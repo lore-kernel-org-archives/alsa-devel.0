@@ -1,72 +1,64 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: omap-mcpdm: Remove OMAP revision check
-Date: Thu, 04 Oct 2012 11:22:33 +0300
-Message-ID: <506D4749.4020405@ti.com>
-References: <1349338509-3440-1-git-send-email-peter.ujfalusi@ti.com> <1349338509-3440-3-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1349338509-3440-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+From: Matt Porter <mporter@ti.com>
+Subject: [PATCH 2/2] ARM: davinci: enable SRAM ping ping buffering on DA850
+Date: Thu,  4 Oct 2012 06:15:45 -0400
+Message-ID: <1349345745-10584-3-git-send-email-mporter@ti.com>
+References: <1349345745-10584-1-git-send-email-mporter@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1349345745-10584-1-git-send-email-mporter@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/04/2012 11:15 AM, Peter Ujfalusi wrote:
-> The OMAP revision check is not needed since the watchdog bit is not i=
-n use
-> on 4430 ES1.0 and have no effect when we set the bit. The watchdog ne=
-ed to
-> be enabled on all other revisions.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  sound/soc/omap/omap-mcpdm.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
->=20
-> diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.=
-c
-> index fdf655e..8f5edc8 100644
-> --- a/sound/soc/omap/omap-mcpdm.c
-> +++ b/sound/soc/omap/omap-mcpdm.c
-> @@ -40,7 +40,6 @@
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
-> =20
-> -#include <plat/cpu.h>
->  #include "omap-mcpdm.h"
->  #include "omap-pcm.h"
-> =20
-> @@ -258,14 +257,9 @@ static int omap_mcpdm_dai_startup(struct snd_pcm=
-_substream *substream,
->  	mutex_lock(&mcpdm->mutex);
-> =20
->  	if (!dai->active) {
-> -		/* Enable watch dog for ES above ES 1.0 to avoid saturation */
-> -		if (omap_rev() !=3D OMAP4430_REV_ES1_0) {
-> -			u32 ctrl =3D omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
-> +		u32 ctrl =3D omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
-> =20
-> -			omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL,
-> -					 ctrl | MCPDM_WD_EN);
-> -		}
-> -		omap_mcpdm_open_streams(mcpdm);
-> +		omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl | MCPDM_WD_EN);
+Passes the DA850 shared SRAM gen_pool to the McASP driver
+and enables the ping-pong buffer DMA support.
 
-Oops. I have removed the omap_mcpdm_open_streams() as well...
-Will resend :(
+Signed-off-by: Matt Porter <mporter@ti.com>
+---
+ arch/arm/mach-davinci/board-da850-evm.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
->  	}
->  	mutex_unlock(&mcpdm->mutex);
-> =20
->=20
-
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index acc6e84..c14ca9d 100644
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -750,16 +750,19 @@ static u8 da850_iis_serializer_direction[] = {
+ };
+ 
+ static struct snd_platform_data da850_evm_snd_data = {
+-	.tx_dma_offset	= 0x2000,
+-	.rx_dma_offset	= 0x2000,
+-	.op_mode	= DAVINCI_MCASP_IIS_MODE,
+-	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
+-	.tdm_slots	= 2,
+-	.serial_dir	= da850_iis_serializer_direction,
+-	.asp_chan_q	= EVENTQ_0,
+-	.version	= MCASP_VERSION_2,
+-	.txnumevt	= 1,
+-	.rxnumevt	= 1,
++	.tx_dma_offset		= 0x2000,
++	.rx_dma_offset		= 0x2000,
++	.op_mode		= DAVINCI_MCASP_IIS_MODE,
++	.num_serializer		= ARRAY_SIZE(da850_iis_serializer_direction),
++	.tdm_slots		= 2,
++	.serial_dir		= da850_iis_serializer_direction,
++	.asp_chan_q		= EVENTQ_0,
++	.ram_chan_q		= EVENTQ_1,
++	.version		= MCASP_VERSION_2,
++	.txnumevt		= 1,
++	.rxnumevt		= 1,
++	.sram_size_playback	= SZ_8K,
++	.sram_size_capture	= SZ_8K,
+ };
+ 
+ static const short da850_evm_mcasp_pins[] __initconst = {
+@@ -1338,6 +1341,7 @@ static __init void da850_evm_init(void)
+ 		pr_warning("da850_evm_init: mcasp mux setup failed: %d\n",
+ 				ret);
+ 
++	da850_evm_snd_data.sram_pool = sram_get_gen_pool();
+ 	da8xx_register_mcasp(0, &da850_evm_snd_data);
+ 
+ 	ret = davinci_cfg_reg_list(da850_lcdcntl_pins);
+-- 
+1.7.9.5
