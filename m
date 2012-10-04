@@ -1,37 +1,52 @@
-From: Matt Porter <mporter@ti.com>
-Subject: [PATCH 0/2] Convert davinci ASoC to genalloc SRAM
-Date: Thu,  4 Oct 2012 06:15:43 -0400
-Message-ID: <1349345745-10584-1-git-send-email-mporter@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>, Daniel Mack <zonque@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 2/2] ASoC: omap-mcpdm: Remove OMAP revision check
+Date: Thu,  4 Oct 2012 11:27:16 +0300
+Message-ID: <1349339236-3622-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This series converts davinci ASoC to use genalloc and enables
-that support on DA850. It applies on top of the uio_pruss/genalloc
-series [1] which allows DaVinci to provide a gen_pool via pdata
-for driver use.
+The OMAP revision check is not needed since the watchdog bit is not in use
+on 4430 ES1.0 and have no effect when we set the bit. The watchdog need to
+be enabled on all other revisions.
 
-I've tested this on the AM180x EVM. Note that prior to this,
-the SRAM paths in the driver were completely unused. I've only
-enabled ping-pong buffering on the platform I can test as it's
-best to allow those with DM644x and similar platforms to set the
-playback/capture sram size to something that's known to work
-for them.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/omap/omap-mcpdm.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-[1] http://www.spinics.net/lists/arm-kernel/msg198854.html
-
-Matt Porter (2):
-  ASoC: davinci: replace private sram api with genalloc
-  ARM: davinci: enable SRAM ping ping buffering on DA850
-
- arch/arm/mach-davinci/board-da850-evm.c   |   24 ++++++++++++++----------
- include/linux/platform_data/davinci_asp.h |    3 +++
- sound/soc/davinci/davinci-mcasp.c         |    2 ++
- sound/soc/davinci/davinci-pcm.c           |   18 ++++++++++++------
- sound/soc/davinci/davinci-pcm.h           |    2 ++
- 5 files changed, 33 insertions(+), 16 deletions(-)
-
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index fdf655e..e134b27 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -40,7 +40,6 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+-#include <plat/cpu.h>
+ #include "omap-mcpdm.h"
+ #include "omap-pcm.h"
+ 
+@@ -258,13 +257,9 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
+ 	mutex_lock(&mcpdm->mutex);
+ 
+ 	if (!dai->active) {
+-		/* Enable watch dog for ES above ES 1.0 to avoid saturation */
+-		if (omap_rev() != OMAP4430_REV_ES1_0) {
+-			u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
++		u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+ 
+-			omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL,
+-					 ctrl | MCPDM_WD_EN);
+-		}
++		omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl | MCPDM_WD_EN);
+ 		omap_mcpdm_open_streams(mcpdm);
+ 	}
+ 	mutex_unlock(&mcpdm->mutex);
 -- 
-1.7.9.5
+1.7.12
+
