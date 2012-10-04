@@ -1,53 +1,160 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: omap-mcpdm: Remove OMAP revision check
-Date: Thu,  4 Oct 2012 11:15:09 +0300
-Message-ID: <1349338509-3440-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1349338509-3440-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1349338509-3440-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+From: Matt Porter <mporter@ti.com>
+Subject: [PATCH 1/2] ASoC: davinci: replace private sram api with genalloc
+Date: Thu,  4 Oct 2012 06:15:44 -0400
+Message-ID: <1349345745-10584-2-git-send-email-mporter@ti.com>
+References: <1349345745-10584-1-git-send-email-mporter@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1349345745-10584-1-git-send-email-mporter@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The OMAP revision check is not needed since the watchdog bit is not in use
-on 4430 ES1.0 and have no effect when we set the bit. The watchdog need to
-be enabled on all other revisions.
+Removes the DaVinci private SRAM API and replaces it with
+the genalloc API. The SRAM gen_pool is passed in pdata since
+DaVinci is in the early stages of DT conversion.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Matt Porter <mporter@ti.com>
 ---
- sound/soc/omap/omap-mcpdm.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ include/linux/platform_data/davinci_asp.h |    3 +++
+ sound/soc/davinci/davinci-mcasp.c         |    2 ++
+ sound/soc/davinci/davinci-pcm.c           |   18 ++++++++++++------
+ sound/soc/davinci/davinci-pcm.h           |    2 ++
+ 4 files changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index fdf655e..8f5edc8 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -40,7 +40,6 @@
- #include <sound/pcm_params.h>
+diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
+index d0c5825..f3d6e4f 100644
+--- a/include/linux/platform_data/davinci_asp.h
++++ b/include/linux/platform_data/davinci_asp.h
+@@ -16,6 +16,8 @@
+ #ifndef __DAVINCI_ASP_H
+ #define __DAVINCI_ASP_H
+ 
++#include <linux/genalloc.h>
++
+ struct snd_platform_data {
+ 	u32 tx_dma_offset;
+ 	u32 rx_dma_offset;
+@@ -30,6 +32,7 @@ struct snd_platform_data {
+ 	unsigned enable_channel_combine:1;
+ 	unsigned sram_size_playback;
+ 	unsigned sram_size_capture;
++	struct gen_pool *sram_pool;
+ 
+ 	/*
+ 	 * If McBSP peripheral gets the clock from an external pin,
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 714e51e..52194bb 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1098,6 +1098,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
+ 	dma_data->asp_chan_q = pdata->asp_chan_q;
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
++	dma_data->sram_pool = pdata->sram_pool;
+ 	dma_data->sram_size = pdata->sram_size_playback;
+ 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
+ 							mem->start);
+@@ -1115,6 +1116,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
+ 	dma_data->asp_chan_q = pdata->asp_chan_q;
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
++	dma_data->sram_pool = pdata->sram_pool;
+ 	dma_data->sram_size = pdata->sram_size_capture;
+ 	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
+ 							mem->start);
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index 93ea3bf..d2cc169 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -16,6 +16,7 @@
+ #include <linux/slab.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/kernel.h>
++#include <linux/genalloc.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -23,7 +24,6 @@
  #include <sound/soc.h>
  
--#include <plat/cpu.h>
- #include "omap-mcpdm.h"
- #include "omap-pcm.h"
+ #include <asm/dma.h>
+-#include <mach/sram.h>
  
-@@ -258,14 +257,9 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
- 	mutex_lock(&mcpdm->mutex);
+ #include "davinci-pcm.h"
  
- 	if (!dai->active) {
--		/* Enable watch dog for ES above ES 1.0 to avoid saturation */
--		if (omap_rev() != OMAP4430_REV_ES1_0) {
--			u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
-+		u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
- 
--			omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL,
--					 ctrl | MCPDM_WD_EN);
--		}
--		omap_mcpdm_open_streams(mcpdm);
-+		omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl | MCPDM_WD_EN);
+@@ -259,7 +259,8 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
  	}
- 	mutex_unlock(&mcpdm->mutex);
+ }
  
+-static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
++static int allocate_sram(struct snd_pcm_substream *substream,
++		struct gen_pool *sram_pool, unsigned size,
+ 		struct snd_pcm_hardware *ppcm)
+ {
+ 	struct snd_dma_buffer *buf = &substream->dma_buffer;
+@@ -271,9 +272,10 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+ 		return 0;
+ 
+ 	ppcm->period_bytes_max = size;
+-	iram_virt = sram_alloc(size, &iram_phys);
++	iram_virt = (void *)gen_pool_alloc(sram_pool, size);
+ 	if (!iram_virt)
+ 		goto exit1;
++	iram_phys = gen_pool_virt_to_phys(sram_pool, (unsigned)iram_virt);
+ 	iram_dma = kzalloc(sizeof(*iram_dma), GFP_KERNEL);
+ 	if (!iram_dma)
+ 		goto exit2;
+@@ -285,7 +287,7 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+ 	return 0;
+ exit2:
+ 	if (iram_virt)
+-		sram_free(iram_virt, size);
++		gen_pool_free(sram_pool, (unsigned)iram_virt, size);
+ exit1:
+ 	return -ENOMEM;
+ }
+@@ -676,7 +678,7 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	ppcm = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+ 			&pcm_hardware_playback : &pcm_hardware_capture;
+-	allocate_sram(substream, params->sram_size, ppcm);
++	allocate_sram(substream, params->sram_pool, params->sram_size, ppcm);
+ 	snd_soc_set_runtime_hwparams(substream, ppcm);
+ 	/* ensure that buffer size is a multiple of period size */
+ 	ret = snd_pcm_hw_constraint_integer(runtime,
+@@ -819,7 +821,11 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
+ 		buf->area = NULL;
+ 		iram_dma = buf->private_data;
+ 		if (iram_dma) {
+-			sram_free(iram_dma->area, iram_dma->bytes);
++			struct davinci_runtime_data *prtd =
++				substream->runtime->private_data;
++			struct gen_pool *sram_pool = prtd->params->sram_pool;
++			gen_pool_free(sram_pool, (unsigned)iram_dma->area,
++				      iram_dma->bytes);
+ 			kfree(iram_dma);
+ 		}
+ 	}
+diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
+index fc4d01c..b6ef703 100644
+--- a/sound/soc/davinci/davinci-pcm.h
++++ b/sound/soc/davinci/davinci-pcm.h
+@@ -12,6 +12,7 @@
+ #ifndef _DAVINCI_PCM_H
+ #define _DAVINCI_PCM_H
+ 
++#include <linux/genalloc.h>
+ #include <linux/platform_data/davinci_asp.h>
+ #include <mach/edma.h>
+ 
+@@ -20,6 +21,7 @@ struct davinci_pcm_dma_params {
+ 	unsigned short acnt;
+ 	dma_addr_t dma_addr;		/* device physical address for DMA */
+ 	unsigned sram_size;
++	struct gen_pool *sram_pool;	/* SRAM gen_pool for ping pong */
+ 	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
+ 	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
+ 	unsigned char data_type;	/* xfer data type */
 -- 
-1.7.12
-
+1.7.9.5
