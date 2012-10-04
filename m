@@ -1,14 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 0/5] McASP changes for more flexibility
-Date: Thu,  4 Oct 2012 15:08:37 +0200
-Message-ID: <1349356122-14794-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fsi: use devm_request_irq()
+Date: Thu, 4 Oct 2012 18:52:45 +0100
+Message-ID: <20121004175245.GW4360@opensource.wolfsonmicro.com>
+References: <87fw5wrs5d.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FF1A261631
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 15:09:11 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 621C4261611
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 19:52:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <87fw5wrs5d.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,40 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Oct 02, 2012 at 11:22:57PM -0700, Kuninori Morimoto wrote:
+> This patch uses devm_request_irq() instead of request_irq()
+> and removed free_irq() from driver
 
-I've been working on the McASP driver lately to support a board on
-which an AM33xx SoC is connected to a CS4271 via I2S. The CPU is clock
-master for both LRCLK and BITCLK, but receives its master clock
-externally.
-
-Some changes were necessary in order to get this playing, as the
-driver seems to have been used with DSP_B formats only.
-
-I couldn't the pateches on any Davinci platform, so I rely on other
-people to test and see if they break anything.
-
-
-Thanks,
-Daniel
-
-Daniel Mack (5):
-  ALSA: ASoC: enable 192KHz support for McASP
-  ALSA: ASoC: McASP: add support for clock dividers
-  ALSA: ASoC: McASP: add support for 24 bit samples
-  ALSA: ASoC: McASP: make AHCLK direction configurable
-  ALSA: ASoC: McASP: set format parameters in dependence of the DAI
-    format
-
- sound/soc/davinci/davinci-evm.c   |  5 +++
- sound/soc/davinci/davinci-mcasp.c | 87 ++++++++++++++++++++++++++++++++++-----
- sound/soc/davinci/davinci-mcasp.h |  2 +-
- sound/soc/davinci/davinci-pcm.c   | 16 ++-----
- 4 files changed, 86 insertions(+), 24 deletions(-)
-
--- 
-1.7.11.4
+Applied, thanks.
