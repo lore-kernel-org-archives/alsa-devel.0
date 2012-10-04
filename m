@@ -1,87 +1,135 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: ASoC: cs4271: add DT property for
-	AMUTEB=BMUTEC feature
-Date: Thu,  4 Oct 2012 13:53:59 +0200
-Message-ID: <1349351639-17506-1-git-send-email-zonque@gmail.com>
+From: "Porter, Matt" <mporter-l0cyMroinI0@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Davinci: pcm: add support for
+	sram-support-less platforms
+Date: Thu, 4 Oct 2012 09:38:40 +0000
+Message-ID: <E4D2ACDC-4749-4988-ADC5-277C187B0DC6@ti.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+	<1346417459-30042-3-git-send-email-gururaja.hebbar@ti.com>
+	<20120922153313.GN4495@opensource.wolfsonmicro.com>
+	<506A9C65.5040309@ti.com>
+	<20121002093753.GU4360@opensource.wolfsonmicro.com>
+	<506AC303.9080906@gmail.com> <506ACACE.4030308@ti.com>
+	<506AEF57.2000306@gmail.com> <20121002164116.GT5641@beef>
+	<506B1B46.2070006@gmail.com> <506D552A.2000506@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 47E5C2615F5
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 13:54:25 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Alexander Sverdlin <subaparts@yandex.ru>, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <506D552A.2000506-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Language: en-US
+Content-ID: <C7BABAF7DA78A346A50EA5EE8C28F96C-q8tqbTl1AnqmHdYHvhjUOg@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "<alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "
+  <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>" <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "
+ <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "Ujfalusi,  Peter" <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, "Girdwood, Liam" <lrg-l0cyMroinI0@public.gmane.org>, "<linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org> " <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The CS4271 has a feature to sync its analog mute flags, so one mute
-circuitry can be used for both channels.
 
-Give DT uses access to this feature with a new property.
+On Oct 4, 2012, at 5:21 AM, Daniel Mack wrote:
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Alexander Sverdlin <subaparts@yandex.ru>
----
- Documentation/devicetree/bindings/sound/cs4271.txt |  2 ++
- sound/soc/codecs/cs4271.c                          | 13 ++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> 
+> On 02.10.2012 18:50, Daniel Mack wrote:
+>> On 02.10.2012 18:41, Matt Porter wrote:
+>>> On Tue, Oct 02, 2012 at 03:42:47PM +0200, Daniel Mack wrote:
+>>>> On 02.10.2012 13:06, Sekhar Nori wrote:
+>>>>> On 10/2/2012 4:03 PM, Daniel Mack wrote:
+>>>>>> On 02.10.2012 11:37, Mark Brown wrote:
+>>>>>>> On Tue, Oct 02, 2012 at 10:48:53AM +0300, Peter Ujfalusi wrote:
+>>>>>>> 
+>>>>>>>> I also agree that ifdef is not a good solution.
+>>>>>>>> It is better to have this information passed as device_data and via DT it can
+>>>>>>>> be decided based on the compatible property for the device.
+>>>>>>> 
+>>>>>>> That's not really the problem here - the problem is that the APIs used
+>>>>>>> to get the SRAM are DaVinci only so it's not possible to build on OMAP
+>>>>>>> or other platforms.  The SRAM code needs to move to a standard API.
+>>>>>> 
+>>>>>> What about following Matt Porter's idea and ignore the SRAM code
+>>>>>> entirely and port the entire PCM code to generic dmaengine code first?
+>>>>>> The EDMA driver needs to learn support for cyclic DMA for that, and I
+>>>>>> might give that a try in near future.
+>>>>>> 
+>>>>>> Later on, the SRAM ping-pong code can get added back using genalloc
+>>>>>> functions, as Sekhar proposed. That needs to be done by someone who has
+>>>>>> access to a Davinci board though, I only have a AM33xx/OMAP here.
+>>>>> 
+>>>>> We cannot "get rid" of SRAM code and add it back "later". It is required
+>>>>> for most DaVinci parts. The SRAM code can be converted to use genalloc
+>>>>> (conversion should be straightforward and I can help test it) and the
+>>>>> code that uses SRAM can probably keep using the private EDMA API till
+>>>>> the dmaengine EDMA driver has cyclic DMA support. Matt has already
+>>>>> posted patches to move private EDMA APIs to a common location. That
+>>>>> should keep AM335x build from breaking. Is this something that is feasible?
+>>>> 
+>>>> Yes - by "later" I just meant in a subsequent patch. But you're probably
+>>>> right, we can also do that first.
+>>>> 
+>>>> I'm looking at that right now and the problem seems that we don't have a
+>>>> sane way to dynamically look up gen_pools independently of the actual
+>>>> run-time platform. All users of gen_pools seem to know which platform
+>>>> they run on and access a platform-specific pool. So I don't currently
+>>>> see how we could implement multi-platform code, gen_pools are fine but
+>>>> don't solve the problem here.
+>>>> 
+>>>> Would it be an idea to add a char* member to gen_pools and a function
+>>>> that can be used to dynamically look it up again? If a buffer with a
+>>>> certain name exists, we can use it and install that ping-pong buffer,
+>>>> otherwise we just don't. While that would be easy to do, it's a
+>>>> tree-wide change.
+>>>> 
+>>>> Is there a better way that I miss?
+>>> 
+>>> At the high level there's two platform models we have to handle, the
+>>> boot from board file !DT case, and then the boot from DT case. Since
+>>> Davinci is just starting DT conversion, we mostly care about the !DT
+>>> base in which the struct gen_pool * is passed in pdata to the ASoC
+>>> driver. It is then selectable on a per-platform basis where the decision
+>>> should be made.
+>>> 
+>>> Given a separate discussion with Sekhar, we're only going to have one
+>>> SRAM pool on any DaVinci part right now...this was only a question on
+>>> L138 anyway. But regardless, the created gen_pool will be passed via
+>>> pdata.
+>> 
+>> I thought about this too, as mmp does it that way.
+>> 
+>>> Since DT conversion is starting and we need to consider that now,
+>>> the idea there is to use the DT-based generic sram driver [1] such that
+>>> when we do boot from DT on Davinci, the genpool is provided via phandle
+>>> and the pointer extracted with the OF helpers that are part of the
+>>> series.
+>> 
+>> A phandle is the cleanest way I think, yes.
+>> 
+>>> That's pretty much it. I'm reworking the backend support as discussed
+>>> with Sekhar wrt to my uio_pruss series. I can post a standalone series
+>>> that just replaces sram_* with genalloc for davinci ASoC.
+>> 
+>> As you can also test it, it would be easiest if you came up with a patch
+>> for that, yes. I can have a look at the dma bits laters, once my OMAP
+>> board finally works with the code as it currently stands. I'm still
+>> fighting with the mcasp driver right now ...
+> 
+> I quickly prepared two patches to change that, so that topic is out of
+> the way. But I did only compile-test them on OMAP - could you check on
+> your Davinci platform? Note that these apply on top of the patch in
+> discussion here (which isn't applied to the asoc tree yet).
 
-diff --git a/Documentation/devicetree/bindings/sound/cs4271.txt b/Documentation/devicetree/bindings/sound/cs4271.txt
-index c81b5fd..a850fb9 100644
---- a/Documentation/devicetree/bindings/sound/cs4271.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4271.txt
-@@ -18,6 +18,8 @@ Optional properties:
- 
-  - reset-gpio: 	a GPIO spec to define which pin is connected to the chip's
- 		!RESET pin
-+ - cirrus,amuteb-eq-bmutec:	When given, the Codec's AMUTEB=BMUTEC flag
-+				is enabled.
- 
- Examples:
- 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index f994af3..56ec8dd2 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -474,11 +474,17 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 	struct cs4271_platform_data *cs4271plat = codec->dev->platform_data;
- 	int ret;
- 	int gpio_nreset = -EINVAL;
-+	int amutec_eq_bmutec = 0;
- 
- #ifdef CONFIG_OF
--	if (of_match_device(cs4271_dt_ids, codec->dev))
-+	if (of_match_device(cs4271_dt_ids, codec->dev)) {
- 		gpio_nreset = of_get_named_gpio(codec->dev->of_node,
- 						"reset-gpio", 0);
-+
-+		if (!of_get_property(codec->dev->of_node,
-+				     "cirrus,amutec-eq-bmutec", NULL))
-+			amutec_eq_bmutec = 1;
-+	}
- #endif
- 
- 	if (cs4271plat && gpio_is_valid(cs4271plat->gpio_nreset))
-@@ -528,6 +534,11 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 	/* Power-up sequence requires 85 uS */
- 	udelay(85);
- 
-+	if (amutec_eq_bmutec)
-+		snd_soc_update_bits(codec, CS4271_MODE2,
-+				    CS4271_MODE2_MUTECAEQUB,
-+				    CS4271_MODE2_MUTECAEQUB);
-+
- 	return snd_soc_add_codec_controls(codec, cs4271_snd_controls,
- 		ARRAY_SIZE(cs4271_snd_controls));
- }
--- 
-1.7.11.4
+I put a series together yesterday, just ran out of time to post
+last night after testing. I'm posting that now...it's on top of my
+uio_pruss/genalloc series and only addresss switching davinci-pcm to
+genalloc (and actually enabling ping-pon from sram).
+
+I'll take a look a your OMAP patches.
+
+-Matt
