@@ -1,17 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 3/5] ALSA: ASoC: McASP: add support for 24 bit
-	samples
-Date: Thu,  4 Oct 2012 15:08:40 +0200
-Message-ID: <1349356122-14794-4-git-send-email-zonque@gmail.com>
-References: <1349356122-14794-1-git-send-email-zonque@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_hwdep_open() as non-root user
+Date: Thu, 04 Oct 2012 14:50:10 +0200
+Message-ID: <506D8602.3050007@ladisch.de>
+References: <44F73A434CA44E548BE58635A97F56C9@mediascore.mediascore.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 59663261631
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 15:09:12 +0200 (CEST)
-In-Reply-To: <1349356122-14794-1-git-send-email-zonque@gmail.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C9E9626160E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 14:50:12 +0200 (CEST)
+In-Reply-To: <44F73A434CA44E548BE58635A97F56C9@mediascore.mediascore.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Matt Porter <mporter@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+To: Rafal Powierski <powierski@mediascore.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Hebbar, Gururaja <gururaja.hebbar@ti.com>
-Cc: Matt Porter <mporter@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 1252bad..ab9773d 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -839,6 +839,14 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 		word_length = DAVINCI_AUDIO_WORD_16;
- 		break;
- 
-+	case SNDRV_PCM_FORMAT_U24_3LE:
-+	case SNDRV_PCM_FORMAT_S24_3LE:
-+	case SNDRV_PCM_FORMAT_U24_LE:
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		dma_params->data_type = 3;
-+		word_length = DAVINCI_AUDIO_WORD_24;
-+		break;
-+
- 	case SNDRV_PCM_FORMAT_U32_LE:
- 	case SNDRV_PCM_FORMAT_S32_LE:
- 		dma_params->data_type = 4;
--- 
-1.7.11.4
+UmFmYWwgUG93aWVyc2tpIHdyb3RlOgo+IEkgd291bGQgbGlrZSB0byBhY2Nlc3MgcGluIHZlcmIg
+aGRhIGludGVyZmFjZSB1c2luZyBzbmRfaHdkZXBfb3BlbigpIGZ1bmN0aW9uLgo+IEl0IHdvcmtz
+IGZpbmUgaWYgSSBydW4gYXMgcm9vdC4KPiBJIGhvcGUgdGhlcmUgaXMgYSB3YXkgdG8gY29uZmln
+dXJlIG15IGt1YnVudHUgc28gSSBjYW4gZG8gaXQgYXMgbm9uLXJvb3QgdXNlciAoZS5nLiBkZWJ1
+Z2dpbmcpCj4gc28gZmFyLCBJIGhhdmUgYmVlbiB0cnlpbmcgY2hhbmdpbmcgYWNjZXNzIGZsYWdz
+IGZvciBkZXZpY2VzIGluIC9kZXYvc25kLyBkaXJlY3RvcnkgdG8gY3J3eHJ3eHJ3eCBubyBwbHVz
+IGNoYXJhY3Rlci4KPiBJdCBkaWQgbm90IGNoYW5nZSBteSBwcml2aWxlZ2VzIGZvciBzbmRfaHdk
+ZXBfb3BlbigpIC0gIHN0aWxsIHJldHVybnMg4oCTMTMuCgpzb3VuZC9wY2kvaGRhL2hkYV9od2Rl
+cC5jIHNheXM6CgpzdGF0aWMgaW50IGhkYV9od2RlcF9vcGVuKHN0cnVjdCBzbmRfaHdkZXAgKmh3
+LCBzdHJ1Y3QgZmlsZSAqZmlsZSkKewojaWZuZGVmIENPTkZJR19TTkRfREVCVUdfVkVSQk9TRQoJ
+aWYgKCFjYXBhYmxlKENBUF9TWVNfUkFXSU8pKQoJCXJldHVybiAtRUFDQ0VTOwojZW5kaWYKCXJl
+dHVybiAwOwp9CgoKUmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
