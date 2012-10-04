@@ -1,64 +1,32 @@
-From: Matt Porter <mporter@ti.com>
-Subject: [PATCH 2/2] ARM: davinci: enable SRAM ping ping buffering on DA850
-Date: Thu,  4 Oct 2012 06:15:45 -0400
-Message-ID: <1349345745-10584-3-git-send-email-mporter@ti.com>
-References: <1349345745-10584-1-git-send-email-mporter@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1349345745-10584-1-git-send-email-mporter@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>, Daniel Mack <zonque@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Fix typo of
+	Vibrator
+Date: Thu, 4 Oct 2012 18:45:56 +0100
+Message-ID: <20121004174555.GQ4360@opensource.wolfsonmicro.com>
+References: <1349181076-31402-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3852526160D
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 19:45:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1349181076-31402-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Passes the DA850 shared SRAM gen_pool to the McASP driver
-and enables the ping-pong buffer DMA support.
+On Tue, Oct 02, 2012 at 03:31:16PM +0300, Peter Ujfalusi wrote:
+> It is not Vinrator but Vibrator.
 
-Signed-off-by: Matt Porter <mporter@ti.com>
----
- arch/arm/mach-davinci/board-da850-evm.c |   24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index acc6e84..c14ca9d 100644
---- a/arch/arm/mach-davinci/board-da850-evm.c
-+++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -750,16 +750,19 @@ static u8 da850_iis_serializer_direction[] = {
- };
- 
- static struct snd_platform_data da850_evm_snd_data = {
--	.tx_dma_offset	= 0x2000,
--	.rx_dma_offset	= 0x2000,
--	.op_mode	= DAVINCI_MCASP_IIS_MODE,
--	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
--	.tdm_slots	= 2,
--	.serial_dir	= da850_iis_serializer_direction,
--	.asp_chan_q	= EVENTQ_0,
--	.version	= MCASP_VERSION_2,
--	.txnumevt	= 1,
--	.rxnumevt	= 1,
-+	.tx_dma_offset		= 0x2000,
-+	.rx_dma_offset		= 0x2000,
-+	.op_mode		= DAVINCI_MCASP_IIS_MODE,
-+	.num_serializer		= ARRAY_SIZE(da850_iis_serializer_direction),
-+	.tdm_slots		= 2,
-+	.serial_dir		= da850_iis_serializer_direction,
-+	.asp_chan_q		= EVENTQ_0,
-+	.ram_chan_q		= EVENTQ_1,
-+	.version		= MCASP_VERSION_2,
-+	.txnumevt		= 1,
-+	.rxnumevt		= 1,
-+	.sram_size_playback	= SZ_8K,
-+	.sram_size_capture	= SZ_8K,
- };
- 
- static const short da850_evm_mcasp_pins[] __initconst = {
-@@ -1338,6 +1341,7 @@ static __init void da850_evm_init(void)
- 		pr_warning("da850_evm_init: mcasp mux setup failed: %d\n",
- 				ret);
- 
-+	da850_evm_snd_data.sram_pool = sram_get_gen_pool();
- 	da8xx_register_mcasp(0, &da850_evm_snd_data);
- 
- 	ret = davinci_cfg_reg_list(da850_lcdcntl_pins);
--- 
-1.7.9.5
+Applied, thanks.
