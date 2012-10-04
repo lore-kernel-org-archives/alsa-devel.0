@@ -1,32 +1,33 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Fix typo of
-	Vibrator
-Date: Thu, 4 Oct 2012 18:45:56 +0100
-Message-ID: <20121004174555.GQ4360@opensource.wolfsonmicro.com>
-References: <1349181076-31402-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3852526160D
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 19:45:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1349181076-31402-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/2] ASoC: omap-mcpdm updates for 3.7
+Date: Thu,  4 Oct 2012 11:27:14 +0300
+Message-ID: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 02, 2012 at 03:31:16PM +0300, Peter Ujfalusi wrote:
-> It is not Vinrator but Vibrator.
+Hello Mark, Tony,
 
-Applied, thanks.
+Change since v1:
+- Fixed the second patch to keep the omap_mcpdm_open_stream() - after a coffee
+
+The mcpdm driver no longer needs to include any plat/*.h file, clearing the way
+for the single kernel image.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (1):
+  ASoC: omap-mcpdm: Remove OMAP revision check
+
+Tony Lindgren (1):
+  ASoC: Fix wrong include for McPDM
+
+ sound/soc/omap/omap-mcpdm.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+-- 
+1.7.12
+
