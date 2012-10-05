@@ -1,17 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi: fixup channels_min/max
-Date: Thu, 4 Oct 2012 18:52:27 +0100
-Message-ID: <20121004175227.GV4360@opensource.wolfsonmicro.com>
-References: <87ipass3wt.wl%kuninori.morimoto.gx@renesas.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: i2s: use clk_prepare_enable
+ and	clk_disable_unprepare
+Date: Fri, 05 Oct 2012 13:43:37 +0900
+Message-ID: <012101cda2b3$fc2f33d0$f48d9b70$@com>
+References: <1349221618-2943-1-git-send-email-thomas.abraham@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 70CAA261611
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2012 19:52:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87ipass3wt.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAA7826507B
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 06:43:25 +0200 (CEST)
+Received: from epcpsbgm2.samsung.com (epcpsbgm2 [203.254.230.27])
+ by mailout1.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0MBE00LUUL1ONRI0@mailout1.samsung.com> for
+ alsa-devel@alsa-project.org; Fri, 05 Oct 2012 13:43:21 +0900 (KST)
+Received: from DOSBKIM7302 ([10.90.35.108])
+ by mmp2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTPA id <0MBE00HKPL498CI0@mmp2.samsung.com> for
+ alsa-devel@alsa-project.org; Fri, 05 Oct 2012 13:43:21 +0900 (KST)
+In-reply-to: <1349221618-2943-1-git-send-email-thomas.abraham@linaro.org>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +32,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Guennadi <g.liakhovetski@gmx.de>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: 'Thomas Abraham' <thomas.abraham@linaro.org>, alsa-devel@alsa-project.org
+Cc: jassisinghbrar@gmail.com, kgene.kim@samsung.com, lrg@ti.com, linux-samsung-soc@vger.kernel.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 02, 2012 at 07:08:53PM -0700, Kuninori Morimoto wrote:
-> FSI can support 1 - 8 channel input/output,
-> but current driver is supporting 2 channel format only.
-> This patch fixes channel mismatch
+On Wednesday, Oct 03, 2012 at 8:47 AM, Thomas Abraham wrote:
 
-Applied, thanks.
+> Subject: [alsa-devel] [PATCH] ASoC: SAMSUNG: i2s: use clk_prepare_enable and clk_disable_unprepare
+> 
+> Convert clk_enable/clk_disable to clk_prepare_enable/clk_disable_unprepare
+> calls as required by common clock framework.
+> 
+> Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
+
+Currently, Common clock framework for exynos series is being worked.
+To fully support common clock framework, 
+need to replace clk_enable with clk_prepare_enable.
+It looks that There is no side effect for ccf unsupported device.
+
+Acked-by: Sangbeom Kim <sbkim73@samsung.com>
+
+Thanks,
+Sangbeom.
