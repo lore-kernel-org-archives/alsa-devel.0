@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/7] ASoC: wm2200: Map DSPs into regmap
-Date: Fri,  5 Oct 2012 19:55:32 +0100
-Message-ID: <1349463336-10871-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/7] ASoC: wm2200: Convert to devm APIs
+Date: Fri,  5 Oct 2012 19:55:30 +0100
+Message-ID: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C37A72650CF
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BF9E32650CA
  for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 20:55:42 +0200 (CEST)
-In-Reply-To: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,137 +22,105 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the regmap ranges support to add the WM2200 DSP core memory pages
-into the "register map" beyond the end of the real register map. We
-don't extend beyond 16 bits since the regmap API will iterate over
-every register doing diagnostics.
-
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm2200.c |   85 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 84 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm2200.c |   39 ++++++++++++++-------------------------
+ 1 file changed, 14 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 367d1e5..1eafaae 100644
+index eab64a1..6ca9bcc 100644
 --- a/sound/soc/codecs/wm2200.c
 +++ b/sound/soc/codecs/wm2200.c
-@@ -64,6 +64,66 @@ struct wm2200_priv {
- 	int sysclk;
- };
+@@ -2011,7 +2011,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	wm2200->dev = &i2c->dev;
+ 	init_completion(&wm2200->fll_lock);
  
-+#define WM2200_DSP_RANGE_BASE (WM2200_MAX_REGISTER + 1)
-+#define WM2200_DSP_SPACING 12288
-+
-+#define WM2200_DSP1_DM_BASE (WM2200_DSP_RANGE_BASE + (0 * WM2200_DSP_SPACING))
-+#define WM2200_DSP1_PM_BASE (WM2200_DSP_RANGE_BASE + (1 * WM2200_DSP_SPACING))
-+#define WM2200_DSP1_ZM_BASE (WM2200_DSP_RANGE_BASE + (2 * WM2200_DSP_SPACING))
-+#define WM2200_DSP2_DM_BASE (WM2200_DSP_RANGE_BASE + (3 * WM2200_DSP_SPACING))
-+#define WM2200_DSP2_PM_BASE (WM2200_DSP_RANGE_BASE + (4 * WM2200_DSP_SPACING))
-+#define WM2200_DSP2_ZM_BASE (WM2200_DSP_RANGE_BASE + (5 * WM2200_DSP_SPACING))
-+
-+static const struct regmap_range_cfg wm2200_ranges[] = {
-+	/* DSP1 DM */
-+	{ .range_min = WM2200_DSP1_DM_BASE,
-+	  .range_max = WM2200_DSP1_DM_BASE + 12287,
-+	  .selector_reg = WM2200_DSP1_CONTROL_3,
-+	  .selector_mask = WM2200_DSP1_PAGE_BASE_DM_0_MASK,
-+	  .selector_shift = WM2200_DSP1_PAGE_BASE_DM_0_SHIFT,
-+	  .window_start = WM2200_DSP1_DM_0, .window_len = 2048, },
-+
-+	/* DSP1 PM */
-+	{ .range_min = WM2200_DSP1_PM_BASE,
-+	  .range_max = WM2200_DSP1_PM_BASE + 12287,
-+	  .selector_reg = WM2200_DSP1_CONTROL_2,
-+	  .selector_mask = WM2200_DSP1_PAGE_BASE_PM_0_MASK,
-+	  .selector_shift = WM2200_DSP1_PAGE_BASE_PM_0_SHIFT,
-+	  .window_start = WM2200_DSP1_PM_0, .window_len = 768, },
-+
-+	/* DSP1 ZM */
-+	{ .range_min = WM2200_DSP1_ZM_BASE,
-+	  .range_max = WM2200_DSP1_ZM_BASE + 2047,
-+	  .selector_reg = WM2200_DSP1_CONTROL_4,
-+	  .selector_mask = WM2200_DSP1_PAGE_BASE_ZM_0_MASK,
-+	  .selector_shift = WM2200_DSP1_PAGE_BASE_ZM_0_SHIFT,
-+	  .window_start = WM2200_DSP1_ZM_0, .window_len = 1024, },
-+
-+	/* DSP2 DM */
-+	{ .range_min = WM2200_DSP2_DM_BASE,
-+	  .range_max = WM2200_DSP2_DM_BASE + 4095,
-+	  .selector_reg = WM2200_DSP2_CONTROL_3,
-+	  .selector_mask = WM2200_DSP2_PAGE_BASE_DM_0_MASK,
-+	  .selector_shift = WM2200_DSP2_PAGE_BASE_DM_0_SHIFT,
-+	  .window_start = WM2200_DSP2_DM_0, .window_len = 2048, },
-+
-+	/* DSP2 PM */
-+	{ .range_min = WM2200_DSP2_PM_BASE,
-+	  .range_max = WM2200_DSP2_PM_BASE + 11287,
-+	  .selector_reg = WM2200_DSP2_CONTROL_2,
-+	  .selector_mask = WM2200_DSP2_PAGE_BASE_PM_0_MASK,
-+	  .selector_shift = WM2200_DSP2_PAGE_BASE_PM_0_SHIFT,
-+	  .window_start = WM2200_DSP2_PM_0, .window_len = 768, },
-+
-+	/* DSP2 ZM */
-+	{ .range_min = WM2200_DSP2_ZM_BASE,
-+	  .range_max = WM2200_DSP2_ZM_BASE + 2047,
-+	  .selector_reg = WM2200_DSP2_CONTROL_4,
-+	  .selector_mask = WM2200_DSP2_PAGE_BASE_ZM_0_MASK,
-+	  .selector_shift = WM2200_DSP2_PAGE_BASE_ZM_0_SHIFT,
-+	  .window_start = WM2200_DSP2_ZM_0, .window_len = 1024, },
-+};
-+
- static struct reg_default wm2200_reg_defaults[] = {
- 	{ 0x000B, 0x0000 },   /* R11    - Tone Generator 1 */
- 	{ 0x0102, 0x0000 },   /* R258   - Clocking 3 */
-@@ -407,6 +467,16 @@ static struct reg_default wm2200_reg_defaults[] = {
+-	wm2200->regmap = regmap_init_i2c(i2c, &wm2200_regmap);
++	wm2200->regmap = devm_regmap_init_i2c(i2c, &wm2200_regmap);
+ 	if (IS_ERR(wm2200->regmap)) {
+ 		ret = PTR_ERR(wm2200->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+@@ -2027,8 +2027,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	for (i = 0; i < ARRAY_SIZE(wm2200->core_supplies); i++)
+ 		wm2200->core_supplies[i].supply = wm2200_core_supply_names[i];
  
- static bool wm2200_volatile_register(struct device *dev, unsigned int reg)
- {
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(wm2200_ranges); i++)
-+		if ((reg >= wm2200_ranges[i].window_start &&
-+		     reg <= wm2200_ranges[i].window_start +
-+		     wm2200_ranges[i].window_len) ||
-+		    (reg >= wm2200_ranges[i].range_min &&
-+		     reg <= wm2200_ranges[i].range_max))
-+			return true;
-+
- 	switch (reg) {
- 	case WM2200_SOFTWARE_RESET:
- 	case WM2200_DEVICE_REVISION:
-@@ -423,6 +493,16 @@ static bool wm2200_volatile_register(struct device *dev, unsigned int reg)
+-	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm2200->core_supplies),
+-				 wm2200->core_supplies);
++	ret = devm_regulator_bulk_get(&i2c->dev,
++				      ARRAY_SIZE(wm2200->core_supplies),
++				      wm2200->core_supplies);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to request core supplies: %d\n",
+ 			ret);
+@@ -2044,8 +2045,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	}
  
- static bool wm2200_readable_register(struct device *dev, unsigned int reg)
- {
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(wm2200_ranges); i++)
-+		if ((reg >= wm2200_ranges[i].window_start &&
-+		     reg <= wm2200_ranges[i].window_start +
-+		     wm2200_ranges[i].window_len) ||
-+		    (reg >= wm2200_ranges[i].range_min &&
-+		     reg <= wm2200_ranges[i].range_max))
-+			return true;
-+
- 	switch (reg) {
- 	case WM2200_SOFTWARE_RESET:
- 	case WM2200_DEVICE_REVISION:
-@@ -1991,12 +2071,15 @@ static const struct regmap_config wm2200_regmap = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
+ 	if (wm2200->pdata.ldo_ena) {
+-		ret = gpio_request_one(wm2200->pdata.ldo_ena,
+-				       GPIOF_OUT_INIT_HIGH, "WM2200 LDOENA");
++		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.ldo_ena,
++					    GPIOF_OUT_INIT_HIGH,
++					    "WM2200 LDOENA");
+ 		if (ret < 0) {
+ 			dev_err(&i2c->dev, "Failed to request LDOENA %d: %d\n",
+ 				wm2200->pdata.ldo_ena, ret);
+@@ -2055,8 +2057,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	}
  
--	.max_register = WM2200_MAX_REGISTER,
-+	.max_register = WM2200_MAX_REGISTER + (ARRAY_SIZE(wm2200_ranges) *
-+					       WM2200_DSP_SPACING),
- 	.reg_defaults = wm2200_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(wm2200_reg_defaults),
- 	.volatile_reg = wm2200_volatile_register,
- 	.readable_reg = wm2200_readable_register,
- 	.cache_type = REGCACHE_RBTREE,
-+	.ranges = wm2200_ranges,
-+	.num_ranges = ARRAY_SIZE(wm2200_ranges),
- };
+ 	if (wm2200->pdata.reset) {
+-		ret = gpio_request_one(wm2200->pdata.reset,
+-				       GPIOF_OUT_INIT_HIGH, "WM2200 /RESET");
++		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.reset,
++					    GPIOF_OUT_INIT_HIGH,
++					    "WM2200 /RESET");
+ 		if (ret < 0) {
+ 			dev_err(&i2c->dev, "Failed to request /RESET %d: %d\n",
+ 				wm2200->pdata.reset, ret);
+@@ -2166,23 +2169,16 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
+ err_pm_runtime:
+ 	pm_runtime_disable(&i2c->dev);
+ err_reset:
+-	if (wm2200->pdata.reset) {
++	if (wm2200->pdata.reset)
+ 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
+-		gpio_free(wm2200->pdata.reset);
+-	}
+ err_ldo:
+-	if (wm2200->pdata.ldo_ena) {
++	if (wm2200->pdata.ldo_ena)
+ 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
+-		gpio_free(wm2200->pdata.ldo_ena);
+-	}
+ err_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm2200->core_supplies),
+ 			       wm2200->core_supplies);
+ err_core:
+-	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
+-			    wm2200->core_supplies);
+ err_regmap:
+-	regmap_exit(wm2200->regmap);
+ err:
+ 	return ret;
+ }
+@@ -2194,17 +2190,10 @@ static __devexit int wm2200_i2c_remove(struct i2c_client *i2c)
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, wm2200);
+-	if (wm2200->pdata.reset) {
++	if (wm2200->pdata.reset)
+ 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
+-		gpio_free(wm2200->pdata.reset);
+-	}
+-	if (wm2200->pdata.ldo_ena) {
++	if (wm2200->pdata.ldo_ena)
+ 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
+-		gpio_free(wm2200->pdata.ldo_ena);
+-	}
+-	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
+-			    wm2200->core_supplies);
+-	regmap_exit(wm2200->regmap);
  
- static const unsigned int wm2200_dig_vu[] = {
+ 	return 0;
+ }
 -- 
 1.7.10.4
