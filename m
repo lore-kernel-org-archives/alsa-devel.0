@@ -1,19 +1,16 @@
-From: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: have unique stream_names in codecs
-Date: Fri, 05 Oct 2012 17:47:43 +0300
-Message-ID: <506EF30F.3070506@ti.com>
-References: <1349446668-28299-1-git-send-email-pmeerw@pmeerw.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/7] ASoC: wm2200: Map DSPs into regmap
+Date: Fri,  5 Oct 2012 19:55:32 +0100
+Message-ID: <1349463336-10871-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog137.obsmtp.com (na3sys009aog137.obsmtp.com
- [74.125.149.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 438372650C1
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 16:46:29 +0200 (CEST)
-Received: by mail-ob0-f179.google.com with SMTP id lz20so1681499obb.38
- for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2012 07:46:27 -0700 (PDT)
-In-Reply-To: <1349446668-28299-1-git-send-email-pmeerw@pmeerw.net>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C37A72650CF
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 20:55:42 +0200 (CEST)
+In-Reply-To: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,161 +20,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Peter Meerwald <p.meerwald@bct-electronic.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Use the regmap ranges support to add the WM2200 DSP core memory pages
+into the "register map" beyond the end of the real register map. We
+don't extend beyond 16 bits since the regmap API will iterate over
+every register doing diagnostics.
 
-On 10/05/2012 05:17 PM, Peter Meerwald wrote:
-> From: Peter Meerwald <p.meerwald@bct-electronic.com>
-> =
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm2200.c |   85 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 84 insertions(+), 1 deletion(-)
 
-> for example, there are two 'Capture' stream_names in twl4030, resulting in
-> =
-
-> twl4030-codec twl4030-codec: ASoC: Failed to create Capture debugfs file
-> =
-
-> with debug enabled (fails to create two sysfs entries named 'Capture' und=
-er
-> /sys/kernel/debug/asoc/omap3beagle/twl4030-codec/dapm
-
-I have already sent patches for twl4040 and twl6040 and they should have be=
-en
-applied:
-twl4030:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-September/055683.=
-html
-
-twl6040:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-September/055684.=
-html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-October/055959.ht=
-ml
-
-Also: if you just change the stream name you might end up with non working
-audio since the stream name matching will no longer work.
-
--- =
-
-P=E9ter
-
-> =
-
-> this patch tries to avoid duplicate stream_names
-> =
-
-> Signed-off-by: Peter Meerwald <p.meerwald@bct-electronic.com>
-> ---
->  sound/soc/codecs/stac9766.c |    4 ++--
->  sound/soc/codecs/twl4030.c  |    4 ++--
->  sound/soc/codecs/twl6040.c  |    2 +-
->  sound/soc/codecs/uda1380.c  |    4 ++--
->  sound/soc/codecs/wm8753.c   |    4 ++--
->  5 files changed, 9 insertions(+), 9 deletions(-)
-> =
-
-> diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-> index 33c0f3d..3379119 100644
-> --- a/sound/soc/codecs/stac9766.c
-> +++ b/sound/soc/codecs/stac9766.c
-> @@ -300,14 +300,14 @@ static struct snd_soc_dai_driver stac9766_dai[] =3D=
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index 367d1e5..1eafaae 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -64,6 +64,66 @@ struct wm2200_priv {
+ 	int sysclk;
+ };
+ 
++#define WM2200_DSP_RANGE_BASE (WM2200_MAX_REGISTER + 1)
++#define WM2200_DSP_SPACING 12288
++
++#define WM2200_DSP1_DM_BASE (WM2200_DSP_RANGE_BASE + (0 * WM2200_DSP_SPACING))
++#define WM2200_DSP1_PM_BASE (WM2200_DSP_RANGE_BASE + (1 * WM2200_DSP_SPACING))
++#define WM2200_DSP1_ZM_BASE (WM2200_DSP_RANGE_BASE + (2 * WM2200_DSP_SPACING))
++#define WM2200_DSP2_DM_BASE (WM2200_DSP_RANGE_BASE + (3 * WM2200_DSP_SPACING))
++#define WM2200_DSP2_PM_BASE (WM2200_DSP_RANGE_BASE + (4 * WM2200_DSP_SPACING))
++#define WM2200_DSP2_ZM_BASE (WM2200_DSP_RANGE_BASE + (5 * WM2200_DSP_SPACING))
++
++static const struct regmap_range_cfg wm2200_ranges[] = {
++	/* DSP1 DM */
++	{ .range_min = WM2200_DSP1_DM_BASE,
++	  .range_max = WM2200_DSP1_DM_BASE + 12287,
++	  .selector_reg = WM2200_DSP1_CONTROL_3,
++	  .selector_mask = WM2200_DSP1_PAGE_BASE_DM_0_MASK,
++	  .selector_shift = WM2200_DSP1_PAGE_BASE_DM_0_SHIFT,
++	  .window_start = WM2200_DSP1_DM_0, .window_len = 2048, },
++
++	/* DSP1 PM */
++	{ .range_min = WM2200_DSP1_PM_BASE,
++	  .range_max = WM2200_DSP1_PM_BASE + 12287,
++	  .selector_reg = WM2200_DSP1_CONTROL_2,
++	  .selector_mask = WM2200_DSP1_PAGE_BASE_PM_0_MASK,
++	  .selector_shift = WM2200_DSP1_PAGE_BASE_PM_0_SHIFT,
++	  .window_start = WM2200_DSP1_PM_0, .window_len = 768, },
++
++	/* DSP1 ZM */
++	{ .range_min = WM2200_DSP1_ZM_BASE,
++	  .range_max = WM2200_DSP1_ZM_BASE + 2047,
++	  .selector_reg = WM2200_DSP1_CONTROL_4,
++	  .selector_mask = WM2200_DSP1_PAGE_BASE_ZM_0_MASK,
++	  .selector_shift = WM2200_DSP1_PAGE_BASE_ZM_0_SHIFT,
++	  .window_start = WM2200_DSP1_ZM_0, .window_len = 1024, },
++
++	/* DSP2 DM */
++	{ .range_min = WM2200_DSP2_DM_BASE,
++	  .range_max = WM2200_DSP2_DM_BASE + 4095,
++	  .selector_reg = WM2200_DSP2_CONTROL_3,
++	  .selector_mask = WM2200_DSP2_PAGE_BASE_DM_0_MASK,
++	  .selector_shift = WM2200_DSP2_PAGE_BASE_DM_0_SHIFT,
++	  .window_start = WM2200_DSP2_DM_0, .window_len = 2048, },
++
++	/* DSP2 PM */
++	{ .range_min = WM2200_DSP2_PM_BASE,
++	  .range_max = WM2200_DSP2_PM_BASE + 11287,
++	  .selector_reg = WM2200_DSP2_CONTROL_2,
++	  .selector_mask = WM2200_DSP2_PAGE_BASE_PM_0_MASK,
++	  .selector_shift = WM2200_DSP2_PAGE_BASE_PM_0_SHIFT,
++	  .window_start = WM2200_DSP2_PM_0, .window_len = 768, },
++
++	/* DSP2 ZM */
++	{ .range_min = WM2200_DSP2_ZM_BASE,
++	  .range_max = WM2200_DSP2_ZM_BASE + 2047,
++	  .selector_reg = WM2200_DSP2_CONTROL_4,
++	  .selector_mask = WM2200_DSP2_PAGE_BASE_ZM_0_MASK,
++	  .selector_shift = WM2200_DSP2_PAGE_BASE_ZM_0_SHIFT,
++	  .window_start = WM2200_DSP2_ZM_0, .window_len = 1024, },
++};
++
+ static struct reg_default wm2200_reg_defaults[] = {
+ 	{ 0x000B, 0x0000 },   /* R11    - Tone Generator 1 */
+ 	{ 0x0102, 0x0000 },   /* R258   - Clocking 3 */
+@@ -407,6 +467,16 @@ static struct reg_default wm2200_reg_defaults[] = {
+ 
+ static bool wm2200_volatile_register(struct device *dev, unsigned int reg)
  {
->  =
-
->  	/* stream cababilities */
->  	.playback =3D {
-> -		.stream_name =3D "stac9766 analog",
-> +		.stream_name =3D "stac9766 playback",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D SNDRV_PCM_RATE_8000_48000,
->  		.formats =3D SND_SOC_STD_AC97_FMTS,
->  	},
->  	.capture =3D {
-> -		.stream_name =3D "stac9766 analog",
-> +		.stream_name =3D "stac9766 capture",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D SNDRV_PCM_RATE_8000_48000,
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index 391fcfc..55582db 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -2172,7 +2172,7 @@ static struct snd_soc_dai_driver twl4030_dai[] =3D {
->  		.formats =3D TWL4030_FORMATS,
->  		.sig_bits =3D 24,},
->  	.capture =3D {
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "HiFi Capture",
->  		.channels_min =3D 2,
->  		.channels_max =3D 4,
->  		.rates =3D TWL4030_RATES,
-> @@ -2189,7 +2189,7 @@ static struct snd_soc_dai_driver twl4030_dai[] =3D {
->  		.rates =3D SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
->  		.formats =3D SNDRV_PCM_FMTBIT_S16_LE,},
->  	.capture =3D {
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "Voice Capture",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-> diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-> index c084c54..6f3a9cf 100644
-> --- a/sound/soc/codecs/twl6040.c
-> +++ b/sound/soc/codecs/twl6040.c
-> @@ -1046,7 +1046,7 @@ static struct snd_soc_dai_driver twl6040_dai[] =3D {
->  {
->  	.name =3D "twl6040-ul",
->  	.capture =3D {
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "Capture UL",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D TWL6040_RATES,
-> diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-> index 2502214..d780fe7 100644
-> --- a/sound/soc/codecs/uda1380.c
-> +++ b/sound/soc/codecs/uda1380.c
-> @@ -671,7 +671,7 @@ static struct snd_soc_dai_driver uda1380_dai[] =3D {
->  { /* playback only - dual interface */
->  	.name =3D "uda1380-hifi-playback",
->  	.playback =3D {
-> -		.stream_name =3D "Playback",
-> +		.stream_name =3D "Playback Only",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D UDA1380_RATES,
-> @@ -682,7 +682,7 @@ static struct snd_soc_dai_driver uda1380_dai[] =3D {
->  { /* capture only - dual interface*/
->  	.name =3D "uda1380-hifi-capture",
->  	.capture =3D {
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "Capture Only",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D UDA1380_RATES,
-> diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-> index 13bff87..783ac20 100644
-> --- a/sound/soc/codecs/wm8753.c
-> +++ b/sound/soc/codecs/wm8753.c
-> @@ -1400,7 +1400,7 @@ static struct snd_soc_dai_driver wm8753_dai[] =3D {
->  		.formats =3D WM8753_FORMATS
->  	},
->  	.capture =3D { /* dummy for fast DAI switching */
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "HiFi Capture",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D WM8753_RATES,
-> @@ -1418,7 +1418,7 @@ static struct snd_soc_dai_driver wm8753_dai[] =3D {
->  		.formats =3D WM8753_FORMATS,
->  	},
->  	.capture =3D {
-> -		.stream_name =3D "Capture",
-> +		.stream_name =3D "Voice Capture",
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
->  		.rates =3D WM8753_RATES,
-> =
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(wm2200_ranges); i++)
++		if ((reg >= wm2200_ranges[i].window_start &&
++		     reg <= wm2200_ranges[i].window_start +
++		     wm2200_ranges[i].window_len) ||
++		    (reg >= wm2200_ranges[i].range_min &&
++		     reg <= wm2200_ranges[i].range_max))
++			return true;
++
+ 	switch (reg) {
+ 	case WM2200_SOFTWARE_RESET:
+ 	case WM2200_DEVICE_REVISION:
+@@ -423,6 +493,16 @@ static bool wm2200_volatile_register(struct device *dev, unsigned int reg)
+ 
+ static bool wm2200_readable_register(struct device *dev, unsigned int reg)
+ {
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(wm2200_ranges); i++)
++		if ((reg >= wm2200_ranges[i].window_start &&
++		     reg <= wm2200_ranges[i].window_start +
++		     wm2200_ranges[i].window_len) ||
++		    (reg >= wm2200_ranges[i].range_min &&
++		     reg <= wm2200_ranges[i].range_max))
++			return true;
++
+ 	switch (reg) {
+ 	case WM2200_SOFTWARE_RESET:
+ 	case WM2200_DEVICE_REVISION:
+@@ -1991,12 +2071,15 @@ static const struct regmap_config wm2200_regmap = {
+ 	.reg_bits = 16,
+ 	.val_bits = 16,
+ 
+-	.max_register = WM2200_MAX_REGISTER,
++	.max_register = WM2200_MAX_REGISTER + (ARRAY_SIZE(wm2200_ranges) *
++					       WM2200_DSP_SPACING),
+ 	.reg_defaults = wm2200_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(wm2200_reg_defaults),
+ 	.volatile_reg = wm2200_volatile_register,
+ 	.readable_reg = wm2200_readable_register,
+ 	.cache_type = REGCACHE_RBTREE,
++	.ranges = wm2200_ranges,
++	.num_ranges = ARRAY_SIZE(wm2200_ranges),
+ };
+ 
+ static const unsigned int wm2200_dig_vu[] = {
+-- 
+1.7.10.4
