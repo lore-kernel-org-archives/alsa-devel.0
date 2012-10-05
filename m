@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/7] ASoC: wm2200: Fully plumb the DSPs into
-	the routing map
-Date: Fri,  5 Oct 2012 19:55:33 +0100
-Message-ID: <1349463336-10871-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/7] ASoC: wm2200: Provide initial coefficient
+	loading
+Date: Fri,  5 Oct 2012 19:55:35 +0100
+Message-ID: <1349463336-10871-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 039AD2650D0
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A15642650CF
  for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 20:55:43 +0200 (CEST)
 In-Reply-To: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,118 +25,281 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Allow a coefficient set provided using the Wolfson callibration tools to
+be provided along with the firmware files. Currently only coefficient
+files which configure absolute register addresses are supported.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm2200.c |   55 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 49 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm2200.c |  194 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wmfw.h   |   43 ++++++++++
+ 2 files changed, 237 insertions(+)
 
 diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 1eafaae..f24ef0a 100644
+index e3f549b..06d4e61 100644
 --- a/sound/soc/codecs/wm2200.c
 +++ b/sound/soc/codecs/wm2200.c
-@@ -1056,6 +1056,20 @@ static int wm2200_mixer_values[] = {
- 	static WM2200_MUX_CTL_DECL(name##_in3); \
- 	static WM2200_MUX_CTL_DECL(name##_in4)
+@@ -1150,6 +1150,192 @@ out:
+ 	return ret;
+ }
  
-+#define WM2200_DSP_ENUMS(name, base_reg) \
-+	static WM2200_MUX_ENUM_DECL(name##_aux1_enum, base_reg);     \
-+	static WM2200_MUX_ENUM_DECL(name##_aux2_enum, base_reg + 1); \
-+	static WM2200_MUX_ENUM_DECL(name##_aux3_enum, base_reg + 2); \
-+	static WM2200_MUX_ENUM_DECL(name##_aux4_enum, base_reg + 3); \
-+	static WM2200_MUX_ENUM_DECL(name##_aux5_enum, base_reg + 4); \
-+	static WM2200_MUX_ENUM_DECL(name##_aux6_enum, base_reg + 5); \
-+	static WM2200_MUX_CTL_DECL(name##_aux1); \
-+	static WM2200_MUX_CTL_DECL(name##_aux2); \
-+	static WM2200_MUX_CTL_DECL(name##_aux3); \
-+	static WM2200_MUX_CTL_DECL(name##_aux4); \
-+	static WM2200_MUX_CTL_DECL(name##_aux5); \
-+	static WM2200_MUX_CTL_DECL(name##_aux6);
++static int wm2200_setup_algs(struct snd_soc_codec *codec, int base)
++{
++	struct regmap *regmap = codec->control_data;
++	struct wmfw_adsp1_id_hdr id;
++	struct wmfw_adsp1_alg_hdr *alg;
++	size_t algs;
++	int zm, dm, pm, ret, i;
++	__be32 val;
 +
- static const struct snd_kcontrol_new wm2200_snd_controls[] = {
- SOC_SINGLE("IN1 High Performance Switch", WM2200_IN1L_CONTROL,
- 	   WM2200_IN1_OSR_SHIFT, 1, 0),
-@@ -1131,6 +1145,9 @@ WM2200_MIXER_ENUMS(DSP1R, WM2200_DSP1RMIX_INPUT_1_SOURCE);
- WM2200_MIXER_ENUMS(DSP2L, WM2200_DSP2LMIX_INPUT_1_SOURCE);
- WM2200_MIXER_ENUMS(DSP2R, WM2200_DSP2RMIX_INPUT_1_SOURCE);
- 
-+WM2200_DSP_ENUMS(DSP1, WM2200_DSP1AUX1MIX_INPUT_1_SOURCE);
-+WM2200_DSP_ENUMS(DSP2, WM2200_DSP2AUX1MIX_INPUT_1_SOURCE);
++	switch (base) {
++	case WM2200_DSP1_CONTROL_1:
++		dm = WM2200_DSP1_DM_BASE;
++		pm = WM2200_DSP1_PM_BASE;
++		zm = WM2200_DSP1_ZM_BASE;
++		break;
++	case WM2200_DSP2_CONTROL_1:
++		dm = WM2200_DSP2_DM_BASE;
++		pm = WM2200_DSP2_PM_BASE;
++		zm = WM2200_DSP2_ZM_BASE;
++		break;
++	default:
++		dev_err(codec->dev, "BASE %x\n", base);
++		BUG_ON(1);
++		return -EINVAL;
++	}
 +
- WM2200_MIXER_ENUMS(LHPF1, WM2200_LHPF1MIX_INPUT_1_SOURCE);
- WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
- 
-@@ -1144,6 +1161,16 @@ WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
- 	WM2200_MUX(name_str " Input 4", &name##_in4_mux), \
- 	SND_SOC_DAPM_MIXER(name_str " Mixer", SND_SOC_NOPM, 0, 0, NULL, 0)
- 
-+#define WM2200_DSP_WIDGETS(name, name_str) \
-+	WM2200_MIXER_WIDGETS(name##L, name_str "L"), \
-+	WM2200_MIXER_WIDGETS(name##R, name_str "R"), \
-+	WM2200_MUX(name_str " Aux 1", &name##_aux1_mux), \
-+	WM2200_MUX(name_str " Aux 2", &name##_aux2_mux), \
-+	WM2200_MUX(name_str " Aux 3", &name##_aux3_mux), \
-+	WM2200_MUX(name_str " Aux 4", &name##_aux4_mux), \
-+	WM2200_MUX(name_str " Aux 5", &name##_aux5_mux), \
-+	WM2200_MUX(name_str " Aux 6", &name##_aux6_mux)
++	ret = regmap_raw_read(regmap, dm, &id, sizeof(id));
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to read algorithm info: %d\n",
++			ret);
++		return ret;
++	}
 +
- #define WM2200_MIXER_INPUT_ROUTES(name)	\
- 	{ name, "Tone Generator", "Tone Generator" }, \
- 	{ name, "AEC Loopback", "AEC Loopback" }, \
-@@ -1187,6 +1214,19 @@ WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
- 	WM2200_MIXER_INPUT_ROUTES(name " Input 3"), \
- 	WM2200_MIXER_INPUT_ROUTES(name " Input 4")
- 
-+#define WM2200_DSP_AUX_ROUTES(name) \
-+	{ name, NULL, name " Aux 1" }, \
-+	{ name, NULL, name " Aux 2" }, \
-+	{ name, NULL, name " Aux 3" }, \
-+	{ name, NULL, name " Aux 4" }, \
-+	{ name, NULL, name " Aux 5" }, \
-+	{ name, NULL, name " Aux 6" }, \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 1"), \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 2"), \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 3"), \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 4"), \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 5"), \
-+	WM2200_MIXER_INPUT_ROUTES(name " Aux 6")
- 
- static const char *wm2200_aec_loopback_texts[] = {
- 	"OUT1L", "OUT1R", "OUT2L", "OUT2R",
-@@ -1260,8 +1300,10 @@ SND_SOC_DAPM_PGA("LHPF1", WM2200_HPLPF1_1, WM2200_LHPF1_ENA_SHIFT, 0,
- SND_SOC_DAPM_PGA("LHPF2", WM2200_HPLPF2_1, WM2200_LHPF2_ENA_SHIFT, 0,
- 		 NULL, 0),
- 
--SND_SOC_DAPM_PGA_E("DSP1", SND_SOC_NOPM, 0, 0, NULL, 0, NULL, 0),
--SND_SOC_DAPM_PGA_E("DSP2", SND_SOC_NOPM, 1, 0, NULL, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_E("DSP1", WM2200_DSP1_CONTROL_30, WM2200_DSP1_SYS_ENA_SHIFT,
-+		   0, NULL, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_E("DSP2", WM2200_DSP2_CONTROL_30, WM2200_DSP2_SYS_ENA_SHIFT,
-+		   0, NULL, 0, NULL, 0),
- 
- SND_SOC_DAPM_AIF_OUT("AIF1TX1", "Capture", 0,
- 		    WM2200_AUDIO_IF_1_22, WM2200_AIF1TX1_ENA_SHIFT, 0),
-@@ -1329,10 +1371,8 @@ WM2200_MIXER_WIDGETS(EQR, "EQR"),
- WM2200_MIXER_WIDGETS(LHPF1, "LHPF1"),
- WM2200_MIXER_WIDGETS(LHPF2, "LHPF2"),
- 
--WM2200_MIXER_WIDGETS(DSP1L, "DSP1L"),
--WM2200_MIXER_WIDGETS(DSP1R, "DSP1R"),
--WM2200_MIXER_WIDGETS(DSP2L, "DSP2L"),
--WM2200_MIXER_WIDGETS(DSP2R, "DSP2R"),
-+WM2200_DSP_WIDGETS(DSP1, "DSP1"),
-+WM2200_DSP_WIDGETS(DSP2, "DSP2"),
- 
- WM2200_MIXER_WIDGETS(AIF1TX1, "AIF1TX1"),
- WM2200_MIXER_WIDGETS(AIF1TX2, "AIF1TX2"),
-@@ -1434,6 +1474,9 @@ static const struct snd_soc_dapm_route wm2200_dapm_routes[] = {
- 	WM2200_MIXER_ROUTES("DSP2", "DSP2L"),
- 	WM2200_MIXER_ROUTES("DSP2", "DSP2R"),
- 
-+	WM2200_DSP_AUX_ROUTES("DSP1"),
-+	WM2200_DSP_AUX_ROUTES("DSP2"),
++	algs = be32_to_cpu(id.algs);
++	dev_info(codec->dev, "Firmware: %x v%d.%d.%d, %d algorithms\n",
++		 be32_to_cpu(id.fw.id),
++		 (be32_to_cpu(id.fw.ver) & 0xff000) >> 16,
++		 (be32_to_cpu(id.fw.ver) & 0xff00) >> 8,
++		 be32_to_cpu(id.fw.ver) & 0xff,
++		 algs);
 +
- 	WM2200_MIXER_ROUTES("OUT1L", "OUT1L"),
- 	WM2200_MIXER_ROUTES("OUT1R", "OUT1R"),
- 	WM2200_MIXER_ROUTES("OUT2L", "OUT2L"),
++	/* Read the terminator first to validate the length */
++	ret = regmap_raw_read(regmap, dm +
++			      (sizeof(id) + (algs * sizeof(*alg))) / 2,
++			      &val, sizeof(val));
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to read algorithm list end: %d\n",
++			ret);
++		return ret;
++	}
++
++	if (be32_to_cpu(val) != 0xbedead)
++		dev_warn(codec->dev, "Algorithm list end %x 0x%x != 0xbeadead\n",
++			 (sizeof(id) + (algs * sizeof(*alg))) / 2,
++			 be32_to_cpu(val));
++
++	alg = kzalloc(sizeof(*alg) * algs, GFP_KERNEL);
++	if (!alg)
++		return -ENOMEM;
++
++	ret = regmap_raw_read(regmap, dm + (sizeof(id) / 2),
++			      alg, algs * sizeof(*alg));
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to read algorithm list: %d\n",
++			ret);
++		goto out;
++	}
++
++	for (i = 0; i < algs; i++) {
++		dev_info(codec->dev, "%d: ID %x v%d.%d.%d\n",
++			 i, be32_to_cpu(alg[i].alg.id),
++			 (be32_to_cpu(alg[i].alg.ver) & 0xff000) >> 16,
++			 (be32_to_cpu(alg[i].alg.ver) & 0xff00) >> 8,
++			 be32_to_cpu(alg[i].alg.ver) & 0xff);
++	}
++
++out:
++	kfree(alg);
++	return ret;
++}
++
++static int wm2200_load_coeff(struct snd_soc_codec *codec, int base)
++{
++	struct regmap *regmap = codec->control_data;
++	struct wmfw_coeff_hdr *hdr;
++	struct wmfw_coeff_item *blk;
++	const struct firmware *firmware;
++	const char *file, *region_name;
++	int ret, dm, pm, zm, pos, blocks, type, offset, reg;
++
++	switch (base) {
++	case WM2200_DSP1_CONTROL_1:
++		file = "wm2200-dsp1.bin";
++		dm = WM2200_DSP1_DM_BASE;
++		pm = WM2200_DSP1_PM_BASE;
++		zm = WM2200_DSP1_ZM_BASE;
++		break;
++	case WM2200_DSP2_CONTROL_1:
++		file = "wm2200-dsp2.bin";
++		dm = WM2200_DSP2_DM_BASE;
++		pm = WM2200_DSP2_PM_BASE;
++		zm = WM2200_DSP2_ZM_BASE;
++		break;
++	default:
++		dev_err(codec->dev, "BASE %x\n", base);
++		BUG_ON(1);
++		return -EINVAL;
++	}
++
++	ret = request_firmware(&firmware, file, codec->dev);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to request '%s'\n", file);
++		return ret;
++	}
++
++	if (sizeof(*hdr) >= firmware->size) {
++		dev_err(codec->dev, "%s: file too short, %d bytes\n",
++			file, firmware->size);
++		return -EINVAL;
++	}
++
++	hdr = (void*)&firmware->data[0];
++	if (memcmp(hdr->magic, "WMDR", 4) != 0) {
++		dev_err(codec->dev, "%s: invalid magic\n", file);
++		return -EINVAL;
++	}
++
++	dev_dbg(codec->dev, "%s: v%d.%d.%d\n", file,
++		(le32_to_cpu(hdr->ver) >> 16) & 0xff,
++		(le32_to_cpu(hdr->ver) >>  8) & 0xff,
++		le32_to_cpu(hdr->ver) & 0xff);
++
++	pos = le32_to_cpu(hdr->len);
++
++	blocks = 0;
++	while (pos < firmware->size &&
++	       pos - firmware->size > sizeof(*blk)) {
++		blk = (void*)(&firmware->data[pos]);
++
++		type = be32_to_cpu(blk->type) & 0xff;
++		offset = le32_to_cpu(blk->offset) & 0xffffff;
++
++		dev_dbg(codec->dev, "%s.%d: %x v%d.%d.%d\n",
++			file, blocks, le32_to_cpu(blk->id),
++			(le32_to_cpu(blk->ver) >> 16) & 0xff,
++			(le32_to_cpu(blk->ver) >>  8) & 0xff,
++			le32_to_cpu(blk->ver) & 0xff);
++		dev_dbg(codec->dev, "%s.%d: %d bytes at 0x%x in %x\n",
++			file, blocks, le32_to_cpu(blk->len), offset, type);
++
++		reg = 0;
++		region_name = "Unknown";
++		switch (type) {
++		case WMFW_NAME_TEXT:
++		case WMFW_INFO_TEXT:
++			break;
++		case WMFW_ABSOLUTE:
++			region_name = "register";
++			reg = offset;
++			break;
++		default:
++			dev_err(codec->dev, "Unknown region type %x\n", type);
++			break;
++		}
++
++		if (reg) {
++			ret = regmap_raw_write(regmap, reg, blk->data,
++					       le32_to_cpu(blk->len));
++			if (ret != 0) {
++				dev_err(codec->dev,
++					"%s.%d: Failed to write to %x in %s\n",
++					file, blocks, reg, region_name);
++			}
++		}
++
++		pos += le32_to_cpu(blk->len) + sizeof(*blk);
++		blocks++;
++	}
++
++	if (pos > firmware->size)
++		dev_warn(codec->dev, "%s.%d: %d bytes at end of file\n",
++			 file, blocks, pos - firmware->size);
++
++	return 0;
++}
++
+ static int wm2200_dsp_ev(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 int event)
+@@ -1164,6 +1350,14 @@ static int wm2200_dsp_ev(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0)
+ 			return ret;
+ 
++		ret = wm2200_setup_algs(codec, base);
++		if (ret != 0)
++			return ret;
++
++		ret = wm2200_load_coeff(codec, base);
++		if (ret != 0)
++			return ret;
++
+ 		/* Start the core running */
+ 		snd_soc_update_bits(codec, w->reg,
+ 				    WM2200_DSP1_CORE_ENA | WM2200_DSP1_START,
+diff --git a/sound/soc/codecs/wmfw.h b/sound/soc/codecs/wmfw.h
+index ef37316..5791f8e 100644
+--- a/sound/soc/codecs/wmfw.h
++++ b/sound/soc/codecs/wmfw.h
+@@ -43,6 +43,49 @@ struct wmfw_region {
+ 	u8 data[];
+ } __packed;
+ 
++struct wmfw_id_hdr {
++	__be32 core_id;
++	__be32 core_rev;
++	__be32 id;
++	__be32 ver;
++} __packed;
++
++struct wmfw_adsp1_id_hdr {
++	struct wmfw_id_hdr fw;
++	__be32 zm;
++	__be32 dm;
++	__be32 algs;
++} __packed;
++
++struct wmfw_alg_hdr {
++	__be32 id;
++	__be32 ver;
++} __packed;
++
++struct wmfw_adsp1_alg_hdr {
++	struct wmfw_alg_hdr alg;
++	__be32 zm;
++	__be32 dm;
++} __packed;
++
++struct wmfw_coeff_hdr {
++	u8 magic[4];
++	__le32 len;
++	__le32 ver;
++	u8 data[];
++} __packed;
++
++struct wmfw_coeff_item {
++	union {
++		__be32 type;
++		__le32 offset;
++	};
++	__le32 id;
++	__le32 ver;
++	__le32 sr;
++	__le32 len;
++	u8 data[];
++} __packed;
+ #define WMFW_ADSP1 1
+ 
+ #define WMFW_ABSOLUTE  0xf0
 -- 
 1.7.10.4
