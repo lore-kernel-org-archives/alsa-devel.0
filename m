@@ -1,14 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/7] ASoC: wm2200: Convert to devm APIs
-Date: Fri,  5 Oct 2012 19:55:30 +0100
-Message-ID: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/7] ASoC: wm2200: Implement AEC loopback
+	support
+Date: Fri,  5 Oct 2012 19:55:31 +0100
+Message-ID: <1349463336-10871-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BF9E32650CA
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C1B762650CB
  for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2012 20:55:42 +0200 (CEST)
+In-Reply-To: <1349463336-10871-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,103 +27,72 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm2200.c |   39 ++++++++++++++-------------------------
- 1 file changed, 14 insertions(+), 25 deletions(-)
+ sound/soc/codecs/wm2200.c |   25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index eab64a1..6ca9bcc 100644
+index 6ca9bcc..367d1e5 100644
 --- a/sound/soc/codecs/wm2200.c
 +++ b/sound/soc/codecs/wm2200.c
-@@ -2011,7 +2011,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	wm2200->dev = &i2c->dev;
- 	init_completion(&wm2200->fll_lock);
+@@ -880,7 +880,7 @@ static DECLARE_TLV_DB_SCALE(out_tlv, -6400, 100, 0);
+ static const char *wm2200_mixer_texts[] = {
+ 	"None",
+ 	"Tone Generator",
+-	"AEC loopback",
++	"AEC Loopback",
+ 	"IN1L",
+ 	"IN1R",
+ 	"IN2L",
+@@ -1066,6 +1066,7 @@ WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
  
--	wm2200->regmap = regmap_init_i2c(i2c, &wm2200_regmap);
-+	wm2200->regmap = devm_regmap_init_i2c(i2c, &wm2200_regmap);
- 	if (IS_ERR(wm2200->regmap)) {
- 		ret = PTR_ERR(wm2200->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-@@ -2027,8 +2027,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	for (i = 0; i < ARRAY_SIZE(wm2200->core_supplies); i++)
- 		wm2200->core_supplies[i].supply = wm2200_core_supply_names[i];
+ #define WM2200_MIXER_INPUT_ROUTES(name)	\
+ 	{ name, "Tone Generator", "Tone Generator" }, \
++	{ name, "AEC Loopback", "AEC Loopback" }, \
+         { name, "IN1L", "IN1L PGA" }, \
+         { name, "IN1R", "IN1R PGA" }, \
+         { name, "IN2L", "IN2L PGA" }, \
+@@ -1106,6 +1107,20 @@ WM2200_MIXER_ENUMS(LHPF2, WM2200_LHPF2MIX_INPUT_1_SOURCE);
+ 	WM2200_MIXER_INPUT_ROUTES(name " Input 3"), \
+ 	WM2200_MIXER_INPUT_ROUTES(name " Input 4")
  
--	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm2200->core_supplies),
--				 wm2200->core_supplies);
-+	ret = devm_regulator_bulk_get(&i2c->dev,
-+				      ARRAY_SIZE(wm2200->core_supplies),
-+				      wm2200->core_supplies);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to request core supplies: %d\n",
- 			ret);
-@@ -2044,8 +2045,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	}
++
++static const char *wm2200_aec_loopback_texts[] = {
++	"OUT1L", "OUT1R", "OUT2L", "OUT2R",
++};
++
++static const struct soc_enum wm2200_aec_loopback =
++	SOC_ENUM_SINGLE(WM2200_DAC_AEC_CONTROL_1,
++			WM2200_AEC_LOOPBACK_SRC_SHIFT,
++			ARRAY_SIZE(wm2200_aec_loopback_texts),
++			wm2200_aec_loopback_texts);
++
++static const struct snd_kcontrol_new wm2200_aec_loopback_mux =
++	SOC_DAPM_ENUM("AEC Loopback", wm2200_aec_loopback);
++
+ static const struct snd_soc_dapm_widget wm2200_dapm_widgets[] = {
+ SND_SOC_DAPM_SUPPLY("SYSCLK", WM2200_CLOCKING_3, WM2200_SYSCLK_ENA_SHIFT, 0,
+ 		    NULL, 0),
+@@ -1181,6 +1196,9 @@ SND_SOC_DAPM_AIF_OUT("AIF1TX5", "Capture", 4,
+ SND_SOC_DAPM_AIF_OUT("AIF1TX6", "Capture", 5,
+ 		    WM2200_AUDIO_IF_1_22, WM2200_AIF1TX6_ENA_SHIFT, 0),
  
- 	if (wm2200->pdata.ldo_ena) {
--		ret = gpio_request_one(wm2200->pdata.ldo_ena,
--				       GPIOF_OUT_INIT_HIGH, "WM2200 LDOENA");
-+		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.ldo_ena,
-+					    GPIOF_OUT_INIT_HIGH,
-+					    "WM2200 LDOENA");
- 		if (ret < 0) {
- 			dev_err(&i2c->dev, "Failed to request LDOENA %d: %d\n",
- 				wm2200->pdata.ldo_ena, ret);
-@@ -2055,8 +2057,9 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	}
++SND_SOC_DAPM_MUX("AEC Loopback", WM2200_DAC_AEC_CONTROL_1,
++		 WM2200_AEC_LOOPBACK_ENA_SHIFT, 0, &wm2200_aec_loopback_mux),
++
+ SND_SOC_DAPM_PGA_S("OUT1L", 0, WM2200_OUTPUT_ENABLES,
+ 		   WM2200_OUT1L_ENA_SHIFT, 0, NULL, 0),
+ SND_SOC_DAPM_PGA_S("OUT1R", 0, WM2200_OUTPUT_ENABLES,
+@@ -1326,6 +1344,11 @@ static const struct snd_soc_dapm_route wm2200_dapm_routes[] = {
+ 	{ "SPK", NULL, "OUT2L" },
+ 	{ "SPK", NULL, "OUT2R" },
  
- 	if (wm2200->pdata.reset) {
--		ret = gpio_request_one(wm2200->pdata.reset,
--				       GPIOF_OUT_INIT_HIGH, "WM2200 /RESET");
-+		ret = devm_gpio_request_one(&i2c->dev, wm2200->pdata.reset,
-+					    GPIOF_OUT_INIT_HIGH,
-+					    "WM2200 /RESET");
- 		if (ret < 0) {
- 			dev_err(&i2c->dev, "Failed to request /RESET %d: %d\n",
- 				wm2200->pdata.reset, ret);
-@@ -2166,23 +2169,16 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- err_pm_runtime:
- 	pm_runtime_disable(&i2c->dev);
- err_reset:
--	if (wm2200->pdata.reset) {
-+	if (wm2200->pdata.reset)
- 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
--		gpio_free(wm2200->pdata.reset);
--	}
- err_ldo:
--	if (wm2200->pdata.ldo_ena) {
-+	if (wm2200->pdata.ldo_ena)
- 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
--		gpio_free(wm2200->pdata.ldo_ena);
--	}
- err_enable:
- 	regulator_bulk_disable(ARRAY_SIZE(wm2200->core_supplies),
- 			       wm2200->core_supplies);
- err_core:
--	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
--			    wm2200->core_supplies);
- err_regmap:
--	regmap_exit(wm2200->regmap);
- err:
- 	return ret;
- }
-@@ -2194,17 +2190,10 @@ static __devexit int wm2200_i2c_remove(struct i2c_client *i2c)
- 	snd_soc_unregister_codec(&i2c->dev);
- 	if (i2c->irq)
- 		free_irq(i2c->irq, wm2200);
--	if (wm2200->pdata.reset) {
-+	if (wm2200->pdata.reset)
- 		gpio_set_value_cansleep(wm2200->pdata.reset, 0);
--		gpio_free(wm2200->pdata.reset);
--	}
--	if (wm2200->pdata.ldo_ena) {
-+	if (wm2200->pdata.ldo_ena)
- 		gpio_set_value_cansleep(wm2200->pdata.ldo_ena, 0);
--		gpio_free(wm2200->pdata.ldo_ena);
--	}
--	regulator_bulk_free(ARRAY_SIZE(wm2200->core_supplies),
--			    wm2200->core_supplies);
--	regmap_exit(wm2200->regmap);
- 
- 	return 0;
- }
++	{ "AEC Loopback", "OUT1L", "OUT1L" },
++	{ "AEC Loopback", "OUT1R", "OUT1R" },
++	{ "AEC Loopback", "OUT2L", "OUT2L" },
++	{ "AEC Loopback", "OUT2R", "OUT2R" },
++
+ 	WM2200_MIXER_ROUTES("DSP1", "DSP1L"),
+ 	WM2200_MIXER_ROUTES("DSP1", "DSP1R"),
+ 	WM2200_MIXER_ROUTES("DSP2", "DSP2L"),
 -- 
 1.7.10.4
