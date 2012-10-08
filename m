@@ -1,26 +1,18 @@
-From: Julien Danjou <julien@danjou.info>
-Subject: Re: Constant noise on HDA ALC275
-Date: Mon, 08 Oct 2012 22:34:43 +0200
-Message-ID: <87zk3wity4.fsf@dex.adm.naquadah.org>
-References: <87obl7bg02.fsf@dex.adm.naquadah.org>
- <s5hwqzna4pn.wl%tiwai@suse.de> <87haqrijiz.fsf@dex.adm.naquadah.org>
- <s5htxura31x.wl%tiwai@suse.de> <87d31fii3v.fsf@dex.adm.naquadah.org>
- <s5hmx0ja08z.wl%tiwai@suse.de> <874nmried6.fsf@dex.adm.naquadah.org>
- <s5hfw6bpen9.wl%tiwai@suse.de> <87vcf7gyl5.fsf@dex.adm.naquadah.org>
- <s5h6277pdfi.wl%tiwai@suse.de> <87r4pvgxvx.fsf@dex.adm.naquadah.org>
- <87r4pepcgo.fsf@dex.adm.naquadah.org> <s5h1uh9jfxq.wl%tiwai@suse.de>
- <87zk3xku73.fsf@dex.adm.naquadah.org> <s5hwqz1i0y0.wl%tiwai@suse.de>
- <87fw5pktos.fsf@dex.adm.naquadah.org> <s5hr4p9hzw0.wl%tiwai@suse.de>
- <87ehl96ifc.fsf@dex.adm.naquadah.org> <s5h7gr1gc7o.wl%tiwai@suse.de>
- <87ehl86h4l.fsf@dex.adm.naquadah.org> <s5hvcek7oh7.wl%tiwai@suse.de>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] ARM: imx: clk: Split SSI clock into
+ 'ipg' and 'per'
+Date: Mon, 8 Oct 2012 23:44:52 +0200
+Message-ID: <20121008214452.GA27665@pengutronix.de>
+References: <1349725213-11354-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8904878100215757578=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 18ADF265179
- for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 22:35:34 +0200 (CEST)
-In-Reply-To: <s5hvcek7oh7.wl%tiwai@suse.de> (Takashi Iwai's message of "Mon,
- 08 Oct 2012 21:28:20 +0200")
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E8D852651C0
+ for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 23:45:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1349725213-11354-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,122 +22,277 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, gcembed@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
---===============8904878100215757578==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+On Mon, Oct 08, 2012 at 04:40:13PM -0300, Fabio Estevam wrote:
+> Currently imx ssi driver has been using only the ipg clock as only slave =
+mode
+> is supported.
+> =
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+> For mx27 it is necessay to provide both 'ipg' and 'per' clocks in order t=
+o get
+> ssi functional.
+> =
 
-On Mon, Oct 08 2012, Takashi Iwai wrote:
+> This issue was found on mx27 by unselecting the mmc driver from the kernel
+> ,which resulted on a system that could not play audio.
+> =
 
-> Doesn't the beep work if you load pcspkr module?  It should be there
-> independently.
+> When the mmc driver is selected the required 'per2' clock is provided and=
+ it =
 
-pcspkr is loaded, but no sound from the speakers. And I don't think this
-laptop has an old buzzer. ;)
+> allows the ssi to work.
 
-> Hm, then maybe the effect of removing noise appears no matter which
-> input of NID 0x0b be unmuted?=20=20
+I am not sure it's good to work around that issue in the ssi driver. We
+could also just enable the clock in the clk driver as it seems to be a
+ccm related issue.
+According to the datasheet per2_clk has absolutely nothing to do with
+the ssi unit. Are you really sure there is not another bug in the clk
+driver triggering this behaviour?
 
-I've retested some, and you're right, it seems some others do make the
-noise disappear:
+BTW i.MX6 would need a fixup aswell.
 
-For example, this works too:
+Sascha
 
-@@ -198,7 +198,7 @@
-   Control: name=3D"Beep Playback Switch", index=3D0, device=3D0
-     ControlAmp: chs=3D3, dir=3DIn, idx=3D4, ofs=3D0
-   Amp-In caps: ofs=3D0x17, nsteps=3D0x1f, stepsize=3D0x05, mute=3D1
-=2D  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x=
-80]
-+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80]
-   Connection: 5
-      0x18 0x19 0x1a 0x1b 0x1d
- Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+> =
+
+> Add the required 'per' clock to the mx27 ssi and a dummy one for the othe=
+r SoCs.
+> =
+
+> Reported-by: Ga=EBtan Carlier <gcembed@gmail.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Drop per4 from the camera clok, which belonged to a different patch
+>  arch/arm/mach-imx/clk-imx21.c       |   11 +++++++----
+>  arch/arm/mach-imx/clk-imx25.c       |    6 ++++--
+>  arch/arm/mach-imx/clk-imx27.c       |    8 ++++----
+>  arch/arm/mach-imx/clk-imx31.c       |   11 +++++++----
+>  arch/arm/mach-imx/clk-imx35.c       |   10 +++++++---
+>  arch/arm/mach-imx/clk-imx51-imx53.c |   19 +++++++++++++------
+>  6 files changed, 42 insertions(+), 23 deletions(-)
+> =
+
+> diff --git a/arch/arm/mach-imx/clk-imx21.c b/arch/arm/mach-imx/clk-imx21.c
+> index cf65148..2ed49c8 100644
+> --- a/arch/arm/mach-imx/clk-imx21.c
+> +++ b/arch/arm/mach-imx/clk-imx21.c
+> @@ -51,8 +51,8 @@ static const char *mpll_sel_clks[] =3D { "fpm", "ckih",=
+ };
+>  static const char *spll_sel_clks[] =3D { "fpm", "ckih", };
+>  =
+
+>  enum imx21_clks {
+> -	ckil, ckih, fpm, mpll_sel, spll_sel, mpll, spll, fclk, hclk, ipg, per1,
+> -	per2, per3, per4, uart1_ipg_gate, uart2_ipg_gate, uart3_ipg_gate,
+> +	dummy, ckil, ckih, fpm, mpll_sel, spll_sel, mpll, spll, fclk, hclk, ipg,
+> +	per1, per2, per3, per4, uart1_ipg_gate, uart2_ipg_gate, uart3_ipg_gate,
+>  	uart4_ipg_gate, gpt1_ipg_gate, gpt2_ipg_gate, gpt3_ipg_gate,
+>  	pwm_ipg_gate, sdhc1_ipg_gate, sdhc2_ipg_gate, lcdc_ipg_gate,
+>  	lcdc_hclk_gate, cspi3_ipg_gate, cspi2_ipg_gate, cspi1_ipg_gate,
+> @@ -72,6 +72,7 @@ int __init mx21_clocks_init(unsigned long lref, unsigne=
+d long href)
+>  {
+>  	int i;
+>  =
+
+> +	clk[dummy] =3D imx_clk_fixed("dummy", 0);
+>  	clk[ckil] =3D imx_clk_fixed("ckil", lref);
+>  	clk[ckih] =3D imx_clk_fixed("ckih", href);
+>  	clk[fpm] =3D imx_clk_fixed_factor("fpm", "ckil", 512, 1);
+> @@ -174,8 +175,10 @@ int __init mx21_clocks_init(unsigned long lref, unsi=
+gned long href)
+>  	clk_register_clkdev(clk[gpio_gate], "gpio", NULL);
+>  	clk_register_clkdev(clk[rtc_gate], "rtc", NULL);
+>  	clk_register_clkdev(clk[csi_hclk_gate], "csi", NULL);
+> -	clk_register_clkdev(clk[ssi1_gate], "ssi1", NULL);
+> -	clk_register_clkdev(clk[ssi2_gate], "ssi2", NULL);
+> +	clk_register_clkdev(clk[ssi1_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.1");
+>  	clk_register_clkdev(clk[sdhc1_ipg_gate], "sdhc1", NULL);
+>  	clk_register_clkdev(clk[sdhc2_ipg_gate], "sdhc2", NULL);
+>  =
+
+> diff --git a/arch/arm/mach-imx/clk-imx25.c b/arch/arm/mach-imx/clk-imx25.c
+> index d20d479..c81864d 100644
+> --- a/arch/arm/mach-imx/clk-imx25.c
+> +++ b/arch/arm/mach-imx/clk-imx25.c
+> @@ -222,8 +222,10 @@ int __init mx25_clocks_init(void)
+>  	clk_register_clkdev(clk[lcdc_ipg], "ipg", "imx-fb.0");
+>  	clk_register_clkdev(clk[lcdc_ahb], "ahb", "imx-fb.0");
+>  	clk_register_clkdev(clk[wdt_ipg], NULL, "imx2-wdt.0");
+> -	clk_register_clkdev(clk[ssi1_ipg], NULL, "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_ipg], NULL, "imx-ssi.1");
+> +	clk_register_clkdev(clk[ssi1_ipg], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_ipg], "ipg", "imx-ssi.1");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.1");
+>  	clk_register_clkdev(clk[esdhc1_ipg_per], "per", "sdhci-esdhc-imx25.0");
+>  	clk_register_clkdev(clk[esdhc1_ipg], "ipg", "sdhci-esdhc-imx25.0");
+>  	clk_register_clkdev(clk[esdhc1_ahb], "ahb", "sdhci-esdhc-imx25.0");
+> diff --git a/arch/arm/mach-imx/clk-imx27.c b/arch/arm/mach-imx/clk-imx27.c
+> index 3b6b640..8cbb6b5 100644
+> --- a/arch/arm/mach-imx/clk-imx27.c
+> +++ b/arch/arm/mach-imx/clk-imx27.c
+> @@ -236,8 +236,10 @@ int __init mx27_clocks_init(unsigned long fref)
+>  	clk_register_clkdev(clk[usb_div], "per", "mxc-ehci.2");
+>  	clk_register_clkdev(clk[usb_ipg_gate], "ipg", "mxc-ehci.2");
+>  	clk_register_clkdev(clk[usb_ahb_gate], "ahb", "mxc-ehci.2");
+> -	clk_register_clkdev(clk[ssi1_ipg_gate], NULL, "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_ipg_gate], NULL, "imx-ssi.1");
+> +	clk_register_clkdev(clk[ssi1_ipg_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_ipg_gate], "ipg", "imx-ssi.1");
+> +	clk_register_clkdev(clk[per2_gate], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[per2_gate], "per", "imx-ssi.1");
+>  	clk_register_clkdev(clk[nfc_baud_gate], NULL, "mxc_nand.0");
+>  	clk_register_clkdev(clk[vpu_baud_gate], "per", "coda-imx27.0");
+>  	clk_register_clkdev(clk[vpu_ahb_gate], "ahb", "coda-imx27.0");
+> @@ -262,8 +264,6 @@ int __init mx27_clocks_init(unsigned long fref)
+>  	clk_register_clkdev(clk[scc_ipg_gate], "scc", NULL);
+>  	clk_register_clkdev(clk[cpu_div], "cpu", NULL);
+>  	clk_register_clkdev(clk[emi_ahb_gate], "emi_ahb" , NULL);
+> -	clk_register_clkdev(clk[ssi1_baud_gate], "bitrate" , "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_baud_gate], "bitrate" , "imx-ssi.1");
+>  =
+
+>  	mxc_timer_init(MX27_IO_ADDRESS(MX27_GPT1_BASE_ADDR), MX27_INT_GPT1);
+>  =
+
+> diff --git a/arch/arm/mach-imx/clk-imx31.c b/arch/arm/mach-imx/clk-imx31.c
+> index 1253af2..61567dc 100644
+> --- a/arch/arm/mach-imx/clk-imx31.c
+> +++ b/arch/arm/mach-imx/clk-imx31.c
+> @@ -35,8 +35,8 @@ static const char *csi_sel[] =3D { "upll", "spll", };
+>  static const char *fir_sel[] =3D { "mcu_main", "upll", "spll" };
+>  =
+
+>  enum mx31_clks {
+> -	ckih, ckil, mpll, spll, upll, mcu_main, hsp, ahb, nfc, ipg, per_div,
+> -	per, csi, fir, csi_div, usb_div_pre, usb_div_post, fir_div_pre,
+> +	dummy, ckih, ckil, mpll, spll, upll, mcu_main, hsp, ahb, nfc, ipg,
+> +	per_div, per, csi, fir, csi_div, usb_div_pre, usb_div_post, fir_div_pre,
+>  	fir_div_post, sdhc1_gate, sdhc2_gate, gpt_gate, epit1_gate, epit2_gate,
+>  	iim_gate, ata_gate, sdma_gate, cspi3_gate, rng_gate, uart1_gate,
+>  	uart2_gate, ssi1_gate, i2c1_gate, i2c2_gate, i2c3_gate, hantro_gate,
+> @@ -53,6 +53,7 @@ int __init mx31_clocks_init(unsigned long fref)
+>  	void __iomem *base =3D MX31_IO_ADDRESS(MX31_CCM_BASE_ADDR);
+>  	int i;
+>  =
+
+> +	clk[dummy] =3D imx_clk_fixed("dummy", 0);
+>  	clk[ckih] =3D imx_clk_fixed("ckih", fref);
+>  	clk[ckil] =3D imx_clk_fixed("ckil", 32768);
+>  	clk[mpll] =3D imx_clk_pllv1("mpll", "ckih", base + MXC_CCM_MPCTL);
+> @@ -161,8 +162,10 @@ int __init mx31_clocks_init(unsigned long fref)
+>  	clk_register_clkdev(clk[owire_gate], NULL, "mxc_w1.0");
+>  	clk_register_clkdev(clk[sdhc1_gate], NULL, "mxc-mmc.0");
+>  	clk_register_clkdev(clk[sdhc2_gate], NULL, "mxc-mmc.1");
+> -	clk_register_clkdev(clk[ssi1_gate], NULL, "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_gate], NULL, "imx-ssi.1");
+> +	clk_register_clkdev(clk[ssi1_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.1");
+>  	clk_register_clkdev(clk[firi_gate], "firi", NULL);
+>  	clk_register_clkdev(clk[ata_gate], NULL, "pata_imx");
+>  	clk_register_clkdev(clk[rtic_gate], "rtic", NULL);
+> diff --git a/arch/arm/mach-imx/clk-imx35.c b/arch/arm/mach-imx/clk-imx35.c
+> index 177259b..1ab7467 100644
+> --- a/arch/arm/mach-imx/clk-imx35.c
+> +++ b/arch/arm/mach-imx/clk-imx35.c
+> @@ -50,7 +50,7 @@ static const char *std_sel[] =3D {"ppll", "arm"};
+>  static const char *ipg_per_sel[] =3D {"ahb_per_div", "arm_per_div"};
+>  =
+
+>  enum mx35_clks {
+> -	ckih, mpll, ppll, mpll_075, arm, hsp, hsp_div, hsp_sel, ahb, ipg,
+> +	dummy, ckih, mpll, ppll, mpll_075, arm, hsp, hsp_div, hsp_sel, ahb, ipg,
+>  	arm_per_div, ahb_per_div, ipg_per, uart_sel, uart_div, esdhc_sel,
+>  	esdhc1_div, esdhc2_div, esdhc3_div, spdif_sel, spdif_div_pre,
+>  	spdif_div_post, ssi_sel, ssi1_div_pre, ssi1_div_post, ssi2_div_pre,
+> @@ -88,6 +88,7 @@ int __init mx35_clocks_init()
+>  		aad =3D &clk_consumer[0];
+>  	}
+>  =
+
+> +	clk[dummy] =3D imx_clk_fixed("dummy", 0);
+>  	clk[ckih] =3D imx_clk_fixed("ckih", 24000000);
+>  	clk[mpll] =3D imx_clk_pllv1("mpll", "ckih", base + MX35_CCM_MPCTL);
+>  	clk[ppll] =3D imx_clk_pllv1("ppll", "ckih", base + MX35_CCM_PPCTL);
+> @@ -234,8 +235,11 @@ int __init mx35_clocks_init()
+>  	clk_register_clkdev(clk[kpp_gate], NULL, "imx-keypad");
+>  	clk_register_clkdev(clk[owire_gate], NULL, "mxc_w1");
+>  	clk_register_clkdev(clk[sdma_gate], NULL, "imx35-sdma");
+> -	clk_register_clkdev(clk[ssi1_gate], NULL, "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_gate], NULL, "imx-ssi.1");
+> +	clk_register_clkdev(clk[ssi1_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.1");
+> +
+>  	/* i.mx35 has the i.mx21 type uart */
+>  	clk_register_clkdev(clk[uart1_gate], "per", "imx21-uart.0");
+>  	clk_register_clkdev(clk[ipg], "ipg", "imx21-uart.0");
+> diff --git a/arch/arm/mach-imx/clk-imx51-imx53.c b/arch/arm/mach-imx/clk-=
+imx51-imx53.c
+> index a0bf848..46d679c 100644
+> --- a/arch/arm/mach-imx/clk-imx51-imx53.c
+> +++ b/arch/arm/mach-imx/clk-imx51-imx53.c
+> @@ -273,9 +273,12 @@ static void __init mx5_clocks_common_init(unsigned l=
+ong rate_ckil,
+>  	clk_register_clkdev(clk[usboh3_gate], "ipg", "fsl-usb2-udc");
+>  	clk_register_clkdev(clk[usboh3_gate], "ahb", "fsl-usb2-udc");
+>  	clk_register_clkdev(clk[nfc_gate], NULL, "mxc_nand");
+> -	clk_register_clkdev(clk[ssi1_ipg_gate], NULL, "imx-ssi.0");
+> -	clk_register_clkdev(clk[ssi2_ipg_gate], NULL, "imx-ssi.1");
+> -	clk_register_clkdev(clk[ssi3_ipg_gate], NULL, "imx-ssi.2");
+> +	clk_register_clkdev(clk[ssi1_ipg_gate], "ipg", "imx-ssi.0");
+> +	clk_register_clkdev(clk[ssi2_ipg_gate], "ipg", "imx-ssi.1");
+> +	clk_register_clkdev(clk[ssi3_ipg_gate], "ipg", "imx-ssi.2");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.0");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.1");
+> +	clk_register_clkdev(clk[dummy], "per", "imx-ssi.2");
+>  	clk_register_clkdev(clk[ssi_ext1_gate], "ssi_ext1", NULL);
+>  	clk_register_clkdev(clk[ssi_ext2_gate], "ssi_ext2", NULL);
+>  	clk_register_clkdev(clk[sdma_gate], NULL, "imx35-sdma");
+> @@ -366,9 +369,13 @@ int __init mx51_clocks_init(unsigned long rate_ckil,=
+ unsigned long rate_osc,
+>  	clk_register_clkdev(clk[esdhc4_ipg_gate], "ipg", "sdhci-esdhc-imx51.3");
+>  	clk_register_clkdev(clk[dummy], "ahb", "sdhci-esdhc-imx51.3");
+>  	clk_register_clkdev(clk[esdhc4_per_gate], "per", "sdhci-esdhc-imx51.3");
+> -	clk_register_clkdev(clk[ssi1_ipg_gate], NULL, "83fcc000.ssi");
+> -	clk_register_clkdev(clk[ssi2_ipg_gate], NULL, "70014000.ssi");
+> -	clk_register_clkdev(clk[ssi3_ipg_gate], NULL, "83fe8000.ssi");
+> +	clk_register_clkdev(clk[ssi1_ipg_gate], "ipg", "83fcc000.ssi");
+> +	clk_register_clkdev(clk[ssi2_ipg_gate], "ipg", "70014000.ssi");
+> +	clk_register_clkdev(clk[ssi3_ipg_gate], "ipg", "83fe8000.ssi");
+> +	clk_register_clkdev(clk[dummy], "per", "83fcc000.ssi");
+> +	clk_register_clkdev(clk[dummy], "per", "70014000.ssi");
+> +	clk_register_clkdev(clk[dummy], "per", "83fe8000.ssi");
+> +
+>  	clk_register_clkdev(clk[nfc_gate], NULL, "83fdb000.nand");
+>  =
+
+>  	/* set the usboh3 parent to pll2_sw */
+> -- =
+
+> 1.7.9.5
+> =
+
+> =
+
+> =
 
 
-This one too:
-@@ -198,7 +198,7 @@
-   Control: name=3D"Beep Playback Switch", index=3D0, device=3D0
-     ControlAmp: chs=3D3, dir=3DIn, idx=3D4, ofs=3D0
-   Amp-In caps: ofs=3D0x17, nsteps=3D0x1f, stepsize=3D0x05, mute=3D1
-=2D  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x=
-80]
-+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80]
-   Connection: 5
-      0x18 0x19 0x1a 0x1b 0x1d
- Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+-- =
 
-Other pairs do not work, but some do change the noise sound.
-
-No pair work when speakers or master is muted; the noise is always
-there, no matter which pair I mute/unmute.
-
-> So, obviously muting the amp triggers the noise.
-> BTW, does the noise come only from speaker, not from headphone,
-> correct?
-
-Yeah correct. Never got any noise in the headphone.
-(That's how and why I didn't got insane so far with that noise always
-there :)
-
-> Related tests: what happens if you mute both input amps of the node
-> 0x0d?  This is a mixer widget between DAC and the speaker pin.
-> Does this widget work as a proper mute/unmute point without causing
-> noise?
-
-I tried all combinations on 0x0d with master unmuted: there's 2 inputs,
-so 4 combinations, and I got=E2=80=A6 4 different noises. Almost funny.
-If master is muted, changing any input amps from 0x0d change nothing at
-all, noise still there.
-
->> When doing that, I cannot hear anything, because it seems to disconnect
->> the speakers. My idea would be to set this pin to 0x00 instead of 0x40
->> when "Speakers" are set to mute (I don't know about master though).
->> WDYT?
->
-> Possible, but a bit hackish.  Let's see...
-
-Heh, too bad. But you know better than me. :)
-
-=2D-=20
-Julien Danjou
-// Free Software hacker & freelance
-// http://julien.danjou.info
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQczjjAAoJEGEbqVCLeKXCEx8P/i5Fr7mO6fNP457CinuXjLF+
-KkQqmz8+Tct7RatOtWaUdCC0QQ5EhghyrTRosau07bbGudW6iNb4ULVXs5hw3nSI
-JAs3EEv9XSf45OnqAGhWTuTwWKqA6wv5rg17DOvQ/QBOMUc87Z3+pnql8LuH4m5o
-Xy1YQE/ydZiE9+po0BGn+fcCsr1rcrmi9YqzTaTQqdD74tGXft5USBKsw6P588zN
-1hGC7UbqruvQUD1pjGqRwxd4bo5TvbvHg1+e15GvxX2/rRcKccFMYU0YtNdEPdZh
-9mwk4eoCKZa5v3AO9LweUiE856PmqL1JP/87q1W6WR1+0XCNhG5Lh/CGUUpf1rMG
-YwYHg3TjpzRHo9y7GdwAU2MfZ8sXGujvLSKITDpOK2sfd9IeVoKw/9A0gxna6hGU
-r3YOuY0E0lXXfH/T7exLiL4Nf4/xgtOCDS0UQaM1x4QI6SB6hXLDG8QjO1RwUWVf
-mhVzg8rO1gDCfECnf9pwWH1A8npEgZHMJ1Z+IVud2u6p47twvV/SNcxjF5bd4xhR
-P/ibMutw9GxZOkwexBJuwX6J4TY4yOAKhGzMKbY18iXuRo6jaAmrHffQ0ADHKLRs
-Q4U0YQ6T8f8wkv6kx3SqE0SVG93N+RA+/GfNeRp1NYTgJ2hbAJaZfzFvG/FiTfzN
-rYV2MiRTN9SI3xbHk8/l
-=cdOM
------END PGP SIGNATURE-----
---=-=-=--
-
---===============8904878100215757578==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8904878100215757578==--
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
