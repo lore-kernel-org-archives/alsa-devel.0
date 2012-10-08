@@ -1,135 +1,107 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Internal Microphone in Lenovo P580 not working
- with alsa 1.0.25
-Date: Mon, 8 Oct 2012 10:15:52 +0800
-Message-ID: <CAN8ccianZcZtc6PmniOcQwXYTBFto9Zo23zb3A5SJXwWuaWLVw@mail.gmail.com>
-References: <506E7C1B.4030703@gmx.com>
- <CAN8cciYhcaBecaG7xnL769NAwQjS9LRfdWrg+UbuH_15796rmA@mail.gmail.com>
- <506E8EAE.5060504@gmx.com>
+From: Vincent Cheng <vincentc1208@gmail.com>
+Subject: Re: [BISECTED] snd-hda-intel audio distortion in Linus' current tree
+Date: Sun, 7 Oct 2012 20:13:47 -0700
+Message-ID: <CACZd_tDu3aN3O+V59wkp2fCoN0Ly6MYXE_TPt27cXXOtdT-xog@mail.gmail.com>
+References: <20120926072916.GA2654@croesus.uplinklabs.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id A3FAB261650
- for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 04:15:53 +0200 (CEST)
-Received: by mail-qa0-f44.google.com with SMTP id 25so1931515qao.17
- for <alsa-devel@alsa-project.org>; Sun, 07 Oct 2012 19:15:52 -0700 (PDT)
-In-Reply-To: <506E8EAE.5060504@gmx.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20120926072916.GA2654@croesus.uplinklabs.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Seth Heasley <seth.heasley@intel.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Steven Noonan <steven@uplinklabs.net>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMC01IOS4i+WNiDM6Mzkg5pa8ICJtZWZpcyIgPG1lZmlzdG9mQGdteC5jb20+IOWvq+mB
-k++8mgo+Cj4gT24gMTAvMDUvMjAxMiAwMjowOSBBTSwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4+Cj4+
-IDIwMTItMTAtNSDkuIvljYgyOjIwIOaWvCAibWVmaXMiIDxtZWZpc3RvZkBnbXguY29tPiDlr6vp
-gZPvvJoKPj4+Cj4+PiBIaSwKPj4+Cj4+PiBNaWMgbm90IHdvcmtpbmcgaW4gTGVub3ZvIFA1ODAg
-d2l0aCBhbHNhIDEuMC4yNQo+Pj4KPj4+IEFsc2EgSW5mb3JtYXRpb24gc2NyaXB0IG91dHB1dDoK
-Pj4+Cj4+PgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9MDAxNTIzZWQ2MWJjNzZm
-YjViMmFkMGQzYzM1NGMwNDNmODllNWEzMwo+Pj4KPj4+IEhvcGUgaXQgaGVscHMuCj4+Pgo+Pj4K
-Pj4+Cj4+PiAhISMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4+PiAhIUFMU0EgSW5m
-b3JtYXRpb24gU2NyaXB0IHYgMC40LjYxCj4+PiAhISMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjCj4+Pgo+Pj4gISFTY3JpcHQgcmFuIG9uOiBGcmkgT2N0ICA1IDA1OjU2OjM4IFVUQyAy
-MDEyCj4+Pgo+Pj4KPj4+ICEhTGludXggRGlzdHJpYnV0aW9uCj4+PiAhIS0tLS0tLS0tLS0tLS0t
-LS0tLQo+Pj4KPj4+IFVidW50dSAxMi4wNC4xIExUUyBcbiBcbCBESVNUUklCX0lEPVVidW50dSBE
-SVNUUklCX0RFU0NSSVBUSU9OPSJVYnVudHUKPj4KPj4gMTIuMDQuMSBMVFMiCj4+Pgo+Pj4KPj4+
-ICEhRE1JIEluZm9ybWF0aW9uCj4+PiAhIS0tLS0tLS0tLS0tLS0tLQo+Pj4KPj4+IE1hbnVmYWN0
-dXJlcjogICAgICBMRU5PVk8KPj4+IFByb2R1Y3QgTmFtZTogICAgICBMZW5vdm8gSWRlYVBhZCBQ
-NTgwCj4+PiBQcm9kdWN0IFZlcnNpb246ICAgTGVub3ZvIElkZWFQYWQgUDU4MAo+Pj4gRmlybXdh
-cmUgVmVyc2lvbjogIDVFQ04zM1dXKFYyLjAzKQo+Pj4KPj4+Cj4+PiAhIUtlcm5lbCBJbmZvcm1h
-dGlvbgo+Pj4gISEtLS0tLS0tLS0tLS0tLS0tLS0KPj4+Cj4+PiBLZXJuZWwgcmVsZWFzZTogICAg
-My4yLjAtMzEtZ2VuZXJpYwo+Pj4gT3BlcmF0aW5nIFN5c3RlbTogIEdOVS9MaW51eAo+Pj4gQXJj
-aGl0ZWN0dXJlOiAgICAgIHg4Nl82NAo+Pj4gUHJvY2Vzc29yOiAgICAgICAgIHg4Nl82NAo+Pj4g
-U01QIEVuYWJsZWQ6ICAgICAgIFllcwo+Pj4KPj4+Cj4+PiAhIUFMU0EgVmVyc2lvbgo+Pj4gISEt
-LS0tLS0tLS0tLS0KPj4+Cj4+PiBEcml2ZXIgdmVyc2lvbjogICAgIDEuMC4yNQo+Pj4gTGlicmFy
-eSB2ZXJzaW9uOiAgICAxLjAuMTYKPj4+IFV0aWxpdGllcyB2ZXJzaW9uOiAgMS4wLjI1Cj4+Cj4+
-IGlzIHRoaXMgYW4gdXBncmFkZSBzaW5jZSBhbHNhLWxpYiBpcyBxdWl0ZSBvbGQgPwo+Cj4gc29y
-cnksIHRoaXMgd2FzIGFuIG9sZCBsb2cuIFRoZSBuZXdlc3QgaXMgaGVyZToKaHR0cDovL3d3dy5h
-bHNhLXByb2plY3Qub3JnL2RiLz9mPTA4YWU2MmU2MWNjYzg5ZDkyYTYxNTRkNGU1OTA3YjRmNjc2
-YzE2NGEKPgo+Pgo+PiBpdCBpcyBzdHJhbmdlIHRoYXQgdW5zb2xpY2llZCBldmVudCBlbmFibGVk
-IGF0IGZpeGVkIG1pYwo+PiBpbnN0ZWFkIG9mIG1pYyBqYWNrID8KPj4KCj4KPiAhISMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAu
-NC42MQo+ICEhIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKPgo+ICEhU2NyaXB0IHJh
-biBvbjogRnJpIE9jdCAgNSAwNzozNDowNiBVVEMgMjAxMgo+Cj4KPgo+ICEhTGludXggRGlzdHJp
-YnV0aW9uCj4gISEtLS0tLS0tLS0tLS0tLS0tLS0KPgo+IFVidW50dSAxMi4wNC4xIExUUyBcbiBc
-bCBESVNUUklCX0lEPVVidW50dSBESVNUUklCX0RFU0NSSVBUSU9OPSJVYnVudHUKMTIuMDQuMSBM
-VFMiCj4KPgo+ICEhRE1JIEluZm9ybWF0aW9uCj4gISEtLS0tLS0tLS0tLS0tLS0KPgo+IE1hbnVm
-YWN0dXJlcjogICAgICBMRU5PVk8KPiBQcm9kdWN0IE5hbWU6ICAgICAgTGVub3ZvIElkZWFQYWQg
-UDU4MAo+IFByb2R1Y3QgVmVyc2lvbjogICBMZW5vdm8gSWRlYVBhZCBQNTgwCj4gRmlybXdhcmUg
-VmVyc2lvbjogIDVFQ04zM1dXKFYyLjAzKQo+Cj4KPiAhIUtlcm5lbCBJbmZvcm1hdGlvbgo+ICEh
-LS0tLS0tLS0tLS0tLS0tLS0tCj4KPiBLZXJuZWwgcmVsZWFzZTogICAgMy4yLjAtMzEtZ2VuZXJp
-Ywo+IE9wZXJhdGluZyBTeXN0ZW06ICBHTlUvTGludXgKPiBBcmNoaXRlY3R1cmU6ICAgICAgeDg2
-XzY0Cj4gUHJvY2Vzc29yOiAgICAgICAgIHg4Nl82NAo+IFNNUCBFbmFibGVkOiAgICAgICBZZXMK
-Pgo+Cj4gISFBTFNBIFZlcnNpb24KPiAhIS0tLS0tLS0tLS0tLQo+Cj4gRHJpdmVyIHZlcnNpb246
-ICAgICAxLjAuMjUKPiBMaWJyYXJ5IHZlcnNpb246ICAgIDEuMC4yNQo+Cj4gVXRpbGl0aWVzIHZl
-cnNpb246ICAxLjAuMjUKPgo+Cj4gISFMb2FkZWQgQUxTQSBtb2R1bGVzCj4gISEtLS0tLS0tLS0t
-LS0tLS0tLS0tCj4KPiBzbmRfaGRhX2ludGVsCj4KPgo+ICEhU291bmQgU2VydmVycyBvbiB0aGlz
-IHN5c3RlbQo+ICEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Cj4gUHVsc2VhdWRpbzoK
-PiAgICAgICBJbnN0YWxsZWQgLSBZZXMgKC91c3IvYmluL3B1bHNlYXVkaW8pCj4gICAgICAgUnVu
-bmluZyAtIFllcwo+Cj4KPiAhIVNvdW5kY2FyZHMgcmVjb2duaXNlZCBieSBBTFNBCj4gISEtLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Cj4gIDAgW1BDSCAgICAgICAgICAgIF06IEhEQS1J
-bnRlbCAtIEhEQSBJbnRlbCBQQ0gKPiAgICAgICAgICAgICAgICAgICAgICAgSERBIEludGVsIFBD
-SCBhdCAweGUwNjEwMDAwIGlycSA0Ngo+Cj4KPiAhIVBDSSBTb3VuZGNhcmRzIGluc3RhbGxlZCBp
-biB0aGUgc3lzdGVtCj4gISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
-Cj4gMDA6MWIuMCBBdWRpbyBkZXZpY2U6IEludGVsIENvcnBvcmF0aW9uIFBhbnRoZXIgUG9pbnQg
-SGlnaCBEZWZpbml0aW9uCkF1ZGlvIENvbnRyb2xsZXIgKHJldiAwNCkKPgo+Cj4gISFBZHZhbmNl
-ZCBpbmZvcm1hdGlvbiAtIFBDSSBWZW5kb3IvRGV2aWNlL1N1YnN5c3RlbSBJRCdzCj4gISEtLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4KPiAw
-MDoxYi4wIDA0MDM6IDgwODY6MWUyMCAocmV2IDA0KQo+ICAgICAgICAgU3Vic3lzdGVtOiAxN2Fh
-OjM5NzcKPgo+Cj4gISFNb2Rwcm9iZSBvcHRpb25zIChTb3VuZCByZWxhdGVkKQo+ICEhLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPgo+IHNuZC1hdGlpeHAtbW9kZW06IGluZGV4PS0y
-Cj4gc25kLWludGVsOHgwbTogaW5kZXg9LTIKPiBzbmQtdmlhODJ4eC1tb2RlbTogaW5kZXg9LTIK
-PiBzbmQtdXNiLWF1ZGlvOiBpbmRleD0tMgo+IHNuZC11c2ItY2FpYXE6IGluZGV4PS0yCj4gc25k
-LXVzYi11YTEwMTogaW5kZXg9LTIKPiBzbmQtdXNiLXVzMTIybDogaW5kZXg9LTIKPiBzbmQtdXNi
-LXVzeDJ5OiBpbmRleD0tMgo+IHNuZC1jbWlwY2k6IG1wdV9wb3J0PTB4MzMwIGZtX3BvcnQ9MHgz
-ODgKPiBzbmQtcGNzcDogaW5kZXg9LTIKPiBzbmQtdXNiLWF1ZGlvOiBpbmRleD0tMgo+IHNuZC1o
-ZGEtaW50ZWw6IG1vZGVsPWJhc2ljCgp0cnkgbW9kZWw9YXV0bwoKaHR0cDovL2dpdC5rZXJuZWwu
-b3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0O2E9YmxvYl9wbGFpbjtmPURv
-Y3VtZW50YXRpb24vc291bmQvYWxzYS9IRC1BdWRpby1Nb2RlbHMudHh0O2g9MTZkZmU1N2YxNzMx
-NjdjOWRmNTliZmRjNmMxY2VmZmY5ZGIyZmEwZjtoYj1IRUFECgpDb25leGFudCA1MDY2Cj09PT09
-PT09PT09PT0KICBsYXB0b3BCYXNpYyBMYXB0b3AgY29uZmlnIChkZWZhdWx0KQogIGhwLWxhcHRv
-cEhQIGxhcHRvcHMsIGUgZyBHNjAKICBhc3VzQXN1cyBLNTJKVSwgTGVub3ZvIEc1NjAKICBkZWxs
-LWxhcHRvcERlbGwgbGFwdG9wcwogIGRlbGwtdm9zdHJvRGVsbCBWb3N0cm8KICBvbHBjLXhvLTFf
-NU9MUEMgWE8gMS41CiAgaWRlYXBhZCAgICAgICBMZW5vdm8gSWRlYVBhZCBVMTUwCiAgdGhpbmtw
-YWRMZW5vdm8gVGhpbmtwYWQKCnRoZSBtb2RlbCAiYXV0byIgaXMgbm90IGxpc3RlZCBpbiB0aGUg
-ZG9jdW1lbnRhdGlvbgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQv
-dGl3YWkvc291bmQuZ2l0O2E9YmxvYl9wbGFpbjtmPXNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhh
-bnQuYztoPTAzYjFkYzMxN2ZmMDM0MTEyMmQ0OGEwNTM1ZTQxOTYzYjI4MzQxNTc7aGI9NzRkM2U2
-OTcyOGEwZGNlZThjZDBmOTNkYTRkYzA3NzQzMWQ1OTYwNgoKc3RhdGljIGNvbnN0IGNoYXIgKiBj
-b25zdCBjeHQ1MDY2X21vZGVsc1tDWFQ1MDY2X01PREVMU10gPSB7CltDWFQ1MDY2X0xBUFRPUF09
-ICJsYXB0b3AiLApbQ1hUNTA2Nl9ERUxMX0xBUFRPUF09ICJkZWxsLWxhcHRvcCIsCltDWFQ1MDY2
-X09MUENfWE9fMV81XT0gIm9scGMteG8tMV81IiwKW0NYVDUwNjZfREVMTF9WT1NUUk9dPSAiZGVs
-bC12b3N0cm8iLApbQ1hUNTA2Nl9JREVBUEFEXT0gImlkZWFwYWQiLApbQ1hUNTA2Nl9USElOS1BB
-RF09ICJ0aGlua3BhZCIsCltDWFQ1MDY2X0FTVVNdPSAiYXN1cyIsCltDWFQ1MDY2X0hQX0xBUFRP
-UF09ICJocC1sYXB0b3AiLApbQ1hUNTA2Nl9BVVRPXT0gImF1dG8iLAp9OwoKPiAhIUhEQS1JbnRl
-bCBDb2RlYyBpbmZvcm1hdGlvbgo+ICEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS1z
-dGFydGNvbGxhcHNlLS0KPgo+IENvZGVjOiBDb25leGFudCBDWDIwNTkwCj4gQWRkcmVzczogMAo+
-IEFGRyBGdW5jdGlvbiBJZDogMHgxICh1bnNvbCAxKQo+IFZlbmRvciBJZDogMHgxNGYxNTA2ZQo+
-IFN1YnN5c3RlbSBJZDogMHgxN2FhYzAyZAo+IFJldmlzaW9uIElkOiAweDEwMDAwMwoKPiBOb2Rl
-IDB4MWEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQ4MTogU3RlcmVvCj4gICBQaW5jYXAgMHgw
-MDAwMTMyNDogSU4gRGV0ZWN0Cj4gICAgIFZyZWYgY2FwczogSElaIDUwIDgwCj4gICBQaW4gRGVm
-YXVsdCAweDA0YTExMDMwOiBbSmFja10gTWljIGF0IEV4dCBSaWdodAo+ICAgICBDb25uID0gMS84
-LCBDb2xvciA9IEJsYWNrCj4gICAgIERlZkFzc29jaWF0aW9uID0gMHgzLCBTZXF1ZW5jZSA9IDB4
-MAo+ICAgUGluLWN0bHM6IDB4MjQ6IElOIFZSRUZfODAKPiAgIFVuc29saWNpdGVkOiB0YWc9MDAs
-IGVuYWJsZWQ9MAo+Cj4gICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBEM2NvbGQgRVBTUwo+
-ICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAo+IE5vZGUgMHgxYiBbUGluIENvbXBsZXhd
-IHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KPiAgIFBpbmNhcCAweDAwMDExMzM0OiBJTiBPVVQgRUFQ
-RCBEZXRlY3QKPiAgICAgVnJlZiBjYXBzOiBISVogNTAgODAKPiAgIEVBUEQgMHgyOiBFQVBECj4g
-ICBQaW4gRGVmYXVsdCAweDk1YTcwMTIwOiBbRml4ZWRdIE1pYyBhdCBJbnQgVG9wCj4gICAgIENv
-bm4gPSBBbmFsb2csIENvbG9yID0gVW5rbm93bgo+ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4Miwg
-U2VxdWVuY2UgPSAweDAKPiAgICAgTWlzYyA9IE5PX1BSRVNFTkNFCj4gICBQaW4tY3RsczogMHgw
-MDogVlJFRl9ISVoKPiAgIFVuc29saWNpdGVkOiB0YWc9MzgsIGVuYWJsZWQ9MQo+ICAgUG93ZXIg
-c3RhdGVzOiAgRDAgRDEgRDIgRDMgRDNjb2xkIEVQU1MKPiAgIFBvd2VyOiBzZXR0aW5nPUQwLCBh
-Y3R1YWw9RDAKPiAgIENvbm5lY3Rpb246IDIKPiAgICAgIDB4MTAqIDB4MTEKPgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+[Cc: alsa-devel@alsa-project.org; also, please cc: me explicitly as
+well, since I'm not subscribed to either list]
+
+On Wed, Sep 26, 2012 at 12:29 AM, Steven Noonan <steven@uplinklabs.net> wrote:
+> Started having audio problems when trying out the latest tree
+> (v3.6-rc7-10-g56d27ad). When playing any kind of audio, there was
+> significant distortion, mostly crackling noise. I'm using a Lenovo
+> ThinkPad X230 (Panther Point).
+>
+> I did a git-bisect to locate the problem, and it seems this commit is to
+> blame:
+>
+>         c20c5a841cbe47f5b7812b57bd25397497e5fbc0 is the first bad commit
+>         commit c20c5a841cbe47f5b7812b57bd25397497e5fbc0
+>         Author: Seth Heasley <seth.heasley@intel.com>
+>         Date:   Thu Jun 14 14:23:53 2012 -0700
+>
+>                 ALSA: hda_intel: activate COMBO mode for Intel client chipsets
+>
+>                 This patch activates the COMBO position_fix for recent Intel client chipsets.
+>                 COMBO mode is the recommended setting for Intel chipsets and eliminates HD
+>                 audio warnings in dmesg.  This patch has been tested on Lynx Point, Panther
+>                 Point, and Cougar Pont.
+>
+>                 Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+>                 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>
+> It's pretty clear-cut. If I revert this patch, my sound starts
+> functioning normally again.
+>
+> Any thoughts on how to proceed here? Can someone revert this, or is
+> there some testing that I can do?
+>
+> Here's a pretty-printed bisection log, if needed:
+>
+>  # good: [28a33cbc] Linux 3.5
+>  # bad:  [b13bc8dd] Merge tag 'staging-3.6-rc1' of git://git.kernel.or
+>  # good: [3c4cfade] Merge git://git.kernel.org/pub/scm/linux/kernel/gi
+>  # bad:  [9fc37779] Merge tag 'usb-3.6-rc1' of git://git.kernel.org/pu
+>  # bad:  [f14121ab] Merge tag 'dt-for-3.6' of git://sources.calxeda.co
+>  # good: [d14b7a41] Merge branch 'for-linus' of git://git.kernel.org/p
+>  # good: [15d47763] Merge branch 'for-3.5' into for-3.6
+>  # bad:  [dbf7b591] Merge tag 'sound-3.6' of git://git.kernel.org/pub/
+>  # bad:  [1c76684d] ALSA: hda - add Haswell HDMI codec id
+>  # bad:  [8b8d654b] ALSA: hda - Move one-time init codes from generic_
+>  # good: [80c8bfbe] ALSA: HDA: Create phantom jacks for fixed inputs a
+>  # bad:  [ceaa86ba] ALSA: hda - Remove invalid init verbs for Nvidia 2
+>  # bad:  [4b6ace9e] ALSA: hda - Add the support for VIA HDMI pin detec
+>  # bad:  [c20c5a84] ALSA: hda_intel: activate COMBO mode for Intel cli
+>
+>
+> - Steven
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
+>
+
+I can confirm that I've also hit this bug as well, and that it's still
+present in stable 3.6.0. Strangely enough however, this only seems to
+affect VLC for me; while playing audio through mplayer or any
+gstreamer-based players (Rhythmbox, Totem, etc.), I don't encounter
+any audio distortion. Possibly also related to [1]?
+
+A workaround (other than reverting this commit) is to not use COMBO
+mode, i.e. load snd-hda-intel with position_fix=2.
+
+Please let me know if any more information is needed.
+
+$ lspci -vvnn | grep -A8 Audio
+00:1b.0 Audio device [0403]: Intel Corporation 7 Series/C210 Series
+Chipset Family High Definition Audio Controller [8086:1e20] (rev 04)
+	Subsystem: Toshiba America Info Systems Device [1179:fb30]
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 46
+	Region 0: Memory at f7310000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: <access denied>
+	Kernel driver in use: snd_hda_intel
+
+Machine: Toshiba Satellite P850
+Distro: Debian wheezy/sid
+ALSA 1.0.25; PulseAudio 2.0
+
+Regards,
+Vincent
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2012-September/055161.html
