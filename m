@@ -1,20 +1,22 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: 3.6.0 regression,
- distorted sound failure while using jack and hd-audio
-Date: Sun, 07 Oct 2012 23:27:43 +0200
-Message-ID: <5071F3CF.8070907@gmail.com>
-References: <20121007213452.08e29880@tenkende-august.homelinux.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Internal Microphone in Lenovo P580 not working
+ with alsa 1.0.25
+Date: Mon, 8 Oct 2012 10:15:52 +0800
+Message-ID: <CAN8ccianZcZtc6PmniOcQwXYTBFto9Zo23zb3A5SJXwWuaWLVw@mail.gmail.com>
+References: <506E7C1B.4030703@gmx.com>
+ <CAN8cciYhcaBecaG7xnL769NAwQjS9LRfdWrg+UbuH_15796rmA@mail.gmail.com>
+ <506E8EAE.5060504@gmx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EABA26162E
- for <alsa-devel@alsa-project.org>; Sun,  7 Oct 2012 23:27:47 +0200 (CEST)
-Received: by mail-bk0-f51.google.com with SMTP id e19so1388447bku.38
- for <alsa-devel@alsa-project.org>; Sun, 07 Oct 2012 14:27:46 -0700 (PDT)
-In-Reply-To: <20121007213452.08e29880@tenkende-august.homelinux.net>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3FAB261650
+ for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 04:15:53 +0200 (CEST)
+Received: by mail-qa0-f44.google.com with SMTP id 25so1931515qao.17
+ for <alsa-devel@alsa-project.org>; Sun, 07 Oct 2012 19:15:52 -0700 (PDT)
+In-Reply-To: <506E8EAE.5060504@gmx.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +26,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Helge Hafting <helge.hafting@ntebb.no>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-(cc alsa-devel)
-
-On 07.10.2012 21:34, Helge Hafting wrote:
-> My sound setup works fine with 3.5.4, but have serious problems with 3.6.0
-> 
-> It is sound through jack that breaks, simply using "aplay" directly with the
-> alsa device works.
-> 
-> When I use jack, my setup works fine with 3.5.4. But boot into 3.6.0,
-> and I get badly distorted sound as if using an extremely overdone reverb effect. 
-> And jack reports tons of xruns, several per second.
-> 
-> This can be worked around by going from 256 to 512 frames/period in the jack
-> settings. But that also double the latency, which makes keyboard playing less
-> pleasant.
-> 
-> It is not a case of 256 frames/period being (almost) too extreme for the machine. With kernel 3.5.4,
-> I can use 128 frames/period and get mostly ok sound, with only an occational 
-> xrun (and a correseponding pop in the sound). So I use 256 because that's solid.
-> But with 3.6.0, not even 256 is enough. And it is not an occational pop, but
-> awful distortion all the time.
-> 
-> I don't really know what has changed from 3.5.4 to 3.6.0. The hd-audio driver?
-> Something in alsa? Or the scheduling?
-> 
-> Machine: Dell precision M6600 laptop, 8GB, 2.2GHz quad-core i7.
->          Usually at 800MHz to save power, this is enough for making sound.
-> Kernels: 64-bit 3.5.4 or 3.6.0
-> Distro: funtoo
-> 
-> Audio according to lspci:
-> 00:1b.0 Audio device: Intel Corporation 6 Series/C200 Series Chipset Family High Definition Audio Controller (rev 04)
-> 
-> Please tell if there is anything I should try. I can test other kernel versions
-> or try patches.
-> 
-> Helge Hafting
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+MjAxMi0xMC01IOS4i+WNiDM6Mzkg5pa8ICJtZWZpcyIgPG1lZmlzdG9mQGdteC5jb20+IOWvq+mB
+k++8mgo+Cj4gT24gMTAvMDUvMjAxMiAwMjowOSBBTSwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4+Cj4+
+IDIwMTItMTAtNSDkuIvljYgyOjIwIOaWvCAibWVmaXMiIDxtZWZpc3RvZkBnbXguY29tPiDlr6vp
+gZPvvJoKPj4+Cj4+PiBIaSwKPj4+Cj4+PiBNaWMgbm90IHdvcmtpbmcgaW4gTGVub3ZvIFA1ODAg
+d2l0aCBhbHNhIDEuMC4yNQo+Pj4KPj4+IEFsc2EgSW5mb3JtYXRpb24gc2NyaXB0IG91dHB1dDoK
+Pj4+Cj4+PgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9MDAxNTIzZWQ2MWJjNzZm
+YjViMmFkMGQzYzM1NGMwNDNmODllNWEzMwo+Pj4KPj4+IEhvcGUgaXQgaGVscHMuCj4+Pgo+Pj4K
+Pj4+Cj4+PiAhISMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4+PiAhIUFMU0EgSW5m
+b3JtYXRpb24gU2NyaXB0IHYgMC40LjYxCj4+PiAhISMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjCj4+Pgo+Pj4gISFTY3JpcHQgcmFuIG9uOiBGcmkgT2N0ICA1IDA1OjU2OjM4IFVUQyAy
+MDEyCj4+Pgo+Pj4KPj4+ICEhTGludXggRGlzdHJpYnV0aW9uCj4+PiAhIS0tLS0tLS0tLS0tLS0t
+LS0tLQo+Pj4KPj4+IFVidW50dSAxMi4wNC4xIExUUyBcbiBcbCBESVNUUklCX0lEPVVidW50dSBE
+SVNUUklCX0RFU0NSSVBUSU9OPSJVYnVudHUKPj4KPj4gMTIuMDQuMSBMVFMiCj4+Pgo+Pj4KPj4+
+ICEhRE1JIEluZm9ybWF0aW9uCj4+PiAhIS0tLS0tLS0tLS0tLS0tLQo+Pj4KPj4+IE1hbnVmYWN0
+dXJlcjogICAgICBMRU5PVk8KPj4+IFByb2R1Y3QgTmFtZTogICAgICBMZW5vdm8gSWRlYVBhZCBQ
+NTgwCj4+PiBQcm9kdWN0IFZlcnNpb246ICAgTGVub3ZvIElkZWFQYWQgUDU4MAo+Pj4gRmlybXdh
+cmUgVmVyc2lvbjogIDVFQ04zM1dXKFYyLjAzKQo+Pj4KPj4+Cj4+PiAhIUtlcm5lbCBJbmZvcm1h
+dGlvbgo+Pj4gISEtLS0tLS0tLS0tLS0tLS0tLS0KPj4+Cj4+PiBLZXJuZWwgcmVsZWFzZTogICAg
+My4yLjAtMzEtZ2VuZXJpYwo+Pj4gT3BlcmF0aW5nIFN5c3RlbTogIEdOVS9MaW51eAo+Pj4gQXJj
+aGl0ZWN0dXJlOiAgICAgIHg4Nl82NAo+Pj4gUHJvY2Vzc29yOiAgICAgICAgIHg4Nl82NAo+Pj4g
+U01QIEVuYWJsZWQ6ICAgICAgIFllcwo+Pj4KPj4+Cj4+PiAhIUFMU0EgVmVyc2lvbgo+Pj4gISEt
+LS0tLS0tLS0tLS0KPj4+Cj4+PiBEcml2ZXIgdmVyc2lvbjogICAgIDEuMC4yNQo+Pj4gTGlicmFy
+eSB2ZXJzaW9uOiAgICAxLjAuMTYKPj4+IFV0aWxpdGllcyB2ZXJzaW9uOiAgMS4wLjI1Cj4+Cj4+
+IGlzIHRoaXMgYW4gdXBncmFkZSBzaW5jZSBhbHNhLWxpYiBpcyBxdWl0ZSBvbGQgPwo+Cj4gc29y
+cnksIHRoaXMgd2FzIGFuIG9sZCBsb2cuIFRoZSBuZXdlc3QgaXMgaGVyZToKaHR0cDovL3d3dy5h
+bHNhLXByb2plY3Qub3JnL2RiLz9mPTA4YWU2MmU2MWNjYzg5ZDkyYTYxNTRkNGU1OTA3YjRmNjc2
+YzE2NGEKPgo+Pgo+PiBpdCBpcyBzdHJhbmdlIHRoYXQgdW5zb2xpY2llZCBldmVudCBlbmFibGVk
+IGF0IGZpeGVkIG1pYwo+PiBpbnN0ZWFkIG9mIG1pYyBqYWNrID8KPj4KCj4KPiAhISMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAu
+NC42MQo+ICEhIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKPgo+ICEhU2NyaXB0IHJh
+biBvbjogRnJpIE9jdCAgNSAwNzozNDowNiBVVEMgMjAxMgo+Cj4KPgo+ICEhTGludXggRGlzdHJp
+YnV0aW9uCj4gISEtLS0tLS0tLS0tLS0tLS0tLS0KPgo+IFVidW50dSAxMi4wNC4xIExUUyBcbiBc
+bCBESVNUUklCX0lEPVVidW50dSBESVNUUklCX0RFU0NSSVBUSU9OPSJVYnVudHUKMTIuMDQuMSBM
+VFMiCj4KPgo+ICEhRE1JIEluZm9ybWF0aW9uCj4gISEtLS0tLS0tLS0tLS0tLS0KPgo+IE1hbnVm
+YWN0dXJlcjogICAgICBMRU5PVk8KPiBQcm9kdWN0IE5hbWU6ICAgICAgTGVub3ZvIElkZWFQYWQg
+UDU4MAo+IFByb2R1Y3QgVmVyc2lvbjogICBMZW5vdm8gSWRlYVBhZCBQNTgwCj4gRmlybXdhcmUg
+VmVyc2lvbjogIDVFQ04zM1dXKFYyLjAzKQo+Cj4KPiAhIUtlcm5lbCBJbmZvcm1hdGlvbgo+ICEh
+LS0tLS0tLS0tLS0tLS0tLS0tCj4KPiBLZXJuZWwgcmVsZWFzZTogICAgMy4yLjAtMzEtZ2VuZXJp
+Ywo+IE9wZXJhdGluZyBTeXN0ZW06ICBHTlUvTGludXgKPiBBcmNoaXRlY3R1cmU6ICAgICAgeDg2
+XzY0Cj4gUHJvY2Vzc29yOiAgICAgICAgIHg4Nl82NAo+IFNNUCBFbmFibGVkOiAgICAgICBZZXMK
+Pgo+Cj4gISFBTFNBIFZlcnNpb24KPiAhIS0tLS0tLS0tLS0tLQo+Cj4gRHJpdmVyIHZlcnNpb246
+ICAgICAxLjAuMjUKPiBMaWJyYXJ5IHZlcnNpb246ICAgIDEuMC4yNQo+Cj4gVXRpbGl0aWVzIHZl
+cnNpb246ICAxLjAuMjUKPgo+Cj4gISFMb2FkZWQgQUxTQSBtb2R1bGVzCj4gISEtLS0tLS0tLS0t
+LS0tLS0tLS0tCj4KPiBzbmRfaGRhX2ludGVsCj4KPgo+ICEhU291bmQgU2VydmVycyBvbiB0aGlz
+IHN5c3RlbQo+ICEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Cj4gUHVsc2VhdWRpbzoK
+PiAgICAgICBJbnN0YWxsZWQgLSBZZXMgKC91c3IvYmluL3B1bHNlYXVkaW8pCj4gICAgICAgUnVu
+bmluZyAtIFllcwo+Cj4KPiAhIVNvdW5kY2FyZHMgcmVjb2duaXNlZCBieSBBTFNBCj4gISEtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Cj4gIDAgW1BDSCAgICAgICAgICAgIF06IEhEQS1J
+bnRlbCAtIEhEQSBJbnRlbCBQQ0gKPiAgICAgICAgICAgICAgICAgICAgICAgSERBIEludGVsIFBD
+SCBhdCAweGUwNjEwMDAwIGlycSA0Ngo+Cj4KPiAhIVBDSSBTb3VuZGNhcmRzIGluc3RhbGxlZCBp
+biB0aGUgc3lzdGVtCj4gISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
+Cj4gMDA6MWIuMCBBdWRpbyBkZXZpY2U6IEludGVsIENvcnBvcmF0aW9uIFBhbnRoZXIgUG9pbnQg
+SGlnaCBEZWZpbml0aW9uCkF1ZGlvIENvbnRyb2xsZXIgKHJldiAwNCkKPgo+Cj4gISFBZHZhbmNl
+ZCBpbmZvcm1hdGlvbiAtIFBDSSBWZW5kb3IvRGV2aWNlL1N1YnN5c3RlbSBJRCdzCj4gISEtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4KPiAw
+MDoxYi4wIDA0MDM6IDgwODY6MWUyMCAocmV2IDA0KQo+ICAgICAgICAgU3Vic3lzdGVtOiAxN2Fh
+OjM5NzcKPgo+Cj4gISFNb2Rwcm9iZSBvcHRpb25zIChTb3VuZCByZWxhdGVkKQo+ICEhLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPgo+IHNuZC1hdGlpeHAtbW9kZW06IGluZGV4PS0y
+Cj4gc25kLWludGVsOHgwbTogaW5kZXg9LTIKPiBzbmQtdmlhODJ4eC1tb2RlbTogaW5kZXg9LTIK
+PiBzbmQtdXNiLWF1ZGlvOiBpbmRleD0tMgo+IHNuZC11c2ItY2FpYXE6IGluZGV4PS0yCj4gc25k
+LXVzYi11YTEwMTogaW5kZXg9LTIKPiBzbmQtdXNiLXVzMTIybDogaW5kZXg9LTIKPiBzbmQtdXNi
+LXVzeDJ5OiBpbmRleD0tMgo+IHNuZC1jbWlwY2k6IG1wdV9wb3J0PTB4MzMwIGZtX3BvcnQ9MHgz
+ODgKPiBzbmQtcGNzcDogaW5kZXg9LTIKPiBzbmQtdXNiLWF1ZGlvOiBpbmRleD0tMgo+IHNuZC1o
+ZGEtaW50ZWw6IG1vZGVsPWJhc2ljCgp0cnkgbW9kZWw9YXV0bwoKaHR0cDovL2dpdC5rZXJuZWwu
+b3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0O2E9YmxvYl9wbGFpbjtmPURv
+Y3VtZW50YXRpb24vc291bmQvYWxzYS9IRC1BdWRpby1Nb2RlbHMudHh0O2g9MTZkZmU1N2YxNzMx
+NjdjOWRmNTliZmRjNmMxY2VmZmY5ZGIyZmEwZjtoYj1IRUFECgpDb25leGFudCA1MDY2Cj09PT09
+PT09PT09PT0KICBsYXB0b3BCYXNpYyBMYXB0b3AgY29uZmlnIChkZWZhdWx0KQogIGhwLWxhcHRv
+cEhQIGxhcHRvcHMsIGUgZyBHNjAKICBhc3VzQXN1cyBLNTJKVSwgTGVub3ZvIEc1NjAKICBkZWxs
+LWxhcHRvcERlbGwgbGFwdG9wcwogIGRlbGwtdm9zdHJvRGVsbCBWb3N0cm8KICBvbHBjLXhvLTFf
+NU9MUEMgWE8gMS41CiAgaWRlYXBhZCAgICAgICBMZW5vdm8gSWRlYVBhZCBVMTUwCiAgdGhpbmtw
+YWRMZW5vdm8gVGhpbmtwYWQKCnRoZSBtb2RlbCAiYXV0byIgaXMgbm90IGxpc3RlZCBpbiB0aGUg
+ZG9jdW1lbnRhdGlvbgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQv
+dGl3YWkvc291bmQuZ2l0O2E9YmxvYl9wbGFpbjtmPXNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhh
+bnQuYztoPTAzYjFkYzMxN2ZmMDM0MTEyMmQ0OGEwNTM1ZTQxOTYzYjI4MzQxNTc7aGI9NzRkM2U2
+OTcyOGEwZGNlZThjZDBmOTNkYTRkYzA3NzQzMWQ1OTYwNgoKc3RhdGljIGNvbnN0IGNoYXIgKiBj
+b25zdCBjeHQ1MDY2X21vZGVsc1tDWFQ1MDY2X01PREVMU10gPSB7CltDWFQ1MDY2X0xBUFRPUF09
+ICJsYXB0b3AiLApbQ1hUNTA2Nl9ERUxMX0xBUFRPUF09ICJkZWxsLWxhcHRvcCIsCltDWFQ1MDY2
+X09MUENfWE9fMV81XT0gIm9scGMteG8tMV81IiwKW0NYVDUwNjZfREVMTF9WT1NUUk9dPSAiZGVs
+bC12b3N0cm8iLApbQ1hUNTA2Nl9JREVBUEFEXT0gImlkZWFwYWQiLApbQ1hUNTA2Nl9USElOS1BB
+RF09ICJ0aGlua3BhZCIsCltDWFQ1MDY2X0FTVVNdPSAiYXN1cyIsCltDWFQ1MDY2X0hQX0xBUFRP
+UF09ICJocC1sYXB0b3AiLApbQ1hUNTA2Nl9BVVRPXT0gImF1dG8iLAp9OwoKPiAhIUhEQS1JbnRl
+bCBDb2RlYyBpbmZvcm1hdGlvbgo+ICEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS1z
+dGFydGNvbGxhcHNlLS0KPgo+IENvZGVjOiBDb25leGFudCBDWDIwNTkwCj4gQWRkcmVzczogMAo+
+IEFGRyBGdW5jdGlvbiBJZDogMHgxICh1bnNvbCAxKQo+IFZlbmRvciBJZDogMHgxNGYxNTA2ZQo+
+IFN1YnN5c3RlbSBJZDogMHgxN2FhYzAyZAo+IFJldmlzaW9uIElkOiAweDEwMDAwMwoKPiBOb2Rl
+IDB4MWEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQ4MTogU3RlcmVvCj4gICBQaW5jYXAgMHgw
+MDAwMTMyNDogSU4gRGV0ZWN0Cj4gICAgIFZyZWYgY2FwczogSElaIDUwIDgwCj4gICBQaW4gRGVm
+YXVsdCAweDA0YTExMDMwOiBbSmFja10gTWljIGF0IEV4dCBSaWdodAo+ICAgICBDb25uID0gMS84
+LCBDb2xvciA9IEJsYWNrCj4gICAgIERlZkFzc29jaWF0aW9uID0gMHgzLCBTZXF1ZW5jZSA9IDB4
+MAo+ICAgUGluLWN0bHM6IDB4MjQ6IElOIFZSRUZfODAKPiAgIFVuc29saWNpdGVkOiB0YWc9MDAs
+IGVuYWJsZWQ9MAo+Cj4gICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBEM2NvbGQgRVBTUwo+
+ICAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAo+IE5vZGUgMHgxYiBbUGluIENvbXBsZXhd
+IHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KPiAgIFBpbmNhcCAweDAwMDExMzM0OiBJTiBPVVQgRUFQ
+RCBEZXRlY3QKPiAgICAgVnJlZiBjYXBzOiBISVogNTAgODAKPiAgIEVBUEQgMHgyOiBFQVBECj4g
+ICBQaW4gRGVmYXVsdCAweDk1YTcwMTIwOiBbRml4ZWRdIE1pYyBhdCBJbnQgVG9wCj4gICAgIENv
+bm4gPSBBbmFsb2csIENvbG9yID0gVW5rbm93bgo+ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4Miwg
+U2VxdWVuY2UgPSAweDAKPiAgICAgTWlzYyA9IE5PX1BSRVNFTkNFCj4gICBQaW4tY3RsczogMHgw
+MDogVlJFRl9ISVoKPiAgIFVuc29saWNpdGVkOiB0YWc9MzgsIGVuYWJsZWQ9MQo+ICAgUG93ZXIg
+c3RhdGVzOiAgRDAgRDEgRDIgRDMgRDNjb2xkIEVQU1MKPiAgIFBvd2VyOiBzZXR0aW5nPUQwLCBh
+Y3R1YWw9RDAKPiAgIENvbm5lY3Rpb246IDIKPiAgICAgIDB4MTAqIDB4MTEKPgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
