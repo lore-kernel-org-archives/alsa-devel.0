@@ -1,14 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] pcm: support for audio timestamps
-Date: Mon,  8 Oct 2012 12:33:48 -0500
-Message-ID: <1349717628-9871-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 1/2] ARM: OMAP: Trivial driver changes to
+ remove include plat/cpu.h
+Date: Mon, 08 Oct 2012 10:35:57 -0700
+Message-ID: <20121008173557.10603.18539.stgit@muffinssi>
+References: <20121008173452.10603.53886.stgit@muffinssi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EBC426513C
- for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 19:34:30 +0200 (CEST)
+Received: from mho-02-ewr.mailhop.org (mho-04-ewr.mailhop.org [204.13.248.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08EC526173C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2012 19:36:04 +0200 (CEST)
+In-Reply-To: <20121008173452.10603.53886.stgit@muffinssi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,272 +21,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Deepak Saxena <dsaxena@plexity.net>, Herbert Xu <herbert@gondor.apana.org.au>, Venkatraman S <svenkatr@ti.com>, Vinod Koul <vinod.koul@intel.com>, Matt Mackall <mpm@selenic.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Chris Ball <cjb@laptop.org>, Dan Williams <djbw@fb.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-crypto@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-add new snd_pcm_status_get_audio_htstamp() routine to
-query the audio timestamps provided by the kernel.
+Drivers should not use cpu_is_omap or cpu_class_is_omap macros,
+they should be private to the platform init code. And we'll be
+removing plat/cpu.h and only have a private soc.h for the
+arch/arm/*omap* code.
 
-This change provides applications with better ways
-to track elapsed time. Before this patch, applications
-would subtract queued samples (delay) from written samples,
-resulting in a 1-2 sample error.
+This patch is intended as preparation for the core omap changes
+and removes the need to include plat/cpu.h from several drivers.
+This is needed for the ARM common zImage support.
 
-Also add snd_pcm_hw_params_supports_audio_wallclock_ts()
-to query what the hardware supports.
+These changes are OK to do because:
 
-TODO: check protocol compatibility?
+- omap-rng.c and hsmmc.c don't need plat/cpu.h
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+- omap-aes.c and omap-sham.c get the proper platform_data
+  passed to them so they don't need extra checks in the driver
+
+- omap-dma.c and omap-pcm.c can test the arch locally as
+  omap1 and omap2 cannot be compiled together because of
+  conflicting compiler flags
+
+Cc: Deepak Saxena <dsaxena@plexity.net>
+Cc: Matt Mackall <mpm@selenic.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Venkatraman S <svenkatr@ti.com>
+Cc: Chris Ball <cjb@laptop.org>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Dan Williams <djbw@fb.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- include/pcm.h          |    2 ++
- include/sound/asound.h |    7 +++--
- src/pcm/pcm.c          |   31 ++++++++++++++++++++++
- test/audio_time.c      |   68 +++++++++++++++++++++++++++++++++++++++++-------
- 4 files changed, 96 insertions(+), 12 deletions(-)
+ drivers/char/hw_random/omap-rng.c |    2 --
+ drivers/crypto/omap-aes.c         |    6 ------
+ drivers/crypto/omap-sham.c        |    8 --------
+ drivers/dma/omap-dma.c            |    9 +++++++--
+ drivers/mmc/host/omap_hsmmc.c     |    1 -
+ sound/soc/omap/omap-pcm.c         |    9 +++++++--
+ 6 files changed, 14 insertions(+), 21 deletions(-)
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 290593b..1ce91e7 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -631,6 +631,7 @@ int snd_pcm_hw_params_is_half_duplex(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_is_joint_duplex(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_can_sync_start(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *params);
-+int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
- 				      unsigned int *rate_num,
- 				      unsigned int *rate_den);
-@@ -939,6 +940,7 @@ void snd_pcm_status_get_trigger_tstamp(const snd_pcm_status_t *obj, snd_timestam
- void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
- void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
- void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
-+void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
- snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index e24d144..16d03e8 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -160,7 +160,7 @@ enum {
-  *                                                                           *
-  *****************************************************************************/
+diff --git a/drivers/char/hw_random/omap-rng.c b/drivers/char/hw_random/omap-rng.c
+index a5effd8..45e467d 100644
+--- a/drivers/char/hw_random/omap-rng.c
++++ b/drivers/char/hw_random/omap-rng.c
+@@ -27,8 +27,6 @@
  
--#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 10)
-+#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 11)
+ #include <asm/io.h>
  
- typedef unsigned long sndrv_pcm_uframes_t;
- typedef long sndrv_pcm_sframes_t;
-@@ -285,6 +285,7 @@ enum sndrv_pcm_subformat {
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
+-#include <plat/cpu.h>
+-
+ #define RNG_OUT_REG		0x00		/* Output register */
+ #define RNG_STAT_REG		0x04		/* Status register
+ 							[0] = STAT_BUSY */
+diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
+index 3e61feb..649a146 100644
+--- a/drivers/crypto/omap-aes.c
++++ b/drivers/crypto/omap-aes.c
+@@ -29,7 +29,6 @@
+ #include <crypto/scatterwalk.h>
+ #include <crypto/aes.h>
  
- enum sndrv_pcm_state {
- 	SNDRV_PCM_STATE_OPEN = 0,	/* stream is open */
-@@ -426,7 +427,8 @@ struct sndrv_pcm_status {
- 	sndrv_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	sndrv_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	int suspended_state;		/* suspended stream state */
--	unsigned char reserved[60];	/* must be filled with zero */
-+	struct timespec audio_tstamp;	/* from sample counter or wall clock */
-+	unsigned char reserved[60-sizeof(struct timespec)]; /* must be filled with zero */
- };
+-#include <plat/cpu.h>
+ #include <plat-omap/dma-omap.h>
  
- struct sndrv_pcm_mmap_status {
-@@ -435,6 +437,7 @@ struct sndrv_pcm_mmap_status {
- 	sndrv_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
- 	struct timespec tstamp;		/* Timestamp */
- 	int suspended_state;		/* RO: suspended stream state */
-+	struct timespec audio_tstamp;	/* from sample counter or wall clock */
- };
- 
- struct sndrv_pcm_mmap_control {
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 65c7646..5880057 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -3124,6 +3124,26 @@ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *param
- }
- 
- /**
-+ * \brief Check if hardware supports audio wallclock timestamps
-+ * \param params Configuration space
-+ * \retval 0 Hardware doesn't support audio wallclock timestamps
-+ * \retval 1 Hardware supports audio wallclock timestamps
-+ *
-+ * This function should only be called when the configuration space
-+ * contains a single configuration. Call #snd_pcm_hw_params to choose
-+ * a single configuration from the configuration space.
-+ */
-+int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params)
-+{
-+	assert(params);
-+	if (CHECK_SANITY(params->info == ~0U)) {
-+		SNDMSG("invalid PCM info field");
-+		return 0; /* FIXME: should be a negative error? */
-+	}
-+	return !!(params->info & SNDRV_PCM_INFO_HAS_WALL_CLOCK);
-+}
-+
-+/**
-  * \brief Get rate exact info from a configuration space
-  * \param params Configuration space
-  * \param rate_num Pointer to returned rate numerator
-@@ -6214,6 +6234,17 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
- use_default_symbol_version(__snd_pcm_status_get_htstamp, snd_pcm_status_get_htstamp, ALSA_0.9.0rc8);
- 
- /** 
-+ * \brief Get "now" hi-res audio timestamp from a PCM status container
-+ * \param obj pointer to #snd_pcm_status_t
-+ * \param ptr Pointer to returned timestamp
-+ */
-+void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
-+{
-+	assert(obj && ptr);
-+	*ptr = obj->audio_tstamp;
-+}
-+
-+/**
-  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
-  * \return Delay in frames
-  *
-diff --git a/test/audio_time.c b/test/audio_time.c
-index a910783..03817c7 100644
---- a/test/audio_time.c
-+++ b/test/audio_time.c
-@@ -33,6 +33,7 @@ long long timediff(snd_htimestamp_t t1, snd_htimestamp_t t2)
- 
- void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
- 		  snd_htimestamp_t *trigger_timestamp,
-+		  snd_htimestamp_t *audio_timestamp,
- 		  snd_pcm_uframes_t *avail, snd_pcm_sframes_t *delay)
+ /* OMAP TRM gives bitfields as start:end, where start is the higher bit
+@@ -941,11 +940,6 @@ static int __init omap_aes_mod_init(void)
  {
- 	int err;
-@@ -45,6 +46,7 @@ void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
- 	}
- 	snd_pcm_status_get_trigger_htstamp(status, trigger_timestamp);
- 	snd_pcm_status_get_htstamp(status, timestamp);
-+	snd_pcm_status_get_audio_htstamp(status, audio_timestamp);
- 	*avail = snd_pcm_status_get_avail(status);
- 	*delay = snd_pcm_status_get_delay(status);
+ 	pr_info("loading %s driver\n", "omap-aes");
+ 
+-	if (!cpu_class_is_omap2() || omap_type() != OMAP2_DEVICE_TYPE_SEC) {
+-		pr_err("Unsupported cpu\n");
+-		return -ENODEV;
+-	}
+-
+ 	return  platform_driver_register(&omap_aes_driver);
  }
-@@ -53,6 +55,7 @@ void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
- #define PCM_LINK        /* sync start for playback and capture */
- #define TRACK_CAPTURE   /* dump capture timing info  */
- #define TRACK_PLAYBACK  /* dump playback timing info */
-+#define TRACK_SAMPLE_COUNTS /* show difference between sample counters and audiotimestamps returned by driver */
- #define PLAYBACK_BUFFERS 4
  
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index 6d79695..d76fe06 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -37,7 +37,6 @@
+ #include <crypto/hash.h>
+ #include <crypto/internal/hash.h>
  
-@@ -65,9 +68,13 @@ int main(void)
-         snd_pcm_sframes_t frames;
- 	snd_htimestamp_t tstamp_c, tstamp_p;
- 	snd_htimestamp_t trigger_tstamp_c, trigger_tstamp_p;
-+	snd_htimestamp_t audio_tstamp_c, audio_tstamp_p;
- 	unsigned char buffer_p[PERIOD*4*4];
- 	unsigned char buffer_c[PERIOD*4*4];
+-#include <plat/cpu.h>
+ #include <plat-omap/dma-omap.h>
+ #include <mach/irqs.h>
  
-+	snd_pcm_hw_params_t *hwparams_p;
-+	snd_pcm_hw_params_t *hwparams_c;
-+
- 	snd_pcm_sw_params_t *swparams_p;
- 	snd_pcm_sw_params_t *swparams_c;
+@@ -1289,13 +1288,6 @@ static int __init omap_sham_mod_init(void)
+ {
+ 	pr_info("loading %s driver\n", "omap-sham");
  
-@@ -94,6 +101,18 @@ int main(void)
- 		goto _exit;
- 	}
+-	if (!cpu_class_is_omap2() ||
+-		(omap_type() != OMAP2_DEVICE_TYPE_SEC &&
+-			omap_type() != OMAP2_DEVICE_TYPE_EMU)) {
+-		pr_err("Unsupported cpu\n");
+-		return -ENODEV;
+-	}
+-
+ 	return platform_driver_register(&omap_sham_driver);
+ }
  
-+	snd_pcm_hw_params_alloca(&hwparams_p);
-+	/* get the current hwparams */
-+	err = snd_pcm_hw_params_current(handle_p, hwparams_p);
-+	if (err < 0) {
-+		printf("Unable to determine current hwparams_p: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+	if (snd_pcm_hw_params_supports_audio_wallclock_ts(hwparams_p))
-+		printf("Playback relies on audio wallclock timestamps\n");
-+	else
-+		printf("Playback relies on audio sample counter timestamps\n");
-+
- 	snd_pcm_sw_params_alloca(&swparams_p);
- 	/* get the current swparams */
- 	err = snd_pcm_sw_params_current(handle_p, swparams_p);
-@@ -131,6 +150,18 @@ int main(void)
- 		goto _exit;
- 	}
+diff --git a/drivers/dma/omap-dma.c b/drivers/dma/omap-dma.c
+index 0b4fa50..56d9253 100644
+--- a/drivers/dma/omap-dma.c
++++ b/drivers/dma/omap-dma.c
+@@ -19,9 +19,14 @@
  
-+	snd_pcm_hw_params_alloca(&hwparams_c);
-+	/* get the current hwparams */
-+	err = snd_pcm_hw_params_current(handle_c, hwparams_c);
-+	if (err < 0) {
-+		printf("Unable to determine current hwparams_c: %s\n", snd_strerror(err));
-+		goto _exit;
-+	}
-+	if (snd_pcm_hw_params_supports_audio_wallclock_ts(hwparams_c))
-+		printf("Capture relies on audio wallclock timestamps\n");
-+	else
-+		printf("Capture relies on audio sample counter timestamps\n");
-+
- 	snd_pcm_sw_params_alloca(&swparams_c);
- 	/* get the current swparams */
- 	err = snd_pcm_sw_params_current(handle_c, swparams_c);
-@@ -202,26 +233,43 @@ int main(void)
- 		frame_count_p += frames;
+ #include "virt-dma.h"
  
- #if defined(TRACK_PLAYBACK)
--		gettimestamp(handle_p, &tstamp_p, &trigger_tstamp_p, &avail_p, &delay_p);
-+		gettimestamp(handle_p, &tstamp_p, &trigger_tstamp_p, &audio_tstamp_p, &avail_p, &delay_p);
+-#include <plat/cpu.h>
+ #include <plat-omap/dma-omap.h>
  
-+#if defined(TRACK_SAMPLE_COUNTS)
- 		curr_count_p = frame_count_p - delay_p; /* written minus queued */
- 
--		printf("playback: systime: %lli nsec, sample time %lli nsec \tsystime delta %lli \n",
--			timediff(tstamp_p,trigger_tstamp_p),
--			(long long)round(((float)curr_count_p * 1000000000.0 / 48000.0)),
--		       timediff(tstamp_p, trigger_tstamp_p) - (long long)round((double)curr_count_p * 1000000000.0 / 48000.0)
-+		printf("playback: curr_count %lli driver count %lli, delta %lli\n",
-+		       (long long)curr_count_p * 1000000000LL / 48000 ,
-+		       timestamp2ns(audio_tstamp_p),
-+		       (long long)curr_count_p * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_p)
-+		       );
++#ifdef CONFIG_ARCH_OMAP2PLUS
++#define dma_omap2plus()	1
++#else
++#define dma_omap2plus()	0
 +#endif
 +
-+		printf("playback: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
-+		       timediff(tstamp_p, trigger_tstamp_p),
-+		       timestamp2ns(audio_tstamp_p),
-+		       timediff(tstamp_p, trigger_tstamp_p) - timestamp2ns(audio_tstamp_p)
- 		       );
- #endif
+ struct omap_dmadev {
+ 	struct dma_device ddev;
+ 	spinlock_t lock;
+@@ -438,7 +443,7 @@ static struct dma_async_tx_descriptor *omap_dma_prep_dma_cyclic(
+ 		omap_disable_dma_irq(c->dma_ch, OMAP_DMA_BLOCK_IRQ);
+ 	}
  
- #if defined(TRACK_CAPTURE)
--		gettimestamp(handle_c, &tstamp_c, &trigger_tstamp_c, &avail_c, &delay_c);
-+		gettimestamp(handle_c, &tstamp_c, &trigger_tstamp_c, &audio_tstamp_c, &avail_c, &delay_c);
+-	if (!cpu_class_is_omap1()) {
++	if (dma_omap2plus()) {
+ 		omap_set_dma_src_burst_mode(c->dma_ch, OMAP_DMA_DATA_BURST_16);
+ 		omap_set_dma_dest_burst_mode(c->dma_ch, OMAP_DMA_DATA_BURST_16);
+ 	}
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index 85b164e..24df035 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -40,7 +40,6 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_data/mmc-omap.h>
+ #include <mach/hardware.h>
+-#include <plat/cpu.h>
  
-+#if defined(TRACK_SAMPLE_COUNTS)
- 		curr_count_c = frame_count_c + delay_c; /* read plus queued */
+ /* OMAP HSMMC Host Controller Registers */
+ #define OMAP_HSMMC_SYSSTATUS	0x0014
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 340874e..52977aa 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -32,9 +32,14 @@
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/soc.h>
  
--		printf("\t capture: systime: %lli nsec, sample time %lli nsec \tsystime delta %lli \n",
--			timediff(tstamp_c,trigger_tstamp_c),
--			(long long)round(((float)curr_count_c * 1000000000.0 / 48000.0)),
--		       timediff(tstamp_c, trigger_tstamp_c) - (long long)round((double)curr_count_c * 1000000000.0 / 48000.0)
-+
-+		printf("capture: curr_count %lli driver count %lli, delta %lli\n",
-+		       (long long)curr_count_c * 1000000000LL / 48000 ,
-+		       timestamp2ns(audio_tstamp_c),
-+		       (long long)curr_count_c * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_c)
-+		       );
+-#include <plat/cpu.h>
+ #include "omap-pcm.h"
+ 
++#ifdef CONFIG_ARCH_OMAP1
++#define pcm_omap1510()	cpu_is_omap1510()
++#else
++#define pcm_omap1510()	0
 +#endif
 +
-+		printf("\t capture: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
-+		       timediff(tstamp_c, trigger_tstamp_c),
-+		       timestamp2ns(audio_tstamp_c),
-+		       timediff(tstamp_c, trigger_tstamp_c) - timestamp2ns(audio_tstamp_c)
- 		       );
- #endif
+ static const struct snd_pcm_hardware omap_pcm_hardware = {
+ 	.info			= SNDRV_PCM_INFO_MMAP |
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+@@ -159,7 +164,7 @@ static snd_pcm_uframes_t omap_pcm_pointer(struct snd_pcm_substream *substream)
+ {
+ 	snd_pcm_uframes_t offset;
  
--- 
-1.7.9.5
+-	if (cpu_is_omap1510())
++	if (pcm_omap1510())
+ 		offset = snd_dmaengine_pcm_pointer_no_residue(substream);
+ 	else
+ 		offset = snd_dmaengine_pcm_pointer(substream);
