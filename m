@@ -1,69 +1,83 @@
-From: Daniel J Blueman <daniel@quora.org>
-Subject: Re: [3.6-rc7] switcheroo race with Intel HDA...
-Date: Tue, 9 Oct 2012 19:23:56 +0800
-Message-ID: <CAMVG2svG+SNY7B=SiCL9taRGhdZtGKZ6javtpRBPUdvB825BEg@mail.gmail.com>
-References: <CAMVG2st1-3kz-KRrm-zXZOGw8=QnyYbB3n5e8Z36xAbmD4b5RQ@mail.gmail.com>
-	<s5hvceli0ht.wl%tiwai@suse.de>
-	<CAMVG2ss7hmJAEt-vEsNBmTVDWMYCPyPo0UC34DKDBnr7t5gn8g@mail.gmail.com>
-	<s5htxu4ezc7.wl%tiwai@suse.de>
-	<s5hr4p8ez6u.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2] ALSA: ASoC: McASP: add support for 24
+ bit samples
+Date: Tue, 09 Oct 2012 14:21:48 +0200
+Message-ID: <507416DC.6030207@ladisch.de>
+References: <A551BDF323A45B48ACE6A404AA16A1C412786E53@TOP-EX01.TOPIC.LOCAL>
+ <5073F2CD.9010407@gmail.com>
+ <20121009102331.GB15207@opensource.wolfsonmicro.com>
+ <507403DB.5050003@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr4p8ez6u.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dave Airlie <airlied@redhat.com>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id BC16C261601
+ for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 14:17:44 +0200 (CEST)
+In-Reply-To: <507403DB.5050003@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 9 October 2012 18:07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 09 Oct 2012 12:04:08 +0200,
-> Takashi Iwai wrote:
+Daniel Mack wrote:
+> On 09.10.2012 12:24, Mark Brown wrote:
+>>> On 09.10.2012 11:41, Mike Looijmans wrote:
+>>>> Sorry for the lack of quoting, but I onle get the digest.
 >>
->> At Tue, 9 Oct 2012 00:34:09 +0800,
->> Daniel J Blueman wrote:
->> >
->> > On 8 October 2012 20:58, Takashi Iwai <tiwai@suse.de> wrote:
->> > > At Tue, 25 Sep 2012 13:20:05 +0800,
->> > > Daniel J Blueman wrote:
->> > >> On my Macbook with a discrete Nvidia GPU, there is a race between
->> > >> selecting the integrated GPU and putting the discrete GPU into D3 [1],
->> > >> reliably causing a kernel oops [2].
->> > >>
->> > >> Introducing a delay of ~1s between the calls prevents this. When the
->> > >> second 'OFF' write path executes, it looks like struct azx at
->> > >> card->private_data hasn't yet been allocated yet [3], so there is
->> > >> likely some locking missing.
->> > >
->> > > It's rather pci_get_drvdata() returning NULL (i.e. card is NULL, thus
->> > > card->private_data causes Oops).  Could you check the patch like below
->> > > and see whether you get a kernel warning (but no Oops) or the problem
->> > > gets fixed by shifting the assignment of pci drvdata?
->> > [...]
->> >
->> > Good patching. Calling pci_set_drvdata later prevents the oops in HDA,
->> > though we see unexpected 0x0 responses in the response ring buffer
->> > [1], which we don't see when there's a >~1.5s delay between IGD and
->> > OFF.
+>>>> These are wrong:
 >>
->> If the previous patch fixed, it means that the switching occurred
->> during the device was being probed.  Maybe a better approach to
->> register the VGA switcheroo after the proper initialization.
+>>>> +       case SNDRV_PCM_FORMAT_U24_LE:
+>>>> +       case SNDRV_PCM_FORMAT_S24_LE:
 >>
->> The patch below is a revised one.  Please give it a try.
+>>>> These pack a 24-bit sample value in a 32-bit word. The codec will
+>>>> send 32 bits to the McASP, and you should transfer 32 bits to the
+>>>> user, not just 24. Hence, SNDRV_PCM_FORMAT_S24_LE must be treated
+>>>> just like SNDRV_PCM_FORMAT_S32_LE.
+>>
+>> The above explanation isn't quite right.  For 24 bit the CODEC should be
+>> working with 24 bits on the wire (though obviously extra BCLKs are
+>> allowed) and the AP should be working with 32 bit words in memory.  The
+>> issue here is probably that you're working with real 24 bit data in RAM
+>> too.
 >
-> Also, it's not clear which card spews the spurious response.
-> Apply the patch below in addition.
-[...]
+> Hmm, I don't understand. I thought S24_3LE exists to denote a 3-byte
+> representation
 
-hda-intel: 0000:01:00.1: spurious response 0x0:0x0, last cmd=0x1f0004
-$ lspci -s :1:0.1
-01:00.1 Audio device: NVIDIA Corporation Device 0e1b (rev ff)
+Yes.
 
-It's the NVIDIA device which presumably hasn't completed it's
-transition to D3 at the time the OFF is executed.
+The three possibilities to store little-endian signed 24-bit samples in
+memory are (where L=LSB, M=MSB):
 
-Thanks,
-  Daniel
--- 
-Daniel J Blueman
+  0padding LLLLLLLL MMMMMMMM HHHHHHHH  S32_LE
+  LLLLLLLL MMMMMMMM HHHHHHHH 0padding  S24_LE
+  LLLLLLLL MMMMMMMM HHHHHHHH           S24_3LE
+
+The first two require the DMA controller to transfer four bytes, the
+last one, three bytes.
+
+All three use (at least) 24 bits on the wire.
+
+Mark is right, unless your DMA controller actually happens to support
+three-byte samples, with all the alignment problems that entails.
+S24_3LE was introduced for USB controllers that are too dumb to
+differentiate between memory and on-the-wire formats; nobody else
+should want to use it.  (But if the hardware supports it, you might
+as well allow it, if you implement it correctly.)
+
+> Hence Mike would be right that S24_LE has to use a 4-byte dma transfer
+> size, no?
+
+Yes.
+
+
+Regards,
+Clemens
