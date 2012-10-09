@@ -1,221 +1,73 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC PATCH] ALSA: hda - Implement a poll loop for
-	jacks as a module parameter
-Date: Tue,  9 Oct 2012 15:19:44 +0200
-Message-ID: <1349788784-11700-1-git-send-email-david.henningsson@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E4D7E26164C
- for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 15:15:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+From: David Howells <dhowells@redhat.com>
+Subject: [GIT PULL] Disintegrate UAPI for sound
+Date: Tue, 09 Oct 2012 14:30:42 +0100
+Message-ID: <30751.1349789442@warthog.procyon.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz
+Cc: dhowells@redhat.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that we have a generic unsol mechanism, we can implement a generic
-poll loop, which can be used for debugging, or if a codec's unsol
-mechanism is broken.
+Can you merge the following branch into the sound tree please.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+This is to complete part of the Userspace API (UAPI) disintegration for which
+the preparatory patches were pulled recently.  After these patches, userspace
+headers will be segregated into:
+
+	include/uapi/linux/.../foo.h
+
+for the userspace interface stuff, and:
+
+	include/linux/.../foo.h
+
+for the strictly kernel internal stuff.
+
 ---
+The following changes since commit 9e2d8656f5e8aa214e66b462680cf86b210b74a8:
 
-I'm also considering activating it by default if we go into single_cmd mode
-due to codec not responding. What do you think?
+  Merge branch 'akpm' (Andrew's patch-bomb) (2012-10-09 16:23:15 +0900)
 
- sound/pci/hda/hda_codec.c |   32 ++++++++++++++++++++++++++++----
- sound/pci/hda/hda_codec.h |    2 ++
- sound/pci/hda/hda_intel.c |    5 +++++
- sound/pci/hda/hda_jack.c  |   22 ++++++++++++++++++++++
- sound/pci/hda/hda_jack.h  |    2 ++
- 5 files changed, 59 insertions(+), 4 deletions(-)
+are available in the git repository at:
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index c0ab72c..626e45b 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1135,6 +1135,19 @@ static void restore_shutup_pins(struct hda_codec *codec)
- }
- #endif
- 
-+static void hda_jackpoll_work(struct work_struct *work)
-+{
-+	struct hda_codec *codec =
-+		container_of(work, struct hda_codec, jackpoll_work.work);
-+	if (!codec->jackpoll_interval)
-+		return;
-+
-+	snd_hda_jack_set_dirty_all(codec);
-+	snd_hda_jack_poll_all(codec);
-+	queue_delayed_work(codec->bus->workq, &codec->jackpoll_work,
-+			   codec->jackpoll_interval);
-+}
-+
- static void init_hda_cache(struct hda_cache_rec *cache,
- 			   unsigned int record_size);
- static void free_hda_cache(struct hda_cache_rec *cache);
-@@ -1190,6 +1203,7 @@ static void snd_hda_codec_free(struct hda_codec *codec)
- {
- 	if (!codec)
- 		return;
-+	cancel_delayed_work_sync(&codec->jackpoll_work);
- 	snd_hda_jack_tbl_clear(codec);
- 	restore_init_pincfgs(codec);
- #ifdef CONFIG_PM
-@@ -1273,6 +1287,7 @@ int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
- 	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
- 	snd_array_init(&codec->conn_lists, sizeof(hda_nid_t), 64);
- 	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
-+	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
- 
- #ifdef CONFIG_PM
- 	spin_lock_init(&codec->power_lock);
-@@ -2349,7 +2364,7 @@ int snd_hda_codec_reset(struct hda_codec *codec)
- 		return -EBUSY;
- 
- 	/* OK, let it free */
--
-+	cancel_delayed_work_sync(&codec->jackpoll_work);
- #ifdef CONFIG_PM
- 	cancel_delayed_work_sync(&codec->power_work);
- 	codec->power_on = 0;
-@@ -3646,7 +3661,6 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 	restore_pincfgs(codec); /* restore all current pin configs */
- 	restore_shutup_pins(codec);
- 	hda_exec_init_verbs(codec);
--	snd_hda_jack_set_dirty_all(codec);
- 	if (codec->patch_ops.resume)
- 		codec->patch_ops.resume(codec);
- 	else {
-@@ -3655,7 +3669,13 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 		snd_hda_codec_resume_amp(codec);
- 		snd_hda_codec_resume_cache(codec);
- 	}
--	snd_hda_jack_report_sync(codec);
-+
-+	if (codec->jackpoll_interval)
-+		hda_jackpoll_work(&codec->jackpoll_work.work);
-+	else {
-+		snd_hda_jack_set_dirty_all(codec);
-+		snd_hda_jack_report_sync(codec);
-+	}
- 	snd_hda_power_down(codec); /* flag down before returning */
- }
- #endif /* CONFIG_PM */
-@@ -3737,7 +3757,10 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
- 	if (err < 0)
- 		return err;
- 
--	snd_hda_jack_report_sync(codec); /* call at the last init point */
-+	if (codec->jackpoll_interval)
-+		hda_jackpoll_work(&codec->jackpoll_work.work);
-+	else
-+		snd_hda_jack_report_sync(codec); /* call at the last init point */
- 	return 0;
- }
- 
-@@ -5128,6 +5151,7 @@ int snd_hda_suspend(struct hda_bus *bus)
- 	struct hda_codec *codec;
- 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
-+		cancel_delayed_work_sync(&codec->jackpoll_work);
- 		if (hda_codec_is_power_on(codec))
- 			hda_call_codec_suspend(codec, false);
- 	}
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 507fe8a..10a03b0 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -884,6 +884,8 @@ struct hda_codec {
- 
- 	/* jack detection */
- 	struct snd_array jacktbl;
-+	unsigned long jackpoll_interval; /* In jiffies. Zero means no poll, rely on unsol events */
-+	struct delayed_work jackpoll_work;
- 
- #ifdef CONFIG_SND_HDA_INPUT_JACK
- 	/* jack detection */
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index f09ff6c..b4f1ab8 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -68,6 +68,7 @@ static int position_fix[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = -1};
- static int bdl_pos_adj[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = -1};
- static int probe_mask[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = -1};
- static int probe_only[SNDRV_CARDS];
-+static int jackpoll_ms[SNDRV_CARDS];
- static bool single_cmd;
- static int enable_msi = -1;
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
-@@ -95,6 +96,8 @@ module_param_array(probe_mask, int, NULL, 0444);
- MODULE_PARM_DESC(probe_mask, "Bitmask to probe codecs (default = -1).");
- module_param_array(probe_only, int, NULL, 0444);
- MODULE_PARM_DESC(probe_only, "Only probing and no codec initialization.");
-+module_param_array(jackpoll_ms, int, NULL, 0444);
-+MODULE_PARM_DESC(jackpoll_ms, "Ms between polling for jack events (default = 0, using unsol events only)");
- module_param(single_cmd, bool, 0444);
- MODULE_PARM_DESC(single_cmd, "Use single command to communicate with codecs "
- 		 "(for debugging only).");
-@@ -1666,6 +1669,8 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
- 			err = snd_hda_codec_new(chip->bus, c, &codec);
- 			if (err < 0)
- 				continue;
-+			codec->jackpoll_interval =
-+				msecs_to_jiffies(jackpoll_ms[chip->dev_index]);
- 			codec->beep_mode = chip->beep_mode;
- 			codecs++;
- 		}
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 5c690cb..07d5288 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -439,3 +439,25 @@ void snd_hda_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- }
- EXPORT_SYMBOL_HDA(snd_hda_jack_unsol_event);
- 
-+void snd_hda_jack_poll_all(struct hda_codec *codec)
-+{
-+	struct hda_jack_tbl *jack = codec->jacktbl.list;
-+	int i, changes = 0;
-+
-+	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
-+		unsigned int old_sense;
-+		if (!jack->nid || !jack->jack_dirty || jack->phantom_jack)
-+			continue;
-+		old_sense = get_jack_plug_state(jack->pin_sense);
-+		jack_detect_update(codec, jack);
-+		if (old_sense == get_jack_plug_state(jack->pin_sense))
-+			continue;
-+		changes = 1;
-+		if (jack->callback)
-+			jack->callback(codec, jack);
-+	}
-+	if (changes)
-+		snd_hda_jack_report_sync(codec);
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_jack_poll_all);
-+
-diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index af8dd47..4487785 100644
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -84,4 +84,6 @@ void snd_hda_jack_report_sync(struct hda_codec *codec);
- 
- void snd_hda_jack_unsol_event(struct hda_codec *codec, unsigned int res);
- 
-+void snd_hda_jack_poll_all(struct hda_codec *codec);
-+
- #endif /* __SOUND_HDA_JACK_H */
--- 
-1.7.9.5
+
+  git://git.infradead.org/users/dhowells/linux-headers.git tags/disintegrate-sound-20121009
+
+for you to fetch changes up to 674e95ca446369e9ca40e4e92b214a616a52bcd6:
+
+  UAPI: (Scripted) Disintegrate include/sound (2012-10-09 09:49:13 +0100)
+
+----------------------------------------------------------------
+UAPI Disintegration 2012-10-09
+
+----------------------------------------------------------------
+David Howells (1):
+      UAPI: (Scripted) Disintegrate include/sound
+
+ include/sound/Kbuild                        |  10 -
+ include/sound/asequencer.h                  | 594 +----------------
+ include/sound/asound.h                      | 935 +--------------------------
+ include/sound/emu10k1.h                     | 355 +----------
+ include/sound/sb16_csp.h                    | 104 +--
+ include/uapi/sound/Kbuild                   |  10 +
+ include/uapi/sound/asequencer.h             | 614 ++++++++++++++++++
+ include/uapi/sound/asound.h                 | 957 ++++++++++++++++++++++++++++
+ include/{ => uapi}/sound/asound_fm.h        |   0
+ include/{ => uapi}/sound/compress_offload.h |   0
+ include/{ => uapi}/sound/compress_params.h  |   0
+ include/uapi/sound/emu10k1.h                | 373 +++++++++++
+ include/{ => uapi}/sound/hdsp.h             |   0
+ include/{ => uapi}/sound/hdspm.h            |   0
+ include/uapi/sound/sb16_csp.h               | 122 ++++
+ include/{ => uapi}/sound/sfnt_info.h        |   0
+ 16 files changed, 2084 insertions(+), 1990 deletions(-)
+ create mode 100644 include/uapi/sound/asequencer.h
+ create mode 100644 include/uapi/sound/asound.h
+ rename include/{ => uapi}/sound/asound_fm.h (100%)
+ rename include/{ => uapi}/sound/compress_offload.h (100%)
+ rename include/{ => uapi}/sound/compress_params.h (100%)
+ create mode 100644 include/uapi/sound/emu10k1.h
+ rename include/{ => uapi}/sound/hdsp.h (100%)
+ rename include/{ => uapi}/sound/hdspm.h (100%)
+ create mode 100644 include/uapi/sound/sb16_csp.h
+ rename include/{ => uapi}/sound/sfnt_info.h (100%)
+.
