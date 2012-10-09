@@ -1,21 +1,22 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v2] ALSA: ASoC: McASP: add support for 24
- bit samples
-Date: Tue, 9 Oct 2012 15:06:53 +0200
-Message-ID: <5074216D.4030306@topic.nl>
-References: <A551BDF323A45B48ACE6A404AA16A1C412786E53@TOP-EX01.TOPIC.LOCAL>
- <5073F2CD.9010407@gmail.com>
- <20121009102331.GB15207@opensource.wolfsonmicro.com>
- <507403DB.5050003@gmail.com> <507416DC.6030207@ladisch.de>
+From: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: dmaengine: Correct Makefile when
+ sound is built as module
+Date: Tue, 09 Oct 2012 15:16:15 +0200
+Message-ID: <5074239F.9050302@ti.com>
+References: <1349083766-17076-1-git-send-email-peter.ujfalusi@ti.com>
+ <20121009065836.GT8237@opensource.wolfsonmicro.com> <5073E93F.7090507@ti.com>
+ <20121009090857.GD8237@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 46972261616
- for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 15:02:49 +0200 (CEST)
-In-Reply-To: <507416DC.6030207@ladisch.de>
+Received: from na3sys009aog128.obsmtp.com (na3sys009aog128.obsmtp.com
+ [74.125.149.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16102261669
+ for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 15:10:41 +0200 (CEST)
+Received: by mail-ob0-f179.google.com with SMTP id lz20so4498983obb.38
+ for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2012 06:14:47 -0700 (PDT)
+In-Reply-To: <20121009090857.GD8237@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +26,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMTAvMDkvMjAxMiAwMjoyMSBQTSwgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+IFRoZSB0
-aHJlZSBwb3NzaWJpbGl0aWVzIHRvIHN0b3JlIGxpdHRsZS1lbmRpYW4gc2lnbmVkIDI0LWJpdCBz
-YW1wbGVzIGluCj4gbWVtb3J5IGFyZSAod2hlcmUgTD1MU0IsIE09TVNCKToKPgo+ICAgIDBwYWRk
-aW5nIExMTExMTExMIE1NTU1NTU1NIEhISEhISEhIICBTMzJfTEUKPiAgICBMTExMTExMTCBNTU1N
-TU1NTSBISEhISEhISCAwcGFkZGluZyAgUzI0X0xFCj4gICAgTExMTExMTEwgTU1NTU1NTU0gSEhI
-SEhISEggICAgICAgICAgIFMyNF8zTEUKPgo+IFRoZSBmaXJzdCB0d28gcmVxdWlyZSB0aGUgRE1B
-IGNvbnRyb2xsZXIgdG8gdHJhbnNmZXIgZm91ciBieXRlcywgdGhlCj4gbGFzdCBvbmUsIHRocmVl
-IGJ5dGVzLgo+Cj4gQWxsIHRocmVlIHVzZSAoYXQgbGVhc3QpIDI0IGJpdHMgb24gdGhlIHdpcmUu
-Ck9oLCBJIGFsd2F5cyBhc3N1bWVkIHRoYXQgUzMyX0xFIHdhcyBqdXN0IGEgMzItYml0IGZvcm1h
-dC4gVGhhdCdzIHdoYXQgCkkndmUgYmVlbiBhc3N1bWluZyBzbyBmYXIsIGFuZCB0aGUgcmVzdWx0
-aW5nIGRhdGEgZmlsZXMgZnJvbSAiYXJlY29yZCAtZiAKe1MzMl9MRXxTMjRfTEV8UzI0XzNMRX0i
-IHdlcmUgcGVyZmVjdGx5IHVuZGVyc3Rvb2QgYnkgYXVkaW8gcHJvZ3JhbXMuCkJhc2ljYWxseSwg
-d2hhdCB5b3UncmUgY2xhaW1pbmcgaGVyZSBpcyB0aGF0IFMyNF9MRSBtdXN0IHN0b3JlIHRoZSBh
-dWRpbyAKZGF0YSBpbiB0aGUgbG93ZXIgMyBieXRlcz8gQmVjYXVzZSBpbiBteSBleHBlcmltZW50
-cyBzbyBmYXIgSSBjb25jbHVkZWQgCkkgaGFkIHRvIGZpbGwgdGhlIGhpZ2ggb3JkZXIgYml0cyBm
-b3IgYm90aCBTMjRfTEUgYW5kIFMzMl9MRSBmb3JtYXRzLgoKPiA+SGVuY2UgTWlrZSB3b3VsZCBi
-ZSByaWdodCB0aGF0IFMyNF9MRSBoYXMgdG8gdXNlIGEgNC1ieXRlIGRtYSB0cmFuc2Zlcgo+ID5z
-aXplLCBubz8KPiBZZXMuCkl0J3Mgbm90IHN0cmljdGx5IHdoYXQgSSB3cm90ZSwgYnV0IGl0J3Mg
-d2hhdCBJIG1lYW50LCB5ZXMuCgpOb3cgd2UncmUgb24gdGhlIHRvcGljIG9mIERNQSBjb250cm9s
-bGVyczoKV2hlbiByZWFkaW5nIG11bHRpcGxlIGNoYW5uZWxzIChlLmcuIDIgb3IgbW9yZSBjb2Rl
-Y3Mgb24gdGhlIHNlcmlhbGl6ZXJzIAplaXRoZXIgdXNpbmcgVERNIG9yIG11bHRpcGxlIEFYUiBw
-aW5zKSwgdGhlIERNQSBjb250cm9sbGVyIG11c3QgYWx3YXlzIApyZWFkIDMyIGJpdHMgcGVyIHNh
-bXBsZSBmcm9tIHRoZSBzZXJpYWxpemVyLCByZWdhcmRsZXNzIG9mIHRoZSBzYW1wbGUgCmZvcm1h
-dCB1c2VkLgpDdXJyZW50bHkgSSBpbXBsZW1lbnQgdGhpcyBieSBlbmZvcmNpbmcgUzMyX0xFIG9y
-IFMyNF9MRSBmb3JtYXRzLCBhbmQgCmRlbnlpbmcgYWxsIG90aGVycyB3aGVuIG11bHRpcGxlIHNl
-cmlhbGl6ZXJzIGFyZSBpbnZvbHZlZC4KV291bGQgaXQgYmUgcG9zc2libGUgdG8gaW5zdHJ1Y3Qg
-dGhlIGRhdmluY2kncyBETUEgY29udHJvbGxlciB0byByZWFkIDMyIApiaXRzIGJ1dCB3cml0ZSBv
-bmx5IDgsIDE2IG9yIDI0IGJpdHMgdG8gbWVtb3J5IGZvciBlYWNoIHNhbXBsZT8KCgpNZXQgdnJp
-ZW5kZWxpamtlIGdyb2V0IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29pam1hbnMKClRPUElDIEVt
-YmVkZGVkIFN5c3RlbXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4MyBLSCBCZXN0ClBvc3Ri
-dXMgNDQwLCBOTC01NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpIOKAkyAoMCk0OTkgLSAzMy42
-OS43OQpUZWxlZmF4OiAoKzMxKSAtICgwKTQ5OSAtIDMzLjY5LjcwCkUtbWFpbDogbWlrZS5sb29p
-am1hbnNAdG9waWMubmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpEaXQgZS1tYWlsIGJlcmljaHQg
-ZW4gZGUgZXZlbnR1ZWVsIGRhYXJiaWogYmVob3JlbmRlIGJpamxhZ2VuIHppam4gdWl0c2x1aXRl
-bmQgYmVzdGVtZCB2b29yIGRlIGdlYWRyZXNzZWVyZGUsIHpvYWxzIGRpZSBibGlqa3QgdWl0IGhl
-dCBlLW1haWwgYmVyaWNodCBlbi9vZiBkZSBiaWpsYWdlbi4gRXIga3VubmVuIGdlZ2V2ZW5zIG1l
-dCBiZXRyZWtraW5nIHRvdCBlZW4gZGVyZGUgaW5zdGFhbi4gSW5kaWVuIHUgYWxzIG5pZXQtZ2Vh
-ZHJlc3NlZXJkZSBkaXQgYmVyaWNodCBlbiBkZSBiaWpsYWdlbiBvbnR2YW5ndCwgdGVyd2lqbCB1
-IG5pZXQgYmV2b2VnZCBvZiBnZW1hY2h0aWdkIGJlbnQgb20gZGl0IGJlcmljaHQgbmFtZW5zIGRl
-IGdlYWRyZXNzZWVyZGUgdGUgb250dmFuZ2VuLCB3b3JkdCB1IHZlcnpvY2h0IGRlIGFmemVuZGVy
-IGhpZXJvdmVyIGRpcmVjdCB0ZSBpbmZvcm1lcmVuIGVuIGhldCBlLW1haWwgYmVyaWNodCBtZXQg
-ZGUgYmlqbGFnZW4gdGUgdmVybmlldGlnZW4uIEllZGVyIGdlYnJ1aWsgdmFuIGRlIGluaG91ZCB2
-YW4gaGV0IGUtbWFpbCBiZXJpY2h0LCB3YWFyb25kZXIgZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlq
-bGFnZW4sIGRvb3IgZWVuIGFuZGVyIGRhbiBkZSBnZWFkcmVzc2VlcmRlIGlzIG9ucmVjaHRtYXRp
-ZyBqZWdlbnMgb25zIGRhbiB3ZWwgZGUgZXZlbnR1ZWVsIGluIGhldCBlLW1haWwgYmVyaWNodCBv
-ZiBkZSBiaWpsYWdlbiB2b29ya29tZW5kZSBhbmRlcmUgcGVyc29uZW4uIFRPUElDIEVtYmVkZGVk
-IFN5c3RlbXMgaXMgbmlldCBhYW5zcHJha2VsaWprIHZvb3IgZW5pZ2VybGVpIHNjaGFkZSB2b29y
-dHZsb2VpZW5kIHVpdCBoZXQgZ2VicnVpayBlbi9vZiBhY2NlcHRhdGllIHZhbiBkaXQgZS1tYWls
-IGJlcmljaHQgb2YgZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4uCgpUaGUgY29udGVudHMg
-b2YgdGhpcyBtZXNzYWdlLCBhcyB3ZWxsIGFzIGFueSBlbmNsb3N1cmVzLCBhcmUgYWRkcmVzc2Vk
-IHBlcnNvbmFsbHkgdG8sIGFuZCB0aHVzIHNvbGVseSBpbnRlbmRlZCBmb3IgdGhlIGFkZHJlc3Nl
-ZS4gVGhleSBtYXkgY29udGFpbiBpbmZvcm1hdGlvbiByZWdhcmRpbmcgYSB0aGlyZCBwYXJ0eS4g
-QSByZWNpcGllbnQgd2hvIGlzIG5laXRoZXIgdGhlIGFkZHJlc3NlZSwgbm9yIGVtcG93ZXJlZCB0
-byByZWNlaXZlIHRoaXMgbWVzc2FnZSBvbiBiZWhhbGYgb2YgdGhlIGFkZHJlc3NlZSwgaXMga2lu
-ZGx5IHJlcXVlc3RlZCB0byBpbW1lZGlhdGVseSBpbmZvcm0gdGhlIHNlbmRlciBvZiByZWNlaXB0
-LCBhbmQgdG8gZGVzdHJveSB0aGUgbWVzc2FnZSBhbmQgdGhlIGVuY2xvc3VyZXMuIEFueSB1c2Ug
-b2YgdGhlIGNvbnRlbnRzIG9mIHRoaXMgbWVzc2FnZSBhbmQvb3IgdGhlIGVuY2xvc3VyZXMgYnkg
-YW55IG90aGVyIHBlcnNvbiB0aGFuIHRoZSBhZGRyZXNzZWUgb3IgcGVyc29uIHdobyBpcyBlbXBv
-d2VyZWQgdG8gcmVjZWl2ZSB0aGlzIG1lc3NhZ2UsIGlzIGlsbGVnYWwgdG93YXJkcyB0aGUgc2Vu
-ZGVyIGFuZC9vciB0aGUgYWZvcmVtZW50aW9uZWQgdGhpcmQgcGFydHkuIFRPUElDIEVtYmVkZGVk
-IFN5c3RlbXMgaXMgbm90ICBsaWFibGUgZm9yIGFueSBkYW1hZ2UgYXMgYSByZXN1bHQgb2YgdGhl
-IHVzZSBhbmQvb3IgYWNjZXB0YW5jZSBvZiB0aGlzIG1lc3NhZ2UgYW5kIGFzIHdlbGwgYXMgYW55
-IGVuY2xvc3VyZXMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On 10/09/2012 11:08 AM, Mark Brown wrote:
+> What makes you believe that this is due to the code not being part of
+> the core module?
+
+the linker tells me.
+Without this patch with mainline kernel from today (I used tegra to see if =
+it
+happens there as well):
+
+make tegra_defconfig
+scripts/config -d CONFIG_MMC # MMC does not compile for tegra
+scripts/config -e CONFIG_SOUND -e CONFIG_SND -e CONFIG_SND_SOC
+
+Fine
+
+scripts/config -e CONFIG_SOUND -e CONFIG_SND -m CONFIG_SND_SOC
+
+sound/built-in.o: In function `dmaengine_pcm_dma_complete':
+/home/ujfalusi/work/kernel/kernel.org-torvalds-linux-2.6/sound/soc/soc-dmae=
+ngine-pcm.c:134:
+undefined reference to `snd_pcm_period_elapsed'
+sound/built-in.o: In function `snd_dmaengine_pcm_open':
+/home/ujfalusi/work/kernel/kernel.org-torvalds-linux-2.6/sound/soc/soc-dmae=
+ngine-pcm.c:285:
+undefined reference to `snd_pcm_hw_constraint_integer'
+make: *** [vmlinux] Error 1
+
+scripts/config -e CONFIG_SOUND -m CONFIG_SND -m CONFIG_SND_SOC
+scripts/config -m CONFIG_SOUND -m CONFIG_SND -m CONFIG_SND_SOC
+
+ERROR: "snd_hwparams_to_dma_slave_config"
+[sound/soc/tegra/snd-soc-tegra-pcm.ko] undefined!
+ERROR: "snd_dmaengine_pcm_pointer" [sound/soc/tegra/snd-soc-tegra-pcm.ko]
+undefined!
+ERROR: "snd_dmaengine_pcm_open" [sound/soc/tegra/snd-soc-tegra-pcm.ko] unde=
+fined!
+ERROR: "snd_dmaengine_pcm_close" [sound/soc/tegra/snd-soc-tegra-pcm.ko] und=
+efined!
+ERROR: "snd_dmaengine_pcm_get_chan" [sound/soc/tegra/snd-soc-tegra-pcm.ko]
+undefined!
+ERROR: "snd_dmaengine_pcm_trigger" [sound/soc/tegra/snd-soc-tegra-pcm.ko]
+undefined!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
+make: *** Waiting for unfinished jobs....
+
+With the patch:
+
+make tegra_defconfig
+scripts/config -d CONFIG_MMC # MMC does not compile for tegra
+scripts/config -e CONFIG_SOUND -e CONFIG_SND -e CONFIG_SND_SOC
+scripts/config -e CONFIG_SOUND -e CONFIG_SND -m CONFIG_SND_SOC
+scripts/config -e CONFIG_SOUND -m CONFIG_SND -m CONFIG_SND_SOC
+scripts/config -m CONFIG_SOUND -m CONFIG_SND -m CONFIG_SND_SOC
+
+is fine.
+
+I guess it was due to the Kconfig/Makefile related to soc-dmaengine:
+
+config SND_SOC_DMAENGINE_PCM
+	bool
+
+snd-soc-dmaengine-pcm-objs :=3D soc-dmaengine-pcm.o
+obj-$(CONFIG_SND_SOC_DMAENGINE_PCM) +=3D snd-soc-dmaengine-pcm.o
+
+My guess is that in this way the soc-dmaengine-pcm.o would want itself to be
+built in to the kernel but since the sound is in modules there is no place =
+to
+link this part of the code.
+If I change the Kconfig from bool to tristate it will build
+snd-soc-dmaengine-pcm.ko but since the soc-dmaengine-pcm.c does not have
+module_init it is not really going to load.
+I might be wrong.
+
+-- =
+
+P=E9ter
