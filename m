@@ -1,27 +1,62 @@
-From: =?UTF-8?B?UMOpdGVyIFVqZmFsdXNp?= <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/2] ARM: OMAP: Trivial driver changes to remove include
- plat/cpu.h
-Date: Tue, 09 Oct 2012 11:03:10 +0200
-Message-ID: <5073E84E.4090408@ti.com>
-References: <20121008173452.10603.53886.stgit@muffinssi> <20121008173557.10603.18539.stgit@muffinssi>
+From: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: dmaengine: Correct Makefile when
+ sound is built as module
+Date: Tue, 09 Oct 2012 11:07:11 +0200
+Message-ID: <5073E93F.7090507@ti.com>
+References: <1349083766-17076-1-git-send-email-peter.ujfalusi@ti.com>
+ <20121009065836.GT8237@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-crypto-owner@vger.kernel.org>
-In-Reply-To: <20121008173557.10603.18539.stgit@muffinssi>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Herbert Xu <herbert@gondor.hengli.com.au>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Deepak Saxena <dsaxena@plexity.net>, Chris Ball <cjb@laptop.org>, Matt Mackall <mpm@selenic.com>, Venkatraman S <svenkatr@ti.com>, "David S. Miller" <davem@davemloft.net>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+ [74.125.149.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7692226262A
+ for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 11:05:44 +0200 (CEST)
+Received: by mail-ob0-f179.google.com with SMTP id lz20so4312626obb.38
+ for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2012 02:05:43 -0700 (PDT)
+In-Reply-To: <20121009065836.GT8237@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/08/2012 07:35 PM, Tony Lindgren wrote:
+On 10/09/2012 08:58 AM, Mark Brown wrote:
+> On Mon, Oct 01, 2012 at 12:29:26PM +0300, Peter Ujfalusi wrote:
+> =
 
-> - omap-dma.c and omap-pcm.c can test the arch locally as
->   omap1 and omap2 cannot be compiled together because of
->   conflicting compiler flags
+>> soc-dmaengine-pcm library need to be part of the snd-soc-core in order to
+>> be able to compile ASoC as modules when dmaengine is enabled on the plat=
+form.
+> =
 
->  sound/soc/omap/omap-pcm.c         |    9 +++++++--
+> I also meant to ask...  what's the actual issue here?
 
-Tony: is this going to be included in 3.7?
+When we build sound as modules for OMAP which has been converted to dmaengi=
+ne:
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+ERROR: "snd_hwparams_to_dma_slave_config" [sound/soc/omap/snd-soc-omap.ko]
+undefined!
+ERROR: "snd_dmaengine_pcm_pointer" [sound/soc/omap/snd-soc-omap.ko] undefin=
+ed!
+ERROR: "snd_dmaengine_pcm_open" [sound/soc/omap/snd-soc-omap.ko] undefined!
+ERROR: "snd_dmaengine_pcm_close" [sound/soc/omap/snd-soc-omap.ko] undefined!
+ERROR: "snd_dmaengine_pcm_get_chan" [sound/soc/omap/snd-soc-omap.ko] undefi=
+ned!
+ERROR: "snd_dmaengine_pcm_trigger" [sound/soc/omap/snd-soc-omap.ko] undefin=
+ed!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
+
+
+-- =
+
+P=E9ter
