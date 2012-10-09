@@ -1,18 +1,18 @@
-From: gsantosh@codeaurora.org
-Subject: Re: customized IOCTL in pcm platform driver.
-Date: Mon, 8 Oct 2012 23:44:40 -0700 (PDT)
-Message-ID: <4d3d244e3c337274675747eee0404a78.squirrel@www.codeaurora.org>
-References: <d0ef8dd36b2e37d9f0f0886758cb5963.squirrel@www.codeaurora.org>
- <s5hipak6td2.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: issue of shdma-base library
+Date: Tue, 9 Oct 2012 15:46:46 +0900
+Message-ID: <20121009064643.GR8237@opensource.wolfsonmicro.com>
+References: <506A7E48.3060701@jinso.co.jp>
+ <Pine.LNX.4.64.1210031414080.26201@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
- [199.106.114.254])
- by alsa0.perex.cz (Postfix) with ESMTP id BCED62615C0
- for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 08:44:41 +0200 (CEST)
-In-Reply-To: <s5hipak6td2.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5366C2615CF
+ for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 08:46:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1210031414080.26201@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, gsantosh@codeaurora.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: Shimoda Yoshihiro <yoshihiro.shimoda.uh@renesas.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Morimoto Kuninori <kuninori.morimoto.gx@renesas.com>, "Do Q.Thang" <dq-thang@jinso.co.jp>
 List-Id: alsa-devel@alsa-project.org
 
-> At Mon, 8 Oct 2012 23:30:09 -0700 (PDT),
-> gsantosh@codeaurora.org wrote:
->>
->> Hi All,
->>
->> will ALSA framework provide any customized IOCTL functionality in PCM
->> platform driver.
->
-> No.
->
->> in my  system there is a requirement to get some information from DSP to
->> user space and I am thinking to add IOCTL's, is there any method to
->> accommodate or how we can address this issue?
->
-> You can use hwdep device for any extra methods.
+On Wed, Oct 03, 2012 at 02:33:50PM +0200, Guennadi Liakhovetski wrote:
+> Subject: [PATCH] ASoC: fsi: don't reschedule DMA from an atomic context
+> 
+> shdma doesn't support transfer re-scheduling or triggering from callbacks 
+> or from atomic context. The fsi driver issues DMA transfers from a tasklet 
+> context, which is a bug. To fix it convert tasklet to a work.
 
-We need to tie this ioctl with the on going DSP session which will be
-difficult When used with hwdep interface.
-
->
->
-> Takashi
->
+Applied, thanks.
