@@ -1,18 +1,15 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 1/2] ARM: OMAP: Trivial driver changes to
- remove include plat/cpu.h
-Date: Tue, 9 Oct 2012 09:20:03 +0300
-Message-ID: <20121009092003.3f3d271a035595ef8fbb1e76@bitmer.com>
-References: <20121008173452.10603.53886.stgit@muffinssi>
- <20121008173557.10603.18539.stgit@muffinssi>
+From: gsantosh@codeaurora.org
+Subject: customized IOCTL in pcm platform driver.
+Date: Mon, 8 Oct 2012 23:30:09 -0700 (PDT)
+Message-ID: <d0ef8dd36b2e37d9f0f0886758cb5963.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id EB9F82615C0
- for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 08:20:02 +0200 (CEST)
-In-Reply-To: <20121008173557.10603.18539.stgit@muffinssi>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+ [199.106.114.254])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46E0E2615C0
+ for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2012 08:30:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Deepak Saxena <dsaxena@plexity.net>, Herbert Xu <herbert@gondor.apana.org.au>, Venkatraman S <svenkatr@ti.com>, Vinod Koul <vinod.koul@intel.com>, Matt Mackall <mpm@selenic.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Chris Ball <cjb@laptop.org>, Dan Williams <djbw@fb.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 08 Oct 2012 10:35:57 -0700
-Tony Lindgren <tony@atomide.com> wrote:
+Hi All,
 
-> - omap-dma.c and omap-pcm.c can test the arch locally as
->   omap1 and omap2 cannot be compiled together because of
->   conflicting compiler flags
-...
->  sound/soc/omap/omap-pcm.c         |    9 +++++++--
+will ALSA framework provide any customized IOCTL functionality in PCM
+platform driver.
 
-Build tested above for omap1 and omap2+.
+in my  system there is a requirement to get some information from DSP to
+user space and I am thinking to add IOCTL's, is there any method to
+accommodate or how we can address this issue?
 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Regards,
+Santosh
