@@ -1,91 +1,96 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/2] Convert davinci ASoC to genalloc SRAM
-Date: Wed, 10 Oct 2012 12:02:47 +0200
-Message-ID: <507547C7.4020701@gmail.com>
-References: <1349345745-10584-1-git-send-email-mporter@ti.com> <F3DBB1B3EF102E4994C89758CFCA32412852CA@DBDE01.ent.ti.com> <50751E0F.3010906@gmail.com> <F3DBB1B3EF102E4994C89758CFCA3241285400@DBDE01.ent.ti.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [alsa-devel] [PATCH] ASoC: codecs: da9055: Minor improvements
+Date: Wed, 10 Oct 2012 17:24:53 +0530
+Message-ID: <1349870093.13275.16.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <F3DBB1B3EF102E4994C89758CFCA3241285400@DBDE01.ent.ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Kumar, Anil" <anilkumar.v@ti.com>
-Cc: "Porter, Matt" <mporter@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10.10.2012 11:59, Kumar, Anil wrote:
-> On Wed, Oct 10, 2012 at 12:34:47, Daniel Mack wrote:
->> On 10.10.2012 08:54, Kumar, Anil wrote:
->>> On Thu, Oct 04, 2012 at 15:45:43, Porter, Matt wrote:
->>>> This series converts davinci ASoC to use genalloc and enables
->>>> that support on DA850. It applies on top of the uio_pruss/genalloc
->>>> series [1] which allows DaVinci to provide a gen_pool via pdata
->>>> for driver use.
->>>>
->>>> I've tested this on the AM180x EVM. Note that prior to this,
->>>> the SRAM paths in the driver were completely unused. I've only
->>>> enabled ping-pong buffering on the platform I can test as it's
->>>> best to allow those with DM644x and similar platforms to set the
->>>> playback/capture sram size to something that's known to work
->>>> for them.
->>>>
->>>> [1] http://www.spinics.net/lists/arm-kernel/msg198854.html
->>>
->>> Tested on DA850 EVM after applying patches from [1] above.
->>> Tested on Linux-torvalds 3.6-rc6 master branch.
->>> Tested ASoC module (aplay & arecord for various frequencies)
->>>
->>> Acked-by: Kumar, Anil <anilkumar.v@ti.com>
->>
->> As you're on it, could you also quickly merge this branch
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->> topic/davinci
->>
->> And see if my recent patches for more McASP flexibility cause any
->> trouble on your hardware?
->>
->>
->> Daniel
->>
->>
-> 
-> I have merged it with 3.6-rc6 and I have got error at compile time.
-> I have fixed this locally with the following patch [1]. 
-> Kindly confirm if the patch is correct?
+This patch includes two minor improvements for da9055 codec driver
 
-I did the same thing locally, but I considered this a merge conflict.
+(1) Adding support for DSP mode of AIF
+(2) Muting Mic PGAs during ALC calibration process
 
-> With that 
-> Tested on DA850 EVM
-> Tested on Linux-torvalds 3.6-rc6 master branch merged + [1]
-> Tested ASoC module (aplay & arecord for various frequencies)   
-> 
-> Tested-By: Kumar, Anil <anilkumar.v@ti.com> 
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <david.chen@diasemi.com>
+---
+ sound/soc/codecs/da9055.c |   26 +++++++++++++++++++++++++-
+ 1 files changed, 25 insertions(+), 1 deletions(-)
 
-Ok, that's good to hear. Thanks a lot :)
-
-
-Daniel
-
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 09da4e5..9c02a45 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -591,7 +591,7 @@ struct dma_device {
->         struct dma_async_tx_descriptor *(*device_prep_dma_cyclic)(
->                 struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
->                 size_t period_len, enum dma_transfer_direction direction,
-> -               unsigned long flags, void *context);
-> +               void *context);
->         struct dma_async_tx_descriptor *(*device_prep_interleaved_dma)(
->                 struct dma_chan *chan, struct dma_interleaved_template *xt,
->                 unsigned long flags);
-> @@ -656,7 +656,7 @@ static inline struct dma_async_tx_descriptor *dmaengine_prep_dma_cyclic(
->                 size_t period_len, enum dma_transfer_direction dir)
->  {
->         return chan->device->device_prep_dma_cyclic(chan, buf_addr, buf_len,
-> -                                               period_len, dir, flags, NULL);
-> +                                               period_len, dir, NULL);
->  }
-> 
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index 185d8dd..abf3e43 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -173,11 +173,18 @@
+ #define DA9055_AIF_FORMAT_I2S_MODE	(0 << 0)
+ #define DA9055_AIF_FORMAT_LEFT_J	(1 << 0)
+ #define DA9055_AIF_FORMAT_RIGHT_J	(2 << 0)
++#define DA9055_AIF_FORMAT_DSP		(3 << 0)
+ #define DA9055_AIF_WORD_S16_LE		(0 << 2)
+ #define DA9055_AIF_WORD_S20_3LE		(1 << 2)
+ #define DA9055_AIF_WORD_S24_LE		(2 << 2)
+ #define DA9055_AIF_WORD_S32_LE		(3 << 2)
+ 
++/* MIC_L_CTRL bit fields */
++#define DA9055_MIC_L_MUTE_EN		(1 << 6)
++
++/* MIC_R_CTRL bit fields */
++#define DA9055_MIC_R_MUTE_EN		(1 << 6)
++
+ /* MIXIN_L_CTRL bit fields */
+ #define DA9055_MIXIN_L_MIX_EN		(1 << 3)
+ 
+@@ -476,7 +483,7 @@ static int da9055_put_alc_sw(struct snd_kcontrol *kcontrol,
+ 			     struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+-	u8 reg_val, adc_left, adc_right;
++	u8 reg_val, adc_left, adc_right, mic_left, mic_right;
+ 	int avg_left_data, avg_right_data, offset_l, offset_r;
+ 
+ 	if (ucontrol->value.integer.value[0]) {
+@@ -485,6 +492,16 @@ static int da9055_put_alc_sw(struct snd_kcontrol *kcontrol,
+ 		 * offsets must be done first
+ 		 */
+ 
++		/* Save current values from Mic control registers */
++		mic_left = snd_soc_read(codec, DA9055_MIC_L_CTRL);
++		mic_right = snd_soc_read(codec, DA9055_MIC_R_CTRL);
++
++		/* Mute Mic PGA Left and Right */
++		snd_soc_update_bits(codec, DA9055_MIC_L_CTRL,
++				    DA9055_MIC_L_MUTE_EN, DA9055_MIC_L_MUTE_EN);
++		snd_soc_update_bits(codec, DA9055_MIC_R_CTRL,
++				    DA9055_MIC_R_MUTE_EN, DA9055_MIC_R_MUTE_EN);
++
+ 		/* Save current values from ADC control registers */
+ 		adc_left = snd_soc_read(codec, DA9055_ADC_L_CTRL);
+ 		adc_right = snd_soc_read(codec, DA9055_ADC_R_CTRL);
+@@ -520,6 +537,10 @@ static int da9055_put_alc_sw(struct snd_kcontrol *kcontrol,
+ 		/* Restore original values of ADC control registers */
+ 		snd_soc_write(codec, DA9055_ADC_L_CTRL, adc_left);
+ 		snd_soc_write(codec, DA9055_ADC_R_CTRL, adc_right);
++
++		/* Restore original values of Mic control registers */
++		snd_soc_write(codec, DA9055_MIC_L_CTRL, mic_left);
++		snd_soc_write(codec, DA9055_MIC_R_CTRL, mic_right);
+ 	}
+ 
+ 	return snd_soc_put_volsw(kcontrol, ucontrol);
+@@ -1155,6 +1176,9 @@ static int da9055_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		aif_ctrl = DA9055_AIF_FORMAT_RIGHT_J;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		aif_ctrl = DA9055_AIF_FORMAT_DSP;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.7.1
