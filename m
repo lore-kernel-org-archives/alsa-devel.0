@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8750: Convert to direct regmap API
+Subject: [PATCH] ASoC: wm8971: Convert to direct regmap API
 	usage
-Date: Wed, 10 Oct 2012 21:55:42 +0900
-Message-ID: <1349873742-2968-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Wed, 10 Oct 2012 21:44:15 +0900
+Message-ID: <1349873055-384-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0EDBD265095
- for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2012 09:11:26 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32046261742
+ for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2012 09:11:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +25,34 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8750.c |   86 ++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 66 insertions(+), 20 deletions(-)
+ sound/soc/codecs/wm8971.c |   80 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 61 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 89151ca..7665d68 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -18,6 +18,7 @@
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index 5ce6477..70dd27e 100644
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -19,6 +19,7 @@
  #include <linux/delay.h>
  #include <linux/pm.h>
  #include <linux/i2c.h>
 +#include <linux/regmap.h>
- #include <linux/spi/spi.h>
  #include <linux/slab.h>
- #include <linux/of_device.h>
-@@ -34,24 +35,55 @@
-  * We can't read the WM8750 register space when we
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -34,7 +35,6 @@ static struct workqueue_struct *wm8971_workq = NULL;
+ 
+ /* codec private data */
+ struct wm8971_priv {
+-	enum snd_soc_control_type control_type;
+ 	unsigned int sysclk;
+ };
+ 
+@@ -43,18 +43,50 @@ struct wm8971_priv {
+  * We can't read the WM8971 register space when we
   * are using 2 wire for device control, so we cache them instead.
   */
--static const u16 wm8750_reg[] = {
+-static const u16 wm8971_reg[] = {
 -	0x0097, 0x0097, 0x0079, 0x0079,  /*  0 */
 -	0x0000, 0x0008, 0x0000, 0x000a,  /*  4 */
 -	0x0000, 0x0000, 0x00ff, 0x00ff,  /*  8 */
@@ -56,7 +64,7 @@ index 89151ca..7665d68 100644
 -	0x0000, 0x0000, 0x0050, 0x0050,  /* 32 */
 -	0x0050, 0x0050, 0x0050, 0x0050,  /* 36 */
 -	0x0079, 0x0079, 0x0079,          /* 40 */
-+static const struct reg_default wm8750_reg_defaults[] = {
++static const struct reg_default wm8971_reg_defaults[] = {
 +	{  0, 0x0097 },
 +	{  1, 0x0097 },
 +	{  2, 0x0079 },
@@ -102,88 +110,63 @@ index 89151ca..7665d68 100644
 +	{ 42, 0x0079 },
  };
  
- /* codec private data */
- struct wm8750_priv {
- 	unsigned int sysclk;
--	enum snd_soc_control_type control_type;
- };
+ #define wm8971_reset(c)	snd_soc_write(c, WM8971_RESET, 0)
+@@ -613,11 +645,10 @@ static int wm8971_resume(struct snd_soc_codec *codec)
  
- #define wm8750_reset(c)	snd_soc_write(c, WM8750_RESET, 0)
-@@ -668,10 +700,9 @@ static int wm8750_resume(struct snd_soc_codec *codec)
- 
- static int wm8750_probe(struct snd_soc_codec *codec)
+ static int wm8971_probe(struct snd_soc_codec *codec)
  {
--	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
+-	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 	u16 reg;
  
--	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8750->control_type);
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8971->control_type);
 +	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
  	if (ret < 0) {
- 		printk(KERN_ERR "wm8750: failed to set cache I/O: %d\n", ret);
+ 		printk(KERN_ERR "wm8971: failed to set cache I/O: %d\n", ret);
  		return ret;
-@@ -711,9 +742,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8750 = {
- 	.suspend =	wm8750_suspend,
- 	.resume =	wm8750_resume,
- 	.set_bias_level = wm8750_set_bias_level,
--	.reg_cache_size = ARRAY_SIZE(wm8750_reg),
+@@ -667,9 +698,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8971 = {
+ 	.suspend =	wm8971_suspend,
+ 	.resume =	wm8971_resume,
+ 	.set_bias_level = wm8971_set_bias_level,
+-	.reg_cache_size = ARRAY_SIZE(wm8971_reg),
 -	.reg_word_size = sizeof(u16),
--	.reg_cache_default = wm8750_reg,
+-	.reg_cache_default = wm8971_reg,
  
- 	.controls = wm8750_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8750_snd_controls),
-@@ -730,10 +758,21 @@ static const struct of_device_id wm8750_of_match[] = {
+ 	.controls = wm8971_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8971_snd_controls),
+@@ -679,10 +707,21 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8971 = {
+ 	.num_dapm_routes = ARRAY_SIZE(wm8971_dapm_routes),
  };
- MODULE_DEVICE_TABLE(of, wm8750_of_match);
  
-+static const struct regmap_config wm8750_regmap = {
++static const struct regmap_config wm8971_regmap = {
 +	.reg_bits = 7,
 +	.val_bits = 9,
-+	.max_register = WM8750_MOUTV,
++	.max_register = WM8971_MOUTV,
 +
-+	.reg_defaults = wm8750_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(wm8750_reg_defaults),
++	.reg_defaults = wm8971_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(wm8971_reg_defaults),
 +	.cache_type = REGCACHE_RBTREE,
 +};
 +
- #if defined(CONFIG_SPI_MASTER)
- static int __devinit wm8750_spi_probe(struct spi_device *spi)
- {
- 	struct wm8750_priv *wm8750;
-+	struct regmap *regmap;
- 	int ret;
- 
- 	wm8750 = devm_kzalloc(&spi->dev, sizeof(struct wm8750_priv),
-@@ -741,7 +780,10 @@ static int __devinit wm8750_spi_probe(struct spi_device *spi)
- 	if (wm8750 == NULL)
- 		return -ENOMEM;
- 
--	wm8750->control_type = SND_SOC_SPI;
-+	regmap = devm_regmap_init_spi(spi, &wm8750_regmap);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
- 	spi_set_drvdata(spi, wm8750);
- 
- 	ret = snd_soc_register_codec(&spi->dev,
-@@ -779,6 +821,7 @@ static __devinit int wm8750_i2c_probe(struct i2c_client *i2c,
+ static __devinit int wm8971_i2c_probe(struct i2c_client *i2c,
  				      const struct i2c_device_id *id)
  {
- 	struct wm8750_priv *wm8750;
+ 	struct wm8971_priv *wm8971;
 +	struct regmap *regmap;
  	int ret;
  
- 	wm8750 = devm_kzalloc(&i2c->dev, sizeof(struct wm8750_priv),
-@@ -787,7 +830,10 @@ static __devinit int wm8750_i2c_probe(struct i2c_client *i2c,
+ 	wm8971 = devm_kzalloc(&i2c->dev, sizeof(struct wm8971_priv),
+@@ -690,7 +729,10 @@ static __devinit int wm8971_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8971 == NULL)
  		return -ENOMEM;
  
- 	i2c_set_clientdata(i2c, wm8750);
--	wm8750->control_type = SND_SOC_I2C;
-+
-+	regmap = devm_regmap_init_i2c(i2c, &wm8750_regmap);
+-	wm8971->control_type = SND_SOC_I2C;
++	regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
 +	if (IS_ERR(regmap))
 +		return PTR_ERR(regmap);
++
+ 	i2c_set_clientdata(i2c, wm8971);
  
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8750, &wm8750_dai, 1);
+ 	ret = snd_soc_register_codec(&i2c->dev,
 -- 
 1.7.10.4
