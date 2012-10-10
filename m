@@ -1,14 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8958: Load firmwares simultaneously
-Date: Wed, 10 Oct 2012 22:15:36 +0900
-Message-ID: <1349874936-4516-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/4] ASoC: wm8770: Remove unneeded bias level
+	manipulation
+Date: Wed, 10 Oct 2012 20:43:37 +0900
+Message-ID: <1349869419-10357-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1349869419-10357-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C1502616DA
- for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2012 09:11:00 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63B9E2625D4
+ for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2012 09:11:05 +0200 (CEST)
+In-Reply-To: <1349869419-10357-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +25,68 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-As of commit 99c2aa (firmware loader: fix creation failure of fw loader
-device) we can have more than one firmware request outstanding at once so
-there is no need to daisychain our requests any more.
+Since the device is now idle_bias_off these never have any useful effect,
+the device will be brought to _OFF when idle, and will at best leave it
+powered for longer.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8958-dsp2.c |   31 +++++++++++--------------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
+ sound/soc/codecs/wm8770.c |   22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index 2f191a0..b0710d8 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -883,13 +883,6 @@ static void wm8958_mbc_vss_loaded(const struct firmware *fw, void *context)
- 		wm8994->mbc_vss = fw;
- 		mutex_unlock(&codec->mutex);
+diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
+index 21ec563..8eefe42 100644
+--- a/sound/soc/codecs/wm8770.c
++++ b/sound/soc/codecs/wm8770.c
+@@ -572,23 +572,6 @@ static struct snd_soc_dai_driver wm8770_dai = {
+ 	.symmetric_rates = 1
+ };
+ 
+-#ifdef CONFIG_PM
+-static int wm8770_suspend(struct snd_soc_codec *codec)
+-{
+-	wm8770_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+-static int wm8770_resume(struct snd_soc_codec *codec)
+-{
+-	wm8770_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	return 0;
+-}
+-#else
+-#define wm8770_suspend NULL
+-#define wm8770_resume NULL
+-#endif
+-
+ static int wm8770_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8770_priv *wm8770;
+@@ -642,8 +625,6 @@ static int wm8770_probe(struct snd_soc_codec *codec)
+ 		goto err_reg_enable;
  	}
+ 
+-	wm8770_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
--	/* We can't have more than one request outstanding at once so
--	 * we daisy chain.
--	 */
--	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
--				"wm8958_enh_eq.wfw", codec->dev, GFP_KERNEL,
--				codec, wm8958_enh_eq_loaded);
- }
+ 	/* latch the volume update bits */
+ 	snd_soc_update_bits(codec, WM8770_MSDIGVOL, 0x100, 0x100);
+ 	snd_soc_update_bits(codec, WM8770_MSALGVOL, 0x100, 0x100);
+@@ -680,7 +661,6 @@ static int wm8770_remove(struct snd_soc_codec *codec)
+ 	int i;
  
- static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
-@@ -897,19 +890,11 @@ static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
- 	struct snd_soc_codec *codec = context;
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+ 	wm8770 = snd_soc_codec_get_drvdata(codec);
+-	wm8770_set_bias_level(codec, SND_SOC_BIAS_OFF);
  
--	if (wm8958_dsp2_fw(codec, "MBC", fw, true) != 0)
--		return;
--
--	mutex_lock(&codec->mutex);
--	wm8994->mbc = fw;
--	mutex_unlock(&codec->mutex);
--
--	/* We can't have more than one request outstanding at once so
--	 * we daisy chain.
--	 */
--	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
--				"wm8958_mbc_vss.wfw", codec->dev, GFP_KERNEL,
--				codec, wm8958_mbc_vss_loaded);
-+	if (fw && (wm8958_dsp2_fw(codec, "MBC", fw, true) == 0)) {
-+		mutex_lock(&codec->mutex);
-+		wm8994->mbc = fw;
-+		mutex_unlock(&codec->mutex);
-+	}
- }
- 
- void wm8958_dsp2_init(struct snd_soc_codec *codec)
-@@ -933,6 +918,12 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
- 	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
- 				"wm8958_mbc.wfw", codec->dev, GFP_KERNEL,
- 				codec, wm8958_mbc_loaded);
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+				"wm8958_mbc_vss.wfw", codec->dev, GFP_KERNEL,
-+				codec, wm8958_mbc_vss_loaded);
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+				"wm8958_enh_eq.wfw", codec->dev, GFP_KERNEL,
-+				codec, wm8958_enh_eq_loaded);
- 
- 	if (pdata->num_mbc_cfgs) {
- 		struct snd_kcontrol_new control[] = {
+ 	for (i = 0; i < ARRAY_SIZE(wm8770->supplies); ++i)
+ 		regulator_unregister_notifier(wm8770->supplies[i].consumer,
+@@ -692,8 +672,6 @@ static int wm8770_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_wm8770 = {
+ 	.probe = wm8770_probe,
+ 	.remove = wm8770_remove,
+-	.suspend = wm8770_suspend,
+-	.resume = wm8770_resume,
+ 	.set_bias_level = wm8770_set_bias_level,
+ 	.idle_bias_off = true,
+ };
 -- 
 1.7.10.4
