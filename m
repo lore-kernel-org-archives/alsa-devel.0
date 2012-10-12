@@ -1,29 +1,133 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [alsa-devel] [PATCH 0/2] dmaengine: Fix compillation issues in
- device_prep_dma_cyclic()
-Date: Fri, 12 Oct 2012 16:44:15 +0000
-Message-ID: <6AE080B68D46FC4BA2D2769E68D765B7080FEAB8@039-SN2MPN1-023.039d.mgd.msft.net>
-References: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
-	<1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/3] ALSA: core: keep track of boundary
+	wrap-around
+Date: Fri, 12 Oct 2012 12:05:35 -0500
+Message-ID: <1350061537-10166-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
-Content-Language: en-US
-Content-ID: <A827A0995B731A449EDC094624CD43F9@mgd.freescale.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene.kim@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1377C261640
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2012 19:06:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 24, 2012 at 2:58 AM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+Keep track of boundary crossing when hw_ptr
+exceeds boundary limit and wraps-around. This
+will help keep track of total number
+of frames played/received at the kernel level
 
-> PS: I did build tested the series on ARM (OMAP), x86_32, x86_64 but not for ppc
-> for sure.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/pcm.h  |    1 +
+ sound/core/pcm_lib.c |   25 ++++++++++++++++++++-----
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
-For the record, patch #1 fixes the build break on PowerPC.  Thanks.
-
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index cdca2ab..ba13e0b 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -281,6 +281,7 @@ struct snd_pcm_runtime {
+ 	unsigned long hw_ptr_jiffies;	/* Time when hw_ptr is updated */
+ 	unsigned long hw_ptr_buffer_jiffies; /* buffer time in jiffies */
+ 	snd_pcm_sframes_t delay;	/* extra delay; typically FIFO size */
++	u64 hw_ptr_wrap;                /* offset for hw_ptr due to boundary wrap-around */
+ 
+ 	/* -- HW params -- */
+ 	snd_pcm_access_t access;	/* access mode */
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7ae6719..bbc6ba4 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -315,6 +315,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	unsigned long jdelta;
+ 	unsigned long curr_jiffies;
+ 	struct timespec curr_tstamp;
++	int crossed_boundary = 0;
+ 
+ 	old_hw_ptr = runtime->status->hw_ptr;
+ 
+@@ -359,8 +360,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 			hdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+ 			if (hdelta > runtime->hw_ptr_buffer_jiffies/2) {
+ 				hw_base += runtime->buffer_size;
+-				if (hw_base >= runtime->boundary)
++				if (hw_base >= runtime->boundary) {
+ 					hw_base = 0;
++					crossed_boundary++;
++				}
+ 				new_hw_ptr = hw_base + pos;
+ 				goto __delta;
+ 			}
+@@ -370,8 +373,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	/* pointer crosses the end of the ring buffer */
+ 	if (new_hw_ptr < old_hw_ptr) {
+ 		hw_base += runtime->buffer_size;
+-		if (hw_base >= runtime->boundary)
++		if (hw_base >= runtime->boundary) {
+ 			hw_base = 0;
++			crossed_boundary++;
++		}
+ 		new_hw_ptr = hw_base + pos;
+ 	}
+       __delta:
+@@ -409,8 +414,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		while (hdelta > xrun_threshold) {
+ 			delta += runtime->buffer_size;
+ 			hw_base += runtime->buffer_size;
+-			if (hw_base >= runtime->boundary)
++			if (hw_base >= runtime->boundary) {
+ 				hw_base = 0;
++				crossed_boundary++;
++			}
+ 			new_hw_ptr = hw_base + pos;
+ 			hdelta -= runtime->hw_ptr_buffer_jiffies;
+ 		}
+@@ -455,8 +462,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		/* the delta value is small or zero in most cases */
+ 		while (delta > 0) {
+ 			new_hw_ptr += runtime->period_size;
+-			if (new_hw_ptr >= runtime->boundary)
++			if (new_hw_ptr >= runtime->boundary) {
+ 				new_hw_ptr -= runtime->boundary;
++				crossed_boundary--;
++			}
+ 			delta--;
+ 		}
+ 		/* align hw_base to buffer_size */
+@@ -506,6 +515,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	runtime->hw_ptr_base = hw_base;
+ 	runtime->status->hw_ptr = new_hw_ptr;
+ 	runtime->hw_ptr_jiffies = curr_jiffies;
++	if (crossed_boundary) {
++		snd_BUG_ON(crossed_boundary != 1);
++		runtime->hw_ptr_wrap += runtime->boundary;
++	}
+ 	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE)
+ 		runtime->status->tstamp = curr_tstamp;
+ 
+@@ -1660,8 +1673,10 @@ static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
+ 	if (snd_pcm_running(substream) &&
+ 	    snd_pcm_update_hw_ptr(substream) >= 0)
+ 		runtime->status->hw_ptr %= runtime->buffer_size;
+-	else
++	else {
+ 		runtime->status->hw_ptr = 0;
++		runtime->hw_ptr_wrap = 0;
++	}
+ 	snd_pcm_stream_unlock_irqrestore(substream, flags);
+ 	return 0;
+ }
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+1.7.9.5
