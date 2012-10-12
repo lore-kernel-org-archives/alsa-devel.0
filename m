@@ -1,44 +1,29 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: Re: Silence playback during XRUN
-Date: Fri, 12 Oct 2012 16:39:22 +0000
-Message-ID: <32F4D3A311A1404B92CF923AFF38C3C526B2CA@BGSMSX101.gar.corp.intel.com>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [alsa-devel] [PATCH 0/2] dmaengine: Fix compillation issues in
+ device_prep_dma_cyclic()
+Date: Fri, 12 Oct 2012 16:44:15 +0000
+Message-ID: <6AE080B68D46FC4BA2D2769E68D765B7080FEAB8@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <20120924133923.130c4db72aa8105cb5647d7a@canb.auug.org.au>
+	<1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 32762261614
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2012 18:39:26 +0200 (CEST)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <1348473485-5081-1-git-send-email-peter.ujfalusi@ti.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Content-ID: <A827A0995B731A449EDC094624CD43F9@mgd.freescale.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Kukjin Kim <kgene.kim@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Mon, Sep 24, 2012 at 2:58 AM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
 
-I am trying to configure my application to use silence playback of ALSA in case XRUN.
-I am configuring the silence parameters as below:
+> PS: I did build tested the series on ARM (OMAP), x86_32, x86_64 but not for ppc
+> for sure.
 
-silence_threshold = 0
-silence_size = boundary
-stop_threshold = bounday
+For the record, patch #1 fixes the build break on PowerPC.  Thanks.
 
-Using the above configuration I can see that ALSA sends silence during XRUN.
-But I am experiencing audio is jerky, when application starts sending the data after the XRUN.
-
-I noticed someone has met similar situation.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2011-December/046894.html
-
-Do I need to modify my silence settings? Anything that I need take care apart from the above mentioned parameters?
-
-Thanks
-Ramesh
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
