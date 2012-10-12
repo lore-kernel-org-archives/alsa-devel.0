@@ -1,176 +1,476 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: davinci: replace private sram api with genalloc
-Date: Fri, 12 Oct 2012 19:15:53 +0200
-Message-ID: <50785049.50108@gmail.com>
-References: <1349991229-32107-1-git-send-email-mporter@ti.com> <1349991229-32107-2-git-send-email-mporter@ti.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] [v2] ASoC: add support for the Freescale /
+	iVeia P1022 RDK reference board
+Date: Fri, 12 Oct 2012 14:09:18 -0500
+Message-ID: <1350068958-1162-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1349991229-32107-2-git-send-email-mporter@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matt Porter <mporter@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe010.messaging.microsoft.com [216.32.180.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FFE4265B5E
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2012 21:09:33 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matt,
+This small reference boards has a Freescale P1022 dual-core PowerPC SOC
+and a Wolfson Microelectronics WM8960 codec.
 
-On 11.10.2012 23:33, Matt Porter wrote:
-> Removes the DaVinci private SRAM API and replaces it with
-> the genalloc API. The SRAM gen_pool is passed in pdata since
-> DaVinci is in the early stages of DT conversion.
-> 
-> Signed-off-by: Matt Porter <mporter@ti.com>
-> ---
->  include/linux/platform_data/davinci_asp.h |    3 +++
->  sound/soc/davinci/davinci-mcasp.c         |    2 ++
->  sound/soc/davinci/davinci-pcm.c           |   18 ++++++++++++------
->  sound/soc/davinci/davinci-pcm.h           |    2 ++
->  4 files changed, 19 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
-> index d0c5825..f3d6e4f 100644
-> --- a/include/linux/platform_data/davinci_asp.h
-> +++ b/include/linux/platform_data/davinci_asp.h
-> @@ -16,6 +16,8 @@
->  #ifndef __DAVINCI_ASP_H
->  #define __DAVINCI_ASP_H
->  
-> +#include <linux/genalloc.h>
-> +
->  struct snd_platform_data {
->  	u32 tx_dma_offset;
->  	u32 rx_dma_offset;
-> @@ -30,6 +32,7 @@ struct snd_platform_data {
->  	unsigned enable_channel_combine:1;
->  	unsigned sram_size_playback;
->  	unsigned sram_size_capture;
-> +	struct gen_pool *sram_pool;
->  
->  	/*
->  	 * If McBSP peripheral gets the clock from an external pin,
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-> index 714e51e..52194bb 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -1098,6 +1098,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
->  	dma_data->asp_chan_q = pdata->asp_chan_q;
->  	dma_data->ram_chan_q = pdata->ram_chan_q;
-> +	dma_data->sram_pool = pdata->sram_pool;
->  	dma_data->sram_size = pdata->sram_size_playback;
->  	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
->  							mem->start);
-> @@ -1115,6 +1116,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
->  	dma_data->asp_chan_q = pdata->asp_chan_q;
->  	dma_data->ram_chan_q = pdata->ram_chan_q;
-> +	dma_data->sram_pool = pdata->sram_pool;
->  	dma_data->sram_size = pdata->sram_size_capture;
->  	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
->  							mem->start);
-> diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-> index 93ea3bf..d2cc169 100644
-> --- a/sound/soc/davinci/davinci-pcm.c
-> +++ b/sound/soc/davinci/davinci-pcm.c
-> @@ -16,6 +16,7 @@
->  #include <linux/slab.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/kernel.h>
-> +#include <linux/genalloc.h>
->  
->  #include <sound/core.h>
->  #include <sound/pcm.h>
-> @@ -23,7 +24,6 @@
->  #include <sound/soc.h>
->  
->  #include <asm/dma.h>
-> -#include <mach/sram.h>
->  
->  #include "davinci-pcm.h"
->  
-> @@ -259,7 +259,8 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
->  	}
->  }
->  
-> -static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
-> +static int allocate_sram(struct snd_pcm_substream *substream,
-> +		struct gen_pool *sram_pool, unsigned size,
->  		struct snd_pcm_hardware *ppcm)
->  {
->  	struct snd_dma_buffer *buf = &substream->dma_buffer;
-> @@ -271,9 +272,10 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
->  		return 0;
->  
->  	ppcm->period_bytes_max = size;
-> -	iram_virt = sram_alloc(size, &iram_phys);
-> +	iram_virt = (void *)gen_pool_alloc(sram_pool, size);
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/fsl/Kconfig     |   14 ++
+ sound/soc/fsl/Makefile    |    4 +
+ sound/soc/fsl/p1022_rdk.c |  392 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 410 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/fsl/p1022_rdk.c
 
-Did you see my patch that stubs out all functions that use gen_pool_*
-functions for !CONFIG_GENERIC_ALLOCATOR configs? It should still apply
-nicely on top of this one, and is necessary for AM33xx-only builds.
-
-
-
-Daniel
-
-
-
->  	if (!iram_virt)
->  		goto exit1;
-> +	iram_phys = gen_pool_virt_to_phys(sram_pool, (unsigned)iram_virt);
->  	iram_dma = kzalloc(sizeof(*iram_dma), GFP_KERNEL);
->  	if (!iram_dma)
->  		goto exit2;
-> @@ -285,7 +287,7 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
->  	return 0;
->  exit2:
->  	if (iram_virt)
-> -		sram_free(iram_virt, size);
-> +		gen_pool_free(sram_pool, (unsigned)iram_virt, size);
->  exit1:
->  	return -ENOMEM;
->  }
-> @@ -676,7 +678,7 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
->  
->  	ppcm = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
->  			&pcm_hardware_playback : &pcm_hardware_capture;
-> -	allocate_sram(substream, params->sram_size, ppcm);
-> +	allocate_sram(substream, params->sram_pool, params->sram_size, ppcm);
->  	snd_soc_set_runtime_hwparams(substream, ppcm);
->  	/* ensure that buffer size is a multiple of period size */
->  	ret = snd_pcm_hw_constraint_integer(runtime,
-> @@ -819,7 +821,11 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
->  		buf->area = NULL;
->  		iram_dma = buf->private_data;
->  		if (iram_dma) {
-> -			sram_free(iram_dma->area, iram_dma->bytes);
-> +			struct davinci_runtime_data *prtd =
-> +				substream->runtime->private_data;
-> +			struct gen_pool *sram_pool = prtd->params->sram_pool;
-> +			gen_pool_free(sram_pool, (unsigned)iram_dma->area,
-> +				      iram_dma->bytes);
->  			kfree(iram_dma);
->  		}
->  	}
-> diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
-> index fc4d01c..b6ef703 100644
-> --- a/sound/soc/davinci/davinci-pcm.h
-> +++ b/sound/soc/davinci/davinci-pcm.h
-> @@ -12,6 +12,7 @@
->  #ifndef _DAVINCI_PCM_H
->  #define _DAVINCI_PCM_H
->  
-> +#include <linux/genalloc.h>
->  #include <linux/platform_data/davinci_asp.h>
->  #include <mach/edma.h>
->  
-> @@ -20,6 +21,7 @@ struct davinci_pcm_dma_params {
->  	unsigned short acnt;
->  	dma_addr_t dma_addr;		/* device physical address for DMA */
->  	unsigned sram_size;
-> +	struct gen_pool *sram_pool;	/* SRAM gen_pool for ping pong */
->  	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
->  	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
->  	unsigned char data_type;	/* xfer data type */
-> 
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 4563b28..8e48432 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -46,6 +46,20 @@ config SND_SOC_P1022_DS
+ 	  This will also include the Wolfson Microelectronics WM8776 codec
+ 	  driver.
+ 
++config SND_SOC_P1022_RDK
++	tristate "ALSA SoC support for the Freescale / iVeia P1022 RDK board"
++	# I2C is necessary for the WM8960 driver
++	depends on P1022_RDK && I2C
++	select SND_SOC_FSL_SSI
++	select SND_SOC_FSL_UTILS
++	select SND_SOC_POWERPC_DMA
++	select SND_SOC_WM8960
++	default y if P1022_RDK
++	help
++	  Say Y if you want to enable audio on the Freescale / iVeia
++	  P1022 RDK board.  This will also include the Wolfson
++	  Microelectronics WM8960 codec driver.
++
+ config SND_SOC_MPC5200_I2S
+ 	tristate "Freescale MPC5200 PSC in I2S mode driver"
+ 	depends on PPC_MPC52xx && PPC_BESTCOMM
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 5f3cf3f..515ba66 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -6,6 +6,10 @@ obj-$(CONFIG_SND_SOC_MPC8610_HPCD) += snd-soc-mpc8610-hpcd.o
+ snd-soc-p1022-ds-objs := p1022_ds.o
+ obj-$(CONFIG_SND_SOC_P1022_DS) += snd-soc-p1022-ds.o
+ 
++# P1022 RDK Machine Support
++snd-soc-p1022-rdk-objs := p1022_rdk.o
++obj-$(CONFIG_SND_SOC_P1022_RDK) += snd-soc-p1022-rdk.o
++
+ # Freescale PowerPC SSI/DMA Platform Support
+ snd-soc-fsl-ssi-objs := fsl_ssi.o
+ snd-soc-fsl-utils-objs := fsl_utils.o
+diff --git a/sound/soc/fsl/p1022_rdk.c b/sound/soc/fsl/p1022_rdk.c
+new file mode 100644
+index 0000000..897e32f
+--- /dev/null
++++ b/sound/soc/fsl/p1022_rdk.c
+@@ -0,0 +1,392 @@
++/**
++ * Freescale P1022RDK ALSA SoC Machine driver
++ *
++ * Author: Timur Tabi <timur@freescale.com>
++ *
++ * Copyright 2012 Freescale Semiconductor, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ *
++ * Note: in order for audio to work correctly, the output controls need
++ * to be enabled, because they control the clock.  So for playback, for
++ * example:
++ *
++ *      amixer sset 'Left Output Mixer PCM' on
++ *      amixer sset 'Right Output Mixer PCM' on
++ */
++
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/of_device.h>
++#include <linux/slab.h>
++#include <sound/soc.h>
++#include <asm/fsl_guts.h>
++
++#include "fsl_dma.h"
++#include "fsl_ssi.h"
++#include "fsl_utils.h"
++
++/* P1022-specific PMUXCR and DMUXCR bit definitions */
++
++#define CCSR_GUTS_PMUXCR_UART0_I2C1_MASK	0x0001c000
++#define CCSR_GUTS_PMUXCR_UART0_I2C1_UART0_SSI	0x00010000
++#define CCSR_GUTS_PMUXCR_UART0_I2C1_SSI		0x00018000
++
++#define CCSR_GUTS_PMUXCR_SSI_DMA_TDM_MASK	0x00000c00
++#define CCSR_GUTS_PMUXCR_SSI_DMA_TDM_SSI	0x00000000
++
++#define CCSR_GUTS_DMUXCR_PAD	1	/* DMA controller/channel set to pad */
++#define CCSR_GUTS_DMUXCR_SSI	2	/* DMA controller/channel set to SSI */
++
++/*
++ * Set the DMACR register in the GUTS
++ *
++ * The DMACR register determines the source of initiated transfers for each
++ * channel on each DMA controller.  Rather than have a bunch of repetitive
++ * macros for the bit patterns, we just have a function that calculates
++ * them.
++ *
++ * guts: Pointer to GUTS structure
++ * co: The DMA controller (0 or 1)
++ * ch: The channel on the DMA controller (0, 1, 2, or 3)
++ * device: The device to set as the target (CCSR_GUTS_DMUXCR_xxx)
++ */
++static inline void guts_set_dmuxcr(struct ccsr_guts __iomem *guts,
++	unsigned int co, unsigned int ch, unsigned int device)
++{
++	unsigned int shift = 16 + (8 * (1 - co) + 2 * (3 - ch));
++
++	clrsetbits_be32(&guts->dmuxcr, 3 << shift, device << shift);
++}
++
++/* There's only one global utilities register */
++static phys_addr_t guts_phys;
++
++/**
++ * machine_data: machine-specific ASoC device data
++ *
++ * This structure contains data for a single sound platform device on an
++ * P1022 RDK.  Some of the data is taken from the device tree.
++ */
++struct machine_data {
++	struct snd_soc_dai_link dai[2];
++	struct snd_soc_card card;
++	unsigned int dai_format;
++	unsigned int codec_clk_direction;
++	unsigned int cpu_clk_direction;
++	unsigned int clk_frequency;
++	unsigned int dma_id[2];		/* 0 = DMA1, 1 = DMA2, etc */
++	unsigned int dma_channel_id[2]; /* 0 = ch 0, 1 = ch 1, etc*/
++	char platform_name[2][DAI_NAME_SIZE]; /* One for each DMA channel */
++};
++
++/**
++ * p1022_rdk_machine_probe: initialize the board
++ *
++ * This function is used to initialize the board-specific hardware.
++ *
++ * Here we program the DMACR and PMUXCR registers.
++ */
++static int p1022_rdk_machine_probe(struct snd_soc_card *card)
++{
++	struct machine_data *mdata =
++		container_of(card, struct machine_data, card);
++	struct ccsr_guts __iomem *guts;
++
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	if (!guts) {
++		dev_err(card->dev, "could not map global utilities\n");
++		return -ENOMEM;
++	}
++
++	/* Enable SSI Tx signal */
++	clrsetbits_be32(&guts->pmuxcr, CCSR_GUTS_PMUXCR_UART0_I2C1_MASK,
++			CCSR_GUTS_PMUXCR_UART0_I2C1_UART0_SSI);
++
++	/* Enable SSI Rx signal */
++	clrsetbits_be32(&guts->pmuxcr, CCSR_GUTS_PMUXCR_SSI_DMA_TDM_MASK,
++			CCSR_GUTS_PMUXCR_SSI_DMA_TDM_SSI);
++
++	/* Enable DMA Channel for SSI */
++	guts_set_dmuxcr(guts, mdata->dma_id[0], mdata->dma_channel_id[0],
++			CCSR_GUTS_DMUXCR_SSI);
++
++	guts_set_dmuxcr(guts, mdata->dma_id[1], mdata->dma_channel_id[1],
++			CCSR_GUTS_DMUXCR_SSI);
++
++	iounmap(guts);
++
++	return 0;
++}
++
++/**
++ * p1022_rdk_startup: program the board with various hardware parameters
++ *
++ * This function takes board-specific information, like clock frequencies
++ * and serial data formats, and passes that information to the codec and
++ * transport drivers.
++ */
++static int p1022_rdk_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct machine_data *mdata =
++		container_of(rtd->card, struct machine_data, card);
++	struct device *dev = rtd->card->dev;
++	int ret = 0;
++
++	/* Tell the codec driver what the serial protocol is. */
++	ret = snd_soc_dai_set_fmt(rtd->codec_dai, mdata->dai_format);
++	if (ret < 0) {
++		dev_err(dev, "could not set codec driver audio format (ret=%i)\n",
++			ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_pll(rtd->codec_dai, 0, 0, mdata->clk_frequency,
++		mdata->clk_frequency);
++	if (ret < 0) {
++		dev_err(dev, "could not set codec PLL frequency (ret=%i)\n",
++			ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++/**
++ * p1022_rdk_machine_remove: Remove the sound device
++ *
++ * This function is called to remove the sound device for one SSI.  We
++ * de-program the DMACR and PMUXCR register.
++ */
++static int p1022_rdk_machine_remove(struct snd_soc_card *card)
++{
++	struct machine_data *mdata =
++		container_of(card, struct machine_data, card);
++	struct ccsr_guts __iomem *guts;
++
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	if (!guts) {
++		dev_err(card->dev, "could not map global utilities\n");
++		return -ENOMEM;
++	}
++
++	/* Restore the signal routing */
++	clrbits32(&guts->pmuxcr, CCSR_GUTS_PMUXCR_UART0_I2C1_MASK);
++	clrbits32(&guts->pmuxcr, CCSR_GUTS_PMUXCR_SSI_DMA_TDM_MASK);
++	guts_set_dmuxcr(guts, mdata->dma_id[0], mdata->dma_channel_id[0], 0);
++	guts_set_dmuxcr(guts, mdata->dma_id[1], mdata->dma_channel_id[1], 0);
++
++	iounmap(guts);
++
++	return 0;
++}
++
++/**
++ * p1022_rdk_ops: ASoC machine driver operations
++ */
++static struct snd_soc_ops p1022_rdk_ops = {
++	.startup = p1022_rdk_startup,
++};
++
++/**
++ * p1022_rdk_probe: platform probe function for the machine driver
++ *
++ * Although this is a machine driver, the SSI node is the "master" node with
++ * respect to audio hardware connections.  Therefore, we create a new ASoC
++ * device for each new SSI node that has a codec attached.
++ */
++static int p1022_rdk_probe(struct platform_device *pdev)
++{
++	struct device *dev = pdev->dev.parent;
++	/* ssi_pdev is the platform device for the SSI node that probed us */
++	struct platform_device *ssi_pdev =
++		container_of(dev, struct platform_device, dev);
++	struct device_node *np = ssi_pdev->dev.of_node;
++	struct device_node *codec_np = NULL;
++	struct machine_data *mdata;
++	const u32 *iprop;
++	int ret;
++
++	/* Find the codec node for this SSI. */
++	codec_np = of_parse_phandle(np, "codec-handle", 0);
++	if (!codec_np) {
++		dev_err(dev, "could not find codec node\n");
++		return -EINVAL;
++	}
++
++	mdata = kzalloc(sizeof(struct machine_data), GFP_KERNEL);
++	if (!mdata) {
++		ret = -ENOMEM;
++		goto error_put;
++	}
++
++	mdata->dai[0].cpu_dai_name = dev_name(&ssi_pdev->dev);
++	mdata->dai[0].ops = &p1022_rdk_ops;
++
++	/* ASoC core can match codec with device node */
++	mdata->dai[0].codec_of_node = codec_np;
++
++	/*
++	 * We register two DAIs per SSI, one for playback and the other for
++	 * capture.  We support codecs that have separate DAIs for both playback
++	 * and capture.
++	 */
++	memcpy(&mdata->dai[1], &mdata->dai[0], sizeof(struct snd_soc_dai_link));
++
++	/* The DAI names from the codec (snd_soc_dai_driver.name) */
++	mdata->dai[0].codec_dai_name = "wm8960-hifi";
++	mdata->dai[1].codec_dai_name = mdata->dai[0].codec_dai_name;
++
++	/*
++	 * Configure the SSI for I2S slave mode.  Older device trees have
++	 * an fsl,mode property, but we ignore that since there's really
++	 * only one way to configure the SSI.
++	 */
++	mdata->dai_format = SND_SOC_DAIFMT_NB_NF |
++		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
++	mdata->codec_clk_direction = SND_SOC_CLOCK_OUT;
++	mdata->cpu_clk_direction = SND_SOC_CLOCK_IN;
++
++	/*
++	 * In i2s-slave mode, the codec has its own clock source, so we
++	 * need to get the frequency from the device tree and pass it to
++	 * the codec driver.
++	 */
++	iprop = of_get_property(codec_np, "clock-frequency", NULL);
++	if (!iprop || !*iprop) {
++		dev_err(&pdev->dev, "codec bus-frequency property is missing or invalid\n");
++		ret = -EINVAL;
++		goto error;
++	}
++	mdata->clk_frequency = be32_to_cpup(iprop);
++
++	if (!mdata->clk_frequency) {
++		dev_err(&pdev->dev, "unknown clock frequency\n");
++		ret = -EINVAL;
++		goto error;
++	}
++
++	/* Find the playback DMA channel to use. */
++	mdata->dai[0].platform_name = mdata->platform_name[0];
++	ret = fsl_asoc_get_dma_channel(np, "fsl,playback-dma", &mdata->dai[0],
++				       &mdata->dma_channel_id[0],
++				       &mdata->dma_id[0]);
++	if (ret) {
++		dev_err(&pdev->dev, "missing/invalid playback DMA phandle (ret=%i)\n",
++			ret);
++		goto error;
++	}
++
++	/* Find the capture DMA channel to use. */
++	mdata->dai[1].platform_name = mdata->platform_name[1];
++	ret = fsl_asoc_get_dma_channel(np, "fsl,capture-dma", &mdata->dai[1],
++				       &mdata->dma_channel_id[1],
++				       &mdata->dma_id[1]);
++	if (ret) {
++		dev_err(&pdev->dev, "missing/invalid capture DMA phandle (ret=%i)\n",
++			ret);
++		goto error;
++	}
++
++	/* Initialize our DAI data structure.  */
++	mdata->dai[0].stream_name = "playback";
++	mdata->dai[1].stream_name = "capture";
++	mdata->dai[0].name = mdata->dai[0].stream_name;
++	mdata->dai[1].name = mdata->dai[1].stream_name;
++
++	mdata->card.probe = p1022_rdk_machine_probe;
++	mdata->card.remove = p1022_rdk_machine_remove;
++	mdata->card.name = pdev->name; /* The platform driver name */
++	mdata->card.owner = THIS_MODULE;
++	mdata->card.dev = &pdev->dev;
++	mdata->card.num_links = 2;
++	mdata->card.dai_link = mdata->dai;
++
++	/* Register with ASoC */
++	ret = snd_soc_register_card(&mdata->card);
++	if (ret) {
++		dev_err(&pdev->dev, "could not register card (ret=%i)\n", ret);
++		goto error;
++	}
++
++	return 0;
++
++error:
++	kfree(mdata);
++error_put:
++	of_node_put(codec_np);
++	return ret;
++}
++
++/**
++ * p1022_rdk_remove: remove the platform device
++ *
++ * This function is called when the platform device is removed.
++ */
++static int __devexit p1022_rdk_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct machine_data *mdata =
++		container_of(card, struct machine_data, card);
++
++	snd_soc_unregister_card(card);
++	kfree(mdata);
++
++	return 0;
++}
++
++static struct platform_driver p1022_rdk_driver = {
++	.probe = p1022_rdk_probe,
++	.remove = __devexit_p(p1022_rdk_remove),
++	.driver = {
++		/*
++		 * The name must match 'compatible' property in the device tree,
++		 * in lowercase letters.
++		 */
++		.name = "snd-soc-p1022rdk",
++		.owner = THIS_MODULE,
++	},
++};
++
++/**
++ * p1022_rdk_init: machine driver initialization.
++ *
++ * This function is called when this module is loaded.
++ */
++static int __init p1022_rdk_init(void)
++{
++	struct device_node *guts_np;
++	struct resource res;
++
++	/* Get the physical address of the global utilities registers */
++	guts_np = of_find_compatible_node(NULL, NULL, "fsl,p1022-guts");
++	if (of_address_to_resource(guts_np, 0, &res)) {
++		pr_err("snd-soc-p1022rdk: missing/invalid global utils node\n");
++		of_node_put(guts_np);
++		return -EINVAL;
++	}
++	guts_phys = res.start;
++	of_node_put(guts_np);
++
++	return platform_driver_register(&p1022_rdk_driver);
++}
++
++/**
++ * p1022_rdk_exit: machine driver exit
++ *
++ * This function is called when this driver is unloaded.
++ */
++static void __exit p1022_rdk_exit(void)
++{
++	platform_driver_unregister(&p1022_rdk_driver);
++}
++
++late_initcall(p1022_rdk_init);
++module_exit(p1022_rdk_exit);
++
++MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
++MODULE_DESCRIPTION("Freescale / iVeia P1022 RDK ALSA SoC machine driver");
++MODULE_LICENSE("GPL v2");
+-- 
+1.7.3.4
