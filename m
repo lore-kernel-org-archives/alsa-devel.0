@@ -1,40 +1,42 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 3/3] i2c: change the id to let the i2c-gpio work
-Date: Fri, 12 Oct 2012 09:53:21 +0800
-Message-ID: <50777811.8020808@atmel.com>
-References: <1349923097-14115-1-git-send-email-voice.shen@atmel.com> <1349923097-14115-4-git-send-email-voice.shen@atmel.com> <20121011071140.GA11726@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: calling snd_ctl_notify from mixer ctl_put
+Date: Fri, 12 Oct 2012 08:03:13 +0200
+Message-ID: <5077B2A1.5070608@ladisch.de>
+References: <201210112129.03097.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20121011071140.GA11726@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, jm.lin@atmel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id B2DF026036F
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2012 08:03:15 +0200 (CEST)
+In-Reply-To: <201210112129.03097.linux@rainbow-software.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On 10/11/2012 15:11, Mark Brown wrote:
-> On Thu, Oct 11, 2012 at 10:38:17AM +0800, Bo Shen wrote:
+Ondrej Zary wrote:
+> I want to enable/disable some mixer controls based on state of another control
+> (switching between limiter and AGC mode). So I (re)set the
+> SNDRV_CTL_ELEM_ACCESS_INACTIVE flag in kctl->vd[0].access
+> and then call snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_INFO, &kctl->id);
+> Everyting from ctl_put() mixer callback.
 >
->>   static struct platform_device at91sam9260_twi_device = {
->>   	.name			= "i2c-gpio",
->> -	.id			= -1,
->> +	.id			= 0,
->>   	.dev.platform_data	= &pdata,
->>   };
->
-> Why would this have any effect on the operation of the i2c-gpio driver?
-> This suggests i2c-gpio is buggy.
+> When changing the control value in alsamixer, it crashes with:
+> alsamixer: simple.c:948: snd_mixer_selem_get_enum_item: Assertion
+> `(elem)->type == SND_MIXER_ELEM_SIMPLE' failed.
 
-This cause i2c devices can not register to the i2c bus which the device 
-want.
+Looks like a bug in alsamixer.
 
-I will send this patch to i2c maintainer.
 
-Thanks
-
-BR,
-Bo Shen
-
+Regards,
+Clemens
