@@ -1,20 +1,20 @@
-From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: sound/pci/hda/hda_codec.c:1435:46: error:
- 'AC_VERB_GET_CON' undeclared
-Date: Mon, 15 Oct 2012 09:49:26 +0800
-Message-ID: <20121015014926.GA7203@localhost>
-References: <20121012170109.GD20312@localhost> <s5h7gquixlv.wl%tiwai@suse.de>
- <20121014023953.GA8713@localhost>
- <20121015005944.GC24935@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC] Fix for conflict of HDMI and SPDIF IEC958
+	controls
+Date: Mon, 15 Oct 2012 10:31:50 +0800
+Message-ID: <CAN8cciZ=7c7z5g5qSS30RnRf5TjoG8HjwBwYBtoUCMdNQ4Rxag@mail.gmail.com>
+References: <s5hpq4nk9b1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 67B93262638
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2012 03:49:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20121015005944.GC24935@opensource.wolfsonmicro.com>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1B04264EF5
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2012 04:31:51 +0200 (CEST)
+Received: by mail-qa0-f44.google.com with SMTP id 25so1050104qao.17
+ for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2012 19:31:51 -0700 (PDT)
+In-Reply-To: <s5hpq4nk9b1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,20 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 15, 2012 at 09:59:45AM +0900, Mark Brown wrote:
-> On Sun, Oct 14, 2012 at 10:39:53AM +0800, Fengguang Wu wrote:
-> 
-> > OK. Takashi, Mark, the build system can now avoid testing selected
-> > trees during the merge window. Shall I add your trees to the list?
-> 
-> For me I'd really want to be able to keep the for-next branch covered,
-> it's better to have the false positives than to loose that coverage.
-
-Got it, yeah it makes good sense.
-
-Thanks,
-Fengguang
+MjAxMi0xMC0xMiDkuIvljYgxMToxOSDmlrwgIlRha2FzaGkgSXdhaSIgPHRpd2FpQHN1c2UuZGU+
+IOWvq+mBk++8mgo+Cj4gSGksCj4KPiB0aGVyZSBpcyBhIGxvbmctc3RhbmRpbmcgcHJvYmxlbSBp
+biBIRC1hdWRpbyByZWdhcmRpbmcgSUVDOTU4Cj4gY29udHJvbHMuICBXaGVuIGJvdGggYW4gU1BE
+SUYgYW5kIGFuIEhETUkgYXJlIGNyZWF0ZWQgb24gdGhlIHNhbWUKPiBjYXJkIChlLmcuIG9uZSBm
+cm9tIGFuYWxvZyBjb2RlYyBhbmQgb25lIGZyb20gZ3JhcGhpY3MgY2hpcCksIHRoZQo+IGRyaXZl
+ciBhc3NpZ25zIHRoZSBJRUM5NTggY29udHJvbHMganVzdCB3aXRoIG5ldyBpbmRpY2VzLCAwLCAx
+LCAyLi4uCj4KPiBUaGUgcHJvYmxlbSBpcyB0aGF0IHRoZXJlIGlzIG5vIHdheSB0byBjb25uZWN0
+IGJldHdlZW4gdGhpcyBpbmRleCBhbmQKPiB0aGUgYWN0dWFsIFBDTSBkZXZpY2UuICBDdXJyZW50
+bHksIGFsc2EtbGliIEhEQS1JbnRlbC5jb25mIGhhcyBhIGZpeGVkCj4gY29uZmlndXJhdGlvbjoK
+PiAgIHNwZGlmICAtPiBJRUM5NTggeHh4IGluZGV4PTAsIFBDTSBkZXY9MQo+ICAgaGRtaSwwIC0+
+IElFQzk1OCB4eHggaW5kZXg9MCwgUENNIGRldj0zCj4gICBoZG1pLDEgLT4gSUVDOTU4IHh4eCBp
+bmRleD0xLCBQQ00gZGV2PTcKPiAgIGhkbWksMiAtPiBJRUM5NTggeHh4IGluZGV4PTIsIFBDTSBk
+ZXY9OAo+ICAgaGRtaSwzIC0+IElFQzk1OCB4eHggaW5kZXg9MywgUENNIGRldj05Cj4KPiBTbyBv
+YnZpb3VzbHkgc3BkaWYgYW5kIHRoZSBmaXJzdCBoZG1pIGNvbmZsaWN0Lgo+Cj4gQmFzaWNhbGx5
+IHRoaXMgY2FuIGJlIGZpeGVkIGJ5IHJlYXNzaWduaW5nIGVhY2ggSUVDOTU4IGNvbnRyb2wgd2l0
+aAo+IHRoZSBzYW1lIGRldmljZSBudW1iZXIgY29ycmVzcG9uZGluZyB0byB0aGUgUENNIGRldmlj
+ZS4gIFRoYXQgaXMsIGZvcgo+IFNQRElGLCBhc3NpZ24gYSBjb250cm9sIGVsZW1lbnQgd2l0aCBk
+ZXZpY2U9MSwgZm9yIEhETUksCj4gZGV2aWNlPTMsNy4uLgo+IEhvd2V2ZXIsIHRoaXMgb2J2aW91
+c2x5IGJyZWFrcyB0aGUgb2xkIGNvbmZpZ3VyYXRpb24gdW5sZXNzIHVzZXIKPiB1cGdyYWRlcyB0
+aGUgYWxzYS1saWIgY29uZmlndXJhdGlvbi4gIFRodXMgdGhpcyBpcyBuby1nby4KPgo+IE5vdyBo
+ZXJlIGlzIGEgY29tcHJvbWlzZTogdGhlIElFQzk1OCBjb250cm9sIGZvciBTUERJRiBpcyByZWFz
+c2lnbmVkCj4gdG8gZGV2aWNlPTEgKm9ubHkqIHdoZW4gU1BESUYgYW5kIEhETUkgY29leGlzdC4g
+IFNpbmNlIHRoZQo+IGNvbmZpZ3VyYXRpb24gaXMgYW55d2F5IGJyb2tlbiBhcyBpcyBub3cgaW4g
+c3VjaCBhIGNhc2UsIGl0J3Mgbm8gYmlnCj4gZGVhbCB0byBmaXggb25lIHNpZGUgaW4gYW4gaW5j
+b21wYXRpYmxlIHdheS4gIChUaGUgcmVhc29uIHdoeSBTUERJRgo+IGlzIHJlLWFzc2lnbmVkIGlz
+IHRoYXQgSSBndWVzcyBtYWpvcml0eSBvZiB1c2VyIHJlcXVpcmUgbW9yZSBIRE1JIHRoYW4KPiBT
+UERJRiBpbiBzdWNoIGEgY29uZmlndXJhdGlvbi4pCj4KPiBJbiBhZGRpdGlvbiwgd2UgbmVlZCBh
+IGZpeCBpbiBhbHNhLWxpYi4gIEFsc28gbm90IGZvciBicmVha2luZyB0aGUKPiBjb21wYXRpYmls
+aXR5IHdpdGggb2xkZXIga2VybmVsLCB3ZSBuZWVkIHNvbWUgZmFsbGJhY2sgY2hlY2suICBJIGRp
+ZCBhCj4gcXVpY2sgaGFjayB0byBhbHNhLWxpYiBjb25mIGNvZGUgYW5kIGFkZGVkICJza2lwX3Jl
+c3QiIG9wdGlvbiB0byB0aGUKPiBob29rIGVsZW1lbnQsIHNvIHRoYXQgb25seSB0aGUgZmlyc3Qg
+bWF0Y2hpbmcgZWxlbWVudCBpcyB0YWtlbi4KCmhvdyBhYm91dCB0aG9zZSBoZG1pIGphY2sgYW5k
+IGllYzk1OCBvbiBhZDE5ODliPwoKdGhlcmUgaXMgbm8gZGV2aWNlIDMgYnV0IFtKYWNrXSBTUERJ
+RiBPdXQgYXQgRXh0IFJlYXIgYW5kIFtKYWNrXSBEaWdpdGFsCk91dCBhdCBJbnQgSERNSQoKKioq
+KiBMaXN0IG9mIFBMQVlCQUNLIEhhcmR3YXJlIERldmljZXMgKioqKgpjYXJkIDA6IEludGVsIFtI
+REEgSW50ZWxdLCBkZXZpY2UgMDogQUQxOTh4IEFuYWxvZyBbQUQxOTh4IEFuYWxvZ10KICBTdWJk
+ZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IEludGVsIFtI
+REEgSW50ZWxdLCBkZXZpY2UgMTogQUQxOTh4IERpZ2l0YWwgW0FEMTk4eCBEaWdpdGFsXQogIFN1
+YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDogSW50ZWwg
+W0hEQSBJbnRlbF0sIGRldmljZSAyOiBBRDE5OHggSGVhZHBob25lIFtBRDE5OHggSGVhZHBob25l
+XQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgpodHRwczov
+L2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZlci8rYnVnLzk5NTE2
+OS8rYXR0YWNobWVudC8zMTMyMDcwLytmaWxlcy9DYXJkMC5Db2RlY3MuY29kZWMuMC50eHQKCk5v
+ZGUgMHgxYiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzBkOiBTdGVyZW8gRGlnaXRhbCBBbXAt
+T3V0CiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRl
+dmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1w
+LU91dCBjYXBzOiBvZnM9MHgyNywgbnN0ZXBzPTB4MjcsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQog
+IEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMTA6IE9VVAogIFBp
+biBEZWZhdWx0IDB4MDE0NWYxYTA6IFtKYWNrXSBTUERJRiBPdXQgYXQgRXh0IFJlYXIKICAgIENv
+bm4gPSBPcHRpY2FsLCBDb2xvciA9IE90aGVyCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4YSwgU2Vx
+dWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQK
+ICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMgoKTm9kZSAweDFkIFtQaW4gQ29tcGxleF0gd2NhcHMg
+MHg0MDAzMGQ6IFN0ZXJlbyBEaWdpdGFsIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJIRE1JIFBs
+YXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9Mywg
+ZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgyNywgbnN0ZXBzPTB4
+MjcsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDI3IDB4MjddCiAg
+UGluY2FwIDB4MDAwMDAwMTA6IE9VVAogIFBpbiBEZWZhdWx0IDB4MTg1NmYxYjA6IFtKYWNrXSBE
+aWdpdGFsIE91dCBhdCBJbnQgSERNSQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gT3RoZXIK
+ICAgIERlZkFzc29jaWF0aW9uID0gMHhiLCBTZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9IE5PX1BS
+RVNFTkNFCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIENvbm5lY3Rpb246IDEKICAgICAweDBiCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
