@@ -1,27 +1,19 @@
-From: Adolfo <adolfo.ranea@gmail.com>
-Subject: Re: USB Quirks for Boss JS-8
-Date: Sun, 14 Oct 2012 19:43:12 +0000 (UTC)
-Message-ID: <loom.20121014T211933-673@post.gmane.org>
-References: <201103181756.53155.maillist@superlative.org>
- <AANLkTikU+shHE6Z4cz0Gecy9VO6bg=Cxvpjywrfxfck5@mail.gmail.com>
- <4D875382.9000707@ladisch.de> <201103211445.47752.maillist@superlative.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: sound/pci/hda/hda_codec.c:1435:46: error:
+ 'AC_VERB_GET_CON' undeclared
+Date: Mon, 15 Oct 2012 09:59:45 +0900
+Message-ID: <20121015005944.GC24935@opensource.wolfsonmicro.com>
+References: <20121012170109.GD20312@localhost> <s5h7gquixlv.wl%tiwai@suse.de>
+ <20121014023953.GA8713@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id A6500262602
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2012 21:44:59 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TNU7U-00070W-IU
- for alsa-devel@alsa-project.org; Sun, 14 Oct 2012 21:45:04 +0200
-Received: from 212.83-213-229.dynamic.clientes.euskaltel.es ([83.213.229.212])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2012 21:45:04 +0200
-Received: from adolfo.ranea by 212.83-213-229.dynamic.clientes.euskaltel.es
- with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2012 21:45:04 +0200
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F1A7726262D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2012 03:00:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20121014023953.GA8713@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,17 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Oct 14, 2012 at 10:39:53AM +0800, Fengguang Wu wrote:
 
-I am not able to hear any sounds in my JS-8 connected to my Fedora 17,
+> OK. Takashi, Mark, the build system can now avoid testing selected
+> trees during the merge window. Shall I add your trees to the list?
 
-The device is recognised by the system, but no sound can be played,
-I've tried with jack too, but no luck,
-Can you please tell me if jackd needs any special parameters in order to run
-with JS-8?
-
-Best regards,
-Adolfo
+For me I'd really want to be able to keep the for-next branch covered,
+it's better to have the false positives than to loose that coverage.
