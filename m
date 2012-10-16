@@ -1,39 +1,87 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Fwd: Support for Roland VG-99 (working code,
- but could use help)
-Date: Tue, 16 Oct 2012 11:19:10 +0200
-Message-ID: <507D268E.2070609@ladisch.de>
-References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
- <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
- <507D0F6D.1000102@gmail.com>
- <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+From: Fabio Porcedda <fabio.porcedda@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: atmel-ssc: use module_platform_driver macro
+Date: Tue, 16 Oct 2012 11:32:38 +0200
+Message-ID: <CAHkwnC_ih_-bHeYxxF0xy+pKjATkzfu1cDPD8XAw8ZHu9OQuxg@mail.gmail.com>
+References: <1350359819-2461-1-git-send-email-voice.shen@atmel.com> <1350359819-2461-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 45221262626
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 11:20:27 +0200 (CEST)
-In-Reply-To: <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pete Leigh <pete.leigh@gmail.com>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1350359819-2461-2-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Pete Leigh wrote:
-> Ok, I'll give this a shot.. Does the quirk definition look sane?
+On Tue, Oct 16, 2012 at 5:56 AM, Bo Shen <voice.shen@atmel.com> wrote:
+> This patch removes some code duplication by using module_platform_driver
+>
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
+>  drivers/misc/atmel-ssc.c |   18 ++++--------------
+>  1 file changed, 4 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+> index 23dcb76..ac00f83 100644
+> --- a/drivers/misc/atmel-ssc.c
+> +++ b/drivers/misc/atmel-ssc.c
+> @@ -68,7 +68,7 @@ void ssc_free(struct ssc_device *ssc)
+>  }
+>  EXPORT_SYMBOL(ssc_free);
+>
+> -static int __init ssc_probe(struct platform_device *pdev)
+> +static int ssc_probe(struct platform_device *pdev)
+>  {
+>         struct resource *regs;
+>         struct ssc_device *ssc;
+> @@ -135,24 +135,14 @@ static int __devexit ssc_remove(struct platform_device *pdev)
+>  }
+>
+>  static struct platform_driver ssc_driver = {
+> -       .remove         = __devexit_p(ssc_remove),
+>         .driver         = {
+>                 .name           = "ssc",
+>                 .owner          = THIS_MODULE,
+>         },
+> +       .probe          = ssc_probe,
+> +       .remove         = __devexit_p(ssc_remove),
+>  };
+> -
+> -static int __init ssc_init(void)
+> -{
+> -       return platform_driver_probe(&ssc_driver, ssc_probe);
+> -}
+> -module_init(ssc_init);
+> -
+> -static void __exit ssc_exit(void)
+> -{
+> -       platform_driver_unregister(&ssc_driver);
+> -}
+> -module_exit(ssc_exit);
+> +module_platform_driver(ssc_driver);
+>
+>  MODULE_AUTHOR("Hans-Christian Egtvedt <hcegtvedt@atmel.com>");
+>  MODULE_DESCRIPTION("SSC driver for Atmel AVR32 and AT91");
+> --
+> 1.7.9.5
 
-Please check if QUIRK_AUDIO_STANDARD_INTERFACE works.
-Are you sure there are three MIDI ports per direction, and not two?
+Maybe the module_platform_driver isn't a substitute of platform_driver_probe,
+because module_platform_driver  use platform_driver_register/unregister.
+Using that macro we lose the advantage of platform_driver_probe,
+as stated in:
 
+https://lkml.org/lkml/2012/1/10/335
+On Tue, Jan 10, 2012 at 21:47, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> [...]
+>Still, setting up platform_driver.probe and removing __init from all probe
+>functions is not the right thing to do, as this make (non-__init) kernel code
+>size bigger, while none of these devices are hotpluggable and thus cannot
+>appear after bootup. That's why we have platform_driver_probe() in the
+>first place. So I think all of this should be reverted for non-hotpluggable
+>drivers.
+> [...]
 
-Regards,
-Clemens
+What do you think?
+
+Best regards
+-- 
+Fabio Porcedda
