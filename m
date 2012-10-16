@@ -1,17 +1,24 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: Re: Silence playback during XRUN
-Date: Tue, 16 Oct 2012 10:24:20 +0000
-Message-ID: <32F4D3A311A1404B92CF923AFF38C3C526E1D7@BGSMSX101.gar.corp.intel.com>
-References: <32F4D3A311A1404B92CF923AFF38C3C526B2CA@BGSMSX101.gar.corp.intel.com>
+From: Pete Leigh <pete.leigh@gmail.com>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Tue, 16 Oct 2012 12:38:23 +0100
+Message-ID: <CABn3OEHgc5RHDX-C3yJsHj9iVFH6Zn9hg3Z0umUhK6SyPVqVJw@mail.gmail.com>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+ <507D268E.2070609@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 97E262616E3
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 12:24:25 +0200 (CEST)
-In-Reply-To: <32F4D3A311A1404B92CF923AFF38C3C526B2CA@BGSMSX101.gar.corp.intel.com>
-Content-Language: en-US
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 983AE2650D1
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 13:38:25 +0200 (CEST)
+Received: by mail-ie0-f179.google.com with SMTP id c10so9260656ieb.38
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 04:38:24 -0700 (PDT)
+In-Reply-To: <507D268E.2070609@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +28,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->Hi
->
->I am trying to configure my application to use silence playback of ALSA in case
->XRUN.
->I am configuring the silence parameters as below:
->
->silence_threshold = 0
->silence_size = boundary
->stop_threshold = bounday
->
->Using the above configuration I can see that ALSA sends silence during XRUN.
->But I am experiencing audio is jerky, when application starts sending the data
->after the XRUN.
->
->I noticed someone has met similar situation.
->http://mailman.alsa-project.org/pipermail/alsa-devel/2011-
->December/046894.html
->
->Do I need to modify my silence settings? Anything that I need take care apart
->from the above mentioned parameters?
+Hi Clemens, thanks for looking..
 
-Ping....
+On 16 October 2012 10:19, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Please check if QUIRK_AUDIO_STANDARD_INTERFACE works.
 
+It does! :)
 
-Thanks
-Ramesh
+> Are you sure there are three MIDI ports per direction, and not two?
+
+No, that sounds wrong, in fact I didn't realise I'd set this. I guess
+the two ports would be one for sysex and one for normal messages? Two
+seems to fit with what lsusb shows
+
+I've tested with .out_cables and .in_cables both set to 0x0011 (is
+that two?) and midi in and out continue to work..
+
+Physically, there are two midi connectors, "IN" and "OUT".
+
+Thanks again for the help..
+
+- Pete.
+
+>
+> Regards,
+> Clemens
