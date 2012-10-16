@@ -1,47 +1,115 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/2] ARM: OMAP: Trivial driver changes to
- remove include plat/cpu.h
-Date: Mon, 15 Oct 2012 17:07:23 -0700
-Message-ID: <20121016000722.GH15569@atomide.com>
-References: <20121008173452.10603.53886.stgit@muffinssi>
- <20121008173557.10603.18539.stgit@muffinssi>
- <5073E84E.4090408@ti.com> <20121010001943.GK12552@atomide.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-04-ewr.mailhop.org [204.13.248.74])
- by alsa0.perex.cz (Postfix) with ESMTP id B231A2650BB
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 02:07:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20121010001943.GK12552@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Deepak Saxena <dsaxena@plexity.net>, Venkatraman S <svenkatr@ti.com>, Vinod Koul <vinod.koul@intel.com>, Matt Mackall <mpm@selenic.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Herbert Xu <herbert@gondor.hengli.com.au>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Chris Ball <cjb@laptop.org>, Dan Williams <djbw@fb.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 1/2] ASoC: atmel-ssc: use devm_xxx() managed function
+Date: Tue, 16 Oct 2012 11:56:58 +0800
+Message-ID: <1350359819-2461-1-git-send-email-voice.shen@atmel.com>
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-KiBUb255IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPiBbMTIxMDA5IDE3OjIxXToKPiAqIFDD
-qXRlciBVamZhbHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPiBbMTIxMDA5IDAyOjAzXToKPiA+
-IE9uIDEwLzA4LzIwMTIgMDc6MzUgUE0sIFRvbnkgTGluZGdyZW4gd3JvdGU6Cj4gPiAKPiA+ID4g
-LSBvbWFwLWRtYS5jIGFuZCBvbWFwLXBjbS5jIGNhbiB0ZXN0IHRoZSBhcmNoIGxvY2FsbHkgYXMK
-PiA+ID4gICBvbWFwMSBhbmQgb21hcDIgY2Fubm90IGJlIGNvbXBpbGVkIHRvZ2V0aGVyIGJlY2F1
-c2Ugb2YKPiA+ID4gICBjb25mbGljdGluZyBjb21waWxlciBmbGFncwo+ID4gCj4gPiA+ICBzb3Vu
-ZC9zb2Mvb21hcC9vbWFwLXBjbS5jICAgICAgICAgfCAgICA5ICsrKysrKystLQo+ID4gCj4gPiBU
-b255OiBpcyB0aGlzIGdvaW5nIHRvIGJlIGluY2x1ZGVkIGluIDMuNz8KPiAKPiBIbW0gSSBndWVz
-cyB3ZSBjb3VsZCB0cnkgdG8gZ2V0IHRoaXMgb3V0IG9mIHRoZSB3YXkKPiB0byBjdXQgZG93biB0
-aGUgZGVwZW5kZW5jaWVzLiBMZXQncyBpZiBtYWludGFpbmVycwo+IG9mIHRoZSBvdGhlciBhZmZl
-Y3RlZCBkcml2ZXJzIHRoaXMgaXMgT0sgZm9yIHRoZQo+IC1yYyBzZXJpZXMuCgpJdCBzZWVtcyB0
-aGF0IG5vYm9keSBuZWVkcyB0aGVzZSB1bnRpbCBmb3IgdjMuOCwgc28gSSdsbApiZSBhcHBseWlu
-ZyB0aGlzIGludG8gb21hcC1mb3ItdjMuOC9jbGVhbnVwLWhlYWRlcnMtcHJlcGFyZQpicmFuY2gg
-c29vbi4KCkFueWJvZHkgZWxzZSBjYXJlIHRvIGFjaz8KClJlZ2FyZHMsCgpUb255Cl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Using the devm_xxx() managed function to stripdown the error
+and remove code.
+
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
+ drivers/misc/atmel-ssc.c |   47 +++++++++++++++-------------------------------
+ 1 file changed, 15 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index 5bb1877..23dcb76 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -70,37 +70,33 @@ EXPORT_SYMBOL(ssc_free);
+ 
+ static int __init ssc_probe(struct platform_device *pdev)
+ {
+-	int retval = 0;
+ 	struct resource *regs;
+ 	struct ssc_device *ssc;
+ 
+-	ssc = kzalloc(sizeof(struct ssc_device), GFP_KERNEL);
++	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
+ 	if (!ssc) {
+ 		dev_dbg(&pdev->dev, "out of memory\n");
+-		retval = -ENOMEM;
+-		goto out;
++		return -ENOMEM;
+ 	}
+ 
++	ssc->pdev = pdev;
++
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!regs) {
+ 		dev_dbg(&pdev->dev, "no mmio resource defined\n");
+-		retval = -ENXIO;
+-		goto out_free;
++		return -ENXIO;
+ 	}
+ 
+-	ssc->clk = clk_get(&pdev->dev, "pclk");
+-	if (IS_ERR(ssc->clk)) {
+-		dev_dbg(&pdev->dev, "no pclk clock defined\n");
+-		retval = -ENXIO;
+-		goto out_free;
+-	}
+-
+-	ssc->pdev = pdev;
+-	ssc->regs = ioremap(regs->start, resource_size(regs));
++	ssc->regs = devm_request_and_ioremap(&pdev->dev, regs);
+ 	if (!ssc->regs) {
+ 		dev_dbg(&pdev->dev, "ioremap failed\n");
+-		retval = -EINVAL;
+-		goto out_clk;
++		return -EINVAL;
++	}
++
++	ssc->clk = devm_clk_get(&pdev->dev, "pclk");
++	if (IS_ERR(ssc->clk)) {
++		dev_dbg(&pdev->dev, "no pclk clock defined\n");
++		return -ENXIO;
+ 	}
+ 
+ 	/* disable all interrupts */
+@@ -112,8 +108,7 @@ static int __init ssc_probe(struct platform_device *pdev)
+ 	ssc->irq = platform_get_irq(pdev, 0);
+ 	if (!ssc->irq) {
+ 		dev_dbg(&pdev->dev, "could not get irq\n");
+-		retval = -ENXIO;
+-		goto out_unmap;
++		return -ENXIO;
+ 	}
+ 
+ 	spin_lock(&user_lock);
+@@ -125,16 +120,7 @@ static int __init ssc_probe(struct platform_device *pdev)
+ 	dev_info(&pdev->dev, "Atmel SSC device at 0x%p (irq %d)\n",
+ 			ssc->regs, ssc->irq);
+ 
+-	goto out;
+-
+-out_unmap:
+-	iounmap(ssc->regs);
+-out_clk:
+-	clk_put(ssc->clk);
+-out_free:
+-	kfree(ssc);
+-out:
+-	return retval;
++	return 0;
+ }
+ 
+ static int __devexit ssc_remove(struct platform_device *pdev)
+@@ -142,10 +128,7 @@ static int __devexit ssc_remove(struct platform_device *pdev)
+ 	struct ssc_device *ssc = platform_get_drvdata(pdev);
+ 
+ 	spin_lock(&user_lock);
+-	iounmap(ssc->regs);
+-	clk_put(ssc->clk);
+ 	list_del(&ssc->list);
+-	kfree(ssc);
+ 	spin_unlock(&user_lock);
+ 
+ 	return 0;
+-- 
+1.7.9.5
+
