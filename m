@@ -1,126 +1,77 @@
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 1/2] ASoC: atmel-ssc: use devm_xxx() managed function
-Date: Tue, 16 Oct 2012 10:05:25 +0200
-Message-ID: <507D1545.8020903@atmel.com>
-References: <1350359819-2461-1-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH 2/2] ASoC: atmel-ssc: use module_platform_driver macro
+Date: Tue, 16 Oct 2012 10:07:30 +0200
+Message-ID: <507D15C2.7000606@atmel.com>
+References: <1350359819-2461-1-git-send-email-voice.shen@atmel.com> <1350359819-2461-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1350359819-2461-1-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <1350359819-2461-2-git-send-email-voice.shen@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com
+To: Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, Wolfram Sang <w.sang@pengutronix.de>
+Cc: broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On 10/16/2012 05:56 AM, Bo Shen :
-> Using the devm_xxx() managed function to stripdown the error
-> and remove code.
+> This patch removes some code duplication by using module_platform_driver
 > 
 > Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-Maybe too late, but:
-
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Very good simplification but...
 
 > ---
->  drivers/misc/atmel-ssc.c |   47 +++++++++++++++-------------------------------
->  1 file changed, 15 insertions(+), 32 deletions(-)
+>  drivers/misc/atmel-ssc.c |   18 ++++--------------
+>  1 file changed, 4 insertions(+), 14 deletions(-)
 > 
 > diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-> index 5bb1877..23dcb76 100644
+> index 23dcb76..ac00f83 100644
 > --- a/drivers/misc/atmel-ssc.c
 > +++ b/drivers/misc/atmel-ssc.c
-> @@ -70,37 +70,33 @@ EXPORT_SYMBOL(ssc_free);
+> @@ -68,7 +68,7 @@ void ssc_free(struct ssc_device *ssc)
+>  }
+>  EXPORT_SYMBOL(ssc_free);
 >  
->  static int __init ssc_probe(struct platform_device *pdev)
+> -static int __init ssc_probe(struct platform_device *pdev)
+> +static int ssc_probe(struct platform_device *pdev)
+
+Here you remove the __init altogether, maybe converting to __devinit is
+the proper replacement for this? I do not know myself but if anybody knows?
+
+Bye,
+
+
 >  {
-> -	int retval = 0;
 >  	struct resource *regs;
 >  	struct ssc_device *ssc;
->  
-> -	ssc = kzalloc(sizeof(struct ssc_device), GFP_KERNEL);
-> +	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
->  	if (!ssc) {
->  		dev_dbg(&pdev->dev, "out of memory\n");
-> -		retval = -ENOMEM;
-> -		goto out;
-> +		return -ENOMEM;
->  	}
->  
-> +	ssc->pdev = pdev;
-> +
->  	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!regs) {
->  		dev_dbg(&pdev->dev, "no mmio resource defined\n");
-> -		retval = -ENXIO;
-> -		goto out_free;
-> +		return -ENXIO;
->  	}
->  
-> -	ssc->clk = clk_get(&pdev->dev, "pclk");
-> -	if (IS_ERR(ssc->clk)) {
-> -		dev_dbg(&pdev->dev, "no pclk clock defined\n");
-> -		retval = -ENXIO;
-> -		goto out_free;
-> -	}
-> -
-> -	ssc->pdev = pdev;
-> -	ssc->regs = ioremap(regs->start, resource_size(regs));
-> +	ssc->regs = devm_request_and_ioremap(&pdev->dev, regs);
->  	if (!ssc->regs) {
->  		dev_dbg(&pdev->dev, "ioremap failed\n");
-> -		retval = -EINVAL;
-> -		goto out_clk;
-> +		return -EINVAL;
-> +	}
-> +
-> +	ssc->clk = devm_clk_get(&pdev->dev, "pclk");
-> +	if (IS_ERR(ssc->clk)) {
-> +		dev_dbg(&pdev->dev, "no pclk clock defined\n");
-> +		return -ENXIO;
->  	}
->  
->  	/* disable all interrupts */
-> @@ -112,8 +108,7 @@ static int __init ssc_probe(struct platform_device *pdev)
->  	ssc->irq = platform_get_irq(pdev, 0);
->  	if (!ssc->irq) {
->  		dev_dbg(&pdev->dev, "could not get irq\n");
-> -		retval = -ENXIO;
-> -		goto out_unmap;
-> +		return -ENXIO;
->  	}
->  
->  	spin_lock(&user_lock);
-> @@ -125,16 +120,7 @@ static int __init ssc_probe(struct platform_device *pdev)
->  	dev_info(&pdev->dev, "Atmel SSC device at 0x%p (irq %d)\n",
->  			ssc->regs, ssc->irq);
->  
-> -	goto out;
-> -
-> -out_unmap:
-> -	iounmap(ssc->regs);
-> -out_clk:
-> -	clk_put(ssc->clk);
-> -out_free:
-> -	kfree(ssc);
-> -out:
-> -	return retval;
-> +	return 0;
+> @@ -135,24 +135,14 @@ static int __devexit ssc_remove(struct platform_device *pdev)
 >  }
 >  
->  static int __devexit ssc_remove(struct platform_device *pdev)
-> @@ -142,10 +128,7 @@ static int __devexit ssc_remove(struct platform_device *pdev)
->  	struct ssc_device *ssc = platform_get_drvdata(pdev);
+>  static struct platform_driver ssc_driver = {
+> -	.remove		= __devexit_p(ssc_remove),
+>  	.driver		= {
+>  		.name		= "ssc",
+>  		.owner		= THIS_MODULE,
+>  	},
+> +	.probe		= ssc_probe,
+> +	.remove		= __devexit_p(ssc_remove),
+>  };
+> -
+> -static int __init ssc_init(void)
+> -{
+> -	return platform_driver_probe(&ssc_driver, ssc_probe);
+> -}
+> -module_init(ssc_init);
+> -
+> -static void __exit ssc_exit(void)
+> -{
+> -	platform_driver_unregister(&ssc_driver);
+> -}
+> -module_exit(ssc_exit);
+> +module_platform_driver(ssc_driver);
 >  
->  	spin_lock(&user_lock);
-> -	iounmap(ssc->regs);
-> -	clk_put(ssc->clk);
->  	list_del(&ssc->list);
-> -	kfree(ssc);
->  	spin_unlock(&user_lock);
->  
->  	return 0;
+>  MODULE_AUTHOR("Hans-Christian Egtvedt <hcegtvedt@atmel.com>");
+>  MODULE_DESCRIPTION("SSC driver for Atmel AVR32 and AT91");
 > 
 
 
