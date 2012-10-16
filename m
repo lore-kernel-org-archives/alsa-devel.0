@@ -1,28 +1,39 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 2/2] ASoC: atmel-ssc: use module_platform_driver macro
-Date: Tue, 16 Oct 2012 10:07:48 +0100
-Message-ID: <20121016090748.GX21164@n2100.arm.linux.org.uk>
-References: <1350359819-2461-1-git-send-email-voice.shen@atmel.com> <1350359819-2461-2-git-send-email-voice.shen@atmel.com> <507D15C2.7000606@atmel.com> <20121016084947.GD12801@game.jcrosoft.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Tue, 16 Oct 2012 11:19:10 +0200
+Message-ID: <507D268E.2070609@ladisch.de>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121016084947.GD12801@game.jcrosoft.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Wolfram Sang <w.sang@pengutronix.de>, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 45221262626
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 11:20:27 +0200 (CEST)
+In-Reply-To: <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pete Leigh <pete.leigh@gmail.com>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 16, 2012 at 10:49:47AM +0200, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 10:07 Tue 16 Oct     , Nicolas Ferre wrote:
-> > On 10/16/2012 05:56 AM, Bo Shen :
-> > > -static int __init ssc_probe(struct platform_device *pdev)
-> > > +static int ssc_probe(struct platform_device *pdev)
-> > 
-> > Here you remove the __init altogether, maybe converting to __devinit is
-> > the proper replacement for this? I do not know myself but if anybody knows?
-> yes __devinit is mandatory
+Pete Leigh wrote:
+> Ok, I'll give this a shot.. Does the quirk definition look sane?
 
-No it isn't.  __init is plain buggy.  __devinit is better, but there's
-plans to remove all __devinit from the kernel.  Having nothing there
-will make GregKH's life a lot easier when he does come to remove __devinit.
+Please check if QUIRK_AUDIO_STANDARD_INTERFACE works.
+Are you sure there are three MIDI ports per direction, and not two?
+
+
+Regards,
+Clemens
