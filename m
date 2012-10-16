@@ -1,17 +1,23 @@
-From: Yuanhan Liu <yuanhan.liu@intel.com>
-Subject: [asoc:topic/wm2200] sound/soc/codecs/wm2200.c:1033:4:
- warning: format '%d' expects argument of type 'int',
- but argument 4 has type 'size_t'
-Date: Mon, 15 Oct 2012 15:21:05 +0800
-Message-ID: <20121015072105.GC2136@yliu-dev.sh.intel.com>
+From: Adolfo Ranea <adolfo.ranea@gmail.com>
+Subject: Re: USB Quirks for Boss JS-8
+Date: Tue, 16 Oct 2012 10:04:02 +0200
+Message-ID: <CAPYxcbK4GzMtErCHL9Lnxg0TM_yMkXpXeuTnEPRrnFjtrxgEKg@mail.gmail.com>
+References: <201103181756.53155.maillist@superlative.org>
+ <AANLkTikU+shHE6Z4cz0Gecy9VO6bg=Cxvpjywrfxfck5@mail.gmail.com>
+ <4D875382.9000707@ladisch.de>
+ <201103211445.47752.maillist@superlative.org>
+ <loom.20121014T211933-673@post.gmane.org>
+ <507D1110.1000609@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id E5024261643
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2012 09:21:02 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 968FC2625F4
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 10:04:06 +0200 (CEST)
+Received: by mail-wg0-f51.google.com with SMTP id ed3so3710861wgb.20
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2012 01:04:02 -0700 (PDT)
+In-Reply-To: <507D1110.1000609@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Yuanhan Liu <yuanhan.liu@intel.com>, kernel-janitors@vger.kernel.org, wfg@linux.intel.com, alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Thanks for your response,
 
-FYI, there are new compile warnings show up in
+If I can help you in testing the fix please let me know
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/wm2200
-head:   9874482985fb26f90c3b2d8f1a82bd796d141304
-commit: 6e87badd3f38e1a095d6e1b13828246c3e8486b5 ASoC: wm2200: Provide initial coefficient loading
-config: x86_64-allmodconfig # make ARCH=x86_64 allmodconfig
+Regards,
+Adolfo
 
-All warnings:
+2012/10/16 Daniel Mack <zonque@gmail.com>
 
-sound/soc/codecs/wm2200.c: In function 'wm2200_dsp_load':
-sound/soc/codecs/wm2200.c:1033:4: warning: format '%d' expects argument of type 'int', but argument 4 has type 'size_t' [-Wformat]
-sound/soc/codecs/wm2200.c:1145:5: warning: format '%d' expects argument of type 'int', but argument 5 has type 'long unsigned int' [-Wformat]
-sound/soc/codecs/wm2200.c: In function 'wm2200_setup_algs':
-sound/soc/codecs/wm2200.c:1187:2: warning: format '%d' expects argument of type 'int', but argument 7 has type 'size_t' [-Wformat]
-sound/soc/codecs/wm2200.c:1207:5: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'long unsigned int' [-Wformat]
-sound/soc/codecs/wm2200.c: In function 'wm2200_load_coeff':
-sound/soc/codecs/wm2200.c:1270:4: warning: format '%d' expects argument of type 'int', but argument 4 has type 'size_t' [-Wformat]
-sound/soc/codecs/wm2200.c:1334:5: warning: format '%d' expects argument of type 'int', but argument 5 has type 'long unsigned int' [-Wformat]
-
-vim +1033 sound/soc/codecs/wm2200.c
-
-e10f8711 Mark Brown 2012-10-04  1017  		break;
-e10f8711 Mark Brown 2012-10-04  1018  	default:
-e10f8711 Mark Brown 2012-10-04  1019  		dev_err(codec->dev, "BASE %x\n", base);
-e10f8711 Mark Brown 2012-10-04  1020  		BUG_ON(1);
-e10f8711 Mark Brown 2012-10-04  1021  		return -EINVAL;
-e10f8711 Mark Brown 2012-10-04  1022  	}
-e10f8711 Mark Brown 2012-10-04  1023  
-e10f8711 Mark Brown 2012-10-04  1024  	ret = request_firmware(&firmware, file, codec->dev);
-e10f8711 Mark Brown 2012-10-04  1025  	if (ret != 0) {
-e10f8711 Mark Brown 2012-10-04  1026  		dev_err(codec->dev, "Failed to request '%s'\n", file);
-e10f8711 Mark Brown 2012-10-04  1027  		return ret;
-e10f8711 Mark Brown 2012-10-04  1028  	}
-e10f8711 Mark Brown 2012-10-04  1029  
-e10f8711 Mark Brown 2012-10-04  1030  	pos = sizeof(*header) + sizeof(*adsp1_sizes) + sizeof(*footer);
-e10f8711 Mark Brown 2012-10-04  1031  	if (pos >= firmware->size) {
-e10f8711 Mark Brown 2012-10-04  1032  		dev_err(codec->dev, "%s: file too short, %d bytes\n",
-e10f8711 Mark Brown 2012-10-04 @1033  			file, firmware->size);
-e10f8711 Mark Brown 2012-10-04  1034  		return -EINVAL;
-e10f8711 Mark Brown 2012-10-04  1035  	}
-e10f8711 Mark Brown 2012-10-04  1036  
-e10f8711 Mark Brown 2012-10-04  1037  	header = (void*)&firmware->data[0];
-e10f8711 Mark Brown 2012-10-04  1038  
-e10f8711 Mark Brown 2012-10-04  1039  	if (memcmp(&header->magic[0], "WMFW", 4) != 0) {
-e10f8711 Mark Brown 2012-10-04  1040  		dev_err(codec->dev, "%s: invalid magic\n", file);
-e10f8711 Mark Brown 2012-10-04  1041  		return -EINVAL;
-
----
-0-DAY kernel build testing backend         Open Source Technology Center
-Fengguang Wu, Yuanhan Liu                              Intel Corporation
+> On 14.10.2012 21:43, Adolfo wrote:
+> > I am not able to hear any sounds in my JS-8 connected to my Fedora 17,
+> >
+> > The device is recognised by the system, but no sound can be played,
+> > I've tried with jack too, but no luck,
+> > Can you please tell me if jackd needs any special parameters in order to
+> run
+> > with JS-8?
+>
+> You might have hit a bug here that I introduced during a refactoring of
+> the driver. Unfortunately, I can't reproduce that with any of the
+> multiple USB audio devices I have at hand, but someone from the
+> alsa-user ML offered me to send over his device that also show this
+> problem, so I can have a look. Stay tuned please, and my apologies for
+> the trouble.
+>
+> Meanwhile, you could check whether any of the kernels between 2.6.39 ->
+> 3.4 works for you - they all have the quirk for the JS-8.
+>
+>
+> Thanks,
+> Daniel
+>
+>
