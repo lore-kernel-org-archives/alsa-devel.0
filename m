@@ -1,44 +1,51 @@
-From: Maxim Kachur <mcdebugger@duganet.ru>
-Subject: Re: [PATCH] emu10k1: add chip details for E-mu 1010
-	PCIe card
-Date: Wed, 17 Oct 2012 21:46:07 +0400
-Message-ID: <507EEEDF.2010300@duganet.ru>
-References: <507EC615.4070306@duganet.ru> <s5hfw5dqdea.wl%tiwai@suse.de>
-Reply-To: mcdebugger@duganet.ru
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 1/2] ARM: OMAP: Trivial driver changes to remove
+ include plat/cpu.h
+Date: Wed, 17 Oct 2012 11:13:31 -0700
+Message-ID: <20121017181330.GV15569@atomide.com>
+References: <20121008173452.10603.53886.stgit@muffinssi>
+ <20121008173557.10603.18539.stgit@muffinssi>
+ <5073E84E.4090408@ti.com>
+ <20121010001943.GK12552@atomide.com>
+ <20121016000722.GH15569@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 44A72265285
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 19:46:47 +0200 (CEST)
-Received: by mail-lb0-f179.google.com with SMTP id c1so4853658lbg.38
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 10:46:46 -0700 (PDT)
-In-Reply-To: <s5hfw5dqdea.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-crypto-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121016000722.GH15569@atomide.com>
+Sender: linux-crypto-owner@vger.kernel.org
+To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Herbert Xu <herbert@gondor.hengli.com.au>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Deepak Saxena <dsaxena@plexity.net>, Chris Ball <cjb@laptop.org>, Matt Mackall <mpm@selenic.com>, Venkatraman S <svenkatr@ti.com>, "David S. Miller" <davem@davemloft.net>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-crypto@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17.10.2012 20:19, Takashi Iwai wrote:
-> At Wed, 17 Oct 2012 18:52:05 +0400,
-> Maxim Kachur wrote:
->> emu10k1_main.c: Add chip details for E-mu 1010 PCIe card. It has the same
->> chip as found in E-mu 1010b but it uses different PCI id.
->>
->> Signed-off-by: Maxim Kachur<mcdebugger@duganet.ru>
-> Thanks, applied.
->
->
-> Takashi
->
-Thank you! I hope it will reduce headache for some users not so familiar 
-with kernel patching when using this type of cards.
+* Tony Lindgren <tony@atomide.com> [121015 17:09]:
+> * Tony Lindgren <tony@atomide.com> [121009 17:21]:
+> > * P=C3=A9ter Ujfalusi <peter.ujfalusi@ti.com> [121009 02:03]:
+> > > On 10/08/2012 07:35 PM, Tony Lindgren wrote:
+> > >=20
+> > > > - omap-dma.c and omap-pcm.c can test the arch locally as
+> > > >   omap1 and omap2 cannot be compiled together because of
+> > > >   conflicting compiler flags
+> > >=20
+> > > >  sound/soc/omap/omap-pcm.c         |    9 +++++++--
+> > >=20
+> > > Tony: is this going to be included in 3.7?
+> >=20
+> > Hmm I guess we could try to get this out of the way
+> > to cut down the dependencies. Let's if maintainers
+> > of the other affected drivers this is OK for the
+> > -rc series.
+>=20
+> It seems that nobody needs these until for v3.8, so I'll
+> be applying this into omap-for-v3.8/cleanup-headers-prepare
+> branch soon.
+>=20
+> Anybody else care to ack?
+
+OK pushed out now with just that patch in the branch in case
+driver branches need to merge it in too to avoid conflicts.
+
+Regards,
+
+Tony
