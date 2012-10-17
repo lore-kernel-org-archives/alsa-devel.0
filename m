@@ -1,17 +1,18 @@
 From: Maxim Kachur <mcdebugger@duganet.ru>
 Subject: [PATCH] emu10k1: add chip details for E-mu 1010 PCIe
 	card
-Date: Wed, 17 Oct 2012 18:47:45 +0400
-Message-ID: <507EC511.3050600@duganet.ru>
+Date: Wed, 17 Oct 2012 18:52:05 +0400
+Message-ID: <507EC615.4070306@duganet.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000400080100070300050704"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id EF59326522C
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 16:48:20 +0200 (CEST)
-Received: by mail-la0-f51.google.com with SMTP id m15so4661425lah.38
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 07:48:20 -0700 (PDT)
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A39F2651C6
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 16:52:39 +0200 (CEST)
+Received: by mail-lb0-f179.google.com with SMTP id c1so4726985lbg.38
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 07:52:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,11 +24,6 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
-This is a multi-part message in MIME format.
---------------000400080100070300050704
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
 emu10k1_main.c: Add chip details for E-mu 1010 PCIe card. It has the same
 chip as found in E-mu 1010b but it uses different PCI id.
@@ -61,21 +57,3 @@ emu_chip_details[] = {
   	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x40011102,
 -- 
 1.7.8.6
-
-
---------------000400080100070300050704
-Content-Type: text/plain;
- name="Attached Message Part"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="Attached Message Part"
-
-
---------------000400080100070300050704
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------000400080100070300050704--
