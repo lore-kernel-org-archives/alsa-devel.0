@@ -1,50 +1,46 @@
 From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/2] ARM: OMAP: Trivial driver changes to remove
- include plat/cpu.h
-Date: Wed, 17 Oct 2012 11:13:31 -0700
-Message-ID: <20121017181330.GV15569@atomide.com>
-References: <20121008173452.10603.53886.stgit@muffinssi>
- <20121008173557.10603.18539.stgit@muffinssi>
- <5073E84E.4090408@ti.com>
- <20121010001943.GK12552@atomide.com>
- <20121016000722.GH15569@atomide.com>
+Subject: Re: [PATCH v2 0/2] ASoC: omap-mcpdm updates for 3.7
+Date: Wed, 17 Oct 2012 12:55:26 -0700
+Message-ID: <20121017195525.GX15569@atomide.com>
+References: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-crypto-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20121016000722.GH15569@atomide.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Herbert Xu <herbert@gondor.hengli.com.au>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Deepak Saxena <dsaxena@plexity.net>, Chris Ball <cjb@laptop.org>, Matt Mackall <mpm@selenic.com>, Venkatraman S <svenkatr@ti.com>, "David S. Miller" <davem@davemloft.net>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-crypto@vger.kernel.org
+In-Reply-To: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Tony Lindgren <tony@atomide.com> [121015 17:09]:
-> * Tony Lindgren <tony@atomide.com> [121009 17:21]:
-> > * P=C3=A9ter Ujfalusi <peter.ujfalusi@ti.com> [121009 02:03]:
-> > > On 10/08/2012 07:35 PM, Tony Lindgren wrote:
-> > >=20
-> > > > - omap-dma.c and omap-pcm.c can test the arch locally as
-> > > >   omap1 and omap2 cannot be compiled together because of
-> > > >   conflicting compiler flags
-> > >=20
-> > > >  sound/soc/omap/omap-pcm.c         |    9 +++++++--
-> > >=20
-> > > Tony: is this going to be included in 3.7?
-> >=20
-> > Hmm I guess we could try to get this out of the way
-> > to cut down the dependencies. Let's if maintainers
-> > of the other affected drivers this is OK for the
-> > -rc series.
->=20
-> It seems that nobody needs these until for v3.8, so I'll
-> be applying this into omap-for-v3.8/cleanup-headers-prepare
-> branch soon.
->=20
-> Anybody else care to ack?
+Hi Mark,
 
-OK pushed out now with just that patch in the branch in case
-driver branches need to merge it in too to avoid conflicts.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [121004 01:27]:
+> Hello Mark, Tony,
+> 
+> Change since v1:
+> - Fixed the second patch to keep the omap_mcpdm_open_stream() - after a coffee
+> 
+> The mcpdm driver no longer needs to include any plat/*.h file, clearing the way
+> for the single kernel image.
+> 
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (1):
+>   ASoC: omap-mcpdm: Remove OMAP revision check
+> 
+> Tony Lindgren (1):
+>   ASoC: Fix wrong include for McPDM
+> 
+>  sound/soc/omap/omap-mcpdm.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+
+Is it OK for me to merge in your ASoC for-3.7 branch at commit
+68214d99 (ASoC: omap-mcpdm: Remove OMAP revision check) also
+into my omap cleanup branch for v3.8?
+
+I need that to avoid compile errors with some of my test configs.
 
 Regards,
 
