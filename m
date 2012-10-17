@@ -1,16 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Always check array bounds in
-	alc_get_line_out_pfx
-Date: Wed, 17 Oct 2012 12:43:44 +0200
-Message-ID: <1350470624-19833-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Handle snd_BUG()
+Date: Wed, 17 Oct 2012 12:59:32 +0200
+Message-ID: <1350471572-22504-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 1254A2651C3
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 12:43:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 96A7F2651C4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2012 12:59:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Even when CONFIG_SND_DEBUG is not enabled, we don't want to
-return an arbitrary memory location when the channel count is
-larger than we expected.
-
-Cc: stable@kernel.org
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
+ include/sound/core.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-Notes: This was found while debugging an OOPS on kernel 3.2.
-See https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1067269 for details.
-The badness calculation was improved in kernel 3.4; so not sure if the
-same could happen in later kernels, but at least apply to kernels <= 3.3 would make sense.
-Also adding to current trees (3.7, 3.8) would make sense IMO, just as extra safety.
-
- sound/pci/hda/patch_realtek.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2d2bb66..651822c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2599,8 +2599,10 @@ static const char *alc_get_line_out_pfx(struct alc_spec *spec, int ch,
- 			return "PCM";
- 		break;
- 	}
--	if (snd_BUG_ON(ch >= ARRAY_SIZE(channel_name)))
-+	if (ch >= ARRAY_SIZE(channel_name)) {
-+		snd_BUG();
- 		return "PCM";
-+	}
- 
- 	return channel_name[ch];
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 57774ea..a749460 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -24,6 +24,7 @@ static inline int _snd_BUG_ON(int cond, const char *func, int line)
+ 	return cond;
  }
+ #define snd_BUG_ON(cond)	_snd_BUG_ON(cond, __func__, __LINE__)
++#define snd_BUG()		snd_BUG_ON(1)
+ 
+ #include "asound.h"
+ #include "codec_config.h"
 -- 
 1.7.9.5
