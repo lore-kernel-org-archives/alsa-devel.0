@@ -1,46 +1,42 @@
-From: Prasant J <pj0585@gmail.com>
-Subject: Re: Interleaved or Non-interleaved?
-Date: Thu, 18 Oct 2012 15:27:48 +0530
-Message-ID: <CAA2DH4ttnAbxPCYBrNktbsAJS4zgBA5PG+qsD+r5cRLc6kMNiw@mail.gmail.com>
-References: <CAA2DH4sexxhLRRZzA6_-nFbY2P+VBLXX_aqcb6u5=13NJAKTaQ@mail.gmail.com>
+From: Marek Vasut <marex-ynQEQJNshbs@public.gmane.org>
+Subject: Re: [PATCH] dma: add new DMA control commands
+Date: Thu, 18 Oct 2012 12:51:14 +0200
+Message-ID: <201210181251.15116.marex@denx.de>
+References: <1350538335-29026-1-git-send-email-b32955@freescale.com> <201210181049.21556.marex@denx.de> <507FC827.40601@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 5318F2652C8
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 11:57:49 +0200 (CEST)
-Received: by mail-lb0-f179.google.com with SMTP id c1so5273905lbg.38
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 02:57:49 -0700 (PDT)
-In-Reply-To: <CAA2DH4sexxhLRRZzA6_-nFbY2P+VBLXX_aqcb6u5=13NJAKTaQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <507FC827.40601-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Huang Shijie <b32955-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: Vinod Koul <vinod.koul-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, djbw-b10kYP2dOMg@public.gmane.org, khali-PUYAD+kWke1g9hUCZPvPmw@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, w.sang-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org, dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, artem.bityutskiy-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, Huang Shijie <shijie8-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 18, 2012 at 2:04 PM, Prasant J <pj0585@gmail.com> wrote:
-> hi,
->
-> My sound hardware supports only interleaved audio.
->
-> I'm writing an alsa application. Which access method will be more
-> performing : interleaved or non-interleaved? (Or it does not make a
-> difference?)
->
-> -Prasant
+Dear Huang Shijie,
 
-@Clemens:
-What I wanted to know : right now my application is doing the audio
-sample demux/separation (capture) & mux (playback), because I my
-access method is interleaved. Will I get any performance benefit if I
-access in non-interleaved method ad let alsa do the work?
+> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:49, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > Dear Huang Shijie,
+> >=20
+> >> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=
+=86=99=E9=81=93:
+> >>> So we can't stream data from the chip? About time to adjust the M=
+TD
+> >>> framework to allow that. Maybe implement a command queue?
+> >>=20
+> >> IMHO, it's not possible. Because the READ-PAGE(00h-30h) command ne=
+eds to
+> >> check the busy status
+> >> which means we have to stop in the middle, so we can not chain the=
+ all
+> >> the read-pages DMA commands.
+> >=20
+> > Can the DMA not branch?
+>=20
+> it's too complicated to the MTD layer, as well as the gpmi driver.
 
--Prasant
+Can you please elaborate ?
+
+Best regards,
+Marek Vasut
