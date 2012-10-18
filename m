@@ -1,49 +1,83 @@
-From: Jassi Brar <jaswinder.singh@linaro.org>
-Subject: Re: [PATCH] dma: add new DMA control commands
-Date: Thu, 18 Oct 2012 14:59:10 +0530
-Message-ID: <CAJe_ZhfarH-HpJkEOpH=jY1Gc-UPEyuA4bJ4LSQES7Uyea2BQw@mail.gmail.com>
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
-	<1350541111.5263.3.camel@vkoul-udesk3>
-	<507FA595.4020507@freescale.com>
+From: Prasant J <pj0585@gmail.com>
+Subject: Re: ASoC: mmap or read/write?
+Date: Thu, 18 Oct 2012 15:07:45 +0530
+Message-ID: <CAA2DH4v4DUxf5Qh79nehTPD+22v6XddzDrEMmnBu2eM8m4JXzg@mail.gmail.com>
+References: <CAA2DH4uhwV0NmxEbLKN=m+VC9ruOHM13Vpu1m33j0DNm+n6yKQ@mail.gmail.com>
+ <507FC752.1050005@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <507FA595.4020507@freescale.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Huang Shijie <b32955@freescale.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, marex@denx.de, Huang Shijie <shijie8@gmail.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linux@arm.linux.org.uk, tiwai@suse.de, artem.bityutskiy@linux.intel.com, broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org, w.sang@pengutronix.de, perex@perex.cz, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, ben-linux@fluff.org, djbw@fb.com, khali@linux-fr.org, cjb@laptop.org, dwmw2@infradead.org, lrg@ti.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18B5D2625FC
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 11:37:46 +0200 (CEST)
+Received: by mail-lb0-f179.google.com with SMTP id c1so5263308lbg.38
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 02:37:45 -0700 (PDT)
+In-Reply-To: <507FC752.1050005@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 18 October 2012 12:15, Huang Shijie <b32955@freescale.com> wrote:
-> =D3=DA 2012=C4=EA10=D4=C218=C8=D5 14:18, Vinod Koul =D0=B4=B5=C0:
+On Thu, Oct 18, 2012 at 2:39 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Prasant J wrote:
+>> I'm writing an alsa application for recording & playing 16 channel audio.
+>>
+>> The application is intended to run on an embedded platform & the
+>> resources are highly constrained.
 >
->> Why cant you do start (prepare clock etc) when you submit the descri=
-ptor
->> to dmaengine. Can be done in tx_submit callback.
->> Similarly remove the clock when dma transaction gets completed.
+> Then I wonder how you manage to handle 16 channels.
+> What hardware is this?
+
+I'm working with Beaglebone (ARM Cortex-A8 720 MHz). (Currently
+failures are for 8 channels 32 bit / 16 bit, but our final target is
+16 channels)
+
 >
-> I ever thought this method too.
+>> My application is not performing well with read/write methods.
 >
-> But it will become low efficient in the following case:
+> How much CPU usage?
+
+The CPU usage is around 35% (as seen in top)
+
+I have managed to get Audio capture working fine (after certain linux
+optimizations) but playback is giving under-runs (only when PLAYBACK &
+CAPTURE run together)
+I was wondering that changing access method to mmap (currently I'm
+using read/write) may give me some more CPU time.
+
+
 >
->   Assuming the gpmi-nand driver has to read out 1024 pages in one _SI=
-NGLE_
-> read operation.
-> The gpmi-nand will submit the descriptor to dmaengine per page. So wi=
-th your
-> method,
-> the system will repeat the enable/disable dma clock 1024 time. At eve=
-ry
-> enable/disable dma clock,
-> the system has to enable the clock chain and it's parents ...
+>> Does the mmap method has any advantages over read/write?
 >
-> But with this patch, we only need to enable/disable dma clock one tim=
-e, just
-> at we select the nand chip.
+> No, except when then samples are generated in/consumed from the
+> device's buffer directly without copying them around, and even then
+> it's unlikely that the time needed for copying actually matters.
 >
-If the clock is the dmac's property (not channels'), the toggling
-seems too aggressive.
-You could try using runtime_suspend/resume for clock
-disabling/enabling. How about employing autosuspend with a few ms
-delay?
+>> Is there any thumb rule to decide when to use mmap or read/write?
+>
+> Yes; use read/write.
+
+OK. You say read/write is the best apart from the one use case you
+mentioned, makes sense, because, irrespective I use read/write or
+mmap, in my case, I will anyway have to copy the buffers to mmap-ed
+area.
+
+>
+>
+> Regards,
+> Clemens
+
+
+Thanks for inputs!
+
+Regards, Prasant
