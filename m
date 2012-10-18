@@ -1,59 +1,74 @@
-From: Matthieu CASTET <matthieu.castet-ITF29qwbsa/QT0dZR+AlfA@public.gmane.org>
-Subject: Re: usb audio race at disconnect time
-Date: Thu, 18 Oct 2012 17:39:05 +0200
-Message-ID: <50802299.9080004@parrot.com>
-References: <5076E327.5030503@parrot.com>	<s5hvceh9d0v.wl%tiwai@suse.de>	<50783A5B.9090009@parrot.com>	<s5h626eixid.wl%tiwai@suse.de>	<507C4AD4.2090400@parrot.com>	<s5hwqyrh8vb.wl%tiwai@suse.de>	<507D84C9.9070405@parrot.com> <s5ha9vm4d46.wl%tiwai@suse.de>
+From: Robin Gareus <robin@gareus.org>
+Subject: LAC 2013: the Linux Audio Conference - Call for
+	Participation
+Date: Thu, 18 Oct 2012 19:23:55 +0200
+Message-ID: <50803B2B.4060101@gareus.org>
+Reply-To: lac@linuxaudio.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5ha9vm4d46.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC0FC2616D5
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 19:24:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai a =C3=A9crit :
-> At Tue, 16 Oct 2012 18:01:13 +0200,
-> Matthieu CASTET wrote:
->> Takashi Iwai a =C3=A9crit :
->>> At Mon, 15 Oct 2012 19:41:40 +0200,
->>> Matthieu CASTET wrote:
->>>> Hi Takashi,
->>>>
->>>> But I believe I found other races in the alsa char device handling=
-=2E With the
->>>> attached patch, if you disconnect the usb audio device between "ms=
-leep o" and
->>>> "msleep o+", you will free the card resource (snd_card_do_free) an=
-d then use it [1].
->>>>
->>>> I did in in snd_ctl_open, but the same thing could be done in snd_=
-pcm_open, ...
->>> OK, we'd need a generic open/close protection.
->>> For PCM, there is already a fix in my last patchset, so it should
->>> work, but for other devices, the paths are still uncovered.
->>>
->> I don't think it will work for pcm : the begin of snd_pcm_open is no=
-t protected
->> by any lock even with your patch
->> In snd_open we release sound_mutex before calling file->f_op->open.
->>
->> The snd_lookup_minor_data and snd_card_file_add should be protected =
-by a lock.
->> Attached a patch (pcm.crash) that help to trigger [1].
->=20
-> Check out my latest patches in topic/usb-disconnect-fix branch.
-> It's been fixed there.
->=20
-Thanks,
+sorry for ><  please >> <<
 
-the first tests seems ok.
-We will do more strees test.
+We are happy to announce the next issue of the Linux Audio Conference
+(LAC), May 9-12, 2013 @ IEM, the Institute of Electronic Music and
+Acoustics, in Graz, Austria.
 
+The Linux Audio Conference is an international conference that brings
+together musicians, sound artists, software developers and researchers,
+working with Linux as an open, stable, professional platform for audio
+and media research and music production. LAC includes paper sessions,
+workshops, and a diverse program of electronic music.
 
-Matthieu
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+*Call for Papers, Workshops, Music and Installations*
+
+We invite submissions of papers addressing all areas of audio processing
+and media creation based on Linux. Papers can focus on technical,
+artistic and scientific issues and should target developers or users. In
+our call for music, we are looking for works that have been produced or
+composed entirely/mostly using Linux.
+
+The online submission of papers, workshops, music and installations is
+now open at
+ http://lac.iem.at/
+
+The Deadline for all submissions is February 4th, 2013 (23:59 HAST)
+
+You are invited to register for participation on our conference website.
+There you will find up-to-date instructions, as well as important
+information about dates, travel, lodging, and so on.
+
+This year's conference is hosted by IEM, Graz, in cooperation with local
+artists and FLOSS enthusiasts.
+The Institute of Electronic Music and Acoustics (IEM) at the University
+of Music and Performing Arts Graz is considered Austria's leading
+institution in computer music, acoustics and audio engineering and has
+gained international reputation for its research on spatial audio and
+its artistic production and research.
+IEM has been embracing Linux audio as a production and research
+environment since the mid-1990s, and has contributed to FLOSS/Linux
+projects, amongst others by providing drivers for multichannel audio
+interfaces and hosting the Pure Data community portal and mailing lists.
+
+http://iem.at/
+
+We look forward to seeing you in Graz in May!
+
+Sincerely,
+
+The LAC 2013 Organizing Team
