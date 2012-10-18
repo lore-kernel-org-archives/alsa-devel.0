@@ -1,71 +1,185 @@
-From: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] dma: add new DMA control commands
-Date: Thu, 18 Oct 2012 11:18:53 -0400
-Message-ID: <CAMiH66H=VMEgHFMdEhCTqA5AtVw6iN97-cbwUd86Ghd77OLcWA@mail.gmail.com>
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
-	<1350541111.5263.3.camel@vkoul-udesk3>
-	<507FA595.4020507@freescale.com>
-	<CAJe_ZhfarH-HpJkEOpH=jY1Gc-UPEyuA4bJ4LSQES7Uyea2BQw@mail.gmail.com>
+From: Matt Porter <mporter@ti.com>
+Subject: Re: [PATCH v2 1/2] ASoC: davinci: replace private sram api with
+ genalloc
+Date: Thu, 18 Oct 2012 11:21:49 -0400
+Message-ID: <20121018152149.GC25164@beef>
+References: <1349991229-32107-1-git-send-email-mporter@ti.com>
+ <1349991229-32107-2-git-send-email-mporter@ti.com>
+ <50785049.50108@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJe_ZhfarH-HpJkEOpH=jY1Gc-UPEyuA4bJ4LSQES7Uyea2BQw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <50785049.50108@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: Huang Shijie <b32955@freescale.com>, Vinod Koul <vinod.koul@linux.intel.com>, marex@denx.de, alsa-devel@alsa-project.org, shawn.guo@linaro.org, linux@arm.linux.org.uk, tiwai@suse.de, artem.bityutskiy@linux.intel.com, broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org, w.sang@pengutronix.de, perex@perex.cz, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, ben-linux@fluff.org, djbw@fb.com, khali@linux-fr.org, cjb@laptop.org, dwmw2@infradead.org, lrg@ti.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 18, 2012 at 5:29 AM, Jassi Brar <jaswinder.singh@linaro.org=
-> wrote:
-> On 18 October 2012 12:15, Huang Shijie <b32955@freescale.com> wrote:
->> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 14:18, Vinod Koul =E5=86=
-=99=E9=81=93:
->>
->>> Why cant you do start (prepare clock etc) when you submit the descr=
-iptor
->>> to dmaengine. Can be done in tx_submit callback.
->>> Similarly remove the clock when dma transaction gets completed.
->>
->> I ever thought this method too.
->>
->> But it will become low efficient in the following case:
->>
->>   Assuming the gpmi-nand driver has to read out 1024 pages in one _S=
-INGLE_
->> read operation.
->> The gpmi-nand will submit the descriptor to dmaengine per page. So w=
-ith your
->> method,
->> the system will repeat the enable/disable dma clock 1024 time. At ev=
-ery
->> enable/disable dma clock,
->> the system has to enable the clock chain and it's parents ...
->>
->> But with this patch, we only need to enable/disable dma clock one ti=
-me, just
->> at we select the nand chip.
->>
-> If the clock is the dmac's property (not channels'), the toggling
-> seems too aggressive.
-> You could try using runtime_suspend/resume for clock
-> disabling/enabling. How about employing autosuspend with a few ms
-> delay?
+On Fri, Oct 12, 2012 at 07:15:53PM +0200, Daniel Mack wrote:
+> Hi Matt,
+> 
+> On 11.10.2012 23:33, Matt Porter wrote:
+> > Removes the DaVinci private SRAM API and replaces it with
+> > the genalloc API. The SRAM gen_pool is passed in pdata since
+> > DaVinci is in the early stages of DT conversion.
+> > 
+> > Signed-off-by: Matt Porter <mporter@ti.com>
+> > ---
+> >  include/linux/platform_data/davinci_asp.h |    3 +++
+> >  sound/soc/davinci/davinci-mcasp.c         |    2 ++
+> >  sound/soc/davinci/davinci-pcm.c           |   18 ++++++++++++------
+> >  sound/soc/davinci/davinci-pcm.h           |    2 ++
+> >  4 files changed, 19 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
+> > index d0c5825..f3d6e4f 100644
+> > --- a/include/linux/platform_data/davinci_asp.h
+> > +++ b/include/linux/platform_data/davinci_asp.h
+> > @@ -16,6 +16,8 @@
+> >  #ifndef __DAVINCI_ASP_H
+> >  #define __DAVINCI_ASP_H
+> >  
+> > +#include <linux/genalloc.h>
+> > +
+> >  struct snd_platform_data {
+> >  	u32 tx_dma_offset;
+> >  	u32 rx_dma_offset;
+> > @@ -30,6 +32,7 @@ struct snd_platform_data {
+> >  	unsigned enable_channel_combine:1;
+> >  	unsigned sram_size_playback;
+> >  	unsigned sram_size_capture;
+> > +	struct gen_pool *sram_pool;
+> >  
+> >  	/*
+> >  	 * If McBSP peripheral gets the clock from an external pin,
+> > diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+> > index 714e51e..52194bb 100644
+> > --- a/sound/soc/davinci/davinci-mcasp.c
+> > +++ b/sound/soc/davinci/davinci-mcasp.c
+> > @@ -1098,6 +1098,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+> >  	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
+> >  	dma_data->asp_chan_q = pdata->asp_chan_q;
+> >  	dma_data->ram_chan_q = pdata->ram_chan_q;
+> > +	dma_data->sram_pool = pdata->sram_pool;
+> >  	dma_data->sram_size = pdata->sram_size_playback;
+> >  	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
+> >  							mem->start);
+> > @@ -1115,6 +1116,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+> >  	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
+> >  	dma_data->asp_chan_q = pdata->asp_chan_q;
+> >  	dma_data->ram_chan_q = pdata->ram_chan_q;
+> > +	dma_data->sram_pool = pdata->sram_pool;
+> >  	dma_data->sram_size = pdata->sram_size_capture;
+> >  	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
+> >  							mem->start);
+> > diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+> > index 93ea3bf..d2cc169 100644
+> > --- a/sound/soc/davinci/davinci-pcm.c
+> > +++ b/sound/soc/davinci/davinci-pcm.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/genalloc.h>
+> >  
+> >  #include <sound/core.h>
+> >  #include <sound/pcm.h>
+> > @@ -23,7 +24,6 @@
+> >  #include <sound/soc.h>
+> >  
+> >  #include <asm/dma.h>
+> > -#include <mach/sram.h>
+> >  
+> >  #include "davinci-pcm.h"
+> >  
+> > @@ -259,7 +259,8 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+> >  	}
+> >  }
+> >  
+> > -static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+> > +static int allocate_sram(struct snd_pcm_substream *substream,
+> > +		struct gen_pool *sram_pool, unsigned size,
+> >  		struct snd_pcm_hardware *ppcm)
+> >  {
+> >  	struct snd_dma_buffer *buf = &substream->dma_buffer;
+> > @@ -271,9 +272,10 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+> >  		return 0;
+> >  
+> >  	ppcm->period_bytes_max = size;
+> > -	iram_virt = sram_alloc(size, &iram_phys);
+> > +	iram_virt = (void *)gen_pool_alloc(sram_pool, size);
+> 
+> Did you see my patch that stubs out all functions that use gen_pool_*
+> functions for !CONFIG_GENERIC_ALLOCATOR configs? It should still apply
+> nicely on top of this one, and is necessary for AM33xx-only builds.
 
-Yes, employing the autosuspend is workable method too.o
-But it's a little more complicated then this patch. You have to create
-a thread or workqueue to
-do the job.
+Sorry, I've had the last week of list traffic go to /dev/null. Catching
+up now and I do see that. I'm assuming that will all be in your updated
+series with these patches squashed in?
 
-What's more, I think other DMA engine may also meets the same issue as
-the mxs-dma, such as the imx-sdma.
-It's somehow a common issue to disable the clocks when no one use the
-DMA engine.
-Do you also suggest employing the autosuspend? Why not use a simple
-way to handle this issue?
-When the dma device want to use a DMA engine, it just needs to issue a
-DMA_START command.
+-Matt
 
-thanks
-Huang Shijie
-Huang Shijie
+> >  	if (!iram_virt)
+> >  		goto exit1;
+> > +	iram_phys = gen_pool_virt_to_phys(sram_pool, (unsigned)iram_virt);
+> >  	iram_dma = kzalloc(sizeof(*iram_dma), GFP_KERNEL);
+> >  	if (!iram_dma)
+> >  		goto exit2;
+> > @@ -285,7 +287,7 @@ static int allocate_sram(struct snd_pcm_substream *substream, unsigned size,
+> >  	return 0;
+> >  exit2:
+> >  	if (iram_virt)
+> > -		sram_free(iram_virt, size);
+> > +		gen_pool_free(sram_pool, (unsigned)iram_virt, size);
+> >  exit1:
+> >  	return -ENOMEM;
+> >  }
+> > @@ -676,7 +678,7 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
+> >  
+> >  	ppcm = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+> >  			&pcm_hardware_playback : &pcm_hardware_capture;
+> > -	allocate_sram(substream, params->sram_size, ppcm);
+> > +	allocate_sram(substream, params->sram_pool, params->sram_size, ppcm);
+> >  	snd_soc_set_runtime_hwparams(substream, ppcm);
+> >  	/* ensure that buffer size is a multiple of period size */
+> >  	ret = snd_pcm_hw_constraint_integer(runtime,
+> > @@ -819,7 +821,11 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
+> >  		buf->area = NULL;
+> >  		iram_dma = buf->private_data;
+> >  		if (iram_dma) {
+> > -			sram_free(iram_dma->area, iram_dma->bytes);
+> > +			struct davinci_runtime_data *prtd =
+> > +				substream->runtime->private_data;
+> > +			struct gen_pool *sram_pool = prtd->params->sram_pool;
+> > +			gen_pool_free(sram_pool, (unsigned)iram_dma->area,
+> > +				      iram_dma->bytes);
+> >  			kfree(iram_dma);
+> >  		}
+> >  	}
+> > diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
+> > index fc4d01c..b6ef703 100644
+> > --- a/sound/soc/davinci/davinci-pcm.h
+> > +++ b/sound/soc/davinci/davinci-pcm.h
+> > @@ -12,6 +12,7 @@
+> >  #ifndef _DAVINCI_PCM_H
+> >  #define _DAVINCI_PCM_H
+> >  
+> > +#include <linux/genalloc.h>
+> >  #include <linux/platform_data/davinci_asp.h>
+> >  #include <mach/edma.h>
+> >  
+> > @@ -20,6 +21,7 @@ struct davinci_pcm_dma_params {
+> >  	unsigned short acnt;
+> >  	dma_addr_t dma_addr;		/* device physical address for DMA */
+> >  	unsigned sram_size;
+> > +	struct gen_pool *sram_pool;	/* SRAM gen_pool for ping pong */
+> >  	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
+> >  	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
+> >  	unsigned char data_type;	/* xfer data type */
+> > 
+> 
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
