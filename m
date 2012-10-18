@@ -1,28 +1,35 @@
-From: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] dma: add new DMA control commands
-Date: Thu, 18 Oct 2012 16:29:37 +0800
-Message-ID: <507FBDF1.5050602@freescale.com>
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com> <201210180914.58527.marex@denx.de> <507FB495.7050104@freescale.com> <201210181016.06782.marex@denx.de>
+From: Prasant J <pj0585@gmail.com>
+Subject: Interleaved or Non-interleaved?
+Date: Thu, 18 Oct 2012 14:04:20 +0530
+Message-ID: <CAA2DH4sexxhLRRZzA6_-nFbY2P+VBLXX_aqcb6u5=13NJAKTaQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201210181016.06782.marex@denx.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marek Vasut <marex@denx.de>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, djbw@fb.com, khali@linux-fr.org, ben-linux@fluff.org, w.sang@pengutronix.de, cjb@laptop.org, dwmw2@infradead.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, shawn.guo@linaro.org, artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux@arm.linux.org.uk, Huang Shijie <shijie8@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D88452652B0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 10:34:20 +0200 (CEST)
+Received: by mail-la0-f51.google.com with SMTP id m15so5168309lah.38
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 01:34:20 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-=E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=86=
-=99=E9=81=93:
-> So we can't stream data from the chip? About time to adjust the MTD f=
-ramework to
-> allow that. Maybe implement a command queue?
->
+hi,
 
-to Artem & David:
-    is this possible to stream the data out with a command queue?
+My sound hardware supports only interleaved audio.
 
-thanks
-Huang Shijie
+I'm writing an alsa application. Which access method will be more
+performing : interleaved or non-interleaved? (Or it does not make a
+difference?)
+
+-Prasant
