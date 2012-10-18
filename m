@@ -1,16 +1,22 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ASoC: mmap or read/write?
-Date: Thu, 18 Oct 2012 11:09:38 +0200
-Message-ID: <507FC752.1050005@ladisch.de>
-References: <CAA2DH4uhwV0NmxEbLKN=m+VC9ruOHM13Vpu1m33j0DNm+n6yKQ@mail.gmail.com>
+Subject: Re: Interleaved or Non-interleaved?
+Date: Thu, 18 Oct 2012 11:11:47 +0200
+Message-ID: <507FC7D3.4050200@ladisch.de>
+References: <CAA2DH4sexxhLRRZzA6_-nFbY2P+VBLXX_aqcb6u5=13NJAKTaQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D374F2625FC
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 11:10:56 +0200 (CEST)
-In-Reply-To: <CAA2DH4uhwV0NmxEbLKN=m+VC9ruOHM13Vpu1m33j0DNm+n6yKQ@mail.gmail.com>
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 4410B2625FC
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 11:13:05 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id BFA7D208B0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 05:13:04 -0400 (EDT)
+Received: from [192.168.42.195] (unknown [46.115.34.159])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 249F6482539
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 05:13:02 -0400 (EDT)
+In-Reply-To: <CAA2DH4sexxhLRRZzA6_-nFbY2P+VBLXX_aqcb6u5=13NJAKTaQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Prasant J <pj0585@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Prasant J wrote:
-> I'm writing an alsa application for recording & playing 16 channel audio.
+> My sound hardware supports only interleaved audio.
 >
-> The application is intended to run on an embedded platform & the
-> resources are highly constrained.
+> I'm writing an alsa application. Which access method will be more
+> performing : interleaved or non-interleaved?
 
-Then I wonder how you manage to handle 16 channels.
-What hardware is this?
-
-> My application is not performing well with read/write methods.
-
-How much CPU usage?
-
-> Does the mmap method has any advantages over read/write?
-
-No, except when then samples are generated in/consumed from the
-device's buffer directly without copying them around, and even then
-it's unlikely that the time needed for copying actually matters.
-
-> Is there any thumb rule to decide when to use mmap or read/write?
-
-Yes; use read/write.
+With interleaved, samples can be copied from/to your application's
+buffer in one big block.  With non-interleaved, samples must be
+copied individually.
 
 
 Regards,
