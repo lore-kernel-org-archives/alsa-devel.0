@@ -1,16 +1,17 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: LAC 2013: the Linux Audio Conference - Call for
-	Participation
-Date: Thu, 18 Oct 2012 19:23:55 +0200
-Message-ID: <50803B2B.4060101@gareus.org>
-Reply-To: lac@linuxaudio.org
+From: Neil Mcbennett <neil@mcbennett.net>
+Subject: ESI drivers
+Date: Thu, 18 Oct 2012 20:02:13 +0100
+Message-ID: <CABcPhMNWJUvO=2qx3pfqrgz2EtYYpTggizLkOPbUgeSkshSJFQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
- by alsa0.perex.cz (Postfix) with ESMTP id EC0FC2616D5
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 19:24:05 +0200 (CEST)
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AB48261714
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 21:02:15 +0200 (CEST)
+Received: by mail-pb0-f51.google.com with SMTP id rp16so8664803pbb.38
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 12:02:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-sorry for ><  please >> <<
+Hi,
+I am not a developer and probably shouldn't even be here, but I do
+have a question that is probably best answered from this forum.
+I've been looking at the ESI website and I notice that there is some
+ALSA support for a few of their cards...
 
-We are happy to announce the next issue of the Linux Audio Conference
-(LAC), May 9-12, 2013 @ IEM, the Institute of Electronic Music and
-Acoustics, in Graz, Austria.
+http://www.alsa-project.org/main/index.php/Matrix:Vendor-ESI
 
-The Linux Audio Conference is an international conference that brings
-together musicians, sound artists, software developers and researchers,
-working with Linux as an open, stable, professional platform for audio
-and media research and music production. LAC includes paper sessions,
-workshops, and a diverse program of electronic music.
+The interface I'm most interested in isn't on this list (MaXiO 032e)
 
-*Call for Papers, Workshops, Music and Installations*
+I decided to call the technical support number in the UK and ask them
+what their position is regarding Linux. The guy I spoke to said that
+ESI are not going to provide an ALSA driver for these devices but they
+would be more than happy if someone from the ALSA community were to
+approach them. They would then assist in providing the necessary
+information.
 
-We invite submissions of papers addressing all areas of audio processing
-and media creation based on Linux. Papers can focus on technical,
-artistic and scientific issues and should target developers or users. In
-our call for music, we are looking for works that have been produced or
-composed entirely/mostly using Linux.
+So, just wondering if anyone has already started on this or if there
+might be some interest in doing so? I was attracted to ESI by the fact
+that they have a number of PCIe interfaces which are still quite
+something of a rarity.
 
-The online submission of papers, workshops, music and installations is
-now open at
- http://lac.iem.at/
+Regards
 
-The Deadline for all submissions is February 4th, 2013 (23:59 HAST)
-
-You are invited to register for participation on our conference website.
-There you will find up-to-date instructions, as well as important
-information about dates, travel, lodging, and so on.
-
-This year's conference is hosted by IEM, Graz, in cooperation with local
-artists and FLOSS enthusiasts.
-The Institute of Electronic Music and Acoustics (IEM) at the University
-of Music and Performing Arts Graz is considered Austria's leading
-institution in computer music, acoustics and audio engineering and has
-gained international reputation for its research on spatial audio and
-its artistic production and research.
-IEM has been embracing Linux audio as a production and research
-environment since the mid-1990s, and has contributed to FLOSS/Linux
-projects, amongst others by providing drivers for multichannel audio
-interfaces and hosting the Pure Data community portal and mailing lists.
-
-http://iem.at/
-
-We look forward to seeing you in Graz in May!
-
-Sincerely,
-
-The LAC 2013 Organizing Team
+Neil
