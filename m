@@ -1,51 +1,73 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 0/2] ASoC: omap-mcpdm updates for 3.7
-Date: Thu, 18 Oct 2012 15:52:37 -0700
-Message-ID: <20121018225237.GJ30550@atomide.com>
-References: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
- <20121017195525.GX15569@atomide.com>
+From: Pete Leigh <pete.leigh@gmail.com>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Fri, 19 Oct 2012 00:38:34 +0100
+Message-ID: <CABn3OEHxhguP6E56DUjfPAgxyaSXOHrRSd7jEdsax3e16Zm3Nw@mail.gmail.com>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+ <507D1C77.5080302@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121017195525.GX15569@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ia0-f179.google.com (mail-ia0-f179.google.com
+ [209.85.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id D263F264FE7
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 01:38:35 +0200 (CEST)
+Received: by mail-ia0-f179.google.com with SMTP id k25so6488610iah.38
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 16:38:35 -0700 (PDT)
+In-Reply-To: <507D1C77.5080302@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Tony Lindgren <tony@atomide.com> [121017 13:01]:
-> Hi Mark,
-> 
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [121004 01:27]:
-> > Hello Mark, Tony,
-> > 
-> > Change since v1:
-> > - Fixed the second patch to keep the omap_mcpdm_open_stream() - after a coffee
-> > 
-> > The mcpdm driver no longer needs to include any plat/*.h file, clearing the way
-> > for the single kernel image.
-> > 
-> > Regards,
-> > Peter
-> > ---
-> > Peter Ujfalusi (1):
-> >   ASoC: omap-mcpdm: Remove OMAP revision check
-> > 
-> > Tony Lindgren (1):
-> >   ASoC: Fix wrong include for McPDM
-> > 
-> >  sound/soc/omap/omap-mcpdm.c | 9 ++-------
-> >  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> Is it OK for me to merge in your ASoC for-3.7 branch at commit
-> 68214d99 (ASoC: omap-mcpdm: Remove OMAP revision check) also
-> into my omap cleanup branch for v3.8?
-> 
-> I need that to avoid compile errors with some of my test configs.
+Hi Daniel,
 
-Never mind, that seems to be merged now.
+On 16 October 2012 09:36, Daniel Mack <zonque@gmail.com> wrote:
 
-Thanks,
+>>> Check out the latestes sound.git[*] and make sure your patch applies
+>>> there.
 
-Tony
+> And I missed the annotation in the previous mail, so here it is:
+
+> [*] git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+
+I've got this kernel (sound.git) booting now, but I find that USB
+audio isn't working
+before I touch it.
+
+When I connect my (known working) UA-25, this happens:
+
+[  248.815369] usb 1-1.6: new full-speed USB device number 6 using ehci_hcd
+[  248.913064] usb 1-1.6: New USB device found, idVendor=0582, idProduct=0074
+[  248.913068] usb 1-1.6: New USB device strings: Mfr=1, Product=2,
+SerialNumber=0
+[  248.913071] usb 1-1.6: Product: EDIROL UA-25
+[  248.913074] usb 1-1.6: Manufacturer: Roland
+ mtp-probe: checking bus 1, device 6:
+"/sys/devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.6"
+ mtp-probe: bus: 1, device: 6 was not an MTP device
+[  249.073737] cannot submit urb 0, error -28: not enough bandwidth
+
+Any subsequent attempts to send audio to it result in a single "urb 0
+error -28" message
+
+I googled this a bit, and saw that there had been a problem looking like
+this with USB full speed devices on ehci controllers, which does apply here.
+
+Do you think that's what's biting me?
+
+Cheers,
+
+- Pete.
