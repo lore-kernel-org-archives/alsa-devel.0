@@ -1,18 +1,31 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 1/3] ALSA: core: keep track of boundary
- wrap-around
-Date: Fri, 19 Oct 2012 16:19:45 -0500
-Message-ID: <5081C3F1.2070304@linux.intel.com>
-References: <1350061537-10166-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <s5hvcebsz59.wl%tiwai@suse.de>
+From: Pete Leigh <pete.leigh@gmail.com>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Fri, 19 Oct 2012 23:24:11 +0100
+Message-ID: <CABn3OEF8HHCp2Z-gDV1smYdTpijO_Fty5H-RjfVCtqVQQQPfUA@mail.gmail.com>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+ <507D1C77.5080302@gmail.com>
+ <CABn3OEHxhguP6E56DUjfPAgxyaSXOHrRSd7jEdsax3e16Zm3Nw@mail.gmail.com>
+ <50810512.2040909@gmail.com>
+ <CABn3OEECLmo3LXQ7Zg+HVk4HBO54NgLZgxwV11-7rjQYu8BHQQ@mail.gmail.com>
+ <50810E4E.2020108@gmail.com>
+ <CABn3OEF18-Q3agOZ3Er5BODDo2R=H-G4Njdua-1L_E1uXHqpMw@mail.gmail.com>
+ <CABn3OEH4n5i_UNMQSVM9a+gUBD5mXH=faeazu038Kdy_p9G+AQ@mail.gmail.com>
+ <508191DF.2060802@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id CBE92262607
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 23:19:55 +0200 (CEST)
-In-Reply-To: <s5hvcebsz59.wl%tiwai@suse.de>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DED626260B
+ for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2012 00:24:12 +0200 (CEST)
+Received: by mail-ie0-f179.google.com with SMTP id c10so1312182ieb.38
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 15:24:11 -0700 (PDT)
+In-Reply-To: <508191DF.2060802@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,18 +35,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
 
-> The new patchset looks almost good to me (except for a still missing
-> compat_timespec conversion in patch 2).  But now I already applied
-> UAPI patch to move the stuff from include/sound/asound.h to
-> include/uapi/sound/asound.h, so your patch conflicts.
->
-> Could you rebase your patches with for-next branch of my sound git
-> tree (also with the fix for patch 2)?
+On 19 October 2012 18:46, Daniel Mack <zonque@gmail.com> wrote:
+> On 19.10.2012 19:02, Pete Leigh wrote:
+>> If it's any use regarding the urb 0 -ENOSPACE error I was having,  I
+>> can try and track down the config item difference that makes it work,
 
-no problem, will send an update shortly.
-Thanks for the review.
--Pierre
+> If you would point me to any specific
+> config option that reproducibly changes the behaviour, that would be of
+> great help.
+
+If I take the working config, and disable CONFIG_USB_EHCI_TT_NEWSCHED,
+recompile, make install, reboot, then I get the familiar  "cannot
+submit urb 0, error -28: not enough bandwidth" error, and trying to
+record off the UA-25 in audacity freezes audacity. If I then re-enable
+it, recompile, make install, reboot, then I don't see the error, and
+recording off the UA-25 works normally in audacity.
+
+This (as I guess you know) is the "Improved Transaction Translator
+scheduling" option under "Device Drivers" -> "USB Support" in
+menuconfig. The help text even mentions the -28 error, in fact, and
+suggests using this option in some circumstances.
+
+Cheers,
+
+- Pete
