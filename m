@@ -1,49 +1,41 @@
-From: Sebastien LEDUC <sebastien.leduc@st.com>
-Subject: dynamic PCM and dynamic DSP graphs
-Date: Fri, 19 Oct 2012 11:39:22 +0200
-Message-ID: <9C1683ABA24673439FCD019782C9F4BBDA29EC8998@SAFEX1MAIL1.st.com>
+From: Dongjiu Geng <djgeng@marvell.com>
+Subject: Re: [pulseaudio] module-alsa-card.c: Failed to
+ find a working profile.
+Date: Fri, 19 Oct 2012 02:33:37 -0700
+Message-ID: <78895A20B3CF7D49B5589B604D36692B1A8D3CEEEE@SC-VEXCH4.marvell.com>
+References: <78895A20B3CF7D49B5589B604D36692B1A8D3CEEEB@SC-VEXCH4.marvell.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
- [207.126.144.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 5159326532C
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:39:26 +0200 (CEST)
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8D6D1E8
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 09:39:25 +0000 (GMT)
-Received: from Webmail-eu.st.com (safex1hubcas4.st.com [10.75.90.69])
- by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 539A4286A
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 09:39:25 +0000 (GMT)
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <78895A20B3CF7D49B5589B604D36692B1A8D3CEEEB@SC-VEXCH4.marvell.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: Dongjiu Geng <djgeng@marvell.com>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark / Liam,
-We have started to use Dynamic PCM to manage our on-SoC DSP.
-In our case, the API exposed by the DSP is graph oriented, and allows to dynamically create and control the running graph on the DSP.
+paste the detailed log,  I am indeed what should do about that,  Thank you in advance.
 
-What we are doing is that we use DAPM widgets and routes to manage  the DSP graph dynamically:
-We use some dedicated widgets that have power callbacks. 
-When a  widget is powered on/off, the callback will use the DSP API to create/destroy the corresponding parts of the DSP graph.
+Hi all:
+    when I run the pulseaudio, it always shows the bellowing error log:
+     01-02 09:47:27.492  1449  1449 I /system/bin/pulseaudio: E: [pulseaudio] module-alsa-card.c: Failed to find a working profile.
+     01-02 09:47:27.492  1449  1449 I /system/bin/pulseaudio: E: [pulseaudio] module.c: Failed to load module "module-alsa-card" (argument: "device_id=0"): initialization failed.
+     01-02 09:47:27.500  1449  1449 I /system/bin/pulseaudio: E: [pulseaudio] main.c: Module load failed.
+     01-02 09:47:27.500  1449  1449 I /system/bin/pulseaudio: E: [pulseaudio] main.c: Failed to initialize daemon.
+     01-02 09:47:27.500  1449  1449 I logwrapper: /system/bin/pulseaudio terminated by exit(1)
 
-We wanted to get your feedback on this approach, so as to be sure it won't be an issue when we want to mainline our driver.
-We can of course share more details if needed, or even some preliminary version of the driver.
+    Could you hep me ?  
 
-Thanks in advance for your feedback
 
-Regards
-Sebastien
-
- 
- 
+Best regards,
+Dongjiu Geng
