@@ -1,16 +1,26 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: Question about move atmel audio part to DT support
-Date: Fri, 19 Oct 2012 16:18:16 +0800
-Message-ID: <50810CC8.4050009@atmel.com>
-References: <5080F54F.4000600@atmel.com>
+From: Pete Leigh <pete.leigh@gmail.com>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Fri, 19 Oct 2012 09:23:15 +0100
+Message-ID: <CABn3OEECLmo3LXQ7Zg+HVk4HBO54NgLZgxwV11-7rjQYu8BHQQ@mail.gmail.com>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+ <507D1C77.5080302@gmail.com>
+ <CABn3OEHxhguP6E56DUjfPAgxyaSXOHrRSd7jEdsax3e16Zm3Nw@mail.gmail.com>
+ <50810512.2040909@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EBD9261669
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 10:18:42 +0200 (CEST)
-In-Reply-To: <5080F54F.4000600@atmel.com>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40B7626531C
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 10:23:16 +0200 (CEST)
+Received: by mail-ie0-f179.google.com with SMTP id c10so242050ieb.38
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 01:23:15 -0700 (PDT)
+In-Reply-To: <50810512.2040909@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +30,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Lin, JM" <JM.Lin@atmel.com>, "Ferre,
- Nicolas" <Nicolas.FERRE@atmel.com>, linux-sound@vger.kernel.org, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, linux-arm-kernel@lists.infradead.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cc:
-    linux-arm-kernel mailing list
-    devicetree-discuss mailing list
-    alsa-devel mailing list
-    linux-sound mailing list
+On 19 October 2012 08:45, Daniel Mack <zonque@gmail.com> wrote:
+>> [  248.815369] usb 1-1.6: new full-speed USB device number 6 using ehci_hcd
+[...]]
+>> [  249.073737] cannot submit urb 0, error -28: not enough bandwidth
 
+> Ok, I have to fix this finally. Are you using a hub or is this device
+> directly connected?
 
-On 10/19/2012 14:38, Bo Shen wrote:
-> Hi Mark Brown,
->    Now, I am trying to move atmel audio part to DT support. I meet the
-> following issue.
->
->    Atmel audio part has three platform device:
->      -> atmel ssc: ssc library (different SOC has different number)
->      -> atmel ssc dai: dai for audio
->      -> atmel pcm: for pdc or dma transfer (now only support pdc, dma
-> support will add soon)
->
->   In DT support kernel, I don't find any similar case. So, if I want to
-> keep ssc as library, and use dai to register pcm. Then the dts file will
-> like:
-> ---<8---
-> ssc0: ssc@fffbc000 {
->                  status = "okay";
-> };
->
-> dai0: dai {
->                  compatible = "atmel,atmel-ssc-dai";
->          };
->
-> sound {
->                  compatible = "atmel,at91sam9g20-audio";
->                  atmel,model = "wm8731 @ sam9g20ek";
->
->                  atmel,audio-routing =
->                          "Ext Spk", "LHPOUT",
->                          "Int Mic", "MICIN";
->
->                  atmel,audio-codec = <&wm8731>;
->                  atmel,dai = <&dai>;
-> };
-> --->8---
->
->    Would this be OK?
->    If not, may I add some code for ssc which dedicate for audio into
-> sound/soc/atmel (using audio-ssc and ssc to distiguish which dedicate
-> for audio, which used for ssc library)? This will broken the exist code
-> for audio (only sam9g20-wm8731).
->    Any suggestion?
+Directly connected, I assume to this (from lspci)
+
+:14.0 USB Controller: Intel Corporation Panther Point USB xHCI Host
+Controller (rev 04) (prog-if 30 [XHCI])
+        Subsystem: Hewlett-Packard Company Device 179b
+        Flags: bus master, medium devsel, latency 0, IRQ 46
+        Memory at d4420000 (64-bit, non-prefetchable) [size=64K]
+        Capabilities: [70] Power Management version 2
+        Capabilities: [80] MSI: Enable+ Count=1/8 Maskable- 64bit+
+        Kernel driver in use: xhci_hcd
+
+That is reported by the distro kernel.. I notice it is using an xhci
+driver, which I think is not enabled in the sound.git kernel I booted.
+I'll try again after enabling CONFIG_USB_XHCI_HCD, in case that helps.
+
+Cheers,
+
+- Pete.
