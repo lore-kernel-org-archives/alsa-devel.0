@@ -1,11 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 0/9] Fixes for RME MADI cards
-Date: Fri, 19 Oct 2012 17:42:21 +0200
-Message-ID: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 2/9] ALSA: hdspm - Report external rate in
+	slave mode on PCI MADI
+Date: Fri, 19 Oct 2012 17:42:23 +0200
+Message-ID: <1350661350-5000-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,37 +22,44 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+As a follow-up to a97bda7d29d02a2e9c6609d0947b15e55f5200e5, report the
+external sample rate as system_sample_rate when in slave mode.
 
-I've spent another afternoon at IOSONO to fix a series of bugs in the
-hdspm driver.
+For PCIe MADI cards, the DDS value automatically contains the external
+sample rate, but the PCI version needs this manual workaround.
 
-Andre Schramm and me have tested almost all patches on a box with two
-PCIe MADI cards and one PCI MADI card. The DDS/Varispeed patch has only
-been tested on my RayDAT, the sync_in detection for AES32 has not been
-tested at all, though the documentation is pretty clear that the
-previous bit position was wrong. If there are AES(32) owners with two or
-more cards out there, please test and report back.
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-The typo and the coding style patches have not been tested, since
-they're trivial.
-
-
-Cheers
-
-Adrian Knoth (9):
-  ALSA: hdspm - Allow DDS/Varispeed to be set from userspace
-  ALSA: hdspm - Report external rate in slave mode on PCI MADI
-  ALSA: hdspm - Fix sync check reporting on all RME HDSPM cards
-  ALSA: hdspm - Fix reported autosync_sample_rate
-  ALSA: hdspm - Also report autosync_sample_rate on MADI and MADIface
-  ALSA: hdspm - Fix sync_in reporting on RME MADI cards
-  ALSA: hdspm - Fix sync_in detection on AES/AES32
-  ALSA: hdspm - Fix typo in kcontrol element on RME MADI cards
-  ALSA: hdspm - Fix coding style in CTL_ELEM macros
-
- sound/pci/rme9652/hdspm.c |  232 ++++++++++++++++++++++++++-------------------
- 1 file changed, 137 insertions(+), 95 deletions(-)
-
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 742bd5e..1131a8a 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -971,6 +971,7 @@ static inline void snd_hdspm_initialize_midi_flush(struct hdspm *hdspm);
+ static int hdspm_update_simple_mixer_controls(struct hdspm *hdspm);
+ static int hdspm_autosync_ref(struct hdspm *hdspm);
+ static int snd_hdspm_set_defaults(struct hdspm *hdspm);
++static int hdspm_system_clock_mode(struct hdspm *hdspm);
+ static void hdspm_set_sgbuf(struct hdspm *hdspm,
+ 			    struct snd_pcm_substream *substream,
+ 			     unsigned int reg, int channels);
+@@ -1989,10 +1990,14 @@ static int hdspm_get_system_sample_rate(struct hdspm *hdspm)
+ 	rate = hdspm_calc_dds_value(hdspm, period);
+ 
+ 	if (rate > 207000) {
+-		/* Unreasonable high sample rate as seen on PCI MADI cards.
+-		 * Use the cached value instead.
+-		 */
+-		rate = hdspm->system_sample_rate;
++		/* Unreasonable high sample rate as seen on PCI MADI cards. */
++		if (0 == hdspm_system_clock_mode(hdspm)) {
++			/* master mode, return internal sample rate */
++			rate = hdspm->system_sample_rate;
++		} else {
++			/* slave mode, return external sample rate */
++			rate = hdspm_external_sample_rate(hdspm);
++		}
+ 	}
+ 
+ 	return rate;
 -- 
 1.7.10.4
