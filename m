@@ -1,32 +1,17 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: ASoC: mmap or read/write?
-Date: Fri, 19 Oct 2012 11:56:46 +0200
-Message-ID: <508123DE.8020704@topic.nl>
-References: <mailman.1.1350554402.30975.alsa-devel@alsa-project.org>
- <5080F434.6040602@topic.nl> <50811626.9030100@ladisch.de>
- <CAA2DH4vYZC-cK4P3crhQS7xkDRhh0cxKLAXacp144Ni2nL8HOQ@mail.gmail.com>
+From: Prasant J <pj0585@gmail.com>
+Subject: Non-interleaved with plughw
+Date: Fri, 19 Oct 2012 15:52:59 +0530
+Message-ID: <CAA2DH4uZAFL32NKzirGoVXATTxBuT4xM-wVA3pw_v6HV8X=oHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id B4E6B26532C
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:56:48 +0200 (CEST)
-Received: from amavisd-new (mailscanner6.mer-nm.internl.net [217.149.192.58])
- by smtp103.mer-nm.internl.net (Postfix) with ESMTP id EDD563F465
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:56:47 +0200 (CEST)
-Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
- by amavisd-new (mailscanner6.mer-nm.internl.net [217.149.192.159])
- (amavisd-new, port 10024)
- with ESMTP id ecySD3TC9XsO for <alsa-devel@alsa-project.org>;
- Fri, 19 Oct 2012 11:56:47 +0200 (CEST)
-Received: from TOP-EX02.topic.local (82-204-13-181.dsl.bbeyond.nl
- [82.204.13.181]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
- (No client certificate requested)
- by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:56:47 +0200 (CEST)
-In-Reply-To: <CAA2DH4vYZC-cK4P3crhQS7xkDRhh0cxKLAXacp144Ni2nL8HOQ@mail.gmail.com>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BFA02625E9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 12:23:00 +0200 (CEST)
+Received: by mail-qa0-f51.google.com with SMTP id j40so28480qab.17
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 03:22:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,75 +24,20 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMTAvMTkvMjAxMiAxMTozNiBBTSwgUHJhc2FudCBKIHdyb3RlOgo+IE9uIEZyaSwgT2N0
-IDE5LCAyMDEyIGF0IDI6MjggUE0sIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRl
-PiB3cm90ZToKPj4gTWlrZSBMb29pam1hbnMgd3JvdGU6Cj4+PiBGcm9tOiBQcmFzYW50IEogPHBq
-MDU4NUBnbWFpbC5jb20+Cj4+Pj4+IFByYXNhbnQgSiB3cm90ZToKPj4+Pj4+IEknbSB3cml0aW5n
-IGFuIGFsc2EgYXBwbGljYXRpb24gZm9yIHJlY29yZGluZyAmIHBsYXlpbmcgMTYgY2hhbm5lbCBh
-dWRpby4KPj4+PiBJJ20gd29ya2luZyB3aXRoIEJlYWdsZWJvbmUgKEFSTSBDb3J0ZXgtQTggNzIw
-IE1IeikuIChDdXJyZW50bHkKPj4+PiBmYWlsdXJlcyBhcmUgZm9yIDggY2hhbm5lbHMgMzIgYml0
-IC8gMTYgYml0LCBidXQgb3VyIGZpbmFsIHRhcmdldCBpcwo+Pj4+IDE2IGNoYW5uZWxzKQo+Pj4+
-Cj4+Pj4gSSBoYXZlIG1hbmFnZWQgdG8gZ2V0IEF1ZGlvIGNhcHR1cmUgd29ya2luZyBmaW5lIChh
-ZnRlciBjZXJ0YWluIGxpbnV4Cj4+Pj4gb3B0aW1pemF0aW9ucykgYnV0IHBsYXliYWNrIGlzIGdp
-dmluZyB1bmRlci1ydW5zIChvbmx5IHdoZW4gUExBWUJBQ0sgJgo+Pj4+IENBUFRVUkUgcnVuIHRv
-Z2V0aGVyKQo+Pj4gWW91IG11c3QgYmUgZG9pbmcgc29tZXRoaW5nIHdyb25nLiBJJ20gZG9pbmcg
-MzItYml0LCAxNi1jaGFubmVsIGlucHV0Cj4+PiBhdCA1MS4ya0h6IG9uIGEgT01BUC1MMTM4IChh
-biBBUk05IENQVSBhdCA0NTAgTUh6KQo+Pgo+IEBNaWtlOgo+IEknbSBwbGF5aW5nICYgcmVjb3Jk
-aW5nIGF0IHRoZSBzYW1lIHRpbWUsIHRoYXQgc2hvdWxkIGJlIHRoZSByZWFzb24uCkdvb2QgcG9p
-bnQsIG15IGJvYXJkIG9ubHkgYSBoYXMgYSBzaW5nbGUgcGxheWJhY2sgY2hhbm5lbC4KCj4gV2hl
-biBJIHdhcyB1c2luZyBhcmVjb3JkIChvbmx5IGNhcHR1cmUpIEkgd2FzIGdldHRpbmcgb3ZlcnJ1
-bnMgYW5kCj4gb25seSBhZnRlciBtYWtpbmcgc29tZSBsaW51eCBvcHRpbWl6YXRpb25zLCBJIHdh
-cyBhYmxlIHRvIHJlY29yZAo+IHByb3Blcmx5LiBBcmUgeW91IDEwMCUgc3VyZSB5b3UgZG8gbm90
-IG9ic2VydmUgYW55IGVycm9ycz8gRGlkIHlvdSBkbwo+IHRlc3RzIGZvciBsb25nZXIgZHVyYXRp
-b25zPwoKSSd2ZSBoYWQgaXQgcnVubmluZyBmb3IgYWJvdXQgYW4gaG91ciwgdXNpbmcgL2Rldi9u
-dWxsIGFzIGEgdGFyZ2V0IApiZWNhdXNlIEkgZG9uJ3QgaGF2ZSBlbm91Z2ggbWVtb3J5IHRvIHN0
-b3JlIHRoYXQgbXVjaCBkYXRhLgoKSSBkaWQgZ2V0IGxvdHMgb2YgdW5kZXJydW5zL292ZXJydW5z
-IHdoaWxlIGdldHRpbmcgc3RhcnRlZCwgYnV0IHRoZXkgCnR1cm5lZCBvdXQgdGUgYmUgcmVsYXRl
-ZCB0byBjbG9jayBjb25maWd1cmF0aW9ucy4gU28gdGFrZSBhIHJlYWxseSBnb29kIApsb29rIGF0
-IHRob3NlLCB0aGUgd2F5IHRoZSByZWdpc3RlcnMgYXJlIGJlaW5nIHNldCBhcmUgb2Z0ZW4gdmVy
-eSAKb2JzY3VyZSBhbmQgcmVnaXN0ZXIgZGVmaW5lcyBvZnRlbiBkb24ndCBtYXRjaCB0aGUgZGF0
-YXNoZWV0LgoKPj4gUGxheWJhY2sgYW5kIGNhcHR1cmUgYXQgdGhlIHNhbWUgdGltZSBzZWVtcyB0
-byBiZSBoYXJkZXIgZm9yIGNlcnRhaW4KPj4gZW1iZWRkZWQgZGV2aWNlcy4gIEkgZG9uJ3Qga25v
-dyBpZiB0aGlzIGlzIGEgZHJpdmVyIGJ1ZyBvciBhIGhhcmR3YXJlCj4+IGxpbWl0YXRpb24uCj4g
-QENsZW1lbnM6Cj4gVGhlIGJvdHRsZS1uZWNrIGlzIFNEIGNhcmQgYWNjZXNzLiBEcml2ZXIgYnVn
-IGNhbm5vdCBiZSBydWxlZCBvdXQsIGJ1dAo+IGl0IGlzIGRpZmZpY3VsdCB0byBldmFsdWF0ZS4K
-U291bmQgZmFtaWxpYXIsIG9uIG15IGJvYXJkIGEgVVNCIFNEIGNhcmRyZWFkZXIgY29ubmVjdGVk
-IHRvIHRoZSBVU0IgCnBvcnQgd2FzIGFjdHVhbGx5IGZhc3RlciB0aGFuIHRoZSBidWlsdC1pbiA0
-LXdpcmUgU0QuCgpNaWtlLgoKCk1ldCB2cmllbmRlbGlqa2UgZ3JvZXQgLyBraW5kIHJlZ2FyZHMs
-CgpNaWtlIExvb2lqbWFucwoKVE9QSUMgRW1iZWRkZWQgU3lzdGVtcwpFaW5kaG92ZW5zZXdlZyAz
-Mi1DLCBOTC01NjgzIEtIIEJlc3QKUG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9v
-bjogKCszMSkg4oCTICgwKTQ5OSAtIDMzLjY5Ljc5ClRlbGVmYXg6ICgrMzEpIC0gKDApNDk5IC0g
-MzMuNjkuNzAKRS1tYWlsOiBtaWtlLmxvb2lqbWFuc0B0b3BpYy5ubApXZWJzaXRlOiB3d3cudG9w
-aWMubmwKCkRpdCBlLW1haWwgYmVyaWNodCBlbiBkZSBldmVudHVlZWwgZGFhcmJpaiBiZWhvcmVu
-ZGUgYmlqbGFnZW4gemlqbiB1aXRzbHVpdGVuZCBiZXN0ZW1kIHZvb3IgZGUgZ2VhZHJlc3NlZXJk
-ZSwgem9hbHMgZGllIGJsaWprdCB1aXQgaGV0IGUtbWFpbCBiZXJpY2h0IGVuL29mIGRlIGJpamxh
-Z2VuLiBFciBrdW5uZW4gZ2VnZXZlbnMgbWV0IGJldHJla2tpbmcgdG90IGVlbiBkZXJkZSBpbnN0
-YWFuLiBJbmRpZW4gdSBhbHMgbmlldC1nZWFkcmVzc2VlcmRlIGRpdCBiZXJpY2h0IGVuIGRlIGJp
-amxhZ2VuIG9udHZhbmd0LCB0ZXJ3aWpsIHUgbmlldCBiZXZvZWdkIG9mIGdlbWFjaHRpZ2QgYmVu
-dCBvbSBkaXQgYmVyaWNodCBuYW1lbnMgZGUgZ2VhZHJlc3NlZXJkZSB0ZSBvbnR2YW5nZW4sIHdv
-cmR0IHUgdmVyem9jaHQgZGUgYWZ6ZW5kZXIgaGllcm92ZXIgZGlyZWN0IHRlIGluZm9ybWVyZW4g
-ZW4gaGV0IGUtbWFpbCBiZXJpY2h0IG1ldCBkZSBiaWpsYWdlbiB0ZSB2ZXJuaWV0aWdlbi4gSWVk
-ZXIgZ2VicnVpayB2YW4gZGUgaW5ob3VkIHZhbiBoZXQgZS1tYWlsIGJlcmljaHQsIHdhYXJvbmRl
-ciBkZSBkYWFyYmlqIGJlaG9yZW5kZSBiaWpsYWdlbiwgZG9vciBlZW4gYW5kZXIgZGFuIGRlIGdl
-YWRyZXNzZWVyZGUgaXMgb25yZWNodG1hdGlnIGplZ2VucyBvbnMgZGFuIHdlbCBkZSBldmVudHVl
-ZWwgaW4gaGV0IGUtbWFpbCBiZXJpY2h0IG9mIGRlIGJpamxhZ2VuIHZvb3Jrb21lbmRlIGFuZGVy
-ZSBwZXJzb25lbi4gVE9QSUMgRW1iZWRkZWQgU3lzdGVtcyBpcyBuaWV0IGFhbnNwcmFrZWxpamsg
-dm9vciBlbmlnZXJsZWkgc2NoYWRlIHZvb3J0dmxvZWllbmQgdWl0IGhldCBnZWJydWlrIGVuL29m
-IGFjY2VwdGF0aWUgdmFuIGRpdCBlLW1haWwgYmVyaWNodCBvZiBkZSBkYWFyYmlqIGJlaG9yZW5k
-ZSBiaWpsYWdlbi4KClRoZSBjb250ZW50cyBvZiB0aGlzIG1lc3NhZ2UsIGFzIHdlbGwgYXMgYW55
-IGVuY2xvc3VyZXMsIGFyZSBhZGRyZXNzZWQgcGVyc29uYWxseSB0bywgYW5kIHRodXMgc29sZWx5
-IGludGVuZGVkIGZvciB0aGUgYWRkcmVzc2VlLiBUaGV5IG1heSBjb250YWluIGluZm9ybWF0aW9u
-IHJlZ2FyZGluZyBhIHRoaXJkIHBhcnR5LiBBIHJlY2lwaWVudCB3aG8gaXMgbmVpdGhlciB0aGUg
-YWRkcmVzc2VlLCBub3IgZW1wb3dlcmVkIHRvIHJlY2VpdmUgdGhpcyBtZXNzYWdlIG9uIGJlaGFs
-ZiBvZiB0aGUgYWRkcmVzc2VlLCBpcyBraW5kbHkgcmVxdWVzdGVkIHRvIGltbWVkaWF0ZWx5IGlu
-Zm9ybSB0aGUgc2VuZGVyIG9mIHJlY2VpcHQsIGFuZCB0byBkZXN0cm95IHRoZSBtZXNzYWdlIGFu
-ZCB0aGUgZW5jbG9zdXJlcy4gQW55IHVzZSBvZiB0aGUgY29udGVudHMgb2YgdGhpcyBtZXNzYWdl
-IGFuZC9vciB0aGUgZW5jbG9zdXJlcyBieSBhbnkgb3RoZXIgcGVyc29uIHRoYW4gdGhlIGFkZHJl
-c3NlZSBvciBwZXJzb24gd2hvIGlzIGVtcG93ZXJlZCB0byByZWNlaXZlIHRoaXMgbWVzc2FnZSwg
-aXMgaWxsZWdhbCB0b3dhcmRzIHRoZSBzZW5kZXIgYW5kL29yIHRoZSBhZm9yZW1lbnRpb25lZCB0
-aGlyZCBwYXJ0eS4gVE9QSUMgRW1iZWRkZWQgU3lzdGVtcyBpcyBub3QgIGxpYWJsZSBmb3IgYW55
-IGRhbWFnZSBhcyBhIHJlc3VsdCBvZiB0aGUgdXNlIGFuZC9vciBhY2NlcHRhbmNlIG9mIHRoaXMg
-bWVzc2FnZSBhbmQgYXMgd2VsbCBhcyBhbnkgZW5jbG9zdXJlcy4KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+
+My hardware supports only interleaved access and I'm recording and
+playing using hw:0,0. Currently I provide interleaved buffers to the
+device.
+
+What I read is that plughw device can convert non-interleaved buffers
+to interleave buffers before sending to hardware. I want to reduce
+complexity of my application and want to use plughw.
+
+But I'm not able to get good documentation or examples of the same.
+Can anyone point out to me?
+
+
+Regards,
+-Prasant
