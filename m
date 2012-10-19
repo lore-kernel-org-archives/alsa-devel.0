@@ -1,48 +1,113 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 0/2] ASoC: omap-mcpdm updates for 3.7
-Date: Thu, 18 Oct 2012 19:23:38 -0700
-Message-ID: <20121019022338.GM30550@atomide.com>
-References: <1349339236-3622-1-git-send-email-peter.ujfalusi@ti.com>
- <20121017195525.GX15569@atomide.com>
- <20121018225237.GJ30550@atomide.com>
- <20121019012751.GA2353@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: softvol master has preference over virtual master in
+	amixer
+Date: Fri, 19 Oct 2012 11:15:29 +0800
+Message-ID: <CAN8cciZJpZQHsz1oYZZ8sVHRKo5hxdNBuKyDZsJPtho9V3ifNg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121019012751.GA2353@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14A40261732
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 05:15:30 +0200 (CEST)
+Received: by mail-qc0-f179.google.com with SMTP id b14so13275qcs.38
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2012 20:15:30 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [121018 18:29]:
-> On Thu, Oct 18, 2012 at 03:52:37PM -0700, Tony Lindgren wrote:
-> > * Tony Lindgren <tony@atomide.com> [121017 13:01]:
-> 
-> > > Is it OK for me to merge in your ASoC for-3.7 branch at commit
-> > > 68214d99 (ASoC: omap-mcpdm: Remove OMAP revision check) also
-> > > into my omap cleanup branch for v3.8?
-> 
-> > > I need that to avoid compile errors with some of my test configs.
-> 
-> > Never mind, that seems to be merged now.
-> 
-> That's easy :)  Sorry about the delay, OMAP stuff tends to get delayed
-> as there's so many large patch serieses posted in multiple versions that
-> I get CCed on I tend to batch process it.
+does softvol plugin "master" has any preference over vmaster in amixer ?
 
-Sure no problem, no kidding with the large multiple revision series..
- 
-> FWIW signed tags are fair game for merging without asking (in this case
-> asoc-3.7) but please don't merge any of my branches directly, I'll make
-> a tag.
+http://www.alsa-project.org/db/?f=44b26f5cd37f33bfef2871ff1fd250301bdb5364
 
-OK thanks, will do. In this case using the commit above works well
-as it's in mainline and actually will only bring in only one extra
-omap ASoC commit into my pull request. And I don't have to wait for
--rc2 :)
+control.32 {
+iface MIXER
+name 'Master Playback Volume'
+value 64
+comment {
+access 'read write'
+type INTEGER
+count 1
+range '0 - 64'
+dbmin -6400
+dbmax 0
+dbvalue.0 0
+}
+}
 
-Regards,
+control.42 {
+iface MIXER
+name Master
+value.0 255
+value.1 255
+comment {
+access 'read write user'
+type INTEGER
+count 2
+range '0 - 255'
+tlv '0000000100000008ffffec1400000014'
+dbmin -5100
+dbmax 0
+dbvalue.0 0
+dbvalue.1 0
+}
 
-Tony
+Card hw:0 'Intel'/'HDA Intel at 0xfeaf8000 irq 43'
+  Mixer name: 'Realtek ALC887-VD'
+  Components: 'HDA:10ec0887,10438445,00100302'
+  Controls      : 42
+  Simple ctrls  : 22
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 255 [100%] [191.00dB] [on]
+  Front Right: Playback 255 [100%] [191.00dB] [on]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Mono:
+  Front Left: Playback 64 [100%] [0.00dB] [on]
+  Front Right: Playback 64 [100%] [0.00dB] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 255 [100%] [0.00dB]
+  Front Right: Playback 255 [100%] [0.00dB]
+
+https://launchpadlibrarian.net/119782219/Symptom_PulseAudioLog.txt
+
+Oct 15 10:49:11 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:11 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:11 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:11 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
+Oct 15 10:49:12 xaser pulseaudio[1601]: [pulseaudio] alsa-util.c: Unable to
+load mixer: Invalid argument
