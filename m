@@ -1,104 +1,32 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: ASoC: mmap or read/write?
-Date: Fri, 19 Oct 2012 08:33:24 +0200
-Message-ID: <5080F434.6040602@topic.nl>
-References: <mailman.1.1350554402.30975.alsa-devel@alsa-project.org>
+From: Dongjiu Geng <djgeng@marvell.com>
+Subject: [pulseaudio] module-alsa-card.c: Failed to
+	find a working profile.
+Date: Fri, 19 Oct 2012 00:37:59 -0700
+Message-ID: <78895A20B3CF7D49B5589B604D36692B1A8D3CEEEB@SC-VEXCH4.marvell.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp102.mer-nm.internl.net (smtp102.mer-nm.internl.net
- [217.149.192.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 5173C2652E3
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 08:33:27 +0200 (CEST)
-Received: from amavisd-new (mailscanner11.mer-nm.internl.net [217.149.192.96])
- by smtp102.mer-nm.internl.net (Postfix) with ESMTP id D96B53F56F
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 08:33:26 +0200 (CEST)
-Received: from smtp102.mer-nm.internl.net ([IPv6:::ffff:217.149.192.138])
- by amavisd-new (mailscanner11.mer-nm.internl.net [::ffff:217.149.192.159])
- (amavisd-new, port 10024)
- with ESMTP id iscXgmP9VCg3 for <alsa-devel@alsa-project.org>;
- Fri, 19 Oct 2012 08:33:26 +0200 (CEST)
-Received: from TOP-EX02.topic.local (82-204-13-181.dsl.bbeyond.nl
- [82.204.13.181]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
- (No client certificate requested)
- by smtp102.mer-nm.internl.net (Postfix) with ESMTPS
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 08:33:26 +0200 (CEST)
-In-Reply-To: <mailman.1.1350554402.30975.alsa-devel@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-77u/Q2xlbWVucyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gTWVzc2FnZTogNiBEYXRl
-OiBUaHUsIDE4IE9jdCAyMDEyIAoxNTowNzo0NSArMDUzMCBGcm9tOiBQcmFzYW50IEogPHBqMDU4
-NUBnbWFpbC5jb20+IFRvOiBDbGVtZW5zIExhZGlzY2ggCjxjbGVtZW5zQGxhZGlzY2guZGU+IENj
-OiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcgU3ViamVjdDogUmU6IApbYWxzYS1kZXZlbF0g
-QVNvQzogbW1hcCBvciByZWFkL3dyaXRlPyBNZXNzYWdlLUlEOiAKPENBQTJESDR2NERVeGY1UWg3
-OW5laFRQRCsyMnY2WGRkekRyRU1tbkJ1MmVNOG00Slh6Z0BtYWlsLmdtYWlsLmNvbT4gCkNvbnRl
-bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1JU08tODg1OS0xIE9uIFRodSwgT2N0IDE4LCAy
-MDEyIGF0IAoyOjM5IFBNLCBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4gd3Jv
-dGU6Cj4+IFByYXNhbnQgSiB3cm90ZToKPj4+IEknbSB3cml0aW5nIGFuIGFsc2EgYXBwbGljYXRp
-b24gZm9yIHJlY29yZGluZyAmIHBsYXlpbmcgMTYgY2hhbm5lbCBhdWRpby4KPj4+Cj4+PiBUaGUg
-YXBwbGljYXRpb24gaXMgaW50ZW5kZWQgdG8gcnVuIG9uIGFuIGVtYmVkZGVkIHBsYXRmb3JtICYg
-dGhlCj4+PiByZXNvdXJjZXMgYXJlIGhpZ2hseSBjb25zdHJhaW5lZC4KPj4gVGhlbiBJIHdvbmRl
-ciBob3cgeW91IG1hbmFnZSB0byBoYW5kbGUgMTYgY2hhbm5lbHMuCj4+IFdoYXQgaGFyZHdhcmUg
-aXMgdGhpcz8KPiBJJ20gd29ya2luZyB3aXRoIEJlYWdsZWJvbmUgKEFSTSBDb3J0ZXgtQTggNzIw
-IE1IeikuIChDdXJyZW50bHkKPiBmYWlsdXJlcyBhcmUgZm9yIDggY2hhbm5lbHMgMzIgYml0IC8g
-MTYgYml0LCBidXQgb3VyIGZpbmFsIHRhcmdldCBpcwo+IDE2IGNoYW5uZWxzKQo+Cj4+PiBNeSBh
-cHBsaWNhdGlvbiBpcyBub3QgcGVyZm9ybWluZyB3ZWxsIHdpdGggcmVhZC93cml0ZSBtZXRob2Rz
-Lgo+PiBIb3cgbXVjaCBDUFUgdXNhZ2U/Cj4gVGhlIENQVSB1c2FnZSBpcyBhcm91bmQgMzUlIChh
-cyBzZWVuIGluIHRvcCkKPgo+IEkgaGF2ZSBtYW5hZ2VkIHRvIGdldCBBdWRpbyBjYXB0dXJlIHdv
-cmtpbmcgZmluZSAoYWZ0ZXIgY2VydGFpbiBsaW51eAo+IG9wdGltaXphdGlvbnMpIGJ1dCBwbGF5
-YmFjayBpcyBnaXZpbmcgdW5kZXItcnVucyAob25seSB3aGVuIFBMQVlCQUNLICYKPiBDQVBUVVJF
-IHJ1biB0b2dldGhlcikKPiBJIHdhcyB3b25kZXJpbmcgdGhhdCBjaGFuZ2luZyBhY2Nlc3MgbWV0
-aG9kIHRvIG1tYXAgKGN1cnJlbnRseSBJJ20KPiB1c2luZyByZWFkL3dyaXRlKSBtYXkgZ2l2ZSBt
-ZSBzb21lIG1vcmUgQ1BVIHRpbWUuCgpZb3UgbXVzdCBiZSBkb2luZyBzb21ldGhpbmcgd3Jvbmcu
-IEknbSBkb2luZyAzMi1iaXQsIDE2LWNoYW5uZWwgaW5wdXQgYXQgCjUxLjJrSHogb24gYSBPTUFQ
-LUwxMzggKGFuIEFSTTkgQ1BVIGF0IDQ1MCBNSHopIHVuZGVyIExpbnV4IGFuZCBpdCdzIAp1c2lu
-ZyBubyBtb3JlIHRoYW4gMjUlIENQVSBmb3IgdGhhdC4gSnVzdCB1c2luZyJhcmVjb3JkIiBmb3Ig
-dGhhdC4KCk1pa2UuCihzb3JyeSBmb3IgdGhlIGNvbXBhbnkgc2lnKQoKCgpNZXQgdnJpZW5kZWxp
-amtlIGdyb2V0IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29pam1hbnMKClRPUElDIEVtYmVkZGVk
-IFN5c3RlbXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4MyBLSCBCZXN0ClBvc3RidXMgNDQw
-LCBOTC01NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpIOKAkyAoMCk0OTkgLSAzMy42OS43OQpU
-ZWxlZmF4OiAoKzMxKSAtICgwKTQ5OSAtIDMzLjY5LjcwCkUtbWFpbDogbWlrZS5sb29pam1hbnNA
-dG9waWMubmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpEaXQgZS1tYWlsIGJlcmljaHQgZW4gZGUg
-ZXZlbnR1ZWVsIGRhYXJiaWogYmVob3JlbmRlIGJpamxhZ2VuIHppam4gdWl0c2x1aXRlbmQgYmVz
-dGVtZCB2b29yIGRlIGdlYWRyZXNzZWVyZGUsIHpvYWxzIGRpZSBibGlqa3QgdWl0IGhldCBlLW1h
-aWwgYmVyaWNodCBlbi9vZiBkZSBiaWpsYWdlbi4gRXIga3VubmVuIGdlZ2V2ZW5zIG1ldCBiZXRy
-ZWtraW5nIHRvdCBlZW4gZGVyZGUgaW5zdGFhbi4gSW5kaWVuIHUgYWxzIG5pZXQtZ2VhZHJlc3Nl
-ZXJkZSBkaXQgYmVyaWNodCBlbiBkZSBiaWpsYWdlbiBvbnR2YW5ndCwgdGVyd2lqbCB1IG5pZXQg
-YmV2b2VnZCBvZiBnZW1hY2h0aWdkIGJlbnQgb20gZGl0IGJlcmljaHQgbmFtZW5zIGRlIGdlYWRy
-ZXNzZWVyZGUgdGUgb250dmFuZ2VuLCB3b3JkdCB1IHZlcnpvY2h0IGRlIGFmemVuZGVyIGhpZXJv
-dmVyIGRpcmVjdCB0ZSBpbmZvcm1lcmVuIGVuIGhldCBlLW1haWwgYmVyaWNodCBtZXQgZGUgYmlq
-bGFnZW4gdGUgdmVybmlldGlnZW4uIEllZGVyIGdlYnJ1aWsgdmFuIGRlIGluaG91ZCB2YW4gaGV0
-IGUtbWFpbCBiZXJpY2h0LCB3YWFyb25kZXIgZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4s
-IGRvb3IgZWVuIGFuZGVyIGRhbiBkZSBnZWFkcmVzc2VlcmRlIGlzIG9ucmVjaHRtYXRpZyBqZWdl
-bnMgb25zIGRhbiB3ZWwgZGUgZXZlbnR1ZWVsIGluIGhldCBlLW1haWwgYmVyaWNodCBvZiBkZSBi
-aWpsYWdlbiB2b29ya29tZW5kZSBhbmRlcmUgcGVyc29uZW4uIFRPUElDIEVtYmVkZGVkIFN5c3Rl
-bXMgaXMgbmlldCBhYW5zcHJha2VsaWprIHZvb3IgZW5pZ2VybGVpIHNjaGFkZSB2b29ydHZsb2Vp
-ZW5kIHVpdCBoZXQgZ2VicnVpayBlbi9vZiBhY2NlcHRhdGllIHZhbiBkaXQgZS1tYWlsIGJlcmlj
-aHQgb2YgZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4uCgpUaGUgY29udGVudHMgb2YgdGhp
-cyBtZXNzYWdlLCBhcyB3ZWxsIGFzIGFueSBlbmNsb3N1cmVzLCBhcmUgYWRkcmVzc2VkIHBlcnNv
-bmFsbHkgdG8sIGFuZCB0aHVzIHNvbGVseSBpbnRlbmRlZCBmb3IgdGhlIGFkZHJlc3NlZS4gVGhl
-eSBtYXkgY29udGFpbiBpbmZvcm1hdGlvbiByZWdhcmRpbmcgYSB0aGlyZCBwYXJ0eS4gQSByZWNp
-cGllbnQgd2hvIGlzIG5laXRoZXIgdGhlIGFkZHJlc3NlZSwgbm9yIGVtcG93ZXJlZCB0byByZWNl
-aXZlIHRoaXMgbWVzc2FnZSBvbiBiZWhhbGYgb2YgdGhlIGFkZHJlc3NlZSwgaXMga2luZGx5IHJl
-cXVlc3RlZCB0byBpbW1lZGlhdGVseSBpbmZvcm0gdGhlIHNlbmRlciBvZiByZWNlaXB0LCBhbmQg
-dG8gZGVzdHJveSB0aGUgbWVzc2FnZSBhbmQgdGhlIGVuY2xvc3VyZXMuIEFueSB1c2Ugb2YgdGhl
-IGNvbnRlbnRzIG9mIHRoaXMgbWVzc2FnZSBhbmQvb3IgdGhlIGVuY2xvc3VyZXMgYnkgYW55IG90
-aGVyIHBlcnNvbiB0aGFuIHRoZSBhZGRyZXNzZWUgb3IgcGVyc29uIHdobyBpcyBlbXBvd2VyZWQg
-dG8gcmVjZWl2ZSB0aGlzIG1lc3NhZ2UsIGlzIGlsbGVnYWwgdG93YXJkcyB0aGUgc2VuZGVyIGFu
-ZC9vciB0aGUgYWZvcmVtZW50aW9uZWQgdGhpcmQgcGFydHkuIFRPUElDIEVtYmVkZGVkIFN5c3Rl
-bXMgaXMgbm90ICBsaWFibGUgZm9yIGFueSBkYW1hZ2UgYXMgYSByZXN1bHQgb2YgdGhlIHVzZSBh
-bmQvb3IgYWNjZXB0YW5jZSBvZiB0aGlzIG1lc3NhZ2UgYW5kIGFzIHdlbGwgYXMgYW55IGVuY2xv
-c3VyZXMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi all:
+    when I run the pulseaudio, it always shows the bellowing error log:
+      I//system/bin/pulseaudio( 1529): E: [pulseaudio] module-alsa-card.c: Failed to find a working profile.
+    what should i do ?  Thank you very much.
+
+
+Best regards,
+Dongjiu Geng
