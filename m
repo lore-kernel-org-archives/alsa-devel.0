@@ -1,37 +1,50 @@
-From: joseph.salisbury@canonical.com
-Subject: [PATCH v2 1/1] ALSA: hda - add quirk for Thinkpad T430
-Date: Fri, 19 Oct 2012 14:26:21 -0400
-Message-ID: <fe78ea8daff3d5a41b6e1c78fb527894da6ad71e.1350570761.git.joseph.salisbury__6098.30490216172$1350671209$gmane$org@canonical.com>
+From: Jonathan Nieder <jrnieder@gmail.com>
+Subject: Re: [PATCH v2 1/1] ALSA: hda - add quirk for Thinkpad T430
+Date: Fri, 19 Oct 2012 12:54:21 -0700
+Message-ID: <20121019195421.GC4787@elie.Belkin>
 References: <cover.1350570761.git.joseph.salisbury@canonical.com>
+ <fe78ea8daff3d5a41b6e1c78fb527894da6ad71e.1350570761.git.joseph.salisbury@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1350570761.git.joseph.salisbury@canonical.com>
+Content-Disposition: inline
+In-Reply-To: <fe78ea8daff3d5a41b6e1c78fb527894da6ad71e.1350570761.git.joseph.salisbury@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: torvalds@linux-foundation.org, perex@perex.cz, tiwai@suse.de, david.henningsson@canonical.com, alsa-devel@alsa-project.org, stable@vger.kernel.org
+To: joseph.salisbury@canonical.com
+Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, perex@perex.cz, tiwai@suse.de, david.henningsson@canonical.com, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
+joseph.salisbury@canonical.com wrote:
 
-This patch adds a quirk to enable headphone jack audio on T430 Thinkpads.
+> This patch adds a quirk to enable headphone jack audio on T430 Thinkp=
+ads.
+>
+> Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
+> Cc: <stable@vger.kernel.org>
+
+Thanks --- this is a little better.
+
+One more nit: it looks like this was reported, tested, and based on a
+patch by Stefan Freyr.  Takashi, could you amend the message to
+reflect that, or should the patch be resent?
+
+Something like
+
+-- >8 --
+=46rom: Stef=C3=A1n Freyr <stefan.freyr@gmail.com>
+Subject: ALSA: hda - add dock support for Thinkpad T430
+
+I have a Lenovo ThinkPad T430 and an UltraBase Series 3 docking
+station.
+
+Without this patch, if I plug my headphones into the jack on the
+computer, everything works fine. The computer speakers mute and the
+audio is played in the headphones. However, if I plug into the docking
+station headphone jack the computer speakers are muted but there is no
+audio in the headphones.
+
+Addresses https://bugs.launchpad.net/bugs/1060372
 
 Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
-Cc: <stable@vger.kernel.org>
-
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 739f968..18fce01 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6172,6 +6172,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
--- 
-1.7.9.5
+Cc: stable@vger.kernel.org
