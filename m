@@ -1,12 +1,12 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/9] ALSA: hdspm - Allow DDS/Varispeed to be
-	set from userspace
-Date: Fri, 19 Oct 2012 17:42:22 +0200
-Message-ID: <1350661350-5000-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 3/9] ALSA: hdspm - Fix sync check reporting on
+	all RME HDSPM cards
+Date: Fri, 19 Oct 2012 17:42:24 +0200
+Message-ID: <1350661350-5000-4-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,34 +22,47 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIEREUyB2YWx1ZSBpcyB0aGUgYWN0dWFsIHBoeXNpY2FsIHNhbXBsZSByYXRlLiBXZSBzZXQg
-aXQgaW5kaXJlY3RseQp3aGVuIHNlbGVjdGluZyA0NDEwMCwgNDgwMDAgYW5kIHNvIG9uIHZpYSBz
-bmRfaGRzcG1faHdfcGFyYW1zIG9yCmhkc3BtX3NldF9jbG9ja19zb3VyY2UuCgpUaGlzIGNvbW1p
-dCBub3cgYWxsb3dzIHRoZSBERFMgdmFsdWUgdG8gYmUgYWx0ZXJlZCBhdCBydW50aW1lLCB0aHVz
-CnNwZWVkaW5nIHVwIG9yIHNsb3dpbmcgZG93biB0aGUgcGh5c2ljYWwgc2FtcGxlIHJhdGUuIFRo
-aXMgaXMgcmVxdWlyZWQKZm9yIE1BREkncyB2YXJpc3BlZWQgdGhhdCBhbGxvd3MgZm9yIMKxMTIu
-NSUgc3BlZWQgYWRqdXN0bWVudCBmcm9tIHRoZQoic2VsZWN0ZWQiIHJhdGUgKDMya0h6LCA0NDEw
-MGtIeiwgNDhrSHogYW5kIHNvIG9uKS4KClNpZ25lZC1vZmYtYnk6IEFkcmlhbiBLbm90aCA8YWRp
-QGRyY29tcC5lcmZ1cnQudGh1ci5kZT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvcm1lOTY1Mi9o
-ZHNwbS5jIGIvc291bmQvcGNpL3JtZTk2NTIvaGRzcG0uYwppbmRleCBiMTIzMDhiLi43NDJiZDVl
-IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvcm1lOTY1Mi9oZHNwbS5jCisrKyBiL3NvdW5kL3BjaS9y
-bWU5NjUyL2hkc3BtLmMKQEAgLTIwMDMsOCArMjAwMywxMCBAQCBzdGF0aWMgaW50IGhkc3BtX2dl
-dF9zeXN0ZW1fc2FtcGxlX3JhdGUoc3RydWN0IGhkc3BtICpoZHNwbSkKIHsgLmlmYWNlID0gU05E
-UlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsIFwKICAgLm5hbWUgPSB4bmFtZSwgXAogICAuaW5kZXgg
-PSB4aW5kZXgsIFwKLSAgLmFjY2VzcyA9IFNORFJWX0NUTF9FTEVNX0FDQ0VTU19SRUFELCBcCisg
-IC5hY2Nlc3MgPSBTTkRSVl9DVExfRUxFTV9BQ0NFU1NfUkVBRFdSSVRFIHxcCisJU05EUlZfQ1RM
-X0VMRU1fQUNDRVNTX1ZPTEFUSUxFLCBcCiAgIC5pbmZvID0gc25kX2hkc3BtX2luZm9fc3lzdGVt
-X3NhbXBsZV9yYXRlLCBcCisgIC5wdXQgPSBzbmRfaGRzcG1fcHV0X3N5c3RlbV9zYW1wbGVfcmF0
-ZSwgXAogICAuZ2V0ID0gc25kX2hkc3BtX2dldF9zeXN0ZW1fc2FtcGxlX3JhdGUgXAogfQogCkBA
-IC0yMDMwLDYgKzIwMzIsMTYgQEAgc3RhdGljIGludCBzbmRfaGRzcG1fZ2V0X3N5c3RlbV9zYW1w
-bGVfcmF0ZShzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAlyZXR1cm4gMDsKIH0KIAor
-c3RhdGljIGludCBzbmRfaGRzcG1fcHV0X3N5c3RlbV9zYW1wbGVfcmF0ZShzdHJ1Y3Qgc25kX2tj
-b250cm9sICprY29udHJvbCwKKwkJCQkJICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKgor
-CQkJCQkgICAgdWNvbnRyb2wpCit7CisJc3RydWN0IGhkc3BtICpoZHNwbSA9IHNuZF9rY29udHJv
-bF9jaGlwKGtjb250cm9sKTsKKworCWhkc3BtX3NldF9kZHNfdmFsdWUoaGRzcG0sIHVjb250cm9s
-LT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0pOworCXJldHVybiAwOworfQorCiAKIC8qKgogICog
-UmV0dXJucyB0aGUgV29yZENsb2NrIHNhbXBsZSByYXRlIGNsYXNzIGZvciB0aGUgZ2l2ZW4gY2Fy
-ZC4KLS0gCjEuNy4xMC40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Due to missing breaks and the resulting fall-through, card subtype
+selection was effectively missing, thus causing the wrong sync check
+functions to be called.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 1131a8a..81d83fa 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -3959,6 +3959,7 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
+ 		default:
+ 			val = hdspm_s1_sync_check(hdspm, ucontrol->id.index-1);
+ 		}
++		break;
+ 
+ 	case AIO:
+ 		switch (kcontrol->private_value) {
+@@ -3971,6 +3972,7 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
+ 		default:
+ 			val = hdspm_s1_sync_check(hdspm, ucontrol->id.index-1);
+ 		}
++		break;
+ 
+ 	case MADI:
+ 		switch (kcontrol->private_value) {
+@@ -3983,6 +3985,7 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
+ 		case 3: /* SYNC_IN */
+ 			val = hdspm_sync_in_sync_check(hdspm); break;
+ 		}
++		break;
+ 
+ 	case MADIface:
+ 		val = hdspm_madi_sync_check(hdspm); /* MADI */
+@@ -4000,6 +4003,7 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
+ 			 val = hdspm_aes_sync_check(hdspm,
+ 					 kcontrol->private_value-1);
+ 		}
++		break;
+ 
+ 	}
+ 
+-- 
+1.7.10.4
