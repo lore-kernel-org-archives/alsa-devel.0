@@ -1,21 +1,31 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: usb-audio: Reloop Play support (TI TUSB3200AC)
-Date: Fri, 19 Oct 2012 20:06:20 +0200
-Message-ID: <5081969C.1060203@gmail.com>
-References: <1350652166.5549.8.camel@didier-laptop> <5081539E.40705@gmail.com>
- <1350654327.8310.4.camel@didier-laptop> <50815B51.3090402@gmail.com>
- <1350660503.5494.15.camel@didier-laptop>
+From: Pete Leigh <pete.leigh@gmail.com>
+Subject: Re: Fwd: Support for Roland VG-99 (working code,
+ but could use help)
+Date: Fri, 19 Oct 2012 19:18:49 +0100
+Message-ID: <CABn3OEHmJqtkkKz1TeLh_Q52meUkuzKYnp8sTH5LtSjMG73sCg@mail.gmail.com>
+References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
+ <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
+ <507D0F6D.1000102@gmail.com>
+ <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
+ <507D1C77.5080302@gmail.com>
+ <CABn3OEHxhguP6E56DUjfPAgxyaSXOHrRSd7jEdsax3e16Zm3Nw@mail.gmail.com>
+ <50810512.2040909@gmail.com>
+ <CABn3OEECLmo3LXQ7Zg+HVk4HBO54NgLZgxwV11-7rjQYu8BHQQ@mail.gmail.com>
+ <50810E4E.2020108@gmail.com>
+ <CABn3OEF18-Q3agOZ3Er5BODDo2R=H-G4Njdua-1L_E1uXHqpMw@mail.gmail.com>
+ <CABn3OEH4n5i_UNMQSVM9a+gUBD5mXH=faeazu038Kdy_p9G+AQ@mail.gmail.com>
+ <508191DF.2060802@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 95708265CBF
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 20:06:23 +0200 (CEST)
-Received: by mail-bk0-f51.google.com with SMTP id e19so283387bku.38
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:06:23 -0700 (PDT)
-In-Reply-To: <1350660503.5494.15.camel@didier-laptop>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34CAD265B79
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 20:18:51 +0200 (CEST)
+Received: by mail-ie0-f179.google.com with SMTP id c10so1016000ieb.38
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 11:18:50 -0700 (PDT)
+In-Reply-To: <508191DF.2060802@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,30 +35,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Didier 'Ptitjes' Villevalois <ptitjes@free.fr>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19.10.2012 17:28, Didier 'Ptitjes' Villevalois wrote:
-> Daniel,
-> 
-> I noticed something strange on the screenshots. AudioMIDISetup says the
-> Reloop Play is a 24bit device (and indeed this is what is advertised on
-> the Reloop page http://www.reloop.com/reloop-play). However, when I
-> inspect the proposed audio formats through Javasound the only format
-> proposed are:
+Hi Daniel
 
-[...]
+On 19 October 2012 18:46, Daniel Mack <zonque@gmail.com> wrote:
+> On 19.10.2012 19:02, Pete Leigh wrote:
 
-> Is it possible that ALSA does not correctly see that it is a 24-bit
-> soundcard ?
+>> I quickly tested the VG-99 quirk (modified as per Clemens' suggestion)
+>> and that works too, so I'll work on generating a patch as per the
+>> instructions on alsa-project.org.
 
-Yes, but I doubt that the only reason for them to ship an own driver.
+Actually, I'm struggling a bit with this. I'm guessing
+(alsa-project.org doesn't seem to say...) that you need to check out
+the release branch in alsa-driver to work on, and do your commit
+against that (master branch contains only a README) but the wiki also
+advises to do a rebase origin/master after your commit. It seemed
+weird, but I tried it, to no useful effect of course.
 
-Could you post the output of "lsusb -v" please? For both cases: the
-device freshly plugged in under Linux, and after the OSX driver
-downloaded its firmware. You can already check whether you spot any
-differences between them ...
+As a relative novice, this is pretty confusing stuff. Is there a plain
+step-by-step of the procedure to generate a patch? Would  it be
+acceptable to send the patch against the sound.git tree?
 
+>> If it's any use regarding the urb 0 -ENOSPACE error I was having,  I
+>> can try and track down the config item difference that makes it work,
+>> or provide the config files for you to look at.. Please let me know if
+>> this would be useful.
+>
+> Absolutely, that would be great. We keep getting reports from users that
+> see this since the driver was reworked, and I still haven't got my head
+> around what really causes it. And none of my machines show the error
+> yet, so it's really hard to track. If you would point me to any specific
+> config option that reproducibly changes the behaviour, that would be of
+> great help.
+>
+>> Should there be some dependency in the configs so that whatever item
+>> is making the difference is enabled by selecting SND_USB_AUDIO ?
+>
+> No, it's really just a bug that must be fixed.
 
-Daniel
+Ok, I'll try narrowing down the config differences. It might take a
+while, though:
+
+$ diff ~/3.7.working.config ~/broken.config | grep -v '#' | wc -l
+$ 1001
+
+Cheers,
+
+- Pete.
