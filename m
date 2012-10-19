@@ -1,12 +1,12 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 2/9] ALSA: hdspm - Report external rate in
-	slave mode on PCI MADI
-Date: Fri, 19 Oct 2012 17:42:23 +0200
-Message-ID: <1350661350-5000-3-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 1/9] ALSA: hdspm - Allow DDS/Varispeed to be
+	set from userspace
+Date: Fri, 19 Oct 2012 17:42:22 +0200
+Message-ID: <1350661350-5000-2-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,44 +22,34 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-As a follow-up to a97bda7d29d02a2e9c6609d0947b15e55f5200e5, report the
-external sample rate as system_sample_rate when in slave mode.
-
-For PCIe MADI cards, the DDS value automatically contains the external
-sample rate, but the PCI version needs this manual workaround.
-
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 742bd5e..1131a8a 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -971,6 +971,7 @@ static inline void snd_hdspm_initialize_midi_flush(struct hdspm *hdspm);
- static int hdspm_update_simple_mixer_controls(struct hdspm *hdspm);
- static int hdspm_autosync_ref(struct hdspm *hdspm);
- static int snd_hdspm_set_defaults(struct hdspm *hdspm);
-+static int hdspm_system_clock_mode(struct hdspm *hdspm);
- static void hdspm_set_sgbuf(struct hdspm *hdspm,
- 			    struct snd_pcm_substream *substream,
- 			     unsigned int reg, int channels);
-@@ -1989,10 +1990,14 @@ static int hdspm_get_system_sample_rate(struct hdspm *hdspm)
- 	rate = hdspm_calc_dds_value(hdspm, period);
- 
- 	if (rate > 207000) {
--		/* Unreasonable high sample rate as seen on PCI MADI cards.
--		 * Use the cached value instead.
--		 */
--		rate = hdspm->system_sample_rate;
-+		/* Unreasonable high sample rate as seen on PCI MADI cards. */
-+		if (0 == hdspm_system_clock_mode(hdspm)) {
-+			/* master mode, return internal sample rate */
-+			rate = hdspm->system_sample_rate;
-+		} else {
-+			/* slave mode, return external sample rate */
-+			rate = hdspm_external_sample_rate(hdspm);
-+		}
- 	}
- 
- 	return rate;
--- 
-1.7.10.4
+VGhlIEREUyB2YWx1ZSBpcyB0aGUgYWN0dWFsIHBoeXNpY2FsIHNhbXBsZSByYXRlLiBXZSBzZXQg
+aXQgaW5kaXJlY3RseQp3aGVuIHNlbGVjdGluZyA0NDEwMCwgNDgwMDAgYW5kIHNvIG9uIHZpYSBz
+bmRfaGRzcG1faHdfcGFyYW1zIG9yCmhkc3BtX3NldF9jbG9ja19zb3VyY2UuCgpUaGlzIGNvbW1p
+dCBub3cgYWxsb3dzIHRoZSBERFMgdmFsdWUgdG8gYmUgYWx0ZXJlZCBhdCBydW50aW1lLCB0aHVz
+CnNwZWVkaW5nIHVwIG9yIHNsb3dpbmcgZG93biB0aGUgcGh5c2ljYWwgc2FtcGxlIHJhdGUuIFRo
+aXMgaXMgcmVxdWlyZWQKZm9yIE1BREkncyB2YXJpc3BlZWQgdGhhdCBhbGxvd3MgZm9yIMKxMTIu
+NSUgc3BlZWQgYWRqdXN0bWVudCBmcm9tIHRoZQoic2VsZWN0ZWQiIHJhdGUgKDMya0h6LCA0NDEw
+MGtIeiwgNDhrSHogYW5kIHNvIG9uKS4KClNpZ25lZC1vZmYtYnk6IEFkcmlhbiBLbm90aCA8YWRp
+QGRyY29tcC5lcmZ1cnQudGh1ci5kZT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvcm1lOTY1Mi9o
+ZHNwbS5jIGIvc291bmQvcGNpL3JtZTk2NTIvaGRzcG0uYwppbmRleCBiMTIzMDhiLi43NDJiZDVl
+IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvcm1lOTY1Mi9oZHNwbS5jCisrKyBiL3NvdW5kL3BjaS9y
+bWU5NjUyL2hkc3BtLmMKQEAgLTIwMDMsOCArMjAwMywxMCBAQCBzdGF0aWMgaW50IGhkc3BtX2dl
+dF9zeXN0ZW1fc2FtcGxlX3JhdGUoc3RydWN0IGhkc3BtICpoZHNwbSkKIHsgLmlmYWNlID0gU05E
+UlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsIFwKICAgLm5hbWUgPSB4bmFtZSwgXAogICAuaW5kZXgg
+PSB4aW5kZXgsIFwKLSAgLmFjY2VzcyA9IFNORFJWX0NUTF9FTEVNX0FDQ0VTU19SRUFELCBcCisg
+IC5hY2Nlc3MgPSBTTkRSVl9DVExfRUxFTV9BQ0NFU1NfUkVBRFdSSVRFIHxcCisJU05EUlZfQ1RM
+X0VMRU1fQUNDRVNTX1ZPTEFUSUxFLCBcCiAgIC5pbmZvID0gc25kX2hkc3BtX2luZm9fc3lzdGVt
+X3NhbXBsZV9yYXRlLCBcCisgIC5wdXQgPSBzbmRfaGRzcG1fcHV0X3N5c3RlbV9zYW1wbGVfcmF0
+ZSwgXAogICAuZ2V0ID0gc25kX2hkc3BtX2dldF9zeXN0ZW1fc2FtcGxlX3JhdGUgXAogfQogCkBA
+IC0yMDMwLDYgKzIwMzIsMTYgQEAgc3RhdGljIGludCBzbmRfaGRzcG1fZ2V0X3N5c3RlbV9zYW1w
+bGVfcmF0ZShzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAlyZXR1cm4gMDsKIH0KIAor
+c3RhdGljIGludCBzbmRfaGRzcG1fcHV0X3N5c3RlbV9zYW1wbGVfcmF0ZShzdHJ1Y3Qgc25kX2tj
+b250cm9sICprY29udHJvbCwKKwkJCQkJICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKgor
+CQkJCQkgICAgdWNvbnRyb2wpCit7CisJc3RydWN0IGhkc3BtICpoZHNwbSA9IHNuZF9rY29udHJv
+bF9jaGlwKGtjb250cm9sKTsKKworCWhkc3BtX3NldF9kZHNfdmFsdWUoaGRzcG0sIHVjb250cm9s
+LT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0pOworCXJldHVybiAwOworfQorCiAKIC8qKgogICog
+UmV0dXJucyB0aGUgV29yZENsb2NrIHNhbXBsZSByYXRlIGNsYXNzIGZvciB0aGUgZ2l2ZW4gY2Fy
+ZC4KLS0gCjEuNy4xMC40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
