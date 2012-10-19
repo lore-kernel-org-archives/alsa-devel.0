@@ -1,18 +1,11 @@
-From: Didier 'Ptitjes' Villevalois <ptitjes@free.fr>
-Subject: Re: usb-audio: Reloop Play support (TI TUSB3200AC)
-Date: Fri, 19 Oct 2012 17:28:23 +0200
-Message-ID: <1350660503.5494.15.camel@didier-laptop>
-References: <1350652166.5549.8.camel@didier-laptop>
- <5081539E.40705@gmail.com> <1350654327.8310.4.camel@didier-laptop>
- <50815B51.3090402@gmail.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/9] Fixes for RME MADI cards
+Date: Fri, 19 Oct 2012 17:42:21 +0200
+Message-ID: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E15A265B7B
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 17:28:29 +0200 (CEST)
-In-Reply-To: <50815B51.3090402@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +15,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-Daniel,
+Hi!
 
-I noticed something strange on the screenshots. AudioMIDISetup says the
-Reloop Play is a 24bit device (and indeed this is what is advertised on
-the Reloop page http://www.reloop.com/reloop-play). However, when I
-inspect the proposed audio formats through Javasound the only format
-proposed are:
+I've spent another afternoon at IOSONO to fix a series of bugs in the
+hdspm driver.
 
-      Format: PCM_SIGNED unknown sample rate, 16 bit, mono, 2
-bytes/frame, little-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, mono, 2
-bytes/frame, big-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, stereo, 4
-bytes/frame, little-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, stereo, 4
-bytes/frame, big-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, 3 channels, 6
-bytes/frame, little-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, 3 channels, 6
-bytes/frame, big-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, 4 channels, 8
-bytes/frame, little-endian
-      Format: PCM_SIGNED unknown sample rate, 16 bit, 4 channels, 8
-bytes/frame, big-endian
-      Format: PCM_SIGNED unknown sample rate, 8 bit, mono, 1
-bytes/frame, 
-      Format: PCM_UNSIGNED unknown sample rate, 8 bit, mono, 1
-bytes/frame, 
-      Format: PCM_SIGNED unknown sample rate, 8 bit, stereo, 2
-bytes/frame, 
-      Format: PCM_UNSIGNED unknown sample rate, 8 bit, stereo, 2
-bytes/frame, 
-      Format: PCM_SIGNED unknown sample rate, 8 bit, 3 channels, 3
-bytes/frame, 
-      Format: PCM_UNSIGNED unknown sample rate, 8 bit, 3 channels, 3
-bytes/frame, 
-      Format: PCM_SIGNED unknown sample rate, 8 bit, 4 channels, 4
-bytes/frame, 
-      Format: PCM_UNSIGNED unknown sample rate, 8 bit, 4 channels, 4
-bytes/frame, 
+Andre Schramm and me have tested almost all patches on a box with two
+PCIe MADI cards and one PCI MADI card. The DDS/Varispeed patch has only
+been tested on my RayDAT, the sync_in detection for AES32 has not been
+tested at all, though the documentation is pretty clear that the
+previous bit position was wrong. If there are AES(32) owners with two or
+more cards out there, please test and report back.
 
-Is it possible that ALSA does not correctly see that it is a 24-bit
-soundcard ?
+The typo and the coding style patches have not been tested, since
+they're trivial.
 
-Didier.
+
+Cheers
+
+Adrian Knoth (9):
+  ALSA: hdspm - Allow DDS/Varispeed to be set from userspace
+  ALSA: hdspm - Report external rate in slave mode on PCI MADI
+  ALSA: hdspm - Fix sync check reporting on all RME HDSPM cards
+  ALSA: hdspm - Fix reported autosync_sample_rate
+  ALSA: hdspm - Also report autosync_sample_rate on MADI and MADIface
+  ALSA: hdspm - Fix sync_in reporting on RME MADI cards
+  ALSA: hdspm - Fix sync_in detection on AES/AES32
+  ALSA: hdspm - Fix typo in kcontrol element on RME MADI cards
+  ALSA: hdspm - Fix coding style in CTL_ELEM macros
+
+ sound/pci/rme9652/hdspm.c |  232 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 137 insertions(+), 95 deletions(-)
+
+-- 
+1.7.10.4
