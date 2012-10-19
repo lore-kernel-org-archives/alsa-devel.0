@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 6/9] ALSA: hdspm - Fix sync_in reporting on RME
-	MADI cards
-Date: Fri, 19 Oct 2012 17:42:27 +0200
-Message-ID: <1350661350-5000-7-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 7/9] ALSA: hdspm - Fix sync_in detection on
+	AES/AES32
+Date: Fri, 19 Oct 2012 17:42:28 +0200
+Message-ID: <1350661350-5000-8-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,26 +22,25 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-In contrast to AES32, MADI uses the first status register to report the
-sync_in status.
+According to the documentation, AES32 cards use a different bit position
+for reporting the sync_in status.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 1a679e9..9c41661 100644
+index 9c41661..e327484 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -3883,6 +3883,11 @@ static int hdspm_sync_in_sync_check(struct hdspm *hdspm)
- 		break;
+@@ -3890,8 +3890,8 @@ static int hdspm_sync_in_sync_check(struct hdspm *hdspm)
  
- 	case MADI:
-+		status = hdspm_read(hdspm, HDSPM_statusRegister);
-+		lock = (status & HDSPM_syncInLock) ? 1 : 0;
-+		sync = (status & HDSPM_syncInSync) ? 1 : 0;
-+		break;
-+
  	case AES32:
  		status = hdspm_read(hdspm, HDSPM_statusRegister2);
- 		lock = (status & HDSPM_syncInLock) ? 1 : 0;
+-		lock = (status & HDSPM_syncInLock) ? 1 : 0;
+-		sync = (status & HDSPM_syncInSync) ? 1 : 0;
++		lock = (status & 0x100000) ? 1 : 0;
++		sync = (status & 0x200000) ? 1 : 0;
+ 		break;
+ 
+ 	case MADIface:
 -- 
 1.7.10.4
