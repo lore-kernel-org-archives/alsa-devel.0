@@ -1,33 +1,20 @@
-From: Pete Leigh <pete.leigh@gmail.com>
-Subject: Re: Fwd: Support for Roland VG-99 (working code,
- but could use help)
-Date: Sat, 20 Oct 2012 03:21:42 +0100
-Message-ID: <CABn3OEHzKfq-asnXRMRs8GgRosis4fSzdrExBW8mHJk9eKBqqA@mail.gmail.com>
-References: <CABn3OEFatrnhGs1xzpmOfXSxpSLuGwgRtN8v=1B96i6=7_9vTg@mail.gmail.com>
- <CABn3OEHRK7TLp+J_pZjMoFts4bZ=-FquQX0WKCzUcaaMZ8Nrpg@mail.gmail.com>
- <507D0F6D.1000102@gmail.com>
- <CABn3OEF1L7hqVAcjs5E5NveA741HPVd4a9eq0w9sS77PYg+2hQ@mail.gmail.com>
- <507D1C77.5080302@gmail.com>
- <CABn3OEHxhguP6E56DUjfPAgxyaSXOHrRSd7jEdsax3e16Zm3Nw@mail.gmail.com>
- <50810512.2040909@gmail.com>
- <CABn3OEECLmo3LXQ7Zg+HVk4HBO54NgLZgxwV11-7rjQYu8BHQQ@mail.gmail.com>
- <50810E4E.2020108@gmail.com>
- <CABn3OEF18-Q3agOZ3Er5BODDo2R=H-G4Njdua-1L_E1uXHqpMw@mail.gmail.com>
- <CABn3OEH4n5i_UNMQSVM9a+gUBD5mXH=faeazu038Kdy_p9G+AQ@mail.gmail.com>
- <508191DF.2060802@gmail.com>
- <CABn3OEF8HHCp2Z-gDV1smYdTpijO_Fty5H-RjfVCtqVQQQPfUA@mail.gmail.com>
- <CABn3OEG=u+iDeVqkar-Dg3rYWnY7b6UgHKJuyRpFgMXqMe_LoQ@mail.gmail.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 1/9] ALSA: hdspm - Allow DDS/Varispeed to
+ be set from userspace
+Date: Sat, 20 Oct 2012 10:35:36 +0200
+Message-ID: <20121020083536.GQ2040@ltw.loris.tv>
+References: <1350661350-5000-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1350661350-5000-2-git-send-email-adi@drcomp.erfurt.thur.de>
+ <s5hsj9akx1k.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f179.google.com (mail-ia0-f179.google.com
- [209.85.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id B39A2262637
- for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2012 04:21:43 +0200 (CEST)
-Received: by mail-ia0-f179.google.com with SMTP id k25so730773iah.38
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2012 19:21:42 -0700 (PDT)
-In-Reply-To: <CABn3OEG=u+iDeVqkar-Dg3rYWnY7b6UgHKJuyRpFgMXqMe_LoQ@mail.gmail.com>
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63BF9264F07
+ for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2012 10:35:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hsj9akx1k.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,64 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Oct 19, 2012 at 10:48:55PM +0200, Takashi Iwai wrote:
 
-On 19 October 2012 23:24, Pete Leigh <pete.leigh@gmail.com> wrote:
+> > The DDS value is the actual physical sample rate. We set it indirectly
+> > when selecting 44100, 48000 and so on via snd_hdspm_hw_params or
+> > hdspm_set_clock_source.
+> > =
 
-> If I take the working config, and disable CONFIG_USB_EHCI_TT_NEWSCHED,
-> recompile, make install, reboot, then I get the familiar  "cannot
-> submit urb 0, error -28: not enough bandwidth" error, and trying to
-> record off the UA-25 in audacity freezes audacity. If I then re-enable
-> it, recompile, make install, reboot, then I don't see the error, and
-> recording off the UA-25 works normally in audacity.
+> > This commit now allows the DDS value to be altered at runtime, thus
+> > speeding up or slowing down the physical sample rate. This is required
+> > for MADI's varispeed that allows for =B112.5% speed adjustment from the
+> > "selected" rate (32kHz, 44100kHz, 48kHz and so on).
+> > =
 
-Just a bit more info on how this is happening in ehci-sched.c (with
-the ...NEWSCHED config unset),
+> > Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> > =
 
-It is hitting the Q_TYPE_QH case in tt_no_collision().
+> > diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+> > index b12308b..742bd5e 100644
+> > --- a/sound/pci/rme9652/hdspm.c
+> > +++ b/sound/pci/rme9652/hdspm.c
+> > @@ -2003,8 +2003,10 @@ static int hdspm_get_system_sample_rate(struct h=
+dspm *hdspm)
+> >  { .iface =3D SNDRV_CTL_ELEM_IFACE_MIXER, \
+> >    .name =3D xname, \
+> >    .index =3D xindex, \
+> > -  .access =3D SNDRV_CTL_ELEM_ACCESS_READ, \
+> > +  .access =3D SNDRV_CTL_ELEM_ACCESS_READWRITE |\
+> > +	SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
+> =
 
-In there, (mask & uf_mask) evaluates to true, and thus 0 is returned
-to sitd_slot_ok() which in turn returns 0 to iso_stream_schedule().
+> What's the reason to add VOLATILE flag?
+> Does the hardware itself change the value without the driver
+> involvement?
 
-It goes around this loop 3 times before giving the -ENOSPC error in
-iso_stream_schedule().
+Yes, when in slave mode. Then, this value reflects the detected external
+sample rate that may change at any time.
 
-I'm seeing this from some debug printks I inserted:
+The following example shows that this just happened in my test setup:
 
-[   52.135325] knowsnogap: mask was: 1124206081, uf_mask is: 61444,
-mask is now: 1128465927
-[   52.135328] returning 0 in tt_no_collision (4) frame: 0,
-ehci->periodic_size 1024,  period 1
-[   52.135329] returning 0 in sitd slot ok
-[   52.135330] knowsnogap: mask was: 1124206081, uf_mask is: 30722,
-mask is now: 1128465927
-[   52.135330] returning 0 in tt_no_collision (4) frame: 0,
-ehci->periodic_size 1024,  period 1
-[   52.135331] returning 0 in sitd slot ok
-[   52.135331] knowsnogap: mask was: 1124206081, uf_mask is: 15361,
-mask is now: 1128465927
-[   52.135332] returning 0 in tt_no_collision (4) frame: 0,
-ehci->periodic_size 1024,  period 1
-[   52.135333] returning 0 in sitd slot ok
-[   52.135334] no room: iso resched full ffff8802158b3300 (now 899 max 9091)
-[   52.135336] ALSA sound/usb/endpoint.c:877 cannot submit urb 0,
-error -28: not enough bandwidth
+adi@foh:/opt/adi-src/sound-2.6$ amixer -c 0 cset numid=3D5 48000
+numid=3D5,iface=3DMIXER,name=3D'System Sample Rate'
+  ; type=3DINTEGER,access=3Drw------,values=3D1,min=3D27000,max=3D207000,st=
+ep=3D1
+  : values=3D44104
 
-The "knowsnogap" message  is from just before the break; in the
-Q_TYPE_QH case, showing the value of uf_mask and mask before and after
- "mask |= mask >> 8" is done
+Though I was asking for 48000Hz, the card runs at 44104Hz, because it's
+syncing to S/PDIF-In at the moment.
 
-(I would have put these in hex.. I thought they'd be small! :)
 
-the "returning 0 in tt_no_collision" are printed just before the
-return 0, showing the values at that time.
+Cheers
 
-Hope this is somehow useful..
+-- =
 
-Cheers,
-
-- Pete.
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
