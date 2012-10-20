@@ -1,74 +1,30 @@
-From: pete.leigh@gmail.com
-Subject: [PATCH 1/1] Add USB audio quirk supporting Roland
-	VG-99 advanced mode
-Date: Sat, 20 Oct 2012 10:01:04 +0100
-Message-ID: <1350723664-7368-1-git-send-email-pete.leigh@gmail.com>
+From: Helge Hafting <helge.hafting@ntebb.no>
+Subject: Re: [alsa-devel] 3.6.0 regression, distorted sound failure while
+ using jack and hd-audio
+Date: Sat, 20 Oct 2012 11:24:02 +0200
+Message-ID: <20121020112402.0f1119e5@tenkende-august.homelinux.net>
+References: <20121007213452.08e29880@tenkende-august.homelinux.net>
+	<5071F3CF.8070907@gmail.com>
+	<s5h626ljgc7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Pete Leigh <pete.leigh@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h626ljgc7.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Mack <zonque@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pete Leigh <pete.leigh@gmail.com>
+On Mon, 08 Oct 2012 14:31:04 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
 
-Signed-off-by: Pete Leigh <pete.leigh@gmail.com>
+> This sounds like a known issue that has been fixed for 3.7-rc1.
+> As a workaround, try to pass position_fix=2 option to snd-hda-intel
+> module.
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 88d8ceb..ffeabf8 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1457,6 +1457,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
-+	/* Advanced mode of the Roland VG-99, with MIDI and 24-bit PCM at 44.1
-+	 * kHz. In standard mode, the device has ID 0582:00b3, and offers
-+	 * 16-bit PCM at 44.1 kHz with no MIDI.
-+	 */
-+	USB_DEVICE(0x0582, 0x00b2),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Roland",
-+		.product_name = "VG-99",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0003,
-+					.in_cables  = 0x0003
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
-+{
- 	/* Roland SonicCell */
- 	USB_DEVICE(0x0582, 0x00c2),
- 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
--- 
-1.7.11.7
+Thanks a lot, that parameter fixed it for me. It was not necessary before,
+and I'll try to remove it again for 3.7
+
+Helge Hafting
