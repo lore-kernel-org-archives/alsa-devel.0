@@ -1,17 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: usb-audio: Reloop Play support (TI TUSB3200AC)
-Date: Sat, 20 Oct 2012 18:15:10 +0200
-Message-ID: <5082CE0E.1010701@ladisch.de>
-References: <1350652166.5549.8.camel@didier-laptop>
- <1350743458.25322.16.camel@didier-laptop>
+Subject: [GIT PULL] dummy: allow disabling mixer controls
+Date: Sun, 21 Oct 2012 00:09:40 +0200
+Message-ID: <50832124.4080503@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id EB9EE264F45
- for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2012 18:16:28 +0200 (CEST)
-In-Reply-To: <1350743458.25322.16.camel@didier-laptop>
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 47BEF265085
+ for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 00:11:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +18,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Didier 'Ptitjes' Villevalois <ptitjes@free.fr>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Didier 'Ptitjes' Villevalois wrote:
->                 .vendor_name = "Reloop",
->                 .product_name = "Play",
+The following changes since commit a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
 
-These aren't needed except when they are wrong in the descriptor.
+  Linux 3.6 (2012-09-30 16:47:46 -0700)
 
->                                 .data = &(const struct audioformat) {
->                                         .formats = SNDRV_PCM_FMTBIT_S24_3LE,
->                                         .channels = 4,
->                                         .iface = 1,
->                                         .altsetting = 1,
->                                         .altset_idx = 1,
->                                         .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
->                                         .endpoint = 0x01,
+are available in the git repository at:
+  git://git.alsa-project.org/alsa-kprivate.git dummy-ctl-inactive
 
-You might as well set ep_attr to USB_ENDPOINT_SYNC_ADAPTIVE.
+----------------------------------------------------------------
+Quite a few mixer applications do not handle deactivated controls
+correctly.  This patch adds such controls to snd-dummy to make
+crash^H^H^H^H^Htesting these apps easier.
+----------------------------------------------------------------
+Clemens Ladisch (1):
+      ALSA: dummy: allow disabling mixer controls
 
+ sound/drivers/dummy.c |   73 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 71 insertions(+), 2 deletions(-)
 
-Regards,
-Clemens
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index 54bb664..4f522cf 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -134,6 +134,9 @@ struct snd_dummy {
+ 	spinlock_t mixer_lock;
+ 	int mixer_volume[MIXER_ADDR_LAST+1][2];
+ 	int capture_source[MIXER_ADDR_LAST+1][2];
++	int iobox;
++	struct snd_kcontrol *cd_volume_ctl;
++	struct snd_kcontrol *cd_switch_ctl;
+ 	const struct dummy_timer_ops *timer_ops;
+ };
+
+@@ -817,6 +820,57 @@ static int snd_dummy_capsrc_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
+ 	return change;
+ }
+
++static int snd_dummy_iobox_info(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *info)
++{
++	const char *const names[] = { "None", "CD Player" };
++
++	return snd_ctl_enum_info(info, 1, 2, names);
++}
++
++static int snd_dummy_iobox_get(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *value)
++{
++	struct snd_dummy *dummy = snd_kcontrol_chip(kcontrol);
++
++	value->value.enumerated.item[0] = dummy->iobox;
++	return 0;
++}
++
++static int snd_dummy_iobox_put(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *value)
++{
++	struct snd_dummy *dummy = snd_kcontrol_chip(kcontrol);
++	int changed;
++
++	if (value->value.enumerated.item[0] > 1)
++		return -EINVAL;
++
++	changed = value->value.enumerated.item[0] != dummy->iobox;
++	if (changed) {
++		dummy->iobox = value->value.enumerated.item[0];
++
++		if (dummy->iobox) {
++			dummy->cd_volume_ctl->vd[0].access &=
++				~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++			dummy->cd_switch_ctl->vd[0].access &=
++				~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++		} else {
++			dummy->cd_volume_ctl->vd[0].access |=
++				SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++			dummy->cd_switch_ctl->vd[0].access |=
++				SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++		}
++
++		snd_ctl_notify(dummy->card, SNDRV_CTL_EVENT_MASK_INFO,
++			       &dummy->cd_volume_ctl->id);
++		snd_ctl_notify(dummy->card, SNDRV_CTL_EVENT_MASK_INFO,
++			       &dummy->cd_switch_ctl->id);
++	}
++
++	return changed;
++}
++
+ static struct snd_kcontrol_new snd_dummy_controls[] = {
+ DUMMY_VOLUME("Master Volume", 0, MIXER_ADDR_MASTER),
+ DUMMY_CAPSRC("Master Capture Switch", 0, MIXER_ADDR_MASTER),
+@@ -827,22 +881,37 @@ DUMMY_CAPSRC("Line Capture Switch", 0, MIXER_ADDR_LINE),
+ DUMMY_VOLUME("Mic Volume", 0, MIXER_ADDR_MIC),
+ DUMMY_CAPSRC("Mic Capture Switch", 0, MIXER_ADDR_MIC),
+ DUMMY_VOLUME("CD Volume", 0, MIXER_ADDR_CD),
+-DUMMY_CAPSRC("CD Capture Switch", 0, MIXER_ADDR_CD)
++DUMMY_CAPSRC("CD Capture Switch", 0, MIXER_ADDR_CD),
++{
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name  = "External I/O Box",
++	.info  = snd_dummy_iobox_info,
++	.get   = snd_dummy_iobox_get,
++	.put   = snd_dummy_iobox_put,
++},
+ };
+
+ static int __devinit snd_card_dummy_new_mixer(struct snd_dummy *dummy)
+ {
+ 	struct snd_card *card = dummy->card;
++	struct snd_kcontrol *kcontrol;
+ 	unsigned int idx;
+ 	int err;
+
+ 	spin_lock_init(&dummy->mixer_lock);
+ 	strcpy(card->mixername, "Dummy Mixer");
++	dummy->iobox = 1;
+
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_dummy_controls); idx++) {
+-		err = snd_ctl_add(card, snd_ctl_new1(&snd_dummy_controls[idx], dummy));
++		kcontrol = snd_ctl_new1(&snd_dummy_controls[idx], dummy);
++		err = snd_ctl_add(card, kcontrol);
+ 		if (err < 0)
+ 			return err;
++		if (!strcmp(kcontrol->id.name, "CD Volume"))
++			dummy->cd_volume_ctl = kcontrol;
++		else if (!strcmp(kcontrol->id.name, "CD Capture Switch"))
++			dummy->cd_switch_ctl = kcontrol;
++
+ 	}
+ 	return 0;
+ }
