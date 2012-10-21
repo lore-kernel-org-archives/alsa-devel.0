@@ -1,23 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: softvol master has preference over virtual master
-	in amixer
-Date: Sun, 21 Oct 2012 21:05:11 +0800
-Message-ID: <CAN8cciak+xPH2zR+y3fMOCxujdwmKwW8nNc85H1RKeCH6K8_Ow@mail.gmail.com>
-References: <CAN8cciZJpZQHsz1oYZZ8sVHRKo5hxdNBuKyDZsJPtho9V3ifNg@mail.gmail.com>
- <s5hobjwjjw3.wl%tiwai@suse.de>
- <CAN8cciZVCES94ugTmr7Z=ZceUO579Dpp0-Xpkd3o7ZsYq_Lvfw@mail.gmail.com>
- <s5hehksjfqm.wl%tiwai@suse.de>
+From: Didier 'Ptitjes' Villevalois <ptitjes@free.fr>
+Subject: Re: usb-audio: Reloop Play support (TI TUSB3200AC)
+Date: Sun, 21 Oct 2012 15:38:50 +0200
+Message-ID: <1350826730.5300.2.camel@didier-laptop>
+References: <1350652166.5549.8.camel@didier-laptop>
+ <1350743458.25322.16.camel@didier-laptop> <5082CE0E.1010701@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 849A9265087
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 15:05:12 +0200 (CEST)
-Received: by mail-qc0-f179.google.com with SMTP id b14so945183qcs.38
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 06:05:11 -0700 (PDT)
-In-Reply-To: <s5hehksjfqm.wl%tiwai@suse.de>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDA5B265134
+ for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 15:38:54 +0200 (CEST)
+In-Reply-To: <5082CE0E.1010701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,73 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMC0yMSDkuIvljYg2OjEyIOaWvCAiVGFrYXNoaSBJd2FpIiA8dGl3YWlAc3VzZS5kZT4g
-5a+r6YGT77yaCj4KPiBBdCBTdW4sIDIxIE9jdCAyMDEyIDE3OjUxOjAwICswODAwLAo+IFJheW1v
-bmQgWWF1IHdyb3RlOgo+ID4KPiA+IFsxICA8dGV4dC9wbGFpbjsgVVRGLTggKHF1b3RlZC1wcmlu
-dGFibGUpPl0KPiA+IDIwMTItMTAtMjEg5LiL5Y2INDo0MiDmlrwgIlRha2FzaGkgSXdhaSIgPHRp
-d2FpQHN1c2UuZGU+IOWvq+mBk++8mgo+ID4gPgo+ID4gPiBBdCBGcmksIDE5IE9jdCAyMDEyIDEx
-OjE1OjI5ICswODAwLAo+ID4gPiBSYXltb25kIFlhdSB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IGRv
-ZXMgc29mdHZvbCBwbHVnaW4gIm1hc3RlciIgaGFzIGFueSBwcmVmZXJlbmNlIG92ZXIgdm1hc3Rl
-ciBpbgphbWl4ZXIgPwo+ID4gPgo+ID4gPiBObywgaXQgc2hvdWxkbid0Lgo+ID4KPiA+IFNpbXBs
-ZSBtaXhlciBjb250cm9sICdNYXN0ZXInLDAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gK
-PiA+IHBzd2l0Y2gtam9pbmVkIHBlbnVtIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0g
-RnJvbnQgUmlnaHQgTGltaXRzOgo+ID4gUGxheWJhY2sgMCAtIDI1NSBNb25vOiBGcm9udCBMZWZ0
-OiBQbGF5YmFjayAyNTUgWzEwMCVdIFsxOTEuMDBkQl0gW29uXQo+ID4gRnJvbnQgUmlnaHQ6IFBs
-YXliYWNrIDI1NSBbMTAwJV0gWzE5MS4wMGRCXSBbb25dCj4gPgo+ID4gdGhlIGRCIHZhbHVlIGNo
-YW5nZSB0byAxOTFkQgo+ID4KPiA+IGl0IHNlZW0gdGhhdCBhbHNhLWxpYiBpcyB1bmFibGUgdG8g
-ZmluZCB0aGUgY29ycmVjdCB0bHYKPgo+IFNvbWV0aGluZyB3aWxkIGlzIG1lcmdlZCBpbiBoaXMg
-c3lzdGVtLiAgSXQgaGFzIGEgd3JvbmcgIk1hc3RlciIKPiBjb250cm9sIHdpdGhvdXQgc3VmZml4
-LiAgQWxzbyBhIHN0cmFuZ2UgIlByZS1BbXAiIGNvbnRyb2wgaXMgZm91bmQKPiB0aGVyZSwgdG9v
-LiAgVGhlIHN0cmluZyBkb2Vzbid0IGZpeCBpbiBrZXJuZWwgb3IgYWxzYS1saWIgY29kZXMgYXQK
-PiBhbGwuCj4KCnRoZSBzb2Z0dm9sIHBsdWdpbiBhbGxvdyB1c2VyIHRvIGRlZmluZSB0aGUgbmFt
-ZSBvZiB0aGUgY29udHJvbCBhbmQgZEIgcmFuZ2UKCmh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0
-L3VidW50dS8rc291cmNlL2Fsc2EtZHJpdmVyLytidWcvMTA2NjgxNAoKdGhlIHVzZXIgaGFzIGEg
-ZnJlc2ggaW5zdGFsbCBvZiBrYnVudHUgMTIuMDQgYW5kIGZvdW5kIHRoZSB2b2x1bWUgdG9vIGxv
-dwpmb3IgaGlzIGFsYzg4N3ZkIGFzIGhlIG1lbnRpb24gdGhhdCBoZSB0cmllZCBzb21lIGFzb3Vu
-ZC5yYyBjb25maWcKCk9jdCAxNSAxMTo1NToyNCB4YXNlciBwdWxzZWF1ZGlvWzE2MDZdOiAoICAg
-MC4xMTF8ICAgMC4wMDYpIFthbHNhLXNpbmtdCmFsc2Etc2luay5jOiBSZXF1ZXN0ZWQgdm9sdW1l
-OiAwOiAyMTQ1MCUgMTogMjE0NTAlCk9jdCAxNSAxMTo1NToyNCB4YXNlciBwdWxzZWF1ZGlvWzE2
-MDZdOiAoICAgMC4xMTF8ICAgMC4wMDApIFthbHNhLXNpbmtdCmFsc2Etc2luay5jOiAgICAgICAg
-ICAgIGluIGRCOiAwOiAxOTEuMDAgZEIgMTogMTkxLjAwIGRCCk9jdCAxNSAxMTo1NToyNCB4YXNl
-ciBwdWxzZWF1ZGlvWzE2MDZdOiAoICAgMC4xMTF8ICAgMC4wMDApIFthbHNhLXNpbmtdCmFsc2Et
-c2luay5jOiBHb3QgaGFyZHdhcmUgdm9sdW1lOiAwOiAxMDAlIDE6IDEwMCUKT2N0IDE1IDExOjU1
-OjI0IHhhc2VyIHB1bHNlYXVkaW9bMTYwNl06ICggICAwLjExMXwgICAwLjAwMCkgW2Fsc2Etc2lu
-a10KYWxzYS1zaW5rLmM6ICAgICAgICAgICAgICAgaW4gZEI6IDA6IDAuMDIgZEIgMTogMC4wMiBk
-QgpPY3QgMTUgMTE6NTU6MjQgeGFzZXIgcHVsc2VhdWRpb1sxNjA2XTogKCAgIDAuMTExfCAgIDAu
-MDAwKSBbYWxzYS1zaW5rXQphbHNhLXNpbmsuYzogQ2FsY3VsYXRlZCBzb2Z0d2FyZSB2b2x1bWU6
-IDA6IDIxMzM2JSAxOiAyMTMzNiUKKGFjY3VyYXRlLWVub3VnaD1ubykKT2N0IDE1IDExOjU1OjI0
-IHhhc2VyIHB1bHNlYXVkaW9bMTYwNl06ICggICAwLjExMXwgICAwLjAwMCkgW2Fsc2Etc2lua10K
-YWxzYS1zaW5rLmM6ICAgICAgICAgICAgICAgICAgICAgIGluIGRCOiAwOiAxOTAuOTggZEIgMTog
-MTkwLjk4IGRCCgoKZGlkIHB1bHNlYXVkaW8gbGltaXRlZCB0aGUgc29md2FyZSB2b2x1bWUgdG8g
-c29tZSByZWFzb25hYmxlIHZhbHVlIG9yCndhcm5lZCBhYm91dCB0aGUgZXh0cmEgb3JkaW5hcnkg
-bGFyZ2UgZEIgb2YgdGhlIGhhcmR3YXJlIHZvbHVtZQoKPiA+Cj4gPiA+Cj4gPiA+ID4KPiA+ID4g
-Pgo+ID4KaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTQ0YjI2ZjVjZDM3ZjMzYmZl
-ZjI4NzFmZjFmZDI1MDMwMWJkYjUzNjQKPiA+ID4gPgo+ID4gPiA+IGNvbnRyb2wuMzIgewo+ID4g
-PiA+IGlmYWNlIE1JWEVSCj4gPiA+ID4gbmFtZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKPiA+
-ID4gPiB2YWx1ZSA2NAo+ID4gPiA+IGNvbW1lbnQgewo+ID4gPiA+IGFjY2VzcyAncmVhZCB3cml0
-ZScKPiA+ID4gPiB0eXBlIElOVEVHRVIKPiA+ID4gPiBjb3VudCAxCj4gPiA+ID4gcmFuZ2UgJzAg
-LSA2NCcKPiA+ID4gPiBkYm1pbiAtNjQwMAo+ID4gPiA+IGRibWF4IDAKPiA+ID4gPiBkYnZhbHVl
-LjAgMAo+ID4gPiA+IH0KPiA+ID4gPiB9Cj4gPiA+ID4KPiA+ID4gPiBjb250cm9sLjQyIHsKPiA+
-ID4gPiBpZmFjZSBNSVhFUgo+ID4gPiA+IG5hbWUgTWFzdGVyCj4gPiA+ID4gdmFsdWUuMCAyNTUK
-PiA+ID4gPiB2YWx1ZS4xIDI1NQo+ID4gPiA+IGNvbW1lbnQgewo+ID4gPiA+IGFjY2VzcyAncmVh
-ZCB3cml0ZSB1c2VyJwo+ID4gPiA+IHR5cGUgSU5URUdFUgo+ID4gPiA+IGNvdW50IDIKPiA+ID4g
-PiByYW5nZSAnMCAtIDI1NScKPiA+ID4gPiB0bHYgJzAwMDAwMDAxMDAwMDAwMDhmZmZmZWMxNDAw
-MDAwMDE0Jwo+ID4gPiA+IGRibWluIC01MTAwCj4gPiA+ID4gZGJtYXggMAo+ID4gPiA+IGRidmFs
-dWUuMCAwCj4gPiA+ID4gZGJ2YWx1ZS4xIDAKPiA+ID4gPiB9Cj4gPiA+ID4KPiA+ID4gPiBDYXJk
-IGh3OjAgJ0ludGVsJy8nSERBIEludGVsIGF0IDB4ZmVhZjgwMDAgaXJxIDQzJwo+ID4gPiA+ICAg
-TWl4ZXIgbmFtZTogJ1JlYWx0ZWsgQUxDODg3LVZEJwo+ID4gPiA+ICAgQ29tcG9uZW50czogJ0hE
-QToxMGVjMDg4NywxMDQzODQ0NSwwMDEwMDMwMicKPiA+ID4gPiAgIENvbnRyb2xzICAgICAgOiA0
-Mgo+ID4gPiA+ICAgU2ltcGxlIGN0cmxzICA6IDIyCj4gPiA+ID4gU2ltcGxlIG1peGVyIGNvbnRy
-b2wgJ01hc3RlcicsMAo+ID4gPiA+ICAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2ggcHN3
-aXRjaC1qb2luZWQgcGVudW0KPiA+ID4gPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0
-IC0gRnJvbnQgUmlnaHQKPiA+ID4gPiAgIExpbWl0czogUGxheWJhY2sgMCAtIDI1NQo+ID4gPiA+
-ICAgTW9ubzoKPiA+ID4gPiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzE5MS4w
-MGRCXSBbb25dCj4gPiA+ID4gICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMTkx
-LjAwZEJdIFtvbl0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On sam., 2012-10-20 at 18:15 +0200, Clemens Ladisch wrote:
+> Didier 'Ptitjes' Villevalois wrote:
+> >                 .vendor_name = "Reloop",
+> >                 .product_name = "Play",
+> 
+> These aren't needed except when they are wrong in the descriptor.
+
+In fact there is nothing appearing when I do lsusb, even when I specify
+them in the quirk. Is this not related ?
+
+> >                                 .data = &(const struct audioformat) {
+> >                                         .formats = SNDRV_PCM_FMTBIT_S24_3LE,
+> >                                         .channels = 4,
+> >                                         .iface = 1,
+> >                                         .altsetting = 1,
+> >                                         .altset_idx = 1,
+> >                                         .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+> >                                         .endpoint = 0x01,
+> 
+> You might as well set ep_attr to USB_ENDPOINT_SYNC_ADAPTIVE.
+
+Oki. I'll do that.
+
+Didier.
