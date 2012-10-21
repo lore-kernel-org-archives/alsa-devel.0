@@ -1,21 +1,21 @@
-From: Pete Leigh <pete.leigh@gmail.com>
-Subject: Re: [PATCH 1/1] Add USB audio quirk supporting Roland
- VG-99 advanced mode
-Date: Sun, 21 Oct 2012 10:34:57 +0100
-Message-ID: <CABn3OEF1-y_kP428Y_-Vr3kk+YS4B7wktqrP6xOcT3B__5QKDg@mail.gmail.com>
-References: <1350723664-7368-1-git-send-email-pete.leigh@gmail.com>
- <s5hpq4cjjzu.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: softvol master has preference over virtual master
+	in amixer
+Date: Sun, 21 Oct 2012 17:51:00 +0800
+Message-ID: <CAN8cciZVCES94ugTmr7Z=ZceUO579Dpp0-Xpkd3o7ZsYq_Lvfw@mail.gmail.com>
+References: <CAN8cciZJpZQHsz1oYZZ8sVHRKo5hxdNBuKyDZsJPtho9V3ifNg@mail.gmail.com>
+ <s5hobjwjjw3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f179.google.com (mail-ia0-f179.google.com
- [209.85.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id C34162650D7
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 11:34:58 +0200 (CEST)
-Received: by mail-ia0-f179.google.com with SMTP id k25so1275594iah.38
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 02:34:58 -0700 (PDT)
-In-Reply-To: <s5hpq4cjjzu.wl%tiwai@suse.de>
+Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
+ [209.85.216.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D74842650A2
+ for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 11:51:01 +0200 (CEST)
+Received: by mail-qa0-f51.google.com with SMTP id j40so876453qab.17
+ for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2012 02:51:00 -0700 (PDT)
+In-Reply-To: <s5hobjwjjw3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +26,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21 October 2012 09:40, Takashi Iwai <tiwai@suse.de> wrote:
-
-> Could you give a bit more descriptive commit log?
-> I see you put more in comments, but it'd be also good to have more
-> information in the changelog.
-
-Ok, done I hope.
-
-Perhaps it's worth noting - I ran the patch checking script, and it
-did not like the spaces after '&', nor line lengths, in a couple of
-places in the patch, but I obeyed the conventions of the existing code
-in the file rather than what the script said, and kept things as they
-were. Hope that's ok.
-
-Cheers.
-
-- Pete.
+MjAxMi0xMC0yMSDkuIvljYg0OjQyIOaWvCAiVGFrYXNoaSBJd2FpIiA8dGl3YWlAc3VzZS5kZT4g
+5a+r6YGT77yaCj4KPiBBdCBGcmksIDE5IE9jdCAyMDEyIDExOjE1OjI5ICswODAwLAo+IFJheW1v
+bmQgWWF1IHdyb3RlOgo+ID4KPiA+IGRvZXMgc29mdHZvbCBwbHVnaW4gIm1hc3RlciIgaGFzIGFu
+eSBwcmVmZXJlbmNlIG92ZXIgdm1hc3RlciBpbiBhbWl4ZXIgPwo+Cj4gTm8sIGl0IHNob3VsZG4n
+dC4KClNpbXBsZSBtaXhlciBjb250cm9sICdNYXN0ZXInLDAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1l
+IHBzd2l0Y2gKcHN3aXRjaC1qb2luZWQgcGVudW0gUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExl
+ZnQgLSBGcm9udCBSaWdodCBMaW1pdHM6ClBsYXliYWNrIDAgLSAyNTUgTW9ubzogRnJvbnQgTGVm
+dDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMTkxLjAwZEJdIFtvbl0KRnJvbnQgUmlnaHQ6IFBsYXli
+YWNrIDI1NSBbMTAwJV0gWzE5MS4wMGRCXSBbb25dCgp0aGUgZEIgdmFsdWUgY2hhbmdlIHRvIDE5
+MWRCCgppdCBzZWVtIHRoYXQgYWxzYS1saWIgaXMgdW5hYmxlIHRvIGZpbmQgdGhlIGNvcnJlY3Qg
+dGx2Cgo+Cj4gPgo+ID4KaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTQ0YjI2ZjVj
+ZDM3ZjMzYmZlZjI4NzFmZjFmZDI1MDMwMWJkYjUzNjQKPiA+Cj4gPiBjb250cm9sLjMyIHsKPiA+
+IGlmYWNlIE1JWEVSCj4gPiBuYW1lICdNYXN0ZXIgUGxheWJhY2sgVm9sdW1lJwo+ID4gdmFsdWUg
+NjQKPiA+IGNvbW1lbnQgewo+ID4gYWNjZXNzICdyZWFkIHdyaXRlJwo+ID4gdHlwZSBJTlRFR0VS
+Cj4gPiBjb3VudCAxCj4gPiByYW5nZSAnMCAtIDY0Jwo+ID4gZGJtaW4gLTY0MDAKPiA+IGRibWF4
+IDAKPiA+IGRidmFsdWUuMCAwCj4gPiB9Cj4gPiB9Cj4gPgo+ID4gY29udHJvbC40MiB7Cj4gPiBp
+ZmFjZSBNSVhFUgo+ID4gbmFtZSBNYXN0ZXIKPiA+IHZhbHVlLjAgMjU1Cj4gPiB2YWx1ZS4xIDI1
+NQo+ID4gY29tbWVudCB7Cj4gPiBhY2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicKPiA+IHR5cGUgSU5U
+RUdFUgo+ID4gY291bnQgMgo+ID4gcmFuZ2UgJzAgLSAyNTUnCj4gPiB0bHYgJzAwMDAwMDAxMDAw
+MDAwMDhmZmZmZWMxNDAwMDAwMDE0Jwo+ID4gZGJtaW4gLTUxMDAKPiA+IGRibWF4IDAKPiA+IGRi
+dmFsdWUuMCAwCj4gPiBkYnZhbHVlLjEgMAo+ID4gfQo+ID4KPiA+IENhcmQgaHc6MCAnSW50ZWwn
+LydIREEgSW50ZWwgYXQgMHhmZWFmODAwMCBpcnEgNDMnCj4gPiAgIE1peGVyIG5hbWU6ICdSZWFs
+dGVrIEFMQzg4Ny1WRCcKPiA+ICAgQ29tcG9uZW50czogJ0hEQToxMGVjMDg4NywxMDQzODQ0NSww
+MDEwMDMwMicKPiA+ICAgQ29udHJvbHMgICAgICA6IDQyCj4gPiAgIFNpbXBsZSBjdHJscyAgOiAy
+Mgo+ID4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAo+ID4gICBDYXBhYmlsaXRpZXM6
+IHB2b2x1bWUgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZCBwZW51bQo+ID4gICBQbGF5YmFjayBjaGFu
+bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0Cj4gPiAgIExpbWl0czogUGxheWJhY2sgMCAt
+IDI1NQo+ID4gICBNb25vOgo+ID4gICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFsx
+OTEuMDBkQl0gW29uXQo+ID4gICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMTkx
+LjAwZEJdIFtvbl0KPiA+IFNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkcGhvbmUnLDAKPiA+ICAg
+Q2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2ggcGVudW0KPiA+ICAgUGxheWJhY2sgY2hhbm5l
+bHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAo+ID4gICBMaW1pdHM6IFBsYXliYWNrIDAgLSA2
+NAo+ID4gICBNb25vOgo+ID4gICBGcm9udCBMZWZ0OiBQbGF5YmFjayA2NCBbMTAwJV0gWzAuMDBk
+Ql0gW29uXQo+ID4gICBGcm9udCBSaWdodDogUGxheWJhY2sgNjQgWzEwMCVdIFswLjAwZEJdIFtv
+bl0KPiA+IFNpbXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKPiA+ICAgQ2FwYWJpbGl0aWVzOiBw
+dm9sdW1lIHBlbnVtCj4gPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQg
+UmlnaHQKPiA+ICAgTGltaXRzOiBQbGF5YmFjayAwIC0gMjU1Cj4gPiAgIE1vbm86Cj4gPiAgIEZy
+b250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KPiA+ICAgRnJvbnQgUmlnaHQ6
+IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KPiA+Cj4gPiBodHRwczovL2xhdW5jaHBhZGxp
+YnJhcmlhbi5uZXQvMTE5NzgyMjE5L1N5bXB0b21fUHVsc2VBdWRpb0xvZy50eHQKPiA+Cj4gPiBP
+Y3QgMTUgMTA6NDk6MTEgeGFzZXIgcHVsc2VhdWRpb1sxNjAxXTogW3B1bHNlYXVkaW9dIGFsc2Et
+dXRpbC5jOgpVbmFibGUgdG8KPiA+IGxvYWQgbWl4ZXI6IEludmFsaWQgYXJndW1lbnQKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
