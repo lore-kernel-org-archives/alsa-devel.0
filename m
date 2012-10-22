@@ -1,61 +1,77 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 5/5] ASoC: sam9g20_wm8731: fix the issue for non-DT kernel
-Date: Mon, 22 Oct 2012 18:17:59 +0800
-Message-ID: <1350901079-18307-5-git-send-email-voice.shen@atmel.com>
-References: <1350901079-18307-1-git-send-email-voice.shen@atmel.com>
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1350901079-18307-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com, nicolas.ferre@atmel.com
-Cc: linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com, Bo Shen <voice.shen@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: dynamic PCM and dynamic DSP graphs
+Date: Mon, 22 Oct 2012 13:04:26 +0100
+Message-ID: <20121022120426.GC4477@opensource.wolfsonmicro.com>
+References: <9C1683ABA24673439FCD019782C9F4BBDA29EC8998@SAFEX1MAIL1.st.com>
+ <508130BD.4060909@ti.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1905821238377394148=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F31412651C8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 14:12:04 +0200 (CEST)
+In-Reply-To: <508130BD.4060909@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sebastien LEDUC <sebastien.leduc@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-When register platform from DAIs, the platform device to PCM no longer
-needed. So, fix it with this patch
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- arch/arm/mach-at91/board-sam9g20ek.c |    6 ------
- sound/soc/atmel/sam9g20_wm8731.c     |    2 +-
- 2 files changed, 1 insertion(+), 7 deletions(-)
+--===============1905821238377394148==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+Content-Disposition: inline
 
-diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
-index 5b6a6f9..ebdbf42 100644
---- a/arch/arm/mach-at91/board-sam9g20ek.c
-+++ b/arch/arm/mach-at91/board-sam9g20ek.c
-@@ -353,11 +353,6 @@ static struct i2c_board_info __initdata ek_i2c_devices[] = {
-         },
- };
- 
--static struct platform_device sam9g20ek_pcm_device = {
--	.name	= "atmel-pcm-audio",
--	.id = -1,
--};
--
- static struct platform_device sam9g20ek_audio_device = {
- 	.name   = "at91sam9g20ek-audio",
- 	.id     = -1,
-@@ -365,7 +360,6 @@ static struct platform_device sam9g20ek_audio_device = {
- 
- static void __init ek_add_device_audio(void)
- {
--	platform_device_register(&sam9g20ek_pcm_device);
- 	platform_device_register(&sam9g20ek_audio_device);
- }
- 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 187dc65..0c5987a 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -182,7 +182,7 @@ static struct snd_soc_dai_link at91sam9g20ek_dai = {
- 	.cpu_dai_name = "atmel-ssc-dai.0",
- 	.codec_dai_name = "wm8731-hifi",
- 	.init = at91sam9g20ek_wm8731_init,
--	.platform_name = "atmel-pcm-audio",
-+	.platform_name = "atmel-ssc-dai.0",
- 	.codec_name = "wm8731.0-001b",
- 	.ops = &at91sam9g20ek_ops,
- };
--- 
-1.7.9.5
 
+--E13BgyNx05feLLmH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 19, 2012 at 11:51:41AM +0100, Liam Girdwood wrote:
+
+> Best to always CC Mark and I if you want a quicker reply from either of us.
+
+Just to emphasise this point - for *all* Linux kernel things you should
+always CC maintainers on mails.  Things sent to the list only are liable
+to get lost.  It's not something specific to ASoC.
+
+--E13BgyNx05feLLmH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQhTZDAAoJELSic+t+oim9G0IP/A7rhw6AbpwDvFuh/YVdkbse
+qb7wQVDv4KZX724DuRYAe2TgRvixUefvZl3Vb3mMALbzgFdqCj9ZCgasiOWZ1Y0J
+NBRmm37Th8zQ0XsnmfKfNCqW70O9qXXsgG5DqFQXFy2ivjcqSXmwyWuMCbZKuy/c
+HwWQG0z08LWtYArX94Esr5PsXCvWCJRBueLFsmgKKqIRmBaz2Ghfj6xL1iSWTBO1
+bEFSAgmzmvIkONteLAunLSrdfL798PnmxNnZy/RkSRdegOPjP1eOp2YzSHDUBvIO
+QR8lVcsRgsN6k/5DIp+WwjsdYL/B8RK1b+63FWxzSSGKMfUn27llyiAMmDVhtaom
+XKfr/DJC8D0fv95+3pCXuNkGcJmSMi8qjiRKQ/RZk5i57XzuT+PsmA1KLEoppXYG
+4C9r8/4Q8TxBYMLOo0U+7KKBaOW4mjg/7dAM9Orea3uzrNdEGVjdpD7bJ1Me8BA+
+Ldw77TiFWJkNIkZh+k80Qz91lvRCLKK1HY9iKONQdkkwX439Y/tbw389RO0kHxIW
+n0u87i34Zg+wW+yXUspDrTSLlwvqoXWR7fjYUH7nynMmzJ1qo2V9gLQY4JsBsSQK
+RoVRPR5BB3maktPoCEs4bffIBgDzImMPq3mQOxKv06PEuFrun+zPfxfAAqO1NxqH
+ohilG11qTZ96KOr6QyWO
+=t3Fq
+-----END PGP SIGNATURE-----
+
+--E13BgyNx05feLLmH--
+
+--===============1905821238377394148==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1905821238377394148==--
