@@ -1,28 +1,53 @@
-From: "Artem S. Tashkinov" <t.artem@lycos.com>
-Subject: Re: Re: A reliable kernel panic (3.6.2) and system crash when
- visiting a particular website
-Date: Mon, 22 Oct 2012 17:30:37 +0000 (GMT)
-Message-ID: <1985645001.39510.1350927037793.JavaMail.mail@webmail15>
-References: <Pine.LNX.4.44L0.1210221153140.1724-100000@iolanthe.rowland.org>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Passing audio info from HDMI EDID beside speaker
+	allocation
+Date: Mon, 22 Oct 2012 11:00:02 -0700
+Message-ID: <508589A2.4080309@codeaurora.org>
+References: <506E832C.50702@codeaurora.org> <s5hzk3xjryl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: stern@rowland.harvard.edu
-Cc: zonque@gmail.com, bp@alien8.de, pavel@ucw.cz, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, linux-media@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
+ [199.106.114.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A3B626525B
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 20:00:20 +0200 (CEST)
+In-Reply-To: <s5hzk3xjryl.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 22, 2012, Alan Stern <stern@rowland.harvard.edu> wrote: 
+On 10/8/2012 1:20 AM, Takashi Iwai wrote:
 
-> A BUG() at these points would crash the machine hard.  And where we
-> came from doesn't matter; what matters is the values in the pointers.
+> In the case of HD-audio, it's passed via the normal IEC958 status bits
+> controls separately.  ELD itself is exposed as a byte array in a
+> control element, but it's read-only.
 
-OK, here's what the kernel prints with your patch:
+Thanks for the reply. Couple more questions
 
-usb 6.1.4: ep 86 list del corruption prev: e5103b54 e5103a94 e51039d4
+1. Is kcontrol "ELD" being read directly by application or there is
+ALSA library API to parse the information.
 
-A small delay before I got thousands of list_del corruption messages would
-have been nice, but I managed to catch the message anyway.
+2. Also, I see you submit this patch [PATCH 3/3] ELD proc interface for
+HDMI sinks in 2008. I presume it's just for information purpose. You
+still expect application to query for HDMI sink capability through
+"ELD" kcontrol. Am I correct?
 
-Artem
+>
+>
+> Takashi
+>
+
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
