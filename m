@@ -1,35 +1,37 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: Ux500: Control apb clock
-Date: Mon, 22 Oct 2012 16:07:18 +0200
-Message-ID: <CAPDyKFpUTjkc3rm4iDCioiiB9=EWbtqv+UQFsJRzBBv+SV7A_g@mail.gmail.com>
-References: <1350909125-20189-1-git-send-email-ulf.hansson@stericsson.com>
-	<1350909125-20189-2-git-send-email-ulf.hansson@stericsson.com>
-	<20121022133200.GG4477@opensource.wolfsonmicro.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: Re: [PATCH] ASoC: jack: remove unused variable in snd_soc_jack_report()
+Date: Mon, 22 Oct 2012 22:13:10 +0800
+Message-ID: <CAPgLHd_Ee81ye-QqQj35ZpmzBdGpdGpdS8dUY7m=PUTFxHUVPw@mail.gmail.com>
+References: <CAPgLHd-DCVsDnKG6uH=Pq7hABRmyEfJ30GxczD99cmjSQQiWDA@mail.gmail.com>
+	<20121022135048.GI4477@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121022133200.GG4477@opensource.wolfsonmicro.com>
+In-Reply-To: <20121022135048.GI4477@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ulf Hansson <ulf.hansson@stericsson.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22 October 2012 15:32, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Oct 22, 2012 at 02:32:05PM +0200, Ulf Hansson wrote:
->> From: Ulf Hansson <ulf.hansson@linaro.org>
+On 10/22/2012 09:50 PM, Mark Brown wrote:
+> On Thu, Oct 18, 2012 at 10:49:19PM +0800, Wei Yongjun wrote:
+>> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >>
->> When switching to common clock driver for ux500 this clock needs to
->> be handled as well. Before this clock was internally managed by the
->> clock driver itself.
->
-> Applied but why isn't this a deficiency in the common clock
-> implementation for the platform?
+>> The variable oldstatus is initialized but never used
+>> otherwise, so remove the unused variable.
+> Applied, thanks.  However for changes like this you should really
+> consider in your changelog why the variable is unused - is the bug that
+> the result is ignored or that it is needlessly generated?
 
-Good question. :-) Patches have just been sent to Mike Turquette clk
-tree for adding the clock lookups.
-First, I thought I might wanted to group them all in a series but
-decided that splitting them are probably easier to handle.
+Yes, I will review every patch before send out them. I will try to
+fix it if it is a bug, but some times, I does not have all of those
+knowledge, many place have unused variables, but it is hard to
+find why this is unused, so maybe some times I send the wrong
+patch.
 
-Kind regards
-Ulf Hansson
+Like this patch:
+https://patchwork.kernel.org/patch/1606481/
+It is found by the same rule, but I fixed it as a bug.
+
+Thanks,
+Yongjun Wei
