@@ -1,32 +1,28 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: A reliable kernel panic (3.6.2) and system crash when visiting
- a particular website
-Date: Mon, 22 Oct 2012 11:54:37 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1210221153140.1724-100000@iolanthe.rowland.org>
-References: <5085667A.70408@gmail.com>
+From: "Artem S. Tashkinov" <t.artem@lycos.com>
+Subject: Re: Re: A reliable kernel panic (3.6.2) and system crash when
+ visiting a particular website
+Date: Mon, 22 Oct 2012 17:30:37 +0000 (GMT)
+Message-ID: <1985645001.39510.1350927037793.JavaMail.mail@webmail15>
+References: <Pine.LNX.4.44L0.1210221153140.1724-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5085667A.70408@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "Artem S. Tashkinov" <t.artem@lycos.com>, bp@alien8.de, pavel@ucw.cz, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, linux-media@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org
+To: stern@rowland.harvard.edu
+Cc: zonque@gmail.com, bp@alien8.de, pavel@ucw.cz, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, security@kernel.org, linux-media@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Oct 2012, Daniel Mack wrote:
+On Oct 22, 2012, Alan Stern <stern@rowland.harvard.edu> wrote: 
 
-> On 22.10.2012 17:17, Alan Stern wrote:
-> > On Sun, 21 Oct 2012, Artem S. Tashkinov wrote:
-> > 
-> >> dmesg messages up to a crash can be seen here: https://bugzilla.kernel.org/attachment.cgi?id=84221
-> > 
-> > The first problem in the log is endpoint list corruption.  Here's a 
-> > debugging patch which should provide a little more information.
-> 
-> Maybe add a BUG() after each of these dev_err() so we stop at the first
-> occurance and also see where we're coming from?
+> A BUG() at these points would crash the machine hard.  And where we
+> came from doesn't matter; what matters is the values in the pointers.
 
-A BUG() at these points would crash the machine hard.  And where we
-came from doesn't matter; what matters is the values in the pointers.
+OK, here's what the kernel prints with your patch:
 
-Alan Stern
+usb 6.1.4: ep 86 list del corruption prev: e5103b54 e5103a94 e51039d4
+
+A small delay before I got thousands of list_del corruption messages would
+have been nice, but I managed to catch the message anyway.
+
+Artem
