@@ -1,56 +1,42 @@
-From: Ulf Hansson <ulf.hansson@stericsson.com>
-Subject: [PATCH 1/2] ASoC: Ux500: Fixup use of clocks
-Date: Mon, 22 Oct 2012 14:32:04 +0200
-Message-ID: <1350909125-20189-1-git-send-email-ulf.hansson@stericsson.com>
+From: Denis Kirjanov <kirjanov@gmail.com>
+Subject: [PATCH] check for the kzalloc return value
+Date: Mon, 22 Oct 2012 17:05:53 +0400
+Message-ID: <1350911153-23647-1-git-send-email-kirjanov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Ulf Hansson <ulf.hansson@linaro.org>
+To: perex@perex.cz
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kirjanov@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
 
-Make sure clocks are being prepared and unprepared as well
-as enabled and disabled.
-
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Denis Kirjanov <kirjanov@gmail.com>
 ---
- sound/soc/ux500/ux500_msp_dai.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/pci/als300.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index be94bf9..e11187f 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -398,11 +398,13 @@ static int ux500_msp_dai_startup(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
+diff --git a/sound/pci/als300.c b/sound/pci/als300.c
+index 68c4469..e1f74d4 100644
+--- a/sound/pci/als300.c
++++ b/sound/pci/als300.c
+@@ -394,6 +394,8 @@ static int snd_als300_playback_open(struct snd_pcm_substream *substream)
+ 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
+ 								GFP_KERNEL);
  
--	/* Enable clock */
-+	/* Prepare and enable clock */
- 	dev_dbg(dai->dev, "%s: Enabling MSP-clock.\n", __func__);
--	clk_enable(drvdata->clk);
-+	ret = clk_prepare_enable(drvdata->clk);
-+	if (ret)
-+		regulator_disable(drvdata->reg_vape);
++	if (!data)
++		return -ENOMEM;
+ 	snd_als300_dbgcallenter();
+ 	chip->playback_substream = substream;
+ 	runtime->hw = snd_als300_playback_hw;
+@@ -425,6 +427,8 @@ static int snd_als300_capture_open(struct snd_pcm_substream *substream)
+ 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
+ 								GFP_KERNEL);
  
--	return 0;
-+	return ret;
- }
- 
- static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
-@@ -428,8 +430,8 @@ static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
- 			__func__, dai->id, snd_pcm_stream_str(substream));
- 	}
- 
--	/* Disable clock */
--	clk_disable(drvdata->clk);
-+	/* Disable and unprepare clock */
-+	clk_disable_unprepare(drvdata->clk);
- 
- 	/* Disable regulator */
- 	ret = regulator_disable(drvdata->reg_vape);
++	if (!data)
++		return -ENOMEM;
+ 	snd_als300_dbgcallenter();
+ 	chip->capture_substream = substream;
+ 	runtime->hw = snd_als300_capture_hw;
 -- 
-1.7.10
+1.7.9.5
