@@ -1,17 +1,19 @@
-From: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
 Subject: Re: [sound-unstable:topic/hda-spdif-fix 99/124] ERROR:
  "snd_dmaengine_pcm_open" [sound/soc/omap/snd-soc-omap.ko] undefined!
-Date: Mon, 22 Oct 2012 11:10:21 +0200
-Message-ID: <50850D7D.8050402@ti.com>
+Date: Mon, 22 Oct 2012 17:17:38 +0800
+Message-ID: <20121022091738.GA8902@localhost>
 References: <5083733a.T3zEi6cLE4psrO1W%fengguang.wu@intel.com>
+ <50850D7D.8050402@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id A26262651AF
- for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 11:10:24 +0200 (CEST)
-In-Reply-To: <5083733a.T3zEi6cLE4psrO1W%fengguang.wu@intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 198DC2651B0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 11:17:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <50850D7D.8050402@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,46 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>
+To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 10/21/2012 05:59 AM, Fengguang Wu wrote:
-> Hi Peter,
-> =
-
-> FYI, kernel build failed on
-> =
-
-> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstabl=
-e.git topic/hda-spdif-fix
-> head:   afc51e492b36bd61b46f4d70dd646678d96f5f97
-> commit: e7736cdea223f3a5b867c359fb35cf08250dd771 [99/124] dmaengine: Add =
-flags parameter to dmaengine_prep_dma_cyclic()
-> config: arm-omap2plus_defconfig # make ARCH=3Darm omap2plus_defconfig
-> =
-
-> All error/warnings:
-> =
-
-> ERROR: "snd_hwparams_to_dma_slave_config" [sound/soc/omap/snd-soc-omap.ko=
-] undefined!
-> ERROR: "snd_dmaengine_pcm_pointer" [sound/soc/omap/snd-soc-omap.ko] undef=
-ined!
-> ERROR: "snd_dmaengine_pcm_open" [sound/soc/omap/snd-soc-omap.ko] undefine=
-d!
-> ERROR: "snd_dmaengine_pcm_close" [sound/soc/omap/snd-soc-omap.ko] undefin=
-ed!
-> ERROR: "snd_dmaengine_pcm_get_chan" [sound/soc/omap/snd-soc-omap.ko] unde=
-fined!
-> ERROR: "snd_dmaengine_pcm_trigger" [sound/soc/omap/snd-soc-omap.ko] undef=
-ined!
-
-This has been fixed by the following commit (already in mainline):
-961a7ae ASoC: dmaengine: Correct Makefile when sound is built as module
-
--- =
-
-P=E9ter
+T24gTW9uLCBPY3QgMjIsIDIwMTIgYXQgMTE6MTA6MjFBTSArMDIwMCwgUMOpdGVyIFVqZmFsdXNp
+IHdyb3RlOgo+IEhpLAo+IAo+IE9uIDEwLzIxLzIwMTIgMDU6NTkgQU0sIEZlbmdndWFuZyBXdSB3
+cm90ZToKPiA+IEhpIFBldGVyLAo+ID4gCj4gPiBGWUksIGtlcm5lbCBidWlsZCBmYWlsZWQgb24K
+PiA+IAo+ID4gdHJlZTogICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
+bC9naXQvdGl3YWkvc291bmQtdW5zdGFibGUuZ2l0IHRvcGljL2hkYS1zcGRpZi1maXgKPiA+IGhl
+YWQ6ICAgYWZjNTFlNDkyYjM2YmQ2MWI0NmY0ZDcwZGQ2NDY2NzhkOTZmNWY5Nwo+ID4gY29tbWl0
+OiBlNzczNmNkZWEyMjNmM2E1Yjg2N2MzNTlmYjM1Y2YwODI1MGRkNzcxIFs5OS8xMjRdIGRtYWVu
+Z2luZTogQWRkIGZsYWdzIHBhcmFtZXRlciB0byBkbWFlbmdpbmVfcHJlcF9kbWFfY3ljbGljKCkK
+PiA+IGNvbmZpZzogYXJtLW9tYXAycGx1c19kZWZjb25maWcgIyBtYWtlIEFSQ0g9YXJtIG9tYXAy
+cGx1c19kZWZjb25maWcKPiA+IAo+ID4gQWxsIGVycm9yL3dhcm5pbmdzOgo+ID4gCj4gPiBFUlJP
+UjogInNuZF9od3BhcmFtc190b19kbWFfc2xhdmVfY29uZmlnIiBbc291bmQvc29jL29tYXAvc25k
+LXNvYy1vbWFwLmtvXSB1bmRlZmluZWQhCj4gPiBFUlJPUjogInNuZF9kbWFlbmdpbmVfcGNtX3Bv
+aW50ZXIiIFtzb3VuZC9zb2Mvb21hcC9zbmQtc29jLW9tYXAua29dIHVuZGVmaW5lZCEKPiA+IEVS
+Uk9SOiAic25kX2RtYWVuZ2luZV9wY21fb3BlbiIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21h
+cC5rb10gdW5kZWZpbmVkIQo+ID4gRVJST1I6ICJzbmRfZG1hZW5naW5lX3BjbV9jbG9zZSIgW3Nv
+dW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC5rb10gdW5kZWZpbmVkIQo+ID4gRVJST1I6ICJzbmRf
+ZG1hZW5naW5lX3BjbV9nZXRfY2hhbiIgW3NvdW5kL3NvYy9vbWFwL3NuZC1zb2Mtb21hcC5rb10g
+dW5kZWZpbmVkIQo+ID4gRVJST1I6ICJzbmRfZG1hZW5naW5lX3BjbV90cmlnZ2VyIiBbc291bmQv
+c29jL29tYXAvc25kLXNvYy1vbWFwLmtvXSB1bmRlZmluZWQhCj4gCj4gVGhpcyBoYXMgYmVlbiBm
+aXhlZCBieSB0aGUgZm9sbG93aW5nIGNvbW1pdCAoYWxyZWFkeSBpbiBtYWlubGluZSk6Cj4gOTYx
+YTdhZSBBU29DOiBkbWFlbmdpbmU6IENvcnJlY3QgTWFrZWZpbGUgd2hlbiBzb3VuZCBpcyBidWls
+dCBhcyBtb2R1bGUKClNvcnJ5IGFib3V0IHRoYXQhIEkndmUgZml4ZWQgdGhlIHNjcmlwdCB0byB0
+ZXN0IHRoYXQgY2FzZSBhbmQgYXZvaWQKcmVwb3J0aW5nIGZpeGVkIGVycm9ycyBpbiB1cHN0cmVh
+bS4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
