@@ -1,17 +1,20 @@
 From: Jamey Drennan <jamey.drennan@gmail.com>
-Subject: VOIP xrun problem
-Date: Mon, 22 Oct 2012 16:40:15 -0400
-Message-ID: <CAJqUV39Mg8+Cd_ogFGL1vjagwpmBYCC+avWkQaBtPpQz0zZkTg@mail.gmail.com>
+Subject: Re: VOIP xrun problem
+Date: Mon, 22 Oct 2012 16:56:56 -0400
+Message-ID: <CAJqUV39RZ6SB4OQmn5oF61P2=NNxvs9yzPzAtY8fqP7Y1yVjgA@mail.gmail.com>
+References: <CAJqUV39Mg8+Cd_ogFGL1vjagwpmBYCC+avWkQaBtPpQz0zZkTg@mail.gmail.com>
+ <5085B04E.8040507@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
  [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 68AE2265265
- for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 22:40:16 +0200 (CEST)
-Received: by mail-vc0-f179.google.com with SMTP id f13so3240766vcb.38
- for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 13:40:15 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 552B5265261
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 22:56:57 +0200 (CEST)
+Received: by mail-vc0-f179.google.com with SMTP id f13so3259114vcb.38
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2012 13:56:56 -0700 (PDT)
+In-Reply-To: <5085B04E.8040507@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Florian Faber <faber@faberman.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-A quick background:  I'm developing a VOIP program for an embedded system.
-In the first phase of the program everything was event driven.  Basically
-ask ALSA for samples, encode them, and send them via UDP to the connected
-client.  On the other end, receive the packet, decode, play the samples.
-After setting the correct value for the start_threshold function everything
-worked great no xruns at all.
-Now in the second phase, events are timed due to specification
-requirements.  The same Alsa setup code is used yet xruns (mostly
-underruns) are all over the place.  The underruns are periodic and can be
-reduced by increasing the period size and number of periods (this also
-increases the latency obviously and is undersirable) but never removed
-completely.
+Maybe I don't quite understand your question but I use RTP (oRTP library)
+to manage the sending/receiving of the audio streams.
 
-My question is how to reduce/remove the xruns.  I am not currently at a
-point where installing a real-time OS or patching to get these features is
-possible.  Also, when aplay/arecord is run on the system, no xruns occur.
-Finally, the CPU is not being overloaded, actually in the second phase the
-CPU usage is much less.  Any help/suggestions are greatly appreciated.
-Thanks in advance!
+On Mon, Oct 22, 2012 at 4:45 PM, Florian Faber <faber@faberman.de> wrote:
+
+> On 10/22/12 22:40, Jamey Drennan wrote:
+> > Now in the second phase, events are timed due to specification
+> > requirements.  The same Alsa setup code is used yet xruns (mostly
+> > underruns) are all over the place.  The underruns are periodic and can be
+> > reduced by increasing the period size and number of periods (this also
+> > increases the latency obviously and is undersirable) but never removed
+> > completely.
+> >
+> > My question is how to reduce/remove the xruns.
+>
+> How do you synchronize the streams? You will either have to synchronize
+> the media clocks or do some sort of SRC.
+>
+>
+> Flo
+> --
+> Machines can do the work, so people have time to think.
+> public key B3B9226C          x-hkp://wwwkeys.eu.pgp.net
+>
