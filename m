@@ -1,42 +1,27 @@
-From: Denis Kirjanov <kirjanov@gmail.com>
-Subject: [PATCH] check for the kzalloc return value
-Date: Mon, 22 Oct 2012 17:05:53 +0400
-Message-ID: <1350911153-23647-1-git-send-email-kirjanov@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: Ux500: Fixup use of clocks
+Date: Mon, 22 Oct 2012 15:19:30 +0200
+Message-ID: <CACRpkdasuxBaQ28cgV52isgGK7Lhq3dtYAp1ogyD68EhpRmSdw@mail.gmail.com>
+References: <1350909125-20189-1-git-send-email-ulf.hansson@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1350909125-20189-1-git-send-email-ulf.hansson@stericsson.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kirjanov@gmail.com
+To: Ulf Hansson <ulf.hansson@stericsson.com>
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Ulf Hansson <ulf.hansson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Oct 22, 2012 at 2:32 PM, Ulf Hansson <ulf.hansson@stericsson.com> wrote:
 
-Signed-off-by: Denis Kirjanov <kirjanov@gmail.com>
----
- sound/pci/als300.c |    4 ++++
- 1 file changed, 4 insertions(+)
+> From: Ulf Hansson <ulf.hansson@linaro.org>
+>
+> Make sure clocks are being prepared and unprepared as well
+> as enabled and disabled.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-diff --git a/sound/pci/als300.c b/sound/pci/als300.c
-index 68c4469..e1f74d4 100644
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -394,6 +394,8 @@ static int snd_als300_playback_open(struct snd_pcm_substream *substream)
- 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
- 								GFP_KERNEL);
- 
-+	if (!data)
-+		return -ENOMEM;
- 	snd_als300_dbgcallenter();
- 	chip->playback_substream = substream;
- 	runtime->hw = snd_als300_playback_hw;
-@@ -425,6 +427,8 @@ static int snd_als300_capture_open(struct snd_pcm_substream *substream)
- 	struct snd_als300_substream_data *data = kzalloc(sizeof(*data),
- 								GFP_KERNEL);
- 
-+	if (!data)
-+		return -ENOMEM;
- 	snd_als300_dbgcallenter();
- 	chip->capture_substream = substream;
- 	runtime->hw = snd_als300_capture_hw;
--- 
-1.7.9.5
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+Thanks,
+Linus Walleij
