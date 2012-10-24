@@ -1,77 +1,60 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: ux500_msp_i2s: Fix devm_* and return code merge error
-Date: Wed, 24 Oct 2012 11:34:00 +0200
-Message-ID: <CAPDyKFqrS0QT+UO0L3B29UcnjX0bSv3XvWTmC6E_ubgr8NTDiQ@mail.gmail.com>
-References: <1350306806-5688-1-git-send-email-lee.jones@linaro.org>
-	<1350306806-5688-2-git-send-email-lee.jones@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Lower AIFnCLK divisor when
+	dropping to 32kHz
+Date: Wed, 24 Oct 2012 10:57:06 +0100
+Message-ID: <1351072626-29087-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1350306806-5688-2-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E0E12652E4
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2012 12:07:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+When lowering SYSCLK to 50kHz for accessory detection also lower the
+AIFnCLK divisor to normalise the clocking configuration within the
+device. This will not disrupt audio as we cannot support active audio
+with such a low SYSCLK.
 
-I assume this shall go into 3.7, right?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Kind regards
-Ulf Hansson
-
-On 15 October 2012 15:13, Lee Jones <lee.jones@linaro.org> wrote:
-> Some ux500_msp_i2s patches clashed with:
->
-> b18e93a493626c1446f9788ebd5844d008bbf71c
-> ASoC: ux500_msp_i2s: better use devm functions and fix error return code
->
-> ... leaving the driver uncompilable. This patch fixes the
-> issues encountered.
->
-> Cc: alsa-devel@alsa-project.org
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  sound/soc/ux500/ux500_msp_i2s.c |    8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-> index b7c996e..a26c6bf 100644
-> --- a/sound/soc/ux500/ux500_msp_i2s.c
-> +++ b/sound/soc/ux500/ux500_msp_i2s.c
-> @@ -18,6 +18,7 @@
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/delay.h>
->  #include <linux/slab.h>
-> +#include <linux/io.h>
->  #include <linux/of.h>
->
->  #include <mach/hardware.h>
-> @@ -697,14 +698,11 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
->                         platform_data = devm_kzalloc(&pdev->dev,
->                                 sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
->                         if (!platform_data)
-> -                               ret = -ENOMEM;
-> +                               return -ENOMEM;
->                 }
->         } else
->                 if (!platform_data)
-> -                       ret = -EINVAL;
-> -
-> -       if (ret)
-> -               goto err_res;
-> +                       return -EINVAL;
->
->         dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
->                 pdev->name, platform_data->id);
-> --
-> 1.7.9.5
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 0932d7a..c16a9a3 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2443,6 +2443,18 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+ 
+ 	configure_clock(codec);
+ 
++	/*
++	 * If SYSCLK will be less than 50kHz adjust AIFnCLK dividers
++	 * for detection.
++	 */
++	if (max(wm8994->aifclk[0], wm8994->aifclk[1]) < 50000) {
++		dev_dbg(codec->dev, "Configuring AIFs for 128fs\n");
++		snd_soc_update_bits(codec, WM8994_AIF1_RATE,
++				    WM8994_AIF1CLK_RATE_MASK, 0x1);
++		snd_soc_update_bits(codec, WM8994_AIF2_RATE,
++				    WM8994_AIF2CLK_RATE_MASK, 0x1);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
