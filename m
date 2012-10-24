@@ -1,61 +1,77 @@
-From: Wang Xingchao <xingchao.wang@intel.com>
-Subject: [PATCH] ALSA: HDA - Check return value to reduce
-	useless delay
-Date: Wed, 24 Oct 2012 14:53:23 +0800
-Message-ID: <1351061603-2433-1-git-send-email-xingchao.wang@intel.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH 2/2] ASoC: ux500_msp_i2s: Fix devm_* and return code merge error
+Date: Wed, 24 Oct 2012 11:34:00 +0200
+Message-ID: <CAPDyKFqrS0QT+UO0L3B29UcnjX0bSv3XvWTmC6E_ubgr8NTDiQ@mail.gmail.com>
+References: <1350306806-5688-1-git-send-email-lee.jones@linaro.org>
+	<1350306806-5688-2-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 85B982651BF
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2012 09:19:21 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Wang Xingchao <xingchao.wang@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1350306806-5688-2-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-For verb 705h, it's useless to read response, so use *write api would be
-better. If there's error after sending cmd, just try again without continue
-after wrong operation.Otherwise there's long time delay.
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
----
- sound/pci/hda/hda_codec.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I assume this shall go into 3.7, right?
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 960800b..0946eca 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3569,6 +3569,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
- 	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
- 	int count;
- 	unsigned int state;
-+	int err;
- 
- 	/* this delay seems necessary to avoid click noise at power-down */
- 	if (power_state == AC_PWRST_D3) {
-@@ -3582,9 +3583,11 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
- 			codec->patch_ops.set_power_state(codec, fg,
- 							 power_state);
- 		else {
--			snd_hda_codec_read(codec, fg, 0,
-+			err = snd_hda_codec_write(codec, fg, 0,
- 					   AC_VERB_SET_POWER_STATE,
- 					   power_state);
-+			if (err < 0)
-+				continue;
- 			snd_hda_codec_set_power_to_all(codec, fg, power_state,
- 						       true);
- 		}
--- 
-1.7.9.5
+Kind regards
+Ulf Hansson
+
+On 15 October 2012 15:13, Lee Jones <lee.jones@linaro.org> wrote:
+> Some ux500_msp_i2s patches clashed with:
+>
+> b18e93a493626c1446f9788ebd5844d008bbf71c
+> ASoC: ux500_msp_i2s: better use devm functions and fix error return code
+>
+> ... leaving the driver uncompilable. This patch fixes the
+> issues encountered.
+>
+> Cc: alsa-devel@alsa-project.org
+> Cc: Liam Girdwood <lrg@ti.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  sound/soc/ux500/ux500_msp_i2s.c |    8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+> index b7c996e..a26c6bf 100644
+> --- a/sound/soc/ux500/ux500_msp_i2s.c
+> +++ b/sound/soc/ux500/ux500_msp_i2s.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/delay.h>
+>  #include <linux/slab.h>
+> +#include <linux/io.h>
+>  #include <linux/of.h>
+>
+>  #include <mach/hardware.h>
+> @@ -697,14 +698,11 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+>                         platform_data = devm_kzalloc(&pdev->dev,
+>                                 sizeof(struct msp_i2s_platform_data), GFP_KERNEL);
+>                         if (!platform_data)
+> -                               ret = -ENOMEM;
+> +                               return -ENOMEM;
+>                 }
+>         } else
+>                 if (!platform_data)
+> -                       ret = -EINVAL;
+> -
+> -       if (ret)
+> -               goto err_res;
+> +                       return -EINVAL;
+>
+>         dev_dbg(&pdev->dev, "%s: Enter (name: %s, id: %d).\n", __func__,
+>                 pdev->name, platform_data->id);
+> --
+> 1.7.9.5
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
