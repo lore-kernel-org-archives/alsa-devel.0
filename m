@@ -1,21 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [GIT PULL] dummy: allow disabling mixer controls
-Date: Wed, 24 Oct 2012 11:45:01 +0800
-Message-ID: <CAN8cciYgm4T5M5HO-XGhFBPsoiOJGfaVm9ig4Vd8y1kjVZWsFw@mail.gmail.com>
-References: <50832124.4080503@ladisch.de>
- <CAN8cciZemEttvKsWAYnr3nS6ZN5EES_-t1Lfw=G=apRHMYti4g@mail.gmail.com>
- <s5htxtojkuo.wl%tiwai@suse.de>
+From: Wang Xingchao <xingchao.wang@intel.com>
+Subject: [PATCH] ALSA: HDA - Check return value to reduce
+	useless delay
+Date: Wed, 24 Oct 2012 14:53:23 +0800
+Message-ID: <1351061603-2433-1-git-send-email-xingchao.wang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 736C926510C
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2012 05:45:03 +0200 (CEST)
-Received: by mail-qc0-f179.google.com with SMTP id b14so41050qcs.38
- for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2012 20:45:02 -0700 (PDT)
-In-Reply-To: <s5htxtojkuo.wl%tiwai@suse.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85B982651BF
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2012 09:19:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,122 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMC0yMSDkuIvljYg0OjIyIOaWvCAiVGFrYXNoaSBJd2FpIiA8dGl3YWlAc3VzZS5kZT4g
-5a+r6YGT77yaCj4KPiBBdCBTdW4sIDIxIE9jdCAyMDEyIDE1OjI0OjU2ICswODAwLAo+IFJheW1v
-bmQgWWF1IHdyb3RlOgo+ID4KPiA+IDIwMTItMTAtMjEg5LiK5Y2INjoxMSDmlrwgIkNsZW1lbnMg
-TGFkaXNjaCIgPGNsZW1lbnNAbGFkaXNjaC5kZT4g5a+r6YGT77yaCj4gPiA+Cj4gPiA+IFRoZSBm
-b2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQKPiA+IGEwZDI3MWNiZmVkMWRkNTAyNzhjNmIw
-NmJlYWQzZDAwYmEwYTg4Zjk6Cj4gPiA+Cj4gPiA+ICAgTGludXggMy42ICgyMDEyLTA5LTMwIDE2
-OjQ3OjQ2IC0wNzAwKQo+ID4gPgo+ID4gPiBhcmUgYXZhaWxhYmxlIGluIHRoZSBnaXQgcmVwb3Np
-dG9yeSBhdDoKPiA+ID4gICBnaXQ6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWtwcml2YXRl
-LmdpdCBkdW1teS1jdGwtaW5hY3RpdmUKPiA+ID4KPiA+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gPiBRdWl0ZSBh
-IGZldyBtaXhlciBhcHBsaWNhdGlvbnMgZG8gbm90IGhhbmRsZSBkZWFjdGl2YXRlZCBjb250cm9s
-cwo+ID4gPiBjb3JyZWN0bHkuICBUaGlzIHBhdGNoIGFkZHMgc3VjaCBjb250cm9scyB0byBzbmQt
-ZHVtbXkgdG8gbWFrZQo+ID4gPiBjcmFzaF5IXkheSF5IXkh0ZXN0aW5nIHRoZXNlIGFwcHMgZWFz
-aWVyLgo+ID4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCj4gPgo+ID4gd2hhdCBpcyB0aGUgbWVhbmluZyBvZiBkZWFjdGl2
-YXRlZCBjb250cm9sID8KPiA+Cj4gPiBhbWl4ZXIgc3RpbGwgY2FuIGNoYW5nZSB0aGUgdmFsdWUg
-b2YgdGhlIGRlYWN0aXZhdGVkIGNkIHZvbHVtZSBjb250cm9sCmlmCj4gPiB3cml0ZSBhY2Nlc3Mg
-aXMgbm8gZGlzYWJsZWQKPgo+IElmIHNvLCB0aGF0IHNob3VsZCBiZSBjaGVja2VkIHJhdGhlciBp
-biB0aGUgY29yZSBjb2RlLi4uCgp0aGUgb3RoZXIgcHJvYmxlbSBpcyB0aGF0IHRoZSBzaW1wbGUg
-bWl4ZXIgYXBpIGRvZXMgbm90ICBwcm92aWRlIGFueQpmdW5jdGlvbiB0byBrbm93IHdoZXRoZXIg
-dGhlIGNkIHBsYXliYWNrIHZvbHVtZSBjb250cm9sIG9yIHRoZSAgY2QgcGxheWJhY2sKc3dpdGNo
-IGNvbnRyb2wgaXMgYWN0aXZlIG9yIGluYWN0aXZlIHNvIGFsc2FtaXhlciBkaXNhYmxlIGJvdGgg
-Y29udHJvbHMKCj4KPgo+IFRha2FzaGkKPgo+ID4gPiBDbGVtZW5zIExhZGlzY2ggKDEpOgo+ID4g
-PiAgICAgICBBTFNBOiBkdW1teTogYWxsb3cgZGlzYWJsaW5nIG1peGVyIGNvbnRyb2xzCj4gPiA+
-Cj4gPiA+ICBzb3VuZC9kcml2ZXJzL2R1bW15LmMgfCAgIDczCj4gPiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPiA+ID4gIDEgZmlsZXMgY2hhbmdlZCwg
-NzEgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBh
-L3NvdW5kL2RyaXZlcnMvZHVtbXkuYyBiL3NvdW5kL2RyaXZlcnMvZHVtbXkuYwo+ID4gPiBpbmRl
-eCA1NGJiNjY0Li40ZjUyMmNmIDEwMDY0NAo+ID4gPiAtLS0gYS9zb3VuZC9kcml2ZXJzL2R1bW15
-LmMKPiA+ID4gKysrIGIvc291bmQvZHJpdmVycy9kdW1teS5jCj4gPiA+IEBAIC0xMzQsNiArMTM0
-LDkgQEAgc3RydWN0IHNuZF9kdW1teSB7Cj4gPiA+ICAgICAgICAgc3BpbmxvY2tfdCBtaXhlcl9s
-b2NrOwo+ID4gPiAgICAgICAgIGludCBtaXhlcl92b2x1bWVbTUlYRVJfQUREUl9MQVNUKzFdWzJd
-Owo+ID4gPiAgICAgICAgIGludCBjYXB0dXJlX3NvdXJjZVtNSVhFUl9BRERSX0xBU1QrMV1bMl07
-Cj4gPiA+ICsgICAgICAgaW50IGlvYm94Owo+ID4gPiArICAgICAgIHN0cnVjdCBzbmRfa2NvbnRy
-b2wgKmNkX3ZvbHVtZV9jdGw7Cj4gPiA+ICsgICAgICAgc3RydWN0IHNuZF9rY29udHJvbCAqY2Rf
-c3dpdGNoX2N0bDsKPiA+ID4gICAgICAgICBjb25zdCBzdHJ1Y3QgZHVtbXlfdGltZXJfb3BzICp0
-aW1lcl9vcHM7Cj4gPiA+ICB9Owo+ID4gPgo+ID4gPiBAQCAtODE3LDYgKzgyMCw1NyBAQCBzdGF0
-aWMgaW50IHNuZF9kdW1teV9jYXBzcmNfcHV0KHN0cnVjdApzbmRfa2NvbnRyb2wKPiA+ICprY29u
-dHJvbCwgc3RydWN0IHNuZF9jdGxfZWwKPiA+ID4gICAgICAgICByZXR1cm4gY2hhbmdlOwo+ID4g
-PiAgfQo+ID4gPgo+ID4gPiArc3RhdGljIGludCBzbmRfZHVtbXlfaW9ib3hfaW5mbyhzdHJ1Y3Qg
-c25kX2tjb250cm9sICprY29udHJvbCwKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX2luZm8gKmluZm8pCj4gPiA+ICt7Cj4gPiA+ICsgICAg
-ICAgY29uc3QgY2hhciAqY29uc3QgbmFtZXNbXSA9IHsgIk5vbmUiLCAiQ0QgUGxheWVyIiB9Owo+
-ID4gPiArCj4gPiA+ICsgICAgICAgcmV0dXJuIHNuZF9jdGxfZW51bV9pbmZvKGluZm8sIDEsIDIs
-IG5hbWVzKTsKPiA+ID4gK30KPiA+ID4gKwo+ID4gPiArc3RhdGljIGludCBzbmRfZHVtbXlfaW9i
-b3hfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdmFsdWUpCj4gPiA+
-ICt7Cj4gPiA+ICsgICAgICAgc3RydWN0IHNuZF9kdW1teSAqZHVtbXkgPSBzbmRfa2NvbnRyb2xf
-Y2hpcChrY29udHJvbCk7Cj4gPiA+ICsKPiA+ID4gKyAgICAgICB2YWx1ZS0+dmFsdWUuZW51bWVy
-YXRlZC5pdGVtWzBdID0gZHVtbXktPmlvYm94Owo+ID4gPiArICAgICAgIHJldHVybiAwOwo+ID4g
-PiArfQo+ID4gPiArCj4gPiA+ICtzdGF0aWMgaW50IHNuZF9kdW1teV9pb2JveF9wdXQoc3RydWN0
-IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp2YWx1ZSkKPiA+ID4gK3sKPiA+ID4gKyAg
-ICAgICBzdHJ1Y3Qgc25kX2R1bW15ICpkdW1teSA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9s
-KTsKPiA+ID4gKyAgICAgICBpbnQgY2hhbmdlZDsKPiA+ID4gKwo+ID4gPiArICAgICAgIGlmICh2
-YWx1ZS0+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdID4gMSkKPiA+ID4gKyAgICAgICAgICAgICAg
-IHJldHVybiAtRUlOVkFMOwo+ID4gPiArCj4gPiA+ICsgICAgICAgY2hhbmdlZCA9IHZhbHVlLT52
-YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gIT0gZHVtbXktPmlvYm94Owo+ID4gPiArICAgICAgIGlm
-IChjaGFuZ2VkKSB7Cj4gPiA+ICsgICAgICAgICAgICAgICBkdW1teS0+aW9ib3ggPSB2YWx1ZS0+
-dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdOwo+ID4gPiArCj4gPiA+ICsgICAgICAgICAgICAgICBp
-ZiAoZHVtbXktPmlvYm94KSB7Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGR1bW15LT5j
-ZF92b2x1bWVfY3RsLT52ZFswXS5hY2Nlc3MgJj0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB+U05EUlZfQ1RMX0VMRU1fQUNDRVNTX0lOQUNUSVZFOwo+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICBkdW1teS0+Y2Rfc3dpdGNoX2N0bC0+dmRbMF0uYWNjZXNzICY9Cj4g
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgflNORFJWX0NUTF9FTEVNX0FDQ0VT
-U19JTkFDVElWRTsKPiA+ID4gKyAgICAgICAgICAgICAgIH0gZWxzZSB7Cj4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIGR1bW15LT5jZF92b2x1bWVfY3RsLT52ZFswXS5hY2Nlc3MgfD0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRSVl9DVExfRUxFTV9BQ0NFU1Nf
-SU5BQ1RJVkU7Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGR1bW15LT5jZF9zd2l0Y2hf
-Y3RsLT52ZFswXS5hY2Nlc3MgfD0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBTTkRSVl9DVExfRUxFTV9BQ0NFU1NfSU5BQ1RJVkU7Cj4gPiA+ICsgICAgICAgICAgICAgICB9
-Cj4gPiA+ICsKPiA+ID4gKyAgICAgICAgICAgICAgIHNuZF9jdGxfbm90aWZ5KGR1bW15LT5jYXJk
-LCBTTkRSVl9DVExfRVZFTlRfTUFTS19JTkZPLAo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgJmR1bW15LT5jZF92b2x1bWVfY3RsLT5pZCk7Cj4gPiA+ICsgICAgICAgICAgICAg
-ICBzbmRfY3RsX25vdGlmeShkdW1teS0+Y2FyZCwgU05EUlZfQ1RMX0VWRU5UX01BU0tfSU5GTywK
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZkdW1teS0+Y2Rfc3dpdGNoX2N0
-bC0+aWQpOwo+ID4gPiArICAgICAgIH0KPiA+ID4gKwo+ID4gPiArICAgICAgIHJldHVybiBjaGFu
-Z2VkOwo+ID4gPiArfQo+ID4gPiArCj4gPiA+ICBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9u
-ZXcgc25kX2R1bW15X2NvbnRyb2xzW10gPSB7Cj4gPiA+ICBEVU1NWV9WT0xVTUUoIk1hc3RlciBW
-b2x1bWUiLCAwLCBNSVhFUl9BRERSX01BU1RFUiksCj4gPiA+ICBEVU1NWV9DQVBTUkMoIk1hc3Rl
-ciBDYXB0dXJlIFN3aXRjaCIsIDAsIE1JWEVSX0FERFJfTUFTVEVSKSwKPiA+ID4gQEAgLTgyNywy
-MiArODgxLDM3IEBAIERVTU1ZX0NBUFNSQygiTGluZSBDYXB0dXJlIFN3aXRjaCIsIDAsCj4gPiBN
-SVhFUl9BRERSX0xJTkUpLAo+ID4gPiAgRFVNTVlfVk9MVU1FKCJNaWMgVm9sdW1lIiwgMCwgTUlY
-RVJfQUREUl9NSUMpLAo+ID4gPiAgRFVNTVlfQ0FQU1JDKCJNaWMgQ2FwdHVyZSBTd2l0Y2giLCAw
-LCBNSVhFUl9BRERSX01JQyksCj4gPiA+ICBEVU1NWV9WT0xVTUUoIkNEIFZvbHVtZSIsIDAsIE1J
-WEVSX0FERFJfQ0QpLAo+ID4gPiAtRFVNTVlfQ0FQU1JDKCJDRCBDYXB0dXJlIFN3aXRjaCIsIDAs
-IE1JWEVSX0FERFJfQ0QpCj4gPiA+ICtEVU1NWV9DQVBTUkMoIkNEIENhcHR1cmUgU3dpdGNoIiwg
-MCwgTUlYRVJfQUREUl9DRCksCj4gPiA+ICt7Cj4gPiA+ICsgICAgICAgLmlmYWNlID0gU05EUlZf
-Q1RMX0VMRU1fSUZBQ0VfTUlYRVIsCj4gPiA+ICsgICAgICAgLm5hbWUgID0gIkV4dGVybmFsIEkv
-TyBCb3giLAo+ID4gPiArICAgICAgIC5pbmZvICA9IHNuZF9kdW1teV9pb2JveF9pbmZvLAo+ID4g
-PiArICAgICAgIC5nZXQgICA9IHNuZF9kdW1teV9pb2JveF9nZXQsCj4gPiA+ICsgICAgICAgLnB1
-dCAgID0gc25kX2R1bW15X2lvYm94X3B1dCwKPiA+ID4gK30sCj4gPiA+ICB9Owo+ID4gPgo+ID4g
-PiAgc3RhdGljIGludCBfX2RldmluaXQgc25kX2NhcmRfZHVtbXlfbmV3X21peGVyKHN0cnVjdCBz
-bmRfZHVtbXkKKmR1bW15KQo+ID4gPiAgewo+ID4gPiAgICAgICAgIHN0cnVjdCBzbmRfY2FyZCAq
-Y2FyZCA9IGR1bW15LT5jYXJkOwo+ID4gPiArICAgICAgIHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtj
-b250cm9sOwo+ID4gPiAgICAgICAgIHVuc2lnbmVkIGludCBpZHg7Cj4gPiA+ICAgICAgICAgaW50
-IGVycjsKPiA+ID4KPiA+ID4gICAgICAgICBzcGluX2xvY2tfaW5pdCgmZHVtbXktPm1peGVyX2xv
-Y2spOwo+ID4gPiAgICAgICAgIHN0cmNweShjYXJkLT5taXhlcm5hbWUsICJEdW1teSBNaXhlciIp
-Owo+ID4gPiArICAgICAgIGR1bW15LT5pb2JveCA9IDE7Cj4gPiA+Cj4gPiA+ICAgICAgICAgZm9y
-IChpZHggPSAwOyBpZHggPCBBUlJBWV9TSVpFKHNuZF9kdW1teV9jb250cm9scyk7IGlkeCsrKSB7
-Cj4gPiA+IC0gICAgICAgICAgICAgICBlcnIgPSBzbmRfY3RsX2FkZChjYXJkLAo+ID4gc25kX2N0
-bF9uZXcxKCZzbmRfZHVtbXlfY29udHJvbHNbaWR4XSwgZHVtbXkpKTsKPiA+ID4gKyAgICAgICAg
-ICAgICAgIGtjb250cm9sID0gc25kX2N0bF9uZXcxKCZzbmRfZHVtbXlfY29udHJvbHNbaWR4XSwK
-ZHVtbXkpOwo+ID4gPiArICAgICAgICAgICAgICAgZXJyID0gc25kX2N0bF9hZGQoY2FyZCwga2Nv
-bnRyb2wpOwo+ID4gPiAgICAgICAgICAgICAgICAgaWYgKGVyciA8IDApCj4gPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIHJldHVybiBlcnI7Cj4gPiA+ICsgICAgICAgICAgICAgICBpZiAoIXN0
-cmNtcChrY29udHJvbC0+aWQubmFtZSwgIkNEIFZvbHVtZSIpKQo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICBkdW1teS0+Y2Rfdm9sdW1lX2N0bCA9IGtjb250cm9sOwo+ID4gPiArICAgICAg
-ICAgICAgICAgZWxzZSBpZiAoIXN0cmNtcChrY29udHJvbC0+aWQubmFtZSwgIkNEIENhcHR1cmUK
-U3dpdGNoIikpCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGR1bW15LT5jZF9zd2l0Y2hf
-Y3RsID0ga2NvbnRyb2w7Cj4gPiA+ICsKPiA+ID4gICAgICAgICB9Cj4gPiA+ICAgICAgICAgcmV0
-dXJuIDA7Cj4gPiA+ICB9Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+For verb 705h, it's useless to read response, so use *write api would be
+better. If there's error after sending cmd, just try again without continue
+after wrong operation.Otherwise there's long time delay.
+
+Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+---
+ sound/pci/hda/hda_codec.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 960800b..0946eca 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3569,6 +3569,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
+ 	int count;
+ 	unsigned int state;
++	int err;
+ 
+ 	/* this delay seems necessary to avoid click noise at power-down */
+ 	if (power_state == AC_PWRST_D3) {
+@@ -3582,9 +3583,11 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 			codec->patch_ops.set_power_state(codec, fg,
+ 							 power_state);
+ 		else {
+-			snd_hda_codec_read(codec, fg, 0,
++			err = snd_hda_codec_write(codec, fg, 0,
+ 					   AC_VERB_SET_POWER_STATE,
+ 					   power_state);
++			if (err < 0)
++				continue;
+ 			snd_hda_codec_set_power_to_all(codec, fg, power_state,
+ 						       true);
+ 		}
+-- 
+1.7.9.5
