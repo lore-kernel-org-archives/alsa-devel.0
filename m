@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: supply and micbiases shoud bring "up
- to" STANDBY
-Date: Thu, 25 Oct 2012 17:49:18 +0100
-Message-ID: <20121025164917.GR18814@opensource.wolfsonmicro.com>
-References: <5FBF8E85CA34454794F0F7ECBA79798F37A052B72B@HQMAIL04.nvidia.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: Back-end state transition query
+Date: Thu, 25 Oct 2012 18:59:16 +0100
+Message-ID: <50897DF4.1020402@ti.com>
+References: <5088ECF2.8010007@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9198856022348977161=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28AD6264F47
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 18:49:19 +0200 (CEST)
-In-Reply-To: <5FBF8E85CA34454794F0F7ECBA79798F37A052B72B@HQMAIL04.nvidia.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62C4E264FF7
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 19:59:20 +0200 (CEST)
+In-Reply-To: <5088ECF2.8010007@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,73 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shaoming Feng <shaomingf@nvidia.com>
-Cc: Daniel Solomon <daniels@nvidia.com>, Stephen Warren <swarren@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Patrick,
 
---===============9198856022348977161==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="foM9DbudB2CcldhH"
-Content-Disposition: inline
+On 25/10/12 08:40, Patrick Lai wrote:
+> Hi Liam,
+> 
+> I am facing an issue related to how DPCM manages state of back-end
+> substream. Here is description of problem:
+> 
+> When front-end PCM substream is in paused state, back-end PCM substream
+> will be put in paused state as well if given front-end PCM substream is
+> the only client of given back-end. Based on current implementation of
+> DPCM, when application closes front-end PCM substream, DPCM framework
+> will not allow back-end enter HW_FREE state so back-end will never get
+> shutdown completely as well.
+> 
+> refer to function soc_dpcm_be_dai_hw_free(), here is the check for states
+> 
+>     if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+>         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+>         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
+>         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
+>                         continue;
+> 
+> Can't DPCM also allow back-end hardware being freed in STATE_PAUSED?
 
+This seems like a bug. We should hw_free() the BE here.
 
---foM9DbudB2CcldhH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Even if DPCM expects trigger stop coming to update back-end state to STATE_STOP, the following condition check will never allow back-end enter stop state anyway
+> 
+> Refer to soc_dpcm_be_dai_trigger()
+> 
+>   case SNDRV_PCM_TRIGGER_STOP:
+>      if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+>                                 continue;
+> 
+> Can you please take a look and recommend the appropriate state transition or it would be okay to allow PAUSED state in soc_dpcm_be_dai_hw_free()?
 
-On Wed, Oct 24, 2012 at 02:19:35PM -0700, Shaoming Feng wrote:
+It should be OK to allow the paused state in hw_free(), but I'm thinking we should probably see the trigger stop when we close the FE (although I'm not 100% certain atm of seeing the STOP as I've not traced this PAUSE -> CLOSE sequence). I assume you have a patch that allows this ?
 
-> /* Supplies and micbiases only bring the
->  * context up to STANDBY as unless something
->  * else is active and passing audio they
->   * generally don't require full power.  Signal
->   * generators are virtual pins and have no
->   * power impact themselves.
->   */
+Thanks
 
-> According to the comment, the target bias level shouldn't be higher than STANDBY.
-
->                         case snd_soc_dapm_clock_supply:
->                         case snd_soc_dapm_micbias:
-> -                               if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
-> +                              if (d->target_bias_level > SND_SOC_BIAS_STANDBY)
->                                         d->target_bias_level = SND_SOC_BIAS_STANDBY;
-
-This will do the wrong thing - it'll mean that if we've already found
-that we need a bias level over _STANDBY we'll pull back to only
-selecting _STANDBY.  The intention here is that we should raise to
-_STANDBY but this shouldn't distrupt operation of other widgets.
-
---foM9DbudB2CcldhH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQiW2HAAoJELSic+t+oim9XsoP/jGvG0OzNSzh009ItMxeUc+3
-fcLYtkvAGy3/Lnb503r/PN/MjvuYZdANAGb0r35IbNmh2oT4byBRvY8cTpmQzb31
-h0edyZjE9I1CmWvA6bmtfnFplrBrrIqCL0YQ4P296ln6jqF26hIB368x4pffbfMk
-sjY4D/T0qVKtCH0eBebdRgq+bber1h1hlOvMjZdycv7QbG4elhx8XVb0oJCDRFP5
-+2wEb5AX37qzs5DOct6XoyFuHlwKegNV1/U97/HyarhJI6cB55vIr5ykv8UlXt6L
-jO5ZxLjShrRG9pHldXR/eLKmkq76DexsHltwT2vSfk+qh85uTeu/w/B1zkPlgg8d
-mMA08coFSy6zlM/5x/BxHj/hToO0brR9nw89veyBIuFotV3CZ21BJUjgIcL/yW9D
-dAIg5w7XjTKQ2e02qHQb4v5rrcmd2Bq9r4FVjKdKBtpU2qs8cBOkma9iOW9o1+HJ
-bqvNl4RrW8Ll5nHEAKUZ0hmS4ZKSaIpr37jyjeEN9FLnKt55hZ5YfpuOMPNzcNjh
-nCr8m76E6j9eU6BBG8WCbIDuphS5VdIEfKUlR3l9aKkB30s+MnpKnKmxXADeyb7J
-C73UIuzZkAZUobW/ZlhbImq4S8PiN3gV+AQpdEkeh54Gf+doawXxDlZO/8RJFU7I
-Mn4vQueuft22SkAdr6Oy
-=xRMR
------END PGP SIGNATURE-----
-
---foM9DbudB2CcldhH--
-
---===============9198856022348977161==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9198856022348977161==--
+Liam
