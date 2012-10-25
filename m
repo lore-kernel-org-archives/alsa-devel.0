@@ -1,23 +1,15 @@
-From: gsantosh@codeaurora.org
-Subject: Re: customized IOCTL in pcm platform driver.
-Date: Wed, 24 Oct 2012 21:56:26 -0700 (PDT)
-Message-ID: <6f00eacf2834f3322850a660bf74d7ee.squirrel@www.codeaurora.org>
-References: <d0ef8dd36b2e37d9f0f0886758cb5963.squirrel@www.codeaurora.org>
- <s5hipak6td2.wl%tiwai@suse.de>
- <4d3d244e3c337274675747eee0404a78.squirrel@www.codeaurora.org>
- <s5hfw5o6ss5.wl%tiwai@suse.de>
- <9c99072a34e9cd171404e40d6e543d13.squirrel@www.codeaurora.org>
- <s5h626k6qeg.wl%tiwai@suse.de>
- <e207ed9010d18ed2da363bf6496f1a9b.squirrel@www.codeaurora.org>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Back-end state transition query
+Date: Thu, 25 Oct 2012 00:40:34 -0700
+Message-ID: <5088ECF2.8010007@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
  [199.106.114.254])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BA1C264F34
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 06:56:27 +0200 (CEST)
-In-Reply-To: <e207ed9010d18ed2da363bf6496f1a9b.squirrel@www.codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 03BCB26506E
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 09:40:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lrg@ti.com, gsantosh@codeaurora.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> At Tue, 9 Oct 2012 00:30:40 -0700 (PDT),
->> gsantosh@codeaurora.org wrote:
->>>
->>> > At Mon, 8 Oct 2012 23:44:40 -0700 (PDT),
->>> > gsantosh@codeaurora.org wrote:
->>> >>
->>> >> > At Mon, 8 Oct 2012 23:30:09 -0700 (PDT),
->>> >> > gsantosh@codeaurora.org wrote:
->>> >> >>
->>> >> >> Hi All,
->>> >> >>
->>> >> >> will ALSA framework provide any customized IOCTL functionality in
->>> PCM
->>> >> >> platform driver.
->>> >> >
->>> >> > No.
->>> >> >
->>> >> >> in my  system there is a requirement to get some information from
->>> DSP
->>> >> to
->>> >> >> user space and I am thinking to add IOCTL's, is there any method
->>> to
->>> >> >> accommodate or how we can address this issue?
->>> >> >
->>> >> > You can use hwdep device for any extra methods.
->>> >>
->>> >> We need to tie this ioctl with the on going DSP session which will
->>> be
->>> >> difficult When used with hwdep interface.
->>> >
->>> > Hm, how can it be difficult?  More specific description is needed to
->>> > answer more.
->>>
->>> to communicate with DSP we open up a session and populate that
->>> information
->>> in the substream, for this use case during the playback session user
->>> space
->>> has to talk to DSP to get some information like time stamp also the
->>> time
->>> stamp statistics, to talk to DSP I need to get hold of the proper
->>> substream so that the communication with particular session is
->>> possible.
->>>
->>> I see adding one IOCTL in the platform driver will solve my issue, but
->>> not
->>> finding any way to integrate this in the current framework,
->>>
->>> if we use the hwdep, not sure how can I get hold of the substream
->>> handle
->>> so I can talk to particular session in DSP.
->>
->> A PCM substream can be identified simply by a PCM device number and
->> a PCM substream index.  You can make ioctl to pass these information.
->>
->
-> Can you point to any code reference doing this operation?
-> did you mean accessing the sub-stream handle in user space or in the
-> kernel driver.
->
->
->>
->> Takashi
->>
->
->
+Hi Liam,
 
-thanks for the information Takashi, but I have new requirement, want to
-see how can I implement a asynchronous functionality using dependent
-hardware interface,
-consider a use case where the DSP responds with proprietary data tied up
-with session opened, now the data received at app has to be propagated to
-user space
-for further processing, does any one implemented this in hardware
-dependent interface layer.
+I am facing an issue related to how DPCM manages state of back-end
+substream. Here is description of problem:
+
+When front-end PCM substream is in paused state, back-end PCM substream
+will be put in paused state as well if given front-end PCM substream is
+the only client of given back-end. Based on current implementation of
+DPCM, when application closes front-end PCM substream, DPCM framework
+will not allow back-end enter HW_FREE state so back-end will never get
+shutdown completely as well.
+
+refer to function soc_dpcm_be_dai_hw_free(), here is the check for states
+
+     if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
+         (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
+                         continue;
+
+Can't DPCM also allow back-end hardware being freed in STATE_PAUSED?
+Even if DPCM expects trigger stop coming to update back-end state to 
+STATE_STOP, the following condition check will never allow back-end 
+enter stop state anyway
+
+Refer to soc_dpcm_be_dai_trigger()
+
+   case SNDRV_PCM_TRIGGER_STOP:
+      if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+                                 continue;
+
+Can you please take a look and recommend the appropriate state 
+transition or it would be okay to allow PAUSED state in 
+soc_dpcm_be_dai_hw_free()?
+
+Thanks
+Patrick
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
