@@ -1,33 +1,96 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: ux500_msp_i2s: Fix devm_* and return code merge error
-Date: Thu, 25 Oct 2012 11:33:20 +0200
-Message-ID: <CAPDyKFr9bqm+0peZSFPE6Uopg0VpT7waD7QPBJBzhkEub1zvWw@mail.gmail.com>
-References: <1350306806-5688-1-git-send-email-lee.jones@linaro.org>
-	<1350306806-5688-2-git-send-email-lee.jones@linaro.org>
-	<CAPDyKFqrS0QT+UO0L3B29UcnjX0bSv3XvWTmC6E_ubgr8NTDiQ@mail.gmail.com>
-	<20121024102707.GC18814@opensource.wolfsonmicro.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH] ALSA: HDA - Check return value to reduce
+	useless delay
+Date: Thu, 25 Oct 2012 10:30:35 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF86722@SHSMSX102.ccr.corp.intel.com>
+References: <1351061603-2433-1-git-send-email-xingchao.wang@intel.com>
+ <s5htxtjh6nv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121024102707.GC18814@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linus.walleij@stericsson.com, arnd@arndb.de, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 453B5264F16
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 12:30:40 +0200 (CEST)
+In-Reply-To: <s5htxtjh6nv.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 24 October 2012 12:27, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Oct 24, 2012 at 11:34:00AM +0200, Ulf Hansson wrote:
->> Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
->>
->> I assume this shall go into 3.7, right?
->>
->> Kind regards
->> Ulf Hansson
->
-> You may recall that only yesterday I reminded you not to top post...
 
-Sorry, I have a short memory. :-) I will try to improve.
 
-Kind regards
-Ulf Hansson
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, October 25, 2012 6:01 AM
+> To: Wang, Xingchao
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] ALSA: HDA - Check return value to reduce useless delay
+> 
+> At Wed, 24 Oct 2012 14:53:23 +0800,
+> Wang Xingchao wrote:
+> >
+> > For verb 705h, it's useless to read response, so use *write api would
+> > be better. If there's error after sending cmd, just try again without
+> > continue after wrong operation.Otherwise there's long time delay.
+> 
+> Well, this is a bit sensitive part.  Did you do the good test coverage for
+> different hardware controllers and codecs, including the non-Intel ones?
+> 
+
+Well I only tested the patch on Haswell/Ivybridge platform. For Haswell I meet an issue about codec suspend/resume.
+There's no response from codec when there's power state transition from D3 to D0, and the patch could reduced delay time.
+For ivybridge the codec works well, so this patch has no active behavior. 
+I assume the verb 705h will not work for subnodes if it failed at first for "function group".
+Is there such case when set power state for the "Audio Function Group" fail but the sub-nodes could keep on setting power?
+
+Thanks
+--xingchao
+
+> 
+> Takashi
+> 
+> > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
+> > ---
+> >  sound/pci/hda/hda_codec.c |    5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> > index 960800b..0946eca 100644
+> > --- a/sound/pci/hda/hda_codec.c
+> > +++ b/sound/pci/hda/hda_codec.c
+> > @@ -3569,6 +3569,7 @@ static unsigned int hda_set_power_state(struct
+> hda_codec *codec,
+> >  	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
+> >  	int count;
+> >  	unsigned int state;
+> > +	int err;
+> >
+> >  	/* this delay seems necessary to avoid click noise at power-down */
+> >  	if (power_state == AC_PWRST_D3) {
+> > @@ -3582,9 +3583,11 @@ static unsigned int hda_set_power_state(struct
+> hda_codec *codec,
+> >  			codec->patch_ops.set_power_state(codec, fg,
+> >  							 power_state);
+> >  		else {
+> > -			snd_hda_codec_read(codec, fg, 0,
+> > +			err = snd_hda_codec_write(codec, fg, 0,
+> >  					   AC_VERB_SET_POWER_STATE,
+> >  					   power_state);
+> > +			if (err < 0)
+> > +				continue;
+> >  			snd_hda_codec_set_power_to_all(codec, fg, power_state,
+> >  						       true);
+> >  		}
+> > --
+> > 1.7.9.5
+> >
