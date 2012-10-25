@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
 Subject: Re: Help requested: new HSS1394 MIDI back-end
-Date: Thu, 25 Oct 2012 21:23:41 +0200
-Message-ID: <508991BD.5090101@ladisch.de>
+Date: Thu, 25 Oct 2012 22:26:17 +0200
+Message-ID: <5089A069.8010604@mixxx.org>
 References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>	<4FC5C9C8.1000604@ladisch.de>
  <4FC7CDC1.8020606@ladisch.de>	<4FD2F324.7070402@mixxx.org>
  <4FD32E76.3090304@ladisch.de> <4FD49A51.3050809@ladisch.de>
- <5087D5D2.6020208@mixxx.org>
+ <5087D5D2.6020208@mixxx.org> <508991BD.5090101@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8316396811731116444=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 67842265025
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 21:25:02 +0200 (CEST)
-In-Reply-To: <5087D5D2.6020208@mixxx.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3447E26502A
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 22:26:30 +0200 (CEST)
+Received: by mail-ee0-f51.google.com with SMTP id d49so788811eek.38
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 13:26:29 -0700 (PDT)
+In-Reply-To: <508991BD.5090101@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,601 +24,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sean M. Pappalardo - D.J. Pegasus wrote:
-> the amidi dump still shows an extra 00 byte after every message
+This is a cryptographically signed message in MIME format.
 
-Silly off-by-one error.  New patch below.
+--===============8316396811731116444==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080600030501040501020902"
 
-> BTW, which ALSA version (and Linux kernel version) did the last patch
-> go into, if any?
+This is a cryptographically signed message in MIME format.
 
-I was waiting for your Tested-by ...
-
-
-Regards,
-Clemens
+--------------ms080600030501040501020902
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
- sound/firewire/Kconfig  |   13 ++
- sound/firewire/Makefile |    2 +
- sound/firewire/scs1x.c  |  531 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 546 insertions(+), 0 deletions(-)
- create mode 100644 sound/firewire/scs1x.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 2607148..ea063e1 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -33,4 +33,17 @@ config SND_ISIGHT
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-isight.
+On 10/25/2012 09:23 PM, Clemens Ladisch wrote:
+> I was waiting for your Tested-by ...
 
-+config SND_SCS1X
-+	tristate "Stanton Control System 1 MIDI"
-+	select SND_PCM
-+	select SND_RAWMIDI
-+	select SND_FIREWIRE_LIB
-+	help
-+	  Say Y here to include support for the MIDI ports of the Stanton
-+	  SCS.1d/SCS.1m DJ controllers.  (SCS.1m audio is still handled
-+	  by FFADO.)
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-scs1x.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index d71ed89..460179d 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -2,7 +2,9 @@ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
- 			 fcp.o cmp.o amdtp.o
- snd-firewire-speakers-objs := speakers.o
- snd-isight-objs := isight.o
-+snd-scs1x-objs := scs1x.o
+Oopsie... I thought I replied saying that
 
- obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
- obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
- obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
-+obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
-diff --git a/sound/firewire/scs1x.c b/sound/firewire/scs1x.c
-new file mode 100644
-index 0000000..40b4798
---- /dev/null
-+++ b/sound/firewire/scs1x.c
-@@ -0,0 +1,531 @@
-+/*
-+ * Stanton Control System 1 MIDI driver
-+ *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/slab.h>
-+#include <linux/string.h>
-+#include <linux/wait.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/rawmidi.h>
-+#include "lib.h"
-+
-+#define OUI_STANTON	0x001260
-+#define MODEL_SCS_1M	0x001000
-+#define MODEL_SCS_1D	0x002000
-+
-+#define HSS1394_ADDRESS			0xc007dedadadaULL
-+#define HSS1394_MAX_PACKET_SIZE		64
-+
-+#define HSS1394_TAG_USER_DATA		0x00
-+#define HSS1394_TAG_CHANGE_ADDRESS	0xf1
-+
-+struct scs {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	struct fw_address_handler hss_handler;
-+	struct fw_transaction transaction;
-+	bool transaction_running;
-+	bool output_idle;
-+	u8 output_status;
-+	u8 output_bytes;
-+	bool output_escaped;
-+	bool output_escape_high_nibble;
-+	u8 input_escape_count;
-+	struct snd_rawmidi_substream *output;
-+	struct snd_rawmidi_substream *input;
-+	struct tasklet_struct tasklet;
-+	wait_queue_head_t idle_wait;
-+	u8 *buffer;
-+};
-+
-+static const u8 sysex_escape_prefix[] = {
-+	0xf0,			/* SysEx begin */
-+	0x00, 0x01, 0x60,	/* Stanton DJ */
-+	0x48, 0x53, 0x53,	/* "HSS" */
-+};
-+
-+static int scs_output_open(struct snd_rawmidi_substream *stream)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	scs->output_status = 0;
-+	scs->output_bytes = 1;
-+	scs->output_escaped = false;
-+
-+	return 0;
-+}
-+
-+static int scs_output_close(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static void scs_output_trigger(struct snd_rawmidi_substream *stream, int up)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->output) = up ? stream : NULL;
-+	if (up) {
-+		scs->output_idle = false;
-+		tasklet_schedule(&scs->tasklet);
-+	}
-+}
-+
-+static void scs_write_callback(struct fw_card *card, int rcode,
-+			       void *data, size_t length, void *callback_data)
-+{
-+	struct scs *scs = callback_data;
-+
-+	if (rcode == RCODE_GENERATION) {
-+		/* TODO: retry this packet */
-+	}
-+
-+	scs->transaction_running = false;
-+	tasklet_schedule(&scs->tasklet);
-+}
-+
-+static bool is_valid_running_status(u8 status)
-+{
-+	return status >= 0x80 && status <= 0xef;
-+}
-+
-+static bool is_one_byte_cmd(u8 status)
-+{
-+	return status == 0xf6 ||
-+	       status >= 0xf8;
-+}
-+
-+static bool is_two_bytes_cmd(u8 status)
-+{
-+	return (status >= 0xc0 && status <= 0xdf) ||
-+	       status == 0xf1 ||
-+	       status == 0xf3;
-+}
-+
-+static bool is_three_bytes_cmd(u8 status)
-+{
-+	return (status >= 0x80 && status <= 0xbf) ||
-+	       (status >= 0xe0 && status <= 0xef) ||
-+	       status == 0xf2;
-+}
-+
-+static bool is_invalid_cmd(u8 status)
-+{
-+	return status == 0xf4 ||
-+	       status == 0xf5 ||
-+	       status == 0xf9 ||
-+	       status == 0xfd;
-+}
-+
-+static void scs_output_tasklet(unsigned long data)
-+{
-+	struct scs *scs = (void *)data;
-+	struct snd_rawmidi_substream *stream;
-+	unsigned int i;
-+	u8 byte;
-+	struct fw_device *dev;
-+	int generation;
-+
-+	if (scs->transaction_running)
-+		return;
-+
-+	stream = ACCESS_ONCE(scs->output);
-+	if (!stream) {
-+		scs->output_idle = true;
-+		wake_up(&scs->idle_wait);
-+		return;
-+	}
-+
-+	i = scs->output_bytes;
-+	for (;;) {
-+		if (snd_rawmidi_transmit(stream, &byte, 1) != 1) {
-+			scs->output_bytes = i;
-+			scs->output_idle = true;
-+			wake_up(&scs->idle_wait);
-+			return;
-+		}
-+		/*
-+		 * Convert from real MIDI to what I think the device expects (no
-+		 * running status, one command per packet, unescaped SysExs).
-+		 */
-+		if (scs->output_escaped && byte < 0x80) {
-+			if (scs->output_escape_high_nibble) {
-+				if (i < HSS1394_MAX_PACKET_SIZE) {
-+					scs->buffer[i] = byte << 4;
-+					scs->output_escape_high_nibble = false;
-+				}
-+			} else {
-+				scs->buffer[i++] |= byte & 0x0f;
-+				scs->output_escape_high_nibble = true;
-+			}
-+		} else if (byte < 0x80) {
-+			if (i == 1) {
-+				if (!is_valid_running_status(scs->output_status))
-+					continue;
-+				scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+				scs->buffer[i++] = scs->output_status;
-+			}
-+			scs->buffer[i++] = byte;
-+			if ((i == 3 && is_two_bytes_cmd(scs->output_status)) ||
-+			    (i == 4 && is_three_bytes_cmd(scs->output_status)))
-+				break;
-+			if (i == 1 + ARRAY_SIZE(sysex_escape_prefix) &&
-+			    !memcmp(scs->buffer + 1, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix))) {
-+				scs->output_escaped = true;
-+				scs->output_escape_high_nibble = true;
-+				i = 0;
-+			}
-+			if (i >= HSS1394_MAX_PACKET_SIZE)
-+				i = 1;
-+		} else if (byte == 0xf7) {
-+			if (scs->output_escaped) {
-+				if (i >= 1 && scs->output_escape_high_nibble &&
-+				    scs->buffer[0] != HSS1394_TAG_CHANGE_ADDRESS)
-+					break;
-+			} else {
-+				if (i > 1 && scs->output_status == 0xf0) {
-+					scs->buffer[i++] = 0xf7;
-+					break;
-+				}
-+			}
-+			i = 1;
-+			scs->output_escaped = false;
-+		} else if (!is_invalid_cmd(byte) &&
-+			   byte < 0xf8) {
-+			i = 1;
-+			scs->buffer[0] = HSS1394_TAG_USER_DATA;
-+			scs->buffer[i++] = byte;
-+			scs->output_status = byte;
-+			scs->output_escaped = false;
-+			if (is_one_byte_cmd(byte))
-+				break;
-+		}
-+	}
-+	scs->output_bytes = 1;
-+	scs->output_escaped = false;
-+
-+	scs->transaction_running = true;
-+	dev = fw_parent_device(scs->unit);
-+	generation = dev->generation;
-+	smp_rmb(); /* node_id vs. generation */
-+	fw_send_request(dev->card, &scs->transaction, TCODE_WRITE_BLOCK_REQUEST,
-+			dev->node_id, generation, dev->max_speed,
-+			HSS1394_ADDRESS, scs->buffer, i,
-+			scs_write_callback, scs);
-+}
-+
-+static void scs_output_drain(struct snd_rawmidi_substream *stream)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	wait_event(scs->idle_wait, scs->output_idle);
-+}
-+
-+static struct snd_rawmidi_ops output_ops = {
-+	.open    = scs_output_open,
-+	.close   = scs_output_close,
-+	.trigger = scs_output_trigger,
-+	.drain   = scs_output_drain,
-+};
-+
-+static int scs_input_open(struct snd_rawmidi_substream *stream)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	scs->input_escape_count = 0;
-+
-+	return 0;
-+}
-+
-+static int scs_input_close(struct snd_rawmidi_substream *stream)
-+{
-+	return 0;
-+}
-+
-+static void scs_input_trigger(struct snd_rawmidi_substream *stream, int up)
-+{
-+	struct scs *scs = stream->rmidi->private_data;
-+
-+	ACCESS_ONCE(scs->input) = up ? stream : NULL;
-+}
-+
-+static void scs_input_escaped_byte(struct snd_rawmidi_substream *stream,
-+				   u8 byte)
-+{
-+	u8 nibbles[2];
-+
-+	nibbles[0] = byte >> 4;
-+	nibbles[1] = byte & 0x0f;
-+	snd_rawmidi_receive(stream, nibbles, 2);
-+}
-+
-+static void scs_input_midi_byte(struct scs *scs,
-+				struct snd_rawmidi_substream *stream,
-+				u8 byte)
-+{
-+	if (scs->input_escape_count > 0) {
-+		scs_input_escaped_byte(stream, byte);
-+		scs->input_escape_count--;
-+		if (scs->input_escape_count == 0)
-+			snd_rawmidi_receive(stream, (const u8[]) { 0xf7 }, 1);
-+	} else if (byte == 0xf9) {
-+		snd_rawmidi_receive(stream, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix));
-+		scs_input_escaped_byte(stream, 0x00);
-+		scs_input_escaped_byte(stream, 0xf9);
-+		scs->input_escape_count = 3;
-+	} else {
-+		snd_rawmidi_receive(stream, &byte, 1);
-+	}
-+}
-+
-+static void scs_input_packet(struct scs *scs,
-+			     struct snd_rawmidi_substream *stream,
-+			     const u8 *data, unsigned int bytes)
-+{
-+	unsigned int i;
-+
-+	if (data[0] == HSS1394_TAG_USER_DATA) {
-+		for (i = 1; i < bytes; ++i)
-+			scs_input_midi_byte(scs, stream, data[i]);
-+	} else {
-+		snd_rawmidi_receive(stream, sysex_escape_prefix,
-+				    ARRAY_SIZE(sysex_escape_prefix));
-+		for (i = 0; i < bytes; ++i)
-+			scs_input_escaped_byte(stream, data[i]);
-+		snd_rawmidi_receive(stream, (const u8[]) { 0xf7 }, 1);
-+	}
-+}
-+
-+static struct snd_rawmidi_ops input_ops = {
-+	.open    = scs_input_open,
-+	.close   = scs_input_close,
-+	.trigger = scs_input_trigger,
-+};
-+
-+static int scs_create_midi(struct scs *scs)
-+{
-+	struct snd_rawmidi *rmidi;
-+	int err;
-+
-+	err = snd_rawmidi_new(scs->card, "SCS.1x", 0, 1, 1, &rmidi);
-+	if (err < 0)
-+		return err;
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", scs->card->shortname);
-+	rmidi->info_flags = SNDRV_RAWMIDI_INFO_OUTPUT |
-+	                    SNDRV_RAWMIDI_INFO_INPUT |
-+	                    SNDRV_RAWMIDI_INFO_DUPLEX;
-+	rmidi->private_data = scs;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &output_ops);
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &input_ops);
-+
-+	return 0;
-+}
-+
-+static void handle_hss(struct fw_card *card, struct fw_request *request,
-+		       int tcode, int destination, int source, int generation,
-+		       unsigned long long offset, void *data, size_t length,
-+		       void *callback_data)
-+{
-+	struct scs *scs = callback_data;
-+	struct snd_rawmidi_substream *stream;
-+
-+	if (offset != scs->hss_handler.offset) {
-+		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
-+		return;
-+	}
-+	if (tcode != TCODE_WRITE_QUADLET_REQUEST &&
-+	    tcode != TCODE_WRITE_BLOCK_REQUEST) {
-+		fw_send_response(card, request, RCODE_TYPE_ERROR);
-+		return;
-+	}
-+
-+	if (length >= 1) {
-+		stream = ACCESS_ONCE(scs->input);
-+		if (stream)
-+			scs_input_packet(scs, stream, data, length);
-+	}
-+
-+	fw_send_response(card, request, RCODE_COMPLETE);
-+}
-+
-+static int scs_init_hss_address(struct scs *scs)
-+{
-+	u8 data[8];
-+	int err;
-+
-+	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
-+	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
-+	err = snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				 HSS1394_ADDRESS, data, 8, 0);
-+	if (err < 0)
-+		dev_err(&scs->unit->device, "HSS1394 communication failed\n");
-+
-+	return err;
-+}
-+
-+static void scs_card_free(struct snd_card *card)
-+{
-+	struct scs *scs = card->private_data;
-+
-+	fw_core_remove_address_handler(&scs->hss_handler);
-+	kfree(scs->buffer);
-+}
-+
-+static int scs_probe(struct device *unit_dev)
-+{
-+	struct fw_unit *unit = fw_unit(unit_dev);
-+	struct fw_device *fw_dev = fw_parent_device(unit);
-+	struct snd_card *card;
-+	struct scs *scs;
-+	int err;
-+
-+	err = snd_card_create(-16, NULL, THIS_MODULE, sizeof(*scs), &card);
-+	if (err < 0)
-+		return err;
-+	snd_card_set_dev(card, unit_dev);
-+
-+	scs = card->private_data;
-+	scs->card = card;
-+	scs->unit = unit;
-+	tasklet_init(&scs->tasklet, scs_output_tasklet, (unsigned long)scs);
-+	init_waitqueue_head(&scs->idle_wait);
-+	scs->output_idle = true;
-+
-+	scs->buffer = kmalloc(HSS1394_MAX_PACKET_SIZE, GFP_KERNEL);
-+	if (!scs->buffer)
-+		goto err_card;
-+
-+	scs->hss_handler.length = HSS1394_MAX_PACKET_SIZE;
-+	scs->hss_handler.address_callback = handle_hss;
-+	scs->hss_handler.callback_data = scs;
-+	err = fw_core_add_address_handler(&scs->hss_handler,
-+					  &fw_high_memory_region);
-+	if (err < 0)
-+		goto err_buffer;
-+
-+	card->private_free = scs_card_free;
-+
-+	strcpy(card->driver, "SCS.1x");
-+	strcpy(card->shortname, "SCS.1x");
-+	fw_csr_string(unit->directory, CSR_MODEL,
-+		      card->shortname, sizeof(card->shortname));
-+	snprintf(card->longname, sizeof(card->longname),
-+		 "Stanton DJ %s (GUID %08x%08x) at %s, S%d",
-+		 card->shortname, fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&unit->device), 100 << fw_dev->max_speed);
-+	strcpy(card->mixername, card->shortname);
-+
-+	err = scs_init_hss_address(scs);
-+	if (err < 0)
-+		goto err_card;
-+
-+	err = scs_create_midi(scs);
-+	if (err < 0)
-+		goto err_card;
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto err_card;
-+
-+	dev_set_drvdata(unit_dev, scs);
-+
-+	return 0;
-+
-+err_buffer:
-+	kfree(scs->buffer);
-+err_card:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static int scs_remove(struct device *dev)
-+{
-+	struct scs *scs = dev_get_drvdata(dev);
-+
-+	snd_card_disconnect(scs->card);
-+
-+	ACCESS_ONCE(scs->output) = NULL;
-+	ACCESS_ONCE(scs->input) = NULL;
-+
-+	wait_event(scs->idle_wait, scs->output_idle);
-+
-+	tasklet_kill(&scs->tasklet);
-+
-+	snd_card_free_when_closed(scs->card);
-+
-+	return 0;
-+}
-+
-+static void scs_update(struct fw_unit *unit)
-+{
-+	struct scs *scs = dev_get_drvdata(&unit->device);
-+	int generation;
-+	u8 data[8];
-+
-+	*(__be64 *)data = cpu_to_be64(scs->hss_handler.offset);
-+	data[0] = HSS1394_TAG_CHANGE_ADDRESS;
-+	generation = fw_parent_device(unit)->generation;
-+	smp_rmb(); /* node_id vs. generation */
-+	snd_fw_transaction(scs->unit, TCODE_WRITE_BLOCK_REQUEST,
-+			   HSS1394_ADDRESS, data, 8,
-+			   FW_FIXED_GENERATION | generation);
-+}
-+
-+static const struct ieee1394_device_id scs_id_table[] = {
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+		               IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id   = OUI_STANTON,
-+		.model_id    = MODEL_SCS_1M,
-+	},
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+		               IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id   = OUI_STANTON,
-+		.model_id    = MODEL_SCS_1D,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, scs_id_table);
-+
-+MODULE_DESCRIPTION("SCS.1x MIDI driver");
-+MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
-+MODULE_LICENSE("GPL v2");
-+
-+static struct fw_driver scs_driver = {
-+	.driver = {
-+		.owner  = THIS_MODULE,
-+		.name   = KBUILD_MODNAME,
-+		.bus    = &fw_bus_type,
-+		.probe  = scs_probe,
-+		.remove = scs_remove,
-+	},
-+	.update   = scs_update,
-+	.id_table = scs_id_table,
-+};
-+
-+static int __init alsa_scs1x_init(void)
-+{
-+	return driver_register(&scs_driver.driver);
-+}
-+
-+static void __exit alsa_scs1x_exit(void)
-+{
-+	driver_unregister(&scs_driver.driver);
-+}
-+
-+module_init(alsa_scs1x_init);
-+module_exit(alsa_scs1x_exit);
+Tested-by: Sean M. Pappalardo - D.J. Pegasus <spappalardo@mixxx.org>
+
+=2E..was fine. Ah well.
+
+
+Thanks again for all your hard work on this!
+
+Sincerely,
+Sean M. Pappalardo
+"D.J. Pegasus"
+Mixxx Developer - Controller Specialist
+
+
+--------------ms080600030501040501020902
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIINtjCC
+BjQwggQcoAMCAQICASAwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
+DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
+MTAyNDIxMDI1NVoXDTE3MTAyNDIxMDI1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
+dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
+aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
+aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMsohUWcASz7GfKrpTOM
+KqANy9BV7V0igWdGxA8IU77L3aTxErQ+fcxtDYZ36Z6GH0YFn7fq5RADteP0AYzrCA+EQTfi
+8q1+kA3m0nwtwXG94M5sIqsvs7lRP1aycBke/s5g9hJHryZ2acScnzczjBCAo7X1v5G3yw8M
+DP2m2RCye0KfgZ4nODerZJVzhAlOD9YejvAXZqHksw56HzElVIoYSZ3q4+RJuPXXfIoyby+Y
+2m1E+YzX5iCZXBx05gk6MKAW1vaw4/v2OOLy6FZH3XHHtOkzUreG//CsFnB9+uaYSlR65cdG
+zTsmoIK8WH1ygoXhRBm98SD7Hf/r3FELNvUCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
+Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSuVYNv7DHKufcd+q9rMfPIHeOsuzAfBgNV
+HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
+MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
+dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
+c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBADqp
+Jw3I07QWke9plNBpxUxcffc7nUrIQpJHDci91DFG7fVhHRkMZ1J+BKg5UNUxIFJ2Z9B90Mic
+c/NXcs7kPBRdn6XGO/vPc87Y6R+cWS9Nc9+fp3Enmsm94OxOwI9wn8qnr/6o3mD4noP9Jphw
+UPTXwHovjavRnhUQHLfo/i2NG0XXgTHXS2Xm0kVUozXqpYpAdumMiB/vezj1QHQJDmUdPYMc
+p+reg9901zkyT3fDW/ivJVv6pWtkh6Pw2ytZT7mvg7YhX3V50Nv860cV11mocUVcqBLv0gcT
++HBDYtbuvexNftwNQKD5193A7zN4vG7CTYkXxytSjKuXrpEatEiFPxWgb84nVj25SU5q/r1X
+hwby6mLhkbaXslkVtwEWT3Van49rKjlK4XrUKYYWtnfzq6aSak5u0Vpxd1rY79tWhD3EdCvO
+hNz/QplNa+VkIsrcp7+8ZhP1l1b2U6MaxIVteuVMD3X0vziIwr7jxYae9FZjbxlpUemqXjcC
+0QaFfN7qI0JsQMALL7iGRBg7K0CoOBzECdD3fuZil5kU/LP9cr1BK31U0Uy651bFnAMMMkqh
+AChIbn0ei72VnbpSsrrSdF0BAGYQ8vyHae5aCg+H75dVCV33K6FuxZrf09yTz+Vx/PkdRUYk
+XmZz/OTfyJXsUOUXrym6KvI2rYpccSk5MIIHejCCBmKgAwIBAgICFzUwDQYJKoZIhvcNAQEF
+BQAwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJT
+ZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBD
+bGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTAeFw0xMTEwMDUwOTU4MjBa
+Fw0xMzEwMDUwODI2MThaMIG+MSAwHgYDVQQNExc1Mjg2MjUtMkxtSDcwOVRWS3FBR1N4QjEL
+MAkGA1UEBhMCVVMxETAPBgNVBAgTCE5ldyBZb3JrMRYwFAYDVQQHEw1TdGF0ZW4gSXNsYW5k
+MSIwIAYDVQQKExlSZW5lZ2FkZSBUZWNobm9sb2dpZXMgREJBMRgwFgYDVQQDEw9TZWFuIFBh
+cHBhbGFyZG8xJDAiBgkqhkiG9w0BCQEWFXNwYXBwYWxhcmRvQG1peHh4Lm9yZzCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAK1NNpr6hUJ8LOZMez9xHLjyZRYqeJz4Lp5+2dxd
+slcNSxT7n/4wKzLdQiadXLeLKxBGy6OrGNZN2a2cO3+g/0vE3VvcgJJZVW8R7QX1qIaL8oSM
+KcMj76LE/CHtzpYkyPDQipQXhgn6sRe0qvc4IfvOpkwtgpZ2p6kDFO+sl2a97N1Ep/wrS7h1
+MMbaRqpi01jpls8FrysT8vcXzofqaj3S36vr8jdcmCTW4hDz2Si/YZ/jgvF1w7nv6n16Y9fl
+avbhPqSQK4FHKDmRRwyBzVErGzb0MuaNlVlaGWj8a9qtVZa5OoDN+Sx0vnMbP5PJ8JuW/be0
+SxzOyH1RTZu0z+ECAwEAAaOCA7AwggOsMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1Ud
+JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUUvDFTXcNxsN+0UNFTI/K3ZoX
+m6swHwYDVR0jBBgwFoAUrlWDb+wxyrn3HfqvazHzyB3jrLswIAYDVR0RBBkwF4EVc3BhcHBh
+bGFyZG9AbWl4eHgub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8w
+LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
+BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsG
+AQUFBwICMIHqMCcWIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5U
+aGlzIGNlcnRpZmljYXRlIHdhcyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAyIFZh
+bGlkYXRpb24gcmVxdWlyZW1lbnRzIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlh
+bmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhl
+IHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGcBggrBgEFBQcCAjCBjzAnFiBTdGFydENv
+bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRMaWFiaWxpdHkgYW5kIHdhcnJhbnRp
+ZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBhbmQgTGltaXRhdGlvbnMiIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwu
+c3RhcnRzc2wuY29tL2NydHUyLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUH
+MAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MyL2NsaWVudC9jYTBCBggr
+BgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNzMi5jbGll
+bnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkqhkiG
+9w0BAQUFAAOCAQEALuOsKhJbsLicRnSPl4PMV5ZqM4mTi+qh5YZapOppBJLUuAvR0RsUN7n1
+cOgAbSjnU0/9m7wA/Rm5rt4OWP1L+K6NMIem2Dh7ghP2qXmDia439ACksTxQU+IUhVQCg3ZT
+Ama2VQSOCSM0IinfRk/h7f4bLqQ67OPN4ZeaPOHZs49V6xbIxn1GbfQkZ5hVC77zQsbN2Hx9
+rKZfg0OlEos8fd3HnuB9IS1RthS7Cbz/BgyA/GX2ViEZjQEcgsXh70tEDQ/LA6OaTE7+4a5S
+eDNRhvB5L0r3LQRgkWGQBGDwsL+M0isFmt4VSqIV62Ixx/zZhcknODotr585NfQ2NuFUvjGC
+A9owggPWAgEBMIGTMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
+MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
+U3RhcnRDb20gQ2xhc3MgMiBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAhc1MAkG
+BSsOAwIaBQCgggIbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8X
+DTEyMTAyNTIwMjYyMVowIwYJKoZIhvcNAQkEMRYEFM0HbZZXDVr+GW6NfW8AqPA5z6BIMGwG
+CSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAO
+BggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgw
+gaQGCSsGAQQBgjcQBDGBljCBkzCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29t
+IEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
+BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
+AgIXNTCBpgYLKoZIhvcNAQkQAgsxgZaggZMwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
+dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
+aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
+aWVudCBDQQICFzUwDQYJKoZIhvcNAQEBBQAEggEAKFpUppmLB15ucskqKjY8l3dK8USN61Ry
+niFsq+uFeEJLKApz1qrKZi+YXDNac4Z+7xgaCPHF9R5GE9+9HVKNhA3oHdns4y/VDWdyoALc
+eZS0EV6n9e1MZyTCJ8CsLDVlGRj1cL5OgAbzATiUVsNKKGiltLoC9Sm0YjcnwyogigSk1RDa
+X98HTwb/h1zGuQKSuE08RJeDEDK9NvxYvt+fT2S2q/0f2dTXJD7ue2y9aNR8U+Nhe5fKh31h
+iZ7DHpvAv5TclpLrPmKQEj7nlunekLsV4Tw2Y/zINvDsFhlJz31B4G4L2kKOcZJuEAv14OqC
+uM5yK2dNSPWEUe0Dzk3sWAAAAAAAAA==
+--------------ms080600030501040501020902--
+
+--===============8316396811731116444==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8316396811731116444==--
