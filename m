@@ -1,22 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: sound/pci/au88x0/au88x0_core.c:2464
-	vortex_interrupt() warn: if();
-Date: Thu, 25 Oct 2012 12:05:03 +0800
-Message-ID: <CAN8cciacCY_Bft5pz7jF+TqtH6jzz7b1MWcNB--4y7S6sZ6oqQ@mail.gmail.com>
-References: <508695b0.hStka2PI8YeAmkAt%fengguang.wu@intel.com>
- <20121023141642.GA22154@localhost> <s5hhapli7cm.wl%tiwai@suse.de>
- <CAN8cciZH6+rxuVpp5QtenFMs1PHaPnyusF2mVRMWEDhnWuCR8Q@mail.gmail.com>
+From: gsantosh@codeaurora.org
+Subject: Re: customized IOCTL in pcm platform driver.
+Date: Wed, 24 Oct 2012 21:56:26 -0700 (PDT)
+Message-ID: <6f00eacf2834f3322850a660bf74d7ee.squirrel@www.codeaurora.org>
+References: <d0ef8dd36b2e37d9f0f0886758cb5963.squirrel@www.codeaurora.org>
+ <s5hipak6td2.wl%tiwai@suse.de>
+ <4d3d244e3c337274675747eee0404a78.squirrel@www.codeaurora.org>
+ <s5hfw5o6ss5.wl%tiwai@suse.de>
+ <9c99072a34e9cd171404e40d6e543d13.squirrel@www.codeaurora.org>
+ <s5h626k6qeg.wl%tiwai@suse.de>
+ <e207ed9010d18ed2da363bf6496f1a9b.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id EB196264F3A
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 06:05:04 +0200 (CEST)
-Received: by mail-qa0-f44.google.com with SMTP id 25so3634023qao.17
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2012 21:05:04 -0700 (PDT)
-In-Reply-To: <CAN8cciZH6+rxuVpp5QtenFMs1PHaPnyusF2mVRMWEDhnWuCR8Q@mail.gmail.com>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+ [199.106.114.254])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BA1C264F34
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2012 06:56:27 +0200 (CEST)
+In-Reply-To: <e207ed9010d18ed2da363bf6496f1a9b.squirrel@www.codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,74 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: manuel.jander@gmail.com, yuanhan.liu@linux.intel.com, Fengguang Wu <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lrg@ti.com, gsantosh@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMC0yMyDkuIvljYgxMDozNSDmlrwgIlRha2FzaGkgSXdhaSIgPHRpd2FpQHN1c2UuZGU+
-IOWvq+mBk++8mgo+Cj4gQXQgVHVlLCAyMyBPY3QgMjAxMiAyMjoxNjo0MiArMDgwMCwKPiBGZW5n
-Z3VhbmcgV3Ugd3JvdGU6Cj4gPgo+ID4gSGksCj4gPgo+ID4gc21hdGNoIHdhcm5zIGFib3V0IGEg
-d2VpcmQgImlmKCk7IiBpbiBzb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9jb3JlLmMKPiA+IEFueSBp
-ZGVhcyB0byBmaXggaXQ/Cj4gPgo+ID4gICAgICAgICAyNDYxICNpZm5kZWYgQ0hJUF9BVTg4MTAK
-PiA+ICAgICAgICAgMjQ2MiAgICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IE5SX1dUOyBp
-KyspIHsKPiA+ICAgICAgICAgMjQ2MyAgICAgICAgICAgICAgICAgICAgICAgICBpZiAodm9ydGV4
-LT5kbWFfd3RbaV0uZmlmb19zdGF0dXMKPT0gRklGT19TVEFSVCkgewo+ID4gPT0+ICAgICAyNDY0
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYKKHZvcnRleF93dGRtYV9idWZzaGlm
-dCh2b3J0ZXgsIGkpKSA7Cj4gPiAgICAgICAgIDI0NjUgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBzcGluX3VubG9jaygmdm9ydGV4LT5sb2NrKTsKPiA+ICAgICAgICAgMjQ2NgpzbmRf
-cGNtX3BlcmlvZF9lbGFwc2VkKHZvcnRleC0+ZG1hX3d0W2ldLgo+ID4gICAgICAgICAyNDY3CiBz
-dWJzdHJlYW0pOwo+ID4gICAgICAgICAyNDY4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc3Bpbl9sb2NrKCZ2b3J0ZXgtPmxvY2spOwo+ID4gICAgICAgICAyNDY5ICAgICAgICAgICAg
-ICAgICAgICAgICAgIH0KPiA+ICAgICAgICAgMjQ3MCAgICAgICAgICAgICAgICAgfQo+ID4gICAg
-ICAgICAyNDcxICNlbmRpZgo+Cj4gQSBxdWljayBmaXggaXMgYmVsb3csIGJ1dCBJJ20gbm90IDEw
-MCUgc3VyZSBhYm91dCBpdCB5ZXQuCj4gTGV0J3Mgc2VlLgoKdXNpbmcgYXBsYXkgd2l0aCAgVk9S
-VEVYX1BDTV9XVCAsIG9ubHkgYSB2ZXJ5IGxvdyBoaWdoIGZyZXF1ZW5jeSBzaWduYWwgaXMKaGVh
-cmQgIGFuZCBhZnRlciAxMCBzZWNvbmRzCgphcGxheTogcGNtX3dyaXRlOjE3MDI6IHdyaXRlIGVy
-cm9yOiBJbnB1dC9vdXRwdXQgZXJyb3IKCnJlZmVyIHRvIHRoZSBwYXRlbnQgNjE2NzQ2NSB0aGUg
-d2F2ZXRhYmxlIERNQSBjaGFubmVscyBvcGVyYXRlIHNsaWdodGx5CmRpZmZlcmVudCBmcm9tIHRo
-ZSBub24td2F2ZXRhYmxlIERNQSBjaGFubmVscwoKaXQgc2VlbSB0aGF0IHRoZSBkcml2ZXIgc3Rp
-bGwgY2Fubm90IHNlbmQgdGhlIGluY3JlbWVudCB3YXZldGFibGUgcG9pbnRlcgpzaWduYWwgYW5k
-IHRoZSBpbmNyZW1lbnQgY291bnQgc2lnbmFsICwgdGh1cyBmaWZvIGNvbnRyb2xsZXIgZG9lcyBu
-b3QgcmVhY2gKdGhlIHRyaWdnZXIgbGV2ZWwgdG8gcmVxdWVzdCBmb3IgYSBkbWEgdHJhbnNmZXIK
-Cm1heSBuZWVkIHNvbWUgY29kZSB0byB1c2UgdGhlIHNvdW5kIGNhcmQncyB0aW1lciBpbnRlcnJ1
-cHQgdG8gc2VuZAppbmNyZW1lbnQgd2F2ZXRhYmxlIHBvaW50ZXIgc2lnbmFsIHRvIHByb3ZpZGUg
-cGl0Y2hpbmcgYnkgcGVyZm9ybSBzYW1wbGUKcmF0ZSBjb252ZXJzaW9uIG9uIHRoZSBkYXRhIHRo
-cm91Z2ggaW50ZXJwb2xhdGlvbiBhbmQgbG9vcGluZwoKQlRXIGF1ODh4MCBzdGlsbCBtaXNzaW5n
-IGNoYW5uZWwgbWFwCgovKiBwcmUtYWxsb2NhdGlvbiBvZiBTY2F0dGVyLUdhdGhlciBidWZmZXJz
-ICovCgpzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdlc19mb3JfYWxsKHBjbSwgU05EUlZfRE1B
-X1RZUEVfREVWX1NHLAogICAgICBzbmRfZG1hX3BjaV9kYXRhKGNoaXAtPnBjaV9kZXYpLAogICAg
-ICAweDEwMDAwLCAweDEwMDAwKTsKCitpZiAoVk9SVEVYX1BDTV9UWVBFKHBjbSkgPT0gVk9SVEVY
-X1BDTV9BREIpIHsKKyAgICAgICBlcnIgPSBzbmRfcGNtX2FkZF9jaG1hcF9jdGxzKHBjbSwgU05E
-UlZfUENNX1NUUkVBTV9QTEFZQkFDSywKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHNuZF9wY21fc3RkX2NobWFwcywgNCwgMCwgTlVMTCk7CisgICAgICAgaWYgKGVyciA8IDAp
-CisgICAgICAgICAgICAgICByZXR1cm4gZXJyOworICB9CmlmIChWT1JURVhfUENNX1RZUEUocGNt
-KSA9PSBWT1JURVhfUENNX1NQRElGKSB7CgpodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9
-YWxzYS1saWIuZ2l0O2E9Y29tbWl0ZGlmZjtoPTNmYzEzZDZmNWIwOGVkZWU0OWIxMDZjZDcxMWQ1
-MWJmM2FlZjZhYjc7aHA9NjYyZjc5ZDRlYzZiNTJiYmFhYjI4ZDVhOWI2MGNjOGJjZGYwNDJmOQoK
-aG93IGFib3V0IGNhcHR1cmUgc3RyZWFtIHNpbmNlIHRlc3QvY2htYXAgY2FuIG9wZW4gY2FwdHVy
-ZSBzdHJlYW0gPwoKY2FzZSAncyc6CiAgICAgICAgICAgICAgICAgICAgICAgaWYgKCpvcHRhcmcg
-PT0gJ2MnIHx8ICpvcHRhcmcgPT0gJ0MnKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-c3RyZWFtID0gU05EX1BDTV9TVFJFQU1fQ0FQVFVSRTsKICAgICAgICAgICAgICAgICAgICAgICBl
-bHNlCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJlYW0gPSBTTkRfUENNX1NUUkVB
-TV9QTEFZQkFDSzsKICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKCmRvIFZPUlRFWF9QQ01f
-QTNEIG5lZWQgYSBtb25vIGNoYW5uZWwgbWFwIHNpbmNlIGRldmljZSAyIG9ubHkgc3VwcG9ydCBt
-b25vCnBsYXliYWNrIHdpdGggc3BhdGFsaXphdGlvbiB0byBzdGVyZW8gb3V0cHV0ID8KCmhvdyBh
-Ym91dCB0aGUgbW9ubyBjaGFubmVsIG1hcCBvZiBlbXUxMGsxIGFuZCB0cmlkZW50ID8KPgo+Cj4g
-dGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4gLS0tCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9hdTg4
-eDAvYXU4OHgwX2NvcmUuYwpiL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwX2NvcmUuYwo+IGluZGV4
-IDUyNWY4ODEuLjNmZTNkYmUgMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDBf
-Y29yZS5jCj4gKysrIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4eDBfY29yZS5jCj4gQEAgLTI0NjEs
-NyArMjQ2MSw4IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCB2b3J0ZXhfaW50ZXJydXB0KGludCBpcnEs
-IHZvaWQKKmRldl9pZCkKPiAgI2lmbmRlZiBDSElQX0FVODgxMAo+ICAgICAgICAgICAgICAgICBm
-b3IgKGkgPSAwOyBpIDwgTlJfV1Q7IGkrKykgewo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlm
-ICh2b3J0ZXgtPmRtYV93dFtpXS5maWZvX3N0YXR1cyA9PSBGSUZPX1NUQVJUKSB7Cj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAodm9ydGV4X3d0ZG1hX2J1ZnNoaWZ0KHZvcnRl
-eCwgaSkpIDsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmICghdm9ydGV4X3d0
-ZG1hX2J1ZnNoaWZ0KHZvcnRleCwgaSkpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGNvbnRpbnVlOwo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Bp
-bl91bmxvY2soJnZvcnRleC0+bG9jayk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBzbmRfcGNtX3BlcmlvZF9lbGFwc2VkKHZvcnRleC0+ZG1hX3d0W2ldLgo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdWJzdHJlYW0pOwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+>> At Tue, 9 Oct 2012 00:30:40 -0700 (PDT),
+>> gsantosh@codeaurora.org wrote:
+>>>
+>>> > At Mon, 8 Oct 2012 23:44:40 -0700 (PDT),
+>>> > gsantosh@codeaurora.org wrote:
+>>> >>
+>>> >> > At Mon, 8 Oct 2012 23:30:09 -0700 (PDT),
+>>> >> > gsantosh@codeaurora.org wrote:
+>>> >> >>
+>>> >> >> Hi All,
+>>> >> >>
+>>> >> >> will ALSA framework provide any customized IOCTL functionality in
+>>> PCM
+>>> >> >> platform driver.
+>>> >> >
+>>> >> > No.
+>>> >> >
+>>> >> >> in my  system there is a requirement to get some information from
+>>> DSP
+>>> >> to
+>>> >> >> user space and I am thinking to add IOCTL's, is there any method
+>>> to
+>>> >> >> accommodate or how we can address this issue?
+>>> >> >
+>>> >> > You can use hwdep device for any extra methods.
+>>> >>
+>>> >> We need to tie this ioctl with the on going DSP session which will
+>>> be
+>>> >> difficult When used with hwdep interface.
+>>> >
+>>> > Hm, how can it be difficult?  More specific description is needed to
+>>> > answer more.
+>>>
+>>> to communicate with DSP we open up a session and populate that
+>>> information
+>>> in the substream, for this use case during the playback session user
+>>> space
+>>> has to talk to DSP to get some information like time stamp also the
+>>> time
+>>> stamp statistics, to talk to DSP I need to get hold of the proper
+>>> substream so that the communication with particular session is
+>>> possible.
+>>>
+>>> I see adding one IOCTL in the platform driver will solve my issue, but
+>>> not
+>>> finding any way to integrate this in the current framework,
+>>>
+>>> if we use the hwdep, not sure how can I get hold of the substream
+>>> handle
+>>> so I can talk to particular session in DSP.
+>>
+>> A PCM substream can be identified simply by a PCM device number and
+>> a PCM substream index.  You can make ioctl to pass these information.
+>>
+>
+> Can you point to any code reference doing this operation?
+> did you mean accessing the sub-stream handle in user space or in the
+> kernel driver.
+>
+>
+>>
+>> Takashi
+>>
+>
+>
+
+thanks for the information Takashi, but I have new requirement, want to
+see how can I implement a asynchronous functionality using dependent
+hardware interface,
+consider a use case where the DSP responds with proprietary data tied up
+with session opened, now the data received at app has to be propagated to
+user space
+for further processing, does any one implemented this in hardware
+dependent interface layer.
