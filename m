@@ -1,21 +1,16 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH] ALSA: HDA - Check return value to reduce
-	useless delay
-Date: Fri, 26 Oct 2012 10:45:33 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48900FF86D06@SHSMSX102.ccr.corp.intel.com>
-References: <1351061603-2433-1-git-send-email-xingchao.wang@intel.com>
- <s5htxtjh6nv.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC48900FF86722@SHSMSX102.ccr.corp.intel.com>
- <s5hy5iustbb.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: Store codec capabilites in alsa
+Date: Fri, 26 Oct 2012 11:45:47 +0100
+Message-ID: <508A69DB.7030009@ti.com>
+References: <000001cdb31e$9a76a530$cf63ef90$@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E3AF2650D0
- for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2012 12:45:37 +0200 (CEST)
-In-Reply-To: <s5hy5iustbb.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA33B265083
+ for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2012 12:45:50 +0200 (CEST)
+In-Reply-To: <000001cdb31e$9a76a530$cf63ef90$@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,117 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 26/10/12 03:07, Bharath Ramachandramurthy wrote:
+> Hello
+> 
+>  
+> 
+> Is there a mechanism for the codec driver to register the codec
+> capabilities to the ALSA framework ? 
+> 
+> 
 
+The codec DAI driver does register some of it's capabilities with the core.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, October 25, 2012 7:08 PM
-> To: Wang, Xingchao
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [PATCH] ALSA: HDA - Check return value to reduce useless delay
+ 
 > 
-> At Thu, 25 Oct 2012 10:30:35 +0000,
-> Wang, Xingchao wrote:
-> >
-> >
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Thursday, October 25, 2012 6:01 AM
-> > > To: Wang, Xingchao
-> > > Cc: alsa-devel@alsa-project.org
-> > > Subject: Re: [PATCH] ALSA: HDA - Check return value to reduce
-> > > useless delay
-> > >
-> > > At Wed, 24 Oct 2012 14:53:23 +0800,
-> > > Wang Xingchao wrote:
-> > > >
-> > > > For verb 705h, it's useless to read response, so use *write api
-> > > > would be better. If there's error after sending cmd, just try
-> > > > again without continue after wrong operation.Otherwise there's long
-> time delay.
-> > >
-> > > Well, this is a bit sensitive part.  Did you do the good test
-> > > coverage for different hardware controllers and codecs, including the
-> non-Intel ones?
-> > >
-> >
-> > Well I only tested the patch on Haswell/Ivybridge platform.
+> The BE CPU dai driver can then read the capabilities of the codec and talk
+> to the DSP. 
 > 
-> Both are too new :)
 > 
-> > For Haswell I meet an issue about codec suspend/resume.
-> > There's no response from codec when there's power state transition from D3
-> to D0, and the patch could reduced delay time.
-> 
-> But does it fix the issue itself?
 
-Actually not. :)
-> 
-> > For ivybridge the codec works well, so this patch has no active behavior.
-> > I assume the verb 705h will not work for subnodes if it failed at first for
-> "function group".
-> > Is there such case when set power state for the "Audio Function Group" fail
-> but the sub-nodes could keep on setting power?
-> 
-> Not sure.  But we need more testing obviously before breaking anything.
+You should be able to do this by looking at the RTD codec->driver pointer to get supported rates, formats and channels.
 
-Okay, I will try to test it on other platforms. :)
+Regards
 
---xingchao
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> >
-> > Thanks
-> > --xingchao
-> >
-> > >
-> > > Takashi
-> > >
-> > > > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
-> > > > ---
-> > > >  sound/pci/hda/hda_codec.c |    5 ++++-
-> > > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> > > > index 960800b..0946eca 100644
-> > > > --- a/sound/pci/hda/hda_codec.c
-> > > > +++ b/sound/pci/hda/hda_codec.c
-> > > > @@ -3569,6 +3569,7 @@ static unsigned int
-> > > > hda_set_power_state(struct
-> > > hda_codec *codec,
-> > > >  	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
-> > > >  	int count;
-> > > >  	unsigned int state;
-> > > > +	int err;
-> > > >
-> > > >  	/* this delay seems necessary to avoid click noise at power-down */
-> > > >  	if (power_state == AC_PWRST_D3) { @@ -3582,9 +3583,11 @@
-> static
-> > > > unsigned int hda_set_power_state(struct
-> > > hda_codec *codec,
-> > > >  			codec->patch_ops.set_power_state(codec, fg,
-> > > >  							 power_state);
-> > > >  		else {
-> > > > -			snd_hda_codec_read(codec, fg, 0,
-> > > > +			err = snd_hda_codec_write(codec, fg, 0,
-> > > >  					   AC_VERB_SET_POWER_STATE,
-> > > >  					   power_state);
-> > > > +			if (err < 0)
-> > > > +				continue;
-> > > >  			snd_hda_codec_set_power_to_all(codec, fg, power_state,
-> > > >  						       true);
-> > > >  		}
-> > > > --
-> > > > 1.7.9.5
-> > > >
-> >
+Liam
