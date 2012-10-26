@@ -1,16 +1,20 @@
-From: "Bharath Ramachandramurthy" <bramacha@codeaurora.org>
-Subject: Store codec capabilites in alsa
-Date: Thu, 25 Oct 2012 19:07:07 -0700
-Message-ID: <000001cdb31e$9a76a530$cf63ef90$@codeaurora.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Help requested: new HSS1394 MIDI back-end
+Date: Fri, 26 Oct 2012 09:48:31 +0200
+Message-ID: <508A404F.4060902@ladisch.de>
+References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>	<4FC5C9C8.1000604@ladisch.de>
+ <4FC7CDC1.8020606@ladisch.de>	<4FD2F324.7070402@mixxx.org>
+ <4FD32E76.3090304@ladisch.de> <4FD49A51.3050809@ladisch.de>
+ <5087D5D2.6020208@mixxx.org> <508991BD.5090101@ladisch.de>
+ <5089A069.8010604@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
- [199.106.114.254])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D9FE265092
- for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2012 04:07:11 +0200 (CEST)
-Content-Language: en-us
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id F130D265098
+ for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2012 09:48:35 +0200 (CEST)
+In-Reply-To: <5089A069.8010604@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,26 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: bramacha@codeaurora.org
+To: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+Sean M. Pappalardo - D.J. Pegasus wrote:
+> On 10/25/2012 09:23 PM, Clemens Ladisch wrote:
+>> I was waiting for your Tested-by ...
+>
+> Oopsie... I thought I replied saying that
+>
+> Tested-by: Sean M. Pappalardo - D.J. Pegasus <spappalardo@mixxx.org>
+>
+> ...was fine.
 
- 
+Sorry, you did; what I meant to say was that I was waiting for the test
+*result*.  (Which turned out to be negative after all.)
 
-Is there a mechanism for the codec driver to register the codec
-capabilities to the ALSA framework ? 
 
- 
-
-The BE CPU dai driver can then read the capabilities of the codec and talk
-to the DSP. 
-
- 
-
-Thanks
-
-Bharath
-
- 
+Regards,
+Clemens
