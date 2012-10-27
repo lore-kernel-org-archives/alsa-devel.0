@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3.7-rc1] omap zoom2.c: Fix compile error by
- including correct header files
-Date: Sat, 27 Oct 2012 22:44:26 +0100
-Message-ID: <20121027214421.GG4564@opensource.wolfsonmicro.com>
-References: <1349274686-45668-1-git-send-email-tim.gardner@canonical.com>
- <506C5124.3050200@ti.com> <20121003155900.GA4840@atomide.com>
- <20121003163102.GB4840@atomide.com>
+Subject: Re: [PATCH] ASoC: omap-dmic: Correct functional clock
+	name
+Date: Sat, 27 Oct 2012 23:01:58 +0100
+Message-ID: <20121027220155.GJ4564@opensource.wolfsonmicro.com>
+References: <1351247588-30500-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6910961444948293310=="
+Content-Type: multipart/mixed; boundary="===============7969848106697544208=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 389D726522A
- for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2012 23:44:29 +0200 (CEST)
-In-Reply-To: <20121003163102.GB4840@atomide.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 821C826522E
+ for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2012 00:02:01 +0200 (CEST)
+In-Reply-To: <1351247588-30500-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tim Gardner <tim.gardner@canonical.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6910961444948293310==
+--===============7969848106697544208==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="m972NQjnE83KvVa/"
+	protocol="application/pgp-signature"; boundary="cEobB2knsyc5ebfU"
 Content-Disposition: inline
 
 
---m972NQjnE83KvVa/
+--cEobB2knsyc5ebfU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 03, 2012 at 09:31:02AM -0700, Tony Lindgren wrote:
+On Fri, Oct 26, 2012 at 12:33:08PM +0200, Peter Ujfalusi wrote:
 
-> Actually we can also drop "#include <mach/hardware.h>" too,
-> it's now empty for mach-omap2. I've updated Tim's patch below
-> for you guys to queue via the ASoC fixes. It's against the
-> current linux next.
+> Would it be possible to send this patch for 3.7 as a fix?
+> The DMIC driver works withoput this patch but we ask for the functional clock
+> using the wrong name.
 
-Applied.  Tim, you should send patches using subject lines appropriate
-for the subsystem you're submitting against *especially* if the patch is
-to be deferred for some future time as it makes it harder to search for
-the patch.  If your changelog looks different to the other changelogs
-for the thing you're patching that should be a warning.
+So, this has no practical effect but we should fix it for the next
+release...?   I've applied it as a fix but better motivation would help
+for things like this.
 
---m972NQjnE83KvVa/
+--cEobB2knsyc5ebfU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQjFWVAAoJELSic+t+oim9ibcP/R2yTacJ476LTN4hyrf0jACS
-M+oPVa51w9Ijj3WdnyiwZNlRwLLiaiALgq+u2bu1s73AeFteLp4C8L2JTDfZqf6V
-ZGhsQfgEdsl4swrPUvf6sj86lfIu95NtMkpdB/yPch/K3StEPXxS93GY/IIN8OF0
-f5X1pucHw5WuN19bOE67cLbQzEFGZZwh9PAPnxJ+2iT/m6hZCvtj0sAedl1qgI75
-ulyu90y0jAtOhoOpjJbS2VVIIS7cSK9Z3sP2BsIX8JOn4J9pauJaTosoqP9EVxVI
-6vISiKJPZ0YuOVFifMxpzONdOeMNT1mBpg9JcnckgoONg/GvafucDlsrJkRWtq72
-UI8i2P3VewciEOcF/pUJrX2VO2DPfUeiObyTFrIUWwDXsLk6MJmMsVZpmx5yCd4s
-JGcM9Fn+i538ldPji58l0tT82g/CG2t0hLB8bJw34zflRZY00wHyMkZL+5dNpR1E
-SB7D94PR5KpqXt2Cu+birTe3R4zC9MviWH7tnrfA260IATaUL0AFemKksFg2Z7Q4
-j0PhUAVTNyxV2ffDZv0vNs2W+PlYx/Nw12XLFFi1LyYFMgQ6+APmFI3A3RjAL97Y
-Nb6HCU1SXruKXaE6z2TCjtw/Q4VBCWhBYrFagcE6EQD2AHeBPha7IK8WNkCWCHWw
-zm2CtQakw89fbgMs6xcg
-=8ywV
+iQIcBAEBAgAGBQJQjFmyAAoJELSic+t+oim94hgP/12wuS8FzSNvNnC63Dptlbqz
+ZGlTpLud3rJzIgTb6jM3begqgZpVaXktC5Kw2up8cJo5KJIsRPAxPntFyugOWxBV
+SLb4YzJzjytYfIfpm5Uzg4U7yoFrKHuA7OhsV5KiDoWCVW4m0d6ORsJ54qFcWopo
+mA5ML2mGEa44aaAJaSx8S6z/r7QcfLtuxSl+sRBQRke/Zp/EDw2up3VFoZ8Rd5rN
+tmGmeptQ/NpHaABc2JN8NcwSLyANuPK+cNBInLkTGEGIvagsFlYMMPcCtW8Q+INv
+IfWLUWUwLlxkCrsRzBqVLov1MJAbXl7rk6tqt5mcgVuC4K1rHPxk4JcvLQC1qr6I
+AfJBiFlTKiErekqHKhdd6Xvx3V3erNu59+8IpnsTfevcF3SrhUWDB7DGxyNoCJTh
+gYvmaVMPbomeNxQyoORNCMvNqdU0TTjYSFMK+sDMpgX4UKmc6Qi1pLgkVSGsYWV3
+poHGUIjn60P4XRNOi0yglwOxr1Vp9VUD77Jan7mExT6V6dWuttOFk3lhFDb/+EKI
+MuyBDrXbBDUXh22CS0etc1we531ezgjwcxLfFubXPCjFwhLoZsYNzjDgsA3L18cC
+kKhajXROzDkCrZRuNdjHVqKtz4w2E8KBX30jU9SPZRLgHz37wylQwc6hi/gQL90I
+WP0YJZXhG88QlyqL1O1t
+=oogp
 -----END PGP SIGNATURE-----
 
---m972NQjnE83KvVa/--
+--cEobB2knsyc5ebfU--
 
---===============6910961444948293310==
+--===============7969848106697544208==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6910961444948293310==--
+--===============7969848106697544208==--
