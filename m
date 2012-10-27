@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: jz4740-codec: Add dB information
-Date: Sat, 27 Oct 2012 21:33:52 +0100
-Message-ID: <20121027203339.GA4564@opensource.wolfsonmicro.com>
-References: <1351350908-4262-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 3.7-rc1] omap zoom2.c: Fix compile error by
+ including correct header files
+Date: Sat, 27 Oct 2012 22:44:26 +0100
+Message-ID: <20121027214421.GG4564@opensource.wolfsonmicro.com>
+References: <1349274686-45668-1-git-send-email-tim.gardner@canonical.com>
+ <506C5124.3050200@ti.com> <20121003155900.GA4840@atomide.com>
+ <20121003163102.GB4840@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8905891404547967326=="
+Content-Type: multipart/mixed; boundary="===============6910961444948293310=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC12B26522A
- for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2012 22:34:06 +0200 (CEST)
-In-Reply-To: <1351350908-4262-1-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 389D726522A
+ for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2012 23:44:29 +0200 (CEST)
+In-Reply-To: <20121003163102.GB4840@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Tim Gardner <tim.gardner@canonical.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8905891404547967326==
+--===============6910961444948293310==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+	protocol="application/pgp-signature"; boundary="m972NQjnE83KvVa/"
 Content-Disposition: inline
 
 
---GvXjxJ+pjyke8COw
+--m972NQjnE83KvVa/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 27, 2012 at 05:15:06PM +0200, Lars-Peter Clausen wrote:
-> Add dB TLV ranges for the various volume controls.
+On Wed, Oct 03, 2012 at 09:31:02AM -0700, Tony Lindgren wrote:
 
-Applied all, thanks.
+> Actually we can also drop "#include <mach/hardware.h>" too,
+> it's now empty for mach-omap2. I've updated Tim's patch below
+> for you guys to queue via the ASoC fixes. It's against the
+> current linux next.
 
---GvXjxJ+pjyke8COw
+Applied.  Tim, you should send patches using subject lines appropriate
+for the subsystem you're submitting against *especially* if the patch is
+to be deferred for some future time as it makes it harder to search for
+the patch.  If your changelog looks different to the other changelogs
+for the thing you're patching that should be a warning.
+
+--m972NQjnE83KvVa/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQjETdAAoJELSic+t+oim9iVYP/11T06qGhlu3OIJpvcZahlwm
-UQnLGlvAra86mCtf0vaKqemuXSETKAFA3MM64kgh7hhN2GC1wueG06gHcYbQ6qF3
-EMXEhi7vD1t6l+YORwU+qCfb8T19Lvt+QYGbe4Dl6lKDZX/rGZjm0Rg4grWisLMt
-TIm30jCnykcER2gWMONPj4Wi7SWrx/GIJv04DH/AK1Dgy5F2tJ/tcaa+8MKlyZkH
-kAKXdC1ZenGe36Q3PWuoBjwf7cE29RT/JKvm6nRQIp6rJpXWhqh+oNd83UGI67yT
-Tx5AliKfWkKoe/dw5Viyy5igGG31olQyV9xE6LRt7cajOJO4HJPCrMlZHb1qQHx6
-55gY+1YDMX6hTO+vq7+1V0NQxt3PXalkdOtnlMM/ZcDTDBeQhxUwRVnupHc3QBex
-uF8HWIJwy69GHEyXOX/rPh1M42n0RQ7F9jn+x1LcjHmAdPzgcAbQJvs/h9Xtd46n
-v3llIBlERmpnGOfC2+vYaYykka9mszHYt0jHnVcDsWAUW8Y3rgyQJKyj0YHxKCql
-nQV8+Ss/lB79K/+EEVe6HZwEQLyB9aoIX7HLHA1ns9FyogThAJ9AVpe/2tlPnuwX
-/HREWnz9apyf/c9zFHYMivm+nMqxdhfb0Qu5kSF7lU2464mHNQBnVlNtFn37/+Qm
-tY/L3LX9QZzgHUed7R6u
-=B06z
+iQIcBAEBAgAGBQJQjFWVAAoJELSic+t+oim9ibcP/R2yTacJ476LTN4hyrf0jACS
+M+oPVa51w9Ijj3WdnyiwZNlRwLLiaiALgq+u2bu1s73AeFteLp4C8L2JTDfZqf6V
+ZGhsQfgEdsl4swrPUvf6sj86lfIu95NtMkpdB/yPch/K3StEPXxS93GY/IIN8OF0
+f5X1pucHw5WuN19bOE67cLbQzEFGZZwh9PAPnxJ+2iT/m6hZCvtj0sAedl1qgI75
+ulyu90y0jAtOhoOpjJbS2VVIIS7cSK9Z3sP2BsIX8JOn4J9pauJaTosoqP9EVxVI
+6vISiKJPZ0YuOVFifMxpzONdOeMNT1mBpg9JcnckgoONg/GvafucDlsrJkRWtq72
+UI8i2P3VewciEOcF/pUJrX2VO2DPfUeiObyTFrIUWwDXsLk6MJmMsVZpmx5yCd4s
+JGcM9Fn+i538ldPji58l0tT82g/CG2t0hLB8bJw34zflRZY00wHyMkZL+5dNpR1E
+SB7D94PR5KpqXt2Cu+birTe3R4zC9MviWH7tnrfA260IATaUL0AFemKksFg2Z7Q4
+j0PhUAVTNyxV2ffDZv0vNs2W+PlYx/Nw12XLFFi1LyYFMgQ6+APmFI3A3RjAL97Y
+Nb6HCU1SXruKXaE6z2TCjtw/Q4VBCWhBYrFagcE6EQD2AHeBPha7IK8WNkCWCHWw
+zm2CtQakw89fbgMs6xcg
+=8ywV
 -----END PGP SIGNATURE-----
 
---GvXjxJ+pjyke8COw--
+--m972NQjnE83KvVa/--
 
---===============8905891404547967326==
+--===============6910961444948293310==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8905891404547967326==--
+--===============6910961444948293310==--
