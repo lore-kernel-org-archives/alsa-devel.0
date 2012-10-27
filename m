@@ -1,79 +1,65 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-dmic: Correct functional clock
-	name
-Date: Sat, 27 Oct 2012 23:01:58 +0100
-Message-ID: <20121027220155.GJ4564@opensource.wolfsonmicro.com>
-References: <1351247588-30500-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/5] ASoC: sam9g20_wm8731: convert to device tree support
+Date: Sat, 27 Oct 2012 23:12:05 +0100
+Message-ID: <20121027221204.GL4564@opensource.wolfsonmicro.com>
+References: <1350901079-18307-1-git-send-email-voice.shen@atmel.com>
+ <1350901079-18307-4-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7969848106697544208=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 821C826522E
- for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2012 00:02:01 +0200 (CEST)
-In-Reply-To: <1351247588-30500-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4ybNbZnZ8tziJ7D6"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1350901079-18307-4-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7969848106697544208==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cEobB2knsyc5ebfU"
-Content-Disposition: inline
-
-
---cEobB2knsyc5ebfU
+--4ybNbZnZ8tziJ7D6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 26, 2012 at 12:33:08PM +0200, Peter Ujfalusi wrote:
+On Mon, Oct 22, 2012 at 06:17:58PM +0800, Bo Shen wrote:
+> Covert sam9g20 wm8731 to device tree support
+> And enable it through dts file
+>  =20
+>   Tested on sam9g20 EK board
 
-> Would it be possible to send this patch for 3.7 as a fix?
-> The DMIC driver works withoput this patch but we ask for the functional clock
-> using the wrong name.
+This needs to add binding documentation for the board.
 
-So, this has no practical effect but we should fix it for the next
-release...?   I've applied it as a fix but better motivation would help
-for things like this.
+> +	dai: dai {
+> +		compatible =3D "atmel,atmel-ssc-dai";
+> +		atmel,dai-master =3D <&ssc0>;
+> +	};
 
---cEobB2knsyc5ebfU
+This looks wrong - this is a Linux-specific virtual device sitting on
+top of the SSC which is the actual physical device.  The usual patterns
+would be something like have the machine driver register the DAI based
+on the SSC specified in the bindings (much like how you're handling the
+platform already).
+
+--4ybNbZnZ8tziJ7D6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQjFmyAAoJELSic+t+oim94hgP/12wuS8FzSNvNnC63Dptlbqz
-ZGlTpLud3rJzIgTb6jM3begqgZpVaXktC5Kw2up8cJo5KJIsRPAxPntFyugOWxBV
-SLb4YzJzjytYfIfpm5Uzg4U7yoFrKHuA7OhsV5KiDoWCVW4m0d6ORsJ54qFcWopo
-mA5ML2mGEa44aaAJaSx8S6z/r7QcfLtuxSl+sRBQRke/Zp/EDw2up3VFoZ8Rd5rN
-tmGmeptQ/NpHaABc2JN8NcwSLyANuPK+cNBInLkTGEGIvagsFlYMMPcCtW8Q+INv
-IfWLUWUwLlxkCrsRzBqVLov1MJAbXl7rk6tqt5mcgVuC4K1rHPxk4JcvLQC1qr6I
-AfJBiFlTKiErekqHKhdd6Xvx3V3erNu59+8IpnsTfevcF3SrhUWDB7DGxyNoCJTh
-gYvmaVMPbomeNxQyoORNCMvNqdU0TTjYSFMK+sDMpgX4UKmc6Qi1pLgkVSGsYWV3
-poHGUIjn60P4XRNOi0yglwOxr1Vp9VUD77Jan7mExT6V6dWuttOFk3lhFDb/+EKI
-MuyBDrXbBDUXh22CS0etc1we531ezgjwcxLfFubXPCjFwhLoZsYNzjDgsA3L18cC
-kKhajXROzDkCrZRuNdjHVqKtz4w2E8KBX30jU9SPZRLgHz37wylQwc6hi/gQL90I
-WP0YJZXhG88QlyqL1O1t
-=oogp
+iQIcBAEBAgAGBQJQjFwpAAoJELSic+t+oim9vRkQAJsIx+TBrM0+Of00c95zpjh/
+A5MLpFAKKZTzxJ2CqhGwi6o8rL21GoKPF2kyIivDC9UY6HnDL7ysSP8rytwaxveT
+rdqcg+2qr9fOJR+Pm1TiC56DmJdAqxBNe9+1h2wxwEGmBLaT8WCHFERyTTw6PmoS
+xX9vLnAZhcY6eTC2FQ1rFW/naR5iQ2QZbYAyir7bvsX4TbJe930eCg2OnVBAj3Ee
+aV6oofaIinxFd9wk/FJGRzJkruIU+o4ScQ0aa5/3wkFURhghXBx7Jvy8fp/fH2d9
+qkmSykJsY5TjhEB1iQnJtyFC0MX5dSUY8BWj5q4g1atzMFY4KALu3gZtwa+Ag/nO
+Y/42WxH78a2MyG2qZ0KcqABdKGovOdb5mY2f1mVQyRwJNjrpxtKbRdPZFyLPlyx2
+oZHrC0n9hGhpcc7W9KDeZWKLvUyQaNb6PGxDRA3kxPF9hjE1/3ODu5VePIqbwQec
+1vUAjMiycelOi+ngjA5YpGxFe5G3JV/e1h+fUo4o/vy5BvdTNGEebUwGWmqq+pgN
+3DZf98GRfMuY1YiMHSO0emCswofI2C9QaiI+vGQyRNEjWHUqHHyz1XeMgvcuM5/z
+5mJLq7J8IIc2nK+MhvnGkIx8EpqkqOCg+p0kPtu27TMKmEPJbWZnOfqbJ65XCFHT
+b/Go7YimgBHmEoSJKZQ4
+=FY/O
 -----END PGP SIGNATURE-----
 
---cEobB2knsyc5ebfU--
-
---===============7969848106697544208==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7969848106697544208==--
+--4ybNbZnZ8tziJ7D6--
