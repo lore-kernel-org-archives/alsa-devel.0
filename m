@@ -1,17 +1,18 @@
 From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Back-end state transition query
-Date: Sun, 28 Oct 2012 17:24:27 -0700
-Message-ID: <508DCCBB.4000109@codeaurora.org>
-References: <5088ECF2.8010007@codeaurora.org> <50897DF4.1020402@ti.com>
+Subject: Re: Store codec capabilites in alsa
+Date: Sun, 28 Oct 2012 18:13:08 -0700
+Message-ID: <508DD824.3040600@codeaurora.org>
+References: <000001cdb31e$9a76a530$cf63ef90$@codeaurora.org>
+ <508A69DB.7030009@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
  [199.106.114.254])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC882652D5
- for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2012 01:25:08 +0100 (CET)
-In-Reply-To: <50897DF4.1020402@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B1A52652A6
+ for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2012 02:13:11 +0100 (CET)
+In-Reply-To: <508A69DB.7030009@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2012 10:59 AM, Liam Girdwood wrote:
+On 10/26/2012 3:45 AM, Liam Girdwood wrote:
 Hi Liam,
 
-> It should be OK to allow the paused state in hw_free(), but I'm thinking we should probably see the trigger stop when we close the FE (although I'm not 100% certain atm of seeing the STOP as I've not traced this PAUSE -> CLOSE sequence).
-I am also surprised to see that trigger stop never comes. I can dig in
-more to figure out why.
+> The codec DAI driver does register some of it's capabilities with the core.
+The CODEC Bharath and I are working with has hardware providing 
+information back to CPU so post processing modules running on CPU can 
+fine tune things on the CODEC continuously.
 
-I assume you have a patch that allows this ?
+So, the information need to exposed to CPU is more than supported rates, 
+format, and channels but very CODEC specific.
 
-Yes, I will publish to alsa-devel
+I doubt that ASoC has mechanism for vendor's own CODEC driver to 
+advertise CODEC specific information. However, we would like to check 
+ahead of time before coming up with something on our own.
 
 Thanks
 Patrick
 
 >
-> Thanks
+>
+>>
+>> The BE CPU dai driver can then read the capabilities of the codec and talk
+>> to the DSP.
+>>
+>>
+>
+> You should be able to do this by looking at the RTD codec->driver pointer to get supported rates, formats and channels.
+>
+> Regards
 >
 > Liam
->
 >
 > _______________________________________________
 > Alsa-devel mailing list
