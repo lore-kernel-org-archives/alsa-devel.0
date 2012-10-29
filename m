@@ -1,17 +1,18 @@
-From: irfanks <irfan.shaikh@sasken.com>
-Subject: Re: snd_pcm_sw_params_set_start_threshold()
-	functionality
-Date: Mon, 29 Oct 2012 17:58:50 +0530
-Message-ID: <508E7682.5030109@sasken.com>
-References: <508E6666.5080402@sasken.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/4] ASoC: ak5702: add support for ak5702
+ -- 4ch ADC
+Date: Mon, 29 Oct 2012 13:41:44 +0100
+Message-ID: <508E7988.30409@metafoo.de>
+References: <CAFsPKCXpZ43SBXyPTJnXR9mUgXyLK0T=JBiQrkBWGzSJOuLptA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 56AC52652E4
- for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2012 13:28:53 +0100 (CET)
-In-Reply-To: <508E6666.5080402@sasken.com>
+Received: from smtp-out-165.synserver.de (smtp-out-165.synserver.de
+ [212.40.185.165])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBF452652E4
+ for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2012 13:41:46 +0100 (CET)
+In-Reply-To: <CAFsPKCXpZ43SBXyPTJnXR9mUgXyLK0T=JBiQrkBWGzSJOuLptA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +22,688 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Paolo Doz <paolo.doz@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Please let me know if my below understanding is correct :
+Hi,
+
+On 10/29/2012 09:43 AM, Paolo Doz wrote:
+> This codec driver adds support for Asahi Kasei AK5702.
+> 
+> Signed-off-by: Paolo Doz <paolo.doz@gmail.com>
+
+Your mail client seems to have messed up the patches. Tabs replaces with
+spaces, inserted a few extra newlines, etc.
+
+Also, there is not really a need to have this split out over 4 commits. In
+fact it makes things harder to review.
 
 
-snd_pcm_sw_params_set_start_threshold() explains :
-"PCM is automatically started when playback frames available to PCM are 
- >= threshold or when requested capture frames are >= threshold"
+> ---
+>  sound/soc/codecs/ak5702.c |  728
+> +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 728 insertions(+)
+>  create mode 100644 sound/soc/codecs/ak5702.c
+> 
+> diff --git a/sound/soc/codecs/ak5702.c b/sound/soc/codecs/ak5702.c
+> new file mode 100644
+> index 0000000..47c2e52
+> --- /dev/null
+> +++ b/sound/soc/codecs/ak5702.c
+> @@ -0,0 +1,728 @@
+> +/*
+> + * ak5702.c  --  AK5702 ALSA SoC driver
+> + *
+> + * Author:      Paolo Doz <paolo.doz@gmail.com>
+> + * Copyright:   (C) 2012 Soft In S.r.l.
+> + *                  2009 Freescale Semiconductor, Inc. All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + * This code comes from the original Freescale Ak5702 Audio driver
+> + */
+> +
+> +/* #define DEBUG 1 */
+> +
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/init.h>
+> +#include <linux/delay.h>
+> +#include <linux/pm.h>
+> +#include <linux/i2c.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <sound/soc-dapm.h>
+> +#include <sound/initval.h>
+> +#include <linux/slab.h>
+> +#include <linux/debugfs.h>
+> +
+> +#include <sound/ak5702.h>
+> +#include "ak5702.h"
+> +
+> +#define AK5702_VERSION "0.2"
+> +#define DRV_NAME "ak5702"
+> +
+> +/* codec private data */
+> +struct ak5702_priv {
+> +    enum snd_soc_control_type control_type;
+> +    void *control_data;
+> +    unsigned int sysclk;
+> +    enum ak5702_clock_mode clock_mode;
+> +    struct dentry *debugfs;
+> +};
+> +
+> +/*
+> + * ak5702 register cache
+> + */
+> +static u16 ak5702_reg[AK5702_CACHEREGNUM] = {
+> +    0x00, 0x24, 0x00, 0x01, 0x23, 0x1f,
+> +    0x00, 0x01, 0x91, 0x00, 0xe1, 0x00,
+> +    0xa0, 0x00, 0x00, 0x00, 0x01, 0x20,
+> +    0x00, 0x00, 0x01, 0x91, 0x00, 0xe1,
+> +    0x00,
+> +};
+> +
+> +/*
+> + * read ak5702 register cache
+> + */
+> +static inline unsigned int ak5702_read_reg_cache(struct snd_soc_codec
+> *codec,
+> +                unsigned int reg)
+> +{
+> +    u16 *cache = codec->reg_cache;
+> +
+> +    if (reg >= AK5702_CACHEREGNUM)
+> +        return -1;
+> +    return cache[reg];
+> +}
+> +
+> +/*
+> + * write ak5702 register cache
+> + */
+> +static inline void ak5702_write_reg_cache(struct snd_soc_codec *codec,
+> +                u16 reg, unsigned int value)
+> +{
+> +    u16 *cache = codec->reg_cache;
+> +
+> +    if (reg >= AK5702_CACHEREGNUM)
+> +        return;
+> +    cache[reg] = value;
+> +    ak5702_reg[reg] = value;
+> +}
+> +
+> +/*
+> + * write to the AK5702 register space
+> + */
+> +static int ak5702_write(struct snd_soc_codec *codec, unsigned int reg,
+> +                unsigned int value)
+> +{
+> +    u8 data[2];
+> +    data[0] = reg & 0xff;
+> +    data[1] = value & 0xff;
+> +
+> +    if (codec->hw_write(codec->control_data, data, 2) == 2) {
+> +        pr_debug("I2c write success @ reg = %x, val = %x\n",
+> +             data[0], data[1]);
+> +        ak5702_write_reg_cache(codec, reg, value);
+> +        return 0;
+> +    } else {
+> +        pr_debug("I2c write error reg = %x, val = %x\n",
+> +            data[0], data[1]);
+> +        return -EIO;
+> +    }
+> +}
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +static int ak5702_show(struct seq_file *s, void *unused)
+> +{
+> +#define REG(r) { r, #r }
+> +    static const struct {
+> +        int offset;
+> +        const char *name;
+> +    } regs[] = {
+> +        REG(AK5702_PM1),
+> +        REG(AK5702_PLL1),
+> +        REG(AK5702_SIG1),
+> +        REG(AK5702_MICG1),
+> +        REG(AK5702_FMT1),
+> +        REG(AK5702_FS1),
+> +        REG(AK5702_CLK1),
+> +        REG(AK5702_VOLCTRL1),
+> +        REG(AK5702_LVOL1),
+> +        REG(AK5702_RVOL1),
+> +        REG(AK5702_TIMER1),
+> +        REG(AK5702_ALC11),
+> +        REG(AK5702_ALC12),
+> +        REG(AK5702_MODE11),
+> +        REG(AK5702_MODE12),
+> +        REG(AK5702_MODE13),
+> +
+> +        REG(AK5702_PM2),
+> +        REG(AK5702_PLL2),
+> +        REG(AK5702_SIG2),
+> +        REG(AK5702_MICG2),
+> +        REG(AK5702_FMT2),
+> +        REG(AK5702_FS2),
+> +        REG(AK5702_CLK2),
+> +        REG(AK5702_VOLCTRL2),
+> +        REG(AK5702_LVOL2),
+> +        REG(AK5702_RVOL2),
+> +        REG(AK5702_TIMER2),
+> +        REG(AK5702_ALC21),
+> +        REG(AK5702_ALC22),
+> +        REG(AK5702_MODE21),
+> +        REG(AK5702_MODE22),
+> +    };
+> +#undef REG
+> +
+> +    int i;
+> +    for (i = 0; i < ARRAY_SIZE(ak5702_reg); i++) {
+> +        seq_printf(s, "%s = 0x%02x\n", regs[i].name,
+> +                        ak5702_reg[regs[i].offset]);
+> +    }
+> +
+> +    return 0;
+> +}
+> +
+> +static int ak5702_debug_open(struct inode *inode, struct file *file)
+> +{
+> +    return single_open(file, ak5702_show, inode->i_private);
+> +}
+> +
+> +static const struct file_operations ak5702_debug_fops = {
+> +    .open    = ak5702_debug_open,
+> +    .read    = seq_read,
+> +    .llseek  = seq_lseek,
+> +    .release = single_release,
+> +};
+> +
+> +static void ak5702_debug_add(struct ak5702_priv *ak5702)
+> +{
+> +    char name[] = DRV_NAME ".0";
+> +
+> +    snprintf(name, sizeof(name), DRV_NAME);
+> +    ak5702->debugfs = debugfs_create_file(name, S_IRUGO,
+> +            snd_soc_debugfs_root, ak5702, &ak5702_debug_fops);
+> +}
+> +
+> +static void ak5702_debug_remove(struct ak5702_priv *ak5702)
+> +{
+> +    if (ak5702->debugfs)
+> +        debugfs_remove(ak5702->debugfs);
+> +}
+> +#else
+> +static inline void ak5702_debug_add(struct ak5702_priv *ak5702)
+> +{
+> +}
+> +
+> +static inline void ak5702_debug_remove(struct ak5702_priv *ak5702)
+> +{
+> +}
+> +#endif
 
-PCM has below states :
 
-SND_PCM_STATE_OPEN                      Open
-SND_PCM_STATE_SETUP                     Setup installed
-SND_PCM_STATE_PREPARED              Ready to start
-SND_PCM_STATE_RUNNING                Running
-SND_PCM_STATE_XRUN                      Stopped: underrun (playback) or 
-overrun (capture) detected
-SND_PCM_STATE_DRAINING               Draining: running (playback) or 
-stopped (capture)
-SND_PCM_STATE_PAUSED                  Paused
-SND_PCM_STATE_SUSPENDED           Hardware is suspended
-SND_PCM_STATE_DISCONNECTED     Hardware is disconnected
+You should really use regmap for register IO and register debugfs.
 
-When ever underrun occurs, PCM device state goes to XRUN state.
-To bring back the PCM playback device to playback {Ready to start}, we 
-use snd_pcm_prepare().
+> +
+> +static const char *ak5702_mic_gain[] = { "0dB", "+15dB", "+30dB", "+
+36dB"
+> };
 
-*Thus snd_pcm_sw_params_set_start_threshold() should again 
-prebuffer(threshold) X periods of data {which we have set in software 
-params}, once again after the XRUN state is recovered.*
+Uhm... no. Use a proper volume control with a TLV, instead of enum.
+
+> +static const char *ak5702_adc_input_type[] = {
+> +    "Single-ended", "Full-differential" };
+
+Is this really something that should be runtime configurable. I'd image this
+to depend on the board setup, so it should go into platform data
+
+> +static const char *ak5702_adca_left_input[] = { "LIN1", "LIN2" };
+> +static const char *ak5702_adca_right_input[] = { "RIN1", "RIN2" };
+> +static const char *ak5702_adca_left5[] = { "LIN1-2", "LIN5" };
+> +static const char *ak5702_adca_right5[] = { "RIN1-2", "RIN5" };
+> +
+> +static const char *ak5702_adcb_left_input[] = { "LIN3", "LIN4" };
+> +static const char *ak5702_adcb_right_input[] = { "RIN3", "RIN4" };
+> +static const char *ak5702_adcb_left5[] = { "LIN3-4", "LIN5" };
+> +static const char *ak5702_adcb_right5[] = { "RIN3-4", "RIN5" };
+
+These all look as if they should be implemented as DAPM Muxes as they
+contain routing information.
+
+> +
+> +static const char *ak5702_input_vol_control[] = { "Independent",
+> "Dependent" };
+
+Not a 100% what this does, but should this really be runtime configurable?
+
+> +static const char *ak5702_mic_power[] = { "Off", "On" };
+
+Power management should be done by DAPM
+
+> +
+> +static const struct soc_enum ak5702_enum[] = {
+
+No array here please, just makes things pretty hard to follow and easily
+opens up a path for errors, when you access the array like ak5702_enum[x].
 
 
-Thanks and regards,
-Irfan
+> +    SOC_ENUM_SINGLE(AK5702_MICG1, 0, 4, ak5702_mic_gain),
+> +    SOC_ENUM_SINGLE(AK5702_MICG2, 0, 4, ak5702_mic_gain),
+> +
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 0, 2, ak5702_adca_left_input),
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 1, 2, ak5702_adca_right_input),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 0, 2, ak5702_adcb_left_input),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 1, 2, ak5702_adcb_right_input),
+> +
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 2, 2, ak5702_adc_input_type),
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 3, 2, ak5702_adc_input_type),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 2, 2, ak5702_adc_input_type),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 3, 2, ak5702_adc_input_type),
+> +
+> +    SOC_ENUM_SINGLE(AK5702_VOLCTRL1, 0, 2, ak5702_input_vol_control),
+> +    SOC_ENUM_SINGLE(AK5702_VOLCTRL2, 0, 2, ak5702_input_vol_control),
+> +
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 5, 2, ak5702_adca_left5),
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 6, 2, ak5702_adca_right5),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 5, 2, ak5702_adcb_left5),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 6, 2, ak5702_adcb_right5),
+> +
+> +    SOC_ENUM_SINGLE(AK5702_SIG1, 4, 2, ak5702_mic_power),
+> +    SOC_ENUM_SINGLE(AK5702_SIG2, 4, 2, ak5702_mic_power),
+> +};
+> +
+> +static const struct snd_kcontrol_new ak5702_snd_controls[] = {
+> +    SOC_SINGLE("ADCA Left Vol", AK5702_LVOL1, 0, 242, 0),
+> +    SOC_SINGLE("ADCA Right Vol", AK5702_RVOL1, 0, 242, 0),
+> +    SOC_SINGLE("ADCB Left Vol", AK5702_LVOL2, 0, 242, 0),
+> +    SOC_SINGLE("ADCB Right Vol", AK5702_RVOL2, 0, 242, 0),
 
+If this is known please provide TLV dB informations for the controls.
+Also please stick so standard ALSA control namings. Volume controls should
+end with "Volume".
 
+> +
+> +    SOC_ENUM("MIC-AmpA Gain", ak5702_enum[0]),
+> +    SOC_ENUM("MIC-AmpB Gain", ak5702_enum[1]),
+> +
+> +    SOC_ENUM("ADCA Left Source", ak5702_enum[2]),
+> +    SOC_ENUM("ADCA Right Source", ak5702_enum[3]),
+> +    SOC_ENUM("ADCB Left Source", ak5702_enum[4]),
+> +    SOC_ENUM("ADCB Right Source", ak5702_enum[5]),
+> +
+> +    SOC_ENUM("ADCA Left Type", ak5702_enum[6]),
+> +    SOC_ENUM("ADCA Right Type", ak5702_enum[7]),
+> +    SOC_ENUM("ADCB Left Type", ak5702_enum[8]),
+> +    SOC_ENUM("ADCB Right Type", ak5702_enum[9]),
+> +
+> +    SOC_ENUM("ADCA Input Vol mode", ak5702_enum[10]),
+> +    SOC_ENUM("ADCB Input Vol mode", ak5702_enum[11]),
+> +
+> +    SOC_ENUM("ADCA LIN5 Source", ak5702_enum[12]),
+> +    SOC_ENUM("ADCA RIN5 Source", ak5702_enum[13]),
+> +    SOC_ENUM("ADCB LIN5 Source", ak5702_enum[14]),
+> +    SOC_ENUM("ADCB RIN5 Source", ak5702_enum[15]),
+> +
+> +    SOC_ENUM("MIC-A Power", ak5702_enum[16]),
+> +    SOC_ENUM("MIC-B Power", ak5702_enum[17]),
+> +};
+> +
+> +/* ak5702 dapm widgets */
+> +static const struct snd_soc_dapm_widget ak5702_dapm_widgets[] = {
+> +    SND_SOC_DAPM_ADC("ADCA Left", "Capture", AK5702_PM1, 0, 0),
+> +    SND_SOC_DAPM_ADC("ADCA Right", "Capture", AK5702_PM1, 1, 0),
+> +    SND_SOC_DAPM_ADC("ADCB Left", "Capture", AK5702_PM2, 0, 0),
+> +    SND_SOC_DAPM_ADC("ADCB Right", "Capture", AK5702_PM2, 1, 0),
+> +
+> +    SND_SOC_DAPM_INPUT("ADCA Left Input"),
+> +    SND_SOC_DAPM_INPUT("ADCA Right Input"),
+> +    SND_SOC_DAPM_INPUT("ADCB Left Input"),
+> +    SND_SOC_DAPM_INPUT("ADCB Right Input"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route audio_map[] = {
 
-On 10/29/2012 04:50 PM, irfanks wrote:
-> Hello,
->
->             snd_pcm_sw_params_set_start_threshold() API description 
-> explains, "PCM is automatically started when playback frames available 
-> to PCM are >= threshold"
->
->              I want to know,  whether above pre-buffering(threshold) 
-> mechanism is only during the start of playback ?
-> OR
->             Also if my playback device goes to XRUN state, Again next 
-> time when i prepare my playback device using snd_pcm_prepare(). Again 
-> the prebuffering (threshold) will occur since i have set 
-> snd_pcm_sw_params_set_start_threshold() to N periods in software params.
->
->
-> Best Regards,
-> Thanks in advance,
-> Irfan...
+I'd call this ak5702_dapm_routes
+
+> +    {"ADCA Left", NULL, "ADCA Left Input"},
+> +    {"ADCA Right", NULL, "ADCA Right Input"},
+> +    {"ADCB Left", NULL, "ADCB Left Input"},
+> +    {"ADCB Right", NULL, "ADCB Right Input"},
+> +};
+> +
+> +static int ak5702_dai_startup(struct snd_pcm_substream *substream,
+> +                struct snd_soc_dai *dai)
+> +{
+> +    pr_debug("Entered %s\n", __func__);
+> +    return 0;
+> +}
+> +
+> +static void ak5702_dai_shutdown(struct snd_pcm_substream *substream,
+> +                struct snd_soc_dai *dai)
+> +{
+> +    pr_debug("Entered %s\n", __func__);
+> +}
+
+No need to implement these, if they do nothing.
+
+[...]
+> +static int ak5702_dai_hw_free(struct snd_pcm_substream *substream,
+> +                struct snd_soc_dai *dai)
+> +{
+> +    struct snd_soc_codec *codec = dai->codec;
+> +    int value;
+> +
+> +    pr_debug("Entered %s\n", __func__);
+> +    /* power down ADCA */
+> +    value = AK5702_POWERDOWN | AK5702_PM1_PMVCM;
+> +    ak5702_write(codec, AK5702_PM1, value);
+> +
+> +    /* power down ADCB */
+> +    value = AK5702_POWERDOWN;
+> +    ak5702_write(codec, AK5702_PM2, value);
+
+This looks all like power management, this should either be handeld by DAPM
+controls directly or via the set_bias_level callback
+
+> +    return 0;
+> +}
+> +
+> +static int ak5702_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> +                int clk_id, unsigned int freq, int dir)
+> +{
+> +    struct snd_soc_codec *codec = codec_dai->codec;
+> +    struct ak5702_priv *ak5702 = snd_soc_codec_get_drvdata(codec);
+> +    int value = 0;
+> +    switch (clk_id) {
+> +    case PLL_master_mode:
+> +    case EXT_master_mode:
+
+please all upper case for the defines. Also they need a driver specific
+prefix. Also slave and master mode should be selected via the set_dai_fmt
+callback.
+
+> +        if (dir != SND_SOC_CLOCK_OUT)
+> +            return -EINVAL;
+> +        break;
+> +    case PLL_slave_mode:
+> +    case PLL_slave_mode2:
+> +        if (dir != SND_SOC_CLOCK_IN)
+> +            return -EINVAL;
+> +        value = AK5702_PLL1_POWERUP |
+> +            AK5702_PLL1_SLAVE |
+> +            AK5702_PLL1_MODE2;
+> +        break;
+> +    case EXT_slave_mode:
+> +        if (dir != SND_SOC_CLOCK_IN)
+> +            return -EINVAL;
+> +        value = AK5702_PLL1_POWERDOWN | AK5702_PLL1_SLAVE;
+> +        break;
+> +    default:
+> +        return -EINVAL;
+> +    }
+> +    ak5702_write(codec, AK5702_PLL1, value);
+> +    ak5702->clock_mode = clk_id;
+> +
+> +    return 0;
+> +}
+> +
+[...]
+> +}
+> +
+> +#ifdef CONFIG_PM
+> +static int ak5702_sync(struct snd_soc_codec *codec)
+> +{
+> +    u16 *cache = codec->reg_cache;
+> +    int i, r = 0;
+> +
+> +    for (i = 0; i < AK5702_CACHEREGNUM; i++)
+> +        r |= ak5702_write(codec, i, cache[i]);
+> +
+> +    return r;
+> +}
+> +
+> +static int ak5702_suspend(struct snd_soc_codec *codec)
+> +{
+> +    return 0;
+> +}
+> +
+> +static int ak5702_resume(struct snd_soc_codec *codec)
+> +{
+> +    /* restore register status*/
+> +    return ak5702_sync(codec);
+> +}
+> +#endif
+> +
+> +/* define operations */
+> +struct snd_soc_dai_ops ak5702_ops = {
+
+static const
+
+> +    .set_sysclk    = ak5702_set_dai_sysclk,
+> +    .set_pll    = ak5702_set_dai_pll,
+> +    .set_clkdiv    = ak5702_set_dai_clkdiv,
+> +    .set_fmt    = ak5702_set_dai_fmt,
+> +    .startup    = ak5702_dai_startup,
+> +    .shutdown    = ak5702_dai_shutdown,
+> +    .hw_params    = ak5702_dai_hw_params,
+> +    .hw_free    = ak5702_dai_hw_free,
+> +};
+> +
+> +/* define name and capabilities */
+> +struct snd_soc_dai_driver ak5702_dai = {
+
+static
+
+> +    .name = "ak5702-hifi",
+> +    .capture = {
+> +        .stream_name = "Capture",
+> +        .channels_min = 1,
+> +        .channels_max = 8,
+> +        .rates = SNDRV_PCM_RATE_8000_48000,
+> +        .formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+> +    },
+> +    .ops = &ak5702_ops,
+> +};
+> +
+> +static struct snd_soc_codec *ak5702_codec;
+
+Just move the definition of ak5702_codec here.
+
+> +
+> +static int ak5702_probe(struct snd_soc_codec *codec)
+> +{
+> +    struct ak5702_priv *ak5702 = snd_soc_codec_get_drvdata(codec);
+> +    int ret = 0;
+> +    u8 reg = 0;
+> +    dev_info(codec->dev, "AK5702 Audio Codec %s", AK5702_VERSION);
+> +
+> +    codec->hw_write    = (hw_write_t)i2c_master_send;
+> +    codec->control_data = ak5702->control_data;
+> +
+> +    /* set the clock type */
+> +    ak5702->clock_mode = EXT_slave_mode;
+> +
+> +    /* power off the device */
+> +    reg = AK5702_POWERDOWN;
+> +    ak5702_write(codec, AK5702_PM1, reg);
+> +
+> +    /* set default ADCA input LIN5-RIN5, power down ADCA mic power*/
+> +    reg = AK5702_SIG1_L_LIN5 | AK5702_SIG1_R_RIN5;
+> +    ak5702_write(codec, AK5702_SIG1, reg);
+> +
+> +    /* mic gain +0dB */
+> +    reg = AK5702_MICGAIN_0DB;
+> +    ak5702_write(codec, AK5702_MICG1, reg);
+> +
+> +    /* volume control dependent for ADCA */
+> +    reg = AK5702_VOLCTRL_DEP;
+> +    ak5702_write(codec, AK5702_VOLCTRL1, reg);
+> +
+> +    /* set default volume for ADCA */
+> +    reg = AK5702_VOL_INIT;
+> +    ak5702_write(codec, AK5702_LVOL1, reg);
+> +
+> +    /* power down ADCB */
+> +    reg = AK5702_POWERDOWN;
+> +    ak5702_write(codec, AK5702_PM2, reg);
+> +
+> +    /* set default ADCB input LIN3-RIN3, power off ADCB mic power*/
+> +    reg = AK5702_SIG2_L_LIN3 | AK5702_SIG2_R_RIN3;
+> +    ak5702_write(codec, AK5702_SIG2, reg);
+> +
+> +    /* mic gain +0dB */
+> +    reg = AK5702_MICGAIN_0DB;
+> +    ak5702_write(codec, AK5702_MICG2, reg);
+> +
+> +    /* volume control independent for ADCB */
+> +    reg = AK5702_VOLCTRL_INDEP;
+> +    ak5702_write(codec, AK5702_VOLCTRL2, reg);
+> +
+> +    /* set default volume for ADCB */
+> +    reg = AK5702_VOL_INIT;
+> +    ak5702_write(codec, AK5702_LVOL2, reg);
+> +    ak5702_write(codec, AK5702_RVOL2, reg);
+
+There should be no need initialize all these registers, just leave them at
+their reset default value and let userspace select whatever they need for
+their mode of operation.
+
+> +
+> +    snd_soc_add_codec_controls(codec, ak5702_snd_controls,
+> +               ARRAY_SIZE(ak5702_snd_controls));
+
+Use the .controls/.num_controls field of the snd_soc_codec_driver struct to
+get them registered instead of doing this here manually. Same goes for your
+DAPM widgets and routes, which you don't seem to register at all at the moment.
+
+> +
+> +    /* add debugfs entry */
+> +    ak5702_debug_add(ak5702);
+> +
+> +    return ret;
+> +}
+> +
+> +static int ak5702_remove(struct snd_soc_codec *codec)
+> +{
+> +    struct ak5702_priv *ak5702 = snd_soc_codec_get_drvdata(codec);
+> +    u8 reg = 0;
+> +
+> +    /* power off the device */
+> +    reg = AK5702_POWERDOWN;
+> +    ak5702_write(codec, AK5702_PM1, reg);
+> +    ak5702_debug_remove(ak5702);
+> +
+> +    return 0;
+> +}
+> +
+> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+> +static __devinit int ak5702_i2c_probe(struct i2c_client *i2c,
+> +                const struct i2c_device_id *id)
+> +{
+> +    struct ak5702_priv *ak5702;
+> +    int ret;
+> +    pr_debug("Entered %s", __func__);
+> +    if (ak5702_codec) { /*maybe useless*/
+> +        dev_err(&i2c->dev,
+> +          "Multiple AK5702 devices not supported\n");
+> +        return -ENOMEM;
+> +    }
+> +
+> +    ak5702 = kzalloc(sizeof(struct ak5702_priv), GFP_KERNEL);
+
+devm_kzalloc. Using devm_kzalloc means the memory will automatically be
+freed when the device is removed, so you don't have to do this by hand.
+
+> +    if (!ak5702)
+> +        return -ENOMEM;
+> +
+> +    i2c_set_clientdata(i2c, ak5702);
+> +    ak5702->control_data = i2c;
+> +    ak5702->control_type = SND_SOC_I2C;
+> +
+> +    ret = snd_soc_register_codec(&i2c->dev,
+> +                &soc_codec_dev_ak5702, &ak5702_dai, 1);
+> +    if (ret < 0) {
+> +        kfree(ak5702);
+> +        return ret;
+> +    }
+> +    return ret;
+> +}
+> +
+> +static __devexit int ak5702_i2c_remove(struct i2c_client *client)
+> +{
+> +    snd_soc_unregister_codec(&client->dev);
+> +    kfree(i2c_get_clientdata(client));
+> +    return 0;
+> +}
+> +
+> +static const struct i2c_device_id ak5702_i2c_id[] = {
+> +    {"ak5702-codec", 0},
+> +    {}
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, ak5702_i2c_id);
+> +
+> +static struct i2c_driver ak5702_i2c_driver = {
+> +    .driver = {
+> +        .name = "ak5702-codec",
+> +        .owner = THIS_MODULE,
+> +    },
+> +    .probe = ak5702_i2c_probe,
+> +    .remove = __devexit_p(ak5702_i2c_remove),
+> +    .id_table = ak5702_i2c_id,
+> +};
+> +#endif
+> +
+> +struct snd_soc_codec_driver soc_codec_dev_ak5702 = {
+
+static
+
+> +    .probe            = ak5702_probe,
+> +    .remove            = ak5702_remove,
+> +#ifdef CONFIG_PM
+> +    .suspend        = ak5702_suspend,
+> +    .resume            = ak5702_resume,
+> +#endif
+> +    .read            = ak5702_read_reg_cache,
+> +    .write            = ak5702_write,
+> +    .reg_cache_size        = ARRAY_SIZE(ak5702_reg) ,
+> +    .reg_word_size        = sizeof(u16),
+> +    .reg_cache_default    = ak5702_reg,
+> +};
+> +
+> +static int __init ak5702_modinit(void)
+> +{
+> +    int ret = 0;
+> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+
+So if CONFIG_I2C is not selected the module does nothing?
+
+> +    ret = i2c_add_driver(&ak5702_i2c_driver);
+> +#endif
+> +    return ret;
+> +}
+> +module_init(ak5702_modinit);
+> +
+> +static void __exit ak5702_exit(void)
+> +{
+> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+> +    i2c_del_driver(&ak5702_i2c_driver);
+> +#endif
+> +}
+> +module_exit(ak5702_exit);
+
+The hole module init/exit functions can just be replaced with
+module_i2c_driver(ak5702_i2c_driver);
+
+> +
+> +MODULE_DESCRIPTION("Asahi Kasei AK5702 ALSA SoC driver");
+> +MODULE_AUTHOR("Paolo Doz <paolo.doz@gmail.com");
+> +MODULE_LICENSE("GPL");
