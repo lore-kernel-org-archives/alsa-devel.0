@@ -1,17 +1,20 @@
 From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH 1/2] sound: soc: tlv320aic32x4: Fix problem
-	with first capture.
-Date: Tue, 30 Oct 2012 16:29:33 +0100
-Message-ID: <1351610974-18395-1-git-send-email-javier.martin@vista-silicon.com>
+Subject: [PATCH 2/2] sound: soc: tlv320aic32x4: Add rstn gpio
+	to platform data.
+Date: Tue, 30 Oct 2012 16:29:34 +0100
+Message-ID: <1351610974-18395-2-git-send-email-javier.martin@vista-silicon.com>
+References: <1351610974-18395-1-git-send-email-javier.martin@vista-silicon.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 657DF260202
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 16:29:44 +0100 (CET)
-Received: by mail-ee0-f51.google.com with SMTP id d49so222944eek.38
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 08:29:44 -0700 (PDT)
+Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 465B02602F7
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 16:29:46 +0100 (CET)
+Received: by mail-ea0-f179.google.com with SMTP id f14so163743eaa.38
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 08:29:45 -0700 (PDT)
+In-Reply-To: <1351610974-18395-1-git-send-email-javier.martin@vista-silicon.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,57 +28,92 @@ To: alsa-devel@alsa-project.org
 Cc: lrg@ti.com, lars@metafoo.de, w.sang@pengutronix.de, Javier Martin <javier.martin@vista-silicon.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-In its previous status, the first capture didn't work properly;
-nothing was actually recorded from the microphone. This
-behaviour was observed using a Visstrim M10 board.
-
-In order to solve this BUG a workaround has been added that,
-during the initialization process of the codec, powers on and
-off the ADC.
-
-The issue seems related to a HW BUG or some behavior that
-is not documented in the datasheet.
+Add the possibility to specify a gpio through platform data
+so that a HW reset can be issued to the codec.
 
 Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c |   10 ++++++++++
- sound/soc/codecs/tlv320aic32x4.h |    3 +++
- 2 files changed, 13 insertions(+)
+ include/sound/tlv320aic32x4.h    |    1 +
+ sound/soc/codecs/tlv320aic32x4.c |   19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
+diff --git a/include/sound/tlv320aic32x4.h b/include/sound/tlv320aic32x4.h
+index c009f70..24e5d99 100644
+--- a/include/sound/tlv320aic32x4.h
++++ b/include/sound/tlv320aic32x4.h
+@@ -26,6 +26,7 @@ struct aic32x4_pdata {
+ 	u32 power_cfg;
+ 	u32 micpga_routing;
+ 	bool swapdacs;
++	int rstn_gpio;
+ };
+ 
+ #endif
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index b0a73d3..aad92f9 100644
+index aad92f9..be04cd4 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -675,6 +675,16 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
- 			     ARRAY_SIZE(aic32x4_snd_controls));
- 	aic32x4_add_widgets(codec);
+@@ -28,6 +28,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
++#include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+@@ -65,6 +66,7 @@ struct aic32x4_priv {
+ 	u32 power_cfg;
+ 	u32 micpga_routing;
+ 	bool swapdacs;
++	int rstn_gpio;
+ };
  
-+	/*
-+	 * Workaround: for an unknown reason, the ADC needs to be powered up
-+	 * and down for the first capture to work properly. It seems related to
-+	 * a HW BUG or some kind of behavior not documented in the datasheet.
-+	 */
-+	tmp_reg = snd_soc_read(codec, AIC32X4_ADCSETUP);
-+	snd_soc_write(codec, AIC32X4_ADCSETUP, tmp_reg |
-+				AIC32X4_LADC_EN | AIC32X4_RADC_EN);
-+	snd_soc_write(codec, AIC32X4_ADCSETUP, tmp_reg);
+ /* 0dB min, 1dB steps */
+@@ -627,10 +629,21 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+ {
+ 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
+ 	u32 tmp_reg;
++	int ret;
+ 
+ 	codec->hw_write = (hw_write_t) i2c_master_send;
+ 	codec->control_data = aic32x4->control_data;
+ 
++	if (aic32x4->rstn_gpio >= 0) {
++		ret = gpio_request(aic32x4->rstn_gpio, "tlv320aic32x4 rstn");
++		if (ret != 0)
++			return ret;
++		gpio_direction_output(aic32x4->rstn_gpio, 1);
++		gpio_set_value(aic32x4->rstn_gpio, 0);
++		ndelay(10);
++		gpio_set_value(aic32x4->rstn_gpio, 1);
++	}
 +
+ 	snd_soc_write(codec, AIC32X4_RESET, 0x01);
+ 
+ 	/* Power platform configuration */
+@@ -690,6 +703,10 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+ 
+ static int aic32x4_remove(struct snd_soc_codec *codec)
+ {
++	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
++
++	if (aic32x4->rstn_gpio != -1)
++		gpio_free(aic32x4->rstn_gpio);
+ 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_OFF);
  	return 0;
  }
+@@ -723,10 +740,12 @@ static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
+ 		aic32x4->power_cfg = pdata->power_cfg;
+ 		aic32x4->swapdacs = pdata->swapdacs;
+ 		aic32x4->micpga_routing = pdata->micpga_routing;
++		aic32x4->rstn_gpio = pdata->rstn_gpio;
+ 	} else {
+ 		aic32x4->power_cfg = 0;
+ 		aic32x4->swapdacs = false;
+ 		aic32x4->micpga_routing = 0;
++		aic32x4->rstn_gpio = -1;
+ 	}
  
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index aae2b24..3577422 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -94,6 +94,9 @@
- #define AIC32X4_WORD_LEN_24BITS		0x02
- #define AIC32X4_WORD_LEN_32BITS		0x03
- 
-+#define AIC32X4_LADC_EN			(1 << 7)
-+#define AIC32X4_RADC_EN			(1 << 6)
-+
- #define AIC32X4_I2S_MODE		0x00
- #define AIC32X4_DSP_MODE		0x01
- #define AIC32X4_RIGHT_JUSTIFIED_MODE	0x02
+ 	ret = snd_soc_register_codec(&i2c->dev,
 -- 
 1.7.9.5
