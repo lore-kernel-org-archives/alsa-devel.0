@@ -1,65 +1,51 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: [alsa-devel] [PATCH 5/5] snd-ice1712: Fix resume on ice1724
-Date: Tue, 30 Oct 2012 20:34:00 +0100
-Message-ID: <201210302034.00890.linux@rainbow-software.org>
+From: Ivan Sorokin <vanyacpp@gmail.com>
+Subject: Re: possibly memory leak in alsa-lib
+Date: Wed, 31 Oct 2012 01:36:09 +0400
+Message-ID: <50904849.5030101@gmail.com>
+References: <508EFF67.6020901@gmail.com>
+ <20121030114835.5cb85160@t510.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 085A42608E7
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 22:35:51 +0100 (CET)
+Received: by mail-la0-f51.google.com with SMTP id m15so518690lah.38
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 14:35:51 -0700 (PDT)
+In-Reply-To: <20121030114835.5cb85160@t510.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 17 October 2012 08:57:39 Takashi Iwai wrote:
-> At Sun, 14 Oct 2012 21:09:23 +0200,
+On 30.10.2012 14:48, Jaroslav Kysela wrote:
+> On Tue, 30 Oct 2012 02:12:55 +0400
+> Ivan Sorokin <vanyacpp@gmail.com> wrote:
 >
-> Ondrej Zary wrote:
-> > set_pro_rate() is called from hw_params() but not from prepare(),
-> > breaking running PCM on suspend/resume. Call it from prepare() if PCM was
-> > suspended to fix the problem.
-> >
-> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+>> The following program shows a few leaks in valgrind (ubuntu 12.04,
+>> alsa-lib 1.0.25, eglibc 2.15):
+>>
+>> I'm not sure, but probably some leaks are caused by glibc.
 >
-> This should be fixed in the resume callback.  Could you check the
-> patch below instead?
+> Most of them are glibc leaks, but I found a little issue in alsa-lib,
+> too. This commit should fix it:
+>
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=edcd677bf2065c560ef578940bab8f0aacddf0e6
 
-I've now verified that this patch fixes a real problem. When "multi track rate 
-locking" is disabled and some sound is played at non-default (non-48kHz) 
-frequency during suspend, the frequency is wrong (48kHz) after resume. This 
-patch fixes that.
+Thank you very much. I looked into those leaks in glibc and they 
+appeared to be fixed (at least some of them):
 
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-> index 161c8f6..5cc3fa5 100644
-> --- a/sound/pci/ice1712/ice1724.c
-> +++ b/sound/pci/ice1712/ice1724.c
-> @@ -2867,7 +2867,12 @@ static int snd_vt1724_resume(struct device *dev)
->  		ice->set_spdif_clock(ice, 0);
->  	} else {
->  		/* internal on-card clock */
-> -		snd_vt1724_set_pro_rate(ice, ice->pro_rate_default, 1);
-> +		int rate;
-> +		if (ice->cur_rate)
-> +			rate = ice->cur_rate;
-> +		else
-> +			rate = ice->pro_rate_default;
-> +		snd_vt1724_set_pro_rate(ice, rate, 1);
->  	}
->
->  	update_spdif_bits(ice, ice->pm_saved_spdif_ctrl);
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+http://sourceware.org/git/?p=glibc.git;a=commitdiff;h=d44638b0a7fc1f01c3b2153cfa1bbb849f01f217;hp=da0331a873dbb62462c151c3d824da2f6fe2e770
 
-
--- 
-Ondrej Zary
+Sadly this fix is in 2.16 and ubuntu 12.04 is shipped with glibc 2.15. 
+When I get next version of glibc, I will check my program again.
