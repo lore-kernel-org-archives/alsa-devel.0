@@ -1,48 +1,70 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 1/5] ARM: at91: atmel-ssc: add platform device id table
-Date: Tue, 30 Oct 2012 18:14:41 +0100
-Message-ID: <50900B01.3000402@atmel.com>
-References: <1350901079-18307-1-git-send-email-voice.shen@atmel.com> <20121030160722.GW4511@opensource.wolfsonmicro.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Store codec capabilites in alsa
+Date: Tue, 30 Oct 2012 11:18:57 -0700
+Message-ID: <50901A11.80503@codeaurora.org>
+References: <000001cdb31e$9a76a530$cf63ef90$@codeaurora.org>
+ <508A69DB.7030009@ti.com> <508DD824.3040600@codeaurora.org>
+ <20121029170732.GF4511@opensource.wolfsonmicro.com>
+ <508F4830.4010600@codeaurora.org>
+ <20121030151303.GS4511@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20121030160722.GW4511@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+ [199.106.114.254])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23DDB260317
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2012 19:19:30 +0100 (CET)
+In-Reply-To: <20121030151303.GS4511@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On 10/30/2012 8:13 AM, Mark Brown wrote:
+> On Mon, Oct 29, 2012 at 08:23:28PM -0700, Patrick Lai wrote:
+>> On 10/29/2012 10:07 AM, Mark Brown wrote:
+>
+>>> Unless you tell us something about what's being advertised it's very
+>>> hard to comment;
+>
+>> CODEC has filters for noise cancellation purpose. CPU will need to
+>> know given CODEC has noise cancellation support. Also, CPU needs to
+>> know the CODEC registers to program the filters and which digital
+>> audio interface would have noise reference.
+>
+> Why is this all not just normal configuration done from the application
+> layer?  Especially the noise reference configuration just looks like
+> totally normal routing configuration.
+>
+Agree that for noise reference can be done through normal routing
+configuration. However, CPU driver does not normally manage CODEC
+register. In my case, CPU algorithm module needs to know what CODEC
+registers to program in order to update the filters.
+So far, ASoC model has partitioned roles of CPU and CODEC to be managed
+by CPU driver and CODEC driver. Both drivers talk on common interface
+to allow easy swap out of CPU hardware or CODEC hardware. In our case,
+the requirement described so far requires tight coupling of CPU and
+CODEC. We are looking to maintain clean partition while meeting the
+requirement through ASoc framework.
 
-On 10/30/2012 05:07 PM, Mark Brown :
-> On Mon, Oct 22, 2012 at 06:17:55PM +0800, Bo Shen wrote:
->> Using platform device id to check whether the Atmel SOC support
->> dma for data transfer
->> 
->> If match "at91rm9200_ssc" which does not support DMA transfer If
->> match "at91sam9g45_ssc" which support DMA transfer
-> 
-> Any comments on this from that Atmel folks?  If I don't see
-> something I'll probably just apply.
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-Indeed, comment sent.
 
-Thanks for the "heads-up" Mark.
-
-Best regards,
-- -- 
-Nicolas Ferre
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
-
-iQEcBAEBAgAGBQJQkAr2AAoJEAf03oE53VmQviMIAJrjBBi3ePMgP+jwRQuKw54A
-bZOHRmaqpGPh6cLAvXeUEkv2VflLcoYxIKiV1PZsNYctUHz/rrYX4y5bMwkJqJb1
-jWR1LDibKWny74pXiilrf4pgtabqhIQN8v64DjIg4vF8I6pzBBtlA3sBBQtRlJzB
-yQulBHP63vNDHlZm+AayeuWkF16Gh+FfDtYSNDy8w8lNjJLwQo2mNvI6WurSTI85
-mqidOzW5k0wrYo/6012vAzIV3BC+1Ck0A2gXhkS8yhuThS1xT+u4c3iTAMJE2FzZ
-PM4+JLf0o5fgtOkj0UzFuVea6BxNQ/qjwyV6y+cJ/QBS7DY7N9rmD+vrr8dpgMs=
-=wvcs
------END PGP SIGNATURE-----
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
