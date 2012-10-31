@@ -1,19 +1,17 @@
-From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio to
-	platform data.
-Date: Wed, 31 Oct 2012 11:53:34 +0100
-Message-ID: <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
-References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2 1/2] ASoC: mxs-saif: Remove platform data
+Date: Wed, 31 Oct 2012 09:15:17 -0200
+Message-ID: <1351682117-10316-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 36DD1261621
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 11:53:47 +0100 (CET)
-Received: by mail-wg0-f51.google.com with SMTP id ed3so648312wgb.20
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 03:53:44 -0700 (PDT)
-In-Reply-To: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
+Received: from mail-yh0-f51.google.com (mail-yh0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE148261613
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 12:15:31 +0100 (CET)
+Received: by mail-yh0-f51.google.com with SMTP id n12so225658yhn.38
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 04:15:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,89 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: lrg@ti.com, lars@metafoo.de, broonie@opensource.wolfsonmicro.com, javier.martin@vista-silicon.com, w.sang@pengutronix.de
+To: broonie@opensource.wolfsonmicro.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the possibility to specify a gpio through platform data
-so that a HW reset can be issued to the codec.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+All MXS users have been converted to device tree and the board files have been
+removed.
+
+No need to keep platform data in the driver.
+  
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 Changes since v1:
- - Use a subject line according to the ASoC subsystem.
- - Use 'devm_gpio_request_one()'
- - Provide correct default value to the GPIO.
----
- include/sound/tlv320aic32x4.h    |    1 +
- sound/soc/codecs/tlv320aic32x4.c |   14 ++++++++++++++
- 2 files changed, 15 insertions(+)
+- Also remove mxs_saif_platform_data and sound/saif.h, which was used only
+to include mxs_saif_platform_data definition.
 
-diff --git a/include/sound/tlv320aic32x4.h b/include/sound/tlv320aic32x4.h
-index c009f70..24e5d99 100644
---- a/include/sound/tlv320aic32x4.h
-+++ b/include/sound/tlv320aic32x4.h
-@@ -26,6 +26,7 @@ struct aic32x4_pdata {
- 	u32 power_cfg;
- 	u32 micpga_routing;
- 	bool swapdacs;
-+	int rstn_gpio;
- };
+ include/sound/saif.h     |   16 ----------------
+ sound/soc/mxs/mxs-saif.c |    9 ---------
+ 2 files changed, 25 deletions(-)
+ delete mode 100644 include/sound/saif.h
+
+diff --git a/include/sound/saif.h b/include/sound/saif.h
+deleted file mode 100644
+index f22f3e1..0000000
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index aa037b2..76a9c4a 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -32,7 +32,6 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+-#include <sound/saif.h>
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+ #include <mach/mxs.h>
+@@ -652,7 +651,6 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *iores, *dmares;
+ 	struct mxs_saif *saif;
+-	struct mxs_saif_platform_data *pdata;
+ 	struct pinctrl *pinctrl;
+ 	int ret = 0;
  
- #endif
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index aad92f9..f188aa4 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -28,6 +28,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/gpio.h>
- #include <linux/i2c.h>
- #include <linux/cdev.h>
- #include <linux/slab.h>
-@@ -65,6 +66,7 @@ struct aic32x4_priv {
- 	u32 power_cfg;
- 	u32 micpga_routing;
- 	bool swapdacs;
-+	int rstn_gpio;
- };
- 
- /* 0dB min, 1dB steps */
-@@ -627,10 +629,20 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
- {
- 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
- 	u32 tmp_reg;
-+	int ret;
- 
- 	codec->hw_write = (hw_write_t) i2c_master_send;
- 	codec->control_data = aic32x4->control_data;
- 
-+	if (aic32x4->rstn_gpio >= 0) {
-+		ret = devm_gpio_request_one(codec->dev, aic32x4->rstn_gpio,
-+				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
-+		if (ret != 0)
-+			return ret;
-+		ndelay(10);
-+		gpio_set_value(aic32x4->rstn_gpio, 1);
-+	}
-+
- 	snd_soc_write(codec, AIC32X4_RESET, 0x01);
- 
- 	/* Power platform configuration */
-@@ -723,10 +735,12 @@ static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
- 		aic32x4->power_cfg = pdata->power_cfg;
- 		aic32x4->swapdacs = pdata->swapdacs;
- 		aic32x4->micpga_routing = pdata->micpga_routing;
-+		aic32x4->rstn_gpio = pdata->rstn_gpio;
- 	} else {
- 		aic32x4->power_cfg = 0;
- 		aic32x4->swapdacs = false;
- 		aic32x4->micpga_routing = 0;
-+		aic32x4->rstn_gpio = -1;
+@@ -682,13 +680,6 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+ 			if (saif->master_id < 0)
+ 				return saif->master_id;
+ 		}
+-	} else {
+-		saif->id = pdev->id;
+-		pdata = pdev->dev.platform_data;
+-		if (pdata && !pdata->master_mode)
+-			saif->master_id = pdata->master_id;
+-		else
+-			saif->master_id = saif->id;
  	}
  
- 	ret = snd_soc_register_codec(&i2c->dev,
+ 	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
 -- 
 1.7.9.5
