@@ -1,19 +1,18 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio
- to platform data.
-Date: Wed, 31 Oct 2012 15:40:17 +0100
-Message-ID: <50913851.6060003@topic.nl>
-References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
- <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 1/2] ASoC: mxs-saif: Remove platform data
+Date: Wed, 31 Oct 2012 23:35:25 +0800
+Message-ID: <20121031153522.GA8358@S2100-06.ap.freescale.net>
+References: <1351682117-10316-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp102.mer-nm.internl.net (smtp102.mer-nm.internl.net
- [217.149.192.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 5913926165D
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 15:40:20 +0100 (CET)
-In-Reply-To: <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C449261688
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 16:10:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1351682117-10316-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lrg@ti.com, w.sang@pengutronix.de, broonie@opensource.wolfsonmicro.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, dong.aisheng@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMTAvMzEvMjAxMiAxMTo1MyBBTSwgSmF2aWVyIE1hcnRpbiB3cm90ZToKPiBBZGQgdGhl
-IHBvc3NpYmlsaXR5IHRvIHNwZWNpZnkgYSBncGlvIHRocm91Z2ggcGxhdGZvcm0gZGF0YQo+IHNv
-IHRoYXQgYSBIVyByZXNldCBjYW4gYmUgaXNzdWVkIHRvIHRoZSBjb2RlYy4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IEphdmllciBNYXJ0aW4gPGphdmllci5tYXJ0aW5AdmlzdGEtc2lsaWNvbi5jb20+Cj4g
-LS0tCj4gQ2hhbmdlcyBzaW5jZSB2MToKPiAgIC0gVXNlIGEgc3ViamVjdCBsaW5lIGFjY29yZGlu
-ZyB0byB0aGUgQVNvQyBzdWJzeXN0ZW0uCj4gICAtIFVzZSAnZGV2bV9ncGlvX3JlcXVlc3Rfb25l
-KCknCj4gICAtIFByb3ZpZGUgY29ycmVjdCBkZWZhdWx0IHZhbHVlIHRvIHRoZSBHUElPLgo+CgpO
-b3cgdGhhdCBJIHNlZSB5b3VyIHBhdGNoIC0gSSBtb2RlbGxlZCB0aGUgUkVTRVQgcGlucyAoYW5k
-IHRoZSBwb3dlciAKc3VwcGx5IHBpbnMpIGFzIHBvd2VyIHN1cHBseSBpbnB1dHMsIGFuZCByZXF1
-ZXN0IHRoZW0gdG8gYmUgYWN0aXZlIHdoZW4gCnRoZSBiaWFzIGdvZXMgaW50byBzdGFuZGJ5IG9y
-IGhpZ2hlci4gS2VlcGluZyB0aGUgY2hpcCBpbiBSRVNFVCBpcyBhIAp2ZXJ5IG5pY2UgcG93ZXIg
-c2F2aW5nIGZlYXR1cmUuIEkganVzdCBjYWNoZSBhbGwgdGhlIHJlZ2lzdGVyIHNldHRpbmdzIAp1
-cCB1bnRpbCB0aGF0IHBvaW50ICh3aGljaCByZXF1aXJlZCBhIGJpdCBvZiBjb2RpbmcgYmVjYXVz
-ZSBvZiB0aGUgCiJwYWdpbmciIG9mIHRoZSBJMkMgYWRkcmVzcyBzcGFjZSkuCgpUaGUgcmVhc29u
-IHRoYXQgSSBhbHNvIG1hZGUgUkVTRVQgYSAicG93ZXIiIHJhdGhlciB0aGFuIGEgR1BJTyBpcyB0
-aGF0IEkgCmhhdmUgc2V2ZW4gY29kZWNzLCB1c2luZyB0aHJlZSBHUElPIGxpbmVzIChpbiAzLzMv
-MSBjb25maWd1cmF0aW9uKSB0byAKcmVzZXQgdGhlIGNoaXBzLiBIYXZpbmcgdGhlIFJFU0VUIHBp
-biBtb2RlbGxlZCBhcyBhIHBvd2Vyc3VwcGx5IGFsbG93ZWQgCnRoZSBjb2RlYyBpbnN0YW5jZSB0
-byBibGluZGx5IHR1cm4gaXQgb24sIGxldHRpbmcgdGhlIHBvd2Vyc3VwcGx5IGtlZXAgCnRyYWNr
-IG9mIHRoZSBudW1iZXIgb2YgY2xpZW50cy4KCkl0IHdhcyB0aGUgYmVzdCBJIGNvdWxkIHRoaW5r
-IG9mZiBhdCB0aGUgdGltZSwgYW5kIGl0IG1hZGUgbWUgd29uZGVyIHdoeSAKdGhvc2UgcmVzZXQg
-bGluZXMgYXJlbid0IG1vZGVsbGVkIHRoaXMgd2F5IG1vcmUgb2Z0ZW4uCgpJZiBhbnlvbmUncyBp
-bnRlcmVzdGVkLCBJIGNhbiB1cGxvYWQgdGhlIG1vZGlmaWVkIHNvdXJjZS4gQSBwYXRjaCBpcyAK
-ZGlmZmljdWx0LCBiZWNhdXNlIEkgZGlkIGhvcnJpYmxlIHRoaW5ncyB0byB0aGUgY29kZSBmb3Ig
-b3VyIHNwZWNpZmljIG5lZWRzLgoKV2hhdCdzIHlvdXIgdmlldyBvbiB0aGlzPwoKCk1pa2UuCgoK
-TWV0IHZyaWVuZGVsaWprZSBncm9ldCAvIGtpbmQgcmVnYXJkcywKCk1pa2UgTG9vaWptYW5zCgpU
-T1BJQyBFbWJlZGRlZCBTeXN0ZW1zCkVpbmRob3ZlbnNld2VnIDMyLUMsIE5MLTU2ODMgS0ggQmVz
-dApQb3N0YnVzIDQ0MCwgTkwtNTY4MCBBSyBCZXN0ClRlbGVmb29uOiAoKzMxKSDigJMgKDApNDk5
-IC0gMzMuNjkuNzkKVGVsZWZheDogKCszMSkgLSAoMCk0OTkgLSAzMy42OS43MApFLW1haWw6IG1p
-a2UubG9vaWptYW5zQHRvcGljLm5sCldlYnNpdGU6IHd3dy50b3BpYy5ubAoKRGl0IGUtbWFpbCBi
-ZXJpY2h0IGVuIGRlIGV2ZW50dWVlbCBkYWFyYmlqIGJlaG9yZW5kZSBiaWpsYWdlbiB6aWpuIHVp
-dHNsdWl0ZW5kIGJlc3RlbWQgdm9vciBkZSBnZWFkcmVzc2VlcmRlLCB6b2FscyBkaWUgYmxpamt0
-IHVpdCBoZXQgZS1tYWlsIGJlcmljaHQgZW4vb2YgZGUgYmlqbGFnZW4uIEVyIGt1bm5lbiBnZWdl
-dmVucyBtZXQgYmV0cmVra2luZyB0b3QgZWVuIGRlcmRlIGluc3RhYW4uIEluZGllbiB1IGFscyBu
-aWV0LWdlYWRyZXNzZWVyZGUgZGl0IGJlcmljaHQgZW4gZGUgYmlqbGFnZW4gb250dmFuZ3QsIHRl
-cndpamwgdSBuaWV0IGJldm9lZ2Qgb2YgZ2VtYWNodGlnZCBiZW50IG9tIGRpdCBiZXJpY2h0IG5h
-bWVucyBkZSBnZWFkcmVzc2VlcmRlIHRlIG9udHZhbmdlbiwgd29yZHQgdSB2ZXJ6b2NodCBkZSBh
-ZnplbmRlciBoaWVyb3ZlciBkaXJlY3QgdGUgaW5mb3JtZXJlbiBlbiBoZXQgZS1tYWlsIGJlcmlj
-aHQgbWV0IGRlIGJpamxhZ2VuIHRlIHZlcm5pZXRpZ2VuLiBJZWRlciBnZWJydWlrIHZhbiBkZSBp
-bmhvdWQgdmFuIGhldCBlLW1haWwgYmVyaWNodCwgd2Fhcm9uZGVyIGRlIGRhYXJiaWogYmVob3Jl
-bmRlIGJpamxhZ2VuLCBkb29yIGVlbiBhbmRlciBkYW4gZGUgZ2VhZHJlc3NlZXJkZSBpcyBvbnJl
-Y2h0bWF0aWcgamVnZW5zIG9ucyBkYW4gd2VsIGRlIGV2ZW50dWVlbCBpbiBoZXQgZS1tYWlsIGJl
-cmljaHQgb2YgZGUgYmlqbGFnZW4gdm9vcmtvbWVuZGUgYW5kZXJlIHBlcnNvbmVuLiBUT1BJQyBF
-bWJlZGRlZCBTeXN0ZW1zIGlzIG5pZXQgYWFuc3ByYWtlbGlqayB2b29yIGVuaWdlcmxlaSBzY2hh
-ZGUgdm9vcnR2bG9laWVuZCB1aXQgaGV0IGdlYnJ1aWsgZW4vb2YgYWNjZXB0YXRpZSB2YW4gZGl0
-IGUtbWFpbCBiZXJpY2h0IG9mIGRlIGRhYXJiaWogYmVob3JlbmRlIGJpamxhZ2VuLgoKVGhlIGNv
-bnRlbnRzIG9mIHRoaXMgbWVzc2FnZSwgYXMgd2VsbCBhcyBhbnkgZW5jbG9zdXJlcywgYXJlIGFk
-ZHJlc3NlZCBwZXJzb25hbGx5IHRvLCBhbmQgdGh1cyBzb2xlbHkgaW50ZW5kZWQgZm9yIHRoZSBh
-ZGRyZXNzZWUuIFRoZXkgbWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gcmVnYXJkaW5nIGEgdGhpcmQg
-cGFydHkuIEEgcmVjaXBpZW50IHdobyBpcyBuZWl0aGVyIHRoZSBhZGRyZXNzZWUsIG5vciBlbXBv
-d2VyZWQgdG8gcmVjZWl2ZSB0aGlzIG1lc3NhZ2Ugb24gYmVoYWxmIG9mIHRoZSBhZGRyZXNzZWUs
-IGlzIGtpbmRseSByZXF1ZXN0ZWQgdG8gaW1tZWRpYXRlbHkgaW5mb3JtIHRoZSBzZW5kZXIgb2Yg
-cmVjZWlwdCwgYW5kIHRvIGRlc3Ryb3kgdGhlIG1lc3NhZ2UgYW5kIHRoZSBlbmNsb3N1cmVzLiBB
-bnkgdXNlIG9mIHRoZSBjb250ZW50cyBvZiB0aGlzIG1lc3NhZ2UgYW5kL29yIHRoZSBlbmNsb3N1
-cmVzIGJ5IGFueSBvdGhlciBwZXJzb24gdGhhbiB0aGUgYWRkcmVzc2VlIG9yIHBlcnNvbiB3aG8g
-aXMgZW1wb3dlcmVkIHRvIHJlY2VpdmUgdGhpcyBtZXNzYWdlLCBpcyBpbGxlZ2FsIHRvd2FyZHMg
-dGhlIHNlbmRlciBhbmQvb3IgdGhlIGFmb3JlbWVudGlvbmVkIHRoaXJkIHBhcnR5LiBUT1BJQyBF
-bWJlZGRlZCBTeXN0ZW1zIGlzIG5vdCAgbGlhYmxlIGZvciBhbnkgZGFtYWdlIGFzIGEgcmVzdWx0
-IG9mIHRoZSB1c2UgYW5kL29yIGFjY2VwdGFuY2Ugb2YgdGhpcyBtZXNzYWdlIGFuZCBhcyB3ZWxs
-IGFzIGFueSBlbmNsb3N1cmVzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Wed, Oct 31, 2012 at 09:15:17AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> All MXS users have been converted to device tree and the board files have been
+> removed.
+> 
+> No need to keep platform data in the driver.
+>   
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Also remove mxs_saif_platform_data and sound/saif.h, which was used only
+> to include mxs_saif_platform_data definition.
+> 
+>  include/sound/saif.h     |   16 ----------------
+>  sound/soc/mxs/mxs-saif.c |    9 ---------
+>  2 files changed, 25 deletions(-)
+>  delete mode 100644 include/sound/saif.h
+> 
+> diff --git a/include/sound/saif.h b/include/sound/saif.h
+> deleted file mode 100644
+> index f22f3e1..0000000
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index aa037b2..76a9c4a 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -32,7 +32,6 @@
+>  #include <sound/pcm.h>
+>  #include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+> -#include <sound/saif.h>
+>  #include <asm/mach-types.h>
+>  #include <mach/hardware.h>
+>  #include <mach/mxs.h>
+> @@ -652,7 +651,6 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+>  	struct device_node *np = pdev->dev.of_node;
+>  	struct resource *iores, *dmares;
+>  	struct mxs_saif *saif;
+> -	struct mxs_saif_platform_data *pdata;
+>  	struct pinctrl *pinctrl;
+>  	int ret = 0;
+>  
+> @@ -682,13 +680,6 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+>  			if (saif->master_id < 0)
+>  				return saif->master_id;
+>  		}
+> -	} else {
+> -		saif->id = pdev->id;
+> -		pdata = pdev->dev.platform_data;
+> -		if (pdata && !pdata->master_mode)
+> -			saif->master_id = pdata->master_id;
+> -		else
+> -			saif->master_id = saif->id;
+
+With the "else" block removed, the left "if (np)" does not make much
+sense to me.  We should probably just remove it, since the only way
+that driver will get probed is from DT, in which case np shouldn't
+be NULL.
+
+Shawn
+
+>  	}
+>  
+>  	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
+> -- 
+> 1.7.9.5
+> 
