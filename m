@@ -1,35 +1,46 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: limitations on number of alsa controls for a card
-Date: Wed, 31 Oct 2012 19:37:31 +0530
-Message-ID: <1351692451.7077.40.camel@vkoul-udesk3>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [alsa-devel] Query about alsa ucm (use case manager) config files
+Date: Wed, 31 Oct 2012 14:26:49 +0000
+Message-ID: <50913529.2030906@ti.com>
+References: <1351688372.28030.18.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 63C6226165D
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 15:21:02 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1351688372.28030.18.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, arun.raghavan@collabora.co.ukMark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 31/10/12 12:59, Ashish Chavan wrote:
+> Hi,
+>    I am just curious to know if there is any centralized repository for
+> alsa use case manager configuration files. I tried searching and could
+> only find alsa-ucm-conf.git repo at alsa project git server, which is
+> actually an empty repo!
+> 
 
-Is there any limitation on maximum number of controls we can have.
+This is the correct place, but I've been busy with other stuff to push our configs upstream to date (will do so today now). The eventual contents of this repo are intended to be copied into :-
 
-I had some platform side controls to represent DSP and adding them made
-some of codec controls to vanish. And looks like if I register these
-platform controls not all codec controls are visible in userpsace.
-Is there nay max limit I am hitting?
+/usr/share/alsa/ucm (or where ever alsa is installed on your distro)
 
--- 
-~Vinod
+However, I've not had a chance to push the UCM Nexus and Pandaboard files from Arun to this repo yet due to some other ongoing work.
+
+FYI, Arun's current UCM configs are here :-
+
+http://cgit.collabora.com/git/android/platform/external/collabora/pulseaudio-android.git/log/data/alsa/ucm/Tuna/VoiceCall
+
+> How people share/reuse ucm configuration files for a specific codec?
+> In near future, I will be developing few ucm configuration files for
+> some codecs and wish to share them with rest of the world. I think even
+> though ucm configs are board/machine specific, it makes sense to share
+> them. Is there any other, more visible place to put these config files
+> than board specific distributions?
+> 
+
+Interesting idea to create separate shareable codec UCM configuration. We currently have no way to "include" a shareable codec specific configuration into a machine specific configuration but it would probably not be too hard to add to the parser.
+
+Regards
+
+Liam
