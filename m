@@ -1,15 +1,14 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Query about alsa ucm (use case manager) config files
-Date: Wed, 31 Oct 2012 18:29:32 +0530
-Message-ID: <1351688372.28030.18.camel@matrix>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: limitations on number of alsa controls for a card
+Date: Wed, 31 Oct 2012 19:37:31 +0530
+Message-ID: <1351692451.7077.40.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe002.messaging.microsoft.com [207.46.163.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EEA5261654
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 13:49:11 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63C6226165D
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 15:21:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,19 +18,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lrg <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
-   I am just curious to know if there is any centralized repository for
-alsa use case manager configuration files. I tried searching and could
-only find alsa-ucm-conf.git repo at alsa project git server, which is
-actually an empty repo!
 
-How people share/reuse ucm configuration files for a specific codec?
-In near future, I will be developing few ucm configuration files for
-some codecs and wish to share them with rest of the world. I think even
-though ucm configs are board/machine specific, it makes sense to share
-them. Is there any other, more visible place to put these config files
-than board specific distributions?
+Is there any limitation on maximum number of controls we can have.
+
+I had some platform side controls to represent DSP and adding them made
+some of codec controls to vanish. And looks like if I register these
+platform controls not all codec controls are visible in userpsace.
+Is there nay max limit I am hitting?
+
+-- 
+~Vinod
