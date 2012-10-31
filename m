@@ -1,17 +1,24 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v3 1/2] ASoC: mxs-saif: Remove platform data
-Date: Wed, 31 Oct 2012 13:55:25 -0200
-Message-ID: <1351698925-25530-1-git-send-email-festevam@gmail.com>
+From: Massimo Del Fedele <max@veneto.com>
+Subject: ALSA hda/patch_via -- Error in via_auto_fill_dac_nids
+Date: Wed, 31 Oct 2012 16:54:21 +0100
+Message-ID: <k6rhjc$u6m$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
- [209.85.161.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DDBC226168B
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 16:55:36 +0100 (CET)
-Received: by mail-gg0-f179.google.com with SMTP id y6so288096ggc.38
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 08:55:33 -0700 (PDT)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7C1526168B
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 16:59:57 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TTai4-0005LM-3S
+ for alsa-devel@alsa-project.org; Wed, 31 Oct 2012 17:00:04 +0100
+Received: from host247-229-dynamic.9-87-r.retail.telecomitalia.it
+ ([87.9.229.247]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 17:00:04 +0100
+Received: from max by host247-229-dynamic.9-87-r.retail.telecomitalia.it with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 17:00:04 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,101 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, shawn.guo@linaro.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+The function should scan all paths from DACs to OUTS, but like it is just takes the first available DAC.
+The problem arises here :
 
-All MXS users have been converted to device tree and the board files have been
-removed.
+		if (dac) {
+			spec->private_dac_nids[i] = dac;
+			dac_num++;
+		}
 
-No need to keep platform data in the driver.
-  
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v2:
-- Also remove 'if (np)' as dt is the only probing mechanism.
-Changes since v1:
-- Also remove mxs_saif_platform_data and sound/saif.h, which was used only
-to include mxs_saif_platform_data definition.
- include/sound/saif.h     |   16 ----------------
- sound/soc/mxs/mxs-saif.c |   42 +++++++++++++++---------------------------
- 2 files changed, 15 insertions(+), 43 deletions(-)
- delete mode 100644 include/sound/saif.h
+Which correctly adds DAC to used list, but doesn't update the total number of found DACs
+in spec->multiout.num_dacs; following calls to is_empty_dac() will always return true
+for already used DACs, making parse_output_path() return always the first one.
 
-diff --git a/include/sound/saif.h b/include/sound/saif.h
-deleted file mode 100644
-index f22f3e1..0000000
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index aa037b2..ab5bdec 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -32,7 +32,6 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/saif.h>
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/mxs.h>
-@@ -652,10 +651,9 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
--	struct mxs_saif_platform_data *pdata;
- 	struct pinctrl *pinctrl;
- 	int ret = 0;
--
-+	struct device_node *master;
- 
- 	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
- 		return -EINVAL;
-@@ -664,31 +662,21 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	if (!saif)
- 		return -ENOMEM;
- 
--	if (np) {
--		struct device_node *master;
--		saif->id = of_alias_get_id(np, "saif");
--		if (saif->id < 0)
--			return saif->id;
--		/*
--		 * If there is no "fsl,saif-master" phandle, it's a saif
--		 * master.  Otherwise, it's a slave and its phandle points
--		 * to the master.
--		 */
--		master = of_parse_phandle(np, "fsl,saif-master", 0);
--		if (!master) {
--			saif->master_id = saif->id;
--		} else {
--			saif->master_id = of_alias_get_id(master, "saif");
--			if (saif->master_id < 0)
--				return saif->master_id;
--		}
-+	saif->id = of_alias_get_id(np, "saif");
-+	if (saif->id < 0)
-+		return saif->id;
-+	/*
-+	 * If there is no "fsl,saif-master" phandle, it's a saif
-+	 * master.  Otherwise, it's a slave and its phandle points
-+	 * to the master.
-+	 */
-+	master = of_parse_phandle(np, "fsl,saif-master", 0);
-+	if (!master) {
-+		saif->master_id = saif->id;
- 	} else {
--		saif->id = pdev->id;
--		pdata = pdev->dev.platform_data;
--		if (pdata && !pdata->master_mode)
--			saif->master_id = pdata->master_id;
--		else
--			saif->master_id = saif->id;
-+		saif->master_id = of_alias_get_id(master, "saif");
-+		if (saif->master_id < 0)
-+			return saif->master_id;
- 	}
- 
- 	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
--- 
-1.7.9.5
+Corrected function should be like this :
+
+static int via_auto_fill_dac_nids(struct hda_codec *codec)
+{
+	struct via_spec *spec = codec->spec;
+	const struct auto_pin_cfg *cfg = &spec->autocfg;
+	int i;
+	hda_nid_t nid;
+
+	spec->multiout.dac_nids = spec->private_dac_nids;
+	spec->multiout.num_dacs = 0;
+	for (i = 0; i < cfg->line_outs; i++) {
+		hda_nid_t dac = 0;
+		nid = cfg->line_out_pins[i];
+		if (!nid)
+			continue;
+		if (parse_output_path(codec, nid, 0, 0, &spec->out_path[i]))
+			dac = spec->out_path[i].path[0];
+		if (!i && parse_output_path(codec, nid, dac, 1,
+					    &spec->out_mix_path))
+			dac = spec->out_mix_path.path[0];
+		if (dac) {
+			spec->private_dac_nids[i] = dac;
+			spec->multiout.num_dacs++;
+		}
+	}
+	if (!spec->out_path[0].depth && spec->out_mix_path.depth) {
+		spec->out_path[0] = spec->out_mix_path;
+		spec->out_mix_path.depth = 0;
+	}
+	return 0;
+}
+
+This one (and a few other changes) allows the subwoofer of asus g75 work correctly.
+Sorry for not submitting a patch, I'm quite new to alsa; please tell me if/how I should do it.
+
+Ciao
+Max
