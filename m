@@ -1,214 +1,158 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [Patch v2 4/4] ASoC: sam9g20-wm8731: convert to device tree support
-Date: Wed, 31 Oct 2012 10:42:27 +0100
-Message-ID: <5090F283.8080701@atmel.com>
-References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com> <1351668420-18447-4-git-send-email-voice.shen@atmel.com>
+From: "Sean M. Pappalardo - D.J. Pegasus" <spappalardo@mixxx.org>
+Subject: Re: Help requested: new HSS1394 MIDI back-end
+Date: Wed, 31 Oct 2012 11:00:39 +0100
+Message-ID: <5090F6C7.5050401@mixxx.org>
+References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>	<4FC5C9C8.1000604@ladisch.de>
+ <4FC7CDC1.8020606@ladisch.de>	<4FD2F324.7070402@mixxx.org>
+ <4FD32E76.3090304@ladisch.de> <4FD49A51.3050809@ladisch.de>
+ <5087D5D2.6020208@mixxx.org> <508991BD.5090101@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1351668420-18447-4-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
+Content-Type: multipart/mixed; boundary="===============5017348411523887996=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E6F7261608
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 11:00:47 +0100 (CET)
+Received: by mail-lb0-f179.google.com with SMTP id c1so824436lbg.38
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 03:00:47 -0700 (PDT)
+In-Reply-To: <508991BD.5090101@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10/31/2012 08:27 AM, Bo Shen :
-> convert sam9g20-wm8731 to device tree support.
-> 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+This is a cryptographically signed message in MIME format.
 
-Seems ok for AT91. But will certainly need more eyes for the audio part...
+--===============5017348411523887996==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms040108060504000803030001"
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+This is a cryptographically signed message in MIME format.
 
-> ---
-> Change since v1:
->   Add sam9g20-wm8731 binding document
-> ---
->  .../bindings/sound/atmel-sam9g20-audio-wm8731.txt  |   21 ++++++++
->  arch/arm/boot/dts/at91sam9g20ek_common.dtsi        |   25 +++++++++-
->  sound/soc/atmel/Kconfig                            |    3 +-
->  sound/soc/atmel/sam9g20_wm8731.c                   |   51 +++++++++++++++++++-
->  4 files changed, 94 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
-> new file mode 100644
-> index 0000000..04a39dd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
-> @@ -0,0 +1,21 @@
-> +* Atmel sam9g20ek audio complex
-> +
-> +Required properties:
-> +  - compatible: "atmel,at91sam9g20-audio"
-> +  - atmel,model: The user-visible name of this sound complex.
-> +  - atmel,audio-routing: A list of the connections between audio components.
-> +  - atmel,dai: The phandle of the dai based on SSC controller
-> +  - atmel,audio-codec: The phandle of the WM8731 audio codec
-> +
-> +Example:
-> +sound {
-> +	compatible = "atmel,at91sam9g20-audio";
-> +	atmel,model = "wm8731 @ sam9g20ek";
-> +
-> +	atmel,audio-routing =
-> +		"Ext Spk", "LHPOUT",
-> +		"Int MIC", "MICIN";
-> +
-> +	atmel,dai = <&dai>;
-> +	atmel,audio-codec = <&wm8731>;
-> +};
-> diff --git a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
-> index b06c0db..056ff33 100644
-> --- a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
-> +++ b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
-> @@ -51,6 +51,10 @@
->  				atmel,vbus-gpio = <&pioC 5 0>;
->  				status = "okay";
->  			};
-> +
-> +			ssc0: ssc@fffbc000 {
-> +				status = "okay";
-> +			};
->  		};
->  
->  		nand0: nand@40000000 {
-> @@ -114,8 +118,8 @@
->  			reg = <0x50>;
->  		};
->  
-> -		wm8731@1b {
-> -			compatible = "wm8731";
-> +		wm8731: wm8731@1b {
-> +			compatible = "wlf,wm8731";
->  			reg = <0x1b>;
->  		};
->  	};
-> @@ -139,4 +143,21 @@
->  			gpio-key,wakeup;
->  		};
->  	};
-> +
-> +	dai: dai {
-> +		compatible = "atmel,atmel-ssc-dai";
-> +		atmel,dai-master = <&ssc0>;
-> +	};
-> +
-> +	sound {
-> +		compatible = "atmel,at91sam9g20-audio";
-> +		atmel,model = "wm8731 @ sam9g20ek";
-> +
-> +		atmel,audio-routing =
-> +			"Ext Spk", "LHPOUT",
-> +			"Int Mic", "MICIN";
-> +
-> +		atmel,audio-codec = <&wm8731>;
-> +		atmel,dai = <&dai>;
-> +	};
->  };
-> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-> index 72b09cf..397ec75 100644
-> --- a/sound/soc/atmel/Kconfig
-> +++ b/sound/soc/atmel/Kconfig
-> @@ -16,8 +16,7 @@ config SND_ATMEL_SOC_SSC
->  
->  config SND_AT91_SOC_SAM9G20_WM8731
->  	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
-> -	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC && \
-> -                   AT91_PROGRAMMABLE_CLOCKS
-> +	depends on ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
->  	select SND_ATMEL_SOC_SSC
->  	select SND_SOC_WM8731
->  	help
-> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-> index c3e1df5..0a275d0 100644
-> --- a/sound/soc/atmel/sam9g20_wm8731.c
-> +++ b/sound/soc/atmel/sam9g20_wm8731.c
-> @@ -197,13 +197,17 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
->  
->  static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
->  {
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct device_node *codec_np, *cpu_np;
->  	struct clk *pllb;
->  	struct snd_soc_card *card =&snd_soc_at91sam9g20ek;
->  	int ret;
->  
-> -	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
-> +	if (!np) {
-> +		if (!(machine_is_at91sam9g20ek()
-> +			|| machine_is_at91sam9g20ek_2mmc()))
->  		return -ENODEV;
-> -
-> +	}
->  	/*
->  	 * Codec MCLK is supplied by PCK0 - set it up.
->  	 */
-> @@ -230,6 +234,40 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
->  	clk_set_rate(mclk, MCLK_RATE);
->  
->  	card->dev = &pdev->dev;
-> +
-> +	/* Parse device node info */
-> +	if (np) {
-> +		ret = snd_soc_of_parse_card_name(card, "atmel,model");
-> +		if (ret)
-> +			goto err;
-> +
-> +		ret = snd_soc_of_parse_audio_routing(card,
-> +						"atmel,audio-routing");
-> +		if (ret)
-> +			goto err;
-> +
-> +		/* Parse codec dai info */
-> +		at91sam9g20ek_dai.codec_name = NULL;
-> +		codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
-> +		if (!codec_np) {
-> +			dev_err(&pdev->dev, "codec info missing\n");
-> +			return -EINVAL;
-> +		}
-> +		at91sam9g20ek_dai.codec_of_node = codec_np;
-> +		at91sam9g20ek_dai.cpu_dai_name = NULL;
-> +		at91sam9g20ek_dai.platform_name = NULL;
-> +		cpu_np = of_parse_phandle(np, "atmel,dai", 0);
-> +		if (!cpu_np) {
-> +			dev_err(&pdev->dev, "dai info missing\n");
-> +			return -EINVAL;
-> +		}
-> +		at91sam9g20ek_dai.cpu_of_node = cpu_np;
-> +		at91sam9g20ek_dai.platform_of_node = cpu_np;
-> +
-> +		of_node_put(codec_np);
-> +		of_node_put(cpu_np);
-> +	}
-> +
->  	ret = snd_soc_register_card(card);
->  	if (ret) {
->  		printk(KERN_ERR "ASoC: snd_soc_register_card() failed\n");
-> @@ -255,10 +293,19 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id sam9g20ek_wm8731_dt_ids[] = {
-> +	{ .compatible = "atmel,at91sam9g20-audio", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sam9g20ek_wm8731_dt_ids);
-> +#endif
-> +
->  static struct platform_driver at91sam9g20ek_audio_driver = {
->  	.driver = {
->  		.name	= "at91sam9g20ek-audio",
->  		.owner	= THIS_MODULE,
-> +		.of_match_table = of_match_ptr(sam9g20ek_wm8731_dt_ids),
->  	},
->  	.probe	= at91sam9g20ek_audio_probe,
->  	.remove	= __devexit_p(at91sam9g20ek_audio_remove),
-> 
+--------------ms040108060504000803030001
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
--- 
-Nicolas Ferre
+
+On 10/25/2012 09:23 PM, Clemens Ladisch wrote:
+> Silly off-by-one error.  New patch below.
+
+Okay! That looks and works great! (I had to remove the extra parameter=20
+on the snd_fw_transaction calls since I'm still using kernel 3.2.18.)=20
+Thank you very much for all your time and work on this!
+
+Sincerely,
+Sean M. Pappalardo
+"D.J. Pegasus"
+Mixxx Developer - Controller Specialist
+
+
+--------------ms040108060504000803030001
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIINtjCC
+BjQwggQcoAMCAQICASAwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
+DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
+MTAyNDIxMDI1NVoXDTE3MTAyNDIxMDI1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
+dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
+aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
+aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMsohUWcASz7GfKrpTOM
+KqANy9BV7V0igWdGxA8IU77L3aTxErQ+fcxtDYZ36Z6GH0YFn7fq5RADteP0AYzrCA+EQTfi
+8q1+kA3m0nwtwXG94M5sIqsvs7lRP1aycBke/s5g9hJHryZ2acScnzczjBCAo7X1v5G3yw8M
+DP2m2RCye0KfgZ4nODerZJVzhAlOD9YejvAXZqHksw56HzElVIoYSZ3q4+RJuPXXfIoyby+Y
+2m1E+YzX5iCZXBx05gk6MKAW1vaw4/v2OOLy6FZH3XHHtOkzUreG//CsFnB9+uaYSlR65cdG
+zTsmoIK8WH1ygoXhRBm98SD7Hf/r3FELNvUCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
+Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSuVYNv7DHKufcd+q9rMfPIHeOsuzAfBgNV
+HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
+MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
+dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
+c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBADqp
+Jw3I07QWke9plNBpxUxcffc7nUrIQpJHDci91DFG7fVhHRkMZ1J+BKg5UNUxIFJ2Z9B90Mic
+c/NXcs7kPBRdn6XGO/vPc87Y6R+cWS9Nc9+fp3Enmsm94OxOwI9wn8qnr/6o3mD4noP9Jphw
+UPTXwHovjavRnhUQHLfo/i2NG0XXgTHXS2Xm0kVUozXqpYpAdumMiB/vezj1QHQJDmUdPYMc
+p+reg9901zkyT3fDW/ivJVv6pWtkh6Pw2ytZT7mvg7YhX3V50Nv860cV11mocUVcqBLv0gcT
++HBDYtbuvexNftwNQKD5193A7zN4vG7CTYkXxytSjKuXrpEatEiFPxWgb84nVj25SU5q/r1X
+hwby6mLhkbaXslkVtwEWT3Van49rKjlK4XrUKYYWtnfzq6aSak5u0Vpxd1rY79tWhD3EdCvO
+hNz/QplNa+VkIsrcp7+8ZhP1l1b2U6MaxIVteuVMD3X0vziIwr7jxYae9FZjbxlpUemqXjcC
+0QaFfN7qI0JsQMALL7iGRBg7K0CoOBzECdD3fuZil5kU/LP9cr1BK31U0Uy651bFnAMMMkqh
+AChIbn0ei72VnbpSsrrSdF0BAGYQ8vyHae5aCg+H75dVCV33K6FuxZrf09yTz+Vx/PkdRUYk
+XmZz/OTfyJXsUOUXrym6KvI2rYpccSk5MIIHejCCBmKgAwIBAgICFzUwDQYJKoZIhvcNAQEF
+BQAwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJT
+ZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBD
+bGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTAeFw0xMTEwMDUwOTU4MjBa
+Fw0xMzEwMDUwODI2MThaMIG+MSAwHgYDVQQNExc1Mjg2MjUtMkxtSDcwOVRWS3FBR1N4QjEL
+MAkGA1UEBhMCVVMxETAPBgNVBAgTCE5ldyBZb3JrMRYwFAYDVQQHEw1TdGF0ZW4gSXNsYW5k
+MSIwIAYDVQQKExlSZW5lZ2FkZSBUZWNobm9sb2dpZXMgREJBMRgwFgYDVQQDEw9TZWFuIFBh
+cHBhbGFyZG8xJDAiBgkqhkiG9w0BCQEWFXNwYXBwYWxhcmRvQG1peHh4Lm9yZzCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAK1NNpr6hUJ8LOZMez9xHLjyZRYqeJz4Lp5+2dxd
+slcNSxT7n/4wKzLdQiadXLeLKxBGy6OrGNZN2a2cO3+g/0vE3VvcgJJZVW8R7QX1qIaL8oSM
+KcMj76LE/CHtzpYkyPDQipQXhgn6sRe0qvc4IfvOpkwtgpZ2p6kDFO+sl2a97N1Ep/wrS7h1
+MMbaRqpi01jpls8FrysT8vcXzofqaj3S36vr8jdcmCTW4hDz2Si/YZ/jgvF1w7nv6n16Y9fl
+avbhPqSQK4FHKDmRRwyBzVErGzb0MuaNlVlaGWj8a9qtVZa5OoDN+Sx0vnMbP5PJ8JuW/be0
+SxzOyH1RTZu0z+ECAwEAAaOCA7AwggOsMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1Ud
+JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUUvDFTXcNxsN+0UNFTI/K3ZoX
+m6swHwYDVR0jBBgwFoAUrlWDb+wxyrn3HfqvazHzyB3jrLswIAYDVR0RBBkwF4EVc3BhcHBh
+bGFyZG9AbWl4eHgub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8w
+LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
+BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsG
+AQUFBwICMIHqMCcWIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5U
+aGlzIGNlcnRpZmljYXRlIHdhcyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAyIFZh
+bGlkYXRpb24gcmVxdWlyZW1lbnRzIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlh
+bmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhl
+IHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGcBggrBgEFBQcCAjCBjzAnFiBTdGFydENv
+bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRMaWFiaWxpdHkgYW5kIHdhcnJhbnRp
+ZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBhbmQgTGltaXRhdGlvbnMiIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwu
+c3RhcnRzc2wuY29tL2NydHUyLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUH
+MAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MyL2NsaWVudC9jYTBCBggr
+BgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNzMi5jbGll
+bnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkqhkiG
+9w0BAQUFAAOCAQEALuOsKhJbsLicRnSPl4PMV5ZqM4mTi+qh5YZapOppBJLUuAvR0RsUN7n1
+cOgAbSjnU0/9m7wA/Rm5rt4OWP1L+K6NMIem2Dh7ghP2qXmDia439ACksTxQU+IUhVQCg3ZT
+Ama2VQSOCSM0IinfRk/h7f4bLqQ67OPN4ZeaPOHZs49V6xbIxn1GbfQkZ5hVC77zQsbN2Hx9
+rKZfg0OlEos8fd3HnuB9IS1RthS7Cbz/BgyA/GX2ViEZjQEcgsXh70tEDQ/LA6OaTE7+4a5S
+eDNRhvB5L0r3LQRgkWGQBGDwsL+M0isFmt4VSqIV62Ixx/zZhcknODotr585NfQ2NuFUvjGC
+A9owggPWAgEBMIGTMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
+MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
+U3RhcnRDb20gQ2xhc3MgMiBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAhc1MAkG
+BSsOAwIaBQCgggIbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8X
+DTEyMTAzMTEwMDAzOVowIwYJKoZIhvcNAQkEMRYEFHZQgnSIaLIQXF6oPUjswy3lG3YsMGwG
+CSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAO
+BggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgw
+gaQGCSsGAQQBgjcQBDGBljCBkzCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29t
+IEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
+BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
+AgIXNTCBpgYLKoZIhvcNAQkQAgsxgZaggZMwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
+dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
+aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
+aWVudCBDQQICFzUwDQYJKoZIhvcNAQEBBQAEggEAEWtO0EA927aKpCV7ihKchemGeUQW3ysM
+MQptyL17vzNrMf0Ybr7laygDivc4/dOZZzCX+qejfLzzl9xrOR8ZS9PN2vVjIt25wGzeNQoA
+eoxGPvHle+cFXMEPnj4izA8SO/9MZUxLTPQyrxp8igUoRu8QzCNafzd5u+pM48ivbUqz3SMu
+dbnplJyTWK42ykrNy3jHBZEMIw/epxtfUuZ8iX1io/Y5eZ1oJk21bo4jr+qBPq+QoYM3K5dM
+LejivPAjV7/WsvVhQ//T9Pv1IJVUmQ3uSr2CJSGiNHj6bzQjE0emFyxJ3J1tcpzRY6PILQi4
+plEDSX/1qExeNrSSsxqedQAAAAAAAA==
+--------------ms040108060504000803030001--
+
+--===============5017348411523887996==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5017348411523887996==--
