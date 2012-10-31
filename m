@@ -1,7 +1,7 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [Patch v2 2/4] ARM: at91: atmel-ssc: add device tree support
-Date: Wed, 31 Oct 2012 15:26:58 +0800
-Message-ID: <1351668420-18447-2-git-send-email-voice.shen@atmel.com>
+Subject: [Patch v2 4/4] ASoC: sam9g20-wm8731: convert to device tree support
+Date: Wed, 31 Oct 2012 15:27:00 +0800
+Message-ID: <1351668420-18447-4-git-send-email-voice.shen@atmel.com>
 References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
 Return-path: <linux-sound-owner@vger.kernel.org>
 In-Reply-To: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
@@ -10,356 +10,194 @@ To: broonie@opensource.wolfsonmicro.com, nicolas.ferre@atmel.com
 Cc: linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add atmel-ssc for device tree support
-
-Match "atmel,at91rm9200-ssc" for using pdc for data transfer
-Match "atmel,at91sam9g45-ssc" for using pdc for data transfer
+convert sam9g20-wm8731 to device tree support.
 
 Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
 Change since v1:
-  change the underscore to dash in atmel-ssc binding document
+  Add sam9g20-wm8731 binding document
 ---
- .../devicetree/bindings/misc/atmel-ssc.txt         |   15 ++++++
- arch/arm/boot/dts/at91sam9260.dtsi                 |    8 ++++
- arch/arm/boot/dts/at91sam9263.dtsi                 |   16 +++++++
- arch/arm/boot/dts/at91sam9g45.dtsi                 |   16 +++++++
- arch/arm/boot/dts/at91sam9x5.dtsi                  |    8 ++++
- arch/arm/mach-at91/at91rm9200.c                    |    3 ++
- arch/arm/mach-at91/at91sam9260.c                   |    1 +
- arch/arm/mach-at91/at91sam9261.c                   |    3 ++
- arch/arm/mach-at91/at91sam9263.c                   |    2 +
- arch/arm/mach-at91/at91sam9g45.c                   |    2 +
- arch/arm/mach-at91/at91sam9rl.c                    |    2 +
- arch/arm/mach-at91/at91sam9x5.c                    |    1 +
- drivers/misc/atmel-ssc.c                           |   49 ++++++++++++++++++--
- 13 files changed, 123 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/misc/atmel-ssc.txt
+ .../bindings/sound/atmel-sam9g20-audio-wm8731.txt  |   21 ++++++++
+ arch/arm/boot/dts/at91sam9g20ek_common.dtsi        |   25 +++++++++-
+ sound/soc/atmel/Kconfig                            |    3 +-
+ sound/soc/atmel/sam9g20_wm8731.c                   |   51 +++++++++++++++++++-
+ 4 files changed, 94 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
 
-diff --git a/Documentation/devicetree/bindings/misc/atmel-ssc.txt b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
+diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
 new file mode 100644
-index 0000000..38e51ad
+index 0000000..04a39dd
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/atmel-ssc.txt
-@@ -0,0 +1,15 @@
-+* Atmel SSC driver.
++++ b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
+@@ -0,0 +1,21 @@
++* Atmel sam9g20ek audio complex
 +
 +Required properties:
-+- compatible: "atmel,at91rm9200-ssc" or "atmel,at91sam9g45-ssc"
-+	- atmel,at91rm9200-ssc: support pdc transfer
-+	- atmel,at91sam9g45-ssc: support dma transfer
-+- reg: Should contain SSC registers location and length
-+- interrupts: Should contain SSC interrupt
++  - compatible: "atmel,at91sam9g20-audio"
++  - atmel,model: The user-visible name of this sound complex.
++  - atmel,audio-routing: A list of the connections between audio components.
++  - atmel,dai: The phandle of the dai based on SSC controller
++  - atmel,audio-codec: The phandle of the WM8731 audio codec
 +
 +Example:
-+ssc0: ssc@fffbc000 {
-+	compatible = "atmel,at91rm9200-ssc";
-+	reg = <0xfffbc000 0x4000>;
-+	interrupts = <14 4 5>;
++sound {
++	compatible = "atmel,at91sam9g20-audio";
++	atmel,model = "wm8731 @ sam9g20ek";
++
++	atmel,audio-routing =
++		"Ext Spk", "LHPOUT",
++		"Int MIC", "MICIN";
++
++	atmel,dai = <&dai>;
++	atmel,audio-codec = <&wm8731>;
 +};
-diff --git a/arch/arm/boot/dts/at91sam9260.dtsi b/arch/arm/boot/dts/at91sam9260.dtsi
-index d410581..aaa42d8 100644
---- a/arch/arm/boot/dts/at91sam9260.dtsi
-+++ b/arch/arm/boot/dts/at91sam9260.dtsi
-@@ -29,6 +29,7 @@
- 		tcb0 = &tcb0;
- 		tcb1 = &tcb1;
- 		i2c0 = &i2c0;
-+		ssc0 = &ssc0;
- 	};
- 	cpus {
- 		cpu@0 {
-@@ -212,6 +213,13 @@
- 				status = "disabled";
+diff --git a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
+index b06c0db..056ff33 100644
+--- a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
++++ b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
+@@ -51,6 +51,10 @@
+ 				atmel,vbus-gpio = <&pioC 5 0>;
+ 				status = "okay";
  			};
- 
++
 +			ssc0: ssc@fffbc000 {
-+				compatible = "atmel,at91rm9200-ssc";
-+				reg = <0xfffbc000 0x4000>;
-+				interrupts = <14 4 5>;
-+				status = "disable";
++				status = "okay";
 +			};
-+
- 			adc0: adc@fffe0000 {
- 				compatible = "atmel,at91sam9260-adc";
- 				reg = <0xfffe0000 0x100>;
-diff --git a/arch/arm/boot/dts/at91sam9263.dtsi b/arch/arm/boot/dts/at91sam9263.dtsi
-index 3e6e5c1..3b721ee 100644
---- a/arch/arm/boot/dts/at91sam9263.dtsi
-+++ b/arch/arm/boot/dts/at91sam9263.dtsi
-@@ -25,6 +25,8 @@
- 		gpio4 = &pioE;
- 		tcb0 = &tcb0;
- 		i2c0 = &i2c0;
-+		ssc0 = &ssc0;
-+		ssc1 = &ssc1;
+ 		};
+ 
+ 		nand0: nand@40000000 {
+@@ -114,8 +118,8 @@
+ 			reg = <0x50>;
+ 		};
+ 
+-		wm8731@1b {
+-			compatible = "wm8731";
++		wm8731: wm8731@1b {
++			compatible = "wlf,wm8731";
+ 			reg = <0x1b>;
+ 		};
  	};
- 	cpus {
- 		cpu@0 {
-@@ -173,6 +175,20 @@
- 				status = "disabled";
- 			};
- 
-+			ssc0: ssc@fff98000 {
-+				compatible = "atmel,at91rm9200-ssc";
-+				reg = <0xfff98000 0x4000>;
-+				interrupts = <16 4 5>;
-+				status = "disable";
-+			};
-+
-+			ssc1: ssc@fff9c000 {
-+				compatible = "atmel,at91rm9200-ssc";
-+				reg = <0xfff9c000 0x4000>;
-+				interrupts = <17 4 5>;
-+				status = "disable";
-+			};
-+
- 			macb0: ethernet@fffbc000 {
- 				compatible = "cdns,at32ap7000-macb", "cdns,macb";
- 				reg = <0xfffbc000 0x100>;
-diff --git a/arch/arm/boot/dts/at91sam9g45.dtsi b/arch/arm/boot/dts/at91sam9g45.dtsi
-index 3add030..cd9af7c 100644
---- a/arch/arm/boot/dts/at91sam9g45.dtsi
-+++ b/arch/arm/boot/dts/at91sam9g45.dtsi
-@@ -31,6 +31,8 @@
- 		tcb1 = &tcb1;
- 		i2c0 = &i2c0;
- 		i2c1 = &i2c1;
-+		ssc0 = &ssc0;
-+		ssc1 = &ssc1;
+@@ -139,4 +143,21 @@
+ 			gpio-key,wakeup;
+ 		};
  	};
- 	cpus {
- 		cpu@0 {
-@@ -226,6 +228,20 @@
- 				status = "disabled";
- 			};
- 
-+			ssc0: ssc@fff9c000 {
-+				compatible = "atmel,at91sam9g45-ssc";
-+				reg = <0xfff9c000 0x4000>;
-+				interrupts = <16 4 5>;
-+				status = "disable";
-+			};
 +
-+			ssc0: ssc@fffa0000 {
-+				compatible = "atmel,at91sam9g45-ssc";
-+				reg = <0xfffa0000 0x4000>;
-+				interrupts = <17 4 5>;
-+				status = "disable";
-+			};
++	dai: dai {
++		compatible = "atmel,atmel-ssc-dai";
++		atmel,dai-master = <&ssc0>;
++	};
 +
- 			adc0: adc@fffb0000 {
- 				compatible = "atmel,at91sam9260-adc";
- 				reg = <0xfffb0000 0x100>;
-diff --git a/arch/arm/boot/dts/at91sam9x5.dtsi b/arch/arm/boot/dts/at91sam9x5.dtsi
-index 03fc136..69667d0 100644
---- a/arch/arm/boot/dts/at91sam9x5.dtsi
-+++ b/arch/arm/boot/dts/at91sam9x5.dtsi
-@@ -30,6 +30,7 @@
- 		i2c0 = &i2c0;
- 		i2c1 = &i2c1;
- 		i2c2 = &i2c2;
-+		ssc0 = &ssc0;
- 	};
- 	cpus {
- 		cpu@0 {
-@@ -87,6 +88,13 @@
- 				interrupts = <1 4 7>;
- 			};
- 
-+			ssc0: ssc@f0010000 {
-+				compatible = "atmel,at91sam9g45-ssc";
-+				reg = <0xf0010000 0x4000>;
-+				interrupts = <28 4 5>;
-+				status = "disable";
-+			};
++	sound {
++		compatible = "atmel,at91sam9g20-audio";
++		atmel,model = "wm8731 @ sam9g20ek";
 +
- 			tcb0: timer@f8008000 {
- 				compatible = "atmel,at91sam9x5-tcb";
- 				reg = <0xf8008000 0x100>;
-diff --git a/arch/arm/mach-at91/at91rm9200.c b/arch/arm/mach-at91/at91rm9200.c
-index 85d53c5..6d65feb 100644
---- a/arch/arm/mach-at91/at91rm9200.c
-+++ b/arch/arm/mach-at91/at91rm9200.c
-@@ -187,6 +187,9 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.0", &ssc0_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.1", &ssc1_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.2", &ssc2_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffd0000.ssc", &ssc0_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffd4000.ssc", &ssc1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffd8000.ssc", &ssc2_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91rm9200", &twi_clk),
- 	/* fake hclk clock */
- 	CLKDEV_CON_DEV_ID("hclk", "at91_ohci", &ohci_clk),
-diff --git a/arch/arm/mach-at91/at91sam9260.c b/arch/arm/mach-at91/at91sam9260.c
-index 2c8aab0..54d4aea 100644
---- a/arch/arm/mach-at91/at91sam9260.c
-+++ b/arch/arm/mach-at91/at91sam9260.c
-@@ -211,6 +211,7 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID("t1_clk", "atmel_tcb.1", &tc4_clk),
- 	CLKDEV_CON_DEV_ID("t2_clk", "atmel_tcb.1", &tc5_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.0", &ssc_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffbc000.ssc", &ssc_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9260", &twi_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g20", &twi_clk),
- 	/* more usart lookup table for DT entries */
-diff --git a/arch/arm/mach-at91/at91sam9261.c b/arch/arm/mach-at91/at91sam9261.c
-index 4e8c56e..5c7a482 100644
---- a/arch/arm/mach-at91/at91sam9261.c
-+++ b/arch/arm/mach-at91/at91sam9261.c
-@@ -177,6 +177,9 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.0", &ssc0_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.1", &ssc1_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.2", &ssc2_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffbc000.ssc", &ssc0_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffc0000.ssc", &ssc1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffc4000.ssc", &ssc2_clk),
- 	CLKDEV_CON_DEV_ID("hclk", "at91_ohci", &hck0),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9261", &twi_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g10", &twi_clk),
-diff --git a/arch/arm/mach-at91/at91sam9263.c b/arch/arm/mach-at91/at91sam9263.c
-index 95a5471..1f523de 100644
---- a/arch/arm/mach-at91/at91sam9263.c
-+++ b/arch/arm/mach-at91/at91sam9263.c
-@@ -188,6 +188,8 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_ID("hclk", &macb_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.0", &ssc0_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.1", &ssc1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fff98000.ssc", &ssc0_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fff9c000.ssc", &ssc1_clk),
- 	CLKDEV_CON_DEV_ID("mci_clk", "atmel_mci.0", &mmc0_clk),
- 	CLKDEV_CON_DEV_ID("mci_clk", "atmel_mci.1", &mmc1_clk),
- 	CLKDEV_CON_DEV_ID("spi_clk", "atmel_spi.0", &spi0_clk),
-diff --git a/arch/arm/mach-at91/at91sam9g45.c b/arch/arm/mach-at91/at91sam9g45.c
-index f4f96a6..a4282d3 100644
---- a/arch/arm/mach-at91/at91sam9g45.c
-+++ b/arch/arm/mach-at91/at91sam9g45.c
-@@ -241,6 +241,8 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g10.1", &twi1_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91sam9g45_ssc.0", &ssc0_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91sam9g45_ssc.1", &ssc1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fff9c000.ssc", &ssc0_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffa0000.ssc", &ssc1_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "atmel-trng", &trng_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "atmel_sha", &aestdessha_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "atmel_tdes", &aestdessha_clk),
-diff --git a/arch/arm/mach-at91/at91sam9rl.c b/arch/arm/mach-at91/at91sam9rl.c
-index 4110b54..b683fdc 100644
---- a/arch/arm/mach-at91/at91sam9rl.c
-+++ b/arch/arm/mach-at91/at91sam9rl.c
-@@ -186,6 +186,8 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID("t2_clk", "atmel_tcb.0", &tc2_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.0", &ssc0_clk),
- 	CLKDEV_CON_DEV_ID("pclk", "at91rm9200_ssc.1", &ssc1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffc0000.ssc", &ssc0_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "fffc4000.ssc", &ssc1_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g20.0", &twi0_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "i2c-at91sam9g20.1", &twi1_clk),
- 	CLKDEV_CON_ID("pioA", &pioA_clk),
-diff --git a/arch/arm/mach-at91/at91sam9x5.c b/arch/arm/mach-at91/at91sam9x5.c
-index e503538..18fbbb2 100644
---- a/arch/arm/mach-at91/at91sam9x5.c
-+++ b/arch/arm/mach-at91/at91sam9x5.c
-@@ -231,6 +231,7 @@ static struct clk_lookup periph_clocks_lookups[] = {
- 	CLKDEV_CON_DEV_ID("t0_clk", "f800c000.timer", &tcb0_clk),
- 	CLKDEV_CON_DEV_ID("dma_clk", "ffffec00.dma-controller", &dma0_clk),
- 	CLKDEV_CON_DEV_ID("dma_clk", "ffffee00.dma-controller", &dma1_clk),
-+	CLKDEV_CON_DEV_ID("pclk", "f0010000.ssc", &ssc_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "f8010000.i2c", &twi0_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "f8014000.i2c", &twi1_clk),
- 	CLKDEV_CON_DEV_ID(NULL, "f8018000.i2c", &twi2_clk),
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index f40abd8..a769719 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -18,6 +18,8 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- 
-+#include <linux/of.h>
++		atmel,audio-routing =
++			"Ext Spk", "LHPOUT",
++			"Int Mic", "MICIN";
 +
- /* Serialize access to ssc_list and user count */
- static DEFINE_SPINLOCK(user_lock);
- static LIST_HEAD(ssc_list);
-@@ -29,7 +31,13 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 
- 	spin_lock(&user_lock);
- 	list_for_each_entry(ssc, &ssc_list, list) {
--		if (ssc->pdev->id == ssc_num) {
-+		if (ssc->pdev->dev.of_node) {
-+			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
-+				== ssc_num) {
-+				ssc_valid = 1;
-+				break;
-+			}
-+		} else if (ssc->pdev->id == ssc_num) {
- 			ssc_valid = 1;
- 			break;
- 		}
-@@ -88,10 +96,41 @@ static const struct platform_device_id atmel_ssc_devtypes[] = {
- 	}
++		atmel,audio-codec = <&wm8731>;
++		atmel,dai = <&dai>;
++	};
  };
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 72b09cf..397ec75 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -16,8 +16,7 @@ config SND_ATMEL_SOC_SSC
+ 
+ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+-	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC && \
+-                   AT91_PROGRAMMABLE_CLOCKS
++	depends on ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_SOC_WM8731
+ 	help
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index c3e1df5..0a275d0 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -197,13 +197,17 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+ 
+ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *codec_np, *cpu_np;
+ 	struct clk *pllb;
+ 	struct snd_soc_card *card =&snd_soc_at91sam9g20ek;
+ 	int ret;
+ 
+-	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
++	if (!np) {
++		if (!(machine_is_at91sam9g20ek()
++			|| machine_is_at91sam9g20ek_2mmc()))
+ 		return -ENODEV;
+-
++	}
+ 	/*
+ 	 * Codec MCLK is supplied by PCK0 - set it up.
+ 	 */
+@@ -230,6 +234,40 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	clk_set_rate(mclk, MCLK_RATE);
+ 
+ 	card->dev = &pdev->dev;
++
++	/* Parse device node info */
++	if (np) {
++		ret = snd_soc_of_parse_card_name(card, "atmel,model");
++		if (ret)
++			goto err;
++
++		ret = snd_soc_of_parse_audio_routing(card,
++						"atmel,audio-routing");
++		if (ret)
++			goto err;
++
++		/* Parse codec dai info */
++		at91sam9g20ek_dai.codec_name = NULL;
++		codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
++		if (!codec_np) {
++			dev_err(&pdev->dev, "codec info missing\n");
++			return -EINVAL;
++		}
++		at91sam9g20ek_dai.codec_of_node = codec_np;
++		at91sam9g20ek_dai.cpu_dai_name = NULL;
++		at91sam9g20ek_dai.platform_name = NULL;
++		cpu_np = of_parse_phandle(np, "atmel,dai", 0);
++		if (!cpu_np) {
++			dev_err(&pdev->dev, "dai info missing\n");
++			return -EINVAL;
++		}
++		at91sam9g20ek_dai.cpu_of_node = cpu_np;
++		at91sam9g20ek_dai.platform_of_node = cpu_np;
++
++		of_node_put(codec_np);
++		of_node_put(cpu_np);
++	}
++
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		printk(KERN_ERR "ASoC: snd_soc_register_card() failed\n");
+@@ -255,10 +293,19 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
 +#ifdef CONFIG_OF
-+static const struct of_device_id atmel_ssc_dt_ids[] = {
-+	{
-+		.compatible = "atmel,at91rm9200-ssc",
-+		.data = &at91rm9200_config,
-+	}, {
-+		.compatible = "atmel,at91sam9g45-ssc",
-+		.data = &at91sam9g45_config,
-+	}, {
-+		/* sentinel */
-+	}
++static const struct of_device_id sam9g20ek_wm8731_dt_ids[] = {
++	{ .compatible = "atmel,at91sam9g20-audio", },
++	{ }
 +};
-+MODULE_DEVICE_TABLE(of, atmel_ssc_dt_ids);
++MODULE_DEVICE_TABLE(of, sam9g20ek_wm8731_dt_ids);
 +#endif
 +
-+static inline const struct atmel_ssc_platform_data * __init
-+	atmel_ssc_get_driver_data(struct platform_device *pdev)
-+{
-+	if (pdev->dev.of_node) {
-+		const struct of_device_id *match;
-+		match = of_match_node(atmel_ssc_dt_ids, pdev->dev.of_node);
-+		if (match == NULL)
-+			return NULL;
-+		return match->data;
-+	}
-+
-+	return (struct atmel_ssc_platform_data *)
-+		platform_get_device_id(pdev)->driver_data;
-+}
-+
- static int ssc_probe(struct platform_device *pdev)
- {
- 	struct resource *regs;
- 	struct ssc_device *ssc;
-+	const struct atmel_ssc_platform_data *plat_dat;
- 
- 	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
- 	if (!ssc) {
-@@ -100,8 +139,11 @@ static int ssc_probe(struct platform_device *pdev)
- 	}
- 
- 	ssc->pdev = pdev;
--	ssc->pdata = (struct atmel_ssc_platform_data *)
--			platform_get_device_id(pdev)->driver_data;
-+
-+	plat_dat = atmel_ssc_get_driver_data(pdev);
-+	if (!plat_dat)
-+		return -ENODEV;
-+	ssc->pdata = (struct atmel_ssc_platform_data *)plat_dat;
- 
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!regs) {
-@@ -160,6 +202,7 @@ static struct platform_driver ssc_driver = {
- 	.driver		= {
- 		.name		= "ssc",
- 		.owner		= THIS_MODULE,
-+		.of_match_table	= of_match_ptr(atmel_ssc_dt_ids),
+ static struct platform_driver at91sam9g20ek_audio_driver = {
+ 	.driver = {
+ 		.name	= "at91sam9g20ek-audio",
+ 		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(sam9g20ek_wm8731_dt_ids),
  	},
- 	.id_table	= atmel_ssc_devtypes,
- 	.probe		= ssc_probe,
+ 	.probe	= at91sam9g20ek_audio_probe,
+ 	.remove	= __devexit_p(at91sam9g20ek_audio_remove),
 -- 
 1.7.9.5
 
