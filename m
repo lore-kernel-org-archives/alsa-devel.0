@@ -1,18 +1,20 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: si476x: Add missing break for
- SNDRV_PCM_FORMAT_S8 switch case
-Date: Wed, 31 Oct 2012 16:07:43 +0800
-Message-ID: <1351670863.6496.1.camel@phoenix>
+From: Dong Aisheng <dong.aisheng@linaro.org>
+Subject: Re: [PATCH] ASoC: mxs-saif: Fix channel swap for
+	24-bit format
+Date: Wed, 31 Oct 2012 16:50:50 +0800
+Message-ID: <CAP1dx+ydbcYfFrdG0sa2Ro2kfJbCS99nm4J_uFWT4JUo7NkcdQ@mail.gmail.com>
+References: <1351638429-13865-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
- [209.85.210.51])
- by alsa0.perex.cz (Postfix) with ESMTP id B42A92615ED
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 09:07:52 +0100 (CET)
-Received: by mail-da0-f51.google.com with SMTP id t11so489808daj.38
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 01:07:51 -0700 (PDT)
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D5B22615F5
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 09:50:51 +0100 (CET)
+Received: by mail-ie0-f179.google.com with SMTP id c10so1626218ieb.38
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2012 01:50:50 -0700 (PDT)
+In-Reply-To: <1351638429-13865-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,26 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Andrey Smirnov <andrey.smirnov@convergeddevices.net>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, DWinner@tc-helicon.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/si476x.c |    1 +
- 1 file changed, 1 insertion(+)
+Hi Fabio,
 
-diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
-index 38145ba..dadf04d 100644
---- a/sound/soc/codecs/si476x.c
-+++ b/sound/soc/codecs/si476x.c
-@@ -159,6 +159,7 @@ static int si476x_codec_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
- 		width = SI476X_PCM_FORMAT_S8;
-+		break;
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		width = SI476X_PCM_FORMAT_S16_LE;
- 		break;
--- 
-1.7.9.5
+On 31 October 2012 07:07, Fabio Estevam <festevam@gmail.com> wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Playing 24-bit format file leads to channel swap on mx28 and the reason is that
+> the current driver performs one write/read to/from the SAIF_DATA register to
+> trigger the transfer.
+>
+> This approach works fine for S16_LE case because SAIF_DATA is a 32-bit register
+> and thus is capable of storing the 16-bit left and right channels, but for the
+> S24_LE case it can only store one channel, so in order to not lose the FIFO sync
+> an extra read/write is needed.
+>
+> Reported-by: Dan Winner <DWinner@tc-helicon.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> Tested-by: Dan Winner <DWinner@tc-helicon.com>
+> ---
+>  sound/soc/mxs/mxs-saif.c |   14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index aa037b2..05a875c 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -523,16 +523,22 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
+>
+>                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                         /*
+> -                        * write a data to saif data register to trigger
+> -                        * the transfer
+> +                        * write data to saif data register to trigger
+> +                        * the transfer.
+> +                        * For 24-bit format the 32-bit FIFO register stores
+> +                        * only one channel, so we need to write twice.
+>                          */
+>                         __raw_writel(0, saif->base + SAIF_DATA);
+> +                       __raw_writel(0, saif->base + SAIF_DATA);
+This probably could a workaround for the customer, but i'm not sure
+Mark could accept it
+since the code is a bit confusing. (Mark, what's your suggestion on this?)
+Maybe the correct way to do is to get rid of this write for playback
+and the read for capture,
+since I did not see any place in datasheet to specify we must
+write/read to trigger the transfer,
+But the test result seems we indeed need this to trigger.
+And this code also exists in Freescale internal BSP for a long time.
+Maybe we need spend some more time to dig into why the trigger is needed,
+however, one bad thing is that the original owner of this IC module
+has left Freescale,
+i have no one to ask about hw details now.
+
+Regards
+Dong Aisheng
+
+>                 } else {
+>                         /*
+> -                        * read a data from saif data register to trigger
+> -                        * the receive
+> +                        * read data from saif data register to trigger
+> +                        * the receive.
+> +                        * For 24-bit format the 32-bit FIFO register stores
+> +                        * only one channel, so we need to read twice.
+>                          */
+>                         __raw_readl(saif->base + SAIF_DATA);
+> +                       __raw_readl(saif->base + SAIF_DATA);
+>                 }
+>
+>                 master_saif->ongoing = 1;
+> --
+> 1.7.9.5
+>
