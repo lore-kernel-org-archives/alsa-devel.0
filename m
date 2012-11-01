@@ -1,18 +1,18 @@
-From: Laurence Darby <ldarby@tuffmail.com>
-Subject: Re: [PATCH v2] stop setup_dig_out_stream() causing
- clicks
-Date: Thu, 1 Nov 2012 02:53:43 +0000
-Message-ID: <20121101025343.34d69664.ldarby@tuffmail.com>
-References: <20121004212008.dd604566.ldarby@tuffmail.com>
- <s5h391pjg0i.wl%tiwai@suse.de>
+From: John Frankish <j-frankish@slb.com>
+Subject: Re: macmini5,3 and imac27 ssid conflict
+Date: Thu, 1 Nov 2012 03:58:49 +0000
+Message-ID: <E1B828866A01174CB7A0393CF2309BCC027939@AE0043EXC01.DIR.slb.com>
+References: <CAN8ccias7Z-fhtpAa4VKQVgTjg1kX=sTB_8Q_wC0Nk3mVcYfLg@mail.gmail.com>
+ <s5hwqy8rvz0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxout-07.mxes.net (mxout-07.mxes.net [216.86.168.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 337B62616D5
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 03:53:47 +0100 (CET)
-In-Reply-To: <s5h391pjg0i.wl%tiwai@suse.de>
+Received: from nl0105mta01.mail.slb.com (sx003.ddc-nl0105.slb.com
+ [199.6.154.22]) by alsa0.perex.cz (Postfix) with ESMTP id 0F6AE2616DB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 04:58:53 +0100 (CET)
+In-Reply-To: <s5hwqy8rvz0.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>, "hohndel@infradead.org" <hohndel@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Starting audio or seeking in various music players causes
-setup_dig_out_stream() to be called, which resets the SPDIF stream,
-which caused one DAC (but not another) to make a clicking noise every
-time.
-
-This patch ensures the reset only happens when it needs to, which is
-when the format changes, and makes the code a little more readable.
-
-Signed-off-by: Laurence Darby <ldarby@tuffmail.com>
----
-Takashi Iwai wrote:
-
-> At Thu, 4 Oct 2012 21:20:08 +0100,
-> Laurence Darby wrote:
+> At Tue, 30 Oct 2012 20:14:25 +0800,
+> Raymond Yau wrote:
+> >
 > > 
-> > 
-> > Starting audio or seeking in various music players causes
-> > setup_dig_out_stream() to be called, which resets the SPDIF stream,
-> > which caused one DAC (but not another) to make a clicking noise
-> > every time.
-> > 
-> > This patch turns off codec->spdif_status_reset after one reset which
-> > stops further clicks.  One reset is still necessary to initialise
-> > the codec properly.
+> > http://www.alsa-project.org/db/?f=5e7f45089ce82985c003fa2608bed82726ebbdf6
+> >
+> > > > how many audio jacks do your macmini have ?
+> > > >
+> > > > seem only line in support jack detect, internal mic support
+> > > > balanced but ext mic does not support jack detect
+> > >
+> > > There are two audio jacks:
+> > >
+> > > 1. An analogue headset/external speakers jack. Note that in order
+> > > for the external speakers to work, I need to use HDA Analyser to change the
+> > > settings otherwise things remain stuck on the internal speaker. I did not try an analogue headset.
+> >
+> > https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/892697
+> >
+> > >
+> > > 2. An analogue line-in jack. I tried this with a powered condenser
+> > > microphone - I can hear a recording, but the level is too low for practical use.
+> > >
+> > > I'm not sure there is an internal microphone connected - shouting at the
+> > > mac mini box does not produce an audible recording :P
+> >
+> > http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff
+> > ;h=6dfeb703e386369d9f1585d29482efe7b2b4401d;hp=e2301a4de22c438f5a9
+> > 62c7cefc3e9cba736991c
+> >
+> > Advanced information - PCI Vendor/Device/Subsystem ID's
+> > !!-------------------------------------------------------
+> >
+> > 00:1b.0 0403: 8086:1c20 (rev 05)
+> > Subsystem: 8086:7270
+> >
+> > your macmini pci subsystem is also 8086:7270 which is same as imac27
 > 
-> The flag isn't supposed to be changed in such a dynamic way.
-> Certain codecs seem requiring resetting the SPDIF status bits, and
-> this flag indicates that.
+> 8086:7270 PCI SSID is no longer referred.  The codec SSID are checked
+> instead.
 > 
-> That is, blindly clearing this flag is risky (and likely broken).
+> > the pin default of your macmini (init_pin_config) is replaced by the
+> > pin config of model imac27 (driver_pin_config)
+> >
+> > Codec: Cirrus Logic CS4206
+> > Address: 0 AFG Function Id: 0x1 (unsol 0) Vendor Id: 0x10134206
+> > Subsystem Id: 0x106b2100
+> >
+> > is the subsystem id in codec unique ?
 > 
-> One better option would be to do the SPDIF status reset only when the
-> value is really changed.
+> It should be.
 > 
-
-Hi Takashi,
-
-Thanks, you are right, if another audio player used a different format,
-only noise was produced...  So v2 of the patch does the reset if the
-format changes, (so changing players still results in a click, but that
-seems to be unavoidable) and has some other changes which I think make
-the code a bit more readable.  Could you please review this?
-
-It's against the 3.6.4 stable branch (which is what I'm running), or
-does it need to be against Linus's tree?
-
-Thanks,
-Laurence
-
- sound/pci/hda/hda_codec.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 38fdefc..6f7800a 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -4718,10 +4718,20 @@ EXPORT_SYMBOL_HDA(snd_hda_input_mux_put);
- static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
- 				 unsigned int stream_tag, unsigned int format)
- {
--	struct hda_spdif_out *spdif = snd_hda_spdif_out_of_nid(codec, nid);
--
--	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
--	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
-+	struct hda_spdif_out *spdif;
-+	unsigned int curr_fmt;
-+	bool reset;
-+
-+	spdif = snd_hda_spdif_out_of_nid(codec, nid);
-+	curr_fmt = snd_hda_codec_read(codec, nid, 0,
-+				      AC_VERB_GET_STREAM_FORMAT, 0);
-+	reset = codec->spdif_status_reset &&
-+		spdif->ctls & AC_DIG1_ENABLE &&
-+		curr_fmt != format;
-+
-+	/* turn off SPDIF if needed; otherwise the IEC958 bits won't be
-+	   updated */
-+	if (reset)
- 		set_dig_out_convert(codec, nid,
- 				    spdif->ctls & ~AC_DIG1_ENABLE & 0xff,
- 				    -1);
-@@ -4733,7 +4743,7 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
- 						   format);
- 	}
- 	/* turn on again (if needed) */
--	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
-+	if (reset)
- 		set_dig_out_convert(codec, nid,
- 				    spdif->ctls & 0xff, -1);
- }
--- 
-1.7.12.1
+I applied the patch referenced above (I assume it only affects snd-hda-codec-cirrus.ko), but it did not improve the situation - I still need to use HDA Analyser to get sound out of the external speakers as opposed to the internal speakers.
