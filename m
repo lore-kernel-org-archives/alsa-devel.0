@@ -1,104 +1,193 @@
-From: Julien Danjou <julien@danjou.info>
-Subject: Re: Constant noise on HDA ALC275
-Date: Thu, 01 Nov 2012 23:39:52 +0100
-Message-ID: <87fw4t9ccn.fsf@dex.adm.naquadah.org>
-References: <87obl7bg02.fsf@dex.adm.naquadah.org>
- <s5htxura31x.wl%tiwai@suse.de> <87d31fii3v.fsf@dex.adm.naquadah.org>
- <s5hmx0ja08z.wl%tiwai@suse.de> <874nmried6.fsf@dex.adm.naquadah.org>
- <s5hfw6bpen9.wl%tiwai@suse.de> <87vcf7gyl5.fsf@dex.adm.naquadah.org>
- <s5h6277pdfi.wl%tiwai@suse.de> <87r4pvgxvx.fsf@dex.adm.naquadah.org>
- <87r4pepcgo.fsf@dex.adm.naquadah.org> <s5h1uh9jfxq.wl%tiwai@suse.de>
- <87zk3xku73.fsf@dex.adm.naquadah.org> <s5hwqz1i0y0.wl%tiwai@suse.de>
- <87fw5pktos.fsf@dex.adm.naquadah.org> <s5hr4p9hzw0.wl%tiwai@suse.de>
- <87ehl96ifc.fsf@dex.adm.naquadah.org> <s5h7gr1gc7o.wl%tiwai@suse.de>
- <87ehl86h4l.fsf@dex.adm.naquadah.org> <s5hvcek7oh7.wl%tiwai@suse.de>
- <87zk3wity4.fsf@dex.adm.naquadah.org> <5073C20C.2080603@canonical.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 2/3] ARM: OMAP: Remove NEED_MACH_GPIO_H
+Date: Thu, 01 Nov 2012 15:48:23 -0700
+Message-ID: <20121101224823.2103.24591.stgit@muffinssi.local>
+References: <20121101224703.2103.95474.stgit@muffinssi.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3833064245757892795=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 22FFF264F02
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 23:39:54 +0100 (CET)
-In-Reply-To: <5073C20C.2080603@canonical.com> (David Henningsson's message of
- "Tue, 09 Oct 2012 08:19:56 +0200")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20121101224703.2103.95474.stgit@muffinssi.local>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============3833064245757892795==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+Omap no longer needs this option, mach/gpio.h is
+empty.
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Also remove mach/irqs.h from gpio-omap.h and
+include it directly from the related omap1
+gpio init files.
 
-On Tue, Oct 09 2012, David Henningsson wrote:
+Otherwise omap2+ build fails for MULTI_PLATFORM.
 
-Hi David, Takashi,
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/Kconfig                        |    1 -
+ arch/arm/mach-omap1/gpio15xx.c          |    2 ++
+ arch/arm/mach-omap1/gpio16xx.c          |    2 ++
+ arch/arm/mach-omap1/gpio7xx.c           |    2 ++
+ arch/arm/mach-omap1/include/mach/gpio.h |    3 ---
+ arch/arm/mach-omap2/include/mach/gpio.h |    3 ---
+ include/linux/platform_data/gpio-omap.h |    1 -
+ sound/soc/omap/am3517evm.c              |    2 --
+ sound/soc/omap/n810.c                   |    1 -
+ sound/soc/omap/osk5912.c                |    1 -
+ sound/soc/omap/sdp3430.c                |    2 --
+ sound/soc/omap/zoom2.c                  |    3 ---
+ 12 files changed, 6 insertions(+), 17 deletions(-)
+ delete mode 100644 arch/arm/mach-omap1/include/mach/gpio.h
+ delete mode 100644 arch/arm/mach-omap2/include/mach/gpio.h
 
-I'm still trying to advance on this! :)
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 73067ef..6207cf7 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -937,7 +937,6 @@ config ARCH_OMAP
+ 	select CLKSRC_MMIO
+ 	select GENERIC_CLOCKEVENTS
+ 	select HAVE_CLK
+-	select NEED_MACH_GPIO_H
+ 	help
+ 	  Support for TI's OMAP platform (OMAP1/2/3/4).
+ 
+diff --git a/arch/arm/mach-omap1/gpio15xx.c b/arch/arm/mach-omap1/gpio15xx.c
+index 98e6f39..02b3eb2 100644
+--- a/arch/arm/mach-omap1/gpio15xx.c
++++ b/arch/arm/mach-omap1/gpio15xx.c
+@@ -19,6 +19,8 @@
+ #include <linux/gpio.h>
+ #include <linux/platform_data/gpio-omap.h>
+ 
++#include <mach/irqs.h>
++
+ #define OMAP1_MPUIO_VBASE		OMAP1_MPUIO_BASE
+ #define OMAP1510_GPIO_BASE		0xFFFCE000
+ 
+diff --git a/arch/arm/mach-omap1/gpio16xx.c b/arch/arm/mach-omap1/gpio16xx.c
+index 33f4192..b9952a2 100644
+--- a/arch/arm/mach-omap1/gpio16xx.c
++++ b/arch/arm/mach-omap1/gpio16xx.c
+@@ -19,6 +19,8 @@
+ #include <linux/gpio.h>
+ #include <linux/platform_data/gpio-omap.h>
+ 
++#include <mach/irqs.h>
++
+ #define OMAP1610_GPIO1_BASE		0xfffbe400
+ #define OMAP1610_GPIO2_BASE		0xfffbec00
+ #define OMAP1610_GPIO3_BASE		0xfffbb400
+diff --git a/arch/arm/mach-omap1/gpio7xx.c b/arch/arm/mach-omap1/gpio7xx.c
+index 958ce9a..f5819b2 100644
+--- a/arch/arm/mach-omap1/gpio7xx.c
++++ b/arch/arm/mach-omap1/gpio7xx.c
+@@ -19,6 +19,8 @@
+ #include <linux/gpio.h>
+ #include <linux/platform_data/gpio-omap.h>
+ 
++#include <mach/irqs.h>
++
+ #define OMAP7XX_GPIO1_BASE		0xfffbc000
+ #define OMAP7XX_GPIO2_BASE		0xfffbc800
+ #define OMAP7XX_GPIO3_BASE		0xfffbd000
+diff --git a/arch/arm/mach-omap1/include/mach/gpio.h b/arch/arm/mach-omap1/include/mach/gpio.h
+deleted file mode 100644
+index ebf86c0..0000000
+--- a/arch/arm/mach-omap1/include/mach/gpio.h
++++ /dev/null
+@@ -1,3 +0,0 @@
+-/*
+- * arch/arm/mach-omap1/include/mach/gpio.h
+- */
+diff --git a/arch/arm/mach-omap2/include/mach/gpio.h b/arch/arm/mach-omap2/include/mach/gpio.h
+deleted file mode 100644
+index 5621cc5..0000000
+--- a/arch/arm/mach-omap2/include/mach/gpio.h
++++ /dev/null
+@@ -1,3 +0,0 @@
+-/*
+- * arch/arm/mach-omap2/include/mach/gpio.h
+- */
+diff --git a/include/linux/platform_data/gpio-omap.h b/include/linux/platform_data/gpio-omap.h
+index e8741c2..5d50b25 100644
+--- a/include/linux/platform_data/gpio-omap.h
++++ b/include/linux/platform_data/gpio-omap.h
+@@ -26,7 +26,6 @@
+ 
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+-#include <mach/irqs.h>
+ 
+ #define OMAP1_MPUIO_BASE			0xfffb5000
+ 
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+index fad3506..c1900b2 100644
+--- a/sound/soc/omap/am3517evm.c
++++ b/sound/soc/omap/am3517evm.c
+@@ -25,8 +25,6 @@
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+-#include <mach/gpio.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+ 
+ #include "omap-mcbsp.h"
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 521bfc3..230b8c1 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -29,7 +29,6 @@
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
+index 3960e8d..06ef8d6 100644
+--- a/sound/soc/omap/osk5912.c
++++ b/sound/soc/omap/osk5912.c
+@@ -28,7 +28,6 @@
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 597cae7..b462a2c 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -31,8 +31,6 @@
+ #include <sound/jack.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+-#include <mach/gpio.h>
+ #include <linux/platform_data/gpio-omap.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+ 
+diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+index 677b567..27c501c 100644
+--- a/sound/soc/omap/zoom2.c
++++ b/sound/soc/omap/zoom2.c
+@@ -26,9 +26,6 @@
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+-#include <mach/gpio.h>
+-#include <mach/board-zoom.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+ 
+ /* Register descriptions for twl4030 codec part */
 
-> So; if everything is muted, it causes some codec bug to appear. If this o=
-nly
-> happens in the speaker, maybe we should try to reroute the speaker to go
-> 0x02 -> 0x0c -> 0x14 instead of 0x03 -> 0x0d -> 0x14? What will happen if
-> you change 0x14 to take its input from 0x0c instead?
-
-I just did that using the hda-analyzer tool. I changed 0x14 to uses 0x0c
-as a source, and it's indeed much better. The noise disappear when
-neither master or speaker is muted, and actually the music playback
-sounds better and without the little background noise I still hear on
-low volume level.
-
-Actually, I'm sure it'd be easy to come with a patch, so my question
-would rather be: what's this routing about, and why is 0x0d set up
-instead of 0x0c?
-
-I'm still trying to find a way to fix the noise when speaker or master
-are muted. No chance so far. :(
-
-=2D-=20
-Julien Danjou
-# Free Software hacker & freelance
-# http://julien.danjou.info
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQkvo4AAoJEGEbqVCLeKXCWOgP/j8lXoj4Vyoisq5yJMQMt6o9
-5i5SzVwMH36YQnAlY7Y+3gbkyA7nnKpSJBAnFYyZpX2KuE9DMNOLxRQiyehM+sk1
-uazmSXWtq1ae3XDS+4vMmvkk5zt4dCmYvgHTGQLKN48QW+3XsVhAJ9uppmNTALJ5
-HKbIyabCzyNZi+0kJXpZYMMUB6aWbZkXoc9ksR/yLG3K+IzgtORJ6vLClS82/huG
-Y8KAXDtuhh04QRBVHM85AnOJiBt7ALqo84CQia0RTr3unB02o+GwGyLydDZYStc7
-U1WgHMa4oZlEsCxdK78TlkWQh+dXDfDn1x86F0nBj8xt++BTYwiVfkpJPLzw+9Pf
-0WQtI7jnpVY2j9UVIu/WV2o2YwMm6Hi6J7N0zGwR6eVmfOq/BWTxCVcVKQ4s7Anq
-S/ZrAPefYCpy6T1TZby2JHSL9w/BdK34ZtaQ+TcaiQNryQeNDUI6/3rIU8GHhmmm
-JBrtMs4zvg1G5z1fJK2qZnXv/ELnFw+migbYygmM76Y+O8RG6Qe63tqtVn5N1uhp
-WmbSGgRfVdneli5iP8Optu7R4vrPnYZI/EmCyv2i+P54vJnUUOhiu1OCRgQOWH+r
-srNZ/B3B49BEHQuTTQ0WxB2ugNhTc7uoHra/VLI0IcOPuANMhhXVETlBdscHwAjm
-XlfUo3PfWgNeKA2IKgX6
-=Ypsy
------END PGP SIGNATURE-----
---=-=-=--
-
---===============3833064245757892795==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3833064245757892795==--
