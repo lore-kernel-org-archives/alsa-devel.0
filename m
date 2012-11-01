@@ -1,18 +1,19 @@
-From: John Frankish <j-frankish@slb.com>
-Subject: Re: macmini5,3 and imac27 ssid conflict
-Date: Thu, 1 Nov 2012 03:58:49 +0000
-Message-ID: <E1B828866A01174CB7A0393CF2309BCC027939@AE0043EXC01.DIR.slb.com>
-References: <CAN8ccias7Z-fhtpAa4VKQVgTjg1kX=sTB_8Q_wC0Nk3mVcYfLg@mail.gmail.com>
- <s5hwqy8rvz0.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Fix for Asus G75 notebook subwoofer
+Date: Thu, 1 Nov 2012 16:11:19 +0800
+Message-ID: <CAN8cciZEwLxxiMp69k8yyAzSnqRNQ6m2=7q373x91D_pMy=h-w@mail.gmail.com>
+References: <k6rkr2$usv$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nl0105mta01.mail.slb.com (sx003.ddc-nl0105.slb.com
- [199.6.154.22]) by alsa0.perex.cz (Postfix) with ESMTP id 0F6AE2616DB
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 04:58:53 +0100 (CET)
-In-Reply-To: <s5hwqy8rvz0.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90D9C261710
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 09:11:20 +0100 (CET)
+Received: by mail-qc0-f179.google.com with SMTP id b14so1466209qcs.38
+ for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 01:11:19 -0700 (PDT)
+In-Reply-To: <k6rkr2$usv$1@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>, "hohndel@infradead.org" <hohndel@infradead.org>
+To: Massimo Del Fedele <max@veneto.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> At Tue, 30 Oct 2012 20:14:25 +0800,
-> Raymond Yau wrote:
-> >
-> > 
-> > http://www.alsa-project.org/db/?f=5e7f45089ce82985c003fa2608bed82726ebbdf6
-> >
-> > > > how many audio jacks do your macmini have ?
-> > > >
-> > > > seem only line in support jack detect, internal mic support
-> > > > balanced but ext mic does not support jack detect
-> > >
-> > > There are two audio jacks:
-> > >
-> > > 1. An analogue headset/external speakers jack. Note that in order
-> > > for the external speakers to work, I need to use HDA Analyser to change the
-> > > settings otherwise things remain stuck on the internal speaker. I did not try an analogue headset.
-> >
-> > https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/892697
-> >
-> > >
-> > > 2. An analogue line-in jack. I tried this with a powered condenser
-> > > microphone - I can hear a recording, but the level is too low for practical use.
-> > >
-> > > I'm not sure there is an internal microphone connected - shouting at the
-> > > mac mini box does not produce an audible recording :P
-> >
-> > http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff
-> > ;h=6dfeb703e386369d9f1585d29482efe7b2b4401d;hp=e2301a4de22c438f5a9
-> > 62c7cefc3e9cba736991c
-> >
-> > Advanced information - PCI Vendor/Device/Subsystem ID's
-> > !!-------------------------------------------------------
-> >
-> > 00:1b.0 0403: 8086:1c20 (rev 05)
-> > Subsystem: 8086:7270
-> >
-> > your macmini pci subsystem is also 8086:7270 which is same as imac27
-> 
-> 8086:7270 PCI SSID is no longer referred.  The codec SSID are checked
-> instead.
-> 
-> > the pin default of your macmini (init_pin_config) is replaced by the
-> > pin config of model imac27 (driver_pin_config)
-> >
-> > Codec: Cirrus Logic CS4206
-> > Address: 0 AFG Function Id: 0x1 (unsol 0) Vendor Id: 0x10134206
-> > Subsystem Id: 0x106b2100
-> >
-> > is the subsystem id in codec unique ?
-> 
-> It should be.
-> 
-I applied the patch referenced above (I assume it only affects snd-hda-codec-cirrus.ko), but it did not improve the situation - I still need to use HDA Analyser to get sound out of the external speakers as opposed to the internal speakers.
+>
+> This code fixes surround path of asus G75; i'll drop here as a function
+to be called
+> before codec initialization (I did it in static int patch_vt2002P() )
+because I don't
+> know how to detect the notebook and apply it only when needed (I'm new to
+alsa code).
+>
+> /* Fixes for Asus G75 subwoofer
+>    pin 24 is marked as speaker by bios -- should mark as line
+>    pin 33 has a wrong connection to out-of-range nid #3e
+> */
+
+can you post the output of alsa-info.sh ?
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/hda-emu.git;a=blob_plain;f=codecs/vt1802-asus-u30s;hb=HEAD
+
+   9.337454] ALSA hda_codec.c:4877 autoconfig: line_outs=1
+(0x24/0x0/0x0/0x0/0x0) type:speaker
+[    9.337458] ALSA hda_codec.c:4881    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[    9.337460] ALSA hda_codec.c:4885    hp_outs=1 (0x25/0x0/0x0/0x0/0x0)
+[    9.337462] ALSA hda_codec.c:4886    mono: mono_out=0x0
+[    9.337464] ALSA hda_codec.c:4889    dig-out=0x2d/0x0
+[    9.337465] ALSA hda_codec.c:4890    inputs:
+[    9.337467] ALSA hda_codec.c:4894  Internal Mic=0x29
+[    9.337469] ALSA hda_codec.c:4894  Mic=0x2b
+
+it is the auto parser put the speaker to autocfg->lineout
+
+vt1802 also has connection to 0x3e in node 0x24 and 0x33
+
+you cannot change the pin default from speaker of 0x24 to lineout if node
+0x33 only support mono
+
+should the auto parser put it into autocfg->mono_out?
