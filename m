@@ -1,17 +1,15 @@
-From: Alexandre Belloni <alexandre.belloni@piout.net>
-Subject: [PATCH] ASoC: atmel_ssc_dai: make module reloadable
-Date: Thu,  1 Nov 2012 14:18:02 +0100
-Message-ID: <1351775882-15834-1-git-send-email-alexandre.belloni@piout.net>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-es1968: remove pm_whitelist
+Date: Thu, 1 Nov 2012 21:55:54 +0100
+Message-ID: <201211012155.54713.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from narya.piout.net (128-79-244-21.hfc.dyn.abo.bbox.fr
- [128.79.244.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 916D92625ED
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 19:42:06 +0100 (CET)
-Resent-Message-ID: <20121101184151.GA14207@piout.net>
-Resent-To: alsa-devel@alsa-project.org
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BA2C264EFF
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 21:56:23 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +20,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Alexandre Belloni <alexandre.belloni@piout.net>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-As the platform_devices were never unregistered, it was not possible to
-unload/reload the module.
+pm_whitelist breaks suspend on all non-whitelisted cards for unknown purpose.
+Remove it. This fixes suspend on Terratec DMX and SF64-PCE2 cards.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@piout.net>
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/pci/es1968.c |   40 ----------------------------------------
+ 1 files changed, 0 insertions(+), 40 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 354341e..07ee57b 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -155,6 +155,8 @@ static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
- #endif
+diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+index 5d0e568..a9c92a4 100644
+--- a/sound/pci/es1968.c
++++ b/sound/pci/es1968.c
+@@ -137,7 +137,6 @@ static int total_bufsize[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1024 };
+ static int pcm_substreams_p[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 4 };
+ static int pcm_substreams_c[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1 };
+ static int clock[SNDRV_CARDS];
+-static int use_pm[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
+ static int enable_mpu[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
+ #ifdef SUPPORT_JOYSTICK
+ static bool joystick[SNDRV_CARDS];
+@@ -158,8 +157,6 @@ module_param_array(pcm_substreams_c, int, NULL, 0444);
+ MODULE_PARM_DESC(pcm_substreams_c, "PCM Capture substreams for " CARD_NAME " soundcard.");
+ module_param_array(clock, int, NULL, 0444);
+ MODULE_PARM_DESC(clock, "Clock on " CARD_NAME " soundcard.  (0 = auto-detect)");
+-module_param_array(use_pm, int, NULL, 0444);
+-MODULE_PARM_DESC(use_pm, "Toggle power-management.  (0 = off, 1 = on, 2 = auto)");
+ module_param_array(enable_mpu, int, NULL, 0444);
+ MODULE_PARM_DESC(enable_mpu, "Enable MPU401.  (0 = off, 1 = on, 2 = auto)");
+ #ifdef SUPPORT_JOYSTICK
+@@ -519,7 +516,6 @@ struct es1968 {
+ 	struct pci_dev *pci;
+ 	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+-	int do_pm;		/* power-management enabled */
+ 
+ 	/* DMA memory block */
+ 	struct list_head buf_list;
+@@ -2387,9 +2383,6 @@ static int es1968_suspend(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct es1968 *chip = card->private_data;
+ 
+-	if (! chip->do_pm)
+-		return 0;
+-
+ 	chip->in_suspend = 1;
+ 	cancel_work_sync(&chip->hwvol_work);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+@@ -2410,9 +2403,6 @@ static int es1968_resume(struct device *dev)
+ 	struct es1968 *chip = card->private_data;
+ 	struct esschan *es;
+ 
+-	if (! chip->do_pm)
+-		return 0;
+-
+ 	/* restore all our config */
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+@@ -2648,15 +2638,6 @@ struct ess_device_list {
+ 	unsigned short vendor;	/* subsystem vendor id */
  };
  
-+static struct platform_device *dma_pdev;
-+static struct platform_device *ssc_pdevs[NUM_SSC_DEVICES];
- 
- /*
-  * SSC interrupt handler.  Passes PDC interrupts to the DMA
-@@ -796,6 +798,12 @@ static __devinit int asoc_ssc_probe(struct platform_device *pdev)
- 
- static int __devexit asoc_ssc_remove(struct platform_device *pdev)
+-static struct ess_device_list pm_whitelist[] __devinitdata = {
+-	{ TYPE_MAESTRO2E, 0x0e11 },	/* Compaq Armada */
+-	{ TYPE_MAESTRO2E, 0x1028 },
+-	{ TYPE_MAESTRO2E, 0x103c },
+-	{ TYPE_MAESTRO2E, 0x1179 },
+-	{ TYPE_MAESTRO2E, 0x14c0 },	/* HP omnibook 4150 */
+-	{ TYPE_MAESTRO2E, 0x1558 },
+-};
+-
+ static struct ess_device_list mpu_blacklist[] __devinitdata = {
+ 	{ TYPE_MAESTRO2, 0x125d },
+ };
+@@ -2667,7 +2648,6 @@ static int __devinit snd_es1968_create(struct snd_card *card,
+ 				       int play_streams,
+ 				       int capt_streams,
+ 				       int chip_type,
+-				       int do_pm,
+ 				       int radio_nr,
+ 				       struct es1968 **chip_ret)
  {
-+	int i;
-+	platform_device_unregister(dma_pdev);
-+
-+	for(i = 0; i < NUM_SSC_DEVICES; i++)
-+		platform_device_unregister(ssc_pdevs[i]);
-+
- 	snd_soc_unregister_dai(&pdev->dev);
- 	return 0;
- }
-@@ -816,7 +824,6 @@ static struct platform_driver asoc_ssc_driver = {
- int atmel_ssc_set_audio(int ssc_id)
- {
- 	struct ssc_device *ssc;
--	static struct platform_device *dma_pdev;
- 	struct platform_device *ssc_pdev;
- 	int ret;
+@@ -2736,25 +2716,6 @@ static int __devinit snd_es1968_create(struct snd_card *card,
+ 	/* just to be sure */
+ 	pci_set_master(pci);
  
-@@ -855,6 +862,8 @@ int atmel_ssc_set_audio(int ssc_id)
- 	if (ret < 0)
- 		platform_device_put(ssc_pdev);
+-	if (do_pm > 1) {
+-		/* disable power-management if not on the whitelist */
+-		unsigned short vend;
+-		pci_read_config_word(chip->pci, PCI_SUBSYSTEM_VENDOR_ID, &vend);
+-		for (i = 0; i < (int)ARRAY_SIZE(pm_whitelist); i++) {
+-			if (chip->type == pm_whitelist[i].type &&
+-			    vend == pm_whitelist[i].vendor) {
+-				do_pm = 1;
+-				break;
+-			}
+-		}
+-		if (do_pm > 1) {
+-			/* not matched; disabling pm */
+-			printk(KERN_INFO "es1968: not attempting power management.\n");
+-			do_pm = 0;
+-		}
+-	}
+-	chip->do_pm = do_pm;
+-
+ 	snd_es1968_chip_init(chip);
  
-+	ssc_pdevs[ssc_id] = ssc_pdev;
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+@@ -2817,7 +2778,6 @@ static int __devinit snd_es1968_probe(struct pci_dev *pci,
+ 				     pcm_substreams_p[dev], 
+ 				     pcm_substreams_c[dev],
+ 				     pci_id->driver_data,
+-				     use_pm[dev],
+ 				     radio_nr[dev],
+ 				     &chip)) < 0) {
+ 		snd_card_free(card);
 -- 
-1.7.9.5
+Ondrej Zary
