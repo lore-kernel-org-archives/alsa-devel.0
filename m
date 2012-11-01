@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 1 Nov 2012 14:30:46 +0000
-Message-ID: <20121101143046.GH4413@opensource.wolfsonmicro.com>
-References: <1351698925-25530-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio
+ to platform data.
+Date: Thu, 1 Nov 2012 14:35:15 +0000
+Message-ID: <20121101143514.GJ4413@opensource.wolfsonmicro.com>
+References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
+ <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
+ <50913851.6060003@topic.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0432186614362981565=="
+Content-Type: multipart/mixed; boundary="===============3016175642146605217=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B84E2625E0
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:30:47 +0100 (CET)
-In-Reply-To: <1351698925-25530-1-git-send-email-festevam@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20436261794
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:35:16 +0100 (CET)
+In-Reply-To: <50913851.6060003@topic.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,60 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, shawn.guo@linaro.org
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Javier Martin <javier.martin@vista-silicon.com>, w.sang@pengutronix.de, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0432186614362981565==
+--===============3016175642146605217==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2xzXx3ruJf7hsAzo"
+	protocol="application/pgp-signature"; boundary="7AwgMNpd3VkAVXjS"
 Content-Disposition: inline
 
 
---2xzXx3ruJf7hsAzo
+--7AwgMNpd3VkAVXjS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 31, 2012 at 01:55:25PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> All MXS users have been converted to device tree and the board files have=
- been
-> removed.
+On Wed, Oct 31, 2012 at 03:40:17PM +0100, Mike Looijmans wrote:
 
-I also seem to be missing patch 2...
+> is a very nice power saving feature. I just cache all the register
+> settings up until that point (which required a bit of coding because
+> of the "paging" of the I2C address space).
 
---2xzXx3ruJf7hsAzo
+Probably easiest to just convert over to regmap, it handles paging fine.
+
+> It was the best I could think off at the time, and it made me wonder
+> why those reset lines aren't modelled this way more often.
+
+This breaks down if any of the drivers actually uses the reset pin to
+reset the chip - if the reset might not actually happen but the driver
+wants it to happen then things are going to go wrong.
+
+--7AwgMNpd3VkAVXjS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQkoePAAoJELSic+t+oim9Sz0QAIt3K8CbBe5xq5UDvngGIqTp
-/VBJ/kHqlyQMKZfJzPlgLg24c9edBaCMF8DcpwVnunqKL/jy3oH+rDepkVn1XJtg
-JA4QEuREvYE2N03OudDconU5qpYfPDQ0/W3jGhqxRqMxmZea6kzJYDhfzrIDSW0H
-yL+kVyBblasVGn6AU3uvBKJzQVULbioFZ6cUUBwuVSxc8GqhwHHyyUyjCs7rlwGj
-MRy2Eiw6IsPy4JU/0Vcb6K3FdeTj53uRx62FxMXzTLu5oU/hNCaiZyoTLRo+GOya
-w+7Xf53yCGvYoQx9yDJ8l36EaQUaXvzBdCdfAG+ii+U5aWzGtHOEw0/0BQvQAnor
-eze7CWjHsCaWf9O2dXCysZU7TsjKrLzG0vEl4Qpyo8cSKCo34kq/GH8hnZ0CizyK
-6rsegBQ6WDEtV0SD+9AFIKgm1JqZIXG6MStPXejN0/x/L0UVzJGGogq1C60iZRkO
-vchObQfqNZ0hOaV6JNKIt/isoJDxLb+fyMk/gt8ekOI3VXnGllwSfoXQ+1lcONvG
-e2sdaZ63aOjtVJ3WH5ZWij22S41XepKtnslT6fdkWT/1FqCN2nxBbisazpHa0/HM
-hQ8/iCNypFhSZIXBH/SmslgBkPstt2lqZRou+vLfty6ujIa6vJGXv6TIWBl0eQze
-F6div81+aORo7pXd1+h8
-=M0eA
+iQIcBAEBAgAGBQJQkoibAAoJELSic+t+oim9hOYP/iMTc88gKOBsfOhkeNd2dCfr
+wpDkONCtDGEOEAjx5/uPiHhqllRiIHHyPlsHDnIxHO4e9AMYGHFL2+JNCOBybX3U
+l8tEJDdUG1LmH6f2pbvvbk9eFZP6P0yuAQjlopfsxpNLAUP9vFeE9UTwLq/DlFMA
+0EFemRS5z2PkUwU1/BlS9mrF6Tl5c4+Z/zM6/tUI4ie+yB76vLk9P66O80Ml2oTZ
+CQCvY3KYKIIfcFZ9IadISONv3K1rT1LuRCj5jGjdWFnRubGaGrT5tdVr0928PiFI
+kFG4cGSJEZknZMbsT0fQurEvXPyotDn8otmYOXGxgnDSp410TQ9kc8Ld+avUhC7a
+zUAQuew/yszAWmCGwe73JXicmEaT4TjRvbPlpQiM9srrZNuMeT101mX7LCDFk2Fs
+ZXP8KPqazUTM8HK+3LFOPa+LtJM8H7RSp21p0Gq3SzEk6XGFh1GTi9l2I7zjDn7t
+Q2VenqvUjLa+GBLM2Trhr7ffEVaeBkBU6BZU6IQrOv+Xn31UnGX9T3299+0PpXQ6
+MB30/xcI0lXMQeGkEDL9jc2uqKlrPwQ4o+vrJt4H+s+pwHPagu2372fX3SMi/auI
+u9RkVL0iRStwSB6Azb86jz6Vvf1crk5J9WO0c5ci4UeiWYqFmnblNfzlq7mf3eiP
+xeI4y2u8RNqT6aBCWX2e
+=UuBn
 -----END PGP SIGNATURE-----
 
---2xzXx3ruJf7hsAzo--
+--7AwgMNpd3VkAVXjS--
 
---===============0432186614362981565==
+--===============3016175642146605217==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0432186614362981565==--
+--===============3016175642146605217==--
