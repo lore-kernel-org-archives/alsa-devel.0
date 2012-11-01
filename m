@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: fsi: care fsi_hw_start/stop()
-	return value
-Date: Thu, 1 Nov 2012 14:48:06 +0000
-Message-ID: <20121101144806.GO4413@opensource.wolfsonmicro.com>
-References: <87mwz3mjou.wl%kuninori.morimoto.gx@renesas.com>
- <87lienmjnj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 2/2] ASoC: mxs-saif: Add MODULE_ALIAS
+Date: Thu, 1 Nov 2012 14:49:33 +0000
+Message-ID: <20121101144933.GP4413@opensource.wolfsonmicro.com>
+References: <1351653605-30512-1-git-send-email-festevam@gmail.com>
+ <1351653605-30512-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8260901167131019762=="
+Content-Type: multipart/mixed; boundary="===============0095570261858756310=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E470262617
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:48:07 +0100 (CET)
-In-Reply-To: <87lienmjnj.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2AB922625D3
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:49:36 +0100 (CET)
+In-Reply-To: <1351653605-30512-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8260901167131019762==
+--===============0095570261858756310==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GYaKytDE8aa4+VVK"
+	protocol="application/pgp-signature"; boundary="kERJ49nCKmnv470N"
 Content-Disposition: inline
 
 
---GYaKytDE8aa4+VVK
+--kERJ49nCKmnv470N
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 30, 2012 at 07:59:15PM -0700, Kuninori Morimoto wrote:
-> Current FSI driver didn't care fsi_hw_start/stop() return value,
-> and it causes WARNING() call if SNDRV_PCM_TRIGGER_START failed.
-> This patch solved this issue
+On Wed, Oct 31, 2012 at 01:20:05AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Add MODULE_ALIAS information.
 
-Applied, thanks
+Applied, thanks.
 
---GYaKytDE8aa4+VVK
+--kERJ49nCKmnv470N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQkoueAAoJELSic+t+oim9+80QAIex2Q/8PQmdjmSoSj677F4Y
-qO4sAG2hfRmGLDKYAG/1zl2w60qIw1IrG8s9j1uRTjqm2bLIR4mHPvS6tyRz8ZhZ
-sRpZ9QOonuCwxHiWyrwocUe0BY0/u4HoO/6PrpCsWuaZdvdRn4HJH6IUXGVLJbFN
-DMtD5gxDYb6oi/7foOs4St6jcZ2uvL1LWFbULzgR2xIKWYOAphqmWqiN84B3qA9Z
-0ewW6237kPaZd/RblT29To36Q/e8yHliCTADW6xbiDuurq/O9XB0DoyYjnWz8A6/
-FJj3Jc11h2lk+4GxTiP1mVqD8Nj6QBPWrrzJKfPngeByopr/ThNBKzl17pQLIh6I
-Cj0REfVSiByPUhtHzxO1V1aKYL3VZEgWqfCGgRhMEGslOcBkyvlLsEN6br4yuJ2E
-XGPuzA1np0sifay7bbPzou0FGqX7CvhDroML3pIqJYQatVfFeutIhrIudfSVcpdg
-mglMVtPtd/Vs/aOScnYEFnDQWapYOplqHhNDd/AdxyDxPDXvRP23kClnaf+EtXml
-XoSjixM3r8sNns8GrGFRfcxcfGVqiiV73HkLYpjUjvp9E6Ih6jlTKii179UHH6W9
-ZTtcVuXm1Kv8pNwJmpVcxrhTqMnmnfim1BGTfn0NNZy9rIFeMohCulNOj7KoY5Wj
-ThekOvh7LtvweO0w36O8
-=f7o3
+iQIcBAEBAgAGBQJQkov2AAoJELSic+t+oim9TxwP/2uYumL3WnORq8XfcAGwRhy5
+UmmEkXHrjNP5eV9qb+iihvcGkhOv7+s0EN0Ps9RqqiiIMi3Bj6I14soOMubfygzw
+DdBdm+3bYsufFVGXxhbgBd52Sajkan62yEh/PvUDH5RtSLZS12LdwJSaQZnyNc3F
+rv0MgyNcLg7SZKmjumJE+yw/8CjyFI6jSTzyfgMwrFCsHzXwbhPP/4RVRpPjlREG
+j97dKxaeiiz/MfY95aNDsR72l5JGY2XA3g9hgNk+vfRZsr26uGbCAzNuuQDLBJUD
+FBwhzmP7idEp71pSueB3SzJLevLqHTAzxKoNj+VmUd+DH0HN9UP4Jk0Rct/l8I2q
+Ui9dC0hcw0HIWtPhgYOeAe7mu8eNuRbgDXvbfDYbqk7dtdQPALq2QS+8i7twa+NZ
+7ubGsHMIAr4ujLCk/oZWS/N7u8wzdU/AttCryyRHQOZjfXfz6EcE9ziUgXGkVEux
+27M3y6CaYg8BZuq0/T73/3pOpftS2/IRlm6rZ9kqUa3D5aAbOZ6J5lV8CrZkWUvK
+qD8oKh0AKtbBusWEtP+SRUk9Pz5RlmMHL2wwbaUzco6WLPaWatvx5C2HkKxK9YNO
+B9++w8L4NO5nNeBIgHBQBGCDPwUXiA+mSidFU5NyAY83smysuRWK9sKOZtq5BMQi
+msE9FynyrIEmLZ/kdmW7
+=INne
 -----END PGP SIGNATURE-----
 
---GYaKytDE8aa4+VVK--
+--kERJ49nCKmnv470N--
 
---===============8260901167131019762==
+--===============0095570261858756310==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8260901167131019762==--
+--===============0095570261858756310==--
