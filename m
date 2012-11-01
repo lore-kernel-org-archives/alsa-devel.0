@@ -1,16 +1,17 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2 1/2] ASoC: mxs-saif: Fix channel swap for
-	24-bit format
-Date: Thu, 1 Nov 2012 15:57:11 -0200
-Message-ID: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
+Date: Thu, 1 Nov 2012 15:57:12 -0200
+Message-ID: <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
+References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe001.messaging.microsoft.com [65.55.88.11])
- by alsa0.perex.cz (Postfix) with ESMTP id CA750262603
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 18:57:27 +0100 (CET)
+Received: from db3outboundpool.messaging.microsoft.com
+ (db3ehsobe003.messaging.microsoft.com [213.199.154.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id D01542625ED
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 19:04:40 +0100 (CET)
+In-Reply-To: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +25,101 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Playing 24-bit format file leads to channel swap on mx28 and the reason is that
-the current driver performs one write/read to/from the SAIF_DATA register to 
-trigger the transfer.
+All MXS users have been converted to device tree and the board files have been
+removed.
 
-This approach works fine for S16_LE case because SAIF_DATA is a 32-bit register 
-and thus is capable of storing the 16-bit left and right channels, but for the 
-S24_LE case it can only store one channel, so in order to not lose the FIFO sync
-an extra read/write is needed.
-
-Reported-by: Dan Winner <DWinner@tc-helicon.com>
+No need to keep platform data in the driver.
+  
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Tested-by: Dan Winner <DWinner@tc-helicon.com>
+Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
 ---
+Changes since v3:
+- Remove pdev->id check
+Changes since v2:
+- Also remove 'if (np)' as dt is the only probing mechanism.
 Changes since v1:
-- Clarify that the extra read/write is also safe for non 24-bit formats.
+- Also remove mxs_saif_platform_data and sound/saif.h, which was used only
+to include mxs_saif_platform_data definition.
+ include/sound/saif.h     |   16 ----------------
+ sound/soc/mxs/mxs-saif.c |   44 ++++++++++++++++----------------------------
+ 2 files changed, 16 insertions(+), 44 deletions(-)
+ delete mode 100644 include/sound/saif.h
 
- sound/soc/mxs/mxs-saif.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
+diff --git a/include/sound/saif.h b/include/sound/saif.h
+deleted file mode 100644
+index f22f3e1..0000000
 diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index aa037b2..0eb2883 100644
+index c294fbb..05dbadb 100644
 --- a/sound/soc/mxs/mxs-saif.c
 +++ b/sound/soc/mxs/mxs-saif.c
-@@ -523,16 +523,24 @@ static int mxs_saif_trigger(struct snd_pcm_substream *substream, int cmd,
+@@ -32,7 +32,6 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+-#include <sound/saif.h>
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+ #include <mach/mxs.h>
+@@ -660,43 +659,32 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *iores, *dmares;
+ 	struct mxs_saif *saif;
+-	struct mxs_saif_platform_data *pdata;
+ 	struct pinctrl *pinctrl;
+ 	int ret = 0;
++	struct device_node *master;
  
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			/*
--			 * write a data to saif data register to trigger
--			 * the transfer
-+			 * write data to saif data register to trigger
-+			 * the transfer.
-+			 * For 24-bit format the 32-bit FIFO register stores
-+			 * only one channel, so we need to write twice.
-+			 * This is also safe for the other non 24-bit formats.
- 			 */
- 			__raw_writel(0, saif->base + SAIF_DATA);
-+			__raw_writel(0, saif->base + SAIF_DATA);
- 		} else {
- 			/*
--			 * read a data from saif data register to trigger
--			 * the receive
-+			 * read data from saif data register to trigger
-+			 * the receive.
-+			 * For 24-bit format the 32-bit FIFO register stores
-+			 * only one channel, so we need to read twice.
-+			 * This is also safe for the other non 24-bit formats.
- 			 */
- 			__raw_readl(saif->base + SAIF_DATA);
-+			__raw_readl(saif->base + SAIF_DATA);
- 		}
+-
+-	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
++	if (!np)
+ 		return -EINVAL;
  
- 		master_saif->ongoing = 1;
+ 	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
+ 
+-	if (np) {
+-		struct device_node *master;
+-		saif->id = of_alias_get_id(np, "saif");
+-		if (saif->id < 0)
+-			return saif->id;
+-		/*
+-		 * If there is no "fsl,saif-master" phandle, it's a saif
+-		 * master.  Otherwise, it's a slave and its phandle points
+-		 * to the master.
+-		 */
+-		master = of_parse_phandle(np, "fsl,saif-master", 0);
+-		if (!master) {
+-			saif->master_id = saif->id;
+-		} else {
+-			saif->master_id = of_alias_get_id(master, "saif");
+-			if (saif->master_id < 0)
+-				return saif->master_id;
+-		}
++	saif->id = of_alias_get_id(np, "saif");
++	if (saif->id < 0)
++		return saif->id;
++	/*
++	 * If there is no "fsl,saif-master" phandle, it's a saif
++	 * master.  Otherwise, it's a slave and its phandle points
++	 * to the master.
++	 */
++	master = of_parse_phandle(np, "fsl,saif-master", 0);
++	if (!master) {
++		saif->master_id = saif->id;
+ 	} else {
+-		saif->id = pdev->id;
+-		pdata = pdev->dev.platform_data;
+-		if (pdata && !pdata->master_mode)
+-			saif->master_id = pdata->master_id;
+-		else
+-			saif->master_id = saif->id;
++		saif->master_id = of_alias_get_id(master, "saif");
++		if (saif->master_id < 0)
++			return saif->master_id;
+ 	}
+ 
+ 	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
 -- 
 1.7.9.5
