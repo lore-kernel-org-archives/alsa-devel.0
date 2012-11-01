@@ -1,64 +1,64 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Fix for Asus G75 notebook subwoofer
-Date: Thu, 1 Nov 2012 16:11:19 +0800
-Message-ID: <CAN8cciZEwLxxiMp69k8yyAzSnqRNQ6m2=7q373x91D_pMy=h-w@mail.gmail.com>
-References: <k6rkr2$usv$1@ger.gmane.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [alsa-devel] Idea: dynamic loading of USB quirks
+Date: Thu, 01 Nov 2012 10:05:41 +0100
+Message-ID: <50923B65.4060304@gmail.com>
+References: <2390628.MpxcLPPhM0@kamdesktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 90D9C261710
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 09:11:20 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so1466209qcs.38
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 01:11:19 -0700 (PDT)
-In-Reply-To: <k6rkr2$usv$1@ger.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Massimo Del Fedele <max@veneto.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <2390628.MpxcLPPhM0@kamdesktop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, maillist@superlative.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> This code fixes surround path of asus G75; i'll drop here as a function
-to be called
-> before codec initialization (I did it in static int patch_vt2002P() )
-because I don't
-> know how to detect the notebook and apply it only when needed (I'm new to
-alsa code).
->
-> /* Fixes for Asus G75 subwoofer
->    pin 24 is marked as speaker by bios -- should mark as line
->    pin 33 has a wrong connection to out-of-range nid #3e
-> */
+[cc lkml as this might be of broader interest]
 
-can you post the output of alsa-info.sh ?
+On 01.11.2012 00:32, maillist@superlative.org wrote:
+> Dear Alsa community,
+> I've some minor contributions in the form of patches for USB quirks for 
+> devices in the past. It occurred to me that having these USB quirks hardcoded 
+> into the driver maybe isn't the best thing.
+> 
+> Looking at the current quirks file, the majority of them are relatively trivial 
+> and are really just there to give the USB driver a nudge in the right 
+> direction.
+> 
+> Having to have these hardcoded into the driver creates a number of issues:
+> 
+> 1. It needs someone with the expertise and will, and access the specific device 
+> for testing, to build the quirk. To hardened ALSA hackers this seems trivial, 
+> but to an average end user who has a device they want to get supported, this 
+> can be pretty inpenatrable. The complexity of just getting the alsa source 
+> installed and set up for compilation is enough to put off the vast majority of 
+> users.
+> 
+> 2. It makes the process of getting the driver "to market" lengthy as these 
+> changes have to go through all of the normal release schedules, and these are 
+> pretty opaque.
+> 
+> 3. It makes getting changing a driver (because of a bug, or a new release of 
+> hardware) difficult as the revisions need to go through the whole process of 
+> creating a patch, getting it accepted, and then the long kernel release 
+> process, as well as the various distribution release processes.
+> 
+> It occured to me that there might be a better way where quirks like this could 
+> be dynamically loaded into the driver after it has loaded. This would a 
+> structured text file describing the quirk to be created and pushed into the 
+> driver. Ultimately this could be wrapped into a framework where quirk files 
+> could be put into a common directory (similar to modprobe.d) with a startup 
+> script which pushed these into the driver.
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/hda-emu.git;a=blob_plain;f=codecs/vt1802-asus-u30s;hb=HEAD
+The idea is interesting, but we would need to find a way to not only
+cover the entries in quirks-list.h but the other hard-coded details as well.
 
-   9.337454] ALSA hda_codec.c:4877 autoconfig: line_outs=1
-(0x24/0x0/0x0/0x0/0x0) type:speaker
-[    9.337458] ALSA hda_codec.c:4881    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[    9.337460] ALSA hda_codec.c:4885    hp_outs=1 (0x25/0x0/0x0/0x0/0x0)
-[    9.337462] ALSA hda_codec.c:4886    mono: mono_out=0x0
-[    9.337464] ALSA hda_codec.c:4889    dig-out=0x2d/0x0
-[    9.337465] ALSA hda_codec.c:4890    inputs:
-[    9.337467] ALSA hda_codec.c:4894  Internal Mic=0x29
-[    9.337469] ALSA hda_codec.c:4894  Mic=0x2b
+I fear that if quirk fixups are done on both the kernel level and loaded
+from userspace, it actually makes debugging and maintainance harder.
 
-it is the auto parser put the speaker to autocfg->lineout
+Then again, if a versatile and clean solution to this problem is found,
+there would be tons of other drivers in Linux to benefit from it, just
+think about the hda driver to begin with. But not only in the ALSA area.
 
-vt1802 also has connection to 0x3e in node 0x24 and 0x33
 
-you cannot change the pin default from speaker of 0x24 to lineout if node
-0x33 only support mono
-
-should the auto parser put it into autocfg->mono_out?
+Daniel
