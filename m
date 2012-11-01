@@ -1,21 +1,21 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio
- to platform data.
-Date: Thu, 1 Nov 2012 16:28:59 +0100
-Message-ID: <5092953B.9080109@topic.nl>
-References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
- <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
- <50913851.6060003@topic.nl>
- <20121101143514.GJ4413@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: limitations on number of alsa controls for a card
+Date: Thu, 1 Nov 2012 18:42:01 +0100
+Message-ID: <CAFz=ag7hzZmdhS2d0-0GsbPECUQbOzOz2G4b+FSh=3f__6FtSw@mail.gmail.com>
+References: <1351692451.7077.40.camel@vkoul-udesk3>
+ <20121101142558.GF4413@opensource.wolfsonmicro.com>
+ <1351781211.7077.44.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id C83742625E2
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 16:29:02 +0100 (CET)
-In-Reply-To: <20121101143514.GJ4413@opensource.wolfsonmicro.com>
+Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
+ [209.85.219.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C1C22625ED
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 18:42:02 +0100 (CET)
+Received: by mail-oa0-f51.google.com with SMTP id n12so2588991oag.38
+ for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 10:42:01 -0700 (PDT)
+In-Reply-To: <1351781211.7077.44.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Javier Martin <javier.martin@vista-silicon.com>, w.sang@pengutronix.de, lrg@ti.com
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMTEvMDEvMjAxMiAwMzozNSBQTSwgTWFyayBCcm93biB3cm90ZToKPgo+PiBpcyBhIHZl
-cnkgbmljZSBwb3dlciBzYXZpbmcgZmVhdHVyZS4gSSBqdXN0IGNhY2hlIGFsbCB0aGUgcmVnaXN0
-ZXIKPj4gc2V0dGluZ3MgdXAgdW50aWwgdGhhdCBwb2ludCAod2hpY2ggcmVxdWlyZWQgYSBiaXQg
-b2YgY29kaW5nIGJlY2F1c2UKPj4gb2YgdGhlICJwYWdpbmciIG9mIHRoZSBJMkMgYWRkcmVzcyBz
-cGFjZSkuCj4gUHJvYmFibHkgZWFzaWVzdCB0byBqdXN0IGNvbnZlcnQgb3ZlciB0byByZWdtYXAs
-IGl0IGhhbmRsZXMgcGFnaW5nIGZpbmUuCkkndmUgYmFja3BvcnRlZCB0aGUgZHJpdmVyIHRvIDIu
-Ni4zNyBzbyBwcm9iYWJseSBteSByZWdtYXAgd2Fzbid0IHNtYXJ0IAplbm91Z2ggeWV0LgoKPgo+
-PiBJdCB3YXMgdGhlIGJlc3QgSSBjb3VsZCB0aGluayBvZmYgYXQgdGhlIHRpbWUsIGFuZCBpdCBt
-YWRlIG1lIHdvbmRlcgo+PiB3aHkgdGhvc2UgcmVzZXQgbGluZXMgYXJlbid0IG1vZGVsbGVkIHRo
-aXMgd2F5IG1vcmUgb2Z0ZW4uCj4gVGhpcyBicmVha3MgZG93biBpZiBhbnkgb2YgdGhlIGRyaXZl
-cnMgYWN0dWFsbHkgdXNlcyB0aGUgcmVzZXQgcGluIHRvCj4gcmVzZXQgdGhlIGNoaXAgLSBpZiB0
-aGUgcmVzZXQgbWlnaHQgbm90IGFjdHVhbGx5IGhhcHBlbiBidXQgdGhlIGRyaXZlcgo+IHdhbnRz
-IGl0IHRvIGhhcHBlbiB0aGVuIHRoaW5ncyBhcmUgZ29pbmcgdG8gZ28gd3JvbmcuCgpHb29kIHBv
-aW50LiBCdXQgaW4gdGhhdCBjYXNlLCB0aGUgZ3BpbyBjYW5ub3QgYmUgIm9wdGlvbmFsIiwgdGhl
-IGJvYXJkIApmaWxlIE1VU1Qgc3VwcGx5IGl0LgoKTW9zdCBjaGlwcyAtIGlmIG5vdCBhbGwsIGFu
-ZCB0aGlzIG9uZSBjZXJ0YWlubHkgaGFzIGl0IC0gYWxzbyBoYXZlIGEgCnNvZnR3YXJlIHJvdXRp
-bmUgZm9yIHJlc2V0dGluZyBpdC4KCiBGcm9tIGEgaGFyZHdhcmUgcGVyc3BlY3RpdmUsIHdoZW4g
-dXNpbmcgdHdvIGNvZGVjcyB0byBnZXQgYSA0LWNoYW5uZWwgCmlucHV0LCBpdCBtYWtlcyBwZXJm
-ZWN0IHNlbnNlIHRvIHVzZSB0aGUgc2FtZSBHUElPIGxpbmUgdG8gcmVzZXQgdGhlbSAKYm90aC4g
-VGhpcyB3aWxsIG5ldmVyIHdvcmsgd2l0aCB0d28gaW5zdGFuY2VzIG9mIGEgZHJpdmVyIHRoYXQg
-d2FudHMgdG8gCmNvbnRyb2wgdGhlIEdQSU8gbGluZSBkaXJlY3RseSwgYnV0IGl0IHdvcmtzIGZs
-YXdsZXNzbHkgd2hlbiB0aGF0IGxpbmUgCmlzIG1vZGVsbGVkIGFzIGEgcG93ZXIgc3VwcGx5LiBF
-YWNoIGluc3RhbmNlIGNhbiByZXF1ZXN0IHRoZSByZXNldCB0byBiZSAKcmVsYXhlZCwgYW5kIGVh
-Y2ggaW5zdGFuY2UgZ2V0cyBmZWVkYmFjayBmcm9tIHRoZSBzdXBwbHkgY29yZSB3aGVuIHRoZSAK
-cmVzZXQgbGluZSBpcyBhY3R1YWxseSBiZWluZyBhbHRlcmVkICh3aGljaCBjYW4gZm9yIGV4YW1w
-bGUgYmUgdXNlZCB0byAKdXBkYXRlIHRoZSBjb2RlYydzIHJlZ2lzdGVycyBmcm9tIHRoZSBjYWNo
-ZSwgb3IgdG8gaW5kaWNhdGUgdGhhdCB0aGUgCmNoaXAgaXMgbm8gbG9uZ2VyIG9ubGluZSBhbmQg
-ZXZlcnkgd3JpdGUgbXVzdCBnbyB0byB0aGUgY2FjaGUgb25seSkuCgoKRG8gSSB1bmRlcnN0YW5k
-IGNvcnJlY3RseSB0aGF0IEknbSB0b3RhbGx5IGFsb25lIGluIHRoaXMgYW5kIHRoYXQgdGhlcmUg
-CmlzIG5vIHBvaW50IGluIHVwbG9hZGluZyB0aGUgY29kZT8KCgpNZXQgdnJpZW5kZWxpamtlIGdy
-b2V0IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29pam1hbnMKClRPUElDIEVtYmVkZGVkIFN5c3Rl
-bXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4MyBLSCBCZXN0ClBvc3RidXMgNDQwLCBOTC01
-NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpIOKAkyAoMCk0OTkgLSAzMy42OS43OQpUZWxlZmF4
-OiAoKzMxKSAtICgwKTQ5OSAtIDMzLjY5LjcwCkUtbWFpbDogbWlrZS5sb29pam1hbnNAdG9waWMu
-bmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpEaXQgZS1tYWlsIGJlcmljaHQgZW4gZGUgZXZlbnR1
-ZWVsIGRhYXJiaWogYmVob3JlbmRlIGJpamxhZ2VuIHppam4gdWl0c2x1aXRlbmQgYmVzdGVtZCB2
-b29yIGRlIGdlYWRyZXNzZWVyZGUsIHpvYWxzIGRpZSBibGlqa3QgdWl0IGhldCBlLW1haWwgYmVy
-aWNodCBlbi9vZiBkZSBiaWpsYWdlbi4gRXIga3VubmVuIGdlZ2V2ZW5zIG1ldCBiZXRyZWtraW5n
-IHRvdCBlZW4gZGVyZGUgaW5zdGFhbi4gSW5kaWVuIHUgYWxzIG5pZXQtZ2VhZHJlc3NlZXJkZSBk
-aXQgYmVyaWNodCBlbiBkZSBiaWpsYWdlbiBvbnR2YW5ndCwgdGVyd2lqbCB1IG5pZXQgYmV2b2Vn
-ZCBvZiBnZW1hY2h0aWdkIGJlbnQgb20gZGl0IGJlcmljaHQgbmFtZW5zIGRlIGdlYWRyZXNzZWVy
-ZGUgdGUgb250dmFuZ2VuLCB3b3JkdCB1IHZlcnpvY2h0IGRlIGFmemVuZGVyIGhpZXJvdmVyIGRp
-cmVjdCB0ZSBpbmZvcm1lcmVuIGVuIGhldCBlLW1haWwgYmVyaWNodCBtZXQgZGUgYmlqbGFnZW4g
-dGUgdmVybmlldGlnZW4uIEllZGVyIGdlYnJ1aWsgdmFuIGRlIGluaG91ZCB2YW4gaGV0IGUtbWFp
-bCBiZXJpY2h0LCB3YWFyb25kZXIgZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4sIGRvb3Ig
-ZWVuIGFuZGVyIGRhbiBkZSBnZWFkcmVzc2VlcmRlIGlzIG9ucmVjaHRtYXRpZyBqZWdlbnMgb25z
-IGRhbiB3ZWwgZGUgZXZlbnR1ZWVsIGluIGhldCBlLW1haWwgYmVyaWNodCBvZiBkZSBiaWpsYWdl
-biB2b29ya29tZW5kZSBhbmRlcmUgcGVyc29uZW4uIFRPUElDIEVtYmVkZGVkIFN5c3RlbXMgaXMg
-bmlldCBhYW5zcHJha2VsaWprIHZvb3IgZW5pZ2VybGVpIHNjaGFkZSB2b29ydHZsb2VpZW5kIHVp
-dCBoZXQgZ2VicnVpayBlbi9vZiBhY2NlcHRhdGllIHZhbiBkaXQgZS1tYWlsIGJlcmljaHQgb2Yg
-ZGUgZGFhcmJpaiBiZWhvcmVuZGUgYmlqbGFnZW4uCgpUaGUgY29udGVudHMgb2YgdGhpcyBtZXNz
-YWdlLCBhcyB3ZWxsIGFzIGFueSBlbmNsb3N1cmVzLCBhcmUgYWRkcmVzc2VkIHBlcnNvbmFsbHkg
-dG8sIGFuZCB0aHVzIHNvbGVseSBpbnRlbmRlZCBmb3IgdGhlIGFkZHJlc3NlZS4gVGhleSBtYXkg
-Y29udGFpbiBpbmZvcm1hdGlvbiByZWdhcmRpbmcgYSB0aGlyZCBwYXJ0eS4gQSByZWNpcGllbnQg
-d2hvIGlzIG5laXRoZXIgdGhlIGFkZHJlc3NlZSwgbm9yIGVtcG93ZXJlZCB0byByZWNlaXZlIHRo
-aXMgbWVzc2FnZSBvbiBiZWhhbGYgb2YgdGhlIGFkZHJlc3NlZSwgaXMga2luZGx5IHJlcXVlc3Rl
-ZCB0byBpbW1lZGlhdGVseSBpbmZvcm0gdGhlIHNlbmRlciBvZiByZWNlaXB0LCBhbmQgdG8gZGVz
-dHJveSB0aGUgbWVzc2FnZSBhbmQgdGhlIGVuY2xvc3VyZXMuIEFueSB1c2Ugb2YgdGhlIGNvbnRl
-bnRzIG9mIHRoaXMgbWVzc2FnZSBhbmQvb3IgdGhlIGVuY2xvc3VyZXMgYnkgYW55IG90aGVyIHBl
-cnNvbiB0aGFuIHRoZSBhZGRyZXNzZWUgb3IgcGVyc29uIHdobyBpcyBlbXBvd2VyZWQgdG8gcmVj
-ZWl2ZSB0aGlzIG1lc3NhZ2UsIGlzIGlsbGVnYWwgdG93YXJkcyB0aGUgc2VuZGVyIGFuZC9vciB0
-aGUgYWZvcmVtZW50aW9uZWQgdGhpcmQgcGFydHkuIFRPUElDIEVtYmVkZGVkIFN5c3RlbXMgaXMg
-bm90ICBsaWFibGUgZm9yIGFueSBkYW1hZ2UgYXMgYSByZXN1bHQgb2YgdGhlIHVzZSBhbmQvb3Ig
-YWNjZXB0YW5jZSBvZiB0aGlzIG1lc3NhZ2UgYW5kIGFzIHdlbGwgYXMgYW55IGVuY2xvc3VyZXMu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+2012/11/1 Vinod Koul <vinod.koul@linux.intel.com>:
+> On Thu, 2012-11-01 at 14:25 +0000, Mark Brown wrote:
+>> On Wed, Oct 31, 2012 at 07:37:31PM +0530, Vinod Koul wrote:
+>>
+>> > Is there any limitation on maximum number of controls we can have.
+>>
+>>
+>> Not that I'm aware of beyond sizeof() type stuff which you're probably
+>> still a way away from.
+
+At least, for USB devices there's a maximum for logical mixer channels
+(currently, MAX_CHANNELS = 16).  This might feel like a limit for the
+number of mixer controls depending on the respective mixer topoplogy.
+MAX_CHANNELS can't be raised deliberately in the current code since it
+is used for some bitshifting. I don't know if something similar exists
+for PCI devices
