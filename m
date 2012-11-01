@@ -1,17 +1,17 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 1 Nov 2012 15:57:12 -0200
-Message-ID: <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
-References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+From: Alexandre Belloni <alexandre.belloni@piout.net>
+Subject: [PATCH] ASoC: atmel_ssc_dai: make module reloadable
+Date: Thu,  1 Nov 2012 14:18:02 +0100
+Message-ID: <1351775882-15834-1-git-send-email-alexandre.belloni@piout.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
- (db3ehsobe003.messaging.microsoft.com [213.199.154.141])
- by alsa0.perex.cz (Postfix) with ESMTP id D01542625ED
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 19:04:40 +0100 (CET)
-In-Reply-To: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+Received: from narya.piout.net (128-79-244-21.hfc.dyn.abo.bbox.fr
+ [128.79.244.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 916D92625ED
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 19:42:06 +0100 (CET)
+Resent-Message-ID: <20121101184151.GA14207@piout.net>
+Resent-To: alsa-devel@alsa-project.org
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,105 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
+To: alsa-devel@alsa-project.org
+Cc: Alexandre Belloni <alexandre.belloni@piout.net>, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-All MXS users have been converted to device tree and the board files have been
-removed.
+As the platform_devices were never unregistered, it was not possible to
+unload/reload the module.
 
-No need to keep platform data in the driver.
-  
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@piout.net>
 ---
-Changes since v3:
-- Remove pdev->id check
-Changes since v2:
-- Also remove 'if (np)' as dt is the only probing mechanism.
-Changes since v1:
-- Also remove mxs_saif_platform_data and sound/saif.h, which was used only
-to include mxs_saif_platform_data definition.
- include/sound/saif.h     |   16 ----------------
- sound/soc/mxs/mxs-saif.c |   44 ++++++++++++++++----------------------------
- 2 files changed, 16 insertions(+), 44 deletions(-)
- delete mode 100644 include/sound/saif.h
+ sound/soc/atmel/atmel_ssc_dai.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/saif.h b/include/sound/saif.h
-deleted file mode 100644
-index f22f3e1..0000000
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index c294fbb..05dbadb 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -32,7 +32,6 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/saif.h>
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/mxs.h>
-@@ -660,43 +659,32 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
--	struct mxs_saif_platform_data *pdata;
- 	struct pinctrl *pinctrl;
- 	int ret = 0;
-+	struct device_node *master;
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 354341e..07ee57b 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -155,6 +155,8 @@ static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
+ #endif
+ };
  
--
--	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
-+	if (!np)
- 		return -EINVAL;
++static struct platform_device *dma_pdev;
++static struct platform_device *ssc_pdevs[NUM_SSC_DEVICES];
  
- 	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
+ /*
+  * SSC interrupt handler.  Passes PDC interrupts to the DMA
+@@ -796,6 +798,12 @@ static __devinit int asoc_ssc_probe(struct platform_device *pdev)
  
--	if (np) {
--		struct device_node *master;
--		saif->id = of_alias_get_id(np, "saif");
--		if (saif->id < 0)
--			return saif->id;
--		/*
--		 * If there is no "fsl,saif-master" phandle, it's a saif
--		 * master.  Otherwise, it's a slave and its phandle points
--		 * to the master.
--		 */
--		master = of_parse_phandle(np, "fsl,saif-master", 0);
--		if (!master) {
--			saif->master_id = saif->id;
--		} else {
--			saif->master_id = of_alias_get_id(master, "saif");
--			if (saif->master_id < 0)
--				return saif->master_id;
--		}
-+	saif->id = of_alias_get_id(np, "saif");
-+	if (saif->id < 0)
-+		return saif->id;
-+	/*
-+	 * If there is no "fsl,saif-master" phandle, it's a saif
-+	 * master.  Otherwise, it's a slave and its phandle points
-+	 * to the master.
-+	 */
-+	master = of_parse_phandle(np, "fsl,saif-master", 0);
-+	if (!master) {
-+		saif->master_id = saif->id;
- 	} else {
--		saif->id = pdev->id;
--		pdata = pdev->dev.platform_data;
--		if (pdata && !pdata->master_mode)
--			saif->master_id = pdata->master_id;
--		else
--			saif->master_id = saif->id;
-+		saif->master_id = of_alias_get_id(master, "saif");
-+		if (saif->master_id < 0)
-+			return saif->master_id;
- 	}
+ static int __devexit asoc_ssc_remove(struct platform_device *pdev)
+ {
++	int i;
++	platform_device_unregister(dma_pdev);
++
++	for(i = 0; i < NUM_SSC_DEVICES; i++)
++		platform_device_unregister(ssc_pdevs[i]);
++
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 	return 0;
+ }
+@@ -816,7 +824,6 @@ static struct platform_driver asoc_ssc_driver = {
+ int atmel_ssc_set_audio(int ssc_id)
+ {
+ 	struct ssc_device *ssc;
+-	static struct platform_device *dma_pdev;
+ 	struct platform_device *ssc_pdev;
+ 	int ret;
  
- 	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
+@@ -855,6 +862,8 @@ int atmel_ssc_set_audio(int ssc_id)
+ 	if (ret < 0)
+ 		platform_device_put(ssc_pdev);
+ 
++	ssc_pdevs[ssc_id] = ssc_pdev;
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
 -- 
 1.7.9.5
