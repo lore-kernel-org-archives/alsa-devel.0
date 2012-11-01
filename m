@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v3 1/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 1 Nov 2012 14:30:01 +0000
-Message-ID: <20121101143001.GG4413@opensource.wolfsonmicro.com>
+Date: Thu, 1 Nov 2012 14:30:46 +0000
+Message-ID: <20121101143046.GH4413@opensource.wolfsonmicro.com>
 References: <1351698925-25530-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0682384864632353684=="
+Content-Type: multipart/mixed; boundary="===============0432186614362981565=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C79E7261794
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:30:02 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B84E2625E0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:30:47 +0100 (CET)
 In-Reply-To: <1351698925-25530-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,13 +24,13 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, do
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0682384864632353684==
+--===============0432186614362981565==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UTZ8bGhNySVQ9LYl"
+	protocol="application/pgp-signature"; boundary="2xzXx3ruJf7hsAzo"
 Content-Disposition: inline
 
 
---UTZ8bGhNySVQ9LYl
+--2xzXx3ruJf7hsAzo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -42,38 +42,37 @@ On Wed, Oct 31, 2012 at 01:55:25PM -0200, Fabio Estevam wrote:
  been
 > removed.
 
-This doesn't apply against v3.7-rc3 so I wasn't able to make a topic
-branch for it.  Can you check what's going on here please?
+I also seem to be missing patch 2...
 
---UTZ8bGhNySVQ9LYl
+--2xzXx3ruJf7hsAzo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQkodcAAoJELSic+t+oim92oQQAJ1kVeU9v26x/MKQBClOCtXW
-cKOJ/ThKkebdL5SXpFMHPwPZdoMyCTd4D4WJWAsdha0yn1ZodTbIYLiXeXmbs5eb
-svzaWWxNv7KUeZg4AU9Cd6udrzFbT0nj3ZAKeGuBqpxIfL0JSli2goVdlchamu9i
-ttfkSwh1J3aRG8/OsJTZgYt2v1hPwy+JUXEel1gPmSvCfB9k58bekcIkWXugfmwH
-P997PLWiNiszyyXzgsmWv66JCLLMJpLp3+nRJHqkx5QCBI57BPcak2afFiItq0cR
-IlOVEv7+c75/CAxKCGhrhTkYObyqWLmozZOhJZL/aGM4rPc/ZM3B6bz3qYS0wMLj
-PQ8fN1APSjBtdyTXZK21jwMJth+H+Kmonof36LrdC2vSmZm9ZcaKXVXsNwxDu6/D
-zX8YiXgIUMCULZJXlJ8MT1wT7gxdjofaTKMSt1CekVTAaaBdrG3jIMt/e5zQDmZD
-2sLCMDNnP81D1ut691Oo+80dO4h2VQvijhNCOK6PGaYYPj1inqFu+Slc6SCcV+rC
-D0dNRFTlUx6exPaFZcqBdLFTQMjD41xfaDkn2FK6cBV6qteHiSmT576hA0lrEzFT
-SRq6pxvHIF22Xxk2pZ97YZa2+EspMfYEhHw5bl3EAtOEcILG0CW3yPQbBoXpzRQx
-NFDmrRs2ZMkTJ+OIP5OB
-=QiZr
+iQIcBAEBAgAGBQJQkoePAAoJELSic+t+oim9Sz0QAIt3K8CbBe5xq5UDvngGIqTp
+/VBJ/kHqlyQMKZfJzPlgLg24c9edBaCMF8DcpwVnunqKL/jy3oH+rDepkVn1XJtg
+JA4QEuREvYE2N03OudDconU5qpYfPDQ0/W3jGhqxRqMxmZea6kzJYDhfzrIDSW0H
+yL+kVyBblasVGn6AU3uvBKJzQVULbioFZ6cUUBwuVSxc8GqhwHHyyUyjCs7rlwGj
+MRy2Eiw6IsPy4JU/0Vcb6K3FdeTj53uRx62FxMXzTLu5oU/hNCaiZyoTLRo+GOya
+w+7Xf53yCGvYoQx9yDJ8l36EaQUaXvzBdCdfAG+ii+U5aWzGtHOEw0/0BQvQAnor
+eze7CWjHsCaWf9O2dXCysZU7TsjKrLzG0vEl4Qpyo8cSKCo34kq/GH8hnZ0CizyK
+6rsegBQ6WDEtV0SD+9AFIKgm1JqZIXG6MStPXejN0/x/L0UVzJGGogq1C60iZRkO
+vchObQfqNZ0hOaV6JNKIt/isoJDxLb+fyMk/gt8ekOI3VXnGllwSfoXQ+1lcONvG
+e2sdaZ63aOjtVJ3WH5ZWij22S41XepKtnslT6fdkWT/1FqCN2nxBbisazpHa0/HM
+hQ8/iCNypFhSZIXBH/SmslgBkPstt2lqZRou+vLfty6ujIa6vJGXv6TIWBl0eQze
+F6div81+aORo7pXd1+h8
+=M0eA
 -----END PGP SIGNATURE-----
 
---UTZ8bGhNySVQ9LYl--
+--2xzXx3ruJf7hsAzo--
 
---===============0682384864632353684==
+--===============0432186614362981565==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0682384864632353684==--
+--===============0432186614362981565==--
