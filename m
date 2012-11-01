@@ -1,18 +1,18 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v3 1/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 1 Nov 2012 09:35:16 +0800
-Message-ID: <20121101013515.GD8358@S2100-06.ap.freescale.net>
-References: <1351698925-25530-1-git-send-email-festevam@gmail.com>
+From: Laurence Darby <ldarby@tuffmail.com>
+Subject: Re: [PATCH v2] stop setup_dig_out_stream() causing
+ clicks
+Date: Thu, 1 Nov 2012 02:53:43 +0000
+Message-ID: <20121101025343.34d69664.ldarby@tuffmail.com>
+References: <20121004212008.dd604566.ldarby@tuffmail.com>
+ <s5h391pjg0i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 69D8E2616DA
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 02:09:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1351698925-25530-1-git-send-email-festevam@gmail.com>
+Received: from mxout-07.mxes.net (mxout-07.mxes.net [216.86.168.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 337B62616D5
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 03:53:47 +0100 (CET)
+In-Reply-To: <s5h391pjg0i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +22,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, dong.aisheng@linaro.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 31, 2012 at 01:55:25PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> All MXS users have been converted to device tree and the board files have been
-> removed.
-> 
-> No need to keep platform data in the driver.
->   
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Starting audio or seeking in various music players causes
+setup_dig_out_stream() to be called, which resets the SPDIF stream,
+which caused one DAC (but not another) to make a clicking noise every
+time.
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+This patch ensures the reset only happens when it needs to, which is
+when the format changes, and makes the code a little more readable.
 
-> ---
-> Changes since v2:
-> - Also remove 'if (np)' as dt is the only probing mechanism.
-> Changes since v1:
-> - Also remove mxs_saif_platform_data and sound/saif.h, which was used only
-> to include mxs_saif_platform_data definition.
->  include/sound/saif.h     |   16 ----------------
->  sound/soc/mxs/mxs-saif.c |   42 +++++++++++++++---------------------------
->  2 files changed, 15 insertions(+), 43 deletions(-)
->  delete mode 100644 include/sound/saif.h
+Signed-off-by: Laurence Darby <ldarby@tuffmail.com>
+---
+Takashi Iwai wrote:
+
+> At Thu, 4 Oct 2012 21:20:08 +0100,
+> Laurence Darby wrote:
+> > 
+> > 
+> > Starting audio or seeking in various music players causes
+> > setup_dig_out_stream() to be called, which resets the SPDIF stream,
+> > which caused one DAC (but not another) to make a clicking noise
+> > every time.
+> > 
+> > This patch turns off codec->spdif_status_reset after one reset which
+> > stops further clicks.  One reset is still necessary to initialise
+> > the codec properly.
 > 
-> diff --git a/include/sound/saif.h b/include/sound/saif.h
-> deleted file mode 100644
-> index f22f3e1..0000000
-> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-> index aa037b2..ab5bdec 100644
-> --- a/sound/soc/mxs/mxs-saif.c
-> +++ b/sound/soc/mxs/mxs-saif.c
-> @@ -32,7 +32,6 @@
->  #include <sound/pcm.h>
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
-> -#include <sound/saif.h>
->  #include <asm/mach-types.h>
->  #include <mach/hardware.h>
->  #include <mach/mxs.h>
-> @@ -652,10 +651,9 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  	struct device_node *np = pdev->dev.of_node;
->  	struct resource *iores, *dmares;
->  	struct mxs_saif *saif;
-> -	struct mxs_saif_platform_data *pdata;
->  	struct pinctrl *pinctrl;
->  	int ret = 0;
-> -
-> +	struct device_node *master;
->  
->  	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
->  		return -EINVAL;
-> @@ -664,31 +662,21 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
->  	if (!saif)
->  		return -ENOMEM;
->  
-> -	if (np) {
-> -		struct device_node *master;
-> -		saif->id = of_alias_get_id(np, "saif");
-> -		if (saif->id < 0)
-> -			return saif->id;
-> -		/*
-> -		 * If there is no "fsl,saif-master" phandle, it's a saif
-> -		 * master.  Otherwise, it's a slave and its phandle points
-> -		 * to the master.
-> -		 */
-> -		master = of_parse_phandle(np, "fsl,saif-master", 0);
-> -		if (!master) {
-> -			saif->master_id = saif->id;
-> -		} else {
-> -			saif->master_id = of_alias_get_id(master, "saif");
-> -			if (saif->master_id < 0)
-> -				return saif->master_id;
-> -		}
-> +	saif->id = of_alias_get_id(np, "saif");
-> +	if (saif->id < 0)
-> +		return saif->id;
-> +	/*
-> +	 * If there is no "fsl,saif-master" phandle, it's a saif
-> +	 * master.  Otherwise, it's a slave and its phandle points
-> +	 * to the master.
-> +	 */
-> +	master = of_parse_phandle(np, "fsl,saif-master", 0);
-> +	if (!master) {
-> +		saif->master_id = saif->id;
->  	} else {
-> -		saif->id = pdev->id;
-> -		pdata = pdev->dev.platform_data;
-> -		if (pdata && !pdata->master_mode)
-> -			saif->master_id = pdata->master_id;
-> -		else
-> -			saif->master_id = saif->id;
-> +		saif->master_id = of_alias_get_id(master, "saif");
-> +		if (saif->master_id < 0)
-> +			return saif->master_id;
->  	}
->  
->  	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
-> -- 
-> 1.7.9.5
+> The flag isn't supposed to be changed in such a dynamic way.
+> Certain codecs seem requiring resetting the SPDIF status bits, and
+> this flag indicates that.
 > 
+> That is, blindly clearing this flag is risky (and likely broken).
+> 
+> One better option would be to do the SPDIF status reset only when the
+> value is really changed.
+> 
+
+Hi Takashi,
+
+Thanks, you are right, if another audio player used a different format,
+only noise was produced...  So v2 of the patch does the reset if the
+format changes, (so changing players still results in a click, but that
+seems to be unavoidable) and has some other changes which I think make
+the code a bit more readable.  Could you please review this?
+
+It's against the 3.6.4 stable branch (which is what I'm running), or
+does it need to be against Linus's tree?
+
+Thanks,
+Laurence
+
+ sound/pci/hda/hda_codec.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 38fdefc..6f7800a 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -4718,10 +4718,20 @@ EXPORT_SYMBOL_HDA(snd_hda_input_mux_put);
+ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 				 unsigned int stream_tag, unsigned int format)
+ {
+-	struct hda_spdif_out *spdif = snd_hda_spdif_out_of_nid(codec, nid);
+-
+-	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
+-	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
++	struct hda_spdif_out *spdif;
++	unsigned int curr_fmt;
++	bool reset;
++
++	spdif = snd_hda_spdif_out_of_nid(codec, nid);
++	curr_fmt = snd_hda_codec_read(codec, nid, 0,
++				      AC_VERB_GET_STREAM_FORMAT, 0);
++	reset = codec->spdif_status_reset &&
++		spdif->ctls & AC_DIG1_ENABLE &&
++		curr_fmt != format;
++
++	/* turn off SPDIF if needed; otherwise the IEC958 bits won't be
++	   updated */
++	if (reset)
+ 		set_dig_out_convert(codec, nid,
+ 				    spdif->ctls & ~AC_DIG1_ENABLE & 0xff,
+ 				    -1);
+@@ -4733,7 +4743,7 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 						   format);
+ 	}
+ 	/* turn on again (if needed) */
+-	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
++	if (reset)
+ 		set_dig_out_convert(codec, nid,
+ 				    spdif->ctls & 0xff, -1);
+ }
+-- 
+1.7.12.1
