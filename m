@@ -1,22 +1,20 @@
 From: Dong Aisheng <dong.aisheng@linaro.org>
-Subject: Re: [PATCH] ASoC: mxs-saif: Fix channel swap for
-	24-bit format
-Date: Thu, 1 Nov 2012 22:20:50 +0800
-Message-ID: <CAP1dx+zuyUsMxNFqN_NM0OWMN-jb8Fx+BWvHbutNUSik306e2Q@mail.gmail.com>
-References: <1351638429-13865-1-git-send-email-festevam@gmail.com>
- <CAP1dx+ydbcYfFrdG0sa2Ro2kfJbCS99nm4J_uFWT4JUo7NkcdQ@mail.gmail.com>
- <20121101121133.GB4413@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/2] ASoC: mxs-saif: Fix channel swap
+	for 24-bit format
+Date: Fri, 2 Nov 2012 05:59:05 +0800
+Message-ID: <CAP1dx+x7VpTnePoE+37KbKWHM_LgsUf1pZz_5=d+fi4dU32H2A@mail.gmail.com>
+References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
- [209.85.210.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E62842616E0
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 15:20:51 +0100 (CET)
-Received: by mail-da0-f51.google.com with SMTP id t11so1102453daj.38
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 07:20:50 -0700 (PDT)
-In-Reply-To: <20121101121133.GB4413@opensource.wolfsonmicro.com>
+Received: from mail-ia0-f179.google.com (mail-ia0-f179.google.com
+ [209.85.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F5CD264F13
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 22:59:06 +0100 (CET)
+Received: by mail-ia0-f179.google.com with SMTP id k25so2150336iah.38
+ for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 14:59:05 -0700 (PDT)
+In-Reply-To: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,40 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, DWinner@tc-helicon.com, alsa-devel@alsa-project.org, shawn.guo@linaro.org, Fabio Estevam <festevam@gmail.com>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, DWinner@tc-helicon.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1 November 2012 20:11, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Oct 31, 2012 at 04:50:50PM +0800, Dong Aisheng wrote:
->> On 31 October 2012 07:07, Fabio Estevam <festevam@gmail.com> wrote:
+On 2 November 2012 01:57, Fabio Estevam <fabio.estevam@freescale.com> wrote:
+> Playing 24-bit format file leads to channel swap on mx28 and the reason is that
+> the current driver performs one write/read to/from the SAIF_DATA register to
+> trigger the transfer.
 >
->> > +                        * write data to saif data register to trigger
->> > +                        * the transfer.
->> > +                        * For 24-bit format the 32-bit FIFO register stores
->> > +                        * only one channel, so we need to write twice.
->> >                          */
->> >                         __raw_writel(0, saif->base + SAIF_DATA);
->> > +                       __raw_writel(0, saif->base + SAIF_DATA);
+> This approach works fine for S16_LE case because SAIF_DATA is a 32-bit register
+> and thus is capable of storing the 16-bit left and right channels, but for the
+> S24_LE case it can only store one channel, so in order to not lose the FIFO sync
+> an extra read/write is needed.
 >
->> This probably could a workaround for the customer, but i'm not sure
->> Mark could accept it
->> since the code is a bit confusing. (Mark, what's your suggestion on this?)
->
-> I'm not really concerned about the code, the comment is fairly clear
-> except that it'd be good to mention that this is safe for data sizes
-> other than 24 bit.  It's certainly really much more confusing than the
-> existing code and if it works better that's obviously good!
+> Reported-by: Dan Winner <DWinner@tc-helicon.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> Tested-by: Dan Winner <DWinner@tc-helicon.com>
 
-If you're fine with it, i'm also ok.
-This probably is a suitable solution for now since finding out the
-strange IC behavior of this issue
-may need much longer time without IC people's help and it's still not
-on the plan.
-
-Fabio,
-You can update the patch with Mark's suggestion and resend it.
+Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
 
 Regards
 Dong Aisheng
