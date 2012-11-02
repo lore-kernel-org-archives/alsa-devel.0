@@ -1,51 +1,128 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: limitations on number of alsa controls for a card
-Date: Fri, 2 Nov 2012 10:21:49 +0800
-Message-ID: <CAN8cciZzXWj_Xc6F154KgH7F-ss0ORFrV=B9qKTT=_mf0z0ZAA@mail.gmail.com>
-References: <1351692451.7077.40.camel@vkoul-udesk3>
- <20121101142558.GF4413@opensource.wolfsonmicro.com>
- <1351781211.7077.44.camel@vkoul-udesk3>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register platform from DAIs
+Date: Fri, 02 Nov 2012 10:34:21 +0800
+Message-ID: <5093312D.4070408@atmel.com>
+References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com> <1351668420-18447-3-git-send-email-voice.shen@atmel.com> <20121101144315.GM4413@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 9007F264F0F
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 03:21:50 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so2054177qcs.38
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 19:21:49 -0700 (PDT)
-In-Reply-To: <1351781211.7077.44.camel@vkoul-udesk3>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20121101144315.GM4413@opensource.wolfsonmicro.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMS0xIOS4i+WNiDExOjAxIOaWvCAiVmlub2QgS291bCIgPHZpbm9kLmtvdWxAbGludXgu
-aW50ZWwuY29tPiDlr6vpgZPvvJoKPgo+IE9uIFRodSwgMjAxMi0xMS0wMSBhdCAxNDoyNSArMDAw
-MCwgTWFyayBCcm93biB3cm90ZToKPiA+IE9uIFdlZCwgT2N0IDMxLCAyMDEyIGF0IDA3OjM3OjMx
-UE0gKzA1MzAsIFZpbm9kIEtvdWwgd3JvdGU6Cj4gPgo+ID4gPiBJcyB0aGVyZSBhbnkgbGltaXRh
-dGlvbiBvbiBtYXhpbXVtIG51bWJlciBvZiBjb250cm9scyB3ZSBjYW4gaGF2ZS4KPiA+Cj4gPiA+
-IEkgaGFkIHNvbWUgcGxhdGZvcm0gc2lkZSBjb250cm9scyB0byByZXByZXNlbnQgRFNQIGFuZCBh
-ZGRpbmcgdGhlbQptYWRlCj4gPiA+IHNvbWUgb2YgY29kZWMgY29udHJvbHMgdG8gdmFuaXNoLiBB
-bmQgbG9va3MgbGlrZSBpZiBJIHJlZ2lzdGVyIHRoZXNlCj4gPiA+IHBsYXRmb3JtIGNvbnRyb2xz
-IG5vdCBhbGwgY29kZWMgY29udHJvbHMgYXJlIHZpc2libGUgaW4gdXNlcnBzYWNlLgo+ID4gPiBJ
-cyB0aGVyZSBuYXkgbWF4IGxpbWl0IEkgYW0gaGl0dGluZz8KPiA+Cj4gPiBOb3QgdGhhdCBJJ20g
-YXdhcmUgb2YgYmV5b25kIHNpemVvZigpIHR5cGUgc3R1ZmYgd2hpY2ggeW91J3JlIHByb2JhYmx5
-Cj4gPiBzdGlsbCBhIHdheSBhd2F5IGZyb20uICBIb3cgYXJlIHlvdSBsaXN0aW5nIHRoZSBjb250
-cm9scyBhbmQgYXJlIHRoZXJlCj4gPiBhbnkgbmFtZSBjb2xsaXNvbnM/Cj4gYWxzYV9hbWl4ZXIg
-LWMiY2FyZG5hbWUiIGNvbnRyb2xzCj4KPiBpZiB0aGVyZSBpc24ndCBhbnl0aGluZyBpbiBrZXJu
-ZWwgd2hpY2ggbGltaXRzIHRoaXMsIHdvdWxkIHRoZXJlIGJlCj4gc29tZXRoaW5nIGluIGFsc2Et
-bGliIHRvIGhhdmUgdGhpcyBraW5kIG9mIGJlaGF2aW9yPwo+Cj4gLS0KCnRob3NlIGluYWN0aXZl
-IGNvbnRyb2xzIGFyZSBub3QgbGlzdGVkIGJ5IGFtaXhlcgoKdHJ5IGFsc2FjdGwgc3RvcmUgLWYg
-Zm9vLnN0YXRlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Mark Brown,
+
+On 11/1/2012 22:43, Mark Brown wrote:
+> On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
+>
+>> +Required properties:
+>> +  - compatible: "atmel,atmel-ssc-dai"
+>> +  - atmel,dai-master: this dai base on which ssc controller
+>
+>> +Example:
+>> +dai: dai {
+>> +	compatible = "atmel,atmel-ssc-dai";
+>> +	atmel,dai-master = <&ssc0>;
+>> +};
+>
+> This seems to be a purely virtual device which remaps the SSC onto the
+> Linux audio subsystem?  If that is the case then it shouldn't appear in
+> the device tree,
+
+Yes. This is a purely virtual device. I add this as to the following reason.
+
+In our case, the ssc can connect to audio codec, DAC and other devices. 
+In order to avoid duplicate the code, so keep ssc as a library, register 
+it directly in Linux and use remap method to let it work onto other 
+different subsystem.
+
+So, for ssc connect to audio codec, use dai to remap the SSC onto the 
+Linux audio subsystem. In this way, just let the dai know which ssc 
+channel it based on. The remap is just a simple way. Please take 
+following code as a reference.
+
+---<8---
+         if (pdev->dev.of_node) {
+                 struct device_node *np = pdev->dev.of_node;
+                 struct device_node *dai_master_np;
+
+                 dai_master_np = of_parse_phandle(np, 
+"atmel,dai-master", 0);
+                 if (!dai_master_np) {
+                         dev_err(&pdev->dev, "No SSC for atmel dai");
+                         return -EINVAL;
+                 }
+
+                 id = of_alias_get_id(dai_master_np, "ssc");
+         } else {
+                 id = to_platform_device(pdev->dev.parent)->id;
+         }
+
+         ssc = ssc_request(id);
+         if (IS_ERR(ssc)) {
+                 dev_err(&pdev->dev, "Failed to request SSC %d\n", id);
+                 return PTR_ERR(ssc);
+         }
+         ssc_info.ssc = ssc;
+         pdev->dev.parent = &(ssc->pdev->dev);
+--->8---
+
+If ssc connect to other devices, also need to remap to other subsystem.
+
+the machine driver should just directly reference the
+> SSC and instantiate any devices required in Linux directly.
+
+I am not fully understand this. So, which do you mean as the following 
+two method or any other else?
+
+Our old method:
+   using audio machine driver (e.g: sam9g20_wm8731.c) call 
+atmel_ssc_set_audio function to allocate the platform device for 
+atmel-ssc-dai and atmel-pcm-audio and then add device.
+
+Code as following:
+---<8---
+/* Allocate a dummy device for DMA if we don't have one already */
+         if (!dma_pdev) {
+                 dma_pdev = platform_device_alloc("atmel-pcm-audio", -1);
+                 if (!dma_pdev)
+                         return -ENOMEM;
+
+                 ret = platform_device_add(dma_pdev);
+                 if (ret < 0) {
+                         platform_device_put(dma_pdev);
+                         dma_pdev = NULL;
+                         return ret;
+                 }
+         }
+
+         ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
+         if (!ssc_pdev)
+                 return -ENOMEM;
+
+         /* If we can grab the SSC briefly to parent the DAI device off 
+it */
+         ssc = ssc_request(ssc_id);
+         if (IS_ERR(ssc))
+                 pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+                         PTR_ERR(ssc));
+         else {
+                 ssc_pdev->dev.parent = &(ssc->pdev->dev);
+                 ssc_free(ssc);
+         }
+
+         ret = platform_device_add(ssc_pdev);
+--->8---
+
+Other SoC do like this:
+   register i2s device, and then register dai, finally register 
+platform. So, only one device.
+
+Best regards,
+Bo Shen
+
+
+
