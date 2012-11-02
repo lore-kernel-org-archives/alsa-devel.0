@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: mxs-pcm: Fix fifo size
-Date: Fri, 2 Nov 2012 15:06:27 +0000
-Message-ID: <20121102150627.GE4413@opensource.wolfsonmicro.com>
-References: <1351703171-27855-1-git-send-email-festevam@gmail.com>
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+Subject: [PATCH] ASoC: codecs/wm8978: pll incorrectly
+	configured when codec is master
+Date: Fri,  2 Nov 2012 17:05:44 -0400
+Message-ID: <1351890344-9938-1-git-send-email-emillbrandt@dekaresearch.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3326022913949662818=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28AEB2650A1
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 16:06:29 +0100 (CET)
-In-Reply-To: <1351703171-27855-1-git-send-email-festevam@gmail.com>
+Received: from norco.coldhaus.com (norco.coldhaus.com [64.32.230.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEC872650F6
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 22:06:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,60 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, shawn.guo@linaro.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Eric Millbrandt <emillbrandt@dekaresearch.com>
 List-Id: alsa-devel@alsa-project.org
 
+When MCLK is supplied externally and BCLK and LRC are configured as outputs
+(codec is master), the PLL values are only calculated correctly on the first
+transmission.  On subsequent transmissions, at differenct sample rates, the
+wrong PLL values are used.  Test for f_opclk instead of f_pllout to determine
+if the PLL values are needed.
 
---===============3326022913949662818==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iEgkO1EH36X1eT6a"
-Content-Disposition: inline
+Signed-off-by: Eric Millbrandt <emillbrandt@dekaresearch.com>
+---
+ sound/soc/codecs/wm8978.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
---iEgkO1EH36X1eT6a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Oct 31, 2012 at 03:06:11PM -0200, Fabio Estevam wrote:
-
-> According to MX28 Reference Manual the SAIF FIFO contains four 32-bit entries.
-
-> -	.fifo_size		= 32,
-> +	.fifo_size		= 4,
-
-fifo_size should be specified in bytes so the original code looks
-correct?
-
---iEgkO1EH36X1eT6a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQk+FgAAoJELSic+t+oim9hvsP+wflnkO7W0YseQNhMBgfOlFc
-FWHjJglZ1Djp905fB9AoXoGMPTXoesZHyZJsScZJ5R3pZFU20km8RuLDFSKYdJRM
-lR/2IDLdpePC8x5+9TpB0B+FwyAwTRXM9tFvR9iRhE4l+6EeSp5uWqtmm6J13fqG
-utB96o0qQ3yV7othYmo5Bs07DG4ojp8bIKnC0DkaXmF5qqubpeogMQUwtG5/yUAZ
-ihnvyASBgOo1Otoj4pUIlo1aDeq9yxqVy7ieYE0FErZTNLD+IGN8mlL+QDbFZSLP
-R63ngXbcRg2OoVfBuZSq8R6o4COYbuT9y2uUvWwMBloPs+lOKRWqDCjuxgi/5b8f
-e0aJR7Ie8Bzfisx0Nlo5TlyRnSEzC76KsSE5E1MmJ3lWBDw4JGMIRKrYItFb6K6W
-hjks6iECpJq1pHHn0s1f0vZmYL+QF2/8jvIHiVNCjqgUDmot+pc87a3kY3g6h6qG
-rjgfzOlqs8iexrwNYmLBUfrRjR/sgBvU8SD/HJhBCZIxYdZsF4M9/ybTncL+hW72
-gDjN8l3v0lWDQ6ZshH5WxDoj1seVuC7/n1f8pdozWyNWllApuJm57jMvctjVi/6D
-aBwKBdgFkMjMQubBd2RAtrEZU3hgTaR/WbAHuHOEcMNhN027z2UhJr6nmhfFewWr
-xiD7BR3l7VALuE7JOe7O
-=nDZ9
------END PGP SIGNATURE-----
-
---iEgkO1EH36X1eT6a--
-
---===============3326022913949662818==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3326022913949662818==--
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index a706262..e329187 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -784,7 +784,7 @@ static int wm8978_hw_params(struct snd_pcm_substream *substream,
+ 		wm8978->mclk_idx = -1;
+ 		f_sel = wm8978->f_mclk;
+ 	} else {
+-		if (!wm8978->f_pllout) {
++		if (!wm8978->f_opclk) {
+ 			/* We only enter here, if OPCLK is not used */
+ 			int ret = wm8978_configure_pll(codec);
+ 			if (ret < 0)
+-- 
+1.7.2.5
