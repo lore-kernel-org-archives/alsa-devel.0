@@ -1,20 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio
- to platform data.
-Date: Fri, 2 Nov 2012 14:40:27 +0000
-Message-ID: <20121102144027.GB4413@opensource.wolfsonmicro.com>
-References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
- <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
- <50913851.6060003@topic.nl>
- <20121101143514.GJ4413@opensource.wolfsonmicro.com>
- <5092953B.9080109@topic.nl>
+From: Massimo Del Fedele <max@veneto.com>
+Subject: Re: Fix for Asus G75 notebook subwoofer
+Date: Fri, 02 Nov 2012 15:57:58 +0100
+Message-ID: <k70n1l$65a$1@ger.gmane.org>
+References: <k6rkr2$usv$1@ger.gmane.org>
+ <CAN8cciZEwLxxiMp69k8yyAzSnqRNQ6m2=7q373x91D_pMy=h-w@mail.gmail.com>
+ <k6tlk1$2vr$1@ger.gmane.org>
+ <CAN8cciZQw8m-m-Bk6KF2UuqpU2a5=Y7vAi7daWmqF9vbA2w=4g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2819933472421894070=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E9E32650A0
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 15:40:29 +0100 (CET)
-In-Reply-To: <5092953B.9080109@topic.nl>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63CFB26509B
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 15:58:15 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TUIhR-0007ZL-On
+ for alsa-devel@alsa-project.org; Fri, 02 Nov 2012 15:58:21 +0100
+Received: from host65-12-dynamic.60-82-r.retail.telecomitalia.it
+ ([82.60.12.65]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2012 15:58:21 +0100
+Received: from max by host65-12-dynamic.60-82-r.retail.telecomitalia.it with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2012 15:58:21 +0100
+In-Reply-To: <CAN8cciZQw8m-m-Bk6KF2UuqpU2a5=Y7vAi7daWmqF9vbA2w=4g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +33,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Javier Martin <javier.martin@vista-silicon.com>, w.sang@pengutronix.de, lrg@ti.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Il 02/11/2012 02:44, Raymond Yau ha scritto:
+>>
 
---===============2819933472421894070==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5iEYumb6eglF6CEb"
-Content-Disposition: inline
+>
+> it is ignored by the auto parser because [N/A] instead of [Fixed]
 
+I guess it's ignored for 2 reasons :
 
---5iEYumb6eglF6CEb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+1) N/Aconnection
+2) Input from non-reported 0x3e widget
+>
+> do widge 0x3e has amp-out for subwoofer volume control ?
 
-On Thu, Nov 01, 2012 at 04:28:59PM +0100, Mike Looijmans wrote:
+Nope. The sound path I got finally are :
+08/34/14/24/00
+08/21/14/24/00
+09/3c/1c/33/00
+08/35/15/25/00
+08/21/15/25/00
 
-> >This breaks down if any of the drivers actually uses the reset pin to
-> >reset the chip - if the reset might not actually happen but the driver
-> >wants it to happen then things are going to go wrong.
+So, front on 0x08, shared with HP, and subwoofer on 0x09. Volumes are on 0x08 and 0x09 controls,
+afaik there are no more volume controls there.
 
-> Good point. But in that case, the gpio cannot be "optional", the
-> board file MUST supply it.
+>
+>>>
+>>> should the auto parser put it into autocfg->mono_out?
+>>>
+>>
+>> maybe.... I didn't try that one.
+>> With both patches the stuffs appears like a 4 channel one; the correct
+> would be 2+1, but
+>> I didn't manage to get it right.
+>
+> Node 0x2b [Pin Complex] wcaps 0x400481: Stereo
+>    Control: name="Mic Boost Volume", index=0, device=0
+>      ControlAmp: chs=3, dir=In, idx=0, ofs=0
+>    Control: name="Mic Jack", index=0, device=0
+>    Pincap 0x00002324: IN Detect
+>      Vref caps: HIZ 50 100
+>    Pin Default 0x01a1903e: [Jack] Mic at Ext Rear
+>      Conn = 1/8, Color = Pink
+>      DefAssociation = 0x3, Sequence = 0xe
+>
+> as the mic jack cannot be retasked as output , No need to put hp in lineout
+>
+I didn't retask the mic (0x2b)... just the 24 and 33.
 
-Well, what normally happens is that the driver has some alternative
-ways of doing what it wants but if there's a reset signal present it
-wants to actually use it and be able to rely on it doing the job.
+> multiout.extra_out seem support multi stereo streams in
+> snd_hda_multi_out_analog_prepare()
+>
+> for (i = 0; i < ARRAY_SIZE(mout->extra_out_nid); i++)
+>                   if (!mout->no_share_stream && mout->extra_out_nid[i])
+>                           snd_hda_codec_setup_stream(codec,
+>                                                      mout->extra_out_nid[i],
+>                                                      stream_tag, 0, format);
+>
+> how to put those internal speakers into multiout->extra_out in
+> via_auto_create_speaker_ctls() when the auto parser put the speaker into
+> autocfg->lineout ?
 
-> Do I understand correctly that I'm totally alone in this and that
-> there is no point in uploading the code?
+Don't know.... if I let 0x33 and/or 0x24 as speaker, they're put as speaker out but not taken
+in multiout paths.
+>
+> only two volume controls at 0x08 and 0x09,
+> there are three pin complexes 0x24, 0x25 and 0x33
+>
 
-If you want to do something like this you should explictly model reset
-lines like this rather than shoehorning them into a different subsystem.
+As above, a volume control is shared between front (24) and HP (25) pins, I guess.
+Volumes are present just at DAC level, not pins.
 
---5iEYumb6eglF6CEb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQk9tQAAoJELSic+t+oim9FzsP/jYe1I/4UydGFPYLWm1ZpuXY
-Hl+E+uMMcdN/N9lerpKUvtBXmV8dDFka3MObWrgIPrajykwwD1FMm1ZoyAXyxN+R
-O0HURibwhc3BvjsPQrW46GSr7nKM4hszITi0cbcJ3uR+1kPA5QWhZEChcmpVfiI8
-AjFqqTfqwjV1JUagKQ9axYD3sR4ltxAwSjw7bdLmo/c88uegZRvY2y//g9lfOLwC
-ugOlrZNsU13xLCoB5HWyoZNW/iHeu1AWTBFk87QBMecfjUqSrD3/MxRV5SC6NXr7
-vngAAEBl/3wGtp3sOKGS7QES+LcJBUyY6SiGcOdHskHu0KmCXI7Nfru7uC4Fxv19
-+jyqWiiu9eIs4uzp6JS2GK6TBubiuZ0lufvBgWnmKDXUowIgkH17Cj8GSjF5lc3G
-zjONolEEifA5rU3JxupvOdHmzoHj0YDVmgvLp/wkMHms9sHbPA2BeroixcUiRDeg
-e0lSUNHpbvWXHLjJg+z69vqAerWq8cvs55kAL5WZy/5NjuyNkn6twFKfAkaieivd
-LJPyazDjOHwJ4LzE/VtciWivI7uTKWJFTmQn1I8bSNaUU7ygtYNZusoHDxYwY9mm
-mbByHRJj9fvA69RyzPOdojWXHJpC6XYLlgGhQ1aYMkIKm2mmJIpZ+v0+ybZZcgfd
-0x+qGzbcTkPpLXESW1TV
-=CAGh
------END PGP SIGNATURE-----
-
---5iEYumb6eglF6CEb--
-
---===============2819933472421894070==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2819933472421894070==--
+Max
