@@ -1,75 +1,71 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: bells: Add hookup of WM0010 on
-	Bells
-Date: Fri, 2 Nov 2012 14:19:59 +0000
-Message-ID: <20121102141959.GW4413@opensource.wolfsonmicro.com>
-References: <1351861374-19940-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register platform from DAIs
+Date: Fri, 2 Nov 2012 14:24:44 +0000
+Message-ID: <20121102142444.GY4413@opensource.wolfsonmicro.com>
+References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
+ <1351668420-18447-3-git-send-email-voice.shen@atmel.com>
+ <20121101144315.GM4413@opensource.wolfsonmicro.com>
+ <5093312D.4070408@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4804160815075614571=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 26A44265081
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 15:20:06 +0100 (CET)
-In-Reply-To: <1351861374-19940-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RUh7Gb6wQL2PrpWP"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5093312D.4070408@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4804160815075614571==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L+ytD9kXoSFEJYhc"
-Content-Disposition: inline
-
-
---L+ytD9kXoSFEJYhc
+--RUh7Gb6wQL2PrpWP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 02, 2012 at 01:02:53PM +0000, Dimitris Papastamos wrote:
-> The Bells platform by default has a WM0010 fitted.  Now that we
-> have a public driver hook it up in the machine integration.
+On Fri, Nov 02, 2012 at 10:34:21AM +0800, Bo Shen wrote:
+> On 11/1/2012 22:43, Mark Brown wrote:
+> >On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
 
-Applied both with a fixed changelog for patch 1.
+> >>+dai: dai {
+> >>+	compatible = "atmel,atmel-ssc-dai";
+> >>+	atmel,dai-master = <&ssc0>;
+> >>+};
 
---L+ytD9kXoSFEJYhc
+> >This seems to be a purely virtual device which remaps the SSC onto the
+> >Linux audio subsystem?  If that is the case then it shouldn't appear in
+> >the device tree,
+
+> Yes. This is a purely virtual device. I add this as to the following reason.
+
+> In our case, the ssc can connect to audio codec, DAC and other
+> devices. In order to avoid duplicate the code, so keep ssc as a
+> library, register it directly in Linux and use remap method to let
+> it work onto other different subsystem.
+
+Your quote appears to have deleted the bit of my mail where I told you
+how to fix this.  Is there something unclear in my suggestion that the
+machine driver directly reference the SSC node?
+
+--RUh7Gb6wQL2PrpWP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQk9aBAAoJELSic+t+oim9FM8P/0tB97Q0qzb9Tn4Szl6vRbSg
-TG7eserLyrpOBs25/fEWMJYdEkJ8URn3iz+yTt7Ho7uaH+HUh+4oOSjVJgwsDFgd
-MfyzdcDlfOv7825BEbYH7zf7gjiNNn/2iJ9iDTBCTLeNxS3SP9PA2pjHNmD/Hx59
-9Qs6ADBpQtitWPwjdMKGBxNwPGa/4W41Z2DNdvJ5IvGLQHNVW+KuXIllZtFu/pHx
-5QqWY5dQiNi4lsw2UDhAsM7julLVHpvcXYgU59SrntftnjLfBIrVKq0Zr2x12PnL
-BSc306Hrg/U3otgVQX8MzO2scecOJk3CIolFmGlZlbG9YXRxYBnIINNTuztm9HVR
-h7WXSu4Xwtw0YBF7d0jwcVBQ5+PoHEyDO0QImH0TXEcobWJW3xZ1NC3B2Av98bA3
-FiFG7Sa0RuJfEKXHR8tDbM3NQboZ/fpcyOak+g5leyumK0QirgxxOtzYDzoKVDMo
-tGb8cV+3AdHYwurgNy8T52fpTUQt7zM9zfkAyMq93bfUvrnlxOhXOEnzPntX0e7i
-tWcqDTtNszdOjBpX/ucpF8AydDx2a77uUxJSBj8xKd0fGV0e9M2rbLJgiSlIBWTW
-RIBmTdA1v9Tolc96FIcLHaWSHLCqiKyGp6jQv1x+jqBVJ1D1yGj2h43MR4pD0O2x
-g9hu425KY11lnuZV47iA
-=3An1
+iQIcBAEBAgAGBQJQk9eKAAoJELSic+t+oim9eWwP/15cY43ihmhBpcmAxrgJtm0l
+N+siOIOnjfF3Jhyy3r0hNdAQ6SaeW4LYB3lbUYMC6/eNSiiRNLC447ki/FgciOdx
+SQ/qapzewV1MuzCi66SvonXav0TclbXIB+T9TupTnYRRzeAGCXDtLZa0uEATI3OD
+osSaVPUOf7tO3UBfvDuV0r4otLUgFV2lS2MljuGdG6xb7YGc5+RZ9cbeABM8N4QQ
+oh/oy3+BA1X/lIK0hlgQn8M7pHxjwY5/1LkxFd6unXqzROb/KuFi1NGRTS1LUQTK
+8TCSd9qjt9j7I8QzAhk95qlcJsMF2LBbTAYUk7XCG+i3+lGHx+BPLzlX/v/U8lkC
+Yt1l5/7BLPx4W5aiyWUuEy0X+/B6VgrTW2uBawxbXLX6fFpDoK+9GiO+5cTveW8Y
+cElo5QvxMeDrl5+YBh9sXPL7LFiXq7/nrsYF86JaT6wHGZTkTrRKgN/wlIOBb4Yr
+dVTDKGldX/WDnQsABPF9DLwGv0rLQdlCisZzLKat/VD71qpNjHAUi1z97j8FH3u9
+fAEi32gB33FXDEmPF0fDwr0vVl2/9qareTj8Dw/fjZixB/ZQ8dOmntAZAQsj2H74
+w8uo7oAn/cEwRD9peieMZOQCRLS67FEbmB+1RV36emO+QUw9kocNcmzNqVN9krrm
+x9z079ILBed39bq7Eyk0
+=3OZ0
 -----END PGP SIGNATURE-----
 
---L+ytD9kXoSFEJYhc--
-
---===============4804160815075614571==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4804160815075614571==--
+--RUh7Gb6wQL2PrpWP--
