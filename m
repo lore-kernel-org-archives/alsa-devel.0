@@ -1,16 +1,14 @@
-From: Nick Harezga <nharezga@gmail.com>
-Subject: Issue when upgrading from 1.0.22 to 1.0.25
-Date: Fri, 2 Nov 2012 07:53:11 -0400
-Message-ID: <CAFMXN5p-PBtvM1LR+QMCdekXuBGF95sGOfmX2ZnWTF4RC10MMQ@mail.gmail.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: bells: Add hookup of WM0010 on Bells
+Date: Fri,  2 Nov 2012 13:02:53 +0000
+Message-ID: <1351861374-19940-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=f46d044269dcb60c3204cd81c79e
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id CFD9B265005
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 12:53:12 +0100 (CET)
-Received: by mail-ob0-f179.google.com with SMTP id lz20so3233674obb.38
- for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2012 04:53:12 -0700 (PDT)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B8759265016
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 14:04:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,129 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
---f46d044269dcb60c3204cd81c79e
-Content-Type: text/plain; charset=ISO-8859-1
+The Bells platform by default has a WM0010 fitted.  Now that we
+have a public driver hook it up in the machine integration.
 
-I initially tried to send this yesterday from my work e-mail, but I think they
-may be blocking the list for some reason. Apologies if this question shows
-up twice.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I am attempting to upgrade from Ubuntu version 10.04 to version 12.04. Version
-10.04 has ALSA version 1.0.22 and version 12.04 has ALSA 1.0.25. I have a
-simple test application that captures microphone input and then plays the
-audio through the speaker. When run with ALSA 1.0.22 the program works as
-expected. When I run the program with ALSA 1.0.25, I get a bad pipe error
-indicating buffer underrun when calling writes. Both systems have the same
-hardware (Dell Latitude E6400 laptop).
-
-I tried looking through the change logs to determine if there were any obvious
-changes that stood out to me, but couldn't find anything. I have attached
-my code. Any suggestions?
-
-Program is compiled using "g++ audio_test.cpp -o audio_test -lasound"
-
-Audio sample rate: 8000
-Buffer size: 1800
-Format: Signed 16bit LE, interleaved
-
---f46d044269dcb60c3204cd81c79e
-Content-Type: text/x-c++src; charset=US-ASCII; name="audio_test.cpp"
-Content-Disposition: attachment; filename="audio_test.cpp"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h918w9kz0
-
-I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSA8
-c3RkaW8uaD4KI2luY2x1ZGUgPHN0ZGxpYi5oPgoKI2RlZmluZSBCVUZGRVJfU0laRQkJCTE4MDAK
-CmludCBtYWluKCBpbnQgYXJnYywgY2hhciogYXJndltdICkKewoJLy9TcGVha2VyCgoJc25kX3Bj
-bV90KiBwY21faGFuZGxlOwoJc25kX3BjbV90KiBjYXBfaGFuZGxlOwoJc25kX3BjbV9zdHJlYW1f
-dCBzdHJlYW0gPSBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSzsKCXNuZF9wY21fc3RyZWFtX3QgcmVj
-ZWl2ZSA9IFNORF9QQ01fU1RSRUFNX0NBUFRVUkU7CglzbmRfcGNtX2h3X3BhcmFtc190ICpod3Bh
-cmFtczsKCWNoYXIgKnBjbV9uYW1lOwoJcGNtX25hbWUgPSBzdHJkdXAoICJkZWZhdWx0IiApOwoK
-CXNuZF9wY21faHdfcGFyYW1zX2FsbG9jYSggJmh3cGFyYW1zICk7CgoJaWYoIHNuZF9wY21fb3Bl
-biggJnBjbV9oYW5kbGUsIHBjbV9uYW1lLCBzdHJlYW0sIDAgKSA8IDAgKQoJewoJCWZwcmludGYo
-IHN0ZGVyciwgIkVycm9yIG9wZW5pbmcgUENNIGRldmljZSAlc1xuIiwgcGNtX25hbWUgKTsKCQly
-ZXR1cm4gLTE7Cgl9CglpZiggc25kX3BjbV9vcGVuKCAmY2FwX2hhbmRsZSwgcGNtX25hbWUsIHJl
-Y2VpdmUsIDAgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIG9wZW5pbmcgUENN
-IGRldmljZSAlc1xuIiwgcGNtX25hbWUgKTsKCQlyZXR1cm4gLTE7Cgl9CgoJaWYoIHNuZF9wY21f
-aHdfcGFyYW1zX21hbGxvYyggJmh3cGFyYW1zICkgPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIs
-ICJjYW5ub3QgYWxsb2NhdGUgaGFyZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZVxuIiApOwoJCXJl
-dHVybiAtMTsKCX0KCglpZiggc25kX3BjbV9od19wYXJhbXNfYW55KCBwY21faGFuZGxlLCBod3Bh
-cmFtcyApIDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiY2Fubm90IGluaXRpYWxpemUgaGFy
-ZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZVxuIiApOwoJCXJldHVybiAtMTsKCX0KCWlmKCBzbmRf
-cGNtX2h3X3BhcmFtc19hbnkoIGNhcF9oYW5kbGUsIGh3cGFyYW1zICkgPCAwICkKCXsKCQlmcHJp
-bnRmKCBzdGRlcnIsICJjYW5ub3QgaW5pdGlhbGl6ZSBoYXJkd2FyZSBwYXJhbWV0ZXIgc3RydWN0
-dXJlXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWludCByYXRlID0gODAwMDsKCXVuc2lnbmVkIGlu
-dCBleGFjdF9yYXRlOwoJdW5zaWduZWQgaW50IHBlcmlvZHMgPSAyOwoJaW50IGNoYW4gPSAxOwoJ
-aW50IGVycjsKCglpZiggZXJyID0gKCBzbmRfcGNtX2h3X3BhcmFtc19zZXRfYWNjZXNzKCBwY21f
-aGFuZGxlLCBod3BhcmFtcywKCQlTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCApIDwgMCAp
-ICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIGFjY2VzcyAoJXMpLlxuIiwg
-c25kX3N0cmVycm9yKCBlcnIgKSApOwoJCXJldHVybiAtMTsKCX0KCWlmKCBlcnIgPSAoIHNuZF9w
-Y21faHdfcGFyYW1zX3NldF9hY2Nlc3MoIGNhcF9oYW5kbGUsIGh3cGFyYW1zLAoJCVNORF9QQ01f
-QUNDRVNTX1JXX0lOVEVSTEVBVkVEICkgPCAwICkgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVy
-cm9yIHNldHRpbmcgYWNjZXNzICglcykuXG4iLCBzbmRfc3RyZXJyb3IoIGVyciApICk7CgkJcmV0
-dXJuIC0xOwoJfQoKCWlmKCBzbmRfcGNtX2h3X3BhcmFtc19zZXRfZm9ybWF0KCBwY21faGFuZGxl
-LCBod3BhcmFtcywgCgkJU05EX1BDTV9GT1JNQVRfUzE2X0xFICkgPCAwICkKCXsKCQlmcHJpbnRm
-KCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoJaWYo
-IHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoIGNhcF9oYW5kbGUsIGh3cGFyYW1zLCAKCQlT
-TkRfUENNX0ZPUk1BVF9TMTZfTEUgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9y
-IHNldHRpbmcgcmF0ZS5cbiIgKTsKCQlyZXR1cm4gLTE7Cgl9CgoJZXhhY3RfcmF0ZSA9IHJhdGU7
-CglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhciggcGNtX2hhbmRsZSwgaHdwYXJh
-bXMsICZleGFjdF9yYXRlLCAKCQkwICkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJv
-ciBzZXR0aW5nIHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoJaWYoIHJhdGUgIT0gZXhhY3Rf
-cmF0ZSApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiVGhlIHJhdGUgJWQgSHogaXMgbm90IHN1cHBv
-cnRlZCBieSB5b3VyIGhhcmR3YXJlLlxuICIgCgkJCQkiID09PiBVc2luZyAlZCBIeiBpbnN0ZWFk
-LlxuIiwgcmF0ZSwgZXhhY3RfcmF0ZSApOwoJfQoJZXhhY3RfcmF0ZSA9IHJhdGU7CglpZiggc25k
-X3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhciggY2FwX2hhbmRsZSwgaHdwYXJhbXMsICZleGFj
-dF9yYXRlLCAKCQkwICkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5n
-IHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWlmKCByYXRlICE9IGV4YWN0X3JhdGUgKQoJ
-ewoJCWZwcmludGYoIHN0ZGVyciwgIlRoZSByYXRlICVkIEh6IGlzIG5vdCBzdXBwb3J0ZWQgYnkg
-eW91ciBoYXJkd2FyZS5cbiAiIAoJCQkJIiA9PT4gVXNpbmcgJWQgSHogaW5zdGVhZC5cbiIsIHJh
-dGUsIGV4YWN0X3JhdGUgKTsKCX0KCglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxz
-KCBwY21faGFuZGxlLCBod3BhcmFtcywgY2hhbiApIDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJy
-LCAiRXJyb3Igc2V0dGluZyBjaGFubmVscy5cbiIgKTsKCQlyZXR1cm4gLTE7Cgl9CglpZiggc25k
-X3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKCBjYXBfaGFuZGxlLCBod3BhcmFtcywgY2hhbiAp
-IDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiRXJyb3Igc2V0dGluZyBjaGFubmVscy5cbiIg
-KTsKCQlyZXR1cm4gLTE7Cgl9CgoJaWYoIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RzX25l
-YXIoIHBjbV9oYW5kbGUsIGh3cGFyYW1zLCAmcGVyaW9kcywgMCApCgkJPCAwICkKCXsKCQlmcHJp
-bnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIHBlcmlvZHMuXG4iICk7CgkJcmV0dXJuIC0xOwoJ
-fQoJaWYoIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RzX25lYXIoIGNhcF9oYW5kbGUsIGh3
-cGFyYW1zLCAmcGVyaW9kcywgMCApCgkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJv
-ciBzZXR0aW5nIHBlcmlvZHMuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWludCBmcmFtZVNpemUg
-PSBjaGFuICogMjsKCXNuZF9wY21fdWZyYW1lc190IGZybWUgPSBCVUZGRVJfU0laRSAvIGZyYW1l
-U2l6ZSAqIHBlcmlvZHM7CglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9zaXplX25l
-YXIoIHBjbV9oYW5kbGUsIGh3cGFyYW1zLCAmZnJtZSApIAoJCTwgMCApCgl7CgkJZnByaW50Zigg
-c3RkZXJyLCAiRXJyb3Igc2V0dGluZyBidWZmZXJzaXplLlxuIiApOwoJCXJldHVybiAtMTsKCX0K
-CglpZiggQlVGRkVSX1NJWkUgIT0gKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMg
-KSApCgl7CgkJcHJpbnRmKCAiYXNrZWQgZm9yICVkLCBnb3QgJWRcbiIsIEJVRkZFUl9TSVpFLCAK
-CQkJKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMgKSApOwoJfQoKCWZybWUgPSBC
-VUZGRVJfU0laRSAvIGZyYW1lU2l6ZSAqIHBlcmlvZHM7CgoJaWYoIHNuZF9wY21faHdfcGFyYW1z
-X3NldF9idWZmZXJfc2l6ZV9uZWFyKCBjYXBfaGFuZGxlLCBod3BhcmFtcywgJmZybWUgKSAKCQk8
-IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgYnVmZmVyc2l6ZS5cbiIg
-KTsKCQlyZXR1cm4gLTE7Cgl9CglpZiggQlVGRkVSX1NJWkUgIT0gKCBpbnQgKSggZnJtZSAqIGZy
-YW1lU2l6ZSAvIHBlcmlvZHMgKSApCgl7CgkJcHJpbnRmKCAiYXNrZWQgZm9yICVkLCBnb3QgJWRc
-biIsIEJVRkZFUl9TSVpFLCAKCQkJKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMg
-KSApOwoJfQoKCWlmKCBzbmRfcGNtX2h3X3BhcmFtcyggcGNtX2hhbmRsZSwgaHdwYXJhbXMgKSA8
-IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgSFcgcGFyYW1zLlxuIiAp
-OwoJCXJldHVybiAtMTsKCX0KCWlmKCBzbmRfcGNtX2h3X3BhcmFtcyggY2FwX2hhbmRsZSwgaHdw
-YXJhbXMgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgSFcgcGFy
-YW1zLlxuIiApOwoJCXJldHVybiAtMTsKCX0KCgl1bnNpZ25lZCBjaGFyICpkYXRhOwoJaW50IGZy
-YW1lczsKCglkYXRhID0gKCB1bnNpZ25lZCBjaGFyKiApbWFsbG9jKCBCVUZGRVJfU0laRSApOwoJ
-ZnJhbWVzID0gQlVGRkVSX1NJWkUvZnJhbWVTaXplOwoKCXdoaWxlKCB0cnVlICkKCXsKCQlpZigg
-KCBwY21yZXR1cm4gPSBzbmRfcGNtX3JlYWRpKCBjYXBfaGFuZGxlLCBkYXRhLCBmcmFtZXMgKSAp
-IDwgMCApCgkJewoJCQlzbmRfcGNtX3ByZXBhcmUoIGNhcF9oYW5kbGUgKTsKCQkJcHJpbnRmKCAi
-cmVhZCBlcnJvcjogJWRcbiIsIHBjbXJldHVybiApOwoJCX0KCQllbHNlCgkJewoJCQlpZiggKCBw
-Y21yZXR1cm4gPSBzbmRfcGNtX3dyaXRlaSggcGNtX2hhbmRsZSwgZGF0YSwgZnJhbWVzICkgKSAK
-CQkJCTwgMCApCgkJCXsKCQkJCXByaW50ZiggIndyaXRlIGVycm9yOiAlZFxuIiwgcGNtcmV0dXJu
-ICk7CgkJCX0KCQl9Cgl9CgoJc25kX3BjbV9kcm9wKCBwY21faGFuZGxlICk7CglzbmRfcGNtX2Ry
-YWluKCBwY21faGFuZGxlICk7CgoJcmV0dXJuIDA7Cn0K
---f46d044269dcb60c3204cd81c79e
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---f46d044269dcb60c3204cd81c79e--
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index e7b8317..fa166bd 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -207,6 +207,7 @@ config SND_SOC_BELLS
+ 	select SND_SOC_WM5102
+ 	select SND_SOC_WM5110
+ 	select SND_SOC_WM9081
++	select SND_SOC_WM0010
+ 
+ config SND_SOC_LOWLAND
+ 	tristate "Audio support for Wolfson Lowland"
+-- 
+1.8.0
