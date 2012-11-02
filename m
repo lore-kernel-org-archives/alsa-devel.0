@@ -1,20 +1,17 @@
-From: Dong Aisheng <dong.aisheng@linaro.org>
-Subject: Re: [PATCH v2 1/2] ASoC: mxs-saif: Fix channel swap
-	for 24-bit format
-Date: Fri, 2 Nov 2012 05:59:05 +0800
-Message-ID: <CAP1dx+x7VpTnePoE+37KbKWHM_LgsUf1pZz_5=d+fi4dU32H2A@mail.gmail.com>
-References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+From: Raphael Souza <raphaelsouzalaw84@gmail.com>
+Subject: M-Audio FastTrack C400
+Date: Fri, 2 Nov 2012 13:11:03 -0300
+Message-ID: <CAFb-hWDVqAxg9B9vayvP504SViY4w9cxCuTC=r0mh-woi_p21A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ia0-f179.google.com (mail-ia0-f179.google.com
  [209.85.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F5CD264F13
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2012 22:59:06 +0100 (CET)
-Received: by mail-ia0-f179.google.com with SMTP id k25so2150336iah.38
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2012 14:59:05 -0700 (PDT)
-In-Reply-To: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A24F62650AD
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 17:11:04 +0100 (CET)
+Received: by mail-ia0-f179.google.com with SMTP id k25so2641484iah.38
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2012 09:11:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, DWinner@tc-helicon.com, shawn.guo@linaro.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2 November 2012 01:57, Fabio Estevam <fabio.estevam@freescale.com> wrote:
-> Playing 24-bit format file leads to channel swap on mx28 and the reason is that
-> the current driver performs one write/read to/from the SAIF_DATA register to
-> trigger the transfer.
->
-> This approach works fine for S16_LE case because SAIF_DATA is a 32-bit register
-> and thus is capable of storing the 16-bit left and right channels, but for the
-> S24_LE case it can only store one channel, so in order to not lose the FIFO sync
-> an extra read/write is needed.
->
-> Reported-by: Dan Winner <DWinner@tc-helicon.com>
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> Tested-by: Dan Winner <DWinner@tc-helicon.com>
+Hello, first of all, i want to thank you for the attention.  It's necessary
+good support recording with Ubuntu, and you do so well.
 
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
+So, i have the M-Audio Fast Track C400 and i have installed on my computer
+Ubuntu 12.04 LTS (Precise Pangolin).  My system recognized the soundcard,
+run JACK with it, but i can't record or hear any sound from there.
 
-Regards
-Dong Aisheng
+Which procedure i have to do?
+
+Thank you again.
+
+Best regards.
+
+Raphael Fonseca
+Sing-songwriter and Producer from Manaus, Brazil.
