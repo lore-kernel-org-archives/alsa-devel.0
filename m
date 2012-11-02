@@ -1,26 +1,16 @@
-From: Julien Danjou <julien@danjou.info>
-Subject: Re: Constant noise on HDA ALC275
-Date: Fri, 02 Nov 2012 12:29:40 +0100
-Message-ID: <874nl89ra3.fsf@dex.adm.naquadah.org>
-References: <87obl7bg02.fsf@dex.adm.naquadah.org>
- <s5hmx0ja08z.wl%tiwai@suse.de> <874nmried6.fsf@dex.adm.naquadah.org>
- <s5hfw6bpen9.wl%tiwai@suse.de> <87vcf7gyl5.fsf@dex.adm.naquadah.org>
- <s5h6277pdfi.wl%tiwai@suse.de> <87r4pvgxvx.fsf@dex.adm.naquadah.org>
- <87r4pepcgo.fsf@dex.adm.naquadah.org> <s5h1uh9jfxq.wl%tiwai@suse.de>
- <87zk3xku73.fsf@dex.adm.naquadah.org> <s5hwqz1i0y0.wl%tiwai@suse.de>
- <87fw5pktos.fsf@dex.adm.naquadah.org> <s5hr4p9hzw0.wl%tiwai@suse.de>
- <87ehl96ifc.fsf@dex.adm.naquadah.org> <s5h7gr1gc7o.wl%tiwai@suse.de>
- <87ehl86h4l.fsf@dex.adm.naquadah.org> <s5hvcek7oh7.wl%tiwai@suse.de>
- <87zk3wity4.fsf@dex.adm.naquadah.org> <5073C20C.2080603@canonical.com>
- <87fw4t9ccn.fsf@dex.adm.naquadah.org> <s5hvcdos7qn.wl%tiwai@suse.de>
+From: Nick Harezga <nharezga@gmail.com>
+Subject: Issue when upgrading from 1.0.22 to 1.0.25
+Date: Fri, 2 Nov 2012 07:53:11 -0400
+Message-ID: <CAFMXN5p-PBtvM1LR+QMCdekXuBGF95sGOfmX2ZnWTF4RC10MMQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3041671087111389501=="
+Content-Type: multipart/mixed; boundary=f46d044269dcb60c3204cd81c79e
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.naquadah.org (prometheus.naquadah.org [212.85.154.174])
- by alsa0.perex.cz (Postfix) with ESMTP id E36CC265005
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 12:29:43 +0100 (CET)
-In-Reply-To: <s5hvcdos7qn.wl%tiwai@suse.de> (Takashi Iwai's message of "Fri,
- 02 Nov 2012 09:56:48 +0100")
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFD9B265005
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2012 12:53:12 +0100 (CET)
+Received: by mail-ob0-f179.google.com with SMTP id lz20so3233674obb.38
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2012 04:53:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,86 +20,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============3041671087111389501==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+--f46d044269dcb60c3204cd81c79e
+Content-Type: text/plain; charset=ISO-8859-1
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I initially tried to send this yesterday from my work e-mail, but I think they
+may be blocking the list for some reason. Apologies if this question shows
+up twice.
 
-On Fri, Nov 02 2012, Takashi Iwai wrote:
+I am attempting to upgrade from Ubuntu version 10.04 to version 12.04. Version
+10.04 has ALSA version 1.0.22 and version 12.04 has ALSA 1.0.25. I have a
+simple test application that captures microphone input and then plays the
+audio through the speaker. When run with ALSA 1.0.22 the program works as
+expected. When I run the program with ALSA 1.0.25, I get a bad pipe error
+indicating buffer underrun when calling writes. Both systems have the same
+hardware (Dell Latitude E6400 laptop).
 
->> I just did that using the hda-analyzer tool. I changed 0x14 to uses 0x0c
->> as a source, and it's indeed much better. The noise disappear when
->> neither master or speaker is muted, and actually the music playback
->> sounds better and without the little background noise I still hear on
->> low volume level.
->
-> Good to hear.  What's the remaining issue?
+I tried looking through the change logs to determine if there were any obvious
+changes that stood out to me, but couldn't find anything. I have attached
+my code. Any suggestions?
 
-Well, it's still not perfect, and as I wrote, if any of "master" or
-"speaker" is muted, the noise kicks back in instantly. :(
+Program is compiled using "g++ audio_test.cpp -o audio_test -lasound"
 
-> The current parser prefers the line-out as the primary output over the
-> headphone.  Then it tries to assign from the smaller NID, so 0x0c is
-> assigned to the line-out (which is the speaker in your case), then
-> 0x0d is to the headphone.
+Audio sample rate: 8000
+Buffer size: 1800
+Format: Signed 16bit LE, interleaved
 
-Ok, thanks for the explanation.
+--f46d044269dcb60c3204cd81c79e
+Content-Type: text/x-c++src; charset=US-ASCII; name="audio_test.cpp"
+Content-Disposition: attachment; filename="audio_test.cpp"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h918w9kz0
 
->> I'm still trying to find a way to fix the noise when speaker or master
->> are muted. No chance so far. :(
->
-> Do you mean that the noise is there with rerouting like the above, or
-> you are asking for a patch to achieve the rerouting?
-
-If "master" or "speaker" is muted, the noise kicks back in, whatever the
-routing is.
-
-
-At this point, I wonder if it wouldn't be simpler to just boot the
-machine under Windows and dump the HDA state to see how the Windows
-driver set up all the routing. Do you think this kind of approach would
-work, and in that case, is there a tool do achieve that?
-
-
-=2D-=20
-Julien Danjou
-# Free Software hacker & freelance
-# http://julien.danjou.info
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQk66kAAoJEGEbqVCLeKXCK6gP/3LZqoL7hi/BouWv+m5oQt27
-+JsTdITCYEny1/gEtjBvO2pdaNy1iQQU790HpESVUkHr4nzRzPYF/XaO+Z5pbF5V
-jXL4fP3oPkm+m6tIejhbWrKsb5rm8PDPurnaSlGHfxUHfkmcNTF1N4ilgQwYeMVC
-YkpmLgIdigfR/sdsFuFCCiL9yd8O1e2eTICKJ0EdjwdgdqJh0F6AjM2fh2MDZ/Fn
-ZPXJDASzn51/SfJpYbfgJPjCtoJEZ55rwGku09xBOcs4zYydb0vAOL+gkohwEKCg
-NvBdju44nwYmX4WxtFhpK2P7AXeOlRfIS5O9fvSBtgHpYLTtbQNwH8ftsDqkv5C7
-GWlX81rkpqEEPS90hLPBT0k3OSPlvmA8Ya0NVBGZ/zsbAUK3TX1gGY+r/SatODF+
-f/iS0yUMMVg9wulFgUPBGnuVK8+AstJ32ilchTC4DFbMb/n2EPy/fSWNbdNSwFIA
-6xqh9HpxnadXmRR8J6rH+1LemeOaAFSy4JvoWjAO0fg7hic03Kackl0p5+ortZEh
-2m7+YCxuHVpKyGjOhW5f955/i9BCYtrzgCLrh4WbQwUi9bRizo4waVeBJSm1NugG
-jbH6jU9wEDoCAOGoFIA6lsH3Dkvv7OvRDR/LkMqw086hPW6REmBoRIGkkKG/mJuk
-JNVgd1cqUj4D099G6uzT
-=OPYY
------END PGP SIGNATURE-----
---=-=-=--
-
---===============3041671087111389501==
+I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSA8
+c3RkaW8uaD4KI2luY2x1ZGUgPHN0ZGxpYi5oPgoKI2RlZmluZSBCVUZGRVJfU0laRQkJCTE4MDAK
+CmludCBtYWluKCBpbnQgYXJnYywgY2hhciogYXJndltdICkKewoJLy9TcGVha2VyCgoJc25kX3Bj
+bV90KiBwY21faGFuZGxlOwoJc25kX3BjbV90KiBjYXBfaGFuZGxlOwoJc25kX3BjbV9zdHJlYW1f
+dCBzdHJlYW0gPSBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSzsKCXNuZF9wY21fc3RyZWFtX3QgcmVj
+ZWl2ZSA9IFNORF9QQ01fU1RSRUFNX0NBUFRVUkU7CglzbmRfcGNtX2h3X3BhcmFtc190ICpod3Bh
+cmFtczsKCWNoYXIgKnBjbV9uYW1lOwoJcGNtX25hbWUgPSBzdHJkdXAoICJkZWZhdWx0IiApOwoK
+CXNuZF9wY21faHdfcGFyYW1zX2FsbG9jYSggJmh3cGFyYW1zICk7CgoJaWYoIHNuZF9wY21fb3Bl
+biggJnBjbV9oYW5kbGUsIHBjbV9uYW1lLCBzdHJlYW0sIDAgKSA8IDAgKQoJewoJCWZwcmludGYo
+IHN0ZGVyciwgIkVycm9yIG9wZW5pbmcgUENNIGRldmljZSAlc1xuIiwgcGNtX25hbWUgKTsKCQly
+ZXR1cm4gLTE7Cgl9CglpZiggc25kX3BjbV9vcGVuKCAmY2FwX2hhbmRsZSwgcGNtX25hbWUsIHJl
+Y2VpdmUsIDAgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIG9wZW5pbmcgUENN
+IGRldmljZSAlc1xuIiwgcGNtX25hbWUgKTsKCQlyZXR1cm4gLTE7Cgl9CgoJaWYoIHNuZF9wY21f
+aHdfcGFyYW1zX21hbGxvYyggJmh3cGFyYW1zICkgPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIs
+ICJjYW5ub3QgYWxsb2NhdGUgaGFyZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZVxuIiApOwoJCXJl
+dHVybiAtMTsKCX0KCglpZiggc25kX3BjbV9od19wYXJhbXNfYW55KCBwY21faGFuZGxlLCBod3Bh
+cmFtcyApIDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiY2Fubm90IGluaXRpYWxpemUgaGFy
+ZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZVxuIiApOwoJCXJldHVybiAtMTsKCX0KCWlmKCBzbmRf
+cGNtX2h3X3BhcmFtc19hbnkoIGNhcF9oYW5kbGUsIGh3cGFyYW1zICkgPCAwICkKCXsKCQlmcHJp
+bnRmKCBzdGRlcnIsICJjYW5ub3QgaW5pdGlhbGl6ZSBoYXJkd2FyZSBwYXJhbWV0ZXIgc3RydWN0
+dXJlXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWludCByYXRlID0gODAwMDsKCXVuc2lnbmVkIGlu
+dCBleGFjdF9yYXRlOwoJdW5zaWduZWQgaW50IHBlcmlvZHMgPSAyOwoJaW50IGNoYW4gPSAxOwoJ
+aW50IGVycjsKCglpZiggZXJyID0gKCBzbmRfcGNtX2h3X3BhcmFtc19zZXRfYWNjZXNzKCBwY21f
+aGFuZGxlLCBod3BhcmFtcywKCQlTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCApIDwgMCAp
+ICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIGFjY2VzcyAoJXMpLlxuIiwg
+c25kX3N0cmVycm9yKCBlcnIgKSApOwoJCXJldHVybiAtMTsKCX0KCWlmKCBlcnIgPSAoIHNuZF9w
+Y21faHdfcGFyYW1zX3NldF9hY2Nlc3MoIGNhcF9oYW5kbGUsIGh3cGFyYW1zLAoJCVNORF9QQ01f
+QUNDRVNTX1JXX0lOVEVSTEVBVkVEICkgPCAwICkgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVy
+cm9yIHNldHRpbmcgYWNjZXNzICglcykuXG4iLCBzbmRfc3RyZXJyb3IoIGVyciApICk7CgkJcmV0
+dXJuIC0xOwoJfQoKCWlmKCBzbmRfcGNtX2h3X3BhcmFtc19zZXRfZm9ybWF0KCBwY21faGFuZGxl
+LCBod3BhcmFtcywgCgkJU05EX1BDTV9GT1JNQVRfUzE2X0xFICkgPCAwICkKCXsKCQlmcHJpbnRm
+KCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoJaWYo
+IHNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoIGNhcF9oYW5kbGUsIGh3cGFyYW1zLCAKCQlT
+TkRfUENNX0ZPUk1BVF9TMTZfTEUgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9y
+IHNldHRpbmcgcmF0ZS5cbiIgKTsKCQlyZXR1cm4gLTE7Cgl9CgoJZXhhY3RfcmF0ZSA9IHJhdGU7
+CglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhciggcGNtX2hhbmRsZSwgaHdwYXJh
+bXMsICZleGFjdF9yYXRlLCAKCQkwICkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJv
+ciBzZXR0aW5nIHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoJaWYoIHJhdGUgIT0gZXhhY3Rf
+cmF0ZSApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiVGhlIHJhdGUgJWQgSHogaXMgbm90IHN1cHBv
+cnRlZCBieSB5b3VyIGhhcmR3YXJlLlxuICIgCgkJCQkiID09PiBVc2luZyAlZCBIeiBpbnN0ZWFk
+LlxuIiwgcmF0ZSwgZXhhY3RfcmF0ZSApOwoJfQoJZXhhY3RfcmF0ZSA9IHJhdGU7CglpZiggc25k
+X3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhciggY2FwX2hhbmRsZSwgaHdwYXJhbXMsICZleGFj
+dF9yYXRlLCAKCQkwICkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5n
+IHJhdGUuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWlmKCByYXRlICE9IGV4YWN0X3JhdGUgKQoJ
+ewoJCWZwcmludGYoIHN0ZGVyciwgIlRoZSByYXRlICVkIEh6IGlzIG5vdCBzdXBwb3J0ZWQgYnkg
+eW91ciBoYXJkd2FyZS5cbiAiIAoJCQkJIiA9PT4gVXNpbmcgJWQgSHogaW5zdGVhZC5cbiIsIHJh
+dGUsIGV4YWN0X3JhdGUgKTsKCX0KCglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxz
+KCBwY21faGFuZGxlLCBod3BhcmFtcywgY2hhbiApIDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJy
+LCAiRXJyb3Igc2V0dGluZyBjaGFubmVscy5cbiIgKTsKCQlyZXR1cm4gLTE7Cgl9CglpZiggc25k
+X3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKCBjYXBfaGFuZGxlLCBod3BhcmFtcywgY2hhbiAp
+IDwgMCApCgl7CgkJZnByaW50Ziggc3RkZXJyLCAiRXJyb3Igc2V0dGluZyBjaGFubmVscy5cbiIg
+KTsKCQlyZXR1cm4gLTE7Cgl9CgoJaWYoIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RzX25l
+YXIoIHBjbV9oYW5kbGUsIGh3cGFyYW1zLCAmcGVyaW9kcywgMCApCgkJPCAwICkKCXsKCQlmcHJp
+bnRmKCBzdGRlcnIsICJFcnJvciBzZXR0aW5nIHBlcmlvZHMuXG4iICk7CgkJcmV0dXJuIC0xOwoJ
+fQoJaWYoIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RzX25lYXIoIGNhcF9oYW5kbGUsIGh3
+cGFyYW1zLCAmcGVyaW9kcywgMCApCgkJPCAwICkKCXsKCQlmcHJpbnRmKCBzdGRlcnIsICJFcnJv
+ciBzZXR0aW5nIHBlcmlvZHMuXG4iICk7CgkJcmV0dXJuIC0xOwoJfQoKCWludCBmcmFtZVNpemUg
+PSBjaGFuICogMjsKCXNuZF9wY21fdWZyYW1lc190IGZybWUgPSBCVUZGRVJfU0laRSAvIGZyYW1l
+U2l6ZSAqIHBlcmlvZHM7CglpZiggc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9zaXplX25l
+YXIoIHBjbV9oYW5kbGUsIGh3cGFyYW1zLCAmZnJtZSApIAoJCTwgMCApCgl7CgkJZnByaW50Zigg
+c3RkZXJyLCAiRXJyb3Igc2V0dGluZyBidWZmZXJzaXplLlxuIiApOwoJCXJldHVybiAtMTsKCX0K
+CglpZiggQlVGRkVSX1NJWkUgIT0gKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMg
+KSApCgl7CgkJcHJpbnRmKCAiYXNrZWQgZm9yICVkLCBnb3QgJWRcbiIsIEJVRkZFUl9TSVpFLCAK
+CQkJKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMgKSApOwoJfQoKCWZybWUgPSBC
+VUZGRVJfU0laRSAvIGZyYW1lU2l6ZSAqIHBlcmlvZHM7CgoJaWYoIHNuZF9wY21faHdfcGFyYW1z
+X3NldF9idWZmZXJfc2l6ZV9uZWFyKCBjYXBfaGFuZGxlLCBod3BhcmFtcywgJmZybWUgKSAKCQk8
+IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgYnVmZmVyc2l6ZS5cbiIg
+KTsKCQlyZXR1cm4gLTE7Cgl9CglpZiggQlVGRkVSX1NJWkUgIT0gKCBpbnQgKSggZnJtZSAqIGZy
+YW1lU2l6ZSAvIHBlcmlvZHMgKSApCgl7CgkJcHJpbnRmKCAiYXNrZWQgZm9yICVkLCBnb3QgJWRc
+biIsIEJVRkZFUl9TSVpFLCAKCQkJKCBpbnQgKSggZnJtZSAqIGZyYW1lU2l6ZSAvIHBlcmlvZHMg
+KSApOwoJfQoKCWlmKCBzbmRfcGNtX2h3X3BhcmFtcyggcGNtX2hhbmRsZSwgaHdwYXJhbXMgKSA8
+IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgSFcgcGFyYW1zLlxuIiAp
+OwoJCXJldHVybiAtMTsKCX0KCWlmKCBzbmRfcGNtX2h3X3BhcmFtcyggY2FwX2hhbmRsZSwgaHdw
+YXJhbXMgKSA8IDAgKQoJewoJCWZwcmludGYoIHN0ZGVyciwgIkVycm9yIHNldHRpbmcgSFcgcGFy
+YW1zLlxuIiApOwoJCXJldHVybiAtMTsKCX0KCgl1bnNpZ25lZCBjaGFyICpkYXRhOwoJaW50IGZy
+YW1lczsKCglkYXRhID0gKCB1bnNpZ25lZCBjaGFyKiApbWFsbG9jKCBCVUZGRVJfU0laRSApOwoJ
+ZnJhbWVzID0gQlVGRkVSX1NJWkUvZnJhbWVTaXplOwoKCXdoaWxlKCB0cnVlICkKCXsKCQlpZigg
+KCBwY21yZXR1cm4gPSBzbmRfcGNtX3JlYWRpKCBjYXBfaGFuZGxlLCBkYXRhLCBmcmFtZXMgKSAp
+IDwgMCApCgkJewoJCQlzbmRfcGNtX3ByZXBhcmUoIGNhcF9oYW5kbGUgKTsKCQkJcHJpbnRmKCAi
+cmVhZCBlcnJvcjogJWRcbiIsIHBjbXJldHVybiApOwoJCX0KCQllbHNlCgkJewoJCQlpZiggKCBw
+Y21yZXR1cm4gPSBzbmRfcGNtX3dyaXRlaSggcGNtX2hhbmRsZSwgZGF0YSwgZnJhbWVzICkgKSAK
+CQkJCTwgMCApCgkJCXsKCQkJCXByaW50ZiggIndyaXRlIGVycm9yOiAlZFxuIiwgcGNtcmV0dXJu
+ICk7CgkJCX0KCQl9Cgl9CgoJc25kX3BjbV9kcm9wKCBwY21faGFuZGxlICk7CglzbmRfcGNtX2Ry
+YWluKCBwY21faGFuZGxlICk7CgoJcmV0dXJuIDA7Cn0K
+--f46d044269dcb60c3204cd81c79e
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3041671087111389501==--
+--f46d044269dcb60c3204cd81c79e--
