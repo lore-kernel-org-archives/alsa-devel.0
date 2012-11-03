@@ -1,15 +1,20 @@
-From: "Rafal Powierski" <powierski@mediascore.de>
-Subject: spdif input - square resample confusion, alc886
-Date: Sat, 3 Nov 2012 12:59:49 +0100
-Message-ID: <9F8EF5E9979C40B8A305A56FCC8EABD7@mediascore.mediascore.de>
+From: Laurence Darby <ldarby@tuffmail.com>
+Subject: Re: [PATCH v3] stop setup_dig_out_stream() causing
+ clicks
+Date: Sat, 3 Nov 2012 17:00:06 +0000
+Message-ID: <20121103170006.63f9a3b0.ldarby@tuffmail.com>
+References: <20121004212008.dd604566.ldarby@tuffmail.com>
+ <s5h391pjg0i.wl%tiwai@suse.de>
+ <20121101025343.34d69664.ldarby@tuffmail.com>
+ <s5hsj8ss7di.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ED442615FE
- for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2012 12:59:57 +0100 (CET)
+Received: from mxout-07.mxes.net (mxout-07.mxes.net [216.86.168.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB5222625C6
+ for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2012 18:00:11 +0100 (CET)
+In-Reply-To: <s5hsj8ss7di.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,28 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RGV2ZWxvcGVycyEKCgpTUERJRiAgSU5QVVQsCihIaWdoIERlZmluaXRpb24gQXVkaW8gU3BlY2lm
-aWNhdGlvbjogNS40LjMgU291cmNlIFN5bmNocm9ub3VzIElucHV0KQpXcml0aW5nIGFwcGxpY2F0
-aW9uLgpoYXJkd2FyZTogQUxDODg2IGNvZGVjIGFuZCBBTUQgRlVTSU9OIGluIG15IHNwZWNpYWwg
-ZGV2aWNlLgoKCkhvdyBjYW4gSSBkZXRlY3Qgc3BkaWYgc3RyZWFtIHNvdXJjZSBzYW1wbGUgcmF0
-aW8/CkkgdHJpZWQgbm90IHRvIHNldCB0aGUgcmF0aW8gYXQgaW5pdCDigJMgdGhpcyBnaXZlcyA0
-NC4xCklmIEkgc2V0IDQ4ayBpdCBzZWFtcyB0byB3b3JrLiAKaWYgSSBzZXQgZGlmZmVyZW50LCBh
-bHNhK2NvZGVjIGlzIHNvbWVob3cgZm9sbG93aW5nIG15IHJlcXVlc3QgYW5kIHJlY3Rhbmd1bGFy
-LeKAnHJlc2FtcGxpbmfigJ0gaW5wdXQgdG8gZ2l2ZW4gc2V0dGluZy4KVGhhdCBpcyBJIGFtIGdl
-dHRpbmcgMnggdGhlIHNhbWUgdmFsdWUgd2hlbiBJIHNldCA5NjAwMEh6CkkgYW0gYWZyYWlkIG9m
-IHJlcGVhdGVkbHkgbG9vc2luZyBzYW1wbGVzIG9yIGdldHRpbmcgaXQgdHdpY2UgKGUuZy4gaW4g
-Y2FzZSBvZiBqaXR0ZXIgb3IgdGhlIHN0cmVhbSBmcm9tIGFsc2EgaXMgbm90IHJlYWxseSB0aGUg
-c291cmNlIHN5bmNocm9ub3VzICkuCgpIb3cgY2FuIEkgZ290IHJlYWwgMToxIHNhbXBsZSByYXRp
-bz8KCmlmIG5vIHNvbHV0aW9uOgpjYW4gSSB1c2UgbXVjaCBoaWdoZXIgc2FtcGxlIHJhdGlvIGFu
-ZCB1c2Ugc29mdHdhcmUgUExMIGJhc2VkIG9uIGVxdWFsIGNvbnNlcXVlbnQgc2FtcGxlcz8KaXMg
-dGhhdCBiZWhhdmlvciBvZiByZXBlYXRpbmcgc2FtcGxlcyBjb25zaXN0ZW50PyDigJMgaS5lLiBp
-cyB0aGF0IHBsYW5lZCBvciBidWc/CgpSQVcgZGF0YSAoZS5nLiBBQzMpOgpTTkRfUENNX0ZPUk1B
-VF9JRUM5NThfU1VCRlJBTUVfTEUgaXMgbm90IGF2YWlsYWJsZQpidXQgMzIgYml0IGZvcm1hdCBi
-cmluZ3MgYWxsIDMyIGJpdHMgc2V0IHRvIHNvbWUgbm9uIGNvbnN0YW50IHZhbHVlLgpJcyB0aGlz
-IG1heWJlIHRoZSByYXcgZm9ybWF0PwoKCgpSZWdhcmRzLApSYWZhbAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Starting audio or seeking in various music players causes
+setup_dig_out_stream() to be called, which resets the SPDIF stream,
+which caused one DAC (but not another) to make a clicking noise every
+time.
+
+This patch ensures the reset only happens when it needs to, which is
+when the format changes, and makes the code a little more readable.
+
+Signed-off-by: Laurence Darby <ldarby@tuffmail.com>
+---
+
+Takashi Iwai wrote:
+
+> > +	reset = codec->spdif_status_reset &&
+> > +		spdif->ctls & AC_DIG1_ENABLE &&
+> > +		curr_fmt != format;
+> 
+> Better to put parentheses around the bit operations when combined with
+> logical operations.  gcc would suggest it, too, I thought.
+> 
+
+gcc doesn't warn about it, but it does on code like this:
+
+	reset = codec->spdif_status_reset &&
+		spdif->ctls & AC_DIG1_ENABLE + 0 &&
+		curr_fmt != format;
+
+which suggests putting them around the +. But since you spotted it, I've put them back in.
+
+Regards,
+Laurence
+
+
+ sound/pci/hda/hda_codec.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 38fdefc..2b21906 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -4718,10 +4718,20 @@ EXPORT_SYMBOL_HDA(snd_hda_input_mux_put);
+ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 				 unsigned int stream_tag, unsigned int format)
+ {
+-	struct hda_spdif_out *spdif = snd_hda_spdif_out_of_nid(codec, nid);
+-
+-	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
+-	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
++	struct hda_spdif_out *spdif;
++	unsigned int curr_fmt;
++	bool reset;
++
++	spdif = snd_hda_spdif_out_of_nid(codec, nid);
++	curr_fmt = snd_hda_codec_read(codec, nid, 0,
++				      AC_VERB_GET_STREAM_FORMAT, 0);
++	reset = codec->spdif_status_reset &&
++		(spdif->ctls & AC_DIG1_ENABLE) &&
++		curr_fmt != format;
++	
++	/* turn off SPDIF if needed; otherwise the IEC958 bits won't be
++	   updated */
++	if (reset)
+ 		set_dig_out_convert(codec, nid,
+ 				    spdif->ctls & ~AC_DIG1_ENABLE & 0xff,
+ 				    -1);
+@@ -4733,7 +4743,7 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 						   format);
+ 	}
+ 	/* turn on again (if needed) */
+-	if (codec->spdif_status_reset && (spdif->ctls & AC_DIG1_ENABLE))
++	if (reset)
+ 		set_dig_out_convert(codec, nid,
+ 				    spdif->ctls & 0xff, -1);
+ }
+-- 
+1.7.12.1
