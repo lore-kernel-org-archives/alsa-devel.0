@@ -1,31 +1,15 @@
-From: Massimo Del Fedele <max@veneto.com>
-Subject: Re: Fix for Asus G75 notebook subwoofer
-Date: Sat, 03 Nov 2012 10:04:01 +0100
-Message-ID: <k72mm0$os$1@ger.gmane.org>
-References: <k6rkr2$usv$1@ger.gmane.org>
- <CAN8cciZEwLxxiMp69k8yyAzSnqRNQ6m2=7q373x91D_pMy=h-w@mail.gmail.com>
- <k6tlk1$2vr$1@ger.gmane.org>
- <CAN8cciZQw8m-m-Bk6KF2UuqpU2a5=Y7vAi7daWmqF9vbA2w=4g@mail.gmail.com>
- <k70n1l$65a$1@ger.gmane.org>
- <CAN8ccia86GNJrXkDQM9zxrcBD6+5oqTYn6wk-ZVamW0VV1iQOA@mail.gmail.com>
+From: "Rafal Powierski" <powierski@mediascore.de>
+Subject: spdif input - square resample confusion, alc886
+Date: Sat, 3 Nov 2012 12:59:49 +0100
+Message-ID: <9F8EF5E9979C40B8A305A56FCC8EABD7@mediascore.mediascore.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D0DB2602AC
- for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2012 10:04:13 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TUZeO-0000xq-4Z
- for alsa-devel@alsa-project.org; Sat, 03 Nov 2012 10:04:20 +0100
-Received: from host97-251-dynamic.0-87-r.retail.telecomitalia.it
- ([87.0.251.97]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 03 Nov 2012 10:04:20 +0100
-Received: from max by host97-251-dynamic.0-87-r.retail.telecomitalia.it with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 03 Nov 2012 10:04:20 +0100
-In-Reply-To: <CAN8ccia86GNJrXkDQM9zxrcBD6+5oqTYn6wk-ZVamW0VV1iQOA@mail.gmail.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3ED442615FE
+ for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2012 12:59:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,40 +22,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Il 03/11/2012 01:37, Raymond Yau ha scritto:
-> https://launchpadlibrarian.net/121871263/alsainfo.txt
->
-> do your patched driver really work with pulseaudio 2.0 if there is no
-> headphone playback volume controls ?
->
-Yep... behaviour is following :
-
-if NO headphone plugged in, I can choose between stereo and 4 channel surround.
-With pulse I can then balance left/right and front/rear channels, and set the
-overall sound volume.
-The output selector of pulseaudio shows just "analog output".
-
-if headset is plugged in, output audio selector shows both "analog output" and "headphone output",
-but no matters what I select, output of front channelsgoes to HP, and rear channels are disabled.
-I guess the output selector switch should work, but it doesn't and audio goes always to HP when plugged.
-
->
-> if independent headphone is ON, two different audio stereo streams can play
-> using device 0 (speaker) and device 2 (headphone)
-
-Can't obviously have indep HP mode AND 2+1 channels, having just 2 volume controls.
-Maybe it would be possible to have indep HP mode when selecting stereo mode output,
-but I don't see much use for it.
->
-> dac 0x08 cannot be shared beween headphone 0x25 and speaker 0x24
->
-> do a notebook really need independent headphone ?
-
-When I said "shared" I meant "alternative"; channel 8 is used for HP when plugged, for front speakers
-when unplugged; I can't hear both together, and I think it's correct behaviour, having just 2 volume
-widgets inside VT1802P.
-Plugged HP completely disables both subwoofer and front speakers; this should be selectable by pulse
-output selector, but it doesn't.... Bu I guess that one is another bug.
-
-
-Max
+RGV2ZWxvcGVycyEKCgpTUERJRiAgSU5QVVQsCihIaWdoIERlZmluaXRpb24gQXVkaW8gU3BlY2lm
+aWNhdGlvbjogNS40LjMgU291cmNlIFN5bmNocm9ub3VzIElucHV0KQpXcml0aW5nIGFwcGxpY2F0
+aW9uLgpoYXJkd2FyZTogQUxDODg2IGNvZGVjIGFuZCBBTUQgRlVTSU9OIGluIG15IHNwZWNpYWwg
+ZGV2aWNlLgoKCkhvdyBjYW4gSSBkZXRlY3Qgc3BkaWYgc3RyZWFtIHNvdXJjZSBzYW1wbGUgcmF0
+aW8/CkkgdHJpZWQgbm90IHRvIHNldCB0aGUgcmF0aW8gYXQgaW5pdCDigJMgdGhpcyBnaXZlcyA0
+NC4xCklmIEkgc2V0IDQ4ayBpdCBzZWFtcyB0byB3b3JrLiAKaWYgSSBzZXQgZGlmZmVyZW50LCBh
+bHNhK2NvZGVjIGlzIHNvbWVob3cgZm9sbG93aW5nIG15IHJlcXVlc3QgYW5kIHJlY3Rhbmd1bGFy
+LeKAnHJlc2FtcGxpbmfigJ0gaW5wdXQgdG8gZ2l2ZW4gc2V0dGluZy4KVGhhdCBpcyBJIGFtIGdl
+dHRpbmcgMnggdGhlIHNhbWUgdmFsdWUgd2hlbiBJIHNldCA5NjAwMEh6CkkgYW0gYWZyYWlkIG9m
+IHJlcGVhdGVkbHkgbG9vc2luZyBzYW1wbGVzIG9yIGdldHRpbmcgaXQgdHdpY2UgKGUuZy4gaW4g
+Y2FzZSBvZiBqaXR0ZXIgb3IgdGhlIHN0cmVhbSBmcm9tIGFsc2EgaXMgbm90IHJlYWxseSB0aGUg
+c291cmNlIHN5bmNocm9ub3VzICkuCgpIb3cgY2FuIEkgZ290IHJlYWwgMToxIHNhbXBsZSByYXRp
+bz8KCmlmIG5vIHNvbHV0aW9uOgpjYW4gSSB1c2UgbXVjaCBoaWdoZXIgc2FtcGxlIHJhdGlvIGFu
+ZCB1c2Ugc29mdHdhcmUgUExMIGJhc2VkIG9uIGVxdWFsIGNvbnNlcXVlbnQgc2FtcGxlcz8KaXMg
+dGhhdCBiZWhhdmlvciBvZiByZXBlYXRpbmcgc2FtcGxlcyBjb25zaXN0ZW50PyDigJMgaS5lLiBp
+cyB0aGF0IHBsYW5lZCBvciBidWc/CgpSQVcgZGF0YSAoZS5nLiBBQzMpOgpTTkRfUENNX0ZPUk1B
+VF9JRUM5NThfU1VCRlJBTUVfTEUgaXMgbm90IGF2YWlsYWJsZQpidXQgMzIgYml0IGZvcm1hdCBi
+cmluZ3MgYWxsIDMyIGJpdHMgc2V0IHRvIHNvbWUgbm9uIGNvbnN0YW50IHZhbHVlLgpJcyB0aGlz
+IG1heWJlIHRoZSByYXcgZm9ybWF0PwoKCgpSZWdhcmRzLApSYWZhbAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
