@@ -1,19 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: ad1988 spdif crackling (includes patch)
-Date: Sun, 4 Nov 2012 09:02:54 +0800
-Message-ID: <CAN8ccia2H88R28TVCPjvqc73u_3C0MuCXqP5xUPxuzung4SFPw@mail.gmail.com>
-References: <1351598547.646.18.camel@quip>
+From: Daniel J Blueman <daniel@quora.org>
+Subject: [PATCH 1/2] HDA: Fix digital microphone on CS420x
+Date: Sun,  4 Nov 2012 13:19:03 +0800
+Message-ID: <1352006344-3378-1-git-send-email-daniel@quora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A5860265128
- for <alsa-devel@alsa-project.org>; Sun,  4 Nov 2012 02:02:55 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so3030588qcs.38
- for <alsa-devel@alsa-project.org>; Sat, 03 Nov 2012 18:02:54 -0700 (PDT)
-In-Reply-To: <1351598547.646.18.camel@quip>
+Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
+ [209.85.210.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33F2B261676
+ for <alsa-devel@alsa-project.org>; Sun,  4 Nov 2012 06:20:22 +0100 (CET)
+Received: by mail-da0-f51.google.com with SMTP id t11so2017799daj.38
+ for <alsa-devel@alsa-project.org>; Sat, 03 Nov 2012 22:20:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robin Kreis <r.kreis@uni-bremen.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel J Blueman <daniel@quora.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+IEhpIQo+Cj4gRm9yIG5lYXJseSB0aHJlZSB5ZWFycywgYSBidWcgaGFzIGJlZW4ga25vd24g
-dG8gY3JpcHBsZSBTUERJRiBvdXRwdXQgb24KPiBjZXJ0YWluIGhhcmR3YXJlLiAgSXQgbWlnaHQg
-d29yayBmaW5lIGZvciBhIHdoaWxlLCBidXQgd2lsbCByYW5kb21seQo+IGJyZWFrLCBzaG93aW5n
-IHR3byBzeW1wdG9tczogIFBDTSBhdWRpbyBpcyBkaXN0b3J0ZWQgKHNpbWlsYXIgdG8KPiBjbGlw
-cGluZykgd2hpbGUgY29tcHJlc3NlZCBhdWRpbyAoQUMzIG9yIERUUykgd2lsbCBub3Qgd29yayBh
-dCBhbGwuCgpjYW4geW91IHBvc3QgdGhlIG91dHB1dCBvZiBhbHNhLWluZm8uc2ggPwoKZG8gdHVy
-biBvZmYgdGhpcyBzd2l0Y2ggaGVscCA/CgpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4IERl
-ZmF1bHQgUENNJywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkIHBlbnVt
-CiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dCgphcmUgeW91
-ciBhcHBsaWNhdGlvbiB1c2luZyAgaHc6MCwwICwgaWVjOTU4OjAgIG9yIGh3OjAsMSBmb3IgZGln
-aXRhbCBvdXRwdXQKPwoKaHR0cDovL3N1cHBvcnQuYXN1cy5jb20vU2VhcmNoL0tEZXRhaWwuYXNw
-eD9TTGFuZ3VhZ2U9ZW4mbm89QkZGRDEyQjktMTI1NS03OTc0LTlEQTYtRjVGN0M0NzY4OURDJnQ9
-MgoKdGhlIHN1cHBvcnRlZCByYXRlcyBvZiBkZXZpY2UgMCBpcyByZXN0cmljdGVkIHRvIHRoZSBz
-dXBwb3J0ZWQgcmF0ZXMgb2YKbm9kZSAweDAyIHdoZW4gdGhlIGFib3ZlIHN3aXRjaCBpcyBPTiBh
-bmQgdGhlIGRyaXZlciBkb24ndCBwcm90ZWN0IHRoZQpzd2l0Y2ggd2hlbiB0aGUgYXBwbGljYXRp
-b24gaXMgcGxheWluZwoKRGVmYXVsdCBQQ006CiAgICByYXRlcyBbMHg3ZmZdOiA4MDAwIDExMDI1
-IDE2MDAwIDIyMDUwIDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwCjE3NjQwMCAxOTIwMDAK
-ICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KRGVmYXVsdCBB
-bXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEK
-RGVmYXVsdCBBbXAtT3V0IGNhcHM6IG9mcz0weDI3LCBuc3RlcHM9MHgyNywgc3RlcHNpemU9MHgw
-NSwgbXV0ZT0wCk5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDMwMzExOiBTdGVyZW8g
-RGlnaXRhbAogIFBDTToKICAgIHJhdGVzIFsweDdlMF06IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAw
-IDE3NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVd
-OiBQQ00gQUMzCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MWQKTm9kZSAweDAzIFtBdWRpbyBPdXRw
-dXRdIHdjYXBzIDB4NDA1OiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4Mjcs
-IG5zdGVwcz0weDI3LCBzdGVwc2l6ZT0weDA1LCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHgy
-NyAweDI3XQogIFBvd2VyOiAweDAKCml0IHNlZW0gdGhhdCB0aG9zZSBwYXRocyBmcm9tIEFEQyB0
-byBTUERJRiBkb2VzIG5vdCBleGlzdAoKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCBQbGF5
-YmFjayBTb3VyY2UnLDAKICBDYXBhYmlsaXRpZXM6IGVudW0KICBJdGVtczogJ1BDTScgJ0FEQzEn
-ICdBREMyJyAnQURDMycKICBJdGVtMDogJ1BDTScKCmh0dHA6Ly9zdXBwb3J0LmFzdXMuY29tL1Nl
-YXJjaC9LRGV0YWlsLmFzcHg/U0xhbmd1YWdlPWVuJm5vPTliNGY3MjJjLWRkODktOTBlZS1lNDBj
-LWZlZmYyOTdkNjlkZCZ0PTIKCkFEMTk4OCBkb2VzIG5vdCBzdXBwb3J0IE1pYyB0byBTUERJRi4K
-Cj4gTXV0aW5nIGFuIHVubXV0aW5nIHRoZSBtYXN0ZXIgY2hhbm5lbCBtYXkgdGVtcG9yYXJpbHkg
-Zml4IGl0Lgo+Cj4gVGhpcyBhZmZlY3RzIGF0IGxlYXN0IGFsbCBBc3VzIFA1QiBhbmQgUDZCIG1h
-aW5ib2FyZHMuCgpodHRwOi8vc3VwcG9ydC5hc3VzLmNvbS9TZWFyY2gvS0RldGFpbC5hc3B4P1NM
-YW5ndWFnZT1lbiZubz0wMkE3MTUxRi1ENTk5LUFBMzUtOUI1Ny05NzZFRDE5RkFDRTQmdD0yCgpo
-dHRwOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9oZGEtZW11Lmdp
-dDthPXRyZWU7Zj1jb2RlY3M7aGI9SEVBRAoKaHR0cDovL3d3dy5hc3VzLmNvbS9Nb3RoZXJib2Fy
-ZHMvSW50ZWxfU29ja2V0Xzc3NS9QNVFfRGVsdXhlLyNzcGVjaWZpY2F0aW9ucwoKMG4gdGhvc2Ug
-UDVRIGRlbHV4ZSAoYWQxOTg5YiksIHRoZXJlIGFyZSBjb2F4aWFsIGFuZCBzcGRpZiBvdXQgcG9y
-dHMgYnV0IG5vCmhkbWkKCkFEScKuIEFEMjAwMEIgOC1jaGFubmVsIEhpZ2ggRGVmaW5pdGlvbiBB
-dWRpbyBDT0RFQwotIENvYXhpYWwvT3B0aWNhbCBTL1BESUYgb3V0IHBvcnRzIGF0IGJhY2sgSS9P
-Cgo+Cj4gVGhlIHNvbHV0aW9uIGlzIGEgc2ltcGxlIG9uZS1saW5lciwgYW5kIGhhcyBiZWVuIGtu
-b3duIGZvciBhIHllYXI6Cj4gaHR0cDovL2ZqZXJoYW1tZXIuZGsvYWQxOTg4X3NwZGlmX2NyYWNr
-bGluZy5wYXRjaCAoY3JlZGl0cyBnbyB0byBKYXZlZWQKPiBTaGFpa2ggZm9yIHRoZSBwYXRjaCBh
-bmQgZmplcmhhbW1lciBmb3IgaG9zdGluZyBpdCkuICBJIGNhbiB2ZXJpZnkgdGhhdAo+IGl0IGZp
-eGVzIGFsbCBpc3N1ZXMgb24gbXkgc2V0dXAuICBQbGVhc2UgYXBwbHkgaXQuCj4KPiBTZWUgYWxz
-bzoKPiBodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC91YnVudHUvK3NvdXJjZS9hbHNhLWRyaXZl
-ci8rYnVnLzM1OTM2MQoKZG8gdGhlIGJ1ZyBhZmZlY3QgYWxsIGFkMTk4eCBzaW5jZSB0aGUgdHdv
-IHJlcG9ydGVycyB3aG8gcG9zdGVkIHRoZSBjb2RlYwppbmZvIGFyZSB1c2luZyBhZDE5ODQgPwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Correctly enable the digital microphones with the right bits in the right coeffecient
+registers on Cirrus CS4206/7 codecs. It also prevents misconfiguring ADC1/2.
+
+This fixes the digital mic on the Macbook Pro 10,1/Retina.
+
+Based-on-patch-by: Alexander Stein <alexander.stein@systec-electronic.com>
+Signed-off-by: Daniel J Blueman <daniel@quora.org>
+---
+ sound/pci/hda/patch_cirrus.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 61a7113..859a119 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -101,8 +101,8 @@ enum {
+ #define CS420X_VENDOR_NID	0x11
+ #define CS_DIG_OUT1_PIN_NID	0x10
+ #define CS_DIG_OUT2_PIN_NID	0x15
+-#define CS_DMIC1_PIN_NID	0x12
+-#define CS_DMIC2_PIN_NID	0x0e
++#define CS_DMIC1_PIN_NID	0x0e
++#define CS_DMIC2_PIN_NID	0x12
+ 
+ /* coef indices */
+ #define IDX_SPDIF_STAT		0x0000
+@@ -1079,14 +1079,18 @@ static void init_input(struct hda_codec *codec)
+ 			cs_automic(codec, NULL);
+ 
+ 		coef = 0x000a; /* ADC1/2 - Digital and Analog Soft Ramp */
++		cs_vendor_coef_set(codec, IDX_ADC_CFG, coef);
++
++		coef = cs_vendor_coef_get(codec, IDX_BEEP_CFG);
+ 		if (is_active_pin(codec, CS_DMIC2_PIN_NID))
+-			coef |= 0x0500; /* DMIC2 2 chan on, GPIO1 off */
++			coef |= 1 << 4; /* DMIC2 2 chan on, GPIO1 off */
+ 		if (is_active_pin(codec, CS_DMIC1_PIN_NID))
+-			coef |= 0x1800; /* DMIC1 2 chan on, GPIO0 off
++			coef |= 1 << 3; /* DMIC1 2 chan on, GPIO0 off
+ 					 * No effect if SPDIF_OUT2 is
+ 					 * selected in IDX_SPDIF_CTL.
+ 					*/
+-		cs_vendor_coef_set(codec, IDX_ADC_CFG, coef);
++
++		cs_vendor_coef_set(codec, IDX_BEEP_CFG, coef);
+ 	} else {
+ 		if (spec->mic_detect)
+ 			cs_automic(codec, NULL);
+-- 
+1.7.10.4
