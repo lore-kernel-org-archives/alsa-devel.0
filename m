@@ -1,21 +1,19 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register
-	platform from DAIs
-Date: Mon, 05 Nov 2012 13:25:58 +0800
-Message-ID: <50974DE6.50506@atmel.com>
-References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
- <1351668420-18447-3-git-send-email-voice.shen@atmel.com>
- <20121101144315.GM4413@opensource.wolfsonmicro.com>
- <5093312D.4070408@atmel.com>
- <20121102142444.GY4413@opensource.wolfsonmicro.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: [FT C400,RFC 0/6] M-Audio Fast Track C400
+Date: Mon, 5 Nov 2012 17:30:44 +1100
+Message-ID: <CACckToWvY8_VgFMGFWSf+FhqcpXV4EbEft-hMd4nFBTea6Z-pQ@mail.gmail.com>
+References: <1351950011-8915-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FFA7260744
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2012 06:26:52 +0100 (CET)
-In-Reply-To: <20121102142444.GY4413@opensource.wolfsonmicro.com>
+Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
+ [209.85.219.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8AF626159D
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2012 07:30:45 +0100 (CET)
+Received: by mail-oa0-f51.google.com with SMTP id n12so4980686oag.38
+ for <alsa-devel@alsa-project.org>; Sun, 04 Nov 2012 22:30:44 -0800 (PST)
+In-Reply-To: <1351950011-8915-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,149 +23,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, jm.lin@atmel.com, linux-arm-kernel@lists.infradead.org
+To: Eldad Zack <eldad@fogrefinery.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Chris Cavey <chris-alsa@rauros.net>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark Brown,
+64samples/frame doesn't work for me ever
 
-On 11/2/2012 22:24, Mark Brown wrote:
-> On Fri, Nov 02, 2012 at 10:34:21AM +0800, Bo Shen wrote:
->> On 11/1/2012 22:43, Mark Brown wrote:
->>> On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
+I'll build this patchset and test with an ftu tonight/tomorrow (yay for cup
+day holiday)
+
+Grant.
+
+
+On Sun, Nov 4, 2012 at 12:40 AM, Eldad Zack <eldad@fogrefinery.com> wrote:
+
+> Hi,
 >
->>>> +dai: dai {
->>>> +	compatible = "atmel,atmel-ssc-dai";
->>>> +	atmel,dai-master = <&ssc0>;
->>>> +};
+> The following patches adds support for the M-Audio Fast Track C400.
+> I recently bought this device and I was able to get this work thanks to
+> the discussion on the alsa-devel list.[1]
+> Thanks everyone!
 >
->>> This seems to be a purely virtual device which remaps the SSC onto the
->>> Linux audio subsystem?  If that is the case then it shouldn't appear in
->>> the device tree,
+> This series applies against the latest mainline tree, 3.7-rc3
+> (HEAD 0f89a5733a8d28174c7adeb1fdc20ac11439e766 )
 >
->> Yes. This is a purely virtual device. I add this as to the following reason.
+> * First of all, everything works: mixer controls, effects control,
+> playback and capture (with the correct sampling frequency set).
+> Note that the device doesn't really have a master control or left/right
+> pan. It's just "emulated" in the software.
+> Audio in/out works good (but not good enough yet, see below).
+> Playback and capture at 48KHz as well as 96KHz works fine (if you don't
+> mind an xrun every 2-5 minutes). I've captured with the C400 and played
+> it back on my on-board device and vice versa to make sure it gets the
+> sample rate correctly.
 >
->> In our case, the ssc can connect to audio codec, DAC and other
->> devices. In order to avoid duplicate the code, so keep ssc as a
->> library, register it directly in Linux and use remap method to let
->> it work onto other different subsystem.
+> * The clock sources are still named "Unit 129" (0x81, internal) and
+> "Unit 130" (0x82, SPDIF). I'll fix this later. I also plan to fix the
+> channel names (i.e., instead of "AIn3", use "SPDIF In L").
 >
-> Your quote appears to have deleted the bit of my mail where I told you
-> how to fix this.  Is there something unclear in my suggestion that the
-> machine driver directly reference the SSC node?
+> * I've touched one FTU mixer creation function. I'd appreciate if someone
+> can test this with the FTU to make sure I didn't break something.
 >
-
-Sorry for misunderstand. I split your e-mail into two parts. May be you 
-miss some parts of my e-mail. You can check the last mail from me. Or 
-check the following fully quote.
-
---------------------------------------------------------------------------
-On 11/1/2012 22:43, Mark Brown wrote:
- > On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
- >
- >> +Required properties:
- >> +  - compatible: "atmel,atmel-ssc-dai"
- >> +  - atmel,dai-master: this dai base on which ssc controller
- >
- >> +Example:
- >> +dai: dai {
- >> +    compatible = "atmel,atmel-ssc-dai";
- >> +    atmel,dai-master = <&ssc0>;
- >> +};
- >
- > This seems to be a purely virtual device which remaps the SSC onto the
- > Linux audio subsystem?  If that is the case then it shouldn't appear in
- > the device tree,
-
-Yes. This is a purely virtual device. I add this as to the following reason.
-
-In our case, the ssc can connect to audio codec, DAC and other devices. 
-In order to avoid duplicate the code, so keep ssc as a library, register 
-it directly in Linux and use remap method to let it work onto other 
-different subsystem.
-
-So, for ssc connect to audio codec, use dai to remap the SSC onto the 
-Linux audio subsystem. In this way, just let the dai know which ssc 
-channel it based on. The remap is just a simple way. Please take 
-following code as a reference.
-
----<8---
-         if (pdev->dev.of_node) {
-                 struct device_node *np = pdev->dev.of_node;
-                 struct device_node *dai_master_np;
-
-                 dai_master_np = of_parse_phandle(np, 
-"atmel,dai-master", 0);
-                 if (!dai_master_np) {
-                         dev_err(&pdev->dev, "No SSC for atmel dai");
-                         return -EINVAL;
-                 }
-
-                 id = of_alias_get_id(dai_master_np, "ssc");
-         } else {
-                 id = to_platform_device(pdev->dev.parent)->id;
-         }
-
-         ssc = ssc_request(id);
-         if (IS_ERR(ssc)) {
-                 dev_err(&pdev->dev, "Failed to request SSC %d\n", id);
-                 return PTR_ERR(ssc);
-         }
-         ssc_info.ssc = ssc;
-         pdev->dev.parent = &(ssc->pdev->dev);
---->8---
-
-If ssc connect to other devices, also need to remap to other subsystem.
-
- > the machine driver should just directly reference the
- > SSC and instantiate any devices required in Linux directly.
-
-I am not fully understand this. So, which do you mean as the following 
-two method or any other else?
-
-Our old method:
-   using audio machine driver (e.g: sam9g20_wm8731.c) call 
-atmel_ssc_set_audio function to allocate the platform device for 
-atmel-ssc-dai and atmel-pcm-audio and then add device.
-
-Code as following:
----<8---
-/* Allocate a dummy device for DMA if we don't have one already */
-         if (!dma_pdev) {
-                 dma_pdev = platform_device_alloc("atmel-pcm-audio", -1);
-                 if (!dma_pdev)
-                         return -ENOMEM;
-
-                 ret = platform_device_add(dma_pdev);
-                 if (ret < 0) {
-                         platform_device_put(dma_pdev);
-                         dma_pdev = NULL;
-                         return ret;
-                 }
-         }
-
-         ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
-         if (!ssc_pdev)
-                 return -ENOMEM;
-
-         /* If we can grab the SSC briefly to parent the DAI device off 
-it */
-         ssc = ssc_request(ssc_id);
-         if (IS_ERR(ssc))
-                 pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
-                         PTR_ERR(ssc));
-         else {
-                 ssc_pdev->dev.parent = &(ssc->pdev->dev);
-                 ssc_free(ssc);
-         }
-
-         ret = platform_device_add(ssc_pdev);
---->8---
-
-Other SoC do like this:
-   register i2s device, and then register dai, finally register 
-platform. So, only one device.
---------------------------------------------------------------------------
-
-Best regards,
-Bo Shen
+> * The last two patches are not ready to go in. Patch #5 employs a crude
+> hack and misuses cmask. Patch #6 follows suit. I'd appreciate some
+> hints on how to do this properly.
+> (It's theoretically possible to use cmask properly, but cmasks must be
+> a 64 bits type, because we have 10 input * 6 output = 60 paths).
+>
+> * Somewhat unrelated: I encounter latency issues. I'm not sure if it's
+> just my particular hardware/drivers. I'm getting jack xruns even with
+> very large buffers and low sampling frequency. Jackd is running alone,
+> with almost no system activity (no X).
+> With the USB 2.0 interface (ehci) I have also experienced hard lock-ups
+> after a while (or almost immediately with 96KHz @ 64 bytes * 2 periods).
+> Luckily I have a USB 3.0 interfaces as well (Intel xhci), which doesn't
+> lock-up, but I still get xruns once every 2-5 minutes. (1000HZ kernel,
+> with PREEMPT).
+> Also, xruns are much less frequent when using only capture or only
+> playback.
+>
+> Chris, do you mind testing this and see if (1) it works for you and (2)
+> you see the same latency issues? Thanks for the USB captures, it really
+> saved a lot of work to get this done!
+>
+> Cheers,
+> Eldad
+>
+> Cc: Chris Cavey <chris-alsa@rauros.net>
+> Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+>
+> --
+>
+> Eldad Zack (6):
+>   usb-audio: skip UAC2 EFFECT_UNIT
+>   usb-audio: parameterize FTU effect unit control
+>   usb-audio: M-Audio Fast Track C400 quirks table
+>   usb-audio: Fast Track C400 mixer ranges
+>   usb-audio: Fast Track C400 mixer quirks
+>   usb-audio: add remaining C400 controls
+>
+>  sound/usb/mixer.c        |   55 +++++++++++++-
+>  sound/usb/mixer_quirks.c |  196
+> ++++++++++++++++++++++++++++++++++++++++++++--
+>  sound/usb/quirks-table.h |   71 +++++++++++++++++
+>  3 files changed, 313 insertions(+), 9 deletions(-)
+>
+> --
+> 1.7.8.6
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
