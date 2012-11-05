@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: fsi: add master clock control
-	functions
-Date: Mon, 5 Nov 2012 09:03:37 +0100
-Message-ID: <20121105080336.GA28886@opensource.wolfsonmicro.com>
-References: <87mwz3mjou.wl%kuninori.morimoto.gx@renesas.com>
- <87k3u7mjmp.wl%kuninori.morimoto.gx@renesas.com>
- <20121101144729.GN4413@opensource.wolfsonmicro.com>
- <874nl4271g.wl%kuninori.morimoto.gx@renesas.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH v2 2/2] ASoC: tlv320aic32x4: Add rstn gpio
+ to platform data.
+Date: Mon, 5 Nov 2012 09:14:41 +0100
+Message-ID: <CACKLOr0a+oUiP6gh_FNZ+cx7KkTiBef7mRWf3FO7xmRRUYUf0A@mail.gmail.com>
+References: <1351680814-13714-1-git-send-email-javier.martin@vista-silicon.com>
+ <1351680814-13714-2-git-send-email-javier.martin@vista-silicon.com>
+ <50913851.6060003@topic.nl>
+ <20121101143514.GJ4413@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4679556649810253802=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D2492615C7
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2012 09:03:40 +0100 (CET)
-In-Reply-To: <874nl4271g.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
+ [74.125.82.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 289C52615B9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2012 09:14:42 +0100 (CET)
+Received: by mail-we0-f179.google.com with SMTP id z49so2424464wey.38
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 00:14:42 -0800 (PST)
+In-Reply-To: <20121101143514.GJ4413@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,85 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org, lars@metafoo.de, lrg@ti.com, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4679556649810253802==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
-Content-Disposition: inline
+On 1 November 2012 15:35, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Oct 31, 2012 at 03:40:17PM +0100, Mike Looijmans wrote:
+>
+>> is a very nice power saving feature. I just cache all the register
+>> settings up until that point (which required a bit of coding because
+>> of the "paging" of the I2C address space).
+>
+> Probably easiest to just convert over to regmap, it handles paging fine.
 
-
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Nov 04, 2012 at 05:05:34PM -0800, Kuninori Morimoto wrote:
-
-> > > +	own =3D clk_get(dev, NULL);
-> > > +	if (IS_ERR(own))
-> > > +		return -EINVAL;
-
-> > Any reason not to use devm_clk_get()?
->=20
-> Ahh yes, Sorry.
-> BTW, currect code calls this function many times now,
-> (this clk is local variable now)
-> then should I use...
-
->  1) use devm_clk_get() / devm_clk_put() pair
->  2) use clk_get() / clk_put() pair
->  3) keep these clocks under private date (struct fsi_prive)
->     and use devm_clk_get() only _probe timing.
-
-Option 3 is the normal approach here.
-
-> > > +	if (enable) {
-> > > +		clk_disable(ick);
-
-> > Are we sure that calls to this function are always balanced so that
-> > calls to clk_enable() and clk_disable() are balanced?
-
-> I balanced it by local technic.
-> But I can say it is un-understandable.
-> Can I use counter ?
-
-Well, the whole thing is that the clk_enable() will count too so if you
-don't make sure the calls are balanced you'll run into issues.  I'd add
-some comments which explain why this is safe.
-
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQl3K2AAoJELSic+t+oim9oGoP/1zvU7VTKKh7I8MqZNbhoNWp
-XYqk6DoFydmtts2imYHk5xNC5+Cuh0Xn9FLkZOJFnTzgN2WrRuCwLk/TzRVLuRhq
-lShrtY9VYr90bVL8822DlaWdIbXE5ItpU2Ov0lOy4JMYQ9nOSUkjA6PSx7Jh4M6R
-I5xQtj91TEUvaa1dGK5Y+7qrTEZU4iFEt9TQA3AUxDaI3VDqatvgJXZix1bV0LYz
-zjFm/4yTQztyUkqyTadgq98cvw88F7KiI/XwnFey4mSwG4Vo8tc1OOPJB/CJea6S
-afEWFNLIwb+hvsQ9m4LpMYBru6K7KAOO8mHoEx3kK1lG8LZiT2NDcNkDx1m7q3RF
-4WeITDDhh4PG43hBbKkqHyyjKxuAriCRyUTaMOzh0ZexF4rvOZw3yOoplTcJDDUp
-i/YLo3TY8QGk5dror78OPp9pQvtagVT32ONfHSKetttfQSrWYKicJcofmksVrOZ1
-+rwVCWP5a+eyGLEO/PBOP02j9Z6wIr4ni8jY5TgvBLecQE2YkmU1x0Y+2GDKSe1j
-IrzxAYVL2diR8aCTbzSSI2I9C+JNixI3ygnBiVxPGFNxvFnEJ2CJieshACI6xfgJ
-fg3yVbJjd346XTYNePmxsHj50dnQt9bQhF4EKKtI4+jOkmA7vzfPFX6VM+r+hwpr
-UQA8RBhrgZx4WCHH4X5Y
-=aYZW
------END PGP SIGNATURE-----
-
---WIyZ46R2i8wDzkSu--
-
---===============4679556649810253802==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+this is something I'd like to do when I have some spare time. Do you
+know any example of a codec driver that uses a similar approach for
+accessing registers?
 
 
---===============4679556649810253802==--
+
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
