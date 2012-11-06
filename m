@@ -1,63 +1,79 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC patch v3 3/4] ASoC: atmel-ssc-dai: register dai and pcm
- directly
-Date: Tue, 6 Nov 2012 09:48:14 +0100
-Message-ID: <20121106084814.GC5044@opensource.wolfsonmicro.com>
-References: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
- <1352181474-19597-3-git-send-email-voice.shen@atmel.com>
+Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register platform from DAIs
+Date: Tue, 6 Nov 2012 09:53:09 +0100
+Message-ID: <20121106085309.GD5044@opensource.wolfsonmicro.com>
+References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
+ <1351668420-18447-3-git-send-email-voice.shen@atmel.com>
+ <20121101144315.GM4413@opensource.wolfsonmicro.com>
+ <5093312D.4070408@atmel.com>
+ <20121102142444.GY4413@opensource.wolfsonmicro.com>
+ <50974DE6.50506@atmel.com>
+ <5098A280.7070301@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pk6IbRAofICFmK5e"
+	protocol="application/pgp-signature"; boundary="vni90+aGYgRvsTuO"
 Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1352181474-19597-3-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <5098A280.7070301@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
 To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, jm.lin@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---Pk6IbRAofICFmK5e
+--vni90+aGYgRvsTuO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 06, 2012 at 01:57:53PM +0800, Bo Shen wrote:
+On Tue, Nov 06, 2012 at 01:39:12PM +0800, Bo Shen wrote:
+> On 11/5/2012 13:25, Bo Shen wrote:
 
->  static struct platform_device at91sam9260_ssc_device = {
-> -	.name	= "at91rm9200_ssc",
-> +	.name	= "at91rm9200_ssc_dai",
->  	.id	= 0,
->  	.dev	= {
+Note that there's less than 24 hours between these two mails...
 
-No, this isn't converting things to device tree which presumably is the
-goal here and obviously just doing the rename doesn't accomplish an
-enormous amount.  What I said was that you should instantiate the ASoC
-adaption when the machine driver needs to use them.  You shouldn't even
-need a separate device for this.
+> >Sorry for misunderstand. I split your e-mail into two parts. May be you
+> >miss some parts of my e-mail. You can check the last mail from me. Or
+> >check the following fully quote.
 
-Please do look at other platforms with similar hardware and do something
-similar to them.
+> Anyway, I will sent out a RFC patch series (which will be v3) which
+> register dai and platform directly in Linux.
 
---Pk6IbRAofICFmK5e
+> > > This seems to be a purely virtual device which remaps the SSC onto the
+> > > Linux audio subsystem?  If that is the case then it shouldn't appear in
+> > > the device tree,
+
+> >Yes. This is a purely virtual device. I add this as to the following
+> >reason.
+
+> >In our case, the ssc can connect to audio codec, DAC and other devices.
+> >In order to avoid duplicate the code, so keep ssc as a library, register
+> >it directly in Linux and use remap method to let it work onto other
+> >different subsystem.
+
+The whole point here is that this remapping shouldn't appear in the
+device tree since it's a purely Linux internal issue, the code that uses
+the SSC should have a reference to the SSC and then do whatever
+remapping is required.
+
+--vni90+aGYgRvsTuO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQmM7DAAoJELSic+t+oim9ppoQAJwJbKb1JezL/G48nwCk+FRO
-lQs9UaGo7N9rZNlnLBuZcig8tYkA0aj3W9T3uvfuLau76LhN8K2aTqur/c+fZUQ2
-nD9ThF9i8knuvI+QMciXVc6BNXi1PpYKcOK4lMJkeNvoIFroJz17BJB0COkp2oXC
-DCqii9wriHfVsS6MW7+i4Zy7uCL9cuId1JiZcrPSg+BUN1OgvJj5KtThBdNIaI5v
-+PI9PM/X87fVNODLQjP2z31DN9kxRRQYlXarxq9LcBVy2b/k0CJ00R8BXVsijqg6
-9+BrLkLF2tY6XTV5yZgpLU7M5HxPeoyVTxMiSUAOvevYfZycS/qsqkOE6D6ZSsuV
-znaDpAEdln4RIREyDRrW7d7qwXI3ArV3dCgWcV01I2FcbD/l5FpuaXsdsjYPzuYP
-vVhjLXKDzq2z3xqE8NBh9zW+qZ0DiTVBx5O41HF52ZTVs6W2kqOrUFIEyhOHiLae
-vMyYPmhWt9JqG6Dm6FPBowlx8xC9hAyPB/6loV6sxC00QMF9Xa7BpOnEst6go+Ol
-jvY8JGoIi/SfrmpBfGtIrc5f/pc07Oa3X7p99iw0wY2zzLR6KmtSHvgs09I16T6w
-WYKAIxhVYsIVt/zrn2YoOmY7jQXCZKW0UVRW8JXAPjZRpDBuf8qo0TQCEXSCOelS
-bQTNCWBElZmsLpALGaQm
-=1/dQ
+iQIcBAEBAgAGBQJQmM/rAAoJELSic+t+oim9T0cP/Ayv4z7ZsHLLNRsafNdSE2WB
+QjXifXeKJe8mgBlNbQnVy5rS4i5DxD6hfwJ50H+2/fYCyzolLTALslyyWxLwW2BO
+uPkOLnPm7n9nRI3kG1MlhefaQPbop8n5mAFA4ReLl3rS2hUPA8pVSFnHIA0ySdFk
+LH/m7lYVWB+rttj0u6SXNRui3gNj2seBaNy6qC6XqmSB8ESpqVlfnMoX0+dvpnhN
+ye7CCEWFLWXiw65qo+GaKjhqVdhoKDVxbzI06tdK0YOSgK0IZINE4IIBPv2dZIHM
+G1DewoHrPvCXvh/CicUf9pDYz4u2TjBPv2SgW4IaIN2Bkx+2WxPpU9/NN6PE2BQu
+t74xbrAZxcdZPjPS6j+TYeyq+KXaMr2HEXCg78QkS5KhcxDMHYpIT6Da9MMvxV2S
+ki4UUheIuA5D6j9OQjycpSSBdkLh1y4+fQkWc/Uo1+8Qh2eVp1kGyF8q5FaZE/DT
+HJTDuac3qxJYphrojbgS6SjDTPPgVisBIs41QDrVZ2ts1Is0V3tvJn0f4+m4LPHz
+l5eBmxM9Xi4v/VIU52lgy/zybtrHd9jwAt0jspyrLw1Z2Q0e3fw+9Yqb1PX8w1Lm
+h0Au4BQ9QIMO8CBrqum06AsCHYpt0dma0IH4aPYGkzR+5ChTFtD4MLl1p+sHvtfJ
+y44NJC9ZTE9VF3gI10Tm
+=QC9W
 -----END PGP SIGNATURE-----
 
---Pk6IbRAofICFmK5e--
+--vni90+aGYgRvsTuO--
