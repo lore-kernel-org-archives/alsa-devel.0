@@ -1,77 +1,77 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [asoc:topic/atmel 7/7] ERROR: Input tree has
- errors, aborting (use -f to force output)
-Date: Tue, 6 Nov 2012 12:12:47 +0100
-Message-ID: <20121106111246.GA10080@opensource.wolfsonmicro.com>
-References: <5098e341.O6MhFjJV2ViFIEza%yuanhan.liu@linux.intel.com>
- <20121106105856.GA17982@localhost>
+Subject: Re: [RFC patch v3 3/4] ASoC: atmel-ssc-dai: register dai and pcm
+ directly
+Date: Tue, 6 Nov 2012 12:39:08 +0100
+Message-ID: <20121106113908.GC10080@opensource.wolfsonmicro.com>
+References: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
+ <1352181474-19597-3-git-send-email-voice.shen@atmel.com>
+ <20121106084814.GC5044@opensource.wolfsonmicro.com>
+ <5098D930.8030403@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3302978572267443429=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CAA1526172A
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 12:12:59 +0100 (CET)
-In-Reply-To: <20121106105856.GA17982@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>
-Cc: alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RIYY1s2vRbPFwWeW"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5098D930.8030403@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3302978572267443429==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-
-
---DocE+STaALJfprDB
+--RIYY1s2vRbPFwWeW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 06, 2012 at 06:58:56PM +0800, Fengguang Wu wrote:
+On Tue, Nov 06, 2012 at 05:32:32PM +0800, Bo Shen wrote:
+> On 11/6/2012 16:48, Mark Brown wrote:
+> >On Tue, Nov 06, 2012 at 01:57:53PM +0800, Bo Shen wrote:
 
-> ERROR (duplicate_label): Duplicate label 'ssc0' on /ahb/apb/ssc@fffa0000 and /ahb/apb/ssc@fff9c000
-> ERROR: Input tree has errors, aborting (use -f to force output)
+> >No, this isn't converting things to device tree which presumably is the
+> >goal here and obviously just doing the rename doesn't accomplish an
+> >enormous amount.  What I said was that you should instantiate the ASoC
+> >adaption when the machine driver needs to use them.  You shouldn't even
+> >need a separate device for this.
 
-Reverted.
+> Maybe this is not the best solution, but just abstract audio as a
+> separate device. The other's still keep as a ssc library.
 
---DocE+STaALJfprDB
+It's not abstracting things, that's the whole problem.  It's putting the
+internals of how the Linux audio stack is organised into the device
+tree.  The point is that the SSC should be a library to all users.
+
+> >Please do look at other platforms with similar hardware and do something
+> >similar to them.
+
+> I take some reference (e.g: freescale, marvell, invidia soc, this
+> RFC implement is similar with them), but don't find the similar
+> hardware with us. Please help provide the information who's HW is
+> similar with us. Thanks.
+
+A *huge* range of SoCs have generic serial ports - off the top of my
+head this includes at least OMAP, PXA and Freescale.  The same issue
+also applies to DMA controllers which affects almost all SoCs.
+
+--RIYY1s2vRbPFwWeW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQmPCdAAoJELSic+t+oim9cEcP/33YzmhL7S2Ru+UzhDpKVJn0
-/GbO/G3WBjNTXhSGvS0M8a1SxRdKdVUB3/JFHpJ3tGLv3K7sYECS0miUTw2twTFT
-Y+7Rvpp7jK2t+C0mIOmlQhGjoWF1aXDrgycK+jfh5W0yQ+Gw0K5kFM0D2WooYaqZ
-E5L99++yV7IZ9DbfrzN84OyDn50gsz9ym8F8P8KA+EorickWNYZUjFFJNd+Jd/db
-cAGVI2468/a0zFesaWvMqXdfw/XzNzdZuEa+6sgSGG95Po4YeFCoG0ufobCRMyQJ
-u6AT/leLyFjJ+ZPcO43YbXpL1nQ5aX1x1FlTX9d01BKw37AnkKdnXXBQbydkEvWt
-REHqU3JL9ZUZF6fOoL4yDkNtUDIu3p4aLGSzdPvJJQB+yoQZHhrHYKlFYtlVqwU9
-tYyfZLiLWQ6C8Fuhnv6Db2o6JVNvpvcufN34DtoZMU8FRtGsjsO2x7pSt1rbq6La
-dHMjGu/IRRzpECJi4/UjHucHHhSGPfW5fPW7rgTyJpIcNOU/dBOBZMu//oFbzenW
-WQl8kAwtqMuDHh5J0rQuE1CKeOUyZVmy8Xmdx7qfwuHejVjaORP8BA/xe8umRHRM
-tujCkTIktr+RDA1K/Oevll/GqE1k2N0lCWYKb1yRVK9vIOU84rKVmj1WwQp1/EuX
-urBZtQCvlwfsfdE8y9VC
-=/6Nv
+iQIcBAEBAgAGBQJQmPbBAAoJELSic+t+oim9nvkP/Aq7tuIm/tpRBbRhFXhUgYWk
+qRwrVjHgoDHIryKYVmtVxApazcw68eCP97zNWPIhwNCE+VAMmSnS+GESONRir1/u
+1XNZjczforjel74BA82QiPbhyO2rYeaWvTu4oTHUYpJiLnUtrgx3Sq2h6xEcozmG
+AkYYI4nPMXxr9CliiCtKqwXzIuVJZHH6a6Yc4AXvneSivmRM0e4syjlMSxptv7+d
+F3AzzxniDIQyFkxBMWz0JJYupfxRdhZQDVqOnH+8kfCXhU1RLE2XPjWMwp2FuHag
+By5MaV3aUm1mJrXj3vxwycjt1EueDaR+2gs+XfvCJ9PvLpvYmHAJmUkbTDkQvDJp
+CENQKU7MoWoX6/q1OhKwwEBv9yDrGnHTA7cPIBXWwM0rW9YZ03qyrF85MrnBjkts
+1Np+67T1FYjfxo8LerbBQsoGJary8bIGVFkhbIfH4ifeNEE8W5+FyjgrH3O6xvre
+B13qBU8zQs4T2Op5nz0fAp9SA/SqKTLNidbR/7naR2dGyuzMwEV92PaxYTOzXcSB
+3OQ52d8gJ5rYCvfpidzjLss9aIy61plmc4aZYgzKMzxR2G9WzU5maq0uy7PyEmuD
+O38cVQy+wuExWtB+7CUY286twuKE1l8dOn8nXHrTicabYWqtyO8M7hireQFWp7JG
+dWUwF7IhZW+yBSspUCgx
+=gtOn
 -----END PGP SIGNATURE-----
 
---DocE+STaALJfprDB--
-
---===============3302978572267443429==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3302978572267443429==--
+--RIYY1s2vRbPFwWeW--
