@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: mxs-pcm: Fix fifo size
-Date: Tue, 6 Nov 2012 10:07:06 +0100
-Message-ID: <20121106090706.GJ5044@opensource.wolfsonmicro.com>
-References: <1351703171-27855-1-git-send-email-festevam@gmail.com>
- <20121102150627.GE4413@opensource.wolfsonmicro.com>
- <CAP1dx+zSmfEeih4DP3=E-r5HZUYmEAf07WzTmgYypxP8DJ73RA@mail.gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [RFC patch v3 3/4] ASoC: atmel-ssc-dai: register
+ dai and pcm directly
+Date: Tue, 06 Nov 2012 17:32:32 +0800
+Message-ID: <5098D930.8030403@atmel.com>
+References: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
+ <1352181474-19597-3-git-send-email-voice.shen@atmel.com>
+ <20121106084814.GC5044@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0271089028195631627=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 13DCE26172D
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 10:07:08 +0100 (CET)
-In-Reply-To: <CAP1dx+zSmfEeih4DP3=E-r5HZUYmEAf07WzTmgYypxP8DJ73RA@mail.gmail.com>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A69426172D
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 10:33:20 +0100 (CET)
+In-Reply-To: <20121106084814.GC5044@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <dong.aisheng@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, Fabio Estevam <festevam@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/6/2012 16:48, Mark Brown wrote:
+> On Tue, Nov 06, 2012 at 01:57:53PM +0800, Bo Shen wrote:
+>
+>>   static struct platform_device at91sam9260_ssc_device = {
+>> -	.name	= "at91rm9200_ssc",
+>> +	.name	= "at91rm9200_ssc_dai",
+>>   	.id	= 0,
+>>   	.dev	= {
+>
+> No, this isn't converting things to device tree which presumably is the
+> goal here and obviously just doing the rename doesn't accomplish an
+> enormous amount.  What I said was that you should instantiate the ASoC
+> adaption when the machine driver needs to use them.  You shouldn't even
+> need a separate device for this.
 
---===============0271089028195631627==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ofZMSlrAVk9bLeVm"
-Content-Disposition: inline
+Maybe this is not the best solution, but just abstract audio as a 
+separate device. The other's still keep as a ssc library.
 
+> Please do look at other platforms with similar hardware and do something
+> similar to them.
 
---ofZMSlrAVk9bLeVm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I take some reference (e.g: freescale, marvell, invidia soc, this RFC 
+implement is similar with them), but don't find the similar hardware 
+with us. Please help provide the information who's HW is similar with 
+us. Thanks.
 
-On Sat, Nov 03, 2012 at 04:04:02AM +0800, Dong Aisheng wrote:
-> On 2 November 2012 23:06, Mark Brown
-> > On Wed, Oct 31, 2012 at 03:06:11PM -0200, Fabio Estevam wrote:
-
-> >> According to MX28 Reference Manual the SAIF FIFO contains four 32-bit entries.
-
-> >> -     .fifo_size              = 32,
-> >> +     .fifo_size              = 4,
-
-> > fifo_size should be specified in bytes so the original code looks
-> > correct?
-
-> Then, probably it should be 16.
-
-Yup.
-
-> BTW, it seems this param is not used anymore:
-> http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s05.html
-> That may be the reason why i see some other platforms pcm code just
-> set fifo_size to 0.
-
-Hrm, right - that'll be why nobody noticed.  Guess it doesn't matter any
-more.
-
---ofZMSlrAVk9bLeVm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQmNL3AAoJELSic+t+oim9BFMQAIl5c3TczTurvq39twNQ/iq4
-Ce7tXYGtYjKX0FxRthtCj7+OoeS5FWVndZr6hKcUlJSCaFRl7yf32kqn00/NKlu5
-4HgW8xP3KKSkNmNiky1hvuYLVXnbeBJj+5Rbu9d9jKk+EIBIh7kTVzk+5fJOGnZS
-DUxEWMbgCKE1GeWheH732ZPfsCFZ3Bb7gstOS42WhKzH12ij428OHHRS52h/68Fs
-S73/NZyGN4m4aAZc0Cv92j+//A/HSGKT4fDwN6REHkRf8WaiIAtUoHiqfoG+0SSN
-aXfsHFw3D6g6ig+Xhj+B+RM6SrneYCJTqgsILFsT2pT7WNpJgsRG48jTRUw5cq62
-du62NJNPkBNzuayXhJphCx5xjgODGjzun8LrJY3Et9re+9RQ2ZcS7O/sxBOAEOdb
-hXVPbG0MC7VftFknyfqr9+h9UUsHcQMrPn8uhGBZXngwokXU0bn5OXlAkAoNsZ6q
-oCD0jrBQHlPxbTrBKtM3L2sFTHK+wmardLKijxB+y2ZsooLVQLR5tEHzc4By4gDw
-T+VvH1wgkPfY5pFpXuup0uV5//VHuqQ1l12+asVcNW3UefPUcE2KBcDWDlOcTXJ1
-xklr7teCQvmViSmaRQi1cfS75rMDyKUwvYbQm8RnToBn5aVuL2xXou/fn2lI/6EM
-z8f85UJSp+o+lZjmpeaV
-=BWWs
------END PGP SIGNATURE-----
-
---ofZMSlrAVk9bLeVm--
-
---===============0271089028195631627==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0271089028195631627==--
+BRs,
+Bo Shen
