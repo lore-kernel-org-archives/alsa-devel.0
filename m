@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, v2,
-	RFC 5/8] usb-audio: Fast Track C400 mixer ranges
-Date: Tue,  6 Nov 2012 01:30:36 +0100
-Message-ID: <1352161839-1455-6-git-send-email-eldad@fogrefinery.com>
+	RFC 7/8] usb-audio: add remaining C400 controls
+Date: Tue,  6 Nov 2012 01:30:38 +0100
+Message-ID: <1352161839-1455-8-git-send-email-eldad@fogrefinery.com>
 References: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 873892616AB
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:36 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C4D72616B0
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:47 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id e19so2096111bku.38
- for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:36 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:47 -0800 (PST)
 In-Reply-To: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,61 +28,169 @@ To: alsa-devel@alsa-project.org, Chris Cavey <chris-alsa@rauros.net>, Grant Diff
 Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add ranges for various Fast Track C400 controls, as observed
-while using the vendor's mixer control software (res values
-are an estimation).
+Add the remaining controls for the M-Audio Fast Track C400:
+* Effect Type (reusing FTU controls)
+* Effect Volume
+* Effect Send/Return
+* Effect Program
+* Effect Feedback
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/mixer.c |   36 ++++++++++++++++++++++++++++++++++++
- 1 files changed, 36 insertions(+), 0 deletions(-)
+ sound/usb/mixer_quirks.c |  130 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 128 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 9bbc981..5cddc0b 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -800,6 +800,42 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 				  struct snd_kcontrol *kctl)
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index f8ff7f6..7d35d78 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1014,6 +1014,7 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ }
+ 
+ /* M-Audio Fast Track C400 */
++/* C400 volume controls, this control needs a volume quirk, see mixer.c */
+ static int snd_c400_create_vol_ctls(struct usb_mixer_interface *mixer)
  {
- 	switch (cval->mixer->chip->usb_id) {
-+	case USB_ID(0x0763, 0x2030): /* M-Audio Fast Track C400 */
-+		if (strcmp(kctl->id.name, "Effect Duration") == 0) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirk for C400 Effect Duration\n");
-+			cval->min = 0x0000;
-+			cval->max = 0xffff;
-+			cval->res = 0x00e6;
-+			break;
-+		}
-+		if (strcmp(kctl->id.name, "Effect Volume") == 0 ||
-+		    strcmp(kctl->id.name, "Effect Feedback Volume") == 0) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirks for C400 Effect Feedback/Volume\n");
-+			cval->min = 0x00;
-+			cval->max = 0xff;
-+			break;
-+		}
-+		if (strstr(kctl->id.name, "Effect Return") != NULL) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirks for C400 %s\n", kctl->id.name);
-+			cval->min = 0xb706;
-+			cval->max = 0xff7b;
-+			cval->res = 0x0073;
-+			break;
-+		}
-+		if ((strstr(kctl->id.name, "Playback Volume") != NULL) ||
-+			(strstr(kctl->id.name, "Effect Send") != NULL)) {
-+			snd_printk(KERN_INFO
-+				"usb-audio: set quirk for Fast Track C400 %s\n",
-+				kctl->id.name);
-+			cval->min = 0xb5fb; /* -73 dB = 0xb6ff */
-+			cval->max = 0xfcfe;
-+			cval->res = 0x0073;
-+		}
-+		break;
+ 	char name[64];
+@@ -1047,12 +1048,137 @@ static int snd_c400_create_vol_ctls(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
++/* This control needs a volume quirk, see mixer.c */
++static int snd_c400_create_effect_volume_ctl(struct usb_mixer_interface *mixer)
++{
++	static const char name[] = "Effect Volume";
++	const unsigned int id = 0x43;
++	const int val_type = USB_MIXER_U8;
++	const unsigned int control = 3;
++	const unsigned int cmask = 0;
 +
- 	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
- 	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
- 		if (strcmp(kctl->id.name, "Effect Duration") == 0) {
++	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
++					name, snd_usb_mixer_vol_tlv);
++}
++
++/* This control needs a volume quirk, see mixer.c */
++static int snd_c400_create_effect_duration_ctl(struct usb_mixer_interface *mixer)
++{
++	static const char name[] = "Effect Duration";
++	const unsigned int id = 0x43;
++	const int val_type = USB_MIXER_S16;
++	const unsigned int control = 4;
++	const unsigned int cmask = 0;
++
++	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
++					name, snd_usb_mixer_vol_tlv);
++}
++
++/* This control needs a volume quirk, see mixer.c */
++static int snd_c400_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)
++{
++	static const char name[] = "Effect Feedback Volume";
++	const unsigned int id = 0x43;
++	const int val_type = USB_MIXER_U8;
++	const unsigned int control = 5;
++	const unsigned int cmask = 0;
++
++	return snd_create_std_mono_ctl(mixer, id, control, cmask, val_type,
++					name, NULL);
++}
++
++static int snd_c400_create_effect_vol_ctls(struct usb_mixer_interface *mixer)
++{
++	char name[64];
++	unsigned int cmask;
++	int chan, err;
++
++	const unsigned int id = 0x42;
++	const int val_type = USB_MIXER_S16;
++	const int control = 1;
++
++	for (chan = 0; chan < 10; chan++) {
++		if (chan < 6) {
++			snprintf(name, sizeof(name),
++				"Effect Send DOut%d",
++				chan + 1);
++		} else {
++			snprintf(name, sizeof(name),
++				"Effect Send AIn%d",
++				chan - 5);
++		}
++
++		cmask = chan; /* FIXME: abuse of cmask. Sorry about that. */
++		err = snd_create_std_mono_ctl(mixer, id, control,
++						cmask, val_type, name,
++						&snd_usb_mixer_vol_tlv);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static int snd_c400_create_effect_ret_vol_ctls(struct usb_mixer_interface *mixer)
++{
++	char name[64];
++	unsigned int cmask;
++	int chan, err;
++
++	const unsigned int id = 0x40;
++	const int val_type = USB_MIXER_S16;
++	const int control = 1;
++	const int chan_id[6] = { 0x3c, 0x43, 0x3e, 0x45, 0x40, 0x47 };
++
++	for (chan = 0; chan < 6; chan++) {
++		snprintf(name, sizeof(name),
++			"Effect Return %d",
++			chan + 1);
++
++		cmask = chan_id[chan]; /* FIXME: abuse of cmask. Sorry about that. */
++		err = snd_create_std_mono_ctl(mixer, id, control,
++						cmask, val_type, name,
++						&snd_usb_mixer_vol_tlv);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)
+ {
+-	int err = 0;
++	int err;
++
+ 	err = snd_c400_create_vol_ctls(mixer);
++	if (err < 0)
++		return err;
+ 
+-	return err;
++	err = snd_c400_create_effect_vol_ctls(mixer);
++	if (err < 0)
++		return err;
++
++	err = snd_c400_create_effect_ret_vol_ctls(mixer);
++	if (err < 0)
++		return err;
++
++	err = snd_ftu_create_effect_switch(mixer, 2, 0x43);
++	if (err < 0)
++		return err;
++
++	err = snd_c400_create_effect_volume_ctl(mixer);
++	if (err < 0)
++		return err;
++
++	err = snd_c400_create_effect_duration_ctl(mixer);
++	if (err < 0)
++		return err;
++
++	err = snd_c400_create_effect_feedback_ctl(mixer);
++	if (err < 0)
++		return err;
++
++	return 0;
+ }
+ 
+ /*
 -- 
 1.7.8.6
