@@ -1,185 +1,200 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register
-	platform from DAIs
-Date: Tue, 06 Nov 2012 13:39:12 +0800
-Message-ID: <5098A280.7070301@atmel.com>
-References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
- <1351668420-18447-3-git-send-email-voice.shen@atmel.com>
- <20121101144315.GM4413@opensource.wolfsonmicro.com>
- <5093312D.4070408@atmel.com>
- <20121102142444.GY4413@opensource.wolfsonmicro.com>
- <50974DE6.50506@atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 759D2261696
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 06:40:10 +0100 (CET)
-In-Reply-To: <50974DE6.50506@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, jm.lin@atmel.com, linux-arm-kernel@lists.infradead.org
+Subject: [RFC patch v3 4/4] ASoC: sam9g20-wm8731: convert dt support
+Date: Tue,  6 Nov 2012 13:57:54 +0800
+Message-ID: <1352181474-19597-4-git-send-email-voice.shen@atmel.com>
+References: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com, nicolas.ferre@atmel.com
+Cc: linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark Brown,
+convert sam9g20-wm8731 to device tree support
 
-On 11/5/2012 13:25, Bo Shen wrote:
-> Hi Mark Brown,
->
-> On 11/2/2012 22:24, Mark Brown wrote:
->> On Fri, Nov 02, 2012 at 10:34:21AM +0800, Bo Shen wrote:
->>> On 11/1/2012 22:43, Mark Brown wrote:
->>>> On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
->>
->>>>> +dai: dai {
->>>>> +    compatible = "atmel,atmel-ssc-dai";
->>>>> +    atmel,dai-master = <&ssc0>;
->>>>> +};
->>
->>>> This seems to be a purely virtual device which remaps the SSC onto the
->>>> Linux audio subsystem?  If that is the case then it shouldn't appear in
->>>> the device tree,
->>
->>> Yes. This is a purely virtual device. I add this as to the following
->>> reason.
->>
->>> In our case, the ssc can connect to audio codec, DAC and other
->>> devices. In order to avoid duplicate the code, so keep ssc as a
->>> library, register it directly in Linux and use remap method to let
->>> it work onto other different subsystem.
->>
->> Your quote appears to have deleted the bit of my mail where I told you
->> how to fix this.  Is there something unclear in my suggestion that the
->> machine driver directly reference the SSC node?
->>
->
-> Sorry for misunderstand. I split your e-mail into two parts. May be you
-> miss some parts of my e-mail. You can check the last mail from me. Or
-> check the following fully quote.
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+Change since v2:
+  No change
+Change since v1:
+  Add sam9g20-wm8731 binding document
+---
+ .../bindings/sound/atmel-sam9g20-audio-wm8731.txt  |   21 ++++++++
+ arch/arm/boot/dts/at91sam9260.dtsi                 |    2 +-
+ arch/arm/boot/dts/at91sam9g20ek_common.dtsi        |   20 +++++++-
+ sound/soc/atmel/sam9g20_wm8731.c                   |   51 +++++++++++++++++++-
+ 4 files changed, 89 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
 
-Anyway, I will sent out a RFC patch series (which will be v3) which 
-register dai and platform directly in Linux.
+diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
+new file mode 100644
+index 0000000..ad77fb0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/atmel-sam9g20-audio-wm8731.txt
+@@ -0,0 +1,21 @@
++* Atmel sam9g20ek audio complex
++
++Required properties:
++  - compatible: "atmel,at91sam9g20-audio"
++  - atmel,model: The user-visible name of this sound complex.
++  - atmel,audio-routing: A list of the connections between audio components.
++  - atmel,ssc-controller: The phandle of the SSC controller
++  - atmel,audio-codec: The phandle of the WM8731 audio codec
++
++Example:
++sound {
++	compatible = "atmel,at91sam9g20-audio";
++	atmel,model = "wm8731 @ sam9g20ek";
++
++	atmel,audio-routing =
++		"Ext Spk", "LHPOUT",
++		"Int MIC", "MICIN";
++
++	atmel,ssc-controller = <&ssc0>;
++	atmel,audio-codec = <&wm8731>;
++};
+diff --git a/arch/arm/boot/dts/at91sam9260.dtsi b/arch/arm/boot/dts/at91sam9260.dtsi
+index aaa42d8..d322dae 100644
+--- a/arch/arm/boot/dts/at91sam9260.dtsi
++++ b/arch/arm/boot/dts/at91sam9260.dtsi
+@@ -214,7 +214,7 @@
+ 			};
+ 
+ 			ssc0: ssc@fffbc000 {
+-				compatible = "atmel,at91rm9200-ssc";
++				compatible = "atmel,at91rm9200-ssc-dai";
+ 				reg = <0xfffbc000 0x4000>;
+ 				interrupts = <14 4 5>;
+ 				status = "disable";
+diff --git a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
+index b06c0db..05706a3 100644
+--- a/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
++++ b/arch/arm/boot/dts/at91sam9g20ek_common.dtsi
+@@ -51,6 +51,10 @@
+ 				atmel,vbus-gpio = <&pioC 5 0>;
+ 				status = "okay";
+ 			};
++
++			ssc0: ssc@fffbc000 {
++				status = "okay";
++			};
+ 		};
+ 
+ 		nand0: nand@40000000 {
+@@ -114,8 +118,8 @@
+ 			reg = <0x50>;
+ 		};
+ 
+-		wm8731@1b {
+-			compatible = "wm8731";
++		wm8731: wm8731@1b {
++			compatible = "wlf,wm8731";
+ 			reg = <0x1b>;
+ 		};
+ 	};
+@@ -139,4 +143,16 @@
+ 			gpio-key,wakeup;
+ 		};
+ 	};
++
++	sound {
++		compatible = "atmel,at91sam9g20-audio";
++		atmel,model = "wm8731 @ sam9g20ek";
++
++		atmel,audio-routing =
++			"Ext Spk", "LHPOUT",
++			"Int Mic", "MICIN";
++
++		atmel,ssc-controller = <&ssc0>;
++		atmel,audio-codec = <&wm8731>;
++	};
+ };
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 862cbcc..36f0fb3 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -197,13 +197,17 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+ 
+ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *codec_np, *cpu_np;
+ 	struct clk *pllb;
+ 	struct snd_soc_card *card =&snd_soc_at91sam9g20ek;
+ 	int ret;
+ 
+-	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
++	if (!np) {
++		if (!(machine_is_at91sam9g20ek()
++			|| machine_is_at91sam9g20ek_2mmc()))
+ 		return -ENODEV;
+-
++	}
+ 	/*
+ 	 * Codec MCLK is supplied by PCK0 - set it up.
+ 	 */
+@@ -230,6 +234,40 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	clk_set_rate(mclk, MCLK_RATE);
+ 
+ 	card->dev = &pdev->dev;
++
++	/* Parse device node info */
++	if (np) {
++		ret = snd_soc_of_parse_card_name(card, "atmel,model");
++		if (ret)
++			goto err;
++
++		ret = snd_soc_of_parse_audio_routing(card,
++						"atmel,audio-routing");
++		if (ret)
++			goto err;
++
++		/* Parse codec dai info */
++		at91sam9g20ek_dai.codec_name = NULL;
++		codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
++		if (!codec_np) {
++			dev_err(&pdev->dev, "codec info missing\n");
++			return -EINVAL;
++		}
++		at91sam9g20ek_dai.codec_of_node = codec_np;
++		at91sam9g20ek_dai.cpu_dai_name = NULL;
++		at91sam9g20ek_dai.platform_name = NULL;
++		cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
++		if (!cpu_np) {
++			dev_err(&pdev->dev, "dai info missing\n");
++			return -EINVAL;
++		}
++		at91sam9g20ek_dai.cpu_of_node = cpu_np;
++		at91sam9g20ek_dai.platform_of_node = cpu_np;
++
++		of_node_put(codec_np);
++		of_node_put(cpu_np);
++	}
++
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		printk(KERN_ERR "ASoC: snd_soc_register_card() failed\n");
+@@ -255,10 +293,19 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id sam9g20ek_wm8731_dt_ids[] = {
++	{ .compatible = "atmel,at91sam9g20-audio", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, sam9g20ek_wm8731_dt_ids);
++#endif
++
+ static struct platform_driver at91sam9g20ek_audio_driver = {
+ 	.driver = {
+ 		.name	= "at91sam9g20ek-audio",
+ 		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(sam9g20ek_wm8731_dt_ids),
+ 	},
+ 	.probe	= at91sam9g20ek_audio_probe,
+ 	.remove	= __devexit_p(at91sam9g20ek_audio_remove),
+-- 
+1.7.9.5
 
-BRs,
-Bo Shen
-
-> --------------------------------------------------------------------------
-> On 11/1/2012 22:43, Mark Brown wrote:
->  > On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
->  >
->  >> +Required properties:
->  >> +  - compatible: "atmel,atmel-ssc-dai"
->  >> +  - atmel,dai-master: this dai base on which ssc controller
->  >
->  >> +Example:
->  >> +dai: dai {
->  >> +    compatible = "atmel,atmel-ssc-dai";
->  >> +    atmel,dai-master = <&ssc0>;
->  >> +};
->  >
->  > This seems to be a purely virtual device which remaps the SSC onto the
->  > Linux audio subsystem?  If that is the case then it shouldn't appear in
->  > the device tree,
->
-> Yes. This is a purely virtual device. I add this as to the following
-> reason.
->
-> In our case, the ssc can connect to audio codec, DAC and other devices.
-> In order to avoid duplicate the code, so keep ssc as a library, register
-> it directly in Linux and use remap method to let it work onto other
-> different subsystem.
->
-> So, for ssc connect to audio codec, use dai to remap the SSC onto the
-> Linux audio subsystem. In this way, just let the dai know which ssc
-> channel it based on. The remap is just a simple way. Please take
-> following code as a reference.
->
-> ---<8---
->          if (pdev->dev.of_node) {
->                  struct device_node *np = pdev->dev.of_node;
->                  struct device_node *dai_master_np;
->
->                  dai_master_np = of_parse_phandle(np,
-> "atmel,dai-master", 0);
->                  if (!dai_master_np) {
->                          dev_err(&pdev->dev, "No SSC for atmel dai");
->                          return -EINVAL;
->                  }
->
->                  id = of_alias_get_id(dai_master_np, "ssc");
->          } else {
->                  id = to_platform_device(pdev->dev.parent)->id;
->          }
->
->          ssc = ssc_request(id);
->          if (IS_ERR(ssc)) {
->                  dev_err(&pdev->dev, "Failed to request SSC %d\n", id);
->                  return PTR_ERR(ssc);
->          }
->          ssc_info.ssc = ssc;
->          pdev->dev.parent = &(ssc->pdev->dev);
-> --->8---
->
-> If ssc connect to other devices, also need to remap to other subsystem.
->
->  > the machine driver should just directly reference the
->  > SSC and instantiate any devices required in Linux directly.
->
-> I am not fully understand this. So, which do you mean as the following
-> two method or any other else?
->
-> Our old method:
->    using audio machine driver (e.g: sam9g20_wm8731.c) call
-> atmel_ssc_set_audio function to allocate the platform device for
-> atmel-ssc-dai and atmel-pcm-audio and then add device.
->
-> Code as following:
-> ---<8---
-> /* Allocate a dummy device for DMA if we don't have one already */
->          if (!dma_pdev) {
->                  dma_pdev = platform_device_alloc("atmel-pcm-audio", -1);
->                  if (!dma_pdev)
->                          return -ENOMEM;
->
->                  ret = platform_device_add(dma_pdev);
->                  if (ret < 0) {
->                          platform_device_put(dma_pdev);
->                          dma_pdev = NULL;
->                          return ret;
->                  }
->          }
->
->          ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
->          if (!ssc_pdev)
->                  return -ENOMEM;
->
->          /* If we can grab the SSC briefly to parent the DAI device off
-> it */
->          ssc = ssc_request(ssc_id);
->          if (IS_ERR(ssc))
->                  pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
->                          PTR_ERR(ssc));
->          else {
->                  ssc_pdev->dev.parent = &(ssc->pdev->dev);
->                  ssc_free(ssc);
->          }
->
->          ret = platform_device_add(ssc_pdev);
-> --->8---
->
-> Other SoC do like this:
->    register i2s device, and then register dai, finally register
-> platform. So, only one device.
-> --------------------------------------------------------------------------
->
-> Best regards,
-> Bo Shen
