@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, v2,
-	RFC 4/8] usb-audio: M-Audio Fast Track C400 quirks table
-Date: Tue,  6 Nov 2012 01:30:35 +0100
-Message-ID: <1352161839-1455-5-git-send-email-eldad@fogrefinery.com>
+	RFC 6/8] usb-audio: Fast Track C400 mixer quirks
+Date: Tue,  6 Nov 2012 01:30:37 +0100
+Message-ID: <1352161839-1455-7-git-send-email-eldad@fogrefinery.com>
 References: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D3978261675
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:29 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 398DF26167D
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:41 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id e19so2096111bku.38
- for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:29 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:41 -0800 (PST)
 In-Reply-To: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,100 +28,107 @@ To: alsa-devel@alsa-project.org, Chris Cavey <chris-alsa@rauros.net>, Grant Diff
 Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds a quirks table for the M-Audio Fast Track C400.
-
-Based on the following patch from the alsa-devel list:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-May/051676.html
-
-See also:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-April/051219.html
+This patch adds a specific mixer quirk for the M-Audio Fast Track C400
+and creates volume controls.
+This is a hack to accomodate the unit ID semantics used by the device.
+I'd appreciate some hints on how to properly implement this because of
+the model used by this device (m*n).
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/quirks-table.h |   71 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 71 insertions(+), 0 deletions(-)
+ sound/usb/mixer.c        |    8 ++++++++
+ sound/usb/mixer_quirks.c |   46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 88d8ceb..7ec7b7f 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2296,6 +2296,77 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 5cddc0b..2fdfc8a 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -323,6 +323,10 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
+ 	int idx = 0, ret, size;
+ 	__u8 bRequest;
+ 
++	/* Fast Track C400 Hack */
++	if (cval->mixer->chip->usb_id == USB_ID(0x0763, 0x2030))
++		validx = (validx & 0xff00) | cval->cmask; /* FIXME */
++
+ 	if (request == UAC_GET_CUR) {
+ 		bRequest = UAC2_CS_CUR;
+ 		size = sizeof(__u16);
+@@ -432,6 +436,10 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 	unsigned char buf[2];
+ 	int idx = 0, val_len, err, timeout = 10;
+ 
++	/* Fast Track C400 Hack */
++	if (cval->mixer->chip->usb_id == USB_ID(0x0763, 0x2030))
++		validx = (validx & 0xff00) | cval->cmask; /* FIXME */
++
+ 	if (cval->mixer->protocol == UAC_VERSION_1) {
+ 		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
+ 	} else { /* UAC_VERSION_2 */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 6807b97..f8ff7f6 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1013,6 +1013,48 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
  	}
- },
+ }
+ 
++/* M-Audio Fast Track C400 */
++static int snd_c400_create_vol_ctls(struct usb_mixer_interface *mixer)
 +{
-+	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2030),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "M-Audio", */
-+		/* .product_name = "Fast Track C400", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = &(const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_MIXER,
-+			},
-+			/* Playback */
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 6,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x01,
-+					.ep_attr = 0x09,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						 SNDRV_PCM_RATE_48000 |
-+						 SNDRV_PCM_RATE_88200 |
-+						 SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+							44100, 48000, 88200, 96000
-+					},
-+					.clock = 0x81,
-+				}
-+			},
-+			/* Capture */
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 4,
-+					.iface = 3,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x81,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						 SNDRV_PCM_RATE_48000 |
-+						 SNDRV_PCM_RATE_88200 |
-+						 SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200, 96000
-+					},
-+					.clock = 0x81,
-+				}
-+			},
-+			/* MIDI */
-+			{
-+				.ifnum = -1 /* Interface = 4 */
++	char name[64];
++	unsigned int cmask;
++	int out, chan, err;
++
++	const unsigned int id = 0x40;
++	const int val_type = USB_MIXER_S16;
++	const int control = 1;
++
++	for (chan = 0; chan < 10; chan++) {
++		for (out = 0; out < 6; out++) {
++			if (chan < 6) {
++				snprintf(name, sizeof(name),
++					"DOut%d-AOut%d Playback Volume",
++					chan + 1, out + 1);
++			} else {
++				snprintf(name, sizeof(name),
++					"AIn%d-DOut%d Playback Volume",
++					chan - 5, out + 1);
 +			}
++			cmask = out + chan * 6; /* FIXME: abuse of cmask. Sorry about that. */
++			err = snd_create_std_mono_ctl(mixer, id, control,
++						cmask, val_type, name,
++						&snd_usb_mixer_vol_tlv);
++			if (err < 0)
++				return err;
 +		}
 +	}
-+},
++
++	return 0;
++}
++
++static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)
++{
++	int err = 0;
++	err = snd_c400_create_vol_ctls(mixer);
++
++	return err;
++}
++
+ /*
+  * The mixer units for Ebox-44 are corrupt, and even where they
+  * are valid they presents mono controls as L and R channels of
+@@ -1115,6 +1157,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 		err = snd_ftu_create_mixer(mixer);
+ 		break;
  
- /* Casio devices */
- {
++	case USB_ID(0x0763, 0x2030): /* M-Audio C400 */
++		err = snd_c400_create_mixer(mixer);
++		break;
++
+ 	case USB_ID(0x0b05, 0x1739):
+ 	case USB_ID(0x0b05, 0x1743):
+ 		err = snd_xonar_u1_controls_create(mixer);
 -- 
 1.7.8.6
