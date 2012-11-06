@@ -1,76 +1,57 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm0010: Only output debug status
- message on status change.
-Date: Tue, 6 Nov 2012 09:20:53 +0100
-Message-ID: <20121106082053.GE3283@opensource.wolfsonmicro.com>
-References: <1352126712-6747-1-git-send-email-scott.ling@wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Ux500: Fixup use of clocks
+Date: Tue, 6 Nov 2012 09:26:12 +0100
+Message-ID: <20121106082612.GF3283@opensource.wolfsonmicro.com>
+References: <1350909125-20189-1-git-send-email-ulf.hansson@stericsson.com>
+ <20121022133003.GF4477@opensource.wolfsonmicro.com>
+ <CAPDyKFqgFvY67QR8LA_KTEQwDi3o2wH=MY-D89k023-2S=ioFw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8539837364931883325=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67B532616C9
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 09:20:55 +0100 (CET)
-In-Reply-To: <1352126712-6747-1-git-send-email-scott.ling@wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Scott Ling <scott.ling@wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s5/bjXLgkIwAv6Hi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFqgFvY67QR8LA_KTEQwDi3o2wH=MY-D89k023-2S=ioFw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Ulf Hansson <ulf.hansson@stericsson.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8539837364931883325==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
-Content-Disposition: inline
-
-
---phCU5ROyZO6kBE05
+--s5/bjXLgkIwAv6Hi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 05, 2012 at 02:45:12PM +0000, Scott Ling wrote:
-> Rather than outputting the debug status message for every status
-> received from the DSP, only output a message when the status
-> changes.
+On Mon, Nov 05, 2012 at 03:27:08PM +0100, Ulf Hansson wrote:
 
-This doesn't apply against -next, please check what's going on there.
+> I can not find this patch on any "next-tree" yet. Same goes for:
+> "[PATCH 2/2] ASoC: Ux500: Control apb clock".
 
---phCU5ROyZO6kBE05
+> Maybe I should be more patient, but thought it make sense to send a
+> ping on this. :-)
+
+As I've had to tell you before pings are pointless, don't do this - to
+repeat, if you think something has been missed resend it.
+
+--s5/bjXLgkIwAv6Hi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQmMhPAAoJELSic+t+oim9EGUP/2K2RLk/0qt2/dVBddLqMAB4
-XcaPVzD4DPsh1LDJTNYz9nPhj7Ysse0Mjxq7Ue7sFLIOcRCMXvu6hj6PLtfG6r/A
-GUZhhjd/qXrDfejpFuhzIq/KC27Fmra0OJUYVnTkJ18dn4HPswxbblnIZm1BpUfj
-wqOSgnK1mhmCk9zOCBivMWLKUbb29WbRBK7FjLxvt8qTumY96aXuNBzE+CcztgcG
-Yy9VTnCY+pbCuU2xKO/NAoHMRNcHdhDcarjx/QPcsnGvyhWm+S+nj/yQXs/B6bw/
-+UA7kD/g93zws1dHvXiAbgk6N1R/aJAoWKNqLN2ABhy6FVHA5Ccd5wJteA16jT45
-Yp5nHF/0s6Fng1zr5ZwzlDHnxjeZKJgSbGMhlNuVRoY3QybxJt3uatPMF31lMpVI
-eHOHFhYKXNeQlgCWDHcJFtrU3POP89mOnsGcWij/QCs01z6Xa47UhuGjxkhuzfW7
-UsRn3Fo+WtuFZEgDQNYk4vowkxVTCpredu0Qn/iyZ2rzFzFAKkNBq7EvMsQYte30
-v/5n+DYl57OpXZ2BYzCNXS9Lb3EBV21GXAW9JTEDvrgeVB6nthQuwduIbgzi0Owd
-Ij6vmaE455/CQSKeLD5v22D9dyVM7jboF1BSPuS4YI2qe37xxWMbqBOSHHYLgXyx
-6L5Qpg7FD/6EmOSy6+O3
-=wAXM
+iQIcBAEBAgAGBQJQmMmdAAoJELSic+t+oim9/i0P/0/ByKzheNY0YUBgPUi9XGjT
+bHuSdB4D7Bhmir8rMSzQewzrAAZoGBlLI+fKdnl4IVtIULSjgdCyqcWJIWxKHVfO
+Nm2wlEfl09EGQ3HdViO8ECmCyfu9yjGuG8hDep7yLql3k3JzkWPdE2ZMmnBTvLQX
+7/cQxXe2mxS2sPsn8HkYJzpfph2VvliJSx5vK4OftkWMzL7TiqDeMagcbU1U1YUQ
+l884GK+DpAVkWV3avESfACoPHL3El6i2EENpq4Falj7nvoraBkqeJF5N2Ea4H0ar
+TSFezW8kkHwZuvlplBpqQYsNMuhA1sjqYbx42gGZRey/rRxhNxvQ2B/mk8xGWdkG
+SXFVKxn9eDRodDmjaEYPWGhJSX2Nzlxnqw7sX99ugFBaT9P0X2wSBX8IL0UCx5TN
+E7oyGPbQLZeU3NyBo65lyIVCZSjlLpIpEr8yP6c4tfapBhU6JS1TiIq4FrpTVhxs
+UtYKfgedm2mMvke/vCDxpI8GapCSKF/oTsYlVAShIT4k8C4PdhGbAoRakVG6ggTM
+RwRMKpktqAaIdxVZruFc2cABLSmxoZmVJZY8MXFl4agoB5nm5umJcLPlFww7ON1g
+unNms0pAwuuax3OlZ+1ilhM7OS8Q8oqlFuYi/zlRNDdu63nOxjb+78oguDRLtzJH
+UbIuIiHAhr0gtv8pj4c1
+=AGf8
 -----END PGP SIGNATURE-----
 
---phCU5ROyZO6kBE05--
-
---===============8539837364931883325==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8539837364931883325==--
+--s5/bjXLgkIwAv6Hi--
