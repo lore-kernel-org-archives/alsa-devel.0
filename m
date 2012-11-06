@@ -1,39 +1,185 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH V3 2/2] ARM: EXYNOS: Enable platform support for I2S controllers
-Date: Tue, 06 Nov 2012 10:14:44 +0530
-Message-ID: <1352177084-16339-3-git-send-email-padma.v@samsung.com>
-References: <1352177084-16339-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1352177084-16339-1-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: padma.v@samsung.com, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
-Cc: sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Patch v2 3/4] ASoC: atmel-ssc-dai: register
+	platform from DAIs
+Date: Tue, 06 Nov 2012 13:39:12 +0800
+Message-ID: <5098A280.7070301@atmel.com>
+References: <1351668420-18447-1-git-send-email-voice.shen@atmel.com>
+ <1351668420-18447-3-git-send-email-voice.shen@atmel.com>
+ <20121101144315.GM4413@opensource.wolfsonmicro.com>
+ <5093312D.4070408@atmel.com>
+ <20121102142444.GY4413@opensource.wolfsonmicro.com>
+ <50974DE6.50506@atmel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 759D2261696
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 06:40:10 +0100 (CET)
+In-Reply-To: <50974DE6.50506@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, jm.lin@atmel.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add AUXDATA entries for i2s controller driver so as to set the device
-name for clock lookups
+Hi Mark Brown,
 
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
----
- arch/arm/mach-exynos/mach-exynos5-dt.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+On 11/5/2012 13:25, Bo Shen wrote:
+> Hi Mark Brown,
+>
+> On 11/2/2012 22:24, Mark Brown wrote:
+>> On Fri, Nov 02, 2012 at 10:34:21AM +0800, Bo Shen wrote:
+>>> On 11/1/2012 22:43, Mark Brown wrote:
+>>>> On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
+>>
+>>>>> +dai: dai {
+>>>>> +    compatible = "atmel,atmel-ssc-dai";
+>>>>> +    atmel,dai-master = <&ssc0>;
+>>>>> +};
+>>
+>>>> This seems to be a purely virtual device which remaps the SSC onto the
+>>>> Linux audio subsystem?  If that is the case then it shouldn't appear in
+>>>> the device tree,
+>>
+>>> Yes. This is a purely virtual device. I add this as to the following
+>>> reason.
+>>
+>>> In our case, the ssc can connect to audio codec, DAC and other
+>>> devices. In order to avoid duplicate the code, so keep ssc as a
+>>> library, register it directly in Linux and use remap method to let
+>>> it work onto other different subsystem.
+>>
+>> Your quote appears to have deleted the bit of my mail where I told you
+>> how to fix this.  Is there something unclear in my suggestion that the
+>> machine driver directly reference the SSC node?
+>>
+>
+> Sorry for misunderstand. I split your e-mail into two parts. May be you
+> miss some parts of my e-mail. You can check the last mail from me. Or
+> check the following fully quote.
 
-diff --git a/arch/arm/mach-exynos/mach-exynos5-dt.c b/arch/arm/mach-exynos/mach-exynos5-dt.c
-index ed37273..93e63ec 100644
---- a/arch/arm/mach-exynos/mach-exynos5-dt.c
-+++ b/arch/arm/mach-exynos/mach-exynos5-dt.c
-@@ -86,6 +86,12 @@ static const struct of_dev_auxdata exynos5250_auxdata_lookup[] __initconst = {
- 				"exynos5-hdmi", NULL),
- 	OF_DEV_AUXDATA("samsung,exynos5-mixer", 0x14450000,
- 				"exynos5-mixer", NULL),
-+	OF_DEV_AUXDATA("samsung,samsung-i2s", EXYNOS5_PA_I2S0,
-+				"samsung-i2s.0", NULL),
-+	OF_DEV_AUXDATA("samsung,samsung-i2s", EXYNOS5_PA_I2S1,
-+				"samsung-i2s.1", NULL),
-+	OF_DEV_AUXDATA("samsung,samsung-i2s", EXYNOS5_PA_I2S2,
-+				"samsung-i2s.2", NULL),
- 	{},
- };
- 
--- 
-1.7.4.4
+Anyway, I will sent out a RFC patch series (which will be v3) which 
+register dai and platform directly in Linux.
+
+BRs,
+Bo Shen
+
+> --------------------------------------------------------------------------
+> On 11/1/2012 22:43, Mark Brown wrote:
+>  > On Wed, Oct 31, 2012 at 03:26:59PM +0800, Bo Shen wrote:
+>  >
+>  >> +Required properties:
+>  >> +  - compatible: "atmel,atmel-ssc-dai"
+>  >> +  - atmel,dai-master: this dai base on which ssc controller
+>  >
+>  >> +Example:
+>  >> +dai: dai {
+>  >> +    compatible = "atmel,atmel-ssc-dai";
+>  >> +    atmel,dai-master = <&ssc0>;
+>  >> +};
+>  >
+>  > This seems to be a purely virtual device which remaps the SSC onto the
+>  > Linux audio subsystem?  If that is the case then it shouldn't appear in
+>  > the device tree,
+>
+> Yes. This is a purely virtual device. I add this as to the following
+> reason.
+>
+> In our case, the ssc can connect to audio codec, DAC and other devices.
+> In order to avoid duplicate the code, so keep ssc as a library, register
+> it directly in Linux and use remap method to let it work onto other
+> different subsystem.
+>
+> So, for ssc connect to audio codec, use dai to remap the SSC onto the
+> Linux audio subsystem. In this way, just let the dai know which ssc
+> channel it based on. The remap is just a simple way. Please take
+> following code as a reference.
+>
+> ---<8---
+>          if (pdev->dev.of_node) {
+>                  struct device_node *np = pdev->dev.of_node;
+>                  struct device_node *dai_master_np;
+>
+>                  dai_master_np = of_parse_phandle(np,
+> "atmel,dai-master", 0);
+>                  if (!dai_master_np) {
+>                          dev_err(&pdev->dev, "No SSC for atmel dai");
+>                          return -EINVAL;
+>                  }
+>
+>                  id = of_alias_get_id(dai_master_np, "ssc");
+>          } else {
+>                  id = to_platform_device(pdev->dev.parent)->id;
+>          }
+>
+>          ssc = ssc_request(id);
+>          if (IS_ERR(ssc)) {
+>                  dev_err(&pdev->dev, "Failed to request SSC %d\n", id);
+>                  return PTR_ERR(ssc);
+>          }
+>          ssc_info.ssc = ssc;
+>          pdev->dev.parent = &(ssc->pdev->dev);
+> --->8---
+>
+> If ssc connect to other devices, also need to remap to other subsystem.
+>
+>  > the machine driver should just directly reference the
+>  > SSC and instantiate any devices required in Linux directly.
+>
+> I am not fully understand this. So, which do you mean as the following
+> two method or any other else?
+>
+> Our old method:
+>    using audio machine driver (e.g: sam9g20_wm8731.c) call
+> atmel_ssc_set_audio function to allocate the platform device for
+> atmel-ssc-dai and atmel-pcm-audio and then add device.
+>
+> Code as following:
+> ---<8---
+> /* Allocate a dummy device for DMA if we don't have one already */
+>          if (!dma_pdev) {
+>                  dma_pdev = platform_device_alloc("atmel-pcm-audio", -1);
+>                  if (!dma_pdev)
+>                          return -ENOMEM;
+>
+>                  ret = platform_device_add(dma_pdev);
+>                  if (ret < 0) {
+>                          platform_device_put(dma_pdev);
+>                          dma_pdev = NULL;
+>                          return ret;
+>                  }
+>          }
+>
+>          ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
+>          if (!ssc_pdev)
+>                  return -ENOMEM;
+>
+>          /* If we can grab the SSC briefly to parent the DAI device off
+> it */
+>          ssc = ssc_request(ssc_id);
+>          if (IS_ERR(ssc))
+>                  pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+>                          PTR_ERR(ssc));
+>          else {
+>                  ssc_pdev->dev.parent = &(ssc->pdev->dev);
+>                  ssc_free(ssc);
+>          }
+>
+>          ret = platform_device_add(ssc_pdev);
+> --->8---
+>
+> Other SoC do like this:
+>    register i2s device, and then register dai, finally register
+> platform. So, only one device.
+> --------------------------------------------------------------------------
+>
+> Best regards,
+> Bo Shen
