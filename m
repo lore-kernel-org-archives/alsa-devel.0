@@ -1,21 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [Alsa-user] Ticks when playing to USB DAC at high
-	sample rates
-Date: Tue, 06 Nov 2012 01:12:42 +0100
-Message-ID: <509855FA.7000409@gmail.com>
-References: <3884466.olklcBH31l@quintet> <1377790.NxBekNbB4q@quintet>
- <5097D524.5010309@gmail.com> <3608072.60TCDCLhjU@quintet>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: [FT C400,v2,RFC 0/8] M-Audio Fast Track C400
+Date: Tue,  6 Nov 2012 01:30:31 +0100
+Message-ID: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A154D26166D
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:12:48 +0100 (CET)
-Received: by mail-we0-f179.google.com with SMTP id z49so2816592wey.38
- for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:12:46 -0800 (PST)
-In-Reply-To: <3608072.60TCDCLhjU@quintet>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E42B8261671
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:10 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id e19so2096111bku.38
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:10 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,333 +21,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeffrey Barish <jeff_barish@earthlink.net>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, Chris Cavey <chris-alsa@rauros.net>, Grant Diffey <gdiffey@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05.11.2012 23:29, Jeffrey Barish wrote:
-> On Mon 05 November 2012 16:03:00 Daniel Mack wrote:
->> Hi Jeff,
->>
->> On 05.11.2012 02:53, Jeffrey Barish wrote:
->>> On Sun 04 November 2012 11:39:48 Daniel Mack wrote:
->>>> [cc alsa-devel]
->>>>
->>>> On 04.11.2012 02:25, Jeffrey Barish wrote:
->>>>> On Fri 26 October 2012 15:21:06 Jeffrey Barish wrote:
->>>>>> On Fri 26 October 2012 21:47:05 Daniel Mack wrote:
->>>>>>> On 26.10.2012 21:43, Jeffrey Barish wrote:
->>>>>>>> On Thu 25 October 2012 19:10:45 Daniel Mack wrote:
->>>>>>>>> On 25.10.2012 17:18, Jeffrey Barish wrote:
->>>>>>>>>> I found something in the snd_usb_audio code (in endpoint.c) that
->>>>>>>>>> could
->>>>>>>>>> explain one of the problems I have observed (the ticks). I would
->>>>>>>>>> normally test my theory by modifying the code. In this case, I
->>>>>>>>>> would
->>>>>>>>>> like to stick in a print statement to see what values are being
->>>>>>>>>> assigned
->>>>>>>>>> to certain variables. Unfortunately, I am too ignorant to do
->>>>>>>>>> something
->>>>>>>>>> even this trivial as I have never worked on kernel code. I think I
->>>>>>>>>> am
->>>>>>>>>> supposed to use printk,
->>>>>>>>>
->>>>>>>>> printk is nice for simple debugging, yes. But note that this call is
->>>>>>>>> timing critical and should not be used in "fast path" code.
->>>>>>>>> Introducing
->>>>>>>>> a printk for each received packet for example will almost certainly
->>>>>>>>> make
->>>>>>>>> the driver behave quite differently.
->>>>>>>>>
->>>>>>>>>> but beyond that I am lost. Can someone provide
->>>>>>>>>> me with some directions? I need to know how to make the driver. To
->>>>>>>>>> that
->>>>>>>>>> end, I probably will have to install additional packages. After
->>>>>>>>>> making
->>>>>>>>>> the driver, I need to know how to install it over the existing
->>>>>>>>>> driver.
->>>>>>>>>
->>>>>>>>> Here's one way to do it:
->>>>>>>>>
->>>>>>>>> 1. git clone
->>>>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git (your
->>>>>>>>> patch should apply on top of this tree eventually)
->>>>>>>>> 2. cd sound
->>>>>>>>> 3. zcat /proc/config.gz >.config
->>>>>>>>> 4. build and install the kernel image. How that is done depends on
->>>>>>>>> the
->>>>>>>>> distribution you're using. For Ubuntu follow the docs at [1] (start
->>>>>>>>> at
->>>>>>>>> point #5). For Fedora and others, something like "make && make
->>>>>>>>> install"
->>>>>>>>> should do
->>>>>>>>> 5. reboot and check that the new kernel is running
->>>>>>>>> 6. hack on sound/usb
->>>>>>>>> 7. make M=sound/usb
->>>>>>>>> 8. reload the module with "sudo rmmod snd_usb_audio; sudo insmod
->>>>>>>>> sound/usb/snd-usb-audio.ko" (better plug out the device before so
->>>>>>>>> you
->>>>>>>>> always have the same defined point of start)
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Hope that works for you.
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> Daniel
->>>>>>>>>
->>>>>>>>> [1] https://wiki.ubuntu.com/KernelTeam/GitKernelBuild
->>>>>>>>
->>>>>>>> Your directions were almost perfect, so even I was able to build the
->>>>>>>> kernel. I made a discovery using the new kernel that might help
->>>>>>>> someone
->>>>>>>> more familiar with the code than I am to localize the problem.  I am
->>>>>>>> still hearing the blip when I play audio sampled at 88.2 kHz, but I
->>>>>>>> just
->>>>>>>> noticed that the blip is perfectly periodic, with a period of about
->>>>>>>> 16.4
->>>>>>>> seconds.  I am playing a sine wave synthesized using GStreamer using
->>>>>>>> the
->>>>>>>> following command:
->>>>>>>>
->>>>>>>> gst-launch audiotestsrc volume=0.01 ! audio/x-raw-float, width=64,
->>>>>>>> rate=88200, channels=2, endianness=1234 ! audioconvert ! alsasink
->>>>>>>>
->>>>>>>> A sine wave makes it easier to hear the blip.  Does this clue suggest
->>>>>>>> anything?
->>>>>>>>
->>>>>>>> I also want to mention that when I use the new kernel, I do not get
->>>>>>>> the
->>>>>>>> ticks at either 88.2 or 96 kHz even when I do not use the external
->>>>>>>> USB
->>>>>>>> hub.  I plan next to back up to the 3.6.2 kernel to see whether I
->>>>>>>> still
->>>>>>>> get ticks there.
->>>>>>>
->>>>>>> Which kernel did you use when you heard the 'blibs'?
->>>>>>
->>>>>> The latest news is bad.  I am on 3.2.0 now.  The USB DAC is working
->>>>>> perfectly at this moment at both 96 kHz and 88.2 kHz without the
->>>>>> external
->>>>>> USB hub (imagine calling that bad news).  If I set the srate to 88.2
->>>>>> kHz
->>>>>> and stop and start the sine wave, sometimes I get the blip.  Forget
->>>>>> about
->>>>>> its being periodic.  It was definitely periodic before lunch; now I
->>>>>> usually
->>>>>> get random intervals if I get any blips at all.  As I am typing this
->>>>>> message, I can't get blips at all.  There was some correlation between
->>>>>> changing sample rates and blips, but I can't reproduce that behavior
->>>>>> now.
->>>>>> What is most weird is that I haven't gotten any ticks since lunch with
->>>>>> any
->>>>>> kernel or with either sample rate, yet they were reliable earlier today
->>>>>> unless I used the external USB hub. I obviously need to experiment some
->>>>>> more to see whether I can observe a pattern.
->>>>>
->>>>> To conclude (?) this thread, I am now convinced that the anomalies I
->>>>> observed were unrelated to the device driver.  I had two theories
->>>>> remaining.  One was that the problem was somehow related to an
->>>>> overheating problem.  I used a heat gun to convince myself that the
->>>>> theory was wrong.  The other was that the problem had something to do
->>>>> with services running in the background that interfered with the device
->>>>> driver.  I removed or disabled all services that I could identify as
->>>>> superfluous.  Removed services include zeitgeist, apparmor,
->>>>> modemmanager,
->>>>> mdadm, and bluetooth.  Disabled services include atd, dns-clean, and
->>>>> pppd-dns.  The system has been running perfectly with an 88.2 kHz sample
->>>>> rate and no external USB hub for 2 days.  However, I tried booting the
->>>>> system with a copy of the OS from before I removed superfluous services.
->>>>> It still ran perfectly.  Thus, I cannot convince myself that removing
->>>>> superfluous services actually solved the problem.  I suppose it's
->>>>> possible that some service was running sporadically, which could explain
->>>>> why the problem seemed to come and go and also why the problem did not
->>>>> occur when I booted the copy of the OS. As long as the problem remains
->>>>> dormant I have no alternative but to move on and see whether the problem
->>>>> eventually recurs.  Only time will tell.
->>>>>
->>>>> Thanks for all the help.  Hey, I built a kernel and got my own version
->>>>> of
->>>>> the device driver to run.  That was exciting.
->>>>>
->>>>> ------------------------------------------------------------------------
->>>>> --
->>>>> ----
->>>>>
->>>>> I'm back.  The USB DAC continued to work for two more days after my last
->>>>> message and then the blips resumed.  I've been digging into the driver
->>>>> code
->>>>> for two days.  I spent today trying to convince myself that the driver
->>>>> is
->>>>> actually using an asynchronous protocol.  The blips are almost certainly
->>>>> buffer underruns, which I could account for if the driver were not
->>>>> responding to asynchronous feedback from the DAC.  I expected to see a
->>>>> deviation from the pattern of one frame with 89 samples followed by 4
->>>>> frames with 88 (which results in 88,200 samples per second).  That
->>>>> sequence would work perfectly if the clocks in the computer and in the
->>>>> USB DAC were exactly the same frequency, but of course they are not.
->>>>> Consequently, I would expect to see requests for one sample more or less
->>>>> once in a while, depending on whether the clock in the computer is
->>>>> slower
->>>>> or faster than the one in the DAC.  What I see is 89 + 4 * 88 almost all
->>>>> the time, as expected .  Once in a while there is a request for an
->>>>> additional frame of 88 and then the pattern of 89 + 4 * 88 resumes.  I
->>>>> presume that the break in the usual pattern indicates that the device
->>>>> driver is responding to a request from the DAC for fewer samples, which
->>>>> confirms that the driver is using the asynchronous protocol.  That's
->>>>> good, if I am right. However, sticking in an extra packet of only 88
->>>>> would be the expected deviation if the host were getting a little ahead
->>>>> of the DAC, yet the blip is almost certainly a buffer underrun, which
->>>>> means that the host is actually falling behind.  Thus, an extra packet
->>>>> of
->>>>> 89 would make more sense.  I should also mention that there is no
->>>>> correlation between the timing of the extra packet of 88 and the audible
->>>>> blip.  Something seems wrong here, but I'm not sure where to go next.
->>>>>
->>>>> On a related topic, to confirm that the blip is a buffer underrun, I
->>>>> would
->>>>> like to synthesize a waveform that is DC.  With DC, an overrun would not
->>>>> produce any audible anomalies whereas an underrun would be audible.  I
->>>>> am
->>>>> using GStreamer to synthesize the test waveform.  Does anyone know of a
->>>>> way to synthesize a DC waveform using GStreamer?  If not, is there any
->>>>> other tool available in Linux?
->>>>>
->>>>> By the way, I bought another USB DAC from a different manufacturer to be
->>>>> sure that the anomalies I am observing were not due to a defect in the
->>>>> DAC.  They both display the same problem.
->>>>>
->>>>> -----------------------------------------------------
->>>>>
->>>>> I modified the device driver to output a constant instead of the
->>>>> incoming
->>>>> waveform.  I get blips, as I expected, so I am now certain that the
->>>>> blips
->>>>> are caused by a buffer underrun.  The blips occur periodically again --
->>>>> period of about 16.5 seconds.  I presume that the period is related to
->>>>> the difference in clock rates between the host and DAC.  Roughly every
->>>>> 3-4 blips, I get an extra packet of 88 samples.  To prevent buffer
->>>>> underrun, I ought to be getting an extra packet of 89 samples every 16.5
->>>>> seconds, but I never do.
->>>>
->>>> Thanks for all your investigation on this! Sending computed data instead
->>>> of the payload delivered by the ALSA stack is in fact a very good way to
->>>> isolate the issue.
->>>>
->>>> The question is: if the algorithm in the USB driver miscalculates the
->>>> number of samples to send over time, what't the reason for that? Does
->>>> the device report bogus values or is there this a bug in the driver?
->>>
->>> Well, I have two DACs, each from a different manufacturer.  Both
->>> experience
->>> underruns (though not at the same rate).  It's possible that they are both
->>> reporting bogus values, but unlikely, so I'm leaning toward the bug
->>> theory.
->>>
->>>> Did you read chapter 5.4.12.1 of the USB2.0 spec, and can you explain
->>>> where you suspect the bug to be? The current implementation in the
->>>> driver is quite straight forward, mapping all feedback values to Q16.16
->>>> and keeping the lower 16bits around for phase compensation between the
->>>> calculation of the packet sizes.
->>>
->>> Do you perhaps mean chapter 5.12.4.1 (Synchronization Type)?  I'm not
->>> finding a 5.4.12.1 in usb_20.pdf from a zip dated 102512.
->>
->> Yes, sorry.
->>
->>> Please tell me whether I have this right:
->>>
->>> You start transferring the sound in snd_usb_endpoint_start using
->>> usb_submit_urb to submit 2 urbs to the USB core.  The urbs specify that on
->>> completion, the USB core should call snd_complete_urb.  snd_complete_urb
->>> resubmits the urb after calling retire_playback_urb (by way of
->>> retire_outbound_urb which calls retire_data_urb which is
->>> retire_playback_urb), which updates its estimate of delay (what's that? 
->>> It seems to be 0 always)
->> That's just an information that is passed to userspace for latency
->> compensation matters. As you don't stream data that ALSA passes up the
->> stack anymore in your tests (but static data), you can ignore this
->> detail for now.
->>
->>> and prepare_playback_urb (by way of prepare_outbound_urb which calls
->>> prepare_data_urb which is prepare_playback_urb), which fills the
->>> transfer_buffer in the urb with the audio data (from a DMA buffer, I
->>> guess).
->>>
->>> Before filling transfer_buffer, prepare_playback_urb calls
->>> snd_usb_endpoint_next_packet_size to compute the number of samples to
->>> send.
->>> This code appears to be the crux of what I need to understand because the
->>> value returned from this function is what is supposed to adjust to prevent
->>> buffer underruns.
->>
->> That's correct.
->>
->>> It isn't clear to me how this function gets information
->>> about the state of the buffer in the device.
->>
->> Via the callback of the feedback data endpoint - the momentary frequency
->> is updated there and referred to again in
->> snd_usb_endpoint_next_packet_size().
->>
->>> The only argument to
->>> snd_usb_endpoint_next_packet_size is ep, which is a pointer to the
->>> snd_usb_endpoint structure.
->>
->> Yes, the endpoint structure hold all runtime streaming details. Once a
->> sync urb is given back from the host controller, retire_inbound_urb() is
->> called and snd_usb_handle_sync_urb() cares for updating the momentary
->> frequency of the slave of the sync endpoint, which is the data endpoint
->> that is later on used by next_packet_size(). Makes sense?
->>
->>> I see that ep->phase is the Q16.16 value you
->>> mentioned, so the lower 16 bits are for "phase compensation between the
->>> calculation of the packet sizes".  I don't completely understand that
->>> phrase. freqm is an unchanging value (5780275)
->>
->> freqm shouldn't be unchanging. Are you sure it really is? If so, is
->> snd_usb_handle_sync_urb() ever called in your setup?
-> 
-> Yes.  freqm is always 5780275.  snd_usb_handle_sync_urb is never called.
+Hi,
 
-Ok, we can probably stop debugging here already, because if that
-function is never called, something's badly wrong. No question the data
-endpoint will run out of bounds at some point if it doesn't get any
-usable feedback data.
+The following patches adds support for the M-Audio Fast Track C400.
+I recently bought this device and I was able to get this work thanks to
+the discussion on the alsa-devel list.[1]
+Thanks everyone!
 
-> snd_usb_handle_sync_urb is called from only one place, retire_inbound_urb, so 
-> the latter is never called.  I suppose that an inbound urb would never need to 
-> be retired if one were never submitted.
+This series applies against the latest mainline tree, 3.7-rc4
+(HEAD 3d70f8c617a436c7146ecb81df2265b4626dfe89 )
 
-Trace whteher usb_submit_urb() is called on the sync endpoint. There
-must be a reason why the completion routing is never callsed, and that's
-most probably also the solution of your problem.
+This is v2 of the series. It adds patches #3 and #8.
 
-[..]
+* First of all, everything works: mixer controls, effects control,
+playback and capture (with the correct sampling frequency set).
+Note that the device doesn't really have a master control or left/right
+pan. It's just "emulated" in the software.
 
-> Since puzzling over the apparent absence of feedback about the state of the 
-> device, I had an epiphany this morning that such feedback is not necessary.
+* Audio in/out seems to work good in v2, mainly because the
+playback is an implicit feedback endpoint, and it is now configured
+with the capture endpoint as its sync-buddy (patch #8).
 
-It's always necessary, as two osciallators will drift from each other,
-no matter what. Without a feedback, there's no way the host can know how
-many data to send over the wire.
+* Also needed to correct the calculation for implicit feedback, because
+of the different channel numbers between the two endpoints on the C400
+(6 playback - implicit feedback, 4 capture) (patch #3).
 
-> The pattern of payload sizes should not change if the payloads are sent in 
-> response to a request from the device.  The device makes this request by 
-> calling snd_complete_urb when it finishes an urb.  As the device defines time, 
-> the host is responsible only for having the next urb ready when the device 
-> requests it.  Could it be that the missing feedback provides nonessential 
-> information about the state of the device, such as confirmation that the 
-> previous payload was successfully processed?
-> 
-> I repeated the test with a different DAC.  With that DAC it is still the case 
-> that snd_usb_handle_sync_urb is never called.
+* The clock sources are still named "Unit 129" (0x81, internal) and
+"Unit 130" (0x82, SPDIF). I'll fix this later. I also plan to fix the
+channel names (i.e., instead of "AIn3", use "SPDIF In L").
 
-How exactly did you make sure? There's something really wrong if what
-you describe happens, and we need to find the cause for it.
+* I've touched one FTU mixer creation function. I'd appreciate if someone
+can test this with the FTU to make sure I didn't break something.
 
-Unless you're dealing with a device that uses one data endpoint as clock
-source for another data endpoint (which is called an "implicit feedback"
-mechanism), you need to have a dedicated sync endpoint.
+* Patches #6 and #7 are not ready to go in. Patch #6 employs a crude
+hack and misuses cmask. Patch #7 follows suit. I'd appreciate some
+hints on how to do this properly.
+(It's theoretically possible to use cmask properly, but cmasks must be
+a 64 bits type, because we have 10 input * 6 output = 60 paths).
+
+Grant, I mentioned just now that I get distorted playback. This was caused
+by me using an lower bandwidth altsetting (2), which I tried since it
+gives only 2 playback channels, figuring it might help latency somehow.
+I now reverted back to the original alsetting (1) and I seem to get a
+stable latency and I can't hear anything unusual (yet?). jack_delay seems
+to be happy as well.
+
+Cheers,
+Eldad
+
+Cc: Grant Diffey <gdiffey@gmail.com>
+Cc: Chris Cavey <chris-alsa@rauros.net>
+Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 
 
-Daniel
+Eldad Zack (8):
+  usb-audio: skip UAC2 EFFECT_UNIT
+  usb-audio: parameterize FTU effect unit control
+  usb-audio: use sender stride for implicit feedback
+  usb-audio: M-Audio Fast Track C400 quirks table
+  usb-audio: Fast Track C400 mixer ranges
+  usb-audio: Fast Track C400 mixer quirks
+  usb-audio: add remaining C400 controls
+  usb-audio: FT C400 sync playback EP to capture EP
+
+ sound/usb/endpoint.c     |    9 ++-
+ sound/usb/mixer.c        |   55 +++++++++++++-
+ sound/usb/mixer_quirks.c |  196 ++++++++++++++++++++++++++++++++++++++++++++--
+ sound/usb/pcm.c          |   13 +++
+ sound/usb/quirks-table.h |   71 +++++++++++++++++
+ 5 files changed, 332 insertions(+), 12 deletions(-)
+
+-- 
+1.7.8.6
