@@ -1,18 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
-	by codec
-Date: Tue, 6 Nov 2012 12:43:24 +0100
-Message-ID: <20121106114323.GD10080@opensource.wolfsonmicro.com>
-References: <505AFB0B.7010306@st.com>
- <20120920114951.GJ17666@opensource.wolfsonmicro.com>
- <505BE5BB.5010008@st.com> <5098E929.7040404@st.com>
+From: Massimo Del Fedele <max@veneto.com>
+Subject: Re: Fix for Asus G75 notebook subwoofer
+Date: Tue, 06 Nov 2012 15:18:58 +0100
+Message-ID: <k7b68h$epd$1@ger.gmane.org>
+References: <k6rkr2$usv$1@ger.gmane.org> <s5hy5ifgmbq.wl%tiwai@suse.de>
+ <k7ajdq$42u$1@ger.gmane.org> <s5hsj8ngkxe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4745398256631665449=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B438926172E
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 12:43:25 +0100 (CET)
-In-Reply-To: <5098E929.7040404@st.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24070261723
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 15:19:09 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TVjzo-0005A7-Ud
+ for alsa-devel@alsa-project.org; Tue, 06 Nov 2012 15:19:16 +0100
+Received: from host118-251-dynamic.0-87-r.retail.telecomitalia.it
+ ([87.0.251.118]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 06 Nov 2012 15:19:16 +0100
+Received: from max by host118-251-dynamic.0-87-r.retail.telecomitalia.it with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 06 Nov 2012 15:19:16 +0100
+In-Reply-To: <s5hsj8ngkxe.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,81 +31,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Il 06/11/2012 10:06, Takashi Iwai ha scritto:
 
---===============4745398256631665449==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qrgsu6vtpU/OV/zm"
-Content-Disposition: inline
+>
+> Could you attach to ML too?
 
+I tried, but they're too big
+>
+>>
+>> BTW, did you see the above patch (error in via_auto_fill_dac_nids) ?
+>> My patch isn't correct either (fails when the 'continue' path is taken)
+>> but it's better than now. I guess that code should be rewritten, it's
+>> quite weird in respect to dac numbering.
+>
+> Could you elaborate a bit more?
+>
 
---Qrgsu6vtpU/OV/zm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok. here the original functions :
 
-On Tue, Nov 06, 2012 at 04:10:41PM +0530, Rajeev kumar wrote:
+static bool is_empty_dac(struct hda_codec *codec, hda_nid_t dac)
+{
+	struct via_spec *spec = codec->spec;
+	int i;
 
-> Once again I am raising this issue. Sorry for that.
-> First time I have implemented dapm support for my codec driver
-> (sta529), but still crash is there. There is no any asynchronous
-> events, so platform/Machine driver does not contains any dapm
-> widgets.
-
-This is probably a bug in your system given that nobody else is seeing
-it, I'd suggest you follow normal debugging processes to figure out
-where the crash is occuring.  Just a backtrace isn't really enough to
-provide useful diagnostic information (especially without the
-translation to line numbers), you should at least turn on logging and
-also translate the backtrace into line numbers.
-
->=20
-> Please find below the implementation for dapm.
->=20
-> static const struct snd_soc_dapm_widget sta529_dapm_widgets[] =3D {
->         SND_SOC_DAPM_DAC("DAC", "Play", SND_SOC_NOPM , 0, 0),
->         SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
->         SND_SOC_DAPM_OUTPUT("HPL"),
->         SND_SOC_DAPM_OUTPUT("HPR"),
->         SND_SOC_DAPM_OUTPUT("SPKL"),
->         SND_SOC_DAPM_OUTPUT("SPKR"),
->         SND_SOC_DAPM_INPUT("MIC1"),
-> };
-
-Does the device really have no power control at all?
-
---Qrgsu6vtpU/OV/zm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQmPfEAAoJELSic+t+oim9suEP/0nSrk6IJ9grIQLDBeOur1Kf
-6EpKfp6JhgO5vYgjVL2O+FCduDX4X92PK87MUzauGiXRw1tMBvWUtJ46TQJ+LjDg
-jTstWaxCE82HEfxr6PE+MBBwjsldkmzOAMv26hQ8DnauExZItSsiaRE6imanRf8N
-gLFltqz6Wuso8+2mSY8LmrkTuV1oCSAmyPII8WG3NV3Ifo/Qyq8ZOcC4HD2LfcbY
-yLCfadf2LvJl+w62qHbL4uK8EhTkqL5eyRJBOfCm8UGMmxhDRM78X2gb4WxvdDyo
-lnGc789bvLaL5FQOuKEjLD8PuJmHA7Qti1Ki/WbPpQ52s+Zmw8jq7LyTEsILHqLb
-Yoq/yFIK91UEN8u/Si7IiYccxvdakIn60kDu+ZrdOSrf+cSY96xvAHwrH+oFqas4
-a1OK66VTKj0nIJdOPpaZEwoRx3VvANUpFESqZrCUoNDth89IvcFM4ARCtsZVcswq
-MkH1vMwTqTPdrWyryfL+wmrVEfpZn++a4GcX5u/tHHaPFLs6Dg9GFN3r4KGi1Qr+
-YA588YkHrorEsrgVz3L9jq0ziWPQf2fwYDWxNYgIHvgAvWWpaOpL7aAqbrFckFrh
-ADl1jm8QUspKZJcvh7851PBTS2gqAkAl1lF7rBX3vDSNwmQwGuZ/TGCPfhYGEvfX
-lebWbiF15CE2LsirQhAH
-=i/Jz
------END PGP SIGNATURE-----
-
---Qrgsu6vtpU/OV/zm--
-
---===============4745398256631665449==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	for (i = 0; i < spec->multiout.num_dacs; i++) {     <--- uses spec->multiout.num_dacs as used DAC count
+		if (spec->multiout.dac_nids[i] == dac)
+			return false;
+	}
+	if (spec->hp_dac_nid == dac)
+		return false;
+	return true;
+}
 
 
---===============4745398256631665449==--
+.....................
+
+static bool __parse_output_path(struct hda_codec *codec, hda_nid_t nid,
+				hda_nid_t target_dac, int with_aa_mix,
+				struct nid_path *path, int depth)
+{
+	struct via_spec *spec = codec->spec;
+	hda_nid_t conn[8];
+	int i, nums;
+
+	if (nid == spec->aa_mix_nid) {
+		if (!with_aa_mix)
+			return false;
+		with_aa_mix = 2; /* mark aa-mix is included */
+	}
+
+	nums = snd_hda_get_connections(codec, nid, conn, ARRAY_SIZE(conn));
+	for (i = 0; i < nums; i++) {
+		if (get_wcaps_type(get_wcaps(codec, conn[i])) != AC_WID_AUD_OUT)
+			continue;
+		if (conn[i] == target_dac || is_empty_dac(codec, conn[i])) {       <--- calls is_empty_dac, but spec->multiout.num_dacs not set here
+			/* aa-mix is requested but not included? */
+			if (!(spec->aa_mix_nid && with_aa_mix == 1))
+				goto found;
+		}
+	}
+	if (depth >= MAX_NID_PATH_DEPTH)
+		return false;
+	for (i = 0; i < nums; i++) {
+		unsigned int type;
+		type = get_wcaps_type(get_wcaps(codec, conn[i]));
+		if (type == AC_WID_AUD_OUT)
+			continue;
+		if (__parse_output_path(codec, conn[i], target_dac,
+					with_aa_mix, path, depth + 1))
+			goto found;
+	}
+	return false;
+
+   found:
+	path->path[path->depth] = conn[i];
+	path->idx[path->depth] = i;
+	if (nums > 1 && get_wcaps_type(get_wcaps(codec, nid)) != AC_WID_AUD_MIX)
+		path->multi[path->depth] = 1;
+	path->depth++;
+	return true;
+}
+
+....................
+
+static int via_auto_fill_dac_nids(struct hda_codec *codec)
+{
+	struct via_spec *spec = codec->spec;
+	const struct auto_pin_cfg *cfg = &spec->autocfg;
+	int i, dac_num;
+	hda_nid_t nid;
+
+	spec->multiout.dac_nids = spec->private_dac_nids;
+	dac_num = 0;
+	for (i = 0; i < cfg->line_outs; i++) {
+		hda_nid_t dac = 0;
+		nid = cfg->line_out_pins[i];
+		if (!nid)
+			continue;
+		if (parse_output_path(codec, nid, 0, 0, &spec->out_path[i]))
+			dac = spec->out_path[i].path[0];
+		if (!i && parse_output_path(codec, nid, dac, 1,
+					    &spec->out_mix_path))
+			dac = spec->out_mix_path.path[0];
+		if (dac) {
+			spec->private_dac_nids[i] = dac;   <---- should be, IMHO, spec->private_dac_nids[dac_num] instead
+			dac_num++;
+		}
+	}
+	if (!spec->out_path[0].depth && spec->out_mix_path.depth) {
+		spec->out_path[0] = spec->out_mix_path;
+		spec->out_mix_path.depth = 0;
+	}
+	spec->multiout.num_dacs = dac_num;     <--- sets spec->multiout.num_dacs ONLY at end of search, do is_empty_dac always returns true during search
+	return 0;
+}
+
+
+Resuming ;
+
+1) during scan, the spec->multiout.num_dacs is taken as the number of already used DACs, but this is updated jut at END of scan, so during scan
+     the first DAC is always taken.
+2) spec->private_dac_nids[i] = dac; should be spec->private_dac_nids[dac_num++] = dac; the 'continue' statement above can leave some holes of
+     uninitializad data in spec->private_dac_nids.
+3) spec->multiout.num_dacs sould be updated on EACH dac found, not just at end, otherwise you've got the problem at point 1
+
+The patch I posted on former post is incomplete (don't solve the 'holes' due to continue statement), so it should be rewritten.
+If you mean, I can do it correctly on next days.
+
+Ciao
+
+Max
