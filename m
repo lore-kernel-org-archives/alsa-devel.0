@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, v2,
-	RFC 2/8] usb-audio: parameterize FTU effect unit control
-Date: Tue,  6 Nov 2012 01:30:33 +0100
-Message-ID: <1352161839-1455-3-git-send-email-eldad@fogrefinery.com>
+	RFC 3/8] usb-audio: use sender stride for implicit feedback
+Date: Tue,  6 Nov 2012 01:30:34 +0100
+Message-ID: <1352161839-1455-4-git-send-email-eldad@fogrefinery.com>
 References: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E738261672
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E00B261671
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2012 01:33:25 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id e19so2096111bku.38
- for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:21 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2012 16:33:25 -0800 (PST)
 In-Reply-To: <1352161839-1455-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,107 +28,46 @@ To: alsa-devel@alsa-project.org, Chris Cavey <chris-alsa@rauros.net>, Grant Diff
 Cc: Takashi Iwai <tiwai@suse.de>, Eldad Zack <eldad@fogrefinery.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds the unit ID and the control as parameters to the creation of the
-effect unit control for the M-Audio Fast Track Ultra. This allows the
-code to be shared with other devices that use different unit ID and
-control, such as the M-Audio Fast Track C400.
+For implicit feedback endpoints, the number of bytes for each packet
+is matched by the corresponding synchronizing endpoint.
+The size is calculated by taking the actual size and dividing it by
+the stride - currently by the endpoint's stride, but we should use the
+synchronization source's stride.
+This is evident when the number of channels differ between the
+synchornization source and the implictly fed-back endpoint, as with
+M-Audio Fast Track C400 - the synchonization source (capture) has
+4 channels, while the implicit feedback mode endpoint has 6.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/mixer_quirks.c |   24 ++++++++++++++++--------
- 1 files changed, 16 insertions(+), 8 deletions(-)
+ sound/usb/endpoint.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index ae2b714..6807b97 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -621,11 +621,13 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
- }
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 7f78c6d..e2317da 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1021,15 +1021,18 @@ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+ 		/*
+ 		 * Iterate through the inbound packet and prepare the lengths
+ 		 * for the output packet. The OUT packet we are about to send
+-		 * will have the same amount of payload bytes than the IN
+-		 * packet we just received.
++		 * will have the same amount of payload bytes per stride as the
++		 * IN packet we just received. Since the actual size is scaled
++		 * by the stride, use the sender stride to calculate the length
++		 * in case the number of channels differ between the implicitly
++		 * fed-back endpoint and the synchronizing endpoint.
+ 		 */
  
- /* M-Audio FastTrack Ultra quirks */
--/* FTU Effect switch */
-+/* FTU Effect switch (also used by C400) */
- struct snd_ftu_eff_switch_priv_val {
- 	struct usb_mixer_interface *mixer;
- 	int cached_value;
- 	int is_cached;
-+	int bUnitID;
-+	int validx;
- };
- 
- static int snd_ftu_eff_switch_info(struct snd_kcontrol *kcontrol,
-@@ -660,9 +662,8 @@ static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
- 	struct snd_ftu_eff_switch_priv_val *pval;
- 	int err;
- 	unsigned char value[2];
-+	int id, validx;
- 
--	const int id = 6;
--	const int validx = 1;
- 	const int val_len = 2;
- 
- 	value[0] = 0x00;
-@@ -684,6 +685,8 @@ static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
- 	if (snd_BUG_ON(!chip))
- 		return -EINVAL;
- 
-+	id = pval->bUnitID;
-+	validx = pval->validx;
- 
- 	down_read(&mixer->chip->shutdown_rwsem);
- 	if (mixer->chip->shutdown)
-@@ -714,10 +717,8 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer;
- 	int changed, cur_val, err, new_val;
- 	unsigned char value[2];
-+	int id, validx;
- 
--
--	const int id = 6;
--	const int validx = 1;
- 	const int val_len = 2;
- 
- 	changed = 0;
-@@ -735,6 +736,9 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	if (snd_BUG_ON(!chip))
- 		return -EINVAL;
- 
-+	id = pval->bUnitID;
-+	validx = pval->validx;
-+
- 	if (!pval->is_cached) {
- 		/* Read current value */
- 		down_read(&mixer->chip->shutdown_rwsem);
-@@ -779,7 +783,8 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	return changed;
- }
- 
--static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer)
-+static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer,
-+	int validx, int bUnitID)
- {
- 	static struct snd_kcontrol_new template = {
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -802,6 +807,8 @@ static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer)
- 	pval->cached_value = 0;
- 	pval->is_cached = 0;
- 	pval->mixer = mixer;
-+	pval->bUnitID = bUnitID;
-+	pval->validx = validx;
- 
- 	template.private_value = (unsigned long) pval;
- 	kctl = snd_ctl_new1(&template, mixer->chip);
-@@ -960,9 +967,10 @@ static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
- 	if (err < 0)
- 		return err;
- 
--	err = snd_ftu_create_effect_switch(mixer);
-+	err = snd_ftu_create_effect_switch(mixer, 1, 6);
- 	if (err < 0)
- 		return err;
-+
- 	err = snd_ftu_create_effect_volume_ctl(mixer);
- 	if (err < 0)
- 		return err;
+ 		out_packet->packets = in_ctx->packets;
+ 		for (i = 0; i < in_ctx->packets; i++) {
+ 			if (urb->iso_frame_desc[i].status == 0)
+ 				out_packet->packet_size[i] =
+-					urb->iso_frame_desc[i].actual_length / ep->stride;
++					urb->iso_frame_desc[i].actual_length / sender->stride;
+ 			else
+ 				out_packet->packet_size[i] = 0;
+ 		}
 -- 
 1.7.8.6
