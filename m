@@ -1,20 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Out of tree driver for hiface
-Date: Wed, 07 Nov 2012 01:50:43 +0100
-Message-ID: <5099B063.60801@gmail.com>
-References: <CACckToVxqMdQx_ER+ErsyJech8EVx2k8U_Ps5qzymFL1bd3-FA@mail.gmail.com>
- <CACckToX+BVfTisKUZfkVe43ZE5S4k+QAwWwAhdzrb_YjwmP+QQ@mail.gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [asoc:topic/atmel 7/7] ERROR: Input tree has
+ errors, aborting (use -f to force output)
+Date: Wed, 07 Nov 2012 09:29:32 +0800
+Message-ID: <5099B97C.7090900@atmel.com>
+References: <20121106105856.GA17982@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
- [209.85.212.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BE203264EEE
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 01:50:45 +0100 (CET)
-Received: by mail-wi0-f179.google.com with SMTP id hq7so810280wib.2
- for <alsa-devel@alsa-project.org>; Tue, 06 Nov 2012 16:50:45 -0800 (PST)
-In-Reply-To: <CACckToX+BVfTisKUZfkVe43ZE5S4k+QAwWwAhdzrb_YjwmP+QQ@mail.gmail.com>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B589264EF6
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 02:30:10 +0100 (CET)
+In-Reply-To: <20121106105856.GA17982@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Fengguang Wu <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06.11.2012 23:32, Grant Diffey wrote:
-> Were either of you aware of: https
-> <https://github.com/panicking/snd-usb-asyncaudio>://
+Hi Fengguang Wu,
 
-I wasn't - thanks for the pointer.
-
-> Could ever be merged/incorporated into mainline?
+On 11/6/2012 18:58, Fengguang Wu wrote:
+> Hi Bo,
 >
-> Does it contain too much in common with snd-usb-audio requiring merging
-> into that to go into mainline?
+> FYI, kernel build failed on
+>
+> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/atmel
+> head:   e9898f35f539f3a1aecf054d01cc1631aaa67be4
+> commit: e9898f35f539f3a1aecf054d01cc1631aaa67be4 [7/7] ARM: at91: atmel-ssc: add device tree support
+> config: make ARCH=arm at91_dt_defconfig
+>
+> All error/warnings:
+>
+> ERROR (duplicate_label): Duplicate label 'ssc0' on /ahb/apb/ssc@fffa0000 and /ahb/apb/ssc@fff9c000
+> ERROR: Input tree has errors, aborting (use -f to force output)
 
-That driver currently doesn't care to integrate into the snd-usb generic
-driver, but it could live within mainline as propietary thing. If anyone
-with access to the hardware and sufficient free time wants to prepare
-patches, they can be reviewed :)
+Thanks for finding this issue.
+I will correct it in next version.
+Thanks again.
 
-Would you like to contact the author maybe?
+BRs
+Bo Shen
 
-
-Daniel
+> ---
+> 0-DAY kernel build testing backend         Open Source Technology Center
+> Fengguang Wu, Yuanhan Liu                              Intel Corporation
+>
