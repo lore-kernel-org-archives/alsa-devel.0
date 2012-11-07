@@ -1,21 +1,21 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
-	by codec
-Date: Wed, 7 Nov 2012 11:02:21 +0530
-Message-ID: <5099F265.6010008@st.com>
-References: <505AFB0B.7010306@st.com>
- <20120920114951.GJ17666@opensource.wolfsonmicro.com>
- <505BE5BB.5010008@st.com> <5098E929.7040404@st.com>
- <20121106114323.GD10080@opensource.wolfsonmicro.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [RFC patch v3 3/4] ASoC: atmel-ssc-dai: register
+ dai and pcm directly
+Date: Wed, 07 Nov 2012 15:38:24 +0800
+Message-ID: <509A0FF0.7030501@atmel.com>
+References: <1352181474-19597-1-git-send-email-voice.shen@atmel.com>
+ <1352181474-19597-3-git-send-email-voice.shen@atmel.com>
+ <20121106084814.GC5044@opensource.wolfsonmicro.com>
+ <5098D930.8030403@atmel.com>
+ <20121106113908.GC10080@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
- [207.126.144.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 671B3264F0B
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 06:32:28 +0100 (CET)
-In-Reply-To: <20121106114323.GD10080@opensource.wolfsonmicro.com>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6C94264F28
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 08:39:44 +0100 (CET)
+In-Reply-To: <20121106113908.GC10080@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,82 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
-
-On 11/6/2012 5:13 PM, Mark Brown wrote:
-> On Tue, Nov 06, 2012 at 04:10:41PM +0530, Rajeev kumar wrote:
+On 11/6/2012 19:39, Mark Brown wrote:
+> On Tue, Nov 06, 2012 at 05:32:32PM +0800, Bo Shen wrote:
+>> On 11/6/2012 16:48, Mark Brown wrote:
+>>> On Tue, Nov 06, 2012 at 01:57:53PM +0800, Bo Shen wrote:
 >
->> Once again I am raising this issue. Sorry for that.
->> First time I have implemented dapm support for my codec driver
->> (sta529), but still crash is there. There is no any asynchronous
->> events, so platform/Machine driver does not contains any dapm
->> widgets.
+>>> No, this isn't converting things to device tree which presumably is the
+>>> goal here and obviously just doing the rename doesn't accomplish an
+>>> enormous amount.  What I said was that you should instantiate the ASoC
+>>> adaption when the machine driver needs to use them.  You shouldn't even
+>>> need a separate device for this.
 >
-> This is probably a bug in your system given that nobody else is seeing
-> it, I'd suggest you follow normal debugging processes to figure out
-> where the crash is occuring.  Just a backtrace isn't really enough to
-> provide useful diagnostic information (especially without the
-> translation to line numbers), you should at least turn on logging and
-> also translate the backtrace into line numbers.
+>> Maybe this is not the best solution, but just abstract audio as a
+>> separate device. The other's still keep as a ssc library.
 >
+> It's not abstracting things, that's the whole problem.  It's putting the
+> internals of how the Linux audio stack is organised into the device
+> tree.  The point is that the SSC should be a library to all users.
 
-Turn on logging does not helping in giving any extra information in this 
-case. Backtracing the code gives me the line number. Please find below 
-the information.
+OK. I will keep the SSC as a library for all users.
 
-The problem occur only when I want to put system into hibernation 
-otherwise it is working fine.
-When the system put into hibernation mode snd_soc_dapm_shutdown  routine 
-is called from snd_soc_poweroff function.
-
-static void soc_dapm_shutdown_codec(struct snd_soc_dapm_context *dapm)
-3540 {
-3541         struct snd_soc_dapm_widget *w;
-3542         LIST_HEAD(down_list);
-3543         int powerdown = 0;
-3544
-3545         list_for_each_entry(w, &dapm->card->widgets, list) {
-3546                 if (w->dapm != dapm)
-3547                         continue;
-3548                 if (w->power) {
-3549                         dapm_seq_insert(w, &down_list, false);
-3550                         w->power = 0;
-3551                         powerdown = 1;
-3552                 }
-3553         }
-
-
-If you check line number 3545, it is trying to get widget from card.
-and the system get crashed as there is no entry for dapm in the card.
-
-As I mentioned previously, I have provided widgets support only at codec 
-level not at platform/machine level. So extracting widgets from card may 
-create an issue.
-
-Note:
-Just to make an experiment, I have added a single widget in machine 
-driver then also I am getting the same crash log.
-
->>
->> Please find below the implementation for dapm.
->>
->> static const struct snd_soc_dapm_widget sta529_dapm_widgets[] = {
->>          SND_SOC_DAPM_DAC("DAC", "Play", SND_SOC_NOPM , 0, 0),
->>          SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
->>          SND_SOC_DAPM_OUTPUT("HPL"),
->>          SND_SOC_DAPM_OUTPUT("HPR"),
->>          SND_SOC_DAPM_OUTPUT("SPKL"),
->>          SND_SOC_DAPM_OUTPUT("SPKR"),
->>          SND_SOC_DAPM_INPUT("MIC1"),
->> };
+>>> Please do look at other platforms with similar hardware and do something
+>>> similar to them.
 >
-> Does the device really have no power control at all?
+>> I take some reference (e.g: freescale, marvell, invidia soc, this
+>> RFC implement is similar with them), but don't find the similar
+>> hardware with us. Please help provide the information who's HW is
+>> similar with us. Thanks.
+>
+> A *huge* range of SoCs have generic serial ports - off the top of my
+> head this includes at least OMAP, PXA and Freescale.  The same issue
+> also applies to DMA controllers which affects almost all SoCs.
 
-I have a single bit for power bridge ONN/OFF in a given register. I am 
-handling this bit with  SND_SOC_BIAS_OFF and SND_SOC_BIAS_ON.
+Thanks for this information, I will try to implement the SSC framework 
+like this. If it is finished, I will send out v4 patch series.
 
-Best Regards
-Rajeev
+Thanks again.
+
+BRs,
+Bo Shen
