@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: Fix for Asus G75 notebook subwoofer
-Date: Wed, 07 Nov 2012 09:56:48 +0100
-Message-ID: <s5h8vadhju7.wl%tiwai@suse.de>
+Date: Wed, 07 Nov 2012 09:56:56 +0100
+Message-ID: <s5h7gpxhjtz.wl%tiwai@suse.de>
 References: <k6rkr2$usv$1@ger.gmane.org> <s5hy5ifgmbq.wl%tiwai@suse.de>
  <k7ajdq$42u$1@ger.gmane.org> <s5hsj8ngkxe.wl%tiwai@suse.de>
  <k7b68h$epd$1@ger.gmane.org> <s5h390m95d5.wl%tiwai@suse.de>
@@ -11,8 +11,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BCD72652FA
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 09:56:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B1A52652FA
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 09:56:56 +0100 (CET)
 In-Reply-To: <509947A7.9080406@veneto.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
