@@ -1,69 +1,54 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [RFC PATCH] ALSA: hda - Keep power link on for
-	PantherPoint HDMI
-Date: Wed,  7 Nov 2012 09:22:33 +0100
-Message-ID: <1352276553-26044-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree
+ support
+Date: Wed, 7 Nov 2012 09:24:20 +0100
+Message-ID: <20121107082419.GB12323@opensource.wolfsonmicro.com>
+References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C08DD264F3A
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 09:22:34 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, 1075882@bugs.launchpad.net, alsa-devel@alsa-project.org, fengguang.wu@intel.com
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, plagnioj@jcrosoft.com, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On some of the PantherPoint HDMI machines we currently enable, we're seeing
-trouble with unsol events, i e detecting monitor presence, especially when
-on battery and after suspend/resume.
 
-BugLink: https://bugs.launchpad.net/bugs/1075882
-Tested-by: Cyrus Lien <cyrus.lien@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_hdmi.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So far this is the workaround we have found to be working. Sometimes, it also
-seems that "cat /proc/asound/cardx/codec#x" can also make the HDMI unsol event
-trigger, so that the problem fixes itself.
+On Wed, Nov 07, 2012 at 11:41:41AM +0800, Bo Shen wrote:
+> Add atmel-ssc for device tree support
+>=20
+> Match "atmel,at91rm9200-ssc" for using pdc for data transfer
+> Match "atmel,at91sam9g45-ssc" for using dma for data transfer
 
-We have not run any battery life tests to see if this causes more power consumption.
+Applied, thanks.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 39ca100..3155267 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1288,13 +1288,17 @@ static int hdmi_parse_codec(struct hda_codec *codec)
- 		}
- 	}
- 
-+#ifdef CONFIG_PM
-+	/* We're seeing some problems with unsolicited hot plug events on
-+	 * PantherPoint after S3, if this is not enabled */
-+	if (codec->vendor_id == 0x80862806)
-+		codec->bus->power_keep_link_on = 1;
- 	/*
- 	 * G45/IbexPeak don't support EPSS: the unsolicited pin hot plug event
- 	 * can be lost and presence sense verb will become inaccurate if the
- 	 * HDA link is powered off at hot plug or hw initialization time.
- 	 */
--#ifdef CONFIG_PM
--	if (!(snd_hda_param_read(codec, codec->afg, AC_PAR_POWER_STATE) &
-+	else if (!(snd_hda_param_read(codec, codec->afg, AC_PAR_POWER_STATE) &
- 	      AC_PWRST_EPSS))
- 		codec->bus->power_keep_link_on = 1;
- #endif
--- 
-1.7.9.5
+--eAbsdosE1cNLO4uF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQmhqqAAoJELSic+t+oim9pfEP/Awe0fnA/zfcS+lVuzQ9EXWO
+5F4jp1yF+KXOv53VnvJ5lgkJzeiDvNk+oA8MDOXUgsrvhRa25/UEBjDESfSJol++
+iM9ubN42xU11Hn4kfmwZt63t5jTg+6aqI4UewnA1aZRoc6S4fYl2f8LvOH5DbPQ9
+o5n0wN5qrCq+jfX5j6DmVSw/4603ghC2ePdPLzluxwdbiMx7FbNrxBEnzgPMrMbq
+fQ9OCPLRuOP12W1ndlQZJu//nJ9gWWV00SmaPM5lNqh6yMgy4ys5zfKbGYUlSh/Q
+v4yqbSZGhR/tko/bwqyC9PW7y9JqR6aT1P3+CgCpXUSHMG9CsMHNK3B6A4kl0Mb+
+JyP0MpSca2VbsHDWwpROgpo76ozhONCfAH00uXdoVXHe71rBbgtOmZat3LkrJ5Hw
+kBFi1n1DoovgYqwxdmVpTCkbwMvEvevCx7EWJAxR8L6nfxUKMn9voNK6GGTGqaZN
+P2xQm6XqPNpsuWxBlDeedKJVDOqXQHgCPS+0h6DDPbc7Hj+P9QeY1fdwFLjE0M+T
+j0zuTVMz0bE0sm4y7qUIhm5r0zdmmbv2eXI+JZhytV/EIcA9Hyy3zBrSTEb9vhWI
+7hcO8BlzkNz17d4VhjdBM9f1lkjQ1onX+ZQr6sM07xxsrrE6HX1/GSA1g6LZnutg
+Sgl2Fkr5gii4BvPRO0oT
+=g2oQ
+-----END PGP SIGNATURE-----
+
+--eAbsdosE1cNLO4uF--
