@@ -1,70 +1,75 @@
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>
-Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree
- support
-Date: Wed, 7 Nov 2012 11:41:21 +0100
-Message-ID: <20121107104121.GG20063@game.jcrosoft.org>
-References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
- <20121107084932.GE20063@game.jcrosoft.org>
- <20121107092124.GE12323@opensource.wolfsonmicro.com>
+From: tiwai@suse.de
+Subject: [PATCH 2/3] ALSA: hda - Fix invalid connections in
+	VT1802 codec
+Date: Wed,  7 Nov 2012 12:52:19 +0100
+Message-ID: <1352289140-30731-3-git-send-email-tiwai@suse.de>
+References: <1352289140-30731-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20121107092124.GE12323-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9056D264FF3
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 12:52:28 +0100 (CET)
+In-Reply-To: <1352289140-30731-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Massimo Del Fedele <max@veneto.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10:21 Wed 07 Nov     , Mark Brown wrote:
-> On Wed, Nov 07, 2012 at 09:49:32AM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> 
-> > yes the pinctrl is mainline in -next via pinctrl tree
-> 
-> > s code does not work on the DT kernel untill it's done
-> 
-> > NACK stand I refuse this touch the at91 dtsi untiol it's done correctly
-> 
-> ...and here's another mail (plus a further private mail on the same
-> subject) by the time I managed to reply to the first one, the timestamps
-> say in about ten minutes :/  What I'm seeing here is two of the Atmel
-> maintainers disagreeing about a patch so I've got to pick one view and
-> right now applying the patch looks like it moves us further forwards.
-> 
-> Like I say it's not an issue right now and it seems like it should be
-> trivial to fix.  Is anything needed here other than adding the
-> pinctrl_get_set_default() call, in which case would it not be less
-> effort all round to just send the patch?  If there is more involved then
-> what is needed?
-for the driver point of view I agreee with you for the dtsi I disagree I miss
-100 lignes of pinctrl description
+From: Takashi Iwai <tiwai@suse.de>
 
-so today if no pinctrl the pin are input gpio and the drivers will not work
+VT1802 codec provides the invalid connection lists of NID 0x24 and
+0x33 containing the routes to a non-exist widget 0x3e.  This confuses
+the auto-parser.  Fix it up in the driver by overriding these
+connections.
 
-if this code was tested this work MUST have been done otherwise we will apply
-non tested work
+Reported-by: Massimo Del Fedele <max@veneto.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_via.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-so dor the dtsi part I do NACK it and the pinctrl code is arropund for 2 or 3
-months so no excuse even Joachim who add the rm9200 support to DT handled the
-pinctrl so no exeption on at91 when switching to DT the pinctrl is mandatory
-
-If you want to apply the part of the patch that touch only the drivers I'm
-fine but for the dtsi no
-
-
-Best Regards,
-J.
-> 
-> Thinking about it a little more I'm actually wondering why whatever
-> pinctrl change made this mandatory didn't go through and update all the
-> drivers.
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 1c1367b..34b7f2a 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -3649,6 +3649,18 @@ static const struct snd_pci_quirk vt2002p_fixups[] = {
+ 	{}
+ };
+ 
++/* NIDs 0x24 and 0x33 on VT1802 have connections to non-existing NID 0x3e
++ * Replace this with mixer NID 0x1c
++ */
++static void fix_vt1802_connections(struct hda_codec *codec)
++{
++	static hda_nid_t conn_24[] = { 0x14, 0x1c };
++	static hda_nid_t conn_33[] = { 0x1c };
++
++	snd_hda_override_conn_list(codec, 0x24, ARRAY_SIZE(conn_24), conn_24);
++	snd_hda_override_conn_list(codec, 0x33, ARRAY_SIZE(conn_33), conn_33);
++}
++
+ /* patch for vt2002P */
+ static int patch_vt2002P(struct hda_codec *codec)
+ {
+@@ -3663,6 +3675,8 @@ static int patch_vt2002P(struct hda_codec *codec)
+ 	spec->aa_mix_nid = 0x21;
+ 	override_mic_boost(codec, 0x2b, 0, 3, 40);
+ 	override_mic_boost(codec, 0x29, 0, 3, 40);
++	if (spec->codec_type == VT1802)
++		fix_vt1802_connections(codec);
+ 	add_secret_dac_path(codec);
+ 
+ 	snd_hda_pick_fixup(codec, NULL, vt2002p_fixups, via_fixups);
+-- 
+1.8.0
