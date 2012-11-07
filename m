@@ -1,14 +1,29 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: ASoC: cs4271: free allocated GPIO
-Date: Wed,  7 Nov 2012 14:15:55 +0100
-Message-ID: <1352294155-6733-1-git-send-email-zonque@gmail.com>
+From: Massimo Del Fedele <max@veneto.com>
+Subject: Re: Fix for Asus G75 notebook subwoofer
+Date: Wed, 07 Nov 2012 14:37:33 +0100
+Message-ID: <509A641D.8070501@veneto.com>
+References: <k6rkr2$usv$1@ger.gmane.org> <s5hy5ifgmbq.wl%tiwai@suse.de>
+ <k7ajdq$42u$1@ger.gmane.org> <s5hsj8ngkxe.wl%tiwai@suse.de>
+ <k7b68h$epd$1@ger.gmane.org> <s5h390m95d5.wl%tiwai@suse.de>
+ <509947A7.9080406@veneto.com> <s5h7gpxhjtz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 8990F265015
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 14:16:04 +0100 (CET)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 041C0264FEA
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 14:37:44 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TW5pH-0000Qk-OJ
+ for alsa-devel@alsa-project.org; Wed, 07 Nov 2012 14:37:51 +0100
+Received: from host184-250-dynamic.0-87-r.retail.telecomitalia.it
+ ([87.0.250.184]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2012 14:37:51 +0100
+Received: from max by host184-250-dynamic.0-87-r.retail.telecomitalia.it with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2012 14:37:51 +0100
+In-Reply-To: <s5h7gpxhjtz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,68 +34,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Alexander Sverdlin <subaparts@yandex.ru>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case of probe deferral, the allocated GPIO line is not freed, which
-prevents it from being claimed and properly asserted in later attempts.
 
-Fix this by freeing the GPIO in case of errors.
+Il 07/11/2012 09:56, Takashi Iwai ha scritto:
+> At Tue, 06 Nov 2012 18:23:51 +0100,
+> Massimo Del Fedele wrote:
+>>
+>> Il 06/11/2012 15:24, Takashi Iwai ha scritto:
+>>> At Tue, 06 Nov 2012 15:18:58 +0100,
+>>> Massimo Del Fedele wrote:
+>>>> Il 06/11/2012 10:06, Takashi Iwai ha scritto:
+>>>>
+>>>>> Could you attach to ML too?
+>>>> I tried, but they're too big
+>>> Did you compress it?
+>> No, but I'm doing now... in compressed file are both info
+> Could you post also alsa-info.sh output before applying your patch,
+> too?
+>
+>>>>>> BTW, did you see the above patch (error in via_auto_fill_dac_nids) ?
+>>>>>> My patch isn't correct either (fails when the 'continue' path is taken)
+>>>>>> but it's better than now. I guess that code should be rewritten, it's
+>>>>>> quite weird in respect to dac numbering.
+>>>>> Could you elaborate a bit more?
+>>>>>
+>>>> Ok. here the original functions :
+>>> Hmm... could you give a "diff -up" output instead?
+>> Ok... here is te diff (with whole asus patch). I cleaned up the part of via_auto_fill_dac_nids,
+>> it should be correct now in all parts, even for skipped nids.
+> Actually the only place to be fixed is the assignment of
+> spec->private_dac_nids[].  spec->out_path[] should correspond to
+> cfg->line_out_pins[].  That is, the patch below should suffice (in
+> addition to pin default changes and connection overrides for VT1802).
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+> index 72a2f60..1c1367b 100644
+> --- a/sound/pci/hda/patch_via.c
+> +++ b/sound/pci/hda/patch_via.c
+> @@ -1825,7 +1825,7 @@ static int via_auto_fill_dac_nids(struct hda_codec *codec)
+>   					    &spec->out_mix_path))
+>   			dac = spec->out_mix_path.path[0];
+>   		if (dac) {
+> -			spec->private_dac_nids[i] = dac;
+> +			spec->private_dac_nids[dac_num] = dac;
+>   			dac_num++;
+>   		}
+>   	}
+>
+>
+>
+Hi...  not tested, but IMHO your patch won't  be enough; you're not updating the spec->multiout.num_dacs inside the loop,
+which means that is_empty_dac(codec, conn[i]) inside __parse_output_path() will not detect used DACs as used :
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-by: Michael Hirsch <hirsch@teufel.de>
-Cc: Alexander Sverdlin <subaparts@yandex.ru>
----
- sound/soc/codecs/cs4271.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+static bool is_empty_dac(struct hda_codec *codec, hda_nid_t dac)
+{
+     struct via_spec *spec = codec->spec;
+     int i;
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index e5a7ea4..ea57014 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -505,7 +505,7 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 		ret = regulator_enable(cs4271->vd_supply);
- 		if (ret < 0) {
- 			dev_err(codec->dev, "unable to enable regulator\n");
--			return ret;
-+			goto err;
- 		}
- 	}
- 
-@@ -548,22 +548,31 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 			cs4271->bus_type);
- 	if (ret) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--		return ret;
-+		goto err_free_gpio;
- 	}
- 
- 	ret = snd_soc_update_bits(codec, CS4271_MODE2,
- 				  CS4271_MODE2_PDN | CS4271_MODE2_CPEN,
- 				  CS4271_MODE2_PDN | CS4271_MODE2_CPEN);
- 	if (ret < 0)
--		return ret;
-+		goto err_free_gpio;
- 	ret = snd_soc_update_bits(codec, CS4271_MODE2, CS4271_MODE2_PDN, 0);
- 	if (ret < 0)
--		return ret;
-+		goto err_free_gpio;
- 	/* Power-up sequence requires 85 uS */
- 	udelay(85);
- 
- 	return snd_soc_add_codec_controls(codec, cs4271_snd_controls,
- 		ARRAY_SIZE(cs4271_snd_controls));
-+
-+err_free_gpio:
-+	if (gpio_is_valid(cs4271->gpio_nreset))
-+		gpio_free(cs4271->gpio_nreset);
-+
-+	cs4271->gpio_nreset = -EINVAL;
-+
-+err:
-+	return ret;
- }
- 
- static int cs4271_remove(struct snd_soc_codec *codec)
--- 
-1.7.11.7
+     for (i = 0; i < spec->multiout.num_dacs; i++) { <---- HERE, using spec->multiout.num_dacs as loop end
+         if (spec->multiout.dac_nids[i] == dac)
+             return false;
+     }
+     if (spec->hp_dac_nid == dac)
+         return false;
+     return true;
+}
+
+You need to update spec->multiout.num_dacs INSIDE scan loop, NOT at end.
+
+Ciao
+
+Max
