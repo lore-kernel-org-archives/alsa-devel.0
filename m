@@ -1,78 +1,75 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Using sync dapm_sync in stream_event call back
-Date: Wed, 7 Nov 2012 15:47:30 +0100
-Message-ID: <20121107144728.GH20844@opensource.wolfsonmicro.com>
-References: <32F4D3A311A1404B92CF923AFF38C3C529E715@BGSMSX101.gar.corp.intel.com>
+Subject: Re: [PATCH -next] ASoC: cs42l52: fix the return value of
+ cs42l52_set_fmt()
+Date: Wed, 7 Nov 2012 15:50:46 +0100
+Message-ID: <20121107145046.GI20844@opensource.wolfsonmicro.com>
+References: <CAPgLHd_GJMWGiMbJp=Jd9cevekJm_LpAXuCT_QADbQXqoBoa0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6988426192706992204=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E35B2265079
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 15:47:33 +0100 (CET)
-In-Reply-To: <32F4D3A311A1404B92CF923AFF38C3C529E715@BGSMSX101.gar.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Babu, Ramesh" <ramesh.babu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zhtSGe8h3+lMyY1M"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAPgLHd_GJMWGiMbJp=Jd9cevekJm_LpAXuCT_QADbQXqoBoa0w@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6988426192706992204==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
-Content-Disposition: inline
-
-
---xjyYRNSh/RebjC6o
+--zhtSGe8h3+lMyY1M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 07, 2012 at 09:53:14AM +0000, Babu, Ramesh wrote:
+On Wed, Nov 07, 2012 at 08:38:35PM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Fix the return value of cs42l52_set_fmt() when clock inversion is
+> not allowed and also remove the useless variable ret.
 
-> In my machine driver, I need to disable a widget in stream_event call back.
-> I realized that I cannot invoke dapm_sync() inside the stream_event, because it causes recursive lock.
+Applied, but you need to work on your changelogs:
 
-> How can I disable a pin (widget) inside stream_event call back?
+What is wrong with the return value?
 
-This doesn't sound like something that really makes sense within the
-model DAPM has.  What are you actually trying to accomplish?
+>  	u8 iface =3D 0;
+> =20
+>  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> @@ -822,7 +821,7 @@ static int cs42l52_set_fmt(struct snd_soc_dai *codec_=
+dai, unsigned int fmt)
+>  	case SND_SOC_DAIFMT_NB_IF:
+>  		break;
+>  	default:
+> -		ret =3D -EINVAL;
+> +		return -EINVAL;
+>  	}
+>  	cs42l52->config.format =3D iface;
+>  	snd_soc_write(codec, CS42L52_IFACE_CTL1, cs42l52->config.format);
+>=20
 
---xjyYRNSh/RebjC6o
+This doesn't look like it changes the return value...  the actual issue
+here is that we don't pay attention to ret later on, we just always
+return 0.
+
+--zhtSGe8h3+lMyY1M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQmnR4AAoJELSic+t+oim9iDkP/jYtpLIOdtKv90aeHCF+ztbN
-UCGFh3HOJs159BbCFQATBbVjnaO2R820QtH6ieiwfryBCHei+tyBAy3i9KSlAZbD
-hEHwS9fk3+bkTvpwUe0ILt11vB/qOrtk64kSPFeFT3uJ1gpmFAcSKH9kRLQv+85U
-XieItEkq3jOp08/6eo2gbfMvbsPGvdBV075J5p73thIE84D5HHribm3NPz8X6zFu
-JKFkWJfXVlxjtBAf8aIWCq1piYloLLw2/wUM5RVosDLfaVNBWbsWvbLU6pmFaDjk
-DgwgB+8MJqu2A14Im4mItDEH9sv6VJlYV1VGk3B01TT+LQkN+ANcVghWbUujRJmC
-b2JAxmpnB/p6L0YMzWH/z0+u0lTSE4vWwR5jdB5F/Q8lSe6ONULVg5izcmLoDGNP
-iEwQ3lJzaRsWEeUVbbMPFKjCXQnwZpBMV3MoKquUsZt3OAlA69+cgRAJ1sQEBcHi
-uFYN3vylmFHsZiW7w05O9RPD4zONdWjJuPSKpps2ug9fAvbxRl9KjRJyVpdJcX2s
-EYaozewjK8KVhlmbEb1mPK4Px+tr3wj2E+oaaZQ/rv+o3FLrQYfRsC0rWiJE9LbS
-l/os/5pLMRMLqV+FwxmM2TFoRjyBpnb1uzl5AuDl02crpR25m/WaLrbTJkharGCa
-7V5RuY/7yT84p/r7IyCb
-=urqQ
+iQIcBAEBAgAGBQJQmnUNAAoJELSic+t+oim9nEYQAI5hGAzZm3J2zoDrlPqMNCeJ
+FZ3hQyRld1scSWve3YYLeoPjX2MewbKTYBMXWjt4nfmb4Bn+wAJ3UFr9JlYITbh4
+TYcUYfsZ5+zwAXHUmLWPcNQ/FJyKt/VaL1XG3HabhDRV2Tvu11IGkoiOAHadHgVx
+8vRBR/SNr3IatZ693YL2Bv3gs1H6gkb6kNFIG0aQfL/UegBS1az5QaJ0DEuKA0JA
+ZIP2zT0yO43WGFujQklT787dh3YOtSK7iVzoQdHRN9wHWGNeic0A2UP1nUixsFCS
+KXgzfJymtRMYud4rObSFSn2I6SB7SYs5ozMyPqZdSJ//gqkDsemQlwnhDmjDD/4j
+1Ur/ElazLDMydJrozKz9d6oiQczE/Ew9fWxB0gS8gDT+wrP8XWQaYe4lUmv9AWQT
+Qz4ynavS2gRwaxDLZ1086rkCR9Hjm66SLmSpngVyE2ejPOn8ykaXJLotf1VGCcOe
+2DNcHk/pxLAUT85LI0A/uLlvGDVSevVYAiU54ZggHTFOhf1NAZeT7bHdv9HO0lYH
+KjKBq9NoSsP5DSHl1GmeZviJPAZQsJAxi5vTusYgrmt0i5CV7M2pRCasQ+QF1krh
+3JW+t3XJS7RKg2U7GWeSgbVupsMtcaj9ag3lt1j+fe5szmpoa2MtsribCtw0oo+f
+Z2c+fgbDDaCkG+dBYrQm
+=4E9j
 -----END PGP SIGNATURE-----
 
---xjyYRNSh/RebjC6o--
-
---===============6988426192706992204==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6988426192706992204==--
+--zhtSGe8h3+lMyY1M--
