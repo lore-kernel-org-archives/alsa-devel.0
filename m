@@ -1,65 +1,65 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [Alsa-user] Ticks when playing to USB DAC at high
-	sample rates
-Date: Wed, 07 Nov 2012 10:01:14 +0100
-Message-ID: <509A235A.7000004@gmail.com>
-References: <3884466.olklcBH31l@quintet> <3608072.60TCDCLhjU@quintet>
- <509855FA.7000409@gmail.com> <9872736.seOqKZ7sS2@quintet>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree
+ support
+Date: Wed, 7 Nov 2012 10:04:16 +0100
+Message-ID: <20121107090416.GD12323@opensource.wolfsonmicro.com>
+References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
+ <20121107082419.GB12323@opensource.wolfsonmicro.com>
+ <20121107084733.GD20063@game.jcrosoft.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 2741B265301
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 10:01:22 +0100 (CET)
-Received: by mail-wi0-f169.google.com with SMTP id hq4so4539006wib.2
- for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2012 01:01:20 -0800 (PST)
-In-Reply-To: <9872736.seOqKZ7sS2@quintet>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeffrey Barish <jeff_barish@earthlink.net>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121107084733.GD20063@game.jcrosoft.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Bo Shen <voice.shen@atmel.com>, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07.11.2012 00:54, Jeffrey Barish wrote:
-> I guess that snd_usb_pcm_prepare is called by the core usb system to prepare 
-> the snd driver.  Anyway, snd_usb_pcm_prepare calls configure_endpoint with a 
-> substream.  Then configure_endpoint calls snd_usb_endpoint_set_params with the 
-> data endpoint that corresponds to the substream.  snd_usb_endpoint_set_params 
-> calls data_ep_set_params with the data ep and data_ep_set_params sets nurbs to 
-> 2 for the data endpoint.
-> 
-> snd_usb_endpoint_set_params has code to call sync_ep_set_params when the 
-> endpoint is type sync.  sync_ep_set_params sets nurbs to 4 (why?).  However, 
-> snd_usb_endpoint_set_params never invokes the call to sync_ep_set_params 
-> because ep->type is always data.  Back up: snd_usb_endpoint_set_params is 
-> called from configure_endpoint.  It is called from an if block contingent on 
-> the substream's having a sync endpoint.  It does.  However, the call to 
-> snd_usb_endpoint_set_params passes subs->data_endpoint as the first argument, 
-> so snd_usb_endpoint_set_params simply repeats the operations it performed as a 
-> result of the previous invocation.  I presume that the first argument to the 
-> second call to snd_usb_endpoint_set_params should be subs->sync_endpoint.
 
-Eh. You clearly spotted a bug here. The rally interesting thing is that
-that it didn't bite us earlier, as it's in since 3.6.
+--2iBwrppp/7QCDedR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  I 
-> made that change.  Now freqm does change.  However, I am getting tons of 
-> ticks.  Now it sounds as if the payload size is always wrong.
-> 
-> Oh, 44.1 kHz works.  48 kHz works.  88.2 and 96 don't work.
+On Wed, Nov 07, 2012 at 09:47:33AM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
 
-That's a different issue. Would you like to prepare a patch for the
-issue above please?
+> Mark I nack the patch series this patch series does not run on any DT kernel
 
+> as no picntrl is done
 
-Thanks,
-Daniel
+> do not apply until this patfh handle the pinctrl
+
+Nicholas seemed to be disagreeing you on that one and his observation
+that it won't be an issue until v3.8 anyway seemed totally reasonable.
+In any case it doesn't seems like it'll be an issue to get it resolved
+before it actually gets merged down to become an issue.
+
+Of course there's also some ongoing discussion on the question of having
+to add mindless pinctrl_get_set_default() to all the drivers at all, the
+fact that we're having to do that at all seems like a failure to me at
+least.
+
+--2iBwrppp/7QCDedR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQmiQKAAoJELSic+t+oim9+p8P/j9oXunGHxezMTom2f+8+NVp
+W17kDEzi+gmML/TFKnXVlZMKXjGfGTf/0Ha1LSuxDRmWFk3bZy07lQc63RirSt/j
+ml9xRfYZcN8qzDbdCTLzgYFAYL46OzIBTSWtcLsFki1OfjMTjtSYVOv9A89PxM3V
+8PfVmfFmFv66unnXQcmWn85uS8Msad8Kf6oy4fj3IbAB831ozbatI+TQ5v/+3QKX
+beHenfwyThGj2uMAm2L6O4CqhVsmy4eEwgPDh8wdwG//KoN9KgoYYXfjfAo2bKcx
+E2ub3hHjs+Zl2GqoeIsqjNtwX3P8UNDHH9v1DLm/PpZZG9GktnH87PbUAOHwbXBp
+rgf5092uvF622QTdULHaNHyD7sHNN7EArVvyi2H3zbhXhqiKkegku26tFf/bFGd/
+8XaktNXSr1eQ9j4QYQ8UPuYd8ixtrhqfyh1qh6pNrz8HBMq3Enq91AxQAtR4P2lS
+LCSiWiJfmDfNSw9IJ2BJN6Ig/NrURB022ekntziYYvEuRK6+ecvuHcEbkfK5bBgV
+ahEAY36P02sXQjD/clOVb223NZ8cnQLnQLgFN15dduseFBrMfc5HI0UKOV5TNC6o
+xIwnJgBAF+4N2TGyCs92trLzki80yhT3Ej1D+d3J2jwbfR/ZUu7UHpL3DOwtB9l5
+revcZyNL3q/dP4r82yhB
+=Kxm8
+-----END PGP SIGNATURE-----
+
+--2iBwrppp/7QCDedR--
