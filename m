@@ -1,57 +1,123 @@
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>
-Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree
- support
-Date: Wed, 7 Nov 2012 16:16:07 +0100
-Message-ID: <20121107151607.GC4576@game.jcrosoft.org>
-References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
- <20121107084932.GE20063@game.jcrosoft.org>
- <20121107092124.GE12323@opensource.wolfsonmicro.com>
- <20121107104121.GG20063@game.jcrosoft.org>
- <20121107140535.GA28954@opensource.wolfsonmicro.com>
- <20121107143046.GA4576@game.jcrosoft.org>
- <20121107144450.GF20844@opensource.wolfsonmicro.com>
+From: Ulf Hansson <ulf.hansson@stericsson.com>
+Subject: [RESEND PATCH 2/2] ASoC: Ux500: Control apb clock
+Date: Wed, 7 Nov 2012 16:42:42 +0100
+Message-ID: <1352302962-25201-2-git-send-email-ulf.hansson@stericsson.com>
+References: <1352302962-25201-1-git-send-email-ulf.hansson@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20121107144450.GF20844-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1352302962-25201-1-git-send-email-ulf.hansson@stericsson.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Ulf Hansson <ulf.hansson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 15:44 Wed 07 Nov     , Mark Brown wrote:
-> On Wed, Nov 07, 2012 at 03:30:46PM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> 
-> > the one via ASoC for the driver with the pinctrl for now but MUST add it later
-> 
-> > the arch/arm related via AT91 tree where the pinctrl is mandatory in the dtsi
-> 
-> > I'm no going to spend hours to do the pinctrl to test Bo patch that he is
-> > supposed to have deon to test this code
-> 
-> > As basically today on DT none of the board will work if BO does no provide the
-> > pinctrl so for me he MUST put in the dtsi
-> 
-> > is it ok with you?
-> 
-> Or add the pinmux bindings for other IPs over in the pinmux branch and
-> the pinmux binding for SSC here (which will help with bisection as the
-> DT bindings for the audio will then always exist in conjunction with the
-> .dtsi changes for them).  Either way is fine with me; I'll leave things
-> as they are until I see some new patches.
-for where it's merge honestly I do not care much but the pinctrl must be
-handled correctly
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-Best Regards,
-J.
+When switching to common clock driver for ux500 this clock needs to
+be handled as well. Before this clock was internally managed by the
+clock driver itself.
+
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ sound/soc/ux500/ux500_msp_dai.c |   38 ++++++++++++++++++++++++++++++++------
+ sound/soc/ux500/ux500_msp_dai.h |    1 +
+ 2 files changed, 33 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index e11187f..74bb3c0 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -398,13 +398,28 @@ static int ux500_msp_dai_startup(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
+-	/* Prepare and enable clock */
+-	dev_dbg(dai->dev, "%s: Enabling MSP-clock.\n", __func__);
++	/* Prepare and enable clocks */
++	dev_dbg(dai->dev, "%s: Enabling MSP-clocks.\n", __func__);
++	ret = clk_prepare_enable(drvdata->pclk);
++	if (ret) {
++		dev_err(drvdata->msp->dev,
++			"%s: Failed to prepare/enable pclk!\n", __func__);
++		goto err_pclk;
++	}
++
+ 	ret = clk_prepare_enable(drvdata->clk);
+-	if (ret)
+-		regulator_disable(drvdata->reg_vape);
++	if (ret) {
++		dev_err(drvdata->msp->dev,
++			"%s: Failed to prepare/enable clk!\n", __func__);
++		goto err_clk;
++	}
+ 
+ 	return ret;
++err_clk:
++	clk_disable_unprepare(drvdata->pclk);
++err_pclk:
++	regulator_disable(drvdata->reg_vape);
++	return ret;
+ }
+ 
+ static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
+@@ -430,8 +445,9 @@ static void ux500_msp_dai_shutdown(struct snd_pcm_substream *substream,
+ 			__func__, dai->id, snd_pcm_stream_str(substream));
+ 	}
+ 
+-	/* Disable and unprepare clock */
++	/* Disable and unprepare clocks */
+ 	clk_disable_unprepare(drvdata->clk);
++	clk_disable_unprepare(drvdata->pclk);
+ 
+ 	/* Disable regulator */
+ 	ret = regulator_disable(drvdata->reg_vape);
+@@ -782,6 +798,14 @@ static int __devinit ux500_msp_drv_probe(struct platform_device *pdev)
+ 	}
+ 	prcmu_qos_add_requirement(PRCMU_QOS_APE_OPP, (char *)pdev->name, 50);
+ 
++	drvdata->pclk = clk_get(&pdev->dev, "apb_pclk");
++	if (IS_ERR(drvdata->pclk)) {
++		ret = (int)PTR_ERR(drvdata->pclk);
++		dev_err(&pdev->dev, "%s: ERROR: clk_get of pclk failed (%d)!\n",
++			__func__, ret);
++		goto err_pclk;
++	}
++
+ 	drvdata->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(drvdata->clk)) {
+ 		ret = (int)PTR_ERR(drvdata->clk);
+@@ -812,8 +836,9 @@ static int __devinit ux500_msp_drv_probe(struct platform_device *pdev)
+ 
+ err_init_msp:
+ 	clk_put(drvdata->clk);
+-
+ err_clk:
++	clk_put(drvdata->pclk);
++err_pclk:
+ 	devm_regulator_put(drvdata->reg_vape);
+ 
+ 	return ret;
+@@ -829,6 +854,7 @@ static int __devexit ux500_msp_drv_remove(struct platform_device *pdev)
+ 	prcmu_qos_remove_requirement(PRCMU_QOS_APE_OPP, "ux500_msp_i2s");
+ 
+ 	clk_put(drvdata->clk);
++	clk_put(drvdata->pclk);
+ 
+ 	ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
+ 
+diff --git a/sound/soc/ux500/ux500_msp_dai.h b/sound/soc/ux500/ux500_msp_dai.h
+index 98202a3..9c778d9 100644
+--- a/sound/soc/ux500/ux500_msp_dai.h
++++ b/sound/soc/ux500/ux500_msp_dai.h
+@@ -69,6 +69,7 @@ struct ux500_msp_i2s_drvdata {
+ 	/* Clocks */
+ 	unsigned int master_clk;
+ 	struct clk *clk;
++	struct clk *pclk;
+ 
+ 	/* Regulators */
+ 	int vape_opp_constraint;
+-- 
+1.7.10
