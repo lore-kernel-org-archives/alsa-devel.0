@@ -1,76 +1,84 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm0010: Split out the firmware file
- parsing from the boot.
-Date: Wed, 7 Nov 2012 15:32:55 +0100
-Message-ID: <20121107143253.GE20844@opensource.wolfsonmicro.com>
-References: <1352292269-15021-1-git-send-email-sl@opensource.wolfsonmicro.com>
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree
+ support
+Date: Wed, 7 Nov 2012 15:30:46 +0100
+Message-ID: <20121107143046.GA4576@game.jcrosoft.org>
+References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com>
+ <20121107084932.GE20063@game.jcrosoft.org>
+ <20121107092124.GE12323@opensource.wolfsonmicro.com>
+ <20121107104121.GG20063@game.jcrosoft.org>
+ <20121107140535.GA28954@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4246213041512006627=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 11EFF26509C
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2012 15:32:59 +0100 (CET)
-In-Reply-To: <1352292269-15021-1-git-send-email-sl@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Scott Ling <sl@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20121107140535.GA28954@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, fengguang.wu@intel.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 14:05 Wed 07 Nov     , Mark Brown wrote:
+> On Wed, Nov 07, 2012 at 11:41:21AM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> > On 10:21 Wed 07 Nov     , Mark Brown wrote:
+> 
+> > > Like I say it's not an issue right now and it seems like it should be
+> > > trivial to fix.  Is anything needed here other than adding the
+> > > pinctrl_get_set_default() call, in which case would it not be less
+> > > effort all round to just send the patch?  If there is more involved then
+> > > what is needed?
+> 
+> > for the driver point of view I agreee with you for the dtsi I disagree I miss
+> > 100 lignes of pinctrl description
+> 
+> > so today if no pinctrl the pin are input gpio and the drivers will not work
+> 
+> > if this code was tested this work MUST have been done otherwise we will apply
+> > non tested work
+> 
+> > so dor the dtsi part I do NACK it and the pinctrl code is arropund for 2 or 3
+> > months so no excuse even Joachim who add the rm9200 support to DT handled the
+> > pinctrl so no exeption on at91 when switching to DT the pinctrl is mandatory
+> 
+> > If you want to apply the part of the patch that touch only the drivers I'm
+> > fine but for the dtsi no
+> 
+> So what the above is saying is that we should have a followup patch to
+> add the pinctrl setup to the DT (probably one that goes along with the
+> pinctrl changes and adds complete pinctrl setup for the affected boards
+> rather than just doing the audio piecemeal) and do the mindless call in
+> the driver.  That doesn't seem impossible.
+> 
+> So long as we get those things in place prior to the merge window we
+> should be fine.  Even if we don't manage that it still seems like having
+> the patch is better than not having it, from the sounds of it the boards
+> are going to be totally broken if they boot with DT but without the
+> pinctrl setup and the ASoC bindings are pretty much an orthogonal issue
+> to that.  Having the bindings for the SSC (which depend on this AFAICT)
+> will allow other machines which are doing a better job with pinctrl to
+> work.
+so for me Bo re do his patch series by splitting in 2 patch seires
 
---===============4246213041512006627==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
+the one via ASoC for the driver with the pinctrl for now but MUST add it later
 
+the arch/arm related via AT91 tree where the pinctrl is mandatory in the dtsi
 
---/3yNEOqWowh/8j+e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm no going to spend hours to do the pinctrl to test Bo patch that he is
+supposed to have deon to test this code
 
-On Wed, Nov 07, 2012 at 12:44:29PM +0000, Scott Ling wrote:
-> Move the firmware load and record parsing functionality out into
-> a separate function from the boot function.
+As basically today on DT none of the board will work if BO does no provide the
+pinctrl so for me he MUST put in the dtsi
 
-This still doesn't apply.  What are you generating these against?  Code
-for upstream should be generated against the current upstream...
+is it ok with you?
 
---/3yNEOqWowh/8j+e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQmnEOAAoJELSic+t+oim9hOsP/R67eB98Dnh85fxm+F8d6q5U
-yDRweflA6ktZzj4lton6xbd8Zdnt68wH/sPcGNTxOA7P47bT4oQhVOfH8oSQalcm
-yyJtq/+8cAQVZfG8+JII/6T19OOljQJ4VA7w7Cyy4ubJIa2ofHjS9Ru+XjgRiFX2
-5wiMLiTt/0BKQ94DeONZiEek2do96AzwXgV4plucvrUk3we8vmXOIF0N2Un2Nixn
-IBDn9kU4hnWZ0KEgA9bkz76MJObKumEH9XBK/dfaZEIWEbmbg1gvt5gBgVyrRMwL
-IgjU5gyawfSI3vmirhifvIjH+8wCL/YqoJd4zKVrIO4aTr0ekwouRZfxwMhydKiV
-bRRs8nr/txrPRE9sgUYJYakWU3s+6pAul+utd2MJWSgXtAaSF07RA/mfBY8fNcDS
-pEr3p/o5fCvBQFn++Dhi2A2HLW076Tef0No/qzo1/Np/22U+4yDglIAwmrXGDci9
-NVAdGnR7RGjDDMi3vYbjZX/DFfTArpqMpslZROlVO/Xys+Kcgkr0w2GrYGQB2jaU
-VJj4d0LOpalkb2QuZF0qMw/KfpIwRlWnF5zgPKySqk1HuBn+CuJ6YRv89KhRK835
-driInUGV+Ecr79U5dEnNHrm4IMRAm3OODmLbUJFdHpoDsDn7zYvnYMkPQH38yhnx
-P82q7m2E2ahi2hfEWGtj
-=8NiX
------END PGP SIGNATURE-----
-
---/3yNEOqWowh/8j+e--
-
---===============4246213041512006627==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4246213041512006627==--
+Best Regards,
+J.
