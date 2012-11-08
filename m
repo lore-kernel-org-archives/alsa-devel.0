@@ -1,14 +1,19 @@
-From: "Rafal Powierski" <powierski@mediascore.de>
-Subject: spdif input, source synchronous?
-Date: Thu, 8 Nov 2012 10:10:41 +0100
-Message-ID: <603ABBBDFF6140989F91BF7793F25E83@mediascore.mediascore.de>
+From: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
+	by codec
+Date: Thu, 8 Nov 2012 15:38:36 +0100
+Message-ID: <509BC3EC.4030503@ti.com>
+References: <505AFB0B.7010306@st.com>
+ <20120920114951.GJ17666@opensource.wolfsonmicro.com>
+ <505BE5BB.5010008@st.com> <5098E929.7040404@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 32AF926007E
- for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2012 10:10:48 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF40C260318
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2012 15:38:40 +0100 (CET)
+In-Reply-To: <5098E929.7040404@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,20 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGV2ZWxvcGVycywKCkRvZXMgYW55b25lIGtub3cgaG93IHRoZSBTUERJRiBpbnB1dCBpcyB3
-b3JraW5nIG9uIEhEQT8KSXMgaXQgdXNpbmcgYSBzb3VyY2Utc3luY2hyb25vdXMgZGF0YSB0cmFu
-c2ZlciBvdmVyIEhEQT8KSW4gbXkgYXJyYW5nZW1lbnQgKEFMQzg4NikgSSBjYW4gc2V0IHVwIGFu
-eSByYXRlIGFuZCBJIGFtIHJlY2VpdmluZyBhIHJlY3Rhbmd1bGFyIOKAnHJlc2FtcGxpbmfigJ0u
-CuKAkyBpcyB0aGlzIGEgYnVnPwp3aWxsIHRoaXMgc3RheT8gc28gSSBjYW4gdXNlIGhpZ2hlciBy
-YXRpbyBhbmQgc29tZSBraW5kIG9mIHNvZnR3YXJlIFBMTCB0byByZWNvdmVyIGlucHV0IHJhdGU/
-CgpIb3cgY2FuIEkgcmVhZCBwcmVzZW5jZSBhbmQgcmF0ZSBvZiB0aGUgc2lnbmFsPwpWZXJiIOKA
-kyBHZXQgRGlnaXRhbCBDb252ZXJ0ZXIgQ29udHJvbCAxLDIgaXMgZ29vZCB0aGluZyB0byBoYXZl
-LCBidXQgSSBuZWVkIOKAnGNhcnJpZXItZGV0ZWN04oCdIGFuZCBtYXliZSByYXRlIHRvIGZlZWQg
-YmFjayB0byBBbHNhIG9uIHNldHVwLgoKSSBob3BlIHNvbWVvbmUga25vd3MgdGhpcyDigJMgZXZl
-biBpZiBtYXliZSBzcGRpZiBpbnB1dCBpcyBub3QgdmVyeSBwb3B1bGFyLgoKUmVnYXJkcywKUmFm
-YWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 11/06/2012 11:40 AM, Rajeev kumar wrote:
+> Please find below the implementation for dapm.
+> =
+
+> static const struct snd_soc_dapm_widget sta529_dapm_widgets[] =3D {
+>         SND_SOC_DAPM_DAC("DAC", "Play", SND_SOC_NOPM , 0, 0),
+>         SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
+>         SND_SOC_DAPM_OUTPUT("HPL"),
+>         SND_SOC_DAPM_OUTPUT("HPR"),
+>         SND_SOC_DAPM_OUTPUT("SPKL"),
+>         SND_SOC_DAPM_OUTPUT("SPKR"),
+>         SND_SOC_DAPM_INPUT("MIC1"),
+> };
+> =
+
+> static const struct snd_soc_dapm_route sta529_audio_map[] =3D {
+>         {"DAC", NULL, "output"},
+>         {"ADC", NULL, "input"},
+>         {"HPL", NULL, "HP Left Out"},
+>         {"HPR", NULL, "HP Right Out"},
+>         {"SPKL", NULL, "SPK Left Out"},
+>         {"SPKR", NULL, "SPK Right Out"},
+> };
+
+If this is all you have for DAPM routing I just wonder what the core will do
+with these... I mean you don't appear to have valid routing: no sign of
+"output", "input", "HP Left Out", etc.
+
+But it is really odd that you can not have at least some power control bits
+along the paths.
+
+This would look odd also but at least connects the widgets:
+static const struct snd_soc_dapm_route sta529_audio_map[] =3D {
+        {"HPL", NULL, "DAC"},
+        {"HPR", NULL, "DAC"},
+        {"ADC", NULL, "MIC1"},
+};
+
+Don't you have messages during boot or module loading about DAPM route erro=
+r?
+
+-- =
+
+P=E9ter
