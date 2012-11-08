@@ -1,23 +1,15 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
-	by codec
-Date: Thu, 8 Nov 2012 09:58:49 +0530
-Message-ID: <509B3501.6040807@st.com>
-References: <505AFB0B.7010306@st.com>
- <20120920114951.GJ17666@opensource.wolfsonmicro.com>
- <505BE5BB.5010008@st.com> <5098E929.7040404@st.com>
- <20121106114323.GD10080@opensource.wolfsonmicro.com>
- <5099F265.6010008@st.com>
- <20121107145606.GJ20844@opensource.wolfsonmicro.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [RFC PATCH v4 1/2] ASoC: atmel-ssc-dai: register dai
+	and pcm directly
+Date: Thu,  8 Nov 2012 15:57:01 +0800
+Message-ID: <1352361422-13265-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog116.obsmtp.com (eu1sys200aog116.obsmtp.com
- [207.126.144.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 44F0626535F
- for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2012 05:28:58 +0100 (CET)
-In-Reply-To: <20121107145606.GJ20844@opensource.wolfsonmicro.com>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A21E265355
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2012 09:00:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,166 +19,582 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@opensource.wolfsonmicro.com, nicolas.ferre@atmel.com
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, plagnioj@jcrosoft.com, jm.lin@atmel.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+change the method for register dai and pcm
+  - let the atmel-ssc-dai no longer as a standalone platform device
+  - remap ssc and then register dai directly
+  - register pcm from dai directly
 
-On 11/7/2012 8:26 PM, Mark Brown wrote:
-> On Wed, Nov 07, 2012 at 11:02:21AM +0530, Rajeev kumar wrote:
->
->> >  Turn on logging does not helping in giving any extra information in
->> >  this case. Backtracing the code gives me the line number. Please
->> >  find below the information.
-> Perhaps if you were to share the logging someone might spot something,
-> or perhaps if you thought about the logging in more detail...
->
->> >  static void soc_dapm_shutdown_codec(struct snd_soc_dapm_context *dapm)
->> >  3540 {
->> >  3541         struct snd_soc_dapm_widget *w;
->> >  3542         LIST_HEAD(down_list);
->> >  3543         int powerdown = 0;
->> >  3544
->> >  3545         list_for_each_entry(w,&dapm->card->widgets, list) {
->> >  3546                 if (w->dapm != dapm)
->> >  3547                         continue;
->> >  3548                 if (w->power) {
->> >  3549                         dapm_seq_insert(w,&down_list, false);
->> >  3550                         w->power = 0;
->> >  3551                         powerdown = 1;
->> >  3552                 }
->> >  3553         }
->> >  If you check line number 3545, it is trying to get widget from card.
->> >  and the system get crashed as there is no entry for dapm in the card.
-> Your analysis does not appear to correspond to the code.  The DAPM
-> context is being used to find the card here, not the other way around as
-> you say.  How have we managed to get an active DAPM context which isn't
-> part of a card?
->
+Modify the code which related with this change
 
-Thanks for correcting me.
-Please find below the complete crash log
-(The line number is same I mentioned previously for the crash).
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
+Change since v3 RFC
+  - remap ssc and then register dai and pcm directly
+Change since v2
+  - Register dai and pcm directly according to Mark Brown's suggestion
+    - using name to distinguish ssc register for audio or library
+      if for audio, the name with dai subfix
+      if for library, the name without dai subfix
+  - fix the issue for sam9g20-wm8731
+    - when register dai and pcm cause the sam9g20-wm8731 doesn't work,
+      so fix it
+  - Add device tree support
+    - Detail information reference atmel-ssc-dai.txt binding document
+Change since v1
+  No change
+---
+ arch/arm/mach-at91/at91sam9260_devices.c |    9 --
+ arch/arm/mach-at91/board-sam9g20ek.c     |    8 +-
+ sound/soc/atmel/atmel-pcm.c              |   23 +--
+ sound/soc/atmel/atmel-pcm.h              |    3 +
+ sound/soc/atmel/atmel_ssc_dai.c          |  228 +++++++-----------------------
+ sound/soc/atmel/atmel_ssc_dai.h          |    1 +
+ sound/soc/atmel/sam9g20_wm8731.c         |   13 +-
+ 7 files changed, 76 insertions(+), 209 deletions(-)
 
-=================================================================================================
-
-PM: Syncing filesystems ... done.
-Freezing user space processes ... (elapsed 0.05 seconds) done.
-PM: Preallocating image memory... done (allocated 14310 pages)
-PM: Allocated 57240 kbytes in 0.98 seconds (58.40 MB/s)
-Freezing remaining freezable tasks ... (elapsed 0.02 seconds) done.
-PM: freeze of devices complete after 34.208 msecs
-PM: late freeze of devices complete after 1.429 msecs
-PM: noirq freeze of devices complete after 2.442 msecs
-Disabling non-boot CPUs ...
-CPU1: shutdown
-PM: Creating hibernation image:
-PM: Need to copy 13838 pages
-PM: Hibernation image created (13838 pages copied)
-Enabling non-boot CPUs ...
-CPU1: Booted secondary processor
-CPU1 is up
-PM: noirq thaw of devices complete after 0.885 msecs
-PM: early thaw of devices complete after 0.725 msecs
-eth0: device MAC address 00:10:5a:0c:fb:80
-PM: thaw of devices complete after 281.477 msecs
-PM: Using 1 thread(s) for compression.
-PM: Compressing and saving image data (13852 pages) ...  10%
-PHY: stmmac-0:01 - Link is Up - 100/Half
-done
-PM: Wrote 55408 kbytes in 9.63 seconds (5.75 MB/s)
-PM: S|
-Unable to handle kernel NULL pointer dereference at virtual address 00000008
-pgd = bd470000
-[00000008] *pgd=3d43b831, *pte=00000000, *ppte=00000000
-Internal error: Oops: 17 [#1] SMP ARM
-Modules linked in:
-CPU: 1    Not tainted  (3.5.0-lsp-3.3.0-rc1 #5)
-PC is at snd_soc_dapm_shutdown+0x48/0x11c
-LR is at snd_soc_poweroff+0x68/0x70
-pc : [<80372438>]    lr : [<8036ccf4>]    psr: 00000013
-sp : bd5bbd98  ip : bd5bbdc8  fp : bd5bbdc4
-r10: 806a6048  r9 : 8044e200  r8 : bd5bbd98
-r7 : 807260c4  r6 : bebceec8  r5 : ffffffec  r4 : bebcee08
-r3 : 00000000  r2 : bebcec10  r1 : 00000000  r0 : 807260c4
-Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 10c53c7d  Table: 3d47004a  DAC: 00000015
-Process disk.sh (pid: 1932, stack limit = 0xbd5ba2f0)
-Stack: (0xbd5bbd98 to 0xbd5bc000)
-bd80:                                                       bd5bbd98 
-bd5bbd98
-bda0: bd5bbdc4 807260c4 000016b0 00000004 00000000 8024397c bd5bbde4 
-bd5bbdc8
-bdc0: 8036ccf4 803723fc 8036cc8c be9b2808 be9b2808 00000000 bd5bbdf4 
-bd5bbde8
-bde0: 802439bc 8036cc98 bd5bbe2c bd5bbdf8 80247a28 80243988 80435b80 
-8008fc18
-be00: 00000000 00000000 bd5bbe2c be9b2808 00000004 be9b283c 8072359c 
-00000004
-be20: bd5bbe54 bd5bbe30 80248564 802479f8 806a5c98 009b2880 be9b2880 
-00000000
-be40: 806a6008 be9b2808 bd5bbe8c bd5bbe58 80248dac 80248450 3a87fb94 
-00000023
-be60: 3a87fb94 00000023 00000004 806f6e58 00000004 00000005 be863e00 
-bd4a2918
-be80: bd5bbea4 bd5bbe90 80249144 80248cfc 00000001 00000000 bd5bbebc 
-bd5bbea8
-bea0: 800590a8 802490e4 00000000 806953ac bd5bbed4 bd5bbec0 800592dc 
-8005906c
-bec0: bde8b000 be863f00 bd5bbefc bd5bbed8 80057444 80059194 00000005 
-be863f00
-bee0: bd4a2900 bd5bbf70 be863e00 bd4a2918 bd5bbf0c bd5bbf00 801e5e18 
-80057394
-bf00: bd5bbf3c bd5bbf10 80124f18 801e5e08 bd5bbf70 00000005 bdcd9300 
-76fc6000
-bf20: bd5bbf70 00000000 00000000 00000000 bd5bbf6c bd5bbf40 800cf8b0 
-80124e0c
-bf40: 00000000 bde7b500 00000003 bdcd9300 76fc6000 00000005 00000004 
-00000000
-bf60: bd5bbfa4 bd5bbf70 800cfb2c 800cf7f8 00000000 00000000 00000005 
-00000000
-bf80: 00000004 76f87628 00000005 76fc6000 8000e088 bd5ba000 00000000 
-bd5bbfa8
-bfa0: 8000dde0 800cfaec 76f87628 00000005 00000001 76fc6000 00000005 
-00000000
-bfc0: 76f87628 00000005 76fc6000 00000004 00000005 76fc74c0 000b0094 
-0005dae8
-bfe0: 00000005 7e8df7c8 76ed713c 76f1fafc 60000010 00000001 3fffe821 
-3fffec21
-[<80372438>] (snd_soc_dapm_shutdown+0x48/0x11c) from [<8036ccf4>] 
-(snd_soc_poweroff+0x68/0x70)
-[<8036ccf4>] (snd_soc_poweroff+0x68/0x70) from [<802439bc>] 
-(platform_pm_poweroff+0x40/0x58)
-[<802439bc>] (platform_pm_poweroff+0x40/0x58) from [<80247a28>] 
-(dpm_run_callback.isra.12+0x3c/0x74)
-[<80247a28>] (dpm_run_callback.isra.12+0x3c/0x74) from [<80248564>] 
-(__device_suspend+0x120/0x194)
-[<80248564>] (__device_suspend+0x120/0x194) from [<80248dac>] 
-(dpm_suspend+0xbc/0x224)
-[<80248dac>] (dpm_suspend+0xbc/0x224) from [<80249144>] 
-(dpm_suspend_start+0x6c/0x74)
-[<80249144>] (dpm_suspend_start+0x6c/0x74) from [<800590a8>] 
-(hibernation_platform_enter+0x48/0x128)
-[<800590a8>] (hibernation_platform_enter+0x48/0x128) from [<800592dc>] 
-(hibernate+0x154/0x21c)
-[<800592dc>] (hibernate+0x154/0x21c) from [<80057444>] 
-(state_store+0xbc/0xd0)
-[<80057444>] (state_store+0xbc/0xd0) from [<801e5e18>] 
-(kobj_attr_store+0x1c/0x28)
-[<801e5e18>] (kobj_attr_store+0x1c/0x28) from [<80124f18>] 
-(sysfs_write_file+0x118/0x14c)
-[<80124f18>] (sysfs_write_file+0x118/0x14c) from [<800cf8b0>] 
-(vfs_write+0xc4/0x140)
-[<800cf8b0>] (vfs_write+0xc4/0x140) from [<800cfb2c>] (sys_write+0x4c/0x78)
-[<800cfb2c>] (sys_write+0x4c/0x78) from [<8000dde0>] 
-(ret_fast_syscall+0x0/0x48)
-Code: e59350f8 e3a03000 e2455014 ea00000f (e595201c)
-================================================================================================
-
-If I talk only for the crash then BTW I tried to comment these lines 
-(from line 3545 to 3552) of code and found no crash but the song is not 
-getting resumed after hibernation.
-
-Best Regards
-Rajeev
+diff --git a/arch/arm/mach-at91/at91sam9260_devices.c b/arch/arm/mach-at91/at91sam9260_devices.c
+index df7bebf..6959fd2 100644
+--- a/arch/arm/mach-at91/at91sam9260_devices.c
++++ b/arch/arm/mach-at91/at91sam9260_devices.c
+@@ -768,14 +768,6 @@ static inline void configure_ssc_pins(unsigned pins)
+ 		at91_set_A_periph(AT91_PIN_PB21, 1);
+ }
+ 
+-static struct platform_device at91sam9260_ssc_dai_device = {
+-	.name	= "atmel-ssc-dai",
+-	.id	= 0,
+-	.dev	= {
+-		.parent	= &(at91sam9260_ssc_device.dev),
+-	},
+-};
+-
+ /*
+  * SSC controllers are accessed through library code, instead of any
+  * kind of all-singing/all-dancing driver.  For example one could be
+@@ -800,7 +792,6 @@ void __init at91_add_device_ssc(unsigned id, unsigned pins)
+ 	}
+ 
+ 	platform_device_register(pdev);
+-	platform_device_register(&at91sam9260_ssc_dai_device);
+ }
+ 
+ #else
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index 5b6a6f9..f3faf54 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -353,19 +353,13 @@ static struct i2c_board_info __initdata ek_i2c_devices[] = {
+         },
+ };
+ 
+-static struct platform_device sam9g20ek_pcm_device = {
+-	.name	= "atmel-pcm-audio",
+-	.id = -1,
+-};
+-
+ static struct platform_device sam9g20ek_audio_device = {
+ 	.name   = "at91sam9g20ek-audio",
+-	.id     = -1,
++	.id     = 0,
+ };
+ 
+ static void __init ek_add_device_audio(void)
+ {
+-	platform_device_register(&sam9g20ek_pcm_device);
+ 	platform_device_register(&sam9g20ek_audio_device);
+ }
+ 
+diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
+index 9b84f98..40e17d1 100644
+--- a/sound/soc/atmel/atmel-pcm.c
++++ b/sound/soc/atmel/atmel-pcm.c
+@@ -473,28 +473,17 @@ static struct snd_soc_platform_driver atmel_soc_platform = {
+ 	.resume		= atmel_pcm_resume,
+ };
+ 
+-static int __devinit atmel_soc_platform_probe(struct platform_device *pdev)
++int atmel_pcm_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(&pdev->dev, &atmel_soc_platform);
++	return snd_soc_register_platform(dev, &atmel_soc_platform);
+ }
++EXPORT_SYMBOL(atmel_pcm_platform_register);
+ 
+-static int __devexit atmel_soc_platform_remove(struct platform_device *pdev)
++void atmel_pcm_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(&pdev->dev);
+-	return 0;
++	snd_soc_unregister_platform(dev);
+ }
+-
+-static struct platform_driver atmel_pcm_driver = {
+-	.driver = {
+-			.name = "atmel-pcm-audio",
+-			.owner = THIS_MODULE,
+-	},
+-
+-	.probe = atmel_soc_platform_probe,
+-	.remove = __devexit_p(atmel_soc_platform_remove),
+-};
+-
+-module_platform_driver(atmel_pcm_driver);
++EXPORT_SYMBOL(atmel_pcm_platform_unregister);
+ 
+ MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
+ MODULE_DESCRIPTION("Atmel PCM module");
+diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
+index 5e0a95e..e6d67b3 100644
+--- a/sound/soc/atmel/atmel-pcm.h
++++ b/sound/soc/atmel/atmel-pcm.h
+@@ -80,4 +80,7 @@ struct atmel_pcm_dma_params {
+ #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
+ #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
+ 
++int atmel_pcm_platform_register(struct device *dev);
++void atmel_pcm_platform_unregister(struct device *dev);
++
+ #endif /* _ATMEL_PCM_H */
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 354341e..4435e19 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -47,13 +47,6 @@
+ #include "atmel-pcm.h"
+ #include "atmel_ssc_dai.h"
+ 
+-
+-#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
+-#define NUM_SSC_DEVICES		1
+-#else
+-#define NUM_SSC_DEVICES		3
+-#endif
+-
+ /*
+  * SSC PDC registers required by the PCM DMA engine.
+  */
+@@ -96,63 +89,24 @@ static struct atmel_ssc_mask ssc_rx_mask = {
+ /*
+  * DMA parameters.
+  */
+-static struct atmel_pcm_dma_params ssc_dma_params[NUM_SSC_DEVICES][2] = {
+-	{{
+-	.name		= "SSC0 PCM out",
+-	.pdc		= &pdc_tx_reg,
+-	.mask		= &ssc_tx_mask,
+-	},
++static struct atmel_pcm_dma_params ssc_dma_params[2] = {
+ 	{
+-	.name		= "SSC0 PCM in",
+-	.pdc		= &pdc_rx_reg,
+-	.mask		= &ssc_rx_mask,
+-	} },
+-#if NUM_SSC_DEVICES == 3
+-	{{
+-	.name		= "SSC1 PCM out",
++	.name		= "SSC PCM out",
+ 	.pdc		= &pdc_tx_reg,
+ 	.mask		= &ssc_tx_mask,
+ 	},
+ 	{
+-	.name		= "SSC1 PCM in",
++	.name		= "SSC PCM in",
+ 	.pdc		= &pdc_rx_reg,
+ 	.mask		= &ssc_rx_mask,
+-	} },
+-	{{
+-	.name		= "SSC2 PCM out",
+-	.pdc		= &pdc_tx_reg,
+-	.mask		= &ssc_tx_mask,
+ 	},
+-	{
+-	.name		= "SSC2 PCM in",
+-	.pdc		= &pdc_rx_reg,
+-	.mask		= &ssc_rx_mask,
+-	} },
+-#endif
+ };
+ 
+-
+-static struct atmel_ssc_info ssc_info[NUM_SSC_DEVICES] = {
+-	{
+-	.name		= "ssc0",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[0].lock),
+-	.dir_mask	= SSC_DIR_MASK_UNUSED,
+-	.initialized	= 0,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{
+-	.name		= "ssc1",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[1].lock),
++static struct atmel_ssc_info ssc_info = {
++	.name		= "ssc",
++	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info.lock),
+ 	.dir_mask	= SSC_DIR_MASK_UNUSED,
+ 	.initialized	= 0,
+-	},
+-	{
+-	.name		= "ssc2",
+-	.lock		= __SPIN_LOCK_UNLOCKED(ssc_info[2].lock),
+-	.dir_mask	= SSC_DIR_MASK_UNUSED,
+-	.initialized	= 0,
+-	},
+-#endif
+ };
+ 
+ 
+@@ -205,7 +159,7 @@ static irqreturn_t atmel_ssc_interrupt(int irq, void *dev_id)
+ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 	int dir_mask;
+ 
+ 	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
+@@ -234,7 +188,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 
+@@ -285,7 +239,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
+ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		unsigned int fmt)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 
+ 	ssc_p->daifmt = fmt;
+ 	return 0;
+@@ -297,7 +251,7 @@ static int atmel_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	int div_id, int div)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 
+ 	switch (div_id) {
+ 	case ATMEL_SSC_CMR_DIV:
+@@ -336,8 +290,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	int id = dai->id;
+-	struct atmel_ssc_info *ssc_p = &ssc_info[id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, channels, bits;
+ 	u32 tfmr, rfmr, tcmr, rcmr;
+@@ -354,7 +307,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	else
+ 		dir = 1;
+ 
+-	dma_params = &ssc_dma_params[id][dir];
++	dma_params = &ssc_dma_params[dir];
+ 	dma_params->ssc = ssc_p->ssc;
+ 	dma_params->substream = substream;
+ 
+@@ -603,7 +556,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir;
+ 
+@@ -631,7 +584,7 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info;
+ 
+ 	/* Save the status register before disabling transmit and receive */
+ 	ssc_p->ssc_state.ssc_sr = ssc_readl(ssc_p->ssc->regs, SR);
+@@ -660,7 +613,7 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-	ssc_p = &ssc_info[cpu_dai->id];
++	ssc_p = &ssc_info;
+ 
+ 	/* restore SSC register settings */
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+@@ -689,28 +642,10 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ 
+ static int atmel_ssc_probe(struct snd_soc_dai *dai)
+ {
+-	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
+-	int ret = 0;
++	struct atmel_ssc_info *ssc_p = &ssc_info;
+ 
+ 	snd_soc_dai_set_drvdata(dai, ssc_p);
+ 
+-	/*
+-	 * Request SSC device
+-	 */
+-	ssc_p->ssc = ssc_request(dai->id);
+-	if (IS_ERR(ssc_p->ssc)) {
+-		printk(KERN_ERR "ASoC: Failed to request SSC %d\n", dai->id);
+-		ret = PTR_ERR(ssc_p->ssc);
+-	}
+-
+-	return ret;
+-}
+-
+-static int atmel_ssc_remove(struct snd_soc_dai *dai)
+-{
+-	struct atmel_ssc_info *ssc_p = snd_soc_dai_get_drvdata(dai);
+-
+-	ssc_free(ssc_p->ssc);
+ 	return 0;
+ }
+ 
+@@ -728,11 +663,8 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
+ };
+ 
+-static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
+-	{
+-		.name = "atmel-ssc-dai.0",
++static struct snd_soc_dai_driver atmel_ssc_dai = {
+ 		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+ 		.suspend = atmel_ssc_suspend,
+ 		.resume = atmel_ssc_resume,
+ 		.playback = {
+@@ -746,69 +678,37 @@ static struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
+ 			.rates = ATMEL_SSC_RATES,
+ 			.formats = ATMEL_SSC_FORMATS,},
+ 		.ops = &atmel_ssc_dai_ops,
+-	},
+-#if NUM_SSC_DEVICES == 3
+-	{
+-		.name = "atmel-ssc-dai.1",
+-		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+-		.suspend = atmel_ssc_suspend,
+-		.resume = atmel_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.ops = &atmel_ssc_dai_ops,
+-	},
+-	{
+-		.name = "atmel-ssc-dai.2",
+-		.probe = atmel_ssc_probe,
+-		.remove = atmel_ssc_remove,
+-		.suspend = atmel_ssc_suspend,
+-		.resume = atmel_ssc_resume,
+-		.playback = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.capture = {
+-			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = ATMEL_SSC_RATES,
+-			.formats = ATMEL_SSC_FORMATS,},
+-		.ops = &atmel_ssc_dai_ops,
+-	},
+-#endif
+ };
+ 
+-static __devinit int asoc_ssc_probe(struct platform_device *pdev)
++static int asoc_ssc_init(struct device *dev)
+ {
+-	BUG_ON(pdev->id < 0);
+-	BUG_ON(pdev->id >= ARRAY_SIZE(atmel_ssc_dai));
+-	return snd_soc_register_dai(&pdev->dev, &atmel_ssc_dai[pdev->id]);
+-}
++	int ret;
++
++	ret = snd_soc_register_dai(dev, &atmel_ssc_dai);
++	if (ret) {
++		dev_err(dev, "Could not register DAI: %d\n", ret);
++		goto err;
++	}
++
++	ret = atmel_pcm_platform_register(dev);
++	if (ret) {
++		dev_err(dev, "Could not register PCM: %d\n", ret);
++		goto err_unregister_dai;
++	};
+ 
+-static int __devexit asoc_ssc_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_dai(&pdev->dev);
+ 	return 0;
+-}
+ 
+-static struct platform_driver asoc_ssc_driver = {
+-	.driver = {
+-			.name = "atmel-ssc-dai",
+-			.owner = THIS_MODULE,
+-	},
++err_unregister_dai:
++	snd_soc_unregister_dai(dev);
++err:
++	return ret;
++}
+ 
+-	.probe = asoc_ssc_probe,
+-	.remove = __devexit_p(asoc_ssc_remove),
+-};
++static void asoc_ssc_exit(struct device *dev)
++{
++	atmel_pcm_platform_unregister(dev);
++	snd_soc_unregister_dai(dev);
++}
+ 
+ /**
+  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
+@@ -816,50 +716,32 @@ static struct platform_driver asoc_ssc_driver = {
+ int atmel_ssc_set_audio(int ssc_id)
+ {
+ 	struct ssc_device *ssc;
+-	static struct platform_device *dma_pdev;
+-	struct platform_device *ssc_pdev;
+ 	int ret;
+ 
+-	if (ssc_id < 0 || ssc_id >= ARRAY_SIZE(atmel_ssc_dai))
+-		return -EINVAL;
+-
+-	/* Allocate a dummy device for DMA if we don't have one already */
+-	if (!dma_pdev) {
+-		dma_pdev = platform_device_alloc("atmel-pcm-audio", -1);
+-		if (!dma_pdev)
+-			return -ENOMEM;
+-
+-		ret = platform_device_add(dma_pdev);
+-		if (ret < 0) {
+-			platform_device_put(dma_pdev);
+-			dma_pdev = NULL;
+-			return ret;
+-		}
+-	}
+-
+-	ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
+-	if (!ssc_pdev)
+-		return -ENOMEM;
+-
+ 	/* If we can grab the SSC briefly to parent the DAI device off it */
+ 	ssc = ssc_request(ssc_id);
+-	if (IS_ERR(ssc))
+-		pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
++	if (IS_ERR(ssc)) {
++		pr_err("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+ 			PTR_ERR(ssc));
+-	else {
+-		ssc_pdev->dev.parent = &(ssc->pdev->dev);
+-		ssc_free(ssc);
++		return PTR_ERR(ssc);
++	} else {
++		ssc_info.ssc = ssc;
+ 	}
+ 
+-	ret = platform_device_add(ssc_pdev);
+-	if (ret < 0)
+-		platform_device_put(ssc_pdev);
++	ret = asoc_ssc_init(&ssc->pdev->dev);
+ 
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 
+-module_platform_driver(asoc_ssc_driver);
++void atmel_ssc_put_audio(void)
++{
++	struct ssc_device *ssc = ssc_info.ssc;
++
++	ssc_free(ssc);
++	asoc_ssc_exit(&ssc->pdev->dev);
++}
++EXPORT_SYMBOL_GPL(atmel_ssc_put_audio);
+ 
+ /* Module information */
+ MODULE_AUTHOR("Sedji Gaouaou, sedji.gaouaou@atmel.com, www.atmel.com");
+diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
+index 5d4f0f9..70c66dd 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.h
++++ b/sound/soc/atmel/atmel_ssc_dai.h
+@@ -118,5 +118,6 @@ struct atmel_ssc_info {
+ };
+ 
+ int atmel_ssc_set_audio(int ssc);
++void atmel_ssc_put_audio(void);
+ 
+ #endif /* _AT91_SSC_DAI_H */
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 228ca6a..eef6eed 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -179,10 +179,10 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_link at91sam9g20ek_dai = {
+ 	.name = "WM8731",
+ 	.stream_name = "WM8731 PCM",
+-	.cpu_dai_name = "atmel-ssc-dai.0",
++	.cpu_dai_name = "at91rm9200_ssc.0",
+ 	.codec_dai_name = "wm8731-hifi",
+ 	.init = at91sam9g20ek_wm8731_init,
+-	.platform_name = "atmel-pcm-audio",
++	.platform_name = "at91rm9200_ssc.0",
+ 	.codec_name = "wm8731.0-001b",
+ 	.ops = &at91sam9g20ek_ops,
+ };
+@@ -204,6 +204,10 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
+ 		return -ENODEV;
+ 
++	ret = atmel_ssc_set_audio(pdev->id);
++	if (ret)
++		goto err;
++
+ 	/*
+ 	 * Codec MCLK is supplied by PCK0 - set it up.
+ 	 */
+@@ -211,7 +215,7 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mclk)) {
+ 		printk(KERN_ERR "ASoC: Failed to get MCLK\n");
+ 		ret = PTR_ERR(mclk);
+-		goto err;
++		goto err_ssc_put_audio;
+ 	}
+ 
+ 	pllb = clk_get(NULL, "pllb");
+@@ -240,6 +244,8 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ err_mclk:
+ 	clk_put(mclk);
+ 	mclk = NULL;
++err_ssc_put_audio:
++	atmel_ssc_put_audio();
+ err:
+ 	return ret;
+ }
+@@ -248,6 +254,7 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
++	atmel_ssc_put_audio();
+ 	snd_soc_unregister_card(card);
+ 	clk_put(mclk);
+ 	mclk = NULL;
+-- 
+1.7.9.5
