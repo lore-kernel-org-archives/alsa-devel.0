@@ -1,27 +1,200 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] ARM: davinci: enable SRAM ping ping buffering on DA850
-Date: Thu, 8 Nov 2012 15:02:04 +0000
-Message-ID: <201211081502.04980.arnd@arndb.de>
-References: <1349345745-10584-1-git-send-email-mporter@ti.com> <1349345745-10584-3-git-send-email-mporter@ti.com>
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>
+Subject: Re: [RFC PATCH v4 2/2] ASoC: sam9g20-wm8731: convert to dt support
+Date: Thu, 8 Nov 2012 16:24:31 +0100
+Message-ID: <20121108152431.GJ4576@game.jcrosoft.org>
+References: <1352361422-13265-1-git-send-email-voice.shen@atmel.com>
+ <1352361422-13265-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1349345745-10584-3-git-send-email-mporter@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matt Porter <mporter@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, gururaja.hebbar@ti.com, Sekhar Nori <nsekhar@ti.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>, Linux DaVinci Kernel List <davinci-linux-open-source@linux.davincidsp.com>, Ben Gardiner <bengardiner@nanometrics.ca>, Daniel Mack <zonque@gmail.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1352361422-13265-2-git-send-email-voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jm.lin-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 04 October 2012, Matt Porter wrote:
-> Passes the DA850 shared SRAM gen_pool to the McASP driver
-> and enables the ping-pong buffer DMA support.
-> 
-> Signed-off-by: Matt Porter <mporter@ti.com>
+On 15:57 Thu 08 Nov     , Bo Shen wrote:
+> Signed-off-by: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
 > ---
+> Change since v3 RFC:
+>   Remove dai node, remap ssc in place
+>   without pinctrl added, so don't modify the dtsi file, will be added
+>   soon
+until I see the pinctrl to test this no
+This code is untested
+> Change since v2:
+>   No change
+> Change since v1:
+>   Add sam9g20-wm8731 binding document
+> ---
+>  .../bindings/sound/atmel-sam9g20-wm8731-audio.txt  |   21 ++++++
+>  sound/soc/atmel/Kconfig                            |    3 +-
+>  sound/soc/atmel/sam9g20_wm8731.c                   |   71 ++++++++++++++++++--
+>  3 files changed, 88 insertions(+), 7 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9g20-wm8731-audio.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9g20-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-sam9g20-wm8731-audio.txt
+> new file mode 100644
+> index 0000000..adf7e7c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/atmel-sam9g20-wm8731-audio.txt
+> @@ -0,0 +1,21 @@
+> +* Atmel sam9g20ek audio complex
+this is board file or soc?
 
-It seems this is in linux-next now, but the patch it depends on
-(ARM: davinci: add platform hook to fetch the SRAM pool) is not.
 
-	Arnd
+and use the full soc sor board ame in the documentation
+
+Best Regards,
+J.
+> +
+> +Required properties:
+> +  - compatible: "atmel,at91sam9g20-audio"
+> +  - atmel,model: The user-visible name of this sound complex.
+> +  - atmel,audio-routing: A list of the connections between audio components.
+> +  - atmel,ssc-controller: The phandle of the SSC controller
+> +  - atmel,audio-codec: The phandle of the WM8731 audio codec
+> +
+> +Example:
+> +sound {
+> +	compatible = "atmel,at91sam9g20-audio";
+> +	atmel,model = "wm8731 @ AT91SAMG20EK";
+> +
+> +	atmel,audio-routing =
+> +		"Ext Spk", "LHPOUT",
+> +		"Int MIC", "MICIN";
+> +
+> +	atmel,ssc-controller = <&ssc0>;
+> +	atmel,audio-codec = <&wm8731>;
+> +};
+> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+> index 72b09cf..397ec75 100644
+> --- a/sound/soc/atmel/Kconfig
+> +++ b/sound/soc/atmel/Kconfig
+> @@ -16,8 +16,7 @@ config SND_ATMEL_SOC_SSC
+>  
+>  config SND_AT91_SOC_SAM9G20_WM8731
+>  	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+> -	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC && \
+> -                   AT91_PROGRAMMABLE_CLOCKS
+> +	depends on ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
+>  	select SND_ATMEL_SOC_SSC
+>  	select SND_SOC_WM8731
+>  	help
+> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+> index eef6eed..62c3a3d 100644
+> --- a/sound/soc/atmel/sam9g20_wm8731.c
+> +++ b/sound/soc/atmel/sam9g20_wm8731.c
+> @@ -197,14 +197,30 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+>  
+>  static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+>  {
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct device_node *codec_np, *cpu_np;
+>  	struct clk *pllb;
+>  	struct snd_soc_card *card = &snd_soc_at91sam9g20ek;
+> -	int ret;
+> -
+> -	if (!(machine_is_at91sam9g20ek() || machine_is_at91sam9g20ek_2mmc()))
+> -		return -ENODEV;
+> +	int ret, id;
+> +
+> +	if (np) {
+> +		cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+> +		if (!cpu_np) {
+> +			dev_err(&pdev->dev, "codec info missing\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		id = of_alias_get_id(cpu_np, "ssc");
+> +		of_node_put(cpu_np);
+> +	} else {
+> +		if (!(machine_is_at91sam9g20ek() ||
+> +			machine_is_at91sam9g20ek_2mmc()))
+> +			return -ENODEV;
+> +
+> +		id = pdev->id;
+> +	}
+>  
+> -	ret = atmel_ssc_set_audio(pdev->id);
+> +	ret = atmel_ssc_set_audio(id);
+>  	if (ret)
+>  		goto err;
+>  
+> @@ -234,6 +250,42 @@ static int __devinit at91sam9g20ek_audio_probe(struct platform_device *pdev)
+>  	clk_set_rate(mclk, MCLK_RATE);
+>  
+>  	card->dev = &pdev->dev;
+> +
+> +	/* Parse device node info */
+> +	if (np) {
+> +		ret = snd_soc_of_parse_card_name(card, "atmel,model");
+> +		if (ret)
+> +			goto err;
+> +
+> +		ret = snd_soc_of_parse_audio_routing(card,
+> +			"atmel,audio-routing");
+> +		if (ret)
+> +			goto err;
+> +
+> +		/* Parse codec info */
+> +		at91sam9g20ek_dai.codec_name = NULL;
+> +		codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
+> +		if (!codec_np) {
+> +			dev_err(&pdev->dev, "codec info missing\n");
+> +			return -EINVAL;
+> +		}
+> +		at91sam9g20ek_dai.codec_of_node = codec_np;
+> +
+> +		/* Parse dai and platform info */
+> +		at91sam9g20ek_dai.cpu_dai_name = NULL;
+> +		at91sam9g20ek_dai.platform_name = NULL;
+> +		cpu_np = of_parse_phandle(np, "atmel,ssc-controller", 0);
+> +		if (!cpu_np) {
+> +			dev_err(&pdev->dev, "dai and pcm info missing\n");
+> +			return -EINVAL;
+> +		}
+> +		at91sam9g20ek_dai.cpu_of_node = cpu_np;
+> +		at91sam9g20ek_dai.platform_of_node = cpu_np;
+> +
+> +		of_node_put(codec_np);
+> +		of_node_put(cpu_np);
+> +	}
+> +
+>  	ret = snd_soc_register_card(card);
+>  	if (ret) {
+>  		printk(KERN_ERR "ASoC: snd_soc_register_card() failed\n");
+> @@ -262,10 +314,19 @@ static int __devexit at91sam9g20ek_audio_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id sam9g20ek_wm8731_dt_ids[] = {
+> +	{ .compatible = "atmel,at91sam9g20-audio", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sam9g20ek_wm8731_dt_ids);
+> +#endif
+> +
+>  static struct platform_driver at91sam9g20ek_audio_driver = {
+>  	.driver = {
+>  		.name	= "at91sam9g20ek-audio",
+>  		.owner	= THIS_MODULE,
+> +		.of_match_table = of_match_ptr(sam9g20ek_wm8731_dt_ids),
+>  	},
+>  	.probe	= at91sam9g20ek_audio_probe,
+>  	.remove	= __devexit_p(at91sam9g20ek_audio_remove),
+> -- 
+> 1.7.9.5
+> 
