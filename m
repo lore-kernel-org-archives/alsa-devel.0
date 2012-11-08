@@ -1,60 +1,42 @@
-From: Bo Shen <bard.shen@gmail.com>
-Subject: Re: [Resend PATCH v3 2/4] ARM: at91: atmel-ssc: add device tree support
-Date: Thu, 08 Nov 2012 09:50:41 +0800
-Message-ID: <509B0FF1.4080504@gmail.com>
-References: <1352259701-19847-1-git-send-email-voice.shen@atmel.com> <20121107084932.GE20063@game.jcrosoft.org> <20121107092124.GE12323@opensource.wolfsonmicro.com> <20121107104121.GG20063@game.jcrosoft.org> <20121107140535.GA28954@opensource.wolfsonmicro.com> <20121107143046.GA4576@game.jcrosoft.org> <20121107144450.GF20844@opensource.wolfsonmicro.com> <20121107151607.GC4576@game.jcrosoft.org>
+From: "Babu, Ramesh" <ramesh.babu@intel.com>
+Subject: Re: Using sync dapm_sync in stream_event call back
+Date: Thu, 8 Nov 2012 04:28:43 +0000
+Message-ID: <32F4D3A311A1404B92CF923AFF38C3C529EEBD@BGSMSX101.gar.corp.intel.com>
+References: <32F4D3A311A1404B92CF923AFF38C3C529E715@BGSMSX101.gar.corp.intel.com>
+ <20121107144728.GH20844@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20121107151607.GC4576@game.jcrosoft.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, Bo Shen <voice.shen@atmel.com>, fengguang.wu@intel.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33747265104
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2012 05:28:48 +0100 (CET)
+In-Reply-To: <20121107144728.GH20844@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi J,
-
-On 11/7/2012 23:16, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 15:44 Wed 07 Nov     , Mark Brown wrote:
->> On Wed, Nov 07, 2012 at 03:30:46PM +0100, Jean-Christophe PLAGNIOL-VILLARD wrote:
->>
->>> the one via ASoC for the driver with the pinctrl for now but MUST add it later
->>
->>> the arch/arm related via AT91 tree where the pinctrl is mandatory in the dtsi
->>
->>> I'm no going to spend hours to do the pinctrl to test Bo patch that he is
->>> supposed to have deon to test this code
->>
->>> As basically today on DT none of the board will work if BO does no provide the
->>> pinctrl so for me he MUST put in the dtsi
->>
->>> is it ok with you?
->>
->> Or add the pinmux bindings for other IPs over in the pinmux branch and
->> the pinmux binding for SSC here (which will help with bisection as the
->> DT bindings for the audio will then always exist in conjunction with the
->> .dtsi changes for them).  Either way is fine with me; I'll leave things
->> as they are until I see some new patches.
-> for where it's merge honestly I do not care much but the pinctrl must be
-> handled correctly
-
-I will send patches to add pinctrl support.
-For atmel ssc driver, it is simple, however for dtsi, which point should 
-I based on? which git and which branch? Because, I am not sure which 
-branch on git://github.com/at91linux/linux-at91.git is the right point.
-
-Thanks.
-
-Best Regards,
-Bo Shen
-
-> Best Regards,
-> J.
+>> In my machine driver, I need to disable a widget in stream_event call back.
+>> I realized that I cannot invoke dapm_sync() inside the stream_event, because it
+>causes recursive lock.
 >
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> How can I disable a pin (widget) inside stream_event call back?
 >
+>This doesn't sound like something that really makes sense within the model
+>DAPM has.  What are you actually trying to accomplish?
 
+App is re-routing the audio within codec by changing mixer settings (for a same stream/device).
+When app changes a MUX mixer settings, temporarily DAPM path gets broken and shut downs BIAS/CLOCK.
+I was planning to use a Virtual Widget which I enable in my open and disable it during stream_event(STREAM_STOP).
+This is to make sure BIAS/CLOCK will never shut down, as long as stream is active.
+I'm not sure if this is correct way to do it. Any inputs?
