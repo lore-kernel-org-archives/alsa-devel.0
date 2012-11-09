@@ -1,87 +1,72 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 4/6] ASoC: wm8974: add SPI as a possible bus master
-Date: Fri, 9 Nov 2012 14:59:22 +0000
-Message-ID: <20121109145921.GJ23807@opensource.wolfsonmicro.com>
-References: <1352469625-32024-1-git-send-email-s.trumtrar@pengutronix.de>
- <1352469625-32024-5-git-send-email-s.trumtrar@pengutronix.de>
- <20121109143841.GG23807@opensource.wolfsonmicro.com>
- <20121109145504.GC8598@pengutronix.de>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] dma: add new DMA control commands
+Date: Fri, 09 Nov 2012 17:29:11 +0200
+Message-ID: <1352474951.1814.40.camel@sauron.fi.intel.com>
+References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
+	 <201210180914.58527.marex@denx.de> <507FB495.7050104@freescale.com>
+	 <201210181016.06782.marex@denx.de> <507FBDF1.5050602@freescale.com>
+Reply-To: dedekind1@gmail.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6097520093800692132=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20121109145504.GC8598-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Landley <rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-1Ho9I/5vx63xnID433oO"
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <507FBDF1.5050602@freescale.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Huang Shijie <b32955@freescale.com>
+Cc: Marek Vasut <marex@denx.de>, Vinod Koul <vinod.koul@linux.intel.com>, djbw@fb.com, khali@linux-fr.org, ben-linux@fluff.org, w.sang@pengutronix.de, cjb@laptop.org, dwmw2@infradead.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, shawn.guo@linaro.org, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux@arm.linux.org.uk, Huang Shijie <shijie8@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6097520093800692132==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="451BZW+OUuJBCAYj"
-Content-Disposition: inline
+--=-1Ho9I/5vx63xnID433oO
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, 2012-10-18 at 16:29 +0800, Huang Shijie wrote:
+> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > So we can't stream data from the chip? About time to adjust the MTD fra=
+mework to
+> > allow that. Maybe implement a command queue?
+> >
+>=20
+> to Artem & David:
+>     is this possible to stream the data out with a command queue?
 
---451BZW+OUuJBCAYj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Well, I think there was no HW which supported reading multiple pages
+with DMA before, are your sure yours support this? Usually reading a
+NAND page consists of 2 phases - loading the NAND array contents to a
+controller buffer, and then copying that to RAM. And the second part is
+something people sometimes do with DMA, AFAIU.
 
-On Fri, Nov 09, 2012 at 03:55:04PM +0100, Steffen Trumtrar wrote:
-> On Fri, Nov 09, 2012 at 02:38:42PM +0000, Mark Brown wrote:
+If your HW supports this, sure the MTD framework can be re-worked. Or
+you may write your own 'mtd->_read()' / 'mtd->_write()' implementation.
 
-> > We should be converting things to regmap if we're going to do this -
-> > we're trying to phase out the ASoC-specific I/O and this makes the code
-> > simpler anyway as the core will just be able to get the regmap from the
-> > struct device without bouncing information around through the private
-> > data and so on.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> I wasn't aware of that driver. That sounds way better than the private data stuff.
-
-If you look in mainline there's a bunch of conversions been done
-recently, it's fairly mechanical so hopefully they'll show you what
-needs doing.
-
---451BZW+OUuJBCAYj
+--=-1Ho9I/5vx63xnID433oO
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQnRpDAAoJELSic+t+oim9q34QAInSqgrdzlwX9NvNvo1jAXxT
-9Gy/nBq9AYJz27PcuBRF72u2lmy5TEdbbG/vfEzzrVndExVVxYfwvp/bXPgYEYFb
-OwichlvXKj5acammff9L0RYh9cRQR/+aw8xL4qdEQVaxgRLOa0fIzgGHIaYsN3q+
-3axqzarXksBMphwrpWiCrUSUMYrKEaLoq+y6yDvlkTkKLtv8stH2gv3QJyX1UC04
-Y3nvBQcFwUeUGdVOZL1S3Tqj/dbEMW2Ms+pqwyHYlXMvnepQmAdsg0wF1IARxs7X
-g6aB8tdJtA2j/5dY8RHgNbB4gWMdnZ88LzHhvp7eXlYpU8lMqQ8ycWZho0qE6jjt
-uW5pnqLHTurDUCt5VNeyu5vg1dTOoK0kL4bh8mETDKTB3+Nwv5Fgf1Sp6bUVCX7d
-IGLcnmoCaX30xNIA/LRKSc+D1me/6W40w2wHsA5OBNwp1gDiBJjfAm4oJnOS1ao6
-15TZ1MDE2CfCH3gdwH6kShQmdYnonLcaQYkZcBokCLm7tUnGRB27ywby4iHrb48T
-D5ByWOueyGziEYh3VHwHAkaHlfVlUAOpRKuBKY0wUwnBB1r8fWkSmWCMNHikGhYW
-8g2eR2f3AxY2lEkcNSuINOVZsL7wgFxZ4uG/Tp+m3weaQeJ0D/B8V3pDej7btitR
-SApaXGEt81c9Y2vE/3Jg
-=no2K
+iQIcBAABAgAGBQJQnSFHAAoJECmIfjd9wqK0GowP/jz3M70GMjElaOIdPUtV+TZf
+UlaiLpjwY5JNIa/2J5OHP8JA7mEsaG9QXFPHkHXbc0hdNODY1R/+l1db82JPH1WL
+9Fw3ka9+9HuZ5m4OEm4XkWH9e8eodM6Ixm0mYok5yzKdQ+ToHnacaS92z6mIdH5T
+SBZtH1+Lh7bRzdVDY9MlwlmrCoQ+aUx4Du1NKyXE2bh8zoEc5Z2t6URd6gT8bbWC
+7OelYPHKbKIIsAgSNYpoNFjnX0zdLWHU4UT2nS8ES7bz7TR47HHCHZVKBwK7R5P5
+UFqBNA7uufMRNuyAGM1/REtfIdtvcphEJZGlPWwQnN89Hu3oPZCCJn4rBUHnCiiK
+aPKeOQI4QrzxcnUjvkmpgAvaLrxWpKLNWDxzCYaXBmUvxSl/LcLgMtOBXbHtaaA/
+lt2DX7E8qpyWVznf+xlT+oMMHLzvcFk3yz5fM6wGkMpxogHRRf1bTUZJqx6HH0wF
+mJWyp1vSr66RUMb0s2ThRrTx/AaCBWxAIuaD3laId024p89tADeu9KLOrV7V1Qvs
+msZSb5D/P5laJyiaFkUP+pA23xP27sfzvascsF56ArwX1UvDL5ZI46HMBMFc4zRb
+sHhGI8FO5IOum5GcfEW5ABvS0WvN8G1bIP8yy/405UutCnkC/puzQiKTvCgv/AC3
+26iBTNS6y+1KA3BwgAm8
+=ZOe9
 -----END PGP SIGNATURE-----
 
---451BZW+OUuJBCAYj--
+--=-1Ho9I/5vx63xnID433oO--
 
---===============6097520093800692132==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============6097520093800692132==--
