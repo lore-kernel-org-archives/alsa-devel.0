@@ -1,17 +1,18 @@
-From: Trent Piepho <tpiepho@gmail.com>
-Subject: Races in alsa-lib with threads
-Date: Fri, 9 Nov 2012 18:03:25 -0800
-Message-ID: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+From: Martin Schwenke <martin@meltin.net> (by way of Martin Schwenke
+ <martin@meltin.net>)
+Subject: [PATCH] ALSA: usb-audio: Add quirk for Focusrite
+	Scarlett 18i6
+Date: Fri, 9 Nov 2012 20:20:23 +1100
+Message-ID: <20121109202023.60f6dcdc@martins.ozlabs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f50.google.com (mail-vb0-f50.google.com
- [209.85.212.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 564AE26079C
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 03:03:26 +0100 (CET)
-Received: by mail-vb0-f50.google.com with SMTP id fa15so4375481vbb.9
- for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2012 18:03:25 -0800 (PST)
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85F7026086D
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 03:39:00 +0100 (CET)
+Resent-Message-ID: <20121110133858.076239f8@martins.ozlabs.org>
+Resent-To: alsa-devel@alsa-project.org
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +25,119 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We've found a race with alsa-lib functions are called from multiple
-threads.  I was under the impression that alsa-lib was supposed to be
-thread safe.  Is this not the case and all alsa calls should be done
-one from thread or protected by a mutex?
+Probing this device currently fails in snd_usb_audio_probe() because
+the call to snd_usb_create_mixer() fails.  This is due to unknown or
+non-standard interface descriptor subtypes in parse_audio_unit():
 
-The race we found was in sync_ptr1() in pcm_hw.c.  This issues the
-ioctl() to get the current hw ptr from the kernel and send the app ptr
-to the kernel.  The communication is done by passing a pointer to
-hw->sync_ptr, a field in the snd_pcm_hw_t structure for the pcm.  Any
-thread calling sync_ptr1 will pass the same structure to the kernel.
-This should be a red flag for a race, having two threads write to the
-same data structure at the same time.
+  usbaudio: unit 51: unexpected type 0x09
+  snd-usb-audio: probe of 1-8:1.0 failed with error -5
 
-This function gets called by snd_pcm_writei(), as part of that
-function getting the current hw pointer so it can calculate the avail
-value.  And again when it actually writes data to commit the new app
-pointer to the kernel.
+Some people are working around this by recompiling usb-audio with the
+call to snd_usb_create_mixer() commented out.  It would be nice to
+avoid that.
 
-It also gets called by snd_pcm_delay() if a rate plugin is used.
-snd_pcm_rate_delay() will end up calling snd_pcm_hw_hwsync() and that
-does a sync_ptr1() call.
+While the best idea would be to look into the mixer creation failure,
+a reasonable short-term solution is to use quirks to only probe the
+trouble-free interfaces.  This allows audio and MIDI interfaces to be
+used without any obvious issues.
 
-So imaging two threads, one writing data and calling snd_pcm_writei()
-and another calling snd_pcm_delay() as part of trying to sync audio
-playback.  gstreamer does this!
+Interface 0 is the main one to ignore.  It contains lots of
+control-fu, including the unexpected interface descriptor subtypes.
+Interface 5 is for firmware updates and I'm not sure how to get
+support for this.  Interface 3 is some sort of control interface that
+I don't understand:
 
-The ioctl is handled by snd_pcm_sync_ptr() in pcm_native.c.  It gets
-the stream lock while it reads/writes the various fields a sync struct
-on the stack, then releases the lock and calls copy_to_user to write
-the sync struct from its stack to userspace.
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength            9
+        bInCollection           1
+        baInterfaceNr( 0)       1
 
-Here's how the race works.
-Thread 1 calls snd_pcm_delay().
-  sync_ptr1 is called
-  snd_pcm_sync_ptr gets the lock, fills a struct with the current
-data, releases the lock.  Does not call copy_to_user yet!
-  Thread 2 runs!  It calls snd_pcm_writei(), actually writes data too
-    It calls sync_ptr1() to update the app pointer with the new data and returns
-    The snd_pcm_writei() call returns
-  Thread 1 runs again, calls copy_to_user
-    The copy_to_user writes the OLD struct that was prepared back on
-the 3rd line into userspace
-    The hw and app pointer values, as far as the userspace copy in
-alsa-lib is concerned, have regressed to what they were before the
-call to snd_pcm_writei()!
+Signed-off-by: Martin Schwenke <martin@meltin.net>
+---
+ sound/usb/quirks-table.h |   52
+++++++++++++++++++++++++++++++++++++++++++++++ 1 file changed, 52
+insertions(+)
 
-You get an audio stutter as the data written is overwritten by the
-next write.  The race turns out to not be that unlikely.  The stream
-lock is held and then released before calling copy_to_user.  When it's
-released irqs are enabled.  If a period has elapsed while the lock was
-held, the irq handle runs now, the elapsing period will wake anything
-blocked in poll() waiting for space, which then probably gets to run
-immediately since the schedule likes tasks that have been sleeping and
-just woke, and the new task was probably blocked waiting to write data
-so that's what it does as soon as it runs.
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 88d8ceb..c9dde5f 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2882,6 +2882,58 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 
+ {
+ 	/*
++	 * Focusrite Scarlett 18i6
++	 *
++	 * Avoid mixer creation, which otherwise fails because some of
++	 * the interface descriptor subtypes for interface 0 are
++	 * unknown.  That should be fixed or worked-around but this at
++	 * least allows the device to be used successfully with a DAW
++	 * and an external mixer.  See comments below about other
++	 * ignored interfaces.
++	 */
++	USB_DEVICE(0x1235, 0x8004),
++	.driver_info = (unsigned long) & (const struct
+snd_usb_audio_quirk) {
++		.vendor_name = "Focusrite",
++		.product_name = "Scarlett 18i6",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = & (const struct snd_usb_audio_quirk[]) {
++			{
++				/* InterfaceSubClass 1 (Control
+Device) */
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Control
+Device) */
++				.ifnum = 3,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 4,
++				.type = QUIRK_MIDI_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Device
+Firmware Update) */
++				.ifnum = 5,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++
++{
++	/*
+ 	 * Some USB MIDI devices don't have an audio control interface,
+ 	 * so we have to grab MIDI streaming interfaces here.
+ 	 */
+-- 
+1.7.10.4
