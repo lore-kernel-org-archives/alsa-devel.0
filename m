@@ -1,102 +1,53 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Linux Kernel-3.5 crashed as dapm is not supported
-	by codec
-Date: Fri, 9 Nov 2012 16:47:07 +0530
-Message-ID: <509CE633.1070002@st.com>
-References: <505AFB0B.7010306@st.com>
- <20120920114951.GJ17666@opensource.wolfsonmicro.com>
- <505BE5BB.5010008@st.com> <5098E929.7040404@st.com> <509BC3EC.4030503@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND PATCH 1/2] ASoC: Ux500: Fixup use of clocks
+Date: Fri, 9 Nov 2012 11:49:43 +0000
+Message-ID: <20121109114943.GD23807@opensource.wolfsonmicro.com>
+References: <1352302962-25201-1-git-send-email-ulf.hansson@stericsson.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog115.obsmtp.com (eu1sys200aog115.obsmtp.com
- [207.126.144.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 13D83261672
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2012 12:17:13 +0100 (CET)
-In-Reply-To: <509BC3EC.4030503@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+B+y8wtTXqdUj1xM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1352302962-25201-1-git-send-email-ulf.hansson@stericsson.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ulf Hansson <ulf.hansson@stericsson.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Ulf Hansson <ulf.hansson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Peter,
 
-On 11/8/2012 8:08 PM, P=E9ter Ujfalusi wrote:
-> On 11/06/2012 11:40 AM, Rajeev kumar wrote:
->> Please find below the implementation for dapm.
->>
->> static const struct snd_soc_dapm_widget sta529_dapm_widgets[] =3D {
->>          SND_SOC_DAPM_DAC("DAC", "Play", SND_SOC_NOPM , 0, 0),
->>          SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
->>          SND_SOC_DAPM_OUTPUT("HPL"),
->>          SND_SOC_DAPM_OUTPUT("HPR"),
->>          SND_SOC_DAPM_OUTPUT("SPKL"),
->>          SND_SOC_DAPM_OUTPUT("SPKR"),
->>          SND_SOC_DAPM_INPUT("MIC1"),
->> };
->>
->> static const struct snd_soc_dapm_route sta529_audio_map[] =3D {
->>          {"DAC", NULL, "output"},
->>          {"ADC", NULL, "input"},
->>          {"HPL", NULL, "HP Left Out"},
->>          {"HPR", NULL, "HP Right Out"},
->>          {"SPKL", NULL, "SPK Left Out"},
->>          {"SPKR", NULL, "SPK Right Out"},
->> };
->
-> If this is all you have for DAPM routing I just wonder what the core will=
- do
-> with these... I mean you don't appear to have valid routing: no sign of
-> "output", "input", "HP Left Out", etc.
->
-> But it is really odd that you can not have at least some power control bi=
-ts
-> along the paths.
+--+B+y8wtTXqdUj1xM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes I have a single bit in a register which will do power bridge =
+On Wed, Nov 07, 2012 at 04:42:41PM +0100, Ulf Hansson wrote:
+> From: Ulf Hansson <ulf.hansson@linaro.org>
+>=20
+> Make sure clocks are being prepared and unprepared as well
+> as enabled and disabled.
 
-OFF/ONN. Right now depending on biasing level this bit is getting =
+Both of these patches are already applied...
 
-manipulated.
+--+B+y8wtTXqdUj1xM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-With the DAPM macros how can I control this bit? Please share your opinion.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
->
-> This would look odd also but at least connects the widgets:
-> static const struct snd_soc_dapm_route sta529_audio_map[] =3D {
->          {"HPL", NULL, "DAC"},
->          {"HPR", NULL, "DAC"},
->          {"ADC", NULL, "MIC1"},
-> };
+iQIcBAEBAgAGBQJQnO3FAAoJELSic+t+oim9iAUQAJP3AihLKvHrjpsTijwoxETa
+lQk4VrEVa/gqxku7QuZM3CdeTkpWHGRJ5hPiXIL5GPv4pVsqHPv+njbwvzXJjvOM
+D/kb9lSOL//jYT/lbgAudZmvEtROL/hFRJ4nPnSSUErhmO/B8m+epceNU10qSroK
+gs0G48Eaw1veJ9KXG2aNP22TrM5CMWp8219HyCCjID/AEAgrCaSG6cCB7Plgam3e
+ufUAdgYE/KRFvant6UoRBLenGEO+zauIQGb1RqUjJy3X1fxWJyA4mM1lOrpjKJQB
+OsGNkzdEGoMZWsCVdT4wUWdr73Sz5Z/R/z1Gc3VGLy+TYvpDcKfcARdovD26VIZk
+MjUVHTb1XyrKiR8o76uKtE+aZ+jGn/7zqX4gLVW4+LeqkK67sv27JVrW38z2P4lc
+bocwGsiUupJtMdDP3gC9BL4B2uzmAc5MX6gsQCa9sy4Wpo/c0WySKrQwEmzCOv4P
+/k2Y/4t4JoTtLuUvxtoHDOIHbhSvHPUc/Pb5B8bCgqAFzyV21rPTyfqDVOZ5Zsza
+rlSTkqseMwLN0LI3uPEIvXAricyuUFbLCE8CeBOsc9q41Ng6YhDPWrAZomGVTnsi
+V+pt17LQHt/Da/ZU84hrVYfq4JoxIzaiixnQN4aiSPf1SDdTOCR1Z5HO/jUDerRj
+QMHQxb8cPWdbHoUtIR8S
+=jmRY
+-----END PGP SIGNATURE-----
 
-
->
-> Don't you have messages during boot or module loading about DAPM route er=
-ror?
->
-
-Right now I am working on it. Yes with the given sta529_dapm_widgets and =
-
-audio_map I am getting "Failed to add route output->DAC". I have to work =
-
-on this.
-
-With the sta529_audio_map suggested by you, There is no any error I am =
-
-getting during boot time. Thanks for your valuable suggestion.
-
-As I dont have any event based dapm control, how can I test my dapm =
-
-support whether it is working or not?
-
-Best Regards
-Rajeev
+--+B+y8wtTXqdUj1xM--
