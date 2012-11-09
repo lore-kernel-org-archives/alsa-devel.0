@@ -1,103 +1,91 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 6/6] ASoC: fsl: add imx-wm8974 machine driver
-Date: Fri, 9 Nov 2012 15:36:30 +0000
-Message-ID: <20121109153629.GK23807@opensource.wolfsonmicro.com>
-References: <1352469625-32024-1-git-send-email-s.trumtrar@pengutronix.de>
- <1352469625-32024-7-git-send-email-s.trumtrar@pengutronix.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: samsung - Don't setup i2s if already
+	active.
+Date: Fri, 9 Nov 2012 16:08:56 +0000
+Message-ID: <20121109160856.GM23807@opensource.wolfsonmicro.com>
+References: <1352414816-9157-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0255094436439317653=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1352469625-32024-7-git-send-email-s.trumtrar-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Steffen Trumtrar <s.trumtrar-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============2762902659480493501=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A180F26172E
+ for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2012 17:08:57 +0100 (CET)
+In-Reply-To: <1352414816-9157-1-git-send-email-dgreid@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: sbkim73@samsung.com, sangsu4u.park@samsung.com, alsa-devel@alsa-project.org, lrg@ti.com, padma.v@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0255094436439317653==
+--===============2762902659480493501==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HTLCc13+3hfAZ6SL"
+	protocol="application/pgp-signature"; boundary="jB+02Y6wHc2pEa2x"
 Content-Disposition: inline
 
 
---HTLCc13+3hfAZ6SL
+--jB+02Y6wHc2pEa2x
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 09, 2012 at 03:00:25PM +0100, Steffen Trumtrar wrote:
+On Thu, Nov 08, 2012 at 02:46:56PM -0800, Dylan Reid wrote:
+> If the dai is already running when setup is called, skip setup.  Setting
+> up again caused set_sysclk to set rclk_srcrate to other->rclk_srcrate,
+> other would often be set to the default of 44.1.  Playing a 48k stream
+> then adding a 48k capture stream would lead to both streams set to 44.1
+> (The value of other->rclk_srcrate).
 
-> +static int imx_wm8974_dai_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct imx_wm8974_data *data = container_of(rtd->card,
-> +					struct imx_wm8974_data, card);
-> +	struct device *dev = rtd->card->dev;
-> +	int ret;
-> +
-> +	/* the pll stability peaks at N=8 and around 90MHz.
-> +	 * This values are best reached with a 12.288MHz or
-> +	 * 11.289MHz clock. As the first is closer to N=8 in
-> +	 * more situations, chose 12.288MHz as the target clock
-> +	 * (ref: datasheet section "Master Clock and Phase Locked Loop")*/
-> +	ret = snd_soc_dai_set_pll(rtd->codec_dai, 0, 0, data->clk_frequency,
-> +		12288000);
+This doesn't seem the obvious fix here - surely if the setup comes out
+with the wrong answer the configuration it was asked for doesn't match
+the configuration the device currently has and therefore we should
+return an error as the new stream will have an incorrect setup?
 
-This seems far from ideal - it's starting the PLL at system boot and
-just leaving it running.  This will be power inefficient when the system
-is not playing audio as the PLL will be consuming power but not used for
-anything.  You could also do the same thing with the MCLK.
+Really this driver should probably be being redone in terms of the DPCM
+code, it predates it and is a very simple case of it but it's in the
+same ballpark feature wise.
 
-Note also that a 12.288MHz clock is only suitable for 8kHz based sample
-rates, for CD audio 44.1kHz based rates like most media files 11.2896MHz
-should be chosen.  The driver may want to switch dynamically at runtime
-to support the widest possible range of rates.
+> Similarly in shutdown, if either playback or capture is still active,
+> return instead of turning off the clocks.
 
-> +	data->codec_clk = clk_get(&codec_pdev->dev, NULL);
-> +	if (IS_ERR(data->codec_clk)) {
+This seems sensible; another option is to do clk_enable() for both
+streams then let the clock framework refcount for us.
 
-devm_clk_get() - this'd free the clock that's leaked on removal.
-
---HTLCc13+3hfAZ6SL
+--jB+02Y6wHc2pEa2x
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQnSKxAAoJELSic+t+oim9FlkP/3QBWznByoBL7pT4QOTkNzBl
-PAcA+6LGPTkLgFsJwOeC+jPfmQ/AFU1k7UW+jxQZm/KfTlxtkmIOJRcS32M6bCkA
-PyLoOFKea2KQYjrxaWrgGmYhNA1B1Dl6Ecos1rk4rmRytphGvNbeJ4tPPKAvpw8S
-W59yYRDPje/wcXVzywT9bbLWQhW5dbQmQa0yNwbYVEvzC+IYL4z7MMijdlMn86Dt
-m20jszZtnoVA16yxz18Be4aesILo8axjDMVNVTc3EjEZvjlEyUw+udged5KZsNwj
-ozTt2g3OFPQnFbCuBD4uDGuAVAB4o33QdqBdIxEOmt6xeYWhb/A8feUiMO03eOvv
-1qE80r3ywDZFuHl9zSGxerdqc9fndeykwXdCd7E6HmFeBthGBlnNi4UtftZtHdbL
-656VpVlwgVSmqOkd2qtE/UvHjhteC6z6Hjw8nwfpHORlm3cqOrtE1DFHcQXIyee4
-EnzmGW2t11IQ3dJ6Mcaoc8X1fISIYhlAq2sgbAB+x8+3YB+AOMWi1fcDhtaIyjCQ
-EKf3MXzW0kNGPgJwe1FYgZ4O8o09B0JgJ/vqvXVVJ0H0K6srChVpvTIRlN+DdrL1
-TgCp1igBUhXR6FWIS6zDp/sqj29J5ePuM1uzM0Us+0Mb8sOrZG3kLOcmmB5uwjr/
-H51jAHu31xAma5yFQYNN
-=VBF8
+iQIcBAEBAgAGBQJQnSqRAAoJELSic+t+oim9g/YP/04UvJW5Cp9ynSNeu1jySEsE
+wZ7JY14csUiUyeMEGonCxPSdrZru90cMQ9pcuBtaLy8/zP6c1/T+5zYIHiHiNB9T
+33FkJvBprMbnNa1UCtBgBNEHqBLxaaez/I+SYVEcXzTPHB7qsNz5XQaf79oPCRqe
+SObK8uBRCzo4R5WrZnuhcZJwvd5KuBBslS4usW6itd9/KF5iW43HIcdnC3GlEJs+
+tXAAaKUOc+ZUz1Rlxw0UDUD5BIU2T8v3SYX6qFPs/p5qb7UlJffImlaeNTDOXEkA
+T/zGpasp8Y3ZP7UDaTJPhCX7JDLwqRNTXhrjHCZBpxQiYP2XDqlFljSCUg2p09p6
+3CwTiIDqTiCmK5iTNIAd9Q4VpJTLob2D+p1qB+Vd6zpZBM5FBIszbW4VuxponRu9
+/UwMIPj/ww4Xs5sLe3X3b6LqR6nSQ9w1uFHXqS+yNkd5YcSK4XO/o83lQWsg54+F
+PtQbW7CnKrg/Og58KuBEx0eHYSH9v6EzV6hlXWcgsccuVMcCviq9UH7ciX2MroYP
+74isVOr+4s50aOzmZElw5i/NJZx/kEgf36FRRZ2eRbajW67rKKjgbIjOjEDhjEFH
+k3Mzlhm/beq6nuxCgVEw8twM+cGUEYoEFP19UTCbu10dHdLmTnCGJ5LA5eiM/Fgd
+xsABvDJV8DFmvTKZoHuC
+=BY6L
 -----END PGP SIGNATURE-----
 
---HTLCc13+3hfAZ6SL--
+--jB+02Y6wHc2pEa2x--
 
---===============0255094436439317653==
+--===============2762902659480493501==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============0255094436439317653==--
+--===============2762902659480493501==--
