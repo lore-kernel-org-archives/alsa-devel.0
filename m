@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Use card_list during DAPM
-	shutdown
-Date: Fri, 9 Nov 2012 16:32:17 +0000
-Message-ID: <20121109163217.GO23807@opensource.wolfsonmicro.com>
-References: <1352397792-2233-1-git-send-email-misael.lopez@ti.com>
- <20121109160232.GL23807@opensource.wolfsonmicro.com>
- <509D2C84.4080206@ti.com>
+Subject: Re: [PATCH 1/6] spi: imx: specify spi base for device
+	tree probe
+Date: Fri, 9 Nov 2012 16:38:30 +0000
+Message-ID: <20121109163830.GP23807@opensource.wolfsonmicro.com>
+References: <1352469625-32024-1-git-send-email-s.trumtrar@pengutronix.de>
+ <1352469625-32024-2-git-send-email-s.trumtrar@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8103304184770764282=="
+Content-Type: multipart/mixed; boundary="===============8329117520095674208=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D40282625ED
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2012 17:32:18 +0100 (CET)
-In-Reply-To: <509D2C84.4080206@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 690972625CC
+ for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2012 17:38:32 +0100 (CET)
+In-Reply-To: <1352469625-32024-2-git-send-email-s.trumtrar@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org
+To: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, Grant Likely <grant.likely@secretlab.ca>, Rob Herring <robherring2@gmail.com>, Rob Landley <rob@landley.net>, spi-devel-general@lists.sourceforge.net, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8103304184770764282==
+--===============8329117520095674208==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DRfr/2Y1Zz/5r+Kb"
+	protocol="application/pgp-signature"; boundary="h9WqFG8zn/Mwlkpe"
 Content-Disposition: inline
 
 
---DRfr/2Y1Zz/5r+Kb
+--h9WqFG8zn/Mwlkpe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 09, 2012 at 04:17:08PM +0000, Liam Girdwood wrote:
+On Fri, Nov 09, 2012 at 03:00:20PM +0100, Steffen Trumtrar wrote:
 
-> Fwiw, We both worked on this hence the dual sign-off, I would have
-> complained anyway if my ack/sob had been added by mistake.
+> * This breaks compatibility with user space applications between non-DT and DT.
 
-Ah, OK - normally for that the Signoffs will be the other way around
-(the person sending the mail last).  I'll change it.
+> * On platforms that are in between DT and non-DT, it breaks registration of
+>   devices via spi_board_info.
 
---DRfr/2Y1Zz/5r+Kb
+> Use the same method as 7e6086d9e54a159a6257c02bb7fc5805c614aad2 does for gpios:
+> Use alias to identify the spi port, and then specify the base via the port id.
+> If alias is not defined in DT, allocate the base dynamically.
+
+This sounds like a fix userspace and/or complete your DT conversion
+problem...
+
+--h9WqFG8zn/Mwlkpe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQnTAKAAoJELSic+t+oim9QDQQAJz/OtOITD3o8699MVcvH+A+
-frhX+hSMz8XH9nm2gLtw3etJcWfrXzA0UewXlCee/Bs6xj0IGtz0bmkeefT0MoO1
-abks2QsIIs88dEzJR4PD4QlB+VxvRbwy1Zsx1cCVTnaGwTN8gi49RNfr0fAo81n+
-FlIxZ+GmIrpV8j+o66lvfZtPLBvv3ZjBN82FGn755ShmecMTECv2tnql0xsTwCy5
-hFdEBFTR1aEHp692Cu2Lz1HLHYT9a3Ol+rpMYvez7X6K6lTtS1FQdsuPt8MaGAXl
-XNBSY1NGwC0dXjs0715SQcOSwP2zpF670y91UAuzN6K1Vrj08OodlKaSda95UZKb
-IKTkri0LMzl934AwShDD9r+KPQbhnJbtN22a2R6GOt3gD29+F6cIN0ycewckMuro
-NNkhJtm+sAXiayhUiI07shjDTT8G4DtV2ykjniSebnRXHjBHNm54iiL6bMNdCb8P
-X8PwE1mZfMZ8mu95DSiMcjEz+BzYH1pvEWIlHX1YFl3mPL3u2n8uy5DBJhZGgjDJ
-BZYyNeSn9o6P+N34nFZrMR1gO2TuDum51+ea72jmDkHIYnPmcfacIeTRb4xyvkB9
-fyhdgfZcbM9Nwyf2f1XEy1/QpR/gh4gPjZepOOZgfIyaOivfNZlCus/KRoPPkSPH
-Q83Qyh9M4kE//cu0Wnce
-=5zjJ
+iQIcBAEBAgAGBQJQnTGAAAoJELSic+t+oim9hl4P/11g0Vg66oKTEMRSMxQ0O80Y
+a34oXWqks6huwmiRiu4vLU6CzDHiwSaJoj7uPS+RVOPlMtDpb9nzXDXvTkfCfIHo
+bBsQQlLuVNMJLXDt0l3HTdngEUkTdMoM9K7LsItQZnuJrm2O61m8bH2pt/80JAZZ
+Sv/2uQdF+Ww8sY9D7yyPhAe2QF4cR877W2oI48aep4pVxl+eSYNOEf6VOMXv4DBk
+BkDXNXsOxy5CQ4dZuk6MsOsyGPw5YQR++SQBdJdk+PsOWcytq2bOW6kWC8gSbql3
+Oauco9h2o3EdTIvTNm5h86gfdql+byMQpRxy4dvzFTZ/qHDY6NICq/nt1fZDVmWT
+XheNyPW3gM5ddDQLYFG8KI5tq0G1DuHOqXo99dLsiQ/1UzlJUnOw0om3Eb6DEiln
+6fph4UyPdprELK7bvGMwQlgfvsTOx2Ka2zeXiJ6RQGI9XdKmAMUhul3kM4WxYDz+
+xGYdASQhXImTVLBpn1TqQS9bQg0J8S2DPIXrSOQ9c0uhSL10rSZnw4fzHoa2Mz3H
+Ghwn9QHBZ2gMN4/ZmVgMZ+xrTCOCoR4AA3ckN4dB7122XnkNCjPpvqZF+M9NN9bi
+hrIoSfsBOEvEcnXHSqIwQUOSRro3wNtD54M5OAX8uZYfHD9Pdp3cZEwXnWqpJeyL
+NEmab4NkbvTDbjD2jX6M
+=5+vC
 -----END PGP SIGNATURE-----
 
---DRfr/2Y1Zz/5r+Kb--
+--h9WqFG8zn/Mwlkpe--
 
---===============8103304184770764282==
+--===============8329117520095674208==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8103304184770764282==--
+--===============8329117520095674208==--
