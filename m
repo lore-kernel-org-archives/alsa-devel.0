@@ -1,20 +1,17 @@
 From: Trent Piepho <tpiepho@gmail.com>
-Subject: Re: Bug in alsa-lib causes high CPU with rate plugin
-Date: Fri, 9 Nov 2012 17:19:32 -0800
-Message-ID: <CA+7tXihYX-hr7ai6KYWxzTeJEjtPjgGaeyqz+ife1=ehcHywCw@mail.gmail.com>
-References: <CA+7tXii+Oc8utgBA=mqa3BA+9BYUv0cqd3pC=DQcAKrDTkyXxQ@mail.gmail.com>
- <s5htxsyiuji.wl%tiwai@suse.de>
+Subject: Races in alsa-lib with threads
+Date: Fri, 9 Nov 2012 18:03:25 -0800
+Message-ID: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vb0-f50.google.com (mail-vb0-f50.google.com
  [209.85.212.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 37BDE260799
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 02:19:33 +0100 (CET)
-Received: by mail-vb0-f50.google.com with SMTP id fa15so4349762vbb.9
- for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2012 17:19:32 -0800 (PST)
-In-Reply-To: <s5htxsyiuji.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 564AE26079C
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 03:03:26 +0100 (CET)
+Received: by mail-vb0-f50.google.com with SMTP id fa15so4375481vbb.9
+ for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2012 18:03:25 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,72 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 9, 2012 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 8 Nov 2012 13:47:52 -0800,
-> Trent Piepho wrote:
->> snd_pcm_wait() doesn't sleep, because it's based on the status of the
->> hw buffer and that buffer does have free space.  snd_pcm_write_areas()
->> would write to the hw buffer and not try to sleep.  But it's not
->> looking at the hw buffer when it decides to sleep or write, it's
->> looking at the rate buffer.  And the rate buffer's fill level says to
->> sleep, not write.  And if snd_pcm_wait() was looking at the rate
->> buffer, it would sleep.
->>
->
-> Yeah, this is a known longtime PITA in the rate plugin.
->
-> Tweaking avail_min is also an option, but I'm afraid it's too
-> hackish.
->
-> The primary problem is the discrepancy of the state "I have to wait
-> until period size becomes available" between the rate plugin and the
-> underlying PCM.  Since the poll is performed only on the slave PCM,
-> checking the rate plugin's avail is bogus in such a state.  In other
-> words, if the rate plugin puts the decision for the sleep simply
-> depending on the slave state, there will be no inconsistency between
-> them.
->
-> Below is a quick fix.  Does it work for you?
+We've found a race with alsa-lib functions are called from multiple
+threads.  I was under the impression that alsa-lib was supposed to be
+thread safe.  Is this not the case and all alsa calls should be done
+one from thread or protected by a mutex?
 
-It adds an extra call to the kernel to get the HW pointer position yet
-again.  snd_pcm_avail_update() is called initially by
-snd_pcm_write_areas.  The avail_update method for the rate plugin
-calls snd_pcm_avail_update on the slave.  It's worth noting at this
-point that we know that avail(rate) + unresampled_data = avail(slave).
-  Then check_for_wait() is called right after, which calls the rate
-plugin's check_for_wait method, which calls snd_pcm_avail_update() on
-the slave a second time.
+The race we found was in sync_ptr1() in pcm_hw.c.  This issues the
+ioctl() to get the current hw ptr from the kernel and send the app ptr
+to the kernel.  The communication is done by passing a pointer to
+hw->sync_ptr, a field in the snd_pcm_hw_t structure for the pcm.  Any
+thread calling sync_ptr1 will pass the same structure to the kernel.
+This should be a red flag for a race, having two threads write to the
+same data structure at the same time.
 
-It seems like you have a race if a period elapses between the two
-checks of the slave's avail.  Suppose upon entering
-snd_pcm_write_areas both buffers are 100% full.  avail =
-snd_pcm_update_avail(pcm /*rate*/) returns zero, which is up to date
-and correct.  We get to the code for check_for_wait() and it calls
-snd_pcm_avail_update(slave) and a period has elapsed since "avail" was
-found. So check_for_wait() returns not to wait, which is correct based
-on the current state of the slave.  Now the rest of the
-snd_pcm_write_areas() code runs, but avail=0 still and it's not going
-to work, it just blows up if avail = 0.
+This function gets called by snd_pcm_writei(), as part of that
+function getting the current hw pointer so it can calculate the avail
+value.  And again when it actually writes data to commit the new app
+pointer to the kernel.
 
-If you think about it, tweaking avail_min does the same thing as using
-the slave's avail and avail_min.
+It also gets called by snd_pcm_delay() if a rate plugin is used.
+snd_pcm_rate_delay() will end up calling snd_pcm_hw_hwsync() and that
+does a sync_ptr1() call.
 
-We had a wait check of "rate->avail < rate->avail_min".  What we want
-is "slave->avail < slave->avail_min".  Ignoring the resampling factor,
-we know that:
-rate->avail + rate->unresampled_data = slave->avail
-rate->avail_min = slave->avail_min
+So imaging two threads, one writing data and calling snd_pcm_writei()
+and another calling snd_pcm_delay() as part of trying to sync audio
+playback.  gstreamer does this!
 
-So if we do a little algebra:
-slave->avail < slave->avail_min
-rate->avail + rate->unresampled_data < slave->avail_min
-rate->avail + rate->unresampled_data < rate->avail_min
-rate->avail < rate->avail_min - rate->unresampled_data
+The ioctl is handled by snd_pcm_sync_ptr() in pcm_native.c.  It gets
+the stream lock while it reads/writes the various fields a sync struct
+on the stack, then releases the lock and calls copy_to_user to write
+the sync struct from its stack to userspace.
 
-In other words, subtracting the unresampled data from the avail_min
-for the rate pcm produces the exact same comparison as looking at the
-slave's avail and avail_min, which is what we actually wanted.
+Here's how the race works.
+Thread 1 calls snd_pcm_delay().
+  sync_ptr1 is called
+  snd_pcm_sync_ptr gets the lock, fills a struct with the current
+data, releases the lock.  Does not call copy_to_user yet!
+  Thread 2 runs!  It calls snd_pcm_writei(), actually writes data too
+    It calls sync_ptr1() to update the app pointer with the new data and returns
+    The snd_pcm_writei() call returns
+  Thread 1 runs again, calls copy_to_user
+    The copy_to_user writes the OLD struct that was prepared back on
+the 3rd line into userspace
+    The hw and app pointer values, as far as the userspace copy in
+alsa-lib is concerned, have regressed to what they were before the
+call to snd_pcm_writei()!
+
+You get an audio stutter as the data written is overwritten by the
+next write.  The race turns out to not be that unlikely.  The stream
+lock is held and then released before calling copy_to_user.  When it's
+released irqs are enabled.  If a period has elapsed while the lock was
+held, the irq handle runs now, the elapsing period will wake anything
+blocked in poll() waiting for space, which then probably gets to run
+immediately since the schedule likes tasks that have been sleeping and
+just woke, and the new task was probably blocked waiting to write data
+so that's what it does as soon as it runs.
