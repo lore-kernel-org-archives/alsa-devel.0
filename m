@@ -1,20 +1,14 @@
-From: Daniel Sanz <daniellsanz2@gmail.com>
-Subject: Re: Non-blocking snd_pcm_drain?
-Date: Sat, 10 Nov 2012 18:57:11 +0100
-Message-ID: <CAHU0+dTCkmMiF9P9FJUj0n3kU7aGt72P_fc_tMSo6ZDp+PEtqQ@mail.gmail.com>
-References: <CAHU0+dREbMHoAKOHgPpHfEO+kr93d1FmtrrQ6-nXUN3=7MqGxw@mail.gmail.com>
- <509E8ECD.7080205@ladisch.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: ASoC: cs4271: free allocated GPIO
+Date: Sat, 10 Nov 2012 19:52:50 +0100
+Message-ID: <1352573570-23671-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AA96261615
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 18:57:12 +0100 (CET)
-Received: by mail-qa0-f51.google.com with SMTP id t11so1086477qaa.17
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 09:57:11 -0800 (PST)
-In-Reply-To: <509E8ECD.7080205@ladisch.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 833A3261604
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 19:52:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +18,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Alexander Sverdlin <subaparts@yandex.ru>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If I don't drain the buffer, then I don't hear the entire sound, even
-though I think I'm writing correctly all the frames.
+In case of probe deferral, the allocated GPIO line is not freed, which
+prevents it from being claimed and properly asserted in later attempts.
 
-Here's the relevant code (playback of 2 seconds of a sound file
-represented by file pointer "fp"):
+Fix this by using devm_gpio_request().
 
-	snd_pcm_hw_params_get_period_size(params, &frames, 0);
-	buffer_size = frames * channels * 2;
-	buffer = (char*)malloc(buffer_size);
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Reported-by: Michael Hirsch <hirsch@teufel.de>
+Cc: Alexander Sverdlin <subaparts@yandex.ru>
+---
+ sound/soc/codecs/cs4271.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-	snd_pcm_hw_params_get_period_time(params, &period_time, NULL);
-
-	for (loops = (2 * 1000000) / period_time; loops > 0; loops--)
-	{
-                fread(buffer, sizeof(char), buffer_size, fp);
-
-		if ((err = snd_pcm_writei(handle, buffer, frames)) == -EPIPE)
-		{
-			printf("XRUN.\n");
-			snd_pcm_prepare(handle);
-		}
-		else if (err < 0)
-		{
-			printf("ERROR. Can't write to the device. %s\n", snd_strerror(err));
-		}
-       }
-
-       snd_pcm_close(handle);
-
-Thanks,
-
-On Sat, Nov 10, 2012 at 6:28 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->
-> Daniel Sanz wrote:
-> > I noticed that the snd_pcm_drain call blocks until the buffer is
-> > completely drained. Is there any way to drain the buffer without
-> > a block?
->
-> Try calling snd_pcm_nonblock(handle, 1).
->
-> > I've tried calling snd_pcm_nonblock(handle, 1) before the call to
-> > snd_pcm_drain but it does not work.
->
-> How so?
->
-> > The context is that this is an application that plays a particular WAV
-> > sound repeatedly, so I don't want to wait until the sound is played
-> > completely before it is played again.
->
-> Then why do you drain at all?  Just write the new data into the buffer.
->
->
-> Regards,
-> Clemens
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index f994af3..e3f0a7f 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -485,7 +485,7 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+ 		gpio_nreset = cs4271plat->gpio_nreset;
+ 
+ 	if (gpio_nreset >= 0)
+-		if (gpio_request(gpio_nreset, "CS4271 Reset"))
++		if (devm_gpio_request(codec->dev, gpio_nreset, "CS4271 Reset"))
+ 			gpio_nreset = -EINVAL;
+ 	if (gpio_nreset >= 0) {
+ 		/* Reset codec */
+@@ -535,15 +535,10 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+ static int cs4271_remove(struct snd_soc_codec *codec)
+ {
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+-	int gpio_nreset;
+ 
+-	gpio_nreset = cs4271->gpio_nreset;
+-
+-	if (gpio_is_valid(gpio_nreset)) {
++	if (gpio_is_valid(cs4271->gpio_nreset))
+ 		/* Set codec to the reset state */
+-		gpio_set_value(gpio_nreset, 0);
+-		gpio_free(gpio_nreset);
+-	}
++		gpio_set_value(cs4271->gpio_nreset, 0);
+ 
+ 	return 0;
+ };
+-- 
+1.7.11.7
