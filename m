@@ -1,18 +1,17 @@
-From: Enno Fennema <ennofennema@tele2.nl>
-Subject: snd_pcm_wait function
-Date: Sat, 10 Nov 2012 17:43:49 +0100
-Message-ID: <509E8445.8050001@tele2.nl>
+From: Daniel Sanz <daniellsanz2@gmail.com>
+Subject: Non-blocking snd_pcm_drain?
+Date: Sat, 10 Nov 2012 18:08:37 +0100
+Message-ID: <CAHU0+dREbMHoAKOHgPpHfEO+kr93d1FmtrrQ6-nXUN3=7MqGxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swip.net (mailfe07.tele2.nl [212.247.154.206])
- by alsa0.perex.cz (Postfix) with ESMTP id 6862926160F
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 17:42:46 +0100 (CET)
-Received: from [143.176.48.63] (account cxu-brf-4d3@tele2.nl HELO
- [192.168.1.7]) by mailfe07.swip.net (CommuniGate Pro SMTP 5.4.4)
- with ESMTPSA id 341944006 for alsa-devel@alsa-project.org;
- Sat, 10 Nov 2012 17:42:43 +0100
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC44B26160F
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 18:08:37 +0100 (CET)
+Received: by mail-qc0-f179.google.com with SMTP id b14so2923073qcs.38
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 09:08:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,14 +24,18 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The documentation says this functions waits for the pcm to become ready 
-for I/O. I am not sure what ready means in this context.
+Hello, I'm new to the ALSA API and I have a question:
 
-I assume entering the PREPARED state. Is that correct?
+I've developed a small program that plays audio from a buffer using
+snd_pcm_writei and snd_pcm_drain but I noticed that the snd_pcm_drain call
+blocks until the buffer is completely drained. Is there any way to drain
+the buffer without a block? I've tried calling snd_pcm_nonblock(handle, 1)
+before the call to snd_pcm_drain but it does not work.
 
-Is there a function to wait for entering the SETUP state. In particular 
-I would like to wait for pcm_snd_drain to finish.
+The context is that this is an application that plays a particular WAV
+sound repeatedly, so I don't want to wait until the sound is played
+completely before it is played again.
 
-Appreciate any help.
+What would be the best way to achieve this?
 
-Enno Fennema
+Thanks,
