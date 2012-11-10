@@ -1,21 +1,20 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH] ASoC: samsung - Don't setup i2s if already
-	active.
-Date: Fri, 9 Nov 2012 12:05:53 -0800
-Message-ID: <CAEUnVG5ntyaK862R3Tu6J3VHhZVM+wZR4XOL1LDzSX1b9FuF9g@mail.gmail.com>
-References: <1352414816-9157-1-git-send-email-dgreid@chromium.org>
- <20121109160856.GM23807@opensource.wolfsonmicro.com>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: Bug in alsa-lib causes high CPU with rate plugin
+Date: Fri, 9 Nov 2012 17:19:32 -0800
+Message-ID: <CA+7tXihYX-hr7ai6KYWxzTeJEjtPjgGaeyqz+ife1=ehcHywCw@mail.gmail.com>
+References: <CA+7tXii+Oc8utgBA=mqa3BA+9BYUv0cqd3pC=DQcAKrDTkyXxQ@mail.gmail.com>
+ <s5htxsyiuji.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 347C92625F3
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2012 21:06:15 +0100 (CET)
-Received: by mail-ea0-f179.google.com with SMTP id f14so1574441eaa.38
- for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2012 12:06:14 -0800 (PST)
-In-Reply-To: <20121109160856.GM23807@opensource.wolfsonmicro.com>
+Received: from mail-vb0-f50.google.com (mail-vb0-f50.google.com
+ [209.85.212.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37BDE260799
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 02:19:33 +0100 (CET)
+Received: by mail-vb0-f50.google.com with SMTP id fa15so4349762vbb.9
+ for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2012 17:19:32 -0800 (PST)
+In-Reply-To: <s5htxsyiuji.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, sangsu4u.park@samsung.com, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, padma.v@samsung.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 9, 2012 at 8:08 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Nov 08, 2012 at 02:46:56PM -0800, Dylan Reid wrote:
->> If the dai is already running when setup is called, skip setup.  Setting
->> up again caused set_sysclk to set rclk_srcrate to other->rclk_srcrate,
->> other would often be set to the default of 44.1.  Playing a 48k stream
->> then adding a 48k capture stream would lead to both streams set to 44.1
->> (The value of other->rclk_srcrate).
+On Fri, Nov 9, 2012 at 8:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 8 Nov 2012 13:47:52 -0800,
+> Trent Piepho wrote:
+>> snd_pcm_wait() doesn't sleep, because it's based on the status of the
+>> hw buffer and that buffer does have free space.  snd_pcm_write_areas()
+>> would write to the hw buffer and not try to sleep.  But it's not
+>> looking at the hw buffer when it decides to sleep or write, it's
+>> looking at the rate buffer.  And the rate buffer's fill level says to
+>> sleep, not write.  And if snd_pcm_wait() was looking at the rate
+>> buffer, it would sleep.
+>>
 >
-> This doesn't seem the obvious fix here - surely if the setup comes out
-> with the wrong answer the configuration it was asked for doesn't match
-> the configuration the device currently has and therefore we should
-> return an error as the new stream will have an incorrect setup?
-
-Thanks Mark, sorry I didn't explain this better.  It is getting the
-correct answer.  However if the same format is requested for another
-stream, startup will clear rclk_srcrate.  rclk_srcrate being cleared
-causes i2s_set_fmt to call i2s_set_sysclk.  i2s_set_sysclk assumes it
-should use the "other" setting for rclk_srcrate (because something is
-active).
-
-for example:
-
-aplay -Dhw:0 some_48k_file.wav
-followed by
-arecord -Dhw:0 -f dat /tmp/foo.wav
-
-both 48k streams, but when the arecord is started, the aplay will have
-its rate set to what ever the unused secondary DAI is using
-(initialized to 44.1).
-
+> Yeah, this is a known longtime PITA in the rate plugin.
 >
-> Really this driver should probably be being redone in terms of the DPCM
-> code, it predates it and is a very simple case of it but it's in the
-> same ballpark feature wise.
-
-That looks promising, not only for this but for a few other issues.
-I'll take investigate some more, thanks for the suggestion.
-
+> Tweaking avail_min is also an option, but I'm afraid it's too
+> hackish.
 >
->> Similarly in shutdown, if either playback or capture is still active,
->> return instead of turning off the clocks.
+> The primary problem is the discrepancy of the state "I have to wait
+> until period size becomes available" between the rate plugin and the
+> underlying PCM.  Since the poll is performed only on the slave PCM,
+> checking the rate plugin's avail is bogus in such a state.  In other
+> words, if the rate plugin puts the decision for the sleep simply
+> depending on the slave state, there will be no inconsistency between
+> them.
 >
-> This seems sensible; another option is to do clk_enable() for both
-> streams then let the clock framework refcount for us.
+> Below is a quick fix.  Does it work for you?
+
+It adds an extra call to the kernel to get the HW pointer position yet
+again.  snd_pcm_avail_update() is called initially by
+snd_pcm_write_areas.  The avail_update method for the rate plugin
+calls snd_pcm_avail_update on the slave.  It's worth noting at this
+point that we know that avail(rate) + unresampled_data = avail(slave).
+  Then check_for_wait() is called right after, which calls the rate
+plugin's check_for_wait method, which calls snd_pcm_avail_update() on
+the slave a second time.
+
+It seems like you have a race if a period elapses between the two
+checks of the slave's avail.  Suppose upon entering
+snd_pcm_write_areas both buffers are 100% full.  avail =
+snd_pcm_update_avail(pcm /*rate*/) returns zero, which is up to date
+and correct.  We get to the code for check_for_wait() and it calls
+snd_pcm_avail_update(slave) and a period has elapsed since "avail" was
+found. So check_for_wait() returns not to wait, which is correct based
+on the current state of the slave.  Now the rest of the
+snd_pcm_write_areas() code runs, but avail=0 still and it's not going
+to work, it just blows up if avail = 0.
+
+If you think about it, tweaking avail_min does the same thing as using
+the slave's avail and avail_min.
+
+We had a wait check of "rate->avail < rate->avail_min".  What we want
+is "slave->avail < slave->avail_min".  Ignoring the resampling factor,
+we know that:
+rate->avail + rate->unresampled_data = slave->avail
+rate->avail_min = slave->avail_min
+
+So if we do a little algebra:
+slave->avail < slave->avail_min
+rate->avail + rate->unresampled_data < slave->avail_min
+rate->avail + rate->unresampled_data < rate->avail_min
+rate->avail < rate->avail_min - rate->unresampled_data
+
+In other words, subtracting the unresampled data from the avail_min
+for the rate pcm produces the exact same comparison as looking at the
+slave's avail and avail_min, which is what we actually wanted.
