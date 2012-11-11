@@ -1,41 +1,39 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: ASoC: cs4271: free allocated GPIO
-Date: Sat, 10 Nov 2012 19:52:06 +0100
-Message-ID: <509EA256.6050009@gmail.com>
-References: <1352294155-6733-1-git-send-email-zonque@gmail.com>
- <20121107140720.GB28954@opensource.wolfsonmicro.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ALSA: line6: move staging driver to sound/usb/
+Date: Sun, 11 Nov 2012 06:23:22 +0100
+Message-ID: <20121111052322.GB5795@kroah.com>
+References: <1352529892-17610-1-git-send-email-stefanha@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A57C326166D
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 19:53:06 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so124588bkc.38
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2012 10:53:06 -0800 (PST)
-In-Reply-To: <20121107140720.GB28954@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Alexander Sverdlin <subaparts@yandex.ru>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1352529892-17610-1-git-send-email-stefanha@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stefan Hajnoczi <stefanha@gmail.com>
+Cc: alsa-devel@alsa-project.org, Markus Grabner <grabner@icg.tugraz.at>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, line6linux-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07.11.2012 15:07, Mark Brown wrote:
-> On Wed, Nov 07, 2012 at 02:15:55PM +0100, Daniel Mack wrote:
->> In case of probe deferral, the allocated GPIO line is not freed, which
->> prevents it from being claimed and properly asserted in later attempts.
->>
->> Fix this by freeing the GPIO in case of errors.
+On Sat, Nov 10, 2012 at 07:44:52AM +0100, Stefan Hajnoczi wrote:
+> The line6 driver supports devices from the Line6 PODxt, POD HD,
+> TonePort, and Variax product families.  This USB sound driver has been
+> in staging since 2009 and is ready for wider review and users.
 > 
-> Can we convert to devm_gpio_request_one() instead?
+> These devices provide both PCM and MIDI.  Depending on the model the PCM
+> supports capture and playback - there may be multiple capture sources.
+> MIDI is used to control the device including changing effect or
+> amplifier model settings, dumping presets, and changing between patches.
 > 
+> There are userspace tools and a manual available at:
+> 
+>   http://www.tanzband-scream.at/line6/
+>   http://line6linux.sourceforge.net/
+> 
+> Cc: Markus Grabner <grabner@icg.tugraz.at>
+> Signed-off-by: Stefan Hajnoczi <stefanha@gmail.com>
 
-Sure, that's much nicer.
+Please fix all of the coding style issues, and the huge number of
+undocumented sysfs files before asking to move this out of staging.
+
+thanks,
+
+greg k-h
