@@ -1,21 +1,16 @@
-From: Daniel Sanz <daniellsanz2@gmail.com>
-Subject: Re: Non-blocking snd_pcm_drain?
-Date: Sun, 11 Nov 2012 19:10:42 +0100
-Message-ID: <CAHU0+dS7W+Xa9FMxTU1J-0mka4p0fuF9y5a1KXoWx-hfKdnoEQ@mail.gmail.com>
-References: <CAHU0+dREbMHoAKOHgPpHfEO+kr93d1FmtrrQ6-nXUN3=7MqGxw@mail.gmail.com>
- <509E8ECD.7080205@ladisch.de>
- <CAHU0+dTCkmMiF9P9FJUj0n3kU7aGt72P_fc_tMSo6ZDp+PEtqQ@mail.gmail.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-ice1712: enable suspend on unknown ICE1724
+	cards
+Date: Sun, 11 Nov 2012 22:10:13 +0100
+Message-ID: <201211112210.13837.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f51.google.com (mail-qa0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id B43E326171E
- for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 19:10:43 +0100 (CET)
-Received: by mail-qa0-f51.google.com with SMTP id t11so1373482qaa.17
- for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 10:10:42 -0800 (PST)
-In-Reply-To: <CAHU0+dTCkmMiF9P9FJUj0n3kU7aGt72P_fc_tMSo6ZDp+PEtqQ@mail.gmail.com>
+Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 267D4261723
+ for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 22:10:36 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Removing the last line, snd_pcm_close(handle), plays the entire sound,
-but I don't think it is a good solution.
+Assume that unknown ICE1724-based cards are AC97-only that can suspend
+without any additional card-specific code.
 
-It is like there is somewhere a huge latency between the moment I call
-snd_pcm_writei and the moment I hear sound, but I don't know what's
-causing this. I've even tried reducing the period size to 32 frames or
-padding the last buffer with zeros, but no luck either.
+This fixes suspend on Gainward Hollywood@Home 7.1.
 
-I'm out of ideas.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/ice1712/ice1724.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-
-On Sat, Nov 10, 2012 at 6:57 PM, Daniel Sanz <daniellsanz2@gmail.com> wrote:
-> If I don't drain the buffer, then I don't hear the entire sound, even
-> though I think I'm writing correctly all the frames.
->
-> Here's the relevant code (playback of 2 seconds of a sound file
-> represented by file pointer "fp"):
->
->         snd_pcm_hw_params_get_period_size(params, &frames, 0);
->         buffer_size = frames * channels * 2;
->         buffer = (char*)malloc(buffer_size);
->
->         snd_pcm_hw_params_get_period_time(params, &period_time, NULL);
->
->         for (loops = (2 * 1000000) / period_time; loops > 0; loops--)
->         {
->                 fread(buffer, sizeof(char), buffer_size, fp);
->
->                 if ((err = snd_pcm_writei(handle, buffer, frames)) == -EPIPE)
->                 {
->                         printf("XRUN.\n");
->                         snd_pcm_prepare(handle);
->                 }
->                 else if (err < 0)
->                 {
->                         printf("ERROR. Can't write to the device. %s\n", snd_strerror(err));
->                 }
->        }
->
->        snd_pcm_close(handle);
->
-> Thanks,
->
-> On Sat, Nov 10, 2012 at 6:28 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->>
->> Daniel Sanz wrote:
->> > I noticed that the snd_pcm_drain call blocks until the buffer is
->> > completely drained. Is there any way to drain the buffer without
->> > a block?
->>
->> Try calling snd_pcm_nonblock(handle, 1).
->>
->> > I've tried calling snd_pcm_nonblock(handle, 1) before the call to
->> > snd_pcm_drain but it does not work.
->>
->> How so?
->>
->> > The context is that this is an application that plays a particular WAV
->> > sound repeatedly, so I don't want to wait until the sound is played
->> > completely before it is played again.
->>
->> Then why do you drain at all?  Just write the new data into the buffer.
->>
->>
->> Regards,
->> Clemens
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index 5cc3fa5..aebd584 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -2363,6 +2363,8 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+ 	}
+ 	printk(KERN_WARNING "ice1724: No matching model found for ID 0x%x\n",
+ 	       ice->eeprom.subvendor);
++	/* assume AC97-only card which can suspend without additional code */
++	ice->pm_suspend_enabled = 1;
+ 
+  found:
+ 	ice->eeprom.size = snd_vt1724_read_i2c(ice, dev, 0x04);
+-- 
+Ondrej Zary
