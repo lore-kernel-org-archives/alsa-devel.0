@@ -1,16 +1,20 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] snd-ice1712: enable suspend on unknown ICE1724
-	cards
-Date: Sun, 11 Nov 2012 22:10:13 +0100
-Message-ID: <201211112210.13837.linux@rainbow-software.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [git pull] new HSS1394 MIDI back-end
+Date: Sun, 11 Nov 2012 22:34:46 +0100
+Message-ID: <50A019F6.1050101@ladisch.de>
+References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>	<4FC5C9C8.1000604@ladisch.de>
+ <4FC7CDC1.8020606@ladisch.de>	<4FD2F324.7070402@mixxx.org>
+ <4FD32E76.3090304@ladisch.de> <4FD49A51.3050809@ladisch.de>
+ <5087D5D2.6020208@mixxx.org> <508991BD.5090101@ladisch.de>
+ <5090F6C7.5050401@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 267D4261723
- for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 22:10:36 +0100 (CET)
-Content-Disposition: inline
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 88B792617AF
+ for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 22:34:55 +0100 (CET)
+In-Reply-To: <5090F6C7.5050401@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Assume that unknown ICE1724-based cards are AC97-only that can suspend
-without any additional card-specific code.
+Takashi, please pull the following change since commit
+a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
 
-This fixes suspend on Gainward Hollywood@Home 7.1.
+  Linux 3.6 (2012-09-30 16:47:46 -0700)
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
----
- sound/pci/ice1712/ice1724.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+which is available in the git repository at:
+  git://git.alsa-project.org/alsa-kprivate.git stanton-cs1-driver
 
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index 5cc3fa5..aebd584 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2363,6 +2363,8 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
- 	}
- 	printk(KERN_WARNING "ice1724: No matching model found for ID 0x%x\n",
- 	       ice->eeprom.subvendor);
-+	/* assume AC97-only card which can suspend without additional code */
-+	ice->pm_suspend_enabled = 1;
- 
-  found:
- 	ice->eeprom.size = snd_vt1724_read_i2c(ice, dev, 0x04);
--- 
-Ondrej Zary
+Clemens Ladisch (1):
+      ALSA: firewire: add Stanton SCS.1d/1m driver
+
+ sound/firewire/Kconfig  |   13 ++
+ sound/firewire/Makefile |    2 +
+ sound/firewire/scs1x.c  |  527 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 542 insertions(+), 0 deletions(-)
+ create mode 100644 sound/firewire/scs1x.c
