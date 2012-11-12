@@ -1,14 +1,27 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/2] ac3dec: Show usage if no parameter is
-	passed
-Date: Mon, 12 Nov 2012 16:02:33 -0200
-Message-ID: <1352743353-7568-2-git-send-email-festevam@gmail.com>
-References: <1352743353-7568-1-git-send-email-festevam@gmail.com>
+From: Rob Krakora <B42341@freescale.com>
+Subject: Re: Races in alsa-lib with threads
+Date: Mon, 12 Nov 2012 19:40:42 +0000 (UTC)
+Message-ID: <loom.20121112T203721-204@post.gmane.org>
+References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+ <s5hbof5ef7s.wl%tiwai@suse.de> <509FD3BE.7090504@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1352743353-7568-1-git-send-email-festevam@gmail.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C07C265065
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2012 20:44:56 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TXzwO-0004OG-EP
+ for alsa-devel@alsa-project.org; Mon, 12 Nov 2012 20:45:04 +0100
+Received: from messagenetcommunicationsystems.com
+ ([messagenetcommunicationsystems.com])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2012 20:45:04 +0100
+Received: from B42341 by messagenetcommunicationsystems.com with local (Gmexim
+ 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2012 20:45:04 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,36 +31,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, patch@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Jaroslav Kysela <perex <at> perex.cz> writes:
 
-When ac3dec is called without any argument the application hangs forever.
+> 
+> Date 10.11.2012 14:53, Takashi Iwai wrote:
+> > At Fri, 9 Nov 2012 18:03:25 -0800,
+> > Trent Piepho wrote:
+> >>
+> >> We've found a race with alsa-lib functions are called from multiple
+> >> threads.  I was under the impression that alsa-lib was supposed to be
+> >> thread safe.  Is this not the case and all alsa calls should be done
+> >> one from thread or protected by a mutex?
+> > 
+> > Yes.  alsa-lib isn't thread-safe.
+> 
+> The alsa-lib is designed to be thread safe but the calls for one handle
+> (PCM, control, rawmidi etc.) should be serialized using mutexes in apps.
+> Or basically, it's assumed that one thread will maintain one handle.
+> 
+> This should be documented somewhere.
+> 
+> 					Jaroslav
+> 
 
-Instead of hanging, print the usage and exit.
+Hi Jaroslav,
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- ac3dec/ac3dec.c |    5 +++++
- 1 file changed, 5 insertions(+)
+Would you be able to point me the the ALSA documentation that indicates the
+stipulations on handle usage using multiple threads?  I cannot find it.
 
-diff --git a/ac3dec/ac3dec.c b/ac3dec/ac3dec.c
-index 00c4f1a..f1423e3 100644
---- a/ac3dec/ac3dec.c
-+++ b/ac3dec/ac3dec.c
-@@ -130,6 +130,11 @@ int main(int argc,char *argv[])
- 	out_config.spdif = SPDIF_NONE;
- 	out_config.hdmi = 0;
- 
-+	if (argc == 1) {
-+		help();
-+		return 0;
-+	}
-+
- 	morehelp = 0;
- 	while (1) {
- 		int c;
--- 
-1.7.9.5
+Best Regards,
+
+Rob Krakora
