@@ -1,20 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [git pull] new HSS1394 MIDI back-end
-Date: Sun, 11 Nov 2012 22:34:46 +0100
-Message-ID: <50A019F6.1050101@ladisch.de>
-References: <94aa86f3-5257-402a-a094-f58fccdeb846@email.android.com>	<38538c62-f01e-4743-be92-aea79d61085e@email.android.com>	<4FC5AC47.4060606@mixxx.org>	<4FC5C9C8.1000604@ladisch.de>
- <4FC7CDC1.8020606@ladisch.de>	<4FD2F324.7070402@mixxx.org>
- <4FD32E76.3090304@ladisch.de> <4FD49A51.3050809@ladisch.de>
- <5087D5D2.6020208@mixxx.org> <508991BD.5090101@ladisch.de>
- <5090F6C7.5050401@mixxx.org>
+From: Enno Fennema <ennofennema@tele2.nl>
+Subject: Re: snd_pcm_wait function
+Date: Mon, 12 Nov 2012 08:23:42 +0100
+Message-ID: <50A0A3FE.4090901@tele2.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 88B792617AF
- for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2012 22:34:55 +0100 (CET)
-In-Reply-To: <5090F6C7.5050401@mixxx.org>
+Received: from swip.net (mailfe05.tele2.nl [212.247.154.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B50D2615F3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2012 08:22:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, daniellsanz2@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi, please pull the following change since commit
-a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
+Thanks for your reply. I may not have expressed myself clearly. I appear 
+to have the opposite problem from Daniel Sanz re Non-blocking 
+snd_pcm_drain (also posted 10 Nov). He wants the new sound to start 
+immediately. I want to close the pcm AFTER the sound finished.
 
-  Linux 3.6 (2012-09-30 16:47:46 -0700)
+The docs say calling drain() puts the pcm in the DRAINING state. When I 
+obtain the state immediately after drain() it is already SETUP.
+I hoped a state change from DRAINING to SETUP  would be the right time 
+to close the pcm but there appears to be no such state change.
 
-which is available in the git repository at:
-  git://git.alsa-project.org/alsa-kprivate.git stanton-cs1-driver
+Currently I solved my problem by a usleep() based on an estimate of the 
+time needed to finish playing the last samples in the buffer.
 
-Clemens Ladisch (1):
-      ALSA: firewire: add Stanton SCS.1d/1m driver
+If there is a more elegant way I would like to know. Otherwise I will 
+stick with usleep(),
 
- sound/firewire/Kconfig  |   13 ++
- sound/firewire/Makefile |    2 +
- sound/firewire/scs1x.c  |  527 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 542 insertions(+), 0 deletions(-)
- create mode 100644 sound/firewire/scs1x.c
+Regards,
+Enno
