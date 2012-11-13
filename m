@@ -1,21 +1,19 @@
-From: Krakora Robert-B42341 <B42341@freescale.com>
-Subject: Re: Races in alsa-lib with threads
-Date: Tue, 13 Nov 2012 14:26:33 +0000
-Message-ID: <5175C6FEA820754B902FF6873E9285B00C9862A5@039-SN2MPN1-021.039d.mgd.msft.net>
-References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
- <s5hbof5ef7s.wl%tiwai@suse.de>	<509FD3BE.7090504@perex.cz>
- <loom.20121112T203721-204@post.gmane.org>	<s5hwqxqvwra.wl%tiwai@suse.de>
- <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>,
- <s5h4nktipd5.wl%tiwai@suse.de>
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+Subject: Re: [PATCH] ASoC: codecs/wm8978: Only reconfigure
+ GPIO1 when used for PLL output
+Date: Tue, 13 Nov 2012 09:43:08 -0500
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD3459CEDE0D5@dekaexchange07.deka.local>
+References: <1352482418-64950-1-git-send-email-emillbrandt@dekaresearch.com>
+ <20121113064410.GE18224@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
- (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EF6D265201
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:26:41 +0100 (CET)
-In-Reply-To: <s5h4nktipd5.wl%tiwai@suse.de>
+Received: from dekaexchange07.deka.local (mail.dekaresearch.com
+ [208.65.175.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 356452651FE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:43:10 +0100 (CET)
+In-Reply-To: <20121113064410.GE18224@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,74 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "kevin.w.kaster@delphi.com" <kevin.w.kaster@delphi.com>, "Huolin.Yang@delphi.com" <Huolin.Yang@delphi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Trent Piepho <tpiepho@gmail.com>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Takashi Iwai [tiwai@suse.de]
-Sent: Tuesday, November 13, 2012 8:50 AM
-To: Krakora Robert-B42341
-Cc: Trent Piepho; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Races in alsa-lib with threads
+Mark,
 
-At Tue, 13 Nov 2012 13:39:24 +0000,
-Krakora Robert-B42341 wrote:
+On 2012-11-13 Mark Brown wrote:
+
+>> -            snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 0x30,
+>> +            /*
+>> +             * GPIO1 is used for OPCLK, reconfigure into default
+>> +             * mode as input - before configuring OPCLKDIV and PLL
+>> +             */
+>> +            snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 0x37,
+>>                                  (opclk_div - 1) << 4);
 >
-> [1  <text/plain; us-ascii (quoted-printable)>]
-> > From: Takashi Iwai [tiwai@suse.de]
-> > Sent: Tuesday, November 13, 2012 2:30 AM
-> > To: Trent Piepho
-> > Cc: Krakora Robert-B42341; alsa-devel@alsa-project.org
-> > Subject: Re: [alsa-devel] Races in alsa-lib with threads
-> >
-> > At Tue, 13 Nov 2012 02:14:08 -0500,
-> > Trent Piepho wrote:
-> > >
-> > > On Tue, Nov 13, 2012 at 1:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > > At Mon, 12 Nov 2012 19:40:42 +0000 (UTC),
-> > > > Rob Krakora wrote:
-> > > >> Would you be able to point me the the ALSA documentation that indicates the
-> > > >> stipulations on handle usage using multiple threads?  I cannot find it.
-> > > >
-> > > > Think other way round:
-> > > > The fact that it isn't documented means it's not safe to use in that
-> > > > way :)
-> > >
-> > >
-> > > The introduction on the alsa-project home page says, "SMP and
-> > > thread-safe design. "  Some people might misunderstand what
-> > > thread-safe means.  Maybe some clarification could be added.
-> > > "Different streams are SMP and thread-safe (calls for the same stream
-> > > must be serialized)."
-> >
-> > Yeah this should be corrected.  SMP things are just about the kernel
-> > side at that time.
-> >
-> > It's a Wiki, feel free to correct / improve the text.
-> >
-> >
-> > Takashi
+> Previously we weren't changing the pin mode at all, we were only
+> updating the bitfield that contains OPCLK.  With your change we will
+> also change the pin mode to input, but if the pin is doing any form of
+> output (or anything other than input mode) I'd expect this to at least
+> glitch things which seems actively harmful.  Why is it being set up as
+> an input?  Though I have to say that all this handling of the pin in the
+> existing driver looks at best odd.
 >
-> Hi Takashi,
->
-> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib assumes that it is thread safe.  The fix crafted by one of Trent's colleagues (attached) seems to be the way to go.  However, I don't know how it would impact other functionality within ALSA Lib.
+> Your changelog describes what you're doing but not what is being
+> fixed...
 
-No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM
-stuff.
+The issue was in the following snippet:
 
-We already have a few places, yes, but they are exceptional (mostly
-for funky rarely used plugins that we can drop or mixer codes that
-are no hot path).
+@@ -529,9 +533,6 @@ static int wm8978_configure_pll(struct snd_soc_codec *codec)
+                        return idx;
+
+                wm8978->mclk_idx = idx;
+-
+-               /* GPIO1 into default mode as input - before configuring PLL */
+-               snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 7, 0);
+        } else {
+                return -EINVAL;
+        }
+
+This bit of code was always reconfiguring the pin to input when it was known
+that OPCLK was not needed.  I am using GPIO1 to enable an amplifier, so I do
+not want it reconfigured.  I moved the reconfiguring of GPIO1 to the block of
+code under "if (f_opclk)", so we can safely assume that that pin is not being
+used for something else.
+
+However, I agree that the handling of the pin is odd.  Does OPCLK really need
+to be reconfigured as input whenever the PLL values are updated?  I didn't
+see anything in the user manual to suggest that that needed to be done.
+
+Eric
 
 
-Takashi
 
-Hi Takashi,
+This e-mail and the information, including any attachments, it contains are intended to be a confidential communication only to the person or entity to whom it is addressed and may contain information that is privileged. If the reader of this message is not the intended recipient, you are hereby notified that any dissemination, distribution or copying of this communication is strictly prohibited. If you have received this communication in error, please immediately notify the sender and destroy the original message.
 
-A colleague found this from two years ago:  http://mailman.alsa-project.org/pipermail/alsa-devel/2010-June/028347.html.
+Thank you.
 
-IMHO, it seems trivial and harmless to serialize appl.ptr updates with mutexes unless there is a potential for deadlock or other possible race conditions in the affected ALSA Lib functions.  I know it breaks the paradigm, but you can see how snd_pcm_delay() function can lead a developer to believe that it can be called on a different thread time from snd_pcm_writei().
-
-Best Regards,
-
-Rob Krakora
+Please consider the environment before printing this email.
