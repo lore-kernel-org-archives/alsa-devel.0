@@ -1,20 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Races in alsa-lib with threads
-Date: Tue, 13 Nov 2012 15:08:29 +0100
-Message-ID: <50A2545D.4090106@perex.cz>
-References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
- <s5hbof5ef7s.wl%tiwai@suse.de> <509FD3BE.7090504@perex.cz>
- <loom.20121112T203721-204@post.gmane.org> <s5hwqxqvwra.wl%tiwai@suse.de>
- <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>
- <s5h4nktipd5.wl%tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v3 1/2] aplay: Show usage if no parameter
+	is passed
+Date: Tue, 13 Nov 2012 12:10:28 -0200
+Message-ID: <CAOMZO5B6YUr=uFc5rR2A7EmiOuTU8m7EQEc5HjTFE9vgneySOw@mail.gmail.com>
+References: <1352808340-10561-1-git-send-email-fabio.estevam@freescale.com>
+ <s5h7gppiq1v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id CA3A9265176
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:08:30 +0100 (CET)
-In-Reply-To: <s5h4nktipd5.wl%tiwai@suse.de>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DADE265176
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:10:29 +0100 (CET)
+Received: by mail-ob0-f179.google.com with SMTP id eq6so3325358obc.38
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 06:10:28 -0800 (PST)
+In-Reply-To: <s5h7gppiq1v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,66 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Trent Piepho <tpiepho@gmail.com>, Krakora Robert-B42341 <B42341@freescale.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Date 13.11.2012 14:50, Takashi Iwai wrote:
-> At Tue, 13 Nov 2012 13:39:24 +0000, Krakora Robert-B42341 wrote:
->> 
->> [1  <text/plain; us-ascii (quoted-printable)>]
->>> From: Takashi Iwai [tiwai@suse.de] Sent: Tuesday, November 13,
->>> 2012 2:30 AM To: Trent Piepho Cc: Krakora Robert-B42341;
->>> alsa-devel@alsa-project.org Subject: Re: [alsa-devel] Races in
->>> alsa-lib with threads
->>> 
->>> At Tue, 13 Nov 2012 02:14:08 -0500, Trent Piepho wrote:
->>>> 
->>>> On Tue, Nov 13, 2012 at 1:32 AM, Takashi Iwai <tiwai@suse.de>
->>>> wrote:
->>>>> At Mon, 12 Nov 2012 19:40:42 +0000 (UTC), Rob Krakora wrote:
->>>>>> Would you be able to point me the the ALSA documentation
->>>>>> that indicates the stipulations on handle usage using
->>>>>> multiple threads?  I cannot find it.
->>>>> 
->>>>> Think other way round: The fact that it isn't documented
->>>>> means it's not safe to use in that way :)
->>>> 
->>>> 
->>>> The introduction on the alsa-project home page says, "SMP and 
->>>> thread-safe design. "  Some people might misunderstand what 
->>>> thread-safe means.  Maybe some clarification could be added. 
->>>> "Different streams are SMP and thread-safe (calls for the same
->>>> stream must be serialized)."
->>> 
->>> Yeah this should be corrected.  SMP things are just about the
->>> kernel side at that time.
->>> 
->>> It's a Wiki, feel free to correct / improve the text.
->>> 
->>> 
->>> Takashi
->> 
->> Hi Takashi,
->> 
->> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib
->> assumes that it is thread safe.  The fix crafted by one of Trent's
->> colleagues (attached) seems to be the way to go.  However, I don't
->> know how it would impact other functionality within ALSA Lib.
-> 
-> No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM 
-> stuff.
-> 
-> We already have a few places, yes, but they are exceptional (mostly 
-> for funky rarely used plugins that we can drop or mixer codes that 
-> are no hot path).
+Hi Takashi,
 
-I tried to put notes on the ALSA Wiki, please, extend / fix / review.
+On Tue, Nov 13, 2012 at 11:35 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 13 Nov 2012 10:05:39 -0200,
+> Fabio Estevam wrote:
+>>
+>> When aplay/arecord are called without any argument the application hangs forever.
+>>
+>> Instead of hanging, print the usage and exit.
+>>
+>> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Applied this one.  I suppose there is no v4 for aplay, right?
 
-http://www.alsa-project.org/main/index.php/SMP_Design
+Yes, correct.
 
-					Jaroslav
+Thanks,
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Fabio Estevam
