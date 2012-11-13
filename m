@@ -1,7 +1,7 @@
 From: Krakora Robert-B42341 <B42341@freescale.com>
 Subject: Re: Races in alsa-lib with threads
-Date: Tue, 13 Nov 2012 20:55:30 +0000
-Message-ID: <5175C6FEA820754B902FF6873E9285B00C9862EA@039-SN2MPN1-021.039d.mgd.msft.net>
+Date: Tue, 13 Nov 2012 21:11:31 +0000
+Message-ID: <5175C6FEA820754B902FF6873E9285B00C9862F6@039-SN2MPN1-021.039d.mgd.msft.net>
 References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
  <s5hbof5ef7s.wl%tiwai@suse.de>	<509FD3BE.7090504@perex.cz>
  <loom.20121112T203721-204@post.gmane.org>	<s5hwqxqvwra.wl%tiwai@suse.de>
@@ -9,16 +9,17 @@ References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
  <5175C6FEA820754B902FF6873E9285B00C985240@039-SN2MPN1-021.039d.mgd.msft.net>
  <s5h4nktipd5.wl%tiwai@suse.de>
  <CA+7tXii5Lecb3GW4GPgMg6UWYe1jmpEWi_FHM24_nEB5Q7YT0w@mail.gmail.com>,
- <s5hy5i5nt69.wl%tiwai@suse.de>
+ <s5hy5i5nt69.wl%tiwai@suse.de>,
+ <5175C6FEA820754B902FF6873E9285B00C9862EA@039-SN2MPN1-021.039d.mgd.msft.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 876772615EB
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 21:55:39 +0100 (CET)
-In-Reply-To: <s5hy5i5nt69.wl%tiwai@suse.de>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26C5626517E
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 22:11:38 +0100 (CET)
+In-Reply-To: <5175C6FEA820754B902FF6873E9285B00C9862EA@039-SN2MPN1-021.039d.mgd.msft.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,6 +33,14 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, Trent Piepho <tpiepho@gmail.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+snd_pcm_poll instead of snd_pcm_delay?
+________________________________________
+From: Krakora Robert-B42341
+Sent: Tuesday, November 13, 2012 3:55 PM
+To: Takashi Iwai; Trent Piepho
+Cc: alsa-devel@alsa-project.org
+Subject: RE: [alsa-devel] Races in alsa-lib with threads
 
 At Tue, 13 Nov 2012 14:41:40 -0500,
 Trent Piepho wrote:
