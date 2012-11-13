@@ -1,21 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
-Date: Tue, 13 Nov 2012 10:25:06 -0200
-Message-ID: <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
-References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
- <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
- <20121102150312.GC4413@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: CM6206, S/PDIF + JACK
+Date: Tue, 13 Nov 2012 13:55:38 +0100
+Message-ID: <50A2434A.8000803@ladisch.de>
+References: <CANOoOjsvRWz6N7eUgJRyFohqih4_d9-sCXhHpWs3M7i4wXjbWQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CA49260309
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 13:25:07 +0100 (CET)
-Received: by mail-ob0-f179.google.com with SMTP id eq6so3234054obc.38
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 04:25:06 -0800 (PST)
-In-Reply-To: <20121102150312.GC4413@opensource.wolfsonmicro.com>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 4E1FD26516B
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 13:55:40 +0100 (CET)
+In-Reply-To: <CANOoOjsvRWz6N7eUgJRyFohqih4_d9-sCXhHpWs3M7i4wXjbWQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
+To: Dan MacDonald <allcoms@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On Fri, Nov 2, 2012 at 1:03 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Nov 01, 2012 at 03:57:12PM -0200, Fabio Estevam wrote:
->> All MXS users have been converted to device tree and the board files have been
->> removed.
->>
->> No need to keep platform data in the driver.
+Dan MacDonald wrote:
+> I've got a Startech USB device based on the CM6206 chipset. It does work
+> with JACK although I can only access the two mic inputs as JACK capture
+> ports even though under alsamixer I can also see line in and SPDIF In.
 >
-> This doesn't apply against v3.7-rc3 (or against my fix/mxs branch) -
-> please check what's going on.
+> I get no SPDIF capture port.
 
-fix/mxs branch misses commit 730963f81 (ASoC: mxs-saif: Use devm_clk_get()).
+Have a look at section 5 of the CM6206 datasheet.
+There is no S/PDIF capture port; all inputs end up at the default
+stereo input port.
 
-This patch applies cleanly against your for-next and also against linux-next.
 
-Thanks,
-
-Fabio Estevam
+Regards,
+Clemens
