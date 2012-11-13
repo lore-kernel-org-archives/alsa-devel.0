@@ -1,99 +1,51 @@
-From: Wang Jing <windsdaemon@gmail.com>
-Subject: [PATCH] sound: use PTR_ERR to fix the value of the return
-Date: Tue, 13 Nov 2012 20:19:00 +0800
-Message-ID: <1352809140-4214-1-git-send-email-windsdaemon@gmail.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
+Date: Tue, 13 Nov 2012 10:25:06 -0200
+Message-ID: <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
+References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+ <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
+ <20121102150312.GC4413@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CA49260309
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 13:25:07 +0100 (CET)
+Received: by mail-ob0-f179.google.com with SMTP id eq6so3234054obc.38
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 04:25:06 -0800 (PST)
+In-Reply-To: <20121102150312.GC4413@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-From: wangjing <wangjing@wangjing.(none)>
+Hi Mark,
 
-This patch use the macro PTR_ERR to modify the value of the return
+On Fri, Nov 2, 2012 at 1:03 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, Nov 01, 2012 at 03:57:12PM -0200, Fabio Estevam wrote:
+>> All MXS users have been converted to device tree and the board files have been
+>> removed.
+>>
+>> No need to keep platform data in the driver.
+>
+> This doesn't apply against v3.7-rc3 (or against my fix/mxs branch) -
+> please check what's going on.
 
-Signed-off-by: wangjing <wangjing@wangjing.(none)>
----
- sound/soc/samsung/smdk_spdif.c |   30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+fix/mxs branch misses commit 730963f81 (ASoC: mxs-saif: Use devm_clk_get()).
 
-diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
-index beaa9c1..8f78482 100644
---- a/sound/soc/samsung/smdk_spdif.c
-+++ b/sound/soc/samsung/smdk_spdif.c
-@@ -28,32 +28,29 @@ static int set_audio_clock_heirachy(struct platform_device *pdev)
- 
- 	fout_epll = clk_get(NULL, "fout_epll");
- 	if (IS_ERR(fout_epll)) {
--		printk(KERN_WARNING "%s: Cannot find fout_epll.\n",
--				__func__);
--		return -EINVAL;
-+		printk(KERN_ERR "%s: Cannot find fout_epll.\n", __func__);
-+		ret = PTR_ERR(fout_epll);
-+		return ret;
- 	}
- 
- 	mout_epll = clk_get(NULL, "mout_epll");
- 	if (IS_ERR(mout_epll)) {
--		printk(KERN_WARNING "%s: Cannot find mout_epll.\n",
--				__func__);
--		ret = -EINVAL;
-+		printk(KERN_ERR "%s: Cannot find mout_epll.\n", __func__);
-+		ret = PTR_ERR(mout_epll);
- 		goto out1;
- 	}
- 
- 	sclk_audio0 = clk_get(&pdev->dev, "sclk_audio");
- 	if (IS_ERR(sclk_audio0)) {
--		printk(KERN_WARNING "%s: Cannot find sclk_audio.\n",
--				__func__);
--		ret = -EINVAL;
-+		printk(KERN_ERR "%s: Cannot find sclk_audio.\n", __func__);
-+		ret = PTR_ERR(sclk_audio0);
- 		goto out2;
- 	}
- 
- 	sclk_spdif = clk_get(NULL, "sclk_spdif");
- 	if (IS_ERR(sclk_spdif)) {
--		printk(KERN_WARNING "%s: Cannot find sclk_spdif.\n",
--				__func__);
--		ret = -EINVAL;
-+		printk(KERN_ERR "%s: Cannot find sclk_spdif.\n", __func__);
-+		ret = PTR_ERR(sclk_spdif);
- 		goto out3;
- 	}
- 
-@@ -81,11 +78,13 @@ static int set_audio_clock_rate(unsigned long epll_rate,
- 				unsigned long audio_rate)
- {
- 	struct clk *fout_epll, *sclk_spdif;
-+	int ret = 0;
- 
- 	fout_epll = clk_get(NULL, "fout_epll");
- 	if (IS_ERR(fout_epll)) {
- 		printk(KERN_ERR "%s: failed to get fout_epll\n", __func__);
--		return -ENOENT;
-+		ret = PTR_ERR(fout_epll);
-+		return ret;
- 	}
- 
- 	clk_set_rate(fout_epll, epll_rate);
-@@ -94,13 +93,14 @@ static int set_audio_clock_rate(unsigned long epll_rate,
- 	sclk_spdif = clk_get(NULL, "sclk_spdif");
- 	if (IS_ERR(sclk_spdif)) {
- 		printk(KERN_ERR "%s: failed to get sclk_spdif\n", __func__);
--		return -ENOENT;
-+		ret = PTR_ERR(sclk_spdif);
-+		return ret;
- 	}
- 
- 	clk_set_rate(sclk_spdif, audio_rate);
- 	clk_put(sclk_spdif);
- 
--	return 0;
-+	return ret;
- }
- 
- static int smdk_hw_params(struct snd_pcm_substream *substream,
--- 
-1.7.9.5
+This patch applies cleanly against your for-next and also against linux-next.
+
+Thanks,
+
+Fabio Estevam
