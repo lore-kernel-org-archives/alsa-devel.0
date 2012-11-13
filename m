@@ -1,14 +1,12 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v3 2/2] ac3dec: Show usage if no parameter is
+Subject: [PATCH v4 2/2] ac3dec: Show usage if no parameter is
 	passed
-Date: Tue, 13 Nov 2012 10:05:40 -0200
-Message-ID: <1352808340-10561-2-git-send-email-fabio.estevam@freescale.com>
-References: <1352808340-10561-1-git-send-email-fabio.estevam@freescale.com>
+Date: Tue, 13 Nov 2012 10:08:14 -0200
+Message-ID: <1352808494-10607-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1352808340-10561-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,6 +26,8 @@ Instead of hanging, print the usage and exit.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
+Changes since v3:
+- Fix return value
 Changes since v2:
 - No changes
 Changes since v1:
@@ -45,7 +45,7 @@ index 00c4f1a..ce6c507 100644
  
 +	if (isatty(fileno(stdin)) && (argc == 1)) {
 +		help();
-+		return 0;
++		return 1;
 +	}
 +
  	morehelp = 0;
