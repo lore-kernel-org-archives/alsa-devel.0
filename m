@@ -1,85 +1,91 @@
-From: Eric Millbrandt <emillbrandt@dekaresearch.com>
-Subject: Re: [PATCH] ASoC: codecs/wm8978: Only reconfigure
- GPIO1 when used for PLL output
-Date: Tue, 13 Nov 2012 09:43:08 -0500
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD3459CEDE0D5@dekaexchange07.deka.local>
-References: <1352482418-64950-1-git-send-email-emillbrandt@dekaresearch.com>
- <20121113064410.GE18224@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dekaexchange07.deka.local (mail.dekaresearch.com
- [208.65.175.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 356452651FE
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:43:10 +0100 (CET)
-In-Reply-To: <20121113064410.GE18224@opensource.wolfsonmicro.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: arizona: Add support for multiplexer with no associated mixer
+Date: Tue, 13 Nov 2012 16:40:32 +0000
+Message-ID: <1352824834-11224-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+The Asynchronous Sample Rate Converters on the wm5102/wm5110 have no
+mixer attached to their input, but they do allow the input to be
+selected from a number of sources via a multiplexer. Currently the
+platform assumes the presence of 4 multiplexers and a mixer for each
+block.
 
-On 2012-11-13 Mark Brown wrote:
+This patch adds support multiplexed single input blocks into the Arizona
+platform.
 
->> -            snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 0x30,
->> +            /*
->> +             * GPIO1 is used for OPCLK, reconfigure into default
->> +             * mode as input - before configuring OPCLKDIV and PLL
->> +             */
->> +            snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 0x37,
->>                                  (opclk_div - 1) << 4);
->
-> Previously we weren't changing the pin mode at all, we were only
-> updating the bitfield that contains OPCLK.  With your change we will
-> also change the pin mode to input, but if the pin is doing any form of
-> output (or anything other than input mode) I'd expect this to at least
-> glitch things which seems actively harmful.  Why is it being set up as
-> an input?  Though I have to say that all this handling of the pin in the
-> existing driver looks at best odd.
->
-> Your changelog describes what you're doing but not what is being
-> fixed...
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.h |   40 ++++++++++++++++++++--------------------
+ 1 files changed, 20 insertions(+), 20 deletions(-)
 
-The issue was in the following snippet:
-
-@@ -529,9 +533,6 @@ static int wm8978_configure_pll(struct snd_soc_codec *codec)
-                        return idx;
-
-                wm8978->mclk_idx = idx;
--
--               /* GPIO1 into default mode as input - before configuring PLL */
--               snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 7, 0);
-        } else {
-                return -EINVAL;
-        }
-
-This bit of code was always reconfiguring the pin to input when it was known
-that OPCLK was not needed.  I am using GPIO1 to enable an amplifier, so I do
-not want it reconfigured.  I moved the reconfiguring of GPIO1 to the block of
-code under "if (f_opclk)", so we can safely assume that that pin is not being
-used for something else.
-
-However, I agree that the handling of the pin is odd.  Does OPCLK really need
-to be reconfigured as input whenever the PLL values are updated?  I didn't
-see anything in the user manual to suggest that that needed to be done.
-
-Eric
-
-
-
-This e-mail and the information, including any attachments, it contains are intended to be a confidential communication only to the person or entity to whom it is addressed and may contain information that is privileged. If the reader of this message is not the intended recipient, you are hereby notified that any dissemination, distribution or copying of this communication is strictly prohibited. If you have received this communication in error, please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 5a09127..f1c0ec9 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -94,33 +94,30 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ 	const struct snd_kcontrol_new name##_mux =	\
+ 		SOC_DAPM_VALUE_ENUM("Route", name##_enum)
+ 
++#define ARIZONA_MUX_ENUMS(name, base_reg) \
++	static ARIZONA_MUX_ENUM_DECL(name##_enum, base_reg);      \
++	static ARIZONA_MUX_CTL_DECL(name)
++
+ #define ARIZONA_MIXER_ENUMS(name, base_reg) \
+-	static ARIZONA_MUX_ENUM_DECL(name##_in1_enum, base_reg);      \
+-	static ARIZONA_MUX_ENUM_DECL(name##_in2_enum, base_reg + 2);  \
+-	static ARIZONA_MUX_ENUM_DECL(name##_in3_enum, base_reg + 4);  \
+-	static ARIZONA_MUX_ENUM_DECL(name##_in4_enum, base_reg + 6);  \
+-	static ARIZONA_MUX_CTL_DECL(name##_in1); \
+-	static ARIZONA_MUX_CTL_DECL(name##_in2); \
+-	static ARIZONA_MUX_CTL_DECL(name##_in3); \
+-	static ARIZONA_MUX_CTL_DECL(name##_in4)
++	ARIZONA_MUX_ENUMS(name##_in1, base_reg);     \
++	ARIZONA_MUX_ENUMS(name##_in2, base_reg + 2); \
++	ARIZONA_MUX_ENUMS(name##_in3, base_reg + 4); \
++	ARIZONA_MUX_ENUMS(name##_in4, base_reg + 6)
+ 
+ #define ARIZONA_DSP_AUX_ENUMS(name, base_reg) \
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux1_enum, base_reg);	\
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux2_enum, base_reg + 8);	\
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux3_enum, base_reg + 16);	\
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux4_enum, base_reg + 24);	\
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux5_enum, base_reg + 32);	\
+-	static ARIZONA_MUX_ENUM_DECL(name##_aux6_enum, base_reg + 40);	\
+-	static ARIZONA_MUX_CTL_DECL(name##_aux1); \
+-	static ARIZONA_MUX_CTL_DECL(name##_aux2); \
+-	static ARIZONA_MUX_CTL_DECL(name##_aux3); \
+-	static ARIZONA_MUX_CTL_DECL(name##_aux4); \
+-	static ARIZONA_MUX_CTL_DECL(name##_aux5); \
+-	static ARIZONA_MUX_CTL_DECL(name##_aux6)
++	ARIZONA_MUX_ENUMS(name##_aux1, base_reg);	\
++	ARIZONA_MUX_ENUMS(name##_aux2, base_reg + 8);	\
++	ARIZONA_MUX_ENUMS(name##_aux3, base_reg + 16);	\
++	ARIZONA_MUX_ENUMS(name##_aux4, base_reg + 24);	\
++	ARIZONA_MUX_ENUMS(name##_aux5, base_reg + 32);	\
++	ARIZONA_MUX_ENUMS(name##_aux6, base_reg + 40)
+ 
+ #define ARIZONA_MUX(name, ctrl) \
+ 	SND_SOC_DAPM_VALUE_MUX(name, SND_SOC_NOPM, 0, 0, ctrl)
+ 
++#define ARIZONA_MUX_WIDGETS(name, name_str) \
++	ARIZONA_MUX(name_str " Input", &name##_mux)
++
+ #define ARIZONA_MIXER_WIDGETS(name, name_str)	\
+ 	ARIZONA_MUX(name_str " Input 1", &name##_in1_mux), \
+ 	ARIZONA_MUX(name_str " Input 2", &name##_in2_mux), \
+@@ -138,6 +135,9 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ 	ARIZONA_MUX(name_str " Aux 5", &name##_aux5_mux), \
+ 	ARIZONA_MUX(name_str " Aux 6", &name##_aux6_mux)
+ 
++#define ARIZONA_MUX_ROUTES(name) \
++	ARIZONA_MIXER_INPUT_ROUTES(name " Input")
++
+ #define ARIZONA_MIXER_ROUTES(widget, name) \
+ 	{ widget, NULL, name " Mixer" },         \
+ 	{ name " Mixer", NULL, name " Input 1" }, \
+-- 
+1.7.2.5
