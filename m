@@ -1,12 +1,14 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2 1/2] aplay: Show usage if no parameter is
+Subject: [PATCH v2 2/2] ac3dec: Show usage if no parameter is
 	passed
-Date: Tue, 13 Nov 2012 09:06:02 -0200
-Message-ID: <1352804763-6373-1-git-send-email-fabio.estevam@freescale.com>
+Date: Tue, 13 Nov 2012 09:06:03 -0200
+Message-ID: <1352804763-6373-2-git-send-email-fabio.estevam@freescale.com>
+References: <1352804763-6373-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1352804763-6373-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +22,32 @@ To: perex@perex.cz
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, patch@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-When aplay/arecord are called without any argument the application hangs forever.
+When ac3dec is called without any argument the application hangs forever.
 
 Instead of hanging, print the usage and exit.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 Changes since v1:
-- Also check for isatty, so that 'aplay < file.wav' can still work
-
- aplay/aplay.c |    5 +++++
+- Also check for isatty, so that 'ac3dec < file.wav' can still work
+ ac3dec/ac3dec.c |    5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 741979a..38459e6 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -519,6 +519,11 @@ int main(int argc, char *argv[])
- 		return 1;
- 	}
+diff --git a/ac3dec/ac3dec.c b/ac3dec/ac3dec.c
+index 00c4f1a..ce6c507 100644
+--- a/ac3dec/ac3dec.c
++++ b/ac3dec/ac3dec.c
+@@ -130,6 +130,11 @@ int main(int argc,char *argv[])
+ 	out_config.spdif = SPDIF_NONE;
+ 	out_config.hdmi = 0;
  
 +	if (isatty(fileno(stdin)) && (argc == 1)) {
-+		usage(command);
++		help();
 +		return 0;
 +	}
 +
- 	chunk_size = -1;
- 	rhwparams.format = DEFAULT_FORMAT;
- 	rhwparams.rate = DEFAULT_SPEED;
+ 	morehelp = 0;
+ 	while (1) {
+ 		int c;
 -- 
 1.7.9.5
