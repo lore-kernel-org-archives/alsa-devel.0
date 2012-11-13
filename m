@@ -1,96 +1,99 @@
-From: Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least
- one enabled link
-Date: Tue, 13 Nov 2012 16:24:10 +0200
-Message-ID: <20121113142409.GR25623@valkosipuli.retiisi.org.uk>
-References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi>
+From: Krakora Robert-B42341 <B42341@freescale.com>
+Subject: Re: Races in alsa-lib with threads
+Date: Tue, 13 Nov 2012 14:26:33 +0000
+Message-ID: <5175C6FEA820754B902FF6873E9285B00C9862A5@039-SN2MPN1-021.039d.mgd.msft.net>
+References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+ <s5hbof5ef7s.wl%tiwai@suse.de>	<509FD3BE.7090504@perex.cz>
+ <loom.20121112T203721-204@post.gmane.org>	<s5hwqxqvwra.wl%tiwai@suse.de>
+ <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>,
+ <s5h4nktipd5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi>
-Sender: linux-media-owner@vger.kernel.org
-To: dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl, sylwester.nawrocki@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EF6D265201
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:26:41 +0100 (CET)
+In-Reply-To: <s5h4nktipd5.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "kevin.w.kaster@delphi.com" <kevin.w.kaster@delphi.com>, "Huolin.Yang@delphi.com" <Huolin.Yang@delphi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Trent Piepho <tpiepho@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+From: Takashi Iwai [tiwai@suse.de]
+Sent: Tuesday, November 13, 2012 8:50 AM
+To: Krakora Robert-B42341
+Cc: Trent Piepho; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Races in alsa-lib with threads
 
-Comments would be appreciated, either positive or negative. The omap3isp
-driver does the same check itself currently, but I think this is more
-generic than that.
+At Tue, 13 Nov 2012 13:39:24 +0000,
+Krakora Robert-B42341 wrote:
+>
+> [1  <text/plain; us-ascii (quoted-printable)>]
+> > From: Takashi Iwai [tiwai@suse.de]
+> > Sent: Tuesday, November 13, 2012 2:30 AM
+> > To: Trent Piepho
+> > Cc: Krakora Robert-B42341; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] Races in alsa-lib with threads
+> >
+> > At Tue, 13 Nov 2012 02:14:08 -0500,
+> > Trent Piepho wrote:
+> > >
+> > > On Tue, Nov 13, 2012 at 1:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > > At Mon, 12 Nov 2012 19:40:42 +0000 (UTC),
+> > > > Rob Krakora wrote:
+> > > >> Would you be able to point me the the ALSA documentation that indicates the
+> > > >> stipulations on handle usage using multiple threads?  I cannot find it.
+> > > >
+> > > > Think other way round:
+> > > > The fact that it isn't documented means it's not safe to use in that
+> > > > way :)
+> > >
+> > >
+> > > The introduction on the alsa-project home page says, "SMP and
+> > > thread-safe design. "  Some people might misunderstand what
+> > > thread-safe means.  Maybe some clarification could be added.
+> > > "Different streams are SMP and thread-safe (calls for the same stream
+> > > must be serialized)."
+> >
+> > Yeah this should be corrected.  SMP things are just about the kernel
+> > side at that time.
+> >
+> > It's a Wiki, feel free to correct / improve the text.
+> >
+> >
+> > Takashi
+>
+> Hi Takashi,
+>
+> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib assumes that it is thread safe.  The fix crafted by one of Trent's colleagues (attached) seems to be the way to go.  However, I don't know how it would impact other functionality within ALSA Lib.
 
-Thanks.
+No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM
+stuff.
 
-On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
-> If an entity has sink pads, at least one of them must be connected to
-> another pad with an enabled link. If a driver with multiple sink pads has
-> more strict requirements the check should be done in the driver itself.
-> 
-> Just requiring one sink pad is connected with an enabled link is enough
-> API-wise: entities with sink pads with only disabled links should not be
-> allowed to stream in the first place, but also in a different operation mode
-> a device might require only one of its pads connected with an active link.
-> 
-> If an entity has an ability to function as a source entity another logical
-> entity connected to the aforementioned one should be used for the purpose.
-> 
-> Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
-> ---
->  drivers/media/media-entity.c |   16 +++++++++++++---
->  1 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-> index e1cd132..8846ea7 100644
-> --- a/drivers/media/media-entity.c
-> +++ b/drivers/media/media-entity.c
-> @@ -227,6 +227,7 @@ __must_check int media_entity_pipeline_start(struct media_entity *entity,
->  	media_entity_graph_walk_start(&graph, entity);
->  
->  	while ((entity = media_entity_graph_walk_next(&graph))) {
-> +		bool has_sink = false, active_sink = false;
->  		unsigned int i;
->  
->  		entity->stream_count++;
-> @@ -243,18 +244,27 @@ __must_check int media_entity_pipeline_start(struct media_entity *entity,
->  		for (i = 0; i < entity->num_links; i++) {
->  			struct media_link *link = &entity->links[i];
->  
-> +			/* Are we the sink or not? */
-> +			if (link->sink->entity != entity)
-> +				continue;
-> +
-> +			has_sink = true;
-> +
->  			/* Is this pad part of an enabled link? */
->  			if (!(link->flags & MEDIA_LNK_FL_ENABLED))
->  				continue;
->  
-> -			/* Are we the sink or not? */
-> -			if (link->sink->entity != entity)
-> -				continue;
-> +			active_sink = true;
->  
->  			ret = entity->ops->link_validate(link);
->  			if (ret < 0 && ret != -ENOIOCTLCMD)
->  				goto error;
->  		}
-> +
-> +		if (has_sink && !active_sink) {
-> +			ret = -EPIPE;
-> +			goto error;
-> +		}
->  	}
->  
->  	mutex_unlock(&mdev->graph_mutex);
-> -- 
-> 1.7.2.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+We already have a few places, yes, but they are exceptional (mostly
+for funky rarely used plugins that we can drop or mixer codes that
+are no hot path).
 
--- 
-Sakari Ailus
-e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
+
+Takashi
+
+Hi Takashi,
+
+A colleague found this from two years ago:  http://mailman.alsa-project.org/pipermail/alsa-devel/2010-June/028347.html.
+
+IMHO, it seems trivial and harmless to serialize appl.ptr updates with mutexes unless there is a potential for deadlock or other possible race conditions in the affected ALSA Lib functions.  I know it breaks the paradigm, but you can see how snd_pcm_delay() function can lead a developer to believe that it can be called on a different thread time from snd_pcm_writei().
+
+Best Regards,
+
+Rob Krakora
