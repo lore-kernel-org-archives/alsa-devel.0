@@ -1,22 +1,20 @@
-From: Krakora Robert-B42341 <B42341@freescale.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: Races in alsa-lib with threads
-Date: Tue, 13 Nov 2012 14:04:22 +0000
-Message-ID: <5175C6FEA820754B902FF6873E9285B00C98627B@039-SN2MPN1-021.039d.mgd.msft.net>
+Date: Tue, 13 Nov 2012 15:08:29 +0100
+Message-ID: <50A2545D.4090106@perex.cz>
 References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
- <s5hbof5ef7s.wl%tiwai@suse.de>	<509FD3BE.7090504@perex.cz>
- <loom.20121112T203721-204@post.gmane.org>	<s5hwqxqvwra.wl%tiwai@suse.de>
- <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>,
+ <s5hbof5ef7s.wl%tiwai@suse.de> <509FD3BE.7090504@perex.cz>
+ <loom.20121112T203721-204@post.gmane.org> <s5hwqxqvwra.wl%tiwai@suse.de>
+ <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>
  <s5h4nktipd5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe006.messaging.microsoft.com [216.32.180.189])
- by alsa0.perex.cz (Postfix) with ESMTP id D22DC2651BF
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:04:38 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA3A9265176
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 15:08:30 +0100 (CET)
 In-Reply-To: <s5h4nktipd5.wl%tiwai@suse.de>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,70 +25,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "Huolin.Yang@delphi.com" <Huolin.Yang@delphi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Trent Piepho <tpiepho@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Trent Piepho <tpiepho@gmail.com>, Krakora Robert-B42341 <B42341@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
->From: Takashi Iwai [tiwai@suse.de]
->Sent: Tuesday, November 13, 2012 8:50 AM
->To: Krakora Robert-B42341
->Cc: Trent Piepho; alsa-devel@alsa-project.org
->Subject: Re: [alsa-devel] Races in alsa-lib with threads
->
->At Tue, 13 Nov 2012 13:39:24 +0000,
->Krakora Robert-B42341 wrote:
->>
+Date 13.11.2012 14:50, Takashi Iwai wrote:
+> At Tue, 13 Nov 2012 13:39:24 +0000, Krakora Robert-B42341 wrote:
+>> 
 >> [1  <text/plain; us-ascii (quoted-printable)>]
->> > From: Takashi Iwai [tiwai@suse.de]
->> > Sent: Tuesday, November 13, 2012 2:30 AM
->> > To: Trent Piepho
->> > Cc: Krakora Robert-B42341; alsa-devel@alsa-project.org
->> > Subject: Re: [alsa-devel] Races in alsa-lib with threads
->> >
->> > At Tue, 13 Nov 2012 02:14:08 -0500,
->> > Trent Piepho wrote:
->> > >
->> > > On Tue, Nov 13, 2012 at 1:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > > > At Mon, 12 Nov 2012 19:40:42 +0000 (UTC),
->> > > > Rob Krakora wrote:
->> > > >> Would you be able to point me the the ALSA documentation that indicates the
->> > > >> stipulations on handle usage using multiple threads?  I cannot find it.
->> > > >
->> > > > Think other way round:
->> > > > The fact that it isn't documented means it's not safe to use in that
->> > > > way :)
->> > >
->> > >
->> > > The introduction on the alsa-project home page says, "SMP and
->> > > thread-safe design. "  Some people might misunderstand what
->> > > thread-safe means.  Maybe some clarification could be added.
->> > > "Different streams are SMP and thread-safe (calls for the same stream
->> > > must be serialized)."
->> >
->> > Yeah this should be corrected.  SMP things are just about the kernel
->> > side at that time.
->> >
->> > It's a Wiki, feel free to correct / improve the text.
->> >
->> >
->> > Takashi
->>
+>>> From: Takashi Iwai [tiwai@suse.de] Sent: Tuesday, November 13,
+>>> 2012 2:30 AM To: Trent Piepho Cc: Krakora Robert-B42341;
+>>> alsa-devel@alsa-project.org Subject: Re: [alsa-devel] Races in
+>>> alsa-lib with threads
+>>> 
+>>> At Tue, 13 Nov 2012 02:14:08 -0500, Trent Piepho wrote:
+>>>> 
+>>>> On Tue, Nov 13, 2012 at 1:32 AM, Takashi Iwai <tiwai@suse.de>
+>>>> wrote:
+>>>>> At Mon, 12 Nov 2012 19:40:42 +0000 (UTC), Rob Krakora wrote:
+>>>>>> Would you be able to point me the the ALSA documentation
+>>>>>> that indicates the stipulations on handle usage using
+>>>>>> multiple threads?  I cannot find it.
+>>>>> 
+>>>>> Think other way round: The fact that it isn't documented
+>>>>> means it's not safe to use in that way :)
+>>>> 
+>>>> 
+>>>> The introduction on the alsa-project home page says, "SMP and 
+>>>> thread-safe design. "  Some people might misunderstand what 
+>>>> thread-safe means.  Maybe some clarification could be added. 
+>>>> "Different streams are SMP and thread-safe (calls for the same
+>>>> stream must be serialized)."
+>>> 
+>>> Yeah this should be corrected.  SMP things are just about the
+>>> kernel side at that time.
+>>> 
+>>> It's a Wiki, feel free to correct / improve the text.
+>>> 
+>>> 
+>>> Takashi
+>> 
 >> Hi Takashi,
->>
->> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib assumes that it is thread safe.  The fix crafted >by one of Trent's colleagues (attached) seems to be the way to go.  However, I don't know how it would impact >other functionality within ALSA Lib.
->
->No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM
->stuff.
->
->We already have a few places, yes, but they are exceptional (mostly
->for funky rarely used plugins that we can drop or mixer codes that
->are no hot path).
->
->Takashi
+>> 
+>> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib
+>> assumes that it is thread safe.  The fix crafted by one of Trent's
+>> colleagues (attached) seems to be the way to go.  However, I don't
+>> know how it would impact other functionality within ALSA Lib.
+> 
+> No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM 
+> stuff.
+> 
+> We already have a few places, yes, but they are exceptional (mostly 
+> for funky rarely used plugins that we can drop or mixer codes that 
+> are no hot path).
 
-Hi Takashi,
+I tried to put notes on the ALSA Wiki, please, extend / fix / review.
 
-OK, but it sure seems as though the better fix would be in ALSA Lib (but then ALSA Lib assumes a great deal of risk unless it is re-architected for thread safety).  However, you have an already established paradigm so I will see what I can do in the GStreamer ALSA Sink plugin.
+http://www.alsa-project.org/main/index.php/SMP_Design
 
-Best Regards,
+					Jaroslav
 
-Rob Krakora
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
