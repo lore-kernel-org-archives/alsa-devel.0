@@ -1,67 +1,155 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5 2/3] ASoC: atmel-ssc-dai: register dai and pcm directly
-Date: Tue, 13 Nov 2012 17:30:33 +0900
-Message-ID: <20121113083031.GP18224@opensource.wolfsonmicro.com>
-References: <1352706028-750-1-git-send-email-voice.shen@atmel.com>
- <1352706028-750-3-git-send-email-voice.shen@atmel.com>
+From: Martin Schwenke <martin@meltin.net>
+Subject: Re: [PATCH] ALSA: usb-audio: Add quirk for Focusrite
+ Scarlett 18i6
+Date: Tue, 13 Nov 2012 19:38:03 +1100
+Message-ID: <20121113193803.2e0d7c4a@martins.ozlabs.org>
+References: <20121109202023.60f6dcdc@martins.ozlabs.org>
+ <s5hvcdavwoy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s9kDAZ2EyO0AcRYa"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1352706028-750-3-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 180A5265117
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 09:38:05 +0100 (CET)
+In-Reply-To: <s5hvcdavwoy.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 13 Nov 2012 07:33:33 +0100, Takashi Iwai <tiwai@suse.de> wrote:
 
---s9kDAZ2EyO0AcRYa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Unfortunately your MUA broke lines so the patch cannot be applied
+> cleanly.  Please fix your MUA setup and resend, or use an attachment
+> if it doesn't work.
 
-On Mon, Nov 12, 2012 at 03:40:26PM +0800, Bo Shen wrote:
+Sorry, that's irritating!  Is this better?
 
->  static struct platform_device sam9g20ek_audio_device = {
->  	.name   = "at91sam9g20ek-audio",
-> -	.id     = -1,
-> +	.id     = 0,
->  };
+peace & happiness,
+martin
 
-Why are you changing this?  Single devices are supposed to specify -1 as
-their id.
+p.s. I can't see another way of adding a comment like this above the
+patch, other than the scissors thing that is processed by "git am -c".
+Sorry, I don't know how standard this is...
 
->  static int atmel_ssc_startup(struct snd_pcm_substream *substream,
->  			     struct snd_soc_dai *dai)
->  {
-> -	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-> +	struct atmel_ssc_info *ssc_p = &ssc_info;
+--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--8<--
+Probing this device currently fails in snd_usb_audio_probe() because
+the call to snd_usb_create_mixer() fails.  This is due to unknown or
+non-standard interface descriptor subtypes in parse_audio_unit():
 
-This seems like a very big step backwards, there's now a single global
-variable for the ssc_info which presumably means there can be only one
-SSC active in the system at once.  That's changing a lot more than just
-the registration...
+  usbaudio: unit 51: unexpected type 0x09
+  snd-usb-audio: probe of 1-8:1.0 failed with error -5
 
---s9kDAZ2EyO0AcRYa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Some people are working around this by recompiling usb-audio with the
+call to snd_usb_create_mixer() commented out.  It would be nice to
+avoid that.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+While the best idea would be to look into the mixer creation failure,
+a reasonable short-term solution is to use quirks to only probe the
+trouble-free interfaces.  This allows audio and MIDI interfaces to be
+used without any obvious issues.
 
-iQIcBAEBAgAGBQJQogTyAAoJELSic+t+oim9umQP/RIuxfm6bmfHp+Ovx6Rq+6La
-BV+jcDuhnGa0Z1AMAmvPfBqdKbZeDtmrGQqqvcAh5GhPcBeZlDVGhHKRsvQ6KoHo
-zeNk+VY95tdrSfNgNBh8HAWBuY31fUPx7IUqD2/CwpnfzVDj5PzCbt5Y+XUxGsML
-fgjDzyoDl46p3Onzomme+7/cUGAOWeleYmoOa/AiAjDS409YEyZsHHPDnHPucwOn
-UFBVkzDuO8ZLA4m/ggWM4wMjWjmS6t58XLRQm9p6edWStho3R+3KDFqjo0DZMaEA
-Cfl13mYHGtCF3GXzjyWJdfti7E6AitjA3s9J71Rx2frxVq3+V+iKQxTqOMSmr5Ha
-cuRWJ21IM6cBnsUrAAo00a5kVw8Y8lCveHMkZ5p+rV93jBXYgHoWg+Jkz688YqeV
-L9zZgFQY237IBWsUQvkw0G7+2Ypq3AZtCkKuWHFrdMcjsTm3hco4axO+P4KgOi/c
-QKRJqVMQvMuE8RTs7r9xegwh3hCZg19+v+bo6nOLGJ2YVIYxmnGxv+Duh6MV1jeL
-5C0Z42kTRimb+dcnorGiw078T5b+B5OAlITTLJoNy9i5JiICfDMEtOpQ8wBYVUxs
-/74F1er+JIiaDqEqjdpZllJLrFvilAQ20UGqkXN3wgdB9uWj/Vmaa614SggGmteY
-13vyPGuTqyrXrkDLvHcn
-=mzEK
------END PGP SIGNATURE-----
+Interface 0 is the main one to ignore.  It contains lots of
+control-fu, including the unexpected interface descriptor subtypes.
+Interface 5 is for firmware updates and I'm not sure how to get
+support for this.  Interface 3 is some sort of control interface that
+I don't understand:
 
---s9kDAZ2EyO0AcRYa--
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength            9
+        bInCollection           1
+        baInterfaceNr( 0)       1
+
+Signed-off-by: Martin Schwenke <martin@meltin.net>
+---
+ sound/usb/quirks-table.h |   52 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 88d8ceb..c9dde5f 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2882,6 +2882,58 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 
+ {
+ 	/*
++	 * Focusrite Scarlett 18i6
++	 *
++	 * Avoid mixer creation, which otherwise fails because some of
++	 * the interface descriptor subtypes for interface 0 are
++	 * unknown.  That should be fixed or worked-around but this at
++	 * least allows the device to be used successfully with a DAW
++	 * and an external mixer.  See comments below about other
++	 * ignored interfaces.
++	 */
++	USB_DEVICE(0x1235, 0x8004),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Focusrite",
++		.product_name = "Scarlett 18i6",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = & (const struct snd_usb_audio_quirk[]) {
++			{
++				/* InterfaceSubClass 1 (Control Device) */
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Control Device) */
++				.ifnum = 3,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 4,
++				.type = QUIRK_MIDI_STANDARD_INTERFACE
++			},
++			{
++				/* InterfaceSubClass 1 (Device Firmware Update) */
++				.ifnum = 5,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++
++{
++	/*
+ 	 * Some USB MIDI devices don't have an audio control interface,
+ 	 * so we have to grab MIDI streaming interfaces here.
+ 	 */
+-- 
+1.7.10.4
