@@ -1,63 +1,70 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: HIFACE family driver
-Date: Wed, 14 Nov 2012 12:40:44 +0100
-Message-ID: <50A3833C.8030101@amarulasolutions.com>
-References: <50A3750A.70401@amarulasolutions.com>
- <CACckToWXMza5tMB0w+qAseXjiRijsFzidLET7jDZynSguatxew@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 9533D26168F
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:41:13 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so134632bkc.38
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 03:41:13 -0800 (PST)
-In-Reply-To: <CACckToWXMza5tMB0w+qAseXjiRijsFzidLET7jDZynSguatxew@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [RFC PATCH] ASoC: Samsung: Register the audio dma platform device
+Date: Wed, 14 Nov 2012 17:39:19 +0530
+Message-ID: <1352894960-17434-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: padma.v@samsung.com, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+Cc: sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Audio dma device is not a hardware peripherial.
+So this device can't be added in the dt devices list.
+So expanded the module_platform_driver and registered
+this device using "platform_device_register_simple".
 
-On 11/14/2012 12:15 PM, Grant Diffey wrote:
-> On Wed, Nov 14, 2012 at 9:40 PM, Michael Trimarchi <michael@amarulasolutions.com <mailto:michael@amarulasolutions.com>> wrote:
-> 
->     Hi all,
-> 
->     I have written in my spare time an alsa driver for HIFACE devices family. Now I'm not an alsa expert and I would like to know if you think that it's useful to include it in mainline
-> 
->     https://github.com/panicking/snd-usb-asyncaudio
-> 
->     The list of usb devices supported
-> 
->     https://github.com/panicking/snd-usb-asyncaudio/blob/master/chip.c
-> 
->     The main difference is that I need to use bulk message to talk to the usb dongle and ofcourse there are a lot of improvement that we can do on it. I have already tested on several kernel version and it's already included in some linux distribution. Wait for some feedback ;)
-> 
->     Michael
-> 
-> 
-> Michael,
-> 
-> Your driver has been discussed briefly on list already: http://mailman.alsa-project.org/pipermail/alsa-devel/2012-November/056791.html
->  
-> adding Daniel and Clemens as cc's
+Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+---
+ sound/soc/samsung/dma.c |   30 +++++++++++++++++++++++++++++-
+ 1 files changed, 29 insertions(+), 1 deletions(-)
 
-Ok, so the idea is to send patches on the mailing list. I can send one hiface for free if someone want help me on the submission. Sounds good?
-
-Michael
-
-
-> 
-> Grant
+diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
+index 359708c..17ae9c0 100644
+--- a/sound/soc/samsung/dma.c
++++ b/sound/soc/samsung/dma.c
+@@ -444,6 +444,8 @@ static int __devexit samsung_asoc_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static struct platform_device *asoc_dma_device;
++
+ static struct platform_driver asoc_dma_driver = {
+ 	.driver = {
+ 		.name = "samsung-audio",
+@@ -454,7 +456,33 @@ static struct platform_driver asoc_dma_driver = {
+ 	.remove = __devexit_p(samsung_asoc_platform_remove),
+ };
+ 
+-module_platform_driver(asoc_dma_driver);
++static int __init asoc_dma_init(void)
++{
++	int ret;
++
++	ret = platform_driver_register(&asoc_dma_driver);
++	if (ret) {
++		pr_err("unable to register driver\n");
++		return ret;
++	}
++
++	asoc_dma_device = platform_device_register_simple("samsung-audio", -1, NULL, 0);
++	if (IS_ERR(asoc_dma_device)) {
++		platform_driver_unregister(&asoc_dma_driver);
++		return PTR_ERR(asoc_dma_device);
++	}
++
++	return 0;
++}
++
++static void __exit asoc_dma_exit(void)
++{
++	platform_device_unregister(asoc_dma_device);
++	platform_driver_unregister(&asoc_dma_driver);
++}
++
++module_init(asoc_dma_init);
++module_exit(asoc_dma_exit);
+ 
+ MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+ MODULE_DESCRIPTION("Samsung ASoC DMA Driver");
+-- 
+1.7.4.4
