@@ -1,19 +1,20 @@
-From: FirebUntU <info@firebuntu.com>
-Subject: Trouble about Roland UA-11 UA-33 UA-55 and
-	snd-usb-audio module
-Date: Wed, 14 Nov 2012 08:35:01 +0100
-Message-ID: <50A349A5.6010403@firebuntu.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: CM6206, S/PDIF + JACK
+Date: Wed, 14 Nov 2012 08:40:45 +0100
+Message-ID: <50A34AFD.3070801@ladisch.de>
+References: <CANOoOjsvRWz6N7eUgJRyFohqih4_d9-sCXhHpWs3M7i4wXjbWQ@mail.gmail.com>
+ <50A2434A.8000803@ladisch.de>
+ <CANOoOjtGq5OYYkhVHrxivCSrPmvzid1_-vbvuzDtgDqChUHTSQ@mail.gmail.com>
+ <50A2BACE.80107@ladisch.de>
+ <CANOoOju1RjMdutspkvE23sErr7x-B-gbq5jVk4r3KS02vbx4Bg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n23.mail01.mtsvc.net (mailout32.mail01.mtsvc.net [216.70.64.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EBA5260376
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 08:35:05 +0100 (CET)
-Received: from [62.19.188.233] (port=56563 helo=[192.168.1.4])
- by n23.mail01.mtsvc.net with esmtpsa (TLSv1:CAMELLIA256-SHA:256)
- (Exim 4.72) (envelope-from <info@firebuntu.com>) id 1TYXV1-0007Ug-V2
- for alsa-devel@alsa-project.org; Wed, 14 Nov 2012 02:35:04 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 1A4D926031E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 08:40:48 +0100 (CET)
+In-Reply-To: <CANOoOju1RjMdutspkvE23sErr7x-B-gbq5jVk4r3KS02vbx4Bg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dan MacDonald <allcoms@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+Dan MacDonald wrote:
+> numid=9,iface=MIXER,name='Line Capture Switch'
+>   : values=off
+> numid=7,iface=MIXER,name='Mic Capture Switch'
+>   : values=off
+> numid=11,iface=MIXER,name='IEC958 In Capture Switch'
+>   : values=on
 
-I write you about support of snd-usb-audio module and a relatively-new 
-gamma of devices from Roland/Edirol:
+Okay.
 
-DUO CAPTURE, TRI CAPTURE and QUAD CAPTURE
+> numid=14,iface=MIXER,name='PCM Capture Source'
+>   ; Item #0 'Mic'
+>   ; Item #1 'Line'
+>   ; Item #2 'IEC958 In'
+>   ; Item #3 'Mixer'
+>   : values=0
 
-respectively:
+But this is still set to Mic, ...
 
-UA-11, UA-33, UA-55
+> numid=12,iface=MIXER,name='PCM Capture Switch'
+>   : values=off
 
-These aren't not listed in the Alsa db.
-I have searched a solution for a week and I haven't found a trick to 
-make UA-11 to work under Alsa 1.25.0
-then I downloaded the driver for try to patch it and I found these 
-devices is not listed in the tricks table
-
-In despair I have played with the switch button called "EXT * **" in the 
-bottom of the unit of UA-11 and magically the device ID is transformed 
-from * 0582:012b to ** 0582:0137
-
-Image: https://dl.dropbox.com/u/32759898/output.jpg
-(Rear of the UA-11 unit, from the manual)
-
-
-*Before* (Recognized from udev - Unknown from alsa):
-http://www.alsa-project.org/db/?f=502ee68cf31882ba9ef23525fd66452c34d329e1
-
-*After* (Recognized from udev - Recognized from alsa):
-http://www.alsa-project.org/db/?f=b2ae3e4331fb3fe613ba71e7aba1ad2e0e6dcd29
-
-In the tricks table header of ALSA the 0582:0137 stay for PM-1000 in 
-/TODO/ statement.
-I understand the EXT switch, undiscovered in the manual of the DUO 
-CAPTURE is - as the fact - the Advanced Mode.
-
-Now the peripherical running both in playback and recording in 16 and 24 
-bit and without any mixer options in alsamixer.
+... and capturing is disabled altogether.
+(Or is this one for capturing playback data?)
 
 
-Can you update future releases with this gamma of devices?
-
-
-Awaiting for your positive response :)
-
-Thanks.
-
-
-Best regards,
-
-Leonardo
+Regards,
+Clemens
