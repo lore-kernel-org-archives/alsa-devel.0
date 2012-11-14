@@ -1,78 +1,58 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [RFC PATCH] ASoC: Samsung: Register the audio platform device
-Date: Wed, 14 Nov 2012 17:39:20 +0530
-Message-ID: <1352894960-17434-2-git-send-email-padma.v@samsung.com>
-References: <1352894960-17434-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1352894960-17434-1-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: padma.v@samsung.com, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
-Cc: sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: HIFACE family driver
+Date: Wed, 14 Nov 2012 20:44:10 +0800
+Message-ID: <50A3921A.4030907@gmail.com>
+References: <50A3750A.70401@amarulasolutions.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
+ [209.85.210.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E490C2616BB
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 13:44:36 +0100 (CET)
+Received: by mail-da0-f51.google.com with SMTP id t11so161247daj.38
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 04:44:35 -0800 (PST)
+In-Reply-To: <50A3750A.70401@amarulasolutions.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audio platform device is not a hardware peripherial.
-So this device can't be added in the dt devices list.
-So expanded the module_platform_driver and registered
-this device using "platform_device_register_simple".
+Hi Michael,
 
-Also added the soc-core pm ops structure in the audio
-platform driver.
+On 14.11.2012 18:40, Michael Trimarchi wrote:
+> I have written in my spare time an alsa driver for HIFACE devices
+> family. Now I'm not an alsa expert and I would like to know if you
+> think that it's useful to include it in mainline
+> 
+> https://github.com/panicking/snd-usb-asyncaudio
+> 
+> The list of usb devices supported
+> 
+> https://github.com/panicking/snd-usb-asyncaudio/blob/master/chip.c
 
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
----
- sound/soc/samsung/smdk_wm8994.c |   31 ++++++++++++++++++++++++++++++-
- 1 files changed, 30 insertions(+), 1 deletions(-)
+We've already seen this - very cool!
 
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index 48dd4dd..7f97969 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -173,16 +173,45 @@ static int __devexit smdk_audio_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static struct platform_device *smdk_audio_device;
-+
- static struct platform_driver smdk_audio_driver = {
- 	.driver		= {
- 		.name	= "smdk-audio",
- 		.owner	= THIS_MODULE,
-+		.pm	= &snd_soc_pm_ops,
- 	},
- 	.probe		= smdk_audio_probe,
- 	.remove		= __devexit_p(smdk_audio_remove),
- };
- 
--module_platform_driver(smdk_audio_driver);
-+static int __init smdk_audio_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_driver_register(&smdk_audio_driver);
-+	if (ret) {
-+		pr_err("unable to register driver\n");
-+		return ret;
-+	}
-+
-+	smdk_audio_device = platform_device_register_simple("smdk-audio", -1, NULL, 0);
-+	if (IS_ERR(smdk_audio_device)) {
-+		platform_driver_unregister(&smdk_audio_driver);
-+		return PTR_ERR(smdk_audio_device);
-+	}
-+
-+	return 0;
-+}
-+
-+static void __exit smdk_audio_exit(void)
-+{
-+	platform_device_unregister(smdk_audio_device);
-+	platform_driver_unregister(&smdk_audio_driver);
-+}
-+
-+module_init(smdk_audio_init);
-+module_exit(smdk_audio_exit);
- 
- MODULE_DESCRIPTION("ALSA SoC SMDK WM8994");
- MODULE_LICENSE("GPL");
--- 
-1.7.4.4
+> The main difference is that I need to use bulk message to talk to the
+> usb dongle and ofcourse there are a lot of improvement that we can do
+> on it. I have already tested on several kernel version and it's
+> already included in some linux distribution. Wait for some feedback
+> ;)
+
+More than welcome :) You should submit your current version of the code
+in digestable pieces. Maybe the basic driver structure first, and then
+put individual features into additional patches if possible. That way,
+things can be reviewed in-line on the mailing list.
+
+
+Thanks,
+Daniel
