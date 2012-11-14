@@ -1,17 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v5 2/2] ASoC: mxs-saif: Remove platform data
-Date: Wed, 14 Nov 2012 18:28:58 -0200
-Message-ID: <1352924938-24789-1-git-send-email-festevam@gmail.com>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: Races in alsa-lib with threads
+Date: Wed, 14 Nov 2012 15:54:15 -0500
+Message-ID: <CA+7tXihk-0XPcVzB0cAHWDgCpn_XiQNxtwjqUUoActcndAj19A@mail.gmail.com>
+References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+ <50A34FFD.4040603@canonical.com>
+ <CA+7tXigU4WhmSFQyUBRmrtZksvwu-4Vj2jsOiN5u6BH9c0itGw@mail.gmail.com>
+ <201211142203.52948@leon.remlab.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f179.google.com (mail-gg0-f179.google.com
- [209.85.161.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E7EFA2625E2
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 21:29:07 +0100 (CET)
-Received: by mail-gg0-f179.google.com with SMTP id y6so185510ggc.38
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:29:07 -0800 (PST)
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+ [209.85.212.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C58DA2625F4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 21:54:16 +0100 (CET)
+Received: by mail-vb0-f51.google.com with SMTP id fn1so869217vbb.38
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:54:16 -0800 (PST)
+In-Reply-To: <201211142203.52948@leon.remlab.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,128 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?R=E9mi_Denis=2DCourmont?= <remi@remlab.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wed, Nov 14, 2012 at 3:03 PM, R=E9mi Denis-Courmont <remi@remlab.net> wr=
+ote:
+> Le mercredi 14 novembre 2012 21:49:36, Trent Piepho a =E9crit :
+>> > You claim that the Gstreamer ALSA sink plugin accesses alsa-lib from t=
+wo
+>> > threads simultaneously. Could you elaborate on how this can happen, ma=
+ybe
+>> > it is easy to fix?
+>>
+>> gstreamer has no lock around the call to snd_pcm_delay().  So it can
+>> race with snd_pcm_wait() or snd_pcm_writei(), which are called in
+>> another thread.  There is a lock around the block of code calling
+>> wait()/writei(), but this lock isn't used for calling delay().
+>
+> Use non-blocking I/O and poll(). Then the snd_pcm_write() calls will not =
+sleep
+> and can be interlocked with snd_pcm_delay() calls.
 
-All MXS users have been converted to device tree and the board files have been
-removed.
+gstreamer uses non-blocking I/O.  But uses snd_pcm_wait rather than
+poll directly.  I wonder if poll() is entirely correct when ALSA
+plugins are in the chain?
 
-No need to keep platform data in the driver.
-  
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Acked-by: Dong Aisheng <dong.aisheng@linaro.org>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
----
-Changes since v4:
-- Rebased against fix/mxs branch and fix file removal
-Changes since v3:
-- Remove pdev->id check
-Changes since v2:
-- Also remove 'if (np)' as dt is the only probing mechanism.
-Changes since v1:
-- Also remove mxs_saif_platform_data and sound/saif.h, which was used only
-to include mxs_saif_platform_data definition.
- include/sound/saif.h     |   16 ----------------
- sound/soc/mxs/mxs-saif.c |   44 ++++++++++++++++----------------------------
- 2 files changed, 16 insertions(+), 44 deletions(-)
- delete mode 100644 include/sound/saif.h
+"the snd_pcm_write() calls ...can be interlocked with snd_pcm_delay() calls=
+".
 
-diff --git a/include/sound/saif.h b/include/sound/saif.h
-deleted file mode 100644
-index f22f3e1..0000000
---- a/include/sound/saif.h
-+++ /dev/null
-@@ -1,16 +0,0 @@
--/*
-- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __SOUND_SAIF_H__
--#define __SOUND_SAIF_H__
--
--struct mxs_saif_platform_data {
--	bool master_mode;	/* if true use master mode */
--	int master_id;		/* id of the master if in slave mode */
--};
--#endif
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index c294fbb..05dbadb 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -32,7 +32,6 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/saif.h>
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/mxs.h>
-@@ -660,43 +659,32 @@ static int __devinit mxs_saif_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
--	struct mxs_saif_platform_data *pdata;
- 	struct pinctrl *pinctrl;
- 	int ret = 0;
-+	struct device_node *master;
- 
--
--	if (!np && pdev->id >= ARRAY_SIZE(mxs_saif))
-+	if (!np)
- 		return -EINVAL;
- 
- 	saif = devm_kzalloc(&pdev->dev, sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
- 
--	if (np) {
--		struct device_node *master;
--		saif->id = of_alias_get_id(np, "saif");
--		if (saif->id < 0)
--			return saif->id;
--		/*
--		 * If there is no "fsl,saif-master" phandle, it's a saif
--		 * master.  Otherwise, it's a slave and its phandle points
--		 * to the master.
--		 */
--		master = of_parse_phandle(np, "fsl,saif-master", 0);
--		if (!master) {
--			saif->master_id = saif->id;
--		} else {
--			saif->master_id = of_alias_get_id(master, "saif");
--			if (saif->master_id < 0)
--				return saif->master_id;
--		}
-+	saif->id = of_alias_get_id(np, "saif");
-+	if (saif->id < 0)
-+		return saif->id;
-+	/*
-+	 * If there is no "fsl,saif-master" phandle, it's a saif
-+	 * master.  Otherwise, it's a slave and its phandle points
-+	 * to the master.
-+	 */
-+	master = of_parse_phandle(np, "fsl,saif-master", 0);
-+	if (!master) {
-+		saif->master_id = saif->id;
- 	} else {
--		saif->id = pdev->id;
--		pdata = pdev->dev.platform_data;
--		if (pdata && !pdata->master_mode)
--			saif->master_id = pdata->master_id;
--		else
--			saif->master_id = saif->id;
-+		saif->master_id = of_alias_get_id(master, "saif");
-+		if (saif->master_id < 0)
-+			return saif->master_id;
- 	}
- 
- 	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
--- 
-1.7.9.5
+It's still a race to call writei() and delay() at the same time, even
+if writei() is non-blocking.  But only if the rate plugin is being
+used.  Of course the actual race is very small, and doesn't include
+the time spent doing resampling or mixing in plugins which are still
+part of the writei() call in non-blocking mode.  It's basically like
+the BKL around every ALSA call.
+
+>> It seems that they didn't know there would be a problem.
+>
+> Eh? It is rather the exception for a library to be thread-safe when using=
+ the
+> same object in multiple threads.
+
+It's ok to call kernel syscalls on the same fd at the same time.  The
+kernel used to have the BKL for this.  Now it has fine grained locking
+around the actual critical sections.  So if ALSA is called thread
+safe, it doesn't seem that unreasonable to think one can do this.
+
+> It looks more like "they" did not pay attention to what they were doing.
+
+I think the point is that this bug was in gstreamer.  gstreamer is
+commonly used by many people.  The bug has been there for years.  Many
+programmers have looked at the code.  Yet no one noticed it or tracked
+it down until now.  If it's so obvious why did it take so long?
+
+You aren't aware of this problem in other multi-threaded code, but
+that doesn't mean it doesn't exist.  You weren't aware of the problem
+in gstreamer and yet it exists.
