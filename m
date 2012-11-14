@@ -1,72 +1,80 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: OMAP: HDMI: Obtain DMA port from resources
-Date: Thu, 15 Nov 2012 08:08:55 +0900
-Message-ID: <20121114230848.GA4536@opensource.wolfsonmicro.com>
-References: <1352860249-26348-1-git-send-email-ricardo.neri@ti.com>
- <1352860249-26348-4-git-send-email-ricardo.neri@ti.com>
- <20121114032712.GQ4415@opensource.wolfsonmicro.com>
- <50A3CFBD.5080903@ti.com>
+Subject: Re: [PATCH v5 2/2] ASoC: mxs-saif: Remove platform data
+Date: Thu, 15 Nov 2012 08:10:03 +0900
+Message-ID: <20121114231000.GB4536@opensource.wolfsonmicro.com>
+References: <1352924938-24789-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50A3CFBD.5080903@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, "Valkeinen, Tomi" <tomi.valkeinen@ti.com>
+Content-Type: multipart/mixed; boundary="===============1753400535823505420=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63412264F06
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 00:10:08 +0100 (CET)
+In-Reply-To: <1352924938-24789-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
+--===============1753400535823505420==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
 Content-Disposition: inline
 
-On Wed, Nov 14, 2012 at 11:07:09AM -0600, Ricardo Neri wrote:
-> On 11/13/2012 09:27 PM, Mark Brown wrote:
 
-> >Presumably this needs some other corresponding change in the resource
-> >setup to go in simultaneously...
+--gj572EiMnwbLXET9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Yes, the change in the resources setup has been submitted to the
-> OMAPDSS HDMI driver and accepted by Tomi [1].
+On Wed, Nov 14, 2012 at 06:28:58PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> All MXS users have been converted to device tree and the board files have=
+ been
+> removed.
+>=20
+> No need to keep platform data in the driver.
 
-Don't do this.  With a change like this which must be made at the same
-time over multiple subsystems it is very important that you send all the
-parts of the changes together.  Otherwise there's a risk that one of
-them won't get merged and even if they do both get merged you'll break
-bisection - it's clear that nobody can be testing this on Tomi's branch.
+I'm missing patch 1 here?
 
-> >>-	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start
-> >>-		+ OMAP_HDMI_AUDIO_DMA_PORT;
-> >>+	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start;
-
-> >...both before and after versions use the resource.
-
-> This change should be present in K3.8.
-
-What is "K3.8"?
-
---qDbXVdCdHGoSgWSk
+--gj572EiMnwbLXET9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQpCRxAAoJELSic+t+oim9xC4P/A7NS4DSgjLIhgpIpvFE3fx2
-/NwLtAbGCHtelJfcFF6J0X3NCWU2Q8wQtweQe9LpoN95K9FA3CXWYEo9yMKZ4j2m
-B8YblH0+IGZGvxeZ6qUQa24fwL/vSMFjGW6ylWv0zbIP2cKh7Z+TtCnA0s0D8AFq
-QizZIG8fwmyApCxLvDKuML4DoeHGU4Io0y9Uv5LTOr9N+djGzT9LoA51JfBKFVPK
-FQ8YFenA+d5C5M/7CIwtC3I4MO5pZCXITyz9hkLE5s8zu0gm3tdLKN/EVqSnfdAx
-RWeOmsPk2axPAiW0lsC3h8hXHdodBAaLkBd3sUvEm8AM4pukXKUdCeznDLhqhnbE
-KBbcta1AF+u/fjK9DewGB98HRc39JHSygEMXVbD36V1Vr3wdxPH7mdQnLcvb8FQq
-lf+6iTmsPliQxtoBAbI3XSU/5eJOwPTLQ/4xvGV79dIYY0imOgfHFrEAiOmr95du
-PX5f9tvJ5KusN0VHzEXnZxMDWFEanB8PZ0HutJxdGqeAywU5Cf3ReADl1F014GeT
-J4ZAcGeyiQjw/JA9vaIgybXa2PwupufimfQUCpmFaUG4IoDdPywKohs9R4bc+IiO
-AL3ZSfNLT+vvUIsdUchZEOkVw93yiaM4/u18eV7+MQP8EkCYB9cwsYY772mquDCw
-wk9ExVs4ny2U+z2Pzn+E
-=pnoB
+iQIcBAEBAgAGBQJQpCTAAAoJELSic+t+oim9Kp8P/1PGc4U3I4cImf5v1LaSQfAS
+Frv8yktObcPbxjKylUfzOLy4289OBeLaR80YHG/A22n2F+ThH31HnmwZLiOWLPWE
+vp0Zaw44XGzKjcbP286gCPlPNdx+Xy2lePTZkOYQ6Xqp/od7vLOqdEAWwfyucuDI
++CbQKVzUIBhi++u1HHXF/Wf6GLbGpNXDK5XYw4qjSS2eZ66FTKBMN94z//0ADQqB
+r4LriKCIIYEyDy7zuJ+1QV6gUAfkldiFzXI1ryskdQDGkdqumvRM3zYgrO7y5nUt
+1ojRXJUVDcoyUCwJHLZ1zUXDn3HCawdcuKJjVJQLY1r++Ax3MIXwl1F01Iwzce48
+B3Y4+7V9fQ5KGbnnQeWEHifkl/iagiYMHsr7JVnsu4DBXnqDdp/8J4Dfs3ijt9Bh
+AtlNKV2GRD9gZgo/YBtyZw3mSsT5k2tOLbFi3MW/4ZT9WkPMXjOiiy/hqwRxP+cU
+61QiLz5c7vM2/xgFGQWXTv1QSfz+gu25UI37v4DVOdZVyy30vVnX8N7uqBKH5NLd
+77Hy2rYp6oRixefoHmPqG8HCmluEl84sAZ8FAS9PGxRe85//LMfATTorYzZHLHAG
+12AHRqb6xMl1o4rmhnKgCrklwdmehSM2KIMR0a7ypWofKeA9ZFi1HhIHhTMwol7G
+6onit05//Kr3N6ATeEj0
+=KV1a
 -----END PGP SIGNATURE-----
 
---qDbXVdCdHGoSgWSk--
+--gj572EiMnwbLXET9--
+
+--===============1753400535823505420==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1753400535823505420==--
