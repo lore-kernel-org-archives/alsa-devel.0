@@ -1,7 +1,7 @@
 From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: [PATCH 2/3] ASoC: OMAP: HDMI: Update CPU DAI driver name
-Date: Tue, 13 Nov 2012 20:30:48 -0600
-Message-ID: <1352860249-26348-3-git-send-email-ricardo.neri@ti.com>
+Subject: [PATCH 1/3] ASoC: OMAP: HDMI: Update machine driver name
+Date: Tue, 13 Nov 2012 20:30:47 -0600
+Message-ID: <1352860249-26348-2-git-send-email-ricardo.neri@ti.com>
 References: <1352860249-26348-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,45 +12,33 @@ To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
 Cc: s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Update the driver name to use the platform device created by the OMAPDSS HDMI
-driver for interested audio drivers to use.
+Being the name of a machine driver, it aims to describe the connection between
+the HDMI IP of the processor and the companion chip it uses to connect to the
+outside world. This name tries to follow the same naming convention as in
+the OMAP-ABE-TWL6040 machine driver.
 
-This platform device represents the audio functionality of the HDMI IP in
-the applicable OMAP processors. It does not make explicit reference to ASoC
-concepts such as DAI.
+TPD12S015 is an HDMI companion chip for DC-DC step-up, I2C level shifter and
+low-capacitance ESD protection. This chip is used on all OMAP4 Pandaboards an
+SDPs as well as in OMAP5 EVMs.
 
 Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
 ---
  sound/soc/omap/omap-hdmi-card.c |    2 +-
- sound/soc/omap/omap-hdmi.c      |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/omap/omap-hdmi-card.c b/sound/soc/omap/omap-hdmi-card.c
-index 184180e..d6f4dba 100644
+index eaa2ea0..184180e 100644
 --- a/sound/soc/omap/omap-hdmi-card.c
 +++ b/sound/soc/omap/omap-hdmi-card.c
-@@ -32,7 +32,7 @@
+@@ -27,7 +27,7 @@
+ #include <asm/mach-types.h>
+ #include <video/omapdss.h>
+ 
+-#define DRV_NAME "omap-hdmi-audio"
++#define DRV_NAME "omap-hdmi-tpd12s015-audio"
+ 
  static struct snd_soc_dai_link omap_hdmi_dai = {
  	.name = "HDMI",
- 	.stream_name = "HDMI",
--	.cpu_dai_name = "omap-hdmi-audio-dai",
-+	.cpu_dai_name = "omap_hdmi_audio",
- 	.platform_name = "omap-pcm-audio",
- 	.codec_name = "hdmi-audio-codec",
- 	.codec_dai_name = "omap-hdmi-hifi",
-diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
-index f59c69f..6592d6f 100644
---- a/sound/soc/omap/omap-hdmi.c
-+++ b/sound/soc/omap/omap-hdmi.c
-@@ -37,7 +37,7 @@
- #include "omap-pcm.h"
- #include "omap-hdmi.h"
- 
--#define DRV_NAME "omap-hdmi-audio-dai"
-+#define DRV_NAME "omap_hdmi_audio"
- 
- struct hdmi_priv {
- 	struct omap_pcm_dma_data dma_params;
 -- 
 1.7.5.4
 
