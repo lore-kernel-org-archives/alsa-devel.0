@@ -1,84 +1,58 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: ak4104: add reset line
- property to DT bindings
-Date: Wed, 14 Nov 2012 19:57:19 +0900
-Message-ID: <20121114105718.GL7407@opensource.wolfsonmicro.com>
-References: <1352888919-25270-1-git-send-email-zonque@gmail.com>
- <20121114104344.GJ7407@opensource.wolfsonmicro.com>
- <CACTFLAM68vtG-oKjV+AQtyeROZx1Ouku+Bz4MsN3EGOz=2uPgQ@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least one enabled link
+Date: Wed, 14 Nov 2012 11:58:42 +0100
+Message-ID: <2181130.3OlxHxCofA@avalon>
+References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi> <20121113142409.GR25623@valkosipuli.retiisi.org.uk> <50A36307.50502@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6976892450502023502=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E5452652D7
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 11:57:25 +0100 (CET)
-In-Reply-To: <CACTFLAM68vtG-oKjV+AQtyeROZx1Ouku+Bz4MsN3EGOz=2uPgQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <50A36307.50502@samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Sakari Ailus <sakari.ailus@iki.fi>, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
 List-Id: alsa-devel@alsa-project.org
 
+Hi Sylwester,
 
---===============6976892450502023502==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AQNmCumFClRcGgHG"
-Content-Disposition: inline
+On Wednesday 14 November 2012 10:23:19 Sylwester Nawrocki wrote:
+> On 11/13/2012 03:24 PM, Sakari Ailus wrote:
+> > Hi all,
+> > 
+> > Comments would be appreciated, either positive or negative. The omap3isp
+> > driver does the same check itself currently, but I think this is more
+> > generic than that.
+> > 
+> > Thanks.
+> > 
+> > On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
+> >> If an entity has sink pads, at least one of them must be connected to
+> >> another pad with an enabled link. If a driver with multiple sink pads has
+> >> more strict requirements the check should be done in the driver itself.
+> >> 
+> >> Just requiring one sink pad is connected with an enabled link is enough
+> >> API-wise: entities with sink pads with only disabled links should not be
+> >> allowed to stream in the first place, but also in a different operation
+> >> mode a device might require only one of its pads connected with an
+> >> active link.
+> >> 
+> >> If an entity has an ability to function as a source entity another
+> >> logical entity connected to the aforementioned one should be used for the
+> >> purpose.
+> 
+> Why not leave it to individual drivers ? I'm not sure if it is a good idea
+> not to allow an entity with sink pads to be used as a source only. It might
+> be appropriate for most of the cases but likely not all. I'm inclined not to
+> add this requirement in the API. Just my opinion though.
 
+I have mixed feelings about this patch too, which is why I've asked Sakari to 
+cross-post it. It's pretty easy to add this check to the core now, but pushing 
+it back to drivers late if we realize it's too restrictive would be difficult. 
+I think my preference would go for a helper function that drivers can use, 
+possibly first waiting until a second driver requires this kind of checks 
+before implementing it.
 
---AQNmCumFClRcGgHG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- 
+Regards,
 
-On Wed, Nov 14, 2012 at 06:54:12PM +0800, Daniel Mack wrote:
-> On Wed, Nov 14, 2012 at 6:43 PM, Mark Brown
-
-> > This doesn't apply, the bindings file doesn't exist in mainline or -next
-> > - probably an earlier patch you forgot to submit.
-
-> I submitted that some weeks ago - it's in your topic/ak4104 branch :)
-
->   https://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;a=commit;h=ac5dbea
-
-I don't appear to have any such branch locally...  wonder where that
-went.
-
---AQNmCumFClRcGgHG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQo3jjAAoJELSic+t+oim9gKsQAJFwFebGoDLYakUpZ1wuDr4r
-YVA3Ikuo3ziTALx9/jntRZBw2CvL63TqMU4Nlz79iZflEI1f7fMhpZhoXcXL1v8e
-pZY0G946/Mh8RI094aADa01hTHOzKEFbjQQqxoZrmbtLxhFwBz53Q7ChP6U9vK5W
-UurT1A5N3ZJvZN4M194p5HBlkdVAUPkFZMqy4fl7i/7PhqeV+u1Zf1YrzYe2IK2b
-RoMtBhZ+hXrOeYVTE2D/Y3bqi1AammC961cuFg8R/Aj1qW7OFuihX7u03RjlyDR+
-sYsv9IDmB7n+8dSi6piZWTTbWqhe3oj+sl+/VQnACoEgIxh7UvzqECjXOULQr0up
-6OvhHZz2nkcYjPJQBCMFJZ3m8rho1qpHrQB62RAXMD1L4FDNP1PBJVs2CMEHrbLu
-wqFAUgyJubAXN52V/H0zZKKFIeSccgBB+/hBD9DsKqEVk66cRTQ3u1BpBdzRCu67
-TBmQPVMG0AMJQTltYxXCQnQ5kSIA1zb9xgURXK1ggMnNpowQRlU4es+nJVb7yGXR
-Exam7MXjsOstr9QiW6dBjFCDr04WXmFhyk/Cfw77OjcUVkZO+4qpWps7vI7zxl5H
-EatcTZHkkGVs5AvKIbXb4RJxDSC7FcAAAx83FpM8eamzW5HEmYWFAepTYpUXE82e
-dC2QU8d1kqCYqmpImv09
-=VrQG
------END PGP SIGNATURE-----
-
---AQNmCumFClRcGgHG--
-
---===============6976892450502023502==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6976892450502023502==--
+Laurent Pinchart
