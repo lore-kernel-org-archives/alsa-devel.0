@@ -1,20 +1,18 @@
-From: Xi Wang <xi.wang@gmail.com>
-Subject: [PATCH 2/2] ALSA: core: fix NULL checking in
-	snd_pcm_plug_slave_size()
-Date: Tue, 13 Nov 2012 17:12:12 -0500
-Message-ID: <1352844732-4764-2-git-send-email-xi.wang@gmail.com>
-References: <1352844732-4764-1-git-send-email-xi.wang@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
+Date: Wed, 14 Nov 2012 10:02:07 +0900
+Message-ID: <20121114010205.GB4415@opensource.wolfsonmicro.com>
+References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
+ <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
+ <20121102150312.GC4413@opensource.wolfsonmicro.com>
+ <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6614980195590128438=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 02348261616
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 23:12:19 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so4483793qcs.38
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2012 14:12:19 -0800 (PST)
-In-Reply-To: <1352844732-4764-1-git-send-email-xi.wang@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBDCE261616
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 02:02:14 +0100 (CET)
+In-Reply-To: <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Xi Wang <xi.wang@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-The dereference snd_pcm_plug_stream(plug) should come after the NULL
-check snd_BUG_ON(!plug).
 
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
----
- sound/core/oss/pcm_plugin.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--===============6614980195590128438==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
+Content-Disposition: inline
 
-diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
-index f0d7b15..727ac44 100644
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -231,13 +231,14 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
- {
- 	struct snd_pcm_plugin *plugin, *plugin_prev, *plugin_next;
- 	snd_pcm_sframes_t frames;
--	int stream = snd_pcm_plug_stream(plug);
-+	int stream;
- 	
- 	if (snd_BUG_ON(!plug))
- 		return -ENXIO;
- 	if (clt_frames == 0)
- 		return 0;
- 	frames = clt_frames;
-+	stream = snd_pcm_plug_stream(plug);
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		plugin = snd_pcm_plug_first(plug);
- 		while (plugin && frames > 0) {
--- 
-1.7.10.4
+
+--wq9mPyueHGvFACwf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 13, 2012 at 10:25:06AM -0200, Fabio Estevam wrote:
+
+> fix/mxs branch misses commit 730963f81 (ASoC: mxs-saif: Use devm_clk_get()).
+
+> This patch applies cleanly against your for-next and also against linux-next.
+
+That commit appears to have been added somewhere prior to v3.6 so should
+be in mainline now in which case it's surprising that it's not in a
+branch based off v3.7-rc3, and indeed when I look at both the fix/mxs
+branch and mainline I can see the commit.  This suggests that it isn't
+the problem.
+
+--wq9mPyueHGvFACwf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQou1gAAoJELSic+t+oim9t+IQAIzAt9obwpP1uUDjSjYx9k0F
+WhC2GuxIccLQgB4c5jqZ/RHvHIDp6FchpNqLp5EoESDFTMuH9b2wnxpUAlBLUcwS
+/t+8VpknHafpMsBxYQFVRlToKMg11SL99CFKypVp9t5CAJFhYkM8oEHmHAi4ApQ3
+eZ9+3M6ZxEptQvGFQYiycW2MMTNLYHwZBEy9AX0lYyypGFoNz1YA+FnQihw+zYyg
+2F58TIKS00dw9QZllCZvdBe+M6aHcgz8vPhFrmU8wCpXK219LefZk1oxAtPipZJR
+KimD00PEm8+GfGXe5RSnOsDIKj5Ura/l3Za9yLAYeRndcb1/BAWg4sL0/fnsFTJM
+o8RP+rLxHd3V2aJdsBNDIWdJu8R2Bj9Ok4UgnRuyn5J1a1aGqUyMp2edVh2uG0Im
+icHGpKipI6JNlwd5m3Ng3h2tuvc/7/R/MLdEfuC7kOTRL8IJ/2nABgCoy8FiFox9
+0HAXZQQ6hUP6AZRbMR/Xdtd/JOMqlIIHJr3o1/3zjzL+c5ILLyafzBd+SSh4WyLK
+144rvcIAecZNIO4xM1qCDVnY0CmDeCy5B/1xNVAvzoC+A49UhJk4ClYw89hAaKd0
+z/7fbd5RmCF4zdn+endW/XEgq6uDB2/r4x2zVfohpeu9am46Mwfg8CstE5+pWBbZ
+ukT8dhtmWTsM5krE9lOi
+=eV+P
+-----END PGP SIGNATURE-----
+
+--wq9mPyueHGvFACwf--
+
+--===============6614980195590128438==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6614980195590128438==--
