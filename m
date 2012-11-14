@@ -1,23 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Races in alsa-lib with threads
-Date: Wed, 14 Nov 2012 09:02:05 +0100
-Message-ID: <50A34FFD.4040603@canonical.com>
-References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
- <s5hbof5ef7s.wl%tiwai@suse.de> <509FD3BE.7090504@perex.cz>
- <loom.20121112T203721-204@post.gmane.org> <s5hwqxqvwra.wl%tiwai@suse.de>
- <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>
- <5175C6FEA820754B902FF6873E9285B00C985240@039-SN2MPN1-021.039d.mgd.msft.net>
- <s5h4nktipd5.wl%tiwai@suse.de>
- <CA+7tXii5Lecb3GW4GPgMg6UWYe1jmpEWi_FHM24_nEB5Q7YT0w@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: fm801: precedence bug in
+	snd_fm801_tea575x_get_pins()
+Date: Wed, 14 Nov 2012 11:23:54 +0300
+Message-ID: <20121114082354.GB31792@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BAC23260841
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 09:02:07 +0100 (CET)
-In-Reply-To: <CA+7tXii5Lecb3GW4GPgMg6UWYe1jmpEWi_FHM24_nEB5Q7YT0w@mail.gmail.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94AB9260799
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 09:24:09 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,56 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Krakora Robert-B42341 <B42341@freescale.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Takashi Iwai <tiwai@suse.de>, Rusty Russell <rusty@rustcorp.com.au>, kernel-janitors@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/13/2012 08:41 PM, Trent Piepho wrote:
-> On Tue, Nov 13, 2012 at 8:50 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> At Tue, 13 Nov 2012 13:39:24 +0000,
->> Krakora Robert-B42341 wrote:
->>> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib assumes that it is thread safe.  The fix crafted by one of Trent's colleagues (attached) seems to be the way to go.  However, I don't know how it would impact other functionality within ALSA Lib.
->>
->> No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM
->> stuff.
->>
->
-> The problem with introduction serialization outside alsa-lib is that
-> you must now serialize entire ALSA calls.  The locks must be held for
-> far too long.
->
-> Consider snd_pcm_writei(), most of the time is usually spent blocked
-> waiting for a period to elapse.  It is perfectly ok to call
-> snd_pcm_delay() during this time.  But if one isn't allowed to make
-> any other pcm calls during snd_pcm_writei() then this can't be done.
->
-> It's a pretty big problem.  Most code using blocking mode is going to
-> write another period as soon as the writei call returns from the last
-> write.  It will spend almost all its time inside snd_pcm_writei() and
-> thus will always be holding the app's pcm stream lock.  As soon as it
-> releases the lock it grabs it again for the next write.  Another
-> thread trying to call snd_pcm_delay() will virtually NEVER get a
-> chance.  Not only is it unnecessary stopped from getting the delay
-> while another thread is blocked inside writei(), but it won't get a
-> chance to call it between writei() calls either.
->
-> But there doesn't need to be a conflict, since the actual critical
-> section that needs locking is very small, far smaller than the time
-> spent sleeping inside writei() or wait().  How can just the critical
-> section be protected without placing the locking inside alsa-lib?
+There is a precedence bug because | has higher precedence than ?:.  This
+code was cut and pasted and I fixed a similar bug a few days ago.
 
-Hmm, but the great majority of programs are not interested in accessing 
-alsa-lib from multiple threads in the way that's currently unsafe. That 
-includes programs who are very dependent on low latency. I would not 
-like to see all these programs to suffer from the overhead of adding 
-locks here and there, even if those locks are small.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-You claim that the Gstreamer ALSA sink plugin accesses alsa-lib from two 
-threads simultaneously. Could you elaborate on how this can happen, 
-maybe it is easy to fix?
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index cc2e91d..c5806f8 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -767,9 +767,14 @@ static u8 snd_fm801_tea575x_get_pins(struct snd_tea575x *tea)
+ 	struct fm801 *chip = tea->private_data;
+ 	unsigned short reg = inw(FM801_REG(chip, GPIO_CTRL));
+ 	struct snd_fm801_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+-
+-	return  (reg & FM801_GPIO_GP(gpio.data)) ? TEA575X_DATA : 0 |
+-		(reg & FM801_GPIO_GP(gpio.most)) ? TEA575X_MOST : 0;
++	u8 ret;
++
++	ret = 0;
++	if (reg & FM801_GPIO_GP(gpio.data))
++		ret |= TEA575X_DATA;
++	if (reg & FM801_GPIO_GP(gpio.most))
++		ret |= TEA575X_MOST;
++	return ret;
+ }
+ 
+ static void snd_fm801_tea575x_set_direction(struct snd_tea575x *tea, bool output)
