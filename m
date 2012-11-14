@@ -1,23 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: ASoC: ak4104: add reset line
-	property to DT bindings
-Date: Wed, 14 Nov 2012 19:03:23 +0800
-Message-ID: <CACTFLAMCStZwPumOX16dqEU_gLaB6f=ufeUSY_VAjpR7DAR33A@mail.gmail.com>
-References: <1352888919-25270-1-git-send-email-zonque@gmail.com>
- <20121114104344.GJ7407@opensource.wolfsonmicro.com>
- <CACTFLAM68vtG-oKjV+AQtyeROZx1Ouku+Bz4MsN3EGOz=2uPgQ@mail.gmail.com>
- <20121114105718.GL7407@opensource.wolfsonmicro.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: HIFACE family driver
+Date: Wed, 14 Nov 2012 22:15:26 +1100
+Message-ID: <CACckToWXMza5tMB0w+qAseXjiRijsFzidLET7jDZynSguatxew@mail.gmail.com>
+References: <50A3750A.70401@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 810D8261676
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:03:24 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so148090qcs.38
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 03:03:23 -0800 (PST)
-In-Reply-To: <20121114105718.GL7407@opensource.wolfsonmicro.com>
+Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
+ [209.85.219.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id B922E26165C
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:15:27 +0100 (CET)
+Received: by mail-oa0-f51.google.com with SMTP id n12so232423oag.38
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 03:15:27 -0800 (PST)
+In-Reply-To: <50A3750A.70401@amarulasolutions.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,25 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 14, 2012 at 6:57 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Nov 14, 2012 at 06:54:12PM +0800, Daniel Mack wrote:
->> On Wed, Nov 14, 2012 at 6:43 PM, Mark Brown
->
->> > This doesn't apply, the bindings file doesn't exist in mainline or -next
->> > - probably an earlier patch you forgot to submit.
->
->> I submitted that some weeks ago - it's in your topic/ak4104 branch :)
->
->>   https://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;a=commit;h=ac5dbea
->
-> I don't appear to have any such branch locally...  wonder where that
-> went.
+On Wed, Nov 14, 2012 at 9:40 PM, Michael Trimarchi <
+michael@amarulasolutions.com> wrote:
 
-I was refering to your remote branch of course:
+> Hi all,
+>
+> I have written in my spare time an alsa driver for HIFACE devices family.
+> Now I'm not an alsa expert and I would like to know if you think that it's
+> useful to include it in mainline
+>
+> https://github.com/panicking/snd-usb-asyncaudio
+>
+> The list of usb devices supported
+>
+> https://github.com/panicking/snd-usb-asyncaudio/blob/master/chip.c
+>
+> The main difference is that I need to use bulk message to talk to the usb
+> dongle and ofcourse there are a lot of improvement that we can do on it. I
+> have already tested on several kernel version and it's already included in
+> some linux distribution. Wait for some feedback ;)
+>
+> Michael
+>
 
-https://git.kernel.org/?p=linux/kernel/git/broonie/sound.git;a=shortlog;h=refs/heads/topic/ak4104
+Michael,
+
+Your driver has been discussed briefly on list already:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-November/056791.html
+
+adding Daniel and Clemens as cc's
+
+Grant
