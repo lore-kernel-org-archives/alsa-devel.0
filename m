@@ -1,49 +1,72 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least one
- enabled link
-Date: Wed, 14 Nov 2012 10:23:19 +0100
-Message-ID: <50A36307.50502@samsung.com>
-References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi>
- <20121113142409.GR25623@valkosipuli.retiisi.org.uk>
+From: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
+Subject: ALSA with dmix, help needed
+Date: Wed, 14 Nov 2012 01:39:11 -0800 (PST)
+Message-ID: <1352885951.26711.YahooMailNeo@web120404.mail.ne1.yahoo.com>
+Reply-To: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-reply-to: <20121113142409.GR25623@valkosipuli.retiisi.org.uk>
-Sender: linux-media-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm22-vm2.bullet.mail.ne1.yahoo.com
+ (nm22-vm2.bullet.mail.ne1.yahoo.com [98.138.91.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 576FA261667
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 10:39:13 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sakari,
 
-On 11/13/2012 03:24 PM, Sakari Ailus wrote:
-> Hi all,
-> 
-> Comments would be appreciated, either positive or negative. The omap3isp
-> driver does the same check itself currently, but I think this is more
-> generic than that.
-> 
-> Thanks.
-> 
-> On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
->> If an entity has sink pads, at least one of them must be connected to
->> another pad with an enabled link. If a driver with multiple sink pads has
->> more strict requirements the check should be done in the driver itself.
->>
->> Just requiring one sink pad is connected with an enabled link is enough
->> API-wise: entities with sink pads with only disabled links should not be
->> allowed to stream in the first place, but also in a different operation mode
->> a device might require only one of its pads connected with an active link.
->>
->> If an entity has an ability to function as a source entity another logical
->> entity connected to the aforementioned one should be used for the purpose.
 
-Why not leave it to individual drivers ? I'm not sure if it is a good idea
-not to allow an entity with sink pads to be used as a source only. It might
-be appropriate for most of the cases but likely not all. I'm inclined not to
-add this requirement in the API. Just my opinion though.
+Hello,
 
---
-Thanks,
-Sylwester
+I am struggling for some time now with dmix plugin from ALSA. Could anyone =
+please answer to these questions: =
+
+
+
+1. Is ALSA library with DMIX plugin suitable for real-time embedded =
+
+systems: where it's needed small api latencies, fast output to =
+
+dma/serial bus and no audible defects?
+
+2. Is it reliable to use ALSA commands from different threads? (e.g. open()=
+ in one master thread, writei() from child threads)?
+
+3. Is it normal that two consecutive writei() calls to generate underrun - =
+this happens only just after opening the dmix device. =
+
+
+e.g.: =
+
+
+if( snd_pcm_writei(pPcmPlayHandle, (pu8WavDataBuf), 2048) < 0)
+=A0 fprintf(stderr, "Underrun encountered: application didn't sent enough d=
+ata to the ALSA buffer \n");
+if( snd_pcm_writei(pPcmPlayHandle, (pu8WavDataBuf+4096),2048) < 0)
+=A0fprintf(stderr, "Underrun encountered: application didn't sent enough da=
+ta to the ALSA buffer \n");
+
+
+The second writei() generates this underrun error (-32), even though there =
+is no delay between these two calls. The get_buff_size is 4096, get_buf_per=
+iod =3D 1024.
+
+
+4. The pcm_drain() help states: "for playback, wait for all pending frames =
+to be played and then stop the PCM"
+But, how come the execution duration of this drain() takes longer than the =
+actual sound duration? e.g. pcm_drain() takes 300-400 miliseconds, but the =
+wav size sent to writei() is less than 100ms? =
+
+
+I'm using ASLA lib 1.0.25, on a ARM controller with 440MHz, and no other hi=
+gh prio threads.
