@@ -1,16 +1,19 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: fm801: precedence bug in
-	snd_fm801_tea575x_get_pins()
-Date: Wed, 14 Nov 2012 11:23:54 +0300
-Message-ID: <20121114082354.GB31792@elgon.mountain>
+Subject: Re: [patch] ALSA: es1968: precedence bug in
+ snd_es1968_tea575x_get_pins()
+Date: Wed, 14 Nov 2012 11:27:39 +0300
+Message-ID: <20121114082739.GF11566@mwanda>
+References: <20121113074454.GB13198@elgon.mountain>
+ <1352793790.24230.18.camel@joe-AO722>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 94AB9260799
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 09:24:09 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 509B32615AE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 09:27:58 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1352793790.24230.18.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,34 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Takashi Iwai <tiwai@suse.de>, Rusty Russell <rusty@rustcorp.com.au>, kernel-janitors@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>
+To: Joe Perches <joe@perches.com>
+Cc: alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>, Mauro Carvalho Chehab <mchehab@redhat.com>, Takashi Iwai <tiwai@suse.de>, Rusty Russell <rusty@rustcorp.com.au>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is a precedence bug because | has higher precedence than ?:.  This
-code was cut and pasted and I fixed a similar bug a few days ago.
+On Tue, Nov 13, 2012 at 12:03:10AM -0800, Joe Perches wrote:
+> On Tue, 2012-11-13 at 10:44 +0300, Dan Carpenter wrote:
+> > I don't think this works as intended.  '|' higher precedence than ?: so
+> > the bitwize OR "0 | (val & STR_MOST)" is a no-op.
+> > 
+> > I have re-written it to be more clear.
+> []
+> > diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+> []
+> > @@ -2581,9 +2581,14 @@ static u8 snd_es1968_tea575x_get_pins(struct snd_tea575x *tea)
+> >  	struct es1968 *chip = tea->private_data;
+> >  	unsigned long io = chip->io_port + GPIO_DATA;
+> >  	u16 val = inw(io);
+> > -
+> > -	return  (val & STR_DATA) ? TEA575X_DATA : 0 |
+> > -		(val & STR_MOST) ? TEA575X_MOST : 0;
+> > +	u8 ret;
+> > +
+> > +	ret = 0;
+> > +	if (val & STR_DATA)
+> > +		ret |= TEA575X_DATA;
+> > +	if (val & STR_MOST)
+> > +		ret |= TEA575X_MOST;
+> > +	return ret;
+> 
+> Cute.  smatch I presume?  Tools are useful.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Yep.  This is a smatch thing.
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index cc2e91d..c5806f8 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -767,9 +767,14 @@ static u8 snd_fm801_tea575x_get_pins(struct snd_tea575x *tea)
- 	struct fm801 *chip = tea->private_data;
- 	unsigned short reg = inw(FM801_REG(chip, GPIO_CTRL));
- 	struct snd_fm801_tea575x_gpio gpio = *get_tea575x_gpio(chip);
--
--	return  (reg & FM801_GPIO_GP(gpio.data)) ? TEA575X_DATA : 0 |
--		(reg & FM801_GPIO_GP(gpio.most)) ? TEA575X_MOST : 0;
-+	u8 ret;
-+
-+	ret = 0;
-+	if (reg & FM801_GPIO_GP(gpio.data))
-+		ret |= TEA575X_DATA;
-+	if (reg & FM801_GPIO_GP(gpio.most))
-+		ret |= TEA575X_MOST;
-+	return ret;
- }
- 
- static void snd_fm801_tea575x_set_direction(struct snd_tea575x *tea, bool output)
+> 
+> Moving the close parentheses is a pretty common style too
+> 
+> 	return  (val & STR_DATA ? TEA575X_DATA : 0) |
+> 		(val & STR_MOST ? TEA575X_MOST : 0);
+
+That would work as well, of course.  I don't have a strong
+preference either way.
+
+regards,
+dan carpenter
