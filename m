@@ -1,83 +1,54 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/2] ASoC: mxs-saif: Remove platform data
-Date: Wed, 14 Nov 2012 10:02:07 +0900
-Message-ID: <20121114010205.GB4415@opensource.wolfsonmicro.com>
-References: <1351792632-30649-1-git-send-email-fabio.estevam@freescale.com>
- <1351792632-30649-2-git-send-email-fabio.estevam@freescale.com>
- <20121102150312.GC4413@opensource.wolfsonmicro.com>
- <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: arizona: Add support for multiplexer with no
+ associated mixer
+Date: Wed, 14 Nov 2012 10:36:02 +0900
+Message-ID: <20121114013600.GG4415@opensource.wolfsonmicro.com>
+References: <1352824834-11224-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6614980195590128438=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBDCE261616
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 02:02:14 +0100 (CET)
-In-Reply-To: <CAOMZO5DCjg+SxDDxUD1cxbYyu5QdohmoXQs4XtfgbFfoW59ePQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, DWinner@tc-helicon.com, shawn.guo@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="64j1qyTOoGvYcHb1"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1352824834-11224-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6614980195590128438==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
-Content-Disposition: inline
-
-
---wq9mPyueHGvFACwf
+--64j1qyTOoGvYcHb1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 13, 2012 at 10:25:06AM -0200, Fabio Estevam wrote:
+On Tue, Nov 13, 2012 at 04:40:32PM +0000, Charles Keepax wrote:
+> The Asynchronous Sample Rate Converters on the wm5102/wm5110 have no
+> mixer attached to their input, but they do allow the input to be
+> selected from a number of sources via a multiplexer. Currently the
+> platform assumes the presence of 4 multiplexers and a mixer for each
+> block.
 
-> fix/mxs branch misses commit 730963f81 (ASoC: mxs-saif: Use devm_clk_get()).
+Applied all, thanks.
 
-> This patch applies cleanly against your for-next and also against linux-next.
-
-That commit appears to have been added somewhere prior to v3.6 so should
-be in mainline now in which case it's surprising that it's not in a
-branch based off v3.7-rc3, and indeed when I look at both the fix/mxs
-branch and mainline I can see the commit.  This suggests that it isn't
-the problem.
-
---wq9mPyueHGvFACwf
+--64j1qyTOoGvYcHb1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQou1gAAoJELSic+t+oim9t+IQAIzAt9obwpP1uUDjSjYx9k0F
-WhC2GuxIccLQgB4c5jqZ/RHvHIDp6FchpNqLp5EoESDFTMuH9b2wnxpUAlBLUcwS
-/t+8VpknHafpMsBxYQFVRlToKMg11SL99CFKypVp9t5CAJFhYkM8oEHmHAi4ApQ3
-eZ9+3M6ZxEptQvGFQYiycW2MMTNLYHwZBEy9AX0lYyypGFoNz1YA+FnQihw+zYyg
-2F58TIKS00dw9QZllCZvdBe+M6aHcgz8vPhFrmU8wCpXK219LefZk1oxAtPipZJR
-KimD00PEm8+GfGXe5RSnOsDIKj5Ura/l3Za9yLAYeRndcb1/BAWg4sL0/fnsFTJM
-o8RP+rLxHd3V2aJdsBNDIWdJu8R2Bj9Ok4UgnRuyn5J1a1aGqUyMp2edVh2uG0Im
-icHGpKipI6JNlwd5m3Ng3h2tuvc/7/R/MLdEfuC7kOTRL8IJ/2nABgCoy8FiFox9
-0HAXZQQ6hUP6AZRbMR/Xdtd/JOMqlIIHJr3o1/3zjzL+c5ILLyafzBd+SSh4WyLK
-144rvcIAecZNIO4xM1qCDVnY0CmDeCy5B/1xNVAvzoC+A49UhJk4ClYw89hAaKd0
-z/7fbd5RmCF4zdn+endW/XEgq6uDB2/r4x2zVfohpeu9am46Mwfg8CstE5+pWBbZ
-ukT8dhtmWTsM5krE9lOi
-=eV+P
+iQIcBAEBAgAGBQJQovVyAAoJELSic+t+oim9mRQP/1XE363r1gpkjMDWuM+LwJBo
+SEg/6U7RAByT6xfzBNAlOhRGYV6tmOpkvKyF3/kq58Pu9hI55YujokVFPqCN8+34
+s9l6KiGXAd4WRpiAs7t7LCViRWklspiSHFP71jecF2rDBrb4e2QPhWXcdWjv1zzJ
+/8H0SCV2xjGf0hSdUddwXbb4h/xYVSVmmJYACY4kRwvJ5UhvBxMLRqyQaBZTW/6e
+wdPkALnugJi+I/epNi9Umh6GEdWU0m0GPN1DVTAppvt0T6aEdhF68Oqj0OzG03bY
+isS6AX1JJmiGKqN2xLnOa/bP7R91taNAGahxbDDiKLLH9pYag03Oug1XFHhxrb4A
+UQdtx4vhA+FrrDFmUFYVtwGtG+7v1bdQfXhj+X5IwDMGLH8evl7TiGzde8xW3T3d
+RNzmzKRNtrbPjAAM+iaXEPNmaKVmVf8kdDAUHYChwIq9cOUEcDyRgtEblVK5dh8A
+vbpsoF4Cewr4+DyXJE9WnKlXrwf75DY7QFqzV4sj72i5SjyGmeRWsw8iNMs96Em4
+hbHEcBz0zPR1DcZWLgRqM7yagCx73BThlRHXzwiy9Dhc0S5XYva9wU7ncbkLQB4M
+pUs5DRi46Zqff3bnZuFS/R34b9A7DCAd50gl0RXftMz/Vkbd+FXfz9Q6HEJBSQ72
+RhdoptjhRpaLMaMMJxet
+=9vP5
 -----END PGP SIGNATURE-----
 
---wq9mPyueHGvFACwf--
-
---===============6614980195590128438==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6614980195590128438==--
+--64j1qyTOoGvYcHb1--
