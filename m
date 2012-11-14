@@ -1,85 +1,80 @@
-From: Trent Piepho <tpiepho@gmail.com>
-Subject: Re: Races in alsa-lib with threads
-Date: Wed, 14 Nov 2012 15:54:15 -0500
-Message-ID: <CA+7tXihk-0XPcVzB0cAHWDgCpn_XiQNxtwjqUUoActcndAj19A@mail.gmail.com>
-References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
- <50A34FFD.4040603@canonical.com>
- <CA+7tXigU4WhmSFQyUBRmrtZksvwu-4Vj2jsOiN5u6BH9c0itGw@mail.gmail.com>
- <201211142203.52948@leon.remlab.net>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least
+ one enabled link
+Date: Wed, 14 Nov 2012 23:13:45 +0200
+Message-ID: <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
+References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi>
+ <20121113142409.GR25623@valkosipuli.retiisi.org.uk>
+ <50A36307.50502@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
- [209.85.212.51])
- by alsa0.perex.cz (Postfix) with ESMTP id C58DA2625F4
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 21:54:16 +0100 (CET)
-Received: by mail-vb0-f51.google.com with SMTP id fn1so869217vbb.38
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 12:54:16 -0800 (PST)
-In-Reply-To: <201211142203.52948@leon.remlab.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?R=E9mi_Denis=2DCourmont?= <remi@remlab.net>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <50A36307.50502@samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 14, 2012 at 3:03 PM, R=E9mi Denis-Courmont <remi@remlab.net> wr=
-ote:
-> Le mercredi 14 novembre 2012 21:49:36, Trent Piepho a =E9crit :
->> > You claim that the Gstreamer ALSA sink plugin accesses alsa-lib from t=
-wo
->> > threads simultaneously. Could you elaborate on how this can happen, ma=
-ybe
->> > it is easy to fix?
->>
->> gstreamer has no lock around the call to snd_pcm_delay().  So it can
->> race with snd_pcm_wait() or snd_pcm_writei(), which are called in
->> another thread.  There is a lock around the block of code calling
->> wait()/writei(), but this lock isn't used for calling delay().
->
-> Use non-blocking I/O and poll(). Then the snd_pcm_write() calls will not =
-sleep
-> and can be interlocked with snd_pcm_delay() calls.
+Hi Sylwester,
 
-gstreamer uses non-blocking I/O.  But uses snd_pcm_wait rather than
-poll directly.  I wonder if poll() is entirely correct when ALSA
-plugins are in the chain?
+Thanks for the comments.
 
-"the snd_pcm_write() calls ...can be interlocked with snd_pcm_delay() calls=
-".
+On Wed, Nov 14, 2012 at 10:23:19AM +0100, Sylwester Nawrocki wrote:
+> On 11/13/2012 03:24 PM, Sakari Ailus wrote:
+> > Hi all,
+> > 
+> > Comments would be appreciated, either positive or negative. The omap3isp
+> > driver does the same check itself currently, but I think this is more
+> > generic than that.
+> > 
+> > Thanks.
+> > 
+> > On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
+> >> If an entity has sink pads, at least one of them must be connected to
+> >> another pad with an enabled link. If a driver with multiple sink pads has
+> >> more strict requirements the check should be done in the driver itself.
+> >>
+> >> Just requiring one sink pad is connected with an enabled link is enough
+> >> API-wise: entities with sink pads with only disabled links should not be
+> >> allowed to stream in the first place, but also in a different operation mode
+> >> a device might require only one of its pads connected with an active link.
+> >>
+> >> If an entity has an ability to function as a source entity another logical
+> >> entity connected to the aforementioned one should be used for the purpose.
+> 
+> Why not leave it to individual drivers ? I'm not sure if it is a good idea
+> not to allow an entity with sink pads to be used as a source only. It might
+> be appropriate for most of the cases but likely not all. I'm inclined not to
+> add this requirement in the API. Just my opinion though.
 
-It's still a race to call writei() and delay() at the same time, even
-if writei() is non-blocking.  But only if the rate plugin is being
-used.  Of course the actual race is very small, and doesn't include
-the time spent doing resampling or mixing in plugins which are still
-part of the writei() call in non-blocking mode.  It's basically like
-the BKL around every ALSA call.
+I'm just wondering what would be the use case for that.
 
->> It seems that they didn't know there would be a problem.
->
-> Eh? It is rather the exception for a library to be thread-safe when using=
- the
-> same object in multiple threads.
+What comes closest is generating a test pattern, but even that should be a
+separate subdev: the test pattern can be enabled by enabling the link from
+the test pattern generator subdev.
 
-It's ok to call kernel syscalls on the same fd at the same time.  The
-kernel used to have the BKL for this.  Now it has fine grained locking
-around the actual critical sections.  So if ALSA is called thread
-safe, it doesn't seem that unreasonable to think one can do this.
+As it seems not everyone is outright happy about the idea of making this
+mandatory, then how about making it optional?
 
-> It looks more like "they" did not pay attention to what they were doing.
+I'd hate having a link validate function for each subdev e.g. in the OMAP 3
+ISP driver that just checks that its sink pad is actually connected with an
+enabled link. That'd be lots of mostly useless code. If this is done in the
+framework, the drivers will be spared from copying this code in a number of
+places. Which was why I originally wrote this patch. The alternative is to
+re-parse the whole graph in the driver which I'd also like to avoid.
 
-I think the point is that this bug was in gstreamer.  gstreamer is
-commonly used by many people.  The bug has been there for years.  Many
-programmers have looked at the code.  Yet no one noticed it or tracked
-it down until now.  If it's so obvious why did it take so long?
+One opion I can think of is to call link_validate op of struct
+media_entity_operations also for disabled links on entities that are
+connected through active links (on V4L2 to a video node right before
+streaming, for example).
 
-You aren't aware of this problem in other multi-threaded code, but
-that doesn't mean it doesn't exist.  You weren't aware of the problem
-in gstreamer and yet it exists.
+That'd make it easy to perform the check in the drivers.
+
+What do you think?
+
+-- 
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
