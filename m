@@ -1,15 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: ab8500: Staticise non-exported
-	ab85000_codec_dai
-Date: Wed, 14 Nov 2012 16:46:16 +0900
-Message-ID: <1352879176-5978-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Races in alsa-lib with threads
+Date: Wed, 14 Nov 2012 09:02:05 +0100
+Message-ID: <50A34FFD.4040603@canonical.com>
+References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+ <s5hbof5ef7s.wl%tiwai@suse.de> <509FD3BE.7090504@perex.cz>
+ <loom.20121112T203721-204@post.gmane.org> <s5hwqxqvwra.wl%tiwai@suse.de>
+ <CA+7tXijc833Bvi-E-L2itnRGF0CNBEY-sahgRhzD_uuws+TQwA@mail.gmail.com>
+ <5175C6FEA820754B902FF6873E9285B00C985240@039-SN2MPN1-021.039d.mgd.msft.net>
+ <s5h4nktipd5.wl%tiwai@suse.de>
+ <CA+7tXii5Lecb3GW4GPgMg6UWYe1jmpEWi_FHM24_nEB5Q7YT0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 697302616C8
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 08:46:22 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAC23260841
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 09:02:07 +0100 (CET)
+In-Reply-To: <CA+7tXii5Lecb3GW4GPgMg6UWYe1jmpEWi_FHM24_nEB5Q7YT0w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +27,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Trent Piepho <tpiepho@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Krakora Robert-B42341 <B42341@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/ab8500-codec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/13/2012 08:41 PM, Trent Piepho wrote:
+> On Tue, Nov 13, 2012 at 8:50 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> At Tue, 13 Nov 2012 13:39:24 +0000,
+>> Krakora Robert-B42341 wrote:
+>>> The way that the GStreamer ALSA Sink Plugin is using ALSA Lib assumes that it is thread safe.  The fix crafted by one of Trent's colleagues (attached) seems to be the way to go.  However, I don't know how it would impact other functionality within ALSA Lib.
+>>
+>> No, sorry, we don't want to introduce pthread_lock in alsa-lib PCM
+>> stuff.
+>>
+>
+> The problem with introduction serialization outside alsa-lib is that
+> you must now serialize entire ALSA calls.  The locks must be held for
+> far too long.
+>
+> Consider snd_pcm_writei(), most of the time is usually spent blocked
+> waiting for a period to elapse.  It is perfectly ok to call
+> snd_pcm_delay() during this time.  But if one isn't allowed to make
+> any other pcm calls during snd_pcm_writei() then this can't be done.
+>
+> It's a pretty big problem.  Most code using blocking mode is going to
+> write another period as soon as the writei call returns from the last
+> write.  It will spend almost all its time inside snd_pcm_writei() and
+> thus will always be holding the app's pcm stream lock.  As soon as it
+> releases the lock it grabs it again for the next write.  Another
+> thread trying to call snd_pcm_delay() will virtually NEVER get a
+> chance.  Not only is it unnecessary stopped from getting the delay
+> while another thread is blocked inside writei(), but it won't get a
+> chance to call it between writei() calls either.
+>
+> But there doesn't need to be a conflict, since the actual critical
+> section that needs locking is very small, far smaller than the time
+> spent sleeping inside writei() or wait().  How can just the critical
+> section be protected without placing the locking inside alsa-lib?
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index af54749..4d96090 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2356,7 +2356,7 @@ static int ab8500_codec_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--struct snd_soc_dai_driver ab8500_codec_dai[] = {
-+static struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 	{
- 		.name = "ab8500-codec-dai.0",
- 		.id = 0,
+Hmm, but the great majority of programs are not interested in accessing 
+alsa-lib from multiple threads in the way that's currently unsafe. That 
+includes programs who are very dependent on low latency. I would not 
+like to see all these programs to suffer from the overhead of adding 
+locks here and there, even if those locks are small.
+
+You claim that the Gstreamer ALSA sink plugin accesses alsa-lib from two 
+threads simultaneously. Could you elaborate on how this can happen, 
+maybe it is easy to fix?
+
+
+
 -- 
-1.7.10.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
