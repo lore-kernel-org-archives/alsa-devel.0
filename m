@@ -1,15 +1,24 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: ASoC: ak4104: add reset line property to
-	DT bindings
-Date: Wed, 14 Nov 2012 18:28:39 +0800
-Message-ID: <1352888919-25270-1-git-send-email-zonque@gmail.com>
+From: Dan MacDonald <allcoms@gmail.com>
+Subject: Re: CM6206, S/PDIF + JACK
+Date: Wed, 14 Nov 2012 10:29:04 +0000
+Message-ID: <CANOoOjugufJhFwmJhaSUH-JN1Zpe+wRiBOvEe9eGjVtjLkH=cA@mail.gmail.com>
+References: <CANOoOjsvRWz6N7eUgJRyFohqih4_d9-sCXhHpWs3M7i4wXjbWQ@mail.gmail.com>
+ <50A2434A.8000803@ladisch.de>
+ <CANOoOjtGq5OYYkhVHrxivCSrPmvzid1_-vbvuzDtgDqChUHTSQ@mail.gmail.com>
+ <50A2BACE.80107@ladisch.de>
+ <CANOoOju1RjMdutspkvE23sErr7x-B-gbq5jVk4r3KS02vbx4Bg@mail.gmail.com>
+ <50A34AFD.3070801@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id CB2D1265261
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 11:28:58 +0100 (CET)
+Received: from mail-vb0-f51.google.com (mail-vb0-f51.google.com
+ [209.85.212.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 375DD2652CF
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 11:29:05 +0100 (CET)
+Received: by mail-vb0-f51.google.com with SMTP id fn1so225421vbb.38
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2012 02:29:04 -0800 (PST)
+In-Reply-To: <50A34AFD.3070801@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,77 +28,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Daniel Mack <zonque@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This device doesn't have a pdata definition for legacy boards, and
-unless anyone need to control the reset GPIO, it's not worth adding one.
-So this feature is only available to DT users for now.
+Hi Clemens et al(sa)!
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- Documentation/devicetree/bindings/sound/ak4104.txt |  5 +++++
- sound/soc/codecs/ak4104.c                          | 17 +++++++++++++++++
- 2 files changed, 22 insertions(+)
+Yes, that was the problem and I have SPDIF capture working now!
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4104.txt b/Documentation/devicetree/bindings/sound/ak4104.txt
-index 1f8e506..b902ee3 100644
---- a/Documentation/devicetree/bindings/sound/ak4104.txt
-+++ b/Documentation/devicetree/bindings/sound/ak4104.txt
-@@ -8,6 +8,11 @@ Required properties:
- 
-   - reg : The chip select number on the SPI bus
- 
-+Optional properties:
-+
-+  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
-+		 deasserted before communication to the device starts.
-+
- Example:
- 
- spdif: ak4104@0 {
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index d4d4858..eec086b 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -15,6 +15,8 @@
- #include <sound/soc.h>
- #include <sound/initval.h>
- #include <linux/spi/spi.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
- #include <sound/asoundef.h>
- 
- /* AK4104 registers addresses */
-@@ -204,6 +206,7 @@ static const struct regmap_config ak4104_regmap = {
- 
- static int ak4104_spi_probe(struct spi_device *spi)
- {
-+	struct device_node *np = spi->dev.of_node;
- 	struct ak4104_private *ak4104;
- 	unsigned int val;
- 	int ret;
-@@ -225,6 +228,20 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 		return ret;
- 	}
- 
-+	if (np) {
-+		enum of_gpio_flags flags;
-+		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
-+
-+		if (gpio_is_valid(gpio)) {
-+			ret = devm_gpio_request_one(&spi->dev, gpio,
-+				     flags & OF_GPIO_ACTIVE_LOW ?
-+					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
-+				     "ak4104 reset");
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+
- 	/* read the 'reserved' register - according to the datasheet, it
- 	 * should contain 0x5b. Not a good way to verify the presence of
- 	 * the device, but there is no hardware ID register. */
--- 
-1.7.11.7
+I couldn't find any simpleton friendly docs for this process so I wrote a
+short howto:
+
+http://www.linuxmusicians.com/viewtopic.php?f=19&t=10271
+
+
+Thanks for your help!
+
+
+On Wed, Nov 14, 2012 at 7:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Dan MacDonald wrote:
+> > numid=9,iface=MIXER,name='Line Capture Switch'
+> >   : values=off
+> > numid=7,iface=MIXER,name='Mic Capture Switch'
+> >   : values=off
+> > numid=11,iface=MIXER,name='IEC958 In Capture Switch'
+> >   : values=on
+>
+> Okay.
+>
+> > numid=14,iface=MIXER,name='PCM Capture Source'
+> >   ; Item #0 'Mic'
+> >   ; Item #1 'Line'
+> >   ; Item #2 'IEC958 In'
+> >   ; Item #3 'Mixer'
+> >   : values=0
+>
+> But this is still set to Mic, ...
+>
+> > numid=12,iface=MIXER,name='PCM Capture Switch'
+> >   : values=off
+>
+> ... and capturing is disabled altogether.
+> (Or is this one for capturing playback data?)
+>
+>
+> Regards,
+> Clemens
+>
