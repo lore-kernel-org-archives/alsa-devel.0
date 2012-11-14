@@ -1,59 +1,119 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: OMAP: HDMI: Obtain DMA port from resources
-Date: Wed, 14 Nov 2012 12:27:14 +0900
-Message-ID: <20121114032712.GQ4415@opensource.wolfsonmicro.com>
-References: <1352860249-26348-1-git-send-email-ricardo.neri@ti.com>
- <1352860249-26348-4-git-send-email-ricardo.neri@ti.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH] sound: use PTR_ERR to fix the value of the return
+Date: Wed, 14 Nov 2012 10:28:09 +0530
+Message-ID: <50A324E1.7060003@linaro.org>
+References: <1352809140-4214-1-git-send-email-windsdaemon@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GTGEtWEe6jD60dxL"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1352860249-26348-4-git-send-email-ricardo.neri@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1352809140-4214-1-git-send-email-windsdaemon@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Wang Jing <windsdaemon@gmail.com>
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/13/2012 05:49 PM, Wang Jing wrote:
+> From: wangjing <wangjing@wangjing.(none)>
+> 
+> This patch use the macro PTR_ERR to modify the value of the return
+> 
+> Signed-off-by: wangjing <wangjing@wangjing.(none)>
+> ---
+>  sound/soc/samsung/smdk_spdif.c |   30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
+> index beaa9c1..8f78482 100644
+> --- a/sound/soc/samsung/smdk_spdif.c
+> +++ b/sound/soc/samsung/smdk_spdif.c
+> @@ -28,32 +28,29 @@ static int set_audio_clock_heirachy(struct platform_device *pdev)
+>  
+>  	fout_epll = clk_get(NULL, "fout_epll");
+>  	if (IS_ERR(fout_epll)) {
+> -		printk(KERN_WARNING "%s: Cannot find fout_epll.\n",
+> -				__func__);
+> -		return -EINVAL;
+> +		printk(KERN_ERR "%s: Cannot find fout_epll.\n", __func__);
+> +		ret = PTR_ERR(fout_epll);
+> +		return ret;
 
---GTGEtWEe6jD60dxL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We can have a single statement for the above two statements.
 
-On Tue, Nov 13, 2012 at 08:30:49PM -0600, Ricardo Neri wrote:
-> Instead of defining the address offset of the DMA port for transfers of
-> audio samples, obtain this information from the resources of the device.
-> This device and its resources are created by the OMAPDSS HDMI driver.
+		return PTR_ERR(fout_epll);
 
-Presumably this needs some other corresponding change in the resource
-setup to go in simultaneously...
+>  	}
+>  
+>  	mout_epll = clk_get(NULL, "mout_epll");
+>  	if (IS_ERR(mout_epll)) {
+> -		printk(KERN_WARNING "%s: Cannot find mout_epll.\n",
+> -				__func__);
+> -		ret = -EINVAL;
+> +		printk(KERN_ERR "%s: Cannot find mout_epll.\n", __func__);
+> +		ret = PTR_ERR(mout_epll);
+>  		goto out1;
+>  	}
+>  
+>  	sclk_audio0 = clk_get(&pdev->dev, "sclk_audio");
+>  	if (IS_ERR(sclk_audio0)) {
+> -		printk(KERN_WARNING "%s: Cannot find sclk_audio.\n",
+> -				__func__);
+> -		ret = -EINVAL;
+> +		printk(KERN_ERR "%s: Cannot find sclk_audio.\n", __func__);
+> +		ret = PTR_ERR(sclk_audio0);
+>  		goto out2;
+>  	}
+>  
+>  	sclk_spdif = clk_get(NULL, "sclk_spdif");
+>  	if (IS_ERR(sclk_spdif)) {
+> -		printk(KERN_WARNING "%s: Cannot find sclk_spdif.\n",
+> -				__func__);
+> -		ret = -EINVAL;
+> +		printk(KERN_ERR "%s: Cannot find sclk_spdif.\n", __func__);
+> +		ret = PTR_ERR(sclk_spdif);
+>  		goto out3;
+>  	}
+>  
+> @@ -81,11 +78,13 @@ static int set_audio_clock_rate(unsigned long epll_rate,
+>  				unsigned long audio_rate)
+>  {
+>  	struct clk *fout_epll, *sclk_spdif;
+> +	int ret = 0;
+>  
+>  	fout_epll = clk_get(NULL, "fout_epll");
+>  	if (IS_ERR(fout_epll)) {
+>  		printk(KERN_ERR "%s: failed to get fout_epll\n", __func__);
+> -		return -ENOENT;
+> +		ret = PTR_ERR(fout_epll);
+> +		return ret;
 
-> -	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start
-> -		+ OMAP_HDMI_AUDIO_DMA_PORT;
-> +	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start;
+Same as above.
 
-...both before and after versions use the resource.
+>  	}
+>  
+>  	clk_set_rate(fout_epll, epll_rate);
+> @@ -94,13 +93,14 @@ static int set_audio_clock_rate(unsigned long epll_rate,
+>  	sclk_spdif = clk_get(NULL, "sclk_spdif");
+>  	if (IS_ERR(sclk_spdif)) {
+>  		printk(KERN_ERR "%s: failed to get sclk_spdif\n", __func__);
+> -		return -ENOENT;
+> +		ret = PTR_ERR(sclk_spdif);
+> +		return ret;
 
---GTGEtWEe6jD60dxL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Same as above.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>  	}
+>  
+>  	clk_set_rate(sclk_spdif, audio_rate);
+>  	clk_put(sclk_spdif);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int smdk_hw_params(struct snd_pcm_substream *substream,
+> 
 
-iQIcBAEBAgAGBQJQow+JAAoJELSic+t+oim9sFQP+wSVqUY/3jR+DbYdycXueIZz
-utnT5UKWZRKWwb6HvRKF5u01vY/PBFsZwIGfhqdwFG8SLe/V5SVzqfalBA0tZeMY
-YYn8fr698dYLpEhIcnTW6m4Mqdl74VLe8nKJoc3wC3LGwXu8uy6Sq+8lSHPSgdcZ
-F1Oxe5o+Ui2ckuZhb1GaIWTLF4xfFN7GdzBe0BghYjN8k7sL5iPOohuG3tDQRs2M
-SH258oOLTz9InY8VvpMzSdaetjcGk2rkcXDBd65hHQ6crxcchvt4YyhmmdYvGTTt
-hEBXJ7G6mo+dSZem3wQSLDPyP7aRgo7uYcKayiZRlN3DRnSSUy0ln4f1Rtw2hseq
-BlHHf2AUHYp7uNJm6Jodfqx5hImBXjoQa5oZCOIxulEhvApj83HafL45BoPmTiAw
-R+gqAa4Tq1lfBcJRMPUFULOE80jFmOHbJWItRZU7+tzhvuTTH+zkuMMxEaK8DkBc
-1keu5a0JBbU564nwmiAC/m+Zuj/Ajy4Naw4QDdlgDVm3AHa1+2f77B/QFNIEbQRO
-C3tQeEAAcU9eDnT0Duz9pLA5Pb+I9YSAP9svwKmMIpV9Q4C9GikE1tLIQNuYQ+6f
-ibTxB+AyghcSH+3/h1sGXNV//46+Myq/xJ/eNy6hTgkR/bgHLoxkbS4idW3LrELw
-A4okke6KtBOqmYyiv/Q0
-=ddQz
------END PGP SIGNATURE-----
 
---GTGEtWEe6jD60dxL--
+-- 
+Tushar Behera
