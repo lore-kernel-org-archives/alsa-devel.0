@@ -1,40 +1,65 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Can't connect to MIDI output of Edirol UA-1000
-Date: Thu, 15 Nov 2012 15:14:16 +0100
-Message-ID: <50A4F8B8.5060704@ladisch.de>
-References: <50587F96.8080005@googlemail.com> <505883EA.6070808@ladisch.de>
- <5058898C.6020608@googlemail.com> <50588FE8.4070206@googlemail.com>
- <50A4EB06.1030404@googlemail.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: [PATCH 3/3] ASoC: OMAP: HDMI: Obtain DMA port from resources
+Date: Thu, 15 Nov 2012 10:22:05 -0600
+Message-ID: <50A516AD.8000702@ti.com>
+References: <1352860249-26348-1-git-send-email-ricardo.neri@ti.com> <1352860249-26348-4-git-send-email-ricardo.neri@ti.com> <20121114032712.GQ4415@opensource.wolfsonmicro.com> <50A3CFBD.5080903@ti.com> <20121114230848.GA4536@opensource.wolfsonmicro.com> <50A45467.6070404@ti.com> <20121115040141.GC7599@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A2BCB2615E1
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 15:14:19 +0100 (CET)
-In-Reply-To: <50A4EB06.1030404@googlemail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Fletcher <colin.m.fletcher@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20121115040141.GC7599@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, "Valkeinen, Tomi" <tomi.valkeinen@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Colin Fletcher wrote:
-> With kernel 2.6.38.8, aconnect can connect to the MIDI out of my
-> UA-1000; with 2.6.39, it fails, so it seems likely that it is the same
-> bug.
+Hi Mark,
 
-It's the same bug, caused by this patch: http://git.kernel.org/linus/88a8516a2128
+On 11/14/2012 10:10 PM, Mark Brown wrote:
+> On Wed, Nov 14, 2012 at 08:33:11PM -0600, Ricardo Neri wrote:
+>> On 11/14/2012 05:08 PM, Mark Brown wrote:
+>
+>>> Don't do this.  With a change like this which must be made at the same
+>>> time over multiple subsystems it is very important that you send all the
+>
+>> but the changes will hit linux-next at some point and they could be
+>> tested there, right?
+>
+> This isn't much fun for anyone doing git bisect, it means the device
+> will be unusuable for large periods of history.
+>
+>> Sorry, as changes for the HDMI drivers go to several maintainers, I
+>> was trying to send the relevant patches to the respective
+>> maintainers and avoid potential merge/rebase issues.
+>
+> You need to make sure everyone involved knows what's going on - review
+> should really turn up the sort of issue I just highlighted.
+>
+>> Tomi has already taken the DSS changes. Perhaps, if you and Tomi
+>> agree, Tomi could also take the ASoC and the arch/arm/mach-omap2
+>> changes. This way all changes come from the same tree.
+>
+> Yes, we're going to need to do that.  Ideally all the changes would be
+> squashed into a single commit.
 
-Fix coming soon.
+OK. Tomi has offered to revert the patch that create the platform 
+device. I will resubmit a new series with all the required changes 
+squashing all the platform devices into a single one.
 
+>
+>>>> This change should be present in K3.8.
+>
+>>> What is "K3.8"?
+>
+>> I meant that Tomi took the DSS changes in [1] on his master branch
+>> and he should push them upstream when the merge window for kernel
+>> v3.8 opens.
+>
+> Do you mean that "K3.8" is "v3.8"?
 
-Regards,
-Clemens
+Yes, that is what I mean.
+
+BR,
+
+Ricardo
+>
