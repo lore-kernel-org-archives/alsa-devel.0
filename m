@@ -1,60 +1,102 @@
-From: Peter Grasch <me@bedahr.org>
-Subject: snd_device_name_hint: Inconsistent output
-Date: Thu, 15 Nov 2012 01:27:00 +0100
-Message-ID: <1352939220.424.10.camel@localhost>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least one enabled link
+Date: Thu, 15 Nov 2012 01:46:23 +0100
+Message-ID: <2019126.gp1BvLQNQ8@avalon>
+References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi> <50A36307.50502@samsung.com> <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ms94393.hosts.iptox.net (ms94393.hosts.iptox.net
- [95.128.200.174])
- by alsa0.perex.cz (Postfix) with ESMTP id BBEFE264F06
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 01:27:33 +0100 (CET)
-Received: from [192.168.1.173] (chello213047047049.3.graz.surfer.at
- [213.47.47.49])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by ms94393.hosts.iptox.net (Postfix) with ESMTPSA id 822F8253406C
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 01:35:59 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
+Sender: linux-media-owner@vger.kernel.org
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi Sakari,
 
-Today, I noticed that some devices (specifically, the "pulse" device,
-but there might be others as well) do not show up in a call to
-snd_device_name_hint when it is called for the first time within an
-application.
+On Wednesday 14 November 2012 23:13:45 Sakari Ailus wrote:
+> On Wed, Nov 14, 2012 at 10:23:19AM +0100, Sylwester Nawrocki wrote:
+> > On 11/13/2012 03:24 PM, Sakari Ailus wrote:
+> > > Hi all,
+> > > 
+> > > Comments would be appreciated, either positive or negative. The omap3isp
+> > > driver does the same check itself currently, but I think this is more
+> > > generic than that.
+> > > 
+> > > Thanks.
+> > > 
+> > > On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
+> > >> If an entity has sink pads, at least one of them must be connected to
+> > >> another pad with an enabled link. If a driver with multiple sink pads
+> > >> has more strict requirements the check should be done in the driver
+> > >> itself.
+> > >> 
+> > >> Just requiring one sink pad is connected with an enabled link is enough
+> > >> API-wise: entities with sink pads with only disabled links should not
+> > >> be allowed to stream in the first place, but also in a different
+> > >> operation mode a device might require only one of its pads connected
+> > >> with an active link.
+> > >> 
+> > >> If an entity has an ability to function as a source entity another
+> > >> logical entity connected to the aforementioned one should be used for
+> > >> the purpose.
+> > 
+> > Why not leave it to individual drivers ? I'm not sure if it is a good idea
+> > not to allow an entity with sink pads to be used as a source only. It
+> > might be appropriate for most of the cases but likely not all. I'm
+> > inclined not to add this requirement in the API. Just my opinion though.
+> 
+> I'm just wondering what would be the use case for that.
+> 
+> What comes closest is generating a test pattern, but even that should be a
+> separate subdev: the test pattern can be enabled by enabling the link from
+> the test pattern generator subdev.
 
-I've managed to reproduce the problem on three different systems:
-Get the source of a current version of aplay, compile it, run aplay -L
-and store the output.
-Then add another call to snd_device_name_hint in pcm_list to make it
-look like this (leaking memory, but it doesn't matter for this
-demonstration):
- 315 static void pcm_list(void)
- 316 {
- 317         void **hints, **n;
- 318         char *name, *descr, *descr1, *io;
- 319         const char *filter;
- 320 
- 321         snd_device_name_hint(-1, "pcm", &hints);
- 322         if (snd_device_name_hint(-1, "pcm", &hints) < 0)
- 323                 return;
-Compile and run this version of aplay and again store the output of
-"aplay -L".
-For me, the two outputs differ.
+That would force creating a separate subdev just to support test pattern 
+generation, I'm not sure if I want to push for that. There might also be other 
+use cases not related to V4L (thus the cross-posting).
 
-Please net me know how I can help to resolve this issue. Thanks.
+> As it seems not everyone is outright happy about the idea of making this
+> mandatory, then how about making it optional?
+> 
+> I'd hate having a link validate function for each subdev e.g. in the OMAP 3
+> ISP driver that just checks that its sink pad is actually connected with an
+> enabled link. That'd be lots of mostly useless code.
 
-Best regards,
-Peter
+Agreed.
+
+> If this is done in the framework, the drivers will be spared from copying
+> this code in a number of places. Which was why I originally wrote this
+> patch. The alternative is to re-parse the whole graph in the driver which
+> I'd also like to avoid.
+
+I'd also prefer to avoid that *if*possible*, as we already walk the graph 
+during link validation.
+
+> One opion I can think of is to call link_validate op of struct
+> media_entity_operations also for disabled links on entities that are
+> connected through active links (on V4L2 to a video node right before
+> streaming, for example).
+> 
+> That'd make it easy to perform the check in the drivers.
+>
+> What do you think?
+
+I think that would be a bit too complex. Drivers (or the V4L core) would need 
+to gather data from multiple links in some state object to find out if the 
+complete pipeline is valid or not.
+
+Another option would be to set a flag somewhere to indicate whether the check 
+should be performed by the media core or left to drivers. As different types 
+of drivers might need different types of checks, I think I would prefer for 
+now to walk the graph one more time in the OMAP3 ISP driver, as currently 
+done, and revisit this issue when we will have a couple of drivers 
+implementing pipeline validity checks. I'm just a bit uncomfortable adding 
+core code for a feature that has a single user at the moment without a clear 
+view regarding how it would scale.
+
+-- 
+Regards,
+
+Laurent Pinchart
