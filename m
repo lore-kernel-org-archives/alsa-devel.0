@@ -1,14 +1,14 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: bells: Up to 512fs
-Date: Thu, 15 Nov 2012 13:56:35 +0000
-Message-ID: <1352987795-20780-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: bells: Up to 512fs
+Date: Thu, 15 Nov 2012 13:56:07 +0000
+Message-ID: <1352987767-20732-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 496D1265B6A
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 14:58:25 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B5CA9265B6A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 15:07:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,6 +24,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Optimize performance by providing a 512fs based clkin.
 
+Change-Id: Ied1f59ebaa4469aac41c97ae3000a4af9c653518
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
  sound/soc/samsung/bells.c | 2 +-
