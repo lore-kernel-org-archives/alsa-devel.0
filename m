@@ -1,71 +1,110 @@
-From: Daniel Griscom <griscom@suitable.com>
-Subject: USB hardware that supports implicit feedback?
-Date: Thu, 15 Nov 2012 15:11:46 -0500
-Message-ID: <p06240805cccafc72f23b@[192.168.1.36]>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least
+ one enabled link
+Date: Thu, 15 Nov 2012 22:25:10 +0200
+Message-ID: <20121115202510.GA29863@valkosipuli.retiisi.org.uk>
+References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi>
+ <50A36307.50502@samsung.com>
+ <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
+ <2019126.gp1BvLQNQ8@avalon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway13.websitewelcome.com (gateway13.websitewelcome.com
- [67.18.72.140]) by alsa0.perex.cz (Postfix) with ESMTP id A02BD26162A
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 21:11:50 +0100 (CET)
-Received: from gator683.hostgator.com (gator683.hostgator.com
- [174.132.158.226])
- by gateway13.websitewelcome.com (Postfix) with ESMTP id 92E0F7327F076
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 14:11:50 -0600 (CST)
-Received: from 75-144-159-89-newengland.hfc.comcastbusiness.net
- ([75.144.159.89]:52091 helo=[192.168.1.8])
- by gator683.hostgator.com with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
- (Exim 4.80) (envelope-from <griscom@suitable.com>)
- id 1TZ5mv-0008Si-6s
- for alsa-devel@alsa-project.org; Thu, 15 Nov 2012 14:11:49 -0600
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa Developer <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2019126.gp1BvLQNQ8@avalon>
+Sender: linux-media-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
 List-Id: alsa-devel@alsa-project.org
 
-[I posted this to the user list with no response; perhaps it was too 
-technical.]
+Hi Laurent,
 
-I'm having trouble getting implicit feedback working with my custom 
-capture/playback USB audio class device, even with the latest kernel. 
-I presume it's a problem with my device's configuration, but can't 
-figure out exactly what the problem is (after a whole lotta 
-investigation).
+Thanks for the comments.
 
-Specifically, my device captures an AES/EBU data stream (at a frame 
-rate dictated by an external device), sends it to the computer via 
-USB and ALSA, and then takes a processed audio stream from the 
-computer via ALSA and USB, and sends it out at the same frame rate. 
-The output stream should have the exact same frame rate as the input 
-stream, governed by implicit feedback.
+On Thu, Nov 15, 2012 at 01:46:23AM +0100, Laurent Pinchart wrote:
+> On Wednesday 14 November 2012 23:13:45 Sakari Ailus wrote:
+> > On Wed, Nov 14, 2012 at 10:23:19AM +0100, Sylwester Nawrocki wrote:
+> > > On 11/13/2012 03:24 PM, Sakari Ailus wrote:
+> > > > Hi all,
+> > > > 
+> > > > Comments would be appreciated, either positive or negative. The omap3isp
+> > > > driver does the same check itself currently, but I think this is more
+> > > > generic than that.
+> > > > 
+> > > > Thanks.
+> > > > 
+> > > > On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
+> > > >> If an entity has sink pads, at least one of them must be connected to
+> > > >> another pad with an enabled link. If a driver with multiple sink pads
+> > > >> has more strict requirements the check should be done in the driver
+> > > >> itself.
+> > > >> 
+> > > >> Just requiring one sink pad is connected with an enabled link is enough
+> > > >> API-wise: entities with sink pads with only disabled links should not
+> > > >> be allowed to stream in the first place, but also in a different
+> > > >> operation mode a device might require only one of its pads connected
+> > > >> with an active link.
+> > > >> 
+> > > >> If an entity has an ability to function as a source entity another
+> > > >> logical entity connected to the aforementioned one should be used for
+> > > >> the purpose.
+> > > 
+> > > Why not leave it to individual drivers ? I'm not sure if it is a good idea
+> > > not to allow an entity with sink pads to be used as a source only. It
+> > > might be appropriate for most of the cases but likely not all. I'm
+> > > inclined not to add this requirement in the API. Just my opinion though.
+> > 
+> > I'm just wondering what would be the use case for that.
+> > 
+> > What comes closest is generating a test pattern, but even that should be a
+> > separate subdev: the test pattern can be enabled by enabling the link from
+> > the test pattern generator subdev.
+> 
+> That would force creating a separate subdev just to support test pattern 
+> generation, I'm not sure if I want to push for that. There might also be other 
 
-I understand that only recently has ALSA included support for 
-implicit feedback. I'm running with kernel 3.6.6, which I believe 
-includes the support, but still can't get it working. I'd really love 
-to see something functioning in this mode so I can determine where 
-the problem is.
+The benefit of standard interfaces and uniform behaviour of those interfaces
+is that you can configure test pattern generation using e.g. media-ctl and
+yavta. Nothing else; not even private controls are needed.
 
-Is there any commercial USB hardware out there that supports implicit 
-feedback? I assume the ALSA developers are testing against something, 
-but I can't find anything appropriate.
+> use cases not related to V4L (thus the cross-posting).
 
-Or, is there source available that runs on some USB-capable micro 
-board that supports it?
+That's certainly possible.
 
+...
 
-Thanks,
-Dan
+> > One opion I can think of is to call link_validate op of struct
+> > media_entity_operations also for disabled links on entities that are
+> > connected through active links (on V4L2 to a video node right before
+> > streaming, for example).
+> > 
+> > That'd make it easy to perform the check in the drivers.
+> >
+> > What do you think?
+> 
+> I think that would be a bit too complex. Drivers (or the V4L core) would need 
+> to gather data from multiple links in some state object to find out if the 
+> complete pipeline is valid or not.
+> 
+> Another option would be to set a flag somewhere to indicate whether the check 
+> should be performed by the media core or left to drivers. As different types 
+> of drivers might need different types of checks, I think I would prefer for 
+> now to walk the graph one more time in the OMAP3 ISP driver, as currently 
+> done, and revisit this issue when we will have a couple of drivers 
+> implementing pipeline validity checks. I'm just a bit uncomfortable adding 
+> core code for a feature that has a single user at the moment without a clear 
+> view regarding how it would scale.
+
+Honestly, I think that a driver that has configurable links but does not
+require this check to be done is quite probably broken. I'm not really
+convinced there is even a use case for a subdev operating its all sink pads
+disconnected.
+
+Btw. this "somewhere" could be struct media_pad. It already has a "flags"
+field. We could call it MEDIA_PAD_FL_MUST_CONNECT.
 
 -- 
-Daniel T. Griscom             griscom@suitable.com
-Suitable Systems              http://www.suitable.com/
-1 Centre Street, Suite 204    (781) 665-0053
-Wakefield, MA  01880-2400
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
