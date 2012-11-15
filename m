@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5 2/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 15 Nov 2012 08:10:03 +0900
-Message-ID: <20121114231000.GB4536@opensource.wolfsonmicro.com>
-References: <1352924938-24789-1-git-send-email-festevam@gmail.com>
+From: Peter Grasch <me@bedahr.org>
+Subject: snd_device_name_hint: Inconsistent output
+Date: Thu, 15 Nov 2012 01:27:00 +0100
+Message-ID: <1352939220.424.10.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1753400535823505420=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63412264F06
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 00:10:08 +0100 (CET)
-In-Reply-To: <1352924938-24789-1-git-send-email-festevam@gmail.com>
+Received: from ms94393.hosts.iptox.net (ms94393.hosts.iptox.net
+ [95.128.200.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBEFE264F06
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 01:27:33 +0100 (CET)
+Received: from [192.168.1.173] (chello213047047049.3.graz.surfer.at
+ [213.47.47.49])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by ms94393.hosts.iptox.net (Postfix) with ESMTPSA id 822F8253406C
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 01:35:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---===============1753400535823505420==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
-Content-Disposition: inline
+Today, I noticed that some devices (specifically, the "pulse" device,
+but there might be others as well) do not show up in a call to
+snd_device_name_hint when it is called for the first time within an
+application.
 
+I've managed to reproduce the problem on three different systems:
+Get the source of a current version of aplay, compile it, run aplay -L
+and store the output.
+Then add another call to snd_device_name_hint in pcm_list to make it
+look like this (leaking memory, but it doesn't matter for this
+demonstration):
+ 315 static void pcm_list(void)
+ 316 {
+ 317         void **hints, **n;
+ 318         char *name, *descr, *descr1, *io;
+ 319         const char *filter;
+ 320 
+ 321         snd_device_name_hint(-1, "pcm", &hints);
+ 322         if (snd_device_name_hint(-1, "pcm", &hints) < 0)
+ 323                 return;
+Compile and run this version of aplay and again store the output of
+"aplay -L".
+For me, the two outputs differ.
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please net me know how I can help to resolve this issue. Thanks.
 
-On Wed, Nov 14, 2012 at 06:28:58PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> All MXS users have been converted to device tree and the board files have=
- been
-> removed.
->=20
-> No need to keep platform data in the driver.
-
-I'm missing patch 1 here?
-
---gj572EiMnwbLXET9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQpCTAAAoJELSic+t+oim9Kp8P/1PGc4U3I4cImf5v1LaSQfAS
-Frv8yktObcPbxjKylUfzOLy4289OBeLaR80YHG/A22n2F+ThH31HnmwZLiOWLPWE
-vp0Zaw44XGzKjcbP286gCPlPNdx+Xy2lePTZkOYQ6Xqp/od7vLOqdEAWwfyucuDI
-+CbQKVzUIBhi++u1HHXF/Wf6GLbGpNXDK5XYw4qjSS2eZ66FTKBMN94z//0ADQqB
-r4LriKCIIYEyDy7zuJ+1QV6gUAfkldiFzXI1ryskdQDGkdqumvRM3zYgrO7y5nUt
-1ojRXJUVDcoyUCwJHLZ1zUXDn3HCawdcuKJjVJQLY1r++Ax3MIXwl1F01Iwzce48
-B3Y4+7V9fQ5KGbnnQeWEHifkl/iagiYMHsr7JVnsu4DBXnqDdp/8J4Dfs3ijt9Bh
-AtlNKV2GRD9gZgo/YBtyZw3mSsT5k2tOLbFi3MW/4ZT9WkPMXjOiiy/hqwRxP+cU
-61QiLz5c7vM2/xgFGQWXTv1QSfz+gu25UI37v4DVOdZVyy30vVnX8N7uqBKH5NLd
-77Hy2rYp6oRixefoHmPqG8HCmluEl84sAZ8FAS9PGxRe85//LMfATTorYzZHLHAG
-12AHRqb6xMl1o4rmhnKgCrklwdmehSM2KIMR0a7ypWofKeA9ZFi1HhIHhTMwol7G
-6onit05//Kr3N6ATeEj0
-=KV1a
------END PGP SIGNATURE-----
-
---gj572EiMnwbLXET9--
-
---===============1753400535823505420==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1753400535823505420==--
+Best regards,
+Peter
