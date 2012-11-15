@@ -1,20 +1,14 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v5 2/2] ASoC: mxs-saif: Remove platform data
-Date: Thu, 15 Nov 2012 11:20:01 -0200
-Message-ID: <CAOMZO5BBmSLB9boZYXuT4o_tywPx3f58p4yod+CuO=H1Pi-R2w@mail.gmail.com>
-References: <1352924938-24789-1-git-send-email-festevam@gmail.com>
- <20121114231000.GB4536@opensource.wolfsonmicro.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH v2] ASoC: bells: Up to 512fs
+Date: Thu, 15 Nov 2012 13:56:35 +0000
+Message-ID: <1352987795-20780-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AA9A265B59
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 14:20:02 +0100 (CET)
-Received: by mail-ob0-f179.google.com with SMTP id eq6so1467970obc.38
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 05:20:01 -0800 (PST)
-In-Reply-To: <20121114231000.GB4536@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 496D1265B6A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 14:58:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 14, 2012 at 9:10 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Nov 14, 2012 at 06:28:58PM -0200, Fabio Estevam wrote:
->> From: Fabio Estevam <fabio.estevam@freescale.com>
->>
->> All MXS users have been converted to device tree and the board files have been
->> removed.
->>
->> No need to keep platform data in the driver.
->
-> I'm missing patch 1 here?
+Optimize performance by providing a 512fs based clkin.
 
-Sorry, I should not have marked it as 2/2. In my previous submissions
-this was a patch series, but the now the other patches were already
-applied into your tree.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/bells.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please consider it as only one patch instead.
-
-Thanks,
-
-Fabio Estevam
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 3d7ace7..b5065ee 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -28,7 +28,7 @@
+ #define MCLK_RATE 24576000
+ 
+ #define SYS_AUDIO_RATE 44100
+-#define SYS_MCLK_RATE  (SYS_AUDIO_RATE * 256)
++#define SYS_MCLK_RATE  (SYS_AUDIO_RATE * 512)
+ 
+ #define DAI_AP_DSP    0
+ #define DAI_DSP_CODEC 1
+-- 
+1.8.0
