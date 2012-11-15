@@ -1,102 +1,133 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 1/1] media: Entities with sink pads must have at least one enabled link
-Date: Thu, 15 Nov 2012 01:46:23 +0100
-Message-ID: <2019126.gp1BvLQNQ8@avalon>
-References: <1351280777-4936-1-git-send-email-sakari.ailus@iki.fi> <50A36307.50502@samsung.com> <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
+From: Krakora Robert-B42341 <B42341@freescale.com>
+Subject: Re: Races in alsa-lib with threads
+Date: Thu, 15 Nov 2012 01:52:01 +0000
+Message-ID: <5175C6FEA820754B902FF6873E9285B00C98764D@039-SN2MPN1-021.039d.mgd.msft.net>
+References: <CA+7tXig7cz8bOuKf3Dqk+iPErY9OKz4hD5L=MM=1vHFUdtPJQQ@mail.gmail.com>
+ <201211142203.52948@leon.remlab.net>
+ <CA+7tXihk-0XPcVzB0cAHWDgCpn_XiQNxtwjqUUoActcndAj19A@mail.gmail.com>,
+ <201211142319.08294@leon.remlab.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20121114211344.GU25623@valkosipuli.retiisi.org.uk>
-Sender: linux-media-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, hverkuil@xs4all.nl
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from db3outboundpool.messaging.microsoft.com
+ (db3ehsobe003.messaging.microsoft.com [213.199.154.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66C3C264F28
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 02:52:08 +0100 (CET)
+In-Reply-To: <201211142319.08294@leon.remlab.net>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?iso-8859-1?Q?R=E9mi_Denis-Courmont?= <remi@remlab.net>, Trent Piepho <tpiepho@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sakari,
+From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.=
+org] on behalf of R=E9mi Denis-Courmont [remi@remlab.net]
+Sent: Wednesday, November 14, 2012 4:19 PM
+To: Trent Piepho
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Races in alsa-lib with threads
 
-On Wednesday 14 November 2012 23:13:45 Sakari Ailus wrote:
-> On Wed, Nov 14, 2012 at 10:23:19AM +0100, Sylwester Nawrocki wrote:
-> > On 11/13/2012 03:24 PM, Sakari Ailus wrote:
-> > > Hi all,
-> > > 
-> > > Comments would be appreciated, either positive or negative. The omap3isp
-> > > driver does the same check itself currently, but I think this is more
-> > > generic than that.
-> > > 
-> > > Thanks.
-> > > 
-> > > On Fri, Oct 26, 2012 at 10:46:17PM +0300, Sakari Ailus wrote:
-> > >> If an entity has sink pads, at least one of them must be connected to
-> > >> another pad with an enabled link. If a driver with multiple sink pads
-> > >> has more strict requirements the check should be done in the driver
-> > >> itself.
-> > >> 
-> > >> Just requiring one sink pad is connected with an enabled link is enough
-> > >> API-wise: entities with sink pads with only disabled links should not
-> > >> be allowed to stream in the first place, but also in a different
-> > >> operation mode a device might require only one of its pads connected
-> > >> with an active link.
-> > >> 
-> > >> If an entity has an ability to function as a source entity another
-> > >> logical entity connected to the aforementioned one should be used for
-> > >> the purpose.
-> > 
-> > Why not leave it to individual drivers ? I'm not sure if it is a good idea
-> > not to allow an entity with sink pads to be used as a source only. It
-> > might be appropriate for most of the cases but likely not all. I'm
-> > inclined not to add this requirement in the API. Just my opinion though.
-> 
-> I'm just wondering what would be the use case for that.
-> 
-> What comes closest is generating a test pattern, but even that should be a
-> separate subdev: the test pattern can be enabled by enabling the link from
-> the test pattern generator subdev.
-
-That would force creating a separate subdev just to support test pattern 
-generation, I'm not sure if I want to push for that. There might also be other 
-use cases not related to V4L (thus the cross-posting).
-
-> As it seems not everyone is outright happy about the idea of making this
-> mandatory, then how about making it optional?
-> 
-> I'd hate having a link validate function for each subdev e.g. in the OMAP 3
-> ISP driver that just checks that its sink pad is actually connected with an
-> enabled link. That'd be lots of mostly useless code.
-
-Agreed.
-
-> If this is done in the framework, the drivers will be spared from copying
-> this code in a number of places. Which was why I originally wrote this
-> patch. The alternative is to re-parse the whole graph in the driver which
-> I'd also like to avoid.
-
-I'd also prefer to avoid that *if*possible*, as we already walk the graph 
-during link validation.
-
-> One opion I can think of is to call link_validate op of struct
-> media_entity_operations also for disabled links on entities that are
-> connected through active links (on V4L2 to a video node right before
-> streaming, for example).
-> 
-> That'd make it easy to perform the check in the drivers.
+Le mercredi 14 novembre 2012 22:54:15, Trent Piepho a =E9crit :
+> gstreamer uses non-blocking I/O.  But uses snd_pcm_wait rather than
+> poll directly.  I wonder if poll() is entirely correct when ALSA
+> plugins are in the chain?
 >
-> What do you think?
+> "the snd_pcm_write() calls ...can be interlocked with snd_pcm_delay()
+> calls".
+>
+> It's still a race to call writei() and delay() at the same time, even
+> if writei() is non-blocking.  But only if the rate plugin is being
+> used.  Of course the actual race is very small, and doesn't include
+> the time spent doing resampling or mixing in plugins which are still
+> part of the writei() call in non-blocking mode.  It's basically like
+> the BKL around every ALSA call.
 
-I think that would be a bit too complex. Drivers (or the V4L core) would need 
-to gather data from multiple links in some state object to find out if the 
-complete pipeline is valid or not.
+Of course, you will need a lock around many ALSA calls, at least all
+potentially concurrent call. But that's a great improvement over holding a
+lock while sleeping inside a blocking I/O operation.
 
-Another option would be to set a flag somewhere to indicate whether the check 
-should be performed by the media core or left to drivers. As different types 
-of drivers might need different types of checks, I think I would prefer for 
-now to walk the graph one more time in the OMAP3 ISP driver, as currently 
-done, and revisit this issue when we will have a couple of drivers 
-implementing pipeline validity checks. I'm just a bit uncomfortable adding 
-core code for a feature that has a single user at the moment without a clear 
-view regarding how it would scale.
+> >> It seems that they didn't know there would be a problem.
+> >
+> > Eh? It is rather the exception for a library to be thread-safe when usi=
+ng
+> > the same object in multiple threads.
+>
+> It's ok to call kernel syscalls on the same fd at the same time.
 
--- 
-Regards,
+Yes and no. Typically the kernel protects itself against undefined behaviour
+induced by user space. But it does not protect user space against their own
+undefined behaviour. The file descriptors table is a very good example of t=
+hat.
 
-Laurent Pinchart
+In fact,  calling snd_pcm_delay() and snd_pcm_write() concurrently is just
+PLAIN STUPID. The delay measurement may or may not include the impeding wri=
+te
+operation, or maybe only a part of it. Essentially, the delay value is not
+much more than random garbage.
+
+Hiding a mutex inside alsa-lib will NOT fix this intrinsic problem: Instead=
+ of
+having data races in memory, you will have logical races and gstreamer would
+still be buggy in some ways.
+
+> The kernel used to have the BKL for this.  Now it has fine grained locking
+> around the actual critical sections.  So if ALSA is called thread
+> safe, it doesn't seem that unreasonable to think one can do this.
+
+Thread-safe means you can enter the library functions from multiple threads.
+Thread-safe never meant that you can enter the library functions from multi=
+ple
+threads with the SAME DATA.
+
+See also Lennart's and Kay's example library...
+
+> > It looks more like "they" did not pay attention to what they were doing.
+>
+> I think the point is that this bug was in gstreamer.  gstreamer is
+> commonly used by many people.  The bug has been there for years.  Many
+> programmers have looked at the code.  Yet no one noticed it or tracked
+> it down until now.  If it's so obvious why did it take so long?
+>
+> You aren't aware of this problem in other multi-threaded code, but
+> that doesn't mean it doesn't exist.  You weren't aware of the problem
+> in gstreamer and yet it exists.
+
+Hey, I don't use gstreamer.  VLC has interlocked its ALSA calls for many ye=
+ars
+and I did not blame alsa-lib for not doing it internally. In fact, I realiz=
+ed
+that this was not a problem that ALSA could nor should solve.
+
+Also, all audio APIs are like that. Even PulseAudio requires the application
+to acquire locks explicitly.
+
+--
+R=E9mi Denis-Courmont
+http://www.remlab.net/
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Hi Remi,
+
+We have a solution now that we are testing where the ALSA calls reside is a=
+ single thread within the GStreamer ALSA Sink plugin.  Once we tested it fo=
+r a bit, we will submit it to the GStreamer folks for approval.  Now that t=
+he ALSA Wiki has been updated with Jarloslav's caveat about ALSA thread saf=
+ety, newbies should no longer misuse that ALSA Lib API.  Thanks so much for=
+ your insight and for Takashi's and Jarloslav's help as well.  Sorry to tak=
+e up so much of your time.  ;-)
+
+Best Regards,
+
+Rob
