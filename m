@@ -1,21 +1,22 @@
-From: Colin Fletcher <colin.m.fletcher@googlemail.com>
-Subject: Re: Can't connect to MIDI output of Edirol UA-1000
-Date: Thu, 15 Nov 2012 19:34:35 +0000
-Message-ID: <50A543CB.9080707@googlemail.com>
-References: <50587F96.8080005@googlemail.com> <505883EA.6070808@ladisch.de>
- <5058898C.6020608@googlemail.com> <50588FE8.4070206@googlemail.com>
- <50A4EB06.1030404@googlemail.com> <50A4F8B8.5060704@ladisch.de>
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+Subject: Re: [PATCH] ASoC: codecs/wm8978: Only reconfigure
+ GPIO1 when used for PLL output
+Date: Thu, 15 Nov 2012 14:35:59 -0500
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD3459CEDE0F1@dekaexchange07.deka.local>
+References: <1352482418-64950-1-git-send-email-emillbrandt@dekaresearch.com>
+ <20121113064410.GE18224@opensource.wolfsonmicro.com>
+ <0A40042D85E7C84DB443060EC44B3FD3459CEDE0D5@dekaexchange07.deka.local>
+ <20121115052036.GE7599@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f179.google.com (mail-we0-f179.google.com
- [74.125.82.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AD9726161A
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 20:34:39 +0100 (CET)
-Received: by mail-we0-f179.google.com with SMTP id z49so700178wey.38
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 11:34:38 -0800 (PST)
-In-Reply-To: <50A4F8B8.5060704@ladisch.de>
+Received: from dekaexchange07.deka.local (mail.dekaresearch.com
+ [208.65.175.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24558261625
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 20:36:04 +0100 (CET)
+In-Reply-To: <20121115052036.GE7599@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,30 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 15/11/12 14:14, Clemens Ladisch wrote:
-> Colin Fletcher wrote:
->> With kernel 2.6.38.8, aconnect can connect to the MIDI out of my
->> UA-1000; with 2.6.39, it fails, so it seems likely that it is the same
->> bug.
+On 2012-11-15 Mark Brown wrote:
+> On Tue, Nov 13, 2012 at 09:43:08AM -0500, Eric Millbrandt wrote:
 >
-> It's the same bug, caused by this patch: http://git.kernel.org/linus/88a8516a2128
+>> However, I agree that the handling of the pin is odd.  Does OPCLK
+>> really need to be reconfigured as input whenever the PLL values are
+>> updated?  I didn't see anything in the user manual to suggest that that
+>> needed to be
+> done.
 >
-> Fix coming soon.
+> It should not be a requirement of the device itself.  It might be a
+> requirement of something using the clock but the system doing that
+> should take care of remuxing the pin as needed.  What I'd suggest doing
+> here is removing the management of the pin completely from this
+> function.
 
-It's great to hear you know the cause of this. Thank you very much!
+That sounds reasonable.  I'll make those changes and resubmit.
 
-Armed with that information, I've found that replacing '#ifdef 
-CONFIG_PM' with '#if 0' and commenting out calls to 
-usb_autopm_{get|put}_interface() inside sound/usb/ gets me a working 
-MIDI out on kernel 3.4.18 for now, which makes me happy.
+Eric
 
-If there's a proper patch I can usefully test, I'd be very glad to know 
-about it.
+
+
+
+This e-mail and the information, including any attachments, it contains are intended to be a confidential communication only to the person or entity to whom it is addressed and may contain information that is privileged. If the reader of this message is not the intended recipient, you are hereby notified that any dissemination, distribution or copying of this communication is strictly prohibited. If you have received this communication in error, please immediately notify the sender and destroy the original message.
 
 Thank you.
 
-Colin.
+Please consider the environment before printing this email.
