@@ -1,79 +1,86 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [Resend v6 PATCH 2/2] ASoC: atmel-ssc: add pinctrl consumer
-Date: Fri, 16 Nov 2012 14:59:25 +0800
-Message-ID: <50A5E44D.6040501@atmel.com>
-References: <1353045837-19474-1-git-send-email-voice.shen@atmel.com> <1353045837-19474-2-git-send-email-voice.shen@atmel.com> <20121116061250.GP4387@opensource.wolfsonmicro.com> <50A5DE4E.80206@atmel.com> <20121116064113.GQ4387@opensource.wolfsonmicro.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2 1/2] ARM: OMAP2+: HDMI: Relocate audio platform device
+ creation
+Date: Fri, 16 Nov 2012 09:38:30 +0200
+Message-ID: <50A5ED76.4040308@ti.com>
+References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com> <1353029819-21809-2-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20121116064113.GQ4387@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig192DBA5546B76A61C23409F8"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1353029819-21809-2-git-send-email-ricardo.neri@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2012 14:41, Mark Brown wrote:
-> On Fri, Nov 16, 2012 at 02:33:50PM +0800, Bo Shen wrote:
->> On 11/16/2012 14:12, Mark Brown wrote:
->
->>> No, this isn't what was meant - the idea is to send only the addition of
->>> pinctrl data as one patch, based off the ASoC branch instead of -next.
->
->> What is the pinctrl data? (This patch can be applied on
->
-> The data you're adding in the device tree!
->
->> sound/topic/atmel branch without any conflicts)
->
-> That's not helpful to anyone doing bisection if there's nothing defining
-> the pin states, it means that the system won't be able to start the
-> driver as the API call will fail.
->
->> The other one add pinctrl nodes, must based on -next, or else I
->> don't know where should I add the pinctrl nodes.
->
-> What makes you say this?
+--------------enig192DBA5546B76A61C23409F8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-For example, if I want to add pinctrl node
----<8---
-  ssc0 {
-	pinctrl_ssc0_tx: ssc0_tx-0 {
-         	atmel,pins = <1 16 0x1 0x0   /* PB16 periph A */
-                 	      1 17 0x1 0x0   /* PB17 periph A */
-                       	      1 18 0x1 0x0>; /* PB18 periph A */
-         };
---->8---
-This should be add into dtsi file as following
----<8---
-ahb {
-	apb {
-		pinctrl {
-			ssc0 {
-				pinctrl_ssc0_tx
-			}
-		}
-	}
-}
---->8---
+Hi,
 
-In the ASoC branch tree, I don't see any pinctrl related information. 
-So, I say I don't know where should I add the pinctrl nodes.
+On 2012-11-16 03:36, Ricardo Neri wrote:
+> Creating the accessory devices (such as audio) from the HDMI driver,
+> allows to regard HDMI as a single entity with audio an display
+> functionality. This intends to follow the design of drivers such
+> as MFD-type, in which a single entity handles the creation of the acces=
+sory
+> devices. Such devices are then used by domain-specific drivers (audio i=
+n
+> this case). This is in line with the DT implementation of HDMI, in whic=
+h
+> we will have a single node to describe this feature of the OMAP SoC. Ot=
+herwise,
+> we would need to have separate nodes for audio and video functionality.=
 
-May be I misunderstanding, do you mean I should only add as followign 
-based on ASoC tree? And the upper go into pinctrl tree?
----<8---
-ssc0: ssc@fffbc000 {
-	compatible = "atmel,at91rm9200-ssc";
-         reg = <0xfffbc000 0x4000>;
-         interrupts = <14 4 5>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
-         status = "disable";
-};
---->8---
+>=20
+> Previously, the platform device for the audio driver was created in
+> arch/arm/mach-omap2/devices.c. Thus, this is removed.
+>=20
+> Also, as the platform device for audio created by the OMAPDSS HDMI now =
+provides
+> a resource for the DMA port for audio samples, we do not need to specif=
+y
+> any offset in the ASoC HDMI CPU DAI driver.
 
-Best Regards
-Bo Shen
+If you notice yourself writing "also, the patch does this" in the patch
+description, it's usually a sign that the patch needs to be split =3D).
+
+That's perhaps not so important when a patch only deals with one
+subsystem or one file, but when the patch changes arch, video and audio
+drivers at the same time I would like to have the patches as simple as
+possible.
+
+Here I suggest you handle the DMA port change in a separate patch.
+
+ Tomi
 
 
+
+--------------enig192DBA5546B76A61C23409F8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iQIcBAEBAgAGBQJQpe12AAoJEPo9qoy8lh71d2oP/2MDSXYGvJs98COpjMhLkBmZ
+AAnzmn1o6mFpTk13UbH+wy2+qdTpnDQPSvlC3o3vlCO+ImbLWB14WbM+TwkWsCxr
+lSjvfkNE7/0X0pMSX6CFAjO6wsEpME3VkjUUuAC8P62kAEN/uyIPbRfaPD+ywcpp
+42z7iozwKa6lET/IQypGQ8BUbVh6O89RS4XmI2E291Ow8fazkB4E1kBWku9wHt0m
+VbJxYXOqHDSXCkH9d7kAvt3VBMwL5Gkz8JCXgpTwM/ln7LZIVynG8SC3g2kYAUUz
+eW2tK6Be7Z3xxds/rdkVDDR0TQLsBJYi3ERZsPl0tRmI0iNq18i8cx6mc1uTAHqp
+p2+HoNjuB0Kp61E73HK+Afcs9Zi+OzrQWOmSjSaknYofxQ5bEPdz8RA2vBVzOBS5
+o9SDteXu2sn2tk0Dkn8wGGeknh48rquBpQW0AViRQqcEUuFsqA7KL41yl0LWtIHQ
+xvRs7z5RR5RrxSBWB0v62pT7ZBVrxhR5p66Lb7P92uCbuIP8AeXc0xUMRfVdvYKP
+qGZBfBSOGQLVNEAxZIjsP3yGHkRADktIXSBCNlkQZ9fNUqiV9Qumx5KJHdD41OeA
+53zsdPdvCfwD76ZGH1+X1dgds2UMMrA9BcSrlYh2VALWu4onurV7W3QV+5ZtnlNS
+7q8cwWRIcyc5YOln7stG
+=3Azt
+-----END PGP SIGNATURE-----
+
+--------------enig192DBA5546B76A61C23409F8--
