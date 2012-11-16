@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Fix typo - Swap value in
- 48k_rates[] and 44k1_rates[]
-Date: Fri, 16 Nov 2012 09:38:29 +0900
-Message-ID: <20121116003828.GC4387@opensource.wolfsonmicro.com>
-References: <1352979690-25117-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: bells: Up to 512fs
+Date: Fri, 16 Nov 2012 09:39:43 +0900
+Message-ID: <20121116003941.GD4387@opensource.wolfsonmicro.com>
+References: <1352987795-20780-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5165273641446493236=="
+Content-Type: multipart/mixed; boundary="===============0353489782043242162=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4ED23265CC7
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2012 01:38:35 +0100 (CET)
-In-Reply-To: <1352979690-25117-1-git-send-email-dp@opensource.wolfsonmicro.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BD6CC265CC8
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2012 01:39:53 +0100 (CET)
+In-Reply-To: <1352987795-20780-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +24,53 @@ Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5165273641446493236==
+--===============0353489782043242162==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="69pVuxX8awAiJ7fD"
+	protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
 Content-Disposition: inline
 
 
---69pVuxX8awAiJ7fD
+--5gxpn/Q6ypwruk0T
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 15, 2012 at 11:41:30AM +0000, Dimitris Papastamos wrote:
+On Thu, Nov 15, 2012 at 01:56:35PM +0000, Dimitris Papastamos wrote:
+> Optimize performance by providing a 512fs based clkin.
+>=20
 > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
 Applied, thanks.
 
---69pVuxX8awAiJ7fD
+--5gxpn/Q6ypwruk0T
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQpYr9AAoJELSic+t+oim9rK4P/2pQTLt+Dtec6P2P6WGmC2qH
-d8TFZMMKvzge4pD4TqrPWUg2vqyrkqZ8LKZmTSY1mXPi8FNqt2WEYmT3P/CtwtV6
-EzcF9nV8+ctAh3CFTkQIMcpy1R8hgAvWoN3gpgJx4bPaXp2XXH5uZzIiWCaZMs0+
-0SzbAAScbzpG6E9QRd37+crdhXG/CAVzJD9yq4qtgA+iqduZYYTTiyGxHkI/tczV
-oofTvenk0DVs5hqpUVRNpoxoUKSeQkLwAGtANAt669RkQz7jb2ThjSboUFF2GVPZ
-6tKoSsGmLW3uFNlrgJaRjMzOeOJdj8/xp2Sv5d2GlNcW1jUisF0j0w2sKT2FjgnH
-I6U0rtI9kd4AUh5c4+Qyw0/u/550jZ3jb6sLAiUtZm+FiGlWWUQ9nKEBLJtyFzgX
-5ddfro/t/4zSiIHbVBD8aWd17Tg1KkOVb3XCTNnXootmLoVLBBefif01z9EnaPPu
-YMh/TuywBJ/DlVVj7tmP2eCXD8A500g8WgzAXeMNGmHurde18hALZxirzQGhuO/j
-LfHvVKrGUKABYAQZtwaPCHjQ1zkTy/L9FXhJeyiE9liOpiyXVmMSsZoY10rPWy13
-w8EdA4tPEf9nS4AzYuJAP9uNNJA1QhRghLJOvMND18LRnvo0rzHfAIeSOa8s41ZH
-Zl0n4u3KBeAgQ+k+vKEK
-=Sb6M
+iQIcBAEBAgAGBQJQpYtDAAoJELSic+t+oim9Ji4P/ju+jaV4IjqKndo1BGavJjL0
+SVLrqJTISWoeX0CpzIIbn5E1M3jmzvX5UYLFrEL+s5nzCC+1tNq4I4BON7Ih2xrH
+BZI8liQ4WDmw4DCzxeivSqmUgKjyuNxlyVOuR/WWDcMJHoK4xbrFQMM+gkpMmicT
+tB+D3zIsC3vBzcmQgeILg4iPJDq71ZHHDfskkmUH83zO0AIO9hDCLwjoECgs9WgL
+PPx3TaCPeNbSFGnEmSomyng+hB1yRsPyw4Ln5DNu9uLB+Xu8k3Kxg8KMg2awvEde
+jPjH0DaE7KJo4h0EaE4eF2mm5MD7aRTpOiAo8L/N0fc/ml4cws4Q2yPhZbjZAaCZ
+TxzhHVucNEgazK87aAEoXPu2H92X8Wnf5hiT3HYCihBmX9VCu6QtuR4ipL7mHgX6
+GbefymnXwVxwWMRhAFS6meSCx9ixx+dTqPFDgh+zKDSQnmBZiYrzyYIiwCqm/b2C
+ksongXHDJqRNKczgZM9sWe0ZwEbT3OsLaYB97WnD5fDuWlaEDnVyDq3mpzR3p69M
+ubWSqH213Mn8x08d8Tv+gSh3reXgpkpDz4ZTT4/qWnUpEQWomoEzYrERAcGwWK1P
+gL7dMCNWZH8oiyqzHTN55+Jps4wlHQpeiMEFcFCKHl3DRRcKZ3oN7V5vy7VzFI7u
+/yK74Ue5e9kdqsaJuYdZ
+=yVH8
 -----END PGP SIGNATURE-----
 
---69pVuxX8awAiJ7fD--
+--5gxpn/Q6ypwruk0T--
 
---===============5165273641446493236==
+--===============0353489782043242162==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5165273641446493236==--
+--===============0353489782043242162==--
