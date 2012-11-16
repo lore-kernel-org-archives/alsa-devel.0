@@ -1,51 +1,65 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Patch v6 4/4] ASoC: at91sam9g20ek-wm8731: convert to dt support
-Date: Fri, 16 Nov 2012 10:28:04 +0900
-Message-ID: <20121116012802.GK4387@opensource.wolfsonmicro.com>
-References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com>
- <1352887751-21848-5-git-send-email-voice.shen@atmel.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: [PATCH v2 0/2] ARM: OMAP2+: HDMI: Update platform devices for audio
+Date: Thu, 15 Nov 2012 19:36:57 -0600
+Message-ID: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Cy+5HEalSgyXkpVS"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1352887751-21848-5-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: tony@atomide.com, tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark, Tomi, Liam, Tony,
 
---Cy+5HEalSgyXkpVS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This set aims to be the version 2 of my previous submission[1] and aims to
+address the potential issues that Mark and Tomi described on such submission.
 
-On Wed, Nov 14, 2012 at 06:09:11PM +0800, Bo Shen wrote:
-> convert at91sam9g20ek with wm8731 to device tree support
+The creation of the platform device for HDMI audio from the OMAPDSS HDMI driver
+that was previously submitted[2] is resubmitted to be complemented with code to
+remove the platform device created in /arch/arm/mach-omap2/devices.c in order
+to have a complete series that does not break functionality in any patch.
 
-Applied, thanks.  Now I have a board with full DT enablement I can run
-(I think...)!
+Also, a second patch proposes new names and locations for the ASoC HDMI CPU DAI
+and machine drivers. This intends to give to the platform devices more
+descriptive names and create them from more relevant locations.
 
---Cy+5HEalSgyXkpVS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+This set of patches requires that
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+commit 14840b9a83c6a56629db2ba0ec247503e975f143
+Author: Ricardo Neri <ricardo.neri@ti.com>
+Date:   Tue Nov 6 00:19:17 2012 -0600
 
-iQIcBAEBAgAGBQJQpZaVAAoJELSic+t+oim9AYYP/0DhpPlnc1ltZ0w4jtVilIGU
-W2Om+3olcbsN8Mnhxu8N1qPFNr250SevmZPazm5vQAIN6hLw84y5XAORj5j9tg61
-7AhPvhu5MCoB7LSuPnGoXCikA8d6CWqEZjiTkM5TyBuJStHEqMrSImrVMkPKYMvJ
-WWndOEnIsNmynH2OunkEWpNQibKR21mK2sEz5e1uk5uIdX2Wr/qPCuHkvAoCLLQO
-tVb4USGs6dpXEEmn4GuOsQfoAd2NUHKODr1Ht6E6WZEULC8XHTm5RI7atM0K6jnJ
-xYAPAqyHWCspioo4z+IQ1f7TbcNilQ29MKFt6TH+/YTDJuh+1Aug1ISK/SCGLty0
-Yxh8eR2RA5oEM5mkeT1tC0TTjhwQNSxbnNSP8985/y8bJ7D/XHoApmn6vwjlgQUs
-cv8o3q6+J8a63GEMmS4zvcRZZeh6fmBNHAmzx+RytV7sQWvxPAbntpCKqqXrT4kn
-bgP/Ijf68pjXMNDR1ocBlHZQl90S+aC1wqdmmsubVz/vIolY5h+4JxrS7REh8wVR
-S5Iz5LkUM8qKCFZtSI5Pyp73lcp6mi2q/LUUiCV1Ha+MhrqqKf7pvM4SGQpfIPtq
-oNMr0urx0FZz/e4PYYEbhAxgAg8w8zPMLcCE12PqifzpjCFDdX2asFGT0UQrXVri
-qEbYqs7VrlblpOnV4y1b
-=os8v
------END PGP SIGNATURE-----
+    OMAPDSS: HDMI: Create platform device for audio support
 
---Cy+5HEalSgyXkpVS--
+is reverted in Tomi's git://gitorious.org/linux-omap-dss2/linux.git master
+
+Changes from v1.
+*Put in a single series all the patches related to platform device updates.
+*Now HDMI audio works correctly in every patch.
+*Remove reference to the TPD12S015 HDMI companion chip as the ASoC drivers
+ are not aware of this and other chips could be used in the future.
+
+ BR,
+
+ Ricardo
+
+[1]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg80678.html
+[2]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg79795.html
+
+Ricardo Neri (2):
+  ARM: OMAP2+: HDMI: Relocate audio platform device creation
+  ARM: OMAP4+: HDMI: Rearrange platform devices for ASoC drivers
+
+ arch/arm/mach-omap2/board-4430sdp.c    |    6 +++
+ arch/arm/mach-omap2/board-omap4panda.c |    6 +++
+ arch/arm/mach-omap2/devices.c          |   31 ----------------
+ drivers/video/omap2/dss/hdmi.c         |   62 ++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-hdmi-card.c        |    4 +-
+ sound/soc/omap/omap-hdmi.c             |    5 +--
+ sound/soc/omap/omap-hdmi.h             |    2 -
+ 7 files changed, 78 insertions(+), 38 deletions(-)
+
+-- 
+1.7.5.4
+
