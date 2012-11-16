@@ -1,101 +1,66 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] pcm_pulse: set prebuf parameter
- according to software parameters
-Date: Fri, 16 Nov 2012 17:35:58 +0100
-Message-ID: <50A66B6E.7000100@canonical.com>
-References: <201211142007.19751@leon.remlab.net>
- <1352916477-17552-2-git-send-email-remi@remlab.net>
- <50A4A103.1090802@canonical.com> <201211161749.59094@leon.remlab.net>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: Re: [PATCH v2 1/2] ARM: OMAP2+: HDMI: Relocate audio platform device
+ creation
+Date: Fri, 16 Nov 2012 11:14:56 -0600
+Message-ID: <50A67490.4080002@ti.com>
+References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com> <1353029819-21809-2-git-send-email-ricardo.neri@ti.com> <50A5ED76.4040308@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id ECF9126509E
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2012 17:35:56 +0100 (CET)
-In-Reply-To: <201211161749.59094@leon.remlab.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?R=E9mi_Denis-Courmont?= <remi@remlab.net>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <50A5ED76.4040308@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/16/2012 04:49 PM, R=E9mi Denis-Courmont wrote:
-> Le jeudi 15 novembre 2012 10:00:03, David Henningsson a =E9crit :
->> On 11/14/2012 07:07 PM, R=E9mi Denis-Courmont wrote:
->>> The current default value for prebuf is very high, almost the full
->>> virtual ALSA buffer. This breaks some application especially where
->>> low latency is involved.
->>>
->>> This patch makes pcm_pulse implement the sw_params callback and get
->>> the prebuf value from the ALSA software parameters. Thus the
->>> trigger latency is much more like what an ALSA application should
->>> expect from an ALSA PCM device.
->>
->> This seems reasonable I believe; see review comments below.
->>
->>> ---
->>>
->>>    pulse/pcm_pulse.c |   25 +++++++++++++++++++++++++
->>>    1 file changed, 25 insertions(+)
->>>
->>> diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
->>> index 0165120..08b6cea 100644
->>> --- a/pulse/pcm_pulse.c
->>> +++ b/pulse/pcm_pulse.c
->>> @@ -859,6 +859,30 @@ static int pulse_hw_params(snd_pcm_ioplug_t * io,
->>>
->>>    	return err;
->>>
->>>    }
->>>
->>> +static int pulse_sw_params(snd_pcm_ioplug_t *io, snd_pcm_sw_params_t
->>> *params) +{
->>> +	snd_pcm_pulse_t *pcm =3D io->private_data;
->>> +	snd_pcm_uframes_t start_threshold;
->>> +
->>> +	assert(pcm);
->>> +
->>> +	if (!pcm->p || !pcm->p->mainloop)
->>> +		return -EBADFD;
->>> +
->>> +	pa_threaded_mainloop_lock(pcm->p->mainloop);
->>> +
->>> +	snd_pcm_sw_params_get_start_threshold(params, &start_threshold);
->>> +
->>> +	if (start_threshold < io->period_size)
->>> +		start_threshold =3D io->period_size;
->>
->> Why do we need the above constraint?
+Hi Tomi,
+
+On 11/16/2012 01:38 AM, Tomi Valkeinen wrote:
+> Hi,
 >
-> In my experience, PulseAudio really does not like having less than a peri=
-od
-> worth of buffered samples. I guess the code assumes there is always at le=
-ast
-> that much, and may underrun if not.
+> On 2012-11-16 03:36, Ricardo Neri wrote:
+>> Creating the accessory devices (such as audio) from the HDMI driver,
+>> allows to regard HDMI as a single entity with audio an display
+>> functionality. This intends to follow the design of drivers such
+>> as MFD-type, in which a single entity handles the creation of the accessory
+>> devices. Such devices are then used by domain-specific drivers (audio in
+>> this case). This is in line with the DT implementation of HDMI, in which
+>> we will have a single node to describe this feature of the OMAP SoC. Otherwise,
+>> we would need to have separate nodes for audio and video functionality.
+>>
+>> Previously, the platform device for the audio driver was created in
+>> arch/arm/mach-omap2/devices.c. Thus, this is removed.
+>>
+>> Also, as the platform device for audio created by the OMAPDSS HDMI now provides
+>> a resource for the DMA port for audio samples, we do not need to specify
+>> any offset in the ASoC HDMI CPU DAI driver.
 >
-> But sure enough, we could remove the constraint and blame the ALSA applic=
-ation
-> for using inadequate parameters if a problem occurs. What do you prefer?
+> If you notice yourself writing "also, the patch does this" in the patch
+> description, it's usually a sign that the patch needs to be split =).
+:)
 
-Assuming you're right about the almost-empty buffer being subject to =
+>
+> That's perhaps not so important when a patch only deals with one
+> subsystem or one file, but when the patch changes arch, video and audio
+> drivers at the same time I would like to have the patches as simple as
+> possible.
+>
+> Here I suggest you handle the DMA port change in a separate patch.
 
-"false underruns" (which, IIRC I confirmed a while ago), probably just a =
+I went ahead and submitted this part in the same patch to make sure that 
+HDMI audio works in every patch.
 
-comment explaining why we need it or so. I didn't know that the limit =
+What I can do is that a first patch creates the platform device for HDMI 
+and just passes the whole register space to the audio platform device to 
+not break ASoC HDMI. Then, a second patch will refine the pdev audio 
+resources and remove the offset from the ASoC HDMI driver. Does that 
+make sense to you?
 
-was one period_size though.
+BR,
 
-
--- =
-
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Ricardo
+>
+>   Tomi
+>
+>
