@@ -1,23 +1,19 @@
-From: Daniel Griscom <griscom@suitable.com>
-Subject: Re: USB hardware that supports implicit feedback?
-Date: Thu, 15 Nov 2012 21:41:35 -0500
-Message-ID: <p06240806cccb568404f5@[192.168.1.12]>
-References: <p06240805cccafc72f23b@[192.168.1.36]>
- <alpine.LNX.2.00.1211152158440.2632@xoschi>
- <p06240809cccb09820207@[192.168.1.8]>
- <alpine.LNX.2.00.1211160159040.1157@xoschi>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Patch v6 1/4] ARM: at91: atmel-ssc: add pinctrl
+	support
+Date: Fri, 16 Nov 2012 10:43:15 +0800
+Message-ID: <50A5A843.2060902@atmel.com>
+References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com>
+ <1352887751-21848-2-git-send-email-voice.shen@atmel.com>
+ <20121116010310.GG4387@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway02.websitewelcome.com (gateway02.websitewelcome.com
- [67.18.36.20]) by alsa0.perex.cz (Postfix) with ESMTP id 5D541265D4E
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2012 03:41:39 +0100 (CET)
-Received: from gator683.hostgator.com (gator683.hostgator.com
- [174.132.158.226])
- by gateway02.websitewelcome.com (Postfix) with ESMTP id D67ED74A8741F
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2012 20:41:37 -0600 (CST)
-In-Reply-To: <alpine.LNX.2.00.1211160159040.1157@xoschi>
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CE5F265D60
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2012 03:44:14 +0100 (CET)
+In-Reply-To: <20121116010310.GG4387@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,88 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+To: plagnioj@jcrosoft.com
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-At 3:08 AM +0100 11/16/12, Eldad Zack wrote:
->I think that Autodiscovery should fail with this amtel device because
->the number of endpoints is 1 for the playback ep (this is what I encountered
->with the C400).
->Maybe a info message could be added in case the attributes do say
->implicit feedback, but bNumEndpoints < 2?
+Hi J,
 
-Good point. I'll look into changing that.
-
-At 3:10 AM +0100 11/16/12, Eldad Zack wrote:
->Hi Daniel,
->On Thu, 15 Nov 2012, Daniel Griscom wrote:
->>  The audio output stream (from the computer to my device) runs at a 
->>few frames
->>  per second higher or lower rate than that of the input stream 
->>(from my device
->>  to the computer). The actual difference seems to be stable on a specific
->>  machine, but varies greatly between machines (I've seen 
->>differences from +7fps
->>  to -2fps; I presume this is due to differences in CPU clock frequencies).
+On 11/16/2012 9:03, Mark Brown wrote:
+> On Wed, Nov 14, 2012 at 06:09:08PM +0800, Bo Shen wrote:
+>> Add pinctrl support for atmel ssc peripheral
+>>
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 >
->Looking at the lsusb output, I assume that the sink/source coupling
->doesn't work, because it's not in an interface group.
+> This generates lots of conflicts in the pinctrl stuff in the DTS - looks
+> like it was generated against -next.  Can you please regenerate against
+> my atmel branch with just the changes to add the pinmux information on
+> the SSC nodes?  Or possbily this can just be applied direct to the
+> pinctrl branch (we'll get an add/add conflict with the SSC nodes though
+> that should be simple to resolve, a cross merge might be helpful).
 
-And, good point number 2.
+As Mark suggested, would this patch be split into 2 patches? One is for 
+atmel ssc add pinmux information go into ASoC tree, and the other add 
+ssc node into dts file go into pinctrl tree. Would this be ok?
 
->  > >I'm not an ALSA dev, but I recently posted a series of patches for the
->>  >M-Audio Fast Track C400, which uses the implicit feedback code that was
->>  >already in the tree for other devices.
->>  So, this device uses implicit feedback to tell ALSA to send output 
->>data at the
->>  same rate as its input data? Very cool; I've ordered one to test.
->
->Yes, and it seems to work very good with my hardware. But I'm not 
->actually sure
->I want to recommend a device with broken descriptors...
->
->Try this, it *MIGHT* work (applies against mainline 3.7-rc5) -
->completely untested, btw.
->
->Cheers,
->Eldad
->
->diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
->index 5c12a3f..fd766a3 100644
->--- a/sound/usb/pcm.c
->+++ b/sound/usb/pcm.c
->@@ -372,6 +372,19 @@ static int set_format(struct snd_usb_substream 
->*subs, struct audioformat *fmt)
->  			alts = &iface->altsetting[1];
->  			goto add_sync_ep;
->  		}
->+		break;
->+	case USB_ID(0x03eb, 0x2311): /* AMTEL === UNTESTED === */
->+		if (is_playback) {
->+			implicit_fb = 1;
->+			ep = 0x82;
->+			iface = usb_ifnum_to_if(dev, 2);
->+
->+			if (!iface || iface->num_altsetting == 0)
->+				return -EINVAL;
->+
->+			alts = &iface->altsetting[1];
->+			goto add_sync_ep;
->+		}
->  	}
->
->  	if (((is_playback && attr == USB_ENDPOINT_SYNC_ASYNC) ||
+Thanks.
 
-Very, ultra, mega-cool. Even if it doesn't work as-is, this will give 
-me big hints on how to get it done.
-
-
-Thanks for all the help,
-Dan
-
--- 
-Daniel T. Griscom             griscom@suitable.com
-Suitable Systems              http://www.suitable.com/
-1 Centre Street, Suite 204    (781) 665-0053
-Wakefield, MA  01880-2400
+Best Regards,
+Bo Shen
