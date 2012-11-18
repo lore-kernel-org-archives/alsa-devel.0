@@ -1,17 +1,14 @@
-From: Karl Grill <kgrill@chello.at>
-Subject: Re: hdsp rpm support
-Date: Sun, 18 Nov 2012 18:30:41 +0100
-Message-ID: <1353259841.4990.8.camel@chello084112006029.chello.at>
-References: <1326877559.24738.84.camel@yoyo4>
- <20120118102658.GA5351@linuxaudio.org>  <1349046242.2195.6.camel@yoyo5>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [git pull] bugfix for 3.7
+Date: Sun, 18 Nov 2012 17:58:00 +0100
+Message-ID: <50A91398.3000103@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep19.mx.upcmail.net (fep19.mx.upcmail.net [62.179.121.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 8280526508E
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 17:53:32 +0100 (CET)
-In-Reply-To: <1349046242.2195.6.camel@yoyo5>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id CB0D526508F
+ for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 17:58:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,19 +18,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Roman Haefeli <reduzent@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I finally got my hands on my son's RPM+cardbus, and my results were
-exactly the same as Roman's (timeout at the beginning of firmware
-upload). With a bit of experimenting (imitating the windows driver), I
-am now at stage where the firmware loads, but there are still some
-quirks (I had to bypass the iobox recognition code, and I have to eject
-the card and push it back in for it to work - well that is at least
-better than having to boot into XP and back out). I'll post a patch when
-these are fixed.
+The following change since commit a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
 
-Regards
-Karl
+  Linux 3.6 (2012-09-30 16:47:46 -0700)
+
+is available in the git repository at:
+
+  git://git.alsa-project.org/alsa-kprivate.git usb-midi-fix-3.7
+
+for you to fetch up to e99ddfde6ae0dd2662bb40435696002b590e4057:
+
+  ALSA: ua101, usx2y: fix broken MIDI output (2012-11-18 17:15:24 +0100)
+
+----------------------------------------------------------------
+ALSA: ua101, usx2y: fix broken MIDI output
+
+Commit 88a8516a2128 (ALSA: usbaudio: implement USB autosuspend) added
+autosuspend code to all files making up the snd-usb-audio driver.
+However, midi.c is part of snd-usb-lib and is also used by other
+drivers, not all of which support autosuspend.  Thus, calls to
+usb_autopm_get_interface() could fail, and this unexpected error would
+result in the MIDI output being completely unusable.
+
+Make it work by ignoring the error that is expected with drivers that do
+not support autosuspend.
+
+Reported-by: Colin Fletcher <colin.m.fletcher@googlemail.com>
+Reported-by: Devin Venable <venable.devin@gmail.com>
+Reported-by: Dr Nick Bailey <nicholas.bailey@glasgow.ac.uk>
+Reported-by: Jannis Achstetter <jannis_achstetter@web.de>
+Reported-by: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: Oliver Neukum <oliver@neukum.org>
+Cc: 2.6.39+ <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/midi.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index c83f614..eeefbce 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -148,6 +148,7 @@ struct snd_usb_midi_out_endpoint {
+ 		struct snd_usb_midi_out_endpoint* ep;
+ 		struct snd_rawmidi_substream *substream;
+ 		int active;
++		bool autopm_reference;
+ 		uint8_t cable;		/* cable number << 4 */
+ 		uint8_t state;
+ #define STATE_UNKNOWN	0
+@@ -1076,7 +1077,8 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
+ 		return -ENXIO;
+ 	}
+ 	err = usb_autopm_get_interface(umidi->iface);
+-	if (err < 0)
++	port->autopm_reference = err >= 0;
++	if (err < 0 && err != -EACCES)
+ 		return -EIO;
+ 	substream->runtime->private_data = port;
+ 	port->state = STATE_UNKNOWN;
+@@ -1087,9 +1089,11 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
+ static int snd_usbmidi_output_close(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_usb_midi* umidi = substream->rmidi->private_data;
++	struct usbmidi_out_port *port = substream->runtime->private_data;
+
+ 	substream_open(substream, 0);
+-	usb_autopm_put_interface(umidi->iface);
++	if (port->autopm_reference)
++		usb_autopm_put_interface(umidi->iface);
+ 	return 0;
+ }
