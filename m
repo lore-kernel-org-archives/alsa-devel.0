@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [git pull] bugfix for 3.7
-Date: Sun, 18 Nov 2012 17:58:00 +0100
-Message-ID: <50A91398.3000103@ladisch.de>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: How to structure CPU DAI
+Date: Sun, 18 Nov 2012 17:04:15 -0500
+Message-ID: <CAKON4OyCTQPtfTLyiWrXRKJurF=6ZdDpAY-zQwXvJ2COokbkAA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id CB0D526508F
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 17:58:14 +0100 (CET)
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73C3A2650C1
+ for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 23:04:19 +0100 (CET)
+Received: by mail-ie0-f179.google.com with SMTP id c10so5528476ieb.38
+ for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 14:04:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,78 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following change since commit a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
+The LPC3130 has two independent I2S channels but it is not two copies
+of the same hardware block. Instead it is a single hardware block
+implementing the two channels. Some setup registers contain setup bits
+for both channels.
 
-  Linux 3.6 (2012-09-30 16:47:46 -0700)
+So I have one CPU DAI with two independent CODECs hung off from it.
 
-is available in the git repository at:
+So in a function like hw_params() for the CPU DAI, how do I know which
+I2S channel I'm supposed to be using? At the point where I created the
+soc_card I know the right channel. But I can't use the card pointer in
+the CPU DAI, since there are two cards and only on CPU DAI. The card
+pointer points to the last one registered. Can I put the info into the
+substream?
 
-  git://git.alsa-project.org/alsa-kprivate.git usb-midi-fix-3.7
+Or should I register two CPU DAIs from a single I2S device driver and
+give then two different names?
 
-for you to fetch up to e99ddfde6ae0dd2662bb40435696002b590e4057:
+A device tree like this describes the hardware..
 
-  ALSA: ua101, usx2y: fix broken MIDI output (2012-11-18 17:15:24 +0100)
+i2s@16000000 {
+    #address-cells = <2>;
+    #size-cells = <0>;
+    compatible = "nxp,lpc31xx-i2s";
+    reg = <0x16000000 0x1000>;
+    i2s0:i2s@0 {
+       interrupts = <13 15>;
+       reg = <0x80 0x180>;
+        /*receive-slave;*/ /* default is master */
+    };
+    i2s1:i2s@1 {
+       interrupts = <14 16>;
+       reg = <0x100 0x200>;
+        /*receive-slave;*/ /* default is master */
+    };
+};
 
-----------------------------------------------------------------
-ALSA: ua101, usx2y: fix broken MIDI output
+sound@1 {
+    compatible = "ea,ea3131-uda1380";
+    audio-codec = <&uda1380-0>;
+    i2s-controller = <&i2s0>;
+};
 
-Commit 88a8516a2128 (ALSA: usbaudio: implement USB autosuspend) added
-autosuspend code to all files making up the snd-usb-audio driver.
-However, midi.c is part of snd-usb-lib and is also used by other
-drivers, not all of which support autosuspend.  Thus, calls to
-usb_autopm_get_interface() could fail, and this unexpected error would
-result in the MIDI output being completely unusable.
+sound@2 {
+    compatible = "ea,ea3131-uda1380";
+    audio-codec = <&uda1380-1>;
+    i2s-controller = <&i2s1>;
+};
 
-Make it work by ignoring the error that is expected with drivers that do
-not support autosuspend.
-
-Reported-by: Colin Fletcher <colin.m.fletcher@googlemail.com>
-Reported-by: Devin Venable <venable.devin@gmail.com>
-Reported-by: Dr Nick Bailey <nicholas.bailey@glasgow.ac.uk>
-Reported-by: Jannis Achstetter <jannis_achstetter@web.de>
-Reported-by: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: Oliver Neukum <oliver@neukum.org>
-Cc: 2.6.39+ <stable@vger.kernel.org>
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/midi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index c83f614..eeefbce 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -148,6 +148,7 @@ struct snd_usb_midi_out_endpoint {
- 		struct snd_usb_midi_out_endpoint* ep;
- 		struct snd_rawmidi_substream *substream;
- 		int active;
-+		bool autopm_reference;
- 		uint8_t cable;		/* cable number << 4 */
- 		uint8_t state;
- #define STATE_UNKNOWN	0
-@@ -1076,7 +1077,8 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
- 		return -ENXIO;
- 	}
- 	err = usb_autopm_get_interface(umidi->iface);
--	if (err < 0)
-+	port->autopm_reference = err >= 0;
-+	if (err < 0 && err != -EACCES)
- 		return -EIO;
- 	substream->runtime->private_data = port;
- 	port->state = STATE_UNKNOWN;
-@@ -1087,9 +1089,11 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
- static int snd_usbmidi_output_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_usb_midi* umidi = substream->rmidi->private_data;
-+	struct usbmidi_out_port *port = substream->runtime->private_data;
-
- 	substream_open(substream, 0);
--	usb_autopm_put_interface(umidi->iface);
-+	if (port->autopm_reference)
-+		usb_autopm_put_interface(umidi->iface);
- 	return 0;
- }
+--
+Jon Smirl
+jonsmirl@gmail.com
