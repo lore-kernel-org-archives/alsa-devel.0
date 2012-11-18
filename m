@@ -1,22 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: USB hardware that supports implicit feedback?
-Date: Sun, 18 Nov 2012 18:10:29 +0800
-Message-ID: <50A8B415.5010008@gmail.com>
-References: <p06240805cccafc72f23b@[192.168.1.36]>
- <alpine.LNX.2.00.1211152158440.2632@xoschi>
- <p06240809cccb09820207@[192.168.1.8]> <50A57933.9070607@gmail.com>
- <p06240807cccb56d116e2@[192.168.1.12]>
+From: Julian Wollrath <jwollrath@web.de>
+Subject: Hung task with trace after resume on kernel v3.7-rc6
+Date: Sun, 18 Nov 2012 16:18:03 +0100
+Message-ID: <20121118161803.58ca707c@ilfaris>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FC602615AA
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 11:11:41 +0100 (CET)
-Received: by mail-pa0-f51.google.com with SMTP id fb11so519424pad.38
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 02:11:40 -0800 (PST)
-In-Reply-To: <p06240807cccb56d116e2@[192.168.1.12]>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1257A26508E
+ for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 16:18:08 +0100 (CET)
+Received: from ilfaris ([193.170.62.226]) by smtp.web.de (mrweb002) with
+ ESMTPSA (Nemesis) id 0LqlAw-1T5hpl0hak-00dpyB for
+ <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 16:18:07 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +21,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Griscom <griscom@suitable.com>
-Cc: Eldad Zack <eldad@fogrefinery.com>, Alsa Developer <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16.11.2012 10:39, Daniel Griscom wrote:
-> At 7:22 AM +0800 11/16/12, Daniel Mack wrote:
->> Hi Daniel,
->> Hi Elad,
->>
->> On 16.11.2012 05:32, Daniel Griscom wrote:
->>>  At 10:02 PM +0100 11/15/12, Eldad Zack wrote:
->>>>  Hi Daniel,
->>>>
->>>>  On Thu, 15 Nov 2012, Daniel Griscom wrote:
->>>>>   I'm having trouble getting implicit feedback working with my custom
->>>>>   capture/playback USB audio class device, even with the latest kernel. I
->>>>>   presume it's a problem with my device's configuration, but 
->>>>> can't figure out
->>>>>   exactly what the problem is (after a whole lotta investigation).
->>>>
->>>>  What exactly doesn't work?
->>>
->>>  The audio output stream (from the computer to my device) runs at a
->>>  few frames per second higher or lower rate than that of the input
->>>  stream (from my device to the computer). The actual difference seems
->>>  to be stable on a specific machine, but varies greatly between
->>>  machines (I've seen differences from +7fps to -2fps; I presume this
->>>  is due to differences in CPU clock frequencies).
->>
->> So you're saying that this is what you experience after you added code
->> to make the driver use the implicit feedback mechanism? Over which time
->> did you measure this and how exactly? Because frankly, I doubt that -
->> the data rate is purely derived from the number of incoming samples.
-> 
-> This has been the case for a while; we started work with ALSA 1.0.23, 
-> but upgrading to kernel 3.6.6 (with included ALSA code) didn't change 
-> anything. We have yet to do any patching of ALSA for this matter.
+Hello,
 
-Well, afaik, ALSA 1.0.23 is what ships with a kernel <= 3.4, and the
-code for implicit feedback went in for 3.5.
+I have an Thinkpad X121e with the following soundcard:
+00:01.1 Audio device [0403]: Advanced Micro Devices [AMD] nee ATI
+Wrestler HDMI Audio [Radeon HD 6250/6310] [1002:1314]
 
->> Does your device demand the same number of *bytes* or samples/channel to
->> be sent?
-> 
-> I'll have to check that.
+After resuming after an suspend (either to ram or to disk) I found this
+output in my dmesg:
+[ 7514.237941] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7514.238085] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238090] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7514.238094] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238099] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7514.238104] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238109] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238113] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238118] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238123] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238127] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238132] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238137] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238141] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238154] hda-intel: spurious response 0xffffffff:0x0, last cmd=0x1970700
+[ 7514.238159] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7514.238443] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238448] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7514.238452] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238457] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7514.238461] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238466] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238471] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238475] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238480] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238485] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238489] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238494] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7514.238499] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7514.238563] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7514.238568] hda-intel: spurious response 0xffffffff:0x0, last cmd=0x1970700
+[ 7514.238573] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7514.238610] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7516.240988] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01a70700
+[ 7517.345017] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.345374] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345379] hda-intel: spurious response 0xffffffff:0x0, last cmd=0x1970700
+[ 7517.345384] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.345453] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345458] hda-intel: spurious response 0x7fffffff:0x0, last cmd=0x1970700
+[ 7517.345463] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.345639] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345644] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7517.345648] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345653] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7517.345658] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345662] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345667] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345671] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345676] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345681] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345685] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345690] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7517.345695] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345700] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7517.345704] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345709] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345713] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345718] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345723] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345727] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345732] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345737] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345741] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.345747] hda-intel: spurious response 0xffffffff:0x0, last cmd=0x1970700
+[ 7517.345751] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.346035] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.346040] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7517.346045] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.346050] hda-intel: spurious response 0x2:0x0, last cmd=0x1970700
+[ 7517.346054] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.346082] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.346087] hda-intel: spurious response 0x233:0x0, last cmd=0x1970700
+[ 7517.346092] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.346156] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7517.346161] hda-intel: spurious response 0xffffffff:0x0, last cmd=0x1970700
+[ 7517.346166] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+....
+[ 7517.346203] hda-intel: spurious response 0x0:0x0, last cmd=0x1970700
+[ 7518.346490] hda_intel: azx_get_response timeout, switching to single_cmd mode: last cmd=0x01a70700
+[ 7670.241195] INFO: task kworker/u:13:3734 blocked for more than 120 seconds.
+[ 7670.241208] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 7670.241215] kworker/u:13    D ffff88011ec128c0     0  3734      2 0x00000000
+[ 7670.241229]  ffff880104538690 0000000000000046 ffff880118c19b14 ffffffff81813420
+[ 7670.241240]  ffff880118c19fd8 ffff880118c19fd8 ffff880118c19fd8 ffff880104538690
+[ 7670.241250]  ffff88008d688098 ffff880118c19c20 ffff880118c19c18 ffff880104538690
+[ 7670.241261] Call Trace:
+[ 7670.241281]  [<ffffffff81403302>] ? schedule_timeout+0x1e2/0x2a0
+[ 7670.241293]  [<ffffffff81404982>] ? wait_for_common+0xd2/0x180
+[ 7670.241305]  [<ffffffff810693f0>] ? try_to_wake_up+0x270/0x270
+[ 7670.241315]  [<ffffffff81052911>] ? flush_work+0xe1/0x160
+[ 7670.241325]  [<ffffffff81051c10>] ? gcwq_release_assoc_and_unlock+0x40/0x40
+[ 7670.241335]  [<ffffffff8105369d>] ? __cancel_work_timer+0x5d/0xa0
+[ 7670.241377]  [<ffffffffa01b7f5c>] ? hda_call_codec_suspend+0x14c/0x160 [snd_hda_codec]
+[ 7670.241397]  [<ffffffffa01b7fb0>] ? snd_hda_suspend+0x40/0x60 [snd_hda_codec]
+[ 7670.241413]  [<ffffffffa018d693>] ? azx_bus_reset+0x73/0xa0 [snd_hda_intel]
+[ 7670.241433]  [<ffffffffa01b6e55>] ? codec_exec_verb+0x185/0x1c0 [snd_hda_codec]
+[ 7670.241452]  [<ffffffffa01b6ee8>] ? snd_hda_codec_read+0x58/0x90 [snd_hda_codec]
+[ 7670.241473]  [<ffffffffa01b7b68>] ? snd_hda_shutup_pins+0x58/0x70 [snd_hda_codec]
+[ 7670.241489]  [<ffffffffa028c369>] ? conexant_suspend+0x9/0x10 [snd_hda_codec_conexant]
+[ 7670.241507]  [<ffffffffa01b7e2e>] ? hda_call_codec_suspend+0x1e/0x160 [snd_hda_codec]
+[ 7670.241526]  [<ffffffffa01b8048>] ? hda_power_work+0x78/0xc0 [snd_hda_codec]
+[ 7670.241536]  [<ffffffff81052f06>] ? process_one_work+0x126/0x490
+[ 7670.241554]  [<ffffffffa01b7fd0>] ? snd_hda_suspend+0x60/0x60 [snd_hda_codec]
+[ 7670.241564]  [<ffffffff81054c3d>] ? worker_thread+0x15d/0x450
+[ 7670.241573]  [<ffffffff81054ae0>] ? flush_delayed_work+0x40/0x40
+[ 7670.241582]  [<ffffffff810599a3>] ? kthread+0xb3/0xc0
+[ 7670.241591]  [<ffffffff810598f0>] ? kthread_create_on_node+0x110/0x110
+[ 7670.241601]  [<ffffffff8140616c>] ? ret_from_fork+0x7c/0xb0
+[ 7670.241609]  [<ffffffff810598f0>] ? kthread_create_on_node+0x110/0x110
 
-Let me rephrase the question: does the number of input and output
-channels match? Eldad had a patch in his series that should make it work
-for both scenarios.
 
->> The code I wrote for implicit feedback is used by the M-Audio FTU
->> devices,
-> 
-> So, with an FTU the implicit feedback code works?
-
-Yes, it does for many others.
-
-> What version of 
-> kernel/ALSA should I use - the latest?
-
-Yes, always use the latests from git, especially for such relatively new
-features.
+If you need further information, please feel free to ask.
 
 
-Daniel
+With best regards,
+Julian Wollrath
