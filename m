@@ -1,18 +1,18 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH 1/2] ALSA: hda - Allow jack state to depend on
-	another jack.
-Date: Sun, 18 Nov 2012 22:56:39 -0800
-Message-ID: <1353308200-18944-2-git-send-email-dgreid@chromium.org>
+Subject: [PATCH 2/2] ALSA: hda - Fix Acer Aspire models with
+	analog mics.
+Date: Sun, 18 Nov 2012 22:56:40 -0800
+Message-ID: <1353308200-18944-3-git-send-email-dgreid@chromium.org>
 References: <1353308200-18944-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f201.google.com (mail-gg0-f201.google.com
- [209.85.161.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 000B02650E5
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 07:56:46 +0100 (CET)
-Received: by mail-gg0-f201.google.com with SMTP id i24so514772ggk.2
+Received: from mail-vb0-f73.google.com (mail-vb0-f73.google.com
+ [209.85.212.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DF0E2650EC
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 07:56:47 +0100 (CET)
+Received: by mail-vb0-f73.google.com with SMTP id b13so58222vby.2
  for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2012 22:56:46 -0800 (PST)
 In-Reply-To: <1353308200-18944-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,119 +28,79 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce the concept of a "gated" jack.  The gated jack's pin sense is
-only valid when the "gating" jack is plugged.  This requires checking
-the gating jack when the gated jack changes and re-checking the gated
-jack when the gating jack is plugged/unplugged.
+The Acer Aspire AO756 has an analog built-in mic on nid 0x1b and an
+external mic on nid 0x19.  The BIOS doesn't set this up.
 
-This allows handling of devices where the mic jack detect floats when
-the headphone jack is unplugged.
+The mic detect on this Acer Aspire netbook and Acer C7 ChromeBook is
+only valid when the headphone is plugged.  The detect circuit relies on
+the tip detect switch being closed on the jack.  Tell hda_jack to ignore
+the mic sense unless the headphones are plugged.
 
 Signed-off-by: Dylan Reid <dgreid@chromium.org>
 ---
- sound/pci/hda/hda_jack.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
- sound/pci/hda/hda_jack.h |  4 ++++
- 2 files changed, 48 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 5bdbada..e851d88 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -122,6 +122,8 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec)
- 	snd_array_free(&codec->jacktbl);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 89737ae..fe99176 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6013,6 +6013,16 @@ static void alc269_fixup_mic2_mute(struct hda_codec *codec,
+ 	}
  }
  
-+#define get_jack_plug_state(sense) !!(sense & AC_PINSENSE_PRESENCE)
-+
- /* update the cached value and notification flag if needed */
- static void jack_detect_update(struct hda_codec *codec,
- 			       struct hda_jack_tbl *jack)
-@@ -134,6 +136,27 @@ static void jack_detect_update(struct hda_codec *codec,
- 	else
- 		jack->pin_sense = read_pin_sense(codec, jack->nid);
- 
-+	/* A gating jack indicates the jack is invalid if gating is unplugged */
-+	if (jack->gating_jack &&
-+	    !get_jack_plug_state(jack->gating_jack->pin_sense))
-+		jack->pin_sense &= ~AC_PINSENSE_PRESENCE;
-+
-+	/* If a jack is gated by this one update it. */
-+	if (jack->gated_jack) {
-+		struct hda_jack_tbl *gated = jack->gated_jack;
-+
-+		if (gated->callback)
-+			gated->callback(codec, gated);
-+
-+		/* If this jack is plugged, then check the gated jack, otherwise
-+		 * not plugged.
-+		 */
-+		if (get_jack_plug_state(jack->pin_sense))
-+			gated->pin_sense = read_pin_sense(codec, gated->nid);
-+		else
-+			gated->pin_sense &= ~AC_PINSENSE_PRESENCE;
-+	}
-+
- 	jack->jack_dirty = 0;
- }
- 
-@@ -173,8 +196,6 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
- }
- EXPORT_SYMBOL_HDA(snd_hda_pin_sense);
- 
--#define get_jack_plug_state(sense) !!(sense & AC_PINSENSE_PRESENCE)
--
- /**
-  * snd_hda_jack_detect - query pin Presence Detect status
-  * @codec: the CODEC to sense
-@@ -222,6 +243,27 @@ int snd_hda_jack_detect_enable(struct hda_codec *codec, hda_nid_t nid,
- EXPORT_SYMBOL_HDA(snd_hda_jack_detect_enable);
- 
- /**
-+ * snd_hda_jack_set_gating_jack - Set gating jack.
-+ *
-+ * Indicates the gated jack is only valid when the gating jack is plugged.
-+ */
-+int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
-+				 hda_nid_t gating_nid)
++static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
++				    const struct alc_fixup *fix,
++				    int action)
 +{
-+	struct hda_jack_tbl *gated = snd_hda_jack_tbl_get(codec, gated_nid);
-+	struct hda_jack_tbl *gating = snd_hda_jack_tbl_get(codec, gating_nid);
++	struct alc_spec *spec = codec->spec;
 +
-+	if (!gated || !gating)
-+		return -EINVAL;
-+
-+	gated->gating_jack = gating;
-+	gating->gated_jack = gated;
-+
-+	return 0;
++	if (action == ALC_FIXUP_ACT_PROBE)
++		snd_hda_jack_set_gating_jack(codec, spec->ext_mic_pin,
++					     spec->autocfg.hp_pins[0]);
 +}
-+EXPORT_SYMBOL_HDA(snd_hda_jack_set_gating_jack);
-+
-+/**
-  * snd_hda_jack_report_sync - sync the states of all jacks and report if changed
-  */
- void snd_hda_jack_report_sync(struct hda_codec *codec)
-diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index 4487785..71553b2 100644
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -29,6 +29,8 @@ struct hda_jack_tbl {
- 	unsigned int jack_dirty:1;	/* needs to update? */
- 	unsigned int phantom_jack:1;    /* a fixed, always present port? */
- 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
-+	struct hda_jack_tbl *gating_jack;/* valid when gating jack plugged */
-+	struct hda_jack_tbl *gated_jack;/* gated is dependent on this jack */
- #ifdef CONFIG_SND_HDA_INPUT_JACK
- 	int type;
- 	struct snd_jack *jack;
-@@ -69,6 +71,8 @@ int snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
- 					unsigned char action,
- 					hda_jack_callback cb);
  
-+int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
-+				 hda_nid_t gating_nid);
+ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+@@ -6035,6 +6045,8 @@ enum {
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
+ 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
++	ALC271_FIXUP_AMIC_MIC2,
++	ALC271_FIXUP_HP_GATE_MIC_JACK,
+ };
  
- u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid);
- int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid);
+ static const struct alc_fixup alc269_fixups[] = {
+@@ -6179,6 +6191,22 @@ static const struct alc_fixup alc269_fixups[] = {
+ 		.type = ALC_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+ 	},
++	[ALC271_FIXUP_AMIC_MIC2] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
++			{ 0x14, 0x99130110 }, /* speaker */
++			{ 0x19, 0x01a19c20 }, /* mic */
++			{ 0x1b, 0x99a7012f }, /* int-mic */
++			{ 0x21, 0x0121401f }, /* HP out */
++			{ }
++		},
++	},
++	[ALC271_FIXUP_HP_GATE_MIC_JACK] = {
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc271_hp_gate_mic_jack,
++		.chained = true,
++		.chain_id = ALC271_FIXUP_AMIC_MIC2,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6199,6 +6227,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
++	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
+ 	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
 -- 
 1.8.0
