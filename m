@@ -1,21 +1,19 @@
-From: Julian Wollrath <jwollrath@web.de>
-Subject: Re: Hung task with trace after resume on kernel
- v3.7-rc6
-Date: Mon, 19 Nov 2012 14:56:45 +0100
-Message-ID: <20121119145645.30c681e5@ilfaris>
-References: <20121118161803.58ca707c@ilfaris>
- <CAEUnVG7bFqrzfVDG5-2uL6OHGEJR-Jf35mx-OLiTx-K84P+dmA@mail.gmail.com>
- <s5h3906gcfe.wl%tiwai@suse.de> <20121119115632.0c41386f@ilfaris>
- <s5hmwydg7mq.wl%tiwai@suse.de> <20121119131504.71f3151b@ilfaris>
- <s5h8v9xaha1.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] ALSA: hda - Keep power link on for
+	PantherPoint HDMI
+Date: Mon, 19 Nov 2012 15:14:45 +0100
+Message-ID: <50AA3ED5.5070809@canonical.com>
+References: <1352276553-26044-1-git-send-email-david.henningsson@canonical.com>
+ <s5hehk5hksn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id E024E2616D7
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 14:56:52 +0100 (CET)
-In-Reply-To: <s5h8v9xaha1.wl%tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AB0A2616E3
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 15:14:44 +0100 (CET)
+In-Reply-To: <s5hehk5hksn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,27 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, fengguang.wu@intel.com, "jesse.sung" <jesse.sung@canonical.com>, 1075882@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-> > > Could you try the patch below instead?
-> > The patch did not apply against 3.7-rc6 but the patch below applied
-> > and let the trace disappear.
-> 
-> OK, then at least it can be added as a workaround.
-> 
-> But the spurious response still appears, right?
-Yes, the spurious response still appears.
- 
-> Hm, then something screwed up the communication...
-> 
-> At which moment do you see such a message?  In other words, how to
-> trigger the bug?
-I suspend my system to ram or to disk. Then I resume it, everthing
-comes up again and then, aprrox 4s after the resume was initiated, the
-spurious response messages hit the dmesg for approx. 0.07s as you can
-see in my first message. Hopefully this answer the question.
+On 11/07/2012 09:36 AM, Takashi Iwai wrote:
+> At Wed,  7 Nov 2012 09:22:33 +0100,
+> David Henningsson wrote:
+>>
+>> On some of the PantherPoint HDMI machines we currently enable, we're seeing
+>> trouble with unsol events, i e detecting monitor presence, especially when
+>> on battery and after suspend/resume.
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/1075882
+>> Tested-by: Cyrus Lien <cyrus.lien@canonical.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_hdmi.c |    8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> So far this is the workaround we have found to be working. Sometimes, it also
+>> seems that "cat /proc/asound/cardx/codec#x" can also make the HDMI unsol event
+>> trigger, so that the problem fixes itself.
+>>
+>> We have not run any battery life tests to see if this causes more power consumption.
+>
+> Looks safe at least, so I applied to for-next branch to give more
+> testing.  If you find a better solution, let me know.
+
+Jesse has now done a battery life test, both for idle machine and S3 
+machine, and both with HDMI connected and HDMI unconnected.
+
+All differences in power consumption were within error margins. Given 
+that, should we consider sending this patch to stable?
 
 
-With best regards,
-Julian
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
