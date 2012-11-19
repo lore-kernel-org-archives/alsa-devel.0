@@ -1,41 +1,69 @@
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] ASoC: mxs-saif: export
- mxs_saif_put_mclk,mxs_saif_get_mclk
-Date: Fri, 23 Nov 2012 08:21:22 +0100
-Message-ID: <20655.9202.288388.343758@ipc1.ka-ro>
-References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
-	<1353587470-11994-4-git-send-email-LW@KARO-electronics.de>
-	<20121123020635.GK4385@opensource.wolfsonmicro.com>
+From: Bill Pemberton <wfp5p@virginia.edu>
+Subject: [PATCH 030/493] ASoC: max98088: remove use of
+	__devexit_p
+Date: Mon, 19 Nov 2012 13:19:39 -0500
+Message-ID: <1353349642-3677-30-git-send-email-wfp5p@virginia.edu>
+References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121123020635.GK4385@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from viridian.itc.virginia.edu (viridian.itc.virginia.edu
+ [128.143.12.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4BB3261731
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 19:27:25 +0100 (CET)
+In-Reply-To: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: gregkh@linuxfoundation.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+CONFIG_HOTPLUG is going away as an option so __devexit_p is no longer
+needed, remove it.
 
-> On Thu, Nov 22, 2012 at 01:31:09PM +0100, Lothar Wa=C3=9Fmann wrote:
-> >=20
-> > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
->=20
-> Why?
->
-I thought that was obvious... To be able to compile the mxs sound
-driver as module.
+Also fix the indentation for the initialization of the
+max98088_i2c_driver struct to make chkpatch happy.
 
+Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+Cc: Jaroslav Kysela <perex@perex.cz> 
+Cc: Takashi Iwai <tiwai@suse.de> 
+Cc: alsa-devel@alsa-project.org 
+---
+ sound/soc/codecs/max98088.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 3264a51..b858264 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -2098,13 +2098,13 @@ static const struct i2c_device_id max98088_i2c_id[] = {
+ MODULE_DEVICE_TABLE(i2c, max98088_i2c_id);
+ 
+ static struct i2c_driver max98088_i2c_driver = {
+-       .driver = {
+-               .name = "max98088",
+-               .owner = THIS_MODULE,
+-       },
+-       .probe  = max98088_i2c_probe,
+-       .remove = __devexit_p(max98088_i2c_remove),
+-       .id_table = max98088_i2c_id,
++	.driver = {
++		.name = "max98088",
++		.owner = THIS_MODULE,
++	},
++	.probe  = max98088_i2c_probe,
++	.remove = max98088_i2c_remove,
++	.id_table = max98088_i2c_id,
+ };
+ 
+ module_i2c_driver(max98088_i2c_driver);
+-- 
+1.8.0
