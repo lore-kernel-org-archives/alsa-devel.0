@@ -1,8 +1,8 @@
 From: Julian Wollrath <jwollrath@web.de>
 Subject: Re: Hung task with trace after resume on kernel
  v3.7-rc6
-Date: Mon, 19 Nov 2012 20:14:42 +0100
-Message-ID: <20121119201442.182cc790@ilfaris>
+Date: Mon, 19 Nov 2012 20:25:13 +0100
+Message-ID: <20121119202513.725a7f1f@ilfaris>
 References: <20121118161803.58ca707c@ilfaris>
  <CAEUnVG7bFqrzfVDG5-2uL6OHGEJR-Jf35mx-OLiTx-K84P+dmA@mail.gmail.com>
  <s5h3906gcfe.wl%tiwai@suse.de> <20121119115632.0c41386f@ilfaris>
@@ -11,15 +11,15 @@ References: <20121118161803.58ca707c@ilfaris>
  <20121119151845.1886ed58@ilfaris> <s5ha9ud7j5j.wl%tiwai@suse.de>
  <20121119160020.78c84910@ilfaris> <20121119170900.7093ca40@ilfaris>
  <s5h1ufp7ejj.wl%tiwai@suse.de> <20121119185112.33707654@ilfaris>
- <s5hwqxhqxdc.wl%tiwai@suse.de>
+ <s5hwqxhqxdc.wl%tiwai@suse.de> <s5hmwydqunm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 3288F26260C
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 20:15:08 +0100 (CET)
-In-Reply-To: <s5hwqxhqxdc.wl%tiwai@suse.de>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DCCC2651B2
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 20:25:55 +0100 (CET)
+In-Reply-To: <s5hmwydqunm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,12 +33,121 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> OK, then the approach isn't wrong.
+> > Could you clear the patch and check whether power_save_controller=0
+> > option also solves the issue?
 > 
-> Could you clear the patch and check whether power_save_controller=0
-> option also solves the issue?
-Setting power_save_controller=0 also solves the issue.
+> If it works, the patch below should help.  Give it a try.
+The patch below does help, the spurious responses do not show up
+anymore.
 
-
-With best regards,
+Thank you very much for your help and your quick response, with best
+regards,
 Julian
+
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Limit runtime PM support only to known
+> Intel chips
+> 
+> We've got a report that the runtime PM may make the codec the
+> unresponsive on AMD platforms.  Since the feature has been tested only
+> on the recent Intel platforms, it's safer to limit the support to such
+> devices for now.
+> 
+> This patch adds a new DCAPS bit flag indicating the runtime PM
+> support, and mark it for Intel controllers.
+> 
+> Reported-by: Julian Wollrath <jwollrath@web.de>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Tested-by: Julian Wollrath <jwollrath@web.de>
+> ---
+>  sound/pci/hda/hda_intel.c | 39
+> ++++++++++++++++++++------------------- 1 file changed, 20
+> insertions(+), 19 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index cd2dbaf..f9d870e 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -556,6 +556,12 @@ enum {
+>  #define AZX_DCAPS_ALIGN_BUFSIZE	(1 << 22)	/* buffer
+> size alignment */ #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 <<
+> 23)	/* BDLE in 4k boundary */ #define
+> AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
+> +#define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM
+> support */ + +/* quirks for Intel PCH */
+> +#define AZX_DCAPS_INTEL_PCH \
+> +	(AZX_DCAPS_SCH_SNOOP | AZX_DCAPS_BUFSIZE | \
+> +	 AZX_DCAPS_COUNT_LPIB_DELAY | AZX_DCAPS_PM_RUNTIME)
+>  
+>  /* quirks for ATI SB / AMD Hudson */
+>  #define AZX_DCAPS_PRESET_ATI_SB \
+> @@ -2433,6 +2439,9 @@ static void azx_power_notify(struct hda_bus
+> *bus, bool power_up) {
+>  	struct azx *chip = bus->private_data;
+>  
+> +	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
+> +		return;
+> +
+>  	if (power_up)
+>  		pm_runtime_get_sync(&chip->pci->dev);
+>  	else
+> @@ -2548,7 +2557,8 @@ static int azx_runtime_suspend(struct device
+> *dev) struct snd_card *card = dev_get_drvdata(dev);
+>  	struct azx *chip = card->private_data;
+>  
+> -	if (!power_save_controller)
+> +	if (!power_save_controller ||
+> +	    !(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
+>  		return -EAGAIN;
+>  
+>  	azx_stop_chip(chip);
+> @@ -3429,39 +3439,30 @@ static void __devexit azx_remove(struct
+> pci_dev *pci) static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+>  	/* CPT */
+>  	{ PCI_DEVICE(0x8086, 0x1c20),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* PBG */
+>  	{ PCI_DEVICE(0x8086, 0x1d20),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE},
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Panther Point */
+>  	{ PCI_DEVICE(0x8086, 0x1e20),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Lynx Point */
+>  	{ PCI_DEVICE(0x8086, 0x8c20),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Lynx Point-LP */
+>  	{ PCI_DEVICE(0x8086, 0x9c20),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Lynx Point-LP */
+>  	{ PCI_DEVICE(0x8086, 0x9c21),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+>  	/* Haswell */
+>  	{ PCI_DEVICE(0x8086, 0x0c0c),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
+>  	{ PCI_DEVICE(0x8086, 0x0d0c),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
+>  	/* 5 Series/3400 */
+>  	{ PCI_DEVICE(0x8086, 0x3b56),
+> -	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
+> -	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY },
+> +	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
+>  	/* SCH */
+>  	{ PCI_DEVICE(0x8086, 0x811b),
+>  	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
