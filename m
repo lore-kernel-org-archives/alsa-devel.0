@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCHv2 1/1] pcm_pulse: set prebuf
- parameter	according to software parameters
-Date: Tue, 20 Nov 2012 08:51:29 +0100
-Message-ID: <50AB3681.7040802@canonical.com>
-References: <1353232909-6207-1-git-send-email-remi@remlab.net>
- <s5hvcd1qxb6.wl%tiwai@suse.de>
+From: Roman Haefeli <reduzent@gmail.com>
+Subject: Re: hdsp rpm support
+Date: Tue, 20 Nov 2012 08:57:22 +0100
+Message-ID: <1353398242.2165.1.camel@yoyo5>
+References: <1326877559.24738.84.camel@yoyo4>
+ <20120118102658.GA5351@linuxaudio.org>  <1349046242.2195.6.camel@yoyo5>
+ <1353259841.4990.8.camel@chello084112006029.chello.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 42463261603
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 08:51:31 +0100 (CET)
-In-Reply-To: <s5hvcd1qxb6.wl%tiwai@suse.de>
+Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
+ [209.85.215.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 096EA261603
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 08:57:25 +0100 (CET)
+Received: by mail-ea0-f179.google.com with SMTP id i12so128380eaa.38
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2012 23:57:24 -0800 (PST)
+In-Reply-To: <1353259841.4990.8.camel@chello084112006029.chello.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?B?UsOpbWkgRGVuaXMtQ291cm1vbnQ=?= <remi@remlab.net>
+To: Karl Grill <kgrill@chello.at>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTEvMTkvMjAxMiAwNzowOSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFN1biwgMTgg
-Tm92IDIwMTIgMTI6MDE6NDkgKzAyMDAsCj4gUsOpbWkgRGVuaXMtQ291cm1vbnQgd3JvdGU6Cj4+
-Cj4+IFRoZSBjdXJyZW50IGRlZmF1bHQgdmFsdWUgZm9yIHByZWJ1ZiBpcyB2ZXJ5IGhpZ2gsIGFs
-bW9zdCB0aGUgZnVsbAo+PiB2aXJ0dWFsIEFMU0EgYnVmZmVyLiBUaGlzIGJyZWFrcyBzb21lIGFw
-cGxpY2F0aW9uIGVzcGVjaWFsbHkgd2hlcmUKPj4gbG93IGxhdGVuY3kgaXMgaW52b2x2ZWQuCj4+
-Cj4+IFRoaXMgcGF0Y2ggbWFrZXMgcGNtX3B1bHNlIGltcGxlbWVudCB0aGUgc3dfcGFyYW1zIGNh
-bGxiYWNrIGFuZCBnZXQKPj4gdGhlIHByZWJ1ZiB2YWx1ZSBmcm9tIHRoZSBBTFNBIHNvZnR3YXJl
-IHBhcmFtZXRlcnMuIFRodXMgdGhlCj4+IHRyaWdnZXIgbGF0ZW5jeSBpcyBtdWNoIG1vcmUgbGlr
-ZSB3aGF0IGFuIEFMU0EgYXBwbGljYXRpb24gc2hvdWxkCj4+IGV4cGVjdCBmcm9tIGFuIEFMU0Eg
-UENNIGRldmljZS4KPgo+IExvb2tzIGdvb2QgdG8gbWUuICBEYXZpZCwgY291bGQgeW91IHJldmll
-dz8KCkkgdGhpbmsgc28gdG9vLgoKQWNrZWQtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5o
-ZW5uaW5nc3NvbkBjYW5vbmljYWwuY29tPgoKPiBBbHNvLCB0aGUgZmlyc3QgcGF0Y2ggaXNuJ3Qg
-bmVlZGVkLCByaWdodD8KCkkgdGhpbmsgdGhlICJwY21fcHVsc2U6IGRvIG5vdCB0cmlnZ2VyIGlt
-bWVkaWF0ZWx5IGF0IHN0YXJ0IiBwYXRjaCAKc2hvdWxkIG5vdCBiZSBhcHBsaWVkLgoKPgo+Cj4g
-VGFrYXNoaQo+Cj4+IC0tLQo+PiAgIHB1bHNlL3BjbV9wdWxzZS5jIHwgICAzMiArKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKystLQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCAzMCBpbnNlcnRpb25z
-KCspLCAyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvcHVsc2UvcGNtX3B1bHNlLmMg
-Yi9wdWxzZS9wY21fcHVsc2UuYwo+PiBpbmRleCAyNGZkNGRhLi40MjI2ZDMwIDEwMDY0NAo+PiAt
-LS0gYS9wdWxzZS9wY21fcHVsc2UuYwo+PiArKysgYi9wdWxzZS9wY21fcHVsc2UuYwo+PiBAQCAt
-ODU0LDggKzg1NCw5IEBAIHN0YXRpYyBpbnQgcHVsc2VfaHdfcGFyYW1zKHNuZF9wY21faW9wbHVn
-X3QgKiBpbywKPj4gICAJCTQgKiAxMDI0ICogMTAyNDsKPj4gICAJcGNtLT5idWZmZXJfYXR0ci50
-bGVuZ3RoID0KPj4gICAJCWlvLT5idWZmZXJfc2l6ZSAqIHBjbS0+ZnJhbWVfc2l6ZTsKPj4gLQlw
-Y20tPmJ1ZmZlcl9hdHRyLnByZWJ1ZiA9Cj4+IC0JICAgIChpby0+YnVmZmVyX3NpemUgLSBpby0+
-cGVyaW9kX3NpemUpICogcGNtLT5mcmFtZV9zaXplOwo+PiArCWlmIChwY20tPmJ1ZmZlcl9hdHRy
-LnByZWJ1ZiA9PSAodWludDMyX3QpLTEpCj4+ICsJCXBjbS0+YnVmZmVyX2F0dHIucHJlYnVmID0K
-Pj4gKwkJCShpby0+YnVmZmVyX3NpemUgLSBpby0+cGVyaW9kX3NpemUpICogcGNtLT5mcmFtZV9z
-aXplOwo+PiAgIAlwY20tPmJ1ZmZlcl9hdHRyLm1pbnJlcSA9IGlvLT5wZXJpb2Rfc2l6ZSAqIHBj
-bS0+ZnJhbWVfc2l6ZTsKPj4gICAJcGNtLT5idWZmZXJfYXR0ci5mcmFnc2l6ZSA9IGlvLT5wZXJp
-b2Rfc2l6ZSAqIHBjbS0+ZnJhbWVfc2l6ZTsKPj4KPj4gQEAgLTg2NSw2ICs4NjYsMzEgQEAgc3Rh
-dGljIGludCBwdWxzZV9od19wYXJhbXMoc25kX3BjbV9pb3BsdWdfdCAqIGlvLAo+PiAgIAlyZXR1
-cm4gZXJyOwo+PiAgIH0KPj4KPj4gK3N0YXRpYyBpbnQgcHVsc2Vfc3dfcGFyYW1zKHNuZF9wY21f
-aW9wbHVnX3QgKmlvLCBzbmRfcGNtX3N3X3BhcmFtc190ICpwYXJhbXMpCj4+ICt7Cj4+ICsJc25k
-X3BjbV9wdWxzZV90ICpwY20gPSBpby0+cHJpdmF0ZV9kYXRhOwo+PiArCXNuZF9wY21fdWZyYW1l
-c190IHN0YXJ0X3RocmVzaG9sZDsKPj4gKwo+PiArCWFzc2VydChwY20pOwo+PiArCj4+ICsJaWYg
-KCFwY20tPnAgfHwgIXBjbS0+cC0+bWFpbmxvb3ApCj4+ICsJCXJldHVybiAtRUJBREZEOwo+PiAr
-Cj4+ICsJcGFfdGhyZWFkZWRfbWFpbmxvb3BfbG9jayhwY20tPnAtPm1haW5sb29wKTsKPj4gKwo+
-PiArCXNuZF9wY21fc3dfcGFyYW1zX2dldF9zdGFydF90aHJlc2hvbGQocGFyYW1zLCAmc3RhcnRf
-dGhyZXNob2xkKTsKPj4gKwo+PiArCS8qIEF0IGxlYXN0IG9uZSBwZXJpb2QgdG8ga2VlcCBQdWxz
-ZUF1ZGlvIGhhcHB5ICovCj4+ICsJaWYgKHN0YXJ0X3RocmVzaG9sZCA8IGlvLT5wZXJpb2Rfc2l6
-ZSkKPj4gKwkJc3RhcnRfdGhyZXNob2xkID0gaW8tPnBlcmlvZF9zaXplOwo+PiArCj4+ICsJcGNt
-LT5idWZmZXJfYXR0ci5wcmVidWYgPSBzdGFydF90aHJlc2hvbGQgKiBwY20tPmZyYW1lX3NpemU7
-Cj4+ICsKPj4gKwlwYV90aHJlYWRlZF9tYWlubG9vcF91bmxvY2socGNtLT5wLT5tYWlubG9vcCk7
-Cj4+ICsKPj4gKwlyZXR1cm4gMDsKPj4gK30KPj4gKwo+PiAgIHN0YXRpYyBpbnQgcHVsc2VfY2xv
-c2Uoc25kX3BjbV9pb3BsdWdfdCAqIGlvKQo+PiAgIHsKPj4gICAJc25kX3BjbV9wdWxzZV90ICpw
-Y20gPSBpby0+cHJpdmF0ZV9kYXRhOwo+PiBAQCAtOTMxLDYgKzk1Nyw3IEBAIHN0YXRpYyBjb25z
-dCBzbmRfcGNtX2lvcGx1Z19jYWxsYmFja190IHB1bHNlX3BsYXliYWNrX2NhbGxiYWNrID0gewo+
-PiAgIAkucG9sbF9yZXZlbnRzID0gcHVsc2VfcGNtX3BvbGxfcmV2ZW50cywKPj4gICAJLnByZXBh
-cmUgPSBwdWxzZV9wcmVwYXJlLAo+PiAgIAkuaHdfcGFyYW1zID0gcHVsc2VfaHdfcGFyYW1zLAo+
-PiArCS5zd19wYXJhbXMgPSBwdWxzZV9zd19wYXJhbXMsCj4+ICAgCS5jbG9zZSA9IHB1bHNlX2Ns
-b3NlLAo+PiAgIAkucGF1c2UgPSBwdWxzZV9wYXVzZQo+PiAgIH07Cj4+IEBAIC0xMDg4LDYgKzEx
-MTUsNyBAQCBTTkRfUENNX1BMVUdJTl9ERUZJTkVfRlVOQyhwdWxzZSkKPj4gICAJfQo+Pgo+PiAg
-IAlwY20tPmhhbmRsZV91bmRlcnJ1biA9IGhhbmRsZV91bmRlcnJ1bjsKPj4gKwlwY20tPmJ1ZmZl
-cl9hdHRyLnByZWJ1ZiA9IC0xOwo+Pgo+PiAgIAllcnIgPSBwdWxzZV9jb25uZWN0KHBjbS0+cCwg
-c2VydmVyLCBmYWxsYmFja19uYW1lICE9IE5VTEwpOwo+PiAgIAlpZiAoZXJyIDwgMCkKPj4gLS0K
-Pj4gMS43LjEwLjQKPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCj4+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCj4KCgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRk
-LgpodHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Son, 2012-11-18 at 18:30 +0100, Karl Grill wrote:
+> Hi all,
+> I finally got my hands on my son's RPM+cardbus, and my results were
+> exactly the same as Roman's (timeout at the beginning of firmware
+> upload). With a bit of experimenting (imitating the windows driver), I
+> am now at stage where the firmware loads, but there are still some
+> quirks (I had to bypass the iobox recognition code, and I have to eject
+> the card and push it back in for it to work - well that is at least
+> better than having to boot into XP and back out).
+
+Sounds great to me.
+
+>  I'll post a patch when
+> these are fixed.
+
+I'll happily test any patches regarding this hardware. Many thanks for
+your efforts.
+
+Roman
