@@ -1,57 +1,86 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: atmel-pcm: add dma support
-Date: Tue, 20 Nov 2012 18:24:35 +0900
-Message-ID: <20121120092433.GB10560@opensource.wolfsonmicro.com>
-References: <1353400698-19384-1-git-send-email-voice.shen@atmel.com>
- <1353400698-19384-2-git-send-email-voice.shen@atmel.com>
- <20121120085728.GX10560@opensource.wolfsonmicro.com>
- <50AB4BBB.7050308@atmel.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Resend v6 PATCH 2/2] ASoC: atmel-ssc: add pinctrl consumer
+Date: Tue, 20 Nov 2012 17:31:22 +0800
+Message-ID: <50AB4DEA.3090100@atmel.com>
+References: <1353045837-19474-1-git-send-email-voice.shen@atmel.com> <1353045837-19474-2-git-send-email-voice.shen@atmel.com> <20121116061250.GP4387@opensource.wolfsonmicro.com> <50A5DE4E.80206@atmel.com> <20121116064113.GQ4387@opensource.wolfsonmicro.com> <50A5E44D.6040501@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Z4ZSWl3cPHKQyRxO"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50AB4BBB.7050308@atmel.com>
+In-Reply-To: <50A5E44D.6040501@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---Z4ZSWl3cPHKQyRxO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 11/16/2012 14:59, Bo Shen wrote:
+> On 11/16/2012 14:41, Mark Brown wrote:
+>> On Fri, Nov 16, 2012 at 02:33:50PM +0800, Bo Shen wrote:
+>>> On 11/16/2012 14:12, Mark Brown wrote:
+>>
+>>>> No, this isn't what was meant - the idea is to send only the
+>>>> addition of
+>>>> pinctrl data as one patch, based off the ASoC branch instead of -next.
+>>
+>>> What is the pinctrl data? (This patch can be applied on
+>>
+>> The data you're adding in the device tree!
+>>
+>>> sound/topic/atmel branch without any conflicts)
+>>
+>> That's not helpful to anyone doing bisection if there's nothing defining
+>> the pin states, it means that the system won't be able to start the
+>> driver as the API call will fail.
+>>
+>>> The other one add pinctrl nodes, must based on -next, or else I
+>>> don't know where should I add the pinctrl nodes.
+>>
+>> What makes you say this?
+>
+> For example, if I want to add pinctrl node
+> ---<8---
+>   ssc0 {
+>      pinctrl_ssc0_tx: ssc0_tx-0 {
+>              atmel,pins = <1 16 0x1 0x0   /* PB16 periph A */
+>                            1 17 0x1 0x0   /* PB17 periph A */
+>                                  1 18 0x1 0x0>; /* PB18 periph A */
+>          };
+> --->8---
+> This should be add into dtsi file as following
+> ---<8---
+> ahb {
+>      apb {
+>          pinctrl {
+>              ssc0 {
+>                  pinctrl_ssc0_tx
+>              }
+>          }
+>      }
+> }
+> --->8---
+>
+> In the ASoC branch tree, I don't see any pinctrl related information.
+> So, I say I don't know where should I add the pinctrl nodes.
+>
+> May be I misunderstanding, do you mean I should only add as followign
+> based on ASoC tree? And the upper go into pinctrl tree?
+> ---<8---
+> ssc0: ssc@fffbc000 {
+>      compatible = "atmel,at91rm9200-ssc";
+>          reg = <0xfffbc000 0x4000>;
+>          interrupts = <14 4 5>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
+>          status = "disable";
+> };
+> --->8---
 
-On Tue, Nov 20, 2012 at 05:22:03PM +0800, Bo Shen wrote:
-> On 11/20/2012 16:57, Mark Brown wrote:
+Any suggestion for this? what should I do with this patch for next?
 
-> >If you're using dmaengine you really need a *very* good reason not to
-> >use the core dmaengine support...
+> Best Regards
+> Bo Shen
+>
+>
 
-> You mean I should using the soc-dmaengine-pcm, am I right?
-
-Yes, that's right.
-
---Z4ZSWl3cPHKQyRxO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQq0wBAAoJELSic+t+oim9igIP/Rr6CuLFujilpxVFd1RsOi9q
-w7hFu1ntrFr55tApuMKrLbjc9xLyoLkocvVs9ccMtYgkbsEcWMossnIqArckKIUc
-CZiK283Xbm8hTPqy0BZLsQP6NvJYY5Uh6o3nPppV4Ob2VzZfEkQ/bHDaUcEURJ/5
-X4b/cePtfRKVvgqiqhRSzxKYP2/Fcl3R8ftn9ELbi1VcZXF03Lu13FprDeUHq2xQ
-rH+Jg83B+ZZGiMrn1h1auU23TboP+U6BmD8WiqQf+yrwtUpCryr/9aTIVkUE+vIq
-cf7RqcPinSTdI6TvjkgnXw9JuKPgA2JIZaRzV1OJml+2QyuSnJM2mo2FxhDJ7opp
-NDEX7UgD9hXwffAfqQuox9Q5N5ckbLi9bzmXSlqTSdTe2BCWWaEjoD3c+HmC1YfJ
-gbUHyH5siq7xtFrtVa6++MBLrnjvu/5TmH2LG83rleVuRvXO/uaAZ9TyAVvPZ8rW
-Du51odVXOsjtDSa7/EK9zjb/MJARDzdWio0thbQhMiR90VGKkC5yuSG7zK5ZrYzF
-fnc7mEP5D4F6ehZMN9nNvF93ySLlO0GvrIrZiWDA2ilSVBJoO3YejjTXGs632jTO
-psixRu6TTt7wCTzM49rmHKfTl9XPiPk6CFpz28xv6OYmKz9An8RvAC9yDjVP1RTC
-HDTNiqn6dBDNHKhWTBYG
-=VD1N
------END PGP SIGNATURE-----
-
---Z4ZSWl3cPHKQyRxO--
