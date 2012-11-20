@@ -1,63 +1,154 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [BUGFIX PATCH] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
-Date: Fri, 23 Nov 2012 17:13:09 +0900
-Message-ID: <20121123081307.GA4529@opensource.wolfsonmicro.com>
-References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
- <20121123020517.GJ4385@opensource.wolfsonmicro.com>
- <20655.7916.566188.590202@ipc1.ka-ro>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH 06/10] ASoC: kirkwood-i2s: use devm_* APIs
+Date: Tue, 20 Nov 2012 12:19:33 +0000
+Message-ID: <E1Tamnd-0007XT-Lm@rmk-PC.arm.linux.org.uk>
+References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20655.7916.566188.590202@ipc1.ka-ro>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 6E537265376
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 13:19:35 +0100 (CET)
+In-Reply-To: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Liam Girdwood <lrg@ti.com>, Rabeeh Khoury <rabeeh@solid-run.com>
 List-Id: alsa-devel@alsa-project.org
 
+Simplify the cleanup paths in the driver by using the devm_* APIs,
+ensuring that all error paths are correctly checked.
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ sound/soc/kirkwood/kirkwood-i2s.c |   53 ++++++++++--------------------------
+ sound/soc/kirkwood/kirkwood.h     |    1 -
+ 2 files changed, 15 insertions(+), 39 deletions(-)
 
-On Fri, Nov 23, 2012 at 07:59:56AM +0100, Lothar Wa=DFmann wrote:
-> Mark Brown writes:
-
-> > What is the actual bug here?  This fix doesn't look obviously right, and
-> > if we do need to move to -objs for some reason then the block ought to
-> > be in the -objs section of the Makefile.
-
-> As I mentioned in the part of my email that you didn't quote, if the
-> sound driver is being compiled as module, the files imx-pcm-fiq.c or
-> imx-pcm-dma.c which should be compiled as part of imx-pcm.o will not
-> be touched by the compiler:
-
-That's more detailed than your previous mail but you're still only
-describing the symptom, not the what the actual error is or how it's
-fixed...
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQry/wAAoJELSic+t+oim9PI4P/17lQqgJM7mGjhUn6DJ00W0C
-PQqqfIO7RUzHrgRP4FcWhmgt6nAiQJxbOr8k/KnLyZmLpn0fYfkNMGj2QIYkiWgT
-i2b0VWLJftQ6FdFsL0GC+l02VpCghrFji5J7fgLG4l8YDimNycqLTttZfvhLuhhL
-v0NGbrSn/9YxbY5NkUcy9oE2J1/itMkqWvStXn0BUAiD3fSo6TiwJtwz9o+pA/wc
-wApAUUiHBvV7vXnepMIFVA/1jj/anp6C7R/PfNsiJkiLgmmxjqbd8Bqm8rEf6xip
-FQ638w4BRYcbGdaH2l8hlktIE7QwEHLkNysw+/wlKI6DxQ6P2+WVb1cevUhApMkI
-orhb+VgyngmrXxPRYAy+AnYoBh1bQuamcurea19LWE3u5uiaJLtd52+yspGiP4jm
-9hYuKqnV5a/4iFBcIwA6lbdIkJYmQAfbxW469Y/M9ogLe1NO+1EvetnOEPNfCUBg
-3wU5FvkGTtJUYI4/rDgNFAX7/ltmuqK6mvWkIKJCiB2wpyuMDMTFdTEweCHX21Oa
-j30wdY8/2z3LMFE/PJMu711Nn5zGqHThDyP8ZmIzhKJEOYrm6OUfCNzENeV+3kvO
-WtaewjDJg2D7YcL3sGOAQWMlTYdHzNFGTNmTLAJUL92ZxhLV9NCNgVuDTbnRIPDP
-4pi17Lfb7crDqV5pdsSh
-=BMeT
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 1d5db48..f059f40 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -406,57 +406,47 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	struct kirkwood_dma_data *priv;
+ 	int err;
+ 
+-	priv = kzalloc(sizeof(struct kirkwood_dma_data), GFP_KERNEL);
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv) {
+ 		dev_err(&pdev->dev, "allocation failed\n");
+-		err = -ENOMEM;
+-		goto error;
++		return -ENOMEM;
+ 	}
+ 	dev_set_drvdata(&pdev->dev, priv);
+ 
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!mem) {
+ 		dev_err(&pdev->dev, "platform_get_resource failed\n");
+-		err = -ENXIO;
+-		goto err_alloc;
++		return -ENXIO;
+ 	}
+ 
+-	priv->mem = request_mem_region(mem->start, SZ_16K, DRV_NAME);
+-	if (!priv->mem) {
+-		dev_err(&pdev->dev, "request_mem_region failed\n");
+-		err = -EBUSY;
+-		goto err_alloc;
+-	}
+-
+-	priv->io = ioremap(priv->mem->start, SZ_16K);
++	priv->io = devm_request_and_ioremap(&pdev->dev, mem);
+ 	if (!priv->io) {
+-		dev_err(&pdev->dev, "ioremap failed\n");
+-		err = -ENOMEM;
+-		goto err_iomem;
++		dev_err(&pdev->dev, "devm_request_and_ioremap failed\n");
++		return -ENOMEM;
+ 	}
+ 
+ 	priv->irq = platform_get_irq(pdev, 0);
+ 	if (priv->irq <= 0) {
+ 		dev_err(&pdev->dev, "platform_get_irq failed\n");
+-		err = -ENXIO;
+-		goto err_ioremap;
++		return -ENXIO;
+ 	}
+ 
+ 	if (!data) {
+ 		dev_err(&pdev->dev, "no platform data ?!\n");
+-		err = -EINVAL;
+-		goto err_ioremap;
++		return -EINVAL;
+ 	}
+ 
+ 	priv->burst = data->burst;
+ 
+-	priv->clk = clk_get(&pdev->dev, NULL);
++	priv->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(priv->clk)) {
+ 		dev_err(&pdev->dev, "no clock\n");
+-		err = PTR_ERR(priv->clk);
+-		goto err_ioremap;
++		return PTR_ERR(priv->clk);
+ 	}
+-	clk_prepare_enable(priv->clk);
++
++	err = clk_prepare_enable(priv->clk);
++	if (err < 0)
++		return err;
+ 
+ 	err = snd_soc_register_dai(&pdev->dev, &kirkwood_i2s_dai);
+ 	if (!err)
+@@ -464,15 +454,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	dev_err(&pdev->dev, "snd_soc_register_dai failed\n");
+ 
+ 	clk_disable_unprepare(priv->clk);
+-	clk_put(priv->clk);
+-
+-err_ioremap:
+-	iounmap(priv->io);
+-err_iomem:
+-	release_mem_region(priv->mem->start, SZ_16K);
+-err_alloc:
+-	kfree(priv);
+-error:
++
+ 	return err;
+ }
+ 
+@@ -483,11 +465,6 @@ static __devexit int kirkwood_i2s_dev_remove(struct platform_device *pdev)
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	clk_disable_unprepare(priv->clk);
+-	clk_put(priv->clk);
+-
+-	iounmap(priv->io);
+-	release_mem_region(priv->mem->start, SZ_16K);
+-	kfree(priv);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
+index f9084d8..7d92b9e 100644
+--- a/sound/soc/kirkwood/kirkwood.h
++++ b/sound/soc/kirkwood/kirkwood.h
+@@ -119,7 +119,6 @@
+ #define KIRKWOOD_SND_MAX_PERIOD_BYTES		0x4000
+ 
+ struct kirkwood_dma_data {
+-	struct resource *mem;
+ 	void __iomem *io;
+ 	int irq;
+ 	int burst;
+-- 
+1.7.4.4
