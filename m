@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: firmware: Add support for FW
-	based widgets.
-Date: Tue, 20 Nov 2012 11:16:14 +0900
-Message-ID: <20121120021613.GA4483@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] ASoC: firmware core: Add core support
+ for dynamic kcontrols and widgets.
+Date: Tue, 20 Nov 2012 11:36:09 +0900
+Message-ID: <20121120023606.GB4483@opensource.wolfsonmicro.com>
 References: <1353348765-6238-1-git-send-email-lrg@ti.com>
- <1353348765-6238-2-git-send-email-lrg@ti.com>
+ <1353348765-6238-3-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6857248009929575837=="
+Content-Type: multipart/mixed; boundary="===============6714652275300546698=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D4AC264F6A
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 03:16:22 +0100 (CET)
-In-Reply-To: <1353348765-6238-2-git-send-email-lrg@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 902CF264FEB
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 03:42:21 +0100 (CET)
+In-Reply-To: <1353348765-6238-3-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,72 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6857248009929575837==
+--===============6714652275300546698==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k1G2Bc0EDIhoSmEt"
+	protocol="application/pgp-signature"; boundary="JyUo+2rKuw1VKSUr"
 Content-Disposition: inline
 
 
---k1G2Bc0EDIhoSmEt
+--JyUo+2rKuw1VKSUr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 19, 2012 at 06:12:43PM +0000, Liam Girdwood wrote:
-> This patch adds initial support for firmware based widgets by allowing
-> soc-dapm.h to be included by userspace firmware generation tools and assigns
-> IDs to the standard ASoC widgets kcontrol types using the kcontrol_new
-> index and IDs to kcontrol get/put/info functions.
+On Mon, Nov 19, 2012 at 06:12:44PM +0000, Liam Girdwood wrote:
 
-Applied,t hanks.
+> @@ -584,6 +584,8 @@ struct snd_soc_dapm_widget {
+>  	int num_kcontrols;
+>  	const struct snd_kcontrol_new *kcontrol_news;
+>  	struct snd_kcontrol **kcontrols;
+> +	int denum;
+> +	int dmixer;
 
---k1G2Bc0EDIhoSmEt
+In the patch adding the actual functional code it looks like these are
+just treated as booleans saying if the control is dynamic.  This in
+conjunction with the fact that we've got a single list of dynamic
+controls means that we can only have one block of dynamic controls on
+this device.  Is that correct?  If not then I've got the wrong end of
+the stick otherwise...
+
+It occurs to me that if we just assign these to numbers per thing with
+firmware then we can easily use this data structure to support multiple
+firmwares per device.  We just go through the list and delete all mixers
+numbered 1 or something.  If we do that I think we can simplify the code
+a little and just make all the mixers and controls "dynamic", using ID 0
+for the non-changable ones.
+
+The patch itself looks good but leaving it for now since it's so closely
+tied in with patch 4, any change in patch 4 is likely to give changes in
+the data structure I guess.
+
+--JyUo+2rKuw1VKSUr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQqufmAAoJELSic+t+oim9lwYP+wZsgSc5qfMwbCjMRPZYRRCw
-bqAnC3z9XCXgBNYD5EfTFKEsPehPU10fJRMlyMqWZDJkspH4jlxAa58c3EVFAoYv
-WkCGxeleTakSIzZxBU0wwEZS6Hjc2Kv2yFZebGkfILZLud5pJAg6szVYCaNqTEz3
-OM/ug1iEhj3aMLoLCx7P639amNtCvrFbteLL15tFC2JkW3OEoyG7z0Ay9I0eLhLW
-y/sPRkmHUD0EpetVoCwp4et8C8YkaST4YWtz76vSz2dCpfkOgNooFKTFcGT/TrRD
-nskwFs2SNPCxo8DjMfvnMwASIJuRstC+Kp0LU82g6o3F8Rky9dF5zV9Dldj7OKyc
-XatgeegmYv+QJbRLl7qlcvEta4jSa2lBAWUHoHixQNSGqyqUXDQQti8fsZ30wMql
-FzNlJXeXBhIF8tu7EzoqBic/RN7Asu8JX3aZFleEA3vgxH7sX//b8FccqwuQDR9o
-35RMd5GXUb6EP+VR5O8GDYgt/5DKxfNoWn6QeJUrxkOb+cLNF/knsYi4QSVVCvvE
-sK5OHYxlcDdbJNxCIfsuNKLG2MmJPO8iU+/QMZKKVWepjpkaVFnv71LKtSin6NfL
-DuLkujWtX9cICxz8NNhN2ye35q8eh9zXw8UXDDoRoWOTwnSXs1DiCwx7ftoNGcOw
-dtzIqAfmI0qVe8lhDhNn
-=iGmm
+iQIcBAEBAgAGBQJQquyDAAoJELSic+t+oim9rXIP/i6KXeA1rCYzu5kwPlsmhYzh
+7lX0qJMo1S/pcU//oQYs5xTUlzO8cbk9VjpR+HAfHDHmL3zMHlpFw3NN8QGdl2nt
+gFSjh2/4vmpuUztwQACsrTwRqBn2Wq68bEQMiyGQn1C4WjjRjyHxMl3Bzfb72E8r
+jWlTtI+zJmDbiYgt0+CsNxi8oR8PYqTu7Dxm6U2DMNXYPnJjzdPcXGf2jalsyo4j
+aBg96UxYVrn4f04n9byS+0bmbh2f6TKIQGHnSdg0OSdXfSZ9POqX3zhcyy1wwOJj
+lE0Cm3wm9FACwP1nMgnGNeI7KSrGUL2Ge+bZj/6DWN72FxZ8vrJ72FKOwcswW+6S
+c5sWWaZIZcC+OCfeBZWcZCxCHtAURth4z+ZvouMTPZf2Ghu1iiyAraahBDh+gC9P
+9WAWRoUBmL4g6JSQlMBt7o6BURFgAL+F1fyUGDNOpigY8Q+8fVpdpIoPgl0KpBMJ
+fr6NYOx/RGDKTegd56EVQNb0/RmvswmvMKEORw/c23DK9leJKl6w1aQ9AM/BBDKc
+dV9Csmf7CloPcX405zE2UcwNfsOFdfsqhLlD/3Vh4MZAC2n3L5k/LD5O06TRBl5C
+/4R30/mSlnbkV0tiZZU7U3z7DMUNnXEUnHXswMgusuSNWmkbSP0jhoMhPOQHTr9d
+PdWGfvOLNfqQtNx7ps6x
+=KNwE
 -----END PGP SIGNATURE-----
 
---k1G2Bc0EDIhoSmEt--
+--JyUo+2rKuw1VKSUr--
 
---===============6857248009929575837==
+--===============6714652275300546698==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6857248009929575837==--
+--===============6714652275300546698==--
