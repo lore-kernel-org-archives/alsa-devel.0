@@ -1,15 +1,23 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 1/2] ASoC: atmel-ssc: add phybase in device
-	structure
-Date: Tue, 20 Nov 2012 16:38:17 +0800
-Message-ID: <1353400698-19384-1-git-send-email-voice.shen@atmel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: 100.0% power usage of Device Audio codec (HDA) on
+ wake
+Date: Tue, 20 Nov 2012 09:56:19 +0100
+Message-ID: <50AB45B3.6060904@canonical.com>
+References: <af012f839bb665744d02fa1031764767@sourcepole.ch>
+ <s5hmwyhh6vg.wl%tiwai@suse.de>
+ <c342c478aca9a752935a88b5b5e0d329@sourcepole.ch>
+ <s5h1ufsa4aq.wl%tiwai@suse.de>
+ <33f3a5d64a489d40499192a0659dd76c@sourcepole.ch>
+ <50AB3A39.1090604@canonical.com> <s5hpq38ptc8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FC64265298
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 09:42:41 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 882CF265293
+ for <Alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 09:56:22 +0100 (CET)
+In-Reply-To: <s5hpq38ptc8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com
-Cc: voice.shen@atmel.com, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@alsa-project.org, Tomas Pospisek <tpo2@sourcepole.ch>
 List-Id: alsa-devel@alsa-project.org
 
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+On 11/20/2012 09:32 AM, Takashi Iwai wrote:
+> At Tue, 20 Nov 2012 09:07:21 +0100,
+> David Henningsson wrote:
+>>
+>> It does put another question - from where does powertop get its values,
+>> and do we have to do anything on our side to make sure / aid them being
+>> correct?
+>
+> powertop checks /sys/class/sound/hwC*D*/power_{off|on}_acct files.
+> They contain the time (in ms) how long the codec is in the power-save
+> mode.
 
-Useful for future dmaengine use.
+Thanks. But I have also recently seen a computer where powertop showed a 
+Watt number, essentially saying that the codec consumed 1.4 Watts or so 
+(I don't remember the exact number). Have you seen that too?
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/misc/atmel-ssc.c  |    2 ++
- include/linux/atmel-ssc.h |    1 +
- 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index a769719..d07a9ed 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -157,6 +157,8 @@ static int ssc_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	ssc->phybase = regs->start;
-+
- 	ssc->clk = devm_clk_get(&pdev->dev, "pclk");
- 	if (IS_ERR(ssc->clk)) {
- 		dev_dbg(&pdev->dev, "no pclk clock defined\n");
-diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-index 1ca0e32..deb0ae5 100644
---- a/include/linux/atmel-ssc.h
-+++ b/include/linux/atmel-ssc.h
-@@ -11,6 +11,7 @@ struct atmel_ssc_platform_data {
- 
- struct ssc_device {
- 	struct list_head	list;
-+	resource_size_t		phybase;
- 	void __iomem		*regs;
- 	struct platform_device	*pdev;
- 	struct atmel_ssc_platform_data *pdata;
 -- 
-1.7.9.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
