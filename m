@@ -1,18 +1,14 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 0/10] Kirkwood ASoC drivers fixes and
-	improvements
-Date: Tue, 20 Nov 2012 12:20:51 +0000
-Message-ID: <20121120122051.GA12063@n2100.arm.linux.org.uk>
-References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5102: Register DSP1 Aux widgets
+Date: Tue, 20 Nov 2012 13:15:21 +0000
+Message-ID: <1353417321-4100-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id DBFB326538B
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 13:20:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1D7A26538C
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 14:27:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Rabeeh Khoury <rabeeh@solid-run.com>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Argh.  Just noticed the driver author is _not_ listed in MAINTAINTERS.
-I guess the driver author doesn't care about receiving patches for his
-driver then...  If Arnaud does care then that needs to be fixed.  I will
-not be spamming everyone again with this patch set just because someone
-can't be bothered to ensure that they have appropriate MAINTAINERS entries.
-I'm sure they can be dug out of the alsa-devel archives instead.
+It seems WM_ADSP2("DSP1", 0) is added twice to the widgets list, remove
+that and in place use ARIZONA_DSP_WIDGETS(DSP1, "DSP1").
 
-On Tue, Nov 20, 2012 at 12:17:26PM +0000, Russell King - ARM Linux wrote:
-> The first five patches of this patch series fixes a number of problems
-> with the Kirkwood audio driver, as seen on Dove platforms.  The biggest
-> issue is that they can cause the kernel to lock up solidly, requiring
-> a reset to recover.
-> 
-> Other issues included in the first six patches are bugs found by the
-> cubox folk.
-> 
-> The other five patches convert the I2S driver to use the devm_* APIs,
-> improve the handling of the record and playback control registers so
-> we're not reading and writing them as often, lift restrictions in the
-> DMA driver which aren't necessary to impose, and add support for
-> external clocks so that sample rates other than 44.1, 48 and 96kHz
-> can be supported.  Some of these changes prepare the driver to support
-> the SPDIF output including passthrough mode; however, that support is
-> not included in this patch set.
-> 
-> These patches probably need checking out on Kirkwood before they go
-> into mainline, but given the severity of the kernel lockup, I suggest
-> that once tested the first five patches go into -rc.
-> 
->  sound/soc/kirkwood/kirkwood-dma.c |   19 ++-
->  sound/soc/kirkwood/kirkwood-i2s.c |  291 ++++++++++++++++++++++---------------
->  sound/soc/kirkwood/kirkwood.h     |   11 +-
->  3 files changed, 197 insertions(+), 124 deletions(-)
-> 
->  ASoC: kirkwood-dma: remove channel restrictions
->  ASoC: kirkwood-i2s: add support for external clock rates
->  ASoC: kirkwood-dma: remove restriction on sample rates
->  ASoC: kirkwood-i2s: better handling of play/record control registers
->  ASoC: kirkwood-i2s: use devm_* APIs
->  ASoC: kirkwood-i2s: more pause-mode fixes
->  ASoC: kirkwood-i2s: fix DMA underruns
->  ASoC: kirkwood-i2s: fix DCO lock detection
->  ASoC: kirkwood-dma: don't ignore other irq causes on error
->  ASoC: kirkwood-dma: fix use of virt_to_phys()
-> 
+We need to make sure that the DSP1 Aux widgets are provided otherwise
+we'll see errors such as "Failed to add route DSP1 Aux 1 -> DSP1" etc.
+
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 54485d4..e2826bf 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1033,7 +1033,7 @@ SND_SOC_DAPM_AIF_IN("AIF3RX1", NULL, 0,
+ SND_SOC_DAPM_AIF_IN("AIF3RX2", NULL, 0,
+ 		    ARIZONA_AIF3_RX_ENABLES, ARIZONA_AIF3RX2_ENA_SHIFT, 0),
+ 
+-WM_ADSP2("DSP1", 0),
++ARIZONA_DSP_WIDGETS(DSP1, "DSP1"),
+ 
+ SND_SOC_DAPM_VALUE_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
+ 		       ARIZONA_AEC_LOOPBACK_ENA, 0, &wm5102_aec_loopback_mux),
+-- 
+1.8.0
