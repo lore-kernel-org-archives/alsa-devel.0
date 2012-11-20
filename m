@@ -1,84 +1,78 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: dapm: Standardise ASoC DAPM
-	messages
-Date: Tue, 20 Nov 2012 09:31:09 +0900
-Message-ID: <20121120003108.GB4483@opensource.wolfsonmicro.com>
-References: <1353335955-5249-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH v2 2/2] ARM: OMAP4+: HDMI: Rearrange platform devices for
+ ASoC drivers
+Date: Tue, 20 Nov 2012 10:15:28 +0900
+Message-ID: <20121120011526.GF4483@opensource.wolfsonmicro.com>
+References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com>
+ <1353029819-21809-3-git-send-email-ricardo.neri@ti.com>
+ <50A5F0A5.2010105@ti.com>
+ <50A6805C.3050004@ti.com>
+ <50AA2D01.5020302@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6927641092354124744=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A804262624
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 01:31:17 +0100 (CET)
-In-Reply-To: <1353335955-5249-1-git-send-email-lrg@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E7i4zwmWs5DOuDSH"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <50AA2D01.5020302@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Ricardo Neri <ricardo.neri@ti.com>, tony@atomide.com, lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6927641092354124744==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
-Content-Disposition: inline
-
-
---61jdw2sOBCFtR2d/
+--E7i4zwmWs5DOuDSH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 19, 2012 at 02:39:12PM +0000, Liam Girdwood wrote:
-> Currently ASoC has a mixture of message prefixes e.g. "ASoC", "asoc"
-> or none and message types e.g. pr_debug or dev_dbg.
->=20
-> Make sure all ASoC core messages use the same "ASoC" prefix and
-> convert any component device specific messages to use dev_dbg
-> instead of pr_debug.
+On Mon, Nov 19, 2012 at 02:58:41PM +0200, Tomi Valkeinen wrote:
 
-So, the reason we used to have the prefixes was that we didn't have dev_
-versions of the macros - I'd been going the other way and stripping out
-the prefixes for ASoC: because they seemed noisy and out of line with
-most other subsystems which either use dev_ or put a prefix in but not
-both.
+> I still don't understand why the codec and machine drivers need to be
+> created in the board file. That just forces us to replicate the same
+> code for all OMAP boards that have OMAP HDMI output. Why not create the
+> devices in some common code, for example arch/arm/mach-omap2/display.c?
 
---61jdw2sOBCFtR2d/
+Yes, this would be more sensible if there's no board specifics involved.
+
+> With DT this should be similar: OMAP's hdmi devices should be presented
+> in the omap4.dtsi file, not in each individual board dts. Although the
+> DT data should represent the hardware, and if the code and machine
+> devices are not really there in the HW, then... I don't know =).
+
+Well, in a case like this where the sound card is essentially autoprobed
+based on the detection of the hardware at runtime the sound card
+probably shouldn't appear in the device tree at all - you'll probably
+want something to say there's a physical HDMI port it's worth looking at
+there but everything else should be figured out at runtime.
+
+> And something that confuses me: sound/soc/codecs/omap-hdmi.c contains a
+> codec and dai drivers, but sound/soc/omap/omap-hdmi.c also contains a
+> dai driver. The latter actually contains two dai drivers, the other a
+> platform driver and the other a snd_soc_dai_driver. But I guess this is
+> asoc details, and not relevant to this disuccsion =).
+
+There's an interaface on each end of the link, they're wired together to
+communicate between the two devices.
+
+--E7i4zwmWs5DOuDSH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQqs8ZAAoJELSic+t+oim9Rt0P/2C3NBMDto+RFXP8hmxCUsgp
-qdo7eMXRsPqY2p+qCda5tDoPz4k2mDf6e3pGIWr94ia0zVWXtFe/1BuCvSuewZn4
-6wyu2WC5+T1G975N6LmbFA+wLgh3qksvwGHhcnW47BUMvcFJHM5c3s4M5XCAr20E
-AJtmTiDLQ6JjrmAOBMDt1X/IzqDWFlurVP/Xsd5dBG4Kpf7qn6Wlr8uPO6b6lUJb
-IPva2Lh/ZPPT6WhmONpR62XHhP/e6EHgb/+03aPxueFlcLqsZ0FRNAJSK9elEUZG
-iqpemCI0XhcDGL2FqPz5zYynuKt+mnLGjRU8g1tnCUTYiN2cQJlwMX56ekLb6LoC
-MHgOMoKZ+OC6FefLRSUgiiADQdkpRCIO1IqtHMunLEFQI5+GbMYoO8ie85dkjcpJ
-/gnwdKKGFasA4eWZJvDri9/B/xIiugcvqsxLOjMuFDpBGKYmr6kOgMYVBhsX6scz
-Y87Wn8+xSECeTRUM4aWRgY5s++6aMeA+Cnu/IWjRNjYmq9+E4VF9uhilFJSY0mnb
-TC6BUWXKL8p9JZiD1cYRdE6fkzLv+qcSjPUpiTAB12whRnXlbc77BfVYvyyZlzoU
-seEm+oXluEpQ8UAqoQnk0GhX2a1SHKF0ROFGFP870Z4gDeBkMjeJZkg6QUXQKXLu
-kPoi1aN67B7kYdd8OjO/
-=k386
+iQIcBAEBAgAGBQJQqtl1AAoJELSic+t+oim9GfMP/3pRzznJdkqaNDCa2lLUVmXI
+Suy72Ie0YPrH5OudC6gyDH5TYs/RT6GzFlLr/6Ky3/xpV/RkZySb0Ac7MGKpTE52
+tJhjdTz+PoXxxBLRJUrM/SYyZ8vSKJRDx7bklnQcjqeuPTPcaahXhHkvftPk5+9c
+opYx9f0qgbEi5mklkF+PKSl1kQu2MbMSoP20gkt6kcD0qkdUpNMO9sBdNhrIt7Bf
+D60iZi/WHJEYPnsoBptlDeFzvqDmLR/LQIPLdgOj1ThdHS8PTIKHW8OprQyX2Qhx
+rpdSXu3B2QUt76Zd/0lNnfbuvZrSmyKLlFGCFZ4P1OgQTv+01MkrddJuLxoIfkhW
+yo5Kj20Hr2d4at5tDFUaQo5rc0UbB1/8I6YGcJwYlUv2aheis/x/i9hY8LL5Jnu5
+xdaZ777H/lmOD+6GRI1RltABAhdShxAsTJJWgvekEgh7mL0lR7u/3KDFHrirnm6w
+lefpLwVa3rfBxsfoK/eAPbCxJGZo1ItPHRku5zFXAS09Q7ufS+fC72I6S7ISzx+o
+czVF0vPoPWnoqxilCWXa8F56fBUVzpPlgRRe4okya0P4FJvs9/5+GuWUJtbYo5ZU
+f0HCFIFqoUac4nfoosGxq6Ye1lyHl1d168egl2ZDR4rLRyPVFkcmnXfhjmG9Vzw0
+gcfQqTIvS2tV+4hR6jMX
+=uIlM
 -----END PGP SIGNATURE-----
 
---61jdw2sOBCFtR2d/--
-
---===============6927641092354124744==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6927641092354124744==--
+--E7i4zwmWs5DOuDSH--
