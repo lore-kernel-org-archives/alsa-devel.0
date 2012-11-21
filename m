@@ -1,18 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/6] ALSA: PCM: Remove redundant null check
-	before kfree
-Date: Wed, 21 Nov 2012 14:36:54 +0530
-Message-ID: <1353488819-13902-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/6] ALSA: pcm: Fix return code in pcm_native.c
+Date: Wed, 21 Nov 2012 14:36:55 +0530
+Message-ID: <1353488819-13902-2-git-send-email-sachin.kamat@linaro.org>
+References: <1353488819-13902-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 35801265369
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 10:13:13 +0100 (CET)
-Received: by mail-pb0-f51.google.com with SMTP id ro12so2642606pbb.38
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 01:13:12 -0800 (PST)
+Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
+ [209.85.210.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9178265BA3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 10:13:16 +0100 (CET)
+Received: by mail-da0-f51.google.com with SMTP id i30so1258899dad.38
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 01:13:16 -0800 (PST)
+In-Reply-To: <1353488819-13902-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,28 +27,30 @@ To: alsa-devel@alsa-project.org
 Cc: patches@linaro.org, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, sachin.kamat@linaro.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-kfree on a null pointer is a no-op.
+Return the value obtained from snd_pcm_hw_constraint_minmax() instead
+of -EINVAL. Silences the following smatch warning:
+sound/core/pcm_native.c:2003 snd_pcm_hw_constraints_complete() info:
+why not propagate 'err' from snd_pcm_hw_constraint_minmax() instead of -22?
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
 Build tested and based on linux-next 20121115.
 ---
- sound/core/pcm.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ sound/core/pcm_native.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 030102c..61798f8 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -981,8 +981,7 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
- 		       PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control)));
- 	kfree(runtime->hw_constraints.rules);
- #ifdef CONFIG_SND_PCM_XRUN_DEBUG
--	if (runtime->hwptr_log)
--		kfree(runtime->hwptr_log);
-+	kfree(runtime->hwptr_log);
- #endif
- 	kfree(runtime);
- 	substream->runtime = NULL;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index c76f6375..09b4286 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2000,7 +2000,7 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
+ 	if (runtime->dma_bytes) {
+ 		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
+ 		if (err < 0)
+-			return -EINVAL;
++			return err;
+ 	}
+ 
+ 	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
 -- 
 1.7.4.1
