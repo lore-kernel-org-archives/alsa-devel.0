@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][PATCH v2] ASoC: Add max98090 codec driver
-Date: Wed, 21 Nov 2012 13:32:09 +0900
-Message-ID: <20121121043207.GN4673@opensource.wolfsonmicro.com>
-References: <8739044mr0.wl%kuninori.morimoto.gx@renesas.com>
- <20121120111441.GJ10560@opensource.wolfsonmicro.com>
- <87r4nnoa1x.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: arizona: Suppress noop FLL updates
+Date: Wed, 21 Nov 2012 14:20:14 +0900
+Message-ID: <1353475214-6455-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2698301726326476776=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5ECE82651D0
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 05:32:23 +0100 (CET)
-In-Reply-To: <87r4nnoa1x.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E68F265153
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 06:27:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +18,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    6 ++++++
+ sound/soc/codecs/arizona.h |    2 ++
+ 2 files changed, 8 insertions(+)
 
---===============2698301726326476776==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oIlomvtVtXAVxSKT"
-Content-Disposition: inline
-
-
---oIlomvtVtXAVxSKT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 20, 2012 at 08:27:10PM -0800, Kuninori Morimoto wrote:
-> This patch adds the max98090 codec prototype driver.
-> It supports Headphone only at this point.
-
-Applied, thanks.
-
---oIlomvtVtXAVxSKT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQrFk6AAoJELSic+t+oim9fuAP/ii7lmQvJ2xjD9t2fddZPoma
-j8U5W9DvGY8SnnxCVw5zmh0/nBWI9gQFmWKYKlOjL1cu5QbGJbK4bGZJXK8ZKZuU
-u+oMBnGA1C2QAubE5AipD7nkpVCWkwh1Yst8/dJtqQlOL0krIg8OWi31ROqrFumS
-rVdna41dQz2Dc7rwwnJWAb9rrlbMwjq6BHTXUi5XsNb9bniKd+Z8kqOgwZCAkC6y
-Wx2bIetzp3freyVXmxEENHQiOWtCGI/xhpmtmcdSIVTqltba5YvYs68h+eZ//Yp/
-BpkjVtySDLlXY1L3bwOH9zC8NiyKqbnUVHKWH4DqlvfB+W1hwDKqlkr4su/rPnVt
-UbgKpL8v5gHMJe5BZw0ZkyONc0kBt2Vv02UqUItoLLR1Od87OVDqhWPrkbwtlOmX
-ElqJs+R4ORTMXpbqgDG6lXhdZAyLQGb/H2I9YlzBzQjYVC76N7P1squ4+VTkwD/4
-9NEDTDq9CvRCjqVWRPywB8JTXuepIEUSqXsM+lN6gFDPhD2GSxGn/7L710o0npTA
-xmSzegymhArQ3LQ5mMoCyiwskF3ELL2IKuhT40pYtFFSNXc950c+heRmMiQ8cNH0
-XXpPRbgGOAGh7AKSfCeWPvrI39J1jfbdAXqWFTz6TlcmWVqihuNBV85xlBGa7Dn6
-7B5ZWjmruiQbzn3ersmw
-=eune
------END PGP SIGNATURE-----
-
---oIlomvtVtXAVxSKT--
-
---===============2698301726326476776==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2698301726326476776==--
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 24ad57b..3883aef 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -944,6 +944,9 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 	bool ena;
+ 	int ret;
+ 
++	if (fll->fref == Fref && fll->fout == Fout)
++		return 0;
++
+ 	ret = regmap_read(arizona->regmap, fll->base + 1, &reg);
+ 	if (ret != 0) {
+ 		arizona_fll_err(fll, "Failed to read current state: %d\n",
+@@ -1021,6 +1024,9 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 	if (ret == 0)
+ 		arizona_fll_warn(fll, "Timed out waiting for lock\n");
+ 
++	fll->fref = Fref;
++	fll->fout = Fout;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(arizona_set_fll);
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 744786b..5e9ade7 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -192,6 +192,8 @@ struct arizona_fll {
+ 	unsigned int vco_mult;
+ 	struct completion lock;
+ 	struct completion ok;
++	unsigned int fref;
++	unsigned int fout;
+ 
+ 	char lock_name[ARIZONA_FLL_NAME_LEN];
+ 	char clock_ok_name[ARIZONA_FLL_NAME_LEN];
+-- 
+1.7.10.4
