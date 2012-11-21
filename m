@@ -1,77 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/10] Kirkwood ASoC drivers fixes and
-	improvements
-Date: Wed, 21 Nov 2012 10:40:45 +0900
-Message-ID: <20121121014043.GG4673@opensource.wolfsonmicro.com>
-References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Resend v6 PATCH 2/2] ASoC: atmel-ssc: add pinctrl consumer
+Date: Wed, 21 Nov 2012 09:43:33 +0800
+Message-ID: <50AC31C5.2000504@atmel.com>
+References: <1353045837-19474-1-git-send-email-voice.shen@atmel.com> <1353045837-19474-2-git-send-email-voice.shen@atmel.com> <20121116061250.GP4387@opensource.wolfsonmicro.com> <50A5DE4E.80206@atmel.com> <20121116064113.GQ4387@opensource.wolfsonmicro.com> <50A5E44D.6040501@atmel.com> <50AB4DEA.3090100@atmel.com> <20121120102712.GF10560@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6937220282983170173=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84EDA261698
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 02:40:51 +0100 (CET)
-In-Reply-To: <20121120121726.GN3290@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Rabeeh Khoury <rabeeh@solid-run.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20121120102712.GF10560@opensource.wolfsonmicro.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============6937220282983170173==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eVzOFob/8UvintSX"
-Content-Disposition: inline
+On 11/20/2012 18:27, Mark Brown wrote:
+> On Tue, Nov 20, 2012 at 05:31:22PM +0800, Bo Shen wrote:
+>
+>>> based on ASoC tree? And the upper go into pinctrl tree?
+>>> ---<8---
+>>> ssc0: ssc@fffbc000 {
+>>>      compatible = "atmel,at91rm9200-ssc";
+>>>          reg = <0xfffbc000 0x4000>;
+>>>          interrupts = <14 4 5>;
+>>> +        pinctrl-names = "default";
+>>> +        pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
+>>>          status = "disable";
+>>> };
+>>> --->8---
+>
+>> Any suggestion for this? what should I do with this patch for next?
+>
+> Send it to pinctrl and we'll deal with the add/add.
 
+So, should I keep these two patches [1] and [2] and then send to pinctrl 
+again, or I need keep it in one patch as [3] which i sent first.
 
---eVzOFob/8UvintSX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+1. [Resend,v6,1/2] ARM: at91: atmel-ssc: add pinctrl nodes
+    https://patchwork.kernel.org/patch/1753101/
 
-On Tue, Nov 20, 2012 at 12:17:26PM +0000, Russell King - ARM Linux wrote:
-> The first five patches of this patch series fixes a number of problems
-> with the Kirkwood audio driver, as seen on Dove platforms.  The biggest
-> issue is that they can cause the kernel to lock up solidly, requiring
-> a reset to recover.
+2. [Resend,v6,2/2] ASoC: atmel-ssc: add pinctrl consumer
+    https://patchwork.kernel.org/patch/1753091/
 
-Applied all, thanks.
+3. [v6,1/4] ARM: at91: atmel-ssc: add pinctrl support
+    https://patchwork.kernel.org/patch/1740391/
 
---eVzOFob/8UvintSX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Best regards,
+Bo Shen
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQrDEVAAoJELSic+t+oim9iksP/2Jy9ULfzpPCBFCHjneeVWcs
-IyGqsHiYI5yQ6THmCTZRmMmm7kBOR2grGo8dT/ehpH0HszYoTiPHOt6BQ0xjH9ax
-OokyVOnuvvSYE1eYOnZNRAh2sVKEVh78rCFXi17tk4Y+KsrQIBrbK+cbeJVBdP77
-5roFSHaiU1x8ft41FU4Cqq7PaUG04QY35n2Pte/iT1KEK536goToxOJlliSP4KVZ
-EdI3ftx09r46xF4P8pUFduubVoo+01EVdcxof/I96dJ2h0EiB8xn8glm1oY5tA0Y
-hlHX9KJot7ob2M06INhXbODm9yxrGJAixK806Is2Mt34wSII4DT2J75AC+4ilCnl
-8bm1tBQfsNNxUpkzYopAqwrMNK6JpEs6JbBvlu8t798UGaLkACnTv6OgoUv6g7j7
-VZRwsQ0mydX5YDeRyMKlF+VqOKN5zKrl5TgdF1Drsxe5cxB0sy+Rl/7SP6myFcqe
-RMJJpRjpeA03+uvVdD6kLcQr7X+NDnxWKZaFDOaNP/Q7vY5akFWDDLNRVPN1xW8L
-m7m5BRTgjnZZ8Oqjz8nXsSyY5vLsRisyaiDxY5Cz2I7DJ6joKMx4ZzHwcjRsPu06
-lQ1LpawJqIv1mmezRhxDAUjlrJGJXUrZabyfVDlW3MpPQSKZbuo7BlEESi7nqBOt
-hCP/f6pqT/Vvwm0XwG5M
-=lTuV
------END PGP SIGNATURE-----
-
---eVzOFob/8UvintSX--
-
---===============6937220282983170173==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6937220282983170173==--
