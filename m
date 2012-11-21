@@ -1,23 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: firmware core: Add core support
- to create and destroy firmware components.
-Date: Wed, 21 Nov 2012 20:52:31 +0900
-Message-ID: <20121121115229.GE18117@opensource.wolfsonmicro.com>
-References: <1353348765-6238-1-git-send-email-lrg@ti.com>
- <1353348765-6238-4-git-send-email-lrg@ti.com>
- <20121120032659.GC4483@opensource.wolfsonmicro.com>
- <50AB9E56.5050509@ti.com>
- <20121121004356.GC4673@opensource.wolfsonmicro.com>
- <50ACAB1D.2040103@ti.com>
- <20121121103754.GC18117@opensource.wolfsonmicro.com>
- <50ACB802.20102@ti.com>
+From: Tomas Pospisek <tpo2@sourcepole.ch>
+Subject: Re: 100.0% power usage of Device Audio codec (HDA) on
+	wake
+Date: Wed, 21 Nov 2012 15:15:09 +0100
+Message-ID: <752ffd5c0c257045c7d8b23d95ea9ffa@sourcepole.ch>
+References: <af012f839bb665744d02fa1031764767@sourcepole.ch>
+ <s5hmwyhh6vg.wl%tiwai@suse.de>
+ <c342c478aca9a752935a88b5b5e0d329@sourcepole.ch>
+ <s5h1ufsa4aq.wl%tiwai@suse.de>
+ <33f3a5d64a489d40499192a0659dd76c@sourcepole.ch>
+ <50AB3A39.1090604@canonical.com> <s5hpq38ptc8.wl%tiwai@suse.de>
+ <50AB45B3.6060904@canonical.com> <s5hk3tgps0x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3104594564173503370=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AAD0E2625D7
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 12:52:38 +0100 (CET)
-In-Reply-To: <50ACB802.20102@ti.com>
+Received: from brisi.sourcepole.ch (brisi.sourcepole.ch [5.9.57.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51F25265D0D
+ for <Alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 15:15:21 +0100 (CET)
+In-Reply-To: <s5hk3tgps0x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,73 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 20 Nov 2012 10:01:18 +0100, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 20 Nov 2012 09:56:19 +0100,
+> David Henningsson wrote:
+>> 
+>> On 11/20/2012 09:32 AM, Takashi Iwai wrote:
+>> > At Tue, 20 Nov 2012 09:07:21 +0100,
+>> > David Henningsson wrote:
+>> >>
+>> >> It does put another question - from where does powertop get its
+>> >> values,
+>> >> and do we have to do anything on our side to make sure / aid them
+>> >> being
+>> >> correct?
+>> >
+>> > powertop checks /sys/class/sound/hwC*D*/power_{off|on}_acct files.
+>> > They contain the time (in ms) how long the codec is in the power-save
+>> > mode.
+>> 
+>> Thanks. But I have also recently seen a computer where powertop showed
+a 
+>> Watt number, essentially saying that the codec consumed 1.4 Watts or so
 
---===============3104594564173503370==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
-Content-Disposition: inline
+>> (I don't remember the exact number). Have you seen that too?
+> 
+> When 1.4W is constantly consumed even without PCM, it's a bit too
+> high.  But with PCM playback, about 1W usage can be measured normally,
+> I guess.
 
+man powertop says:
 
---pY3vCvL1qV+PayAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--calibrate   runs powertop in calibration mode. When running on battery,
+              powertop can track power consumption as well as system
+              activity. When there are enough measurements,  powertop
+              can  start  to  report  power  estimates.  One can get more
+              accurate estimates by using this option to enable a
+              calibration cycle. This will cycle through various display
+              levesl and USB device activities and workloads.
 
-On Wed, Nov 21, 2012 at 11:16:18AM +0000, Liam Girdwood wrote:
-> On 21/11/12 10:37, Mark Brown wrote:
-
-> >Right, but the decision we took at the ASoC conference and have been
-> >implementing was to move away from that to just letting applications set
-> >the binary blob to change the enumeration value instead and then putting
-> >the management of multiple names for the blobs into userspace.
-
-> Ok, this is fine and works well for larger or multiple blobs that
-> will be frequently changed at runtime depending on use case.
-> However, the ABE coefficients here (around 400 bytes per EQU) are
-> only loaded once at boot (where the number and graph positions of
-> the EQUs is tightly coupled to the FW) and are not unloaded. The
-> simplification here is that we dont have to write any new userspace
-> code to manage the ABE EQUs and treat them as regular alsamixer
-> controls which makes the integration and testing easier in this
-> case.
-
-That's the case for essentially all blobs right now (nobody got round to
-fixing the ABI limit of 512 bytes!).  Are we saying we want to use this
-infrastructure for all blobs?  If that's the case then we definitely
-need to support multiple files per device...
-
---pY3vCvL1qV+PayAL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQrMB0AAoJELSic+t+oim9IysQAJBIGQpqaouRQN0Ec2AuKQn2
-j7cCj/fzDBV+6wR16t/SnGzkhUvgiSjGW2EasZhhHVdaelzqjBC9LjC+X/ZIJL2Z
-hCP/XOJrtplobTN/taUTKxiDUZK98CkZgQNFO+8gFfLRHGB1VhoDehyRjH+WKNOS
-XLHITyXFDt8f8T7UpB5twGotnTjMLgpPMZx7zkd/UnCbpeUPdRqAgErWqwQ3blGD
-ED3WB6E6c/ejA1JChu4EAgPfcCG6KLIS8NuzfVb+UrXrao4MrFUYzveLzdWrwTCJ
-rmwivp1aGedH3eD0kBCgR0t/3ZGtHkgK8uvAmEiUuPWhJEQMqWZqLQmw6KZ3Eztu
-G2tVWuYIT9RAEycOUxFq+qBHZaQb+pJBj+9Sn4DazMHu/2TGbzS9K0agr94BfVHk
-qnfXOctDuQ1s1R1ChXhiPispwoB5cmaM8AnkZPXl9wC7H92iWM5TNhh2vbp85sWb
-tKBpN9ef9kxQtjnRXmsY8jLmKorieVgA4mHhXg2qblszQC51i5HkkpsgylLDuDee
-FuxkKgCPZ0qWVUUcXy4/fljpV7ZStMH41XNZLfXCyiINApRyK0EyGQ+TUi8kq3yd
-yWD05KqdMKyA+nc6X63fk8EMir1GFvq5hoaxT4ifdv47GsbglFnBIgLF63dgONva
-J2s3xr6Gqwg3pFZtsJ95
-=S8mU
------END PGP SIGNATURE-----
-
---pY3vCvL1qV+PayAL--
-
---===============3104594564173503370==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3104594564173503370==--
+So that's what powertop does I think: it estimates.
+*t
