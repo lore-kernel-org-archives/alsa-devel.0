@@ -1,22 +1,19 @@
-From: Tomas Pospisek <tpo2@sourcepole.ch>
-Subject: Re: 100.0% power usage of Device Audio codec (HDA) on
-	wake
-Date: Wed, 21 Nov 2012 15:44:18 +0100
-Message-ID: <786252e931c4155bc48b42a49865bf21@sourcepole.ch>
-References: <af012f839bb665744d02fa1031764767@sourcepole.ch>
- <s5hmwyhh6vg.wl%tiwai@suse.de>
- <c342c478aca9a752935a88b5b5e0d329@sourcepole.ch>
- <s5h1ufsa4aq.wl%tiwai@suse.de>
- <33f3a5d64a489d40499192a0659dd76c@sourcepole.ch>
- <50AB3A39.1090604@canonical.com>
+From: Nick Bailey <nicholas.bailey@glasgow.ac.uk>
+Subject: MIDI output to Tascam US-122 via usb-usx2y
+	(regression?)
+Date: Wed, 21 Nov 2012 15:11:29 +0000
+Message-ID: <20121121151129.0ba32f18@arial.fairholm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from brisi.sourcepole.ch (brisi.sourcepole.ch [5.9.57.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C28F2650A8
- for <Alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 15:44:32 +0100 (CET)
-In-Reply-To: <50AB3A39.1090604@canonical.com>
+Received: from hillend.cent.gla.ac.uk (hillend.cent.gla.ac.uk [130.209.16.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id D29CC2650A8
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2012 16:06:06 +0100 (CET)
+Received: from cas06.campus.gla.ac.uk ([130.209.14.39])
+ by hillend.cent.gla.ac.uk with esmtp (Exim 4.72)
+ (envelope-from <Nicholas.Bailey@glasgow.ac.uk>) id 1TbBsM-0005nj-G5
+ for alsa-devel@alsa-project.org; Wed, 21 Nov 2012 15:06:06 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,137 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Nov 2012 09:07:21 +0100, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> On 11/20/2012 07:54 AM, Tomas Pospisek wrote:
->> On Sat, 17 Nov 2012 11:53:49 +0100, Takashi Iwai wrote:
->>> At Sat, 17 Nov 2012 01:48:47 +0100, Tomas Pospisek wrote:
->>>
->>>> On Fri, 16 Nov 2012 17:04:03 +0100, Takashi Iwai wrote:
->>>>> At Fri, 16 Nov 2012 15:23:06 +0100, Tomas Pospisek wrote:
->>>>>>
->>>>>> The kernel of the upcoming Debian release and some
->>>>>> recent kernels of Ubuntu seem to be suffering from HDA
->>>>>> running at full force upon wakeup and producing
->>>>>> a lot of heat (keeping the fan spinning loudly).
->>>>>
->>>>> What do you mean "wakeup"?
->>>>
->>>> Waking up from suspend to RAM.
->>>
->>> And does the same issue occur on hibernation, too?
->>> Basically both S2RAM and S2DISK use the same suspend/resume path
->>> regarding the sound driver, so the behavior should be consistent in
->>> both cases.
->>
->> s2disk doesn't work here / isn't configured properly so I can't tell
->> ad hoc.
->>
->>>>>   Which kernel are you using?
->>>>
->>>> 3.2.0-4-amd64 from Debian wheezy:
->>>>    http://packages.debian.org/wheezy/linux-image-3.2.0-4-amd64
->>>
->>> OK, could you check the latest Linus tree (at least 3.7-rc5) whether
->>> the problem is still present?  If it is, please keep using it for the
->>> further testing instead of 3.2.0.  3.2.0 is way too old to debug
->>> primarily.
->>
->> I'm running 3.7.0-rc6 now, with configuration from the "original"
-Debian
->> kernel, make oldconfig and all choices to default.
-> 
-> The Ubuntu kernel team does mainline builds - 
-> https://wiki.ubuntu.com/Kernel/MainlineBuilds - which provide the latest
+I've been stumped for a while as to why my Tascam US-122 box stopped
+working as a writeable midi port. MIDI input, and audio input work
+(maybe audio output too)
 
-> upstream kernels.
-> 
->>> Also, try the latest alsa-lib from git tree, too.  I thought David
->>> provides some packages built from the latest repo?
->>
->> I've found this repository by David:
->>
->>    https://launchpad.net/~diwic/+archive/dkms
->>
->> however it seems to be deprecated and points to this:
->>
->>    https://code.launchpad.net/~ubuntu-audio-dev/+archive/alsa-dailyvvv
->>
->> which however only contains "dkms-hda" packages. I'm not sure what
->> those packages contain, or rather whether they contain the latest alsa
->> and utils. It seems that they "only" contain an out of tree hda
->> build, but I'm not sure.
->>
->> I'll try to compile latest alsa "the Debian way" and see if that
-changes
->> anything.
-> 
-> The thing I currently compile and maintain are DKMS packages for the HDA
+Using Debian Wheezy, everything was working up to a few weeks ago. MIDI
+input still works and there's nothing suspicious in the /var/logs.
 
-> driver. We're never daily built alsa-lib, and the full sound tree builds
+But...
 
-> have been discontinued since almost everyone used the DKMS packages (or 
-> the full mainline kernel). See 
-> https://wiki.ubuntu.com/Audio/UpgradingAlsa/DKMS for how to install
-them.
+nick@arial:~$ aplaymidi -l
+ Port    Client name                      Port name
+ 14:0    Midi Through                     Midi Through Port-0
+ 20:0    TASCAM US-X2Y                    TASCAM US-X2Y MIDI 1
+ 24:0    USB MIDI keyboard                USB MIDI keyboard MIDI 1
+nick@arial:~$ aplaymidi -p 20:0 Desktop/076903b_.mid
+Cannot connect to port 20:0 - Input/output error
+nick@arial:~$ uname -a
+Linux arial 3.2.0-4-686-pae #1 SMP Debian 3.2.32-1 i686 GNU/Linux
 
-Thanks for both of your pointers!
+Using older kernels doesn't help. Connecting e.g. rosegarden to the
+TASCAM US-122 in qjackctl fails silently (the link is not made in the
+connections window and nothing is printed on the console). Can't see
+any module loading issues.
 
-> I haven't followed this thread in total, and I hadn't seen the bug 
-> report before it was reported here, but I find it a little strange that 
-> a headphone amp, even at full power, would give out so much heat that 
-> your fan would spin up (I mean, this doesn't happen when you normally 
-> listen to music through headphones, right?).
+Is anybody else seeing this behaviour? I'd submit a bug report but
+really can't figure out exactly what isn't working :(
 
-Now that I'm running the 3.7.0-rc6 kernel my laptop is staying rather
-cool and the fan is mostly off. 
+nick@arial:~$ lsmod
+Module                  Size  Used by
+snd_usb_audio          71309  0 
+snd_hrtimer            12540  0 
+snd_seq_dummy          12455  0 
+snd_usb_usx2y          22748  2 
+snd_usbmidi_lib        18844  2 snd_usb_audio,snd_usb_usx2y
+snd_seq_midi           12744  0 
+snd_seq_midi_event     13124  1 snd_seq_midi
+snd_rawmidi            18376  2 snd_seq_midi,snd_usbmidi_lib
+...
+usbcore               104470  8
+ehci_hcd,uhci_hcd,uas,usb_storage,snd_usb_audio,snd_usbmidi_lib,snd_usb_usx2y
+usb_common             12338  1 usbcore
 
-However with Debian's 3.2.0-4-amd64 kernel it's the contrary, the latop
-is blowin hot air. The laptop has got a discrete Radeon card, but that
-card is off and is not showing in powertop. And in powertop's CPU view,
-the "package" is being shown as being <4% in "Turbo" mode. With
-3.7.0-rc6 it's never in "Turbo" mode.
-
-Also, with 3.7.0-rc6 after wake from suspend to RAM the Codecs show first
-on the top in powertops "Overview" but after a few minutes drop out of
-sight. They are still shown at 100% in powertop however they are shown
-to use 0mW.
-
-So back to your question "this doesn't happen when you normally listen
-to music through headphones, right?": what I'm doing on the laptop
-under the 3.2.0-4-amd64 kernel doesn't influence much the output of
-hot air. I notice however that when I wake up, the laptop starts
-blowing hot air immediately. And it doesn't stop until I go into
-alsamixer and press F5. I hear a slight click (as in speakers getting
-dis/connected) and then "Audio codec hwC0D0: IDT" drops to 0% and the
-laptop stops blowing.
-
-If you go to the original Ubuntu bugreport:
-
-   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/877560
-
-you'll notice that many users are reporting very similar problems
-there.
-
-> I could be wrong, but 
-> AFAIK, a codec chip just doesn't cause that much heat in /any/ 
-> situation. So it's probably something else?
-
-I don't understand why you are saying that it would be the
-headphones amplyfier. Is "IDT" the amplifier for the headphones
-only? I.e. not for the laptop's standard speakers?
-
-So now that with the 3.7.0-rc6 kernel my laptop runs cool again,
-I could stop at this point and go on with my own private ways.
-However it'd be nice if it'd be possible to find out what exactly
-was causing the problem in Debian's 3.2.0-4-amd64 kernel. It will
-be Debian's stable kernel for the next 3 years and some of the
-users will be swearing a lot due to the fan noise and the short
-battery life. Same for Ubuntu Precise's kernel it seems.
-
-Thanks,
-*t
+Nick/.
