@@ -1,19 +1,15 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [RESENDING] [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
- probe rather than as a device
-Date: Thu, 22 Nov 2012 14:05:40 +0000
-Message-ID: <20121122140540.GA10986@gmail.com>
-References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
- <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
- <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
- <20120919133343.GH25694@gmail.com>
- <505ADBE6.6080509@stericsson.com> <20120920125259.GA2755@gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 0/10] Kirkwood ASoC drivers fixes and improvements
+Date: Thu, 22 Nov 2012 14:06:14 +0000
+Message-ID: <20121122140614.GA26930@n2100.arm.linux.org.uk>
+References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+ <20121120122051.GA12063@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <20120920125259.GA2755@gmail.com>
+In-Reply-To: <20121120122051.GA12063@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -23,28 +19,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Linus Torvalds <torvalds@linux-foundation.org>, Takashi Iwai <tiwai@suse.de>, Arnaud Patard <arnaud.patard@rtp-net.org>, Jaroslav Kysela <perex@perex.cz>, Rabeeh Khoury <rabeeh@solid-run.com>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMCBTZXAgMjAxMiwgTGVlIEpvbmVzIHdyb3RlOgoKPiA+ID4gQ2FuIHdlIGhhdmUg
-c29tZSBjbG9zdXJlIG9uIHRoaXMgcGF0Y2ggcGxlYXNlLCBhcyBpdCdzIGJsb2NraW5nIHRoZQo+
-ID4gPiBwYXRjaC1zZXQ/IEknbSBmYWlybHkgc3VyZSB0aGUgcGF0Y2ggaXMgZG9pbmcgdGhlIGNv
-cnJlY3QgdGhpbmcsIGFzCj4gPiA+IHNlY29uZGVkIGJ5IE1hcmsuCj4gPiAKPiA+IEkgc3RpbGwg
-ZG9uJ3QgbGlrZSB0aGlzLiBJdCBpcyB0aGUgZGFpX2xpbmstc3RydWN0IHRoYXQgYm90aGVycyBt
-ZS4gV2UgaGF2ZQo+ID4gInV4NTAwLW1zcC1pMnMuMSIgYXMgbmFtZSBvZiB0aGUgcGxhdGZvcm0g
-QU5EIHRoZSBjcHVfZGFpLiBUaGUgTVNQIEkyUy1ibG9jayBpcwo+ID4gbm90IHRoZSBwbGF0Zm9y
-bSBhbmQgaXQgaXMgY2VydGFpbmx5IG5vdCBib3RoIHBsYXRmb3JtIGFuZCBjcHUtREFJIGF0IHRo
-ZSBzYW1lIHRpbWUuCj4gPiBNYXJrOiBEaWQgeW91IGhhdmUgYSBzb2x1dGlvbiBmb3IgdGhpcz8g
-Q291bGRuJ3Qgd2UganVzdCBwdXQgTlVMTCBvbiB0aGUKPiA+IHBsYXRmb3JtX25hbWUgaW5zdGVh
-ZD8KPiAKPiBUaGVyZSBhcmUgb3RoZXIgZHJpdmVycyB3aGljaCBkbyB0aGlzIGFscmVhZHkuIAo+
-IAo+IEkgZG9uJ3QgdGhpbmsgaXQncyBhbiBpc3N1ZSB0byBkbyB0aGlzLgoKSGFzIGFueW9uZSBo
-YWQgYW55IG1vcmUgYnJpZ2h0IGlkZWFzIG9uIGhvdyB3ZSBtaWdodCBoYW5kbGUgdGhpcz8KClRo
-ZSBkZXZpY2UgaXMgc3RpbGwgYmVpbmcgaGFuZGxlZCBpbiBwbGF0Zm9ybSBjb2RlIGFuZCBJJ20g
-ZGVzcGVyYXRlCnRvIGdldCBpdCBvdXQgb2YgdGhlcmUuCgotLSAKTGVlIEpvbmVzCkxpbmFybyBT
-VC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBz
-b2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwg
-QmxvZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGlu
-dXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-YXJtLWtlcm5lbAo=
+All,
+
+I'm opening this to a wider audience in the hope of getting a solution.
+
+There are classes of hardware out there where the DMA support is tightly
+integrated along side the rest of the I2S interface.
+
+One such example of this is the hardware found on Marvell Kirkwood
+platforms and their derivatives.   Not only are the registers interleaved
+between the I2S interface part and the DMA part, and the DMA can only be
+used for I2S, but the current Kirkwood ASoC implementation in
+sound/soc/kirkwood shares a common data structure created by the "cpu dai"
+to provide register access and other data.  This data structure is
+"struct kirkwood_dma_data".
+
+This means that in software, as things stand today, kirkwood-dma.c has
+intimate knowledge of kirkwood-i2s.c despite being two separate platform
+drivers.  This also means that the split between kirkwood-dma.c and
+kirkwood-i2s.c is entirely artificial, brought about by the insistance
+of ASoC that these things shall be separate.
+
+How does ASoC insist that these be separate?  It only provides the
+necessary callbacks for DMA related stuff to what it calls the "platform"
+driver.  The interface part is called a "cpu dai" and one of those must
+always be provided.  Each of these must be a separate platform device,
+because they're each named drivers, and the name comes from the
+device/driver.
+
+This is fine in the pre-DT world, where we have board files in arch/arm
+which can create whatever platform devices are needed to bring ASoC up,
+but we're moving to a DT-only solution - that means no board files.
+DT is a hardware description; it does not describe whatever random ideas
+some software implementation has come up with; a DT description of audio
+on Kirkwood will not make any distinction between the artificial
+"platform" part and the "cpu dai" part.
+
+Instead, a DT description will just declare there to be one I2S device
+with its relevant resources.
+
+Such a description is _inherently_ incompatible with ASoC as long as
+ASoC insists that there is this artificial distinction.
+
+What Mark is telling me is that he requires yet more board files to
+spring up under sound/soc/ which create these artificial platform
+devices.  Not only does that go against the direction which we're heading
+on ARM (at Linus' insistance) to get rid of board files, but it perpetuates
+this silly idea that every audio interface should be split up whether
+there's a distinction there or not.
+
+It also makes the handling of -EPROBE_DEFER yet more complex; using this
+driver on the Dove Cubox platform with built as a set of modules revealed
+that where a platform device was being registered by code in
+sound/soc/kirkwood, and would be immediately unregistered on -EPROBE_DEFER
+never to be re-registered.
+
+It is my belief that Mark's position is not the right solution for where
+things are heading.
+
+We need to have solutions which do not require artificial breakup of
+drivers; we need solutions where hardware can be described by DT and
+that DT description be used by the kernel with the minimum of code.
+What we don't need are yet more board files appearing in some other
+random part of the kernel tree.
+
+Your thoughts please.
