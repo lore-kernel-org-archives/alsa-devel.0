@@ -1,93 +1,99 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 03/10] ASoC: wm8995: Convert to use devm_kzalloc()
-Date: Thu, 22 Nov 2012 09:38:35 +0530
-Message-ID: <1353557322-25353-4-git-send-email-tushar.behera@linaro.org>
-References: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
-Cc: broonie@opensource.wolfsonmicro.com, patches@linaro.org
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Thu, 22 Nov 2012 22:01:13 +0100
+Message-ID: <50AE9299.2090809@gmail.com>
+References: <p06240816ccd2e5cc9db7@[192.168.1.8]>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB1FE2615EB
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2012 22:01:19 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so3434316bkc.38
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2012 13:01:19 -0800 (PST)
+In-Reply-To: <p06240816ccd2e5cc9db7@[192.168.1.8]>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Griscom <griscom@suitable.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
----
- sound/soc/codecs/wm8995.c |   14 ++++----------
- 1 files changed, 4 insertions(+), 10 deletions(-)
+Hi Daniel,
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 28c89b0..2eb68c1 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -2261,7 +2261,7 @@ static int __devinit wm8995_spi_probe(struct spi_device *spi)
- 	struct wm8995_priv *wm8995;
- 	int ret;
- 
--	wm8995 = kzalloc(sizeof *wm8995, GFP_KERNEL);
-+	wm8995 = devm_kzalloc(&spi->dev, sizeof(*wm8995), GFP_KERNEL);
- 	if (!wm8995)
- 		return -ENOMEM;
- 
-@@ -2271,7 +2271,7 @@ static int __devinit wm8995_spi_probe(struct spi_device *spi)
- 	if (IS_ERR(wm8995->regmap)) {
- 		ret = PTR_ERR(wm8995->regmap);
- 		dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
--		goto err_alloc;
-+		return ret;
- 	}
- 
- 	ret = snd_soc_register_codec(&spi->dev,
-@@ -2284,8 +2284,6 @@ static int __devinit wm8995_spi_probe(struct spi_device *spi)
- 
- err_regmap:
- 	regmap_exit(wm8995->regmap);
--err_alloc:
--	kfree(wm8995);
- 
- 	return ret;
- }
-@@ -2295,7 +2293,6 @@ static int __devexit wm8995_spi_remove(struct spi_device *spi)
- 	struct wm8995_priv *wm8995 = spi_get_drvdata(spi);
- 	snd_soc_unregister_codec(&spi->dev);
- 	regmap_exit(wm8995->regmap);
--	kfree(wm8995);
- 	return 0;
- }
- 
-@@ -2316,7 +2313,7 @@ static __devinit int wm8995_i2c_probe(struct i2c_client *i2c,
- 	struct wm8995_priv *wm8995;
- 	int ret;
- 
--	wm8995 = kzalloc(sizeof *wm8995, GFP_KERNEL);
-+	wm8995 = devm_kzalloc(&i2c->dev, sizeof(*wm8995), GFP_KERNEL);
- 	if (!wm8995)
- 		return -ENOMEM;
- 
-@@ -2326,7 +2323,7 @@ static __devinit int wm8995_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(wm8995->regmap)) {
- 		ret = PTR_ERR(wm8995->regmap);
- 		dev_err(&i2c->dev, "Failed to register regmap: %d\n", ret);
--		goto err_alloc;
-+		return ret;
- 	}
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
-@@ -2341,8 +2338,6 @@ static __devinit int wm8995_i2c_probe(struct i2c_client *i2c,
- 
- err_regmap:
- 	regmap_exit(wm8995->regmap);
--err_alloc:
--	kfree(wm8995);
- 
- 	return ret;
- }
-@@ -2353,7 +2348,6 @@ static __devexit int wm8995_i2c_remove(struct i2c_client *client)
- 
- 	snd_soc_unregister_codec(&client->dev);
- 	regmap_exit(wm8995->regmap);
--	kfree(wm8995);
- 	return 0;
- }
- 
--- 
-1.7.4.1
+Thanks for the detailed report.
+
+On 21.11.2012 21:13, Daniel Griscom wrote:
+> On to the next problem we're having with our USB audio card. Recap: 
+> simple USB Audio Class embedded stereo audio card, running at 44.1kHz 
+> or 48kHz, using the 3.6.6 kernel and its associated ALSA modules to 
+> drive it, running on Jetway ND9D-2700, with an Atom D2700 and NM10 
+> chipset. Output of "sudo lsusb -v" for card is appended below.
+> 
+> Problem: we're experiencing strange hiccups in the delivery of audio 
+> from the motherboard to the card. At 48kHz, the motherboard should 
+> send a 6-frame packet to the card once per high-speed microframe 
+> (every 125us). This usually works, but sometimes there are two 
+> closely related failures:
+> 
+> 1) Once in a while (every few seconds or minutes) a single packet 
+> will be missed
+> 
+> 2) Once in a longer while (every few minutes or hours), the system 
+> will go into a continuing error condition where three of every eight 
+> packets are missed.
+> 
+> In both cases, "missed" means that ALSA consumes the output audio 
+> from my motherboard application, but never sends a packet to the 
+> audio card. No USB errors, no logged messages; it just disappears.
+> 
+> 
+> The second case has one very interesting symptom. The pattern of 
+> missed frames is amazingly rigid, and repeats the following pattern 
+> endlessly (each character is a 125us slot for a packet, "F" is a 
+> transmitted packet, "-" is a missing packet):
+> 
+> FFFF--F-
+> 
+> So, with eight microframes per millisecond where packets can be sent, 
+> the fifth, sixth and eighth packets are missed, and this repeats for 
+> at least a number of seconds. Very, very strange.
+> 
+> Using a Beagle 1200 I can see that there are no USB errors: the 
+> packet is just not sent. Audio continues unabated in the other 
+> direction. Timing always looks good, no other traffic on that USB 
+> port.
+> 
+> 
+> We've been chewing on this issue for a while. To me, it sounds like 
+> this could only happen in the ALSA code where the stream of audio is 
+> broken into individual USB packets. Unfortunately, I'm having a heck 
+> of a time navigating the ALSA source code, and frankly have gotten no 
+> traction at all.
+
+I guess the only reason for what you see is that
+snd_usb_endpoint_next_packet_size() returns an unusual value every time
+a packet is missing, and question is why.
+
+That function's operation is based on two values: the current momentary
+frequency as reported by the sync endpoint (ep->freqm), and the phase
+accumulator which carries the lower 16bits of the previous calculation,
+which is preserved for precision sustainment.
+
+> Any thoughts on what this might be, or on what further tests we might do?
+
+Please try to catch the input and output parameters of that function
+when USB packets are missed and also have a closer look at the sync
+packets that are sent to the host shortly before that happens. Is there
+any pattern in that?
+
+
+Daniel
