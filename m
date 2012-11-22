@@ -1,7 +1,7 @@
 From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 07/10] ASoC: wm8804: Convert to use devm_regmap_init_{spi,i2c}()
-Date: Thu, 22 Nov 2012 09:38:39 +0530
-Message-ID: <1353557322-25353-8-git-send-email-tushar.behera@linaro.org>
+Subject: [PATCH 06/10] ASoC: wm8753: Convert to use devm_regmap_init_{spi,i2c}()
+Date: Thu, 22 Nov 2012 09:38:38 +0530
+Message-ID: <1353557322-25353-7-git-send-email-tushar.behera@linaro.org>
 References: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
@@ -12,62 +12,88 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
 ---
- sound/soc/codecs/wm8804.c |   17 ++---------------
- 1 files changed, 2 insertions(+), 15 deletions(-)
+ sound/soc/codecs/wm8753.c |   32 ++++++--------------------------
+ 1 files changed, 6 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index c088020..837bfb5 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -711,7 +711,7 @@ static int __devinit wm8804_spi_probe(struct spi_device *spi)
- 	if (!wm8804)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 9914215..50a5dc7 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -1562,35 +1562,25 @@ static int __devinit wm8753_spi_probe(struct spi_device *spi)
  
--	wm8804->regmap = regmap_init_spi(spi, &wm8804_regmap_config);
-+	wm8804->regmap = devm_regmap_init_spi(spi, &wm8804_regmap_config);
- 	if (IS_ERR(wm8804->regmap)) {
- 		ret = PTR_ERR(wm8804->regmap);
- 		return ret;
-@@ -727,9 +727,7 @@ static int __devinit wm8804_spi_probe(struct spi_device *spi)
+ 	spi_set_drvdata(spi, wm8753);
  
- static int __devexit wm8804_spi_remove(struct spi_device *spi)
- {
--	struct wm8804_priv *wm8804 = spi_get_drvdata(spi);
- 	snd_soc_unregister_codec(&spi->dev);
--	regmap_exit(wm8804->regmap);
- 	return 0;
- }
- 
-@@ -755,7 +753,7 @@ static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
- 	if (!wm8804)
- 		return -ENOMEM;
- 
--	wm8804->regmap = regmap_init_i2c(i2c, &wm8804_regmap_config);
-+	wm8804->regmap = devm_regmap_init_i2c(i2c, &wm8804_regmap_config);
- 	if (IS_ERR(wm8804->regmap)) {
- 		ret = PTR_ERR(wm8804->regmap);
- 		return ret;
-@@ -765,23 +763,12 @@ static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm8804, &wm8804_dai, 1);
--	if (ret != 0)
+-	wm8753->regmap = regmap_init_spi(spi, &wm8753_regmap);
++	wm8753->regmap = devm_regmap_init_spi(spi, &wm8753_regmap);
+ 	if (IS_ERR(wm8753->regmap)) {
+ 		ret = PTR_ERR(wm8753->regmap);
+ 		dev_err(&spi->dev, "Failed to allocate register map: %d\n",
+ 			ret);
 -		goto err;
--
++		return ret;
+ 	}
+ 
+ 	ret = snd_soc_register_codec(&spi->dev, &soc_codec_dev_wm8753,
+ 				     wm8753_dai, ARRAY_SIZE(wm8753_dai));
+-	if (ret != 0) {
++	if (ret != 0)
+ 		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+-		goto err_regmap;
+-	}
+ 
 -	return 0;
 -
+-err_regmap:
+-	regmap_exit(wm8753->regmap);
 -err:
--	regmap_exit(wm8804->regmap);
  	return ret;
  }
  
- static __devexit int wm8804_i2c_remove(struct i2c_client *i2c)
+ static int __devexit wm8753_spi_remove(struct spi_device *spi)
  {
--	struct wm8804_priv *wm8804 = i2c_get_clientdata(i2c);
+-	struct wm8753_priv *wm8753 = spi_get_drvdata(spi);
 -
- 	snd_soc_unregister_codec(&i2c->dev);
--	regmap_exit(wm8804->regmap);
+ 	snd_soc_unregister_codec(&spi->dev);
+-	regmap_exit(wm8753->regmap);
+ 	return 0;
+ }
+ 
+@@ -1619,35 +1609,25 @@ static __devinit int wm8753_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8753);
+ 
+-	wm8753->regmap = regmap_init_i2c(i2c, &wm8753_regmap);
++	wm8753->regmap = devm_regmap_init_i2c(i2c, &wm8753_regmap);
+ 	if (IS_ERR(wm8753->regmap)) {
+ 		ret = PTR_ERR(wm8753->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+ 			ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm8753,
+ 				     wm8753_dai, ARRAY_SIZE(wm8753_dai));
+-	if (ret != 0) {
++	if (ret != 0)
+ 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+-		goto err_regmap;
+-	}
+ 
+-	return 0;
 -
+-err_regmap:
+-	regmap_exit(wm8753->regmap);
+-err:
+ 	return ret;
+ }
+ 
+ static __devexit int wm8753_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8753_priv *wm8753 = i2c_get_clientdata(client);
+-
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(wm8753->regmap);
  	return 0;
  }
  
