@@ -1,106 +1,66 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ARM: OMAP4+: HDMI: Rearrange
- platform devices for ASoC drivers
-Date: Thu, 22 Nov 2012 10:03:59 +0900
-Message-ID: <20121122010358.GB4371@opensource.wolfsonmicro.com>
-References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com>
- <1353029819-21809-3-git-send-email-ricardo.neri@ti.com>
- <50A5F0A5.2010105@ti.com> <50A6805C.3050004@ti.com>
- <50AA2D01.5020302@ti.com>
- <20121120011526.GF4483@opensource.wolfsonmicro.com>
- <50AD6FB0.3050808@ti.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH 1/2] ASoC: davinci-mcasp: Add pinctrl support
+Date: Thu, 22 Nov 2012 09:34:58 +0530
+Message-ID: <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
+References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2577513332348212933=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87C53265DB0
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2012 02:04:09 +0100 (CET)
-In-Reply-To: <50AD6FB0.3050808@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ricardo Neri <ricardo.neri@ti.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, s-guiriec@ti.com, linux-omap@vger.kernel.org, lrg@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1353557099-21599-1-git-send-email-gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: sudhakar.raj-l0cyMroinI0@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, gururaja.hebbar-l0cyMroinI0@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
 
---===============2577513332348212933==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
-Content-Disposition: inline
+Signed-off-by: Hebbar, Gururaja <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+---
+:100644 100644 5715595... 76c05d9... M	sound/soc/davinci/davinci-mcasp.c
+ sound/soc/davinci/davinci-mcasp.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 21, 2012 at 06:20:00PM -0600, Ricardo Neri wrote:
-> On 11/19/2012 07:15 PM, Mark Brown wrote:
-
-> >Yes, this would be more sensible if there's no board specifics involved.
-
-> I think they are truly board-specific. For instance, there could be
-> some board that does not have the OMAP HDMI IP wired to an external
-> connector. We don't want the drivers to be probed in that case. If
-> they are in common code, the devices will be created even if a board
-> does not have HDMI output.
-
-That's just a case of having a flag in the platform data for the device
-saying "don't use this port" as opposed to having the entire ASoC device
-instantiation infrastructure in there which is rather Linux specific.
-
-> Something like this:
-
-> 	sound_hdmi {
-> 		compatible = "ti,omap-hdmi-card-audio";
-> 		ti,model = "OMAP4HDMI";
-
-> 		ti,hdmi_audio = <&hdmi>;
-> 		ti,level_shifter = <&tpd12s015>;
-> 	};
-
-> The ASoC machine driver would create the platform device for the
-> HDMI codec if the DT has the required nodes.
-
-Why not just make this a property of the main HDMI controller - the
-compatible property here looks like it's describing the Linux specifics
-not the hardware?
-
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQrXnZAAoJELSic+t+oim9qnUP/2Ggni5pspU3gjhVDz+9FLoX
-3iaLbSfqey9T/0vmswksfqkYZCvmtQP6hmTzg8Uy6EWXTLVHS89zfyanhNJEmrLH
-nZZLPhsVu+zXN2l6iRtMS5Q7AbYoNCFYE5PK5UKmOVDzmMsRtC7UUYnAH8EIj5SF
-73+x4bTA5yVlYhq8eFz9YINSoZjYi/iO3vywNbj7KQYnqVlIj/MgjxafJFY5XqMB
-qXgRgNbc7xw1/D8UNlxIhWUYRLvbgpFq8ywEog3BYPqaIq98qIR8n/XRxBCJIKt8
-m/rhfj8X3U00WbZldZ0QQtD5wwKwdavSWuF5nQcKrCrCzsecwYoMsHYG8b2TkXed
-cHmjiedHc+AUd7vDCEDQ8n78UFt2FQDyjPf51Zykcljcco1C/+M/e1lwO1YS1CPX
-2ODTbHwlY4Ggb+4BPPFS9ZjZPw39yozl2UyNFchQ1yPyVfIih1JbN7LO6p9GxLse
-0VV6IaCorf9HLLUOADY8MqWf+JHVBT4VAbpc1nXU10tke6tFWR5xrwZPbOHTm6fh
-h2Zwn2aZFbUqI3HMG/yvquMRjc74QgPCyXbiiJe+Uzhijs55f1B2gnoT2+dkoB7/
-GmKS6fRJ3gijTDnVvrXveJVifZ6pOofUy3R+R1qRjMWfTt0+Zmk+jc1iTRKvtEGt
-lonz3fL7A9OU8FipTZmA
-=nzaP
------END PGP SIGNATURE-----
-
---jho1yZJdad60DJr+--
-
---===============2577513332348212933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2577513332348212933==--
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 5715595..76c05d9 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -25,6 +25,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -1108,6 +1109,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	struct resource *mem, *ioarea, *res;
+ 	struct snd_platform_data *pdata;
+ 	struct davinci_audio_dev *dev;
++	struct pinctrl *pinctrl;
+ 	int ret;
+ 
+ 	if (!pdev->dev.platform_data && !pdev->dev.of_node) {
+@@ -1139,6 +1141,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		return -EBUSY;
+ 	}
+ 
++	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
++	if (IS_ERR(pinctrl))
++		dev_warn(&pdev->dev,
++			"pins are not configured from the driver\n");
++
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-- 
+1.7.9.5
