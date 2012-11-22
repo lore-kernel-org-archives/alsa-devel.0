@@ -1,7 +1,7 @@
 From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 04/10] ASoC: ak4104: Convert to use devm_regmap_init_spi()
-Date: Thu, 22 Nov 2012 09:38:36 +0530
-Message-ID: <1353557322-25353-5-git-send-email-tushar.behera@linaro.org>
+Subject: [PATCH 09/10] ASoC: wm8988: Convert to use devm_regmap_init_{spi,i2c}()
+Date: Thu, 22 Nov 2012 09:38:41 +0530
+Message-ID: <1353557322-25353-10-git-send-email-tushar.behera@linaro.org>
 References: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
@@ -12,55 +12,66 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
 ---
- sound/soc/codecs/ak4104.c |   19 ++++---------------
- 1 files changed, 4 insertions(+), 15 deletions(-)
+ sound/soc/codecs/wm8988.c |   14 ++------------
+ 1 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index eec086b..4b11b82 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -222,7 +222,7 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 	if (ak4104 == NULL)
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 1d4c5cf..715788d 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -882,7 +882,7 @@ static int __devinit wm8988_spi_probe(struct spi_device *spi)
+ 	if (wm8988 == NULL)
  		return -ENOMEM;
  
--	ak4104->regmap = regmap_init_spi(spi, &ak4104_regmap);
-+	ak4104->regmap = devm_regmap_init_spi(spi, &ak4104_regmap);
- 	if (IS_ERR(ak4104->regmap)) {
- 		ret = PTR_ERR(ak4104->regmap);
- 		return ret;
-@@ -247,30 +247,19 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 	 * the device, but there is no hardware ID register. */
- 	ret = regmap_read(ak4104->regmap, AK4104_REG_RESERVED, &val);
- 	if (ret != 0)
--		goto err;
--	if (val != AK4104_RESERVED_VAL) {
--		ret = -ENODEV;
--		goto err;
--	}
-+		return ret;
-+	if (val != AK4104_RESERVED_VAL)
-+		return -ENODEV;
- 
- 	spi_set_drvdata(spi, ak4104);
+-	wm8988->regmap = regmap_init_spi(spi, &wm8988_regmap);
++	wm8988->regmap = devm_regmap_init_spi(spi, &wm8988_regmap);
+ 	if (IS_ERR(wm8988->regmap)) {
+ 		ret = PTR_ERR(wm8988->regmap);
+ 		dev_err(&spi->dev, "Failed to init regmap: %d\n", ret);
+@@ -893,17 +893,12 @@ static int __devinit wm8988_spi_probe(struct spi_device *spi)
  
  	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_device_ak4104, &ak4104_dai, 1);
+ 			&soc_codec_dev_wm8988, &wm8988_dai, 1);
 -	if (ret != 0)
--		goto err;
+-		regmap_exit(wm8988->regmap);
 -
--	return 0;
--
--err:
--	regmap_exit(ak4104->regmap);
  	return ret;
  }
  
- static int __devexit ak4104_spi_remove(struct spi_device *spi)
+ static int __devexit wm8988_spi_remove(struct spi_device *spi)
  {
--	struct ak4104_private *ak4101 = spi_get_drvdata(spi);
--	regmap_exit(ak4101->regmap);
+-	struct wm8988_priv *wm8988 = spi_get_drvdata(spi);
  	snd_soc_unregister_codec(&spi->dev);
+-	regmap_exit(wm8988->regmap);
  	return 0;
  }
+ 
+@@ -931,7 +926,7 @@ static __devinit int wm8988_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8988);
+ 
+-	wm8988->regmap = regmap_init_i2c(i2c, &wm8988_regmap);
++	wm8988->regmap = devm_regmap_init_i2c(i2c, &wm8988_regmap);
+ 	if (IS_ERR(wm8988->regmap)) {
+ 		ret = PTR_ERR(wm8988->regmap);
+ 		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
+@@ -940,17 +935,12 @@ static __devinit int wm8988_i2c_probe(struct i2c_client *i2c,
+ 
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8988, &wm8988_dai, 1);
+-	if (ret != 0)
+-		regmap_exit(wm8988->regmap);
+-
+ 	return ret;
+ }
+ 
+ static __devexit int wm8988_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8988_priv *wm8988 = i2c_get_clientdata(client);
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(wm8988->regmap);
+ 	return 0;
+ }
+ 
 -- 
 1.7.4.1
