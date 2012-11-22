@@ -1,20 +1,17 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH v2 2/2] ARM: OMAP4+: HDMI: Rearrange
- platform devices for ASoC drivers
-Date: Wed, 21 Nov 2012 18:20:00 -0600
-Message-ID: <50AD6FB0.3050808@ti.com>
-References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com>
- <1353029819-21809-3-git-send-email-ricardo.neri@ti.com>
- <50A5F0A5.2010105@ti.com> <50A6805C.3050004@ti.com> <50AA2D01.5020302@ti.com>
- <20121120011526.GF4483@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: question on snd_soc_dai_link_event
+Date: Thu, 22 Nov 2012 09:32:41 +0900
+Message-ID: <20121122003239.GA4371@opensource.wolfsonmicro.com>
+References: <9C1683ABA24673439FCD019782C9F4BBDA2A1C1582@SAFEX1MAIL1.st.com>
+ <20121026170142.GZ18814@opensource.wolfsonmicro.com>
+ <9C1683ABA24673439FCD019782C9F4BBDE4BD6E569@SAFEX1MAIL1.st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1025367948205522096=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A39A265DB0
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2012 01:21:00 +0100 (CET)
-In-Reply-To: <20121120011526.GF4483@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5198A265DB0
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2012 01:32:47 +0100 (CET)
+In-Reply-To: <9C1683ABA24673439FCD019782C9F4BBDE4BD6E569@SAFEX1MAIL1.st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, s-guiriec@ti.com, linux-omap@vger.kernel.org, lrg@ti.com
+To: Sebastien LEDUC <sebastien.leduc@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Liam  Girdwood (lrg@ti.com)" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tomi, Mark,
 
-On 11/19/2012 07:15 PM, Mark Brown wrote:
-> On Mon, Nov 19, 2012 at 02:58:41PM +0200, Tomi Valkeinen wrote:
->
->> I still don't understand why the codec and machine drivers need to be
->> created in the board file. That just forces us to replicate the same
->> code for all OMAP boards that have OMAP HDMI output. Why not create the
->> devices in some common code, for example arch/arm/mach-omap2/display.c?
->
-> Yes, this would be more sensible if there's no board specifics involved.
+--===============1025367948205522096==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Content-Disposition: inline
 
-I think they are truly board-specific. For instance, there could be some 
-board that does not have the OMAP HDMI IP wired to an external 
-connector. We don't want the drivers to be probed in that case. If they 
-are in common code, the devices will be created even if a board does not 
-have HDMI output.
->
->> With DT this should be similar: OMAP's hdmi devices should be presented
->> in the omap4.dtsi file, not in each individual board dts. Although the
->> DT data should represent the hardware, and if the code and machine
->> devices are not really there in the HW, then... I don't know =).
->
-> Well, in a case like this where the sound card is essentially autoprobed
-> based on the detection of the hardware at runtime the sound card
-> probably shouldn't appear in the device tree at all - you'll probably
-> want something to say there's a physical HDMI port it's worth looking at
-> there but everything else should be figured out at runtime.
 
-Yes, I was planning to rely on the DSS DT entries in the omap4.dtsi 
-file. However, no HDMI audio support should be probed if the board does 
-not have an HDMI connector. Also, the TPD chip should appear on the 
-Pandaboard/SDP4430 dts files. Only if both conditions are met, probe the 
-HDMI audio drivers, this conditions will be checked at run time by the 
-ASoC HDMI machine driver.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Something like this:
+On Wed, Nov 21, 2012 at 06:56:55PM +0100, Sebastien LEDUC wrote:
 
-	sound_hdmi {
-		compatible = "ti,omap-hdmi-card-audio";
-		ti,model = "OMAP4HDMI";
+> For a capture stream, it creates the following routes:
+> Cpu_dai widget -> dai_link widget -> codec_dai widget
 
-		ti,hdmi_audio = <&hdmi>;
-		ti,level_shifter = <&tpd12s015>;
-	};
+> And for a playback stream:
+> Codec_dai widget -> dai_link widget -> cpu_dai widget
 
-The ASoC machine driver would create the platform device for the HDMI 
-codec if the DT has the required nodes.
->
->> And something that confuses me: sound/soc/codecs/omap-hdmi.c contains a
->> codec and dai drivers, but sound/soc/omap/omap-hdmi.c also contains a
->> dai driver. The latter actually contains two dai drivers, the other a
->> platform driver and the other a snd_soc_dai_driver. But I guess this is
->> asoc details, and not relevant to this disuccsion =).
->
-> There's an interaface on each end of the link, they're wired together to
-> communicate between the two devices.
+Remember that for a CODEC<->CODEC link both devices will be CODECs so
+their widgets have the opposite sense as everything is named in a CPU
+centric fashion.  The important thing is that we link playback to
+capture and capture to playback.
 
-BR,
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Ricardo
->
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQrXKVAAoJELSic+t+oim98IUQAJgU6d0qW87BhLxuZgajZHTY
+s7uFE1IPJt536m/T5Y02HRpoNtygLx4dY3+c+oB9nkCtR/Ud3SzxJT1C1ZRghUDM
+H6zSf4kPWda9+hjvjvPHWn3p/px5TvGkMqiWL9DQkTMCQ4M85cNF4GDUBoJz4Jr+
+fXbtIC/oxXHlUFy6G8Pe5OiqLdv9w6YUhu0qRHjVvoQlNQonlGe/upPAscXCKev2
+pLfrf8ld9Fe1fOAtmn1OGOCeMtdHdq5lTp/3tCjIuctIFx+eLdBIKaC+StRKZQQ3
+DLJRAkfeKgFn70o+wJdwn9tp/90HDxXtaeDsZ7ZF61PJ+O3hnYpViGwuZv6NRcUU
+KcCFE6KFGgpIsup1CStsTPnwBVqq3Ok0uILE6lluBJ/jZ/2LearEbczksSJWe2TK
+kxak9PPyVVUvGQqxqXD8hMOdXqiYgZzAuWztWICbXxZuHcZYGjbNYacYLH45RQKb
+OQhYNgcQ41551LnP5lLVnuE4TDeFHlJg41sTDdF7UKc9lYermOipjBPmv1M0jpxD
+tuQ9dYs3fZ8W0B9neKkslTSqslPQgKStcTHFCKNxIb4b3Xv5tonlmCuri0mjdks2
+AQ0XfD4Ol1hhvAq59aI8MhnKr4H+xXwTu0GS5LVvZBt43wrN1sZtsIJBqS0DnTxr
+WghdPx8BP6xwAReI08tt
+=2opF
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
+
+--===============1025367948205522096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1025367948205522096==--
