@@ -1,91 +1,41 @@
 From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 10/10] ASoC: wm8995: Convert to use devm_regmap_init_{spi,i2c}()
-Date: Thu, 22 Nov 2012 09:38:42 +0530
-Message-ID: <1353557322-25353-11-git-send-email-tushar.behera@linaro.org>
-References: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
+Subject: [PATCH 00/10] ASoC: codec: devm_ related modifications
+Date: Thu, 22 Nov 2012 09:38:32 +0530
+Message-ID: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 Cc: broonie@opensource.wolfsonmicro.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
----
- sound/soc/codecs/wm8995.c |   26 +++-----------------------
- 1 files changed, 3 insertions(+), 23 deletions(-)
+This patchset includes devm_ related modifications for sound codecs.
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 2eb68c1..f1a7cf1 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -2267,7 +2267,7 @@ static int __devinit wm8995_spi_probe(struct spi_device *spi)
- 
- 	spi_set_drvdata(spi, wm8995);
- 
--	wm8995->regmap = regmap_init_spi(spi, &wm8995_regmap);
-+	wm8995->regmap = devm_regmap_init_spi(spi, &wm8995_regmap);
- 	if (IS_ERR(wm8995->regmap)) {
- 		ret = PTR_ERR(wm8995->regmap);
- 		dev_err(&spi->dev, "Failed to register regmap: %d\n", ret);
-@@ -2277,22 +2277,12 @@ static int __devinit wm8995_spi_probe(struct spi_device *spi)
- 	ret = snd_soc_register_codec(&spi->dev,
- 				     &soc_codec_dev_wm8995, wm8995_dai,
- 				     ARRAY_SIZE(wm8995_dai));
--	if (ret < 0)
--		goto err_regmap;
--
--	return ret;
--
--err_regmap:
--	regmap_exit(wm8995->regmap);
--
- 	return ret;
- }
- 
- static int __devexit wm8995_spi_remove(struct spi_device *spi)
- {
--	struct wm8995_priv *wm8995 = spi_get_drvdata(spi);
- 	snd_soc_unregister_codec(&spi->dev);
--	regmap_exit(wm8995->regmap);
- 	return 0;
- }
- 
-@@ -2319,7 +2309,7 @@ static __devinit int wm8995_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8995);
- 
--	wm8995->regmap = regmap_init_i2c(i2c, &wm8995_regmap);
-+	wm8995->regmap = devm_regmap_init_i2c(i2c, &wm8995_regmap);
- 	if (IS_ERR(wm8995->regmap)) {
- 		ret = PTR_ERR(wm8995->regmap);
- 		dev_err(&i2c->dev, "Failed to register regmap: %d\n", ret);
-@@ -2329,25 +2319,15 @@ static __devinit int wm8995_i2c_probe(struct i2c_client *i2c,
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm8995, wm8995_dai,
- 				     ARRAY_SIZE(wm8995_dai));
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
--		goto err_regmap;
--	}
--
--	return ret;
--
--err_regmap:
--	regmap_exit(wm8995->regmap);
- 
- 	return ret;
- }
- 
- static __devexit int wm8995_i2c_remove(struct i2c_client *client)
- {
--	struct wm8995_priv *wm8995 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(wm8995->regmap);
- 	return 0;
- }
- 
+First 2 patches fix warning for freeing of devm_ allocated data.
+The next patch introduces usage of devm_kzalloc() in wm8995 codec.
+Following 7 patches introduce usage of devm_regmap_init_xxx() in
+remaining codecs.
+
+Tushar Behera (10):
+  ASoC: wm8510: remove invalid free of devm_ allocated data
+  ASoC: wm8753: remove invalid free of devm_ allocated data
+  ASoC: wm8995: Convert to use devm_kzalloc()
+  ASoC: ak4104: Convert to use devm_regmap_init_spi()
+  ASoC: wm8741: Convert to use devm_regmap_init_{spi,i2c}()
+  ASoC: wm8753: Convert to use devm_regmap_init_{spi,i2c}()
+  ASoC: wm8804: Convert to use devm_regmap_init_{spi,i2c}()
+  ASoC: wm8985: Convert to use devm_regmap_init_{spi,i2c}()
+  ASoC: wm8988: Convert to use devm_regmap_init_{spi,i2c}()
+  ASoC: wm8995: Convert to use devm_regmap_init_{spi,i2c}()
+
+ sound/soc/codecs/ak4104.c |   19 ++++---------------
+ sound/soc/codecs/wm8510.c |    3 ---
+ sound/soc/codecs/wm8741.c |    4 ++--
+ sound/soc/codecs/wm8753.c |   33 ++++++---------------------------
+ sound/soc/codecs/wm8804.c |   17 ++---------------
+ sound/soc/codecs/wm8985.c |   30 ++++--------------------------
+ sound/soc/codecs/wm8988.c |   14 ++------------
+ sound/soc/codecs/wm8995.c |   40 +++++++---------------------------------
+ 8 files changed, 27 insertions(+), 133 deletions(-)
+
 -- 
 1.7.4.1
