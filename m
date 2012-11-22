@@ -1,8 +1,8 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 2/5] ASoC: OMAP: mcbsp fixes for enabling ARM
- multiplatform support
-Date: Thu, 22 Nov 2012 12:59:28 +0200
-Message-ID: <20121122125928.755ace5bd34f8a3c40ff4abe@bitmer.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/5] ASoC: OMAP: mcbsp fixes for enabling ARM multiplatform
+ support
+Date: Thu, 22 Nov 2012 15:02:00 +0100
+Message-ID: <50AE3058.1080204@ti.com>
 References: <20121121174201.25576.61961.stgit@muffinssi.local>
  <20121121174225.25576.54891.stgit@muffinssi.local>
 Mime-Version: 1.0
@@ -20,12 +20,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Nov 2012 09:42:25 -0800
-Tony Lindgren <tony@atomide.com> wrote:
-
+On 11/21/2012 06:42 PM, Tony Lindgren wrote:
 > We cannot include any plat or mach headers for the multiplatform
 > support.
 > 
@@ -39,10 +37,5 @@ Tony Lindgren <tony@atomide.com> wrote:
 > cc: Takashi Iwai <tiwai@suse.de>
 > cc: alsa-devel@alsa-project.org
 > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  sound/soc/omap/mcbsp.c      |    4 +---
->  sound/soc/omap/mcbsp.h      |    6 ++++++
->  sound/soc/omap/omap-mcbsp.c |    5 ++---
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
