@@ -1,54 +1,56 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: Ux500: Initialise PCM from MSP probe rather
- than as a device
-Date: Fri, 23 Nov 2012 23:06:44 +0900
-Message-ID: <20121123140643.GO4529@opensource.wolfsonmicro.com>
-References: <1353675941-7303-1-git-send-email-lee.jones@linaro.org>
+Subject: Re: [PATCH 3/3] ASoC: atmel-pcm: add dma support
+Date: Fri, 23 Nov 2012 23:27:48 +0900
+Message-ID: <20121123142747.GP4529@opensource.wolfsonmicro.com>
+References: <1353651257-2476-1-git-send-email-voice.shen@atmel.com>
+ <1353651257-2476-4-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X35wERi4JU/f1kly"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="fqIB0bRxfTYxTb/F"
+Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1353675941-7303-1-git-send-email-lee.jones@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, arnd@arndb.de, linus.walleij@stericsson.com, Ola LILJA2 <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org
+In-Reply-To: <1353651257-2476-4-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---X35wERi4JU/f1kly
+--fqIB0bRxfTYxTb/F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 23, 2012 at 01:05:41PM +0000, Lee Jones wrote:
-> The PCM is a pseudo-device. It doesn't have any of it's own registers
-> or hardware. It rather acts as a layer of abstraction for DMA
-> transfers. Hence, instead of classifying it as a device in its own
-> right, we call the initialisation from the MSP driver.
+On Fri, Nov 23, 2012 at 02:14:17PM +0800, Bo Shen wrote:
+> Add dmaengine specific routines and replace PDC ones in
+> pcm_ops if appropriate.
+>=20
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> [voice.shen@atmel.com: adapt to soc dmaengine framework]
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-Applied, thanks.  Please always submit patches against the latest
-development versions of code.
+Why is this not just two separate drivers?
 
---X35wERi4JU/f1kly
+--fqIB0bRxfTYxTb/F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQr4LhAAoJELSic+t+oim9AOUQAIDw7765BwXMVDpZKROK8pIn
-c1P2mTrCt/e+sE5n7PKDEk8bw48Ub0cgjqZ/iBGIVOoM/L8YTBV5+i0kGw6/1qkT
-dt+xoDePAKDYxdiRpVNggsa7OUIM53VHxOKSuIqAfhqQmBB4kCzB+KRQ4OQornVQ
-ql9pjulsjsNYXRxNqRTPGInTameVQjxX/rZOX4IXWkZs2CuyxNFz/jTMdgIqkSP/
-Pukt7GojmwP5gsAoQSTUCoZZhOJ7gUWuN9zVJsopoN+Dk29k6DKU6QzYECcXyBPf
-wqmMXOGy/wWOOjAuesXO7YCl5rre76I1h4k1XvCdqfwaQQzj+pFR4FsKJjMWkOgv
-d70HI2XkQrbjgDoAwMyiyCT9UJeqdx1/gD18KCmvbzQo4MgDBLuYD+7+2bOg5Vuc
-PzbgqoYZyNy9tJ22DxFvGGKxoIfVFpeQ83pMRQzPuj2ClLIfpvtZCSFlrdDbCvbx
-ixHxRBQFAoDhKaexlpNAqAvt2u3SnyIfCCEbfqtTCZazITQQpxuEBk/jFWAmfDAS
-vi8W18wMf0HYzOZiHi+JYh/hhJZ1YrhF7wDEKY7pBLqmA/SDDOkWPlc26RB4JDYF
-52rFuWmS4xqaubvy26Z3ON8mRqoenqJcmTER7ISPTM+QRekFi03rsYaGr1m5tQq7
-L8UIiEYwQ/w2DiY7qk+Y
-=803T
+iQIcBAEBAgAGBQJQr4fNAAoJELSic+t+oim9/cIP/19P545nZNKhPdg3r0rU/Yvs
+zqiT0Q7BDpabIb7B0oohvUox4KUIkZvvt/umqayp0dwaS2EBNB334Iq6X4VggaY3
+dQi4UBdHC0MZorkKzG17GeLI+W4noS0H0f/WsfGlYvlLEZPOOENd/sr6nMF0L7FJ
+UetEmMf3rgMNWt5kI4T8PqCPvr3EtQC3DqCNQ4fCl7LwngBK+MrfvBLR5O3LkfVf
+vLmGUWEi89I+B/qoMfKRK/BMzXpOP/vmDcL1gm6s9v5zl7mk+3y42YeeOorexZmS
+9s162/wQhakMfVa4Dv2SGd/05B+3Puapn0boDthWOZh2X4fBnK+kUb96zIPwyn5w
+Zn/l0BEYCkGtDgvkBYbEfVGDDNahXJVOfgnXcx21vrXIDHLSNgKAe8xOQGI3NXg1
+f6xMUBf8/MEFn5Q+94RDifnORNzGugBygO+gmYoiAzfZk/lZ7hG9Ec+XjOyXlAmq
+TT8BSC/0lrvpaPB/6yXmZ/V47sDtPq7loS/2/O9Qg846Tg/oGdhrRueZn0He2SBW
+SdvkChKfgu5X2ac+umrJWEG36hyVNHKXXz5+bv541CHREd/0pEZNTNG6ohZ/HiQN
+lHeBaYZIC5F9Snytt4NJPRJ5dHIF1Jp/bXp3Le3TvT5MdQDYroixOjIjn/Y4w76J
+yqHAm+0zcinh1Nszcf5C
+=TedW
 -----END PGP SIGNATURE-----
 
---X35wERi4JU/f1kly--
+--fqIB0bRxfTYxTb/F--
