@@ -1,68 +1,62 @@
-From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: Re: [PATCH v2 2/2] ARM: OMAP4+: HDMI: Rearrange platform devices
- for ASoC drivers
-Date: Thu, 22 Nov 2012 20:03:53 -0600
-Message-ID: <50AED989.40408@ti.com>
-References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com> <1353029819-21809-3-git-send-email-ricardo.neri@ti.com> <50A5F0A5.2010105@ti.com> <50A6805C.3050004@ti.com> <50AA2D01.5020302@ti.com> <20121120011526.GF4483@opensource.wolfsonmicro.com> <50AD6FB0.3050808@ti.com> <20121122010358.GB4371@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [BUGFIX PATCH] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
+Date: Fri, 23 Nov 2012 11:05:18 +0900
+Message-ID: <20121123020517.GJ4385@opensource.wolfsonmicro.com>
+References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20121122010358.GB4371@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, tony@atomide.com, lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Y+Z5jE7Arku/2GrR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 11/21/2012 07:03 PM, Mark Brown wrote:
-> On Wed, Nov 21, 2012 at 06:20:00PM -0600, Ricardo Neri wrote:
->> On 11/19/2012 07:15 PM, Mark Brown wrote:
->
->>> Yes, this would be more sensible if there's no board specifics involved.
->
->> I think they are truly board-specific. For instance, there could be
->> some board that does not have the OMAP HDMI IP wired to an external
->> connector. We don't want the drivers to be probed in that case. If
->> they are in common code, the devices will be created even if a board
->> does not have HDMI output.
->
-> That's just a case of having a flag in the platform data for the device
-> saying "don't use this port"
-Ok. I guess I can put code so that the devices for ASoC are created only 
-if there are HDMI displays in the omapdss_board_info.devices array.
+--Y+Z5jE7Arku/2GrR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- > as opposed to having the entire ASoC device
+On Thu, Nov 22, 2012 at 01:31:06PM +0100, Lothar Wa=DFmann wrote:
 
-> instantiation infrastructure in there which is rather Linux specific.
-But the board files are only for Linux, right? The ASoC drivers will 
-always be initialized anyways. They will reach probe only if the devices 
-are present.
+>  obj-$(CONFIG_SND_SOC_IMX_PCM) +=3D snd-soc-imx-pcm.o
+>  snd-soc-imx-pcm-y :=3D imx-pcm.o
+> -snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_FIQ) +=3D imx-pcm-fiq.o
+> -snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_DMA) +=3D imx-pcm-dma.o
+> +ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
+> +	snd-soc-imx-pcm-objs +=3D imx-pcm-fiq.o
+> +endif
+> +ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
+> +	snd-soc-imx-pcm-objs +=3D imx-pcm-dma.o
+> +endif
 
->
->> Something like this:
->
->> 	sound_hdmi {
->> 		compatible = "ti,omap-hdmi-card-audio";
->> 		ti,model = "OMAP4HDMI";
->
->> 		ti,hdmi_audio = <&hdmi>;
->> 		ti,level_shifter = <&tpd12s015>;
->> 	};
->
->> The ASoC machine driver would create the platform device for the
->> HDMI codec if the DT has the required nodes.
->
-> Why not just make this a property of the main HDMI controller - the
-> compatible property here looks like it's describing the Linux specifics
-> not the hardware?
+What is the actual bug here?  This fix doesn't look obviously right, and
+if we do need to move to -objs for some reason then the block ought to
+be in the -objs section of the Makefile.
 
-I see. So it seems that there will be nothing to add for DT support for 
-HDMI from ASoC. Display code is able to take care of it. BTW, thanks for 
-pointing out the issue with the compatible property, I have not noticed it.
+--Y+Z5jE7Arku/2GrR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-BR,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Ricardo
->
+iQIcBAEBAgAGBQJQrtnJAAoJELSic+t+oim9oN4QAJThJQxMGp5w28hEwKUk2cv1
+xqHdFlKhz3b405mhKnknSbniWISsZTsodwW5U84xtcYA7x6aD0jneXeleV/UaIPS
+vOQbQe7Modz3fu5k4/F5lIdg5jG9imYixZJ52+qyqpcG+H1fFMQdwFF1s2d4cCwi
+NSgj3D+ki3dxQrMzPK9NOuhVD0Q+Hy4Uc4m/6PsrehnI6zT9zdz1WWX+jYUgOLxm
+gl4HsfgaYTGwMGNYOHFHwie4xrkofYWsKjLqalmTH1h7u9XxwGken4N1mI8oQVWi
+Mn4YQia3ZWPYm5kbK4nlpdOguAeOEtRGfEO3+64waFIm+4SwZICyUYmIst82zQKW
+cBT2dsQGPh6to+/ycXRiGZFiaazvscANtV6XW+CDdEChU3D8xlTgQhQbGMHDRE9o
+T3vTLRLqCMScHN9vosR9Xv5a1BiRCTZXG1u0EWIXGjJHu153IN7SGUUKsEM7oozm
+axvRWvCiJr0CVw4GLBhVyvLy3zLSz3U7udLYeLgKvtxZgowb+9rI28ZIM32xtXWe
+Tmz+/2y0J6TBxduiefxgKuQc1UA8+6LOKebHBu9MXX75sSObksaGxRO/P4XGuyQK
+zM4WRRWeJ+Isip3C0f1Kj7fLMuLIHN11gOEVcXJ6klGWzwSp1ggZBmEv5Uc4Vn4c
+Cr8Ny8dyT5JdcD+thQ7l
+=6z2r
+-----END PGP SIGNATURE-----
+
+--Y+Z5jE7Arku/2GrR--
