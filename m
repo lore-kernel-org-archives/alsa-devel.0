@@ -1,61 +1,58 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
-Date: Fri, 23 Nov 2012 19:08:50 +0900
-Message-ID: <20121123100849.GC4529@opensource.wolfsonmicro.com>
-References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
- <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Underrun on Jade controller...
+Date: Fri, 23 Nov 2012 11:09:02 +0100
+Message-ID: <50AF4B3E.9050003@gmail.com>
+References: <1353665116.15462.YahooMailNeo@web120405.mail.ne1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7gGkHNMELEOhSGF6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 559C82616F3
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 11:09:05 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so3565049bkc.38
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 02:09:05 -0800 (PST)
+In-Reply-To: <1353665116.15462.YahooMailNeo@web120405.mail.ne1.yahoo.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 23.11.2012 11:05, Sandulescu Bogdan wrote:
+> I'm an User-Space application developer, using the ALSA library to
+> play mixed sounds. My application (and for that matter also aplay)
+> are having one underrun problem, and I need help on how to interpret
+> the following debug information and receive some possible
+> workarounds/solutions.
+> 
+> The underrun occurs only: once after writei() was performed with
+> get_buffer_size bytes  written, and try to do another writei().
+> 
+> Target: Fujitsu Jade microcontroller
+> 
+> ALSA: 1.0.25
+> 
+> ALSA PCM interface for Jade-xxsvideo:
+> /kernel/linux-2.6.31.4/sound/soc/xxsvideo/jade-pcm.c
+> 
+> DMA driver: /kernel/linux-2.6.31.4/arch/arm/mach-xxsvideo/dma.c
 
---7gGkHNMELEOhSGF6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Neither the ARM platform code nor the ASoC parts are present in mainline.
 
-On Fri, Nov 23, 2012 at 10:12:13AM +0100, Lothar Wa=DFmann wrote:
-> Due to a broken make rule, sound/soc/fsl/imx-pcm-dma.c or
-> sound/soc/fsl/imx-pcm-fiq.c (whatever is selected via Kconfig) will
-> not be compiled into imx-pcm.o when building as module, i.e.:
+> Here are the traces I managed to do, if there is any other
+> information needed, please ask me for it.
 
-What I've been trying to do is get you to tell me what the problem is
-with the Makefile rule, it's really not clear to me what the issue is or
-why your change is better.  I can see the practical results but nothing
-about how they came to be which makes it very hard to tell if this is a
-good fix.
+Without providing any code, I guess nobody on this list will be able to
+help you.
 
-This is a common issue with stuff you send, there's lots of analysis
-missing so it's hard to understand the thought process behind the
-change.
 
---7gGkHNMELEOhSGF6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQr0slAAoJELSic+t+oim94DMQAIClHuSnoyzOEEIVHJRL5DWm
-HiImZo8qkCixLmnSAZl3rlGglqqKTG+tH6jYVqsznhibGuILMe2F99Yo0kHHbmZf
-u8tkN33jcZyoaTVbEYeZDoPyQuTHLGYgVE7PLv4+W18rSWS3DDDdL/4hH0UJ/7vR
-hYsyAvpMkMEZMOLoOhZGHAzyUYiUf/0ejPrHczGo4DBphfZMA3/x7zuOI0FiCr82
-UA4b0j7/++N6sMW7+hFwMdLgqy2ootxMdL7S1EoxNe+hc8Pz8blWeC7733wgzELc
-KZl3zoE8JDXNIrnqFVzjBzGwSmIFJl7ejpdykRUhtBuMWZm6XVhcyZPR4/zqObUy
-PTJ7bh6BVpWeZgcXubi6O/c3gm8jWxe1HfwIMvvP9QPsh6fipmm3uD0Xi54I15ED
-cBdspbGaUyVpM1lOVO62fGDvW83hkliVcjuFbobruUxsgK8TT4s4AOScUvNmMh6G
-zKJoWUM1Stj2oFDpxSdsFvj0CRIt27IgoL1fgQvw3mgq1a22FIedERR6wct7odEt
-A9LgIxcIlusfmU7/+uEHTPZ3kYEJm1wU2RNHrY6Sgb04Ccg9GixwwKkNE9NcKWaL
-qfeqqlNJ7LP9U1eX0eZyWkrhKMOm3FWf6Lu2z5PsJC3KrXZlmxm925fD8OUH9Q/W
-CByFLB3JjtKgE8jdnTo5
-=2us+
------END PGP SIGNATURE-----
-
---7gGkHNMELEOhSGF6--
+Daniel
