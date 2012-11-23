@@ -1,59 +1,103 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
-Date: Fri, 23 Nov 2012 20:47:54 +0900
-Message-ID: <20121123114603.GF4529@opensource.wolfsonmicro.com>
-References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
- <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
- <20121123100849.GC4529@opensource.wolfsonmicro.com>
- <20655.20022.819710.39381@ipc1.ka-ro>
+From: Scott Ling <sl@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm0010: Add checking for .dfw info
+	record version.
+Date: Fri, 23 Nov 2012 12:37:35 +0000
+Message-ID: <1353674255-23368-1-git-send-email-sl@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6lCXDTVICvIQMz0h"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20655.20022.819710.39381@ipc1.ka-ro>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 958242625EB
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 13:37:37 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, scott.ling@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+The info record at the start of the dsp firmware file has been
+expanded to incorporate additional version information. We need
+to check the version to make sure we understand the layout of
+the information in the record. The srec2image tool is currently
+used to create this record during creation of the .dfw file.
 
---6lCXDTVICvIQMz0h
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Scott Ling <sl@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c |   25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-On Fri, Nov 23, 2012 at 11:21:42AM +0100, Lothar Wa=DFmann wrote:
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index d795860..e7e6c2f 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -32,6 +32,9 @@
+ #define DEVICE_ID_WM0010	10
+ #define S2_LOADER_ID_OFFSET	8
 
-> I already included the actual error messages I got when loading the
-> sound module.
-> I also mentioned, that in case of module build some source files
-> aren't being compiled with those rules. What else do you expect?
++/* We only support v1 of the .dfw INFO record */
++#define INFO_VERSION		1
++
+ enum dfw_cmd {
+ 	DFW_CMD_FUSE = 0x01,
+ 	DFW_CMD_CODE_HDR,
+@@ -47,6 +50,13 @@ struct dfw_binrec {
+ 	uint8_t data[0];
+ } __packed;
 
-The why part of things - what is the reason there was a problem and how
-does your change address it?  What is it that you believe your patch
-does to address the problem?
++struct dfw_inforec {
++	u8 info_version;
++	u8 tool_major_version;
++	u8 tool_minor_version;
++	u8 dsp_target;
++};
++
+ struct dfw_pllrec {
+ 	u8 command;
+ 	u32 length:24;
+@@ -343,6 +353,7 @@ static int wm0010_firmware_load(char *name, struct snd_soc_codec *codec)
+ 	struct completion done;
+ 	const struct firmware *fw;
+ 	const struct dfw_binrec *rec;
++	const struct dfw_inforec *inforec;
+ 	u64 *img;
+ 	u8 *out, dsp;
+ 	u32 len, offset;
+@@ -357,8 +368,9 @@ static int wm0010_firmware_load(char *name, struct snd_soc_codec *codec)
+ 	}
 
---6lCXDTVICvIQMz0h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ 	rec = (const struct dfw_binrec *)fw->data;
++	inforec = (const struct dfw_inforec *)rec->data;
+ 	offset = 0;
+-	dsp = rec->data[0];
++	dsp = inforec->dsp_target;
+ 	wm0010->boot_failed = false;
+ 	BUG_ON(!list_empty(&xfer_list));
+ 	init_completion(&done);
+@@ -370,6 +382,17 @@ static int wm0010_firmware_load(char *name, struct snd_soc_codec *codec)
+ 		goto abort;
+ 	}
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQr2JWAAoJELSic+t+oim9k8cQAJ5mpDe4I00wWL7kDz3puA9P
-1+4ZppccETzPo+FxWBeSirEla4FAkyN0puRsdHXalEwBh5D20x5oTnTWMYIrQInW
-fTJShL87bbWDNKFa7q/1fc66orsac4yw6PUYCICC1CFMMyIC29SDTkar+1TGAwKD
-vFGPpNkmA2acDaZ7Y9vicaU73IEREfnAfm4YMMF51hgtufGV9yMvu0T0IZEh2auG
-lhCwxcF1brzxVTusN8EbEVeY1bwyeAvh2mtlpjjKEl2oqxxYGvfXPZ7JN65qCulL
-H5CfQdxEcxvyMrWwS507Nxcw8+moOwCnKLvJzWD6++zs/+CmNTGm4DtCNaH6ae9M
-k+Iz1i3l9OfDUKHrWzG/XnLxb5BSuzVXLS1IaA4SE0nDJ0aYl/wXmKm4pgucldn5
-f3jMjAKXFx1OJtSlY3/GEZ9qZIiiXeCKlYsHTtyQFNy/nE0gcTZuWemxA1vFUSn0
-lSbdfJvKd/YWC0b/+mUclYvWlzF1KWBx0T5+FVmnZcVFUTHFa4hHy60UKKK/wjgu
-+1V+Fyo6a48jMSo4H/q5iJ3kbQ/DkrhmSimHX5sA59rQa5AFLnsZFUFeYzS+6CZt
-C7G4S0zF9em7xCLOkQXSzr3wifQO2XTevCKy03e7zpuMAtTarXgMHMybtJ9W1WFL
-2oyzSqVUw46866L/IShn
-=mixt
------END PGP SIGNATURE-----
-
---6lCXDTVICvIQMz0h--
++	if (inforec->info_version != INFO_VERSION) {
++		dev_err(codec->dev,
++			"Unsupported version (%02d) of INFO record\r\n",
++			inforec->info_version);
++		ret = -EINVAL;
++		goto abort;
++	}
++
++	dev_dbg(codec->dev, "Version v%02d INFO record found\r\n",
++		inforec->info_version);
++
+ 	/* Check it's a DSP file */
+ 	if (dsp != DEVICE_ID_WM0010) {
+ 		dev_err(codec->dev, "Not a WM0010 firmware file.\r\n");
+--
+1.7.9.5
