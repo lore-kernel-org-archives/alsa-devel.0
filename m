@@ -1,65 +1,63 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 05/10] ASoC: kirkwood-i2s: more pause-mode fixes
-Date: Tue, 20 Nov 2012 12:19:13 +0000
-Message-ID: <E1TamnJ-0007XP-1S@rmk-PC.arm.linux.org.uk>
-References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [BUGFIX PATCH] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
+Date: Fri, 23 Nov 2012 17:13:09 +0900
+Message-ID: <20121123081307.GA4529@opensource.wolfsonmicro.com>
+References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
+ <20121123020517.GJ4385@opensource.wolfsonmicro.com>
+ <20655.7916.566188.590202@ipc1.ka-ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 7D309265370
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2012 13:19:15 +0100 (CET)
-In-Reply-To: <20121120121726.GN3290@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Liam Girdwood <lrg@ti.com>, Rabeeh Khoury <rabeeh@solid-run.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20655.7916.566188.590202@ipc1.ka-ro>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't even momentarily set the pause status when starting the channel;
-if we do, we should check the busy bit to ensure that we comply with
-the spec.  In any case, it isn't necessary; we will not active on a
-START event so there is no need to pause the DMA.
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- sound/soc/kirkwood/kirkwood-i2s.c |    9 ---------
- 1 files changed, 0 insertions(+), 9 deletions(-)
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 826306d..1d5db48 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -205,10 +205,6 @@ static int kirkwood_i2s_play_trigger(struct snd_pcm_substream *substream,
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		/* stop audio, enable interrupts */
--		ctl |= KIRKWOOD_PLAYCTL_PAUSE;
--		writel(ctl, priv->io + KIRKWOOD_PLAYCTL);
--
- 		value = readl(priv->io + KIRKWOOD_INT_MASK);
- 		value |= KIRKWOOD_INT_CAUSE_PLAY_BYTES;
- 		writel(value, priv->io + KIRKWOOD_INT_MASK);
-@@ -269,11 +265,6 @@ static int kirkwood_i2s_rec_trigger(struct snd_pcm_substream *substream,
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		/* stop audio, enable interrupts */
--		value = readl(priv->io + KIRKWOOD_RECCTL);
--		value |= KIRKWOOD_RECCTL_PAUSE;
--		writel(value, priv->io + KIRKWOOD_RECCTL);
--
- 		value = readl(priv->io + KIRKWOOD_INT_MASK);
- 		value |= KIRKWOOD_INT_CAUSE_REC_BYTES;
- 		writel(value, priv->io + KIRKWOOD_INT_MASK);
--- 
-1.7.4.4
+On Fri, Nov 23, 2012 at 07:59:56AM +0100, Lothar Wa=DFmann wrote:
+> Mark Brown writes:
+
+> > What is the actual bug here?  This fix doesn't look obviously right, and
+> > if we do need to move to -objs for some reason then the block ought to
+> > be in the -objs section of the Makefile.
+
+> As I mentioned in the part of my email that you didn't quote, if the
+> sound driver is being compiled as module, the files imx-pcm-fiq.c or
+> imx-pcm-dma.c which should be compiled as part of imx-pcm.o will not
+> be touched by the compiler:
+
+That's more detailed than your previous mail but you're still only
+describing the symptom, not the what the actual error is or how it's
+fixed...
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQry/wAAoJELSic+t+oim9PI4P/17lQqgJM7mGjhUn6DJ00W0C
+PQqqfIO7RUzHrgRP4FcWhmgt6nAiQJxbOr8k/KnLyZmLpn0fYfkNMGj2QIYkiWgT
+i2b0VWLJftQ6FdFsL0GC+l02VpCghrFji5J7fgLG4l8YDimNycqLTttZfvhLuhhL
+v0NGbrSn/9YxbY5NkUcy9oE2J1/itMkqWvStXn0BUAiD3fSo6TiwJtwz9o+pA/wc
+wApAUUiHBvV7vXnepMIFVA/1jj/anp6C7R/PfNsiJkiLgmmxjqbd8Bqm8rEf6xip
+FQ638w4BRYcbGdaH2l8hlktIE7QwEHLkNysw+/wlKI6DxQ6P2+WVb1cevUhApMkI
+orhb+VgyngmrXxPRYAy+AnYoBh1bQuamcurea19LWE3u5uiaJLtd52+yspGiP4jm
+9hYuKqnV5a/4iFBcIwA6lbdIkJYmQAfbxW469Y/M9ogLe1NO+1EvetnOEPNfCUBg
+3wU5FvkGTtJUYI4/rDgNFAX7/ltmuqK6mvWkIKJCiB2wpyuMDMTFdTEweCHX21Oa
+j30wdY8/2z3LMFE/PJMu711Nn5zGqHThDyP8ZmIzhKJEOYrm6OUfCNzENeV+3kvO
+WtaewjDJg2D7YcL3sGOAQWMlTYdHzNFGTNmTLAJUL92ZxhLV9NCNgVuDTbnRIPDP
+4pi17Lfb7crDqV5pdsSh
+=BMeT
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
