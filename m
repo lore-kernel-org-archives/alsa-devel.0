@@ -1,56 +1,56 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: atmel-pcm: add dma support
-Date: Fri, 23 Nov 2012 23:27:48 +0900
-Message-ID: <20121123142747.GP4529@opensource.wolfsonmicro.com>
-References: <1353651257-2476-1-git-send-email-voice.shen@atmel.com>
- <1353651257-2476-4-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH 00/10] ASoC: codec: devm_ related modifications
+Date: Fri, 23 Nov 2012 23:37:11 +0900
+Message-ID: <20121123143710.GQ4529@opensource.wolfsonmicro.com>
+References: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fqIB0bRxfTYxTb/F"
-Return-path: <linux-sound-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="4Kq+wHeKEs1nwG7z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1353651257-2476-4-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1353557322-25353-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---fqIB0bRxfTYxTb/F
+--4Kq+wHeKEs1nwG7z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 23, 2012 at 02:14:17PM +0800, Bo Shen wrote:
-> Add dmaengine specific routines and replace PDC ones in
-> pcm_ops if appropriate.
+On Thu, Nov 22, 2012 at 09:38:32AM +0530, Tushar Behera wrote:
+> This patchset includes devm_ related modifications for sound codecs.
 >=20
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-> [voice.shen@atmel.com: adapt to soc dmaengine framework]
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> First 2 patches fix warning for freeing of devm_ allocated data.
+> The next patch introduces usage of devm_kzalloc() in wm8995 codec.
+> Following 7 patches introduce usage of devm_regmap_init_xxx() in
+> remaining codecs.
 
-Why is this not just two separate drivers?
+Applied all, thanks.  If you're doing stuff like this it's helpful to
+sort by part.
 
---fqIB0bRxfTYxTb/F
+--4Kq+wHeKEs1nwG7z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQr4fNAAoJELSic+t+oim9/cIP/19P545nZNKhPdg3r0rU/Yvs
-zqiT0Q7BDpabIb7B0oohvUox4KUIkZvvt/umqayp0dwaS2EBNB334Iq6X4VggaY3
-dQi4UBdHC0MZorkKzG17GeLI+W4noS0H0f/WsfGlYvlLEZPOOENd/sr6nMF0L7FJ
-UetEmMf3rgMNWt5kI4T8PqCPvr3EtQC3DqCNQ4fCl7LwngBK+MrfvBLR5O3LkfVf
-vLmGUWEi89I+B/qoMfKRK/BMzXpOP/vmDcL1gm6s9v5zl7mk+3y42YeeOorexZmS
-9s162/wQhakMfVa4Dv2SGd/05B+3Puapn0boDthWOZh2X4fBnK+kUb96zIPwyn5w
-Zn/l0BEYCkGtDgvkBYbEfVGDDNahXJVOfgnXcx21vrXIDHLSNgKAe8xOQGI3NXg1
-f6xMUBf8/MEFn5Q+94RDifnORNzGugBygO+gmYoiAzfZk/lZ7hG9Ec+XjOyXlAmq
-TT8BSC/0lrvpaPB/6yXmZ/V47sDtPq7loS/2/O9Qg846Tg/oGdhrRueZn0He2SBW
-SdvkChKfgu5X2ac+umrJWEG36hyVNHKXXz5+bv541CHREd/0pEZNTNG6ohZ/HiQN
-lHeBaYZIC5F9Snytt4NJPRJ5dHIF1Jp/bXp3Le3TvT5MdQDYroixOjIjn/Y4w76J
-yqHAm+0zcinh1Nszcf5C
-=TedW
+iQIcBAEBAgAGBQJQr4oJAAoJELSic+t+oim9aycP/Rc/Rd3uwDIqj4wuVthV05Wi
+37V6bBMOCDC5ZaisJUbcm8aOqXz6sEz3whtFOSk9Uk2PuzvH/r5EQF3V24APe7U+
+P0shfslU+Z7bnYQFOI3ghvqe4gN//INuy+teEVJNUVFFCqggT4kNGPZyWidreHvg
+oCOwFKB5kIPLvpuWis2AD1RhrJDBPmSlINT8SxlSnQ0k368tS1XndroNF/MvKwEW
+PONLRADpfQuzYFVIocul0d30Q0u0QITMVuRa5DCMPQN/7PzqjDHaXPwY6pc8TULy
+c5hPV8dJ5XE2s4Zqw+g9Tyn4L767KpUgG0rrD86wN4FHe/ynd83+6lirhRovVRSU
+IwQ70zwYiVX4Pqr8xLeVWEDIWmUq37ZYnkl9aOHfIeBEm7CTOh9/7LyDI56XOh+s
+AS6EHBiN+Lk85+biP+uNvE2oNQnINF3y3Al9eD05bIDxmbwL1mIhlJ+EQ/CM6I1P
+DaWT1KtqJmyO3hZ4lEfXhVSWrcLzK6Q5A/Wbz6nMQAvnWKscb6rMHxsxXJkZkQE7
+yEl5D2qq6cSBoiyOOeUetq+K9jJFTJZsVOtBdbUufGnnVSvTeydJDWU4IQ1M9o2j
+IhHH6tRH+oMH3yI985Ly0Dh0VWORe2C/QAoKMgDNFnNy9F2I9P3B7PcSQHys3t1U
+9rtZYcvrZVkqob9kmWbY
+=GHVv
 -----END PGP SIGNATURE-----
 
---fqIB0bRxfTYxTb/F--
+--4Kq+wHeKEs1nwG7z--
