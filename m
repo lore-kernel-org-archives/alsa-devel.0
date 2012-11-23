@@ -1,53 +1,64 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: mxs-saif: export
- mxs_saif_put_mclk,mxs_saif_get_mclk
-Date: Fri, 23 Nov 2012 11:06:36 +0900
-Message-ID: <20121123020635.GK4385@opensource.wolfsonmicro.com>
-References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
- <1353587470-11994-4-git-send-email-LW@KARO-electronics.de>
+Subject: Re: [PATCH v2 2/2] ARM: OMAP4+: HDMI: Rearrange platform devices for
+ ASoC drivers
+Date: Fri, 23 Nov 2012 11:12:12 +0900
+Message-ID: <20121123021211.GL4385@opensource.wolfsonmicro.com>
+References: <1353029819-21809-1-git-send-email-ricardo.neri@ti.com>
+ <1353029819-21809-3-git-send-email-ricardo.neri@ti.com>
+ <50A5F0A5.2010105@ti.com>
+ <50A6805C.3050004@ti.com>
+ <50AA2D01.5020302@ti.com>
+ <20121120011526.GF4483@opensource.wolfsonmicro.com>
+ <50AD6FB0.3050808@ti.com>
+ <20121122010358.GB4371@opensource.wolfsonmicro.com>
+ <50AED989.40408@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nrXiCraHbXeog9mY"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="/JIF1IJL1ITjxcV4"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1353587470-11994-4-git-send-email-LW@KARO-electronics.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <50AED989.40408@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, tony@atomide.com, lrg@ti.com, s-guiriec@ti.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---nrXiCraHbXeog9mY
-Content-Type: text/plain; charset=iso-8859-1
+--/JIF1IJL1ITjxcV4
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 22, 2012 at 01:31:09PM +0100, Lothar Wa=DFmann wrote:
->=20
-> Signed-off-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
+On Thu, Nov 22, 2012 at 08:03:53PM -0600, Ricardo Neri wrote:
+> On 11/21/2012 07:03 PM, Mark Brown wrote:
 
-Why?
+> >instantiation infrastructure in there which is rather Linux specific.
 
---nrXiCraHbXeog9mY
+> But the board files are only for Linux, right? The ASoC drivers will
+> always be initialized anyways. They will reach probe only if the
+> devices are present.
+
+Could you be more specific please?
+
+--/JIF1IJL1ITjxcV4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQrtoaAAoJELSic+t+oim9VloQAIN02AOT+o5F1sAQUjWANdY3
-tVuzfGu/MA+eGTM9tX+Vzg4I6A6YO/lm6BJwx6wtzlRkTaiECxWbpcG+MtPgp8c9
-7wR9faUzH+w+jxLxXU7F/cxOglTk5Og6+0szROAmzNGDEG0r2IhyZ6azmW9201Q7
-5nzYKz/4cwljVmpc/XqliOmuREzQZiszqvev4hPI/Gj6nFRgzM84YFKOGa2HyHOS
-tjv0/CG81zFsoU/nmLbcd4iA8ZU8pkpMMlYypN31iUcqTnL2DxCNnep1dZPOfYKu
-7Jc2KvTxnPrR+j1MB4krxWA+9oX1E+YSdmn4cSn/KX7jyY5K0jER3AL7gTQsDI2P
-BWWtzUEZt4nB0OFRSpYkQho0dayNT5zVQU/jHU647u1E250Vznc063RFjkccNPuq
-EgajP8RLftUDyP1+LiMPiLM1vI6tofLx0UuFmLR6SDbpeN4QKtcGSIv4VoSqlJez
-nAk2700h3B/OjV+81gvxKIXOW866cOn86a7EC142tJyJdKu09iXmwX3LVKstl66k
-ITtF4NdbeUOTl/KrvqMgHijMon9vCGm0VDLu+NWDFhxEdscj6+Wa+jiStiVT8tzk
-MOcUO3AzHwi71XGMh0hsH3xlgqJh9Z6TcCjn75uoGPGMX7Ic+VdPKtF+CV1kcdi0
-lRgYvVyVU8d2l1m7Zw0B
-=qetv
+iQIcBAEBAgAGBQJQrttsAAoJELSic+t+oim9rwcP/0HTPo3LvQ58XnbqoSrzASw3
+0Yr3AB0eNIJ2THDzEw84xIBu8zO0tVebY8d3D/5u7DYjECByHo0QaDglbaxa8ChF
+5sUmSw8Ja/cZnzx/a3OB3OOM9sDLolpfpIKsAnINeJSF79k7pVDcLSot3VKvCfUw
+VOTaMl7CnUtn7pBwOeAJTShgBQyvfwbrReYDdhkik7rUoMDOR+PaapYdBXA2ZPBx
+sphZswIRTz+3Q3GIfLBh0V7mD8HIzfA4DlWPPVx2Qw2QN43eUTBvDwxrFOkZa0pe
+OxoiaZ1SNXxS64JU672zN9j0R5s7eVDuVjd8MnlxncHsE+W02dYASQrSkH2vP3uF
+lvfgOupEGZjhny9TeK09XCulBuyzyf0N2+i9VKj8FkNv+lF1XiYsEI0lQWzFDDUS
+d/z+jIyzCjtheLoQ4cKijRG2vtcIW8/MdxX4s3CQXZ0R4JCz2QzZ/BINd3wVcv+e
+U68nBCWXeqq91kvnbbnVa9B4/g5U2LlkU6LzJUGxCyOqixuy++WiIaFZDUlcNLpF
+/j8eNTqsbzxHwSln1rP/MXVik+BHokf2/TaLZ4EJ7MEi7o4uzUJmR4Sddl/m1so2
+3871xd7E6efDjks6r3GBgH0lCfoyp00qtqZP8vvDUdwkCgdojbNfMbUqsUYhJW7j
+NNlPP7mNh2MMdtjw1At+
+=5g71
 -----END PGP SIGNATURE-----
 
---nrXiCraHbXeog9mY--
+--/JIF1IJL1ITjxcV4--
