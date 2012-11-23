@@ -1,79 +1,54 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Underrun on Jade controller...
-Date: Fri, 23 Nov 2012 14:48:28 +0100
-Message-ID: <50AF7EAC.3090603@gmail.com>
-References: <1353665116.15462.YahooMailNeo@web120405.mail.ne1.yahoo.com>
- <50AF4B3E.9050003@gmail.com>
- <1353666946.95213.YahooMailNeo@web120406.mail.ne1.yahoo.com>
- <50AF527C.8000108@gmail.com>
- <1353675262.71605.YahooMailNeo@web120405.mail.ne1.yahoo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: Ux500: Initialise PCM from MSP probe rather
+ than as a device
+Date: Fri, 23 Nov 2012 23:06:44 +0900
+Message-ID: <20121123140643.GO4529@opensource.wolfsonmicro.com>
+References: <1353675941-7303-1-git-send-email-lee.jones@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A48E260319
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 14:48:32 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so3670906bkc.38
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 05:48:31 -0800 (PST)
-In-Reply-To: <1353675262.71605.YahooMailNeo@web120405.mail.ne1.yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X35wERi4JU/f1kly"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353675941-7303-1-git-send-email-lee.jones@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, arnd@arndb.de, linus.walleij@stericsson.com, Ola LILJA2 <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23.11.2012 13:54, Sandulescu Bogdan wrote:
->> On 23.11.2012 11:35, Sandulescu Bogdan wrote:
->> >
->> > Daniel Mack <zonque <at> gmail.com> writes:
->> >>
->> >> Without providing any code, I guess nobody on this list will be able to
->> >> help you.
->> >>
->> >> Daniel
->> >>
->> >
->> >
->> > OK. Here is the essential part of my code - settings and write to ALSA:
->>
->> It's not about the userspace code in the first place but the kernel part.
->>
->> I guess you are based on a BSP kernel that the vendor of the
->> chip/module/board you are using provides. For whatever reason, this
->> vendor has decided to not push its code to the mainline kernel but keep
->> changes in a private repository.
->>
->> While this is a common approach, your vendor is the only instance in the
->> game that is in charge of supporting you here. The community can't, as
->> the code has not been shared for discussion and integration in mainline.
->>
->> Daniel
->>
->>
-> 
-> Hello Daniel,
-> 
-> Thank you for your answer. Initially I thought I should share my app, as
-> every information I got regarding underruns was that the application is
-> not feeding data fast enough - hence I thought it was my application's
-> fault.
-> 
-> Considering your precise answer, I will try to get support directly from
-> the module vendor.
 
-... and make them push their changes to mainline already, as this is
-your only option to keep up-to-date with all the continously added new
-features in mainline. Rebasing vendor patches has always caused major
-headache an much more work on the long run.
+--X35wERi4JU/f1kly
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Nov 23, 2012 at 01:05:41PM +0000, Lee Jones wrote:
+> The PCM is a pseudo-device. It doesn't have any of it's own registers
+> or hardware. It rather acts as a layer of abstraction for DMA
+> transfers. Hence, instead of classifying it as a device in its own
+> right, we call the initialisation from the MSP driver.
 
-Daniel
+Applied, thanks.  Please always submit patches against the latest
+development versions of code.
+
+--X35wERi4JU/f1kly
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQr4LhAAoJELSic+t+oim9AOUQAIDw7765BwXMVDpZKROK8pIn
+c1P2mTrCt/e+sE5n7PKDEk8bw48Ub0cgjqZ/iBGIVOoM/L8YTBV5+i0kGw6/1qkT
+dt+xoDePAKDYxdiRpVNggsa7OUIM53VHxOKSuIqAfhqQmBB4kCzB+KRQ4OQornVQ
+ql9pjulsjsNYXRxNqRTPGInTameVQjxX/rZOX4IXWkZs2CuyxNFz/jTMdgIqkSP/
+Pukt7GojmwP5gsAoQSTUCoZZhOJ7gUWuN9zVJsopoN+Dk29k6DKU6QzYECcXyBPf
+wqmMXOGy/wWOOjAuesXO7YCl5rre76I1h4k1XvCdqfwaQQzj+pFR4FsKJjMWkOgv
+d70HI2XkQrbjgDoAwMyiyCT9UJeqdx1/gD18KCmvbzQo4MgDBLuYD+7+2bOg5Vuc
+PzbgqoYZyNy9tJ22DxFvGGKxoIfVFpeQ83pMRQzPuj2ClLIfpvtZCSFlrdDbCvbx
+ixHxRBQFAoDhKaexlpNAqAvt2u3SnyIfCCEbfqtTCZazITQQpxuEBk/jFWAmfDAS
+vi8W18wMf0HYzOZiHi+JYh/hhJZ1YrhF7wDEKY7pBLqmA/SDDOkWPlc26RB4JDYF
+52rFuWmS4xqaubvy26Z3ON8mRqoenqJcmTER7ISPTM+QRekFi03rsYaGr1m5tQq7
+L8UIiEYwQ/w2DiY7qk+Y
+=803T
+-----END PGP SIGNATURE-----
+
+--X35wERi4JU/f1kly--
