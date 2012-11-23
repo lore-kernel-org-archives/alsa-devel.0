@@ -1,64 +1,28 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [RESENDING] [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
- probe rather than as a device
-Date: Fri, 23 Nov 2012 09:12:36 +0000
-Message-ID: <20121123091236.GA17471@gmail.com>
-References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
- <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
- <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
- <20120919133343.GH25694@gmail.com>
- <505ADBE6.6080509@stericsson.com>
- <20120920125259.GA2755@gmail.com>
- <20121122140540.GA10986@gmail.com>
- <20121123015838.GH4385@opensource.wolfsonmicro.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: RE: [PATCH V3 0/2] ARM: Exynos: Enable I2S platform support for Exynos5
+Date: Fri, 23 Nov 2012 18:27:19 +0900
+Message-ID: <000201cdc95c$c26a4110$473ec330$@com>
+References: <1352177084-16339-1-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121123015838.GH4385@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1352177084-16339-1-git-send-email-padma.v@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+Cc: kgene.kim@samsung.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 23 Nov 2012, Mark Brown wrote:
+On Tue, Nov 6, 2012 at 1:45 PM, Padmavathi Venna wrote:
+ 
+> This patch set enables device tree based platform support for the three I2S
+> controllers on Samsung's Exynos5 SoC's.
+> 
+This patches add Device Tree Support for Exynos5250.
+I ack 2 patches.
 
-> On Thu, Nov 22, 2012 at 02:05:40PM +0000, Lee Jones wrote:
-> > On Thu, 20 Sep 2012, Lee Jones wrote:
->=20
-> > > > > Can we have some closure on this patch please, as it's blocki=
-ng the
-> > > > > patch-set? I'm fairly sure the patch is doing the correct thi=
-ng, as
-> > > > > seconded by Mark.
->=20
-> > > > I still don't like this. It is the dai_link-struct that bothers=
- me. We have
-> > > > "ux500-msp-i2s.1" as name of the platform AND the cpu_dai. The =
-MSP I2S-block is
-> > > > not the platform and it is certainly not both platform and cpu-=
-DAI at the same time.
-> > > > Mark: Did you have a solution for this? Couldn't we just put NU=
-LL on the
-> > > > platform_name instead?
->=20
-> > > There are other drivers which do this already.=20
->=20
-> > > I don't think it's an issue to do this.
->=20
-> > Has anyone had any more bright ideas on how we might handle this?
->=20
-> > The device is still being handled in platform code and I'm desperat=
-e
-> > to get it out of there.
->=20
-> Why do we need any ideas?  Just implement it already.
+Acked-by: Sangbeom Kim <sbkim73@samsung.com>
 
-How do you mean? I've written the patch, just accept it. ;)
-
---=20
-Lee Jones
-Linaro ST-Ericsson Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+Thanks,
+Sangbeom.
