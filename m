@@ -1,60 +1,94 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: mxs-saif: export
- mxs_saif_put_mclk,mxs_saif_get_mclk
-Date: Fri, 23 Nov 2012 23:45:42 +0900
-Message-ID: <20121123144541.GT4529@opensource.wolfsonmicro.com>
-References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
- <1353587470-11994-4-git-send-email-LW@KARO-electronics.de>
- <20121123020635.GK4385@opensource.wolfsonmicro.com>
- <20655.9202.288388.343758@ipc1.ka-ro>
+Subject: Re: [GIT PULL] ASoC: Samsung: Updates for v3.8
+Date: Fri, 23 Nov 2012 23:59:46 +0900
+Message-ID: <20121123145945.GU4529@opensource.wolfsonmicro.com>
+References: <000001cdc95c$c1d7ec20$4587c460$@com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E5HUUwS3R9LcK7+r"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20655.9202.288388.343758@ipc1.ka-ro>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7991999301132464378=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DB3A26031F
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 15:59:49 +0100 (CET)
+In-Reply-To: <000001cdc95c$c1d7ec20$4587c460$@com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: sachin.kamat@linaro.org, alsa-devel@alsa-project.org, 'Sangsu Park' <sangsu4u.park@samsung.com>, 'Padmavathi Venna' <padma.v@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---E5HUUwS3R9LcK7+r
-Content-Type: text/plain; charset=iso-8859-1
+--===============7991999301132464378==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fzb4MfPSWK/5QThu"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 23, 2012 at 08:21:22AM +0100, Lothar Wa=DFmann wrote:
-> > On Thu, Nov 22, 2012 at 01:31:09PM +0100, Lothar Wa=DFmann wrote:
 
-> > Why?
+--fzb4MfPSWK/5QThu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I thought that was obvious... To be able to compile the mxs sound
-> driver as module.
+On Fri, Nov 23, 2012 at 06:27:19PM +0900, Sangbeom Kim wrote:
 
-Do you want to add new users of these functions, or are there existing
-users which currently fail to link when built as modules?
+> Padmavathi Venna (2):
+>       ASoC: SAMSUNG: Add DT support for i2s
 
---E5HUUwS3R9LcK7+r
+There's some problems with this binding.  The main one is the gpios
+property the format of which isn't specified at all.  The requirement
+for an alias is also very odd, where does that come from?
+
+Some of the code also looks very peculiar, like the fact that it's
+generating a clock name i2s_opclk%d rather than hard coding the clock,
+the physical clock would normally be resolved based on the struct
+device.
+
+>       ASoC: Samsung: Register the audio dma platform device
+
+This isn't the normal approach here, the normal approach is that the I2S
+device instantiates the DMA device it needs - see the Tegra or i.MX
+drivers for examples.  I'm also concerned that this is going to collide
+with the existing static registrations that non-DT boards do.
+
+> Sachin Kamat (1):
+>       ASoC: Samsung-dma: Fix potential NULL pointer dereference
+
+This should be sent separately as a bug fix patch.
+
+--fzb4MfPSWK/5QThu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQr4wNAAoJELSic+t+oim9ruQQAIpyCcqJ0xRh4NcTtckNzG16
-MnbWKs9quLHqKmkfv5BQeR1YSkelEUn4JHWWRn4Nk6GCfkcWCC9MjC7uT5XEfB+L
-V+ijx9kb6kGsQvF92nQguMSJgvlN7XqCv87YLt8/gKNtGVX97iU+LHWSxiriPk/y
-HjTfi2IRFL3yObXBKHnjaRDT+11ZIIGPl9MC7T2GZGSbsPFKlzGjQ/B7ZBzP2zp5
-ODuOLXUJFoFq19iYk/TGRvbXWj+XiHzesEzXOYep4HOD9WbOjGzwbtpeGDNB5On9
-bTURPkIAQvySJEL8PihmILLC74uIRS7bU9Q8T9+4eqSpzHSxZuCnSPJvzVVmsg3/
-v59UpqxZ9EXrz5GLdWwR6jVu0pYAVrxRvDKBtEAyUpbqMsZBPygYJfxdbWAvpHVm
-TSl+A9xJ+dk79GPZ8fYl07vFDHtIhlCeUbNXNebRlMVv34Sax0c3COBUwwgAzpKe
-vvoVcnCnsXlg5vgDp+zEYK5zG0oVsm/OY7/VidqLPFspBTwleAOPeeV8cxlTUzTn
-Y/8V1d/Z459AcY+O/GbbINbzLEw069X2ZNUFy24diqtqbmWqJtajjLzBF6miPiXQ
-GBW9jh0w2C2MLDKxEa3CbpyHrxsnn/VdeKcj9hjVaaw2LMrZwiRnuVBrO1QcEXA5
-9K/PB55xo6qEKNOqkMlB
-=zeF8
+iQIcBAEBAgAGBQJQr49aAAoJELSic+t+oim9YkEQAIkCRauHX56GLkciC3C62NG7
+Pd3wbiVr8+5x7NLCZMqKUGTzlQET9kPzLR6olXs/nwJqGjbAAtsGJMR+BHs81Snw
+2ib4YJ4210tsKu4qBs9ENemuLaEpRMDEVfaulvaqEuSwyQl5rATUwA5o+tKQlxpb
+0HHDWtFihNSZTdrbwQN31YJCX9IR/wkdrl5t4HnuMXGWL9zvWjwTTB3PhXWNzyeP
+PVWHbwaVvhpbEFeVL7+QZr06LpUf65S7giezDWmnYmWmst2GhGpPE8b23ZsAruQM
+Skp7nbeiK0qMpof4+UwinVpTGbyP4l9xZsoTuJBuRTfJ10E+iwABNMOpIhq1CdWh
+7etB9wmV5Jr9UMwjKGrhnnuZBXoPsQKggpW1ZhhzmKjgi8N1mElU15nyRVJarGvZ
+chbNM5mBK6iRaayVeGkCRLrdTpqDDixnLCjA7m2Py9H3Lz1nfhRZCRNbLQvCONN8
+lS2XmRDBy+YH2B/rS+bogslvIY/CH+YbaKFniW+fmVVer6tSGgy/cX9jfSugpzpa
+hYE8pTEHMpSMmpvBTvW0c63k/K5naV6cm6swY9+Z58SB4Eh54UK7t3Jkz5fpfqCN
+u23S8TbrRJus0TLKnAczrs4gcDgxkBEcvMf59/+2HAgpYKj1xk90DBiJYK4mlAOY
+8WAWVnNqnD0K+HN7x7fQ
+=5LVx
 -----END PGP SIGNATURE-----
 
---E5HUUwS3R9LcK7+r--
+--fzb4MfPSWK/5QThu--
+
+--===============7991999301132464378==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7991999301132464378==--
