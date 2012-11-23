@@ -1,117 +1,61 @@
-From: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
-Subject: Underrun on Jade controller...
-Date: Fri, 23 Nov 2012 02:05:16 -0800 (PST)
-Message-ID: <1353665116.15462.YahooMailNeo@web120405.mail.ne1.yahoo.com>
-Reply-To: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
+Date: Fri, 23 Nov 2012 19:08:50 +0900
+Message-ID: <20121123100849.GC4529@opensource.wolfsonmicro.com>
+References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
+ <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm15-vm1.bullet.mail.ne1.yahoo.com
- (nm15-vm1.bullet.mail.ne1.yahoo.com [98.138.90.254])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C3602615FC
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 11:05:18 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7gGkHNMELEOhSGF6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--7gGkHNMELEOhSGF6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hello ALSA community.
+On Fri, Nov 23, 2012 at 10:12:13AM +0100, Lothar Wa=DFmann wrote:
+> Due to a broken make rule, sound/soc/fsl/imx-pcm-dma.c or
+> sound/soc/fsl/imx-pcm-fiq.c (whatever is selected via Kconfig) will
+> not be compiled into imx-pcm.o when building as module, i.e.:
 
-I'm an User-Space application developer, using the ALSA library to play mix=
-ed sounds. My application (and for that matter also aplay) are having one u=
-nderrun problem, and I need help on how to interpret the following debug in=
-formation and receive some possible workarounds/solutions.
+What I've been trying to do is get you to tell me what the problem is
+with the Makefile rule, it's really not clear to me what the issue is or
+why your change is better.  I can see the practical results but nothing
+about how they came to be which makes it very hard to tell if this is a
+good fix.
 
-The underrun occurs only: once after writei() was performed with get_buffer=
-_size bytes=A0 written, and try to do another writei().
+This is a common issue with stuff you send, there's lots of analysis
+missing so it's hard to understand the thought process behind the
+change.
 
-Target: Fujitsu Jade microcontroller
+--7gGkHNMELEOhSGF6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-ALSA: 1.0.25
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-ALSA PCM interface for Jade-xxsvideo: /kernel/linux-2.6.31.4/sound/soc/xxsv=
-ideo/jade-pcm.c
+iQIcBAEBAgAGBQJQr0slAAoJELSic+t+oim94DMQAIClHuSnoyzOEEIVHJRL5DWm
+HiImZo8qkCixLmnSAZl3rlGglqqKTG+tH6jYVqsznhibGuILMe2F99Yo0kHHbmZf
+u8tkN33jcZyoaTVbEYeZDoPyQuTHLGYgVE7PLv4+W18rSWS3DDDdL/4hH0UJ/7vR
+hYsyAvpMkMEZMOLoOhZGHAzyUYiUf/0ejPrHczGo4DBphfZMA3/x7zuOI0FiCr82
+UA4b0j7/++N6sMW7+hFwMdLgqy2ootxMdL7S1EoxNe+hc8Pz8blWeC7733wgzELc
+KZl3zoE8JDXNIrnqFVzjBzGwSmIFJl7ejpdykRUhtBuMWZm6XVhcyZPR4/zqObUy
+PTJ7bh6BVpWeZgcXubi6O/c3gm8jWxe1HfwIMvvP9QPsh6fipmm3uD0Xi54I15ED
+cBdspbGaUyVpM1lOVO62fGDvW83hkliVcjuFbobruUxsgK8TT4s4AOScUvNmMh6G
+zKJoWUM1Stj2oFDpxSdsFvj0CRIt27IgoL1fgQvw3mgq1a22FIedERR6wct7odEt
+A9LgIxcIlusfmU7/+uEHTPZ3kYEJm1wU2RNHrY6Sgb04Ccg9GixwwKkNE9NcKWaL
+qfeqqlNJ7LP9U1eX0eZyWkrhKMOm3FWf6Lu2z5PsJC3KrXZlmxm925fD8OUH9Q/W
+CByFLB3JjtKgE8jdnTo5
+=2us+
+-----END PGP SIGNATURE-----
 
-DMA driver: /kernel/linux-2.6.31.4/arch/arm/mach-xxsvideo/dma.c
-
-
-Here are the traces I managed to do, if there is any other information need=
-ed, please ask me for it.
-
-Application trace:
-[line: 1297 ]: Trying to open the ALSA plugin =3D plug:'dmix:RATE=3D8000'
-=A0[463379 ms] : Play ThreadID [1126167328]: before open ALSA
-[line: 1313 ]: Play Sound No: 0, Sound name: Snd_000.wav - from Thread-ID: =
-1126167328
-=A0[463417 ms] : Play ThreadID [1126167328]: before setting parameters
-[line: 1377 ]: 16 Bit format
-[line: 1386 ]: Channel count: 1
-[line: 1394 ]: Sample rate: 8000
-[line: 1473 ]: Period size =3D 1024 ; Buffer size =3D 4096
-[line: 1514 ]: Start threshold =3D 4096
-=A0[463441 ms] : Play ThreadID [1126167328]: after parmas ended
-=A0[463442 ms] : Play ThreadID [1126167328]: before malloc
-=A0[463442 ms] : Play ThreadID [1126167328]: before reading/writing
-[line: 1691 ]: Writei() ended, bytes written =3D 2048, available bytes to b=
-e written =3D 2048
-[line: 1691 ]: Writei() ended, bytes written =3D 2048, available bytes to b=
-e written =3D 48
-underrun!!! (at least 0.019 ms long)
-[line: 1660 ]: Underrun encountered: status =3D -32
-ALSA lib pcm.c:7339:(snd_pcm_recover) underrun occurred
-[line: 1691 ]: Writei() ended, bytes written =3D 0, available bytes to be w=
-ritten =3D 4096
-[line: 1691 ]: Writei() ended, bytes written =3D 2048, available bytes to b=
-e written =3D 2048
-[line: 1615 ]: Add silence in last buffer, with size =3D 1948
-[line: 1691 ]: Writei() ended, bytes written =3D 2048, available bytes to b=
-e written =3D 64
-=A0[463526 ms] : Play ThreadID [1126167328]: after reading/writing fully en=
-ded
-=A0[464152 ms] : Play ThreadID [1126167328]: after ALSA drain
-
-
-X_RUN DEBUG TRACE:
-echo 1 > /proc/asound/card0/pcm0p/xrun_debug
-
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:330: PCM: Lost interr=
-upts? (stream=3D0, delta=3D15360, intr_ptr=3D1024)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D0, intr_ptr=3D17408)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D1024, intr_ptr=3D18432)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D2048, intr_ptr=3D19456)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D3072, intr_ptr=3D20480)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D4096, intr_ptr=3D21504)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D5120, intr_ptr=3D22528)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D6144, intr_ptr=3D23552)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D7168, intr_ptr=3D24576)
-ALSA /home/kernel/linux-2.6.31.4/sound/core/pcm_lib.c:266: PCM: Unexpected =
-hw_pointer value (stream=3D0, pos=3D8192, intr_ptr=3D25600)
-
-
-Additional note:
-using the :
-#echo 2 > /proc/asound/card0/pcm0p/xrun_debug
-there are no more underruns occurrences!! And this seems to be normal, acco=
-rding to Procfile.txt description from Takashi Iwai (...can be lead to too =
-much corrections for a (mostly buggy) hardware that doesn't give smooth poi=
-nter updates)
-
-Thank you for any information and help given.
+--7gGkHNMELEOhSGF6--
