@@ -1,62 +1,64 @@
-From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: [PATCH v2] ASoC: fsl: fix miscompilation of
-	snd-soc-imx-pcm
-Date: Fri, 23 Nov 2012 10:12:13 +0100
-Message-ID: <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
-References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [RESENDING] [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
+ probe rather than as a device
+Date: Fri, 23 Nov 2012 09:12:36 +0000
+Message-ID: <20121123091236.GA17471@gmail.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+ <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+ <20120919133343.GH25694@gmail.com>
+ <505ADBE6.6080509@stericsson.com>
+ <20120920125259.GA2755@gmail.com>
+ <20121122140540.GA10986@gmail.com>
+ <20121123015838.GH4385@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.karo-electronics.de (mail.karo-electronics.de
- [81.173.242.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 444BE261691
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 10:12:18 +0100 (CET)
-In-Reply-To: <20121123081307.GA4529@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121123015838.GH4385@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>
 List-Id: alsa-devel@alsa-project.org
 
-RHVlIHRvIGEgYnJva2VuIG1ha2UgcnVsZSwgc291bmQvc29jL2ZzbC9pbXgtcGNtLWRtYS5jIG9y
-CnNvdW5kL3NvYy9mc2wvaW14LXBjbS1maXEuYyAod2hhdGV2ZXIgaXMgc2VsZWN0ZWQgdmlhIEtj
-b25maWcpIHdpbGwKbm90IGJlIGNvbXBpbGVkIGludG8gaW14LXBjbS5vIHdoZW4gYnVpbGRpbmcg
-YXMgbW9kdWxlLCBpLmUuOgpDT05GSUdfU05EX1NPQ19JTVhfUENNPW0KQ09ORklHX1NORF9TT0Nf
-SU1YX1BDTV9ETUE9bQpyZXN1bHRpbmcgaW4gYSBub24tZnVuY3Rpb25hbCBzb3VuZCBkcml2ZXIu
-CgpUaGlzIGdpdmVzIHRoZSBlcnJvciBtZXNzYWdlczoKfCBpbXgtc2d0bDUwMDAgc291bmQuMTog
-cGxhdGZvcm0gaW14LXBjbS1hdWRpbyBub3QgcmVnaXN0ZXJlZAp8IGlteC1zZ3RsNTAwMCBzb3Vu
-ZC4xOiBzbmRfc29jX3JlZ2lzdGVyX2NhcmQgZmFpbGVkICgtNTE3KQp8IHBsYXRmb3JtIHNvdW5k
-LjE6IERyaXZlciBpbXgtc2d0bDUwMDAgcmVxdWVzdHMgcHJvYmUgZGVmZXJyYWwKd2hlbiBsb2Fk
-aW5nIHRoZSBkcml2ZXIgaW5zdGVhZCBvZiB3aGF0J3MgdG8gYmUgZXhwZWN0ZWQ6CnwgaW14LXNn
-dGw1MDAwIHNvdW5kLjE6ICBzZ3RsNTAwMCA8LT4gNjNmY2MwMDAuc3NpIG1hcHBpbmcgb2sKClNp
-Z25lZC1vZmYtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4KLS0t
-CiBzb3VuZC9zb2MvZnNsL01ha2VmaWxlIHwgICAxMCArKysrKysrLS0tCiAxIGZpbGVzIGNoYW5n
-ZWQsIDcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9z
-b2MvZnNsL01ha2VmaWxlIGIvc291bmQvc29jL2ZzbC9NYWtlZmlsZQppbmRleCA1MTViYTY2Li5h
-ZmQzNDc5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL01ha2VmaWxlCisrKyBiL3NvdW5kL3Nv
-Yy9mc2wvTWFrZWZpbGUKQEAgLTMwLDE0ICszMCwxOCBAQCBvYmotJChDT05GSUdfU05EX01QQzUy
-eHhfU09DX0VGSUtBKSArPSBlZmlrYS1hdWRpby1mYWJyaWMubwogIyBpLk1YIFBsYXRmb3JtIFN1
-cHBvcnQKIHNuZC1zb2MtaW14LXNzaS1vYmpzIDo9IGlteC1zc2kubwogc25kLXNvYy1pbXgtYXVk
-bXV4LW9ianMgOj0gaW14LWF1ZG11eC5vCitzbmQtc29jLWlteC1wY20tb2JqcyA6PSBpbXgtcGNt
-Lm8KK2lmbmVxICgkKENPTkZJR19TTkRfU09DX0lNWF9QQ01fRklRKSwpCisJc25kLXNvYy1pbXgt
-cGNtLW9ianMgKz0gaW14LXBjbS1maXEubworZW5kaWYKK2lmbmVxICgkKENPTkZJR19TTkRfU09D
-X0lNWF9QQ01fRE1BKSwpCisJc25kLXNvYy1pbXgtcGNtLW9ianMgKz0gaW14LXBjbS1kbWEubwor
-ZW5kaWYKIAogb2JqLSQoQ09ORklHX1NORF9TT0NfSU1YX1NTSSkgKz0gc25kLXNvYy1pbXgtc3Np
-Lm8KIG9iai0kKENPTkZJR19TTkRfU09DX0lNWF9BVURNVVgpICs9IHNuZC1zb2MtaW14LWF1ZG11
-eC5vCiAKIG9iai0kKENPTkZJR19TTkRfU09DX0lNWF9QQ00pICs9IHNuZC1zb2MtaW14LXBjbS5v
-Ci1zbmQtc29jLWlteC1wY20teSA6PSBpbXgtcGNtLm8KLXNuZC1zb2MtaW14LXBjbS0kKENPTkZJ
-R19TTkRfU09DX0lNWF9QQ01fRklRKSArPSBpbXgtcGNtLWZpcS5vCi1zbmQtc29jLWlteC1wY20t
-JChDT05GSUdfU05EX1NPQ19JTVhfUENNX0RNQSkgKz0gaW14LXBjbS1kbWEubwogCiAjIGkuTVgg
-TWFjaGluZSBTdXBwb3J0CiBzbmQtc29jLWV1a3JlYS10bHYzMjAtb2JqcyA6PSBldWtyZWEtdGx2
-MzIwLm8KLS0gCjEuNy4yLjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Fri, 23 Nov 2012, Mark Brown wrote:
+
+> On Thu, Nov 22, 2012 at 02:05:40PM +0000, Lee Jones wrote:
+> > On Thu, 20 Sep 2012, Lee Jones wrote:
+>=20
+> > > > > Can we have some closure on this patch please, as it's blocki=
+ng the
+> > > > > patch-set? I'm fairly sure the patch is doing the correct thi=
+ng, as
+> > > > > seconded by Mark.
+>=20
+> > > > I still don't like this. It is the dai_link-struct that bothers=
+ me. We have
+> > > > "ux500-msp-i2s.1" as name of the platform AND the cpu_dai. The =
+MSP I2S-block is
+> > > > not the platform and it is certainly not both platform and cpu-=
+DAI at the same time.
+> > > > Mark: Did you have a solution for this? Couldn't we just put NU=
+LL on the
+> > > > platform_name instead?
+>=20
+> > > There are other drivers which do this already.=20
+>=20
+> > > I don't think it's an issue to do this.
+>=20
+> > Has anyone had any more bright ideas on how we might handle this?
+>=20
+> > The device is still being handled in platform code and I'm desperat=
+e
+> > to get it out of there.
+>=20
+> Why do we need any ideas?  Just implement it already.
+
+How do you mean? I've written the patch, just accept it. ;)
+
+--=20
+Lee Jones
+Linaro ST-Ericsson Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
