@@ -1,80 +1,145 @@
-From: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
-Subject: Re: Underrun on Jade controller...
-Date: Fri, 23 Nov 2012 04:54:22 -0800 (PST)
-Message-ID: <1353675262.71605.YahooMailNeo@web120405.mail.ne1.yahoo.com>
-References: <1353665116.15462.YahooMailNeo@web120405.mail.ne1.yahoo.com>
- <50AF4B3E.9050003@gmail.com>
- <1353666946.95213.YahooMailNeo@web120406.mail.ne1.yahoo.com>
- <50AF527C.8000108@gmail.com>
-Reply-To: Sandulescu Bogdan <bogdan.sandulescu@yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm38-vm7.bullet.mail.ne1.yahoo.com
- (nm38-vm7.bullet.mail.ne1.yahoo.com [98.138.229.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CEFE261647
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 13:54:24 +0100 (CET)
-In-Reply-To: <50AF527C.8000108@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 1/1] ASoC: Ux500: Initialise PCM from MSP probe rather than as a device
+Date: Fri, 23 Nov 2012 13:05:41 +0000
+Message-ID: <1353675941-7303-1-git-send-email-lee.jones@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: arnd@arndb.de, linus.walleij@stericsson.com, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ola LILJA2 <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On 23.11.2012 11:35, Sandulescu Bogdan wrote:
-> > =
+The PCM is a pseudo-device. It doesn't have any of it's own registers
+or hardware. It rather acts as a layer of abstraction for DMA
+transfers. Hence, instead of classifying it as a device in its own
+right, we call the initialisation from the MSP driver.
 
-> > Daniel Mack <zonque <at> gmail.com> writes:
-> >>
-> >> Without providing any code, I guess nobody on this list will be able to
-> >> help you.
-> >>
-> >> Daniel
-> >>
-> > =
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Ola LILJA2 <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/ux500/mop500.c        |    4 ++--
+ sound/soc/ux500/ux500_msp_dai.c |   14 +++++++++++++-
+ sound/soc/ux500/ux500_pcm.c     |   19 ++++---------------
+ sound/soc/ux500/ux500_pcm.h     |    3 +++
+ 4 files changed, 22 insertions(+), 18 deletions(-)
 
-> > =
-
-> > OK. Here is the essential part of my code - settings and write to ALSA:
-> =
-
-> It's not about the userspace code in the first place but the kernel part.
-> =
-
-> I guess you are based on a BSP kernel that the vendor of the
-> chip/module/board you are using provides. For whatever reason, this
-> vendor has decided to not push its code to the mainline kernel but keep
-> changes in a private repository.
-> =
-
-> While this is a common approach, your vendor is the only instance in the
-> game that is in charge of supporting you here. The community can't, as
-> the code has not been shared for discussion and integration in mainline.
-> =
-
-> Daniel
-> =
-
-> =
-
-
-
-Hello Daniel,
-
-Thank you for your answer. Initially I thought I should share my app, as ev=
-ery information I got regarding underruns was that the application is not f=
-eeding data fast enough - hence I thought it was my application's fault.
-
-Considering your precise answer, I will try to get support directly from th=
-e module vendor.
-
-Yours,
-=A0=A0=A0 Bogdan
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 54f7e25..651a52a 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -33,7 +33,7 @@ struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_0",
+ 		.cpu_dai_name = "ux500-msp-i2s.1",
+ 		.codec_dai_name = "ab8500-codec-dai.0",
+-		.platform_name = "ux500-pcm.0",
++		.platform_name = "ux500-msp-i2s.1",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = mop500_ab8500_machine_init,
+ 		.ops = mop500_ab8500_ops,
+@@ -43,7 +43,7 @@ struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_1",
+ 		.cpu_dai_name = "ux500-msp-i2s.3",
+ 		.codec_dai_name = "ab8500-codec-dai.1",
+-		.platform_name = "ux500-pcm.0",
++		.platform_name = "ux500-msp-i2s.3",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = NULL,
+ 		.ops = mop500_ab8500_ops,
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index be94bf9..66ca889 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -28,6 +28,7 @@
+ 
+ #include "ux500_msp_i2s.h"
+ #include "ux500_msp_dai.h"
++#include "ux500_pcm.h"
+ 
+ static int setup_pcm_multichan(struct snd_soc_dai *dai,
+ 			struct ux500_msp_config *msp_config)
+@@ -806,11 +807,20 @@ static int __devinit ux500_msp_drv_probe(struct platform_device *pdev)
+ 		goto err_init_msp;
+ 	}
+ 
++	ret = ux500_pcm_register_platform(pdev);
++	if (ret < 0) {
++		dev_err(&pdev->dev,
++			"Error: %s: Failed to register PCM platform device!\n",
++			__func__);
++		goto err_reg_plat;
++	}
++
+ 	return 0;
+ 
++err_reg_plat:
++	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(ux500_msp_dai_drv));
+ err_init_msp:
+ 	clk_put(drvdata->clk);
+-
+ err_clk:
+ 	devm_regulator_put(drvdata->reg_vape);
+ 
+@@ -821,6 +831,8 @@ static int __devexit ux500_msp_drv_remove(struct platform_device *pdev)
+ {
+ 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
+ 
++	ux500_pcm_unregister_platform(pdev);
++
+ 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(ux500_msp_dai_drv));
+ 
+ 	devm_regulator_put(drvdata->reg_vape);
+diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
+index 1a04e24..894c9f4 100644
+--- a/sound/soc/ux500/ux500_pcm.c
++++ b/sound/soc/ux500/ux500_pcm.c
+@@ -282,7 +282,7 @@ static struct snd_soc_platform_driver ux500_pcm_soc_drv = {
+ 	.pcm_new        = ux500_pcm_new,
+ };
+ 
+-static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
++int __devinit ux500_pcm_register_platform(struct platform_device *pdev)
+ {
+ 	int ret;
+ 
+@@ -296,23 +296,12 @@ static int __devexit ux500_pcm_drv_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(ux500_pcm_register_platform);
+ 
+-static int __devinit ux500_pcm_drv_remove(struct platform_device *pdev)
++int __devexit ux500_pcm_unregister_platform(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 
+ 	return 0;
+ }
+-
+-static struct platform_driver ux500_pcm_driver = {
+-	.driver = {
+-		.name = "ux500-pcm",
+-		.owner = THIS_MODULE,
+-	},
+-
+-	.probe = ux500_pcm_drv_probe,
+-	.remove = __devexit_p(ux500_pcm_drv_remove),
+-};
+-module_platform_driver(ux500_pcm_driver);
+-
+-MODULE_LICENSE("GPL v2");
++EXPORT_SYMBOL_GPL(ux500_pcm_unregister_platform);
+diff --git a/sound/soc/ux500/ux500_pcm.h b/sound/soc/ux500/ux500_pcm.h
+index 77ed44d..76d3444 100644
+--- a/sound/soc/ux500/ux500_pcm.h
++++ b/sound/soc/ux500/ux500_pcm.h
+@@ -32,4 +32,7 @@
+ #define UX500_PLATFORM_PERIODS_MAX		48
+ #define UX500_PLATFORM_BUFFER_BYTES_MAX		(2048 * PAGE_SIZE)
+ 
++int ux500_pcm_register_platform(struct platform_device *pdev);
++int ux500_pcm_unregister_platform(struct platform_device *pdev);
++
+ #endif
+-- 
+1.7.9.5
