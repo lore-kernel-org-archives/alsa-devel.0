@@ -1,83 +1,80 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/10] Kirkwood ASoC drivers fixes and
-	improvements
-Date: Fri, 23 Nov 2012 10:38:28 +0900
-Message-ID: <20121123013827.GB4385@opensource.wolfsonmicro.com>
-References: <20121120121726.GN3290@n2100.arm.linux.org.uk>
- <20121120122051.GA12063@n2100.arm.linux.org.uk>
- <87ip8xodv1.fsf@lebrac.rtp-net.org>
+Subject: Re: [RESENDING] [PATCH 07/22] ASoC: Ux500: Initialise PCM from MSP
+ probe rather than as a device
+Date: Fri, 23 Nov 2012 10:58:39 +0900
+Message-ID: <20121123015838.GH4385@opensource.wolfsonmicro.com>
+References: <1344527268-5964-1-git-send-email-lee.jones@linaro.org>
+ <1344527268-5964-8-git-send-email-lee.jones@linaro.org>
+ <CACRpkdbc6bGC4Yp7Bcdfev=Uc=1h4L1v+Lj9RbmJV3F+knQOZQ@mail.gmail.com>
+ <20120919133343.GH25694@gmail.com>
+ <505ADBE6.6080509@stericsson.com>
+ <20120920125259.GA2755@gmail.com>
+ <20121122140540.GA10986@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8453879260025877227=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB24326030F
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2012 02:38:31 +0100 (CET)
-In-Reply-To: <87ip8xodv1.fsf@lebrac.rtp-net.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Rabeeh Khoury <rabeeh@solid-run.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cDtQGJ/EJIRf/Cpq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121122140540.GA10986@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linus WALLEIJ <linus.walleij@stericsson.com>, "arnd@arndb.de" <arnd@arndb.de>, STEricsson_nomadik_linux <STEricsson_nomadik_linux@list.st.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8453879260025877227==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
-Content-Disposition: inline
-
-
---LpQ9ahxlCli8rRTG
+--cDtQGJ/EJIRf/Cpq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 22, 2012 at 04:29:22PM +0100, Arnaud Patard wrote:
-> Russell King - ARM Linux <linux@arm.linux.org.uk> writes:
+On Thu, Nov 22, 2012 at 02:05:40PM +0000, Lee Jones wrote:
+> On Thu, 20 Sep 2012, Lee Jones wrote:
 
-> > Argh.  Just noticed the driver author is _not_ listed in MAINTAINTERS.
+> > > > Can we have some closure on this patch please, as it's blocking the
+> > > > patch-set? I'm fairly sure the patch is doing the correct thing, as
+> > > > seconded by Mark.
 
-> hm. right. sorry. I tend to always forget this. Is this still really
-> usefull given that there's get_maintainer.pl ?
+> > > I still don't like this. It is the dai_link-struct that bothers me. W=
+e have
+> > > "ux500-msp-i2s.1" as name of the platform AND the cpu_dai. The MSP I2=
+S-block is
+> > > not the platform and it is certainly not both platform and cpu-DAI at=
+ the same time.
+> > > Mark: Did you have a solution for this? Couldn't we just put NULL on =
+the
+> > > platform_name instead?
 
-Yes, get_maintainer.pl is far too prone to problems like false positives
-and other issues when it guesses based on git - real information helps
-it a lot.
+> > There are other drivers which do this already.=20
 
---LpQ9ahxlCli8rRTG
+> > I don't think it's an issue to do this.
+
+> Has anyone had any more bright ideas on how we might handle this?
+
+> The device is still being handled in platform code and I'm desperate
+> to get it out of there.
+
+Why do we need any ideas?  Just implement it already.
+
+--cDtQGJ/EJIRf/Cpq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQrtOFAAoJELSic+t+oim9Jj8QAIQs1Gq07tXPIl1UyTP2nQSl
-r1V66BkKZQZ7nmV53EGYWBCMwB+PzPtF57IXLnqCzZsnADUtco73uR6ZSMtlVF/c
-fOMrYfIWDO1H4FguWJAGgHaB6gCvBKk9xvVAItHTtRYrZSnzL+/89waFvOLtZadk
-QOJcJOTqT0SdE5mOI12/83zfGgkZr282kUOyN1hVzpxNfvlljTDsbk4U1QzcLbk/
-3IRYq7tLTYZCl86iOePaog4LueuELtEfJ3OSEB+547qb+EcvRIsRuqDKp42izhcB
-WeG69aFmUlQzgFiEmjYxH5iupc98gl1UUS0NHZ2g6ZtkeN8R4459UeU78ZBusLAb
-WW7nLuvbb/tJWMdOaZ8gvDzvsp80+kFsraBdKdGdw/Wvir/zdWlwqGxTp8rb+aOb
-C1MI9o3yLJgGQamj7CTgj8jJiJzCk//mO99rYX3RPsxYGW6wmrOxv2icKpBK+PLK
-jD0IEpP7khwwwn/VTFWB0j18sMofclfKEC1CzskMp5AAgD2iA3z1SKTHmC6tfm2f
-Gb+Anq+xba1GNVpAVWbFZJI/WiFnnhr4Y8AfaMliEN0fWoODdQjU72HjoFITQiG5
-ouFfhn8VspH9c7xfam6rEWgOgQTVdlLKXTOnQuP31b7BaeYUxaRt5IrCQGzCp2r3
-v5su4dPH5IW/cXgZV6kD
-=tEAn
+iQIcBAEBAgAGBQJQrtgfAAoJELSic+t+oim9sdAP/3V7ir3NK4SmTh4DVdndL9z2
+Jdfp3PRQ/Xtrw+D0AlWWITcaLUMotlQ826rlp2KTaKSIfF/tgBu8v8ZHbCAHH52f
+GgcA86BdFqfPImBIWn0I9O593LCi9jUZSGBiWel4ImpoRSasS4Lcf/T5Nl28cKff
+24Ul+9k46kp0/muVpZbv9IiWUm9T5PKSjHuOQsNDt0uXZqqk+iA53Rg8h40Ho5BG
+P70rVbo4Br9s7WSjwxTt0KtoAxyD0OnzwKndt6M/A0CClcRdRhcgtgB9vOOlaApM
+xdXFwK8FgsEcjVBrsDQadaYuh0WpuBTrBHVplpU5xeIPg7pdrUviPe4c/3tEMGXA
+cHwGRdfDezX6sqPwnUQLA2dRGu3Hgi4CKLdiMFVnoV81POo6K3Z5uztocFgdP+Se
+4X9UTkkDA+DSH4iOKLio0U4q0MlqbUMzXn5VquRKZFWkp9yw8a6Gyj3wIOBXn7A7
+wXko2cx+Uyeqtam8UQ0uyWaRu14xONXF21BQPSo+3z1u8/J4T8hEv2oZORlDRRxJ
+0z7/aEIs/yfaOpYkulRRnswrYlDYI6WKrJXpgHq9HpGIlF36yan2OV81O0yEE1Qg
+On1Raxoc7XT7bNI8BIaJtOQkrPxS3+sXIXQJPeNIVT8fx8FGkoyHDxhaeBQ605x7
+tfEkllma9PdJtx29HeZR
+=6UW0
 -----END PGP SIGNATURE-----
 
---LpQ9ahxlCli8rRTG--
-
---===============8453879260025877227==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8453879260025877227==--
+--cDtQGJ/EJIRf/Cpq--
