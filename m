@@ -1,60 +1,35 @@
-From: oeai <oeai@ya.ru>
-Subject: Re: EMU-1212m "no Audiodock - no firmware" patch
-Date: Mon, 26 Nov 2012 00:09:30 +0400
-Message-ID: <50B27AFA.8000208@ya.ru>
-References: <50AD5347.5040003@ya.ru> <s5h8v9tr1zu.wl%tiwai@suse.de>
- <50AE8681.3080409@ya.ru> <s5hy5hsk1gf.wl%tiwai@suse.de>
- <CAAMvbhHyG-W-vtu+wpq3JY-Uh-1uuK+5WC6+LJNEG3oy7z=J+A@mail.gmail.com>
-Reply-To: oeai@ya.ru
+From: Jonathan Nieder <jrnieder@gmail.com>
+Subject: Re: [2.6.32.y] Re: [regression] no sound from Fujitsu Pi laptop
+ unless headphones plugged in
+Date: Sun, 25 Nov 2012 12:28:33 -0800
+Message-ID: <20121125202833.GC24024@elie.Belkin>
+References: <1286612714.8879.5.camel@pink>
+ <20120101091142.GA4927@elie.hsd1.il.comcast.net>
+ <20120101091324.GB4927@elie.hsd1.il.comcast.net>
+ <20120216005618.GA29853@burratino>
+ <20121125093136.GA21119@elie.Belkin>
+ <20121125105158.GD18311@1wt.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
- [77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id BE6D8260317
- for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2012 21:09:56 +0100 (CET)
-In-Reply-To: <CAAMvbhHyG-W-vtu+wpq3JY-Uh-1uuK+5WC6+LJNEG3oy7z=J+A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121125105158.GD18311@1wt.eu>
+Sender: stable-owner@vger.kernel.org
+To: Willy Tarreau <w@1wt.eu>
+Cc: stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jose Manuel Castroagudin <j@chav.es>, Rafael Varela Pet <rpet@mundo-r.com>
 List-Id: alsa-devel@alsa-project.org
 
-Oh, it's nice really!!
-Did i understand you correctly - that the ca_cardbus - is the pcmcia bus 
-support?
-So i need just to turn it off and that will solve the problem of waking 
-up from suspend?
-nor should i put it in the end of the init process (so that sequence 
-would be loaded before it)?
+Willy Tarreau wrote:
+> On Sun, Nov 25, 2012 at 01:31:36AM -0800, Jonathan Nieder wrote:
 
-just didn't understand what do you mean @new card@ because it is 
-actually stopped being supported and now they do the pcie and usb cards 
-only.
-
-  =)
-
-On 25.11.2012 23:05, James Courtier-Dutton wrote:
-> Can I help at all?
-> I don't have much time spare, but I do have datasheets for some EMU cards.
-> The PCMCIA/Cardbus versions need a special startup sequence before you
-> can write or read any other registers.
-> Failing to follow the startup sequence causes a PCI fault on the bus
-> when you write to other registers on the card.
-> I have not read the code recently, but I think that is what
-> "ca_cardbus_chip = 1".
-> For any new cards, you can try removing it, and if you get a PCI fault
-> or hang on start up, put it back in.
+>> Please consider
+>>
+>>   cfc9b06f0bef ALSA: hda - Add a pin-fix for FSC Amilo Pi1505
+>>
+>> for application to the 2.6.32.y tree.  Without this patch, the Amilo
+>> Pi 1505's internal speaker is silent unless a jack is plugged into its
+>> headphone jack.
 >
+> OK, queued now.
 
---
-RA
-OE
-AI
+That was fast. :)  Thanks for looking it over.
