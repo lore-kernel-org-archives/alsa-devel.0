@@ -1,41 +1,101 @@
-From: Jonathan Nieder <jrnieder@gmail.com>
-Subject: [2.6.32.y] Re: [regression] no sound from Fujitsu Pi laptop unless
- headphones plugged in
-Date: Sun, 25 Nov 2012 01:31:36 -0800
-Message-ID: <20121125093136.GA21119@elie.Belkin>
-References: <1286612714.8879.5.camel@pink>
- <20120101091142.GA4927@elie.hsd1.il.comcast.net>
- <20120101091324.GB4927@elie.hsd1.il.comcast.net>
- <20120216005618.GA29853@burratino>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: [PATCH 0/3] ASoC: Davinci: McASP: add support new
+ McASP IP Variant
+Date: Sun, 25 Nov 2012 11:26:27 +0100
+Message-ID: <CAGm1_kut_wmno7vG_Vm=7c7e4A7ih+PpGP-GzzYWrfT99UC0FQ@mail.gmail.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+ <506B6A9D.3090100@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
+ <506C1E97.1070700@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120216005618.GA29853@burratino>
-Sender: stable-owner@vger.kernel.org
-To: stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jose Manuel Castroagudin <j@chav.es>, Rafael Varela Pet <rpet@mundo-r.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4068264FE3
+ for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2012 11:26:47 +0100 (CET)
+Received: by mail-ee0-f51.google.com with SMTP id d4so5483745eek.38
+ for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2012 02:26:47 -0800 (PST)
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, Daniel Mack <zonque@gmail.com>, "Girdwood,
+ Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Willy,
+On Wed, Oct 3, 2012 at 2:57 PM, Hebbar, Gururaja <gururaja.hebbar@ti.com> wrote:
+> On Wed, Oct 03, 2012 at 16:46:39, Daniel Mack wrote:
+>> On 03.10.2012 09:16, Hebbar, Gururaja wrote:
+>> > On Wed, Oct 03, 2012 at 03:58:45, Daniel Mack wrote:
+>> >> On 31.08.2012 14:50, Hebbar, Gururaja wrote:
+>> >>> The OMAP2+ variant of McASP is different from Davinci variant w.r.to some
+>> >>> register offset and missing generic SRAM APIs support
+>> >>>
+>> >>> Changes
+>> >>> - Add new MCASP_VERSION_3 to identify new variant. New DT compatible
+>> >>>   "ti,omap2-mcasp-audio" to identify version 3 controller.
+>> >>> - The register offsets are handled depending on the version.
+>> >>> - Provide a config option to indicate missing SRAM API support.
+>> >>
+>> >> Could you give some insight which hardware this was tested on? I'm
+>> >> trying to get this up and running on a AM33xx board, and the patches
+>> >> look all reasonable to me. My problem is that I can't make the DMA
+>> >> engine move forward, I fail to receive a single interrupt on this
+>> >> peripheral after the stream starts. I will continue searching for the
+>> >> reason of this tomorrow, but maybe you can give me some hint by
+>> >> explaining your setup?
+>> >>
+>> >> Note that I'm using your patches together with Matt's from this series:
+>> >>
+>> >>   https://github.com/ohporter/linux/tree/edma-dmaengine-am33xx-rfc-v1
+>> >>
+>> >> ... but it doesn't work without those either.
+>> >
+>> >
+>> > When I started working on adding DT support to McASP driver, Matt Porter
+>> > EDMA port was not yet ready.
+>> >
+>> > So
+>> > 1. I took existing edma driver from AM335x Arago release [1] (driver + edma
+>> >    device init).
+>> > 2. Added this to Vaibhav's Local (linux-next + AM335x patches) tree [2]
+>> >
+>> > 3. Added DT support to McASP driver.
+>> >
+>> > I tested this on AM335x EVM board.
+>>
+>> Hmm, so I think there's a tiny bit missing for the EDMA conversion on DT
+>> kernels.
+>>
+>> > If you need the code, I can share it as a patch (I will send the patch as a
+>> > private mail since the patch is huge).
+>>
+>> Please do :) Or just push your entire tree somewhere.
+>
+> I have pushed the code at below git repo
+> Repo :https://github.com/hvaibhav/am335x-linux
+> Branch : am335x-upstream-staging-audio
+>
+> This includes
+> 1. (linux-next + AM335x patches)
+> 2. McASP DT conversion
+> 3. EDMA hack
+> 4. AM335x audio specific DT blobs
+> 5. Am335x dma DT blobs [hack]
+>
+> Kindly let me know if you need any more details.
 
-Please consider
+What can be expected in 3.8? And what will have to wait for 3.9?
 
-  cfc9b06f0bef ALSA: hda - Add a pin-fix for FSC Amilo Pi1505
-
-for application to the 2.6.32.y tree.  Without this patch, the Amilo
-Pi 1505's internal speaker is silent unless a jack is plugged into its
-headphone jack.
-
-Jose Manuel Castroagudin noticed[1] that 2.6.30 is not affected, so
-this seems to be a regression.
-
-The patch was applied upstream during the 2.6.33 merge window, where
-it worked.  That said, I didn't manage to track down anyone with a
-Pi1505 to test it against 2.6.32, so thoughts from alsa folks on
-whether this is appropriate for 2.6.32.y would be useful.
-
-Hope that helps,
-Jonathan
-
-[1] http://bugs.debian.org/599582 has many more details.
+Yegor
