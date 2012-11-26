@@ -1,44 +1,72 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [alsa-devel] [PATCH] usb: add USB_QUIRK_RESET_RESUME for M-Audio
- 49
-Date: Mon, 26 Nov 2012 16:54:07 -0500 (EST)
-Message-ID: <Pine.LNX.4.44L0.1211261646230.2168-100000@iolanthe.rowland.org>
-References: <50B3CD29.2060505@ladisch.de>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
+ on Arizona CODECs
+Date: Mon, 26 Nov 2012 15:11:22 -0800
+Message-ID: <20121126231122.GA26836@core.coreip.homeip.net>
+References: <1353965980-32543-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <1353965980-32543-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <50B3CD29.2060505@ladisch.de>
-Sender: linux-pm-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Oliver Neukum <oneukum@suse.de>, Takashi Iwai <tiwai@suse.de>, Jonathan Nieder <jrnieder@gmail.com>, =?ISO-8859-1?Q?Steffen_M=FCller?= <steffen.mueller@radio-frei.de>, alsa-devel@alsa-project.org, Olivier MATZ <zer0@droids-corp.org>, linux-pm@vger.kernel.org, linux-usb@vger.kernel.org, stable@vger.kernel.org, David Banks <amoebae@gmail.com>, Ralf Lang <lang@b1-systems.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353965980-32543-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26 Nov 2012, Clemens Ladisch wrote:
+Hi Mark,
 
-> Alan Stern wrote:
-> > On Mon, 26 Nov 2012, Oliver Neukum wrote:
-> >> On Monday 26 November 2012 14:43:13 Clemens Ladisch wrote:
-> >>> usb_autopm_get_interface() cannot be called from the USB probe callback.
-> >>
-> >> You can use usb_autopm_get_interface_no_resume()
-> >> During probe() the device is known to not be suspended.
-> >
-> > In fact, as far as I know you _can_ use usb_autopm_get_interface() from
-> > within a probe routine.  Is there some problem with it I'm not aware of?
-> 
-> It returns -EACCES.
+On Mon, Nov 26, 2012 at 09:39:38PM +0000, Mark Brown wrote:
+> +static int arizona_haptics_play(struct input_dev *input, void *data,
+> +				struct ff_effect *effect)
+> +{
+> +	struct arizona_haptics *haptics = input_get_drvdata(input);
+> +	struct arizona *arizona = haptics->arizona;
+> +	struct mutex *dapm_mutex = &arizona->dapm->card->dapm_mutex;
+> +	u8 val;
+> +	int ret;
+> +
+> +	if (!haptics->arizona->dapm) {
+> +		dev_err(arizona->dev, "No DAPM context\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (effect->u.rumble.strong_magnitude) {
+> +		/* Scale the magnitude into the range the device supports */
+> +		if (arizona->pdata.hap_act) {
+> +			val = effect->u.rumble.strong_magnitude >> 9;
+> +			if (effect->direction < 0x8000)
+> +				val += 0x7f;
+> +		} else {
+> +			val = effect->u.rumble.strong_magnitude >> 8;
+> +		}
+> +
+> +		ret = regmap_update_bits(arizona->regmap,
+> +					 ARIZONA_HAPTICS_PHASE_2_INTENSITY,
+> +					 ARIZONA_PHASE2_INTENSITY_MASK, val);
+> +		if (ret != 0) {
+> +			dev_err(arizona->dev, "Failed to set intensity: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		/* This enable sequence will be a noop if already enabled */
+> +		ret = regmap_update_bits(arizona->regmap,
+> +					 ARIZONA_HAPTICS_CONTROL_1,
+> +					 ARIZONA_HAP_CTRL_MASK,
+> +					 1 << ARIZONA_HAP_CTRL_SHIFT);
+> +		if (ret != 0) {
+> +			dev_err(arizona->dev, "Failed to start haptics: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
 
-That's odd.  -EACCES occurs only when the interface or the device it
-belongs to is disabled for runtime PM.  But the USB core enables
-interfaces before probing, provided the driver's supports_autosuspend
-flag is set.
+You cannot sleep in play() methods.
 
-Furthermore, -EACCES can occur in usb_autopm_get_interface() only when 
-the interface or its device is not currently resumed -- but USB devices 
-and interfaces are always resumed during a probe.
+Thanks.
 
-Do you have any idea about what's going wrong here?  Or do I need to 
-investigate more closely?
-
-Alan Stern
-
+-- 
+Dmitry
