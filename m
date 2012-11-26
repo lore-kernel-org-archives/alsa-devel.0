@@ -1,39 +1,48 @@
-From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
-Subject: Re: [Patch v6 4/4] ASoC: at91sam9g20ek-wm8731: convert to dt support
-Date: Mon, 26 Nov 2012 21:23:42 +0000
-Message-ID: <201211262123.42812.arnd@arndb.de>
-References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com>
- <1352887751-21848-5-git-send-email-voice.shen@atmel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Mon, 26 Nov 2012 22:32:31 +0100
+Message-ID: <50B3DFEF.9080303@ladisch.de>
+References: <p06240816ccd2e5cc9db7@[192.168.1.8]> <50AE99E7.6080008@gmail.com>
+ <p06240802ccd72a8f5c3e@[192.168.1.12]> <50B21255.8080202@gmail.com>
+ <50B249A6.108@ladisch.de> <p0624080eccd8028e2fa3@[192.168.1.12]>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1352887751-21848-5-git-send-email-voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 011ED2651C3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 22:32:47 +0100 (CET)
+In-Reply-To: <p0624080eccd8028e2fa3@[192.168.1.12]>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Griscom <griscom@suitable.com>
+Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 14 November 2012, Bo Shen wrote:
-> +
-> +                       ssc0: ssc@fffbc000 {
-> +                               status = "okay";
-> +                               pinctrl-0 = <&pinctrl_ssc0_tx>;
-> +                       };
->                 };
->  
+Daniel Griscom wrote:
+> At 5:39 PM +0100 11/25/12, Clemens Ladisch wrote:
+>> You might want to try to check the
+>> frames' status in retire_playback_urb(),
+>
+> I've looked that function over, but it's not clear where in the
+> various structures I'd find the status.
 
-This gives me a build error in linux-next with at91sam9g20_defconfig:
+Copy that code from retire_capture_urb().
 
-ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+> if the data is put on the USB bus, but the receiving device (my audio
+> card) loses it, there's no way the above will show this?
 
-	Arnd
+Isochronous packets have no error handling or reporting, except for the
+CRC.  You will see an error report only if it happend before the packet
+was put on the bus.  (Which appears to be the case for you.)
+
+
+Regards,
+Clemens
