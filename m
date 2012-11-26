@@ -1,18 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: usb - Don't create "Speaker" mixer
- controls on headphones and headsets
-Date: Mon, 26 Nov 2012 11:06:41 +0100
-Message-ID: <50B33F31.8000603@ladisch.de>
-References: <1353674935-4215-1-git-send-email-david.henningsson@canonical.com>
- <s5hip8sitzm.wl%tiwai@suse.de>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH 0/3] ASoC: Davinci: McASP: add support new
+ McASP IP Variant
+Date: Mon, 26 Nov 2012 11:32:49 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EAD7872@DBDE01.ent.ti.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+ <506B6A9D.3090100@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
+ <506C1E97.1070700@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
+ <CAGm1_kut_wmno7vG_Vm=7c7e4A7ih+PpGP-GzzYWrfT99UC0FQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A93C726172E
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 11:06:45 +0100 (CET)
-In-Reply-To: <s5hip8sitzm.wl%tiwai@suse.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7A8B264F34
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:32:59 +0100 (CET)
+In-Reply-To: <CAGm1_kut_wmno7vG_Vm=7c7e4A7ih+PpGP-GzzYWrfT99UC0FQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>, zonque@gmail.com
+To: Yegor Yefremov <yegorslists@googlemail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
+ Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, Daniel Mack <zonque@gmail.com>, "Girdwood,
+ Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> David Henningsson wrote:
->> A lot of headsets/headphones have a "Speaker" mixer control. This confuses
->> PulseAudio to think it is a speaker instead of a headphone/headset.
->> Therfore, we rename it to "Headphone".
->>
->> We determine if something is a headphone similar to how udev determines
->> form factor (see 78-sound-card.rules).
->>
->> BugLink: https://bugs.launchpad.net/bugs/1082357
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->> ---
->>  sound/usb/mixer.c |   30 ++++++++++++++++++++++++++++++
->>  1 file changed, 30 insertions(+)
->>
->> I tried to find a better way of doing this using the existing quirk or
->> map infrastructure but it didn't seem to fit, so added a new
->> explicit check.
->
-> Hrm, indeed it's pretty hackish although it'd work heuristically.
+Yegor,
 
-This is for devices that have explicitly marked their output
-terminal as speakers, so I don't see any method to make this less
-hackish.
+On Sun, Nov 25, 2012 at 15:56:27, Yegor Yefremov wrote:
+> On Wed, Oct 3, 2012 at 2:57 PM, Hebbar, Gururaja <gururaja.hebbar@ti.com> wrote:
+> > On Wed, Oct 03, 2012 at 16:46:39, Daniel Mack wrote:
+> >> On 03.10.2012 09:16, Hebbar, Gururaja wrote:
+> >> > On Wed, Oct 03, 2012 at 03:58:45, Daniel Mack wrote:
+> >> >> On 31.08.2012 14:50, Hebbar, Gururaja wrote:
+> >> >>> The OMAP2+ variant of McASP is different from Davinci variant w.r.to some
+> >> >>> register offset and missing generic SRAM APIs support
+> >> >>>
+
+..snip..
+..snip..
+
+> >>
+> >> Please do :) Or just push your entire tree somewhere.
+> >
+> > I have pushed the code at below git repo
+> > Repo :https://github.com/hvaibhav/am335x-linux
+> > Branch : am335x-upstream-staging-audio
+> >
+> > This includes
+> > 1. (linux-next + AM335x patches)
+> > 2. McASP DT conversion
+> > 3. EDMA hack
+> > 4. AM335x audio specific DT blobs
+> > 5. Am335x dma DT blobs [hack]
+> >
+> > Kindly let me know if you need any more details.
+> 
+
+> What can be expected in 3.8? 
+
+1. ASoC McASP DT conversion is 80% complete. Davinci Machine DT conversion
+& McASP pinctrl support is yet to be accepted. I sent a patch recently and 
+waiting for feedback.
+
+> And what will have to wait for 3.9?
+AFAIK
+1. EDMA port for McASP driver
+2. AM335x support on Davinci ASoC (Kconfig & makefile)
+3. DT blobs for Audio modules on AM335x (am335x-evm.dts & am33xx.dtsi)
+
+> 
+> Yegor
+> 
 
 
-Regards,
-Clemens
+Regards, 
+Gururaja
