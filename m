@@ -1,56 +1,63 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: davinci-mcasp: Add pinctrl support
-Date: Mon, 26 Nov 2012 11:45:11 +0000
-Message-ID: <20121126114511.GE9411@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: Davinci: machine: Add device tree binding
+Date: Mon, 26 Nov 2012 11:56:19 +0000
+Message-ID: <20121126115619.GF9411@opensource.wolfsonmicro.com>
 References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
- <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
+ <1353557099-21599-3-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xJK8B5Wah2CMJs8h"
+	protocol="application/pgp-signature"; boundary="0hHDr/TIsw4o3iPK"
 Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
+In-Reply-To: <1353557099-21599-3-git-send-email-gururaja.hebbar@ti.com>
 Sender: linux-doc-owner@vger.kernel.org
 To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
 Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, tony@atomide.com, lrg@ti.com, perex@perex.cz, nsekhar@ti.com, sudhakar.raj@ti.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, rob@landley.net
 List-Id: alsa-devel@alsa-project.org
 
 
---xJK8B5Wah2CMJs8h
+--0hHDr/TIsw4o3iPK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 22, 2012 at 09:34:58AM +0530, Hebbar, Gururaja wrote:
+On Thu, Nov 22, 2012 at 09:34:59AM +0530, Hebbar, Gururaja wrote:
 
-> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-> +	if (IS_ERR(pinctrl))
-> +		dev_warn(&pdev->dev,
-> +			"pins are not configured from the driver\n");
+> +- dai-data		: A list of DAI data used by SOC code to register
+> +			  DAI, Codecs platform.
+> +			  The string index "should" be as shown below.
+> +dai-data =
+> +"<DAI Name>", 		"<DAI Stream Name>",
+> +"<CODEC DAI Name>",	"<true if evm_aic3x_init is required, else false>",
+> +"<evm ops required (evm_ops or evm_spdif_ops)>";
 
-Since the driver is happy to continue without the pins why is it
-bothering requesting them in the first place?  In other words, this
-should be a hard error.
+This continues to have the same issue as with previous versions, this is
+all Linux internals (especially the evm_aic3x_init thing) not a
+description of the hardware, there's not enough information to allow
+someone to work out what the bindings for their system should be.
 
---xJK8B5Wah2CMJs8h
+Do not post *ANY* further versions that have this evm_aic3x_init stuff
+in them, it's very annoying that you keep on ignoring this feedback.
+
+--0hHDr/TIsw4o3iPK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQs1ZAAAoJELSic+t+oim9TzsP/0nbB4/m1COerA5f7PpBlxaO
-e4hGMgicqIUNXz7JoBJrmHqmo/EbWrHe2b73moOr1D0sgNpFknFRQF9OAlc0oja2
-+y2h0ZwqDhHfXMLGvALUctnHQKi3iDjZiNjQWvYx3InWe2Nsw8MU0z0cjtm7JEnb
-qnX3KvTGTGNWolkppLteS2dq9qJ1tpAygN7bsAu5JeoQFapChouOVCvxMCHbMxei
-bB/nK7LYlliuCmBr9Ngab0n1mfjaRhJltB+HKm27WzBz2N2N/8pLQ/ULzBIOAbJF
-s1LMAYQ+zDQNcBN1B57bVnGoUqNao0qr440HJISc6NfgFFzR+g1C/HIPctmEcyBJ
-IFaK5KPLNwu6JZU3qWttEzg2pEE889Sm9EHdeHUmSXYT8ney4TZpmIKJpi0Hqw3i
-t/ztysorhTySBold0VJj9CmORJnhLaiSfwZeKG8PtHplDm/sSD1g7x/H29lZ70Kj
-VNzyp8asi7SKDcHhkjRLbP2CvsMCt/rTWV8CRxMI+bDgKgExdvg6gL0SlC9/O6vG
-T0qMwPKyefqF5r3aQpGyRZ67jCjw19jQ9ExdSBzaOfAHYGFBTEgC4HP4h8tr2GhP
-jDOdQrPwCxi0JZQ5eiiqirEqwWmwJfLS32TGVfJGu016WpKQ7he0d4zQeWSaVHcw
-m1T0YLVDgfrZgaUsQBqD
-=ep/H
+iQIcBAEBAgAGBQJQs1jbAAoJELSic+t+oim9DmwP/AsAL9pNXNxmU/aCTCVHv1Kz
+YFXb5dBpofd2qcbloEoLvYeZS0QWs8fdJYrplmKd57jZM5/ltBhm443fs6ltQ+vE
+AFlIpDktosTZTvjk8LcDh3IVB1zstGglXJFnb4a2ceFPq+Qee5w0em0cigotNWfY
+BadAv5gLDbhCKbg2XMrQU6Npv1bE79eAOu+4LTyrPieUtK/97Yncjd+nFZCrigr4
+R7Oa5usgW94HQaWVzKajboOHQLSiYlkksmuSV6s5E89QVvmLV5eG08O9Vxlmc7ix
+bwHl404B2t2OeUS6L40M12PrdqQ03nZJNkzOLgdrl/mAitCEPse0rOjGn46udUKy
+VWUHczmETZc2Dp8ybgBr647iIPl1gQKy/um6c4V4h/og7MZwBK+i7yKj7NqFGdrN
+hHIvQpEVpbSwbS6w+iGO5nwNu7qSRQGt80zHqeVTmg5ztbmHcELJ+7OGBtrp6VhF
+nwPVkkJw4Q3w4G/Ui8uIN5sJJ6GefWop7R3NsZsljGKZkNWHj5gNW60YQsP90KBE
+bjdXdUIN1Ofb0D4B6/x35yp8ETZ5myOVO8kMOPTMLteY46z2ZO0QUms2hR5RYQI0
+nUZ5AQAuzGOFLjME/0e+rqNCLOT87Uemag9T8DkDgixwv8RABGkegqlqLdcRkpN3
+8o0zXlSXwpt/L8SF4hx5
+=OcxI
 -----END PGP SIGNATURE-----
 
---xJK8B5Wah2CMJs8h--
+--0hHDr/TIsw4o3iPK--
