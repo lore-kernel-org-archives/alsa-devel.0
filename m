@@ -1,59 +1,44 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ASoC: Samsung: Register the audio platform device
-Date: Mon, 26 Nov 2012 14:49:44 +0000
-Message-ID: <20121126144943.GM9411@opensource.wolfsonmicro.com>
-References: <1352894960-17434-1-git-send-email-padma.v@samsung.com>
- <1352894960-17434-2-git-send-email-padma.v@samsung.com>
- <CAAgF-BdHm_VFB-xsZ6kpAu5+9+1yMNVVGM_og+H3QghWQuf8+w@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: usb - Don't create "Speaker" mixer
+ controls on headphones and headsets
+Date: Mon, 26 Nov 2012 23:21:02 +0800
+Message-ID: <CAN8cciboDbGx6Ua6d25vsM=85EiuvN+ZEruNYNCmx+byTrgnvQ@mail.gmail.com>
+References: <1353674935-4215-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GeONROBiaq1zPAtT"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAgF-BdHm_VFB-xsZ6kpAu5+9+1yMNVVGM_og+H3QghWQuf8+w@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 436E62650D1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 16:21:05 +0100 (CET)
+Received: by mail-qa0-f44.google.com with SMTP id c4so3224500qae.17
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 07:21:04 -0800 (PST)
+In-Reply-To: <1353674935-4215-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
---GeONROBiaq1zPAtT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 26, 2012 at 08:15:12PM +0530, Padma Venkat wrote:
-> On Wed, Nov 14, 2012 at 5:39 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
-
-> > +module_init(smdk_audio_init);
-> > +module_exit(smdk_audio_exit);
-
-> Ping. Any comments on this patch?
-
-Don't send contentless pings and delete irrelevant context from replies.
-Please refer to the feedback I sent in response to Sangbeom's pull
-request - in short, this isn't the way to do this - do what the other
-platforms do.
-
---GeONROBiaq1zPAtT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQs4F/AAoJELSic+t+oim9sRUP/iajPpRYrQUgv8CWJ+fYKzXi
-FHOHuSlXV1aN/DfSWtREGZVTPPlHo5wN4G67miqJf2vWmdakdMlUOi4sYdIKDmug
-dNP/euAcbosYNS3n7C8GLueI2VAYxmgB1jkEEw+7k/d7lmu5riMpQfupISpxHlbr
-wp4VygWWcVtLmqRAzVqOYucpzV67rpU/fwqKtFZvQ6Icl4nZZwAy55aIGOzaqekc
-ARMdc1MY8r/EqtuoK1za/FKagdVX3kwbiRVOvE1LzCohohCg8RUkmahaDzDmrOjF
-dzO/Y2+2xvNvkrDIRqfzDylKDKJ174f3/liJJPJ84qYK7Qi/VcF1aKBVQH6Wy7cO
-8bUigFrZJri34cNZdfKYZSIEEBmnmnGr06PnuII9QX4MPCmEIZBSdEhLf/6uBbh2
-TKjw050j11Ffgxe9I83mr3BOy0a76PCItGI4/p75gsha+ST2lxEuq1LZKqO1HxXv
-pqZEucfs/ULA3RgNAtJykZBfD2lK8Bx+eYWDpHzoQR7hXIFQnG++SBFwKFpFcv0b
-1DRtpXHFUXzkFEjvihdlKmhCr3DE6YaYf/9q9H9Kvv0AIxISYfjruYmScU6V2CE5
-3aZJ4xKjRSiOTg+ftZijVgexd3H/dIF/ECKcn7VRHnOxJy8vzGmZDBPfI2pwaCRx
-bOmssElZ246BJLHNoeE4
-=jBzo
------END PGP SIGNATURE-----
-
---GeONROBiaq1zPAtT--
+MjAxMi0xMS0yMyDkuIvljYg4OjQ5IOaWvCAiRGF2aWQgSGVubmluZ3Nzb24iIDxkYXZpZC5oZW5u
+aW5nc3NvbkBjYW5vbmljYWwuY29tPgrlr6vpgZPvvJoKPgo+IEEgbG90IG9mIGhlYWRzZXRzL2hl
+YWRwaG9uZXMgaGF2ZSBhICJTcGVha2VyIiBtaXhlciBjb250cm9sLiBUaGlzIGNvbmZ1c2VzCj4g
+UHVsc2VBdWRpbyB0byB0aGluayBpdCBpcyBhIHNwZWFrZXIgaW5zdGVhZCBvZiBhIGhlYWRwaG9u
+ZS9oZWFkc2V0Lgo+IFRoZXJmb3JlLCB3ZSByZW5hbWUgaXQgdG8gIkhlYWRwaG9uZSIuCj4KPiBX
+ZSBkZXRlcm1pbmUgaWYgc29tZXRoaW5nIGlzIGEgaGVhZHBob25lIHNpbWlsYXIgdG8gaG93IHVk
+ZXYgZGV0ZXJtaW5lcwo+IGZvcm0gZmFjdG9yIChzZWUgNzgtc291bmQtY2FyZC5ydWxlcykuCgpk
+b2VzIGl0IHJlYWxseSBmaXggdGhlIHByb2JsZW0gc2luY2UgdGhlcmUgYXJlCgoxKSB1c2IgaGVh
+ZHNldHMgd2hpY2ggaGFzICJQQ00iIHZvbHVtZSBjb250cm9sCjIpIHNvbWUgdXNiIGhlYWRwaG9u
+ZSBzdXBwb3J0IDUuMQoKZG9lcyBpdCBtZWFuIHRoYXQgdGhvc2Ugbm9uIGhlYWRzZXQgdXNiIGF1
+ZGlvIGRldmljZXMgaGF2ZSBhIGhpZ2hlcgpwcmlvcml0eSB0aGFuIHVzYiBoZWFkc2V0ID8KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
