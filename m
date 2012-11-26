@@ -1,7 +1,7 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 12/14] ASoC: wm8978: Use devm_regmap_init_i2c()
-Date: Mon, 26 Nov 2012 17:19:45 +0530
-Message-ID: <1353930587-12907-13-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 13/14] ASoC: wm8993: Use devm_regmap_init_i2c()
+Date: Mon, 26 Nov 2012 17:19:46 +0530
+Message-ID: <1353930587-12907-14-git-send-email-sachin.kamat@linaro.org>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,10 +9,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
  [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B754265162
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AD631265172
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:57 +0100 (CET)
 Received: by mail-pa0-f51.google.com with SMTP id fb11so4983511pad.38
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:54 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:57 -0800 (PST)
 In-Reply-To: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,53 +32,55 @@ handling and code cleanup simpler.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/wm8978.c |   13 +++----------
- 1 files changed, 3 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm8993.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index 8c1dac9..ef46700 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -1046,7 +1046,7 @@ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
- 	if (wm8978 == NULL)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index c3d3107..347a359 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1660,7 +1660,7 @@ static __devinit int wm8993_i2c_probe(struct i2c_client *i2c,
+ 	wm8993->dev = &i2c->dev;
+ 	init_completion(&wm8993->fll_lock);
  
--	wm8978->regmap = regmap_init_i2c(i2c, &wm8978_regmap_config);
-+	wm8978->regmap = devm_regmap_init_i2c(i2c, &wm8978_regmap_config);
- 	if (IS_ERR(wm8978->regmap)) {
- 		ret = PTR_ERR(wm8978->regmap);
+-	wm8993->regmap = regmap_init_i2c(i2c, &wm8993_regmap);
++	wm8993->regmap = devm_regmap_init_i2c(i2c, &wm8993_regmap);
+ 	if (IS_ERR(wm8993->regmap)) {
+ 		ret = PTR_ERR(wm8993->regmap);
  		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
-@@ -1059,29 +1059,22 @@ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
- 	ret = regmap_write(wm8978->regmap, WM8978_RESET, 0);
+@@ -1676,14 +1676,14 @@ static __devinit int wm8993_i2c_probe(struct i2c_client *i2c,
+ 				 wm8993->supplies);
  	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to issue reset: %d\n", ret);
+ 		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
 -		goto err;
 +		return ret;
  	}
  
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8978, &wm8978_dai, 1);
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8993->supplies),
+ 				    wm8993->supplies);
  	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+ 		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
 -		goto err;
 +		return ret;
  	}
  
- 	return 0;
--
+ 	ret = regmap_read(wm8993->regmap, WM8993_SOFTWARE_RESET, &reg);
+@@ -1742,8 +1742,6 @@ err_irq:
+ 		free_irq(i2c->irq, wm8993);
+ err_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
 -err:
--	regmap_exit(wm8978->regmap);
--	return ret;
+-	regmap_exit(wm8993->regmap);
+ 	return ret;
  }
  
- static __devexit int wm8978_i2c_remove(struct i2c_client *client)
- {
--	struct wm8978_priv *wm8978 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(wm8978->regmap);
+@@ -1754,7 +1752,6 @@ static __devexit int wm8993_i2c_remove(struct i2c_client *i2c)
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, wm8993);
+-	regmap_exit(wm8993->regmap);
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
  
  	return 0;
- }
 -- 
 1.7.4.1
