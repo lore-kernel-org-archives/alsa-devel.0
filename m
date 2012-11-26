@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm2000: Get the CODEC pointer from the
-	widget
-Date: Mon, 26 Nov 2012 14:19:08 +0000
-Message-ID: <1353939548-15296-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ALSA: usb-audio: ignore delay
+ calculation for capture stream
+Date: Mon, 26 Nov 2012 08:24:16 -0600
+Message-ID: <50B37B90.7020403@linux.intel.com>
+References: <1353684108-16669-1-git-send-email-tiwai@suse.de>
+ <1353684108-16669-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 371DE2650ED
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 15:19:10 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D245F2650ED
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 15:24:18 +0100 (CET)
+In-Reply-To: <1353684108-16669-2-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't rely on the kcontrol for robustness reasons, the widget mechanism
-is what the framework uses.
+On 11/23/2012 09:21 AM, Takashi Iwai wrote:
+> It doesn't make sense to calculate the delay for capture streams in
+> the current implementation.  It's always zero, so we should skip the
+> computation in snd_usb_pcm_pointer() in the case of capture.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2000.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index 683dc43..02750ab 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -646,7 +646,7 @@ static const struct snd_kcontrol_new wm2000_controls[] = {
- static int wm2000_anc_power_event(struct snd_soc_dapm_widget *w,
- 				  struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_codec *codec = w->codec;
- 	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
- 
- 	if (SND_SOC_DAPM_EVENT_ON(event))
--- 
-1.7.10.4
+Shouldn't we add support for delay on the capture path instead? We could 
+use the same frame counter to report the delay and resync when the urb 
+is retired.
+-Pierre
