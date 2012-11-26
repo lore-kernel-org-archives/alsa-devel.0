@@ -1,51 +1,77 @@
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] ASoC: mxs-saif: export
- mxs_saif_put_mclk,mxs_saif_get_mclk
-Date: Mon, 26 Nov 2012 09:49:50 +0100
-Message-ID: <20659.11566.624414.569253@ipc1.ka-ro>
-References: <1353587470-11994-1-git-send-email-LW@KARO-electronics.de>
-	<1353587470-11994-4-git-send-email-LW@KARO-electronics.de>
-	<20121123020635.GK4385@opensource.wolfsonmicro.com>
-	<20655.9202.288388.343758@ipc1.ka-ro>
-	<20121123144541.GT4529@opensource.wolfsonmicro.com>
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Subject: [PATCH v3] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
+Date: Mon, 26 Nov 2012 09:50:47 +0100
+Message-ID: <1353919847-8395-1-git-send-email-LW@KARO-electronics.de>
+References: <20121123114603.GF4529@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121123144541.GT4529@opensource.wolfsonmicro.com>
+In-Reply-To: <20121123114603.GF4529@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Mark,
 
-Mark Brown writes:
-> On Fri, Nov 23, 2012 at 08:21:22AM +0100, Lothar Wa=C3=9Fmann wrote:
-> > > On Thu, Nov 22, 2012 at 01:31:09PM +0100, Lothar Wa=C3=9Fmann wro=
-te:
->=20
-> > > Why?
->=20
-> > I thought that was obvious... To be able to compile the mxs sound
-> > driver as module.
->=20
-> Do you want to add new users of these functions, or are there existin=
-g
-> users which currently fail to link when built as modules?
->
-The existing MXS sound driver fails to build as module
-(CONFIG_SND_SOC_MXS_SGTL5000=3Dm) without this patch.
+thanks your insisting on a better description for the patch, I found a
+more appropriate solution for the problem:=20
 
+Compiling the SoC Audio driver for Freescale i.MX as a module
+(CONFIG_SND_SOC_IMX_PCM=3Dm) results in a non-functional sound driver
+indicated by the error message:
+| imx-sgtl5000 sound.1: platform imx-pcm-audio not registered
+| imx-sgtl5000 sound.1: snd_soc_register_card failed (-517)
+| platform sound.1: Driver imx-sgtl5000 requests probe deferral
+instead of the message:
+| imx-sgtl5000 sound.1:  sgtl5000 <-> 63fcc000.ssi mapping ok
+that is to be expected upon loading the snd-soc-imx-pcm.ko module.
 
-Lothar Wa=C3=9Fmann
+The build log reveals, that the file imx-pcm-dma.o (or imx-pcm-fiq.o
+depending on the kernel configuration), which should be linked
+together with imx-pcm.o into snd-imx-pcm.ko, is not being compiled in
+this case.
+
+The make rules for these files shows that the target object imx-pcm.o
+is assigned to the variable snd-soc-imx-pcm-y while
+imx-pcm-{dma,fiq}.o are added to to
+snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_DMA) and
+snd-soc-imx-pcm-$(CONFIG_SND_SOC_IMX_PCM_FIQ) which resolve to
+snd-soc-imx-pcm-m in this case.
+
+According to Documentation/kbuild/modules.txt:
+|When the module is built from multiple sources, an additional line is
+|needed listing the files:
+|
+|        <module_name>-y :=3D <src1>.o <src2>.o ...
+Thus the type of the config variables CONFIG_SND_SOC_IMX_PCM_DMA and
+CONFIG_SND_SOC_IMX_PCM_FIQ should be 'bool' instead of 'tristate' to
+resolve to 'y' when selected.
+
+Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+---
+ sound/soc/fsl/Kconfig |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 10fd172..3b98159 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -112,12 +112,12 @@ config SND_SOC_IMX_PCM
+ 	tristate
+=20
+ config SND_SOC_IMX_PCM_FIQ
+-	tristate
++	bool
+ 	select FIQ
+ 	select SND_SOC_IMX_PCM
+=20
+ config SND_SOC_IMX_PCM_DMA
+-	tristate
++	bool
+ 	select SND_SOC_DMAENGINE_PCM
+ 	select SND_SOC_IMX_PCM
+=20
 --=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+1.7.2.5
