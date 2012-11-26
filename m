@@ -1,56 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Support higher clock rates
-Date: Mon, 26 Nov 2012 16:02:06 +0000
-Message-ID: <1353945726-12328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [alsa-devel] [PATCH] usb: add USB_QUIRK_RESET_RESUME for M-Audio
+ 49
+Date: Mon, 26 Nov 2012 11:12:34 -0500 (EST)
+Message-ID: <Pine.LNX.4.44L0.1211261111130.2168-100000@iolanthe.rowland.org>
+References: <9473152.Oq5ztpgF62@linux-lqwf.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B8B32650CC
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 17:07:25 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <9473152.Oq5ztpgF62@linux-lqwf.site>
+Sender: stable-owner@vger.kernel.org
+To: Oliver Neukum <oneukum@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Jonathan Nieder <jrnieder@gmail.com>, Steffen =?ISO-8859-1?Q?M=FCller?= <steffen.mueller@radio-frei.de>, alsa-devel@alsa-project.org, Olivier MATZ <zer0@droids-corp.org>, linux-pm@vger.kernel.org, linux-usb@vger.kernel.org, stable@vger.kernel.org, David Banks <amoebae@gmail.com>, Ralf Lang <lang@b1-systems.de>
 List-Id: alsa-devel@alsa-project.org
 
-Some devices support higher clock rates, allow users to select these.
+On Mon, 26 Nov 2012, Oliver Neukum wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> On Monday 26 November 2012 14:43:13 Clemens Ladisch wrote:
+> 
+> > > If it has to be running, the easiest fix would be the patch like
+> > > below.  This will turn off the autopm essentially, but better than
+> > > breakage.
+> > >
+> > > @@ -2074,6 +2077,8 @@ static void snd_usbmidi_input_start_ep(struct snd_usb_midi_in_endpoint* ep)
+> > >
+> > > +	ep->autopm_reference =
+> > > +		usb_autopm_get_interface(ep->umidi->iface) >= 0;
+> > 
+> > usb_autopm_get_interface() cannot be called from the USB probe callback.
+> 
+> You can use usb_autopm_get_interface_no_resume()
+> During probe() the device is known to not be suspended.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 909b9b2..1bc6f25 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -380,6 +380,18 @@ int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	case 49152000:
- 		val |= 3 << ARIZONA_SYSCLK_FREQ_SHIFT;
- 		break;
-+	case 67737600:
-+	case 73728000:
-+		val |= 4 << ARIZONA_SYSCLK_FREQ_SHIFT;
-+		break;
-+	case 90316800:
-+	case 98304000:
-+		val |= 5 << ARIZONA_SYSCLK_FREQ_SHIFT;
-+		break;
-+	case 135475200:
-+	case 147456000:
-+		val |= 6 << ARIZONA_SYSCLK_FREQ_SHIFT;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
--- 
-1.7.10.4
+In fact, as far as I know you _can_ use usb_autopm_get_interface() from
+within a probe routine.  Is there some problem with it I'm not aware of?
+
+Alan Stern
