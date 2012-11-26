@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 05/14] ASoC: ak4535: Use devm_regmap_init_i2c()
-Date: Mon, 26 Nov 2012 17:19:38 +0530
-Message-ID: <1353930587-12907-6-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 07/14] ASoC: lm49453: Use devm_regmap_init_i2c()
+Date: Mon, 26 Nov 2012 17:19:40 +0530
+Message-ID: <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 76058265147
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:31 +0100 (CET)
-Received: by mail-pa0-f51.google.com with SMTP id fb11so4983511pad.38
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:30 -0800 (PST)
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C4B92650F3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:37 +0100 (CET)
+Received: by mail-pb0-f51.google.com with SMTP id ro12so5190394pbb.38
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:37 -0800 (PST)
 In-Reply-To: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,38 +32,42 @@ handling and code cleanup simpler.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/ak4535.c |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+ sound/soc/codecs/lm49453.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index 618fdc3..fc55810 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -447,7 +447,7 @@ static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
- 	if (ak4535 == NULL)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index 99b0a9d..096b6aa 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -1497,7 +1497,7 @@ static __devinit int lm49453_i2c_probe(struct i2c_client *i2c,
  
--	ak4535->regmap = regmap_init_i2c(i2c, &ak4535_regmap);
-+	ak4535->regmap = devm_regmap_init_i2c(i2c, &ak4535_regmap);
- 	if (IS_ERR(ak4535->regmap)) {
- 		ret = PTR_ERR(ak4535->regmap);
- 		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
-@@ -458,18 +458,13 @@ static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
+ 	i2c_set_clientdata(i2c, lm49453);
  
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_ak4535, &ak4535_dai, 1);
--	if (ret != 0)
--		regmap_exit(ak4535->regmap);
+-	lm49453->regmap = regmap_init_i2c(i2c, &lm49453_regmap_config);
++	lm49453->regmap = devm_regmap_init_i2c(i2c, &lm49453_regmap_config);
+ 	if (IS_ERR(lm49453->regmap)) {
+ 		ret = PTR_ERR(lm49453->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+@@ -1508,21 +1508,15 @@ static __devinit int lm49453_i2c_probe(struct i2c_client *i2c,
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 				      &soc_codec_dev_lm49453,
+ 				      lm49453_dai, ARRAY_SIZE(lm49453_dai));
+-	if (ret < 0) {
++	if (ret < 0)
+ 		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
+-		regmap_exit(lm49453->regmap);
+-		return ret;
+-	}
  
  	return ret;
  }
  
- static __devexit int ak4535_i2c_remove(struct i2c_client *client)
+ static int __devexit lm49453_i2c_remove(struct i2c_client *client)
  {
--	struct ak4535_priv *ak4535 = i2c_get_clientdata(client);
+-	struct lm49453_priv *lm49453 = i2c_get_clientdata(client);
 -
  	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(ak4535->regmap);
+-	regmap_exit(lm49453->regmap);
  	return 0;
  }
  
