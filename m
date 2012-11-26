@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 07/14] ASoC: lm49453: Use devm_regmap_init_i2c()
-Date: Mon, 26 Nov 2012 17:19:40 +0530
-Message-ID: <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 08/14] ASoC: max9768: Use devm_regmap_init_i2c()
+Date: Mon, 26 Nov 2012 17:19:41 +0530
+Message-ID: <1353930587-12907-9-git-send-email-sachin.kamat@linaro.org>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C4B92650F3
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:37 +0100 (CET)
-Received: by mail-pb0-f51.google.com with SMTP id ro12so5190394pbb.38
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:37 -0800 (PST)
+Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
+ [209.85.210.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1B5726514C
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:56:40 +0100 (CET)
+Received: by mail-da0-f51.google.com with SMTP id i30so2953117dad.38
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:56:40 -0800 (PST)
 In-Reply-To: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,44 +32,43 @@ handling and code cleanup simpler.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/lm49453.c |   10 ++--------
- 1 files changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/codecs/max9768.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 99b0a9d..096b6aa 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -1497,7 +1497,7 @@ static __devinit int lm49453_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/soc/codecs/max9768.c b/sound/soc/codecs/max9768.c
+index 17b3ec2..a777de6 100644
+--- a/sound/soc/codecs/max9768.c
++++ b/sound/soc/codecs/max9768.c
+@@ -187,7 +187,7 @@ static int __devinit max9768_i2c_probe(struct i2c_client *client,
  
- 	i2c_set_clientdata(i2c, lm49453);
+ 	i2c_set_clientdata(client, max9768);
  
--	lm49453->regmap = regmap_init_i2c(i2c, &lm49453_regmap_config);
-+	lm49453->regmap = devm_regmap_init_i2c(i2c, &lm49453_regmap_config);
- 	if (IS_ERR(lm49453->regmap)) {
- 		ret = PTR_ERR(lm49453->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-@@ -1508,21 +1508,15 @@ static __devinit int lm49453_i2c_probe(struct i2c_client *i2c,
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 				      &soc_codec_dev_lm49453,
- 				      lm49453_dai, ARRAY_SIZE(lm49453_dai));
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
--		regmap_exit(lm49453->regmap);
--		return ret;
--	}
+-	max9768->regmap = regmap_init_i2c(client, &max9768_i2c_regmap_config);
++	max9768->regmap = devm_regmap_init_i2c(client, &max9768_i2c_regmap_config);
+ 	if (IS_ERR(max9768->regmap)) {
+ 		err = PTR_ERR(max9768->regmap);
+ 		goto err_gpio_free;
+@@ -195,12 +195,10 @@ static int __devinit max9768_i2c_probe(struct i2c_client *client,
  
- 	return ret;
- }
+ 	err = snd_soc_register_codec(&client->dev, &max9768_codec_driver, NULL, 0);
+ 	if (err)
+-		goto err_regmap_free;
++		goto err_gpio_free;
  
- static int __devexit lm49453_i2c_remove(struct i2c_client *client)
- {
--	struct lm49453_priv *lm49453 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(lm49453->regmap);
  	return 0;
- }
  
+- err_regmap_free:
+-	regmap_exit(max9768->regmap);
+  err_gpio_free:
+ 	if (gpio_is_valid(max9768->shdn_gpio))
+ 		gpio_free(max9768->shdn_gpio);
+@@ -215,7 +213,6 @@ static int __devexit max9768_i2c_remove(struct i2c_client *client)
+ 	struct max9768 *max9768 = i2c_get_clientdata(client);
+ 
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(max9768->regmap);
+ 
+ 	if (gpio_is_valid(max9768->shdn_gpio))
+ 		gpio_free(max9768->shdn_gpio);
 -- 
 1.7.4.1
