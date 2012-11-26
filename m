@@ -1,102 +1,59 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 14/14] ASoC: wm9081: Use devm_regmap_init_i2c()
-Date: Mon, 26 Nov 2012 17:19:47 +0530
-Message-ID: <1353930587-12907-15-git-send-email-sachin.kamat@linaro.org>
-References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH] usb: add USB_QUIRK_RESET_RESUME for M-Audio
+ 49
+Date: Mon, 26 Nov 2012 13:35:31 +0100
+Message-ID: <50B36213.9090007@ladisch.de>
+References: <4FA2D481.4070304@droids-corp.org> <4FA2DB9D.1040303@droids-corp.org> <20120604110608.GG8248@droids-corp.org> <20120605232432.GE3619@burratino> <4FD06563.7050605@droids-corp.org> <20121125094110.GA21387@elie.Belkin> <50B2815E.2090105@droids-corp.org> <20121125212100.GE24024@elie.Belkin> <50B29537.7060007@ladisch.de> <s5hlidoiu5y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E98F4265122
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 12:57:00 +0100 (CET)
-Received: by mail-pb0-f51.google.com with SMTP id ro12so5190394pbb.38
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 03:57:00 -0800 (PST)
-In-Reply-To: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, patches@linaro.org
+Return-path: <linux-pm-owner@vger.kernel.org>
+In-Reply-To: <s5hlidoiu5y.wl%tiwai@suse.de>
+Sender: linux-pm-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Nieder <jrnieder@gmail.com>, =?ISO-8859-1?Q?Steffen_M=FCll?= =?ISO-8859-1?Q?er?= <steffen.mueller@radio-frei.de>, alsa-devel@alsa-project.org, Olivier MATZ <zer0@droids-corp.org>, linux-pm@vger.kernel.org, linux-usb@vger.kernel.org, Oliver Neukum <oneukum@suse.de>, stable@vger.kernel.org, David Banks <amoebae@gmail.com>, Ralf Lang <lang@b1-systems.de>
 List-Id: alsa-devel@alsa-project.org
 
-devm_regmap_init_i2c() is device managed and makes error
-handling and code cleanup simpler.
+Takashi Iwai wrote:> At Sun, 25 Nov 2012 23:01:27 +0100,
+> Clemens Ladisch wrote:
+>>
+>> Jonathan Nieder wrote:
+>>> Some USB MIDI keyboards fail to operate after a USB autosuspend.
+>>
+>> Make that *all* USB MIDI devices with input ports.
+>>
+>> This is not a bug in the device, but one of the many bugs introduced
+>> with the autosuspend code in <http://git.kernel.org/linus/88a8516a2128>.
+>>
+>> That patch does not handle input at all, i.e., when the driver wants to
+>> read from the device, it just doesn't take it out of suspend mode.
+>>
+>>> A workaround is to disable USB autosuspend for these devices by
+>>> putting AUTOSUSPEND_USBID_BLACKLIST="0763:2027" (resp. 0763:019b) in
+>>> /etc/laptop-mode/conf.d/usb-autosuspend.conf.  In the spirit of commit
+>>> 166cb70e97bd ("usb: add USB_QUIRK_RESET_RESUME for M-Audio 88es"),
+>>> reset the device on resume so this workaround is not needed any more.
+>>
+>> It is not feasible to add the IDs of all USB MIDI devices.
+>>
+>> I'm working on a fix that adds proper power management for input ports,
+>> but this requires the driver to be reorganized a little ...
+>
+> Doesn't a simple patch like below work?
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- sound/soc/codecs/wm9081.c |   22 ++++++----------------
- 1 files changed, 6 insertions(+), 16 deletions(-)
+> +static int substream_open(struct snd_rawmidi_substream *substream, int open)
+>  {
+> +	if (open && umidi->opened++ == 0) {
+> +		err = usb_autopm_get_interface(umidi->iface);
+>
+>  static int snd_usbmidi_input_open(struct snd_rawmidi_substream *substream)
+>  {
+> +	return substream_open(substream, 1);
 
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 2de74e1..860144e 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -1341,28 +1341,27 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm9081);
- 
--	wm9081->regmap = regmap_init_i2c(i2c, &wm9081_regmap);
-+	wm9081->regmap = devm_regmap_init_i2c(i2c, &wm9081_regmap);
- 	if (IS_ERR(wm9081->regmap)) {
- 		ret = PTR_ERR(wm9081->regmap);
- 		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
--		goto err;
-+		return ret;
- 	}
- 
- 	ret = regmap_read(wm9081->regmap, WM9081_SOFTWARE_RESET, &reg);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
--		goto err_regmap;
-+		return ret;
- 	}
- 	if (reg != 0x9081) {
- 		dev_err(&i2c->dev, "Device is not a WM9081: ID=0x%x\n", reg);
--		ret = -EINVAL;
--		goto err_regmap;
-+		return -EINVAL;
- 	}
- 
- 	ret = wm9081_reset(wm9081->regmap);
- 	if (ret < 0) {
- 		dev_err(&i2c->dev, "Failed to issue reset\n");
--		goto err_regmap;
-+		return ret;
- 	}
- 
- 	if (dev_get_platdata(&i2c->dev))
-@@ -1382,23 +1381,14 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm9081, &wm9081_dai, 1);
- 	if (ret < 0)
--		goto err_regmap;
-+		return ret;
- 
- 	return 0;
--
--err_regmap:
--	regmap_exit(wm9081->regmap);
--err:
--
--	return ret;
- }
- 
- static __devexit int wm9081_i2c_remove(struct i2c_client *client)
- {
--	struct wm9081_priv *wm9081 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(wm9081->regmap);
- 	return 0;
- }
- 
--- 
-1.7.4.1
+No, because the input URBs are submitted before the userspace device is
+opened.  (And usb_autopm_get_interface() cannot be called from the USB
+probe callback.)
+
+
+Regards,
+Clemens
