@@ -1,93 +1,59 @@
-From: Padma Venkat <padma.kvr@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [RFC PATCH] ASoC: Samsung: Register the audio platform device
-Date: Mon, 26 Nov 2012 20:15:12 +0530
-Message-ID: <CAAgF-BdHm_VFB-xsZ6kpAu5+9+1yMNVVGM_og+H3QghWQuf8+w@mail.gmail.com>
+Date: Mon, 26 Nov 2012 14:49:44 +0000
+Message-ID: <20121126144943.GM9411@opensource.wolfsonmicro.com>
 References: <1352894960-17434-1-git-send-email-padma.v@samsung.com>
-	<1352894960-17434-2-git-send-email-padma.v@samsung.com>
+ <1352894960-17434-2-git-send-email-padma.v@samsung.com>
+ <CAAgF-BdHm_VFB-xsZ6kpAu5+9+1yMNVVGM_og+H3QghWQuf8+w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GeONROBiaq1zPAtT"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1352894960-17434-2-git-send-email-padma.v@samsung.com>
+Content-Disposition: inline
+In-Reply-To: <CAAgF-BdHm_VFB-xsZ6kpAu5+9+1yMNVVGM_og+H3QghWQuf8+w@mail.gmail.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Wed, Nov 14, 2012 at 5:39 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
-> Audio platform device is not a hardware peripherial.
-> So this device can't be added in the dt devices list.
-> So expanded the module_platform_driver and registered
-> this device using "platform_device_register_simple".
->
-> Also added the soc-core pm ops structure in the audio
-> platform driver.
->
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
->  sound/soc/samsung/smdk_wm8994.c |   31 ++++++++++++++++++++++++++++++-
->  1 files changed, 30 insertions(+), 1 deletions(-)
->
-> diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-> index 48dd4dd..7f97969 100644
-> --- a/sound/soc/samsung/smdk_wm8994.c
-> +++ b/sound/soc/samsung/smdk_wm8994.c
-> @@ -173,16 +173,45 @@ static int __devexit smdk_audio_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +static struct platform_device *smdk_audio_device;
-> +
->  static struct platform_driver smdk_audio_driver = {
->         .driver         = {
->                 .name   = "smdk-audio",
->                 .owner  = THIS_MODULE,
-> +               .pm     = &snd_soc_pm_ops,
->         },
->         .probe          = smdk_audio_probe,
->         .remove         = __devexit_p(smdk_audio_remove),
->  };
->
-> -module_platform_driver(smdk_audio_driver);
-> +static int __init smdk_audio_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = platform_driver_register(&smdk_audio_driver);
-> +       if (ret) {
-> +               pr_err("unable to register driver\n");
-> +               return ret;
-> +       }
-> +
-> +       smdk_audio_device = platform_device_register_simple("smdk-audio", -1, NULL, 0);
-> +       if (IS_ERR(smdk_audio_device)) {
-> +               platform_driver_unregister(&smdk_audio_driver);
-> +               return PTR_ERR(smdk_audio_device);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void __exit smdk_audio_exit(void)
-> +{
-> +       platform_device_unregister(smdk_audio_device);
-> +       platform_driver_unregister(&smdk_audio_driver);
-> +}
-> +
-> +module_init(smdk_audio_init);
-> +module_exit(smdk_audio_exit);
-Ping. Any comments on this patch?
+--GeONROBiaq1zPAtT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
-Padma
->
->  MODULE_DESCRIPTION("ALSA SoC SMDK WM8994");
->  MODULE_LICENSE("GPL");
-> --
-> 1.7.4.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Mon, Nov 26, 2012 at 08:15:12PM +0530, Padma Venkat wrote:
+> On Wed, Nov 14, 2012 at 5:39 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
+
+> > +module_init(smdk_audio_init);
+> > +module_exit(smdk_audio_exit);
+
+> Ping. Any comments on this patch?
+
+Don't send contentless pings and delete irrelevant context from replies.
+Please refer to the feedback I sent in response to Sangbeom's pull
+request - in short, this isn't the way to do this - do what the other
+platforms do.
+
+--GeONROBiaq1zPAtT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQs4F/AAoJELSic+t+oim9sRUP/iajPpRYrQUgv8CWJ+fYKzXi
+FHOHuSlXV1aN/DfSWtREGZVTPPlHo5wN4G67miqJf2vWmdakdMlUOi4sYdIKDmug
+dNP/euAcbosYNS3n7C8GLueI2VAYxmgB1jkEEw+7k/d7lmu5riMpQfupISpxHlbr
+wp4VygWWcVtLmqRAzVqOYucpzV67rpU/fwqKtFZvQ6Icl4nZZwAy55aIGOzaqekc
+ARMdc1MY8r/EqtuoK1za/FKagdVX3kwbiRVOvE1LzCohohCg8RUkmahaDzDmrOjF
+dzO/Y2+2xvNvkrDIRqfzDylKDKJ174f3/liJJPJ84qYK7Qi/VcF1aKBVQH6Wy7cO
+8bUigFrZJri34cNZdfKYZSIEEBmnmnGr06PnuII9QX4MPCmEIZBSdEhLf/6uBbh2
+TKjw050j11Ffgxe9I83mr3BOy0a76PCItGI4/p75gsha+ST2lxEuq1LZKqO1HxXv
+pqZEucfs/ULA3RgNAtJykZBfD2lK8Bx+eYWDpHzoQR7hXIFQnG++SBFwKFpFcv0b
+1DRtpXHFUXzkFEjvihdlKmhCr3DE6YaYf/9q9H9Kvv0AIxISYfjruYmScU6V2CE5
+3aZJ4xKjRSiOTg+ftZijVgexd3H/dIF/ECKcn7VRHnOxJy8vzGmZDBPfI2pwaCRx
+bOmssElZ246BJLHNoeE4
+=jBzo
+-----END PGP SIGNATURE-----
+
+--GeONROBiaq1zPAtT--
