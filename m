@@ -1,54 +1,56 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH 0/3] ASoC: Davinci: McASP: add support new
-	McASP IP Variant
-Date: Mon, 26 Nov 2012 11:42:01 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EAD78E1@DBDE01.ent.ti.com>
-References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
-	<506B6A9D.3090100@gmail.com>
-	<1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
-	<506C1E97.1070700@gmail.com>
-	<1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
-	<CAGm1_kut_wmno7vG_Vm=7c7e4A7ih+PpGP-GzzYWrfT99UC0FQ@mail.gmail.com>
-	<1BAFE6F6C881BF42822005164F1491C33EAD7872@DBDE01.ent.ti.com>
-	<20121126113521.GD9411@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: davinci-mcasp: Add pinctrl support
+Date: Mon, 26 Nov 2012 11:45:11 +0000
+Message-ID: <20121126114511.GE9411@opensource.wolfsonmicro.com>
+References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
+ <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20121126113521.GD9411-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org" <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, "Girdwood,
- Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xJK8B5Wah2CMJs8h"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, tony@atomide.com, lrg@ti.com, perex@perex.cz, nsekhar@ti.com, sudhakar.raj@ti.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, rob@landley.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 26, 2012 at 17:05:21, Mark Brown wrote:
-> On Mon, Nov 26, 2012 at 11:32:49AM +0000, Hebbar, Gururaja wrote:
-> > On Sun, Nov 25, 2012 at 15:56:27, Yegor Yefremov wrote:
-> 
-> > > What can be expected in 3.8? 
-> 
-> > 1. ASoC McASP DT conversion is 80% complete. Davinci Machine DT conversion
-> > & McASP pinctrl support is yet to be accepted. I sent a patch recently and 
-> > waiting for feedback.
-> 
-> I don't have anything in my review queue, please post patches if you
-> want them reviewed.
 
-I already sent the patches for these on 22/11/2012 
+--xJK8B5Wah2CMJs8h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-http://lkml.org/lkml/2012/11/22/857
+On Thu, Nov 22, 2012 at 09:34:58AM +0530, Hebbar, Gururaja wrote:
 
-> 
+> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+> +	if (IS_ERR(pinctrl))
+> +		dev_warn(&pdev->dev,
+> +			"pins are not configured from the driver\n");
 
-Regards, 
-Gururaja
+Since the driver is happy to continue without the pins why is it
+bothering requesting them in the first place?  In other words, this
+should be a hard error.
+
+--xJK8B5Wah2CMJs8h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQs1ZAAAoJELSic+t+oim9TzsP/0nbB4/m1COerA5f7PpBlxaO
+e4hGMgicqIUNXz7JoBJrmHqmo/EbWrHe2b73moOr1D0sgNpFknFRQF9OAlc0oja2
++y2h0ZwqDhHfXMLGvALUctnHQKi3iDjZiNjQWvYx3InWe2Nsw8MU0z0cjtm7JEnb
+qnX3KvTGTGNWolkppLteS2dq9qJ1tpAygN7bsAu5JeoQFapChouOVCvxMCHbMxei
+bB/nK7LYlliuCmBr9Ngab0n1mfjaRhJltB+HKm27WzBz2N2N/8pLQ/ULzBIOAbJF
+s1LMAYQ+zDQNcBN1B57bVnGoUqNao0qr440HJISc6NfgFFzR+g1C/HIPctmEcyBJ
+IFaK5KPLNwu6JZU3qWttEzg2pEE889Sm9EHdeHUmSXYT8ney4TZpmIKJpi0Hqw3i
+t/ztysorhTySBold0VJj9CmORJnhLaiSfwZeKG8PtHplDm/sSD1g7x/H29lZ70Kj
+VNzyp8asi7SKDcHhkjRLbP2CvsMCt/rTWV8CRxMI+bDgKgExdvg6gL0SlC9/O6vG
+T0qMwPKyefqF5r3aQpGyRZ67jCjw19jQ9ExdSBzaOfAHYGFBTEgC4HP4h8tr2GhP
+jDOdQrPwCxi0JZQ5eiiqirEqwWmwJfLS32TGVfJGu016WpKQ7he0d4zQeWSaVHcw
+m1T0YLVDgfrZgaUsQBqD
+=ep/H
+-----END PGP SIGNATURE-----
+
+--xJK8B5Wah2CMJs8h--
