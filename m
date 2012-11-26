@@ -1,62 +1,54 @@
 From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH 0/2] ARM/ASoC: Davinci: Device Tree Update
-Date: Mon, 26 Nov 2012 11:41:43 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EAD78D4@DBDE01.ent.ti.com>
-References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
+Subject: RE: [alsa-devel] [PATCH 0/3] ASoC: Davinci: McASP: add support new
+	McASP IP Variant
+Date: Mon, 26 Nov 2012 11:42:01 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EAD78E1@DBDE01.ent.ti.com>
+References: <1346417459-30042-1-git-send-email-gururaja.hebbar@ti.com>
+	<506B6A9D.3090100@gmail.com>
+	<1BAFE6F6C881BF42822005164F1491C33EA99A40@DBDE01.ent.ti.com>
+	<506C1E97.1070700@gmail.com>
+	<1BAFE6F6C881BF42822005164F1491C33EA99DA8@DBDE01.ent.ti.com>
+	<CAGm1_kut_wmno7vG_Vm=7c7e4A7ih+PpGP-GzzYWrfT99UC0FQ@mail.gmail.com>
+	<1BAFE6F6C881BF42822005164F1491C33EAD7872@DBDE01.ent.ti.com>
+	<20121126113521.GD9411@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1353557099-21599-1-git-send-email-gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <20121126113521.GD9411-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>, "linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "Girdwood, Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org" <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Yegor Yefremov <yegorslists-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, "Girdwood,
+ Liam" <lrg-l0cyMroinI0@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On Thu, Nov 22, 2012 at 09:34:57, Hebbar, Gururaja wrote:
-> From: "Hebbar, Gururaja" <gururaja.hebbar-l0cyMroinI0@public.gmane.org>
+On Mon, Nov 26, 2012 at 17:05:21, Mark Brown wrote:
+> On Mon, Nov 26, 2012 at 11:32:49AM +0000, Hebbar, Gururaja wrote:
+> > On Sun, Nov 25, 2012 at 15:56:27, Yegor Yefremov wrote:
 > 
-> 1. Add pinctrl for McASP Module
-> 2. Add DT support for Davinci machine platform (resend)
+> > > What can be expected in 3.8? 
 > 
-> Second commit is a resend after re-basing on latest broonie-asoc/for-next
-> (v3.7-rc6)
+> > 1. ASoC McASP DT conversion is 80% complete. Davinci Machine DT conversion
+> > & McASP pinctrl support is yet to be accepted. I sent a patch recently and 
+> > waiting for feedback.
 > 
-> Hebbar, Gururaja (2):
->   ASoC: davinci-mcasp: Add pinctrl support
->   ASoC: Davinci: machine: Add device tree binding
+> I don't have anything in my review queue, please post patches if you
+> want them reviewed.
 
-With these 2 patches, DT support for Davinci ASoC will be complete 
-(well almost because edma dt binding is yet to be added). 
-However it will at least be complete on Davinci platform.
+I already sent the patches for these on 22/11/2012 
 
-Can you please review them and if it's OK, Could you please accept this series?
+http://lkml.org/lkml/2012/11/22/857
 
 > 
->  .../bindings/sound/davinci-evm-audio.txt           |   66 +++++++
->  sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++---
->  sound/soc/davinci/davinci-mcasp.c                  |    7 +
->  3 files changed, 238 insertions(+), 20 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-> 
-> -- 
-> 1.7.9.5
-> 
-> 
-
 
 Regards, 
 Gururaja
