@@ -1,20 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [PATCH] ALSA: usb - Don't create "Speaker" mixer
  controls on headphones and headsets
-Date: Mon, 26 Nov 2012 23:21:02 +0800
-Message-ID: <CAN8cciboDbGx6Ua6d25vsM=85EiuvN+ZEruNYNCmx+byTrgnvQ@mail.gmail.com>
+Date: Mon, 26 Nov 2012 16:26:02 +0100
+Message-ID: <50B38A0A.2010505@canonical.com>
 References: <1353674935-4215-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciboDbGx6Ua6d25vsM=85EiuvN+ZEruNYNCmx+byTrgnvQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 436E62650D1
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 16:21:05 +0100 (CET)
-Received: by mail-qa0-f44.google.com with SMTP id c4so3224500qae.17
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 07:21:04 -0800 (PST)
-In-Reply-To: <1353674935-4215-1-git-send-email-david.henningsson@canonical.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B43B92650D1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2012 16:26:02 +0100 (CET)
+In-Reply-To: <CAN8cciboDbGx6Ua6d25vsM=85EiuvN+ZEruNYNCmx+byTrgnvQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMi0xMS0yMyDkuIvljYg4OjQ5IOaWvCAiRGF2aWQgSGVubmluZ3Nzb24iIDxkYXZpZC5oZW5u
-aW5nc3NvbkBjYW5vbmljYWwuY29tPgrlr6vpgZPvvJoKPgo+IEEgbG90IG9mIGhlYWRzZXRzL2hl
-YWRwaG9uZXMgaGF2ZSBhICJTcGVha2VyIiBtaXhlciBjb250cm9sLiBUaGlzIGNvbmZ1c2VzCj4g
-UHVsc2VBdWRpbyB0byB0aGluayBpdCBpcyBhIHNwZWFrZXIgaW5zdGVhZCBvZiBhIGhlYWRwaG9u
-ZS9oZWFkc2V0Lgo+IFRoZXJmb3JlLCB3ZSByZW5hbWUgaXQgdG8gIkhlYWRwaG9uZSIuCj4KPiBX
-ZSBkZXRlcm1pbmUgaWYgc29tZXRoaW5nIGlzIGEgaGVhZHBob25lIHNpbWlsYXIgdG8gaG93IHVk
-ZXYgZGV0ZXJtaW5lcwo+IGZvcm0gZmFjdG9yIChzZWUgNzgtc291bmQtY2FyZC5ydWxlcykuCgpk
-b2VzIGl0IHJlYWxseSBmaXggdGhlIHByb2JsZW0gc2luY2UgdGhlcmUgYXJlCgoxKSB1c2IgaGVh
-ZHNldHMgd2hpY2ggaGFzICJQQ00iIHZvbHVtZSBjb250cm9sCjIpIHNvbWUgdXNiIGhlYWRwaG9u
-ZSBzdXBwb3J0IDUuMQoKZG9lcyBpdCBtZWFuIHRoYXQgdGhvc2Ugbm9uIGhlYWRzZXQgdXNiIGF1
-ZGlvIGRldmljZXMgaGF2ZSBhIGhpZ2hlcgpwcmlvcml0eSB0aGFuIHVzYiBoZWFkc2V0ID8KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+T24gMTEvMjYvMjAxMiAwNDoyMSBQTSwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4KPiAyMDEyLTExLTIz
+IOS4i+WNiDg6NDkg5pa8ICJEYXZpZCBIZW5uaW5nc3NvbiIKPiA8ZGF2aWQuaGVubmluZ3Nzb25A
+Y2Fub25pY2FsLmNvbQo+IDxtYWlsdG86ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4+
+IOWvq+mBk++8mgo+ICA+Cj4gID4gQSBsb3Qgb2YgaGVhZHNldHMvaGVhZHBob25lcyBoYXZlIGEg
+IlNwZWFrZXIiIG1peGVyIGNvbnRyb2wuIFRoaXMKPiBjb25mdXNlcwo+ICA+IFB1bHNlQXVkaW8g
+dG8gdGhpbmsgaXQgaXMgYSBzcGVha2VyIGluc3RlYWQgb2YgYSBoZWFkcGhvbmUvaGVhZHNldC4K
+PiAgPiBUaGVyZm9yZSwgd2UgcmVuYW1lIGl0IHRvICJIZWFkcGhvbmUiLgo+ICA+Cj4gID4gV2Ug
+ZGV0ZXJtaW5lIGlmIHNvbWV0aGluZyBpcyBhIGhlYWRwaG9uZSBzaW1pbGFyIHRvIGhvdyB1ZGV2
+IGRldGVybWluZXMKPiAgPiBmb3JtIGZhY3RvciAoc2VlIDc4LXNvdW5kLWNhcmQucnVsZXMpLgo+
+Cj4gZG9lcyBpdCByZWFsbHkgZml4IHRoZSBwcm9ibGVtCgpJdCBmaXhlcyBhIHByb2JsZW0gd2l0
+aCBhIGNvbW1vbiBjbGFzcyBvZiBMb2dpdGVjaCBzdGVyZW8gaGVhZHNldHMuCgo+IHNpbmNlIHRo
+ZXJlIGFyZQo+Cj4gMSkgdXNiIGhlYWRzZXRzIHdoaWNoIGhhcyAiUENNIiB2b2x1bWUgY29udHJv
+bAo+IDIpIHNvbWUgdXNiIGhlYWRwaG9uZSBzdXBwb3J0IDUuMQoKVGhlc2UgZGV2aWNlcyBhcmUg
+dW5saWtlbHkgdG8gYmUgYWZmZWN0ZWQgYnkgdGhlIHBhdGNoLiBJZiB5b3UgaGF2ZSBhIApwcm9i
+bGVtIHdpdGggYW55IG9mIHRoZXNlIGRldmljZXMsIGl0J3MgYSBkaWZmZXJlbnQgYnVnLgoKCi0t
+IApEYXZpZCBIZW5uaW5nc3NvbiwgQ2Fub25pY2FsIEx0ZC4KaHR0cHM6Ly9sYXVuY2hwYWQubmV0
+L35kaXdpYwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
