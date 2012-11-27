@@ -1,56 +1,81 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
- on Arizona CODECs
-Date: Tue, 27 Nov 2012 20:00:02 +0000
-Message-ID: <20121127200001.GJ4468@opensource.wolfsonmicro.com>
-References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <1354020025-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
- <20121127195644.GA29727@core.coreip.homeip.net>
+From: Daniel Griscom <griscom@suitable.com>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Tue, 27 Nov 2012 15:10:45 -0500
+Message-ID: <p06240802ccdacd0f08d7@[192.168.1.8]>
+References: <p06240816ccd2e5cc9db7@[192.168.1.8]>
+ <50AE99E7.6080008@gmail.com> <p06240802ccd72a8f5c3e@[192.168.1.12]>
+ <50B21255.8080202@gmail.com> <p06240812ccd8489d6378@[192.168.1.12]>
+ <50B31800.2000000@gmail.com> <p06240804ccd98cef996c@[192.168.1.8]>
+ <50B4A870.7040201@gmail.com> <p06240808ccdaa0a47bbb@[192.168.1.8]>
+ <50B4F699.5090205@ladisch.de> <p0624080cccdaac242dc3@[192.168.1.8]>
+ <50B518A9.4090807@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qo8f1a4rgWw9S/zY"
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121127195644.GA29727@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gateway12.websitewelcome.com (gateway12.websitewelcome.com
+ [67.18.82.6]) by alsa0.perex.cz (Postfix) with ESMTP id 894D92615CF
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 21:10:53 +0100 (CET)
+Received: from gator683.hostgator.com (gator683.hostgator.com
+ [174.132.158.226])
+ by gateway12.websitewelcome.com (Postfix) with ESMTP id BB4863722BC20
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 14:10:54 -0600 (CST)
+In-Reply-To: <50B518A9.4090807@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+At 8:46 PM +0100 11/27/12, Clemens Ladisch wrote:
+>Daniel Griscom wrote:
+>>  We are using a bInterval value of 1 (on a high-speed device). We've
+>>  recently tried bumping this up to 2, and the problem was no longer
+>>  evident
+>
+>This might indicate that the controller has problems reading the
+>packet data from memory; there's a considerable overhead for each
+>memory transaction, and the controller needs to update the DMA lists.
+>(The pattern might be caused by some data, which arrives too late,
+>interfering with the reading of the next packet.)
 
---Qo8f1a4rgWw9S/zY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, might this whole thing have been caused by setting bInterval to 1 
+in the device descriptor?
 
-On Tue, Nov 27, 2012 at 11:56:44AM -0800, Dmitry Torokhov wrote:
+>If 2 is the first save interval, consider using 4.
 
-> How do you want to merge it? My tree or some other?
+Interval lengths are 2 ^ (bInterval - 1) microframes, so we went from 
+1 microframe to 2. Should I go right to a bInterval of 2 (4 
+microframes)?
 
-I'm not terribly fussed but I guess as it's a new driver for the input
-tree merging via ASoC will minimise the potential for conflicts?  But
-we're near the merge window and I'm not sure that's likely anyway so if
-you want to apply it to your tree.
+>  For that matter,
+>full-speed devices work fine with one packet per frame.  There isn't
+>a problem with buffering one millisecond of data in the device, is it?
 
---Qo8f1a4rgWw9S/zY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+We are indeed trying to squeeze the milliseconds out of the audio 
+chain, but getting it robust is obviously the priority.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>(The only reason to use smaller intervals is if you really require sub-
+>millisecond latencies, or if the bigger packets would eat up too much
+>bandwidth in one of the microframes.  The cost of smaller intervals is
+>more overhead on the host, on the bus, and in the device.)
 
-iQIcBAEBAgAGBQJQtRutAAoJELSic+t+oim9BI4P/3X+5fUZZnI5h/Qht9pifS5L
-8ybFaGKP95UUa+4G59tNws0umWp7xUPgd5EgMoY5zdgzvgRLaole9+RCShAsU+0d
-2m9oAYTyoU8gpv3eRiCaKyYNNeE5oTBAlZwD0aPNW94zZSBpE3ncq9uT1di8T5jT
-rPnbyDv8HGOY+trN4kx+F9O1xqvD5xdv69pZiEWCDyy4o/Gp2v2YLkPC+sDRDMTN
-85N4mH/ttKa+r09GrxmeihsqlAZvkd0bZ7qaG1MMgvXuseWlhDFL2/qqnjZebAMM
-zq+YlbiGoy/rBOdgNviZf1l3hFccc3VuvB5Fb9NkBQHmKRvaHXllLmEntyKqnXjB
-0yqH7Z+5G1wIqU3ZZG+ZJD9KTJueRbB2RJt8TS+zagDB2+05N7YN/0Q7TDXu0yQH
-zCQL/XTZe4DEto5f6sre+np8VKZ9WPMV9swV3m7/DDCIlLd6zh0pBTzBGzg7kg9Y
-4av9Is578tY/vltSx/F4tMXvQigtYlG/i/KTG1pUzu3Mj0xtlWF2X82GohgB1pku
-D4FFMaKL+nMGXwNmX6NGNKF8n6hat7TLkuBz5eCFkmPt1kp3wwDGbOSsBkSqzFon
-zh8sDlZEKmljdXC9uOsvWsYPZS15Kqd1bMpL/ANOZRoFAR4RwszSf1AkfmuHPGz4
-QhCz2Q+yJ8V8GldMI8aR
-=Ez89
------END PGP SIGNATURE-----
+We have plenty of bus bandwidth, and I'd thought we had plenty of CPU 
+power, but perhaps not.
 
---Qo8f1a4rgWw9S/zY--
+
+Thanks,
+Dan
+
+-- 
+Daniel T. Griscom             griscom@suitable.com
+Suitable Systems              http://www.suitable.com/
+1 Centre Street, Suite 204    (781) 665-0053
+Wakefield, MA  01880-2400
