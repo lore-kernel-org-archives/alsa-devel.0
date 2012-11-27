@@ -1,72 +1,37 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
- on Arizona CODECs
-Date: Mon, 26 Nov 2012 15:11:22 -0800
-Message-ID: <20121126231122.GA26836@core.coreip.homeip.net>
-References: <1353965980-32543-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <1353965980-32543-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [Patch v6 4/4] ASoC: at91sam9g20ek-wm8731: convert to dt support
+Date: Tue, 27 Nov 2012 10:54:03 +0800
+Message-ID: <50B42B4B.90407@atmel.com>
+References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com> <1352887751-21848-5-git-send-email-voice.shen@atmel.com> <201211262123.42812.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1353965980-32543-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <201211262123.42812.arnd@arndb.de>
+Sender: linux-sound-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, broonie@opensource.wolfsonmicro.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi Arnd,
 
-On Mon, Nov 26, 2012 at 09:39:38PM +0000, Mark Brown wrote:
-> +static int arizona_haptics_play(struct input_dev *input, void *data,
-> +				struct ff_effect *effect)
-> +{
-> +	struct arizona_haptics *haptics = input_get_drvdata(input);
-> +	struct arizona *arizona = haptics->arizona;
-> +	struct mutex *dapm_mutex = &arizona->dapm->card->dapm_mutex;
-> +	u8 val;
-> +	int ret;
-> +
-> +	if (!haptics->arizona->dapm) {
-> +		dev_err(arizona->dev, "No DAPM context\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	if (effect->u.rumble.strong_magnitude) {
-> +		/* Scale the magnitude into the range the device supports */
-> +		if (arizona->pdata.hap_act) {
-> +			val = effect->u.rumble.strong_magnitude >> 9;
-> +			if (effect->direction < 0x8000)
-> +				val += 0x7f;
-> +		} else {
-> +			val = effect->u.rumble.strong_magnitude >> 8;
-> +		}
-> +
-> +		ret = regmap_update_bits(arizona->regmap,
-> +					 ARIZONA_HAPTICS_PHASE_2_INTENSITY,
-> +					 ARIZONA_PHASE2_INTENSITY_MASK, val);
-> +		if (ret != 0) {
-> +			dev_err(arizona->dev, "Failed to set intensity: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +
-> +		/* This enable sequence will be a noop if already enabled */
-> +		ret = regmap_update_bits(arizona->regmap,
-> +					 ARIZONA_HAPTICS_CONTROL_1,
-> +					 ARIZONA_HAP_CTRL_MASK,
-> +					 1 << ARIZONA_HAP_CTRL_SHIFT);
-> +		if (ret != 0) {
-> +			dev_err(arizona->dev, "Failed to start haptics: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +
-> +		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+On 11/27/2012 5:23, Arnd Bergmann wrote:
+> On Wednesday 14 November 2012, Bo Shen wrote:
+>> +
+>> +                       ssc0: ssc@fffbc000 {
+>> +                               status = "okay";
+>> +                               pinctrl-0 = <&pinctrl_ssc0_tx>;
+>> +                       };
+>>                  };
+>>
+>
+> This gives me a build error in linux-next with at91sam9g20_defconfig:
+>
+> ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
 
-You cannot sleep in play() methods.
+Yes, this is because there is a cross merge patch at: 
+https://patchwork.kernel.org/patch/1776941/ acked by Mark Brown, however 
+it does not merged.
 
-Thanks.
-
--- 
-Dmitry
+Best Regards,
+Bo Shen
