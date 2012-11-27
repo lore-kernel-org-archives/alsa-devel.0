@@ -1,63 +1,88 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: davinci-mcasp: Add pinctrl support
-Date: Tue, 27 Nov 2012 14:04:02 +0000
-Message-ID: <20121127140402.GE4468@opensource.wolfsonmicro.com>
-References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
- <1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
- <20121126114511.GE9411@opensource.wolfsonmicro.com>
- <87y5hn1tey.fsf@dell.be.48ers.dk>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: [FT C400,PATCH RFC,v3 0/9] M-Audio Fast Track C400
+Date: Tue, 27 Nov 2012 17:00:49 +0100
+Message-ID: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="65ImJOski3p8EhYV"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87y5hn1tey.fsf@dell.be.48ers.dk>
-Sender: linux-doc-owner@vger.kernel.org
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Cc: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, perex@perex.cz, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41F932652BB
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:01:06 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so4944982bkc.38
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 08:01:06 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Felix Homann <linuxaudio@showlabor.de>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+Cc: Grant Diffey <gdiffey@gmail.com>, George Willian Condomitti <georgecondomitti@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---65ImJOski3p8EhYV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The following patches adds support for the M-Audio Fast Track C400.
+This is version 3 of the patch series.
 
-On Mon, Nov 26, 2012 at 09:55:33PM -0800, Peter Korsgaard wrote:
-> >>>>> "Mark" == Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
+v2:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-November/056750.html
 
->  Mark> Since the driver is happy to continue without the pins why is it
->  Mark> bothering requesting them in the first place?  In other words, this
->  Mark> should be a hard error.
+This series applies against the latest mainline tree, 3.7-rc7
+(HEAD 2844a48706e54ddda4a04269dba4250b42f449de )
 
-> Sorry, I disagree. As was discussed recently, there's several reasons
-> why the pinctrl call might fail, and not all are fatal (E.G. pinmux
-> already setup by bootloader):
+* First of all, everything works: mixer controls, effects control,
+playback and capture (with the correct sampling frequency set).
+Note that the device doesn't really have a master control or left/right
+pan. It's just "emulated" in the software.
 
-> http://article.gmane.org/gmane.linux.kernel/1399756
+* To deal with the mixer channel IDs, limited by cmask bit length,
+I introduced an offset value. This allows to get rid of the shorehorning
+of the IDs into cmask and device-referencing in the low-level functions.
+Is this a good approach?
 
-I'd expect the platform to provide stub mappings for cases where the
-pinmux code shouldn't do anything.
+* Audio in/out seems to work good in this series, mainly because the
+playback is an implicit feedback endpoint, and it is now configured
+with the capture endpoint as its sync-buddy. Also needed to correct
+the calculation, because of the different channel numbers between
+the two endpoints on the C400 (6 playback - implicit feedback, 4 capture).
 
---65ImJOski3p8EhYV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+* The clock sources are still named "Unit 129" (0x81, internal) and
+"Unit 130" (0x82, SPDIF). I'll fix this later. I also plan to fix the
+channel names (i.e., instead of "AIn3", use "SPDIF In L").
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+* I've touched one FTU mixer creation function. I'd appreciate if someone
+can test this with the FTU to make sure I didn't break something.
+(I haven't gotten any feedback on that one yet)
 
-iQIcBAEBAgAGBQJQtMgCAAoJELSic+t+oim9Np8QAId8bMn26Xnjq/YSiCiUFK01
-iJH8Kk1Z0d/KXeOW+V1nO5x8G8phACWyVYQRdvP+rJ/91EwsRryo32NA0N5Ga3Fs
-tehqHV3o3Cxx2Au0oE3s1xtlkiJYVk8XbYCjwTN0s33VkpMEE7mtULneE6jJmQkB
-oOwYvhJD+bS+HtDzmByRf8pmmWCrI1jelqEy39qnU9IJUM0a/H3r7J2nM9nggqPX
-d+2nnCOnTg8G59ENQptQP0sK8spcZL4FzzZgBMGthJ8oVj53WEyrLYYp5BDnSQr0
-yR3BHzOALm8wCXGa7iGs0ThBt/PVeUtHhyPyPfp3EWOvcyYDh76yR9PVWkDmgNmm
-mHTOABloUiudKxmEkHPQsRCUxb5nK0mohx9M+JRE6eMeKt3XG4ISR4I/+X2LPAuq
-X/03eFg45p5wu6p+RbdN1dWPkAf5g5EfeCAxnahJokqR2+4ObhcIvZ3KH7abzFHi
-2IF0ehAcC1hRe1ss2NnnZNypNkUb3WbV5ShulR/WyEK++ejWcjKrF6tZPx0iQj2t
-IwozIJ2hxcUFSn5zfixaCFx7x8ssGH39AGoeJOcd+Ro2xqJMBDSRXhRhaRAajOT5
-y069bbBoFT7KC0fGhS+WlHFlVY0yTzLwipLm7S7F9T+qo4+h02eRXno4coz61aOP
-6GY1728FhMK8OjBtHTS/
-=WOzO
------END PGP SIGNATURE-----
+Cheers,
+Eldad
 
---65ImJOski3p8EhYV--
+Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+
+Eldad Zack (9):
+  usb-audio: replace hardcoded value with const
+  usb-audio: use sender stride for implicit feedback
+  usb-audio: add control index offset
+  usb-audio: skip UAC2 EFFECT_UNIT
+  usb-audio: parameterize FTU effect unit control
+  usb-audio: M-Audio Fast Track C400 quirks table
+  usb-audio: Fast Track C400 mixer ranges
+  usb-audio: Fast Track C400 mixer controls
+  usb-audio: FT C400 sync playback EP to capture EP
+
+ sound/usb/endpoint.c     |    9 ++-
+ sound/usb/mixer.c        |   53 +++++++++++-
+ sound/usb/mixer.h        |    1 +
+ sound/usb/mixer_quirks.c |  216 ++++++++++++++++++++++++++++++++++++++++++++--
+ sound/usb/pcm.c          |   15 +++-
+ sound/usb/quirks-table.h |   71 +++++++++++++++
+ 6 files changed, 351 insertions(+), 14 deletions(-)
+
+-- 
+1.7.8.6
