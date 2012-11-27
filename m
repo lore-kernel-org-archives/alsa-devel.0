@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, PATCH RFC,
-	v3 4/9] usb-audio: skip UAC2 EFFECT_UNIT
-Date: Tue, 27 Nov 2012 17:00:53 +0100
-Message-ID: <1354032058-668-5-git-send-email-eldad@fogrefinery.com>
+	v3 6/9] usb-audio: M-Audio Fast Track C400 quirks table
+Date: Tue, 27 Nov 2012 17:00:55 +0100
+Message-ID: <1354032058-668-7-git-send-email-eldad@fogrefinery.com>
 References: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 400B92652BB
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:01:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A909C2652D3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:01:25 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id ik5so4944982bkc.38
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 08:01:17 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 08:01:25 -0800 (PST)
 In-Reply-To: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,43 +28,100 @@ To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Felix Homann <
 Cc: Grant Diffey <gdiffey@gmail.com>, George Willian Condomitti <georgecondomitti@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-Current code mishandles the case where the device is a UAC2
-and the bDescriptorSubtype is a UAC2 Effect Unit (0x07).
-It tries to parse it as a Processing Unit (which is similar to two
-other UAC1 units with overlapping subtypes), but since the structure
-is different (See: 4.7.2.10, 4.7.2.11 in UAC2 standard), the parsing
-is done incorrectly and prevents the device from initializing.
-For now, just ignore the unit.
+Adds a quirks table for the M-Audio Fast Track C400.
+
+Based on the following patch from the alsa-devel list:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-May/051676.html
+
+See also:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-April/051219.html
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/mixer.c |   13 ++++++++++++-
- 1 files changed, 12 insertions(+), 1 deletions(-)
+ sound/usb/quirks-table.h |   71 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 71 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index b0fc6ae..4eacbe2 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -723,8 +723,19 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
- 			return 0;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 88d8ceb..7ec7b7f 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2296,6 +2296,77 @@ YAMAHA_DEVICE(0x7010, "UB99"),
  		}
- 		case UAC1_PROCESSING_UNIT:
--		case UAC1_EXTENSION_UNIT: {
-+		case UAC1_EXTENSION_UNIT:
-+		/* UAC2_PROCESSING_UNIT_V2 */
-+		/* UAC2_EFFECT_UNIT */ {
- 			struct uac_processing_unit_descriptor *d = p1;
-+
-+			if (state->mixer->protocol == UAC_VERSION_2 &&
-+				hdr[2] == UAC2_EFFECT_UNIT) {
-+				/* UAC2/UAC1 unit IDs overlap here in an
-+				 * uncompatible way. Ignore this unit for now.
-+				 */
-+				return 0;
+ 	}
+ },
++{
++	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2030),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		/* .vendor_name = "M-Audio", */
++		/* .product_name = "Fast Track C400", */
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
++			/* Playback */
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 6,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000 |
++						 SNDRV_PCM_RATE_88200 |
++						 SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++							44100, 48000, 88200, 96000
++					},
++					.clock = 0x81,
++				}
++			},
++			/* Capture */
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 3,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000 |
++						 SNDRV_PCM_RATE_88200 |
++						 SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					},
++					.clock = 0x81,
++				}
++			},
++			/* MIDI */
++			{
++				.ifnum = -1 /* Interface = 4 */
 +			}
-+
- 			if (d->bNrInPins) {
- 				id = d->baSourceID[0];
- 				break; /* continue to parse */
++		}
++	}
++},
+ 
+ /* Casio devices */
+ {
 -- 
 1.7.8.6
