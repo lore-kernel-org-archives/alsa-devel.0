@@ -1,107 +1,54 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
  on Arizona CODECs
-Date: Tue, 27 Nov 2012 01:08:20 -0800
-Message-ID: <20121127090820.GB25658@core.coreip.homeip.net>
+Date: Tue, 27 Nov 2012 09:36:52 +0000
+Message-ID: <20121127093652.GA4468@opensource.wolfsonmicro.com>
 References: <1354000088-30517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
  <1354000088-30517-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <20121127090820.GB25658@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
 Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1354000088-30517-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <20121127090820.GB25658@core.coreip.homeip.net>
 Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: Liam Girdwood <lrg@ti.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 27, 2012 at 07:08:06AM +0000, Mark Brown wrote:
-> +
-> +static int arizona_haptics_probe(struct platform_device *pdev)
-> +{
-> +	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
-> +	struct arizona_haptics *haptics;
-> +	int ret;
-> +
-> +	haptics = kzalloc(sizeof(*haptics), GFP_KERNEL);
-> +	if (!haptics)
-> +		return -ENOMEM;
-> +
-> +	haptics->arizona = arizona;
-> +
-> +	ret = regmap_update_bits(arizona->regmap, ARIZONA_HAPTICS_CONTROL_1,
-> +				 ARIZONA_HAP_ACT, arizona->pdata.hap_act);
-> +	if (ret != 0) {
-> +		dev_err(arizona->dev, "Failed to set haptics actuator: %d\n",
-> +			ret);
 
-Leaking haptics memory.
+--6TrnltStXW4iwmi0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +		return ret;
-> +	}
-> +
-> +	INIT_WORK(&haptics->work, arizona_haptics_work);
-> +
-> +	haptics->input_dev = input_allocate_device();
-> +	if (haptics->input_dev == NULL) {
-> +		dev_err(arizona->dev, "Failed to allocate input device\n");
+On Tue, Nov 27, 2012 at 01:08:20AM -0800, Dmitry Torokhov wrote:
+> On Tue, Nov 27, 2012 at 07:08:06AM +0000, Mark Brown wrote:
 
-Leaking haptics memory again.
+> Leaking haptics memory.
 
-> +		return -ENOMEM;
-> +	}
-> +
-> +	input_set_drvdata(haptics->input_dev, haptics);
-> +
-> +	haptics->input_dev->name = "arizona:haptics";
-> +	haptics->input_dev->dev.parent = pdev->dev.parent;
-> +	haptics->input_dev->close = arizona_haptics_close;
-> +	__set_bit(FF_RUMBLE, haptics->input_dev->ffbit);
-> +
-> +	ret = input_ff_create_memless(haptics->input_dev, NULL,
-> +				      arizona_haptics_play);
-> +	if (ret < 0) {
-> +		dev_err(arizona->dev, "input_ff_create_memless() failed: %d\n",
-> +			ret);
-> +		goto err_ialloc;
-> +	}
-> +
-> +	ret = input_register_device(haptics->input_dev);
-> +	if (ret < 0) {
-> +		dev_err(arizona->dev, "couldn't register input device: %d\n",
-> +			ret);
-> +		goto err_iff;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, haptics);
-> +
-> +	return 0;
-> +
-> +err_iff:
-> +	if (haptics->input_dev)
-> +		input_ff_destroy(haptics->input_dev);
-> +err_ialloc:
-> +	input_free_device(haptics->input_dev);
+Meh, sorry - that was supposed to be devm_kzalloc().
 
-You are leaking haptics memory here.
-> +
-> +	return ret;
-> +}
-> +
-> +static int arizona_haptics_remove(struct platform_device *pdev)
-> +{
-> +	struct arizona_haptics *haptics = platform_get_drvdata(pdev);
-> +
-> +	input_unregister_device(haptics->input_dev);
-> +
+--6TrnltStXW4iwmi0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-And here as well.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-> +	return 0;
-> +}
-> +
+iQIcBAEBAgAGBQJQtImkAAoJELSic+t+oim911gP/iZLFG9QNumuzE3KJJESy27i
++3iwZx1AE1gBloitbkrtPsqKZcjZYWbtMkxKj9rfxURInwQaNYUG3wgDTjXZKiFL
+mTkHsNXkuKDUx94P8igc167hmw2pJivZyimwd9UdfcZxEtqe8/MuhhyCiCWJJNwA
+EmlVLCQNxNyUHnpFDlJOHaj9EUXOW0hmPv7Zk1brcCH9QDvOsQ/eBrXeNx8hRWT/
+6lx6Kew9t8tmwQwIU3mWGG4mqSaVsf6QyV/IE+qVqxo0+hinFFDI1/9Rl9ABMzh5
+JM/Idlw4oLMCHNVGU/iIz2dIHfJszxu13Q4tTkqPPZtmuaxkaNZp34oXV39otdTg
+JmKo41ThtCPNilleFy01qNo2lEaBhxZ0YD9D0au9Qq2jGxM7bJd1Qo2Jwzxi0ZuI
+H+2cLKfMYx9z2iybMbtHWMo8cl3Lb06yw2sKn2MZFOXRQMjp+3yLsaEtT2oHJrz/
+7nGHOVI5ly8NrnLE2eiJN7BT0MKHGdeEdLq5VyYjF7Qzc3kkwTRii+uUyYQczD/I
+DT6PDJRCqKeii4oGJef4d8iclWQ7EHhHHzE08TGmOE18LHviI8kiLc3Awyo+MFeS
+isBOnTrmXT1q2Jtc59GStPnzQC9U1WQlgPP2jgU/v3MJTi0vuPxRykja/piEgG+j
+kmoIWCbdmVY9yWqTNneg
+=vp7V
+-----END PGP SIGNATURE-----
 
-Thanks.
-
--- 
-Dmitry
+--6TrnltStXW4iwmi0--
