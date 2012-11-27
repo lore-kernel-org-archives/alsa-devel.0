@@ -1,48 +1,56 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5102: Add missing routes for ASRC
-	inputs
-Date: Tue, 27 Nov 2012 19:11:22 +0000
-Message-ID: <1354043482-25948-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
+Date: Tue, 27 Nov 2012 19:36:52 +0000
+Message-ID: <20121127193651.GH4468@opensource.wolfsonmicro.com>
+References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
+ <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5AAC260817
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 20:11:23 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="G3juXO9GfR42w+sw"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5102.c |    5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 63c24a3..5a1eb5b 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1221,6 +1221,11 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	{ "IN3L PGA", NULL, "IN3L" },
- 	{ "IN3R PGA", NULL, "IN3R" },
- 
-+	{ "ASRC1L", NULL, "ASRC1L Input" },
-+	{ "ASRC1R", NULL, "ASRC1R Input" },
-+	{ "ASRC2L", NULL, "ASRC2L Input" },
-+	{ "ASRC2R", NULL, "ASRC2R Input" },
-+
- 	ARIZONA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
- 	ARIZONA_MIXER_ROUTES("OUT1R", "HPOUT1R"),
- 	ARIZONA_MIXER_ROUTES("OUT2L", "HPOUT2L"),
--- 
-1.7.10.4
+--G3juXO9GfR42w+sw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Nov 23, 2012 at 10:12:13AM +0100, Lothar Wa=DFmann wrote:
+> Due to a broken make rule, sound/soc/fsl/imx-pcm-dma.c or
+> sound/soc/fsl/imx-pcm-fiq.c (whatever is selected via Kconfig) will
+> not be compiled into imx-pcm.o when building as module, i.e.:
+> CONFIG_SND_SOC_IMX_PCM=3Dm
+> CONFIG_SND_SOC_IMX_PCM_DMA=3Dm
+> resulting in a non-functional sound driver.
+
+Applied, thanks.
+
+--G3juXO9GfR42w+sw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQtRZMAAoJELSic+t+oim9P6wP/imhPloqqGrGfvVv/zTNngGm
+Hnbxx0JCzvjkr0Mq2skTfwalvLrmPe4WVtoaAfUOedatNCcqP9N/yCmhU+HFbL2Y
+LSPcGNQxGaUHbC6DZJt2F7Dn3ceVKeyVT1WBbsuuMsxDIXqIXarcuABUIzSvJ/re
+UzjF/RlUOiOStgoa0c7sRbUhcAPHfNa5epny3gDvSf2XTAO1T9/pZtlupxOn9XMi
+xAvCAp3aN9GE2FcAsEsLnjnk1SeXZD4BxUyn8CVV1CEZDznhFiB2rgtEZkPIJtBp
+GehJFDrgK911Q2ArD3Sv8VpBECMfx+wtd/XSMZFwWc0zAWknXC21YhoE/HUsjHe8
+nwS2MMOlaTMCIwqZbe2SFyfRCQ5V5Lxln/ax4YUamMXpf/SJKFpJ3cW+suSll2lG
+vy5qSOE+1fhN5X2D3k/ssEQvIOshCRyUUU2VlXewXt3+ophJMzAlQdM6/CCv/jmr
+UVq8DFXAEJdRRo/dMKTLZLpTdIxXD3aldUrwfJfbV2Fo1fKPnn/Mia4rEoDrvGlj
+LHxKZIdW+nwf6ZhVzA4Pcq0JuZtFDjq/Cv1w9lRWFA+SSknrGk2HFUhGrFWxzsBw
+13X9wDUQ3PhZrFvzuQ+idDJBGYrtYIr37NRT0hOXc8Xiu4av99oAU83fQTBAfliC
+vudw+YIQ00MgDmnE6i3L
+=uyw9
+-----END PGP SIGNATURE-----
+
+--G3juXO9GfR42w+sw--
