@@ -1,56 +1,54 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: fsl: fix miscompilation of snd-soc-imx-pcm
-Date: Tue, 27 Nov 2012 19:37:26 +0000
-Message-ID: <20121127193726.GI4468@opensource.wolfsonmicro.com>
-References: <20121123081307.GA4529@opensource.wolfsonmicro.com>
- <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Tue, 27 Nov 2012 20:46:49 +0100
+Message-ID: <50B518A9.4090807@ladisch.de>
+References: <p06240816ccd2e5cc9db7@[192.168.1.8]> <50AE99E7.6080008@gmail.com>
+ <p06240802ccd72a8f5c3e@[192.168.1.12]> <50B21255.8080202@gmail.com>
+ <p06240812ccd8489d6378@[192.168.1.12]> <50B31800.2000000@gmail.com>
+ <p06240804ccd98cef996c@[192.168.1.8]> <50B4A870.7040201@gmail.com>
+ <p06240808ccdaa0a47bbb@[192.168.1.8]> <50B4F699.5090205@ladisch.de>
+ <p0624080cccdaac242dc3@[192.168.1.8]>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOmey7/79ja+7F5w"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1353661933-27659-1-git-send-email-LW@KARO-electronics.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D316A26164E
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 20:47:06 +0100 (CET)
+In-Reply-To: <p0624080cccdaac242dc3@[192.168.1.8]>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Griscom <griscom@suitable.com>
+Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Daniel Griscom wrote:
+> We are using a bInterval value of 1 (on a high-speed device). We've
+> recently tried bumping this up to 2, and the problem was no longer
+> evident
 
---BOmey7/79ja+7F5w
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This might indicate that the controller has problems reading the
+packet data from memory; there's a considerable overhead for each
+memory transaction, and the controller needs to update the DMA lists.
+(The pattern might be caused by some data, which arrives too late,
+interfering with the reading of the next packet.)
 
-On Fri, Nov 23, 2012 at 10:12:13AM +0100, Lothar Wa=DFmann wrote:
-> Due to a broken make rule, sound/soc/fsl/imx-pcm-dma.c or
-> sound/soc/fsl/imx-pcm-fiq.c (whatever is selected via Kconfig) will
-> not be compiled into imx-pcm.o when building as module, i.e.:
-> CONFIG_SND_SOC_IMX_PCM=3Dm
-> CONFIG_SND_SOC_IMX_PCM_DMA=3Dm
-> resulting in a non-functional sound driver.
+If 2 is the first save interval, consider using 4.  For that matter,
+full-speed devices work fine with one packet per frame.  There isn't
+a problem with buffering one millisecond of data in the device, is it?
 
-Sorry, replied to the wrong version here - I did apply v3.
+(The only reason to use smaller intervals is if you really require sub-
+millisecond latencies, or if the bigger packets would eat up too much
+bandwidth in one of the microframes.  The cost of smaller intervals is
+more overhead on the host, on the bus, and in the device.)
 
---BOmey7/79ja+7F5w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQtRZuAAoJELSic+t+oim9cOoQAJLonLXJNbz5SYsX9h/WPLo6
-ZOIWbhUg5oV0it1PgFk6NLHNQXcTrxon8/Q7s+9dL5EVzHTKPx+cxGQBWlOCxd9/
-M89rH+zpWbhMZEmYzfgu6i2wY1+8r1VeGCM7zB6yQ+Yv3rIZn7gDKNFiYL8ZHxGq
-fXqu6Id1m0meRxPxcdr/rSZc+5DjWQz4zU3jGmZKAvEu1kMFKDvtqzCZsLW1n26P
-fv+CS8dyEPRdcJn6r1VO3JwEKmgaR2nQhRJQq64TrcWieEhTy3sl7dyxQ2Og+sYU
-f8ZBziFFyYiV2AZmjuFhZj+FO02+DeUWdEPmohfXxJNvpQzBVMDQACDu/bd6Qj4A
-P9zVoxsDXduhfd7zXyvcuKJW5aznbYFxqd0JIIsAB3+wLmLOuw9kplJ8cmEoRaXl
-oVEz2l9C97197bxHDMnmoXTxZByNv+t3E8QWKYD94eEZStPnKui2uob99KKFEaaf
-8/9GFnsGt/DzoUy5PWIcfXbZT04sm+DaSoFSj9RZElkhY8ibwhaoO+qJAAB01gYo
-egO4YrDMPz9QbXf2JJSWgZ5HFFCDP1+W9zfOvMzS9fd8OGrBF+Fz/sSeYEeb+RNP
-xKMvnX8EoYbBaFvKUQzcftvOjUXkVAYXu27LWquGnt6EHckgnpU/Qrut7W2QzfF/
-j+VaX/Dgi84fAJg+3eaY
-=fbnX
------END PGP SIGNATURE-----
-
---BOmey7/79ja+7F5w--
+Regards,
+Clemens
