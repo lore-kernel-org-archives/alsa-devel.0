@@ -1,56 +1,44 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
- on Arizona CODECs
-Date: Tue, 27 Nov 2012 06:32:33 +0000
-Message-ID: <20121127063233.GT9411@opensource.wolfsonmicro.com>
-References: <1353965980-32543-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <1353965980-32543-2-git-send-email-broonie@opensource.wolfsonmicro.com>
- <20121126231122.GA26836@core.coreip.homeip.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="flpRHSNNLnUanxKW"
+Subject: [PATCH 1/4] mfd: arizona: Allow the CODEC DAPM context to be accessed elsewhere
+Date: Tue, 27 Nov 2012 07:08:05 +0000
+Message-ID: <1354000088-30517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20121126231122.GA26836@core.coreip.homeip.net>
 Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Some other device functions need to integrate with signal sources in the
+audio portion (primarily for haptics) so allow CODEC to export the DAPM
+context by pointing to it from the core driver.
 
---flpRHSNNLnUanxKW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/linux/mfd/arizona/core.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Mon, Nov 26, 2012 at 03:11:22PM -0800, Dmitry Torokhov wrote:
+diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+index dd231ac..a580363 100644
+--- a/include/linux/mfd/arizona/core.h
++++ b/include/linux/mfd/arizona/core.h
+@@ -78,6 +78,8 @@ enum arizona_type {
+ 
+ #define ARIZONA_NUM_IRQ                   50
+ 
++struct snd_soc_dapm_context;
++
+ struct arizona {
+ 	struct regmap *regmap;
+ 	struct device *dev;
+@@ -98,6 +100,8 @@ struct arizona {
+ 
+ 	struct mutex clk_lock;
+ 	int clk32k_ref;
++
++	struct snd_soc_dapm_context *dapm;
+ };
+ 
+ int arizona_clk32k_enable(struct arizona *arizona);
+-- 
+1.7.10.4
 
-> > +		mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-
-> You cannot sleep in play() methods.
-
-Sorry, I wasn't getting enough vibrations from the code :)  I just sent
-a documentation patch.
-
---flpRHSNNLnUanxKW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQtF50AAoJELSic+t+oim9zjgP/iMhYsJqWoNtlL+NTS18Iziz
-ak1Mf+QVdvy4+LOuIFgfckjsc7qNv1VKmNYVtwaWY85Wi+zqTgZ7Z1tmQ1Wzw4A5
-wWNToUpjXd1I5Ace1oP9in+wiw36Yly5mx47R+7VTzHTKG3/CExv59MCdAVRorWE
-YVJG6Wndnege5KNLvCVZ8cO+S/OfNouOYzatK2TwHurldosBY43DSsBoakmfmSVp
-4eI7Ehbmo4ta14z6Ejda7hu2LPLNTggSP5V3yet3Sdy3FmofSNI1MeYOf1n2L5Uc
-A6WBcKGFnEXqiLO2GG7pCdxhk/e0YE9SZR09u8O12/2aSh2te90R6oYFv1aD3Ow4
-/Ob9EFHQgutxzIBAG0QaLuAk37LtzSUJJuD1+JuLtEDJK1uK6pBqnt/1bXr9COy2
-qVpt5RhHlC7pRupdMM1Rd8ksKY3TW5s7KRwbh70Kd/s/b9GSFFq8CwH1NDycURR9
-oS3EwfsTCcZsH7Ruguq7Swbe8NlNpsblQEEN59c8NvkEB/v8gvr43JvH6bcyi6Lx
-ZKgny+aU+iWfYiD8puoNMchmB59MFv0Ub2rJixt5eHgDvzP3+H7A61D2pQssGKUD
-kalpZrVMNAFa2Vi8tYGiZPUaMaqHJTy/jmHLFy+mlKAOxjoqtd0cnrtxTpNYjnv9
-XTmK6hpDwd0zPlCWE8Ln
-=n6hn
------END PGP SIGNATURE-----
-
---flpRHSNNLnUanxKW--
