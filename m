@@ -1,54 +1,59 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Missing exactly 3 of 8 audio packets?
-Date: Tue, 27 Nov 2012 20:46:49 +0100
-Message-ID: <50B518A9.4090807@ladisch.de>
-References: <p06240816ccd2e5cc9db7@[192.168.1.8]> <50AE99E7.6080008@gmail.com>
- <p06240802ccd72a8f5c3e@[192.168.1.12]> <50B21255.8080202@gmail.com>
- <p06240812ccd8489d6378@[192.168.1.12]> <50B31800.2000000@gmail.com>
- <p06240804ccd98cef996c@[192.168.1.8]> <50B4A870.7040201@gmail.com>
- <p06240808ccdaa0a47bbb@[192.168.1.8]> <50B4F699.5090205@ladisch.de>
- <p0624080cccdaac242dc3@[192.168.1.8]>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
+ on Arizona CODECs
+Date: Tue, 27 Nov 2012 11:56:44 -0800
+Message-ID: <20121127195644.GA29727@core.coreip.homeip.net>
+References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <1354020025-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D316A26164E
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 20:47:06 +0100 (CET)
-In-Reply-To: <p0624080cccdaac242dc3@[192.168.1.8]>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Griscom <griscom@suitable.com>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1354020025-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Griscom wrote:
-> We are using a bInterval value of 1 (on a high-speed device). We've
-> recently tried bumping this up to 2, and the problem was no longer
-> evident
+On Tue, Nov 27, 2012 at 12:40:23PM +0000, Mark Brown wrote:
+> The Arizona CODECs contain a haptics module providing vibration feedback
+> support. Implement basic support for this, providing simple start/stop and
+> signal magnitude control.
+> 
+> Since the output path for haptics is routed through the CODEC audio routing
+> it is modelled as a signal generator within ASoC, the haptics driver calls
+> DAPM to start and stop the output drivers. An appropriate output path must
+> be configured via ALSA to connect the haptics source to the correct output.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-This might indicate that the controller has problems reading the
-packet data from memory; there's a considerable overhead for each
-memory transaction, and the controller needs to update the DMA lists.
-(The pattern might be caused by some data, which arrives too late,
-interfering with the reading of the next packet.)
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-If 2 is the first save interval, consider using 4.  For that matter,
-full-speed devices work fine with one packet per frame.  There isn't
-a problem with buffering one millisecond of data in the device, is it?
+with minor nits:
 
-(The only reason to use smaller intervals is if you really require sub-
-millisecond latencies, or if the bigger packets would eat up too much
-bandwidth in one of the microframes.  The cost of smaller intervals is
-more overhead on the host, on the bus, and in the device.)
+> +
+> +	if (effect->u.rumble.strong_magnitude) {
+> +		/* Scale the magnitude into the range the device supports */
+> +		if (arizona->pdata.hap_act) {
+> +			haptics->intensity = effect->u.rumble.strong_magnitude
+> +				>> 9;
 
+If we have to fit in 80 columns can we format like this:
 
-Regards,
-Clemens
+			haptics->intensity =
+				effect->u.rumble.strong_magnitude >> 9;
+
+> +			if (effect->direction < 0x8000)
+> +				haptics->intensity += 0x7f;
+> +		} else {
+> +			haptics->intensity = effect->u.rumble.strong_magnitude
+> +				>> 8;
+
+and here as well - I really hate shifts moved over to the next line.
+
+How do you want to merge it? My tree or some other?
+
+Thanks.
+
+-- 
+Dmitry
