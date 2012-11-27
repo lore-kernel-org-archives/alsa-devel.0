@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [FT C400, PATCH RFC,
- v3 6/9] usb-audio: M-Audio Fast Track C400 quirks table
-Date: Tue, 27 Nov 2012 17:11:56 +0100
-Message-ID: <50B4E64C.9000804@ladisch.de>
+	v3 7/9] usb-audio: Fast Track C400 mixer ranges
+Date: Tue, 27 Nov 2012 17:12:00 +0100
+Message-ID: <50B4E650.90609@ladisch.de>
 References: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
- <1354032058-668-7-git-send-email-eldad@fogrefinery.com>
+ <1354032058-668-8-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 157B4260305
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:12:01 +0100 (CET)
-In-Reply-To: <1354032058-668-7-git-send-email-eldad@fogrefinery.com>
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 4CE8D2652BB
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:12:05 +0100 (CET)
+In-Reply-To: <1354032058-668-8-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,17 +27,24 @@ Cc: alsa-devel@alsa-project.org, Chris Cavey <chris-alsa@rauros.net>, Takashi Iw
 List-Id: alsa-devel@alsa-project.org
 
 Eldad Zack wrote:
-> Adds a quirks table for the M-Audio Fast Track C400.
+> Add ranges for various Fast Track C400 controls, as observed
+> while using the vendor's mixer control software (res values
+> are an estimation).
 >
-> +++ b/sound/usb/quirks-table.h
-> @@ -2296,6 +2296,77 @@ YAMAHA_DEVICE(0x7010, "UB99"),
->  		}
->  	}
->  },
-> +{
-> +	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2030),
+> +			snd_printk(KERN_INFO
+> +				"usb-audio: set quirk for C400 Effect Duration\n");
 
-The table should be sorted.
+> +			snd_printk(KERN_INFO
+> +				"usb-audio: set quirks for C400 Effect Feedback/Volume\n");
+
+> +			snd_printk(KERN_INFO
+> +				"usb-audio: set quirks for C400 %s\n", kctl->id.name);
+
+> +			snd_printk(KERN_INFO
+> +				"usb-audio: set quirk for Fast Track C400 %s\n",
+> +				kctl->id.name);
+
+Are these messages really needed?
 
 
 Regards,
