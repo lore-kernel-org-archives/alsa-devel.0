@@ -1,110 +1,81 @@
-From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] Missing exactly 3 of 8 audio packets?
-Date: Tue, 27 Nov 2012 12:48:00 +0100
-Message-ID: <50B4A870.7040201@gmail.com>
-References: <p06240816ccd2e5cc9db7@[192.168.1.8]> <50AE99E7.6080008@gmail.com> <p06240802ccd72a8f5c3e@[192.168.1.12]> <50B21255.8080202@gmail.com> <p06240812ccd8489d6378@[192.168.1.12]> <50B31800.2000000@gmail.com> <p06240804ccd98cef996c@[192.168.1.8]>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <p06240804ccd98cef996c@[192.168.1.8]>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Griscom <griscom-yI/1Hl18UA1Wk0Htik3J/w@public.gmane.org>
-Cc: Alsa Developer <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-usb <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/4] ASoC: wm5102: Implement haptics support
+Date: Tue, 27 Nov 2012 12:40:24 +0000
+Message-ID: <1354020025-23881-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 26.11.2012 22:23, Daniel Griscom wrote:
-> At 8:19 AM +0100 11/26/12, Daniel Mack wrote:
->> On 25.11.2012 23:23, Daniel Griscom wrote:
->>>  At 1:43 PM +0100 11/25/12, Daniel Mack wrote:
->>>>  Please do another test and change prepare_outbound_urb() so that instead
->>>>  of calling ep->prepare_data_urb() to fill the URB, fill it directly with
->>>>  some sort of easily recognizable test pattern (you can take the code
->>> >from "silence" case to access the buffers). Some kind of 16-bit counter
->>>>  should do. And then check the payload with the Beagle and see whether
->>>>  the pattern has gaps.
->>>>
->>>>  This test will tell us whether data is in fact lost before it hits the
->>>>  usb audio driver, or if it's dropped by the USB HCD.
->>>
->>>  I did the test, and expected to either a) see the incrementing data
->>>  be contiguous even though the USB packet transmission was stuttering,
->>>  or b) see the incrementing data have gaps where the "missing" packets
->>  > were. However, what I saw was c): the USB packets never misbehaved.
->> Note that this is a potential difference between your two cases.
->>
->> prepare_playback_urb() from pcm.c will not always set
->> urb->number_of_packets to the maximum value but cut packets short at PCM
->> period boundaries.
->>
->> Could you move your pattern generating code down to that function? Just
->> look for the memcpy() calls there.
-> 
-> OK, this time I got some real results. I can still get the USB packet 
-> stream to misbehave, and indeed the synthesized data is being lost. 
-> The output data present on the USB bus smoothly increments during 
-> each packet, continuing smoothly in adjacent packets. But, when one 
-> or two packets are missed, the next output data is numbered as if the 
-> packets (6 stereo frames each) had been generated but lost.
-> 
-> Here's my code in linux-3.6.6/sound/usb/pcm.c, prepare_playback_urb():
-> 
->> 	static short left = 0;
->> 	static short right = 0x0404;
->> 	short *sp;
-> 
-> ...
-> 
->> 	bytes = frames * stride;
->> #define FAKE_DATA
->> #ifdef FAKE_DATA
->> 	for (i = 0, sp = (short *)(urb->transfer_buffer);
->> 	   i < bytes; /* no increment */) {
->> 		*sp++ = left++;
->> 		i += sizeof(*sp);
->> 		*sp++ = right++;
->> 		i += sizeof(*sp);
->> 	}
->> #else
->> 	if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
->> 		/* err, the transferred area goes over buffer boundary. */
->> 		unsigned int bytes1 =
->> 			runtime->buffer_size * stride - subs->hwptr_done;
->> 		memcpy(urb->transfer_buffer,
->> 		       runtime->dma_area + subs->hwptr_done, bytes1);
->> 		memcpy(urb->transfer_buffer + bytes1,
->> 		       runtime->dma_area, bytes - bytes1);
->> 	} else {
->> 		memcpy(urb->transfer_buffer,
->> 		       runtime->dma_area + subs->hwptr_done, bytes);
->> 	}
->> #endif
->> 	subs->hwptr_done += bytes;
-> 
-> Did I place the generation code in the correct location?
+Provide a haptics widget for use by the haptics driver and expose the DAPM
+context for it.
 
-Yes.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c |   24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-> And, what should I look at next?
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index b18fd2e..63c24a3 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -860,6 +860,7 @@ SND_SOC_DAPM_REGULATOR_SUPPLY("SPKVDDR", 0, 0),
+ 
+ SND_SOC_DAPM_SIGGEN("TONE"),
+ SND_SOC_DAPM_SIGGEN("NOISE"),
++SND_SOC_DAPM_SIGGEN("HAPTICS"),
+ 
+ SND_SOC_DAPM_INPUT("IN1L"),
+ SND_SOC_DAPM_INPUT("IN1R"),
+@@ -1094,6 +1095,7 @@ SND_SOC_DAPM_OUTPUT("SPKDAT1R"),
+ 	{ name, "Noise Generator", "Noise Generator" }, \
+ 	{ name, "Tone Generator 1", "Tone Generator 1" }, \
+ 	{ name, "Tone Generator 2", "Tone Generator 2" }, \
++	{ name, "Haptics", "HAPTICS" }, \
+ 	{ name, "AEC", "AEC Loopback" }, \
+ 	{ name, "IN1L", "IN1L PGA" }, \
+ 	{ name, "IN1R", "IN1R PGA" }, \
+@@ -1385,9 +1387,28 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 
+ 	codec->control_data = priv->core.arizona->regmap;
+-	return snd_soc_codec_set_cache_io(codec, 32, 16, SND_SOC_REGMAP);
++
++	ret = snd_soc_codec_set_cache_io(codec, 32, 16, SND_SOC_REGMAP);
++	if (ret != 0)
++		return ret;
++
++	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
++
++	priv->core.arizona->dapm = &codec->dapm;
++
++	return 0;
++}
++
++static int wm5102_codec_remove(struct snd_soc_codec *codec)
++{
++	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	priv->core.arizona->dapm = NULL;
++
++	return 0;
+ }
+ 
+ #define WM5102_DIG_VU 0x0200
+@@ -1414,6 +1435,7 @@ static unsigned int wm5102_digital_vu[] = {
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_wm5102 = {
+ 	.probe = wm5102_codec_probe,
++	.remove = wm5102_codec_remove,
+ 
+ 	.idle_bias_off = true,
+ 
+-- 
+1.7.10.4
 
-As Clemens said, check the error fields in the isochronous frames when
-the urb is given back to the driver. For isochronous data, there's
-nothing the driver can do about failed transmissions, hence there's no
-code to handle such conditions. But it might help understand what's
-going on.
-
-In any case, this now certainly looks more like a strange USB problem,
-rather than a bug in snd-usb. I copied the USB list. The thread starts here:
-
-
-http://mailman.alsa-project.org/pipermail/alsa-devel/2012-November/057259.html
-
-
-Daniel
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
