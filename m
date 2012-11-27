@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, PATCH RFC,
-	v3 3/9] usb-audio: add control index offset
-Date: Tue, 27 Nov 2012 17:00:52 +0100
-Message-ID: <1354032058-668-4-git-send-email-eldad@fogrefinery.com>
+	v3 4/9] usb-audio: skip UAC2 EFFECT_UNIT
+Date: Tue, 27 Nov 2012 17:00:53 +0100
+Message-ID: <1354032058-668-5-git-send-email-eldad@fogrefinery.com>
 References: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C1262652EB
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:01:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 400B92652BB
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 17:01:17 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id ik5so4944982bkc.38
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 08:01:14 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 08:01:17 -0800 (PST)
 In-Reply-To: <1354032058-668-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,98 +28,43 @@ To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Felix Homann <
 Cc: Grant Diffey <gdiffey@gmail.com>, George Willian Condomitti <georgecondomitti@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, channel IDs exceeding 31 (0x1f) cannot be used.
-The channel ID is derived from the cmask. Extending cmask
-to a 64-bit type would only allow it to go up to 63 (0x2f).
-Some devices have channel IDs exceeding that as well.
-To address that, add an offset to the mixer element which
-is then accounted for in the UAC set/get functions.
+Current code mishandles the case where the device is a UAC2
+and the bDescriptorSubtype is a UAC2 Effect Unit (0x07).
+It tries to parse it as a Processing Unit (which is similar to two
+other UAC1 units with overlapping subtypes), but since the structure
+is different (See: 4.7.2.10, 4.7.2.11 in UAC2 standard), the parsing
+is done incorrectly and prevents the device from initializing.
+For now, just ignore the unit.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/mixer.c        |    4 ++++
- sound/usb/mixer.h        |    1 +
- sound/usb/mixer_quirks.c |   16 +++++++++++++++-
- 3 files changed, 20 insertions(+), 1 deletions(-)
+ sound/usb/mixer.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 298070e..b0fc6ae 100644
+index b0fc6ae..4eacbe2 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -382,6 +382,8 @@ error:
- 
- static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
- {
-+	validx += cval->idx_off;
+@@ -723,8 +723,19 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 			return 0;
+ 		}
+ 		case UAC1_PROCESSING_UNIT:
+-		case UAC1_EXTENSION_UNIT: {
++		case UAC1_EXTENSION_UNIT:
++		/* UAC2_PROCESSING_UNIT_V2 */
++		/* UAC2_EFFECT_UNIT */ {
+ 			struct uac_processing_unit_descriptor *d = p1;
 +
- 	return (cval->mixer->protocol == UAC_VERSION_1) ?
- 		get_ctl_value_v1(cval, request, validx, value_ret) :
- 		get_ctl_value_v2(cval, request, validx, value_ret);
-@@ -432,6 +434,8 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 	unsigned char buf[2];
- 	int idx = 0, val_len, err, timeout = 10;
- 
-+	validx += cval->idx_off;
++			if (state->mixer->protocol == UAC_VERSION_2 &&
++				hdr[2] == UAC2_EFFECT_UNIT) {
++				/* UAC2/UAC1 unit IDs overlap here in an
++				 * uncompatible way. Ignore this unit for now.
++				 */
++				return 0;
++			}
 +
- 	if (cval->mixer->protocol == UAC_VERSION_1) {
- 		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
- 	} else { /* UAC_VERSION_2 */
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index a7f3d45..aab80df 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -43,6 +43,7 @@ struct usb_mixer_elem_info {
- 	unsigned int id;
- 	unsigned int control;	/* CS or ICN (high byte) */
- 	unsigned int cmask; /* channel mask bitmap: 0 = master */
-+	unsigned int idx_off; /* Control index offset */
- 	unsigned int ch_readonly;
- 	unsigned int master_readonly;
- 	int channels;
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index ae2b714..4199b97 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -63,11 +63,12 @@ static void usb_mixer_elem_free(struct snd_kcontrol *kctl)
-  * Since there doesn't seem to be a devices that needs a multichannel
-  * version, we keep it mono for simplicity.
-  */
--static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
-+static int snd_create_std_mono_ctl_offset(struct usb_mixer_interface *mixer,
- 				unsigned int unitid,
- 				unsigned int control,
- 				unsigned int cmask,
- 				int val_type,
-+				unsigned int idx_off,
- 				const char *name,
- 				snd_kcontrol_tlv_rw_t *tlv_callback)
- {
-@@ -85,6 +86,7 @@ static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
- 	cval->channels = 1;
- 	cval->control = control;
- 	cval->cmask = cmask;
-+	cval->idx_off = idx_off;
- 
- 	/* get_min_max() is called only for integer volumes later,
- 	 * so provide a short-cut for booleans */
-@@ -120,6 +122,18 @@ static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
- 	return 0;
- }
- 
-+static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
-+				unsigned int unitid,
-+				unsigned int control,
-+				unsigned int cmask,
-+				int val_type,
-+				const char *name,
-+				snd_kcontrol_tlv_rw_t *tlv_callback)
-+{
-+	return snd_create_std_mono_ctl_offset(mixer, unitid, control, cmask,
-+		val_type, 0 /* Offset */, name, tlv_callback);
-+}
-+
- /*
-  * Create a set of standard UAC controls from a table
-  */
+ 			if (d->bNrInPins) {
+ 				id = d->baSourceID[0];
+ 				break; /* continue to parse */
 -- 
 1.7.8.6
