@@ -1,82 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/4] ASoC: wm5110: Implement haptics support
-Date: Tue, 27 Nov 2012 07:08:08 +0000
-Message-ID: <1354000088-30517-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1354000088-30517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <1354000088-30517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [Patch v6 4/4] ASoC: at91sam9g20ek-wm8731: convert to dt support
+Date: Tue, 27 Nov 2012 08:44:29 +0000
+Message-ID: <201211270844.29311.arnd@arndb.de>
+References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com> <201211262123.42812.arnd@arndb.de> <50B42B4B.90407@atmel.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <50B42B4B.90407@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: linux-arm-kernel@lists.infradead.org, broonie@opensource.wolfsonmicro.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide a haptics widget for use by the haptics driver and expose the DAPM
-context for it.
+On Tuesday 27 November 2012, Bo Shen wrote:
+> >
+> > ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+> 
+> Yes, this is because there is a cross merge patch at: 
+> https://patchwork.kernel.org/patch/1776941/ acked by Mark Brown, however 
+> it does not merged.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |   25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+I think I'm missing context here. What's holding this up? It looks like it should
+have been merged before 531f67e41d, possibly into both arm-soc and asoc.
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 3485b83..2a075ad 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -352,6 +352,7 @@ SND_SOC_DAPM_REGULATOR_SUPPLY("SPKVDDR", 0, 0),
- 
- SND_SOC_DAPM_SIGGEN("TONE"),
- SND_SOC_DAPM_SIGGEN("NOISE"),
-+SND_SOC_DAPM_SIGGEN("HAPTICS"),
- 
- SND_SOC_DAPM_INPUT("IN1L"),
- SND_SOC_DAPM_INPUT("IN1R"),
-@@ -610,6 +611,7 @@ SND_SOC_DAPM_OUTPUT("SPKDAT2R"),
- 	{ name, "Noise Generator", "Noise Generator" }, \
- 	{ name, "Tone Generator 1", "Tone Generator 1" }, \
- 	{ name, "Tone Generator 2", "Tone Generator 2" }, \
-+	{ name, "Haptics", "HAPTICS" }, \
- 	{ name, "AEC", "AEC Loopback" }, \
- 	{ name, "IN1L", "IN1L PGA" }, \
- 	{ name, "IN1R", "IN1R PGA" }, \
-@@ -902,9 +904,29 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
- static int wm5110_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int ret;
- 
- 	codec->control_data = priv->core.arizona->regmap;
--	return snd_soc_codec_set_cache_io(codec, 32, 16, SND_SOC_REGMAP);
-+	priv->core.arizona->dapm = &codec->dapm;
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 32, 16, SND_SOC_REGMAP);
-+	if (ret != 0)
-+		return ret;
-+
-+	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
-+
-+	priv->core.arizona->dapm = &codec->dapm;
-+
-+	return 0;
-+}
-+
-+static int wm5110_codec_remove(struct snd_soc_codec *codec)
-+{
-+	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	priv->core.arizona->dapm = NULL;
-+
-+	return 0;
- }
- 
- #define WM5110_DIG_VU 0x0200
-@@ -935,6 +957,7 @@ static unsigned int wm5110_digital_vu[] = {
- 
- static struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	.probe = wm5110_codec_probe,
-+	.remove = wm5110_codec_remove,
- 
- 	.idle_bias_off = true,
- 
--- 
-1.7.10.4
-
+	Arnd
