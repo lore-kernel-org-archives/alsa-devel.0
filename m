@@ -1,25 +1,15 @@
-From: Daniel Griscom <griscom@suitable.com>
-Subject: Re: Missing exactly 3 of 8 audio packets?
-Date: Tue, 27 Nov 2012 13:40:57 -0500
-Message-ID: <p0624080cccdaac242dc3@[192.168.1.8]>
-References: <p06240816ccd2e5cc9db7@[192.168.1.8]>
- <50AE99E7.6080008@gmail.com> <p06240802ccd72a8f5c3e@[192.168.1.12]>
- <50B21255.8080202@gmail.com> <p06240812ccd8489d6378@[192.168.1.12]>
- <50B31800.2000000@gmail.com> <p06240804ccd98cef996c@[192.168.1.8]>
- <50B4A870.7040201@gmail.com> <p06240808ccdaa0a47bbb@[192.168.1.8]>
- <50B4F699.5090205@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5102: Add missing routes for ASRC
+	inputs
+Date: Tue, 27 Nov 2012 19:11:22 +0000
+Message-ID: <1354043482-25948-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway05.websitewelcome.com (gateway05.websitewelcome.com
- [67.18.103.7]) by alsa0.perex.cz (Postfix) with ESMTP id C65A626157F
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 19:41:01 +0100 (CET)
-Received: from gator683.hostgator.com (gator683.hostgator.com
- [174.132.158.226])
- by gateway05.websitewelcome.com (Postfix) with ESMTP id 9B8519C3BE916
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 12:41:00 -0600 (CST)
-In-Reply-To: <50B4F699.5090205@ladisch.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5AAC260817
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 20:11:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,45 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-At 6:21 PM +0100 11/27/12, Clemens Ladisch wrote:
->Daniel Griscom wrote:
->>>  [  432.591698] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->>>  [  432.591702] ALSA sound/usb/pcm.c:1163 packet 1 failed: -18
->>>  [  432.592684] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->>>  [  432.592702] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->>>  [  432.592706] ALSA sound/usb/pcm.c:1163 packet 1 failed: -18
->>>  [  432.593684] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->>>  [  432.593701] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->>>  [  432.593705] ALSA sound/usb/pcm.c:1163 packet 1 failed: -18
->>>  [  432.594680] ALSA sound/usb/pcm.c:1163 packet 0 failed: -18
->
->These packet numbers never get above 1.  Are you using two
->microframes per URB?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-We are using a bInterval value of 1 (on a high-speed device). We've 
-recently tried bumping this up to 2, and the problem was no longer 
-evident, but given the difficulty in reproducing it I wasn't at all 
-clear that we hadn't just moved it to a different set of reproduce 
-conditions.
-
-... is that what you meant?
-
->What is the ALSA buffer size?
-
-We're handing a value of 3072 to snd_pcm_hw_params_set_buffer_size_near().
-
->Regards,
->Clemens
-
-Thanks,
-Dan
-
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 63c24a3..5a1eb5b 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1221,6 +1221,11 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
+ 	{ "IN3L PGA", NULL, "IN3L" },
+ 	{ "IN3R PGA", NULL, "IN3R" },
+ 
++	{ "ASRC1L", NULL, "ASRC1L Input" },
++	{ "ASRC1R", NULL, "ASRC1R Input" },
++	{ "ASRC2L", NULL, "ASRC2L Input" },
++	{ "ASRC2R", NULL, "ASRC2R Input" },
++
+ 	ARIZONA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
+ 	ARIZONA_MIXER_ROUTES("OUT1R", "HPOUT1R"),
+ 	ARIZONA_MIXER_ROUTES("OUT2L", "HPOUT2L"),
 -- 
-Daniel T. Griscom             griscom@suitable.com
-Suitable Systems              http://www.suitable.com/
-1 Centre Street, Suite 204    (781) 665-0053
-Wakefield, MA  01880-2400
+1.7.10.4
