@@ -1,37 +1,39 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [Patch v6 4/4] ASoC: at91sam9g20ek-wm8731: convert to dt support
-Date: Tue, 27 Nov 2012 10:54:03 +0800
-Message-ID: <50B42B4B.90407@atmel.com>
-References: <1352887751-21848-1-git-send-email-voice.shen@atmel.com> <1352887751-21848-5-git-send-email-voice.shen@atmel.com> <201211262123.42812.arnd@arndb.de>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: [PATCH 1/2] ASoC: davinci-mcasp: Add pinctrl support
+Date: Mon, 26 Nov 2012 21:55:33 -0800
+Message-ID: <87y5hn1tey.fsf@dell.be.48ers.dk>
+References: <1353557099-21599-1-git-send-email-gururaja.hebbar@ti.com>
+	<1353557099-21599-2-git-send-email-gururaja.hebbar@ti.com>
+	<20121126114511.GE9411@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <201211262123.42812.arnd@arndb.de>
-Sender: linux-sound-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, broonie@opensource.wolfsonmicro.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20121126114511.GE9411@opensource.wolfsonmicro.com> (Mark Brown's
+	message of "Mon, 26 Nov 2012 11:45:11 +0000")
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, perex@perex.cz, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Arnd,
+>>>>> "Mark" == Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
-On 11/27/2012 5:23, Arnd Bergmann wrote:
-> On Wednesday 14 November 2012, Bo Shen wrote:
->> +
->> +                       ssc0: ssc@fffbc000 {
->> +                               status = "okay";
->> +                               pinctrl-0 = <&pinctrl_ssc0_tx>;
->> +                       };
->>                  };
->>
->
-> This gives me a build error in linux-next with at91sam9g20_defconfig:
->
-> ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+Hi,
 
-Yes, this is because there is a cross merge patch at: 
-https://patchwork.kernel.org/patch/1776941/ acked by Mark Brown, however 
-it does not merged.
+ Mark> On Thu, Nov 22, 2012 at 09:34:58AM +0530, Hebbar, Gururaja wrote:
+ >> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+ >> +	if (IS_ERR(pinctrl))
+ >> +		dev_warn(&pdev->dev,
+ >> +			"pins are not configured from the driver\n");
 
-Best Regards,
-Bo Shen
+ Mark> Since the driver is happy to continue without the pins why is it
+ Mark> bothering requesting them in the first place?  In other words, this
+ Mark> should be a hard error.
+
+Sorry, I disagree. As was discussed recently, there's several reasons
+why the pinctrl call might fail, and not all are fatal (E.G. pinmux
+already setup by bootloader):
+
+http://article.gmane.org/gmane.linux.kernel/1399756
+
+-- 
+Bye, Peter Korsgaard
