@@ -1,26 +1,12 @@
-From: Daniel Griscom <griscom@suitable.com>
-Subject: Re: Missing exactly 3 of 8 audio packets?
-Date: Tue, 27 Nov 2012 15:10:45 -0500
-Message-ID: <p06240802ccdacd0f08d7@[192.168.1.8]>
-References: <p06240816ccd2e5cc9db7@[192.168.1.8]>
- <50AE99E7.6080008@gmail.com> <p06240802ccd72a8f5c3e@[192.168.1.12]>
- <50B21255.8080202@gmail.com> <p06240812ccd8489d6378@[192.168.1.12]>
- <50B31800.2000000@gmail.com> <p06240804ccd98cef996c@[192.168.1.8]>
- <50B4A870.7040201@gmail.com> <p06240808ccdaa0a47bbb@[192.168.1.8]>
- <50B4F699.5090205@ladisch.de> <p0624080cccdaac242dc3@[192.168.1.8]>
- <50B518A9.4090807@ladisch.de>
+From: Ian Minett <ian_minett@creativelabs.com>
+Subject: [PATCH 1/1] ALSA: CA0132 - Handle endianness of SCP
+	buffer data
+Date: Tue, 27 Nov 2012 19:04:47 -0800
+Message-ID: <1354071887-2653-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway12.websitewelcome.com (gateway12.websitewelcome.com
- [67.18.82.6]) by alsa0.perex.cz (Postfix) with ESMTP id 894D92615CF
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 21:10:53 +0100 (CET)
-Received: from gator683.hostgator.com (gator683.hostgator.com
- [174.132.158.226])
- by gateway12.websitewelcome.com (Postfix) with ESMTP id BB4863722BC20
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2012 14:10:54 -0600 (CST)
-In-Reply-To: <50B518A9.4090807@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,52 +16,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
 List-Id: alsa-devel@alsa-project.org
 
-At 8:46 PM +0100 11/27/12, Clemens Ladisch wrote:
->Daniel Griscom wrote:
->>  We are using a bInterval value of 1 (on a high-speed device). We've
->>  recently tried bumping this up to 2, and the problem was no longer
->>  evident
->
->This might indicate that the controller has problems reading the
->packet data from memory; there's a considerable overhead for each
->memory transaction, and the controller needs to update the DMA lists.
->(The pattern might be caused by some data, which arrives too late,
->interfering with the reading of the next packet.)
+From: Ian Minett <ian_minett@creativelabs.com>
 
-So, might this whole thing have been caused by setting bInterval to 1 
-in the device descriptor?
+Handle endianness of the SCP buffer being sent to or from the
+DSP chip on big-endian host architectures.
+The SCP buffer is prepared in dspio_scp(), and bytes are swapped 
+before being transferred by the codec in dspio_send().
+Based on branch origin/topic/hda-ca0132-dsp.
 
->If 2 is the first save interval, consider using 4.
+We would appreciate any feedback you may have.
+Thanks very much,
+- Ian
 
-Interval lengths are 2 ^ (bInterval - 1) microframes, so we went from 
-1 microframe to 2. Should I go right to a bInterval of 2 (4 
-microframes)?
+Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
->  For that matter,
->full-speed devices work fine with one packet per frame.  There isn't
->a problem with buffering one millisecond of data in the device, is it?
-
-We are indeed trying to squeeze the milliseconds out of the audio 
-chain, but getting it robust is obviously the priority.
-
->(The only reason to use smaller intervals is if you really require sub-
->millisecond latencies, or if the bigger packets would eat up too much
->bandwidth in one of the microframes.  The cost of smaller intervals is
->more overhead on the host, on the bus, and in the device.)
-
-We have plenty of bus bandwidth, and I'd thought we had plenty of CPU 
-power, but perhaps not.
-
-
-Thanks,
-Dan
-
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 2fd3121..8386a11 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -28,6 +28,7 @@
+ #include <linux/mutex.h>
+ #include <linux/module.h>
+ #include <linux/firmware.h>
++#include <asm/unaligned.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+@@ -701,11 +702,16 @@ static int dspio_send(struct hda_codec *codec, unsigned int reg,
+ 	unsigned int res;
+ 	int retry = 50;
+ 
++	/* Handling for Big Endian machine */
++	unsigned int val;
++	put_unaligned_le32(data, &val);
++
+ 	/* send bits of data specified by reg to dsp */
+ 	do {
+-		res = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0, reg, data);
+-		if ((res >= 0) && (res != VENDOR_STATUS_DSPIO_BUSY))
+-			return res;
++		res = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0, reg, val);
++		put_unaligned_le32(res, &val);
++		if ((val >= 0) && (val != VENDOR_STATUS_DSPIO_BUSY))
++			return val;
+ 	} while (--retry);
+ 
+ 	return -EIO;
+@@ -719,11 +725,15 @@ static void dspio_write_wait(struct hda_codec *codec)
+ 	int status;
+ 	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
+ 
++	/* Handling for Big Endian machine */
++	unsigned int val;
++
+ 	do {
+ 		status = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0,
+ 						VENDOR_DSPIO_STATUS, 0);
+-		if ((status == VENDOR_STATUS_DSPIO_OK) ||
+-		    (status == VENDOR_STATUS_DSPIO_SCP_RESPONSE_QUEUE_EMPTY))
++		put_unaligned_le32(status, &val);
++		if ((val == VENDOR_STATUS_DSPIO_OK) ||
++		    (val == VENDOR_STATUS_DSPIO_SCP_RESPONSE_QUEUE_EMPTY))
+ 			break;
+ 		msleep(1);
+ 	} while (time_before(jiffies, timeout));
+@@ -736,6 +746,8 @@ static int dspio_write(struct hda_codec *codec, unsigned int scp_data)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+ 	int status;
++	/* Handling for Big Endian machine */
++	unsigned int val = 0;
+ 
+ 	dspio_write_wait(codec);
+ 
+@@ -751,8 +763,10 @@ static int dspio_write(struct hda_codec *codec, unsigned int scp_data)
+ 		goto error;
+ 
+ 	/* OK, now check if the write itself has executed*/
+-	status = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0,
++	val = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0,
+ 				    VENDOR_DSPIO_STATUS, 0);
++	put_unaligned_le32(val, &status);
++
+ error:
+ 	mutex_unlock(&spec->chipio_mutex);
+ 
 -- 
-Daniel T. Griscom             griscom@suitable.com
-Suitable Systems              http://www.suitable.com/
-1 Centre Street, Suite 204    (781) 665-0053
-Wakefield, MA  01880-2400
+1.7.4.1
