@@ -1,48 +1,57 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Record FLL setting when
-	disabling
-Date: Wed, 28 Nov 2012 11:51:18 +0000
-Message-ID: <1354103478-28595-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
+ on Arizona CODECs
+Date: Wed, 28 Nov 2012 13:49:20 +0000
+Message-ID: <20121128134920.GQ32691@opensource.wolfsonmicro.com>
+References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <1354020025-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <20121127195644.GA29727@core.coreip.homeip.net>
+ <20121127200001.GJ4468@opensource.wolfsonmicro.com>
+ <20121128071132.GE23378@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 22E2D2615F2
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 12:51:20 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QVgWX4+QEldMe/r9"
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121128071132.GE23378@core.coreip.homeip.net>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise we skip reenables.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |    3 +++
- 1 file changed, 3 insertions(+)
+--QVgWX4+QEldMe/r9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 1bc6f25..0c2c453 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1004,6 +1004,9 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
- 		if (ena)
- 			pm_runtime_put_autosuspend(arizona->dev);
- 
-+		fll->fref = Fref;
-+		fll->fout = Fout;
-+
- 		return 0;
- 	}
- 
--- 
-1.7.10.4
+On Tue, Nov 27, 2012 at 11:11:32PM -0800, Dmitry Torokhov wrote:
+
+> No, going through ASoc tree is fine with me. But given that it is a new
+> driver I think we should merge it quickly, especially since merge window
+> hasn't opened yet.
+
+I applied them all now.
+
+--QVgWX4+QEldMe/r9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQthZCAAoJELSic+t+oim9fUAP/03pUT1rSdnDmXteNi0KgCf7
+r8bxAYPzu/jrB7VV6HUMNinpK1OH/46paS8/TQbMUziFKuayNu6LBU1i9xjLCQmj
+laIUd/IAh1gPYf+Cy4ev9pQLMLsG2KK+LHQFEPKQsPlWjRnhpLIFWVVSrAil3ctD
+u+DjyBqesHuw+LvdKNXvjQSGq9yCQYbf3kXsyBH83lAh8FfoPaTCoWJfzIVcFpI9
+gukvy80Vn8o7NtIuen716G5ZXObCEaP4hUK8tkZilCILs7ZlzS+670N1UHozqcsL
+z2UjXP3O9euik4AjzlK7MWeeEMoSbGuqpTMlpxOlLCBVXygoapC0aIsIfECEo4WR
+kZh00NNFAxEhguupfrQgNo0L+gqpn3tZXOzmj1pFtrOR31phZ/FB2Gzkqcoc5fz/
+29Opv87VIFbQGxCulByHkkZgtFyfOvtznHV+enjVzGVlSRtNLPCPY34R/qCsjTDq
+RajFVnT93OEDPC874KqqUiBW0DGPuYWj7GGJM5lOstaGbB+bMLtvdQqNye/7OR/I
+9xzY4UxWgXTmaYG9domWsXvemiGcLPtkENQ1LHHvIIFByg/qnnsCjC4e2Oj7PgId
+gm0uB6yYg/DNXAwd+FKA/e+NGwd6o1yEpS5FOkiQh/lU/oRgUm7KLe5WRbkvvDV6
+MJUPetUVeQaatCw3k+7S
+=oCNk
+-----END PGP SIGNATURE-----
+
+--QVgWX4+QEldMe/r9--
