@@ -1,67 +1,76 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/adsp 139/139]
- sound/soc/codecs/wm_adsp.c:556:4: warning: suggest parentheses around
- comparison in operand of '&'
-Date: Thu, 29 Nov 2012 02:08:03 +0800
-Message-ID: <50b65303.kWUxe6P+Biw7JuEF%fengguang.wu@intel.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Use "ti,jack-detection" DT
+ property as boolean
+Date: Wed, 28 Nov 2012 19:17:20 +0000
+Message-ID: <20121128191719.GA32691@opensource.wolfsonmicro.com>
+References: <1354098943-16185-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3307C261731
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 19:09:19 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============9150900626875740763=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1354098943-16185-1-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/adsp
-head:   973838a030d2a91fbd524c95281991510ed0a865
-commit: 973838a030d2a91fbd524c95281991510ed0a865 [139/139] ASoC: wm_adsp: Enable DVFS for ADSP2
-config: make ARCH=x86_64 allmodconfig
 
-All warnings:
+--===============9150900626875740763==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ELawpaRm0uGyL1wg"
+Content-Disposition: inline
 
-sound/soc/codecs/wm_adsp.c: In function 'wm_adsp2_event':
-sound/soc/codecs/wm_adsp.c:556:4: warning: suggest parentheses around comparison in operand of '&' [-Wparentheses]
 
-vim +556 sound/soc/codecs/wm_adsp.c
+--ELawpaRm0uGyL1wg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-2159ad93 Mark Brown 2012-10-11  540  	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
-2159ad93 Mark Brown 2012-10-11  541  	struct wm_adsp *dsp = &dsps[w->shift];
-973838a0 Mark Brown 2012-11-28  542  	unsigned int val;
-2159ad93 Mark Brown 2012-10-11  543  	int ret;
-2159ad93 Mark Brown 2012-10-11  544  
-2159ad93 Mark Brown 2012-10-11  545  	switch (event) {
-2159ad93 Mark Brown 2012-10-11  546  	case SND_SOC_DAPM_POST_PMU:
-973838a0 Mark Brown 2012-11-28  547  		if (dsp->dvfs) {
-973838a0 Mark Brown 2012-11-28  548  			ret = regmap_read(dsp->regmap,
-973838a0 Mark Brown 2012-11-28  549  					  dsp->base + ADSP2_CLOCKING, &val);
-973838a0 Mark Brown 2012-11-28  550  			if (ret != 0) {
-973838a0 Mark Brown 2012-11-28  551  				dev_err(dsp->dev,
-973838a0 Mark Brown 2012-11-28  552  					"Failed to read clocking: %d\n", ret);
-973838a0 Mark Brown 2012-11-28  553  				return ret;
-973838a0 Mark Brown 2012-11-28  554  			}
-973838a0 Mark Brown 2012-11-28  555  
-973838a0 Mark Brown 2012-11-28 @556  			if (val & ADSP2_CLK_SEL_MASK >= 3) {
-973838a0 Mark Brown 2012-11-28  557  				ret = regulator_enable(dsp->dvfs);
-973838a0 Mark Brown 2012-11-28  558  				if (ret != 0) {
-973838a0 Mark Brown 2012-11-28  559  					dev_err(dsp->dev,
-973838a0 Mark Brown 2012-11-28  560  						"Failed to enable supply: %d\n",
-973838a0 Mark Brown 2012-11-28  561  						ret);
-973838a0 Mark Brown 2012-11-28  562  					return ret;
-973838a0 Mark Brown 2012-11-28  563  				}
-973838a0 Mark Brown 2012-11-28  564  
+On Wed, Nov 28, 2012 at 11:35:43AM +0100, Peter Ujfalusi wrote:
+> Handle the jack detection inforamtion as bool from devicetree.
 
----
-0-DAY kernel build testing backend         Open Source Technology Center
-Fengguang Wu, Yuanhan Liu                              Intel Corporation
+Applied, thanks.
+
+--ELawpaRm0uGyL1wg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQtmMoAAoJELSic+t+oim9nX0QAIyliEP3d0hsA8+NqXmB22ZK
+V9XKEJKluHf37S6XoOROQlzas1RPAfE93QzDalA7zfCRyIbFGHyh3HWD7iPAi2FO
+J4tlFHzcoV+xJ0XWiAYJ3571dxQdH84jBKp5jwo3lbD3sBJi7m2RxaTaiP5XVeRB
+wc1C+bPWhsukfX8Gu1A6HNuqYz3gMK3UX5JwWIX0ZsZsOS6zkwgVgFMyD4ACYC+A
+BA91Xk3ljbSNTpynBuy6lDg5rZQ/SSEHOEhvzHPOa+92GN0wjb85PQIfu6AY7DQx
+B2EEKs+0K1rxPB1pFSRaQZ0jBiYqxSs7OrecYtpzHWd0g1w4KtE3zWhPZkO0Ed6L
+cI5dodiNtqZ16vBjOBJTa3LzSEoUZzATjwH+/Boc3xqhmcLB3Mx1WiNlrxGM4tXR
+EKwILPIffD1BgVZJrcnZtG5hHKuvRQAeuBBN4NCoAtJvSN1Um9HXqZAcya5maXvS
+woXvGRXQmTIBOw5WyMHIXsfcLiWvV7Fpxbg0RAyZlzWr9YSjNUxzYkYhuY20+TzA
+Z3VcUW0AdP1ncfr7M42+Pe1s/eONA0Kf7mq0H261gGzInPmXBioMkfDyXhSi30zn
+yHgmk7KxvSAkgzeEIcGT1+dtmZjKgXnzaG48Q6W1cJeJFXftem9byrBPqTR4axHy
+1zrPTgiSUJ16ivzmDy1I
+=FsOD
+-----END PGP SIGNATURE-----
+
+--ELawpaRm0uGyL1wg--
+
+--===============9150900626875740763==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============9150900626875740763==--
