@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/14] ASoC: wm8350: Use
+Subject: Re: [PATCH 02/14] ASoC: wm8962: Use
 	devm_regulator_bulk_get
-Date: Wed, 28 Nov 2012 17:38:59 +0000
-Message-ID: <20121128173858.GT32691@opensource.wolfsonmicro.com>
+Date: Wed, 28 Nov 2012 17:39:46 +0000
+Message-ID: <20121128173946.GU32691@opensource.wolfsonmicro.com>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
- <1353930587-12907-2-git-send-email-sachin.kamat@linaro.org>
+ <1353930587-12907-3-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5379565122051369306=="
+Content-Type: multipart/mixed; boundary="===============8152411382025399904=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1741026172C
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:39:00 +0100 (CET)
-In-Reply-To: <1353930587-12907-2-git-send-email-sachin.kamat@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF2CB2625DD
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:39:47 +0100 (CET)
+In-Reply-To: <1353930587-12907-3-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5379565122051369306==
+--===============8152411382025399904==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v15hXiddb3kq3Bam"
+	protocol="application/pgp-signature"; boundary="+k4Drb7WGefOwc9B"
 Content-Disposition: inline
 
 
---v15hXiddb3kq3Bam
+--+k4Drb7WGefOwc9B
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 26, 2012 at 05:19:34PM +0530, Sachin Kamat wrote:
+On Mon, Nov 26, 2012 at 05:19:35PM +0530, Sachin Kamat wrote:
 > devm_regulator_bulk_get() is device managed and makes error
 > handling and code cleanup simpler.
 
-Applied, thanks, but *ALWAYS* CC maintainers on patches.
+Applied, but again *ALWAYS* CC maintainers.
 
---v15hXiddb3kq3Bam
+--+k4Drb7WGefOwc9B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQtkwpAAoJELSic+t+oim9HaQP/0XYJ7dUr5WzJVLu3c0hyKgv
-Kw9OY7iFlOgd+PDJkpLfvdvdFRSLaCUmB2A9WwKBEXvgZetf0F85IFrw65qzE+EP
-Me31JBNhNvDaPbKd5XdU1pRoNwA3XZWFyBnQB0TrV3M/jYPk4CYr60jgRPVZ0Tr9
-axnDQMUwIOJltCNbZeO7CCdSINVdUGYUPqvt4L6fQNHklRcN7eOPqV8Wc7Qe91TM
-Z13lwl7IiXKo6CatXpjsL6CKrXQpItSokR3j8d7Kvl0YZ7b3vjt89JCqV6jIIG0R
-0RRJCXKBp2zGI+/H2dluKHDeSktM12j6OjfUqCGAt6GEmgWKMPS6Hm7wcHo/WA61
-C/86MGp9Jcj2zKQahcNdEL4lMd6CHTUHbxkZjpgf7sZeTmtUIYZwqlx34DWcbBQG
-vk9c5OXwXMD7X9UhtTBiGEmexNgg0Dx/v6chk1iSqWPY37+mWqoyvNRT9LP0F5jK
-vz/MWZbs5Kq2reEetsubaWvM3BetI0YziP0vDKGMhDBlVE95NyVBkMeJxSW4TMYa
-I7GrGVgt9BjVsY+Chcw2DimS5sJwvzzM9xPX1f9in25Pa611tU0oayXLoTsxmJIQ
-+bdpCJdp6qbbLSEVDht073JWDgCTNVq18prNy1v+QSh9IXDeGErv6MXyY341Le09
-+pmWD+jP77CN7C9JKx65
-=gh6k
+iQIcBAEBAgAGBQJQtkxOAAoJELSic+t+oim9askP/jqljD57APvh4Mm8Lvqg+Jl/
+JTsnTLHKrcBlTM8Jf0ephDKQGyS9yzWRjtQz92BFxsMeweG0KgdmolW7oTaBhcoC
+PD7ztJhKBevWp8nUT3E/O4NmO+PxNjefvUIMbbeO3BI73A2MElqPXF3R730jc9p9
+KM5TlJkmFnJB4oJ9BGRDJWWvLBMzWmE1/UVVHCGxCRMVTjQqQdLd2jNycGZ1NAXC
+b39JMGLMDfLRi5MNhr1EcC/H1gs0POayQecKqZI01REAuzlyDkuKezxMCa7I1i5C
+xr9mi4GC9p8PxXhd2mXHvrICzy96vpfo8M9ihz4S5UFZPy88o5KgYsn/aw6BNWHv
+18vJTzPuVuthETTbycBFRfiqEZ48TTQVFmnZv1vyipoByI1tfhwN+zkO45rewwhf
+q5kAve2QOUZbFgL/HDnWFknipSx6yaOZa/nOZgluA9yQEIiczL39iOE9ZGtW3F6A
+yCdlhR33eAiteaOEqogJTQT8cvcFLBghOM825K/M3NdL5OTgplNqPu9wpWFKULam
+8JuxvufYQJdj8PWuxUb2wtb0nURHcMIhxJOF5Ux0F8tjAbKNEzVh1xyb36fZ9337
+OraQao6jBfNcjLeBcMOK0GHH/HF7xhdEdy/hXNqmPzfBY3XNSkshb1p2D2IcgQ7L
+9UdOiR4zxfkhlr6oOtPB
+=LEzz
 -----END PGP SIGNATURE-----
 
---v15hXiddb3kq3Bam--
+--+k4Drb7WGefOwc9B--
 
---===============5379565122051369306==
+--===============8152411382025399904==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5379565122051369306==--
+--===============8152411382025399904==--
