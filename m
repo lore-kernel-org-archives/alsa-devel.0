@@ -1,8 +1,8 @@
 From: Eldad Zack <eldad@fogrefinery.com>
 Subject: [FT C400, PATCH RFC,
-	v4 06/10] usb-audio: parameterize FTU effect unit control
-Date: Wed, 28 Nov 2012 23:55:37 +0100
-Message-ID: <1354143341-1623-7-git-send-email-eldad@fogrefinery.com>
+	v4 07/10] usb-audio: M-Audio Fast Track C400 quirks table
+Date: Wed, 28 Nov 2012 23:55:38 +0100
+Message-ID: <1354143341-1623-8-git-send-email-eldad@fogrefinery.com>
 References: <1354143341-1623-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
  [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2236F264F3F
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 23:56:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 034DF264F53
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 23:56:05 +0100 (CET)
 Received: by mail-bk0-f51.google.com with SMTP id ik5so5643893bkc.38
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 14:56:03 -0800 (PST)
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 14:56:05 -0800 (PST)
 In-Reply-To: <1354143341-1623-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,107 +28,102 @@ To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Felix Homann <
 Cc: Grant Diffey <gdiffey@gmail.com>, George Willian Condomitti <georgecondomitti@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds the unit ID and the control as parameters to the creation of the
-effect unit control for the M-Audio Fast Track Ultra. This allows the
-code to be shared with other devices that use different unit ID and
-control, such as the M-Audio Fast Track C400.
+Adds a quirks table for the M-Audio Fast Track C400.
+Thanks to Clemens Ladisch <clemens@ladisch.de> for pointing out that
+the table must be sorted.
+
+Based on the following patch from the alsa-devel list:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-May/051676.html
+
+See also:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2012-April/051219.html
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/mixer_quirks.c |   24 ++++++++++++++++--------
- 1 files changed, 16 insertions(+), 8 deletions(-)
+ sound/usb/quirks-table.h |   71 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 71 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 4199b97..a614dab 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -635,11 +635,13 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
- }
- 
- /* M-Audio FastTrack Ultra quirks */
--/* FTU Effect switch */
-+/* FTU Effect switch (also used by C400) */
- struct snd_ftu_eff_switch_priv_val {
- 	struct usb_mixer_interface *mixer;
- 	int cached_value;
- 	int is_cached;
-+	int bUnitID;
-+	int validx;
- };
- 
- static int snd_ftu_eff_switch_info(struct snd_kcontrol *kcontrol,
-@@ -674,9 +676,8 @@ static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
- 	struct snd_ftu_eff_switch_priv_val *pval;
- 	int err;
- 	unsigned char value[2];
-+	int id, validx;
- 
--	const int id = 6;
--	const int validx = 1;
- 	const int val_len = 2;
- 
- 	value[0] = 0x00;
-@@ -698,6 +699,8 @@ static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
- 	if (snd_BUG_ON(!chip))
- 		return -EINVAL;
- 
-+	id = pval->bUnitID;
-+	validx = pval->validx;
- 
- 	down_read(&mixer->chip->shutdown_rwsem);
- 	if (mixer->chip->shutdown)
-@@ -728,10 +731,8 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	struct usb_mixer_interface *mixer;
- 	int changed, cur_val, err, new_val;
- 	unsigned char value[2];
-+	int id, validx;
- 
--
--	const int id = 6;
--	const int validx = 1;
- 	const int val_len = 2;
- 
- 	changed = 0;
-@@ -749,6 +750,9 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	if (snd_BUG_ON(!chip))
- 		return -EINVAL;
- 
-+	id = pval->bUnitID;
-+	validx = pval->validx;
-+
- 	if (!pval->is_cached) {
- 		/* Read current value */
- 		down_read(&mixer->chip->shutdown_rwsem);
-@@ -793,7 +797,8 @@ static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
- 	return changed;
- }
- 
--static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer)
-+static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer,
-+	int validx, int bUnitID)
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 88d8ceb..0635801 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2163,6 +2163,77 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
  {
- 	static struct snd_kcontrol_new template = {
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -816,6 +821,8 @@ static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer)
- 	pval->cached_value = 0;
- 	pval->is_cached = 0;
- 	pval->mixer = mixer;
-+	pval->bUnitID = bUnitID;
-+	pval->validx = validx;
- 
- 	template.private_value = (unsigned long) pval;
- 	kctl = snd_ctl_new1(&template, mixer->chip);
-@@ -974,9 +981,10 @@ static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)
- 	if (err < 0)
- 		return err;
- 
--	err = snd_ftu_create_effect_switch(mixer);
-+	err = snd_ftu_create_effect_switch(mixer, 1, 6);
- 	if (err < 0)
- 		return err;
-+
- 	err = snd_ftu_create_effect_volume_ctl(mixer);
- 	if (err < 0)
- 		return err;
++	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2030),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		/* .vendor_name = "M-Audio", */
++		/* .product_name = "Fast Track C400", */
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
++			/* Playback */
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 6,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000 |
++						 SNDRV_PCM_RATE_88200 |
++						 SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++							44100, 48000, 88200, 96000
++					},
++					.clock = 0x81,
++				}
++			},
++			/* Capture */
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 3,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000 |
++						 SNDRV_PCM_RATE_88200 |
++						 SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					},
++					.clock = 0x81,
++				}
++			},
++			/* MIDI */
++			{
++				.ifnum = -1 /* Interface = 4 */
++			}
++		}
++	}
++},
++{
+ 	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2080),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
 -- 
 1.7.8.6
