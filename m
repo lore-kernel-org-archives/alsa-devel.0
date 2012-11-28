@@ -1,64 +1,96 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [GIT PULL] ASoC: Samsung: Updates for v3.8
-Date: Wed, 28 Nov 2012 09:08:40 +0000
-Message-ID: <20121128090840.GH32691@opensource.wolfsonmicro.com>
-References: <001601cdcd28$ce5204c0$6af60e40$@com>
- <CAAgF-Bfv46Xt0hFdPmviCdZbpje1M4MBnmCsHGgdOjcq4SnuJw@mail.gmail.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ASoC: wm9090: Use devm_regmap_init_i2c()
+Date: Wed, 28 Nov 2012 14:43:52 +0530
+Message-ID: <1354094032-1701-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G44BJl3Aq1QbV/QL"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAgF-Bfv46Xt0hFdPmviCdZbpje1M4MBnmCsHGgdOjcq4SnuJw@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, Kukjin Kim <kgene.kim@samsung.com>, devicetree-discuss@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 241F1261570
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 10:20:25 +0100 (CET)
+Received: by mail-pb0-f51.google.com with SMTP id ro12so6627567pbb.38
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 01:20:25 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, patches@linaro.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, sachin.kamat@linaro.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+devm_regmap_init_i2c() is device managed and makes error
+handling and code cleanup simpler.
 
---G44BJl3Aq1QbV/QL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ sound/soc/codecs/wm9090.c |   20 ++++++--------------
+ 1 files changed, 6 insertions(+), 14 deletions(-)
 
-On Wed, Nov 28, 2012 at 11:21:31AM +0530, Padma Venkat wrote:
-> On Wed, Nov 28, 2012 at 10:55 AM, Sangbeom Kim <sbkim73@samsung.com> wrote:
-
-> >> > The requirement for an alias is also very odd, where does that come from?
-
-> >> I don't know that Which one is odd. Please let me know.
-
-> > Having them at all is odd - it's not something other DT bindings have needed and there was nothing
-> > saying what it was for.
-
-> What is the exact requirement here? Should I remove the alias ids or
-> I2S1 and I2S2 nodes as they are in disabled state? This is done same
-> way as SPI and I2C. Please explain me.
-
-If you need those aliases you need to explain why.  They're listed as
-mandatory so presumably they must be needed for something?  It might be
-that this is a good idea we didn't think of before so the answer is just
-to document that rather than remove them.
-
---G44BJl3Aq1QbV/QL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQtdSRAAoJELSic+t+oim9hW4P/iB9/Ver6dz1OkExAxgZhjBi
-RsiZwCfP9WJpy53G5JuutnRFqvrAzjEbOaWI9JiVieg5D+Gl8RCpYt78RkOhaOSa
-PIcXrtkac9NMkfgx8YjH2wqR2o/aebfFan5y8SAIQNHWE9GRe6BjLb0+FLezFTPY
-k2PRsQVExCOeDmv1HvHREmrVBW1OMA2PYQCKH0MfX6nR1CEsOxgu/qgONFUHVlgb
-rPpCVHfXcSXxCmidlEwDax7BcXOsJk337CAE/rjS+86WZxWIipwTmpOIsao3Y/HF
-l9ywAqA0eXFb++FtgAd/0HolORcxV7UewxYCZr6fJO6o4ZVI/0BpMHOfM/Iasw06
-vOwiS99Lf8pkiwuSLEx7B6zNbbERRhP1XBZnOtZoKSoFx2pzTes/yYY5bbKwtwCE
-KH9wAHc0vVMpjkwKXZa9TeaebbqQjZN8lGzrGuHfIjZEAOiiWIehjUB09viB4Ic3
-Kd08qeia1yQqjxp7TetyjMPGYuMOlLzavKB95+CIioGQ7NhYV/VRK4Tqw0IqhXIg
-fko4fZOeVZYLzKeb0ToJkVMr3v1ox4WGhhbyCB9xLFm7rqoEgfkT2bHQ6DsD0Q+p
-9aUGm+Ko0RY33/uZPUrDoYufNahH5Fn3yiQZ9mLq3p2PLzyd/gsDCMqPxpe8+o72
-Q5O/q8xU/OiWt/S3lCdV
-=y6Du
------END PGP SIGNATURE-----
-
---G44BJl3Aq1QbV/QL--
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index c7ddc56..bb55a70 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -628,7 +628,7 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 		return -ENOMEM;
+ 	}
+ 
+-	wm9090->regmap = regmap_init_i2c(i2c, &wm9090_regmap);
++	wm9090->regmap = devm_regmap_init_i2c(i2c, &wm9090_regmap);
+ 	if (IS_ERR(wm9090->regmap)) {
+ 		ret = PTR_ERR(wm9090->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
+@@ -637,16 +637,16 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 
+ 	ret = regmap_read(wm9090->regmap, WM9090_SOFTWARE_RESET, &reg);
+ 	if (ret < 0)
+-		goto err;
++		return ret;
++
+ 	if (reg != 0x9093) {
+ 		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", reg);
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
+ 
+ 	ret = regmap_write(wm9090->regmap, WM9090_SOFTWARE_RESET, 0);
+ 	if (ret < 0)
+-		goto err;
++		return ret;
+ 
+ 	if (i2c->dev.platform_data)
+ 		memcpy(&wm9090->pdata, i2c->dev.platform_data,
+@@ -658,23 +658,15 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 			&soc_codec_dev_wm9090,  NULL, 0);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	return 0;
+-
+-err:
+-	regmap_exit(wm9090->regmap);
+-	return ret;
+ }
+ 
+ static int __devexit wm9090_i2c_remove(struct i2c_client *i2c)
+ {
+-	struct wm9090_priv *wm9090 = i2c_get_clientdata(i2c);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+-	regmap_exit(wm9090->regmap);
+-
+ 	return 0;
+ }
+ 
+-- 
+1.7.4.1
