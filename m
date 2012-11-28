@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 07/14] ASoC: lm49453: Use
-	devm_regmap_init_i2c()
-Date: Wed, 28 Nov 2012 17:45:18 +0000
-Message-ID: <20121128174518.GZ32691@opensource.wolfsonmicro.com>
-References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
- <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:topic/adsp 139/139]
+ sound/soc/codecs/wm_adsp.c:556:4: warning: suggest parentheses around
+ comparison in operand of '&'
+Date: Thu, 29 Nov 2012 02:08:03 +0800
+Message-ID: <50b65303.kWUxe6P+Biw7JuEF%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0124760261656903017=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E97AF2625E6
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:45:19 +0100 (CET)
-In-Reply-To: <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3307C261731
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 19:09:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/adsp
+head:   973838a030d2a91fbd524c95281991510ed0a865
+commit: 973838a030d2a91fbd524c95281991510ed0a865 [139/139] ASoC: wm_adsp: Enable DVFS for ADSP2
+config: make ARCH=x86_64 allmodconfig
 
---===============0124760261656903017==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E9SPMlsjsjqOlA3h"
-Content-Disposition: inline
+All warnings:
 
+sound/soc/codecs/wm_adsp.c: In function 'wm_adsp2_event':
+sound/soc/codecs/wm_adsp.c:556:4: warning: suggest parentheses around comparison in operand of '&' [-Wparentheses]
 
---E9SPMlsjsjqOlA3h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+vim +556 sound/soc/codecs/wm_adsp.c
 
-On Mon, Nov 26, 2012 at 05:19:40PM +0530, Sachin Kamat wrote:
-> devm_regmap_init_i2c() is device managed and makes error
-> handling and code cleanup simpler.
+2159ad93 Mark Brown 2012-10-11  540  	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+2159ad93 Mark Brown 2012-10-11  541  	struct wm_adsp *dsp = &dsps[w->shift];
+973838a0 Mark Brown 2012-11-28  542  	unsigned int val;
+2159ad93 Mark Brown 2012-10-11  543  	int ret;
+2159ad93 Mark Brown 2012-10-11  544  
+2159ad93 Mark Brown 2012-10-11  545  	switch (event) {
+2159ad93 Mark Brown 2012-10-11  546  	case SND_SOC_DAPM_POST_PMU:
+973838a0 Mark Brown 2012-11-28  547  		if (dsp->dvfs) {
+973838a0 Mark Brown 2012-11-28  548  			ret = regmap_read(dsp->regmap,
+973838a0 Mark Brown 2012-11-28  549  					  dsp->base + ADSP2_CLOCKING, &val);
+973838a0 Mark Brown 2012-11-28  550  			if (ret != 0) {
+973838a0 Mark Brown 2012-11-28  551  				dev_err(dsp->dev,
+973838a0 Mark Brown 2012-11-28  552  					"Failed to read clocking: %d\n", ret);
+973838a0 Mark Brown 2012-11-28  553  				return ret;
+973838a0 Mark Brown 2012-11-28  554  			}
+973838a0 Mark Brown 2012-11-28  555  
+973838a0 Mark Brown 2012-11-28 @556  			if (val & ADSP2_CLK_SEL_MASK >= 3) {
+973838a0 Mark Brown 2012-11-28  557  				ret = regulator_enable(dsp->dvfs);
+973838a0 Mark Brown 2012-11-28  558  				if (ret != 0) {
+973838a0 Mark Brown 2012-11-28  559  					dev_err(dsp->dev,
+973838a0 Mark Brown 2012-11-28  560  						"Failed to enable supply: %d\n",
+973838a0 Mark Brown 2012-11-28  561  						ret);
+973838a0 Mark Brown 2012-11-28  562  					return ret;
+973838a0 Mark Brown 2012-11-28  563  				}
+973838a0 Mark Brown 2012-11-28  564  
 
-Applied, thanks.
-
---E9SPMlsjsjqOlA3h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQtk2KAAoJELSic+t+oim9Cv0P/AowQdtyjuPU2kHnnIYEgOhm
-c8z8B8KngdocO8qI4kFH3nMQqz0YIpuV4PSn2uxsKBKwhYCDWDSPeH7FbY9+Jg/x
-kn9swjN0zRPkvBg1a/kM/HEKvZHx9iv2qdtcSku/U7gzturQEkViS7AVUnWPbVrZ
-zE/XVBzwp2rsR0cWLtP0gLcXacfUIdy0sX0c4BJXu/26ayURQfCd9yCX1VAWv7V0
-11SvTieQWnfs0XJil8npbfn4YWk4O0H482r+LAfTGELpvBUOyo//8WCEnWzYX2iQ
-Z809wDktU3FSOznwFJGMT4cVCtNdIgV9WGL1JXZgNohv4ts2Zq6yaw2zaTBluzNW
-F5mpNKV2cRDY60NML1Tv9neD4D+JI2AFtJ+gzmz2d5b6LbqliD/gayNJdtClHHbc
-9o8MNIbQL9QOQZIUt2pdBFWJzHsaJMH/IsWSiHIcq/eKU7HK6qqn+67BXvVHa1gA
-gjAb5wj9jNas2H0Fbb98ggAiYEsouQddxNMickr2T/kOrF68u3MaslnmEno9Ht4p
-uwpFD6FGUUo+hjB+Dk2Is62KRgFgCTArGOV7Ycx2q7K018ejTOMBJ0tVkaTatHPy
-B1KnDqoO58SxoyZmOGpby8O4cN2sHluJf3vB0j+q4X7Al6nAifFKCHGG/dXJNZAF
-IPwPMHFYnJg2oQLF78fh
-=38RF
------END PGP SIGNATURE-----
-
---E9SPMlsjsjqOlA3h--
-
---===============0124760261656903017==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0124760261656903017==--
+---
+0-DAY kernel build testing backend         Open Source Technology Center
+Fengguang Wu, Yuanhan Liu                              Intel Corporation
