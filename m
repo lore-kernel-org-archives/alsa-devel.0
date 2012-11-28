@@ -1,57 +1,34 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] Input - arizona-haptics: Add driver haptics module
- on Arizona CODECs
-Date: Wed, 28 Nov 2012 13:49:20 +0000
-Message-ID: <20121128134920.GQ32691@opensource.wolfsonmicro.com>
-References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <1354020025-23881-2-git-send-email-broonie@opensource.wolfsonmicro.com>
- <20121127195644.GA29727@core.coreip.homeip.net>
- <20121127200001.GJ4468@opensource.wolfsonmicro.com>
- <20121128071132.GE23378@core.coreip.homeip.net>
+Subject: Re: [PATCH] sound/sgtl5000: fix initial setting for DAC data source
+Date: Wed, 28 Nov 2012 13:59:54 +0000
+Message-ID: <20121128135953.GA22582@sirena.org.uk>
+References: <50B5E03E.2080308@ti.com>
+ <1354097668-3780-1-git-send-email-oskar@scara.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QVgWX4+QEldMe/r9"
-Return-path: <linux-input-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20121128071132.GE23378@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com
+In-Reply-To: <1354097668-3780-1-git-send-email-oskar@scara.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Wolfram Sang <w.sang@pengutronix.de>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>, Fabio Estevam <fabio.estevam@freescale.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 28, 2012 at 10:14:28AM +0000, Oskar Schirmer wrote:
 
---QVgWX4+QEldMe/r9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You've somehow decided to CC half the world but still haven't managed
+to CC the maintainers like Liam asked (and as is covered in
+SubmittingPatches)...
 
-On Tue, Nov 27, 2012 at 11:11:32PM -0800, Dmitry Torokhov wrote:
+> According to documentation bit 3:2 in register SSS_CTRL are
+> reserved and zero, so the setting of 0x0008 does not make much sense.
+> Instead, bit 4 should be set as is with power up, to reflect
+> routing of I2S_IN to DAC correctly.
 
-> No, going through ASoc tree is fine with me. But given that it is a new
-> driver I think we should merge it quickly, especially since merge window
-> hasn't opened yet.
+> Looks much like an off by one error.
 
-I applied them all now.
-
---QVgWX4+QEldMe/r9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQthZCAAoJELSic+t+oim9fUAP/03pUT1rSdnDmXteNi0KgCf7
-r8bxAYPzu/jrB7VV6HUMNinpK1OH/46paS8/TQbMUziFKuayNu6LBU1i9xjLCQmj
-laIUd/IAh1gPYf+Cy4ev9pQLMLsG2KK+LHQFEPKQsPlWjRnhpLIFWVVSrAil3ctD
-u+DjyBqesHuw+LvdKNXvjQSGq9yCQYbf3kXsyBH83lAh8FfoPaTCoWJfzIVcFpI9
-gukvy80Vn8o7NtIuen716G5ZXObCEaP4hUK8tkZilCILs7ZlzS+670N1UHozqcsL
-z2UjXP3O9euik4AjzlK7MWeeEMoSbGuqpTMlpxOlLCBVXygoapC0aIsIfECEo4WR
-kZh00NNFAxEhguupfrQgNo0L+gqpn3tZXOzmj1pFtrOR31phZ/FB2Gzkqcoc5fz/
-29Opv87VIFbQGxCulByHkkZgtFyfOvtznHV+enjVzGVlSRtNLPCPY34R/qCsjTDq
-RajFVnT93OEDPC874KqqUiBW0DGPuYWj7GGJM5lOstaGbB+bMLtvdQqNye/7OR/I
-9xzY4UxWgXTmaYG9domWsXvemiGcLPtkENQ1LHHvIIFByg/qnnsCjC4e2Oj7PgId
-gm0uB6yYg/DNXAwd+FKA/e+NGwd6o1yEpS5FOkiQh/lU/oRgUm7KLe5WRbkvvDV6
-MJUPetUVeQaatCw3k+7S
-=oCNk
------END PGP SIGNATURE-----
-
---QVgWX4+QEldMe/r9--
+What does "as is with power up" mean?  This is a register defaults
+table, it should reflect what is in the register defaults.  The meaning
+of the field and the desired configuration for runtime is not relevant
+here, the only thing that matters is what the default value of the
+register is.
