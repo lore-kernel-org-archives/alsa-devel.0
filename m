@@ -1,38 +1,39 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: SOC that needs L/R data in separate buffers
-Date: Wed, 28 Nov 2012 10:13:50 +0000
-Message-ID: <50B5E3DE.8000109@ti.com>
-References: <CAKON4OzLvNUNsWXoaBMy+BFT-dhv2sAW6ytPXpTWkKEjoS+w0w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id B739B26167A
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 11:13:58 +0100 (CET)
-In-Reply-To: <CAKON4OzLvNUNsWXoaBMy+BFT-dhv2sAW6ytPXpTWkKEjoS+w0w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: [PATCH] sound/sgtl5000: fix initial setting for DAC data source
+Date: 28 Nov 2012 10:14:28 +0000
+Message-ID: <1354097668-3780-1-git-send-email-oskar@scara.com>
+References: <50B5E03E.2080308@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <50B5E03E.2080308@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>, Fabio Estevam <fabio.estevam@freescale.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 28/11/12 04:13, jonsmirl@gmail.com wrote:
-> Is there a format in ALSA for hardware that wants the L/R stereo data
-> in two different buffers and not inter-leaved? Hardware has two DMA
-> channels into separate FIFOs for L/R.
->
+According to documentation bit 3:2 in register SSS_CTRL are
+reserved and zero, so the setting of 0x0008 does not make much sense.
+Instead, bit 4 should be set as is with power up, to reflect
+routing of I2S_IN to DAC correctly.
 
-asound.h lists all the supported data formats and we have 
-SNDRV_PCM_ACCESS_RW_NONINTERLEAVED for non interleaved hardware.
+Looks much like an off by one error.
 
-Regards
+Signed-off-by: Oskar Schirmer <oskar@scara.com>
+---
+ sound/soc/codecs/sgtl5000.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Liam
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index df2f99d..5b37891 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -37,7 +37,7 @@
+ static const u16 sgtl5000_regs[SGTL5000_MAX_REG_OFFSET] =  {
+ 	[SGTL5000_CHIP_CLK_CTRL] = 0x0008,
+ 	[SGTL5000_CHIP_I2S_CTRL] = 0x0010,
+-	[SGTL5000_CHIP_SSS_CTRL] = 0x0008,
++	[SGTL5000_CHIP_SSS_CTRL] = 0x0010,
+ 	[SGTL5000_CHIP_DAC_VOL] = 0x3c3c,
+ 	[SGTL5000_CHIP_PAD_STRENGTH] = 0x015f,
+ 	[SGTL5000_CHIP_ANA_HP_CTRL] = 0x1818,
+-- 
+1.7.9.5
