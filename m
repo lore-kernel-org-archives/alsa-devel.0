@@ -1,17 +1,17 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/1] ASoC: wm2200: Remove empty labels
-Date: Wed, 28 Nov 2012 14:45:25 +0530
-Message-ID: <1354094125-4506-1-git-send-email-sachin.kamat@linaro.org>
+From: Peter Meerwald <pmeerw@pmeerw.net>
+Subject: Re: mic bias for tlv320aic3x?
+Date: Wed, 28 Nov 2012 10:28:53 +0100 (CET)
+Message-ID: <alpine.DEB.2.01.1211280927500.26303@pmeerw.net>
+References: <alpine.DEB.2.01.1211271808130.20477@pmeerw.net>
+ <20121127175326.GB13065@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
- [209.85.160.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BEAB261570
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 10:21:58 +0100 (CET)
-Received: by mail-pb0-f51.google.com with SMTP id ro12so6628329pbb.38
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 01:21:57 -0800 (PST)
+Received: from pmeerw.net (ns.pmeerw.net [87.118.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4E78261570
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 10:28:54 +0100 (CET)
+In-Reply-To: <20121127175326.GB13065@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, patches@linaro.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, sachin.kamat@linaro.org, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Removed unnecessary labels probably left out of some previous cleanup.
+Hello,
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- sound/soc/codecs/wm2200.c |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+> > I'd like to enable 2V mic bias on the tlv320aic3x (which offers 2V, 2.5V, 
+> > AVDD, off) -- I'd have expected some control in alsamixer to so, but there 
+> > is none
+ 
+> > what is the proper way to implement mic bias selection?
+ 
+> As platform data or possibly via an API offered to the machine driver,
+> we've yet to see any use case where it's something that should be varied
+> directly from the application layer.
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 1730df8..ff45b02 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -2205,7 +2205,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 		ret = PTR_ERR(wm2200->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
- 			ret);
--		goto err;
-+		return ret;
- 	}
- 
- 	for (i = 0; i < 2; i++) {
-@@ -2238,7 +2238,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to request core supplies: %d\n",
- 			ret);
--		goto err_regmap;
-+		return ret;
- 	}
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(wm2200->core_supplies),
-@@ -2246,7 +2246,7 @@ static __devinit int wm2200_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to enable core supplies: %d\n",
- 			ret);
--		goto err_core;
-+		return ret;
- 	}
- 
- 	if (wm2200->pdata.ldo_ena) {
-@@ -2382,9 +2382,6 @@ err_ldo:
- err_enable:
- 	regulator_bulk_disable(ARRAY_SIZE(wm2200->core_supplies),
- 			       wm2200->core_supplies);
--err_core:
--err_regmap:
--err:
- 	return ret;
- }
- 
+I can see the platform data way
+
+I'd be happy with an API to control from the machine driver -- is 
+snd_soc_dapm_enable_pin() to be used for this + some SND_SOC_DAPM_MIC? 
+
+I am missing the overall strategy how this is supposed to work
+
+is there a good reference driver?
+
+per default, Mic Bias is off
+there already are some mic bias definitions in tlv320aic3x:
+
+	/* Mic Bias */
+	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias 2V",
+			 MICBIAS_CTRL, 6, 3, 1, 0),
+	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias 2.5V",
+			 MICBIAS_CTRL, 6, 3, 2, 0),
+	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias AVDD",
+			 MICBIAS_CTRL, 6, 3, 3, 0),
+
+however, those are not referenced anywhere and it is not clear how to 
+access those from the machine driver
+
+as for the use case: user wants to connect either a microphone or line-in 
+to a connector, hence mic bias selection is necessary -- this doesn't 
+sound so unusual
+
+thanks, regards, p.
+
 -- 
-1.7.4.1
+
+Peter Meerwald
++43-664-2444418 (mobile)
