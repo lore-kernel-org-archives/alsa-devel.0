@@ -1,76 +1,54 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: omap-abe-twl6040: Use "ti,jack-detection" DT
- property as boolean
-Date: Wed, 28 Nov 2012 19:17:20 +0000
-Message-ID: <20121128191719.GA32691@opensource.wolfsonmicro.com>
-References: <1354098943-16185-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V4 1/2] ASoC: Samsung: Get I2S src_clk from clock alias
+ id.
+Date: Wed, 28 Nov 2012 19:18:22 +0000
+Message-ID: <20121128191822.GB32691@opensource.wolfsonmicro.com>
+References: <1354099669-1735-1-git-send-email-padma.v@samsung.com>
+ <1354099669-1735-2-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9150900626875740763=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1354098943-16185-1-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JoJCGVnM/36AiBh+"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1354099669-1735-2-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: padma.kvr@gmail.com, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, lrg@ti.com, jassisinghbrar@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9150900626875740763==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ELawpaRm0uGyL1wg"
-Content-Disposition: inline
-
-
---ELawpaRm0uGyL1wg
+--JoJCGVnM/36AiBh+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 28, 2012 at 11:35:43AM +0100, Peter Ujfalusi wrote:
-> Handle the jack detection inforamtion as bool from devicetree.
+On Wed, Nov 28, 2012 at 04:17:48PM +0530, Padmavathi Venna wrote:
+> As the I2S src clks are registered with clkdev using generic
+> connection id, driver can get the clk name using generic id.
+> So the variable representing the array of rclk src clks is
+> deleted.
 
 Applied, thanks.
 
---ELawpaRm0uGyL1wg
+--JoJCGVnM/36AiBh+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQtmMoAAoJELSic+t+oim9nX0QAIyliEP3d0hsA8+NqXmB22ZK
-V9XKEJKluHf37S6XoOROQlzas1RPAfE93QzDalA7zfCRyIbFGHyh3HWD7iPAi2FO
-J4tlFHzcoV+xJ0XWiAYJ3571dxQdH84jBKp5jwo3lbD3sBJi7m2RxaTaiP5XVeRB
-wc1C+bPWhsukfX8Gu1A6HNuqYz3gMK3UX5JwWIX0ZsZsOS6zkwgVgFMyD4ACYC+A
-BA91Xk3ljbSNTpynBuy6lDg5rZQ/SSEHOEhvzHPOa+92GN0wjb85PQIfu6AY7DQx
-B2EEKs+0K1rxPB1pFSRaQZ0jBiYqxSs7OrecYtpzHWd0g1w4KtE3zWhPZkO0Ed6L
-cI5dodiNtqZ16vBjOBJTa3LzSEoUZzATjwH+/Boc3xqhmcLB3Mx1WiNlrxGM4tXR
-EKwILPIffD1BgVZJrcnZtG5hHKuvRQAeuBBN4NCoAtJvSN1Um9HXqZAcya5maXvS
-woXvGRXQmTIBOw5WyMHIXsfcLiWvV7Fpxbg0RAyZlzWr9YSjNUxzYkYhuY20+TzA
-Z3VcUW0AdP1ncfr7M42+Pe1s/eONA0Kf7mq0H261gGzInPmXBioMkfDyXhSi30zn
-yHgmk7KxvSAkgzeEIcGT1+dtmZjKgXnzaG48Q6W1cJeJFXftem9byrBPqTR4axHy
-1zrPTgiSUJ16ivzmDy1I
-=FsOD
+iQIcBAEBAgAGBQJQtmNvAAoJELSic+t+oim9fZYP/2/WkyyEDQZlnVSgGeYsIz0+
+r5R8r5ZsCFIbdmtZQPjHJkTDzt0gc6W2jDjv7CzCmcH1tjtXGc0Pe3lrOX9YQrKk
+GKQ8X520v5j7vaeJF9Dp6SqSwtfY50ZE1ti9V1/pDg77wobzyFMAA0KeflECiNFH
+bfBVWH/iIoT29spS7c7gytJV2cmAILxF/RcUlhQvzjo8RLc1nAiXvAo22qgNnNRe
++SAc9sVcLH7xsamPBYbpGt67jxAi7ZjL9A1174w+da2liKGPY0PIhebBQSWyOmYi
+XlBPy0XtcaKm0QtLFWvHrMTcaWxVV4soVBLkH1yNBWoeUg/Q83HGIxTaTbeQmRG4
+RrECriLm9zstuSldP+AOWK7ozKCbu8wgHSKaxO0gE1pl+QfKjybWUInRE9zYmHdr
+t9pQe+P+D9GBUnKe0hjKj6Cwhm7W522m0lzF6SYeiGtwhIoRR1toPxEJQXpG+Jn3
+rFlIYNY+SA4cDowy5JMoYyQzOQ2KOJCOCRQrE1Tr33c+hze98t0cMd2m+tgLB2MQ
+PJ3UXjy6bc0VWR5T6quWzfheJuxU0kq4bWc/7TwZAFPhPRUJwsWvEb3j8cNrb06U
+cgQldJM2SiQXbldYbZeSTOJYtQQunpqQ5WvA4vteEqL/9NaQAdqurlgX2jsB0phd
+wLdC2/Hj7LDmw/NBAf6x
+=2kM8
 -----END PGP SIGNATURE-----
 
---ELawpaRm0uGyL1wg--
-
---===============9150900626875740763==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============9150900626875740763==--
+--JoJCGVnM/36AiBh+--
