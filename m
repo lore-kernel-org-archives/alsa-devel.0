@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 03/14] ASoC: wm8400: Use
+Subject: Re: [PATCH 04/14] ASoC: wm8993: Use
 	devm_regulator_bulk_get
-Date: Wed, 28 Nov 2012 17:40:29 +0000
-Message-ID: <20121128174028.GV32691@opensource.wolfsonmicro.com>
+Date: Wed, 28 Nov 2012 17:41:42 +0000
+Message-ID: <20121128174142.GW32691@opensource.wolfsonmicro.com>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
- <1353930587-12907-4-git-send-email-sachin.kamat@linaro.org>
+ <1353930587-12907-5-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1370041877284516419=="
+Content-Type: multipart/mixed; boundary="===============6712262966347785940=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 262692625E6
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:40:30 +0100 (CET)
-In-Reply-To: <1353930587-12907-4-git-send-email-sachin.kamat@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0C9A261731
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:41:43 +0100 (CET)
+In-Reply-To: <1353930587-12907-5-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1370041877284516419==
+--===============6712262966347785940==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ln+iIw7POnzHEEo5"
+	protocol="application/pgp-signature"; boundary="7kW37LRKoI6fR2de"
 Content-Disposition: inline
 
 
---Ln+iIw7POnzHEEo5
+--7kW37LRKoI6fR2de
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 26, 2012 at 05:19:36PM +0530, Sachin Kamat wrote:
+On Mon, Nov 26, 2012 at 05:19:37PM +0530, Sachin Kamat wrote:
 > devm_regulator_bulk_get() is device managed and makes error
 > handling and code cleanup simpler.
 
-Applied, thanks.  CC maintainers...
+Applied, thanks.  CC maintainers.
 
---Ln+iIw7POnzHEEo5
+--7kW37LRKoI6fR2de
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQtkx7AAoJELSic+t+oim9sb0P/2f+2mkuoomy1mVsjLaomjW5
-FrnCp0x59DbYlvHEgisnHY5wITzp2dH/SRlAf2pYne3+3EK35HYeyQ7oDE2EI9qM
-nzjX/1oMhME62i2stnQe1Iu3grbQPgCvTDD0Q2DdKtVlCDPNg6hrny9+jHk2/vfB
-T/Da7PtcrZiwen1sPSDj/PWYCpFJZmlVO1yjpF7ARF/bmtOdztLmwSOSvbolyks9
-zJ13V8pwQvYr851y+7PbO/9H2JKYEzsDWMEXOpBB+GRW7y5fOTVMIB+DdNwOzR+q
-Fhh93GndFTMHEhvrISG/g+S03G2RR6cGS4FGgKMoERsDxgHKoPu6lyf+488gcX35
-ecwYtjt3/N4ruO3RrkbELX1osv5q/vvBx9B0NEcaAuMGUYrR7hNHTe4x8xLkpHHe
-0oDGKWUSJ24qGVulW6FbgRz8IFBIaKMKqfwjGbcRlXYkkpeOSSLSRbu3moSYohay
-HLP85kXeAYpF8Ws6Fs7GnQ6fiL5cLn/+mV5SvLI3GKIx2JEQ5qvKu8DGbTqXY4F5
-4jTlR8zFg0sDU4e6pu+ytP6G+2YqGlnUKchYhIlFHrf+cbMq3hQnHDYuFDoXeWV6
-g3iak4npA02W542YsrfMrN9t8XcKICjY8dJNcsXcBUAEEMaV7rnscGVqpnDOgvVJ
-2gHIX+YwPLwFtlslEfSe
-=wYPl
+iQIcBAEBAgAGBQJQtkzPAAoJELSic+t+oim9/xUP/iazNxzwmTYx0cgVyhVI8alE
+eEXRb0V6w9DIIZjVbOtBi/G8vRXVy57GeLhMgpq6AVFMkw/ovn5gnGcH5Ow2Vur1
+3ijjx7+CEXwQqOU+WMWbXaKQGy80ytvVoaZgGsYH2/xq2vTXCJzXKb5uneU7e1D4
+Db1+byYfidKmeGBPpQQIbursLxsFk27z9P0RRAe7wet6Pn8EnZktaL5BRtavwB8U
+vhdXvyrAMYm1JgkK+2+oMeP0R6xEVXAibaP59bFgAoxJuLmR6jRtoTqSMrf+8z0O
+cZcSiUHrGN/lKdp+r1zTgujy9Sx+9dHP2t7lSFUlqcS+AZLQnHiitrS7EFAWZLDI
+3c3yR4UY1o0ZiJU8A3ov5EzerfpmZaF6lIHoiX9mLuc5YnJBJxeFLIArlY3q1thq
+6hiPSduE0EO/uYzsyYOBU36Y/UKd13fuIgQ5N9x1VHkgFl8SgQ2KBQL61ZhRFQzn
+3dzf3Buy/i/YimPK2WYwbInlLJ1iPoeq7Mv1kUU3D/HpsjJr/aVfh+PLoCbIADzh
+T9bQMs79jou+tRUh2WUDyWgqN45TyOCufDoULE/rhrwe2br5Ydj+C8COnozaRMue
+xJVWkHweFPJ5504Fi70qp2kVKdzIJ/1GiD46RrlVQ3MuFDs3+MUQAvTH5YF8qVYy
+28Hw6w7CTqLxfKwwne+X
+=Tv4y
 -----END PGP SIGNATURE-----
 
---Ln+iIw7POnzHEEo5--
+--7kW37LRKoI6fR2de--
 
---===============1370041877284516419==
+--===============6712262966347785940==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1370041877284516419==--
+--===============6712262966347785940==--
