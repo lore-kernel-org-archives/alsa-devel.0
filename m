@@ -1,54 +1,69 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V4 1/2] ASoC: Samsung: Get I2S src_clk from clock alias
- id.
-Date: Wed, 28 Nov 2012 19:18:22 +0000
-Message-ID: <20121128191822.GB32691@opensource.wolfsonmicro.com>
-References: <1354099669-1735-1-git-send-email-padma.v@samsung.com>
- <1354099669-1735-2-git-send-email-padma.v@samsung.com>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH] ALSA: snd-usb: properly initialize the
+ sync endpoint
+Date: Wed, 28 Nov 2012 22:17:17 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1211282212500.5153@xoschi>
+References: <1353612479-8460-1-git-send-email-zonque@gmail.com>
+ <s5hhaohcrp3.wl%tiwai@suse.de> <alpine.LNX.2.00.1211281646530.1397@xoschi>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JoJCGVnM/36AiBh+"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1354099669-1735-2-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: padma.kvr@gmail.com, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, lrg@ti.com, jassisinghbrar@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EE86264F0A
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 22:17:26 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so5621266bkc.38
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 13:17:26 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1211281646530.1397@xoschi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---JoJCGVnM/36AiBh+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 28 Nov 2012, Eldad Zack wrote:
+> On Thu, 22 Nov 2012, Takashi Iwai wrote:
+> > At Thu, 22 Nov 2012 20:27:59 +0100,
+> > Daniel Mack wrote:
+> > > 
+> > > Jeffrey Barish reported an obvious bug in the pcm part of the usb-audio
+> > > driver which causes the code to not initialize the sync endpoint from
+> > > configure_endpoint().
+> > > 
+> > > Reported-by: Jeffrey Barish <jeff_barish at earthlink.net>
+> > > Signed-off-by: Daniel Mack <zonque at gmail.com>
+> > > Cc: stable at kernel.org [3.5+]
+> > 
+> > Thanks, applied.
+> 
+> This breaks the pcm init for the FT C400 - the reason is once 
+> again the mismatch between sync and data in terms of channels and period
+> bytes.
+> I didn't notice it, since I was always opening capture and playback at 
+> the same time.
+> 
+> After reverting it works as expected (for capture + playback) - however, 
+> the revert is not a fix:
+> If I open only the playback stream from userspace (using jack with -P),
+> it will error out and then it will refuse to open pcm even for capture.
+> But if I first open the device for capture (using jackd with -C), stop 
+> it, then open just the playback, it works. Not surprising, since the sync
+> ep was already set up.
+> 
+> Any suggestions on how to initialize the sync ep with its specific
+> channel and period bytes paramaters?
 
-On Wed, Nov 28, 2012 at 04:17:48PM +0530, Padmavathi Venna wrote:
-> As the I2S src clks are registered with clkdev using generic
-> connection id, driver can get the clk name using generic id.
-> So the variable representing the array of rclk src clks is
-> deleted.
+Update: I found a solution for this - I'll post it with the C400 v4 
+(today or tomorrow).
 
-Applied, thanks.
-
---JoJCGVnM/36AiBh+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQtmNvAAoJELSic+t+oim9fZYP/2/WkyyEDQZlnVSgGeYsIz0+
-r5R8r5ZsCFIbdmtZQPjHJkTDzt0gc6W2jDjv7CzCmcH1tjtXGc0Pe3lrOX9YQrKk
-GKQ8X520v5j7vaeJF9Dp6SqSwtfY50ZE1ti9V1/pDg77wobzyFMAA0KeflECiNFH
-bfBVWH/iIoT29spS7c7gytJV2cmAILxF/RcUlhQvzjo8RLc1nAiXvAo22qgNnNRe
-+SAc9sVcLH7xsamPBYbpGt67jxAi7ZjL9A1174w+da2liKGPY0PIhebBQSWyOmYi
-XlBPy0XtcaKm0QtLFWvHrMTcaWxVV4soVBLkH1yNBWoeUg/Q83HGIxTaTbeQmRG4
-RrECriLm9zstuSldP+AOWK7ozKCbu8wgHSKaxO0gE1pl+QfKjybWUInRE9zYmHdr
-t9pQe+P+D9GBUnKe0hjKj6Cwhm7W522m0lzF6SYeiGtwhIoRR1toPxEJQXpG+Jn3
-rFlIYNY+SA4cDowy5JMoYyQzOQ2KOJCOCRQrE1Tr33c+hze98t0cMd2m+tgLB2MQ
-PJ3UXjy6bc0VWR5T6quWzfheJuxU0kq4bWc/7TwZAFPhPRUJwsWvEb3j8cNrb06U
-cgQldJM2SiQXbldYbZeSTOJYtQQunpqQ5WvA4vteEqL/9NaQAdqurlgX2jsB0phd
-wLdC2/Hj7LDmw/NBAf6x
-=2kM8
------END PGP SIGNATURE-----
-
---JoJCGVnM/36AiBh+--
+Cheers,
+Eldad
