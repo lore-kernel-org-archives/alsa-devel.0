@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 06/14] ASoC: da7210: Use
+Subject: Re: [PATCH 07/14] ASoC: lm49453: Use
 	devm_regmap_init_i2c()
-Date: Wed, 28 Nov 2012 17:43:19 +0000
-Message-ID: <20121128174318.GY32691@opensource.wolfsonmicro.com>
+Date: Wed, 28 Nov 2012 17:45:18 +0000
+Message-ID: <20121128174518.GZ32691@opensource.wolfsonmicro.com>
 References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
- <1353930587-12907-7-git-send-email-sachin.kamat@linaro.org>
+ <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5859528733106624408=="
+Content-Type: multipart/mixed; boundary="===============0124760261656903017=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 432942625DD
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:43:20 +0100 (CET)
-In-Reply-To: <1353930587-12907-7-git-send-email-sachin.kamat@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E97AF2625E6
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2012 18:45:19 +0100 (CET)
+In-Reply-To: <1353930587-12907-8-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,51 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5859528733106624408==
+--===============0124760261656903017==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="B7FF+pnjRCrp0ISR"
+	protocol="application/pgp-signature"; boundary="E9SPMlsjsjqOlA3h"
 Content-Disposition: inline
 
 
---B7FF+pnjRCrp0ISR
+--E9SPMlsjsjqOlA3h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 26, 2012 at 05:19:39PM +0530, Sachin Kamat wrote:
+On Mon, Nov 26, 2012 at 05:19:40PM +0530, Sachin Kamat wrote:
 > devm_regmap_init_i2c() is device managed and makes error
 > handling and code cleanup simpler.
 
 Applied, thanks.
 
---B7FF+pnjRCrp0ISR
+--E9SPMlsjsjqOlA3h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQtk0vAAoJELSic+t+oim9mf8P/ilcaJXr7GBJLcExw8WnxHcs
-C7FT5dd2qp9VGNLaqN4g2Qz+cRLrvkL1sf3wlAblkFvfC4Z/4FGIsfVCirNv09em
-nb9OxGYSm3CKJla3GHYuN5t5MpJQ3S7ugkbzZlXbhxCCZJlDMXR1ABT8HkUDX+o3
-Ijy4wCndfpho9DDqtWdE83noAoPO0/IWvyOOSiYJsESg9TFNGVHvuKuT3MX810IL
-j/Ir51FTaJjsOvAIRCoFIzy5ROMoqsIWNVdPlsNruLrYeaEihaHqKnwmWTep4rBN
-32sEB+/Z4iRslIpgwO3webkSsUDrqxVkMbmXJOFh8xIQ8G08nDcsEFcOh7xM0T74
-HvhV6ZcC3hwP0eXRf5K91BvS+ZDXRgsOugmHmp6HeudrbF7UBVf1Tu0XO4Fr0E7q
-bXRyyE5qZTbKdgQWHMn+kPNanVxa5NxTrxJ7b8UtpnLTyPPa/UVyXbvcpVEX8Tgo
-vXirk1Q7J5ilzc/SbcjhpFuvTiwvIsI8xNjRylEmR4zlnFL4Je+lc/uWTwYvYUdo
-ZEdbIQhKjOMcVL+DKuiu4JbE9LRPc+ty6rGpfv3mRQlckm5qXwle2jsxP//UmBKX
-Lrt4UMDhtXdpACRaRxWqJ7BgGqv+OHwKRIRV6sPSjX+moX+YZAAYgqn2rsZPUgOd
-IfxgRLf1vfWE6gcqeoMW
-=y9F/
+iQIcBAEBAgAGBQJQtk2KAAoJELSic+t+oim9Cv0P/AowQdtyjuPU2kHnnIYEgOhm
+c8z8B8KngdocO8qI4kFH3nMQqz0YIpuV4PSn2uxsKBKwhYCDWDSPeH7FbY9+Jg/x
+kn9swjN0zRPkvBg1a/kM/HEKvZHx9iv2qdtcSku/U7gzturQEkViS7AVUnWPbVrZ
+zE/XVBzwp2rsR0cWLtP0gLcXacfUIdy0sX0c4BJXu/26ayURQfCd9yCX1VAWv7V0
+11SvTieQWnfs0XJil8npbfn4YWk4O0H482r+LAfTGELpvBUOyo//8WCEnWzYX2iQ
+Z809wDktU3FSOznwFJGMT4cVCtNdIgV9WGL1JXZgNohv4ts2Zq6yaw2zaTBluzNW
+F5mpNKV2cRDY60NML1Tv9neD4D+JI2AFtJ+gzmz2d5b6LbqliD/gayNJdtClHHbc
+9o8MNIbQL9QOQZIUt2pdBFWJzHsaJMH/IsWSiHIcq/eKU7HK6qqn+67BXvVHa1gA
+gjAb5wj9jNas2H0Fbb98ggAiYEsouQddxNMickr2T/kOrF68u3MaslnmEno9Ht4p
+uwpFD6FGUUo+hjB+Dk2Is62KRgFgCTArGOV7Ycx2q7K018ejTOMBJ0tVkaTatHPy
+B1KnDqoO58SxoyZmOGpby8O4cN2sHluJf3vB0j+q4X7Al6nAifFKCHGG/dXJNZAF
+IPwPMHFYnJg2oQLF78fh
+=38RF
 -----END PGP SIGNATURE-----
 
---B7FF+pnjRCrp0ISR--
+--E9SPMlsjsjqOlA3h--
 
---===============5859528733106624408==
+--===============0124760261656903017==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5859528733106624408==--
+--===============0124760261656903017==--
