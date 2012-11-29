@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for v3.8
-Date: Thu, 29 Nov 2012 17:44:45 +0000
-Message-ID: <20121129174445.GP32691@opensource.wolfsonmicro.com>
-References: <20121129161015.GL32691@opensource.wolfsonmicro.com>
- <s5hy5hknzho.wl%tiwai@suse.de>
- <20121129164422.GM32691@opensource.wolfsonmicro.com>
- <s5htxs8nxu2.wl%tiwai@suse.de>
- <20121129171004.GO32691@opensource.wolfsonmicro.com>
- <s5hsj7snxc1.wl%tiwai@suse.de>
+From: Daniel Griscom <griscom@suitable.com>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Thu, 29 Nov 2012 15:35:54 -0500
+Message-ID: <p06240802ccdd6fe50ce5@[192.168.1.8]>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4810302977212624708=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EBB59261677
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 18:44:46 +0100 (CET)
-In-Reply-To: <s5hsj7snxc1.wl%tiwai@suse.de>
+Received: from gateway01.websitewelcome.com (gateway01.websitewelcome.com
+ [67.18.36.19]) by alsa0.perex.cz (Postfix) with ESMTP id 7313C2616DB
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 21:41:13 +0100 (CET)
+Received: from gator683.hostgator.com (gator683.hostgator.com
+ [174.132.158.226])
+ by gateway01.websitewelcome.com (Postfix) with ESMTP id CE9BB96BF04AE
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 14:35:57 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa Developer <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Daniel (M) and Clemens,
 
---===============4810302977212624708==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VSMi1UXgOp435K5S"
-Content-Disposition: inline
+I'd like to conclude this thread if I could. It seems clear that 
+configuring our USB audio card's descriptor with a bInterval value of 
+1 (a packet every microframe) was too aggressive, and was part of 
+what caused the packet stuttering issue. (Right?)
 
+We almost certainly should increase bInterval; I'll try 2, and if 
+that seems stable will probably go to 3 (4 microframes) for some 
+margin. However, I'm still concerned that the symptoms don't sound 
+like a simple starvation issue, where I'd expect to have a missing 
+frame every once in a while. Instead, we were seeing reliable 
+operation interspersed with periods where lots of packets were being 
+consistently omitted. To me, this suggests that there's some other 
+issue going on, either in the USB stack or in the USB hardware itself.
 
---VSMi1UXgOp435K5S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 29, 2012 at 06:16:46PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> >  It's an accurate reflection of
-> > what's happening.
-
-> Yes, and this reveals something ugly really happened.
-> Using gitk (or any other GUI) is a very fundamental workflow for
-> normal developers.  We mustn't mess it up.
-
-I don't see it as ugly to be honest - it's no worse for me than any
-other gitk log, they're all unreadable in the merge window.  The massive
-pile of branches just gets splattered even further over the map.
-
---VSMi1UXgOp435K5S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQt522AAoJELSic+t+oim9rTkP/3ko6H9NeTa5qE5s0Yyx/dmQ
-2kbL5DKSTKvcgLvs9K3XqX5JEs52AvSV+DAZ1NNIEdQ3wAUjQ2FrU4X9zCrhWhuj
-9LakEcWVwJUqAD50PoT2+u+NpwH4fzwPLRrbJxm3zs3zM/xP77dhevL+T1ZqIEHU
-9RcM6aw3X0EZCtBS9/JbiZcn1fcHTlRgmm97yKfxJplZgP0gJlLNGt35Y8z+TJwx
-EH1WHdU00fIdSNLjOCY9tVL2GfdCllXfBaUeACVJfCv5Wtrk1ybMCgccga6s3ZXN
-A145hMqmyZ+pdQVhzCNaum/nVCxJZGMBf8+9tL+TSN5xBDZh5JlVlRHv9PmTvUm5
-0nw47EANSqgx0uADuehOcFWz5UaWl+RYBeQkCeHwmuGz1036WY7guiMgWWI1gPT7
-18yalPkPCyOkpbpG1RMe7RW9gP41WItDEygZ4Rxj55bYwe7+4Cqy0TpF97EpI1rM
-7cpGSLD90vasFrqkUhyoBcpZv6Y/MnCh5li31oQzsvCvg05sCeVDNEoxmWBA2klJ
-3OVcoKFiqyyg92Hj/RcqP/RMjT43oThzlDeSTYFUj4RvvNhIzz1eeBXQvIwCFCMR
-2Mh4gI81xkEJfy3NKDlrEAovkIZEoJYzbmIxmKqI8oDYd8u9maFz6b46xPgPVnbi
-Q4D0ifZxfDpgbok+nIGh
-=KAML
------END PGP SIGNATURE-----
-
---VSMi1UXgOp435K5S--
-
---===============4810302977212624708==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Given that, I'm worried that increasing bInterval will just move the 
+symptoms around, making it harder to duplicate but not truly becoming 
+robust.
 
 
---===============4810302977212624708==--
+Any thoughts on this? Should I try chasing the issue into the Linux 
+USB development mailing list, or will they just say "set bInterval to 
+a larger value!"?
+
+
+Thanks,
+Dan
+
+-- 
+Daniel T. Griscom             griscom@suitable.com
+Suitable Systems              http://www.suitable.com/
+1 Centre Street, Suite 204    (781) 665-0053
+Wakefield, MA  01880-2400
