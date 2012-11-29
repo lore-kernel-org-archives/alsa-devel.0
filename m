@@ -1,16 +1,16 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [asoc:topic/arizona 16/21]
- drivers/input/misc/arizona-haptics.c:164 arizona_haptics_close() warn:
- variable dereferenced before check 'haptics->arizona->dapm' (see line 158)
-Date: Thu, 29 Nov 2012 10:31:19 +0300
-Message-ID: <20121129073119.GY6186@mwanda>
+Subject: [asoc:topic/adsp 139/139]
+ sound/soc/codecs/wm_adsp.c:556 wm_adsp2_event() warn: add some parenthesis
+ here?
+Date: Thu, 29 Nov 2012 10:33:37 +0300
+Message-ID: <20121129073337.GZ6186@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 37337265076
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 08:31:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FFAB26505A
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 08:33:45 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,39 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fengguang Wu <fengguang.wu@intel.com>, alsa-devel@alsa-project.org, kbuild@01.org
+Cc: kbuild@01.org, Fengguang Wu <fengguang.wu@intel.com>, alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
 
 FYI, there are new smatch warnings show up in
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/arizona
-head:   cac27cff066cf86c6fefe33d99d935e9d0d9c78c
-commit: 9dd555e2f4de1af1bb0f75cc84ed0708fcdb5987 [16/21] Input - arizona-haptics: Add driver haptics module on Arizona CODECs
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/adsp
+head:   973838a030d2a91fbd524c95281991510ed0a865
+commit: 973838a030d2a91fbd524c95281991510ed0a865 [139/139] ASoC: wm_adsp: Enable DVFS for ADSP2
 
-+ drivers/input/misc/arizona-haptics.c:164 arizona_haptics_close() warn: variable dereferenced before check 'haptics->arizona->dapm' (see line 158)
++ sound/soc/codecs/wm_adsp.c:556 wm_adsp2_event() warn: add some parenthesis here?
 
 git remote update asoc
-git checkout 9dd555e2f4de1af1bb0f75cc84ed0708fcdb5987
-vim +164 drivers/input/misc/arizona-haptics.c
+git checkout 973838a030d2a91fbd524c95281991510ed0a865
+vim +556 sound/soc/codecs/wm_adsp.c
 
-9dd555e2 Mark Brown 2012-11-26  152  	return 0;
-9dd555e2 Mark Brown 2012-11-26  153  }
-9dd555e2 Mark Brown 2012-11-26  154  
-9dd555e2 Mark Brown 2012-11-26  155  static void arizona_haptics_close(struct input_dev *input)
-9dd555e2 Mark Brown 2012-11-26  156  {
-9dd555e2 Mark Brown 2012-11-26  157  	struct arizona_haptics *haptics = input_get_drvdata(input);
-9dd555e2 Mark Brown 2012-11-26 @158  	struct mutex *dapm_mutex = &haptics->arizona->dapm->card->dapm_mutex;
-9dd555e2 Mark Brown 2012-11-26  159  
-9dd555e2 Mark Brown 2012-11-26  160  	cancel_work_sync(&haptics->work);
-9dd555e2 Mark Brown 2012-11-26  161  
-9dd555e2 Mark Brown 2012-11-26  162  	mutex_lock_nested(dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-9dd555e2 Mark Brown 2012-11-26  163  
-9dd555e2 Mark Brown 2012-11-26 @164  	if (haptics->arizona->dapm)
-9dd555e2 Mark Brown 2012-11-26  165  		snd_soc_dapm_disable_pin(haptics->arizona->dapm, "HAPTICS");
-9dd555e2 Mark Brown 2012-11-26  166  
-9dd555e2 Mark Brown 2012-11-26  167  	mutex_unlock(dapm_mutex);
+2159ad93 Mark Brown 2012-10-11  540  	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+2159ad93 Mark Brown 2012-10-11  541  	struct wm_adsp *dsp = &dsps[w->shift];
+973838a0 Mark Brown 2012-11-28  542  	unsigned int val;
+2159ad93 Mark Brown 2012-10-11  543  	int ret;
+2159ad93 Mark Brown 2012-10-11  544  
+2159ad93 Mark Brown 2012-10-11  545  	switch (event) {
+2159ad93 Mark Brown 2012-10-11  546  	case SND_SOC_DAPM_POST_PMU:
+973838a0 Mark Brown 2012-11-28  547  		if (dsp->dvfs) {
+973838a0 Mark Brown 2012-11-28  548  			ret = regmap_read(dsp->regmap,
+973838a0 Mark Brown 2012-11-28  549  					  dsp->base + ADSP2_CLOCKING, &val);
+973838a0 Mark Brown 2012-11-28  550  			if (ret != 0) {
+973838a0 Mark Brown 2012-11-28  551  				dev_err(dsp->dev,
+973838a0 Mark Brown 2012-11-28  552  					"Failed to read clocking: %d\n", ret);
+973838a0 Mark Brown 2012-11-28  553  				return ret;
+973838a0 Mark Brown 2012-11-28  554  			}
+973838a0 Mark Brown 2012-11-28  555  
+973838a0 Mark Brown 2012-11-28 @556  			if (val & ADSP2_CLK_SEL_MASK >= 3) {
+
+Precedence bug.  The intent was:
+                                                        if (val & ADSP2_CLK_SEL_MASK) >= 3) {
+
+973838a0 Mark Brown 2012-11-28  557  				ret = regulator_enable(dsp->dvfs);
+973838a0 Mark Brown 2012-11-28  558  				if (ret != 0) {
+973838a0 Mark Brown 2012-11-28  559  					dev_err(dsp->dev,
+973838a0 Mark Brown 2012-11-28  560  						"Failed to enable supply: %d\n",
+973838a0 Mark Brown 2012-11-28  561  						ret);
+973838a0 Mark Brown 2012-11-28  562  					return ret;
+973838a0 Mark Brown 2012-11-28  563  				}
+973838a0 Mark Brown 2012-11-28  564  
 
 ---
 0-DAY kernel build testing backend         Open Source Technology Center
