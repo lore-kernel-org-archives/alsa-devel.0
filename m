@@ -1,18 +1,16 @@
-From: Daniel Griscom <griscom@suitable.com>
-Subject: Re: Missing exactly 3 of 8 audio packets?
-Date: Thu, 29 Nov 2012 15:35:54 -0500
-Message-ID: <p06240802ccdd6fe50ce5@[192.168.1.8]>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH - hdsp.c 1/1] HDSP fixes for RPM
+Date: Thu, 29 Nov 2012 22:59:03 +0100
+Message-ID: <50B7DAA7.20109@drcomp.erfurt.thur.de>
+References: <1353533632.2957.10.camel@chello084112006029.chello.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway01.websitewelcome.com (gateway01.websitewelcome.com
- [67.18.36.19]) by alsa0.perex.cz (Postfix) with ESMTP id 7313C2616DB
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 21:41:13 +0100 (CET)
-Received: from gator683.hostgator.com (gator683.hostgator.com
- [174.132.158.226])
- by gateway01.websitewelcome.com (Postfix) with ESMTP id CE9BB96BF04AE
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 14:35:57 -0600 (CST)
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62DCC261710
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 22:59:05 +0100 (CET)
+In-Reply-To: <1353533632.2957.10.camel@chello084112006029.chello.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>
+To: Karl Grill <kgrill@chello.at>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Daniel (M) and Clemens,
+On 11/21/2012 10:33 PM, Karl Grill wrote:
 
-I'd like to conclude this thread if I could. It seems clear that 
-configuring our USB audio card's descriptor with a bInterval value of 
-1 (a packet every microframe) was too aggressive, and was part of 
-what caused the packet stuttering issue. (Right?)
+Hi!
 
-We almost certainly should increase bInterval; I'll try 2, and if 
-that seems stable will probably go to 3 (4 microframes) for some 
-margin. However, I'm still concerned that the symptoms don't sound 
-like a simple starvation issue, where I'd expect to have a missing 
-frame every once in a while. Instead, we were seeing reliable 
-operation interspersed with periods where lots of packets were being 
-consistently omitted. To me, this suggests that there's some other 
-issue going on, either in the USB stack or in the USB hardware itself.
+> - changed iobox recognition and firmware loading to mimick XP driver 
+> - added loop to check_for_iobox() to fix timing issues
 
-Given that, I'm worried that increasing bInterval will just move the 
-symptoms around, making it harder to duplicate but not truly becoming 
-robust.
+Did you have the opportunity to test with Multiface and/or Digiface?
 
 
-Any thoughts on this? Should I try chasing the issue into the Linux 
-USB development mailing list, or will they just say "set bInterval to 
-a larger value!"?
+I can test with a Multiface next Tuesday, but I have no Digiface.
 
 
-Thanks,
-Dan
 
--- 
-Daniel T. Griscom             griscom@suitable.com
-Suitable Systems              http://www.suitable.com/
-1 Centre Street, Suite 204    (781) 665-0053
-Wakefield, MA  01880-2400
+Cheers
