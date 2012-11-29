@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: hda - More generic auto-mic
-	switching for Realtek codecs
-Date: Thu, 29 Nov 2012 16:21:26 +0100
-Message-ID: <1354202489-12769-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/5] ALSA: hda - Implement shared front mic/hp
+	jack for HP Z220
+Date: Thu, 29 Nov 2012 16:21:28 +0100
+Message-ID: <1354202489-12769-5-git-send-email-tiwai@suse.de>
 References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EF9E92650D0
+ by alsa0.perex.cz (Postfix) with ESMTP id F38142650D7
  for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:45 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id D042FA3421
+ by mx2.suse.de (Postfix) with ESMTP id D48D9A38EA
  for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:45 +0100 (CET)
 In-Reply-To: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,277 +29,203 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of limiting the automatic input-source selection only to the
-mics (internal, external and dock mics), allow it for generic inputs,
-e.g. switching between the rear line-in and the front mic.
+HP Z220 with ALC221 codec has a front jack that should work as both
+the front mic and the secondary headphone.  This patch adds a new
+mixer enum to change the jack behavior.
 
-It's been a frequent demand from desktop machines, and we already do
-it for the headphone auto-mute, so no reason to avoid it now.
-
-The logic is to check the attribute and location of input pins, and
-enable the automatic selection feature only if all such pins are in
-different locations (e.g. internal, front, rear, etc) and line-in or
-mic pins.  That is, if multiple input pins are assigned to a single
-location, the feature isn't enabled because we don't know the
-priority.
-
-(You may wonder why this restriction doesn't exist for the headphone
- automute.  The reason is that the output case is different from the
- input: the input source is an exclusive selection while the output
- can be multiplexed.)
+In the headphone mode, the auto-mic switching is disabled and the
+input is fixed to the rear line-in.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 137 +++++++++++++++++++++++-------------------
- 1 file changed, 74 insertions(+), 63 deletions(-)
+ sound/pci/hda/patch_realtek.c | 147 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 147 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c7369a6..c5cc47b 100644
+index c5cc47b..95c5bc7 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -28,6 +28,7 @@
- #include <linux/slab.h>
- #include <linux/pci.h>
- #include <linux/module.h>
-+#include <linux/sort.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include "hda_codec.h"
-@@ -98,6 +99,13 @@ enum {
- #define ALC_FIXUP_ACT_INIT	HDA_FIXUP_ACT_INIT
- #define ALC_FIXUP_ACT_BUILD	HDA_FIXUP_ACT_BUILD
+@@ -213,6 +213,10 @@ struct alc_spec {
+ 	unsigned int inv_dmic_muted:1; /* R-ch of inv d-mic is muted? */
+ 	unsigned int no_primary_hp:1; /* Don't prefer HP pins to speaker pins */
  
-+#define MAX_AUTO_MIC_PINS	3
++	/* front-mic / HP sharing for HP Z220 */
++	unsigned int shared_fmic_hp_mode:1;
++	hda_nid_t shared_fmic_hp_nid;
 +
-+struct alc_automic_entry {
-+	hda_nid_t pin;		/* pin */
-+	int idx;		/* imux index, -1 = invalid */
-+	unsigned int attr;	/* pin attribute (INPUT_PIN_ATTR_*) */
-+};
- 
- struct alc_spec {
- 	struct hda_gen_spec gen;
-@@ -145,9 +153,6 @@ struct alc_spec {
- 	unsigned int num_mux_defs;
- 	const struct hda_input_mux *input_mux;
- 	unsigned int cur_mux[3];
--	hda_nid_t ext_mic_pin;
--	hda_nid_t dock_mic_pin;
--	hda_nid_t int_mic_pin;
- 
- 	/* channel model */
- 	const struct hda_channel_mode *channel_mode;
-@@ -169,9 +174,12 @@ struct alc_spec {
- 	hda_nid_t private_capsrc_nids[AUTO_CFG_MAX_OUTS];
- 	hda_nid_t imux_pins[HDA_MAX_NUM_INPUTS];
- 	unsigned int dyn_adc_idx[HDA_MAX_NUM_INPUTS];
--	int int_mic_idx, ext_mic_idx, dock_mic_idx; /* for auto-mic */
- 	hda_nid_t inv_dmic_pin;
- 
-+	/* auto-mic stuff */
-+	int am_num_entries;
-+	struct alc_automic_entry am_entry[MAX_AUTO_MIC_PINS];
-+
- 	/* hooks */
- 	void (*init_hook)(struct hda_codec *codec);
- #ifdef CONFIG_PM
-@@ -632,22 +640,20 @@ static void alc_line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack
- static void alc_mic_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- {
- 	struct alc_spec *spec = codec->spec;
--	hda_nid_t *pins = spec->imux_pins;
-+	int i;
- 
- 	if (!spec->auto_mic || !spec->auto_mic_valid_imux)
- 		return;
- 	if (snd_BUG_ON(!spec->adc_nids))
- 		return;
--	if (snd_BUG_ON(spec->int_mic_idx < 0 || spec->ext_mic_idx < 0))
--		return;
- 
--	if (snd_hda_jack_detect(codec, pins[spec->ext_mic_idx]))
--		alc_mux_select(codec, 0, spec->ext_mic_idx, false);
--	else if (spec->dock_mic_idx >= 0 &&
--		   snd_hda_jack_detect(codec, pins[spec->dock_mic_idx]))
--		alc_mux_select(codec, 0, spec->dock_mic_idx, false);
--	else
--		alc_mux_select(codec, 0, spec->int_mic_idx, false);
-+	for (i = spec->am_num_entries - 1; i > 0; i--) {
-+		if (snd_hda_jack_detect(codec, spec->am_entry[i].pin)) {
-+			alc_mux_select(codec, 0, spec->am_entry[i].idx, false);
-+			return;
-+		}
-+	}
-+	alc_mux_select(codec, 0, spec->am_entry[0].idx, false);
+ 	/* auto-mute control */
+ 	int automute_mode;
+ 	hda_nid_t automute_mixer_nid[AUTO_CFG_MAX_OUTS];
+@@ -5959,6 +5963,143 @@ static void alc269_fixup_pcm_44k(struct hda_codec *codec,
+ 	spec->stream_analog_capture = &alc269_44k_pcm_analog_capture;
  }
  
- /* update the master volume per volume-knob's unsol event */
-@@ -1053,6 +1059,7 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
- 	const struct hda_input_mux *imux;
-+	int i;
- 
- 	if (!spec->auto_mic)
- 		return false;
-@@ -1066,21 +1073,20 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
- 	}
- 
- 	imux = spec->input_mux;
--	spec->ext_mic_idx = find_idx_in_nid_list(spec->ext_mic_pin,
--					spec->imux_pins, imux->num_items);
--	spec->int_mic_idx = find_idx_in_nid_list(spec->int_mic_pin,
--					spec->imux_pins, imux->num_items);
--	spec->dock_mic_idx = find_idx_in_nid_list(spec->dock_mic_pin,
--					spec->imux_pins, imux->num_items);
--	if (spec->ext_mic_idx < 0 || spec->int_mic_idx < 0) {
--		spec->auto_mic = 0;
--		return false; /* no corresponding imux */
-+	for (i = 0; i < spec->am_num_entries; i++) {
-+		spec->am_entry[i].idx =
-+			find_idx_in_nid_list(spec->am_entry[i].pin,
-+					     spec->imux_pins, imux->num_items);
-+		if (spec->am_entry[i].idx < 0) {
-+			spec->auto_mic = 0;
-+			return false; /* no corresponding imux */
-+		}
- 	}
- 
--	snd_hda_jack_detect_enable_callback(codec, spec->ext_mic_pin,
--					    ALC_MIC_EVENT, alc_mic_automute);
--	if (spec->dock_mic_pin)
--		snd_hda_jack_detect_enable_callback(codec, spec->dock_mic_pin,
-+	/* we don't need the jack detection for the first pin */
-+	for (i = 1; i < spec->am_num_entries; i++)
-+		snd_hda_jack_detect_enable_callback(codec,
-+						    spec->am_entry[i].pin,
- 						    ALC_MIC_EVENT,
- 						    alc_mic_automute);
- 
-@@ -1089,6 +1095,13 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
- 	return true;
- }
- 
-+static int compare_attr(const void *ap, const void *bp)
++/* allow switching HP/front-mic on HP Z220 */
++static int alc221_shared_fmic_hp_mode_info(struct snd_kcontrol *kcontrol,
++					   struct snd_ctl_elem_info *uinfo)
 +{
-+	const struct alc_automic_entry *a = ap;
-+	const struct alc_automic_entry *b = bp;
-+	return (int)(a->attr - b->attr);
++	static const char * const texts[] = {
++		"Mic", "Headphone"
++	};
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = 2;
++	if (uinfo->value.enumerated.item >= 2)
++		uinfo->value.enumerated.item = 1;
++	strcpy(uinfo->value.enumerated.name,
++	       texts[uinfo->value.enumerated.item]);
++	return 0;
 +}
 +
- /*
-  * Check the availability of auto-mic switch;
-  * Set up if really supported
-@@ -1097,67 +1110,63 @@ static void alc_init_auto_mic(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
- 	struct auto_pin_cfg *cfg = &spec->autocfg;
--	hda_nid_t fixed, ext, dock;
--	int i;
-+	unsigned int types;
-+	int i, num_pins;
- 
- 	if (spec->shared_mic_hp)
- 		return; /* no auto-mic for the shared I/O */
- 
--	spec->ext_mic_idx = spec->int_mic_idx = spec->dock_mic_idx = -1;
-+	types = 0;
-+	num_pins = 0;
- 
--	fixed = ext = dock = 0;
- 	for (i = 0; i < cfg->num_inputs; i++) {
- 		hda_nid_t nid = cfg->inputs[i].pin;
--		unsigned int defcfg;
--		defcfg = snd_hda_codec_get_pincfg(codec, nid);
--		switch (snd_hda_get_input_pin_attr(defcfg)) {
-+		unsigned int attr;
-+		attr = snd_hda_codec_get_pincfg(codec, nid);
-+		attr = snd_hda_get_input_pin_attr(attr);
-+		if (types & (1 << attr))
-+			return; /* already occupied */
-+		switch (attr) {
- 		case INPUT_PIN_ATTR_INT:
--			if (fixed)
--				return; /* already occupied */
- 			if (cfg->inputs[i].type != AUTO_PIN_MIC)
- 				return; /* invalid type */
--			fixed = nid;
- 			break;
- 		case INPUT_PIN_ATTR_UNUSED:
- 			return; /* invalid entry */
--		case INPUT_PIN_ATTR_DOCK:
--			if (dock)
--				return; /* already occupied */
--			if (cfg->inputs[i].type > AUTO_PIN_LINE_IN)
--				return; /* invalid type */
--			dock = nid;
--			break;
- 		default:
--			if (ext)
--				return; /* already occupied */
--			if (cfg->inputs[i].type != AUTO_PIN_MIC)
-+			if (cfg->inputs[i].type > AUTO_PIN_LINE_IN)
- 				return; /* invalid type */
--			ext = nid;
-+			if (!is_jack_detectable(codec, nid))
-+				return; /* no unsol support */
- 			break;
- 		}
-+		if (num_pins >= MAX_AUTO_MIC_PINS)
-+			return;
-+		types |= (1 << attr);
-+		spec->am_entry[num_pins].pin = nid;
-+		spec->am_entry[num_pins].attr = attr;
-+		num_pins++;
- 	}
--	if (!ext && dock) {
--		ext = dock;
--		dock = 0;
--	}
--	if (!ext || !fixed)
++static int alc221_shared_fmic_hp_mode_get(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct alc_spec *spec = codec->spec;
++	ucontrol->value.enumerated.item[0] = spec->shared_fmic_hp_mode;
++	return 0;
++}
 +
-+	if (num_pins < 2)
- 		return;
--	if (!is_jack_detectable(codec, ext))
--		return; /* no unsol support */
--	if (dock && !is_jack_detectable(codec, dock))
--		return; /* no unsol support */
- 
--	/* check imux indices */
--	spec->ext_mic_pin = ext;
--	spec->int_mic_pin = fixed;
--	spec->dock_mic_pin = dock;
-+	spec->am_num_entries = num_pins;
-+	/* sort the am_entry in the order of attr so that the pin with a
-+	 * higher attr will be selected when the jack is plugged.
-+	 */
-+	sort(spec->am_entry, num_pins, sizeof(spec->am_entry[0]),
-+	     compare_attr, NULL);
- 
-+	/* check imux indices */
- 	spec->auto_mic = 1;
- 	if (!alc_auto_mic_check_imux(codec))
- 		return;
- 
- 	snd_printdd("realtek: Enable auto-mic switch on NID 0x%x/0x%x/0x%x\n",
--		    ext, fixed, dock);
-+		    spec->am_entry[0].pin,
-+		    spec->am_entry[1].pin,
-+		    spec->am_entry[2].pin);
- }
- 
- /* check the availabilities of auto-mute and auto-mic switches */
-@@ -6019,8 +6028,10 @@ static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
- {
- 	struct alc_spec *spec = codec->spec;
- 
-+	if (snd_BUG_ON(!spec->am_entry[1].pin || !spec->autocfg.hp_pins[0]))
++static void alc221_shared_fmic_hp_mode_update(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	struct hda_jack_tbl *jack;
++	hda_nid_t fmic_nid = spec->shared_fmic_hp_nid;
++	unsigned int pinctl, mute, idx;
++	hda_jack_callback callback;
++
++	if (!fmic_nid)
 +		return;
- 	if (action == ALC_FIXUP_ACT_PROBE)
--		snd_hda_jack_set_gating_jack(codec, spec->ext_mic_pin,
-+		snd_hda_jack_set_gating_jack(codec, spec->am_entry[1].pin,
- 					     spec->autocfg.hp_pins[0]);
- }
- 
++
++	/* utterly hackish: replace the secondary hp pin, enable/disable the
++	 * automic on the fly
++	 */
++	if (spec->shared_fmic_hp_mode) {
++		spec->autocfg.hp_outs = 2;
++		spec->autocfg.hp_pins[1] = fmic_nid;
++		callback = alc_hp_automute;
++		pinctl = PIN_HP;
++		mute = AMP_OUT_UNMUTE;
++		spec->auto_mic = 0;
++		alc_mux_select(codec, 0, spec->am_entry[0].idx, false);
++		/* choose the same DAC as the primary HP output */
++		idx = snd_hda_codec_read(codec, spec->autocfg.hp_pins[0], 0,
++					 AC_VERB_GET_CONNECT_SEL, 0);
++		snd_hda_codec_write(codec, fmic_nid, 0,
++				    AC_VERB_SET_CONNECT_SEL, idx);
++	} else {
++		spec->autocfg.hp_outs = 1;
++		spec->autocfg.hp_pins[1] = 0;
++		callback = alc_mic_automute;
++		pinctl = PIN_VREF80;
++		mute = AMP_OUT_MUTE;
++		spec->auto_mic = 1;
++	}
++
++	snd_hda_codec_write(codec, fmic_nid, 0,
++			    AC_VERB_SET_PIN_WIDGET_CONTROL, pinctl);
++	snd_hda_codec_write(codec, fmic_nid, 0,
++			    AC_VERB_SET_AMP_GAIN_MUTE, mute);
++
++	jack = snd_hda_jack_tbl_get(codec, fmic_nid);
++	if (jack)
++		jack->callback = callback;
++	else
++		snd_hda_jack_detect_enable_callback(codec, fmic_nid,
++						    ALC_HP_EVENT, callback);
++	alc_hp_automute(codec, NULL);
++	alc_mic_automute(codec, NULL);
++}
++
++static int alc221_shared_fmic_hp_mode_put(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct alc_spec *spec = codec->spec;
++
++	if (spec->shared_fmic_hp_mode == ucontrol->value.enumerated.item[0])
++		return 0;
++	spec->shared_fmic_hp_mode = ucontrol->value.enumerated.item[0];
++	alc221_shared_fmic_hp_mode_update(codec);
++	return 1;
++}
++
++static const struct snd_kcontrol_new alc221_shared_fmic_hp_mode_enum = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Front Mic Jack Mode",
++	.info = alc221_shared_fmic_hp_mode_info,
++	.get = alc221_shared_fmic_hp_mode_get,
++	.put = alc221_shared_fmic_hp_mode_put,
++};
++
++static int alc221_add_shared_fmic_hp_mode(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	struct snd_kcontrol_new *knew;
++	char name[22];
++
++	if (spec->autocfg.hp_outs != 1 || spec->am_num_entries != 2)
++		return -EINVAL;
++
++	snd_hda_get_pin_label(codec, spec->am_entry[1].pin, &spec->autocfg,
++			      name, sizeof(name), NULL);
++	strlcat(name, " Jack Mode", sizeof(name));
++
++	knew = alc_kcontrol_new(spec);
++	if (!knew)
++		return -ENOMEM;
++	*knew = alc221_shared_fmic_hp_mode_enum;
++	knew->name = kstrdup(name, GFP_KERNEL);
++	if (!knew->name)
++		return -ENOMEM;
++	spec->shared_fmic_hp_nid = spec->am_entry[1].pin;
++	spec->shared_fmic_hp_mode = 0;
++	return 0;
++}
++
++static void alc221_fixup_shared_fmic_hp(struct hda_codec *codec,
++					const struct alc_fixup *fix, int action)
++{
++	switch (action) {
++	case ALC_FIXUP_ACT_PROBE:
++		if (alc221_add_shared_fmic_hp_mode(codec) < 0)
++			return;
++		break;
++	case ALC_FIXUP_ACT_INIT:
++		alc221_shared_fmic_hp_mode_update(codec);
++		break;
++	}
++}
++
+ static void alc269_fixup_stereo_dmic(struct hda_codec *codec,
+ 				     const struct alc_fixup *fix, int action)
+ {
+@@ -6055,6 +6196,7 @@ enum {
+ 	ALC269_FIXUP_MIC2_MUTE_LED,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
++	ALC221_FIXUP_SHARED_FMIC_HP,
+ 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
+ 	ALC271_FIXUP_AMIC_MIC2,
+ 	ALC271_FIXUP_HP_GATE_MIC_JACK,
+@@ -6198,6 +6340,10 @@ static const struct alc_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT
+ 	},
++	[ALC221_FIXUP_SHARED_FMIC_HP] = {
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc221_fixup_shared_fmic_hp,
++	},
+ 	[ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT] = {
+ 		.type = ALC_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+@@ -6224,6 +6370,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_MIC2_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x1791, "HP Z220", ALC221_FIXUP_SHARED_FMIC_HP),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
 -- 
 1.8.0.1
