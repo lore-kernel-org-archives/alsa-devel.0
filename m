@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/5] ALSA: hda - Use standard sort function in
-	hda_auto_parser.c
-Date: Thu, 29 Nov 2012 16:21:27 +0100
-Message-ID: <1354202489-12769-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/5] ALSA: hda - More generic auto-mic
+	switching for Realtek codecs
+Date: Thu, 29 Nov 2012 16:21:26 +0100
+Message-ID: <1354202489-12769-3-git-send-email-tiwai@suse.de>
 References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F26822650D4
+ by alsa0.perex.cz (Postfix) with ESMTP id EF9E92650D0
  for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:45 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
+Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id D6457A398D
+ by mx2.suse.de (Postfix) with ESMTP id D042FA3421
  for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:45 +0100 (CET)
 In-Reply-To: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,209 +29,277 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just refactoring, no functional changes.
+Instead of limiting the automatic input-source selection only to the
+mics (internal, external and dock mics), allow it for generic inputs,
+e.g. switching between the rear line-in and the front mic.
+
+It's been a frequent demand from desktop machines, and we already do
+it for the headphone auto-mute, so no reason to avoid it now.
+
+The logic is to check the attribute and location of input pins, and
+enable the automatic selection feature only if all such pins are in
+different locations (e.g. internal, front, rear, etc) and line-in or
+mic pins.  That is, if multiple input pins are assigned to a single
+location, the feature isn't enabled because we don't know the
+priority.
+
+(You may wonder why this restriction doesn't exist for the headphone
+ automute.  The reason is that the output case is different from the
+ input: the input source is an exclusive selection while the output
+ can be multiplexed.)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_auto_parser.c | 106 ++++++++++++++++++----------------------
- 1 file changed, 47 insertions(+), 59 deletions(-)
+ sound/pci/hda/patch_realtek.c | 137 +++++++++++++++++++++++-------------------
+ 1 file changed, 74 insertions(+), 63 deletions(-)
 
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index 90d5b39..91232db 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -11,6 +11,7 @@
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c7369a6..c5cc47b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -28,6 +28,7 @@
  #include <linux/slab.h>
- #include <linux/export.h>
+ #include <linux/pci.h>
+ #include <linux/module.h>
 +#include <linux/sort.h>
  #include <sound/core.h>
+ #include <sound/jack.h>
  #include "hda_codec.h"
- #include "hda_local.h"
-@@ -30,29 +31,30 @@ static int is_in_nid_list(hda_nid_t nid, const hda_nid_t *list)
- 	return 0;
- }
+@@ -98,6 +99,13 @@ enum {
+ #define ALC_FIXUP_ACT_INIT	HDA_FIXUP_ACT_INIT
+ #define ALC_FIXUP_ACT_BUILD	HDA_FIXUP_ACT_BUILD
  
-+/* a pair of input pin and its sequence */
-+struct auto_out_pin {
-+	hda_nid_t pin;
-+	short seq;
-+};
++#define MAX_AUTO_MIC_PINS	3
 +
-+static int compare_seq(const void *ap, const void *bp)
-+{
-+	const struct auto_out_pin *a = ap;
-+	const struct auto_out_pin *b = bp;
-+	return (int)(a->seq - b->seq);
-+}
++struct alc_automic_entry {
++	hda_nid_t pin;		/* pin */
++	int idx;		/* imux index, -1 = invalid */
++	unsigned int attr;	/* pin attribute (INPUT_PIN_ATTR_*) */
++};
  
- /*
-  * Sort an associated group of pins according to their sequence numbers.
-+ * then store it to a pin array.
-  */
--static void sort_pins_by_sequence(hda_nid_t *pins, short *sequences,
-+static void sort_pins_by_sequence(hda_nid_t *pins, struct auto_out_pin *list,
- 				  int num_pins)
+ struct alc_spec {
+ 	struct hda_gen_spec gen;
+@@ -145,9 +153,6 @@ struct alc_spec {
+ 	unsigned int num_mux_defs;
+ 	const struct hda_input_mux *input_mux;
+ 	unsigned int cur_mux[3];
+-	hda_nid_t ext_mic_pin;
+-	hda_nid_t dock_mic_pin;
+-	hda_nid_t int_mic_pin;
+ 
+ 	/* channel model */
+ 	const struct hda_channel_mode *channel_mode;
+@@ -169,9 +174,12 @@ struct alc_spec {
+ 	hda_nid_t private_capsrc_nids[AUTO_CFG_MAX_OUTS];
+ 	hda_nid_t imux_pins[HDA_MAX_NUM_INPUTS];
+ 	unsigned int dyn_adc_idx[HDA_MAX_NUM_INPUTS];
+-	int int_mic_idx, ext_mic_idx, dock_mic_idx; /* for auto-mic */
+ 	hda_nid_t inv_dmic_pin;
+ 
++	/* auto-mic stuff */
++	int am_num_entries;
++	struct alc_automic_entry am_entry[MAX_AUTO_MIC_PINS];
++
+ 	/* hooks */
+ 	void (*init_hook)(struct hda_codec *codec);
+ #ifdef CONFIG_PM
+@@ -632,22 +640,20 @@ static void alc_line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack
+ static void alc_mic_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
  {
--	int i, j;
--	short seq;
--	hda_nid_t nid;
--
--	for (i = 0; i < num_pins; i++) {
--		for (j = i + 1; j < num_pins; j++) {
--			if (sequences[i] > sequences[j]) {
--				seq = sequences[i];
--				sequences[i] = sequences[j];
--				sequences[j] = seq;
--				nid = pins[i];
--				pins[i] = pins[j];
--				pins[j] = nid;
--			}
--		}
--	}
+ 	struct alc_spec *spec = codec->spec;
+-	hda_nid_t *pins = spec->imux_pins;
 +	int i;
-+	sort(list, num_pins, sizeof(list[0]), compare_seq, NULL);
-+	for (i = 0; i < num_pins; i++)
-+		pins[i] = list[i].pin;
+ 
+ 	if (!spec->auto_mic || !spec->auto_mic_valid_imux)
+ 		return;
+ 	if (snd_BUG_ON(!spec->adc_nids))
+ 		return;
+-	if (snd_BUG_ON(spec->int_mic_idx < 0 || spec->ext_mic_idx < 0))
+-		return;
+ 
+-	if (snd_hda_jack_detect(codec, pins[spec->ext_mic_idx]))
+-		alc_mux_select(codec, 0, spec->ext_mic_idx, false);
+-	else if (spec->dock_mic_idx >= 0 &&
+-		   snd_hda_jack_detect(codec, pins[spec->dock_mic_idx]))
+-		alc_mux_select(codec, 0, spec->dock_mic_idx, false);
+-	else
+-		alc_mux_select(codec, 0, spec->int_mic_idx, false);
++	for (i = spec->am_num_entries - 1; i > 0; i--) {
++		if (snd_hda_jack_detect(codec, spec->am_entry[i].pin)) {
++			alc_mux_select(codec, 0, spec->am_entry[i].idx, false);
++			return;
++		}
++	}
++	alc_mux_select(codec, 0, spec->am_entry[0].idx, false);
  }
  
+ /* update the master volume per volume-knob's unsol event */
+@@ -1053,6 +1059,7 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 	const struct hda_input_mux *imux;
++	int i;
  
-@@ -67,21 +69,11 @@ static void add_auto_cfg_input_pin(struct auto_pin_cfg *cfg, hda_nid_t nid,
+ 	if (!spec->auto_mic)
+ 		return false;
+@@ -1066,21 +1073,20 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
  	}
+ 
+ 	imux = spec->input_mux;
+-	spec->ext_mic_idx = find_idx_in_nid_list(spec->ext_mic_pin,
+-					spec->imux_pins, imux->num_items);
+-	spec->int_mic_idx = find_idx_in_nid_list(spec->int_mic_pin,
+-					spec->imux_pins, imux->num_items);
+-	spec->dock_mic_idx = find_idx_in_nid_list(spec->dock_mic_pin,
+-					spec->imux_pins, imux->num_items);
+-	if (spec->ext_mic_idx < 0 || spec->int_mic_idx < 0) {
+-		spec->auto_mic = 0;
+-		return false; /* no corresponding imux */
++	for (i = 0; i < spec->am_num_entries; i++) {
++		spec->am_entry[i].idx =
++			find_idx_in_nid_list(spec->am_entry[i].pin,
++					     spec->imux_pins, imux->num_items);
++		if (spec->am_entry[i].idx < 0) {
++			spec->auto_mic = 0;
++			return false; /* no corresponding imux */
++		}
+ 	}
+ 
+-	snd_hda_jack_detect_enable_callback(codec, spec->ext_mic_pin,
+-					    ALC_MIC_EVENT, alc_mic_automute);
+-	if (spec->dock_mic_pin)
+-		snd_hda_jack_detect_enable_callback(codec, spec->dock_mic_pin,
++	/* we don't need the jack detection for the first pin */
++	for (i = 1; i < spec->am_num_entries; i++)
++		snd_hda_jack_detect_enable_callback(codec,
++						    spec->am_entry[i].pin,
+ 						    ALC_MIC_EVENT,
+ 						    alc_mic_automute);
+ 
+@@ -1089,6 +1095,13 @@ static bool alc_auto_mic_check_imux(struct hda_codec *codec)
+ 	return true;
  }
  
--/* sort inputs in the order of AUTO_PIN_* type */
--static void sort_autocfg_input_pins(struct auto_pin_cfg *cfg)
-+static int compare_input_type(const void *ap, const void *bp)
++static int compare_attr(const void *ap, const void *bp)
++{
++	const struct alc_automic_entry *a = ap;
++	const struct alc_automic_entry *b = bp;
++	return (int)(a->attr - b->attr);
++}
++
+ /*
+  * Check the availability of auto-mic switch;
+  * Set up if really supported
+@@ -1097,67 +1110,63 @@ static void alc_init_auto_mic(struct hda_codec *codec)
  {
--	int i, j;
--
--	for (i = 0; i < cfg->num_inputs; i++) {
--		for (j = i + 1; j < cfg->num_inputs; j++) {
--			if (cfg->inputs[i].type > cfg->inputs[j].type) {
--				struct auto_pin_cfg_item tmp;
--				tmp = cfg->inputs[i];
--				cfg->inputs[i] = cfg->inputs[j];
--				cfg->inputs[j] = tmp;
--			}
--		}
--	}
-+	const struct auto_pin_cfg_item *a = ap;
-+	const struct auto_pin_cfg_item *b = bp;
-+	return (int)(a->type - b->type);
- }
+ 	struct alc_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+-	hda_nid_t fixed, ext, dock;
+-	int i;
++	unsigned int types;
++	int i, num_pins;
  
- /* Reorder the surround channels
-@@ -129,16 +121,16 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- {
- 	hda_nid_t nid, end_nid;
- 	short seq, assoc_line_out;
--	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
--	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
--	short sequences_hp[ARRAY_SIZE(cfg->hp_pins)];
-+	struct auto_out_pin line_out[ARRAY_SIZE(cfg->line_out_pins)];
-+	struct auto_out_pin speaker_out[ARRAY_SIZE(cfg->speaker_pins)];
-+	struct auto_out_pin hp_out[ARRAY_SIZE(cfg->hp_pins)];
- 	int i;
+ 	if (spec->shared_mic_hp)
+ 		return; /* no auto-mic for the shared I/O */
  
- 	memset(cfg, 0, sizeof(*cfg));
+-	spec->ext_mic_idx = spec->int_mic_idx = spec->dock_mic_idx = -1;
++	types = 0;
++	num_pins = 0;
  
--	memset(sequences_line_out, 0, sizeof(sequences_line_out));
--	memset(sequences_speaker, 0, sizeof(sequences_speaker));
--	memset(sequences_hp, 0, sizeof(sequences_hp));
-+	memset(line_out, 0, sizeof(line_out));
-+	memset(speaker_out, 0, sizeof(speaker_out));
-+	memset(hp_out, 0, sizeof(hp_out));
- 	assoc_line_out = 0;
- 
- 	end_nid = codec->start_nid + codec->num_nodes;
-@@ -184,8 +176,8 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 				continue;
- 			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
- 				continue;
--			cfg->line_out_pins[cfg->line_outs] = nid;
--			sequences_line_out[cfg->line_outs] = seq;
-+			line_out[cfg->line_outs].pin = nid;
-+			line_out[cfg->line_outs].seq = seq;
- 			cfg->line_outs++;
+-	fixed = ext = dock = 0;
+ 	for (i = 0; i < cfg->num_inputs; i++) {
+ 		hda_nid_t nid = cfg->inputs[i].pin;
+-		unsigned int defcfg;
+-		defcfg = snd_hda_codec_get_pincfg(codec, nid);
+-		switch (snd_hda_get_input_pin_attr(defcfg)) {
++		unsigned int attr;
++		attr = snd_hda_codec_get_pincfg(codec, nid);
++		attr = snd_hda_get_input_pin_attr(attr);
++		if (types & (1 << attr))
++			return; /* already occupied */
++		switch (attr) {
+ 		case INPUT_PIN_ATTR_INT:
+-			if (fixed)
+-				return; /* already occupied */
+ 			if (cfg->inputs[i].type != AUTO_PIN_MIC)
+ 				return; /* invalid type */
+-			fixed = nid;
  			break;
- 		case AC_JACK_SPEAKER:
-@@ -193,8 +185,8 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 			assoc = get_defcfg_association(def_conf);
- 			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
- 				continue;
--			cfg->speaker_pins[cfg->speaker_outs] = nid;
--			sequences_speaker[cfg->speaker_outs] = (assoc << 4) | seq;
-+			speaker_out[cfg->speaker_outs].pin = nid;
-+			speaker_out[cfg->speaker_outs].seq = (assoc << 4) | seq;
- 			cfg->speaker_outs++;
+ 		case INPUT_PIN_ATTR_UNUSED:
+ 			return; /* invalid entry */
+-		case INPUT_PIN_ATTR_DOCK:
+-			if (dock)
+-				return; /* already occupied */
+-			if (cfg->inputs[i].type > AUTO_PIN_LINE_IN)
+-				return; /* invalid type */
+-			dock = nid;
+-			break;
+ 		default:
+-			if (ext)
+-				return; /* already occupied */
+-			if (cfg->inputs[i].type != AUTO_PIN_MIC)
++			if (cfg->inputs[i].type > AUTO_PIN_LINE_IN)
+ 				return; /* invalid type */
+-			ext = nid;
++			if (!is_jack_detectable(codec, nid))
++				return; /* no unsol support */
  			break;
- 		case AC_JACK_HP_OUT:
-@@ -202,8 +194,8 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 			assoc = get_defcfg_association(def_conf);
- 			if (cfg->hp_outs >= ARRAY_SIZE(cfg->hp_pins))
- 				continue;
--			cfg->hp_pins[cfg->hp_outs] = nid;
--			sequences_hp[cfg->hp_outs] = (assoc << 4) | seq;
-+			hp_out[cfg->hp_outs].pin = nid;
-+			hp_out[cfg->hp_outs].seq = (assoc << 4) | seq;
- 			cfg->hp_outs++;
- 			break;
- 		case AC_JACK_MIC_IN:
-@@ -248,34 +240,28 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 		int i = 0;
- 		while (i < cfg->hp_outs) {
- 			/* The real HPs should have the sequence 0x0f */
--			if ((sequences_hp[i] & 0x0f) == 0x0f) {
-+			if ((hp_out[i].seq & 0x0f) == 0x0f) {
- 				i++;
- 				continue;
- 			}
- 			/* Move it to the line-out table */
--			cfg->line_out_pins[cfg->line_outs] = cfg->hp_pins[i];
--			sequences_line_out[cfg->line_outs] = sequences_hp[i];
--			cfg->line_outs++;
-+			line_out[cfg->line_outs++] = hp_out[i];
- 			cfg->hp_outs--;
--			memmove(cfg->hp_pins + i, cfg->hp_pins + i + 1,
--				sizeof(cfg->hp_pins[0]) * (cfg->hp_outs - i));
--			memmove(sequences_hp + i, sequences_hp + i + 1,
--				sizeof(sequences_hp[0]) * (cfg->hp_outs - i));
-+			memmove(hp_out + i, hp_out + i + 1,
-+				sizeof(hp_out[0]) * (cfg->hp_outs - i));
  		}
--		memset(cfg->hp_pins + cfg->hp_outs, 0,
--		       sizeof(hda_nid_t) * (AUTO_CFG_MAX_OUTS - cfg->hp_outs));
-+		memset(hp_out + cfg->hp_outs, 0,
-+		       sizeof(hp_out[0]) * (AUTO_CFG_MAX_OUTS - cfg->hp_outs));
- 		if (!cfg->hp_outs)
- 			cfg->line_out_type = AUTO_PIN_HP_OUT;
- 
++		if (num_pins >= MAX_AUTO_MIC_PINS)
++			return;
++		types |= (1 << attr);
++		spec->am_entry[num_pins].pin = nid;
++		spec->am_entry[num_pins].attr = attr;
++		num_pins++;
  	}
+-	if (!ext && dock) {
+-		ext = dock;
+-		dock = 0;
+-	}
+-	if (!ext || !fixed)
++
++	if (num_pins < 2)
+ 		return;
+-	if (!is_jack_detectable(codec, ext))
+-		return; /* no unsol support */
+-	if (dock && !is_jack_detectable(codec, dock))
+-		return; /* no unsol support */
  
- 	/* sort by sequence */
--	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
--			      cfg->line_outs);
--	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
-+	sort_pins_by_sequence(cfg->line_out_pins, line_out, cfg->line_outs);
-+	sort_pins_by_sequence(cfg->speaker_pins, speaker_out,
- 			      cfg->speaker_outs);
--	sort_pins_by_sequence(cfg->hp_pins, sequences_hp,
--			      cfg->hp_outs);
-+	sort_pins_by_sequence(cfg->hp_pins, hp_out, cfg->hp_outs);
+-	/* check imux indices */
+-	spec->ext_mic_pin = ext;
+-	spec->int_mic_pin = fixed;
+-	spec->dock_mic_pin = dock;
++	spec->am_num_entries = num_pins;
++	/* sort the am_entry in the order of attr so that the pin with a
++	 * higher attr will be selected when the jack is plugged.
++	 */
++	sort(spec->am_entry, num_pins, sizeof(spec->am_entry[0]),
++	     compare_attr, NULL);
  
- 	/*
- 	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
-@@ -304,7 +290,9 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
- 	reorder_outputs(cfg->hp_outs, cfg->hp_pins);
- 	reorder_outputs(cfg->speaker_outs, cfg->speaker_pins);
++	/* check imux indices */
+ 	spec->auto_mic = 1;
+ 	if (!alc_auto_mic_check_imux(codec))
+ 		return;
  
--	sort_autocfg_input_pins(cfg);
-+	/* sort inputs in the order of AUTO_PIN_* type */
-+	sort(cfg->inputs, cfg->num_inputs, sizeof(cfg->inputs[0]),
-+	     compare_input_type, NULL);
+ 	snd_printdd("realtek: Enable auto-mic switch on NID 0x%x/0x%x/0x%x\n",
+-		    ext, fixed, dock);
++		    spec->am_entry[0].pin,
++		    spec->am_entry[1].pin,
++		    spec->am_entry[2].pin);
+ }
  
- 	/*
- 	 * debug prints of the parsed results
+ /* check the availabilities of auto-mute and auto-mic switches */
+@@ -6019,8 +6028,10 @@ static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 
++	if (snd_BUG_ON(!spec->am_entry[1].pin || !spec->autocfg.hp_pins[0]))
++		return;
+ 	if (action == ALC_FIXUP_ACT_PROBE)
+-		snd_hda_jack_set_gating_jack(codec, spec->ext_mic_pin,
++		snd_hda_jack_set_gating_jack(codec, spec->am_entry[1].pin,
+ 					     spec->autocfg.hp_pins[0]);
+ }
+ 
 -- 
 1.8.0.1
