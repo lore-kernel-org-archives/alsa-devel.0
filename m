@@ -1,22 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: hda - Refactor alc_kcontrol_new()
-	usages
-Date: Thu, 29 Nov 2012 16:21:29 +0100
-Message-ID: <1354202489-12769-6-git-send-email-tiwai@suse.de>
-References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/4] ASoC: firmware: Add support for FW
+ based kcontrols.
+Date: Thu, 29 Nov 2012 15:51:52 +0000
+Message-ID: <50B78498.40406@ti.com>
+References: <1353348765-6238-1-git-send-email-lrg@ti.com>
+ <s5hsj85qw1n.wl%tiwai@suse.de> <50B75032.2030502@ti.com>
+ <s5h8v9kphi9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1422C2650EE
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:46 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id DA49FA39CE
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:21:45 +0100 (CET)
-In-Reply-To: <1354202489-12769-1-git-send-email-tiwai@suse.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id D212E2650D0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 16:51:56 +0100 (CET)
+In-Reply-To: <s5h8v9kphi9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,125 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allocate the name string and assign the structure in
-alc_kcontrol_new() itself to reduce the code.
+On 29/11/12 15:15, Takashi Iwai wrote:
+> At Thu, 29 Nov 2012 12:08:18 +0000,
+> Liam Girdwood wrote:
+>>
+>> On 19/11/12 18:36, Takashi Iwai wrote:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 54 +++++++++++++++----------------------------
- 1 file changed, 19 insertions(+), 35 deletions(-)
+>>>
+>>> For the sound stuff, the patch is queued for 3.8 in for-next branch.
+>>> Please rebase on it.
+>>
+>> Done, but I'm now seeing some type conflict errors when building my userspace
+>> tools (i.e. after moving to include uapi/sound/asound.h from sound/asound.h).
+>>
+>> e.g.
+>>
+>> #include <stdlib.h>
+>> #include <uapi/sound/asound.h>
+>>
+>> int main ()
+>> {
+>> }
+>>
+>> gives :-
+>>
+>> gcc uapi-test.c -I ~/source/linux.git/include
+>
+> Pass -I ~/source/linux.git/include/uapi
+>
+> then
+>
+> #include <sound/asound.h>
+>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 95c5bc7..d3a4c2ca 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -913,22 +913,25 @@ static const struct snd_kcontrol_new alc_automute_mode_enum = {
- 	.put = alc_automute_mode_put,
- };
- 
--static struct snd_kcontrol_new *alc_kcontrol_new(struct alc_spec *spec)
-+static struct snd_kcontrol_new *
-+alc_kcontrol_new(struct alc_spec *spec, const char *name,
-+		 const struct snd_kcontrol_new *temp)
- {
--	return snd_array_new(&spec->kctls);
-+	struct snd_kcontrol_new *knew = snd_array_new(&spec->kctls);
-+	if (!knew)
-+		return NULL;
-+	*knew = *temp;
-+	knew->name = kstrdup(name, GFP_KERNEL);
-+	if (!knew->name)
-+		return NULL;
-+	return knew;
- }
- 
- static int alc_add_automute_mode_enum(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
--	struct snd_kcontrol_new *knew;
- 
--	knew = alc_kcontrol_new(spec);
--	if (!knew)
--		return -ENOMEM;
--	*knew = alc_automute_mode_enum;
--	knew->name = kstrdup("Auto-Mute Mode", GFP_KERNEL);
--	if (!knew->name)
-+	if (!alc_kcontrol_new(spec, "Auto-Mute Mode", &alc_automute_mode_enum))
- 		return -ENOMEM;
- 	return 0;
- }
-@@ -1769,12 +1772,9 @@ static const struct snd_kcontrol_new alc_inv_dmic_sw = {
- static int alc_add_inv_dmic_mixer(struct hda_codec *codec, hda_nid_t nid)
- {
- 	struct alc_spec *spec = codec->spec;
--	struct snd_kcontrol_new *knew = alc_kcontrol_new(spec);
--	if (!knew)
--		return -ENOMEM;
--	*knew = alc_inv_dmic_sw;
--	knew->name = kstrdup("Inverted Internal Mic Capture Switch", GFP_KERNEL);
--	if (!knew->name)
-+
-+	if (!alc_kcontrol_new(spec, "Inverted Internal Mic Capture Switch",
-+			      &alc_inv_dmic_sw))
- 		return -ENOMEM;
- 	spec->inv_dmic_fixup = 1;
- 	spec->inv_dmic_muted = 0;
-@@ -2550,13 +2550,9 @@ static int add_control(struct alc_spec *spec, int type, const char *name,
- {
- 	struct snd_kcontrol_new *knew;
- 
--	knew = alc_kcontrol_new(spec);
-+	knew = alc_kcontrol_new(spec, name, &alc_control_templates[type]);
- 	if (!knew)
- 		return -ENOMEM;
--	*knew = alc_control_templates[type];
--	knew->name = kstrdup(name, GFP_KERNEL);
--	if (!knew->name)
--		return -ENOMEM;
- 	knew->index = cidx;
- 	if (get_amp_nid_(val))
- 		knew->subdevice = HDA_SUBDEV_AMP_FLAG;
-@@ -3999,14 +3995,8 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
- 	struct alc_spec *spec = codec->spec;
- 
- 	if (spec->multi_ios > 0) {
--		struct snd_kcontrol_new *knew;
--
--		knew = alc_kcontrol_new(spec);
--		if (!knew)
--			return -ENOMEM;
--		*knew = alc_auto_channel_mode_enum;
--		knew->name = kstrdup("Channel Mode", GFP_KERNEL);
--		if (!knew->name)
-+		if (!alc_kcontrol_new(spec, "Channel Mode",
-+				      &alc_auto_channel_mode_enum))
- 			return -ENOMEM;
- 	}
- 	return 0;
-@@ -6064,7 +6054,6 @@ static const struct snd_kcontrol_new alc221_shared_fmic_hp_mode_enum = {
- static int alc221_add_shared_fmic_hp_mode(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
--	struct snd_kcontrol_new *knew;
- 	char name[22];
- 
- 	if (spec->autocfg.hp_outs != 1 || spec->am_num_entries != 2)
-@@ -6074,12 +6063,7 @@ static int alc221_add_shared_fmic_hp_mode(struct hda_codec *codec)
- 			      name, sizeof(name), NULL);
- 	strlcat(name, " Jack Mode", sizeof(name));
- 
--	knew = alc_kcontrol_new(spec);
--	if (!knew)
--		return -ENOMEM;
--	*knew = alc221_shared_fmic_hp_mode_enum;
--	knew->name = kstrdup(name, GFP_KERNEL);
--	if (!knew->name)
-+	if (!alc_kcontrol_new(spec, name, &alc221_shared_fmic_hp_mode_enum))
- 		return -ENOMEM;
- 	spec->shared_fmic_hp_nid = spec->am_entry[1].pin;
- 	spec->shared_fmic_hp_mode = 0;
--- 
-1.8.0.1
+Ah, I did initially try this before emailing :-
+
+gcc uapi-test.c -I ~/source/linux.git/include/uapi
+In file included from /home/lrg/source/linux.git/include/uapi/sound/asound.h:26:0,
+                  from uapi-test.c:2:
+/home/lrg/source/linux.git/include/uapi/linux/types.h:9:2: warning: #warning 
+"Attempt to use kernel headers from user space, see 
+http://kernelnewbies.org/KernelHeaders" [-Wcpp]
+In file included from 
+/home/lrg/source/linux.git/include/uapi/linux/posix_types.h:4:0,
+                  from /home/lrg/source/linux.git/include/uapi/linux/types.h:13,
+                  from /home/lrg/source/linux.git/include/uapi/sound/asound.h:26,
+                  from uapi-test.c:2:
+/home/lrg/source/linux.git/include/uapi/linux/stddef.h:1:28: fatal error: 
+linux/compiler.h: No such file or directory
+
+adding -D__EXPORTED_HEADERS__ to gcc command line gets rid of the warning, but 
+it seems we are missing compiler.h (even in todays linux-next).
+
+If this works for you, it may be an issue at my end.
+
+Thanks
+
+Liam
