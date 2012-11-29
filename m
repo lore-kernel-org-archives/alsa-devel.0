@@ -1,20 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/4] ASoC: firmware: Add support for FW
- based kcontrols.
-Date: Thu, 29 Nov 2012 17:39:38 +0000
-Message-ID: <50B79DDA.4090406@ti.com>
-References: <1353348765-6238-1-git-send-email-lrg@ti.com>
- <s5hsj85qw1n.wl%tiwai@suse.de> <50B75032.2030502@ti.com>
- <s5h8v9kphi9.wl%tiwai@suse.de> <50B78498.40406@ti.com>
- <50B786D5.1010003@ti.com> <s5hmwy0nwgl.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for v3.8
+Date: Thu, 29 Nov 2012 17:44:45 +0000
+Message-ID: <20121129174445.GP32691@opensource.wolfsonmicro.com>
+References: <20121129161015.GL32691@opensource.wolfsonmicro.com>
+ <s5hy5hknzho.wl%tiwai@suse.de>
+ <20121129164422.GM32691@opensource.wolfsonmicro.com>
+ <s5htxs8nxu2.wl%tiwai@suse.de>
+ <20121129171004.GO32691@opensource.wolfsonmicro.com>
+ <s5hsj7snxc1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4810302977212624708=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id A44892651D5
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 18:39:42 +0100 (CET)
-In-Reply-To: <s5hmwy0nwgl.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EBB59261677
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 18:44:46 +0100 (CET)
+In-Reply-To: <s5hsj7snxc1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 29/11/12 17:35, Takashi Iwai wrote:
-> At Thu, 29 Nov 2012 16:01:25 +0000,
-> Liam Girdwood wrote:
->>
->> On 29/11/12 15:51, Liam Girdwood wrote:
 
->> In fact adding the old include path at the end works, but is probably an
->> interim fix until the uapi work is completed.
->>
->>    gcc uapi-test.c -I ~/source/linux.git/include/uapi -D__EXPORTED_HEADERS__ -I
->> /home/lrg/source/linux.git/include/
->
-> Well, actually the content of uapi/sound/asound.h won't be changed.
->
+--===============4810302977212624708==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VSMi1UXgOp435K5S"
+Content-Disposition: inline
 
-Sorry, I was meaning the other uapi includes here. Like compiler.h
 
-> Looking at this issue more closely, I found that glibc package also
-> provides the copy of linux kernel headers as well, but they are
-> stripped.  And the stripped form is almost what we have now in
-> include/uapi/*.  The difference is that all ifdef KERNEL will be
-> stripped, thus the check of non-kernel access in linux/types.h is also
-> stripped.
->
-> That being said, once when kernel uapi things get merged to glibc,
-> everything will be fine....  Well, I hope.
->
+--VSMi1UXgOp435K5S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hehe, I hope too.
+On Thu, Nov 29, 2012 at 06:16:46PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Thanks
+> >  It's an accurate reflection of
+> > what's happening.
 
-Liam
+> Yes, and this reveals something ugly really happened.
+> Using gitk (or any other GUI) is a very fundamental workflow for
+> normal developers.  We mustn't mess it up.
+
+I don't see it as ugly to be honest - it's no worse for me than any
+other gitk log, they're all unreadable in the merge window.  The massive
+pile of branches just gets splattered even further over the map.
+
+--VSMi1UXgOp435K5S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQt522AAoJELSic+t+oim9rTkP/3ko6H9NeTa5qE5s0Yyx/dmQ
+2kbL5DKSTKvcgLvs9K3XqX5JEs52AvSV+DAZ1NNIEdQ3wAUjQ2FrU4X9zCrhWhuj
+9LakEcWVwJUqAD50PoT2+u+NpwH4fzwPLRrbJxm3zs3zM/xP77dhevL+T1ZqIEHU
+9RcM6aw3X0EZCtBS9/JbiZcn1fcHTlRgmm97yKfxJplZgP0gJlLNGt35Y8z+TJwx
+EH1WHdU00fIdSNLjOCY9tVL2GfdCllXfBaUeACVJfCv5Wtrk1ybMCgccga6s3ZXN
+A145hMqmyZ+pdQVhzCNaum/nVCxJZGMBf8+9tL+TSN5xBDZh5JlVlRHv9PmTvUm5
+0nw47EANSqgx0uADuehOcFWz5UaWl+RYBeQkCeHwmuGz1036WY7guiMgWWI1gPT7
+18yalPkPCyOkpbpG1RMe7RW9gP41WItDEygZ4Rxj55bYwe7+4Cqy0TpF97EpI1rM
+7cpGSLD90vasFrqkUhyoBcpZv6Y/MnCh5li31oQzsvCvg05sCeVDNEoxmWBA2klJ
+3OVcoKFiqyyg92Hj/RcqP/RMjT43oThzlDeSTYFUj4RvvNhIzz1eeBXQvIwCFCMR
+2Mh4gI81xkEJfy3NKDlrEAovkIZEoJYzbmIxmKqI8oDYd8u9maFz6b46xPgPVnbi
+Q4D0ifZxfDpgbok+nIGh
+=KAML
+-----END PGP SIGNATURE-----
+
+--VSMi1UXgOp435K5S--
+
+--===============4810302977212624708==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4810302977212624708==--
