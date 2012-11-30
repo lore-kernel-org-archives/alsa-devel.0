@@ -1,43 +1,38 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 4/5] ALSA: hda - Implement shared front
- mic/hp jack for HP Z220
-Date: Fri, 30 Nov 2012 15:21:42 +0800
-Message-ID: <CAN8ccibE0xEpOTPwLrFAJbypSnO4jdaAHRK3L=_bqHFY1ATepA@mail.gmail.com>
-References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
- <1354202489-12769-5-git-send-email-tiwai@suse.de>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/4] mfd: arizona: Allow the CODEC DAPM context to be
+ accessed elsewhere
+Date: Fri, 30 Nov 2012 11:09:39 +0100
+Message-ID: <20121130100939.GC3176@sortiz-mobl>
+References: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 3378C2615E8
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 08:21:43 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id b14so90334qcs.38
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2012 23:21:42 -0800 (PST)
-In-Reply-To: <1354202489-12769-5-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1354020025-23881-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> HP Z220 with ALC221 codec has a front jack that should work as both
-> the front mic and the secondary headphone.  This patch adds a new
-> mixer enum to change the jack behavior.
->
-> In the headphone mode, the auto-mic switching is disabled and the
-> input is fixed to the rear line-in.
->
+Hi Mark,
 
-I expect when any input jack(line in or mic) is retasked as output e.g.
-alc_set_multi_io() the corresponding jack detection kcontrol should change
-to false
+On Tue, Nov 27, 2012 at 12:40:22PM +0000, Mark Brown wrote:
+> Some other device functions need to integrate with signal sources in the
+> audio portion (primarily for haptics) so allow CODEC to export the DAPM
+> context by pointing to it from the core driver.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  include/linux/mfd/arizona/core.h |    4 ++++
+>  1 file changed, 4 insertions(+)
+Probably too late, but I think it would make sense to merge this one through
+your asoc tree:
+
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+
+Cheers,
+Samuel.
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
