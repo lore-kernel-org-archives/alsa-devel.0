@@ -1,17 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 3/3] ALSA: ASoC: cs4271: add optional soft
-	reset workaround
-Date: Fri, 30 Nov 2012 11:28:57 +0100
-Message-ID: <1354271337-15113-3-git-send-email-zonque@gmail.com>
-References: <1354271337-15113-1-git-send-email-zonque@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: hda - Create Capture Source enum
+	even for auto-mic mode
+Date: Fri, 30 Nov 2012 09:15:59 +0100
+Message-ID: <1354263363-25398-2-git-send-email-tiwai@suse.de>
+References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
+ <1354263363-25398-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id B425926510C
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 11:29:14 +0100 (CET)
-In-Reply-To: <1354271337-15113-1-git-send-email-zonque@gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99B5E265CAD
+ for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 09:16:22 +0100 (CET)
+In-Reply-To: <1354263363-25398-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,152 +23,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@ti.com, Daniel Mack <zonque@gmail.com>
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The CS4271 requires its LRCLK and MCLK to be stable before its RESET
-line is de-asserted. That also means that clocks cannot be changed
-without putting the chip back into hardware reset, which also requires
-a complete re-initialization of all registers.
+Create "Capture Source" control even when the driver is running in the
+auto-mic mode.  This allows user to switch to the non-standard input
+source.
 
-One (undocumented) workaround is to assert and de-assert the PDN bit
-in the MODE2 register in the startup hook, in case the other channel
-of the codec is not currently running.
+When the input source is changed automatically via jack detection, the
+value change is notified to this control as well.
 
-This patch adds a new flag to both the DT bindings as well as to the
-platform data to enable that workaround.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/devicetree/bindings/sound/cs4271.txt | 12 +++++++
- include/sound/cs4271.h                             | 15 +++++++++
- sound/soc/codecs/cs4271.c                          | 39 ++++++++++++++++++++++
- 3 files changed, 66 insertions(+)
+ sound/pci/hda/patch_realtek.c | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs4271.txt b/Documentation/devicetree/bindings/sound/cs4271.txt
-index a850fb9..e2cd1d7 100644
---- a/Documentation/devicetree/bindings/sound/cs4271.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4271.txt
-@@ -20,6 +20,18 @@ Optional properties:
- 		!RESET pin
-  - cirrus,amuteb-eq-bmutec:	When given, the Codec's AMUTEB=BMUTEC flag
- 				is enabled.
-+ - cirrus,enable-soft-reset:
-+	The CS4271 requires its LRCLK and MCLK to be stable before its RESET
-+	line is de-asserted. That also means that clocks cannot be changed
-+	without putting the chip back into hardware reset, which also requires
-+	a complete re-initialization of all registers.
-+
-+	One (undocumented) workaround is to assert and de-assert the PDN bit
-+	in the MODE2 register. This workaround can be enabled with this DT
-+	property.
-+
-+	Note that this is not needed in case the clocks are stable
-+	throughout the entire runtime of the codec.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d3a4c2ca..909a623 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -349,7 +349,7 @@ static void update_shared_mic_hp(struct hda_codec *codec, bool set_as_mic)
  
- Examples:
- 
-diff --git a/include/sound/cs4271.h b/include/sound/cs4271.h
-index dd8c48d..70f4535 100644
---- a/include/sound/cs4271.h
-+++ b/include/sound/cs4271.h
-@@ -20,6 +20,21 @@
- struct cs4271_platform_data {
- 	int gpio_nreset;	/* GPIO driving Reset pin, if any */
- 	bool amutec_eq_bmutec;	/* flag to enable AMUTEC=BMUTEC */
+ /* select the given imux item; either unmute exclusively or select the route */
+ static int alc_mux_select(struct hda_codec *codec, unsigned int adc_idx,
+-			  unsigned int idx, bool force)
++			  unsigned int idx, bool force, bool notify)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 	const struct hda_input_mux *imux;
+@@ -404,6 +404,16 @@ static int alc_mux_select(struct hda_codec *codec, unsigned int adc_idx,
+ 					  imux->items[idx].index);
+ 	}
+ 	alc_inv_dmic_sync(codec, true);
 +
-+	/*
-+	 * The CS4271 requires its LRCLK and MCLK to be stable before its RESET
-+	 * line is de-asserted. That also means that clocks cannot be changed
-+	 * without putting the chip back into hardware reset, which also requires
-+	 * a complete re-initialization of all registers.
-+	 *
-+	 * One (undocumented) workaround is to assert and de-assert the PDN bit
-+	 * in the MODE2 register. This workaround can be enabled with the
-+	 * following flag.
-+	 *
-+	 * Note that this is not needed in case the clocks are stable
-+	 * throughout the entire runtime of the codec.
-+	 */
-+	bool enable_soft_reset;
- };
++	if (notify) {
++		struct snd_ctl_elem_id id;
++		memset(&id, 0, sizeof(id));
++		id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++		strcpy(id.name, "Capture Source");
++		snd_ctl_notify(codec->bus->card, SNDRV_CTL_EVENT_MASK_VALUE,
++			       &id);
++	}
++
+ 	return 1;
+ }
  
- #endif /* __CS4271_H */
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index ac99238..bbc83ef 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -167,6 +167,8 @@ struct cs4271_private {
- 	int				gpio_nreset;
- 	/* GPIO that disable serial bus, if any */
- 	int				gpio_disable;
-+	/* enable soft reset workaround */
-+	bool				enable_soft_reset;
- };
+@@ -413,7 +423,7 @@ static int alc_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+ 	return alc_mux_select(codec, adc_idx,
+-			      ucontrol->value.enumerated.item[0], false);
++			      ucontrol->value.enumerated.item[0], false, false);
+ }
  
  /*
-@@ -403,11 +405,43 @@ static const struct snd_kcontrol_new cs4271_snd_controls[] = {
- 		7, 1, 1),
- };
+@@ -653,11 +663,12 @@ static void alc_mic_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
  
-+static int cs4271_startup(struct snd_pcm_substream *subs,
-+			   struct snd_soc_dai *codec_dai)
-+{
-+	int ret;
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (!cs4271->enable_soft_reset)
-+		return 0;
-+
-+	/*
-+	 * Put the codec in soft reset and back again in case it's not
-+	 * currently streaming data. This way of bringing the codec in
-+	 * sync to the current clocks is not explicitly documented in
-+	 * the data sheet, but it seems to work fine.
-+	 */
-+
-+	if ((subs->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-+	     codec_dai->capture_active) ||
-+	    (subs->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+	     codec_dai->playback_active))
-+		return 0;
-+
-+	ret = snd_soc_update_bits(codec, CS4271_MODE2, CS4271_MODE2_PDN,
-+				  CS4271_MODE2_PDN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_soc_update_bits(codec, CS4271_MODE2, CS4271_MODE2_PDN, 0);
-+}
-+
- static const struct snd_soc_dai_ops cs4271_dai_ops = {
- 	.hw_params	= cs4271_hw_params,
- 	.set_sysclk	= cs4271_set_dai_sysclk,
- 	.set_fmt	= cs4271_set_dai_fmt,
- 	.digital_mute	= cs4271_digital_mute,
-+	.startup	= cs4271_startup,
- };
- 
- static struct snd_soc_dai_driver cs4271_dai = {
-@@ -484,6 +518,10 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 		if (of_get_property(codec->dev->of_node,
- 				     "cirrus,amutec-eq-bmutec", NULL))
- 			amutec_eq_bmutec = true;
-+
-+		if (of_get_property(codec->dev->of_node,
-+				     "cirrus,enable-soft-reset", NULL))
-+			cs4271->enable_soft_reset = true;
+ 	for (i = spec->am_num_entries - 1; i > 0; i--) {
+ 		if (snd_hda_jack_detect(codec, spec->am_entry[i].pin)) {
+-			alc_mux_select(codec, 0, spec->am_entry[i].idx, false);
++			alc_mux_select(codec, 0, spec->am_entry[i].idx, false,
++				       true);
+ 			return;
+ 		}
  	}
- #endif
+-	alc_mux_select(codec, 0, spec->am_entry[0].idx, false);
++	alc_mux_select(codec, 0, spec->am_entry[0].idx, false, true);
+ }
  
-@@ -492,6 +530,7 @@ static int cs4271_probe(struct snd_soc_codec *codec)
- 			gpio_nreset = cs4271plat->gpio_nreset;
+ /* update the master volume per volume-knob's unsol event */
+@@ -1655,7 +1666,7 @@ static int alc_cap_sw_put(struct snd_kcontrol *kcontrol,
+ 	{ \
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+ 		/* .name = "Capture Source", */ \
+-		.name = "Input Source", \
++		.name = num == 1 ? "Capture Source" : "Input Source", \
+ 		.count = num, \
+ 		.info = alc_mux_enum_info, \
+ 		.get = alc_mux_enum_get, \
+@@ -4103,7 +4114,7 @@ static void alc_auto_init_input_src(struct hda_codec *codec)
+ 	else
+ 		nums = spec->num_adc_nids;
+ 	for (c = 0; c < nums; c++)
+-		alc_mux_select(codec, c, spec->cur_mux[c], true);
++		alc_mux_select(codec, c, spec->cur_mux[c], true, false);
+ }
  
- 		amutec_eq_bmutec = cs4271plat->amutec_eq_bmutec;
-+		cs4271->enable_soft_reset = cs4271plat->enable_soft_reset;
- 	}
+ /* add mic boosts if needed */
+@@ -4217,11 +4228,10 @@ static void set_capture_mixer(struct hda_codec *codec)
  
- 	if (gpio_nreset >= 0)
+ 		if (spec->input_mux && spec->input_mux->num_items > 1)
+ 			mux = 1;
+-		if (spec->auto_mic) {
+-			num_adcs = 1;
+-			mux = 0;
+-		} else if (spec->dyn_adc_switch)
++		if (spec->auto_mic || spec->dyn_adc_switch) {
+ 			num_adcs = 1;
++			mux = 1;
++		}
+ 		if (!num_adcs) {
+ 			if (spec->num_adc_nids > 3)
+ 				spec->num_adc_nids = 3;
+@@ -6000,7 +6010,7 @@ static void alc221_shared_fmic_hp_mode_update(struct hda_codec *codec)
+ 		pinctl = PIN_HP;
+ 		mute = AMP_OUT_UNMUTE;
+ 		spec->auto_mic = 0;
+-		alc_mux_select(codec, 0, spec->am_entry[0].idx, false);
++		alc_mux_select(codec, 0, spec->am_entry[0].idx, false, true);
+ 		/* choose the same DAC as the primary HP output */
+ 		idx = snd_hda_codec_read(codec, spec->autocfg.hp_pins[0], 0,
+ 					 AC_VERB_GET_CONNECT_SEL, 0);
 -- 
-1.7.11.7
+1.8.0.1
