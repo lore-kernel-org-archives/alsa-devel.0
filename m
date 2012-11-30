@@ -1,20 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [RFC][PATCH 2/2] ASoC: simple-card: add DT support
-Date: Fri, 30 Nov 2012 11:38:42 +0100
-Message-ID: <50B88CB2.9040605@gmail.com>
-References: <87txs9hvy7.wl%kuninori.morimoto.gx@renesas.com>
- <87r4ndhvwj.wl%kuninori.morimoto.gx@renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/5] More patches for Relatek auto-mic things
+Date: Fri, 30 Nov 2012 09:15:58 +0100
+Message-ID: <1354263363-25398-1-git-send-email-tiwai@suse.de>
+References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id C96592650FF
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 11:38:55 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so118796bkc.38
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 02:38:55 -0800 (PST)
-In-Reply-To: <87r4ndhvwj.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BB2E265CB3
+ for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2012 09:16:22 +0100 (CET)
+In-Reply-To: <1354202489-12769-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,136 +20,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori,
-
-On 29.11.2012 05:32, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/generic/simple-card.c |   90 +++++++++++++++++++++++++++++++++++++--
->  1 file changed, 87 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index b4b4cab..a59e88c 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -9,6 +9,7 @@
->   * published by the Free Software Foundation.
->   */
->  
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/module.h>
->  #include <sound/simple_card.h>
-> @@ -47,12 +48,89 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
->  	return 0;
->  }
->  
-> +static void asoc_simple_card_parse_of(struct device_node *np,
-> +				      struct asoc_simple_card_info *cinfo,
-> +				      struct device *dev)
-> +{
-> +	struct asoc_simple_dai_init_info *iinfo;
-> +	unsigned int cpu_daifmt = 0;
-> +	unsigned int codec_daifmt = 0;
-> +	unsigned int sysclk = 0;
-> +
-> +	/*
-> +	 * it will find
-> +	 *
-> +	 * iinfo,cpu,snd,soc,daifmt,xxx
-> +	 * iinfo,codec,snd,soc,daifmt,xxx
-> +	 * iinfo,sysclk
-> +	 */
-> +	snd_soc_of_parse_daifmt(np, "iinfo,cpu,",	&cpu_daifmt);
-> +	snd_soc_of_parse_daifmt(np, "iinfo,codec,",	&codec_daifmt);
-> +	of_property_read_u32(np, "iinfo,sysclk",	&sysclk);
-> +
-> +	if (cpu_daifmt || codec_daifmt || sysclk) {
-> +		iinfo = devm_kzalloc(dev, sizeof(*iinfo), GFP_KERNEL);
-> +		if (!iinfo)
-> +			return;
-> +
-> +		cinfo->init		= iinfo;
-> +		iinfo->cpu_daifmt	= cpu_daifmt;
-> +		iinfo->codec_daifmt	= codec_daifmt;
-> +		iinfo->sysclk		= sysclk;
-> +	}
-> +
-> +	/*
-> +	 * it will find
-> +	 *
-> +	 * cinfo,xxx
-> +	 */
-> +	of_property_read_string(np, "cinfo,name",	&cinfo->name);
-> +	of_property_read_string(np, "cinfo,card",	&cinfo->card);
-> +	of_property_read_string(np, "cinfo,cpu_dai",	&cinfo->cpu_dai);
-> +	of_property_read_string(np, "cinfo,codec",	&cinfo->codec);
-> +	of_property_read_string(np, "cinfo,platform",	&cinfo->platform);
-> +	of_property_read_string(np, "cinfo,codec_dai",	&cinfo->codec_dai);
+This is yet more patche series I mentioned in the previous post.
+These should be applied on the top of previous patch set.
 
 
-CPUs, codecs and platforms should be referenced by phandles rather than
-by string. The ASoC core is well prepared for this, by using the
-dai_link's *_of_node members.
-
-
-> +	/*
-> +	 * debug info
-> +	 */
-> +	if (cinfo->name)
-> +		dev_dbg(dev, "name      = %s\n", cinfo->name);
-> +	if (cinfo->card)
-> +		dev_dbg(dev, "card      = %s\n", cinfo->card);
-> +	if (cinfo->cpu_dai)
-> +		dev_dbg(dev, "cpu_dai   = %s\n", cinfo->cpu_dai);
-> +	if (cinfo->codec)
-> +		dev_dbg(dev, "codec     = %s\n", cinfo->codec);
-> +	if (cinfo->platform)
-> +		dev_dbg(dev, "platform  = %s\n", cinfo->platform);
-> +	if (cinfo->codec_dai)
-> +		dev_dbg(dev, "codec_dai = %s\n", cinfo->codec_dai);
-> +	if (iinfo && iinfo->cpu_daifmt)
-> +		dev_dbg(dev, "cpu_daifmt = %08x\n", iinfo->cpu_daifmt);
-> +	if (iinfo && iinfo->codec_daifmt)
-> +		dev_dbg(dev, "codec_daifmt = %08x\n", iinfo->codec_daifmt);
-> +	if (iinfo && iinfo->sysclk)
-> +		dev_dbg(dev, "iinfo,sysclk = %d\n", iinfo->sysclk);
-> +}
-> +
->  static int asoc_simple_card_probe(struct platform_device *pdev)
->  {
-> -	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
-> +	struct asoc_simple_card_info *cinfo;
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	cinfo = NULL;
-> +	if (np && of_device_is_available(np)) {
-> +		cinfo = devm_kzalloc(dev, sizeof(*cinfo), GFP_KERNEL);
-> +		if (cinfo)
-> +			asoc_simple_card_parse_of(np, cinfo, dev);
-> +	} else {
-> +		cinfo = pdev->dev.platform_data;
-> +	}
->  
->  	if (!cinfo) {
-> -		dev_err(&pdev->dev, "no info for asoc-simple-card\n");
-> +		dev_err(dev, "no info for asoc-simple-card\n");
->  		return -EINVAL;
->  	}
->  
-> @@ -62,7 +140,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
->  	    !cinfo->codec	||
->  	    !cinfo->platform	||
->  	    !cinfo->codec_dai) {
-> -		dev_err(&pdev->dev, "insufficient asoc_simple_card_info settings\n");
-> +		dev_err(dev, "insufficient asoc_simple_card_info settings\n");
-
-That's an unrelated change that should probably go into a separate commit.
-
-
-Daniel
+Takashi
