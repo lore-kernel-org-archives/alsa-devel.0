@@ -1,60 +1,48 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Samsung: WM8994: Add basic device tree support
- for machine file
-Date: Sat, 1 Dec 2012 22:49:38 +0900
-Message-ID: <20121201134937.GD17981@opensource.wolfsonmicro.com>
-References: <1354356447-16784-1-git-send-email-padma.v@samsung.com>
- <1354356447-16784-2-git-send-email-padma.v@samsung.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Preliminary driver for RME MADI FX
+Date: Sat, 01 Dec 2012 22:43:31 +0100
+Message-ID: <50BA7A03.2040008@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VV4b6MQE+OnNyhkM"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1354356447-16784-2-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, padma.kvr@gmail.com, sbkim73@samsung.com, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org, kgene.kim@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 193D7261742
+ for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2012 22:43:33 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Robert Steffens <robert.steffens@iosono-sound.com>, Cornelius Bradter <c.bradter@hff-potsdam.de>, Andre Schramm <andre.schramm@iosono-sound.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---VV4b6MQE+OnNyhkM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've been working on a driver for the new 390 channels RME MADI FX.
 
-On Sat, Dec 01, 2012 at 03:37:26PM +0530, Padmavathi Venna wrote:
-> Add the basic device tree based lookup.
->=20
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
->  sound/soc/samsung/smdk_wm8994.c |   23 +++++++++++++++++++++++
+For those who are interested, I've made the source available here:
 
-Any new device tree bindings need binding documentation.
+   https://github.com/adiknoth/madifx
 
-Your subject line is also very misleading here...  it should say that
-it's talking about the SMDK.  There's at least two other WM8994 based
-Samsung boards in mainline.
+As mentioned there, I only had remote access, so not all possible
+hardware configurations have been tested. This might change next year,
+until then, consider everything as "coincidentally working" ;)
 
---VV4b6MQE+OnNyhkM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Most importantly, the userspace API isn't stable, yet, since we still
+have to develop new tools for metering and mixer adjustments. If we
+exclude this API (the ioctls) for now, it is moderately safe to go
+mainline, though we definitely lack decent test coverage.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+ALSA devs: Feel free to demand any changes that are required for
+mainline inclusion. The github repo is meant to serve as an incubator
+from which we'll eventually derive the final kernel patch.
 
-iQIcBAEBAgAGBQJQugrPAAoJELSic+t+oim9Ee8P/iKFTT8W+i1DyObTrPh+EVZP
-Eq18+acCJycFyBm/Y4J0bKoVxhInwNKzryje8PecIctQ9bVFvKdEL4us/JGiPiNS
-akbHEOY7edOnL5KkG7bSdpHrXibLDZP+OgJyVPGiJFb7fZJZTNVJyk7TLX6cfKeF
-Hd/qY6WiKt9+o2Lr2ZnzoPOX2eRbRXU4O57dsQyYM0qmXO8Edfiqt0+/0NKNbJT+
-NDH0ltYzgjbaQd0ZLIiLbHevc8On3EX5zjI/1W1gPsGR2SCoOFJjCAuBzkn3fC5+
-bIuBrcPPrSqE6fwtNX6APkH90TJIrICPjIYSGBeVaZsDtpBPg+ew0wL9uqjAdWDD
-HEc6JarC5lx3/M/nDoA+4Hju+4lsHhnkAk8V6Xdb4vqvanHZ4ZVCoXRVrseOajfr
-vyEG9s4YRVEUtg5IF3eoLuh2DpoLAD8mXhc3ywruzpEMPPzCIcXR3bbMc18RdWBT
-QpSA7rjapA3aQYj7Nh0WbBpr1YYWM3co98UEJ6z1FP25txy6ZmJnxq8npUnSf0tY
-+AbQoD6b1AvIJo/LavDPvaUUBYqYgX99wTe/Csw0w6J87L6Edq1jlZEuOfjuPrym
-UXh79THk6KXfIVt8oMPNLEYtvtiOWMCOCbAyEE2fHLb7LULoyGBLMhjw5sLzZCD4
-6eIdrNG+u8owrNFeYTC9
-=B3tt
------END PGP SIGNATURE-----
 
---VV4b6MQE+OnNyhkM--
+
+Cheers
