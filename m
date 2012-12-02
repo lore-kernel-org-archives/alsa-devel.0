@@ -1,20 +1,21 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH sound-unstable] usb-audio: sync ep init fix for
-	audioformat mistmatch
-Date: Sat,  1 Dec 2012 23:50:26 +0100
-Message-ID: <1354402226-2392-1-git-send-email-eldad@fogrefinery.com>
-References: <s5hk3t4alc0.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 2/5] ALSA: hda - More generic auto-mic
+ switching for Realtek codecs
+Date: Sun, 2 Dec 2012 09:55:56 +0800
+Message-ID: <CAN8cciYhX57p-ZQ1t9xym2pkiPNruEoFXD6jUOXDwWW651hQ3w@mail.gmail.com>
+References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
+ <1354202489-12769-3-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 404D0261743
- for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2012 23:50:34 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so577442bkc.38
- for <alsa-devel@alsa-project.org>; Sat, 01 Dec 2012 14:50:34 -0800 (PST)
-In-Reply-To: <s5hk3t4alc0.wl%tiwai@suse.de>
+Received: from mail-ie0-f170.google.com (mail-ie0-f170.google.com
+ [209.85.223.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33C22261743
+ for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2012 02:55:58 +0100 (CET)
+Received: by mail-ie0-f170.google.com with SMTP id k10so2834168iea.29
+ for <alsa-devel@alsa-project.org>; Sat, 01 Dec 2012 17:55:57 -0800 (PST)
+In-Reply-To: <1354202489-12769-3-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,162 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Felix Homann <linuxaudio@showlabor.de>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
-Cc: Grant Diffey <gdiffey@gmail.com>, George Willian Condomitti <georgecondomitti@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>, Jeffrey Barish <jeff_barish@earthlink.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 947d299686aa9cc8aecf749d54e8475c6e498956 , "ALSA: snd-usb:
-properly initialize the sync endpoint", while correcting the
-initialization of the sync endpoint when opening just the data
-endpoint, prevents devices that has a sync endpoint with a channel
-number different than the data endpoint channel from functioning.
-Due to a different channel and period bytes count. attempting to
-initialize the sync endpoint will fail at the usb host driver:
-(example, when using xhci:)
+>
+> Instead of limiting the automatic input-source selection only to the
+> mics (internal, external and dock mics), allow it for generic inputs,
+> e.g. switching between the rear line-in and the front mic.
 
- cannot submit urb 0, error -90: internal error
+the problem of addng line in jack to auto mic is line in does not has any
+boost (gain) but most mic have a boost control
 
-With this patch, if a sync endpoint has multiple audioformats, a
-matching audioformat is perferred. An audioformat must be found
-with at least one channel and support the requested sample rate
-and PCM format, otherwise the stream will not be opened.
+the other problem is those acer aspire 8930g notebook has internal 5.1
+speakers and three jacks which can support external 5.1 speakers
 
-If the number of channels differ between the selected audioformat
-and the requested format, adjust the period bytes count accordingly.
-It is safe to perform the calculation on the basis of the channel
-count, since the PCM audio format and the rate must be supported by
-the selected audioformat.
+it seem the the channel mode control limit the max channels to 2 when there
+is internal 5.1 speaker
 
-Cc: Jeffrey Barish <jeff_barish@earthlink.net>
-Cc: Daniel Mack <zonque@gmail.com>
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- sound/usb/pcm.c |  106 +++++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 files changed, 99 insertions(+), 7 deletions(-)
+when channel mode is 6ch the mic jack is retasked as output and cannot be
+used
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 5d3cf85..e539a5a 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -451,6 +451,103 @@ add_sync_ep:
- }
- 
- /*
-+ * Return the score of matching two audioformats.
-+ * Veto the audioformat if:
-+ * - It has no channels for some reason.
-+ * - Requested PCM format is not supported.
-+ * - Requested sample rate is not supported.
-+ */
-+static int match_endpoint_audioformats(struct audioformat *fp,
-+	struct audioformat *match, int rate,
-+	snd_pcm_format_t pcm_format)
-+{
-+	int i;
-+	int score = 0;
-+
-+	if (fp->channels < 1) {
-+		snd_printdd("%s: (fmt @%p) no channels\n", __func__, fp);
-+		return 0;
-+	}
-+
-+	if (!(fp->formats && pcm_format)) {
-+		snd_printdd("%s: (fmt @%p) no match for format %d\n", __func__,
-+			fp, pcm_format);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < 4; i++) {
-+		if (fp->rate_table[i] == rate) {
-+			score++;
-+			break;
-+		}
-+	}
-+	if (!score) {
-+		snd_printdd("%s: (fmt @%p) no match for rate %d\n", __func__,
-+			fp, rate);
-+		return 0;
-+	}
-+
-+	if (fp->channels == match->channels)
-+		score++;
-+
-+	snd_printdd("%s: (fmt @%p) score %d\n", __func__, fp, score);
-+
-+	return score;
-+}
-+
-+/*
-+ * Configure the sync ep using the rate and pcm format of the data ep.
-+ */
-+static int configure_sync_endpoint(struct snd_usb_substream *subs)
-+{
-+	int ret;
-+	struct audioformat *fp;
-+	struct audioformat *sync_fp = NULL;
-+	int cur_score = 0;
-+	int sync_period_bytes = subs->period_bytes;
-+	struct snd_usb_substream *sync_subs =
-+		&subs->stream->substream[subs->direction ^ 1];
-+
-+	/* Try to find the best matching audioformat. */
-+	list_for_each_entry(fp, &sync_subs->fmt_list, list) {
-+		int score = match_endpoint_audioformats(fp, subs->cur_audiofmt,
-+			subs->cur_rate, subs->pcm_format);
-+
-+		if (score > cur_score) {
-+			sync_fp = fp;
-+			cur_score = score;
-+		}
-+	}
-+
-+	if (unlikely(sync_fp == NULL)) {
-+		snd_printk(KERN_ERR "%s: no valid audioformat for sync ep %x found\n",
-+			__func__, sync_subs->ep_num);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Recalculated the period bytes if channel number differ between
-+	 * data and sync ep audioformat.
-+	 */
-+	if (sync_fp->channels != subs->channels) {
-+		sync_period_bytes = (subs->period_bytes / subs->channels) *
-+			sync_fp->channels;
-+		snd_printdd("%s: adjusted sync ep period bytes (%d -> %d)\n",
-+			__func__, subs->period_bytes, sync_period_bytes);
-+	}
-+
-+	ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
-+					  subs->pcm_format,
-+					  sync_fp->channels,
-+					  sync_period_bytes,
-+					  subs->cur_rate,
-+					  sync_fp,
-+					  NULL);
-+
-+	return ret;
-+}
-+
-+/*
-  * configure endpoint params
-  *
-  * called  during initial setup and upon resume
-@@ -472,13 +569,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
- 		return ret;
- 
- 	if (subs->sync_endpoint)
--		ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
--						  subs->pcm_format,
--						  subs->channels,
--						  subs->period_bytes,
--						  subs->cur_rate,
--						  subs->cur_audiofmt,
--						  NULL);
-+		ret = configure_sync_endpoint(subs);
-+
- 	return ret;
- }
- 
--- 
-1.7.8.6
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/943386
