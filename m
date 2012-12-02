@@ -1,21 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 2/5] ALSA: hda - More generic auto-mic
- switching for Realtek codecs
-Date: Sun, 2 Dec 2012 09:55:56 +0800
-Message-ID: <CAN8cciYhX57p-ZQ1t9xym2pkiPNruEoFXD6jUOXDwWW651hQ3w@mail.gmail.com>
-References: <1354202489-12769-1-git-send-email-tiwai@suse.de>
- <1354202489-12769-3-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] ALSA: ASoC: cs4271: add optional soft
+ reset workaround
+Date: Sun, 2 Dec 2012 13:02:01 +0900
+Message-ID: <20121202040200.GI17981@opensource.wolfsonmicro.com>
+References: <1354271337-15113-1-git-send-email-zonque@gmail.com>
+ <1354271337-15113-3-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9012428865366802366=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f170.google.com (mail-ie0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 33C22261743
- for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2012 02:55:58 +0100 (CET)
-Received: by mail-ie0-f170.google.com with SMTP id k10so2834168iea.29
- for <alsa-devel@alsa-project.org>; Sat, 01 Dec 2012 17:55:57 -0800 (PST)
-In-Reply-To: <1354202489-12769-3-git-send-email-tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 281DC264F06
+ for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2012 05:02:06 +0100 (CET)
+In-Reply-To: <1354271337-15113-3-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +21,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> Instead of limiting the automatic input-source selection only to the
-> mics (internal, external and dock mics), allow it for generic inputs,
-> e.g. switching between the rear line-in and the front mic.
 
-the problem of addng line in jack to auto mic is line in does not has any
-boost (gain) but most mic have a boost control
+--===============9012428865366802366==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
+Content-Disposition: inline
 
-the other problem is those acer aspire 8930g notebook has internal 5.1
-speakers and three jacks which can support external 5.1 speakers
 
-it seem the the channel mode control limit the max channels to 2 when there
-is internal 5.1 speaker
+--J/zg8ciPNcraoWb6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-when channel mode is 6ch the mic jack is retasked as output and cannot be
-used
+On Fri, Nov 30, 2012 at 11:28:57AM +0100, Daniel Mack wrote:
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/943386
+> +	Note that this is not needed in case the clocks are stable
+> +	throughout the entire runtime of the codec.
+
+That's really quite rare for embeded systems, though - normally at least
+the LRCLK is going to be enabled only when there's audio. =20
+
+> +static int cs4271_startup(struct snd_pcm_substream *subs,
+> +			   struct snd_soc_dai *codec_dai)
+> +{
+> +	int ret;
+> +	struct snd_soc_codec *codec =3D codec_dai->codec;
+> +	struct cs4271_private *cs4271 =3D snd_soc_codec_get_drvdata(codec);
+> +
+> +	if (!cs4271->enable_soft_reset)
+> +		return 0;
+> +
+> +	/*
+> +	 * Put the codec in soft reset and back again in case it's not
+> +	 * currently streaming data. This way of bringing the codec in
+> +	 * sync to the current clocks is not explicitly documented in
+> +	 * the data sheet, but it seems to work fine.
+> +	 */
+
+Since startup() is called before hw_params() you might well find even an
+active LRCLK is going to change underneath the driver here...
+
+--J/zg8ciPNcraoWb6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQutKgAAoJELSic+t+oim9dtEP/1JkbsVB2poVWFoSvqeN+TwI
+IOt8MBFE7hOyU9A8QSIKt6Duk+345x8qhIMauHGeBMErcGkt1w/bXo8+reQKlZwO
+8jV8eingU59ZbPbC8grHobDQlhTs/1GoZs4c8hAFptmSzBe9twYZzqgzKhfjyR9j
+MsLGGPckoR6DA/ihxuNL8QMesN0Kr3Mh9bXZi7T8a74nAXeoBVjZ9nF6CSkwR06A
+S4B4bkTLaSo1aFqDTUZJ6IohIU2IairIEU/wyugtVY1KRYKvhVWhh+WOMygO82id
+jnDzfeTR01MTN7f1nTWuaRW+m6Uu5uU+xSnLBrpzGhcJQQJ0PFpHawLSIqCT2+y2
+O+tIXTYmVk5hkaftoXphtuGedHIADhsm87jYbq5oxO37ofskMF/QlHk0u9yJ7q2d
+J0nnzQ+khmjR7ZeCBWqSFVZYUQIhFmHg/qY/g/VrH0lD0bAqkRb4jKl/cwcXChCP
+xffp+G7VfngkI8Kr8l9Tjkqc5UwWWtVKTUDK75hoblSaKA31jljtblQ7tjMFNc35
+kOEx2l4SnLbVs8DL8eGpsOxcsvXbVqeu+Vm9sT1ciXJXGwhFLwWPiQnP+mjOLSUG
+XMbGhnE9MMboABt8BoDuR4TMRIoPSh/mzBHVQJPmUFF6GAYu3zqjbYgEuCAg1GiK
+Yzim7Mx8IKbw18/+vRUG
+=82ky
+-----END PGP SIGNATURE-----
+
+--J/zg8ciPNcraoWb6--
+
+--===============9012428865366802366==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9012428865366802366==--
