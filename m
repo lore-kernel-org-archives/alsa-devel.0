@@ -1,54 +1,62 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: atmel-pcm: split into two file
-Date: Sun, 2 Dec 2012 13:28:27 +0900
-Message-ID: <20121202042826.GV17981@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: atmel-pcm: dma support based on pcm dmaengine
+Date: Sun, 2 Dec 2012 13:30:38 +0900
+Message-ID: <20121202043036.GW17981@opensource.wolfsonmicro.com>
 References: <1354074373-7671-1-git-send-email-voice.shen@atmel.com>
+ <1354074373-7671-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BrzieSmlpF6NDzIw"
+	protocol="application/pgp-signature"; boundary="Ou5B7nmexOOGXbzo"
 Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1354074373-7671-1-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <1354074373-7671-2-git-send-email-voice.shen@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
 To: Bo Shen <voice.shen@atmel.com>
 Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---BrzieSmlpF6NDzIw
+--Ou5B7nmexOOGXbzo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 28, 2012 at 11:46:12AM +0800, Bo Shen wrote:
-> This patch is split original atmel-pcm.c into new atmel-pcm.c and
-> atmel-pcm-pdc.c two files. The new atmel-pcm.c is the share routine
-> while will be used for pdc or dma transfer.
->=20
-> Using SND_ATMEL_SOC_PDC to select using PDC for audio transfer
+On Wed, Nov 28, 2012 at 11:46:13AM +0800, Bo Shen wrote:
+> Specify overrun bit in interrupt mask
+> Add dmaengine specific routines
 
 Applied, thanks.
 
---BrzieSmlpF6NDzIw
+> +	struct snd_pcm_substream *substream)
+> +{
+> +	struct atmel_pcm_dma_params *prtd;
+> +
+> +	prtd = snd_dmaengine_pcm_get_data(substream);
+> +
+> +	if (ssc_sr & prtd->mask->ssc_error) {
+> +		if (snd_pcm_running(substream))
+
+It is a bit weird that this is not part of the SSC code...
+
+--Ou5B7nmexOOGXbzo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQutjgAAoJELSic+t+oim9qyAP/iH4LLXOch+7SmtF5r2f98SM
-ZP5NGGCgPW70G9gkVVsDWpVRk7upmn4/AtRP5EtLaXQdgIi8ZiOm3tkx2Bv4jeHs
-jSGsL2Cf22JpCVihNCWKHtAmCfDQXMBc1MEVMqaxY9b1JFCn2kNeF5I/z/vXzvXy
-0PgRb+JS2NJVa/ie9BbU3U8vZr8cfevWsWVeMzTc9ql3fgZx480zdQ9zBeBHrV5N
-AkZyoVxgSF9qYSnB7MPZiE8dt2F/gAu0UJfO5OOI176zXXzOe5CENCgl7B7QXIJm
-9iAwZsXgjwq62iersyEj972+CWB+dcr5THPocoivdSWbZrgu2pp+rvYD1cv97mzy
-AwiXTy7aeX+wdzjoHQMIOqhZhmgPNI23jOS/0o0DG08YwTFo1wwu6F5nyfxim3t9
-n85gL27hy8kpgU3gTt5tTied6UPCRRaKHumDEpogO1E7MX/mDOcNE1IUXcHX5/qB
-obAL+PTJo5cpxmjlLNZNPc3gvfegDc5Xoy4/pA7gV7qsAuP9WnKM3TcakAK6gbXn
-nEMFAyKYerkC30MQ8DqGdtXFN5/PefIhs76ghCMhp7GtYIwEI624W7vSkr4L6ahH
-fZXuaRawbkZmOubQfwgwzXp5e+wFbFxaDjsuWtO/cYj79UFW2NdQLTo+ceK2qUfI
-orKbk5kZYPGMj4IVJXNA
-=I+BV
+iQIcBAEBAgAGBQJQutlmAAoJELSic+t+oim9eCMP/jj4ZM1E0vATa1eTyCMNzUmI
+5MIwP28Pew9rYjqPO6kv2IliP2Bc2LMtqhVHBznOlDbOD9THjtIFFqa4ERXm7xqk
+UTJR2mBwxZ07pqIv1gRTvU5WeazudrMQb2kHFm4ywf21oqIj2qqUNJene+sF4CTE
+66K2E1hQkJIdOeS9s8kFjdrmjCPqKaTVdvabXyRUL6MiHImrDC6BGTUm5sRSUo3s
+e0moX/PcOhq5cOhXjSzkAdqc03NePRiBnX9DavH/arQ6EzstImkFRMcObSw/432r
+0ojLlNUXO3+AGnNtEu2MMFhuthJnsYvzRxZ2mE4bNCtDdiWSxABDr6pC6CMnqelp
+fePzm8kECNKwQin/QHzUMhZ+1e59IB8swCmGM1lCICE5O4rC0gWfvZBDq44Ar5gM
+YkEuFcLgRVpPFpjxD9qvtS6hgaZFTVpk+6/O7JyRfK49rbe94pPcme8U1jLXlinj
+EsV4ArsHVJCj/6PzolgJOyjlXvJZhebc1uZeqQPKKPaZSYBE1vRBMss6AR2YNPBQ
+lmKncBvpnRym4i0mQ2CWvXKtb2S4mTLI5QSdJeY81VwKa+RVT5h+ClhPF4EEi8BU
+QuuU2Eag9HUZ1L9lplKBuwsQyF4JqplEs+ZOYhPc/uzS2lAoOA4aJ3IxUP0xbRet
+nkWea417F5uNDsyou/X1
+=3O/D
 -----END PGP SIGNATURE-----
 
---BrzieSmlpF6NDzIw--
+--Ou5B7nmexOOGXbzo--
