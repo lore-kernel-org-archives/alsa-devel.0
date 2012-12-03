@@ -1,20 +1,18 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH sound-unstable] usb-audio: sync ep init fix for
-	audioformat mismatch
-Date: Mon,  3 Dec 2012 20:30:09 +0100
-Message-ID: <1354563009-1949-1-git-send-email-eldad@fogrefinery.com>
-References: <alpine.LNX.2.00.1212031932420.1485@xoschi>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Fix missing autopm
+ for MIDI input
+Date: Mon, 03 Dec 2012 21:47:48 +0100
+Message-ID: <50BD0FF4.50301@ladisch.de>
+References: <1354531738-22046-1-git-send-email-tiwai@suse.de>
+ <1354531738-22046-3-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D1A12616EF
- for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2012 20:30:25 +0100 (CET)
-Received: by mail-bk0-f51.google.com with SMTP id ik5so1182560bkc.38
- for <alsa-devel@alsa-project.org>; Mon, 03 Dec 2012 11:30:25 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1212031932420.1485@xoschi>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E50D626169D
+ for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2012 21:48:11 +0100 (CET)
+In-Reply-To: <1354531738-22046-3-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,162 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>
-Cc: Grant Diffey <gdiffey@gmail.com>, Chris Cavey <chris-alsa@rauros.net>, Eldad Zack <eldad@fogrefinery.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>, George Willian Condomitti <georgecondomitti@gmail.com>, Jeffrey Barish <jeff_barish@earthlink.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Nieder <jrnieder@gmail.com>, David Banks <amoebae@gmail.com>, alsa-devel@alsa-project.org, Olivier MATZ <zer0@droids-corp.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 947d299686aa9cc8aecf749d54e8475c6e498956 , "ALSA: snd-usb:
-properly initialize the sync endpoint", while correcting the
-initialization of the sync endpoint when opening just the data
-endpoint, prevents devices that has a sync endpoint, with a channel
-number different than that of the data endpoint, from functioning.
-Due to a different channel and period bytes count, attempting to
-initialize the sync endpoint will fail at the usb host driver.
-For example, when using xhci:
+Takashi Iwai wrote:
+> The commit [88a8516a: ALSA: usbaudio: implement USB autosuspend] added
+> the support of autopm for USB MIDI output, but it didn't take the MIDI
+> input into account.
+>
+> This patch adds the following for fixing the autopm:
+> - Manage the URB start at the first MIDI input stream open, instead of
+>   the time of instance creation
+> - Move autopm code to the common substream_open()
+> - Make snd_usbmidi_input_start/_stop() more robust and add the running
+>   state check
+>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ...
+> +static int substream_open(struct snd_rawmidi_substream *substream, int dir,
+> +			  int open)
+>  {
+>  	struct snd_usb_midi* umidi = substream->rmidi->private_data;
+>  	struct snd_kcontrol *ctl;
+> +	int err;
+>
+>  	down_read(&umidi->disc_rwsem);
+>  	if (umidi->disconnected) {
+>  		up_read(&umidi->disc_rwsem);
+> +		return open ? -ENODEV : 0;
+>  	}
+>
+>  	mutex_lock(&umidi->mutex);
+>  	if (open) {
+> +		if (!umidi->opened[0] && !umidi->opened[1]) {
+> +			err = usb_autopm_get_interface(umidi->iface);
+> +			umidi->autopm_reference = err >= 0;
+> +			if (err < 0 && err != -EACCES) {
+> +				up_read(&umidi->disc_rwsem);
+> +				return -EIO;
 
- cannot submit urb 0, error -90: internal error
+umidi->mutex is still held here.
 
-With this patch, if a sync endpoint has multiple audioformats, a
-matching audioformat is preferred. An audioformat must be found
-with at least one channel and support the requested sample rate
-and PCM format, otherwise the stream will not be opened.
+Otherwise, for both patches:
+Reviewd-by: Clemens Ladisch <clemens@ladisch.de>
+Tested-by: Clemens Ladisch <clemens@ladisch.de>
 
-If the number of channels differ between the selected audioformat
-and the requested format, adjust the period bytes count accordingly.
-It is safe to perform the calculation on the basis of the channel
-count, since the requested PCM audio format and the rate must be
-supported by the selected audioformat.
 
-Cc: Jeffrey Barish <jeff_barish@earthlink.net>
-Cc: Daniel Mack <zonque@gmail.com>
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- sound/usb/pcm.c |  106 +++++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 files changed, 99 insertions(+), 7 deletions(-)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 5d3cf85..ec0318c 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -451,6 +451,103 @@ add_sync_ep:
- }
- 
- /*
-+ * Return the score of matching two audioformats.
-+ * Veto the audioformat if:
-+ * - It has no channels for some reason.
-+ * - Requested PCM format is not supported.
-+ * - Requested sample rate is not supported.
-+ */
-+static int match_endpoint_audioformats(struct audioformat *fp,
-+	struct audioformat *match, int rate,
-+	snd_pcm_format_t pcm_format)
-+{
-+	int i;
-+	int score = 0;
-+
-+	if (fp->channels < 1) {
-+		snd_printdd("%s: (fmt @%p) no channels\n", __func__, fp);
-+		return 0;
-+	}
-+
-+	if (!(fp->formats & (1ULL << pcm_format))) {
-+		snd_printdd("%s: (fmt @%p) no match for format %d\n", __func__,
-+			fp, pcm_format);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < fp->nr_rates; i++) {
-+		if (fp->rate_table[i] == rate) {
-+			score++;
-+			break;
-+		}
-+	}
-+	if (!score) {
-+		snd_printdd("%s: (fmt @%p) no match for rate %d\n", __func__,
-+			fp, rate);
-+		return 0;
-+	}
-+
-+	if (fp->channels == match->channels)
-+		score++;
-+
-+	snd_printdd("%s: (fmt @%p) score %d\n", __func__, fp, score);
-+
-+	return score;
-+}
-+
-+/*
-+ * Configure the sync ep using the rate and pcm format of the data ep.
-+ */
-+static int configure_sync_endpoint(struct snd_usb_substream *subs)
-+{
-+	int ret;
-+	struct audioformat *fp;
-+	struct audioformat *sync_fp = NULL;
-+	int cur_score = 0;
-+	int sync_period_bytes = subs->period_bytes;
-+	struct snd_usb_substream *sync_subs =
-+		&subs->stream->substream[subs->direction ^ 1];
-+
-+	/* Try to find the best matching audioformat. */
-+	list_for_each_entry(fp, &sync_subs->fmt_list, list) {
-+		int score = match_endpoint_audioformats(fp, subs->cur_audiofmt,
-+			subs->cur_rate, subs->pcm_format);
-+
-+		if (score > cur_score) {
-+			sync_fp = fp;
-+			cur_score = score;
-+		}
-+	}
-+
-+	if (unlikely(sync_fp == NULL)) {
-+		snd_printk(KERN_ERR "%s: no valid audioformat for sync ep %x found\n",
-+			__func__, sync_subs->ep_num);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Recalculate the period bytes if channel number differ between
-+	 * data and sync ep audioformat.
-+	 */
-+	if (sync_fp->channels != subs->channels) {
-+		sync_period_bytes = (subs->period_bytes / subs->channels) *
-+			sync_fp->channels;
-+		snd_printdd("%s: adjusted sync ep period bytes (%d -> %d)\n",
-+			__func__, subs->period_bytes, sync_period_bytes);
-+	}
-+
-+	ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
-+					  subs->pcm_format,
-+					  sync_fp->channels,
-+					  sync_period_bytes,
-+					  subs->cur_rate,
-+					  sync_fp,
-+					  NULL);
-+
-+	return ret;
-+}
-+
-+/*
-  * configure endpoint params
-  *
-  * called  during initial setup and upon resume
-@@ -472,13 +569,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
- 		return ret;
- 
- 	if (subs->sync_endpoint)
--		ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
--						  subs->pcm_format,
--						  subs->channels,
--						  subs->period_bytes,
--						  subs->cur_rate,
--						  subs->cur_audiofmt,
--						  NULL);
-+		ret = configure_sync_endpoint(subs);
-+
- 	return ret;
- }
- 
--- 
-1.7.8.6
+Regards,
+Clemens
