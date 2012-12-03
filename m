@@ -1,74 +1,32 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: Fix missing autopm
- for MIDI input
-Date: Mon, 03 Dec 2012 21:47:48 +0100
-Message-ID: <50BD0FF4.50301@ladisch.de>
-References: <1354531738-22046-1-git-send-email-tiwai@suse.de>
- <1354531738-22046-3-git-send-email-tiwai@suse.de>
+From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [alsa-devel] Missing exactly 3 of 8 audio packets?
+Date: Mon, 3 Dec 2012 13:04:25 -0800
+Message-ID: <20121203210425.GB11877@xanatos>
+References: <50B4A870.7040201@gmail.com>
+ <Pine.LNX.4.44L0.1211271213580.1489-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E50D626169D
- for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2012 21:48:11 +0100 (CET)
-In-Reply-To: <1354531738-22046-3-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Nieder <jrnieder@gmail.com>, David Banks <amoebae@gmail.com>, alsa-devel@alsa-project.org, Olivier MATZ <zer0@droids-corp.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L0.1211271213580.1489-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Daniel Griscom <griscom-yI/1Hl18UA1Wk0Htik3J/w@public.gmane.org>, Alsa Developer <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-usb <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> The commit [88a8516a: ALSA: usbaudio: implement USB autosuspend] added
-> the support of autopm for USB MIDI output, but it didn't take the MIDI
-> input into account.
->
-> This patch adds the following for fixing the autopm:
-> - Manage the URB start at the first MIDI input stream open, instead of
->   the time of instance creation
-> - Move autopm code to the common substream_open()
-> - Make snd_usbmidi_input_start/_stop() more robust and add the running
->   state check
->
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ...
-> +static int substream_open(struct snd_rawmidi_substream *substream, int dir,
-> +			  int open)
->  {
->  	struct snd_usb_midi* umidi = substream->rmidi->private_data;
->  	struct snd_kcontrol *ctl;
-> +	int err;
->
->  	down_read(&umidi->disc_rwsem);
->  	if (umidi->disconnected) {
->  		up_read(&umidi->disc_rwsem);
-> +		return open ? -ENODEV : 0;
->  	}
->
->  	mutex_lock(&umidi->mutex);
->  	if (open) {
-> +		if (!umidi->opened[0] && !umidi->opened[1]) {
-> +			err = usb_autopm_get_interface(umidi->iface);
-> +			umidi->autopm_reference = err >= 0;
-> +			if (err < 0 && err != -EACCES) {
-> +				up_read(&umidi->disc_rwsem);
-> +				return -EIO;
+On Tue, Nov 27, 2012 at 12:20:42PM -0500, Alan Stern wrote:
+> The only thing that's strange is that there are so many dropped packets 
+> and that they seem to fall into a small number of patterns.  This 
+> strongly suggests hardware issues.  Daniel G., have you tried running 
+> your tests on a different computer?  Preferably with a different brand 
+> of motherboard?
 
-umidi->mutex is still held here.
+What host controller were you running under?  I know that some xHCI host
+controllers (NEC in particular) have pretty bad issues with missing
+service intervals on isochronous transfers.
 
-Otherwise, for both patches:
-Reviewd-by: Clemens Ladisch <clemens@ladisch.de>
-Tested-by: Clemens Ladisch <clemens@ladisch.de>
-
-
-Regards,
-Clemens
+Sarah Sharp
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
