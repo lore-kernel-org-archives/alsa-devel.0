@@ -1,19 +1,17 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: HIFACE family driver
-Date: Tue, 04 Dec 2012 11:22:30 +0100
-Message-ID: <50BDCEE6.1070208@amarulasolutions.com>
-References: <50A3750A.70401@amarulasolutions.com> <50A3921A.4030907@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: sound/usb/midi.c:1088 substream_open() warn:
+ inconsistent returns mutex:&umidi->mutex: locked (1058) unlocked (1048,
+ 1088)
+Date: Tue, 4 Dec 2012 13:57:18 +0300
+Message-ID: <20121204105718.GC22569@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 575092625FF
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 11:22:33 +0100 (CET)
-Received: by mail-ea0-f179.google.com with SMTP id i12so1475228eaa.38
- for <alsa-devel@alsa-project.org>; Tue, 04 Dec 2012 02:22:33 -0800 (PST)
-In-Reply-To: <50A3921A.4030907@gmail.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 404D02625FF
+ for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 11:57:32 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +21,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: kbuild@01.org, Fengguang Wu <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel
+Hi Takashi,
 
-On 11/14/2012 01:44 PM, Daniel Mack wrote:
-> Hi Michael,
-> 
-> On 14.11.2012 18:40, Michael Trimarchi wrote:
->> I have written in my spare time an alsa driver for HIFACE devices
->> family. Now I'm not an alsa expert and I would like to know if you
->> think that it's useful to include it in mainline
->>
->> https://github.com/panicking/snd-usb-asyncaudio
->>
->> The list of usb devices supported
->>
->> https://github.com/panicking/snd-usb-asyncaudio/blob/master/chip.c
-> 
-> We've already seen this - very cool!
-> 
->> The main difference is that I need to use bulk message to talk to the
->> usb dongle and ofcourse there are a lot of improvement that we can do
->> on it. I have already tested on several kernel version and it's
->> already included in some linux distribution. Wait for some feedback
->> ;)
-> 
-> More than welcome :) You should submit your current version of the code
-> in digestable pieces. Maybe the basic driver structure first, and then
-> put individual features into additional patches if possible. That way,
-> things can be reviewed in-line on the mailing list.
-> 
-> 
+FYI, there are new smatch warnings show up in
 
-Sorry if I'm late, but I'm very busy. I will try to sort out by the end of the week.
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git master
+head:   d34bb8cb0b61e91a036aa516dc6f9ced5af2adc4
+commit: 6e28507b716f16618070517dbfcaafe2ca7e9cbe ALSA: usb-audio: Fix missing autopm for MIDI input
+date:   6 hours ago
 
-Regards
-Michael
++ sound/usb/midi.c:1088 substream_open() warn: inconsistent returns mutex:&umidi->mutex: locked (1058) unlocked (1048,1088)
+  sound/usb/midi.c:2166 snd_usbmidi_create() error: we previously assumed 'quirk' could be null (see line 2155)
 
-> Thanks,
-> Daniel
-> 
+git remote update sound-unstable
+git checkout 6e28507b716f16618070517dbfcaafe2ca7e9cbe
+vim +1088 sound/usb/midi.c
+
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1042  	struct snd_kcontrol *ctl;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1043  	int err;
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1044  
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1045  	down_read(&umidi->disc_rwsem);
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1046  	if (umidi->disconnected) {
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1047  		up_read(&umidi->disc_rwsem);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03 @1048  		return open ? -ENODEV : 0;
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1049  	}
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1050  
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1051  	mutex_lock(&umidi->mutex);
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1052  	if (open) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1053  		if (!umidi->opened[0] && !umidi->opened[1]) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1054  			err = usb_autopm_get_interface(umidi->iface);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1055  			umidi->autopm_reference = err >= 0;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1056  			if (err < 0 && err != -EACCES) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1057  				up_read(&umidi->disc_rwsem);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03 @1058  				return -EIO;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1059  			}
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1060  			if (umidi->roland_load_ctl) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1061  				ctl = umidi->roland_load_ctl;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1062  				ctl->vd[0].access |= SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1063  				snd_ctl_notify(umidi->card,
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1064  				       SNDRV_CTL_EVENT_MASK_INFO, &ctl->id);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1065  				update_roland_altsetting(umidi);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1066  			}
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1067  		}
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1068  		umidi->opened[dir]++;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1069  		if (umidi->opened[1])
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1070  			snd_usbmidi_input_start(&umidi->list);
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1071  	} else {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1072  		umidi->opened[dir]--;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1073  		if (!umidi->opened[1])
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1074  			snd_usbmidi_input_stop(&umidi->list);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1075  		if (!umidi->opened[0] && !umidi->opened[1]) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1076  			if (umidi->roland_load_ctl) {
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1077  				ctl = umidi->roland_load_ctl;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1078  				ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1079  				snd_ctl_notify(umidi->card,
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1080  				       SNDRV_CTL_EVENT_MASK_INFO, &ctl->id);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1081  			}
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1082  			if (umidi->autopm_reference)
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03  1083  				usb_autopm_put_interface(umidi->iface);
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1084  		}
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1085  	}
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1086  	mutex_unlock(&umidi->mutex);
+cea1c011 sound/usb/midi.c    Takashi Iwai    2012-12-03  1087  	up_read(&umidi->disc_rwsem);
+6e28507b sound/usb/midi.c    Takashi Iwai    2012-12-03 @1088  	return 0;
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1089  }
+96f61d9a sound/usb/usbmidi.c Clemens Ladisch 2009-10-22  1090  
+86e07d34 sound/usb/usbmidi.c Takashi Iwai    2005-11-17  1091  static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
+
+---
+0-DAY kernel build testing backend         Open Source Technology Center
+Fengguang Wu, Yuanhan Liu                              Intel Corporation
