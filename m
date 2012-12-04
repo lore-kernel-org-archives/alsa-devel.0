@@ -1,23 +1,17 @@
-From: Cyril GERMAINE <c.germaine@elno.fr>
-Subject: Re: Support request for codec WM8731 porting
-Date: Tue, 4 Dec 2012 14:54:51 +0100
-Message-ID: <50BE00AB.50509@elno.fr>
-References: <50B8E1AB.6000006@elno.fr> <50B8EA28.5060208@gmail.com>
+From: Daniel J Blueman <daniel@quora.org>
+Subject: [PATCH] HDA: Add PCI device prefix for clarity
+Date: Tue,  4 Dec 2012 22:11:04 +0800
+Message-ID: <1354630264-1688-1-git-send-email-daniel@quora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
- by alsa0.perex.cz (Postfix) with ESMTP id A8796264F09
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 14:55:08 +0100 (CET)
-Received: from mail152-co9 (localhost [127.0.0.1])	by
- mail152-co9-R.bigfish.com (Postfix) with ESMTP id 3556F18012A	for
- <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 13:55:07 +0000 (UTC)
-Received: from CO9EHSMHS018.bigfish.com (unknown [10.236.132.253])	by
- mail152-co9.bigfish.com (Postfix) with ESMTP id 8D35E200058	for
- <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 13:55:05 +0000 (UTC)
-In-Reply-To: <50B8EA28.5060208@gmail.com>
+Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
+ [209.85.220.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8657D264F25
+ for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2012 15:11:32 +0100 (CET)
+Received: by mail-pa0-f51.google.com with SMTP id fb11so2376598pad.38
+ for <alsa-devel@alsa-project.org>; Tue, 04 Dec 2012 06:11:31 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,45 +21,452 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Daniel J Blueman <daniel@quora.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you Daniel for your reply.
+When printing, use a prefix of the PCI domain, bus, device and function
+as in other drivers, to differentiate multiple devices.
 
-I found out what was the problem.
+Important for reporting and debugging.
 
-I was trying to use the WM8731 in I2S mode (porting from another board), 
-but davinci CPU doesn't support true I2S. Switching to DSP mode resolved 
-my problems.
+Signed-off-by: Daniel J Blueman <daniel@quora.org>
+---
+ sound/pci/hda/hda_intel.c |  110 +++++++++++++++++++++++----------------------
+ 1 file changed, 57 insertions(+), 53 deletions(-)
 
-Cyril
-
-On 30/11/2012 18:17, Daniel Mack wrote:
-> On 30.11.2012 17:41, Cyril GERMAINE wrote:
->> Hello,
->>
->> I work on a board based from DM365EVM baseboard, but with the WM8731
->> codec instead of the TLV320AIC3x.
->> I tried with several linux kernels (one is the 3.6.6 release). Now the
->> playback works but not the capture, and I'm not able to debug this
->> issue. I have many "0" frames in the captured data, although data and
->> rate on I2S bus is OK.
-> Do you see the audio gaps in I2S as well? This is the first thing to
-> investigate on, because if they aren't, your problem is unrelated to the
-> Codec.
->
-> What are the differences between your board and the DM365EVM regarding
-> the SoC and the clocks ratios? Does the DM365EVM work with 3.6.6? How do
-> your board support files and ASoC machine driver differ?
->
-> Too many open questions here that need to be addressed.
->
->
-> Daniel
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index f9d870e..cdfebbd 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -185,7 +185,7 @@ MODULE_DESCRIPTION("Intel HDA driver");
+ #ifdef CONFIG_SND_VERBOSE_PRINTK
+ #define SFX	/* nop */
+ #else
+-#define SFX	"hda-intel: "
++#define SFX	"hda-intel %s: "
+ #endif
+ 
+ #if defined(CONFIG_PM) && defined(CONFIG_VGA_SWITCHEROO)
+@@ -703,7 +703,7 @@ static int azx_alloc_cmd_io(struct azx *chip)
+ 				  snd_dma_pci_data(chip->pci),
+ 				  PAGE_SIZE, &chip->rb);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR SFX "cannot allocate CORB/RIRB\n");
++		snd_printk(KERN_ERR SFX "cannot allocate CORB/RIRB\n", pci_name(chip->pci));
+ 		return err;
+ 	}
+ 	mark_pages_wc(chip, &chip->rb, true);
+@@ -836,7 +836,7 @@ static void azx_update_rirb(struct azx *chip)
+ 			chip->rirb.cmds[addr]--;
+ 		} else
+ 			snd_printk(KERN_ERR SFX "spurious response %#x:%#x, "
+-				   "last cmd=%#08x\n",
++				   "last cmd=%#08x\n", pci_name(chip->pci),
+ 				   res, res_ex,
+ 				   chip->last_cmd[addr]);
+ 	}
+@@ -881,7 +881,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ 	if (!chip->polling_mode && chip->poll_count < 2) {
+ 		snd_printdd(SFX "azx_get_response timeout, "
+ 			   "polling the codec once: last cmd=0x%08x\n",
+-			   chip->last_cmd[addr]);
++			   pci_name(chip->pci), chip->last_cmd[addr]);
+ 		do_poll = 1;
+ 		chip->poll_count++;
+ 		goto again;
+@@ -891,7 +891,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ 	if (!chip->polling_mode) {
+ 		snd_printk(KERN_WARNING SFX "azx_get_response timeout, "
+ 			   "switching to polling mode: last cmd=0x%08x\n",
+-			   chip->last_cmd[addr]);
++			   pci_name(chip->pci), chip->last_cmd[addr]);
+ 		chip->polling_mode = 1;
+ 		goto again;
+ 	}
+@@ -899,7 +899,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ 	if (chip->msi) {
+ 		snd_printk(KERN_WARNING SFX "No response from codec, "
+ 			   "disabling MSI: last cmd=0x%08x\n",
+-			   chip->last_cmd[addr]);
++			   pci_name(chip->pci), chip->last_cmd[addr]);
+ 		free_irq(chip->irq, chip);
+ 		chip->irq = -1;
+ 		pci_disable_msi(chip->pci);
+@@ -966,7 +966,7 @@ static int azx_single_wait_for_response(struct azx *chip, unsigned int addr)
+ 	}
+ 	if (printk_ratelimit())
+ 		snd_printd(SFX "get_response timeout: IRS=0x%x\n",
+-			   azx_readw(chip, IRS));
++			   pci_name(chip->pci), azx_readw(chip, IRS));
+ 	chip->rirb.res[addr] = -1;
+ 	return -EIO;
+ }
+@@ -994,7 +994,7 @@ static int azx_single_send_cmd(struct hda_bus *bus, u32 val)
+ 	}
+ 	if (printk_ratelimit())
+ 		snd_printd(SFX "send_cmd timeout: IRS=0x%x, val=0x%x\n",
+-			   azx_readw(chip, IRS), val);
++			   pci_name(chip->pci), azx_readw(chip, IRS), val);
+ 	return -EIO;
+ }
+ 
+@@ -1080,7 +1080,7 @@ static int azx_reset(struct azx *chip, int full_reset)
+       __skip:
+ 	/* check to see if controller is ready */
+ 	if (!azx_readb(chip, GCTL)) {
+-		snd_printd(SFX "azx_reset: controller not ready!\n");
++		snd_printd(SFX "azx_reset: controller not ready!\n", pci_name(chip->pci));
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1092,7 +1092,7 @@ static int azx_reset(struct azx *chip, int full_reset)
+ 	/* detect codecs */
+ 	if (!chip->codec_mask) {
+ 		chip->codec_mask = azx_readw(chip, STATESTS);
+-		snd_printdd(SFX "codec_mask = 0x%x\n", chip->codec_mask);
++		snd_printdd(SFX "codec_mask = 0x%x\n", pci_name(chip->pci), chip->codec_mask);
+ 	}
+ 
+ 	return 0;
+@@ -1236,7 +1236,7 @@ static void azx_init_pci(struct azx *chip)
+ 	 * The PCI register TCSEL is defined in the Intel manuals.
+ 	 */
+ 	if (!(chip->driver_caps & AZX_DCAPS_NO_TCSEL)) {
+-		snd_printdd(SFX "Clearing TCSEL\n");
++		snd_printdd(SFX "Clearing TCSEL\n", pci_name(chip->pci));
+ 		update_pci_byte(chip->pci, ICH6_PCIREG_TCSEL, 0x07, 0);
+ 	}
+ 
+@@ -1244,7 +1244,7 @@ static void azx_init_pci(struct azx *chip)
+ 	 * we need to enable snoop.
+ 	 */
+ 	if (chip->driver_caps & AZX_DCAPS_ATI_SNOOP) {
+-		snd_printdd(SFX "Setting ATI snoop: %d\n", azx_snoop(chip));
++		snd_printdd(SFX "Setting ATI snoop: %d\n", pci_name(chip->pci), azx_snoop(chip));
+ 		update_pci_byte(chip->pci,
+ 				ATI_SB450_HDAUDIO_MISC_CNTR2_ADDR, 0x07,
+ 				azx_snoop(chip) ? ATI_SB450_HDAUDIO_ENABLE_SNOOP : 0);
+@@ -1252,7 +1252,7 @@ static void azx_init_pci(struct azx *chip)
+ 
+ 	/* For NVIDIA HDA, enable snoop */
+ 	if (chip->driver_caps & AZX_DCAPS_NVIDIA_SNOOP) {
+-		snd_printdd(SFX "Setting Nvidia snoop: %d\n", azx_snoop(chip));
++		snd_printdd(SFX "Setting Nvidia snoop: %d\n", pci_name(chip->pci), azx_snoop(chip));
+ 		update_pci_byte(chip->pci,
+ 				NVIDIA_HDA_TRANSREG_ADDR,
+ 				0x0f, NVIDIA_HDA_ENABLE_COHBITS);
+@@ -1278,7 +1278,7 @@ static void azx_init_pci(struct azx *chip)
+ 				INTEL_SCH_HDA_DEVC, &snoop);
+ 		}
+ 		snd_printdd(SFX "SCH snoop: %s\n",
+-				(snoop & INTEL_SCH_HDA_DEVC_NOSNOOP)
++				pci_name(chip->pci), (snoop & INTEL_SCH_HDA_DEVC_NOSNOOP)
+ 				? "Disabled" : "Enabled");
+         }
+ }
+@@ -1439,7 +1439,7 @@ static int azx_setup_periods(struct azx *chip,
+ 		pos_adj = frames_to_bytes(runtime, pos_adj);
+ 		if (pos_adj >= period_bytes) {
+ 			snd_printk(KERN_WARNING SFX "Too big adjustment %d\n",
+-				   bdl_pos_adj[chip->dev_index]);
++				   pci_name(chip->pci), bdl_pos_adj[chip->dev_index]);
+ 			pos_adj = 0;
+ 		} else {
+ 			ofs = setup_bdle(chip, substream, azx_dev,
+@@ -1464,7 +1464,7 @@ static int azx_setup_periods(struct azx *chip,
+ 
+  error:
+ 	snd_printk(KERN_ERR SFX "Too many BDL entries: buffer=%d, period=%d\n",
+-		   azx_dev->bufsize, period_bytes);
++		   pci_name(chip->pci), azx_dev->bufsize, period_bytes);
+ 	return -EINVAL;
+ }
+ 
+@@ -1561,7 +1561,7 @@ static int probe_codec(struct azx *chip, int addr)
+ 	mutex_unlock(&chip->bus->cmd_mutex);
+ 	if (res == -1)
+ 		return -EIO;
+-	snd_printdd(SFX "codec #%d probed OK\n", addr);
++	snd_printdd(SFX "codec #%d probed OK\n", pci_name(chip->pci), addr);
+ 	return 0;
+ }
+ 
+@@ -1622,7 +1622,7 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
+ 		return err;
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_RIRB_DELAY) {
+-		snd_printd(SFX "Enable delay in RIRB handling\n");
++		snd_printd(SFX "Enable delay in RIRB handling\n", pci_name(chip->pci));
+ 		chip->bus->needs_damn_long_delay = 1;
+ 	}
+ 
+@@ -1640,7 +1640,7 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
+ 				 */
+ 				snd_printk(KERN_WARNING SFX
+ 					   "Codec #%d probe error; "
+-					   "disabling it...\n", c);
++					   "disabling it...\n", pci_name(chip->pci), c);
+ 				chip->codec_mask &= ~(1 << c);
+ 				/* More badly, accessing to a non-existing
+ 				 * codec often screws up the controller chip,
+@@ -1660,7 +1660,8 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
+ 	 * access works around the stall.  Grrr...
+ 	 */
+ 	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
+-		snd_printd(SFX "Enable sync_write for stable communication\n");
++		snd_printd(SFX "Enable sync_write for stable communication\n",
++			pci_name(chip->pci));
+ 		chip->bus->sync_write = 1;
+ 		chip->bus->allow_bus_reset = 1;
+ 	}
+@@ -1677,7 +1678,7 @@ static int DELAYED_INIT_MARK azx_codec_create(struct azx *chip, const char *mode
+ 		}
+ 	}
+ 	if (!codecs) {
+-		snd_printk(KERN_ERR SFX "no codecs initialized\n");
++		snd_printk(KERN_ERR SFX "no codecs initialized\n", pci_name(chip->pci));
+ 		return -ENXIO;
+ 	}
+ 	return 0;
+@@ -1917,7 +1918,7 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (!format_val) {
+ 		snd_printk(KERN_ERR SFX
+ 			   "invalid format_val, rate=%d, ch=%d, format=%d\n",
+-			   runtime->rate, runtime->channels, runtime->format);
++			   pci_name(chip->pci), runtime->rate, runtime->channels, runtime->format);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1925,7 +1926,7 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	period_bytes = snd_pcm_lib_period_bytes(substream);
+ 
+ 	snd_printdd(SFX "azx_pcm_prepare: bufsize=0x%x, format=0x%x\n",
+-		    bufsize, format_val);
++		    pci_name(chip->pci), bufsize, format_val);
+ 
+ 	if (bufsize != azx_dev->bufsize ||
+ 	    period_bytes != azx_dev->period_bytes ||
+@@ -2167,7 +2168,7 @@ static unsigned int azx_get_position(struct azx *chip,
+ 			snd_printk(KERN_WARNING SFX
+ 				   "Unstable LPIB (%d >= %d); "
+ 				   "disabling LPIB delay counting\n",
+-				   delay, azx_dev->period_bytes);
++				   pci_name(chip->pci), delay, azx_dev->period_bytes);
+ 			delay = 0;
+ 			chip->driver_caps &= ~AZX_DCAPS_COUNT_LPIB_DELAY;
+ 		}
+@@ -2324,7 +2325,8 @@ azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
+ 
+ 	list_for_each_entry(apcm, &chip->pcm_list, list) {
+ 		if (apcm->pcm->device == pcm_dev) {
+-			snd_printk(KERN_ERR SFX "PCM %d already exists\n", pcm_dev);
++			snd_printk(KERN_ERR SFX "PCM %d already exists\n",
++				   pci_name(chip->pci), pcm_dev);
+ 			return -EBUSY;
+ 		}
+ 	}
+@@ -2636,27 +2638,26 @@ static void azx_vs_set_state(struct pci_dev *pci,
+ 		chip->disabled = disabled;
+ 		if (!disabled) {
+ 			snd_printk(KERN_INFO SFX
+-				   "%s: Start delayed initialization\n",
++				   "Start delayed initialization\n",
+ 				   pci_name(chip->pci));
+ 			if (azx_first_init(chip) < 0 ||
+ 			    azx_probe_continue(chip) < 0) {
+ 				snd_printk(KERN_ERR SFX
+-					   "%s: initialization error\n",
++					   "initialization error\n",
+ 					   pci_name(chip->pci));
+ 				chip->init_failed = true;
+ 			}
+ 		}
+ 	} else {
+ 		snd_printk(KERN_INFO SFX
+-			   "%s %s via VGA-switcheroo\n",
+-			   disabled ? "Disabling" : "Enabling",
+-			   pci_name(chip->pci));
++			   "%s via VGA-switcheroo\n", pci_name(chip->pci),
++			   disabled ? "Disabling" : "Enabling");
+ 		if (disabled) {
+ 			azx_suspend(&pci->dev);
+ 			chip->disabled = true;
+ 			if (snd_hda_lock_devices(chip->bus))
+-				snd_printk(KERN_WARNING SFX
+-					   "Cannot lock devices!\n");
++				snd_printk(KERN_WARNING SFX "Cannot lock devices!\n",
++					   pci_name(chip->pci));
+ 		} else {
+ 			snd_hda_unlock_devices(chip->bus);
+ 			chip->disabled = false;
+@@ -2685,7 +2686,7 @@ static void __devinit init_vga_switcheroo(struct azx *chip)
+ 	struct pci_dev *p = get_bound_vga(chip->pci);
+ 	if (p) {
+ 		snd_printk(KERN_INFO SFX
+-			   "%s: Handle VGA-switcheroo audio client\n",
++			   "Handle VGA-switcheroo audio client\n",
+ 			   pci_name(chip->pci));
+ 		chip->use_vga_switcheroo = 1;
+ 		pci_dev_put(p);
+@@ -2871,11 +2872,11 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ 
+ 	/* Check VIA/ATI HD Audio Controller exist */
+ 	if (chip->driver_caps & AZX_DCAPS_POSFIX_VIA) {
+-		snd_printd(SFX "Using VIACOMBO position fix\n");
++		snd_printd(SFX "Using VIACOMBO position fix\n", pci_name(chip->pci));
+ 		return POS_FIX_VIACOMBO;
+ 	}
+ 	if (chip->driver_caps & AZX_DCAPS_POSFIX_LPIB) {
+-		snd_printd(SFX "Using LPIB position fix\n");
++		snd_printd(SFX "Using LPIB position fix\n", pci_name(chip->pci));
+ 		return POS_FIX_LPIB;
+ 	}
+ 	return POS_FIX_AUTO;
+@@ -2992,7 +2993,7 @@ static void __devinit azx_check_snoop_available(struct azx *chip)
+ 
+ 	if (snoop != chip->snoop) {
+ 		snd_printk(KERN_INFO SFX "Force to %s mode\n",
+-			   snoop ? "snoop" : "non-snoop");
++			   pci_name(chip->pci), snoop ? "snoop" : "non-snoop");
+ 		chip->snoop = snoop;
+ 	}
+ }
+@@ -3018,7 +3019,7 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+ 	if (!chip) {
+-		snd_printk(KERN_ERR SFX "cannot allocate chip\n");
++		snd_printk(KERN_ERR SFX "Cannot allocate chip\n", pci_name(pci));
+ 		pci_disable_device(pci);
+ 		return -ENOMEM;
+ 	}
+@@ -3064,10 +3065,11 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	}
+ 
+ 	if (check_hdmi_disabled(pci)) {
+-		snd_printk(KERN_INFO SFX "VGA controller for %s is disabled\n",
+-			   pci_name(pci));
++		snd_printk(KERN_INFO SFX "VGA controller is disabled\n",
++		   pci_name(chip->pci));
+ 		if (use_vga_switcheroo(chip)) {
+-			snd_printk(KERN_INFO SFX "Delaying initialization\n");
++			snd_printk(KERN_INFO SFX "Delaying initialization\n",
++			   pci_name(chip->pci));
+ 			chip->disabled = true;
+ 			goto ok;
+ 		}
+@@ -3085,7 +3087,8 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
+  ok:
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR SFX "Error creating device [card]!\n");
++		snd_printk(KERN_ERR SFX "Error creating device [card]!\n",
++		   pci_name(chip->pci));
+ 		azx_free(chip);
+ 		return err;
+ 	}
+@@ -3120,7 +3123,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 	chip->addr = pci_resource_start(pci, 0);
+ 	chip->remap_addr = pci_ioremap_bar(pci, 0);
+ 	if (chip->remap_addr == NULL) {
+-		snd_printk(KERN_ERR SFX "ioremap error\n");
++		snd_printk(KERN_ERR SFX "ioremap error\n", pci_name(chip->pci));
+ 		return -ENXIO;
+ 	}
+ 
+@@ -3135,7 +3138,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 	synchronize_irq(chip->irq);
+ 
+ 	gcap = azx_readw(chip, GCAP);
+-	snd_printdd(SFX "chipset global capabilities = 0x%x\n", gcap);
++	snd_printdd(SFX "chipset global capabilities = 0x%x\n", pci_name(chip->pci), gcap);
+ 
+ 	/* disable SB600 64bit support for safety */
+ 	if (chip->pci->vendor == PCI_VENDOR_ID_ATI) {
+@@ -3152,7 +3155,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 
+ 	/* disable 64bit DMA address on some devices */
+ 	if (chip->driver_caps & AZX_DCAPS_NO_64BIT) {
+-		snd_printd(SFX "Disabling 64bit DMA\n");
++		snd_printd(SFX "Disabling 64bit DMA\n", pci_name(chip->pci));
+ 		gcap &= ~ICH6_GCAP_64OK;
+ 	}
+ 
+@@ -3207,7 +3210,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 	chip->azx_dev = kcalloc(chip->num_streams, sizeof(*chip->azx_dev),
+ 				GFP_KERNEL);
+ 	if (!chip->azx_dev) {
+-		snd_printk(KERN_ERR SFX "cannot malloc azx_dev\n");
++		snd_printk(KERN_ERR SFX "cannot malloc azx_dev\n", pci_name(chip->pci));
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -3217,7 +3220,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 					  snd_dma_pci_data(chip->pci),
+ 					  BDL_SIZE, &chip->azx_dev[i].bdl);
+ 		if (err < 0) {
+-			snd_printk(KERN_ERR SFX "cannot allocate BDL\n");
++			snd_printk(KERN_ERR SFX "cannot allocate BDL\n", pci_name(chip->pci));
+ 			return -ENOMEM;
+ 		}
+ 		mark_pages_wc(chip, &chip->azx_dev[i].bdl, true);
+@@ -3227,7 +3230,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 				  snd_dma_pci_data(chip->pci),
+ 				  chip->num_streams * 8, &chip->posbuf);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR SFX "cannot allocate posbuf\n");
++		snd_printk(KERN_ERR SFX "cannot allocate posbuf\n", pci_name(chip->pci));
+ 		return -ENOMEM;
+ 	}
+ 	mark_pages_wc(chip, &chip->posbuf, true);
+@@ -3245,7 +3248,7 @@ static int DELAYED_INIT_MARK azx_first_init(struct azx *chip)
+ 
+ 	/* codec detection */
+ 	if (!chip->codec_mask) {
+-		snd_printk(KERN_ERR SFX "no codecs found!\n");
++		snd_printk(KERN_ERR SFX "no codecs found!\n", pci_name(chip->pci));
+ 		return -ENODEV;
+ 	}
+ 
+@@ -3281,7 +3284,8 @@ static void azx_firmware_cb(const struct firmware *fw, void *context)
+ 	struct pci_dev *pci = chip->pci;
+ 
+ 	if (!fw) {
+-		snd_printk(KERN_ERR SFX "Cannot load firmware, aborting\n");
++		snd_printk(KERN_ERR SFX "Cannot load firmware, aborting\n",
++			   pci_name(chip->pci));
+ 		goto error;
+ 	}
+ 
+@@ -3317,7 +3321,7 @@ static int __devinit azx_probe(struct pci_dev *pci,
+ 
+ 	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR SFX "Error creating card!\n");
++		snd_printk(KERN_ERR "hda-intel: Error creating card!\n");
+ 		return err;
+ 	}
+ 
+@@ -3332,7 +3336,7 @@ static int __devinit azx_probe(struct pci_dev *pci,
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	if (patch[dev] && *patch[dev]) {
+ 		snd_printk(KERN_ERR SFX "Applying patch firmware '%s'\n",
+-			   patch[dev]);
++			   pci_name(pci), patch[dev]);
+ 		err = request_firmware_nowait(THIS_MODULE, true, patch[dev],
+ 					      &pci->dev, GFP_KERNEL, card,
+ 					      azx_firmware_cb);
+@@ -3355,8 +3359,8 @@ static int __devinit azx_probe(struct pci_dev *pci,
+ 
+ 	err = register_vga_switcheroo(chip);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR SFX
+-			   "Error registering VGA-switcheroo client\n");
++		snd_printk(KERN_ERR SFX "Error registering VGA-switcheroo client\n",
++		   pci_name(chip->pci));
+ 		goto out_free;
+ 	}
+ 
+-- 
+1.7.10.4
