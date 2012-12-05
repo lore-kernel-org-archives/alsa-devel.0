@@ -1,15 +1,22 @@
-From: <MR.Swami.Reddy@ti.com>
-Subject: [PATCH] ASoC:lm49453: Update lm49453_reg_defs values
-	as per LM49453 HW version-RevB
-Date: Wed, 5 Dec 2012 18:46:03 +0530
-Message-ID: <1354713363-13791-1-git-send-email-MR.Swami.Reddy@ti.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 3/3] ALSA: ASoC: cs4271: add optional soft
+	reset workaround
+Date: Wed, 05 Dec 2012 14:59:37 +0100
+Message-ID: <50BF5349.2040901@gmail.com>
+References: <1354271337-15113-1-git-send-email-zonque@gmail.com>
+ <1354271337-15113-3-git-send-email-zonque@gmail.com>
+ <20121202040200.GI17981@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E4C02650C9
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 13:59:12 +0100 (CET)
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 266B32650D0
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 14:59:40 +0100 (CET)
+Received: by mail-wi0-f169.google.com with SMTP id hq12so1790313wib.2
+ for <alsa-devel@alsa-project.org>; Wed, 05 Dec 2012 05:59:39 -0800 (PST)
+In-Reply-To: <20121202040200.GI17981@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,103 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: vishwas.a.deshpande@ti.com, alsa-devel@alsa-project.org, M R Swami Reddy <mr.swami.reddy@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Alexander Sverdlin <subaparts@yandex.ru>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+On 02.12.2012 05:02, Mark Brown wrote:
+> On Fri, Nov 30, 2012 at 11:28:57AM +0100, Daniel Mack wrote:
+> 
+>> +	Note that this is not needed in case the clocks are stable
+>> +	throughout the entire runtime of the codec.
+> 
+> That's really quite rare for embeded systems, though - normally at least
+> the LRCLK is going to be enabled only when there's audio. 
 
-[PATCH] ASoC:lm49453: Update lm49453_reg_defs values as per LM49453 HW version-RevB
+I agree, but I don't know which system the original driver was written
+for. As it seems to work there, I didn't want to unconditionally
+introduce this new reset command.
 
-Signed-off-by: M R Swami Reddy <mr.swami.reddy@ti.com>
----
+>> +static int cs4271_startup(struct snd_pcm_substream *subs,
+>> +			   struct snd_soc_dai *codec_dai)
+>> +{
+>> +	int ret;
+>> +	struct snd_soc_codec *codec = codec_dai->codec;
+>> +	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+>> +
+>> +	if (!cs4271->enable_soft_reset)
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * Put the codec in soft reset and back again in case it's not
+>> +	 * currently streaming data. This way of bringing the codec in
+>> +	 * sync to the current clocks is not explicitly documented in
+>> +	 * the data sheet, but it seems to work fine.
+>> +	 */
+> 
+> Since startup() is called before hw_params() you might well find even an
+> active LRCLK is going to change underneath the driver here...
 
- sound/soc/codecs/lm49453.c |   61 +++++++++++---------------------------------
- 1 files changed, 15 insertions(+), 46 deletions(-)
+Hmm ok, so you're saying this quirk should go in hwparams() then?
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 99b0a9d..808e50a 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -111,9 +111,9 @@ static struct reg_default lm49453_reg_defs[] = {
- 	{ 101, 0x00 },
- 	{ 102, 0x00 },
- 	{ 103, 0x01 },
--	{ 105, 0x01 },
--	{ 106, 0x00 },
--	{ 107, 0x01 },
-+	{ 104, 0x01 },
-+	{ 105, 0x00 },
-+	{ 106, 0x01 },
- 	{ 107, 0x00 },
- 	{ 108, 0x00 },
- 	{ 109, 0x00 },
-@@ -163,56 +163,25 @@ static struct reg_default lm49453_reg_defs[] = {
- 	{ 184, 0x00 },
- 	{ 185, 0x00 },
- 	{ 186, 0x00 },
--	{ 189, 0x00 },
-+	{ 187, 0x00 },
- 	{ 188, 0x00 },
--	{ 194, 0x00 },
--	{ 195, 0x00 },
--	{ 196, 0x00 },
--	{ 197, 0x00 },
--	{ 200, 0x00 },
--	{ 201, 0x00 },
--	{ 202, 0x00 },
--	{ 203, 0x00 },
--	{ 204, 0x00 },
--	{ 205, 0x00 },
--	{ 208, 0x00 },
-+	{ 189, 0x00 },
-+	{ 208, 0x06 },
- 	{ 209, 0x00 },
--	{ 210, 0x00 },
--	{ 211, 0x00 },
--	{ 213, 0x00 },
--	{ 214, 0x00 },
--	{ 215, 0x00 },
--	{ 216, 0x00 },
--	{ 217, 0x00 },
--	{ 218, 0x00 },
--	{ 219, 0x00 },
-+	{ 210, 0x08 },
-+	{ 211, 0x54 },
-+	{ 212, 0x14 },
-+	{ 213, 0x0d },
-+	{ 214, 0x0d },
-+	{ 215, 0x14 },
-+	{ 216, 0x60 },
- 	{ 221, 0x00 },
- 	{ 222, 0x00 },
-+	{ 223, 0x00 },
- 	{ 224, 0x00 },
--	{ 225, 0x00 },
--	{ 226, 0x00 },
--	{ 227, 0x00 },
--	{ 228, 0x00 },
--	{ 229, 0x00 },
--	{ 230, 0x13 },
--	{ 231, 0x00 },
--	{ 232, 0x80 },
--	{ 233, 0x0C },
--	{ 234, 0xDD },
--	{ 235, 0x00 },
--	{ 236, 0x04 },
--	{ 237, 0x00 },
--	{ 238, 0x00 },
--	{ 239, 0x00 },
--	{ 240, 0x00 },
--	{ 241, 0x00 },
--	{ 242, 0x00 },
--	{ 243, 0x00 },
--	{ 244, 0x00 },
--	{ 245, 0x00 },
- 	{ 248, 0x00 },
- 	{ 249, 0x00 },
--	{ 254, 0x00 },
-+	{ 250, 0x00 },
- 	{ 255, 0x00 },
- };
- 
+
+
+Thanks,
+Daniel
