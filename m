@@ -1,15 +1,15 @@
 From: <MR.Swami.Reddy@ti.com>
-Subject: [PATCH] ASoC: lm49453: Fix analog and digital volume
-	ranges
-Date: Wed, 5 Dec 2012 16:18:49 +0530
-Message-ID: <1354704529-12912-1-git-send-email-MR.Swami.Reddy@ti.com>
+Subject: [PATCH] ASoC:lm49453: Update lm49453_reg_defs values
+	as per LM49453 HW version-RevB
+Date: Wed, 5 Dec 2012 18:46:03 +0530
+Message-ID: <1354713363-13791-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 8517926507E
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 11:32:29 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E4C02650C9
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 13:59:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +25,97 @@ List-Id: alsa-devel@alsa-project.org
 
 From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
 
-[PATCH] ASoC: lm49453: Fix analog and digital volume ranges
+[PATCH] ASoC:lm49453: Update lm49453_reg_defs values as per LM49453 HW version-RevB
 
 Signed-off-by: M R Swami Reddy <mr.swami.reddy@ti.com>
+---
 
---
- sound/soc/codecs/lm49453.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/lm49453.c |   61 +++++++++++---------------------------------
+ 1 files changed, 15 insertions(+), 46 deletions(-)
 
 diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 808e50a..afbefa2 100644
+index 99b0a9d..808e50a 100644
 --- a/sound/soc/codecs/lm49453.c
 +++ b/sound/soc/codecs/lm49453.c
-@@ -495,7 +495,8 @@ SOC_DAPM_SINGLE("Port2_2 Switch", LM49453_P0_PORT2_TX2_REG, 7, 1, 0),
+@@ -111,9 +111,9 @@ static struct reg_default lm49453_reg_defs[] = {
+ 	{ 101, 0x00 },
+ 	{ 102, 0x00 },
+ 	{ 103, 0x01 },
+-	{ 105, 0x01 },
+-	{ 106, 0x00 },
+-	{ 107, 0x01 },
++	{ 104, 0x01 },
++	{ 105, 0x00 },
++	{ 106, 0x01 },
+ 	{ 107, 0x00 },
+ 	{ 108, 0x00 },
+ 	{ 109, 0x00 },
+@@ -163,56 +163,25 @@ static struct reg_default lm49453_reg_defs[] = {
+ 	{ 184, 0x00 },
+ 	{ 185, 0x00 },
+ 	{ 186, 0x00 },
+-	{ 189, 0x00 },
++	{ 187, 0x00 },
+ 	{ 188, 0x00 },
+-	{ 194, 0x00 },
+-	{ 195, 0x00 },
+-	{ 196, 0x00 },
+-	{ 197, 0x00 },
+-	{ 200, 0x00 },
+-	{ 201, 0x00 },
+-	{ 202, 0x00 },
+-	{ 203, 0x00 },
+-	{ 204, 0x00 },
+-	{ 205, 0x00 },
+-	{ 208, 0x00 },
++	{ 189, 0x00 },
++	{ 208, 0x06 },
+ 	{ 209, 0x00 },
+-	{ 210, 0x00 },
+-	{ 211, 0x00 },
+-	{ 213, 0x00 },
+-	{ 214, 0x00 },
+-	{ 215, 0x00 },
+-	{ 216, 0x00 },
+-	{ 217, 0x00 },
+-	{ 218, 0x00 },
+-	{ 219, 0x00 },
++	{ 210, 0x08 },
++	{ 211, 0x54 },
++	{ 212, 0x14 },
++	{ 213, 0x0d },
++	{ 214, 0x0d },
++	{ 215, 0x14 },
++	{ 216, 0x60 },
+ 	{ 221, 0x00 },
+ 	{ 222, 0x00 },
++	{ 223, 0x00 },
+ 	{ 224, 0x00 },
+-	{ 225, 0x00 },
+-	{ 226, 0x00 },
+-	{ 227, 0x00 },
+-	{ 228, 0x00 },
+-	{ 229, 0x00 },
+-	{ 230, 0x13 },
+-	{ 231, 0x00 },
+-	{ 232, 0x80 },
+-	{ 233, 0x0C },
+-	{ 234, 0xDD },
+-	{ 235, 0x00 },
+-	{ 236, 0x04 },
+-	{ 237, 0x00 },
+-	{ 238, 0x00 },
+-	{ 239, 0x00 },
+-	{ 240, 0x00 },
+-	{ 241, 0x00 },
+-	{ 242, 0x00 },
+-	{ 243, 0x00 },
+-	{ 244, 0x00 },
+-	{ 245, 0x00 },
+ 	{ 248, 0x00 },
+ 	{ 249, 0x00 },
+-	{ 254, 0x00 },
++	{ 250, 0x00 },
+ 	{ 255, 0x00 },
+ };
  
- /* TLV Declarations */
- static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
--static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(analog_tlv, 0, 200, 1);
-+static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
- 
- static const struct snd_kcontrol_new lm49453_sidetone_mixer_controls[] = {
- /* Sidetone supports mono only */
-@@ -516,9 +517,9 @@ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", LM49453_P0_STN_VOL_DMIC2R_REG,
- static const struct snd_kcontrol_new lm49453_snd_controls[] = {
- 	/* mic1 and mic2 supports mono only */
- 	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
--			0, digital_tlv),
-+			0, analog_tlv),
- 	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
--			0, digital_tlv),
-+			0, analog_tlv),
- 
- 	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
- 			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv),
