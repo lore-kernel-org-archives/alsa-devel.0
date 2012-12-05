@@ -1,17 +1,22 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH] ASoC: lm49453: Fix analog and digital
- volume ranges
-Date: Wed, 05 Dec 2012 11:29:02 -0800
-Message-ID: <1354735742.7077.89.camel@vkoul-udesk3>
-References: <1354704529-12912-1-git-send-email-MR.Swami.Reddy@ti.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [RFC][PATCH 1/2] ASoC: add
+	snd_soc_of_parse_daifmt()
+Date: Wed, 05 Dec 2012 13:42:05 -0700
+Message-ID: <50BFB19D.40504@wwwdotorg.org>
+References: <87txs9hvy7.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj7thvwy.wl%kuninori.morimoto.gx@renesas.com>
+ <50B6F0F7.1050902@wwwdotorg.org>
+ <87sj7snd0z.wl%kuninori.morimoto.gx@renesas.com>
+ <50BE5A9B.1020500@wwwdotorg.org>
+ <87wqwx7x1u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id F19DC261620
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 20:49:05 +0100 (CET)
-In-Reply-To: <1354704529-12912-1-git-send-email-MR.Swami.Reddy@ti.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE85F2650E7
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2012 21:42:11 +0100 (CET)
+In-Reply-To: <87wqwx7x1u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: MR.Swami.Reddy@ti.com
-Cc: vishwas.a.deshpande@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2012-12-05 at 16:18 +0530, MR.Swami.Reddy@ti.com wrote:
+On 12/05/2012 12:55 AM, Kuninori Morimoto wrote:
+> 
+> Hi Stephen
+> Cc  Mark
+> 
+> Thank you for your reply
+> 
+>>> +	ret |= __snd_soc_of_parse_daifmt(np, prefix, fmt,
+>>> +					 "i2s", SND_SOC_DAIFMT_I2S);
+>>> +	ret |= __snd_soc_of_parse_daifmt(np, prefix, fmt,
+>>> +					 "right_j", SND_SOC_DAIFMT_RIGHT_J);
+>>> +	ret |= __snd_soc_of_parse_daifmt(np, prefix, fmt,
+>>> +					 "left_j", SND_SOC_DAIFMT_LEFT_J);
+>>> +	ret |= __snd_soc_of_parse_daifmt(np, prefix, fmt,
+>>> +					 "dsp_a", SND_SOC_DAIFMT_DSP_A);
+>>> +	ret |= __snd_soc_of_parse_daifmt(np, prefix, fmt,
+>>> +					 "dsp_b", SND_SOC_DAIFMT_DSP_B);
+>>
+>> I'd expect to see something more like:
+>>
+>> fmt = of_property_read_u32_array(np, "bit-format");
+> 
+> Ahh... I see.
+> 
+>> Well, once a DT binding is created, you can't change the numbers, or you
+>> would break the ability for an old DT to work with a newer kernel.
+> 
+> OK. I understand.
+> 
+>>> How about to use string ?
+>>>
+>>>   snd.soc.daifmt.format      = "left_j"
+>>>   snd.soc.daifmt.clock_gate  = "cont"
+>>>   snd.soc.daifmt.inversion   = "ib_nf"
+>>>   snd.soc.daifmt.hw_clock    = "cbs_cfm"
+>>
+>> That's probably the best we can do for now. Using a pre-processor would
+>> be best:
+>>
+>> #define SND_SOC_DAIFMT_LEFT_J 3
+>>
+>> snd.soc.daifmt.format = <SND_SOC_DAIFMT_LEFT_J>;
+>>
+>> ... but we can't do that yet...
+> 
+> Thank you.
+> 
+> I tried v2 of snd_soc_of_parse_daifmt() which is using "string" and "array" style
+> 
+> 	[prefix]snd,soc,daifmt = "i2c", "nb_if", "cbm_cfm";
 
->  /* TLV Declarations */
->  static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
-> -static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
-> +static const DECLARE_TLV_DB_SCALE(analog_tlv, 0, 200, 1);
-The spec says your analog gain are 0 to 30dB in steps of 2dB, this
-doesnt sound right to me.
-> +static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
->  
->  static const struct snd_kcontrol_new lm49453_sidetone_mixer_controls[] = {
->  /* Sidetone supports mono only */
-> @@ -516,9 +517,9 @@ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", LM49453_P0_STN_VOL_DMIC2R_REG,
->  static const struct snd_kcontrol_new lm49453_snd_controls[] = {
->  	/* mic1 and mic2 supports mono only */
->  	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
-> -			0, digital_tlv),
-> +			0, analog_tlv),
-now i see a  problem.
-You have hidden the MIC gains and exposed only ADC gains. The name is
-wrong causing the confusion. Please make this ADC gain and add new
-control for MIC gain!
-Your ADC gain is -76 to 18db, with 0.5dB steps, how does this reflect
-that?
+I assume you mean i2s not i2c there.
 
->  	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
-> -			0, digital_tlv),
-> +			0, analog_tlv),
-Ditto.....
->  
->  	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
->  			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv),
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
--- 
-~Vinod
+That seems to be overloading one property so that it contains a lot of
+separate data items. I'd expect separate properties for the format, the
+bitclock inversion, the frame inversion, the bitclock master, and the
+frame master.
