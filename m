@@ -1,25 +1,24 @@
 From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 13/20] ALSA: sound/ps3: remove __dev* attributes
-Date: Thu,  6 Dec 2012 12:35:22 -0500
-Message-ID: <1354815329-20221-14-git-send-email-wfp5p@virginia.edu>
+Subject: [PATCH 03/20] ALSA: pxa2xx: remove __dev* attributes
+Date: Thu,  6 Dec 2012 12:35:12 -0500
+Message-ID: <1354815329-20221-4-git-send-email-wfp5p@virginia.edu>
 References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
-Cc: cbe-oss-dev@lists.ozlabs.org, tiwai@suse.de, gregkh@linuxfoundation.org, perex@perex.cz, Geoff Levand <geoff@infradead.org>, linuxppc-dev@lists.ozlabs.org
+Cc: Eric Miao <eric.y.miao@gmail.com>, tiwai@suse.de, gregkh@linuxfoundation.org, Haojian Zhuang <haojian.zhuang@gmail.com>, perex@perex.cz, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 CONFIG_HOTPLUG is going away as an option.  As result the __dev*
@@ -29,70 +28,58 @@ Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
 and __devexit.
 
 Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
-Cc: Geoff Levand <geoff@infradead.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: cbe-oss-dev@lists.ozlabs.org
+Cc: Eric Miao <eric.y.miao@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- sound/ppc/snd_ps3.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/arm/pxa2xx-ac97-lib.c | 2 +-
+ sound/arm/pxa2xx-ac97.c     | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
-index 9b18b52..8c7dcbe 100644
---- a/sound/ppc/snd_ps3.c
-+++ b/sound/ppc/snd_ps3.c
-@@ -786,7 +786,7 @@ static struct snd_pcm_ops snd_ps3_pcm_spdif_ops = {
- };
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 48d7c0a..6fc0ae9 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -314,7 +314,7 @@ int pxa2xx_ac97_hw_resume(void)
+ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_resume);
+ #endif
  
- 
--static int __devinit snd_ps3_map_mmio(void)
-+static int snd_ps3_map_mmio(void)
- {
- 	the_card.mapped_mmio_vaddr =
- 		ioremap(the_card.ps3_dev->m_region->bus_addr,
-@@ -808,7 +808,7 @@ static void snd_ps3_unmap_mmio(void)
- 	the_card.mapped_mmio_vaddr = NULL;
- }
- 
--static int __devinit snd_ps3_allocate_irq(void)
-+static int snd_ps3_allocate_irq(void)
+-int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
++int pxa2xx_ac97_hw_probe(struct platform_device *dev)
  {
  	int ret;
- 	u64 lpar_addr, lpar_size;
-@@ -866,7 +866,7 @@ static void snd_ps3_free_irq(void)
- 	ps3_irq_plug_destroy(the_card.irq_no);
- }
+ 	pxa2xx_audio_ops_t *pdata = dev->dev.platform_data;
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 4e1fda7..ec54be4 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -163,7 +163,7 @@ static int pxa2xx_ac97_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(pxa2xx_ac97_pm_ops, pxa2xx_ac97_suspend, pxa2xx_ac97_resume);
+ #endif
  
--static void __devinit snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
-+static void snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
+-static int __devinit pxa2xx_ac97_probe(struct platform_device *dev)
++static int pxa2xx_ac97_probe(struct platform_device *dev)
  {
- 	uint64_t val;
- 	int ret;
-@@ -882,7 +882,7 @@ static void __devinit snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
- 			ret);
- }
- 
--static void __devinit snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
-+static void snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
- {
- 	/*
- 	 * avsetting driver seems to never change the followings
-@@ -906,7 +906,7 @@ static void __devinit snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
- 		   PS3_AUDIO_AO_3WMCTRL_ASOPLRCK_DEFAULT);
- }
- 
--static int __devinit snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
-+static int snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
- {
- 	int ret;
- 	pr_debug("%s: start\n", __func__);
-@@ -928,7 +928,7 @@ static int __devinit snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
+ 	struct snd_card *card;
+ 	struct snd_ac97_bus *ac97_bus;
+@@ -224,7 +224,7 @@ err_dev:
  	return ret;
  }
  
--static int __devinit snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
-+static int snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
+-static int __devexit pxa2xx_ac97_remove(struct platform_device *dev)
++static int pxa2xx_ac97_remove(struct platform_device *dev)
  {
- 	int i, ret;
- 	u64 lpar_addr, lpar_size;
+ 	struct snd_card *card = platform_get_drvdata(dev);
+ 
+@@ -239,7 +239,7 @@ static int __devexit pxa2xx_ac97_remove(struct platform_device *dev)
+ 
+ static struct platform_driver pxa2xx_ac97_driver = {
+ 	.probe		= pxa2xx_ac97_probe,
+-	.remove		= __devexit_p(pxa2xx_ac97_remove),
++	.remove		= pxa2xx_ac97_remove,
+ 	.driver		= {
+ 		.name	= "pxa2xx-ac97",
+ 		.owner	= THIS_MODULE,
 -- 
 1.8.0.1
