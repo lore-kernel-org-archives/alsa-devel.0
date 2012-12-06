@@ -1,24 +1,14 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 12/14] ASoC: wm8978: Use
-	devm_regmap_init_i2c()
-Date: Thu, 6 Dec 2012 11:27:24 +0530
-Message-ID: <CAK9yfHy=y+Xohju55fEy2-o9v-Q=1kWqpoeQMfHgRLPHkc4dOg@mail.gmail.com>
-References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
- <1353930587-12907-13-git-send-email-sachin.kamat@linaro.org>
- <20121202040743.GP17981@opensource.wolfsonmicro.com>
- <CAK9yfHyWLH2yo2ARYdhFEUoKts1GS2OCFfwn+c=H7oBzU9u8-Q@mail.gmail.com>
- <20121206052908.GB10867@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Make FLL lock timeout very high
+Date: Thu,  6 Dec 2012 15:30:48 +0900
+Message-ID: <1354775449-19256-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
- [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id B3E532615FA
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 06:57:25 +0100 (CET)
-Received: by mail-vc0-f179.google.com with SMTP id p1so5285193vcq.38
- for <alsa-devel@alsa-project.org>; Wed, 05 Dec 2012 21:57:25 -0800 (PST)
-In-Reply-To: <20121206052908.GB10867@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A1542615FF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 07:30:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,28 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6 December 2012 10:59, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Dec 06, 2012 at 10:13:22AM +0530, Sachin Kamat wrote:
->
->> Looks like this patch is missed out in your tree.
->> Please let me know if you want me to re-send this.
->
-> I
-> can
-> see
-> it
-> in
-> my
-> tree
+Provide robustness against low quality FLL sync clocks by increasing the
+timeout for lock to an absurdly high point; we should never get anywhere
+near hitting the timeout in a real system unless it is failing.
 
-Yes, found it now. Thanks.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 5fc11bc..ef68f7a 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1083,7 +1083,7 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 				   ARIZONA_FLL1_SYNC_ENA);
+ 
+ 	ret = wait_for_completion_timeout(&fll->ok,
+-					  msecs_to_jiffies(25));
++					  msecs_to_jiffies(250));
+ 	if (ret == 0)
+ 		arizona_fll_warn(fll, "Timed out waiting for lock\n");
+ 
 -- 
-With warm regards,
-Sachin
+1.7.10.4
