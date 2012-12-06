@@ -1,13 +1,25 @@
 From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 09/20] ALSA: ad1889: remove __dev* attributes
-Date: Thu,  6 Dec 2012 12:35:18 -0500
-Message-ID: <1354815329-20221-10-git-send-email-wfp5p@virginia.edu>
+Subject: [PATCH 13/20] ALSA: sound/ps3: remove __dev* attributes
+Date: Thu,  6 Dec 2012 12:35:22 -0500
+Message-ID: <1354815329-20221-14-git-send-email-wfp5p@virginia.edu>
 References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
-Return-path: <linux-parisc-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 In-Reply-To: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
-Sender: linux-parisc-owner@vger.kernel.org
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, perex@perex.cz, gregkh@linuxfoundation.org, Thibaut Varene <T-Bone@parisc-linux.org>, linux-parisc@vger.kernel.org
+Cc: cbe-oss-dev@lists.ozlabs.org, tiwai@suse.de, gregkh@linuxfoundation.org, perex@perex.cz, Geoff Levand <geoff@infradead.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 CONFIG_HOTPLUG is going away as an option.  As result the __dev*
@@ -17,97 +29,70 @@ Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
 and __devexit.
 
 Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
-Cc: Thibaut Varene <T-Bone@parisc-linux.org>
-Cc: linux-parisc@vger.kernel.org
+Cc: Geoff Levand <geoff@infradead.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: cbe-oss-dev@lists.ozlabs.org
 ---
- sound/pci/ad1889.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/ppc/snd_ps3.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index e672ff4..ad8a311 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -624,7 +624,7 @@ snd_ad1889_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static int __devinit
-+static int
- snd_ad1889_pcm_init(struct snd_ad1889 *chip, int device, struct snd_pcm **rpcm)
- {
- 	int err;
-@@ -747,7 +747,7 @@ snd_ad1889_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffe
- 	snd_iprintf(buffer, "Resampler samplerate: %u Hz\n", reg);
- }
- 
--static void __devinit
-+static void
- snd_ad1889_proc_init(struct snd_ad1889 *chip)
- {
- 	struct snd_info_entry *entry;
-@@ -767,7 +767,7 @@ static struct ac97_quirk ac97_quirks[] = {
- 	{ } /* terminator */
+diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
+index 9b18b52..8c7dcbe 100644
+--- a/sound/ppc/snd_ps3.c
++++ b/sound/ppc/snd_ps3.c
+@@ -786,7 +786,7 @@ static struct snd_pcm_ops snd_ps3_pcm_spdif_ops = {
  };
  
--static void __devinit
-+static void
- snd_ad1889_ac97_xinit(struct snd_ad1889 *chip)
+ 
+-static int __devinit snd_ps3_map_mmio(void)
++static int snd_ps3_map_mmio(void)
  {
- 	u16 reg;
-@@ -805,7 +805,7 @@ snd_ad1889_ac97_free(struct snd_ac97 *ac97)
- 	chip->ac97 = NULL;
+ 	the_card.mapped_mmio_vaddr =
+ 		ioremap(the_card.ps3_dev->m_region->bus_addr,
+@@ -808,7 +808,7 @@ static void snd_ps3_unmap_mmio(void)
+ 	the_card.mapped_mmio_vaddr = NULL;
  }
  
--static int __devinit
-+static int
- snd_ad1889_ac97_init(struct snd_ad1889 *chip, const char *quirk_override)
+-static int __devinit snd_ps3_allocate_irq(void)
++static int snd_ps3_allocate_irq(void)
  {
- 	int err;
-@@ -878,7 +878,7 @@ snd_ad1889_dev_free(struct snd_device *device)
- 	return snd_ad1889_free(chip);
+ 	int ret;
+ 	u64 lpar_addr, lpar_size;
+@@ -866,7 +866,7 @@ static void snd_ps3_free_irq(void)
+ 	ps3_irq_plug_destroy(the_card.irq_no);
  }
  
--static int __devinit
-+static int
- snd_ad1889_init(struct snd_ad1889 *chip) 
+-static void __devinit snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
++static void snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
  {
- 	ad1889_writew(chip, AD_DS_CCS, AD_DS_CCS_CLKEN); /* turn on clock */
-@@ -892,7 +892,7 @@ snd_ad1889_init(struct snd_ad1889 *chip)
- 	return 0;
+ 	uint64_t val;
+ 	int ret;
+@@ -882,7 +882,7 @@ static void __devinit snd_ps3_audio_set_base_addr(uint64_t ioaddr_start)
+ 			ret);
  }
  
--static int __devinit
-+static int
- snd_ad1889_create(struct snd_card *card,
- 		  struct pci_dev *pci,
- 		  struct snd_ad1889 **rchip)
-@@ -978,7 +978,7 @@ free_and_ret:
- 	return err;
+-static void __devinit snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
++static void snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
+ {
+ 	/*
+ 	 * avsetting driver seems to never change the followings
+@@ -906,7 +906,7 @@ static void __devinit snd_ps3_audio_fixup(struct snd_ps3_card_info *card)
+ 		   PS3_AUDIO_AO_3WMCTRL_ASOPLRCK_DEFAULT);
  }
  
--static int __devinit
-+static int
- snd_ad1889_probe(struct pci_dev *pci,
- 		 const struct pci_device_id *pci_id)
+-static int __devinit snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
++static int snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
  {
-@@ -1042,7 +1042,7 @@ free_and_ret:
- 	return err;
+ 	int ret;
+ 	pr_debug("%s: start\n", __func__);
+@@ -928,7 +928,7 @@ static int __devinit snd_ps3_init_avsetting(struct snd_ps3_card_info *card)
+ 	return ret;
  }
  
--static void __devexit
-+static void
- snd_ad1889_remove(struct pci_dev *pci)
+-static int __devinit snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
++static int snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
  {
- 	snd_card_free(pci_get_drvdata(pci));
-@@ -1059,7 +1059,7 @@ static struct pci_driver ad1889_pci_driver = {
- 	.name = KBUILD_MODNAME,
- 	.id_table = snd_ad1889_ids,
- 	.probe = snd_ad1889_probe,
--	.remove = __devexit_p(snd_ad1889_remove),
-+	.remove = snd_ad1889_remove,
- };
- 
- module_pci_driver(ad1889_pci_driver);
+ 	int i, ret;
+ 	u64 lpar_addr, lpar_size;
 -- 
 1.8.0.1
-
