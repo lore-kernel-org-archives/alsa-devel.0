@@ -1,15 +1,23 @@
-From: <MR.Swami.Reddy@ti.com>
-Subject: [PATCH] ASoC: lm49453: Fix adc,
-	mic and sidetone volume ranges
-Date: Thu, 6 Dec 2012 16:08:12 +0530
-Message-ID: <1354790292-11968-1-git-send-email-MR.Swami.Reddy@ti.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 2/3] ALSA: ASoC: McASP: determine XSSZ
+	value programatically
+Date: Thu, 06 Dec 2012 12:21:33 +0100
+Message-ID: <50C07FBD.3000804@gmail.com>
+References: <1354721862-10318-1-git-send-email-zonque@gmail.com>
+ <1354721862-10318-2-git-send-email-zonque@gmail.com>
+ <50BF81CC.2030008@gmail.com>
+ <1BAFE6F6C881BF42822005164F1491C33EB00050@DBDE01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BB0026030B
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 11:21:23 +0100 (CET)
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00970260314
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 12:21:35 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so2519346bkc.38
+ for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2012 03:21:35 -0800 (PST)
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EB00050@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,99 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: vishwas.a.deshpande@ti.com, alsa-devel@alsa-project.org, MR Swami Reddy <mr.swami.reddy@ti.com>
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+On 06.12.2012 04:18, Hebbar, Gururaja wrote:
+> On Wed, Dec 05, 2012 at 22:48:04, Daniel Mack wrote:
+>> On 05.12.2012 16:37, Daniel Mack wrote:
+>>> This shouldn't change any functionality and is just a preparation a
+>>> special case handling.
+>>>
+>>> Signed-off-by: Daniel Mack <zonque@gmail.com>
+>>
+>> Hold on - I found another way that even does more cleanups. I'll
+>> resubmit a v2.
+> 
+> Kindly add a cover letter and mention what is/will be changed in V2
+> so that it will help the reviewers.
 
-[PATCH] ASoC: lm49453: Fix adc, mic and sidetone volume ranges
+You're right - will do next time. Too late for this, as I already sent
+out v2. But as there was no feedback to the first round, you can just
+ignore it entirely and just look at v2.
 
-Signed-off-by: MR Swami Reddy <mr.swami.reddy@ti.com>
 
---
- sound/soc/codecs/lm49453.c |   43 ++++++++++++++++++++++++-------------------
- 1 files changed, 24 insertions(+), 19 deletions(-)
-
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 808e50a..379fcdf 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -494,36 +494,41 @@ SOC_DAPM_SINGLE("Port2_2 Switch", LM49453_P0_PORT2_TX2_REG, 7, 1, 0),
- };
- 
- /* TLV Declarations */
--static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
--static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_dac_tlv, -7650, 150, 1);
-+static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
-+static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(stn_tlv, -7200, 150, 0);
- 
- static const struct snd_kcontrol_new lm49453_sidetone_mixer_controls[] = {
- /* Sidetone supports mono only */
- SOC_DAPM_SINGLE_TLV("Sidetone ADCL Volume", LM49453_P0_STN_VOL_ADCL_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- SOC_DAPM_SINGLE_TLV("Sidetone ADCR Volume", LM49453_P0_STN_VOL_ADCR_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- SOC_DAPM_SINGLE_TLV("Sidetone DMIC1L Volume", LM49453_P0_STN_VOL_DMIC1L_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- SOC_DAPM_SINGLE_TLV("Sidetone DMIC1R Volume", LM49453_P0_STN_VOL_DMIC1R_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- SOC_DAPM_SINGLE_TLV("Sidetone DMIC2L Volume", LM49453_P0_STN_VOL_DMIC2L_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", LM49453_P0_STN_VOL_DMIC2R_REG,
--		     0, 0x3F, 0, digital_tlv),
-+		     0, 0x3F, 0, stn_tlv),
- };
- 
- static const struct snd_kcontrol_new lm49453_snd_controls[] = {
- 	/* mic1 and mic2 supports mono only */
--	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
--			0, digital_tlv),
--	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
--			0, digital_tlv),
-+	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_MICL_REG, 0, 15, 0, mic_tlv),
-+	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_MICR_REG, 0, 15, 0, mic_tlv),
-+
-+	SOC_SINGLE_TLV("ADCL Volume", LM49453_P0_ADC_LEVELL_REG, 0, 63,
-+			0, adc_dac_tlv),
-+	SOC_SINGLE_TLV("ADCR Volume", LM49453_P0_ADC_LEVELR_REG, 0, 63,
-+			0, adc_dac_tlv),
- 
- 	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
--			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DMIC1_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 	SOC_DOUBLE_R_TLV("DMIC2 Volume", LM49453_P0_DMIC2_LEVELL_REG,
--			  LM49453_P0_DMIC2_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DMIC2_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 
- 	SOC_DAPM_ENUM("Mic2Mode", lm49453_mic2mode_enum),
- 	SOC_DAPM_ENUM("DMIC12 SRC", lm49453_dmic12_cfg_enum),
-@@ -538,16 +543,16 @@ static const struct snd_kcontrol_new lm49453_snd_controls[] = {
- 					  2, 1, 0),
- 
- 	SOC_DOUBLE_R_TLV("DAC HP Volume", LM49453_P0_DAC_HP_LEVELL_REG,
--			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 	SOC_DOUBLE_R_TLV("DAC LO Volume", LM49453_P0_DAC_LO_LEVELL_REG,
--			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 	SOC_DOUBLE_R_TLV("DAC LS Volume", LM49453_P0_DAC_LS_LEVELL_REG,
--			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 	SOC_DOUBLE_R_TLV("DAC HA Volume", LM49453_P0_DAC_HA_LEVELL_REG,
--			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 6, 0, digital_tlv),
-+			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
- 
- 	SOC_SINGLE_TLV("EP Volume", LM49453_P0_DAC_LS_LEVELL_REG,
--			0, 6, 0, digital_tlv),
-+			0, 63, 0, adc_dac_tlv),
- 
- 	SOC_SINGLE_TLV("PORT1_1_RX_LVL Volume", LM49453_P0_PORT1_RX_LVL1_REG,
- 			0, 3, 0, port_tlv),
+Thanks,
+Daniel
