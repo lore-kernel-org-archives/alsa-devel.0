@@ -1,65 +1,85 @@
-From: itxEpsilon <carlos@isometrica.net>
-Subject: Re: How to mix two PCM channels with ALSA
-Date: Thu, 6 Dec 2012 16:18:06 +0000 (UTC)
-Message-ID: <loom.20121206T171348-66@post.gmane.org>
-References: <loom.20121206T132219-620@post.gmane.org>
- <50C0AA5F.1040503@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DB602615D2
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 17:18:22 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Tge9g-0002Zx-4D
- for alsa-devel@alsa-project.org; Thu, 06 Dec 2012 17:18:32 +0100
-Received: from 128.Red-2-136-253.dynamicIP.rima-tde.net ([2.136.253.128])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2012 17:18:32 +0100
-Received: from carlos by 128.Red-2-136-253.dynamicIP.rima-tde.net with local
- (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2012 17:18:32 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+From: Bill Pemberton <wfp5p@virginia.edu>
+Subject: [PATCH 07/20] ALSA: parisc/harmony: remove __dev* attributes
+Date: Thu,  6 Dec 2012 12:35:16 -0500
+Message-ID: <1354815329-20221-8-git-send-email-wfp5p@virginia.edu>
+References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
+Sender: linux-parisc-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, perex@perex.cz, gregkh@linuxfoundation.org, linux-parisc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens <at> ladisch.de> writes:
+CONFIG_HOTPLUG is going away as an option.  As result the __dev*
+markings will be going away.
 
-> 
-> itxEpsilon wrote:
-> > I'm trying to write a simple application
-> > for mixing two PCM sound channels in
-> > C++. Could anyone provide me a
-> > quick example about how to implement
-> > this operation?
-> 
->   outputSample[i] = inputChannel1[i] + inputChannel2[i];
-> 
-> What does this have to do with ALSA?
-> 
-> Regards,
-> Clemens
-> 
+Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
+and __devexit.
 
-Hi,
-That's no my question, I'd like to know how is performed with the ALSA API.
+Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+Cc: linux-parisc@vger.kernel.org
+---
+ sound/parisc/harmony.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-i.e. 
+diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
+index f47f9e2..0e66ba4 100644
+--- a/sound/parisc/harmony.c
++++ b/sound/parisc/harmony.c
+@@ -856,7 +856,7 @@ static struct snd_kcontrol_new snd_harmony_controls[] = {
+ 		       HARMONY_GAIN_HE_SHIFT, 1, 0),
+ };
+ 
+-static void __devinit
++static void
+ snd_harmony_mixer_reset(struct snd_harmony *h)
+ {
+ 	harmony_mute(h);
+@@ -865,7 +865,7 @@ snd_harmony_mixer_reset(struct snd_harmony *h)
+ 	harmony_unmute(h);
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_mixer_init(struct snd_harmony *h)
+ {
+ 	struct snd_card *card;
+@@ -915,7 +915,7 @@ snd_harmony_dev_free(struct snd_device *dev)
+ 	return snd_harmony_free(h);
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_create(struct snd_card *card, 
+ 		   struct parisc_device *padev, 
+ 		   struct snd_harmony **rchip)
+@@ -972,7 +972,7 @@ free_and_ret:
+ 	return err;
+ }
+ 
+-static int __devinit
++static int
+ snd_harmony_probe(struct parisc_device *padev)
+ {
+ 	int err;
+@@ -1012,7 +1012,7 @@ free_and_ret:
+ 	return err;
+ }
+ 
+-static int __devexit
++static int
+ snd_harmony_remove(struct parisc_device *padev)
+ {
+ 	snd_card_free(parisc_get_drvdata(padev));
+@@ -1024,7 +1024,7 @@ static struct parisc_driver snd_harmony_driver = {
+ 	.name = "harmony",
+ 	.id_table = snd_harmony_devtable,
+ 	.probe = snd_harmony_probe,
+-	.remove = __devexit_p(snd_harmony_remove),
++	.remove = snd_harmony_remove,
+ };
+ 
+ static int __init 
+-- 
+1.8.0.1
 
-playSound(buffer1);
-playSound(buffer2);
-
-is it implicitly mixed when playing two buffers by hardware?
-
-Thanks.
-Carlos.
