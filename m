@@ -1,14 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Make FLL lock timeout very high
-Date: Thu,  6 Dec 2012 15:30:48 +0900
-Message-ID: <1354775449-19256-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Reddy, M.R. Swami" <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH] ASoC: lm49453: Fix analog and digital
+ volume ranges
+Date: Thu, 6 Dec 2012 08:07:32 +0000
+Message-ID: <354ACD19F280E44381F0C302BC7A15A39DE2DF@DFLE08.ent.ti.com>
+References: <1354704529-12912-1-git-send-email-MR.Swami.Reddy@ti.com>
+ <1354735742.7077.89.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A1542615FF
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 07:30:57 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8D0226007E
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 09:07:34 +0100 (CET)
+In-Reply-To: <1354735742.7077.89.camel@vkoul-udesk3>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: "Deshpande A, Vishwas" <Vishwas.A.Deshpande@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Provide robustness against low quality FLL sync clocks by increasing the
-timeout for lock to an absurdly high point; we should never get anywhere
-near hitting the timeout in a real system unless it is failing.
+Thanks Vinod. Yes, the ADC tlvs missed... I will update the patch.  
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
+Swami
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 5fc11bc..ef68f7a 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1083,7 +1083,7 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
- 				   ARIZONA_FLL1_SYNC_ENA);
- 
- 	ret = wait_for_completion_timeout(&fll->ok,
--					  msecs_to_jiffies(25));
-+					  msecs_to_jiffies(250));
- 	if (ret == 0)
- 		arizona_fll_warn(fll, "Timed out waiting for lock\n");
- 
--- 
-1.7.10.4
+-----Original Message-----
+From: Vinod Koul [mailto:vinod.koul@linux.intel.com] 
+Sent: Thursday, December 06, 2012 12:59 AM
+To: Reddy, M.R. Swami
+Cc: broonie@opensource.wolfsonmicro.com; Girdwood, Liam; Deshpande A, Vishwas; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: lm49453: Fix analog and digital volume ranges
+
+On Wed, 2012-12-05 at 16:18 +0530, MR.Swami.Reddy@ti.com wrote:
+
+>  /* TLV Declarations */
+>  static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1); 
+> -static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
+> +static const DECLARE_TLV_DB_SCALE(analog_tlv, 0, 200, 1);
+The spec says your analog gain are 0 to 30dB in steps of 2dB, this doesnt sound right to me.
+> +static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
+>  
+>  static const struct snd_kcontrol_new 
+> lm49453_sidetone_mixer_controls[] = {
+>  /* Sidetone supports mono only */
+> @@ -516,9 +517,9 @@ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", 
+> LM49453_P0_STN_VOL_DMIC2R_REG,  static const struct snd_kcontrol_new lm49453_snd_controls[] = {
+>  	/* mic1 and mic2 supports mono only */
+>  	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
+> -			0, digital_tlv),
+> +			0, analog_tlv),
+now i see a  problem.
+You have hidden the MIC gains and exposed only ADC gains. The name is wrong causing the confusion. Please make this ADC gain and add new control for MIC gain!
+Your ADC gain is -76 to 18db, with 0.5dB steps, how does this reflect that?
+
+>  	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
+> -			0, digital_tlv),
+> +			0, analog_tlv),
+Ditto.....
+>  
+>  	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
+>  			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv), 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+
+--
+~Vinod
