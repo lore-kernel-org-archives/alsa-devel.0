@@ -1,23 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to mix two PCM channels with ALSA
-Date: Thu, 06 Dec 2012 19:05:27 +0100
-Message-ID: <50C0DE67.1000000@ladisch.de>
-References: <loom.20121206T132219-620@post.gmane.org>
- <50C0AA5F.1040503@ladisch.de> <loom.20121206T171348-66@post.gmane.org>
+Subject: Re: [PATCH 05/20] ALSA: firewire-speakers: remove
+	__dev* attributes
+Date: Thu, 06 Dec 2012 19:13:26 +0100
+Message-ID: <50C0E046.10207@ladisch.de>
+References: <1354815329-20221-1-git-send-email-wfp5p@virginia.edu>
+ <1354815329-20221-6-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3C282261710
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 19:05:53 +0100 (CET)
-Received: from compute6.internal (compute6.nyi.mail.srv.osa [10.202.2.46])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 5BCDC2067D
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 13:05:52 -0500 (EST)
-Received: from [192.168.42.56] (unknown [46.115.36.32])
- by mail.messagingengine.com (Postfix) with ESMTPA id CB38D4827CE
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 13:05:51 -0500 (EST)
-In-Reply-To: <loom.20121206T171348-66@post.gmane.org>
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 4B73B26171E
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 19:13:52 +0100 (CET)
+In-Reply-To: <1354815329-20221-6-git-send-email-wfp5p@virginia.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,21 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Bill Pemberton <wfp5p@virginia.edu>
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-itxEpsilon wrote:
-> I'd like to know how is performed with the ALSA API.
+Bill Pemberton wrote:
+> CONFIG_HOTPLUG is going away as an option.  As result the __dev*
+> markings will be going away.
 >
-> playSound(buffer1);
-> playSound(buffer2);
+> Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
+> and __devexit.
 >
-> is it implicitly mixed when playing two buffers by hardware?
+> Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+> Cc: Clemens Ladisch <clemens@ladisch.de>
 
-Yes, if the hardware actually support this (nowadays, none does), or if
-ALSA is configured to use software mixing through dmix or PulseAudio
-(which are enabled by default in most distributions).
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
+for all these (5,10,11):
 
+>  sound/firewire/speakers.c        | 8 ++++----
 
-Regards,
-Clemens
+>  sound/pci/bt87x.c                | 22 +++++++++++-----------
+
+>  sound/pci/oxygen/oxygen.c        | 10 +++++-----
+>  sound/pci/oxygen/virtuoso.c      | 10 +++++-----
+>  sound/pci/oxygen/xonar_cs43xx.c  |  4 ++--
+>  sound/pci/oxygen/xonar_pcm179x.c |  4 ++--
+>  sound/pci/oxygen/xonar_wm87x6.c  |  4 ++--
