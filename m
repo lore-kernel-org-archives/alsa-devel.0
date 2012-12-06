@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Store the DAI clock ID when
-	setting
-Date: Thu,  6 Dec 2012 18:18:00 +0900
-Message-ID: <1354785480-21904-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: <MR.Swami.Reddy@ti.com>
+Subject: [PATCH] ASoC: lm49453: Fix adc,
+	mic and sidetone volume ranges
+Date: Thu, 6 Dec 2012 16:08:12 +0530
+Message-ID: <1354790292-11968-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 41F3E260307
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 10:18:09 +0100 (CET)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BB0026030B
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 11:21:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,89 +19,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: vishwas.a.deshpande@ti.com, alsa-devel@alsa-project.org, MR Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-So the code to suppress duplicate changes is effective.
+From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
 
-Reported-by: Kyung Kwee Ryu <Kyung-Kwee.Ryu@wolfsonmicro.comyu@wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |   22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+[PATCH] ASoC: lm49453: Fix adc, mic and sidetone volume ranges
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index ef68f7a..dfaeca9 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1,3 +1,4 @@
-+#define DEBUG
- /*
-  * arizona.c - Wolfson Arizona class device shared support
-  *
-@@ -679,6 +680,9 @@ static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona_dai_priv *dai_priv = &priv->dai[dai->id - 1];
-+	int base = dai->driver->base;
- 	int i, sr_val;
+Signed-off-by: MR Swami Reddy <mr.swami.reddy@ti.com>
+
+--
+ sound/soc/codecs/lm49453.c |   43 ++++++++++++++++++++++++-------------------
+ 1 files changed, 24 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index 808e50a..379fcdf 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -494,36 +494,41 @@ SOC_DAPM_SINGLE("Port2_2 Switch", LM49453_P0_PORT2_TX2_REG, 7, 1, 0),
+ };
  
- 	/*
-@@ -699,14 +703,16 @@ static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
- 	case ARIZONA_CLK_SYSCLK:
- 		snd_soc_update_bits(codec, ARIZONA_SAMPLE_RATE_1,
- 				    ARIZONA_SAMPLE_RATE_1_MASK, sr_val);
--		snd_soc_update_bits(codec, base + ARIZONA_AIF_RATE_CTRL,
--				    ARIZONA_AIF1_RATE_MASK, 0);
-+		if (base)
-+			snd_soc_update_bits(codec, base + ARIZONA_AIF_RATE_CTRL,
-+					    ARIZONA_AIF1_RATE_MASK, 0);
- 		break;
- 	case ARIZONA_CLK_ASYNCCLK:
- 		snd_soc_update_bits(codec, ARIZONA_ASYNC_SAMPLE_RATE_1,
- 				    ARIZONA_ASYNC_SAMPLE_RATE_MASK, sr_val);
--		snd_soc_update_bits(codec, base + ARIZONA_AIF_RATE_CTRL,
--				    ARIZONA_AIF1_RATE_MASK, 8);
-+		if (base)
-+			snd_soc_update_bits(codec, base + ARIZONA_AIF_RATE_CTRL,
-+					    ARIZONA_AIF1_RATE_MASK, 8);
- 		break;
- 	default:
- 		arizona_aif_err(dai, "Invalid clock %d\n", dai_priv->clk);
-@@ -721,12 +727,10 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
--	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
--	struct arizona_dai_priv *dai_priv = &priv->dai[dai->id - 1];
- 	int base = dai->driver->base;
- 	const int *rates;
- 	int i, ret;
--	int bclk, lrclk, wl, frame, sr_val;
-+	int bclk, lrclk, wl, frame;
+ /* TLV Declarations */
+-static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
+-static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
++static const DECLARE_TLV_DB_SCALE(adc_dac_tlv, -7650, 150, 1);
++static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
++static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
++static const DECLARE_TLV_DB_SCALE(stn_tlv, -7200, 150, 0);
  
- 	if (params_rate(params) % 8000)
- 		rates = &arizona_44k1_bclk_rates[0];
-@@ -754,7 +758,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 	wl = snd_pcm_format_width(params_format(params));
- 	frame = wl << ARIZONA_AIF1TX_WL_SHIFT | wl;
+ static const struct snd_kcontrol_new lm49453_sidetone_mixer_controls[] = {
+ /* Sidetone supports mono only */
+ SOC_DAPM_SINGLE_TLV("Sidetone ADCL Volume", LM49453_P0_STN_VOL_ADCL_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone ADCR Volume", LM49453_P0_STN_VOL_ADCR_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC1L Volume", LM49453_P0_STN_VOL_DMIC1L_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC1R Volume", LM49453_P0_STN_VOL_DMIC1R_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2L Volume", LM49453_P0_STN_VOL_DMIC2L_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", LM49453_P0_STN_VOL_DMIC2R_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ };
  
--	ret = arizona_hw_params_rate(codec, params, dai);
-+	ret = arizona_hw_params_rate(substream, params, dai);
- 	if (ret != 0)
- 		return ret;
- 
-@@ -823,6 +827,8 @@ static int arizona_dai_set_sysclk(struct snd_soc_dai *dai,
- 	routes[1].source = arizona_dai_clk_str(clk_id);
- 	snd_soc_dapm_add_routes(&codec->dapm, routes, ARRAY_SIZE(routes));
- 
-+	dai_priv->clk = clk_id;
+ static const struct snd_kcontrol_new lm49453_snd_controls[] = {
+ 	/* mic1 and mic2 supports mono only */
+-	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
+-			0, digital_tlv),
+-	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
+-			0, digital_tlv),
++	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_MICL_REG, 0, 15, 0, mic_tlv),
++	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_MICR_REG, 0, 15, 0, mic_tlv),
 +
- 	return snd_soc_dapm_sync(&codec->dapm);
- }
++	SOC_SINGLE_TLV("ADCL Volume", LM49453_P0_ADC_LEVELL_REG, 0, 63,
++			0, adc_dac_tlv),
++	SOC_SINGLE_TLV("ADCR Volume", LM49453_P0_ADC_LEVELR_REG, 0, 63,
++			0, adc_dac_tlv),
  
--- 
-1.7.10.4
+ 	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
+-			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DMIC1_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DMIC2 Volume", LM49453_P0_DMIC2_LEVELL_REG,
+-			  LM49453_P0_DMIC2_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DMIC2_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 
+ 	SOC_DAPM_ENUM("Mic2Mode", lm49453_mic2mode_enum),
+ 	SOC_DAPM_ENUM("DMIC12 SRC", lm49453_dmic12_cfg_enum),
+@@ -538,16 +543,16 @@ static const struct snd_kcontrol_new lm49453_snd_controls[] = {
+ 					  2, 1, 0),
+ 
+ 	SOC_DOUBLE_R_TLV("DAC HP Volume", LM49453_P0_DAC_HP_LEVELL_REG,
+-			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC LO Volume", LM49453_P0_DAC_LO_LEVELL_REG,
+-			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC LS Volume", LM49453_P0_DAC_LS_LEVELL_REG,
+-			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC HA Volume", LM49453_P0_DAC_HA_LEVELL_REG,
+-			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 
+ 	SOC_SINGLE_TLV("EP Volume", LM49453_P0_DAC_LS_LEVELL_REG,
+-			0, 6, 0, digital_tlv),
++			0, 63, 0, adc_dac_tlv),
+ 
+ 	SOC_SINGLE_TLV("PORT1_1_RX_LVL Volume", LM49453_P0_PORT1_RX_LVL1_REG,
+ 			0, 3, 0, port_tlv),
