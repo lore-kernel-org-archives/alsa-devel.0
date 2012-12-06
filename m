@@ -1,30 +1,47 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V4 0/2] Add DT support for i2s
-Date: Thu, 6 Dec 2012 13:11:42 +0900
-Message-ID: <20121206041141.GA10867@opensource.wolfsonmicro.com>
-References: <1354099669-1735-1-git-send-email-padma.v@samsung.com>
- <CAAgF-Bc4t6WL4vswP6CFeSQrPZBmOuYfVt6_JoB1Za9TBX7mvA@mail.gmail.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 12/14] ASoC: wm8978: Use
+	devm_regmap_init_i2c()
+Date: Thu, 6 Dec 2012 10:13:22 +0530
+Message-ID: <CAK9yfHyWLH2yo2ARYdhFEUoKts1GS2OCFfwn+c=H7oBzU9u8-Q@mail.gmail.com>
+References: <1353930587-12907-1-git-send-email-sachin.kamat@linaro.org>
+ <1353930587-12907-13-git-send-email-sachin.kamat@linaro.org>
+ <20121202040743.GP17981@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAgF-Bc4t6WL4vswP6CFeSQrPZBmOuYfVt6_JoB1Za9TBX7mvA@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, lrg@ti.com, jassisinghbrar@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f50.google.com (mail-vb0-f50.google.com
+ [209.85.212.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5105C2615CF
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 05:43:24 +0100 (CET)
+Received: by mail-vb0-f50.google.com with SMTP id fr13so5566274vbb.9
+ for <alsa-devel@alsa-project.org>; Wed, 05 Dec 2012 20:43:23 -0800 (PST)
+In-Reply-To: <20121202040743.GP17981@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 06, 2012 at 09:31:40AM +0530, Padma Venkat wrote:
-> On Wed, Nov 28, 2012 at 4:17 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
+On 2 December 2012 09:37, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Nov 26, 2012 at 05:19:45PM +0530, Sachin Kamat wrote:
+>> devm_regmap_init_i2c() is device managed and makes error
+>> handling and code cleanup simpler.
+>
+> Applied, thanks.
 
-> > Padmavathi Venna (2):
-> >   ASoC: Samsung: Get I2S src_clk from clock alias id.
-> >   ASoC: SAMSUNG: Add DT support for i2s
+Mark,
+Looks like this patch is missed out in your tree.
+Please let me know if you want me to re-send this.
 
-> Any comments on DT support for i2s patch?  If not when this patch can be pulled?
-
-Don't send contentless pings.
-
-I still don't really like what's going on with aliases here, I need to
-understand why things are structured the way they are to say something
-about that.
+-- 
+With regards,
+Sachin
