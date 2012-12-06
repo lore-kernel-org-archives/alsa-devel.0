@@ -1,52 +1,77 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH 2/3] ALSA: ASoC: McASP: determine XSSZ
- value programatically
-Date: Thu, 6 Dec 2012 03:18:36 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB00050@DBDE01.ent.ti.com>
-References: <1354721862-10318-1-git-send-email-zonque@gmail.com>
- <1354721862-10318-2-git-send-email-zonque@gmail.com>
- <50BF81CC.2030008@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id DC9E226517E
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 04:18:41 +0100 (CET)
-In-Reply-To: <50BF81CC.2030008@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH V2 0/2] ASoC: Samsung: Remove platform device support
+Date: Thu, 06 Dec 2012 09:20:35 +0530
+Message-ID: <1354765837-3469-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, padma.kvr@gmail.com
+Cc: sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org, kgene.kim@samsung.com, ben@simtec.co.uk, lrg@slimlogic.co.uk, jassisinghbrar@gmail.com, anarsoul@gmail.com, graeme.gregory@wolfsonmicro.com, philipp.zabel@gmail.com, dgreenday@gmail.com, chripell@evolware.org, mcuelenaere@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 05, 2012 at 22:48:04, Daniel Mack wrote:
-> On 05.12.2012 16:37, Daniel Mack wrote:
-> > This shouldn't change any functionality and is just a preparation a
-> > special case handling.
-> > 
-> > Signed-off-by: Daniel Mack <zonque@gmail.com>
-> 
-> Hold on - I found another way that even does more cleanups. I'll
-> resubmit a v2.
+Changes since V1:
+	- Renamed all samsung based audio platform names with the corresponding
+	  cpu dai name
+	- Register the dma device in the corresponding samsung cpu dai driver
+	- Deleted "samsung_asoc_dma" platform device from devs.c
+	- Deleted the "samsung_asoc_dma" platfrom device entry from the list of
+	  registered platform devices in the legacy platforms.
+	- Renamed the function name from samsung_dma_platform_register to
+	  asoc_dma_platform_register
+	- Added binding documentation for new device tree binding
 
-Kindly add a cover letter and mention what is/will be changed in V2
-so that it will help the reviewers.
+Padmavathi Venna (2):
+  ASoC: Samsung: Do not register samsung audio dma device as pdev
+  ASoC: SMDK: WM8994: Add device tree support for machine file
 
-> 
-> 
-> Daniel
-> 
-> 
+ .../bindings/sound/samsung,smdk-wm8994.txt         |   14 +++++++++
+ arch/arm/boot/dts/exynos5250-smdk5250.dts          |   12 ++++++++
+ arch/arm/mach-exynos/mach-armlex4210.c             |    1 -
+ arch/arm/mach-exynos/mach-smdkv310.c               |    1 -
+ arch/arm/mach-s3c24xx/mach-gta02.c                 |    1 -
+ arch/arm/mach-s3c24xx/mach-h1940.c                 |    1 -
+ arch/arm/mach-s3c24xx/mach-mini2440.c              |    1 -
+ arch/arm/mach-s3c24xx/mach-rx1950.c                |    1 -
+ arch/arm/mach-s3c64xx/mach-crag6410.c              |    1 -
+ arch/arm/mach-s3c64xx/mach-smdk6410.c              |    1 -
+ arch/arm/mach-s5p64x0/mach-smdk6440.c              |    1 -
+ arch/arm/mach-s5p64x0/mach-smdk6450.c              |    1 -
+ arch/arm/mach-s5pc100/mach-smdkc100.c              |    1 -
+ arch/arm/mach-s5pv210/mach-smdkc110.c              |    1 -
+ arch/arm/mach-s5pv210/mach-smdkv210.c              |    1 -
+ arch/arm/plat-samsung/devs.c                       |    9 ------
+ arch/arm/plat-samsung/include/plat/devs.h          |    1 -
+ sound/soc/samsung/ac97.c                           |   10 ++++++-
+ sound/soc/samsung/bells.c                          |    6 ++--
+ sound/soc/samsung/dma.c                            |   24 ++++------------
+ sound/soc/samsung/dma.h                            |    3 ++
+ sound/soc/samsung/goni_wm8994.c                    |    2 +-
+ sound/soc/samsung/h1940_uda1380.c                  |    2 +-
+ sound/soc/samsung/i2s.c                            |    4 ++
+ sound/soc/samsung/jive_wm8750.c                    |    2 +-
+ sound/soc/samsung/littlemill.c                     |    2 +-
+ sound/soc/samsung/ln2440sbc_alc650.c               |    2 +-
+ sound/soc/samsung/lowland.c                        |    2 +-
+ sound/soc/samsung/neo1973_wm8753.c                 |    2 +-
+ sound/soc/samsung/pcm.c                            |    9 ++++++
+ sound/soc/samsung/rx1950_uda1380.c                 |    2 +-
+ sound/soc/samsung/s3c2412-i2s.c                    |   20 ++++++++++++-
+ sound/soc/samsung/s3c24xx-i2s.c                    |   20 ++++++++++++-
+ sound/soc/samsung/s3c24xx_simtec_hermes.c          |    2 +-
+ sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c     |    2 +-
+ sound/soc/samsung/s3c24xx_uda134x.c                |    2 +-
+ sound/soc/samsung/smartq_wm8987.c                  |    2 +-
+ sound/soc/samsung/smdk2443_wm9710.c                |    2 +-
+ sound/soc/samsung/smdk_spdif.c                     |    2 +-
+ sound/soc/samsung/smdk_wm8580.c                    |    6 ++--
+ sound/soc/samsung/smdk_wm8580pcm.c                 |    2 +-
+ sound/soc/samsung/smdk_wm8994.c                    |   30 ++++++++++++++++++-
+ sound/soc/samsung/smdk_wm8994pcm.c                 |    2 +-
+ sound/soc/samsung/smdk_wm9713.c                    |    2 +-
+ sound/soc/samsung/spdif.c                          |   10 ++++++-
+ sound/soc/samsung/speyside.c                       |    2 +-
+ sound/soc/samsung/tobermory.c                      |    2 +-
+ 47 files changed, 157 insertions(+), 72 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt
 
-
-Regards, 
-Gururaja
+-- 
+1.7.4.4
