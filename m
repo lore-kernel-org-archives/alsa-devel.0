@@ -1,14 +1,20 @@
-From: "Pils Bert" <pilsbert@gmx.net>
-Subject: M-Audio Audiophile 24/96 (snd-ice1712) lacks ADCs
-Date: Thu, 06 Dec 2012 01:24:12 +0100
-Message-ID: <20121206002412.104860@gmx.net>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH 2/3] ALSA: ASoC: McASP: determine XSSZ
+ value programatically
+Date: Thu, 6 Dec 2012 03:18:36 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB00050@DBDE01.ent.ti.com>
+References: <1354721862-10318-1-git-send-email-zonque@gmail.com>
+ <1354721862-10318-2-git-send-email-zonque@gmail.com>
+ <50BF81CC.2030008@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
- by alsa0.perex.cz (Postfix) with SMTP id 8F0F6265179
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 01:24:15 +0100 (CET)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC9E226517E
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2012 04:18:41 +0100 (CET)
+In-Reply-To: <50BF81CC.2030008@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,49 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nori, Sekhar" <nsekhar@ti.com>, "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 05, 2012 at 22:48:04, Daniel Mack wrote:
+> On 05.12.2012 16:37, Daniel Mack wrote:
+> > This shouldn't change any functionality and is just a preparation a
+> > special case handling.
+> > 
+> > Signed-off-by: Daniel Mack <zonque@gmail.com>
+> 
+> Hold on - I found another way that even does more cleanups. I'll
+> resubmit a v2.
 
-Hi guys,
+Kindly add a cover letter and mention what is/will be changed in V2
+so that it will help the reviewers.
 
-I have a problem with my M-Audio Audiophile 24/96 soundcard: There are no ADC volume sliders present neither in alsamixer nor in envy24control. But instead there are also DAC sliders on the capture page in alsamixer?! But changing them doesn't have an effect on the H/W input gain.
+> 
+> 
+> Daniel
+> 
+> 
 
-I read on website that some other users had the same problem (but it seams to be a rare problem).
 
-First of all my card has been correctly detected as Audiophile 24/96. But in /sys/module/snd_ice1712/parameters/model are only null values. I loaded the module with the model=audiophile parameter, but no ADCs appear. Second I skimmed over the module source code and found the lines
-
-	case ICE1712_SUBDEVICE_AUDIOPHILE:
-		ice->num_total_dacs = 2;
-		ice->num_total_adcs = 2;
-		break;
-
-in __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice) in delta.c
-So the module says there have to be 2 ADCs...
-
-I also disabled my onboard soundcard (HDA Intel), but no ADCs appear.
-
-Maybe its some hardware configuration problem?
-
-Moreover, I had to edit my .asoundrc file in order to play and capture audio anyway (so no 'out of the box' experience here...):
-
-pcm.audiophile {
-   type hw
-   card 1
-   device 0
-}
-
-pcm.analog {
-   type plug
-   slave.pcm audiophile
-   ttable.0.0 1 # H/W 1
-   ttable.1.1 1 # H/W 2
-}
-
-I'm using plain ALSA 1.0.25 (without pulseaudio) on Debian Testing (Linux Rowdy 3.2.0-4-amd64 #1 SMP Debian 3.2.32-1 x86_64 GNU/Linux)
-
-Maybe some of you guys have an good idea ;)
-
-Best regards,
-
-Jannik
+Regards, 
+Gururaja
