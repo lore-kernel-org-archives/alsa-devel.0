@@ -1,17 +1,15 @@
-From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/1] ASoC: tpa6130a2: Use devm_* APIs
-Date: Fri,  7 Dec 2012 16:32:26 +0530
-Message-ID: <1354878146-28222-1-git-send-email-sachin.kamat@linaro.org>
+From: <MR.Swami.Reddy@ti.com>
+Subject: [PATCH v2] ASoC: lm49453: Fix adc,
+	mic and sidetone volume ranges
+Date: Fri, 7 Dec 2012 17:00:10 +0530
+Message-ID: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5046A261654
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2012 12:09:22 +0100 (CET)
-Received: by mail-pa0-f51.google.com with SMTP id fb11so365157pad.38
- for <alsa-devel@alsa-project.org>; Fri, 07 Dec 2012 03:09:21 -0800 (PST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id A289F261654
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2012 12:13:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,88 +19,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches@linaro.org, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, sachin.kamat@linaro.org, lrg@ti.com
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: vishwas.a.deshpande@ti.com, alsa-devel@alsa-project.org, MR Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Converted to use devm_gpio_request and devm_regulator_get APIs.
-These are device managed and make error handling and cleanup
-a bit simpler.
+Add adc, mic, sidetone volume ranges and appropriately added the controls. 
+Fix the DAC HP/EP/LS/LO/HA maximum gain values.
 
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
-Compile tested on for-next branch of following tree:
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
----
- sound/soc/codecs/tpa6130a2.c |   23 ++++++-----------------
- 1 files changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index 565ff39..ec78073 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -398,7 +398,8 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
- 						TPA6130A2_MUTE_L;
+Signed-off-by: MR Swami Reddy <mr.swami.reddy@ti.com>
+
+--
+ sound/soc/codecs/lm49453.c |   43 ++++++++++++++++++++++++-------------------
+ 1 files changed, 24 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index 808e50a..379fcdf 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -494,36 +494,41 @@ SOC_DAPM_SINGLE("Port2_2 Switch", LM49453_P0_PORT2_TX2_REG, 7, 1, 0),
+ };
  
- 	if (data->power_gpio >= 0) {
--		ret = gpio_request(data->power_gpio, "tpa6130a2 enable");
-+		ret = devm_gpio_request(dev, data->power_gpio,
-+					"tpa6130a2 enable");
- 		if (ret < 0) {
- 			dev_err(dev, "Failed to request power GPIO (%d)\n",
- 				data->power_gpio);
-@@ -419,16 +420,16 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
- 		break;
- 	}
+ /* TLV Declarations */
+-static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
+-static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
++static const DECLARE_TLV_DB_SCALE(adc_dac_tlv, -7650, 150, 1);
++static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
++static const DECLARE_TLV_DB_SCALE(port_tlv, -1800, 600, 0);
++static const DECLARE_TLV_DB_SCALE(stn_tlv, -7200, 150, 0);
  
--	data->supply = regulator_get(dev, regulator);
-+	data->supply = devm_regulator_get(dev, regulator);
- 	if (IS_ERR(data->supply)) {
- 		ret = PTR_ERR(data->supply);
- 		dev_err(dev, "Failed to request supply: %d\n", ret);
--		goto err_regulator;
-+		goto err_gpio;
- 	}
+ static const struct snd_kcontrol_new lm49453_sidetone_mixer_controls[] = {
+ /* Sidetone supports mono only */
+ SOC_DAPM_SINGLE_TLV("Sidetone ADCL Volume", LM49453_P0_STN_VOL_ADCL_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone ADCR Volume", LM49453_P0_STN_VOL_ADCR_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC1L Volume", LM49453_P0_STN_VOL_DMIC1L_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC1R Volume", LM49453_P0_STN_VOL_DMIC1R_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2L Volume", LM49453_P0_STN_VOL_DMIC2L_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ SOC_DAPM_SINGLE_TLV("Sidetone DMIC2R Volume", LM49453_P0_STN_VOL_DMIC2R_REG,
+-		     0, 0x3F, 0, digital_tlv),
++		     0, 0x3F, 0, stn_tlv),
+ };
  
- 	ret = tpa6130a2_power(1);
- 	if (ret != 0)
--		goto err_power;
-+		goto err_gpio;
+ static const struct snd_kcontrol_new lm49453_snd_controls[] = {
+ 	/* mic1 and mic2 supports mono only */
+-	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_ADC_LEVELL_REG, 0, 6,
+-			0, digital_tlv),
+-	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_ADC_LEVELR_REG, 0, 6,
+-			0, digital_tlv),
++	SOC_SINGLE_TLV("Mic1 Volume", LM49453_P0_MICL_REG, 0, 15, 0, mic_tlv),
++	SOC_SINGLE_TLV("Mic2 Volume", LM49453_P0_MICR_REG, 0, 15, 0, mic_tlv),
++
++	SOC_SINGLE_TLV("ADCL Volume", LM49453_P0_ADC_LEVELL_REG, 0, 63,
++			0, adc_dac_tlv),
++	SOC_SINGLE_TLV("ADCR Volume", LM49453_P0_ADC_LEVELR_REG, 0, 63,
++			0, adc_dac_tlv),
  
+ 	SOC_DOUBLE_R_TLV("DMIC1 Volume", LM49453_P0_DMIC1_LEVELL_REG,
+-			  LM49453_P0_DMIC1_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DMIC1_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DMIC2 Volume", LM49453_P0_DMIC2_LEVELL_REG,
+-			  LM49453_P0_DMIC2_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DMIC2_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
  
- 	/* Read version */
-@@ -440,15 +441,10 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
- 	/* Disable the chip */
- 	ret = tpa6130a2_power(0);
- 	if (ret != 0)
--		goto err_power;
-+		goto err_gpio;
+ 	SOC_DAPM_ENUM("Mic2Mode", lm49453_mic2mode_enum),
+ 	SOC_DAPM_ENUM("DMIC12 SRC", lm49453_dmic12_cfg_enum),
+@@ -538,16 +543,16 @@ static const struct snd_kcontrol_new lm49453_snd_controls[] = {
+ 					  2, 1, 0),
  
- 	return 0;
+ 	SOC_DOUBLE_R_TLV("DAC HP Volume", LM49453_P0_DAC_HP_LEVELL_REG,
+-			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_HP_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC LO Volume", LM49453_P0_DAC_LO_LEVELL_REG,
+-			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_LO_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC LS Volume", LM49453_P0_DAC_LS_LEVELL_REG,
+-			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_LS_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
+ 	SOC_DOUBLE_R_TLV("DAC HA Volume", LM49453_P0_DAC_HA_LEVELL_REG,
+-			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 6, 0, digital_tlv),
++			  LM49453_P0_DAC_HA_LEVELR_REG, 0, 63, 0, adc_dac_tlv),
  
--err_power:
--	regulator_put(data->supply);
--err_regulator:
--	if (data->power_gpio >= 0)
--		gpio_free(data->power_gpio);
- err_gpio:
- 	tpa6130a2_client = NULL;
+ 	SOC_SINGLE_TLV("EP Volume", LM49453_P0_DAC_LS_LEVELL_REG,
+-			0, 6, 0, digital_tlv),
++			0, 63, 0, adc_dac_tlv),
  
-@@ -457,14 +453,7 @@ err_gpio:
- 
- static int __devexit tpa6130a2_remove(struct i2c_client *client)
- {
--	struct tpa6130a2_data *data = i2c_get_clientdata(client);
--
- 	tpa6130a2_power(0);
--
--	if (data->power_gpio >= 0)
--		gpio_free(data->power_gpio);
--
--	regulator_put(data->supply);
- 	tpa6130a2_client = NULL;
- 
- 	return 0;
--- 
-1.7.4.1
+ 	SOC_SINGLE_TLV("PORT1_1_RX_LVL Volume", LM49453_P0_PORT1_RX_LVL1_REG,
+ 			0, 3, 0, port_tlv),
