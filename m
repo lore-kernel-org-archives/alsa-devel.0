@@ -1,15 +1,19 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [patch] usb6fire: prevent driver panic state when
-	stopping
-Date: Fri, 07 Dec 2012 10:26:43 +0100
-Message-ID: <1354872409.2161.7.camel@paragon.slim>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RESEND V2 1/2] ASoC: Samsung: Do not
+ register samsung audio dma device as pdev
+Date: Fri, 7 Dec 2012 19:37:46 +0900
+Message-ID: <20121207103745.GK26070@opensource.wolfsonmicro.com>
+References: <1354868962-7862-1-git-send-email-padma.v@samsung.com>
+ <1354868962-7862-2-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr8.xs4all.nl (smtp-vbr8.xs4all.nl [194.109.24.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 94C5F2615E4
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2012 10:26:49 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC32E261662
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2012 11:37:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1354868962-7862-2-git-send-email-padma.v@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,34 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: torsten.schenk@zoho.com
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, philipp.zabel@gmail.com, sbkim73@samsung.com, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, mcuelenaere@gmail.com, anarsoul@gmail.com, tiwai@suse.de, kgene.kim@samsung.com, ben-linux@fluff.org, padma.kvr@gmail.com, dgreenday@gmail.com, chripell@evolware.org, graeme.gregory@wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Dec 07, 2012 at 01:59:21PM +0530, Padmavathi Venna wrote:
+> Previously, the ASoC 'platform' (PCM/DMA) object was instantiated via a
+> platform_device. This didn't represent the hardware well, since there
+> was no separate hardware associated with this platform_device; it was a
+> virtual device with sole purpose to call snd_soc_register_platform().
 
-The patch below prevents the 6fire usb driver going into panic state
-when stopping playing. On some systems the urb in handler
-(usb6fire_pcm_in_urb_handler) is being called while urbs are being
-killed off, this causes the driver to set panic state and can result in
-the kernel warning 'URB %p submitted while active'.
-
-Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
-
-diff -uNrp linux/sound/usb/6fire/pcm.c linux.new/sound/usb/6fire/pcm.c
---- linux/sound/usb/6fire/pcm.c	2012-11-23 17:01:41.754673597 +0100
-+++ linux.new/sound/usb/6fire/pcm.c	2012-12-07 10:09:11.386666744 +0100
-@@ -135,6 +135,9 @@ static void usb6fire_pcm_stream_stop(str
- 	struct control_runtime *ctrl_rt = rt->chip->control;
- 
- 	if (rt->stream_state != STREAM_DISABLED) {
-+
-+		rt->stream_state = STREAM_STOPPING;
-+
- 		for (i = 0; i < PCM_N_URBS; i++) {
- 			usb_kill_urb(&rt->in_urbs[i].instance);
- 			usb_kill_urb(&rt->out_urbs[i].instance);
-
-
-
-Jurgen
+Applied, thanks.
