@@ -1,27 +1,32 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: pcm: allow backend hardware to be freed in pause
- state
-Date: Fri, 7 Dec 2012 13:37:11 +0000
-Message-ID: <50C1F107.1050404@ti.com>
-References: <1354819199-28795-1-git-send-email-plai@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1354819199-28795-1-git-send-email-plai@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH V4 0/2] Add DT support for i2s
+Date: Fri, 07 Dec 2012 13:51:31 +0000
+Message-ID: <20121207135131.A53643E0B87@localhost>
+References: <1354099669-1735-1-git-send-email-padma.v@samsung.com> <CAAgF-Bc4t6WL4vswP6CFeSQrPZBmOuYfVt6_JoB1Za9TBX7mvA@mail.gmail.com> <20121206041141.GA10867@opensource.wolfsonmicro.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20121206041141.GA10867@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Padma Venkat <padma.kvr@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Padmavathi Venna <padma.v@samsung.com>, sbkim73@samsung.com, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/12/12 18:39, Patrick Lai wrote:
-> When front-end PCM session is in paused state, back-end
-> PCM session will be put in paused state as well if given
-> front-end PCM session is the only client of given back-end.
-> Then, application closes front-end PCM session, DPCM
-> framework will not allow back-end enters HW_FREE state
-> so back-end will never get shutdown completely.
->
-> Signed-off-by: Patrick Lai <plai@codeaurora.org>
+On Thu, 6 Dec 2012 13:11:42 +0900, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, Dec 06, 2012 at 09:31:40AM +0530, Padma Venkat wrote:
+> > On Wed, Nov 28, 2012 at 4:17 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
+> 
+> > > Padmavathi Venna (2):
+> > >   ASoC: Samsung: Get I2S src_clk from clock alias id.
+> > >   ASoC: SAMSUNG: Add DT support for i2s
+> 
+> > Any comments on DT support for i2s patch?  If not when this patch can be pulled?
+> 
+> Don't send contentless pings.
+> 
+> I still don't really like what's going on with aliases here, I need to
+> understand why things are structured the way they are to say something
+> about that.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Right. On a brief look, it appears that the binding is using aliases as
+a way to encode implementation specific details of the driver.
+
+g.
