@@ -1,70 +1,63 @@
-From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 7/7] ALSA: CA0132: Update sample rate and
-	module description
-Date: Fri, 7 Dec 2012 21:36:03 -0800
-Message-ID: <1354944963-4654-8-git-send-email-ian_minett@creativelabs.com>
-References: <1354944963-4654-1-git-send-email-ian_minett@creativelabs.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1354944963-4654-1-git-send-email-ian_minett@creativelabs.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
+From: Joachim Eastwood <manabian@gmail.com>
+Subject: [PATCH] ASoC: atmel-ssc: make it buildable on other architectures
+Date: Sat,  8 Dec 2012 13:46:41 +0100
+Message-ID: <1354970801-9185-1-git-send-email-manabian@gmail.com>
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: voice.shen@atmel.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, broonie@opensource.wolfsonmicro.com
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Joachim Eastwood <manabian@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ian Minett <ian_minett@creativelabs.com>
+Not very useful on non AT91/AVR32 platforms but it provides
+more build coverage and prepares for ARM multiplatform.
 
-Also, handle potential dma_engine alloc error.
+Also fixes a truncated warning that would come when
+building on a 64-bit arch.
 
-Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
+Signed-off-by: Joachim Eastwood <manabian@gmail.com>
+---
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 21380f1..7ada5e6 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -2399,8 +2399,11 @@ static int dspxfr_image(struct hda_codec *codec,
- 		return -EINVAL;
+Hi Mark,
+
+Sending it to you since seem like you're the last one who
+commited changes to the driver and the driver is mostly
+used on ASoC.
+
+Tested on RM9200 and build tested on x86_64.
+
+regards
+Joachim Eastwood
+
+ drivers/misc/Kconfig     | 2 +-
+ drivers/misc/atmel-ssc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index b151b7c..8f59d88 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -192,7 +192,7 @@ config ICS932S401
  
- 	dma_engine = kzalloc(sizeof(*dma_engine), GFP_KERNEL);
--	if (!dma_engine)
--		return -ENOMEM;
-+	if (!dma_engine) {
-+		status = -ENOMEM;
-+		goto exit;
-+	}
-+	memset((void *)dma_engine, 0, sizeof(*dma_engine));
+ config ATMEL_SSC
+ 	tristate "Device driver for Atmel SSC peripheral"
+-	depends on AVR32 || ARCH_AT91
++	depends on HAS_IOMEM
+ 	---help---
+ 	  This option enables device driver support for Atmel Synchronized
+ 	  Serial Communication peripheral (SSC).
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index 158da5a..0cee274 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -167,7 +167,7 @@ static int ssc_probe(struct platform_device *pdev)
  
- 	dma_engine->dmab = kzalloc(sizeof(*dma_engine->dmab), GFP_KERNEL);
- 	if (!dma_engine->dmab) {
-@@ -4289,8 +4292,8 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
- 	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_B_96KHZ, is96k);
- 	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_C_96KHZ, is96k);
+ 	/* disable all interrupts */
+ 	clk_enable(ssc->clk);
+-	ssc_writel(ssc->regs, IDR, ~0UL);
++	ssc_writel(ssc->regs, IDR, -1);
+ 	ssc_readl(ssc->regs, SR);
+ 	clk_disable(ssc->clk);
  
--	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
--	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
- 	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
- }
- 
-@@ -4635,7 +4638,7 @@ static struct hda_codec_preset snd_hda_preset_ca0132[] = {
- MODULE_ALIAS("snd-hda-codec-id:11020011");
- 
- MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("Creative CA0132, CA0132 HD-audio codec");
-+MODULE_DESCRIPTION("Creative Sound Core3D codec");
- 
- static struct hda_codec_preset_list ca0132_list = {
- 	.preset = snd_hda_preset_ca0132,
 -- 
-1.7.4.1
+1.8.0
+
