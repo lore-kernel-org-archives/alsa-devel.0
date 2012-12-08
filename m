@@ -1,115 +1,63 @@
-From: Joachim Eastwood <manabian@gmail.com>
-Subject: [PATCH] ASoC: atmel-soc: make it buildable on other architectures
-Date: Sat,  8 Dec 2012 14:23:22 +0100
-Message-ID: <1354973002-13588-1-git-send-email-manabian@gmail.com>
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: voice.shen@atmel.com, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, broonie@opensource.wolfsonmicro.com
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Joachim Eastwood <manabian@gmail.com>
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH 05/25] ASoC: pxa: remove __dev* attributes
+Date: Sun, 9 Dec 2012 00:20:43 +0800
+Message-ID: <CAN1soZyzNaEfmtKPoPOuLw-9ZPe4O7og5r803qOtzSf=RD2jEA@mail.gmail.com>
+References: <1354890397-28568-1-git-send-email-wfp5p@virginia.edu>
+ <1354890397-28568-6-git-send-email-wfp5p@virginia.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 775B426163B
+ for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2012 17:20:44 +0100 (CET)
+Received: by mail-ee0-f51.google.com with SMTP id d4so777510eek.38
+ for <alsa-devel@alsa-project.org>; Sat, 08 Dec 2012 08:20:44 -0800 (PST)
+In-Reply-To: <1354890397-28568-6-git-send-email-wfp5p@virginia.edu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bill Pemberton <wfp5p@virginia.edu>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Greg KH <gregkh@linuxfoundation.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Russell King <linux@arm.linux.org.uk>, Girdwood Liam <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Not very useful on non AT91/AVR32 platforms but it provides
-more build coverage and prepares for ARM multiplatform.
+On Fri, Dec 7, 2012 at 10:26 PM, Bill Pemberton <wfp5p@virginia.edu> wrote:
+> CONFIG_HOTPLUG is going away as an option.  As result the __dev*
+> markings will be going away.
+>
+> Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
+> and __devexit.
+>
+> Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  sound/soc/pxa/brownstone.c     | 6 +++---
+>  sound/soc/pxa/corgi.c          | 6 +++---
+>  sound/soc/pxa/e740_wm9705.c    | 6 +++---
+>  sound/soc/pxa/e750_wm9705.c    | 6 +++---
+>  sound/soc/pxa/e800_wm9712.c    | 6 +++---
+>  sound/soc/pxa/imote2.c         | 6 +++---
+>  sound/soc/pxa/mioa701_wm9713.c | 6 +++---
+>  sound/soc/pxa/mmp-pcm.c        | 6 +++---
+>  sound/soc/pxa/mmp-sspa.c       | 6 +++---
+>  sound/soc/pxa/palm27x.c        | 4 ++--
+>  sound/soc/pxa/poodle.c         | 6 +++---
+>  sound/soc/pxa/pxa-ssp.c        | 6 +++---
+>  sound/soc/pxa/pxa2xx-ac97.c    | 8 ++++----
+>  sound/soc/pxa/pxa2xx-i2s.c     | 4 ++--
+>  sound/soc/pxa/pxa2xx-pcm.c     | 6 +++---
+>  sound/soc/pxa/tosa.c           | 6 +++---
+>  sound/soc/pxa/ttc-dkb.c        | 6 +++---
+>  17 files changed, 50 insertions(+), 50 deletions(-)
+>
 
-Also fixes a couple of format type warnings.
-
-Signed-off-by: Joachim Eastwood <manabian@gmail.com>
----
-
-Hi,
-
-Build tested on RM9200 and x86_64.
-
-ARCH_AT91 depend is pushed down to the machine drivers
-since they still relies on mach includes.
-
-regards
-Joachim Eastwood
-
- sound/soc/atmel/Kconfig         | 6 +++---
- sound/soc/atmel/atmel-pcm-pdc.c | 4 ++--
- sound/soc/atmel/atmel-pcm.c     | 2 +-
- sound/soc/atmel/atmel_ssc_dai.c | 2 --
- 4 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index d1b691b..3fdd87f 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -1,6 +1,6 @@
- config SND_ATMEL_SOC
- 	tristate "SoC Audio for the Atmel System-on-Chip"
--	depends on ARCH_AT91
-+	depends on HAS_IOMEM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the ATMEL SSC interface. You will also need
-@@ -24,7 +24,7 @@ config SND_ATMEL_SOC_SSC
- 
- config SND_AT91_SOC_SAM9G20_WM8731
- 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
--	depends on ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
-+	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
- 	select SND_ATMEL_SOC_PDC
- 	select SND_ATMEL_SOC_SSC
- 	select SND_SOC_WM8731
-@@ -34,7 +34,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
- 
- config SND_AT91_SOC_AFEB9260
- 	tristate "SoC Audio support for AFEB9260 board"
--	depends on ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-+	depends on ARCH_AT91 && ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
- 	select SND_ATMEL_SOC_PDC
- 	select SND_ATMEL_SOC_SSC
- 	select SND_SOC_TLV320AIC23
-diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-index 6a293c7..054ea4d 100644
---- a/sound/soc/atmel/atmel-pcm-pdc.c
-+++ b/sound/soc/atmel/atmel-pcm-pdc.c
-@@ -159,7 +159,7 @@ static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	pr_debug("atmel-pcm: "
- 		"hw_params: DMA for %s initialized "
--		"(dma_bytes=%u, period_size=%u)\n",
-+		"(dma_bytes=%zu, period_size=%zu)\n",
- 		prtd->params->name,
- 		runtime->dma_bytes,
- 		prtd->period_size);
-@@ -201,7 +201,7 @@ static int atmel_pcm_trigger(struct snd_pcm_substream *substream,
- 	int ret = 0;
- 
- 	pr_debug("atmel-pcm:buffer_size = %ld,"
--		"dma_area = %p, dma_bytes = %u\n",
-+		"dma_area = %p, dma_bytes = %zu\n",
- 		rtd->buffer_size, rtd->dma_area, rtd->dma_bytes);
- 
- 	switch (cmd) {
-diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-index e99f181..3109db7 100644
---- a/sound/soc/atmel/atmel-pcm.c
-+++ b/sound/soc/atmel/atmel-pcm.c
-@@ -49,7 +49,7 @@ static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
- 	buf->private_data = NULL;
- 	buf->area = dma_alloc_coherent(pcm->card->dev, size,
- 			&buf->addr, GFP_KERNEL);
--	pr_debug("atmel-pcm: alloc dma buffer: area=%p, addr=%p, size=%d\n",
-+	pr_debug("atmel-pcm: alloc dma buffer: area=%p, addr=%p, size=%zu\n",
- 			(void *)buf->area, (void *)buf->addr, size);
- 
- 	if (!buf->area)
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 1c76634..2755750 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -42,8 +42,6 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- 
--#include <mach/hardware.h>
--
- #include "atmel-pcm.h"
- #include "atmel_ssc_dai.h"
- 
--- 
-1.8.0
-
+Acked-by: Haojian Zhuang <haojian.zhuang@gmail.com>
