@@ -1,8 +1,7 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 5/7] ALSA: CA0132: Some code shuffling to group
-	functions together.
-Date: Fri, 7 Dec 2012 21:36:01 -0800
-Message-ID: <1354944963-4654-6-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 4/7] ALSA: CA0132: Add tuning controls
+Date: Fri, 7 Dec 2012 21:36:00 -0800
+Message-ID: <1354944963-4654-5-git-send-email-ian_minett@creativelabs.com>
 References: <1354944963-4654-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -28,449 +27,324 @@ From: Ian Minett <ian_minett@creativelabs.com>
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index b62d407..983142a 100644
+index b971a9d..b62d407 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -2665,42 +2665,6 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
- 	return false;
- }
+@@ -771,6 +771,9 @@ struct ca0132_spec {
+ 	long voicefx_val;
+ 	long cur_mic_boost;
  
--
--/*
-- * Controls stuffs.
-- */
--
--/*
-- * Mixer controls helpers.
-- */
--#define CA0132_CODEC_VOL_MONO(xname, nid, channel, dir) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--	  .name = xname, \
--	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
--	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
--			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
--			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
--	  .info = ca0132_volume_info, \
--	  .get = ca0132_volume_get, \
--	  .put = ca0132_volume_put, \
--	  .tlv = { .c = ca0132_volume_tlv }, \
--	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
--
--#define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--	  .name = xname, \
--	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
--	  .info = snd_hda_mixer_amp_switch_info, \
--	  .get = ca0132_switch_get, \
--	  .put = ca0132_switch_put, \
--	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
--
--/* stereo */
--#define CA0132_CODEC_VOL(xname, nid, dir) \
--	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
--#define CA0132_CODEC_MUTE(xname, nid, dir) \
--	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
--
++	#ifdef ENABLE_TUNING_CONTROLS
++	long cur_ctl_vals[TUNING_CTLS_COUNT];
++	#endif
+ };
+ 
  /*
-  * PCM stuffs
-  */
-@@ -2857,6 +2821,43 @@ static int ca0132_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
+@@ -2854,6 +2857,284 @@ static int ca0132_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
  	return 0;
  }
  
++/* The followings are for tuning of products */
++#ifdef ENABLE_TUNING_CONTROLS
 +
-+/*
-+ * Controls stuffs.
-+ */
++static unsigned int voice_focus_vals_lookup[] = {
++0x41A00000, 0x41A80000, 0x41B00000, 0x41B80000, 0x41C00000, 0x41C80000,
++0x41D00000, 0x41D80000, 0x41E00000, 0x41E80000, 0x41F00000, 0x41F80000,
++0x42000000, 0x42040000, 0x42080000, 0x420C0000, 0x42100000, 0x42140000,
++0x42180000, 0x421C0000, 0x42200000, 0x42240000, 0x42280000, 0x422C0000,
++0x42300000, 0x42340000, 0x42380000, 0x423C0000, 0x42400000, 0x42440000,
++0x42480000, 0x424C0000, 0x42500000, 0x42540000, 0x42580000, 0x425C0000,
++0x42600000, 0x42640000, 0x42680000, 0x426C0000, 0x42700000, 0x42740000,
++0x42780000, 0x427C0000, 0x42800000, 0x42820000, 0x42840000, 0x42860000,
++0x42880000, 0x428A0000, 0x428C0000, 0x428E0000, 0x42900000, 0x42920000,
++0x42940000, 0x42960000, 0x42980000, 0x429A0000, 0x429C0000, 0x429E0000,
++0x42A00000, 0x42A20000, 0x42A40000, 0x42A60000, 0x42A80000, 0x42AA0000,
++0x42AC0000, 0x42AE0000, 0x42B00000, 0x42B20000, 0x42B40000, 0x42B60000,
++0x42B80000, 0x42BA0000, 0x42BC0000, 0x42BE0000, 0x42C00000, 0x42C20000,
++0x42C40000, 0x42C60000, 0x42C80000, 0x42CA0000, 0x42CC0000, 0x42CE0000,
++0x42D00000, 0x42D20000, 0x42D40000, 0x42D60000, 0x42D80000, 0x42DA0000,
++0x42DC0000, 0x42DE0000, 0x42E00000, 0x42E20000, 0x42E40000, 0x42E60000,
++0x42E80000, 0x42EA0000, 0x42EC0000, 0x42EE0000, 0x42F00000, 0x42F20000,
++0x42F40000, 0x42F60000, 0x42F80000, 0x42FA0000, 0x42FC0000, 0x42FE0000,
++0x43000000, 0x43010000, 0x43020000, 0x43030000, 0x43040000, 0x43050000,
++0x43060000, 0x43070000, 0x43080000, 0x43090000, 0x430A0000, 0x430B0000,
++0x430C0000, 0x430D0000, 0x430E0000, 0x430F0000, 0x43100000, 0x43110000,
++0x43120000, 0x43130000, 0x43140000, 0x43150000, 0x43160000, 0x43170000,
++0x43180000, 0x43190000, 0x431A0000, 0x431B0000, 0x431C0000, 0x431D0000,
++0x431E0000, 0x431F0000, 0x43200000, 0x43210000, 0x43220000, 0x43230000,
++0x43240000, 0x43250000, 0x43260000, 0x43270000, 0x43280000, 0x43290000,
++0x432A0000, 0x432B0000, 0x432C0000, 0x432D0000, 0x432E0000, 0x432F0000,
++0x43300000, 0x43310000, 0x43320000, 0x43330000, 0x43340000
++};
 +
-+/*
-+ * Mixer controls helpers.
-+ */
-+#define CA0132_CODEC_VOL_MONO(xname, nid, channel, dir) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+	  .name = xname, \
-+	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
-+	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
-+			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
-+	  .info = ca0132_volume_info, \
-+	  .get = ca0132_volume_get, \
-+	  .put = ca0132_volume_put, \
-+	  .tlv = { .c = ca0132_volume_tlv }, \
-+	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
++static unsigned int mic_svm_vals_lookup[] = {
++0x00000000, 0x3C23D70A, 0x3CA3D70A, 0x3CF5C28F, 0x3D23D70A, 0x3D4CCCCD,
++0x3D75C28F, 0x3D8F5C29, 0x3DA3D70A, 0x3DB851EC, 0x3DCCCCCD, 0x3DE147AE,
++0x3DF5C28F, 0x3E051EB8, 0x3E0F5C29, 0x3E19999A, 0x3E23D70A, 0x3E2E147B,
++0x3E3851EC, 0x3E428F5C, 0x3E4CCCCD, 0x3E570A3D, 0x3E6147AE, 0x3E6B851F,
++0x3E75C28F, 0x3E800000, 0x3E851EB8, 0x3E8A3D71, 0x3E8F5C29, 0x3E947AE1,
++0x3E99999A, 0x3E9EB852, 0x3EA3D70A, 0x3EA8F5C3, 0x3EAE147B, 0x3EB33333,
++0x3EB851EC, 0x3EBD70A4, 0x3EC28F5C, 0x3EC7AE14, 0x3ECCCCCD, 0x3ED1EB85,
++0x3ED70A3D, 0x3EDC28F6, 0x3EE147AE, 0x3EE66666, 0x3EEB851F, 0x3EF0A3D7,
++0x3EF5C28F, 0x3EFAE148, 0x3F000000, 0x3F028F5C, 0x3F051EB8, 0x3F07AE14,
++0x3F0A3D71, 0x3F0CCCCD, 0x3F0F5C29, 0x3F11EB85, 0x3F147AE1, 0x3F170A3D,
++0x3F19999A, 0x3F1C28F6, 0x3F1EB852, 0x3F2147AE, 0x3F23D70A, 0x3F266666,
++0x3F28F5C3, 0x3F2B851F, 0x3F2E147B, 0x3F30A3D7, 0x3F333333, 0x3F35C28F,
++0x3F3851EC, 0x3F3AE148, 0x3F3D70A4, 0x3F400000, 0x3F428F5C, 0x3F451EB8,
++0x3F47AE14, 0x3F4A3D71, 0x3F4CCCCD, 0x3F4F5C29, 0x3F51EB85, 0x3F547AE1,
++0x3F570A3D, 0x3F59999A, 0x3F5C28F6, 0x3F5EB852, 0x3F6147AE, 0x3F63D70A,
++0x3F666666, 0x3F68F5C3, 0x3F6B851F, 0x3F6E147B, 0x3F70A3D7, 0x3F733333,
++0x3F75C28F, 0x3F7851EC, 0x3F7AE148, 0x3F7D70A4, 0x3F800000
++};
 +
-+#define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+	  .name = xname, \
-+	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
-+	  .info = snd_hda_mixer_amp_switch_info, \
-+	  .get = ca0132_switch_get, \
-+	  .put = ca0132_switch_put, \
-+	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
++static unsigned int equalizer_vals_lookup[] = {
++0xC1C00000, 0xC1B80000, 0xC1B00000, 0xC1A80000, 0xC1A00000, 0xC1980000,
++0xC1900000, 0xC1880000, 0xC1800000, 0xC1700000, 0xC1600000, 0xC1500000,
++0xC1400000, 0xC1300000, 0xC1200000, 0xC1100000, 0xC1000000, 0xC0E00000,
++0xC0C00000, 0xC0A00000, 0xC0800000, 0xC0400000, 0xC0000000, 0xBF800000,
++0x00000000, 0x3F800000, 0x40000000, 0x40400000, 0x40800000, 0x40A00000,
++0x40C00000, 0x40E00000, 0x41000000, 0x41100000, 0x41200000, 0x41300000,
++0x41400000, 0x41500000, 0x41600000, 0x41700000, 0x41800000, 0x41880000,
++0x41900000, 0x41980000, 0x41A00000, 0x41A80000, 0x41B00000, 0x41B80000,
++0x41C00000
++};
 +
-+/* stereo */
-+#define CA0132_CODEC_VOL(xname, nid, dir) \
-+	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
-+#define CA0132_CODEC_MUTE(xname, nid, dir) \
-+	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
++static int tuning_ctl_set(struct hda_codec *codec, hda_nid_t nid,
++			  unsigned int *lookup, int idx)
++{
++	int i = 0;
 +
++	for (i = 0; i < TUNING_CTLS_COUNT; i++)
++		if (nid == ca0132_tuning_ctls[i].nid)
++			break;
 +
- /* The followings are for tuning of products */
- #ifdef ENABLE_TUNING_CONTROLS
- 
-@@ -3923,6 +3924,68 @@ static struct snd_kcontrol_new ca0132_mixer[] = {
- 	{ } /* end */
- };
- 
-+static int ca0132_build_controls(struct hda_codec *codec)
++	snd_hda_power_up(codec);
++	dspio_set_param(codec, ca0132_tuning_ctls[i].mid,
++			ca0132_tuning_ctls[i].req,
++			&(lookup[idx]), sizeof(unsigned int));
++	snd_hda_power_down(codec);
++
++	return 1;
++}
++
++static int tuning_ctl_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	int idx = nid - TUNING_CTL_START_NID;
++
++	*valp = spec->cur_ctl_vals[idx];
++	return 0;
++}
++
++static int voice_focus_ctl_info(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_info *uinfo)
++{
++	int chs = get_amp_channels(kcontrol);
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = chs == 3 ? 2 : 1;
++	uinfo->value.integer.min = 20;
++	uinfo->value.integer.max = 180;
++	uinfo->value.integer.step = 1;
++
++	return 0;
++}
++
++static int voice_focus_ctl_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	int idx;
++
++	idx = nid - TUNING_CTL_START_NID;
++	/* any change? */
++	if (spec->cur_ctl_vals[idx] == *valp)
++		return 0;
++
++	spec->cur_ctl_vals[idx] = *valp;
++
++	idx = *valp - 20;
++	tuning_ctl_set(codec, nid, voice_focus_vals_lookup, idx);
++
++	return 1;
++}
++
++static int mic_svm_ctl_info(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_info *uinfo)
++{
++	int chs = get_amp_channels(kcontrol);
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = chs == 3 ? 2 : 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 100;
++	uinfo->value.integer.step = 1;
++
++	return 0;
++}
++
++static int mic_svm_ctl_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	int idx;
++
++	idx = nid - TUNING_CTL_START_NID;
++	/* any change? */
++	if (spec->cur_ctl_vals[idx] == *valp)
++		return 0;
++
++	spec->cur_ctl_vals[idx] = *valp;
++
++	idx = *valp;
++	tuning_ctl_set(codec, nid, mic_svm_vals_lookup, idx);
++
++	return 0;
++}
++
++static int equalizer_ctl_info(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_info *uinfo)
++{
++	int chs = get_amp_channels(kcontrol);
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = chs == 3 ? 2 : 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 48;
++	uinfo->value.integer.step = 1;
++
++	return 0;
++}
++
++static int equalizer_ctl_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	int idx;
++
++	idx = nid - TUNING_CTL_START_NID;
++	/* any change? */
++	if (spec->cur_ctl_vals[idx] == *valp)
++		return 0;
++
++	spec->cur_ctl_vals[idx] = *valp;
++
++	idx = *valp;
++	tuning_ctl_set(codec, nid, equalizer_vals_lookup, idx);
++
++	return 1;
++}
++
++DECLARE_TLV_DB_SCALE(voice_focus_db_scale, 2000, 100, 0);
++DECLARE_TLV_DB_SCALE(eq_db_scale, -2400, 100, 0);
++
++static int add_tuning_control(struct hda_codec *codec,
++				hda_nid_t pnid, hda_nid_t nid,
++				const char *name, int dir)
++{
++	char namestr[44];
++	int type = dir ? HDA_INPUT : HDA_OUTPUT;
++	struct snd_kcontrol_new knew =
++		HDA_CODEC_VOLUME_MONO(namestr, nid, 1, 0, type);
++
++	knew.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
++			SNDRV_CTL_ELEM_ACCESS_TLV_READ;
++	knew.tlv.c = 0;
++	knew.tlv.p = 0;
++	switch (pnid) {
++	case VOICE_FOCUS:
++		knew.info = voice_focus_ctl_info;
++		knew.get = tuning_ctl_get;
++		knew.put = voice_focus_ctl_put;
++		knew.tlv.p = voice_focus_db_scale;
++		break;
++	case MIC_SVM:
++		knew.info = mic_svm_ctl_info;
++		knew.get = tuning_ctl_get;
++		knew.put = mic_svm_ctl_put;
++		break;
++	case EQUALIZER:
++		knew.info = equalizer_ctl_info;
++		knew.get = tuning_ctl_get;
++		knew.put = equalizer_ctl_put;
++		knew.tlv.p = eq_db_scale;
++		break;
++	default:
++		return 0;
++	}
++	knew.private_value =
++		HDA_COMPOSE_AMP_VAL(nid, 1, 0, type);
++	sprintf(namestr, "%s %s Volume", name, dirstr[dir]);
++	return snd_hda_ctl_add(codec, nid, snd_ctl_new1(&knew, codec));
++}
++
++static int add_tuning_ctls(struct hda_codec *codec)
++{
++	int i;
++	int err;
++
++	for (i = 0; i < TUNING_CTLS_COUNT; i++) {
++		err = add_tuning_control(codec,
++					ca0132_tuning_ctls[i].parent_nid,
++					ca0132_tuning_ctls[i].nid,
++					ca0132_tuning_ctls[i].name,
++					ca0132_tuning_ctls[i].direct);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static void ca0132_init_tuning_defaults(struct hda_codec *codec)
 +{
 +	struct ca0132_spec *spec = codec->spec;
-+	int i, num_fx;
-+	int err = 0;
++	int i;
 +
-+	/* Add Mixer controls */
-+	for (i = 0; i < spec->num_mixers; i++) {
-+		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
-+		if (err < 0)
-+			return err;
-+	}
++	/* Wedge Angle defaults to 30.  10 below is 30 - 20.  20 is min. */
++	spec->cur_ctl_vals[WEDGE_ANGLE - TUNING_CTL_START_NID] = 10;
++	/* SVM level defaults to 0.74. */
++	spec->cur_ctl_vals[SVM_LEVEL - TUNING_CTL_START_NID] = 74;
 +
-+	/* Add in and out effects controls.
-+	 * VoiceFX, PE and CrystalVoice are added separately.
-+	 */
-+	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT;
-+	for (i = 0; i < num_fx; i++) {
-+		err = add_fx_switch(codec, ca0132_effects[i].nid,
-+				    ca0132_effects[i].name,
-+				    ca0132_effects[i].direct);
-+		if (err < 0)
-+			return err;
-+	}
++	/* EQ defaults to 0dB. */
++	for (i = 2; i < TUNING_CTLS_COUNT; i++)
++		spec->cur_ctl_vals[i] = 24;
++}
++#endif /*ENABLE_TUNING_CONTROLS*/
 +
-+	err = add_fx_switch(codec, PLAY_ENHANCEMENT, "PlayEnhancement", 0);
-+	if (err < 0)
-+		return err;
-+
-+	err = add_fx_switch(codec, CRYSTAL_VOICE, "CrystalVoice", 1);
-+	if (err < 0)
-+		return err;
-+
-+	add_voicefx(codec);
-+
+ static int ca0132_select_out(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -3771,6 +4052,10 @@ static int ca0132_build_controls(struct hda_codec *codec)
+ 
+ 	add_voicefx(codec);
+ 
 +	#ifdef ENABLE_TUNING_CONTROLS
 +	add_tuning_ctls(codec);
 +	#endif
 +
-+	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
-+	if (err < 0)
-+		return err;
-+
-+	if (spec->dig_out) {
-+		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
-+						    spec->dig_out);
-+		if (err < 0)
-+			return err;
-+		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
-+		if (err < 0)
-+			return err;
-+		/* spec->multiout.share_spdif = 1; */
-+	}
-+
-+	if (spec->dig_in) {
-+		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- /*
-  * PCM
-  */
-@@ -4017,68 +4080,6 @@ static int ca0132_build_pcms(struct hda_codec *codec)
- 	return 0;
+ 	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
+ 	if (err < 0)
+ 		return err;
+@@ -4144,6 +4429,9 @@ static void ca0132_init_chip(struct hda_codec *codec)
+ 	spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID] = 1;
+ 	spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID] = 0;
+ 
++	#ifdef ENABLE_TUNING_CONTROLS
++	ca0132_init_tuning_defaults(codec);
++	#endif
  }
  
--static int ca0132_build_controls(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--	int i, num_fx;
--	int err = 0;
--
--	/* Add Mixer controls */
--	for (i = 0; i < spec->num_mixers; i++) {
--		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
--		if (err < 0)
--			return err;
--	}
--
--	/* Add in and out effects controls.
--	 * VoiceFX, PE and CrystalVoice are added separately.
--	 */
--	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT;
--	for (i = 0; i < num_fx; i++) {
--		err = add_fx_switch(codec, ca0132_effects[i].nid,
--				    ca0132_effects[i].name,
--				    ca0132_effects[i].direct);
--		if (err < 0)
--			return err;
--	}
--
--	err = add_fx_switch(codec, PLAY_ENHANCEMENT, "PlayEnhancement", 0);
--	if (err < 0)
--		return err;
--
--	err = add_fx_switch(codec, CRYSTAL_VOICE, "CrystalVoice", 1);
--	if (err < 0)
--		return err;
--
--	add_voicefx(codec);
--
--	#ifdef ENABLE_TUNING_CONTROLS
--	add_tuning_ctls(codec);
--	#endif
--
--	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
--	if (err < 0)
--		return err;
--
--	if (spec->dig_out) {
--		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
--						    spec->dig_out);
--		if (err < 0)
--			return err;
--		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
--		if (err < 0)
--			return err;
--		/* spec->multiout.share_spdif = 1; */
--	}
--
--	if (spec->dig_in) {
--		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in);
--		if (err < 0)
--			return err;
--	}
--	return 0;
--}
--
- static void ca0132_init_unsol(struct hda_codec *codec)
- {
- 	snd_hda_jack_detect_enable(codec, UNSOL_TAG_HP, UNSOL_TAG_HP);
-@@ -4278,16 +4279,54 @@ static void ca0132_init_params(struct hda_codec *codec)
- 	chipio_set_control_param(codec, CONTROL_PARAM_PORTD_160OHM_GAIN, 6);
- }
- 
--static void ca0132_set_ct_ext(struct hda_codec *codec, int enable)
-+static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
- {
--	/* Set Creative extension */
--	snd_printdd("SET CREATIVE EXTENSION\n");
--	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
--			    VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE,
--			    enable);
--	msleep(20);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_DSP_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_DAC_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_RATE_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_CLOCK_196MHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_B_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_C_96KHZ, is96k);
-+
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
-+}
-+
-+static bool ca0132_download_dsp_images(struct hda_codec *codec)
-+{
-+	bool dsp_loaded = false;
-+	const struct dsp_image_seg *dsp_os_image;
-+
-+	if (request_firmware_cached(&fw_efx, EFX_FILE,
-+				    codec->bus->card->dev) != 0)
-+		return false;
-+
-+	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
-+	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
-+	dsp_loaded = dspload_wait_loaded(codec);
-+
-+	return dsp_loaded;
- }
- 
-+static void ca0132_download_dsp(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	spec->dsp_state = DSP_DOWNLOAD_INIT;
-+
-+	if (spec->dsp_state == DSP_DOWNLOAD_INIT) {
-+		chipio_enable_clocks(codec);
-+		spec->dsp_state = DSP_DOWNLOADING;
-+		if (!ca0132_download_dsp_images(codec))
-+			spec->dsp_state = DSP_DOWNLOAD_FAILED;
-+		else
-+			spec->dsp_state = DSP_DOWNLOADED;
-+	}
-+
-+	if (spec->dsp_state == DSP_DOWNLOADED)
-+		ca0132_set_dsp_msr(codec, true);
-+}
- 
- static void ca0132_config(struct hda_codec *codec)
- {
-@@ -4328,6 +4367,47 @@ static void ca0132_config(struct hda_codec *codec)
- 	cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
- }
- 
-+static void ca0132_process_dsp_response(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	snd_printdd(KERN_INFO "ca0132_process_dsp_response\n");
-+	if (spec->wait_scp) {
-+		if (dspio_get_response_data(codec) >= 0)
-+			spec->wait_scp = 0;
-+	}
-+
-+	dspio_clear_response_queue(codec);
-+}
-+
-+static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
-+
-+
-+	if (((res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f) == UNSOL_TAG_DSP) {
-+		ca0132_process_dsp_response(codec);
-+	} else {
-+		res = snd_hda_jack_get_action(codec,
-+				(res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f);
-+
-+		snd_printdd(KERN_INFO "snd_hda_jack_get_action: 0x%x\n", res);
-+
-+		switch (res) {
-+		case UNSOL_TAG_HP:
-+			ca0132_select_out(codec);
-+			snd_hda_jack_report_sync(codec);
-+			break;
-+		case UNSOL_TAG_AMIC1:
-+			ca0132_select_mic(codec);
-+			snd_hda_jack_report_sync(codec);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
- /*
-  * Verbs tables.
-  */
-@@ -4442,96 +4522,6 @@ static void ca0132_exit_chip(struct hda_codec *codec)
- 		dsp_reset(codec);
- }
- 
--static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
--{
--	chipio_set_control_flag(codec, CONTROL_FLAG_DSP_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_DAC_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_RATE_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_CLOCK_196MHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_B_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_C_96KHZ, is96k);
--
--	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
--	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
--	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
--}
--
--static bool ca0132_download_dsp_images(struct hda_codec *codec)
--{
--	bool dsp_loaded = false;
--	const struct dsp_image_seg *dsp_os_image;
--
--	if (request_firmware_cached(&fw_efx, EFX_FILE,
--				    codec->bus->card->dev) != 0)
--		return false;
--
--	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
--	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
--	dsp_loaded = dspload_wait_loaded(codec);
--
--	return dsp_loaded;
--}
--
--static void ca0132_download_dsp(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--
--	spec->dsp_state = DSP_DOWNLOAD_INIT;
--
--	if (spec->dsp_state == DSP_DOWNLOAD_INIT) {
--		chipio_enable_clocks(codec);
--		spec->dsp_state = DSP_DOWNLOADING;
--		if (!ca0132_download_dsp_images(codec))
--			spec->dsp_state = DSP_DOWNLOAD_FAILED;
--		else
--			spec->dsp_state = DSP_DOWNLOADED;
--	}
--
--	if (spec->dsp_state == DSP_DOWNLOADED)
--		ca0132_set_dsp_msr(codec, true);
--}
--
--static void ca0132_process_dsp_response(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--
--	snd_printdd(KERN_INFO "ca0132_process_dsp_response\n");
--	if (spec->wait_scp) {
--		if (dspio_get_response_data(codec) >= 0)
--			spec->wait_scp = 0;
--	}
--
--	dspio_clear_response_queue(codec);
--}
--
--static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
--{
--	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
--
--
--	if (((res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f) == UNSOL_TAG_DSP) {
--		ca0132_process_dsp_response(codec);
--	} else {
--		res = snd_hda_jack_get_action(codec,
--				(res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f);
--
--		snd_printdd(KERN_INFO "snd_hda_jack_get_action: 0x%x\n", res);
--
--		switch (res) {
--		case UNSOL_TAG_HP:
--			ca0132_select_out(codec);
--			snd_hda_jack_report_sync(codec);
--			break;
--		case UNSOL_TAG_AMIC1:
--			ca0132_select_mic(codec);
--			snd_hda_jack_report_sync(codec);
--			break;
--		default:
--			break;
--		}
--	}
--}
--
- static int ca0132_init(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-@@ -4599,8 +4589,6 @@ static struct hda_codec_ops ca0132_patch_ops = {
- 	.unsol_event = ca0132_unsol_event,
- };
- 
--
--
- static int patch_ca0132(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec;
+ static void ca0132_exit_chip(struct hda_codec *codec)
 -- 
 1.7.4.1
