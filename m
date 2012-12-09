@@ -1,16 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/25] ASoC: remove __dev* attributes for
- retirement of HOTPLUG
-Date: Mon, 10 Dec 2012 00:30:26 +0900
-Message-ID: <20121209153025.GG6511@opensource.wolfsonmicro.com>
-References: <1354890397-28568-1-git-send-email-wfp5p@virginia.edu>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: what is period_size, buffer_size and boundary size,
+ i confuse them
+Date: Sun, 09 Dec 2012 17:22:27 +0100
+Message-ID: <50C4BAC3.4030300@ladisch.de>
+References: <65bdafa4.4e24.13b8019be47.Coremail.l9jj@163.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5179564572817967647=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38515262617
- for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2012 16:30:37 +0100 (CET)
-In-Reply-To: <1354890397-28568-1-git-send-email-wfp5p@virginia.edu>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 931D2264F15
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2012 17:22:53 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.mail.srv.osa [10.202.2.41])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id B1C952085B
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2012 11:22:52 -0500 (EST)
+Received: from [192.168.42.150] (unknown [46.115.75.160])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 2339C8E0115
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2012 11:22:51 -0500 (EST)
+In-Reply-To: <65bdafa4.4e24.13b8019be47.Coremail.l9jj@163.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bill Pemberton <wfp5p@virginia.edu>
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, lrg@ti.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+l9jj wrote:
+> can anyone help me to figure out  the concepts between period_size ,buffer_size and boundary size?
+> n * period_size = buffer_size?
 
---===============5179564572817967647==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wLAMOaPNJ0fu1fTG"
-Content-Disposition: inline
+Yes.  On many devices, n is not required to be an integer.
 
+> m * buffer_size = boundary_size?
 
---wLAMOaPNJ0fu1fTG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, where m is very big.  In applications, the actual value of the boundary
+size does not matter (except as a special value for some sw params).
 
-On Fri, Dec 07, 2012 at 09:26:12AM -0500, Bill Pemberton wrote:
-> Remove use of __devinit, __devexit_p, __devinitdata, __devinitconst,
-> and __devexit so that HOTPLUG can be retired.
+> and how the dma buffer mapped to the alsa buffer?
 
-Applied all, thanks.
-
---wLAMOaPNJ0fu1fTG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQxK6GAAoJELSic+t+oim9xg4P/3pCLjmImUcmrWl2+4TLkBJ/
-N3Z2C9ljzcHLpU5ZX4qScB7/wrfLzfDJbIKmxFFKltewRk74KW1vaGS8qLcD1i9X
-OCyspr0caIh60XqC0o3i+zKZLFgWmw/pAPEW5mkbIRSOY3LPMzH73v/FtXUII7of
-dttb7jV/pZPquCFRZ3xQUj80DsxXmHPMtmd6OT8zIRq6IpGqPSMrhAKqGCrH2T94
-4e6UzBNZtFbHk3s3un+EUfOdKNoIEDqPKED7Pu18lEDt3BbklmZVVjaG7AMpDUhR
-O4OJM2/DDjJsj4FLHjIPf3pKRYZzAIxmhv9AfATtqCuLfqhA6Pp/fZIIWuNNRB46
-vhEkCDROtyF43Qmq40FHVr78i/mX6Qt4ceUs3EkNt8Mi/bf4RrXkppt6xn2ytdnm
-fL4223Y+yXY5R9Ax0S5kZlyC7ldfg/ruO/eO3fCuvhWKD3yiCT7WoS10TNamONSW
-XKXegxuVy73ZoP+ciHFlcqLrHx+XHZGPqNEeFAGDrfcGZVBX8QN67s7WGzgvEp9D
-Zn6jLfqfBrRtevw9/6Z9ukNHXhjYKMKu0NmW6YvkKgAIbpGSA1eG5qRi+ZS3LcFs
-nqaCHOcTOkLaD+tVdobkRfpOH7+TWhhl7RnO+VsYkvYTHoy/IvjdsfyFW1bXbC+n
-Li2d23PUCj/KuBxd2AhO
-=qR8z
------END PGP SIGNATURE-----
-
---wLAMOaPNJ0fu1fTG--
-
---===============5179564572817967647==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The DMA buffer _is_ the ALSA buffer.
 
 
---===============5179564572817967647==--
+Regards,
+Clemens
