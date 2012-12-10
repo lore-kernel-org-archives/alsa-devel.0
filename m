@@ -1,31 +1,77 @@
-From: l9jj@163.com
-Subject: is it a memory bug?
-Date: Mon, 10 Dec 2012 17:41:20 +0800 (GMT+08:00)
-Message-ID: <212adfc0.5b1.13b8430ad3b.Coremail.l9jj@163.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH] ASoC: atmel-ssc: make it buildable on other architectures
+Date: Mon, 10 Dec 2012 17:53:07 +0800
+Message-ID: <50C5B103.2050508@atmel.com>
+References: <1354970801-9185-1-git-send-email-manabian@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m13-238.163.com (m13-238.163.com [220.181.13.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 082D026169D
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2012 10:41:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1354970801-9185-1-git-send-email-manabian@gmail.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Joachim Eastwood <manabian@gmail.com>
+Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-cHJvamVjdDogYWxzYS1saWItMS4wLjI1CmZpbGU6ICAgICAgZGxtaXNjLmMKZnVuY3Rpb246IHNu
-ZF9kbHN5bV92ZXJpZnkoKQpkZXNjcmlwdGlvbjoKdGhlIHBvaW50ZXIgdm5hbWUgaG9sZCBhIG1l
-bW9yeSB1bnRpbCBleGl0IHRoZSBmdW5jdGlvbiB3aXRob3V0IHJlbGVhc2UuanVzdCBjYWxsIGFs
-bG9jYSgpIHdpdGhvdXQgZnJlZSgp77yfCgpsOWpqQDE2My5jb20KCiDigJTigJTnvZHmmJPpgq7n
-rrHmiYvmnLrlrqLmiLfnq6/igJTigJQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Hi Joachim Eastwood,
+
+On 12/8/2012 20:46, Joachim Eastwood wrote:
+> Not very useful on non AT91/AVR32 platforms but it provides
+> more build coverage and prepares for ARM multiplatform.
+>
+> Also fixes a truncated warning that would come when
+> building on a 64-bit arch.
+>
+> Signed-off-by: Joachim Eastwood <manabian@gmail.com>
+> ---
+>
+> Hi Mark,
+>
+> Sending it to you since seem like you're the last one who
+> commited changes to the driver and the driver is mostly
+> used on ASoC.
+>
+> Tested on RM9200 and build tested on x86_64.
+>
+> regards
+> Joachim Eastwood
+>
+>   drivers/misc/Kconfig     | 2 +-
+>   drivers/misc/atmel-ssc.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index b151b7c..8f59d88 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -192,7 +192,7 @@ config ICS932S401
+>
+>   config ATMEL_SSC
+>   	tristate "Device driver for Atmel SSC peripheral"
+> -	depends on AVR32 || ARCH_AT91
+> +	depends on HAS_IOMEM
+>   	---help---
+>   	  This option enables device driver support for Atmel Synchronized
+>   	  Serial Communication peripheral (SSC).
+> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+> index 158da5a..0cee274 100644
+> --- a/drivers/misc/atmel-ssc.c
+> +++ b/drivers/misc/atmel-ssc.c
+> @@ -167,7 +167,7 @@ static int ssc_probe(struct platform_device *pdev)
+>
+>   	/* disable all interrupts */
+>   	clk_enable(ssc->clk);
+> -	ssc_writel(ssc->regs, IDR, ~0UL);
+> +	ssc_writel(ssc->regs, IDR, -1);
+
+I don't meet building warning on x86_64 machine. So, would you please 
+explain more why need change this?
+
+Best Regards,
+Bo Shen
+
+>   	ssc_readl(ssc->regs, SR);
+>   	clk_disable(ssc->clk);
+>
+>
+
