@@ -1,15 +1,20 @@
-From: Wang Xingchao <wangxingchao2011@gmail.com>
-Subject: [PATCH] ALSA - Replace msleep() with usleep_range() to
-	save module loading time
-Date: Mon, 10 Dec 2012 14:20:32 +0800
-Message-ID: <1355120432-9840-1-git-send-email-wangxingchao2011@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] sound/soc/soc-core.c: drop kfree of
+ devm_kzalloc's data
+Date: Mon, 10 Dec 2012 16:09:28 +0900
+Message-ID: <20121210070927.GK10927@opensource.wolfsonmicro.com>
+References: <1354989680-25794-1-git-send-email-Julia.Lawall@lip6.fr>
+ <20121210052334.GI10927@opensource.wolfsonmicro.com>
+ <alpine.DEB.2.02.1212100709450.2213@localhost6.localdomain6>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5488A265150
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2012 07:39:20 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 358D52602AE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2012 08:09:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.02.1212100709450.2213@localhost6.localdomain6>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: mengdong.lin@intel.com, Wang Xingchao <wangxingchao2011@gmail.com>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, matthias@kaehlcke.net, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-msleep(1) is not so accurate and may cause almost 15ms delay in azx_reset().
-usleep_range() can reduce ~30ms loading time for Intel Haswell which has two HDA
-controllers.
+On Mon, Dec 10, 2012 at 07:10:16AM +0100, Julia Lawall wrote:
 
-Signed-off-by: Wang Xingchao <wangxingchao2011@gmail.com>
----
- sound/pci/hda/hda_intel.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Sorry, I just resent the patch as is.  1 and 2 were I guess applied,
+> because I odn't findthe problem any more.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index eb48109..865df90 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1075,22 +1075,22 @@ static int azx_reset(struct azx *chip, int full_reset)
- 
- 	count = 50;
- 	while (azx_readb(chip, GCTL) && --count)
--		msleep(1);
-+		usleep_range(1000, 1500);
- 
- 	/* delay for >= 100us for codec PLL to settle per spec
- 	 * Rev 0.9 section 5.5.1
- 	 */
--	msleep(1);
-+	usleep_range(1000, 1500);
- 
- 	/* Bring controller out of reset */
- 	azx_writeb(chip, GCTL, azx_readb(chip, GCTL) | ICH6_GCTL_RESET);
- 
- 	count = 50;
- 	while (!azx_readb(chip, GCTL) && --count)
--		msleep(1);
-+		usleep_range(1000, 1500);
- 
- 	/* Brent Chartrand said to wait >= 540us for codecs to initialize */
--	msleep(1);
-+	usleep_range(1000, 1500);
- 
-       __skip:
- 	/* check to see if controller is ready */
--- 
-1.7.9.5
+It looks like this is what happened the first time round as well - I
+only got patch 3 but it was flagged as part of a three patch series.
+Please don't do things like this, it makes the patch look like part of a
+series which has already been applied but didn't get deleted when it's
+sitting in an inbox.
