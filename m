@@ -1,15 +1,14 @@
 From: Denis Washington <denisw@online.de>
-Subject: [PATCH 0/2] Make ASUS Xonar U3 S/PDIF channel
-	accessible
-Date: Tue, 11 Dec 2012 11:37:26 +0100
-Message-ID: <50C70CE6.4070606@online.de>
+Subject: [PATCH 1/2] Enable S/PDIF on the ASUS Xonar U3
+Date: Tue, 11 Dec 2012 11:38:32 +0100
+Message-ID: <50C70D28.70804@online.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1171889357136353831=="
+Content-Type: multipart/mixed; boundary="===============7907389391594717774=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
  [212.227.126.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 3019B260309
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 11:37:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 94C332602F4
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 11:38:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +23,45 @@ List-Id: alsa-devel@alsa-project.org
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---===============1171889357136353831==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010508040602030206040705"
+--===============7907389391594717774==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010005090702060907060605"
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---------------ms010508040602030206040705
+--------------ms010005090702060907060605
 Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+The only required change is to extend the existing Xonar U1
+mixer quirks to the U3, which seems to be controlled the same
+way.
+---
+  sound/usb/mixer_quirks.c | 5 +++--
+  1 file changed, 3 insertions(+), 2 deletions(-)
 
-This is my first ALSA patch ever (in fact, also my first kernel patch=20
-and my first e-mail to this mailing list); as such, I'm sorry when I did =
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ae2b714..2223089 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1107,8 +1107,9 @@ int snd_usb_mixer_apply_create_quirk(struct=20
+usb_mixer_interface *mixer)
+  		err =3D snd_ftu_create_mixer(mixer);
+  		break;
 
-something wrong and/or didn't follow the procedure properly. I hope you=20
-can forgive me.
+-	case USB_ID(0x0b05, 0x1739):
+-	case USB_ID(0x0b05, 0x1743):
++	case USB_ID(0x0b05, 0x1739): /* ASUS Xonar U1 */
++	case USB_ID(0x0b05, 0x1743): /* ASUS Xonar U1 (2) */
++	case USB_ID(0x0b05, 0x17a0): /* ASUS Xonar U3 */
+  		err =3D snd_xonar_u1_controls_create(mixer);
+  		break;
 
-I recently bought an ASUS Xonar U3 USB audio card. It general it works=20
-well with Linux, but unfortunately, it's PCM output channel is unusable=20
-for headphones because it allows virtually no volume control (maximum=20
-loudness is already reach at a volume level of 2 or 3). The card does=20
-also have a digital (S/PDIF) output channel, which however isn't=20
-switched on by the Linux USB audio driver:
-
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg28970.html=
-
-
-When I boot into Windows (where the ASUS driver seemingly enables the=20
-channel) and then reboot into Linux, I can use this channel and control=20
-volume as expected. It's just this turning on of S/PDIF which is=20
-missing, as suggested by the alsa-user thread linked to above.
-
-The patchset that follows enables S/PDIF on the Xonar U3 by using the=20
-(seemingly compatible) mixer quirks code as for the U1, just as done and =
-
-tested by the initiator of the alsa-user thread, together with a very=20
-minor cleanup (renaming internal xonar_u1_* identifiers to just=20
-xonar_u_*). The change seems to work well (tested with the 3.7.0 Ubuntu=20
-kernel as found in today' daily version).
-
-Regard,
-Denis Washington
+--=20
+1.8.0
 
 
---------------ms010508040602030206040705
+
+--------------ms010005090702060907060605
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -142,7 +135,7 @@ A90wggPZAgEBMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwO5WTAJ
 BgUrDgMCGgUAoIICHTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
-Fw0xMjEyMTExMDM3MjZaMCMGCSqGSIb3DQEJBDEWBBSxEoZRDasJ/12dU8GMOTac8Kb7ZzBs
+Fw0xMjEyMTExMDM4MzJaMCMGCSqGSIb3DQEJBDEWBBQXMC5nT6FmVLxqqVZ6fsEKJJvfDjBs
 BgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcw
 DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
 MIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENv
@@ -151,19 +144,19 @@ NgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBD
 QQIDA7lZMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
 DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
 Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
-Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAPGV4NcNkuQgWpnQY82pB/TZ2RVBW
-EzbhFB36ApJTPjMI9Sn+kEPAWdYcFOJo97i0mEi5A+MFOK3X9fg0VWRidzAcE9e8IabxJEp9
-c/9cxF6UoXDHOfoQ4OSu7knxiYTpOXHU89MFekCM3tDPrH0nXl8uTgT8YrA/cRoTSTltCYiW
-DvTD3m718StUQa+JdXGtSwgknXQ/j/IMUVQ3d7OCSzw0F/6HZI/3WoS4t7dQIhs/WiiI1qQ/
-i1E4pUEfx1SXkSEscIyQmX/+UmgS7r5flHpfTOFRetgs+Tmlw4klvO1q6kIW0Zdfk3rnRlBR
-u5l0AzMeKrMgszhFv3HmOptbAAAAAAAAAA==
---------------ms010508040602030206040705--
+Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAGQyKpj/cSoATCSb2s+jWoYdV3+cB
+bOqGBgb/lc8S5NU3LYcW4uCPUXyzL/ckwLyu3dj/bcnCPABPeuX26iIJblbRyGjLH6F15uKF
+t4hfewU6AHxCaevzo0GYLl9wGDqErbzEGN/kki35010PHYBHRgSm1Dl+RNU803jnb2nG3d+g
+ZP96emFnwj5IC6X0SgkQnUCV5ulojGVUhXklpzSVi5a7Z089oyfOsiGGGyC/6uMl8Ls4dJYV
+PDFYCaeJbvgzO92vpZKsO59xFny+0DWSEOBVUpETiZgY7dtfbneVPfWjfqxZxx3aQZWS1NfB
+m4KpezH04o0KZoUKri44+oyeIAAAAAAAAA==
+--------------ms010005090702060907060605--
 
---===============1171889357136353831==
+--===============7907389391594717774==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1171889357136353831==--
+--===============7907389391594717774==--
