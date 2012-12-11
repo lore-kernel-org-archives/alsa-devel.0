@@ -1,14 +1,17 @@
-From: Denis Washington <denisw@online.de>
-Subject: [PATCH 2/2] Rename internal xonar_u1_* names to just
-	xonar_u_*
-Date: Tue, 11 Dec 2012 19:26:42 +0100
-Message-ID: <50C77AE2.8000001@online.de>
+From: Florian Beginn <the.lexxis@gmail.com>
+Subject: Denon DN-X 1600 Support
+Date: Tue, 11 Dec 2012 19:54:58 +0100
+Message-ID: <CAFwW9qdUA54LS135_+=u6WX=o2XNaeVwPqZE0bE_WkPQGbW3Mg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1088902223027115855=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 079BC261613
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 19:26:44 +0100 (CET)
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEA812615D8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 19:54:58 +0100 (CET)
+Received: by mail-la0-f51.google.com with SMTP id e4so2988462lag.38
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 10:54:58 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,222 +24,593 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
+Hello,
 
---===============1088902223027115855==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080307080409030702000006"
+i just made my first steps fiddling with the alsa-driver and got my
+DN-X 1600 working. It's a dj-mixer connected via usb, offering 8
+channel input/output and midi. Samplerate can be set to either 44.1,
+48 or 96khz. It seems to not answer properly on samplerate requests
+from snd_usb_ctl_msg() so i hardcoded it to 96khz. Regrettably, this
+is a pretty ugly workaround and somehow broke midi capability,
+although audio is running fine.
+I'd be happy if one of you could help me work out how to do this right/better.
 
-Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
+Find attached the patches and all information i could gather.
 
---------------ms080307080409030702000006
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: quoted-printable
+P.S. I'm not used to git (well, any VCS) and hope the diff format is ok for you.
 
-Now that the code applies both to the U1 and the U3,
-xonar_u1 is not a good name anymore.
+--- a/sound/usb/clock.c	2012-01-25 08:56:49.000000000 +0100
++++ b/sound/usb/clock.c	2012-12-11 17:33:47.685196544 +0100
+@@ -255,6 +255,14 @@
+ 	int err, crate;
+ 	int clock = snd_usb_clock_find_source(chip, fmt->clock);
 
-Signed-off-by: Denis Washington <denisw@online.de>
----
-   sound/usb/mixer.h        |  2 +-
-   sound/usb/mixer_quirks.c | 24 ++++++++++++------------
-   2 files changed, 13 insertions(+), 13 deletions(-)
++	/*
++	* Denon DN-X 1600 won't respond when asked for samplerate.
++	* Currently hardcoded to only work with 96khz
++	*/
++
++	if (chip->usb_id == USB_ID(0x154e, 0x500e) && rate == 96000)
++		return 0;
++		
+ 	if (clock < 0)
+ 		return clock;
 
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index a7f3d45..9e7ec0e 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -22,7 +22,7 @@ struct usb_mixer_interface {
-   	u8 rc_buffer[6];
 
-   	u8 audigy2nx_leds[3];
--	u8 xonar_u1_status;
-+	u8 xonar_u_status;
-   };
+--- a/sound/usb/format.c	2012-12-07 17:11:00.000000000 +0100
++++ b/sound/usb/format.c	2012-12-11 17:42:14.069181583 +0100
+@@ -281,6 +281,21 @@
+ 	int nr_triplets, data_size, ret = 0;
+ 	int clock = snd_usb_clock_find_source(chip, fp->clock);
 
-   #define MAX_CHANNELS	16	/* max logical channels */
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 2223089..de6db70 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -416,23 +416,23 @@ static void snd_audigy2nx_proc_read(struct=20
-snd_info_entry *entry,
-   	}
-   }
++	/*
++	* Denon DN-X 1600 won't respond when asked for samplerate.
++	* Currently hardcoded to only work with 96khz
++	*/
++	if (chip->usb_id == USB_ID(0x154e, 0x500e))
++	{
++		fp->nr_rates = 1;
++		fp->rate_min = 96000;
++		fp->rate_max = 96000;
++		fp->rates = SNDRV_PCM_RATE_96000;
++		fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
++		fp->rate_table[0] = 96000;
++		return 0;
++	}
++
+ 	if (clock < 0) {
+ 		snd_printk(KERN_ERR "%s(): unable to find clock source (clock %d)\n",
+ 				__func__, clock);
 
--static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
-+static int snd_xonar_u_switch_get(struct snd_kcontrol *kcontrol,
-   				   struct snd_ctl_elem_value *ucontrol)
-   {
-   	struct usb_mixer_interface *mixer =3D snd_kcontrol_chip(kcontrol);
 
--	ucontrol->value.integer.value[0] =3D !!(mixer->xonar_u1_status & 0x02);=
+--- a/sound/usb/pcm.c	2012-01-25 08:56:49.000000000 +0100
++++ b/sound/usb/pcm.c	2012-12-11 17:57:11.579301294 +0100
+@@ -198,6 +198,13 @@
+ 	if (!(fmt->attributes & UAC_EP_CS_ATTR_PITCH_CONTROL))
+ 		return 0;
 
-+	ucontrol->value.integer.value[0] =3D !!(mixer->xonar_u_status & 0x02);
-   	return 0;
-   }
-
--static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
-+static int snd_xonar_u_switch_put(struct snd_kcontrol *kcontrol,
-   				   struct snd_ctl_elem_value *ucontrol)
-   {
-   	struct usb_mixer_interface *mixer =3D snd_kcontrol_chip(kcontrol);
-   	u8 old_status, new_status;
-   	int err, changed;
-
--	old_status =3D mixer->xonar_u1_status;
-+	old_status =3D mixer->xonar_u_status;
-   	if (ucontrol->value.integer.value[0])
-   		new_status =3D old_status | 0x02;
-   	else
-@@ -449,27 +449,27 @@ static int snd_xonar_u1_switch_put(struct=20
-snd_kcontrol *kcontrol,
-   	up_read(&mixer->chip->shutdown_rwsem);
-   	if (err < 0)
-   		return err;
--	mixer->xonar_u1_status =3D new_status;
-+	mixer->xonar_u_status =3D new_status;
-   	return changed;
-   }
-
--static struct snd_kcontrol_new snd_xonar_u1_output_switch =3D {
-+static struct snd_kcontrol_new snd_xonar_u_output_switch =3D {
-   	.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,
-   	.name =3D "Digital Playback Switch",
-   	.info =3D snd_ctl_boolean_mono_info,
--	.get =3D snd_xonar_u1_switch_get,
--	.put =3D snd_xonar_u1_switch_put,
-+	.get =3D snd_xonar_u_switch_get,
-+	.put =3D snd_xonar_u_switch_put,
-   };
-
--static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixe=
-r)
-+static int snd_xonar_u_controls_create(struct usb_mixer_interface *mixer=
-)
-   {
-   	int err;
-
-   	err =3D snd_ctl_add(mixer->chip->card,
--			  snd_ctl_new1(&snd_xonar_u1_output_switch, mixer));
-+			  snd_ctl_new1(&snd_xonar_u_output_switch, mixer));
-   	if (err < 0)
-   		return err;
--	mixer->xonar_u1_status =3D 0x05;
-+	mixer->xonar_u_status =3D 0x05;
-   	return 0;
-   }
-
-@@ -1110,7 +1110,7 @@ int snd_usb_mixer_apply_create_quirk(struct=20
-usb_mixer_interface *mixer)
-   	case USB_ID(0x0b05, 0x1739): /* ASUS Xonar U1 */
-   	case USB_ID(0x0b05, 0x1743): /* ASUS Xonar U1 (2) */
-   	case USB_ID(0x0b05, 0x17a0): /* ASUS Xonar U3 */
--		err =3D snd_xonar_u1_controls_create(mixer);
-+		err =3D snd_xonar_u_controls_create(mixer);
-   		break;
-
-   	case USB_ID(0x17cc, 0x1011): /* Traktor Audio 6 */
---=20
-1.8.0
++	/*
++	* Denon DN-X 1600 doesn't properly handle this -> bail out, too
++	*/
++
++	if (chip->usb_id == USB_ID(0x154e, 0x500e))
++		return 0;
++
+ 	switch (altsd->bInterfaceProtocol) {
+ 	case UAC_VERSION_1:
+ 	default:
 
 
 
---------------ms080307080409030702000006
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Kryptografische Unterschrift
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIINSjCC
-BjQwggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
-DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
-MTAyNDIxMDE1NVoXDTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
-dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
-aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
-aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOr
-lr6KMoOMpohBllVHrdRvEg/q6r8jR+EK75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSM
-zR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6
-qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxDz2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSD
-kOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr/+N2JLKutIxMYqQOJebr/f/h5t95
-m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
-Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFcfH6WNU7y1LhRgjAfBgNV
-HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
-MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
-dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
-c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
-d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqD
-CH14qywGXLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy
-6QMVQjbbMXltUfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPI
-zKKR9tQW8gGK+2+RHxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKf
-KSETEPrHh7p5shuuNktvsv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HOR
-z9v3vQwR4e3ksLc2JZOAFK+ssS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9
-sIPP7ON0fz095HdThKjiVJe6vofq+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCie
-uoBJ9OlqmsVWQvifIYf40dJPZkk9YgGTzWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7t
-w1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGqUp/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQ
-G2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb19mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t
-5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHDjCCBfagAwIBAgIDA7lZMA0GCSqGSIb3DQEB
-BQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMi
-U2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20g
-Q2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcNMTIwMjE0MTAwNTA4
-WhcNMTMwMjE0MTgzOTI3WjBXMRkwFwYDVQQNExBMNmdGeFExWHdaeXRGN1lxMRkwFwYDVQQD
-DBBkZW5pc3dAb25saW5lLmRlMR8wHQYJKoZIhvcNAQkBFhBkZW5pc3dAb25saW5lLmRlMIIB
-IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmAhzvlayB5uCi6VNrgC7OFelwcFCpjY6
-1TV+7tW4Ty/UaO3GGGxT9VHvKTwrM26zR2yn0HGGeHPmEAjOYykM7ECdm9ngsEYgHeD6bFoU
-nmTe++7hFFYpt45WBvRK3nNXwUWOCsNbdk8xJ3zKYg33dAC1ElgxDa7LVUbsUQs2KZs7POsN
-eglKYbwJ+pf7KJDtUi03I+uePDD1tyL4V79kuJuWn+TDCt8aNRPrcnCm0upeo4zKIGbjRyg3
-6dt8/f0Z0j0B1tCsxW+tJNYAuNW1wcd+uFtnK7naqE0H0yKWrWMKDoEH1kEBRXmqOyZh0z6A
-MckT1d9koDI17rM8EWUsqwIDAQABo4IDqzCCA6cwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAw
-HQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTpR41raZ+/vaajVNrE
-9QzD1rGCUDAfBgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAbBgNVHREEFDASgRBk
-ZW5pc3dAb25saW5lLmRlMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8w
-LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
-BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsG
-AQUFBwICMIHqMCcWIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5U
-aGlzIGNlcnRpZmljYXRlIHdhcyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZh
-bGlkYXRpb24gcmVxdWlyZW1lbnRzIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlh
-bmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhl
-IHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGcBggrBgEFBQcCAjCBjzAnFiBTdGFydENv
-bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRMaWFiaWxpdHkgYW5kIHdhcnJhbnRp
-ZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBhbmQgTGltaXRhdGlvbnMiIG9m
-IHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwu
-c3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUH
-MAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVudC9jYTBCBggr
-BgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNzMS5jbGll
-bnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkqhkiG
-9w0BAQUFAAOCAQEAq7F/lnxjk1g3NoypFR6OPukxeatCRGwayef2zSqZUDD2rR+zImknVpwE
-Xu9q17bxfsb/TtP2ZP+eBh+8L8IBml78Twnn7pIUW8MHazbqNOz+bVgyxZRnMjQGKpy+P74T
-dIm38z5aqQSL2tOpAQHxA0kBZFMF/5egW92oCkg66MA9zoz2ZVU342/E4Lt/CMYUfHeU4y6Y
-4pR/qcMfu2zmeGi6kC/hHKDcB6ZAksl74GxkeGZIDpYbvzD6uvgCIJm/mjFFIJJGLG9MNezG
-uWDLLpjsMbShkmJ3DjHMarrrEJzqcY3hwEL5ZkSpCYDs2DJEQGlglOvUeoZ7BnJ10Muj8jGC
-A90wggPZAgEBMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
-U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwO5WTAJ
-BgUrDgMCGgUAoIICHTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
-Fw0xMjEyMTExODI2NDJaMCMGCSqGSIb3DQEJBDEWBBTqlu1tWDd2JfQlMjLpw3jF/XmZSDBs
-BgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcw
-DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
-MIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENv
-bSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgw
-NgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBD
-QQIDA7lZMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
-DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
-Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAZXB04MoYwuG+h9KsAX+urjtN0Hhs
-smRKwZKbiqqQoDKE2DKx0ZBUb1fiOw2QquWNCWfsq5s3QSXbGOmvw/P3T000UZY6Rs/XSfeQ
-5/ea7l3ubUdMttl3GkTzqPAQeBBCVAcQGUresiHkPVlt/nm/CqoTEMHVRFUWVyZqzPHa6zoJ
-RYExZFiaxUIlwszkyrEXlqMl209Q8ZnCvLUNZ8rjROhCf0HVIAHSqika8rnMORNEFkq9Z8pU
-1L7At/+82x0D+TKOJb1w6ge20uwZt9ODy/c2fXMBoOyNd2g+iSpfFXcopanhSzhngfxrN9VZ
-csdSGY1X9tMtsP5I5Mx9suC0dgAAAAAAAA==
---------------ms080307080409030702000006--
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.25.
 
---===============1088902223027115855==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+lsusb
+(...)
+Bus 002 Device 003: ID 154e:500e D&M Holdings, Inc. (Denon/Marantz)
 
+lsusb -t
+(...)
+/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=ehci_hcd/2p, 480M
+    |__ Port 1: Dev 2, If 0, Class=hub, Driver=hub/6p, 480M
+        |__ Port 2: Dev 3, If 0, Class=audio, Driver=snd-usb-audio, 480M
+        |__ Port 2: Dev 3, If 1, Class=audio, Driver=snd-usb-audio, 480M
+        |__ Port 2: Dev 3, If 2, Class=audio, Driver=snd-usb-audio, 480M
+        |__ Port 2: Dev 3, If 3, Class=audio, Driver=snd-usb-audio, 480M
+        |__ Port 2: Dev 3, If 4, Class=audio, Driver=snd-usb-audio, 480M
+        |__ Port 2: Dev 3, If 5, Class=HID, Driver=usbhid, 480M
+(...)
 
---===============1088902223027115855==--
+lsusb -v
+(...)
+Bus 002 Device 003: ID 154e:500e D&M Holdings, Inc. (Denon/Marantz)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass          239 Miscellaneous Device
+  bDeviceSubClass         2 ?
+  bDeviceProtocol         1 Interface Association
+  bMaxPacketSize0        64
+  idVendor           0x154e D&M Holdings, Inc. (Denon/Marantz)
+  idProduct          0x500e
+  bcdDevice            0.01
+  iManufacturer           1
+  iProduct                2
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          385
+    bNumInterfaces          6
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xc0
+      Self Powered
+    MaxPower                0mA
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         0
+      bInterfaceCount         3
+      bFunctionClass        255 Vendor Specific Class
+      bFunctionSubClass       0
+      bFunctionProtocol      32
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol     32
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               2.00
+        bCategory               0
+        wTotalLength           92
+        bmControl            0x01
+          Latency control Control (read-only)
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bCSourceID              7
+        bNrChannels             8
+        bmChannelConfig   0x000000ff
+          Front Left (FL)
+          Front Right (FR)
+          Front Center (FC)
+          Low Frequency Effects (LFE)
+          Back Left (BL)
+          Back Right (BR)
+          Front Left of Center (FLC)
+          Front Right of Center (FRC)
+        bmControls    0x0555
+          Copy Protect Control (read-only)
+          Connector Control (read-only)
+          Overload Control (read-only)
+          Cluster Control (read-only)
+          Underflow Control (read-only)
+          Overflow Control (read-only)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             2
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID               1
+        bCSourceID              7
+        bmControls         0x0155
+          Copy Protect Control (read-only)
+          Connector Control (read-only)
+          Overload Control (read-only)
+          Underflow Control (read-only)
+          Overflow Control (read-only)
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             3
+        wTerminalType      0x0201 Microphone
+        bAssocTerminal          0
+        bCSourceID              7
+        bNrChannels             8
+        bmChannelConfig   0x000000ff
+          Front Left (FL)
+          Front Right (FR)
+          Front Center (FC)
+          Low Frequency Effects (LFE)
+          Back Left (BL)
+          Back Right (BR)
+          Front Left of Center (FLC)
+          Front Right of Center (FRC)
+        bmControls    0x0555
+          Copy Protect Control (read-only)
+          Connector Control (read-only)
+          Overload Control (read-only)
+          Cluster Control (read-only)
+          Underflow Control (read-only)
+          Overflow Control (read-only)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             4
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bSourceID               3
+        bCSourceID              7
+        bmControls         0x0155
+          Copy Protect Control (read-only)
+          Connector Control (read-only)
+          Overload Control (read-only)
+          Underflow Control (read-only)
+          Overflow Control (read-only)
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                 8
+        bDescriptorType        36
+        bDescriptorSubtype     10 (CLOCK_SOURCE)
+        bClockID                5
+        bmAttributes         0x02 Internal variable Clock
+        bmControls           0x03
+          Clock Frequency Control (read/write)
+        bAssocTerminal          0
+        iClockSource            0
+      AudioControl Interface Descriptor:
+        bLength                 8
+        bDescriptorType        36
+        bDescriptorSubtype     10 (CLOCK_SOURCE)
+        bClockID                6
+        bmAttributes         0x02 Internal variable Clock
+        bmControls           0x03
+          Clock Frequency Control (read/write)
+        bAssocTerminal          0
+        iClockSource            0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype     11 (CLOCK_SELECTOR)
+        bUnitID                 7
+        bNrInPins               2
+        baCSourceID( 0)         5
+        baCSourceID( 1)         6
+        bmControls           0x01
+          Clock Selector Control (read-only)
+        iClockSelector          0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol     32
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol     32
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                16
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bmControls           0x05
+          Active Alternate Setting Control (read-only)
+          Valid Alternate Setting Control (read-only)
+        bFormatType             1
+        bmFormats               1
+          PCM
+        bNrChannels             8
+        bmChannelConfig   0x000000ff
+          Front Left (FL)
+          Front Right (FR)
+          Front Center (FC)
+          Low Frequency Effects (LFE)
+          Back Left (BL)
+          Back Right (BR)
+          Front Left of Center (FLC)
+          Front Right of Center (FRC)
+        iChannelNames           0
+      AudioStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bSubslotSize            3
+        bBitResolution         24
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0138  1x 312 bytes
+        bInterval               1
+        AudioControl Endpoint Descriptor:
+          bLength                 8
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bmControls           0x15
+          Pitch Control (read-only)
+          Data Overrun Control (read-only)
+          Data Underrun Control (read-only)
+          bLockDelayUnits         1 Milliseconds
+          wLockDelay              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol     32
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol     32
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                16
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           4
+        bmControls           0x05
+          Active Alternate Setting Control (read-only)
+          Valid Alternate Setting Control (read-only)
+        bFormatType             1
+        bmFormats               1
+          PCM
+        bNrChannels             8
+        bmChannelConfig   0x000000ff
+          Front Left (FL)
+          Front Right (FR)
+          Front Center (FC)
+          Low Frequency Effects (LFE)
+          Back Left (BL)
+          Back Right (BR)
+          Front Left of Center (FLC)
+          Front Right of Center (FRC)
+        iChannelNames           0
+      AudioStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bSubslotSize            3
+        bBitResolution         24
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x85  EP 5 IN
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0138  1x 312 bytes
+        bInterval               1
+        AudioControl Endpoint Descriptor:
+          bLength                 8
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bmControls           0x15
+          Pitch Control (read-only)
+          Data Overrun Control (read-only)
+          Data Underrun Control (read-only)
+          bLockDelayUnits         1 Milliseconds
+          wLockDelay              0
+    Interface Association:
+      bLength                 8
+      bDescriptorType        11
+      bFirstInterface         3
+      bInterfaceCount         2
+      bFunctionClass          1 Audio
+      bFunctionSubClass       0
+      bFunctionProtocol       0
+      iFunction               0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength            9
+        bInCollection           1
+        baInterfaceNr( 0)       4
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        4
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      3 MIDI Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      MIDIStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           97
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               1 Embedded
+        bJackID                 1
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               1 Embedded
+        bJackID                17
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               2 External
+        bJackID                 2
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 6
+        bDescriptorType        36
+        bDescriptorSubtype      2 (MIDI_IN_JACK)
+        bJackType               2 External
+        bJackID                18
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               1 Embedded
+        bJackID                 3
+        bNrInputPins            1
+        baSourceID( 0)          2
+        BaSourcePin( 0)         1
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               1 Embedded
+        bJackID                19
+        bNrInputPins            1
+        baSourceID( 0)         18
+        BaSourcePin( 0)         1
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               2 External
+        bJackID                 4
+        bNrInputPins            1
+        baSourceID( 0)          1
+        BaSourcePin( 0)         1
+        iJack                   0
+      MIDIStreaming Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (MIDI_OUT_JACK)
+        bJackType               2 External
+        bJackID                20
+        bNrInputPins            1
+        baSourceID( 0)         17
+        BaSourcePin( 0)         1
+        iJack                   0
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+        MIDIStreaming Endpoint Descriptor:
+          bLength                 6
+          bDescriptorType        37
+          bDescriptorSubtype      1 (GENERAL)
+          bNumEmbMIDIJack         2
+          baAssocJackID( 0)       1
+          baAssocJackID( 1)      17
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+        bRefresh                0
+        bSynchAddress           0
+        MIDIStreaming Endpoint Descriptor:
+          bLength                 6
+          bDescriptorType        37
+          bDescriptorSubtype      1 (GENERAL)
+          bNumEmbMIDIJack         2
+          baAssocJackID( 0)       3
+          baAssocJackID( 1)      19
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        5
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         3 Human Interface Device
+      bInterfaceSubClass      0 No Subclass
+      bInterfaceProtocol      0 None
+      iInterface              0
+        HID Device Descriptor:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.11
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 Report
+          wDescriptorLength      34
+         Report Descriptors:
+           ** UNAVAILABLE **
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0020  1x 32 bytes
+        bInterval               1
