@@ -1,18 +1,15 @@
-From: isaac smith <hunternet93@gmail.com>
-Subject: ALSA sound/usb/mixer.c:415 cannot get current value
- for control 2 ch 1: err = -22
-Date: Mon, 10 Dec 2012 22:39:15 -0600
-Message-ID: <CAFR7B-09W6x_fDLpnYNXY8xe6frnHAK-82rd8uPz1U9zF4ZY9w@mail.gmail.com>
+From: Denis Washington <denisw@online.de>
+Subject: [PATCH 0/2] Make ASUS Xonar U3 S/PDIF channel
+	accessible
+Date: Tue, 11 Dec 2012 11:37:26 +0100
+Message-ID: <50C70CE6.4070606@online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1171889357136353831=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 874642650E5
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 05:39:16 +0100 (CET)
-Received: by mail-wi0-f181.google.com with SMTP id hm9so1551277wib.2
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2012 20:39:16 -0800 (PST)
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3019B260309
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 11:37:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,319 +22,148 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
+
+--===============1171889357136353831==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010508040602030206040705"
+
+Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
+
+--------------ms010508040602030206040705
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
 Hello,
-I have the same issue with my HP Envy 15. The sound card in question
-is an HP Wireless Audio card that only works with HP-branded wireless
-speakers, so playing to the card produces no output whatsoever, but
-does hang whatever process tries to access it. I doubt that many
-people ever use this feature, so unless someone invests the time to
-get it working I'd like a way to just ignore it completely. I've
-blacklisted the snd-usb-audio module for now, but I have a USB sound
-card and a USB MIDI controller that I'd like to be able to use.
 
-Here's the output of "lsusb -vd 0424:b832" (apologies for length):
-Bus 004 Device 004: ID 0424:b832 Standard Microsystems Corp.
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0        64
-  idVendor           0x0424 Standard Microsystems Corp.
-  idProduct          0xb832
-  bcdDevice           75.28
-  iManufacturer           1
-  iProduct                2
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          225
-    bNumInterfaces          4
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              3
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           72
-        bInCollection           2
-        baInterfaceNr( 0)       1
-        baInterfaceNr( 1)       2
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0402 Headset
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             6
-        wTerminalType      0x0301 Speaker
-        bAssocTerminal          0
-        bSourceID              11
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             7
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID              12
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                11
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x01
-          Mute Control
-        bmaControls( 1)      0x02
-          Volume Control
-        bmaControls( 2)      0x02
-          Volume Control
-        iFeature                0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                12
-        bSourceID               2
-        bControlSize            1
-        bmaControls( 0)      0x01
-          Mute Control
-        bmaControls( 1)      0x02
-          Volume Control
-        bmaControls( 2)      0x02
-          Volume Control
-        iFeature                0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        44100
-        tSamFreq[ 1]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         1 Milliseconds
-          wLockDelay              0 Milliseconds
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           7
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        48000
-        tSamFreq[ 1]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         1 Milliseconds
-          wLockDelay              0 Milliseconds
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Device
-      bInterfaceSubClass      0 No Subclass
-      bInterfaceProtocol      0 None
-      iInterface              0
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.10
-          bCountryCode            0 Not supported
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength      74
-         Report Descriptors:
-           ** UNAVAILABLE **
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x8a  EP 10 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval              10
-Device Status:     0x060a
-  (Bus Powered)
-  Remote Wakeup Enabled
+This is my first ALSA patch ever (in fact, also my first kernel patch=20
+and my first e-mail to this mailing list); as such, I'm sorry when I did =
+
+something wrong and/or didn't follow the procedure properly. I hope you=20
+can forgive me.
+
+I recently bought an ASUS Xonar U3 USB audio card. It general it works=20
+well with Linux, but unfortunately, it's PCM output channel is unusable=20
+for headphones because it allows virtually no volume control (maximum=20
+loudness is already reach at a volume level of 2 or 3). The card does=20
+also have a digital (S/PDIF) output channel, which however isn't=20
+switched on by the Linux USB audio driver:
+
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg28970.html=
 
 
->
-> On Thu, 6 Dec 2012, Joe Cooper wrote:
-> > On most HP Envy laptops the snd-usb-audio module causes the system to
-> > become unresponsive and Gnome Shell 3 to crash. This effects every kernel
-> > I've tried from 3.3.4 on up to 3.7rc8. It also produces these errors on the
-> > console:
-> >
-> > ALSA sound/usb/mixer.c:415 cannot get current value for control 2 ch 1: err
-> > = -22
-> >
-> > ALSA sound/usb/clock.c:228 3:1:1: cannot set freq 44100 to ep 0x1
-> >
-> > Blacklisting this module allows the system to function, but with most of
-> > its speakers not working. It also prevents use of other USB audio devices,
-> > making multitrack recording impossible.
-> >
-> > I have a ticket about it in the Fedora bug tracker, but was referred to
-> > alsa-devel. That ticket links to other discussions of this bug, as well.
-> > Here's that ticket: https://bugzilla.redhat.com/show_bug.cgi?id=884368
-> >
-> > alsa-info is here: https://bugzilla.redhat.com/attachment.cgi?id=658989
-> >
-> > Please let me know if you need further details, or if there's anything else
-> > I can do to help troubleshoot this.
->
-> Hi Joe,
->
-> I can try to help.
->
-> Do you get any sound output at all (even if it stutters or sounds
-> wrong)?
->
-> Can you please send the output of "lsusb -v -d 0424:b832"?
-> I think I can work out a patch for you to skip this device, so
-> you can use other audio usb devices until this gets proper support.
->
-> Cheers,
-> Eldad
+When I boot into Windows (where the ASUS driver seemingly enables the=20
+channel) and then reboot into Linux, I can use this channel and control=20
+volume as expected. It's just this turning on of S/PDIF which is=20
+missing, as suggested by the alsa-user thread linked to above.
+
+The patchset that follows enables S/PDIF on the Xonar U3 by using the=20
+(seemingly compatible) mixer quirks code as for the U1, just as done and =
+
+tested by the initiator of the alsa-user thread, together with a very=20
+minor cleanup (renaming internal xonar_u1_* identifiers to just=20
+xonar_u_*). The change seems to work well (tested with the 3.7.0 Ubuntu=20
+kernel as found in today' daily version).
+
+Regard,
+Denis Washington
+
+
+--------------ms010508040602030206040705
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Kryptografische Unterschrift
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIINSjCC
+BjQwggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
+DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
+MTAyNDIxMDE1NVoXDTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
+dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
+aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
+aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOr
+lr6KMoOMpohBllVHrdRvEg/q6r8jR+EK75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSM
+zR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6
+qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxDz2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSD
+kOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr/+N2JLKutIxMYqQOJebr/f/h5t95
+m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
+Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFcfH6WNU7y1LhRgjAfBgNV
+HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
+MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
+dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
+c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqD
+CH14qywGXLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy
+6QMVQjbbMXltUfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPI
+zKKR9tQW8gGK+2+RHxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKf
+KSETEPrHh7p5shuuNktvsv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HOR
+z9v3vQwR4e3ksLc2JZOAFK+ssS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9
+sIPP7ON0fz095HdThKjiVJe6vofq+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCie
+uoBJ9OlqmsVWQvifIYf40dJPZkk9YgGTzWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7t
+w1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGqUp/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQ
+G2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb19mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t
+5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHDjCCBfagAwIBAgIDA7lZMA0GCSqGSIb3DQEB
+BQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMi
+U2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20g
+Q2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcNMTIwMjE0MTAwNTA4
+WhcNMTMwMjE0MTgzOTI3WjBXMRkwFwYDVQQNExBMNmdGeFExWHdaeXRGN1lxMRkwFwYDVQQD
+DBBkZW5pc3dAb25saW5lLmRlMR8wHQYJKoZIhvcNAQkBFhBkZW5pc3dAb25saW5lLmRlMIIB
+IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmAhzvlayB5uCi6VNrgC7OFelwcFCpjY6
+1TV+7tW4Ty/UaO3GGGxT9VHvKTwrM26zR2yn0HGGeHPmEAjOYykM7ECdm9ngsEYgHeD6bFoU
+nmTe++7hFFYpt45WBvRK3nNXwUWOCsNbdk8xJ3zKYg33dAC1ElgxDa7LVUbsUQs2KZs7POsN
+eglKYbwJ+pf7KJDtUi03I+uePDD1tyL4V79kuJuWn+TDCt8aNRPrcnCm0upeo4zKIGbjRyg3
+6dt8/f0Z0j0B1tCsxW+tJNYAuNW1wcd+uFtnK7naqE0H0yKWrWMKDoEH1kEBRXmqOyZh0z6A
+MckT1d9koDI17rM8EWUsqwIDAQABo4IDqzCCA6cwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAw
+HQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTpR41raZ+/vaajVNrE
+9QzD1rGCUDAfBgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAbBgNVHREEFDASgRBk
+ZW5pc3dAb25saW5lLmRlMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8w
+LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
+BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsG
+AQUFBwICMIHqMCcWIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5U
+aGlzIGNlcnRpZmljYXRlIHdhcyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZh
+bGlkYXRpb24gcmVxdWlyZW1lbnRzIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlh
+bmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhl
+IHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGcBggrBgEFBQcCAjCBjzAnFiBTdGFydENv
+bSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRMaWFiaWxpdHkgYW5kIHdhcnJhbnRp
+ZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBhbmQgTGltaXRhdGlvbnMiIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwu
+c3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUH
+MAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVudC9jYTBCBggr
+BgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNzMS5jbGll
+bnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkqhkiG
+9w0BAQUFAAOCAQEAq7F/lnxjk1g3NoypFR6OPukxeatCRGwayef2zSqZUDD2rR+zImknVpwE
+Xu9q17bxfsb/TtP2ZP+eBh+8L8IBml78Twnn7pIUW8MHazbqNOz+bVgyxZRnMjQGKpy+P74T
+dIm38z5aqQSL2tOpAQHxA0kBZFMF/5egW92oCkg66MA9zoz2ZVU342/E4Lt/CMYUfHeU4y6Y
+4pR/qcMfu2zmeGi6kC/hHKDcB6ZAksl74GxkeGZIDpYbvzD6uvgCIJm/mjFFIJJGLG9MNezG
+uWDLLpjsMbShkmJ3DjHMarrrEJzqcY3hwEL5ZkSpCYDs2DJEQGlglOvUeoZ7BnJ10Muj8jGC
+A90wggPZAgEBMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
+MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
+U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwO5WTAJ
+BgUrDgMCGgUAoIICHTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
+Fw0xMjEyMTExMDM3MjZaMCMGCSqGSIb3DQEJBDEWBBSxEoZRDasJ/12dU8GMOTac8Kb7ZzBs
+BgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcw
+DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
+MIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENv
+bSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgw
+NgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBD
+QQIDA7lZMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
+DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
+Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAPGV4NcNkuQgWpnQY82pB/TZ2RVBW
+EzbhFB36ApJTPjMI9Sn+kEPAWdYcFOJo97i0mEi5A+MFOK3X9fg0VWRidzAcE9e8IabxJEp9
+c/9cxF6UoXDHOfoQ4OSu7knxiYTpOXHU89MFekCM3tDPrH0nXl8uTgT8YrA/cRoTSTltCYiW
+DvTD3m718StUQa+JdXGtSwgknXQ/j/IMUVQ3d7OCSzw0F/6HZI/3WoS4t7dQIhs/WiiI1qQ/
+i1E4pUEfx1SXkSEscIyQmX/+UmgS7r5flHpfTOFRetgs+Tmlw4klvO1q6kIW0Zdfk3rnRlBR
+u5l0AzMeKrMgszhFv3HmOptbAAAAAAAAAA==
+--------------ms010508040602030206040705--
+
+--===============1171889357136353831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1171889357136353831==--
