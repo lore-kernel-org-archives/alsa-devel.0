@@ -1,14 +1,15 @@
 From: Denis Washington <denisw@online.de>
-Subject: [PATCH 1/2] Enable S/PDIF on the ASUS Xonar U3
-Date: Tue, 11 Dec 2012 11:38:32 +0100
-Message-ID: <50C70D28.70804@online.de>
+Subject: [PATCH 2/2] Rename internal xonar_u1_* names to just
+	xonar_u_*
+Date: Tue, 11 Dec 2012 11:39:25 +0100
+Message-ID: <50C70D5D.90305@online.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7907389391594717774=="
+Content-Type: multipart/mixed; boundary="===============3770105266626360758=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 94C332602F4
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 11:38:33 +0100 (CET)
+ [212.227.126.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE33E2602F4
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 11:39:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +24,122 @@ List-Id: alsa-devel@alsa-project.org
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---===============7907389391594717774==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010005090702060907060605"
+--===============3770105266626360758==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms090807050404070204010904"
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---------------ms010005090702060907060605
+--------------ms090807050404070204010904
 Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-The only required change is to extend the existing Xonar U1
-mixer quirks to the U3, which seems to be controlled the same
-way.
+Now that the code applies both to the U1 and the U3,
+xonar_u1 is not a good name anymore.
 ---
-  sound/usb/mixer_quirks.c | 5 +++--
-  1 file changed, 3 insertions(+), 2 deletions(-)
+  sound/usb/mixer.h        |  2 +-
+  sound/usb/mixer_quirks.c | 24 ++++++++++++------------
+  2 files changed, 13 insertions(+), 13 deletions(-)
 
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index a7f3d45..9e7ec0e 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -22,7 +22,7 @@ struct usb_mixer_interface {
+  	u8 rc_buffer[6];
+
+  	u8 audigy2nx_leds[3];
+-	u8 xonar_u1_status;
++	u8 xonar_u_status;
+  };
+
+  #define MAX_CHANNELS	16	/* max logical channels */
 diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index ae2b714..2223089 100644
+index 2223089..de6db70 100644
 --- a/sound/usb/mixer_quirks.c
 +++ b/sound/usb/mixer_quirks.c
-@@ -1107,8 +1107,9 @@ int snd_usb_mixer_apply_create_quirk(struct=20
+@@ -416,23 +416,23 @@ static void snd_audigy2nx_proc_read(struct=20
+snd_info_entry *entry,
+  	}
+  }
+
+-static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
++static int snd_xonar_u_switch_get(struct snd_kcontrol *kcontrol,
+  				   struct snd_ctl_elem_value *ucontrol)
+  {
+  	struct usb_mixer_interface *mixer =3D snd_kcontrol_chip(kcontrol);
+
+-	ucontrol->value.integer.value[0] =3D !!(mixer->xonar_u1_status & 0x02);=
+
++	ucontrol->value.integer.value[0] =3D !!(mixer->xonar_u_status & 0x02);
+  	return 0;
+  }
+
+-static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
++static int snd_xonar_u_switch_put(struct snd_kcontrol *kcontrol,
+  				   struct snd_ctl_elem_value *ucontrol)
+  {
+  	struct usb_mixer_interface *mixer =3D snd_kcontrol_chip(kcontrol);
+  	u8 old_status, new_status;
+  	int err, changed;
+
+-	old_status =3D mixer->xonar_u1_status;
++	old_status =3D mixer->xonar_u_status;
+  	if (ucontrol->value.integer.value[0])
+  		new_status =3D old_status | 0x02;
+  	else
+@@ -449,27 +449,27 @@ static int snd_xonar_u1_switch_put(struct=20
+snd_kcontrol *kcontrol,
+  	up_read(&mixer->chip->shutdown_rwsem);
+  	if (err < 0)
+  		return err;
+-	mixer->xonar_u1_status =3D new_status;
++	mixer->xonar_u_status =3D new_status;
+  	return changed;
+  }
+
+-static struct snd_kcontrol_new snd_xonar_u1_output_switch =3D {
++static struct snd_kcontrol_new snd_xonar_u_output_switch =3D {
+  	.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,
+  	.name =3D "Digital Playback Switch",
+  	.info =3D snd_ctl_boolean_mono_info,
+-	.get =3D snd_xonar_u1_switch_get,
+-	.put =3D snd_xonar_u1_switch_put,
++	.get =3D snd_xonar_u_switch_get,
++	.put =3D snd_xonar_u_switch_put,
+  };
+
+-static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixe=
+r)
++static int snd_xonar_u_controls_create(struct usb_mixer_interface *mixer=
+)
+  {
+  	int err;
+
+  	err =3D snd_ctl_add(mixer->chip->card,
+-			  snd_ctl_new1(&snd_xonar_u1_output_switch, mixer));
++			  snd_ctl_new1(&snd_xonar_u_output_switch, mixer));
+  	if (err < 0)
+  		return err;
+-	mixer->xonar_u1_status =3D 0x05;
++	mixer->xonar_u_status =3D 0x05;
+  	return 0;
+  }
+
+@@ -1110,7 +1110,7 @@ int snd_usb_mixer_apply_create_quirk(struct=20
 usb_mixer_interface *mixer)
-  		err =3D snd_ftu_create_mixer(mixer);
+  	case USB_ID(0x0b05, 0x1739): /* ASUS Xonar U1 */
+  	case USB_ID(0x0b05, 0x1743): /* ASUS Xonar U1 (2) */
+  	case USB_ID(0x0b05, 0x17a0): /* ASUS Xonar U3 */
+-		err =3D snd_xonar_u1_controls_create(mixer);
++		err =3D snd_xonar_u_controls_create(mixer);
   		break;
 
--	case USB_ID(0x0b05, 0x1739):
--	case USB_ID(0x0b05, 0x1743):
-+	case USB_ID(0x0b05, 0x1739): /* ASUS Xonar U1 */
-+	case USB_ID(0x0b05, 0x1743): /* ASUS Xonar U1 (2) */
-+	case USB_ID(0x0b05, 0x17a0): /* ASUS Xonar U3 */
-  		err =3D snd_xonar_u1_controls_create(mixer);
-  		break;
-
+  	case USB_ID(0x17cc, 0x1011): /* Traktor Audio 6 */
 --=20
 1.8.0
 
 
-
---------------ms010005090702060907060605
+--------------ms090807050404070204010904
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -135,7 +213,7 @@ A90wggPZAgEBMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwO5WTAJ
 BgUrDgMCGgUAoIICHTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
-Fw0xMjEyMTExMDM4MzJaMCMGCSqGSIb3DQEJBDEWBBQXMC5nT6FmVLxqqVZ6fsEKJJvfDjBs
+Fw0xMjEyMTExMDM5MjVaMCMGCSqGSIb3DQEJBDEWBBTXhx7wIhKhQnFjynAe37Na/SxUEzBs
 BgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcw
 DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
 MIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENv
@@ -144,19 +222,19 @@ NgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBD
 QQIDA7lZMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
 DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
 Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
-Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAGQyKpj/cSoATCSb2s+jWoYdV3+cB
-bOqGBgb/lc8S5NU3LYcW4uCPUXyzL/ckwLyu3dj/bcnCPABPeuX26iIJblbRyGjLH6F15uKF
-t4hfewU6AHxCaevzo0GYLl9wGDqErbzEGN/kki35010PHYBHRgSm1Dl+RNU803jnb2nG3d+g
-ZP96emFnwj5IC6X0SgkQnUCV5ulojGVUhXklpzSVi5a7Z089oyfOsiGGGyC/6uMl8Ls4dJYV
-PDFYCaeJbvgzO92vpZKsO59xFny+0DWSEOBVUpETiZgY7dtfbneVPfWjfqxZxx3aQZWS1NfB
-m4KpezH04o0KZoUKri44+oyeIAAAAAAAAA==
---------------ms010005090702060907060605--
+Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAPtSilEu/gQAFIYrolOo3zVhrO1qU
+Csq0eONL8tw3jtMHnv1uzuYOzZ18/+WzpcdmxMJwFHdrm7dqAiX/kv3gUPXO1nhGVl5o1rxh
+o+AnWHEOceE0Zz5SuN8amuoL2yQMgdaDFcF6tXidTxypg6V0Akboa5khpXDLPo1tljTDrzAw
+xhxJX1UoH45VncA15sih7hDthfiB5qYABJQ0aYTg//GH1cL1FhxH2jd+xwJRxaidfQiS1fNi
+7hZA+35CS2tIxs3VPDvC9h6pwniqyeMCAae9fCyTK2qugbJtNsLZGtZ15UaJ8PHJxcoAyyFR
+AvlURhPJvL4rtRhtaETHPm7DsAAAAAAAAA==
+--------------ms090807050404070204010904--
 
---===============7907389391594717774==
+--===============3770105266626360758==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7907389391594717774==--
+--===============3770105266626360758==--
