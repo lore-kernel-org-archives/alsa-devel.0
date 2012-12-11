@@ -1,17 +1,14 @@
 From: Denis Washington <denisw@online.de>
-Subject: Re: [PATCH 0/2] Make ASUS Xonar U3 S/PDIF
-	channel	accessible
-Date: Tue, 11 Dec 2012 19:24:55 +0100
-Message-ID: <50C77A77.7060805@online.de>
-References: <50C70CE6.4070606@online.de> <s5hk3solstc.wl%tiwai@suse.de>
+Subject: [PATCH 1/2] Enable S/PDIF on the ASUS Xonar U3
+Date: Tue, 11 Dec 2012 19:26:15 +0100
+Message-ID: <50C77AC7.80000@online.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4919466431736544017=="
+Content-Type: multipart/mixed; boundary="===============3588007438948324058=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
  [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 913D72615E1
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 19:24:56 +0100 (CET)
-In-Reply-To: <s5hk3solstc.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 250382615D8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 19:26:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +23,48 @@ List-Id: alsa-devel@alsa-project.org
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---===============4919466431736544017==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080901060605070005020203"
+--===============3588007438948324058==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms020309090301010400050409"
 
 Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
---------------ms080901060605070005020203
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------ms020309090301010400050409
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-Am 11.12.2012 12:41, schrieb Takashi Iwai:
-> At Tue, 11 Dec 2012 11:37:26 +0100,
-> Denis Washington wrote:
->>
->> Hello,
->>
->> This is my first ALSA patch ever (in fact, also my first kernel patch
->> and my first e-mail to this mailing list); as such, I'm sorry when I d=
-id
->> something wrong and/or didn't follow the procedure properly. I hope yo=
-u
->> can forgive me.
->>
->> I recently bought an ASUS Xonar U3 USB audio card. It general it works=
+The only required change is to extend the existing Xonar U1
+mixer quirks to the U3, which seems to be controlled the same
+way.
 
->> well with Linux, but unfortunately, it's PCM output channel is unusabl=
-e
->> for headphones because it allows virtually no volume control (maximum
->> loudness is already reach at a volume level of 2 or 3). The card does
->> also have a digital (S/PDIF) output channel, which however isn't
->> switched on by the Linux USB audio driver:
->>
->> http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg28970.h=
-tml
->>
->> When I boot into Windows (where the ASUS driver seemingly enables the
->> channel) and then reboot into Linux, I can use this channel and contro=
-l
->> volume as expected. It's just this turning on of S/PDIF which is
->> missing, as suggested by the alsa-user thread linked to above.
->>
->> The patchset that follows enables S/PDIF on the Xonar U3 by using the
->> (seemingly compatible) mixer quirks code as for the U1, just as done a=
-nd
->> tested by the initiator of the alsa-user thread, together with a very
->> minor cleanup (renaming internal xonar_u1_* identifiers to just
->> xonar_u_*). The change seems to work well (tested with the 3.7.0 Ubunt=
-u
->> kernel as found in today' daily version).
->
-> Thanks for patches.
->
-> I think the rename of xonar_u1_* isn't needed.  What we need is rather
-> giving more comments there, that it's for both U1 and U3.
+Signed-off-by: Denis Washington <denisw@online.de>
+---
+   sound/usb/mixer_quirks.c | 5 +++--
+   1 file changed, 3 insertions(+), 2 deletions(-)
 
-Yes, that would be useful. I don't know if I'm qualified to write a=20
-useful comment for this, though.
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ae2b714..2223089 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1107,8 +1107,9 @@ int snd_usb_mixer_apply_create_quirk(struct=20
+usb_mixer_interface *mixer)
+   		err =3D snd_ftu_create_mixer(mixer);
+   		break;
 
-> In anyway, could you resubmit with your sign-off?
-> Put a line like
-> 	Signed-of-by: Your Name <foo@bar.com>
-> in the tail of the change log text.
+-	case USB_ID(0x0b05, 0x1739):
+-	case USB_ID(0x0b05, 0x1743):
++	case USB_ID(0x0b05, 0x1739): /* ASUS Xonar U1 */
++	case USB_ID(0x0b05, 0x1743): /* ASUS Xonar U1 (2) */
++	case USB_ID(0x0b05, 0x17a0): /* ASUS Xonar U3 */
+   		err =3D snd_xonar_u1_controls_create(mixer);
+   		break;
 
-OK, no problem.
-
-Regards,
-Denis
+--=20
+1.8.0
 
 
---------------ms080901060605070005020203
+
+
+--------------ms020309090301010400050409
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -168,7 +138,7 @@ A90wggPZAgEBMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwO5WTAJ
 BgUrDgMCGgUAoIICHTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
-Fw0xMjEyMTExODI0NTVaMCMGCSqGSIb3DQEJBDEWBBT4sqp3SlSCB7LAIAXTCHWkAFVNCjBs
+Fw0xMjEyMTExODI2MTVaMCMGCSqGSIb3DQEJBDEWBBQ01P4K1FZQdu+Tui0OT8uYfjkAOzBs
 BgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcw
 DgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEo
 MIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENv
@@ -177,19 +147,19 @@ NgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBD
 QQIDA7lZMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
 DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
 Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
-Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAd+F62f9lZgcgQHeYD0C1qMqoLaNk
-j8CKlR4xYW3pN3kzyA6WY8vQz8lO3QYcGm/jpYriWXv8/o+98bZUB8r/5KA9r5CprOyaAj9U
-FHrkGVD2zhzphyEChSeO7jY+w7ObtovMOPg7rNLjr+yQmAQNQ1LSe7Ragm9dusCmweHJ8ECq
-s6a2Nuub/9zu0IxKM8pOb9ZsI0xykB9dc+xmctROybDWdTFFO68znxvRBJNER5JZ+uTkpA5V
-n6w5y1riYlIzzajiHSUA/l0qE/BdAySU23z0DPp2vFb11AkYPR8DwDgcQv5H/4YRmD7y6pTb
-thhJImpcC7wmzf0aTcKY2VL/aAAAAAAAAA==
---------------ms080901060605070005020203--
+Q2xpZW50IENBAgMDuVkwDQYJKoZIhvcNAQEBBQAEggEAQexcU1k9Z2q+QZLmLiIg+/I8dg4g
+Mu1AlL37RkxRbEb/tfJoC7KovHMvucpLMsJfw8bGEvsEFz5GXaXY4RUP7gFidVoxWfNWxOub
+oZD0Z3rrr+e87ajcDvOpSsr9aZTcpcX7XExKl/0IAo7YhkURh9HqJKmUYIfCCKsCJKRUmgtl
+xb7l2krSPx6Pg5kevay7AzEgp/sq8CtjXZSh66BBpTpctY/yXUfVMZWzJS6DvFqiWu2Xs2w/
+p7eyUVc5VhqdI1kS2aLb1iZp9kw84Cvn6b5/7ykgm0tNqghJRERJyAlK+HvZ9XbPX3ktDjlF
+kSZKwKPkCHJ3CTRYVdkLxKiiigAAAAAAAA==
+--------------ms020309090301010400050409--
 
---===============4919466431736544017==
+--===============3588007438948324058==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4919466431736544017==--
+--===============3588007438948324058==--
