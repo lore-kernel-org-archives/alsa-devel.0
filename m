@@ -1,18 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: wm8993: Refactor set_pll code to
-	avoid GCC warnings
-Date: Wed, 12 Dec 2012 01:24:40 -0200
-Message-ID: <1355282680-30760-1-git-send-email-festevam@gmail.com>
+From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH v2] ASoC: lm49453: Fix adc,
+ mic and sidetone volume ranges
+Date: Wed, 12 Dec 2012 12:06:29 +0530
+Message-ID: <50C825ED.2010903@ti.com>
+References: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>	
+ <1355254851.7077.97.camel@vkoul-udesk3>
+ <1355264914.7077.100.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f47.google.com (mail-qa0-f47.google.com
- [209.85.216.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A9D7261603
- for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2012 04:24:49 +0100 (CET)
-Received: by mail-qa0-f47.google.com with SMTP id a19so4152727qad.13
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 19:24:49 -0800 (PST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id B597B2617AF
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2012 07:18:46 +0100 (CET)
+In-Reply-To: <1355264914.7077.100.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: "Deshpande A, Vishwas" <Vishwas.A.Deshpande@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wednesday 12 December 2012 03:58 AM, Vinod Koul wrote:
+> On Tue, 2012-12-11 at 11:40 -0800, Vinod Koul wrote:
+>>> +static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
+>> step is NOT 2dB but 10dB, and where do we have mute here
+> Sorry I mis read data sheet, this is fine. We have 2dB steps
+>
+> I have tested both of these so:
+> Tested-by: Vinod Koul <vinod.koul@intel.com>
 
-Refactor set_pll code to avoid the following warnings:
+Thanks for validation.
 
-sound/soc/codecs/wm8983.c:873:40: warning: 'pll_div.k' may be used uninitialized in this function [-Wuninitialized]
-sound/soc/codecs/wm8983.c:870:9: warning: 'pll_div.n' may be used uninitialized in this function [-Wuninitialized]
-sound/soc/codecs/wm8983.c:869:23: warning: 'pll_div.div2' may be used uninitialized in this function [-Wuninitialized]
+> Only mute bits need to be fixed here and we should be good
+>
 
-Do the same as in commit 86ce6c9a (ASoC: WM8804: Refactor set_pll code to avoid 
-GCC warnings).
+LM49453 codec has a separate bit for MUTE operation.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Fix the comment
- sound/soc/codecs/wm8983.c |   41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8983.c b/sound/soc/codecs/wm8983.c
-index 9fe1e04..e7c73ff 100644
---- a/sound/soc/codecs/wm8983.c
-+++ b/sound/soc/codecs/wm8983.c
-@@ -851,30 +851,33 @@ static int wm8983_set_pll(struct snd_soc_dai *dai, int pll_id,
- 	struct pll_div pll_div;
- 
- 	codec = dai->codec;
--	if (freq_in && freq_out) {
-+	if (!freq_in || !freq_out) {
-+		/* disable the PLL */
-+		snd_soc_update_bits(codec, WM8983_POWER_MANAGEMENT_1,
-+				    WM8983_PLLEN_MASK, 0);
-+		return 0;
-+	} else {
- 		ret = pll_factors(&pll_div, freq_out * 4 * 2, freq_in);
- 		if (ret)
- 			return ret;
--	}
--
--	/* disable the PLL before re-programming it */
--	snd_soc_update_bits(codec, WM8983_POWER_MANAGEMENT_1,
--			    WM8983_PLLEN_MASK, 0);
- 
--	if (!freq_in || !freq_out)
--		return 0;
-+		/* disable the PLL before re-programming it */
-+		snd_soc_update_bits(codec, WM8983_POWER_MANAGEMENT_1,
-+				    WM8983_PLLEN_MASK, 0);
-+
-+		/* set PLLN and PRESCALE */
-+		snd_soc_write(codec, WM8983_PLL_N,
-+			(pll_div.div2 << WM8983_PLL_PRESCALE_SHIFT)
-+			| pll_div.n);
-+		/* set PLLK */
-+		snd_soc_write(codec, WM8983_PLL_K_3, pll_div.k & 0x1ff);
-+		snd_soc_write(codec, WM8983_PLL_K_2, (pll_div.k >> 9) & 0x1ff);
-+		snd_soc_write(codec, WM8983_PLL_K_1, (pll_div.k >> 18));
-+		/* enable the PLL */
-+		snd_soc_update_bits(codec, WM8983_POWER_MANAGEMENT_1,
-+					WM8983_PLLEN_MASK, WM8983_PLLEN);
-+	}
- 
--	/* set PLLN and PRESCALE */
--	snd_soc_write(codec, WM8983_PLL_N,
--		      (pll_div.div2 << WM8983_PLL_PRESCALE_SHIFT)
--		      | pll_div.n);
--	/* set PLLK */
--	snd_soc_write(codec, WM8983_PLL_K_3, pll_div.k & 0x1ff);
--	snd_soc_write(codec, WM8983_PLL_K_2, (pll_div.k >> 9) & 0x1ff);
--	snd_soc_write(codec, WM8983_PLL_K_1, (pll_div.k >> 18));
--	/* enable the PLL */
--	snd_soc_update_bits(codec, WM8983_POWER_MANAGEMENT_1,
--			    WM8983_PLLEN_MASK, WM8983_PLLEN);
- 	return 0;
- }
- 
--- 
-1.7.9.5
+Thanks
+Swami
