@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: lm49453: Fix adc,
- mic and sidetone volume ranges
-Date: Tue, 11 Dec 2012 14:28:34 -0800
-Message-ID: <1355264914.7077.100.camel@vkoul-udesk3>
-References: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>
- <1355254851.7077.97.camel@vkoul-udesk3>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 1/1] ALSA: hda - use usleep_range in link
+	reset and change timeout check
+Date: Wed, 12 Dec 2012 09:16:15 -0500
+Message-ID: <1355321775-2042-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A244261622
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2012 23:49:42 +0100 (CET)
-In-Reply-To: <1355254851.7077.97.camel@vkoul-udesk3>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC64261687
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2012 03:14:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: MR.Swami.Reddy@ti.com
-Cc: vishwas.a.deshpande@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Xingchao Wang <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2012-12-11 at 11:40 -0800, Vinod Koul wrote:
-> You have confused the meanings of TLV
-> #define DECLARE_TLV_DB_SCALE(name, min, step, mute)
-> 
-> > -static const DECLARE_TLV_DB_SCALE(digital_tlv, -7650, 150, 1);
-> > -static const DECLARE_TLV_DB_SCALE(port_tlv, 0, 600, 0);
-> > +static const DECLARE_TLV_DB_SCALE(adc_dac_tlv, -7650, 150, 1);
-> step is right here, but MAX shows up as 63 and not 18dB and where is
-> mute here. You have separate bit for mute!
-> > +static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
-> step is NOT 2dB but 10dB, and where do we have mute here
-Sorry I mis read data sheet, this is fine. We have 2dB steps
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-I have tested both of these so:
-Tested-by: Vinod Koul <vinod.koul@intel.com>
+Reducing the time on HDA link reset can help to reduce the driver loading
+time. So we replace msleep with usleep_range to get more accurate time
+control and change the value to a smaller one. And a 100ms timeout is set
+for both entering and exiting the link reset.
 
-Only mute bits need to be fixed here and we should be good
+Signed-off-by: Xingchao Wang <xingchao.wang@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 72b085a..ed3a290 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1041,7 +1041,7 @@ static void azx_power_notify(struct hda_bus *bus, bool power_up);
+ /* reset codec link */
+ static int azx_reset(struct azx *chip, int full_reset)
+ {
+-	int count;
++	unsigned long timeout;
+ 
+ 	if (!full_reset)
+ 		goto __skip;
+@@ -1052,24 +1052,26 @@ static int azx_reset(struct azx *chip, int full_reset)
+ 	/* reset controller */
+ 	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_RESET);
+ 
+-	count = 50;
+-	while (azx_readb(chip, GCTL) && --count)
+-		msleep(1);
++	timeout = jiffies + msecs_to_jiffies(100);
++	while (azx_readb(chip, GCTL) &&
++			time_before(jiffies, timeout))
++		usleep_range(500, 1000);
+ 
+ 	/* delay for >= 100us for codec PLL to settle per spec
+ 	 * Rev 0.9 section 5.5.1
+ 	 */
+-	msleep(1);
++	usleep_range(500, 1000);
+ 
+ 	/* Bring controller out of reset */
+ 	azx_writeb(chip, GCTL, azx_readb(chip, GCTL) | ICH6_GCTL_RESET);
+ 
+-	count = 50;
+-	while (!azx_readb(chip, GCTL) && --count)
+-		msleep(1);
++	timeout = jiffies + msecs_to_jiffies(100);
++	while (!azx_readb(chip, GCTL) &&
++			time_before(jiffies, timeout))
++		usleep_range(500, 1000);
+ 
+ 	/* Brent Chartrand said to wait >= 540us for codecs to initialize */
+-	msleep(1);
++	usleep_range(1000, 1200);
+ 
+       __skip:
+ 	/* check to see if controller is ready */
 -- 
-~Vinod
+1.7.9.5
