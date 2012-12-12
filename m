@@ -1,19 +1,14 @@
-From: MR Swami Reddy <MR.Swami.Reddy@ti.com>
-Subject: Re: [PATCH v2] ASoC: lm49453: Fix adc,
- mic and sidetone volume ranges
-Date: Wed, 12 Dec 2012 12:06:29 +0530
-Message-ID: <50C825ED.2010903@ti.com>
-References: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>	
- <1355254851.7077.97.camel@vkoul-udesk3>
- <1355264914.7077.100.camel@vkoul-udesk3>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Implement tristate support
+Date: Wed, 12 Dec 2012 16:22:53 +0900
+Message-ID: <1355296973-29658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id B597B2617AF
- for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2012 07:18:46 +0100 (CET)
-In-Reply-To: <1355264914.7077.100.camel@vkoul-udesk3>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A2D926030A
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2012 08:22:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +18,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: "Deshpande A, Vishwas" <Vishwas.A.Deshpande@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 12 December 2012 03:58 AM, Vinod Koul wrote:
-> On Tue, 2012-12-11 at 11:40 -0800, Vinod Koul wrote:
->>> +static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 200, 1);
->> step is NOT 2dB but 10dB, and where do we have mute here
-> Sorry I mis read data sheet, this is fine. We have 2dB steps
->
-> I have tested both of these so:
-> Tested-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Thanks for validation.
-
-> Only mute bits need to be fixed here and we should be good
->
-
-LM49453 codec has a separate bit for MUTE operation.
-
-Thanks
-Swami
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 231fae0..a85a68f 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -859,11 +859,27 @@ static int arizona_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	return snd_soc_dapm_sync(&codec->dapm);
+ }
+ 
++static int arizona_set_tristate(struct snd_soc_dai *dai, int tristate)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	int base = dai->driver->base;
++	unsigned int reg;
++
++	if (tristate)
++		reg = ARIZONA_AIF1_TRI;
++	else
++		reg = 0;
++
++	return snd_soc_update_bits(codec, base + ARIZONA_AIF_RATE_CTRL,
++				   ARIZONA_AIF1_TRI, reg);
++}
++
+ const struct snd_soc_dai_ops arizona_dai_ops = {
+ 	.startup = arizona_startup,
+ 	.set_fmt = arizona_set_fmt,
+ 	.hw_params = arizona_hw_params,
+ 	.set_sysclk = arizona_dai_set_sysclk,
++	.set_tristate = arizona_set_tristate,
+ };
+ EXPORT_SYMBOL_GPL(arizona_dai_ops);
+ 
+-- 
+1.7.10.4
