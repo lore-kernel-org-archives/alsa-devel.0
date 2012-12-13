@@ -1,128 +1,99 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] ASoC: atmel-soc: make it buildable on other architectures
-Date: Thu, 13 Dec 2012 12:21:25 +0100
-Message-ID: <50C9BA35.9030008@atmel.com>
-References: <1354973002-13588-1-git-send-email-manabian@gmail.com>
+From: Tomas Pospisek <tpo2@sourcepole.ch>
+Subject: Re:
+ =?utf-8?q?Request_for_HW_auto-recognition=3A_HP_Pavi?=
+ =?utf-8?q?lion_dv7_with=09STAC92xx?=
+Date: Thu, 13 Dec 2012 14:04:10 +0100
+Message-ID: <28554302d077d5894814557cdb219bad@sourcepole.ch>
+References: <f1d85d07d48763e792148f67cb6f842c@sourcepole.ch>
+ <s5hk3snrsrk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1354973002-13588-1-git-send-email-manabian@gmail.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Joachim Eastwood <manabian@gmail.com>, broonie@opensource.wolfsonmicro.com
-Cc: voice.shen@atmel.com, plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from brisi.sourcepole.ch (brisi.sourcepole.ch [5.9.57.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43BC026160D
+ for <Alsa-devel@alsa-project.org>; Thu, 13 Dec 2012 14:04:20 +0100 (CET)
+In-Reply-To: <s5hk3snrsrk.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/08/2012 02:23 PM, Joachim Eastwood :
-> Not very useful on non AT91/AVR32 platforms but it provides
-> more build coverage and prepares for ARM multiplatform.
+On Wed, 12 Dec 2012 20:10:23 +0100, Takashi Iwai wrote:
+> At Wed, 12 Dec 2012 18:08:25 +0100, Tomas Pospisek wrote:
+>> 
+>> I have a HP Pavilion dv7 laptop (LS066EA#UUZ), with:
+>> 
+>>   # cat /proc/asound/card0/codec* | grep Codec
+>>   Codec: IDT 92HD81B1X5
+>>   Codec: Intel CougarPoint HDMI
+>> 
+>> when play sound without any tweaks, I get a very weak sound output. If
+I
+>> want to have "beats audio", that is subwoofer and all speakers, I need
+to
+>> set:
+>> 
+>>   # cat /etc/modprobe.d/alsa-base.conf 
+>>   options snd-hda-intel model=hp-dv7-4000
+>> 
+>> Could the snd_hda_intel alsa driver be updated to recognize and setup
+the
+>> driver accordingly?
+>> 
+>> alsa-info.sh output here:
+>>  
+>>
+http://www.alsa-project.org/db/?f=54ea874f43f12c1572aff3ee3113dc4b0ad0b398
 > 
-> Also fixes a couple of format type warnings.
+> Could you check whether the patch below works?
 > 
-> Signed-off-by: Joachim Eastwood <manabian@gmail.com>
-
-seems ok:
-
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
+> Takashi
+> 
 > ---
-> 
-> Hi,
-> 
-> Build tested on RM9200 and x86_64.
-> 
-> ARCH_AT91 depend is pushed down to the machine drivers
-> since they still relies on mach includes.
-> 
-> regards
-> Joachim Eastwood
-> 
->  sound/soc/atmel/Kconfig         | 6 +++---
->  sound/soc/atmel/atmel-pcm-pdc.c | 4 ++--
->  sound/soc/atmel/atmel-pcm.c     | 2 +-
->  sound/soc/atmel/atmel_ssc_dai.c | 2 --
->  4 files changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-> index d1b691b..3fdd87f 100644
-> --- a/sound/soc/atmel/Kconfig
-> +++ b/sound/soc/atmel/Kconfig
-> @@ -1,6 +1,6 @@
->  config SND_ATMEL_SOC
->  	tristate "SoC Audio for the Atmel System-on-Chip"
-> -	depends on ARCH_AT91
-> +	depends on HAS_IOMEM
->  	help
->  	  Say Y or M if you want to add support for codecs attached to
->  	  the ATMEL SSC interface. You will also need
-> @@ -24,7 +24,7 @@ config SND_ATMEL_SOC_SSC
->  
->  config SND_AT91_SOC_SAM9G20_WM8731
->  	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
-> -	depends on ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
-> +	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && AT91_PROGRAMMABLE_CLOCKS
->  	select SND_ATMEL_SOC_PDC
->  	select SND_ATMEL_SOC_SSC
->  	select SND_SOC_WM8731
-> @@ -34,7 +34,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
->  
->  config SND_AT91_SOC_AFEB9260
->  	tristate "SoC Audio support for AFEB9260 board"
-> -	depends on ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
-> +	depends on ARCH_AT91 && ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
->  	select SND_ATMEL_SOC_PDC
->  	select SND_ATMEL_SOC_SSC
->  	select SND_SOC_TLV320AIC23
-> diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-> index 6a293c7..054ea4d 100644
-> --- a/sound/soc/atmel/atmel-pcm-pdc.c
-> +++ b/sound/soc/atmel/atmel-pcm-pdc.c
-> @@ -159,7 +159,7 @@ static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
->  
->  	pr_debug("atmel-pcm: "
->  		"hw_params: DMA for %s initialized "
-> -		"(dma_bytes=%u, period_size=%u)\n",
-> +		"(dma_bytes=%zu, period_size=%zu)\n",
->  		prtd->params->name,
->  		runtime->dma_bytes,
->  		prtd->period_size);
-> @@ -201,7 +201,7 @@ static int atmel_pcm_trigger(struct snd_pcm_substream *substream,
->  	int ret = 0;
->  
->  	pr_debug("atmel-pcm:buffer_size = %ld,"
-> -		"dma_area = %p, dma_bytes = %u\n",
-> +		"dma_area = %p, dma_bytes = %zu\n",
->  		rtd->buffer_size, rtd->dma_area, rtd->dma_bytes);
->  
->  	switch (cmd) {
-> diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-> index e99f181..3109db7 100644
-> --- a/sound/soc/atmel/atmel-pcm.c
-> +++ b/sound/soc/atmel/atmel-pcm.c
-> @@ -49,7 +49,7 @@ static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
->  	buf->private_data = NULL;
->  	buf->area = dma_alloc_coherent(pcm->card->dev, size,
->  			&buf->addr, GFP_KERNEL);
-> -	pr_debug("atmel-pcm: alloc dma buffer: area=%p, addr=%p, size=%d\n",
-> +	pr_debug("atmel-pcm: alloc dma buffer: area=%p, addr=%p, size=%zu\n",
->  			(void *)buf->area, (void *)buf->addr, size);
->  
->  	if (!buf->area)
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index 1c76634..2755750 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -42,8 +42,6 @@
->  #include <sound/initval.h>
->  #include <sound/soc.h>
->  
-> -#include <mach/hardware.h>
-> -
->  #include "atmel-pcm.h"
->  #include "atmel_ssc_dai.h"
->  
-> 
+> diff --git a/sound/pci/hda/patch_sigmatel.c
+> b/sound/pci/hda/patch_sigmatel.c
+> index df13c0f..a86547c 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -1725,7 +1725,7 @@ static const struct snd_pci_quirk
+> stac92hd83xxx_cfg_tbl[] = {
+>  	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1658,
+>  			  "HP", STAC_92HD83XXX_HP_cNB11_INTQUAD),
+>  	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1659,
+> -			  "HP", STAC_92HD83XXX_HP_cNB11_INTQUAD),
+> +			  "HP Pavilion dv7", STAC_HP_DV7_4000),
+>  	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x165A,
+>  			  "HP", STAC_92HD83XXX_HP_cNB11_INTQUAD),
+>  	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x165B,
 
+It now indeed does switch on "beats audio" aka subwoofer et al.
 
--- 
-Nicolas Ferre
+However now I got a different problem: When I play a video on youtube,
+then
+suspend to RAM, and then resume:
+
+* if the music was playing when suspending, then the desktop gets stuck
+  after resume:
+  no mouse, no keyboard input gets through to the desktop. I can
+  Ctrl-Alt-F1 out of X and reboot and that's it. I guess it's the firefox
+  flash plugin getting blocked in the kernel while accessing the audio
+  device and thus blocking the whole desktop (that's my speculation).
+
+* if the music was *not* playing (i.e. video paused), then after resume
+  there is no sound any more. "alsa force-reload" puts the audio in some
+  weird state where it gets in a loop playing some short bit of sound:
+  tak-tak-tak-tak-tak-tak... So again I reboot.
+
+# uname -a
+  Linux hier 3.7.0 #2 SMP Thu Dec 13 12:48:25 CET 2012 x86_64 GNU/Linux
+
+*t
