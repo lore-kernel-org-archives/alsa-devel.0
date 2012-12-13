@@ -1,40 +1,36 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [Resend PATCH v6 1/4] pinctrl: atmel-ssc: add pinctrl support
-Date: Thu, 13 Dec 2012 10:10:35 +0800
-Message-ID: <50C9391B.7080204@atmel.com>
-References: <1353464229-20846-1-git-send-email-voice.shen@atmel.com> <20121121022441.GJ4673@opensource.wolfsonmicro.com> <50BC3F1A.1030808@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320aic326x: Support for TI
+	TLV320AIC3262	audio driver
+Date: Thu, 13 Dec 2012 02:32:25 +0000
+Message-ID: <20121213023225.GB23329@opensource.wolfsonmicro.com>
+References: <1355309628-20945-1-git-send-email-mehar.bajwa@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <50BC3F1A.1030808@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: plagnioj@jcrosoft.com
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 432812615D1
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2012 03:32:26 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1355309628-20945-1-git-send-email-mehar.bajwa@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mehar Bajwa <mehar.bajwa@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/3/2012 13:56, Bo Shen wrote:
-> Hi J,
->
-> On 11/21/2012 10:24, Mark Brown wrote:
->> On Wed, Nov 21, 2012 at 10:17:09AM +0800, Bo Shen wrote:
->>> Add pinctrl support for atmel ssc peripheral
->>>
->>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->>
->> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->>
->
-> Ping?
-> Will you pick up this patch, if not, the linux-next (20121130) build
-> will report following error:
-> ---<8---
-> ERROR (phandle_references): Reference to non-existent node or label
-> "pinctrl_ssc0_tx
-> --->8---
+On Wed, Dec 12, 2012 at 04:23:48PM +0530, Mehar Bajwa wrote:
+> TI TLV320AIC3262 is a flexible, low-power, low-voltage stereo audio
+> codec with digital microphone inputs and programmable outputs. It includes
+> powertune capabilities, enhanced fully-programmable miniDSP, fixed predefined
+> and parameterizable signal processing blocks, integrated PLL and flexible digital
+> interfaces.
 
-Ping again?
-
-> Best Regards,
-> Bo Shen
-
+Is this in some way different to the patch set you sent yesterday?
