@@ -1,20 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re:
- =?utf-8?b?562U5aSNOiBDb3VsZCB5b3UgaGVscCBtZSBhYm91?=
- =?utf-8?q?t_the_ALSA=3F?=
-Date: Fri, 14 Dec 2012 10:46:28 +0100
-Message-ID: <50CAF574.1@perex.cz>
-References: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
- <50CAE504.60002@perex.cz>
- <6B947C8AC4195040A8C6876A496C644A07BAB6A9@BJ-MAIL-04.vimicro.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 1/1] ALSA: hda - bug fix for invalid
+	connection list of Haswell HDMI codec pin
+Date: Fri, 14 Dec 2012 16:53:50 -0500
+Message-ID: <1355522030-9819-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B2EE261712
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 10:46:29 +0100 (CET)
-In-Reply-To: <6B947C8AC4195040A8C6876A496C644A07BAB6A9@BJ-MAIL-04.vimicro.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9363261712
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 10:52:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,71 +19,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zhang wei <zhangwei@vimicro.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Xingchao Wang <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAxNC4xMi4yMDEyIDA5OjU1LCBaaGFuZyB3ZWkgd3JvdGU6Cj4gVGhhbmsgeW91IHZlcnkg
-bXVjaC4KPiAKPiBCdXQgaWYgdGhlIE9TIGxvc3Qgb3IgZGVsYXllZCBzb21lIGludGVycnVwdChz
-KSB0aGUgdmFyaWFibGUKPiBod19wdHJfaW50ZXJydXB0IHdpbGwgc21hbGxlciB0aGFuIGl0IHNo
-b3VsZCBiZSxiZWNhdXNlIGRlbGF5ZWQgdXBkYXRlCj4gaXQgZnJvbSBsYXN0IHRpbWUgZW50ZXIg
-dGhlIGludGVycnVwdC5zbyB0aGUKPiAKPiBkZWx0YSA9IHJ1bnRpbWUtPmh3X3B0cl9pbnRlcnJ1
-cHQgKyBydW50aW1lLT5wZXJpb2Rfc2l6ZTsKPiAKPiBzaG91bGQgYmUgc21hbGxlciB0aGFuIG5l
-d19od19wdHIuCgpUaGUgY3VycmVudCAncG9zJyB2YWx1ZSBmcm9tIHRoZSBkcml2ZXIgY2FuIGJl
-IHNtYWxsZXIgKGJ1ZmZlcl9zaXplCndyYXApIHRoYW4gbGFzdCBvbmUuIFRoZSBuZXdfaHdfcHRy
-IGNhbiBiZSBsb3dlciB0aGFuIGRlbHRhIGluIHRoaXMgY2FzZS4KCgkJCQkJSmFyb3NsYXYKCj4g
-Cj4gIAo+IAo+IC0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0KPiDlj5Hku7bkuro6IEphcm9zbGF2IEt5
-c2VsYSBbbWFpbHRvOnBlcmV4QHBlcmV4LmN6XQo+IOWPkemAgeaXtumXtDogMjAxMuW5tDEy5pyI
-MTTml6UgMTY6MzYKPiDmlLbku7bkuro6IFpoYW5nIHdlaQo+IOaKhOmAgTogQUxTQSBkZXZlbG9w
-bWVudAo+IOS4u+mimDogUmU6IENvdWxkIHlvdSBoZWxwIG1lIGFib3V0IHRoZSBBTFNBPwo+IAo+
-ICAKPiAKPiBEYXRlIDE0LjEyLjIwMTIgMDk6MDcsIFpoYW5nIHdlaSB3cm90ZToKPiAKPj4gR29v
-ZCBhZnRlcm5vb24gLgo+IAo+PiAKPiAKPj4gRXhjdXNlIG1lIGlmIEkgZGlzdHVyYiB5b3UsIEkg
-Zm91bmQgeW91ciBjb250YWN0IGluZm9ybWF0aW9uIGZyb20gdGhlCj4gCj4+IGFsc2EtZGV2ZWwK
-PiAKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZl
-bC8yMDEwLUF1Z3VzdC8wMzA2MDUuaHRtbAo+IAo+PiAuCj4gCj4+IAo+IAo+PiBSZWNlbnRseSBJ
-IGFtIHN0dWR5aW5nIHRoZSBhbHNhLWRyaXZlciBhbmQgdGhlIGNvZGUgYmxvY2tlZCBtZSB3aGlj
-aAo+IAo+PiBmcm9tIHRoZSBmdW5jdGlvbiBzbmRfcGNtX3VwZGF0ZV9od19wdHIwaW50aGUgcGNt
-X2xpYi5jLgo+IAo+PiAKPiAKPj4gPT09PT09PT09PT09PT09PT09PT09c3RhcnQ9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT3DqAo+IAo+PiAKPiAKPj4gICAgICAgICAgaWYgKGluX2ludGVy
-cnVwdCkgewo+IAo+PiAKPiAKPj4gICAgICAgICAgICAgICAgICAgIC8qIHdlIGtub3cgdGhhdCBv
-bmUgcGVyaW9kIHdhcyBwcm9jZXNzZWQgKi8KPiAKPj4gCj4gCj4+ICAgICAgICAgICAgICAgICAg
-ICAvKiBkZWx0YSA9ICJleHBlY3RlZCBuZXh0IGh3X3B0ciIgZm9yIGluX2ludGVycnVwdCAhPQo+
-IAo+PiAwICovCj4gCj4+IAo+IAo+PiAgICAgICAgICAgICAgICAgICAgZGVsdGEgPSBydW50aW1l
-LT5od19wdHJfaW50ZXJydXB0ICsKPiBydW50aW1lLT5wZXJpb2Rfc2l6ZTsKPiAKPj4gCj4gCj4+
-ICAgICAgICAgICAgICAgICAgICBpZiAoZGVsdGEgPiBuZXdfaHdfcHRyKSB7Cj4gCj4+IAo+IAo+
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogY2hlY2sgZm9yIGRvdWJsZSBhY2tub3ds
-ZWRnZWQgaW50ZXJydXB0cyAqLwo+IAo+PiAKPiAKPj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGhkZWx0YSA9IGppZmZpZXMgLSBydW50aW1lLT5od19wdHJfamlmZmllczsKPiAKPj4gCj4g
-Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoaGRlbHRhID4KPiBydW50aW1lLT5o
-d19wdHJfYnVmZmVyX2ppZmZpZXMvMikgewo+IAo+PiAKPiAKPj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGh3X2Jhc2UgKz0gcnVudGltZS0+YnVmZmVyX3NpemU7Cj4gCj4+
-IAo+IAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGh3X2Jhc2Ug
-Pj0gcnVudGltZS0+Ym91bmRhcnkpCj4gCj4+IAo+IAo+PiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGh3X2Jhc2UgPSAwOwo+IAo+PiAKPiAKPj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5ld19od19wdHIgPSBod19iYXNlICsgcG9z
-Owo+IAo+PiAKPiAKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8g
-X19kZWx0YTsKPiAKPj4gCj4gCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gCj4+
-IAo+IAo+PiAgICAgICAgICAgICAgICAgICAgfQo+IAo+PiAKPiAKPj4gICAgICAgICAgfQo+IAo+
-PiAKPiAKPj4gw6c9PT09PT09PT09PT09PT09ZW5kPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09Cj4gCj4+IAo+IAo+PiBJ4oCZdmUgYWxyZWFkeSByZWFkIHlvdXIgbWFpbCBidXQgSSBz
-dGlsbCBkbyBub3QgdW5kZXJzdGFuZCB5b3VyIGludGVuZC4gSQo+IAo+PiBrbm93IHRoZSB0YXJn
-ZXQgb2YgdGhlIHBpY2VzIG9mIGNvZGUgaXMgcHJldmVudCB0aGUgdmFyaWFibGUgaHdfcHRyIGFu
-ZAo+IAo+PiBod19iYXNlIGRlbGF5ZWQgdXBkYXRlIGZyb20gc29tZSBraW5kIG9mIGNhc2UgLnNv
-IG15IHF1ZXN0aW9uIGlzCj4gCj4+IAo+IAo+PiAoMSkgICAgIGhvdyBjb3VsZCBoYXBwZW4gb24g
-ZGVsdGE+bmV3X2h3X3B0cj8gQW5kIHdoeT8KPiAKPj4gCj4gCj4+ICgyKSAgICAgV2h5IHdlIGNh
-biBjb25jbHVlIHRoZSBod19wdHIgY3Jvc3NlZCB0aGUgYm91bmRhcnkgb2YKPiAKPj4gYnVmZmVy
-X3NpemUgd2hlbiBoZGVsdGE+cnVuaXRtZS0+aHdfcHRyX2ppZmZpZXMvMj8gV2hhdCBwcmluY2lw
-bGUgd2UKPiAKPj4gYmFzZWQgb24/Cj4gCj4gIAo+IAo+IFRoZSBpbnRlcnJ1cHRzIGNhbiBiZSBs
-b3N0IG9yIGRlbGF5ZWQgaW4gc29tZSBjYXNlcyAoc21hbGwgcGVyaW9kIHNpemVzCj4gCj4gZXRj
-LikuIFNvIHlvdSBuZWVkIHRvIGNoZWNrIGZvciB0aGVzZSBzaXR1YXRpb25zLiBUaGUgZHJpdmVy
-IHJldHVybnMKPiAKPiBvbmx5IHBvc2l0aW9uIGluIHRoZSByaW5nIGJ1ZmZlciB3aXRob3V0IGNv
-dW50IG9mICJjcm9zcyIgcG9pbnRzLCBzbyB3ZQo+IAo+IG5lZWQgdG8gdHJhY2UgdGhlc2Ugc2l0
-dWF0aW9ucyB1c2luZyBhbm90aGVyIGNsb2NrIHNvdXJjZSAobGlrZSBzeXN0ZW0KPiAKPiBjbG9j
-aykuCj4gCj4gIAo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgSmFyb3NsYXYKPiAKPiAgCj4g
-Cj4gLS0gCj4gCj4gSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4KPiAKPiBMaW51eCBL
-ZXJuZWwgU291bmQgTWFpbnRhaW5lcgo+IAo+IEFMU0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLgo+
-IAoKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBLZXJuZWwgU291
-bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Mengdong Lin <mengdong.lin@intel.com>
+
+Haswell HDMI codec pins may report invalid connection list entries, which
+will cause failure to play audio via HDMI.
+
+So this patch
+- allow generic hdmi patch to pick up and apply fixups for different codecs.
+- add fixup for Haswell to workaround this hardware issue: enable DP1.2 mode
+  and override the connection list entries with proper value.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Signed-off-by: Xingchao Wang <xingchao.wang@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 71555cc..42fdf14 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -38,6 +38,7 @@
+ #include <sound/tlv.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_jack.h"
+ 
+ static bool static_hdmi_pcm;
+@@ -79,6 +80,7 @@ struct hdmi_spec_per_pin {
+ };
+ 
+ struct hdmi_spec {
++	struct hda_gen_spec gen;
+ 	int num_cvts;
+ 	struct hdmi_spec_per_cvt cvts[MAX_HDMI_CVTS];
+ 
+@@ -1687,6 +1689,54 @@ static const struct hda_codec_ops generic_hdmi_patch_ops = {
+ 	.unsol_event		= hdmi_unsol_event,
+ };
+ 
++static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
++			       const struct hda_fixup *fix, int action)
++{
++	unsigned int vendor_param;
++	hda_nid_t list[3] = {0x2, 0x3, 0x4};
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	vendor_param = snd_hda_codec_read(codec, 0x08, 0, 0xf81, 0);
++	if (vendor_param == -1 || vendor_param & 0x02)
++		return;
++
++	/* enable DP1.2 mode */
++	vendor_param |= 0x02;
++	snd_hda_codec_read(codec, 0x08, 0, 0x781, vendor_param);
++
++	vendor_param = snd_hda_codec_read(codec, 0x08, 0, 0xf81, 0);
++	if (vendor_param == -1 || !(vendor_param & 0x02))
++		return;
++
++	snd_hda_override_conn_list(codec, 0x06, 3, list);
++	hdmi_read_pin_conn(codec, 1);
++}
++
++
++/* available models for fixup */
++enum {
++	INTEL_HASWELL,
++};
++
++static const struct hda_model_fixup hdmi_models[] = {
++	{.id = INTEL_HASWELL, .name = "Haswell"},
++	{}
++};
++
++static const struct snd_pci_quirk hdmi_fixup_tbl[] = {
++	SND_PCI_QUIRK(0x8086, 0x2010, "Haswell", INTEL_HASWELL),
++	{} /* terminator */
++};
++
++static const struct hda_fixup hdmi_fixups[] = {
++	[INTEL_HASWELL] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = intel_haswell_fixup_connect_list,
++	},
++};
++
+ static int patch_generic_hdmi(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec;
+@@ -1696,6 +1746,11 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	codec->spec = spec;
++	snd_hda_gen_init(&spec->gen);
++
++	snd_hda_pick_fixup(codec, hdmi_models, hdmi_fixup_tbl, hdmi_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
+ 		kfree(spec);
+-- 
+1.7.9.5
