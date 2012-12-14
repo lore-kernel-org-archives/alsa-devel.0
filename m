@@ -1,22 +1,15 @@
-From: Devin Anderson <surfacepatterns@gmail.com>
-Subject: Re: Polling issues with the PCM multi plugin
-Date: Thu, 13 Dec 2012 22:48:36 -0800
-Message-ID: <CAG7zqTqBnJYaDq8i06xx2kkPf7dQG5HLMGVM5ECFyNu9_J9bBw@mail.gmail.com>
-References: <CAG7zqTqPaLWy-1kN_4pbpbNTL4jAaEnDn6p-OT+-xsrFffpvjA@mail.gmail.com>
- <s5hd2yesbo8.wl%tiwai@suse.de>
- <CAG7zqTroztZHymJmBASNcvZ9odfEBfXpowOi=bKAxGgHAT20rA@mail.gmail.com>
- <s5h38zas9b5.wl%tiwai@suse.de>
- <CAG7zqTpWkGD5XFKEfJNYXh0bAjTNOmL-KcXBQJPj96exEYbukg@mail.gmail.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH 1/1] ALSA: hda - bug fix for invalid connection
+	list of Haswell HDMI codec pin
+Date: Fri, 14 Dec 2012 13:57:30 -0500
+Message-ID: <1355511450-2031-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f53.google.com (mail-wg0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id E28972616F1
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 07:48:36 +0100 (CET)
-Received: by mail-wg0-f53.google.com with SMTP id ei8so1236897wgb.20
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2012 22:48:36 -0800 (PST)
-In-Reply-To: <CAG7zqTpWkGD5XFKEfJNYXh0bAjTNOmL-KcXBQJPj96exEYbukg@mail.gmail.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id E466A2616F1
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 07:55:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,29 +19,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Xingchao Wang <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 13, 2012 at 7:43 PM, Devin Anderson
-<surfacepatterns@gmail.com> wrote:
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-> I have an idea that I'd like to explore, but it's dependent on the
-> idea that `snd_pcm_poll_descriptors()` needs to be called before every
-> `poll()` call, and I'm not sure if that's a reasonable expectation.
-> Is `snd_pcm_poll_descriptors()` a function you can call once, and then
-> depend on working through multiple `poll()` calls, or is it required
-> that `snd_pcm_poll_descriptors()` be called for every call to refresh
-> the descriptors and the events they should be polled for?
+Haswell HDMI codec pins may report invalid connection list entries, which
+will cause failure to play audio via HDMI.
 
-Scratch that.  I just read pcm.c in the tests folder in alsa-lib,
-which calls `snd_pcm_poll_descriptors()` only once, and then polls
-thereafter.  Oh well.
+So this patch
+- allow generic hdmi patch to pick up and apply fixups for different codecs.
+- add fixup for Haswell to workaround this hardware issue: enable DP1.2 mode
+  and override invalid connection list entries reported by hardware.
 
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Signed-off-by: Xingchao Wang <xingchao.wang@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 71555cc..2bf1758 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -38,6 +38,7 @@
+ #include <sound/tlv.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
++#include "hda_auto_parser.h"
+ #include "hda_jack.h"
+ 
+ static bool static_hdmi_pcm;
+@@ -79,6 +80,7 @@ struct hdmi_spec_per_pin {
+ };
+ 
+ struct hdmi_spec {
++	struct hda_gen_spec gen;
+ 	int num_cvts;
+ 	struct hdmi_spec_per_cvt cvts[MAX_HDMI_CVTS];
+ 
+@@ -1687,6 +1689,69 @@ static const struct hda_codec_ops generic_hdmi_patch_ops = {
+ 	.unsol_event		= hdmi_unsol_event,
+ };
+ 
++static void intel_haswell_fixup_enable_dp12_mode(struct hda_codec *codec,
++			       const struct hda_fixup *fix, int action)
++{
++	unsigned int vendor_param;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	vendor_param = snd_hda_codec_read(codec, 0x08, 0, 0xf81, 0);
++	if (vendor_param == -1 || vendor_param & 0x02)
++		return;
++
++	vendor_param |= 0x02;
++	snd_hda_codec_read(codec, 0x08, 0, 0x781, vendor_param);
++}
++
++static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
++			       const struct hda_fixup *fix, int action)
++{
++	hda_nid_t list[3] = {0x2, 0x3, 0x4};
++	unsigned int vendor_param;
++
++	if (action != HDA_FIXUP_ACT_PROBE)
++		return;
++
++	vendor_param = snd_hda_codec_read(codec, 0x08, 0, 0xf81, 0);
++	if (vendor_param == -1 || !(vendor_param & 0x02))
++		return;
++
++	snd_hda_override_conn_list(codec, 0x06, 3, list);
++	hdmi_read_pin_conn(codec, 1);
++}
++
++
++/* available models for fixup */
++enum {
++	INTEL_HASWELL,
++	INTEL_HASWELL_CONNECT_LIST,
++};
++
++static const struct hda_model_fixup hdmi_models[] = {
++	{.id = INTEL_HASWELL, .name = "Haswell"},
++	{}
++};
++
++static const struct snd_pci_quirk hdmi_fixup_tbl[] = {
++	SND_PCI_QUIRK(0x8086, 0x2010, "Haswell", INTEL_HASWELL),
++	{} /* terminator */
++};
++
++static const struct hda_fixup hdmi_fixups[] = {
++	[INTEL_HASWELL] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = intel_haswell_fixup_enable_dp12_mode,
++		.chained = true,
++		.chain_id = INTEL_HASWELL_CONNECT_LIST,
++	},
++	[INTEL_HASWELL_CONNECT_LIST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = intel_haswell_fixup_connect_list,
++	},
++};
++
+ static int patch_generic_hdmi(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec;
+@@ -1696,11 +1761,19 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	codec->spec = spec;
++	snd_hda_gen_init(&spec->gen);
++
++	snd_hda_pick_fixup(codec, hdmi_models, hdmi_fixup_tbl, hdmi_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
+ 		kfree(spec);
+ 		return -EINVAL;
+ 	}
++
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
++
+ 	codec->patch_ops = generic_hdmi_patch_ops;
+ 	generic_hdmi_init_per_pins(codec);
+ 
 -- 
-Devin Anderson
-surfacepatterns (at) gmail (dot) com
-
-blog - http://surfacepatterns.blogspot.com/
-psinsights - http://psinsights.googlecode.com/
-synthclone - http://synthclone.googlecode.com/
+1.7.9.5
