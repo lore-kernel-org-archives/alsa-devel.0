@@ -1,21 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 1/1] ALSA: hda - bug fix for
-	invalid	connection list of Haswell HDMI codec pin
-Date: Fri, 14 Dec 2012 08:04:04 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8294796@SHSMSX101.ccr.corp.intel.com>
-References: <1355511450-2031-1-git-send-email-mengdong.lin@intel.com>
- <s5hk3slqfda.wl%tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F82946F1@SHSMSX101.ccr.corp.intel.com>
- <s5hehitqdii.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Could you help me about the ALSA?
+Date: Fri, 14 Dec 2012 09:36:20 +0100
+Message-ID: <50CAE504.60002@perex.cz>
+References: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A929026170D
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 09:04:13 +0100 (CET)
-In-Reply-To: <s5hehitqdii.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49F4A26170D
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 09:36:21 +0100 (CET)
+In-Reply-To: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,30 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
- Xingchao" <xingchao.wang@intel.com>
+To: Zhang wei <zhangwei@vimicro.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, December 14, 2012 3:50 PM
-
-
-> > But, do you mean we can change this to the pre-probe stage, so that
-> > snd_hda_get_raw_connections() need not be called during the parsing the
-> codec? I'll do a test.
-> 
-> Yes.  It may work currently but it might be broken if the parser code is
-> changed, for example.  I see no reason why the fixup must be applied after
-> parsing the tree.
->
-
-Hi Takashi,
-
-You're right. Overriding the connection list can work after being merged into 
-the pre-probe stage and so only one fix-up is enough.
-
-I'll update the patch. Many thanks for your advice!
-
-- Mengdong
+RGF0ZSAxNC4xMi4yMDEyIDA5OjA3LCBaaGFuZyB3ZWkgd3JvdGU6Cj4gR29vZCBhZnRlcm5vb24g
+Lgo+IAo+IEV4Y3VzZSBtZSBpZiBJIGRpc3R1cmIgeW91LCBJIGZvdW5kIHlvdXIgY29udGFjdCBp
+bmZvcm1hdGlvbiBmcm9tIHRoZQo+IGFsc2EtZGV2ZWwKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTAtQXVndXN0LzAzMDYwNS5odG1sCj4g
+Lgo+IAo+IFJlY2VudGx5IEkgYW0gc3R1ZHlpbmcgdGhlIGFsc2EtZHJpdmVyIGFuZCB0aGUgY29k
+ZSBibG9ja2VkIG1lIHdoaWNoCj4gZnJvbSB0aGUgZnVuY3Rpb24gc25kX3BjbV91cGRhdGVfaHdf
+cHRyMGludGhlIHBjbV9saWIuYy4KPiAKPiA9PT09PT09PT09PT09PT09PT09PT1zdGFydD09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PcOoCj4gCj4gICAgICAgICAgaWYgKGluX2ludGVycnVw
+dCkgewo+IAo+ICAgICAgICAgICAgICAgICAgICAvKiB3ZSBrbm93IHRoYXQgb25lIHBlcmlvZCB3
+YXMgcHJvY2Vzc2VkICovCj4gCj4gICAgICAgICAgICAgICAgICAgIC8qIGRlbHRhID0gImV4cGVj
+dGVkIG5leHQgaHdfcHRyIiBmb3IgaW5faW50ZXJydXB0ICE9Cj4gMCAqLwo+IAo+ICAgICAgICAg
+ICAgICAgICAgICBkZWx0YSA9IHJ1bnRpbWUtPmh3X3B0cl9pbnRlcnJ1cHQgKyBydW50aW1lLT5w
+ZXJpb2Rfc2l6ZTsKPiAKPiAgICAgICAgICAgICAgICAgICAgaWYgKGRlbHRhID4gbmV3X2h3X3B0
+cikgewo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBjaGVjayBmb3IgZG91Ymxl
+IGFja25vd2xlZGdlZCBpbnRlcnJ1cHRzICovCj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGhkZWx0YSA9IGppZmZpZXMgLSBydW50aW1lLT5od19wdHJfamlmZmllczsKPiAKPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGhkZWx0YSA+IHJ1bnRpbWUtPmh3X3B0cl9idWZm
+ZXJfamlmZmllcy8yKSB7Cj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGh3X2Jhc2UgKz0gcnVudGltZS0+YnVmZmVyX3NpemU7Cj4gCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGlmIChod19iYXNlID49IHJ1bnRpbWUtPmJvdW5kYXJ5KQo+IAo+
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaHdfYmFzZSA9
+IDA7Cj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5ld19od19wdHIg
+PSBod19iYXNlICsgcG9zOwo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIF9fZGVsdGE7Cj4gCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KPiAKPiAg
+ICAgICAgICAgICAgICAgICAgfQo+IAo+ICAgICAgICAgIH0KPiAKPiDDpz09PT09PT09PT09PT09
+PT1lbmQ9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAKPiBJ4oCZdmUgYWxyZWFk
+eSByZWFkIHlvdXIgbWFpbCBidXQgSSBzdGlsbCBkbyBub3QgdW5kZXJzdGFuZCB5b3VyIGludGVu
+ZC4gSQo+IGtub3cgdGhlIHRhcmdldCBvZiB0aGUgcGljZXMgb2YgY29kZSBpcyBwcmV2ZW50IHRo
+ZSB2YXJpYWJsZSBod19wdHIgYW5kCj4gaHdfYmFzZSBkZWxheWVkIHVwZGF0ZSBmcm9tIHNvbWUg
+a2luZCBvZiBjYXNlIC5zbyBteSBxdWVzdGlvbiBpcwo+IAo+ICgxKSAgICAgaG93IGNvdWxkIGhh
+cHBlbiBvbiBkZWx0YT5uZXdfaHdfcHRyPyBBbmQgd2h5Pwo+IAo+ICgyKSAgICAgV2h5IHdlIGNh
+biBjb25jbHVlIHRoZSBod19wdHIgY3Jvc3NlZCB0aGUgYm91bmRhcnkgb2YKPiBidWZmZXJfc2l6
+ZSB3aGVuIGhkZWx0YT5ydW5pdG1lLT5od19wdHJfamlmZmllcy8yPyBXaGF0IHByaW5jaXBsZSB3
+ZQo+IGJhc2VkIG9uPwoKVGhlIGludGVycnVwdHMgY2FuIGJlIGxvc3Qgb3IgZGVsYXllZCBpbiBz
+b21lIGNhc2VzIChzbWFsbCBwZXJpb2Qgc2l6ZXMKZXRjLikuIFNvIHlvdSBuZWVkIHRvIGNoZWNr
+IGZvciB0aGVzZSBzaXR1YXRpb25zLiBUaGUgZHJpdmVyIHJldHVybnMKb25seSBwb3NpdGlvbiBp
+biB0aGUgcmluZyBidWZmZXIgd2l0aG91dCBjb3VudCBvZiAiY3Jvc3MiIHBvaW50cywgc28gd2UK
+bmVlZCB0byB0cmFjZSB0aGVzZSBzaXR1YXRpb25zIHVzaW5nIGFub3RoZXIgY2xvY2sgc291cmNl
+IChsaWtlIHN5c3RlbQpjbG9jaykuCgoJCQkJCUphcm9zbGF2CgotLSAKSmFyb3NsYXYgS3lzZWxh
+IDxwZXJleEBwZXJleC5jej4KTGludXggS2VybmVsIFNvdW5kIE1haW50YWluZXIKQUxTQSBQcm9q
+ZWN0OyBSZWQgSGF0LCBJbmMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
