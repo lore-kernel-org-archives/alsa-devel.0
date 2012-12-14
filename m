@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5110: Split input PGA controls
-Date: Fri, 14 Dec 2012 15:22:55 +0900
-Message-ID: <1355466175-15187-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5102: Split input PGA controls
+Date: Fri, 14 Dec 2012 14:48:27 +0900
+Message-ID: <1355464107-26545-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4121E2616F3
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 12:50:21 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8FE66261602
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 12:57:35 +0100 (CET)
 Received: from finisterre.wolfsonmicro.main (unknown [87.246.78.26])
- by opensource.wolfsonmicro.com (Postfix) with ESMTPSA id DA77A11091E
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 11:50:20 +0000 (GMT)
+ by opensource.wolfsonmicro.com (Postfix) with ESMTPSA id BF276110487
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 11:50:19 +0000 (GMT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,16 +32,16 @@ than stereo ones.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5110.c |   77 +++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 31 deletions(-)
+ sound/soc/codecs/wm5102.c |   64 +++++++++++++++++++++++++++------------------
+ 1 file changed, 38 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 794f050..55a1348 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -55,37 +55,52 @@ SOC_SINGLE("IN3 High Performance Switch", ARIZONA_IN3L_CONTROL,
- SOC_SINGLE("IN4 High Performance Switch", ARIZONA_IN4L_CONTROL,
- 	   ARIZONA_IN4_OSR_SHIFT, 1, 0),
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index b20feb2..3831645 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -611,32 +611,44 @@ SOC_SINGLE("IN2 High Performance Switch", ARIZONA_IN2L_CONTROL,
+ SOC_SINGLE("IN3 High Performance Switch", ARIZONA_IN3L_CONTROL,
+ 	   ARIZONA_IN3_OSR_SHIFT, 1, 0),
  
 -SOC_DOUBLE_R_RANGE_TLV("IN1 Volume", ARIZONA_IN1L_CONTROL,
 -		       ARIZONA_IN1R_CONTROL,
@@ -59,8 +59,6 @@ index 794f050..55a1348 100644
 -	     ARIZONA_ADC_DIGITAL_VOLUME_2R, ARIZONA_IN2L_MUTE_SHIFT, 1, 1),
 -SOC_DOUBLE_R("IN3 Digital Switch", ARIZONA_ADC_DIGITAL_VOLUME_3L,
 -	     ARIZONA_ADC_DIGITAL_VOLUME_3R, ARIZONA_IN3L_MUTE_SHIFT, 1, 1),
--SOC_DOUBLE_R("IN4 Digital Switch", ARIZONA_ADC_DIGITAL_VOLUME_4L,
--	     ARIZONA_ADC_DIGITAL_VOLUME_4R, ARIZONA_IN4L_MUTE_SHIFT, 1, 1),
 -
 -SOC_DOUBLE_R_TLV("IN1 Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_1L,
 -		 ARIZONA_ADC_DIGITAL_VOLUME_1R, ARIZONA_IN1L_DIG_VOL_SHIFT,
@@ -70,9 +68,6 @@ index 794f050..55a1348 100644
 -		 0xbf, 0, digital_tlv),
 -SOC_DOUBLE_R_TLV("IN3 Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_3L,
 -		 ARIZONA_ADC_DIGITAL_VOLUME_3R, ARIZONA_IN3L_DIG_VOL_SHIFT,
--		 0xbf, 0, digital_tlv),
--SOC_DOUBLE_R_TLV("IN4 Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_4L,
--		 ARIZONA_ADC_DIGITAL_VOLUME_4R, ARIZONA_IN4L_DIG_VOL_SHIFT,
 -		 0xbf, 0, digital_tlv),
 +SOC_SINGLE_RANGE_TLV("IN1L Volume", ARIZONA_IN1L_CONTROL,
 +		     ARIZONA_IN1L_PGA_VOL_SHIFT, 0x40, 0x5f, 0, ana_tlv),
@@ -99,10 +94,6 @@ index 794f050..55a1348 100644
 +	   ARIZONA_IN3L_MUTE_SHIFT, 1, 1),
 +SOC_SINGLE("IN3R Digital Switch", ARIZONA_ADC_DIGITAL_VOLUME_3R,
 +	   ARIZONA_IN3R_MUTE_SHIFT, 1, 1),
-+SOC_SINGLE("IN4L Digital Switch", ARIZONA_ADC_DIGITAL_VOLUME_4L,
-+	   ARIZONA_IN4L_MUTE_SHIFT, 1, 1),
-+SOC_SINGLE("IN4R Digital Switch", ARIZONA_ADC_DIGITAL_VOLUME_4R,
-+	   ARIZONA_IN4R_MUTE_SHIFT, 1, 1),
 +
 +SOC_SINGLE_TLV("IN1L Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_1L,
 +	       ARIZONA_IN1L_DIG_VOL_SHIFT, 0xbf, 0, digital_tlv),
@@ -116,10 +107,6 @@ index 794f050..55a1348 100644
 +	       ARIZONA_IN3L_DIG_VOL_SHIFT, 0xbf, 0, digital_tlv),
 +SOC_SINGLE_TLV("IN3R Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_3R,
 +	       ARIZONA_IN3R_DIG_VOL_SHIFT, 0xbf, 0, digital_tlv),
-+SOC_SINGLE_TLV("IN4L Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_4L,
-+	       ARIZONA_IN4L_DIG_VOL_SHIFT, 0xbf, 0, digital_tlv),
-+SOC_SINGLE_TLV("IN4R Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_4R,
-+	       ARIZONA_IN4R_DIG_VOL_SHIFT, 0xbf, 0, digital_tlv),
  
  SOC_ENUM("Input Ramp Up", arizona_in_vi_ramp),
  SOC_ENUM("Input Ramp Down", arizona_in_vd_ramp),
