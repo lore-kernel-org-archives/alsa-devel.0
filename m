@@ -1,20 +1,20 @@
-From: "Zhang wei" <zhangwei@vimicro.com>
-Subject: Could you help me about the ALSA?
-Date: Fri, 14 Dec 2012 18:46:12 +0800
-Message-ID: <6B947C8AC4195040A8C6876A496C644A07BAB7A7@BJ-MAIL-04.vimicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Could you help me about the ALSA?
+Date: Fri, 14 Dec 2012 12:01:59 +0100
+Message-ID: <50CB0727.1030706@perex.cz>
 References: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
  <50CAE504.60002@perex.cz>
  <6B947C8AC4195040A8C6876A496C644A07BAB6A9@BJ-MAIL-04.vimicro.com>
  <50CAF574.1@perex.cz>
+ <6B947C8AC4195040A8C6876A496C644A07BAB7A7@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.vimicro.com (unknown [211.155.250.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D341265133
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 11:47:18 +0100 (CET)
-Content-class: urn:content-classes:message
-In-Reply-To: <50CAF574.1@perex.cz>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1589265133
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 12:01:59 +0100 (CET)
+In-Reply-To: <6B947C8AC4195040A8C6876A496C644A07BAB7A7@BJ-MAIL-04.vimicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Zhang wei <zhangwei@vimicro.com>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Date 14.12.2012 09:55, Zhang wei wrote:
-
-> Thank you very much.
-
-> 
-
-> But if the OS lost or delayed some interrupt(s) the variable
-
-> hw_ptr_interrupt will smaller than it should be,because delayed update
-
-> it from last time enter the interrupt.so the
-
-> 
-
-> delta = runtime->hw_ptr_interrupt + runtime->period_size;
-
-> 
-
-> should be smaller than new_hw_ptr.
-
- 
-
-The current 'pos' value from the driver can be smaller (buffer_size
-
-wrap) than last one. The new_hw_ptr can be lower than delta in this
-case.
-
- 
-
-                       Jaroslav
-
- 
-
-Yes,when buffer_size wraped the 'pos' is smallar than last one.If we
-want to confirm the hw_base need to adjust there must be consider
-another confidition:
-
-hdelta = jiffies - runtime->hw_ptr_jiffies;
-
-              if (hdelta > runtime->hw_ptr_buffer_jiffies/2)
-
-how to connect this code with checking unnormal interrupt(lost or
-delayed)?
-
-Why we can prove need to adjust the 'hw_base' when 'hdelta' >
-hw_ptr_buffer_jiffies/2 ? the former represent the jiffier error between
-this moment and last be here(maybe called from non-interrupt elpased()).
-
-The later means the time spend on fill the buffer.Then compare them and
-we will find if 'delta' is bigger means the DMA already fininshed a
-period at least without notice the OS?
-
-The compariation confused me.I can not get the relationship from the
-result and what the information or clue is ignored by me? Please give me
-some tips. Thank you.
+RGF0ZSAxNC4xMi4yMDEyIDExOjQ2LCBaaGFuZyB3ZWkgd3JvdGU6Cj4gRGF0ZSAxNC4xMi4yMDEy
+IDA5OjU1LCBaaGFuZyB3ZWkgd3JvdGU6Cj4gCj4+IFRoYW5rIHlvdSB2ZXJ5IG11Y2guCj4gCj4+
+IAo+IAo+PiBCdXQgaWYgdGhlIE9TIGxvc3Qgb3IgZGVsYXllZCBzb21lIGludGVycnVwdChzKSB0
+aGUgdmFyaWFibGUKPiAKPj4gaHdfcHRyX2ludGVycnVwdCB3aWxsIHNtYWxsZXIgdGhhbiBpdCBz
+aG91bGQgYmUsYmVjYXVzZSBkZWxheWVkIHVwZGF0ZQo+IAo+PiBpdCBmcm9tIGxhc3QgdGltZSBl
+bnRlciB0aGUgaW50ZXJydXB0LnNvIHRoZQo+IAo+PiAKPiAKPj4gZGVsdGEgPSBydW50aW1lLT5o
+d19wdHJfaW50ZXJydXB0ICsgcnVudGltZS0+cGVyaW9kX3NpemU7Cj4gCj4+IAo+IAo+PiBzaG91
+bGQgYmUgc21hbGxlciB0aGFuIG5ld19od19wdHIuCj4gCj4gIAo+IAo+IFRoZSBjdXJyZW50ICdw
+b3MnIHZhbHVlIGZyb20gdGhlIGRyaXZlciBjYW4gYmUgc21hbGxlciAoYnVmZmVyX3NpemUKPiAK
+PiB3cmFwKSB0aGFuIGxhc3Qgb25lLiBUaGUgbmV3X2h3X3B0ciBjYW4gYmUgbG93ZXIgdGhhbiBk
+ZWx0YSBpbiB0aGlzIGNhc2UuCj4gCj4gIAo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgSmFy
+b3NsYXYKPiAKPiAgCj4gCj4gWWVzLHdoZW4gYnVmZmVyX3NpemUgd3JhcGVkIHRoZSAncG9zJyBp
+cyBzbWFsbGFyIHRoYW4gbGFzdCBvbmUuSWYgd2UKPiB3YW50IHRvIGNvbmZpcm0gdGhlIGh3X2Jh
+c2UgbmVlZCB0byBhZGp1c3QgdGhlcmUgbXVzdCBiZSBjb25zaWRlcgo+IGFub3RoZXIgY29uZmlk
+aXRpb246Cj4gCj4gaGRlbHRhID0gamlmZmllcyAtIHJ1bnRpbWUtPmh3X3B0cl9qaWZmaWVzOwo+
+IAo+ICAgICAgICAgICAgICAgaWYgKGhkZWx0YSA+IHJ1bnRpbWUtPmh3X3B0cl9idWZmZXJfamlm
+Zmllcy8yKQo+IAo+IGhvdyB0byBjb25uZWN0IHRoaXMgY29kZSB3aXRoIGNoZWNraW5nIHVubm9y
+bWFsIGludGVycnVwdChsb3N0IG9yIGRlbGF5ZWQpPwoKVGhpcyBjb25kaXRpb24gaXMgZm9yIHRo
+ZSBkb3VibGUgaW50ZXJydXB0IGFja25vd2xlZGdlIHByb2JsZW1zIChzZWUKY29tbWVudCkuIEl0
+IG1ha2VzIHN1cmUsIHRoYXQgdGhlIERNQSBidWZmZXIgcG9zaXRpb24gd2FzIHdyYXBwZWQgdXNp
+bmcKYW5vdGhlciBleHRlcm5hbCB0aW1pbmcgc291cmNlLiBJbmRlZWQsIGl0J3MgbW9zdGx5IGEg
+bG93bGV2ZWwgZHJpdmVyCmZhdWx0IHRvIGNhbGwgdGhpcyBwb2ludGVyIHVwZGF0ZSByb3V0aW5l
+IHdpdGggdGhlIGluX2ludGVycnVwdCBmbGFnCndoZW4gdGhlIHBlcmlvZCB3YXMgbm90IHJlYWxs
+eSBlbGFwc2VkLgoKPiBXaHkgd2UgY2FuIHByb3ZlIG5lZWQgdG8gYWRqdXN0IHRoZSDigJhod19i
+YXNl4oCZd2hlbiDigJhoZGVsdGHigJk+Cj4gaHdfcHRyX2J1ZmZlcl9qaWZmaWVzLzIgPyB0aGUg
+Zm9ybWVyIHJlcHJlc2VudCB0aGUgamlmZmllciBlcnJvciBiZXR3ZWVuCj4gdGhpcyBtb21lbnQg
+YW5kIGxhc3QgYmUgaGVyZShtYXliZSBjYWxsZWQgZnJvbSBub24taW50ZXJydXB0IGVscGFzZWQo
+KSkuCj4gCj4gVGhlIGxhdGVyIG1lYW5zIHRoZSB0aW1lIHNwZW5kIG9uIGZpbGwgdGhlIGJ1ZmZl
+ci5UaGVuIGNvbXBhcmUgdGhlbSBhbmQKPiB3ZSB3aWxsIGZpbmQgaWYg4oCYZGVsdGHigJlpcyBi
+aWdnZXIgbWVhbnMgdGhlIERNQSBhbHJlYWR5IGZpbmluc2hlZCBhCj4gcGVyaW9kIGF0IGxlYXN0
+IHdpdGhvdXQgbm90aWNlIHRoZSBPUz8KPiAKPiBUaGUgY29tcGFyaWF0aW9uIGNvbmZ1c2VkIG1l
+LkkgY2FuIG5vdCBnZXQgdGhlIHJlbGF0aW9uc2hpcCBmcm9tIHRoZQo+IHJlc3VsdCBhbmQgd2hh
+dCB0aGUgaW5mb3JtYXRpb24gb3IgY2x1ZSBpcyBpZ25vcmVkIGJ5IG1lPyBQbGVhc2UgZ2l2ZSBt
+ZQo+IHNvbWUgdGlwcy4gVGhhbmsgeW91LgoKUGxlYXNlLCBzdHVkeSB0aGUgY29tbWVudHMgYWdh
+aW4uCgoJCQkJCUphcm9zbGF2CgotLSAKSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4K
+TGludXggS2VybmVsIFNvdW5kIE1haW50YWluZXIKQUxTQSBQcm9qZWN0OyBSZWQgSGF0LCBJbmMu
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
