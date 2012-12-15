@@ -1,15 +1,17 @@
-From: Olivier Blin <dev@blino.org>
-Subject: [PATCH] configure: do not detect incorrect
-	cross-compiler
-Date: Sat, 15 Dec 2012 01:58:59 +0100
-Message-ID: <1355533139-9539-1-git-send-email-dev@blino.org>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: [PATCH] usb-audio: ignore-quirk for HP Wireless Audio
+Date: Sat, 15 Dec 2012 05:30:33 +0100
+Message-ID: <1355545833-8654-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 25015264F18
- for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 01:59:05 +0100 (CET)
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F874264F42
+ for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 05:30:40 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so1997662bkc.38
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 20:30:39 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Olivier Blin <dev@blino.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Isaac Smith <hunternet93@gmail.com>, alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>, Joe Cooper <swelljoe@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Ubuntu 11.04, configuring with --build=x86_64-unknown-linux-gnu
---host=x86_64-linux-gnu finds a wrong cross-compiler:
-checking for cross-compiler... x86_64-x86_64-pc-linux-gnu-gcc
+As Joe Cooper <swelljoe@gmail.com> reported, "On most HP Envy laptops
+the snd-usb-audio module causes the system to become unresponsive and
+Gnome Shell 3 to crash.".
+See also:
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2012-December/057729.html
 
-This happens because of a dash vs underscore inconsistency in configure.in:
-host=x86_64-pc-linux-gnu
-host_cpu=x86_64
-host_os=linux-gnu
-which ${host_cpu}-${host_os}-gcc >/dev/null 2>&1 && echo ${host_cpu}-${host-os}-gcc
+Add a quirk to ignore this device (for now) to solve the instability
+issue and allow other USB audio devices to be used.
 
-This bug has been introduced in the initial --with-host support from
-2002, commit eb267ade29c9a49c07b1c33dc9bf7a6790217400
-
-This configure command is about "cross-compiling for i586", where the
-system compiler is used, which just -m32 additional options.
-The --build value comes from config.guess.
+Reported-by: Joe Cooper <swelljoe@gmail.com>
+Tested-by: Isaac Smith <hunternet93@gmail.com>
+Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- configure.in | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/quirks-table.h |   36 ++++++++++++++++++++++++++++++++++++
+ 1 files changed, 36 insertions(+), 0 deletions(-)
 
-diff --git a/configure.in b/configure.in
-index e397dad..4af917b 100644
---- a/configure.in
-+++ b/configure.in
-@@ -31,7 +31,7 @@ then
+Applies against mainline 3.7.0 and sound-3.8.
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 49f9af9..e3c59f0 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -99,6 +99,42 @@
+ },
  
-   which ${program_prefix}gcc >/dev/null 2>&1 && CC=${program_prefix}gcc
-   which ${host_cpu}-${host_os}-gcc >/dev/null 2>&1 \
--  && CC=${host_cpu}-${host-os}-gcc
-+  && CC=${host_cpu}-${host_os}-gcc
-   which ${host_cpu}-${host_vendor}-${host_os}-gcc >/dev/null 2>&1 \
-   && CC=${host_cpu}-${host_vendor}-${host_os}-gcc
- 
+ /*
++ * HP Wireless Audio
++ * When not ignored, causes instability issues for some users, forcing them to
++ * blacklist the entire module.
++ */
++{
++	USB_DEVICE(0x0424, 0xb832),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Standard Microsystems Corp.",
++		.product_name = "HP Wireless Audio",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			/* Mixer */
++			{
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			/* Playback */
++			{
++				.ifnum = 1,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			/* Capture */
++			{
++				.ifnum = 2,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			/* HID Device, .ifnum = 3 */
++			{
++				.ifnum = -1,
++			}
++		}
++	}
++},
++
++/*
+  * Logitech QuickCam: bDeviceClass is vendor-specific, so generic interface
+  * class matches do not take effect without an explicit ID match.
+  */
 -- 
-1.8.0.2
+1.7.8.6
