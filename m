@@ -1,20 +1,15 @@
-From: =?UTF-8?Q?Nicolas_Ma=C3=AEtre?= <nimai@skynet.be>
-Subject: Fwd: Request for HW auto-recognition: HP Pavilion dv7
- with STAC92xx
-Date: Fri, 14 Dec 2012 22:12:18 +0100
-Message-ID: <CACd4Q01r58JL3hD49mtT97+7Jkdpr8Sgfni88wHfsE79_dTP6A@mail.gmail.com>
-References: <CACd4Q01r1Oa=ds0+eskdkvnMJytuLRj5FPYyNjbdnx5WNWWZvQ@mail.gmail.com>
+From: Olivier Blin <dev@blino.org>
+Subject: [PATCH] configure: do not detect incorrect
+	cross-compiler
+Date: Sat, 15 Dec 2012 01:58:59 +0100
+Message-ID: <1355533139-9539-1-git-send-email-dev@blino.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 8995A264F10
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 22:12:38 +0100 (CET)
-Received: by mail-wi0-f169.google.com with SMTP id hq12so874971wib.2
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2012 13:12:38 -0800 (PST)
-In-Reply-To: <CACd4Q01r1Oa=ds0+eskdkvnMJytuLRj5FPYyNjbdnx5WNWWZvQ@mail.gmail.com>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25015264F18
+ for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 01:59:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Olivier Blin <dev@blino.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Ubuntu 11.04, configuring with --build=x86_64-unknown-linux-gnu
+--host=x86_64-linux-gnu finds a wrong cross-compiler:
+checking for cross-compiler... x86_64-x86_64-pc-linux-gnu-gcc
 
-At Wed, 12 Dec 2012 18:08:25 +0100,
-Tomas Pospisek wrote:
->
-> Hello,
->
-> I have a HP Pavilion dv7 laptop (LS066EA#UUZ), with:
->
->   # cat /proc/asound/card0/codec* | grep Codec
->   Codec: IDT 92HD81B1X5
->   Codec: Intel CougarPoint HDMI
->
-> when play sound without any tweaks, I get a very weak sound output. If I
-> want to have "beats audio", that is subwoofer and all speakers, I need to
-> set:
->
->   # cat /etc/modprobe.d/alsa-base.conf
->   options snd-hda-intel model=hp-dv7-4000
->
-> Could the snd_hda_intel alsa driver be updated to recognize and setup the
-> driver accordingly?
->
-> alsa-info.sh output here:
->
->
-> http://www.alsa-project.org/db/?f=54ea874f43f12c1572aff3ee3113dc4b0ad0b398
+This happens because of a dash vs underscore inconsistency in configure.in:
+host=x86_64-pc-linux-gnu
+host_cpu=x86_64
+host_os=linux-gnu
+which ${host_cpu}-${host_os}-gcc >/dev/null 2>&1 && echo ${host_cpu}-${host-os}-gcc
 
-I'm not quite sure that I have the exact same hardware, but I think
-so. I have 5 speakers (rear left and right, front left and right +
-subwoofer)
-Here is my alsa-info:
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1056669/+attachment/3459484/+files/alsa-info.txt.lYaCjHLUA1
-In my case, model=hp-dv7-4000 doesn't fully solve the problem. The
-subwoofer works but it is not mapped as such.
-After some tests, it seems that the alsa's speakers rear left and rear
-right are mapped to the subwoofer. The front ones are alright.
-With the model=hp-dv5 that I'm using, the subwoofer isnt recognized at
-all, but the rear speakers are correctly mapped.
+This bug has been introduced in the initial --with-host support from
+2002, commit eb267ade29c9a49c07b1c33dc9bf7a6790217400
 
-Also, with hp-dv7-4000, the internal microphone is still used when a
-micro jack is plugged in. That's not the case with hp-dv5.
+This configure command is about "cross-compiling for i586", where the
+system compiler is used, which just -m32 additional options.
+The --build value comes from config.guess.
+---
+ configure.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If you think there's a configuration issue on my side, please let me
-know, but I think hp-dv5 is actually a better default choice if I have
-to choose between both.
-
-Kind regards,
-
---
-nimai
+diff --git a/configure.in b/configure.in
+index e397dad..4af917b 100644
+--- a/configure.in
++++ b/configure.in
+@@ -31,7 +31,7 @@ then
+ 
+   which ${program_prefix}gcc >/dev/null 2>&1 && CC=${program_prefix}gcc
+   which ${host_cpu}-${host_os}-gcc >/dev/null 2>&1 \
+-  && CC=${host_cpu}-${host-os}-gcc
++  && CC=${host_cpu}-${host_os}-gcc
+   which ${host_cpu}-${host_vendor}-${host_os}-gcc >/dev/null 2>&1 \
+   && CC=${host_cpu}-${host_vendor}-${host_os}-gcc
+ 
+-- 
+1.8.0.2
