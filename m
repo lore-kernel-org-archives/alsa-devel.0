@@ -1,57 +1,92 @@
-From: l9jj@163.com
-Subject: Re: Could you help me about the ALSA?
-Date: Sun, 16 Dec 2012 22:13:57 +0800 (CST)
-Message-ID: <33fb975a.ebba.13ba4106c5b.Coremail.l9jj@163.com>
-References: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
- <50CAE504.60002@perex.cz>
- <6B947C8AC4195040A8C6876A496C644A07BAB6A9@BJ-MAIL-04.vimicro.com>
- <50CAF574.1@perex.cz>
- <6B947C8AC4195040A8C6876A496C644A07BAB7A7@BJ-MAIL-04.vimicro.com>
- <50CB0727.1030706@perex.cz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: dma_mmap_coherent / ARCH_HAS_DMA_MMAP_COHERENT
+Date: Sun, 16 Dec 2012 17:03:18 +0100
+Message-ID: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m13-48.163.com (m13-48.163.com [220.181.13.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 02140260728
- for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 15:14:01 +0100 (CET)
-In-Reply-To: <50CB0727.1030706@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Zhang wei <zhangwei@vimicro.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-arch-owner@vger.kernel.org>
+Sender: linux-arch-owner@vger.kernel.org
+To: Linux-Arch <linux-arch@vger.kernel.org>
+Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
+2_dc_mmap=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit
+declaration of function =E2=80=98dma_mmap_coherent=E2=80=99
+drivers/media/v4l2-core/videobuf2-dma-contig.c: In function
+=E2=80=98vb2_dc_get_base_sgt=E2=80=99:
+drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit
+declaration of function =E2=80=98dma_get_sgtable=E2=80=99
+make[6]: *** [drivers/media/v4l2-core/videobuf2-dma-contig.o] Error 1
+make[6]: Target `__build' not remade because of errors.
+make[5]: *** [drivers/media/v4l2-core] Error 2
 
+Both dma_mmap_coherent() and dma_get_sgtable() are defined in
+include/asm-generic/dma-mapping-common.h only, which is included by
+<asm/dma-mapping.h> on alpha, arm, arm64, hexagon, ia64, microblaze, mi=
+ps,
+openrisc, powerpc, s390, sh, sparc, tile, unicore32, x86.
+Should the remaining architectures include this, too?
+Should it be moved to <linux/dma-mapping.h>?
 
+=46urthermore, there's ARCH_HAS_DMA_MMAP_COHERENT, which is defined
+by powerpc only:
+arch/powerpc/include/asm/dma-mapping.h:#define ARCH_HAS_DMA_MMAP_COHERE=
+NT
 
+and handled in some fishy way in sound/core/pcm_native.c:
 
+#ifndef ARCH_HAS_DMA_MMAP_COHERENT
+/* This should be defined / handled globally! */
+#ifdef CONFIG_ARM
+#define ARCH_HAS_DMA_MMAP_COHERENT
+#endif
+#endif
 
->> 
->>  
->> 
->> Yes,when buffer_size wraped the 'pos' is smallar than last one.If we
->> want to confirm the hw_base need to adjust there must be consider
->> another confidition:
->> 
->> hdelta = jiffies - runtime->hw_ptr_jiffies;
->> 
->>               if (hdelta > runtime->hw_ptr_buffer_jiffies/2)
->> 
->> how to connect this code with checking unnormal interrupt(lost or delayed)?
->
->This condition is for the double interrupt acknowledge problems (see
->comment). It makes sure, that the DMA buffer position was wrapped using
->another external timing source. Indeed, it's mostly a lowlevel driver
->fault to call this pointer update routine with the in_interrupt flag
->when the period was not really elapsed.
->
+/*
+ * mmap the DMA buffer on RAM
+ */
+int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
+                             struct vm_area_struct *area)
+{
+        area->vm_flags |=3D VM_DONTEXPAND | VM_DONTDUMP;
+#ifdef ARCH_HAS_DMA_MMAP_COHERENT
+        if (!substream->ops->page &&
+            substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV)
+                return dma_mmap_coherent(substream->dma_buffer.dev.dev,
+                                         area,
+                                         substream->runtime->dma_area,
+                                         substream->runtime->dma_addr,
+                                         area->vm_end - area->vm_start)=
+;
+#elif defined(CONFIG_MIPS) && defined(CONFIG_DMA_NONCOHERENT)
+        if (substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV &&
+            !plat_device_is_coherent(substream->dma_buffer.dev.dev))
+                area->vm_page_prot =3D pgprot_noncached(area->vm_page_p=
+rot);
+#endif /* ARCH_HAS_DMA_MMAP_COHERENT */
+        /* mmap with fault handler */
+        area->vm_ops =3D &snd_pcm_vm_ops_data_fault;
+        return 0;
+}
+EXPORT_SYMBOL_GPL(snd_pcm_lib_default_mmap);
 
-But,why alsa use the specific  value 'runtime->hw_ptr_buffer_jiffies/2' to compare with hdelta than other?
+What's up here?
+
+Thx!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
+m68k.org
+
+In personal conversations with technical people, I call myself a hacker=
+=2E But
+when I'm talking to journalists I just say "programmer" or something li=
+ke that.
+                                -- Linus Torvalds
