@@ -1,21 +1,18 @@
-From: =?UTF-8?Q?Nicolas_Ma=C3=AEtre?= <nimai@skynet.be>
-Subject: Re: Fwd: Request for HW auto-recognition: HP Pavilion
- dv7 with STAC92xx
-Date: Sat, 15 Dec 2012 23:31:57 +0100
-Message-ID: <CACd4Q03Vy4DBVVM5gyo9NF+aOaBAPoKig8hG7SahMdNhq=smjQ@mail.gmail.com>
-References: <CACd4Q01r1Oa=ds0+eskdkvnMJytuLRj5FPYyNjbdnx5WNWWZvQ@mail.gmail.com>
- <CACd4Q01r58JL3hD49mtT97+7Jkdpr8Sgfni88wHfsE79_dTP6A@mail.gmail.com>
- <s5hr4mrpqek.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: cs42l52: Fix off-by-one boundary
+ checking for cs42l52_get_clk()
+Date: Sun, 16 Dec 2012 10:11:29 +0800
+Message-ID: <1355623889.9994.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f53.google.com (mail-wg0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id B66DA261981
- for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 23:32:17 +0100 (CET)
-Received: by mail-wg0-f53.google.com with SMTP id ei8so2066743wgb.20
- for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 14:32:17 -0800 (PST)
-In-Reply-To: <s5hr4mrpqek.wl%tiwai@suse.de>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EA05261680
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 03:11:41 +0100 (CET)
+Received: by mail-pb0-f51.google.com with SMTP id ro12so2876887pbb.38
+ for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2012 18:11:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 15, 2012 at 11:21 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> So in this case you need to figure out the exact pin configurations on
-> your machine.  hda_analyzer and hdajackretask programs would be a
-> great help for that.
+The caller uses the return value of cs42l52_get_clk as array index,
+the valid array index is 0 .. ARRAY_SIZE(clk_map_table) - 1.
+Thus we need to ensure ret is less than ARRAY_SIZE(clk_map_table).
 
-Well, I don't know how to do that efficiently. I have spent some time
-trying to play with hda analyzer and hda-jack-retask but I think it
-was just a waste of time.
-I've used "speaker-test -c 6" as test for each change. Here are my
-notes on my attempts to make something work by overriding the pins in
-hda-jack-retask, in case is could be useful anyway:
-http://pastebin.com/HVgURDuA
-I've realized it was probably not the good way to go when I've seen
-that the fact that pulseaudio were running actually changed the
-mapping.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/cs42l52.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So, do you know some guide/howto I could follow to do something useful
-with my issue?
-
-Thanks.
-
-
---
-nimai
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 99bb1c6..66817f6 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -749,7 +749,7 @@ static int cs42l52_get_clk(int mclk, int rate)
+ 			}
+ 		}
+ 	}
+-	if (ret > ARRAY_SIZE(clk_map_table))
++	if (ret >= ARRAY_SIZE(clk_map_table))
+ 		return -EINVAL;
+ 	return ret;
+ }
+-- 
+1.7.9.5
