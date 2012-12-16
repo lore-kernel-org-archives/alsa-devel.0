@@ -1,92 +1,58 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: dma_mmap_coherent / ARCH_HAS_DMA_MMAP_COHERENT
-Date: Sun, 16 Dec 2012 17:03:18 +0100
-Message-ID: <CAMuHMdVPBUzN8fsNHFzrEqev9BsvVCVR2fWySCOecjVA-J1qjg@mail.gmail.com>
+From: "Mantas M." <grawity@gmail.com>
+Subject: "hda-intel: azx_get_response timeout"
+Date: Sun, 16 Dec 2012 18:04:17 +0200
+Message-ID: <kakre0$jpv$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arch-owner@vger.kernel.org>
-Sender: linux-arch-owner@vger.kernel.org
-To: Linux-Arch <linux-arch@vger.kernel.org>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id B38FA2616EA
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 17:09:54 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TkGmy-0003iq-Fj
+ for alsa-devel@alsa-project.org; Sun, 16 Dec 2012 17:10:04 +0100
+Received: from 78-60-211-195.static.zebra.lt ([78.60.211.195])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 17:10:04 +0100
+Received: from grawity by 78-60-211-195.static.zebra.lt with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 17:10:04 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function =E2=80=98vb=
-2_dc_mmap=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:204: error: implicit
-declaration of function =E2=80=98dma_mmap_coherent=E2=80=99
-drivers/media/v4l2-core/videobuf2-dma-contig.c: In function
-=E2=80=98vb2_dc_get_base_sgt=E2=80=99:
-drivers/media/v4l2-core/videobuf2-dma-contig.c:387: error: implicit
-declaration of function =E2=80=98dma_get_sgtable=E2=80=99
-make[6]: *** [drivers/media/v4l2-core/videobuf2-dma-contig.o] Error 1
-make[6]: Target `__build' not remade because of errors.
-make[5]: *** [drivers/media/v4l2-core] Error 2
-
-Both dma_mmap_coherent() and dma_get_sgtable() are defined in
-include/asm-generic/dma-mapping-common.h only, which is included by
-<asm/dma-mapping.h> on alpha, arm, arm64, hexagon, ia64, microblaze, mi=
-ps,
-openrisc, powerpc, s390, sh, sparc, tile, unicore32, x86.
-Should the remaining architectures include this, too?
-Should it be moved to <linux/dma-mapping.h>?
-
-=46urthermore, there's ARCH_HAS_DMA_MMAP_COHERENT, which is defined
-by powerpc only:
-arch/powerpc/include/asm/dma-mapping.h:#define ARCH_HAS_DMA_MMAP_COHERE=
-NT
-
-and handled in some fishy way in sound/core/pcm_native.c:
-
-#ifndef ARCH_HAS_DMA_MMAP_COHERENT
-/* This should be defined / handled globally! */
-#ifdef CONFIG_ARM
-#define ARCH_HAS_DMA_MMAP_COHERENT
-#endif
-#endif
-
-/*
- * mmap the DMA buffer on RAM
- */
-int snd_pcm_lib_default_mmap(struct snd_pcm_substream *substream,
-                             struct vm_area_struct *area)
-{
-        area->vm_flags |=3D VM_DONTEXPAND | VM_DONTDUMP;
-#ifdef ARCH_HAS_DMA_MMAP_COHERENT
-        if (!substream->ops->page &&
-            substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV)
-                return dma_mmap_coherent(substream->dma_buffer.dev.dev,
-                                         area,
-                                         substream->runtime->dma_area,
-                                         substream->runtime->dma_addr,
-                                         area->vm_end - area->vm_start)=
-;
-#elif defined(CONFIG_MIPS) && defined(CONFIG_DMA_NONCOHERENT)
-        if (substream->dma_buffer.dev.type =3D=3D SNDRV_DMA_TYPE_DEV &&
-            !plat_device_is_coherent(substream->dma_buffer.dev.dev))
-                area->vm_page_prot =3D pgprot_noncached(area->vm_page_p=
-rot);
-#endif /* ARCH_HAS_DMA_MMAP_COHERENT */
-        /* mmap with fault handler */
-        area->vm_ops =3D &snd_pcm_vm_ops_data_fault;
-        return 0;
-}
-EXPORT_SYMBOL_GPL(snd_pcm_lib_default_mmap);
-
-What's up here?
-
-Thx!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-
-In personal conversations with technical people, I call myself a hacker=
-=2E But
-when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-                                -- Linus Torvalds
+QWZ0ZXIgdXBncmFkaW5nIHRvIExpbnV4IDMuNyAob24gQXJjaCBMaW51eCwgeDg2XzY0KSwgSSd2
+ZSBiZWVuIGdldHRpbmcKdGhlIGZvbGxvd2luZyBtZXNzYWdlcyBpbiBkbWVzZzoKCj4gW0RlYzEx
+IDIxOjUyXSBoZGEtaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCwgc3dpdGNoaW5nIHRv
+IHBvbGxpbmcgbW9kZTogbGFzdCBjbWQ9MHgwMDFmMDUwMAo+IFsgICsxLjAwNjcwOV0gaGRhLWlu
+dGVsOiBObyByZXNwb25zZSBmcm9tIGNvZGVjLCBkaXNhYmxpbmcgTVNJOiBsYXN0IGNtZD0weDAw
+MWYwNTAwCj4gWyAgKzEuMDA2NzczXSBoZGFfaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91
+dCwgc3dpdGNoaW5nIHRvIHNpbmdsZV9jbWQgbW9kZTogbGFzdCBjbWQ9MHgwMDFmMDUwMAoKVGhp
+cyBzZWVtcyB0byBoYXBwZW4gd2hlbiByZXN1bWluZyBmcm9tIHN1c3BlbmQtdG8tbWVtb3J5LCBh
+bmQgaXMgbmV3IHRvCnYzLjcg4oCTIEkgaGF2ZW4ndCBzZWVuIGFueSBzdWNoIG1lc3NhZ2VzIG9u
+IGFueSBrZXJuZWxzIEkndmUgdXNlZCBlYXJsaWVyCihiZXR3ZWVuIHYzLjAgYW5kIHYzLjYuOSku
+CgpUaGUgZGV2aWNlIGlzOgoKPiAjIGxzcGNpIC12Cj4gMDA6MWIuMCBBdWRpbyBkZXZpY2U6IElu
+dGVsIENvcnBvcmF0aW9uIDUgU2VyaWVzLzM0MDAgU2VyaWVzIENoaXBzZXQgSGlnaCBEZWZpbml0
+aW9uIEF1ZGlvIChyZXYgMDYpCj4gCVN1YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERl
+dmljZSAxNjQzCj4gCUZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwLCBJ
+UlEgMjIKPiAJTWVtb3J5IGF0IGQ1MjAwMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtz
+aXplPTE2S10KPiAJQ2FwYWJpbGl0aWVzOiBbNTBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAy
+Cj4gCUNhcGFiaWxpdGllczogWzYwXSBNU0k6IEVuYWJsZS0gQ291bnQ9MS8xIE1hc2thYmxlLSA2
+NGJpdCsKPiAJQ2FwYWJpbGl0aWVzOiBbNzBdIEV4cHJlc3MgUm9vdCBDb21wbGV4IEludGVncmF0
+ZWQgRW5kcG9pbnQsIE1TSSAwMAo+IAlDYXBhYmlsaXRpZXM6IFsxMDBdIFZpcnR1YWwgQ2hhbm5l
+bAo+IAlDYXBhYmlsaXRpZXM6IFsxMzBdIFJvb3QgQ29tcGxleCBMaW5rCj4gCUtlcm5lbCBkcml2
+ZXIgaW4gdXNlOiBzbmRfaGRhX2ludGVsCgpJcyB0aGVyZSBhbnl0aGluZyBJIGNhbi9zaG91bGQg
+ZG8gYWJvdXQgdGhpcz8KCi0tIApNYW50YXMgTWlrdWzEl25hcyA8Z3Jhd2l0eUBnbWFpbC5jb20+
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
