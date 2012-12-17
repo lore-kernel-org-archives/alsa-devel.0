@@ -1,22 +1,23 @@
-From: "Zhang wei" <zhangwei@vimicro.com>
-Subject: Re: Could you help me about the ALSA?
-Date: Mon, 17 Dec 2012 10:09:48 +0800
-Message-ID: <6B947C8AC4195040A8C6876A496C644A07BAB870@BJ-MAIL-04.vimicro.com>
-References: <6B947C8AC4195040A8C6876A496C644A07BAB641@BJ-MAIL-04.vimicro.com>
- <50CAE504.60002@perex.cz>
- <6B947C8AC4195040A8C6876A496C644A07BAB6A9@BJ-MAIL-04.vimicro.com>
- <50CAF574.1@perex.cz>
- <6B947C8AC4195040A8C6876A496C644A07BAB7A7@BJ-MAIL-04.vimicro.com>
- <50CB0727.1030706@perex.cz>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Fwd: Request for HW auto-recognition: HP Pavilion
+ dv7 with STAC92xx
+Date: Mon, 17 Dec 2012 10:55:55 +0800
+Message-ID: <CAN8cciZjR5jo0DUpd_iLZ-00bb-5rveBEK9LezBf-79=QT_oMw@mail.gmail.com>
+References: <CACd4Q01r1Oa=ds0+eskdkvnMJytuLRj5FPYyNjbdnx5WNWWZvQ@mail.gmail.com>
+ <CACd4Q01r58JL3hD49mtT97+7Jkdpr8Sgfni88wHfsE79_dTP6A@mail.gmail.com>
+ <s5hr4mrpqek.wl%tiwai@suse.de>
+ <CACd4Q03Vy4DBVVM5gyo9NF+aOaBAPoKig8hG7SahMdNhq=smjQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.vimicro.com (unknown [211.155.250.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E3EC261631
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 03:10:52 +0100 (CET)
-Content-class: urn:content-classes:message
-In-Reply-To: <50CB0727.1030706@perex.cz>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3CFC261631
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 03:55:56 +0100 (CET)
+Received: by mail-ie0-f179.google.com with SMTP id k14so8126608iea.38
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2012 18:55:56 -0800 (PST)
+In-Reply-To: <CACd4Q03Vy4DBVVM5gyo9NF+aOaBAPoKig8hG7SahMdNhq=smjQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,64 +27,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: =?UTF-8?Q?Nicolas_Ma=C3=AEtre?= <nimai@skynet.be>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Yes,when buffer_size wraped the 'pos' is smallar than last one.If we
-
-> want to confirm the hw_base need to adjust there must be consider
-
-> another confidition:
-
-> 
-
-> hdelta = jiffies - runtime->hw_ptr_jiffies;
-
-> 
-
->               if (hdelta > runtime->hw_ptr_buffer_jiffies/2)
-
-> 
-
-> how to connect this code with checking unnormal interrupt(lost or
-delayed)?
-
- 
-
-This condition is for the double interrupt acknowledge problems (see
-
-comment). It makes sure, that the DMA buffer position was wrapped using
-
-another external timing source. Indeed, it's mostly a lowlevel driver
-
-fault to call this pointer update routine with the in_interrupt flag
-
-when the period was not really elapsed.
-
- 
-
-Yes,I saw the comment and known the target of the pices of code and
-known alsa use jiffies as another timing source to detect the wrap
-situation,but I do not understand how to detect or check that case.In
-other word,why does alsa use the value runtime->hw_ptr_buffer_jiffies/2
-not runtime->hw_ptr_buffer_jiffies/3 or runtime->hw_ptr_buffer_jiffies/4
-...?
-
- 
-
--- 
-
-Jaroslav Kysela <perex@perex.cz>
-
-Linux Kernel Sound Maintainer
-
-ALSA Project; Red Hat, Inc.
-
-_______________________________________________
-
-Alsa-devel mailing list
-
-Alsa-devel@alsa-project.org
-
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+PiA+IENvdWxkIHRoZSBzbmRfaGRhX2ludGVsIGFsc2EgZHJpdmVyIGJlIHVwZGF0ZWQgdG8gcmVj
+b2duaXplIGFuZCBzZXR1cAp0aGUgPiBkcml2ZXIgYWNjb3JkaW5nbHk/Cgo+ID4gYWxzYS1pbmZv
+LnNoIG91dHB1dCBoZXJlOiA+ID4gPgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9
+NTRlYTg3NGY0M2YxMmMxNTcyYWZmM2VlMzExM2RjIDRiMGFkMGIzOTgKClsgIDM0NS45NjQ1MjVd
+IGhkYS1pbnRlbDogYXp4X2dldF9yZXNwb25zZSB0aW1lb3V0LCBzd2l0Y2hpbmcgdG8gcG9sbGlu
+Zwptb2RlOiBsYXN0IGNtZD0weDMwMTcwNTAzClsgIDM0Ni45NzIyNDFdIGhkYS1pbnRlbDogTm8g
+cmVzcG9uc2UgZnJvbSBjb2RlYywgZGlzYWJsaW5nIE1TSTogbGFzdApjbWQ9MHgzMDE3MDUwMwpb
+ICAzNDcuOTc5ODg3XSBoZGFfaW50ZWw6IGF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCwgc3dpdGNo
+aW5nIHRvIHNpbmdsZV9jbWQKbW9kZTogbGFzdCBjbWQ9MHgzMDE3MDUwMwoKPiBJJ20gbm90IHF1
+aXRlIHN1cmUgdGhhdCBJIGhhdmUgdGhlIGV4YWN0IHNhbWUgaGFyZHdhcmUsIGJ1dCBJIHRoaW5r
+ID4gc28uCkkgaGF2ZSA1IHNwZWFrZXJzIChyZWFyIGxlZnQgYW5kIHJpZ2h0LCBmcm9udCBsZWZ0
+IGFuZCByaWdodCArID4gc3Vid29vZmVyKQo+IEhlcmUgaXMgbXkgYWxzYS1pbmZvOgo+Cmh0dHBz
+Oi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291cmNlL2Fsc2EtZHJpdmVyLytidWcvMTA1
+NjY2OS8rYXR0YWNobWVudC8zNDU5NDg0LytmaWxlcy9hbHNhLWluZm8udHh0LmxZYUNqSExVQTEK
+Cj4gSW4gbXkgY2FzZSwgbW9kZWw9aHAtZHY3LTQwMDAgZG9lc24ndCBmdWxseSBzb2x2ZSB0aGUg
+cHJvYmxlbS4gVGhlCj4gc3Vid29vZmVyIHdvcmtzIGJ1dCBpdCBpcyBub3QgbWFwcGVkIGFzIHN1
+Y2guCj4gQWZ0ZXIgc29tZSB0ZXN0cywgaXQgc2VlbXMgdGhhdCB0aGUgYWxzYSdzIHNwZWFrZXJz
+IHJlYXIgbGVmdCBhbmQgcmVhcgo+IHJpZ2h0IGFyZSBtYXBwZWQgdG8gdGhlIHN1Yndvb2Zlci4g
+VGhlIGZyb250IG9uZXMgYXJlIGFscmlnaHQuCj4gV2l0aCB0aGUgbW9kZWw9aHAtZHY1IHRoYXQg
+SSdtIHVzaW5nLCB0aGUgc3Vid29vZmVyIGlzbnQgcmVjb2duaXplZCBhdAo+IGFsbCwgYnV0IHRo
+ZSByZWFyIHNwZWFrZXJzIGFyZSBjb3JyZWN0bHkgbWFwcGVkLgoKVGhlcmUgaXMgbm8gZHY1IG1v
+ZGVsIGFzIDkySEQ4MSB1c2UKcGF0Y2hfc3RhYzkyaGQ4M3h4eAoKU1RBQzkySEQ4MyoKPT09PT09
+PT09PT0KICByZWZSZWZlcmVuY2UgYm9hcmQKICBtaWMtcmVmUmVmZXJlbmNlIGJvYXJkIHdpdGgg
+cG93ZXIgbWFuYWdlbWVudCBmb3IgcG9ydHMKICBkZWxsLXMxNERlbGwgbGFwdG9wCiAgZGVsbC12
+b3N0cm8tMzUwMERlbGwgVm9zdHJvIDM1MDAgbGFwdG9wCiAgaHAtZHY3LTQwMDBIUCBkdi03IDQw
+MDAKICBocF9jTkIxMV9pbnRxdWFkIEhQIENOQiBtb2RlbHMgd2l0aCA0IHNwZWFrZXJzCiAgaHAt
+emVwaHlySFAgWmVwaHlyCiAgaHAtbGVkSFAgd2l0aCBicm9rZW4gQklPUyBmb3IgbXV0ZSBMRUQK
+ICBocC1pbnYtbGVkSFAgd2l0aCBicm9rZW4gQklPUyBmb3IgaW52ZXJ0ZWQgbXV0ZSBMRUQKICBh
+dXRvQklPUyBzZXR1cCAoZGVmYXVsdCkKCj4gU28gaW4gdGhpcyBjYXNlIHlvdSBuZWVkIHRvIGZp
+Z3VyZSBvdXQgdGhlIGV4YWN0IHBpbiBjb25maWd1cmF0aW9ucyBvbgo+ID4geW91ciBtYWNoaW5l
+LiAgaGRhX2FuYWx5emVyIGFuZCBoZGFqYWNrcmV0YXNrIHByb2dyYW1zIHdvdWxkIGJlIGEKPiA+
+IGdyZWF0IGhlbHAgZm9yIHRoYXQuCj4KPiBXZWxsLCBJIGRvbid0IGtub3cgaG93IHRvIGRvIHRo
+YXQgZWZmaWNpZW50bHkuIEkgaGF2ZSBzcGVudCBzb21lIHRpbWUKPiB0cnlpbmcgdG8gcGxheSB3
+aXRoIGhkYSBhbmFseXplciBhbmQgaGRhLWphY2stcmV0YXNrIGJ1dCBJIHRoaW5rIGl0Cj4gd2Fz
+IGp1c3QgYSB3YXN0ZSBvZiB0aW1lLgo+IEkndmUgdXNlZCAic3BlYWtlci10ZXN0IC1jIDYiIGFz
+IHRlc3QgZm9yIGVhY2ggY2hhbmdlLgoKc3BlYWtlci10ZXN0IC1jNCAtRCBodzowLDAgLXQgd2F2
+Cgo5MkhEODEgb25seSBzdXBwb3J0IHVwIHRvIGZvdXIgY2hhbm5lbHMKCjQgQ2hhbm5lbHMgKDIg
+c3RlcmVvIERBQ3MgYW5kIDIgc3RlcmVvIEFEQ3MpIHdpdGggMjQtYml0IHJlc29sdXRpb24K4oCi
+U3VwcG9ydHMgZnVsbC1kdXBsZXggc3RlcmVvIGF1ZGlvIGFuZCBzaW11bHRhbmVvdXMgVm9JUCDi
+gKJQcm92aWRlcyBhIG1vbm8Kb3V0cHV0CgpodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgv
+a2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQ7YT1jb21taXQ7aD0wYzI3YzE4MDUyNjlmOWZmMDFj
+YzFkNzc3NTJhNjYyMDY1ZWJjZmU1CgpUaGUgdHdvIGludGVybmFsIHNwZWFrZXIgbm9kZXMgaGF2
+ZSB0aGUgc2FtZSBzZXF1ZW5jZSBudW1iZXIgemVybyBpbiB0aGUKcGluIGZpY3VwCgo+SGVyZSBh
+cmUgbXkKPiBub3RlcyBvbiBteSBhdHRlbXB0cyB0byBtYWtlIHNvbWV0aGluZyB3b3JrIGJ5IG92
+ZXJyaWRpbmcgdGhlIHBpbnMgaW4KPiBoZGEtamFjay1yZXRhc2ssIGluIGNhc2UgaXMgY291bGQg
+YmUgdXNlZnVsIGFueXdheToKPiBodHRwOi8vcGFzdGViaW4uY29tL0hWZ1VSRHVBCj4gSSd2ZSBy
+ZWFsaXplZCBpdCB3YXMgcHJvYmFibHkgbm90IHRoZSBnb29kIHdheSB0byBnbyB3aGVuIEkndmUg
+c2Vlbgo+IHRoYXQgdGhlIGZhY3QgdGhhdCBwdWxzZWF1ZGlvIHdlcmUgcnVubmluZyBhY3R1YWxs
+eSBjaGFuZ2VkIHRoZQo+IG1hcHBpbmcuCj4KPiBTbywgZG8geW91IGtub3cgc29tZSBndWlkZS9o
+b3d0byBJIGNvdWxkIGZvbGxvdyB0byBkbyBzb21ldGhpbmcgdXNlZnVsCj4gd2l0aCBteSBpc3N1
+ZT8KPgoKVHJ5aW5nIHJlbW92ZSBQQ0kgcXVpcmsgYW5kIHVzZSBhdXRvIHRvIGZpbmQgb3V0IG5v
+ZGUgMHgwZiBpcyB0aGUgaW50ZXJuYWwKc3BlYWtlcgoKLSBTTkRfUENJX1FVSVJLKFBDSV9WRU5E
+T1JfSURfSFAsIDB4MTY1OSwKLSAiSFAiLCBTVEFDXzkySEQ4M1hYWF9IUF9jTkIxMV9JTlRRVUFE
+KSwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
