@@ -1,83 +1,87 @@
-From: Ricardo Neri <rneri@dextratech.com>
-Subject: [PATCH v3 5/5] ARM: OMAP4+: HDMI: Refine the DMA port resource for audio
-Date: Mon, 17 Dec 2012 19:30:43 -0600
-Message-ID: <1355794243-32345-6-git-send-email-rneri@dextratech.com>
-References: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, tony@atomide.com
-Cc: peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <rneri@dextratech.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [pulseaudio-discuss] Front mic not working properly
+Date: Tue, 18 Dec 2012 11:40:57 +0800
+Message-ID: <CAN8cciZZhrPFUCY7WHYBJ6Pez890dKPCd74j0fPSbC9Nxqy00g@mail.gmail.com>
+References: <50CF0B5E.502@gmx.de>
+ <CAN8cciad8ygjn0SOyB1_pQ5BqyQTKXGATeOqCu6WA2Pf3CKjWQ@mail.gmail.com>
+ <50CF3794.8010008@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 767062615B4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2012 04:40:59 +0100 (CET)
+Received: by mail-ie0-f177.google.com with SMTP id k13so187202iea.8
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 19:40:58 -0800 (PST)
+In-Reply-To: <50CF3794.8010008@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of passing the complete address space to the platform device for audio,
-just pass the address offset of the DMA port for audio samples. Thus, we prevent
-that two drivers try to ioremap the same resources. This is to be safe, as the
-ASoC HDMI CPU-DAI driver will not need to ioremap such resource.
-
-Signed-off-by: Ricardo Neri <rneri@dextratech.com>
----
- drivers/video/omap2/dss/hdmi.c |    9 ++++++---
- sound/soc/omap/omap-hdmi.c     |    3 +--
- sound/soc/omap/omap-hdmi.h     |    2 --
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/video/omap2/dss/hdmi.c b/drivers/video/omap2/dss/hdmi.c
-index 0dde2b5..b758f83 100644
---- a/drivers/video/omap2/dss/hdmi.c
-+++ b/drivers/video/omap2/dss/hdmi.c
-@@ -829,6 +829,7 @@ static int hdmi_probe_audio(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	struct platform_device *aud_pdev;
-+	u32 port_offset, port_size;
- 	struct resource aud_res[2] = {
- 		DEFINE_RES_MEM(-1, -1),
- 		DEFINE_RES_DMA(-1),
-@@ -841,11 +842,13 @@ static int hdmi_probe_audio(struct platform_device *pdev)
- 	}
- 
- 	/*
--	 * Pass this resource to audio drivers to find the DMA port address.
-+	 * Pass DMA audio port to audio drivers.
- 	 * Audio drivers should not ioremap it.
- 	 */
--	aud_res[0].start = res->start;
--	aud_res[0].end = res->end;
-+	hdmi.ip_data.ops->audio_get_dma_port(&port_offset, &port_size);
-+
-+	aud_res[0].start = res->start + port_offset;
-+	aud_res[0].end =  aud_res[0].start + port_size - 1;
- 
- 	res = platform_get_resource(hdmi.pdev, IORESOURCE_DMA, 0);
- 	if (!res) {
-diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
-index db08501..33418fc 100644
---- a/sound/soc/omap/omap-hdmi.c
-+++ b/sound/soc/omap/omap-hdmi.c
-@@ -281,8 +281,7 @@ static __devinit int omap_hdmi_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start
--		+ OMAP_HDMI_AUDIO_DMA_PORT;
-+	hdmi_data->dma_params.port_addr =  hdmi_rsrc->start;
- 
- 	hdmi_rsrc = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!hdmi_rsrc) {
-diff --git a/sound/soc/omap/omap-hdmi.h b/sound/soc/omap/omap-hdmi.h
-index 6ad2bf4..33d7a93 100644
---- a/sound/soc/omap/omap-hdmi.h
-+++ b/sound/soc/omap/omap-hdmi.h
-@@ -25,8 +25,6 @@
- #ifndef __OMAP_HDMI_H__
- #define __OMAP_HDMI_H__
- 
--#define OMAP_HDMI_AUDIO_DMA_PORT 0x8c
--
- #define OMAP_HDMI_RATES	(SNDRV_PCM_RATE_32000 | \
- 				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | \
- 				SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | \
--- 
-1.7.10.4
-
+Pj4gPgo+PiA+IEknbSB0b3RhbGx5IHN0dWNrIHdpdGggYSBzb3VuZCBwcm9ibGVtIEkgZmFpbCB0
+byBkZWJ1ZyBvbiBteSBvd24uCj4+ID4KPj4gPiBNeSBzZXR1cDoKPj4gPiBBc3VzIFA1USBNb3Ro
+ZXJib2FyZCB3aXRoIFJlYWx0ZWMgQUxDMTIwMCBzb3VuZGNoaXAuIFN0ZXJlbyBzcGVha2Vycwpw
+bHVnZ2VkIGluIHRvIHRoZSByZWFyIG91dHB1dCBhbmQgaGVhZHBob25lIHNwZWFrZXIvbWljIGNv
+bWJvIHBsdWdnZWQgaW4gdG8KdGhlIGZyb250IGphY2tzLiBTeXN0ZW06IFVidW50dSAxMi4xMAoK
+Pj4gPiBEZXNpcmVkIGJlaGF2aW91cjogU291bmQgaXMgcGxheWVkIGJhY2sgb24gaGVhZHBob25l
+cyBBTkQgcmVhcgpzcGVha2VyLiBGcm9udCBtaWMgc2hvdWxkICJqdXN0LXdvcmsiCgpBc3VzIFA1
+USBzcGVjaWZpY2F0aW9uCgpSZWFsdGVrIEFMQzEyMDAsIDgtY2hhbm5lbCBIaWdoIERlZmluaXRp
+b24gQXVkaW8gQ09ERUMKLSBTdXBwb3J0IEphY2stRGV0ZWN0aW9uLCBNdWx0aS1zdHJlYW1pbmcs
+IGFuZCBGcm9udCBQYW5lbCBKYWNrLVJldGFza2luZwoKQWx0X3BsYXliYWNrIGlzIHN0aWxsIG5v
+dCBlbmFibGVkIHRvIHN1cHBvcnQgbXVsdGkgc3RyZWFtaW5nIHBsYXliYWNrIG9uCnJlYWx0ZWMg
+Y29kZWNzCgo+PiA+IFByb2JsZW0gMjoKPj4gPiBUaGlzIGlzIHRoZSBiaWdnZXN0IHByb2JsZW0u
+Cj4+ID4gQXMgc29vbiBhcyBJIHBsdWcgaW4gdGhlIGZyb250IG1pYywgSW5zaWRlIGdub21lLWFs
+c2FtaXhlciB0aGUgdm9sdW1lCmZvciBtYXN0ZXIsIHN1cnJvdW5kLGNlbnRlcixsZmUgc3RhcnQg
+dG8ganVtcCBiZXR3ZWVuIG9uIGFuZCBvZmYuIFdoeSBpcwp0aGUgRnJvbnQgbWljIGphY2sgY29u
+dHJvbGxpbmcgdGhlc2UgdmFsdWVzPwoKRG8geW91IG1lYW4gQklPUyBkaWQgbm90IHNldHVwIHBp
+biBkZWZhdWx0IGNvcnJlY3RseSBhZnRlciBhc3VzLXA1cSBtb2RlbAp3YXMgcmVtb3ZlZD8KCmh0
+dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdDth
+PWNvbW1pdGRpZmY7aD02ZmRmYTM2MTI4MmE2OWZjOWJmZWE0ZGQ3ZDYzMDNhZGM5ZTRkNmRmO2hw
+PTQ1ODZiMmI1ODNlOWJiM2RmOGNmNTU4NjQ2OWMyYzE5YmQ2YjMxZDIKCj4gSG93IGNhbiBJIGRl
+YnVnIHRoaXMgYmVoYXZpb3VyPwoKUG9zdCB0aGUgb3V0cHV0IG9mIGFsc2EtaW5mby5zaAoKPiBJ
+IGp1c3Qgd2FudCB0aGVtIHRvIHN0YXkgdGhlIHNhbWUsIGlmIHRoZSBtaWMgaXMgcGx1Z2dlZCBp
+biBvciBub3QuCj4+ID4gSW5zaWRlIHRoZSBnbm9tZSB2b2x1bWUgc2V0dGluZ3MsIHRoZSBvdXRw
+dXQgcG9ydCBzdGFydHMgdG8ganVtcApiZXR3ZWVuICJBbmFsb2cgT3V0cHV0IiBhbmQgIkFuYWxv
+ZyBIZWFkcGhvbmVzIgo+Pgo+PiBUaGlzIGxvb2sgbGlrZSBwcm9ibGVtIGluIEphY2sgZGV0ZWN0
+aW9uIG9mIHRoZSBoZWFkcGhvbmUgYW5kIE1pYyBKYWNrCm9mIGZyb250IGF1ZGlvIHBhbmVsCj4+
+Cj4+IGFsc2FtaXhlciAtYzAKPj4KPj4gRG9lcyB0aGUgcGxheWJhY2sgc3dpdGNoIGNoYW5nZSBy
+YXBpZGx5IG9uIGFuZCBvZmYgaW4gYWxzYW1peGVyID8KPj4KPj4gRG8geW91ciBjb21wdXRlciBj
+aGFzc2lzIGhhdmUgYSBoZGEgZnJvbnQgYXVkaW8gcGFuZWwgYW5kIHlvdSBjb25uZWN0CnRoZW0g
+dG8gdGhlIGZyb250IGF1ZGlvIGNvbm5lY3RvciBvZiB0aGUgbW90aGVyYm9hcmQgYWNjb3JkaW5n
+IHRvIHRoZSB1c2VyCm1hbnVhbCA/Cj4+Cj4+IERvZXMgaXQgaGVscCBpZiB5b3UgZGlzYWJsZWQg
+dGhlIGF1dG9tdXRlIHN3aXRjaCA/Cj4+Cj4gVGhhbmtzIGEgbG90LiBZb3VyIGlucHV0IGhlbHBl
+ZCBtZSB0byBhdCBsZWFzdCB3b3JrIGFyb3VuZCB0aGUgcHJvYmxlbS4KTXkgY2hhc3NpcyBoYXMg
+YSBIREEgYW5kIGFuIEFDOTcgY29ubmVjdG9yLiBUaGUgSERBIGNvbm5lY3RvciB3YXMgcGx1Z2dl
+ZAppbiBhbmQgY29ycmVjdGx5IGNvbmZpZ3VyZWQgaW4gQklPUy4KPiBJIG5vdyB1c2UgdGhlIEFD
+OTcgY29ubmVjdG9yIChhbmQgY2hhbmdlZCB0aGUgQklPUyBzZXR0aW5ncykgYW5kCmV2ZXJ5dGhp
+bmcgaXMgd29ya2luZyBwcm9wZXJseS4KCkNoZWNraW5nIHRoZSBmcm9udCBhdWRpbyBwYW5lbCBz
+cGVjaWZpY2F0aW9uIG9mIHlvdXIgY29tcHV0ZXIgY2hhc3NpcwoKU2V0dGluZyBmcm9udCBhdWRp
+byBwYW5lbCB0byBBQzk3IGluIEJJT1Mgb2YgQXN1cyBtb3RoZXJib2FyZCBjaGFuZ2UgdGhlCm1p
+c2NlbGxhbmVvdXMgYml0IG9mIHBpbiBkZWZhdWx0IG9mIGZyb250IEhQIGFuZCBNaWMgSmFjayDv
+vIhpLmUuIG1pc2MgPQpOT19QUkVTRU5DRSkKClRoZSBhbHNhIGRyaXZlciB3b24ndCBlbmFibGUg
+dGhlIHVuc29saWNpdGVkIGV2ZW50IG9uIHRoZXNlIG5vZGVzCgo+Cj4gUmVnYXJkaW5nIHlvdXIg
+cXVlc3Rpb25zOiBEaXNhYmxpbmcgYXV0b211dGUgZGlkbid0IGhlbHAuIEFuZCB5ZXMsIHRoZQpw
+bGF5YmFjayBzd2l0Y2ggdG9nZ2xlZCByYXBpZGx5LgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9w
+PWxpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgtMi42LmdpdDthPWNvbW1pdGRpZmY7aD0y
+NjFjMjQwNzQwMWNhMjZmYTE3ZjA1NjY3ZWE2OGY1MWUxMmM1MzAzCgpUcnkgZGlzYWJsZSB0cmln
+Z2VyIHNlbnNlIGJ5Cgpjb2RlYy0+bm9fdHJpZ2dlcl9zZW5zZSA9IDE7Cgo+Cj4gT25lIHRoaW5n
+IEkgZGlkbid0IHRlc3Q6IEkgbWlzdGFrZW5seSBwbHVnZ2VkIHRoZSByZWFyIHNwZWFrZXIgaW50
+byB0aGUKZnJvbnQgY2hhbm5lbCBqYWNrIChwbHVnZ2luZyB0aGUgZ3JlZW4gY29ubmVjdG9yIGlu
+dG8gYSBncmVlbiBqYWNrIHNlZW1lZApzbyBvYnZpb3VzKS4gSSBkb24ndCBrbm93IGlzIHRoaXMg
+aXMgdGhlIHNhbWUgY2hhbm5lbCBhcyB0aGUgaGVhZHBob25lCmNvbm5lY3RvciBvbiB0aGUgZnJv
+bnQgcGFuZWwuLi4KPgo+IEluIEFDOTcgbW9kZSBpdCBkb2Vzbid0IG1hdHRlciBpZiBJIHVzZSB0
+aGUgZnJvbnQgY2hhbm5lbCBqYWNrIG9yIHRoZQpyZWFyIGNoYW5uZWwgamFjayAoYm90aCBhdCB0
+aGUgcmVhciBvZiB0aGUgY29tcHV0ZXIpIHRvIGNvbm5lY3QgbXkgbWFpbgpzcGVha2Vycy4KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
