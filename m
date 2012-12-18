@@ -1,21 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [pulseaudio-discuss] Front mic not working properly
-Date: Tue, 18 Dec 2012 11:40:57 +0800
-Message-ID: <CAN8cciZZhrPFUCY7WHYBJ6Pez890dKPCd74j0fPSbC9Nxqy00g@mail.gmail.com>
-References: <50CF0B5E.502@gmx.de>
- <CAN8cciad8ygjn0SOyB1_pQ5BqyQTKXGATeOqCu6WA2Pf3CKjWQ@mail.gmail.com>
- <50CF3794.8010008@gmx.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH 1/1] ALSA: hda - bug fix for invalid connection
+	list of more Haswell HDMI codec pins
+Date: Tue, 18 Dec 2012 13:21:54 -0500
+Message-ID: <1355854914-13010-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 767062615B4
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2012 04:40:59 +0100 (CET)
-Received: by mail-ie0-f177.google.com with SMTP id k13so187202iea.8
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 19:40:58 -0800 (PST)
-In-Reply-To: <50CF3794.8010008@gmx.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 091B82615BB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2012 07:19:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,63 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gPgo+PiA+IEknbSB0b3RhbGx5IHN0dWNrIHdpdGggYSBzb3VuZCBwcm9ibGVtIEkgZmFpbCB0
-byBkZWJ1ZyBvbiBteSBvd24uCj4+ID4KPj4gPiBNeSBzZXR1cDoKPj4gPiBBc3VzIFA1USBNb3Ro
-ZXJib2FyZCB3aXRoIFJlYWx0ZWMgQUxDMTIwMCBzb3VuZGNoaXAuIFN0ZXJlbyBzcGVha2Vycwpw
-bHVnZ2VkIGluIHRvIHRoZSByZWFyIG91dHB1dCBhbmQgaGVhZHBob25lIHNwZWFrZXIvbWljIGNv
-bWJvIHBsdWdnZWQgaW4gdG8KdGhlIGZyb250IGphY2tzLiBTeXN0ZW06IFVidW50dSAxMi4xMAoK
-Pj4gPiBEZXNpcmVkIGJlaGF2aW91cjogU291bmQgaXMgcGxheWVkIGJhY2sgb24gaGVhZHBob25l
-cyBBTkQgcmVhcgpzcGVha2VyLiBGcm9udCBtaWMgc2hvdWxkICJqdXN0LXdvcmsiCgpBc3VzIFA1
-USBzcGVjaWZpY2F0aW9uCgpSZWFsdGVrIEFMQzEyMDAsIDgtY2hhbm5lbCBIaWdoIERlZmluaXRp
-b24gQXVkaW8gQ09ERUMKLSBTdXBwb3J0IEphY2stRGV0ZWN0aW9uLCBNdWx0aS1zdHJlYW1pbmcs
-IGFuZCBGcm9udCBQYW5lbCBKYWNrLVJldGFza2luZwoKQWx0X3BsYXliYWNrIGlzIHN0aWxsIG5v
-dCBlbmFibGVkIHRvIHN1cHBvcnQgbXVsdGkgc3RyZWFtaW5nIHBsYXliYWNrIG9uCnJlYWx0ZWMg
-Y29kZWNzCgo+PiA+IFByb2JsZW0gMjoKPj4gPiBUaGlzIGlzIHRoZSBiaWdnZXN0IHByb2JsZW0u
-Cj4+ID4gQXMgc29vbiBhcyBJIHBsdWcgaW4gdGhlIGZyb250IG1pYywgSW5zaWRlIGdub21lLWFs
-c2FtaXhlciB0aGUgdm9sdW1lCmZvciBtYXN0ZXIsIHN1cnJvdW5kLGNlbnRlcixsZmUgc3RhcnQg
-dG8ganVtcCBiZXR3ZWVuIG9uIGFuZCBvZmYuIFdoeSBpcwp0aGUgRnJvbnQgbWljIGphY2sgY29u
-dHJvbGxpbmcgdGhlc2UgdmFsdWVzPwoKRG8geW91IG1lYW4gQklPUyBkaWQgbm90IHNldHVwIHBp
-biBkZWZhdWx0IGNvcnJlY3RseSBhZnRlciBhc3VzLXA1cSBtb2RlbAp3YXMgcmVtb3ZlZD8KCmh0
-dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdDth
-PWNvbW1pdGRpZmY7aD02ZmRmYTM2MTI4MmE2OWZjOWJmZWE0ZGQ3ZDYzMDNhZGM5ZTRkNmRmO2hw
-PTQ1ODZiMmI1ODNlOWJiM2RmOGNmNTU4NjQ2OWMyYzE5YmQ2YjMxZDIKCj4gSG93IGNhbiBJIGRl
-YnVnIHRoaXMgYmVoYXZpb3VyPwoKUG9zdCB0aGUgb3V0cHV0IG9mIGFsc2EtaW5mby5zaAoKPiBJ
-IGp1c3Qgd2FudCB0aGVtIHRvIHN0YXkgdGhlIHNhbWUsIGlmIHRoZSBtaWMgaXMgcGx1Z2dlZCBp
-biBvciBub3QuCj4+ID4gSW5zaWRlIHRoZSBnbm9tZSB2b2x1bWUgc2V0dGluZ3MsIHRoZSBvdXRw
-dXQgcG9ydCBzdGFydHMgdG8ganVtcApiZXR3ZWVuICJBbmFsb2cgT3V0cHV0IiBhbmQgIkFuYWxv
-ZyBIZWFkcGhvbmVzIgo+Pgo+PiBUaGlzIGxvb2sgbGlrZSBwcm9ibGVtIGluIEphY2sgZGV0ZWN0
-aW9uIG9mIHRoZSBoZWFkcGhvbmUgYW5kIE1pYyBKYWNrCm9mIGZyb250IGF1ZGlvIHBhbmVsCj4+
-Cj4+IGFsc2FtaXhlciAtYzAKPj4KPj4gRG9lcyB0aGUgcGxheWJhY2sgc3dpdGNoIGNoYW5nZSBy
-YXBpZGx5IG9uIGFuZCBvZmYgaW4gYWxzYW1peGVyID8KPj4KPj4gRG8geW91ciBjb21wdXRlciBj
-aGFzc2lzIGhhdmUgYSBoZGEgZnJvbnQgYXVkaW8gcGFuZWwgYW5kIHlvdSBjb25uZWN0CnRoZW0g
-dG8gdGhlIGZyb250IGF1ZGlvIGNvbm5lY3RvciBvZiB0aGUgbW90aGVyYm9hcmQgYWNjb3JkaW5n
-IHRvIHRoZSB1c2VyCm1hbnVhbCA/Cj4+Cj4+IERvZXMgaXQgaGVscCBpZiB5b3UgZGlzYWJsZWQg
-dGhlIGF1dG9tdXRlIHN3aXRjaCA/Cj4+Cj4gVGhhbmtzIGEgbG90LiBZb3VyIGlucHV0IGhlbHBl
-ZCBtZSB0byBhdCBsZWFzdCB3b3JrIGFyb3VuZCB0aGUgcHJvYmxlbS4KTXkgY2hhc3NpcyBoYXMg
-YSBIREEgYW5kIGFuIEFDOTcgY29ubmVjdG9yLiBUaGUgSERBIGNvbm5lY3RvciB3YXMgcGx1Z2dl
-ZAppbiBhbmQgY29ycmVjdGx5IGNvbmZpZ3VyZWQgaW4gQklPUy4KPiBJIG5vdyB1c2UgdGhlIEFD
-OTcgY29ubmVjdG9yIChhbmQgY2hhbmdlZCB0aGUgQklPUyBzZXR0aW5ncykgYW5kCmV2ZXJ5dGhp
-bmcgaXMgd29ya2luZyBwcm9wZXJseS4KCkNoZWNraW5nIHRoZSBmcm9udCBhdWRpbyBwYW5lbCBz
-cGVjaWZpY2F0aW9uIG9mIHlvdXIgY29tcHV0ZXIgY2hhc3NpcwoKU2V0dGluZyBmcm9udCBhdWRp
-byBwYW5lbCB0byBBQzk3IGluIEJJT1Mgb2YgQXN1cyBtb3RoZXJib2FyZCBjaGFuZ2UgdGhlCm1p
-c2NlbGxhbmVvdXMgYml0IG9mIHBpbiBkZWZhdWx0IG9mIGZyb250IEhQIGFuZCBNaWMgSmFjayDv
-vIhpLmUuIG1pc2MgPQpOT19QUkVTRU5DRSkKClRoZSBhbHNhIGRyaXZlciB3b24ndCBlbmFibGUg
-dGhlIHVuc29saWNpdGVkIGV2ZW50IG9uIHRoZXNlIG5vZGVzCgo+Cj4gUmVnYXJkaW5nIHlvdXIg
-cXVlc3Rpb25zOiBEaXNhYmxpbmcgYXV0b211dGUgZGlkbid0IGhlbHAuIEFuZCB5ZXMsIHRoZQpw
-bGF5YmFjayBzd2l0Y2ggdG9nZ2xlZCByYXBpZGx5LgoKaHR0cDovL2dpdC5rZXJuZWwub3JnLz9w
-PWxpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgtMi42LmdpdDthPWNvbW1pdGRpZmY7aD0y
-NjFjMjQwNzQwMWNhMjZmYTE3ZjA1NjY3ZWE2OGY1MWUxMmM1MzAzCgpUcnkgZGlzYWJsZSB0cmln
-Z2VyIHNlbnNlIGJ5Cgpjb2RlYy0+bm9fdHJpZ2dlcl9zZW5zZSA9IDE7Cgo+Cj4gT25lIHRoaW5n
-IEkgZGlkbid0IHRlc3Q6IEkgbWlzdGFrZW5seSBwbHVnZ2VkIHRoZSByZWFyIHNwZWFrZXIgaW50
-byB0aGUKZnJvbnQgY2hhbm5lbCBqYWNrIChwbHVnZ2luZyB0aGUgZ3JlZW4gY29ubmVjdG9yIGlu
-dG8gYSBncmVlbiBqYWNrIHNlZW1lZApzbyBvYnZpb3VzKS4gSSBkb24ndCBrbm93IGlzIHRoaXMg
-aXMgdGhlIHNhbWUgY2hhbm5lbCBhcyB0aGUgaGVhZHBob25lCmNvbm5lY3RvciBvbiB0aGUgZnJv
-bnQgcGFuZWwuLi4KPgo+IEluIEFDOTcgbW9kZSBpdCBkb2Vzbid0IG1hdHRlciBpZiBJIHVzZSB0
-aGUgZnJvbnQgY2hhbm5lbCBqYWNrIG9yIHRoZQpyZWFyIGNoYW5uZWwgamFjayAoYm90aCBhdCB0
-aGUgcmVhciBvZiB0aGUgY29tcHV0ZXIpIHRvIGNvbm5lY3QgbXkgbWFpbgpzcGVha2Vycy4KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Mengdong Lin <mengdong.lin@intel.com>
+
+Haswell HDMI codec may report invalid connection list entries on all three
+pins. But our previous patch only fixes the HDMI pin, not the DP pin, so
+audio playbak via DP can still fail.
+
+This patch adds fixup for Haswell to set proper connection list entries for
+the other 2 pins including the DP pin.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 42fdf14..73d298a 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1710,8 +1710,14 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ 	if (vendor_param == -1 || !(vendor_param & 0x02))
+ 		return;
+ 
++	snd_hda_override_conn_list(codec, 0x05, 3, list);
++	hdmi_read_pin_conn(codec, 1);
++
+ 	snd_hda_override_conn_list(codec, 0x06, 3, list);
+ 	hdmi_read_pin_conn(codec, 1);
++
++	snd_hda_override_conn_list(codec, 0x07, 3, list);
++	hdmi_read_pin_conn(codec, 1);
+ }
+ 
+ 
+-- 
+1.7.9.5
