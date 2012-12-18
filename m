@@ -1,54 +1,76 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: hda - Set codec->single_adc_amp flag
-	for Realtek codecs
-Date: Mon, 17 Dec 2012 20:13:40 +0100
-Message-ID: <1355771621-11086-2-git-send-email-tiwai@suse.de>
-References: <1355771621-11086-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E6B09260310
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 20:13:47 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id B08A9A50E4
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 20:13:47 +0100 (CET)
-In-Reply-To: <1355771621-11086-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Ricardo Neri <rneri@dextratech.com>
+Subject: [PATCH v3 0/5] ARM: OMAP4+: HDMI: Update platform devices for audio
+Date: Mon, 17 Dec 2012 19:30:38 -0600
+Message-ID: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, tony@atomide.com
+Cc: peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <rneri@dextratech.com>
 List-Id: alsa-devel@alsa-project.org
 
-It turned out that Realtek codecs (ALC260, etc) with input amps in
-audio-input widgets don't handle the multiple individual input amps.
-Thus we need to set codec->single_adc_amp flag for them in general.
+Hi Mark, Tomi, Liam, Tony,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+This set aims to be the version 3 of my previous submission[1] and aims to
+address the comments that Mark and Tomi kindly provided on such submission.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7743775..16d210a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4373,6 +4373,7 @@ static int alc_alloc_spec(struct hda_codec *codec, hda_nid_t mixer_nid)
- 	if (!spec)
- 		return -ENOMEM;
- 	codec->spec = spec;
-+	codec->single_adc_amp = 1;
- 	spec->mixer_nid = mixer_nid;
- 	snd_hda_gen_init(&spec->gen);
- 	snd_array_init(&spec->kctls, sizeof(struct snd_kcontrol_new), 32);
--- 
-1.8.0.1
+The creation of the platform device for the HDMI audio interface from within the
+OMAPDSS HDMI driver that was previously submitted[2] is resubmitted to be
+complemented with code to relocate to arch/arm/mach-omap2/display.c the
+creation of the platform devices for the HDMI ASoC codec and card drivers. This
+series does not break the HDMI audio functionality in any patch.
+
+Also, the names of the platform devices are changed to give them more logical
+and more descriptive names.
+
+As the commit
+
+commit 14840b9a83c6a56629db2ba0ec247503e975f143
+Author: Ricardo Neri <ricardo.n...@ti.com>
+Date:   Tue Nov 6 00:19:17 2012 -0600
+
+    OMAPDSS: HDMI: Create platform device for audio support
+
+is reverted in Tomi's git://gitorious.org/linux-omap-dss2/linux.git master
+branch, this series applies cleanly.
+
+Changes from v1:
+*Put in a single series all the patches related to platform device updates.
+*Now HDMI audio works correctly in every patch.
+*Remove reference to the TPD12S015 HDMI companion chip as the ASoC drivers
+ are not aware of this and other chips could be used in the future.
+
+ Changes from v2:
+*Split in two patches the renaming and the relocation of the platform devices.
+*Create a separate patch to pass only the address offset of the DMA data port
+ to the audio interface platform device.
+*Keep the name hdmi-audio-codec to not refer to explicitly to OMAP. The codec
+ can be made generic in a different patch series submitted to alsa-devel.
+
+ BR,
+
+ Ricardo
+
+
+[1]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg80785.html
+[2]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg79795.html
+
+Ricardo Neri (5):
+  ARM: OMAP4+: HDMI: Rename platform devices for ASoC drivers
+  ARM: OMAP4: Assign IDs to DSS HDMI devices
+  ARM4: OMAP4+: HDMI: Relocate devices for audio codec and card
+  ARM: OMAP4+: HDMI: Relocate the device for audio interface
+  ARM: OMAP4+: HDMI: Refine the DMA port resource for audio
+
+ arch/arm/mach-omap2/board-4430sdp.c    |    9 ++---
+ arch/arm/mach-omap2/board-omap4panda.c |    9 ++---
+ arch/arm/mach-omap2/devices.c          |   31 ----------------
+ arch/arm/mach-omap2/display.c          |   31 ++++++++++++++++
+ drivers/video/omap2/dss/hdmi.c         |   62 ++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-hdmi-card.c        |    4 +--
+ sound/soc/omap/omap-hdmi.c             |    5 ++-
+ sound/soc/omap/omap-hdmi.h             |    2 --
+ 8 files changed, 103 insertions(+), 50 deletions(-)
+
+--
+1.7.10.4
+
