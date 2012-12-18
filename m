@@ -1,25 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Fwd: Request for HW auto-recognition: HP Pavilion
- dv7 with STAC92xx
-Date: Tue, 18 Dec 2012 15:50:58 +0800
-Message-ID: <CAN8cciYKBbRsjvt82=GV_HpqJbWO1j6BFmaDaU+ugtEjAjZkMw@mail.gmail.com>
-References: <CACd4Q01r1Oa=ds0+eskdkvnMJytuLRj5FPYyNjbdnx5WNWWZvQ@mail.gmail.com>
- <CACd4Q01r58JL3hD49mtT97+7Jkdpr8Sgfni88wHfsE79_dTP6A@mail.gmail.com>
- <s5hr4mrpqek.wl%tiwai@suse.de>
- <CACd4Q03Vy4DBVVM5gyo9NF+aOaBAPoKig8hG7SahMdNhq=smjQ@mail.gmail.com>
- <CAN8cciZjR5jo0DUpd_iLZ-00bb-5rveBEK9LezBf-79=QT_oMw@mail.gmail.com>
- <CACd4Q008FETHS04bWpgmGBzrkgi5wS895sKympBWCynUCJ_VQQ@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 1/1] ALSA: hda - bug fix for invalid
+ connection list of more Haswell HDMI codec pins
+Date: Tue, 18 Dec 2012 08:09:12 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82995C2@SHSMSX101.ccr.corp.intel.com>
+References: <1355854914-13010-1-git-send-email-mengdong.lin@intel.com>
+ <s5hip7zq1lq.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F829955B@SHSMSX101.ccr.corp.intel.com>
+ <s5hd2y7pzuc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f182.google.com (mail-ia0-f182.google.com
- [209.85.210.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F94D2615F5
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2012 08:51:00 +0100 (CET)
-Received: by mail-ia0-f182.google.com with SMTP id x2so272137iad.13
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2012 23:50:59 -0800 (PST)
-In-Reply-To: <CACd4Q008FETHS04bWpgmGBzrkgi5wS895sKympBWCynUCJ_VQQ@mail.gmail.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD361261604
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2012 09:09:18 +0100 (CET)
+In-Reply-To: <s5hd2y7pzuc.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,50 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Nicolas_Ma=C3=AEtre?= <nimai@skynet.be>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Cj4gPiBUcnlpbmcgcmVtb3ZlIFBDSSBxdWlyayBhbmQgdXNlIGF1dG8gdG8gZmluZCBvdXQg
-bm9kZSAweDBmIGlzIHRoZQppbnRlcm5hbAo+ID4gc3BlYWtlcgo+ID4KPiA+IC0gU05EX1BDSV9R
-VUlSSyhQQ0lfVkVORE9SX0lEX0hQLCAweDE2NTksCj4gPiAtICJIUCIsIFNUQUNfOTJIRDgzWFhY
-X0hQX2NOQjExX0lOVFFVQUQpLAo+Cj4gTm90IHN1cmUgb2Ygd2hhdCB5b3UgZXhwZWN0IG9mIG1l
-LCBidXQgYW55d2F5IEkndmUgdHJpZWQgYSBrZXJuZWwKPiB3aXRob3V0IHRoZSBxdWlyayBhbmQg
-aGVyZSdzIHRoZSByZXN1bHQ6Cj4KPiBvcmlnaW5hbCBrZXJuZWwsIG1vZGVsPWR2Ny00MDAwOgo+
-IDB4MGEgMHgwM2ExMjA1MAo+IDB4MGIgMHgwMzIxMjAxZgo+IDB4MGMgMHg0MGYwMDBmMAo+IDB4
-MGQgMHg5MDE3MDExMAo+IDB4MGUgMHg0MGYwMDBmMAo+IDB4MGYgMHg0MGYwMDBmMAo+IDB4MTAg
-MHg5MDE3MDExMAo+IDB4MTEgMHhkNWEzMDE0MAo+IDB4MWYgMHg0MGYwMDBmMAo+IDB4MjAgMHg0
-MGYwMDBmMAo+IDEKPgo+IGtlcm5lbCB3aXRob3V0IHF1aXJrLCBtb2RlbD1hdXRvOgo+IDB4MGEg
-MHg0MGYwMDBmMAo+IDB4MGIgMHgwMjIxMTAxZgo+IDB4MGMgMHgwMmExMTAyMAo+IDB4MGQgMHg0
-MGYwMDBmMAo+IDB4MGUgMHg0MGYwMDBmMAo+IDB4MGYgMHg5MjE3MDExMAo+IDB4MTAgMHg0MGYw
-MDBmMAo+IDB4MTEgMHhkNWEzMDEzMAo+IDB4MWYgMHg0MGYwMDBmMAo+IDB4MjAgMHg0MGYwMDBm
-MAo+IDEKPgo+IEFuZCBJIGNhbiBzZWUgdGhhdCAweDBmIGlzIHRoZSBpbnRlcm5hbCBzcGVha2Vy
-IChhdCBsZWFzdCBpbgpoZGEtamFjay1yZXRhc2spCj4gVGhlIHNvdW5kIGlzIG9ubHkgb3V0cHV0
-IG9uIHRoZSAyIHJlYXIgc3BlYWtlcnMgKG5vIGZyb250IG5vciBzdWJ3b29mZXIpLgo+IFNvIHdo
-YXQgbm93Pwo+CgpDYW4geW91IHBvc3QgdGhlIG91dHB1dCBvZiBhbHdheXMtaW5mby5zaCAoa2Vy
-bmVsIHdpdGhvdXQgcXVpcmssIG1vZGVsPWF1dG8KKT8KClRha2UgYSBsb29rIGF0IDkySEQ4MSBk
-YXRhc2hlZXQKCjIuMS5Qb3J0IEZ1bmN0aW9uYWxpdHkKMi4yLiBNb25vIE91dHB1dAoyLjE5LkJU
-TCBBbXBsaWZpZXIgSGlnaC1QYXNzIEZpbHRlcgogICAgICAgIFRoZSBoaWdoIHBhc3MgZmlsdGVy
-IGlzIGVuYWJsZWQgYnkgZGVmYXVsdCB3aXRoIGEgY3V0LW9mZiBmcmVxdWVuY3kKb2YgMzAwSHoK
-Mi4yMy4yLiDigJxQbGF5YmFjayBQYXRo4oCdIFBvcnQgQmVoYXZpb3IKCkZpZ3VyZSA4LiAgRnVu
-Y3Rpb25hbCBCbG9jayBEaWFncmFtCgpJZiB5b3VyIG5vdGUgYm9vayByZWFsbHkgaGF2ZSA1IHNw
-ZWFrZXJzIGFuZCBub2RlIDB4MGYgaXMgdGhlIHJlYXIgc3BlYWtlcgosIHRoZSBzZXF1ZW5jZSBu
-dW1iZXIgc2hvdWxkIGJlIDEgaW5zdGVhZCBvZiAwIGJ5IHBpbiBmaXh1cAoKRG8gdGhlIGhlYWRw
-aG9uZSAsIE1pYyBqYWNrIGFuZCBpbnRlcm5hbCBNaWMgd29yayBhcyBleHBlY3RlZCA/CgpzdWJ3
-b29mZXIgaXMgbW9zdCBsaWtlbHkgYXQgbW9ubyBwaW4gbm9kZSAweDEwCgp1c2UgaGRhLWFuYWx5
-emVyIHRvIGNoYW5nZSBQaW4tY3RscyB0byBPVVQgYW5kIGNvbm5lY3Qgbm9kZSAweDE5IHRvIHRo
-ZQphdWRpbyBvdXRwdXQgd2l0aCBzcGVha2VyIHBsYXliYWNrIHZvbHVtZSBjb250cm9sCgpFaXRo
-ZXIgMHgwZCBvciAweDBlIGlzIHRoZSBmcm9udCBzcGVha2VyCgpVc2UgZWFybHkgcGF0Y2hpbmcg
-dG8gZml4IHRoZSBwaW4gZGVmYXVsdAoKTm9kZSAweDEwIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
-MDA1MDA6IE1vbm8KICBQaW5jYXAgMHgwMDAwMDAxMDogT1VUCiAgUGluIERlZmF1bHQgMHg0MGYw
-MDBmMDogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0g
-VW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0
-bHM6IDB4MDA6CiAgUG93ZXIgc3RhdGVzOgogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
-ICBDb25uZWN0aW9uOiAxCiAgICAgMHgxYQoKTm9kZSAweDE5IFtBdWRpbyBTZWxlY3Rvcl0gd2Nh
-cHMgMHgzMDA1MDE6IFN0ZXJlbwogIFBvd2VyIHN0YXRlczoKICBQb3dlcjogc2V0dGluZz1EMCwg
-YWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMwogICAgIDB4MTMqIDB4MTQgMHgxYwpOb2RlIDB4MWEg
-W0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDUwMDogTW9ubwogIFBvd2VyIHN0YXRlczoKICBQb3dl
-cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTkKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, December 18, 2012 3:46 PM
+
+
+> > Will OEM change the PCI (or codec) SSID so that this fixup will not be
+> applied at all?
+> >
+> > In Haswell, there are two HD-A controllers: one for display codec and the
+> other for legacy 3rd-party codec.
+> > I'm not sure if OEM will change the PCI SSID of the display HD-A controller.
+> 
+> Of course, they'll change SSIDs.
+> 
+
+Thanks for your info, Takashi!
+You're right. PCI spec allow these registers in configuration space to be changed.
+
+So snd_hda_pick_fixup/snd_hda_apply_fixup is designed for fixing board or BIOS-specific issues, right?
+
+I'll update the patch as you suggested.
+
+Thanks
+Mengdong
