@@ -1,91 +1,65 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Adding wm8962 support to mx6qsabresd
-Date: Wed, 19 Dec 2012 16:42:01 +0000
-Message-ID: <20121219164201.GU4985@opensource.wolfsonmicro.com>
-References: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
+Subject: Re: [PATCH V5 2/2] ASoC: SAMSUNG: Add DT support for i2s
+Date: Wed, 19 Dec 2012 17:09:37 +0000
+Message-ID: <20121219170937.GV4985@opensource.wolfsonmicro.com>
+References: <1355395373-22058-1-git-send-email-padma.v@samsung.com>
+ <1355395373-22058-3-git-send-email-padma.v@samsung.com>
+ <20121219132414.2CF653E0AD7@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2546602556644886986=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FC49265049
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2012 17:42:03 +0100 (CET)
-In-Reply-To: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <kernel@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+Yg8W10oK6rlW0RR"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20121219132414.2CF653E0AD7@localhost>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, kgene.kim@samsung.com, sbkim73@samsung.com, tiwai@suse.de, ben-linux@fluff.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2546602556644886986==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l4+/aJnPlhOv5JVj"
-Content-Disposition: inline
-
-
---l4+/aJnPlhOv5JVj
+--+Yg8W10oK6rlW0RR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 19, 2012 at 02:33:58PM -0200, Fabio Estevam wrote:
+On Wed, Dec 19, 2012 at 01:24:14PM +0000, Grant Likely wrote:
+> On Thu, 13 Dec 2012 16:12:53 +0530, Padmavathi Venna <padma.v@samsung.com=
+> wrote:
 
-> I am working on adding audio support to mx6qsabresd board, which
-> contains a wm8962 codec.
+> > +- compatible : "samsung,samsung-i2s"
 
-Without seeing your code or knowing which kernel version you're running
-it's a bit hard to comment...
+> Isn't that kind of redundant?  :-)
 
-> wm8962 0-001a: wm8962->lrclk = 44100
-> wm8962 0-001a: Selected sysclk ratio 256
-> wm8962 0-001a: read 4 => ffffffff
-> wm8962 0-001a: Failed to read DSPCLK: -1
+> The format of the compatible strings should be "<vendor>,<part-number>-i2=
+s".=20
+> Please be specific about the part number that you're doing the binding
+> for. For example; use "samsung,exynos4210-i2s" instead of "samsung,exynos=
+-i2s".
 
-This suggests that physical I/O to the device isn't working.  Is it
-clocked and powered?
+There are actually versioned IPs here (where the versions are used
+publically in a few places) but it's not clearly documented which is
+which.  It would be reasonable to use the IP versions here I think.
 
-> wm8962 0-001a: read 3 => 100
-> wm8962 0-001a: write 3 = 100
-> wm8962 0-001a: ASoC: POST_PMU: HPOUTR PGA event failed: -5
-
-You've not enabled any of the debug in the driver...  it might give you
-some hints.
-
---l4+/aJnPlhOv5JVj
+--+Yg8W10oK6rlW0RR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ0e40AAoJELSic+t+oim9bKoQAJlCcYjmWJ0tySMoKLm6pDMn
-fHGgbnACifkPtvANH4lEY3auDzjR9Nx6yVPYtYFKFw3s+MwNaw/0LUmt4H4LZGEu
-uAOAgvlOrHvLEZKPiMvKKQo5jLl+XjbwxPn0ykFncdS0690ArcqbuJgwe9dpkFlh
-PAC4BwC5NFqF4Lf3M14e8LRJ7eNLm0V6+hW7X23/HMm9ZblcZk+0VMJepapaOHWQ
-D5DFvCR+jqUXyGzpoI/RKUeKEAyViUIyycxSahIskGoqmatnz4N759sQefwGxcvV
-WcBDrJHYcODBB7vm1mldhGiEIjsVyBSqmGl2LclYgstp6SIwgAqz1e6AUsBzisX5
-a12x0EzzqnoSCfBZrMBX6D2gPCPDPSoJ00AchttaOG3SCu3EtjxYnF5mcRhwGTV/
-30ZHWEMoRVl4tO8b8zLA0gwAQy4ME7uQgaeqYea17R4s0e4Ce3Zf/6r+Com7rwg1
-nBC7vYh7qkwYrtyOql4hFi9HMLmC2Lp5Wlgc+It5YLHN4P7hAY0WZ9B5WVn/kwKY
-Du2ecQ/zt2Gi5t/k66p3gmcQVLFrrYlbesmwh8Fja+iqOJFLf4ZsgFrj89ntzCNb
-IWQliEosXjGAxUW1TjIUF5wrB9gXl8C7ERfYXkK+sf51gVxlIIxdYEJR8fuTNDAi
-Ho0Tglc9oHhdMF1fH4I1
-=r7+L
+iQIcBAEBAgAGBQJQ0fS+AAoJELSic+t+oim99iQQAJKF9qTp0/p73XtK6TJwvXVM
+xYY0ZzmZzFv8q6HG7Nx+gw+SE1DAp+GmQefCIAahsEIEnRf/9MHhiz9uuMtP3jLL
+rYCqy5uiYgXDAOhW3dVB7r4l+XFotslkkigm0dDA2GTrLQrWdP2CXqmN2j8fix3G
+MARX79RwNoRLTWHz4LvOgB2tdqjLUfhNEbBSrwnTGLNR3TMa32+26zABO+bgASx9
+dx8A1O9m6Y+ZBuDfVNAVixnMZ90P0+iaM0TKmaEzKMnCsg9779V85PkkhYKMdewc
+NQiwhfsHs26bF/Fub2SJpCYAvMW7YfTU1go3H5UuXOPY2KvgFhZmREx0zBkoGyT9
+jDOUJJPtxYaCNfi+qM2gOxdfSYl0jcbCQ82U+wlWB8GhdZyWzxirk3sE4o78FXZL
+hDKY0dWEtHOY1uKuHQPmQ4eo6ORYaECEBTexHDe+lBmT0DxELeE9b83FCwEItcSC
+Dl316A6Ojo8KJi7Fxwl/xLHFoi6vMNU8lCT/fvdn81z5U5YshxRuJIHy7VJFWccO
+iD2Gt9tPU60Y0YarAnEhK+JhSeabvsWBco7fAQYkk89GSAz8T8BWmmtl2phPtfRd
++fiUK5wb1jYaSztOwZUvCPTBcbLH5owFf/byn2VXZ7be5xRsNGp1u0XMMx0aeRtF
+XvnudmpfXR6Z3+OXztDr
+=tTsm
 -----END PGP SIGNATURE-----
 
---l4+/aJnPlhOv5JVj--
-
---===============2546602556644886986==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2546602556644886986==--
+--+Yg8W10oK6rlW0RR--
