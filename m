@@ -1,17 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Adding wm8962 support to mx6qsabresd
-Date: Wed, 19 Dec 2012 14:33:58 -0200
-Message-ID: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Adding wm8962 support to mx6qsabresd
+Date: Wed, 19 Dec 2012 16:42:01 +0000
+Message-ID: <20121219164201.GU4985@opensource.wolfsonmicro.com>
+References: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2546602556644886986=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id D38F42650A4
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2012 17:33:59 +0100 (CET)
-Received: by mail-ob0-f172.google.com with SMTP id za17so2218660obc.3
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2012 08:33:58 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FC49265049
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2012 17:42:03 +0100 (CET)
+In-Reply-To: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,145 +19,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Fabio Estevam <festevam@gmail.com>
 Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I am working on adding audio support to mx6qsabresd board, which
-contains a wm8962 codec.
+--===============2546602556644886986==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="l4+/aJnPlhOv5JVj"
+Content-Disposition: inline
 
-Here is the log with debug information turned on that I am getting so far:
 
-wm8962 0-001a: customer id 0 revision D
-wm8962 0-001a: read 25 => 8
-wm8962 0-001a: read 25 => 8
-wm8962 0-001a: read 25 => 8
-wm8962 0-001a: read 25 => 8
-wm8962 0-001a: read 26 => 8
-wm8962 0-001a: read 26 => 8
-wm8962 0-001a: read 26 => 8
-wm8962 0-001a: read 26 => 8
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 22 => 9
-wm8962 0-001a: read 3a => 0
-wm8962 0-001a: read 3a => 0
-wm8962 0-001a: read 39 => 0
-wm8962 0-001a: read 39 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 64 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 65 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 69 => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 6a => 0
-wm8962 0-001a: read 200 => ffffffff
-wm8962 0-001a: read 201 => 0
-wm8962 0-001a: read 202 => 0
-wm8962 0-001a: read 203 => ffffffff
-wm8962 0-001a: read 204 => 8100
-wm8962 0-001a: read 205 => 8100
-wm8962 0-001a: DMIC not in use, disabling
-input: WM8962 Beep Generator as
-/devices/soc.0/2100000.aips-bus/21a0000.i2c/i2c-0/0-001a/input/input0
-wm8962 0-001a: read 31 => ffffffff
-wm8962 0-001a: read 31 => ffffffff
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 63 => 0
-wm8962 0-001a: read 63 => 0
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 63 => 0
-wm8962 0-001a: read 63 => 0
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 1a => 0
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: read 26 => 8
-wm8962 0-001a: read 25 => 8
-wm8962 0-001a: read 30 => ffffffff
-wm8962 0-001a: read 30 => ffffffff
-wm8962 0-001a: read 300 => 1c00
-wm8962 0-001a: read 17 => 160
-wm8962 0-001a: read 48 => 0
-wm8962 0-001a: read 8 => ffffffff
-wm8962 0-001a: read 52 => 4
-wm8962 0-001a: read 19 => 0
-wm8962 0-001a: write a0 = 149
-wm8962 0-001a: write a1 = 271
-wm8962 0-001a: write a2 = 7
-wm8962 0-001a: FLL configured for 24000000Hz->11289600Hz
-wm8962 0-001a: No audio clocks configured
-...
-imx-wm8962 sound.14:  wm8962 <-> 2028000.ssi mapping ok
+--l4+/aJnPlhOv5JVj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-root@freescale /home$ ./aplay Front_Left.wav
-wm8962 0-001a: hw_params set BCLK 1411200Hz LRCLK 44100Hz
-wm8962 0-001a: wm8962->sysclk_rate = 11289600
-wm8962 0-001a: wm8962->lrclk = 44100
-wm8962 0-001a: Selected sysclk ratio 256
-wm8962 0-001a: read 4 => ffffffff
-wm8962 0-001a: Failed to read DSPCLK: -1
-wm8962 0-001a: read 3 => 100
-wm8962 0-001a: write 3 = 100
-wm8962 0-001a: ASoC: POST_PMU: HPOUTR PGA event failed: -5
-wm8962 0-001a: read 29 => 100
-wm8962 0-001a: write 29 = 100
-wm8962 0-001a: ASoC: POST_PMU: SPKOUTR PGA event failed: -5
-wm8962 0-001a: read 2 => 100
-wm8962 0-001a: write 2 = 100
-wm8962 0-001a: ASoC: POST_PMU: HPOUTL PGA event failed: -5
-wm8962 0-001a: read 28 => 100
-wm8962 0-001a: write 28 = 100
-wm8962 0-001a: ASoC: POST_PMU: SPKOUTL PGA event failed: -5
-wm8962 0-001a: read 42 => ffffffff
-wm8962 0-001a: Failed to read DCS status: -1
-wm8962 0-001a: DC servo complete after 1ms
-Playing WAVE 'Front_Left.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+On Wed, Dec 19, 2012 at 02:33:58PM -0200, Fabio Estevam wrote:
 
-Any idea of why register 4 and 42 read fails?
-wm8962 0-001a: read 4 => ffffffff
-wm8962 0-001a: Failed to read DSPCLK: -1
+> I am working on adding audio support to mx6qsabresd board, which
+> contains a wm8962 codec.
 
-wm8962 0-001a: read 42 => ffffffff
-wm8962 0-001a: Failed to read DCS status: -1
+Without seeing your code or knowing which kernel version you're running
+it's a bit hard to comment...
 
-Any suggestion is appreciated.
+> wm8962 0-001a: wm8962->lrclk = 44100
+> wm8962 0-001a: Selected sysclk ratio 256
+> wm8962 0-001a: read 4 => ffffffff
+> wm8962 0-001a: Failed to read DSPCLK: -1
 
-Thanks,
+This suggests that physical I/O to the device isn't working.  Is it
+clocked and powered?
 
-Fabio Estevam
+> wm8962 0-001a: read 3 => 100
+> wm8962 0-001a: write 3 = 100
+> wm8962 0-001a: ASoC: POST_PMU: HPOUTR PGA event failed: -5
+
+You've not enabled any of the debug in the driver...  it might give you
+some hints.
+
+--l4+/aJnPlhOv5JVj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ0e40AAoJELSic+t+oim9bKoQAJlCcYjmWJ0tySMoKLm6pDMn
+fHGgbnACifkPtvANH4lEY3auDzjR9Nx6yVPYtYFKFw3s+MwNaw/0LUmt4H4LZGEu
+uAOAgvlOrHvLEZKPiMvKKQo5jLl+XjbwxPn0ykFncdS0690ArcqbuJgwe9dpkFlh
+PAC4BwC5NFqF4Lf3M14e8LRJ7eNLm0V6+hW7X23/HMm9ZblcZk+0VMJepapaOHWQ
+D5DFvCR+jqUXyGzpoI/RKUeKEAyViUIyycxSahIskGoqmatnz4N759sQefwGxcvV
+WcBDrJHYcODBB7vm1mldhGiEIjsVyBSqmGl2LclYgstp6SIwgAqz1e6AUsBzisX5
+a12x0EzzqnoSCfBZrMBX6D2gPCPDPSoJ00AchttaOG3SCu3EtjxYnF5mcRhwGTV/
+30ZHWEMoRVl4tO8b8zLA0gwAQy4ME7uQgaeqYea17R4s0e4Ce3Zf/6r+Com7rwg1
+nBC7vYh7qkwYrtyOql4hFi9HMLmC2Lp5Wlgc+It5YLHN4P7hAY0WZ9B5WVn/kwKY
+Du2ecQ/zt2Gi5t/k66p3gmcQVLFrrYlbesmwh8Fja+iqOJFLf4ZsgFrj89ntzCNb
+IWQliEosXjGAxUW1TjIUF5wrB9gXl8C7ERfYXkK+sf51gVxlIIxdYEJR8fuTNDAi
+Ho0Tglc9oHhdMF1fH4I1
+=r7+L
+-----END PGP SIGNATURE-----
+
+--l4+/aJnPlhOv5JVj--
+
+--===============2546602556644886986==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2546602556644886986==--
