@@ -1,60 +1,94 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH V5 2/2] ASoC: SAMSUNG: Add DT support for i2s
-Date: Wed, 19 Dec 2012 09:37:28 -0800
-Message-ID: <007401cdde0f$86096210$921c2630$@samsung.com>
-References: <1355395373-22058-1-git-send-email-padma.v@samsung.com>
- <1355395373-22058-3-git-send-email-padma.v@samsung.com>
- <20121219132414.2CF653E0AD7@localhost>
- <20121219170937.GV4985@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: usb-audio: support delay calculation on
+	capture streams
+Date: Wed, 19 Dec 2012 11:39:05 -0600
+Message-ID: <1355938745-14693-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-reply-to: 
-Content-language: en-us
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Grant Likely' <grant.likely@secretlab.ca>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, 'Padmavathi Venna' <padma.v@samsung.com>, sbkim73@samsung.com, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, tiwai@suse.de, ben-linux@fluff.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEED22650C1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2012 18:39:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Kukjin Kim wrote:
-> 
-> Mark Brown wrote:
-> >
-> > On Wed, Dec 19, 2012 at 01:24:14PM +0000, Grant Likely wrote:
-> > > On Thu, 13 Dec 2012 16:12:53 +0530, Padmavathi Venna
-> > <padma.v@samsung.com> wrote:
-> >
-> > > > +- compatible : "samsung,samsung-i2s"
-> >
-> > > Isn't that kind of redundant?  :-)
-> >
-> > > The format of the compatible strings should be "<vendor>,<part-
-> number>-
-> > i2s".
-> > > Please be specific about the part number that you're doing the binding
-> > > for. For example; use "samsung,exynos4210-i2s" instead of
-> > "samsung,exynos-i2s".
-> >
-> > There are actually versioned IPs here (where the versions are used
-> > publically in a few places) but it's not clearly documented which is
-> > which.  It would be reasonable to use the IP versions here I think.
-> 
-Oops, I'm resending due to problem of my e-mail client.
+Enable delay report on capture path. The delay is reset when an
+URB is retired and increment at each call to .pointer based
+on frame counter changes. The precision of the delay
+information is limited to 1ms as in the playback case.
 
-> I agree with Mark Brown. That makes sense, for example, see mfc.
-> 	compatible = "samsung,mfc-v6"
-> Same versioned IPs can be used on different SoCs, so in my opinion, in
-this
-> case, to use version is more clear.
-> 
+This reverts commit 3f94fad09538ec988919ec3f371841182df71d04.
 
-- Kukjin
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/usb/pcm.c |   23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index c659310..3a38447 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -59,7 +59,12 @@ snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
+ 
+ 	/* Approximation based on number of samples per USB frame (ms),
+ 	   some truncation for 44.1 but the estimate is good enough */
+-	est_delay =  subs->last_delay - (frame_diff * rate / 1000);
++	est_delay =  frame_diff * rate / 1000;
++	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
++		est_delay = subs->last_delay - est_delay;
++	else
++		est_delay = subs->last_delay + est_delay;
++
+ 	if (est_delay < 0)
+ 		est_delay = 0;
+ 	return est_delay;
+@@ -78,8 +83,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ 		return SNDRV_PCM_POS_XRUN;
+ 	spin_lock(&subs->lock);
+ 	hwptr_done = subs->hwptr_done;
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		substream->runtime->delay = snd_usb_pcm_delay(subs,
++	substream->runtime->delay = snd_usb_pcm_delay(subs,
+ 						substream->runtime->rate);
+ 	spin_unlock(&subs->lock);
+ 	return hwptr_done / (substream->runtime->frame_bits >> 3);
+@@ -1147,6 +1151,10 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 	int i, period_elapsed = 0;
+ 	unsigned long flags;
+ 	unsigned char *cp;
++	int current_frame_number;
++
++	/* read frame number here, update pointer in critical section */
++	current_frame_number = usb_get_current_frame_number(subs->dev);
+ 
+ 	stride = runtime->frame_bits >> 3;
+ 
+@@ -1180,6 +1188,15 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 			subs->transfer_done -= runtime->period_size;
+ 			period_elapsed = 1;
+ 		}
++		/* capture delay is by construction limited to one URB,
++		 * reset delays here
++		 */
++		runtime->delay = subs->last_delay = 0;
++
++		/* realign last_frame_number */
++		subs->last_frame_number = current_frame_number;
++		subs->last_frame_number &= 0xFF; /* keep 8 LSBs */
++
+ 		spin_unlock_irqrestore(&subs->lock, flags);
+ 		/* copy a data chunk */
+ 		if (oldptr + bytes > runtime->buffer_size * stride) {
+-- 
+1.7.9.5
