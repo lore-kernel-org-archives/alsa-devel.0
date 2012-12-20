@@ -1,62 +1,84 @@
-From: "Liu, Chuansheng" <chuansheng.liu@intel.com>
-Subject: RE: [PATCH] ASoC: dapm: Fix the unpaired runtime_get/put cases
-Date: Thu, 20 Dec 2012 06:37:26 +0000
-Message-ID: <27240C0AC20F114CBF8149A2696CBE4A1F3CA7@SHSMSX101.ccr.corp.intel.com>
-References: <1355913397.17896.10.camel@cliu38-desktop-build>
- <20121219091127.GL4985@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: sta529: Fix update register bits in
+ sta529_set_dai_fmt
+Date: Thu, 20 Dec 2012 16:17:25 +0800
+Message-ID: <1355991445.11688.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20121219091127.GL4985@opensource.wolfsonmicro.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-da0-f49.google.com (mail-da0-f49.google.com
+ [209.85.210.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CE00265181
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 09:17:40 +0100 (CET)
+Received: by mail-da0-f49.google.com with SMTP id v40so1380957dad.8
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 00:17:39 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "lrg@ti.com" <lrg@ti.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Liu, Chuansheng" <chuansheng.liu@intel.com>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Both the mask and mode settings are wrong in current code.
 
+According to the datasheet:
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Wednesday, December 19, 2012 5:11 PM
-> To: Liu, Chuansheng
-> Cc: lrg@ti.com; perex@perex.cz; tiwai@suse.de; alsa-devel@alsa-project.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ASoC: dapm: Fix the unpaired runtime_get/put cases
-> 
-> On Wed, Dec 19, 2012 at 06:36:37PM +0800, Chuansheng Liu wrote:
-> 
-> > But some devices has been set to STANDY bias directly during device probing,
-> > such as cs42l73_probe():
-> > cs42l73_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> 
-> > Then it will cause runtime_get() not be called but laterly runtime_put() will
-> > be called. Also found some other uppaired cases.
-> 
-> This is just a bug in the driver, if it's idle_bias_off then it really
-> should be starting in _OFF or at the very least starting actually in
-> _STANDBY (including taking the runtime reference) rather than partially
-> in _STANDBY.
-Thanks your pointing out. You are totally right.
-Rechecked the related driver code, there is one place which starting from _STANDBY with idle_bias_off.
-It should be the main reason of bringing unpaired issue.
+S2PCFG0 (0x0A)
+BIT[3:1] DATA_FORMAT
+        serial interface protocol format:
+        000: left Justified
+        001: I2S (default)
+        010: right justified
+        100: PCM no delay
+        101: PCM delay
+        111: DSP
 
-Meanwhile, is it useful to add one warning there for that case?
-After all, in probing, set the bias to _STANDBY even idle_bias_off == 1, and calling get_runtime_sync(), it
-will let the code more obscure. So giving a warning there to indicate the driver:
-it is not suggested that in probing, set the bias to _STANDBY even idle_bias_off == 1.
+Thus fixes the defines for LEFT_J_DATA_FORMAT, I2S_DATA_FORMAT, and
+RIGHT_J_DATA_FORMAT.
+Also adds define for DATA_FORMAT_MSK.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9c768bc..d6adaec 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1102,6 +1102,8 @@ static int soc_probe_codec(struct snd_soc_card *card,
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Rajeev,
+I don't have this hardware, can you test this patch?
+Thanks,
+Axel
+ sound/soc/codecs/sta529.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index ab355c4..40c07be 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -74,9 +74,10 @@
+ 				SNDRV_PCM_FMTBIT_S32_LE)
+ #define	S2PC_VALUE		0x98
+ #define CLOCK_OUT		0x60
+-#define LEFT_J_DATA_FORMAT	0x10
+-#define I2S_DATA_FORMAT		0x12
+-#define RIGHT_J_DATA_FORMAT	0x14
++#define DATA_FORMAT_MSK		0x0E
++#define LEFT_J_DATA_FORMAT	0x00
++#define I2S_DATA_FORMAT		0x02
++#define RIGHT_J_DATA_FORMAT	0x04
+ #define CODEC_MUTE_VAL		0x80
  
-        if (driver->probe) {
-                ret = driver->probe(codec);
-+               WARN_ON(codec->dapm.idle_bias_off &&
-+                       codec->dapm.bias_level != SND_SOC_BIAS_OFF);
-                if (ret < 0) {
-                        dev_err(codec->dev,
-                                "ASoC: failed to probe CODEC %d\n", ret);
+ #define POWER_CNTLMSAK		0x40
+@@ -289,7 +290,7 @@ static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, STA529_S2PCFG0, 0x0D, mode);
++	snd_soc_update_bits(codec, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
+ 
+ 	return 0;
+ }
+-- 
+1.7.9.5
