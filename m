@@ -1,62 +1,60 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs42l52: Catch no-match case in
-	cs42l52_get_clk
-Date: Thu, 20 Dec 2012 16:53:16 +0800
-Message-ID: <1355993596.20315.1.camel@phoenix>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 2/7] ASoC: allow wolfson wm9712 codec to be instantiated
+ using device tree
+Date: Thu, 20 Dec 2012 09:32:14 +0000
+Message-ID: <20121220093214.GZ4985@opensource.wolfsonmicro.com>
+References: <1355959056-6009-1-git-send-email-dev@lynxeye.de>
+ <1355959056-6009-2-git-send-email-dev@lynxeye.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id DAFF6265182
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 09:53:25 +0100 (CET)
-Received: by mail-pa0-f52.google.com with SMTP id fb1so1924549pad.11
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 00:53:24 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lBR2yNlwcY132B3M"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1355959056-6009-2-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In the case of no-match, return -EINVAL instead of 0.
 
-Since we assign i to ret in the for loop, ret always less than
-ARRAY_SIZE(clk_map_table). Thus remove the boundary checking for ret.
+--lBR2yNlwcY132B3M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs42l52.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Thu, Dec 20, 2012 at 12:17:31AM +0100, Lucas Stach wrote:
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 99bb1c6..9811a54 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -737,7 +737,7 @@ static const struct cs42l52_clk_para clk_map_table[] = {
- 
- static int cs42l52_get_clk(int mclk, int rate)
- {
--	int i, ret = 0;
-+	int i, ret = -EINVAL;
- 	u_int mclk1, mclk2 = 0;
- 
- 	for (i = 0; i < ARRAY_SIZE(clk_map_table); i++) {
-@@ -749,8 +749,6 @@ static int cs42l52_get_clk(int mclk, int rate)
- 			}
- 		}
- 	}
--	if (ret > ARRAY_SIZE(clk_map_table))
--		return -EINVAL;
- 	return ret;
- }
- 
--- 
-1.7.9.5
+>  static struct platform_driver wm9712_codec_driver = {
+>  	.driver = {
+>  		.name = "wm9712-codec",
+>  		.owner = THIS_MODULE,
+> +		.of_match_table = wm9712_of_match,
+>  	},
+
+No, this is really not a sane way of handling AC'97 at all.  They're not
+platform devices, there is no sane reason why they should appear in the
+device tree as such.  Really we ought to be just hotplugging them, AC'97
+is perfectly enumerable.
+
+--lBR2yNlwcY132B3M
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ0tsWAAoJELSic+t+oim9nMkQAJHeRB8CdTLbTJsYt51sbva4
+ZvGyqmC8zpSx9cTYVGTsX5DWlMZjtxQkgIFJ2HA+6IRVaUyVfCioufgsgvZNw9GL
+I2fcXnvzYCVX0z1voip3EG3y86x/ffcVeoNiIbV5xuUD02bXqNzO18kdcy18BAET
+95uMFX+9FtSjsf1ILtOJLwrdAEjxmttTx30xi3rtcQorkYhMcFPxA8NsaGHtsTGm
+FitLKX6XvECZM/7wOARgYlOUSHx0BpJ/YkzqtHOyfjrp6Ue1GaT/zFuy16GZEmP1
+pGKb5PvkrXlnaY/YHGB2XVwm9EWSAfs7O9ZNKleZ2oQB6wSR3NK2B3EUqNf8QVlW
+ATtt66Bef0xttkMhA3vEirlC1W0ji1ObktZf1mXgCqdvFRwby9LMRCHsDPCS4SBr
+WyCldOa12vN3+RM+oxoRt8f6JfP3QC8pz935iJvtNd6sY2taWfYNOVVWQ0yWDxyN
+dwJWU6f2uEeSEWRfsel94jwhceparmUlv5alCHhgkveS4O4juf3l/wzbwteA1fGp
+pKIO34CJqYaBL8To9sag7id7ITRy9MMRPNlAn3n/uNFh3niBVk64CJBcqLUdFTxE
+d7Ck+nRf6Wfqb7THEqeeH3sS0PP1TcJ6ndqgHs5zHiYEDgt+Xo4Kmj67GW9IoVpS
+jCGl+xne1Ux0w0/9Xefh
+=xNjf
+-----END PGP SIGNATURE-----
+
+--lBR2yNlwcY132B3M--
