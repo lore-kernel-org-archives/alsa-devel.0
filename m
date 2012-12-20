@@ -1,17 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: pcm: allow backend hardware to be
- freed in pause state
-Date: Thu, 20 Dec 2012 10:29:56 +0000
-Message-ID: <50D2E8A4.8060203@ti.com>
-References: <1355974562-21537-1-git-send-email-plai@codeaurora.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8962: Convert to
+	devm_input_allocate_device()
+Date: Thu, 20 Dec 2012 13:18:26 +0000
+Message-ID: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 685752651A7
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 11:29:59 +0100 (CET)
-In-Reply-To: <1355974562-21537-1-git-send-email-plai@codeaurora.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 293782615FA
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 14:18:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,18 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/12/12 03:36, Patrick Lai wrote:
-> When front-end PCM session is in paused state, back-end
-> PCM session will be put in paused state as well if given
-> front-end PCM session is the only client of given back-end.
-> Then, application closes front-end PCM session, DPCM
-> framework will not allow back-end enters HW_FREE state
-> so back-end will never get shutdown completely.
->
-> Signed-off-by: Patrick Lai <plai@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8962.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 50b0983..1cee9b3 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3189,7 +3189,7 @@ static void wm8962_init_beep(struct snd_soc_codec *codec)
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+-	wm8962->beep = input_allocate_device();
++	wm8962->beep = devm_input_allocate_device(codec->dev);
+ 	if (!wm8962->beep) {
+ 		dev_err(codec->dev, "Failed to allocate beep device\n");
+ 		return;
+@@ -3210,7 +3210,6 @@ static void wm8962_init_beep(struct snd_soc_codec *codec)
+ 
+ 	ret = input_register_device(wm8962->beep);
+ 	if (ret != 0) {
+-		input_free_device(wm8962->beep);
+ 		wm8962->beep = NULL;
+ 		dev_err(codec->dev, "Failed to register beep device\n");
+ 	}
+@@ -3227,7 +3226,6 @@ static void wm8962_free_beep(struct snd_soc_codec *codec)
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	device_remove_file(codec->dev, &dev_attr_beep);
+-	input_unregister_device(wm8962->beep);
+ 	cancel_work_sync(&wm8962->beep_work);
+ 	wm8962->beep = NULL;
+ 
+-- 
+1.7.10.4
