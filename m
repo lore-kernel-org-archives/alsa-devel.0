@@ -1,17 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/2] ALSA: usb-audio: support delay calculation
-	on capture streams
-Date: Tue, 18 Dec 2012 17:54:40 -0600
-Message-ID: <1355874880-9941-2-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1355874880-9941-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: Adding wm8962 support to mx6qsabresd
+Date: Thu, 20 Dec 2012 14:21:45 +0800
+Message-ID: <20121220062144.GB24134@S2101-09.ap.freescale.net>
+References: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id EE41E265020
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 06:12:42 +0100 (CET)
-In-Reply-To: <1355874880-9941-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3426265018
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 07:21:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5BLH-r77EMduGz7jOQVQcFyvW721UEiHY+sE1d7T4mwVA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +22,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Gary Zhang <b13634@freescale.com>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Enable delay report on capture path. The delay is reset when an
-URB is retired and increment at each call to .pointer based
-on frame counter changes. The precision of the delay
-information is limited to 1ms as in the playback case.
+Fabio,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/usb/pcm.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+FSL internal development team has got it work on kernel 3.5.  You can
+talk to Gary (Cc-ed) for details and upstreaming plan.
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index b09b895..3a38447 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -59,7 +59,12 @@ snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
- 
- 	/* Approximation based on number of samples per USB frame (ms),
- 	   some truncation for 44.1 but the estimate is good enough */
--	est_delay =  subs->last_delay - (frame_diff * rate / 1000);
-+	est_delay =  frame_diff * rate / 1000;
-+	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
-+		est_delay = subs->last_delay - est_delay;
-+	else
-+		est_delay = subs->last_delay + est_delay;
-+
- 	if (est_delay < 0)
- 		est_delay = 0;
- 	return est_delay;
-@@ -1146,6 +1151,10 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
- 	int i, period_elapsed = 0;
- 	unsigned long flags;
- 	unsigned char *cp;
-+	int current_frame_number;
-+
-+	/* read frame number here, update pointer in critical section */
-+	current_frame_number = usb_get_current_frame_number(subs->dev);
- 
- 	stride = runtime->frame_bits >> 3;
- 
-@@ -1179,6 +1188,15 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
- 			subs->transfer_done -= runtime->period_size;
- 			period_elapsed = 1;
- 		}
-+		/* capture delay is by construction limited to one URB,
-+		 * reset delays here
-+		 */
-+		runtime->delay = subs->last_delay = 0;
-+
-+		/* realign last_frame_number */
-+		subs->last_frame_number = current_frame_number;
-+		subs->last_frame_number &= 0xFF; /* keep 8 LSBs */
-+
- 		spin_unlock_irqrestore(&subs->lock, flags);
- 		/* copy a data chunk */
- 		if (oldptr + bytes > runtime->buffer_size * stride) {
--- 
-1.7.9.5
+Shawn
+
+On Wed, Dec 19, 2012 at 02:33:58PM -0200, Fabio Estevam wrote:
+> Hi,
+> 
+> I am working on adding audio support to mx6qsabresd board, which
+> contains a wm8962 codec.
+> 
+> Here is the log with debug information turned on that I am getting so far:
+> 
+> wm8962 0-001a: customer id 0 revision D
+> wm8962 0-001a: read 25 => 8
+> wm8962 0-001a: read 25 => 8
+> wm8962 0-001a: read 25 => 8
+> wm8962 0-001a: read 25 => 8
+> wm8962 0-001a: read 26 => 8
+> wm8962 0-001a: read 26 => 8
+> wm8962 0-001a: read 26 => 8
+> wm8962 0-001a: read 26 => 8
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 22 => 9
+> wm8962 0-001a: read 3a => 0
+> wm8962 0-001a: read 3a => 0
+> wm8962 0-001a: read 39 => 0
+> wm8962 0-001a: read 39 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 64 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 65 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 69 => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 6a => 0
+> wm8962 0-001a: read 200 => ffffffff
+> wm8962 0-001a: read 201 => 0
+> wm8962 0-001a: read 202 => 0
+> wm8962 0-001a: read 203 => ffffffff
+> wm8962 0-001a: read 204 => 8100
+> wm8962 0-001a: read 205 => 8100
+> wm8962 0-001a: DMIC not in use, disabling
+> input: WM8962 Beep Generator as
+> /devices/soc.0/2100000.aips-bus/21a0000.i2c/i2c-0/0-001a/input/input0
+> wm8962 0-001a: read 31 => ffffffff
+> wm8962 0-001a: read 31 => ffffffff
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 63 => 0
+> wm8962 0-001a: read 63 => 0
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 63 => 0
+> wm8962 0-001a: read 63 => 0
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 1a => 0
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: read 26 => 8
+> wm8962 0-001a: read 25 => 8
+> wm8962 0-001a: read 30 => ffffffff
+> wm8962 0-001a: read 30 => ffffffff
+> wm8962 0-001a: read 300 => 1c00
+> wm8962 0-001a: read 17 => 160
+> wm8962 0-001a: read 48 => 0
+> wm8962 0-001a: read 8 => ffffffff
+> wm8962 0-001a: read 52 => 4
+> wm8962 0-001a: read 19 => 0
+> wm8962 0-001a: write a0 = 149
+> wm8962 0-001a: write a1 = 271
+> wm8962 0-001a: write a2 = 7
+> wm8962 0-001a: FLL configured for 24000000Hz->11289600Hz
+> wm8962 0-001a: No audio clocks configured
+> ...
+> imx-wm8962 sound.14:  wm8962 <-> 2028000.ssi mapping ok
+> 
+> root@freescale /home$ ./aplay Front_Left.wav
+> wm8962 0-001a: hw_params set BCLK 1411200Hz LRCLK 44100Hz
+> wm8962 0-001a: wm8962->sysclk_rate = 11289600
+> wm8962 0-001a: wm8962->lrclk = 44100
+> wm8962 0-001a: Selected sysclk ratio 256
+> wm8962 0-001a: read 4 => ffffffff
+> wm8962 0-001a: Failed to read DSPCLK: -1
+> wm8962 0-001a: read 3 => 100
+> wm8962 0-001a: write 3 = 100
+> wm8962 0-001a: ASoC: POST_PMU: HPOUTR PGA event failed: -5
+> wm8962 0-001a: read 29 => 100
+> wm8962 0-001a: write 29 = 100
+> wm8962 0-001a: ASoC: POST_PMU: SPKOUTR PGA event failed: -5
+> wm8962 0-001a: read 2 => 100
+> wm8962 0-001a: write 2 = 100
+> wm8962 0-001a: ASoC: POST_PMU: HPOUTL PGA event failed: -5
+> wm8962 0-001a: read 28 => 100
+> wm8962 0-001a: write 28 = 100
+> wm8962 0-001a: ASoC: POST_PMU: SPKOUTL PGA event failed: -5
+> wm8962 0-001a: read 42 => ffffffff
+> wm8962 0-001a: Failed to read DCS status: -1
+> wm8962 0-001a: DC servo complete after 1ms
+> Playing WAVE 'Front_Left.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+> 
+> Any idea of why register 4 and 42 read fails?
+> wm8962 0-001a: read 4 => ffffffff
+> wm8962 0-001a: Failed to read DSPCLK: -1
+> 
+> wm8962 0-001a: read 42 => ffffffff
+> wm8962 0-001a: Failed to read DCS status: -1
+> 
+> Any suggestion is appreciated.
+> 
+> Thanks,
+> 
+> Fabio Estevam
