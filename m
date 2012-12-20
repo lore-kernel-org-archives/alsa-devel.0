@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: sta529: Fix update register bits in
- sta529_set_dai_fmt
-Date: Thu, 20 Dec 2012 16:17:25 +0800
-Message-ID: <1355991445.11688.2.camel@phoenix>
+Subject: [PATCH] ASoC: cs42l52: Catch no-match case in
+	cs42l52_get_clk
+Date: Thu, 20 Dec 2012 16:53:16 +0800
+Message-ID: <1355993596.20315.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f49.google.com (mail-da0-f49.google.com
- [209.85.210.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CE00265181
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 09:17:40 +0100 (CET)
-Received: by mail-da0-f49.google.com with SMTP id v40so1380957dad.8
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 00:17:39 -0800 (PST)
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAFF6265182
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 09:53:25 +0100 (CET)
+Received: by mail-pa0-f52.google.com with SMTP id fb1so1924549pad.11
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 00:53:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lrg@ti.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Both the mask and mode settings are wrong in current code.
+In the case of no-match, return -EINVAL instead of 0.
 
-According to the datasheet:
-
-S2PCFG0 (0x0A)
-BIT[3:1] DATA_FORMAT
-        serial interface protocol format:
-        000: left Justified
-        001: I2S (default)
-        010: right justified
-        100: PCM no delay
-        101: PCM delay
-        111: DSP
-
-Thus fixes the defines for LEFT_J_DATA_FORMAT, I2S_DATA_FORMAT, and
-RIGHT_J_DATA_FORMAT.
-Also adds define for DATA_FORMAT_MSK.
+Since we assign i to ret in the for loop, ret always less than
+ARRAY_SIZE(clk_map_table). Thus remove the boundary checking for ret.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
-Hi Rajeev,
-I don't have this hardware, can you test this patch?
-Thanks,
-Axel
- sound/soc/codecs/sta529.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs42l52.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index ab355c4..40c07be 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -74,9 +74,10 @@
- 				SNDRV_PCM_FMTBIT_S32_LE)
- #define	S2PC_VALUE		0x98
- #define CLOCK_OUT		0x60
--#define LEFT_J_DATA_FORMAT	0x10
--#define I2S_DATA_FORMAT		0x12
--#define RIGHT_J_DATA_FORMAT	0x14
-+#define DATA_FORMAT_MSK		0x0E
-+#define LEFT_J_DATA_FORMAT	0x00
-+#define I2S_DATA_FORMAT		0x02
-+#define RIGHT_J_DATA_FORMAT	0x04
- #define CODEC_MUTE_VAL		0x80
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 99bb1c6..9811a54 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -737,7 +737,7 @@ static const struct cs42l52_clk_para clk_map_table[] = {
  
- #define POWER_CNTLMSAK		0x40
-@@ -289,7 +290,7 @@ static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- 		return -EINVAL;
+ static int cs42l52_get_clk(int mclk, int rate)
+ {
+-	int i, ret = 0;
++	int i, ret = -EINVAL;
+ 	u_int mclk1, mclk2 = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(clk_map_table); i++) {
+@@ -749,8 +749,6 @@ static int cs42l52_get_clk(int mclk, int rate)
+ 			}
+ 		}
  	}
- 
--	snd_soc_update_bits(codec, STA529_S2PCFG0, 0x0D, mode);
-+	snd_soc_update_bits(codec, STA529_S2PCFG0, DATA_FORMAT_MSK, mode);
- 
- 	return 0;
+-	if (ret > ARRAY_SIZE(clk_map_table))
+-		return -EINVAL;
+ 	return ret;
  }
+ 
 -- 
 1.7.9.5
