@@ -1,8 +1,7 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCHv2 7/9] ALSA: CA0132: Code shuffle to group
-	similar functions.
-Date: Thu, 20 Dec 2012 18:53:39 -0800
-Message-ID: <1356058421-2683-8-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCHv2 4/9] ALSA: CA0132: Add PCM enhancements
+Date: Thu, 20 Dec 2012 18:53:36 -0800
+Message-ID: <1356058421-2683-5-git-send-email-ian_minett@creativelabs.com>
 References: <1356058421-2683-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,437 +23,209 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
+Remove the playback PCM open callback.
+PCM stream setup and cleanup functions are added for use by PCM callbacks.
+Delay stream cleanup if effects are on, to allow time for any effects tail to
+finish.
+Add the analog capture PCM callbacks.
+Change the max channels of analog playback to 6.
+Add two new PCMs: AMic2 and What-U-Hear.
 
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index c1391f4..77903a3 100644
+index 91c4a50..748fca7 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -2684,41 +2684,6 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
+@@ -2630,17 +2630,62 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
+ 	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
+ 
+ /*
++ * PCM stuffs
++ */
++static void ca0132_setup_stream(struct hda_codec *codec, hda_nid_t nid,
++				 u32 stream_tag,
++				 int channel_id, int format)
++{
++	unsigned int oldval, newval;
++
++	if (!nid)
++		return;
++
++	snd_printdd(
++		   "ca0132_setup_stream: NID=0x%x, stream=0x%x, "
++		   "channel=%d, format=0x%x\n",
++		   nid, stream_tag, channel_id, format);
++
++	/* update the format-id if changed */
++	oldval = snd_hda_codec_read(codec, nid, 0,
++				    AC_VERB_GET_STREAM_FORMAT,
++				    0);
++	if (oldval != format) {
++		msleep(20);
++		snd_hda_codec_write(codec, nid, 0,
++				    AC_VERB_SET_STREAM_FORMAT,
++				    format);
++	}
++
++	oldval = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONV, 0);
++	newval = (stream_tag << 4) | channel_id;
++	if (oldval != newval) {
++		snd_hda_codec_write(codec, nid, 0,
++				    AC_VERB_SET_CHANNEL_STREAMID,
++				    newval);
++	}
++}
++
++static void ca0132_cleanup_stream(struct hda_codec *codec, hda_nid_t nid)
++{
++	unsigned int val;
++
++	if (!nid)
++		return;
++
++	snd_printdd(KERN_INFO "ca0132_cleanup_stream: NID=0x%x\n", nid);
++
++	val = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONV, 0);
++	if (!val)
++		return;
++
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_STREAM_FORMAT, 0);
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CHANNEL_STREAMID, 0);
++}
++
++/*
+  * PCM callbacks
+  */
+-static int ca0132_playback_pcm_open(struct hda_pcm_stream *hinfo,
+-				    struct hda_codec *codec,
+-				    struct snd_pcm_substream *substream)
+-{
+-	struct ca0132_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
+-					     hinfo);
+-}
+-
+ static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 			struct hda_codec *codec,
+ 			unsigned int stream_tag,
+@@ -2648,8 +2693,10 @@ static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 			struct snd_pcm_substream *substream)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_prepare(codec, &spec->multiout,
+-						stream_tag, format, substream);
++
++	ca0132_setup_stream(codec, spec->dacs[0], stream_tag, 0, format);
++
++	return 0;
+ }
+ 
+ static int ca0132_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+@@ -2657,7 +2704,18 @@ static int ca0132_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+ 			struct snd_pcm_substream *substream)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_cleanup(codec, &spec->multiout);
++
++	if (spec->dsp_state == DSP_DOWNLOADING)
++		return 0;
++
++	/*If Playback effects are on, allow stream some time to flush
++	 *effects tail*/
++	if (spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID])
++		msleep(50);
++
++	ca0132_cleanup_stream(codec, spec->dacs[0]);
++
++	return 0;
  }
  
  /*
-- * Controls stuffs.
-- */
--
--/*
-- * Mixer controls helpers.
-- */
--#define CA0132_CODEC_VOL_MONO(xname, nid, channel, dir) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--	  .name = xname, \
--	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
--	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
--			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
--			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
--	  .info = ca0132_volume_info, \
--	  .get = ca0132_volume_get, \
--	  .put = ca0132_volume_put, \
--	  .tlv = { .c = ca0132_volume_tlv }, \
--	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
--
--#define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--	  .name = xname, \
--	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
--	  .info = snd_hda_mixer_amp_switch_info, \
--	  .get = ca0132_switch_get, \
--	  .put = ca0132_switch_put, \
--	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
--
--/* stereo */
--#define CA0132_CODEC_VOL(xname, nid, dir) \
--	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
--#define CA0132_CODEC_MUTE(xname, nid, dir) \
--	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
--
--/*
-  * PCM stuffs
-  */
- static void ca0132_setup_stream(struct hda_codec *codec, hda_nid_t nid,
-@@ -2875,6 +2840,41 @@ static int ca0132_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
- 	return 0;
+@@ -2699,6 +2757,36 @@ static int ca0132_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
  }
  
-+/*
-+ * Controls stuffs.
+ /*
++ * Analog capture
 + */
-+
-+/*
-+ * Mixer controls helpers.
-+ */
-+#define CA0132_CODEC_VOL_MONO(xname, nid, channel, dir) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+	  .name = xname, \
-+	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
-+	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
-+			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
-+	  .info = ca0132_volume_info, \
-+	  .get = ca0132_volume_get, \
-+	  .put = ca0132_volume_put, \
-+	  .tlv = { .c = ca0132_volume_tlv }, \
-+	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
-+
-+#define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
-+	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+	  .name = xname, \
-+	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
-+	  .info = snd_hda_mixer_amp_switch_info, \
-+	  .get = ca0132_switch_get, \
-+	  .put = ca0132_switch_put, \
-+	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
-+
-+/* stereo */
-+#define CA0132_CODEC_VOL(xname, nid, dir) \
-+	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
-+#define CA0132_CODEC_MUTE(xname, nid, dir) \
-+	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
-+
- /* The followings are for tuning of products */
- #ifdef ENABLE_TUNING_CONTROLS
- 
-@@ -3959,7 +3959,70 @@ static struct snd_kcontrol_new ca0132_mixer[] = {
- 	{ } /* end */
- };
- 
-+static int ca0132_build_controls(struct hda_codec *codec)
++static int ca0132_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
++					struct hda_codec *codec,
++					unsigned int stream_tag,
++					unsigned int format,
++					struct snd_pcm_substream *substream)
 +{
 +	struct ca0132_spec *spec = codec->spec;
-+	int i, num_fx;
-+	int err = 0;
 +
-+	/* Add Mixer controls */
-+	for (i = 0; i < spec->num_mixers; i++) {
-+		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
-+		if (err < 0)
-+			return err;
-+	}
++	ca0132_setup_stream(codec, spec->adcs[substream->number],
++			    stream_tag, 0, format);
 +
-+	/* Add in and out effects controls.
-+	 * VoiceFX, PE and CrystalVoice are added separately.
-+	 */
-+	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT;
-+	for (i = 0; i < num_fx; i++) {
-+		err = add_fx_switch(codec, ca0132_effects[i].nid,
-+				    ca0132_effects[i].name,
-+				    ca0132_effects[i].direct);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	err = add_fx_switch(codec, PLAY_ENHANCEMENT, "PlayEnhancement", 0);
-+	if (err < 0)
-+		return err;
-+
-+	err = add_fx_switch(codec, CRYSTAL_VOICE, "CrystalVoice", 1);
-+	if (err < 0)
-+		return err;
-+
-+	add_voicefx(codec);
-+
-+#ifdef ENABLE_TUNING_CONTROLS
-+	add_tuning_ctls(codec);
-+#endif
-+
-+	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
-+	if (err < 0)
-+		return err;
-+
-+	if (spec->dig_out) {
-+		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
-+						    spec->dig_out);
-+		if (err < 0)
-+			return err;
-+		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
-+		if (err < 0)
-+			return err;
-+		/* spec->multiout.share_spdif = 1; */
-+	}
-+
-+	if (spec->dig_in) {
-+		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in);
-+		if (err < 0)
-+			return err;
-+	}
 +	return 0;
 +}
 +
- /*
-+ * PCM
-  */
++static int ca0132_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
++			struct hda_codec *codec,
++			struct snd_pcm_substream *substream)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	if (spec->dsp_state == DSP_DOWNLOADING)
++		return 0;
++
++	ca0132_cleanup_stream(codec, hinfo->nid);
++	return 0;
++}
++
++/*
+  * Select the active output.
+  * If autodetect is enabled, output will be selected based on jack detection.
+  * If jack inserted, headphone will be selected, else built-in speakers
+@@ -3509,9 +3597,8 @@ static struct snd_kcontrol_new ca0132_mixer[] = {
  static struct hda_pcm_stream ca0132_pcm_analog_playback = {
  	.substreams = 1,
-@@ -4052,68 +4115,6 @@ static int ca0132_build_pcms(struct hda_codec *codec)
- 	return 0;
- }
+ 	.channels_min = 2,
+-	.channels_max = 2,
++	.channels_max = 6,
+ 	.ops = {
+-		.open = ca0132_playback_pcm_open,
+ 		.prepare = ca0132_playback_pcm_prepare,
+ 		.cleanup = ca0132_playback_pcm_cleanup
+ 	},
+@@ -3521,6 +3608,10 @@ static struct hda_pcm_stream ca0132_pcm_analog_capture = {
+ 	.substreams = 1,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
++	.ops = {
++		.prepare = ca0132_capture_pcm_prepare,
++		.cleanup = ca0132_capture_pcm_cleanup
++	},
+ };
  
--static int ca0132_build_controls(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--	int i, num_fx;
--	int err = 0;
--
--	/* Add Mixer controls */
--	for (i = 0; i < spec->num_mixers; i++) {
--		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
--		if (err < 0)
--			return err;
--	}
--
--	/* Add in and out effects controls.
--	 * VoiceFX, PE and CrystalVoice are added separately.
--	 */
--	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT;
--	for (i = 0; i < num_fx; i++) {
--		err = add_fx_switch(codec, ca0132_effects[i].nid,
--				    ca0132_effects[i].name,
--				    ca0132_effects[i].direct);
--		if (err < 0)
--			return err;
--	}
--
--	err = add_fx_switch(codec, PLAY_ENHANCEMENT, "PlayEnhancement", 0);
--	if (err < 0)
--		return err;
--
--	err = add_fx_switch(codec, CRYSTAL_VOICE, "CrystalVoice", 1);
--	if (err < 0)
--		return err;
--
--	add_voicefx(codec);
--
--#ifdef ENABLE_TUNING_CONTROLS
--	add_tuning_ctls(codec);
--#endif
--
--	err = snd_hda_jack_add_kctls(codec, &spec->autocfg);
--	if (err < 0)
--		return err;
--
--	if (spec->dig_out) {
--		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
--						    spec->dig_out);
--		if (err < 0)
--			return err;
--		err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
--		if (err < 0)
--			return err;
--		/* spec->multiout.share_spdif = 1; */
--	}
--
--	if (spec->dig_in) {
--		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in);
--		if (err < 0)
--			return err;
--	}
--	return 0;
--}
--
- static void ca0132_init_unsol(struct hda_codec *codec)
- {
- 	snd_hda_jack_detect_enable(codec, UNSOL_TAG_HP, UNSOL_TAG_HP);
-@@ -4330,6 +4331,55 @@ static void ca0132_init_params(struct hda_codec *codec)
- 	chipio_set_control_param(codec, CONTROL_PARAM_PORTD_160OHM_GAIN, 6);
- }
+ static struct hda_pcm_stream ca0132_pcm_digital_playback = {
+@@ -3555,10 +3646,24 @@ static int ca0132_build_pcms(struct hda_codec *codec)
+ 	info->stream[SNDRV_PCM_STREAM_PLAYBACK].channels_max =
+ 		spec->multiout.max_channels;
+ 	info->stream[SNDRV_PCM_STREAM_CAPTURE] = ca0132_pcm_analog_capture;
+-	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = spec->num_inputs;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = 1;
+ 	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adcs[0];
+ 	codec->num_pcms++;
  
-+static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
-+{
-+	chipio_set_control_flag(codec, CONTROL_FLAG_DSP_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_DAC_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_RATE_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_CLOCK_196MHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_B_96KHZ, is96k);
-+	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_C_96KHZ, is96k);
++	info++;
++	info->name = "CA0132 Analog Mic-In2";
++	info->stream[SNDRV_PCM_STREAM_CAPTURE] = ca0132_pcm_analog_capture;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = 1;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adcs[1];
++	codec->num_pcms++;
 +
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
-+}
++	info++;
++	info->name = "CA0132 What U Hear";
++	info->stream[SNDRV_PCM_STREAM_CAPTURE] = ca0132_pcm_analog_capture;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = 1;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adcs[2];
++	codec->num_pcms++;
 +
-+static bool ca0132_download_dsp_images(struct hda_codec *codec)
-+{
-+	bool dsp_loaded = false;
-+	const struct dsp_image_seg *dsp_os_image;
-+
-+	if (request_firmware_cached(&fw_efx, EFX_FILE,
-+				    codec->bus->card->dev) != 0)
-+		return false;
-+
-+	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
-+	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
-+	dsp_loaded = dspload_wait_loaded(codec);
-+
-+	return dsp_loaded;
-+}
-+
-+static void ca0132_download_dsp(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	spec->dsp_state = DSP_DOWNLOAD_INIT;
-+
-+	if (spec->dsp_state == DSP_DOWNLOAD_INIT) {
-+		chipio_enable_clocks(codec);
-+		spec->dsp_state = DSP_DOWNLOADING;
-+		if (!ca0132_download_dsp_images(codec))
-+			spec->dsp_state = DSP_DOWNLOAD_FAILED;
-+		else
-+			spec->dsp_state = DSP_DOWNLOADED;
-+	}
-+
-+	if (spec->dsp_state == DSP_DOWNLOADED)
-+		ca0132_set_dsp_msr(codec, true);
-+}
-+
- static void ca0132_config(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
-@@ -4369,6 +4419,47 @@ static void ca0132_config(struct hda_codec *codec)
- 	cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
- }
+ 	if (!spec->dig_out && !spec->dig_in)
+ 		return 0;
  
-+static void ca0132_process_dsp_response(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	snd_printdd(KERN_INFO "ca0132_process_dsp_response\n");
-+	if (spec->wait_scp) {
-+		if (dspio_get_response_data(codec) >= 0)
-+			spec->wait_scp = 0;
-+	}
-+
-+	dspio_clear_response_queue(codec);
-+}
-+
-+static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
-+
-+
-+	if (((res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f) == UNSOL_TAG_DSP) {
-+		ca0132_process_dsp_response(codec);
-+	} else {
-+		res = snd_hda_jack_get_action(codec,
-+				(res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f);
-+
-+		snd_printdd(KERN_INFO "snd_hda_jack_get_action: 0x%x\n", res);
-+
-+		switch (res) {
-+		case UNSOL_TAG_HP:
-+			ca0132_select_out(codec);
-+			snd_hda_jack_report_sync(codec);
-+			break;
-+		case UNSOL_TAG_AMIC1:
-+			ca0132_select_mic(codec);
-+			snd_hda_jack_report_sync(codec);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
- /*
-  * Verbs tables.
-  */
-@@ -4483,96 +4574,6 @@ static void ca0132_exit_chip(struct hda_codec *codec)
- 		dsp_reset(codec);
- }
- 
--static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
--{
--	chipio_set_control_flag(codec, CONTROL_FLAG_DSP_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_DAC_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_RATE_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_SRC_CLOCK_196MHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_B_96KHZ, is96k);
--	chipio_set_control_flag(codec, CONTROL_FLAG_ADC_C_96KHZ, is96k);
--
--	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
--	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
--	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
--}
--
--static bool ca0132_download_dsp_images(struct hda_codec *codec)
--{
--	bool dsp_loaded = false;
--	const struct dsp_image_seg *dsp_os_image;
--
--	if (request_firmware_cached(&fw_efx, EFX_FILE,
--				    codec->bus->card->dev) != 0)
--		return false;
--
--	dsp_os_image = (struct dsp_image_seg *)(fw_efx->data);
--	dspload_image(codec, dsp_os_image, 0, 0, true, 0);
--	dsp_loaded = dspload_wait_loaded(codec);
--
--	return dsp_loaded;
--}
--
--static void ca0132_download_dsp(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--
--	spec->dsp_state = DSP_DOWNLOAD_INIT;
--
--	if (spec->dsp_state == DSP_DOWNLOAD_INIT) {
--		chipio_enable_clocks(codec);
--		spec->dsp_state = DSP_DOWNLOADING;
--		if (!ca0132_download_dsp_images(codec))
--			spec->dsp_state = DSP_DOWNLOAD_FAILED;
--		else
--			spec->dsp_state = DSP_DOWNLOADED;
--	}
--
--	if (spec->dsp_state == DSP_DOWNLOADED)
--		ca0132_set_dsp_msr(codec, true);
--}
--
--static void ca0132_process_dsp_response(struct hda_codec *codec)
--{
--	struct ca0132_spec *spec = codec->spec;
--
--	snd_printdd(KERN_INFO "ca0132_process_dsp_response\n");
--	if (spec->wait_scp) {
--		if (dspio_get_response_data(codec) >= 0)
--			spec->wait_scp = 0;
--	}
--
--	dspio_clear_response_queue(codec);
--}
--
--static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
--{
--	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
--
--
--	if (((res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f) == UNSOL_TAG_DSP) {
--		ca0132_process_dsp_response(codec);
--	} else {
--		res = snd_hda_jack_get_action(codec,
--				(res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f);
--
--		snd_printdd(KERN_INFO "snd_hda_jack_get_action: 0x%x\n", res);
--
--		switch (res) {
--		case UNSOL_TAG_HP:
--			ca0132_select_out(codec);
--			snd_hda_jack_report_sync(codec);
--			break;
--		case UNSOL_TAG_AMIC1:
--			ca0132_select_mic(codec);
--			snd_hda_jack_report_sync(codec);
--			break;
--		default:
--			break;
--		}
--	}
--}
--
- static int ca0132_init(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
 -- 
 1.7.4.1
