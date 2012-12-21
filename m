@@ -1,47 +1,55 @@
-From: Chuansheng Liu <chuansheng.liu@intel.com>
-Subject: [PATCH] ASoC: core: giving WARN when device starting from non-off
- bias with idle_bias_off
-Date: Fri, 21 Dec 2012 18:17:12 +0800
-Message-ID: <1356085032.1839.14.camel@cliu38-desktop-build>
-References: <1355913397.17896.10.camel@cliu38-desktop-build>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: lm49453: Fix mask for setting mode
+ bit in lm49453_set_dai_fmt()
+Date: Fri, 21 Dec 2012 09:19:20 +0800
+Message-ID: <1356052760.9177.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1355913397.17896.10.camel@cliu38-desktop-build>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-da0-f51.google.com (mail-da0-f51.google.com
+ [209.85.210.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 571C5264FE7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2012 02:19:32 +0100 (CET)
+Received: by mail-da0-f51.google.com with SMTP id i30so1789910dad.38
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2012 17:19:30 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, M R Swami Reddy <MR.Swami.Reddy@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The mode variable is either 0 or 1.
+To update mode setting, the mask should be BIT(0) rather than BIT(1).
 
-Just found some cases that some codec drivers set the bias to _STANDBY and
-set idle_bias_off to 1 during probing.
-It will cause unpaired runtime_get_sync/put() issue. Also as Mark suggested,
-there is no reason to start from _STANDBY bias with idle_bias_off == 1.
-
-So here giving one warning when detected (dapm.idle_bias_off == 1) and
-(dapm.bias_level != SND_SOC_BIAS_OFF) just after driver->probe().
-
-Signed-off-by: liu chuansheng <chuansheng.liu@intel.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/soc-core.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+Hi M R Swami,
+I don't have the datasheet. Can you check if this patch is correct?
+Thanks,
+Axel
+ sound/soc/codecs/lm49453.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9c768bc..d7ec007 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1107,6 +1107,10 @@ static int soc_probe_codec(struct snd_soc_card *card,
- 				"ASoC: failed to probe CODEC %d\n", ret);
- 			goto err_probe;
- 		}
-+		WARN(codec->dapm.idle_bias_off &&
-+			codec->dapm.bias_level != SND_SOC_BIAS_OFF,
-+			"codec %s can not start from non-off bias"
-+			" with idle_bias_off==1\n", codec->name);
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index d75257d..c0d203b 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -1218,7 +1218,7 @@ static int lm49453_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
  	}
  
- 	/* If the driver didn't set I/O up try regmap */
+ 	snd_soc_update_bits(codec, LM49453_P0_AUDIO_PORT1_BASIC_REG,
+-			    LM49453_AUDIO_PORT1_BASIC_FMT_MASK|BIT(1)|BIT(5),
++			    LM49453_AUDIO_PORT1_BASIC_FMT_MASK|BIT(0)|BIT(5),
+ 			    (aif_val | mode | clk_phase));
+ 
+ 	snd_soc_write(codec, LM49453_P0_AUDIO_PORT1_RX_MSB_REG, clk_shift);
 -- 
-1.7.0.4
+1.7.9.5
