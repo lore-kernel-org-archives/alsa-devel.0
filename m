@@ -1,18 +1,16 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: wm2200: Fix setting dai format in
-	wm2200_set_fmt
-Date: Fri, 21 Dec 2012 16:28:37 +0800
-Message-ID: <1356078517.8338.2.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RFT] ASoC: wm2200: Fix setting dai format
+ in wm2200_set_fmt
+Date: Fri, 21 Dec 2012 09:34:39 +0000
+Message-ID: <20121221093439.GC26183@opensource.wolfsonmicro.com>
+References: <1356078517.8338.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2936044140708476024=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f42.google.com (mail-pb0-f42.google.com
- [209.85.160.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 820BF265264
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2012 09:28:49 +0100 (CET)
-Received: by mail-pb0-f42.google.com with SMTP id rp2so2577298pbb.1
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2012 00:28:48 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6268D265277
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2012 10:42:39 +0100 (CET)
+In-Reply-To: <1356078517.8338.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Axel Lin <axel.lin@ingics.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to the defines in wm2200.h:
-/*
- * R1284 (0x504) - Audio IF 1_5
- */
-#define WM2200_AIF1_FMT_MASK                    0x0007  /* AIF1_FMT - [2:0] */
-#define WM2200_AIF1_FMT_SHIFT                        0  /* AIF1_FMT - [2:0] */
-#define WM2200_AIF1_FMT_WIDTH                        3  /* AIF1_FMT - [2:0] */
 
-We should not left shift 1 bit for fmt_val when setting dai format.
+--===============2936044140708476024==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
+Content-Disposition: inline
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-Hi Mark,
-wm2200.h defines WM2200_AIF1_FMT_SHIFT to be 0, so current code looks wrong to me.
-I don't have the datasheet, so can you check if this patch is correct?
 
-Axel
- sound/soc/codecs/wm2200.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--7qSK/uQB79J36Y4o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index afcf31d..a12fc2f 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -1626,7 +1626,7 @@ static int wm2200_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			    WM2200_AIF1TX_LRCLK_MSTR | WM2200_AIF1TX_LRCLK_INV,
- 			    lrclk);
- 	snd_soc_update_bits(codec, WM2200_AUDIO_IF_1_5,
--			    WM2200_AIF1_FMT_MASK << 1, fmt_val << 1);
-+			    WM2200_AIF1_FMT_MASK, fmt_val);
- 
- 	return 0;
- }
--- 
-1.7.9.5
+On Fri, Dec 21, 2012 at 04:28:37PM +0800, Axel Lin wrote:
+> According to the defines in wm2200.h:
+
+Applied, thanks.
+
+--7qSK/uQB79J36Y4o
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ1CzdAAoJELSic+t+oim9pEIP/jYKWLXi+66mB3OyrPiU/fts
+ae/yw0qZPXkTMR9Ic0Jch3+3fJHq213FsJKao4YQReGL2uQDhrGd5V2P69sKqYBl
+OuB0BhwWPh0vURARVVv+bOpy9zcijLlaao2whXFAfx/fpgTCf4KW9d7mUFieqKm8
+/c2z7DlnoX8lnnOoRFbY3GniUH8n7HD0bQVnACxpolxyPsGr+IR9uP/9LELQzkWG
+9xs8iCnwRdXU9n0BagqYAi+Rbt/RKF7IKQaIQsdqaKmG1SBzTv9KIp7s6HfAIt0V
+XfR2WNeNzTBbWuE4yrMzJx5pEOOj3jPaiZAi/DX49IawwI4RBIbBejrItFskqKgK
+AuE8iO1ASf1SE78oQQAqBVF7h0eiZIKKuYyx59WYBz1Iu9kvfTuizwHMQRgaJjZn
+vtnn6o2IEZ6g62wohxh98myJ9qD+Y/OfPucIsZ9xduNZjCpve7XD8oB/8mKR60qd
+cb/xj6fqKZWyLB6GFjtmHXKs5bUPcM85GE+yfpmcG95KYMDTWAb3tqswN+NhbGxc
+ftFagD6AmL9b9n8iajBMbsr+epY5fSAt3Lpz+hUzVTd70WXHrSugkOq8XiUVQ6fA
+KBx2ZsHa8a08CdDhMGplsRe97sfoOz0oCbu/bcUgEuQ7y4bE077CDCDx7qOdGl2+
+mXrs9ZJbs2ROfOUc/iFB
+=c/YC
+-----END PGP SIGNATURE-----
+
+--7qSK/uQB79J36Y4o--
+
+--===============2936044140708476024==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2936044140708476024==--
