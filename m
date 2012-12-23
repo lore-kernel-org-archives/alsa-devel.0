@@ -1,71 +1,61 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] ASoC: sgtl5000: Fix maximum value for
-	microphone gain
-Date: Sun, 23 Dec 2012 15:45:31 -0200
-Message-ID: <1356284731-19380-1-git-send-email-festevam@gmail.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH V5 2/2] ASoC: SAMSUNG: Add DT support for i2s
+Date: Sun, 23 Dec 2012 15:13:14 -0800
+Message-ID: <016801cde163$17d83670$4788a350$@samsung.com>
+References: <1355395373-22058-1-git-send-email-padma.v@samsung.com>
+ <1355395373-22058-3-git-send-email-padma.v@samsung.com>
+ <20121219132414.2CF653E0AD7@localhost>
+ <20121219170937.GV4985@opensource.wolfsonmicro.com>
+ <CAAgF-Bc3zSyhaMwSOy977PJ-PdtMfDXjFrTvpzETeHJAAQU3vQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f46.google.com (mail-yh0-f46.google.com
- [209.85.213.46])
- by alsa0.perex.cz (Postfix) with ESMTP id CBF202615C7
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 18:45:41 +0100 (CET)
-Received: by mail-yh0-f46.google.com with SMTP id m54so1250665yhm.5
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 09:45:41 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, eric.nelson@boundarydevices.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: 
+Content-language: en-us
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Padma Venkat' <padma.kvr@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: 'Grant Likely' <grant.likely@secretlab.ca>, 'Padmavathi Venna' <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, sbkim73@samsung.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Kukjin Kim wrote:
+> 
+Re-sending due to e-mail client problem :(
 
-sgtl5000 microphone gain only has 2 bits of resolution, so maximum value is 3.
-
->From Eric Nelson:
-"We also found that for the microphones we have here (commodity PC boom mics) a 
-default value of 2 for the gain gives the best results."
-
-So change the default microphone gain as well.
-
-Signed-off-by: Eric Nelson <eric.nelson@boundarydevices.com>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Add sgtl5000 into the Subject
-
- sound/soc/codecs/sgtl5000.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index cb1675c..92bbfec 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -401,7 +401,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 			5, 1, 0),
- 
- 	SOC_SINGLE_TLV("Mic Volume", SGTL5000_CHIP_MIC_CTRL,
--			0, 4, 0, mic_gain_tlv),
-+			0, 3, 0, mic_gain_tlv),
- };
- 
- /* mute the codec used by alsa core */
-@@ -1344,7 +1344,7 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			SGTL5000_HP_ZCD_EN |
- 			SGTL5000_ADC_ZCD_EN);
- 
--	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 0);
-+	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 2);
- 
- 	/*
- 	 * disable DAP
--- 
-1.7.9.5
+> Padma Venkat wrote:
+> >
+> > Hi,
+> >
+> > On Wed, Dec 19, 2012 at 10:39 PM, Mark Brown
+> > <broonie@opensource.wolfsonmicro.com> wrote:
+> > > On Wed, Dec 19, 2012 at 01:24:14PM +0000, Grant Likely wrote:
+> > >> On Thu, 13 Dec 2012 16:12:53 +0530, Padmavathi Venna
+> > <padma.v@samsung.com> wrote:
+> > >
+> > >> > +- compatible : "samsung,samsung-i2s"
+> > >
+> > >> Isn't that kind of redundant?  :-)
+> > >
+> > >> The format of the compatible strings should be "<vendor>,<part-
+> > number>-i2s".
+> > >> Please be specific about the part number that you're doing the
+> > >> binding for. For example; use "samsung,exynos4210-i2s" instead of
+> > "samsung,exynos-i2s".
+> > >
+> > > There are actually versioned IPs here (where the versions are used
+> > > publically in a few places) but it's not clearly documented which is
+> > > which.  It would be reasonable to use the IP versions here I think.
+> >
+> > Samsung has three i2s drivers one for s3c24xx, one for s3c2412 and one
+> > for rest of the platforms. The above mentioned other platforms has
+> > Version 3/4/5 of i2s controllers. This dt binding is for for the i2s
+> 
+> Where is the version defined such as 3, 4, 5? So, what is the
+> "sound/soc/Samsung/s3c-i2s-v2.[ch]"?
+> 
+> > driver that has support for Version 3/4/5 of i2s controller. So
+> > "samsung,i2s-v5" is okay as compatible name? Please suggest me.
+> >
+> I agree with using version here but we need some consensus about that.
+> 
+> - Kukjin
