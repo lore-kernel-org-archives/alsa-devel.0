@@ -1,17 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: Fix maximum value for microphone gain
-Date: Sun, 23 Dec 2012 15:41:19 -0200
-Message-ID: <1356284479-19323-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2] ASoC: sgtl5000: Fix maximum value for
+	microphone gain
+Date: Sun, 23 Dec 2012 15:45:31 -0200
+Message-ID: <1356284731-19380-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f42.google.com (mail-yh0-f42.google.com
- [209.85.213.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 59BE72615C7
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 18:41:38 +0100 (CET)
-Received: by mail-yh0-f42.google.com with SMTP id g71so1240545yhg.1
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 09:41:37 -0800 (PST)
+Received: from mail-yh0-f46.google.com (mail-yh0-f46.google.com
+ [209.85.213.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBF202615C7
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 18:45:41 +0100 (CET)
+Received: by mail-yh0-f46.google.com with SMTP id m54so1250665yhm.5
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 09:45:41 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,6 +39,9 @@ So change the default microphone gain as well.
 Signed-off-by: Eric Nelson <eric.nelson@boundarydevices.com>
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
+Changes since v1:
+- Add sgtl5000 into the Subject
+
  sound/soc/codecs/sgtl5000.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
