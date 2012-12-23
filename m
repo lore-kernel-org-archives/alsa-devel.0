@@ -1,20 +1,17 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: sound: usb-audio: [PATCH]x2 full
- capture/playback/spdif support for Digidesign Mbox 2
-Date: Sun, 23 Dec 2012 16:12:21 +1100
-Message-ID: <CABXa2sE5VZzXSX4zmfDOwSrDEinDBC4r5roZ5jjWMUGJQzZgCA@mail.gmail.com>
-References: <CABXa2sGkpfpj+XgzRJSb2Rsgz=HnWK--hw4k82u=uqWU0jE9dA@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: Fix maximum value for microphone gain
+Date: Sun, 23 Dec 2012 15:41:19 -0200
+Message-ID: <1356284479-19323-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
- [209.85.214.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 5625226036C
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 06:12:22 +0100 (CET)
-Received: by mail-ob0-f177.google.com with SMTP id uo13so5926871obb.36
- for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2012 21:12:21 -0800 (PST)
-In-Reply-To: <CABXa2sGkpfpj+XgzRJSb2Rsgz=HnWK--hw4k82u=uqWU0jE9dA@mail.gmail.com>
+Received: from mail-yh0-f42.google.com (mail-yh0-f42.google.com
+ [209.85.213.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59BE72615C7
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 18:41:38 +0100 (CET)
+Received: by mail-yh0-f42.google.com with SMTP id g71so1240545yhg.1
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2012 09:41:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dong.aisheng@linaro.org, eric.nelson@boundarydevices.com
 List-Id: alsa-devel@alsa-project.org
 
-On 23 December 2012 15:54, Damien Zammit <damien.zammit@gmail.com> wrote:
-> Plus an incremental patch (Version 5-2)
-Sorry I forgot the commit message:
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Support for Digidesign Mbox 2 USB sound card:
+sgtl5000 microphone gain only has 2 bits of resolution, so maximum value is 3.
 
-This patch is the result of a lot of trial and error, since there are no specs
-available for the device.
+>From Eric Nelson:
+"We also found that for the microphones we have here (commodity PC boom mics) a 
+default value of 2 for the gain gives the best results."
 
-This is part two (2) of patch_for_next_dz5.txt and should be applied after it.
+So change the default microphone gain as well.
 
-This patch fixes two things:
-        1) A kernel panic caused by incorrect allocation of a u8
-variable "bootresponse".
-        2) A noisy dmesg (urb status -32) caused by broken pipe to an
-invalid midi endpoint.
-
-It is also a little cleaner because there is no need for a new
-QUIRK_MIDI type as suggested
-by kernel developers.
-
-
-Signed-off-by: Damien Zammit <damien@zamaudio.com>
-
+Signed-off-by: Eric Nelson <eric.nelson@boundarydevices.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
+ sound/soc/codecs/sgtl5000.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-See previous message for the actual patch (version 5-2)
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index cb1675c..92bbfec 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -401,7 +401,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 			5, 1, 0),
+ 
+ 	SOC_SINGLE_TLV("Mic Volume", SGTL5000_CHIP_MIC_CTRL,
+-			0, 4, 0, mic_gain_tlv),
++			0, 3, 0, mic_gain_tlv),
+ };
+ 
+ /* mute the codec used by alsa core */
+@@ -1344,7 +1344,7 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 			SGTL5000_HP_ZCD_EN |
+ 			SGTL5000_ADC_ZCD_EN);
+ 
+-	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 0);
++	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 2);
+ 
+ 	/*
+ 	 * disable DAP
+-- 
+1.7.9.5
