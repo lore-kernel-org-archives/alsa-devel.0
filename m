@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: cs4271: add optional soft
-	reset workaround
-Date: Mon, 24 Dec 2012 15:53:58 +0000
-Message-ID: <20121224155358.GJ30837@opensource.wolfsonmicro.com>
-References: <1355131804-22707-1-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8804: Remove redundant check
+Date: Mon, 24 Dec 2012 15:54:54 +0000
+Message-ID: <20121224155454.GK30837@opensource.wolfsonmicro.com>
+References: <1355280793-23143-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0297431078828046331=="
+Content-Type: multipart/mixed; boundary="===============4408853572111359676=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACC54261637
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:53:59 +0100 (CET)
-In-Reply-To: <1355131804-22707-1-git-send-email-zonque@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3AC261637
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:54:56 +0100 (CET)
+In-Reply-To: <1355280793-23143-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lrg@ti.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0297431078828046331==
+--===============4408853572111359676==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RUqJLqMNe5u4kDWT"
+	protocol="application/pgp-signature"; boundary="BOhpupldhMlYbdva"
 Content-Disposition: inline
 
 
---RUqJLqMNe5u4kDWT
+--BOhpupldhMlYbdva
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 10, 2012 at 10:30:04AM +0100, Daniel Mack wrote:
-> The CS4271 requires its LRCLK and MCLK to be stable before its RESET
-> line is de-asserted. That also means that clocks cannot be changed
-> without putting the chip back into hardware reset, which also requires
-> a complete re-initialization of all registers.
+On Wed, Dec 12, 2012 at 12:53:13AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> The condition "if (!freq_in || !freq_out)" has already been tested previo=
+usly,
+> so no need to do it again.
 
 Applied, thanks.
 
---RUqJLqMNe5u4kDWT
+--BOhpupldhMlYbdva
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ2HqPAAoJELSic+t+oim9ImoQAJrb33ZF+xd4vlSB1xlLT712
-mqMo9tIL9AISic+Ry5HtHKH1B14ycJUt+VNLIeekBNb03pfO8FPHSl+Nofl1KnGF
-qOz4SftVSbNHrclUgvrZS8ZCxH98lF+L3TFYm7JbHSavF8KUK9gz4J5TFfIX1RY7
-o8MRVYG79C0uG094+XkiTRHqQABIpqADMCo5ijKW3D/yv8scnNWFlMftJOOtwFnQ
-7NoGpInraz9ZeEIHS1S+bb1KVs00YYXd00MVyM6/+m6nRaf/b3hVFaXGRc5M3tYS
-YptMJ/twP2gRG3aXbxmngAG0vc4czdO5YWgCX+E9M5b+vOlcRvU/kTnx0HlH9dz0
-+outHy0VLI5kGzTLlsnjVHmKMfSDql8loYDMtTrNKjucbueaJCmMAAm+VTKrou+l
-+FDUWyhSYqML+pH8DY+SxI4NiPnmGjGjnBzBxv9on6e6jLF2cPEokU5xSyUKH0Ii
-pmAlNOz5o/4SxHvSu1uzjMM8MChkKQ5ny1nIec3YKXuQpZS6YfC8i/sD9sp5n3ss
-P59hbIJug0fC4yE6nZPCogHioVK6tKtyYnDbgkljubHjNV0wIvW5TEOctdbEj6iR
-t32KdcRaCAa4qDDU7zMMEkrPveHlGKI1H17WvXnVmLfbcEKJZaQiww7w/sp+6Twi
-cWwr4JS2145asGz+4Z/n
-=NcgC
+iQIcBAEBAgAGBQJQ2Hq6AAoJELSic+t+oim9Lm0P/3J90bYMHFX+2d5DY2tVtzs0
+XSD0iJWPld1hokK5n5TRPo/WmNQ1ie+vRWRHmYVDMeiVtVuXtZ665N/oWhN9ACr1
+Hii+7W+ItKwa2nwb4fWQV8Nn3iGYn6NKuPFCaRi4JE1TdoEOl48mEKJmJYEhmlD0
+qLkDztQqx9cpO73B1g/HjmS0shDQFGTQfvOAKTVGvLKGK0LN/jovzfLuY3y1Ye2W
+ypO1EpIIm3CfzNvBNXGP+d6feZJPU4wz99bWnpm4sPXJ6zLqa6RBToVZKeYT/V7k
+Vl1PgxUPMmDuF8YMZI3JZSBS5RBlpnIfX95UI3x56IeSzWK7pzXhnRgf98yT4tOO
+aliG/Z34hU5sHHrcT8SC5lfTM0SNJedc/5EKvhE04bWkEEqmu16iQ4ghr2FOVewj
+3t5kjF944vYNZbZf3kd0NdRYseS6w9TP8W9AmTXpk8CqR8qWEFlplkCJVjt2fMPs
+q0IIwZWKKuZSct5DswaMM8d+dF5NqDh6q8AfIhdiOPqRq5vGNVR8nsb0akni3nRy
+lnUw4nLEP881Q+Z7BsgdmWcmmOKICT5SVrBVnOP2kndV6c6ohSGv6e6gct3l7QBa
+9qeXttjMRTPLtkvjQhGnShu6k9FkjkMxsfxb5BOi83ZWqnoh1q5YpLgX9s3vOIfJ
+YDurWMZNoaNCwRXRTqc+
+=b0Vo
 -----END PGP SIGNATURE-----
 
---RUqJLqMNe5u4kDWT--
+--BOhpupldhMlYbdva--
 
---===============0297431078828046331==
+--===============4408853572111359676==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0297431078828046331==--
+--===============4408853572111359676==--
