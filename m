@@ -1,71 +1,65 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V5 2/2] ASoC: SAMSUNG: Add DT support for i2s
-Date: Mon, 24 Dec 2012 09:33:18 +0530
-Message-ID: <CAAgF-BckOnct3gGgrxiG2W-D74sFmD=7HfBOqkj9HTc66ZPoiQ@mail.gmail.com>
-References: <1355395373-22058-1-git-send-email-padma.v@samsung.com>
-	<1355395373-22058-3-git-send-email-padma.v@samsung.com>
-	<20121219132414.2CF653E0AD7@localhost>
-	<20121219170937.GV4985@opensource.wolfsonmicro.com>
-	<CAAgF-Bc3zSyhaMwSOy977PJ-PdtMfDXjFrTvpzETeHJAAQU3vQ@mail.gmail.com>
-	<008401cddfad$ae2d19e0$0a874da0$@samsung.com>
+From: "Omair M. Abdullah" <omair.m.abdullah@intel.com>
+Subject: Re: [PATCH RFT] ASoC: lm49453: Fix mask for setting
+ mode bit in lm49453_set_dai_fmt()
+Date: Mon, 24 Dec 2012 11:08:22 +0530
+Message-ID: <20121224053822.GA26412@oma-dev>
+References: <1356052760.9177.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <008401cddfad$ae2d19e0$0a874da0$@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grant Likely <grant.likely@secretlab.ca>, Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, sbkim73@samsung.com, tiwai@suse.de, ben-linux@fluff.org, lrg@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD9A62615F5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 06:36:57 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1356052760.9177.1.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, M R Swami Reddy <MR.Swami.Reddy@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Dec 21, 2012 at 09:19:20AM +0800, Axel Lin wrote:
+> The mode variable is either 0 or 1.
+> To update mode setting, the mask should be BIT(0) rather than BIT(1).
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+> Hi M R Swami,
+> I don't have the datasheet. Can you check if this patch is correct?
+Yes, according to the datasheet the STEREO mode is BIT(0).
 
-On Sat, Dec 22, 2012 at 12:32 AM, Kukjin Kim <kgene.kim@samsung.com> wrote:
-> Padma Venkat wrote:
->>
->> Hi,
->>
->> On Wed, Dec 19, 2012 at 10:39 PM, Mark Brown
->> <broonie@opensource.wolfsonmicro.com> wrote:
->> > On Wed, Dec 19, 2012 at 01:24:14PM +0000, Grant Likely wrote:
->> >> On Thu, 13 Dec 2012 16:12:53 +0530, Padmavathi Venna
->> <padma.v@samsung.com> wrote:
->> >
->> >> > +- compatible : "samsung,samsung-i2s"
->> >
->> >> Isn't that kind of redundant?  :-)
->> >
->> >> The format of the compatible strings should be "<vendor>,<part-
->> number>-i2s".
->> >> Please be specific about the part number that you're doing the binding
->> >> for. For example; use "samsung,exynos4210-i2s" instead of
->> "samsung,exynos-i2s".
->> >
->> > There are actually versioned IPs here (where the versions are used
->> > publically in a few places) but it's not clearly documented which is
->> > which.  It would be reasonable to use the IP versions here I think.
->>
->> Samsung has three i2s drivers one for s3c24xx, one for s3c2412 and one
->> for rest of the platforms. The above mentioned other platforms has
->> Version 3/4/5 of i2s controllers. This dt binding is for for the i2s
->
-> Where is the version defined such as 3, 4, 5? So, what is the
-> "sound/soc/Samsung/s3c-i2s-v2.[ch]"?
-
-Versions 3, 4, 5 are defined in dev-audio.c file of corresponding platforms.
-s3c-i2s-v2 is used in s3c2412 platform.
-
->
->> driver that has support for Version 3/4/5 of i2s controller. So
->> "samsung,i2s-v5" is okay as compatible name? Please suggest me.
->>
-> I agree with using version here but we need some consensus about that.
->
-> - Kukjin
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-Thanks
-Padma
+> Thanks,
+> Axel
+>  sound/soc/codecs/lm49453.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+> index d75257d..c0d203b 100644
+> --- a/sound/soc/codecs/lm49453.c
+> +++ b/sound/soc/codecs/lm49453.c
+> @@ -1218,7 +1218,7 @@ static int lm49453_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+>  	}
+>  
+>  	snd_soc_update_bits(codec, LM49453_P0_AUDIO_PORT1_BASIC_REG,
+> -			    LM49453_AUDIO_PORT1_BASIC_FMT_MASK|BIT(1)|BIT(5),
+> +			    LM49453_AUDIO_PORT1_BASIC_FMT_MASK|BIT(0)|BIT(5),
+>  			    (aif_val | mode | clk_phase));
+>  
+>  	snd_soc_write(codec, LM49453_P0_AUDIO_PORT1_RX_MSB_REG, clk_shift);
+> -- 
+> 1.7.9.5
+> 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
