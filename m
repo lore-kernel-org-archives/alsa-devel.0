@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: lm49453: Fix adc,
-	mic and sidetone volume ranges
-Date: Mon, 24 Dec 2012 15:44:39 +0000
-Message-ID: <20121224154439.GF30837@opensource.wolfsonmicro.com>
-References: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>
+Subject: Re: [PATCH v2] ASoC: lm49453: Update lm49453_reg_defs
+ values as per LM49453 HW revision-B
+Date: Mon, 24 Dec 2012 15:45:27 +0000
+Message-ID: <20121224154527.GG30837@opensource.wolfsonmicro.com>
+References: <1354880214-6552-1-git-send-email-MR.Swami.Reddy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3050952101101463930=="
+Content-Type: multipart/mixed; boundary="===============5887723516193517409=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DA62B261637
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:44:40 +0100 (CET)
-In-Reply-To: <1354879810-6452-1-git-send-email-MR.Swami.Reddy@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EC0526164C
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:45:28 +0100 (CET)
+In-Reply-To: <1354880214-6552-1-git-send-email-MR.Swami.Reddy@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +25,50 @@ Cc: vishwas.a.deshpande@ti.com, lrg@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3050952101101463930==
+--===============5887723516193517409==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K/NRh952CO+2tg14"
+	protocol="application/pgp-signature"; boundary="KIzF6Cje4W/osXrF"
 Content-Disposition: inline
 
 
---K/NRh952CO+2tg14
+--KIzF6Cje4W/osXrF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 07, 2012 at 05:00:10PM +0530, MR.Swami.Reddy@ti.com wrote:
-> Add adc, mic, sidetone volume ranges and appropriately added the controls=
-=2E=20
-> Fix the DAC HP/EP/LS/LO/HA maximum gain values.
+On Fri, Dec 07, 2012 at 05:06:54PM +0530, MR.Swami.Reddy@ti.com wrote:
+> Update lm49453_reg_defs values as per LM49453 HW revision-B
 
 Applied, thanks.
 
---K/NRh952CO+2tg14
+--KIzF6Cje4W/osXrF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ2HhVAAoJELSic+t+oim92koQAIxE+CgE4RgYOeC7Sj1yXABF
-ieIK8v/opYjngF7CjXtDCqMGOmjmXTHMG+VVaZcmQpciQgNSjVoTWIcNFbjXhr98
-Ai33sWJX41X2D3LuvIP2oKNKwcKf1LTFnwk9+TV3ttjZ5BUWIYfp/Po9D0/A4MYK
-xI7o0WLSNMymvRkbnCwbVWj0sxplZWVdORzMlIMDJhv9oMdrhq9CCaBOhEhOTgv/
-2jpj9ooQ7PuKJeU2EC42UKzPVPexs6nZtv+NJ2Wjy/QcUGNRpVhmmtzZMh6O1hNy
-b4uxsPryJJlm94JHqECtiwJPQa8KbEIc/rUEQNWvvkz4jhRfI8MnoABy+lxh+EoL
-QmCQl9fKcVIamiwxpWs/J4A/yik4ez9t5hbyHsEvT1REgt6rcwByrY+ZxN9A+x5a
-QOgGTFJ+vkmxHTMPCPvvQbVZPRbyhKpTyCDVy8Yl3jE1F1XB06zG6CV9Ja5nmIgn
-EG/V8nmqvnhmJwwqMv2+c3D1fb/OK6tCjcStdQ2IH6r9yb9arFm7El/7w+XhY1p7
-s5cT4gUSEszCGbaPZp8KxC+5wZSFxaNIBo0RCbMgHKjtshSnmS/u8n5U04l3gsgq
-qxO1n3nL8+eOsZa1gj2s4iT/rDXmCc41KOp47e7cGB10jRDNlkWpP1O8Jg5WpQjq
-DtKlRKigfKs5L7+Odlr9
-=BrbE
+iQIcBAEBAgAGBQJQ2HiMAAoJELSic+t+oim9MIQP/3jlKokx+DnDFFBawf+o/x4T
+QjDrHeAlqBK0B2CsLXeW0UT+jYz78EV2qzIzK4KGnabM3OyjHYARVWw/ENeb7WUD
+DykZMeLZB1Km03nv1TlMNYvwWaDv27QMujxglPHYpm6/U1OsVsGc4o6ItG0mKMSy
+D4mC0rUqi7OpCcz2pNfso3GwetZGuvjPJkKh35s+G0iUHREG2veNy8G9axB19a3M
+tuvKfPAYpUus7wm0y3oCnmthRi+8Xvty6JdUEs51PM2Glg8EZDc6Oap9qT7Ck0Xh
+f8VE5ha6AuIYrx83eHu8YieF/UqSWgmFXZxkZjSUjMCy7ZI85tLflhXbTMsVJmCU
+66Ay6DRxEUp0dPplCw3ncyZXZFqOmxSjzm/7zUeNl2KpWRcIjSjXclXiLTBHbxkL
+WRHjlCCNe5p93ASl65aNGoLGIr7XqEuJ5i1kkquyV9B9qRyZ+VHxwuUmY+i6rWfp
+6uqo5HOlMAfB12XT+TK23aZus5p90aRZishmg7sawimOleK+dHmpxxQNd7frQ0sY
+H9VVVjg+MxfOWEvNkJp0VvrAWUXl0KaN2GO2cFTzzS+LYq3n3v5HCGdihAXVSgR3
+ZA2j8d0ab30hk55tXpUi9r4EOZBGTwh28zCKqQjREf65Fx6W9mYMB0hDX0F6xb1t
+XEr2Lt5MorMwxKj2NmZ7
+=vZZ1
 -----END PGP SIGNATURE-----
 
---K/NRh952CO+2tg14--
+--KIzF6Cje4W/osXrF--
 
---===============3050952101101463930==
+--===============5887723516193517409==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3050952101101463930==--
+--===============5887723516193517409==--
