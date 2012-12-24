@@ -1,75 +1,58 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RFT] ASoC: lm49453: Fix mask for setting
- mode bit in lm49453_set_dai_fmt()
-Date: Mon, 24 Dec 2012 15:32:36 +0000
-Message-ID: <20121224153236.GC30837@opensource.wolfsonmicro.com>
-References: <1356052760.9177.1.camel@phoenix>
+Subject: Re: [PATCH] ASoC: core: giving WARN when device starting from
+ non-off bias with idle_bias_off
+Date: Mon, 24 Dec 2012 15:35:53 +0000
+Message-ID: <20121224153552.GD30837@opensource.wolfsonmicro.com>
+References: <1355913397.17896.10.camel@cliu38-desktop-build>
+ <1356085032.1839.14.camel@cliu38-desktop-build>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2778774728663077975=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 62156261637
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:32:37 +0100 (CET)
-In-Reply-To: <1356052760.9177.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, M R Swami Reddy <MR.Swami.Reddy@ti.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ycz6tD7Th1CMF4v7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1356085032.1839.14.camel@cliu38-desktop-build>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chuansheng Liu <chuansheng.liu@intel.com>
+Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2778774728663077975==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
-Content-Disposition: inline
-
-
---4ZLFUWh1odzi/v6L
+--Ycz6tD7Th1CMF4v7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 21, 2012 at 09:19:20AM +0800, Axel Lin wrote:
-> The mode variable is either 0 or 1.
-> To update mode setting, the mask should be BIT(0) rather than BIT(1).
+On Fri, Dec 21, 2012 at 06:17:12PM +0800, Chuansheng Liu wrote:
+>=20
+> Just found some cases that some codec drivers set the bias to _STANDBY and
+> set idle_bias_off to 1 during probing.
+> It will cause unpaired runtime_get_sync/put() issue. Also as Mark suggest=
+ed,
+> there is no reason to start from _STANDBY bias with idle_bias_off =3D=3D =
+1.
 
 Applied, thanks.
 
---4ZLFUWh1odzi/v6L
+--Ycz6tD7Th1CMF4v7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ2HWJAAoJELSic+t+oim94aMP/iKMlVqe44EParz3hmUwmeCJ
-X6QlqxXpaHiPgPwVdE4NYQ0o5dcw+P9nmPtPM9dflxap7nfLE6NxUj2fEz8GgM5x
-7gdgSSsA0Moerou5kgWl6gzR5qvtDt4seOGpOtEnB5gMvYBmqk7TRVUZs7KqEfJa
-WOSw7fO3Q/9ZT6+H45ZiF/gBcXEDsnvpXPXUP8klGGUTYyAuRErKQtdZKKOnYx3O
-qIlGxJpq6p0XGqMAXEL1fvEycTjw+Qnmw6zeM4LwdeUhrL5YAT9N9BZ4FqdWbnLT
-p76++eipGpuYdrQSplnvQ2nu+6twGT1JbkND+u3OFzb/vResFcmkcR0DtA3g61op
-PtPLqxRjDZ+kCOPN320IFOBNu7Rka2hjBTROeEAste72nmp+JULV1m46RiSYVarm
-2LRPbHfra+K28Oj/pt7KIm9I2lOCxvqJuqE4jleCV7B8XXCMy/v+jEA4jNpoDrLv
-YvGV7RjVVOFBjrooSkHEJtwFnOuq07vNzc+zBOGNtyynRnRJWJofeM/YXlX+qMaC
-UhasiDeMvrCzk48BJ3uS5lyTjFsAoa3eIZXVueRdlp5tcxsZxEW15fxttAt+QxpH
-1lhatyMlkKEWxbZFInz/ugOOcyNjFuc/iMt+hjWtLgjqpmtqmDuYTwZ0r+niTT2a
-9UfIFnuSJ5610ei3LVx6
-=XIOj
+iQIcBAEBAgAGBQJQ2HZRAAoJELSic+t+oim9/ssP/0mCF43epovtHKA8k2HDkF4B
+hanteMzSjU7YtlaQFJSKE21o8qc5lqE6vRe4eAs7+KZFFeR4mY9bPZfOVwP7ggI8
+ariVulCucr0KMVD9MX05VmZEMWQnABsQEqNPdpvN1laszifLwG90sfFrA29ZpzFf
+BPbWoHXw1f1wDbuFJ0osLqonvZ1Os2qGK8zkJGNGec6/hZ5aYhhOXWcKsTXL5cI0
+s6lBzdOqpWxx7/qYjvOZTLUBQxyNY51YI7K2MWA7T+AtLy6NAX6veybPKxNzaJ0a
+tdMdzCrrZxGifm0ughptl0akU82hwahtCjSh5t5adWJTPcQAnZKAArX9S9S451p8
+hCrrEnhGpxes5Sh9MO/j2Gv+v5z6PY9GkX9CdhdFULdYrCau+TKCf0J+t2G4sfbj
+4LRggCGBPehZD6/8ERwj9a3Ih5J4hB1CS5D4kehFE/50qg4fb6RG+ZrGbPUQ0ksA
+1IzvcIgWCB/V6rH9NsT8+ZBF7eBmDoDToDxqszP8zDslWaP4a8IJviKac6IRa/kC
+jz5mJS9drPWYYfFd9GhyFBUPRl5gnHVuWFJB2qB6ADWD1geLLzhNEe0DIzceMc/d
+FdWP+x4sKiHHjGoydlng72b54FW6nbF/sGzpJKVXPqI8zcjR2IMSGiRvfLuWdKky
+imAI/5yMU3uBTmWaw6y2
+=U59k
 -----END PGP SIGNATURE-----
 
---4ZLFUWh1odzi/v6L--
-
---===============2778774728663077975==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2778774728663077975==--
+--Ycz6tD7Th1CMF4v7--
