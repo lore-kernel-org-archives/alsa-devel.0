@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8804: Remove redundant check
-Date: Mon, 24 Dec 2012 15:54:54 +0000
-Message-ID: <20121224155454.GK30837@opensource.wolfsonmicro.com>
-References: <1355280793-23143-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH v2] ASoC: wm8993: Refactor set_pll code to
+ avoid GCC warnings
+Date: Mon, 24 Dec 2012 15:56:03 +0000
+Message-ID: <20121224155603.GL30837@opensource.wolfsonmicro.com>
+References: <1355282680-30760-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4408853572111359676=="
+Content-Type: multipart/mixed; boundary="===============5455177152712994489=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3AC261637
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:54:56 +0100 (CET)
-In-Reply-To: <1355280793-23143-1-git-send-email-festevam@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1433A261637
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:56:05 +0100 (CET)
+In-Reply-To: <1355282680-30760-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +25,53 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4408853572111359676==
+--===============5455177152712994489==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOhpupldhMlYbdva"
+	protocol="application/pgp-signature"; boundary="NPWyolIJAVLYbHY6"
 Content-Disposition: inline
 
 
---BOhpupldhMlYbdva
+--NPWyolIJAVLYbHY6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 12, 2012 at 12:53:13AM -0200, Fabio Estevam wrote:
+On Wed, Dec 12, 2012 at 01:24:40AM -0200, Fabio Estevam wrote:
 > From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> The condition "if (!freq_in || !freq_out)" has already been tested previo=
-usly,
-> so no need to do it again.
+> Refactor set_pll code to avoid the following warnings:
 
 Applied, thanks.
 
---BOhpupldhMlYbdva
+--NPWyolIJAVLYbHY6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ2Hq6AAoJELSic+t+oim9Lm0P/3J90bYMHFX+2d5DY2tVtzs0
-XSD0iJWPld1hokK5n5TRPo/WmNQ1ie+vRWRHmYVDMeiVtVuXtZ665N/oWhN9ACr1
-Hii+7W+ItKwa2nwb4fWQV8Nn3iGYn6NKuPFCaRi4JE1TdoEOl48mEKJmJYEhmlD0
-qLkDztQqx9cpO73B1g/HjmS0shDQFGTQfvOAKTVGvLKGK0LN/jovzfLuY3y1Ye2W
-ypO1EpIIm3CfzNvBNXGP+d6feZJPU4wz99bWnpm4sPXJ6zLqa6RBToVZKeYT/V7k
-Vl1PgxUPMmDuF8YMZI3JZSBS5RBlpnIfX95UI3x56IeSzWK7pzXhnRgf98yT4tOO
-aliG/Z34hU5sHHrcT8SC5lfTM0SNJedc/5EKvhE04bWkEEqmu16iQ4ghr2FOVewj
-3t5kjF944vYNZbZf3kd0NdRYseS6w9TP8W9AmTXpk8CqR8qWEFlplkCJVjt2fMPs
-q0IIwZWKKuZSct5DswaMM8d+dF5NqDh6q8AfIhdiOPqRq5vGNVR8nsb0akni3nRy
-lnUw4nLEP881Q+Z7BsgdmWcmmOKICT5SVrBVnOP2kndV6c6ohSGv6e6gct3l7QBa
-9qeXttjMRTPLtkvjQhGnShu6k9FkjkMxsfxb5BOi83ZWqnoh1q5YpLgX9s3vOIfJ
-YDurWMZNoaNCwRXRTqc+
-=b0Vo
+iQIcBAEBAgAGBQJQ2HsKAAoJELSic+t+oim92pwP/0LAV5NVry4YSx4+0YcTDg6W
+ku6t29Q5nX/N6X6oIZhlHdV7biKplF1Y6E6GMryYdbk6Qyjga30R9qAcwN8s3dBq
+2/0e1rvpdCoxqmJfhYh75X8la8cBrcUwVeO4n1+PlLHYsMtPY6N2zPwI8Za5woZE
+K9FGm3QyBT9XVFXxvSPJpL1O1Kmzcd0Ou7BZjDnlAXww8MpthYn5MA//6aeo96rG
+PyLM63eTAVwMUvj1fJjzBuRCCsCHIbgGGkvnmvsDbW+Z/lPdnWOGNGU5PkP74Aj+
+PbnbOcHhEOA4D3/7oCyix7yoZVfTp35bou8J1Vbm4WbsCAqf4Q4v0KxEqJdMinRi
+uzL30pv5WZK5o7bjPCAH1eqqKjxbuRyox7HdiIyuOgB+QvaLmD3UYWe2ll4/AW6u
+BkplvSHEp1CCDJ6Dc9HFgkzV9P7D81KcGMZPea2WgTsmCp7CggzASjVHmKdmIdF2
+4Uezp1gsLGsR+LxXzaf3o9x40vcqXzhpXTzYUewGmeJVC3RF9fFoWeyO1tF1p1ld
+nrjut/CG5X0o1wiRcWcaayjTNyXV5Fd7q2gLxrteLmQrcB7zfGs5/STZXKBBRcxm
+pleW7DkcJKdRt4rUCLwG/60nRtnDcpO59RFj5mabvxTkG4tO5Z12s98PIDGPN3pn
+q1lQKLC1m2Whsz0hVqIo
+=wdTC
 -----END PGP SIGNATURE-----
 
---BOhpupldhMlYbdva--
+--NPWyolIJAVLYbHY6--
 
---===============4408853572111359676==
+--===============5455177152712994489==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4408853572111359676==--
+--===============5455177152712994489==--
