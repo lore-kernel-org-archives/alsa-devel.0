@@ -1,58 +1,76 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: giving WARN when device starting from
- non-off bias with idle_bias_off
-Date: Mon, 24 Dec 2012 15:35:53 +0000
-Message-ID: <20121224153552.GD30837@opensource.wolfsonmicro.com>
-References: <1355913397.17896.10.camel@cliu38-desktop-build>
- <1356085032.1839.14.camel@cliu38-desktop-build>
+Subject: Re: [PATCH] ASoC: wm8962: Add device tree support
+Date: Mon, 24 Dec 2012 15:37:28 +0000
+Message-ID: <20121224153728.GE30837@opensource.wolfsonmicro.com>
+References: <1355362084-16460-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ycz6tD7Th1CMF4v7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1356085032.1839.14.camel@cliu38-desktop-build>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chuansheng Liu <chuansheng.liu@intel.com>
-Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7613796749943547820=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27BE7261637
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 16:37:29 +0100 (CET)
+In-Reply-To: <1355362084-16460-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Ycz6tD7Th1CMF4v7
+--===============7613796749943547820==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HnQK338I3UIa/qiP"
+Content-Disposition: inline
+
+
+--HnQK338I3UIa/qiP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 21, 2012 at 06:17:12PM +0800, Chuansheng Liu wrote:
+On Wed, Dec 12, 2012 at 11:28:04PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> Just found some cases that some codec drivers set the bias to _STANDBY and
-> set idle_bias_off to 1 during probing.
-> It will cause unpaired runtime_get_sync/put() issue. Also as Mark suggest=
-ed,
-> there is no reason to start from _STANDBY bias with idle_bias_off =3D=3D =
-1.
+> Add device tree support.
 
 Applied, thanks.
 
---Ycz6tD7Th1CMF4v7
+--HnQK338I3UIa/qiP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ2HZRAAoJELSic+t+oim9/ssP/0mCF43epovtHKA8k2HDkF4B
-hanteMzSjU7YtlaQFJSKE21o8qc5lqE6vRe4eAs7+KZFFeR4mY9bPZfOVwP7ggI8
-ariVulCucr0KMVD9MX05VmZEMWQnABsQEqNPdpvN1laszifLwG90sfFrA29ZpzFf
-BPbWoHXw1f1wDbuFJ0osLqonvZ1Os2qGK8zkJGNGec6/hZ5aYhhOXWcKsTXL5cI0
-s6lBzdOqpWxx7/qYjvOZTLUBQxyNY51YI7K2MWA7T+AtLy6NAX6veybPKxNzaJ0a
-tdMdzCrrZxGifm0ughptl0akU82hwahtCjSh5t5adWJTPcQAnZKAArX9S9S451p8
-hCrrEnhGpxes5Sh9MO/j2Gv+v5z6PY9GkX9CdhdFULdYrCau+TKCf0J+t2G4sfbj
-4LRggCGBPehZD6/8ERwj9a3Ih5J4hB1CS5D4kehFE/50qg4fb6RG+ZrGbPUQ0ksA
-1IzvcIgWCB/V6rH9NsT8+ZBF7eBmDoDToDxqszP8zDslWaP4a8IJviKac6IRa/kC
-jz5mJS9drPWYYfFd9GhyFBUPRl5gnHVuWFJB2qB6ADWD1geLLzhNEe0DIzceMc/d
-FdWP+x4sKiHHjGoydlng72b54FW6nbF/sGzpJKVXPqI8zcjR2IMSGiRvfLuWdKky
-imAI/5yMU3uBTmWaw6y2
-=U59k
+iQIcBAEBAgAGBQJQ2HaqAAoJELSic+t+oim90TcP/1Mto2IIXO7moT9ES9imGr4H
+b3l0YvbnNylFlVU9kOxfH6e5WXBj1NantK/CH9EAuHSxR3zQc4S59oEZ94N7aQ1n
+d1pJKMrJynRdHhmJ9xoGw5kIwh/iUevtjTFvAn6I3yReeMFdbSIRppxmHHyYrV5t
+RXVwJoR8Y8xnw1UkzIRfKHs45/Wun5E7lbSzL/2zTS+pDsb8NOP7JNh3aV92sotX
+6bELoXN00Vf+XHDEs451JvR7tGPCTYY7tzHz51wjxepLNO+U6Uv8lWwm4WMk4+iq
+7Fz28QdiJWiw63AQTeDNplQRCyyuWDBJebP02rD09umZgXMioR4yWSA+zk3jnycd
+8prQTpMZet3YjoxdVgOb3roh57dcmoEAYDp2R2YemQ23PpNlnhCvSVqp/kw3Jve6
+LwuUfj2nxWQ7x2A0eBafa6ybq54DgRaYEzPP7I6F/u9xHO/xV0xJvhusxaxn7FGd
+Z1oLSERdTfxSvQ4dT7I70NDeTFBZ0ESJmnjvFOEx6uMaAMhYfV3L5LSRBZ0C6fQp
+c0SG/isW2H8CGb5wdvaMvruUIjL4OJZalaR6iN3JSVKOqGbciG0yhLHG4loiFvIo
+VlODNiYl2IT3+LSJf+HCLI6stucqeTfdKBc9x3hXAr8R5Qz/RYsEePEDvAMXDkHx
+6y0Eq48VwivU79zh+6lC
+=CI+e
 -----END PGP SIGNATURE-----
 
---Ycz6tD7Th1CMF4v7--
+--HnQK338I3UIa/qiP--
+
+--===============7613796749943547820==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7613796749943547820==--
