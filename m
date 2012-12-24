@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: cs42l52: Catch no-match case in
-	cs42l52_get_clk
-Date: Mon, 24 Dec 2012 16:02:49 +0000
-Message-ID: <20121224160248.GP30837@opensource.wolfsonmicro.com>
-References: <1355993596.20315.1.camel@phoenix>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: wm8985: Refactor set_pll code to
+	avoid gcc warnings
+Date: Mon, 24 Dec 2012 15:55:37 -0200
+Message-ID: <1356371738-15997-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3683490286052648205=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5968B261639
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 17:02:50 +0100 (CET)
-In-Reply-To: <1355993596.20315.1.camel@phoenix>
+Received: from mail-ye0-f181.google.com (mail-ye0-f181.google.com
+ [209.85.213.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3CD826163E
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 18:56:02 +0100 (CET)
+Received: by mail-ye0-f181.google.com with SMTP id m11so1270934yen.12
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2012 09:56:01 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---===============3683490286052648205==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7ZMy3ZKywLyoHonN"
-Content-Disposition: inline
+Refactor set_pll code to avoid the following warnings:
 
+sound/soc/codecs/wm8985.c:852:50: warning: 'pll_div.k' may be used uninitialized in this function
+sound/soc/codecs/wm8985.c:849:9: warning: 'pll_div.n' may be used uninitialized in this function
+sound/soc/codecs/wm8985.c:848:23: warning: 'pll_div.div2' may be used uninitialized in this function
 
---7ZMy3ZKywLyoHonN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do the same as in commit 86ce6c9a (ASoC: WM8804: Refactor set_pll code to avoid 
+GCC warnings).
 
-On Thu, Dec 20, 2012 at 04:53:16PM +0800, Axel Lin wrote:
-> In the case of no-match, return -EINVAL instead of 0.
->=20
-> Since we assign i to ret in the for loop, ret always less than
-> ARRAY_SIZE(clk_map_table). Thus remove the boundary checking for ret.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/wm8985.c |   43 ++++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
 
-Applied, thanks.
-
---7ZMy3ZKywLyoHonN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQ2HyiAAoJELSic+t+oim9l24P+wbQYjBW1E2mVWdNk9DcJ/o4
-dl3NT+ETLCxBwj9t5lzqBd4F2/G64bfa523DC0LtKIS+yksax/AbK4jHEFmGBaK1
-oZoYPBa2fKi4LR/gRg37mX8eKI/NTGecqXAelS5LHWqH+v1oqK4fQDfITzzFeJpX
-ihU0wXsCs6RqDpXpofSAOqidrEV3BKYYFYI4/YdQXt6Z04RaiNqUhkTkM6k3JmGp
-bgaDyrxUWU+/WqTs/cj+1BNJXWdDJjGQyxsMguo7buJPRcrCPTQAkF8PHU/qPswj
-cMUxOaj24SEpbG/y3aooryzCHcg9PzuqaYp81p+fx9ilQKm+BT2vra1Rjnh4/C5/
-x4HvCrAmNow1P29qMp0DTVQbh0VSmG9RR5rgVNxNzLBKIlmGqhy9twjQ3xUxMGZI
-mwZBvxugS857zi+m9KlDd6nfyJwplhsRXHjQ0Fm13mz09TrMQ1zYvXbeiBFpRcwX
-n2gk7aH7yK+2QF0rviMb6cs5DZoTd427Z0QNefEE2/qikm8oLitDclfy7csUVG1L
-KsTnmA6bI1FKresv3Z1k7xCve4MPITYus62zkEaLnUwq1mYGsq0/I8YBcbaQlhzs
-D0nriWTi9x1wy01PwlJnCfLfoVma0Sj4UaaFGYjU4VOPHwdYa/sZkKmIt339LBEd
-7AMzZ78h+PMKy1yyGoRU
-=Z+kp
------END PGP SIGNATURE-----
-
---7ZMy3ZKywLyoHonN--
-
---===============3683490286052648205==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3683490286052648205==--
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index ab37826..dd6ce3b 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -830,33 +830,30 @@ static int wm8985_set_pll(struct snd_soc_dai *dai, int pll_id,
+ 	struct pll_div pll_div;
+ 
+ 	codec = dai->codec;
+-	if (freq_in && freq_out) {
++	if (!freq_in || !freq_out) {
++		/* disable the PLL */
++		snd_soc_update_bits(codec, WM8985_POWER_MANAGEMENT_1,
++				    WM8985_PLLEN_MASK, 0);
++	} else {
+ 		ret = pll_factors(&pll_div, freq_out * 4 * 2, freq_in);
+ 		if (ret)
+ 			return ret;
+-	}
+ 
+-	/* disable the PLL before reprogramming it */
+-	snd_soc_update_bits(codec, WM8985_POWER_MANAGEMENT_1,
+-			    WM8985_PLLEN_MASK, 0);
+-	
+-	if (!freq_in || !freq_out)
+-		return 0;
+-
+-	/* set PLLN and PRESCALE */
+-	snd_soc_write(codec, WM8985_PLL_N,
+-		      (pll_div.div2 << WM8985_PLL_PRESCALE_SHIFT)
+-		      | pll_div.n);
+-	/* set PLLK */
+-	snd_soc_write(codec, WM8985_PLL_K_3, pll_div.k & 0x1ff);
+-	snd_soc_write(codec, WM8985_PLL_K_2, (pll_div.k >> 9) & 0x1ff);
+-	snd_soc_write(codec, WM8985_PLL_K_1, (pll_div.k >> 18));
+-	/* set the source of the clock to be the PLL */
+-	snd_soc_update_bits(codec, WM8985_CLOCK_GEN_CONTROL,
+-			    WM8985_CLKSEL_MASK, WM8985_CLKSEL);
+-	/* enable the PLL */
+-	snd_soc_update_bits(codec, WM8985_POWER_MANAGEMENT_1,
+-			    WM8985_PLLEN_MASK, WM8985_PLLEN);
++		/* set PLLN and PRESCALE */
++		snd_soc_write(codec, WM8985_PLL_N,
++			      (pll_div.div2 << WM8985_PLL_PRESCALE_SHIFT)
++			      | pll_div.n);
++		/* set PLLK */
++		snd_soc_write(codec, WM8985_PLL_K_3, pll_div.k & 0x1ff);
++		snd_soc_write(codec, WM8985_PLL_K_2, (pll_div.k >> 9) & 0x1ff);
++		snd_soc_write(codec, WM8985_PLL_K_1, (pll_div.k >> 18));
++		/* set the source of the clock to be the PLL */
++		snd_soc_update_bits(codec, WM8985_CLOCK_GEN_CONTROL,
++				    WM8985_CLKSEL_MASK, WM8985_CLKSEL);
++		/* enable the PLL */
++		snd_soc_update_bits(codec, WM8985_POWER_MANAGEMENT_1,
++				    WM8985_PLLEN_MASK, WM8985_PLLEN);
++	}
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
