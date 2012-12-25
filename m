@@ -1,48 +1,47 @@
-From: Chuansheng Liu <chuansheng.liu@intel.com>
-Subject: [PATCH 2/2] ASoC: core: fix the memory leak in case of
- remove_aux_dev()
-Date: Wed, 26 Dec 2012 00:57:32 +0800
-Message-ID: <1356454652.21958.4.camel@cliu38-desktop-build>
-References: <1356454565.21958.2.camel@cliu38-desktop-build>
+From: Damien Zammit <damien.zammit@gmail.com>
+Subject: Re: sound: usb-audio: [PATCH]x2 full
+ capture/playback/spdif support for Digidesign Mbox 2
+Date: Wed, 26 Dec 2012 10:21:23 +1100
+Message-ID: <CABXa2sF2RNLJbA4K7xbu_Gy1Z+MXuW_tNoX9zo3_TGWOVn-8DQ@mail.gmail.com>
+References: <CABXa2sGkpfpj+XgzRJSb2Rsgz=HnWK--hw4k82u=uqWU0jE9dA@mail.gmail.com>
+ <s5h8v8n23j7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1356454565.21958.2.camel@cliu38-desktop-build>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
+ [209.85.219.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E18D326171A
+ for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2012 00:21:24 +0100 (CET)
+Received: by mail-oa0-f51.google.com with SMTP id n12so7592238oag.38
+ for <alsa-devel@alsa-project.org>; Tue, 25 Dec 2012 15:21:23 -0800 (PST)
+In-Reply-To: <s5h8v8n23j7.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 24 December 2012 20:38, Takashi Iwai <tiwai@suse.de> wrote:
+> Well, the standard way is to send an incremental patch against the
+> latest upstream.  That is, just give a diff against 3.8-rc1 with a
+> patch description about only the incremental patch -- i.e. which
+> problems in previous commits are fixed by the new patch.
+Okay, in that case if you could ignore version 5-2 and I will send
+through a diff based on 3.8-rc1 with a proper comment instead.  I will
+name it "patch_3.8-rc1_dz1.txt" in my next email.
 
-When probing aux_dev, initializing is as below:
-device_initialize()
-device_add()
+> BTW, I'm going to be on vacation until Jan. 2, so the reply will be
+> delayed.
+> Have a merry Christmas and new year.
+You too, and have a great holiday!
 
-So when remove aux_dev, we need do as below:
-device_del()
-device_put()
-Otherwise, the rtd_release() will not be called.
-
-So here using device_unregister() to replace device_del(),
-like the action in soc_remove_link_dais().
-Signed-off-by: liu chuansheng <chuansheng.liu@intel.com>
----
- sound/soc/soc-core.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9689411..2270f8f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1556,7 +1556,7 @@ static void soc_remove_aux_dev(struct snd_soc_card *card, int num)
- 	/* unregister the rtd device */
- 	if (rtd->dev_registered) {
- 		device_remove_file(rtd->dev, &dev_attr_codec_reg);
--		device_del(rtd->dev);
-+		device_unregister(rtd->dev);
- 		rtd->dev_registered = 0;
- 	}
- 
--- 
-1.7.0.4
+Regards,
+Damien
