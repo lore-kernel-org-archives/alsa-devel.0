@@ -1,81 +1,54 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V5 2/2] ASoC: SAMSUNG: Add DT support for i2s
-Date: Wed, 26 Dec 2012 16:21:58 +0530
-Message-ID: <CAAgF-BdNwk=aB9PdOieb=t-WBmCvB5CWEYic44fc6WwhJUHGmw@mail.gmail.com>
-References: <1355395373-22058-1-git-send-email-padma.v@samsung.com>
-	<1355395373-22058-3-git-send-email-padma.v@samsung.com>
-	<20121219132414.2CF653E0AD7@localhost>
-	<20121219170937.GV4985@opensource.wolfsonmicro.com>
-	<CAAgF-Bc3zSyhaMwSOy977PJ-PdtMfDXjFrTvpzETeHJAAQU3vQ@mail.gmail.com>
-	<008401cddfad$ae2d19e0$0a874da0$@samsung.com>
-	<CAAgF-BckOnct3gGgrxiG2W-D74sFmD=7HfBOqkj9HTc66ZPoiQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: core: fix the memory leak in case of
+ device_add() failure
+Date: Thu, 27 Dec 2012 16:16:41 +0000
+Message-ID: <20121227161640.GA5005@opensource.wolfsonmicro.com>
+References: <1356454565.21958.2.camel@cliu38-desktop-build>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CAAgF-BckOnct3gGgrxiG2W-D74sFmD=7HfBOqkj9HTc66ZPoiQ@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grant Likely <grant.likely@secretlab.ca>, Padmavathi Venna <padma.v@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, jassisinghbrar@gmail.com, sbkim73@samsung.com, tiwai@suse.de, ben-linux@fluff.org, lrg@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1356454565.21958.2.camel@cliu38-desktop-build>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chuansheng Liu <chuansheng.liu@intel.com>
+Cc: lrg@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Mon, Dec 24, 2012 at 9:33 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
-> Hi,
->
-> On Sat, Dec 22, 2012 at 12:32 AM, Kukjin Kim <kgene.kim@samsung.com> wrote:
->> Padma Venkat wrote:
->>>
->>> Hi,
->>>
->>> On Wed, Dec 19, 2012 at 10:39 PM, Mark Brown
->>> <broonie@opensource.wolfsonmicro.com> wrote:
->>> > On Wed, Dec 19, 2012 at 01:24:14PM +0000, Grant Likely wrote:
->>> >> On Thu, 13 Dec 2012 16:12:53 +0530, Padmavathi Venna
->>> <padma.v@samsung.com> wrote:
->>> >
->>> >> > +- compatible : "samsung,samsung-i2s"
->>> >
->>> >> Isn't that kind of redundant?  :-)
->>> >
->>> >> The format of the compatible strings should be "<vendor>,<part-
->>> number>-i2s".
->>> >> Please be specific about the part number that you're doing the binding
->>> >> for. For example; use "samsung,exynos4210-i2s" instead of
->>> "samsung,exynos-i2s".
->>> >
->>> > There are actually versioned IPs here (where the versions are used
->>> > publically in a few places) but it's not clearly documented which is
->>> > which.  It would be reasonable to use the IP versions here I think.
->>>
->>> Samsung has three i2s drivers one for s3c24xx, one for s3c2412 and one
->>> for rest of the platforms. The above mentioned other platforms has
->>> Version 3/4/5 of i2s controllers. This dt binding is for for the i2s
->>
->> Where is the version defined such as 3, 4, 5? So, what is the
->> "sound/soc/Samsung/s3c-i2s-v2.[ch]"?
->
-> Versions 3, 4, 5 are defined in dev-audio.c file of corresponding platforms.
-> s3c-i2s-v2 is used in s3c2412 platform.
->
->>
->>> driver that has support for Version 3/4/5 of i2s controller. So
->>> "samsung,i2s-v5" is okay as compatible name? Please suggest me.
->>>
->> I agree with using version here but we need some consensus about that.
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Any suggestions on i2s compatible name or "samsung,i2s-v5" is okay?
+On Wed, Dec 26, 2012 at 12:56:05AM +0800, Chuansheng Liu wrote:
+>=20
+> After called device_initialize(), even device_add() returns
+> error, we still need use the put_device() to release the reference
+> to call rtd_release(), which will do the free() action.
 
->>
->> - Kukjin
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-> Thanks
-> Padma
+Applied both, thanks.
 
-Thanks
-Padma
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ3HQBAAoJELSic+t+oim9X4wP+wbauVBffXRq52i4ihkUj8AW
+g32Xbt5HCzQyu/UtSsVzEeGB2QQt5sShsQvngF93I2ihX3RuRvPW6fg/Y4YVXu/5
+tkB+zZwQXRmFdogw5WSUuwCs0TDyqGIYBArQ9e1zx5J0cha2KKkTUXHjEXsC3B0x
+OsAWtOROKQkUWD0ezY0Hnz39avqZEa3uKBOKK6BPCfHIcdjtVMoURCFka5iqDKfB
+9o0+Ed1Qwny+AFtoXGIlhqwVZCXEfdM1cs88Np3+BsK9vJYevKovzDhHuI8yO78P
+2uC9dAJuBH8taLtty0KpIm+WVh5XdYi75LSESisMOR4GLicOs/N5uuQepdtYOefb
+s3ahtPDXboXbRy7bV9UrCm5vDcnG+WALwyKtSu878wPyDcoe2blNIPPCov7THhMK
+9hN8tNSwPt+xkUt8e7mHj1nqTFiSjMmbyo4P15jERK25xPhdDSdHffPIBrr5o4/C
+xYAQc8Z8HDibpt2tHPVvmdNd1uKjhPiu5B8tzO9HU5fjBUXI0EI8dFqjHDzN6EFB
+geZ6i41lqN9T2VLSsA4jjJri3o5Tb92Jffg8ZMstaYCVMKIYO2sSD2so3/k68sZL
+5ArSG5GeMKFhPx51eq5btdZYeoR/F6+7/oxh3J/BuJs7cngKYvq12z9Fgbaf14BL
+nB9gxWuJtlBl/raW7clr
+=WQ68
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
