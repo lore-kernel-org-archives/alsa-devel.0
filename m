@@ -1,70 +1,47 @@
-From: Alexander Schremmer <alex@alexanderweb.de>
-Subject: [PATCH] sound: Add support for Creative BT-D1 via usb sound quirks
-Date: Sat, 29 Dec 2012 14:26:25 +0100
-Message-ID: <50DEEF81.40008@alexanderweb.de>
+From: Mike Dunn <mikedunn@newsguy.com>
+Subject: [PATCH v2 0/2] ASoC: palm27x: machine driver fixes and
+	updates
+Date: Sat, 29 Dec 2012 10:53:16 -0800
+Message-ID: <1356807198-14037-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.newsguy.com (smtp.newsguy.com [74.209.136.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17746261637
+ for <alsa-devel@alsa-project.org>; Sat, 29 Dec 2012 19:54:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Marek Vasut <marex@denx.de>, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Schremmer <alex@alexanderweb.de>
+Hi,
 
-Support the Creative BT-D1 Bluetooth USB audio device. Before this
-patch, Linux had trouble finding the correct USB descriptors and bailed
-out with these messages:
+A fix and an update to the palm27x machine driver.
 
- no or invalid class specific endpoint descriptor
+Change log:
+  v2:
+    Patch #2: in palm27x_asoc_remove(), the call to platform_device_unregister()
+    is replaced with snd_soc_unregister_card().
 
-Now it still prints these messages on hotplug:
+    This version v2 is unsolicited; I noticed the omission today.  Patch
+    preparation error; tripping over my own patches.  No new ones for a while!
+    Thanks for your patience.
 
- snd-usb-audio: probe of ...:1.0 failed with error -5
- snd-usb-audio: probe of ...:1.2 failed with error -5
- snd-usb-audio: probe of ...:1.3 failed with error -5
+Mike Dunn (2):
+  ASoC: palm27x: fix widgets and routes in dai_link init
+  ASoC: palm27x: register card in platform_driver probe
 
-But the device works correctly, including the HID support.
+ sound/soc/pxa/palm27x.c |   38 ++++++++++----------------------------
+ 1 files changed, 10 insertions(+), 28 deletions(-)
 
-The patch is diff'ed against 3.8-rc1 but should apply to older kernels
-as well.
-
-Signed-off-by: Alexander Schremmer <alex@alexanderweb.de>
-
----
-diff -uprN linux-3.8-rc1/sound/usb/quirks-table.h
-linux-3.8-rc1-mod/sound/usb/quirks-table.h
---- linux-3.8-rc1/sound/usb/quirks-table.h      2012-12-22
-02:19:00.000000000 +0100
-+++ linux-3.8-rc1-mod/sound/usb/quirks-table.h  2012-12-26
-11:41:28.000000000 +0100
-@@ -50,6 +50,28 @@
-        }
- },
-
-+{
-+       /* Creative BT-D1 */
-+       USB_DEVICE(0x041e, 0x0005),
-+       .driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+               .ifnum = 1,
-+               .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+               .data = &(const struct audioformat) {
-+                       .formats = SNDRV_PCM_FMTBIT_S16_LE,
-+                       .channels = 2,
-+                       .iface = 1,
-+                       .altsetting = 1,
-+                       .altset_idx = 1,
-+                       .endpoint = 0x03,
-+                       .ep_attr = USB_ENDPOINT_XFER_ISOC,
-+                       .attributes = 0,
-+                       .rates = SNDRV_PCM_RATE_CONTINUOUS,
-+                       .rate_min = 48000,
-+                       .rate_max = 48000,
-+               }
-+       }
-+},
-+
- /* Creative/Toshiba Multimedia Center SB-0500 */
- {
-        USB_DEVICE(0x041e, 0x3048),
+-- 
+1.7.8.6
