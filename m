@@ -1,18 +1,18 @@
-From: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH] ALSA: pxa2xx: fix ac97 cold reset for
-	pxa27x
-Date: Fri, 28 Dec 2012 18:26:26 -0800
-Message-ID: <50DE54D2.9040608@newsguy.com>
-References: <1356707815-3235-1-git-send-email-mikedunn@newsguy.com>
- <87wqw2rq92.fsf@free.fr>
+From: oeai <oeai@ya.ru>
+Subject: Re: EMU-1212m "no Audiodock - no firmware" patch
+Date: Sat, 29 Dec 2012 06:45:40 +0400
+Message-ID: <50DE5954.4020101@ya.ru>
+References: <50AD5347.5040003@ya.ru> <s5h8v9tr1zu.wl%tiwai@suse.de>
+Reply-To: oeai@ya.ru
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.newsguy.com (smtp.newsguy.com [74.209.136.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F0C32615D7
- for <alsa-devel@alsa-project.org>; Sat, 29 Dec 2012 03:26:02 +0100 (CET)
-In-Reply-To: <87wqw2rq92.fsf@free.fr>
+Received: from forward12.mail.yandex.net (forward12.mail.yandex.net
+ [95.108.130.94])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7907B2615D5
+ for <alsa-devel@alsa-project.org>; Sat, 29 Dec 2012 03:45:43 +0100 (CET)
+In-Reply-To: <s5h8v9tr1zu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <james.dutton@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/28/2012 10:22 AM, Robert Jarzmik wrote:
-> Mike Dunn <mikedunn@newsguy.com> writes:
-> 
->> Currently, ac97 reset is broken on PXA27x.  Through trial-and-error (the pxa270
->> developer's manual is mostly incoherent on the topic of ac97 reset), I fixed it
->> by setting the WARM_RST bit in the GCR register at the end of the cold reset,
->> and then skipping the warm reset if the link is already up and running.
->>
->> It appears that setting the WARM_RST bit is a necessary final step during cold
->> reset.  I think that the PXA25x and PXA3xx may currently be working correctly
->> because WARM_RST is set within the warm reset routine, and the codec drivers
->> always follow a cold reset with a warm reset during their initialization. so
->> this combination effectively completes a cold reset.  This doesn't work on the
->> PXA27x because its warm reset routine contains additional code for working
->> around a hardware bug in the warm reset sequence, which causes the reset
->> sequence to fail.  I only have a PXA27x platform for testing, so this patch only
->> affects the PXA27x.
-> 
-> Hi Mike,
-> 
-> I'm glad you take over that burden too :)
+aLoha!
+Sorry, being so long, i was doing some other things.
+
+i've downloaded the sound.git and somehow just compiled right what i 
+needed and changed the code.
+
+i've changed the snd_emu10k1_emu1010_init function so it is now loading 
+regs from other function load_patches
+     because of that a lot of space has changed, but it is simplier to 
+just set to default right now
+     and the error in the init function was that it was not calling the 
+load_firmware function in the end
+     that's the real problem
+     and a lot of changes that in the load_patches are just to leave 
+audiodock outside if it is not presented
+     tried the resume function - it's not working for emu1212 need to 
+reload alsa
+     i thought of calling dev_create or dev_free but not sure how to use 
+it free_emu is hanging up on wake_up
+     yeah i've done the exclamation !EMU_HANA_OPTION_DOCK_OFFLINE in 
+firmware_thread and added "else if" to avoid occasional error
+     well it is Loading!!!
+     and looks like no loops occuring.
+
+in the bottom there's a emufx.c patch
+Disabled most of unuseful sliders for emu_model cards
 
 
-No one else wants to work on this ancient hardware.  It's all Kirkwood this and
-Omap that :)  Want to get the kernel fully functional on this old but still
-widely available device.
 
-
-> If you've tested that and if it work, that's great news. I'll test it also to
-> crosscheck.
-
-
-Thanks.  I'd really appreciate that.  Yes, it works for me.
-
-
-> 
-> This topic was discussed several years ago here :
-> http://www.spinics.net/lists/alsa-devel/msg12327.html
-> 
-> I think Mark has a much better view on the silicon defect, he will be of much
-> more help than me.
-
-
-Thanks for the pointer.  I should have done some searches on this myself.  I
-would have if I was hitting a wall, but I chanced upon the solution pretty quickly.
-
-Mike
+-- 
+OEAI
