@@ -1,64 +1,166 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] ALSA: pxa2xx: fix ac97 cold reset for
-	pxa27x
-Date: Sun, 30 Dec 2012 14:12:43 +0100
-Message-ID: <87han3smyc.fsf@free.fr>
-References: <1356707815-3235-1-git-send-email-mikedunn@newsguy.com>
- <87wqw2rq92.fsf@free.fr> <50DE54D2.9040608@newsguy.com>
+From: Kim Twain <kimtwain0@gmail.com>
+Subject: Bug#696321: some more information
+Date: Sun, 30 Dec 2012 20:56:26 +0100
+Message-ID: <CAONW93HZqc8HYWvNFVPDDFi2khe2-7pYLwm49rHJWMV5R5umdg@mail.gmail.com>
+Reply-To: Kim Twain <kimtwain0@gmail.com>, 696321@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id E82FC26168C
- for <alsa-devel@alsa-project.org>; Sun, 30 Dec 2012 14:12:55 +0100 (CET)
-In-Reply-To: <50DE54D2.9040608@newsguy.com> (Mike Dunn's message of "Fri, 28
- Dec 2012 18:26:26 -0800")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Dunn <mikedunn@newsguy.com>
-Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>
+Content-Type: multipart/mixed; boundary=14dae93410d3c164d704d2174ac4
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.696321.B696321.13568973939374@bugs.debian.org>
+List-URL: <http://lists.debian.org/debian-bugs-dist/>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: 696321@bugs.debian.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mike Dunn <mikedunn@newsguy.com> writes:
+--14dae93410d3c164d704d2174ac4
+Content-Type: multipart/alternative; boundary=14dae93410d3c164c704d2174ac2
 
-> On 12/28/2012 10:22 AM, Robert Jarzmik wrote:
->> Mike Dunn <mikedunn@newsguy.com> writes:
->> 
->>> Currently, ac97 reset is broken on PXA27x.  Through trial-and-error (the pxa270
->>> developer's manual is mostly incoherent on the topic of ac97 reset), I fixed it
->>> by setting the WARM_RST bit in the GCR register at the end of the cold reset,
->>> and then skipping the warm reset if the link is already up and running.
->>>
->>> It appears that setting the WARM_RST bit is a necessary final step during cold
->>> reset.  I think that the PXA25x and PXA3xx may currently be working correctly
->>> because WARM_RST is set within the warm reset routine, and the codec drivers
->>> always follow a cold reset with a warm reset during their initialization. so
->>> this combination effectively completes a cold reset.  This doesn't work on the
->>> PXA27x because its warm reset routine contains additional code for working
->>> around a hardware bug in the warm reset sequence, which causes the reset
->>> sequence to fail.  I only have a PXA27x platform for testing, so this patch only
->>> affects the PXA27x.
->> If you've tested that and if it work, that's great news. I'll test it also to
->> crosscheck.
->
->
-> Thanks.  I'd really appreciate that.  Yes, it works for me.
+--14dae93410d3c164c704d2174ac2
+Content-Type: text/plain; charset=ISO-8859-1
 
-Ok, I tested it, through a suspend/resume cycle with a music played, and it
-works, and the patch looks correct to me. So :
+I managed to save an incomplete vmcore (I don't have enough free space on
+/), and I have some more information:
 
-Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Reviewed-by: Robert Jarzmik <robert.jarzmik@free.fr>
+[ 1370.452329] usb 2-1.2: USB disconnect, device number 4
+[ 1370.458255] BUG: unable to handle kernel NULL pointer dereference at
+00000000000000c0
+[ 1370.460213] IP: [<ffffffffa0739aae>] snd_complete_urb+0x22/0x9a
+[snd_usb_audio]
+[ 1370.463136] PGD 0
+[ 1370.465996] Oops: 0000 [#1] SMP
+[ 1370.468878] CPU 1
 
-Cheers.
+--14dae93410d3c164c704d2174ac2
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Robert
+<div id=3D":br" class=3D"ii gt adP adO" style=3D"font-size:13px;direction:l=
+tr;margin:5px 15px 0px 0px;padding-bottom:5px;color:rgb(34,34,34);font-fami=
+ly:arial,sans-serif;background-color:rgb(255,255,255)"><div id=3D":bs">I ma=
+naged to save an incomplete vmcore (I don&#39;t have enough free space on /=
+), and I have some more information:=A0<div>
+<br></div><div><div>[ 1370.452329] usb 2-1.2: USB disconnect, device number=
+ 4</div><div>[ 1370.458255] BUG: unable to handle kernel NULL pointer deref=
+erence at 00000000000000c0</div><div>[ 1370.460213] IP: [&lt;ffffffffa0739a=
+ae&gt;] snd_complete_urb+0x22/0x9a [snd_usb_audio]</div>
+<div>[ 1370.463136] PGD 0=A0</div><div>[ 1370.465996] Oops: 0000 [#1] SMP=
+=A0</div><div>[ 1370.468878] CPU 1</div></div><div><br></div><div class=3D"=
+yj6qo"></div></div></div><div id=3D":bg" class=3D"hq gt" style=3D"margin:15=
+px 0px;clear:both;font-size:13px;color:rgb(34,34,34);font-family:arial,sans=
+-serif;background-color:rgb(255,255,255)">
+</div>
+
+--14dae93410d3c164c704d2174ac2--
+
+--14dae93410d3c164d704d2174ac4
+Content-Type: application/octet-stream; name=dmesg
+Content-Disposition: attachment; filename=dmesg
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hbclnfnt0
+
+WyAxMzQzLjAxODQwOF0gdXNiIDItMS4yOiBuZXcgZnVsbC1zcGVlZCBVU0IgZGV2aWNlIG51bWJl
+ciA0IHVzaW5nIGVoY2lfaGNkClsgMTM0My4xMTUyMjddIHVzYiAyLTEuMjogTmV3IFVTQiBkZXZp
+Y2UgZm91bmQsIGlkVmVuZG9yPTA0NmQsIGlkUHJvZHVjdD0wYTA3ClsgMTM0My4xMTUyMzJdIHVz
+YiAyLTEuMjogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTEsIFByb2R1Y3Q9MiwgU2VyaWFs
+TnVtYmVyPTAKWyAxMzQzLjExNTIzNl0gdXNiIDItMS4yOiBQcm9kdWN0OiBaLTEwIFVTQiBTcGVh
+a2VyClsgMTM0My4xMTUyMzldIHVzYiAyLTEuMjogTWFudWZhY3R1cmVyOiBMb2dpdGVjaApbIDEz
+NDMuMTYyNTAxXSBnZW5lcmljLXVzYiAwMDAzOjA0NkQ6MEEwNy4wMDAxOiBoaWRkZXYwLGhpZHJh
+dzA6IFVTQiBISUQgdjEuMTAgRGV2aWNlIFtMb2dpdGVjaCBaLTEwIFVTQiBTcGVha2VyXSBvbiB1
+c2ItMDAwMDowMDoxZC4wLTEuMi9pbnB1dDIKWyAxMzQzLjE2NDE4M10gaW5wdXQ6IExvZ2l0ZWNo
+IFotMTAgVVNCIFNwZWFrZXIgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFkLjAvdXNi
+Mi8yLTEvMi0xLjIvMi0xLjI6MS4zL2lucHV0L2lucHV0MTIKWyAxMzQzLjE2NDUyNl0gZ2VuZXJp
+Yy11c2IgMDAwMzowNDZEOjBBMDcuMDAwMjogaW5wdXQsaGlkcmF3MTogVVNCIEhJRCB2MS4xMCBE
+ZXZpY2UgW0xvZ2l0ZWNoIFotMTAgVVNCIFNwZWFrZXJdIG9uIHVzYi0wMDAwOjAwOjFkLjAtMS4y
+L2lucHV0MwpbIDEzNDMuMTY0NTg2XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2Ug
+ZHJpdmVyIHVzYmhpZApbIDEzNDMuMTY0NTkzXSB1c2JoaWQ6IFVTQiBISUQgY29yZSBkcml2ZXIK
+WyAxMzQzLjE3OTkzMl0gdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciBz
+bmQtdXNiLWF1ZGlvClsgMTM3MC40NTIzMjldIHVzYiAyLTEuMjogVVNCIGRpc2Nvbm5lY3QsIGRl
+dmljZSBudW1iZXIgNApbIDEzNzAuNDU4MjU1XSBCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVs
+IE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCAwMDAwMDAwMDAwMDAwMGMwClsgMTM3MC40NjAy
+MTNdIElQOiBbPGZmZmZmZmZmYTA3MzlhYWU+XSBzbmRfY29tcGxldGVfdXJiKzB4MjIvMHg5YSBb
+c25kX3VzYl9hdWRpb10KWyAxMzcwLjQ2MzEzNl0gUEdEIDAgClsgMTM3MC40NjU5OTZdIE9vcHM6
+IDAwMDAgWyMxXSBTTVAgClsgMTM3MC40Njg4NzhdIENQVSAxIApbIDEzNzAuNDY4OTA5XSBNb2R1
+bGVzIGxpbmtlZCBpbjogc25kX3VzYl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3NlcV9taWRp
+IHNuZF9zZXFfbWlkaV9ldmVudCBzbmRfcmF3bWlkaSB1c2JoaWQgaGlkIHVzYl9zdG9yYWdlIGNy
+eXB0ZCBhZXNfeDg2XzY0IGFlc19nZW5lcmljIGJpbmZtdF9taXNjIHVpbnB1dCBwYXJwb3J0X3Bj
+IHBwZGV2IGxwIHBhcnBvcnQgc25kX2hydGltZXIgcGNpX3N0dWIgdmJveHBjaShPKSB2Ym94bmV0
+YWRwKE8pIHZib3huZXRmbHQoTykgdmJveGRydihPKSBzbmRfaGRhX2NvZGVjX2hkbWkgc25kX2hk
+YV9jb2RlY19jb25leGFudCBqb3lkZXYgdXZjdmlkZW8gdmlkZW9kZXYgdjRsMl9jb21wYXRfaW9j
+dGwzMiBtZWRpYSBidHVzYiBibHVldG9vdGgga3ZtX2ludGVsIGt2bSBhcmM0IHNuZF9oZGFfaW50
+ZWwgc25kX2hkYV9jb2RlYyBzbmRfaHdkZXAgc25kX3BjbSBzbmRfcGFnZV9hbGxvYyBzbmRfc2Vx
+IHNuZF9zZXFfZGV2aWNlIHNuZF90aW1lciBjb3JldGVtcCBwc21vdXNlIGF0aDlrIHBjc3BrciBp
+OTE1IGlUQ09fd2R0IGF0aDlrX2NvbW1vbiBzZXJpb19yYXcgYXRoOWtfaHcgc25kIGV2ZGV2IGky
+Y19pODAxIGlUQ09fdmVuZG9yX3N1cHBvcnQgam1iMzh4X21zIGludGVsX2lwcyBtZW1zdGljayBh
+dGggbWFjODAyMTEgZHJtX2ttc19oZWxwZXIgZHJtIGNmZzgwMjExIGkyY19hbGdvX2JpdCBzb3Vu
+ZGNvcmUgaTJjX2NvcmUgYmF0dGVyeSBhc3VzX2xhcHRvcCBzcGFyc2Vfa2V5bWFwIGFjIHBvd2Vy
+X3N1cHBseSByZmtpbGwgaW5wdXRfcG9sbGRldiBhY3BpX2NwdWZyZXEgbXBlcmYgdmlkZW8gYnV0
+dG9uIHByb2Nlc3NvciBsb29wIGF1dG9mczQgZXh0NCBjcmMxNiBqYmQyIG1iY2FjaGUgc2cgc3Jf
+bW9kIHNkX21vZCBjZHJvbSBjcmNfdDEwZGlmIGNyYzMyY19pbnRlbCBhaGNpIGxpYmFoY2kgZWhj
+aV9oY2QgbGliYXRhIHNjc2lfbW9kIGptZSBtaWkgdXNiY29yZSBzZGhjaV9wY2kgc2RoY2kgbW1j
+X2NvcmUgdXNiX2NvbW1vbiB0aGVybWFsIHRoZXJtYWxfc3lzIFtsYXN0IHVubG9hZGVkOiBzY3Np
+X3dhaXRfc2Nhbl0KWyAxMzcwLjQ5NjA3M10gClsgMTM3MC40OTk2MzhdIFBpZDogMCwgY29tbTog
+c3dhcHBlci8xIFRhaW50ZWQ6IEcgICAgICAgICAgIE8gMy4yLjAtNC1hbWQ2NCAjMSBEZWJpYW4g
+My4yLjM1LTIgQVNVU1RlSyBDb21wdXRlciBJbmMuIEs1MkYvSzUyRgpbIDEzNzAuNTAzMzk4XSBS
+SVA6IDAwMTA6WzxmZmZmZmZmZmEwNzM5YWFlPl0gIFs8ZmZmZmZmZmZhMDczOWFhZT5dIHNuZF9j
+b21wbGV0ZV91cmIrMHgyMi8weDlhIFtzbmRfdXNiX2F1ZGlvXQpbIDEzNzAuNTA3MTg0XSBSU1A6
+IDAwMTg6ZmZmZjg4MDIzYmM0M2Q3OCAgRUZMQUdTOiAwMDAxMDAwMgpbIDEzNzAuNTEwOTM0XSBS
+QVg6IDAwMDAwMDAwMDAwMDAwMDYgUkJYOiBmZmZmODgwMjJmMmEwODE4IFJDWDogZmZmZjg4MDIy
+ZjI3MTQyMApbIDEzNzAuNTE0NzAxXSBSRFg6IGZmZmY4ODAyMmYyNzFlMDAgUlNJOiAwMDAwMDAw
+MDAwMDAwMjAwIFJESTogZmZmZjg4MDIyZjI3MWUwMApbIDEzNzAuNTE4NDc2XSBSQlA6IGZmZmY4
+ODAyMmYyNzFlMDAgUjA4OiAwMDAwMDAwMDAwMDAwMjAwIFIwOTogZmZmZjg4MDIzMTA2NzFjMApb
+IDEzNzAuNTIyMjEyXSBSMTA6IGZmZmY4ODAyMmYyY2UxYTAgUjExOiBmZmZmODgwMjMxMDY3MWMw
+IFIxMjogMDAwMDAwMDAwMDAwMDAwMApbIDEzNzAuNTI1OTIzXSBSMTM6IGZmZmY4ODAyMmYyYTA4
+ZDggUjE0OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogZmZmZjg4MDAzNzAwNmMxYwpbIDEzNzAuNTI5
+NjE2XSBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjg4MDIzYmM0MDAwMCgwMDAw
+KSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwClsgMTM3MC41MzMzNDNdIENTOiAgMDAxMCBEUzogMDAw
+MCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwM2IKWyAxMzcwLjUzNzExMV0gQ1IyOiAwMDAw
+MDAwMDAwMDAwMGMwIENSMzogMDAwMDAwMDAwMTYwNTAwMCBDUjQ6IDAwMDAwMDAwMDAwMDA2ZTAK
+WyAxMzcwLjU0MDkwNF0gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAw
+MCBEUjI6IDAwMDAwMDAwMDAwMDAwMDAKWyAxMzcwLjU0NDY2Ml0gRFIzOiAwMDAwMDAwMDAwMDAw
+MDAwIERSNjogMDAwMDAwMDBmZmZmMGZmMCBEUjc6IDAwMDAwMDAwMDAwMDA0MDAKWyAxMzcwLjU0
+ODM3OV0gUHJvY2VzcyBzd2FwcGVyLzEgKHBpZDogMCwgdGhyZWFkaW5mbyBmZmZmODgwMjMyZGEy
+MDAwLCB0YXNrIGZmZmY4ODAyMzJkNzYwYzApClsgMTM3MC41NTIxMjddIFN0YWNrOgpbIDEzNzAu
+NTU1ODEzXSAgZmZmZjg4MDIyZjI3MWUwMCBmZmZmODgwMjJmMjcxZTAwIDAwMDAwMDAwZmZmZmZm
+OTQgZmZmZjg4MDIyZjJjZTAwMApbIDEzNzAuNTU5NjA3XSAgZmZmZjg4MDIyZjJjZTFiYyBmZmZm
+ZmZmZmEwMDk1NWFlIGZmZmY4ODAyMmYyY2UxYTAgZmZmZjg4MDIyZjI3MWUwMApbIDEzNzAuNTYz
+MzczXSAgZmZmZjg4MDIyZjJjZTAwMCBmZmZmZmZmZmEwMGZhZDczIGZmZmY4ODAyMmYyY2UxYTAg
+ZmZmZjg4MDAzNzA4NDU0MApbIDEzNzAuNTY3MTIwXSBDYWxsIFRyYWNlOgpbIDEzNzAuNTcwODA2
+XSAgPElSUT4gClsgMTM3MC41NzQ0ODRdICBbPGZmZmZmZmZmYTAwOTU1YWU+XSA/IHVzYl9oY2Rf
+Z2l2ZWJhY2tfdXJiKzB4NzYvMHhhYSBbdXNiY29yZV0KWyAxMzcwLjU3ODI1Nl0gIFs8ZmZmZmZm
+ZmZhMDBmYWQ3Mz5dID8gZWhjaV91cmJfZG9uZSsweDZiLzB4N2IgW2VoY2lfaGNkXQpbIDEzNzAu
+NTgyMDIzXSAgWzxmZmZmZmZmZmEwMGZjY2IxPl0gPyBlaGNpX3dvcmsrMHg1OTkvMHg3M2UgW2Vo
+Y2lfaGNkXQpbIDEzNzAuNTg1NzczXSAgWzxmZmZmZmZmZmEwMGZkM2EyPl0gPyBlaGNpX2lycSsw
+eDFjNC8weDFlZSBbZWhjaV9oY2RdClsgMTM3MC41ODk1MTBdICBbPGZmZmZmZmZmYTAwOTRmOGM+
+XSA/IHVzYl9oY2RfaXJxKzB4MzcvMHg2YSBbdXNiY29yZV0KWyAxMzcwLjU5MzI0MF0gIFs8ZmZm
+ZmZmZmY4MTA5MDlmNT5dID8gaGFuZGxlX2lycV9ldmVudF9wZXJjcHUrMHg1MC8weDE3ZApbIDEz
+NzAuNTk2OTk3XSAgWzxmZmZmZmZmZjgxMDRjMTA5Pl0gPyBfX2RvX3NvZnRpcnErMHgxM2UvMHgx
+NzcKWyAxMzcwLjYwMDc0OF0gIFs8ZmZmZmZmZmY4MTA5MGI1Nj5dID8gaGFuZGxlX2lycV9ldmVu
+dCsweDM0LzB4NTIKWyAxMzcwLjYwNDUwM10gIFs8ZmZmZmZmZmY4MTA2M2JmOD5dID8gc2NoZWRf
+Y2xvY2tfaWRsZV93YWtldXBfZXZlbnQrMHhmLzB4MTcKWyAxMzcwLjYwODI4OF0gIFs8ZmZmZmZm
+ZmY4MTA5MmViOT5dID8gaGFuZGxlX2Zhc3Rlb2lfaXJxKzB4N2MvMHhhZgpbIDEzNzAuNjEyMDc1
+XSAgWzxmZmZmZmZmZjgxMDBmODlkPl0gPyBoYW5kbGVfaXJxKzB4MWQvMHgyMQpbIDEzNzAuNjE1
+ODQ2XSAgWzxmZmZmZmZmZjgxMDBmNWNkPl0gPyBkb19JUlErMHg0Mi8weDk4ClsgMTM3MC42MTk2
+MTBdICBbPGZmZmZmZmZmODEzNGQzMmU+XSA/IGNvbW1vbl9pbnRlcnJ1cHQrMHg2ZS8weDZlClsg
+MTM3MC42MjMzNDNdICA8RU9JPiAKWyAxMzcwLjYyNzAxOV0gIFs8ZmZmZmZmZmY4MTFlZDIwNz5d
+ID8gaW50ZWxfaWRsZSsweGVhLzB4MTE4ClsgMTM3MC42MzA2NzBdICBbPGZmZmZmZmZmODExZWQx
+ZTY+XSA/IGludGVsX2lkbGUrMHhjOS8weDExOApbIDEzNzAuNjM0MjM4XSAgWzxmZmZmZmZmZjgx
+MjZlNjlmPl0gPyBjcHVpZGxlX2lkbGVfY2FsbCsweGVjLzB4MTc5ClsgMTM3MC42Mzc3NzhdICBb
+PGZmZmZmZmZmODEwMGQyNDM+XSA/IGNwdV9pZGxlKzB4YTUvMHhmMgpbIDEzNzAuNjQxMzIzXSAg
+WzxmZmZmZmZmZjgxMDcwYWI2Pl0gPyBhcmNoX2xvY2FsX2lycV9yZXN0b3JlKzB4Mi8weDgKWyAx
+MzcwLjY0NDg5MV0gIFs8ZmZmZmZmZmY4MTMzZjMxZD5dID8gc3RhcnRfc2Vjb25kYXJ5KzB4MWQ1
+LzB4MWRiClsgMTM3MC42NDgzNDNdIENvZGU6IGZmIDVlIDViIDVkIDQxIDVjIDQxIDVkIGMzIDQx
+IDU1IDQxIDU0IDU1IDQ4IDg5IGZkIDUzIDUzIDRjIDhiIGFmIGIwIDAwIDAwIDAwIDQ5IDhiIDVk
+IDEwIGY2IDQzIDdjIDAxIDRjIDhiIDYzIDEwIDc0IDFjIDQ4IDg5IGZhIDw0OT4gOGIgYjQgMjQg
+YzAgMDAgMDAgMDAgNDggODkgZGYgZmYgOTMgODAgMDIgMDAgMDAgODkgYzIgMzEgYzAgClsgMTM3
+MC42NTU5MTZdIFJJUCAgWzxmZmZmZmZmZmEwNzM5YWFlPl0gc25kX2NvbXBsZXRlX3VyYisweDIy
+LzB4OWEgW3NuZF91c2JfYXVkaW9dClsgMTM3MC42NTk0MDhdICBSU1AgPGZmZmY4ODAyM2JjNDNk
+Nzg+ClsgMTM3MC42NjI3NDNdIENSMjogMDAwMDAwMDAwMDAwMDBjMAogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA==
+--14dae93410d3c164d704d2174ac4--
