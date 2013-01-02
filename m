@@ -1,99 +1,54 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: pxa2xx-ac97: fix oops when
-	codec_driver probe runs
-Date: Wed, 2 Jan 2013 10:49:39 +0000
-Message-ID: <20130102104939.GA4627@opensource.wolfsonmicro.com>
-References: <1356704275-3098-1-git-send-email-mikedunn@newsguy.com>
+Subject: Re: [PATCH 1/8] ASoC: twl4030: Correct the support for Voice port
+Date: Wed, 2 Jan 2013 13:04:52 +0000
+Message-ID: <20130102130451.GB4627@opensource.wolfsonmicro.com>
+References: <1356951109-4286-1-git-send-email-peter.ujfalusi@ti.com>
+ <1356951109-4286-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4339449452570810590=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 81CDD2608E7
- for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2013 11:49:41 +0100 (CET)
-In-Reply-To: <1356704275-3098-1-git-send-email-mikedunn@newsguy.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Dunn <mikedunn@newsguy.com>
-Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Tomas Cech <sleep_walker@suse.cz>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4bRzO86E/ozDv8r1"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1356951109-4286-2-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, NeilBrown <neilb@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4339449452570810590==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-
-
---C7zPtVaVf+AK4Oqc
+--4bRzO86E/ozDv8r1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 28, 2012 at 06:17:55AM -0800, Mike Dunn wrote:
+On Mon, Dec 31, 2012 at 11:51:42AM +0100, Peter Ujfalusi wrote:
+> In order to be able to use the Voice port of twl4030 three bits need to be
+> handled in VOICE_IF register:
+> VIF_EN: to enable the voice port (needed for both playback and capture)
+> VIF_DIN_EN: Need to be enabled for playback only (input to the codec)
+> VIF_DOUT_EN: Need to be enabled for capture only (output from codec)
 
-> -	/* Punt most of the init to the SoC probe; we may need the machine
-> -	 * driver to do interesting things with the clocking to get us up
-> -	 * and running.
-> -	 */
-> -	return snd_soc_register_dais(&pdev->dev, pxa_ac97_dai_driver,
-> -			ARRAY_SIZE(pxa_ac97_dai_driver));
-> +	ret = snd_soc_register_dais(&pdev->dev, pxa_ac97_dai_driver,
-> +				    ARRAY_SIZE(pxa_ac97_dai_driver));
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "snd_soc_register_dais failed with %d\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = pxa2xx_ac97_hw_probe(pdev);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "pxa2xx_ac97_hw_probe failed with %d\n",
-> +			ret);
-> +		snd_soc_unregister_dais(&pdev->dev,
-> +					ARRAY_SIZE(pxa_ac97_dai_driver));
-> +	}
-> +	return ret;
+Applied all, thanks.
 
-We should be doing all resource acquisition before registering the DAIs,
-if anything this patch introduces the potential for additional issues
-with the clocks not having been acquired before we try to use them in
-the sound card.
-
---C7zPtVaVf+AK4Oqc
+--4bRzO86E/ozDv8r1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ5BC7AAoJELSic+t+oim9t5QP/2KedskYIpElb0TMfaSSXUyE
-rOqY32RW1DS5JO216qIBs5bcXQpUBmjNPsTW3ktt/fnNsdwN7QKlvf6QS+CwQN5/
-U87+gAGtbEWldO4tjeRRBEAUQesSIYWHCjHZ0aPcusKVgBPweiFCdoCCiKgnLlPE
-SFrV8HOnDNrydbU1WPTsWn2IskizHclXUP91l7BiyKIty3WICzQlNoXYHMKytwD2
-Qi5Dzwks3bCG03qsY5Br5LMkNAMXhC3YyvLGlhVRftqtWdQBOjnZBjqw5B4X03J3
-ojM+ymasE3HwiDwKl0DnAoBs9WEL3VsTN9OYb3frtqKxiW6SZ2hqELjgr/ZNkotq
-cFHX8DbyBhrGW09KKnnoPtLImcRbCBsliBk4u+6fEtbSIank5FRR/mrJFEAAdk2/
-0WJ8q9PxQ6bdxUqakUS6glrvBPo6cVl9PHN/gTI8KVjyYgVBfGEkjPnvLFKn1i1m
-sm1QKVkrirR2mBbvfJZzOn7D3p2ehsOiWhEHvcnxMMVGmZhqDbjsEEklCRZMZT2W
-398ETYfm1sXHVmQR+ZezDmfYGwFG2w9FKvj5onqgXuJf2tlunKOZLDmpwL1opuoq
-d80t7gkEx3c7e1WDvCE2iDSlgQHhNsc7ZOHbESRyFWVNgYBpq376iiJyvgPGdklW
-Ii74WCvdmfe1VX9l6yA5
-=Q8Pg
+iQIcBAEBAgAGBQJQ5DBlAAoJELSic+t+oim9vTEP/Rm8pXQExp8yZGWNANtg84CZ
+v738xn+pykwtaCD+bkxYqYtbP5sQBciBLPgUa5aU6xQXiLQ+2L9UJlAljR7BfBHt
+Aj9AgLa/HR2ez0F+yMj6nFspU7MIuzatQHlE9W98GliY+akH/WyQ1QhMvGhql9N/
+9wTpDUvFOt0xibJ5G29KqH/eeEVDqlgERBJTMmbt7n52gsEDBI5sHXB8tYfvoj1p
+1PLUPO3XznKoqez4uCTKGoONAbP6mK1OaV/ysu9Rx1+jTRpxMqWR4ljo1FvfEDo9
+Lgsr7h4235sttaUsmmcKBvr04rDE8ag4RnbES2L/ppoo6Um0ViotLAW+hc0yjtts
+PVDrK9cuVr3bPYJvirUJwDwdf2MWvlSbgxRMrH2XSDT3VWOEIQfsXquGtLeSS6oi
+HIyx8G93a61oTTnw6BygRlqVJUU/4fIJdisA4ZJlKadKAO7nk2I3DDSEGXsYWIQp
+dHKorUdyFK//8BAXEFwkJhHQXdtisgZ0ZqDwjhBD1JNqSJLp6/tupH9wlPUZddTm
+Q+k/XZ3zTc8efW3Hz8mmh/4j2lOq+Fy6DmM2FICspsewauAFMRHiqqzIQ+w+EWrZ
+AXEMh/1YBV7lomW7C9w87C5tPWwnj+KnW0ion965FvohH/O7YtE4RA5BZits/yhb
+slowedvu7/abnvrg16N9
+=U65t
 -----END PGP SIGNATURE-----
 
---C7zPtVaVf+AK4Oqc--
-
---===============4339449452570810590==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4339449452570810590==--
+--4bRzO86E/ozDv8r1--
