@@ -1,68 +1,115 @@
-From: Vincent Blut <vincent.debian@free.fr>
-Subject: Re: [3.6.9 -> 3.7.1 regression] sound: snd_hda_intel codec probing
- issue?
-Date: Thu, 03 Jan 2013 14:39:42 +0100
-Message-ID: <1357220382.3737.5.camel@lamella>
-References: <1356704740.3953.26.camel@lamella>
-	 <s5hvcber5cz.wl%tiwai@suse.de>
+From: Mike Dunn <mikedunn@newsguy.com>
+Subject: [PATCH v2] ASoC: pxa2xx-ac97: fix oops when codec_driver probe runs
+Date: Thu,  3 Jan 2013 06:40:39 -0800
+Message-ID: <1357224039-9133-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hvcber5cz.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Marek Vasut <marex@denx.de>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Mike Dunn <mikedunn@newsguy.com>, Tomas Cech <sleep_walker@suse.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Le jeudi 03 janvier 2013 =C3=A0 10:19 +0100, Takashi Iwai a =C3=A9crit =
-:
-> At Fri, 28 Dec 2012 15:25:40 +0100,
-> Vincent Blut wrote:
-> >=20
-> > Hi,
-> >=20
-> > Since I updated to Linux 3.7.1, listening to some audio/video bits
-> > frequently cause the following:
-> >=20
-> > [ 7896.166946] hda-intel: azx_get_response timeout, switching to po=
-lling
-> > mode: last cmd=3D0x020c0000
-> > [ 7897.173444] hda-intel: No response from codec, disabling MSI: la=
-st
-> > cmd=3D0x020c0000
-> > [ 7898.179932] hda_intel: azx_get_response timeout, switching to
-> > single_cmd mode: last cmd=3D0x020c0000
-> > [ 7898.179983] hda-codec: out of range cmd 0:0:20:400:fffff7ff
-> > [ 9445.034371] plugin-containe[5873]: segfault at 7f44bb95e639 ip
-> > 00007f44e454bca0 sp 00007f44c91165f8 error 4 in
-> > libc-2.13.so[7f44e442c000+180000]
-> >=20
-> > It seems to be a codec probing failure (?). This is really fatal be=
-cause
-> > the sound become very choppy and can't recover until I reboot.
-> > I'll try to play with 'probe_mask' kernel parameter to see if I can
-> > narrow the correct codec slots!
-> >=20
-> > By the way I can't reproduce this on 3.6.9, so is there something t=
-hat
-> > changed in this area in 3.7.1?
->=20
-> If it's new in 3.7, this could be a regression by runtime D3.
-> Try to pass power_save_controller=3D0 option to snd-hda-intel module
-> (or change it via sysfs dynamically).
->=20
->=20
-> thanks,
->=20
-> Takashi
+Change log:
+v2: pxa2xx_ac97_hw_probe() is called *before* snd_soc_register_dais(), and
+    likewise pxa2xx_ac97_hw_remove() is called after snd_soc_unregister_dais().
+    Thanks much Mark.
 
-Hi,
+This patch fixes a kernel oops that occurs when the snd_soc_codec_driver probe
+function runs.  The exception occurs when the codec calls soc_ac97_ops.reset().
+The pxa2xx-ac97's clocks have not been initialized at this point, but the cpu's
+reset function (pxa_ac97_cold_pxa27x()) expects them to be, resulting in a NULL
+pointer dereference in the pxa's clk_enable().
 
-That makes sense, however I can't reliably reproduce this so I'll repor=
-t
-back later.
+The pxa2xx-ac97's clocks are initialized in pxa2xx_ac97_hw_probe().  To ensure
+that the clocks are initialized when the codec_driver probe runs, the calls to
+pxa2xx_ac97_hw_{probe,remove}() are moved from the cpu's dai_driver probe/remove
+functions to those of its platform_driver.  This is necessary because
+snd_soc_instantiate_card() always calls the codec_driver probe before any of the
+dai_drivers' probes.
 
-Thanks and happy new year!
+This change leaves nothing in the cpu's dai_driver probe/remove functions, so
+those functions are eliminated.
 
-Vincent
+Tested on the pxa27x; palmtreo680 machine using the wm9712 codec.
+
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ sound/soc/pxa/pxa2xx-ac97.c |   27 ++++++++++-----------------
+ 1 files changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 4b0a009..ba04f49 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -104,17 +104,6 @@ static int pxa2xx_ac97_resume(struct snd_soc_dai *dai)
+ #define pxa2xx_ac97_resume	NULL
+ #endif
+ 
+-static int pxa2xx_ac97_probe(struct snd_soc_dai *dai)
+-{
+-	return pxa2xx_ac97_hw_probe(to_platform_device(dai->dev));
+-}
+-
+-static int pxa2xx_ac97_remove(struct snd_soc_dai *dai)
+-{
+-	pxa2xx_ac97_hw_remove(to_platform_device(dai->dev));
+-	return 0;
+-}
+-
+ static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *cpu_dai)
+@@ -184,8 +173,6 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
+ {
+ 	.name = "pxa2xx-ac97",
+ 	.ac97_control = 1,
+-	.probe = pxa2xx_ac97_probe,
+-	.remove = pxa2xx_ac97_remove,
+ 	.suspend = pxa2xx_ac97_suspend,
+ 	.resume = pxa2xx_ac97_resume,
+ 	.playback = {
+@@ -236,15 +223,20 @@ EXPORT_SYMBOL_GPL(soc_ac97_ops);
+ 
+ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ {
++	int ret;
++
+ 	if (pdev->id != -1) {
+ 		dev_err(&pdev->dev, "PXA2xx has only one AC97 port.\n");
+ 		return -ENXIO;
+ 	}
+ 
+-	/* Punt most of the init to the SoC probe; we may need the machine
+-	 * driver to do interesting things with the clocking to get us up
+-	 * and running.
+-	 */
++	ret = pxa2xx_ac97_hw_probe(pdev);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "pxa2xx_ac97_hw_probe failed with %d\n",
++			ret);
++		return ret;
++	}
++
+ 	return snd_soc_register_dais(&pdev->dev, pxa_ac97_dai_driver,
+ 			ARRAY_SIZE(pxa_ac97_dai_driver));
+ }
+@@ -252,6 +244,7 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(pxa_ac97_dai_driver));
++	pxa2xx_ac97_hw_remove(pdev);
+ 	return 0;
+ }
+ 
+-- 
+1.7.8.6
