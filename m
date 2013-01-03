@@ -1,71 +1,91 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] Revert "ALSA: hda - Shut up pins at
- power-saving mode with Conexnat codecs"
-Date: Thu, 03 Jan 2013 17:04:15 +0100
-Message-ID: <50E5ABFF.8040207@canonical.com>
-References: <1355906687-2881-1-git-send-email-david.henningsson@canonical.com>
- <s5hobhqtk50.wl%tiwai@suse.de> <50D19846.8060902@canonical.com>
- <s5hhanitjha.wl%tiwai@suse.de>
+From: Ricardo Neri <rneri@dextratech.com>
+Subject: Re: [PATCH v3 0/5] ARM: OMAP4+: HDMI: Update platform devices for
+ audio
+Date: Thu, 03 Jan 2013 11:33:12 -0600
+Message-ID: <50E5C0D8.9@dextratech.com>
+References: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 26B41261639
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2013 17:04:07 +0100 (CET)
-In-Reply-To: <s5hhanitjha.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, 886975@bugs.launchpad.net
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <rneri@dextratech.com>
+Cc: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, tony@atomide.com, peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/2012 11:38 AM, Takashi Iwai wrote:
-> At Wed, 19 Dec 2012 11:34:46 +0100,
-> David Henningsson wrote:
->>
->> On 12/19/2012 11:24 AM, Takashi Iwai wrote:
->>> At Wed, 19 Dec 2012 09:44:47 +0100,
->>> David Henningsson wrote:
->>>>
->>>> This reverts commit 697c373e34613609cb5450f98b91fefb6e910588.
->>>>
->>>> The original patch was meant to remove clicking, but in fact caused even
->>>> more clicking instead.
->>>>
->>>> Thanks to c4pp4 for doing most of the work with this bug.
->>>>
->>>> BugLink: https://bugs.launchpad.net/bugs/886975
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>> ---
->>>>
->>>> @c4pp4: Is this consistent with what you have done to reduce the clicking?
->>>> Will you recommend upstream Linux to take the patch below?
->>>
->>> So, it shouldn't be merged yet right now?
->>> Now is the last chance for merging it to 3.8-rc1.
->>
->> If we don't have time waiting for c4pp4's confirmation without missing
->> the entire 3.8 cycle, then I think we should merge it.
+Hi Mark, Tomi,
+
+Just wondering if you had a chance to take a look at these patches.
+
+Thanks!
+
+Ricardo
+On 12/17/2012 07:30 PM, Ricardo Neri wrote:
+> Hi Mark, Tomi, Liam, Tony,
 >
-> It's no new feature, so it's fine to merge it at any time during 3.8
-> cycle, even after 3.8-rc1.
+> This set aims to be the version 3 of my previous submission[1] and aims to
+> address the comments that Mark and Tomi kindly provided on such submission.
 >
-> But such a fix should be merged with Cc to stable, so a bit more tests
-> would be better.
+> The creation of the platform device for the HDMI audio interface from within the
+> OMAPDSS HDMI driver that was previously submitted[2] is resubmitted to be
+> complemented with code to relocate to arch/arm/mach-omap2/display.c the
+> creation of the platform devices for the HDMI ASoC codec and card drivers. This
+> series does not break the HDMI audio functionality in any patch.
+>
+> Also, the names of the platform devices are changed to give them more logical
+> and more descriptive names.
+>
+> As the commit
+>
+> commit 14840b9a83c6a56629db2ba0ec247503e975f143
+> Author: Ricardo Neri <ricardo.n...@ti.com>
+> Date:   Tue Nov 6 00:19:17 2012 -0600
+>
+>      OMAPDSS: HDMI: Create platform device for audio support
+>
+> is reverted in Tomi's git://gitorious.org/linux-omap-dss2/linux.git master
+> branch, this series applies cleanly.
+>
+> Changes from v1:
+> *Put in a single series all the patches related to platform device updates.
+> *Now HDMI audio works correctly in every patch.
+> *Remove reference to the TPD12S015 HDMI companion chip as the ASoC drivers
+>   are not aware of this and other chips could be used in the future.
+>
+>   Changes from v2:
+> *Split in two patches the renaming and the relocation of the platform devices.
+> *Create a separate patch to pass only the address offset of the DMA data port
+>   to the audio interface platform device.
+> *Keep the name hdmi-audio-codec to not refer to explicitly to OMAP. The codec
+>   can be made generic in a different patch series submitted to alsa-devel.
+>
+>   BR,
+>
+>   Ricardo
+>
+>
+> [1]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg80785.html
+> [2]. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg79795.html
+>
+> Ricardo Neri (5):
+>    ARM: OMAP4+: HDMI: Rename platform devices for ASoC drivers
+>    ARM: OMAP4: Assign IDs to DSS HDMI devices
+>    ARM4: OMAP4+: HDMI: Relocate devices for audio codec and card
+>    ARM: OMAP4+: HDMI: Relocate the device for audio interface
+>    ARM: OMAP4+: HDMI: Refine the DMA port resource for audio
+>
+>   arch/arm/mach-omap2/board-4430sdp.c    |    9 ++---
+>   arch/arm/mach-omap2/board-omap4panda.c |    9 ++---
+>   arch/arm/mach-omap2/devices.c          |   31 ----------------
+>   arch/arm/mach-omap2/display.c          |   31 ++++++++++++++++
+>   drivers/video/omap2/dss/hdmi.c         |   62 ++++++++++++++++++++++++++++++++
+>   sound/soc/omap/omap-hdmi-card.c        |    4 +--
+>   sound/soc/omap/omap-hdmi.c             |    5 ++-
+>   sound/soc/omap/omap-hdmi.h             |    2 --
+>   8 files changed, 103 insertions(+), 50 deletions(-)
+>
+> --
+> 1.7.10.4
+>
 
-Do you have a suggestion on how that should be tested? I have no 
-conexant machines here currently.
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
