@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: fsi: don't use platform info
-	pointer on probe()
-Date: Thu, 3 Jan 2013 12:51:02 +0000
-Message-ID: <20130103125102.GI4627@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: fsi: add device tree support
+Date: Thu, 3 Jan 2013 12:48:56 +0000
+Message-ID: <20130103124855.GH4627@opensource.wolfsonmicro.com>
 References: <87sj6qyiju.wl%kuninori.morimoto.gx@renesas.com>
- <87r4mayiiu.wl%kuninori.morimoto.gx@renesas.com>
+ <87pq1uyiij.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3210516677671566941=="
+Content-Type: multipart/mixed; boundary="===============1774568124281112693=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A047E261608
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2013 13:51:03 +0100 (CET)
-In-Reply-To: <87r4mayiiu.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E61F6261608
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2013 13:57:46 +0100 (CET)
+In-Reply-To: <87pq1uyiij.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: vinod.koul@intel.com, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3210516677671566941==
+--===============1774568124281112693==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J2uG6jHjFLimDtBY"
+	protocol="application/pgp-signature"; boundary="OfrWf2Fun5Ae4m0Y"
 Content-Disposition: inline
 
 
---J2uG6jHjFLimDtBY
+--OfrWf2Fun5Ae4m0Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 27, 2012 at 07:15:08PM -0800, Kuninori Morimoto wrote:
-> Current FSI driver is using platform info pointer,
-> but it is not good design for DT support.
-> This patch made it not to use platform info pointer.
+On Thu, Dec 27, 2012 at 07:15:19PM -0800, Kuninori Morimoto wrote:
 
-Applied, thanks.
+> +- fsia,flags : FSI-A flags [spdif/cpg/stream]
+> +- fsia,tx_id : FSI-A DMAEngine ID if needed
+> +- fsib,flags : FSI-B flags [spdif/cpg/stream]
+> +- fsib,tx_id : FSI-B DMAEngine ID if needed
 
---J2uG6jHjFLimDtBY
+The flags should be documented - what do these flags mean?  The
+DMAEngine stuff is a bit fun but I don't think there's yet been any
+resolution of what to do with DMAEngine in DT yet...
+
+> +FSI needs simple-card driver. see also simple-card.txt
+
+This isn't true, the driver can be used with any machine driver.  It's
+true that many machines using the FSI driver can be supported with the
+simple-card driver but others are also fine.
+
+> +		{ "cpg",	SH_FSI_CLK_CPG },
+
+Is this definitely something that would be fixed by hardware design?
+
+> +		{ "stream",	SH_FSI_ENABLE_STREAM_MODE },
+
+Why wouldn't stream mode be desired?
+
+--OfrWf2Fun5Ae4m0Y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ5X6vAAoJELSic+t+oim92B0P/iArc7l++JkStH99wsyRy/Mf
-pbZ8N7IucZaC7rvBEZbyh1cAcFsZ6emoaijg9VGXvBaInSk6FdVy2sMZGMzHJm/z
-v2OxkfSq66T56UZWzS/xFJEEDKgiltKHNtUOww8r+hGW6e+YwMpiQOYH0CqhFxOg
-tBU+/erHrqhGunHq1Tm9im6wqte3WSNHJ3LqXrAsJEzw3A2z4w0LfXTwOjWY/aEx
-v924lTMv0Qsjw5wh4BYt7V6UHEX57cYEiwGKsKQXDT/Uelzovd3noomrZGAaTM2D
-uSwAs4RtONxpgazfVcia/wXKYaIMeNwaAJ6SgaL9+dX5p2bcqrNd65B+4Ewp8F2j
-9s/c3bkXATI0hv3hgHXxvkNKkd2jqTNYf+QwJLgj43LJIcMDC4Jsn+8T69JeaZI+
-JL+ZRtO1bJpbZ7w8XdbFO2cRXqKv4YGZgPfaOiOyRXVRJlm3jdbIfOUI91oIQ1lz
-warKTvJyQAJZoyPmSbqbUSY9JkpuRDjdHfAAw9i+VFp0HChe3jT8LNe8AF6WCoq8
-7lPDfFNjEJAR768vZ2zMBn8KD5pzQDlwyx9J/cP18MCdBE3tjQg0AbbsOR/MHPlf
-BQ7pB01HVe11mxqA/PtXK56afBTpQmX3pPNdDuBF/GUr3YJk/m1rs7D/6JJjvfjK
-G8SKfuL8ybr83DWYJ3Pw
-=8634
+iQIcBAEBAgAGBQJQ5X1XAAoJELSic+t+oim9DpMP+wd1hswadHGoIMAvwXqq9Vhz
+jHttDK1qogC/Sse+swZy8/q2oiEabFxLx5yzsiyitzxFlbdcmQRjmyd0NcJ7pPmN
+i0MPbmXf97fyyLE2NWlJN91HhNctV7iM2fjwL791EjcE3FaFrVG1e13WKV+BIZr5
+yMfxrVO0WCpJlRT6X/eV7FVPb8VPXgO3Rsp4Z+ddc9d5NpR6MkDMFf7w7FZRb3Io
+HezX8ceOWXYiRE/j6bOL9DaLYBDradXyi+TOKIXRIJ3th1RO+fyIfzEzMX4iuZZZ
+UpLyt+G9NU9913PGDiVCE2U5QwiCgB4v8yQ7dMLlya4HTWkP8OVtNQ5r0CoEAz6O
+I4HM500xuUdv2I8Cp7xx5Zyvaw4htqiYkxyBPK3iGCyc/EcVz8b0zXzLTpGUlxK0
+2O46AxDn+u10wTkhXNfWuzk4A1zk60AJ/6BRdtUX7phA/pduor6YkZyBPiDQ6keZ
+K/YGJ6lct0RUo8tX13p8hPBzFV8EkYQMoW6clEbKEpR1UMueAn0mjGobh3lgvcXD
+7jkut1ldPltFvz6QLKndpnB50rFxWUGB2xZNMhK2jvdQbBIv6lVKWvX2d9OjzrHx
+vDXUK/2m1GsXoP1BxY0Be/ftNk11kTTJyORr+ULCsKt71vDI6uoOswm9g7iKcey1
+s6Uir9GQwHywAbSOLPpT
+=KY7r
 -----END PGP SIGNATURE-----
 
---J2uG6jHjFLimDtBY--
+--OfrWf2Fun5Ae4m0Y--
 
---===============3210516677671566941==
+--===============1774568124281112693==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3210516677671566941==--
+--===============1774568124281112693==--
