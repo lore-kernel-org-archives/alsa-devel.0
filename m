@@ -1,17 +1,24 @@
-From: Bryan Kaminski <dext0rb@gmail.com>
-Subject: ASoC: EA3250 V2 machine driver
-Date: Wed, 2 Jan 2013 10:06:24 -0600
-Message-ID: <CAD2wHyOzx1OSAyfzjeVJKccCO9w5eAGRsuk9JTKYCsLt3si1iA@mail.gmail.com>
-Mime-Version: 1.0
+From: Louis Gorenfeld <louis@museresearch.com>
+Subject: [PATCH] UAC2 clock selector - fixed?
+Date: Wed, 2 Jan 2013 17:01:41 -0800
+Message-ID: <3388A7F4-A801-4013-8A4A-66E52AA70947@museresearch.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 07E86260308
- for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2013 17:06:24 +0100 (CET)
-Received: by mail-bk0-f48.google.com with SMTP id jc3so6057288bkc.7
- for <alsa-devel@alsa-project.org>; Wed, 02 Jan 2013 08:06:24 -0800 (PST)
+Received: from homiemail-a31.g.dreamhost.com (caiajhbdcbef.dreamhost.com
+ [208.97.132.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87068260818
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2013 02:01:44 +0100 (CET)
+Received: from homiemail-a31.g.dreamhost.com (localhost [127.0.0.1])
+ by homiemail-a31.g.dreamhost.com (Postfix) with ESMTP id 97459202043
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2013 17:01:42 -0800 (PST)
+Received: from [192.168.0.159] (99-9-170-155.lightspeed.sntcca.sbcglobal.net
+ [99.9.170.155]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: louis@museresearch.com)
+ by homiemail-a31.g.dreamhost.com (Postfix) with ESMTPSA id 5772D20203C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2013 17:01:42 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +31,29 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
+  I'd been struggling with a UAC2 device that I couldn't set the clock on. I finally got in touch with a driver author who pointed me to some official 	documentation (the USB Device Class Definition for Audio Devices). Where the ALSA code always sends a 16-bit packet to control mixer settings, the docs say that the clock selector control uses layout 1 which is 8-bit. By changing the routine to send an 8-bit packet, that control now works.
 
-I have an Embedded Artists LPC3250 V2 development board, which has the NXP
-UDA1380 audio codec on-board. I'm wondering if someone could help me get
-started on making an ASoC driver for it. There already exists a machine
-driver for a similar Phytec 3250 development board, with the same audio
-codec. I think it should be possible to modify the existing Phytec driver,
-but I'm unable to accomplish that. I modified some source and everything
-compiled, but I can't get the driver to load correctly. After loading the
-module with 'modprobe', I'm unable to get ALSA to recognize any sound
-cards. Can anyone give me a jump-start on this?
+This is the patch that fixes the problem for me (for ALSA 1.0.25). Is this proper?
 
-Sorry if this is the wrong list to post on. I would post at the LPCLinux
-official site but it has been down for multiple weeks now. :|
+--- a/linux-3.4/sound/usb/mixer.c	2012-05-20 15:29:13.000000000 -0700
++++ b/vanilla-3.4/sound/usb/mixer.c	2013-01-02 17:06:11.009660059 -0800
+@@ -422,8 +422,13 @@
+ 	if (cval->mixer->protocol == UAC_VERSION_1) {
+ 		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
+ 	} else { /* UAC_VERSION_2 */
+-		/* audio class v2 controls are always 2 bytes in size */
+-		val_len = sizeof(__u16);
++		/* audio class v2 controls are often but not always 2 bytes in size */
++		/* For example, the clock selector (see 5.2.5.2.1 in the Universal Serial
++		 * Bus Device Class Definition for Audio Devices document) */
++		if (cval->control == UAC2_CX_CLOCK_SELECTOR)
++			val_len = sizeof(__u8);
++		else
++			val_len = sizeof(__u16);
+ 
+ 		/* FIXME */
+ 		if (request != UAC_SET_CUR) {
 
-Bryan
+Thanks much!
+Louis
