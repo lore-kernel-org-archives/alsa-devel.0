@@ -1,55 +1,54 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 0/5] ARM: OMAP4+: HDMI: Update platform devices for
- audio
-Date: Fri, 4 Jan 2013 10:42:06 +0000
-Message-ID: <20130104104206.GK4627@opensource.wolfsonmicro.com>
-References: <1355794243-32345-1-git-send-email-rneri@dextratech.com>
- <50E5C0D8.9@dextratech.com>
+Subject: [PATCH 1/2] ASoC: arizona: Remove DSP B and left
+	justified AIF modes
+Date: Fri,  4 Jan 2013 10:49:07 +0000
+Message-ID: <1357296548-859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FxavXfDenm+F7xE/"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <50E5C0D8.9@dextratech.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <rneri@dextratech.com>
-Cc: tomi.valkeinen@ti.com, lrg@ti.com, tony@atomide.com, peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECA6D2616F3
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 11:49:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+These are not supported.
 
---FxavXfDenm+F7xE/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
-On Thu, Jan 03, 2013 at 11:33:12AM -0600, Ricardo Neri wrote:
-
-> Just wondering if you had a chance to take a look at these patches.
-
-Don't top post.  Whatever patches you're talking about I don't have them
-(given that they say "ARM: OMAP4:" I'm likely to have just discarded
-them if you sent them to me, people CC me on far too much irrelevant
-OMAP stuff).
-
---FxavXfDenm+F7xE/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQ5rDTAAoJELSic+t+oim9Fq8QAJEko56kRRJRCP+4vz1cztI7
-nq+Aa+Y+cpPjwio7k7gx0XTRJJ/eZ6+60QWcV6Pnf8vbYM1161Q3u41m2SucIRlr
-9xsUA3kIYNEXaxLyYTiFzQxuK7Px0M3ijzFv6Y1ckaZWTbWEa3ExR6N2Xh2gFMgG
-bu8WetnpndIsUpYKqgC2CB1ehpF3QxW2Cig4J3XjzYYIluUIY5HnBetwjso0rsIN
-NQ7VHevWnQkyAQn/C/x3inQt8C/ZhS/J0QyXor8wq2u6PwtVmSzrKKlPnNYuzd/O
-cZ/8kFp4qjBlWSRGQvdoZ0aobJwsoR30kD1Ly2mSSDuZgqLSuuOJAQHgaFBPMWEW
-41yyL6rxyJNd+TVAyzzS9RDnKG6XL/LXxJTvzT+pzXw6rdYwbGqCbAmJA5o8ZFtf
-/VMtEJ+UYiGVpOIOOibAEOApPbwA/8S1ri//1kPgbQAsGkOQSn3o4wIVOc4rHgBh
-stH8MP/RGlN/0Fa84G4REZfHsQAzxPelkFyORdG+51RpMxVDDcIw78EVQ01siZ5N
-J8VuXdK6QLHN2grRiwMY9AueBmeY8tsXT7eDT7PCszhDQBPM5QSjeYWWF432GsQ0
-gRHscDsuusDC6SZ3dSale8/rNGvxG+5Y4xhBisk1jBQBWXjMkmhixwfVDBwTqCkr
-ulLPQWjM7McEy8xYO4Jw
-=b5SV
------END PGP SIGNATURE-----
-
---FxavXfDenm+F7xE/--
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index a4d7fb9..7724b4b 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -503,15 +503,9 @@ static int arizona_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		mode = 0;
+ 		break;
+-	case SND_SOC_DAIFMT_DSP_B:
+-		mode = 1;
+-		break;
+ 	case SND_SOC_DAIFMT_I2S:
+ 		mode = 2;
+ 		break;
+-	case SND_SOC_DAIFMT_LEFT_J:
+-		mode = 3;
+-		break;
+ 	default:
+ 		arizona_aif_err(dai, "Unsupported DAI format %d\n",
+ 				fmt & SND_SOC_DAIFMT_FORMAT_MASK);
+-- 
+1.7.10.4
