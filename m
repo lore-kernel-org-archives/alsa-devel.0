@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm2200: Remove DSP B and left
-	justified AIF modes
-Date: Fri,  4 Jan 2013 10:49:08 +0000
-Message-ID: <1357296548-859-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1357296548-859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 1/2] ASoC: davinci-mcasp: Add pinctrl
+	support
+Date: Fri, 4 Jan 2013 11:38:04 +0000
+Message-ID: <20130104113803.GL4627@opensource.wolfsonmicro.com>
+References: <1357293277-25543-1-git-send-email-gururaja.hebbar@ti.com>
+ <1357293277-25543-2-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5702065344462492057=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37657261703
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 11:49:10 +0100 (CET)
-In-Reply-To: <1357296548-859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E5C6261683
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 12:38:06 +0100 (CET)
+In-Reply-To: <1357293277-25543-2-git-send-email-gururaja.hebbar@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Hebbar Gururaja <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tony@atomide.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, rob@landley.net, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-These are not supported.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2200.c |    6 ------
- 1 file changed, 6 deletions(-)
+--===============5702065344462492057==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0+35XlDF45POFHfm"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index a12fc2f..e6cefe1 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -1566,15 +1566,9 @@ static int wm2200_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_DSP_A:
- 		fmt_val = 0;
- 		break;
--	case SND_SOC_DAIFMT_DSP_B:
--		fmt_val = 1;
--		break;
- 	case SND_SOC_DAIFMT_I2S:
- 		fmt_val = 2;
- 		break;
--	case SND_SOC_DAIFMT_LEFT_J:
--		fmt_val = 3;
--		break;
- 	default:
- 		dev_err(codec->dev, "Unsupported DAI format %d\n",
- 			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
--- 
-1.7.10.4
+
+--0+35XlDF45POFHfm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jan 04, 2013 at 03:24:36PM +0530, Hebbar Gururaja wrote:
+> From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+>=20
+> Signed-off-by: Hebbar, Gururaja <gururaja.hebbar@ti.com>
+
+Linus has a change for this in the core which currently looks like it'll
+get merged in v3.8 so there doesn't seem to be any pressing need for
+driver specific changes that just set the defaults.
+
+--0+35XlDF45POFHfm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ5r8DAAoJELSic+t+oim98s4P/Au5bb0PLI6Sstk4p7TK/BEb
+V9UoEbaER+W7387AVbou41RDx6W/ntKHwERjR6Is6Haa8cYXeXqFyeYmsuPfRy2u
+6NvuQz1h+I8pr5WJDP3/rJICbIvhP4vsl/3h/6tOCyP/JfHoia3hUbPCSMULOpls
+enFHDf6VsMkbLFU3IhKnTuLRRQ+nUVCgZ4QHR33vLs94KVFn2K7DGmiDcMfcXK0/
+8Mw9oqtemjpAsN9oXiqe5Sb0epWd0T9XbisvAtPfEP+j3vevhMoMsX01T3UcfTU4
+GAZmsLh4Jo6cHdGqm6wJhrmoFlQ8Vfq5wRBjz/QWjFchMGJTgxNQvzRkkCBUZ4Lv
+S2LW0s+Jab94ThXbqnbXAlGwOce9xmcv1W7cnnLCkTL88te3Si6l8YZvSAelpu7G
+ljRfdeqtPNDYj/qkFNoCsUiODUMSc9X2qCFx3jjOPDyEsqHj/BnixFPfQHVES8Lm
++uWrWtTyZ5TudtluADu/+omFTMX2y4u3dXSfPtFhxf5KJEm5dunQ92Q57I5vFoHY
+VBZSgiZVdsozDSVaUQ0ZnM5a6bCGfay6HcZYbf7/hTCqLB41iyFoH9Pxue9eRHiX
+5334eakJkFsQKubjs0tsUSOIUcxw6L1F/2wNIUiMIM6ZCzZ/eWvInKFc+5tuSxK8
+VvzOHiu2brZ0vSJQD0IG
+=J/m1
+-----END PGP SIGNATURE-----
+
+--0+35XlDF45POFHfm--
+
+--===============5702065344462492057==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5702065344462492057==--
