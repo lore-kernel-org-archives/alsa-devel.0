@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC PATCH] ALSA: usb - fix race in creation of
- M-Audio Fast track pro driver
-Date: Fri, 04 Jan 2013 21:19:52 +0100
-Message-ID: <50E73968.4070703@ladisch.de>
-References: <1357315338-2843-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm2000: Fix sense of speech clarity
+	enable
+Date: Fri,  4 Jan 2013 21:19:36 +0000
+Message-ID: <1357334377-16388-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3ADEA264F07
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 21:20:35 +0100 (CET)
-In-Reply-To: <1357315338-2843-1-git-send-email-david.henningsson@canonical.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0CEA2264F08
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 22:19:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,18 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, 1095315@bugs.launchpad.net, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> this patch resolves the issue for him. It also leaves a message
-> in the log:
-> "snd-usb-audio: probe of 1-1.1:1.1 failed with error -5"
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm2000.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I'd guess this is for an interface not claimed by the driver but
-without an explicit QUIRK_IGNORE_INTERFACE entry.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
+index 1cbe88f..12bcae6 100644
+--- a/sound/soc/codecs/wm2000.c
++++ b/sound/soc/codecs/wm2000.c
+@@ -209,9 +209,9 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
+ 
+ 	ret = wm2000_read(i2c, WM2000_REG_SPEECH_CLARITY);
+ 	if (wm2000->speech_clarity)
+-		ret &= ~WM2000_SPEECH_CLARITY;
+-	else
+ 		ret |= WM2000_SPEECH_CLARITY;
++	else
++		ret &= ~WM2000_SPEECH_CLARITY;
+ 	wm2000_write(i2c, WM2000_REG_SPEECH_CLARITY, ret);
+ 
+ 	wm2000_write(i2c, WM2000_REG_SYS_START0, 0x33);
+-- 
+1.7.10.4
