@@ -1,18 +1,15 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 5/5] ASoC: simple-card: add Device Tree
-	support
-Date: Fri, 04 Jan 2013 10:49:12 -0700
-Message-ID: <50E71618.8090302@wwwdotorg.org>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Allow runtime reconfiguration
+	of the output mode
+Date: Fri,  4 Jan 2013 19:37:04 +0000
+Message-ID: <1357328224-3859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E7F02625FB
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 18:49:18 +0100 (CET)
-In-Reply-To: <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BF58F264F07
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 20:37:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,129 +19,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/25/2012 11:53 PM, Kuninori Morimoto wrote:
-> Support for loading the simple-card module via devicetree.
-> It requests platform/codec driver's DT blob for probing.
+Some systems use external analogue switches to connect more analogue
+devices to the CODEC than are supported by the device.  In some systems
+this requires changing the switched output from single ended to
+differential mode dynamically at runtime. Add a new function
+arizona_set_output_mode() to support this.
 
-This binding proposal should be sent to
-devicetree-discuss@lists.ozlabs.org; that's where all DT bindings are
-dicussed.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   34 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |    3 +++
+ 2 files changed, 37 insertions(+)
 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-
-> +Required properties:
-> +for simple-card
-> +- compatible			: "asoc,simple-card"
-
-I don't think "asoc," is a good vendor prefix; DT should strive to
-describe the hardware, not a particular OS's driver structure.
-
-Perhaps "simple-audio" would be better.
-
-> +- simple,asoc,name		: simple card name
-
-What is "simple,asoc,"? I've never seen properties with two vendor
-prefixes before... Perhaps "simple-audio," would be better.
-
-What kind of name? Perhaps "simple-audio,model" would be better, and
-more consistent with the use of the word "model" in other audio-related
-DT bindings? Describe it as "user-visible card name"?
-
-> +- simple,asoc,cpu		: phandle for platform
-
-"cpu" isn't a very good name; it couuld mean anything. "platform" is an
-ASoC-specific term. I think this would be better written as:
-
-simple-audio,cpu-audio-controller : phandle of the CPU's audio controller
-
-or perhaps:
-
-simple-audio,cpu-port : phandle of the CPU's audio port
-
-or since I assume this binding assumes I2S rather than say AC'97 or
-SlimBus, perhaps:
-
-simple-audio,i2c-controller : phandle of the CPU's I2S controller
-
-> +- simple,asoc,codec		: phandle for codec
-
-CODEC should be capitalized in the plain-text description (but not DT
-property name). Same for DAI below.
-
-> +for platform
-> +- simple,asoc,dai		: dai name
-> +
-> +for codec
-> +- simple,asoc,dai		: dai name
-> +- simple,asoc,name		: codec name
-
-Why are names needed? The existing audio-related DT bindings don't put
-any names into the device tree; everything binds with phandles.
-
-> +both platform/codec
-> +- simple,asoc,daifmt,fmt		: see snd_soc_of_parse_daifmt()
-> +- simple,asoc,daifmt,clock		: see snd_soc_of_parse_daifmt()
-> +- simple,asoc,daifmt,bitclock_inversion	: see snd_soc_of_parse_daifmt()
-> +- simple,asoc,daifmt,bitclock_master	: see snd_soc_of_parse_daifmt()
-> +- simple,asoc,daifmt,frame_inversion	: see snd_soc_of_parse_daifmt()
-> +- simple,asoc,daifmt,frame_master	: see snd_soc_of_parse_daifmt()
-
-DT bindings should be self-contained, i.e. they should describe
-everything required to write the device tree (with the possible
-exception of referring to other existing manuals or documentation for
-the HW). In particular, they shouldn't refer to code in some specific
-OS. As such, please explain what all those mean here.
-
-It is more typical to use - not _ as a word separator in DT property names.
-
-"bitclock_master" doesn't really describe who is the master. Perhaps
-"cpu-bitclk-master"?
-
-What is "clock"?
-
-> +- simple,asoc,sysclk			: system clock rate
-
-"clock-frequency" rather than "sysclk" would be more consistent with
-other bindings.
-
-> +Example:
-> +
-> +fsi_ak4642 {
-> +	compatible = "asoc,simple-card";
-> +
-> +	simple,asoc,name = "FSI2A-AK4648";
-> +	simple,asoc,cpu = <&sh_fsi2>;
-> +	simple,asoc,codec = <&ak4648>;
-> +};
-> +
-> +&i2c0 {
-> +	ak4648: ak4648@0x12 {
-> +		compatible = "asahi-kasei,ak4648";
-> +		reg = <0x12>;
-> +
-> +		simple,asoc,dai = "ak4642-hifi";
-> +		simple,asoc,name = "ak4642-codec.0-0012";
-> +		simple,asoc,daifmt,fmt = "left_j";
-> +		simple,asoc,daifmt,bitclock_master;
-> +		simple,asoc,daifmt,frame_master;
-> +		simple,asoc,sysclk = <11289600>;
-> +	};
-> +};
-> +
-> +&sh_fsi2 {
-> +	simple,asoc,dai = "fsia-dai";
-> +	simple,asoc,daifmt,fmt = "left_j";
-> +};
-
-Oh, I see. Nothing in the text above implies that the DAI format
-properties would exist in the CODEC and I2S controller nodes. That's
-rather an imposition on the DT bindings for the CODEC and I2S
-controller; the individual bindings for those devices should define all
-the properties that go into those nodes, and those devices won't always
-be used with a "simple" sound card. It feels to me like the DAI
-configuration properties should be part of the sound node, not the
-I2S/CODEC nodes.
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 7724b4b..6d98cf4 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1176,6 +1176,40 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_fll);
+ 
++/**
++ * arizona_set_output_mode - Set the mode of the specified output
++ *
++ * @codec: Device to configure
++ * @output: Output number
++ * @diff: True to set the output to differential mode
++ *
++ * Some systems use external analogue switches to connect more
++ * analogue devices to the CODEC than are supported by the device.  In
++ * some systems this requires changing the switched output from single
++ * ended to differential mode dynamically at runtime, an operation
++ * supported using this function.
++ *
++ * Most systems have a single static configuration and should use
++ * platform data instead.
++ */
++int arizona_set_output_mode(struct snd_soc_codec *codec, int output, bool diff)
++{
++	unsigned int reg, val;
++
++	if (output < 1 || output > 6)
++		return -EINVAL;
++
++	reg = ARIZONA_OUTPUT_PATH_CONFIG_1L + (output - 1) * 8;
++
++	if (diff)
++		val = ARIZONA_OUT1_MONO;
++	else
++		val = 0;
++
++	return snd_soc_update_bits(codec, reg, ARIZONA_OUT1_MONO, val);
++}
++EXPORT_SYMBOL_GPL(arizona_set_output_mode);
++
+ MODULE_DESCRIPTION("ASoC Wolfson Arizona class device support");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 68dfae5..697ff6f 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -213,4 +213,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
+ 
+ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
+ 
++int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
++			    bool diff);
++
+ #endif
+-- 
+1.7.10.4
