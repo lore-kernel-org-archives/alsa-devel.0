@@ -1,48 +1,42 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm2000: Fix sense of speech clarity
-	enable
-Date: Fri,  4 Jan 2013 21:19:36 +0000
-Message-ID: <1357334377-16388-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ricardo Neri <rneri@dextratech.com>
+Subject: Re: [PATCH v3 0/5] ARM: OMAP4+: HDMI: Update platform devices for
+ audio
+Date: Fri, 04 Jan 2013 17:19:02 -0600
+Message-ID: <50E76366.1080401@dextratech.com>
+References: <1355794243-32345-1-git-send-email-rneri@dextratech.com> <50E5C0D8.9@dextratech.com> <20130104104206.GK4627@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0CEA2264F08
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 22:19:41 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20130104104206.GK4627@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: tomi.valkeinen@ti.com, lrg@ti.com, tony@atomide.com, peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2000.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Mark,
 
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index 1cbe88f..12bcae6 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -209,9 +209,9 @@ static int wm2000_power_up(struct i2c_client *i2c, int analogue)
- 
- 	ret = wm2000_read(i2c, WM2000_REG_SPEECH_CLARITY);
- 	if (wm2000->speech_clarity)
--		ret &= ~WM2000_SPEECH_CLARITY;
--	else
- 		ret |= WM2000_SPEECH_CLARITY;
-+	else
-+		ret &= ~WM2000_SPEECH_CLARITY;
- 	wm2000_write(i2c, WM2000_REG_SPEECH_CLARITY, ret);
- 
- 	wm2000_write(i2c, WM2000_REG_SYS_START0, 0x33);
--- 
-1.7.10.4
+On 01/04/2013 04:42 AM, Mark Brown wrote:
+> On Thu, Jan 03, 2013 at 11:33:12AM -0600, Ricardo Neri wrote:
+>
+>> Just wondering if you had a chance to take a look at these patches.
+>
+> Don't top post.
+Sorry, my bad. Won't do it again.
+
+Whatever patches you're talking about I don't have them
+> (given that they say "ARM: OMAP4:" I'm likely to have just discarded
+> them if you sent them to me, people CC me on far too much irrelevant
+> OMAP stuff).
+ >
+Even though changes involve mostly how and where the platform devices 
+for OMAP HDMI audio are created, the OMAP HDMI ASoC drivers are modified 
+as well. Also, you provided feedback in the previous versions. I thought 
+I should send them to you. I will resend.
+
+BR,
+
+Ricardo
+
+
+
