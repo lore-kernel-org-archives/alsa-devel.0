@@ -1,21 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Jonathan Woithe <jwoithe@just42.net>
 Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
-	codec)
-Date: Fri, 4 Jan 2013 10:34:23 +0800
-Message-ID: <CAN8ccia6SGgukkzYQ_5XA0QkRXiq9E_vvqVmQ+sDBrg9ugqT9g@mail.gmail.com>
+ codec)
+Date: Fri, 4 Jan 2013 13:54:49 +1030
+Message-ID: <20130104032449.GA15708@marvin.atrad.com.au>
 References: <20121228135207.GA24779@marvin.atrad.com.au>
  <s5hhamyr1ne.wl%tiwai@suse.de>
+ <CAN8ccia6SGgukkzYQ_5XA0QkRXiq9E_vvqVmQ+sDBrg9ugqT9g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id C6A19261658
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 03:34:24 +0100 (CET)
-Received: by mail-ie0-f181.google.com with SMTP id 16so18803322iea.40
- for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2013 18:34:23 -0800 (PST)
-In-Reply-To: <s5hhamyr1ne.wl%tiwai@suse.de>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id B98B42616A0
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 04:24:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAN8ccia6SGgukkzYQ_5XA0QkRXiq9E_vvqVmQ+sDBrg9ugqT9g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > Having been running kernel 3.3.5 for a while, I decided to upgrade to
-3.7.1
-> > tonight.  Unfortunately there have been a number of HDA-related
-regressions
-> > between these two kernels when running on a Fujitsu S7020 laptop which
-are
-> > clearly related to the HDA rewrite which has been going on recently.
- This
-> > laptop utilises the Realtek ALC260 codec.
-> >
-> > Testing was initially done with alsa-lib 1.0.24 and alsa-utils 1.0.24.
- I
-> > upgraded to version 1.0.26 of both but the behaviour remained the same
-under
-> > 3.3.5 and 3.7.1.
-> >
-> > Under 3.3.5, sound works perfectly.
-> >
-> > Under 3.7.1 there are a number of regressions:
+On Fri, Jan 04, 2013 at 10:34:23AM +0800, Raymond Yau wrote:
+> > > Having been running kernel 3.3.5 for a while, I decided to upgrade to 3.7.1
+> > > tonight.  Unfortunately there have been a number of HDA-related regressions
+> > > between these two kernels when running on a Fujitsu S7020 laptop which are
+> > > clearly related to the HDA rewrite which has been going on recently. This
+> > > laptop utilises the Realtek ALC260 codec.
+> > > :
+> > > Under 3.3.5, sound works perfectly.
+> > >
+> > > Under 3.7.1 there are a number of regressions:
+> 
+> If is because the commit remove the Fujitsu model
+> 
+> http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff;h=c29b3f6dd7798964d77199af4925be72a3a48349;hp=b1f58085a9c01e8ffab954fd77a45f1143edf34d
+> 
+> The driver need pin fixup  for the internal speaker and change the pin
+> default of following node to [N/A]
+> 
+> Node 0x13 [Jack] Line In at Sep Right
+> Node 0x17 [Fixed] Aux at Oth Mobile-In
+> 
+> -/* Initialisation sequence for ALC260 as configured in Fujitsu S702x
+> - * laptops.  ALC260 pin usage: Mic/Line jack = 0x12, HP jack = 0x14, CD
+> - * audio = 0x16, internal speaker = 0x10.
+> - */
+> -static const struct hda_verb alc260_fujitsu_ini
+> 
+> Do the notebook really use node 0x16 CD ?
 
-If is because the commit remove the Fujitsu model
+Yes.  That's where the CD audio comes in.
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff;h=c29b3f6dd7798964d77199af4925be72a3a48349;hp=b1f58085a9c01e8ffab954fd77a45f1143edf34d
-
-The driver need pin fixup  for the internal speaker and change the pin
-default of following node to [N/A]
-
-Node 0x13 [Jack] Line In at Sep Right
-Node 0x17 [Fixed] Aux at Oth Mobile-In
-
--/* Initialisation sequence for ALC260 as configured in Fujitsu S702x
-- * laptops.  ALC260 pin usage: Mic/Line jack = 0x12, HP jack = 0x14, CD
-- * audio = 0x16, internal speaker = 0x10.
-- */
--static const struct hda_verb alc260_fujitsu_ini
-
-Do the notebook really use node 0x16 CD ?
+jonathan
