@@ -1,16 +1,16 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: Re: draft -- ALSA firewire + digi003
-Date: Fri, 04 Jan 2013 14:55:26 +0100
-Message-ID: <50E6DF4E.80706@gareus.org>
-References: <50E6C858.3050409@gareus.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [RFC PATCH] ALSA: usb - fix race in creation of
+	M-Audio Fast track pro driver
+Date: Fri,  4 Jan 2013 17:02:18 +0100
+Message-ID: <1357315338-2843-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 2764C261691
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 14:55:30 +0100 (CET)
-In-Reply-To: <50E6C858.3050409@gareus.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67EDE2617A9
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 17:02:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,76 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, damien@zamaudio.com
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 1095315@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+A patch in the 3.2 kernel caused regression with hotplugging the
+M-Audio Fast track pro, or sound after suspend. I don't have the
+device so I haven't done a full analysis, but it seems userspace
+(both udev and pulseaudio) got confused when a card was created,
+immediately destroyed, and then created again.
 
-Hi Clemens, Hi ALSA-devs,
+However, at least one person in the bug report (martin djfun)
+reports that this patch resolves the issue for him. It also leaves
+a message in the log:
+"snd-usb-audio: probe of 1-1.1:1.1 failed with error -5" which is
+a bit misleading. It is better than non-working audio, but maybe
+there's a more elegant solution?
 
-I'm working with Damien Zammit on the Digidesign-003 driver which is
-based on your alsa-kprivate dice code.
+BugLink: https://bugs.launchpad.net/bugs/1095315
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/usb/quirks.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-We were able to work out most of the issues so far but are now stuck
-with timing problems. More specifically: the jitter of async message
-timing is quite large and the AMDTP ISO stream has regular drop-outs.
+...oh, and if you end up taking this patch as it is, you should probably
+add cc to stable (3.2+).
 
-Comparing 1394 data dumps, OSX sends async messages at regular 125
-(+-5us) intervals. On GNU/Linux we've seen a delta -40us, + 120us. For
-async messages this is not a big deal. But..
-
-Just playing audio via aplay: there are short dropouts every couple of
-seconds but otherwise the devices plays fine indefinitely.
-Interestingly, when running cyclictest while playing sound: there are
-no dropouts but the stream drops after ~10-15 seconds.
-
-Any hints why that may be or how to debug the issue further?
-
-In order to rule out kernel related issues (3.0.0 is quite old), we've
-rebased the work (and alsa-kprivate's firewire-kernel-streaming
-branch) onto alsa-driver.git. The issue remains the same with 3.2.0-4-rt
-
-Alas, neither of us has detailed knowledge nor specs for AMDTP, not to
-mention in-depth knowledge about Linux' firewire stack timings. Any
-help or leads are appreciated.
-
-As we believe we are close to a fully functional driver for the 003,
-we are very keen to resolve the following two separate issues:
-
-1) The timing problem we have observed with AMDTP over firewire.
-2) A framework for the capture stream in ALSA firewire.
-
-
-The rebased driver code is at
- git://gareus.org/alsa-driver.git
- http://gareus.org/gitweb/?p=alsa-driver.git
-
-The broken-out digi003 driver is available from:
- https://github.com/zamaudio/snd-firewire-003
- https://github.com/x42/003amdtp
-
-1394 bus data dumps of both OSX as well as Linux can be found at
- http://www.zamaudio.com/?p=715
-
-
-Cheers!
-robin
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQ5t9CAAoJEKCQvOAs9X8ELbsP/Re0wxZKU6v2rbBVhV/FC6zr
-JYmx/jAsmoC7vtVZMKE4gGcCreszX58oU7RG323qR9iKSEgXeqtuThZSTT6l3N39
-KpHW4T094FyQxmvxRYrZnRlHgWexvLfJT/YiuTUX50L/CKgS75ajRfLqADZaHSy5
-Oc+CEy50Jmoi/9/dTuM0pVPVvt5APFqLyAisw1/5wzhYMTHF0mBByn5AHXBp7bIl
-SVg7IoJuTNd4dYgo3PtKw9OqhjMGZ1g5DNHA9OaE7qY12r3TMMKm7Sq2iWS4HQoq
-RMQLOVtyMOVUKyddK8ubWi0Cm2lYjHUXUNSLyZLcdWYTWbk5eWo6Ze83Tbl33h4T
-ngiWt+DWpqKpm+U0UQDOU6p+DSAosKHsVcPPPkYVkwXKAkHctXKlPUst5NHEhhK3
-5mbVQECHE9+BBy9qY2eimDZ/p3+5C2kIMofDga6jiuFWfHMqKp30uacUHwP4xY38
-jHLaTmpX7VNwNYGnFLvGve709ejNjL8ByFKrUKpV1nAMTO4QP4SipHuApBF3BWS7
-hAGBD6mKQAPl6AhvuJaxtCdTQc/tkAF0Ep1LClthsHnyhqPVCX+L5sb/z7vVmCkp
-cFxGXJq6TujcW4kkKPfZCNsnHqea8lgY6tEonc8aRmcIZvF+L4Yp+p4/r9OxL6ma
-xIIgIVDp1X9HxVayBDWL
-=lVsY
------END PGP SIGNATURE-----
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index acc12f0..e71fc8b 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -387,11 +387,13 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
+ 		 * rules
+ 		 */
+ 		err = usb_driver_set_configuration(dev, 2);
+-		if (err < 0) {
++		if (err < 0)
+ 			snd_printdd("error usb_driver_set_configuration: %d\n",
+ 				    err);
+-			return -ENODEV;
+-		}
++		/* Always return an error, so that we stop creating a device
++		   that will just be destroyed and recreated with a new
++		   configuration */
++		return -ENODEV;
+ 	} else
+ 		snd_printk(KERN_INFO "usb-audio: Fast Track Pro config OK\n");
+ 
+-- 
+1.7.9.5
