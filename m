@@ -1,22 +1,21 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: sound: usb-audio: [PATCH]x2 full
- capture/playback/spdif support for Digidesign Mbox 2
-Date: Fri, 4 Jan 2013 12:29:18 +1100
-Message-ID: <CABXa2sG60otfUk3R82GSXbvbuwXUXAhsAL_qFRTiyiUmqh1TyQ@mail.gmail.com>
-References: <CABXa2sGkpfpj+XgzRJSb2Rsgz=HnWK--hw4k82u=uqWU0jE9dA@mail.gmail.com>
- <s5h8v8n23j7.wl%tiwai@suse.de>
- <CABXa2sF2RNLJbA4K7xbu_Gy1Z+MXuW_tNoX9zo3_TGWOVn-8DQ@mail.gmail.com>
- <s5hip7er2xe.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+	codec)
+Date: Fri, 4 Jan 2013 10:34:23 +0800
+Message-ID: <CAN8ccia6SGgukkzYQ_5XA0QkRXiq9E_vvqVmQ+sDBrg9ugqT9g@mail.gmail.com>
+References: <20121228135207.GA24779@marvin.atrad.com.au>
+ <s5hhamyr1ne.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00235433379e89b3bd04d26c68a5
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
- [209.85.216.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 13BA4261651
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 02:29:19 +0100 (CET)
-Received: by mail-qc0-f175.google.com with SMTP id j3so8314627qcs.20
- for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2013 17:29:19 -0800 (PST)
-In-Reply-To: <s5hip7er2xe.wl%tiwai@suse.de>
+Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6A19261658
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 03:34:24 +0100 (CET)
+Received: by mail-ie0-f181.google.com with SMTP id 16so18803322iea.40
+ for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2013 18:34:23 -0800 (PST)
+In-Reply-To: <s5hhamyr1ne.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,108 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>
 List-Id: alsa-devel@alsa-project.org
 
---00235433379e89b3bd04d26c68a5
-Content-Type: text/plain; charset=ISO-8859-1
+> >
+> > Having been running kernel 3.3.5 for a while, I decided to upgrade to
+3.7.1
+> > tonight.  Unfortunately there have been a number of HDA-related
+regressions
+> > between these two kernels when running on a Fujitsu S7020 laptop which
+are
+> > clearly related to the HDA rewrite which has been going on recently.
+ This
+> > laptop utilises the Realtek ALC260 codec.
+> >
+> > Testing was initially done with alsa-lib 1.0.24 and alsa-utils 1.0.24.
+ I
+> > upgraded to version 1.0.26 of both but the behaviour remained the same
+under
+> > 3.3.5 and 3.7.1.
+> >
+> > Under 3.3.5, sound works perfectly.
+> >
+> > Under 3.7.1 there are a number of regressions:
 
-On 3 January 2013 21:11, Takashi Iwai <tiwai@suse.de> wrote:
-> Yes, a patch against 3.8-rc1 will be helpful.
-Here it is.
-I generated the patch, checked out v3.8-rc1 tag, patched it with this
-patch and compiled it out of tree for my running 3.8-rc1 kernel.
-Tested playback with jackd.  Works well.
+If is because the commit remove the Fujitsu model
 
-Regards,
-Damien
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commitdiff;h=c29b3f6dd7798964d77199af4925be72a3a48349;hp=b1f58085a9c01e8ffab954fd77a45f1143edf34d
 
---00235433379e89b3bd04d26c68a5
-Content-Type: text/plain; charset=US-ASCII; name="patch_3.8-rc1_dz1.txt"
-Content-Disposition: attachment; filename="patch_3.8-rc1_dz1.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hbin51yh0
+The driver need pin fixup  for the internal speaker and change the pin
+default of following node to [N/A]
 
-U3VwcG9ydCBmb3IgRGlnaWRlc2lnbiBNYm94IDIgVVNCIHNvdW5kIGNhcmQ6CgpUaGlzIHBhdGNo
-IGlzIHRoZSByZXN1bHQgb2YgYSBsb3Qgb2YgdHJpYWwgYW5kIGVycm9yLCBzaW5jZSB0aGVyZSBh
-cmUgbm8gc3BlY3MKYXZhaWxhYmxlIGZvciB0aGUgZGV2aWNlLgoKVGhpcyBwYXRjaCBpcyBiYXNl
-ZCBvbiAzLjgtcmMxLiBJdCBmaXhlcyB0d28gdGhpbmdzOgogIDEpIEEga2VybmVsIHBhbmljIGNh
-dXNlZCBieSBpbmNvcnJlY3QgYWxsb2NhdGlvbiBvZiBhIHU4IHZhcmlhYmxlICJib290cmVzcG9u
-c2UiLgogIDIpIEEgbm9pc3kgZG1lc2cgKHVyYiBzdGF0dXMgLTMyKSBjYXVzZWQgYnkgYnJva2Vu
-IHBpcGUgdG8gYW4gaW52YWxpZCBtaWRpIGVuZHBvaW50LgoKSXQgaXMgYWxzbyBhIGxpdHRsZSBj
-bGVhbmVyIGJlY2F1c2UgdGhlcmUgaXMgbm8gbmVlZCBmb3IgYSBuZXcgClFVSVJLX01JREkgdHlw
-ZSBhcyBzdWdnZXN0ZWQgYnkga2VybmVsIGRldmVsb3BlcnMsIHNpbmNlIHRoZSBkZXZpY2UgZm9s
-bG93cwpleGFjdGx5IHRoZSBNSURJTUFOIHByb3RvY29sLgoKU2lnbmVkLW9mZi1ieTogRGFtaWVu
-IFphbW1pdCA8ZGFtaWVuQHphbWF1ZGlvLmNvbT4KCgotLS0KCmRpZmYgLS1naXQgYS9zb3VuZC91
-c2IvbWlkaS5jIGIvc291bmQvdXNiL21pZGkuYwppbmRleCBjMTgzZDM0Li4zNGI5YmI3IDEwMDY0
-NAotLS0gYS9zb3VuZC91c2IvbWlkaS5jCisrKyBiL3NvdW5kL3VzYi9taWRpLmMKQEAgLTIxODEs
-MTAgKzIxODEsNiBAQCBpbnQgc25kX3VzYm1pZGlfY3JlYXRlKHN0cnVjdCBzbmRfY2FyZCAqY2Fy
-ZCwKIAkJdW1pZGktPnVzYl9wcm90b2NvbF9vcHMgPSAmc25kX3VzYm1pZGlfbm92YXRpb25fb3Bz
-OwogCQllcnIgPSBzbmRfdXNibWlkaV9kZXRlY3RfcGVyX3BvcnRfZW5kcG9pbnRzKHVtaWRpLCBl
-bmRwb2ludHMpOwogCQlicmVhazsKLQljYXNlIFFVSVJLX01JRElfTUJPWDI6Ci0JCXVtaWRpLT51
-c2JfcHJvdG9jb2xfb3BzID0gJnNuZF91c2JtaWRpX21pZGltYW5fb3BzOwotCQllcnIgPSBzbmRf
-dXNibWlkaV9kZXRlY3RfcGVyX3BvcnRfZW5kcG9pbnRzKHVtaWRpLCBlbmRwb2ludHMpOwotCQli
-cmVhazsKIAljYXNlIFFVSVJLX01JRElfUkFXX0JZVEVTOgogCQl1bWlkaS0+dXNiX3Byb3RvY29s
-X29wcyA9ICZzbmRfdXNibWlkaV9yYXdfb3BzOwogCQkvKgpkaWZmIC0tZ2l0IGEvc291bmQvdXNi
-L3F1aXJrcy10YWJsZS5oIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCmluZGV4IGNkY2Y2YjQu
-Ljk1ZTMzMjYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAorKysgYi9zb3Vu
-ZC91c2IvcXVpcmtzLXRhYmxlLmgKQEAgLTI5OTMsNyArMjk5Myw3IEBAIFlBTUFIQV9ERVZJQ0Uo
-MHg3MDEwLCAiVUI5OSIpLAogCQkJfSwKIAkJCXsKIAkJCQkuaWZudW0gPSA2LAotCQkJCS50eXBl
-ID0gUVVJUktfTUlESV9NQk9YMiwKKwkJCQkudHlwZSA9IFFVSVJLX01JRElfTUlESU1BTiwKIAkJ
-CQkuZGF0YSA9ICYoY29uc3Qgc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9pbmZvKSB7CiAJ
-CQkJCS5vdXRfZXAgPSAgMHgwMiwKIAkJCQkJLm91dF9jYWJsZXMgPSAweDAwMDEsCmRpZmYgLS1n
-aXQgYS9zb3VuZC91c2IvcXVpcmtzLmMgYi9zb3VuZC91c2IvcXVpcmtzLmMKaW5kZXggZjEwNGM2
-OC4uYWNjMTJmMCAxMDA2NDQKLS0tIGEvc291bmQvdXNiL3F1aXJrcy5jCisrKyBiL3NvdW5kL3Vz
-Yi9xdWlya3MuYwpAQCAtMzA2LDcgKzMwNiw2IEBAIGludCBzbmRfdXNiX2NyZWF0ZV9xdWlyayhz
-dHJ1Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCwKIAkJW1FVSVJLX01JRElfWUFNQUhBXSA9IGNyZWF0
-ZV9hbnlfbWlkaV9xdWlyaywKIAkJW1FVSVJLX01JRElfTUlESU1BTl0gPSBjcmVhdGVfYW55X21p
-ZGlfcXVpcmssCiAJCVtRVUlSS19NSURJX05PVkFUSU9OXSA9IGNyZWF0ZV9hbnlfbWlkaV9xdWly
-aywKLQkJW1FVSVJLX01JRElfTUJPWDJdID0gY3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJ
-UktfTUlESV9SQVdfQllURVNdID0gY3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJUktfTUlE
-SV9FTUFHSUNdID0gY3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJUktfTUlESV9DTUVdID0g
-Y3JlYXRlX2FueV9taWRpX3F1aXJrLApAQCAtNTI4LDExICs1MjcsMTEgQEAgc3RhdGljIHZvaWQg
-bWJveDJfc2V0dXBfNDhfMjRfbWFnaWMoc3RydWN0IHVzYl9kZXZpY2UgKmRldikKICNkZWZpbmUg
-TUJPWDJfQk9PVF9MT0FESU5HICAgICAweDAxIC8qIEhhcmQgY29kZWQgaW50byB0aGUgZGV2aWNl
-ICovCiAjZGVmaW5lIE1CT1gyX0JPT1RfUkVBRFkgICAgICAgMHgwMiAvKiBIYXJkIGNvZGVkIGlu
-dG8gdGhlIGRldmljZSAqLwogCi1pbnQgc25kX3VzYl9tYm94Ml9ib290X3F1aXJrKHN0cnVjdCB1
-c2JfZGV2aWNlICpkZXYpCitzdGF0aWMgaW50IHNuZF91c2JfbWJveDJfYm9vdF9xdWlyayhzdHJ1
-Y3QgdXNiX2RldmljZSAqZGV2KQogewogCXN0cnVjdCB1c2JfaG9zdF9jb25maWcgKmNvbmZpZyA9
-IGRldi0+YWN0Y29uZmlnOwogCWludCBlcnI7Ci0JdTggYm9vdHJlc3BvbnNlOworCXU4IGJvb3Ry
-ZXNwb25zZVsxMl07CiAJaW50IGZ3c2l6ZTsKIAlpbnQgY291bnQ7CiAKQEAgLTU0NiwyMCArNTQ1
-LDIwIEBAIGludCBzbmRfdXNiX21ib3gyX2Jvb3RfcXVpcmsoc3RydWN0IHVzYl9kZXZpY2UgKmRl
-dikKIAlzbmRfcHJpbnRkKCJ1c2ItYXVkaW86IFNlbmRpbmcgRGlnaWRlc2lnbiBNYm94IDIgYm9v
-dCBzZXF1ZW5jZS4uLlxuIik7CiAKIAljb3VudCA9IDA7Ci0JYm9vdHJlc3BvbnNlID0gTUJPWDJf
-Qk9PVF9MT0FESU5HOwotCXdoaWxlICgoYm9vdHJlc3BvbnNlID09IE1CT1gyX0JPT1RfTE9BRElO
-RykgJiYgKGNvdW50IDwgMTApKSB7CisJYm9vdHJlc3BvbnNlWzBdID0gTUJPWDJfQk9PVF9MT0FE
-SU5HOworCXdoaWxlICgoYm9vdHJlc3BvbnNlWzBdID09IE1CT1gyX0JPT1RfTE9BRElORykgJiYg
-KGNvdW50IDwgMTApKSB7CiAJCW1zbGVlcCg1MDApOyAvKiAwLjUgc2Vjb25kIGRlbGF5ICovCiAJ
-CXNuZF91c2JfY3RsX21zZyhkZXYsIHVzYl9yY3ZjdHJscGlwZShkZXYsIDApLAogCQkJLyogQ29u
-dHJvbCBtYWdpYyAtIGxvYWQgb25ib2FyZCBmaXJtd2FyZSAqLwogCQkJMHg4NSwgMHhjMCwgMHgw
-MDAxLCAweDAwMDAsICZib290cmVzcG9uc2UsIDB4MDAxMik7Ci0JCWlmIChib290cmVzcG9uc2Ug
-PT0gTUJPWDJfQk9PVF9SRUFEWSkKKwkJaWYgKGJvb3RyZXNwb25zZVswXSA9PSBNQk9YMl9CT09U
-X1JFQURZKQogCQkJYnJlYWs7CiAJCXNuZF9wcmludGQoInVzYi1hdWRpbzogZGV2aWNlIG5vdCBy
-ZWFkeSwgcmVzZW5kaW5nIGJvb3Qgc2VxdWVuY2UuLi5cbiIpOwogCQljb3VudCsrOwogCX0KIAot
-CWlmIChib290cmVzcG9uc2UgIT0gTUJPWDJfQk9PVF9SRUFEWSkgewotCQlzbmRfcHJpbnRrKEtF
-Uk5fRVJSICJ1c2ItYXVkaW86IFVua25vd24gYm9vdHJlc3BvbnNlPSVkLCBvciB0aW1lZCBvdXQs
-IGlnbm9yaW5nIGRldmljZS5cbiIsIGJvb3RyZXNwb25zZSk7CisJaWYgKGJvb3RyZXNwb25zZVsw
-XSAhPSBNQk9YMl9CT09UX1JFQURZKSB7CisJCXNuZF9wcmludGsoS0VSTl9FUlIgInVzYi1hdWRp
-bzogVW5rbm93biBib290cmVzcG9uc2U9JWQsIG9yIHRpbWVkIG91dCwgaWdub3JpbmcgZGV2aWNl
-LlxuIiwgYm9vdHJlc3BvbnNlWzBdKTsKIAkJcmV0dXJuIC1FTk9ERVY7CiAJfQogCkBAIC02NjAs
-NyArNjU5LDYgQEAgc3RhdGljIGludCBhdWRpb3BoaWxlX3NraXBfc2V0dGluZ19xdWlyayhzdHJ1
-Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCwKIAlyZXR1cm4gMDsgLyoga2VlcCB0aGlzIGFsdHNldHRp
-bmcgKi8KIH0KIAotCiBzdGF0aWMgaW50IGZhc3R0cmFja3Byb19za2lwX3NldHRpbmdfcXVpcmso
-c3RydWN0IHNuZF91c2JfYXVkaW8gKmNoaXAsCiAJCQkJCSAgIGludCBpZmFjZSwgaW50IGFsdG5v
-KQogewpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3VzYmF1ZGlvLmggYi9zb3VuZC91c2IvdXNiYXVk
-aW8uaAppbmRleCBhODE3MmMxLi4xYWMzZmQ5IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvdXNiYXVk
-aW8uaAorKysgYi9zb3VuZC91c2IvdXNiYXVkaW8uaApAQCAtNzYsNyArNzYsNiBAQCBlbnVtIHF1
-aXJrX3R5cGUgewogCVFVSVJLX01JRElfWUFNQUhBLAogCVFVSVJLX01JRElfTUlESU1BTiwKIAlR
-VUlSS19NSURJX05PVkFUSU9OLAotCVFVSVJLX01JRElfTUJPWDIsCiAJUVVJUktfTUlESV9SQVdf
-QllURVMsCiAJUVVJUktfTUlESV9FTUFHSUMsCiAJUVVJUktfTUlESV9DTUUsCg==
---00235433379e89b3bd04d26c68a5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Node 0x13 [Jack] Line In at Sep Right
+Node 0x17 [Fixed] Aux at Oth Mobile-In
 
+-/* Initialisation sequence for ALC260 as configured in Fujitsu S702x
+- * laptops.  ALC260 pin usage: Mic/Line jack = 0x12, HP jack = 0x14, CD
+- * audio = 0x16, internal speaker = 0x10.
+- */
+-static const struct hda_verb alc260_fujitsu_ini
 
---00235433379e89b3bd04d26c68a5--
+Do the notebook really use node 0x16 CD ?
