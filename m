@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Allow runtime reconfiguration
-	of the output mode
-Date: Fri,  4 Jan 2013 19:37:04 +0000
-Message-ID: <1357328224-3859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/5] ASoC: simple-card: add Device Tree
+	support
+Date: Fri, 4 Jan 2013 19:37:13 +0000
+Message-ID: <20130104193712.GN4627@opensource.wolfsonmicro.com>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+ <50E71618.8090302@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5335060318640759412=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BF58F264F07
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 20:37:08 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3256A264F07
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 20:37:14 +0100 (CET)
+In-Reply-To: <50E71618.8090302@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,78 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some systems use external analogue switches to connect more analogue
-devices to the CODEC than are supported by the device.  In some systems
-this requires changing the switched output from single ended to
-differential mode dynamically at runtime. Add a new function
-arizona_set_output_mode() to support this.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |   34 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/arizona.h |    3 +++
- 2 files changed, 37 insertions(+)
+--===============5335060318640759412==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UOYwgDhKKQYesrzQ"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 7724b4b..6d98cf4 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1176,6 +1176,40 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
- }
- EXPORT_SYMBOL_GPL(arizona_init_fll);
- 
-+/**
-+ * arizona_set_output_mode - Set the mode of the specified output
-+ *
-+ * @codec: Device to configure
-+ * @output: Output number
-+ * @diff: True to set the output to differential mode
-+ *
-+ * Some systems use external analogue switches to connect more
-+ * analogue devices to the CODEC than are supported by the device.  In
-+ * some systems this requires changing the switched output from single
-+ * ended to differential mode dynamically at runtime, an operation
-+ * supported using this function.
-+ *
-+ * Most systems have a single static configuration and should use
-+ * platform data instead.
-+ */
-+int arizona_set_output_mode(struct snd_soc_codec *codec, int output, bool diff)
-+{
-+	unsigned int reg, val;
-+
-+	if (output < 1 || output > 6)
-+		return -EINVAL;
-+
-+	reg = ARIZONA_OUTPUT_PATH_CONFIG_1L + (output - 1) * 8;
-+
-+	if (diff)
-+		val = ARIZONA_OUT1_MONO;
-+	else
-+		val = 0;
-+
-+	return snd_soc_update_bits(codec, reg, ARIZONA_OUT1_MONO, val);
-+}
-+EXPORT_SYMBOL_GPL(arizona_set_output_mode);
-+
- MODULE_DESCRIPTION("ASoC Wolfson Arizona class device support");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 68dfae5..697ff6f 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -213,4 +213,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
- 
- extern int arizona_init_dai(struct arizona_priv *priv, int dai);
- 
-+int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
-+			    bool diff);
-+
- #endif
--- 
-1.7.10.4
+
+--UOYwgDhKKQYesrzQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jan 04, 2013 at 10:49:12AM -0700, Stephen Warren wrote:
+> On 12/25/2012 11:53 PM, Kuninori Morimoto wrote:
+
+> > +- simple,asoc,cpu		: phandle for platform
+
+> "cpu" isn't a very good name; it couuld mean anything. "platform" is an
+> ASoC-specific term. I think this would be better written as:
+
+> simple-audio,cpu-audio-controller : phandle of the CPU's audio controller
+
+> or perhaps:
+
+> simple-audio,cpu-port : phandle of the CPU's audio port
+
+> or since I assume this binding assumes I2S rather than say AC'97 or
+> SlimBus, perhaps:
+
+> simple-audio,i2c-controller : phandle of the CPU's I2S controller
+
+The binding is pretty agnostic as to the interface given that the
+bus-specifics are in optional properties.
+
+> > +- simple,asoc,sysclk			: system clock rate
+
+> "clock-frequency" rather than "sysclk" would be more consistent with
+> other bindings.
+
+I think specifying the particular clock being referenced is useful here
+- we may also end up wanting to specify the BCLK or sample rate due to
+some hardware limitation on some system both of which are clocks too.
+
+--UOYwgDhKKQYesrzQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ5y89AAoJELSic+t+oim9TZ0P/2qQosCjIeeZB4UoZumYs/ea
+V+sSt+UwQ55mHADa4qektWLW8OGr/ZQvmUrRBNy+mUvbnZOWzdOeYGwZd4Fnm+et
+366JOtScRiNir9EAg93787tKi7xhJi84nvOZhOu2vgN/SIZNp3YWcyaJW4TskNSH
+N/BFcSv1t6mPxdaTQbUXcB9EFYv3R5PKrZ+mbbg7+6r5SSqfN+Z+UirX5sqZ/7TD
+qAB/GluTJ+lYJPTXXYZ0Lb3J+0JmFlsYUeB89HIvGZkCy7h7KvDjRXRLocT/wwAF
+dR2RXw+FkCUtZGE161HeeQ780AZ1hfcJGQdPYm+TRKU1G9CLQPAkgln5+N5z8aI+
+oR4ug5RiYja9hr1Fp1eENe0SXwqXCa0J6lNTsCVhcFUy3uJKZQ1tEwzOtD5+G/gh
+IyFAjyTI+0er99eC58tJIznTeX779oDzyn+Ayz2zfH0uwkE1eUSb50ncvi2IZrZp
+5mZIVnYgyL4QCRLkhiqlONIBr8f1uJxpPhcTJD9Ddk/0sy46DHM/xUm+lUAmcUVy
+LRsqjEeq+PEsZOgb/ObCsztdUiVfeQJ2PNW2n/j8M0oGwA5taZeUbAHg8VlWMZcY
+TVURyxLDnEfJRgR4WuVqDMYR4slOxoacpo74/sqpZGAgJAQMGCC7qSnMnqqAZynl
+J6t3nRkLBWNfDD2CWTCN
+=sCrV
+-----END PGP SIGNATURE-----
+
+--UOYwgDhKKQYesrzQ--
+
+--===============5335060318640759412==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5335060318640759412==--
