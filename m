@@ -1,143 +1,40 @@
-From: Ricardo Neri <rneri@dextratech.com>
-Subject: [RESEND PATCH v3 3/5] ARM4: OMAP4+: HDMI: Relocate devices for audio codec and card
-Date: Fri,  4 Jan 2013 17:26:25 -0600
-Message-ID: <1357341987-3327-4-git-send-email-rneri@dextratech.com>
-References: <1357341987-3327-1-git-send-email-rneri@dextratech.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1357341987-3327-1-git-send-email-rneri@dextratech.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, lrg@ti.com, tony@atomide.com
-Cc: peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Ricardo Neri <rneri@dextratech.com>
+From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Subject: [PATCH v2 0/3] Tegra AC97 v2
+Date: Sat,  5 Jan 2013 02:18:42 +0100
+Message-ID: <1357348725-32139-1-git-send-email-dev@lynxeye.de>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Relocate the creation the platform devices for audio the HDMI audio codec and
-the audio card to display.c. This allows the display code to create the required
-platform devices based on what is wired on the board. Thus, as many devices as
-required are created; or none if the HDMI ouptut is not implemented.
+v2 of the Tegra AC97 series. Unmerged ASoC related patches only.
 
-Signed-off-by: Ricardo Neri <rneri@dextratech.com>
----
- arch/arm/mach-omap2/board-4430sdp.c    |    6 ------
- arch/arm/mach-omap2/board-omap4panda.c |    6 ------
- arch/arm/mach-omap2/devices.c          |    7 -------
- arch/arm/mach-omap2/display.c          |   31 +++++++++++++++++++++++++++++++
- 4 files changed, 31 insertions(+), 19 deletions(-)
+The machine driver now instantiates the codec driver by itself,
+without usage of DT. Other fixups for review feedback also included.
 
-diff --git a/arch/arm/mach-omap2/board-4430sdp.c b/arch/arm/mach-omap2/board-4430sdp.c
-index 5a486d9..0830d98 100644
---- a/arch/arm/mach-omap2/board-4430sdp.c
-+++ b/arch/arm/mach-omap2/board-4430sdp.c
-@@ -383,11 +383,6 @@ static struct platform_device sdp4430_dmic_codec = {
- 	.id	= -1,
- };
- 
--static struct platform_device sdp4430_hdmi_audio_codec = {
--	.name	= "hdmi-audio-codec",
--	.id	= -1,
--};
--
- static struct omap_abe_twl6040_data sdp4430_abe_audio_data = {
- 	.card_name = "SDP4430",
- 	.has_hs		= ABE_TWL6040_LEFT | ABE_TWL6040_RIGHT,
-@@ -422,7 +417,6 @@ static struct platform_device *sdp4430_devices[] __initdata = {
- 	&sdp4430_vbat,
- 	&sdp4430_dmic_codec,
- 	&sdp4430_abe_audio,
--	&sdp4430_hdmi_audio_codec,
- };
- 
- static struct omap_musb_board_data musb_board_data = {
-diff --git a/arch/arm/mach-omap2/board-omap4panda.c b/arch/arm/mach-omap2/board-omap4panda.c
-index 9f336a3..561a5a7 100644
---- a/arch/arm/mach-omap2/board-omap4panda.c
-+++ b/arch/arm/mach-omap2/board-omap4panda.c
-@@ -126,11 +126,6 @@ static struct platform_device panda_abe_audio = {
- 	},
- };
- 
--static struct platform_device panda_hdmi_audio_codec = {
--	.name	= "hdmi-audio-codec",
--	.id	= -1,
--};
--
- static struct platform_device btwilink_device = {
- 	.name	= "btwilink",
- 	.id	= -1,
-@@ -140,7 +135,6 @@ static struct platform_device *panda_devices[] __initdata = {
- 	&leds_gpio,
- 	&wl1271_device,
- 	&panda_abe_audio,
--	&panda_hdmi_audio_codec,
- 	&btwilink_device,
- };
- 
-diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
-index 66518b2..6d37438 100644
---- a/arch/arm/mach-omap2/devices.c
-+++ b/arch/arm/mach-omap2/devices.c
-@@ -355,11 +355,6 @@ static inline void omap_init_dmic(void) {}
- #if defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI) || \
- 		defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI_MODULE)
- 
--static struct platform_device omap_hdmi_audio = {
--	.name	= "omap-hdmi-audio-card",
--	.id	= -1,
--};
--
- static void __init omap_init_hdmi_audio(void)
- {
- 	struct omap_hwmod *oh;
-@@ -375,8 +370,6 @@ static void __init omap_init_hdmi_audio(void)
- 		-1, oh, NULL, 0, NULL, 0, 0);
- 	WARN(IS_ERR(pdev),
- 	     "Can't build omap_device for omap-hdmi-audio-dai.\n");
--
--	platform_device_register(&omap_hdmi_audio);
- }
- #else
- static inline void omap_init_hdmi_audio(void) {}
-diff --git a/arch/arm/mach-omap2/display.c b/arch/arm/mach-omap2/display.c
-index 282c814e..6cc9cea 100644
---- a/arch/arm/mach-omap2/display.c
-+++ b/arch/arm/mach-omap2/display.c
-@@ -414,6 +414,37 @@ int __init omap_display_init(struct omap_dss_board_info *board_data)
- 		}
- 	}
- 
-+	/* Create devices for HDMI audio drivers */
-+	for (i = 0; i < board_data->num_devices; i++) {
-+		struct platform_device *au_pdev;
-+		struct omap_dss_device *dssdev = board_data->devices[i];
-+		bool card_created = false;
-+
-+		if (dssdev->type != OMAP_DISPLAY_TYPE_HDMI)
-+			continue;
-+
-+		/* We need only one device for the audio card */
-+		if (card_created == false) {
-+			au_pdev = create_simple_dss_pdev("omap-hdmi-audio-card",
-+							 -1, NULL, 0, dss_pdev);
-+			if (IS_ERR(au_pdev)) {
-+				pr_err("Could not build platform_device for omap-hdmi-audio-card\n");
-+				return PTR_ERR(au_pdev);
-+			}
-+			card_created = true;
-+		}
-+
-+		/* One device for each HDMI connector in the board */
-+		au_pdev = create_simple_dss_pdev("hdmi-audio-codec",
-+						  dssdev->dev.id,
-+						  NULL, 0, dss_pdev);
-+		if (IS_ERR(au_pdev)) {
-+			pr_err("Could not build platform_device for hdmi-audio-codec\n");
-+			return PTR_ERR(au_pdev);
-+		}
-+
-+	}
-+
- 	return 0;
- }
- 
+I'll post a patch for the AC97 clock once Prashant patches land
+in a branch.
+
+Lucas Stach (3):
+  ASoC: tegra: add ac97 host driver
+  ASoC: tegra:  add ac97 host controller to device tree
+  ASoC: tegra: add tegra machine driver using wm9712 codec
+
+ .../bindings/sound/nvidia,tegra-audio-wm9712.txt   |  51 +++
+ .../bindings/sound/nvidia,tegra20-ac97.txt         |  22 +
+ arch/arm/boot/dts/tegra20.dtsi                     |   9 +
+ sound/soc/tegra/Kconfig                            |  19 +
+ sound/soc/tegra/Makefile                           |   4 +
+ sound/soc/tegra/tegra20_ac97.c                     | 480 +++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.h                     |  95 ++++
+ sound/soc/tegra/tegra_wm9712.c                     | 179 ++++++++
+ 8 files changed, 859 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-wm9712.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
+ create mode 100644 sound/soc/tegra/tegra20_ac97.c
+ create mode 100644 sound/soc/tegra/tegra20_ac97.h
+ create mode 100644 sound/soc/tegra/tegra_wm9712.c
+
 -- 
-1.7.10.4
-
+1.8.0.1
