@@ -1,87 +1,67 @@
-From: Vincent Blut <vincent.debian@free.fr>
-Subject: Re: [3.6.9 -> 3.7.1 regression] sound: snd_hda_intel codec probing
- issue?
-Date: Sat, 05 Jan 2013 22:24:03 +0100
-Message-ID: <1357421043.3912.13.camel@lamella>
-References: <1356704740.3953.26.camel@lamella>
-	 <s5hvcber5cz.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Missing exactly 3 of 8 audio packets?
+Date: Sun, 06 Jan 2013 18:42:03 +0100
+Message-ID: <50E9B76B.5030107@ladisch.de>
+References: <p06240802ccdd6fe50ce5@[192.168.1.8]>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hvcber5cz.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EC90F262634
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 18:42:47 +0100 (CET)
+In-Reply-To: <p06240802ccdd6fe50ce5@[192.168.1.8]>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Griscom <griscom@suitable.com>
+Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Le jeudi 03 janvier 2013 =C3=A0 10:19 +0100, Takashi Iwai a =C3=A9crit =
-:
-> At Fri, 28 Dec 2012 15:25:40 +0100,
-> Vincent Blut wrote:
-> >=20
-> > Hi,
-> >=20
-> > Since I updated to Linux 3.7.1, listening to some audio/video bits
-> > frequently cause the following:
-> >=20
-> > [ 7896.166946] hda-intel: azx_get_response timeout, switching to po=
-lling
-> > mode: last cmd=3D0x020c0000
-> > [ 7897.173444] hda-intel: No response from codec, disabling MSI: la=
-st
-> > cmd=3D0x020c0000
-> > [ 7898.179932] hda_intel: azx_get_response timeout, switching to
-> > single_cmd mode: last cmd=3D0x020c0000
-> > [ 7898.179983] hda-codec: out of range cmd 0:0:20:400:fffff7ff
-> > [ 9445.034371] plugin-containe[5873]: segfault at 7f44bb95e639 ip
-> > 00007f44e454bca0 sp 00007f44c91165f8 error 4 in
-> > libc-2.13.so[7f44e442c000+180000]
-> >=20
-> > It seems to be a codec probing failure (?). This is really fatal be=
-cause
-> > the sound become very choppy and can't recover until I reboot.
-> > I'll try to play with 'probe_mask' kernel parameter to see if I can
-> > narrow the correct codec slots!
-> >=20
-> > By the way I can't reproduce this on 3.6.9, so is there something t=
-hat
-> > changed in this area in 3.7.1?
->=20
-> If it's new in 3.7, this could be a regression by runtime D3.
-> Try to pass power_save_controller=3D0 option to snd-hda-intel module
-> (or change it via sysfs dynamically).
->=20
->=20
-> thanks,
->=20
-> Takashi
+Sorry for the delay.
 
-Hi Takashi,
+Daniel Griscom wrote:
+> I'd like to conclude this thread if I could. It seems clear that
+> configuring our USB audio card's descriptor with a bInterval value of
+> 1 (a packet every microframe) was too aggressive, and was part of what
+> caused the packet stuttering issue. (Right?)
 
-Well, power_save_controller=3D0 seems to do the trick but I get plenty =
-of:
+Yes.
+
+> We almost certainly should increase bInterval; I'll try 2, and if that
+> seems stable will probably go to 3 (4 microframes) for some margin.
+> However, I'm still concerned that the symptoms don't sound like
+> a simple starvation issue, where I'd expect to have a missing frame
+> every once in a while. Instead, we were seeing reliable operation
+> interspersed with periods where lots of packets were being consistently
+> omitted. To me, this suggests that there's some other issue going on,
+> either in the USB stack or in the USB hardware itself.
+
+The starvation seems to be in either the memory controller or in the
+coherence traffic between the MC and the CPU cache.  I'd guess that
+something else does enough I/O to affect this.
+
+As I've already said, the pattern could be explained by some memory
+read packet arriving too late at the USB controller, thus not only
+making it impossible to send the current packet, but also delaying the
+memory accesses of the next packet.
+
+> Given that, I'm worried that increasing bInterval will just move the
+> symptoms around, making it harder to duplicate but not truly becoming
+> robust.
+
+You could try to trigger the problem by doing many memory access (more
+than fit into the cache), or by doing I/O through other PCI devices.
+
+But if increasing bInterval works, you can be sure that some effect of
+the increased USB transaction management is responsible for the problem.
 
 
-[   15.389270] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-[   25.178725] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-[   72.296536] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-[ 2318.147505] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-[ 6086.029839] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-[ 7390.772818] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x37
-[snd_hda_intel] returns -11
-
-
-which I think is fixed in 3.8 by commit 6eb827d23577
-
-So what's the next step? Adding a quirk for this sound card? Or is ther=
-e
-a way to fix the root cause?=20
-
-Cheers,
-Vincent
+Regards,
+Clemens
