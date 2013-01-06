@@ -1,128 +1,70 @@
-From: Mike Dunn <mikedunn@newsguy.com>
-Subject: [PATCH 4/4] ALSA: pxa27x: rename pxa27x_assert_ac97()
-Date: Sun,  6 Jan 2013 11:14:00 -0800
-Message-ID: <1357499640-13871-5-git-send-email-mikedunn@newsguy.com>
-References: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
+From: Jean-Samuel Reynaud <js.reynaud@gmail.com>
+Subject: Roland-Boss RC-300 support
+Date: Sun, 6 Jan 2013 20:16:31 +0100
+Message-ID: <CAEzrNVQop3Og5KwcHM9cHH_FdUWEkD4iBx-dBBxeEsuH_+o1JA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: multipart/mixed; boundary=047d7b111e65dfdfa204d2a38caa
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pb0-f49.google.com (mail-pb0-f49.google.com
+ [209.85.160.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04764264FF5
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 20:16:32 +0100 (CET)
+Received: by mail-pb0-f49.google.com with SMTP id un15so10084043pbc.22
+ for <alsa-devel@alsa-project.org>; Sun, 06 Jan 2013 11:16:32 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Marek Vasut <marex@denx.de>, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch does nothing functionally, it just gives the function a new name and
-modifies the prototype slightly in order to clarify what the function is doing
-(which is not necessarily asserting the reset).
-Some commentary also added.
+--047d7b111e65dfdfa204d2a38caa
+Content-Type: text/plain; charset=ISO-8859-1
 
-Tested on a palm treo 680 machine.
+Hi All,
 
-Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
----
+I have a Boss RC-300 loop station with an USB connector. The windows
+driver add an audio device but it was not working under linux. So
+please find attached, the patch for supporting audio in this device.
+Note that midi is not working yet but I'm working on it...
 
-checkpatch.pl issues a warning for this patch:
-	      WARNING: externs should be avoided in .c files
-but I just want to rename the function.
 
- arch/arm/mach-pxa/pxa27x.c  |   29 +++++++++++++++++++----------
- sound/arm/pxa2xx-ac97-lib.c |    8 ++++----
- 2 files changed, 23 insertions(+), 14 deletions(-)
+Regards,
 
-diff --git a/arch/arm/mach-pxa/pxa27x.c b/arch/arm/mach-pxa/pxa27x.c
-index eea90fe..896bf94 100644
---- a/arch/arm/mach-pxa/pxa27x.c
-+++ b/arch/arm/mach-pxa/pxa27x.c
-@@ -53,26 +53,35 @@ static unsigned long ac97_reset_config[] = {
- 	GPIO95_AC97_nRESET,
- };
- 
--void pxa27x_assert_ac97reset(int reset_gpio, int on)
-+void pxa27x_configure_ac97reset(int reset_mfp, bool to_gpio)
- {
-+	/*
-+	 * This helper function is used to work around a bug in the pxa27x's
-+	 * ac97 controller during a warm reset.  The configuration of the
-+	 * reset_mfp is changed as follows:
-+	 * to_gpio == true: configured to generic output gpio and driven high
-+	 * to_gpio == false: configured to ac97 controller alt fn AC97_nRESET
-+	 */
-+
- 	/* set direction and level before switching from ac97 alt fn to gpio */
--	if (on) {
--		int ret = gpio_direction_output(reset_gpio, 1);
-+	if (to_gpio == true) {
-+		int ret = gpio_direction_output(reset_mfp, 1);
- 		if (ret) {
- 			pr_err("%s: gpio_direction_output failed: %d\n",
- 				__func__, ret);
- 			return;
- 		}
- 	}
--	if (reset_gpio == 113)
--		pxa2xx_mfp_config(on ? &ac97_reset_config[0] :
--				       &ac97_reset_config[1], 1);
- 
--	if (reset_gpio == 95)
--		pxa2xx_mfp_config(on ? &ac97_reset_config[2] :
--				       &ac97_reset_config[3], 1);
-+	if (reset_mfp == 113)
-+		pxa2xx_mfp_config(to_gpio ? &ac97_reset_config[0] :
-+				  &ac97_reset_config[1], 1);
-+
-+	if (reset_mfp == 95)
-+		pxa2xx_mfp_config(to_gpio ? &ac97_reset_config[2] :
-+				  &ac97_reset_config[3], 1);
- }
--EXPORT_SYMBOL_GPL(pxa27x_assert_ac97reset);
-+EXPORT_SYMBOL_GPL(pxa27x_configure_ac97reset);
- 
- /* Crystal clock: 13MHz */
- #define BASE_CLK	13000000
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 416d2e3..fbac476 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -34,7 +34,7 @@ static struct clk *ac97_clk;
- static struct clk *ac97conf_clk;
- static int reset_gpio;
- 
--extern void pxa27x_assert_ac97reset(int reset_gpio, int on);
-+extern void pxa27x_configure_ac97reset(int reset_mfp, bool to_gpio);
- 
- /*
-  * Beware PXA27x bugs:
-@@ -140,10 +140,10 @@ static inline void pxa_ac97_warm_pxa27x(void)
- 	gsr_bits = 0;
- 
- 	/* warm reset broken on Bulverde, so manually keep AC97 reset high */
--	pxa27x_assert_ac97reset(reset_gpio, 1);
-+	pxa27x_configure_ac97reset(reset_gpio, true);
- 	udelay(10);
- 	GCR |= GCR_WARM_RST;
--	pxa27x_assert_ac97reset(reset_gpio, 0);
-+	pxa27x_configure_ac97reset(reset_gpio, false);
- 	udelay(500);
- }
- 
-@@ -351,7 +351,7 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
- 			       __func__, ret);
- 			goto err_conf;
- 		}
--		pxa27x_assert_ac97reset(reset_gpio, 0);
-+		pxa27x_configure_ac97reset(reset_gpio, false);
- 		ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
- 		if (IS_ERR(ac97conf_clk)) {
- 			ret = PTR_ERR(ac97conf_clk);
--- 
-1.7.8.6
+--047d7b111e65dfdfa204d2a38caa
+Content-Type: application/octet-stream; name="rc-300.diff"
+Content-Disposition: attachment; filename="rc-300.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hbmkb8j60
+
+KioqIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaC5vbGQJMjAxMy0wMS0wNSAyMjoyMDowNi4wMDAw
+MDAwMDAgKzAxMDAKLS0tIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaAkyMDEzLTAxLTA2IDIwOjEx
+OjMxLjU3MzMyMzA0NiArMDEwMAoqKioqKioqKioqKioqKioKKioqIDMyNCwzMjkgKioqKgotLS0g
+MzI0LDM1OSAtLS0tCiAgICogUm9sYW5kL1JvbGFuZEVEL0VkaXJvbC9CT1NTIGRldmljZXMKICAg
+Ki8KICB7CisgCVVTQl9ERVZJQ0UoMHgwNTgyLCAweDAxMzgpLAorIAkuZHJpdmVyX2luZm8gPSAo
+dW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKKyAJ
+CS52ZW5kb3JfbmFtZSA9ICJSb2xhbmQiLAorIAkJLnByb2R1Y3RfbmFtZSA9ICJSQy0zMDAiLAor
+IAkJLmlmbnVtID0gUVVJUktfQU5ZX0lOVEVSRkFDRSwKKyAJCS50eXBlID0gUVVJUktfQ09NUE9T
+SVRFLAorIAkJLmRhdGEgPSAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgewor
+IAkJCXsKKyAJCQkJLmlmbnVtID0gMCwKKyAJCQkJLnR5cGUgPSBRVUlSS19JR05PUkVfSU5URVJG
+QUNFCisgCQkJfSwKKyAJCQl7CisgCQkJICAuaWZudW0gPSAxLCAvLyBPVVQKKyAJCQkJLnR5cGUg
+PSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKyAJCQl9LAorIAkJCXsKKyAJCQkgIC5p
+Zm51bSA9IDIsIC8vIElOCisgCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJG
+QUNFCisgCQkJfSwKKyAJCQl7CisgCQkJICAuaWZudW0gPSAzLCAvLyBNaWRpCisgCQkJCS50eXBl
+ID0gUVVJUktfTUlESV9TVEFOREFSRF9JTlRFUkZBQ0UKKyAJCQl9LAorIAkJCXsKKyAJCQkJLmlm
+bnVtID0gLTEKKyAJCQl9CisgCQl9CisgCX0KKyB9LAorIHsKICAJVVNCX0RFVklDRSgweDA1ODIs
+IDB4MDAwMCksCiAgCS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1
+Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgewogIAkJLnZlbmRvcl9uYW1lID0gIlJvbGFuZCIsCg==
+--047d7b111e65dfdfa204d2a38caa
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--047d7b111e65dfdfa204d2a38caa--
