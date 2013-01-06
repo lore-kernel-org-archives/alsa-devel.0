@@ -1,16 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Missing exactly 3 of 8 audio packets?
-Date: Sun, 06 Jan 2013 18:42:03 +0100
-Message-ID: <50E9B76B.5030107@ladisch.de>
-References: <p06240802ccdd6fe50ce5@[192.168.1.8]>
+From: Mike Dunn <mikedunn@newsguy.com>
+Subject: [PATCH 0/4] ALSA: pxa27x: ac97 reset fixes
+Date: Sun,  6 Jan 2013 11:13:56 -0800
+Message-ID: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EC90F262634
- for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 18:42:47 +0100 (CET)
-In-Reply-To: <p06240802ccdd6fe50ce5@[192.168.1.8]>
+Received: from smtp.newsguy.com (smtp.newsguy.com [74.209.136.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0621B264F1C
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 20:14:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Griscom <griscom@suitable.com>
-Cc: Alsa Developer <alsa-devel@alsa-project.org>, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Marek Vasut <marex@denx.de>, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for the delay.
+AC97 reset is broken on the pxa27x.  These patches fix it by addressing multiple
+problems:
+  - cold reset fails because the GCR register is not set correctly
+  - warm reset fails because some code used to work around a hardware bug is
+    broken
+  - the intent of the work-around code is obfuscated by unfortunate function
+    naming
 
-Daniel Griscom wrote:
-> I'd like to conclude this thread if I could. It seems clear that
-> configuring our USB audio card's descriptor with a bInterval value of
-> 1 (a packet every microframe) was too aggressive, and was part of what
-> caused the packet stuttering issue. (Right?)
+This patch set replaces some earlier individual patches that had some problems.
+Thanks Robert and Igor.
 
-Yes.
+Mike Dunn (4):
+  ALSA: pxa27x: fix ac97 cold reset
+  ALSA: pxa27x: fix ac97 warm reset bug work-around code
+  ALSA: pxa27x: ac97 controller driver requests gpio
+  ALSA: pxa27x: rename pxa27x_assert_ac97()
 
-> We almost certainly should increase bInterval; I'll try 2, and if that
-> seems stable will probably go to 3 (4 microframes) for some margin.
-> However, I'm still concerned that the symptoms don't sound like
-> a simple starvation issue, where I'd expect to have a missing frame
-> every once in a while. Instead, we were seeing reliable operation
-> interspersed with periods where lots of packets were being consistently
-> omitted. To me, this suggests that there's some other issue going on,
-> either in the USB stack or in the USB hardware itself.
+ arch/arm/mach-pxa/include/mach/mfp-pxa27x.h |    3 ++
+ arch/arm/mach-pxa/pxa27x.c                  |   38 +++++++++++++++++++-------
+ sound/arm/pxa2xx-ac97-lib.c                 |   26 +++++++++++++-----
+ 3 files changed, 50 insertions(+), 17 deletions(-)
 
-The starvation seems to be in either the memory controller or in the
-coherence traffic between the MC and the CPU cache.  I'd guess that
-something else does enough I/O to affect this.
-
-As I've already said, the pattern could be explained by some memory
-read packet arriving too late at the USB controller, thus not only
-making it impossible to send the current packet, but also delaying the
-memory accesses of the next packet.
-
-> Given that, I'm worried that increasing bInterval will just move the
-> symptoms around, making it harder to duplicate but not truly becoming
-> robust.
-
-You could try to trigger the problem by doing many memory access (more
-than fit into the cache), or by doing I/O through other PCI devices.
-
-But if increasing bInterval works, you can be sure that some effect of
-the increased USB transaction management is responsible for the problem.
-
-
-Regards,
-Clemens
+-- 
+1.7.8.6
