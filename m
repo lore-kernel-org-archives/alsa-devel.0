@@ -1,14 +1,16 @@
 From: Mike Dunn <mikedunn@newsguy.com>
-Subject: [PATCH 0/4] ALSA: pxa27x: ac97 reset fixes
-Date: Sun,  6 Jan 2013 11:13:56 -0800
-Message-ID: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
+Subject: [PATCH 1/4] ALSA: pxa2xx: fix ac97 cold reset
+Date: Sun,  6 Jan 2013 11:13:57 -0800
+Message-ID: <1357499640-13871-2-git-send-email-mikedunn@newsguy.com>
+References: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.newsguy.com (smtp.newsguy.com [74.209.136.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 0621B264F1C
- for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 20:14:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D005264F2C
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2013 20:14:23 +0100 (CET)
+In-Reply-To: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +24,48 @@ To: alsa-devel@alsa-project.org
 Cc: Marek Vasut <marex@denx.de>, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-AC97 reset is broken on the pxa27x.  These patches fix it by addressing multiple
-problems:
-  - cold reset fails because the GCR register is not set correctly
-  - warm reset fails because some code used to work around a hardware bug is
-    broken
-  - the intent of the work-around code is obfuscated by unfortunate function
-    naming
+Cold reset on the pxa27x currently fails and
 
-This patch set replaces some earlier individual patches that had some problems.
-Thanks Robert and Igor.
+     pxa2xx_ac97_try_cold_reset: cold reset timeout (GSR=0x44)
 
-Mike Dunn (4):
-  ALSA: pxa27x: fix ac97 cold reset
-  ALSA: pxa27x: fix ac97 warm reset bug work-around code
-  ALSA: pxa27x: ac97 controller driver requests gpio
-  ALSA: pxa27x: rename pxa27x_assert_ac97()
+appears in the kernel log.  Through trial-and-error (the pxa270 developer's
+manual is mostly incoherent on the topic of ac97 reset), I got cold reset to
+complete by setting the WARM_RST bit in the GCR register (and later noticed that
+pxa3xx does this for cold reset as well).  Also, a timeout loop is needed to
+wait for the reset to complete.
 
- arch/arm/mach-pxa/include/mach/mfp-pxa27x.h |    3 ++
- arch/arm/mach-pxa/pxa27x.c                  |   38 +++++++++++++++++++-------
- sound/arm/pxa2xx-ac97-lib.c                 |   26 +++++++++++++-----
- 3 files changed, 50 insertions(+), 17 deletions(-)
+Tested on a palm treo 680 machine.
 
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ sound/arm/pxa2xx-ac97-lib.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 6fc0ae9..1ecd0a66 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -148,6 +148,8 @@ static inline void pxa_ac97_warm_pxa27x(void)
+ 
+ static inline void pxa_ac97_cold_pxa27x(void)
+ {
++	unsigned int timeout;
++
+ 	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
+ 	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
+ 
+@@ -157,8 +159,10 @@ static inline void pxa_ac97_cold_pxa27x(void)
+ 	clk_enable(ac97conf_clk);
+ 	udelay(5);
+ 	clk_disable(ac97conf_clk);
+-	GCR = GCR_COLD_RST;
+-	udelay(50);
++	GCR = GCR_COLD_RST | GCR_WARM_RST;
++	timeout = 100;     /* wait for the codec-ready bit to be set */
++	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
++		mdelay(1);
+ }
+ #endif
+ 
 -- 
 1.7.8.6
