@@ -1,89 +1,95 @@
-From: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH 3/4] ALSA: pxa27x: ac97 controller driver requests gpio
-Date: Mon, 07 Jan 2013 11:42:03 +0200
-Message-ID: <50EA986B.70308@compulab.co.il>
-References: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
- <1357499640-13871-4-git-send-email-mikedunn@newsguy.com>
- <50EA9710.3060107@compulab.co.il>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <50EA9710.3060107@compulab.co.il>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Igor Grinberg <grinberg@compulab.co.il>
-Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - add mute LED for HP Pavilion 17 (Realtek codec)
+Date: Mon,  7 Jan 2013 10:51:29 +0100
+Message-ID: <1357552289-3232-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 1096789@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/13 11:36, Igor Grinberg wrote:
-> On 01/06/13 21:13, Mike Dunn wrote:
->> During initialization, the ac97 driver must obtain the gpio for the mfp that is
->> used by the ac97 controller as the AC97_nRESET line, or else gpiolib will issue
->> a warning and stack dump.  Gpiolib may change this to a hard error soon.  The
->> line is used during an ac97 warm reset for working around a hardware bug in the
->> controller.
->>
->> Tested on a palm treo 680 machine.
->>
->> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
->> ---
->>  sound/arm/pxa2xx-ac97-lib.c |   10 +++++++++-
->>  1 files changed, 9 insertions(+), 1 deletions(-)
->>
->> diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
->> index 1ecd0a66..416d2e3 100644
->> --- a/sound/arm/pxa2xx-ac97-lib.c
->> +++ b/sound/arm/pxa2xx-ac97-lib.c
->> @@ -18,6 +18,7 @@
->>  #include <linux/delay.h>
->>  #include <linux/module.h>
->>  #include <linux/io.h>
->> +#include <linux/gpio.h>
->>  
->>  #include <sound/ac97_codec.h>
->>  #include <sound/pxa2xx-lib.h>
->> @@ -344,7 +345,12 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
->>  	}
->>  
->>  	if (cpu_is_pxa27x()) {
->> -		/* Use GPIO 113 as AC97 Reset on Bulverde */
->> +		ret = gpio_request(reset_gpio, "pxa27x ac97 reset");
->> +		if (ret < 0) {
->> +			pr_err("%s: gpio_request() failed: %d\n",
->> +			       __func__, ret);
->> +			goto err_conf;
->> +		}
-> 
-> I think if we are fine with the request in the driver,
-> then we should move the direction and value configuration also
-> to the driver, but let the pxa27x_assert_ac97reset() only switch
-> the AF.
+The mute LED is in this case connected to the Mic1 VREF.
 
-Also this patch should be combined with 2/4.
+The machine also exposes the following string in BIOS:
+"HP_Mute_LED_0_A", so if more machines are coming, it probably
+makes sense to try to do something more generic, like for the
+IDT codec.
 
-> 
->>  		pxa27x_assert_ac97reset(reset_gpio, 0);
->>  		ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
->>  		if (IS_ERR(ac97conf_clk)) {
->> @@ -388,6 +394,8 @@ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_probe);
->>  
->>  void pxa2xx_ac97_hw_remove(struct platform_device *dev)
->>  {
->> +	if (cpu_is_pxa27x())
->> +		gpio_free(reset_gpio);
->>  	GCR |= GCR_ACLINK_OFF;
->>  	free_irq(IRQ_AC97, NULL);
->>  	if (ac97conf_clk) {
-> 
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1096789
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
+I know this is a copy-paste, but I didn't really find a better and more
+condensed way to do it. Perhaps if we get a third variation it would make
+sense to write a more generic version.
+
+Also, Alsa-info is available at https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1096789/+attachment/3476010/+files/alsa-info.txt
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6ee3459..2e6803e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5992,7 +5992,30 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
+ 	spec->automute_hook = alc269_quanta_automute;
+ }
+ 
+-/* update mute-LED according to the speaker mute state via mic2 VREF pin */
++/* update mute-LED according to the speaker mute state via mic VREF pin */
++static void alc269_fixup_mic1_mute_hook(void *private_data, int enabled)
++{
++	struct hda_codec *codec = private_data;
++	unsigned int pinval = AC_PINCTL_IN_EN + (enabled ?
++			      AC_PINCTL_VREF_HIZ : AC_PINCTL_VREF_80);
++	snd_hda_set_pin_ctl_cache(codec, 0x18, pinval);
++}
++
++static void alc269_fixup_mic1_mute(struct hda_codec *codec,
++				   const struct alc_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	switch (action) {
++	case ALC_FIXUP_ACT_BUILD:
++		spec->vmaster_mute.hook = alc269_fixup_mic1_mute_hook;
++		snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
++		/* fallthru */
++	case ALC_FIXUP_ACT_INIT:
++		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
++		break;
++	}
++}
++
+ static void alc269_fixup_mic2_mute_hook(void *private_data, int enabled)
+ {
+ 	struct hda_codec *codec = private_data;
+@@ -6043,6 +6066,7 @@ enum {
+ 	ALC269_FIXUP_DMIC,
+ 	ALC269VB_FIXUP_AMIC,
+ 	ALC269VB_FIXUP_DMIC,
++	ALC269_FIXUP_MIC1_MUTE_LED,
+ 	ALC269_FIXUP_MIC2_MUTE_LED,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
+@@ -6171,6 +6195,10 @@ static const struct alc_fixup alc269_fixups[] = {
+ 			{ }
+ 		},
+ 	},
++	[ALC269_FIXUP_MIC1_MUTE_LED] = {
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc269_fixup_mic1_mute,
++	},
+ 	[ALC269_FIXUP_MIC2_MUTE_LED] = {
+ 		.type = ALC_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_mic2_mute,
+@@ -6215,6 +6243,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_MIC2_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x1972, "HP Pavilion 17", ALC269_FIXUP_MIC1_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
 -- 
-Regards,
-Igor.
+1.7.9.5
