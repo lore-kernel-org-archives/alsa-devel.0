@@ -1,36 +1,88 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Alsa snapshot directory layout changed
-Date: Mon, 07 Jan 2013 11:58:10 +0100
-Message-ID: <50EAAA42.9020701@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D4F3D2650D1
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2013 11:58:09 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: [PATCH v2] ALSA: hda - add mute LED for HP Pavilion 17 (Realtek codec)
+Date: Mon,  7 Jan 2013 12:03:47 +0100
+Message-ID: <1357556627-4178-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 1096789@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I have a script that picks daily snapshots from 
-ftp://ftp.suse.com/pub/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
-...and I just noticed that the directory layout has changed, so what was 
-"alsa-driver" is now "alsa-driver/alsa".
+The mute LED is in this case connected to the Mic1 VREF.
 
-Is this expected, i e, should I update my script to follow this new 
-layout, or was it a mistake?
+The machine also exposes the following string in BIOS:
+"HP_Mute_LED_0_A", so if more machines are coming, it probably
+makes sense to try to do something more generic, like for the
+IDT codec.
 
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1096789
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6ee3459..71ae23d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5992,6 +5992,30 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
+ 	spec->automute_hook = alc269_quanta_automute;
+ }
+ 
++/* update mute-LED according to the speaker mute state via mic1 VREF pin */
++static void alc269_fixup_mic1_mute_hook(void *private_data, int enabled)
++{
++	struct hda_codec *codec = private_data;
++	unsigned int pinval = AC_PINCTL_IN_EN + (enabled ?
++			      AC_PINCTL_VREF_HIZ : AC_PINCTL_VREF_80);
++	snd_hda_set_pin_ctl_cache(codec, 0x18, pinval);
++}
++
++static void alc269_fixup_mic1_mute(struct hda_codec *codec,
++				   const struct alc_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	switch (action) {
++	case ALC_FIXUP_ACT_BUILD:
++		spec->vmaster_mute.hook = alc269_fixup_mic1_mute_hook;
++		snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
++		/* fallthru */
++	case ALC_FIXUP_ACT_INIT:
++		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
++		break;
++	}
++}
++
+ /* update mute-LED according to the speaker mute state via mic2 VREF pin */
+ static void alc269_fixup_mic2_mute_hook(void *private_data, int enabled)
+ {
+@@ -6043,6 +6067,7 @@ enum {
+ 	ALC269_FIXUP_DMIC,
+ 	ALC269VB_FIXUP_AMIC,
+ 	ALC269VB_FIXUP_DMIC,
++	ALC269_FIXUP_MIC1_MUTE_LED,
+ 	ALC269_FIXUP_MIC2_MUTE_LED,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
+@@ -6171,6 +6196,10 @@ static const struct alc_fixup alc269_fixups[] = {
+ 			{ }
+ 		},
+ 	},
++	[ALC269_FIXUP_MIC1_MUTE_LED] = {
++		.type = ALC_FIXUP_FUNC,
++		.v.func = alc269_fixup_mic1_mute,
++	},
+ 	[ALC269_FIXUP_MIC2_MUTE_LED] = {
+ 		.type = ALC_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_mic2_mute,
+@@ -6215,6 +6244,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_MIC2_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x1972, "HP Pavilion 17", ALC269_FIXUP_MIC1_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.7.9.5
