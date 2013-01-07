@@ -1,16 +1,15 @@
 From: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH 1/4] ALSA: pxa2xx: fix ac97 cold reset
-Date: Mon, 07 Jan 2013 17:28:22 +0200
-Message-ID: <50EAE996.8080401@compulab.co.il>
+Subject: Re: [PATCH 3/4] ALSA: pxa27x: ac97 controller driver requests gpio
+Date: Mon, 07 Jan 2013 17:38:00 +0200
+Message-ID: <50EAEBD8.40002@compulab.co.il>
 References: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
- <1357499640-13871-2-git-send-email-mikedunn@newsguy.com>
- <50EA9287.5030304@compulab.co.il> <50EACF4D.4000602@newsguy.com>
- <50EAD43C.2040406@compulab.co.il> <50EAD983.5060801@newsguy.com>
+ <1357499640-13871-4-git-send-email-mikedunn@newsguy.com>
+ <50EA9710.3060107@compulab.co.il> <50EAD73C.3050401@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <50EAD983.5060801@newsguy.com>
+In-Reply-To: <50EAD73C.3050401@newsguy.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -24,52 +23,65 @@ To: Mike Dunn <mikedunn@newsguy.com>
 Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/13 16:19, Mike Dunn wrote:
-> On 01/07/2013 05:57 AM, Igor Grinberg wrote:
->> On 01/07/13 15:36, Mike Dunn wrote:
->>> On 01/07/2013 01:16 AM, Igor Grinberg wrote:
->>>> On 01/06/13 21:13, Mike Dunn wrote:
+On 01/07/13 16:10, Mike Dunn wrote:
+> On 01/07/2013 01:36 AM, Igor Grinberg wrote:
+>> On 01/06/13 21:13, Mike Dunn wrote:
+>>> During initialization, the ac97 driver must obtain the gpio for the mfp that is
+>>> used by the ac97 controller as the AC97_nRESET line, or else gpiolib will issue
+>>> a warning and stack dump.  Gpiolib may change this to a hard error soon.  The
+>>> line is used during an ac97 warm reset for working around a hardware bug in the
+>>> controller.
 >>>
+>>> Tested on a palm treo 680 machine.
 >>>
->>> [..]
+>>> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+>>> ---
+>>>  sound/arm/pxa2xx-ac97-lib.c |   10 +++++++++-
+>>>  1 files changed, 9 insertions(+), 1 deletions(-)
 >>>
->>>
->>>>>  static inline void pxa_ac97_cold_pxa27x(void)
->>>>>  {
->>>>> +	unsigned int timeout;
->>>>> +
->>>>>  	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
->>>>>  	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
->>>>>  
->>>>> @@ -157,8 +159,10 @@ static inline void pxa_ac97_cold_pxa27x(void)
->>>>>  	clk_enable(ac97conf_clk);
->>>>>  	udelay(5);
->>>>>  	clk_disable(ac97conf_clk);
->>>>> -	GCR = GCR_COLD_RST;
->>>>> -	udelay(50);
->>>>> +	GCR = GCR_COLD_RST | GCR_WARM_RST;
->>>>> +	timeout = 100;     /* wait for the codec-ready bit to be set */
->>>>> +	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
->>>>> +		mdelay(1);
->>>>
->>>> Can we use msleep() instead?
->>>> May be this will require to change the granularity to 10...
->>>
->>>
->>> Probably.  mdelay() is used by similiar code in the same file, so I just stayed
->>> consistent.  The code runs very infrequently, so I didn't worry about it.
+>>> diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+>>> index 1ecd0a66..416d2e3 100644
+>>> --- a/sound/arm/pxa2xx-ac97-lib.c
+>>> +++ b/sound/arm/pxa2xx-ac97-lib.c
+>>> @@ -18,6 +18,7 @@
+>>>  #include <linux/delay.h>
+>>>  #include <linux/module.h>
+>>>  #include <linux/io.h>
+>>> +#include <linux/gpio.h>
+>>>  
+>>>  #include <sound/ac97_codec.h>
+>>>  #include <sound/pxa2xx-lib.h>
+>>> @@ -344,7 +345,12 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
+>>>  	}
+>>>  
+>>>  	if (cpu_is_pxa27x()) {
+>>> -		/* Use GPIO 113 as AC97 Reset on Bulverde */
+>>> +		ret = gpio_request(reset_gpio, "pxa27x ac97 reset");
+>>> +		if (ret < 0) {
+>>> +			pr_err("%s: gpio_request() failed: %d\n",
+>>> +			       __func__, ret);
+>>> +			goto err_conf;
+>>> +		}
 >>
->> Well, if we can, I think we'd better do, no?
+>> I think if we are fine with the request in the driver,
+>> then we should move the direction and value configuration also
+>> to the driver, but let the pxa27x_assert_ac97reset() only switch
+>> the AF.
 > 
 > 
-> If you feel strongly about it, I'll defer to you.  But again my arguments are
-> (1) the code runs very infrequently, and (2) very similar code for the other pxa
-> family siblings uses mdelay().
+> Well, I won't make a fuss on this point, but with code that runs very
+> infrequently, I thought that the cost of a call to gpio_direction_output() was
+> worth the clarity and insurance.
 
-No, not too strong, but please, don't argument your code with something like:
-"there are other places where this is done", because it might be done
-improperly and just go in unnoticed.
+This is not about how frequent the code runs, but the fact that the arch code
+relies on sound code (outside of arch) to request the GPIO for it.
+I would recommend to place the GPIO request call along with the
+direction/value calls - in the same subsystem.
 
+Also, the patch ordering is not good:
+patch 2 drives the GPIO, and patch 3 requests it,
+whereas it should be the other way around, so I would recommend to
+combine both into one.
 
 -- 
 Regards,
