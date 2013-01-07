@@ -1,15 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Ensure that block writes are
-	from DMA aligned addresses
-Date: Mon,  7 Jan 2013 18:45:04 +0000
-Message-ID: <1357584304-703-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mike Dunn <mikedunn@newsguy.com>
+Subject: [PATCH 0/3] ALSA: pxa27x: ac97 reset fixes
+Date: Mon,  7 Jan 2013 13:55:11 -0800
+Message-ID: <1357595714-13698-1-git-send-email-mikedunn@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FD78265159
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2013 19:45:14 +0100 (CET)
+Received: from smtp.newsguy.com (smtp.newsguy.com [74.209.136.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7FE2265162
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2013 22:55:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Marek Vasut <marex@denx.de>, Mike Dunn <mikedunn@newsguy.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Igor Grinberg <grinberg@compulab.co.il>, Eric Miao <eric.y.miao@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise we won't run correctly on systems that require this for larger
-data transfers.
+AC97 reset is broken on the pxa27x.  These patches fix it by addressing multiple
+problems:
+  - cold reset fails because the GCR register is not set correctly
+  - warm reset fails because some code used to work around a hardware bug is
+    broken
+  - the intent of the work-around code is obfuscated by unfortunate function
+    naming
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+This patch set replaces some earlier individual patches that had some problems.
+Thanks Robert and Igor.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5d8bb1d..a765458 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -169,6 +169,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 	const struct wm_adsp_region *mem;
- 	const char *region_name;
- 	char *file, *text;
-+	void *buf;
- 	unsigned int reg;
- 	int regions = 0;
- 	int ret, offset, type, sizes;
-@@ -322,8 +323,18 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 		}
- 
- 		if (reg) {
--			ret = regmap_raw_write(regmap, reg, region->data,
-+			buf = kmemdup(region->data, le32_to_cpu(region->len),
-+				      GFP_KERNEL);
-+			if (!buf) {
-+				adsp_err(dsp, "Out of memory\n");
-+				return -ENOMEM;
-+			}
-+
-+			ret = regmap_raw_write(regmap, reg, buf,
- 					       le32_to_cpu(region->len));
-+
-+			kfree(buf);
-+
- 			if (ret != 0) {
- 				adsp_err(dsp,
- 					"%s.%d: Failed to write %d bytes at %d in %s: %d\n",
+Changelog:
+v2:
+  - don't specify the LPM flag DRIVE_HIGH in #define for the mfp config
+  - patches 2 and 3 are combined into one patch
+  - mfp level and direction are set only once, during driver initialization
+
+Mike Dunn (3):
+  ALSA: pxa2xx: fix ac97 cold reset
+  ALSA: pxa27x: fix ac97 warm reset
+  ALSA: pxa27x: rename pxa27x_assert_ac97reset()
+
+ arch/arm/mach-pxa/include/mach/mfp-pxa27x.h |    3 ++
+ arch/arm/mach-pxa/pxa27x.c                  |   24 ++++++++++++------
+ sound/arm/pxa2xx-ac97-lib.c                 |   34 +++++++++++++++++++++-----
+ 3 files changed, 46 insertions(+), 15 deletions(-)
+
 -- 
-1.7.10.4
+1.7.8.6
