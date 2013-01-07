@@ -1,15 +1,15 @@
 From: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH 3/4] ALSA: pxa27x: ac97 controller driver requests gpio
-Date: Mon, 07 Jan 2013 17:38:00 +0200
-Message-ID: <50EAEBD8.40002@compulab.co.il>
+Subject: Re: [PATCH 4/4] ALSA: pxa27x: rename pxa27x_assert_ac97()
+Date: Mon, 07 Jan 2013 17:41:57 +0200
+Message-ID: <50EAECC5.4030700@compulab.co.il>
 References: <1357499640-13871-1-git-send-email-mikedunn@newsguy.com>
- <1357499640-13871-4-git-send-email-mikedunn@newsguy.com>
- <50EA9710.3060107@compulab.co.il> <50EAD73C.3050401@newsguy.com>
+ <1357499640-13871-5-git-send-email-mikedunn@newsguy.com>
+ <50EA97EA.4030807@compulab.co.il> <50EADCF9.10307@newsguy.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <50EAD73C.3050401@newsguy.com>
+In-Reply-To: <50EADCF9.10307@newsguy.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -23,65 +23,35 @@ To: Mike Dunn <mikedunn@newsguy.com>
 Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/13 16:10, Mike Dunn wrote:
-> On 01/07/2013 01:36 AM, Igor Grinberg wrote:
->> On 01/06/13 21:13, Mike Dunn wrote:
->>> During initialization, the ac97 driver must obtain the gpio for the mfp that is
->>> used by the ac97 controller as the AC97_nRESET line, or else gpiolib will issue
->>> a warning and stack dump.  Gpiolib may change this to a hard error soon.  The
->>> line is used during an ac97 warm reset for working around a hardware bug in the
->>> controller.
+On 01/07/13 16:34, Mike Dunn wrote:
+> On 01/07/2013 01:39 AM, Igor Grinberg wrote:
+>>
+>>
+>> On 01/06/13 21:14, Mike Dunn wrote:
+>>> This patch does nothing functionally, it just gives the function a new name and
+>>> modifies the prototype slightly in order to clarify what the function is doing
+>>> (which is not necessarily asserting the reset).
+>>> Some commentary also added.
 >>>
 >>> Tested on a palm treo 680 machine.
 >>>
 >>> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
->>> ---
->>>  sound/arm/pxa2xx-ac97-lib.c |   10 +++++++++-
->>>  1 files changed, 9 insertions(+), 1 deletions(-)
->>>
->>> diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
->>> index 1ecd0a66..416d2e3 100644
->>> --- a/sound/arm/pxa2xx-ac97-lib.c
->>> +++ b/sound/arm/pxa2xx-ac97-lib.c
->>> @@ -18,6 +18,7 @@
->>>  #include <linux/delay.h>
->>>  #include <linux/module.h>
->>>  #include <linux/io.h>
->>> +#include <linux/gpio.h>
->>>  
->>>  #include <sound/ac97_codec.h>
->>>  #include <sound/pxa2xx-lib.h>
->>> @@ -344,7 +345,12 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
->>>  	}
->>>  
->>>  	if (cpu_is_pxa27x()) {
->>> -		/* Use GPIO 113 as AC97 Reset on Bulverde */
->>> +		ret = gpio_request(reset_gpio, "pxa27x ac97 reset");
->>> +		if (ret < 0) {
->>> +			pr_err("%s: gpio_request() failed: %d\n",
->>> +			       __func__, ret);
->>> +			goto err_conf;
->>> +		}
 >>
->> I think if we are fine with the request in the driver,
->> then we should move the direction and value configuration also
->> to the driver, but let the pxa27x_assert_ac97reset() only switch
->> the AF.
+>> This patch makes sense, but again raising your concern...
+>> The gpio_direction_output(reset_gpio, 1) should be called after
+>> the change to AF0.
 > 
 > 
-> Well, I won't make a fuss on this point, but with code that runs very
-> infrequently, I thought that the cost of a call to gpio_direction_output() was
-> worth the clarity and insurance.
+> Can you clarify please?  Don't you mean *before* the change to AF0?  The proper
+> values must be set in the GPDR and GPSR/GPCR before changing to AF0, no?  This
+> not only makes intuitive sense, it is also consistent with the information in
+> the pxa270 developer's manual.  Once AF0 is set, the last values that were set
+> for direction and level take immediate effect, no?
 
-This is not about how frequent the code runs, but the fact that the arch code
-relies on sound code (outside of arch) to request the GPIO for it.
-I would recommend to place the GPIO request call along with the
-direction/value calls - in the same subsystem.
+Yes, you are right, I've just forgot about the
+#define GPIOx_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(...)
+you introduced in patch 2, so no concern here. Sorry...
 
-Also, the patch ordering is not good:
-patch 2 drives the GPIO, and patch 3 requests it,
-whereas it should be the other way around, so I would recommend to
-combine both into one.
 
 -- 
 Regards,
