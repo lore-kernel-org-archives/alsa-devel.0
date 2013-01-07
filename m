@@ -1,88 +1,78 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v2] ALSA: hda - add mute LED for HP Pavilion 17 (Realtek codec)
-Date: Mon,  7 Jan 2013 12:03:47 +0100
-Message-ID: <1357556627-4178-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 1096789@bugs.launchpad.net
-Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: pxa2xx: fix ac97 cold reset for
+	pxa27x
+Date: Mon, 7 Jan 2013 11:05:56 +0000
+Message-ID: <20130107110556.GA4544@opensource.wolfsonmicro.com>
+References: <1356707815-3235-1-git-send-email-mikedunn@newsguy.com>
+ <50E863AB.2000706@newsguy.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6939591930994878753=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 229DD2650E3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2013 12:05:59 +0100 (CET)
+In-Reply-To: <50E863AB.2000706@newsguy.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mike Dunn <mikedunn@newsguy.com>
+Cc: Marek Vasut <marex@denx.de>, Eric Miao <eric.y.miao@gmail.com>, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, Igor Grinberg <grinberg@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-The mute LED is in this case connected to the Mic1 VREF.
 
-The machine also exposes the following string in BIOS:
-"HP_Mute_LED_0_A", so if more machines are coming, it probably
-makes sense to try to do something more generic, like for the
-IDT codec.
+--===============6939591930994878753==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1096789
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6ee3459..71ae23d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5992,6 +5992,30 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
- 	spec->automute_hook = alc269_quanta_automute;
- }
- 
-+/* update mute-LED according to the speaker mute state via mic1 VREF pin */
-+static void alc269_fixup_mic1_mute_hook(void *private_data, int enabled)
-+{
-+	struct hda_codec *codec = private_data;
-+	unsigned int pinval = AC_PINCTL_IN_EN + (enabled ?
-+			      AC_PINCTL_VREF_HIZ : AC_PINCTL_VREF_80);
-+	snd_hda_set_pin_ctl_cache(codec, 0x18, pinval);
-+}
-+
-+static void alc269_fixup_mic1_mute(struct hda_codec *codec,
-+				   const struct alc_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	switch (action) {
-+	case ALC_FIXUP_ACT_BUILD:
-+		spec->vmaster_mute.hook = alc269_fixup_mic1_mute_hook;
-+		snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
-+		/* fallthru */
-+	case ALC_FIXUP_ACT_INIT:
-+		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
-+		break;
-+	}
-+}
-+
- /* update mute-LED according to the speaker mute state via mic2 VREF pin */
- static void alc269_fixup_mic2_mute_hook(void *private_data, int enabled)
- {
-@@ -6043,6 +6067,7 @@ enum {
- 	ALC269_FIXUP_DMIC,
- 	ALC269VB_FIXUP_AMIC,
- 	ALC269VB_FIXUP_DMIC,
-+	ALC269_FIXUP_MIC1_MUTE_LED,
- 	ALC269_FIXUP_MIC2_MUTE_LED,
- 	ALC269_FIXUP_INV_DMIC,
- 	ALC269_FIXUP_LENOVO_DOCK,
-@@ -6171,6 +6196,10 @@ static const struct alc_fixup alc269_fixups[] = {
- 			{ }
- 		},
- 	},
-+	[ALC269_FIXUP_MIC1_MUTE_LED] = {
-+		.type = ALC_FIXUP_FUNC,
-+		.v.func = alc269_fixup_mic1_mute,
-+	},
- 	[ALC269_FIXUP_MIC2_MUTE_LED] = {
- 		.type = ALC_FIXUP_FUNC,
- 		.v.func = alc269_fixup_mic2_mute,
-@@ -6215,6 +6244,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_MIC2_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x1972, "HP Pavilion 17", ALC269_FIXUP_MIC1_MUTE_LED),
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
--- 
-1.7.9.5
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Jan 05, 2013 at 09:32:27AM -0800, Mike Dunn wrote:
+> Please don't apply this patch.  It works, but there is a better way to
+> accomplish the same goal by fixing another problem and also keeping things
+> consistent among the pxa siblings.  Patches to follow.
+
+Don't top post...  if I've applied the patch then send an incremental
+fix please.
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ6qvyAAoJELSic+t+oim9sqQP/jS0EOGA0BvHnntueO9rSsqh
+ftE16wci9dS3IlX3P5inAmpR6QvrDH0f8+j+CC8OQ1Uh5oI0OwoHqWdaHsaVG7pe
+Uk0D+31O+mnx8YijI54VF1qUHPTZ+UZ4jkO3l/AQj80Goax1lvtxwcU8k/vP/ch5
+r2oGT2aeFfJFQ/XvwJgeDHMLB1zyDBJdM340qP6XKxJabUoNuOFJLU4OOhJnh/1B
++5OOrzfR3QI3Nq7lsoE+UjSllRXkK+ZEaw01Axwht3zAplsGOIFUMdDaOyHswZMV
+1ibSJp+7xbw8qYZk9S3Wyuq4422a6RIKr4BDjs82/NqPrNJzfvoZVmb/5Coz+Sny
+jXSTJxKta/2sYLNldV4jQsAHajXBIxjzqoa5hKOWBMLzzpxZ685Wm6x4GypjCZyj
+AM9E4k4t+yGya1lEdOxW/J+r8LykQrrF0wmpyr4h/8haHTA0DmsEPtH9sKTXO1q6
+uAapZ4NHU9VQokImb/Cd1MdIsyzYrPurZz8NewQpRcYzexE8MTBx19WtC4WrhfAN
+fXwJI/ss/JFhgVf4YquEmY0WCJTO7T7dPuItyja6R/auRH3gWTRmXI/QzeAgHJLZ
+4exvF43YEKfY+NS3BYvoylnYVhh+ydbrMnsqUd4Ls9KwpbEw7ILzybyOmmp7+l2N
+GNZm5fZVC6nIaBmfKWqn
+=Y38i
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
+
+--===============6939591930994878753==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6939591930994878753==--
