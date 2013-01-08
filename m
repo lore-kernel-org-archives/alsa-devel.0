@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm_adsp: Factor out calculation of
-	memory base addresses
-Date: Tue,  8 Jan 2013 16:59:22 +0000
-Message-ID: <1357664363-16094-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: mxs-saif: Use a signed integer
+	for error value
+Date: Tue, 8 Jan 2013 17:59:02 +0000
+Message-ID: <20130108175902.GY4544@opensource.wolfsonmicro.com>
+References: <1357649104-8219-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7480252721488975166=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8AE6A26165E
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 18:07:49 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42B5426523D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 18:59:04 +0100 (CET)
+In-Reply-To: <1357649104-8219-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,78 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |   30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 6bff303..ed9a6c4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -156,6 +156,26 @@ static struct wm_adsp_region const *wm_adsp_find_region(struct wm_adsp *dsp,
- 	return NULL;
- }
- 
-+static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *region,
-+					  unsigned int offset)
-+{
-+	switch (region->type) {
-+	case WMFW_ADSP1_PM:
-+		return region->base + (offset * 3);
-+	case WMFW_ADSP1_DM:
-+		return region->base + (offset * 2);
-+	case WMFW_ADSP2_XM:
-+		return region->base + (offset * 2);
-+	case WMFW_ADSP2_YM:
-+		return region->base + (offset * 2);
-+	case WMFW_ADSP1_ZM:
-+		return region->base + (offset * 2);
-+	default:
-+		WARN_ON(NULL != "Unknown memory region type");
-+		return offset;
-+	}
-+}
-+
- static int wm_adsp_load(struct wm_adsp *dsp)
- {
- 	const struct firmware *firmware;
-@@ -283,27 +303,27 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 		case WMFW_ADSP1_PM:
- 			BUG_ON(!mem);
- 			region_name = "PM";
--			reg = mem->base + (offset * 3);
-+			reg = wm_adsp_region_to_reg(mem, offset);
- 			break;
- 		case WMFW_ADSP1_DM:
- 			BUG_ON(!mem);
- 			region_name = "DM";
--			reg = mem->base + (offset * 2);
-+			reg = wm_adsp_region_to_reg(mem, offset);
- 			break;
- 		case WMFW_ADSP2_XM:
- 			BUG_ON(!mem);
- 			region_name = "XM";
--			reg = mem->base + (offset * 2);
-+			reg = wm_adsp_region_to_reg(mem, offset);
- 			break;
- 		case WMFW_ADSP2_YM:
- 			BUG_ON(!mem);
- 			region_name = "YM";
--			reg = mem->base + (offset * 2);
-+			reg = wm_adsp_region_to_reg(mem, offset);
- 			break;
- 		case WMFW_ADSP1_ZM:
- 			BUG_ON(!mem);
- 			region_name = "ZM";
--			reg = mem->base + (offset * 2);
-+			reg = wm_adsp_region_to_reg(mem, offset);
- 			break;
- 		default:
- 			adsp_warn(dsp,
--- 
-1.7.10.4
+--===============7480252721488975166==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="w+MAdceOglSEzbpc"
+Content-Disposition: inline
+
+
+--w+MAdceOglSEzbpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 08, 2013 at 10:45:04AM -0200, Fabio Estevam wrote:
+> saif->id and saif->master_id are unsigned, so they can not be negative.
+>=20
+> Fix the following warning when building with W=3D1 option:
+
+Applied, thanks.
+
+--w+MAdceOglSEzbpc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ7F5YAAoJELSic+t+oim9T1sP/2xZES2rKxWYyfBxZmV97gKm
+VSDZTa+LmImK7SzTaBriDvNsS5WnzHnD71xSf8jiUmLtXCPuUtKsa4K+01naxEVl
+b8bEEog9OKqccWIoxXDi+g3B/2JzQ+zbfdjPJEO+5x7yMVW4dNUFdZ4Mdbqc/v/k
+kiLqjTzhAxdzFFHEdan9NuqqQYkVy9zctksbd2S5AlBZS4hVxIm/B9ss6A4R0LiG
+XBHWeH1BGNNuoYrU9G298ylCoDGdbYiuYQ+rMcjDmRmXKU0er9pp8L2xcDoeqhiw
+ikqIOlYlDv3LIRfHwW/sLm5XB9fKkeBimkjm9OZuTPfG4IImyu9Kcq8eAWbbsPJ/
+Fsz+2ld7d2W5QW+mTvV6HSs0IacfutwMniR1ud1PBvgm5QIR48GtCEmYV8+VqHct
+Y9h5VjUnZE8F1IeKE0wlX/y7jJzrV4Mesl4Yn0YXYWf4Wp8H3mR8Nj9RiHExZ1yl
+1Hg4pWGwdd6wBTxe1mVjLyO35CjoFkDeMhp8PyTHTEkmZdioctlEDcNDXw6TG41h
+NSNaleS76sG3N2z8lJrORjRsceLNs7ZDZpFo1ZyvG7TklnQrxys9A82THVqf/DOP
+5r27V3KgYuKAfjOVWNB3uStP4ly0BzbZ8YP26hgJx3ip7MduckLunRouD8h3ef77
+W41rvFmzGQg+QxEeh30l
+=OdvX
+-----END PGP SIGNATURE-----
+
+--w+MAdceOglSEzbpc--
+
+--===============7480252721488975166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7480252721488975166==--
