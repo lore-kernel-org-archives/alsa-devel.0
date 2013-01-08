@@ -1,19 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 043/112] ALSA: hda - Rearrange INPUT_PIN_ATTR_*
-Date: Tue,  8 Jan 2013 12:38:36 +0100
-Message-ID: <1357645185-7645-44-git-send-email-tiwai@suse.de>
+Subject: [PATCH 038/112] ALSA: hda/realtek - Allow passing
+	name=NULL to alc_kcontrol_new()
+Date: Tue,  8 Jan 2013 12:38:31 +0100
+Message-ID: <1357645185-7645-39-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 99C1C2651C2
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EC662651B9
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:25 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
+Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id D6061A524D
+ by mx2.suse.de (Postfix) with ESMTP id BAF1BA5234
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,61 +29,94 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Put INPUT_PIN_ATTR_FRONT after INPUT_PIN_ATTR_REAR, and define
-INPUT_PIN_ATTR_LAST to point to the last element.
-
-This is a preliminary work for cleaning up Realtek auto-mic parser.
-In the auto-mic implementation, the front panel is preferred over the
-rear panel.  By arranging the attr definitions like in this commit, we
-can simply use sort() for figuring out the priority order.
+This prevents stupid typos.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_auto_parser.c | 2 +-
- sound/pci/hda/hda_auto_parser.h | 3 ++-
- sound/pci/hda/patch_via.c       | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index d460688..44c81d3 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -363,7 +363,7 @@ static const char *hda_get_input_pin_label(struct hda_codec *codec,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7f4ad78..4253b9a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -862,7 +862,10 @@ alc_kcontrol_new(struct alc_spec *spec, const char *name,
+ 	if (!knew)
+ 		return NULL;
+ 	*knew = *temp;
+-	knew->name = kstrdup(name, GFP_KERNEL);
++	if (name)
++		knew->name = kstrdup(name, GFP_KERNEL);
++	else if (knew->name)
++		knew->name = kstrdup(knew->name, GFP_KERNEL);
+ 	if (!knew->name)
+ 		return NULL;
+ 	return knew;
+@@ -872,7 +875,7 @@ static int alc_add_automute_mode_enum(struct hda_codec *codec)
  {
- 	unsigned int def_conf;
- 	static const char * const mic_names[] = {
--		"Internal Mic", "Dock Mic", "Mic", "Front Mic", "Rear Mic",
-+		"Internal Mic", "Dock Mic", "Mic", "Rear Mic", "Front Mic"
- 	};
- 	int attr;
+ 	struct alc_spec *spec = codec->spec;
  
-diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
-index ff11074..f748071 100644
---- a/sound/pci/hda/hda_auto_parser.h
-+++ b/sound/pci/hda/hda_auto_parser.h
-@@ -51,8 +51,9 @@ enum {
- 	INPUT_PIN_ATTR_INT,	/* internal mic/line-in */
- 	INPUT_PIN_ATTR_DOCK,	/* docking mic/line-in */
- 	INPUT_PIN_ATTR_NORMAL,	/* mic/line-in jack */
--	INPUT_PIN_ATTR_FRONT,	/* mic/line-in jack in front */
- 	INPUT_PIN_ATTR_REAR,	/* mic/line-in jack in rear */
-+	INPUT_PIN_ATTR_FRONT,	/* mic/line-in jack in front */
-+	INPUT_PIN_ATTR_LAST = INPUT_PIN_ATTR_FRONT,
- };
+-	if (!alc_kcontrol_new(spec, "Auto-Mute Mode", &alc_automute_mode_enum))
++	if (!alc_kcontrol_new(spec, NULL, &alc_automute_mode_enum))
+ 		return -ENOMEM;
+ 	return 0;
+ }
+@@ -1556,6 +1559,7 @@ static int alc_inv_dmic_sw_put(struct snd_kcontrol *kcontrol,
  
- int snd_hda_get_input_pin_attr(unsigned int def_conf);
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index b224b3d..d3c852a 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -1913,7 +1913,7 @@ static void mangle_smart51(struct hda_codec *codec)
- 	int i, j, nums, attr;
- 	int pins[AUTO_CFG_MAX_INS];
+ static const struct snd_kcontrol_new alc_inv_dmic_sw = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Inverted Internal Mic Capture Switch",
+ 	.info = snd_ctl_boolean_mono_info,
+ 	.get = alc_inv_dmic_sw_get,
+ 	.put = alc_inv_dmic_sw_put,
+@@ -1565,8 +1569,7 @@ static int alc_add_inv_dmic_mixer(struct hda_codec *codec, hda_nid_t nid)
+ {
+ 	struct alc_spec *spec = codec->spec;
  
--	for (attr = INPUT_PIN_ATTR_REAR; attr >= INPUT_PIN_ATTR_NORMAL; attr--) {
-+	for (attr = INPUT_PIN_ATTR_LAST; attr >= INPUT_PIN_ATTR_NORMAL; attr--) {
- 		nums = 0;
- 		for (i = 0; i < cfg->num_inputs; i++) {
- 			unsigned int def;
+-	if (!alc_kcontrol_new(spec, "Inverted Internal Mic Capture Switch",
+-			      &alc_inv_dmic_sw))
++	if (!alc_kcontrol_new(spec, NULL, &alc_inv_dmic_sw))
+ 		return -ENOMEM;
+ 	spec->inv_dmic_fixup = 1;
+ 	spec->inv_dmic_muted = 0;
+@@ -2555,7 +2558,7 @@ static int create_capture_mixers(struct hda_codec *codec)
+ 		nums = spec->num_adc_nids;
+ 
+ 	if (!spec->auto_mic && imux->num_items > 1) {
+-		knew = alc_kcontrol_new(spec, "Input Source", &cap_src_temp);
++		knew = alc_kcontrol_new(spec, NULL, &cap_src_temp);
+ 		if (!knew)
+ 			return -ENOMEM;
+ 		knew->count = nums;
+@@ -2579,8 +2582,7 @@ static int create_capture_mixers(struct hda_codec *codec)
+ 		}
+ 
+ 		if (vol) {
+-			knew = alc_kcontrol_new(spec, "Capture Volume",
+-						&cap_vol_temp);
++			knew = alc_kcontrol_new(spec, NULL, &cap_vol_temp);
+ 			if (!knew)
+ 				return -ENOMEM;
+ 			knew->index = n;
+@@ -2588,8 +2590,7 @@ static int create_capture_mixers(struct hda_codec *codec)
+ 			knew->subdevice = HDA_SUBDEV_AMP_FLAG;
+ 		}
+ 		if (sw) {
+-			knew = alc_kcontrol_new(spec, "Capture Switch",
+-						&cap_sw_temp);
++			knew = alc_kcontrol_new(spec, NULL, &cap_sw_temp);
+ 			if (!knew)
+ 				return -ENOMEM;
+ 			knew->index = n;
+@@ -4106,8 +4107,7 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	if (spec->multi_ios > 0) {
+-		if (!alc_kcontrol_new(spec, "Channel Mode",
+-				      &alc_auto_channel_mode_enum))
++		if (!alc_kcontrol_new(spec, NULL, &alc_auto_channel_mode_enum))
+ 			return -ENOMEM;
+ 	}
+ 	return 0;
 -- 
 1.8.0.1
