@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 024/112] ALSA: hda/realtek - Add boost volumes
-	to path list
-Date: Tue,  8 Jan 2013 12:38:17 +0100
-Message-ID: <1357645185-7645-25-git-send-email-tiwai@suse.de>
+Subject: [PATCH 023/112] ALSA: hda/realtek - Add missing
+	initialization of multi-io routes
+Date: Tue,  8 Jan 2013 12:38:16 +0100
+Message-ID: <1357645185-7645-24-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D253A2651A9
+ by alsa0.perex.cz (Postfix) with ESMTP id D464F2651AA
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:24 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 60157A520C
+ by mx2.suse.de (Postfix) with ESMTP id 6033AA520D
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,82 +29,86 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't forget to take boost volumes into account in the managed path
-list.  Since it's an additional volume, we need to extend the ctls[]
-array.
+The paths used for multi-io haven't been initialized properly, so
+far.  It's usually no big matter because the pins are set to input as
+default, but it's still cleaner to initialize the paths properly.
+
+Now with the path active/inactive check, we can do it easily.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_realtek.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 398b25b..eadf326d 100644
+index 3f39ba5..398b25b 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -95,6 +95,13 @@ struct alc_multi_io {
+@@ -3952,9 +3952,6 @@ static void activate_path(struct hda_codec *codec, struct nid_path *path,
+ {
+ 	int i;
  
- #define MAX_NID_PATH_DEPTH	5
- 
-+enum {
-+	NID_PATH_VOL_CTL,
-+	NID_PATH_MUTE_CTL,
-+	NID_PATH_BOOST_CTL,
-+	NID_PATH_NUM_CTLS
-+};
-+
- /* Widget connection path
-  *
-  * For output, stored in the order of DAC -> ... -> pin,
-@@ -111,12 +118,10 @@ struct nid_path {
- 	hda_nid_t path[MAX_NID_PATH_DEPTH];
- 	unsigned char idx[MAX_NID_PATH_DEPTH];
- 	unsigned char multi[MAX_NID_PATH_DEPTH];
--	unsigned int ctls[2]; /* 0 = volume, 1 = mute */
-+	unsigned int ctls[NID_PATH_NUM_CTLS]; /* NID_PATH_XXX_CTL */
- 	bool active;
- };
- 
--enum { NID_PATH_VOL_CTL = 0, NID_PATH_MUTE_CTL = 1 };
+-	if (path->active == enable)
+-		return;
 -
- struct alc_spec {
- 	struct hda_gen_spec gen;
+ 	if (!enable)
+ 		path->active = false;
  
-@@ -3809,7 +3814,7 @@ static bool is_ctl_associated(struct hda_codec *codec, hda_nid_t nid,
- 		struct nid_path *p = snd_array_elem(&spec->paths, i);
- 		if (p->depth <= 0)
- 			continue;
--		for (type = 0; type < 2; type++) {
-+		for (type = 0; type < NID_PATH_NUM_CTLS; type++) {
- 			unsigned int val = p->ctls[type];
- 			if (get_amp_nid_(val) == nid &&
- 			    get_amp_direction_(val) == dir &&
-@@ -4388,6 +4393,8 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
- 		if (get_wcaps(codec, nid) & AC_WCAP_IN_AMP) {
- 			const char *label;
- 			char boost_label[32];
-+			struct nid_path *path;
-+			unsigned int val;
+@@ -3984,6 +3981,8 @@ static void alc_auto_set_output_and_unmute(struct hda_codec *codec,
+ 	path = get_nid_path(codec, dac, pin);
+ 	if (!path)
+ 		return;
++	if (path->active)
++		return;
+ 	activate_path(codec, path, true);
+ }
  
- 			label = hda_get_autocfg_input_label(codec, cfg, i);
- 			if (spec->shared_mic_hp && !strcmp(label, "Misc"))
-@@ -4400,11 +4407,15 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
+@@ -4193,10 +4192,8 @@ static int alc_set_multi_io(struct hda_codec *codec, int idx, bool output)
+ 	if (!path)
+ 		return -EINVAL;
  
- 			snprintf(boost_label, sizeof(boost_label),
- 				 "%s Boost Volume", label);
-+			val = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT);
- 			err = add_control(spec, ALC_CTL_WIDGET_VOL,
--					  boost_label, type_idx,
--				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
-+					  boost_label, type_idx, val);
- 			if (err < 0)
- 				return err;
-+
-+			path = get_nid_path(codec, nid, 0);
-+			if (path)
-+				path->ctls[NID_PATH_BOOST_CTL] = val;
- 		}
- 	}
+-	if (!spec->multi_io[idx].ctl_in)
+-		spec->multi_io[idx].ctl_in =
+-			snd_hda_codec_update_cache(codec, nid, 0,
+-					   AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++	if (path->active == output)
++		return 0;
+ 
+ 	if (output) {
+ 		snd_hda_set_pin_ctl_cache(codec, nid, PIN_OUT);
+@@ -4251,6 +4248,25 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
  	return 0;
+ }
+ 
++static void alc_auto_init_multi_io(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	int i;
++
++	for (i = 0; i < spec->multi_ios; i++) {
++		hda_nid_t pin = spec->multi_io[i].pin;
++		struct nid_path *path;
++		path = get_nid_path(codec, spec->multi_io[i].dac, pin);
++		if (!path)
++			continue;
++		if (!spec->multi_io[i].ctl_in)
++			spec->multi_io[i].ctl_in =
++				snd_hda_codec_update_cache(codec, pin, 0,
++					   AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++		activate_path(codec, path, path->active);
++	}
++}
++
+ /* filter out invalid adc_nids (and capsrc_nids) that don't give all
+  * active input pins
+  */
+@@ -4489,6 +4505,7 @@ static void alc_auto_init_std(struct hda_codec *codec)
+ {
+ 	alc_auto_init_multi_out(codec);
+ 	alc_auto_init_extra_out(codec);
++	alc_auto_init_multi_io(codec);
+ 	alc_auto_init_analog_input(codec);
+ 	alc_auto_init_input_src(codec);
+ 	alc_auto_init_digital(codec);
 -- 
 1.8.0.1
