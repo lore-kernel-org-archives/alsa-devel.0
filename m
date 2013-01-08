@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 006/112] ALSA: hda/realtek - Reduce vol/mute
-	ctl lookups at parsing codec
-Date: Tue,  8 Jan 2013 12:37:59 +0100
-Message-ID: <1357645185-7645-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 008/112] ALSA: hda/realtek - Make path->idx[]
+	and path->multi[] consistent
+Date: Tue,  8 Jan 2013 12:38:01 +0100
+Message-ID: <1357645185-7645-9-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DAAD72615E8
+ by alsa0.perex.cz (Postfix) with ESMTP id F332D265136
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 17D6CA51F2
+ by mx2.suse.de (Postfix) with ESMTP id 1F5DBA51F5
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,312 +29,56 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-So far, Realtek codec driver evaluates the NIDs for volume and mute
-controls twice, once while parsing the DACs and evaluating the
-assignment, and another while creating the mixer elements.  This is
-utterly redundant and even fragile, as it's assuming that the ctl
-element evaluation is identical between both parsing DACs and creating
-mixer elements.
-
-This patch simplifies the code flow by doing the volume / mute
-controls evaluation only once while parsing the DACs.  The patch ended
-up in larger changes than expected because of some cleanups became
-mandatory.
-
-As a gratis bonus, this patch also fixes some cases where the stereo
-channels are used wrongly for mono amps.
+So far, idx[i] and multi[i] indicate the attribute of the widget
+path[i - 1].  This was just for simplifying the code in
+__parse_output_path(), but this is rather confusing for later use.
+It's more natural if both idx[i] and multi[i] point to the same widget
+of path[i].  This patch changes to that way.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 168 ++++++++++++++++++++----------------------
- 1 file changed, 78 insertions(+), 90 deletions(-)
+ sound/pci/hda/patch_realtek.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 298e046..f8dd753 100644
+index a7899d1..5b8308d 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -3046,17 +3046,6 @@ static bool is_ctl_used(struct hda_codec *codec, unsigned int val, int type)
- 	return false;
+@@ -102,8 +102,8 @@ enum {
+ #define MAX_NID_PATH_DEPTH	5
+ 
+ /* output-path: DAC -> ... -> pin
+- * idx[] contains the source index number of the next widget;
+- * e.g. idx[0] is the index of the DAC selected by path[1] widget
++ * idx[i] contains the source index number to select on of the widget path[i];
++ * e.g. idx[1] is the index of the DAC (path[0]) selected by path[1] widget
+  * multi[] indicates whether it's a selector widget with multi-connectors
+  * (i.e. the connection selection is mandatory)
+  * vol_ctl and mute_ctl contains the NIDs for the assigned mixers
+@@ -2937,9 +2937,9 @@ static bool __parse_output_path(struct hda_codec *codec, hda_nid_t nid,
+ 
+  found:
+ 	path->path[path->depth] = conn[i];
+-	path->idx[path->depth] = i;
++	path->idx[path->depth + 1] = i;
+ 	if (nums > 1 && get_wcaps_type(get_wcaps(codec, nid)) != AC_WID_AUD_MIX)
+-		path->multi[path->depth] = 1;
++		path->multi[path->depth + 1] = 1;
+ 	path->depth++;
+ 	return true;
  }
+@@ -3846,10 +3846,10 @@ static void alc_auto_set_output_and_unmute(struct hda_codec *codec,
  
--static void clear_vol_marks(struct hda_codec *codec)
--{
--	struct alc_spec *spec = codec->spec;
--	int i;
--
--	for (i = 0; i < spec->out_path.used; i++) {
--		struct nid_path *path = snd_array_elem(&spec->out_path, i);
--		path->ctls[0] = path->ctls[1] = 0;
--	}
--}
--
- /* badness definition */
- enum {
- 	/* No primary DAC is found for the main output */
-@@ -3121,8 +3110,15 @@ static struct nid_path *get_out_path(struct hda_codec *codec, hda_nid_t pin,
- 	return NULL;
- }
+ 	for (i = path->depth - 1; i >= 0; i--) {
+ 		hda_nid_t nid = path->path[i];
+-		if (i > 0 && path->multi[i - 1])
++		if (path->multi[i])
+ 			snd_hda_codec_write(codec, nid, 0,
+ 					    AC_VERB_SET_CONNECT_SEL,
+-					    path->idx[i - 1]);
++					    path->idx[i]);
  
--static int eval_shared_vol_badness(struct hda_codec *codec, hda_nid_t pin,
--				   hda_nid_t dac)
-+/* look for widgets in the path between the given NIDs appropriate for
-+ * volume and mute controls, and assign the values to ctls[].
-+ *
-+ * When no appropriate widget is found in the path, the badness value
-+ * is incremented depending on the situation.  The function returns the
-+ * total badness for both volume and mute controls.
-+ */
-+static int assign_out_path_ctls(struct hda_codec *codec, hda_nid_t pin,
-+				hda_nid_t dac)
- {
- 	struct nid_path *path = get_out_path(codec, pin, dac);
- 	hda_nid_t nid;
-@@ -3143,7 +3139,8 @@ static int eval_shared_vol_badness(struct hda_codec *codec, hda_nid_t pin,
- 	nid = alc_look_for_out_mute_nid(codec, path);
- 	if (nid) {
- 		unsigned int wid_type = get_wcaps_type(get_wcaps(codec, nid));
--		if (wid_type == AC_WID_PIN || wid_type == AC_WID_AUD_OUT)
-+		if (wid_type == AC_WID_PIN || wid_type == AC_WID_AUD_OUT ||
-+		    nid_has_mute(codec, nid, HDA_OUTPUT))
- 			val = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_OUTPUT);
- 		else
- 			val = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT);
-@@ -3237,7 +3234,7 @@ static int alc_auto_fill_dacs(struct hda_codec *codec, int num_outs,
- 		if (!add_new_out_path(codec, pin, dac))
- 			dac = dacs[i] = 0;
- 		if (dac)
--			badness += eval_shared_vol_badness(codec, pin, dac);
-+			badness += assign_out_path_ctls(codec, pin, dac);
- 	}
- 
- 	return badness;
-@@ -3533,36 +3530,52 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
- 			spec->vmaster_nid = alc_look_for_out_vol_nid(codec, path);
- 	}
- 
--	/* clear the bitmap flags for creating controls */
--	clear_vol_marks(codec);
- 	kfree(best_cfg);
- 	return 0;
- }
- 
-+/* replace the channels in the composed amp value with the given number */
-+static unsigned int amp_val_replace_channels(unsigned int val, unsigned int chs)
-+{
-+	val &= ~(0x3U << 16);
-+	val |= chs << 16;
-+	return val;
-+}
-+
- static int alc_auto_add_vol_ctl(struct hda_codec *codec,
- 				const char *pfx, int cidx,
--				hda_nid_t nid, unsigned int chs,
-+				unsigned int chs,
- 				struct nid_path *path)
- {
- 	unsigned int val;
--	if (!nid || !path)
-+	if (!path)
- 		return 0;
--	val = HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_OUTPUT);
--	if (is_ctl_used(codec, val, NID_PATH_VOL_CTL) && chs != 2) /* exclude LFE */
-+	val = path->ctls[NID_PATH_VOL_CTL];
-+	if (!val)
- 		return 0;
--	path->ctls[NID_PATH_VOL_CTL] = val;
--	return __add_pb_vol_ctrl(codec->spec, ALC_CTL_WIDGET_VOL, pfx, cidx,
--				 val);
-+	val = amp_val_replace_channels(val, chs);
-+	return __add_pb_vol_ctrl(codec->spec, ALC_CTL_WIDGET_VOL, pfx, cidx, val);
-+}
-+
-+/* return the channel bits suitable for the given path->ctls[] */
-+static int get_default_ch_nums(struct hda_codec *codec, struct nid_path *path,
-+			       int type)
-+{
-+	int chs = 1; /* mono (left only) */
-+	if (path) {
-+		hda_nid_t nid = get_amp_nid_(path->ctls[type]);
-+		if (nid && (get_wcaps(codec, nid) & AC_WCAP_STEREO))
-+			chs = 3; /* stereo */
-+	}
-+	return chs;
- }
- 
- static int alc_auto_add_stereo_vol(struct hda_codec *codec,
- 				   const char *pfx, int cidx,
--				   hda_nid_t nid, struct nid_path *path)
-+				   struct nid_path *path)
- {
--	int chs = 1;
--	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
--		chs = 3;
--	return alc_auto_add_vol_ctl(codec, pfx, cidx, nid, chs, path);
-+	int chs = get_default_ch_nums(codec, path, NID_PATH_VOL_CTL);
-+	return alc_auto_add_vol_ctl(codec, pfx, cidx, chs, path);
- }
- 
- /* create a mute-switch for the given mixer widget;
-@@ -3570,39 +3583,33 @@ static int alc_auto_add_stereo_vol(struct hda_codec *codec,
-  */
- static int alc_auto_add_sw_ctl(struct hda_codec *codec,
- 			       const char *pfx, int cidx,
--			       hda_nid_t nid, unsigned int chs,
-+			       unsigned int chs,
- 			       struct nid_path *path)
- {
--	int wid_type;
--	int type;
--	unsigned long val;
--	if (!nid || !path)
-+	unsigned int val;
-+	int type = ALC_CTL_WIDGET_MUTE;
-+
-+	if (!path)
- 		return 0;
--	wid_type = get_wcaps_type(get_wcaps(codec, nid));
--	if (wid_type == AC_WID_PIN || wid_type == AC_WID_AUD_OUT) {
--		type = ALC_CTL_WIDGET_MUTE;
--		val = HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_OUTPUT);
--	} else if (snd_hda_get_num_conns(codec, nid) == 1) {
--		type = ALC_CTL_WIDGET_MUTE;
--		val = HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_INPUT);
--	} else {
--		type = ALC_CTL_BIND_MUTE;
--		val = HDA_COMPOSE_AMP_VAL(nid, chs, 2, HDA_INPUT);
--	}
--	if (is_ctl_used(codec, val, NID_PATH_MUTE_CTL) && chs != 2) /* exclude LFE */
-+	val = path->ctls[NID_PATH_MUTE_CTL];
-+	if (!val)
- 		return 0;
--	path->ctls[NID_PATH_MUTE_CTL] = val;
-+	val = amp_val_replace_channels(val, chs);
-+	if (get_amp_direction_(val) == HDA_INPUT) {
-+		hda_nid_t nid = get_amp_nid_(val);
-+		if (snd_hda_get_num_conns(codec, nid) > 1) {
-+			type = ALC_CTL_BIND_MUTE;
-+			val |= 2 << 19; /* FIXME: fixed two widgets, so far */
-+		}
-+	}
- 	return __add_pb_sw_ctrl(codec->spec, type, pfx, cidx, val);
- }
- 
- static int alc_auto_add_stereo_sw(struct hda_codec *codec, const char *pfx,
--				  int cidx, hda_nid_t nid,
--				  struct nid_path *path)
-+				  int cidx, struct nid_path *path)
- {
--	int chs = 1;
--	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
--		chs = 3;
--	return alc_auto_add_sw_ctl(codec, pfx, cidx, nid, chs, path);
-+	int chs = get_default_ch_nums(codec, path, NID_PATH_MUTE_CTL);
-+	return alc_auto_add_sw_ctl(codec, pfx, cidx, chs, path);
- }
- 
- static hda_nid_t alc_look_for_out_mute_nid(struct hda_codec *codec,
-@@ -3647,7 +3654,6 @@ static int alc_auto_create_multi_out_ctls(struct hda_codec *codec,
- 		const char *name;
- 		int index;
- 		hda_nid_t dac, pin;
--		hda_nid_t sw, vol;
- 		struct nid_path *path;
- 
- 		dac = spec->multiout.dac_nids[i];
-@@ -3665,33 +3671,25 @@ static int alc_auto_create_multi_out_ctls(struct hda_codec *codec,
- 		path = get_out_path(codec, pin, dac);
- 		if (!path)
- 			continue;
--		sw = alc_look_for_out_mute_nid(codec, path);
--		vol = alc_look_for_out_vol_nid(codec, path);
- 		if (!name || !strcmp(name, "CLFE")) {
- 			/* Center/LFE */
--			err = alc_auto_add_vol_ctl(codec, "Center", 0, vol, 1,
--						   path);
-+			err = alc_auto_add_vol_ctl(codec, "Center", 0, 1, path);
- 			if (err < 0)
- 				return err;
--			err = alc_auto_add_vol_ctl(codec, "LFE", 0, vol, 2,
--						   path);
-+			err = alc_auto_add_vol_ctl(codec, "LFE", 0, 2, path);
- 			if (err < 0)
- 				return err;
--			err = alc_auto_add_sw_ctl(codec, "Center", 0, sw, 1,
--						  path);
-+			err = alc_auto_add_sw_ctl(codec, "Center", 0, 1, path);
- 			if (err < 0)
- 				return err;
--			err = alc_auto_add_sw_ctl(codec, "LFE", 0, sw, 2,
--						  path);
-+			err = alc_auto_add_sw_ctl(codec, "LFE", 0, 2, path);
- 			if (err < 0)
- 				return err;
- 		} else {
--			err = alc_auto_add_stereo_vol(codec, name, index, vol,
--						      path);
-+			err = alc_auto_add_stereo_vol(codec, name, index, path);
- 			if (err < 0)
- 				return err;
--			err = alc_auto_add_stereo_sw(codec, name, index, sw,
--						     path);
-+			err = alc_auto_add_stereo_sw(codec, name, index, path);
- 			if (err < 0)
- 				return err;
- 		}
-@@ -3703,34 +3701,19 @@ static int alc_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
- 				     hda_nid_t dac, const char *pfx,
- 				     int cidx)
- {
--	struct alc_spec *spec = codec->spec;
- 	struct nid_path *path;
--	hda_nid_t sw, vol;
- 	int err;
- 
- 	path = get_out_path(codec, pin, dac);
- 	if (!path)
- 		return 0;
--
--	if (!dac) {
--		unsigned int val;
--		/* the corresponding DAC is already occupied */
--		if (!(get_wcaps(codec, pin) & AC_WCAP_OUT_AMP))
--			return 0; /* no way */
--		/* create a switch only */
--		val = HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT);
--		if (is_ctl_used(codec, val, NID_PATH_MUTE_CTL))
--			return 0; /* already created */
--		path->ctls[NID_PATH_MUTE_CTL] = val;
--		return __add_pb_sw_ctrl(spec, ALC_CTL_WIDGET_MUTE, pfx, cidx, val);
-+	/* bind volume control will be created in the case of dac = 0 */
-+	if (dac) {
-+		err = alc_auto_add_stereo_vol(codec, pfx, cidx, path);
-+		if (err < 0)
-+			return err;
- 	}
--
--	sw = alc_look_for_out_mute_nid(codec, path);
--	vol = alc_look_for_out_vol_nid(codec, path);
--	err = alc_auto_add_stereo_vol(codec, pfx, cidx, vol, path);
--	if (err < 0)
--		return err;
--	err = alc_auto_add_stereo_sw(codec, pfx, cidx, sw, path);
-+	err = alc_auto_add_stereo_sw(codec, pfx, cidx, path);
- 	if (err < 0)
- 		return err;
- 	return 0;
-@@ -4051,7 +4034,12 @@ static int alc_auto_fill_multi_ios(struct hda_codec *codec,
- 		return badness;
- 	}
- 
--	return 0;
-+	/* assign volume and mute controls */
-+	for (i = old_pins; i < spec->multi_ios; i++)
-+		badness += assign_out_path_ctls(codec, spec->multi_io[i].pin,
-+						spec->multi_io[i].dac);
-+
-+	return badness;
- }
- 
- static int alc_auto_ch_mode_info(struct snd_kcontrol *kcontrol,
+ 		if (i != 0 && i != path->depth - 1 &&
+ 		    (get_wcaps(codec, nid) & AC_WCAP_IN_AMP) &&
 -- 
 1.8.0.1
