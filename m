@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 035/112] ALSA: hda/realtek - Handle vmaster
-	hook in the parser side
-Date: Tue,  8 Jan 2013 12:38:28 +0100
-Message-ID: <1357645185-7645-36-git-send-email-tiwai@suse.de>
+Subject: [PATCH 036/112] ALSA: hda/realtek - Assign Master
+	mixer when possible
+Date: Tue,  8 Jan 2013 12:38:29 +0100
+Message-ID: <1357645185-7645-37-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E7DA2651B4
+ by alsa0.perex.cz (Postfix) with ESMTP id 71D4F2651B5
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:25 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id AC3C5A5230
+ by mx2.suse.de (Postfix) with ESMTP id B2884A5232
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,71 +29,36 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-... so that the fixup just needs to set the hook function in
-FIXUP_ACT_PROBE.  This will make easier to port for other codecs,
-too.
+There are a few more cases where we can assign "Master" mixer element
+safely, e.g. when a single DAC is used in the whole output paths.
+
+Also, when vmaster hook is present, avoid "Master" but assign "PCM"
+instead.  Otherwise vmaster hook won't work properly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ sound/pci/hda/patch_realtek.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f5696ab..579a35e 100644
+index 579a35e..c980489 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -1687,6 +1687,8 @@ static int __alc_build_controls(struct hda_codec *codec)
- 					    true, &spec->vmaster_mute.sw_kctl);
- 		if (err < 0)
- 			return err;
-+		if (spec->vmaster_mute.hook)
-+			snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
- 	}
- 
- 	alc_free_kctls(codec); /* no longer needed */
-@@ -1745,6 +1747,9 @@ static int alc_init(struct hda_codec *codec)
- 	snd_hda_gen_apply_verbs(codec);
- 	alc_auto_init_std(codec);
- 
-+	if (spec->vmaster_mute.sw_kctl && spec->vmaster_mute.hook)
-+		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
+@@ -2306,7 +2306,14 @@ static const char *alc_get_line_out_pfx(struct alc_spec *spec, int ch,
+ 	*index = 0;
+ 	if (cfg->line_outs == 1 && !spec->multi_ios &&
+ 	    !cfg->hp_outs && !cfg->speaker_outs && can_be_master)
+-		return "Master";
++		return spec->vmaster_mute.hook ? "PCM" : "Master";
 +
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_INIT);
++	/* if there is really a single DAC used in the whole output paths,
++	 * use it master (or "PCM" if a vmaster hook is present)
++	 */
++	if (spec->multiout.num_dacs == 1 && !spec->mixer_nid &&
++	    !spec->multiout.hp_out_nid[0] && !spec->multiout.extra_out_nid[0])
++		return spec->vmaster_mute.hook ? "PCM" : "Master";
  
- 	hda_call_check_power_status(codec, 0x01);
-@@ -6019,15 +6024,8 @@ static void alc269_fixup_mic1_mute(struct hda_codec *codec,
- 				   const struct alc_fixup *fix, int action)
- {
- 	struct alc_spec *spec = codec->spec;
--	switch (action) {
--	case ALC_FIXUP_ACT_BUILD:
-+	if (action == ALC_FIXUP_ACT_PROBE)
- 		spec->vmaster_mute.hook = alc269_fixup_mic1_mute_hook;
--		snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
--		/* fallthru */
--	case ALC_FIXUP_ACT_INIT:
--		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
--		break;
--	}
- }
- 
- /* update mute-LED according to the speaker mute state via mic2 VREF pin */
-@@ -6042,15 +6040,8 @@ static void alc269_fixup_mic2_mute(struct hda_codec *codec,
- 				   const struct alc_fixup *fix, int action)
- {
- 	struct alc_spec *spec = codec->spec;
--	switch (action) {
--	case ALC_FIXUP_ACT_BUILD:
-+	if (action == ALC_FIXUP_ACT_PROBE)
- 		spec->vmaster_mute.hook = alc269_fixup_mic2_mute_hook;
--		snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
--		/* fallthru */
--	case ALC_FIXUP_ACT_INIT:
--		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
--		break;
--	}
- }
- 
- static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
+ 	switch (cfg->line_out_type) {
+ 	case AUTO_PIN_SPEAKER_OUT:
 -- 
 1.8.0.1
