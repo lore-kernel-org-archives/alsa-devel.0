@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 020/112] ALSA: hda/realtek - Use path-based
-	parser for digital outputs
-Date: Tue,  8 Jan 2013 12:38:13 +0100
-Message-ID: <1357645185-7645-21-git-send-email-tiwai@suse.de>
+Subject: [PATCH 021/112] ALSA: hda/realtek - Rename
+	get_out_path() to get_nid_path()
+Date: Tue,  8 Jan 2013 12:38:14 +0100
+Message-ID: <1357645185-7645-22-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C54512651A1
+ by alsa0.perex.cz (Postfix) with ESMTP id CEC732651A8
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:24 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 5E663A5208
+ by mx2.suse.de (Postfix) with ESMTP id 64450A520E
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,122 +29,110 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Similar like analog output paths, use the path list for parsing and
-initializing digital outputs as well.
+The function can be used not only for output paths but generically.
+Also swap the argument order.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 42 ++++++++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 20 deletions(-)
+ sound/pci/hda/patch_realtek.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 47f5c4f..206b983 100644
+index 206b983..419979d 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -1424,6 +1424,14 @@ static unsigned int alc_get_coef0(struct hda_codec *codec)
- 	return spec->coef0;
+@@ -3064,11 +3064,11 @@ static bool add_new_out_path(struct hda_codec *codec, hda_nid_t pin,
+ 	return false;
  }
  
-+static void alc_auto_set_output_and_unmute(struct hda_codec *codec,
-+					   hda_nid_t pin, int pin_type,
-+					   hda_nid_t dac);
-+static hda_nid_t alc_auto_look_for_dac(struct hda_codec *codec, hda_nid_t pin,
-+				       bool is_digital);
-+static bool add_new_out_path(struct hda_codec *codec, hda_nid_t pin,
-+			     hda_nid_t dac);
-+
- /*
-  * Digital I/O handling
+-/* get the path pointing from the given dac to pin;
++/* get the path between the given NIDs;
+  * passing 0 to either @pin or @dac behaves as a wildcard
   */
-@@ -1433,22 +1441,13 @@ static void alc_auto_init_digital(struct hda_codec *codec)
+-static struct nid_path *get_out_path(struct hda_codec *codec, hda_nid_t pin,
+-				     hda_nid_t dac)
++static struct nid_path *
++get_nid_path(struct hda_codec *codec, hda_nid_t from_nid, hda_nid_t to_nid)
  {
  	struct alc_spec *spec = codec->spec;
  	int i;
--	hda_nid_t pin, dac;
-+	hda_nid_t pin;
- 
- 	for (i = 0; i < spec->autocfg.dig_outs; i++) {
- 		pin = spec->autocfg.dig_out_pins[i];
- 		if (!pin)
+@@ -3077,8 +3077,8 @@ static struct nid_path *get_out_path(struct hda_codec *codec, hda_nid_t pin,
+ 		struct nid_path *path = snd_array_elem(&spec->paths, i);
+ 		if (path->depth <= 0)
  			continue;
--		snd_hda_set_pin_ctl(codec, pin, PIN_OUT);
--		if (!i)
--			dac = spec->multiout.dig_out_nid;
--		else
--			dac = spec->slave_dig_outs[i - 1];
--		if (!dac || !(get_wcaps(codec, dac) & AC_WCAP_OUT_AMP))
--			continue;
--		snd_hda_codec_write(codec, dac, 0,
--				    AC_VERB_SET_AMP_GAIN_MUTE,
--				    AMP_OUT_UNMUTE);
-+		alc_auto_set_output_and_unmute(codec, pin, PIN_OUT, 0);
+-		if ((!dac || path->path[0] == dac) &&
+-		    (!pin || path->path[path->depth - 1] == pin))
++		if ((!from_nid || path->path[0] == from_nid) &&
++		    (!to_nid || path->path[path->depth - 1] == to_nid))
+ 			return path;
  	}
- 	pin = spec->autocfg.dig_in_pin;
- 	if (pin)
-@@ -1465,13 +1464,10 @@ static void alc_auto_parse_digital(struct hda_codec *codec)
- 	/* support multiple SPDIFs; the secondary is set up as a slave */
- 	nums = 0;
- 	for (i = 0; i < spec->autocfg.dig_outs; i++) {
--		hda_nid_t conn[4];
--		err = snd_hda_get_connections(codec,
--					      spec->autocfg.dig_out_pins[i],
--					      conn, ARRAY_SIZE(conn));
--		if (err <= 0)
-+		hda_nid_t pin = spec->autocfg.dig_out_pins[i];
-+		dig_nid = alc_auto_look_for_dac(codec, pin, true);
-+		if (!dig_nid)
- 			continue;
--		dig_nid = conn[0]; /* assume the first element is audio-out */
- 		if (!nums) {
- 			spec->multiout.dig_out_nid = dig_nid;
- 			spec->dig_out_type = spec->autocfg.dig_out_type[0];
-@@ -1481,6 +1477,7 @@ static void alc_auto_parse_digital(struct hda_codec *codec)
- 				break;
- 			spec->slave_dig_outs[nums - 1] = dig_nid;
+ 	return NULL;
+@@ -3094,7 +3094,7 @@ static struct nid_path *get_out_path(struct hda_codec *codec, hda_nid_t pin,
+ static int assign_out_path_ctls(struct hda_codec *codec, hda_nid_t pin,
+ 				hda_nid_t dac)
+ {
+-	struct nid_path *path = get_out_path(codec, pin, dac);
++	struct nid_path *path = get_nid_path(codec, dac, pin);
+ 	hda_nid_t nid;
+ 	unsigned int val;
+ 	int badness = 0;
+@@ -3495,9 +3495,9 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 	debug_show_configs(spec, cfg);
+ 
+ 	if (cfg->line_out_pins[0]) {
+-		struct nid_path *path = get_out_path(codec,
+-						     cfg->line_out_pins[0],
+-						     spec->multiout.dac_nids[0]);
++		struct nid_path *path = get_nid_path(codec,
++						     spec->multiout.dac_nids[0],
++						     cfg->line_out_pins[0]);
+ 		if (path)
+ 			spec->vmaster_nid = alc_look_for_out_vol_nid(codec, path);
+ 	}
+@@ -3641,7 +3641,7 @@ static int alc_auto_create_multi_out_ctls(struct hda_codec *codec,
+ 			name = alc_get_line_out_pfx(spec, i, true, &index);
  		}
-+		add_new_out_path(codec, pin, dig_nid);
- 		nums++;
- 	}
  
-@@ -2895,15 +2892,20 @@ static bool alc_is_dac_already_used(struct hda_codec *codec, hda_nid_t nid)
- }
- 
- /* look for an empty DAC slot */
--static hda_nid_t alc_auto_look_for_dac(struct hda_codec *codec, hda_nid_t pin)
-+static hda_nid_t alc_auto_look_for_dac(struct hda_codec *codec, hda_nid_t pin,
-+				       bool is_digital)
- {
- 	struct alc_spec *spec = codec->spec;
-+	bool cap_digital;
- 	int i;
- 
- 	for (i = 0; i < spec->num_all_dacs; i++) {
- 		hda_nid_t nid = spec->all_dacs[i];
- 		if (!nid || alc_is_dac_already_used(codec, nid))
+-		path = get_out_path(codec, pin, dac);
++		path = get_nid_path(codec, dac, pin);
+ 		if (!path)
  			continue;
-+		cap_digital = !!(get_wcaps(codec, nid) & AC_WCAP_DIGITAL);
-+		if (is_digital != cap_digital)
-+			continue;
- 		if (is_reachable_path(codec, nid, pin))
- 			return nid;
- 	}
-@@ -3169,7 +3171,7 @@ static int alc_auto_fill_dacs(struct hda_codec *codec, int num_outs,
- 	for (i = 0; i < num_outs; i++) {
- 		hda_nid_t pin = pins[i];
- 		if (!dacs[i])
--			dacs[i] = alc_auto_look_for_dac(codec, pin);
-+			dacs[i] = alc_auto_look_for_dac(codec, pin, false);
- 		if (!dacs[i] && !i) {
- 			for (j = 1; j < num_outs; j++) {
- 				if (is_reachable_path(codec, dacs[j], pin)) {
-@@ -4110,7 +4112,7 @@ static int alc_auto_fill_multi_ios(struct hda_codec *codec,
- 			if (hardwired)
- 				dac = get_dac_if_single(codec, nid);
- 			else if (!dac)
--				dac = alc_auto_look_for_dac(codec, nid);
-+				dac = alc_auto_look_for_dac(codec, nid, false);
- 			if (!dac) {
- 				badness++;
- 				continue;
+ 		if (!name || !strcmp(name, "CLFE")) {
+@@ -3677,7 +3677,7 @@ static int alc_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
+ 	struct nid_path *path;
+ 	int err;
+ 
+-	path = get_out_path(codec, pin, dac);
++	path = get_nid_path(codec, dac, pin);
+ 	if (!path)
+ 		return 0;
+ 	/* bind volume control will be created in the case of dac = 0 */
+@@ -3763,7 +3763,7 @@ static int alc_auto_create_extra_outs(struct hda_codec *codec, int num_pins,
+ 		struct nid_path *path;
+ 		if (!pins[i] || !dacs[i])
+ 			continue;
+-		path = get_out_path(codec, pins[i], dacs[i]);
++		path = get_nid_path(codec, dacs[i], pins[i]);
+ 		if (!path)
+ 			continue;
+ 		vol = alc_look_for_out_vol_nid(codec, path);
+@@ -3975,7 +3975,7 @@ static void alc_auto_set_output_and_unmute(struct hda_codec *codec,
+ 	struct nid_path *path;
+ 
+ 	snd_hda_set_pin_ctl_cache(codec, pin, pin_type);
+-	path = get_out_path(codec, pin, dac);
++	path = get_nid_path(codec, dac, pin);
+ 	if (!path)
+ 		return;
+ 	activate_path(codec, path, true);
+@@ -4183,7 +4183,7 @@ static int alc_set_multi_io(struct hda_codec *codec, int idx, bool output)
+ 	hda_nid_t nid = spec->multi_io[idx].pin;
+ 	struct nid_path *path;
+ 
+-	path = get_out_path(codec, nid, spec->multi_io[idx].dac);
++	path = get_nid_path(codec, spec->multi_io[idx].dac, nid);
+ 	if (!path)
+ 		return -EINVAL;
+ 
 -- 
 1.8.0.1
