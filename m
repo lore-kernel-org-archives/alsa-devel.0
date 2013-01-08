@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 051/112] ALSA: hda - Export standard jack event
-	handlers for generic parser
-Date: Tue,  8 Jan 2013 12:38:44 +0100
-Message-ID: <1357645185-7645-52-git-send-email-tiwai@suse.de>
+Subject: [PATCH 048/112] ALSA: hda - Export
+	snd_hda_gen_add_kctl()
+Date: Tue,  8 Jan 2013 12:38:41 +0100
+Message-ID: <1357645185-7645-49-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A77DB2651C7
+ by alsa0.perex.cz (Postfix) with ESMTP id A83672651C8
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:25 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 0BE7FA52A2
+ by mx2.suse.de (Postfix) with ESMTP id 0A2F6A5271
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,139 +29,107 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These handlers are supposed to be called externally from the codec
-drivers once when they need to handle own jack events.
+It may be used in other codec drivers, so let it free.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 26 +++++++++++++++-----------
- sound/pci/hda/hda_generic.h |  9 +++++++++
- 2 files changed, 24 insertions(+), 11 deletions(-)
+ sound/pci/hda/hda_generic.c | 19 ++++++++++---------
+ sound/pci/hda/hda_generic.h |  4 ++++
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 364ec06..6914d70 100644
+index 31c5677..49e968c 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -2414,7 +2414,7 @@ static void do_automute(struct hda_codec *codec, int num_pins, hda_nid_t *pins,
+@@ -43,9 +43,9 @@ int snd_hda_gen_spec_init(struct hda_gen_spec *spec)
  }
+ EXPORT_SYMBOL_HDA(snd_hda_gen_spec_init);
  
- /* Toggle outputs muting */
--static void update_outputs(struct hda_codec *codec)
-+void snd_hda_gen_update_outputs(struct hda_codec *codec)
+-static struct snd_kcontrol_new *
+-add_kctl(struct hda_gen_spec *spec, const char *name,
+-	 const struct snd_kcontrol_new *temp)
++struct snd_kcontrol_new *
++snd_hda_gen_add_kctl(struct hda_gen_spec *spec, const char *name,
++		     const struct snd_kcontrol_new *temp)
  {
- 	struct hda_gen_spec *spec = codec->spec;
- 	int on;
-@@ -2448,6 +2448,7 @@ static void update_outputs(struct hda_codec *codec)
- 	do_automute(codec, ARRAY_SIZE(spec->autocfg.line_out_pins),
- 		    spec->autocfg.line_out_pins, on, false);
+ 	struct snd_kcontrol_new *knew = snd_array_new(&spec->kctls);
+ 	if (!knew)
+@@ -59,6 +59,7 @@ add_kctl(struct hda_gen_spec *spec, const char *name,
+ 		return NULL;
+ 	return knew;
  }
-+EXPORT_SYMBOL_HDA(snd_hda_gen_update_outputs);
++EXPORT_SYMBOL_HDA(snd_hda_gen_add_kctl);
  
- static void call_update_outputs(struct hda_codec *codec)
+ static void free_kctls(struct hda_gen_spec *spec)
  {
-@@ -2455,11 +2456,11 @@ static void call_update_outputs(struct hda_codec *codec)
- 	if (spec->automute_hook)
- 		spec->automute_hook(codec);
- 	else
--		update_outputs(codec);
-+		snd_hda_gen_update_outputs(codec);
- }
- 
- /* standard HP-automute helper */
--static void hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
+@@ -548,7 +549,7 @@ static int add_control(struct hda_gen_spec *spec, int type, const char *name,
  {
- 	struct hda_gen_spec *spec = codec->spec;
+ 	struct snd_kcontrol_new *knew;
  
-@@ -2470,9 +2471,10 @@ static void hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- 		return;
- 	call_update_outputs(codec);
- }
-+EXPORT_SYMBOL_HDA(snd_hda_gen_hp_automute);
- 
- /* standard line-out-automute helper */
--static void line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- {
+-	knew = add_kctl(spec, name, &control_templates[type]);
++	knew = snd_hda_gen_add_kctl(spec, name, &control_templates[type]);
+ 	if (!knew)
+ 		return -ENOMEM;
+ 	knew->index = cidx;
+@@ -1527,7 +1528,7 @@ static int create_multi_channel_mode(struct hda_codec *codec)
  	struct hda_gen_spec *spec = codec->spec;
  
-@@ -2489,9 +2491,10 @@ static void line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- 		return;
- 	call_update_outputs(codec);
- }
-+EXPORT_SYMBOL_HDA(snd_hda_gen_line_automute);
- 
- /* standard mic auto-switch helper */
--static void mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	int i;
-@@ -2507,6 +2510,7 @@ static void mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *jack)
+ 	if (spec->multi_ios > 0) {
+-		if (!add_kctl(spec, NULL, &channel_mode_enum))
++		if (!snd_hda_gen_add_kctl(spec, NULL, &channel_mode_enum))
+ 			return -ENOMEM;
  	}
- 	mux_select(codec, 0, spec->am_entry[0].idx);
- }
-+EXPORT_SYMBOL_HDA(snd_hda_gen_mic_autoswitch);
+ 	return 0;
+@@ -2086,7 +2087,7 @@ static int create_bind_cap_vol_ctl(struct hda_codec *codec, int idx,
+ 	struct snd_kcontrol_new *knew;
  
- /*
-  * Auto-Mute mode mixer enum support
-@@ -2639,7 +2643,7 @@ static int check_auto_mute_availability(struct hda_codec *codec)
- 		snd_printdd("hda-codec: Enable HP auto-muting on NID 0x%x\n",
- 			    nid);
- 		snd_hda_jack_detect_enable_callback(codec, nid, HDA_GEN_HP_EVENT,
--						    hp_automute);
-+						    snd_hda_gen_hp_automute);
- 		spec->detect_hp = 1;
+ 	if (vol_ctl) {
+-		knew = add_kctl(spec, NULL, &cap_vol_temp);
++		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_vol_temp);
+ 		if (!knew)
+ 			return -ENOMEM;
+ 		knew->index = idx;
+@@ -2094,7 +2095,7 @@ static int create_bind_cap_vol_ctl(struct hda_codec *codec, int idx,
+ 		knew->subdevice = HDA_SUBDEV_AMP_FLAG;
  	}
+ 	if (sw_ctl) {
+-		knew = add_kctl(spec, NULL, &cap_sw_temp);
++		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_sw_temp);
+ 		if (!knew)
+ 			return -ENOMEM;
+ 		knew->index = idx;
+@@ -2171,7 +2172,7 @@ static int create_capture_mixers(struct hda_codec *codec)
  
-@@ -2652,7 +2656,7 @@ static int check_auto_mute_availability(struct hda_codec *codec)
- 				snd_printdd("hda-codec: Enable Line-Out auto-muting on NID 0x%x\n", nid);
- 				snd_hda_jack_detect_enable_callback(codec, nid,
- 								    HDA_GEN_FRONT_EVENT,
--								    line_automute);
-+								    snd_hda_gen_line_automute);
- 				spec->detect_lo = 1;
- 			}
- 		spec->automute_lo_possible = spec->detect_hp;
-@@ -2704,7 +2708,7 @@ static bool auto_mic_check_imux(struct hda_codec *codec)
- 		snd_hda_jack_detect_enable_callback(codec,
- 						    spec->am_entry[i].pin,
- 						    HDA_GEN_MIC_EVENT,
--						    mic_autoswitch);
-+						    snd_hda_gen_mic_autoswitch);
- 	return true;
+ 	if (!spec->auto_mic && imux->num_items > 1) {
+ 		struct snd_kcontrol_new *knew;
+-		knew = add_kctl(spec, NULL, &cap_src_temp);
++		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_src_temp);
+ 		if (!knew)
+ 			return -ENOMEM;
+ 		knew->count = nums;
+@@ -2592,7 +2593,7 @@ static int add_automute_mode_enum(struct hda_codec *codec)
+ {
+ 	struct hda_gen_spec *spec = codec->spec;
+ 
+-	if (!add_kctl(spec, NULL, &automute_mode_enum))
++	if (!snd_hda_gen_add_kctl(spec, NULL, &automute_mode_enum))
+ 		return -ENOMEM;
+ 	return 0;
  }
- 
-@@ -3536,9 +3540,9 @@ int snd_hda_gen_init(struct hda_codec *codec)
- 	init_digital(codec);
- 
- 	/* call init functions of standard auto-mute helpers */
--	hp_automute(codec, NULL);
--	line_automute(codec, NULL);
--	mic_autoswitch(codec, NULL);
-+	snd_hda_gen_hp_automute(codec, NULL);
-+	snd_hda_gen_line_automute(codec, NULL);
-+	snd_hda_gen_mic_autoswitch(codec, NULL);
- 
- 	if (spec->vmaster_mute.sw_kctl && spec->vmaster_mute.hook)
- 		snd_hda_sync_vmaster_hook(&spec->vmaster_mute);
 diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 1a3b404..417ab65 100644
+index 9c00bd5..d71e86d 100644
 --- a/sound/pci/hda/hda_generic.h
 +++ b/sound/pci/hda/hda_generic.h
-@@ -199,4 +199,13 @@ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
- int snd_hda_gen_build_controls(struct hda_codec *codec);
- int snd_hda_gen_build_pcms(struct hda_codec *codec);
+@@ -192,6 +192,10 @@ snd_hda_add_new_path(struct hda_codec *codec, hda_nid_t from_nid,
+ void snd_hda_activate_path(struct hda_codec *codec, struct nid_path *path,
+ 			   bool enable, bool add_aamix);
  
-+/* standard jack event callbacks */
-+void snd_hda_gen_hp_automute(struct hda_codec *codec,
-+			     struct hda_jack_tbl *jack);
-+void snd_hda_gen_line_automute(struct hda_codec *codec,
-+			       struct hda_jack_tbl *jack);
-+void snd_hda_gen_mic_autoswitch(struct hda_codec *codec,
-+				struct hda_jack_tbl *jack);
-+void snd_hda_gen_update_outputs(struct hda_codec *codec);
++struct snd_kcontrol_new *
++snd_hda_gen_add_kctl(struct hda_gen_spec *spec, const char *name,
++		     const struct snd_kcontrol_new *temp);
 +
- #endif /* __SOUND_HDA_GENERIC_H */
+ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
+ 				  const hda_nid_t *ignore_nids);
+ int snd_hda_gen_build_controls(struct hda_codec *codec);
 -- 
 1.8.0.1
