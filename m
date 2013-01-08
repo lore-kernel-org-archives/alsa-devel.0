@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 064/112] ALSA: hda - Avoid access of amp cache
-	element outside mutex
-Date: Tue,  8 Jan 2013 12:38:57 +0100
-Message-ID: <1357645185-7645-65-git-send-email-tiwai@suse.de>
+Subject: [PATCH 067/112] ALSA: hda - Add
+	spec->vmaster_mute_enum flag to generic parser
+Date: Tue,  8 Jan 2013 12:39:00 +0100
+Message-ID: <1357645185-7645-68-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 39B072651FF
+ by alsa0.perex.cz (Postfix) with ESMTP id 46065265201
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:26 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
+Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 52E6AA52F2
+ by mx2.suse.de (Postfix) with ESMTP id 60F44A52FB
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,87 +29,70 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The access to a cache array element could be invalid outside the
-mutex, so copy locally for the later references.
+Add a flag to indicate whether the vmaster mute hook enum is exposed
+or not.  Conexant codecs may want not to expose the control depending
+on the model.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/pci/hda/hda_generic.c   | 3 ++-
+ sound/pci/hda/hda_generic.h   | 1 +
+ sound/pci/hda/patch_realtek.c | 8 ++++++--
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 48591ab..9eb73b0 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1807,7 +1807,7 @@ update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
- /*
-  * write the current volume in info to the h/w
-  */
--static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
-+static void put_vol_mute(struct hda_codec *codec, unsigned int amp_caps,
- 			 hda_nid_t nid, int ch, int direction, int index,
- 			 int val)
- {
-@@ -1816,8 +1816,8 @@ static void put_vol_mute(struct hda_codec *codec, struct hda_amp_info *info,
- 	parm = ch ? AC_AMP_SET_RIGHT : AC_AMP_SET_LEFT;
- 	parm |= direction == HDA_OUTPUT ? AC_AMP_SET_OUTPUT : AC_AMP_SET_INPUT;
- 	parm |= index << AC_AMP_SET_INDEX_SHIFT;
--	if ((val & HDA_AMP_MUTE) && !(info->amp_caps & AC_AMPCAP_MUTE) &&
--	    (info->amp_caps & AC_AMPCAP_MIN_MUTE))
-+	if ((val & HDA_AMP_MUTE) && !(amp_caps & AC_AMPCAP_MUTE) &&
-+	    (amp_caps & AC_AMPCAP_MIN_MUTE))
- 		; /* set the zero value as a fake mute */
- 	else
- 		parm |= val;
-@@ -1854,6 +1854,7 @@ static int codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
- 			    bool init_only)
- {
- 	struct hda_amp_info *info;
-+	unsigned int caps;
- 	unsigned int cache_only;
- 
- 	if (snd_BUG_ON(mask & ~0xff))
-@@ -1873,9 +1874,10 @@ static int codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 6fb454e..a5c4bc0 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -2966,7 +2966,8 @@ int snd_hda_gen_build_controls(struct hda_codec *codec)
+ 		if (err < 0)
+ 			return err;
+ 		if (spec->vmaster_mute.hook)
+-			snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute, true);
++			snd_hda_add_vmaster_hook(codec, &spec->vmaster_mute,
++						 spec->vmaster_mute_enum);
  	}
- 	info->vol[ch] = val;
- 	cache_only = info->head.dirty = codec->cached_write;
-+	caps = info->amp_caps;
- 	mutex_unlock(&codec->hash_mutex);
- 	if (!cache_only)
--		put_vol_mute(codec, info, nid, ch, direction, idx, val);
-+		put_vol_mute(codec, caps, nid, ch, direction, idx, val);
- 	return 1;
+ 
+ 	free_kctls(spec); /* no longer needed */
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index b598899..a406cd4 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -151,6 +151,7 @@ struct hda_gen_spec {
+ 	unsigned int multi_cap_vol:1; /* allow multiple capture xxx volumes */
+ 	unsigned int inv_dmic_split:1; /* inverted dmic w/a for conexant */
+ 	unsigned int own_eapd_ctl:1; /* set EAPD by own function */
++	unsigned int vmaster_mute_enum:1; /* add vmaster mute mode enum */
+ 
+ 	/* for virtual master */
+ 	hda_nid_t vmaster_nid;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0b32729..1c343f2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2672,8 +2672,10 @@ static void alc269_fixup_mic1_mute(struct hda_codec *codec,
+ 				   const struct alc_fixup *fix, int action)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-	if (action == ALC_FIXUP_ACT_PROBE)
++	if (action == ALC_FIXUP_ACT_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc269_fixup_mic1_mute_hook;
++		spec->gen.vmaster_mute_enum = 1;
++	}
  }
  
-@@ -1967,23 +1969,25 @@ void snd_hda_codec_resume_amp(struct hda_codec *codec)
- 		u32 key;
- 		hda_nid_t nid;
- 		unsigned int idx, dir, ch;
-+		struct hda_amp_info info;
+ /* update mute-LED according to the speaker mute state via mic2 VREF pin */
+@@ -2688,8 +2690,10 @@ static void alc269_fixup_mic2_mute(struct hda_codec *codec,
+ 				   const struct alc_fixup *fix, int action)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-	if (action == ALC_FIXUP_ACT_PROBE)
++	if (action == ALC_FIXUP_ACT_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc269_fixup_mic2_mute_hook;
++		spec->gen.vmaster_mute_enum = 1;
++	}
+ }
  
- 		buffer = snd_array_elem(&codec->amp_cache.buf, i);
- 		if (!buffer->head.dirty)
- 			continue;
- 		buffer->head.dirty = 0;
--		key = buffer->head.key;
-+		info = *buffer;
-+		key = info.head.key;
- 		if (!key)
- 			continue;
- 		nid = key & 0xff;
- 		idx = (key >> 16) & 0xff;
- 		dir = (key >> 24) & 0xff;
- 		for (ch = 0; ch < 2; ch++) {
--			if (!(buffer->head.val & INFO_AMP_VOL(ch)))
-+			if (!(info.head.val & INFO_AMP_VOL(ch)))
- 				continue;
- 			mutex_unlock(&codec->hash_mutex);
--			put_vol_mute(codec, buffer, nid, ch, dir, idx,
--				     buffer->vol[ch]);
-+			put_vol_mute(codec, info.amp_caps, nid, ch, dir, idx,
-+				     info.vol[ch]);
- 			mutex_lock(&codec->hash_mutex);
- 		}
- 	}
+ static void alc271_hp_gate_mic_jack(struct hda_codec *codec,
 -- 
 1.8.0.1
