@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 048/112] ALSA: hda - Export
-	snd_hda_gen_add_kctl()
-Date: Tue,  8 Jan 2013 12:38:41 +0100
-Message-ID: <1357645185-7645-49-git-send-email-tiwai@suse.de>
+Subject: [PATCH 049/112] ALSA: hda - Move the call of
+	snd_hda_parse_pin_defcfg() from snd_hda_gen_parse_auto_config()
+Date: Tue,  8 Jan 2013 12:38:42 +0100
+Message-ID: <1357645185-7645-50-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A83672651C8
+ by alsa0.perex.cz (Postfix) with ESMTP id A6DEE2651C6
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:25 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 0A2F6A5271
+ by mx2.suse.de (Postfix) with ESMTP id 025E8A525C
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,107 +29,96 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It may be used in other codec drivers, so let it free.
+In some cases, we want to manipulate the auto_pin_cfg table before
+passing to snd_hda_gen_parse_auto_config() (e.g. Realtek SSID check
+code fiddles with the headphone pin).   Also passing ignore_pins just
+for snd_hda_parse_pin_defcfg() isn't good.
+
+In this patch, snd_hda_gen_parse_auto_config() is changed to receive
+the auto_pin_cfg table to be parsed.  The passed auto_pin_cfg table
+must have been initialized (typically by calling
+snd_hda_gen_parse_auto_config()) beforehand by the caller.
+
+Also together with this change, spec->parse_flags is also removed.
+Since this was referred only at the place calling
+snd_hda_parse_pin_defcfg(), no longer needed to be kept in spec.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 19 ++++++++++---------
- sound/pci/hda/hda_generic.h |  4 ++++
- 2 files changed, 14 insertions(+), 9 deletions(-)
+ sound/pci/hda/hda_generic.c | 24 +++++++++++++++---------
+ sound/pci/hda/hda_generic.h |  4 +---
+ 2 files changed, 16 insertions(+), 12 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 31c5677..49e968c 100644
+index 49e968c..e512cab 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -43,9 +43,9 @@ int snd_hda_gen_spec_init(struct hda_gen_spec *spec)
+@@ -2785,21 +2785,23 @@ static int check_auto_mic_availability(struct hda_codec *codec)
  }
- EXPORT_SYMBOL_HDA(snd_hda_gen_spec_init);
  
--static struct snd_kcontrol_new *
--add_kctl(struct hda_gen_spec *spec, const char *name,
--	 const struct snd_kcontrol_new *temp)
-+struct snd_kcontrol_new *
-+snd_hda_gen_add_kctl(struct hda_gen_spec *spec, const char *name,
-+		     const struct snd_kcontrol_new *temp)
- {
- 	struct snd_kcontrol_new *knew = snd_array_new(&spec->kctls);
- 	if (!knew)
-@@ -59,6 +59,7 @@ add_kctl(struct hda_gen_spec *spec, const char *name,
- 		return NULL;
- 	return knew;
- }
-+EXPORT_SYMBOL_HDA(snd_hda_gen_add_kctl);
  
- static void free_kctls(struct hda_gen_spec *spec)
- {
-@@ -548,7 +549,7 @@ static int add_control(struct hda_gen_spec *spec, int type, const char *name,
- {
- 	struct snd_kcontrol_new *knew;
- 
--	knew = add_kctl(spec, name, &control_templates[type]);
-+	knew = snd_hda_gen_add_kctl(spec, name, &control_templates[type]);
- 	if (!knew)
- 		return -ENOMEM;
- 	knew->index = cidx;
-@@ -1527,7 +1528,7 @@ static int create_multi_channel_mode(struct hda_codec *codec)
- 	struct hda_gen_spec *spec = codec->spec;
- 
- 	if (spec->multi_ios > 0) {
--		if (!add_kctl(spec, NULL, &channel_mode_enum))
-+		if (!snd_hda_gen_add_kctl(spec, NULL, &channel_mode_enum))
- 			return -ENOMEM;
- 	}
- 	return 0;
-@@ -2086,7 +2087,7 @@ static int create_bind_cap_vol_ctl(struct hda_codec *codec, int idx,
- 	struct snd_kcontrol_new *knew;
- 
- 	if (vol_ctl) {
--		knew = add_kctl(spec, NULL, &cap_vol_temp);
-+		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_vol_temp);
- 		if (!knew)
- 			return -ENOMEM;
- 		knew->index = idx;
-@@ -2094,7 +2095,7 @@ static int create_bind_cap_vol_ctl(struct hda_codec *codec, int idx,
- 		knew->subdevice = HDA_SUBDEV_AMP_FLAG;
- 	}
- 	if (sw_ctl) {
--		knew = add_kctl(spec, NULL, &cap_sw_temp);
-+		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_sw_temp);
- 		if (!knew)
- 			return -ENOMEM;
- 		knew->index = idx;
-@@ -2171,7 +2172,7 @@ static int create_capture_mixers(struct hda_codec *codec)
- 
- 	if (!spec->auto_mic && imux->num_items > 1) {
- 		struct snd_kcontrol_new *knew;
--		knew = add_kctl(spec, NULL, &cap_src_temp);
-+		knew = snd_hda_gen_add_kctl(spec, NULL, &cap_src_temp);
- 		if (!knew)
- 			return -ENOMEM;
- 		knew->count = nums;
-@@ -2592,7 +2593,7 @@ static int add_automute_mode_enum(struct hda_codec *codec)
+-/* parse the BIOS configuration and set up the hda_gen_spec */
+-/* return 1 if successful, 0 if the proper config is not found,
++/*
++ * Parse the given BIOS configuration and set up the hda_gen_spec
++ *
++ * return 1 if successful, 0 if the proper config is not found,
+  * or a negative error code
+  */
+ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
+-				  const hda_nid_t *ignore_nids)
++				  struct auto_pin_cfg *cfg)
  {
  	struct hda_gen_spec *spec = codec->spec;
+-	struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	int err;
  
--	if (!add_kctl(spec, NULL, &automute_mode_enum))
-+	if (!snd_hda_gen_add_kctl(spec, NULL, &automute_mode_enum))
- 		return -ENOMEM;
- 	return 0;
- }
+-	err = snd_hda_parse_pin_defcfg(codec, cfg, ignore_nids,
+-				       spec->parse_flags);
+-	if (err < 0)
+-		return err;
++	if (cfg != &spec->autocfg) {
++		spec->autocfg = *cfg;
++		cfg = &spec->autocfg;
++	}
++
+ 	if (!cfg->line_outs) {
+ 		if (cfg->dig_outs || cfg->dig_in_pin) {
+ 			spec->multiout.max_channels = 2;
+@@ -3586,7 +3588,11 @@ int snd_hda_parse_generic_codec(struct hda_codec *codec)
+ 	snd_hda_gen_spec_init(spec);
+ 	codec->spec = spec;
+ 
+-	err = snd_hda_gen_parse_auto_config(codec, NULL);
++	err = snd_hda_parse_pin_defcfg(codec, &spec->autocfg, NULL, 0);
++	if (err < 0)
++		return err;
++
++	err = snd_hda_gen_parse_auto_config(codec, &spec->autocfg);
+ 	if (err < 0)
+ 		goto error;
+ 
 diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 9c00bd5..d71e86d 100644
+index d71e86d..1a3b404 100644
 --- a/sound/pci/hda/hda_generic.h
 +++ b/sound/pci/hda/hda_generic.h
-@@ -192,6 +192,10 @@ snd_hda_add_new_path(struct hda_codec *codec, hda_nid_t from_nid,
- void snd_hda_activate_path(struct hda_codec *codec, struct nid_path *path,
- 			   bool enable, bool add_aamix);
+@@ -152,8 +152,6 @@ struct hda_gen_spec {
+ 	unsigned int inv_dmic_split:1; /* inverted dmic w/a for conexant */
+ 	unsigned int own_eapd_ctl:1; /* set EAPD by own function */
  
-+struct snd_kcontrol_new *
-+snd_hda_gen_add_kctl(struct hda_gen_spec *spec, const char *name,
-+		     const struct snd_kcontrol_new *temp);
-+
+-	unsigned int parse_flags; /* passed to snd_hda_parse_pin_defcfg() */
+-
+ 	/* for virtual master */
+ 	hda_nid_t vmaster_nid;
+ 	struct hda_vmaster_mute_hook vmaster_mute;
+@@ -197,7 +195,7 @@ snd_hda_gen_add_kctl(struct hda_gen_spec *spec, const char *name,
+ 		     const struct snd_kcontrol_new *temp);
+ 
  int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
- 				  const hda_nid_t *ignore_nids);
+-				  const hda_nid_t *ignore_nids);
++				  struct auto_pin_cfg *cfg);
  int snd_hda_gen_build_controls(struct hda_codec *codec);
+ int snd_hda_gen_build_pcms(struct hda_codec *codec);
+ 
 -- 
 1.8.0.1
