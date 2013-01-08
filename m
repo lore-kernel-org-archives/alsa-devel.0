@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 023/112] ALSA: hda/realtek - Add missing
-	initialization of multi-io routes
-Date: Tue,  8 Jan 2013 12:38:16 +0100
-Message-ID: <1357645185-7645-24-git-send-email-tiwai@suse.de>
+Subject: [PATCH 015/112] ALSA: hda - Introduce
+	snd_hda_codec_amp_init*()
+Date: Tue,  8 Jan 2013 12:38:08 +0100
+Message-ID: <1357645185-7645-16-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D464F2651AA
+ by alsa0.perex.cz (Postfix) with ESMTP id B6F5226518A
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:24 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 6033AA520D
+ by mx2.suse.de (Postfix) with ESMTP id 315DEA5202
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,86 +29,157 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The paths used for multi-io haven't been initialized properly, so
-far.  It's usually no big matter because the pins are set to input as
-default, but it's still cleaner to initialize the paths properly.
+The new function snd_hda_codec_amp_init() (and the stereo variant)
+initializes the amp value only once at the first access.  If the amp
+was already initialized or updated, this won't do anything more.
 
-Now with the path active/inactive check, we can do it easily.
+It's useful for initializing the input amps that are in the part of
+the path but never used.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ sound/pci/hda/hda_codec.c | 71 ++++++++++++++++++++++++++++++++++-------------
+ sound/pci/hda/hda_local.h |  4 +++
+ 2 files changed, 56 insertions(+), 19 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3f39ba5..398b25b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3952,9 +3952,6 @@ static void activate_path(struct hda_codec *codec, struct nid_path *path,
- {
- 	int i;
- 
--	if (path->active == enable)
--		return;
--
- 	if (!enable)
- 		path->active = false;
- 
-@@ -3984,6 +3981,8 @@ static void alc_auto_set_output_and_unmute(struct hda_codec *codec,
- 	path = get_nid_path(codec, dac, pin);
- 	if (!path)
- 		return;
-+	if (path->active)
-+		return;
- 	activate_path(codec, path, true);
- }
- 
-@@ -4193,10 +4192,8 @@ static int alc_set_multi_io(struct hda_codec *codec, int idx, bool output)
- 	if (!path)
- 		return -EINVAL;
- 
--	if (!spec->multi_io[idx].ctl_in)
--		spec->multi_io[idx].ctl_in =
--			snd_hda_codec_update_cache(codec, nid, 0,
--					   AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+	if (path->active == output)
-+		return 0;
- 
- 	if (output) {
- 		snd_hda_set_pin_ctl_cache(codec, nid, PIN_OUT);
-@@ -4251,6 +4248,25 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
- 	return 0;
- }
- 
-+static void alc_auto_init_multi_io(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	int i;
-+
-+	for (i = 0; i < spec->multi_ios; i++) {
-+		hda_nid_t pin = spec->multi_io[i].pin;
-+		struct nid_path *path;
-+		path = get_nid_path(codec, spec->multi_io[i].dac, pin);
-+		if (!path)
-+			continue;
-+		if (!spec->multi_io[i].ctl_in)
-+			spec->multi_io[i].ctl_in =
-+				snd_hda_codec_update_cache(codec, pin, 0,
-+					   AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		activate_path(codec, path, path->active);
-+	}
-+}
-+
- /* filter out invalid adc_nids (and capsrc_nids) that don't give all
-  * active input pins
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 3aa20dc..7383746 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1765,7 +1765,7 @@ EXPORT_SYMBOL_HDA(snd_hda_override_pin_caps);
   */
-@@ -4489,6 +4505,7 @@ static void alc_auto_init_std(struct hda_codec *codec)
+ static struct hda_amp_info *
+ update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
+-		int direction, int index)
++		int direction, int index, bool init_only)
  {
- 	alc_auto_init_multi_out(codec);
- 	alc_auto_init_extra_out(codec);
-+	alc_auto_init_multi_io(codec);
- 	alc_auto_init_analog_input(codec);
- 	alc_auto_init_input_src(codec);
- 	alc_auto_init_digital(codec);
+ 	struct hda_amp_info *info;
+ 	unsigned int parm, val = 0;
+@@ -1791,7 +1791,8 @@ update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
+ 		}
+ 		info->vol[ch] = val;
+ 		info->head.val |= INFO_AMP_VOL(ch);
+-	}
++	} else if (init_only)
++		return NULL;
+ 	return info;
+ }
+ 
+@@ -1832,7 +1833,7 @@ int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
+ 	unsigned int val = 0;
+ 
+ 	mutex_lock(&codec->hash_mutex);
+-	info = update_amp_hash(codec, nid, ch, direction, index);
++	info = update_amp_hash(codec, nid, ch, direction, index, false);
+ 	if (info)
+ 		val = info->vol[ch];
+ 	mutex_unlock(&codec->hash_mutex);
+@@ -1840,21 +1841,9 @@ int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_read);
+ 
+-/**
+- * snd_hda_codec_amp_update - update the AMP value
+- * @codec: HD-audio codec
+- * @nid: NID to read the AMP value
+- * @ch: channel (left=0 or right=1)
+- * @direction: #HDA_INPUT or #HDA_OUTPUT
+- * @idx: the index value (only for input direction)
+- * @mask: bit mask to set
+- * @val: the bits value to set
+- *
+- * Update the AMP value with a bit mask.
+- * Returns 0 if the value is unchanged, 1 if changed.
+- */
+-int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+-			     int direction, int idx, int mask, int val)
++static int codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
++			    int direction, int idx, int mask, int val,
++			    bool init_only)
+ {
+ 	struct hda_amp_info *info;
+ 
+@@ -1863,7 +1852,7 @@ int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+ 	val &= mask;
+ 
+ 	mutex_lock(&codec->hash_mutex);
+-	info = update_amp_hash(codec, nid, ch, direction, idx);
++	info = update_amp_hash(codec, nid, ch, direction, idx, init_only);
+ 	if (!info) {
+ 		mutex_unlock(&codec->hash_mutex);
+ 		return 0;
+@@ -1881,6 +1870,25 @@ int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+ 		put_vol_mute(codec, info, nid, ch, direction, idx, val);
+ 	return 1;
+ }
++
++/**
++ * snd_hda_codec_amp_update - update the AMP value
++ * @codec: HD-audio codec
++ * @nid: NID to read the AMP value
++ * @ch: channel (left=0 or right=1)
++ * @direction: #HDA_INPUT or #HDA_OUTPUT
++ * @idx: the index value (only for input direction)
++ * @mask: bit mask to set
++ * @val: the bits value to set
++ *
++ * Update the AMP value with a bit mask.
++ * Returns 0 if the value is unchanged, 1 if changed.
++ */
++int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
++			     int direction, int idx, int mask, int val)
++{
++	return codec_amp_update(codec, nid, ch, direction, idx, mask, val, false);
++}
+ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_update);
+ 
+ /**
+@@ -1909,6 +1917,31 @@ int snd_hda_codec_amp_stereo(struct hda_codec *codec, hda_nid_t nid,
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_amp_stereo);
+ 
++/* Works like snd_hda_codec_amp_update() but it writes the value only at
++ * the first access.  If the amp was already initialized / updated beforehand,
++ * this does nothing.
++ */
++int snd_hda_codec_amp_init(struct hda_codec *codec, hda_nid_t nid, int ch,
++			   int dir, int idx, int mask, int val)
++{
++	return codec_amp_update(codec, nid, ch, dir, idx, mask, val, true);
++}
++EXPORT_SYMBOL_HDA(snd_hda_codec_amp_init);
++
++int snd_hda_codec_amp_init_stereo(struct hda_codec *codec, hda_nid_t nid,
++				  int dir, int idx, int mask, int val)
++{
++	int ch, ret = 0;
++
++	if (snd_BUG_ON(mask & ~0xff))
++		mask &= 0xff;
++	for (ch = 0; ch < 2; ch++)
++		ret |= snd_hda_codec_amp_init(codec, nid, ch, dir,
++					      idx, mask, val);
++	return ret;
++}
++EXPORT_SYMBOL_HDA(snd_hda_codec_amp_init_stereo);
++
+ /**
+  * snd_hda_codec_resume_amp - Resume all AMP commands from the cache
+  * @codec: HD-audio codec
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index f765296..e38519b 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -133,6 +133,10 @@ int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
+ 			     int direction, int idx, int mask, int val);
+ int snd_hda_codec_amp_stereo(struct hda_codec *codec, hda_nid_t nid,
+ 			     int dir, int idx, int mask, int val);
++int snd_hda_codec_amp_init(struct hda_codec *codec, hda_nid_t nid, int ch,
++			   int direction, int idx, int mask, int val);
++int snd_hda_codec_amp_init_stereo(struct hda_codec *codec, hda_nid_t nid,
++				  int dir, int idx, int mask, int val);
+ void snd_hda_codec_resume_amp(struct hda_codec *codec);
+ 
+ void snd_hda_set_vmaster_tlv(struct hda_codec *codec, hda_nid_t nid, int dir,
 -- 
 1.8.0.1
