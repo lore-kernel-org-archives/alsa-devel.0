@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 076/112] ALSA: hda - Fix typos in
-	debug_show_configs()
-Date: Tue,  8 Jan 2013 12:39:09 +0100
-Message-ID: <1357645185-7645-77-git-send-email-tiwai@suse.de>
+Subject: [PATCH 080/112] ALSA: hda - Add inv_eapd flag to
+	struct hda_codec
+Date: Tue,  8 Jan 2013 12:39:13 +0100
+Message-ID: <1357645185-7645-81-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 81F2026520C
+ by alsa0.perex.cz (Postfix) with ESMTP id 9985C26520F
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:26 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 7FF15A51BB
+ by mx2.suse.de (Postfix) with ESMTP id 8C93AA5356
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,35 +29,41 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It never showed the 4th line out and headphone pins since quite ago.
-Oh well.
+Add the new flag, codec->inv_eapd, indicating that the EAPD
+implementation is inverted.
+
+There are always broken hardware in the world.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_codec.h   | 1 +
+ sound/pci/hda/hda_generic.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 2d9a51c..369ffaf 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -866,6 +866,7 @@ struct hda_codec {
+ 	unsigned int pins_shutup:1;	/* pins are shut up */
+ 	unsigned int no_trigger_sense:1; /* don't trigger at pin-sensing */
+ 	unsigned int no_jack_detect:1;	/* Machine has no jack-detection */
++	unsigned int inv_eapd:1; /* broken h/w: inverted EAPD control */
+ 	unsigned int pcm_format_first:1; /* PCM format must be set first */
+ 	unsigned int epss:1;		/* supporting EPSS? */
+ 	unsigned int cached_write:1;	/* write only to caches */
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 8af5324..b341450 100644
+index cc47460..18daa8f 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -1164,7 +1164,7 @@ static void debug_show_configs(struct hda_gen_spec *spec, struct auto_pin_cfg *c
- {
- 	debug_badness("multi_outs = %x/%x/%x/%x : %x/%x/%x/%x\n",
- 		      cfg->line_out_pins[0], cfg->line_out_pins[1],
--		      cfg->line_out_pins[2], cfg->line_out_pins[2],
-+		      cfg->line_out_pins[2], cfg->line_out_pins[3],
- 		      spec->multiout.dac_nids[0],
- 		      spec->multiout.dac_nids[1],
- 		      spec->multiout.dac_nids[2],
-@@ -1176,7 +1176,7 @@ static void debug_show_configs(struct hda_gen_spec *spec, struct auto_pin_cfg *c
- 			      spec->multi_io[0].dac, spec->multi_io[1].dac);
- 	debug_badness("hp_outs = %x/%x/%x/%x : %x/%x/%x/%x\n",
- 		      cfg->hp_pins[0], cfg->hp_pins[1],
--		      cfg->hp_pins[2], cfg->hp_pins[2],
-+		      cfg->hp_pins[2], cfg->hp_pins[3],
- 		      spec->multiout.hp_out_nid[0],
- 		      spec->multiout.hp_out_nid[1],
- 		      spec->multiout.hp_out_nid[2],
+@@ -545,6 +545,8 @@ static void set_pin_eapd(struct hda_codec *codec, hda_nid_t pin, bool enable)
+ 	if (spec->own_eapd_ctl ||
+ 	    !(snd_hda_query_pin_caps(codec, pin) & AC_PINCAP_EAPD))
+ 		return;
++	if (codec->inv_eapd)
++		enable = !enable;
+ 	snd_hda_codec_update_cache(codec, pin, 0,
+ 				   AC_VERB_SET_EAPD_BTLENABLE,
+ 				   enable ? 0x02 : 0x00);
 -- 
 1.8.0.1
