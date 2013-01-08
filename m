@@ -1,17 +1,20 @@
-From: Asim Kadav <kadav@cs.wisc.edu>
-Subject: Re: [sound:for-linus 4/4] sound/oss/pas2_card.c:338:5:
-	warning: too many arguments for format
-Date: Fri, 4 Jan 2013 03:40:47 -0600
-Message-ID: <0B608548-D089-43C6-A65E-02E65434ECA1@cs.wisc.edu>
-References: <50e6a191.sDZeREDTt2gcR/8X%fengguang.wu@intel.com>
-Mime-Version: 1.0 (Mac OS X Mail 6.2 \(1499\))
+From: Maurizio Avogadro <mavoga@gmail.com>
+Subject: Re: [3.6.9 -> 3.7.1 regression] sound: snd_hda_intel
+ codec probing issue?
+Date: Tue, 08 Jan 2013 09:23:14 +0100
+Message-ID: <50EBD772.3090008@gmail.com>
+References: <1356704740.3953.26.camel@lamella> <s5hvcber5cz.wl%tiwai@suse.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sabe.cs.wisc.edu (sabe.cs.wisc.edu [128.105.6.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E7DC2616B9
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2013 10:40:55 +0100 (CET)
-In-Reply-To: <50e6a191.sDZeREDTt2gcR/8X%fengguang.wu@intel.com>
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6156261655
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 10:24:22 +0100 (CET)
+Received: by mail-bk0-f46.google.com with SMTP id q16so94638bkw.19
+ for <alsa-devel@alsa-project.org>; Tue, 08 Jan 2013 01:24:22 -0800 (PST)
+In-Reply-To: <s5hvcber5cz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm sorry. There was a stray comma. I fixed it. 
+Takashi Iwai <tiwai <at> suse.de> writes:
 
-Signed-off-by: Asim Kadav <kadav@cs.wisc.edu>
----
-sound/oss/pas2_card.c | 5 +++++
-1 file changed, 5 insertions(+)
+> [...]
+>
+> If it's new in 3.7, this could be a regression by runtime D3.
+> Try to pass power_save_controller=0 option to snd-hda-intel module
+> (or change it via sysfs dynamically).
+>
+> thanks,
+>
+> Takashi
 
-diff --git a/sound/oss/pas2_card.c b/sound/oss/pas2_card.c
-index dabf8a8..f35e752 100644
---- a/sound/oss/pas2_card.c
-+++ b/sound/oss/pas2_card.c
-@@ -333,6 +333,11 @@ static void __init attach_pas_card(struct address_info *hw_config)
-               {
-                       char            temp[100];
+Hi Takashi
 
-+                       if (pas_model < 0 ||
-+                               pas_model >= ARRAY_SIZE(pas_model_names)) {
-+                               printk(KERN_ERR "pas2 unrecognized model.\n");
-+                               return;
-+                       }
-                       sprintf(temp,
-                           "%s rev %d", pas_model_names[(int) pas_model],
-                                   pas_read(0x2789));
---
-1.7.11.3
-On Jan 4, 2013, at 3:32 AM, kbuild test robot <fengguang.wu@intel.com> wrote:
+same codec here (ALC269VB on a Clevo W150HRM), same kernel, same issue.
+Disabling power_save_controller solves the issue, but I could achieve
+the same result by setting enable_msi=0, which I chose in the hope to
+preserve power saving capabilities.
 
-> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-linus
-> head:   b56458b36c8922d1d57c2320151194059dfb9a31
-> commit: b56458b36c8922d1d57c2320151194059dfb9a31 [4/4] sound: oss/pas2: Fix possible access out of array
-> config: make ARCH=x86_64 allyesconfig
-> 
-> All warnings:
-> 
-> sound/oss/pas2_card.c: In function 'attach_pas_card':
-> sound/oss/pas2_card.c:338:5: warning: too many arguments for format [-Wformat-extra-args]
-> 
-> vim +338 sound/oss/pas2_card.c
-> 
-> ^1da177e Linus Torvalds 2005-04-16  322  	return pas_model;
-> ^1da177e Linus Torvalds 2005-04-16  323  }
-> ^1da177e Linus Torvalds 2005-04-16  324  
-> ^1da177e Linus Torvalds 2005-04-16  325  static void __init attach_pas_card(struct address_info *hw_config)
-> ^1da177e Linus Torvalds 2005-04-16  326  {
-> ^1da177e Linus Torvalds 2005-04-16  327  	pas_irq = hw_config->irq;
-> ^1da177e Linus Torvalds 2005-04-16  328  
-> ^1da177e Linus Torvalds 2005-04-16  329  	if (detect_pas_hw(hw_config))
-> ^1da177e Linus Torvalds 2005-04-16  330  	{
-> ^1da177e Linus Torvalds 2005-04-16  331  
-> ^1da177e Linus Torvalds 2005-04-16  332  		if ((pas_model = pas_read(0xFF88)))
-> ^1da177e Linus Torvalds 2005-04-16  333  		{
-> ^1da177e Linus Torvalds 2005-04-16  334  			char            temp[100];
-> ^1da177e Linus Torvalds 2005-04-16  335  
-> b56458b3 Asim Kadav     2013-01-03  336  			if (pas_model < 0 ||
-> b56458b3 Asim Kadav     2013-01-03  337  			    pas_model >= ARRAY_SIZE(pas_model_names)) {
-> b56458b3 Asim Kadav     2013-01-03 @338  				printk(KERN_ERR, "pas2 unrecognized model.\n");
-> b56458b3 Asim Kadav     2013-01-03  339  				return;
-> b56458b3 Asim Kadav     2013-01-03  340  			}
-> ^1da177e Linus Torvalds 2005-04-16  341  			sprintf(temp,
-> ^1da177e Linus Torvalds 2005-04-16  342  			    "%s rev %d", pas_model_names[(int) pas_model],
-> ^1da177e Linus Torvalds 2005-04-16  343  				    pas_read(0x2789));
-> ^1da177e Linus Torvalds 2005-04-16  344  			conf_printf(temp, hw_config);
-> ^1da177e Linus Torvalds 2005-04-16  345  		}
-> ^1da177e Linus Torvalds 2005-04-16  346  		if (config_pas_hw(hw_config))
-> 
-> ---
-> 0-DAY kernel build testing backend         Open Source Technology Center
-> Fengguang Wu, Yuanhan Liu                              Intel Corporation
+thanks, Maurizio
