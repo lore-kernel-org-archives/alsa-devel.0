@@ -1,234 +1,129 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 108/112] ALSA: hda - Fix multi-io channel mode
-	management
-Date: Tue,  8 Jan 2013 12:39:41 +0100
-Message-ID: <1357645185-7645-109-git-send-email-tiwai@suse.de>
-References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
+From: Vincent Blut <vincent.debian@free.fr>
+Subject: Re: [3.6.9 -> 3.7.1 regression] sound: snd_hda_intel codec probing
+ issue?
+Date: Tue, 08 Jan 2013 13:28:55 +0100
+Message-ID: <1357648135.3849.7.camel@lamella>
+References: <1356704740.3953.26.camel@lamella>
+	 <s5hvcber5cz.wl%tiwai@suse.de> <1357421043.3912.13.camel@lamella>
+	 <s5h38ydpf45.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9985526523D
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:27 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 12D57A53F9
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:24 +0100 (CET)
-In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h38ydpf45.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The multi-io channels can vary not only from 1 to 6 but also may vary
-from 6 to 8 or such.  At the same time, there are more speaker pins
-available than the primary output pins.  So, we need three variables
-to check: the minimum channel counts for primary outputs, the current
-channel counts for primary outputs, and the minimum channel counts for
-all outputs.
+Le lundi 07 janvier 2013 =C3=A0 09:32 +0100, Takashi Iwai a =C3=A9crit =
+:
+> At Sat, 05 Jan 2013 22:24:03 +0100,
+> Vincent Blut wrote:
+> >=20
+> > Le jeudi 03 janvier 2013 =C3=A0 10:19 +0100, Takashi Iwai a =C3=A9c=
+rit :
+> > > At Fri, 28 Dec 2012 15:25:40 +0100,
+> > > Vincent Blut wrote:
+> > > >=20
+> > > > Hi,
+> > > >=20
+> > > > Since I updated to Linux 3.7.1, listening to some audio/video b=
+its
+> > > > frequently cause the following:
+> > > >=20
+> > > > [ 7896.166946] hda-intel: azx_get_response timeout, switching t=
+o polling
+> > > > mode: last cmd=3D0x020c0000
+> > > > [ 7897.173444] hda-intel: No response from codec, disabling MSI=
+: last
+> > > > cmd=3D0x020c0000
+> > > > [ 7898.179932] hda_intel: azx_get_response timeout, switching t=
+o
+> > > > single_cmd mode: last cmd=3D0x020c0000
+> > > > [ 7898.179983] hda-codec: out of range cmd 0:0:20:400:fffff7ff
+> > > > [ 9445.034371] plugin-containe[5873]: segfault at 7f44bb95e639 =
+ip
+> > > > 00007f44e454bca0 sp 00007f44c91165f8 error 4 in
+> > > > libc-2.13.so[7f44e442c000+180000]
+> > > >=20
+> > > > It seems to be a codec probing failure (?). This is really fata=
+l because
+> > > > the sound become very choppy and can't recover until I reboot.
+> > > > I'll try to play with 'probe_mask' kernel parameter to see if I=
+ can
+> > > > narrow the correct codec slots!
+> > > >=20
+> > > > By the way I can't reproduce this on 3.6.9, so is there somethi=
+ng that
+> > > > changed in this area in 3.7.1?
+> > >=20
+> > > If it's new in 3.7, this could be a regression by runtime D3.
+> > > Try to pass power_save_controller=3D0 option to snd-hda-intel mod=
+ule
+> > > (or change it via sysfs dynamically).
+> > >=20
+> > >=20
+> > > thanks,
+> > >=20
+> > > Takashi
+> >=20
+> > Hi Takashi,
+> >=20
+> > Well, power_save_controller=3D0 seems to do the trick but I get ple=
+nty of:
+> >=20
+> >=20
+> > [   15.389270] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> > [   25.178725] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> > [   72.296536] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> > [ 2318.147505] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> > [ 6086.029839] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> > [ 7390.772818] pci_pm_runtime_suspend(): azx_runtime_suspend+0x0/0x=
+37
+> > [snd_hda_intel] returns -11
+> >=20
+> >=20
+> > which I think is fixed in 3.8 by commit 6eb827d23577
+>=20
+> Yes, and should be merged in the next stable release.
+>=20
+> > So what's the next step? Adding a quirk for this sound card? Or is =
+there
+> > a way to fix the root cause?=20
+>=20
+> One more thing to test is whether azx_runtime_resume() is properly
+> called before this error happens.  Could you put a debug print and
+> check it?  If it's not called, it implies that the refcount or
+> something else got broken.  If it's called but the device doesn't
+> respond, it's a hardware-specific issue, and the likely solution is t=
+o
+> add a device-specific quirk.
+>=20
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c | 92 ++++++++++++++++++++++++++++++---------------
- sound/pci/hda/hda_generic.h | 16 +++++++-
- 2 files changed, 76 insertions(+), 32 deletions(-)
+Ok, I added a debug printk() which is called:
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index d13e404..193dd55 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1125,6 +1125,25 @@ static int check_aamix_out_path(struct hda_codec *codec, int path_idx)
- 	return snd_hda_get_path_idx(codec, path);
- }
- 
-+/* fill the empty entries in the dac array for speaker/hp with the
-+ * shared dac pointed by the paths
-+ */
-+static void refill_shared_dacs(struct hda_codec *codec, int num_outs,
-+			       hda_nid_t *dacs, int *path_idx)
-+{
-+	struct nid_path *path;
-+	int i;
-+
-+	for (i = 0; i < num_outs; i++) {
-+		if (dacs[i])
-+			continue;
-+		path = snd_hda_get_path_from_idx(codec, path_idx[i]);
-+		if (!path)
-+			continue;
-+		dacs[i] = path->path[0];
-+	}
-+}
-+
- /* fill in the dac_nids table from the parsed pin configuration */
- static int fill_and_eval_dacs(struct hda_codec *codec,
- 			      bool fill_hardwired,
-@@ -1183,19 +1202,6 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
- 				   spec->private_dac_nids, spec->out_paths,
- 				   &main_out_badness);
- 
--	/* re-count num_dacs and squash invalid entries */
--	spec->multiout.num_dacs = 0;
--	for (i = 0; i < cfg->line_outs; i++) {
--		if (spec->private_dac_nids[i])
--			spec->multiout.num_dacs++;
--		else {
--			memmove(spec->private_dac_nids + i,
--				spec->private_dac_nids + i + 1,
--				sizeof(hda_nid_t) * (cfg->line_outs - i - 1));
--			spec->private_dac_nids[cfg->line_outs - 1] = 0;
--		}
--	}
--
- 	if (fill_mio_first &&
- 	    cfg->line_outs == 1 && cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
- 		/* try to fill multi-io first */
-@@ -1246,16 +1252,41 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
- 		if (count_multiio_pins(codec, cfg->hp_pins[0]) >= 2)
- 			spec->multi_ios = 1; /* give badness */
- 
-+	/* re-count num_dacs and squash invalid entries */
-+	spec->multiout.num_dacs = 0;
-+	for (i = 0; i < cfg->line_outs; i++) {
-+		if (spec->private_dac_nids[i])
-+			spec->multiout.num_dacs++;
-+		else {
-+			memmove(spec->private_dac_nids + i,
-+				spec->private_dac_nids + i + 1,
-+				sizeof(hda_nid_t) * (cfg->line_outs - i - 1));
-+			spec->private_dac_nids[cfg->line_outs - 1] = 0;
-+		}
-+	}
-+
-+	spec->ext_channel_count = spec->min_channel_count =
-+		spec->multiout.num_dacs;
-+
- 	if (spec->multi_ios == 2) {
- 		for (i = 0; i < 2; i++)
- 			spec->private_dac_nids[spec->multiout.num_dacs++] =
- 				spec->multi_io[i].dac;
--		spec->ext_channel_count = 2;
- 	} else if (spec->multi_ios) {
- 		spec->multi_ios = 0;
- 		badness += BAD_MULTI_IO;
- 	}
- 
-+	/* re-fill the shared DAC for speaker / headphone */
-+	if (cfg->line_out_type != AUTO_PIN_HP_OUT)
-+		refill_shared_dacs(codec, cfg->hp_outs,
-+				   spec->multiout.hp_out_nid,
-+				   spec->hp_paths);
-+	if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT)
-+		refill_shared_dacs(codec, cfg->speaker_outs,
-+				   spec->multiout.extra_out_nid,
-+				   spec->speaker_paths);
-+
- 	return badness;
- }
- 
-@@ -1608,14 +1639,15 @@ static int ch_mode_info(struct snd_kcontrol *kcontrol,
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_gen_spec *spec = codec->spec;
-+	int chs;
- 
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 1;
- 	uinfo->value.enumerated.items = spec->multi_ios + 1;
- 	if (uinfo->value.enumerated.item > spec->multi_ios)
- 		uinfo->value.enumerated.item = spec->multi_ios;
--	sprintf(uinfo->value.enumerated.name, "%dch",
--		(uinfo->value.enumerated.item + 1) * 2);
-+	chs = uinfo->value.enumerated.item * 2 + spec->min_channel_count;
-+	sprintf(uinfo->value.enumerated.name, "%dch", chs);
- 	return 0;
- }
- 
-@@ -1624,7 +1656,8 @@ static int ch_mode_get(struct snd_kcontrol *kcontrol,
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct hda_gen_spec *spec = codec->spec;
--	ucontrol->value.enumerated.item[0] = (spec->ext_channel_count - 1) / 2;
-+	ucontrol->value.enumerated.item[0] =
-+		(spec->ext_channel_count - spec->min_channel_count) / 2;
- 	return 0;
- }
- 
-@@ -1672,9 +1705,9 @@ static int ch_mode_put(struct snd_kcontrol *kcontrol,
- 	ch = ucontrol->value.enumerated.item[0];
- 	if (ch < 0 || ch > spec->multi_ios)
- 		return -EINVAL;
--	if (ch == (spec->ext_channel_count - 1) / 2)
-+	if (ch == (spec->ext_channel_count - spec->min_channel_count) / 2)
- 		return 0;
--	spec->ext_channel_count = (ch + 1) * 2;
-+	spec->ext_channel_count = ch * 2 + spec->min_channel_count;
- 	for (i = 0; i < spec->multi_ios; i++)
- 		set_multi_io(codec, i, i < ch);
- 	spec->multiout.max_channels = max(spec->ext_channel_count,
-@@ -3125,17 +3158,16 @@ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
- 	if (err < 0)
- 		return err;
- 
--	/* check the multiple speaker pins */
--	if (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
--		spec->const_channel_count = cfg->line_outs * 2;
--	else
--		spec->const_channel_count = cfg->speaker_outs * 2;
--
--	if (spec->multi_ios > 0)
--		spec->multiout.max_channels = max(spec->ext_channel_count,
--						  spec->const_channel_count);
--	else
--		spec->multiout.max_channels = spec->multiout.num_dacs * 2;
-+	spec->const_channel_count = spec->ext_channel_count;
-+	/* check the multiple speaker and headphone pins */
-+	if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT)
-+		spec->const_channel_count = max(spec->const_channel_count,
-+						cfg->speaker_outs * 2);
-+	if (cfg->line_out_type != AUTO_PIN_HP_OUT)
-+		spec->const_channel_count = max(spec->const_channel_count,
-+						cfg->hp_outs * 2);
-+	spec->multiout.max_channels = max(spec->ext_channel_count,
-+					  spec->const_channel_count);
- 
- 	err = check_auto_mute_availability(codec);
- 	if (err < 0)
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 00a1eab..b65769c 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -117,8 +117,20 @@ struct hda_gen_spec {
- 	unsigned int cur_mux[3];
- 
- 	/* channel model */
--	int const_channel_count;	/* min. channel count (for speakers) */
--	int ext_channel_count;		/* current channel count for multi-io */
-+	/* min_channel_count contains the minimum channel count for primary
-+	 * outputs.  When multi_ios is set, the channels can be configured
-+	 * between min_channel_count and (min_channel_count + multi_ios * 2).
-+	 *
-+	 * ext_channel_count contains the current channel count of the primary
-+	 * out.  This varies in the range above.
-+	 *
-+	 * Meanwhile, const_channel_count is the channel count for all outputs
-+	 * including headphone and speakers.  It's a constant value, and the
-+	 * PCM is set up as max(ext_channel_count, const_channel_count).
-+	 */
-+	int min_channel_count;		/* min. channel count for primary out */
-+	int ext_channel_count;		/* current channel count for primary */
-+	int const_channel_count;	/* channel count for all */
- 
- 	/* PCM information */
- 	struct hda_pcm pcm_rec[3];	/* used in build_pcms() */
--- 
-1.8.0.1
+$ dmesg | grep -i debug
+[ 5330.371523] [debug] Probably needs a device-specific quirk!
+
+As usual, when it is called the sound become very choppy.
+
+I'll test with enable_msi=3D0 later.
+
+>=20
+> thanks,
+>=20
+> Takashi
+
+Thanks,
+Vincent
