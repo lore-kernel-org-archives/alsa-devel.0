@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RESEND v5 2/2] ASoC: mxs-saif: Remove
-	platform data
-Date: Tue, 8 Jan 2013 11:22:43 +0000
-Message-ID: <20130108112243.GS4544@opensource.wolfsonmicro.com>
-References: <1357642210-28183-1-git-send-email-festevam@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH RFC 000/112] HD-audio generic parser
+	improvements
+Date: Tue,  8 Jan 2013 12:37:53 +0100
+Message-ID: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0356092652365084879=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2C1A2615BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:32:49 +0100 (CET)
-In-Reply-To: <1357642210-28183-1-git-send-email-festevam@gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E1722615C5
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx2.suse.de (Postfix) with ESMTP id 00002A51B8
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0356092652365084879==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FYef6pHvFBuPZp1D"
-Content-Disposition: inline
+this is a large series of patches to implement the really generic
+HD-audio codec parser usable for various codecs.  It's based on the
+Realtek codec parser, so I started hacking patch_realtek.c for more
+generalization and improvements.  Then it's merged to the existing
+generic parser code, hda_generic.c, and let Realtek parser just uses
+this new parser code.  In the end, patch_realtek.c contains only
+the device specific fixups and the call of generic parser functions.
 
+The series contains a few improvements in the HD-audio core code,
+some of which aren't really dependent on the generic parser code.
+They are just there as I've developed this for a couple of weeks.
 
---FYef6pHvFBuPZp1D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+After this patchset, most of other codecs can be migrated as well.
+Currently analog, ca0110, cirrus, cmedia, conexant and via codecs
+have been already rewritten (i.e. the own parser codes dropped).
+patch_sigmatel.c is still not converted yet, but can be done soon
+later.  I'm going to send the conversion patches for these codecs
+right after this series.
 
-On Tue, Jan 08, 2013 at 08:50:10AM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> All MXS users have been converted to device tree and the board files have=
- been
-> removed.
-
-This was actually already applied.  Oh well.
-
---FYef6pHvFBuPZp1D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQ7AF8AAoJELSic+t+oim9W80P/iLHaOQmxaL2Psza05x5QPox
-E4nPCiEXjtkK7+8Oi/X3jMWy3GyU09JX81OL6Sf339dWC4XUbg5Z8ZMYLmsx+Le0
-45EqKQshaIfN0uHde0CHKSexvlTG7EJfMBLwEnp+ONT89ENgzmhSAM6SJ0A3a80R
-SPBDhphAaZXTh/RTn/Zlfgr2Av9z8L+vpHpMBAieexqPWII2cdLJw+Sm4poZVVn7
-qEIyGK2wLZP1SMHtnIt7AgiMH16GEeiG1YoBfzhSmr4AjBJmHQObeCfNc4izERAC
-lBHn016arNtsPaxm+IOnv069A54f1SF79G+7u0ht3k44i2tGJpAh9qE6f5yFXMXl
-k07nj/NLxkKBtWDOJI5k6GODUmbubaq8AfHmYV78GLQdgUlUP8aZFtpsWHWGsJy4
-MAPGk3ek7qQT9Zo1mLcKGsyz6eQjy+93fl+PQ7+iry2JmMP6sUeB+veOw7iqLVVW
-YpmSPLjP/OeEnruyOiwtbOOHLdFOORl0yutGRBvTJ2efw1f+Dh0zOotdCYgzxYVb
-dkjkyRquNC+XoeBPxR4t44tB2iKlQ11NZbw8GR43aGLn/ojwYxUXoChPthYPFlzu
-/pH4UYL2JfA+X24M90T3iJsRygptTxt1pB2ORA84I0qMyY8mHB8jeC6LBZ6dWx7s
-1525+DUQ3R7AcHgUXAH+
-=4RlH
------END PGP SIGNATURE-----
-
---FYef6pHvFBuPZp1D--
-
---===============0356092652365084879==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I don't expect to merge all conversions of codec parsers in 3.9
+kernel, but at least, the conversion of Realtek and this generic
+parser code addition can be merged to 3.9.  Maybe minor and easy ones
+like ca0110 and cmedia can be merged as well.
 
 
---===============0356092652365084879==--
+Takashi
