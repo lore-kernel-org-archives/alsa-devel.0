@@ -1,16 +1,16 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH] ASoC: mxs-saif: Use a signed integer for error
-	value
-Date: Tue, 8 Jan 2013 10:27:13 -0200
-Message-ID: <1357648033-8101-1-git-send-email-fabio.estevam@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: mxs-saif: Use a signed integer for
+	error value
+Date: Tue, 8 Jan 2013 12:33:23 +0000
+Message-ID: <20130108123322.GV4544@opensource.wolfsonmicro.com>
+References: <1357648033-8101-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8424261175089809587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe004.messaging.microsoft.com [207.46.163.27])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C14C265197
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 13:27:55 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C90FB265B76
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 13:42:49 +0100 (CET)
+In-Reply-To: <1357648033-8101-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-saif->id and saif->master_id are unsigned, so they can not be negative.
 
-Fix the following warning when building with W=1 option:
+--===============8424261175089809587==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6qFdnjy6dKaiDX/E"
+Content-Disposition: inline
 
-sound/soc/mxs/mxs-saif.c: In function 'mxs_saif_probe':
-sound/soc/mxs/mxs-saif.c:676:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
-sound/soc/mxs/mxs-saif.c:688:3: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
-sound/soc/mxs/mxs-saif.c:692:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
 
-Use a signed variable 'ret' to handle the error values.
+--6qFdnjy6dKaiDX/E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/mxs/mxs-saif.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+On Tue, Jan 08, 2013 at 10:27:13AM -0200, Fabio Estevam wrote:
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 752675d..a920206 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -672,9 +672,9 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (!saif)
- 		return -ENOMEM;
- 
--	saif->id = of_alias_get_id(np, "saif");
--	if (saif->id < 0)
--		return saif->id;
-+	ret = of_alias_get_id(np, "saif");
-+	if (ret < 0)
-+		return ret;
- 	/*
- 	 * If there is no "fsl,saif-master" phandle, it's a saif
- 	 * master.  Otherwise, it's a slave and its phandle points
-@@ -684,12 +684,12 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (!master) {
- 		saif->master_id = saif->id;
- 	} else {
--		saif->master_id = of_alias_get_id(master, "saif");
--		if (saif->master_id < 0)
--			return saif->master_id;
-+		ret = of_alias_get_id(master, "saif");
-+		if (ret < 0)
-+			return ret;
- 	}
- 
--	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
-+	if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
- 		dev_err(&pdev->dev, "get wrong master id\n");
- 		return -EINVAL;
- 	}
--- 
-1.7.9.5
+> -	saif->id = of_alias_get_id(np, "saif");
+> -	if (saif->id < 0)
+> -		return saif->id;
+> +	ret = of_alias_get_id(np, "saif");
+> +	if (ret < 0)
+> +		return ret;
+
+Why not remove said->id completely if we don't need to store a value
+there?  Alternatively, this needs to store the id if the return value is
+OK.
+
+--6qFdnjy6dKaiDX/E
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ7BGRAAoJELSic+t+oim9zdcP/Rum5DkzGNS/MpRMVthU6s/g
+XhgrNckYiAaeYy7SWUz6W2b056/HapMfz9qzBrrM9rWlZFkSv+H8f1jTNgqKKyDM
+GL4zldWrCb6fTXo7THv7lh6Qr2Cbht2DaQiJyIVno7hKtRgI+FcOi0+AafpckrAw
+Nbfg5V5I9GkYL+rItN/Tj9zgy4U9DXQvPMeDewuev3f7MF7vixFytbyQkYXhdfXf
+l/6xFiX+H/ZUGMW8zkzmHNAmpgLCWHsvcLuXqm6NbKQg/fgk38S9GITlOMfO5N3e
+p2CDvCg5rtSCKD3AorX9C43n4Wy4vLLMUgSbLVQh6bcaS4X3rLKElSXPI5FDnVJX
+DjVxaFYVVLJClP8wGMueDPwJg5mwY/PCD3qrMG1N3BQLZEjk5fNf5FWUkkP948Sz
+S1eKNMZDqem3jyLX1TGdQpSRBH5z/uqVyFXnwn88cI+s0wrPCY7LPU7tnyIdOnzk
+Ca6y6eLri/HjWl8MZVX4Mad07hKdwlFl6sfQRZmsXcZ/S9s5n8ZoiTJfMnh9i4tM
+r0z+GSC7LizU6N5Mx7oGwF6ea8Qbnmwvlgh0jd3i7l5O39QyP5LqS4fPiouT84c7
+ZiR3zEEdlRZHkzL9VHG373507GmwIbxs+8McqtoLbnGE6/8GIixalaY5UPCg1J1c
+OroeSfjlkVIE9qAsDkZz
+=JKYt
+-----END PGP SIGNATURE-----
+
+--6qFdnjy6dKaiDX/E--
+
+--===============8424261175089809587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8424261175089809587==--
