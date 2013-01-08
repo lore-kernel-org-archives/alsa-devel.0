@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 082/112] ALSA: hda - Revive
-	snd_hda_get_conn_list()
-Date: Tue,  8 Jan 2013 12:39:15 +0100
-Message-ID: <1357645185-7645-83-git-send-email-tiwai@suse.de>
+Subject: [PATCH 088/112] ALSA: hda - Simplify the multi-io
+	assignment with multi speakers
+Date: Tue,  8 Jan 2013 12:39:21 +0100
+Message-ID: <1357645185-7645-89-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B0049265215
+ by alsa0.perex.cz (Postfix) with ESMTP id CC3D5265220
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:26 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 8FCE0A5358
+ by mx2.suse.de (Postfix) with ESMTP id AD6C0A5381
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,327 +29,148 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Manage the connection list cache using linked lists instead of
-snd_array, and revive snd_hda_get_conn_list() again, so that we don't
-have to keep the expanded values locally.
-This will reduce the stack usage by recursive call of
-snd_hda_get_conn_index() or parse_nid_path() of the generic parser.
+When speakers are chosen as the the primary output during evaluation,
+we did some tricks to assign the possible multi-io jacks with a
+certain offset value to multi_out dacs.  This was a workaround for the
+case with multiple speakers like Acer Aspire.  But this is quite ugly
+at the same time and the resultant code is hard to understand.  More
+badly, it works wrongly for 2.1 speakers like Apple iMac91.
 
-The list management doesn't include any mutex protection, thus the
-caller needs to take care of race appropriately.
+In this patch, instead of fiddling with the offset to multi_out dacs,
+simply add a certain badness number if headphone(s) + multi-ios are
+possible.  This simplify the code a bit, and it's more robust.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c   | 164 ++++++++++++++++++++++++++------------------
- sound/pci/hda/hda_codec.h   |   4 +-
- sound/pci/hda/hda_generic.c |   8 +--
- 3 files changed, 106 insertions(+), 70 deletions(-)
+ sound/pci/hda/hda_generic.c | 63 +++++++++++++++++++++++----------------------
+ 1 file changed, 32 insertions(+), 31 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 380c9ed..cd318e4 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -334,20 +334,51 @@ int snd_hda_get_sub_nodes(struct hda_codec *codec, hda_nid_t nid,
- }
- EXPORT_SYMBOL_HDA(snd_hda_get_sub_nodes);
- 
-+/* connection list element */
-+struct hda_conn_list {
-+	struct list_head list;
-+	int len;
-+	hda_nid_t nid;
-+	hda_nid_t conns[0];
-+};
-+
- /* look up the cached results */
--static hda_nid_t *lookup_conn_list(struct snd_array *array, hda_nid_t nid)
-+static struct hda_conn_list *
-+lookup_conn_list(struct hda_codec *codec, hda_nid_t nid)
- {
--	int i, len;
--	for (i = 0; i < array->used; ) {
--		hda_nid_t *p = snd_array_elem(array, i);
--		if (nid == *p)
-+	struct hda_conn_list *p;
-+	list_for_each_entry(p, &codec->conn_list, list) {
-+		if (p->nid == nid)
- 			return p;
--		len = p[1];
--		i += len + 2;
- 	}
- 	return NULL;
- }
- 
-+static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
-+			 const hda_nid_t *list)
-+{
-+	struct hda_conn_list *p;
-+
-+	p = kmalloc(sizeof(*p) + len * sizeof(hda_nid_t), GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+	p->len = len;
-+	p->nid = nid;
-+	memcpy(p->conns, list, len * sizeof(hda_nid_t));
-+	list_add(&p->list, &codec->conn_list);
-+	return 0;
-+}
-+
-+static void remove_conn_list(struct hda_codec *codec)
-+{
-+	while (!list_empty(&codec->conn_list)) {
-+		struct hda_conn_list *p;
-+		p = list_first_entry(&codec->conn_list, typeof(*p), list);
-+		list_del(&p->list);
-+		kfree(p);
-+	}
-+}
-+
- /* read the connection and add to the cache */
- static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
- {
-@@ -361,6 +392,49 @@ static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
- }
- 
- /**
-+ * snd_hda_get_conn_list - get connection list
-+ * @codec: the HDA codec
-+ * @nid: NID to parse
-+ * @len: number of connection list entries
-+ * @listp: the pointer to store NID list
-+ *
-+ * Parses the connection list of the given widget and stores the pointer
-+ * to the list of NIDs.
-+ *
-+ * Returns the number of connections, or a negative error code.
-+ *
-+ * Note that the returned pointer isn't protected against the list
-+ * modification.  If snd_hda_override_conn_list() might be called
-+ * concurrently, protect with a mutex appropriately.
-+ */
-+int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
-+			  const hda_nid_t **listp)
-+{
-+	bool added = false;
-+
-+	for (;;) {
-+		int err;
-+		const struct hda_conn_list *p;
-+
-+		/* if the connection-list is already cached, read it */
-+		p = lookup_conn_list(codec, nid);
-+		if (p) {
-+			if (listp)
-+				*listp = p->conns;
-+			return p->len;
-+		}
-+		if (snd_BUG_ON(added))
-+			return -EINVAL;
-+
-+		err = read_and_add_raw_conns(codec, nid);
-+		if (err < 0)
-+			return err;
-+		added = true;
-+	}
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_get_conn_list);
-+
-+/**
-  * snd_hda_get_connections - copy connection list
-  * @codec: the HDA codec
-  * @nid: NID to parse
-@@ -375,39 +449,20 @@ static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
- int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
- 			    hda_nid_t *conn_list, int max_conns)
- {
--	struct snd_array *array = &codec->conn_lists;
--	int len;
--	hda_nid_t *p;
--	bool added = false;
-+	const hda_nid_t *list;
-+	int len = snd_hda_get_conn_list(codec, nid, &list);
- 
-- again:
--	mutex_lock(&codec->hash_mutex);
--	len = -1;
--	/* if the connection-list is already cached, read it */
--	p = lookup_conn_list(array, nid);
--	if (p) {
--		len = p[1];
--		if (conn_list && len > max_conns) {
-+	if (len > 0 && conn_list) {
-+		if (len > max_conns) {
- 			snd_printk(KERN_ERR "hda_codec: "
- 				   "Too many connections %d for NID 0x%x\n",
- 				   len, nid);
--			mutex_unlock(&codec->hash_mutex);
- 			return -EINVAL;
- 		}
--		if (conn_list && len)
--			memcpy(conn_list, p + 2, len * sizeof(hda_nid_t));
-+		memcpy(conn_list, list, len * sizeof(hda_nid_t));
- 	}
--	mutex_unlock(&codec->hash_mutex);
--	if (len >= 0)
--		return len;
--	if (snd_BUG_ON(added))
--		return -EINVAL;
- 
--	len = read_and_add_raw_conns(codec, nid);
--	if (len < 0)
--		return len;
--	added = true;
--	goto again;
-+	return len;
- }
- EXPORT_SYMBOL_HDA(snd_hda_get_connections);
- 
-@@ -519,15 +574,6 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
- 	return conns;
- }
- 
--static bool add_conn_list(struct snd_array *array, hda_nid_t nid)
--{
--	hda_nid_t *p = snd_array_new(array);
--	if (!p)
--		return false;
--	*p = nid;
--	return true;
--}
--
- /**
-  * snd_hda_override_conn_list - add/modify the connection-list to cache
-  * @codec: the HDA codec
-@@ -543,28 +589,15 @@ static bool add_conn_list(struct snd_array *array, hda_nid_t nid)
- int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
- 			       const hda_nid_t *list)
- {
--	struct snd_array *array = &codec->conn_lists;
--	hda_nid_t *p;
--	int i, old_used;
-+	struct hda_conn_list *p;
- 
--	mutex_lock(&codec->hash_mutex);
--	p = lookup_conn_list(array, nid);
--	if (p)
--		*p = -1; /* invalidate the old entry */
--
--	old_used = array->used;
--	if (!add_conn_list(array, nid) || !add_conn_list(array, len))
--		goto error_add;
--	for (i = 0; i < len; i++)
--		if (!add_conn_list(array, list[i]))
--			goto error_add;
--	mutex_unlock(&codec->hash_mutex);
--	return 0;
-+	p = lookup_conn_list(codec, nid);
-+	if (p) {
-+		list_del(&p->list);
-+		kfree(p);
-+	}
- 
-- error_add:
--	array->used = old_used;
--	mutex_unlock(&codec->hash_mutex);
--	return -ENOMEM;
-+	return add_conn_list(codec, nid, len, list);
- }
- EXPORT_SYMBOL_HDA(snd_hda_override_conn_list);
- 
-@@ -582,10 +615,10 @@ EXPORT_SYMBOL_HDA(snd_hda_override_conn_list);
- int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
- 			   hda_nid_t nid, int recursive)
- {
--	hda_nid_t conn[HDA_MAX_NUM_INPUTS];
-+	const hda_nid_t *conn;
- 	int i, nums;
- 
--	nums = snd_hda_get_connections(codec, mux, conn, ARRAY_SIZE(conn));
-+	nums = snd_hda_get_conn_list(codec, mux, &conn);
- 	for (i = 0; i < nums; i++)
- 		if (conn[i] == nid)
- 			return i;
-@@ -1186,8 +1219,8 @@ static void snd_hda_codec_free(struct hda_codec *codec)
- 	snd_array_free(&codec->mixers);
- 	snd_array_free(&codec->nids);
- 	snd_array_free(&codec->cvt_setups);
--	snd_array_free(&codec->conn_lists);
- 	snd_array_free(&codec->spdif_out);
-+	remove_conn_list(codec);
- 	codec->bus->caddr_tbl[codec->addr] = NULL;
- 	if (codec->patch_ops.free)
- 		codec->patch_ops.free(codec);
-@@ -1257,10 +1290,11 @@ int snd_hda_codec_new(struct hda_bus *bus,
- 	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
- 	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
- 	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
--	snd_array_init(&codec->conn_lists, sizeof(hda_nid_t), 64);
- 	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
- 	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
- 	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
-+	INIT_LIST_HEAD(&codec->conn_list);
-+
- 	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
- 
- #ifdef CONFIG_PM
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 9f241d1..93ec747 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -831,7 +831,7 @@ struct hda_codec {
- 	struct hda_cache_rec amp_cache;	/* cache for amp access */
- 	struct hda_cache_rec cmd_cache;	/* cache for other commands */
- 
--	struct snd_array conn_lists;	/* connection-list array */
-+	struct list_head conn_list;	/* linked-list of connection-list */
- 
- 	struct mutex spdif_mutex;
- 	struct mutex control_mutex;
-@@ -944,6 +944,8 @@ snd_hda_get_num_conns(struct hda_codec *codec, hda_nid_t nid)
- }
- int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
- 			    hda_nid_t *conn_list, int max_conns);
-+int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
-+			  const hda_nid_t **listp);
- int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int nums,
- 			  const hda_nid_t *list);
- int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 18daa8f..f69f2ab 100644
+index 5516905..c928b38 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -208,7 +208,7 @@ static bool __parse_nid_path(struct hda_codec *codec,
- 			     int with_aa_mix, struct nid_path *path, int depth)
+@@ -943,6 +943,28 @@ static bool can_be_multiio_pin(struct hda_codec *codec,
+ 	return true;
+ }
+ 
++/* count the number of input pins that are capable to be multi-io */
++static int count_multiio_pins(struct hda_codec *codec, hda_nid_t reference_pin)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	struct auto_pin_cfg *cfg = &spec->autocfg;
++	unsigned int defcfg = snd_hda_codec_get_pincfg(codec, reference_pin);
++	unsigned int location = get_defcfg_location(defcfg);
++	int type, i;
++	int num_pins = 0;
++
++	for (type = AUTO_PIN_LINE_IN; type >= AUTO_PIN_MIC; type--) {
++		for (i = 0; i < cfg->num_inputs; i++) {
++			if (cfg->inputs[i].type != type)
++				continue;
++			if (can_be_multiio_pin(codec, location,
++					       cfg->inputs[i].pin))
++				num_pins++;
++		}
++	}
++	return num_pins;
++}
++
+ /*
+  * multi-io helper
+  *
+@@ -953,11 +975,11 @@ static bool can_be_multiio_pin(struct hda_codec *codec,
+  */
+ static int fill_multi_ios(struct hda_codec *codec,
+ 			  hda_nid_t reference_pin,
+-			  bool hardwired, int offset)
++			  bool hardwired)
  {
  	struct hda_gen_spec *spec = codec->spec;
--	hda_nid_t conn[16];
-+	const hda_nid_t *conn;
- 	int i, nums;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+-	int type, i, j, dacs, num_pins, old_pins;
++	int type, i, j, num_pins, old_pins;
+ 	unsigned int defcfg = snd_hda_codec_get_pincfg(codec, reference_pin);
+ 	unsigned int location = get_defcfg_location(defcfg);
+ 	int badness = 0;
+@@ -966,20 +988,10 @@ static int fill_multi_ios(struct hda_codec *codec,
+ 	if (old_pins >= 2)
+ 		goto end_fill;
  
- 	if (to_nid == spec->mixer_nid) {
-@@ -217,7 +217,7 @@ static bool __parse_nid_path(struct hda_codec *codec,
- 		with_aa_mix = HDA_PARSE_ALL; /* mark aa-mix is included */
+-	num_pins = 0;
+-	for (type = AUTO_PIN_LINE_IN; type >= AUTO_PIN_MIC; type--) {
+-		for (i = 0; i < cfg->num_inputs; i++) {
+-			if (cfg->inputs[i].type != type)
+-				continue;
+-			if (can_be_multiio_pin(codec, location,
+-					       cfg->inputs[i].pin))
+-				num_pins++;
+-		}
+-	}
++	num_pins = count_multiio_pins(codec, reference_pin);
+ 	if (num_pins < 2)
+ 		goto end_fill;
+ 
+-	dacs = spec->multiout.num_dacs;
+ 	for (type = AUTO_PIN_LINE_IN; type >= AUTO_PIN_MIC; type--) {
+ 		for (i = 0; i < cfg->num_inputs; i++) {
+ 			struct nid_path *path;
+@@ -997,11 +1009,6 @@ static int fill_multi_ios(struct hda_codec *codec,
+ 			if (j < spec->multi_ios)
+ 				continue;
+ 
+-			if (offset && offset + spec->multi_ios < dacs) {
+-				dac = spec->private_dac_nids[offset + spec->multi_ios];
+-				if (!is_reachable_path(codec, dac, nid))
+-					dac = 0;
+-			}
+ 			if (hardwired)
+ 				dac = get_dac_if_single(codec, nid);
+ 			else if (!dac)
+@@ -1109,7 +1116,7 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ 					      spec->multiout.extra_out_nid);
+ 			if (fill_mio_first && cfg->line_outs == 1 &&
+ 			    cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
+-				err = fill_multi_ios(codec, cfg->line_out_pins[0], true, 0);
++				err = fill_multi_ios(codec, cfg->line_out_pins[0], true);
+ 				if (!err)
+ 					mapped = true;
+ 			}
+@@ -1136,7 +1143,7 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ 	if (fill_mio_first &&
+ 	    cfg->line_outs == 1 && cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
+ 		/* try to fill multi-io first */
+-		err = fill_multi_ios(codec, cfg->line_out_pins[0], false, 0);
++		err = fill_multi_ios(codec, cfg->line_out_pins[0], false);
+ 		if (err < 0)
+ 			return err;
+ 		/* we don't count badness at this stage yet */
+@@ -1160,22 +1167,16 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ 		badness += err;
+ 	}
+ 	if (cfg->line_outs == 1 && cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
+-		err = fill_multi_ios(codec, cfg->line_out_pins[0], false, 0);
+-		if (err < 0)
+-			return err;
+-		badness += err;
+-	}
+-	if (cfg->hp_outs && cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
+-		/* try multi-ios with HP + inputs */
+-		int offset = 0;
+-		if (cfg->line_outs >= 3)
+-			offset = 1;
+-		err = fill_multi_ios(codec, cfg->hp_pins[0], false, offset);
++		err = fill_multi_ios(codec, cfg->line_out_pins[0], false);
+ 		if (err < 0)
+ 			return err;
+ 		badness += err;
  	}
  
--	nums = snd_hda_get_connections(codec, to_nid, conn, ARRAY_SIZE(conn));
-+	nums = snd_hda_get_conn_list(codec, to_nid, &conn);
- 	for (i = 0; i < nums; i++) {
- 		if (conn[i] != from_nid) {
- 			/* special case: when from_nid is 0,
-@@ -481,12 +481,12 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
- 			    int i, bool enable, bool add_aamix)
- {
- 	struct hda_gen_spec *spec = codec->spec;
--	hda_nid_t conn[16];
-+	const hda_nid_t *conn;
- 	int n, nums, idx;
- 	int type;
- 	hda_nid_t nid = path->path[i];
- 
--	nums = snd_hda_get_connections(codec, nid, conn, ARRAY_SIZE(conn));
-+	nums = snd_hda_get_conn_list(codec, nid, &conn);
- 	type = get_wcaps_type(get_wcaps(codec, nid));
- 	if (type == AC_WID_PIN ||
- 	    (type == AC_WID_AUD_IN && codec->single_adc_amp)) {
++	if (cfg->hp_outs && cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
++		if (count_multiio_pins(codec, cfg->hp_pins[0]) >= 2)
++			spec->multi_ios = 1; /* give badness */
++
+ 	if (spec->multi_ios == 2) {
+ 		for (i = 0; i < 2; i++)
+ 			spec->private_dac_nids[spec->multiout.num_dacs++] =
 -- 
 1.8.0.1
