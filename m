@@ -1,81 +1,73 @@
-From: Vincent Blut <vincent.debian@free.fr>
-Subject: Re: [3.6.9 -> 3.7.1 regression] sound: snd_hda_intel codec probing
- issue?
-Date: Tue, 08 Jan 2013 21:25:21 +0100
-Message-ID: <1357676721.3776.3.camel@lamella>
-References: <1356704740.3953.26.camel@lamella>
-	 <s5hvcber5cz.wl%tiwai@suse.de> <1357421043.3912.13.camel@lamella>
-	 <s5h38ydpf45.wl%tiwai@suse.de> <1357648135.3849.7.camel@lamella>
-	 <s5hehhvq1dm.wl%tiwai@suse.de>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH v2 1/3] ASoC: tegra: add ac97 host driver
+Date: Tue, 08 Jan 2013 15:10:27 -0700
+Message-ID: <50EC9953.1000107@wwwdotorg.org>
+References: <1357348725-32139-1-git-send-email-dev@lynxeye.de> <1357348725-32139-2-git-send-email-dev@lynxeye.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hehhvq1dm.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Maurizio Avogadro <mavoga@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1357348725-32139-2-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Le mardi 08 janvier 2013 =C3=A0 13:56 +0100, Takashi Iwai a =C3=A9crit =
-:
-> At Tue, 08 Jan 2013 13:28:55 +0100,
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Disable runtime D3 for Intel CPT & co
->=20
-> We've got a few bug reports that the runtime D3 results in the dead
-> HD-audio controller.  It seems that the problem is in a deeper level
-> than the sound driver itself, so as a temporal solution, disable the
-> feature for these controllers again.
->=20
-> Reported-by: Vincent Blut <vincent.debian@free.fr>
-> Reported-by: Maurizio Avogadro <mavoga@gmail.com>
-> Cc: <stable@vger.kernel.org> [v3.7]
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/hda_intel.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
->=20
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index cca8727..0b6aeba 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -573,9 +573,12 @@ enum {
->  #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
-> =20
->  /* quirks for Intel PCH */
-> -#define AZX_DCAPS_INTEL_PCH \
-> +#define AZX_DCAPS_INTEL_PCH_NOPM \
->  	(AZX_DCAPS_SCH_SNOOP | AZX_DCAPS_BUFSIZE | \
-> -	 AZX_DCAPS_COUNT_LPIB_DELAY | AZX_DCAPS_PM_RUNTIME)
-> +	 AZX_DCAPS_COUNT_LPIB_DELAY)
+On 01/04/2013 06:18 PM, Lucas Stach wrote:
+> This adds the driver for the Tegra 2x AC97 host controller.
+> 
+> Signed-off-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+
+> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
+
+> +- nvidia,codec-sync-gpio : The Tegra GPIO controller's phandle and the number
+> +  of the GPIO corresponding with the AC97 DAP _FS line
+> +Example:
+
+If you have to repost for any reason, you probably want a blank line
+before the "Example:" line.
+
+> diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+
+> +static void tegra20_ac97_codec_warm_reset(struct snd_ac97 *ac97)
+> +{
+> +	u32 readback;
+> +	unsigned long timeout;
 > +
-> +#define AZX_DCAPS_INTEL_PCH \
-> +	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_PM_RUNTIME)
-> =20
->  /* quirks for ATI SB / AMD Hudson */
->  #define AZX_DCAPS_PRESET_ATI_SB \
-> @@ -3586,13 +3589,13 @@ static void azx_remove(struct pci_dev *pci)
->  static DEFINE_PCI_DEVICE_TABLE(azx_ids) =3D {
->  	/* CPT */
->  	{ PCI_DEVICE(0x8086, 0x1c20),
-> -	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* PBG */
->  	{ PCI_DEVICE(0x8086, 0x1d20),
-> -	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Panther Point */
->  	{ PCI_DEVICE(0x8086, 0x1e20),
-> -	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-> +	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
->  	/* Lynx Point */
->  	{ PCI_DEVICE(0x8086, 0x8c20),
->  	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+> +	/*
+> +	 * although sync line is driven by the DAC pad group warm reset using
+> +	 * the controller cmd is not working, have to toggle sync line
+> +	 * manually.
+> +	 */
+> +	gpio_request(workdata->sync_gpio, "codec-sync");
+> +
+> +	gpio_direction_output(workdata->sync_gpio, 1);
 
-Well, my sound controller behaves nicely with the above quirk.
+Would it make sense to just request the GPIO during probe()? Or, is the
+sync signal used as part of the AC'97 protocol at other times?
 
-Tested-by: Vincent Blut <vincent.debian@free.fr>
+> +static inline void tegra20_ac97_start_playback(struct tegra20_ac97 *ac97)
+> +{
+> +	regmap_update_bits(ac97->regmap, TEGRA20_AC97_FIFO1_SCR,
+> +			   TEGRA20_AC97_FIFO_SCR_PB_QRT_MT_EN,
+> +			   TEGRA20_AC97_FIFO_SCR_PB_QRT_MT_EN);
+> +
+> +	regmap_update_bits(ac97->regmap, TEGRA20_AC97_CTRL,
+> +			   TEGRA20_AC97_CTRL_PCM_DAC_EN |
+> +			   TEGRA20_AC97_CTRL_STM_EN,
+> +			   TEGRA20_AC97_CTRL_PCM_DAC_EN |
+> +			   TEGRA20_AC97_CTRL_STM_EN);
+> +}
 
-Thanks Takashi for your support,
-Vincent
+That sets both PCM_DAC_EN and STM_EN, but ...
+
+> +static inline void tegra20_ac97_stop_playback(struct tegra20_ac97 *ac97)
+> +{
+> +	regmap_update_bits(ac97->regmap, TEGRA20_AC97_FIFO1_SCR,
+> +			   TEGRA20_AC97_FIFO_SCR_PB_QRT_MT_EN, 0);
+> +
+> +	regmap_update_bits(ac97->regmap, TEGRA20_AC97_CTRL,
+> +			   TEGRA20_AC97_CTRL_PCM_DAC_EN, 0);
+> +}
+
+... that only clears DAC_EN. Should it clear STM_EN too?
