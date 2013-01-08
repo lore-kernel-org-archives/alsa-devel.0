@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 022/112] ALSA: hda/realtek - Fix the
-	initialization of pin amp-in
-Date: Tue,  8 Jan 2013 12:38:15 +0100
-Message-ID: <1357645185-7645-23-git-send-email-tiwai@suse.de>
+Subject: [PATCH 024/112] ALSA: hda/realtek - Add boost volumes
+	to path list
+Date: Tue,  8 Jan 2013 12:38:17 +0100
+Message-ID: <1357645185-7645-25-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C86CD2651A5
+ by alsa0.perex.cz (Postfix) with ESMTP id D253A2651A9
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:24 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 5DCBFA5207
+ by mx2.suse.de (Postfix) with ESMTP id 60157A520C
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:22 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,48 +29,82 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The pin widget has only a single amp value for the input even if it
-has multiple "sources".  Handle the situation in activate_path().
+Don't forget to take boost volumes into account in the managed path
+list.  Since it's an additional volume, we need to extend the ctls[]
+array.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 419979d..3f39ba5 100644
+index 398b25b..eadf326d 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -3921,21 +3921,27 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
- {
- 	struct alc_spec *spec = codec->spec;
- 	hda_nid_t conn[16];
--	int n, nums;
-+	int n, nums, idx;
- 	hda_nid_t nid = path->path[i];
+@@ -95,6 +95,13 @@ struct alc_multi_io {
  
- 	nums = snd_hda_get_connections(codec, nid, conn, ARRAY_SIZE(conn));
-+	if (get_wcaps_type(get_wcaps(codec, nid)) == AC_WID_PIN) {
-+		nums = 1;
-+		idx = 0;
-+	} else
-+		idx = path->idx[i];
+ #define MAX_NID_PATH_DEPTH	5
+ 
++enum {
++	NID_PATH_VOL_CTL,
++	NID_PATH_MUTE_CTL,
++	NID_PATH_BOOST_CTL,
++	NID_PATH_NUM_CTLS
++};
 +
- 	for (n = 0; n < nums; n++)
- 		init_amp(codec, nid, HDA_INPUT, n);
+ /* Widget connection path
+  *
+  * For output, stored in the order of DAC -> ... -> pin,
+@@ -111,12 +118,10 @@ struct nid_path {
+ 	hda_nid_t path[MAX_NID_PATH_DEPTH];
+ 	unsigned char idx[MAX_NID_PATH_DEPTH];
+ 	unsigned char multi[MAX_NID_PATH_DEPTH];
+-	unsigned int ctls[2]; /* 0 = volume, 1 = mute */
++	unsigned int ctls[NID_PATH_NUM_CTLS]; /* NID_PATH_XXX_CTL */
+ 	bool active;
+ };
  
--	if (is_ctl_associated(codec, nid, HDA_INPUT, path->idx[i]))
-+	if (is_ctl_associated(codec, nid, HDA_INPUT, idx))
- 		return;
+-enum { NID_PATH_VOL_CTL = 0, NID_PATH_MUTE_CTL = 1 };
+-
+ struct alc_spec {
+ 	struct hda_gen_spec gen;
  
- 	/* here is a little bit tricky in comparison with activate_amp_out();
- 	 * when aa-mixer is available, we need to enable the path as well
- 	 */
- 	for (n = 0; n < nums; n++) {
--		if (n != path->idx[i] && conn[n] != spec->mixer_nid)
-+		if (n != idx && conn[n] != spec->mixer_nid)
+@@ -3809,7 +3814,7 @@ static bool is_ctl_associated(struct hda_codec *codec, hda_nid_t nid,
+ 		struct nid_path *p = snd_array_elem(&spec->paths, i);
+ 		if (p->depth <= 0)
  			continue;
- 		activate_amp(codec, nid, HDA_INPUT, n, enable);
+-		for (type = 0; type < 2; type++) {
++		for (type = 0; type < NID_PATH_NUM_CTLS; type++) {
+ 			unsigned int val = p->ctls[type];
+ 			if (get_amp_nid_(val) == nid &&
+ 			    get_amp_direction_(val) == dir &&
+@@ -4388,6 +4393,8 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
+ 		if (get_wcaps(codec, nid) & AC_WCAP_IN_AMP) {
+ 			const char *label;
+ 			char boost_label[32];
++			struct nid_path *path;
++			unsigned int val;
+ 
+ 			label = hda_get_autocfg_input_label(codec, cfg, i);
+ 			if (spec->shared_mic_hp && !strcmp(label, "Misc"))
+@@ -4400,11 +4407,15 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
+ 
+ 			snprintf(boost_label, sizeof(boost_label),
+ 				 "%s Boost Volume", label);
++			val = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT);
+ 			err = add_control(spec, ALC_CTL_WIDGET_VOL,
+-					  boost_label, type_idx,
+-				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
++					  boost_label, type_idx, val);
+ 			if (err < 0)
+ 				return err;
++
++			path = get_nid_path(codec, nid, 0);
++			if (path)
++				path->ctls[NID_PATH_BOOST_CTL] = val;
+ 		}
  	}
+ 	return 0;
 -- 
 1.8.0.1
