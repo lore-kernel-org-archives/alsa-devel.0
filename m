@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 083/112] ALSA: hda - Add hooks for HP/line/mic
-	auto switching
-Date: Tue,  8 Jan 2013 12:39:16 +0100
-Message-ID: <1357645185-7645-84-git-send-email-tiwai@suse.de>
+Subject: [PATCH 085/112] ALSA: hda - Initialize output paths
+	with current active states
+Date: Tue,  8 Jan 2013 12:39:18 +0100
+Message-ID: <1357645185-7645-86-git-send-email-tiwai@suse.de>
 References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C25D6265218
+ by alsa0.perex.cz (Postfix) with ESMTP id C891226521A
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:26 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 9A6F0A51C9
+ by mx2.suse.de (Postfix) with ESMTP id A2023A535B
  for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 12:40:23 +0100 (CET)
 In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,63 +29,61 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-... as a preliminary work for migrating patch_sigmatel.c.
+Set path->active flag at the path creation time and let the paths
+initialized according to the current path->active state in
+set_output_and_unmute().  This allows to modify the active flag of
+some output paths dynamically, e.g. switching the front output route
+with or without aamix like patch_via.c.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 6 ++++++
- sound/pci/hda/hda_generic.h | 8 ++++++++
- 2 files changed, 14 insertions(+)
+ sound/pci/hda/hda_generic.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index f69f2ab..c5a9b84 100644
+index 08eced0..5051350 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -2778,6 +2778,8 @@ static int check_auto_mute_availability(struct hda_codec *codec)
- 		snd_printdd("hda-codec: Enable HP auto-muting on NID 0x%x\n",
- 			    nid);
- 		snd_hda_jack_detect_enable_callback(codec, nid, HDA_GEN_HP_EVENT,
-+						    spec->hp_automute_hook ?
-+						    spec->hp_automute_hook :
- 						    snd_hda_gen_hp_automute);
- 		spec->detect_hp = 1;
+@@ -873,8 +873,10 @@ static int try_assign_dacs(struct hda_codec *codec, int num_outs,
+ 		}
+ 		if (!path)
+ 			dac = dacs[i] = 0;
+-		else
++		else {
+ 			print_nid_path("output", path);
++			path->active = true;
++		}
+ 		if (dac)
+ 			badness += assign_out_path_ctls(codec, pin, dac);
  	}
-@@ -2791,6 +2793,8 @@ static int check_auto_mute_availability(struct hda_codec *codec)
- 				snd_printdd("hda-codec: Enable Line-Out auto-muting on NID 0x%x\n", nid);
- 				snd_hda_jack_detect_enable_callback(codec, nid,
- 								    HDA_GEN_FRONT_EVENT,
-+								    spec->line_automute_hook ?
-+								    spec->line_automute_hook :
- 								    snd_hda_gen_line_automute);
- 				spec->detect_lo = 1;
- 			}
-@@ -2843,6 +2847,8 @@ static bool auto_mic_check_imux(struct hda_codec *codec)
- 		snd_hda_jack_detect_enable_callback(codec,
- 						    spec->am_entry[i].pin,
- 						    HDA_GEN_MIC_EVENT,
-+						    spec->mic_autoswitch_hook ?
-+						    spec->mic_autoswitch_hook :
- 						    snd_hda_gen_mic_autoswitch);
- 	return true;
+@@ -1045,6 +1047,7 @@ static bool map_singles(struct hda_codec *codec, int outs,
+ 			dacs[i] = dac;
+ 			found = true;
+ 			print_nid_path("output", path);
++			path->active = true;
+ 		}
+ 	}
+ 	return found;
+@@ -2416,6 +2419,7 @@ static void parse_digital(struct hda_codec *codec)
+ 		if (!path)
+ 			continue;
+ 		print_nid_path("digout", path);
++		path->active = true;
+ 		if (!nums) {
+ 			spec->multiout.dig_out_nid = dig_nid;
+ 			spec->dig_out_type = spec->autocfg.dig_out_type[0];
+@@ -3554,10 +3558,8 @@ static void set_output_and_unmute(struct hda_codec *codec, hda_nid_t pin,
+ 	path = snd_hda_get_nid_path(codec, dac, pin);
+ 	if (!path)
+ 		return;
+-	if (path->active)
+-		return;
+-	snd_hda_activate_path(codec, path, true, true);
+-	set_pin_eapd(codec, pin, true);
++	snd_hda_activate_path(codec, path, path->active, true);
++	set_pin_eapd(codec, pin, path->active);
  }
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 5c1569c..1090a52 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -180,6 +180,14 @@ struct hda_gen_spec {
- 	void (*init_hook)(struct hda_codec *codec);
- 	void (*automute_hook)(struct hda_codec *codec);
- 	void (*cap_sync_hook)(struct hda_codec *codec);
-+
-+	/* automute / autoswitch hooks */
-+	void (*hp_automute_hook)(struct hda_codec *codec,
-+				 struct hda_jack_tbl *tbl);
-+	void (*line_automute_hook)(struct hda_codec *codec,
-+				   struct hda_jack_tbl *tbl);
-+	void (*mic_autoswitch_hook)(struct hda_codec *codec,
-+				    struct hda_jack_tbl *tbl);
- };
  
- int snd_hda_gen_spec_init(struct hda_gen_spec *spec);
+ /* initialize primary output paths */
 -- 
 1.8.0.1
