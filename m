@@ -1,22 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v5 2/2] ASoC: mxs-saif: Remove platform data
-Date: Mon, 7 Jan 2013 22:21:55 -0200
-Message-ID: <CAOMZO5CZ73OZ=7_R5M7foUvjDGMNrmXBk3PC=FMr6ZQO29Efdg@mail.gmail.com>
-References: <1352924938-24789-1-git-send-email-festevam@gmail.com>
- <20121114231000.GB4536@opensource.wolfsonmicro.com>
- <CAOMZO5BBmSLB9boZYXuT4o_tywPx3f58p4yod+CuO=H1Pi-R2w@mail.gmail.com>
- <20121116003443.GB4387@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: About Alsa arecord
+Date: Tue, 8 Jan 2013 10:27:57 +0800
+Message-ID: <CAN8cciZVOH4YuAcCoMicpDQ9sTbGsrsC9zDMgknfbHw+YZ+v=w@mail.gmail.com>
+References: <2871c441.3cd4.13c12e43f7b.Coremail.lgperson@126.com>
+ <CAN8cciYs-GQPGM0EOHJZjhNRqhV9ZNAJOEEV9MD+SqF=H0gJtQ@mail.gmail.com>
+ <4c1e035e.127b8.13c17d598cf.Coremail.lgperson@126.com>
+ <CAN8cciZ7J2OVQA+VweckMbPBqcfjy8NQqEdxUk-j=mceCHzYYg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
- [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id CC8682650FE
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 01:21:56 +0100 (CET)
-Received: by mail-vc0-f179.google.com with SMTP id p1so20577239vcq.10
- for <alsa-devel@alsa-project.org>; Mon, 07 Jan 2013 16:21:55 -0800 (PST)
-In-Reply-To: <20121116003443.GB4387@opensource.wolfsonmicro.com>
+Received: from mail-ia0-f176.google.com (mail-ia0-f176.google.com
+ [209.85.210.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3627F26086E
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 03:27:59 +0100 (CET)
+Received: by mail-ia0-f176.google.com with SMTP id y26so17024735iab.35
+ for <alsa-devel@alsa-project.org>; Mon, 07 Jan 2013 18:27:58 -0800 (PST)
+In-Reply-To: <CAN8cciZ7J2OVQA+VweckMbPBqcfjy8NQqEdxUk-j=mceCHzYYg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,20 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On Thu, Nov 15, 2012 at 10:34 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Nov 15, 2012 at 11:20:01AM -0200, Fabio Estevam wrote:
->
->> Sorry, I should not have marked it as 2/2. In my previous submissions
->> this was a patch series, but the now the other patches were already
->> applied into your tree.
->
-> No problem, applied now thanks.
-
-Sorry, but I do not see this one applied. Would you like me to resend it?
+PiBHb29kIG1vcm5pbmchCj4gICAgICAgICAgICAgICAgICBBcmUgeW91IHNheWluZyBJIHNob3Vs
+ZCBtb2RpZnkgdGhlIHNvdXJjZSBjb2RlIG9mCmFsc2EtZHJpdmVyLTEuMC4yNT8KPj4KPj4gPiBI
+ZWxsbyEKPj4gPiAgICAgICAgVGhlcmUgaGF2ZSAyIHN0ZXJlbyBBRENzIHN1cHBvcnQgb25lIHN0
+ZXJlbyBtaWNyb3Bob25lIGFuZCBvbmUKbGVnYWN5IG1peGVyIHJlY29yZGluZyBzaW11bHRhbmVv
+dXNseSwgc2FpZCBpbiB0aGUgZG9jdW1lbnQgb2YgQUxDODg4CkRhdGFzaGVldCAuSSBpbnB1dGVk
+IDFLSHogc2luZSB3YXZlIGludG8gZXZlcnkgcGlucwooTGluZTEtUixMaW5lMS1MLE1JQzEtUixN
+SUMxX0wsTUlDMi1SLE1JQzItTCxMSU5FMi1SLExJTkUyLUwpIG9mIEFMQzg4OCBieQpzaWduYWwg
+Z2VucmF0b3IsYW5kIHVzZWQgY29tbWFuZCAnYXJlY29yZCAtYyA0IC1mIFMxNl9MRSAtciA0NDEw
+MAo+dGVzdC53YXYnIHJlY29yZGluZyBpbiBmZWRvcmExNC5idXQgQUxMIGF1ZGlvIGRhdGEgYXJl
+IHJlY29yZGVkIGluIGNoYW5uZWwKMSwyLk5vIGFueSBkYXRhIGluIGNoYW5uZWwgMyw0LldoeT9I
+b3cgY2FuIEkgcmVjb3JkIGV2ZXJ5IHBpbnMgYXVkaW8gZGF0YQppbiBlYWNoIGNoYW5uZWw/Cj4+
+Cj4+IEluIGFsY19hdXRvX2NyZWF0ZV9pbnB1dF9jdGxzICwgYWRkIHRoZSBjb25uZWN0aW9uIGZy
+b20gbm9kZSAweDBiIG9mCm1peGVyIEFEQyBhcyBpbnB1dCBzb3VyY2Ugc2ltaWxhciB0byB0aG9z
+ZSBwaW4gY29tcGxleAo+Pgo+PiBUaG9zZSBNaWMvbGluZS9DRCBwbGF5YmFjayB2b2x1bWUgYW5k
+IHN3aXRjaGVzIG9mIG5vZGUgMHgwYiBhZmZlY3QgdGhlCnNpZ25hbCBvZiB0aGUgbmV3IGlucHV0
+IHNvdXJjZSDigJ1taXhlcuKAnQo+Cj4KClllcywgIGFsc28gbmVlZCBhIHN3aXRjaCB3aGljaCBt
+dXRlIHRoZSBpbnB1dCBmcm9tIDB4MGIgZm9yIGFsbCBvdXRwdXQKamFja3MgdG8gcHJldmVudCBm
+ZWVkYmFjayBpZiB1c2luZyBtaWMKCnRoZSBjdXJyZW50IGhkYSBkcml2ZXIgb25seSBzdXBwb3J0
+IHN0ZXJlbyBjYXB0dXJlIGFuZCB5b3UgaGF2ZSB0bwppbXBsZW1lbnQgbXVsdGkgY2hhbm5lbCBj
+YXB0dXJpbmcgc2ltaWxhciB0byBtdWx0aSBjaGFubmVsIHBsYXliYWNrIGluCmhkYV9jb2RlYy5j
+CgpzbmRfaGRhX211bHRpX2luX2FuYWxvZ19wcmVwYXJlCgogICAgIGZvciAoaSA9IDE7IGkgPCBu
+dW1fYWRjczsgaSsrKSB7CiAgICAgICAgICAgICAgICAgICAgICBzbmRfaGRhX2NvZGVjX3NldHVw
+X3N0cmVhbShjb2RlYywgYWRjX25pZHNbaV0sCnN0cmVhbV90YWcsICBpICogMiwgZm9ybWF0KTsK
+Cm9yCgp0cnkgbXVsdGkgcGx1Z2luIG9mIHR3byBzdGVyZW8gY2FwdHVyZSBkZXZpY2VzCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
