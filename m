@@ -1,16 +1,17 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2] ASoC: mxs-saif: Use a signed integer for
-	error value
-Date: Tue, 8 Jan 2013 10:45:04 -0200
-Message-ID: <1357649104-8219-1-git-send-email-fabio.estevam@freescale.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH RFC 000/112] HD-audio generic parser
+	improvements
+Date: Tue, 08 Jan 2013 14:03:23 +0100
+Message-ID: <50EC191B.4070207@perex.cz>
+References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db3outboundpool.messaging.microsoft.com
- (db3ehsobe004.messaging.microsoft.com [213.199.154.142])
- by alsa0.perex.cz (Postfix) with ESMTP id C071A2651C0
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 13:45:20 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id C69E826164D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2013 14:03:24 +0100 (CET)
+In-Reply-To: <1357645185-7645-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-saif->id and saif->master_id are unsigned, so they can not be negative.
+Date 8.1.2013 12:37, Takashi Iwai wrote:
+> Hi,
+> 
+> this is a large series of patches to implement the really generic
+> HD-audio codec parser usable for various codecs.  It's based on the
+> Realtek codec parser, so I started hacking patch_realtek.c for more
+> generalization and improvements.  Then it's merged to the existing
+> generic parser code, hda_generic.c, and let Realtek parser just uses
+> this new parser code.  In the end, patch_realtek.c contains only
+> the device specific fixups and the call of generic parser functions.
 
-Fix the following warning when building with W=1 option:
+Great step forward. Thanks.
 
-sound/soc/mxs/mxs-saif.c: In function 'mxs_saif_probe':
-sound/soc/mxs/mxs-saif.c:676:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
-sound/soc/mxs/mxs-saif.c:688:3: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
-sound/soc/mxs/mxs-saif.c:692:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+In my opinion, it would be great to handle all fixups in some "user
+space" compatible mode. I mean, do not use the C code for fixups, but
+use an universal description code which can be loaded from the user
+space probably as ASCII text (firmware like behaviour), too. This code
+can be buildin to the kernel modules in a default version. I don't mean
+the current implemented patch processing, but full codec initialization.
+I think that it may be last change to bring the HDA code to more
+maintenable state. Just an idea to avoid further HDA code rewrites which
+happen periodically. And now (with your rewrite) it's really good time
+to propose also this change.
 
-Use a signed variable 'ret' to handle the error values.
+Please, provide the GIT URL with these changes.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Keep the attributions in the case of of_alias_get_id is not negative.
+					Thanks,
+						Jaroslav
 
- sound/soc/mxs/mxs-saif.c |   19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 752675d..8f17094 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -672,9 +672,12 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (!saif)
- 		return -ENOMEM;
- 
--	saif->id = of_alias_get_id(np, "saif");
--	if (saif->id < 0)
--		return saif->id;
-+	ret = of_alias_get_id(np, "saif");
-+	if (ret < 0)
-+		return ret;
-+	else
-+		saif->id = ret;
-+
- 	/*
- 	 * If there is no "fsl,saif-master" phandle, it's a saif
- 	 * master.  Otherwise, it's a slave and its phandle points
-@@ -684,12 +687,14 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (!master) {
- 		saif->master_id = saif->id;
- 	} else {
--		saif->master_id = of_alias_get_id(master, "saif");
--		if (saif->master_id < 0)
--			return saif->master_id;
-+		ret = of_alias_get_id(master, "saif");
-+		if (ret < 0)
-+			return ret;
-+		else
-+			saif->master_id = ret;
- 	}
- 
--	if (saif->master_id < 0 || saif->master_id >= ARRAY_SIZE(mxs_saif)) {
-+	if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
- 		dev_err(&pdev->dev, "get wrong master id\n");
- 		return -EINVAL;
- 	}
 -- 
-1.7.9.5
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
