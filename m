@@ -1,80 +1,84 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH v2 3/3] ASoC: tegra: add tegra machine driver using
- wm9712 codec
-Date: Tue, 08 Jan 2013 23:52:33 +0100
-Message-ID: <1357685553.2884.33.camel@astat>
-References: <1357348725-32139-1-git-send-email-dev@lynxeye.de>
-	 <1357348725-32139-4-git-send-email-dev@lynxeye.de>
-	 <50EC9B01.6010203@wwwdotorg.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Revert "ALSA: hda - Shut up pins at
+ power-saving mode with Conexnat codecs"
+Date: Wed, 09 Jan 2013 09:36:24 +0100
+Message-ID: <50ED2C08.8070209@canonical.com>
+References: <1355906687-2881-1-git-send-email-david.henningsson@canonical.com>
+ <s5hobhqtk50.wl%tiwai@suse.de> <50D19846.8060902@canonical.com>
+ <s5hhanitjha.wl%tiwai@suse.de> <50E5ABFF.8040207@canonical.com>
+ <s5h4nixqqo3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <50EC9B01.6010203-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C4C226086E
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2013 09:36:26 +0100 (CET)
+In-Reply-To: <s5h4nixqqo3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, 886975@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, den 08.01.2013, 15:17 -0700 schrieb Stephen Warren:
-> On 01/04/2013 06:18 PM, Lucas Stach wrote:
-> > This adds a very simple machine driver using the Wolfson wm9712 AC97
-> > codec.
-> 
-> > diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-> 
-> 
-> > +static int tegra_wm9712_init(struct snd_soc_pcm_runtime *rtd)
-> 
-> > +	err = snd_soc_dapm_sync(dapm);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	return 0;
-> 
-> That block is just "return snd_soc_dapm_sync(dapm);"
-> 
-> > +static int tegra_wm9712_driver_probe(struct platform_device *pdev)
-> 
-> > +	machine->codec = platform_device_alloc("wm9712-codec", -1);
-> 
-> Hmmm. I thought that could be auto-instantiated based on probing the
-> AC'97 bus for whatever was there?
-AC97 is in principle probeable by reading the first regs of the codec,
-but all the infrastructure to do proper hotplugging on the AC97 bus is
-missing in the kernel. As I didn't want to be the one to add all this
-infrastructure to a dying audio platform, I opted to do the same thing
-as all the other platform using AC97 and instantiate the codec from the
-machine driver.
+On 01/04/2013 09:49 AM, Takashi Iwai wrote:
+> At Thu, 03 Jan 2013 17:04:15 +0100,
+> David Henningsson wrote:
+>>
+>> On 12/19/2012 11:38 AM, Takashi Iwai wrote:
+>>> At Wed, 19 Dec 2012 11:34:46 +0100,
+>>> David Henningsson wrote:
+>>>>
+>>>> On 12/19/2012 11:24 AM, Takashi Iwai wrote:
+>>>>> At Wed, 19 Dec 2012 09:44:47 +0100,
+>>>>> David Henningsson wrote:
+>>>>>>
+>>>>>> This reverts commit 697c373e34613609cb5450f98b91fefb6e910588.
+>>>>>>
+>>>>>> The original patch was meant to remove clicking, but in fact caused even
+>>>>>> more clicking instead.
+>>>>>>
+>>>>>> Thanks to c4pp4 for doing most of the work with this bug.
+>>>>>>
+>>>>>> BugLink: https://bugs.launchpad.net/bugs/886975
+>>>>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>>>>>> ---
+>>>>>>
+>>>>>> @c4pp4: Is this consistent with what you have done to reduce the clicking?
+>>>>>> Will you recommend upstream Linux to take the patch below?
+>>>>>
+>>>>> So, it shouldn't be merged yet right now?
+>>>>> Now is the last chance for merging it to 3.8-rc1.
+>>>>
+>>>> If we don't have time waiting for c4pp4's confirmation without missing
+>>>> the entire 3.8 cycle, then I think we should merge it.
+>>>
+>>> It's no new feature, so it's fine to merge it at any time during 3.8
+>>> cycle, even after 3.8-rc1.
+>>>
+>>> But such a fix should be merged with Cc to stable, so a bit more tests
+>>> would be better.
+>>
+>> Do you have a suggestion on how that should be tested? I have no
+>> conexant machines here currently.
+>
+> Well, at best, test 3.8-rc2 with the patch.  The content isn't too
+> intrusive so it should suffice for merge.  Alternatively, the tester
+> can try older kernel with the same patch.
+>
+> The point is to confirm that the patch really works.
 
-This binds machine driver and codec together, but after all the machine
-driver is already both pretty small and codec specific. So considering
-the number of Tegra platform out there using AC97 I figured it's not
-worth the hassle trying to write a generic machine driver.
-> 
-> > +	ret = platform_device_add(machine->codec);
-> > +	if (ret)
-> > +		goto codec_put;
-> 
-> After this point, ...
-> 
-> > +	ret = snd_soc_of_parse_card_name(card, "nvidia,model");
-> > +	if (ret)
-> > +		goto codec_put;
-> 
-> don't the error paths need to undo platform_device_add()? Or does
-> platform_device_put() do that automatically?
-> 
-Yep, I've just gone through the implementation of those platform
-functions and at some point we reverse the device_add. I'll fix this up.
-> > +codec_put:
-> > +	platform_device_put(machine->codec);
-> > +	return ret;
-> > +}
-> 
-> > +static int tegra_wm9712_driver_remove(struct platform_device *pdev)
-> 
-> > +	platform_device_put(machine->codec);
-> 
-> Same comment here.
-> 
+This has now been confirmed by c4pp4. Please commit the patch.
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
