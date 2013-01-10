@@ -1,224 +1,159 @@
-From: Jens Axboe <axboe@kernel.dk>
-Subject: Re: Oops in sound/usb/pcm.c:match_endpoint_audioformats() in current
- -git
-Date: Thu, 10 Jan 2013 13:49:22 +0100
-Message-ID: <50EEB8D2.2030702@kernel.dk>
-References: <50EE7A94.60409@kernel.dk> <s5hobgx72zf.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [GIT PULL] ASoC updates for v3.8
+Date: Thu, 10 Jan 2013 12:49:10 +0000
+Message-ID: <20130110124910.GP20956@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hobgx72zf.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1811903989921032683=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 92D0A2615FA
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 13:57:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, eldad@fogrefinery.com, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2013-01-10 11:21, Takashi Iwai wrote:
-> At Thu, 10 Jan 2013 09:23:48 +0100,
-> Jens Axboe wrote:
->>
->> Hi,
->>
->> I have a USB DAC that I use for music. Just upgraded my workstation from
->> 3.7-rc7 to 3.8-rc3 this morning, and when the DAC is switched on, I get
->> an immediate oops. I have attached the picture. It's crashing here:
->>
->> (gdb) l *snd_usb_pcm_prepare+0x153
->> 0x161c is in snd_usb_pcm_prepare (sound/usb/pcm.c:470).
->> 465		snd_pcm_format_t pcm_format)
->> 466	{
->> 467		int i;
->> 468		int score = 0;
->> 469	
->> 470		if (fp->channels < 1) {
->> 471			snd_printdd("%s: (fmt @%p) no channels\n", __func__, fp);
->> 472			return 0;
->> 473		}
->> 474	
->>
->> 'fp' is clearly NULL.
-> 
-> Hmm... it's a function called only from a single place in
-> configure_sync_endpoint() and it's in list_for_each_entry():
-> 
-> 	list_for_each_entry(fp, &sync_subs->fmt_list, list) {
-> 		int score = match_endpoint_audioformats(fp, subs->cur_audiofmt,
-> 			subs->cur_rate, subs->pcm_format);
-> 
-> so it must be hardly NULL in normal situations.
-> The only scenario I can imagine right now is that the whole structure
-> is still uninitialized while it's called.  If so, it's a race problem,
-> and shouldn't be new to 3.8.  A patch like below might paper over the
-> problem although it's far from perfect.
-> 
-> 
->> Let me know if you want a bisect.
-> 
-> Yeah, that'll be really helpful.
 
-Here it is, it's from the one introducing the audioformat lookup.
-Confirmed that 3.8-rc3 with this backed out works fine, too. So should
-be fairly confident in that result.
+--===============1811903989921032683==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ftQmbtOmUf2cr8rB"
+Content-Disposition: inline
 
 
-commit 0d9741c0e058e2857fe3fed37975515dc8dcd21d
-Author: Eldad Zack <eldad@fogrefinery.com>
-Date:   Mon Dec 3 20:30:09 2012 +0100
+--ftQmbtOmUf2cr8rB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    ALSA: usb-audio: sync ep init fix for audioformat mismatch
-    
-    Commit 947d299686aa9cc8aecf749d54e8475c6e498956 , "ALSA: snd-usb:
-    properly initialize the sync endpoint", while correcting the
-    initialization of the sync endpoint when opening just the data
-    endpoint, prevents devices that has a sync endpoint, with a channel
-    number different than that of the data endpoint, from functioning.
-    Due to a different channel and period bytes count, attempting to
-    initialize the sync endpoint will fail at the usb host driver.
-    For example, when using xhci:
-    
-     cannot submit urb 0, error -90: internal error
-    
-    With this patch, if a sync endpoint has multiple audioformats, a
-    matching audioformat is preferred. An audioformat must be found
-    with at least one channel and support the requested sample rate
-    and PCM format, otherwise the stream will not be opened.
-    
-    If the number of channels differ between the selected audioformat
-    and the requested format, adjust the period bytes count accordingly.
-    It is safe to perform the calculation on the basis of the channel
-    count, since the requested PCM audio format and the rate must be
-    supported by the selected audioformat.
-    
-    Cc: Jeffrey Barish <jeff_barish@earthlink.net>
-    Cc: Daniel Mack <zonque@gmail.com>
-    Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
-    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The following changes since commit 9931faca02c604c22335f5a935a501bb2ace6e20:
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 769821c..c659310 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -454,6 +454,103 @@ add_sync_ep:
- }
- 
- /*
-+ * Return the score of matching two audioformats.
-+ * Veto the audioformat if:
-+ * - It has no channels for some reason.
-+ * - Requested PCM format is not supported.
-+ * - Requested sample rate is not supported.
-+ */
-+static int match_endpoint_audioformats(struct audioformat *fp,
-+	struct audioformat *match, int rate,
-+	snd_pcm_format_t pcm_format)
-+{
-+	int i;
-+	int score = 0;
-+
-+	if (fp->channels < 1) {
-+		snd_printdd("%s: (fmt @%p) no channels\n", __func__, fp);
-+		return 0;
-+	}
-+
-+	if (!(fp->formats & (1ULL << pcm_format))) {
-+		snd_printdd("%s: (fmt @%p) no match for format %d\n", __func__,
-+			fp, pcm_format);
-+		return 0;
-+	}
-+
-+	for (i = 0; i < fp->nr_rates; i++) {
-+		if (fp->rate_table[i] == rate) {
-+			score++;
-+			break;
-+		}
-+	}
-+	if (!score) {
-+		snd_printdd("%s: (fmt @%p) no match for rate %d\n", __func__,
-+			fp, rate);
-+		return 0;
-+	}
-+
-+	if (fp->channels == match->channels)
-+		score++;
-+
-+	snd_printdd("%s: (fmt @%p) score %d\n", __func__, fp, score);
-+
-+	return score;
-+}
-+
-+/*
-+ * Configure the sync ep using the rate and pcm format of the data ep.
-+ */
-+static int configure_sync_endpoint(struct snd_usb_substream *subs)
-+{
-+	int ret;
-+	struct audioformat *fp;
-+	struct audioformat *sync_fp = NULL;
-+	int cur_score = 0;
-+	int sync_period_bytes = subs->period_bytes;
-+	struct snd_usb_substream *sync_subs =
-+		&subs->stream->substream[subs->direction ^ 1];
-+
-+	/* Try to find the best matching audioformat. */
-+	list_for_each_entry(fp, &sync_subs->fmt_list, list) {
-+		int score = match_endpoint_audioformats(fp, subs->cur_audiofmt,
-+			subs->cur_rate, subs->pcm_format);
-+
-+		if (score > cur_score) {
-+			sync_fp = fp;
-+			cur_score = score;
-+		}
-+	}
-+
-+	if (unlikely(sync_fp == NULL)) {
-+		snd_printk(KERN_ERR "%s: no valid audioformat for sync ep %x found\n",
-+			__func__, sync_subs->ep_num);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Recalculate the period bytes if channel number differ between
-+	 * data and sync ep audioformat.
-+	 */
-+	if (sync_fp->channels != subs->channels) {
-+		sync_period_bytes = (subs->period_bytes / subs->channels) *
-+			sync_fp->channels;
-+		snd_printdd("%s: adjusted sync ep period bytes (%d -> %d)\n",
-+			__func__, subs->period_bytes, sync_period_bytes);
-+	}
-+
-+	ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
-+					  subs->pcm_format,
-+					  sync_fp->channels,
-+					  sync_period_bytes,
-+					  subs->cur_rate,
-+					  sync_fp,
-+					  NULL);
-+
-+	return ret;
-+}
-+
-+/*
-  * configure endpoint params
-  *
-  * called  during initial setup and upon resume
-@@ -475,13 +572,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
- 		return ret;
- 
- 	if (subs->sync_endpoint)
--		ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
--						  subs->pcm_format,
--						  subs->channels,
--						  subs->period_bytes,
--						  subs->cur_rate,
--						  subs->cur_audiofmt,
--						  NULL);
-+		ret = configure_sync_endpoint(subs);
-+
- 	return ret;
- }
- 
+  Linux 3.8-rc3 (2013-01-09 18:59:55 -0800)
 
--- 
-Jens Axboe
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-3.8-rc2
+
+for you to fetch changes up to 49a170bcf28af5ef372cdbed7750ba8d4162bb0e:
+
+  Merge remote-tracking branch 'asoc/fix/wm5100' into tmp (2013-01-10 12:22:30 +0000)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.8
+
+Nothing terribly exciting here except for the DOUBLE_RANGE fix which
+just hadn't worked before, nobody noticed due to lack of use.
+
+----------------------------------------------------------------
+Axel Lin (5):
+      ASoC: sta529: Fix update register bits in sta529_set_dai_fmt
+      ASoC: wm2200: Fix setting dai format in wm2200_set_fmt
+      ASoC: lm49453: Fix mask for setting mode bit in lm49453_set_dai_fmt()
+      ASoC: arizona: Do proper shift for setting AIF rate
+      ASoC: cs42l52: Catch no-match case in cs42l52_get_clk
+
+Chuansheng Liu (2):
+      ASoC: core: fix the memory leak in case of device_add() failure
+      ASoC: core: fix the memory leak in case of remove_aux_dev()
+
+Daniel Mack (2):
+      ASoC: cs4271: fix sparse warning
+      ASoC: cs4271: fix property check
+
+Fabio Estevam (2):
+      ASoC: soc-core: Remove unused 'ret' variable
+      ASoC: sgtl5000: Fix maximum value for microphone gain
+
+MR.Swami.Reddy@ti.com (2):
+      ASoC: lm49453: Fix adc, mic and sidetone volume ranges
+      ASoC: lm49453: Update lm49453_reg_defs values as per LM49453 HW revision-B
+
+Mark Brown (20):
+      ASoC: core: Fix SOC_DOUBLE_RANGE() macros
+      ASoC: arizona: Correct FLL source definitions
+      ASoC: wm5102: Improve speaker enable performance
+      ASoC: wm2200: Remove DSP B and left justified AIF modes
+      ASoC: arizona: Remove DSP B and left justified AIF modes
+      ASoC: wm5100: Remove DSP B and left justified formats
+      ASoC: wm2000: Fix sense of speech clarity enable
+      ASoC: wm_adsp: Ensure that block writes are from DMA aligned addresses
+      Merge remote-tracking branch 'asoc/fix/arizona' into tmp
+      Merge remote-tracking branch 'asoc/fix/core' into tmp
+      Merge remote-tracking branch 'asoc/fix/cs4271' into tmp
+      Merge remote-tracking branch 'asoc/fix/cs42l52' into tmp
+      Merge remote-tracking branch 'asoc/fix/lm49453' into tmp
+      Merge remote-tracking branch 'asoc/fix/pxa' into tmp
+      Merge remote-tracking branch 'asoc/fix/sgtl5000' into tmp
+      Merge remote-tracking branch 'asoc/fix/sta529' into tmp
+      Merge remote-tracking branch 'asoc/fix/wm-adsp' into tmp
+      Merge remote-tracking branch 'asoc/fix/wm2000' into tmp
+      Merge remote-tracking branch 'asoc/fix/wm2200' into tmp
+      Merge remote-tracking branch 'asoc/fix/wm5100' into tmp
+
+Mike Dunn (2):
+      ALSA: pxa27x: fix ac97 cold reset
+      ALSA: pxa27x: fix ac97 warm reset
+
+Patrick Lai (1):
+      ASoC: pcm: allow backend hardware to be freed in pause state
+
+ arch/arm/mach-pxa/include/mach/mfp-pxa27x.h |    3 +
+ arch/arm/mach-pxa/pxa27x.c                  |    4 +-
+ include/sound/cs4271.h                      |    2 +-
+ include/sound/soc.h                         |   10 ++-
+ sound/arm/pxa2xx-ac97-lib.c                 |   26 ++++++-
+ sound/soc/codecs/arizona.c                  |    9 +--
+ sound/soc/codecs/arizona.h                  |   18 ++---
+ sound/soc/codecs/cs4271.c                   |    6 +-
+ sound/soc/codecs/cs42l52.c                  |    4 +-
+ sound/soc/codecs/lm49453.c                  |  106 ++++++++++-----------------
+ sound/soc/codecs/sgtl5000.c                 |    4 +-
+ sound/soc/codecs/sta529.c                   |    9 ++-
+ sound/soc/codecs/wm2000.c                   |    4 +-
+ sound/soc/codecs/wm2200.c                   |    8 +-
+ sound/soc/codecs/wm5100.c                   |    6 --
+ sound/soc/codecs/wm5102.c                   |   48 +++++++++++-
+ sound/soc/codecs/wm_adsp.c                  |   23 +++++-
+ sound/soc/soc-core.c                        |   35 ++++++++-
+ sound/soc/soc-pcm.c                         |    1 +
+ 19 files changed, 201 insertions(+), 125 deletions(-)
+
+--ftQmbtOmUf2cr8rB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIbBAEBAgAGBQJQ7ri9AAoJELSic+t+oim9IrQP+OfskS6pI83xUVsqDjD91fUe
+gPVsDmKJYA6tzSDJZ2pnymJwvMOJTWnlzUg2jEO79SaNsgXgv2Ll97Kn33lc8Etg
+d4EXZyXdh/IE5gRs7RMroEpNIS65w44SY/FscEKzagK2ub7eKP4x7DiI6fQglISP
+rFO4ys9JJirLv5UmKi4gJgqcH0iQqC7GmoqxLTiZz19MGsB1VGubDschmcdt9M3Y
+TnQZu8I1zqB2W+e6wyqYpxKiH/JKsr44shg/btUKJNF0ZYeJH8kWkQV0zX2P9/+0
+h8Nu0sOCT2K0yRSk37coNj7fRD9J/5QcpUjlxQUOU0RHx5xUZ4ga6nD5R3Imtfhj
+BRg6le1ff1e0WLfqdW5ifUN02I+Pd40MHN6jgZTAFW0sQb7iIQAUNFio6+6Y4UtB
+BYRtXr1kdaN6sWmGknLOw/NPFZTq00saJNzZiIYhKB6kV0TbDff/HIiuU8kaQw3h
+vqISdQFPgStC7aG+1dgdqsu2R6rD98dBRgGxD6zdIV+A86V5byItfGUGCRi+ZSYM
+S5uvZQt7tterJOQNw9Cy+y2VRZP0NiYoEG3oVcaJi7NWQKAKsMoz3wuzdjZrsfZV
+3vOOWjPzs++DhsjIz4L/J9ivqAepIBZoNZVr68NkZ2kI/3DC1rfEYz+P2FIVaBOt
+5cSjepvTXAejag26XM0=
+=vQtU
+-----END PGP SIGNATURE-----
+
+--ftQmbtOmUf2cr8rB--
+
+--===============1811903989921032683==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1811903989921032683==--
