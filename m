@@ -1,21 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 044/112] ALSA: hda - More generic auto-mic
- switching for Realtek codecs
-Date: Thu, 10 Jan 2013 08:41:13 +0800
-Message-ID: <CAN8ccibLinueHznUv47s3xkF2boDNxB0VRJ1vdEz6KGqvgFf4A@mail.gmail.com>
-References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
- <1357645185-7645-45-git-send-email-tiwai@suse.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/1] ALSA: usb-audio: Make ebox44_table static
+Date: Thu, 10 Jan 2013 11:19:14 +0530
+Message-ID: <1357796954-9560-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
- [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 4534D260325
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 01:41:15 +0100 (CET)
-Received: by mail-vc0-f179.google.com with SMTP id p1so2158966vcq.24
- for <alsa-devel@alsa-project.org>; Wed, 09 Jan 2013 16:41:14 -0800 (PST)
-In-Reply-To: <1357645185-7645-45-git-send-email-tiwai@suse.de>
+Received: from mail-pb0-f44.google.com (mail-pb0-f44.google.com
+ [209.85.160.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44BC5260799
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 06:57:32 +0100 (CET)
+Received: by mail-pb0-f44.google.com with SMTP id uo1so107717pbc.31
+ for <alsa-devel@alsa-project.org>; Wed, 09 Jan 2013 21:57:31 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, lgperson@126.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> This patch extends the capability of the auto-mic feature.
-> Instead of limiting the automatic input-source selection only to the
-> mics (internal, external and dock mics), allow it for generic inputs,
-> e.g. switching between the rear line-in and the front mic.
->
-> The logic is to check the attribute and location of input pins, and
-> enable the automatic selection feature only if all such pins are in
-> different locations (e.g. internal, front, rear, etc) and line-in or
-> mic pins.  That is, if multiple input pins are assigned to a single
-> location, the feature isn't enabled because we don't know the
-> priority.
->
-> (You may wonder why this restriction doesn't exist for the headphone
->  automute.  The reason is that the output case is different from the
->  input: the input source is an exclusive selection while the output
->  can be multiplexed.)
->
-> Note that, for avoiding regressions, the line-in auto switching
-> feature isn't activated as default.  It has to be set explicitly via
-> spec->line_in_auto_switch flag in a fixup code.
+Fixes the following sparse warning:
+sound/usb/mixer_quirks.c:1209:23: warning:
+symbol 'ebox44_table' was not declared. Should it be static?
 
-Is this feature automatically disabled when rear Mic or line in Jack is
-retasked as output ?
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ sound/usb/mixer_quirks.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Does it mean that multi channel capture will not be implemented since it is
-conflict with both dynamic adc  switching and auto Mic selection ?
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 0422b13..15520de 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1206,7 +1206,7 @@ static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)
+  * are valid they presents mono controls as L and R channels of
+  * stereo. So we provide a good mixer here.
+  */
+-struct std_mono_table ebox44_table[] = {
++static struct std_mono_table ebox44_table[] = {
+ 	{
+ 		.unitid = 4,
+ 		.control = 1,
+-- 
+1.7.4.1
