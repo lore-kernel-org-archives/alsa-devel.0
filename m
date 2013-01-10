@@ -1,16 +1,16 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: fsl: fix multiple definition of
-	init_module
-Date: Thu, 10 Jan 2013 23:43:56 +0800
-Message-ID: <1357832636-11463-1-git-send-email-shawn.guo@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/8] regmap: Add support for 24 bit wide
+	register addresses
+Date: Thu, 10 Jan 2013 17:06:10 +0100
+Message-ID: <1357833977-3682-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA66261683
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 16:44:11 +0100 (CET)
+Received: from smtp-out-052.synserver.de (smtp-out-052.synserver.de
+ [212.40.185.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD1F5261658
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 17:05:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,113 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Shawn Guo <shawn.guo@linaro.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-With commit f2818d0 (ASoC: fsl: fix miscompilation of snd-soc-imx-pcm),
-we will see the following build error when building modules with
-CONFIG_SND_IMX_SOC=m in imx_v6_v7_defconfig.
+Since regmap already has support for formatting 24 bit wide values, so adding
+support for 24 bit wide registers is pretty much straight forward.
 
-  CC [M]  sound/soc/fsl/phycore-ac97.o
-  LD [M]  sound/soc/fsl/snd-soc-fsl-ssi.o
-  LD [M]  sound/soc/fsl/snd-soc-fsl-utils.o
-  LD [M]  sound/soc/fsl/snd-soc-imx-ssi.o
-  LD [M]  sound/soc/fsl/snd-soc-imx-audmux.o
-  LD [M]  sound/soc/fsl/snd-soc-imx-pcm.o
-sound/soc/fsl/imx-pcm-dma.o: In function `init_module':
-imx-pcm-dma.c:(.init.text+0x0): multiple definition of `init_module'
-sound/soc/fsl/imx-pcm-fiq.o:imx-pcm-fiq.c:(.init.text+0x0): first defined here
-sound/soc/fsl/imx-pcm-dma.o: In function `cleanup_module':
-imx-pcm-dma.c:(.exit.text+0x0): multiple definition of `cleanup_module'
-sound/soc/fsl/imx-pcm-fiq.o:imx-pcm-fiq.c:(.exit.text+0x0): first defined here
-make[4]: *** [sound/soc/fsl/snd-soc-imx-pcm.o] Error 1
-
-Instead of using bool for SND_SOC_IMX_PCM_FIQ and SND_SOC_IMX_PCM_DMA
-to fix the original issue, we should completely remove SND_SOC_IMX_PCM
-and have imx-pcm.o statically linked with imx-pcm-fiq.o or imx-pcm-dma.o.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-Mark,
+ drivers/base/regmap/regmap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-To be clear, I think it's a v3.8 material.
-
-Shawn
-
- sound/soc/fsl/Kconfig   |    9 ++-------
- sound/soc/fsl/Makefile  |    5 ++++-
- sound/soc/fsl/imx-pcm.c |    3 ---
- 3 files changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3b98159..a210c8d 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -108,18 +108,13 @@ if SND_IMX_SOC
- config SND_SOC_IMX_SSI
- 	tristate
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 42d5cb0..26af93a 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -500,6 +500,12 @@ struct regmap *regmap_init(struct device *dev,
+ 		}
+ 		break;
  
--config SND_SOC_IMX_PCM
--	tristate
--
- config SND_SOC_IMX_PCM_FIQ
--	bool
-+	tristate
- 	select FIQ
--	select SND_SOC_IMX_PCM
- 
- config SND_SOC_IMX_PCM_DMA
--	bool
-+	tristate
- 	select SND_SOC_DMAENGINE_PCM
--	select SND_SOC_IMX_PCM
- 
- config SND_SOC_IMX_AUDMUX
- 	tristate
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index afd3479..ec14579 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -41,7 +41,10 @@ endif
- obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
- obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
- 
--obj-$(CONFIG_SND_SOC_IMX_PCM) += snd-soc-imx-pcm.o
-+obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += snd-soc-imx-pcm-fiq.o
-+snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o imx-pcm.o
-+obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += snd-soc-imx-pcm-dma.o
-+snd-soc-imx-pcm-dma-y := imx-pcm-dma.o imx-pcm.o
- 
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
-diff --git a/sound/soc/fsl/imx-pcm.c b/sound/soc/fsl/imx-pcm.c
-index d5cd9ef..0c9f188 100644
---- a/sound/soc/fsl/imx-pcm.c
-+++ b/sound/soc/fsl/imx-pcm.c
-@@ -31,7 +31,6 @@ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 			runtime->dma_bytes);
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(snd_imx_pcm_mmap);
- 
- static int imx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- {
-@@ -80,7 +79,6 @@ int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
- out:
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(imx_pcm_new);
- 
- void imx_pcm_free(struct snd_pcm *pcm)
- {
-@@ -102,7 +100,6 @@ void imx_pcm_free(struct snd_pcm *pcm)
- 		buf->area = NULL;
- 	}
- }
--EXPORT_SYMBOL_GPL(imx_pcm_free);
- 
- MODULE_DESCRIPTION("Freescale i.MX PCM driver");
- MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
++	case 24:
++		if (reg_endian != REGMAP_ENDIAN_BIG)
++			goto err_map;
++		map->format.format_reg = regmap_format_24;
++		break;
++
+ 	case 32:
+ 		switch (reg_endian) {
+ 		case REGMAP_ENDIAN_BIG:
 -- 
-1.7.9.5
+1.8.0
