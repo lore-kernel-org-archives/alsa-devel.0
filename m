@@ -1,26 +1,15 @@
-From: Smeefer Carbone <smeefer@gmail.com>
-Subject: Re: Roland UA-55
-Date: Thu, 10 Jan 2013 11:02:35 +0000 (UTC)
-Message-ID: <loom.20130110T120051-216@post.gmane.org>
-References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
- <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: ak4642: add Device Tree support
+Date: Thu, 10 Jan 2013 12:20:26 +0000
+Message-ID: <20130110122026.GO20956@opensource.wolfsonmicro.com>
+References: <871udt4f1n.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6801150302562576431=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BEEF2615D1
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 12:04:51 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TtFwV-0000IZ-MH
- for alsa-devel@alsa-project.org; Thu, 10 Jan 2013 12:05:04 +0100
-Received: from c-66-235-47-206.sea.wa.customer.broadstripe.net
- ([66.235.47.206]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 12:05:03 +0100
-Received: from smeefer by c-66-235-47-206.sea.wa.customer.broadstripe.net with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 12:05:03 +0100
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8F4282615EC
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2013 13:20:27 +0100 (CET)
+In-Reply-To: <871udt4f1n.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,415 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-smeefer@*********:~$ lsusb -v
 
-Bus 002 Device 007: ID 0582:012f Roland Corp. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          255 Vendor Specific Class
-  bDeviceSubClass         0 
-  bDeviceProtocol       255 
-  bMaxPacketSize0        64
-  idVendor           0x0582 Roland Corp.
-  idProduct          0x012f 
-  bcdDevice            1.00
-  iManufacturer           1 
-  iProduct                2 
-  iSerial                 3 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          511
-    bNumInterfaces          5
-    bConfigurationValue     1
-    iConfiguration          0 
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              450mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  06 24 f1 01 00 00
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 04 04 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 04 04 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 04 04 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00d0  1x 208 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 00 ee 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00c8  1x 200 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 06 04 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x00a8  1x 168 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 06 04 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x00a8  1x 168 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 06 04 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0138  1x 312 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 01
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 00 ee 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x00c8  1x 200 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      3 
-      iInterface              0 
-      ** UNRECOGNIZED:  06 24 f1 02 01 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x06  EP 6 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      3 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x06  EP 6 OUT
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      4 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      4 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      5 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      5 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      5 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               2
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      5 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1 
-      bInterfaceProtocol      5 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0008  1x 8 bytes
-        bInterval               4
-can't get device qualifier: Operation not permitted
-can't get debug descriptor: Operation not permitted
-cannot read device status, Operation not permitted (1)
+--===============6801150302562576431==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gh4H09KImyIEQ1se"
+Content-Disposition: inline
+
+
+--gh4H09KImyIEQ1se
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 10, 2013 at 12:29:11AM -0800, Kuninori Morimoto wrote:
+> Support for loading the ak4642 codec module via devicetree.
+
+Applied, thanks.
+
+--gh4H09KImyIEQ1se
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ7rH9AAoJELSic+t+oim9n/wQAJaXQkv6IvSo66DPQowsF9wV
+ZVD4LwBIYLmRZWX5FrV59N0DVzWuWCbv5Xf4MH8aHiRhtz7ol9Op2bDOr/SHBOff
+jB2UiGobcFwvtZWO1nZVUn4Pwin9vsDGAswBRgbn9Y4xv5fBFk5isr0OtoEi9Xvv
+XjVUgVoo9jx67UOZCGZnk16Mj+1I9V7ptz98g/TwY4uSEJrOKgYQp4XDuHayDRon
+ewIOMKsTAej7fkO80aZ8bUjWqsQiUMrBvFHpnkI2HEUioayHtnQg85jVubvcf5pm
+a/IhuhgU/bq20b1SQBfgnUOycZNJICqs0f1gMBzcgyzNHYcfY/H8TxsJso+JIb+r
+53vVBslke/+X0SUXr6sbKYv/WATV6JUgFMgbXKgUv6LnhZRtFKOxN2kNTuAHMBVK
+l3bSTjGJ04hTIdsGTVF5o3/ltSMMztSgpj50e/SIfAR2Pq/7e4ApsHtMieQ4/shl
+/+dAvluXtMk+O45XzyCkbazPQhsfpAL1+eRR67s8iRRU5nwGLSil4YhYRb2o1j7Q
+fjcccQ8UhBDROiphQ2yW8Ww7m8jz36c7mcIWNQV94NULzHHqa/30Xp0pIg3R33sM
+LuvH3ZvhA1clw0NNPHSPN1h3wUjBh2/yfAcKK6Q6P/F1hbtttRYRInPCfW6L3w1K
+kT9J5S52Rbb3Fxy5P5HE
+=1ft6
+-----END PGP SIGNATURE-----
+
+--gh4H09KImyIEQ1se--
+
+--===============6801150302562576431==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6801150302562576431==--
