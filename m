@@ -1,20 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
- transitions during resume
-Date: Fri, 11 Jan 2013 14:55:53 +0100
-Message-ID: <50F019E9.3030805@ti.com>
-References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
- <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
- <20130111115207.GW20956@opensource.wolfsonmicro.com> <50F01644.30703@ti.com>
- <20130111134601.GA20956@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/8] ASoC: Add support for virtual switch
+	controls
+Date: Fri, 11 Jan 2013 13:57:54 +0000
+Message-ID: <20130111135754.GB20956@opensource.wolfsonmicro.com>
+References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
+ <1357833977-3682-2-git-send-email-lars@metafoo.de>
+ <20130111121912.GY20956@opensource.wolfsonmicro.com>
+ <50F007DF.9000606@metafoo.de>
+ <20130111124535.GZ20956@opensource.wolfsonmicro.com>
+ <50F00BF1.6090702@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============2487677220449239147=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 56A6A264EF3
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 14:55:56 +0100 (CET)
-In-Reply-To: <20130111134601.GA20956@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 965D8264ED1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 14:57:55 +0100 (CET)
+In-Reply-To: <50F00BF1.6090702@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/11/2013 02:46 PM, Mark Brown wrote:
-> On Fri, Jan 11, 2013 at 02:40:20PM +0100, Peter Ujfalusi wrote:
-> =
 
->> Since the core saves the previous bias_level in before suspend I can jus=
-t do
->> this here:
-> =
+--===============2487677220449239147==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zKD0QXBepZ0ysD7Q"
+Content-Disposition: inline
 
->> 	twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> =
 
->> If we were in _OFF before it is going to do nothing, but if we were in
->> _STANDBY it brings the codec back.
-> =
+--zKD0QXBepZ0ysD7Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> That'll work, yes (though removing the function when idle_bias_off is
-> implemented would obviously be better).
+On Fri, Jan 11, 2013 at 01:56:17PM +0100, Lars-Peter Clausen wrote:
+> On 01/11/2013 01:45 PM, Mark Brown wrote:
 
-True. Along with the suspend function since I'm not doing anything fancy th=
-ere
-and if idle_bias_off is set the core will not call suspend of the driver if=
- it
-is not already in _OFF.
-I'll keep this in mind for the future and resend with only with
+> > Virtual enums do actually end up routing, that's not what a mute control
+> > usually does.  You can do the above in the manner I suggested, just have
+> > the register forced to a particular value when the DAC is disabled.
 
-	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> Well, that's what the code does. The alternative is to implement more or
 
-in the resume.
-But I wait if you have other comments for the rest for the series.
+No, it's not (at least not according to the changelog).  It implements a
+totally separate virtual control.
 
--- =
+> less in the driver. Have custom put/get callbacks for the controls, which
+> write to a shadow register, only if the DAC is enabled the shadow value gets
+> written to the real register. And listen to the DAC powerdown/powerup
+> events, when it is powered down enable all hw mutes, when it is enabled
 
-P=E9ter
+What makes you say that this must be open coded in the driver?  We can
+modify the framework code...
+
+> restore the shadow register value. The virtual control more or less
+> implements it in a generic manner so it does not have to be implemented by
+> each driver which needs this on its own.
+
+I'm having a really hard time seeing the equivalence here.
+
+--zKD0QXBepZ0ysD7Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ8BoiAAoJELSic+t+oim9o4kQAIhjI4SowsNDCWI8NeU93uZo
+rtURnkog4dSierJGuOTgveNTX+0H/yFJoBbK36HvF4ISR+heaa4RWhko7DUeXeN1
+fMmjIo3rgjX9skUb8yoimsPAgqjNFbXNLD1ULI523agkg47IwOvIZl1/anmWUYGb
+Ol6SLZgNMtUkW0yDEDkfQm9fVQtyLEqDRbIJMQcWfAujInWViTtRerARGzxLfAf3
++7nh+r/HMdtMyHTysXMrk2tiBmVGosGpd4SGpePjP+TO0j+5sirzGxBcV2w6grxn
+ttZ5Vtjz3tsv3C5WVtQHhe6UmaV/KrF1c/kprdFLXzTteREc8JmffJtoIYv/nnu3
+VBzlmxRrbp5wMIyzOATSVBtQllNlsa7WViUaBHM05GklO59s+TPeXeo19T6qoatQ
+9wirJVDCbGyiKyhq89BaDJIwtD+sQIhXefFU5WnDd9pLdECxr2NVnr3KY5pwg1Ez
+5JmBhGrSLg1jNLEwT9Y2dsuDErfCxyZXt6D8mvSXCyx06ipaZVT7NmKuqciBpJmK
+8AavoneMEIezQpm6/gFHWjlG7qym2LSJspCLUkipsECFjcrSsj0jUcuy9k9WIhar
+zDAuq/2XQ0I46MfBIh0uepr6znWza4MCb++d/krR7hANMXHo+DM+Lb3EwjsGF+ad
+5Od24uOnOUTY9uMKWSgo
+=3DmN
+-----END PGP SIGNATURE-----
+
+--zKD0QXBepZ0ysD7Q--
+
+--===============2487677220449239147==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2487677220449239147==--
