@@ -1,85 +1,60 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
- transitions during resume
-Date: Fri, 11 Jan 2013 15:02:48 +0000
-Message-ID: <20130111150248.GD20956@opensource.wolfsonmicro.com>
-References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
- <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
- <20130111115207.GW20956@opensource.wolfsonmicro.com>
- <50F01644.30703@ti.com>
- <20130111134601.GA20956@opensource.wolfsonmicro.com>
- <50F019E9.3030805@ti.com>
- <20130111142403.GC20956@opensource.wolfsonmicro.com>
- <50F02537.1000305@ti.com>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/8] ASoC: Add support
+ for virtual switch controls
+Date: Fri, 11 Jan 2013 16:08:39 +0100
+Message-ID: <50F02AF7.9090700@metafoo.de>
+References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
+	<1357833977-3682-2-git-send-email-lars@metafoo.de>
+	<20130111121912.GY20956@opensource.wolfsonmicro.com>
+	<50F007DF.9000606@metafoo.de>
+	<20130111124535.GZ20956@opensource.wolfsonmicro.com>
+	<50F00BF1.6090702@metafoo.de>
+	<20130111135754.GB20956@opensource.wolfsonmicro.com>
+	<50F02A51.3010108@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8426442177949208888=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98BDE264ED1
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 16:07:50 +0100 (CET)
-In-Reply-To: <50F02537.1000305@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <50F02A51.3010108-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/11/2013 04:05 PM, Lars-Peter Clausen wrote:
+> On 01/11/2013 02:57 PM, Mark Brown wrote:
+>> On Fri, Jan 11, 2013 at 01:56:17PM +0100, Lars-Peter Clausen wrote:
+>>> On 01/11/2013 01:45 PM, Mark Brown wrote:
+>>
+>>>> Virtual enums do actually end up routing, that's not what a mute control
+>>>> usually does.  You can do the above in the manner I suggested, just have
+>>>> the register forced to a particular value when the DAC is disabled.
+>>
+>>> Well, that's what the code does. The alternative is to implement more or
+>>
+>> No, it's not (at least not according to the changelog).  It implements a
+>> totally separate virtual control.
+> 
+> What do you mean by 'separate'? Maybe this is was causes the confusion. Do
+> you mean a separate DAPM control, like DAPM_SWITCH? That's not what the
+> patch does it creates a virtual kcontrol, which can be used to control a
+> mixers input. It's the pendant to SOC_DAPM_ENUM_VIRT not to
 
---===============8426442177949208888==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Eldrgvv4EWsIM1sO"
-Content-Disposition: inline
+s/pendant/counterpart/ apparently this is a false friend
 
-
---Eldrgvv4EWsIM1sO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 11, 2013 at 03:44:07PM +0100, Peter Ujfalusi wrote:
-
-> If it's OK I'll resend the series and replace this patch with a different one
-> to remove just the second
-> twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> call from resume.
-
-Sure, no problem.
-
---Eldrgvv4EWsIM1sO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQ8CiCAAoJELSic+t+oim9gOQP/3VnBhv/qtuWVbrXX9/Osv/e
-ZTks1hoa/w6P+A/wpmpr5AhYSjvfQazX4EafgSuao0Jv6h25NKfoTpgDSeifbeux
-OeFfMb4bDzRxR2pNwngHkz+iqVv/PeHb234Fm54fkY632zr+2Ndn2dc9Z5REOpUi
-Oc+1SH2Tt9URgtMZ44NhnkJuxpz7JVBFtNudWgREtGG21xGsuDnSad7QzXlKSBFf
-65d4nIzxiBNKEkLwC8taqvlrgjpOX95hmVUe0UrunxmQRTkqn2iuGEc8B1tuHxMr
-o8WkFE3gP5tzIRJhk+r6Kt4xI3hzmnTE1Y98j/pz9vYHNgXWN7vfml++/ISwyUcd
-mErGM7exbZduYM+cJXyugW9YN95barlJpR3D8/jUDcN7LacAzQrlkbtHDeTX8hmo
-jMYQMPMUL7NXN0hh3QxL01ns+eQB5BuHsKJaQRmUaVX6lmI/e+hPMZaGJDoJSZik
-60wL+rZvsp/2P78N6dTxegHtfriSvLzWM+mZDjVHi9n/n+EBFVyVdgzR9ILz0SXa
-j0yXWuXEmD474peIDm0vGbg1c9TGcgQaPtoymJvHBI+C8wlxOICxD2l5X7GECpdf
-HkrlMX7+fWlXCv2Lp9BE5Xs06UUksl93bKEmjhkraT2eesy4497ssBp7M1GWY4ET
-budRw+1FfKs4Q8GStl9M
-=4ML8
------END PGP SIGNATURE-----
-
---Eldrgvv4EWsIM1sO--
-
---===============8426442177949208888==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8426442177949208888==--
+> SND_SOC_DAPM_VIRT_MUX. I realize that the commit message may have been a bit
+> ambiguous in that regard.
+> 
+> - Lars
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
