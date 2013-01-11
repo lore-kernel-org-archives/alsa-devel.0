@@ -1,14 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 0/5] ASoC: twl6040: Updates for 3.9
-Date: Fri, 11 Jan 2013 17:00:58 +0100
-Message-ID: <1357920063-15141-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 1/5] ASoC: twl6040: Convert PLUGINT to
+	no-suspend irq
+Date: Fri, 11 Jan 2013 17:00:59 +0100
+Message-ID: <1357920063-15141-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1357920063-15141-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 55BEA264FF6
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 17:01:08 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39822264FFB
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 17:01:09 +0100 (CET)
+In-Reply-To: <1357920063-15141-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +25,29 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Liam,
+From: Misael Lopez Cruz <misael.lopez@ti.com>
 
-Changes since v1:
-- patch 2 for twl6040_resume() has been replaced with a simpler one
+Convert headset PLUGINT interrupt to NO_SUSPEND type in order to
+allow handling of insertion/removal events while device is suspended.
 
-Cover letter from v1:
-
-Small fixe from Misael for twl6040 codec driver and devm_* conversion, switch
-to system workqueue and dead code removal.
-
-Regards,
-Peter
+Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Misael Lopez Cruz (1):
-  ASoC: twl6040: Convert PLUGINT to no-suspend irq
+ sound/soc/codecs/twl6040.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Peter Ujfalusi (4):
-  ASoC: twl6040: Only set the bias_level once in twl6040_resume()
-  ASoC: twl6040: Convert to use devm_* when possible
-  ASoC: twl6040: Switch to use system workqueue for jack reporting
-  ASoC: twl6040: Remove leftover code from hs/hf ramp implementation
-
- sound/soc/codecs/twl6040.c | 62 +++++++---------------------------------------
- 1 file changed, 9 insertions(+), 53 deletions(-)
-
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 3fc3fc6..ef31ace 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1174,7 +1174,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	mutex_init(&priv->mutex);
+ 
+ 	ret = request_threaded_irq(priv->plug_irq, NULL, twl6040_audio_handler,
+-				   0, "twl6040_irq_plug", codec);
++				   IRQF_NO_SUSPEND, "twl6040_irq_plug", codec);
+ 	if (ret) {
+ 		dev_err(codec->dev, "PLUG IRQ request failed: %d\n", ret);
+ 		goto plugirq_err;
 -- 
 1.8.1
