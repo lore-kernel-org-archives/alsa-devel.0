@@ -1,80 +1,49 @@
-From: Jens Axboe <axboe@kernel.dk>
-Subject: Re: Oops in sound/usb/pcm.c:match_endpoint_audioformats() in current
- -git
-Date: Thu, 10 Jan 2013 21:26:16 +0100
-Message-ID: <50EF23E8.1070202@kernel.dk>
-References: <50EE7A94.60409@kernel.dk> <s5hobgx72zf.wl%tiwai@suse.de> <50EEB8D2.2030702@kernel.dk> <s5hsj696tgw.wl%tiwai@suse.de> <alpine.LNX.2.00.1301102038560.1321@xoschi> <s5hehhskcya.wl%tiwai@suse.de>
+From: Ricardo Neri <rneri@dextratech.com>
+Subject: [RESEND PATCH] ASoC: OMAP: HDMI: Initialize IEC-60958
+	channel status word
+Date: Thu, 10 Jan 2013 18:32:13 -0600
+Message-ID: <1357864333-18742-1-git-send-email-rneri@dextratech.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hehhskcya.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eldad Zack <eldad@fogrefinery.com>, perex@perex.cz, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.dextratech.com (spamfilter.dextratech.com [187.141.251.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68E0B2616FC
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 01:32:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: Ricardo Neri <rneri@dextratech.com>, alsa-devel@alsa-project.org, dzuniga@dextratech.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2013-01-10 21:19, Takashi Iwai wrote:
-> At Thu, 10 Jan 2013 20:45:02 +0100 (CET),
-> Eldad Zack wrote:
->>
->>
->> On Thu, 10 Jan 2013, Takashi Iwai wrote:
->>
->>> At Thu, 10 Jan 2013 13:49:22 +0100,
->>> Jens Axboe wrote:
->>>>
->>>> Here it is, it's from the one introducing the audioformat lookup.
->>>> Confirmed that 3.8-rc3 with this backed out works fine, too. So should
->>>> be fairly confident in that result.
->>
->>> From: Takashi Iwai <tiwai@suse.de>
->>> Subject: [PATCH] ALSA: usb-audio: Fix NULL dereference by access to
->>>  non-existing substream
->>>
->>> The commit [0d9741c0: ALSA: usb-audio: sync ep init fix for
->>> audioformat mismatch] introduced the correction of parameters to be
->>> set for sync EP.  But since the new code assumes that the sync EP is
->>> always paired with the data EP of another direction, it triggers Oops
->>> when a device only with a single direction is used.
->>
->> Yes - sorry, I didn't consider this at all.
->>
->>> This patch adds a proper check of sync EP type and the presence of the
->>> paired substream for avoiding the crash.
->>>
->>> Reported-by: Jens Axboe <axboe@kernel.dk>
->>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>> ---
->>>  sound/usb/pcm.c | 11 +++++++++++
->>>  1 file changed, 11 insertions(+)
->>>
->>> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
->>> index c659310..21c0001 100644
->>> --- a/sound/usb/pcm.c
->>> +++ b/sound/usb/pcm.c
->>> @@ -511,6 +511,17 @@ static int configure_sync_endpoint(struct snd_usb_substream *subs)
->>>  	struct snd_usb_substream *sync_subs =
->>>  		&subs->stream->substream[subs->direction ^ 1];
->>>  
->>> +	if (subs->sync_endpoint->type != SND_USB_ENDPOINT_TYPE_DATA ||
->>> +	    !subs->stream) {
->>> +		ret = snd_usb_endpoint_set_params(subs->sync_endpoint,
->>> +						  subs->pcm_format,
->>> +						  subs->channels,
->>> +						  subs->period_bytes,
->>> +						  subs->cur_rate,
->>> +						  subs->cur_audiofmt,
->>> +						  NULL);
->>> +	}
->>> +
->>
->> I think you want to return here, no?
-> 
-> Ah, yes, good catch.  It was dropped during rebasing and rewriting.
-> Below is the revised patch.
+As the IEC-60958 channel status word is set by ANDing and ORing with
+the appropriate definitions, the word bytes need to be initialized
+to zero to avoid misconfiguration due to previous hw_params calls.
 
-Thanks, I'll give it a go and report back.
+Signed-off-by: Ricardo Neri <rneri@dextratech.com>
+---
+ sound/soc/omap/omap-hdmi.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
--- 
-Jens Axboe
+diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
+index f59c69f..75ad378 100644
+--- a/sound/soc/omap/omap-hdmi.c
++++ b/sound/soc/omap/omap-hdmi.c
+@@ -110,6 +110,8 @@ static int omap_hdmi_dai_hw_params(struct snd_pcm_substream *substream,
+ 	/*
+ 	 * fill the IEC-60958 channel status word
+ 	 */
++	/* initialize the word bytes */
++	memset(iec->status, 0, sizeof(iec->status));
+
+ 	/* specify IEC-60958-3 (commercial use) */
+ 	iec->status[0] &= ~IEC958_AES0_PROFESSIONAL;
+--
+1.7.10.4
