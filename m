@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl4030: Remove suspend/resume soc
- driver operations
-Date: Fri, 11 Jan 2013 23:55:41 +0000
-Message-ID: <20130111235540.GA7873@opensource.wolfsonmicro.com>
-References: <1357920101-15179-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 0/5] ASoC: twl6040: Updates for 3.9
+Date: Fri, 11 Jan 2013 23:56:01 +0000
+Message-ID: <20130111235601.GB7873@opensource.wolfsonmicro.com>
+References: <1357920063-15141-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5266201222082076723=="
+Content-Type: multipart/mixed; boundary="===============2423619131302264965=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CAD8A264FF5
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 00:55:43 +0100 (CET)
-In-Reply-To: <1357920101-15179-1-git-send-email-peter.ujfalusi@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D894264FF5
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 00:56:03 +0100 (CET)
+In-Reply-To: <1357920063-15141-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5266201222082076723==
+--===============2423619131302264965==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
 Content-Disposition: inline
 
 
---bg08WKrSYDhXBjb5
+--RASg3xLB4tUQ4RcS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 11, 2013 at 05:01:41PM +0100, Peter Ujfalusi wrote:
-> With idle_bias_off these are no longer needed.
+On Fri, Jan 11, 2013 at 05:00:58PM +0100, Peter Ujfalusi wrote:
+> Hi Mark, Liam,
+>=20
+> Changes since v1:
+> - patch 2 for twl6040_resume() has been replaced with a simpler one
 
 Applied, thanks.
 
---bg08WKrSYDhXBjb5
+--RASg3xLB4tUQ4RcS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ8KZ2AAoJELSic+t+oim9H4IP/RbU2iftFL1L17MfsnQcX51k
-iRZvIleTvtmMwFhV2Yzk6AgmvYGK9iV+8CiBL3CnZxY6koWfWaOk4tXn2Ce887g/
-6arPmRyV80plbYiUet5+EObAH9ZyIiW23jd/v1Lqv0ToSRn0PdYxht8x5/xTY/6V
-8r9dsvalVXH1Vc/w7+Lwnu2GldOTz11o/h719Aw8Ez80/bshMJMOmQ5AhwqDxO5V
-tOZB7+e8flH06o4Tfznjdm7vnXy8nWM8vR9sXwtDsF4uO9jiDTVKhkg3h+iTN++P
-GI4UBRwaDKsKIZkTKYJOTIBZEf/4LpiRGXM4RONR7qGbc/xlHTC4XwH4c3TFN9XQ
-no4DV9E/msG3Hd1reQtypW5oNzpoiwHtZ2+22QwnEh9iOaHqbwe7Ininlhs79eGu
-+Z7btuuyMbstfarR/cUi5l+CcbtIdXI8qajqjc0/Km4jZC0OFI7hLhXD1GdtDAOy
-8NBo0ssc16y+v79S1TuLhGqyNyM/g0mJUxPieb4BrHWWsmPu9yokzeotXbOlAGPt
-VnaqI/a4Yv+7q4Svt3G8lfWaUzq9GF1dIjJR80fB7ny0KM+qrjuNOoRhumoy2jv2
-iGZtl8GMMGDTB+nMUzIVm0+7LCLhRRIx3eZ/rgSxbUjkE+EXxicca40ZArQ80vSu
-0uBM4hS1+NNdKHEFqr+z
-=y/7k
+iQIcBAEBAgAGBQJQ8KaHAAoJELSic+t+oim9iI0P/24u7sdmYoZcTBcl6H7QH23b
+Q+22bVBrRe9H8unIAaHDnqYIcre5/tUPT6b2dj6FtYqmTRiTiQ7v/VlYIGBhKaZi
+2OspM1G2Et+y/b4M3ISfKP8X/++vZ9M70Ay/gWkzl/81ap4cvykBu69PFepk7QTj
+byNBGJKwXpJRSrvw2OqXhF+iS9dlmaN7L/XNtUitl1/MTSSM4QxhZesR23m2dGaf
+bF679bSB1AMTf6XjqP6X6Cm5B4DRpnYH07ohE53JCZKDC2z/m0j8Gpm3K9tKb9Zo
+g1wKGZPOF3krJMflcE0kTK4YcytQ4RlH2RULVV8Z3GC+kdUnSz+iAUMIHSLmZSlJ
+vA/8wlQKDYKtOwIpROCnFE5McNOlvjQ7vOckUAg5eZ6K6KrafaldjSQLmhej/e3A
+w5/m7N9QiQsadwOhpMit5XRknDLSmn8H3fhJ8zJ15IJnvpEOhNVR61Mih4ijoCG+
+BouAGjDjrhXDqaISdRjn7qX99JG7o3yARkxggJ464MR6rMDB8FOhvSXsUGz3demt
+6/T7ZbMyS027o87thkN16Ie1bs9CGBe4qBhBZLd1cPRmTnZfkU2e+gJZ0gn2m9ff
+77tJoyKOZlqqI3+zfmOjQlw4Fa6DV4rrgz6yToHnN7uPD97h8r2I+DnwD2fsZhIM
+HwRxD64CLk7PzG0tr5F2
+=Hq2D
 -----END PGP SIGNATURE-----
 
---bg08WKrSYDhXBjb5--
+--RASg3xLB4tUQ4RcS--
 
---===============5266201222082076723==
+--===============2423619131302264965==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5266201222082076723==--
+--===============2423619131302264965==--
