@@ -1,57 +1,74 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2 06/10] ASoC: tegra: remove auxdata
-Date: Fri, 11 Jan 2013 21:05:09 +0000
-Message-ID: <20130111210509.GB8677@opensource.wolfsonmicro.com>
-References: <1357891289-23500-1-git-send-email-pgaikwad@nvidia.com>
- <1357891289-23500-6-git-send-email-pgaikwad@nvidia.com>
- <50F07D30.9020102@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: twl4030: Remove suspend/resume soc
+ driver operations
+Date: Fri, 11 Jan 2013 23:55:41 +0000
+Message-ID: <20130111235540.GA7873@opensource.wolfsonmicro.com>
+References: <1357920101-15179-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pd0ReVV5GZGQvF3a"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <50F07D30.9020102-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Prashant Gaikwad <pgaikwad-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5266201222082076723=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CAD8A264FF5
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 00:55:43 +0100 (CET)
+In-Reply-To: <1357920101-15179-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Pd0ReVV5GZGQvF3a
+--===============5266201222082076723==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+Content-Disposition: inline
+
+
+--bg08WKrSYDhXBjb5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 11, 2013 at 01:59:28PM -0700, Stephen Warren wrote:
-> On 01/11/2013 01:01 AM, Prashant Gaikwad wrote:
-> > Configlink clock information is added to device tree. Get the clocks
-> > using device node. Remove AUXDATA.
->=20
-> Cc'ing in the ASoC maintainers as an FYI and for Acks; this patch needs
-> to go through the Tegra tree due to dependencies.
+On Fri, Jan 11, 2013 at 05:01:41PM +0100, Peter Ujfalusi wrote:
+> With idle_bias_off these are no longer needed.
 
-Acked-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Applied, thanks.
 
---Pd0ReVV5GZGQvF3a
+--bg08WKrSYDhXBjb5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ8H5mAAoJELSic+t+oim9y7wP+wfkFvYWL5c3wxi5cTL2RY08
-wDbfTIjQz02icWMasqrKpfS3xhEvt/jSKyd6YQ53BqE8PfEYDz2d+UVDYRgy8NpD
-JNcn+VdB/JycFBSh7IrEM0KDpkktn4yXIsA/7VQSUCprv9eI4IeloYKmyOVnJf01
-nGq8BKjAFpBoOCpbAyphpPsT5Kfkz6vJOocHl0RbcVLSmDZ+tuNMX1QwDImSCDQN
-NhaPyGQi4GUMHfT2JolCZev7GnFhiz2YpJAze7CNekgI0de4rsj5+5pPFftVqGHA
-YD7J/qOdmvhzXfqlCsvI85qvConNo06S03jxL0ba7Lv9KrOxuhoyRgJr2EkrPldT
-OrCSqhRcH5bcv3taajVxUgVHLN16xPgZAsBjIY6x5S5KNm4sIUPLmUPSFYcw0Tt5
-H7DJHhdgTMGAtAe0T4XcRY6JeH7Cwup1p7hgqEUzPnjevEZkpCL7qKWr6av+/kA2
-q8WuJTe7GsDwJTDPn3Ngg508j0nRSqpkkcdp1+uFaiVy+Ma7EmtxbkrfjUKfgbip
-79KTs6O6RpCHgOYlbNk2BGnSHsPOGjMCbzNXUjkjf2/Ccn/ZZi6t4zBkaEgD+twu
-vI3wjBLurdVB2bF642GvRwa5/YKnpHI08d7qOloLBjnhE1WUXWxkto5UgoOcn0Cs
-ngn0pZFvv5INJliNmGTX
-=on54
+iQIcBAEBAgAGBQJQ8KZ2AAoJELSic+t+oim9H4IP/RbU2iftFL1L17MfsnQcX51k
+iRZvIleTvtmMwFhV2Yzk6AgmvYGK9iV+8CiBL3CnZxY6koWfWaOk4tXn2Ce887g/
+6arPmRyV80plbYiUet5+EObAH9ZyIiW23jd/v1Lqv0ToSRn0PdYxht8x5/xTY/6V
+8r9dsvalVXH1Vc/w7+Lwnu2GldOTz11o/h719Aw8Ez80/bshMJMOmQ5AhwqDxO5V
+tOZB7+e8flH06o4Tfznjdm7vnXy8nWM8vR9sXwtDsF4uO9jiDTVKhkg3h+iTN++P
+GI4UBRwaDKsKIZkTKYJOTIBZEf/4LpiRGXM4RONR7qGbc/xlHTC4XwH4c3TFN9XQ
+no4DV9E/msG3Hd1reQtypW5oNzpoiwHtZ2+22QwnEh9iOaHqbwe7Ininlhs79eGu
++Z7btuuyMbstfarR/cUi5l+CcbtIdXI8qajqjc0/Km4jZC0OFI7hLhXD1GdtDAOy
+8NBo0ssc16y+v79S1TuLhGqyNyM/g0mJUxPieb4BrHWWsmPu9yokzeotXbOlAGPt
+VnaqI/a4Yv+7q4Svt3G8lfWaUzq9GF1dIjJR80fB7ny0KM+qrjuNOoRhumoy2jv2
+iGZtl8GMMGDTB+nMUzIVm0+7LCLhRRIx3eZ/rgSxbUjkE+EXxicca40ZArQ80vSu
+0uBM4hS1+NNdKHEFqr+z
+=y/7k
 -----END PGP SIGNATURE-----
 
---Pd0ReVV5GZGQvF3a--
+--bg08WKrSYDhXBjb5--
+
+--===============5266201222082076723==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5266201222082076723==--
