@@ -1,88 +1,68 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 0/2 v2] at91/ssc: fixes on ASoC tree for 3.8
-Date: Fri, 11 Jan 2013 11:53:31 -0800
-Message-ID: <20130111195331.GA2533@quad.lixom.net>
-References: <cover.1357912706.git.nicolas.ferre@atmel.com>
- <CAOesGMhhSkrvP7X=y8qmdMKKXZ694+1+ZXY3y6HK1E85qaN5sQ@mail.gmail.com>
- <20130111193948.GA8677@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH v2 06/10] ASoC: tegra: remove auxdata
+Date: Fri, 11 Jan 2013 13:59:28 -0700
+Message-ID: <50F07D30.9020102@wwwdotorg.org>
+References: <1357891289-23500-1-git-send-email-pgaikwad@nvidia.com> <1357891289-23500-6-git-send-email-pgaikwad@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130111193948.GA8677@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, voice.shen@atmel.com, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1357891289-23500-6-git-send-email-pgaikwad-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Prashant Gaikwad <pgaikwad-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 11, 2013 at 07:39:49PM +0000, Mark Brown wrote:
-> On Fri, Jan 11, 2013 at 10:52:19AM -0800, Olof Johansson wrote:
-> > On Fri, Jan 11, 2013 at 6:08 AM, Nicolas Ferre <nicolas.ferre@atmel.com> wrote:
-> > 
-> > > This material was designed to enter Mark's fixes queue, but as discussed with
-> > > Olof, we can imagine merging everything through arm-soc or split the series (of
-> > > 2 patches) and let them progress upstream separated (option that I do not like
-> > > even if I know that the consequences are not so dramatic).
-> > > So please, Olof, if you feel confortable with this series, tell us what you
-> > > prefer and we will make our best to make this material go forward...
-> 
-> > You're setting yourself up for awkward merges. The driver change is
-> > strongly dependent on the device tree change by failing probe unless
-> > the device tree update is there, while before this patch, it still
-> > worked.
-> 
-> This is partly my fault for getting grumpy about adding the bolier plate
-> code without error checking - overall Linus' change to do the get in the
-> core seems like the most sane approach here.
-> 
-> > But to be honest, I don't think this is a fix, it's a feature that you
-> > just didn't include in time for the merge window. I don't really see
-> > them as appropriate 3.8 material at this point.
-> 
-> Jean-Christophe has been most insistent that pinctrl support is now
-> manadatory for all AT91 systems using device tree. 
+On 01/11/2013 01:01 AM, Prashant Gaikwad wrote:
+> Configlink clock information is added to device tree. Get the clocks
+> using device node. Remove AUXDATA.
 
-That's a noble goal but enforcing it early gives everyone a lot of pain, and
-quite honestly doesn't make sense. During transition it's better to be lenient
-and allow both old and new methods (without breakage), unless it causes
-significant extra churn.
-
-> Unfortunately
-> pinctrl support for AT91 only came in during the merge window and it
-> seems like it's sadly been impossible to do what seemd like the obvious
-> thing and add the pinctrl bindings to the DT prior to the merge down so
-> now we've got this mess.  I believe the way the pinctrl conversion was
-> done renders the audio driver non-functional without this series.
-
-The problem is that at91 tries to do too much in a single release, and then do
-nothing in several releases after. If there was a steadier trickle of code
-coming in, then these kind of complex dependencies wouldn't show up all at
-once, and could be handled with much less overhead for everyone else involved.
-:(
+Cc'ing in the ASoC maintainers as an FYI and for Acks; this patch needs
+to go through the Tegra tree due to dependencies.
 
 > 
-> > So, nack on this series. Please make the driver change non-dependent
-> > on the new dtsi contents, and merge that through the ASoC tree. Then
-> > the dtsi update can go through arm-soc, and later on you can make it
-> > mandatory.
+> Signed-off-by: Prashant Gaikwad <pgaikwad-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> ---
+>  sound/soc/tegra/tegra30_ahub.c |   14 ++------------
+>  1 files changed, 2 insertions(+), 12 deletions(-)
 > 
-> Like I say I'm not thrilled about ignoring the return code TBH, nor am I
-> thrilled with the way this has been handled overall.  That said, the
-> current series does seem like the best of a bad job - as I understand it
-> we need something like this in v3.8 to make the driver functional.
-
-To be honest, if Atmel can't figure out how to merge a complete feature
-without causing intentional regressions during the merge window, and plan
-on brokenness to be fixed as late as in -rc4, then they deserve to have
-a broken platform. Unfortunately the victim of that is end users, and we
-don't want to leave them hanging. This really can't become a trend though.
-
-Sigh. Feel free to add:
-
-Reluctantly-acked-by: Olof Johansson <olof@lixom.net>
-
-to the patches when you apply them (based on IRC discussion, might as
-well take both through ASoC).
-
-
--Olof
+> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+> index bb31c41..2355630 100644
+> --- a/sound/soc/tegra/tegra30_ahub.c
+> +++ b/sound/soc/tegra/tegra30_ahub.c
+> @@ -299,15 +299,6 @@ static const char * const configlink_clocks[] = {
+>  	"spdif_in",
+>  };
+>  
+> -struct of_dev_auxdata ahub_auxdata[] = {
+> -	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080300, "tegra30-i2s.0", NULL),
+> -	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080400, "tegra30-i2s.1", NULL),
+> -	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080500, "tegra30-i2s.2", NULL),
+> -	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080600, "tegra30-i2s.3", NULL),
+> -	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080700, "tegra30-i2s.4", NULL),
+> -	{}
+> -};
+> -
+>  #define LAST_REG(name) \
+>  	(TEGRA30_AHUB_##name + \
+>  	 (TEGRA30_AHUB_##name##_STRIDE * TEGRA30_AHUB_##name##_COUNT) - 4)
+> @@ -451,7 +442,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+>  	 * Ensure that here.
+>  	 */
+>  	for (i = 0; i < ARRAY_SIZE(configlink_clocks); i++) {
+> -		clk = clk_get_sys(NULL, configlink_clocks[i]);
+> +		clk = clk_get(&pdev->dev, configlink_clocks[i]);
+>  		if (IS_ERR(clk)) {
+>  			dev_err(&pdev->dev, "Can't get clock %s\n",
+>  				configlink_clocks[i]);
+> @@ -569,8 +560,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+>  			goto err_pm_disable;
+>  	}
+>  
+> -	of_platform_populate(pdev->dev.of_node, NULL, ahub_auxdata,
+> -			     &pdev->dev);
+> +	of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
+>  
+>  	return 0;
+>  
+> 
