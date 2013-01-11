@@ -1,84 +1,87 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
- transitions during resume
-Date: Fri, 11 Jan 2013 11:52:07 +0000
-Message-ID: <20130111115207.GW20956@opensource.wolfsonmicro.com>
-References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
- <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 2/8] ASoC: Add support for virtual
+	switch controls
+Date: Fri, 11 Jan 2013 12:19:12 +0000
+Message-ID: <20130111121912.GY20956@opensource.wolfsonmicro.com>
+References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
+	<1357833977-3682-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4793644360975315430=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10A52262607
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 12:52:09 +0100 (CET)
-In-Reply-To: <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0291323875638160421=="
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1357833977-3682-2-git-send-email-lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4793644360975315430==
+--===============0291323875638160421==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lGQpFNrcSq0Rb43w"
+	protocol="application/pgp-signature"; boundary="rd/3IrB17klb+Ksj"
 Content-Disposition: inline
 
 
---lGQpFNrcSq0Rb43w
+--rd/3IrB17klb+Ksj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 11, 2013 at 11:32:32AM +0100, Peter Ujfalusi wrote:
+On Thu, Jan 10, 2013 at 05:06:11PM +0100, Lars-Peter Clausen wrote:
 
-> -	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> -	twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> +	if (codec->dapm.bias_level != codec->dapm.suspend_bias_level) {
-> +		twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +		twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> +	}
+> More specific this will be used by the ADAU1361 driver where the hardware has
+> a mute control for each of the DAC output paths, but we have to make sure that
+> the path is muted whenever the DAC is disabled. So the mute switches needs
+> to be controlled by DAPM so it can disable them before disabling the DAC. On the
+> other hand we still want to be to mute individual paths. This will be
+> accomplished by using virtual switch controls.
 
-The device should always be in either _STANDBY or _OFF (depending on if
-it supports idle_bias_off) before it tries to suspend so
-suspend_bias_level ought to be redundant.  We should really get round to
-killing it...
+This doesn't sound like it does quite what you want - it means you don't
+actually end up with a mute control, only a power control (which is also
+going to affect everything else in the path).  I'd expect to see
+something like this implemented by having a control that has a specified
+value forced in the register while the control is enabled (kind of the
+opposite of a supply).  This is a fairly common need for older parts
+though it's unusual to see it on a new device.
 
---lGQpFNrcSq0Rb43w
+--rd/3IrB17klb+Ksj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ7/zgAAoJELSic+t+oim9cs0P/3VXosNJitiuqYIv7D/TpYpM
-rilhx5iG0gJ6+n57B85i7cC/Tq/O3RY23GbyRVyg/BSBfXQbWhmoUveIhm3L70Ss
-zH/qxlklvUKJ5mjKPK5h23VjY0FYcn2I3iik3tyma5v0zwzadpDmazLJysX5PIDN
-06qfKQ0mw1zOC/IuMcGq/1uJlBo1o/h6giB/aAF2vjZFPnfmVL7XIdUj55XZO4ez
-7bDN0rTs90qlNyeQTlViScilhoktLQrch7tm9CdQChk/GK4QxPF1mo4VLcro+UQ6
-tg6RnsZ2q1xyqL9p8TchA0EZ1rrbsoN7deKf98ek7QC6j9fB/aC4/aluv86a7LfQ
-PrtlvdxUTDX33hdsf1TOfIk1xBQqjCNVkucJq3UaMypqpoaNsJxjq59XkecHYH4f
-Baq3R9A9GJLI3Rj75/GzV9oLOHCO9DJaKDq442ubR8GrAZrJtE7qFpIl2L3kJMxr
-T4eI9C1kl6GB9t/2GRWXAGwRgbmahmk1sjAnqArVplKCuRAQRMF+GV6sabRe8PbA
-/FGYY+voMcGZcGqNix7HAp7AnTkne+OORQzG00+nt01d3/62wTwHkMF5TPW3HfGD
-OIbIyrIlYfnDlSh95KnOCRo8knEg6eoCHMOI1SoK8qEYqLJt5Yoz1rEYVQgdNnbG
-6KeuPJeILUjtmu7kIRsR
-=2otB
+iQIcBAEBAgAGBQJQ8AM5AAoJELSic+t+oim9cQwQAJPdlukbDycY4jsBz0aH0fvr
+NogEvvtvZvJPE6XbFhiw/JqRBxp2Rj3WiuiSOz29en2kRXtxgdRcwCeNo6GCW51W
+hm30MA50CeK/1Ijfy9pWYBI4zSb7PrfqBa6l+uG1Dbgk+xETx5maSXp1q4Y45110
+2WMo5A81y3+/YTFSvDmYMhthECw6izg1ZJyqqJ9O7HVisZLsg/1C3ZgQ8iKo1qO3
+tyyZ9C+xyb4ZtoWRaCqoIsMGlhCmYe2JmutxkAgw7ajGUtcYiiwsNWx9o23hoAY2
+5cF0GID6FMdJ/eOnK0kDHVZoyFD19aPUoyU97HjVEcpnesNTWSboVcRAAIUVpt7o
+rE/0zAtpQCNR0xKzRlWEygR9EfmXMAXm3/x9L7Fp5WADFNLMYCxRSCSPNKHhGJwi
+w1wfETHU1mcyYOaydF+6p4Ix8YtFtzkE+rBFg07zJUQBanJAOH/Bd4gLeYfosRiM
+cZn/mBfTiiPrzWWqvY6cmCT7+yRoGb4zsbMvijEfDdvm8eGcOA6KusMp1f3G6ng9
+OJRgNfpGNl+tyLMh0Ku7BwBwCvIls1LvAq+6IV8dZH/2bKOwgehOJhjRD6ZmdpXp
+B7hxC4UcB6STT0yh4zZ6+/qyIsl5Xdm5w/vk6VX7Z13iIzYfh6nIXu6OkGiCqwWq
+YDIVimQpYKJvXDRsUcF3
+=LEG8
 -----END PGP SIGNATURE-----
 
---lGQpFNrcSq0Rb43w--
+--rd/3IrB17klb+Ksj--
 
---===============4793644360975315430==
+--===============0291323875638160421==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-
---===============4793644360975315430==--
+_______________________________________________
+Uclinux-dist-devel mailing list
+Uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel
+--===============0291323875638160421==--
