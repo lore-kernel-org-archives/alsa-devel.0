@@ -1,22 +1,24 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
- transitions during resume
-Date: Fri, 11 Jan 2013 15:44:07 +0100
-Message-ID: <50F02537.1000305@ti.com>
-References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
- <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
- <20130111115207.GW20956@opensource.wolfsonmicro.com> <50F01644.30703@ti.com>
- <20130111134601.GA20956@opensource.wolfsonmicro.com>
- <50F019E9.3030805@ti.com>
- <20130111142403.GC20956@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/8] ASoC: Add support for virtual switch
+	controls
+Date: Fri, 11 Jan 2013 16:05:53 +0100
+Message-ID: <50F02A51.3010108@metafoo.de>
+References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
+ <1357833977-3682-2-git-send-email-lars@metafoo.de>
+ <20130111121912.GY20956@opensource.wolfsonmicro.com>
+ <50F007DF.9000606@metafoo.de>
+ <20130111124535.GZ20956@opensource.wolfsonmicro.com>
+ <50F00BF1.6090702@metafoo.de>
+ <20130111135754.GB20956@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FD27264F0C
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 15:44:11 +0100 (CET)
-In-Reply-To: <20130111142403.GC20956@opensource.wolfsonmicro.com>
+Received: from smtp-out-055.synserver.de (smtp-out-055.synserver.de
+ [212.40.185.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ECE1264ED1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 16:05:12 +0100 (CET)
+In-Reply-To: <20130111135754.GB20956@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,25 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/11/2013 03:24 PM, Mark Brown wrote:
-> On Fri, Jan 11, 2013 at 02:55:53PM +0100, Peter Ujfalusi wrote:
-> =
+On 01/11/2013 02:57 PM, Mark Brown wrote:
+> On Fri, Jan 11, 2013 at 01:56:17PM +0100, Lars-Peter Clausen wrote:
+>> On 01/11/2013 01:45 PM, Mark Brown wrote:
+> 
+>>> Virtual enums do actually end up routing, that's not what a mute control
+>>> usually does.  You can do the above in the manner I suggested, just have
+>>> the register forced to a particular value when the DAC is disabled.
+> 
+>> Well, that's what the code does. The alternative is to implement more or
+> 
+> No, it's not (at least not according to the changelog).  It implements a
+> totally separate virtual control.
 
->> But I wait if you have other comments for the rest for the series.
-> =
+What do you mean by 'separate'? Maybe this is was causes the confusion. Do
+you mean a separate DAPM control, like DAPM_SWITCH? That's not what the
+patch does it creates a virtual kcontrol, which can be used to control a
+mixers input. It's the pendant to SOC_DAPM_ENUM_VIRT not to
+SND_SOC_DAPM_VIRT_MUX. I realize that the commit message may have been a bit
+ambiguous in that regard.
 
-> The rest of it was fine, I was going to apply them next time I go
-> through and applied things.
-
-If it's OK I'll resend the series and replace this patch with a different o=
-ne
-to remove just the second
-twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
-call from resume.
-
--- =
-
-P=E9ter
+- Lars
