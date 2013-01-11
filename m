@@ -1,66 +1,62 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH 2/8] ASoC: Add support for virtual
-	switch controls
-Date: Fri, 11 Jan 2013 13:56:17 +0100
-Message-ID: <50F00BF1.6090702@metafoo.de>
-References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
-	<1357833977-3682-2-git-send-email-lars@metafoo.de>
-	<20130111121912.GY20956@opensource.wolfsonmicro.com>
-	<50F007DF.9000606@metafoo.de>
-	<20130111124535.GZ20956@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
+ transitions during resume
+Date: Fri, 11 Jan 2013 14:40:20 +0100
+Message-ID: <50F01644.30703@ti.com>
+References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
+ <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
+ <20130111115207.GW20956@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-In-Reply-To: <20130111124535.GZ20956-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
-List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
-	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1661C264EBE
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 14:40:23 +0100 (CET)
+In-Reply-To: <20130111115207.GW20956@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/11/2013 01:45 PM, Mark Brown wrote:
-> On Fri, Jan 11, 2013 at 01:38:55PM +0100, Lars-Peter Clausen wrote:
->> On 01/11/2013 01:19 PM, Mark Brown wrote:
-> 
->>> going to affect everything else in the path).  I'd expect to see
->>> something like this implemented by having a control that has a specified
->>> value forced in the register while the control is enabled (kind of the
->>> opposite of a supply).  This is a fairly common need for older parts
->>> though it's unusual to see it on a new device.
-> 
->> I think I want the opposite of what you just described. I want to be able to
->> overwrite the control setting based on the power state.
-> 
-> Right, just a thinko though - you see the point though.
-> 
->> In ASoC I modeled this by letting DAPM take care of mute controls. E.g. the
->> mute control gets disabled if there is an active path from the DAC through
->> the mixer to one of the outputs and gets disabled otherwise. This makes sure
->> that when the DAC is powered down (when there is no active path from the DAC
->> to any of the outputs) each mute control is also enabled. The virtual
->> switches now allow disable a path from the DAC to the mixer, which in turn
->> will cause DAPM to enable the mute control. This is similar to how the
->> virtual enums already work.
-> 
-> Virtual enums do actually end up routing, that's not what a mute control
-> usually does.  You can do the above in the manner I suggested, just have
-> the register forced to a particular value when the DAC is disabled.
+On 01/11/2013 12:52 PM, Mark Brown wrote:
+> On Fri, Jan 11, 2013 at 11:32:32AM +0100, Peter Ujfalusi wrote:
+> =
 
-Well, that's what the code does. The alternative is to implement more or
-less in the driver. Have custom put/get callbacks for the controls, which
-write to a shadow register, only if the DAC is enabled the shadow value gets
-written to the real register. And listen to the DAC powerdown/powerup
-events, when it is powered down enable all hw mutes, when it is enabled
-restore the shadow register value. The virtual control more or less
-implements it in a generic manner so it does not have to be implemented by
-each driver which needs this on its own.
+>> -	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>> -	twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
+>> +	if (codec->dapm.bias_level !=3D codec->dapm.suspend_bias_level) {
+>> +		twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>> +		twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
+>> +	}
+> =
 
-- Lars
+> The device should always be in either _STANDBY or _OFF (depending on if
+> it supports idle_bias_off) before it tries to suspend so
+> suspend_bias_level ought to be redundant.  We should really get round to
+> killing it...
+
+Yes, that's true. At the moment I can just send the codec to _STANDBY in
+resume since I don't have idle_bias_off support ready (due to external
+dependencies, but I'm working on it). But when we have idle_bias_off support
+we want to avoid sending the codec to _STANDBY here just that ASoC core will
+put us back to _OFF later on. On/Off is a bit expensive on twl6040.
+Since the core saves the previous bias_level in before suspend I can just do
+this here:
+
+	twl6040_set_bias_level(codec, codec->dapm.suspend_bias_level);
+
+If we were in _OFF before it is going to do nothing, but if we were in
+_STANDBY it brings the codec back.
+
+-- =
+
+P=E9ter
