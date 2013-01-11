@@ -1,55 +1,81 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH 2/2 v2] ASoC: atmel-ssc: add pinctrl selection to driver
-Date: Fri, 11 Jan 2013 15:08:31 +0100
-Message-ID: <d1060534f9dafe4baa9bec2506815ae63455ebd6.1357912706.git.nicolas.ferre@atmel.com>
-References: <cover.1357912706.git.nicolas.ferre@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/5] ASoC: twl6040: Prevent extra power
+ transitions during resume
+Date: Fri, 11 Jan 2013 14:24:03 +0000
+Message-ID: <20130111142403.GC20956@opensource.wolfsonmicro.com>
+References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
+ <1357900355-5055-3-git-send-email-peter.ujfalusi@ti.com>
+ <20130111115207.GW20956@opensource.wolfsonmicro.com>
+ <50F01644.30703@ti.com>
+ <20130111134601.GA20956@opensource.wolfsonmicro.com>
+ <50F019E9.3030805@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <cover.1357912706.git.nicolas.ferre@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Olof Johansson <olof@lixom.net>, broonie@opensource.wolfsonmicro.com, voice.shen@atmel.com
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+Content-Type: multipart/mixed; boundary="===============1927989024713488887=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14557264ED1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 15:24:05 +0100 (CET)
+In-Reply-To: <50F019E9.3030805@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Bo Shen <voice.shen@atmel.com>
 
-Add default pinctrl selection to atmel-ssc driver. The pinctrl
-is mandatory.
+--===============1927989024713488887==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jcjv6D8puUawUjle"
+Content-Disposition: inline
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
-[nicolas.ferre@atmel.com: split dtsi and driver changes]
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/misc/atmel-ssc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index 158da5a..3c09cbb 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- 
- #include <linux/of.h>
-+#include <linux/pinctrl/consumer.h>
- 
- /* Serialize access to ssc_list and user count */
- static DEFINE_SPINLOCK(user_lock);
-@@ -131,6 +132,13 @@ static int ssc_probe(struct platform_device *pdev)
- 	struct resource *regs;
- 	struct ssc_device *ssc;
- 	const struct atmel_ssc_platform_data *plat_dat;
-+	struct pinctrl *pinctrl;
-+
-+	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-+	if (IS_ERR(pinctrl)) {
-+		dev_err(&pdev->dev, "Failed to request pinctrl\n");
-+		return PTR_ERR(pinctrl);
-+	}
- 
- 	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
- 	if (!ssc) {
--- 
-1.8.0
+--jcjv6D8puUawUjle
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Jan 11, 2013 at 02:55:53PM +0100, Peter Ujfalusi wrote:
+
+> But I wait if you have other comments for the rest for the series.
+
+The rest of it was fine, I was going to apply them next time I go
+through and applied things.
+
+--jcjv6D8puUawUjle
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJQ8CAHAAoJELSic+t+oim9I+YP/imcChIabUvUh7QHcxHS8IFX
+AupbH6uPiz7i9f/RTi843eVf9A4xV0xW7u2X8d2svAs35S6KviP1f+xLs+Lm6dTE
+3kk07a/TWupNyv0HasYImAZ1z//1O90pDz6SBJMGqiKYgLIriDNk4n+0Su4wpZrU
+EaqgfuNmaIlUde3eIlMPDr8KNU+AofiF/Tb9YMb9xgZDPZqMjLhyMWW4vwf92gHR
+mGquc8R8yI4kmmSYTOiDiX4uLKCnfP6SMHG9xgh1l1nbw8mVTGCSDrZi0SaIy4x7
+BpKhb9wVW+kESr4Jz7yjHVLUNUOCIC2q3Bz/N65tlSa3PZ97XrUuKrrIPfLkYucq
+ybpjsqrEjz91N1OPMpoX36LZcffCSJfQrlJP6X5TCqcZ5CMRWU73Rj4qk8NE35Nf
+W46MNMT8/d7XVW6ou9aJoQd17+QPQYS8voEZm5TgHU/qBoP1amE10V40+UUcfTZs
+PwQFllXFWS9VlhvR8BRjt7pxlXNo9OfdrnxsuaUCC7njmoi6FAwaDR7mVQchnOlw
+mhoniH7R182vGhWlrQNSt7Gj/GqJV3ELHWQnBKdaOwndpIZ1s+SY9rBzgDkYopJ6
+nA4SlcgktQ5BnqEyxhzLzWVibmeZRMtv6vOPQZz7i3X/62pScDId2FnLVwWeXfqF
+0Zy/Q6AZMnuPfR9MDn3n
+=+l25
+-----END PGP SIGNATURE-----
+
+--jcjv6D8puUawUjle--
+
+--===============1927989024713488887==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1927989024713488887==--
