@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 3/5] ASoC: twl6040: Convert to use devm_* when
-	possible
-Date: Fri, 11 Jan 2013 11:32:33 +0100
-Message-ID: <1357900355-5055-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 5/5] ASoC: twl6040: Remove leftover code from
+	hs/hf ramp implementation
+Date: Fri, 11 Jan 2013 11:32:35 +0100
+Message-ID: <1357900355-5055-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 7536C2625F4
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 11:32:42 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BB2C2625FC
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2013 11:32:44 +0100 (CET)
 In-Reply-To: <1357900355-5055-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,85 +25,59 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In this way we can clean up the probe and remove paths
+The code to do the ramp has been removed a long time ago. Remove the
+remaining code as well since this is not needed.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ sound/soc/codecs/twl6040.c | 21 ---------------------
+ 1 file changed, 21 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index b40830c..29fa457 100644
+index 6c2aa93..6ad2909 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -1134,9 +1134,10 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+@@ -69,10 +69,6 @@ struct twl6040_data {
+ 	int hs_power_mode_locked;
+ 	unsigned int clk_in;
+ 	unsigned int sysclk;
+-	u16 hs_left_step;
+-	u16 hs_right_step;
+-	u16 hf_left_step;
+-	u16 hf_right_step;
+ 	struct twl6040_jack_data hs_jack;
+ 	struct snd_soc_codec *codec;
+ 	struct mutex mutex;
+@@ -1127,7 +1123,6 @@ static int twl6040_resume(struct snd_soc_codec *codec)
+ static int twl6040_probe(struct snd_soc_codec *codec)
+ {
+ 	struct twl6040_data *priv;
+-	struct twl6040_codec_data *pdata = dev_get_platdata(codec->dev);
+ 	struct platform_device *pdev = container_of(codec->dev,
  						   struct platform_device, dev);
  	int ret = 0;
- 
--	priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
-+	priv = devm_kzalloc(codec->dev, sizeof(*priv), GFP_KERNEL);
- 	if (priv == NULL)
- 		return -ENOMEM;
-+
- 	snd_soc_codec_set_drvdata(codec, priv);
- 
+@@ -1141,22 +1136,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
  	priv->codec = codec;
-@@ -1161,25 +1162,23 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	codec->control_data = dev_get_drvdata(codec->dev->parent);
+ 
+-	if (pdata && pdata->hs_left_step && pdata->hs_right_step) {
+-		priv->hs_left_step = pdata->hs_left_step;
+-		priv->hs_right_step = pdata->hs_right_step;
+-	} else {
+-		priv->hs_left_step = 1;
+-		priv->hs_right_step = 1;
+-	}
+-
+-	if (pdata && pdata->hf_left_step && pdata->hf_right_step) {
+-		priv->hf_left_step = pdata->hf_left_step;
+-		priv->hf_right_step = pdata->hf_right_step;
+-	} else {
+-		priv->hf_left_step = 1;
+-		priv->hf_right_step = 1;
+-	}
+-
  	priv->plug_irq = platform_get_irq(pdev, 0);
  	if (priv->plug_irq < 0) {
  		dev_err(codec->dev, "invalid irq\n");
--		ret = -EINVAL;
--		goto work_err;
-+		return -EINVAL;
- 	}
- 
- 	priv->workqueue = alloc_workqueue("twl6040-codec", 0, 0);
--	if (!priv->workqueue) {
--		ret = -ENOMEM;
--		goto work_err;
--	}
-+	if (!priv->workqueue)
-+		return -ENOMEM;
- 
- 	INIT_DELAYED_WORK(&priv->hs_jack.work, twl6040_accessory_work);
- 
- 	mutex_init(&priv->mutex);
- 
--	ret = request_threaded_irq(priv->plug_irq, NULL, twl6040_audio_handler,
--				   IRQF_NO_SUSPEND, "twl6040_irq_plug", codec);
-+	ret = devm_request_threaded_irq(codec->dev, priv->plug_irq, NULL,
-+					twl6040_audio_handler, IRQF_NO_SUSPEND,
-+					"twl6040_irq_plug", codec);
- 	if (ret) {
- 		dev_err(codec->dev, "PLUG IRQ request failed: %d\n", ret);
--		goto plugirq_err;
-+		goto err;
- 	}
- 
- 	twl6040_init_chip(codec);
-@@ -1189,12 +1188,8 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 	if (!ret)
- 		return 0;
- 
--	/* Error path */
--	free_irq(priv->plug_irq, codec);
--plugirq_err:
-+err:
- 	destroy_workqueue(priv->workqueue);
--work_err:
--	kfree(priv);
- 	return ret;
- }
- 
-@@ -1203,9 +1198,7 @@ static int twl6040_remove(struct snd_soc_codec *codec)
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
- 
- 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	free_irq(priv->plug_irq, codec);
- 	destroy_workqueue(priv->workqueue);
--	kfree(priv);
- 
- 	return 0;
- }
 -- 
 1.8.1
