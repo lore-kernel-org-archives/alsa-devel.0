@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: fix multiple definition of
-	init_module
-Date: Sat, 12 Jan 2013 00:05:28 +0000
-Message-ID: <20130112000528.GE7873@opensource.wolfsonmicro.com>
-References: <1357832636-11463-1-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [patch] ASoC: pcm: delete some dead code
+Date: Sat, 12 Jan 2013 00:06:27 +0000
+Message-ID: <20130112000627.GF7873@opensource.wolfsonmicro.com>
+References: <20130110085957.GC23063@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6872189700348760461=="
+Content-Type: multipart/mixed; boundary="===============4163802962875998667=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A064926508C
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 01:05:29 +0100 (CET)
-In-Reply-To: <1357832636-11463-1-git-send-email-shawn.guo@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB99F265062
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 01:06:32 +0100 (CET)
+In-Reply-To: <20130110085957.GC23063@elgon.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6872189700348760461==
+--===============4163802962875998667==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
+	protocol="application/pgp-signature"; boundary="bGR76rFJjkSxVeRa"
 Content-Disposition: inline
 
 
---3O1VwFp74L81IIeR
+--bGR76rFJjkSxVeRa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 10, 2013 at 11:43:56PM +0800, Shawn Guo wrote:
-> With commit f2818d0 (ASoC: fsl: fix miscompilation of snd-soc-imx-pcm),
-> we will see the following build error when building modules with
-> CONFIG_SND_IMX_SOC=m in imx_v6_v7_defconfig.
+On Thu, Jan 10, 2013 at 11:59:57AM +0300, Dan Carpenter wrote:
+> I've removed several unreachable returns.
 
 Applied, thanks.
 
---3O1VwFp74L81IIeR
+--bGR76rFJjkSxVeRa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ8KjBAAoJELSic+t+oim9hFoP/32+02hcT+yciWHq2I70Zbdt
-0dwYCB25pMyIRDmj3KzjON09zdZ3XOJWFeYQUjAtiJWN+oJ2v7qLlRnnSkyVq4sP
-U0SLpegdrOUlKBBIkCuMwdANbjuRI4iwRBYzvN2ykVnbdklLGhq/yUtmpEitJBNa
-lWhrCYZgCwJJR6afU/NybGGOMwS1kJHfow+jSNy9Fj0/hjaW54z+Ue85RmnXibDN
-X4cOM8IecDLkuA8PEHidLRa9yAH4HSR5O3DMWwmx1YG4Wu9hTyiMhdXe1sCdhtEi
-g8JeZXN0ggsJMMaxmKH+O1mTO2FUA53BfcYmZFx7Vj+yaAWRNV6A/b0FgsYcgEVv
-DDHlTE+YtZt7VBT0U1GBHfOGLnFnDOKdHB3mHLnV6TqRXMHDCl4y6R/XVkp7Wu4W
-jj+Dg7l+j1mB49uQvGyaef8BG6LV41BNLCuNE3zpEaDjpaylC4EAJ9/IJmy4SPZS
-QXYzCVTSrJcrh0D4TSPldL993H1hpsHlyxSbHqZqhLQ7CNPnaKVbMBLMPsE9DNnh
-i4KOIsB8hB701XGjM4l73CnAgRZDBB3lo1IioGLb578b3eQqRdPLwUtovUjj2l0q
-9Nx3Na1GzK2NHkFoJQ7guuAnRfi5ST9uVnAvkj0ZBczuMBiFL+RrBe1QUwGqRCsq
-Wn+OviiPqUbh4e6GghQG
-=AoTr
+iQIcBAEBAgAGBQJQ8KjyAAoJELSic+t+oim9rqcP/3Iso7sBRHKSE1HdpRKyHnqP
+ZpTdrvujFyKF99S4hWXaHip1xHpCLzEqfc3kOdG5tmngdQoBddoRasdiDBbZpgf4
+fatUhYo7ZNsNCjImtaYpw1uoA1JgnUnYB8oOtZoy7bSHKHPHvigx+qyUd2iLMFnt
+H2ZhFXjLJySxLDHPVmvlcfIWJxuI5c0G/2AMXfzqhVFOLPken3PwR9IMMIIF4Ohi
+o88gTx57VZtWzSIL5y0ipY/FoqxvJpv2xoyDeWxsH3CI1kieQ2ER4HL50mCNxuo+
+2PpvKoAVnwLVUM8MXUPw5Z/vUcrSI32r+UUFuKcgPw/z1Fw9QfXjgE+NVSW+PkGp
+OiyRpcaiQBNvNLAvqI6px4idx6tr6B3uX6QDIeJoN6gaCNvJB8PYEzCK4mqjiXNQ
+qcFu0WcG3fiyulKsSYqgze7WcEWUkzBQ5f4hE4nypAOP3ZbfLzuWo5oX1nOQPotJ
+JE8VbF15vdw5jtUHcCcZq93Oufi8v6pehYzXKmmRUB0dmmvyaE9aV4/6U8C2lfzt
+f1WKee+8vrQzj8KS5UvTO8YOs8a2DaxnALnX+almOiuPoyMtDkjOVkeSzDkyMwBj
+01yqpMs9kA18zUKg0le5NJM3QBc85k4xYq02nkKDnx9A+KLjF8PFNYmaJc7jSU9n
+FWSSj2G6pu997y81V8iv
+=k7a/
 -----END PGP SIGNATURE-----
 
---3O1VwFp74L81IIeR--
+--bGR76rFJjkSxVeRa--
 
---===============6872189700348760461==
+--===============4163802962875998667==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6872189700348760461==--
+--===============4163802962875998667==--
