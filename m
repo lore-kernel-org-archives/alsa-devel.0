@@ -1,55 +1,76 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2 v2] at91/ssc: fixes on ASoC tree for 3.8
-Date: Sat, 12 Jan 2013 00:04:47 +0000
-Message-ID: <20130112000447.GD7873@opensource.wolfsonmicro.com>
-References: <cover.1357912706.git.nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] ASoC: fsl: fix multiple definition of
+	init_module
+Date: Sat, 12 Jan 2013 00:05:28 +0000
+Message-ID: <20130112000528.GE7873@opensource.wolfsonmicro.com>
+References: <1357832636-11463-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1357912706.git.nicolas.ferre@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Olof Johansson <olof@lixom.net>, voice.shen@atmel.com, Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6872189700348760461=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A064926508C
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 01:05:29 +0100 (CET)
+In-Reply-To: <1357832636-11463-1-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---oj4kGyHlBMXGt3Le
+--===============6872189700348760461==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
+Content-Disposition: inline
+
+
+--3O1VwFp74L81IIeR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 11, 2013 at 03:08:29PM +0100, Nicolas Ferre wrote:
-> Hi Mark, Olof, Arnd,
->=20
-> This series goes on top of Linus' v3.8-rc3 and fixes an error that
-> we have while compiling DTBs for AT91:
-> ERROR (phandle_references): Reference to non-existent node or label
-> "pinctrl_ssc0_tx"
+On Thu, Jan 10, 2013 at 11:43:56PM +0800, Shawn Guo wrote:
+> With commit f2818d0 (ASoC: fsl: fix miscompilation of snd-soc-imx-pcm),
+> we will see the following build error when building modules with
+> CONFIG_SND_IMX_SOC=m in imx_v6_v7_defconfig.
 
-Applied both.
+Applied, thanks.
 
---oj4kGyHlBMXGt3Le
+--3O1VwFp74L81IIeR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ8KiYAAoJELSic+t+oim9F5wP/ji9hCzTqpjUdKy0K08VSPkQ
-3OC3C3O5RGovPzIdIyauHB56LdT1UeOxIi7B9KbG1BZxLsNpSWMhWjnVofOpWmsA
-dYqlRZHgXquOILIyJ88cZkj2wD3OMfuWBVdJAg86yzaWx2c4NoRNlQrYpiPW6DFT
-S31jJu+P8ilzKa+Xq2xr0PEvhptsRlwGjBhoGRqtGXLhAezya8mE2GEzCEwxJR+D
-OKTip20pyFFRHrhcxUXXOBvQz42HvZqgI0RsnymBMfWr7GdssnSUiJsnHsKUa8P6
-3cX3L7t43lOtOyFRjo09rVXXo2c68iu5M08J/fFkEwHeN+j0lW0fKy9iV9Jn97pa
-EFFkCprL5Gqmum9ekuYyEYnB94puNx0Co2aNKH2FxNVcH7cXfw7nyf1YvPxblHRM
-RVIHoIXWgFXcnvuLQqeIhuddY/cWSK/mNf7Y2d1wdMF8FIn5l1kPgHgnN8Abv9GK
-xMMDcaIScKLbXNp8OETDrKPOgRGMzTrI+sh+mLY1iUrv1V1h0GcyBY5Hkr29xj4t
-gqZr+xNN19xgtG3p6PE795t66/0ebeoC9KBF83z0RaXIIizRC4HPk/P2gtn4WPei
-1H1NmrH1CKLvbATy2tObhh+F3iheFLWKImZBUG7JFya/FpQK2AlaYn04gbUS81Bb
-ZiAaLpLKxSYbs3jsUp8E
-=KBEf
+iQIcBAEBAgAGBQJQ8KjBAAoJELSic+t+oim9hFoP/32+02hcT+yciWHq2I70Zbdt
+0dwYCB25pMyIRDmj3KzjON09zdZ3XOJWFeYQUjAtiJWN+oJ2v7qLlRnnSkyVq4sP
+U0SLpegdrOUlKBBIkCuMwdANbjuRI4iwRBYzvN2ykVnbdklLGhq/yUtmpEitJBNa
+lWhrCYZgCwJJR6afU/NybGGOMwS1kJHfow+jSNy9Fj0/hjaW54z+Ue85RmnXibDN
+X4cOM8IecDLkuA8PEHidLRa9yAH4HSR5O3DMWwmx1YG4Wu9hTyiMhdXe1sCdhtEi
+g8JeZXN0ggsJMMaxmKH+O1mTO2FUA53BfcYmZFx7Vj+yaAWRNV6A/b0FgsYcgEVv
+DDHlTE+YtZt7VBT0U1GBHfOGLnFnDOKdHB3mHLnV6TqRXMHDCl4y6R/XVkp7Wu4W
+jj+Dg7l+j1mB49uQvGyaef8BG6LV41BNLCuNE3zpEaDjpaylC4EAJ9/IJmy4SPZS
+QXYzCVTSrJcrh0D4TSPldL993H1hpsHlyxSbHqZqhLQ7CNPnaKVbMBLMPsE9DNnh
+i4KOIsB8hB701XGjM4l73CnAgRZDBB3lo1IioGLb578b3eQqRdPLwUtovUjj2l0q
+9Nx3Na1GzK2NHkFoJQ7guuAnRfi5ST9uVnAvkj0ZBczuMBiFL+RrBe1QUwGqRCsq
+Wn+OviiPqUbh4e6GghQG
+=AoTr
 -----END PGP SIGNATURE-----
 
---oj4kGyHlBMXGt3Le--
+--3O1VwFp74L81IIeR--
+
+--===============6872189700348760461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6872189700348760461==--
