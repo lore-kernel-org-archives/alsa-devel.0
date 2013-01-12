@@ -1,19 +1,19 @@
 From: Fengguang Wu <fengguang.wu@intel.com>
-Subject: sound/pci/hda/hda_generic.c:1529 indep_hp_put() warn:
- inconsistent returns mutex:&spec->pcm_mutex: locked (1526) unlocked (1517,
- 1529)
-Date: Sat, 12 Jan 2013 10:16:50 +0800
-Message-ID: <20130112021650.GC6150@localhost>
-References: <50f05fed.WTL9MFXChbKhBxPs%yuanhan.liu@linux.intel.com>
+Subject: sound/pci/hda/hda_hwdep.c:487 parse_hints() warn:
+ inconsistent returns mutex:&codec->user_mutex: locked (478) unlocked (447,
+ 449, 452, 457, 487)
+Date: Sat, 12 Jan 2013 10:17:57 +0800
+Message-ID: <20130112021757.GD6150@localhost>
+References: <50f065ed.AKRZpjBAgH1NKCEc%yuanhan.liu@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 79A4E26507F
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 03:16:55 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DDEB26507F
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2013 03:18:01 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <50f05fed.WTL9MFXChbKhBxPs%yuanhan.liu@linux.intel.com>
+In-Reply-To: <50f065ed.AKRZpjBAgH1NKCEc%yuanhan.liu@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +27,74 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi Takashi,
-
-FYI, there are new smatch warnings show up in
-
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git master
-head:   02e5aa7b459f69538d4ec88658d064816a7692d6
-commit: a5de6f4d021608c50ff5ff51d208b5030da92957 ALSA: hda - Implement independent HP control
-date:   33 hours ago
-
-sound/pci/hda/hda_generic.c:1529 indep_hp_put() warn: inconsistent returns mutex:&spec->pcm_mutex: locked (1526) unlocked (1517,1529)
-
-vim +1529 sound/pci/hda/hda_generic.c
-
-a5de6f4d Takashi Iwai 2012-12-21  1511  	struct hda_gen_spec *spec = codec->spec;
-a5de6f4d Takashi Iwai 2012-12-21  1512  	unsigned int select = ucontrol->value.enumerated.item[0];
-a5de6f4d Takashi Iwai 2012-12-21  1513  
-a5de6f4d Takashi Iwai 2012-12-21  1514  	mutex_lock(&spec->pcm_mutex);
-a5de6f4d Takashi Iwai 2012-12-21  1515  	if (spec->active_streams) {
-a5de6f4d Takashi Iwai 2012-12-21  1516  		mutex_unlock(&spec->pcm_mutex);
-a5de6f4d Takashi Iwai 2012-12-21 @1517  		return -EBUSY;
-a5de6f4d Takashi Iwai 2012-12-21  1518  	}
-a5de6f4d Takashi Iwai 2012-12-21  1519  
-a5de6f4d Takashi Iwai 2012-12-21  1520  	if (spec->indep_hp_enabled != select) {
-a5de6f4d Takashi Iwai 2012-12-21  1521  		spec->indep_hp_enabled = select;
-a5de6f4d Takashi Iwai 2012-12-21  1522  		if (spec->indep_hp_enabled)
-a5de6f4d Takashi Iwai 2012-12-21  1523  			spec->multiout.hp_out_nid[0] = 0;
-a5de6f4d Takashi Iwai 2012-12-21  1524  		else
-a5de6f4d Takashi Iwai 2012-12-21  1525  			spec->multiout.hp_out_nid[0] = spec->alt_dac_nid;
-a5de6f4d Takashi Iwai 2012-12-21 @1526  		return 1;
-a5de6f4d Takashi Iwai 2012-12-21  1527  	}
-a5de6f4d Takashi Iwai 2012-12-21  1528  	mutex_unlock(&spec->pcm_mutex);
-a5de6f4d Takashi Iwai 2012-12-21 @1529  	return 0;
-a5de6f4d Takashi Iwai 2012-12-21  1530  }
-a5de6f4d Takashi Iwai 2012-12-21  1531  
-a5de6f4d Takashi Iwai 2012-12-21  1532  static const struct snd_kcontrol_new indep_hp_ctl = {
-
----
-0-DAY kernel build testing backend         Open Source Technology Center
-Fengguang Wu, Yuanhan Liu                              Intel Corporation
+CkhpIFRha2FzaGksCgpGWUksIHRoZXJlIGFyZSBuZXcgc21hdGNoIHdhcm5pbmdzIHNob3cgdXAg
+aW4KCnRyZWU6ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
+L3Rpd2FpL3NvdW5kLXVuc3RhYmxlLmdpdCBtYXN0ZXIKaGVhZDogICAwMmU1YWE3YjQ1OWY2OTUz
+OGQ0ZWM4ODY1OGQwNjQ4MTZhNzY5MmQ2CmNvbW1pdDogYmVhMDZhMTQ3OTgxZTg4NDY1ZjU2NmFj
+ZDZjNmU5OGIyOTdmNzcxMiBBTFNBOiBoZGEgLSBQcm90ZWN0IHVzZXItZGVmaW5lZCBhcnJheXMg
+dmlhIG11dGV4CmRhdGU6ICAgMyBob3VycyBhZ28KCnNvdW5kL3BjaS9oZGEvaGRhX2h3ZGVwLmM6
+NDg3IHBhcnNlX2hpbnRzKCkgd2FybjogaW5jb25zaXN0ZW50IHJldHVybnMgbXV0ZXg6JmNvZGVj
+LT51c2VyX211dGV4OiBsb2NrZWQgKDQ3OCkgdW5sb2NrZWQgKDQ0Nyw0NDksNDUyLDQ1Nyw0ODcp
+Cgp2aW0gKzQ4NyBzb3VuZC9wY2kvaGRhL2hkYV9od2RlcC5jCgo0M2I2MjcxMyBUYWthc2hpIEl3
+YWkgICAgICAgMjAwOS0wMy0wMiAgNDQxICAJY2hhciAqa2V5LCAqdmFsOwo0M2I2MjcxMyBUYWth
+c2hpIEl3YWkgICAgICAgMjAwOS0wMy0wMiAgNDQyICAJc3RydWN0IGhkYV9oaW50ICpoaW50Owpi
+ZWEwNmExNCBUYWthc2hpIEl3YWkgICAgICAgMjAxMy0wMS0xMCAgNDQzICAJaW50IGVyciA9IDA7
+CjFlMWJlNDMyIFRha2FzaGkgSXdhaSAgICAgICAyMDA4LTA3LTMwICA0NDQgIAplN2QyODYwYiBB
+bmRyw6kgR29kZGFyZCBSb3NhIDIwMDktMTItMTQgIDQ0NSAgCWJ1ZiA9IHNraXBfc3BhY2VzKGJ1
+Zik7CjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAyMDA5LTAzLTAyICA0NDYgIAlpZiAoISpi
+dWYgfHwgKmJ1ZiA9PSAnIycgfHwgKmJ1ZiA9PSAnXG4nKQo0ZWE2ZmJjOCBUYWthc2hpIEl3YWkg
+ICAgICAgMjAwOS0wNi0xNyBANDQ3ICAJCXJldHVybiAwOwo0M2I2MjcxMyBUYWthc2hpIEl3YWkg
+ICAgICAgMjAwOS0wMy0wMiAgNDQ4ICAJaWYgKCpidWYgPT0gJz0nKQo0M2I2MjcxMyBUYWthc2hp
+IEl3YWkgICAgICAgMjAwOS0wMy0wMiBANDQ5ICAJCXJldHVybiAtRUlOVkFMOwo0M2I2MjcxMyBU
+YWthc2hpIEl3YWkgICAgICAgMjAwOS0wMy0wMiAgNDUwICAJa2V5ID0ga3N0cm5kdXBfbm9lb2wo
+YnVmLCAxMDI0KTsKNDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ1MSAg
+CWlmICgha2V5KQoxZTFiZTQzMiBUYWthc2hpIEl3YWkgICAgICAgMjAwOC0wNy0zMCBANDUyICAJ
+CXJldHVybiAtRU5PTUVNOwo0M2I2MjcxMyBUYWthc2hpIEl3YWkgICAgICAgMjAwOS0wMy0wMiAg
+NDUzICAJLyogZXh0cmFjdCBrZXkgYW5kIHZhbCAqLwo0M2I2MjcxMyBUYWthc2hpIEl3YWkgICAg
+ICAgMjAwOS0wMy0wMiAgNDU0ICAJdmFsID0gc3RyY2hyKGtleSwgJz0nKTsKNDNiNjI3MTMgVGFr
+YXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ1NSAgCWlmICghdmFsKSB7CjQzYjYyNzEzIFRh
+a2FzaGkgSXdhaSAgICAgICAyMDA5LTAzLTAyICA0NTYgIAkJa2ZyZWUoa2V5KTsKNDNiNjI3MTMg
+VGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgQDQ1NyAgCQlyZXR1cm4gLUVJTlZBTDsKNDNi
+NjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ1OCAgCX0KNDNiNjI3MTMgVGFr
+YXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ1OSAgCSp2YWwrKyA9IDA7CmU3ZDI4NjBiIEFu
+ZHLDqSBHb2RkYXJkIFJvc2EgMjAwOS0xMi0xNCAgNDYwICAJdmFsID0gc2tpcF9zcGFjZXModmFs
+KTsKNDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ2MSAgCXJlbW92ZV90
+cmFpbF9zcGFjZXMoa2V5KTsKNDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIg
+IDQ2MiAgCXJlbW92ZV90cmFpbF9zcGFjZXModmFsKTsKYmVhMDZhMTQgVGFrYXNoaSBJd2FpICAg
+ICAgIDIwMTMtMDEtMTAgIDQ2MyAgCW11dGV4X2xvY2soJmNvZGVjLT51c2VyX211dGV4KTsKNDNi
+NjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ2NCAgCWhpbnQgPSBnZXRfaGlu
+dChjb2RlYywga2V5KTsKNDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ2
+NSAgCWlmIChoaW50KSB7CjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAyMDA5LTAzLTAyICA0
+NjYgIAkJLyogcmVwbGFjZSAqLwo0M2I2MjcxMyBUYWthc2hpIEl3YWkgICAgICAgMjAwOS0wMy0w
+MiAgNDY3ICAJCWtmcmVlKGhpbnQtPmtleSk7CjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAy
+MDA5LTAzLTAyICA0NjggIAkJaGludC0+a2V5ID0ga2V5Owo0M2I2MjcxMyBUYWthc2hpIEl3YWkg
+ICAgICAgMjAwOS0wMy0wMiAgNDY5ICAJCWhpbnQtPnZhbCA9IHZhbDsKYmVhMDZhMTQgVGFrYXNo
+aSBJd2FpICAgICAgIDIwMTMtMDEtMTAgIDQ3MCAgCQlnb3RvIHVubG9jazsKNDNiNjI3MTMgVGFr
+YXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ3MSAgCX0KNDNiNjI3MTMgVGFrYXNoaSBJd2Fp
+ICAgICAgIDIwMDktMDMtMDIgIDQ3MiAgCS8qIGFsbG9jYXRlIGEgbmV3IGhpbnQgZW50cnkgKi8K
+NDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ3MyAgCWlmIChjb2RlYy0+
+aGludHMudXNlZCA+PSBNQVhfSElOVFMpCjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAyMDA5
+LTAzLTAyICA0NzQgIAkJaGludCA9IE5VTEw7CjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAy
+MDA5LTAzLTAyICA0NzUgIAllbHNlCjQzYjYyNzEzIFRha2FzaGkgSXdhaSAgICAgICAyMDA5LTAz
+LTAyICA0NzYgIAkJaGludCA9IHNuZF9hcnJheV9uZXcoJmNvZGVjLT5oaW50cyk7CjFlMWJlNDMy
+IFRha2FzaGkgSXdhaSAgICAgICAyMDA4LTA3LTMwICA0NzcgIAlpZiAoIWhpbnQpIHsKMWUxYmU0
+MzIgVGFrYXNoaSBJd2FpICAgICAgIDIwMDgtMDctMzAgQDQ3OCAgCQlyZXR1cm4gLUVOT01FTTsK
+YmVhMDZhMTQgVGFrYXNoaSBJd2FpICAgICAgIDIwMTMtMDEtMTAgIDQ3OSAgCQlnb3RvIHVubG9j
+azsKMWUxYmU0MzIgVGFrYXNoaSBJd2FpICAgICAgIDIwMDgtMDctMzAgIDQ4MCAgCX0KNDNiNjI3
+MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ4MSAgCWhpbnQtPmtleSA9IGtleTsK
+NDNiNjI3MTMgVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDMtMDIgIDQ4MiAgCWhpbnQtPnZhbCA9
+IHZhbDsKYmVhMDZhMTQgVGFrYXNoaSBJd2FpICAgICAgIDIwMTMtMDEtMTAgIDQ4MyAgIHVubG9j
+azoKYmVhMDZhMTQgVGFrYXNoaSBJd2FpICAgICAgIDIwMTMtMDEtMTAgIDQ4NCAgCW11dGV4X3Vu
+bG9jaygmY29kZWMtPnVzZXJfbXV0ZXgpOwpiZWEwNmExNCBUYWthc2hpIEl3YWkgICAgICAgMjAx
+My0wMS0xMCAgNDg1ICAJaWYgKGVycikKYmVhMDZhMTQgVGFrYXNoaSBJd2FpICAgICAgIDIwMTMt
+MDEtMTAgIDQ4NiAgCQlrZnJlZShrZXkpOwpiZWEwNmExNCBUYWthc2hpIEl3YWkgICAgICAgMjAx
+My0wMS0xMCBANDg3ICAJcmV0dXJuIGVycjsKNGVhNmZiYzggVGFrYXNoaSBJd2FpICAgICAgIDIw
+MDktMDYtMTcgIDQ4OCAgfQo0ZWE2ZmJjOCBUYWthc2hpIEl3YWkgICAgICAgMjAwOS0wNi0xNyAg
+NDg5ICAKNGVhNmZiYzggVGFrYXNoaSBJd2FpICAgICAgIDIwMDktMDYtMTcgIDQ5MCAgc3RhdGlj
+IHNzaXplX3QgaGludHNfc3RvcmUoc3RydWN0IGRldmljZSAqZGV2LAoKLS0tCjAtREFZIGtlcm5l
+bCBidWlsZCB0ZXN0aW5nIGJhY2tlbmQgICAgICAgICBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENl
+bnRlcgpGZW5nZ3VhbmcgV3UsIFl1YW5oYW4gTGl1ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgSW50ZWwgQ29ycG9yYXRpb24KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
