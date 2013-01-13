@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: simple-card: add asoc_simple_dai for
-	initializing
-Date: Mon, 14 Jan 2013 06:56:04 +0900
-Message-ID: <20130113215603.GD5041@opensource.wolfsonmicro.com>
-References: <87zk0g4k8s.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 6/8] ASoC: Constify ops and compr_ops
+ fields of snd_soc_dai_link
+Date: Mon, 14 Jan 2013 07:55:28 +0900
+Message-ID: <20130113225527.GG5041@opensource.wolfsonmicro.com>
+References: <1357833977-3682-1-git-send-email-lars@metafoo.de>
+ <1357833977-3682-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1085658480883234723=="
+Content-Type: multipart/mixed; boundary="===============3821248733950852024=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C419226512D
- for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2013 23:02:51 +0100 (CET)
-In-Reply-To: <87zk0g4k8s.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECD73265114
+ for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2013 23:55:33 +0100 (CET)
+In-Reply-To: <1357833977-3682-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1085658480883234723==
+--===============3821248733950852024==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eheScQNz3K90DVRs"
+	protocol="application/pgp-signature"; boundary="xs+9IvWevLaxKUtW"
 Content-Disposition: inline
 
 
---eheScQNz3K90DVRs
+--xs+9IvWevLaxKUtW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 10, 2013 at 04:49:11PM -0800, Kuninori Morimoto wrote:
-> Current simple-card driver calls asoc_simple_card_dai_init()
-> if platform had a asoc_simple_card_dai_init pointer.
+On Thu, Jan 10, 2013 at 05:06:15PM +0100, Lars-Peter Clausen wrote:
+> The core does not modify these fields, so they can be made const. This allows
+> drivers to declare their op tables as const.
 
 Applied, thanks.
 
---eheScQNz3K90DVRs
+--xs+9IvWevLaxKUtW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ8y1oAAoJELSic+t+oim9CuoQAJDS3IS5KW0rd41oy2KJjHUg
-zrsmKh0uuMVuzBFANPq97mK9ht/2CKmIpfG80bQ60P2angyFZVupyT8EXoJHGMjP
-Vpd2cFgDljtJE5NZi/wIXNVW1gZ9hvxlbAKij6pJz22uO5Hsz4dIojXqlGGZN0x5
-4VUAHJaEo4mZjDNgsrFNDVTh/itvDPlABV7ApJSJlU9XUuRCOwlJdW50VF909cTV
-gMthanW7E1AEI44Cwc6QmwxDTgRFSMwbAAST6Ukh73Fp08/XumEBUdKZDUiF5XF1
-cfMbEF6+h1vYR7sUvsS93+Yo9b8WZdmRg5y8RBtoEAY8hurWBI+56IO4zmf+7i/e
-05uVnHYwxMv63a7QnXTHZ23PNS5Nbx8cwHoOY4siG3SBpbfXcQ4JHIqBQkwZx0WX
-CrtDpyxsrHkrhlSX/ouMqc4M3Ipqk3ejw/rx9+n1ejFolSEwwbdbIW0altR7++w8
-K1ir0FyzZZ7kcxaSYxGPEQ0SjElFC43JEfYDQdfL6mPRqSAqouVkJaqJ2/fQzhBh
-uwL+qb/g3oFa0QmJ+wqPgVzUmJumFnkNRlp274WAY4wisu2h0ZVOubUP5wlkt1W7
-1savOAvVNa0tNvEwCIczBheLljCumUZkIRMt3v7elpuFPO3umkyyxo+Fit0lGEnO
-OuA/7MLgQOFdAnUnnya7
-=3R1x
+iQIcBAEBAgAGBQJQ8zkNAAoJELSic+t+oim9mbkP/2DmZ1E4QU/k9iPnag13o5yr
+xjOpYmacBhYtFrzsviV7mTUswQNebsk21ltesFwRL1zbh0nuXYBgeTwzSfwJu+Dy
+TqSrbodezq8zO4JzNvf7ikhxKJQB35K9F4fG5pAfz1wQ/ugWZoeqtEOz5SS+0hHR
+va+n6aiINwwkgOI6yt6f8xDOkRnCg4xDkxKbMjT4diAZIOlOKgp5OPjqtonZruBm
+2FJ0H+CcksZSQhB9jnQNvgD/mnE1E16Zqd4dC/fy9rH8uqGlXmy1SAIQCB8TNcsX
+ngHVnvxuLmpnCoz48pwFLQDuMmzb8bFB1KRuQvJ8EAGXcOmBu6aYJAZWARZk7shN
+QnjGdjatqhwmt+wLZ34AUNOsVCB6qK4zSxQy13m/BjO3NvtE7wacoBHM1ZAM2w/K
+0jz2c1Vh4YnIiUgPKOrPZv3AKMzMXdF8PH+bmstidtQcb3+WwGxv0Z6+TtfQUXfg
+r/5KnM+8rtiBzRU8tcnVRnKQLTSaTbcWYtQTbl0EN3kYuArWcriQxgNwZuWhC2sQ
+I4ySfKL7neN7quu6oL5qV99EzyOfNoPlMFg/gw+bINmTGsXMEvh0bML3iPzu8wDP
+FdKI5k0xGfg9VmcbywDARU2ZVC7Gaavaaml7kxTo+JLLTKM93OQjx9uKnu2TLzkI
+qIQRagnvjIwVJWLU1pLE
+=MDtV
 -----END PGP SIGNATURE-----
 
---eheScQNz3K90DVRs--
+--xs+9IvWevLaxKUtW--
 
---===============1085658480883234723==
+--===============3821248733950852024==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1085658480883234723==--
+--===============3821248733950852024==--
