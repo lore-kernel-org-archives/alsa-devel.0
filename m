@@ -1,59 +1,87 @@
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 0/2 v2] at91/ssc: fixes on ASoC tree for 3.8
-Date: Sat, 12 Jan 2013 14:34:50 +0100
-Message-ID: <20130112133450.GF7360@game.jcrosoft.org>
-References: <cover.1357912706.git.nicolas.ferre@atmel.com>
- <CAOesGMhhSkrvP7X=y8qmdMKKXZ694+1+ZXY3y6HK1E85qaN5sQ@mail.gmail.com>
- <20130111193948.GA8677@opensource.wolfsonmicro.com>
- <20130111195331.GA2533@quad.lixom.net>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Sun, 13 Jan 2013 15:09:36 +1030
+Message-ID: <20130113043936.GA8822@marvin.atrad.com.au>
+References: <s5hhamyr1ne.wl%tiwai@suse.de>
+ <CAN8ccia6SGgukkzYQ_5XA0QkRXiq9E_vvqVmQ+sDBrg9ugqT9g@mail.gmail.com>
+ <20130104032449.GA15708@marvin.atrad.com.au>
+ <CAN8cciYyWfq=hgdRt6abNpSfWDtG3mfbPNvf7TKGrsJ8OpaDhw@mail.gmail.com>
+ <20130104042423.GD15726@marvin.atrad.com.au>
+ <CAN8cciYhydz6e6oz2QU4NeQgWsJU+4BQrhW6CK1tYd_+4E6pBw@mail.gmail.com>
+ <20130105031254.GD11016@marvin.atrad.com.au>
+ <CAN8ccib6xbxAjpNXzxQQGVSo9vuNNPU7NdB7FPFWaNCXLpn+Gw@mail.gmail.com>
+ <20130105071605.GA11323@marvin.atrad.com.au>
+ <s5hvcb7ohly.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 129F42616BF
+ for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2013 05:39:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20130111195331.GA2533@quad.lixom.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Olof Johansson <olof@lixom.net>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, voice.shen@atmel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <s5hvcb7ohly.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11:53 Fri 11 Jan     , Olof Johansson wrote:
-> On Fri, Jan 11, 2013 at 07:39:49PM +0000, Mark Brown wrote:
-> > On Fri, Jan 11, 2013 at 10:52:19AM -0800, Olof Johansson wrote:
-> > > On Fri, Jan 11, 2013 at 6:08 AM, Nicolas Ferre <nicolas.ferre@atmel.com> wrote:
-> > > 
-> > > > This material was designed to enter Mark's fixes queue, but as discussed with
-> > > > Olof, we can imagine merging everything through arm-soc or split the series (of
-> > > > 2 patches) and let them progress upstream separated (option that I do not like
-> > > > even if I know that the consequences are not so dramatic).
-> > > > So please, Olof, if you feel confortable with this series, tell us what you
-> > > > prefer and we will make our best to make this material go forward...
-> > 
-> > > You're setting yourself up for awkward merges. The driver change is
-> > > strongly dependent on the device tree change by failing probe unless
-> > > the device tree update is there, while before this patch, it still
-> > > worked.
-> > 
-> > This is partly my fault for getting grumpy about adding the bolier plate
-> > code without error checking - overall Linus' change to do the get in the
-> > core seems like the most sane approach here.
-> > 
-> > > But to be honest, I don't think this is a fix, it's a feature that you
-> > > just didn't include in time for the merge window. I don't really see
-> > > them as appropriate 3.8 material at this point.
-> > 
-> > Jean-Christophe has been most insistent that pinctrl support is now
-> > manadatory for all AT91 systems using device tree. 
+On Tue, Jan 08, 2013 at 03:48:57PM +0100, Takashi Iwai wrote:
+> > Node 0x10 is notionally labelled "headphone pin" in the ALC260 datasheet. 
 > 
-> That's a noble goal but enforcing it early gives everyone a lot of pain, and
-> quite honestly doesn't make sense. During transition it's better to be lenient
-> and allow both old and new methods (without breakage), unless it causes
-> significant extra churn.
-except here we can not as the same ip manage gpio & pinctrl
+> You can forget the pin notion in the datasheet.  It's just pin
+> assignment Realtek thought as a standard arrangement.
 
-so no choice we need to do the switch at once
+Absolutely - that was abundantly clear when I first added the S7020 details
+years ago.  The comment was only made in an attempt to make the comments in
+the original driver clearer to those reading them now.
 
-and that's why we wait 1 more release to do the switch so erveryone can play
-with it before
+> > I've just looked now.  3.3.5 was booted, alsamixer does not show any
+> > "automute" control to enable or disable this.  In any case, automute is
+> > certainly not happening, so I'm guessing the answer to your question is no.
+> 
+> There is no automute behavior switching control in the 3.3.x kernel
+> driver, so no wonder :)
 
-Best Regards,
-J.
+I wasn't surprised since I thought this too.  However, I was asked to test
+it so I did.
+
+> I took a look at your alsa-info.sh outputs now, but unfortunately I
+> see no obvious problem there.  At least, the path to the speaker looks
+> sane:
+> :
+> And all GPIOs are cleared too.
+
+Agreed.  Given that the headphone jack works and the respective pin
+definition is very similar, I also can't see any obvious reason why things
+are getting messed up.  Something subtle perhaps?
+
+> The differences are that the old driver cleared unused pins such as
+> 0x0f, 0x11, 0x13 and 0x15.  Could you try to set the pin ctl to 0 for
+> these widgets via hda-verb on the fly?
+
+I will try this, hopefully in the next few days.  Like you I suspect, I
+can't see that this should make any difference to the speaker's ability to
+put out audio or to ALSA's ability to populate alsa-mixer correctly, but
+it's easy enough to eliminate it through testing.
+
+> Other than that, the headphone jack is set up with the HP amp and the
+> mic is with VREF 50.  They can be changed on the fly, too.
+
+I'll run through some of these variations and let you know the result.
+
+I noticed your big refactoring patch go past last week.  Is there anything  
+in there which I should test in relation to the ALC260 / Fujitsu issue
+we've been discussing, or should I await further info?
+
+Regards
+  jonathan
