@@ -1,54 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RESEND PATCH v3 5/5] ARM: OMAP4+: HDMI: Refine the DMA port
- resource for audio
-Date: Mon, 14 Jan 2013 08:20:04 +0900
-Message-ID: <20130113232003.GL5041@opensource.wolfsonmicro.com>
-References: <1357341987-3327-1-git-send-email-rneri@dextratech.com>
- <1357341987-3327-6-git-send-email-rneri@dextratech.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 1/3] ASoC: tegra: add ac97 host driver
+Date: Mon, 14 Jan 2013 08:21:47 +0900
+Message-ID: <20130113232146.GM5041@opensource.wolfsonmicro.com>
+References: <1357348725-32139-1-git-send-email-dev@lynxeye.de>
+ <1357348725-32139-2-git-send-email-dev@lynxeye.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UUBKWyapWpFAak7q"
-Return-path: <linux-omap-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="DheUW4aQn8WJk6WR"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1357341987-3327-6-git-send-email-rneri@dextratech.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ricardo Neri <rneri@dextratech.com>
-Cc: tomi.valkeinen@ti.com, lrg@ti.com, tony@atomide.com, peter.ujfalusi@ti.com, dzuniga@dextratech.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1357348725-32139-2-git-send-email-dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---UUBKWyapWpFAak7q
+--DheUW4aQn8WJk6WR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 04, 2013 at 05:26:27PM -0600, Ricardo Neri wrote:
-> Instead of passing the complete address space to the platform device for audio,
-> just pass the address offset of the DMA port for audio samples. Thus, we prevent
-> that two drivers try to ioremap the same resources. This is to be safe, as the
-> ASoC HDMI CPU-DAI driver will not need to ioremap such resource.
+On Sat, Jan 05, 2013 at 02:18:43AM +0100, Lucas Stach wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> This adds the driver for the Tegra 2x AC97 host controller.
 
---UUBKWyapWpFAak7q
+Applied, thanks.
+
+--DheUW4aQn8WJk6WR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ80EdAAoJELSic+t+oim9vAAP/3Mldwe5FEs2IkJx4jc1d96o
-yTvP8GEajkbBu/rXUR8BeA3wTeMTsFJLEPWh2HoDmBalBO9GjwcItEJHqVyxKuye
-AMwZ6IOeCHSXzlyjAjxekiM9h6QcjRVQUhlX+OxBDJROHlk5Xz1bMpP7Q8d4/6VP
-80bv+tY+wZ0o3XlezYrKaQvXkidmA6tAh+prAg32vcOXh7atbMqEpLxxgYwqWyej
-BLY6ebtTjN3cIWolkcOgj8q2IfpCFKNJTCOvvgDFUGYMNIvVuNzh42f/RTw6bGO7
-cuRXDP/Ki7GmU3alc5ptfS4aoXtj4/litvrFM2TfKB5wrAhNnsHiN+zoxxexrhfc
-+MHv2PFAiSvKMNcWfu0UW3zz0fXi+lFByMxx8pPQjMaezvYnFYkIN6YIxmcPm2H5
-QFGhWUtIaF1TAD//e8Ht0U9NW2Mmm0jsmFFrVDIbIcOTDCmLfZfo/qSUy1ho677i
-NbU1R0ddyYMVVGpdBJ1+VDF7LGiNZV6EGT3mrj9LbI+8AY4zaHjUIXHiSNtzMrHd
-y39Ap6lGbed88+SDvSlfW4vprnKQ8yW0PtI0wDS8ZJlIguDdb8RFF2yTPs6a9V1p
-Mur/o4cI63kIqqNLf2Y1koeEE7wH7T1qtecNFiOCuJtus6p0bPNMGe3mKS0Sab3J
-4SS4snZ0OkzCInFtfznu
-=Rwdi
+iQIcBAEBAgAGBQJQ80GDAAoJELSic+t+oim93HoP/jOXdXsAhjltgTY9AhrXdfhj
+dDBzTRcPZMGx1z7hsFV1dro9WG7EVZAhB+eL4H35UlTo58f/3UpIL1Za/2Ed21TD
+gnj8x5b9wUVTorJMlml7Kfrlbr6lOJKAYGFu5s0ELG02RvU6XiO1oaR7+Kc/hacM
+PfRb+Ye4XX9LHvxEfO8fdMZWASjeuBCzpmKuGX38VGZAoH99ukur20qFMhwMWfjq
+30Y/Y5k4XhxGkbRVldLysYB7T3xGmYkyWh5w7Vw/lPjiIb6G4l7GJ1ybyFAXoyNn
+82NjPZZSw+0bspulcFlLJxq+4b4He68o0H/RcbIbSG4o3wOwRt1HluEv9E4acg5f
+YHmL2tHVaAtVOsBre4IILMjKIhHwxp0DiG6jbbQwipK1Mi/HRdvoSUroc+erjF0t
+s8sy4jqpEzeJm6ntYz/EDBZv3pBP1WASa1jNuEtkIQ283R6BOjcoFpalp0IdwVmm
+noahQ0SjnK3HumwhiAkE1ANF7JK2Xu0PzNVLC/jq2aBkyHhDAnF7jlpMIDSmU7gI
+UC9Qqvrb24d2a8xFt8e4HUyuslshjBFZN+zPvp1PPPr9Z7QeG7bX8J//j9DmFqGt
+VBwjzzbQPuj7Y5/EoVHYKtuwuN1z8aSSjxW7NtpC0IyXCyZe7ozylsFhIYUWqB9G
+0qUi8WnWjBDSCr0MC4xh
+=HZ39
 -----END PGP SIGNATURE-----
 
---UUBKWyapWpFAak7q--
+--DheUW4aQn8WJk6WR--
