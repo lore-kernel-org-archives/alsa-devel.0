@@ -1,78 +1,26 @@
-From: Manolo =?UTF-8?B?RMOtYXo=?= <diaz.manolo@gmail.com>
-Subject: Re: HD-audio regression after commit
- 34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Mon, 14 Jan 2013 17:23:54 +0100
-Message-ID: <20130114172354.1f47f49b@gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
- <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
- <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
- <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH v2 2/3] ASoC: tegra:  add ac97 host controller to device
+ tree
+Date: Mon, 14 Jan 2013 10:00:48 -0700
+Message-ID: <50F439C0.4080603@wwwdotorg.org>
+References: <1357348725-32139-1-git-send-email-dev@lynxeye.de> <1357348725-32139-3-git-send-email-dev@lynxeye.de> <50EC99A1.4080402@wwwdotorg.org> <20130113232222.GN5041@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f182.google.com (mail-we0-f182.google.com
- [74.125.82.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 02DCE261619
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 17:23:59 +0100 (CET)
-Received: by mail-we0-f182.google.com with SMTP id u54so2183757wey.13
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 08:23:58 -0800 (PST)
-In-Reply-To: <s5h1udndihf.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, Miro Hodak <mhodak127@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20130113232222.GN5041-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-RWwgbHVuLCAxNCBlbmUgMjAxMyBhIGxhcyAxNDowMyBob3JhcwpUYWthc2hpIEl3YWkgZXNjcmli
-acOzOgoKPlllcywgdGVzdGluZyB0aGUgbGF0ZXN0IGNvZGUgd2l0aCByZWFsIG1hY2hpbmVzIGlz
-IGhpZ2hseQo+YXBwcmVjaWF0ZWQuICBUcnkgc291bmQtdW5zdGFibGUgZ2l0IHRyZWUsIGVpdGhl
-ciBtYXN0ZXIgb3IKPnRlc3QvaGRhLW1pZ3JhdGUgYnJhbmNoLgo+ICBnaXQ6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtdW5zdGFibGUuZ2l0Cj4K
-PkFsdGVybmF0aXZlbHkgeW91IGNhbiBidWlsZCB0aGUgZXh0ZXJuYWwgYWxzYS1kcml2ZXIgbW9k
-dWxlcyBmcm9tCj5hbHNhLWRyaXZlci11bnN0YWJsZSBzbmFwc2hvdCB0YXJiYWxsLCB0b28KPiAg
-ZnRwOi8vZnRwLnN1c2UuY29tL3B1Yi9wZW9wbGUvdGl3YWkvc25hcHNob3QvYWxzYS1kcml2ZXIt
-dW5zdGFibGUtc25hcHNob3QudGFyLmd6Cj4KPk5vdGUgdGhhdCBvbmx5IHRoZSBiZWhhdmlvciBv
-ZiBtb2RlbD1hdXRvIGhhcyBiZWVuIGNoYW5nZWQgaW4gdGhlIHRyZWUKPmFib3ZlLiAgVGhlIG90
-aGVyIG1vZGVsIGJlaGF2aW9ycyBvZiBBRCBjb2RlY3MgYXJlIHVuY2hhbmdlZCBhdCBhbGwuCgpN
-aXhlciBjcmFzaGVzIGFyZSBnb25lLiBBcyBJIHdyb3RlIEkgaGF2ZSBubyB3YXkgdG8gdGVzdCB0
-aGUgZGlnaXRhbApvdXRwdXQuCgpJIGhhdmVuJ3QgZm91bmQgYSB3YXkgdG8gdGVzdCBtdWx0aSBz
-dHJlYW0gcGxheWJhY2sgZWl0aGVyLiBBZnRlcgpjaG9vc2luZyBIUCBJbmRlcGVuZGFudCBlbmFi
-bGVkIEkgY2FuJ3QgaGVhciBub3RoaW5nIHRocm91Z2ggdGhlCmhlYWRwaG9uZS4KCgoKZ2l0IHNo
-b3cKY29tbWl0IDlkN2IyNjY4ZTBkM2RkZjY5YTM4NzJkMmYzNjIyYjJhZjI2MmVkOGUKTWVyZ2U6
-IGJjZjRmMzAgZmI4NTYzNQpBdXRob3I6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KRGF0
-ZTogICBNb24gSmFuIDE0IDEwOjE1OjI0IDIwMTMgKzAxMDAKCiAgICBNZXJnZSByZW1vdGUtdHJh
-Y2tpbmcgYnJhbmNoICdzdGFibGUvbWFzdGVyJwoKCmRtZXNnIHwgZ3JlcCAtaSBoZGEKWyAgICAy
-LjE0NDQ4Ml0gaGRhX2NvZGVjOiBBRDE5ODlCOiBCSU9TIGF1dG8tcHJvYmluZy4KWyAgICAyLjE2
-Nzc2OF0gaW5wdXQ6IEhEQSBBVEkgU0IgTGluZSBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6
-MDA6MTQuMi9zb3VuZC9jYXJkMC9pbnB1dDQKWyAgICAyLjE3MDE5MV0gaW5wdXQ6IEhEQSBBVEkg
-U0IgUmVhciBNaWMgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjE0LjIvc291bmQvY2Fy
-ZDAvaW5wdXQ1ClsgICAgMi4xNzI1NjhdIGlucHV0OiBIREEgQVRJIFNCIEZyb250IE1pYyBhcyAv
-ZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MTQuMi9zb3VuZC9jYXJkMC9pbnB1dDYKWyAgICAy
-LjE3NDk1Nl0gaW5wdXQ6IEhEQSBBVEkgU0IgRnJvbnQgSGVhZHBob25lIGFzIC9kZXZpY2VzL3Bj
-aTAwMDA6MDAvMDAwMDowMDoxNC4yL3NvdW5kL2NhcmQwL2lucHV0NwpbICAgIDIuMTc3Mzc4XSBp
-bnB1dDogSERBIEFUSSBTQiBMaW5lIE91dCBTaWRlIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAw
-MDowMDoxNC4yL3NvdW5kL2NhcmQwL2lucHV0OApbICAgIDIuMTc5ODA2XSBpbnB1dDogSERBIEFU
-SSBTQiBMaW5lIE91dCBDTEZFIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4yL3Nv
-dW5kL2NhcmQwL2lucHV0OQpbICAgIDIuMTgyMjA5XSBpbnB1dDogSERBIEFUSSBTQiBMaW5lIE91
-dCBTdXJyb3VuZCBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MTQuMi9zb3VuZC9jYXJk
-MC9pbnB1dDEwClsgICAgMi4xODQ2MjFdIGlucHV0OiBIREEgQVRJIFNCIExpbmUgT3V0IEZyb250
-IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4yL3NvdW5kL2NhcmQwL2lucHV0MTEK
-WyAgICAyLjE4NzM3MF0gc25kX2hkYV9pbnRlbCAwMDAwOjAxOjAwLjE6IGlycSA0MiBmb3IgTVNJ
-L01TSS1YClsgICAgMi4xOTE1MDFdIGlucHV0OiBIREEgQVRJIEhETUkgSERNSS9EUCxwY209MyBh
-cyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MDIuMC8wMDAwOjAxOjAwLjEvc291bmQvY2Fy
-ZDEvaW5wdXQxMgpbICAgIDIuMjY2MDIyXSAgICMwOiBIREEgQVRJIFNCIGF0IDB4ZmU4ZjQwMDAg
-aXJxIDE2ClsgICAgMi4yNjgyNDRdICAgIzE6IEhEQSBBVEkgSERNSSBhdCAweGZlOWVjMDAwIGly
-cSA0MgpbICAyMTIuOTg0MDI1XSBoZGEtaW50ZWw6IElSUSB0aW1pbmcgd29ya2Fyb3VuZCBpcyBh
-Y3RpdmF0ZWQgZm9yIGNhcmQgIzEuIFN1Z2dlc3QgYSBiaWdnZXIgYmRsX3Bvc19hZGouCgoKUmVn
-YXJkcywKLS0gCk1hbm9sbyBEw61hegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On 01/13/2013 04:22 PM, Mark Brown wrote:
+> On Tue, Jan 08, 2013 at 03:11:45PM -0700, Stephen Warren wrote:
+>> On 01/04/2013 06:18 PM, Lucas Stach wrote:
+>>> Add default entry for the AC97 host controller.
+> 
+>> This looks fine. I assume I'll take this through the Tegra tree.
+> 
+> Makes sense to me.
+
+Thanks, applied to Tegra's for-3.9/dt branch.
