@@ -1,242 +1,413 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HD-audio regression after commit
-	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Mon, 14 Jan 2013 11:42:23 +0800
-Message-ID: <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [RFC PATCH 4/4] alsa/soc: add hdmi audio codec based on cdf
+Date: Mon, 14 Jan 2013 11:13:47 +0530
+Message-ID: <CAK9yfHx=AxQVSzNNuV0hcQjiT0DS_iXY+shuG4GgJEiQGbDr4g@mail.gmail.com>
+References: <1358081534-21372-1-git-send-email-rahul.sharma@samsung.com>
+	<1358081534-21372-5-git-send-email-rahul.sharma@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CE4D2651A0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 04:42:25 +0100 (CET)
-Received: by mail-ie0-f169.google.com with SMTP id c14so4593541ieb.0
- for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2013 19:42:24 -0800 (PST)
-In-Reply-To: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Miro Hodak <mhodak127@gmail.com>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, diaz.manolo@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1358081534-21372-5-git-send-email-rahul.sharma@samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Rahul Sharma <rahul.sharma@samsung.com>
+Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, inki.dae@samsung.com, r.sh.open@gmail.com, joshi@samsung.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
++CC: ALSA mailing list, Mark Brown
+
+On 13 January 2013 18:22, Rahul Sharma <rahul.sharma@samsung.com> wrote:
+> This patch registers hdmi-audio codec to the ALSA framework. This is the second
+> client to the hdmi panel. Once notified by the CDF Core it proceeds towards
+> audio setting and audio control. It also subscribes for hpd notification to
+> implement hpd related audio requirements.
 >
-> Commit identified in the subject (ALSA: HDA - Add Independent Headphone
-for
-> all models of ad1988/ad1989) causes problem with audio on at least two
-Asus
-> boards and is still present in current kernel. The boards on which this
-> problem is seen are Asus M3A79-T DELUXE and Asus Rampage II Gene (actually
-> a slightly modified version used in Asus CG5290 desktop).
+> Signed-off-by: Rahul Sharma <rahul.sharma@samsung.com>
+> ---
+>  sound/soc/codecs/Kconfig             |   4 +
+>  sound/soc/codecs/Makefile            |   2 +
+>  sound/soc/codecs/exynos_hdmi_audio.c | 307 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 313 insertions(+)
+>  create mode 100644 sound/soc/codecs/exynos_hdmi_audio.c
 >
-> The symptoms:
-> 1. XFCE and Gnome2 audio mixers crash whenever sound is started or
-stopped.
-> The error message is:
-> simple_none.c:1350: get_enum_item_ops: Assertion `helem' failed.
-
-This is caused by the active access flag of independent headphone control
-
-static void activate_ctl(struct hda_codec *codec, const char *name, int
-active)
-{
-       struct snd_kcontrol *ctl = snd_hda_find_mixer_ctl(codec, name);
-       if (ctl) {
--               ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
--               ctl->vd[0].access |= active ? 0 :
--                       SNDRV_CTL_ELEM_ACCESS_INACTIVE;
-               ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_WRITE;
-               ctl->vd[0].access |= active ?
-                       SNDRV_CTL_ELEM_ACCESS_WRITE : 0;
-               snd_ctl_notify(codec->bus->card,
-                              SNDRV_CTL_EVENT_MASK_INFO, &ctl->id);
-       }
-}
-
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index b92759a..93f3f6b 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -496,3 +496,7 @@ config SND_SOC_ML26124
 >
-> 2. On one of the boards (Asus M3A79-T DELUXE) the mixer control labels are
-> misconfigured since muting the Master channel does not turn the sound off.
+>  config SND_SOC_TPA6130A2
+>         tristate
+> +
+> +config SND_SOC_EXYNOS_HDMI_AUDIO
+> +       tristate
+> +       default y
 
-For model=auto
+Do you want to enable this by default? Shouldn't this be depending on
+HDMI support?
 
-It is bug of hda parser which put node 0x1a in speaker out pin when the
-pincap only support input
-
-Your need either
-
-ignore this node in hda parser or
-
-Ignore the node as speaker when pincap is INPUT in patch_analog.c
-
-/* add playback controls for speaker and HP outputs */
-static int ad1988_auto_create_extra_out(struct hda_codec *codec, hda_nid_t
-pin,
-                                        const char *pfx)
-{
-        struct ad198x_spec *spec = codec->spec;
-        hda_nid_t nid;
-        int i, idx, err;
-        char name[32];
-
-        if (! pin)
-                return 0;
-
-+
-+     if ((snd_hda_query_pin_caps(codec, pin) & AC_PINCTL_OUT_EN) == 0)
-+          return 0;
-+
-        idx = ad1988_pin_idx(pin);
-        nid = ad1988_idx_to_dac(codec, idx);
-
-
-Node 0x1a [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x911711f0: [Fixed] Speaker at Int Rear
-    Conn = Analog, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1e 0x1e]
-  Converter: stream=0, channel=0
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
-
-Node 0x22 [Audio Mixer] wcaps 0x200103: Stereo Amp-In
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x37 0x21
-
-> Either Master is mislabeled or it does not work correctly.
+> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+> index 9bd4d95..bfe93e6 100644
+> --- a/sound/soc/codecs/Makefile
+> +++ b/sound/soc/codecs/Makefile
+> @@ -112,6 +112,7 @@ snd-soc-wm9705-objs := wm9705.o
+>  snd-soc-wm9712-objs := wm9712.o
+>  snd-soc-wm9713-objs := wm9713.o
+>  snd-soc-wm-hubs-objs := wm_hubs.o
+> +snd-soc-exynos-hdmi-audio-objs := exynos_hdmi_audio.o
 >
-> Other than that, the sound actually works fine, but it is very annoying
-> when mixer keeps crashing. Reverting to kernel just before the commit
-fixes
-> these issues. Thus it appears that the commit
-> 34588709af61be1550b4e2bcee5c85d0ac4f34d4 breaks autodetect for these
-> boards. A workaround is to force the 6stack-dig model and this fixes
-> problems on both boards, but, of course, it would be preferred if things
-> work out of the box.
+>  # Amp
+>  snd-soc-max9877-objs := max9877.o
+> @@ -230,6 +231,7 @@ obj-$(CONFIG_SND_SOC_WM9705)        += snd-soc-wm9705.o
+>  obj-$(CONFIG_SND_SOC_WM9712)   += snd-soc-wm9712.o
+>  obj-$(CONFIG_SND_SOC_WM9713)   += snd-soc-wm9713.o
+>  obj-$(CONFIG_SND_SOC_WM_HUBS)  += snd-soc-wm-hubs.o
+> +obj-$(CONFIG_SND_SOC_EXYNOS_HDMI_AUDIO)        += snd-soc-exynos-hdmi-audio.o
 >
+>  # Amp
+>  obj-$(CONFIG_SND_SOC_MAX9877)  += snd-soc-max9877.o
+> diff --git a/sound/soc/codecs/exynos_hdmi_audio.c b/sound/soc/codecs/exynos_hdmi_audio.c
+> new file mode 100644
+> index 0000000..50e8564
+> --- /dev/null
+> +++ b/sound/soc/codecs/exynos_hdmi_audio.c
+> @@ -0,0 +1,307 @@
+> +/*
+> + * ALSA SoC codec driver for HDMI audio on Samsung Exynos processors.
+> + * Copyright (C) 2012 Samsung corp.
 
-If  possible try the proposed generic hda parser from sound-unstable.git
+Copyright (c) 2012 (-13?) Samsung Electronics Co., Ltd.
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/058330.html
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/058367.html
+> + * Author: Rahul Sharma <rahul.sharma@samsung.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * version 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> + * General Public License for more details.
+> + *
+> + */
+> +#include <linux/module.h>
+> +#include <linux/delay.h>
+> +#include <sound/soc.h>
+> +#include <video/display.h>
+> +#include <video/exynos_hdmi.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +
+> +#undef dev_info
+> +
+> +#define dev_info(dev, format, arg...)          \
+> +       dev_printk(KERN_CRIT, dev, format, ##arg)
 
+You may directly use dev_crit instead of dev_printk.
+
+> +
+> +static struct snd_soc_codec_driver hdmi_codec;
+> +
+> +/* platform device pointer for eynos hdmi audio device. */
+> +static struct platform_device *exynos_hdmi_audio_pdev;
+> +
+> +struct hdmi_audio_context {
+> +       struct platform_device          *pdev;
+> +       atomic_t                                plugged;
+> +       struct display_entity_audio_params      audio_params;
+> +       struct display_entity           *entity;
+> +       struct display_entity_notifier  notf;
+> +       struct display_event_subscriber subscriber;
+> +};
+> +
+> +static int exynos_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
+> +               struct snd_pcm_hw_params *params,
+> +               struct snd_soc_dai *dai)
+> +{
+> +       struct snd_soc_codec *codec = dai->codec;
+> +       struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
+> +       int ret;
+> +
+> +       dev_info(codec->dev, "[%d] %s\n", __LINE__, __func__);
+
+How about making this a debug message as it does not convey anything useful?
+
+> +
+> +       ctx->audio_params.type = DISPLAY_ENTITY_AUDIO_I2S;
+> +
+> +       switch (params_channels(params)) {
+> +       case 6:
+> +       case 4:
+> +       case 2:
+> +       case 1:
+> +               ctx->audio_params.channels = params_channels(params);
+> +               break;
+> +       default:
+> +               dev_err(codec->dev, "%d channels not supported\n",
+> +                               params_channels(params));
+> +               return -EINVAL;
+> +       }
+> +
+> +       switch (params_format(params)) {
+> +       case SNDRV_PCM_FORMAT_S8:
+> +               ctx->audio_params.bits_per_sample = 8;
+> +               break;
+> +       case SNDRV_PCM_FORMAT_S16_LE:
+> +               ctx->audio_params.bits_per_sample = 12;
+> +               break;
+> +       case SNDRV_PCM_FORMAT_S24_LE:
+> +               ctx->audio_params.bits_per_sample = 16;
+> +               break;
+> +       default:
+> +               dev_err(codec->dev, "Format(%d) not supported\n",
+> +                               params_format(params));
+> +               return -EINVAL;
+> +       }
+> +
+> +       switch (params_rate(params)) {
+> +       case 32000:
+> +       case 44100:
+> +       case 88200:
+> +       case 176400:
+> +       case 48000:
+> +       case 96000:
+> +       case 192000:
+> +               ctx->audio_params.sf = params_rate(params);
+> +               break;
+> +       default:
+> +               dev_err(codec->dev, "%d Rate supported\n",
+> +                               params_rate(params));
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* checking here to cache audioparms for hpd plug handling */
+> +       if (!atomic_read(&ctx->plugged))
+> +               return -EINVAL;
+> +
+> +       ret =
+> +       display_entity_hdmi_init_audio(ctx->entity, &ctx->audio_params);
+> +       return ret;
+> +}
+> +
+> +static int exynos_hdmi_audio_trigger(struct snd_pcm_substream *substream,
+> +                       int cmd, struct snd_soc_dai *dai)
+> +{
+> +       struct snd_soc_codec *codec = dai->codec;
+> +       struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
+> +       int ret;
+> +
+> +       dev_info(codec->dev, "[%d] %s\n", __LINE__, __func__);
+
+ditto
+
+> +
+> +       /* checking here to cache audioparms for hpd plug handling */
+> +       if (!atomic_read(&ctx->plugged))
+> +               return -EINVAL;
+> +
+> +       switch (cmd) {
+> +       case SNDRV_PCM_TRIGGER_START:
+> +               ret = display_entity_hdmi_set_audiostate(ctx->entity,
+> +                       DISPLAY_ENTITY_AUDIOSTATE_ON);
+> +               if (ret) {
+> +                       dev_err(codec->dev, "audio enable failed.\n");
+> +                       return -EINVAL;
+> +               }
+> +               break;
+> +       case SNDRV_PCM_TRIGGER_STOP:
+> +               ret = display_entity_hdmi_set_audiostate(ctx->entity,
+> +                       DISPLAY_ENTITY_AUDIOSTATE_OFF);
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +               break;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static const struct snd_soc_dai_ops exynos_hdmi_audio_dai_ops = {
+> +       .hw_params = exynos_hdmi_audio_hw_params,
+> +       .trigger = exynos_hdmi_audio_trigger,
+> +};
+> +
+> +static struct snd_soc_dai_driver hdmi_codec_dai = {
+> +       .name = "exynos-hdmi-audio",
+> +       .playback = {
+> +               .channels_min = 2,
+> +               .channels_max = 8,
+> +               .rates = SNDRV_PCM_RATE_32000 |
+> +                       SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+> +                       SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+> +                       SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+> +               .formats = SNDRV_PCM_FMTBIT_S16_LE |
+> +                       SNDRV_PCM_FMTBIT_S24_LE,
+> +       },
+> +       .ops = &exynos_hdmi_audio_dai_ops,
+> +};
+> +
+> +void hdmi_audio_event_notify(struct display_entity *entity,
+> +               enum display_entity_event_type type,
+> +               unsigned int value, void *context)
+> +{
+> +       struct hdmi_audio_context *ctx = (struct hdmi_audio_context *)context;
+> +
+> +       if (type == DISPLAY_ENTITY_HDMI_HOTPLUG) {
+> +               dev_info(&ctx->pdev->dev, "[%d][%s] hpd(%d)\n", __LINE__,
+> +                       __func__, value);
+> +               atomic_set(&ctx->plugged, !!value);
+> +       }
+> +}
+> +
+> +int exynos_hdmi_audio_notification(struct display_entity_notifier *notf,
+> +               struct display_entity *entity, int status)
+> +{
+> +       struct hdmi_audio_context *ctx = container_of(notf,
+> +               struct hdmi_audio_context, notf);
+> +       struct exynos_hdmi_control_ops *exynos_ops =
+> +               (struct exynos_hdmi_control_ops *)entity->private;
+> +       int hpd;
+> +
+> +       if (status != DISPLAY_ENTITY_NOTIFIER_CONNECT && entity)
+> +               return -EINVAL;
+> +
+> +       dev_info(&ctx->pdev->dev, "[%d][%s]\n", __LINE__, __func__);
+> +
+> +       ctx->entity = entity;
+> +
+> +       ctx->subscriber.context = ctx;
+> +       ctx->subscriber.notify = hdmi_audio_event_notify;
+> +
+> +       display_entity_subscribe_event(entity, &ctx->subscriber);
+> +
+> +       exynos_ops->get_hpdstate(entity, &hpd);
+> +       atomic_set(&ctx->plugged, !!hpd);
+> +
+> +       return 0;
+> +}
+> +
+> +static __devinit int hdmi_codec_probe(struct platform_device *pdev)
+
+__devinit is not necessary.
+
++{
+> +       int ret;
+> +       struct hdmi_audio_context *ctx;
+> +       struct device_node *dev_node;
+> +       struct platform_device *disp_pdev;
+> +
+> +       dev_info(&pdev->dev, "[%d][%s]\n", __LINE__, __func__);
+> +
+> +       ret = snd_soc_register_codec(&pdev->dev, &hdmi_codec,
+> +                       &hdmi_codec_dai, 1);
+> +
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "register_codec failed (%d)\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       ctx = devm_kzalloc(&pdev->dev, sizeof(struct hdmi_audio_context),
+> +                               GFP_KERNEL);
+> +       if (ctx == NULL)
+> +               return -ENOMEM;
+> +
+> +       ctx->pdev = pdev;
+> +       atomic_set(&ctx->plugged, 0);
+> +       platform_set_drvdata(pdev, ctx);
+> +
+> +       dev_node = of_find_compatible_node(NULL, NULL,
+> +                       "samsung,exynos5-hdmi");
+> +       if (!dev_node) {
+> +               dev_err(&pdev->dev, "[%d][%s] dt node not found.\n",
+> +                       __LINE__, __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       disp_pdev = of_find_device_by_node(dev_node);
+> +       if (!disp_pdev) {
+> +               dev_err(&pdev->dev, "[ERROR][%d][%s] No pdev\n",
+> +                       __LINE__, __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       ctx->notf.dev = &disp_pdev->dev;
+> +       ctx->notf.notify = exynos_hdmi_audio_notification;
+> +
+> +       ret = display_entity_register_notifier(&ctx->notf);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "[%d][%s] entity registe failed.\n",
+> +                       __LINE__, __func__);
+> +               return -EINVAL;
+> +       }
+> +       return ret;
+> +}
+> +
+> +static __devexit int hdmi_codec_remove(struct platform_device *pdev)
+
+__devexit is not necessary.
+
+
+> +{
+> +       dev_info(&pdev->dev, " %s:%s:%d", __FILE__, __func__, __LINE__);
+> +       mdelay(1000);
+> +
+> +       snd_soc_unregister_codec(&pdev->dev);
+> +       return 0;
+> +}
+> +
+> +static struct platform_driver hdmi_codec_driver = {
+> +       .driver         = {
+> +               .name   = "exynos-hdmi-audio-codec",
+> +               .owner  = THIS_MODULE,
+> +       },
+> +
+> +       .probe          = hdmi_codec_probe,
+> +       .remove         = __devexit_p(hdmi_codec_remove),
+> +};
+> +
+> +static int __init hdmi_codec_init(void)
+> +{
+> +       int ret;
+> +
+> +       ret = platform_driver_register(&hdmi_codec_driver);
+> +       if (ret < 0)
+> +               return -EINVAL;
+> +
+> +       exynos_hdmi_audio_pdev = platform_device_register_simple
+> +               ("exynos-hdmi-audio-codec", -1, NULL, 0);
+> +       if (IS_ERR_OR_NULL(exynos_hdmi_audio_pdev)) {
+> +               ret = PTR_ERR(exynos_hdmi_audio_pdev);
+> +               platform_driver_unregister(&hdmi_codec_driver);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +static void __exit hdmi_codec_exit(void)
+> +{
+> +       platform_driver_unregister(&hdmi_codec_driver);
+> +       platform_device_unregister(exynos_hdmi_audio_pdev);
+> +}
+> +
+> +module_init(hdmi_codec_init);
+> +module_exit(hdmi_codec_exit);
+> +
+> +MODULE_AUTHOR("Rahul Sharma <rahul.sharma@samsung.com>");
+> +MODULE_DESCRIPTION("ASoC EXYNOS HDMI codec driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:" DRV_NAME);
+> --
+> 1.8.0
 >
-> Alsa-info for both boards can be found below.
->
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Model=auto does not include headphone as slave of virtual master , the
-volume of headphone and line out jacks are controlled independently since
-you can play different streams to headphone and line out jacks (multi
-stream playback)
 
-May need dynamically inlcude/exclude headphone play volume and switch as
-slave of the virtual master controls
 
-Do  you need to include HDMI playback volume as slave of the virtual master
-volume ?
-
-Can HDMI and SPDIF work independently since there are two digital audio
-output convertor and the number of SDO of hda controller is 4 ?
-
-Node 0x1b [Pin Complex] wcaps 0x40030d: Stereo Digital Amp-Out
-  Control: name="IEC958 Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00000010: OUT
-  Pin Default 0x0145f1a0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Other
-    DefAssociation = 0xa, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-
-Node 0x1d [Pin Complex] wcaps 0x40030d: Stereo Digital Amp-Out
-  Control: name="HDMI Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00000010: OUT
-  Pin Default 0x1856f1b0: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Other
-    DefAssociation = 0xb, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-
-For 6stack-dig
-
-Thus model create digital capture even when there is no spdif  in pin
-complex
-
-Node 0x07 [Audio Input] wcaps 0x130391: Stereo Digital
-  Control: name="IEC958 Capture Switch", index=0, device=0
-  Control: name="IEC958 Capture Default", index=0, device=0
-  Device: name="AD198x Digital", type="SPDIF", device=1
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x5]: PCM AC3
-  Unsolicited: tag=00, enabled=0
-  Delay: 3 samples
-  Connection: 1
-     0x1c
-
-Node 0x1c [Pin Complex] wcaps 0x40020b: Stereo Digital Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x97 0x97]
-  Pincap 0x00000020: IN
-  Pin Default 0x41c5f160: [N/A] SPDIF In at Ext Rear
-    Conn = Optical, Color = Other
-    DefAssociation = 0x6, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-
-> Results of alsa-info
->
-> Asus Rampage II Gene:
->
-> Before the commit: http://pastebin.com/gCZurk6D
-> After the commit (autodetect): http://pastebin.com/3hNX2g1c
-> After the commit (6stack_dig model): http://pastebin.com/dL0UGeTW
->
-> More recent kernel:
-> 3.6.11-gentoo (autodetect): http://pastebin.com/0gjnhYA2
-> 3.6.11-gentoo (6stack_dig model): http://pastebin.com/K9bsWBWW
-
->
-> Asus M3A79-T DELUXE
->
-> Before the commit: http://pastebin.com/hyUBmpDL
-> After the commit (autodetect) : http://pastebin.com/gzGg60bM
-> After the commit (6stack_dig model): http://pastebin.com/y88jCMhM
+-- 
+With warm regards,
+Sachin
