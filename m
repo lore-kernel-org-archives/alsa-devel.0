@@ -1,32 +1,175 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH v2 2/3] ASoC: tegra:  add ac97 host controller to device
- tree
-Date: Mon, 14 Jan 2013 10:22:44 -0700
-Message-ID: <50F43EE4.70705@wwwdotorg.org>
-References: <1357348725-32139-1-git-send-email-dev@lynxeye.de> <1357348725-32139-3-git-send-email-dev@lynxeye.de> <50EC99A1.4080402@wwwdotorg.org> <20130113232222.GN5041@opensource.wolfsonmicro.com> <50F439C0.4080603@wwwdotorg.org>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 1/4] ALSA: hdsp - Fix detection for RME
+	RPM/Multiface/Digiface ioboxes
+Date: Mon, 14 Jan 2013 21:37:17 +0100
+Message-ID: <1358195840-8228-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <50F439C0.4080603-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, Karl Grill <kgrill@chello.at>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/14/2013 10:00 AM, Stephen Warren wrote:
-> On 01/13/2013 04:22 PM, Mark Brown wrote:
->> On Tue, Jan 08, 2013 at 03:11:45PM -0700, Stephen Warren wrote:
->>> On 01/04/2013 06:18 PM, Lucas Stach wrote:
->>>> Add default entry for the AC97 host controller.
->>
->>> This looks fine. I assume I'll take this through the Tegra tree.
->>
->> Makes sense to me.
-> 
-> Thanks, applied to Tegra's for-3.9/dt branch.
+The current iobox detection code reportedly fails for various users, so
+simply do what the Win32 driver does instead.
 
-I had to make a small modification to the patch; I commented out the
-clocks property for now since the CAR node isn't yet present. It will be
-soon once the common clock framework patches are merged, and then I'll
-revert the change I made.
+Patch originally by Karl Grill <kgrill@chello.at> and then modified to
+comply with kernel coding guidelines + current HEAD.
+
+Signed-off-by: Karl Grill <kgrill@chello.at>
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 4fae81f..bcad9ba 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -154,10 +154,11 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
+ #define HDSP_BIGENDIAN_MODE     0x200
+ #define HDSP_RD_MULTIPLE        0x400
+ #define HDSP_9652_ENABLE_MIXER  0x800
++#define HDSP_DUNNO		0x1000
+ #define HDSP_TDO                0x10000000
+ 
+-#define HDSP_S_PROGRAM     	(HDSP_PROGRAM|HDSP_CONFIG_MODE_0)
+-#define HDSP_S_LOAD		(HDSP_PROGRAM|HDSP_CONFIG_MODE_1)
++#define HDSP_S_PROGRAM		(HDSP_DUNNO|HDSP_PROGRAM|HDSP_CONFIG_MODE_0)
++#define HDSP_S_LOAD		(HDSP_DUNNO|HDSP_PROGRAM|HDSP_CONFIG_MODE_1)
+ 
+ /* Control Register bits */
+ 
+@@ -671,13 +672,23 @@ static unsigned int hdsp_read(struct hdsp *hdsp, int reg)
+ 
+ static int hdsp_check_for_iobox (struct hdsp *hdsp)
+ {
++	int i;
++
+ 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return 0;
+-	if (hdsp_read (hdsp, HDSP_statusRegister) & HDSP_ConfigError) {
+-		snd_printk("Hammerfall-DSP: no IO box connected!\n");
+-		hdsp->state &= ~HDSP_FirmwareLoaded;
+-		return -EIO;
++	for (i = 0; i < 500; i++) {
++		if (0 == (hdsp_read(hdsp, HDSP_statusRegister) &
++					HDSP_ConfigError)) {
++			if (i) {
++				snd_printk("Hammerfall-DSP: IO box found after %d ms\n",
++						i);
++			}
++			return 0;
++		}
++		msleep(20);
+ 	}
+-	return 0;
++	snd_printk("Hammerfall-DSP: no IO box connected!\n");
++	hdsp->state &= ~HDSP_FirmwareLoaded;
++	return -EIO;
+ }
+ 
+ static int hdsp_wait_for_iobox(struct hdsp *hdsp, unsigned int loops,
+@@ -728,6 +739,7 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
+ 
+ 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
+ 			snd_printk ("Hammerfall-DSP: timeout waiting for download preparation\n");
++			hdsp_write(hdsp, HDSP_control2Reg, 0x800);
+ 			return -EIO;
+ 		}
+ 
+@@ -737,17 +749,15 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
+ 			hdsp_write(hdsp, HDSP_fifoData, cache[i]);
+ 			if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
+ 				snd_printk ("Hammerfall-DSP: timeout during firmware loading\n");
++				hdsp_write(hdsp, HDSP_control2Reg, 0x800);
+ 				return -EIO;
+ 			}
+ 		}
+ 
+-		ssleep(3);
+-
+-		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
+-			snd_printk ("Hammerfall-DSP: timeout at end of firmware loading\n");
+-		    	return -EIO;
+-		}
++		hdsp_fifo_wait(hdsp, 3, HDSP_LONG_WAIT);
++		hdsp_write(hdsp, HDSP_control2Reg, 0x800);
+ 
++		ssleep(3);
+ #ifdef SNDRV_BIG_ENDIAN
+ 		hdsp->control2_register = HDSP_BIGENDIAN_MODE;
+ #else
+@@ -773,24 +783,51 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
+ {
+ 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
+ 
+-		hdsp_write (hdsp, HDSP_control2Reg, HDSP_PROGRAM);
+-		hdsp_write (hdsp, HDSP_fifoData, 0);
+-		if (hdsp_fifo_wait (hdsp, 0, HDSP_SHORT_WAIT) < 0)
+-			return -EIO;
++		hdsp_write(hdsp, HDSP_control2Reg, 0x10a0);
++		hdsp_write(hdsp, HDSP_fifoData, 0);
+ 
+-		hdsp_write (hdsp, HDSP_control2Reg, HDSP_S_LOAD);
++		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
++			hdsp_write(hdsp, HDSP_control2Reg, 0x900);
++			hdsp_write(hdsp, HDSP_control2Reg, 0x10a0);
++		}
++
++		hdsp_write(hdsp, HDSP_control2Reg, 0x820);
+ 		hdsp_write (hdsp, HDSP_fifoData, 0);
++		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
++			hdsp->io_type = Multiface;
++			snd_printk("Hammerfall-DSP: Multiface found\n");
++			return 0;
++		}
+ 
+-		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT)) {
+-			hdsp_write(hdsp, HDSP_control2Reg, HDSP_VERSION_BIT);
+-			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
+-			if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT))
+-				hdsp->io_type = RPM;
+-			else
+-				hdsp->io_type = Multiface;
+-		} else {
++		hdsp_write(hdsp, HDSP_control2Reg, 0x10a0);
++		hdsp_write(hdsp, HDSP_fifoData, 0);
++		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
+ 			hdsp->io_type = Digiface;
++			snd_printk("Hammerfall-DSP: Digiface found\n");
++			return 0;
+ 		}
++
++		hdsp_write(hdsp, HDSP_control2Reg, 0x900);
++		hdsp_write(hdsp, HDSP_control2Reg, 0x10a0);
++		hdsp_write(hdsp, HDSP_fifoData, 0);
++		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
++			hdsp->io_type = Multiface;
++			snd_printk("Hammerfall-DSP: Multiface found\n");
++			return 0;
++		}
++
++		hdsp_write(hdsp, HDSP_control2Reg, 0x900);
++		hdsp_write(hdsp, HDSP_control2Reg, 0x10a0);
++		hdsp_write(hdsp, HDSP_fifoData, 0);
++		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
++			hdsp->io_type = Multiface;
++			snd_printk("Hammerfall-DSP: Multiface found\n");
++			return 0;
++		}
++
++		hdsp->io_type = RPM;
++		snd_printk("Hammerfall-DSP: RPM found\n");
++		return 0;
+ 	} else {
+ 		/* firmware was already loaded, get iobox type */
+ 		if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version2)
+-- 
+1.7.10.4
