@@ -1,22 +1,19 @@
-From: Manolo =?UTF-8?B?RMOtYXo=?= <diaz.manolo@gmail.com>
-Subject: Re: HD-audio regression after commit
- 34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Mon, 14 Jan 2013 14:10:36 +0100
-Message-ID: <20130114141036.383ea740@gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
- <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
- <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
- <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - mute LEDs on HP: also check
+	PCI SSID
+Date: Mon, 14 Jan 2013 14:24:37 +0100
+Message-ID: <50F40715.4080907@canonical.com>
+References: <1358164750-16144-1-git-send-email-david.henningsson@canonical.com>
+ <s5h6230c4is.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 39E4526160E
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 14:10:40 +0100 (CET)
-Received: by mail-wg0-f45.google.com with SMTP id dq12so1955390wgb.0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 05:10:39 -0800 (PST)
-In-Reply-To: <s5h1udndihf.wl%tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92C1A2615F5
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2013 14:24:38 +0100 (CET)
+In-Reply-To: <s5h6230c4is.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,24 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, Miro Hodak <mhodak127@gmail.com>
+Cc: alsa-devel@alsa-project.org, 1099372@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-RWwgbHVuLCAxNCBlbmUgMjAxMyBhIGxhcyAxNDowMyBob3JhcwpUYWthc2hpIEl3YWkgZXNjcmli
-acOzOgoKPkhtLCBkaWRuJ3QgeW91IHJlY2VpdmUgbXkgcHJldmlvdXMgcG9zdD8KPgo+VG8gcmVw
-ZWF0IG15c2VsZjoKPgo+WWVzLCB0ZXN0aW5nIHRoZSBsYXRlc3QgY29kZSB3aXRoIHJlYWwgbWFj
-aGluZXMgaXMgaGlnaGx5Cj5hcHByZWNpYXRlZC4gIFRyeSBzb3VuZC11bnN0YWJsZSBnaXQgdHJl
-ZSwgZWl0aGVyIG1hc3RlciBvcgo+dGVzdC9oZGEtbWlncmF0ZSBicmFuY2guCj4gIGdpdDovL2dp
-dC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC11bnN0YWJs
-ZS5naXQKPgo+QWx0ZXJuYXRpdmVseSB5b3UgY2FuIGJ1aWxkIHRoZSBleHRlcm5hbCBhbHNhLWRy
-aXZlciBtb2R1bGVzIGZyb20KPmFsc2EtZHJpdmVyLXVuc3RhYmxlIHNuYXBzaG90IHRhcmJhbGws
-IHRvbwo+ICBmdHA6Ly9mdHAuc3VzZS5jb20vcHViL3Blb3BsZS90aXdhaS9zbmFwc2hvdC9hbHNh
-LWRyaXZlci11bnN0YWJsZS1zbmFwc2hvdC50YXIuZ3oKPgo+Tm90ZSB0aGF0IG9ubHkgdGhlIGJl
-aGF2aW9yIG9mIG1vZGVsPWF1dG8gaGFzIGJlZW4gY2hhbmdlZCBpbiB0aGUgdHJlZQo+YWJvdmUu
-ICBUaGUgb3RoZXIgbW9kZWwgYmVoYXZpb3JzIG9mIEFEIGNvZGVjcyBhcmUgdW5jaGFuZ2VkIGF0
-IGFsbC4KPgo+Cj50aGFua3MsCj4KPlRha2FzaGkKCkknbSBjbG9uaW5nIHRoZSBzb3VuZC11bnN0
-YWJsZSBnaXQgcmVwb3NpdG9yeS4gSXQgd2lsbCB0YWtlIGEgd2hpbGUuIEknbGwKa2VlcCB5b3Ug
-aW5mb3JtZWQuCgpSZWdhcmRzLAotLSAKTWFub2xvIETDrWF6Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 01/14/2013 01:50 PM, Takashi Iwai wrote:
+> At Mon, 14 Jan 2013 12:59:10 +0100,
+> David Henningsson wrote:
+>>
+>> If the codec subvendor is not set to HP, maybe the PCI SSID is set
+>> to HP. If so, there might still be a valid mute LED string in BIOS/UEFI.
+>>
+>> Cc: stable@vger.kernel.org
+>> Buglink: https://bugs.launchpad.net/bugs/1099372
+>> Reported-and-tested-by: Tammy Yang <tammy.yang@canonical.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>
+> Is there any real machine showing this bug?
+
+Yes, but it is pre-release hardware, so maybe the BIOS/UEFI might not be 
+the final version. If you like, we can wait and see if the problem is 
+corrected in later BIOS/UEFI versions.
+
+I was thinking that this patch does not hurt anyway.
+
+> If yes, could you give alsa-info.sh output?
+
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1099372/+attachment/3482841/+files/alsa-info-hp.txt
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> ---
+>>   sound/pci/hda/patch_sigmatel.c |    3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+>> index a86547c..40c74a2 100644
+>> --- a/sound/pci/hda/patch_sigmatel.c
+>> +++ b/sound/pci/hda/patch_sigmatel.c
+>> @@ -4948,7 +4948,8 @@ static int find_mute_led_cfg(struct hda_codec *codec, int default_polarity)
+>>   			     &spec->gpio_led_polarity);
+>>   		return 1;
+>>   	}
+>> -	if ((codec->subsystem_id >> 16) == PCI_VENDOR_ID_HP) {
+>> +	if ((codec->subsystem_id >> 16) == PCI_VENDOR_ID_HP ||
+>> +	   codec->bus->pci->subsystem_vendor == PCI_VENDOR_ID_HP) {
+>>   		while ((dev = dmi_find_device(DMI_DEV_TYPE_OEM_STRING,
+>>   								NULL, dev))) {
+>>   			if (sscanf(dev->name, "HP_Mute_LED_%d_%x",
+>> --
+>> 1.7.9.5
+>>
+>
+
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
