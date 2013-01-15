@@ -1,14 +1,15 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH v3 1/4] ALSA: hdsp - Fix detection for RME
-	RPM/Multiface/Digiface ioboxes
-Date: Tue, 15 Jan 2013 18:52:20 +0100
-Message-ID: <1358272343-19606-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH v3 2/4] ALSA: hdsp - Implement generic function
+	to toggle settings
+Date: Tue, 15 Jan 2013 18:52:21 +0100
+Message-ID: <1358272343-19606-3-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1358272343-19606-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1358272343-19606-2-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1358272343-19606-1-git-send-email-adi@drcomp.erfurt.thur.de>
+In-Reply-To: <1358272343-19606-2-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,157 +23,83 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The current iobox detection code reportedly fails for various users, so
-simply do what the Win32 driver does instead.
+The driver contains multiple similar functions that change only a single
+bit in the control register, only the bit position varies.
 
-Patch originally by Karl Grill <kgrill@chello.at> and then modified to
-comply with kernel coding guidelines + current HEAD.
+This patch implements a generic function to toggle a certain bit
+position that will be used to replace the old code.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 4fae81f..866d684 100644
+index 866d684..4ebd283 100644
 --- a/sound/pci/rme9652/hdsp.c
 +++ b/sound/pci/rme9652/hdsp.c
-@@ -154,10 +154,13 @@ MODULE_FIRMWARE("digiface_firmware_rev11.bin");
- #define HDSP_BIGENDIAN_MODE     0x200
- #define HDSP_RD_MULTIPLE        0x400
- #define HDSP_9652_ENABLE_MIXER  0x800
-+#define HDSP_S200		0x800
-+#define HDSP_S300		(0x100 | HDSP_S200) /* dummy, purpose of 0x100 unknown */
-+#define HDSP_CYCLIC_MODE	0x1000
- #define HDSP_TDO                0x10000000
- 
--#define HDSP_S_PROGRAM     	(HDSP_PROGRAM|HDSP_CONFIG_MODE_0)
--#define HDSP_S_LOAD		(HDSP_PROGRAM|HDSP_CONFIG_MODE_1)
-+#define HDSP_S_PROGRAM	    (HDSP_CYCLIC_MODE|HDSP_PROGRAM|HDSP_CONFIG_MODE_0)
-+#define HDSP_S_LOAD	    (HDSP_CYCLIC_MODE|HDSP_PROGRAM|HDSP_CONFIG_MODE_1)
- 
- /* Control Register bits */
- 
-@@ -671,13 +674,23 @@ static unsigned int hdsp_read(struct hdsp *hdsp, int reg)
- 
- static int hdsp_check_for_iobox (struct hdsp *hdsp)
- {
-+	int i;
-+
- 	if (hdsp->io_type == H9652 || hdsp->io_type == H9632) return 0;
--	if (hdsp_read (hdsp, HDSP_statusRegister) & HDSP_ConfigError) {
--		snd_printk("Hammerfall-DSP: no IO box connected!\n");
--		hdsp->state &= ~HDSP_FirmwareLoaded;
--		return -EIO;
-+	for (i = 0; i < 500; i++) {
-+		if (0 == (hdsp_read(hdsp, HDSP_statusRegister) &
-+					HDSP_ConfigError)) {
-+			if (i) {
-+				snd_printd("Hammerfall-DSP: IO box found after %d ms\n",
-+						(20 * i));
-+			}
-+			return 0;
-+		}
-+		msleep(20);
- 	}
--	return 0;
-+	snd_printk(KERN_ERR "Hammerfall-DSP: no IO box connected!\n");
-+	hdsp->state &= ~HDSP_FirmwareLoaded;
-+	return -EIO;
+@@ -1713,6 +1713,65 @@ static int snd_hdsp_put_spdif_in(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	return change;
  }
  
- static int hdsp_wait_for_iobox(struct hdsp *hdsp, unsigned int loops,
-@@ -728,6 +741,7 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 
- 		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
- 			snd_printk ("Hammerfall-DSP: timeout waiting for download preparation\n");
-+			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200);
- 			return -EIO;
- 		}
- 
-@@ -737,17 +751,15 @@ static int snd_hdsp_load_firmware_from_cache(struct hdsp *hdsp) {
- 			hdsp_write(hdsp, HDSP_fifoData, cache[i]);
- 			if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
- 				snd_printk ("Hammerfall-DSP: timeout during firmware loading\n");
-+				hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200);
- 				return -EIO;
- 			}
- 		}
- 
--		ssleep(3);
--
--		if (hdsp_fifo_wait (hdsp, 0, HDSP_LONG_WAIT)) {
--			snd_printk ("Hammerfall-DSP: timeout at end of firmware loading\n");
--		    	return -EIO;
--		}
-+		hdsp_fifo_wait(hdsp, 3, HDSP_LONG_WAIT);
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200);
- 
-+		ssleep(3);
- #ifdef SNDRV_BIG_ENDIAN
- 		hdsp->control2_register = HDSP_BIGENDIAN_MODE;
- #else
-@@ -773,24 +785,51 @@ static int hdsp_get_iobox_version (struct hdsp *hdsp)
- {
- 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
- 
--		hdsp_write (hdsp, HDSP_control2Reg, HDSP_PROGRAM);
--		hdsp_write (hdsp, HDSP_fifoData, 0);
--		if (hdsp_fifo_wait (hdsp, 0, HDSP_SHORT_WAIT) < 0)
--			return -EIO;
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		hdsp_write(hdsp, HDSP_fifoData, 0);
- 
--		hdsp_write (hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
-+			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S300);
-+			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		}
++#define HDSP_TOGGLE_SETTING(xname, xindex) \
++{   .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.private_value = xindex, \
++	.info = snd_hdsp_info_toggle_setting, \
++	.get = snd_hdsp_get_toggle_setting, \
++	.put = snd_hdsp_put_toggle_setting \
++}
 +
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S200 | HDSP_PROGRAM);
- 		hdsp_write (hdsp, HDSP_fifoData, 0);
-+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
-+			hdsp->io_type = Multiface;
-+			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			return 0;
-+		}
- 
--		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT)) {
--			hdsp_write(hdsp, HDSP_control2Reg, HDSP_VERSION_BIT);
--			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
--			if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT))
--				hdsp->io_type = RPM;
--			else
--				hdsp->io_type = Multiface;
--		} else {
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		hdsp_write(hdsp, HDSP_fifoData, 0);
-+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
- 			hdsp->io_type = Digiface;
-+			snd_printk("Hammerfall-DSP: Digiface found\n");
-+			return 0;
- 		}
++static int hdsp_toggle_setting(struct hdsp *hdsp, u32 regmask)
++{
++	return (hdsp->control_register & regmask) ? 1 : 0;
++}
 +
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S300);
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		hdsp_write(hdsp, HDSP_fifoData, 0);
-+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) == 0) {
-+			hdsp->io_type = Multiface;
-+			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			return 0;
-+		}
++static int hdsp_set_toggle_setting(struct hdsp *hdsp, u32 regmask, int out)
++{
++	if (out)
++		hdsp->control_register |= regmask;
++	else
++		hdsp->control_register &= ~regmask;
++	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
 +
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S300);
-+		hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
-+		hdsp_write(hdsp, HDSP_fifoData, 0);
-+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT) < 0) {
-+			hdsp->io_type = Multiface;
-+			snd_printk("Hammerfall-DSP: Multiface found\n");
-+			return 0;
-+		}
++	return 0;
++}
 +
-+		hdsp->io_type = RPM;
-+		snd_printk("Hammerfall-DSP: RPM found\n");
-+		return 0;
- 	} else {
- 		/* firmware was already loaded, get iobox type */
- 		if (hdsp_read(hdsp, HDSP_status2Register) & HDSP_version2)
++#define snd_hdsp_info_toggle_setting		   snd_ctl_boolean_mono_info
++
++static int snd_hdsp_get_toggle_setting(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
++	u32 regmask = kcontrol->private_value;
++
++	spin_lock_irq(&hdsp->lock);
++	ucontrol->value.integer.value[0] = hdsp_toggle_setting(hdsp, regmask);
++	spin_unlock_irq(&hdsp->lock);
++	return 0;
++}
++
++static int snd_hdsp_put_toggle_setting(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
++	u32 regmask = kcontrol->private_value;
++	int change;
++	unsigned int val;
++
++	if (!snd_hdsp_use_is_exclusive(hdsp))
++		return -EBUSY;
++	val = ucontrol->value.integer.value[0] & 1;
++	spin_lock_irq(&hdsp->lock);
++	change = (int) val != hdsp_toggle_setting(hdsp, regmask);
++	if (change)
++		hdsp_set_toggle_setting(hdsp, regmask, val);
++	spin_unlock_irq(&hdsp->lock);
++	return change;
++}
++
++
+ #define HDSP_SPDIF_OUT(xname, xindex) \
+ { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
+   .info = snd_hdsp_info_spdif_bits, \
 -- 
 1.7.10.4
