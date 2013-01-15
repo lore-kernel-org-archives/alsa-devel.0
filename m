@@ -1,18 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH v3 1/1] ALSA: hda - bug fix for invalid
- connection list of Haswell HDMI codec pins
-Date: Tue, 15 Jan 2013 11:51:23 +0100
-Message-ID: <50F534AB.3010207@canonical.com>
-References: <1355867955-2391-1-git-send-email-mengdong.lin@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH RFC 00/20] More patches for HD-audio generic
+	auto-parser
+Date: Tue, 15 Jan 2013 12:05:27 +0100
+Message-ID: <1358247947-13992-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C43F32615F3
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 11:51:25 +0100 (CET)
-In-Reply-To: <1355867955-2391-1-git-send-email-mengdong.lin@intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90AC626531B
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:05:50 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx2.suse.de (Postfix) with ESMTP id 68080A51FF
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:05:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Xingchao Wang <xingchao.wang@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
-On 12/18/2012 10:59 PM, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
->
-> Haswell HDMI codec pins may report invalid connection list entries, which
-> will cause failure to play audio via HDMI or Display Port.
->
-> So this patch adds fixup for Haswell to workaround this hardware issue:
-> enable DP1.2 mode and override the pins' connection list entries with proper
-> value.
->
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> Signed-off-by: Xingchao Wang <xingchao.wang@intel.com>
->
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 71555cc..59abe73 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -1687,6 +1687,30 @@ static const struct hda_codec_ops generic_hdmi_patch_ops = {
->   	.unsol_event		= hdmi_unsol_event,
->   };
->
-> +static void intel_haswell_fixup_connect_list(struct hda_codec *codec)
-> +{
-> +	unsigned int vendor_param;
-> +	hda_nid_t list[3] = {0x2, 0x3, 0x4};
-> +
-> +	vendor_param = snd_hda_codec_read(codec, 0x08, 0, 0xf81, 0);
-> +	if (vendor_param == -1 || vendor_param & 0x02)
-> +		return;
-> +
-> +	/* enable DP1.2 mode */
-> +	vendor_param |= 0x02;
-> +	snd_hda_codec_read(codec, 0x08, 0, 0x781, vendor_param);
 
 Hi,
 
-When trying to get Haswell HDMI audio working, I discovered that this 
-verb when executed can get pins to change state from D0 to D3.
-
-As the fixup is executed after hda_call_codec_resume this means that the 
-pins will remain in D3. I'm not entirely sure of this, but I think we 
-have no runtime power transitions if we are on AC power, so this could 
-potentially be for a very long time.
-
-> +	/* override 3 pins connection list */
-> +	snd_hda_override_conn_list(codec, 0x05, 3, list);
-> +	snd_hda_override_conn_list(codec, 0x06, 3, list);
-> +	snd_hda_override_conn_list(codec, 0x07, 3, list);
-
-So before the DP 1.2 verb is executed, the connections are
-just 5 -> 2, 6 -> 3, 7 -> 4, but afterwards, every pin node can connect 
-to every cvt node, and connection select verbs must change as a result?
+this is a series of patches for more enhancements of HD-audio generic
+parser I posted shortly ago.  All patches are found in sound-unstable
+git tree test/hda-gen-parser branch (and merged to master branch, too).
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Takashi
