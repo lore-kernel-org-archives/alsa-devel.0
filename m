@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/20] ALSA: hda - Add helper functions to
-	cache the current pinctl target
-Date: Tue, 15 Jan 2013 12:05:33 +0100
-Message-ID: <1358247947-13992-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 05/20] ALSA: hda - Clear the dropped paths
+	properly
+Date: Tue, 15 Jan 2013 12:05:32 +0100
+Message-ID: <1358247947-13992-6-git-send-email-tiwai@suse.de>
 References: <1358247947-13992-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B432F26531D
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DBF7265315
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:05:50 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 7FC87A5213
+ by mx2.suse.de (Postfix) with ESMTP id 77868A5211
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:05:48 +0100 (CET)
 In-Reply-To: <1358247947-13992-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,90 +29,63 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We already have the list of whole pin widgets and there is an unused
-space in the list; let's use it for caching the current pinctl value.
+When a DAC is reassigned from surrounds to front or ADCs are reduced
+due to incomplete imux, we clear the path indices but the path
+instances remain as is.  Since the paths might be still referred
+through the whole path list parsing (e.g. is_active_nid()), we should
+clear these path instances as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 27 +++++++++++++++++++++++++++
- sound/pci/hda/hda_codec.h |  4 ++--
- sound/pci/hda/hda_local.h |  4 ++++
- 3 files changed, 33 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_generic.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 733bce6..505cb72 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1100,6 +1100,32 @@ unsigned int snd_hda_codec_get_pincfg(struct hda_codec *codec, hda_nid_t nid)
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 26e8d83..a9bf188 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -331,6 +331,15 @@ snd_hda_add_new_path(struct hda_codec *codec, hda_nid_t from_nid,
  }
- EXPORT_SYMBOL_HDA(snd_hda_codec_get_pincfg);
+ EXPORT_SYMBOL_HDA(snd_hda_add_new_path);
  
-+/* remember the current pinctl target value */
-+int snd_hda_codec_set_pin_target(struct hda_codec *codec, hda_nid_t nid,
-+				 unsigned int val)
++/* clear the given path as invalid so that it won't be picked up later */
++static void invalidate_nid_path(struct hda_codec *codec, int idx)
 +{
-+	struct hda_pincfg *pin;
-+
-+	pin = look_up_pincfg(codec, &codec->init_pins, nid);
-+	if (!pin)
-+		return -EINVAL;
-+	pin->target = val;
-+	return 0;
++	struct nid_path *path = snd_hda_get_path_from_idx(codec, idx);
++	if (!path)
++		return;
++	memset(path, 0, sizeof(*path));
 +}
-+EXPORT_SYMBOL_HDA(snd_hda_codec_set_pin_target);
 +
-+/* return the current pinctl target value */
-+int snd_hda_codec_get_pin_target(struct hda_codec *codec, hda_nid_t nid)
-+{
-+	struct hda_pincfg *pin;
-+
-+	pin = look_up_pincfg(codec, &codec->init_pins, nid);
-+	if (!pin)
-+		return 0;
-+	return pin->target;
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_codec_get_pin_target);
-+
- /**
-  * snd_hda_shutup_pins - Shut up all pins
-  * @codec: the HDA codec
-@@ -5266,6 +5292,7 @@ int _snd_hda_set_pin_ctl(struct hda_codec *codec, hda_nid_t pin,
- 				val &= ~(AC_PINCTL_IN_EN | AC_PINCTL_VREFEN);
+ /* look for an empty DAC slot */
+ static hda_nid_t look_for_dac(struct hda_codec *codec, hda_nid_t pin,
+ 			      bool is_digital)
+@@ -891,10 +900,12 @@ static int try_assign_dacs(struct hda_codec *codec, int num_outs,
+ 
+ 		dacs[i] = look_for_dac(codec, pin, false);
+ 		if (!dacs[i] && !i) {
++			/* try to steal the DAC of surrounds for the front */
+ 			for (j = 1; j < num_outs; j++) {
+ 				if (is_reachable_path(codec, dacs[j], pin)) {
+ 					dacs[0] = dacs[j];
+ 					dacs[j] = 0;
++					invalidate_nid_path(codec, path_idx[j]);
+ 					path_idx[j] = 0;
+ 					break;
+ 				}
+@@ -2046,9 +2057,12 @@ static int check_dyn_adc_switch(struct hda_codec *codec)
+ 				continue;
+ 			if (n != nums) {
+ 				spec->adc_nids[nums] = spec->adc_nids[n];
+-				for (i = 0; i < imux->num_items; i++)
++				for (i = 0; i < imux->num_items; i++) {
++					invalidate_nid_path(codec,
++						spec->input_paths[i][nums]);
+ 					spec->input_paths[i][nums] =
+ 						spec->input_paths[i][n];
++				}
+ 			}
+ 			nums++;
  		}
- 	}
-+	snd_hda_codec_set_pin_target(codec, pin, val);
- 	if (cached)
- 		return snd_hda_codec_update_cache(codec, pin, 0,
- 				AC_VERB_SET_PIN_WIDGET_CONTROL, val);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 93ec747..4c4f166 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -981,8 +981,8 @@ void snd_hda_codec_resume_cache(struct hda_codec *codec);
- /* the struct for codec->pin_configs */
- struct hda_pincfg {
- 	hda_nid_t nid;
--	unsigned char ctrl;	/* current pin control value */
--	unsigned char pad;	/* reserved */
-+	unsigned char ctrl;	/* original pin control value */
-+	unsigned char target;	/* target pin control value */
- 	unsigned int cfg;	/* default configuration */
- };
- 
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index fec0e2d..655a40f 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -529,6 +529,10 @@ snd_hda_set_pin_ctl_cache(struct hda_codec *codec, hda_nid_t pin,
- 	return _snd_hda_set_pin_ctl(codec, pin, val, true);
- }
- 
-+int snd_hda_codec_get_pin_target(struct hda_codec *codec, hda_nid_t nid);
-+int snd_hda_codec_set_pin_target(struct hda_codec *codec, hda_nid_t nid,
-+				 unsigned int val);
-+
- /*
-  * get widget capabilities
-  */
 -- 
 1.8.1
