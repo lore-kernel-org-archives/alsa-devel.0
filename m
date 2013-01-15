@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/12] ALSA: hda - Use standard fixup table for
-	STAC9200
-Date: Tue, 15 Jan 2013 12:09:38 +0100
-Message-ID: <1358248189-14166-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 08/12] ALSA: hda - Use standard fixup table for
+	IDT92HD73xx
+Date: Tue, 15 Jan 2013 12:09:45 +0100
+Message-ID: <1358248189-14166-9-git-send-email-tiwai@suse.de>
 References: <1358248189-14166-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D1A96265D75
+ by alsa0.perex.cz (Postfix) with ESMTP id D9D15265D79
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:09:52 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id 8CC61A522C
+ by mx2.suse.de (Postfix) with ESMTP id 9D9F9A5232
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 12:09:52 +0100 (CET)
 In-Reply-To: <1358248189-14166-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,514 +29,414 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert patch_stac9200() to use the standard fixup table instead of
-manual switch-case with board_config.
+This one is rather a simple conversion.  The fixups for Dell machines
+are implemented by fixup functions in the end.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_sigmatel.c | 369 +++++++++++++++++++++++++++++------------
- 1 file changed, 265 insertions(+), 104 deletions(-)
+ sound/pci/hda/patch_sigmatel.c | 331 +++++++++++++++++++++++++++--------------
+ 1 file changed, 218 insertions(+), 113 deletions(-)
 
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 9cc4cb9..e5dffd2 100644
+index 4a2594a..3cb44c1 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -50,7 +50,6 @@ enum {
+@@ -79,7 +79,6 @@ enum {
  };
  
  enum {
--	STAC_AUTO,
- 	STAC_REF,
- 	STAC_9200_OQO,
- 	STAC_9200_DELL_D21,
-@@ -66,6 +65,7 @@ enum {
- 	STAC_9200_M4,
- 	STAC_9200_M4_2,
- 	STAC_9200_PANASONIC,
-+	STAC_9200_EAPD_INIT,
- 	STAC_9200_MODELS
+-	STAC_92HD73XX_AUTO,
+ 	STAC_92HD73XX_NO_JD, /* no jack-detection */
+ 	STAC_92HD73XX_REF,
+ 	STAC_92HD73XX_INTEL,
+@@ -1783,55 +1782,217 @@ static const struct snd_pci_quirk stac925x_fixup_tbl[] = {
+ 	{} /* terminator */
  };
  
-@@ -1197,18 +1197,40 @@ static int stac92xx_build_controls(struct hda_codec *codec)
- 	return 0;	
- }
- 
--static const unsigned int ref9200_pin_configs[8] = {
--	0x01c47010, 0x01447010, 0x0221401f, 0x01114010,
--	0x02a19020, 0x01a19021, 0x90100140, 0x01813122,
-+static const struct hda_pintbl ref9200_pin_configs[] = {
-+	{ 0x08, 0x01c47010 },
-+	{ 0x09, 0x01447010 },
-+	{ 0x0d, 0x0221401f },
-+	{ 0x0e, 0x01114010 },
-+	{ 0x0f, 0x02a19020 },
-+	{ 0x10, 0x01a19021 },
-+	{ 0x11, 0x90100140 },
-+	{ 0x12, 0x01813122 },
-+	{}
- };
- 
--static const unsigned int gateway9200_m4_pin_configs[8] = {
--	0x400000fe, 0x404500f4, 0x400100f0, 0x90110010,
--	0x400100f1, 0x02a1902e, 0x500000f2, 0x500000f3,
-+static const struct hda_pintbl gateway9200_m4_pin_configs[] = {
-+	{ 0x08, 0x400000fe },
-+	{ 0x09, 0x404500f4 },
-+	{ 0x0d, 0x400100f0 },
-+	{ 0x0e, 0x90110010 },
-+	{ 0x0f, 0x400100f1 },
-+	{ 0x10, 0x02a1902e },
-+	{ 0x11, 0x500000f2 },
-+	{ 0x12, 0x500000f3 },
-+	{}
- };
--static const unsigned int gateway9200_m4_2_pin_configs[8] = {
--	0x400000fe, 0x404500f4, 0x400100f0, 0x90110010,
--	0x400100f1, 0x02a1902e, 0x500000f2, 0x500000f3,
-+
-+static const struct hda_pintbl gateway9200_m4_2_pin_configs[] = {
-+	{ 0x08, 0x400000fe },
-+	{ 0x09, 0x404500f4 },
-+	{ 0x0d, 0x400100f0 },
-+	{ 0x0e, 0x90110010 },
-+	{ 0x0f, 0x400100f1 },
-+	{ 0x10, 0x02a1902e },
-+	{ 0x11, 0x500000f2 },
-+	{ 0x12, 0x500000f3 },
-+	{}
- };
- 
- /*
-@@ -1217,9 +1239,16 @@ static const unsigned int gateway9200_m4_2_pin_configs[8] = {
-     102801DE
-     102801E8
- */
--static const unsigned int dell9200_d21_pin_configs[8] = {
--	0x400001f0, 0x400001f1, 0x02214030, 0x01014010, 
--	0x02a19020, 0x01a19021, 0x90100140, 0x01813122,
-+static const struct hda_pintbl dell9200_d21_pin_configs[] = {
-+	{ 0x08, 0x400001f0 },
-+	{ 0x09, 0x400001f1 },
+-static const unsigned int ref92hd73xx_pin_configs[13] = {
+-	0x02214030, 0x02a19040, 0x01a19020, 0x02214030,
+-	0x0181302e, 0x01014010, 0x01014020, 0x01014030,
+-	0x02319040, 0x90a000f0, 0x90a000f0, 0x01452050,
+-	0x01452050,
++static const struct hda_pintbl ref92hd73xx_pin_configs[] = {
++	{ 0x0a, 0x02214030 },
++	{ 0x0b, 0x02a19040 },
++	{ 0x0c, 0x01a19020 },
 +	{ 0x0d, 0x02214030 },
-+	{ 0x0e, 0x01014010 },
-+	{ 0x0f, 0x02a19020 },
-+	{ 0x10, 0x01a19021 },
-+	{ 0x11, 0x90100140 },
-+	{ 0x12, 0x01813122 },
++	{ 0x0e, 0x0181302e },
++	{ 0x0f, 0x01014010 },
++	{ 0x10, 0x01014020 },
++	{ 0x11, 0x01014030 },
++	{ 0x12, 0x02319040 },
++	{ 0x13, 0x90a000f0 },
++	{ 0x14, 0x90a000f0 },
++	{ 0x22, 0x01452050 },
++	{ 0x23, 0x01452050 },
 +	{}
  };
  
- /* 
-@@ -1227,9 +1256,16 @@ static const unsigned int dell9200_d21_pin_configs[8] = {
-     102801C0
-     102801C1
- */
--static const unsigned int dell9200_d22_pin_configs[8] = {
--	0x400001f0, 0x400001f1, 0x0221401f, 0x01014010, 
--	0x01813020, 0x02a19021, 0x90100140, 0x400001f2,
-+static const struct hda_pintbl dell9200_d22_pin_configs[] = {
-+	{ 0x08, 0x400001f0 },
-+	{ 0x09, 0x400001f1 },
-+	{ 0x0d, 0x0221401f },
-+	{ 0x0e, 0x01014010 },
-+	{ 0x0f, 0x01813020 },
-+	{ 0x10, 0x02a19021 },
-+	{ 0x11, 0x90100140 },
-+	{ 0x12, 0x400001f2 },
+-static const unsigned int dell_m6_pin_configs[13] = {
+-	0x0321101f, 0x4f00000f, 0x4f0000f0, 0x90170110,
+-	0x03a11020, 0x0321101f, 0x4f0000f0, 0x4f0000f0,
+-	0x4f0000f0, 0x90a60160, 0x4f0000f0, 0x4f0000f0,
+-	0x4f0000f0,
++static const struct hda_pintbl dell_m6_pin_configs[] = {
++	{ 0x0a, 0x0321101f },
++	{ 0x0b, 0x4f00000f },
++	{ 0x0c, 0x4f0000f0 },
++	{ 0x0d, 0x90170110 },
++	{ 0x0e, 0x03a11020 },
++	{ 0x0f, 0x0321101f },
++	{ 0x10, 0x4f0000f0 },
++	{ 0x11, 0x4f0000f0 },
++	{ 0x12, 0x4f0000f0 },
++	{ 0x13, 0x90a60160 },
++	{ 0x14, 0x4f0000f0 },
++	{ 0x22, 0x4f0000f0 },
++	{ 0x23, 0x4f0000f0 },
 +	{}
  };
  
- /* 
-@@ -1241,9 +1277,16 @@ static const unsigned int dell9200_d22_pin_configs[8] = {
-     102801DA
-     102801E3
- */
--static const unsigned int dell9200_d23_pin_configs[8] = {
--	0x400001f0, 0x400001f1, 0x0221401f, 0x01014010, 
--	0x01813020, 0x01a19021, 0x90100140, 0x400001f2, 
-+static const struct hda_pintbl dell9200_d23_pin_configs[] = {
-+	{ 0x08, 0x400001f0 },
-+	{ 0x09, 0x400001f1 },
-+	{ 0x0d, 0x0221401f },
-+	{ 0x0e, 0x01014010 },
-+	{ 0x0f, 0x01813020 },
-+	{ 0x10, 0x01a19021 },
-+	{ 0x11, 0x90100140 },
-+	{ 0x12, 0x400001f2 },
+-static const unsigned int alienware_m17x_pin_configs[13] = {
+-	0x0321101f, 0x0321101f, 0x03a11020, 0x03014020,
+-	0x90170110, 0x4f0000f0, 0x4f0000f0, 0x4f0000f0,
+-	0x4f0000f0, 0x90a60160, 0x4f0000f0, 0x4f0000f0,
+-	0x904601b0,
++static const struct hda_pintbl alienware_m17x_pin_configs[] = {
++	{ 0x0a, 0x0321101f },
++	{ 0x0b, 0x0321101f },
++	{ 0x0c, 0x03a11020 },
++	{ 0x0d, 0x03014020 },
++	{ 0x0e, 0x90170110 },
++	{ 0x0f, 0x4f0000f0 },
++	{ 0x10, 0x4f0000f0 },
++	{ 0x11, 0x4f0000f0 },
++	{ 0x12, 0x4f0000f0 },
++	{ 0x13, 0x90a60160 },
++	{ 0x14, 0x4f0000f0 },
++	{ 0x22, 0x4f0000f0 },
++	{ 0x23, 0x904601b0 },
 +	{}
  };
  
- 
-@@ -1252,9 +1295,16 @@ static const unsigned int dell9200_d23_pin_configs[8] = {
-     102801B5 (Dell Inspiron 630m)
-     102801D8 (Dell Inspiron 640m)
- */
--static const unsigned int dell9200_m21_pin_configs[8] = {
--	0x40c003fa, 0x03441340, 0x0321121f, 0x90170310,
--	0x408003fb, 0x03a11020, 0x401003fc, 0x403003fd,
-+static const struct hda_pintbl dell9200_m21_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x03441340 },
-+	{ 0x0d, 0x0321121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x408003fb },
-+	{ 0x10, 0x03a11020 },
-+	{ 0x11, 0x401003fc },
-+	{ 0x12, 0x403003fd },
+-static const unsigned int intel_dg45id_pin_configs[13] = {
+-	0x02214230, 0x02A19240, 0x01013214, 0x01014210,
+-	0x01A19250, 0x01011212, 0x01016211
++static const struct hda_pintbl intel_dg45id_pin_configs[] = {
++	{ 0x0a, 0x02214230 },
++	{ 0x0b, 0x02A19240 },
++	{ 0x0c, 0x01013214 },
++	{ 0x0d, 0x01014210 },
++	{ 0x0e, 0x01A19250 },
++	{ 0x0f, 0x01011212 },
++	{ 0x10, 0x01016211 },
 +	{}
  };
  
- /* 
-@@ -1265,9 +1315,16 @@ static const unsigned int dell9200_m21_pin_configs[8] = {
-     102801D4 
-     102801D6 
- */
--static const unsigned int dell9200_m22_pin_configs[8] = {
--	0x40c003fa, 0x0144131f, 0x0321121f, 0x90170310, 
--	0x90a70321, 0x03a11020, 0x401003fb, 0x40f000fc,
-+static const struct hda_pintbl dell9200_m22_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x0144131f },
-+	{ 0x0d, 0x0321121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x90a70321 },
-+	{ 0x10, 0x03a11020 },
-+	{ 0x11, 0x401003fb },
-+	{ 0x12, 0x40f000fc },
-+	{}
- };
- 
- /* 
-@@ -1275,9 +1332,16 @@ static const unsigned int dell9200_m22_pin_configs[8] = {
-     102801CE (Dell XPS M1710)
-     102801CF (Dell Precision M90)
- */
--static const unsigned int dell9200_m23_pin_configs[8] = {
--	0x40c003fa, 0x01441340, 0x0421421f, 0x90170310,
--	0x408003fb, 0x04a1102e, 0x90170311, 0x403003fc,
-+static const struct hda_pintbl dell9200_m23_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x01441340 },
-+	{ 0x0d, 0x0421421f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x408003fb },
-+	{ 0x10, 0x04a1102e },
-+	{ 0x11, 0x90170311 },
-+	{ 0x12, 0x403003fc },
-+	{}
- };
- 
- /*
-@@ -1287,9 +1351,16 @@ static const unsigned int dell9200_m23_pin_configs[8] = {
-     102801CB (Dell Latitude 120L)
-     102801D3
- */
--static const unsigned int dell9200_m24_pin_configs[8] = {
--	0x40c003fa, 0x404003fb, 0x0321121f, 0x90170310, 
--	0x408003fc, 0x03a11020, 0x401003fd, 0x403003fe, 
-+static const struct hda_pintbl dell9200_m24_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x404003fb },
-+	{ 0x0d, 0x0321121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x408003fc },
-+	{ 0x10, 0x03a11020 },
-+	{ 0x11, 0x401003fd },
-+	{ 0x12, 0x403003fe },
-+	{}
- };
- 
- /*
-@@ -1298,9 +1369,16 @@ static const unsigned int dell9200_m24_pin_configs[8] = {
-     102801EE
-     102801EF
- */
--static const unsigned int dell9200_m25_pin_configs[8] = {
--	0x40c003fa, 0x01441340, 0x0421121f, 0x90170310, 
--	0x408003fb, 0x04a11020, 0x401003fc, 0x403003fd,
-+static const struct hda_pintbl dell9200_m25_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x01441340 },
-+	{ 0x0d, 0x0421121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x408003fb },
-+	{ 0x10, 0x04a11020 },
-+	{ 0x11, 0x401003fc },
-+	{ 0x12, 0x403003fd },
-+	{}
- };
- 
- /*
-@@ -1308,64 +1386,163 @@ static const unsigned int dell9200_m25_pin_configs[8] = {
-     102801F5 (Dell Inspiron 1501)
-     102801F6
- */
--static const unsigned int dell9200_m26_pin_configs[8] = {
--	0x40c003fa, 0x404003fb, 0x0421121f, 0x90170310, 
--	0x408003fc, 0x04a11020, 0x401003fd, 0x403003fe,
-+static const struct hda_pintbl dell9200_m26_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x404003fb },
-+	{ 0x0d, 0x0421121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x408003fc },
-+	{ 0x10, 0x04a11020 },
-+	{ 0x11, 0x401003fd },
-+	{ 0x12, 0x403003fe },
-+	{}
- };
- 
- /*
-     STAC 9200-32
-     102801CD (Dell Inspiron E1705/9400)
- */
--static const unsigned int dell9200_m27_pin_configs[8] = {
--	0x40c003fa, 0x01441340, 0x0421121f, 0x90170310,
--	0x90170310, 0x04a11020, 0x90170310, 0x40f003fc,
-+static const struct hda_pintbl dell9200_m27_pin_configs[] = {
-+	{ 0x08, 0x40c003fa },
-+	{ 0x09, 0x01441340 },
-+	{ 0x0d, 0x0421121f },
-+	{ 0x0e, 0x90170310 },
-+	{ 0x0f, 0x90170310 },
-+	{ 0x10, 0x04a11020 },
-+	{ 0x11, 0x90170310 },
-+	{ 0x12, 0x40f003fc },
-+	{}
- };
- 
--static const unsigned int oqo9200_pin_configs[8] = {
--	0x40c000f0, 0x404000f1, 0x0221121f, 0x02211210,
--	0x90170111, 0x90a70120, 0x400000f2, 0x400000f3,
-+static const struct hda_pintbl oqo9200_pin_configs[] = {
-+	{ 0x08, 0x40c000f0 },
-+	{ 0x09, 0x404000f1 },
-+	{ 0x0d, 0x0221121f },
-+	{ 0x0e, 0x02211210 },
-+	{ 0x0f, 0x90170111 },
-+	{ 0x10, 0x90a70120 },
-+	{ 0x11, 0x400000f2 },
-+	{ 0x12, 0x400000f3 },
-+	{}
- };
- 
- 
--static const unsigned int *stac9200_brd_tbl[STAC_9200_MODELS] = {
--	[STAC_REF] = ref9200_pin_configs,
--	[STAC_9200_OQO] = oqo9200_pin_configs,
--	[STAC_9200_DELL_D21] = dell9200_d21_pin_configs,
--	[STAC_9200_DELL_D22] = dell9200_d22_pin_configs,
--	[STAC_9200_DELL_D23] = dell9200_d23_pin_configs,
--	[STAC_9200_DELL_M21] = dell9200_m21_pin_configs,
--	[STAC_9200_DELL_M22] = dell9200_m22_pin_configs,
--	[STAC_9200_DELL_M23] = dell9200_m23_pin_configs,
--	[STAC_9200_DELL_M24] = dell9200_m24_pin_configs,
--	[STAC_9200_DELL_M25] = dell9200_m25_pin_configs,
--	[STAC_9200_DELL_M26] = dell9200_m26_pin_configs,
--	[STAC_9200_DELL_M27] = dell9200_m27_pin_configs,
--	[STAC_9200_M4] = gateway9200_m4_pin_configs,
--	[STAC_9200_M4_2] = gateway9200_m4_2_pin_configs,
--	[STAC_9200_PANASONIC] = ref9200_pin_configs,
-+static void stac9200_fixup_panasonic(struct hda_codec *codec,
+-static const unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
+-	[STAC_92HD73XX_REF]	= ref92hd73xx_pin_configs,
+-	[STAC_DELL_M6_AMIC]	= dell_m6_pin_configs,
+-	[STAC_DELL_M6_DMIC]	= dell_m6_pin_configs,
+-	[STAC_DELL_M6_BOTH]	= dell_m6_pin_configs,
+-	[STAC_DELL_EQ]	= dell_m6_pin_configs,
+-	[STAC_ALIENWARE_M17X]	= alienware_m17x_pin_configs,
+-	[STAC_92HD73XX_INTEL]	= intel_dg45id_pin_configs,
++static void stac92hd73xx_fixup_ref(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	snd_hda_apply_pincfgs(codec, ref92hd73xx_pin_configs);
++	spec->gpio_mask = spec->gpio_dir = spec->gpio_data = 0;
++}
++
++static void stac92hd73xx_fixup_dell(struct hda_codec *codec)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	snd_hda_apply_pincfgs(codec, dell_m6_pin_configs);
++	spec->num_smuxes = 0;
++	spec->eapd_switch = 0;
++}
++
++static void stac92hd73xx_fixup_dell_eq(struct hda_codec *codec,
++				       const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	stac92hd73xx_fixup_dell(codec);
++	snd_hda_add_verbs(codec, dell_eq_core_init);
++	spec->volknob_init = 1;
++}
++
++/* Analog Mics */
++static void stac92hd73xx_fixup_dell_m6_amic(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	stac92hd73xx_fixup_dell(codec);
++	snd_hda_codec_set_pincfg(codec, 0x0b, 0x90A70170);
++	spec->num_dmics = 0;
++}
++
++/* Digital Mics */
++static void stac92hd73xx_fixup_dell_m6_dmic(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	stac92hd73xx_fixup_dell(codec);
++	snd_hda_codec_set_pincfg(codec, 0x13, 0x90A60160);
++	spec->num_dmics = 1;
++}
++
++/* Both */
++static void stac92hd73xx_fixup_dell_m6_both(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	stac92hd73xx_fixup_dell(codec);
++	snd_hda_codec_set_pincfg(codec, 0x0b, 0x90A70170);
++	snd_hda_codec_set_pincfg(codec, 0x13, 0x90A60160);
++	spec->num_dmics = 1;
++}
++
++static void stac92hd73xx_fixup_alienware_m17x(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	snd_hda_apply_pincfgs(codec, alienware_m17x_pin_configs);
++	spec->num_dmics = STAC92HD73XX_NUM_DMICS;
++	spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
++	spec->eapd_switch = 0;
++}
++
++static void stac92hd73xx_fixup_no_jd(struct hda_codec *codec,
 +				     const struct hda_fixup *fix, int action)
 +{
 +	struct sigmatel_spec *spec = codec->spec;
 +
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		spec->gpio_mask = spec->gpio_dir = 0x09;
-+		spec->gpio_data = 0x00;
-+		break;
-+	case HDA_FIXUP_ACT_PROBE:
-+		/* CF-74 has no headphone detection, and the driver should *NOT*
-+		 * do detection and HP/speaker toggle because the hardware does it.
-+		 */
-+		spec->hp_detect = 0;
-+		break;
-+	}
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++	spec->hp_detect = 0;
 +}
 +
-+
-+static const struct hda_fixup stac9200_fixups[] = {
-+	[STAC_REF] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = ref9200_pin_configs,
-+	},
-+	[STAC_9200_OQO] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = oqo9200_pin_configs,
-+		.chained = true,
-+		.chain_id = STAC_9200_EAPD_INIT,
-+	},
-+	[STAC_9200_DELL_D21] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_d21_pin_configs,
-+	},
-+	[STAC_9200_DELL_D22] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_d22_pin_configs,
-+	},
-+	[STAC_9200_DELL_D23] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_d23_pin_configs,
-+	},
-+	[STAC_9200_DELL_M21] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m21_pin_configs,
-+	},
-+	[STAC_9200_DELL_M22] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m22_pin_configs,
-+	},
-+	[STAC_9200_DELL_M23] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m23_pin_configs,
-+	},
-+	[STAC_9200_DELL_M24] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m24_pin_configs,
-+	},
-+	[STAC_9200_DELL_M25] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m25_pin_configs,
-+	},
-+	[STAC_9200_DELL_M26] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m26_pin_configs,
-+	},
-+	[STAC_9200_DELL_M27] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = dell9200_m27_pin_configs,
-+	},
-+	[STAC_9200_M4] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = gateway9200_m4_pin_configs,
-+		.chained = true,
-+		.chain_id = STAC_9200_EAPD_INIT,
-+	},
-+	[STAC_9200_M4_2] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = gateway9200_m4_2_pin_configs,
-+		.chained = true,
-+		.chain_id = STAC_9200_EAPD_INIT,
-+	},
-+	[STAC_9200_PANASONIC] = {
++static const struct hda_fixup stac92hd73xx_fixups[] = {
++	[STAC_92HD73XX_REF] = {
 +		.type = HDA_FIXUP_FUNC,
-+		.v.func = stac9200_fixup_panasonic,
++		.v.func = stac92hd73xx_fixup_ref,
 +	},
-+	[STAC_9200_EAPD_INIT] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{0x08, AC_VERB_SET_EAPD_BTLENABLE, 0x02},
-+			{}
-+		},
++	[STAC_DELL_M6_AMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_dell_m6_amic,
 +	},
++	[STAC_DELL_M6_DMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_dell_m6_dmic,
++	},
++	[STAC_DELL_M6_BOTH] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_dell_m6_both,
++	},
++	[STAC_DELL_EQ]	= {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_dell_eq,
++	},
++	[STAC_ALIENWARE_M17X] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_alienware_m17x,
++	},
++	[STAC_92HD73XX_INTEL] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = intel_dg45id_pin_configs,
++	},
++	[STAC_92HD73XX_NO_JD] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd73xx_fixup_no_jd,
++	}
  };
  
--static const char * const stac9200_models[STAC_9200_MODELS] = {
--	[STAC_AUTO] = "auto",
--	[STAC_REF] = "ref",
--	[STAC_9200_OQO] = "oqo",
--	[STAC_9200_DELL_D21] = "dell-d21",
--	[STAC_9200_DELL_D22] = "dell-d22",
--	[STAC_9200_DELL_D23] = "dell-d23",
--	[STAC_9200_DELL_M21] = "dell-m21",
--	[STAC_9200_DELL_M22] = "dell-m22",
--	[STAC_9200_DELL_M23] = "dell-m23",
--	[STAC_9200_DELL_M24] = "dell-m24",
--	[STAC_9200_DELL_M25] = "dell-m25",
--	[STAC_9200_DELL_M26] = "dell-m26",
--	[STAC_9200_DELL_M27] = "dell-m27",
--	[STAC_9200_M4] = "gateway-m4",
--	[STAC_9200_M4_2] = "gateway-m4-2",
--	[STAC_9200_PANASONIC] = "panasonic",
--};
--
--static const struct snd_pci_quirk stac9200_cfg_tbl[] = {
-+static const struct hda_model_fixup stac9200_models[] = {
-+	{ .id = STAC_REF, .name = "ref" },
-+	{ .id = STAC_9200_OQO, .name = "oqo" },
-+	{ .id = STAC_9200_DELL_D21, .name = "dell-d21" },
-+	{ .id = STAC_9200_DELL_D22, .name = "dell-d22" },
-+	{ .id = STAC_9200_DELL_D23, .name = "dell-d23" },
-+	{ .id = STAC_9200_DELL_M21, .name = "dell-m21" },
-+	{ .id = STAC_9200_DELL_M22, .name = "dell-m22" },
-+	{ .id = STAC_9200_DELL_M23, .name = "dell-m23" },
-+	{ .id = STAC_9200_DELL_M24, .name = "dell-m24" },
-+	{ .id = STAC_9200_DELL_M25, .name = "dell-m25" },
-+	{ .id = STAC_9200_DELL_M26, .name = "dell-m26" },
-+	{ .id = STAC_9200_DELL_M27, .name = "dell-m27" },
-+	{ .id = STAC_9200_M4, .name = "gateway-m4" },
-+	{ .id = STAC_9200_M4_2, .name = "gateway-m4-2" },
-+	{ .id = STAC_9200_PANASONIC, .name = "panasonic" },
+-static const char * const stac92hd73xx_models[STAC_92HD73XX_MODELS] = {
+-	[STAC_92HD73XX_AUTO] = "auto",
+-	[STAC_92HD73XX_NO_JD] = "no-jd",
+-	[STAC_92HD73XX_REF] = "ref",
+-	[STAC_92HD73XX_INTEL] = "intel",
+-	[STAC_DELL_M6_AMIC] = "dell-m6-amic",
+-	[STAC_DELL_M6_DMIC] = "dell-m6-dmic",
+-	[STAC_DELL_M6_BOTH] = "dell-m6",
+-	[STAC_DELL_EQ] = "dell-eq",
+-	[STAC_ALIENWARE_M17X] = "alienware",
++static const struct hda_model_fixup stac92hd73xx_models[] = {
++	{ .id = STAC_92HD73XX_NO_JD, .name = "no-jd" },
++	{ .id = STAC_92HD73XX_REF, .name = "ref" },
++	{ .id = STAC_92HD73XX_INTEL, .name = "intel" },
++	{ .id = STAC_DELL_M6_AMIC, .name = "dell-m6-amic" },
++	{ .id = STAC_DELL_M6_DMIC, .name = "dell-m6-dmic" },
++	{ .id = STAC_DELL_M6_BOTH, .name = "dell-m6" },
++	{ .id = STAC_DELL_EQ, .name = "dell-eq" },
++	{ .id = STAC_ALIENWARE_M17X, .name = "alienware" },
 +	{}
-+};
-+
-+static const struct snd_pci_quirk stac9200_fixup_tbl[] = {
+ };
+ 
+-static const struct snd_pci_quirk stac92hd73xx_cfg_tbl[] = {
++static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
  	/* SigmaTel reference board */
  	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
- 		      "DFI LanParty", STAC_REF),
-@@ -4358,6 +4535,8 @@ static int stac92xx_init(struct hda_codec *codec)
- 	if (spec->init)
- 		snd_hda_sequence_write(codec, spec->init);
- 
-+	snd_hda_apply_verbs(codec);
-+
- 	/* power down adcs initially */
- 	if (spec->powerdown_adcs)
- 		for (i = 0; i < spec->num_adcs; i++)
-@@ -5177,15 +5356,9 @@ static int patch_stac9200(struct hda_codec *codec)
- 
+ 				"DFI LanParty", STAC_92HD73XX_REF),
+@@ -1869,10 +2030,7 @@ static const struct snd_pci_quirk stac92hd73xx_cfg_tbl[] = {
+ 				"Dell Studio XPS 1645", STAC_DELL_M6_DMIC),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0413,
+ 				"Dell Studio 1558", STAC_DELL_M6_DMIC),
+-	{} /* terminator */
+-};
+-
+-static const struct snd_pci_quirk stac92hd73xx_codec_id_cfg_tbl[] = {
++	/* codec SSID matching */
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02a1,
+ 		      "Alienware M17x", STAC_ALIENWARE_M17X),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x043a,
+@@ -6262,23 +6420,9 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
  	spec = codec->spec;
- 	spec->linear_tone_beep = 1;
--	spec->board_config = snd_hda_check_board_config(codec, STAC_9200_MODELS,
--							stac9200_models,
--							stac9200_cfg_tbl);
+ 	spec->linear_tone_beep = 0;
+ 	codec->slave_dig_outs = stac92hd73xx_slave_dig_outs;
+-	spec->board_config = snd_hda_check_board_config(codec,
+-							STAC_92HD73XX_MODELS,
+-							stac92hd73xx_models,
+-							stac92hd73xx_cfg_tbl);
+-	/* check codec subsystem id if not found */
+-	if (spec->board_config < 0)
+-		spec->board_config =
+-			snd_hda_check_board_codec_sid_config(codec,
+-				STAC_92HD73XX_MODELS, stac92hd73xx_models,
+-				stac92hd73xx_codec_id_cfg_tbl);
+-again:
 -	if (spec->board_config < 0)
 -		snd_printdd(KERN_INFO "hda_codec: %s: BIOS auto-probing.\n",
 -			    codec->chip_name);
 -	else
 -		stac92xx_set_config_regs(codec,
--					 stac9200_brd_tbl[spec->board_config]);
+-				stac92hd73xx_brd_tbl[spec->board_config]);
 +
-+	snd_hda_pick_fixup(codec, stac9200_models, stac9200_fixup_tbl,
-+			   stac9200_fixups);
++	snd_hda_pick_fixup(codec, stac92hd73xx_models, stac92hd73xx_fixup_tbl,
++			   stac92hd73xx_fixups);
  
- 	spec->multiout.max_channels = 2;
- 	spec->multiout.num_dacs = 1;
-@@ -5196,19 +5369,11 @@ static int patch_stac9200(struct hda_codec *codec)
- 	spec->num_dmics = 0;
- 	spec->num_adcs = 1;
- 	spec->num_pwrs = 0;
-+	snd_hda_add_verbs(codec, stac9200_eapd_init);
+ 	num_dacs = snd_hda_get_connections(codec, 0x0a,
+ 			conn, STAC92HD73_DAC_COUNT + 2) - 1;
+@@ -6288,7 +6432,7 @@ again:
+ 		       "number of channels defaulting to DAC count\n");
+ 		num_dacs = STAC92HD73_DAC_COUNT;
+ 	}
+-	spec->init = stac92hd73xx_core_init;
++
+ 	switch (num_dacs) {
+ 	case 0x3: /* 6 Channel */
+ 		spec->aloopback_ctl = stac92hd73xx_6ch_loopback;
+@@ -6320,76 +6464,37 @@ again:
+ 	spec->capvols = stac92hd73xx_capvols;
+ 	spec->capsws = stac92hd73xx_capsws;
  
--	if (spec->board_config == STAC_9200_M4 ||
--	    spec->board_config == STAC_9200_M4_2 ||
--	    spec->board_config == STAC_9200_OQO)
--		spec->init = stac9200_eapd_init;
--	else
--		spec->init = stac9200_core_init;
- 	spec->mixer = stac9200_mixer;
+-	switch (spec->board_config) {
+-	case STAC_DELL_EQ:
+-		spec->init = dell_eq_core_init;
+-		/* fallthru */
+-	case STAC_DELL_M6_AMIC:
+-	case STAC_DELL_M6_DMIC:
+-	case STAC_DELL_M6_BOTH:
+-		spec->num_smuxes = 0;
+-		spec->eapd_switch = 0;
++	/* GPIO0 High = Enable EAPD */
++	spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
++	spec->gpio_data = 0x01;
  
--	if (spec->board_config == STAC_9200_PANASONIC) {
--		spec->gpio_mask = spec->gpio_dir = 0x09;
--		spec->gpio_data = 0x00;
+-		switch (spec->board_config) {
+-		case STAC_DELL_M6_AMIC: /* Analog Mics */
+-			snd_hda_codec_set_pincfg(codec, 0x0b, 0x90A70170);
+-			spec->num_dmics = 0;
+-			break;
+-		case STAC_DELL_M6_DMIC: /* Digital Mics */
+-			snd_hda_codec_set_pincfg(codec, 0x13, 0x90A60160);
+-			spec->num_dmics = 1;
+-			break;
+-		case STAC_DELL_M6_BOTH: /* Both */
+-			snd_hda_codec_set_pincfg(codec, 0x0b, 0x90A70170);
+-			snd_hda_codec_set_pincfg(codec, 0x13, 0x90A60160);
+-			spec->num_dmics = 1;
+-			break;
+-		}
+-		break;
+-	case STAC_ALIENWARE_M17X:
+-		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+-		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+-		spec->eapd_switch = 0;
+-		break;
+-	default:
+-		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+-		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+-		spec->eapd_switch = 1;
+-		break;
 -	}
-+	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+-	if (spec->board_config != STAC_92HD73XX_REF) {
+-		/* GPIO0 High = Enable EAPD */
+-		spec->eapd_mask = spec->gpio_mask = spec->gpio_dir = 0x1;
+-		spec->gpio_data = 0x01;
+-	}
++	spec->num_dmics = STAC92HD73XX_NUM_DMICS;
++	spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
++	spec->eapd_switch = 1;
  
- 	err = stac9200_parse_auto_config(codec);
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd73xx_pwr_nids);
+ 	spec->pwr_nids = stac92hd73xx_pwr_nids;
+ 
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
++	if (!spec->volknob_init)
++		snd_hda_add_verbs(codec, stac92hd73xx_core_init);
++
+ 	err = stac92xx_parse_auto_config(codec);
+ 
+-	if (!err) {
+-		if (spec->board_config < 0) {
+-			printk(KERN_WARNING "hda_codec: No auto-config is "
+-			       "available, default to model=ref\n");
+-			spec->board_config = STAC_92HD73XX_REF;
+-			goto again;
+-		}
++	if (!err)
+ 		err = -EINVAL;
+-	}
+-
  	if (err < 0) {
-@@ -5216,14 +5381,10 @@ static int patch_stac9200(struct hda_codec *codec)
+ 		stac92xx_free(codec);
  		return err;
  	}
  
--	/* CF-74 has no headphone detection, and the driver should *NOT*
--	 * do detection and HP/speaker toggle because the hardware does it.
--	 */
--	if (spec->board_config == STAC_9200_PANASONIC)
+-	if (spec->board_config == STAC_92HD73XX_NO_JD)
 -		spec->hp_detect = 0;
 -
  	codec->patch_ops = stac92xx_patch_ops;
+ 
+ 	codec->proc_widget_hook = stac92hd7x_proc_hook;
  
 +	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
 +
