@@ -1,17 +1,15 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 4/4] ALSA: hdsp - Remove obsolete settings
-	functions
-Date: Tue, 15 Jan 2013 15:18:13 +0100
-Message-ID: <1358259493-17974-5-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1358259493-17974-1-git-send-email-adi@drcomp.erfurt.thur.de>
- <1358259493-17974-2-git-send-email-adi@drcomp.erfurt.thur.de>
- <1358259493-17974-3-git-send-email-adi@drcomp.erfurt.thur.de>
- <1358259493-17974-4-git-send-email-adi@drcomp.erfurt.thur.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Make it work with sound-unstable.git
+Date: Tue, 15 Jan 2013 15:18:41 +0100
+Message-ID: <1358259521-25245-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1358259493-17974-4-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6991A26538B
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 15:18:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,378 +19,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-With HDSP_TOGGLE_SETTING in place, these functions are no longer
-required. Removing them makes the code DRY and considerably shorter.
+To be able to build the new code (so we can run aggregate tests on it)
+the following patch needs to be applied.
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ configure.ac          |    8 +++++++
+ hda-ctlsh.c           |    5 ++++
+ include/linux/ctype.h |   64 +++++++++++++++++++++++++++++++++++++++++++++++++
+ snd-wrapper.c         |   32 +++++++++++++++++++++++++
+ 4 files changed, 109 insertions(+)
+ create mode 100644 include/linux/ctype.h
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 45a101a..6cce259 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -1770,185 +1770,6 @@ static int snd_hdsp_put_toggle_setting(struct snd_kcontrol *kcontrol,
- 	return change;
+diff --git a/configure.ac b/configure.ac
+index 3103eb5..80b68a6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -182,6 +182,14 @@ if test "$OLD_HDA_CMD" = "1"; then
+   AC_DEFINE(OLD_HDA_CMD)
+ fi
+ 
++AC_MSG_CHECKING(for user_mutex)
++if grep -q 'struct mutex user_mutex' hda/hda_codec.h; then
++  AC_DEFINE(HAVE_USER_MUTEX)
++  AC_MSG_RESULT(yes)
++else
++  AC_MSG_RESULT(no)
++fi
++
+ AC_MSG_CHECKING(for new pm_notify callback)
+ ac_save_CFLAGS="$CFLAGS"
+ CFLAGS="$CFLAGS -Iinclude"
+diff --git a/hda-ctlsh.c b/hda-ctlsh.c
+index 5ad95fc..04fc318 100644
+--- a/hda-ctlsh.c
++++ b/hda-ctlsh.c
+@@ -537,6 +537,11 @@ int snd_hda_get_bool_hint(struct hda_codec *codec, const char *key)
+ 	return -ENOENT;
  }
  
--
--#define HDSP_SPDIF_OUT(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
--  .info = snd_hdsp_info_spdif_bits, \
--  .get = snd_hdsp_get_spdif_out, .put = snd_hdsp_put_spdif_out }
--
--static int hdsp_spdif_out(struct hdsp *hdsp)
--{
--	return (hdsp->control_register & HDSP_SPDIFOpticalOut) ? 1 : 0;
--}
--
--static int hdsp_set_spdif_output(struct hdsp *hdsp, int out)
--{
--	if (out)
--		hdsp->control_register |= HDSP_SPDIFOpticalOut;
--	else
--		hdsp->control_register &= ~HDSP_SPDIFOpticalOut;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--#define snd_hdsp_info_spdif_bits	snd_ctl_boolean_mono_info
--
--static int snd_hdsp_get_spdif_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = hdsp_spdif_out(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_spdif_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	unsigned int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_spdif_out(hdsp);
--	hdsp_set_spdif_output(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
--#define HDSP_SPDIF_PROFESSIONAL(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
--  .info = snd_hdsp_info_spdif_bits, \
--  .get = snd_hdsp_get_spdif_professional, .put = snd_hdsp_put_spdif_professional }
--
--static int hdsp_spdif_professional(struct hdsp *hdsp)
--{
--	return (hdsp->control_register & HDSP_SPDIFProfessional) ? 1 : 0;
--}
--
--static int hdsp_set_spdif_professional(struct hdsp *hdsp, int val)
--{
--	if (val)
--		hdsp->control_register |= HDSP_SPDIFProfessional;
--	else
--		hdsp->control_register &= ~HDSP_SPDIFProfessional;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--static int snd_hdsp_get_spdif_professional(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = hdsp_spdif_professional(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_spdif_professional(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	unsigned int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_spdif_professional(hdsp);
--	hdsp_set_spdif_professional(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
--#define HDSP_SPDIF_EMPHASIS(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
--  .info = snd_hdsp_info_spdif_bits, \
--  .get = snd_hdsp_get_spdif_emphasis, .put = snd_hdsp_put_spdif_emphasis }
--
--static int hdsp_spdif_emphasis(struct hdsp *hdsp)
--{
--	return (hdsp->control_register & HDSP_SPDIFEmphasis) ? 1 : 0;
--}
--
--static int hdsp_set_spdif_emphasis(struct hdsp *hdsp, int val)
--{
--	if (val)
--		hdsp->control_register |= HDSP_SPDIFEmphasis;
--	else
--		hdsp->control_register &= ~HDSP_SPDIFEmphasis;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--static int snd_hdsp_get_spdif_emphasis(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = hdsp_spdif_emphasis(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_spdif_emphasis(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	unsigned int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_spdif_emphasis(hdsp);
--	hdsp_set_spdif_emphasis(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
--#define HDSP_SPDIF_NON_AUDIO(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
--  .info = snd_hdsp_info_spdif_bits, \
--  .get = snd_hdsp_get_spdif_nonaudio, .put = snd_hdsp_put_spdif_nonaudio }
--
--static int hdsp_spdif_nonaudio(struct hdsp *hdsp)
--{
--	return (hdsp->control_register & HDSP_SPDIFNonAudio) ? 1 : 0;
--}
--
--static int hdsp_set_spdif_nonaudio(struct hdsp *hdsp, int val)
--{
--	if (val)
--		hdsp->control_register |= HDSP_SPDIFNonAudio;
--	else
--		hdsp->control_register &= ~HDSP_SPDIFNonAudio;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--static int snd_hdsp_get_spdif_nonaudio(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = hdsp_spdif_nonaudio(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_spdif_nonaudio(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	unsigned int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_spdif_nonaudio(hdsp);
--	hdsp_set_spdif_nonaudio(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
- #define HDSP_SPDIF_SAMPLE_RATE(xname, xindex) \
- { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-   .name = xname, \
-@@ -2548,114 +2369,6 @@ static int snd_hdsp_put_phone_gain(struct snd_kcontrol *kcontrol, struct snd_ctl
- 	return change;
- }
++int snd_hda_get_int_hint(struct hda_codec *codec, const char *key, int *valp)
++{
++	return -ENOENT;
++}
++
+ #ifdef HAVE_USER_PINCFGS
+ static void get_drv_pincfgs(void)
+ {
+diff --git a/include/linux/ctype.h b/include/linux/ctype.h
+new file mode 100644
+index 0000000..8acfe31
+--- /dev/null
++++ b/include/linux/ctype.h
+@@ -0,0 +1,64 @@
++#ifndef _LINUX_CTYPE_H
++#define _LINUX_CTYPE_H
++
++/*
++ * NOTE! This ctype does not handle EOF like the standard C
++ * library is required to.
++ */
++
++#define _U	0x01	/* upper */
++#define _L	0x02	/* lower */
++#define _D	0x04	/* digit */
++#define _C	0x08	/* cntrl */
++#define _P	0x10	/* punct */
++#define _S	0x20	/* white space (space/lf/tab) */
++#define _X	0x40	/* hex digit */
++#define _SP	0x80	/* hard space (0x20) */
++
++extern const unsigned char _ctype[];
++
++#define __ismask(x) (_ctype[(int)(unsigned char)(x)])
++
++#define isalnum(c)	((__ismask(c)&(_U|_L|_D)) != 0)
++#define isalpha(c)	((__ismask(c)&(_U|_L)) != 0)
++#define iscntrl(c)	((__ismask(c)&(_C)) != 0)
++#define isdigit(c)	((__ismask(c)&(_D)) != 0)
++#define isgraph(c)	((__ismask(c)&(_P|_U|_L|_D)) != 0)
++#define islower(c)	((__ismask(c)&(_L)) != 0)
++#define isprint(c)	((__ismask(c)&(_P|_U|_L|_D|_SP)) != 0)
++#define ispunct(c)	((__ismask(c)&(_P)) != 0)
++/* Note: isspace() must return false for %NUL-terminator */
++#define isspace(c)	((__ismask(c)&(_S)) != 0)
++#define isupper(c)	((__ismask(c)&(_U)) != 0)
++#define isxdigit(c)	((__ismask(c)&(_D|_X)) != 0)
++
++#define isascii(c) (((unsigned char)(c))<=0x7f)
++#define toascii(c) (((unsigned char)(c))&0x7f)
++
++static inline unsigned char __tolower(unsigned char c)
++{
++	if (isupper(c))
++		c -= 'A'-'a';
++	return c;
++}
++
++static inline unsigned char __toupper(unsigned char c)
++{
++	if (islower(c))
++		c -= 'a'-'A';
++	return c;
++}
++
++#define tolower(c) __tolower(c)
++#define toupper(c) __toupper(c)
++
++/*
++ * Fast implementation of tolower() for internal usage. Do not use in your
++ * code.
++ */
++static inline char _tolower(const char c)
++{
++	return c | 0x20;
++}
++
++#endif
+diff --git a/snd-wrapper.c b/snd-wrapper.c
+index 69cd19c..c2649d9 100644
+--- a/snd-wrapper.c
++++ b/snd-wrapper.c
+@@ -27,6 +27,35 @@
+ #include "hda/hda_codec.h"
+ #include "hda-types.h"
+ #include "hda-log.h"
++#include <linux/ctype.h>
++
++/* Copied from lib/ctype.c */
++const unsigned char _ctype[] = {
++_C,_C,_C,_C,_C,_C,_C,_C,				/* 0-7 */
++_C,_C|_S,_C|_S,_C|_S,_C|_S,_C|_S,_C,_C,			/* 8-15 */
++_C,_C,_C,_C,_C,_C,_C,_C,				/* 16-23 */
++_C,_C,_C,_C,_C,_C,_C,_C,				/* 24-31 */
++_S|_SP,_P,_P,_P,_P,_P,_P,_P,				/* 32-39 */
++_P,_P,_P,_P,_P,_P,_P,_P,				/* 40-47 */
++_D,_D,_D,_D,_D,_D,_D,_D,				/* 48-55 */
++_D,_D,_P,_P,_P,_P,_P,_P,				/* 56-63 */
++_P,_U|_X,_U|_X,_U|_X,_U|_X,_U|_X,_U|_X,_U,		/* 64-71 */
++_U,_U,_U,_U,_U,_U,_U,_U,				/* 72-79 */
++_U,_U,_U,_U,_U,_U,_U,_U,				/* 80-87 */
++_U,_U,_U,_P,_P,_P,_P,_P,				/* 88-95 */
++_P,_L|_X,_L|_X,_L|_X,_L|_X,_L|_X,_L|_X,_L,		/* 96-103 */
++_L,_L,_L,_L,_L,_L,_L,_L,				/* 104-111 */
++_L,_L,_L,_L,_L,_L,_L,_L,				/* 112-119 */
++_L,_L,_L,_P,_P,_P,_P,_C,				/* 120-127 */
++0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,			/* 128-143 */
++0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,			/* 144-159 */
++_S|_SP,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,	/* 160-175 */
++_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,_P,	/* 176-191 */
++_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,_U,	/* 192-207 */
++_U,_U,_U,_U,_U,_U,_U,_P,_U,_U,_U,_U,_U,_U,_U,_L,	/* 208-223 */
++_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,_L,	/* 224-239 */
++_L,_L,_L,_L,_L,_L,_L,_P,_L,_L,_L,_L,_L,_L,_L,_L};	/* 240-255 */
++
  
--#define HDSP_XLR_BREAKOUT_CABLE(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--  .name = xname, \
--  .index = xindex, \
--  .info = snd_hdsp_info_xlr_breakout_cable, \
--  .get = snd_hdsp_get_xlr_breakout_cable, \
--  .put = snd_hdsp_put_xlr_breakout_cable \
--}
--
--static int hdsp_xlr_breakout_cable(struct hdsp *hdsp)
--{
--	if (hdsp->control_register & HDSP_XLRBreakoutCable)
--		return 1;
--	return 0;
--}
--
--static int hdsp_set_xlr_breakout_cable(struct hdsp *hdsp, int mode)
--{
--	if (mode)
--		hdsp->control_register |= HDSP_XLRBreakoutCable;
--	else
--		hdsp->control_register &= ~HDSP_XLRBreakoutCable;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--#define snd_hdsp_info_xlr_breakout_cable	snd_ctl_boolean_mono_info
--
--static int snd_hdsp_get_xlr_breakout_cable(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.enumerated.item[0] = hdsp_xlr_breakout_cable(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_xlr_breakout_cable(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_xlr_breakout_cable(hdsp);
--	hdsp_set_xlr_breakout_cable(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
--/* (De)activates old RME Analog Extension Board
--   These are connected to the internal ADAT connector
--   Switching this on desactivates external ADAT
--*/
--#define HDSP_AEB(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--  .name = xname, \
--  .index = xindex, \
--  .info = snd_hdsp_info_aeb, \
--  .get = snd_hdsp_get_aeb, \
--  .put = snd_hdsp_put_aeb \
--}
--
--static int hdsp_aeb(struct hdsp *hdsp)
--{
--	if (hdsp->control_register & HDSP_AnalogExtensionBoard)
--		return 1;
--	return 0;
--}
--
--static int hdsp_set_aeb(struct hdsp *hdsp, int mode)
--{
--	if (mode)
--		hdsp->control_register |= HDSP_AnalogExtensionBoard;
--	else
--		hdsp->control_register &= ~HDSP_AnalogExtensionBoard;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--#define snd_hdsp_info_aeb		snd_ctl_boolean_mono_info
--
--static int snd_hdsp_get_aeb(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.enumerated.item[0] = hdsp_aeb(hdsp);
--	return 0;
--}
--
--static int snd_hdsp_put_aeb(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_aeb(hdsp);
--	hdsp_set_aeb(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
- #define HDSP_PREF_SYNC_REF(xname, xindex) \
- { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-   .name = xname, \
-@@ -2844,58 +2557,6 @@ static int snd_hdsp_get_autosync_ref(struct snd_kcontrol *kcontrol, struct snd_c
+ int snd_pcm_format_width(int format)
+ {
+@@ -46,6 +75,9 @@ int snd_pcm_format_width(int format)
+ 
+ int snd_hda_create_hwdep(struct hda_codec *codec)
+ {
++#ifdef HAVE_USER_MUTEX
++	mutex_init(&codec->user_mutex);
++#endif
  	return 0;
  }
  
--#define HDSP_LINE_OUT(xname, xindex) \
--{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--  .name = xname, \
--  .index = xindex, \
--  .info = snd_hdsp_info_line_out, \
--  .get = snd_hdsp_get_line_out, \
--  .put = snd_hdsp_put_line_out \
--}
--
--static int hdsp_line_out(struct hdsp *hdsp)
--{
--	return (hdsp->control_register & HDSP_LineOut) ? 1 : 0;
--}
--
--static int hdsp_set_line_output(struct hdsp *hdsp, int out)
--{
--	if (out)
--		hdsp->control_register |= HDSP_LineOut;
--	else
--		hdsp->control_register &= ~HDSP_LineOut;
--	hdsp_write(hdsp, HDSP_controlRegister, hdsp->control_register);
--	return 0;
--}
--
--#define snd_hdsp_info_line_out		snd_ctl_boolean_mono_info
--
--static int snd_hdsp_get_line_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--
--	spin_lock_irq(&hdsp->lock);
--	ucontrol->value.integer.value[0] = hdsp_line_out(hdsp);
--	spin_unlock_irq(&hdsp->lock);
--	return 0;
--}
--
--static int snd_hdsp_put_line_out(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct hdsp *hdsp = snd_kcontrol_chip(kcontrol);
--	int change;
--	unsigned int val;
--
--	if (!snd_hdsp_use_is_exclusive(hdsp))
--		return -EBUSY;
--	val = ucontrol->value.integer.value[0] & 1;
--	spin_lock_irq(&hdsp->lock);
--	change = (int)val != hdsp_line_out(hdsp);
--	hdsp_set_line_output(hdsp, val);
--	spin_unlock_irq(&hdsp->lock);
--	return change;
--}
--
- #define HDSP_PRECISE_POINTER(xname, xindex) \
- { .iface = SNDRV_CTL_ELEM_IFACE_CARD, \
-   .name = xname, \
 -- 
-1.7.10.4
+1.7.9.5
