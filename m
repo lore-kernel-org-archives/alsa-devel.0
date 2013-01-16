@@ -1,7 +1,7 @@
 From: Yoichi Yuasa <yuasa@linux-mips.org>
-Subject: [PATCH 09/19] ALSA: ymu831: add F-DSP driver
-Date: Wed, 16 Jan 2013 17:35:04 +0900
-Message-ID: <20130116173504.5d35ab46692269b2b04b6fcb@linux-mips.org>
+Subject: [PATCH 11/19] ALSA: ymu831: add data parser
+Date: Wed, 16 Jan 2013 17:37:04 +0900
+Message-ID: <20130116173704.381ec63138c2ad11dee4640c@linux-mips.org>
 References: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,38 +24,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Yoichi Yuasa <yuasa@linux-mips.org>
 ---
- sound/soc/codecs/ymu831/Makefile    |    3 +-
- sound/soc/codecs/ymu831/mcfdspdrv.c | 1666 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ymu831/mcfdspdrv.h |   55 ++
- 3 files changed, 1723 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/codecs/ymu831/mcfdspdrv.c
- create mode 100644 sound/soc/codecs/ymu831/mcfdspdrv.h
+ sound/soc/codecs/ymu831/Makefile   |    3 +-
+ sound/soc/codecs/ymu831/mcparser.c | 1132 ++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ymu831/mcparser.h |   40 ++
+ 3 files changed, 1174 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/ymu831/mcparser.c
+ create mode 100644 sound/soc/codecs/ymu831/mcparser.h
 
 diff --git a/sound/soc/codecs/ymu831/Makefile b/sound/soc/codecs/ymu831/Makefile
-index d0586ca..c6809c0 100644
+index 01f5910..820dec7 100644
 --- a/sound/soc/codecs/ymu831/Makefile
 +++ b/sound/soc/codecs/ymu831/Makefile
-@@ -3,6 +3,7 @@ snd-soc-ymu831-objs := \
- 	mccdspdrv.o	\
- 	mcdevif.o	\
+@@ -5,6 +5,7 @@ snd-soc-ymu831-objs := \
  	mcdriver.o	\
--	mcedspdrv.o
-+	mcedspdrv.o	\
-+	mcfdspdrv.o
+ 	mcedspdrv.o	\
+ 	mcfdspdrv.o	\
+-	mcpacking.o
++	mcpacking.o	\
++	mcparser.o
  
  obj-$(CONFIG_SND_SOC_YMU831) += snd-soc-ymu831.o
-diff --git a/sound/soc/codecs/ymu831/mcfdspdrv.c b/sound/soc/codecs/ymu831/mcfdspdrv.c
+diff --git a/sound/soc/codecs/ymu831/mcparser.c b/sound/soc/codecs/ymu831/mcparser.c
 new file mode 100644
-index 0000000..9312b70
+index 0000000..b2ba4bc
 --- /dev/null
-+++ b/sound/soc/codecs/ymu831/mcfdspdrv.c
-@@ -0,0 +1,1666 @@
++++ b/sound/soc/codecs/ymu831/mcparser.c
+@@ -0,0 +1,1132 @@
 +/****************************************************************************
 + *
 + * Copyright(c) 2012 Yamaha Corporation. All rights reserved.
 + *
-+ * Module	: mcfdspdrv.c
-+ * Description	: MC F-DSP driver
++ * Module	: mcparser.c
++ * Description	: MC data parser
 + * Version	: 1.0.0	Dec 13 2012
 + *
 + * This software is provided 'as-is', without any express or implied
@@ -86,1648 +86,1114 @@ index 0000000..9312b70
 +
 +#include <asm/byteorder.h>
 +
-+#include "mcdefs.h"
-+#include "mcdevif.h"
++#include "mcbdspdrv.h"
++#include "mccdspdrv.h"
++#include "mcdriver.h"
++#include "mcedspdrv.h"
 +#include "mcfdspdrv.h"
-+#include "mcresctrl.h"
++#include "mcparser.h"
 +
-+#define CHUNK_SIZE			8
++#define AEC_MIN_BYTES			12
++#define AEC_REVISION			5
++#define AEC_TARGET			253
 +
-+#define COEF_DMA_TRANS			0
-+#define COEF_DSP_TRANS			1
-+#define COEF_DSP_TRANS_MAX		512
++#define AEC_D7_MIN_BYTES		6
++#define AEC_D7_CHUNK_CONFIG		0x01000000
++#define AEC_D7_CHUNK_AE			0x02000000
++#define AEC_D7_CHUNK_BDSP_ES1		0x00010000
++#define AEC_D7_CHUNK_BDSP		0x00010001
++#define AEC_D7_CHUNK_FDSP_ES1		0x00020000
++#define AEC_D7_CHUNK_FDSP		0x00020001
++#define AEC_D7_CHUNK_VBOX		0x03000000
++#define AEC_D7_CHUNK_CDSPA		0x00030000
++#define AEC_D7_CHUNK_CDSPB		0x00030001
++#define AEC_D7_CHUNK_CDSP_DEBUG		0x00050000
++#define AEC_D7_CHUNK_OUTPUT0_ES1	0x04000000
++#define AEC_D7_CHUNK_OUTPUT1_ES1	0x04000001
++#define AEC_D7_CHUNK_OUTPUT0		0x04000002
++#define AEC_D7_CHUNK_OUTPUT1		0x04000003
++#define AEC_D7_CHUNK_SYSEQ_EX		0x00060000
++#define AEC_D7_CHUNK_INPUT0		0x05000000
++#define AEC_D7_CHUNK_INPUT1		0x05000001
++#define AEC_D7_CHUNK_INPUT2		0x05000002
++#define AEC_D7_CHUNK_PDM		0x06000000
++#define AEC_D7_CHUNK_E2			0x07000000
++#define AEC_D7_CHUNK_E2_CONFIG		0x00040000
++#define AEC_D7_CHUNK_ADJ		0x08000000
++#define AEC_D7_CHUNK_EDSP_MISC		0x09000000
++#define AEC_D7_CHUNK_CONTROL		0x0A000000
 +
-+#define AEC_FDSP_TAG_FWCTRL		0x00000100
-+#define FWCTRL_SIZE			27
-+#define AEC_FDSP_TAG_CHSEL		0x00000200
-+#define CHSEL_SIZE			33
-+#define AEC_FDSP_TAG_TOP_ENV		0x00000300
-+#define TOP_ENV_SIZE			29
-+#define AEC_FDSP_TAG_TOP_COEF		0x00000400
-+#define TOP_COEF_FIX_SIZE		8
-+#define AEC_FDSP_TAG_TOP_INS		0x00000500
-+#define TOP_INS_FIX_SIZE		8
-+#define AEC_FDSP_TAG_APP_MASK		0xffffff00
-+#define AEC_FDSP_TAG_APPNO_MASK		0xff
-+#define AEC_FDSP_TAG_APP_ENV		0x00000600
-+#define APP_ENV_FIX_SIZE		38
-+#define AEC_FDSP_TAG_APP_COEF		0x00000700
-+#define APP_COEF_FIX_SIZE		9
-+#define AEC_FDSP_TAG_APP_CONST		0x00000800
-+#define AEC_FDSP_TAG_APP_INS		0x00000900
-+#define APP_INS_FIX_SIZE		8
-+#define AEC_FDSP_TAG_APP_REG		0x00000a00
-+#define APP_REG_FIX_SIZE		8
-+#define AEC_FDSP_TAG_EX_INFO_1		0x00000b00
-+#define EX_INFO_1_SIZE			4
-+
-+#define FWCTL_FWMOD			0
-+#define FWCTL_FS			1
-+#define FWCTL_APPEXEC			2
-+#define FWCTL_FADECODE			26
-+
-+#define CHSEL_BYPASS			0
-+#define CHSEL_INFDSPSRC			1
-+#define CHSEL_OUTAUDIOSRC		17
-+
-+#define TOP_ENV_ID			0
-+#define TOP_ENV_INSTBASE		1
-+#define TOP_ENV_MBLKSIZE		5
-+#define TOP_ENV_MBUFSIZE		6
-+#define TOP_ENV_MOCHCNFG		7
-+#define TOP_ENV_MICHCNFG		8
-+#define TOP_ENV_SSTARTCH		9
-+#define TOP_ENV_SNUMOFOCH		10
-+#define TOP_ENV_SNUMOFICH		11
-+#define TOP_ENV_SAVEBUFSIZE1		12
-+#define TOP_ENV_SAVEBUFSIZE0		16
-+#define TOP_ENV_LIMITWORKSIZE		20
-+#define TOP_ENV_WORKBASE		24
-+#define TOP_ENV_TOPBASE0		28
-+
-+#define TOP_COEF_ADR			0
-+#define TOP_COEF_SIZE			4
-+#define TOP_COEF_DATA			8
-+
-+#define TOP_INST_ADR			0
-+#define TOP_INST_SIZE			4
-+#define TOP_INST_DATA			8
-+
-+#define APP_ENV_ID			0
-+#define APP_ENV_EXCECPROCESS		1
-+#define APP_ENV_INSTBASE		2
-+#define APP_ENV_REGBASE			6
-+#define APP_ENV_EXECFS			10
-+#define APP_ENV_EXECCH			14
-+#define APP_ENV_WORKBASE		18
-+#define APP_ENV_APPBASE0		22
-+#define APP_ENV_APPBASE1		26
-+#define APP_ENV_APPBASE2		30
-+#define APP_ENV_APPBASE3		34
-+#define APP_ENV_APPFADE			38
-+#define APP_ENV_APPIRQ			39
-+
-+#define APP_COEF_ADR			0
-+#define APP_COEF_SIZE			5
-+#define APP_COEF_DATA			9
-+
-+#define APP_INST_ADR			0
-+#define APP_INST_SIZE			4
-+#define APP_INST_DATA			8
-+
-+#define APP_REG_ADR			0
-+#define APP_REG_SIZE			4
-+#define APP_REG_DATA			8
-+
-+#define APP_PARAM_ON			1
-+
-+#define MULTI_CHUNK_TOP_COEF		1
-+#define MULTI_CHUNK_APP_COEF		2
-+#define MULTI_CHUNK_APP_REG		3
-+
-+#define STOP_KIND_NONE			0x00
-+#define STOP_KIND_FDSP			0x01
-+#define STOP_KIND_APP_EXEC		0x02
-+#define STOP_KIND_APP			0x04
-+#define STOP_KIND_WAIT			0x08
-+
-+#define RESTART_OFF			0
-+#define RESTART_ON			1
-+#define RESTART_BYPASS			2
-+
-+#define APP_VOL_ID			0x07
-+#define FIX_APP_VOL_FREE		0
-+#define FIX_APP_VOL_EXIST		1
-+#define FIX_APP_VOL_NO			22
-+#define FIX_APP_VOL_ACT			MCI_APPACT0
-+#define FIX_APP_VOL_BIT			MCB_APPACT22
-+#define FIX_APP_VOL_APPEXEC		0x400000
-+#define FIX_APP_VOL_REG_BASE		0x4F
-+#define FIX_APP_VOL_REG_FADE_CTRL	(FIX_APP_VOL_REG_BASE + 1)
-+#define FIX_APP_VOL_REG_FADE_CTRL_BIT	0x01
-+#define FIX_APP_VOL_REG_FADE_STE	(FIX_APP_VOL_REG_BASE + 2)
-+#define FIX_APP_VOL_REG_FADE_STE_BIT	0x01
-+#define FIX_APP_FADE_WAIT_TIME_US	10000
-+
-+#define DEF_FDSP_STOP_WAIT_TIME_US	15000
-+
-+#define FDSP_APP_NUM			24
-+#define FDSP_APP_EXEC_STOP		0
-+#define FDSP_APP_EXEC_START		1
-+#define FDSP_APP_EXEC_DONTCARE		2
-+
-+struct fdsp_info {
-+	bool initialized;
-+	u16 input_add_format;
-+	u16 output_add_format;
-+	u32 wait;
-+	u32 app_stop;
-+	u32 app_irq_enable;
-+	u32 app_fade;
-+	u8 dsp_bypass;
-+	u8 fix_app_vol;
-+
-+	/* registers */
-+	u8 adi_mute0;
-+	u8 adi_mute1;
-+	u8 ado_mute0;
-+	u8 ado_mute1;
-+	u8 dsp_ctrl;
-+	u8 app_exec0;
-+	u8 app_exec1;
-+	u8 app_exec2;
-+	u8 app_irq_enable0;
-+	u8 app_irq_enable1;
-+	u8 app_irq_enable2;
++struct mcdrv_aec_d7_info {
++	u8 *top;
++	u32 size;
 +};
 +
-+struct fdsp_data {
-+	u8 *data;
-+	u32 data_size;
-+	u8 must_stop;
-+	u8 *fw_ctrl;
-+	u8 *ch_sel;
-+	u8 *top_env;
-+	u32 top_coef_count;
-+	u8 *top_inst;
-+	u32 target_app;
-+	u32 app_env_count;
-+	u8 *app_env[FDSP_APP_NUM];
-+	u8 coef_trans;
-+	u32 app_coef_count;
-+	u32 app_const_count;
-+	u32 app_coef_trans_max;
-+	u32 app_inst_count;
-+	u8 *app_inst[FDSP_APP_NUM];
-+	u32 app_reg_count;
-+	u8 *ext_info1;
-+	u32 app_exec;
-+};
-+
-+struct fdsp_exec {
-+	u32 app_exec;
-+	u8 restart;
-+};
-+
-+static struct fdsp_info mc_fdsp_info = {
-+	.wait = DEF_FDSP_STOP_WAIT_TIME_US
-+};
-+
-+static inline u8 create_mute_value(u8 mute, u8 onoff, u8 mask)
++static int analyze_audioengine_sub_data(u8 *data, u32 *offset, u32 *data_size,
++					struct mcdrv_aec_info *aec)
 +{
-+	switch (onoff) {
-+	case FDSP_MUTE_ON:
-+		mute &= ~mask;
-+		break;
-+	case FDSP_MUTE_OFF:
-+		mute |= mask;
-+		break;
-+	default:
-+		break;
-+	}
++	enum mcdrv_dev_id dev_id;
++	u32 id, size;
 +
-+	return mute;
-+}
++	dev_id = mc_dev_id_get();
 +
-+static u32 fdsp_app_act_get(void)
-+{
-+	u32 app_act;
-+	u8 data;
++	while (*data_size > 0) {
++		if (*data_size < 8)
++			return -EINVAL;
 +
-+	mc_read_f(MCI_APPACT0, &data, 1);
-+	app_act = (u32) data << 16;
++		id = htonl(*(u32 *) (data + *offset));
++		size = htonl(*(u32 *) (data + *offset + 4));
 +
-+	mc_read_f(MCI_APPACT1, &data, 1);
-+	app_act |= (u32) data << 8;
++		*data_size -= 8;
++		if (*data_size < size)
++			return -EINVAL;
 +
-+	mc_read_f(MCI_APPACT2, &data, 1);
-+	app_act |= data;
++		if ((id == AEC_D7_CHUNK_BDSP_ES1 &&
++		     dev_id == MCDRV_DEV_ID_80_90H) ||
++		    (id == AEC_D7_CHUNK_BDSP &&
++		     dev_id != MCDRV_DEV_ID_80_90H)) {
++			if (aec->audio_engine.bdsp.data)
++				return -EINVAL;
 +
-+	return app_act;
-+}
++			aec->audio_engine.bdsp.data = data + *offset;
++			aec->audio_engine.bdsp.data_size = size;
++		} else if ((id == AEC_D7_CHUNK_FDSP_ES1 &&
++			    dev_id == MCDRV_DEV_ID_80_90H) ||
++			   (id == AEC_D7_CHUNK_FDSP &&
++			    dev_id != MCDRV_DEV_ID_80_90H)) {
++			if (aec->audio_engine.fdsp.data)
++				return -EINVAL;
 +
-+static inline void fdsp_audioif_set(u16 input_add_format, u16 output_add_format)
-+{
-+	mc_packet_add_force_write_f(MCI_ADIDFMT0, input_add_format & 0xff);
-+	mc_packet_add_force_write_f(MCI_ADIDFMT1,
-+				    (input_add_format >> 8) & 0xff);
++			aec->audio_engine.fdsp.data = data + *offset;
++			aec->audio_engine.fdsp.data_size = size;
++		} else
++			return -EINVAL;
 +
-+	mc_packet_add_force_write_f(MCI_ADODFMT0, output_add_format & 0xff);
-+	mc_packet_add_force_write_f(MCI_ADODFMT1,
-+				    (output_add_format >> 8) & 0xff);
-+
-+	mc_packet_execute();
-+}
-+
-+static void fdsp_core_init(void)
-+{
-+	mc_fdsp_info.app_stop = 0;
-+	mc_fdsp_info.app_irq_enable = 0;
-+	mc_fdsp_info.app_fade = 0;
-+	mc_fdsp_info.dsp_bypass = 0;
-+	mc_fdsp_info.fix_app_vol = FIX_APP_VOL_FREE;
-+
-+	mc_fdsp_info.dsp_ctrl = MCI_DSPCTRL_DEF;
-+	mc_fdsp_info.app_exec0 = MCI_APPEXEC0_DEF;
-+	mc_fdsp_info.app_exec1 = MCI_APPEXEC1_DEF;
-+	mc_fdsp_info.app_exec2 = MCI_APPEXEC2_DEF;
-+	mc_fdsp_info.app_irq_enable0 = MCI_APPIENB0_DEF;
-+	mc_fdsp_info.app_irq_enable1 = MCI_APPIENB1_DEF;
-+	mc_fdsp_info.app_irq_enable2 = MCI_APPIENB2_DEF;
-+
-+	mc_packet_add_force_write_f(MCI_DSPCTRL, mc_fdsp_info.dsp_ctrl);
-+
-+	mc_packet_add_force_write_f(MCI_APPEXEC0, mc_fdsp_info.app_exec0);
-+
-+	mc_packet_add_force_write_f(MCI_APPEXEC1, mc_fdsp_info.app_exec1);
-+
-+	mc_packet_add_force_write_f(MCI_APPEXEC2, mc_fdsp_info.app_exec2);
-+
-+	mc_packet_add_force_write_f(MCI_APPIENB0, mc_fdsp_info.app_irq_enable0);
-+
-+	mc_packet_add_force_write_f(MCI_APPIENB1, mc_fdsp_info.app_irq_enable1);
-+
-+	mc_packet_add_force_write_f(MCI_APPIENB2, mc_fdsp_info.app_irq_enable2);
-+
-+	mc_packet_add_force_write_f(MCI_ADIMUTE0, mc_fdsp_info.adi_mute0);
-+
-+	mc_packet_add_force_write_f(MCI_ADIMUTE1, mc_fdsp_info.adi_mute1);
-+
-+	mc_packet_add_force_write_f(MCI_ADIMUTE2, MCB_ADIMTSET);
-+
-+	mc_packet_add_force_write_f(MCI_ADOMUTE0, mc_fdsp_info.ado_mute0);
-+
-+	mc_packet_add_force_write_f(MCI_ADOMUTE1, mc_fdsp_info.ado_mute1);
-+
-+	mc_packet_add_force_write_f(MCI_ADOMUTE2, MCB_ADOMTSET);
-+
-+	mc_packet_add_force_write_f(MCI_APPFADE0, 0);
-+
-+	mc_packet_add_force_write_f(MCI_APPFADE1, 0);
-+
-+	mc_packet_add_force_write_f(MCI_APPFADE2, 0);
-+
-+	mc_packet_execute();
-+
-+	fdsp_audioif_set(mc_fdsp_info.input_add_format,
-+			 mc_fdsp_info.output_add_format);
-+}
-+
-+static int fdsp_get_data(struct mcdrv_aec_info *aec, struct fdsp_data *fdsp)
-+{
-+	fdsp->data = NULL;
-+	fdsp->data_size = 0;
-+
-+	switch (aec->fdsp_locate) {
-+	case FDSP_LOCATE_AUDIOENGINE:
-+		if (aec->audio_engine.enable) {
-+			if (!aec->audio_engine.fdsp_on)
-+				return 0;
-+
-+			fdsp->data = &aec->audio_engine.fdsp.data[CHUNK_SIZE];
-+			fdsp->data_size = aec->audio_engine.fdsp.data_size;
-+		}
-+		break;
-+	case FDSP_LOCATE_V_BOX:
-+		if (aec->vbox.enable) {
-+			if (!aec->vbox.fdsp_on)
-+				return 0;
-+
-+			fdsp->data = &aec->vbox.fdsp.data[CHUNK_SIZE];
-+			fdsp->data_size = aec->vbox.fdsp.data_size;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
++		*offset += size + 8;
++		*data_size -= size;
 +	}
 +
 +	return 0;
 +}
 +
-+static inline int fdsp_firmware_control_analyze(struct fdsp_data *fdsp,
-+						u8 *data)
++static int analyze_vbox_sub_data(u8 *data, u32 *offset, u32 *data_size,
++				 struct mcdrv_aec_info *aec)
 +{
-+	int i;
++	enum mcdrv_dev_id dev_id;
++	u32 id, size;
 +
-+	if (data[FWCTL_FWMOD])
-+		return -EINVAL;
++	dev_id = mc_dev_id_get();
 +
-+	if (data[FWCTL_FS] != 0xff || data[FWCTL_FADECODE] != 0xff)
-+		fdsp->must_stop |= STOP_KIND_FDSP;
-+
-+	for (i = 0; i < FDSP_APP_NUM; ++i)
-+		if (data[FWCTL_APPEXEC + i] != FDSP_APP_EXEC_DONTCARE &&
-+		    i != FIX_APP_VOL_NO) {
-+			fdsp->must_stop |= STOP_KIND_APP_EXEC;
-+			break;
-+		}
-+
-+	return 0;
-+}
-+
-+static inline int fdsp_app_environment_check(u32 app_no, u8 *app_env)
-+{
-+	if (app_no != FIX_APP_VOL_NO)
-+		return 0;
-+
-+	if (!app_env[APP_ENV_ID])
-+		return 0;
-+
-+	if (app_env[APP_ENV_ID] != APP_VOL_ID)
-+		return -EINVAL;
-+
-+	if ((app_env[APP_ENV_REGBASE + 3] & 0x7F) != FIX_APP_VOL_REG_BASE)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static inline int fdsp_app_data_analyze(struct fdsp_data *fdsp,
-+					u32 tag, u32 size, u32 top, u8 *data)
-+{
-+	u32 app_no, tmp;
-+
-+	app_no = tag & AEC_FDSP_TAG_APPNO_MASK;
-+	if (app_no >= FDSP_APP_NUM)
-+		return -EINVAL;
-+
-+	switch (tag & AEC_FDSP_TAG_APP_MASK) {
-+	case AEC_FDSP_TAG_APP_ENV:
-+		if (size < APP_ENV_FIX_SIZE)
-+			return -EINVAL;
-+		if (fdsp->app_env[app_no])
-+			return -EINVAL;
-+		if (fdsp_app_environment_check(app_no, &data[top]) < 0)
++	while (*data_size > 0) {
++		if (*data_size < 8)
 +			return -EINVAL;
 +
-+		fdsp->app_env[app_no] = &data[top];
-+		fdsp->app_env_count++;
-+		fdsp->target_app |= 1 << app_no;
-+		fdsp->coef_trans = COEF_DMA_TRANS;
-+		fdsp->must_stop |= STOP_KIND_APP;
-+		break;
-+	case AEC_FDSP_TAG_APP_COEF:
-+	case AEC_FDSP_TAG_APP_CONST:
-+		if (size < APP_COEF_FIX_SIZE)
++		id = htonl(*(u32 *) (data + *offset));
++		size = htonl(*(u32 *) (data + *offset + 4));
++
++		*data_size -= 8;
++		if (*data_size < size)
 +			return -EINVAL;
 +
-+		tmp = htonl(*(u32 *) (data + top + 5));
-+		if (!tmp)
-+			break;
-+		if (tmp & 3)
-+			return -EINVAL;
-+		if (tmp + APP_COEF_FIX_SIZE > size)
-+			return -EINVAL;
++		if (id == AEC_D7_CHUNK_CDSPA) {
++			if (aec->vbox.cdsp_a.data)
++				return -EINVAL;
 +
-+		if (data[top + 4] != COEF_DSP_TRANS) {
-+			fdsp->coef_trans = COEF_DMA_TRANS;
-+			fdsp->must_stop |= STOP_KIND_APP;
-+		}
++			aec->vbox.cdsp_a.data = data + *offset;
++			aec->vbox.cdsp_a.data_size = size;
++		} else if (id == AEC_D7_CHUNK_CDSPB) {
++			if (aec->vbox.cdsp_b.data)
++				return -EINVAL;
 +
-+		if ((tag & AEC_FDSP_TAG_APP_MASK) == AEC_FDSP_TAG_APP_COEF)
-+			fdsp->app_coef_count++;
-+		else
-+			fdsp->app_const_count++;
++			aec->vbox.cdsp_b.data = data + *offset;
++			aec->vbox.cdsp_b.data_size = size;
++		} else if ((id == AEC_D7_CHUNK_FDSP_ES1 &&
++			    dev_id == MCDRV_DEV_ID_80_90H) ||
++			   (id == AEC_D7_CHUNK_FDSP &&
++			    dev_id != MCDRV_DEV_ID_80_90H)) {
++			if (aec->vbox.fdsp.data)
++				return -EINVAL;
 +
-+		fdsp->target_app |= 1 << app_no;
++			aec->vbox.fdsp.data = data + *offset;
++			aec->vbox.fdsp.data_size = size;
++		} else if (id == AEC_D7_CHUNK_CDSP_DEBUG) {
++			if (size != 1)
++				return -EINVAL;
 +
-+		if (tmp > fdsp->app_coef_trans_max)
-+			fdsp->app_coef_trans_max = tmp;
-+
-+		fdsp->must_stop |= STOP_KIND_WAIT;
-+		break;
-+	case AEC_FDSP_TAG_APP_INS:
-+		if (size < APP_INS_FIX_SIZE)
-+			return -EINVAL;
-+		if (fdsp->app_inst[app_no])
-+			return -EINVAL;
-+
-+		tmp = htonl(*(u32 *) (data + top + 4));
-+		if (!tmp)
-+			break;
-+		if (tmp & 3)
-+			return -EINVAL;
-+		if (tmp + APP_INS_FIX_SIZE > size)
++			if (aec->vbox.cdsp_jtag_on != 0xff)
++				return -EINVAL;
++			if (data[*offset + 8] > 1)
++				return -EINVAL;
++			aec->vbox.cdsp_jtag_on = data[*offset + 8];
++		} else
 +			return -EINVAL;
 +
-+		fdsp->app_inst[app_no] = &data[top];
-+		fdsp->app_inst_count++;
-+		fdsp->target_app |= 1 << app_no;
-+		fdsp->coef_trans = COEF_DMA_TRANS;
-+		fdsp->must_stop |= STOP_KIND_APP;
-+		break;
-+	case AEC_FDSP_TAG_APP_REG:
-+		if (size < APP_REG_FIX_SIZE)
-+			return -EINVAL;
-+		tmp = htonl(*(u32 *) (data + top + 4));
-+		if (!tmp)
-+			break;
-+		if (tmp + APP_REG_FIX_SIZE > size)
-+			return -EINVAL;
-+
-+		fdsp->app_reg_count++;
-+		fdsp->must_stop |= STOP_KIND_WAIT;
-+		break;
-+
-+	default:
-+		break;
++		*offset += size + 8;
++		*data_size -= size;
 +	}
 +
 +	return 0;
 +}
 +
-+static inline void fdsp_coef_trans_check(struct fdsp_data *fdsp)
++static int analyze_edsp_sub_data(u8 *data, u32 *offset, u32 *data_size,
++				 struct mcdrv_aec_info *aec)
 +{
-+	if (fdsp->coef_trans != COEF_DSP_TRANS)
-+		return;
++	u32 id, size;
 +
-+	if (!fdsp->app_coef_count && !fdsp->app_const_count)
-+		return;
++	while (*data_size > 0) {
++		if (*data_size < 8)
++			return -EINVAL;
 +
-+	if (fdsp->app_coef_trans_max > COEF_DSP_TRANS_MAX ||
-+	    (fdsp->app_coef_count + fdsp->app_const_count) > 1)
-+		fdsp->coef_trans = COEF_DMA_TRANS;
++		id = htonl(*(u32 *) (data + *offset));
++		size = htonl(*(u32 *) (data + *offset + 4));
 +
-+	if (fdsp->coef_trans == COEF_DMA_TRANS)
-+		fdsp->must_stop |= STOP_KIND_APP;
-+}
++		*data_size -= 8;
++		if (*data_size < size)
++			return -EINVAL;
 +
-+static int fdsp_data_analyze(struct fdsp_data *fdsp)
-+{
-+	u32 top, tag, size, tmp;
-+	u8 *data;
-+	u32 data_size;
-+	int ret, i;
++		if (id == AEC_D7_CHUNK_E2_CONFIG) {
++			if (aec->e2.config.data)
++				return -EINVAL;
 +
-+	fdsp->must_stop = STOP_KIND_NONE;
-+	fdsp->fw_ctrl = NULL;
-+	fdsp->ch_sel = NULL;
-+	fdsp->top_env = NULL;
-+	fdsp->top_coef_count = 0;
-+	fdsp->top_inst = NULL;
-+	fdsp->target_app = 0;
-+	fdsp->app_env_count = 0;
-+	fdsp->coef_trans = COEF_DSP_TRANS;
-+	fdsp->app_coef_count = 0;
-+	fdsp->app_const_count = 0;
-+	fdsp->app_coef_trans_max = 0;
-+	fdsp->app_inst_count = 0;
-+	fdsp->app_reg_count = 0;
-+	fdsp->ext_info1 = NULL;
-+	for (i = 0; i < FDSP_APP_NUM; ++i) {
-+		fdsp->app_env[i] = NULL;
-+		fdsp->app_inst[i] = NULL;
++			aec->e2.config.data = data + *offset;
++			aec->e2.config.data_size = size;
++
++			*offset += size + 8;
++			*data_size -= size;
++		} else
++			return -EINVAL;
 +	}
 +
-+	if (!fdsp->data || !fdsp->data_size)
-+		return 0;
++	return 0;
++}
 +
-+	data = fdsp->data;
-+	data_size = fdsp->data_size;
++static int get_d7_info(u8 *data, u32 size, struct mcdrv_aec_d7_info *d7_info)
++{
++	u32 data_size, offset, chunk_size;
 +
-+	top = 0;
-+	while (top < data_size) {
-+		if (top + CHUNK_SIZE > data_size)
++	if (size < AEC_MIN_BYTES)
++		return -EINVAL;
++
++	/* header */
++	if (data[0] != 0x41 || data[1] != 0x45 || data[2] != 0x43)
++		return -EINVAL;
++
++	/* revision */
++	if (data[3] != AEC_REVISION)
++		return -EINVAL;
++
++	/* size */
++	data_size = htonl(*(u32 *) (data + 4));
++	if (size != data_size + 8)
++		return -EINVAL;
++
++	/* target */
++	if (data[9] != AEC_TARGET)
++		return -EINVAL;
++
++	/* Reserved */
++	if (data[11] != 0x00)
++		return -EINVAL;
++
++	/* D7 Chunk Search */
++	d7_info->top = NULL;
++	d7_info->size = 0;
++	offset = AEC_MIN_BYTES;
++
++	while ((offset + AEC_D7_MIN_BYTES) < size) {
++		if (data[offset] == 0x44 && data[offset + 1] == 0x37) {
++			if (d7_info->top)
++				return -EINVAL;
++
++			chunk_size = htonl(*(u32 *) (data + offset + 2));
++			if ((offset + AEC_D7_MIN_BYTES + chunk_size) > size)
++				return -EINVAL;
++
++			d7_info->top = data + offset + AEC_D7_MIN_BYTES;
++			d7_info->size = chunk_size;
++		} else
 +			return -EINVAL;
 +
-+		tag = htonl(*(u32 *) (data + top));
-+		size = htonl(*(u32 *) (data + top + 4));
-+		if (top + CHUNK_SIZE + size > data_size)
++		/* Next Chunk */
++		offset += chunk_size + AEC_D7_MIN_BYTES;
++	}
++
++	if (!d7_info->top)
++		return -EINVAL;
++
++	return 0;
++}
++
++static int analyze_syseq_ex_sub_data(u8 *data, u32 *offset, u32 *sub_size,
++				     struct mcdrv_aec_syseq_ex *syseq_ex)
++{
++	u32 id, size;
++
++	while (*sub_size > 0) {
++		if (*sub_size < 8)
 +			return -EINVAL;
 +
-+		top += CHUNK_SIZE;
-+		switch (tag) {
-+		case AEC_FDSP_TAG_FWCTRL:
-+			if (size < FWCTRL_SIZE)
-+				return -EINVAL;
-+			if (fdsp->fw_ctrl)
++		id = htonl(*(u32 *) (data + *offset));
++		size = htonl(*(u32 *) (data + *offset + 4));
++
++		*offset += 8;
++		*sub_size -= 8;
++		if (*sub_size < size)
++			return -EINVAL;
++
++		if (id == AEC_D7_CHUNK_SYSEQ_EX) {
++			if (size != 30)
 +				return -EINVAL;
 +
-+			ret = fdsp_firmware_control_analyze(fdsp, &data[top]);
-+			if (ret < 0)
-+				return ret;
++			if (syseq_ex->enable)
++				return -EINVAL;
 +
-+			fdsp->fw_ctrl = &data[top];
++			syseq_ex->enable = true;
++			syseq_ex->band[0].coef_a0[0] = data[*offset++];
++			syseq_ex->band[0].coef_a0[1] = data[*offset++];
++			syseq_ex->band[0].coef_a0[2] = data[*offset++];
++			syseq_ex->band[0].coef_a1[0] = data[*offset++];
++			syseq_ex->band[0].coef_a1[1] = data[*offset++];
++			syseq_ex->band[0].coef_a1[2] = data[*offset++];
++			syseq_ex->band[0].coef_a2[0] = data[*offset++];
++			syseq_ex->band[0].coef_a2[1] = data[*offset++];
++			syseq_ex->band[0].coef_a2[2] = data[*offset++];
++			syseq_ex->band[0].coef_b1[0] = data[*offset++];
++			syseq_ex->band[0].coef_b1[1] = data[*offset++];
++			syseq_ex->band[0].coef_b1[2] = data[*offset++];
++			syseq_ex->band[0].coef_b2[0] = data[*offset++];
++			syseq_ex->band[0].coef_b2[1] = data[*offset++];
++			syseq_ex->band[0].coef_b2[2] = data[*offset++];
++			syseq_ex->band[1].coef_a0[0] = data[*offset++];
++			syseq_ex->band[1].coef_a0[1] = data[*offset++];
++			syseq_ex->band[1].coef_a0[2] = data[*offset++];
++			syseq_ex->band[1].coef_a1[0] = data[*offset++];
++			syseq_ex->band[1].coef_a1[1] = data[*offset++];
++			syseq_ex->band[1].coef_a1[2] = data[*offset++];
++			syseq_ex->band[1].coef_a2[0] = data[*offset++];
++			syseq_ex->band[1].coef_a2[1] = data[*offset++];
++			syseq_ex->band[1].coef_a2[2] = data[*offset++];
++			syseq_ex->band[1].coef_b1[0] = data[*offset++];
++			syseq_ex->band[1].coef_b1[1] = data[*offset++];
++			syseq_ex->band[1].coef_b1[2] = data[*offset++];
++			syseq_ex->band[1].coef_b2[0] = data[*offset++];
++			syseq_ex->band[1].coef_b2[1] = data[*offset++];
++			syseq_ex->band[1].coef_b2[2] = data[*offset++];
++			*sub_size -= size;
++		} else
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++int mc_parser_d7_data_analyze(u8 *data, u32 size, struct mcdrv_aec_info *aec)
++{
++	struct mcdrv_aec_d7_info d7_info;
++	enum mcdrv_dev_id dev_id;
++	u8 *d7_data;
++	u32 offset, d7_data_end;
++	u32 id, sub_size;
++	int n, ret;
++
++	ret = get_d7_info(data, size, &d7_info);
++	if (ret < 0)
++		return ret;
++
++	dev_id = mc_dev_id_get();
++
++	d7_data = d7_info.top;
++	d7_data_end = d7_info.size - 1;
++
++	aec->fdsp_locate = 0xFF;
++	aec->audio_engine.enable = false;
++	aec->audio_engine.bdsp.data = NULL;
++	aec->audio_engine.bdsp.data_size = 0;
++	aec->audio_engine.fdsp.data = NULL;
++	aec->audio_engine.fdsp.data_size = 0;
++	aec->vbox.enable = false;
++	aec->vbox.cdsp_a.data = NULL;
++	aec->vbox.cdsp_a.data_size = 0;
++	aec->vbox.cdsp_b.data = NULL;
++	aec->vbox.cdsp_b.data_size = 0;
++	aec->vbox.fdsp.data = NULL;
++	aec->vbox.fdsp.data_size = 0;
++	aec->vbox.cdsp_jtag_on = 0xff;
++	aec->output.lpf_pre_thru[0] = 0xFF;
++	aec->output.lpf_pre_thru[1] = 0xFF;
++	aec->input.dsf32_l_type[0] = 0xFF;
++	aec->input.dsf32_l_type[1] = 0xFF;
++	aec->input.dsf32_l_type[2] = 0xFF;
++	aec->pdm.mode = 0xFF;
++	aec->e2.enable = false;
++	aec->e2.config.data = NULL;
++	aec->e2.config.data_size = 0;
++	aec->adj.hold = 0xFF;
++	aec->edsp_misc.i2s_out_enable = 0xFF;
++	aec->control.command = 0xFF;
++
++	offset = 0;
++	while (offset <= d7_data_end && !ret) {
++		if ((offset + 8 - 1) > d7_data_end) {
++			ret = -EINVAL;
 +			break;
-+		case AEC_FDSP_TAG_CHSEL:
-+			if (size < CHSEL_SIZE)
-+				return -EINVAL;
-+			if (fdsp->ch_sel)
-+				return -EINVAL;
++		}
 +
-+			fdsp->ch_sel = &data[top];
-+			fdsp->must_stop |= STOP_KIND_FDSP;
++		id = htonl(*(u32 *) (d7_data + offset));
++		sub_size = htonl(*(u32 *) (d7_data + offset + 4));
++
++		offset += 8;
++		if ((offset + sub_size - 1) > d7_data_end) {
++			ret = -EINVAL;
 +			break;
-+		case AEC_FDSP_TAG_TOP_ENV:
-+			if (size < TOP_ENV_SIZE)
-+				return -EINVAL;
-+			if (fdsp->top_env)
-+				return -EINVAL;
++		}
 +
-+			fdsp->top_env = &data[top];
-+			fdsp->must_stop |= STOP_KIND_FDSP;
-+			break;
-+		case AEC_FDSP_TAG_TOP_COEF:
-+			if (size < TOP_COEF_FIX_SIZE)
-+				return -EINVAL;
-+			tmp = htonl(*(u32 *) (data + top + 4));
-+			if (tmp & 3)
-+				return -EINVAL;
-+			if (tmp + TOP_COEF_FIX_SIZE > size)
-+				return -EINVAL;
-+
-+			fdsp->top_coef_count++;
-+			fdsp->must_stop |= STOP_KIND_FDSP;
-+			break;
-+		case AEC_FDSP_TAG_TOP_INS:
-+			if (size < TOP_INS_FIX_SIZE)
-+				return -EINVAL;
-+			if (fdsp->top_inst)
-+				return -EINVAL;
-+
-+			tmp = htonl(*(u32 *) (data + top + 4));
-+			if (!tmp)
++		switch (id) {
++		case AEC_D7_CHUNK_CONFIG:
++			if (sub_size != 1 || aec->fdsp_locate != 0xFF ||
++			    d7_data[offset] > 1) {
++				ret = -EINVAL;
 +				break;
-+			if (tmp & 3)
-+				return -EINVAL;
-+			if (tmp + TOP_INS_FIX_SIZE > size)
-+				return -EINVAL;
++			}
 +
-+			fdsp->top_inst = &data[top];
-+			fdsp->must_stop |= STOP_KIND_FDSP;
++			aec->fdsp_locate = d7_data[offset++];
++			sub_size = 0;
++			break;
++		case AEC_D7_CHUNK_AE:
++			if (sub_size < 8 || aec->audio_engine.enable ||
++			    d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.enable = true;
++			aec->audio_engine.on = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.fdsp_on = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.bdsp_ae0_src = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.bdsp_ae1_src = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.mixer_in0_src = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.mixer_in1_src = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.mixer_in2_src = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->audio_engine.mixer_in3_src = d7_data[offset++];
++			sub_size--;
++
++			if (sub_size > 0) {
++				ret = analyze_audioengine_sub_data(d7_data,
++								   &offset,
++								   &sub_size,
++								   aec);
++			}
++			break;
++		case AEC_D7_CHUNK_VBOX:
++			if (sub_size < 15 || aec->vbox.enable) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.enable = true;
++
++			if (d7_data[offset] > 2 && d7_data[offset] != 0x11) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.cdsp_func_a_on = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2 && d7_data[offset] != 0x11) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.cdsp_func_b_on = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.fdsp_on = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 0x3F && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.fdsp_po_source = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 1 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.isrc2_vsource = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 1 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.isrc2_ch1_vsource = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 1 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.isrc3_vsource = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 1 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.lpt2_vsource = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 3 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.lpt2_mix_vol_o = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 3 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.lpt2_mix_vol_i = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 3 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.src3_ctrl = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] == 3 || d7_data[offset] == 7 ||
++			    d7_data[offset] == 11 ||
++			    (d7_data[offset] > 13 && d7_data[offset] < 0xFF)) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.src2_fs = d7_data[offset++];
++			sub_size--;
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 1 &&
++				    d7_data[offset] < 0xFF) {
++					ret = -EINVAL;
++					break;
++				}
++				aec->vbox.src2_thru = d7_data[offset++];
++			} else
++				offset++;
++			sub_size--;
++
++			if (d7_data[offset] == 3 || d7_data[offset] == 7 ||
++			    d7_data[offset] == 11 ||
++			    (d7_data[offset] > 13 && d7_data[offset] < 0xFF)) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.src3_fs = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 1 && d7_data[offset] < 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->vbox.src3_thru = d7_data[offset++];
++			sub_size--;
++
++			if (sub_size > 0) {
++				ret = analyze_vbox_sub_data(d7_data,
++							    &offset,
++							    &sub_size, aec);
++			}
++			break;
++		case AEC_D7_CHUNK_OUTPUT0_ES1:
++		case AEC_D7_CHUNK_OUTPUT1_ES1:
++		case AEC_D7_CHUNK_OUTPUT0:
++		case AEC_D7_CHUNK_OUTPUT1:
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (id != AEC_D7_CHUNK_OUTPUT0_ES1 &&
++				    id != AEC_D7_CHUNK_OUTPUT1_ES1)
++					break;
++				n = id - AEC_D7_CHUNK_OUTPUT0_ES1;
++			} else {
++				if (id != AEC_D7_CHUNK_OUTPUT0 &&
++				    id != AEC_D7_CHUNK_OUTPUT1)
++					break;
++				n = id - AEC_D7_CHUNK_OUTPUT0;
++			}
++			if (sub_size < 47 ||
++			    aec->output.lpf_pre_thru[n] != 0xFF ||
++			    d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.lpf_pre_thru[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.lpf_post_thru[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dcc_sel[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 5) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.signal_detect_level = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.power_detect_level[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.osf_sel[n] = d7_data[offset++];
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 1) {
++					ret = -EINVAL;
++					break;
++				}
++			} else {
++				if (d7_data[offset] > 7) {
++					ret = -EINVAL;
++					break;
++				}
++			}
++			aec->output.syseq_enb[n] = d7_data[offset++];
++			aec->output.syseq_coef_a0[n][0] = d7_data[offset++];
++			aec->output.syseq_coef_a0[n][1] = d7_data[offset++];
++			aec->output.syseq_coef_a0[n][2] = d7_data[offset++];
++			aec->output.syseq_coef_a1[n][0] = d7_data[offset++];
++			aec->output.syseq_coef_a1[n][1] = d7_data[offset++];
++			aec->output.syseq_coef_a1[n][2] = d7_data[offset++];
++			aec->output.syseq_coef_a2[n][0] = d7_data[offset++];
++			aec->output.syseq_coef_a2[n][1] = d7_data[offset++];
++			aec->output.syseq_coef_a2[n][2] = d7_data[offset++];
++			aec->output.syseq_coef_b1[n][0] = d7_data[offset++];
++			aec->output.syseq_coef_b1[n][1] = d7_data[offset++];
++			aec->output.syseq_coef_b1[n][2] = d7_data[offset++];
++			aec->output.syseq_coef_b2[n][0] = d7_data[offset++];
++			aec->output.syseq_coef_b2[n][1] = d7_data[offset++];
++			aec->output.syseq_coef_b2[n][2] = d7_data[offset++];
++
++			if (d7_data[offset] > 7) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.clip_md[n] = d7_data[offset++];
++			aec->output.clip_att[n] = d7_data[offset++];
++			aec->output.clip_rel[n] = d7_data[offset++];
++			aec->output.clip_g[n] = d7_data[offset++];
++			aec->output.osf_gain[n][0] = d7_data[offset++];
++			aec->output.osf_gain[n][1] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dcl_on[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dcl_gain[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 0x7F) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dcl_limit[n][0] = d7_data[offset++];
++			aec->output.dcl_limit[n][1] = d7_data[offset++];
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 1) {
++					ret = -EINVAL;
++					break;
++				}
++				aec->output.random_dither_on[n] =
++				    d7_data[offset++];
++			} else
++				offset++;
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 3) {
++					ret = -EINVAL;
++					break;
++				}
++				aec->output.random_dither_level[n] =
++				    d7_data[offset++];
++			} else
++				offset++;
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 1) {
++					ret = -EINVAL;
++					break;
++				}
++				aec->output.random_dither_pos[n] =
++				    d7_data[offset++];
++			} else
++				offset++;
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dc_dither_on[n] = d7_data[offset++];
++
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] > 15) {
++					ret = -EINVAL;
++					break;
++				}
++				aec->output.dc_dither_level[n] =
++				    d7_data[offset++];
++			} else
++				offset++;
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dither_type[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dng_on[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 31) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dng_zero[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dng_time[n] = d7_data[offset++];
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->output.dng_fw[n] = d7_data[offset++];
++			aec->output.dng_attack = d7_data[offset++];
++			aec->output.dng_release = d7_data[offset++];
++			aec->output.dng_target[n] = d7_data[offset++];
++			aec->output.dng_target_lineout[n] = d7_data[offset++];
++			if (n == 0)
++				aec->output.dng_target_rc = d7_data[offset++];
++			else
++				offset++;
++
++			sub_size -= 47;
++			if (sub_size > 0)
++				ret = analyze_syseq_ex_sub_data(data, &offset,
++								&sub_size,
++								&aec->output.
++								syseq_ex[n]);
++			break;
++		case AEC_D7_CHUNK_INPUT0:
++		case AEC_D7_CHUNK_INPUT1:
++		case AEC_D7_CHUNK_INPUT2:
++			n = id - AEC_D7_CHUNK_INPUT0;
++			if (sub_size < 16 ||
++			    aec->input.dsf32_l_type[n] != 0xFF ||
++			    (n == 0 && d7_data[offset] > 2) ||
++			    (n != 0 && d7_data[offset] > 1)) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dsf32_l_type[n] = d7_data[offset++];
++
++			if ((n == 0 && d7_data[offset] > 2) ||
++			    (n != 0 && d7_data[offset] > 1)) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dsf32_r_type[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dsf4_sel[n] = d7_data[offset++];
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dcc_sel[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dng_on[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dng_att[n] = d7_data[offset++];
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dng_rel[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dng_fw[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 0x3F) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.dng_time[n] = d7_data[offset++];
++			aec->input.dng_zero[n][0] = d7_data[offset++];
++			aec->input.dng_zero[n][1] = d7_data[offset++];
++			aec->input.dng_target[n][0] = d7_data[offset++];
++			aec->input.dng_target[n][1] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.depop_att[n] = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->input.depop_wait[n] = d7_data[offset++];
++			if (n == 2) {
++				if (d7_data[offset] > 1) {
++					ret = -EINVAL;
++					break;
++				}
++
++				aec->input.ref_sel = d7_data[offset++];
++			} else
++				offset++;
++
++			sub_size = 0;
++			break;
++		case AEC_D7_CHUNK_PDM:
++			if (sub_size != 10 || aec->pdm.mode != 0xFF ||
++			    d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.mode = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.st_wait = d7_data[offset++];
++
++			if (d7_data[offset] > 7) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm0_loadtime = d7_data[offset++];
++
++			if (d7_data[offset] > 63) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm0_l_finedelay = d7_data[offset++];
++
++			if (d7_data[offset] > 63) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm0_r_finedelay = d7_data[offset++];
++
++			if (d7_data[offset] > 7) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm1_loadtime = d7_data[offset++];
++
++			if (d7_data[offset] > 63) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm1_l_finedelay = d7_data[offset++];
++
++			if (d7_data[offset] > 63) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm1_r_finedelay = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm0_data_delay = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->pdm.pdm1_data_delay = d7_data[offset++];
++
++			sub_size = 0;
++			break;
++		case AEC_D7_CHUNK_E2:
++			if (sub_size < 3 || aec->e2.enable) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->e2.enable = true;
++
++			if (d7_data[offset] > 4) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->e2.da_sel = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 8) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->e2.ad_sel = d7_data[offset++];
++			sub_size--;
++
++			if (d7_data[offset] > 2) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->e2.on = d7_data[offset++];
++			sub_size--;
++
++			if (sub_size > 0) {
++				ret = analyze_edsp_sub_data(d7_data,
++							    &offset,
++							    &sub_size, aec);
++			}
++			break;
++		case AEC_D7_CHUNK_ADJ:
++			if (sub_size != 4 || aec->adj.hold != 0xFF ||
++			    d7_data[offset] > 0x3F) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->adj.hold = d7_data[offset++];
++
++			if (d7_data[offset] > 0x0F) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->adj.cnt = d7_data[offset++];
++			aec->adj.max[0] = d7_data[offset++];
++			aec->adj.max[1] = d7_data[offset++];
++
++			sub_size = 0;
++			break;
++		case AEC_D7_CHUNK_EDSP_MISC:
++			if (sub_size != 3 ||
++			    aec->edsp_misc.i2s_out_enable != 0xFF ||
++			    d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->edsp_misc.i2s_out_enable = d7_data[offset++];
++
++			if (d7_data[offset] > 1) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->edsp_misc.ch_sel = d7_data[offset++];
++
++			if (d7_data[offset] > 3) {
++				ret = -EINVAL;
++				break;
++			}
++
++			aec->edsp_misc.loopback = d7_data[offset++];
++
++			sub_size = 0;
++			break;
++		case AEC_D7_CHUNK_CONTROL:
++			if (sub_size != 5 || aec->control.command != 0xFF) {
++				ret = -EINVAL;
++				break;
++			}
++			if (dev_id == MCDRV_DEV_ID_80_90H) {
++				if (d7_data[offset] < 1
++				    || d7_data[offset] > 2) {
++					ret = -EINVAL;
++					break;
++				}
++			} else {
++				if (d7_data[offset] < 1
++				    || d7_data[offset] > 4) {
++					ret = -EINVAL;
++					break;
++				}
++			}
++
++			aec->control.command = d7_data[offset++];
++			aec->control.param[0] = d7_data[offset++];
++			aec->control.param[1] = d7_data[offset++];
++			aec->control.param[2] = d7_data[offset++];
++			aec->control.param[3] = d7_data[offset++];
++
++			sub_size = 0;
 +			break;
 +		default:
-+			ret = fdsp_app_data_analyze(fdsp, tag, size, top, data);
-+			if (ret < 0)
-+				return ret;
++			ret = -EINVAL;
 +		}
 +
-+		top += size;
++		offset += sub_size;
 +	}
-+
-+	fdsp_coef_trans_check(fdsp);
-+
-+	return 0;
-+}
-+
-+static void fdsp_app_irq_set(u32 app_irq_enable)
-+{
-+	u8 app_irq_enable0;
-+	u8 app_irq_enable1;
-+	u8 app_irq_enable2;
-+	u8 data;
-+
-+	app_irq_enable0 = (app_irq_enable >> 16) & 0xff;
-+	app_irq_enable1 = (app_irq_enable >> 8) & 0xff;
-+	app_irq_enable2 = app_irq_enable & 0xff;
-+
-+	if (mc_fdsp_info.app_irq_enable0 != app_irq_enable0) {
-+		data = app_irq_enable0 & ~mc_fdsp_info.app_irq_enable0;
-+		if (data)
-+			mc_packet_add_force_write_f(MCI_IREQAPP0, data);
-+
-+		mc_fdsp_info.app_irq_enable0 = app_irq_enable0;
-+		mc_packet_add_force_write_f(MCI_APPIENB0, app_irq_enable0);
-+
-+		mc_packet_execute();
-+	}
-+
-+	if (mc_fdsp_info.app_irq_enable1 != app_irq_enable1) {
-+		data = app_irq_enable1 & ~mc_fdsp_info.app_irq_enable1;
-+		if (data)
-+			mc_packet_add_force_write_f(MCI_IREQAPP1, data);
-+
-+		mc_fdsp_info.app_irq_enable1 = app_irq_enable1;
-+		mc_packet_add_force_write_f(MCI_APPIENB1, app_irq_enable1);
-+
-+		mc_packet_execute();
-+	}
-+
-+	if (mc_fdsp_info.app_irq_enable2 != app_irq_enable2) {
-+		data = app_irq_enable2 & ~mc_fdsp_info.app_irq_enable2;
-+		if (data)
-+			mc_packet_add_force_write_f(MCI_IREQAPP2, data);
-+
-+		mc_fdsp_info.app_irq_enable2 = app_irq_enable2;
-+		mc_packet_add_force_write_f(MCI_APPIENB2, app_irq_enable2);
-+
-+		mc_packet_execute();
-+	}
-+}
-+
-+static inline void fdsp_irq_disable(struct fdsp_data *fdsp)
-+{
-+	if (fdsp->must_stop & STOP_KIND_FDSP) {
-+		mc_packet_add_force_write_if(MCI_IESERR, MCI_IESERR_DEF);
-+
-+		mc_packet_add_force_write_f(MCI_TOPIENB, MCI_TOPIENB_DEF);
-+
-+		mc_packet_execute();
-+
-+		fdsp_app_irq_set(0);
-+	} else if (fdsp->must_stop & STOP_KIND_APP)
-+		fdsp_app_irq_set(mc_fdsp_info.app_irq_enable & ~fdsp->
-+				 target_app);
-+}
-+
-+static int fdsp_fade_out_set(void)
-+{
-+	u8 act;
-+
-+	if (mc_fdsp_info.fix_app_vol != FIX_APP_VOL_EXIST)
-+		return 0;
-+
-+	mc_read_f(FIX_APP_VOL_ACT, &act, 1);
-+
-+	mc_packet_add_force_write_f(MCI_IREQAPP0, MCB_IRAPP22);
-+
-+	mc_packet_add_force_write_f(FIX_APP_VOL_REG_FADE_CTRL, 0);
-+
-+	mc_packet_execute();
-+
-+	if (!(act & FIX_APP_VOL_BIT))
-+		return 0;
-+
-+	mc_packet_add_wait(FIX_APP_FADE_WAIT_TIME_US);
-+
-+	mc_packet_execute();
-+
-+	return 0;
-+}
-+
-+static inline int fdsp_forwarding_wait(void)
-+{
-+	mc_packet_add_wait_event(MCDRV_EVT_IF_REG_FLAG_RESET |
-+				 (MCI_FDSPTREQ << 8) | MCB_FDSPTREQ);
-+
-+	return mc_packet_execute();
-+}
-+
-+static void fdsp_control_set(u8 dsp_ctrl)
-+{
-+	if ((dsp_ctrl & MCB_DSPSTART) != MCB_DSPSTART)
-+		mc_packet_add_force_write_if(MCI_FDSPTREQ, MCI_FDSPTREQ_DEF);
-+
-+	mc_packet_add_force_write_f(MCI_DSPCTRL, dsp_ctrl);
-+	mc_packet_execute();
-+
-+	mc_fdsp_info.dsp_ctrl = dsp_ctrl;
-+}
-+
-+static void fdsp_app_fade_set(void)
-+{
-+	u8 fade0, fade1, fade2;
-+
-+	fade0 = mc_fdsp_info.app_fade >> 16;
-+	fade1 = mc_fdsp_info.app_fade >> 8;
-+	fade2 = mc_fdsp_info.app_fade;
-+
-+	mc_packet_add_write_f(MCI_APPFADE0, fade0);
-+	mc_packet_add_write_f(MCI_APPFADE1, fade1);
-+	mc_packet_add_write_f(MCI_APPFADE2, fade2);
-+
-+	mc_packet_execute();
-+}
-+
-+static void fdsp_app_exec_set(u8 app_exec0, u8 app_exec1, u8 app_exec2)
-+{
-+	mc_packet_add_write_f(MCI_APPEXEC0, app_exec0);
-+	mc_packet_add_write_f(MCI_APPEXEC1, app_exec1);
-+	mc_packet_add_write_f(MCI_APPEXEC2, app_exec2);
-+	mc_packet_execute();
-+
-+	mc_fdsp_info.app_exec0 = app_exec0;
-+	mc_fdsp_info.app_exec1 = app_exec1;
-+	mc_fdsp_info.app_exec2 = app_exec2;
-+}
-+
-+static inline int fdsp_app_stop(u32 app_stop)
-+{
-+	u8 app_stop0, app_stop1, app_stop2;
-+	u8 app_stop0_org, app_stop1_org, app_stop2_org;
-+	u8 app_exec0, app_exec1, app_exec2;
-+	int ret = 0;
-+
-+	if (!app_stop)
-+		return 0;
-+
-+	app_stop0 = (app_stop >> 16) & MCB_APPEXEC0;
-+	app_stop1 = (app_stop >> 8) & MCB_APPEXEC1;
-+	app_stop2 = app_stop & MCB_APPEXEC2;
-+	app_stop0_org = app_stop0;
-+	app_stop1_org = app_stop1;
-+	app_stop2_org = app_stop2;
-+
-+	app_stop0 = mc_fdsp_info.app_exec0 & app_stop0;
-+	app_stop1 = mc_fdsp_info.app_exec1 & app_stop1;
-+	app_stop2 = mc_fdsp_info.app_exec2 & app_stop2;
-+
-+	app_exec0 = mc_fdsp_info.app_exec0 & ~app_stop0;
-+	app_exec1 = mc_fdsp_info.app_exec1 & ~app_stop1;
-+	app_exec2 = mc_fdsp_info.app_exec2 & ~app_stop2;
-+	fdsp_app_exec_set(app_exec0, app_exec1, app_exec2);
-+
-+	if (app_stop0_org) {
-+		mc_packet_add_wait_event(MCDRV_EVT_F_REG_FLAG_RESET |
-+					 (MCI_APPACT0 << 8) | app_stop0_org);
-+		ret = mc_packet_execute();
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	if (app_stop1_org) {
-+		mc_packet_add_wait_event(MCDRV_EVT_F_REG_FLAG_RESET |
-+					 (MCI_APPACT1 << 8) | app_stop1_org);
-+		ret = mc_packet_execute();
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	if (app_stop2_org) {
-+		mc_packet_add_wait_event(MCDRV_EVT_F_REG_FLAG_RESET |
-+					 (MCI_APPACT2 << 8) | app_stop2_org);
-+		ret = mc_packet_execute();
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	mc_packet_add_force_write_f(MCI_IREQAPP0, app_stop0_org);
-+	mc_packet_add_force_write_f(MCI_IREQAPP1, app_stop1_org);
-+	mc_packet_add_force_write_f(MCI_IREQAPP2, app_stop2_org);
-+	mc_packet_execute();
 +
 +	return ret;
 +}
-+
-+static int fdsp_stop(struct fdsp_data *fdsp)
-+{
-+	u8 val;
-+	int ret = 0;
-+
-+	if (fdsp->must_stop & STOP_KIND_FDSP) {
-+		if (mc_fdsp_info.dsp_ctrl & MCB_DSPSTART) {
-+			ret = fdsp_fade_out_set();
-+			if (ret < 0)
-+				return ret;
-+
-+			ret = fdsp_forwarding_wait();
-+			if (ret < 0)
-+				return ret;
-+		}
-+
-+		mc_read_f(MCI_DSPSTATE, &val, 1);
-+
-+		fdsp_control_set(MCI_DSPCTRL_DEF);
-+
-+		if (val & MCB_DSPACT) {
-+			mc_packet_add_wait(mc_fdsp_info.wait);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				return ret;
-+
-+			val = mc_if_register_get_value(MCI_RST);
-+			if (val & MCB_PSW_F) {
-+				mc_packet_add_force_write_if(MCI_RST,
-+							     val | MCB_RST_F);
-+				mc_packet_add_force_write_if(MCI_RST, val);
-+				ret = mc_packet_execute();
-+				if (ret < 0)
-+					return ret;
-+			}
-+
-+			fdsp_core_init();
-+		}
-+	} else if (fdsp->must_stop & STOP_KIND_APP) {
-+		ret = fdsp_forwarding_wait();
-+		if (ret < 0)
-+			return ret;
-+
-+		fdsp_app_fade_set();
-+
-+		ret = fdsp_app_stop(fdsp->target_app);
-+	} else if (fdsp->must_stop & STOP_KIND_WAIT)
-+		ret = fdsp_forwarding_wait();
-+
-+	return ret;
-+}
-+
-+static inline void fdsp_firmware_control_set(struct fdsp_data *fdsp)
-+{
-+	u8 *fw_ctrl;
-+	u8 data;
-+	int i;
-+
-+	fw_ctrl = fdsp->fw_ctrl;
-+
-+	for (i = 0; i < FDSP_APP_NUM; ++i) {
-+		if (i != FIX_APP_VOL_NO) {
-+			switch (fw_ctrl[FWCTL_APPEXEC + i]) {
-+			case FDSP_APP_EXEC_STOP:
-+				fdsp->app_exec &= ~(0x01U << i);
-+				break;
-+			case FDSP_APP_EXEC_START:
-+				fdsp->app_exec |= (0x01U << i);
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (!(fdsp->must_stop & STOP_KIND_FDSP))
-+		return;
-+
-+	data = (fw_ctrl[FWCTL_FWMOD] << 4) & MCB_FWMOD;
-+	if (fw_ctrl[FWCTL_FS] != 0xff) {
-+		data |= fw_ctrl[FWCTL_FS] & MCB_FS;
-+		mc_packet_add_force_write_f(MCI_FWMOD, data);
-+	}
-+
-+	if (fw_ctrl[FWCTL_FADECODE] != 0xff) {
-+		data = fw_ctrl[FWCTL_FADECODE] & MCB_FADECODE;
-+		mc_packet_add_force_write_f(MCI_FADECODE, data);
-+	}
-+
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_channel_select(u8 *ch_sel)
-+{
-+	u8 data;
-+
-+	mc_fdsp_info.dsp_bypass = (ch_sel[CHSEL_BYPASS] << 7) & MCB_DSPBYPASS;
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 1] << 4) & MCB_ADI01CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 0] & MCB_ADI00CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL0, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 3] << 4) & MCB_ADI03CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 2] & MCB_ADI02CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL1, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 5] << 4) & MCB_ADI05CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 4] & MCB_ADI04CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL2, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 7] << 4) & MCB_ADI07CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 6] & MCB_ADI06CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL3, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 9] << 4) & MCB_ADI09CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 8] & MCB_ADI08CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL4, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 11] << 4) & MCB_ADI11CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 10] & MCB_ADI10CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL5, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 13] << 4) & MCB_ADI13CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 12] & MCB_ADI12CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL6, data);
-+
-+	data = (ch_sel[CHSEL_INFDSPSRC + 15] << 4) & MCB_ADI15CSEL;
-+	data |= ch_sel[CHSEL_INFDSPSRC + 14] & MCB_ADI14CSEL;
-+	mc_packet_add_force_write_f(MCI_ADICSEL7, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 1] << 4) & MCB_ADO01CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 0] & MCB_ADO00CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL0, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 3] << 4) & MCB_ADO03CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 2] & MCB_ADO02CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL1, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 5] << 4) & MCB_ADO05CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 4] & MCB_ADO04CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL2, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 7] << 4) & MCB_ADO07CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 6] & MCB_ADO06CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL3, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 9] << 4) & MCB_ADO09CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 8] & MCB_ADO08CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL4, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 11] << 4) & MCB_ADO11CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 10] & MCB_ADO10CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL5, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 13] << 4) & MCB_ADO13CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 12] & MCB_ADO12CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL6, data);
-+
-+	data = (ch_sel[CHSEL_OUTAUDIOSRC + 15] << 4) & MCB_ADO15CSEL;
-+	data |= ch_sel[CHSEL_OUTAUDIOSRC + 14] & MCB_ADO14CSEL;
-+	mc_packet_add_force_write_f(MCI_ADOCSEL7, data);
-+
-+	mc_packet_execute();
-+}
-+
-+static void fdsp_top_environment_set(u8 *top_env)
-+{
-+	u8 data;
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16, 0);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8, 0);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0, 8);
-+
-+	mc_packet_add_force_write_if(MCI_FDSPTINI, MCI_FDSPTINI_DEF);
-+	mc_packet_execute();
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_ID]);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_INSTBASE + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_INSTBASE + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_INSTBASE + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_MBLKSIZE] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_MBUFSIZE] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	data = (top_env[TOP_ENV_MOCHCNFG] << 4) & 0xf0;
-+	data |= top_env[TOP_ENV_MICHCNFG] & 0x0f;
-+	mc_packet_add_force_write_if(MCI_FMAD, data);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_SSTARTCH] & 0x0f);
-+	data = (top_env[TOP_ENV_SNUMOFOCH] << 4) & 0xf0;
-+	data |= top_env[TOP_ENV_SNUMOFICH] & 0x0f;
-+	mc_packet_add_force_write_if(MCI_FMAD, data);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_SAVEBUFSIZE1 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_SAVEBUFSIZE1 + 3]);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_SAVEBUFSIZE0 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_SAVEBUFSIZE0 + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_LIMITWORKSIZE + 1] & 0x0f);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_LIMITWORKSIZE + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_LIMITWORKSIZE + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_WORKBASE + 1] & 0x0f);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_WORKBASE + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_WORKBASE + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     top_env[TOP_ENV_TOPBASE0 + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_TOPBASE0 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, top_env[TOP_ENV_TOPBASE0 + 3]);
-+
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_top_coef_set(u8 *coef)
-+{
-+	u32 size, i;
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16,
-+				     coef[TOP_COEF_ADR + 1] & MCB_FMAA_19_16);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8,
-+				     coef[TOP_COEF_ADR + 2] & MCB_FMAA_15_8);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0,
-+				     coef[TOP_COEF_ADR + 3] & MCB_FMAA_7_0);
-+	mc_packet_add_force_write_if(MCI_FDSPTINI, MCI_FDSPTINI_DEF);
-+	mc_packet_execute();
-+
-+	size = htonl(*(u32 *) (coef + TOP_COEF_SIZE));
-+	for (i = 0; i < size; i++)
-+		mc_packet_add_force_write_if(MCI_FMAD, coef[TOP_COEF_DATA + i]);
-+
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_app_coef_set(u8 *coef, u8 coef_trans)
-+{
-+	u32 size, i;
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16,
-+				     coef[APP_COEF_ADR + 1] & MCB_FMAA_19_16);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8,
-+				     coef[APP_COEF_ADR + 2] & MCB_FMAA_15_8);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0,
-+				     coef[APP_COEF_ADR + 3] & MCB_FMAA_7_0);
-+
-+	if (coef_trans == COEF_DSP_TRANS)
-+		mc_packet_add_force_write_if(MCI_FDSPTINI,
-+					     MCB_DSPTINI | MCB_FMAMOD_DSP);
-+	else
-+		mc_packet_add_force_write_if(MCI_FDSPTINI, MCI_FDSPTINI_DEF);
-+	mc_packet_execute();
-+
-+	size = htonl(*(u32 *) (coef + APP_COEF_SIZE));
-+	for (i = 0; i < size; i++)
-+		mc_packet_add_force_write_if(MCI_FMAD, coef[APP_COEF_DATA + i]);
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_app_reg_set(u8 *reg)
-+{
-+	u32 size, i;
-+
-+	mc_packet_add_force_write_if(MCI_F_REG_A,
-+				     reg[APP_REG_ADR + 3] | MCB_F_REG_AINC);
-+	mc_packet_execute();
-+
-+	size = htonl(*(u32 *) (reg + APP_REG_SIZE));
-+	for (i = 0; i < size; i++)
-+		mc_packet_add_force_write_if(MCI_F_REG_D,
-+					     reg[APP_REG_DATA + i]);
-+	mc_packet_execute();
-+}
-+
-+static void fdsp_multi_data_set(struct fdsp_data *fdsp, u32 target)
-+{
-+	u32 top, tag, size, app_no, data_size;
-+	u8 *data;
-+
-+	data = fdsp->data;
-+	data_size = fdsp->data_size;
-+	top = 0;
-+
-+	while (top < data_size) {
-+		tag = htonl(*(u32 *) (data + top));
-+		size = htonl(*(u32 *) (data + top + 4));
-+
-+		top += CHUNK_SIZE;
-+		app_no = tag & AEC_FDSP_TAG_APPNO_MASK;
-+
-+		switch (tag & AEC_FDSP_TAG_APP_MASK) {
-+		case AEC_FDSP_TAG_APP_COEF:
-+		case AEC_FDSP_TAG_APP_CONST:
-+			if (target == MULTI_CHUNK_APP_COEF &&
-+			    app_no < FDSP_APP_NUM)
-+				fdsp_app_coef_set(&data[top], fdsp->coef_trans);
-+			break;
-+		case AEC_FDSP_TAG_APP_REG:
-+			if (target == MULTI_CHUNK_APP_REG &&
-+			    app_no < FDSP_APP_NUM)
-+				fdsp_app_reg_set(&data[top]);
-+			break;
-+		default:
-+			if (tag == AEC_FDSP_TAG_TOP_COEF &&
-+			    target == MULTI_CHUNK_TOP_COEF)
-+				fdsp_top_coef_set(&data[top]);
-+			break;
-+		}
-+
-+		top += size;
-+	}
-+}
-+
-+static inline void fdsp_top_instruction_set(u8 *inst)
-+{
-+	u32 size, i;
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16,
-+				     inst[TOP_INST_ADR + 1] & MCB_FMAA_19_16);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8,
-+				     inst[TOP_INST_ADR + 2] & MCB_FMAA_15_8);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0,
-+				     inst[TOP_INST_ADR + 3] & MCB_FMAA_7_0);
-+	mc_packet_add_force_write_if(MCI_FDSPTINI, MCB_FMABUS_I);
-+	mc_packet_execute();
-+
-+	size = htonl(*(u32 *) (inst + TOP_INST_SIZE));
-+	for (i = 0; i < size; i++)
-+		mc_packet_add_force_write_if(MCI_FMAD, inst[TOP_INST_DATA + i]);
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_app_environment_fix(u32 app_no, u8 *app_env)
-+{
-+	if (app_no != FIX_APP_VOL_NO)
-+		return;
-+
-+	if (app_env[APP_ENV_ID] == APP_VOL_ID)
-+		mc_fdsp_info.fix_app_vol = FIX_APP_VOL_EXIST;
-+	else
-+		mc_fdsp_info.fix_app_vol = FIX_APP_VOL_FREE;
-+}
-+
-+static inline void fdsp_app_environment_set(u32 app_no, u8 *app_env)
-+{
-+	u32 base;
-+	u8 data;
-+
-+	base = 0x10 + (app_no * 8);
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16,
-+				     (base >> 16) & MCB_FMAA_19_16);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8,
-+				     (base >> 8) & MCB_FMAA_15_8);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0, base & MCB_FMAA_7_0);
-+
-+	mc_packet_add_force_write_if(MCI_FDSPTINI, MCI_FDSPTINI_DEF);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_ID]);
-+	data = (app_env[APP_ENV_EXCECPROCESS] << 7) & 0x80;
-+	data |= app_env[APP_ENV_INSTBASE + 1] & 0x1f;
-+	mc_packet_add_force_write_if(MCI_FMAD, data);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_INSTBASE + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_INSTBASE + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_REGBASE + 3] & 0x7f);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_EXECFS + 2] & 0x7f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_EXECFS + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_EXECCH + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_EXECCH + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_WORKBASE + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_WORKBASE + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_WORKBASE + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_APPBASE0 + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE0 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE0 + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_APPBASE1 + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE1 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE1 + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_APPBASE2 + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE2 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE2 + 3]);
-+
-+	mc_packet_add_force_write_if(MCI_FMAD, 0);
-+	mc_packet_add_force_write_if(MCI_FMAD,
-+				     app_env[APP_ENV_APPBASE3 + 1] & 0x1f);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE3 + 2]);
-+	mc_packet_add_force_write_if(MCI_FMAD, app_env[APP_ENV_APPBASE3 + 3]);
-+
-+	mc_packet_execute();
-+
-+	if ((app_env[APP_ENV_APPFADE] & APP_PARAM_ON) == APP_PARAM_ON)
-+		mc_fdsp_info.app_fade |= 0x01U << app_no;
-+	else
-+		mc_fdsp_info.app_fade &= ~(0x01U << app_no);
-+
-+	if ((app_env[APP_ENV_APPIRQ] & APP_PARAM_ON) == APP_PARAM_ON)
-+		mc_fdsp_info.app_irq_enable |= 0x01U << app_no;
-+	else
-+		mc_fdsp_info.app_irq_enable &= ~(0x01UL << app_no);
-+}
-+
-+static void fdsp_app_instruction_set(u8 *inst)
-+{
-+	u32 size, i;
-+
-+	mc_packet_add_force_write_if(MCI_FMAA_19_16,
-+				     inst[APP_INST_ADR + 1] & MCB_FMAA_19_16);
-+	mc_packet_add_force_write_if(MCI_FMAA_15_8,
-+				     inst[APP_INST_ADR + 2] & MCB_FMAA_15_8);
-+	mc_packet_add_force_write_if(MCI_FMAA_7_0,
-+				     inst[APP_INST_ADR + 3] & MCB_FMAA_7_0);
-+
-+	mc_packet_add_force_write_if(MCI_FDSPTINI, MCB_FMABUS_I);
-+	mc_packet_execute();
-+
-+	size = htonl(*(u32 *) (inst + APP_INST_SIZE));
-+	for (i = 0; i < size; i++)
-+		mc_packet_add_force_write_if(MCI_FMAD, inst[APP_INST_DATA + i]);
-+	mc_packet_execute();
-+}
-+
-+static void fdsp_download(struct fdsp_data *fdsp)
-+{
-+	int i;
-+
-+	if (fdsp->fw_ctrl)
-+		fdsp_firmware_control_set(fdsp);
-+
-+	if (fdsp->ch_sel)
-+		fdsp_channel_select(fdsp->ch_sel);
-+
-+	if (fdsp->top_env)
-+		fdsp_top_environment_set(fdsp->top_env);
-+
-+	if (fdsp->top_coef_count)
-+		fdsp_multi_data_set(fdsp, MULTI_CHUNK_TOP_COEF);
-+
-+	if (fdsp->top_inst)
-+		fdsp_top_instruction_set(fdsp->top_inst);
-+
-+	if (fdsp->target_app)
-+		for (i = 0; i < FDSP_APP_NUM; i++)
-+			if (fdsp->app_env[i]) {
-+				fdsp_app_environment_fix(i, fdsp->app_env[i]);
-+				fdsp_app_environment_set(i, fdsp->app_env[i]);
-+			}
-+
-+	if (fdsp->app_coef_count || fdsp->app_const_count) {
-+		fdsp_multi_data_set(fdsp, MULTI_CHUNK_APP_COEF);
-+
-+		if (fdsp->coef_trans == COEF_DSP_TRANS) {
-+			mc_packet_add_force_write_if(MCI_FDSPTREQ,
-+						     MCB_FDSPTREQ);
-+			mc_packet_execute();
-+		}
-+	}
-+
-+	if (fdsp->app_inst_count)
-+		for (i = 0; i < FDSP_APP_NUM; i++)
-+			if (fdsp->app_inst[i])
-+				fdsp_app_instruction_set(fdsp->app_inst[i]);
-+
-+	if (fdsp->app_reg_count)
-+		fdsp_multi_data_set(fdsp, MULTI_CHUNK_APP_REG);
-+}
-+
-+static void fdsp_irq_enable(struct fdsp_data *fdsp, struct fdsp_exec *exec)
-+{
-+	if (fdsp->must_stop & STOP_KIND_FDSP) {
-+		mc_packet_add_force_write_f(MCI_IREQTOP, MCB_IREQTOP);
-+		mc_packet_add_force_write_if(MCI_IRSERR, MCB_IRSERR | MCB_IRFW);
-+		mc_packet_execute();
-+
-+		fdsp_app_irq_set(mc_fdsp_info.app_irq_enable & exec->app_exec);
-+
-+		mc_packet_add_force_write_f(MCI_TOPIENB, MCB_TOPIENB);
-+		mc_packet_add_force_write_if(MCI_IESERR, MCB_IESERR | MCB_IEFW);
-+		mc_packet_execute();
-+	} else if (fdsp->must_stop & STOP_KIND_APP_EXEC) {
-+		mc_packet_add_force_write_if(MCI_IRSERR, MCB_IRFW_DSP);
-+		mc_packet_execute();
-+
-+		fdsp_app_irq_set(mc_fdsp_info.app_irq_enable & exec->app_exec);
-+	} else if (fdsp->must_stop & STOP_KIND_APP) {
-+		mc_packet_add_force_write_if(MCI_IRSERR, MCB_IRFW_DSP);
-+		mc_packet_execute();
-+
-+		fdsp_app_irq_set(mc_fdsp_info.app_irq_enable & exec->app_exec);
-+	} else if (fdsp->must_stop & STOP_KIND_WAIT) {
-+		mc_packet_add_force_write_if(MCI_IRSERR, MCB_IRFW_DSP);
-+		mc_packet_execute();
-+	}
-+}
-+
-+static void fdsp_face_in_set(void)
-+{
-+	if (mc_fdsp_info.fix_app_vol != FIX_APP_VOL_EXIST)
-+		return;
-+
-+	mc_packet_add_force_write_f(FIX_APP_VOL_REG_FADE_CTRL,
-+				    FIX_APP_VOL_REG_FADE_CTRL_BIT);
-+	mc_packet_execute();
-+}
-+
-+static inline void fdsp_restart(struct fdsp_data *fdsp, struct fdsp_exec *exec)
-+{
-+	u8 app_exec0;
-+	u8 app_exec1;
-+	u8 app_exec2;
-+	u32 app_stop;
-+	u32 app_act;
-+
-+	app_exec0 = (exec->app_exec >> 16) & MCB_APPEXEC0;
-+	app_exec1 = (exec->app_exec >> 8) & MCB_APPEXEC1;
-+	app_exec2 = exec->app_exec & MCB_APPEXEC2;
-+
-+	if (fdsp->must_stop & STOP_KIND_FDSP) {
-+		fdsp_app_exec_set(app_exec0, app_exec1, app_exec2);
-+		if (exec->restart == RESTART_ON) {
-+			mc_fdsp_info.app_stop = 0;
-+			if (mc_fdsp_info.dsp_bypass & MCB_DSPBYPASS)
-+				fdsp_control_set(MCB_DSPBYPASS);
-+			else {
-+				fdsp_control_set(MCB_DSPSTART);
-+				fdsp_face_in_set();
-+			}
-+		}
-+	} else if (fdsp->must_stop & STOP_KIND_APP_EXEC) {
-+		app_stop = (u32) (mc_fdsp_info.app_exec0 & ~app_exec0) << 16;
-+		app_stop |= (u32) (mc_fdsp_info.app_exec1 & ~app_exec1) << 8;
-+		app_stop |= mc_fdsp_info.app_exec2 & ~app_exec2;
-+
-+		fdsp_app_fade_set();
-+		fdsp_app_exec_set(app_exec0, app_exec1, app_exec2);
-+		fdsp_face_in_set();
-+
-+		app_act = fdsp_app_act_get();
-+		if ((app_stop & app_act) != app_stop)
-+			app_stop &= app_act;
-+
-+		mc_fdsp_info.app_stop |= app_stop;
-+	} else if (fdsp->must_stop & STOP_KIND_APP) {
-+		fdsp_app_fade_set();
-+		fdsp_app_exec_set(app_exec0, app_exec1, app_exec2);
-+		fdsp_face_in_set();
-+	}
-+}
-+
-+static inline int fdsp_audio_engine_set(struct fdsp_data *fdsp)
-+{
-+	struct fdsp_exec exec;
-+	u8 data;
-+	int ret;
-+
-+	fdsp->app_exec = (u32) mc_fdsp_info.app_exec0 << 16 |
-+	    (u32) mc_fdsp_info.app_exec1 << 8 | (u32) mc_fdsp_info.app_exec2;
-+
-+	if (mc_fdsp_info.dsp_ctrl != MCI_DSPCTRL_DEF)
-+		exec.restart = RESTART_ON;
-+	else
-+		exec.restart = RESTART_OFF;
-+
-+	if (mc_fdsp_info.dsp_ctrl & MCB_DSPBYPASS)
-+		fdsp->must_stop |= STOP_KIND_FDSP;
-+	else if (mc_fdsp_info.dsp_ctrl & MCB_DSPSTART) {
-+		fdsp->must_stop |= STOP_KIND_FDSP;
-+		fdsp->coef_trans = COEF_DMA_TRANS;
-+	} else {
-+		mc_read_f(MCI_DSPSTATE, &data, 1);
-+		if ((data & MCB_DSPACT) != MCB_DSPACT)
-+			fdsp->coef_trans = COEF_DMA_TRANS;
-+	}
-+
-+	fdsp_irq_disable(fdsp);
-+
-+	ret = fdsp_stop(fdsp);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (fdsp->must_stop & STOP_KIND_FDSP) {
-+		mc_packet_add_write_f(MCI_APPFADE0, 0);
-+		mc_packet_add_write_f(MCI_APPFADE1, 0);
-+		mc_packet_add_write_f(MCI_APPFADE2, 0);
-+	}
-+
-+	fdsp_download(fdsp);
-+
-+	exec.app_exec = fdsp->app_exec;
-+	if (mc_fdsp_info.fix_app_vol == FIX_APP_VOL_EXIST)
-+		exec.app_exec |= FIX_APP_VOL_APPEXEC;
-+	else
-+		exec.app_exec &= ~FIX_APP_VOL_APPEXEC;
-+
-+	fdsp_irq_enable(fdsp, &exec);
-+	fdsp_restart(fdsp, &exec);
-+
-+	return 0;
-+}
-+
-+int mc_fdsp_init(u8 locate, u32 wait)
-+{
-+	if (mc_fdsp_info.initialized)
-+		return -EBUSY;
-+
-+	if (!locate) {
-+		mc_fdsp_info.input_add_format = 0xf0ff;
-+		mc_fdsp_info.output_add_format = 0xf0ff;
-+	} else {
-+		mc_fdsp_info.input_add_format = 0xf000;
-+		mc_fdsp_info.output_add_format = 0xf000;
-+	}
-+
-+	if (wait)
-+		mc_fdsp_info.wait = wait;
-+	else
-+		mc_fdsp_info.wait = DEF_FDSP_STOP_WAIT_TIME_US;
-+
-+	mc_fdsp_info.adi_mute0 = MCI_ADIMUTE0_DEF;
-+	mc_fdsp_info.adi_mute1 = MCI_ADIMUTE1_DEF;
-+	mc_fdsp_info.ado_mute0 = MCI_ADOMUTE0_DEF;
-+	mc_fdsp_info.ado_mute1 = MCI_ADOMUTE1_DEF;
-+
-+	fdsp_core_init();
-+
-+	mc_fdsp_info.initialized = true;
-+
-+	return 0;
-+}
-+
-+void mc_fdsp_term(void)
-+{
-+	if (!mc_fdsp_info.initialized)
-+		return;
-+
-+	mc_packet_add_force_write_if(MCI_IESERR, MCI_IESERR_DEF);
-+	mc_packet_add_force_write_if(MCI_IRSERR, MCB_IRSERR | MCB_IRFW);
-+	mc_packet_add_force_write_f(MCI_DSPCTRL, MCI_DSPCTRL_DEF);
-+	mc_packet_execute();
-+
-+	mc_fdsp_info.initialized = false;
-+}
-+
-+void mc_fdsp_irq(void)
-+{
-+	u32 app_stop;
-+	u8 ireq, ireq_top = 0, ireq_app0 = 0, ireq_app1 = 0, ireq_app2 = 0;
-+
-+	mc_read_f(MCI_IRSERR, &ireq, 1);
-+
-+	mc_packet_add_force_write_if(MCI_IRSERR, ireq);
-+	mc_packet_execute();
-+
-+	if (ireq & MCB_IRFW_TOP) {
-+		mc_read_f(MCI_IREQTOP, &ireq_top, 1);
-+
-+		mc_packet_add_force_write_f(MCI_IREQTOP, ireq_top);
-+		mc_packet_execute();
-+	}
-+
-+	if (ireq & MCB_IRFW_APP) {
-+		if (mc_fdsp_info.app_irq_enable0) {
-+			mc_read_f(MCI_IREQAPP0, &ireq_app0, 1);
-+
-+			mc_packet_add_force_write_f(MCI_IREQAPP0, ireq_app0);
-+			mc_packet_execute();
-+
-+			ireq_app0 = ireq_app0 & mc_fdsp_info.app_irq_enable0;
-+		}
-+
-+		if (mc_fdsp_info.app_irq_enable1) {
-+			mc_read_f(MCI_IREQAPP1, &ireq_app1, 1);
-+
-+			mc_packet_add_force_write_f(MCI_IREQAPP1, ireq_app1);
-+			mc_packet_execute();
-+
-+			ireq_app2 = ireq_app1 & mc_fdsp_info.app_irq_enable1;
-+		}
-+
-+		if (mc_fdsp_info.app_irq_enable2) {
-+			mc_read_f(MCI_IREQAPP2, &ireq_app2, 1);
-+
-+			mc_packet_add_force_write_f(MCI_IREQAPP2, ireq_app2);
-+			mc_packet_execute();
-+
-+			ireq_app2 = ireq_app2 & mc_fdsp_info.app_irq_enable2;
-+		}
-+	}
-+
-+	if (ireq_top & MCB_IREQTOP0) {
-+		app_stop = mc_fdsp_info.app_stop & ~fdsp_app_act_get();
-+		mc_fdsp_info.app_stop &= ~app_stop;
-+	}
-+}
-+
-+int mc_fdsp_set_dsp(struct mcdrv_aec_info *aec)
-+{
-+	struct fdsp_data fdsp;
-+	int ret;
-+
-+	if (!aec)
-+		return -EINVAL;
-+
-+	ret = fdsp_get_data(aec, &fdsp);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = fdsp_data_analyze(&fdsp);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!fdsp.data || !fdsp.data_size)
-+		return 0;
-+
-+	if (!mc_fdsp_info.initialized)
-+		return -EBUSY;
-+
-+	return fdsp_audio_engine_set(&fdsp);
-+}
-+
-+int mc_fdsp_start(void)
-+{
-+	if (!mc_fdsp_info.initialized)
-+		return -EBUSY;
-+
-+	if (mc_fdsp_info.dsp_bypass & MCB_DSPBYPASS) {
-+		mc_fdsp_info.app_stop = 0;
-+		fdsp_control_set(MCB_DSPBYPASS);
-+	} else if (!(mc_fdsp_info.dsp_ctrl & MCB_DSPSTART)) {
-+		mc_fdsp_info.app_stop = 0;
-+		fdsp_control_set(MCB_DSPSTART);
-+		fdsp_face_in_set();
-+	}
-+
-+	return 0;
-+}
-+
-+int mc_fdsp_stop(void)
-+{
-+	if (!mc_fdsp_info.initialized)
-+		return 0;
-+
-+	if (mc_fdsp_info.dsp_ctrl & MCB_DSPSTART)
-+		fdsp_fade_out_set();
-+
-+	fdsp_control_set(MCI_DSPCTRL_DEF);
-+
-+	return 0;
-+}
-+
-+int mc_fdsp_set_mute(struct mcdrv_fdsp_mute *mute)
-+{
-+	u8 adi_mute0, adi_mute1;
-+	u8 ado_mute0, ado_mute1;
-+	int i;
-+
-+	if (!mute)
-+		return -EINVAL;
-+
-+	for (i = 0; i < FDSP_MUTE_NUM; i++)
-+		if (mute->in_mute[i] > FDSP_MUTE_OFF ||
-+		    mute->out_mute[i] > FDSP_MUTE_OFF)
-+			return -EINVAL;
-+
-+	if (!mc_fdsp_info.initialized)
-+		return -EBUSY;
-+
-+	adi_mute0 = mc_fdsp_info.adi_mute0;
-+	adi_mute0 = create_mute_value(adi_mute0, mute->in_mute[0],
-+				      MCB_ADI01MTN | MCB_ADI00MTN);
-+	adi_mute0 = create_mute_value(adi_mute0, mute->in_mute[1],
-+				      MCB_ADI03MTN | MCB_ADI02MTN);
-+	adi_mute0 = create_mute_value(adi_mute0, mute->in_mute[2],
-+				      MCB_ADI05MTN | MCB_ADI04MTN);
-+	adi_mute0 = create_mute_value(adi_mute0, mute->in_mute[3],
-+				      MCB_ADI07MTN | MCB_ADI06MTN);
-+	adi_mute1 = mc_fdsp_info.adi_mute1;
-+	adi_mute1 = create_mute_value(adi_mute1, mute->in_mute[4],
-+				      MCB_ADI09MTN | MCB_ADI08MTN);
-+	adi_mute1 = create_mute_value(adi_mute1, mute->in_mute[5],
-+				      MCB_ADI11MTN | MCB_ADI10MTN);
-+	adi_mute1 = create_mute_value(adi_mute1, mute->in_mute[6],
-+				      MCB_ADI13MTN | MCB_ADI12MTN);
-+	adi_mute1 = create_mute_value(adi_mute1, mute->in_mute[7],
-+				      MCB_ADI15MTN | MCB_ADI14MTN);
-+
-+	ado_mute0 = mc_fdsp_info.ado_mute0;
-+	ado_mute0 = create_mute_value(ado_mute0, mute->out_mute[0],
-+				      MCB_ADO01MTN | MCB_ADO00MTN);
-+	ado_mute0 = create_mute_value(ado_mute0, mute->out_mute[1],
-+				      MCB_ADO03MTN | MCB_ADO02MTN);
-+	ado_mute0 = create_mute_value(ado_mute0, mute->out_mute[2],
-+				      MCB_ADO05MTN | MCB_ADO04MTN);
-+	ado_mute0 = create_mute_value(ado_mute0, mute->out_mute[3],
-+				      MCB_ADO07MTN | MCB_ADO06MTN);
-+	ado_mute1 = mc_fdsp_info.ado_mute1;
-+	ado_mute1 = create_mute_value(ado_mute1, mute->out_mute[4],
-+				      MCB_ADO09MTN | MCB_ADO08MTN);
-+	ado_mute1 = create_mute_value(ado_mute1, mute->out_mute[5],
-+				      MCB_ADO11MTN | MCB_ADO10MTN);
-+	ado_mute1 = create_mute_value(ado_mute1, mute->out_mute[6],
-+				      MCB_ADO13MTN | MCB_ADO12MTN);
-+	ado_mute1 = create_mute_value(ado_mute1, mute->out_mute[7],
-+				      MCB_ADO15MTN | MCB_ADO14MTN);
-+
-+	mc_packet_add_force_write_f(MCI_ADIMUTE0, adi_mute0);
-+	mc_packet_add_force_write_f(MCI_ADIMUTE1, adi_mute1);
-+	mc_packet_add_force_write_f(MCI_ADIMUTE2, MCB_ADIMTSET);
-+
-+	mc_packet_add_force_write_f(MCI_ADOMUTE0, ado_mute0);
-+	mc_packet_add_force_write_f(MCI_ADOMUTE1, ado_mute1);
-+	mc_packet_add_force_write_f(MCI_ADOMUTE2, MCB_ADOMTSET);
-+
-+	mc_packet_execute();
-+
-+	mc_fdsp_info.adi_mute0 = adi_mute0;
-+	mc_fdsp_info.adi_mute1 = adi_mute1;
-+	mc_fdsp_info.ado_mute0 = ado_mute0;
-+	mc_fdsp_info.ado_mute1 = ado_mute1;
-+
-+	return 0;
-+}
-diff --git a/sound/soc/codecs/ymu831/mcfdspdrv.h b/sound/soc/codecs/ymu831/mcfdspdrv.h
+diff --git a/sound/soc/codecs/ymu831/mcparser.h b/sound/soc/codecs/ymu831/mcparser.h
 new file mode 100644
-index 0000000..72c6076
+index 0000000..996c8ab
 --- /dev/null
-+++ b/sound/soc/codecs/ymu831/mcfdspdrv.h
-@@ -0,0 +1,55 @@
++++ b/sound/soc/codecs/ymu831/mcparser.h
+@@ -0,0 +1,40 @@
 +/****************************************************************************
 + *
 + * Copyright(c) 2012 Yamaha Corporation. All rights reserved.
 + *
-+ * Module	: mcfdspdrv.h
-+ * Description	: MC F-DSP driver header
++ * Module	: mcparser.h
++ * Description	: MC data parser header
 + * Version	: 1.0.0	Dec 13 2012
 + *
 + * This software is provided 'as-is', without any express or implied
@@ -1750,32 +1216,17 @@ index 0000000..72c6076
 +/*
 + * changelog:
 + * - change in the Linux coding style
-+ * - remove unnecessary comments
 + * - remove unused codes
 + */
-+#ifndef	_MCFDSPDRV_H
-+#define	_MCFDSPDRV_H
++#ifndef _MCPARSER_H
++#define _MCPARSER_H
++
++#include <linux/types.h>
 +
 +#include "mcresctrl.h"
 +
-+#define FDSP_MUTE_NUM		8
-+#define FDSP_MUTE_NOTCHANGE	0
-+#define FDSP_MUTE_ON		1
-+#define FDSP_MUTE_OFF		2
++int mc_parser_d7_data_analyze(u8 *data, u32 size, struct mcdrv_aec_info *aec);
 +
-+struct mcdrv_fdsp_mute {
-+	u8 in_mute[FDSP_MUTE_NUM];
-+	u8 out_mute[FDSP_MUTE_NUM];
-+};
-+
-+int mc_fdsp_init(u8 locate, u32 wait);
-+void mc_fdsp_term(void);
-+void mc_fdsp_irq(void);
-+int mc_fdsp_set_dsp(struct mcdrv_aec_info *aec);
-+int mc_fdsp_start(void);
-+int mc_fdsp_stop(void);
-+int mc_fdsp_set_mute(struct mcdrv_fdsp_mute *mute);
-+
-+#endif /* _MCFDSPDRV_H */
++#endif /* _MCPARSER_H */
 -- 
 1.7.9.5
