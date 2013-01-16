@@ -1,14 +1,11 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Don't request FLL lock IRQ
-Date: Wed, 16 Jan 2013 17:28:00 +0900
-Message-ID: <1358324880-23668-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Yoichi Yuasa <yuasa@linux-mips.org>
+Subject: [PATCH 01/19] ALSA: add Yamaha YMU831 codec support
+Date: Wed, 16 Jan 2013 17:25:30 +0900
+Message-ID: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 169FC26508C
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 09:37:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,75 +15,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <Liam.R.Girdwood@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, yuasa@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-We only log the result and since the interrupt triggers on loss of lock
-during shutdown this may lead to spurious interrupts during shutdown
-delaying the process.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Yoichi Yuasa <yuasa@linux-mips.org>
 ---
- sound/soc/codecs/arizona.c |   19 -------------------
- sound/soc/codecs/arizona.h |    1 -
- 2 files changed, 20 deletions(-)
+ sound/soc/codecs/Kconfig         |    6 ++++++
+ sound/soc/codecs/Makefile        |    1 +
+ sound/soc/codecs/ymu831/Makefile |    3 +++
+ 3 files changed, 10 insertions(+)
+ create mode 100644 sound/soc/codecs/ymu831/Makefile
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 9da5eee..b3621d6 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1008,17 +1008,6 @@ int arizona_init_dai(struct arizona_priv *priv, int id)
- }
- EXPORT_SYMBOL_GPL(arizona_init_dai);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 3a84782..bb405b87 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -122,6 +122,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_WM9705 if SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9712 if SND_SOC_AC97_BUS
+ 	select SND_SOC_WM9713 if SND_SOC_AC97_BUS
++	select SND_SOC_YMU831 if SPI_MASTER
+         help
+           Normally ASoC codec drivers are only built if a machine driver which
+           uses them is also built since they are only usable with a machine
+@@ -494,6 +495,11 @@ config SND_SOC_WM9712
+ config SND_SOC_WM9713
+ 	tristate
  
--static irqreturn_t arizona_fll_lock(int irq, void *data)
--{
--	struct arizona_fll *fll = data;
--
--	arizona_fll_dbg(fll, "Lock status changed\n");
--
--	complete(&fll->lock);
--
--	return IRQ_HANDLED;
--}
--
- static irqreturn_t arizona_fll_clock_ok(int irq, void *data)
- {
- 	struct arizona_fll *fll = data;
-@@ -1258,7 +1247,6 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
- {
- 	int ret;
++config SND_SOC_YMU831
++	tristate
++	select SND_HWDEP
++
++
+ # Amp
+ config SND_SOC_LM4857
+ 	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index f6e8e36..1d31783 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -236,6 +236,7 @@ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
+ obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+ obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
+ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
++obj-$(CONFIG_SND_SOC_YMU831)	+= ymu831/
  
--	init_completion(&fll->lock);
- 	init_completion(&fll->ok);
- 
- 	fll->id = id;
-@@ -1269,13 +1257,6 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
- 	snprintf(fll->clock_ok_name, sizeof(fll->clock_ok_name),
- 		 "FLL%d clock OK", id);
- 
--	ret = arizona_request_irq(arizona, lock_irq, fll->lock_name,
--				  arizona_fll_lock, fll);
--	if (ret != 0) {
--		dev_err(arizona->dev, "Failed to get FLL%d lock IRQ: %d\n",
--			id, ret);
--	}
--
- 	ret = arizona_request_irq(arizona, ok_irq, fll->clock_ok_name,
- 				  arizona_fll_clock_ok, fll);
- 	if (ret != 0) {
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index b3b97f56..67fd49b 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -200,7 +200,6 @@ struct arizona_fll {
- 	int id;
- 	unsigned int base;
- 	unsigned int vco_mult;
--	struct completion lock;
- 	struct completion ok;
- 	unsigned int fref;
- 	unsigned int fout;
+ # Amp
+ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+diff --git a/sound/soc/codecs/ymu831/Makefile b/sound/soc/codecs/ymu831/Makefile
+new file mode 100644
+index 0000000..5b3f66d
+--- /dev/null
++++ b/sound/soc/codecs/ymu831/Makefile
+@@ -0,0 +1,3 @@
++snd-soc-ymu831-objs := \
++
++obj-$(CONFIG_SND_SOC_YMU831) += snd-soc-ymu831.o
 -- 
-1.7.10.4
+1.7.9.5
