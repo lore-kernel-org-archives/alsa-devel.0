@@ -1,26 +1,24 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: HD-audio regression after commit
 	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Wed, 16 Jan 2013 09:52:10 +0800
-Message-ID: <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
+Date: Wed, 16 Jan 2013 10:04:32 +0800
+Message-ID: <CAN8ccibNXXJ8-jksY4d735Ub2QeNA8nyqUbaMvJp_o1W1yOLpA@mail.gmail.com>
 References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
  <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
- <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
- <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
- <20130114172354.1f47f49b@gmail.com>
- <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
- <20130115095325.7aa2dfdd@gmail.com>
+ <s5hk3rgc9hb.wl%tiwai@suse.de>
+ <CAN8ccia3tfcU6XkRBKhKjY-f_HjkkphXo_UEntVOns4sXZk2+A@mail.gmail.com>
+ <s5htxqjc0gs.wl%tiwai@suse.de> <s5hobgqj2qm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
- [209.85.223.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DF742616B2
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 02:52:12 +0100 (CET)
-Received: by mail-ie0-f174.google.com with SMTP id c11so1528132ieb.33
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 17:52:11 -0800 (PST)
-In-Reply-To: <20130115095325.7aa2dfdd@gmail.com>
+Received: from mail-ie0-f172.google.com (mail-ie0-f172.google.com
+ [209.85.223.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9FDE2616B2
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 03:04:33 +0100 (CET)
+Received: by mail-ie0-f172.google.com with SMTP id c13so1560478ieb.3
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2013 18:04:33 -0800 (PST)
+In-Reply-To: <s5hobgqj2qm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,44 +28,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, basinilya@gmail.com, Miro Hodak <mhodak127@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, diaz.manolo@gmail.com, r.kreis@uni-bremen.de, Miro Hodak <mhodak127@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> >>
-> >> >Yes, testing the latest code with real machines is highly
-> >> >appreciated.  Try sound-unstable git tree, either master or
-> >> >test/hda-migrate branch.
-> >> >  git://
+> > >
+> > > > Yes, testing the latest code with real machines is highly
+> > > > appreciated.  Try sound-unstable git tree, either master or
+> > > > test/hda-migrate branch.
+> > > >   git://
 git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git
-> >> >
-> >> >Alternatively you can build the external alsa-driver modules from
-> >> >alsa-driver-unstable snapshot tarball, too
-> >> >
-> >
+> > > >
+> > > > Alternatively you can build the external alsa-driver modules from
+> > > > alsa-driver-unstable snapshot tarball, too
+> > > >
+> > >
 ftp://ftp.suse.com/pub/people/tiwai/snapshot/alsa-driver-unstable-snapshot.tar.gz
-> >> >
-> >> >Note that only the behavior of model=auto has been changed in the tree
-> >> >above.  The other model behaviors of AD codecs are unchanged at all.
-> >>
-> >> Mixer crashes are gone. As I wrote I have no way to test the digital
-> >> output.
-> >>
-> >> I haven't found a way to test multi stream playback either. After
-> >> choosing HP Independant enabled I can't hear nothing through the
-> >> headphone.
-> >>
+> > > >
+> > > > Note that only the behavior of model=auto has been changed in the
+tree
+> > > > above.  The other model behaviors of AD codecs are unchanged at all.
 
-Did audio work with suspend and resume since my p5b-v ad1988 cannot suspend
-/ resume anymore after install Ubuntu 12.04 ?
+>
+> Never mind, I patched by myself now.  It's found in
+> test/hda-gen-parser branch of sound-unstable git tree.
+>
 
-Audio can suspend / resume in fedora 10 for different version of alsa
-driver
+http://git.kernel.org/?p=linux/kernel/git/tiwai/hda-emu.git;a=blob_plain;f=codecs/ad1988b-asus-p5b-deluxe-wifi;hb=HEAD
 
-Seen many ad1988 controls are missing ?
+https://launchpadlibrarian.net/73038045/Card0.Codecs.codec.0.txt
 
-1) rear Mic, line , front Mic  playback volume and switch
-2) CD playback switch
-3) input mix in input source
-4) analog loopback mix volume and mute switch
+How about this node of Asus P5B [1043:81ec] and P5B DELUXE WIFI ? Two
+line-in in input source
+
+Node 0x1a [Pin Complex] wcaps 0x400000: Mono Pincap 0x00000020: IN Pin
+Default 0x918711f0: [Fixed] Line In at Int Rear Conn = Analog, Color =
+Black DefAssociation = 0xf, Sequence = 0x0 Misc = NO_PRESENCE Pin-ctls:
+0x20: IN
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/hda-emu.git;a=blob_plain;f=codecs/ad1988a;hb=HEAD
+
+Node 0x1a [Pin Complex] wcaps 0x400000: Mono Pincap 0x0820: IN Pin Default
+0x99f301f0: [Fixed] Other at Int ATAPI Conn = ATAPI, Color = Unknown
+Pin-ctls: 0x20: IN
