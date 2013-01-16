@@ -1,18 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/3] ALSA: hda - Check array bounds in
-	get_input_path
-Date: Wed, 16 Jan 2013 11:45:35 +0100
-Message-ID: <1358333137-9415-2-git-send-email-david.henningsson@canonical.com>
-References: <1358333137-9415-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 0/3] Fixes for the new generic parser
+Date: Wed, 16 Jan 2013 11:45:34 +0100
+Message-ID: <1358333137-9415-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D6A7A2625F6
+ by alsa0.perex.cz (Postfix) with ESMTP id D3E8D2625F2
  for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 11:45:36 +0100 (CET)
-In-Reply-To: <1358333137-9415-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +23,23 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This gives us some additional safety.
+Hi Takashi,
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_generic.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+I've run my hda-emu summary test tool to check for errors in the 110 
+codecs we have of certified systems (those in codecs/canonical) 
+against the test/hda-migrate branch.
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 932e6a1..577acc4 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -2397,8 +2397,16 @@ static int create_input_ctls(struct hda_codec *codec)
- static struct nid_path *get_input_path(struct hda_codec *codec, int adc_idx, int imux_idx)
- {
- 	struct hda_gen_spec *spec = codec->spec;
-+	if (imux_idx < 0 || imux_idx >= HDA_MAX_NUM_INPUTS) {
-+		snd_BUG();
-+		return NULL;
-+	}
- 	if (spec->dyn_adc_switch)
- 		adc_idx = spec->dyn_adc_idx[imux_idx];
-+	if (adc_idx < 0 || adc_idx >= AUTO_CFG_MAX_OUTS) {
-+		snd_BUG();
-+		return NULL;
-+	}
- 	return snd_hda_get_path_from_idx(codec, spec->input_paths[imux_idx][adc_idx]);
- }
- 
+After these fixes and the one I sent yesterday, there are no remaining
+regressions (as seen by this test tool) compared to the current sound
+tree.
+
+David Henningsson (3):
+  ALSA: hda - Check array bounds in get_input_path
+  ALSA: hda - fix wrong adc_idx in generic parser
+  ALSA: hda - initialize channel counts correctly
+
+ sound/pci/hda/hda_generic.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
 -- 
 1.7.9.5
