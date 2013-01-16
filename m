@@ -1,12 +1,24 @@
-From: Antonio Ospite <ao2@amarulasolutions.com>
-Subject: [PATCH alsa-utils] speaker-test: increase the maximum
-	supported rate to 384000
-Date: Wed, 16 Jan 2013 17:06:04 +0100
-Message-ID: <1358352364-28279-1-git-send-email-ao2@amarulasolutions.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: No dmix/dsnoop on Intel ICH4/5 by default?
+Date: Wed, 16 Jan 2013 20:26:56 +0100
+Message-ID: <50F6FF00.7020706@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpq1.gn.mail.iss.as9143.net (smtpq1.gn.mail.iss.as9143.net
+ [212.54.34.164])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05C73264F8B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 20:26:59 +0100 (CET)
+Received: from [212.54.34.133] (helo=smtp2.gn.mail.iss.as9143.net)
+ by smtpq1.gn.mail.iss.as9143.net with esmtp (Exim 4.71)
+ (envelope-from <rene.herman@gmail.com>) id 1TvYdV-0006pP-Qn
+ for alsa-devel@alsa-project.org; Wed, 16 Jan 2013 20:26:57 +0100
+Received: from 5249be58.cm-4-2c.dynamic.ziggo.nl ([82.73.190.88]
+ helo=[192.168.178.20])
+ by smtp2.gn.mail.iss.as9143.net with esmtp (Exim 4.71)
+ (envelope-from <rene.herman@gmail.com>) id 1TvYdV-0001mf-IK
+ for alsa-devel@alsa-project.org; Wed, 16 Jan 2013 20:26:57 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,30 +28,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Michael Trimarchi <michael@amarulasolutions.com>, Antonio Ospite <ao2@amarulasolutions.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are some devices around supporting this sample rate so let's make
-speaker-test capable to deal with them.
+Good day.
 
-Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
----
- speaker-test/speaker-test.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm out of touch of with alsa -- but should dmix/dsnoop still be enabled 
+by default on hardware that doesn't do hardware mixing?
 
-diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 3c89c38..de42a0c 100644
---- a/speaker-test/speaker-test.c
-+++ b/speaker-test/speaker-test.c
-@@ -999,7 +999,7 @@ int main(int argc, char *argv[]) {
-     case 'r':
-       rate = atoi(optarg);
-       rate = rate < 4000 ? 4000 : rate;
--      rate = rate > 196000 ? 196000 : rate;
-+      rate = rate > 384000 ? 384000 : rate;
-       break;
-     case 'c':
-       channels = atoi(optarg);
--- 
-1.7.10.4
+It seems it isn't on my Intel ICH4:
+
+$ cat /proc/asound/cards
+  0 [ICH5           ]: ICH4 - Intel ICH5
+                       Intel ICH5 with AD1980 at irq 17
+  1 [SAA7134        ]: SAA7134 - SAA7134
+                       saa7134[0] at 0xe8200000 irq 22
+
+I believe that it should be from /usr/share/alsa/cards/ICH4.conf, but I 
+don't get mixing on this setup when using the "default" pcm...
+
+(which I may not mind at that much, but I was looking at some other 
+sound-related problem and this has me rather confused)
+
+This is arch linux, with alsa-lib, -plugins and -utils 1.0.26 installed, 
+using kernel 3.6.11-1-ARCH (ie, standard).
+
+Regards,
+Rene
