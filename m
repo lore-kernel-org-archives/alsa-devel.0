@@ -1,7 +1,7 @@
 From: Yoichi Yuasa <yuasa@linux-mips.org>
-Subject: [PATCH 07/19] ALSA: ymu831: add base driver
-Date: Wed, 16 Jan 2013 17:33:03 +0900
-Message-ID: <20130116173303.b729a83407513e9a41ef37db@linux-mips.org>
+Subject: [PATCH 12/19] ALSA: ymu831: add resource control driver
+Date: Wed, 16 Jan 2013 17:38:09 +0900
+Message-ID: <20130116173809.ca9b864d2f025cdedd60f824@linux-mips.org>
 References: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,39 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Yoichi Yuasa <yuasa@linux-mips.org>
 ---
- sound/soc/codecs/ymu831/Makefile   |    3 +-
- sound/soc/codecs/ymu831/mcdriver.c | 2934 ++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ymu831/mcdriver.h | 1017 +++++++++++++
- 3 files changed, 3953 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/codecs/ymu831/mcdriver.c
- create mode 100644 sound/soc/codecs/ymu831/mcdriver.h
+ sound/soc/codecs/ymu831/Makefile    |    3 +-
+ sound/soc/codecs/ymu831/mcresctrl.c | 4062 +++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ymu831/mcresctrl.h |  394 ++++
+ 3 files changed, 4458 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/ymu831/mcresctrl.c
+ create mode 100644 sound/soc/codecs/ymu831/mcresctrl.h
 
 diff --git a/sound/soc/codecs/ymu831/Makefile b/sound/soc/codecs/ymu831/Makefile
-index 949640e..e908b6d 100644
+index 820dec7..3fd53fe 100644
 --- a/sound/soc/codecs/ymu831/Makefile
 +++ b/sound/soc/codecs/ymu831/Makefile
-@@ -1,6 +1,7 @@
- snd-soc-ymu831-objs := \
- 	mcbdspdrv.o	\
- 	mccdspdrv.o	\
--	mcdevif.o
-+	mcdevif.o	\
-+	mcdriver.o
+@@ -6,6 +6,7 @@ snd-soc-ymu831-objs := \
+ 	mcedspdrv.o	\
+ 	mcfdspdrv.o	\
+ 	mcpacking.o	\
+-	mcparser.o
++	mcparser.o	\
++	mcresctrl.o
  
  obj-$(CONFIG_SND_SOC_YMU831) += snd-soc-ymu831.o
-diff --git a/sound/soc/codecs/ymu831/mcdriver.c b/sound/soc/codecs/ymu831/mcdriver.c
+diff --git a/sound/soc/codecs/ymu831/mcresctrl.c b/sound/soc/codecs/ymu831/mcresctrl.c
 new file mode 100644
-index 0000000..dbdce57
+index 0000000..9a7787e
 --- /dev/null
-+++ b/sound/soc/codecs/ymu831/mcdriver.c
-@@ -0,0 +1,2934 @@
++++ b/sound/soc/codecs/ymu831/mcresctrl.c
+@@ -0,0 +1,4062 @@
 +/****************************************************************************
 + *
 + * Copyright(c) 2012 Yamaha Corporation. All rights reserved.
 + *
-+ * Module	: mcdriver.c
-+ * Description	: MC base driver
-+ * Version	: 1.0.1	Dec 20 2012
++ * Module	: mcresctrl.c
++ * Description	: MC resource control driver
++ * Version	: 1.0.1	Dec 18 2012
 + *
 + * This software is provided 'as-is', without any express or implied
 + * warranty.	In no event will the authors be held liable for any damages
@@ -81,2922 +81,4050 @@ index 0000000..dbdce57
 + * - remove unnecessary comments
 + * - remove unused codes
 + */
++#include <linux/bug.h>
 +#include <linux/errno.h>
 +#include <linux/delay.h>
-+#include <linux/mutex.h>
++#include <linux/kernel.h>
 +#include <linux/string.h>
 +#include <linux/types.h>
 +
-+#include "mcbdspdrv.h"
-+#include "mccdspdrv.h"
 +#include "mcdefs.h"
 +#include "mcdevif.h"
 +#include "mcdriver.h"
-+#include "mcedspdrv.h"
-+#include "mcfdspdrv.h"
-+#include "mcparser.h"
 +#include "mcresctrl.h"
 +
-+#define LDO_WAIT_TIME			1	/* msec */
-+#define VREF_WAIT_TIME_ES1		2	/* msec */
-+#define VREF_WAIT_TIME			30	/* msec */
-+#define MCDRV_DAC_MUTE_WAIT_TIME	20000
-+#define MCDRV_MB4_WAIT_TIME		8000
++#define BURST_WRITE_ENABLE	0x01
 +
-+#define	T_CPMODE_IMPSENSE_BEFORE	0
-+#define	T_CPMODE_IMPSENSE_AFTER		2
++#define D1SRC_ALL_OFF	(MCDRV_D1SRC_MUSICIN_OFF	\
++			| MCDRV_D1SRC_EXTIN_OFF		\
++			| MCDRV_D1SRC_VBOXOUT_OFF	\
++			| MCDRV_D1SRC_VBOXREFOUT_OFF	\
++			| MCDRV_D1SRC_AE0_OFF		\
++			| MCDRV_D1SRC_AE1_OFF		\
++			| MCDRV_D1SRC_AE2_OFF		\
++			| MCDRV_D1SRC_AE3_OFF		\
++			| MCDRV_D1SRC_ADIF0_OFF		\
++			| MCDRV_D1SRC_ADIF1_OFF		\
++			| MCDRV_D1SRC_ADIF2_OFF		\
++			| MCDRV_D1SRC_HIFIIN_OFF)
++#define D2SRC_ALL_OFF	(MCDRV_D2SRC_VOICEIN_OFF	\
++			| MCDRV_D2SRC_VBOXIOOUT_OFF	\
++			| MCDRV_D2SRC_VBOXHOSTOUT_OFF	\
++			| MCDRV_D2SRC_ADC0_L_OFF	\
++			| MCDRV_D2SRC_ADC0_R_OFF	\
++			| MCDRV_D2SRC_ADC1_OFF		\
++			| MCDRV_D2SRC_PDM0_L_OFF	\
++			| MCDRV_D2SRC_PDM0_R_OFF	\
++			| MCDRV_D2SRC_PDM1_L_OFF	\
++			| MCDRV_D2SRC_PDM1_R_OFF	\
++			| MCDRV_D2SRC_DAC0REF_OFF	\
++			| MCDRV_D2SRC_DAC1REF_OFF)
 +
-+static struct mcdrv_path_info path_alloff = {
-+	.music_out = {0x00AAAAAA, 0x00AAAAAA},
-+	.ext_out = {0x00AAAAAA, 0x00AAAAAA},
-+	.hifi_out = {0x00AAAAAA},
-+	.vbox_mix_in = {0x00AAAAAA, 0x00AAAAAA, 0x00AAAAAA, 0x00AAAAAA},
-+	.ae0 = {0x00AAAAAA, 0x00AAAAAA},
-+	.ae1 = {0x00AAAAAA, 0x00AAAAAA},
-+	.ae2 = {0x00AAAAAA, 0x00AAAAAA},
-+	.ae3 = {0x00AAAAAA, 0x00AAAAAA},
-+	.dac0 = {0x00AAAAAA, 0x00AAAAAA},
-+	.dac1 = {0x00AAAAAA, 0x00AAAAAA},
-+	.voice_out = {0x00AAAAAA},
-+	.vbox_io_in = {0x00AAAAAA},
-+	.vbox_host_in = {0x00AAAAAA},
-+	.host_out = {0x00AAAAAA},
-+	.adif0 = {0x00AAAAAA, 0x00AAAAAA},
-+	.adif1 = {0x00AAAAAA, 0x00AAAAAA},
-+	.adif2 = {0x00AAAAAA, 0x00AAAAAA},
-+	.adc0 = {0x002AAAAA, 0x002AAAAA},
-+	.adc1 = {0x002AAAAA},
-+	.sp = {0x002AAAAA, 0x002AAAAA},
-+	.hp = {0x002AAAAA, 0x002AAAAA},
-+	.rc = {0x002AAAAA},
-+	.lout1 = {0x002AAAAA, 0x002AAAAA},
-+	.lout2 = {0x002AAAAA, 0x002AAAAA},
-+	.bias = {0x002AAAAA, 0x002AAAAA, 0x002AAAAA, 0x002AAAAA},
++#define ASRC_ALL_OFF	(MCDRV_ASRC_DAC0_L_OFF		\
++			| MCDRV_ASRC_DAC0_R_OFF		\
++			| MCDRV_ASRC_DAC1_L_OFF		\
++			| MCDRV_ASRC_DAC1_R_OFF		\
++			| MCDRV_ASRC_MIC1_OFF		\
++			| MCDRV_ASRC_MIC2_OFF		\
++			| MCDRV_ASRC_MIC3_OFF		\
++			| MCDRV_ASRC_MIC4_OFF		\
++			| MCDRV_ASRC_LINEIN1_L_OFF	\
++			| MCDRV_ASRC_LINEIN1_R_OFF	\
++			| MCDRV_ASRC_LINEIN1_M_OFF)
++
++/* control packet for serial host interface */
++#define MCDRV_MAX_CTRL_DATA_NUM	(MCDRV_MAX_PACKETS * 4)
++
++struct mcdrv_packet {
++	u8 data[MCDRV_MAX_CTRL_DATA_NUM];
++	u16 data_size;
 +};
 +
-+static DEFINE_MUTEX(mcdrv_mutex);
++/* Register available num */
++#define MCDRV_REG_NUM_IF	59
++#define MCDRV_REG_NUM_A		68
++#define MCDRV_REG_NUM_MA	85
++#define MCDRV_REG_NUM_MB	86
++#define MCDRV_REG_NUM_B		72
++#define MCDRV_REG_NUM_E		101
++#define MCDRV_REG_NUM_C		160
++#define MCDRV_REG_NUM_F		128
++#define MCDRV_REG_NUM_ANA	116
++#define MCDRV_REG_NUM_CD	53
 +
-+#ifndef MCDRV_SKIP_IMPSENSE
-+static inline int imp_sense_start(u8 *op_dac)
-+{
-+	struct mcdrv_power_info power_info;
-+	struct mcdrv_power_update power_update;
++struct mcdrv_info {
++	u8 id;
++	enum mcdrv_dev_id device_id;
++	enum mcdrv_state state;
++
++	u8 if_registers[MCDRV_REG_NUM_IF];
++	u8 a_registers[MCDRV_REG_NUM_A];
++	u8 ma_registers[MCDRV_REG_NUM_MA];
++	u8 mb_registers[MCDRV_REG_NUM_MB];
++	u8 b_registers[MCDRV_REG_NUM_B];
++	u8 e_registers[MCDRV_REG_NUM_E];
++	u8 c_registers[MCDRV_REG_NUM_C];
++	u8 f_registers[MCDRV_REG_NUM_F];
++	u8 ana_registers[MCDRV_REG_NUM_ANA];
++	u8 cd_registers[MCDRV_REG_NUM_CD];
++
++	struct mcdrv_dev_info dev_info;
++	struct mcdrv_path_info path_info;
++	struct mcdrv_path_info path_info_virtual;
++	struct mcdrv_vol_info vol_info;
++	struct mcdrv_dio_info dio_info;
++	struct mcdrv_dio_path_info dio_path_info;
++	struct mcdrv_swap_info swap_info;
 +	struct mcdrv_hsdet_info hsdet_info;
-+	struct mcdrv_dev_info info;
-+	enum mcdrv_dev_id id;
-+	u8 val, data[2];
-+	int ret = 0;
++	struct mcdrv_aec_info aec_info;
++	struct mcdrv_gp_mode gp_mode;
 +
-+	id = mc_dev_id_get();
-+	mc_power_info_get_current(&power_info);
-+	power_info.digital &= ~(MCDRV_POWINFO_D_PM_CLK_PD |
-+				MCDRV_POWINFO_D_PE_CLK_PD |
-+				MCDRV_POWINFO_D_PLL_PD);
-+	power_info.analog[0] &= ~(MCB_AP_LDOA | MCB_AP_BGR | MCB_AP_VR);
++	u8 clk;
++	u8 clk_sel;
++	u8 eclk_sel;
++	u8 plug_det_db;
 +
-+	/* power up */
-+	power_update.digital = MCDRV_POWUPDATE_D_ALL;
-+	power_update.analog[0] = (u8) MCDRV_POWUPDATE_AP;
-+	power_update.analog[1] = 0;
-+	power_update.analog[2] = 0;
-+	power_update.analog[3] = 0;
-+	power_update.analog[4] = 0;
-+	ret = mc_packet_add_powerup(&power_info, &power_update);
-+	if (ret < 0)
-+		goto exit;
++	struct mcdrv_packet packet;
++	u16 slave_addr;
++	u16 type;
++	u16 addr;
++	u16 data_count;
++	u16 prev_addr_index;
++};
 +
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		goto exit;
++static struct mcdrv_info mc_info = {
++	.device_id = MCDRV_DEV_ID_UNKNOWN,
++	.state = MCDRV_STATE_NOTINIT,
++};
 +
-+	mc_packet_add_force_write_if(MCI_IRQ, 0);
-+	mc_packet_add_force_write_cd(MCI_IRQHS, 0);
++/* register next address */
++static const u16 mc_next_addr_list[256] = {
++	0, 1, 2, 3, 4, 5, 6, 7,
++	8, 9, 10, 11, 12, 13, 14, 15,
++	16, 17, 18, 19, 20, 21, 22, 23,
++	24, 25, 26, 27, 28, 29, 30, 31,
++	32, 33, 34, 35, 36, 37, 38, 39,
++	40, 41, 42, 43, 44, 45, 46, 47,
++	48, 49, 50, 51, 52, 53, 54, 55,
++	56, 57, 58, 59, 60, 61, 62, 63,
++	64, 65, 66, 67, 68, 69, 70, 71,
++	72, 73, 74, 75, 76, 77, 78, 79,
++	80, 81, 82, 83, 84, 85, 86, 87,
++	88, 89, 90, 91, 92, 93, 94, 95,
++	96, 97, 98, 99, 100, 101, 102, 103,
++	104, 105, 106, 107, 108, 109, 110, 111,
++	112, 113, 114, 115, 116, 117, 118, 119,
++	120, 121, 122, 123, 124, 125, 126, 127,
++	128, 129, 130, 131, 132, 133, 134, 135,
++	136, 137, 138, 139, 140, 141, 142, 143,
++	144, 145, 146, 147, 148, 149, 150, 151,
++	152, 153, 154, 155, 156, 157, 158, 159,
++	160, 161, 162, 163, 164, 165, 166, 167,
++	168, 169, 170, 171, 172, 173, 174, 175,
++	176, 177, 178, 179, 180, 181, 182, 183,
++	184, 185, 186, 187, 188, 189, 190, 191,
++	192, 193, 194, 195, 196, 197, 198, 199,
++	200, 201, 202, 203, 204, 205, 206, 207,
++	208, 209, 210, 211, 212, 213, 214, 215,
++	216, 217, 218, 219, 220, 221, 222, 223,
++	224, 225, 226, 227, 228, 229, 230, 231,
++	232, 233, 234, 235, 236, 237, 238, 239,
++	240, 241, 242, 243, 244, 245, 246, 247,
++	248, 249, 250, 251, 252, 253, 254, 255
++};
 +
-+	mc_packet_add_write_e(MCI_E1DSP_CTRL, 0);
++static const u16 mc_next_addr_list_inc[256] = {
++	1, 2, 3, 4, 5, 6, 7, 8,
++	9, 10, 11, 12, 13, 14, 15, 16,
++	17, 18, 19, 20, 21, 22, 23, 24,
++	25, 26, 27, 28, 29, 30, 31, 32,
++	33, 34, 35, 36, 37, 38, 39, 40,
++	41, 42, 43, 44, 45, 46, 47, 48,
++	49, 50, 51, 52, 53, 54, 55, 56,
++	57, 58, 59, 60, 61, 62, 63, 64,
++	65, 66, 67, 68, 69, 70, 71, 72,
++	73, 74, 75, 76, 77, 78, 79, 80,
++	81, 82, 83, 84, 85, 86, 87, 88,
++	89, 90, 91, 92, 93, 94, 95, 96,
++	97, 98, 99, 100, 101, 102, 103, 104,
++	105, 106, 107, 108, 109, 110, 111, 112,
++	113, 114, 115, 116, 117, 118, 119, 120,
++	121, 122, 123, 124, 125, 126, 127, 128,
++	129, 130, 131, 132, 133, 134, 135, 136,
++	137, 138, 139, 140, 141, 142, 143, 144,
++	145, 146, 147, 148, 149, 150, 151, 152,
++	153, 154, 155, 156, 157, 158, 159, 160,
++	161, 162, 163, 164, 165, 166, 167, 168,
++	169, 170, 171, 172, 173, 174, 175, 176,
++	177, 178, 179, 180, 181, 182, 183, 184,
++	185, 186, 187, 188, 189, 190, 191, 192,
++	193, 194, 195, 196, 197, 198, 199, 200,
++	201, 202, 203, 204, 205, 206, 207, 208,
++	209, 210, 211, 212, 213, 214, 215, 216,
++	217, 218, 219, 220, 221, 222, 223, 224,
++	225, 226, 227, 228, 229, 230, 231, 232,
++	233, 234, 235, 236, 237, 238, 239, 240,
++	241, 242, 243, 244, 245, 246, 247, 248,
++	249, 250, 251, 252, 253, 254, 255, 0xffff
++};
 +
-+	mc_packet_add_dac0_mute();
++static inline void registers_set_default(enum mcdrv_dev_id id)
++{
++	memset(mc_info.if_registers, 0, MCDRV_REG_NUM_IF);
 +
-+	val = mc_e_register_get_value(MCI_LPF_THR);
-+	val |= (MCB_OSF0_ENB | MCB_LPF0_PST_THR | MCB_LPF0_PRE_THR);
-+	mc_packet_add_write_e(MCI_LPF_THR, val);
++	mc_info.if_registers[MCI_RST_A] = MCI_RST_A_DEF;
++	mc_info.if_registers[MCI_RST] = MCI_RST_DEF;
 +
-+	val = mc_cd_register_get_value(MCI_DP);
-+	if (id == MCDRV_DEV_ID_80_90H) {
-+		val &= ~(MCB_DP_ADC | MCB_DP_DAC0 | MCB_DP_PDMCK |
-+			 MCB_DP_PDMADC | MCB_DP_PDMDAC);
-+	} else {
-+		val &= ~(MCB_DP_ADC | MCB_DP_DAC1 | MCB_DP_DAC0 |
-+			 MCB_DP_PDMCK | MCB_DP_PDMADC | MCB_DP_PDMDAC);
++	mc_a_registers_init();
++	mc_mblock_registers_init();
++
++	memset(mc_info.c_registers, 0, MCDRV_REG_NUM_C);
++	memset(mc_info.f_registers, 0, MCDRV_REG_NUM_F);
++	memset(mc_info.ana_registers, 0, MCDRV_REG_NUM_ANA);
++
++	mc_info.ana_registers[MCI_ANA_ID] = MCI_ANA_ID_DEF;
++	mc_info.ana_registers[MCI_ANA_RST] = MCI_ANA_RST_DEF;
++	mc_info.ana_registers[MCI_AP] = MCI_AP_DEF;
++	mc_info.ana_registers[MCI_AP_DA0] = MCI_AP_DA0_DEF;
++	mc_info.ana_registers[MCI_AP_DA1] = MCI_AP_DA1_DEF;
++	mc_info.ana_registers[MCI_AP_MIC] = MCI_AP_MIC_DEF;
++	mc_info.ana_registers[MCI_AP_AD] = MCI_AP_AD_DEF;
++
++	if (id == MCDRV_DEV_ID_81_91H)
++		mc_info.ana_registers[10] = 0x06;
++	mc_info.ana_registers[MCI_NONCLIP] = MCI_NONCLIP_DEF;
++
++	mc_info.ana_registers[MCI_SVOL] = MCI_SVOL_DEF;
++
++	if (id == MCDRV_DEV_ID_81_91H) {
++		mc_info.ana_registers[MCI_HIZ] = MCI_HIZ_DEF;
++		mc_info.ana_registers[MCI_LO_HIZ] = MCI_LO_HIZ_DEF;
 +	}
-+	mc_packet_add_write_cd(MCI_DP, val);
 +
-+	val = mc_e_register_get_value(MCI_DCL_GAIN);
-+	val |= MCB_DCL0_OFF;
-+	mc_packet_add_write_e(MCI_DCL_GAIN, val);
-+
-+	if (id == MCDRV_DEV_ID_80_90H) {
-+		val = mc_e_register_get_value(MCI_DSF0_FLT_TYPE);
-+		val |= MCB_DSF0ENB;
-+		mc_packet_add_write_e(MCI_DSF0_FLT_TYPE, val);
-+	} else {
-+		val = mc_e_register_get_value(MCI_DSF2_FLT_TYPE);
-+		val |= MCB_DSF2ENB;
-+		mc_packet_add_write_e(MCI_DSF2_FLT_TYPE, val);
-+	}
-+
-+	mc_hsdet_info_get(&hsdet_info);
-+	val = hsdet_info.sgnl_peak << 4 | hsdet_info.sgnl_num << 2 |
-+	    hsdet_info.sgnl_period;
-+	mc_packet_add_write_e(MCI_IMPSEL, val);
-+
-+	mc_packet_add_write_if(MCI_IRQR, MCB_EIRQR);
-+
-+	mc_packet_add_write_cd(MCI_EIRQSENSE, MCB_EIRQSENSE);
-+
-+	if (id == MCDRV_DEV_ID_80_90H) {
-+		*op_dac = mc_ana_register_get_value(19);
-+		mc_packet_add_write_ana(19, 0);
-+	}
-+
-+	mc_dev_info_get(&info);
 +	if (id == MCDRV_DEV_ID_80_90H)
-+		mc_packet_add_write_ana(MCI_HPDETVOL, 0x70);
-+	else
-+		mc_packet_add_write_ana(MCI_HPDETVOL, info.options[9]);
++		mc_info.ana_registers[MCI_ZCOFF] = MCI_ZCOFF_DEF_ES1;
 +
-+	if (id == MCDRV_DEV_ID_80_90H) {
-+		mc_packet_add_force_write_ana(78, T_CPMODE_IMPSENSE_BEFORE);
-+		mc_packet_add_force_write_ana(87, 0x11);
-+	} else {
-+		mc_packet_add_force_write_if(31, 0xb5);
-+		mc_packet_add_force_write_if(30, 0xd6);
-+		mc_packet_add_force_write_ana(87, info.options[10]);
++	switch (id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.ana_registers[MCI_CPMOD] = MCI_CPMOD_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_ES1] = MCI_DNG_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_HP_ES1] = MCI_DNG_HP_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_SP_ES1] = MCI_DNG_SP_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_RC_ES1] = MCI_DNG_RC_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_LO1_ES1] = MCI_DNG_LO1_DEF_ES1;
++		mc_info.ana_registers[MCI_DNG_LO2_ES1] = MCI_DNG_LO2_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_81_91H:
++		mc_info.ana_registers[MCI_CPMOD] = MCI_CPMOD_DEF;
++		mc_info.ana_registers[MCI_DNG] = MCI_DNG_DEF;
++		mc_info.ana_registers[MCI_DNG_HP] = MCI_DNG_HP_DEF;
++		mc_info.ana_registers[MCI_DNG_SP] = MCI_DNG_SP_DEF;
++		mc_info.ana_registers[MCI_DNG_RC] = MCI_DNG_RC_DEF;
++		mc_info.ana_registers[MCI_DNG_LO1] = MCI_DNG_LO1_DEF;
++		mc_info.ana_registers[MCI_DNG_LO2] = MCI_DNG_LO2_DEF;
++		mc_info.ana_registers[114] = 0x31;
++		mc_info.ana_registers[115] = 0x8B;
++		break;
++	default:
++		break;
 +	}
 +
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		goto exit;
++	memset(mc_info.cd_registers, 0, MCDRV_REG_NUM_CD);
 +
-+	if (id == MCDRV_DEV_ID_80_90H) {
-+		data[0] = MCI_ANA_REG_A << 1;
-+		data[1] = 78;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_ANA_REG_D, &val, 1);
-+		if (val != T_CPMODE_IMPSENSE_BEFORE) {
-+			ret = -EIO;
-+			goto exit;
++	mc_info.cd_registers[MCI_HW_ID] = MCI_HW_ID_DEF;
++	mc_info.cd_registers[MCI_CD_RST] = MCI_CD_RST_DEF;
++	mc_info.cd_registers[MCI_DP] = MCI_DP_DEF;
++	mc_info.cd_registers[MCI_DP_OSC] = MCI_DP_OSC_DEF;
++
++	switch (id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.cd_registers[MCI_CKSEL] = MCI_CKSEL_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_81_91H:
++		mc_info.cd_registers[MCI_CKSEL] = MCI_CKSEL_DEF;
++		break;
++	default:
++		break;
++	}
++
++	mc_info.cd_registers[MCI_MICDET] = MCI_MICDET_DEF;
++	mc_info.cd_registers[MCI_HSDETEN] = MCI_HSDETEN_DEF;
++
++	switch (id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.cd_registers[MCI_DETIN_INV] = MCI_DETIN_INV_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_81_91H:
++		mc_info.cd_registers[MCI_IRQTYPE] = MCI_IRQTYPE_DEF;
++		mc_info.cd_registers[MCI_DETIN_INV] = MCI_DETIN_INV_DEF;
++		break;
++	default:
++		break;
++	}
++
++	mc_info.cd_registers[MCI_HSDETMODE] = MCI_HSDETMODE_DEF;
++	mc_info.cd_registers[MCI_DBNC_PERIOD] = MCI_DBNC_PERIOD_DEF;
++
++	switch (id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.cd_registers[MCI_DBNC_NUM] = MCI_DBNC_NUM_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_UNKNOWN:
++		break;
++	default:
++		mc_info.cd_registers[MCI_DBNC_NUM] = MCI_DBNC_NUM_DEF;
++		mc_info.cd_registers[MCI_KEY_MTIM] = MCI_KEY_MTIM_DEF;
++		mc_info.cd_registers[39] = 0x21;
++		break;
++	}
++}
++
++int mc_id_set(u8 digital_id, u8 analog_id)
++{
++	if ((digital_id & MCDRV_DEVID_MASK) == MCDRV_DEVID_DIG
++	    && (analog_id & MCDRV_DEVID_MASK) == MCDRV_DEVID_ANA) {
++		if ((digital_id & MCDRV_VERID_MASK) == 1) {
++			if ((analog_id & MCDRV_VERID_MASK) == 2)
++				mc_info.device_id = MCDRV_DEV_ID_81_92H;
++			else
++				mc_info.device_id = MCDRV_DEV_ID_81_91H;
++		} else
++			mc_info.device_id = MCDRV_DEV_ID_80_90H;
++
++		mc_info.id = digital_id;
++		registers_set_default(mc_info.device_id);
++		mc_info.a_registers[MCI_A_DEV_ID] = mc_info.id;
++
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
++enum mcdrv_dev_id mc_dev_id_get(void)
++{
++	return mc_info.device_id;
++}
++
++static inline void path_info_init(void)
++{
++	struct mcdrv_path_info *path_info;
++
++	path_info = &mc_info.path_info;
++
++	memset(path_info->music_out, D1SRC_ALL_OFF, MUSICOUT_PATH_CHANNELS);
++	memset(path_info->ext_out, D1SRC_ALL_OFF, EXTOUT_PATH_CHANNELS);
++	memset(path_info->hifi_out, D1SRC_ALL_OFF, HIFIOUT_PATH_CHANNELS);
++	memset(path_info->vbox_mix_in, D1SRC_ALL_OFF, VBOXMIXIN_PATH_CHANNELS);
++	memset(path_info->ae0, D1SRC_ALL_OFF, AE_PATH_CHANNELS);
++	memset(path_info->ae1, D1SRC_ALL_OFF, AE_PATH_CHANNELS);
++	memset(path_info->ae2, D1SRC_ALL_OFF, AE_PATH_CHANNELS);
++	memset(path_info->ae3, D1SRC_ALL_OFF, AE_PATH_CHANNELS);
++	memset(path_info->dac0, D1SRC_ALL_OFF, DAC0_PATH_CHANNELS);
++	memset(path_info->dac1, D1SRC_ALL_OFF, DAC1_PATH_CHANNELS);
++
++	memset(path_info->voice_out, D2SRC_ALL_OFF, VOICEOUT_PATH_CHANNELS);
++	memset(path_info->vbox_io_in, D2SRC_ALL_OFF, VBOXIOIN_PATH_CHANNELS);
++	memset(path_info->vbox_host_in, D2SRC_ALL_OFF,
++	       VBOXHOSTIN_PATH_CHANNELS);
++	memset(path_info->host_out, D2SRC_ALL_OFF, HOSTOUT_PATH_CHANNELS);
++	memset(path_info->adif0, D2SRC_ALL_OFF, ADIF0_PATH_CHANNELS);
++	memset(path_info->adif1, D2SRC_ALL_OFF, ADIF1_PATH_CHANNELS);
++	memset(path_info->adif2, D2SRC_ALL_OFF, ADIF2_PATH_CHANNELS);
++
++	memset(path_info->adc0, ASRC_ALL_OFF, ADC0_PATH_CHANNELS);
++	memset(path_info->adc1, ASRC_ALL_OFF, ADC1_PATH_CHANNELS);
++	memset(path_info->sp, ASRC_ALL_OFF, SP_PATH_CHANNELS);
++	memset(path_info->hp, ASRC_ALL_OFF, HP_PATH_CHANNELS);
++	memset(path_info->rc, ASRC_ALL_OFF, RC_PATH_CHANNELS);
++	memset(path_info->lout1, ASRC_ALL_OFF, LOUT1_PATH_CHANNELS);
++	memset(path_info->lout2, ASRC_ALL_OFF, LOUT2_PATH_CHANNELS);
++	memset(path_info->bias, ASRC_ALL_OFF, BIAS_PATH_CHANNELS);
++
++	mc_info.path_info_virtual = mc_info.path_info;
++}
++
++static inline void vol_info_init(void)
++{
++	struct mcdrv_vol_info *vol_info;
++
++	vol_info = &mc_info.vol_info;
++
++	memset(vol_info, MCDRV_LOGICAL_VOL_MUTE, sizeof(struct mcdrv_vol_info));
++}
++
++static inline void dio_info_init(void)
++{
++	struct mcdrv_dio_port *port;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(mc_info.dio_info.port); i++) {
++		port = &mc_info.dio_info.port[i];
++		port->dio_common.master_slave = MCDRV_DIO_SLAVE;
++		port->dio_common.auto_fs = MCDRV_AUTOFS_ON;
++		port->dio_common.fs = MCDRV_FS_48000;
++		port->dio_common.bck_fs = MCDRV_BCKFS_64;
++		port->dio_common.interface = MCDRV_DIO_DA;
++		port->dio_common.bck_invert = MCDRV_BCLK_NORMAL;
++		port->dio_common.src_thru = MCDRV_SRC_NOT_THRU;
++		port->dio_common.pcm_hiz_transition = MCDRV_PCMHIZTRANS_FALLING;
++		port->dio_common.pcm_frame = MCDRV_PCM_SHORTFRAME;
++		port->dio_common.pcm_high_period = 0;
++
++		port->dir.da_format.bit_sel = MCDRV_BITSEL_16;
++		port->dir.da_format.mode = MCDRV_DAMODE_HEADALIGN;
++		port->dir.pcm_format.mono = MCDRV_PCM_MONO;
++		port->dir.pcm_format.order = MCDRV_PCM_MSB_FIRST;
++		port->dir.pcm_format.law = MCDRV_PCM_LINEAR;
++		port->dir.pcm_format.bit_sel = MCDRV_PCM_BITSEL_8;
++
++		port->dit.st_mode = MCDRV_STMODE_ZERO;
++		port->dit.edge = MCDRV_SDOUT_NORMAL;
++		port->dit.da_format.bit_sel = MCDRV_BITSEL_16;
++		port->dit.da_format.mode = MCDRV_DAMODE_HEADALIGN;
++		port->dit.pcm_format.mono = MCDRV_PCM_MONO;
++		port->dit.pcm_format.order = MCDRV_PCM_MSB_FIRST;
++		port->dit.pcm_format.law = MCDRV_PCM_LINEAR;
++		port->dit.pcm_format.bit_sel = MCDRV_PCM_BITSEL_8;
++	}
++}
++
++static inline void dio_path_info_init(void)
++{
++	mc_info.dio_path_info.phys_port[0] = MCDRV_PHYSPORT_DIO0;
++	mc_info.dio_path_info.phys_port[1] = MCDRV_PHYSPORT_DIO1;
++	mc_info.dio_path_info.phys_port[2] = MCDRV_PHYSPORT_DIO2;
++	mc_info.dio_path_info.phys_port[3] = MCDRV_PHYSPORT_NONE;
++	mc_info.dio_path_info.music_ch = MCDRV_MUSIC_2CH;
++	mc_info.dio_path_info.music_rslot[0] = 0;
++	mc_info.dio_path_info.music_rslot[1] = 1;
++	mc_info.dio_path_info.music_rslot[2] = 2;
++	mc_info.dio_path_info.music_tslot[0] = 0;
++	mc_info.dio_path_info.music_tslot[1] = 1;
++	mc_info.dio_path_info.music_tslot[2] = 2;
++}
++
++static inline void swap_info_init(void)
++{
++	mc_info.swap_info.adif0 = MCDRV_SWAP_NORMAL;
++	mc_info.swap_info.adif1 = MCDRV_SWAP_NORMAL;
++	mc_info.swap_info.adif2 = MCDRV_SWAP_NORMAL;
++	mc_info.swap_info.dac0 = MCDRV_SWAP_NORMAL;
++	mc_info.swap_info.dac1 = MCDRV_SWAP_NORMAL;
++
++	mc_info.swap_info.music_in0 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.music_in1 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.music_in2 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.ext_in = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.voice_in = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.hifi_in = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.music_out0 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.music_out1 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.music_out2 = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.ext_out = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.voice_out = MCDRV_SWSWAP_NORMAL;
++	mc_info.swap_info.hifi_out = MCDRV_SWSWAP_NORMAL;
++}
++
++static inline void hsdet_info_init(void)
++{
++	struct mcdrv_hsdet_info *hsdet;
++
++	hsdet = &mc_info.hsdet_info;
++	hsdet->en_plug_det = MCDRV_PLUGDET_DISABLE;
++	hsdet->en_plug_det_db = MCDRV_PLUGDETDB_DISABLE;
++	hsdet->en_dly_key_off = MCDRV_KEYEN_D_D_D;
++	hsdet->en_dly_key_on = MCDRV_KEYEN_D_D_D;
++	hsdet->en_mic_det = MCDRV_MICDET_DISABLE;
++	hsdet->en_key_off = MCDRV_KEYEN_D_D_D;
++	hsdet->en_key_on = MCDRV_KEYEN_D_D_D;
++	hsdet->hs_det_dbnc = MCDRV_DETDBNC_875;
++	hsdet->key_off_mtim = MCDRV_KEYOFF_MTIM_63;
++	hsdet->key_on_mtim = MCDRV_KEYON_MTIM_63;
++	hsdet->key0_off_dly_tim = 0;
++	hsdet->key1_off_dly_tim = 0;
++	hsdet->key2_off_dly_tim = 0;
++	hsdet->key0_on_dly_tim = 0;
++	hsdet->key1_on_dly_tim = 0;
++	hsdet->key2_on_dly_tim = 0;
++	hsdet->key0_on_dly_tim2 = 0;
++	hsdet->key1_on_dly_tim2 = 0;
++	hsdet->key2_on_dly_tim2 = 0;
++	if (mc_info.device_id == MCDRV_DEV_ID_81_91H)
++		hsdet->irq_type = MCDRV_IRQTYPE_REF;
++	else
++		hsdet->irq_type = MCDRV_IRQTYPE_NORMAL;
++	hsdet->plug_det_db_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->plug_undet_db_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->mic_det_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->plug_det_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key0_on_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key1_on_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key2_on_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key0_off_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key1_off_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->key2_off_irq_type = MCDRV_IRQTYPE_REF;
++	hsdet->det_in_inv = MCDRV_DET_IN_INV;
++	hsdet->hs_det_mode = MCDRV_HSDET_MODE_DETIN_A;
++	hsdet->speriod = MCDRV_SPERIOD_3906;
++	hsdet->lperiod = MCDRV_LPERIOD_125000;
++	hsdet->dbnc_num_plug = MCDRV_DBNC_NUM_7;
++	hsdet->dbnc_num_mic = MCDRV_DBNC_NUM_7;
++	hsdet->dbnc_num_key = MCDRV_DBNC_NUM_7;
++	hsdet->sgnl_period = MCDRV_SGNLPERIOD_97;
++	hsdet->sgnl_num = MCDRV_SGNLNUM_8;
++	hsdet->sgnl_peak = MCDRV_SGNLPEAK_1182;
++	hsdet->imp_sel = MCDRV_IMPSEL_MOSTFREQ;
++	hsdet->dly_irq_stop = MCDRV_DLYIRQ_DONTCARE;
++	hsdet->cbfunc = NULL;
++}
++
++static inline void aec_info_init(void)
++{
++	struct mcdrv_aec_info *aec_info;
++	int i;
++
++	aec_info = &mc_info.aec_info;
++	memset(aec_info, 0, sizeof(struct mcdrv_aec_info));
++
++	aec_info->output.lpf_pre_thru[0] = 1;
++	aec_info->output.lpf_post_thru[0] = 1;
++
++	for (i = 0; i < MCDRV_AEC_OUTPUT_N; i++) {
++		aec_info->output.dcc_sel[i] = 2;
++		aec_info->output.osf_sel[i] = 3;
++		aec_info->output.dcl_limit[i][0] = 0x7f;
++		aec_info->output.dcl_limit[i][1] = 0xff;
++		aec_info->output.dc_dither_level[i] = 3;
++		aec_info->output.dng_fw[i] = 1;
++	}
++	aec_info->output.dng_zero[0] = 31;
++	aec_info->output.dng_zero[1] = 9;
++	aec_info->output.dng_time[1] = 2;
++	aec_info->output.osf_gain[0][0] = MCI_OSF_GAIN0_15_8_DEF;
++	aec_info->output.osf_gain[0][1] = MCI_OSF_GAIN0_7_0_DEF;
++	aec_info->output.osf_gain[1][0] = MCI_OSF_GAIN1_15_8_DEF;
++	aec_info->output.osf_gain[1][1] = MCI_OSF_GAIN1_7_0_DEF;
++	aec_info->output.dng_attack = 1;
++	aec_info->output.dng_release = 3;
++	aec_info->output.dng_target[0] = 0x84;
++	if (mc_info.device_id == MCDRV_DEV_ID_80_90H) {
++		aec_info->output.dng_target[1] = MCI_DNG_SP_DEF_ES1;
++		aec_info->output.dng_target_lineout[0] = MCI_DNG_LO1_DEF_ES1;
++		aec_info->output.dng_target_lineout[1] = MCI_DNG_LO2_DEF_ES1;
++		aec_info->output.dng_target_rc = MCI_DNG_RC_DEF_ES1;
++	} else {
++		aec_info->output.dng_target[1] = MCI_DNG_SP_DEF;
++		aec_info->output.dng_target_lineout[0] = MCI_DNG_LO1_DEF;
++		aec_info->output.dng_target_lineout[1] = MCI_DNG_LO2_DEF;
++		aec_info->output.dng_target_rc = MCI_DNG_RC_DEF;
++	}
++
++	for (i = 0; i < MCDRV_AEC_INPUT_N; i++) {
++		aec_info->input.dsf32_l_type[i] = 1;
++		aec_info->input.dsf32_r_type[i] = 1;
++		aec_info->input.dsf4_sel[i] = 1;
++		if (mc_info.device_id == MCDRV_DEV_ID_80_90H)
++			aec_info->input.dcc_sel[i] = 2;
++		else
++			aec_info->input.dcc_sel[i] = 1;
++		aec_info->input.dng_att[i] = 3;
++		aec_info->input.dng_rel[i] = 2;
++		aec_info->input.depop_att[i] = 2;
++		aec_info->input.depop_wait[i] = 2;
++	}
++
++	aec_info->pdm.st_wait = 2;
++
++	aec_info->adj.hold = 24;
++	aec_info->adj.cnt = 10;
++	aec_info->adj.max[0] = 2;
++}
++
++void mc_resource_init(void)
++{
++	path_info_init();
++	vol_info_init();
++	dio_info_init();
++	dio_path_info_init();
++	swap_info_init();
++	hsdet_info_init();
++	aec_info_init();
++
++	mc_info.clk = MCDRV_CLKSW_CLKA;
++	mc_info.clk_sel = 0;
++	mc_info.eclk_sel = 0;
++	mc_info.plug_det_db = 0;
++
++	mc_resource_clear();
++}
++
++void mc_a_registers_init(void)
++{
++	memset(mc_info.a_registers, 0, MCDRV_REG_NUM_A);
++
++	mc_info.a_registers[MCI_A_DEV_ID] = mc_info.id;
++	mc_info.a_registers[MCI_CLK_MSK] = MCI_CLK_MSK_DEF;
++	mc_info.a_registers[MCI_PD] = MCI_PD_DEF;
++	mc_info.a_registers[MCI_DO0_DRV] = MCI_DO0_DRV_DEF;
++	mc_info.a_registers[MCI_DO1_DRV] = MCI_DO1_DRV_DEF;
++	mc_info.a_registers[MCI_DO2_DRV] = MCI_DO2_DRV_DEF;
++	mc_info.a_registers[MCI_PA0] = MCI_PA0_DEF;
++	mc_info.a_registers[MCI_PA1] = MCI_PA1_DEF;
++	mc_info.a_registers[MCI_PA2] = MCI_PA2_DEF;
++	if (mc_info.device_id != MCDRV_DEV_ID_80_90H)
++		mc_info.a_registers[MCI_DOA_DRV] = MCI_DOA_DRV_DEF;
++	mc_info.a_registers[MCI_LP1_FP] = MCI_LP1_FP_DEF;
++	mc_info.a_registers[MCI_LP2_FP] = MCI_LP2_FP_DEF;
++	mc_info.a_registers[MCI_LP3_FP] = MCI_LP3_FP_DEF;
++	mc_info.a_registers[MCI_CLKSRC] = MCI_CLKSRC_DEF;
++	mc_info.a_registers[MCI_FREQ73M] = MCI_FREQ73M_DEF;
++	mc_info.a_registers[MCI_PLL_MODE_A] = MCI_PLL_MODE_A_DEF;
++	mc_info.a_registers[MCI_PLL_MODE_B] = MCI_PLL_MODE_B_DEF;
++}
++
++void mc_mblock_registers_init(void)
++{
++	memset(mc_info.ma_registers, 0, MCDRV_REG_NUM_MA);
++
++	mc_info.ma_registers[MCI_I_VINTP] = MCI_I_VINTP_DEF;
++	mc_info.ma_registers[MCI_O_VINTP] = MCI_O_VINTP_DEF;
++
++	memset(mc_info.mb_registers, 0, MCDRV_REG_NUM_MB);
++
++	mc_info.mb_registers[MCI_LP0_MODE] = MCI_LP0_MODE_DEF;
++	mc_info.mb_registers[MCI_LPR0_SLOT] = MCI_LPR0_SLOT_DEF;
++	mc_info.mb_registers[MCI_LPT0_SLOT] = MCI_LPT0_SLOT_DEF;
++	mc_info.mb_registers[MCI_LPR0_PCM] = MCI_LPR0_PCM_DEF;
++	mc_info.mb_registers[MCI_LPT0_PCM] = MCI_LPT0_PCM_DEF;
++	mc_info.mb_registers[MCI_LP1_MODE] = MCI_LP1_MODE_DEF;
++	mc_info.mb_registers[MCI_LPR1_PCM] = MCI_LPR1_PCM_DEF;
++	mc_info.mb_registers[MCI_LPT1_PCM] = MCI_LPT1_PCM_DEF;
++	mc_info.mb_registers[MCI_LP2_MODE] = MCI_LP2_MODE_DEF;
++	mc_info.mb_registers[MCI_LPR2_PCM] = MCI_LPR2_PCM_DEF;
++	mc_info.mb_registers[MCI_LPT2_PCM] = MCI_LPT2_PCM_DEF;
++
++	memset(mc_info.b_registers, 0, MCDRV_REG_NUM_B);
++
++	mc_e_registers_init();
++}
++
++void mc_e_registers_init(void)
++{
++	memset(mc_info.e_registers, 0, MCDRV_REG_NUM_E);
++
++	mc_info.e_registers[MCI_E1DSP_CTRL] = MCI_E1DSP_CTRL_DEF;
++	mc_info.e_registers[MCI_LPF_THR] = MCI_LPF_THR_DEF;
++	mc_info.e_registers[MCI_DAC_DCC_SEL] = MCI_DAC_DCC_SEL_DEF;
++	if (mc_info.device_id == MCDRV_DEV_ID_81_91H)
++		mc_info.e_registers[MCI_OSF_SEL] = MCI_OSF_SEL_DEF;
++	mc_info.e_registers[MCI_OSF_GAIN0_15_8] = MCI_OSF_GAIN0_15_8_DEF;
++	mc_info.e_registers[MCI_OSF_GAIN0_7_0] = MCI_OSF_GAIN0_7_0_DEF;
++	mc_info.e_registers[MCI_OSF_GAIN1_15_8] = MCI_OSF_GAIN1_15_8_DEF;
++	mc_info.e_registers[MCI_OSF_GAIN1_7_0] = MCI_OSF_GAIN1_7_0_DEF;
++	mc_info.e_registers[MCI_DCL0_LMT_14_8] = MCI_DCL0_LMT_14_8_DEF;
++	mc_info.e_registers[MCI_DCL0_LMT_7_0] = MCI_DCL0_LMT_7_0_DEF;
++	mc_info.e_registers[MCI_DCL1_LMT_14_8] = MCI_DCL1_LMT_14_8_DEF;
++	mc_info.e_registers[MCI_DCL1_LMT_7_0] = MCI_DCL1_LMT_7_0_DEF;
++	switch (mc_info.device_id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.e_registers[MCI_DITHER0] = MCI_DITHER0_DEF;
++		mc_info.e_registers[MCI_DITHER1] = MCI_DITHER1_DEF;
++		mc_info.e_registers[MCI_DNG0_ES1] = MCI_DNG0_DEF_ES1;
++		mc_info.e_registers[MCI_DNG1_ES1] = MCI_DNG1_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_81_91H:
++		mc_info.e_registers[MCI_DITHER0] = 0x30;
++		mc_info.e_registers[MCI_DITHER1] = 0x30;
++		mc_info.e_registers[MCI_DNG0] = MCI_DNG0_DEF;
++		mc_info.e_registers[MCI_DNG1] = MCI_DNG1_DEF;
++		break;
++	default:
++		break;
++	}
++	mc_info.e_registers[MCI_DPATH_DA_V] = MCI_DPATH_DA_V_DEF;
++	mc_info.e_registers[MCI_DPATH_AD_V] = MCI_DPATH_AD_V_DEF;
++	if (mc_info.device_id == MCDRV_DEV_ID_81_91H)
++		mc_info.e_registers[39] = 0xf4;
++	mc_info.e_registers[MCI_DSF0_PRE_INPUT] = MCI_DSF0_PRE_INPUT_DEF;
++	mc_info.e_registers[MCI_DSF1_FLT_TYPE] = MCI_DSF1_FLT_TYPE_DEF;
++	mc_info.e_registers[MCI_DSF1_PRE_INPUT] = MCI_DSF1_PRE_INPUT_DEF;
++	mc_info.e_registers[MCI_DSF2_PRE_INPUT] = MCI_DSF2_PRE_INPUT_DEF;
++	switch (mc_info.device_id) {
++	case MCDRV_DEV_ID_80_90H:
++		mc_info.e_registers[MCI_ADC_DCC_SEL] = MCI_ADC_DCC_SEL_DEF_ES1;
++		break;
++	case MCDRV_DEV_ID_81_91H:
++		mc_info.e_registers[MCI_ADC_DCC_SEL] = MCI_ADC_DCC_SEL_DEF;
++		break;
++	default:
++		break;
++	}
++	mc_info.e_registers[MCI_ADC_DNG0_FW] = MCI_ADC_DNG0_FW_DEF;
++	mc_info.e_registers[MCI_ADC_DNG1_FW] = MCI_ADC_DNG1_FW_DEF;
++	mc_info.e_registers[MCI_ADC_DNG2_FW] = MCI_ADC_DNG2_FW_DEF;
++	mc_info.e_registers[MCI_DEPOP0] = MCI_DEPOP0_DEF;
++	mc_info.e_registers[MCI_DEPOP1] = MCI_DEPOP1_DEF;
++	mc_info.e_registers[MCI_DEPOP2] = MCI_DEPOP2_DEF;
++	mc_info.e_registers[MCI_PDM_MODE] = MCI_PDM_MODE_DEF;
++	mc_info.e_registers[MCI_E2DSP] = MCI_E2DSP_DEF;
++	if (mc_info.device_id == MCDRV_DEV_ID_81_91H) {
++		mc_info.e_registers[99] = 0xc9;
++		mc_info.e_registers[100] = 0x01;
++	}
++}
++
++void mc_state_update(enum mcdrv_state state)
++{
++	mc_info.state = state;
++}
++
++enum mcdrv_state mc_state_get(void)
++{
++	return mc_info.state;
++}
++
++u8 mc_register_get_value(u16 type, u16 addr)
++{
++	u8 val = 0;
++
++	switch (type) {
++	case MCDRV_PACKET_REGTYPE_IF:
++		val = mc_info.if_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_A:
++		val = mc_info.a_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_MA:
++		val = mc_info.ma_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_MB:
++		val = mc_info.mb_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_E:
++		val = mc_info.e_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_ANA:
++		val = mc_info.ana_registers[addr];
++		break;
++	case MCDRV_PACKET_REGTYPE_CD:
++		val = mc_info.cd_registers[addr];
++		break;
++
++	default:
++		break;
++	}
++
++	return val;
++}
++
++void mc_register_set_value(u16 type, u16 addr, u8 val)
++{
++	switch (type) {
++	case MCDRV_PACKET_REGTYPE_IF:
++		mc_info.if_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_A:
++		mc_info.a_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_MA:
++		mc_info.ma_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_MB:
++		mc_info.mb_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_E:
++		mc_info.e_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_ANA:
++		mc_info.ana_registers[addr] = val;
++		break;
++	case MCDRV_PACKET_REGTYPE_CD:
++		mc_info.cd_registers[addr] = val;
++		break;
++	default:
++		break;
++	}
++}
++
++void mc_dev_info_set(struct mcdrv_dev_info *dev_info)
++{
++	mc_info.dev_info = *dev_info;
++}
++
++void mc_dev_info_get(struct mcdrv_dev_info *dev_info)
++{
++	*dev_info = mc_info.dev_info;
++}
++
++int mc_clock_set(u8 clock)
++{
++	mc_info.clk = clock;
++
++	mc_packet_add_switch_clock(clock);
++
++	return mc_packet_execute();
++}
++
++void mc_clock_get(u8 *clock)
++{
++	*clock = mc_info.clk;
++}
++
++static void source_set_onoff(u32 src, u32 *dst, u32 on, u32 off)
++{
++	if (dst) {
++		if (src & on) {
++			*dst &= ~off;
++			*dst |= on;
++		} else if ((src & (on | off)) == off) {
++			*dst &= ~on;
++			*dst |= off;
++		}
++	}
++}
++
++static void d1_source_set_onoff(u32 *src, u32 *dst, u8 channels)
++{
++	int i, j;
++
++	struct {
++		u32 on;
++		u32 off;
++	} d1_src[] = {
++		{ MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_OFF },
++		{ MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_OFF },
++		{ MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_OFF },
++		{ MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_OFF },
++		{ MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_OFF },
++		{ MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_OFF },
++		{ MCDRV_D1SRC_AE2_ON, MCDRV_D1SRC_AE2_OFF },
++		{ MCDRV_D1SRC_AE3_ON, MCDRV_D1SRC_AE3_OFF },
++		{ MCDRV_D1SRC_ADIF0_ON, MCDRV_D1SRC_ADIF0_OFF },
++		{ MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_OFF },
++		{ MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_ADIF2_OFF },
++		{ MCDRV_D1SRC_HIFIIN_ON, MCDRV_D1SRC_HIFIIN_OFF }
++	};
++
++	for (i = 0; i < channels; i++) {
++		for (j = 0; j < ARRAY_SIZE(d1_src); j++)
++			source_set_onoff(src[i], &dst[i],
++					 d1_src[j].on, d1_src[j].off);
++	}
++}
++
++static void d2_source_set_onoff(u32 *src, u32 *dst, u8 channels)
++{
++	u32 on, off;
++	int i, j;
++
++	struct {
++		u32 on;
++		u32 off;
++	} d2_src[] = {
++		{ MCDRV_D2SRC_VOICEIN_ON, MCDRV_D2SRC_VOICEIN_OFF },
++		{ MCDRV_D2SRC_VBOXIOOUT_ON, MCDRV_D2SRC_VBOXIOOUT_OFF },
++		{ MCDRV_D2SRC_VBOXHOSTOUT_ON, MCDRV_D2SRC_VBOXHOSTOUT_OFF },
++		{ MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_L_OFF },
++		{ MCDRV_D2SRC_ADC0_R_ON, MCDRV_D2SRC_ADC0_R_OFF },
++		{ MCDRV_D2SRC_ADC1_ON, MCDRV_D2SRC_ADC1_OFF },
++		{ MCDRV_D2SRC_PDM0_L_ON, MCDRV_D2SRC_PDM0_L_OFF },
++		{ MCDRV_D2SRC_PDM0_R_ON, MCDRV_D2SRC_PDM0_R_OFF },
++		{ MCDRV_D2SRC_PDM1_L_ON, MCDRV_D2SRC_PDM1_L_OFF },
++		{ MCDRV_D2SRC_PDM1_R_ON, MCDRV_D2SRC_PDM1_R_OFF },
++		{ MCDRV_D2SRC_DAC0REF_ON, MCDRV_D2SRC_DAC0REF_OFF },
++		{ MCDRV_D2SRC_DAC1REF_ON, MCDRV_D2SRC_DAC1REF_OFF }
++	};
++
++	for (i = 0; i < channels; i++) {
++		for (j = 0; j < ARRAY_SIZE(d2_src); j++) {
++			on = d2_src[j].on;
++			off = d2_src[j].off;
++			if ((src[i] & on)
++			    && (on == MCDRV_D2SRC_PDM0_L_ON ||
++				on == MCDRV_D2SRC_PDM0_R_ON ||
++				on == MCDRV_D2SRC_PDM1_L_ON ||
++				on == MCDRV_D2SRC_PDM1_R_ON)
++			    && mc_info.dev_info.pa0_func != MCDRV_PA_PDMCK)
++				break;
++
++			source_set_onoff(src[i], &dst[i], on, off);
++		}
++	}
++}
++
++static void a_source_set_onoff(u32 *src, u32 *dst, u8 channels)
++{
++	int i, j;
++
++	struct {
++		u32 on;
++		u32 off;
++	} a_src[] = {
++		{ MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_L_OFF },
++		{ MCDRV_ASRC_DAC0_R_ON, MCDRV_ASRC_DAC0_R_OFF },
++		{ MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_L_OFF },
++		{ MCDRV_ASRC_DAC1_R_ON, MCDRV_ASRC_DAC1_R_OFF },
++		{ MCDRV_ASRC_MIC1_ON, MCDRV_ASRC_MIC1_OFF },
++		{ MCDRV_ASRC_MIC2_ON, MCDRV_ASRC_MIC2_OFF },
++		{ MCDRV_ASRC_MIC3_ON, MCDRV_ASRC_MIC3_OFF },
++		{ MCDRV_ASRC_MIC4_ON, MCDRV_ASRC_MIC4_OFF },
++		{ MCDRV_ASRC_LINEIN1_L_ON, MCDRV_ASRC_LINEIN1_L_OFF },
++		{ MCDRV_ASRC_LINEIN1_R_ON, MCDRV_ASRC_LINEIN1_R_OFF },
++		{ MCDRV_ASRC_LINEIN1_M_ON, MCDRV_ASRC_LINEIN1_M_OFF }
++	};
++
++	for (i = 0; i < channels; i++) {
++		for (j = 0; j < ARRAY_SIZE(a_src); j++)
++			source_set_onoff(src[i], &dst[i],
++					 a_src[j].on, a_src[j].off);
++	}
++}
++
++static inline void bias_source_set_onoff(struct mcdrv_path_info *path_info)
++{
++	int i, j;
++
++	struct {
++		u32 on;
++		u32 off;
++	} bias[] = {
++		{ MCDRV_ASRC_MIC1_ON, MCDRV_ASRC_MIC1_OFF },
++		{ MCDRV_ASRC_MIC2_ON, MCDRV_ASRC_MIC2_OFF },
++		{ MCDRV_ASRC_MIC3_ON, MCDRV_ASRC_MIC3_OFF },
++		{ MCDRV_ASRC_MIC4_ON, MCDRV_ASRC_MIC4_OFF }
++	};
++
++	for (i = 0; i < BIAS_PATH_CHANNELS; i++) {
++		for (j = 0; j < ARRAY_SIZE(bias); j++) {
++			source_set_onoff(path_info->bias[i],
++					 &mc_info.path_info.bias[i],
++					 bias[j].on, bias[j].off);
++		}
++	}
++}
++
++static inline int is_valid_path(void)
++{
++	u32 dac[2], adif[2], src;
++	int used, i;
++
++	dac[0] = mc_info.path_info.dac0[0];
++	dac[1] = mc_info.path_info.dac0[1];
++
++	if ((dac[0] & MCDRV_D1SRC_HIFIIN_ON)
++	    || (dac[1] & MCDRV_D1SRC_HIFIIN_ON)) {
++		if ((dac[0] & (MCDRV_D1SRC_ALL_ON & ~MCDRV_D1SRC_HIFIIN_ON))
++		    || (dac[1] & (MCDRV_D1SRC_ALL_ON & ~MCDRV_D1SRC_HIFIIN_ON)))
++			return -EINVAL;
++
++		if (mc_info.device_id == MCDRV_DEV_ID_80_90H) {
++			for (i = 0; i < MUSICOUT_PATH_CHANNELS; i++) {
++				src = mc_info.path_info.music_out[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++			}
++
++			for (i = 0; i < EXTOUT_PATH_CHANNELS; i++) {
++				src = mc_info.path_info.ext_out[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++			}
++
++			for (i = 0; i < VBOXMIXIN_PATH_CHANNELS; i++) {
++				src = mc_info.path_info.vbox_mix_in[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++			}
++
++			for (i = 0; i < AE_PATH_CHANNELS; i++) {
++				src = mc_info.path_info.ae0[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++
++				src = mc_info.path_info.ae1[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++
++				src = mc_info.path_info.ae2[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++
++				src = mc_info.path_info.ae3[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++			}
++
++			for (i = 0; i < DAC1_PATH_CHANNELS; i++) {
++				src = mc_info.path_info.dac1[i];
++				if (src & MCDRV_D1SRC_ADIF0_ON)
++					return -EINVAL;
++			}
 +		}
 +	}
 +
-+	val = E1COMMAND_IMP_SENSE;
-+	if (info.gnd_det == MCDRV_GNDDET_ON)
-+		val |= E1COMMAND_GND_DET;
-+	if (mc_a_source_is_used(MCDRV_ASRC_DAC1_L_ON) ||
-+	    mc_a_source_is_used(MCDRV_ASRC_DAC1_R_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_ADC0_L_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_ADC0_R_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_ADC1_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_PDM0_L_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_PDM0_R_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_PDM1_L_ON) ||
-+	    mc_d2_source_is_used(MCDRV_D2SRC_PDM1_R_ON))
-+		val |= E1COMMAND_ADDITIONAL;
-+	else if (mc_a_source_is_used(MCDRV_ASRC_DAC0_L_ON) ||
-+		 mc_a_source_is_used(MCDRV_ASRC_DAC0_R_ON))
-+		val |= E1COMMAND_ADDITIONAL | E1COMMAND_PD;
++	dac[0] = mc_info.path_info.dac1[0];
++	dac[1] = mc_info.path_info.dac1[1];
 +
-+	if (id == MCDRV_DEV_ID_80_90H)
-+		mc_packet_add_wait(MCDRV_DAC_MUTE_WAIT_TIME);
-+	else
-+		val |= E1COMMAND_WAIT;
-+	mc_packet_add_force_write_e(MCI_E1COMMAND, val);
++	if ((dac[0] & MCDRV_D1SRC_HIFIIN_ON)
++	    || (dac[1] & MCDRV_D1SRC_HIFIIN_ON)) {
++		if ((dac[0] & (MCDRV_D1SRC_ALL_ON & ~MCDRV_D1SRC_HIFIIN_ON))
++		    || (dac[1] & (MCDRV_D1SRC_ALL_ON & ~MCDRV_D1SRC_HIFIIN_ON)))
++			return -EINVAL;
++	}
 +
-+	ret = mc_packet_execute();
++	for (i = 0; i < ADIF0_PATH_CHANNELS; i++) {
++		adif[i] = mc_info.path_info.adif0[i];
 +
-+exit:
++		used = 0;
++		if (adif[i] & MCDRV_D2SRC_ADC0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC1_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_R_ON)
++			used++;
++		if (used > 1)
++			return -EINVAL;
++	}
++
++	if (adif[0] == D2SRC_ALL_OFF && adif[1] != D2SRC_ALL_OFF)
++		return -EINVAL;
++
++	for (i = 0; i < ADIF1_PATH_CHANNELS; i++) {
++		adif[i] = mc_info.path_info.adif1[i];
++
++		used = 0;
++		if (adif[i] & MCDRV_D2SRC_ADC0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC1_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_R_ON)
++			used++;
++		if (used > 1)
++			return -EINVAL;
++	}
++
++	if (adif[0] == D2SRC_ALL_OFF && adif[1] != D2SRC_ALL_OFF)
++		return -EINVAL;
++
++	for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++		if (!i)
++			adif[i] = mc_source_get(MCDRV_DST_ADIF2, MCDRV_DST_CH0);
++		else
++			adif[i] = mc_source_get(MCDRV_DST_ADIF2, MCDRV_DST_CH1);
++
++		used = 0;
++		if (adif[i] & MCDRV_D2SRC_ADC0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_ADC1_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM0_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_L_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_PDM1_R_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_DAC0REF_ON)
++			used++;
++		if (adif[i] & MCDRV_D2SRC_DAC1REF_ON)
++			used++;
++		if (used > 1)
++			return -EINVAL;
++	}
++
++	if (!(adif[0] & ~D2SRC_ALL_OFF)
++	    && (adif[1] & ~D2SRC_ALL_OFF))
++		return -EINVAL;
++
++	if ((adif[0] & MCDRV_D2SRC_DAC0REF_ON)
++	    && (adif[1] & ~MCDRV_D2SRC_DAC0REF_ON))
++		return -EINVAL;
++
++	if ((adif[1] & MCDRV_D2SRC_DAC0REF_ON)
++	    && (adif[0] & ~MCDRV_D2SRC_DAC0REF_ON))
++		return -EINVAL;
++
++	if ((adif[0] & MCDRV_D2SRC_DAC1REF_ON)
++	    && (adif[1] & ~MCDRV_D2SRC_DAC1REF_ON))
++		return -EINVAL;
++
++	if ((adif[1] & MCDRV_D2SRC_DAC1REF_ON)
++	    && (adif[0] & ~MCDRV_D2SRC_DAC1REF_ON))
++		return -EINVAL;
++
++	for (i = 0; i < ADC0_PATH_CHANNELS; i++) {
++		used = 0;
++		src = mc_info.path_info.adc0[i];
++		if (src & MCDRV_ASRC_LINEIN1_L_ON)
++			used++;
++		if (src & MCDRV_ASRC_LINEIN1_R_ON)
++			used++;
++		if (src & MCDRV_ASRC_LINEIN1_M_ON)
++			used++;
++		if (used > 1)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++static inline int phys_port_check(void)
++{
++	u32 port[4] = { MCDRV_PHYSPORT_NONE, MCDRV_PHYSPORT_NONE,
++		MCDRV_PHYSPORT_NONE, MCDRV_PHYSPORT_NONE
++	};
++	int i, j;
++
++	if (mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH1)
++	    || mc_d1_source_is_used(MCDRV_D1SRC_MUSICIN_ON)) {
++		port[0] = mc_info.dio_path_info.phys_port[0];
++		if (port[0] == MCDRV_PHYSPORT_NONE)
++			return -EINVAL;
++	}
++
++	if (mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH1)
++	    || mc_d1_source_is_used(MCDRV_D1SRC_EXTIN_ON)) {
++		port[1] = mc_info.dio_path_info.phys_port[1];
++		if (port[1] == MCDRV_PHYSPORT_NONE)
++			return -EINVAL;
++	}
++
++	if (mc_source_is_used(MCDRV_DST_VOICEOUT, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_VBOXIOIN, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_VBOXIOIN, MCDRV_DST_CH0)) {
++		port[2] = mc_info.dio_path_info.phys_port[2];
++		if (port[2] == MCDRV_PHYSPORT_NONE)
++			return -EINVAL;
++	}
++
++	if (mc_source_is_used(MCDRV_DST_HIFIOUT, MCDRV_DST_CH0)
++	    || mc_d1_source_is_used(MCDRV_D1SRC_HIFIIN_ON)) {
++		port[3] = mc_info.dio_path_info.phys_port[3];
++		if (port[3] == MCDRV_PHYSPORT_NONE)
++			return -EINVAL;
++	}
++
++	for (i = 0; i < 4; i++) {
++		if (port[i] == MCDRV_PHYSPORT_NONE)
++			continue;
++
++		for (j = i + 1; j < 4; j++) {
++			if (port[i] == port[j])
++				return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static inline int adc_validate(void)
++{
++	struct mcdrv_path_info *path_info;
++	u32 hifi_out;
++	int has_src, i, ret = 0;
++
++	path_info = &mc_info.path_info;
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADIF0, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_ADIF0, MCDRV_DST_CH1))
++		has_src = 1;
++
++	hifi_out = path_info->hifi_out[0];
++
++	if ((mc_d1_source_is_used(MCDRV_D1SRC_ADIF0_ON)
++	     || (hifi_out & MCDRV_D1SRC_ADIF0_ON)) && !has_src) {
++		for (i = 0; i < MUSICOUT_PATH_CHANNELS; i++) {
++			path_info->music_out[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->music_out[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < EXTOUT_PATH_CHANNELS; i++) {
++			path_info->ext_out[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->ext_out[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < HIFIOUT_PATH_CHANNELS; i++) {
++			path_info->hifi_out[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->hifi_out[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < VBOXMIXIN_PATH_CHANNELS; i++) {
++			path_info->vbox_mix_in[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->vbox_mix_in[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < AE_PATH_CHANNELS; i++) {
++			path_info->ae0[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->ae0[i] |= MCDRV_D1SRC_ADIF0_OFF;
++			path_info->ae1[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->ae1[i] |= MCDRV_D1SRC_ADIF0_OFF;
++			path_info->ae2[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->ae2[i] |= MCDRV_D1SRC_ADIF0_OFF;
++			path_info->ae3[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->ae3[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < DAC0_PATH_CHANNELS; i++) {
++			path_info->dac0[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->dac0[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		for (i = 0; i < DAC1_PATH_CHANNELS; i++) {
++			path_info->dac1[i] &= ~MCDRV_D1SRC_ADIF0_ON;
++			path_info->dac1[i] |= MCDRV_D1SRC_ADIF0_OFF;
++		}
++
++		ret = 1;
++	}
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADIF1, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_ADIF1, MCDRV_DST_CH1))
++		has_src = 1;
++	if (mc_d1_source_is_used(MCDRV_D1SRC_ADIF1_ON) && !has_src) {
++		for (i = 0; i < MUSICOUT_PATH_CHANNELS; i++) {
++			path_info->music_out[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->music_out[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < EXTOUT_PATH_CHANNELS; i++) {
++			path_info->ext_out[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->ext_out[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < HIFIOUT_PATH_CHANNELS; i++) {
++			path_info->hifi_out[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->hifi_out[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < VBOXMIXIN_PATH_CHANNELS; i++) {
++			path_info->vbox_mix_in[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->vbox_mix_in[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < AE_PATH_CHANNELS; i++) {
++			path_info->ae0[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->ae0[i] |= MCDRV_D1SRC_ADIF1_OFF;
++			path_info->ae1[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->ae1[i] |= MCDRV_D1SRC_ADIF1_OFF;
++			path_info->ae2[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->ae2[i] |= MCDRV_D1SRC_ADIF1_OFF;
++			path_info->ae3[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->ae3[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < DAC0_PATH_CHANNELS; i++) {
++			path_info->dac0[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->dac0[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		for (i = 0; i < DAC1_PATH_CHANNELS; i++) {
++			path_info->dac1[i] &= ~MCDRV_D1SRC_ADIF1_ON;
++			path_info->dac1[i] |= MCDRV_D1SRC_ADIF1_OFF;
++		}
++
++		ret = 1;
++	}
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADIF2, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_ADIF2, MCDRV_DST_CH1))
++		has_src = 1;
++	if (mc_d1_source_is_used(MCDRV_D1SRC_ADIF2_ON) && !has_src) {
++		for (i = 0; i < MUSICOUT_PATH_CHANNELS; i++) {
++			path_info->music_out[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->music_out[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < EXTOUT_PATH_CHANNELS; i++) {
++			path_info->ext_out[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->ext_out[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < HIFIOUT_PATH_CHANNELS; i++) {
++			path_info->hifi_out[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->hifi_out[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < VBOXMIXIN_PATH_CHANNELS; i++) {
++			path_info->vbox_mix_in[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->vbox_mix_in[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < AE_PATH_CHANNELS; i++) {
++			path_info->ae0[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->ae0[i] |= MCDRV_D1SRC_ADIF2_OFF;
++			path_info->ae1[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->ae1[i] |= MCDRV_D1SRC_ADIF2_OFF;
++			path_info->ae2[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->ae2[i] |= MCDRV_D1SRC_ADIF2_OFF;
++			path_info->ae3[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->ae3[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < DAC0_PATH_CHANNELS; i++) {
++			path_info->dac0[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->dac0[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		for (i = 0; i < DAC1_PATH_CHANNELS; i++) {
++			path_info->dac1[i] &= ~MCDRV_D1SRC_ADIF2_ON;
++			path_info->dac1[i] |= MCDRV_D1SRC_ADIF2_OFF;
++		}
++
++		ret = 1;
++	}
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH0))
++		has_src = 1;
++	if (!mc_d2_source_is_used(MCDRV_D2SRC_ADC0_L_ON)) {
++		if (has_src) {
++			path_info->adc0[0] = D2SRC_ALL_OFF;
++			ret = 1;
++		}
++	} else if (!has_src) {
++		for (i = 0; i < ADIF0_PATH_CHANNELS; i++) {
++			path_info->adif0[i] &= ~MCDRV_D2SRC_ADC0_L_ON;
++			path_info->adif0[i] |= MCDRV_D2SRC_ADC0_L_OFF;
++		}
++
++		for (i = 0; i < ADIF1_PATH_CHANNELS; i++) {
++			path_info->adif1[i] &= ~MCDRV_D2SRC_ADC0_L_ON;
++			path_info->adif1[i] |= MCDRV_D2SRC_ADC0_L_OFF;
++		}
++
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			path_info->adif2[i] &= ~MCDRV_D2SRC_ADC0_L_ON;
++			path_info->adif2[i] |= MCDRV_D2SRC_ADC0_L_OFF;
++		}
++
++		ret = 1;
++	}
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH1))
++		has_src = 1;
++	if (!mc_d2_source_is_used(MCDRV_D2SRC_ADC0_R_ON)) {
++		if (has_src) {
++			path_info->adc0[1] = D2SRC_ALL_OFF;
++			ret = 1;
++		}
++	} else if (!has_src) {
++		for (i = 0; i < ADIF0_PATH_CHANNELS; i++) {
++			path_info->adif0[i] &= ~MCDRV_D2SRC_ADC0_R_ON;
++			path_info->adif0[i] |= MCDRV_D2SRC_ADC0_R_OFF;
++		}
++
++		for (i = 0; i < ADIF1_PATH_CHANNELS; i++) {
++			path_info->adif1[i] &= ~MCDRV_D2SRC_ADC0_R_ON;
++			path_info->adif1[i] |= MCDRV_D2SRC_ADC0_R_OFF;
++		}
++
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			path_info->adif2[i] &= ~MCDRV_D2SRC_ADC0_R_ON;
++			path_info->adif2[i] |= MCDRV_D2SRC_ADC0_R_OFF;
++		}
++
++		ret = 1;
++	}
++
++	has_src = 0;
++	if (mc_source_is_used(MCDRV_DST_ADC1, MCDRV_DST_CH0))
++		has_src = 1;
++	if (!mc_d2_source_is_used(MCDRV_D2SRC_ADC1_ON)) {
++		if (has_src) {
++			for (i = 0; i < ADC1_PATH_CHANNELS; i++)
++				path_info->adc1[i] = D2SRC_ALL_OFF;
++			ret = 1;
++		}
++	} else if (!has_src) {
++		for (i = 0; i < ADIF0_PATH_CHANNELS; i++) {
++			path_info->adif0[i] &= ~MCDRV_D2SRC_ADC1_ON;
++			path_info->adif0[i] |= MCDRV_D2SRC_ADC1_OFF;
++		}
++
++		for (i = 0; i < ADIF1_PATH_CHANNELS; i++) {
++			path_info->adif1[i] &= ~MCDRV_D2SRC_ADC1_ON;
++			path_info->adif1[i] |= MCDRV_D2SRC_ADC1_OFF;
++		}
++
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			path_info->adif2[i] &= ~MCDRV_D2SRC_ADC1_ON;
++			path_info->adif2[i] |= MCDRV_D2SRC_ADC1_OFF;
++		}
++
++		ret = 1;
++	}
++
 +	return ret;
 +}
-+#endif
 +
-+static inline bool is_ldoa_on(void)
++static inline int dac_validate(void)
 +{
-+	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH0))
-+		return true;
++	struct mcdrv_path_info *path_info;
++	int has_src, used, i, ret = 0;
 +
-+	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH1))
-+		return true;
++	path_info = &mc_info.path_info;
 +
-+	if (mc_source_is_used(MCDRV_DST_ADC1, MCDRV_DST_CH0))
-+		return true;
++	has_src = 0;
++	used = 0;
++	if (mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH1))
++		has_src = 1;
 +
-+	if (mc_source_is_used(MCDRV_DST_BIAS, MCDRV_DST_CH0))
-+		return true;
++	if (mc_a_source_is_used(MCDRV_ASRC_DAC0_L_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_DAC0_R_ON))
++		used = 1;
++	else {
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			if (path_info->adif2[i] & MCDRV_D2SRC_DAC0REF_ON)
++				used = 1;
++		}
++	}
++	if (!has_src) {
++		if (used) {
++			for (i = 0; i < HP_PATH_CHANNELS; i++) {
++				path_info->hp[i] &= ~MCDRV_ASRC_DAC0_L_ON;
++				path_info->hp[i] |= MCDRV_ASRC_DAC0_L_OFF;
++				path_info->hp[i] &= ~MCDRV_ASRC_DAC0_R_ON;
++				path_info->hp[i] |= MCDRV_ASRC_DAC0_R_OFF;
++			}
 +
-+	if (mc_source_is_used(MCDRV_DST_BIAS, MCDRV_DST_CH1))
-+		return true;
++			for (i = 0; i < RC_PATH_CHANNELS; i++) {
++				path_info->rc[i] &= ~MCDRV_ASRC_DAC0_L_ON;
++				path_info->rc[i] |= MCDRV_ASRC_DAC0_L_OFF;
++				path_info->rc[i] &= ~MCDRV_ASRC_DAC0_R_ON;
++				path_info->rc[i] |= MCDRV_ASRC_DAC0_R_OFF;
++			}
 +
-+	if (mc_source_is_used(MCDRV_DST_BIAS, MCDRV_DST_CH2))
-+		return true;
++			for (i = 0; i < LOUT1_PATH_CHANNELS; i++) {
++				path_info->lout1[i] &= ~MCDRV_ASRC_DAC0_L_ON;
++				path_info->lout1[i] |= MCDRV_ASRC_DAC0_L_OFF;
++				path_info->lout1[i] &= ~MCDRV_ASRC_DAC0_R_ON;
++				path_info->lout1[i] |= MCDRV_ASRC_DAC0_R_OFF;
++			}
 +
-+	if (mc_source_is_used(MCDRV_DST_BIAS, MCDRV_DST_CH3))
-+		return true;
++			ret = 1;
++		}
++
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			if (path_info->adif2[i] & MCDRV_D2SRC_DAC0REF_ON) {
++				path_info->adif2[i] &= ~MCDRV_D2SRC_DAC0REF_ON;
++				ret = 1;
++			}
++		}
++	}
++
++	has_src = 0;
++	used = 0;
++	if (mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH1))
++		has_src = 1;
++	if (mc_a_source_is_used(MCDRV_ASRC_DAC1_L_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_DAC1_R_ON))
++		used = 1;
++	else {
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			if (path_info->adif2[i] & MCDRV_D2SRC_DAC1REF_ON)
++				used = 1;
++		}
++	}
++	if (!has_src) {
++		if (used) {
++			ret = 1;
++			for (i = 0; i < SP_PATH_CHANNELS; i++) {
++				path_info->sp[i] &= ~MCDRV_ASRC_DAC1_L_ON;
++				path_info->sp[i] |= MCDRV_ASRC_DAC1_L_OFF;
++				path_info->sp[i] &= ~MCDRV_ASRC_DAC1_R_ON;
++				path_info->sp[i] |= MCDRV_ASRC_DAC1_R_OFF;
++			}
++
++			for (i = 0; i < LOUT2_PATH_CHANNELS; i++) {
++				path_info->lout2[i] &= ~MCDRV_ASRC_DAC1_L_ON;
++				path_info->lout2[i] |= MCDRV_ASRC_DAC1_L_OFF;
++				path_info->lout2[i] &= ~MCDRV_ASRC_DAC1_R_ON;
++				path_info->lout2[i] |= MCDRV_ASRC_DAC1_R_OFF;
++			}
++		}
++
++		for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++			if (path_info->adif2[i] & MCDRV_D2SRC_DAC1REF_ON) {
++				path_info->adif2[i] &= ~MCDRV_D2SRC_DAC1REF_ON;
++				ret = 1;
++			}
++		}
++	}
++
++	return ret;
++}
++
++int mc_path_info_set(struct mcdrv_path_info *path_info)
++{
++	struct mcdrv_path_info old_path_info;
++	int cont, i, ret;
++
++	old_path_info = mc_info.path_info;
++	mc_info.path_info = mc_info.path_info_virtual;
++
++	d1_source_set_onoff(path_info->music_out,
++			    mc_info.path_info.music_out,
++			    MUSICOUT_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->ext_out,
++			    mc_info.path_info.ext_out, EXTOUT_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->hifi_out,
++			    mc_info.path_info.hifi_out, HIFIOUT_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->vbox_mix_in,
++			    mc_info.path_info.vbox_mix_in,
++			    VBOXMIXIN_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->ae0,
++			    mc_info.path_info.ae0, AE_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->ae1,
++			    mc_info.path_info.ae1, AE_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->ae2,
++			    mc_info.path_info.ae2, AE_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->ae3,
++			    mc_info.path_info.ae3, AE_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->dac0,
++			    mc_info.path_info.dac0, DAC0_PATH_CHANNELS);
++	d1_source_set_onoff(path_info->dac1,
++			    mc_info.path_info.dac1, DAC1_PATH_CHANNELS);
++
++	d2_source_set_onoff(path_info->voice_out,
++			    mc_info.path_info.voice_out,
++			    VOICEOUT_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->vbox_io_in,
++			    mc_info.path_info.vbox_io_in,
++			    VBOXIOIN_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->vbox_host_in,
++			    mc_info.path_info.vbox_host_in,
++			    VBOXHOSTIN_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->host_out,
++			    mc_info.path_info.host_out, HOSTOUT_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->adif0,
++			    mc_info.path_info.adif0, ADIF0_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->adif1,
++			    mc_info.path_info.adif1, ADIF1_PATH_CHANNELS);
++	d2_source_set_onoff(path_info->adif2,
++			    mc_info.path_info.adif2, ADIF2_PATH_CHANNELS);
++
++	a_source_set_onoff(path_info->adc0,
++			   mc_info.path_info.adc0, ADC0_PATH_CHANNELS);
++	a_source_set_onoff(path_info->adc1,
++			   mc_info.path_info.adc1, ADC1_PATH_CHANNELS);
++	a_source_set_onoff(path_info->sp,
++			   mc_info.path_info.sp, SP_PATH_CHANNELS);
++	a_source_set_onoff(path_info->hp,
++			   mc_info.path_info.hp, HP_PATH_CHANNELS);
++	a_source_set_onoff(path_info->rc,
++			   mc_info.path_info.rc, RC_PATH_CHANNELS);
++	a_source_set_onoff(path_info->lout1,
++			   mc_info.path_info.lout1, LOUT1_PATH_CHANNELS);
++	a_source_set_onoff(path_info->lout2,
++			   mc_info.path_info.lout2, LOUT2_PATH_CHANNELS);
++
++	bias_source_set_onoff(path_info);
++
++	ret = is_valid_path();
++	if (ret < 0) {
++		mc_info.path_info = old_path_info;
++		return ret;
++	}
++
++	ret = phys_port_check();
++	if (ret < 0) {
++		mc_info.path_info = old_path_info;
++		return ret;
++	}
++
++	mc_info.path_info_virtual = mc_info.path_info;
++
++	for (i = 0, cont = 1; i < 3 && cont; i++) {
++		cont = adc_validate();
++		cont |= dac_validate();
++	}
++
++	return 0;
++}
++
++void mc_path_info_get(struct mcdrv_path_info *path_info)
++{
++	*path_info = mc_info.path_info;
++}
++
++void mc_path_info_get_virtual(struct mcdrv_path_info *path_info)
++{
++	*path_info = mc_info.path_info_virtual;
++}
++
++void mc_vol_info_set(struct mcdrv_vol_info *vol_info)
++{
++	int i;
++
++	for (i = 0; i < MUSICIN_VOL_CHANNELS; i++) {
++		if (vol_info->d_music_in[i] & 1)
++			mc_info.vol_info.d_music_in[i] =
++			    vol_info->d_music_in[i] & ~1;
++	}
++
++	for (i = 0; i < EXTIN_VOL_CHANNELS; i++) {
++		if (vol_info->d_ext_in[i] & 1)
++			mc_info.vol_info.d_ext_in[i] =
++			    vol_info->d_ext_in[i] & ~1;
++	}
++
++	for (i = 0; i < VOICEIN_VOL_CHANNELS; i++) {
++		if (vol_info->d_voice_in[i] & 1)
++			mc_info.vol_info.d_voice_in[i] =
++			    vol_info->d_voice_in[i] & ~1;
++	}
++
++	for (i = 0; i < REFIN_VOL_CHANNELS; i++) {
++		if (vol_info->d_ref_in[i] & 1)
++			mc_info.vol_info.d_ref_in[i] =
++			    vol_info->d_ref_in[i] & ~1;
++	}
++
++	for (i = 0; i < ADIF0IN_VOL_CHANNELS; i++) {
++		if (vol_info->d_adif0_in[i] & 1)
++			mc_info.vol_info.d_adif0_in[i] =
++			    vol_info->d_adif0_in[i] & ~1;
++	}
++
++	for (i = 0; i < ADIF1IN_VOL_CHANNELS; i++) {
++		if (vol_info->d_adif1_in[i] & 1)
++			mc_info.vol_info.d_adif1_in[i] =
++			    vol_info->d_adif1_in[i] & ~1;
++	}
++
++	for (i = 0; i < ADIF2IN_VOL_CHANNELS; i++) {
++		if (vol_info->d_adif2_in[i] & 1)
++			mc_info.vol_info.d_adif2_in[i] =
++			    vol_info->d_adif2_in[i] & ~1;
++	}
++
++	for (i = 0; i < MUSICOUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_music_out[i] & 1)
++			mc_info.vol_info.d_music_out[i] =
++			    vol_info->d_music_out[i] & ~1;
++	}
++
++	for (i = 0; i < EXTOUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_ext_out[i] & 1)
++			mc_info.vol_info.d_ext_out[i] =
++			    vol_info->d_ext_out[i] & ~1;
++	}
++
++	for (i = 0; i < VOICEOUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_voice_out[i] & 1)
++			mc_info.vol_info.d_voice_out[i] =
++			    vol_info->d_voice_out[i] & ~1;
++	}
++
++	for (i = 0; i < REFOUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_ref_out[i] & 1)
++			mc_info.vol_info.d_ref_out[i] =
++			    vol_info->d_ref_out[i] & ~1;
++	}
++
++	for (i = 0; i < DAC0OUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_dac0_out[i] & 1)
++			mc_info.vol_info.d_dac0_out[i] =
++			    vol_info->d_dac0_out[i] & ~1;
++	}
++
++	for (i = 0; i < DAC1OUT_VOL_CHANNELS; i++) {
++		if (vol_info->d_dac1_out[i] & 1)
++			mc_info.vol_info.d_dac1_out[i] =
++			    vol_info->d_dac1_out[i] & ~1;
++	}
++
++	for (i = 0; i < DPATH_VOL_CHANNELS; i++) {
++		if (vol_info->d_dpath_da[i] & 1)
++			mc_info.vol_info.d_dpath_da[i] =
++			    vol_info->d_dpath_da[i] & ~1;
++
++		if (vol_info->d_dpath_ad[i] & 1)
++			mc_info.vol_info.d_dpath_ad[i] =
++			    vol_info->d_dpath_ad[i] & ~1;
++	}
++
++	for (i = 0; i < LINEIN1_VOL_CHANNELS; i++) {
++		if (vol_info->a_line_in1[i] & 1)
++			mc_info.vol_info.a_line_in1[i] =
++			    vol_info->a_line_in1[i] & ~1;
++	}
++
++	for (i = 0; i < MIC1_VOL_CHANNELS; i++) {
++		if (vol_info->a_mic1[i] & 1)
++			mc_info.vol_info.a_mic1[i] = vol_info->a_mic1[i] & ~1;
++	}
++
++	for (i = 0; i < MIC2_VOL_CHANNELS; i++) {
++		if (vol_info->a_mic2[i] & 1)
++			mc_info.vol_info.a_mic2[i] = vol_info->a_mic2[i] & ~1;
++	}
++
++	for (i = 0; i < MIC3_VOL_CHANNELS; i++) {
++		if (vol_info->a_mic3[i] & 1)
++			mc_info.vol_info.a_mic3[i] = vol_info->a_mic3[i] & ~1;
++	}
++
++	for (i = 0; i < MIC4_VOL_CHANNELS; i++) {
++		if (vol_info->a_mic4[i] & 1)
++			mc_info.vol_info.a_mic4[i] = vol_info->a_mic4[i] & ~1;
++	}
++
++	for (i = 0; i < HP_VOL_CHANNELS; i++) {
++		if (vol_info->a_hp[i] & 1)
++			mc_info.vol_info.a_hp[i] = vol_info->a_hp[i] & ~1;
++	}
++
++	for (i = 0; i < SP_VOL_CHANNELS; i++) {
++		if (vol_info->a_sp[i] & 1)
++			mc_info.vol_info.a_sp[i] = vol_info->a_sp[i] & ~1;
++	}
++
++	for (i = 0; i < RC_VOL_CHANNELS; i++) {
++		if (vol_info->a_rc[i] & 1)
++			mc_info.vol_info.a_rc[i] = vol_info->a_rc[i] & ~1;
++	}
++
++	for (i = 0; i < LINEOUT1_VOL_CHANNELS; i++) {
++		if (vol_info->a_line_out1[i] & 1)
++			mc_info.vol_info.a_line_out1[i] =
++			    vol_info->a_line_out1[i] & ~1;
++	}
++
++	for (i = 0; i < LINEOUT2_VOL_CHANNELS; i++) {
++		if (vol_info->a_line_out2[i] & 1)
++			mc_info.vol_info.a_line_out2[i] =
++			    vol_info->a_line_out2[i] & ~1;
++	}
++
++	for (i = 0; i < HPDET_VOL_CHANNELS; i++) {
++		if (vol_info->a_hp_det[i] & 1)
++			mc_info.vol_info.a_hp_det[i] =
++			    vol_info->a_hp_det[i] & ~1;
++	}
++}
++
++void mc_vol_info_get(struct mcdrv_vol_info *vol_info)
++{
++	*vol_info = mc_info.vol_info;
++}
++
++static void dio_common_set(struct mcdrv_dio_common *dio_common, u8 port)
++{
++	struct mcdrv_dio_common *common;
++
++	common = &mc_info.dio_info.port[port].dio_common;
++
++	common->master_slave = dio_common->master_slave;
++	common->auto_fs = dio_common->auto_fs;
++	common->fs = dio_common->fs;
++	common->bck_fs = dio_common->bck_fs;
++	common->interface = dio_common->interface;
++	common->bck_invert = dio_common->bck_invert;
++	common->src_thru = dio_common->src_thru;
++
++	if (dio_common->interface == MCDRV_DIO_PCM) {
++		common->pcm_hiz_transition = dio_common->pcm_hiz_transition;
++		common->pcm_frame = dio_common->pcm_frame;
++		common->pcm_high_period = dio_common->pcm_high_period;
++	}
++}
++
++static void dio_dir_set(struct mcdrv_dio_dir *dio_dir, u8 port)
++{
++	struct mcdrv_dio_dir *dir;
++
++	dir = &mc_info.dio_info.port[port].dir;
++
++	if (mc_info.dio_info.port[port].dio_common.interface == MCDRV_DIO_DA) {
++		dir->da_format.bit_sel = dio_dir->da_format.bit_sel;
++		dir->da_format.mode = dio_dir->da_format.mode;
++	} else {
++		dir->pcm_format.mono = dio_dir->pcm_format.mono;
++		dir->pcm_format.order = dio_dir->pcm_format.order;
++		dir->pcm_format.law = dio_dir->pcm_format.law;
++		dir->pcm_format.bit_sel = dio_dir->pcm_format.bit_sel;
++	}
++}
++
++static void dio_dit_set(struct mcdrv_dio_dit *dio_dit, u8 port)
++{
++	struct mcdrv_dio_dit *dit;
++
++	dit = &mc_info.dio_info.port[port].dit;
++
++	dit->st_mode = dio_dit->st_mode;
++	dit->edge = dio_dit->edge;
++	if (mc_info.dio_info.port[port].dio_common.interface == MCDRV_DIO_DA) {
++		dit->da_format.bit_sel = dio_dit->da_format.bit_sel;
++		dit->da_format.mode = dio_dit->da_format.mode;
++	} else {
++		dit->pcm_format.mono = dio_dit->pcm_format.mono;
++		dit->pcm_format.order = dio_dit->pcm_format.order;
++		dit->pcm_format.law = dio_dit->pcm_format.law;
++		dit->pcm_format.bit_sel = dio_dit->pcm_format.bit_sel;
++	}
++}
++
++void mc_dio_info_set(struct mcdrv_dio_info *dio_info, u32 update)
++{
++	if (update & MCDRV_MUSIC_COM_UPDATE_FLAG)
++		dio_common_set(&dio_info->port[0].dio_common, 0);
++
++	if (update & MCDRV_EXT_COM_UPDATE_FLAG)
++		dio_common_set(&dio_info->port[1].dio_common, 1);
++
++	if (update & MCDRV_VOICE_COM_UPDATE_FLAG)
++		dio_common_set(&dio_info->port[2].dio_common, 2);
++
++	if (update & MCDRV_HIFI_COM_UPDATE_FLAG)
++		dio_common_set(&dio_info->port[3].dio_common, 3);
++
++	if (update & MCDRV_MUSIC_DIR_UPDATE_FLAG)
++		dio_dir_set(&dio_info->port[0].dir, 0);
++
++	if (update & MCDRV_EXT_DIR_UPDATE_FLAG)
++		dio_dir_set(&dio_info->port[1].dir, 1);
++
++	if (update & MCDRV_VOICE_DIR_UPDATE_FLAG)
++		dio_dir_set(&dio_info->port[2].dir, 2);
++
++	if (update & MCDRV_HIFI_DIR_UPDATE_FLAG)
++		dio_dir_set(&dio_info->port[3].dir, 3);
++
++	if (update & MCDRV_MUSIC_DIT_UPDATE_FLAG)
++		dio_dit_set(&dio_info->port[0].dit, 0);
++
++	if (update & MCDRV_EXT_DIT_UPDATE_FLAG)
++		dio_dit_set(&dio_info->port[1].dit, 1);
++
++	if (update & MCDRV_VOICE_DIT_UPDATE_FLAG)
++		dio_dit_set(&dio_info->port[2].dit, 2);
++
++	if (update & MCDRV_HIFI_DIT_UPDATE_FLAG)
++		dio_dit_set(&dio_info->port[3].dit, 3);
++}
++
++void mc_dio_info_get(struct mcdrv_dio_info *dio_info)
++{
++	*dio_info = mc_info.dio_info;
++}
++
++void mc_dio_path_info_set(struct mcdrv_dio_path_info *dio_path_info, u32 update)
++{
++	if (update & MCDRV_MUSICNUM_UPDATE_FLAG)
++		mc_info.dio_path_info.music_ch = dio_path_info->music_ch;
++
++	if (update & MCDRV_PHYS0_UPDATE_FLAG)
++		mc_info.dio_path_info.phys_port[0]
++		    = dio_path_info->phys_port[0];
++
++	if (update & MCDRV_PHYS1_UPDATE_FLAG)
++		mc_info.dio_path_info.phys_port[1]
++		    = dio_path_info->phys_port[1];
++
++	if (update & MCDRV_PHYS2_UPDATE_FLAG)
++		mc_info.dio_path_info.phys_port[2]
++		    = dio_path_info->phys_port[2];
++
++	if (update & MCDRV_PHYS3_UPDATE_FLAG)
++		mc_info.dio_path_info.phys_port[3]
++		    = dio_path_info->phys_port[3];
++
++	if (update & MCDRV_DIR0SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_rslot[0]
++		    = dio_path_info->music_rslot[0];
++
++	if (update & MCDRV_DIR1SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_rslot[1]
++		    = dio_path_info->music_rslot[1];
++
++	if (update & MCDRV_DIR2SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_rslot[2]
++		    = dio_path_info->music_rslot[2];
++
++	if (update & MCDRV_DIT0SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_tslot[0]
++		    = dio_path_info->music_tslot[0];
++
++	if (update & MCDRV_DIT1SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_tslot[1]
++		    = dio_path_info->music_tslot[1];
++
++	if (update & MCDRV_DIT2SLOT_UPDATE_FLAG)
++		mc_info.dio_path_info.music_tslot[2]
++		    = dio_path_info->music_tslot[2];
++}
++
++void mc_dio_path_info_get(struct mcdrv_dio_path_info *dio_path_info)
++{
++	*dio_path_info = mc_info.dio_path_info;
++}
++
++void mc_swap_info_set(struct mcdrv_swap_info *swap_info, u32 update)
++{
++	if (update & MCDRV_SWAP_ADIF0_UPDATE_FLAG)
++		mc_info.swap_info.adif0 = swap_info->adif0;
++
++	if (update & MCDRV_SWAP_ADIF1_UPDATE_FLAG)
++		mc_info.swap_info.adif1 = swap_info->adif1;
++
++	if (update & MCDRV_SWAP_ADIF2_UPDATE_FLAG)
++		mc_info.swap_info.adif2 = swap_info->adif2;
++
++	if (update & MCDRV_SWAP_DAC0_UPDATE_FLAG)
++		mc_info.swap_info.dac0 = swap_info->dac0;
++
++	if (update & MCDRV_SWAP_DAC1_UPDATE_FLAG)
++		mc_info.swap_info.dac1 = swap_info->dac1;
++
++	if (update & MCDRV_SWAP_MUSICIN0_UPDATE_FLAG)
++		mc_info.swap_info.music_in0 = swap_info->music_in0;
++
++	if (update & MCDRV_SWAP_MUSICIN1_UPDATE_FLAG)
++		mc_info.swap_info.music_in1 = swap_info->music_in1;
++
++	if (update & MCDRV_SWAP_MUSICIN2_UPDATE_FLAG)
++		mc_info.swap_info.music_in2 = swap_info->music_in2;
++
++	if (update & MCDRV_SWAP_EXTIN_UPDATE_FLAG)
++		mc_info.swap_info.ext_in = swap_info->ext_in;
++
++	if (update & MCDRV_SWAP_VOICEIN_UPDATE_FLAG)
++		mc_info.swap_info.voice_in = swap_info->voice_in;
++
++	if (update & MCDRV_SWAP_HIFIIN_UPDATE_FLAG)
++		mc_info.swap_info.hifi_in = swap_info->hifi_in;
++
++	if (update & MCDRV_SWAP_MUSICOUT0_UPDATE_FLAG)
++		mc_info.swap_info.music_out0 = swap_info->music_out0;
++
++	if (update & MCDRV_SWAP_MUSICOUT1_UPDATE_FLAG)
++		mc_info.swap_info.music_out1 = swap_info->music_out1;
++
++	if (update & MCDRV_SWAP_MUSICOUT2_UPDATE_FLAG)
++		mc_info.swap_info.music_out2 = swap_info->music_out2;
++
++	if (update & MCDRV_SWAP_EXTOUT_UPDATE_FLAG)
++		mc_info.swap_info.ext_out = swap_info->ext_out;
++
++	if (update & MCDRV_SWAP_VOICEOUT_UPDATE_FLAG)
++		mc_info.swap_info.voice_out = swap_info->voice_out;
++
++	if (update & MCDRV_SWAP_HIFIOUT_UPDATE_FLAG)
++		mc_info.swap_info.hifi_out = swap_info->hifi_out;
++}
++
++void mc_swap_info_get(struct mcdrv_swap_info *swap_info)
++{
++	*swap_info = mc_info.swap_info;
++}
++
++void mc_hsdet_info_set(struct mcdrv_hsdet_info *hsdet_info, u32 update)
++{
++	struct mcdrv_hsdet_info *hsdet;
++
++	hsdet = &mc_info.hsdet_info;
++
++	if (update & MCDRV_ENPLUGDET_UPDATE_FLAG)
++		hsdet->en_plug_det = hsdet_info->en_plug_det;
++
++	if (update & MCDRV_ENPLUGDETDB_UPDATE_FLAG)
++		hsdet->en_plug_det_db = hsdet_info->en_plug_det_db;
++
++	if (update & MCDRV_ENDLYKEYOFF_UPDATE_FLAG)
++		hsdet->en_dly_key_off = hsdet_info->en_dly_key_off;
++
++	if (update & MCDRV_ENDLYKEYON_UPDATE_FLAG)
++		hsdet->en_dly_key_on = hsdet_info->en_dly_key_on;
++
++	if (update & MCDRV_ENMICDET_UPDATE_FLAG)
++		hsdet->en_mic_det = hsdet_info->en_mic_det;
++
++	if (update & MCDRV_ENKEYOFF_UPDATE_FLAG)
++		hsdet->en_key_off = hsdet_info->en_key_off;
++
++	if (update & MCDRV_ENKEYON_UPDATE_FLAG)
++		hsdet->en_key_on = hsdet_info->en_key_on;
++
++	if (update & MCDRV_HSDETDBNC_UPDATE_FLAG)
++		hsdet->hs_det_dbnc = hsdet_info->hs_det_dbnc;
++
++	if (update & MCDRV_KEYOFFMTIM_UPDATE_FLAG)
++		hsdet->key_off_mtim = hsdet_info->key_off_mtim;
++
++	if (update & MCDRV_KEYONMTIM_UPDATE_FLAG)
++		hsdet->key_on_mtim = hsdet_info->key_on_mtim;
++
++	if (update & MCDRV_KEY0OFFDLYTIM_UPDATE_FLAG)
++		hsdet->key0_off_dly_tim = hsdet_info->key0_off_dly_tim;
++
++	if (update & MCDRV_KEY1OFFDLYTIM_UPDATE_FLAG)
++		hsdet->key1_off_dly_tim = hsdet_info->key1_off_dly_tim;
++
++	if (update & MCDRV_KEY2OFFDLYTIM_UPDATE_FLAG)
++		hsdet->key2_off_dly_tim = hsdet_info->key2_off_dly_tim;
++
++	if (update & MCDRV_KEY0ONDLYTIM_UPDATE_FLAG)
++		hsdet->key0_on_dly_tim = hsdet_info->key0_on_dly_tim;
++
++	if (update & MCDRV_KEY1ONDLYTIM_UPDATE_FLAG)
++		hsdet->key1_on_dly_tim = hsdet_info->key1_on_dly_tim;
++
++	if (update & MCDRV_KEY2ONDLYTIM_UPDATE_FLAG)
++		hsdet->key2_on_dly_tim = hsdet_info->key2_on_dly_tim;
++
++	if (update & MCDRV_KEY0ONDLYTIM2_UPDATE_FLAG)
++		hsdet->key0_on_dly_tim2 = hsdet_info->key0_on_dly_tim2;
++
++	if (update & MCDRV_KEY1ONDLYTIM2_UPDATE_FLAG)
++		hsdet->key1_on_dly_tim2 = hsdet_info->key1_on_dly_tim2;
++
++	if (update & MCDRV_KEY2ONDLYTIM2_UPDATE_FLAG)
++		hsdet->key2_on_dly_tim2 = hsdet_info->key2_on_dly_tim2;
++
++	if (update & MCDRV_IRQTYPE_UPDATE_FLAG) {
++		hsdet->irq_type = hsdet_info->irq_type;
++		hsdet->plug_det_db_irq_type = hsdet_info->plug_det_db_irq_type;
++		hsdet->plug_undet_db_irq_type
++		    = hsdet_info->plug_undet_db_irq_type;
++		hsdet->mic_det_irq_type = hsdet_info->mic_det_irq_type;
++		hsdet->plug_det_irq_type = hsdet_info->plug_det_irq_type;
++		hsdet->key0_on_irq_type = hsdet_info->key0_on_irq_type;
++		hsdet->key1_on_irq_type = hsdet_info->key1_on_irq_type;
++		hsdet->key2_on_irq_type = hsdet_info->key2_on_irq_type;
++		hsdet->key0_off_irq_type = hsdet_info->key0_off_irq_type;
++		hsdet->key1_off_irq_type = hsdet_info->key1_off_irq_type;
++		hsdet->key2_off_irq_type = hsdet_info->key2_off_irq_type;
++	}
++
++	if (update & MCDRV_DETINV_UPDATE_FLAG)
++		hsdet->det_in_inv = hsdet_info->det_in_inv;
++
++	if (update & MCDRV_HSDETMODE_UPDATE_FLAG)
++		hsdet->hs_det_mode = hsdet_info->hs_det_mode;
++
++	if (update & MCDRV_SPERIOD_UPDATE_FLAG)
++		hsdet->speriod = hsdet_info->speriod;
++
++	if (update & MCDRV_LPERIOD_UPDATE_FLAG)
++		hsdet->lperiod = hsdet_info->lperiod;
++
++	if (update & MCDRV_DBNCNUMPLUG_UPDATE_FLAG)
++		hsdet->dbnc_num_plug = hsdet_info->dbnc_num_plug;
++
++	if (update & MCDRV_DBNCNUMMIC_UPDATE_FLAG)
++		hsdet->dbnc_num_mic = hsdet_info->dbnc_num_mic;
++
++	if (update & MCDRV_DBNCNUMKEY_UPDATE_FLAG)
++		hsdet->dbnc_num_key = hsdet_info->dbnc_num_key;
++
++	if (update & MCDRV_SGNL_UPDATE_FLAG) {
++		hsdet->sgnl_period = hsdet_info->sgnl_period;
++		hsdet->sgnl_num = hsdet_info->sgnl_num;
++		hsdet->sgnl_peak = hsdet_info->sgnl_peak;
++	}
++
++	if (update & MCDRV_IMPSEL_UPDATE_FLAG)
++		hsdet->imp_sel = hsdet_info->imp_sel;
++
++	if (update & MCDRV_DLYIRQSTOP_UPDATE_FLAG)
++		hsdet->dly_irq_stop = hsdet_info->dly_irq_stop;
++
++	if (update & MCDRV_CBFUNC_UPDATE_FLAG)
++		hsdet->cbfunc = hsdet_info->cbfunc;
++}
++
++void mc_hsdet_info_get(struct mcdrv_hsdet_info *hsdet_info)
++{
++	*hsdet_info = mc_info.hsdet_info;
++}
++
++void mc_aec_info_set(struct mcdrv_aec_info *aec_info)
++{
++	struct mcdrv_aec_info *aec;
++	struct mcdrv_aec_output *out;
++	struct mcdrv_aec_input *in;
++	int i;
++
++	aec = &mc_info.aec_info;
++
++	if (aec_info->fdsp_locate != 0xff)
++		aec->fdsp_locate = aec_info->fdsp_locate;
++
++	aec->audio_engine.enable = aec_info->audio_engine.enable;
++	if (aec_info->audio_engine.enable) {
++		struct mcdrv_aec_audio_engine *ae = &aec->audio_engine;
++
++		if (aec_info->audio_engine.on != 2)
++			ae->on = aec_info->audio_engine.on;
++		if (aec_info->audio_engine.fdsp_on != 2)
++			ae->fdsp_on = aec_info->audio_engine.fdsp_on;
++		if (aec_info->audio_engine.bdsp_ae0_src != 2)
++			ae->bdsp_ae0_src = aec_info->audio_engine.bdsp_ae0_src;
++		if (aec_info->audio_engine.bdsp_ae1_src != 2)
++			ae->bdsp_ae1_src = aec_info->audio_engine.bdsp_ae1_src;
++		if (aec_info->audio_engine.mixer_in0_src != 2)
++			ae->mixer_in0_src =
++			    aec_info->audio_engine.mixer_in0_src;
++		if (aec_info->audio_engine.mixer_in1_src != 2)
++			ae->mixer_in1_src =
++			    aec_info->audio_engine.mixer_in1_src;
++		if (aec_info->audio_engine.mixer_in2_src != 2)
++			ae->mixer_in2_src =
++			    aec_info->audio_engine.mixer_in2_src;
++		if (aec_info->audio_engine.mixer_in3_src != 2)
++			ae->mixer_in3_src =
++			    aec_info->audio_engine.mixer_in3_src;
++	}
++
++	aec->audio_engine.bdsp = aec_info->audio_engine.bdsp;
++	aec->audio_engine.fdsp = aec_info->audio_engine.fdsp;
++
++	aec->vbox.enable = aec_info->vbox.enable;
++	if (aec_info->vbox.enable) {
++		struct mcdrv_aec_vbox *vb = &mc_info.aec_info.vbox;
++
++		if (aec_info->vbox.cdsp_func_a_on != 2)
++			vb->cdsp_func_a_on = aec_info->vbox.cdsp_func_a_on;
++
++		if (aec_info->vbox.cdsp_func_b_on != 2)
++			vb->cdsp_func_b_on = aec_info->vbox.cdsp_func_b_on;
++
++		if (aec_info->vbox.fdsp_on != 2)
++			vb->fdsp_on = aec_info->vbox.fdsp_on;
++
++		if (aec_info->vbox.fdsp_po_source != 0xff)
++			vb->fdsp_po_source = aec_info->vbox.fdsp_po_source;
++
++		if (aec_info->vbox.isrc2_vsource != 0xff)
++			vb->isrc2_vsource = aec_info->vbox.isrc2_vsource;
++
++		if (aec_info->vbox.isrc2_ch1_vsource != 0xff)
++			vb->isrc2_ch1_vsource =
++			    aec_info->vbox.isrc2_ch1_vsource;
++		if (aec_info->vbox.isrc3_vsource != 0xff)
++			vb->isrc3_vsource = aec_info->vbox.isrc3_vsource;
++
++		if (aec_info->vbox.lpt2_vsource != 0xff)
++			vb->lpt2_vsource = aec_info->vbox.lpt2_vsource;
++
++		if (aec_info->vbox.lpt2_mix_vol_o != 0xff)
++			vb->lpt2_mix_vol_o = aec_info->vbox.lpt2_mix_vol_o;
++
++		if (aec_info->vbox.lpt2_mix_vol_i != 0xff)
++			vb->lpt2_mix_vol_i = aec_info->vbox.lpt2_mix_vol_i;
++
++		if (aec_info->vbox.src3_ctrl != 0xff)
++			vb->src3_ctrl = aec_info->vbox.src3_ctrl;
++
++		if (aec_info->vbox.src2_fs != 0xff)
++			vb->src2_fs = aec_info->vbox.src2_fs;
++
++		if (aec_info->vbox.src2_thru != 0xff)
++			vb->src2_thru = aec_info->vbox.src2_thru;
++
++		if (aec_info->vbox.src3_fs != 0xff)
++			vb->src3_fs = aec_info->vbox.src3_fs;
++
++		if (aec_info->vbox.src3_thru != 0xff)
++			vb->src3_thru = aec_info->vbox.src3_thru;
++
++		if (aec_info->vbox.cdsp_jtag_on != 0xff)
++			vb->cdsp_jtag_on = aec_info->vbox.cdsp_jtag_on;
++	}
++
++	aec->vbox.cdsp_a = aec_info->vbox.cdsp_a;
++	aec->vbox.cdsp_b = aec_info->vbox.cdsp_b;
++	aec->vbox.fdsp = aec_info->vbox.fdsp;
++
++	out = &aec->output;
++
++	for (i = 0; i < MCDRV_AEC_OUTPUT_N; i++) {
++
++		if (aec_info->output.lpf_pre_thru[i] != 0xff) {
++			out->lpf_pre_thru[i] = aec_info->output.lpf_pre_thru[i];
++			out->lpf_post_thru[i]
++			    = aec_info->output.lpf_post_thru[i];
++			out->dcc_sel[i] = aec_info->output.dcc_sel[i];
++			out->power_detect_level[i]
++			    = aec_info->output.power_detect_level[i];
++			out->osf_sel[i] = aec_info->output.osf_sel[i];
++			out->syseq_enb[i] = aec_info->output.syseq_enb[i];
++			out->syseq_coef_a0[i][0]
++			    = aec_info->output.syseq_coef_a0[i][0];
++			out->syseq_coef_a0[i][1]
++			    = aec_info->output.syseq_coef_a0[i][1];
++			out->syseq_coef_a0[i][2]
++			    = aec_info->output.syseq_coef_a0[i][2];
++			out->syseq_coef_a1[i][0]
++			    = aec_info->output.syseq_coef_a1[i][0];
++			out->syseq_coef_a1[i][1]
++			    = aec_info->output.syseq_coef_a1[i][1];
++			out->syseq_coef_a1[i][2]
++			    = aec_info->output.syseq_coef_a1[i][2];
++			out->syseq_coef_a2[i][0]
++			    = aec_info->output.syseq_coef_a2[i][0];
++			out->syseq_coef_a2[i][1]
++			    = aec_info->output.syseq_coef_a2[i][1];
++			out->syseq_coef_a2[i][2]
++			    = aec_info->output.syseq_coef_a2[i][2];
++			out->syseq_coef_b1[i][0]
++			    = aec_info->output.syseq_coef_b1[i][0];
++			out->syseq_coef_b1[i][1]
++			    = aec_info->output.syseq_coef_b1[i][1];
++			out->syseq_coef_b1[i][2]
++			    = aec_info->output.syseq_coef_b1[i][2];
++			out->syseq_coef_b2[i][0]
++			    = aec_info->output.syseq_coef_b2[i][0];
++			out->syseq_coef_b2[i][1]
++			    = aec_info->output.syseq_coef_b2[i][1];
++			out->syseq_coef_b2[i][2]
++			    = aec_info->output.syseq_coef_b2[i][2];
++			out->clip_md[i] = aec_info->output.clip_md[i];
++			out->clip_att[i] = aec_info->output.clip_att[i];
++			out->clip_rel[i] = aec_info->output.clip_rel[i];
++			out->clip_g[i] = aec_info->output.clip_g[i];
++			out->osf_gain[i][0] = aec_info->output.osf_gain[i][0];
++			out->osf_gain[i][1] = aec_info->output.osf_gain[i][1];
++			out->dcl_on[i] = aec_info->output.dcl_on[i];
++			out->dcl_gain[i] = aec_info->output.dcl_gain[i];
++			out->dcl_limit[i][0] = aec_info->output.dcl_limit[i][0];
++			out->dcl_limit[i][1] = aec_info->output.dcl_limit[i][1];
++			out->random_dither_on[i]
++			    = aec_info->output.random_dither_on[i];
++			out->random_dither_level[i]
++			    = aec_info->output.random_dither_level[i];
++			out->random_dither_pos[i]
++			    = aec_info->output.random_dither_pos[i];
++			out->dc_dither_on[i] = aec_info->output.dc_dither_on[i];
++			out->dc_dither_level[i]
++			    = aec_info->output.dc_dither_level[i];
++			out->dither_type[i] = aec_info->output.dither_type[i];
++			out->dng_on[i] = aec_info->output.dng_on[i];
++			out->dng_zero[i] = aec_info->output.dng_zero[i];
++			out->dng_time[i] = aec_info->output.dng_time[i];
++			out->dng_fw[i] = aec_info->output.dng_fw[i];
++			out->dng_target[i] = aec_info->output.dng_target[i];
++			out->dng_target_lineout[i]
++			    = aec_info->output.dng_target_lineout[i];
++		}
++		if (aec_info->output.syseq_ex[i].enable)
++			memcpy(&out->syseq_ex[i], &aec_info->output.syseq_ex[i],
++			       sizeof(struct mcdrv_aec_syseq_ex));
++	}
++
++	out->signal_detect_level = aec_info->output.signal_detect_level;
++	out->dng_attack = aec_info->output.dng_attack;
++	out->dng_release = aec_info->output.dng_release;
++	out->dng_target_rc = aec_info->output.dng_target_rc;
++
++	in = &aec->input;
++
++	for (i = 0; i < MCDRV_AEC_INPUT_N; i++) {
++		if (aec_info->input.dsf32_l_type[i] != 0xff) {
++			in->dsf32_l_type[i] = aec_info->input.dsf32_l_type[i];
++			in->dsf32_r_type[i] = aec_info->input.dsf32_r_type[i];
++			in->dsf4_sel[i] = aec_info->input.dsf4_sel[i];
++			in->dcc_sel[i] = aec_info->input.dcc_sel[i];
++			in->dng_on[i] = aec_info->input.dng_on[i];
++			in->dng_att[i] = aec_info->input.dng_att[i];
++			in->dng_rel[i] = aec_info->input.dng_rel[i];
++			in->dng_fw[i] = aec_info->input.dng_fw[i];
++			in->dng_time[i] = aec_info->input.dng_time[i];
++			in->dng_zero[i][0] = aec_info->input.dng_zero[i][0];
++			in->dng_zero[i][1] = aec_info->input.dng_zero[i][1];
++			in->dng_target[i][0] = aec_info->input.dng_target[i][0];
++			in->dng_target[i][1] = aec_info->input.dng_target[i][1];
++			in->depop_att[i] = aec_info->input.depop_att[i];
++			in->depop_wait[i] = aec_info->input.depop_wait[i];
++		}
++	}
++
++	in->ref_sel = aec_info->input.ref_sel;
++
++	if (aec_info->pdm.mode != 0xff)
++		aec->pdm = aec_info->pdm;
++
++	aec->e2.enable = aec_info->e2.enable;
++	if (aec_info->e2.enable) {
++		if (aec_info->e2.da_sel != 4)
++			aec->e2.da_sel = aec_info->e2.da_sel;
++		if (aec_info->e2.ad_sel != 8)
++			aec->e2.ad_sel = aec_info->e2.ad_sel;
++		aec->e2.on = aec_info->e2.on;
++	}
++	aec->e2.config = aec_info->e2.config;
++
++	if (aec_info->adj.hold != 0xff)
++		aec->adj = aec_info->adj;
++
++	if (aec_info->edsp_misc.i2s_out_enable != 0xff)
++		aec->edsp_misc = aec_info->edsp_misc;
++
++	if (aec_info->control.command == 0xff)
++		memset(&aec->control, 0, sizeof(struct mcdrv_aec_control));
++	else
++		aec->control = aec_info->control;
++
++	if (!aec->fdsp_locate)
++		aec->vbox.fdsp_on = 0;
++	else
++		aec->audio_engine.fdsp_on = 0;
++}
++
++void mc_aec_info_replace(struct mcdrv_aec_info *aec_info)
++{
++	mc_info.aec_info = *aec_info;
++}
++
++void mc_aec_info_get(struct mcdrv_aec_info *aec_info)
++{
++	*aec_info = mc_info.aec_info;
++}
++
++void mc_gp_mode_set(struct mcdrv_gp_mode *mode)
++{
++	mc_info.gp_mode = *mode;
++}
++
++void mc_gp_mode_get(struct mcdrv_gp_mode *mode)
++{
++	*mode = mc_info.gp_mode;
++}
++
++bool mc_gp_pad_get(u32 pad_no)
++{
++	if (pad_no > 2)
++		return 0;
++
++	return mc_info.gp_mode.gp_ddr[pad_no];
++}
++
++void mc_clock_select_set(u8 clk_sel)
++{
++	mc_info.clk_sel = clk_sel;
++}
++
++u8 mc_clock_select_get(void)
++{
++	return mc_info.clk_sel;
++}
++
++void mc_e_clock_select_set(u8 eclk_sel)
++{
++	mc_info.eclk_sel = eclk_sel;
++}
++
++u8 mc_e_clock_select_get(void)
++{
++	return mc_info.eclk_sel;
++}
++
++void mc_plug_detect_db_set(u8 plug_det_db)
++{
++	mc_info.plug_det_db = plug_det_db;
++}
++
++u8 mc_plug_detect_db_get(void)
++{
++	return mc_info.plug_det_db;
++}
++
++static s16 digital_volume(int vol)
++{
++	int ret;
++
++	if (vol < (-95 * 256))
++		ret = 0;
++	else if (vol < 0)
++		ret = 96 + (vol - 128) / 256;
++	else
++		ret = 96 + (vol + 128) / 256;
++
++	if (ret > 114)
++		ret = 114;
++
++	return (s16) ret;
++}
++
++static s16 analog_in_volume(s16 vol)
++{
++	s16 ret;
++
++	if (vol < (-30 * 256))
++		ret = 0;
++	else if (vol < 0)
++		ret = 0x21 + (vol - 128) / 256;
++	else if (vol <= (21 * 256))
++		ret = 0x21 + (vol + 128) / 256;
++	else if (vol < 6080)	/* 6080 = 23.75 * 256 */
++		ret = 0x36 + ((vol + 64) / 128 - (21 * 2));
++	else
++		ret = 0x3c + (vol / 256 - 23) / 2;
++
++	if (ret < 0)
++		ret = 0;
++	else if (ret > 0x3f)
++		ret = 0x3f;
++
++	return ret;
++}
++
++static s16 analog_out_volume(s16 vol)
++{
++	s16 ret;
++
++	if (vol < (-36 * 256))
++		ret = 0;
++	else if (vol < -4032)	/* -4032:-15.75*256 */
++		ret = 0x42 + (vol - 128) / 256 + 17;
++	else if (vol < -1504)	/* -1504:-5.875*256 */
++		ret = 0x57 + ((vol - 64) / 128 + 6 * 2);
++	else
++		ret = 0x6f + ((vol - 32) / 64);
++
++	if (ret < 0)
++		ret = 0;
++	else if (ret > 0x6f)
++		ret = 0x6f;
++
++	return ret;
++}
++
++static inline s16 sp_volume(s16 vol)
++{
++	s16 ret;
++
++	if (vol < (-36 * 256))
++		ret = 0;
++	else if (vol < -4032)	/* -4032:-15.75*256 */
++		ret = 0x42 + (vol - 128) / 256 + 17;
++	else if (vol < -1504)	/* -1504:-5.875*256 */
++		ret = 0x57 + ((vol - 64) / 128 + 6 * 2);
++	else if (vol < 32)
++		ret = 0x6f + ((vol - 32) / 64);
++	else
++		ret = 0x70 + ((vol - 32) / 64);
++
++	if (ret < 0)
++		ret = 0;
++	else if (ret > 0x7f)
++		ret = 0x7f;
++
++	return ret;
++}
++
++static s16 lineout_volume(s16 vol)
++{
++	s16 ret;
++
++	if (vol < (-38 * 256))
++		ret = 0;
++	else if (vol < -9344)	/* -9344:-15.75 * 256 */
++		ret = 0x2e;
++	else if (vol < -4032)	/* -4032:-15.75 * 256 */
++		ret = 0x42 + (vol - 128) / 256 + 17;
++	else if (vol < -1504)	/* -1504:-5.875 * 256 */
++		ret = 0x57 + ((vol - 64) / 128 + 6 * 2);
++	else if (vol < 32)
++		ret = 0x6f + ((vol - 32) / 64);
++	else
++		ret = 0x70 + ((vol - 32) / 64);
++
++	if (ret < 0)
++		ret = 0;
++	else if (ret > 0x77)
++		ret = 0x77;
++
++	return ret;
++}
++
++static inline s16 hp_volume(s16 vol)
++{
++	s16 ret;
++
++	if (vol < (-36 * 256))
++		ret = 0;
++	else if (vol < -4032)	/* -4032:-15.75 * 256 */
++		ret = 0x43 + (vol - 128) / 256 + 16;
++	else if (vol < -1504)	/* -1504:-5.875 * 256 */
++		ret = 0x43 + ((vol - 64) / 128 + 16 * 2);
++	else if (vol < 0)
++		ret = 0x57 + ((vol - 32) / 64 + 6 * 4);
++	else
++		ret = 0x6f + ((vol + 32) / 64);
++
++	if (ret < 0)
++		ret = 0;
++	else if (ret > 0x7f)
++		ret = 0x7f;
++
++	return ret;
++}
++
++static u32 d1_get_source(u32 *d1, enum mcdrv_dst_ch ch)
++{
++	u32 src = 0;
++
++	if (d1) {
++		if (d1[ch] & MCDRV_D1SRC_MUSICIN_ON)
++			src |= MCDRV_D1SRC_MUSICIN_ON;
++		if (d1[ch] & MCDRV_D1SRC_EXTIN_ON)
++			src |= MCDRV_D1SRC_EXTIN_ON;
++		if (d1[ch] & MCDRV_D1SRC_VBOXOUT_ON)
++			src |= MCDRV_D1SRC_VBOXOUT_ON;
++		if (d1[ch] & MCDRV_D1SRC_VBOXREFOUT_ON)
++			src |= MCDRV_D1SRC_VBOXREFOUT_ON;
++		if (d1[ch] & MCDRV_D1SRC_AE0_ON)
++			src |= MCDRV_D1SRC_AE0_ON;
++		if (d1[ch] & MCDRV_D1SRC_AE1_ON)
++			src |= MCDRV_D1SRC_AE1_ON;
++		if (d1[ch] & MCDRV_D1SRC_AE2_ON)
++			src |= MCDRV_D1SRC_AE2_ON;
++		if (d1[ch] & MCDRV_D1SRC_AE3_ON)
++			src |= MCDRV_D1SRC_AE3_ON;
++		if (d1[ch] & MCDRV_D1SRC_ADIF0_ON)
++			src |= MCDRV_D1SRC_ADIF0_ON;
++		if (d1[ch] & MCDRV_D1SRC_ADIF1_ON)
++			src |= MCDRV_D1SRC_ADIF1_ON;
++		if (d1[ch] & MCDRV_D1SRC_ADIF2_ON)
++			src |= MCDRV_D1SRC_ADIF2_ON;
++		if (d1[ch] & MCDRV_D1SRC_HIFIIN_ON)
++			src |= MCDRV_D1SRC_HIFIIN_ON;
++	}
++
++	return src;
++}
++
++void mc_volume_info_get(struct mcdrv_vol_info *vol_info)
++{
++	enum mcdrv_dst_ch ch, dst_ch[] = { MCDRV_DST_CH0, MCDRV_DST_CH1 };
++	s16 val1, val2;
++	int i, src;
++
++	*vol_info = mc_info.vol_info;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_MUSICIN_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_music_in[0]);
++		val2 = digital_volume(vol_info->d_music_in[1]);
++	}
++	vol_info->d_music_in[0] = val1;
++	vol_info->d_music_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_EXTIN_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_ext_in[0]);
++		val2 = digital_volume(vol_info->d_ext_in[1]);
++	}
++	vol_info->d_ext_in[0] = val1;
++	vol_info->d_ext_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_VBOXOUT_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_voice_in[0]);
++		val2 = digital_volume(vol_info->d_voice_in[1]);
++	}
++	vol_info->d_voice_in[0] = val1;
++	vol_info->d_voice_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_VBOXREFOUT_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_ref_in[0]);
++		val2 = digital_volume(vol_info->d_ref_in[1]);
++	}
++	vol_info->d_ref_in[0] = val1;
++	vol_info->d_ref_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF0_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_adif0_in[0]);
++		val2 = digital_volume(vol_info->d_adif0_in[1]);
++	}
++	vol_info->d_adif0_in[0] = val1;
++	vol_info->d_adif0_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF1_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_adif1_in[0]);
++		val2 = digital_volume(vol_info->d_adif1_in[1]);
++	}
++	vol_info->d_adif1_in[0] = val1;
++	vol_info->d_adif1_in[1] = val2;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF2_ON)) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		val1 = digital_volume(vol_info->d_adif2_in[0]);
++		val2 = digital_volume(vol_info->d_adif2_in[1]);
++	}
++	vol_info->d_adif2_in[0] = val1;
++	vol_info->d_adif2_in[1] = val2;
++
++	for (i = 0; i < ARRAY_SIZE(dst_ch); i++) {
++		ch = dst_ch[i];
++		if (!mc_source_is_used(MCDRV_DST_MUSICOUT, ch))
++			val1 = MCDRV_REG_MUTE;
++		else
++			val1 = digital_volume(vol_info->d_music_out[i]);
++
++		if (!mc_source_is_used(MCDRV_DST_EXTOUT, ch))
++			val2 = MCDRV_REG_MUTE;
++		else
++			val2 = digital_volume(vol_info->d_ext_out[i]);
++		vol_info->d_music_out[i] = val1;
++		vol_info->d_ext_out[i] = val2;
++	}
++
++	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH0))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_voice_out[0]);
++	vol_info->d_voice_out[0] = val1;
++
++	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH1))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_voice_out[1]);
++	vol_info->d_voice_out[1] = val1;
++
++	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH2))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_ref_out[0]);
++	vol_info->d_ref_out[0] = val1;
++
++	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH3))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_ref_out[1]);
++	vol_info->d_ref_out[1] = val1;
++
++	if (!mc_d1_source_is_used(MCDRV_D1SRC_HIFIIN_ON)) {
++		vol_info->d_dpath_da[0] = MCDRV_REG_MUTE;
++		vol_info->d_dpath_da[1] = MCDRV_REG_MUTE;
++	}
++
++	src = d1_get_source(mc_info.path_info.dac0, MCDRV_DST_CH0);
++	if (!(src & ~MCDRV_D1SRC_HIFIIN_ON))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_dac0_out[0]);
++	vol_info->d_dac0_out[0] = val1;
++
++	if (src & MCDRV_D1SRC_HIFIIN_ON)
++		vol_info->d_dpath_da[0]
++		    = digital_volume(vol_info->d_dpath_da[0]);
++
++	src = d1_get_source(mc_info.path_info.dac0, MCDRV_DST_CH1);
++	if (!(src & ~MCDRV_D1SRC_HIFIIN_ON))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_dac0_out[1]);
++	vol_info->d_dac0_out[1] = val1;
++
++	if (src & MCDRV_D1SRC_HIFIIN_ON)
++		vol_info->d_dpath_da[1]
++		    = digital_volume(vol_info->d_dpath_da[1]);
++
++	src = d1_get_source(mc_info.path_info.dac1, MCDRV_DST_CH0);
++	if (!(src & ~MCDRV_D1SRC_HIFIIN_ON))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_dac1_out[0]);
++	vol_info->d_dac1_out[0] = val1;
++
++	if (src & MCDRV_D1SRC_HIFIIN_ON)
++		vol_info->d_dpath_da[0]
++		    = digital_volume(vol_info->d_dpath_da[0]);
++
++	src = d1_get_source(mc_info.path_info.dac1, MCDRV_DST_CH1);
++	if (!(src & ~MCDRV_D1SRC_HIFIIN_ON))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = digital_volume(vol_info->d_dac1_out[1]);
++	vol_info->d_dac1_out[1] = val1;
++
++	if (src & MCDRV_D1SRC_HIFIIN_ON)
++		vol_info->d_dpath_da[1]
++		    = digital_volume(vol_info->d_dpath_da[1]);
++
++	src = d1_get_source(mc_info.path_info.hifi_out, MCDRV_DST_CH0);
++	if (!src) {
++		val1 = MCDRV_REG_MUTE;
++		val2 = MCDRV_REG_MUTE;
++	} else {
++		if ((src & MCDRV_D2SRC_PDM0_ON)
++		    || (src & MCDRV_D2SRC_PDM1_ON)) {
++			val1 = digital_volume(vol_info->d_dpath_ad[0]);
++			val2 = digital_volume(vol_info->d_dpath_ad[1]);
++		} else {
++			if ((src & MCDRV_D2SRC_ADC1_ON)
++			    || mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH0))
++				val1 = digital_volume(vol_info->d_dpath_ad[0]);
++			else
++				val1 = MCDRV_REG_MUTE;
++
++			if ((src & MCDRV_D2SRC_ADC0_ON)
++			    && mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH1))
++				val2 = digital_volume(vol_info->d_dpath_ad[1]);
++			else
++				val2 = MCDRV_REG_MUTE;
++		}
++	}
++	vol_info->d_dpath_ad[0] = val1;
++	vol_info->d_dpath_ad[1] = val2;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_LINEIN1_L_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_LINEIN1_M_ON))
++		val1 = analog_in_volume(mc_info.vol_info.a_line_in1[0]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_line_in1[0] = val1;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_LINEIN1_R_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_LINEIN1_M_ON))
++		val1 = analog_in_volume(mc_info.vol_info.a_line_in1[1]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_line_in1[1] = val1;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC1_ON) != 0)
++		val1 = analog_in_volume(mc_info.vol_info.a_mic1[0]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_mic1[0] = val1;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC2_ON) != 0)
++		val1 = analog_in_volume(mc_info.vol_info.a_mic2[0]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_mic2[0] = val1;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC3_ON) != 0)
++		val1 = analog_in_volume(mc_info.vol_info.a_mic3[0]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_mic3[0] = val1;
++
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC4_ON) != 0)
++		val1 = analog_in_volume(mc_info.vol_info.a_mic4[0]);
++	else
++		val1 = MCDRV_REG_MUTE;
++	vol_info->a_mic4[0] = val1;
++
++	for (i = 0; i < ARRAY_SIZE(dst_ch); i++) {
++		ch = dst_ch[i];
++		if (!mc_source_is_used(MCDRV_DST_HP, ch))
++			val1 = MCDRV_REG_MUTE;
++		else
++			val1 = hp_volume(mc_info.vol_info.a_hp[i]);
++		vol_info->a_hp[i] = val1;
++
++		if (!mc_source_is_used(MCDRV_DST_SP, ch))
++			val1 = MCDRV_REG_MUTE;
++		else
++			val1 = sp_volume(mc_info.vol_info.a_sp[i]);
++		vol_info->a_sp[i] = val1;
++
++		if (!mc_source_is_used(MCDRV_DST_LOUT1, dst_ch[i]))
++			val1 = MCDRV_REG_MUTE;
++		else
++			val1 = lineout_volume(mc_info.vol_info.a_line_out1[i]);
++		vol_info->a_line_out1[i] = val1;
++
++		if (!mc_source_is_used(MCDRV_DST_LOUT2, dst_ch[i]))
++			val1 = MCDRV_REG_MUTE;
++		else
++			val1 = lineout_volume(mc_info.vol_info.a_line_out2[i]);
++		vol_info->a_line_out2[i] = val1;
++	}
++
++	if (!mc_source_is_used(MCDRV_DST_RCV, MCDRV_DST_CH0))
++		val1 = MCDRV_REG_MUTE;
++	else
++		val1 = analog_out_volume(mc_info.vol_info.a_rc[0]);
++	vol_info->a_rc[0] = val1;
++
++	val1 = analog_out_volume(mc_info.vol_info.a_hp_det[0]);
++	vol_info->a_hp_det[0] = val1;
++}
++
++void mc_power_info_get(struct mcdrv_power_info *info)
++{
++	struct mcdrv_aec_info *aec;
++	u32 hifi_out;
++
++	info->digital = MCDRV_POWINFO_D_PLL_PD | MCDRV_POWINFO_D_PE_CLK_PD |
++	    MCDRV_POWINFO_D_PB_CLK_PD | MCDRV_POWINFO_D_PM_CLK_PD |
++	    MCDRV_POWINFO_D_PF_CLK_PD | MCDRV_POWINFO_D_PC_CLK_PD;
++
++	aec = &mc_info.aec_info;
++	hifi_out = mc_info.path_info.hifi_out[0];
++
++	if (aec->e2.on || (hifi_out & MCDRV_D1SRC_ADIF0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_ADC0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_ADC1_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_PDM0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_PDM1_ON)
++	    || mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH1)
++	    || mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH1))
++		info->digital &= ~(MCDRV_POWINFO_D_PE_CLK_PD |
++				   MCDRV_POWINFO_D_PM_CLK_PD |
++				   MCDRV_POWINFO_D_PLL_PD);
++
++	if (aec->audio_engine.on == 1
++	    || mc_d1_source_is_used(MCDRV_D1SRC_AE_ALL_ON))
++		info->digital &= ~(MCDRV_POWINFO_D_PB_CLK_PD |
++				   MCDRV_POWINFO_D_PE_CLK_PD |
++				   MCDRV_POWINFO_D_PM_CLK_PD |
++				   MCDRV_POWINFO_D_PLL_PD);
++
++	if (mc_info.dev_info.power_mode == MCDRV_POWMODE_CDSPDEBUG
++	    || aec->vbox.cdsp_jtag_on
++	    || aec->vbox.cdsp_func_a_on || aec->vbox.cdsp_func_b_on)
++		info->digital &= ~(MCDRV_POWINFO_D_PC_CLK_PD |
++				   MCDRV_POWINFO_D_PE_CLK_PD |
++				   MCDRV_POWINFO_D_PM_CLK_PD |
++				   MCDRV_POWINFO_D_PLL_PD);
++
++	if (!aec->fdsp_locate && aec->audio_engine.fdsp_on)
++		info->digital &= ~(MCDRV_POWINFO_D_PE_CLK_PD |
++				   MCDRV_POWINFO_D_PF_CLK_PD |
++				   MCDRV_POWINFO_D_PM_CLK_PD |
++				   MCDRV_POWINFO_D_PLL_PD);
++
++	if (aec->fdsp_locate && aec->vbox.fdsp_on)
++		info->digital &= ~(MCDRV_POWINFO_D_PE_CLK_PD |
++				   MCDRV_POWINFO_D_PF_CLK_PD |
++				   MCDRV_POWINFO_D_PM_CLK_PD |
++				   MCDRV_POWINFO_D_PLL_PD);
++
++	if (info->digital & MCDRV_POWINFO_D_PM_CLK_PD) {
++		if (mc_d1_source_is_used(MCDRV_D1SRC_MUSICIN_ON)
++		    || mc_d1_source_is_used(MCDRV_D1SRC_EXTIN_ON)
++		    || mc_d1_source_is_used(MCDRV_D1SRC_VBOXOUT_ON)
++		    || mc_d1_source_is_used(MCDRV_D1SRC_VBOXREFOUT_ON)
++		    || mc_d2_source_is_used(MCDRV_D2SRC_VOICEIN_ON)
++		    || mc_d2_source_is_used(MCDRV_D2SRC_VBOXIOOUT_ON)
++		    || mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH0)
++		    || mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH1)
++		    || mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH0)
++		    || mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH1)
++		    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH0)
++		    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH1)
++		    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH2)
++		    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH3))
++			info->digital &= ~(MCDRV_POWINFO_D_PE_CLK_PD |
++					   MCDRV_POWINFO_D_PM_CLK_PD |
++					   MCDRV_POWINFO_D_PLL_PD);
++	}
++
++	info->analog[0] = MCI_AP_DEF;
++	info->analog[1] = MCI_AP_DA0_DEF;
++	info->analog[2] = MCI_AP_DA1_DEF;
++	info->analog[3] = MCI_AP_MIC_DEF;
++	info->analog[4] = MCI_AP_AD_DEF;
 +
 +	if (mc_a_source_is_used(MCDRV_ASRC_DAC0_L_ON))
-+		return true;
-+
++		info->analog[1] &= ~MCB_AP_DA0L;
 +	if (mc_a_source_is_used(MCDRV_ASRC_DAC0_R_ON))
-+		return true;
-+
++		info->analog[1] &= ~MCB_AP_DA0R;
++	if (mc_source_is_used(MCDRV_DST_HP, MCDRV_DST_CH0)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[1] &= ~MCB_AP_HPL;
++	}
++	if (mc_source_is_used(MCDRV_DST_HP, MCDRV_DST_CH1)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[1] &= ~MCB_AP_HPR;
++	}
++	if (mc_source_is_used(MCDRV_DST_RCV, MCDRV_DST_CH0)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[1] &= ~MCB_AP_RC;
++	}
++	if (mc_source_is_used(MCDRV_DST_LOUT1, MCDRV_DST_CH0)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[1] &= ~MCB_AP_LO1L;
++	}
++	if (mc_source_is_used(MCDRV_DST_LOUT1, MCDRV_DST_CH1)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[1] &= ~MCB_AP_LO1R;
++	}
 +	if (mc_a_source_is_used(MCDRV_ASRC_DAC1_L_ON))
-+		return true;
-+
++		info->analog[2] &= ~MCB_AP_DA1L;
 +	if (mc_a_source_is_used(MCDRV_ASRC_DAC1_R_ON))
-+		return true;
++		info->analog[2] &= ~MCB_AP_DA1R;
++	if (mc_source_is_used(MCDRV_DST_SP, MCDRV_DST_CH0)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[2] &= ~(MCB_AP_SPL2 | MCB_AP_SPL1);
++	}
++	if (mc_source_is_used(MCDRV_DST_SP, MCDRV_DST_CH1)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[2] &= ~(MCB_AP_SPR2 | MCB_AP_SPR1);
++	}
++	if (mc_source_is_used(MCDRV_DST_LOUT2, MCDRV_DST_CH0)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[2] &= ~MCB_AP_LO2L;
++	}
++	if (mc_source_is_used(MCDRV_DST_LOUT2, MCDRV_DST_CH1)) {
++		info->analog[0] &= ~MCB_AP_CP;
++		info->analog[2] &= ~MCB_AP_LO2R;
++	}
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC1_ON))
++		info->analog[3] &= ~MCB_MC1;
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC2_ON))
++		info->analog[3] &= ~MCB_MC2;
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC3_ON))
++		info->analog[3] &= ~MCB_MC3;
++	if (mc_a_source_is_used(MCDRV_ASRC_MIC4_ON))
++		info->analog[3] &= ~MCB_MC4;
++	if ((mc_info.path_info.bias[0] & MCDRV_ASRC_MIC1_ON))
++		info->analog[3] &= ~MCB_MB1;
++	if ((mc_info.path_info.bias[1] & MCDRV_ASRC_MIC2_ON))
++		info->analog[3] &= ~MCB_MB2;
++	if ((mc_info.path_info.bias[2] & MCDRV_ASRC_MIC3_ON))
++		info->analog[3] &= ~MCB_MB3;
++	if ((mc_info.path_info.bias[3] & MCDRV_ASRC_MIC4_ON))
++		info->analog[3] &= ~MCB_MB4;
++	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH0))
++		info->analog[4] &= ~MCB_AP_ADL;
++	if (mc_source_is_used(MCDRV_DST_ADC0, MCDRV_DST_CH1))
++		info->analog[4] &= ~MCB_AP_ADR;
++	if (mc_source_is_used(MCDRV_DST_ADC1, MCDRV_DST_CH0))
++		info->analog[4] &= ~MCB_AP_ADM;
++	if (mc_a_source_is_used(MCDRV_ASRC_LINEIN1_L_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_LINEIN1_M_ON)
++	    || mc_a_source_is_used(MCDRV_ASRC_LINEIN1_R_ON))
++		info->analog[4] &= ~MCB_AP_LI;
++	if (info->analog[1] != MCI_AP_DA0_DEF
++	    || info->analog[2] != MCI_AP_DA1_DEF
++	    || info->analog[3] != MCI_AP_MIC_DEF
++	    || info->analog[4] != MCI_AP_AD_DEF)
++		info->analog[0] &= ~(MCB_AP_LDOA | MCB_AP_BGR | MCB_AP_VR);
++}
++
++void mc_power_info_get_current(struct mcdrv_power_info *info)
++{
++	u8 val;
++
++	info->digital = 0;
++
++	val = mc_info.a_registers[MCI_PD];
++	if (val & MCB_PLL_PD)
++		info->digital |= MCDRV_POWINFO_D_PLL_PD;
++	if (val & MCB_PE_CLK_PD)
++		info->digital |= MCDRV_POWINFO_D_PE_CLK_PD;
++	if (val & MCB_PB_CLK_PD)
++		info->digital |= MCDRV_POWINFO_D_PB_CLK_PD;
++	if (val & MCB_PM_CLK_PD)
++		info->digital |= MCDRV_POWINFO_D_PM_CLK_PD;
++	if (val & MCB_PF_CLK_PD)
++		info->digital |= MCDRV_POWINFO_D_PF_CLK_PD;
++	if (val & MCB_PC_CLK_PD)
++		info->digital |= MCDRV_POWINFO_D_PC_CLK_PD;
++
++	info->analog[0] = mc_info.ana_registers[MCI_AP];
++	info->analog[1] = mc_info.ana_registers[MCI_AP_DA0];
++	info->analog[2] = mc_info.ana_registers[MCI_AP_DA1];
++	info->analog[3] = mc_info.ana_registers[MCI_AP_MIC];
++	info->analog[4] = mc_info.ana_registers[MCI_AP_AD];
++}
++
++static u32 d2_get_source(u32 *d2, enum mcdrv_dst_ch ch)
++{
++	u32 src = 0;
++
++	if (d2) {
++		if (d2[ch] & MCDRV_D2SRC_VOICEIN_ON)
++			src |= MCDRV_D2SRC_VOICEIN_ON;
++		if (d2[ch] & MCDRV_D2SRC_VBOXIOOUT_ON)
++			src |= MCDRV_D2SRC_VBOXIOOUT_ON;
++		if (d2[ch] & MCDRV_D2SRC_VBOXHOSTOUT_ON)
++			src |= MCDRV_D2SRC_VBOXHOSTOUT_ON;
++		if (d2[ch] & MCDRV_D2SRC_ADC0_L_ON)
++			src |= MCDRV_D2SRC_ADC0_L_ON;
++		if (d2[ch] & MCDRV_D2SRC_ADC0_R_ON)
++			src |= MCDRV_D2SRC_ADC0_R_ON;
++		if (d2[ch] & MCDRV_D2SRC_ADC1_ON)
++			src |= MCDRV_D2SRC_ADC1_ON;
++		if (d2[ch] & MCDRV_D2SRC_PDM0_L_ON)
++			src |= MCDRV_D2SRC_PDM0_L_ON;
++		if (d2[ch] & MCDRV_D2SRC_PDM0_R_ON)
++			src |= MCDRV_D2SRC_PDM0_R_ON;
++		if (d2[ch] & MCDRV_D2SRC_PDM1_L_ON)
++			src |= MCDRV_D2SRC_PDM1_L_ON;
++		if (d2[ch] & MCDRV_D2SRC_PDM1_R_ON)
++			src |= MCDRV_D2SRC_PDM1_R_ON;
++		if (d2[ch] & MCDRV_D2SRC_DAC0REF_ON)
++			src |= MCDRV_D2SRC_DAC0REF_ON;
++		if (d2[ch] & MCDRV_D2SRC_DAC1REF_ON)
++			src |= MCDRV_D2SRC_DAC1REF_ON;
++	}
++
++	return src;
++}
++
++bool mc_d1_source_is_used(u32 mask)
++{
++	struct mcdrv_path_info *path;
++	int i;
++
++	path = &mc_info.path_info;
++
++	for (i = 0; i < MUSICOUT_PATH_CHANNELS; i++) {
++		if (path->music_out[i] & mask)
++			return true;
++	}
++
++	for (i = 0; i < EXTOUT_PATH_CHANNELS; i++) {
++		if (path->ext_out[i] & mask)
++			return true;
++	}
++
++	for (i = 0; i < VBOXMIXIN_PATH_CHANNELS; i++) {
++		if (path->vbox_mix_in[i] & mask)
++			return true;
++	}
++
++	for (i = 0; i < AE_PATH_CHANNELS; i++) {
++		if (path->ae0[i] & mask)
++			return true;
++		if (path->ae1[i] & mask)
++			return true;
++		if (path->ae2[i] & mask)
++			return true;
++		if (path->ae3[i] & mask)
++			return true;
++	}
++
++	for (i = 0; i < DAC0_PATH_CHANNELS; i++) {
++		if (path->dac0[i] & mask)
++			return true;
++	}
++
++	for (i = 0; i < DAC1_PATH_CHANNELS; i++) {
++		if (path->dac1[i] & mask)
++			return true;
++	}
 +
 +	return false;
 +}
 +
-+static inline void mask_irregular_path_info(struct mcdrv_path_info *path_info)
++bool mc_d2_source_is_used(u32 mask)
 +{
-+	u8 ch;
++	struct mcdrv_path_info *path;
++	int i;
 +
-+	for (ch = 0; ch < MUSICOUT_PATH_CHANNELS; ch++)
-+		path_info->music_out[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
++	path = &mc_info.path_info;
 +
-+	for (ch = 0; ch < EXTOUT_PATH_CHANNELS; ch++)
-+		path_info->ext_out[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
-+
-+	for (ch = 0; ch < HIFIOUT_PATH_CHANNELS; ch++)
-+		path_info->hifi_out[ch] &=
-+		    MCDRV_D1SRC_ADIF0_ON | MCDRV_D1SRC_ADIF0_OFF;
-+
-+	for (ch = 0; ch < VBOXMIXIN_PATH_CHANNELS; ch++)
-+		path_info->vbox_mix_in[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
-+
-+	for (ch = 0; ch < AE_PATH_CHANNELS; ch++) {
-+		path_info->ae0[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
-+		path_info->ae1[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
-+		path_info->ae2[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
-+		path_info->ae3[ch] &= ~MCDRV_D1SRC_HIFIIN_ON;
++	for (i = 0; i < VOICEOUT_PATH_CHANNELS; i++) {
++		if (path->voice_out[i] & mask)
++			return true;
 +	}
 +
-+	for (ch = 0; ch < VOICEOUT_PATH_CHANNELS; ch++)
-+		path_info->voice_out[ch] &=
-+		    MCDRV_D2SRC_VBOXIOOUT_ON | MCDRV_D2SRC_VBOXIOOUT_OFF;
++	for (i = 0; i < VBOXIOIN_PATH_CHANNELS; i++) {
++		if (path->vbox_io_in[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < VBOXIOIN_PATH_CHANNELS; ch++)
-+		path_info->vbox_io_in[ch] &=
-+		    MCDRV_D2SRC_VOICEIN_ON | MCDRV_D2SRC_VOICEIN_OFF;
++	for (i = 0; i < VBOXHOSTIN_PATH_CHANNELS; i++) {
++		if (path->vbox_host_in[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < VBOXHOSTIN_PATH_CHANNELS; ch++)
-+		path_info->vbox_host_in[ch] &=
-+		    MCDRV_D2SRC_VOICEIN_ON | MCDRV_D2SRC_VOICEIN_OFF;
++	for (i = 0; i < HOSTOUT_PATH_CHANNELS; i++) {
++		if (path->host_out[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < HOSTOUT_PATH_CHANNELS; ch++)
-+		path_info->host_out[ch] &=
-+		    MCDRV_D2SRC_VBOXHOSTOUT_ON | MCDRV_D2SRC_VBOXHOSTOUT_OFF;
++	for (i = 0; i < ADIF0_PATH_CHANNELS; i++) {
++		if (path->adif0[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < ADIF0_PATH_CHANNELS; ch++)
-+		path_info->adif0[ch] &= MCDRV_D2SRC_ADC0_L_ON
-+		    | MCDRV_D2SRC_ADC0_L_OFF
-+		    | MCDRV_D2SRC_ADC0_R_ON
-+		    | MCDRV_D2SRC_ADC0_R_OFF
-+		    | MCDRV_D2SRC_ADC1_ON
-+		    | MCDRV_D2SRC_ADC1_OFF
-+		    | MCDRV_D2SRC_PDM0_L_ON
-+		    | MCDRV_D2SRC_PDM0_L_OFF
-+		    | MCDRV_D2SRC_PDM0_R_ON
-+		    | MCDRV_D2SRC_PDM0_R_OFF
-+		    | MCDRV_D2SRC_PDM1_L_ON
-+		    | MCDRV_D2SRC_PDM1_L_OFF
-+		    | MCDRV_D2SRC_PDM1_R_ON | MCDRV_D2SRC_PDM1_R_OFF;
++	for (i = 0; i < ADIF1_PATH_CHANNELS; i++) {
++		if (path->adif1[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < ADIF1_PATH_CHANNELS; ch++)
-+		path_info->adif1[ch] &= MCDRV_D2SRC_ADC0_L_ON
-+		    | MCDRV_D2SRC_ADC0_L_OFF
-+		    | MCDRV_D2SRC_ADC0_R_ON
-+		    | MCDRV_D2SRC_ADC0_R_OFF
-+		    | MCDRV_D2SRC_ADC1_ON
-+		    | MCDRV_D2SRC_ADC1_OFF
-+		    | MCDRV_D2SRC_PDM0_L_ON
-+		    | MCDRV_D2SRC_PDM0_L_OFF
-+		    | MCDRV_D2SRC_PDM0_R_ON
-+		    | MCDRV_D2SRC_PDM0_R_OFF
-+		    | MCDRV_D2SRC_PDM1_L_ON
-+		    | MCDRV_D2SRC_PDM1_L_OFF
-+		    | MCDRV_D2SRC_PDM1_R_ON | MCDRV_D2SRC_PDM1_R_OFF;
++	for (i = 0; i < ADIF2_PATH_CHANNELS; i++) {
++		if (path->adif2[i] & mask)
++			return true;
++	}
 +
-+	for (ch = 0; ch < ADIF2_PATH_CHANNELS; ch++)
-+		path_info->adif2[ch] &= MCDRV_D2SRC_ADC0_L_ON
-+		    | MCDRV_D2SRC_ADC0_L_OFF
-+		    | MCDRV_D2SRC_ADC0_R_ON
-+		    | MCDRV_D2SRC_ADC0_R_OFF
-+		    | MCDRV_D2SRC_ADC1_ON
-+		    | MCDRV_D2SRC_ADC1_OFF
-+		    | MCDRV_D2SRC_PDM0_L_ON
-+		    | MCDRV_D2SRC_PDM0_L_OFF
-+		    | MCDRV_D2SRC_PDM0_R_ON
-+		    | MCDRV_D2SRC_PDM0_R_OFF
-+		    | MCDRV_D2SRC_PDM1_L_ON
-+		    | MCDRV_D2SRC_PDM1_L_OFF
-+		    | MCDRV_D2SRC_PDM1_R_ON
-+		    | MCDRV_D2SRC_PDM1_R_OFF
-+		    | MCDRV_D2SRC_DAC0REF_ON
-+		    | MCDRV_D2SRC_DAC0REF_OFF
-+		    | MCDRV_D2SRC_DAC1REF_ON | MCDRV_D2SRC_DAC1REF_OFF;
-+
-+	path_info->adc0[0] &= ~(MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_R_ON |
-+				MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_R_ON |
-+				MCDRV_ASRC_LINEIN1_R_ON);
-+	path_info->adc0[1] &= ~(MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_R_ON |
-+				MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_R_ON |
-+				MCDRV_ASRC_LINEIN1_L_ON);
-+
-+	for (ch = 0; ch < ADC1_PATH_CHANNELS; ch++)
-+		path_info->adc1[ch] &= ~(MCDRV_ASRC_DAC0_L_ON |
-+					 MCDRV_ASRC_DAC0_R_ON |
-+					 MCDRV_ASRC_DAC1_L_ON |
-+					 MCDRV_ASRC_DAC1_R_ON |
-+					 MCDRV_ASRC_LINEIN1_L_ON |
-+					 MCDRV_ASRC_LINEIN1_R_ON);
-+
-+	path_info->sp[0] &= MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_L_OFF;
-+	path_info->sp[1] &= MCDRV_ASRC_DAC1_R_ON | MCDRV_ASRC_DAC1_R_OFF;
-+
-+	path_info->hp[0] &= MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_L_OFF;
-+	path_info->hp[1] &= MCDRV_ASRC_DAC0_R_ON | MCDRV_ASRC_DAC0_R_OFF;
-+
-+	path_info->rc[0] &= MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_L_OFF;
-+
-+	path_info->lout1[0] &= MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_L_OFF;
-+	path_info->lout1[1] &= MCDRV_ASRC_DAC0_R_ON | MCDRV_ASRC_DAC0_R_OFF;
-+
-+	path_info->lout2[0] &= MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_L_OFF;
-+	path_info->lout2[1] &= MCDRV_ASRC_DAC1_R_ON | MCDRV_ASRC_DAC1_R_OFF;
-+
-+	path_info->bias[0] &= MCDRV_ASRC_MIC1_ON | MCDRV_ASRC_MIC1_OFF;
-+	path_info->bias[1] &= MCDRV_ASRC_MIC2_ON | MCDRV_ASRC_MIC2_OFF;
-+	path_info->bias[2] &= MCDRV_ASRC_MIC3_ON | MCDRV_ASRC_MIC3_OFF;
-+	path_info->bias[3] &= MCDRV_ASRC_MIC4_ON | MCDRV_ASRC_MIC4_OFF;
++	return false;
 +}
 +
-+static inline bool is_valid_dio_path_info(struct mcdrv_dio_path_info
-+					  *dio_path_info, unsigned int update)
++bool mc_a_source_is_used(u32 mask)
 +{
-+	struct mcdrv_dio_path_info curr_dio_path_info;
-+	u8 val;
-+	bool LP0_start = false, LP1_start = false;
-+	bool LP2_start = false, LP3_start = false;
-+	bool ret = true;
++	struct mcdrv_path_info *path;
++	int i;
 +
-+	val = mc_mb_register_get_value(MCI_LP0_START);
-+	if (val & (MCB_LPR0_START | MCB_LPT0_START))
-+		LP0_start = true;
++	path = &mc_info.path_info;
 +
-+	val = mc_mb_register_get_value(MCI_LP1_START);
-+	if (val & (MCB_LPR1_START | MCB_LPT1_START))
-+		LP1_start = true;
-+
-+	val = mc_mb_register_get_value(MCI_LP2_START);
-+	if (val & (MCB_LPR2_START | MCB_LPT2_START))
-+		LP2_start = true;
-+
-+	val = mc_mb_register_get_value(MCI_LP3_START);
-+	if (val & (MCB_LPR3_START | MCB_LPT3_START))
-+		LP3_start = true;
-+
-+	mc_dio_path_info_get(&curr_dio_path_info);
-+
-+	if (update & MCDRV_MUSICNUM_UPDATE_FLAG) {
-+		if (dio_path_info->music_ch > MCDRV_MUSIC_LAST) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->music_ch !=
-+			   curr_dio_path_info.music_ch) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < ADC0_PATH_CHANNELS; i++) {
++		if (path->adc0[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_PHYS0_UPDATE_FLAG) {
-+		if (dio_path_info->phys_port[0] > MCDRV_PHYSPORT_LAST) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->phys_port[0] !=
-+			   curr_dio_path_info.phys_port[0]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < ADC1_PATH_CHANNELS; i++) {
++		if (path->adc1[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_PHYS1_UPDATE_FLAG) {
-+		if (dio_path_info->phys_port[1] > MCDRV_PHYSPORT_LAST) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->phys_port[1] !=
-+			   curr_dio_path_info.phys_port[1]) {
-+			if (LP1_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < SP_PATH_CHANNELS; i++) {
++		if (path->sp[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_PHYS2_UPDATE_FLAG) {
-+		if (dio_path_info->phys_port[2] > MCDRV_PHYSPORT_LAST) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->phys_port[2] !=
-+			   curr_dio_path_info.phys_port[2]) {
-+			if (LP2_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < HP_PATH_CHANNELS; i++) {
++		if (path->hp[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_PHYS3_UPDATE_FLAG) {
-+		if (dio_path_info->phys_port[3] > MCDRV_PHYSPORT_LAST) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->phys_port[3] !=
-+			   curr_dio_path_info.phys_port[3]) {
-+			if (LP3_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < RC_PATH_CHANNELS; i++) {
++		if (path->rc[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_DIR0SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_rslot[0] > 3) {
-+			ret = false;
-+			goto exit;
-+		} else if (dio_path_info->music_rslot[0] !=
-+			   curr_dio_path_info.music_rslot[0]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < LOUT1_PATH_CHANNELS; i++) {
++		if (path->lout1[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_DIR1SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_rslot[1] > 3) {
-+			ret = false;
-+		} else if (dio_path_info->music_rslot[1] !=
-+			   curr_dio_path_info.music_rslot[1]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
++	for (i = 0; i < LOUT2_PATH_CHANNELS; i++) {
++		if (path->lout2[i] & mask)
++			return true;
 +	}
 +
-+	if (update & MCDRV_DIR2SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_rslot[2] > 3) {
-+			ret = false;
-+		} else if (dio_path_info->music_rslot[2] !=
-+			   curr_dio_path_info.music_rslot[2]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+	}
-+
-+	if (update & MCDRV_DIT0SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_tslot[0] > 3) {
-+			ret = false;
-+		} else if (dio_path_info->music_tslot[0] !=
-+			   curr_dio_path_info.music_tslot[0]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+	}
-+
-+	if (update & MCDRV_DIT1SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_tslot[1] > 3) {
-+			ret = false;
-+		} else if (dio_path_info->music_tslot[1] !=
-+			   curr_dio_path_info.music_tslot[1]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+	}
-+
-+	if (update & MCDRV_DIT2SLOT_UPDATE_FLAG) {
-+		if (dio_path_info->music_tslot[2] > 3) {
-+			ret = false;
-+		} else if (dio_path_info->music_tslot[2] !=
-+			   curr_dio_path_info.music_tslot[2]) {
-+			if (LP0_start) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+	}
-+
-+exit:
-+	return ret;
++	return false;
 +}
 +
-+static inline bool is_valid_swap_info(struct mcdrv_swap_info *info,
-+				      unsigned int update)
++bool mc_source_is_used(enum mcdrv_dst_type type, enum mcdrv_dst_ch ch)
 +{
-+	bool ret = true;
++	struct mcdrv_path_info *path;
++	u32 src;
 +
-+	if (update & MCDRV_SWAP_ADIF0_UPDATE_FLAG)
-+		if (info->adif0 > MCDRV_SWAP_LAST)
-+			ret = false;
++	path = &mc_info.path_info;
 +
-+	if (update & MCDRV_SWAP_ADIF1_UPDATE_FLAG)
-+		if (info->adif1 > MCDRV_SWAP_LAST)
-+			ret = false;
++	switch (type) {
++	case MCDRV_DST_MUSICOUT:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->music_out, ch))
++			return true;
++		break;
++	case MCDRV_DST_EXTOUT:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->ext_out, ch))
++			return true;
++		break;
++	case MCDRV_DST_HIFIOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		if (d1_get_source(path->hifi_out, ch))
++			return true;
++		break;
++	case MCDRV_DST_VBOXMIXIN:
++		if (d1_get_source(path->vbox_mix_in, ch))
++			return true;
++		break;
++	case MCDRV_DST_AE0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->ae0, ch))
++			return true;
++		break;
++	case MCDRV_DST_AE1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->ae1, ch))
++			return true;
++		break;
++	case MCDRV_DST_AE2:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->ae2, ch))
++			return true;
++		break;
++	case MCDRV_DST_AE3:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->ae3, ch))
++			return true;
++		break;
++	case MCDRV_DST_DAC0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->dac0, ch))
++			return true;
++		break;
++	case MCDRV_DST_DAC1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d1_get_source(path->dac1, ch))
++			return true;
++		break;
++	case MCDRV_DST_VOICEOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		if (d2_get_source(path->voice_out, ch))
++			return true;
++		break;
++	case MCDRV_DST_VBOXIOIN:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		if (d2_get_source(path->vbox_io_in, ch))
++			return true;
++		break;
++	case MCDRV_DST_VBOXHOSTIN:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		if (d2_get_source(path->vbox_host_in, ch))
++			return true;
++		break;
++	case MCDRV_DST_HOSTOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		if (d2_get_source(path->host_out, ch))
++			return true;
++		break;
 +
-+	if (update & MCDRV_SWAP_ADIF2_UPDATE_FLAG)
-+		if (info->adif2 > MCDRV_SWAP_LAST)
-+			ret = false;
++	case MCDRV_DST_ADIF0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d2_get_source(path->adif0, ch))
++			return true;
++		break;
++	case MCDRV_DST_ADIF1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d2_get_source(path->adif1, ch))
++			return true;
++		break;
++	case MCDRV_DST_ADIF2:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		if (d2_get_source(path->adif2, ch))
++			return true;
++		break;
++	case MCDRV_DST_ADC0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		src = path->adc0[ch];
++		if (src & (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_ALL_ON))
++			return true;
++		break;
++	case MCDRV_DST_ADC1:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		src = path->adc1[ch];
++		if (src & (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_ALL_ON))
++			return true;
++		break;
++	case MCDRV_DST_SP:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		src = path->sp[ch];
++		if (src & (MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_R_ON))
++			return true;
++		break;
++	case MCDRV_DST_HP:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		src = path->hp[ch];
++		if (src & (MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_R_ON))
++			return true;
++		break;
++	case MCDRV_DST_RCV:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		src = path->rc[ch];
++		if (src & (MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_R_ON))
++			return true;
++		break;
++	case MCDRV_DST_LOUT1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		src = path->lout1[ch];
++		if (src & (MCDRV_ASRC_DAC0_L_ON | MCDRV_ASRC_DAC0_R_ON))
++			return true;
++		break;
++	case MCDRV_DST_LOUT2:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		src = path->lout2[ch];
++		if (src & (MCDRV_ASRC_DAC1_L_ON | MCDRV_ASRC_DAC1_R_ON))
++			return true;
++		break;
++	case MCDRV_DST_BIAS:
++		if (ch > MCDRV_DST_CH3)
++			break;
++		src = path->bias[ch];
++		if (src & MCDRV_ASRC_MIC_ALL_ON)
++			return true;
++		break;
++	default:
++		break;
++	}
 +
-+	if (update & MCDRV_SWAP_DAC0_UPDATE_FLAG)
-+		if (info->dac0 > MCDRV_SWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_DAC1_UPDATE_FLAG)
-+		if (info->dac1 > MCDRV_SWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICIN0_UPDATE_FLAG)
-+		if (info->music_in0 > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICIN1_UPDATE_FLAG)
-+		if (info->music_in1 > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICIN2_UPDATE_FLAG)
-+		if (info->music_in2 > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_EXTIN_UPDATE_FLAG)
-+		if (info->ext_in > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_VOICEIN_UPDATE_FLAG)
-+		if (info->voice_in > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_HIFIIN_UPDATE_FLAG)
-+		if (info->hifi_in > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICOUT0_UPDATE_FLAG)
-+		if (info->music_out0 > MCDRV_SWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICOUT1_UPDATE_FLAG)
-+		if (info->music_out1 > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_MUSICOUT2_UPDATE_FLAG)
-+		if (info->music_out2 > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_EXTOUT_UPDATE_FLAG)
-+		if (info->ext_out > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_VOICEOUT_UPDATE_FLAG)
-+		if (info->voice_out > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	if (update & MCDRV_SWAP_HIFIOUT_UPDATE_FLAG)
-+		if (info->hifi_out > MCDRV_SWSWAP_LAST)
-+			ret = false;
-+
-+	return ret;
++	return false;
 +}
 +
-+static inline bool is_valid_aec_info(struct mcdrv_aec_info *info)
++u32 mc_source_get(enum mcdrv_dst_type type, enum mcdrv_dst_ch ch)
 +{
-+	struct mcdrv_aec_info curr_info;
-+	bool bdsp_used = false, cdsp_used = false, fdsp_used = false;
-+	bool ret = true;
++	struct mcdrv_path_info *path;
 +
-+	mc_aec_info_get(&curr_info);
++	path = &mc_info.path_info;
 +
-+	if (mc_d1_source_is_used(MCDRV_D1SRC_AE0_ON | MCDRV_D1SRC_AE1_ON |
-+				 MCDRV_D1SRC_AE2_ON | MCDRV_D1SRC_AE3_ON)) {
-+		bdsp_used = true;
-+		if (!curr_info.fdsp_locate)
-+			fdsp_used = true;
++	switch (type) {
++	case MCDRV_DST_MUSICOUT:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->music_out, ch);
++	case MCDRV_DST_EXTOUT:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->ext_out, ch);
++	case MCDRV_DST_HIFIOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		return d1_get_source(path->hifi_out, ch);
++	case MCDRV_DST_VBOXMIXIN:
++		return d1_get_source(path->vbox_mix_in, ch);
++	case MCDRV_DST_AE0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->ae0, ch);
++	case MCDRV_DST_AE1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->ae1, ch);
++	case MCDRV_DST_AE2:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->ae2, ch);
++	case MCDRV_DST_AE3:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->ae3, ch);
++	case MCDRV_DST_DAC0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->dac0, ch);
++	case MCDRV_DST_DAC1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d1_get_source(path->dac1, ch);
++	case MCDRV_DST_VOICEOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		return d2_get_source(path->voice_out, ch);
++	case MCDRV_DST_VBOXIOIN:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		return d2_get_source(path->vbox_io_in, ch);
++	case MCDRV_DST_VBOXHOSTIN:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		return d2_get_source(path->vbox_host_in, ch);
++	case MCDRV_DST_HOSTOUT:
++		if (ch > MCDRV_DST_CH0)
++			break;
++		return d2_get_source(path->host_out, ch);
++	case MCDRV_DST_ADIF0:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d2_get_source(path->adif0, ch);
++	case MCDRV_DST_ADIF1:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d2_get_source(path->adif1, ch);
++	case MCDRV_DST_ADIF2:
++		if (ch > MCDRV_DST_CH1)
++			break;
++		return d2_get_source(path->adif2, ch);
++	default:
++		break;
 +	}
 +
-+	if (mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH0) ||
-+	    mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH1) ||
-+	    mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH2) ||
-+	    mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH3) ||
-+	    mc_source_is_used(MCDRV_DST_VBOXHOSTIN, MCDRV_DST_CH0)) {
-+		cdsp_used = true;
-+		if (curr_info.fdsp_locate)
-+			fdsp_used = true;
-+	}
-+
-+	if (bdsp_used || cdsp_used || fdsp_used)
-+		if (info->fdsp_locate != 0xFF)
-+			if (info->fdsp_locate != curr_info.fdsp_locate) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+	if (bdsp_used || fdsp_used)
-+		if (info->audio_engine.enable) {
-+			if (info->audio_engine.bdsp_ae0_src != 2 &&
-+			    info->audio_engine.bdsp_ae0_src !=
-+			    curr_info.audio_engine.bdsp_ae0_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->audio_engine.bdsp_ae1_src != 2 &&
-+			    info->audio_engine.bdsp_ae1_src !=
-+			    curr_info.audio_engine.bdsp_ae1_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+			if (info->audio_engine.mixer_in0_src != 2 &&
-+			    info->audio_engine.mixer_in0_src !=
-+			    curr_info.audio_engine.mixer_in0_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->audio_engine.mixer_in1_src != 2 &&
-+			    info->audio_engine.mixer_in1_src !=
-+			    curr_info.audio_engine.mixer_in1_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+			if (info->audio_engine.mixer_in2_src != 2 &&
-+			    info->audio_engine.mixer_in2_src !=
-+			    curr_info.audio_engine.mixer_in2_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->audio_engine.mixer_in3_src != 2 &&
-+			    info->audio_engine.mixer_in3_src !=
-+			    curr_info.audio_engine.mixer_in3_src) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+
-+	if (cdsp_used || fdsp_used)
-+		if (info->vbox.enable) {
-+			if (info->vbox.fdsp_po_source != 0xFF &&
-+			    info->vbox.fdsp_po_source !=
-+			    curr_info.vbox.fdsp_po_source) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.isrc2_vsource != 0xFF &&
-+			    info->vbox.isrc2_vsource !=
-+			    curr_info.vbox.isrc2_vsource) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.isrc2_ch1_vsource != 0xFF &&
-+			    info->vbox.isrc2_ch1_vsource !=
-+			    curr_info.vbox.isrc2_ch1_vsource) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.isrc3_vsource != 0xFF &&
-+			    info->vbox.isrc3_vsource !=
-+			    curr_info.vbox.isrc3_vsource) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.lpt2_vsource != 0xFF &&
-+			    info->vbox.lpt2_vsource !=
-+			    curr_info.vbox.lpt2_vsource) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+
-+	if (cdsp_used)
-+		if (info->vbox.enable) {
-+			if (info->vbox.src3_ctrl != 0xFF &&
-+			    info->vbox.src3_ctrl != curr_info.vbox.src3_ctrl) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.src2_fs != 0xFF &&
-+			    info->vbox.src2_fs != curr_info.vbox.src2_fs) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.src2_thru != 0xFF &&
-+			    info->vbox.src2_thru != curr_info.vbox.src2_thru) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.src3_fs != 0xFF &&
-+			    info->vbox.src3_fs != curr_info.vbox.src3_fs) {
-+				ret = false;
-+				goto exit;
-+			}
-+
-+			if (info->vbox.src3_thru != 0xFF &&
-+			    info->vbox.src3_thru != curr_info.vbox.src3_thru) {
-+				ret = false;
-+				goto exit;
-+			}
-+		}
-+
-+exit:
-+	return ret;
++	return 0;
 +}
 +
-+static bool is_valid_hsdet_info(struct mcdrv_hsdet_info *info,
-+				unsigned int update)
++u8 mc_dsp_get_running(void)
 +{
-+	struct mcdrv_hsdet_info hsdet_info;
++	struct mcdrv_aec_info *aec;
++	u32 hifi_out;
++	u8 start = 0;
 +
-+	mc_hsdet_info_get(&hsdet_info);
++	aec = &mc_info.aec_info;
++	hifi_out = mc_info.path_info.hifi_out[0];
 +
-+	if (update & MCDRV_ENPLUGDET_UPDATE_FLAG)
-+		if (info->en_plug_det_db > MCDRV_PLUGDETDB_LAST)
-+			return false;
++	if ((hifi_out & MCDRV_D1SRC_ADIF0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_ADC0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_ADC1_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_PDM0_ON)
++	    || mc_d2_source_is_used(MCDRV_D2SRC_PDM1_ON)
++	    || mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH1)
++	    || mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH1))
++		start |= MCDRV_DSP_START_E | MCDRV_DSP_START_M;
 +
-+	if (update & MCDRV_ENDLYKEYOFF_UPDATE_FLAG)
-+		if (info->en_dly_key_off > MCDRV_KEYEN_LAST)
-+			return false;
-+
-+	if (update & MCDRV_ENDLYKEYON_UPDATE_FLAG)
-+		if (info->en_dly_key_on > MCDRV_KEYEN_LAST)
-+			return false;
-+
-+	if (update & MCDRV_ENKEYOFF_UPDATE_FLAG)
-+		if (info->en_key_off > MCDRV_KEYEN_LAST)
-+			return false;
-+
-+	if (update & MCDRV_ENKEYON_UPDATE_FLAG)
-+		if (info->en_key_on > MCDRV_KEYEN_LAST)
-+			return false;
-+
-+	if (update & MCDRV_HSDETDBNC_UPDATE_FLAG)
-+		if (info->hs_det_dbnc > MCDRV_DETDBNC_LAST)
-+			return false;
-+
-+	if (update & MCDRV_KEYOFFMTIM_UPDATE_FLAG)
-+		hsdet_info.key_off_mtim = info->key_off_mtim;
-+
-+	if (update & MCDRV_KEYONMTIM_UPDATE_FLAG)
-+		hsdet_info.key_on_mtim = info->key_on_mtim;
-+
-+	if (update & MCDRV_KEY0OFFDLYTIM_UPDATE_FLAG) {
-+		if (info->key0_off_dly_tim > MC_DRV_KEYOFFDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_off_mtim == MCDRV_KEYOFF_MTIM_63 &&
-+			 info->key0_off_dly_tim == 1)
-+			return false;
++	if (mc_d1_source_is_used(MCDRV_D1SRC_AE_ALL_ON)) {
++		start |= MCDRV_DSP_START_B | MCDRV_DSP_START_M;
++		if (!aec->fdsp_locate && aec->audio_engine.fdsp_on == 1)
++			start |= MCDRV_DSP_START_E | MCDRV_DSP_START_F;
 +	}
 +
-+	if (update & MCDRV_KEY1OFFDLYTIM_UPDATE_FLAG) {
-+		if (info->key1_off_dly_tim > MC_DRV_KEYOFFDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_off_mtim == MCDRV_KEYOFF_MTIM_63 &&
-+			 info->key1_off_dly_tim == 1)
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY2OFFDLYTIM_UPDATE_FLAG) {
-+		if (info->key2_off_dly_tim > MC_DRV_KEYOFFDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_off_mtim == MCDRV_KEYOFF_MTIM_63 &&
-+			 info->key2_off_dly_tim == 1)
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY0ONDLYTIM_UPDATE_FLAG) {
-+		if (info->key0_on_dly_tim > MC_DRV_KEYONDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key0_on_dly_tim == 1 ||
-+			  info->key0_on_dly_tim == 2 ||
-+			  info->key0_on_dly_tim == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY1ONDLYTIM_UPDATE_FLAG) {
-+		if (info->key1_on_dly_tim > MC_DRV_KEYONDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key1_on_dly_tim == 1 ||
-+			  info->key1_on_dly_tim == 2 ||
-+			  info->key1_on_dly_tim == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY2ONDLYTIM_UPDATE_FLAG) {
-+		if (info->key2_on_dly_tim > MC_DRV_KEYONDLYTIM_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key2_on_dly_tim == 1 ||
-+			  info->key2_on_dly_tim == 2 ||
-+			  info->key2_on_dly_tim == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY0ONDLYTIM2_UPDATE_FLAG) {
-+		if (info->key0_on_dly_tim2 > MC_DRV_KEYONDLYTIM2_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key0_on_dly_tim2 == 1 ||
-+			  info->key0_on_dly_tim2 == 2 ||
-+			  info->key0_on_dly_tim2 == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY1ONDLYTIM2_UPDATE_FLAG) {
-+		if (info->key1_on_dly_tim2 > MC_DRV_KEYONDLYTIM2_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key1_on_dly_tim2 == 1 ||
-+			  info->key1_on_dly_tim2 == 2 ||
-+			  info->key1_on_dly_tim2 == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_KEY2ONDLYTIM2_UPDATE_FLAG) {
-+		if (info->key2_on_dly_tim2 > MC_DRV_KEYONDLYTIM2_MAX)
-+			return false;
-+		else if (hsdet_info.key_on_mtim == MCDRV_KEYON_MTIM_250 &&
-+			 (info->key2_on_dly_tim2 == 1 ||
-+			  info->key2_on_dly_tim2 == 2 ||
-+			  info->key2_on_dly_tim2 == 3))
-+			return false;
-+	}
-+
-+	if (update & MCDRV_IRQTYPE_UPDATE_FLAG) {
-+		if (info->irq_type == MCDRV_IRQTYPE_EX) {
-+			if (info->plug_det_db_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->plug_undet_db_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->mic_det_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->plug_det_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key0_on_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key1_on_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key2_on_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key0_off_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key1_off_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+			if (info->key2_off_irq_type > MCDRV_IRQTYPE_REF)
-+				return false;
-+		} else if (info->irq_type > MCDRV_IRQTYPE_LAST)
-+			return false;
-+	}
-+
-+	if (update & MCDRV_DETINV_UPDATE_FLAG)
-+		if (info->det_in_inv > MCDRV_DET_IN_LAST)
-+			return false;
-+
-+	if (update & MCDRV_HSDETMODE_UPDATE_FLAG)
-+		if (info->hs_det_mode != MCDRV_HSDET_MODE_DETIN_A &&
-+		    info->hs_det_mode != MCDRV_HSDET_MODE_DETIN_B)
-+			return false;
-+
-+	if (update & MCDRV_SPERIOD_UPDATE_FLAG)
-+		if (info->speriod > MCDRV_SPERIOD_LAST)
-+			return false;
-+
-+	if (update & MCDRV_LPERIOD_UPDATE_FLAG)
-+		if (info->lperiod > MCDRV_LPERIOD_LAST)
-+			return false;
-+
-+	if (update & MCDRV_DBNCNUMPLUG_UPDATE_FLAG)
-+		if (info->dbnc_num_plug > MCDRV_DBNC_NUM_LAST)
-+			return false;
-+
-+	if (update & MCDRV_DBNCNUMMIC_UPDATE_FLAG)
-+		if (info->dbnc_num_mic > MCDRV_DBNC_NUM_LAST)
-+			return false;
-+
-+	if (update & MCDRV_DBNCNUMKEY_UPDATE_FLAG)
-+		if (info->dbnc_num_key > MCDRV_DBNC_NUM_LAST)
-+			return false;
-+
-+	if (update & MCDRV_SGNL_UPDATE_FLAG) {
-+		if (info->sgnl_period > MCDRV_SGNLPERIOD_LAST)
-+			return false;
-+
-+		if (info->sgnl_num != MCDRV_SGNLNUM_NONE
-+		    && info->sgnl_num > MCDRV_SGNLNUM_LAST)
-+			return false;
-+
-+		if (info->sgnl_peak > MCDRV_SGNLPEAK_LAST)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+static bool check_dio_common(struct mcdrv_dio_info *dio_info, u8 port)
-+{
-+	struct mcdrv_dio_common *dio_common;
-+	bool ret = true;
-+
-+	dio_common = &dio_info->port[port].dio_common;
-+
-+	if (port == 3) {
-+		if (dio_common->fs != MCDRV_FS_48000 &&
-+		    dio_common->fs != MCDRV_FS_192000 &&
-+		    dio_common->fs != MCDRV_FS_96000) {
-+			ret = false;
-+			goto exit;
-+		}
-+
-+		if (dio_common->bck_fs != MCDRV_BCKFS_64 &&
-+		    dio_common->bck_fs != MCDRV_BCKFS_48 &&
-+		    dio_common->bck_fs != MCDRV_BCKFS_32)
-+			ret = false;
-+		goto exit;
-+	}
-+
-+	if (dio_common->fs > MCDRV_FS_LAST ||
-+	    dio_common->fs == MCDRV_FS_NONE1 ||
-+	    dio_common->fs == MCDRV_FS_NONE2 ||
-+	    dio_common->fs == MCDRV_FS_NONE3)
-+		ret = false;
-+	else if (dio_common->bck_fs > MCDRV_BCKFS_LAST ||
-+		 dio_common->bck_fs == MCDRV_BCKFS_NONE1 ||
-+		 dio_common->bck_fs == MCDRV_BCKFS_NONE2 ||
-+		 dio_common->bck_fs == MCDRV_BCKFS_NONE3 ||
-+		 dio_common->bck_fs == MCDRV_BCKFS_NONE4)
-+		ret = false;
-+	else if (dio_common->interface == MCDRV_DIO_PCM &&
-+		 dio_common->pcm_high_period > 31)
-+		ret = false;
-+
-+	if (dio_common->interface == MCDRV_DIO_PCM) {
-+		if (dio_common->fs != MCDRV_FS_8000 &&
-+		    dio_common->fs != MCDRV_FS_16000)
-+			ret = false;
-+
-+		if (dio_common->bck_fs == MCDRV_BCKFS_512 &&
-+		    dio_common->fs != MCDRV_FS_8000)
-+			ret = false;
-+
-+		if (dio_common->bck_fs == MCDRV_BCKFS_256 &&
-+		    (dio_common->fs != MCDRV_FS_8000 &&
-+		     dio_common->fs != MCDRV_FS_16000))
-+			ret = false;
-+
-+		if (dio_common->master_slave == MCDRV_DIO_MASTER &&
-+		    dio_common->bck_fs == MCDRV_BCKFS_SLAVE)
-+			ret = false;
++	if (mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH2)
++	    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH3)
++	    || mc_d1_source_is_used(MCDRV_D1SRC_VBOXREFOUT_ON)) {
++		start |= MCDRV_DSP_START_M;
++		if (aec->vbox.cdsp_func_a_on || aec->vbox.cdsp_func_b_on)
++			start |= MCDRV_DSP_START_C;
++		if (aec->fdsp_locate && aec->vbox.fdsp_on == 1)
++			start |= MCDRV_DSP_START_F;
 +	} else {
-+		if (port == 0 || port == 1) {
-+			if (dio_common->fs == MCDRV_FS_192000 ||
-+			    dio_common->fs == MCDRV_FS_96000)
-+				ret = false;
-+		}
-+
-+		if (dio_common->bck_fs != MCDRV_BCKFS_64 &&
-+		    dio_common->bck_fs != MCDRV_BCKFS_48 &&
-+		    dio_common->bck_fs != MCDRV_BCKFS_32)
-+			ret = false;
-+	}
-+
-+exit:
-+	return ret;
-+}
-+
-+static bool check_da_format(struct mcdrv_da_format *da_format)
-+{
-+	bool ret = true;
-+
-+	if (da_format->bit_sel > MCDRV_BITSEL_LAST)
-+		ret = false;
-+	else if (da_format->mode > MCDRV_DAMODE_LAST)
-+		ret = false;
-+
-+	return ret;
-+}
-+
-+static bool check_pcm_format(struct mcdrv_pcm_format *pcm_format)
-+{
-+	bool ret = true;
-+
-+	if (pcm_format->law > MCDRV_PCM_LAST)
-+		ret = false;
-+	else if (pcm_format->bit_sel > MCDRV_PCM_BITSEL_LAST)
-+		ret = false;
-+	else if ((pcm_format->law == MCDRV_PCM_ALAW ||
-+		  pcm_format->law == MCDRV_PCM_MULAW) &&
-+		 pcm_format->bit_sel != MCDRV_PCM_BITSEL_8)
-+		ret = false;
-+
-+	return ret;
-+}
-+
-+static bool check_dio_dir(struct mcdrv_dio_info *dio_info,
-+			  u8 port, u8 interface)
-+{
-+	bool ret = true;
-+
-+	if (interface == MCDRV_DIO_PCM)
-+		ret = check_pcm_format(&dio_info->port[port].dir.pcm_format);
-+	else {
-+		ret = check_da_format(&dio_info->port[port].dir.da_format);
-+		if (dio_info->port[port].dir.da_format.bit_sel ==
-+		    MCDRV_BITSEL_32)
-+			ret = false;
-+	}
-+
-+	return ret;
-+}
-+
-+static bool check_dio_dit(struct mcdrv_dio_info *dio_info,
-+			  u8 port, u8 interface)
-+{
-+	bool ret = true;
-+
-+	if (interface == MCDRV_DIO_PCM)
-+		ret = check_pcm_format(&dio_info->port[port].dit.pcm_format);
-+	else {
-+		ret = check_da_format(&dio_info->port[port].dit.da_format);
-+		if (dio_info->port[port].dit.da_format.bit_sel ==
-+		    MCDRV_BITSEL_32 && port != 2)
-+			ret = false;
-+	}
-+
-+	return ret;
-+}
-+
-+static inline bool is_valid_dio_info(struct mcdrv_dio_info *dio_info,
-+				     unsigned int update)
-+{
-+	struct mcdrv_dio_info curr_dio_info;
-+	u8 val;
-+	bool LPR0_start = 0, LPT0_start = 0;
-+	bool LPR1_start = 0, LPT1_start = 0;
-+	bool LPR2_start = 0, LPT2_start = 0;
-+	bool LPR3_start = 0, LPT3_start = 0;
-+	bool ret = true;
-+
-+	mc_dio_info_get(&curr_dio_info);
-+
-+	val = mc_mb_register_get_value(MCI_LP0_START);
-+	if (val & MCB_LPR0_START)
-+		LPR0_start = true;
-+	if (val & MCB_LPT0_START)
-+		LPT0_start = true;
-+
-+	val = mc_mb_register_get_value(MCI_LP1_START);
-+	if (val & MCB_LPR1_START)
-+		LPR1_start = true;
-+	if (val & MCB_LPT1_START)
-+		LPT1_start = true;
-+
-+	val = mc_mb_register_get_value(MCI_LP2_START);
-+	if (val & MCB_LPR2_START)
-+		LPR2_start = true;
-+	if (val & MCB_LPT2_START)
-+		LPT2_start = true;
-+
-+	val = mc_mb_register_get_value(MCI_LP3_START);
-+	if (val & MCB_LPR3_START)
-+		LPR3_start = true;
-+	if (val & MCB_LPT3_START)
-+		LPT3_start = true;
-+
-+	if ((update & MCDRV_MUSIC_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_MUSIC_DIR_UPDATE_FLAG)) {
-+		if (LPR0_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_MUSIC_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_MUSIC_DIT_UPDATE_FLAG)) {
-+		if (LPT0_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_EXT_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_EXT_DIR_UPDATE_FLAG)) {
-+		if (LPR1_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_EXT_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_EXT_DIT_UPDATE_FLAG)) {
-+		if (LPT1_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_VOICE_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_VOICE_DIR_UPDATE_FLAG)) {
-+		if (LPR2_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_VOICE_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_VOICE_DIT_UPDATE_FLAG)) {
-+		if (LPT2_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_HIFI_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_HIFI_DIR_UPDATE_FLAG)) {
-+		if (LPR3_start)
-+			ret = false;
-+	}
-+
-+	if ((update & MCDRV_HIFI_COM_UPDATE_FLAG) ||
-+	    (update & MCDRV_HIFI_DIT_UPDATE_FLAG)) {
-+		if (LPT3_start)
-+			ret = false;
-+	}
-+
-+	if (ret && (update & MCDRV_MUSIC_COM_UPDATE_FLAG)) {
-+		ret = check_dio_common(dio_info, 0);
-+		if (ret)
-+			curr_dio_info.port[0].dio_common.interface
-+			    = dio_info->port[0].dio_common.interface;
-+	}
-+
-+	if (ret && (update & MCDRV_EXT_COM_UPDATE_FLAG)) {
-+		ret = check_dio_common(dio_info, 1);
-+		if (ret)
-+			curr_dio_info.port[1].dio_common.interface
-+			    = dio_info->port[1].dio_common.interface;
-+	}
-+
-+	if (ret && (update & MCDRV_VOICE_COM_UPDATE_FLAG)) {
-+		ret = check_dio_common(dio_info, 2);
-+		if (ret)
-+			curr_dio_info.port[2].dio_common.interface
-+			    = dio_info->port[2].dio_common.interface;
-+	}
-+
-+	if (ret && (update & MCDRV_HIFI_COM_UPDATE_FLAG)) {
-+		ret = check_dio_common(dio_info, 3);
-+		if (ret)
-+			curr_dio_info.port[3].dio_common.interface
-+			    = dio_info->port[3].dio_common.interface;
-+	}
-+
-+	if (ret && (update & MCDRV_MUSIC_DIR_UPDATE_FLAG)) {
-+		ret = check_dio_dir(dio_info, 0,
-+				    curr_dio_info.port[0].dio_common.interface);
-+	}
-+
-+	if (ret && (update & MCDRV_EXT_DIR_UPDATE_FLAG)) {
-+		ret = check_dio_dir(dio_info, 1,
-+				    curr_dio_info.port[1].dio_common.interface);
-+	}
-+
-+	if (ret && (update & MCDRV_VOICE_DIR_UPDATE_FLAG)) {
-+		ret = check_dio_dir(dio_info, 2,
-+				    curr_dio_info.port[2].dio_common.interface);
-+	}
-+
-+	if (ret && (update & MCDRV_MUSIC_DIT_UPDATE_FLAG)) {
-+		ret = check_dio_dit(dio_info, 0,
-+				    curr_dio_info.port[0].dio_common.interface);
-+	}
-+
-+	if (ret && (update & MCDRV_EXT_DIT_UPDATE_FLAG))
-+		ret = check_dio_dit(dio_info, 1,
-+				    curr_dio_info.port[1].dio_common.interface);
-+
-+	if (ret && (update & MCDRV_VOICE_DIT_UPDATE_FLAG))
-+		ret = check_dio_dit(dio_info, 2,
-+				    curr_dio_info.port[2].dio_common.interface);
-+
-+	return ret;
-+}
-+
-+static inline int set_vol(u32 update, enum mcdrv_volume_mode mode, u32 *status)
-+{
-+	mc_packet_add_volume(update, mode, status);
-+
-+	return mc_packet_execute();
-+}
-+
-+static inline void get_mute(u8 *dir_mute, u8 *adc_mute,
-+			    u8 *dit_mute, u8 *dac_mute)
-+{
-+	u8 vol;
-+
-+	*dir_mute = 0;
-+	*adc_mute = 0;
-+	*dit_mute = 0;
-+	*dac_mute = 0;
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_MUSICIN_ON)) {
-+		vol = mc_ma_register_get_value(MCI_DIFI0_VOL0);
-+		if (vol & ~MCB_DIFI0_VSEP)
-+			*dir_mute |= MCB_DIFI0_VFLAG0;
-+
-+		vol = mc_ma_register_get_value(MCI_DIFI0_VOL1);
-+		if (vol)
-+			*dir_mute |= MCB_DIFI0_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_EXTIN_ON)) {
-+		vol = mc_ma_register_get_value(MCI_DIFI1_VOL0);
-+		if (vol & ~MCB_DIFI1_VSEP)
-+			*dir_mute |= MCB_DIFI1_VFLAG0;
-+
-+		vol = mc_ma_register_get_value(MCI_DIFI1_VOL1);
-+		if (vol)
-+			*dir_mute |= MCB_DIFI1_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_VBOXOUT_ON)) {
-+		vol = mc_ma_register_get_value(MCI_DIFI2_VOL0);
-+		if (vol & ~MCB_DIFI2_VSEP)
-+			*dir_mute |= MCB_DIFI2_VFLAG0;
-+
-+		vol = mc_ma_register_get_value(MCI_DIFI2_VOL1);
-+		if (vol)
-+			*dir_mute |= MCB_DIFI2_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_VBOXREFOUT_ON)) {
-+		vol = mc_ma_register_get_value(MCI_DIFI3_VOL0);
-+		if (vol & ~MCB_DIFI3_VSEP)
-+			*dir_mute |= MCB_DIFI3_VFLAG0;
-+
-+		vol = mc_ma_register_get_value(MCI_DIFI3_VOL1);
-+		if (vol)
-+			*dir_mute |= MCB_DIFI3_VFLAG1;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH0)) {
-+		vol = mc_ma_register_get_value(MCI_DAO0_VOL0);
-+		if (vol & ~MCB_DAO0_VSEP)
-+			*dac_mute |= MCB_DAO0_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_DAC0, MCDRV_DST_CH1)) {
-+		vol = mc_ma_register_get_value(MCI_DAO0_VOL1);
-+		if (vol)
-+			*dac_mute |= MCB_DAO0_VFLAG1;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH0)) {
-+		vol = mc_ma_register_get_value(MCI_DAO1_VOL0);
-+		if (vol & ~MCB_DAO1_VSEP)
-+			*dac_mute |= MCB_DAO1_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_DAC1, MCDRV_DST_CH1)) {
-+		vol = mc_ma_register_get_value(MCI_DAO1_VOL1);
-+		if (vol)
-+			*dac_mute |= MCB_DAO1_VFLAG1;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH0)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO0_VOL0);
-+		if (vol & ~MCB_DIFO0_VSEP)
-+			*dit_mute |= MCB_DIFO0_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH1)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO0_VOL1);
-+		if (vol)
-+			*dit_mute |= MCB_DIFO0_VFLAG1;
-+
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH0)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO1_VOL0);
-+		if (vol & ~MCB_DIFO1_VSEP)
-+			*dit_mute |= MCB_DIFO1_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH1)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO1_VOL1);
-+		if (vol)
-+			*dit_mute |= MCB_DIFO1_VFLAG1;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH0)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO2_VOL0);
-+		if (vol & ~MCB_DIFO2_VSEP)
-+			*dit_mute |= MCB_DIFO2_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH1)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO2_VOL1);
-+		if (vol)
-+			*dit_mute |= MCB_DIFO2_VFLAG1;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH2)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO3_VOL0);
-+		if (vol & ~MCB_DIFO2_VSEP)
-+			*dit_mute |= MCB_DIFO3_VFLAG0;
-+	}
-+
-+	if (!mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH3)) {
-+		vol = mc_ma_register_get_value(MCI_DIFO3_VOL1);
-+		if (vol)
-+			*dit_mute |= MCB_DIFO3_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF0_ON)) {
-+		vol = mc_ma_register_get_value(MCI_ADI0_VOL0);
-+		if (vol & ~MCB_ADI0_VSEP)
-+			*adc_mute |= MCB_ADI0_VFLAG0;
-+		vol = mc_ma_register_get_value(MCI_ADI0_VOL1);
-+		if (vol)
-+			*adc_mute |= MCB_ADI0_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF1_ON)) {
-+		vol = mc_ma_register_get_value(MCI_ADI1_VOL1);
-+		if (vol & ~MCB_ADI1_VSEP)
-+			*adc_mute |= MCB_ADI1_VFLAG0;
-+		vol = mc_ma_register_get_value(MCI_ADI1_VOL1);
-+		if (vol)
-+			*adc_mute |= MCB_ADI1_VFLAG1;
-+	}
-+
-+	if (!mc_d1_source_is_used(MCDRV_D1SRC_ADIF2_ON)) {
-+		vol = mc_ma_register_get_value(MCI_ADI2_VOL1);
-+		if (vol & ~MCB_ADI2_VSEP)
-+			*adc_mute |= MCB_ADI2_VFLAG0;
-+
-+		vol = mc_ma_register_get_value(MCI_ADI2_VOL1);
-+		if (vol)
-+			*adc_mute |= MCB_ADI2_VFLAG1;
-+	}
-+}
-+
-+static int save_power(void)
-+{
-+	struct mcdrv_power_info power;
-+	struct mcdrv_power_update update;
-+	int ret;
-+
-+	/*      unused path power down  */
-+	mc_power_info_get(&power);
-+
-+	update.digital = MCDRV_POWUPDATE_D_ALL;
-+	update.analog[0] = MCDRV_POWUPDATE_AP;
-+	update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+	update.analog[2] = MCDRV_POWUPDATE_AP_OUT1;
-+	update.analog[3] = MCDRV_POWUPDATE_AP_MC;
-+	update.analog[4] = MCDRV_POWUPDATE_AP_IN;
-+
-+	ret = mc_packet_add_powerdown(&power, &update);
-+	if (!ret)
-+		ret = mc_packet_execute();
-+
-+	return ret;
-+}
-+
-+static inline bool is_valid_clock(u8 clock)
-+{
-+	if (clock != MCDRV_CLKSW_CLKA && clock != MCDRV_CLKSW_CLKB)
-+		return false;
-+
-+	return true;
-+}
-+
-+static inline int get_clock(u8 *clock)
-+{
-+
-+	mc_clock_get(clock);
-+
-+	return 0;
-+}
-+
-+static inline int set_clock(u8 *clock)
-+{
-+	u8 old_clock;
-+
-+	if (!is_valid_clock(*clock))
-+		return -EINVAL;
-+
-+	mc_clock_get(&old_clock);
-+	if (*clock == old_clock)
-+		return 0;
-+
-+	return mc_clock_set(*clock);
-+}
-+
-+static inline int get_path(struct mcdrv_path_info *path_info)
-+{
-+	if (!path_info)
-+		return -EINVAL;
-+
-+	mc_path_info_get_virtual(path_info);
-+
-+	return 0;
-+}
-+
-+static int set_path(struct mcdrv_path_info *path_info)
-+{
-+	struct mcdrv_power_info power;
-+	struct mcdrv_power_update update;
-+	u32 status;
-+	u8 val, dir_mute, adc_mute, dit_mute, dac_mute, hp_vol_l, hp_vol_r;
-+	u8 dsp_started = mc_dsp_get_running();
-+	int ret;
-+
-+	if (!path_info)
-+		return -EINVAL;
-+
-+	mask_irregular_path_info(path_info);
-+
-+	ret = mc_path_info_set(path_info);
-+	if (ret < 0)
-+		return ret;
-+
-+	hp_vol_l = mc_ana_register_get_value(MCI_HPVOL_L);
-+	hp_vol_l &= ~MCB_ALAT_HP;
-+	hp_vol_r = mc_ana_register_get_value(MCI_HPVOL_R);
-+
-+	/* unused analog out volume mute */
-+	ret = set_vol(MCDRV_VOLUPDATE_ANA_OUT, MCDRV_VOLUME_MUTE, &status);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (status)
-+		mc_packet_add_wait_event(MCDRV_EVT_SVOL_DONE | status);
-+
-+	get_mute(&dir_mute, &adc_mute, &dit_mute, &dac_mute);
-+
-+	/* unused volume mute */
-+	ret = set_vol(MCDRV_VOLUPDATE_DIG, MCDRV_VOLUME_MUTE, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set volume */
-+	ret = set_vol(MCDRV_VOLUPDATE_ANA_IN, MCDRV_VOLUME_SET, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (dir_mute)
-+		mc_packet_add_wait_event(MCDRV_EVT_DIRMUTE | dir_mute);
-+
-+	if (adc_mute)
-+		mc_packet_add_wait_event(MCDRV_EVT_ADCMUTE | adc_mute);
-+
-+	if (dit_mute)
-+		mc_packet_add_wait_event(MCDRV_EVT_DITMUTE | dit_mute);
-+
-+	if (dac_mute)
-+		mc_packet_add_wait_event(MCDRV_EVT_DACMUTE | dac_mute);
-+
-+	mc_packet_add_fdsp_stop(dsp_started);
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	/* stop unused path */
-+	mc_packet_add_stop();
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	mc_power_info_get(&power);
-+
-+	/* unused analog out path power down */
-+	update.digital = 0;
-+	update.analog[0] = 0;
-+	update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+	update.analog[2] = MCDRV_POWUPDATE_AP_OUT1;
-+	update.analog[3] = 0;
-+	update.analog[4] = 0;
-+	ret = mc_packet_add_powerdown(&power, &update);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	/* used path power up */
-+	update.digital = MCDRV_POWUPDATE_D_ALL;
-+	update.analog[0] = MCDRV_POWUPDATE_AP;
-+	update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+	update.analog[2] = MCDRV_POWUPDATE_AP_OUT1;
-+	update.analog[3] = MCDRV_POWUPDATE_AP_MC;
-+	update.analog[4] = MCDRV_POWUPDATE_AP_IN;
-+	ret = mc_packet_add_powerup(&power, &update);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set mixer */
-+	mc_packet_add_path_set();
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	/* DSP start */
-+	mc_packet_add_dsp_start_and_stop(dsp_started);
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	if ((hp_vol_l || hp_vol_r)
-+	    && (!hp_vol_l || (status & (MCB_HPL_BUSY << 8)))
-+	    && (!hp_vol_r || (status & (MCB_HPR_BUSY << 8)))
-+	    && (power.analog[3] & MCB_MB4)) {
-+		val = mc_ana_register_get_value(MCI_AP_MIC);
-+		if (!(val & MCB_MB4))
-+			mc_packet_add_wait(MCDRV_MB4_WAIT_TIME);
-+	}
-+
-+	/* unused path power down */
-+	update.digital = MCDRV_POWUPDATE_D_ALL;
-+	update.analog[0] = MCDRV_POWUPDATE_AP;
-+	update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+	update.analog[2] = MCDRV_POWUPDATE_AP_OUT1;
-+	update.analog[3] = MCDRV_POWUPDATE_AP_MC;
-+	update.analog[4] = MCDRV_POWUPDATE_AP_IN;
-+	ret = mc_packet_add_powerdown(&power, &update);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	mc_packet_add_start();
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	/*      set volume      */
-+	ret = set_vol(MCDRV_VOLUPDATE_DIG, MCDRV_VOLUME_SET, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	return set_vol(MCDRV_VOLUPDATE_ANA_OUT, MCDRV_VOLUME_SET, &status);
-+}
-+
-+static inline int get_volume(struct mcdrv_vol_info *vol_info)
-+{
-+	if (!vol_info)
-+		return -EINVAL;
-+
-+	mc_vol_info_get(vol_info);
-+
-+	return 0;
-+}
-+
-+static inline int set_volume(struct mcdrv_vol_info *vol_info)
-+{
-+	struct mcdrv_path_info path_info;
-+
-+	if (!vol_info)
-+		return -EINVAL;
-+
-+	mc_vol_info_set(vol_info);
-+
-+	mc_path_info_get_virtual(&path_info);
-+
-+	return set_path(&path_info);
-+}
-+
-+static inline int get_digitalio(struct mcdrv_dio_info *dio_info)
-+{
-+	if (!dio_info)
-+		return -EINVAL;
-+
-+	mc_dio_info_get(dio_info);
-+
-+	return 0;
-+}
-+
-+static inline int set_digitalio(struct mcdrv_dio_info *dio_info,
-+				unsigned int update)
-+{
-+	if (!dio_info)
-+		return -EINVAL;
-+
-+	if (!is_valid_dio_info(dio_info, update))
-+		return -EINVAL;
-+
-+	mc_dio_info_set(dio_info, update);
-+
-+	mc_packet_add_digital_io(update);
-+
-+	return mc_packet_execute();
-+}
-+
-+static inline int get_digitalio_path(struct mcdrv_dio_path_info *dio_path_info)
-+{
-+	if (!dio_path_info)
-+		return -EINVAL;
-+
-+	mc_dio_path_info_get(dio_path_info);
-+
-+	return 0;
-+}
-+
-+static inline int set_digitalio_path(struct mcdrv_dio_path_info *dio_path_info,
-+				     unsigned int update)
-+{
-+	if (!dio_path_info)
-+		return -EINVAL;
-+
-+	if (!is_valid_dio_path_info(dio_path_info, update))
-+		return -EINVAL;
-+
-+	mc_dio_path_info_set(dio_path_info, update);
-+
-+	mc_packet_add_digital_io_path();
-+
-+	return mc_packet_execute();
-+}
-+
-+static inline int get_swap(struct mcdrv_swap_info *info)
-+{
-+	if (!info)
-+		return -EINVAL;
-+
-+	mc_swap_info_get(info);
-+
-+	return 0;
-+}
-+
-+static inline int set_swap(struct mcdrv_swap_info *info, unsigned int update)
-+{
-+	if (!info)
-+		return -EINVAL;
-+
-+	if (!is_valid_swap_info(info, update))
-+		return -EINVAL;
-+
-+	mc_swap_info_set(info, update);
-+
-+	mc_packet_add_swap(update);
-+
-+	return mc_packet_execute();
-+}
-+
-+static inline bool is_path_alloff(void)
-+{
-+	struct mcdrv_path_info info;
-+
-+	mc_path_info_get_virtual(&info);
-+	if (memcmp(&info, &path_alloff, sizeof(struct mcdrv_path_info)))
-+		return false;
-+
-+	return true;
-+}
-+
-+static int set_dsp(u8 *data, unsigned int size)
-+{
-+	struct mcdrv_aec_info info, curr_info;
-+	struct mcdrv_power_info power;
-+	struct mcdrv_power_update update;
-+	static struct mcdrv_path_info path_info;
-+	enum mcdrv_dev_id id;
-+	static u8 g_lp2_start, g_src3_start;
-+	u32 mute_flag;
-+	int ret = 0;
-+
-+	if (!data || !size)
-+		return -EINVAL;
-+
-+	id = mc_dev_id_get();
-+
-+	mc_aec_info_get(&info);
-+	curr_info = info;
-+
-+	ret = mc_parser_d7_data_analyze(data, size, &info);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!is_valid_aec_info(&info))
-+		return -EINVAL;
-+
-+	mc_aec_info_set(&info);
-+	mc_aec_info_get(&info);
-+
-+	info.vbox.cdsp_func_a_on &= 0x01;
-+	info.vbox.cdsp_func_b_on &= 0x01;
-+
-+	if (info.control.command == 1) {
-+		if (!info.control.param[0] && !is_path_alloff()) {
-+			mc_path_info_get_virtual(&path_info);
-+
-+			ret = set_path(&path_alloff);
-+			if (ret < 0)
-+				goto exit;
-+		}
-+	} else if (info.control.command == 2) {
-+		if (!info.control.param[0]) {
-+			g_lp2_start = mc_mb_register_get_value(MCI_LP2_START);
-+			mc_packet_add_write_mb(MCI_LP2_START, 0);
-+			g_src3_start = mc_mb_register_get_value(MCI_SRC3_START);
-+			mc_packet_add_write_mb(MCI_SRC3_START, 0);
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+		}
-+	} else if (info.control.command == 3) {
-+		if (id == MCDRV_DEV_ID_81_91H) {
-+			mc_packet_add_dout_mute();
-+			mute_flag = MCB_DIFO3_VFLAG1 | MCB_DIFO3_VFLAG0 |
-+			    MCB_DIFO2_VFLAG1 | MCB_DIFO2_VFLAG0 |
-+			    MCB_DIFO1_VFLAG1 | MCB_DIFO1_VFLAG0 |
-+			    MCB_DIFO0_VFLAG1 | MCB_DIFO0_VFLAG0;
-+			mc_packet_add_wait_event(MCDRV_EVT_DITMUTE | mute_flag);
-+			mute_flag = MCB_DAO1_VFLAG1 | MCB_DAO1_VFLAG0 |
-+			    MCB_DAO0_VFLAG1 | MCB_DAO0_VFLAG0;
-+			mc_packet_add_wait_event(MCDRV_EVT_DACMUTE | mute_flag);
-+			mc_packet_add_write_ma(MCI_CLK_SEL,
-+					       info.control.param[0]);
-+			mc_clock_select_set(info.control.param[0]);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+
-+			ret = set_vol(MCDRV_VOLUPDATE_DOUT,
-+				      MCDRV_VOLUME_SET, NULL);
-+			if (ret < 0)
-+				goto exit;
-+		}
-+	} else if (info.control.command == 4) {
-+		if (id == MCDRV_DEV_ID_81_91H) {
-+			u32 status = 0;
-+
-+			mc_packet_add_dac0_mute();
-+			mc_packet_add_dac1_mute();
-+			mc_packet_add_adif_mute();
-+			mc_packet_add_dpath_da_mute();
-+			mute_flag = MCB_ADI2_VFLAG1 | MCB_ADI2_VFLAG0 |
-+			    MCB_ADI1_VFLAG1 | MCB_ADI1_VFLAG0 |
-+			    MCB_ADI0_VFLAG1 | MCB_ADI0_VFLAG0;
-+			mc_packet_add_wait_event(MCDRV_EVT_ADCMUTE | mute_flag);
-+
-+			mute_flag = MCB_SPR_BUSY << 8 | MCB_SPL_BUSY << 8 |
-+			    MCB_HPR_BUSY << 8 | MCB_HPL_BUSY << 8 |
-+			    MCB_LO2R_BUSY | MCB_LO2L_BUSY |
-+			    MCB_LO1R_BUSY | MCB_LO1L_BUSY | MCB_RC_BUSY;
-+			mc_packet_add_wait_event(MCDRV_EVT_SVOL_DONE |
-+						 mute_flag);
-+			mc_packet_add_write_e(MCI_ECLK_SEL,
-+					      info.control.param[0]);
-+			mc_e_clock_select_set(info.control.param[0]);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+
-+			ret = set_vol(MCDRV_VOLUPDATE_ANA_OUT |
-+				      MCDRV_VOLUPDATE_ADIF0 |
-+				      MCDRV_VOLUPDATE_ADIF1 |
-+				      MCDRV_VOLUPDATE_ADIF2 |
-+				      MCDRV_VOLUPDATE_DPATHDA,
-+				      MCDRV_VOLUME_SET, &status);
-+			if (ret < 0)
-+				goto exit;
-+		}
-+
-+	}
-+
-+	mc_power_info_get(&power);
-+	update.digital = MCDRV_POWUPDATE_D_ALL;
-+	update.analog[0] = MCDRV_POWUPDATE_AP;
-+	update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+	update.analog[2] = MCDRV_POWUPDATE_AP_OUT1;
-+	update.analog[3] = MCDRV_POWUPDATE_AP_MC;
-+	update.analog[4] = MCDRV_POWUPDATE_AP_IN;
-+	ret = mc_packet_add_powerup(&power, &update);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		goto exit;
-+
-+	mc_packet_add_aec();
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = mc_bdsp_set_dsp(&info);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = mc_cdsp_set_dsp(&info);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = mc_edsp_set_dsp(&info);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = mc_fdsp_set_dsp(&info);
-+	if (ret < 0)
-+		goto exit;
-+
-+	if (info.control.command == 1) {
-+		if (info.control.param[0] == 1) {
-+			ret = set_path(&path_info);
-+			if (ret < 0)
-+				goto exit;
-+		}
-+	} else if (info.control.command == 2) {
-+		if (info.control.param[0] == 1) {
-+			mc_packet_add_write_mb(MCI_LP2_START, g_lp2_start);
-+			mc_packet_add_write_mb(MCI_SRC3_START, g_src3_start);
-+		}
-+	}
-+
-+	mc_power_info_get(&power);
-+
-+	ret = mc_packet_add_powerdown(&power, &update);
-+	if (ret < 0)
-+		goto exit;
-+
-+	return mc_packet_execute();
-+
-+exit:
-+	mc_aec_info_replace(&curr_info);
-+	save_power();
-+
-+	return ret;
-+}
-+
-+static inline int get_hsdet(struct mcdrv_hsdet_info *info)
-+{
-+	if (!info)
-+		return -EINVAL;
-+
-+	mc_hsdet_info_get(info);
-+
-+	info->dly_irq_stop = 0;
-+
-+	return 0;
-+}
-+
-+static int set_hsdet(struct mcdrv_hsdet_info *hsdet, unsigned int update)
-+{
-+	struct mcdrv_hsdet_info curr_hsdet;
-+	struct mcdrv_path_info path_info, tmp_path_info;
-+	struct mcdrv_hsdet_res hsdet_res;
-+	enum mcdrv_dev_id id;
-+	u8 val, data[2], plug_det_db;
-+	int ret = 0;
-+
-+	if (!hsdet)
-+		return -EINVAL;
-+
-+	curr_hsdet = *hsdet;
-+	if (!is_valid_hsdet_info(&curr_hsdet, update))
-+		return -EINVAL;
-+
-+	id = mc_dev_id_get();
-+	if (id == MCDRV_DEV_ID_80_90H)
-+		curr_hsdet.det_in_inv &= 1;
-+
-+	mc_hsdet_info_set(&curr_hsdet, update);
-+	mc_packet_add_hsdet();
-+	ret = mc_packet_execute();
-+	if (ret < 0)
-+		return ret;
-+
-+	mc_hsdet_info_get(&curr_hsdet);
-+	if (curr_hsdet.en_plug_det_db != MCDRV_PLUGDETDB_DISABLE ||
-+	    curr_hsdet.en_dly_key_off != MCDRV_KEYEN_D_D_D ||
-+	    curr_hsdet.en_dly_key_on != MCDRV_KEYEN_D_D_D ||
-+	    curr_hsdet.en_mic_det != MCDRV_MICDET_DISABLE ||
-+	    curr_hsdet.en_key_off != MCDRV_KEYEN_D_D_D ||
-+	    curr_hsdet.en_key_on != MCDRV_KEYEN_D_D_D) {
-+		val = mc_cd_register_get_value(MCI_HSDETEN);
-+		if (!(val & MCB_MKDETEN)) {
-+			val = MCB_HSDETEN | curr_hsdet.hs_det_dbnc;
-+			mc_packet_add_write_cd(MCI_HSDETEN, val);
-+
-+			if (curr_hsdet.en_dly_key_off != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_dly_key_on != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_mic_det != MCDRV_MICDET_DISABLE ||
-+			    curr_hsdet.en_key_off != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_key_on != MCDRV_KEYEN_D_D_D) {
-+				bool do_set_path = false;
-+
-+				if (is_ldoa_on()) {
-+					mc_path_info_get_virtual(&path_info);
-+					tmp_path_info = path_info;
-+					tmp_path_info.adc0[0] = 0x00aaaaaa;
-+					tmp_path_info.adc0[1] = 0x00aaaaaa;
-+
-+					tmp_path_info.adc1[0] = 0x00aaaaaa;
-+
-+					tmp_path_info.dac0[0] = 0x00aaaaaa;
-+					tmp_path_info.dac0[1] = 0x00aaaaaa;
-+					tmp_path_info.dac1[0] = 0x00aaaaaa;
-+					tmp_path_info.dac1[1] = 0x00aaaaaa;
-+
-+					tmp_path_info.bias[0] = 0x002aaaaa;
-+					tmp_path_info.bias[1] = 0x002aaaaa;
-+					tmp_path_info.bias[2] = 0x002aaaaa;
-+					tmp_path_info.bias[3] = 0x002aaaaa;
-+					ret = set_path(&tmp_path_info);
-+					if (ret < 0)
-+						return ret;
-+
-+					do_set_path = true;
-+				}
-+
-+				mc_packet_add_mic_key_detect_enable(true);
-+
-+				if (do_set_path)
-+					ret = set_path(&path_info);
++		if (mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH0)
++		    || mc_source_is_used(MCDRV_DST_VBOXMIXIN, MCDRV_DST_CH1)) {
++			start |= MCDRV_DSP_START_M;
++			if (aec->vbox.lpt2_vsource == 1) {
++				if (aec->vbox.cdsp_func_a_on
++				    || aec->vbox.cdsp_func_b_on)
++					start |= MCDRV_DSP_START_C;
++				if (aec->fdsp_locate && aec->vbox.fdsp_on == 1)
++					start |= MCDRV_DSP_START_F;
 +			}
++		}
++
++		if (mc_d1_source_is_used(MCDRV_D1SRC_VBOXOUT_ON)) {
++			start |= MCDRV_DSP_START_M;
++			if (aec->vbox.isrc2_vsource == 1) {
++				if (aec->vbox.cdsp_func_a_on
++				    || aec->vbox.cdsp_func_b_on)
++					start |= MCDRV_DSP_START_C;
++				if (aec->fdsp_locate && aec->vbox.fdsp_on == 1)
++					start |= MCDRV_DSP_START_F;
++			}
++		}
++
++		if (mc_source_is_used(MCDRV_DST_VBOXHOSTIN, MCDRV_DST_CH0)
++		    || mc_source_is_used(MCDRV_DST_HOSTOUT, MCDRV_DST_CH0)) {
++			if (aec->vbox.cdsp_func_a_on
++			    || aec->vbox.cdsp_func_b_on)
++				start |= MCDRV_DSP_START_C;
++			if (aec->fdsp_locate && aec->vbox.fdsp_on == 1)
++				start |= MCDRV_DSP_START_F;
++		}
++
++		if (mc_source_is_used(MCDRV_DST_VOICEOUT, MCDRV_DST_CH0)
++		    && aec->vbox.lpt2_vsource == 1) {
++			if (aec->vbox.cdsp_func_a_on
++			    || aec->vbox.cdsp_func_b_on)
++				start |= MCDRV_DSP_START_C;
++			if (aec->fdsp_locate && aec->vbox.fdsp_on == 1)
++				start |= MCDRV_DSP_START_F;
++		}
++	}
++
++	if (mc_d1_source_is_used(MCDRV_D1SRC_MUSICIN_ON)
++	    || mc_d1_source_is_used(MCDRV_D1SRC_EXTIN_ON)
++	    || mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_MUSICOUT, MCDRV_DST_CH1)
++	    || mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH0)
++	    || mc_source_is_used(MCDRV_DST_EXTOUT, MCDRV_DST_CH1))
++		start |= MCDRV_DSP_START_M;
++
++	return start;
++}
++
++void mc_resource_clear(void)
++{
++	mc_info.packet.data_size = 0;
++	mc_info.slave_addr = 0xffff;
++	mc_info.type = 0xffff;
++	mc_info.addr = 0xffff;
++	mc_info.data_count = 0;
++	mc_info.prev_addr_index = 0;
++}
++
++void mc_bus_queue_add(u16 type, u16 addr, u8 data, enum mcdrv_update_mode mode)
++{
++	const u16 *next_list;
++	u16 size, next_addr, after_next_addr;
++	u16 index, prev_type, prev_addr, prev_slave_addr, slave_addr;
++	u8 *regs, *packet;
++	u8 packet_addr, packet_window, addr_inc_reg;
++	bool addr_inc;
++
++	prev_type = mc_info.type;
++	prev_slave_addr = mc_info.slave_addr;
++
++	slave_addr = MCDRV_SLAVE_ADDR_DIGITAL;
++
++	switch (type) {
++	case MCDRV_PACKET_REGTYPE_IF:
++		regs = mc_info.if_registers;
++		next_list = mc_next_addr_list;
++		addr_inc = false;
++		addr_inc_reg = 0;
++		packet_addr = addr;
++		packet_window = packet_addr;
++		break;
++	case MCDRV_PACKET_REGTYPE_A:
++		regs = mc_info.a_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_A_REG_AINC;
++		packet_addr = MCI_A_REG_A;
++		packet_window = MCI_A_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_MA:
++		regs = mc_info.ma_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_MA_REG_AINC;
++		packet_addr = MCI_MA_REG_A;
++		packet_window = MCI_MA_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_MB:
++		regs = mc_info.mb_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_MB_REG_AINC;
++		packet_addr = MCI_MB_REG_A;
++		packet_window = MCI_MB_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_B:
++		regs = mc_info.b_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_B_REG_AINC;
++		packet_addr = MCI_B_REG_A;
++		packet_window = MCI_B_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_E:
++		regs = mc_info.e_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_E_REG_AINC;
++		packet_addr = MCI_E_REG_A;
++		packet_window = MCI_E_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_C:
++		regs = mc_info.c_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = 0;
++		packet_addr = MCI_C_REG_A;
++		packet_window = MCI_C_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_F:
++		regs = mc_info.f_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_F_REG_AINC;
++		packet_addr = MCI_F_REG_A;
++		packet_window = MCI_F_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_ANA:
++		slave_addr = MCDRV_SLAVE_ADDR_ANALOG;
++		regs = mc_info.ana_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_ANA_REG_AINC;
++		packet_addr = MCI_ANA_REG_A;
++		packet_window = MCI_ANA_REG_D;
++		break;
++	case MCDRV_PACKET_REGTYPE_CD:
++		slave_addr = MCDRV_SLAVE_ADDR_ANALOG;
++		regs = mc_info.cd_registers;
++		next_list = mc_next_addr_list_inc;
++		addr_inc = true;
++		addr_inc_reg = MCB_CD_REG_AINC;
++		packet_addr = MCI_CD_REG_A;
++		packet_window = MCI_CD_REG_D;
++		break;
++	default:
++		return;
++	}
++
++	if ((prev_type != 0xffff && prev_type != type)
++	    || (prev_slave_addr != 0xffff && prev_slave_addr != slave_addr)) {
++		mc_bus_queue_flush();
++		mc_resource_clear();
++	}
++
++	if (mode != MCDRV_UPDATE_FORCE && data == regs[addr])
++		return;
++
++	if (mc_info.addr == 0xffff)
++		mc_info.addr = addr;
++
++	prev_addr = mc_info.addr;
++
++	if (mode != MCDRV_UPDATE_DUMMY) {
++		packet = mc_info.packet.data;
++		size = mc_info.packet.data_size;
++		index = mc_info.prev_addr_index;
++		next_addr = next_list[prev_addr];
++
++		if (size > MCDRV_MAX_CTRL_DATA_NUM - 8)
++			pr_warn("ymu831: remaining packet buffer too small\n");
++
++		if (slave_addr == prev_slave_addr && type == prev_type
++		    && next_addr != 0xffff && addr != next_addr && addr_inc) {
++			after_next_addr = next_list[next_addr];
++			if (after_next_addr == addr) {
++				if (!mc_info.data_count)
++					packet[index] |= BURST_WRITE_ENABLE;
++
++				packet[size++] = regs[next_addr];
++				mc_info.data_count++;
++				next_addr = after_next_addr;
++			} else if (after_next_addr != 0xffff
++				   && next_list[after_next_addr] == addr) {
++				if (!mc_info.data_count)
++					packet[index] |= BURST_WRITE_ENABLE;
++
++				packet[size++] = regs[next_addr];
++				packet[size++] = regs[after_next_addr];
++				mc_info.data_count += 2;
++				next_addr = next_list[after_next_addr];
++			}
++		}
++
++		if (!size || addr != next_addr) {
++			if (mc_info.data_count) {
++				mc_bus_queue_flush();
++				mc_resource_clear();
++				size = mc_info.packet.data_size;
++			}
++
++			if (MCDRV_PACKET_REGTYPE_IF == type) {
++				packet[size] = packet_addr << 1;
++				index = size++;
++			} else {
++				packet[size++] = packet_addr << 1;
++				packet[size++] = addr | addr_inc_reg;
++				packet[size] = packet_window << 1;
++				index = size++;
++			}
++
++			mc_info.prev_addr_index = index;
 +		} else {
-+			val = MCB_HSDETEN | curr_hsdet.hs_det_dbnc;
-+			if (curr_hsdet.en_dly_key_off != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_dly_key_on != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_mic_det != MCDRV_MICDET_DISABLE ||
-+			    curr_hsdet.en_key_off != MCDRV_KEYEN_D_D_D ||
-+			    curr_hsdet.en_key_on != MCDRV_KEYEN_D_D_D) {
-+				plug_det_db = mc_plug_detect_db_get();
-+				if (plug_det_db & MCB_RPLUGDET_DB)
-+					val |= MCB_MKDETEN;
-+			}
++			if (!mc_info.data_count)
++				packet[index] |= BURST_WRITE_ENABLE;
 +
-+			mc_packet_add_write_cd(MCI_HSDETEN, val);
-+
-+			if (!(val & MCB_MKDETEN)) {
-+				val = mc_ana_register_get_value(MCI_KDSET);
-+				val &= ~(MCB_KDSET2 | MCB_KDSET1);
-+				mc_packet_add_force_write_ana(MCI_KDSET, val);
-+			}
++			mc_info.data_count++;
 +		}
++
++		packet[size++] = data;
++
++		mc_info.slave_addr = slave_addr;
++		mc_info.type = type;
++		mc_info.addr = addr;
++		mc_info.packet.data_size = size;
 +	}
 +
-+	if (!ret)
-+		ret = mc_packet_execute();
++	/* save register value */
++	regs[addr] = data;
++}
 +
-+	if (!ret) {
-+		if ((update & MCDRV_ENPLUGDETDB_UPDATE_FLAG) &&
-+		    (curr_hsdet.en_plug_det_db &
-+		     MCDRV_PLUGDETDB_UNDET_ENABLE) && curr_hsdet.cbfunc) {
-+			data[0] = MCI_CD_REG_A << 1;
-+			data[1] = MCI_PLUGDET;
++void mc_bus_queue_flush(void)
++{
++	if (mc_info.packet.data_size) {
++		mc_write(mc_info.slave_addr,
++				   mc_info.packet.data,
++				   mc_info.packet.data_size);
++	}
++}
++
++static int wait_set_bit(u8 slave_addr, u16 addr, u8 mask,
++			u32 interval, u32 timeout)
++{
++	u8 val;
++
++	while (timeout > 0) {
++		mc_read(slave_addr, addr, &val, 1);
++		if ((val & mask) == mask)
++			return 0;
++
++		msleep(interval);
++		timeout--;
++	}
++
++	return -EAGAIN;
++}
++
++static int wait_release_bit(u8 slave_addr, u16 addr, u8 mask,
++			    u32 interval, u32 timeout)
++{
++	u8 val;
++
++	while (timeout > 0) {
++		mc_read(slave_addr, addr, &val, 1);
++		if (!(val & mask))
++			return 0;
++
++		msleep(interval);
++		timeout--;
++	}
++
++	return -EAGAIN;
++}
++
++static int wait_set_dspbit(u8 slave_addr, u8 addr_a, u8 addr_d, u8 addr,
++			   u8 mask, u32 interval, u32 timeout)
++{
++	u8 val, data[2];
++
++	data[0] = addr_a << 1;
++	data[1] = addr;
++
++	while (timeout > 0) {
++		mc_write(slave_addr, data, 2);
++		mc_read(slave_addr, addr_d, &val, 1);
++		if ((val & mask) == mask)
++			return 0;
++
++		msleep(interval);
++		timeout--;
++	}
++
++	return -EAGAIN;
++}
++
++static int wait_release_dspbit(u8 slave_addr, u8 addr_a, u8 addr_d, u8 addr,
++			       u8 mask, u32 interval, u32 timeout)
++{
++	u8 val, data[2];
++
++	data[0] = addr_a << 1;
++	data[1] = addr;
++
++	while (timeout > 0) {
++		mc_write(slave_addr, data, 2);
++		mc_read(slave_addr, addr_d, &val, 1);
++		if (!(val & mask))
++			return 0;
++
++		msleep(interval);
++		timeout--;
++	}
++
++	return -EAGAIN;
++}
++
++int mc_wait_event(u32 event, u32 param)
++{
++	u32 interval, timeout;
++	u8 data[2];
++	int ret = 0;
++
++	switch (event) {
++	case MCDRV_EVT_SVOL_DONE:
++		interval = mc_info.dev_info.wait_time.poll_interval[0];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[0];
++
++		if (param >> 8) {
++			data[0] = MCI_ANA_REG_A << 1;
++			data[1] = MCI_BUSY1;
 +			mc_write_analog(data, 2);
-+			mc_read_analog(MCI_CD_REG_D, &val, 1);
-+			if (!(val & MCB_PLUGDET)) {
-+				hsdet_res.key_cnt0 = 0;
-+				hsdet_res.key_cnt1 = 0;
-+				hsdet_res.key_cnt2 = 0;
-+				mutex_unlock(&mcdrv_mutex);
-+				(*curr_hsdet.
-+				 cbfunc) (MCDRV_HSDET_EVT_PLUGUNDET_DB_FLAG,
-+					  &hsdet_res);
-+				mutex_lock(&mcdrv_mutex);
-+			}
++			ret = wait_release_bit(MCDRV_SLAVE_ADDR_ANALOG,
++					       MCI_ANA_REG_D, param >> 8,
++					       interval, timeout);
++			if (ret < 0)
++				break;
 +		}
 +
-+		ret = save_power();
-+	}
++		if (param & 0xffU) {
++			data[0] = MCI_ANA_REG_A << 1;
++			data[1] = MCI_BUSY2;
++			mc_write_analog(data, 2);
++			ret = wait_release_bit(MCDRV_SLAVE_ADDR_ANALOG,
++					       MCI_ANA_REG_D, param & 0xff,
++					       interval, timeout);
++		}
++		break;
++	case MCDRV_EVT_ALLMUTE:
++		interval = mc_info.dev_info.wait_time.poll_interval[1];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[1];
 +
-+	return ret;
-+}
-+
-+static inline void enable_irqhs(u8 *data)
-+{
-+	data[1] = MCI_IRQHS;
-+	data[3] = MCB_EIRQHS;
-+	mc_write_analog(data, 4);
-+
-+	mc_cd_register_set_value(MCI_IRQHS, MCB_EIRQHS);
-+}
-+
-+int mc_do_irq(void)
-+{
-+	struct mcdrv_aec_info aec;
-+	struct mcdrv_path_info path;
-+	struct mcdrv_hsdet_info hsdet;
-+	struct mcdrv_hsdet_res hsdet_res;
-+	enum mcdrv_dev_id id;
-+	u32 flag_det = 0;
-+	u8 val, splug_det, plug_det, sensefin, eirq, data[4];
-+	u8 flag_dlykey = 0, flag_key = 0;
-+	static u8 s_op_dac, s_hp_det;
-+	unsigned long interval;
-+	int cycles, timeout, ret = 0;
-+
-+	mutex_lock(&mcdrv_mutex);
-+
-+	id = mc_dev_id_get();
-+	mc_hsdet_info_get(&hsdet);
-+
-+	eirq = mc_if_register_get_value(MCI_IRQ);
-+	val = mc_cd_register_get_value(MCI_EIRQSENSE);
-+	if (val & MCB_EIRQSENSE) {
-+		/* IRQ Disable */
-+		data[0] = MCI_IRQR << 1;
-+		data[1] = 0;
++		data[0] = MCI_MA_REG_A << 1;
++		data[1] = MCI_DIFI_VFLAG;
 +		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D,
++				       (MCB_DIFI3_VFLAG1 | MCB_DIFI3_VFLAG0 |
++					MCB_DIFI2_VFLAG1 | MCB_DIFI2_VFLAG0 |
++					MCB_DIFI1_VFLAG1 | MCB_DIFI1_VFLAG0 |
++					MCB_DIFI1_VFLAG0 | MCB_DIFI0_VFLAG0),
++				       interval, timeout);
++		if (ret < 0)
++			break;
++
++		data[1] = MCI_ADI_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D,
++				       (MCB_ADI2_VFLAG1 | MCB_ADI2_VFLAG0 |
++					MCB_ADI1_VFLAG1 | MCB_ADI1_VFLAG0 |
++					MCB_ADI0_VFLAG1 | MCB_ADI0_VFLAG0),
++				       interval, timeout);
++		if (ret < 0)
++			break;
++
++		data[1] = MCI_DIFO_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D,
++				       (MCB_DIFO3_VFLAG1 | MCB_DIFO3_VFLAG0 |
++					MCB_DIFO2_VFLAG1 | MCB_DIFO2_VFLAG0 |
++					MCB_DIFO1_VFLAG1 | MCB_DIFO1_VFLAG0 |
++					MCB_DIFO1_VFLAG0 | MCB_DIFO0_VFLAG0),
++				       interval, timeout);
++		if (ret < 0)
++			break;
++
++		data[1] = MCI_DAO_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D,
++				       (MCB_DAO1_VFLAG1 | MCB_DAO1_VFLAG0 |
++					MCB_DAO0_VFLAG1 | MCB_DAO0_VFLAG0),
++				       interval, timeout);
++		break;
++	case MCDRV_EVT_DIRMUTE:
++		interval = mc_info.dev_info.wait_time.poll_interval[1];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[1];
++
++		data[0] = MCI_MA_REG_A << 1;
++		data[1] = MCI_DIFI_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D, param, interval, timeout);
++		break;
++	case MCDRV_EVT_ADCMUTE:
++		interval = mc_info.dev_info.wait_time.poll_interval[1];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[1];
++
++		data[0] = MCI_MA_REG_A << 1;
++		data[1] = MCI_ADI_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D, param, interval, timeout);
++		break;
++	case MCDRV_EVT_DITMUTE:
++		interval = mc_info.dev_info.wait_time.poll_interval[1];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[1];
++
++		data[0] = MCI_MA_REG_A << 1;
++		data[1] = MCI_DIFO_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D, param, interval, timeout);
++		break;
++	case MCDRV_EVT_DACMUTE:
++		interval = mc_info.dev_info.wait_time.poll_interval[1];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[1];
++
++		data[0] = MCI_MA_REG_A << 1;
++		data[1] = MCI_DAO_VFLAG;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_MA_REG_D, param, interval, timeout);
++		break;
++	case MCDRV_EVT_CLKBUSY_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[2];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[2];
++
++		data[0] = MCI_A_REG_A << 1;
++		data[1] = MCI_CLKSRC;
++		mc_write_digital(data, 2);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       MCI_A_REG_D, MCB_CLKBUSY, interval,
++				       timeout);
++		break;
++	case MCDRV_EVT_PSW_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[4];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[4];
++
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL,
++				       param >> 8, param & 0xff,
++				       interval, timeout);
++		break;
++	case MCDRV_EVT_OFFCAN_BSY_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
 +
 +		data[0] = MCI_CD_REG_A << 1;
 +		data[1] = MCI_SSENSEFIN;
 +		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &sensefin, 1);
-+		if (sensefin & MCB_SSENSEFIN) {
-+			data[1] = MCI_EIRQSENSE;
-+			data[2] = MCI_CD_REG_D << 1;
-+			data[3] = 0;
-+			mc_write_analog(data, 4);
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_ANALOG, MCI_CD_REG_D,
++				       MCB_OFFCAN_BSY, interval, timeout);
++		break;
++	case MCDRV_EVT_ANA_RDY:
++		interval = mc_info.dev_info.wait_time.poll_interval[5];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[5];
 +
-+			mc_cd_register_set_value(MCI_EIRQSENSE, 0);
-+			data[1] = MCI_SSENSEFIN;
-+			data[3] = val;
-+			mc_write_analog(data, 4);
-+		} else {
-+			/* IRQ Enable */
-+			data[0] = MCI_IRQR << 1;
-+			data[1] = MCB_EIRQR;
-+			mc_write_digital(data, 2);
-+
-+			mutex_unlock(&mcdrv_mutex);
-+
-+			return 0;
-+		}
-+
-+		/*      PLUGDET, PLUGUNDETDB, PLUGDETDB */
-+		data[0] = MCI_CD_REG_A << 1;
-+		data[1] = MCI_PLUGDET;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+
-+		/*      clear   */
-+		flag_det = val;
-+		data[2] = MCI_CD_REG_D << 1;
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+
-+		/*      set reference   */
-+		data[1] = MCI_PLUGDET_DB;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+		mc_plug_detect_db_set(val);
-+
-+		data[1] = MCI_RPLUGDET;
-+		data[3] = (flag_det & MCB_PLUGDET) | val;
-+		mc_write_analog(data, 4);
-+		flag_det = data[3];
-+
-+		data[1] = MCI_MICDET;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+
-+		data[1] = MCI_RMICDET;
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+		flag_key = val & MCB_MICDET;
-+
-+		data[1] = MCI_SMICDET;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+
-+		hsdet_res.key_cnt0 = 0;
-+		hsdet_res.key_cnt1 = 0;
-+		hsdet_res.key_cnt2 = 0;
-+
-+		data[0] = MCI_E_REG_A << 1;
-+		data[1] = MCI_PLUG_REV;
-+		mc_write_digital(data, 2);
-+		mc_read_digital(MCI_E_REG_D, &val, 1);
-+		hsdet_res.plug_rev = val >> 7;
-+		hsdet_res.hp_imp_class = val & 0x07;
-+		data[1] = MCI_HPIMP_15_8;
-+		mc_write_digital(data, 2);
-+		mc_read_digital(MCI_E_REG_D, &val, 1);
-+		hsdet_res.hp_imp = val << 8;
-+		data[1] = MCI_HPIMP_7_0;
-+		mc_write_digital(data, 2);
-+		mc_read_digital(MCI_E_REG_D, &val, 1);
-+		hsdet_res.hp_imp |= val;
-+
-+		val = mc_e_register_get_value(MCI_LPF_THR);
-+		val &=
-+		    (MCB_OSF1_MN | MCB_OSF0_MN | MCB_OSF1_ENB | MCB_OSF0_ENB);
-+		mc_aec_info_get(&aec);
-+		val |= aec.output.lpf_post_thru[1] << 7
-+		    | aec.output.lpf_post_thru[0] << 6
-+		    | aec.output.lpf_pre_thru[1] << 5
-+		    | aec.output.lpf_pre_thru[0] << 4;
-+		mc_packet_add_write_e(MCI_LPF_THR, val);
-+
-+		val = aec.output.dcl_on[1] << 7 | aec.output.dcl_gain[1] << 4
-+		    | aec.output.dcl_on[0] << 3 | aec.output.dcl_gain[0];
-+		mc_packet_add_write_e(MCI_DCL_GAIN, val);
-+
-+		if (id == MCDRV_DEV_ID_80_90H)
-+			mc_packet_add_write_ana(19, s_op_dac);
-+
-+		mc_packet_add_write_ana(MCI_HPDETVOL, s_hp_det);
-+		if (id == MCDRV_DEV_ID_80_90H) {
-+			mc_packet_add_force_write_ana(78,
-+						      T_CPMODE_IMPSENSE_AFTER);
-+			mc_packet_add_force_write_ana(87, 0);
-+			data[0] = MCI_ANA_REG_A << 1;
-+			data[1] = 78;
-+			mc_write_analog(data, 2);
-+			mc_read_analog(MCI_ANA_REG_D, &val, 1);
-+		} else {
-+			mc_packet_add_force_write_ana(87, 0);
-+			mc_packet_add_force_write_if(31, 0);
-+			mc_packet_add_force_write_if(30, 0);
-+		}
-+
-+		mc_path_info_get_virtual(&path);
-+		ret = set_path(&path);
-+
-+		if (hsdet.cbfunc) {
-+			if (flag_det & MCB_SPLUGUNDET_DB)
-+				flag_det = MCB_PLUGUNDET_DB;
-+			else
-+				flag_det |= MCDRV_HSDET_EVT_SENSEFIN_FLAG;
-+
-+			mutex_unlock(&mcdrv_mutex);
-+
-+			(*hsdet.cbfunc) (flag_det | (flag_key << 16),
-+					 &hsdet_res);
-+			mutex_lock(&mcdrv_mutex);
-+		}
-+
-+		/*      Enable IRQ      */
-+		data[0] = MCI_CD_REG_A << 1;
-+		data[2] = MCI_CD_REG_D << 1;
-+		enable_irqhs(data);
-+
-+		data[0] = MCI_IRQR << 1;
-+		data[1] = MCB_EIRQR;
-+		mc_write_digital(data, 2);
-+
-+		val = mc_if_register_get_value(MCI_RST_A);
-+		if (!val) {
-+			data[0] = MCI_IRQ << 1;
-+			data[1] = MCB_EIRQ;
-+			mc_write_digital(data, 2);
-+			mc_if_register_set_value(MCI_IRQ, MCB_EIRQ);
-+		}
-+
-+		mutex_unlock(&mcdrv_mutex);
-+
-+		return 0;
-+	}
-+
-+	if (mc_state_get() != MCDRV_STATE_READY) {
-+		ret = -EBUSY;
-+		goto exit;
-+	}
-+
-+	if (eirq & MCB_EIRQ) {
-+		mc_read_digital(MCI_EDSP, &val, 1);
-+		if (val) {
-+			/* Disable IRQ */
-+			mc_packet_add_force_write_if(MCI_EEDSP, 0);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+
-+			if (val & MCB_E2DSP_STA)
-+				mc_edsp_irq();
-+
-+			/* Clear IRQ */
-+			mc_packet_add_force_write_if(MCI_EDSP, val);
-+
-+			/* Enable IRQ */
-+			mc_packet_add_force_write_if(MCI_EEDSP, MCB_EE2DSP);
-+		}
-+
-+		mc_read_digital(MCI_CDSP, &val, 1);
-+		if (val) {
-+			/* Disable IRQ */
-+			mc_packet_add_force_write_if(MCI_ECDSP, 0);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+
-+			mc_cdsp_irq();
-+
-+			/* Clear IRQ */
-+			mc_packet_add_force_write_if(MCI_CDSP, val);
-+
-+			/* Enable IRQ */
-+			val = MCB_ECDSP | MCB_EFFIFO | MCB_ERFIFO | MCB_EEFIFO |
-+			    MCB_EOFIFO | MCB_EDFIFO | MCB_EENC | MCB_EDEC;
-+			mc_packet_add_force_write_if(MCI_ECDSP, val);
-+		}
-+
-+		mc_read_digital(MCI_IRSERR, &val, 1);
-+		if (val) {
-+			/* Disable IRQ */
-+			mc_packet_add_force_write_if(MCI_IESERR, 0);
-+
-+			ret = mc_packet_execute();
-+			if (ret < 0)
-+				goto exit;
-+
-+			mc_fdsp_irq();
-+
-+			/* Clear IRQ */
-+			mc_packet_add_force_write_if(MCI_IRSERR, val);
-+			/* Enable IRQ */
-+			val =
-+			    MCB_IESERR | MCB_IEAMTBEG | MCB_IEAMTEND | MCB_IEFW;
-+			mc_packet_add_force_write_if(MCI_IESERR, val);
-+		}
-+
-+		ret = mc_packet_execute();
-+		if (ret < 0)
-+			goto exit;
-+	}
-+
-+	data[0] = MCI_CD_REG_A << 1;
-+	data[1] = MCI_IRQHS;
-+	mc_write_analog(data, 2);
-+	mc_read_analog(MCI_CD_REG_D, &val, 1);
-+	if (val == (MCB_EIRQHS | MCB_IRQHS)) {
-+		/* Disable EIRQHS */
-+		data[2] = MCI_CD_REG_D << 1;
-+		data[3] = 0;
-+		mc_write_analog(data, 4);
-+		mc_cd_register_set_value(MCI_IRQHS, 0);
-+
-+		/* PLUGDET, SPLUGUNDETDB, SPLUGDETDB */
-+		data[1] = MCI_PLUGDET;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &splug_det, 1);
-+		flag_det = splug_det & MCB_PLUGDET;
-+
-+		data[1] = MCI_PLUGDET_DB;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &plug_det, 1);
-+		flag_det |= plug_det;
-+		if (flag_det & MCB_PLUGUNDET_DB)
-+			mc_plug_detect_db_set(0);
-+
-+		if (hsdet.en_plug_det_db & MCDRV_PLUGDETDB_DET_ENABLE) {
-+			if (id == MCDRV_DEV_ID_81_91H) {
-+				data[1] = MCI_RPLUGDET;
-+				mc_write_analog(data, 2);
-+				mc_read_analog(MCI_CD_REG_D, &val, 1);
-+				val = ~val & plug_det;
-+			} else
-+				val = splug_det;
-+
-+			if (val & MCB_SPLUGDET_DB) {
-+				mc_plug_detect_db_set(val);
-+
-+				if (id != MCDRV_DEV_ID_81_92H) {
-+					val = mc_ana_register_get_value(MCI_AP);
-+					val &= ~MCB_AP_BGR;
-+					mc_packet_add_write_ana(MCI_AP, val);
-+				}
-+
-+				val = mc_ana_register_get_value(MCI_HIZ);
-+				val |= MCB_HPR_HIZ | MCB_HPL_HIZ;
-+				mc_packet_add_write_ana(MCI_HIZ, val);
-+
-+				mc_path_info_get_virtual(&path);
-+				path.bias[3] |= MCDRV_ASRC_MIC4_ON;
-+				ret = set_path(&path);
-+				if (ret < 0) {
-+					enable_irqhs(data);
-+					goto exit;
-+				}
-+
-+				if (hsdet.en_dly_key_off != MCDRV_KEYEN_D_D_D
-+				    || hsdet.en_dly_key_on != MCDRV_KEYEN_D_D_D
-+				    || hsdet.en_mic_det != MCDRV_MICDET_DISABLE
-+				    || hsdet.en_key_off != MCDRV_KEYEN_D_D_D
-+				    || hsdet.en_key_on != MCDRV_KEYEN_D_D_D)
-+					mc_packet_add_mic_key_detect_enable
-+					    (false);
-+
-+				ret = mc_packet_execute();
-+				if (ret < 0) {
-+					enable_irqhs(data);
-+					goto exit;
-+				}
-+
-+				if (hsdet.sgnl_num != MCDRV_SGNLNUM_NONE) {
-+					s_hp_det =
-+					    mc_ana_register_get_value
-+					    (MCI_HPDETVOL);
-+					ret = imp_sense_start(&s_op_dac);
-+					if (ret == 0) {
-+						mutex_unlock(&mcdrv_mutex);
-+						return ret;
-+					}
-+
-+					enable_irqhs(data);
-+					goto exit;
-+				}
-+			}
-+		}
-+
-+		/*      clear   */
-+		data[1] = MCI_PLUGDET;
-+		data[3] = splug_det;
-+		mc_write_analog(data, 4);
-+
-+		/*      set reference   */
-+		data[1] = MCI_RPLUGDET;
-+		data[3] = flag_det;
-+		mc_write_analog(data, 4);
-+
-+		/*      DLYKEYON, DLYKEYOFF     */
-+		data[1] = MCI_SDLYKEY;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+		flag_dlykey = val;
-+		/*      clear   */
-+		data[1] = MCI_SDLYKEY;
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+
-+		/*      MICDET, KEYON, KEYOFF   */
-+		data[1] = MCI_SMICDET;
-+		mc_write_analog(data, 2);
-+		mc_read_analog(MCI_CD_REG_D, &val, 1);
-+		flag_key = val & ~MCB_SMICDET;
-+		/*      clear   */
-+		data[1] = MCI_SMICDET;
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+
-+		/* set reference */
-+		data[1] = MCI_MICDET;
-+		mc_write_analog(data, 2);
-+		if (hsdet.sgnl_num == MCDRV_SGNLNUM_NONE) {
-+			if (flag_det & MCB_PLUGDET_DB) {
-+				switch (hsdet.speriod) {
-+				case MCDRV_SPERIOD_488:
-+					interval = 488;
-+					break;
-+				case MCDRV_SPERIOD_977:
-+					interval = 977;
-+					break;
-+				case MCDRV_SPERIOD_1953:
-+					interval = 1953;
-+					break;
-+				case MCDRV_SPERIOD_3906:
-+					interval = 3906;
-+					break;
-+				case MCDRV_SPERIOD_7813:
-+					interval = 7813;
-+					break;
-+				case MCDRV_SPERIOD_15625:
-+					interval = 15625;
-+					break;
-+				case MCDRV_SPERIOD_31250:
-+					interval = 31250;
-+					break;
-+				default:
-+					interval = 244;
-+					break;
-+				}
-+
-+				timeout = 1;
-+				switch (hsdet.dbnc_num_mic) {
-+				case MCDRV_DBNC_NUM_3:
-+					timeout += 3;
-+					break;
-+				case MCDRV_DBNC_NUM_4:
-+					timeout += 4;
-+					break;
-+				case MCDRV_DBNC_NUM_7:
-+					timeout += 7;
-+					break;
-+				default:
-+					break;
-+				}
-+
-+				cycles = 0;
-+				while (cycles < timeout) {
-+					mc_read_analog(MCI_CD_REG_D,
-+								 &val, 1);
-+					if (val & (MCB_MICDET | 0x07))
-+						break;
-+
-+					udelay(interval);
-+					cycles++;
-+				}
-+			}
-+		} else
-+			mc_read_analog(MCI_CD_REG_D, &val, 1);
-+		flag_key |= val & MCB_MICDET;
-+		data[1] = MCI_RMICDET;
-+		data[3] = val;
-+		mc_write_analog(data, 4);
-+
-+		if (hsdet.cbfunc) {
-+			/*      KeyCnt0 */
-+			data[1] = MCI_KEYCNTCLR0;
-+			mc_write_analog(data, 2);
-+			mc_read_analog(MCI_CD_REG_D,
-+						 &hsdet_res.key_cnt0, 1);
-+			data[1] = MCI_KEYCNTCLR0;
-+			data[3] = MCB_KEYCNTCLR0;
-+			mc_write_analog(data, 4);
-+
-+			/*      KeyCnt1 */
-+			data[1] = MCI_KEYCNTCLR1;
-+			mc_write_analog(data, 2);
-+			mc_read_analog(MCI_CD_REG_D,
-+						 &hsdet_res.key_cnt1, 1);
-+			data[1] = MCI_KEYCNTCLR1;
-+			data[3] = MCB_KEYCNTCLR1;
-+			mc_write_analog(data, 4);
-+
-+			/*      KeyCnt2 */
-+			data[1] = MCI_KEYCNTCLR2;
-+			mc_write_analog(data, 2);
-+			mc_read_analog(MCI_CD_REG_D,
-+						 &hsdet_res.key_cnt2, 1);
-+			data[1] = MCI_KEYCNTCLR2;
-+			data[3] = MCB_KEYCNTCLR2;
-+			mc_write_analog(data, 4);
-+
-+			data[0] = MCI_IRQ << 1;
-+			data[1] = 0;
-+			mc_write_analog(data, 2);
-+			mc_if_register_set_value(MCI_IRQ, 0);
-+
-+			data[0] = MCI_IRQR << 1;
-+			data[1] = 0;
-+			mc_write_analog(data, 2);
-+
-+			mutex_unlock(&mcdrv_mutex);
-+
-+			(*hsdet.cbfunc) (flag_det | (u32) flag_dlykey << 8 |
-+					 (u32) flag_key << 16, &hsdet_res);
-+
-+			mutex_lock(&mcdrv_mutex);
-+
-+			data[0] = MCI_IRQR << 1;
-+			data[1] = MCB_EIRQR;
-+			mc_write_analog(data, 2);
-+		}
-+		/* Enable IRQ */
-+		data[0] = MCI_CD_REG_A << 1;
-+		data[2] = MCI_CD_REG_D << 1;
-+		enable_irqhs(data);
-+	}
-+
-+exit:
-+	val = mc_if_register_get_value(MCI_RST_A);
-+	if (!val) {
-+		val = mc_if_register_get_value(MCI_IRQ);
-+		if (val != MCB_EIRQ) {
-+			data[0] = MCI_IRQ << 1;
-+			data[1] = MCB_EIRQ;
-+			mc_write_analog(data, 2);
-+			mc_if_register_set_value(MCI_IRQ, MCB_EIRQ);
-+		}
-+	}
-+
-+	mutex_unlock(&mcdrv_mutex);
-+
-+	return ret;
-+}
-+
-+static inline bool is_valid_mcdrv_dev_info(struct mcdrv_dev_info *info)
-+{
-+	enum mcdrv_dev_id id;
-+
-+	id = mc_dev_id_get();
-+
-+	if (info->clk_sel > MCDRV_CKSEL_LAST)
-+		return false;
-+
-+	if (info->clk_input > MCDRV_CKINPUT_LAST ||
-+	    info->clk_input == MCDRV_CKINPUT_NONE0 ||
-+	    info->clk_input == MCDRV_CKINPUT_NONE1 ||
-+	    info->clk_input == MCDRV_CKINPUT_NONE2)
-+		return false;
-+
-+	if (info->pll_mode_a > MCDRV_PLLMODE_MAX)
-+		return false;
-+
-+	if (info->pll_prev_div_a > MCDRV_PLLPREV_DIV_MAX)
-+		return false;
-+
-+	if (info->pll_fb_div_a > MCDRV_PLLFB_DIV_MAX)
-+		return false;
-+
-+	if (info->pll_mode_b > MCDRV_PLLMODE_MAX)
-+		return false;
-+
-+	if (info->pll_prev_div_b > MCDRV_PLLPREV_DIV_MAX)
-+		return false;
-+
-+	if (info->pll_fb_div_b > MCDRV_PLLFB_DIV_MAX)
-+		return false;
-+
-+	if (info->power_mode != MCDRV_POWMODE_FULL &&
-+	    info->power_mode != MCDRV_POWMODE_CDSPDEBUG)
-+		return false;
-+
-+	if (info->mb_sel1 > MCDRV_MBSEL_LAST)
-+		return false;
-+
-+	if (info->mb_sel2 > MCDRV_MBSEL_LAST)
-+		return false;
-+
-+	if (info->mb_sel3 > MCDRV_MBSEL_LAST)
-+		return false;
-+
-+	if (info->mb_sel4 > MCDRV_MBSEL_LAST)
-+		return false;
-+
-+	if (info->mbs_disch > MCDRV_MBSDISCH_LAST)
-+		return false;
-+
-+	if (info->sp_hiz > MCDRV_WL_LAST)
-+		return false;
-+
-+	if (info->hp_hiz > MCDRV_IMP_LAST)
-+		return false;
-+
-+	if (info->line_out1_hiz > MCDRV_IMP_LAST)
-+		return false;
-+
-+	if (info->line_out2_hiz > MCDRV_IMP_LAST)
-+		return false;
-+
-+	if (info->wait_time.wait[0] > MCDRV_WAIT_MAX ||
-+	    info->wait_time.wait[1] > MCDRV_WAIT_MAX ||
-+	    info->wait_time.wait[2] > MCDRV_WAIT_MAX ||
-+	    info->wait_time.wait[3] > MCDRV_WAIT_MAX ||
-+	    info->wait_time.wait[4] > MCDRV_WAIT_MAX)
-+		return false;
-+
-+	if (id == MCDRV_DEV_ID_81_91H) {
-+		if (info->options[0] > MCDRV_DOA_DRV_LAST)
-+			return false;
-+		if (info->options[1] > MCDRV_SCKMSK_LAST)
-+			return false;
-+		if (info->options[2] > MCDRV_SPMN_LAST)
-+			return false;
-+		if (info->options[3] > 0x0f)
-+			return false;
-+		if (info->options[4] > 0xf8)
-+			return false;
-+		if (info->options[5] > 0xf8)
-+			return false;
-+		if (info->options[6] > 0x31)
-+			return false;
-+		if (info->options[7] > 0x7f)
-+			return false;
-+		if (info->options[9] > 0x7f)
-+			return false;
-+		if (info->options[10] > 0x11)
-+			return false;
-+		if (info->options[11] > 0xf3)
-+			return false;
-+		if (info->options[12] > 0x07)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+int mc_init(struct mcdrv_dev_info *info)
-+{
-+	struct mcdrv_power_info power_info;
-+	struct mcdrv_power_update power_update;
-+	enum mcdrv_state state;
-+	u8 analog_id, digital_id, ap = MCI_AP_DEF, data[4];
-+	int ret;
-+
-+	if (!info)
-+		return -EINVAL;
-+
-+	state = mc_state_get();
-+	if (state == MCDRV_STATE_READY)
-+		return -EBUSY;
-+
-+	mutex_lock(&mcdrv_mutex);
-+
-+	mc_resource_init();
-+
-+	data[0] = MCI_ANA_REG_A << 1;
-+	data[1] = MCI_ANA_ID;
-+	mc_write_analog(data, 2);
-+	mc_read_analog(MCI_ANA_REG_D, &analog_id, 1);
-+
-+	if ((analog_id & MCDRV_DEVID_MASK) == MCDRV_DEVID_ANA) {
-+		/* reset */
 +		data[0] = MCI_ANA_REG_A << 1;
-+		data[1] = MCI_ANA_RST;
-+		data[2] = MCI_ANA_REG_D << 1;
-+		data[3] = MCI_ANA_RST_DEF;
-+		mc_write_analog(data, 4);
-+
-+		data[3] = 0;
-+		mc_write_analog(data, 4);
-+
-+		if (!(analog_id & MCDRV_VERID_MASK)) {
-+			data[1] = MCI_AP;
-+			data[3] = MCI_AP_DEF & ~(MCB_AP_LDOD | MCB_AP_BGR);
-+			mc_write_analog(data, 4);
-+
-+			data[3] &= ~MCB_AP_VR;
-+			mc_write_analog(data, 4);
-+
-+			msleep(VREF_WAIT_TIME_ES1);
-+
-+			data[3] &= ~MCB_AP_LDOA;
-+			mc_write_analog(data, 4);
-+
-+			msleep(LDO_WAIT_TIME);
-+
-+			ap = data[3];
-+		} else {
-+			data[1] = MCI_HIZ;
-+			data[3] = 0;
-+			mc_write_analog(data, 4);
-+
-+			data[1] = MCI_LO_HIZ;
-+			data[3] = 0;
-+			mc_write_analog(data, 4);
-+
-+			data[1] = MCI_AP;
-+			ap &= ~(MCB_AP_LDOD | MCB_AP_BGR);
-+			data[3] = ap;
-+			mc_write_analog(data, 4);
-+
-+			ap &= ~MCB_AP_LDOA;
-+			data[3] = ap;
-+			mc_write_analog(data, 4);
-+
-+			msleep(LDO_WAIT_TIME);
-+
-+			data[1] = 62;
-+			data[3] = 0x20;
-+			mc_write_analog(data, 4);
-+
-+			data[1] = MCI_AP;
-+			ap &= ~MCB_AP_VR;
-+			data[3] = ap;
-+			mc_write_analog(data, 4);
-+
-+			msleep(VREF_WAIT_TIME);
-+
-+			data[1] = 62;
-+			data[3] = 0;
-+			mc_write_analog(data, 4);
-+		}
-+
-+		data[0] = MCI_RST_A << 1;
-+		data[1] = MCI_RST_A_DEF & ~MCB_RST_A;
-+		mc_write_digital(data, 2);
-+
-+		data[0] = MCI_A_REG_A << 1;
-+		data[1] = MCI_A_DEV_ID;
-+		mc_write_digital(data, 2);
-+		mc_read_digital(MCI_A_REG_D, &digital_id, 1);
-+		ret = mc_id_set(digital_id, analog_id);
-+		if (!ret) {
-+			if (is_valid_mcdrv_dev_info(info)) {
-+				mc_ana_register_set_value(MCI_AP, ap);
-+				mc_dev_info_set(info);
-+				mc_packet_clear();
-+				ret = mc_packet_init();
-+				if (ret == 0)
-+					ret = mc_packet_execute();
-+			} else
-+				ret = -EINVAL;
-+		}
-+
-+		if (!ret && info->power_mode == MCDRV_POWMODE_CDSPDEBUG) {
-+			mc_power_info_get(&power_info);
-+
-+			/*      used path power up      */
-+			power_update.digital = MCDRV_POWUPDATE_D_ALL;
-+			power_update.analog[0] = 0;
-+			power_update.analog[1] = 0;
-+			power_update.analog[2] = 0;
-+			power_update.analog[3] = 0;
-+			power_update.analog[4] = 0;
-+			ret = mc_packet_add_powerup(&power_info, &power_update);
-+		}
-+
-+		if (!ret) {
-+			mc_state_update(MCDRV_STATE_READY);
-+			save_power();
-+		}
-+	} else
-+		ret = -EIO;
-+
-+	mutex_unlock(&mcdrv_mutex);
-+
-+	return ret;
-+}
-+
-+int mc_term(void)
-+{
-+	struct mcdrv_dev_info info;
-+	struct mcdrv_power_info power_info;
-+	struct mcdrv_power_update power_update;
-+	struct mcdrv_hsdet_info hsdet_info;
-+	enum mcdrv_state state;
-+	u32 flags;
-+	int ret = 0;
-+
-+	state = mc_state_get();
-+	if (state != MCDRV_STATE_READY)
-+		return -EBUSY;
-+
-+	mutex_lock(&mcdrv_mutex);
-+
-+	mc_dev_info_get(&info);
-+	info.power_mode = MCDRV_POWMODE_FULL;
-+	mc_dev_info_set(&info);
-+
-+	ret = set_path(&path_alloff);
-+	if (!ret) {
-+		power_info.digital = 0xff;
-+		power_info.analog[0] = 0xff;
-+		power_info.analog[1] = 0xff;
-+		power_info.analog[2] = 0xff;
-+		power_info.analog[3] = 0xff;
-+		power_info.analog[4] = 0xff;
-+
-+		power_update.digital = MCDRV_POWUPDATE_D_ALL;
-+		power_update.analog[0] = MCDRV_POWUPDATE_AP;
-+		power_update.analog[1] = MCDRV_POWUPDATE_AP_OUT0;
-+		power_update.analog[2] = (u8) MCDRV_POWUPDATE_AP_OUT1;
-+		power_update.analog[3] = (u8) MCDRV_POWUPDATE_AP_MC;
-+		power_update.analog[4] = (u8) MCDRV_POWUPDATE_AP_IN;
-+
-+		ret = mc_packet_add_powerdown(&power_info,
-+						       &power_update);
-+		if (!ret)
-+			ret = mc_packet_execute();
-+	}
-+
-+	hsdet_info.en_plug_det = MCDRV_PLUGDET_DISABLE;
-+	hsdet_info.en_plug_det_db = MCDRV_PLUGDETDB_DISABLE;
-+	hsdet_info.en_dly_key_off = MCDRV_KEYEN_D_D_D;
-+	hsdet_info.en_dly_key_on = MCDRV_KEYEN_D_D_D;
-+	hsdet_info.en_mic_det = MCDRV_MICDET_DISABLE;
-+	hsdet_info.en_key_off = MCDRV_KEYEN_D_D_D;
-+	hsdet_info.en_key_on = MCDRV_KEYEN_D_D_D;
-+	flags = MCDRV_ENPLUGDET_UPDATE_FLAG | MCDRV_ENPLUGDETDB_UPDATE_FLAG |
-+	    MCDRV_ENDLYKEYOFF_UPDATE_FLAG | MCDRV_ENDLYKEYON_UPDATE_FLAG |
-+	    MCDRV_ENMICDET_UPDATE_FLAG | MCDRV_ENKEYOFF_UPDATE_FLAG |
-+	    MCDRV_ENKEYON_UPDATE_FLAG;
-+
-+	ret = set_hsdet(&hsdet_info, flags);
-+
-+	mc_state_update(MCDRV_STATE_NOTINIT);
-+
-+	mutex_unlock(&mcdrv_mutex);
-+
-+	return ret;
-+}
-+
-+int mc_control(unsigned int cmd, unsigned long arg, unsigned int flags)
-+{
-+	int ret;
-+
-+	if (mc_state_get() != MCDRV_STATE_READY)
-+		return -EBUSY;
-+
-+	mutex_lock(&mcdrv_mutex);
-+
-+	switch (cmd) {
-+	case MCDRV_GET_CLOCKSW:
-+		ret = get_clock((u8 *) arg);
++		data[1] = param >> 8;
++		mc_write_analog(data, 2);
++		ret = wait_set_bit(MCDRV_SLAVE_ADDR_ANALOG, MCI_ANA_REG_D,
++				   param & 0xff, interval, timeout);
 +		break;
-+	case MCDRV_SET_CLOCKSW:
-+		ret = set_clock((u8 *) arg);
++	case MCDRV_EVT_AP_CP_A_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[5];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[5];
++
++		data[0] = MCI_ANA_REG_A << 1;
++		data[1] = param >> 8;
++		mc_write_analog(data, 2);
++		ret = wait_set_bit(MCDRV_SLAVE_ADDR_ANALOG, MCI_ANA_REG_D,
++				   param & 0xff, interval, timeout);
 +		break;
-+	case MCDRV_GET_PATH:
-+		ret = get_path((struct mcdrv_path_info *)arg);
++	case MCDRV_EVT_IF_REG_FLAG_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_set_bit(MCDRV_SLAVE_ADDR_DIGITAL, param >> 8,
++				   param & 0xff, interval, timeout);
 +		break;
-+	case MCDRV_SET_PATH:
-+		ret = set_path((struct mcdrv_path_info *)arg);
++	case MCDRV_EVT_IF_REG_FLAG_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_release_bit(MCDRV_SLAVE_ADDR_DIGITAL, param >> 8,
++				       param & 0xff, interval, timeout);
 +		break;
-+	case MCDRV_GET_VOLUME:
-+		ret = get_volume((struct mcdrv_vol_info *)arg);
++	case MCDRV_EVT_B_REG_FLAG_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_set_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_B_REG_A,
++				      MCI_B_REG_D, param >> 8, param & 0xff,
++				      interval, timeout);
 +		break;
-+	case MCDRV_SET_VOLUME:
-+		ret = set_volume((struct mcdrv_vol_info *)arg);
++	case MCDRV_EVT_B_REG_FLAG_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_release_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_B_REG_A,
++					  MCI_B_REG_D, param >> 8, param & 0xff,
++					  interval, timeout);
 +		break;
-+	case MCDRV_GET_DIGITALIO:
-+		ret = get_digitalio((struct mcdrv_dio_info *)arg);
++	case MCDRV_EVT_E_REG_FLAG_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_set_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_E_REG_A,
++				      MCI_E_REG_D, param >> 8, param & 0xff,
++				      interval, timeout);
 +		break;
-+	case MCDRV_SET_DIGITALIO:
-+		ret = set_digitalio((struct mcdrv_dio_info *)arg, flags);
++	case MCDRV_EVT_E_REG_FLAG_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_release_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_E_REG_A,
++					  MCI_E_REG_D, param >> 8, param & 0xff,
++					  interval, timeout);
 +		break;
-+	case MCDRV_GET_DIGITALIO_PATH:
-+		ret = get_digitalio_path((struct mcdrv_dio_path_info *)arg);
++	case MCDRV_EVT_C_REG_FLAG_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_set_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_C_REG_A,
++				      MCI_C_REG_D, param >> 8, param & 0xff,
++				      interval, timeout);
 +		break;
-+	case MCDRV_SET_DIGITALIO_PATH:
-+		ret =
-+		    set_digitalio_path((struct mcdrv_dio_path_info *)arg,
-+				       flags);
++	case MCDRV_EVT_C_REG_FLAG_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++		ret = wait_release_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_C_REG_A,
++					  MCI_C_REG_D, param >> 8, param & 0xff,
++					  interval, timeout);
 +		break;
-+	case MCDRV_GET_SWAP:
-+		ret = get_swap((struct mcdrv_swap_info *)arg);
++	case MCDRV_EVT_F_REG_FLAG_SET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++		ret = wait_set_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_F_REG_A,
++				      MCI_F_REG_D, param >> 8, param & 0xff,
++				      interval, timeout);
 +		break;
-+	case MCDRV_SET_SWAP:
-+		ret = set_swap((struct mcdrv_swap_info *)arg, flags);
-+		break;
-+	case MCDRV_SET_DSP:
-+		ret = set_dsp((u8 *) arg, flags);
-+		break;
-+	case MCDRV_GET_HSDET:
-+		ret = get_hsdet((struct mcdrv_hsdet_info *)arg);
-+		break;
-+	case MCDRV_SET_HSDET:
-+		ret = set_hsdet((struct mcdrv_hsdet_info *)arg, flags);
++	case MCDRV_EVT_F_REG_FLAG_RESET:
++		interval = mc_info.dev_info.wait_time.poll_interval[3];
++		timeout = mc_info.dev_info.wait_time.poll_timeout[3];
++
++		ret = wait_release_dspbit(MCDRV_SLAVE_ADDR_DIGITAL, MCI_F_REG_A,
++					  MCI_F_REG_D, param >> 8, param & 0xff,
++					  interval, timeout);
 +		break;
 +	default:
 +		ret = -EINVAL;
-+		break;
 +	}
-+
-+	mutex_unlock(&mcdrv_mutex);
 +
 +	return ret;
 +}
-+
-+int mc_version_id_get(void)
-+{
-+	u8 data[2], val;
-+
-+	mutex_lock(&mcdrv_mutex);
-+
-+	data[0] = MCI_ANA_REG_A << 1;
-+	data[1] = MCI_ANA_ID;
-+	mc_write_analog(data, 2);
-+	mc_read_analog(MCI_ANA_REG_D, &val, 1);
-+
-+	mutex_unlock(&mcdrv_mutex);
-+
-+	return val & 0x7;
-+}
-diff --git a/sound/soc/codecs/ymu831/mcdriver.h b/sound/soc/codecs/ymu831/mcdriver.h
+diff --git a/sound/soc/codecs/ymu831/mcresctrl.h b/sound/soc/codecs/ymu831/mcresctrl.h
 new file mode 100644
-index 0000000..d583e87
+index 0000000..4494779
 --- /dev/null
-+++ b/sound/soc/codecs/ymu831/mcdriver.h
-@@ -0,0 +1,1017 @@
++++ b/sound/soc/codecs/ymu831/mcresctrl.h
+@@ -0,0 +1,394 @@
 +/****************************************************************************
 + *
 + * Copyright(c) 2012 Yamaha Corporation. All rights reserved.
 + *
-+ * Module	: mcdriver.h
-+ * Description	: MC driver header
-+ * Version	: 1.0.0 Dec 13 2012
++ * Module	: mcresctrl.h
++ * Description	: MC resource control driver header
++ * Version	: 1.0.0	Dec 13 2012
 + *
 + * This software is provided 'as-is', without any express or implied
 + * warranty.	In no event will the authors be held liable for any damages
@@ -3021,991 +4149,368 @@ index 0000000..d583e87
 + * - remove unnecessary comments
 + * - remove unused codes
 + */
-+#ifndef _MCDRIVER_H
-+#define _MCDRIVER_H
++#ifndef _MCRESCTRL_H
++#define _MCRESCTRL_H
 +
-+#include <linux/types.h>
++#include "mcdriver.h"
++#include "mcpacking.h"
 +
-+/* mc_control command */
-+enum mc_command {
-+	MCDRV_GET_CLOCKSW,
-+	MCDRV_SET_CLOCKSW,
-+	MCDRV_GET_PATH,
-+	MCDRV_SET_PATH,
-+	MCDRV_GET_VOLUME,
-+	MCDRV_SET_VOLUME,
-+	MCDRV_GET_DIGITALIO,
-+	MCDRV_SET_DIGITALIO,
-+	MCDRV_GET_DIGITALIO_PATH,
-+	MCDRV_SET_DIGITALIO_PATH,
-+	MCDRV_GET_SWAP,
-+	MCDRV_SET_SWAP,
-+	MCDRV_SET_DSP,
-+	MCDRV_GET_HSDET,
-+	MCDRV_SET_HSDET,
++#define MCDRV_DEVID_ANA			0x90
++#define MCDRV_DEVID_DIG			0x80
++#define MCDRV_DEVID_MASK		0xf8
++#define MCDRV_VERID_MASK		0x07
++
++enum mcdrv_state {
++	MCDRV_STATE_NOTINIT,
++	MCDRV_STATE_READY,
 +};
 +
-+#define MCDRV_WAIT_MAX			268435455U
++/* volume setting */
++#define MCDRV_LOGICAL_VOL_MUTE		-24576	/* -96dB */
 +
-+struct mcdrv_wait_time {
-+	u32 wait[7];
-+	u32 poll_interval[6];
-+	u32 poll_timeout[6];
++#define MCDRV_REG_MUTE			0x00
++
++/* Path destination channel */
++enum mcdrv_dst_ch {
++	MCDRV_DST_CH0 = 0,
++	MCDRV_DST_CH1,
++	MCDRV_DST_CH2,
++	MCDRV_DST_CH3
 +};
 +
-+/*	mcdrv_dev_info clk_sel setting	*/
-+#define	MCDRV_CKSEL_CMOS_CMOS		0x00
-+#define	MCDRV_CKSEL_TCXO_CMOS		0x01
-+#define	MCDRV_CKSEL_CMOS_TCXO		0x02
-+#define	MCDRV_CKSEL_TCXO_TCXO		0x03
-+#define	MCDRV_CKSEL_LAST		MCDRV_CKSEL_TCXO_TCXO
-+
-+/*	mcdrv_dev_info clk_input setting	*/
-+#define MCDRV_CKINPUT_NONE0		0x00
-+#define	MCDRV_CKINPUT_CLKI1_CLKI0	0x01
-+#define	MCDRV_CKINPUT_RTC_CLKI0		0x02
-+#define	MCDRV_CKINPUT_SBCK_CLKI0	0x03
-+#define	MCDRV_CKINPUT_CLKI0_CLKI1	0x04
-+#define MCDRV_CKINPUT_NONE1		0x05
-+#define	MCDRV_CKINPUT_RTC_CLKI1		0x06
-+#define	MCDRV_CKINPUT_SBCK_CLKI1	0x07
-+#define	MCDRV_CKINPUT_CLKI0_RTCK	0x08
-+#define	MCDRV_CKINPUT_CLKI1_RTCK	0x09
-+#define MCDRV_CKINPUT_NONE2		0x0A
-+#define	MCDRV_CKINPUT_SBCK_RTC		0x0B
-+#define	MCDRV_CKINPUT_CLKI0_SBCK	0x0C
-+#define	MCDRV_CKINPUT_CLKI1_SBCK	0x0D
-+#define	MCDRV_CKINPUT_RTC_SBCK		0x0E
-+#define MCDRV_CKINPUT_LAST		MCDRV_CKINPUT_RTC_SBCK
-+
-+#define MCDRV_PLLMODE_MAX		7
-+
-+#define MCDRV_PLLPREV_DIV_MAX		0x3f
-+
-+#define MCDRV_PLLFB_DIV_MAX		0x3fff
-+
-+/*	mcdrv_dev_info pll_freq_* setting	*/
-+#define	MCDRV_PLLFREQ_73		0
-+#define	MCDRV_PLLFREQ_147		1
-+
-+/*	mcdrv_dev_info hsdet_clk setting	*/
-+#define	MCDRV_HSDETCLK_RTC		false
-+#define	MCDRV_HSDETCLK_OSC		true
-+
-+/*	mcdrv_dev_info XXX_hiz setting	*/
-+#define	MCDRV_DAHIZ_LOW			0
-+#define	MCDRV_DAHIZ_HIZ			1
-+
-+/*	mcdrv_dev_info pcm_hiz setting	*/
-+#define	MCDRV_PCMHIZ_LOW		0
-+#define	MCDRV_PCMHIZ_HIZ		1
-+
-+/*	mcdrv_dev_info paX_func setting	*/
-+#define	MCDRV_PA_GPIO			false
-+#define	MCDRV_PA_PDMCK			true
-+#define	MCDRV_PA_PDMDI			true
-+
-+/*	mcdrv_dev_info power_mode setting	*/
-+#define	MCDRV_POWMODE_FULL		0
-+#define	MCDRV_POWMODE_CDSPDEBUG		255
-+
-+/*	mcdrv_dev_info mb_sel setting	*/
-+#define	MCDRV_MBSEL_20			0
-+#define	MCDRV_MBSEL_21			1
-+#define	MCDRV_MBSEL_22			2
-+#define	MCDRV_MBSEL_23			3
-+#define	MCDRV_MBSEL_LAST		MCDRV_MBSEL_23
-+
-+/*	mcdrv_dev_info mbs_disch setting	*/
-+#define	MCDRV_MBSDISCH_0000		0
-+#define	MCDRV_MBSDISCH_0001		1
-+#define	MCDRV_MBSDISCH_0010		2
-+#define	MCDRV_MBSDISCH_0011		3
-+#define	MCDRV_MBSDISCH_0100		4
-+#define	MCDRV_MBSDISCH_0101		5
-+#define	MCDRV_MBSDISCH_0110		6
-+#define	MCDRV_MBSDISCH_0111		7
-+#define	MCDRV_MBSDISCH_1000		8
-+#define	MCDRV_MBSDISCH_1001		9
-+#define	MCDRV_MBSDISCH_1010		10
-+#define	MCDRV_MBSDISCH_1011		11
-+#define	MCDRV_MBSDISCH_1100		12
-+#define	MCDRV_MBSDISCH_1101		13
-+#define	MCDRV_MBSDISCH_1110		14
-+#define	MCDRV_MBSDISCH_1111		15
-+#define	MCDRV_MBSDISCH_LAST		MCDRV_MBSDISCH_1111
-+
-+/*	mcdrv_dev_info nonclip setting	*/
-+#define	MCDRV_NONCLIP_OFF		false
-+#define	MCDRV_NONCLIP_ON		true
-+
-+/*	mcdrv_dev_info line_*_dif setting	*/
-+#define	MCDRV_LINE_STEREO		false
-+#define	MCDRV_LINE_DIF			true
-+
-+/*	mcdrv_dev_info micX_single setting	*/
-+#define	MCDRV_MIC_DIF			false
-+#define	MCDRV_MIC_SINGLE		true
-+
-+/*	mcdrv_dev_info zc_line_outX/zc_rc/zc_sp/zc_hp setting	*/
-+#define	MCDRV_ZC_ON			false
-+#define	MCDRV_ZC_OFF			true
-+
-+/*	mcdrv_dev_info svol_line_outX/svol_rc/svol_sp/svol_hp setting	*/
-+#define	MCDRV_SVOL_OFF			false
-+#define	MCDRV_SVOL_ON			true
-+
-+/*	mcdrv_dev_info rc_hiz setting	*/
-+#define	MCDRV_RCIMP_FIXLOW		0
-+#define	MCDRV_RCIMP_WL			1
-+
-+/*	mcdrv_dev_info sp_hiz setting	*/
-+#define	MCDRV_WL_LOFF_ROFF		0
-+#define	MCDRV_WL_LON_ROFF		1
-+#define	MCDRV_WL_LOFF_RON		2
-+#define	MCDRV_WL_LON_RON		3
-+#define	MCDRV_WL_LAST			MCDRV_WL_LON_RON
-+
-+/*	mcdrv_dev_info hp_hiz/line_outX_hiz setting	*/
-+#define	MCDRV_IMP_LFIXLOW_RFIXLOW	0
-+#define	MCDRV_IMP_LWL_RFIXLOW		1
-+#define	MCDRV_IMP_LFIXLOW_RWL		2
-+#define	MCDRV_IMP_LWL_RWL		3
-+#define	MCDRV_IMP_LAST			MCDRV_IMP_LWL_RWL
-+
-+/*	mcdrv_dev_info cp_mod setting	*/
-+#define	MCDRV_CPMOD_HI			0
-+#define	MCDRV_CPMOD_MID			1
-+
-+/*	mcdrv_dev_info rb_sel setting	*/
-+#define	MCDRV_RBSEL_2_2K		0
-+#define	MCDRV_RBSEL_50			1
-+
-+/*	mcdrv_dev_info plug_sel setting	*/
-+#define	MCDRV_PLUG_LRGM			0
-+#define	MCDRV_PLUG_LRMG			1
-+
-+/*	mcdrv_dev_info gnd_det setting	*/
-+#define	MCDRV_GNDDET_OFF		0
-+#define	MCDRV_GNDDET_ON			1
-+
-+/*	mcdrv_dev_info ppd_* setting	*/
-+#define	MCDRV_PPD_OFF			0
-+#define	MCDRV_PPD_ON			1
-+
-+/*	mcdrv_dev_info option[0] setting	*/
-+#define MCDRV_DOA_DRV_LOW		0
-+#define MCDRV_DOA_DRV_HIGH		1
-+#define MCDRV_DOA_DRV_LAST		MCDRV_DOA_DRV_HIGH
-+
-+/*	mcdrv_dev_info option[1] setting	*/
-+#define MCDRV_SCKMSK_OFF		0
-+#define MCDRV_SCKMSK_ON			1
-+#define MCDRV_SCKMSK_LAST		MCDRV_SCKMSK_ON
-+
-+/*	mcdrv_dev_info option[2] setting	*/
-+#define MCDRV_SPMN_8_9_10		0
-+#define MCDRV_SPMN_5_6_7		1
-+#define MCDRV_SPMN_4_5_6		2
-+#define MCDRV_SPMN_OFF_9		3
-+#define MCDRV_SPMN_OFF_6		4
-+#define MCDRV_SPMN_LAST			MCDRV_SPMN_OFF_6
-+
-+struct mcdrv_dev_info {
-+	u8 clk_sel;
-+	u8 clk_input;
-+	u8 pll_mode_a;
-+	u8 pll_prev_div_a;
-+	u16 pll_fb_div_a;
-+	u16 pll_frac_a;
-+	bool pll_freq_a;
-+	u8 pll_mode_b;
-+	u8 pll_prev_div_b;
-+	u16 pll_fb_div_b;
-+	u16 pll_frac_b;
-+	bool pll_freq_b;
-+	bool hsdet_clk;
-+	bool dio0_sdo_hiz;
-+	bool dio1_sdo_hiz;
-+	bool dio2_sdo_hiz;
-+	bool dio0_clk_hiz;
-+	bool dio1_clk_hiz;
-+	bool dio2_clk_hiz;
-+	bool dio0_pcm_hiz;
-+	bool dio1_pcm_hiz;
-+	bool dio2_pcm_hiz;
-+	bool pa0_func;
-+	bool pa1_func;
-+	bool pa2_func;
-+	u8 power_mode;
-+	u8 mb_sel1;
-+	u8 mb_sel2;
-+	u8 mb_sel3;
-+	u8 mb_sel4;
-+	u8 mbs_disch;
-+	bool nonclip;
-+	bool line_in1_dif;
-+	bool line_out1_dif;
-+	bool line_out2_dif;
-+	bool mic1_single;
-+	bool mic2_single;
-+	bool mic3_single;
-+	bool mic4_single;
-+	bool zc_line_out1;
-+	bool zc_line_out2;
-+	bool zc_rc;
-+	bool zc_sp;
-+	bool zc_hp;
-+	bool svol_line_out1;
-+	bool svol_line_out2;
-+	bool svol_rc;
-+	bool svol_sp;
-+	bool svol_hp;
-+	bool rc_hiz;
-+	u8 sp_hiz;
-+	u8 hp_hiz;
-+	u8 line_out1_hiz;
-+	u8 line_out2_hiz;
-+	bool cp_mod;
-+	bool rb_sel;
-+	bool plug_sel;
-+	bool gnd_det;
-+	bool ppd_rc;
-+	bool ppd_sp;
-+	bool ppd_hp;
-+	bool ppd_line_out1;
-+	bool ppd_line_out2;
-+	u8 options[20];
-+	struct mcdrv_wait_time wait_time;
++/* Path destination type */
++enum mcdrv_dst_type {
++	MCDRV_DST_MUSICOUT = 0,
++	MCDRV_DST_EXTOUT,
++	MCDRV_DST_HIFIOUT,
++	MCDRV_DST_VBOXMIXIN,
++	MCDRV_DST_AE0,
++	MCDRV_DST_AE1,
++	MCDRV_DST_AE2,
++	MCDRV_DST_AE3,
++	MCDRV_DST_DAC0,
++	MCDRV_DST_DAC1,
++	MCDRV_DST_VOICEOUT,
++	MCDRV_DST_VBOXIOIN,
++	MCDRV_DST_VBOXHOSTIN,
++	MCDRV_DST_HOSTOUT,
++	MCDRV_DST_ADIF0,
++	MCDRV_DST_ADIF1,
++	MCDRV_DST_ADIF2,
++	MCDRV_DST_ADC0,
++	MCDRV_DST_ADC1,
++	MCDRV_DST_SP,
++	MCDRV_DST_HP,
++	MCDRV_DST_RCV,
++	MCDRV_DST_LOUT1,
++	MCDRV_DST_LOUT2,
++	MCDRV_DST_BIAS
 +};
 +
-+/*	set/get clock switch	*/
-+#define	MCDRV_CLKSW_CLKA		0
-+#define	MCDRV_CLKSW_CLKB		1
-+
-+/*	set/get path	*/
-+#define	MCDRV_D1SRC_MUSICIN_ON		0x00000001
-+#define	MCDRV_D1SRC_MUSICIN_OFF		0x00000002
-+#define	MCDRV_D1SRC_EXTIN_ON		0x00000004
-+#define	MCDRV_D1SRC_EXTIN_OFF		0x00000008
-+#define	MCDRV_D1SRC_VBOXOUT_ON		0x00000010
-+#define	MCDRV_D1SRC_VBOXOUT_OFF		0x00000020
-+#define	MCDRV_D1SRC_VBOXREFOUT_ON	0x00000040
-+#define	MCDRV_D1SRC_VBOXREFOUT_OFF	0x00000080
-+#define	MCDRV_D1SRC_AE0_ON		0x00000100
-+#define	MCDRV_D1SRC_AE0_OFF		0x00000200
-+#define	MCDRV_D1SRC_AE1_ON		0x00000400
-+#define	MCDRV_D1SRC_AE1_OFF		0x00000800
-+#define	MCDRV_D1SRC_AE2_ON		0x00001000
-+#define	MCDRV_D1SRC_AE2_OFF		0x00002000
-+#define	MCDRV_D1SRC_AE3_ON		0x00004000
-+#define	MCDRV_D1SRC_AE3_OFF		0x00008000
-+#define MCDRV_D1SRC_AE_ALL_ON				\
-+	(MCDRV_D1SRC_AE0_ON | MCDRV_D1SRC_AE1_ON |	\
-+	 MCDRV_D1SRC_AE2_ON | MCDRV_D1SRC_AE3_ON)
-+#define	MCDRV_D1SRC_ADIF0_ON		0x00010000
-+#define	MCDRV_D1SRC_ADIF0_OFF		0x00020000
-+#define	MCDRV_D1SRC_ADIF1_ON		0x00040000
-+#define	MCDRV_D1SRC_ADIF1_OFF		0x00080000
-+#define	MCDRV_D1SRC_ADIF2_ON		0x00100000
-+#define	MCDRV_D1SRC_ADIF2_OFF		0x00200000
-+#define	MCDRV_D1SRC_HIFIIN_ON		0x00400000
-+#define	MCDRV_D1SRC_HIFIIN_OFF		0x00800000
-+#define MCDRV_D1SRC_ALL_ON		0x00555555
-+
-+#define	MCDRV_D2SRC_VOICEIN_ON		0x00000001
-+#define	MCDRV_D2SRC_VOICEIN_OFF		0x00000002
-+#define	MCDRV_D2SRC_VBOXIOOUT_ON	0x00000004
-+#define	MCDRV_D2SRC_VBOXIOOUT_OFF	0x00000008
-+#define	MCDRV_D2SRC_VBOXHOSTOUT_ON	0x00000010
-+#define	MCDRV_D2SRC_VBOXHOSTOUT_OFF	0x00000020
-+#define	MCDRV_D2SRC_ADC0_L_ON		0x00000040
-+#define	MCDRV_D2SRC_ADC0_L_OFF		0x00000080
-+#define	MCDRV_D2SRC_ADC0_R_ON		0x00000100
-+#define	MCDRV_D2SRC_ADC0_R_OFF		0x00000200
-+#define	MCDRV_D2SRC_ADC0_ON	\
-+	(MCDRV_D2SRC_ADC0_L_ON | MCDRV_D2SRC_ADC0_R_ON)
-+#define	MCDRV_D2SRC_ADC0_OFF	\
-+	(MCDRV_D2SRC_ADC0_L_OFF | MCDRV_D2SRC_ADC0_R_OFF)
-+#define	MCDRV_D2SRC_ADC1_ON		0x00000400
-+#define	MCDRV_D2SRC_ADC1_OFF		0x00000800
-+#define	MCDRV_D2SRC_PDM0_L_ON		0x00001000
-+#define	MCDRV_D2SRC_PDM0_L_OFF		0x00002000
-+#define	MCDRV_D2SRC_PDM0_R_ON		0x00004000
-+#define	MCDRV_D2SRC_PDM0_R_OFF		0x00008000
-+#define MCDRV_D2SRC_PDM0_ON	\
-+	(MCDRV_D2SRC_PDM0_L_ON | MCDRV_D2SRC_PDM0_R_ON)
-+#define	MCDRV_D2SRC_PDM1_L_ON		0x00010000
-+#define	MCDRV_D2SRC_PDM1_L_OFF		0x00020000
-+#define	MCDRV_D2SRC_PDM1_R_ON		0x00040000
-+#define	MCDRV_D2SRC_PDM1_R_OFF		0x00080000
-+#define MCDRV_D2SRC_PDM1_ON	\
-+	(MCDRV_D2SRC_PDM1_L_ON | MCDRV_D2SRC_PDM1_R_ON)
-+#define	MCDRV_D2SRC_DAC0REF_ON		0x00100000
-+#define	MCDRV_D2SRC_DAC0REF_OFF		0x00200000
-+#define	MCDRV_D2SRC_DAC1REF_ON		0x00400000
-+#define	MCDRV_D2SRC_DAC1REF_OFF		0x00800000
-+
-+#define	MCDRV_ASRC_DAC0_L_ON		0x00000001
-+#define	MCDRV_ASRC_DAC0_L_OFF		0x00000002
-+#define	MCDRV_ASRC_DAC0_R_ON		0x00000004
-+#define	MCDRV_ASRC_DAC0_R_OFF		0x00000008
-+#define	MCDRV_ASRC_DAC1_L_ON		0x00000010
-+#define	MCDRV_ASRC_DAC1_L_OFF		0x00000020
-+#define	MCDRV_ASRC_DAC1_R_ON		0x00000040
-+#define	MCDRV_ASRC_DAC1_R_OFF		0x00000080
-+#define	MCDRV_ASRC_MIC1_ON		0x00000100
-+#define	MCDRV_ASRC_MIC1_OFF		0x00000200
-+#define	MCDRV_ASRC_MIC2_ON		0x00000400
-+#define	MCDRV_ASRC_MIC2_OFF		0x00000800
-+#define	MCDRV_ASRC_MIC3_ON		0x00001000
-+#define	MCDRV_ASRC_MIC3_OFF		0x00002000
-+#define	MCDRV_ASRC_MIC4_ON		0x00004000
-+#define	MCDRV_ASRC_MIC4_OFF		0x00008000
-+#define MCDRV_ASRC_MIC_ALL_ON				\
-+	(MCDRV_ASRC_MIC1_ON | MCDRV_ASRC_MIC2_ON |	\
-+	 MCDRV_ASRC_MIC3_ON | MCDRV_ASRC_MIC4_ON)
-+#define	MCDRV_ASRC_LINEIN1_L_ON		0x00010000
-+#define	MCDRV_ASRC_LINEIN1_L_OFF	0x00020000
-+#define	MCDRV_ASRC_LINEIN1_R_ON		0x00040000
-+#define	MCDRV_ASRC_LINEIN1_R_OFF	0x00080000
-+#define	MCDRV_ASRC_LINEIN1_M_ON		0x00100000
-+#define	MCDRV_ASRC_LINEIN1_M_OFF	0x00200000
-+#define MCDRV_ASRC_LINEIN1_ALL_ON				\
-+	(MCDRV_ASRC_LINEIN1_L_ON | MCDRV_ASRC_LINEIN1_R_ON |	\
-+	 MCDRV_ASRC_LINEIN1_M_ON)
-+
-+#define	MUSICOUT_PATH_CHANNELS		2
-+#define	EXTOUT_PATH_CHANNELS		2
-+#define	HIFIOUT_PATH_CHANNELS		1
-+#define	VBOXMIXIN_PATH_CHANNELS		4
-+#define	AE_PATH_CHANNELS		2
-+#define	DAC0_PATH_CHANNELS		2
-+#define	DAC1_PATH_CHANNELS		2
-+#define	VOICEOUT_PATH_CHANNELS		1
-+#define	VBOXIOIN_PATH_CHANNELS		1
-+#define	VBOXHOSTIN_PATH_CHANNELS	1
-+#define	HOSTOUT_PATH_CHANNELS		1
-+#define	ADIF0_PATH_CHANNELS		2
-+#define	ADIF1_PATH_CHANNELS		2
-+#define	ADIF2_PATH_CHANNELS		2
-+#define	ADC0_PATH_CHANNELS		2
-+#define	ADC1_PATH_CHANNELS		1
-+#define	SP_PATH_CHANNELS		2
-+#define	HP_PATH_CHANNELS		2
-+#define	RC_PATH_CHANNELS		1
-+#define	LOUT1_PATH_CHANNELS		2
-+#define	LOUT2_PATH_CHANNELS		2
-+#define	BIAS_PATH_CHANNELS		4
-+
-+struct mcdrv_path_info {
-+	u32 music_out[MUSICOUT_PATH_CHANNELS];
-+	u32 ext_out[EXTOUT_PATH_CHANNELS];
-+	u32 hifi_out[HIFIOUT_PATH_CHANNELS];
-+	u32 vbox_mix_in[VBOXMIXIN_PATH_CHANNELS];
-+	u32 ae0[AE_PATH_CHANNELS];
-+	u32 ae1[AE_PATH_CHANNELS];
-+	u32 ae2[AE_PATH_CHANNELS];
-+	u32 ae3[AE_PATH_CHANNELS];
-+	u32 dac0[DAC0_PATH_CHANNELS];
-+	u32 dac1[DAC1_PATH_CHANNELS];
-+	u32 voice_out[VOICEOUT_PATH_CHANNELS];
-+	u32 vbox_io_in[VBOXIOIN_PATH_CHANNELS];
-+	u32 vbox_host_in[VBOXHOSTIN_PATH_CHANNELS];
-+	u32 host_out[HOSTOUT_PATH_CHANNELS];
-+	u32 adif0[ADIF0_PATH_CHANNELS];
-+	u32 adif1[ADIF1_PATH_CHANNELS];
-+	u32 adif2[ADIF2_PATH_CHANNELS];
-+	u32 adc0[ADC0_PATH_CHANNELS];
-+	u32 adc1[ADC1_PATH_CHANNELS];
-+	u32 sp[SP_PATH_CHANNELS];
-+	u32 hp[HP_PATH_CHANNELS];
-+	u32 rc[RC_PATH_CHANNELS];
-+	u32 lout1[LOUT1_PATH_CHANNELS];
-+	u32 lout2[LOUT2_PATH_CHANNELS];
-+	u32 bias[BIAS_PATH_CHANNELS];
++/* Register update parameter */
++enum mcdrv_update_mode {
++	MCDRV_UPDATE_NORMAL,
++	MCDRV_UPDATE_FORCE,
++	MCDRV_UPDATE_DUMMY
 +};
 +
-+/*	set/get vol	*/
-+#define	MCDRV_VOL_UPDATE		0x0001
++/* DSP Start */
++#define MCDRV_DSP_START_E	0x01
++#define MCDRV_DSP_START_B	0x02
++#define MCDRV_DSP_START_M	0x04
++#define MCDRV_DSP_START_F	0x08
++#define MCDRV_DSP_START_C	0x10
 +
-+#define	MUSICIN_VOL_CHANNELS		2
-+#define	EXTIN_VOL_CHANNELS		2
-+#define	VOICEIN_VOL_CHANNELS		2
-+#define	REFIN_VOL_CHANNELS		2
-+#define	ADIF0IN_VOL_CHANNELS		2
-+#define	ADIF1IN_VOL_CHANNELS		2
-+#define	ADIF2IN_VOL_CHANNELS		2
-+#define	MUSICOUT_VOL_CHANNELS		2
-+#define	EXTOUT_VOL_CHANNELS		2
-+#define	VOICEOUT_VOL_CHANNELS		2
-+#define	REFOUT_VOL_CHANNELS		2
-+#define	DAC0OUT_VOL_CHANNELS		2
-+#define	DAC1OUT_VOL_CHANNELS		2
-+#define	DPATH_VOL_CHANNELS		2
-+#define	LINEIN1_VOL_CHANNELS		2
-+#define	MIC1_VOL_CHANNELS		1
-+#define	MIC2_VOL_CHANNELS		1
-+#define	MIC3_VOL_CHANNELS		1
-+#define	MIC4_VOL_CHANNELS		1
-+#define	HP_VOL_CHANNELS			2
-+#define	SP_VOL_CHANNELS			2
-+#define	RC_VOL_CHANNELS			1
-+#define	LINEOUT1_VOL_CHANNELS		2
-+#define	LINEOUT2_VOL_CHANNELS		2
-+#define	HPDET_VOL_CHANNELS		1
-+
-+struct mcdrv_vol_info {
-+	s16 d_music_in[MUSICIN_VOL_CHANNELS];
-+	s16 d_ext_in[EXTIN_VOL_CHANNELS];
-+	s16 d_voice_in[VOICEIN_VOL_CHANNELS];
-+	s16 d_ref_in[REFIN_VOL_CHANNELS];
-+	s16 d_adif0_in[ADIF0IN_VOL_CHANNELS];
-+	s16 d_adif1_in[ADIF1IN_VOL_CHANNELS];
-+	s16 d_adif2_in[ADIF2IN_VOL_CHANNELS];
-+	s16 d_music_out[MUSICOUT_VOL_CHANNELS];
-+	s16 d_ext_out[EXTOUT_VOL_CHANNELS];
-+	s16 d_voice_out[VOICEOUT_VOL_CHANNELS];
-+	s16 d_ref_out[REFOUT_VOL_CHANNELS];
-+	s16 d_dac0_out[DAC0OUT_VOL_CHANNELS];
-+	s16 d_dac1_out[DAC1OUT_VOL_CHANNELS];
-+	s16 d_dpath_da[DPATH_VOL_CHANNELS];
-+	s16 d_dpath_ad[DPATH_VOL_CHANNELS];
-+	s16 a_line_in1[LINEIN1_VOL_CHANNELS];
-+	s16 a_mic1[MIC1_VOL_CHANNELS];
-+	s16 a_mic2[MIC2_VOL_CHANNELS];
-+	s16 a_mic3[MIC3_VOL_CHANNELS];
-+	s16 a_mic4[MIC4_VOL_CHANNELS];
-+	s16 a_hp[HP_VOL_CHANNELS];
-+	s16 a_sp[SP_VOL_CHANNELS];
-+	s16 a_rc[RC_VOL_CHANNELS];
-+	s16 a_line_out1[LINEOUT1_VOL_CHANNELS];
-+	s16 a_line_out2[LINEOUT2_VOL_CHANNELS];
-+	s16 a_hp_det[HPDET_VOL_CHANNELS];
++struct mcdrv_aec_bdsp {
++	u8 *data;
++	u32 data_size;
 +};
 +
-+/*	set/get digitalio	*/
-+#define	MCDRV_MUSIC_COM_UPDATE_FLAG	0x00000001U
-+#define	MCDRV_MUSIC_DIR_UPDATE_FLAG	0x00000002U
-+#define	MCDRV_MUSIC_DIT_UPDATE_FLAG	0x00000004U
-+#define	MCDRV_EXT_COM_UPDATE_FLAG	0x00000008U
-+#define	MCDRV_EXT_DIR_UPDATE_FLAG	0x00000010U
-+#define	MCDRV_EXT_DIT_UPDATE_FLAG	0x00000020U
-+#define	MCDRV_VOICE_COM_UPDATE_FLAG	0x00000040U
-+#define	MCDRV_VOICE_DIR_UPDATE_FLAG	0x00000080U
-+#define	MCDRV_VOICE_DIT_UPDATE_FLAG	0x00000100U
-+#define	MCDRV_HIFI_COM_UPDATE_FLAG	0x00000200U
-+#define	MCDRV_HIFI_DIR_UPDATE_FLAG	0x00000400U
-+#define	MCDRV_HIFI_DIT_UPDATE_FLAG	0x00000800U
-+#define	MCDRV_ALL_DIO_UPDATE_FLAG	0x00000fffU
-+
-+/*	mcdrv_dio_common master_slave setting	*/
-+#define	MCDRV_DIO_SLAVE			0
-+#define	MCDRV_DIO_MASTER		1
-+
-+/*	mcdrv_dio_common bDigitalAutoFs setting	*/
-+#define	MCDRV_AUTOFS_OFF		0
-+#define	MCDRV_AUTOFS_ON			1
-+
-+/*	mcdrv_dio_common fs setting	*/
-+#define	MCDRV_FS_48000			0
-+#define	MCDRV_FS_44100			1
-+#define	MCDRV_FS_32000			2
-+#define	MCDRV_FS_NONE1			3
-+#define	MCDRV_FS_24000			4
-+#define	MCDRV_FS_22050			5
-+#define	MCDRV_FS_16000			6
-+#define	MCDRV_FS_NONE2			7
-+#define	MCDRV_FS_12000			8
-+#define	MCDRV_FS_11025			9
-+#define	MCDRV_FS_8000			10
-+#define	MCDRV_FS_NONE3			11
-+#define	MCDRV_FS_192000			12
-+#define	MCDRV_FS_96000			13
-+#define	MCDRV_FS_LAST			MCDRV_FS_96000
-+
-+/*	mcdrv_dio_common bck_fs setting	*/
-+#define	MCDRV_BCKFS_64			0
-+#define	MCDRV_BCKFS_48			1
-+#define	MCDRV_BCKFS_32			2
-+#define	MCDRV_BCKFS_NONE1		3
-+#define	MCDRV_BCKFS_512			4
-+#define	MCDRV_BCKFS_256			5
-+#define	MCDRV_BCKFS_192			6
-+#define	MCDRV_BCKFS_128			7
-+#define	MCDRV_BCKFS_96			8
-+#define	MCDRV_BCKFS_24			9
-+#define	MCDRV_BCKFS_16			10
-+#define	MCDRV_BCKFS_8			11
-+#define	MCDRV_BCKFS_NONE2		12
-+#define	MCDRV_BCKFS_NONE3		13
-+#define	MCDRV_BCKFS_NONE4		14
-+#define	MCDRV_BCKFS_SLAVE		15
-+#define	MCDRV_BCKFS_LAST		MCDRV_BCKFS_SLAVE
-+
-+/*	mcdrv_dio_common interface setting	*/
-+#define	MCDRV_DIO_DA			0
-+#define	MCDRV_DIO_PCM			1
-+
-+/*	mcdrv_dio_common bck_invert setting	*/
-+#define	MCDRV_BCLK_NORMAL		0
-+#define	MCDRV_BCLK_INVERT		1
-+
-+/*	mcdrv_dio_common src_thru setting	*/
-+#define	MCDRV_SRC_NOT_THRU		0
-+#define	MCDRV_SRC_THRU			1
-+
-+/*	mcdrv_dio_common pcm_hiz_transition setting	*/
-+#define	MCDRV_PCMHIZTRANS_FALLING	0
-+#define	MCDRV_PCMHIZTRANS_RISING	1
-+
-+/*	mcdrv_dio_common pcm_frame setting	*/
-+#define	MCDRV_PCM_SHORTFRAME		0
-+#define	MCDRV_PCM_LONGFRAME		1
-+
-+struct mcdrv_dio_common {
-+	bool master_slave;
-+	bool auto_fs;
-+	u8 fs;
-+	u8 bck_fs;
-+	bool interface;
-+	bool bck_invert;
-+	bool src_thru;
-+	bool pcm_hiz_transition;
-+	bool pcm_frame;
-+	u8 pcm_high_period;
++struct mcdrv_aec_fdsp {
++	u8 *data;
++	u32 data_size;
 +};
 +
-+/*	mcdrv_da_format bit_sel setting	*/
-+#define	MCDRV_BITSEL_16			0
-+#define	MCDRV_BITSEL_20			1
-+#define	MCDRV_BITSEL_24			2
-+#define	MCDRV_BITSEL_32			3
-+#define	MCDRV_BITSEL_LAST		MCDRV_BITSEL_32
++struct mcdrv_aec_cdsp {
++	u8 *data;
++	u32 data_size;
++};
 +
-+/*	mcdrv_da_format mode setting	*/
-+#define	MCDRV_DAMODE_HEADALIGN		0
-+#define	MCDRV_DAMODE_I2S		1
-+#define	MCDRV_DAMODE_TAILALIGN		2
-+#define	MCDRV_DAMODE_LAST		MCDRV_DAMODE_TAILALIGN
++struct mcdrv_aec_syseq_ex {
++	bool enable;
++	struct {
++		u8 coef_a0[3];
++		u8 coef_a1[3];
++		u8 coef_a2[3];
++		u8 coef_b1[3];
++		u8 coef_b2[3];
++	} band[2];
++};
 +
-+struct mcdrv_da_format {
-+	u8 bit_sel;
++struct mcdrv_aec_e2_config {
++	u8 *data;
++	u32 data_size;
++};
++
++struct mcdrv_aec_audio_engine {
++	bool enable;
++	u8 on;
++	bool fdsp_on;
++	u8 bdsp_ae0_src;
++	u8 bdsp_ae1_src;
++	u8 mixer_in0_src;
++	u8 mixer_in1_src;
++	u8 mixer_in2_src;
++	u8 mixer_in3_src;
++	struct mcdrv_aec_bdsp bdsp;
++	struct mcdrv_aec_fdsp fdsp;
++};
++
++struct mcdrv_aec_vbox {
++	bool enable;
++	u8 cdsp_func_a_on;
++	u8 cdsp_func_b_on;
++	u8 cdsp_jtag_on;
++	bool fdsp_on;
++	u8 fdsp_po_source;
++	u8 isrc2_vsource;
++	u8 isrc2_ch1_vsource;
++	u8 isrc3_vsource;
++	u8 lpt2_vsource;
++	u8 lpt2_mix_vol_o;
++	u8 lpt2_mix_vol_i;
++	u8 src3_ctrl;
++	u8 src2_fs;
++	u8 src2_thru;
++	u8 src3_fs;
++	u8 src3_thru;
++	struct mcdrv_aec_cdsp cdsp_a;
++	struct mcdrv_aec_cdsp cdsp_b;
++	struct mcdrv_aec_fdsp fdsp;
++};
++
++#define	MCDRV_AEC_OUTPUT_N	2
++
++struct mcdrv_aec_output {
++	u8 lpf_pre_thru[MCDRV_AEC_OUTPUT_N];
++	u8 lpf_post_thru[MCDRV_AEC_OUTPUT_N];
++	u8 dcc_sel[MCDRV_AEC_OUTPUT_N];
++	u8 signal_detect_level;
++	u8 power_detect_level[MCDRV_AEC_OUTPUT_N];
++	u8 osf_sel[MCDRV_AEC_OUTPUT_N];
++	u8 syseq_enb[MCDRV_AEC_OUTPUT_N];
++	u8 syseq_coef_a0[MCDRV_AEC_OUTPUT_N][3];
++	u8 syseq_coef_a1[MCDRV_AEC_OUTPUT_N][3];
++	u8 syseq_coef_a2[MCDRV_AEC_OUTPUT_N][3];
++	u8 syseq_coef_b1[MCDRV_AEC_OUTPUT_N][3];
++	u8 syseq_coef_b2[MCDRV_AEC_OUTPUT_N][3];
++	u8 clip_md[MCDRV_AEC_OUTPUT_N];
++	u8 clip_att[MCDRV_AEC_OUTPUT_N];
++	u8 clip_rel[MCDRV_AEC_OUTPUT_N];
++	u8 clip_g[MCDRV_AEC_OUTPUT_N];
++	u8 osf_gain[MCDRV_AEC_OUTPUT_N][2];
++	u8 dcl_on[MCDRV_AEC_OUTPUT_N];
++	u8 dcl_gain[MCDRV_AEC_OUTPUT_N];
++	u8 dcl_limit[MCDRV_AEC_OUTPUT_N][2];
++	u8 random_dither_on[MCDRV_AEC_OUTPUT_N];
++	u8 random_dither_level[MCDRV_AEC_OUTPUT_N];
++	u8 random_dither_pos[MCDRV_AEC_OUTPUT_N];
++	u8 dc_dither_on[MCDRV_AEC_OUTPUT_N];
++	u8 dc_dither_level[MCDRV_AEC_OUTPUT_N];
++	u8 dither_type[MCDRV_AEC_OUTPUT_N];
++	u8 dng_on[MCDRV_AEC_OUTPUT_N];
++	u8 dng_zero[MCDRV_AEC_OUTPUT_N];
++	u8 dng_time[MCDRV_AEC_OUTPUT_N];
++	u8 dng_fw[MCDRV_AEC_OUTPUT_N];
++	u8 dng_attack;
++	u8 dng_release;
++	u8 dng_target[MCDRV_AEC_OUTPUT_N];
++	u8 dng_target_lineout[MCDRV_AEC_OUTPUT_N];
++	u8 dng_target_rc;
++	struct mcdrv_aec_syseq_ex syseq_ex[MCDRV_AEC_OUTPUT_N];
++};
++
++#define	MCDRV_AEC_INPUT_N	3
++
++struct mcdrv_aec_input {
++	u8 dsf32_l_type[MCDRV_AEC_INPUT_N];
++	u8 dsf32_r_type[MCDRV_AEC_INPUT_N];
++	u8 dsf4_sel[MCDRV_AEC_INPUT_N];
++	u8 dcc_sel[MCDRV_AEC_INPUT_N];
++	u8 dng_on[MCDRV_AEC_INPUT_N];
++	u8 dng_att[MCDRV_AEC_INPUT_N];
++	u8 dng_rel[MCDRV_AEC_INPUT_N];
++	u8 dng_fw[MCDRV_AEC_INPUT_N];
++	u8 dng_time[MCDRV_AEC_INPUT_N];
++	u8 dng_zero[MCDRV_AEC_INPUT_N][2];
++	u8 dng_target[MCDRV_AEC_INPUT_N][2];
++	u8 depop_att[MCDRV_AEC_INPUT_N];
++	u8 depop_wait[MCDRV_AEC_INPUT_N];
++	u8 ref_sel;
++};
++
++struct mcdrv_aec_pdm {
 +	u8 mode;
++	u8 st_wait;
++	u8 pdm0_loadtime;
++	u8 pdm0_l_finedelay;
++	u8 pdm0_r_finedelay;
++	u8 pdm1_loadtime;
++	u8 pdm1_l_finedelay;
++	u8 pdm1_r_finedelay;
++	u8 pdm0_data_delay;
++	u8 pdm1_data_delay;
 +};
 +
-+/*	mcdrv_pcm_format mono setting	*/
-+#define	MCDRV_PCM_STEREO		0
-+#define	MCDRV_PCM_MONO			1
-+
-+/*	mcdrv_pcm_format order setting	*/
-+#define	MCDRV_PCM_MSB_FIRST		0
-+#define	MCDRV_PCM_LSB_FIRST		1
-+
-+/*	mcdrv_pcm_format law setting	*/
-+#define	MCDRV_PCM_LINEAR		0
-+#define	MCDRV_PCM_ALAW			1
-+#define	MCDRV_PCM_MULAW			2
-+#define	MCDRV_PCM_LAST			MCDRV_PCM_MULAW
-+
-+/*	mcdrv_pcm_format bit_sel setting	*/
-+#define	MCDRV_PCM_BITSEL_8		0
-+#define	MCDRV_PCM_BITSEL_16		1
-+#define	MCDRV_PCM_BITSEL_24		2
-+#define	MCDRV_PCM_BITSEL_LAST		MCDRV_PCM_BITSEL_24
-+
-+struct mcdrv_pcm_format {
-+	bool mono;
-+	bool order;
-+	u8 law;
-+	u8 bit_sel;
++struct mcdrv_aec_e2 {
++	bool enable;
++	u8 da_sel;
++	u8 ad_sel;
++	bool on;
++	struct mcdrv_aec_e2_config config;
++};
++struct mcdrv_aec_adj {
++	u8 hold;
++	u8 cnt;
++	u8 max[2];
 +};
 +
-+struct mcdrv_dio_dir {
-+	struct mcdrv_da_format da_format;
-+	struct mcdrv_pcm_format pcm_format;
++struct mcdrv_aec_edsp_misc {
++	u8 i2s_out_enable;
++	u8 ch_sel;
++	u8 loopback;
 +};
 +
-+/*	mcdrv_dio_dit st_mode setting	*/
-+#define	MCDRV_STMODE_ZERO		0
-+#define	MCDRV_STMODE_HOLD		1
-+
-+/*	mcdrv_dio_dit edge setting	*/
-+#define	MCDRV_SDOUT_NORMAL		0
-+#define	MCDRV_SDOUT_AHEAD		1
-+
-+struct mcdrv_dio_dit {
-+	bool st_mode;
-+	bool edge;
-+	struct mcdrv_da_format da_format;
-+	struct mcdrv_pcm_format pcm_format;
++struct mcdrv_aec_control {
++	u8 command;
++	u8 param[4];
 +};
 +
-+struct mcdrv_dio_port {
-+	struct mcdrv_dio_common dio_common;
-+	struct mcdrv_dio_dir dir;
-+	struct mcdrv_dio_dit dit;
++/* fdsp_locate */
++#define FDSP_LOCATE_AUDIOENGINE		0
++#define FDSP_LOCATE_V_BOX		1
++
++struct mcdrv_aec_info {
++	u8 fdsp_locate;
++	struct mcdrv_aec_audio_engine audio_engine;
++	struct mcdrv_aec_vbox vbox;
++	struct mcdrv_aec_output output;
++	struct mcdrv_aec_input input;
++	struct mcdrv_aec_pdm pdm;
++	struct mcdrv_aec_e2 e2;
++	struct mcdrv_aec_adj adj;
++	struct mcdrv_aec_edsp_misc edsp_misc;
++	struct mcdrv_aec_control control;
 +};
 +
-+struct mcdrv_dio_info {
-+	struct mcdrv_dio_port port[4];
++/* mcdrv_gp_mode gp_ddr setting */
++#define MCDRV_GPDDR_IN			0
++#define MCDRV_GPDDR_OUT			1
++
++/* mcdrv_gp_mode gp_host setting */
++#define MCDRV_GPHOST_CPU		0
++#define MCDRV_GPHOST_CDSP		1
++
++/* mcdrv_gp_mode gp_invert setting */
++#define MCDRV_GPINV_NORMAL		0
++#define MCDRV_GPINV_INVERT		1
++
++#define MCDRV_GP_PAD0			0
++#define MCDRV_GP_PAD1			1
++#define MCDRV_GP_PAD2			2
++#define MCDRV_GP_NUM			3
++
++struct mcdrv_gp_mode {
++	bool gp_ddr[MCDRV_GP_NUM];
++	bool gp_host[MCDRV_GP_NUM];
++	bool gp_invert[MCDRV_GP_NUM];
 +};
 +
-+/*	set/get digitalio_path	*/
-+#define	MCDRV_PHYS0_UPDATE_FLAG		0x00000001U
-+#define	MCDRV_PHYS1_UPDATE_FLAG		0x00000002U
-+#define	MCDRV_PHYS2_UPDATE_FLAG		0x00000004U
-+#define	MCDRV_PHYS3_UPDATE_FLAG		0x00000008U
-+#define	MCDRV_MUSICNUM_UPDATE_FLAG	0x00000010U
-+#define	MCDRV_DIR0SLOT_UPDATE_FLAG	0x00000020U
-+#define	MCDRV_DIR1SLOT_UPDATE_FLAG	0x00000040U
-+#define	MCDRV_DIR2SLOT_UPDATE_FLAG	0x00000080U
-+#define	MCDRV_DIT0SLOT_UPDATE_FLAG	0x00000100U
-+#define	MCDRV_DIT1SLOT_UPDATE_FLAG	0x00000200U
-+#define	MCDRV_DIT2SLOT_UPDATE_FLAG	0x00000400U
-+
-+/*	mcdrv_dio_path_info phys_port setting	*/
-+#define	MCDRV_PHYSPORT_DIO0		0
-+#define	MCDRV_PHYSPORT_DIO1		1
-+#define	MCDRV_PHYSPORT_DIO2		2
-+#define	MCDRV_PHYSPORT_NONE		3
-+#define	MCDRV_PHYSPORT_SLIM0		4
-+#define	MCDRV_PHYSPORT_SLIM1		5
-+#define	MCDRV_PHYSPORT_SLIM2		6
-+#define	MCDRV_PHYSPORT_LAST		MCDRV_PHYSPORT_SLIM2
-+
-+/*	mcdrv_dio_path_info music_ch setting	*/
-+#define	MCDRV_MUSIC_2CH			0
-+#define	MCDRV_MUSIC_4CH			1
-+#define	MCDRV_MUSIC_6CH			2
-+#define	MCDRV_MUSIC_LAST		MCDRV_MUSIC_6CH
-+
-+struct mcdrv_dio_path_info {
-+	u8 phys_port[4];
-+	u8 music_ch;
-+	u8 music_rslot[3];
-+	u8 music_tslot[3];
++enum mcdrv_dev_id {
++	MCDRV_DEV_ID_UNKNOWN = 0,
++	MCDRV_DEV_ID_80_90H,
++	MCDRV_DEV_ID_81_91H,
++	MCDRV_DEV_ID_81_92H,
 +};
 +
-+/*	set/get swap	*/
-+#define	MCDRV_SWAP_ADIF0_UPDATE_FLAG		0x00000001U
-+#define	MCDRV_SWAP_ADIF1_UPDATE_FLAG		0x00000002U
-+#define	MCDRV_SWAP_ADIF2_UPDATE_FLAG		0x00000004U
-+#define	MCDRV_SWAP_DAC0_UPDATE_FLAG		0x00000008U
-+#define	MCDRV_SWAP_DAC1_UPDATE_FLAG		0x00000010U
-+#define	MCDRV_SWAP_MUSICIN0_UPDATE_FLAG		0x00000020U
-+#define	MCDRV_SWAP_MUSICIN1_UPDATE_FLAG		0x00000040U
-+#define	MCDRV_SWAP_MUSICIN2_UPDATE_FLAG		0x00000080U
-+#define	MCDRV_SWAP_EXTIN_UPDATE_FLAG		0x00000100U
-+#define	MCDRV_SWAP_VOICEIN_UPDATE_FLAG		0x00000200U
-+#define	MCDRV_SWAP_HIFIIN_UPDATE_FLAG		0x00000400U
-+#define	MCDRV_SWAP_MUSICOUT0_UPDATE_FLAG	0x00000800U
-+#define	MCDRV_SWAP_MUSICOUT1_UPDATE_FLAG	0x00001000U
-+#define	MCDRV_SWAP_MUSICOUT2_UPDATE_FLAG	0x00002000U
-+#define	MCDRV_SWAP_EXTOUT_UPDATE_FLAG		0x00004000U
-+#define	MCDRV_SWAP_VOICEOUT_UPDATE_FLAG		0x00008000U
-+#define	MCDRV_SWAP_HIFIOUT_UPDATE_FLAG		0x00010000U
-+#define	MCDRV_SWAP_ALL_UPDATE_FLAG		0x0001ffffU
++int mc_id_set(u8 digital_id, u8 analog_id);
++enum mcdrv_dev_id mc_dev_id_get(void);
++void mc_resource_init(void);
++void mc_a_registers_init(void);
++void mc_mblock_registers_init(void);
++void mc_e_registers_init(void);
++void mc_state_update(enum mcdrv_state state);
++enum mcdrv_state mc_state_get(void);
++u8 mc_register_get_value(u16 type, u16 addr);
++void mc_register_set_value(u16 type, u16 addr, u8 val);
 +
-+/*	mcdrv_swap_info adif/dac setting	*/
-+#define	MCDRV_SWAP_NORMAL		0
-+#define	MCDRV_SWAP_SWAP			1
-+#define	MCDRV_SWAP_MUTE			2
-+#define	MCDRV_SWAP_CENTER		3
-+#define	MCDRV_SWAP_MIX			4
-+#define	MCDRV_SWAP_MONOMIX		5
-+#define	MCDRV_SWAP_BOTHL		6
-+#define	MCDRV_SWAP_BOTHR		7
-+#define	MCDRV_SWAP_LAST			MCDRV_SWAP_BOTHR
++#define mc_if_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_IF, (addr))
++#define mc_ma_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_MA, (addr))
++#define mc_mb_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_MB, (addr))
++#define mc_a_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_A, (addr))
++#define mc_e_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_E, (addr))
++#define mc_ana_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_ANA, (addr))
++#define mc_cd_register_get_value(addr)	\
++		mc_register_get_value(MCDRV_PACKET_REGTYPE_CD, (addr))
++#define mc_if_register_set_value(addr, val)	\
++		mc_register_set_value(MCDRV_PACKET_REGTYPE_IF, (addr), (val))
++#define mc_ma_register_set_value(addr, val)	\
++		mc_register_set_value(MCDRV_PACKET_REGTYPE_MA, (addr), (val))
++#define mc_ana_register_set_value(addr, val)	\
++		mc_register_set_value(MCDRV_PACKET_REGTYPE_ANA, (addr), (val))
++#define mc_cd_register_set_value(addr, val)	\
++		mc_register_set_value(MCDRV_PACKET_REGTYPE_CD, (addr), (val))
 +
-+/*	mcdrv_swap_info
-+	music_in/ext_in/voice_in/hifi_in/music_out/ext_out/voice_out/hifi_out
-+	setting	*/
-+#define	MCDRV_SWSWAP_NORMAL		0
-+#define	MCDRV_SWSWAP_BOTH1		1
-+#define	MCDRV_SWSWAP_BOTH0		2
-+#define	MCDRV_SWSWAP_SWAP		3
-+#define	MCDRV_SWSWAP_LAST		MCDRV_SWSWAP_SWAP
++void mc_dev_info_set(struct mcdrv_dev_info *dev_info);
++void mc_dev_info_get(struct mcdrv_dev_info *dev_info);
++int mc_clock_set(u8 clock);
++void mc_clock_get(u8 *clock);
++int mc_path_info_set(struct mcdrv_path_info *path_info);
++void mc_path_info_get(struct mcdrv_path_info *path_info);
++void mc_path_info_get_virtual(struct mcdrv_path_info *path_info);
++void mc_vol_info_set(struct mcdrv_vol_info *vol_info);
++void mc_vol_info_get(struct mcdrv_vol_info *vol_info);
++void mc_dio_info_set(struct mcdrv_dio_info *dio_info, u32 update);
++void mc_dio_info_get(struct mcdrv_dio_info *dio_info);
++void mc_dio_path_info_set(struct mcdrv_dio_path_info *dio_path_info,
++			  u32 update);
++void mc_dio_path_info_get(struct mcdrv_dio_path_info *dio_path_info);
++void mc_swap_info_set(struct mcdrv_swap_info *swap_info, u32 update);
++void mc_swap_info_get(struct mcdrv_swap_info *swap_info);
++void mc_hsdet_info_set(struct mcdrv_hsdet_info *hsdet_info, u32 update);
++void mc_hsdet_info_get(struct mcdrv_hsdet_info *hsdet_info);
++void mc_aec_info_set(struct mcdrv_aec_info *aec_info);
++void mc_aec_info_replace(struct mcdrv_aec_info *aec_info);
++void mc_aec_info_get(struct mcdrv_aec_info *aec_info);
++void mc_gp_mode_set(struct mcdrv_gp_mode *mode);
++void mc_gp_mode_get(struct mcdrv_gp_mode *mode);
++bool mc_gp_pad_get(u32 pad_no);
++void mc_clock_select_set(u8 clk_sel);
++u8 mc_clock_select_get(void);
++void mc_e_clock_select_set(u8 eclk_sel);
++u8 mc_e_clock_select_get(void);
++void mc_plug_detect_db_set(u8 plug_det_db);
++u8 mc_plug_detect_db_get(void);
++void mc_volume_info_get(struct mcdrv_vol_info *vol_info);
++void mc_power_info_get(struct mcdrv_power_info *info);
++void mc_power_info_get_current(struct mcdrv_power_info *info);
++bool mc_d1_source_is_used(u32 mask);
++bool mc_d2_source_is_used(u32 mask);
++bool mc_a_source_is_used(u32 mask);
++bool mc_source_is_used(enum mcdrv_dst_type type, enum mcdrv_dst_ch ch);
++u32 mc_source_get(enum mcdrv_dst_type type, enum mcdrv_dst_ch ch);
++u8 mc_dsp_get_running(void);
++void mc_resource_clear(void);
++void mc_bus_queue_add(u16 type, u16 addr, u8 data, enum mcdrv_update_mode mode);
++void mc_bus_queue_flush(void);
++int mc_wait_event(u32 event, u32 param);
 +
-+struct mcdrv_swap_info {
-+	u8 adif0;
-+	u8 adif1;
-+	u8 adif2;
-+	u8 dac0;
-+	u8 dac1;
-+	u8 music_in0;
-+	u8 music_in1;
-+	u8 music_in2;
-+	u8 ext_in;
-+	u8 voice_in;
-+	u8 hifi_in;
-+	u8 music_out0;
-+	u8 music_out1;
-+	u8 music_out2;
-+	u8 ext_out;
-+	u8 voice_out;
-+	u8 hifi_out;
-+};
-+
-+/*	get transition	*/
-+#define	MCDRV_DSPTYPE_FDSP		0
-+#define	MCDRV_DSPTYPE_BDSP		1
-+
-+/*	register dsp cb	*/
-+#define	MCDRV_AE_EVT_STOP		1
-+#define	MCDRV_AE_EVT_APPSTOP		2
-+#define	MCDRV_AE_EVT_APPREQ		3
-+#define	MCDRV_AE_EVT_COEFDONE		4
-+#define	MCDRV_AE_EVT_ERROR		5
-+#define	MCDRV_CDSP_EVT_ERROR		11
-+#define	MCDRV_CDSP_EVT_PARAM		12
-+#define	MCDRV_CDSP_ENV_END		13
-+#define	MCDRV_CDSP_EVT_FIFO		14
-+#define	MCDRV_EDSP_EVT_E2PARAM		21
-+
-+/*	set/get hsdet	*/
-+#define	MCDRV_ENPLUGDET_UPDATE_FLAG	0x00000001U
-+#define	MCDRV_ENPLUGDETDB_UPDATE_FLAG	0x00000002U
-+#define	MCDRV_ENDLYKEYOFF_UPDATE_FLAG	0x00000004U
-+#define	MCDRV_ENDLYKEYON_UPDATE_FLAG	0x00000008U
-+#define	MCDRV_ENMICDET_UPDATE_FLAG	0x00000010U
-+#define	MCDRV_ENKEYOFF_UPDATE_FLAG	0x00000020U
-+#define	MCDRV_ENKEYON_UPDATE_FLAG	0x00000040U
-+#define	MCDRV_HSDETDBNC_UPDATE_FLAG	0x00000080U
-+#define	MCDRV_KEYOFFMTIM_UPDATE_FLAG	0x00000100U
-+#define	MCDRV_KEYONMTIM_UPDATE_FLAG	0x00000200U
-+#define	MCDRV_KEY0OFFDLYTIM_UPDATE_FLAG	0x00000400U
-+#define	MCDRV_KEY1OFFDLYTIM_UPDATE_FLAG	0x00000800U
-+#define	MCDRV_KEY2OFFDLYTIM_UPDATE_FLAG	0x00001000U
-+#define	MCDRV_KEY0ONDLYTIM_UPDATE_FLAG	0x00002000U
-+#define	MCDRV_KEY1ONDLYTIM_UPDATE_FLAG	0x00004000U
-+#define	MCDRV_KEY2ONDLYTIM_UPDATE_FLAG	0x00008000U
-+#define	MCDRV_KEY0ONDLYTIM2_UPDATE_FLAG	0x00010000U
-+#define	MCDRV_KEY1ONDLYTIM2_UPDATE_FLAG	0x00020000U
-+#define	MCDRV_KEY2ONDLYTIM2_UPDATE_FLAG	0x00040000U
-+#define	MCDRV_IRQTYPE_UPDATE_FLAG	0x00080000U
-+#define	MCDRV_DETINV_UPDATE_FLAG	0x00100000U
-+#define	MCDRV_HSDETMODE_UPDATE_FLAG	0x00200000U
-+#define	MCDRV_SPERIOD_UPDATE_FLAG	0x00400000U
-+#define	MCDRV_LPERIOD_UPDATE_FLAG	0x00800000U
-+#define	MCDRV_DBNCNUMPLUG_UPDATE_FLAG	0x01000000U
-+#define	MCDRV_DBNCNUMMIC_UPDATE_FLAG	0x02000000U
-+#define	MCDRV_DBNCNUMKEY_UPDATE_FLAG	0x04000000U
-+#define	MCDRV_SGNL_UPDATE_FLAG		0x08000000U
-+#define	MCDRV_IMPSEL_UPDATE_FLAG	0x10000000U
-+#define	MCDRV_DLYIRQSTOP_UPDATE_FLAG	0x20000000U
-+#define	MCDRV_CBFUNC_UPDATE_FLAG	0x40000000U
-+
-+/*	mcdrv_hsdet_info en_plug_det setting	*/
-+#define	MCDRV_PLUGDET_DISABLE		0
-+#define	MCDRV_PLUGDET_ENABLE		1
-+
-+/*	mcdrv_hsdet_info en_plug_det_db setting	*/
-+#define	MCDRV_PLUGDETDB_DISABLE		0
-+#define	MCDRV_PLUGDETDB_DET_ENABLE	1
-+#define	MCDRV_PLUGDETDB_UNDET_ENABLE	2
-+#define	MCDRV_PLUGDETDB_BOTH_ENABLE	3
-+#define	MCDRV_PLUGDETDB_LAST		MCDRV_PLUGDETDB_BOTH_ENABLE
-+
-+/*	mcdrv_hsdet_info
-+	en_dly_key_off/en_dly_key_on/en_key_off/en_key_on setting	*/
-+#define	MCDRV_KEYEN_D_D_D		0
-+#define	MCDRV_KEYEN_D_D_E		1
-+#define	MCDRV_KEYEN_D_E_D		2
-+#define	MCDRV_KEYEN_D_E_E		3
-+#define	MCDRV_KEYEN_E_D_D		4
-+#define	MCDRV_KEYEN_E_D_E		5
-+#define	MCDRV_KEYEN_E_E_D		6
-+#define	MCDRV_KEYEN_E_E_E		7
-+#define	MCDRV_KEYEN_LAST		MCDRV_KEYEN_E_E_E
-+
-+/*	mcdrv_hsdet_info en_mic_det setting	*/
-+#define	MCDRV_MICDET_DISABLE		0
-+#define	MCDRV_MICDET_ENABLE		1
-+
-+/*	mcdrv_hsdet_info hs_det_dbnc setting	*/
-+#define	MCDRV_DETDBNC_27		0
-+#define	MCDRV_DETDBNC_55		1
-+#define	MCDRV_DETDBNC_109		2
-+#define	MCDRV_DETDBNC_219		3
-+#define	MCDRV_DETDBNC_438		4
-+#define	MCDRV_DETDBNC_875		5
-+#define	MCDRV_DETDBNC_1313		6
-+#define	MCDRV_DETDBNC_1750		7
-+#define	MCDRV_DETDBNC_LAST		MCDRV_DETDBNC_1750
-+
-+/*	mcdrv_hsdet_info key_off_mtim setting	*/
-+#define	MCDRV_KEYOFF_MTIM_63		0
-+#define	MCDRV_KEYOFF_MTIM_16		1
-+
-+/*	mcdrv_hsdet_info key_on_mtim setting	*/
-+#define	MCDRV_KEYON_MTIM_63		0
-+#define	MCDRV_KEYON_MTIM_250		1
-+
-+/*	mcdrv_hsdet_info key_off_dly_tim setting	*/
-+#define	MC_DRV_KEYOFFDLYTIM_MAX		15
-+
-+/*	mcdrv_hsdet_info key_on_dly_tim setting	*/
-+#define	MC_DRV_KEYONDLYTIM_MAX		15
-+
-+/*	mcdrv_hsdet_info key_on_dly_tim2 setting	*/
-+#define	MC_DRV_KEYONDLYTIM2_MAX		15
-+
-+/*	mcdrv_hsdet_info irq_type setting	*/
-+#define	MCDRV_IRQTYPE_NORMAL		0
-+#define	MCDRV_IRQTYPE_REF		1
-+#define MCDRV_IRQTYPE_EX		2
-+#define MCDRV_IRQTYPE_LAST		MCDRV_IRQTYPE_EX
-+
-+/*	mcdrv_hsdet_info det_in_inv setting	*/
-+#define	MCDRV_DET_IN_NORMAL		0
-+#define	MCDRV_DET_IN_INV		1
-+#define MCDRV_DET_IN_NORMAL_NORMAL	4
-+#define MCDRV_DET_IN_INV_NORMAL		5
-+#define MCDRV_DET_IN_NORMAL_INV		6
-+#define MCDRV_DET_IN_INV_INV		7
-+#define MCDRV_DET_IN_LAST		MCDRV_DET_IN_INV_INV
-+
-+/*	mcdrv_hsdet_info hs_det_mode setting	*/
-+#define	MCDRV_HSDET_MODE_DETIN_A	4
-+#define	MCDRV_HSDET_MODE_DETIN_B	6
-+
-+/*	mcdrv_hsdet_info speriod setting	*/
-+#define	MCDRV_SPERIOD_244		0
-+#define	MCDRV_SPERIOD_488		1
-+#define	MCDRV_SPERIOD_977		2
-+#define	MCDRV_SPERIOD_1953		3
-+#define	MCDRV_SPERIOD_3906		4
-+#define	MCDRV_SPERIOD_7813		5
-+#define	MCDRV_SPERIOD_15625		6
-+#define	MCDRV_SPERIOD_31250		7
-+#define	MCDRV_SPERIOD_LAST		MCDRV_SPERIOD_31250
-+
-+/*	mcdrv_hsdet_info lperiod setting	*/
-+#define	MCDRV_LPERIOD_3906		0
-+#define	MCDRV_LPERIOD_62500		1
-+#define	MCDRV_LPERIOD_125000		2
-+#define	MCDRV_LPERIOD_250000		3
-+#define	MCDRV_LPERIOD_LAST		MCDRV_LPERIOD_250000
-+
-+/*	mcdrv_hsdet_info dbnc_num setting	*/
-+#define	MCDRV_DBNC_NUM_2		0
-+#define	MCDRV_DBNC_NUM_3		1
-+#define	MCDRV_DBNC_NUM_4		2
-+#define	MCDRV_DBNC_NUM_7		3
-+#define	MCDRV_DBNC_NUM_LAST		MCDRV_DBNC_NUM_7
-+
-+/*	mcdrv_hsdet_info sgnl_period setting	*/
-+#define	MCDRV_SGNLPERIOD_61		0
-+#define	MCDRV_SGNLPERIOD_79		1
-+#define	MCDRV_SGNLPERIOD_97		2
-+#define	MCDRV_SGNLPERIOD_151		3
-+#define	MCDRV_SGNLPERIOD_LAST		MCDRV_SGNLPERIOD_151
-+
-+/*	mcdrv_hsdet_info sgnl_num setting	*/
-+#define	MCDRV_SGNLNUM_1			0
-+#define	MCDRV_SGNLNUM_4			1
-+#define	MCDRV_SGNLNUM_6			2
-+#define	MCDRV_SGNLNUM_8			3
-+#define	MCDRV_SGNLNUM_LAST		MCDRV_SGNLNUM_8
-+#define MCDRV_SGNLNUM_NONE		0xff
-+
-+/*	mcdrv_hsdet_info sgnl_peak setting	*/
-+#define	MCDRV_SGNLPEAK_500		0
-+#define	MCDRV_SGNLPEAK_730		1
-+#define	MCDRV_SGNLPEAK_960		2
-+#define	MCDRV_SGNLPEAK_1182		3
-+#define	MCDRV_SGNLPEAK_LAST		MCDRV_SGNLPEAK_1182
-+
-+/*	mcdrv_hsdet_info imp_sel setting	*/
-+#define	MCDRV_IMPSEL_MOSTFREQ		0
-+#define	MCDRV_IMPSEL_MIN		1
-+
-+/*	mcdrv_hsdet_info dly_irq_stop setting	*/
-+#define	MCDRV_DLYIRQ_DONTCARE		0
-+#define	MCDRV_DLYIRQ_STOP		1
-+
-+#define	MCDRV_HSDET_EVT_PLUGDET_DB_FLAG		0x00000001
-+#define	MCDRV_HSDET_EVT_PLUGUNDET_DB_FLAG	0x00000002
-+#define	MCDRV_HSDET_EVT_PLUGDET_FLAG		0x00000080
-+#define	MCDRV_HSDET_EVT_DLYKEYON0_FLAG		0x00000100
-+#define	MCDRV_HSDET_EVT_DLYKEYON1_FLAG		0x00000200
-+#define	MCDRV_HSDET_EVT_DLYKEYON2_FLAG		0x00000400
-+#define	MCDRV_HSDET_EVT_DLYKEYOFF0_FLAG		0x00000800
-+#define	MCDRV_HSDET_EVT_DLYKEYOFF1_FLAG		0x00001000
-+#define	MCDRV_HSDET_EVT_DLYKEYOFF2_FLAG		0x00002000
-+#define	MCDRV_HSDET_EVT_KEYON0_FLAG		0x00010000
-+#define	MCDRV_HSDET_EVT_KEYON1_FLAG		0x00020000
-+#define	MCDRV_HSDET_EVT_KEYON2_FLAG		0x00040000
-+#define	MCDRV_HSDET_EVT_KEYOFF0_FLAG		0x00080000
-+#define	MCDRV_HSDET_EVT_KEYOFF1_FLAG		0x00100000
-+#define	MCDRV_HSDET_EVT_KEYOFF2_FLAG		0x00200000
-+#define	MCDRV_HSDET_EVT_MICDET_FLAG		0x00400000
-+#define	MCDRV_HSDET_EVT_SENSEFIN_FLAG		0x80000000
-+
-+struct mcdrv_hsdet_res {
-+	u8 key_cnt0;
-+	u8 key_cnt1;
-+	u8 key_cnt2;
-+	u8 plug_rev;
-+	u8 hp_imp_class;
-+	u16 hp_imp;
-+};
-+
-+typedef void (*callback_function) (u32 flags, struct mcdrv_hsdet_res *res);
-+
-+struct mcdrv_hsdet_info {
-+	bool en_plug_det;
-+	u8 en_plug_det_db;
-+	u8 en_dly_key_off;
-+	u8 en_dly_key_on;
-+	bool en_mic_det;
-+	u8 en_key_off;
-+	u8 en_key_on;
-+	u8 hs_det_dbnc;
-+	bool key_off_mtim;
-+	bool key_on_mtim;
-+	u8 key0_off_dly_tim;
-+	u8 key1_off_dly_tim;
-+	u8 key2_off_dly_tim;
-+	u8 key0_on_dly_tim;
-+	u8 key1_on_dly_tim;
-+	u8 key2_on_dly_tim;
-+	u8 key0_on_dly_tim2;
-+	u8 key1_on_dly_tim2;
-+	u8 key2_on_dly_tim2;
-+	u8 irq_type;
-+	u8 plug_det_db_irq_type;
-+	u8 plug_undet_db_irq_type;
-+	u8 mic_det_irq_type;
-+	u8 plug_det_irq_type;
-+	u8 key0_on_irq_type;
-+	u8 key1_on_irq_type;
-+	u8 key2_on_irq_type;
-+	u8 key0_off_irq_type;
-+	u8 key1_off_irq_type;
-+	u8 key2_off_irq_type;
-+	u8 det_in_inv;
-+	u8 hs_det_mode;
-+	u8 speriod;
-+	u8 lperiod;
-+	u8 dbnc_num_plug;
-+	u8 dbnc_num_mic;
-+	u8 dbnc_num_key;
-+	u8 sgnl_period;
-+	u8 sgnl_num;
-+	u8 sgnl_peak;
-+	bool imp_sel;
-+	bool dly_irq_stop;
-+	callback_function cbfunc;
-+};
-+
-+int mc_init(struct mcdrv_dev_info *info);
-+int mc_term(void);
-+int mc_do_irq(void);
-+int mc_control(unsigned int cmd, unsigned long arg, unsigned int flags);
-+int mc_version_id_get(void);
-+
-+#endif /* _MCDRIVER_H */
++#endif /* _MCRESCTRL_H */
 -- 
 1.7.9.5
