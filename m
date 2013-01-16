@@ -1,8 +1,7 @@
 From: Yoichi Yuasa <yuasa@linux-mips.org>
-Subject: [PATCH 15/19] ALSA: ymu831: add path configurations
-	header
-Date: Wed, 16 Jan 2013 17:41:20 +0900
-Message-ID: <20130116174120.7f5c3152baf6cf59ea12c61e@linux-mips.org>
+Subject: [PATCH 16/19] ALSA: ymu831: add volume map header
+Date: Wed, 16 Jan 2013 17:42:30 +0900
+Message-ID: <20130116174230.12f0fa4f5742cbecb28eebec@linux-mips.org>
 References: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,16 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Yoichi Yuasa <yuasa@linux-mips.org>
 ---
- sound/soc/codecs/ymu831/ymu831_path_cfg.h | 1024 +++++++++++++++++++++++++++++
- 1 file changed, 1024 insertions(+)
- create mode 100644 sound/soc/codecs/ymu831/ymu831_path_cfg.h
+ sound/soc/codecs/ymu831/ymu831_vol.h |  461 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 461 insertions(+)
+ create mode 100644 sound/soc/codecs/ymu831/ymu831_vol.h
 
-diff --git a/sound/soc/codecs/ymu831/ymu831_path_cfg.h b/sound/soc/codecs/ymu831/ymu831_path_cfg.h
+diff --git a/sound/soc/codecs/ymu831/ymu831_vol.h b/sound/soc/codecs/ymu831/ymu831_vol.h
 new file mode 100644
-index 0000000..e533ebc
+index 0000000..34bdabd
 --- /dev/null
-+++ b/sound/soc/codecs/ymu831/ymu831_path_cfg.h
-@@ -0,0 +1,1024 @@
++++ b/sound/soc/codecs/ymu831/ymu831_vol.h
+@@ -0,0 +1,461 @@
 +/*
 + * YMU831 ASoC codec driver
 + *
@@ -58,1006 +57,443 @@ index 0000000..e533ebc
 + */
 +/*
 + * changelog:
++ * - split from ymu831.c
 + * - change in the Linux coding style
-+ * - remove unnecessary comments
-+ * - remove unused codes
 + */
-+#ifndef _YMU831_PATH_CFG_H
-+#define _YMU831_PATH_CFG_H
++#ifndef _YMU831_VOL_H
++#define _YMU831_VOL_H
 +
-+#include "mcdriver.h"
++/* volmap for Digital Volumes */
++static const s16 volmap_digital[] = {
++	0xa000, 0xa100, 0xa200, 0xa300, 0xa400, 0xa500, 0xa600, 0xa700,
++	0xa800, 0xa900, 0xaa00, 0xab00, 0xac00, 0xad00, 0xae00, 0xaf00,
++	0xb000, 0xb100, 0xb200, 0xb300, 0xb400, 0xb500, 0xb600, 0xb700,
++	0xb800, 0xb900, 0xba00, 0xbb00, 0xbc00, 0xbd00, 0xbe00, 0xbf00,
++	0xc000, 0xc100, 0xc200, 0xc300, 0xc400, 0xc500, 0xc600, 0xc700,
++	0xc800, 0xc900, 0xca00, 0xcb00, 0xcc00, 0xcd00, 0xce00, 0xcf00,
++	0xd000, 0xd100, 0xd200, 0xd300, 0xd400, 0xd500, 0xd600, 0xd700,
++	0xd800, 0xd900, 0xda00, 0xdb00, 0xdc00, 0xdd00, 0xde00, 0xdf00,
++	0xe000, 0xe100, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600, 0xe700,
++	0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00, 0xef00,
++	0xf000, 0xf100, 0xf200, 0xf300, 0xf400, 0xf500, 0xf600, 0xf700,
++	0xf800, 0xf900, 0xfa00, 0xfb00, 0xfc00, 0xfd00, 0xfe00, 0xff00,
++	0x0000, 0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600, 0x0700,
++	0x0800, 0x0900, 0x0a00, 0x0b00, 0x0c00, 0x0d00, 0x0e00, 0x0f00,
++	0x1000, 0x1100, 0x1200
++};
 +
-+#define PRESET_PATH_N	65
++/* volmap for LINE/MIC Input Volumes */
++static const s16 volmap_ain[] = {
++	0xa000, 0xa000, 0xa000, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600,
++	0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00,
++	0xef00, 0xf000, 0xf100, 0xf200, 0xf300, 0xf400, 0xf500, 0xf600,
++	0xf700, 0xf800, 0xf900, 0xfa00, 0xfb00, 0xfc00, 0xfd00, 0xfe00,
++	0xff00, 0x0000, 0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600,
++	0x0700, 0x0800, 0x0900, 0x0a00, 0x0b00, 0x0c00, 0x0d00, 0x0e00,
++	0x0f00, 0x1000, 0x1100, 0x1200, 0x1300, 0x1400, 0x1500, 0x1580,
++	0x1600, 0x1680, 0x1700, 0x1780, 0x1800, 0x1a00, 0x1c00, 0x1e00
++};
 +
-+static const struct mcdrv_path_info mc_preset_path_info[PRESET_PATH_N] = {
-+	/* playback:off, capture:off */
-+	{
-+	 .music_out = {0x00aaaaaa, 0x00aaaaaa},
-+	 .ext_out = {0x00aaaaaa, 0x00aaaaaa},
-+	 .hifi_out = {0x00aaaaaa},
-+	 .vbox_mix_in = {0x00aaaaaa, 0x00aaaaaa, 0x00aaaaaa, 0x00aaaaaa},
-+	 .ae0 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .ae1 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .ae2 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .ae3 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .dac0 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .dac1 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .voice_out = {0x00aaaaaa},
-+	 .vbox_io_in = {0x00aaaaaa},
-+	 .vbox_host_in = {0x00aaaaaa},
-+	 .host_out = {0x00aaaaaa},
-+	 .adif0 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .adif1 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .adif2 = {0x00aaaaaa, 0x00aaaaaa},
-+	 .adc0 = {0x002aaaaa, 0x002aaaaa},
-+	 .adc1 = {0x002aaaaa},
-+	 .sp = {0x002aaaaa, 0x002aaaaa},
-+	 .hp = {0x002aaaaa, 0x002aaaaa},
-+	 .rc = {0x002aaaaa},
-+	 .lout1 = {0x002aaaaa, 0x002aaaaa},
-+	 .lout2 = {0x002aaaaa, 0x002aaaaa},
-+	 .bias = {0x002aaaaa, 0x002aaaaa, 0x002aaaaa, 0x002aaaaa},
-+	 },
-+	/* playback:audio, capture:off (analog output) */
-+	{
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:off (BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 },
-+	/* playback:audio, capture:off (analog+BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:off, capture:audio (analog input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON)},
-+	 },
-+	/* playback:off, capture:audio (BT input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 },
-+	/* playback:audio, capture:audio (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audio (BT input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audio (analog input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON)},
-+	 },
-+	/* playback:audio, capture:audio (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 },
-+	/* playback:audio, capture:audio (analog input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audio (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall, capture:incall (analog input, analog output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall, capture:incall (BT input, BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:incall, capture:incall (BT input, analog+BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall, capture:incall (analog input analog output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .dac1 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall, capture:incall (BT input BT output) */
-+	{
-+	 .ext_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		     (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio+incall, capture:incall (BT input analog+BT output) */
-+	{
-+	 .ext_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		     (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .dac1 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall, capture:audio+incall
-+	   (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall, capture:audio+incall (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON),
-+		     (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:incall, capture:audio+incall (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON),
-+		     (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall, capture:audio+incall
-+	   (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .dac1 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON),
-+		  (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON)},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {(MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON),
-+		   (MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON)},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall, capture:audio+incall (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio+incall, capture:audio+incall
-+	   (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* incommunication (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* incommunication (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0,
-+			 MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* incommunication (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .dac1 = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio (HiFi), capture:off */
-+	{
-+	 .dac0 = {MCDRV_D1SRC_HIFIIN_ON, MCDRV_D1SRC_HIFIIN_ON},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 },
-+	/* playback:off, capture:audio (HiFi) */
-+	{
-+	 .hifi_out = {MCDRV_D1SRC_ADIF0_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 },
-+	/* playback:audio (HiFi), capture:audio (HiFi) */
-+	{
-+	 .hifi_out = {MCDRV_D1SRC_ADIF0_ON},
-+	 .dac0 = {MCDRV_D1SRC_HIFIIN_ON, MCDRV_D1SRC_HIFIIN_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 },
-+	/* playback:off, capture:audioex (analog input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 },
-+	/* playback:off, capture:audioex (BT input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON,},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio, capture:audioex (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audioex (BT input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audioex (analog input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 },
-+	/* playback:audio, capture:audioex (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio, capture:audioex (analog input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON,
-+		  MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audioex (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON,},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:off, capture:audiovr (analog input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF0_ON, MCDRV_D1SRC_ADIF0_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC1_ON, MCDRV_D2SRC_ADC1_ON},
-+	 .adc1 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_M_ON},
-+	 },
-+	/* playback:off, capture:audiovr (BT input) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF0_ON, MCDRV_D1SRC_ADIF0_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC1_ON, MCDRV_D2SRC_ADC1_ON},
-+	 .adc1 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_M_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (BT input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (analog input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF0_ON, MCDRV_D1SRC_ADIF0_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC1_ON, MCDRV_D2SRC_ADC1_ON},
-+	 .adc1 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_M_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (analog input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF0_ON, MCDRV_D1SRC_ADIF0_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .adif0 = {MCDRV_D2SRC_ADC1_ON, MCDRV_D2SRC_ADC1_ON},
-+	 .adc1 = {MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_M_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio, capture:audiovr (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:karaoke, capture:off (analog input) */
-+	{
-+	 .vbox_mix_in = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON,
-+			 MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .ae0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON),
-+		 (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON)},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON & ~MCDRV_ASRC_MIC3_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON & ~MCDRV_ASRC_MIC3_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:karaoke, capture:off (BT input) */
-+	{
-+	 .vbox_mix_in = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON,
-+			 MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON),
-+		 (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON)},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:karaoke, capture:audio (analog input) */
-+	{
-+	 .music_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON),
-+		       (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON,
-+			 MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .ae0 = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON),
-+		 (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON)},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:karaoke, capture:audio (BT input) */
-+	{
-+	 .music_out = {(MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON),
-+		       (MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON)},
-+	 .vbox_mix_in = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON,
-+			 MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON,
-+		 MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall2, capture:incall (analog input, analog output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall2, capture:incall (BT input, BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:incall2, capture:incall (BT input, analog+BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_VBOXOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall2, capture:incall
-+	   (analog input analog output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall2, capture:incall (BT input BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio+incall2, capture:incall
-+	   (BT input analog+BT output) */
-+	{
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall2, capture:audio+incall
-+	   (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:incall2, capture:audio+incall (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:incall2, capture:audio+incall
-+	   (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_MUSICIN_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall2, capture:audio+incall
-+	   (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* playback:audio+incall2, capture:audio+incall
-+	   (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_VBOXOUT_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* playback:audio+incall2, capture:audio+incall
-+	   (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON,
-+		     MCDRV_D1SRC_VBOXOUT_ON | MCDRV_D1SRC_AE0_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0, MCDRV_D1SRC_ADIF2_ON, 0},
-+	 .ae0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON,
-+		  MCDRV_D1SRC_EXTIN_ON | MCDRV_D1SRC_AE0_ON},
-+	 .voice_out = {MCDRV_D2SRC_VBOXIOOUT_ON},
-+	 .vbox_io_in = {MCDRV_D2SRC_VOICEIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* incommunication2 (analog input, analog output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, MCDRV_D1SRC_AE1_ON,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .adc0 = {MCDRV_ASRC_MIC_ALL_ON, MCDRV_ASRC_MIC_ALL_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+	/* incommunication2 (BT input, BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0,
-+			 MCDRV_D1SRC_VBOXOUT_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 },
-+	/* incommunication2 (BT input, analog+BT output) */
-+	{
-+	 .music_out = {MCDRV_D1SRC_VBOXREFOUT_ON, MCDRV_D1SRC_VBOXREFOUT_ON},
-+	 .ext_out = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .vbox_mix_in = {MCDRV_D1SRC_AE1_ON, 0,
-+			 MCDRV_D1SRC_ADIF2_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .ae1 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .dac1 = {MCDRV_D1SRC_MUSICIN_ON, MCDRV_D1SRC_MUSICIN_ON},
-+	 .host_out = {MCDRV_D2SRC_VBOXHOSTOUT_ON},
-+	 .adif2 = {MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON,
-+		   MCDRV_D2SRC_DAC0REF_ON | MCDRV_D2SRC_DAC1REF_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
++/* volmap for Analog Output Volumes */
++static const s16 volmap_aout[] = {
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdc00,
++	0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	0xed00, 0xee00, 0xef00, 0xf000, 0xf080, 0xf100, 0xf180, 0xf200,
++	0xf280, 0xf300, 0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600,
++	0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00,
++	0xfa40, 0xfa80, 0xfac0, 0xfb00, 0xfb40, 0xfb80, 0xfbc0, 0xfc00,
++	0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000
++};
++
++/* volmap for SP Volumes */
++static const s16 volmap_sp[5][128] = {
++	{
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdc00,
++	 0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	 0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	 0xed00, 0xee00, 0xef00, 0xf000, 0xf080, 0xf100, 0xf180, 0xf200,
++	 0xf280, 0xf300, 0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600,
++	 0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00,
++	 0xfa40, 0xfa80, 0xfac0, 0xfb00, 0xfb40, 0xfb80, 0xfbc0, 0xfc00,
++	 0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	 0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++	 0x0040, 0x0080, 0x00c0, 0x0100, 0x0140, 0x0180, 0x01c0, 0x0200,
++	 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380, 0x03c0, 0x0400},
++	{
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdd00,
++	 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400, 0xe500,
++	 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00,
++	 0xee00, 0xef00, 0xf000, 0xf100, 0xf180, 0xf200, 0xf280, 0xf300,
++	 0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600, 0xf680, 0xf700,
++	 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00, 0xfa80, 0xfb00,
++	 0xfb40, 0xfb80, 0xfbc0, 0xfc00, 0xfc40, 0xfc80, 0xfcc0, 0xfd00,
++	 0xfd40, 0xfd80, 0xfdc0, 0xfe00, 0xfe40, 0xfe80, 0xfec0, 0xff00,
++	 0xff40, 0xff80, 0xffc0, 0x0000, 0x0040, 0x0080, 0x00c0, 0x0100,
++	 0x0140, 0x0180, 0x01c0, 0x0200, 0x0240, 0x0280, 0x02c0, 0x0300,
++	 0x0340, 0x0380, 0x03c0, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400},
++	{
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xde00,
++	 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600,
++	 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00,
++	 0xef00, 0xf000, 0xf100, 0xf200, 0xf280, 0xf300, 0xf380, 0xf400,
++	 0xf480, 0xf500, 0xf580, 0xf600, 0xf680, 0xf700, 0xf780, 0xf800,
++	 0xf880, 0xf900, 0xf980, 0xfa00, 0xfa80, 0xfb00, 0xfb80, 0xfc00,
++	 0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	 0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++	 0x0040, 0x0080, 0x00c0, 0x0100, 0x0140, 0x0180, 0x01c0, 0x0200,
++	 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380, 0x03c0, 0x0400,
++	 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400},
++	{
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdf00,
++	 0xe000, 0xe100, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600, 0xe700,
++	 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00, 0xef00,
++	 0xf000, 0xf100, 0xf200, 0xf300, 0xf380, 0xf400, 0xf480, 0xf500,
++	 0xf580, 0xf600, 0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900,
++	 0xf980, 0xfa00, 0xfa80, 0xfb00, 0xfb80, 0xfc00, 0xfc80, 0xfd00,
++	 0xfd40, 0xfd80, 0xfdc0, 0xfe00, 0xfe40, 0xfe80, 0xfec0, 0xff00,
++	 0xff40, 0xff80, 0xffc0, 0x0000, 0x0040, 0x0080, 0x00c0, 0x0100,
++	 0x0140, 0x0180, 0x01c0, 0x0200, 0x0240, 0x0280, 0x02c0, 0x0300,
++	 0x0340, 0x0380, 0x03c0, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400,
++	 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400},
++	{
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xe000,
++	 0xe100, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600, 0xe700, 0xe800,
++	 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00, 0xef00, 0xf000,
++	 0xf100, 0xf200, 0xf300, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600,
++	 0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00,
++	 0xfa80, 0xfb00, 0xfb80, 0xfc00, 0xfc80, 0xfd00, 0xfd80, 0xfe00,
++	 0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++	 0x0040, 0x0080, 0x00c0, 0x0100, 0x0140, 0x0180, 0x01c0, 0x0200,
++	 0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380, 0x03c0, 0x0400,
++	 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400,
++	 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400}
++};
++
++/* volmap for LineOut Volumes */
++static const s16 volmap_lineout[] = {
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdc00,
++	0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	0xed00, 0xee00, 0xef00, 0xf000, 0xf080, 0xf100, 0xf180, 0xf200,
++	0xf280, 0xf300, 0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600,
++	0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00,
++	0xfa40, 0xfa80, 0xfac0, 0xfb00, 0xfb40, 0xfb80, 0xfbc0, 0xfc00,
++	0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++	0x0040, 0x0080, 0x00c0, 0x0100, 0x0140, 0x0180, 0x01c0, 0x0200,
++};
++
++/* volmap for LineOut2 Volumes */
++static const s16 volmap_lineout2[] = {
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xda00,
++	0xdc00, 0xdc00, 0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200,
++	0xe300, 0xe400, 0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00,
++	0xeb00, 0xec00, 0xed00, 0xee00, 0xee00, 0xef00, 0xef00, 0xf000,
++	0xf080, 0xf100, 0xf180, 0xf200, 0xf280, 0xf300, 0xf380, 0xf400,
++	0xf480, 0xf500, 0xf580, 0xf600, 0xf680, 0xf700, 0xf780, 0xf800,
++	0xf800, 0xf880, 0xf880, 0xf900, 0xf900, 0xf980, 0xf980, 0xfa00,
++	0xfa40, 0xfa80, 0xfac0, 0xfb00, 0xfb40, 0xfb80, 0xfbc0, 0xfc00,
++	0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++};
++
++/* volmap for HP Output Volumes */
++static const s16 volmap_hp_es1[] = {
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdd00,
++	0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400, 0xe500,
++	0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00,
++	0xee00, 0xef00, 0xf000, 0xf100, 0xf180, 0xf200, 0xf280, 0xf300,
++	0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600, 0xf680, 0xf700,
++	0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00, 0xfa80, 0xfb00,
++	0xfb40, 0xfb80, 0xfbc0, 0xfc00, 0xfc40, 0xfc80, 0xfcc0, 0xfd00,
++	0xfd40, 0xfd80, 0xfdc0, 0xfe00, 0xfe40, 0xfe80, 0xfec0, 0xff00,
++	0xff40, 0xff80, 0xffc0, 0x0000, 0x0040, 0x0080, 0x00c0, 0x0100,
++	0x0140, 0x0180, 0x01c0, 0x0200, 0x0240, 0x0280, 0x02c0, 0x0300,
++	0x0340, 0x0380, 0x03c0, 0x0400, 0x0400, 0x0400, 0x0400, 0x0400
++};
++
++static const s16 volmap_hp[] = {
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000,
++	0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xa000, 0xdc00,
++	0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	0xed00, 0xee00, 0xef00, 0xf000, 0xf080, 0xf100, 0xf180, 0xf200,
++	0xf280, 0xf300, 0xf380, 0xf400, 0xf480, 0xf500, 0xf580, 0xf600,
++	0xf680, 0xf700, 0xf780, 0xf800, 0xf880, 0xf900, 0xf980, 0xfa00,
++	0xfa40, 0xfa80, 0xfac0, 0xfb00, 0xfb40, 0xfb80, 0xfbc0, 0xfc00,
++	0xfc40, 0xfc80, 0xfcc0, 0xfd00, 0xfd40, 0xfd80, 0xfdc0, 0xfe00,
++	0xfe40, 0xfe80, 0xfec0, 0xff00, 0xff40, 0xff80, 0xffc0, 0x0000,
++	0x0040, 0x0080, 0x00c0, 0x0100, 0x0140, 0x0180, 0x01c0, 0x0200,
++	0x0240, 0x0280, 0x02c0, 0x0300, 0x0340, 0x0380, 0x03c0, 0x0400
++};
++
++/* volmap for Master Volumes */
++static const s16 volmap_master[] = {
++	0xb500, 0xb600, 0xb700, 0xb800, 0xb900, 0xba00, 0xbb00, 0xbc00,
++	0xbd00, 0xbe00, 0xbf00, 0xc000, 0xc100, 0xc200, 0xc300, 0xc400,
++	0xc500, 0xc600, 0xc700, 0xc800, 0xc900, 0xca00, 0xcb00, 0xcc00,
++	0xcd00, 0xce00, 0xcf00, 0xd000, 0xd100, 0xd200, 0xd300, 0xd400,
++	0xd500, 0xd600, 0xd700, 0xd800, 0xd900, 0xda00, 0xdb00, 0xdc00,
++	0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	0xed00, 0xee00, 0xdf00, 0xf000, 0xf100, 0xf200, 0xf300, 0xf400,
++	0xf500, 0xf600, 0xf700, 0xf800, 0xf900, 0xfa00, 0xfb00, 0xfc00,
++	0xfd00, 0xfe00, 0xff00, 0x0000
++};
++
++/* volmap for Voice Volumes */
++static const s16 volmap_voice[] = {
++	0xb500, 0xb600, 0xb700, 0xb800, 0xb900, 0xba00, 0xbb00, 0xbc00,
++	0xbd00, 0xbe00, 0xbf00, 0xc000, 0xc100, 0xc200, 0xc300, 0xc400,
++	0xc500, 0xc600, 0xc700, 0xc800, 0xc900, 0xca00, 0xcb00, 0xcc00,
++	0xcd00, 0xce00, 0xcf00, 0xd000, 0xd100, 0xd200, 0xd300, 0xd400,
++	0xd500, 0xd600, 0xd700, 0xd800, 0xd900, 0xda00, 0xdb00, 0xdc00,
++	0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100, 0xe200, 0xe300, 0xe400,
++	0xe500, 0xe600, 0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00,
++	0xed00, 0xee00, 0xdf00, 0xf000, 0xf100, 0xf200, 0xf300, 0xf400,
++	0xf500, 0xf600, 0xf700, 0xf800, 0xf900, 0xfa00, 0xfb00, 0xfc00,
++	0xfd00, 0xfe00, 0xff00, 0x0000
++};
++
++/* volmap for AnalogIn Ana Volumes */
++static const s16 volmap_aplay_a[] = {
++	0xa000, 0xa000, 0xa000, 0xe200, 0xe300, 0xe400, 0xe500, 0xe600,
++	0xe700, 0xe800, 0xe900, 0xea00, 0xeb00, 0xec00, 0xed00, 0xee00,
++	0xef00, 0xf000, 0xf100, 0xf200, 0xf300, 0xf400, 0xf500, 0xf600,
++	0xf700, 0xf800, 0xf900, 0xfa00, 0xfb00, 0xfc00, 0xfd00, 0xfe00,
++	0xff00, 0x0000, 0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600,
++	0x0700, 0x0800, 0x0900, 0x0a00, 0x0b00, 0x0c00, 0x0d00, 0x0e00,
++	0x0f00, 0x1000, 0x1100, 0x1200, 0x1300, 0x1400, 0x1500, 0x1580,
++	0x1600, 0x1680, 0x1700, 0x1780, 0x1800, 0x1a00, 0x1c00, 0x1e00
++};
++
++/* volmap for Adif(ES) Volumes */
++static const s16 volmap_adif[] = {
++	0xa000, 0xa300, 0xa400, 0xa500, 0xa600, 0xa700, 0xa800, 0xa900,
++	0xaa00, 0xab00, 0xac00, 0xad00, 0xae00, 0xaf00, 0xb000, 0xb100,
++	0xb200, 0xb300, 0xb400, 0xb500, 0xb600, 0xb700, 0xb800, 0xb900,
++	0xba00, 0xbb00, 0xbc00, 0xbd00, 0xbe00, 0xbf00, 0xc000, 0xc100,
++	0xc200, 0xc300, 0xc400, 0xc500, 0xc600, 0xc700, 0xc800, 0xc900,
++	0xca00, 0xcb00, 0xcc00, 0xcd00, 0xce00, 0xcf00, 0xd000, 0xd100,
++	0xd200, 0xd300, 0xd400, 0xd500, 0xd600, 0xd700, 0xd800, 0xd900,
++	0xda00, 0xdb00, 0xdc00, 0xdd00, 0xde00, 0xdf00, 0xe000, 0xe100,
++	0xe200, 0xe300, 0xe400, 0xe500, 0xe600, 0xe700, 0xe800, 0xe900,
++	0xea00, 0xeb00, 0xec00, 0xed00, 0xee00, 0xef00, 0xf000, 0xf100,
++	0xf200, 0xf300, 0xf400, 0xf500, 0xf600, 0xf700, 0xf800, 0xf900,
++	0xfa00, 0xfb00, 0xfc00, 0xfd00, 0xfe00, 0xff00, 0x0000, 0x0100,
++	0x0200, 0x0300, 0x0400, 0x0500, 0x0600, 0x0700, 0x0800, 0x0900,
++	0x0a00, 0x0b00, 0x0c00, 0x0d00, 0x0e00, 0x0f00, 0x1000, 0x1100,
++	0x1200, 0x1200, 0x1200
++};
++
++struct mc_asoc_vreg_info {
++	size_t offset;
++	const s16 *volmap;
++	u8 channels;
++};
++
++static struct mc_asoc_vreg_info vreg_map[MC_ASOC_N_VOL_REG] = {
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_music_in),
++	 .volmap = volmap_digital,
++	 .channels = MUSICIN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_ext_in),
++	 .volmap = volmap_digital,
++	 .channels = EXTIN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_voice_in),
++	 .volmap = volmap_digital,
++	 .channels = VOICEIN_VOL_CHANNELS},
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_ref_in),
++	 .volmap = volmap_digital,
++	 .channels = REFIN_VOL_CHANNELS},
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_adif0_in),
++	 .volmap = volmap_digital,
++	 .channels = ADIF0IN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_adif1_in),
++	 .volmap = volmap_digital,
++	 .channels = ADIF1IN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_adif2_in),
++	 .volmap = volmap_digital,
++	 .channels = ADIF2IN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_music_out),
++	 .volmap = volmap_digital,
++	 .channels = MUSICOUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_ext_out),
++	 .volmap = volmap_digital,
++	 .channels = EXTOUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_voice_out),
++	 .volmap = volmap_digital,
++	 .channels = VOICEOUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_ref_out),
++	 .volmap = volmap_digital,
++	 .channels = REFOUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_dac0_out),
++	 .volmap = volmap_digital,
++	 .channels = DAC0OUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_dac1_out),
++	 .volmap = volmap_digital,
++	 .channels = DAC1OUT_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_dpath_da),
++	 .volmap = volmap_digital,
++	 .channels = DPATH_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, d_dpath_ad),
++	 .volmap = volmap_digital,
++	 .channels = DPATH_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_line_in1),
++	 .volmap = volmap_ain,
++	 .channels = LINEIN1_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_mic1),
++	 .volmap = volmap_ain,
++	 .channels = MIC1_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_mic2),
++	 .volmap = volmap_ain,
++	 .channels = MIC2_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_mic3),
++	 .volmap = volmap_ain,
++	 .channels = MIC3_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_mic4),
++	 .volmap = volmap_ain,
++	 .channels = MIC4_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_hp),
++	 .volmap = volmap_hp,
++	 .channels = HP_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_sp),
++	 .volmap = volmap_sp[0],
++	 .channels = SP_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_rc),
++	 .volmap = volmap_aout,
++	 .channels = RC_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_line_out1),
++	 .volmap = volmap_lineout,
++	 .channels = LINEOUT1_VOL_CHANNELS,
++	 },
++	{
++	 .offset = offsetof(struct mcdrv_vol_info, a_line_out2),
++	 .volmap = volmap_lineout2,
++	 .channels = LINEOUT2_VOL_CHANNELS,
++	 },
++	{
++	 .offset = (size_t) -1,
++	 .volmap = NULL,
++	 .channels = 0,
++	 },
++	{
++	 .offset = (size_t) -1,
++	 .volmap = volmap_master,
++	 .channels = MUSICIN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = (size_t) -1,
++	 .volmap = volmap_voice,
++	 .channels = VOICEIN_VOL_CHANNELS,
++	 },
++	{
++	 .offset = (size_t) -1,
++	 .volmap = volmap_aplay_a,
++	 .channels = LINEIN1_VOL_CHANNELS,
++	 },
++	{
++	 .offset = (size_t) -1,
++	 .volmap = volmap_digital,
++	 .channels = ADIF0IN_VOL_CHANNELS,
 +	 },
 +};
 +
-+static const struct mcdrv_path_info analog_input_path[] = {
-+	{
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .ae0 = {MCDRV_D1SRC_ADIF1_ON, MCDRV_D1SRC_ADIF1_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .adif1 = {MCDRV_D2SRC_ADC0_L_ON, MCDRV_D2SRC_ADC0_R_ON},
-+	 .adc0 = {(MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_L_ON),
-+		  (MCDRV_ASRC_MIC_ALL_ON | MCDRV_ASRC_LINEIN1_R_ON)},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 },
-+};
-+
-+static const int analog_path_mapping[PRESET_PATH_N];
-+
-+static const struct mcdrv_path_info bt_input_path[] = {
-+	{
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .ae0 = {MCDRV_D1SRC_EXTIN_ON, MCDRV_D1SRC_EXTIN_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 }
-+};
-+
-+static const int bt_path_mapping[PRESET_PATH_N];
-+
-+static const struct mcdrv_path_info dtmf_path[] = {
-+	{
-+	 .ext_out = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac0 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .dac1 = {MCDRV_D1SRC_AE0_ON, MCDRV_D1SRC_AE0_ON},
-+	 .sp = {MCDRV_ASRC_DAC1_L_ON,},
-+	 .hp = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .rc = {MCDRV_ASRC_DAC0_L_ON},
-+	 .lout1 = {MCDRV_ASRC_DAC0_L_ON, MCDRV_ASRC_DAC0_R_ON},
-+	 .lout2 = {MCDRV_ASRC_DAC1_L_ON, MCDRV_ASRC_DAC1_R_ON},
-+	 }
-+};
-+
-+static const int dtmf_path_mapping[PRESET_PATH_N];
-+
-+#endif /* _YMU831_PATH_CFG_H */
++#endif /* _YMU831_VOL_H */
 -- 
 1.7.9.5
