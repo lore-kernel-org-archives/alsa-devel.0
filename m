@@ -1,20 +1,18 @@
-From: FF  <lgperson@126.com>
-Subject: Re: [PATCH 044/112] ALSA: hda - More generic auto-mic
- switching for Realtek codecs
-Date: Thu, 17 Jan 2013 10:47:08 +0800 (CST)
-Message-ID: <2bf60376.44d5.13c46671d14.Coremail.lgperson@126.com>
-References: <1357645185-7645-1-git-send-email-tiwai@suse.de>
- <1357645185-7645-45-git-send-email-tiwai@suse.de>
- <CAN8ccibLinueHznUv47s3xkF2boDNxB0VRJ1vdEz6KGqvgFf4A@mail.gmail.com>
- <s5h1udt2hyz.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 002/002] ASoC: Replace max98090
+	Device	Driver
+Date: Thu, 17 Jan 2013 02:53:33 +0000
+Message-ID: <20130117025333.GA12645@opensource.wolfsonmicro.com>
+References: <A453F1AE3B5DC14DB19666C506CE75A7108684F403@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m15-13.126.com (m15-13.126.com [220.181.15.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FE8D264F07
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 03:47:13 +0100 (CET)
-In-Reply-To: <s5h1udt2hyz.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17291264F07
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 03:53:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F403@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,119 +22,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+To: Jerry Wong <Jerry.Wong@maximintegrated.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-   where is the trace_hda_send_cmd function source code?I can not find it in the path of    alsa-kernel\pci\hda\hda_code.c and linux kenerl.
-Thank you!
- 
+On Mon, Jan 14, 2013 at 07:13:30AM -0800, Jerry Wong wrote:
 
-/*
- * Compose a 32bit command word to be sent to the HD-audio controller
- */
-static inline unsigned int
-make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
-        unsigned int verb, unsigned int parm)
-{
- u32 val;
- if ((codec->addr & ~0xf) || (direct & ~1) || (nid & ~0x7f) ||
-     (verb & ~0xfff) || (parm & ~0xffff)) {
-  printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x:%x\n",
-         codec->addr, direct, nid, verb, parm);
-  return ~0;
- }
- val = (u32)codec->addr << 28;
- val |= (u32)direct << 27;
- val |= (u32)nid << 20;
- val |= verb << 8;
- val |= parm;
- return val;
-}
-/*
- * Send and receive a verb
- */
-static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
-      unsigned int *res)
-{
- struct hda_bus *bus = codec->bus;
- int err;
- if (cmd == ~0)
-  return -1;
- if (res)
-  *res = -1;
- again:
- snd_hda_power_up(codec);
- mutex_lock(&bus->cmd_mutex);
- trace_hda_send_cmd(codec, cmd);
- err = bus->ops.command(bus, cmd);
- if (!err && res) {
-  *res = bus->ops.get_response(bus, codec->addr);
-  trace_hda_get_response(codec, *res);
- }
- mutex_unlock(&bus->cmd_mutex);
- snd_hda_power_down(codec);
- if (res && *res == -1 && bus->rirb_error) {
-  if (bus->response_reset) {
-   snd_printd("hda_codec: resetting BUS due to "
-       "fatal communication error\n");
-   trace_hda_bus_reset(bus);
-   bus->ops.bus_reset(bus);
-  }
-  goto again;
- }
- /* clear reset-flag when the communication gets recovered */
- if (!err)
-  bus->response_reset = 0;
- return err;
-}
+> I have updated most per the review comments, except...
+> "External MIC Mux" is a mux with 0=power down, and exists in DAPM as well
+> "Digital Sidetone Source", with a master SHDN has no power impact, so was left out of DAPM
 
+Sidetone should have an impact on routing though?  DAPM needs routing to
+do power.
 
+> "Quick Setup System Clock" was just a question what they do... they override the
+>  clock settings for common use cases.
+> "VCM bandgap reference", with a master SHDN has no power impact, so was left out of DAPM
+> 
 
+Please have this sort of discussion in line with the previous review -
+discuss why you don't agree with the feedback rather than just sending a
+new patch.  That tends to be less time consuming and it's easier to
+follow the discusssion.
 
+> +static const char * max98090_extmic_mux_text[] = { "MIC1", "MIC2" };
+> +
+> +static const struct soc_enum max98090_extmic_mux_enum =
+> +       SOC_ENUM_SINGLE(M98090_REG_CFG_LINE, M98090_EXTMIC_SHIFT,
+> +               ARRAY_SIZE(max98090_extmic_mux_text),
+> +               max98090_extmic_mux_text);
 
+This looks like routing control which I'd expect to be in DAPM - I'd not
+expect duplication between DAPM and non-DAPM to work very well.
 
+> +static const char * max98090_mixg_text[] = { "Normal", "6dB" };
 
+> +static const struct soc_enum max98090_mixg135_enum =
+> +       SOC_ENUM_SINGLE(M98090_REG_LVL_LINE, M98090_MIXG135_SHIFT,
+> +               ARRAY_SIZE(max98090_mixg_text), max98090_mixg_text);
+> +
+> +static const struct soc_enum max98090_mixg246_enum =
+> +       SOC_ENUM_SINGLE(M98090_REG_LVL_LINE, M98090_MIXT246_SHIFT,
+> +               ARRAY_SIZE(max98090_mixg_text), max98090_mixg_text);
 
+This looks like it should be a volume control with two steps of 0dB and
+6dB?
 
-At 2013-01-10 23:08:52,"Takashi Iwai" <tiwai@suse.de> wrote:
->At Thu, 10 Jan 2013 08:41:13 +0800,
->Raymond Yau wrote:
->> 
->> >
->> > This patch extends the capability of the auto-mic feature.
->> > Instead of limiting the automatic input-source selection only to the
->> > mics (internal, external and dock mics), allow it for generic inputs,
->> > e.g. switching between the rear line-in and the front mic.
->> >
->> > The logic is to check the attribute and location of input pins, and
->> > enable the automatic selection feature only if all such pins are in
->> > different locations (e.g. internal, front, rear, etc) and line-in or
->> > mic pins.  That is, if multiple input pins are assigned to a single
->> > location, the feature isn't enabled because we don't know the
->> > priority.
->> >
->> > (You may wonder why this restriction doesn't exist for the headphone
->> >  automute.  The reason is that the output case is different from the
->> >  input: the input source is an exclusive selection while the output
->> >  can be multiplexed.)
->> >
->> > Note that, for avoiding regressions, the line-in auto switching
->> > feature isn't activated as default.  It has to be set explicitly via
->> > spec->line_in_auto_switch flag in a fixup code.
->> 
->> Is this feature automatically disabled when rear Mic or line in Jack is
->> retasked as output ?
->> 
->> Does it mean that multi channel capture will not be implemented since it is
->> conflict with both dynamic adc  switching and auto Mic selection ?
->
->The recent jack detection codes (at least the code in
->test/hda-gen-parser branch) checks the direction of the pinctl.
->If a multi-io pin is configured as output, the mic autoswitch will
->ignore this pin.  Vice versa for the auto-mute and headphone-as-mic
->case.
->
->
->Takashi
+> +static const char * max98090_enableddisabled_text[] =
+> +       { "Disabled", "Enabled" };
+> +static const char * max98090_enableddisabled_inv_text[] =
+> +       { "Enabled", "Disabled" };
+> +/* Note: Inverted Logic (0 = Enabled) */
+> +
+> +static const struct soc_enum max98090_eqclpn_enum =
+> +       SOC_ENUM_SINGLE(M98090_REG_DAI_LVL_EQ, M98090_DAI_LVL_EQCLPN_SHIFT,
+> +               ARRAY_SIZE(max98090_enableddisabled_inv_text),
+> +               max98090_enableddisabled_inv_text);
+
+These look like they should be Switch controls (which will help UIs
+render them).
+
+> +static const struct snd_kcontrol_new max98090_snd_controls[] = {
+> +       SOC_SINGLE("MIC Bias VCM Bandgap", M98090_REG_BIAS_CNTL,
+> +               M98090_VCM_MODE_SHIFT, M98090_VCM_MODE_NUM - 1, 0),
+
+Why is this a user visible control?
+
+> +       SOC_SINGLE("Quick Setup Sample Rate", M98090_REG_QCFG_RATE,
+> +               M98090_SR_ALL_SHIFT, M98090_SR_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup DAI Interface", M98090_REG_QCFG_DAI,
+> +               M98090_DAI_ALL_SHIFT, M98090_DAI_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup DAC Path", M98090_REG_QCFG_DAC,
+> +               M98090_DIG2_ALL_SHIFT, M98090_DIG2_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup MIC/Direct ADC", M98090_REG_QCFG_MIC_PATH,
+> +               M98090_MIC_ALL_SHIFT, M98090_MIC_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup Line ADC", M98090_REG_QCFG_LINE_PATH,
+> +               M98090_LINE_ALL_SHIFT, M98090_LINE_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup Analog MIC Loop", M98090_REG_QCFG_MIC_LOOP,
+> +               M98090_AMIC_ALL_SHIFT, M98090_AMIC_ALL_NUM - 1, 0),
+> +       SOC_SINGLE("Quick Setup Analog Line Loop",
+> +               M98090_REG_QCFG_LINE_LOOP, M98090_ALIN_ALL_SHIFT,
+> +               M98090_ALIN_ALL_NUM - 1, 0),
+
+What do these controls do?
+
+> +       SOC_SINGLE("Rev ID", M98090_REG_REV_ID,
+> +               M98090_REVID_SHIFT, M98090_REVID_NUM - 1, 0),
+
+Hrm, this needs to be read only I think but we don't support that via
+standard macros.  I'd expect exposing via a sysfs file rather than an
+ALSA control, or just logging on startup - it'll be exposed via the
+regmap debugfs interface anyway.
+
+> +static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
+> +
+> +       {"MIC1 Input", NULL, "MIC1"},
+> +       {"MIC2 Input", NULL, "MIC2"},
+> +       {"MIC1 Input", NULL, "MICBIAS"},
+> +       {"MIC2 Input", NULL, "MICBIAS"},
+
+Is this really an internal connection in the device and not something
+that's done in the system?
+
+> +/*
+> + * This accommodates an inverted logic in the MAX98090 chip
+> + * for Bit Clock Invert (BCI). The inverted logic is only seen
+> + * for the case of TDM mode. The remaining cases have normal logic.
+> + */
+> +               if (max98090->tdm_slots > 1) {
+> +                       regval ^= M98090_DAI_BCI_MASK;
+
+Coding style, your comment is misaligned.
+
+> +
+> +       switch (reg & (M98090_LSNS_MASK | M98090_JKSNS_MASK)) {
+> +               case M98090_LSNS_MASK | M98090_JKSNS_MASK:
+> +               {
+
+You don't need the { } and they make the code look unusual.
+
+> +                       dev_info(codec->dev, "No Headset Detected\n");
+> +
+> +                       max98090->jack_state = M98090_JACK_STATE_NO_HEADSET;
+> +
+> +                       max98090_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+The issues I mentioned last time with the lack of sync between this code
+and DAPM still apply - DAPM is likely to just come along and override
+you here.
+
+> +       if (active & M98090_IRQ_ULK_MASK) {
+> +               dev_dbg(codec->dev, "M98090_IRQ_ULK_MASK\n");
+> +       }
+
+Should things like this be dev_err() - they look like real error
+reports from the device?
+
+> +                                const struct i2c_device_id *id)
+> +{
+> +       struct max98090_priv *max98090;
+> +       int ret;
+> +
+> +       pr_info("max98090_i2c_probe\n");
+
+No need for log messages like this - dev_dbg() at most.
+
+> +       max98090 = kzalloc(sizeof(struct max98090_priv), GFP_KERNEL);
+> +       if (max98090 == NULL)
+> +               return -ENOMEM;
+
+devm_kzalloc() then you don't need to explicitly free() which will fix
+leaks on error.
+
+> +static int max98090_runtime_resume(struct device *dev)
+> +{
+> +       struct max98090_priv *max98090 = dev_get_drvdata(dev);
+> +
+> +       regcache_cache_only(max98090->regmap, false);
+> +
+> +       max98090_reset(max98090);
+> +
+> +       regcache_sync(max98090->regmap);
+
+Do you realy need to reset the device here?  If anything I'd expect it
+on suspend since the reset state is probably the lowest power state.
