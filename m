@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 03/19] ALSA: ymu831: add B-DSP driver
-Date: Thu, 17 Jan 2013 15:07:42 +0900
-Message-ID: <20130117060741.GB20199@opensource.wolfsonmicro.com>
+From: Yoichi Yuasa <yuasa@linux-mips.org>
+Subject: Re: [PATCH 02/19] ALSA: ymu831: add device register
+ definitions
+Date: Thu, 17 Jan 2013 15:24:59 +0900
+Message-ID: <20130117152459.305e658fa201766a85337267@linux-mips.org>
 References: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
- <20130116172832.7339f01ca4557727fdc3883f@linux-mips.org>
- <20130116132245.GB16235@sirena.org.uk>
- <20130117145912.10c5650712b73552ad9c4068@linux-mips.org>
+ <20130116172704.256eccbb8412439455df14e7@linux-mips.org>
+ <20130116131808.GA16235@sirena.org.uk>
+ <20130117150006.ff5c6a69d29d0198a784c7ca@linux-mips.org>
+ <20130117060247.GA20199@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20130117145912.10c5650712b73552ad9c4068@linux-mips.org>
+In-Reply-To: <20130117060247.GA20199@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,19 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yoichi Yuasa <yuasa@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, yuasa@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 17, 2013 at 02:59:12PM +0900, Yoichi Yuasa wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Thu, 17 Jan 2013 15:02:48 +0900
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> > Why the subdirectory?
+> On Thu, Jan 17, 2013 at 03:00:06PM +0900, Yoichi Yuasa wrote:
+> > Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> 
+> > > > +#define MCI_A_REG_A			0
+> > > > +#define MCB_A_REG_AINC			0x80
+> 
+> > > All these definitions need to be namespaced.
+> 
+> > How should these change concretely?
+> 
+> Put a prefix in front of them.
+> 
 
-> ymu831 driver has 27 files.
-> It is the reason that I made the subdirectory.
-> Is it better to put them on sound/soc/codes ?
+OK, I'll update them.
 
-It would be better to rewrite the driver to be a standard Linux driver
-using the standard Linux frameworks - looking at the code this seems
-very likely to substantially reduce the amount of code involved.
+Thanks,
+
+Yoichi
