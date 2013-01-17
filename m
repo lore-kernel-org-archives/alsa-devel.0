@@ -1,17 +1,45 @@
-From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm2200: Set system clock control
-	register is adsp structs
-Date: Thu, 17 Jan 2013 13:11:47 +0000
-Message-ID: <1358428307-30196-2-git-send-email-crattray@opensource.wolfsonmicro.com>
-References: <1358428307-30196-1-git-send-email-crattray@opensource.wolfsonmicro.com>
+From: Miro Hodak <mhodak127@gmail.com>
+Subject: Re: HD-audio regression after commit
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Thu, 17 Jan 2013 09:59:20 -0500
+Message-ID: <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
+References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
+ <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
+ <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+ <20130114172354.1f47f49b@gmail.com>
+ <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
+ <20130115095325.7aa2dfdd@gmail.com>
+ <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
+ <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
+ <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
+ <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
+ <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
+ <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
+ <s5hehhk2uee.wl%tiwai@suse.de>
+ <CAN8cciZEWPdKcX2J=16ry9UVoXZwasF7GfN9O4JGwJPx+0Y8zQ@mail.gmail.com>
+ <s5h8v7s2tja.wl%tiwai@suse.de>
+ <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
+ <s5hvcaw18qf.wl%tiwai@suse.de>
+ <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
+ <s5hsj6017km.wl%tiwai@suse.de>
+ <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
+ <s5hobgo16ct.wl%tiwai@suse.de>
+ <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
+ <s5hlibs154t.wl%tiwai@suse.de>
+ <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+ <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DF2552651BC
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 14:12:14 +0100 (CET)
-In-Reply-To: <1358428307-30196-1-git-send-email-crattray@opensource.wolfsonmicro.com>
+Received: from mail-ia0-f173.google.com (mail-ia0-f173.google.com
+ [209.85.210.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9A642650D7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 15:59:21 +0100 (CET)
+Received: by mail-ia0-f173.google.com with SMTP id l29so477044iag.4
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 06:59:20 -0800 (PST)
+In-Reply-To: <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +49,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@ti.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, basinilya@gmail.com, =?ISO-8859-1?Q?Manolo_D=EDaz?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allows ADSP control code to set the dsp clock rate to match the
-sys clock rate.
+On Thu, Jan 17, 2013 at 7:49 AM, Raymond Yau <superquad.vortex2@gmail.com>wrote:
 
-Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm2200.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+>
+> >
+> > OK, now as far as Auto-Mute goes, should it do what expected when
+> enabled - i.e. muting the speakers when headphones are connected to the
+> front panel? I have tried that, does not seem to work.
+> >
+>
+> Do your computer chassis have a hda front audio panel with Jack detection ?
+>
+> The front headphone Jack should return true when headphone Jack is plugged
+>
+> control.35 {
+> iface CARD
+> name 'Front Headphone Jack'
+>
+> value false
+> comment {
+> access read
+> type BOOLEAN
+> count 1
+> }
+> }
+>
+> All ADI codecs support impedance measurement
+>
+> Try the modified hda-jack-sense-test which need hda-analyzer
+>
+> http://thread.gmane.org/gmane.linux.alsa.devel/90911/focus=91115
+>
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 5259ebd..0181444 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -2205,6 +2205,9 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
- 		wm2200->dsp[i].num = i + 1;
- 		wm2200->dsp[i].dev = &i2c->dev;
- 		wm2200->dsp[i].regmap = wm2200->regmap;
-+		wm2200->dsp[i].sysclk_reg = WM2200_CLOCKING_3;
-+		wm2200->dsp[i].sysclk_mask = WM2200_SYSCLK_FREQ_MASK;
-+		wm2200->dsp[i].sysclk_shift =  WM2200_SYSCLK_FREQ_SHIFT;
- 	}
- 
- 	wm2200->dsp[0].base = WM2200_DSP1_CONTROL_1;
--- 
-1.7.2.5
+Hmmm, ran into some python issues. Even hda-analyzer itself is not working:
+...
+File "/dev/shm/hda-analyzer/hda_proc.py", line 143, in wrongfile
+    raise ValueError, "wrong proc file format (%s)" % msg
+ValueError: wrong proc file format (integer decode 'State of AFG node
+0x01:' ('Node '))
+
+Any ideas?
