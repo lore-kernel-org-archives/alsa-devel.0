@@ -1,44 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HD-audio regression after commit
-	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Thu, 17 Jan 2013 20:49:56 +0800
-Message-ID: <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
- <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
- <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
- <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
- <20130114172354.1f47f49b@gmail.com>
- <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
- <20130115095325.7aa2dfdd@gmail.com>
- <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
- <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
- <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
- <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
- <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
- <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
- <s5hehhk2uee.wl%tiwai@suse.de>
- <CAN8cciZEWPdKcX2J=16ry9UVoXZwasF7GfN9O4JGwJPx+0Y8zQ@mail.gmail.com>
- <s5h8v7s2tja.wl%tiwai@suse.de>
- <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
- <s5hvcaw18qf.wl%tiwai@suse.de>
- <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
- <s5hsj6017km.wl%tiwai@suse.de>
- <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
- <s5hobgo16ct.wl%tiwai@suse.de>
- <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
- <s5hlibs154t.wl%tiwai@suse.de>
- <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Set ADSP1 clock rate to
+	match sys clock
+Date: Thu, 17 Jan 2013 13:11:46 +0000
+Message-ID: <1358428307-30196-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f177.google.com (mail-ia0-f177.google.com
- [209.85.210.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0092651BC
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 13:49:58 +0100 (CET)
-Received: by mail-ia0-f177.google.com with SMTP id h8so368534iaa.22
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 04:49:57 -0800 (PST)
-In-Reply-To: <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6673E265185
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 14:12:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -48,33 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Miro Hodak <mhodak127@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@ti.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> OK, now as far as Auto-Mute goes, should it do what expected when enabled
-- i.e. muting the speakers when headphones are connected to the front
-panel? I have tried that, does not seem to work.
->
+Sets the ADSP1 clock rate to match the system clock
+rate. To support this the codec driver provides
+details of register containing the system clock
+control bits.
 
-Do your computer chassis have a hda front audio panel with Jack detection ?
+Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c |   35 +++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm_adsp.h |    3 +++
+ 2 files changed, 38 insertions(+), 0 deletions(-)
 
-The front headphone Jack should return true when headphone Jack is plugged
-
-control.35 {
-iface CARD
-name 'Front Headphone Jack'
-value false
-comment {
-access read
-type BOOLEAN
-count 1
-}
-}
-
-All ADI codecs support impedance measurement
-
-Try the modified hda-jack-sense-test which need hda-analyzer
-
-http://thread.gmane.org/gmane.linux.alsa.devel/90911/focus=91115
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 9a3f220..739dab6 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -75,6 +75,8 @@
+ #define ADSP1_CONTROL_30                  0x24
+ #define ADSP1_CONTROL_31                  0x26
+ 
++#define ADSP1_CLOCKING 38
++
+ /*
+  * ADSP1 Control 19
+  */
+@@ -103,6 +105,13 @@
+ #define ADSP1_START_SHIFT                      0  /* DSP1_START */
+ #define ADSP1_START_WIDTH                      1  /* DSP1_START */
+ 
++/*
++ * ADSP1 Control 31
++ */
++#define ADSP1_CLK_SEL_MASK                0x0007  /* CLK_SEL_ENA */
++#define ADSP1_CLK_SEL_SHIFT                    0  /* CLK_SEL_ENA */
++#define ADSP1_CLK_SEL_WIDTH                    3  /* CLK_SEL_ENA */
++
+ #define ADSP2_CONTROL  0
+ #define ADSP2_CLOCKING 1
+ #define ADSP2_STATUS1  4
+@@ -817,12 +826,38 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	int ret;
++	int val;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP1_CONTROL_30,
+ 				   ADSP1_SYS_ENA, ADSP1_SYS_ENA);
+ 
++		/*
++		 * For simplicity set the DSP clock rate to be the
++		 * SYSCLK rate rather than making it configurable.
++		 */
++		if(dsp->sysclk_reg) {
++			ret = regmap_read(dsp->regmap, dsp->sysclk_reg, &val);
++			if (ret != 0) {
++				adsp_err(dsp, "Failed to read SYSCLK state: %d\n",
++				ret);
++				return ret;
++			}
++
++			val = (val & dsp->sysclk_mask)
++				>> dsp->sysclk_shift;
++
++			ret = regmap_update_bits(dsp->regmap,
++						 dsp->base + ADSP1_CLOCKING,
++						 ADSP1_CLK_SEL_MASK, val);
++			if (ret != 0) {
++				adsp_err(dsp, "Failed to set clock rate: %d\n",
++					 ret);
++				return ret;
++			}
++		}
++
+ 		ret = wm_adsp_load(dsp);
+ 		if (ret != 0)
+ 			goto err;
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 41206d7..cb8871a 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -40,6 +40,9 @@ struct wm_adsp {
+ 	struct regmap *regmap;
+ 
+ 	int base;
++	int sysclk_reg;
++	int sysclk_mask;
++	int sysclk_shift;
+ 
+ 	struct list_head alg_regions;
+ 
+-- 
+1.7.2.5
