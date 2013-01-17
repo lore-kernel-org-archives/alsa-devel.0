@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 9/9] ALSA: hda - Improve naming rule for
-	primary output
-Date: Thu, 17 Jan 2013 17:54:54 +0100
-Message-ID: <1358441694-32004-10-git-send-email-tiwai@suse.de>
+Subject: [PATCH 5/9] ALSA: hda - Add input jack mode enum
+	controls to generic parser
+Date: Thu, 17 Jan 2013 17:54:50 +0100
+Message-ID: <1358441694-32004-6-git-send-email-tiwai@suse.de>
 References: <1358441694-32004-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 23A2226531F
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CBA9265228
  for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 17:55:00 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id DDF18A51F2
+ by mx2.suse.de (Postfix) with ESMTP id D31CBA51B7
  for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 17:54:59 +0100 (CET)
 In-Reply-To: <1358441694-32004-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,144 +29,205 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When the volume or mute control of the primary output is shared with
-other (headphone or speaker) outputs, we shouldn't name it as a
-specific output type but rather name it with the channel name or a
-generic name like "PCM".
+Just like the jack mode enum ctls for output jacks, add the support
+for similar enum ctls for input pins to control the bias Vref.
+The new controls will be added when spec->add_in_jack_modes is set
+either by the codec driver or by a hint string.
 
-Also, this check should be performed individually for the volume and
-the mute controls because some codecs may have shared volumes but
-separate mute controls.
+Note that ground and 100% vrefs are excluded from the list for
+simplicity, currently.  We may add a new flag to allow them, too.
+But I guess it's easier to put a value override in the pinfix in such
+a case.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 59 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 42 insertions(+), 17 deletions(-)
+ sound/pci/hda/hda_generic.c | 140 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_generic.h |   1 +
+ 2 files changed, 141 insertions(+)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index f946714..ef4c04a 100644
+index 1ea9c2d..878556b 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -825,19 +825,27 @@ static int add_stereo_sw(struct hda_codec *codec, const char *pfx,
- 	return add_sw_ctl(codec, pfx, cidx, chs, path);
+@@ -26,6 +26,7 @@
+ #include <linux/sort.h>
+ #include <linux/ctype.h>
+ #include <linux/string.h>
++#include <linux/bitops.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include "hda_codec.h"
+@@ -149,6 +150,9 @@ static void parse_user_hints(struct hda_codec *codec)
+ 	val = snd_hda_get_bool_hint(codec, "add_out_jack_modes");
+ 	if (val >= 0)
+ 		spec->add_out_jack_modes = !!val;
++	val = snd_hda_get_bool_hint(codec, "add_in_jack_modes");
++	if (val >= 0)
++		spec->add_in_jack_modes = !!val;
+ 
+ 	if (!snd_hda_get_int_hint(codec, "mixer_nid", &val))
+ 		spec->mixer_nid = val;
+@@ -2138,6 +2142,136 @@ static int create_out_jack_modes(struct hda_codec *codec, int num_pins,
+ 	return 0;
  }
  
-+/* any ctl assigned to the path with the given index? */
-+static bool path_has_mixer(struct hda_codec *codec, int path_idx, int ctl_type)
++/*
++ * input jack mode
++ */
++
++/* from AC_PINCTL_VREF_HIZ to AC_PINCTL_VREF_100 */
++#define NUM_VREFS	6
++
++static const char * const vref_texts[NUM_VREFS] = {
++	"Line In", "Mic 50pc Bias", "Mic 0V Bias",
++	"", "Mic 80pc Bias", "Mic 100pc Bias"
++};
++
++static unsigned int get_vref_caps(struct hda_codec *codec, hda_nid_t pin)
 +{
-+	struct nid_path *path = snd_hda_get_path_from_idx(codec, path_idx);
-+	return path && path->ctls[ctl_type];
++	unsigned int pincap;
++
++	pincap = snd_hda_query_pin_caps(codec, pin);
++	pincap = (pincap & AC_PINCAP_VREF) >> AC_PINCAP_VREF_SHIFT;
++	/* filter out unusual vrefs */
++	pincap &= ~(AC_PINCAP_VREF_GRD | AC_PINCAP_VREF_100);
++	return pincap;
 +}
 +
- static const char * const channel_name[4] = {
- 	"Front", "Surround", "CLFE", "Side"
- };
- 
- /* give some appropriate ctl name prefix for the given line out channel */
--static const char *get_line_out_pfx(struct hda_gen_spec *spec, int ch,
--				    bool can_be_master, int *index)
-+static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
-+				    int *index, int ctl_type)
- {
++/* convert from the enum item index to the vref ctl index (0=HIZ, 1=50%...) */
++static int get_vref_idx(unsigned int vref_caps, unsigned int item_idx)
++{
++	unsigned int i, n = 0;
++
++	for (i = 0; i < NUM_VREFS; i++) {
++		if (vref_caps & (1 << i)) {
++			if (n == item_idx)
++				return i;
++			n++;
++		}
++	}
++	return 0;
++}
++
++/* convert back from the vref ctl index to the enum item index */
++static int cvt_from_vref_idx(unsigned int vref_caps, unsigned int idx)
++{
++	unsigned int i, n = 0;
++
++	for (i = 0; i < NUM_VREFS; i++) {
++		if (i == idx)
++			return n;
++		if (vref_caps & (1 << i))
++			n++;
++	}
++	return 0;
++}
++
++static int in_jack_mode_info(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_info *uinfo)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value;
++	unsigned int vref_caps = get_vref_caps(codec, nid);
++
++	snd_hda_enum_helper_info(kcontrol, uinfo, hweight32(vref_caps),
++				 vref_texts);
++	/* set the right text */
++	strcpy(uinfo->value.enumerated.name,
++	       vref_texts[get_vref_idx(vref_caps, uinfo->value.enumerated.item)]);
++	return 0;
++}
++
++static int in_jack_mode_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value;
++	unsigned int vref_caps = get_vref_caps(codec, nid);
++	unsigned int idx;
++
++	idx = snd_hda_codec_get_pin_target(codec, nid) & AC_PINCTL_VREFEN;
++	ucontrol->value.enumerated.item[0] = cvt_from_vref_idx(vref_caps, idx);
++	return 0;
++}
++
++static int in_jack_mode_put(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value;
++	unsigned int vref_caps = get_vref_caps(codec, nid);
++	unsigned int val, idx;
++
++	val = snd_hda_codec_get_pin_target(codec, nid);
++	idx = cvt_from_vref_idx(vref_caps, val & AC_PINCTL_VREFEN);
++	if (idx == ucontrol->value.enumerated.item[0])
++		return 0;
++
++	val &= ~AC_PINCTL_VREFEN;
++	val |= get_vref_idx(vref_caps, ucontrol->value.enumerated.item[0]);
++	snd_hda_set_pin_ctl_cache(codec, nid, val);
++	return 1;
++}
++
++static const struct snd_kcontrol_new in_jack_mode_enum = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.info = in_jack_mode_info,
++	.get = in_jack_mode_get,
++	.put = in_jack_mode_put,
++};
++
++static int create_in_jack_mode(struct hda_codec *codec, hda_nid_t pin)
++{
 +	struct hda_gen_spec *spec = codec->spec;
- 	struct auto_pin_cfg *cfg = &spec->autocfg;
- 
- 	*index = 0;
- 	if (cfg->line_outs == 1 && !spec->multi_ios &&
--	    !cfg->hp_outs && !cfg->speaker_outs && can_be_master)
-+	    !cfg->hp_outs && !cfg->speaker_outs)
- 		return spec->vmaster_mute.hook ? "PCM" : "Master";
- 
- 	/* if there is really a single DAC used in the whole output paths,
-@@ -847,24 +855,41 @@ static const char *get_line_out_pfx(struct hda_gen_spec *spec, int ch,
- 	    !spec->multiout.hp_out_nid[0] && !spec->multiout.extra_out_nid[0])
- 		return spec->vmaster_mute.hook ? "PCM" : "Master";
- 
-+	/* multi-io channels */
-+	if (ch >= cfg->line_outs)
-+		return channel_name[ch];
++	unsigned int defcfg;
++	struct snd_kcontrol_new *knew;
++	char name[44];
 +
- 	switch (cfg->line_out_type) {
- 	case AUTO_PIN_SPEAKER_OUT:
-+		/* if the primary channel vol/mute is shared with HP volume,
-+		 * don't name it as Speaker
-+		 */
-+		if (!ch && cfg->hp_outs &&
-+		    !path_has_mixer(codec, spec->hp_paths[0], ctl_type))
-+			break;
- 		if (cfg->line_outs == 1)
- 			return "Speaker";
- 		if (cfg->line_outs == 2)
- 			return ch ? "Bass Speaker" : "Speaker";
- 		break;
- 	case AUTO_PIN_HP_OUT:
-+		/* if the primary channel vol/mute is shared with spk volume,
-+		 * don't name it as Headphone
-+		 */
-+		if (!ch && cfg->speaker_outs &&
-+		    !path_has_mixer(codec, spec->speaker_paths[0], ctl_type))
-+			break;
- 		/* for multi-io case, only the primary out */
- 		if (ch && spec->multi_ios)
- 			break;
- 		*index = ch;
- 		return "Headphone";
--	default:
--		if (cfg->line_outs == 1 && !spec->multi_ios)
--			return "PCM";
--		break;
- 	}
++	/* no jack mode for fixed pins */
++	defcfg = snd_hda_codec_get_pincfg(codec, pin);
++	if (snd_hda_get_input_pin_attr(defcfg) == INPUT_PIN_ATTR_INT)
++		return 0;
 +
-+	/* for a single channel output, we don't have to name the channel */
-+	if (cfg->line_outs == 1 && !spec->multi_ios)
-+		return "PCM";
++	/* no multiple vref caps? */
++	if (hweight32(get_vref_caps(codec, pin)) <= 1)
++		return 0;
 +
- 	if (ch >= ARRAY_SIZE(channel_name)) {
- 		snd_BUG();
- 		return "PCM";
-@@ -1626,16 +1651,11 @@ static int create_multi_out_ctls(struct hda_codec *codec,
- 		int index;
- 		struct nid_path *path;
++	get_jack_mode_name(codec, pin, name, sizeof(name));
++	knew = snd_hda_gen_add_kctl(spec, name, &in_jack_mode_enum);
++	if (!knew)
++		return -ENOMEM;
++	knew->private_value = pin;
++	return 0;
++}
++
  
--		if (i >= cfg->line_outs) {
--			index = 0;
--			name = channel_name[i];
--		} else {
--			name = get_line_out_pfx(spec, i, true, &index);
--		}
--
- 		path = snd_hda_get_path_from_idx(codec, spec->out_paths[i]);
- 		if (!path)
- 			continue;
+ /*
+  * Parse input paths
+@@ -2392,6 +2526,12 @@ static int create_input_ctls(struct hda_codec *codec)
+ 		err = parse_capture_source(codec, pin, num_adcs, label, -mixer);
+ 		if (err < 0)
+ 			return err;
 +
-+		name = get_line_out_pfx(codec, i, &index, NID_PATH_VOL_CTL);
- 		if (!name || !strcmp(name, "CLFE")) {
- 			/* Center/LFE */
- 			err = add_vol_ctl(codec, "Center", 0, 1, path);
-@@ -1644,6 +1664,14 @@ static int create_multi_out_ctls(struct hda_codec *codec,
- 			err = add_vol_ctl(codec, "LFE", 0, 2, path);
- 			if (err < 0)
- 				return err;
-+		} else {
-+			err = add_stereo_vol(codec, name, index, path);
++		if (spec->add_in_jack_modes) {
++			err = create_in_jack_mode(codec, pin);
 +			if (err < 0)
 +				return err;
 +		}
-+
-+		name = get_line_out_pfx(codec, i, &index, NID_PATH_MUTE_CTL);
-+		if (!name || !strcmp(name, "CLFE")) {
- 			err = add_sw_ctl(codec, "Center", 0, 1, path);
- 			if (err < 0)
- 				return err;
-@@ -1651,9 +1679,6 @@ static int create_multi_out_ctls(struct hda_codec *codec,
- 			if (err < 0)
- 				return err;
- 		} else {
--			err = add_stereo_vol(codec, name, index, path);
--			if (err < 0)
--				return err;
- 			err = add_stereo_sw(codec, name, index, path);
- 			if (err < 0)
- 				return err;
+ 	}
+ 
+ 	if (mixer && spec->add_stereo_mix_input) {
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index dd0818b..142a571 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -202,6 +202,7 @@ struct hda_gen_spec {
+ 	unsigned int prefer_hp_amp:1; /* enable HP amp for speaker if any */
+ 	unsigned int add_stereo_mix_input:1; /* add aamix as a capture src */
+ 	unsigned int add_out_jack_modes:1; /* add output jack mode enum ctls */
++	unsigned int add_in_jack_modes:1; /* add input jack mode enum ctls */
+ 
+ 	/* other internal flags */
+ 	unsigned int no_analog:1; /* digital I/O only */
 -- 
 1.8.1
