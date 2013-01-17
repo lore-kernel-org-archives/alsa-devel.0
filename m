@@ -1,18 +1,43 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: libao problem (Re: No dmix/dsnoop on Intel ICH4/5 by
- default?)
-Date: Thu, 17 Jan 2013 11:22:27 +0100
-Message-ID: <50F7D0E3.3020401@gmail.com>
-References: <50F6FF00.7020706@gmail.com> <50F71312.1000009@ladisch.de>
+From: Miro Hodak <mhodak127@gmail.com>
+Subject: Re: HD-audio regression after commit
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Thu, 17 Jan 2013 05:32:03 -0500
+Message-ID: <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
+ <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
+ <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+ <20130114172354.1f47f49b@gmail.com>
+ <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
+ <20130115095325.7aa2dfdd@gmail.com>
+ <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
+ <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
+ <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
+ <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
+ <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
+ <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
+ <s5hehhk2uee.wl%tiwai@suse.de>
+ <CAN8cciZEWPdKcX2J=16ry9UVoXZwasF7GfN9O4JGwJPx+0Y8zQ@mail.gmail.com>
+ <s5h8v7s2tja.wl%tiwai@suse.de>
+ <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
+ <s5hvcaw18qf.wl%tiwai@suse.de>
+ <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
+ <s5hsj6017km.wl%tiwai@suse.de>
+ <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
+ <s5hobgo16ct.wl%tiwai@suse.de>
+ <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
+ <s5hlibs154t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.gn.mail.iss.as9143.net (smtpq1.gn.mail.iss.as9143.net
- [212.54.34.164])
- by alsa0.perex.cz (Postfix) with ESMTP id EC085265142
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 11:22:28 +0100 (CET)
-In-Reply-To: <50F71312.1000009@ladisch.de>
+Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id C72D52615F7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 11:32:04 +0100 (CET)
+Received: by mail-ie0-f174.google.com with SMTP id c11so4405981ieb.19
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 02:32:04 -0800 (PST)
+In-Reply-To: <s5hlibs154t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +47,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, vorbis-dev@xiph.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, basinilya@gmail.com, =?ISO-8859-1?Q?Manolo_D=EDaz?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16-01-13 21:52, Clemens Ladisch wrote:
+On Thu, Jan 17, 2013 at 5:21 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-> Rene Herman wrote:
-
->> I'm out of touch of with alsa -- but should dmix/dsnoop still be
->> enabled by default on hardware that doesn't do hardware mixing?
+> At Thu, 17 Jan 2013 05:17:07 -0500,
 >
-> Yes.
+> Miro Hodak wrote:
+> >
+> > Do you mean plughw:0,2? Because that one works with aplayer (with
+> > Independent HP enabled and Auto-Mute disabled).
 >
->> I believe that it should be from /usr/share/alsa/cards/ICH4.conf,
->> but I don't get mixing on this setup when using the "default"
->> pcm...
+> Damn, yes, of course, it's plughw:0,2.  Sorry for confusion.
 >
-> What's the output of "aplay -v something.wav"?
+> > Do other players (vlc, mplayer, etc.) support choice of PCM or are they
+> > hardcoded to the primary one?
+>
+> You should be able to pass via option or config.
+>
 
-I won't bother you with that, since things do in fact work with aplay. 
-It seems I'm looking at a libao problem.
 
-Specifically: I can mix as many streams as I want using just "aplay" but 
-if I start by playing one track with "ogg123" (which uses a default, 
-unconfigured libao as its backend), I can't start a second ogg123, which 
-then says:
+> Takashi
+>
 
-===
-ao_alsa WARNING: Unable to open surround playback.  Trying default device...
-ALSA lib pcm_dmix.c:1018:(snd_pcm_dmix_open) unable to open slave
-ao_alsa ERROR: Unable to open ALSA device 'default' for playback => 
-Device or resource busy
-ERROR: Cannot open device alsa.
-===
-
-I CAN still start an "aplay" at this point though. Moreover, things get 
-weirder when I start with aplay. With one aplay running, I CAN start two 
-additional ogg123 instances.
-
-... so, err, ehm, err, what? :-)
-
-This now seems at best related to ALSA in a secondary manner, and I'm 
-CCing this to vorbis-dev (which I believe is the right email contact for 
-libao?) but if you know of something of interest...
-
-For vorbis-dev: this is on arch linux, (standard) kernel 3.6.11-1-ARCH, 
-alsa-{lib,plugins,utils}-1.0.26-1, libao-1.1.0-2 and vorbis-tools-1.4.0-3.
-
-Regards,
-Rene
+OK, now as far as Auto-Mute goes, should it do what expected when enabled -
+i.e. muting the speakers when headphones are connected to the front panel?
+I have tried that, does not seem to work.
