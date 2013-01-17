@@ -1,8 +1,8 @@
-From: Manolo =?UTF-8?B?RMOtYXo=?= <diaz.manolo@gmail.com>
+From: Miro Hodak <mhodak127@gmail.com>
 Subject: Re: HD-audio regression after commit
- 34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Thu, 17 Jan 2013 19:12:24 +0100
-Message-ID: <20130117191224.44794728@gmail.com>
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Thu, 17 Jan 2013 14:51:42 -0500
+Message-ID: <CA+S_cwpM1Z0sPOS+TcdDni14vY7DU14F1ez4CyOkLS1LHyM1oQ@mail.gmail.com>
 References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
  <s5h1udlp5to.wl%tiwai@suse.de>
  <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
@@ -20,18 +20,18 @@ References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
  <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
  <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
  <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
- <s5hfw1zomf2.wl%tiwai@suse.de>
+ <s5hfw1zomf2.wl%tiwai@suse.de> <20130117191224.44794728@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FF5F26260A
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 19:12:35 +0100 (CET)
-Received: by mail-wi0-f174.google.com with SMTP id hq4so4702982wib.13
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 10:12:33 -0800 (PST)
-In-Reply-To: <s5hfw1zomf2.wl%tiwai@suse.de>
+Received: from mail-ia0-f174.google.com (mail-ia0-f174.google.com
+ [209.85.210.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id D50272650AC
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 20:51:43 +0100 (CET)
+Received: by mail-ia0-f174.google.com with SMTP id o25so722461iad.19
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 11:51:42 -0800 (PST)
+In-Reply-To: <20130117191224.44794728@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,67 +41,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, basinilya@gmail.com, alsa-devel@alsa-project.org, Miro Hodak <mhodak127@gmail.com>
+To: =?ISO-8859-1?Q?Manolo_D=EDaz?= <diaz.manolo@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>, basinilya@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RWwganVlLCAxNyBlbmUgMjAxMyBhIGxhcyAxNjozMiBob3JhcwpUYWthc2hpIEl3YWkgZXNjcmli
-acOzOgoKPkF0IFRodSwgMTcgSmFuIDIwMTMgMDk6NTk6MjAgLTA1MDAsCj5NaXJvIEhvZGFrIHdy
-b3RlOgo+PiAKPj4gT24gVGh1LCBKYW4gMTcsIDIwMTMgYXQgNzo0OSBBTSwgUmF5bW9uZCBZYXUg
-PHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT53cm90ZToKPj4gCj4+ID4KPj4gPiA+Cj4+ID4g
-PiBPSywgbm93IGFzIGZhciBhcyBBdXRvLU11dGUgZ29lcywgc2hvdWxkIGl0IGRvIHdoYXQgZXhw
-ZWN0ZWQgd2hlbgo+PiA+IGVuYWJsZWQgLSBpLmUuIG11dGluZyB0aGUgc3BlYWtlcnMgd2hlbiBo
-ZWFkcGhvbmVzIGFyZSBjb25uZWN0ZWQgdG8gdGhlCj4+ID4gZnJvbnQgcGFuZWw/IEkgaGF2ZSB0
-cmllZCB0aGF0LCBkb2VzIG5vdCBzZWVtIHRvIHdvcmsuCj4+ID4gPgo+PiA+Cj4+ID4gRG8geW91
-ciBjb21wdXRlciBjaGFzc2lzIGhhdmUgYSBoZGEgZnJvbnQgYXVkaW8gcGFuZWwgd2l0aCBKYWNr
-IGRldGVjdGlvbiA/Cj4+ID4KPj4gPiBUaGUgZnJvbnQgaGVhZHBob25lIEphY2sgc2hvdWxkIHJl
-dHVybiB0cnVlIHdoZW4gaGVhZHBob25lIEphY2sgaXMgcGx1Z2dlZAo+PiA+Cj4+ID4gY29udHJv
-bC4zNSB7Cj4+ID4gaWZhY2UgQ0FSRAo+PiA+IG5hbWUgJ0Zyb250IEhlYWRwaG9uZSBKYWNrJwo+
-PiA+Cj4+ID4gdmFsdWUgZmFsc2UKPj4gPiBjb21tZW50IHsKPj4gPiBhY2Nlc3MgcmVhZAo+PiA+
-IHR5cGUgQk9PTEVBTgo+PiA+IGNvdW50IDEKPj4gPiB9Cj4+ID4gfQo+PiA+Cj4+ID4gQWxsIEFE
-SSBjb2RlY3Mgc3VwcG9ydCBpbXBlZGFuY2UgbWVhc3VyZW1lbnQKPj4gPgo+PiA+IFRyeSB0aGUg
-bW9kaWZpZWQgaGRhLWphY2stc2Vuc2UtdGVzdCB3aGljaCBuZWVkIGhkYS1hbmFseXplcgo+PiA+
-Cj4+ID4gaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXguYWxzYS5kZXZlbC85MDkx
-MS9mb2N1cz05MTExNQo+PiA+Cj4+IAo+PiBIbW1tLCByYW4gaW50byBzb21lIHB5dGhvbiBpc3N1
-ZXMuIEV2ZW4gaGRhLWFuYWx5emVyIGl0c2VsZiBpcyBub3Qgd29ya2luZzoKPj4gLi4uCj4+IEZp
-bGUgIi9kZXYvc2htL2hkYS1hbmFseXplci9oZGFfcHJvYy5weSIsIGxpbmUgMTQzLCBpbiB3cm9u
-Z2ZpbGUKPj4gICAgIHJhaXNlIFZhbHVlRXJyb3IsICJ3cm9uZyBwcm9jIGZpbGUgZm9ybWF0ICgl
-cykiICUgbXNnCj4+IFZhbHVlRXJyb3I6IHdyb25nIHByb2MgZmlsZSBmb3JtYXQgKGludGVnZXIg
-ZGVjb2RlICdTdGF0ZSBvZiBBRkcgbm9kZQo+PiAweDAxOicgKCdOb2RlICcpKQo+Cj5BaCwgaXQn
-cyBhIG5ldyBwcm9jIGZpbGUgZW50cnkgdGhhdCBoYXMgYmVlbiBhZGRlZCByZWNlbnRseS4KPmhk
-YS1hbmFseXplciBuZWVkcyB0byBiZSBmaXhlZC4KPgo+SW4gYW55d2F5LCBvbmx5IGZvciBjaGVj
-a2luZyB0aGUgcHJlc2VuY2UgdW5zb2xpY2l0ZWQgZXZlbnRzLCB5b3UgY2FuCj5kbyB3aXRob3V0
-IGV4dHJhIHByb2dyYW0uICBTdXBwb3NlIHlvdSBidWlsdCB5b3VyIGtlcm5lbCB3aXRoIHRoZQo+
-dHJhY2luZyBzdXBwb3J0LiAgU2VlICJUcmFjZXBvaW50cyIgb3B0aW9uIGluCj5Eb2N1bWVudGF0
-aW9uL3NvdW5kL2Fsc2EvSEQtQXVkaW8udHh0Lgo+Cj4gICMgZWNobyAxID4gL3N5cy9rZXJuZWwv
-ZGVidWcvdHJhY2luZy9ldmVudHMvaGRhL2hkYV91bnNvbF9ldmVudC9lbmFibGUKPgo+ICAocGx1
-ZyBhbmQgdW5wbHVnIHlvdXIgaGVhZHBob25lIGphY2tzKQo+Cj4gICMgY2F0IC9zeXMva2VybmVs
-L2RlYnVnL3RyYWNpbmcvdHJhY2UKPgo+SWYgeW91IHNlZSBzb21lIGhkYV91bnNvbF9ldmVudCBs
-aW5lcyB0aGVyZSwgaXQgaW1wbGllcyB0aGF0IHRoZSBqYWNrCj5kZXRlY3Rpb24gYmFzaWNhbGx5
-IHdvcmtzIGluIGhhcmR3YXJlIGxldmVsLgo+Cj4KPlRha2FzaGkKCkkgU3VwcG9zZSB0aGF0IHdo
-ZW4gYXV0by1tdXRlIGlzIGVuYWJsZWQgYW4gSFAgaW5kZXBlbmRlbnQgaXMgZGlzYWJsZWQsCmlu
-c2VydGluZyB0aGUgSFAgamFjayBzaG91bGQgZGlzYWJsZSBzb3VuZCBmcm9tIGZyb250IHNwZWFr
-ZXJzLiBJZiBzbwp0aGVuIGF1dG8tbXV0ZSBkb2Vzbid0IHdvcmsuIEphY2sgaW5zZXJ0aW9uL2V4
-dHJhY3Rpb24gZXZlbnRzIGFyZSB3ZWxsCmRldGVjdGVkIGZvciBmcm9udCBzcGVha2VycyBhbmQg
-SFAuCgojfiBjYXQgL3N5cy9rZXJuZWwvZGVidWcvdHJhY2luZy90cmFjZQojIHRyYWNlcjogbm9w
-CiMKIyBlbnRyaWVzLWluLWJ1ZmZlci9lbnRyaWVzLXdyaXR0ZW46IDQvNCAgICNQOjIKIwojICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgXy0tLS0tPT4gaXJxcy1vZmYKIyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgLyBfLS0tLT0+IG5lZWQtcmVzY2hlZAojICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgLyBfLS0tPT4gaGFyZGlycS9zb2Z0aXJxCiMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfHwgLyBfLS09PiBwcmVlbXB0LWRlcHRoCiMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfHx8IC8gICAgIGRlbGF5CiMgICAgICAgICAgIFRBU0stUElEICAgQ1BVIyAgfHx8
-fCAgICBUSU1FU1RBTVAgIEZVTkNUSU9OCiMgICAgICAgICAgICAgIHwgfCAgICAgICB8ICAgfHx8
-fCAgICAgICB8ICAgICAgICAgfAogICAgICAgICAgPGlkbGU+LTAgICAgIFswMDFdIGQuaC4gICAx
-MzcuODgxOTE5OiBoZGFfdW5zb2xfZXZlbnQ6IFswXSByZXM9ODAwMDAwMCwgcmVzX2V4PTEwCiAg
-ICAgICAgICA8aWRsZT4tMCAgICAgWzAwMV0gZC5oLiAgIDE2Mi41MTExMDI6IGhkYV91bnNvbF9l
-dmVudDogWzBdIHJlcz04MDAwMDAwLCByZXNfZXg9MTAKICAgICAgICAgIDxpZGxlPi0wICAgICBb
-MDAxXSBkLmguICAgMjQ2LjUyOTgxMzogaGRhX3Vuc29sX2V2ZW50OiBbMF0gcmVzPTQwMDAwMDAs
-IHJlc19leD0xMAogICAgICAgICAgPGlkbGU+LTAgICAgIFswMDFdIGQuaC4gICAyNzIuMzgxNzE5
-OiBoZGFfdW5zb2xfZXZlbnQ6IFswXSByZXM9NDAwMDAwMCwgcmVzX2V4PTEwCgpicmFuY2ggdGVz
-dGVkOiB0ZXN0L2hkYS1nZW4tcGFyc2VyCgpjb21taXQgNmY0YzUzYTE0NjdjNTE5NjZlMDZhMWQy
-OWM2ZjBmZWU4NWQ1YzZmNgpNZXJnZTogOTIwNTQ0ZSAyOTQ3NjU1OApBdXRob3I6IFRha2FzaGkg
-SXdhaSA8dGl3YWlAc3VzZS5kZT4KRGF0ZTogICBUaHUgSmFuIDE3IDA5OjU2OjMzIDIwMTMgKzAx
-MDAKClJlZ2FyZHMsCi0tIApNYW5vbG8gRMOtYXoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+> El jue, 17 ene 2013 a las 16:32 horas
+> Takashi Iwai escribi=F3:
+> >
+> >In anyway, only for checking the presence unsolicited events, you can
+> >do without extra program.  Suppose you built your kernel with the
+> >tracing support.  See "Tracepoints" option in
+> >Documentation/sound/alsa/HD-Audio.txt.
+> >
+> >  # echo 1 > /sys/kernel/debug/tracing/events/hda/hda_unsol_event/enable
+> >
+> >  (plug and unplug your headphone jacks)
+> >
+> >  # cat /sys/kernel/debug/tracing/trace
+> >
+> >If you see some hda_unsol_event lines there, it implies that the jack
+> >detection basically works in hardware level.
+> >
+> >
+> >Takashi
+>
+>
+> My test:
+
+HP Independent disabled, Auto-Mute enabled. When plugging front headphones,
+sound is in both devices. Yet tracing shows that  jack detection is being
+picked up (one plug and unplug event):
+
+miro2 miro # cat /sys/kernel/debug/tracing/trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 2/2   #P:8
+#
+#                              _-----=3D> irqs-off
+#                             / _----=3D> need-resched
+#                            | / _---=3D> hardirq/softirq
+#                            || / _--=3D> preempt-depth
+#                            ||| /     delay
+#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+#              | |       |   ||||       |         |
+          <idle>-0     [000] d.h.   339.442694: hda_unsol_event: [0]
+res=3D4000000, res_ex=3D10
+          <idle>-0     [000] d.h.   345.727502: hda_unsol_event: [0]
+res=3D4000000, res_ex=3D10
+
+
+So, somehow auto-muting appears non-functional ...
