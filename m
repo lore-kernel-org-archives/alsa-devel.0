@@ -1,19 +1,44 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: libao problem (Re: No dmix/dsnoop on Intel ICH4/5
- by default?)
-Date: Thu, 17 Jan 2013 13:44:44 +0100
-Message-ID: <50F7F23C.4070006@gmail.com>
-References: <50F6FF00.7020706@gmail.com> <50F71312.1000009@ladisch.de>
- <50F7D0E3.3020401@gmail.com> <50F7EAA1.7040504@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HD-audio regression after commit
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Thu, 17 Jan 2013 20:49:56 +0800
+Message-ID: <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
+References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
+ <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
+ <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+ <20130114172354.1f47f49b@gmail.com>
+ <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
+ <20130115095325.7aa2dfdd@gmail.com>
+ <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
+ <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
+ <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
+ <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
+ <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
+ <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
+ <s5hehhk2uee.wl%tiwai@suse.de>
+ <CAN8cciZEWPdKcX2J=16ry9UVoXZwasF7GfN9O4JGwJPx+0Y8zQ@mail.gmail.com>
+ <s5h8v7s2tja.wl%tiwai@suse.de>
+ <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
+ <s5hvcaw18qf.wl%tiwai@suse.de>
+ <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
+ <s5hsj6017km.wl%tiwai@suse.de>
+ <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
+ <s5hobgo16ct.wl%tiwai@suse.de>
+ <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
+ <s5hlibs154t.wl%tiwai@suse.de>
+ <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.gn.mail.iss.as9143.net (smtpq1.gn.mail.iss.as9143.net
- [212.54.34.164])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C12C2650BD
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 13:44:51 +0100 (CET)
-In-Reply-To: <50F7EAA1.7040504@ladisch.de>
+Received: from mail-ia0-f177.google.com (mail-ia0-f177.google.com
+ [209.85.210.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C0092651BC
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 13:49:58 +0100 (CET)
+Received: by mail-ia0-f177.google.com with SMTP id h8so368534iaa.22
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 04:49:57 -0800 (PST)
+In-Reply-To: <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +48,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, vorbis-dev@xiph.org
+To: Miro Hodak <mhodak127@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17-01-13 13:12, Clemens Ladisch wrote:
-
-> Rene Herman wrote:
-
->> I can mix as many streams as I want using just "aplay" but if I start
->> by playing one track with "ogg123" (which uses a default, unconfigured
->> libao as its backend), I can't start a second ogg123, which then says:
->>
->> ao_alsa WARNING: Unable to open surround playback.  Trying default device...
 >
-> The default dmix is for stereo only.  For a surround dmix device, you'd
-> have to write your own definition.
+> OK, now as far as Auto-Mute goes, should it do what expected when enabled
+- i.e. muting the speakers when headphones are connected to the front
+panel? I have tried that, does not seem to work.
+>
 
-Thank you. I didn't notice it was related due to the "trying default 
-device" which I thought should've worked but the issue is that libao 
-1.1.0 doesn't use the alsa "default" device by default. The first ogg123 
-instance therefore keeps things busy.
+Do your computer chassis have a hda front audio panel with Jack detection ?
 
-There's a matching bug-rapport here, I see:
+The front headphone Jack should return true when headphone Jack is plugged
 
-https://trac.xiph.org/ticket/1776
+control.35 {
+iface CARD
+name 'Front Headphone Jack'
+value false
+comment {
+access read
+type BOOLEAN
+count 1
+}
+}
 
-I can, now, set it to dev=default manually but what this means is that 
-libao-1.1.0 by default kills alsa default software mixing. These days 
-everybody seems to have regressed to using a soundserver again anyway 
-and as such not many may notice, but this izz no good, I feel... :-/
+All ADI codecs support impedance measurement
 
-In any case, hope this was useful to alsa-devel in the sense that this 
-libao behavior is now known here, but this is otherwise libao related 
-only, then.
+Try the modified hda-jack-sense-test which need hda-analyzer
 
-Regards,
-Rene
+http://thread.gmane.org/gmane.linux.alsa.devel/90911/focus=91115
