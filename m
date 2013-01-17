@@ -1,31 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HD-audio regression after commit
-	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Thu, 17 Jan 2013 11:51:48 +0800
-Message-ID: <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
- <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
- <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
- <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
- <20130114172354.1f47f49b@gmail.com>
- <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
- <20130115095325.7aa2dfdd@gmail.com>
- <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
- <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
- <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
- <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
- <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v3 1/1] ALSA: hda - bug fix for invalid
+ connection list of Haswell HDMI codec pins
+Date: Thu, 17 Jan 2013 05:32:23 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82D44F4@SHSMSX101.ccr.corp.intel.com>
+References: <1355867955-2391-1-git-send-email-mengdong.lin@intel.com>
+ <50F534AB.3010207@canonical.com> <s5h1udmisu0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f54.google.com (mail-vb0-f54.google.com
- [209.85.212.54])
- by alsa0.perex.cz (Postfix) with ESMTP id F23A226167D
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 04:51:49 +0100 (CET)
-Received: by mail-vb0-f54.google.com with SMTP id l1so2067538vba.13
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2013 19:51:49 -0800 (PST)
-In-Reply-To: <s5h1udlp5to.wl%tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EED1262615
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 06:32:27 +0100 (CET)
+In-Reply-To: <s5h1udmisu0.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,79 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org, Miro Hodak <mhodak127@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > >> >> >> >> >> >Yes, testing the latest code with real machines is
-highly
-> > >> >> >> >> >> >appreciated.  Try sound-unstable git tree, either
-master or
-> > >> >> >> >> >> >test/hda-migrate branch.
-> > >> >> >> >> >> >  git://
-> > >> >> >> >
-git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable.git
-> > >> >> >> >> >> >
-> > >> >> >> >> >> >Alternatively you can build the external alsa-driver
-modules from
-> > >> >> >> >> >> >alsa-driver-unstable snapshot tarball, too
-> > >> >> >> >> >> >
-> > >> >> >> >> >
-> > >> >> >> >
-ftp://ftp.suse.com/pub/people/tiwai/snapshot/alsa-driver-unstable-snapshot.tar.gz
-> > >> >> >> >> >> >
-> > >> >> >> >> >> >Note that only the behavior of model=auto has been
-changed in the tree
-> > >> >> >> >> >> >above.  The other model behaviors of AD codecs are
-unchanged at all.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, January 15, 2013 7:33 PM
+> > When trying to get Haswell HDMI audio working, I discovered that this
+> > verb when executed can get pins to change state from D0 to D3.
+> 
+> Oh, does this verb do it?  It's bad.
 
-> > >> >> >> >
-> > >> >> >> >Seen many ad1988 controls are missing ?
-> > >> >> >> >
-> > >> >> >> >1) rear Mic, line , front Mic  playback volume and switch
-> > >> >> >> >2) CD playback switch
-> > >> >> >> >3) input mix in input source
-> > >> >> >> >4) analog loopback mix volume and mute switch
+No, I think these verbs ((0x781 & 0xf81) don't change pin state. 
+So I'm asking David to share more Information.
 
-> > But the number of controls is smaller than in linux stable 3.7.2. I
-> > don't know if that's a regression.
->
->
-> Unless you see *functional* degradation, it's no regression but
-> regarded rather as a cleanup
+> Also, Mengdong, could you define these verbs (0x781 & 0xf81) in
+> hda_codec.h to understand and read the code better?
 
-Refer to commit
+Okay, I will.
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-unstable.git;a=commitdiff;h=f3fc0b0b1fe31e0ec9a72ab85b421e74c696f00d;hp=3a65bcdc577a338712c2eaefc194909de79d4982
+> > As the fixup is executed after hda_call_codec_resume this means that
+> > the pins will remain in D3. I'm not entirely sure of this, but I think
+> > we have no runtime power transitions if we are on AC power, so this
+> > could potentially be for a very long time.
+> 
+> Actually you spotted a potential bug -- the code isn't called in the resume
+> callback.  This is a code called directly from parse_generic_hdmi(), so it's
+> called only once to override the connections.  But the verb 0x781 isn't set.
 
-The Stereo Mix of those VIA codecs allow ADD capture  DAC signal
+Yes. intel_haswell_fixup_connect_list() is called only once from 
+parse_generic_hdmi().
 
-ad1988 and those realtek codecs can select input source from the audio
-mixer which can mix the input pins
+> I thought we can simply replace the call  snd_hda_codec_read(codec, 0x08,
+> 0, 0x781, ...) with snd_hda_codec_write_cache(), so that the same verb will
+> be executed automatically on resume.  But, if this verb has any bad side
+> effect (like touching D state), it's no good idea to do it in the cache resume.
+> 
 
-- snd_hda_add_imux_item(imux, "Mix", 9, NULL);
+But at first, we need to find out whether snd_hda_codec_read (codec, 0x08, 0, 0x781, ...)
+cannot bring the codec out of D3 before executing 0x781. I suspect it's not the executing
+the verb but before that that the whole codec (including the pins) enters D3.
 
-Those  static models (3stack , 3stack-dig, 6stack and 6stack-dig )still
-have the input source "mix"
-
-static const struct hda_input_mux ad1988_6stack_capture_source = {
-        .num_items = 5,
-       .items = {
-               { "Front Mic", 0x1 },   /* port-B */
-                { "Line", 0x2 },        /* port-C */
-                { "Mic", 0x4 },         /* port-E */
-                { "CD", 0x5 },
-                 { "Mix", 0x9 },
-       },
-};
-
-Most  desktop codecs can pass the blue Jack signal to green Jack by unmute
-line playback switch and line playback volume
-
--- if ((err = add_control(spec, AD_CTL_WIDGET_VOL,
-- "Analog Mix Playback Volume",
-- HDA_COMPOSE_AMP_VAL(0x21, 3, 0x0, HDA_OUTPUT))) < 0)
-- return err;
-- if ((err = add_control(spec, AD_CTL_WIDGET_MUTE, - "Analog Mix Playback
-Switch",
-- HDA_COMPOSE_AMP_VAL(0x21, 3, 0x0, HDA_OUTPUT))) < 0) - return err;
+Thanks
+Mengdong
