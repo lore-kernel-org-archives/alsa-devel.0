@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/9] ALSA: hda - Give more comments to
-	hda_gen_spec flags
-Date: Thu, 17 Jan 2013 17:54:49 +0100
-Message-ID: <1358441694-32004-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 8/9] ALSA: hda - Add PCM capture hook to
+	hda_gen_spec
+Date: Thu, 17 Jan 2013 17:54:53 +0100
+Message-ID: <1358441694-32004-9-git-send-email-tiwai@suse.de>
 References: <1358441694-32004-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D6F0265255
+ by alsa0.perex.cz (Postfix) with ESMTP id 2548A265376
  for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 17:55:00 +0100 (CET)
 Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id D2E9CA4F28
+ by mx2.suse.de (Postfix) with ESMTP id DDAA6A51D9
  for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 17:54:59 +0100 (CET)
 In-Reply-To: <1358441694-32004-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,76 +29,151 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since we have many bit flags in hda_gen_spec, rearrange in sections
-and give more comments there.
+Not only PCM playback, a hook for PCM capture would be required for
+power controls in codec drivers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.h | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ sound/pci/hda/hda_generic.c | 63 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_generic.h |  6 ++++-
+ 2 files changed, 68 insertions(+), 1 deletion(-)
 
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index fc3f241..f946714 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3815,6 +3815,16 @@ static void call_pcm_playback_hook(struct hda_pcm_stream *hinfo,
+ 		spec->pcm_playback_hook(hinfo, codec, substream, action);
+ }
+ 
++static void call_pcm_capture_hook(struct hda_pcm_stream *hinfo,
++				  struct hda_codec *codec,
++				  struct snd_pcm_substream *substream,
++				  int action)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	if (spec->pcm_capture_hook)
++		spec->pcm_capture_hook(hinfo, codec, substream, action);
++}
++
+ /*
+  * Analog playback callbacks
+  */
+@@ -3882,6 +3892,44 @@ static int playback_pcm_close(struct hda_pcm_stream *hinfo,
+ 	return 0;
+ }
+ 
++static int capture_pcm_open(struct hda_pcm_stream *hinfo,
++			    struct hda_codec *codec,
++			    struct snd_pcm_substream *substream)
++{
++	call_pcm_capture_hook(hinfo, codec, substream, HDA_GEN_PCM_ACT_OPEN);
++	return 0;
++}
++
++static int capture_pcm_prepare(struct hda_pcm_stream *hinfo,
++			       struct hda_codec *codec,
++			       unsigned int stream_tag,
++			       unsigned int format,
++			       struct snd_pcm_substream *substream)
++{
++	snd_hda_codec_setup_stream(codec, hinfo->nid, stream_tag, 0, format);
++	call_pcm_capture_hook(hinfo, codec, substream,
++			      HDA_GEN_PCM_ACT_PREPARE);
++	return 0;
++}
++
++static int capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
++			       struct hda_codec *codec,
++			       struct snd_pcm_substream *substream)
++{
++	snd_hda_codec_cleanup_stream(codec, hinfo->nid);
++	call_pcm_capture_hook(hinfo, codec, substream,
++			      HDA_GEN_PCM_ACT_CLEANUP);
++	return 0;
++}
++
++static int capture_pcm_close(struct hda_pcm_stream *hinfo,
++			     struct hda_codec *codec,
++			     struct snd_pcm_substream *substream)
++{
++	call_pcm_capture_hook(hinfo, codec, substream, HDA_GEN_PCM_ACT_CLOSE);
++	return 0;
++}
++
+ static int alt_playback_pcm_open(struct hda_pcm_stream *hinfo,
+ 				 struct hda_codec *codec,
+ 				 struct snd_pcm_substream *substream)
+@@ -3976,6 +4024,9 @@ static int dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
+ /*
+  * Analog capture
+  */
++#define alt_capture_pcm_open	capture_pcm_open
++#define alt_capture_pcm_close	capture_pcm_close
++
+ static int alt_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 				   struct hda_codec *codec,
+ 				   unsigned int stream_tag,
+@@ -3986,6 +4037,8 @@ static int alt_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 
+ 	snd_hda_codec_setup_stream(codec, spec->adc_nids[substream->number + 1],
+ 				   stream_tag, 0, format);
++	call_pcm_capture_hook(hinfo, codec, substream,
++			      HDA_GEN_PCM_ACT_PREPARE);
+ 	return 0;
+ }
+ 
+@@ -3997,6 +4050,8 @@ static int alt_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
+ 
+ 	snd_hda_codec_cleanup_stream(codec,
+ 				     spec->adc_nids[substream->number + 1]);
++	call_pcm_capture_hook(hinfo, codec, substream,
++			      HDA_GEN_PCM_ACT_CLEANUP);
+ 	return 0;
+ }
+ 
+@@ -4020,6 +4075,12 @@ static const struct hda_pcm_stream pcm_analog_capture = {
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+ 	/* NID is set in build_pcms */
++	.ops = {
++		.open = capture_pcm_open,
++		.close = capture_pcm_close,
++		.prepare = capture_pcm_prepare,
++		.cleanup = capture_pcm_cleanup
++	},
+ };
+ 
+ static const struct hda_pcm_stream pcm_analog_alt_playback = {
+@@ -4041,6 +4102,8 @@ static const struct hda_pcm_stream pcm_analog_alt_capture = {
+ 	.channels_max = 2,
+ 	/* NID is set in build_pcms */
+ 	.ops = {
++		.open = alt_capture_pcm_open,
++		.close = alt_capture_pcm_close,
+ 		.prepare = alt_capture_pcm_prepare,
+ 		.cleanup = alt_capture_pcm_cleanup
+ 	},
 diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 59d08c6..dd0818b 100644
+index a0486b1..7b14e9c 100644
 --- a/sound/pci/hda/hda_generic.h
 +++ b/sound/pci/hda/hda_generic.h
-@@ -164,27 +164,34 @@ struct hda_gen_spec {
- 	struct automic_entry am_entry[MAX_AUTO_MIC_PINS];
+@@ -233,11 +233,15 @@ struct hda_gen_spec {
+ 	void (*automute_hook)(struct hda_codec *codec);
+ 	void (*cap_sync_hook)(struct hda_codec *codec);
  
- 	/* for pin sensing */
-+	/* current status; set in hda_geneic.c */
- 	unsigned int hp_jack_present:1;
- 	unsigned int line_jack_present:1;
--	unsigned int master_mute:1;
-+	unsigned int speaker_muted:1; /* current status of speaker mute */
-+	unsigned int line_out_muted:1; /* current status of LO mute */
-+
-+	/* internal states of automute / autoswitch behavior */
- 	unsigned int auto_mic:1;
- 	unsigned int automute_speaker:1; /* automute speaker outputs */
- 	unsigned int automute_lo:1; /* automute LO outputs */
--	unsigned int speaker_muted:1; /* current status of speaker mute */
--	unsigned int line_out_muted:1; /* current status of LO mute */
-+
-+	/* capabilities detected by parser */
- 	unsigned int detect_hp:1;	/* Headphone detection enabled */
- 	unsigned int detect_lo:1;	/* Line-out detection enabled */
- 	unsigned int automute_speaker_possible:1; /* there are speakers and either LO or HP */
- 	unsigned int automute_lo_possible:1;	  /* there are line outs and HP */
-+
-+	/* additional parameters set by codec drivers */
-+	unsigned int master_mute:1;	/* master mute over all */
- 	unsigned int keep_vref_in_automute:1; /* Don't clear VREF in automute */
-+	unsigned int line_in_auto_switch:1; /* allow line-in auto switch */
-+
-+	/* parser behavior flags; set before snd_hda_gen_parse_auto_config() */
- 	unsigned int suppress_auto_mute:1; /* suppress input jack auto mute */
- 	unsigned int suppress_auto_mic:1; /* suppress input jack auto switch */
--	unsigned int line_in_auto_switch:1; /* allow line-in auto switch */
+-	/* PCM playback hook */
++	/* PCM hooks */
+ 	void (*pcm_playback_hook)(struct hda_pcm_stream *hinfo,
+ 				  struct hda_codec *codec,
+ 				  struct snd_pcm_substream *substream,
+ 				  int action);
++	void (*pcm_capture_hook)(struct hda_pcm_stream *hinfo,
++				 struct hda_codec *codec,
++				 struct snd_pcm_substream *substream,
++				 int action);
  
--	/* other flags */
-+	/* other parse behavior flags */
- 	unsigned int need_dac_fix:1; /* need to limit DACs for multi channels */
--	unsigned int no_analog:1; /* digital I/O only */
--	unsigned int dyn_adc_switch:1; /* switch ADCs (for ALC275) */
- 	unsigned int shared_mic_hp:1; /* HP/Mic-in sharing */
- 	unsigned int no_primary_hp:1; /* Don't prefer HP pins to speaker pins */
- 	unsigned int multi_cap_vol:1; /* allow multiple capture xxx volumes */
-@@ -192,11 +199,15 @@ struct hda_gen_spec {
- 	unsigned int own_eapd_ctl:1; /* set EAPD by own function */
- 	unsigned int vmaster_mute_enum:1; /* add vmaster mute mode enum */
- 	unsigned int indep_hp:1; /* independent HP supported */
--	unsigned int indep_hp_enabled:1; /* independent HP enabled */
- 	unsigned int prefer_hp_amp:1; /* enable HP amp for speaker if any */
- 	unsigned int add_stereo_mix_input:1; /* add aamix as a capture src */
- 	unsigned int add_out_jack_modes:1; /* add output jack mode enum ctls */
- 
-+	/* other internal flags */
-+	unsigned int no_analog:1; /* digital I/O only */
-+	unsigned int dyn_adc_switch:1; /* switch ADCs (for ALC275) */
-+	unsigned int indep_hp_enabled:1; /* independent HP enabled */
-+
- 	/* loopback mixing mode */
- 	bool aamix_mode;
- 
+ 	/* automute / autoswitch hooks */
+ 	void (*hp_automute_hook)(struct hda_codec *codec,
 -- 
 1.8.1
