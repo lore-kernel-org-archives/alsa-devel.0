@@ -1,19 +1,16 @@
 From: Yoichi Yuasa <yuasa@linux-mips.org>
 Subject: Re: [PATCH 02/19] ALSA: ymu831: add device register
-	definitions
-Date: Thu, 17 Jan 2013 14:59:37 +0900
-Message-ID: <20130117145937.528c2e7df224c8924cda8031@linux-mips.org>
+ definitions
+Date: Thu, 17 Jan 2013 15:00:06 +0900
+Message-ID: <20130117150006.ff5c6a69d29d0198a784c7ca@linux-mips.org>
 References: <20130116172530.857b627ef3303fb6fe43f603@linux-mips.org>
  <20130116172704.256eccbb8412439455df14e7@linux-mips.org>
- <s5hhamhpczv.wl%tiwai@suse.de>
+ <20130116131808.GA16235@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo.iij4u.or.jp (mo11.iij4u.or.jp [210.138.174.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EC87264FE3
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 06:59:41 +0100 (CET)
-In-Reply-To: <s5hhamhpczv.wl%tiwai@suse.de>
+In-Reply-To: <20130116131808.GA16235@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, yuasa@linux-mips.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, yuasa@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 16 Jan 2013 12:45:56 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Wed, 16 Jan 2013 13:18:09 +0000
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> At Wed, 16 Jan 2013 17:27:04 +0900,
-> Yoichi Yuasa wrote:
-> > 
+> On Wed, Jan 16, 2013 at 05:27:04PM +0900, Yoichi Yuasa wrote:
 > > 
 > > Signed-off-by: Yoichi Yuasa <yuasa@linux-mips.org>
-> > ---
-> >  sound/soc/codecs/ymu831/mcdefs.h | 4303 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 4303 insertions(+)
-> >  create mode 100644 sound/soc/codecs/ymu831/mcdefs.h
-> > 
-> > diff --git a/sound/soc/codecs/ymu831/mcdefs.h b/sound/soc/codecs/ymu831/mcdefs.h
-> > new file mode 100644
-> > index 0000000..fbd2008
-> > --- /dev/null
-> > +++ b/sound/soc/codecs/ymu831/mcdefs.h
-> > @@ -0,0 +1,4303 @@
-> > +/****************************************************************************
-> > + *
-> > + * Copyrightc 2012 Yamaha Corporation. All rights reserved.
-> > + *
+> 
+> Please follow the patch submission process in SubmittingPatches.
+> 
 > > + * Module	: mcdefs.h
 > > + * Description	: MC device definitions
 > > + * Version	: 1.0.1	Dec 18 2012
@@ -69,13 +52,24 @@ Takashi Iwai <tiwai@suse.de> wrote:
 > > + * 2. Altered source versions must be plainly marked as such, and must not be
 > > + *	misrepresented as being the original software.
 > > + * 3. This notice may not be removed or altered from any source distribution.
-> > + *
-> > + ****************************************************************************
-> /
 > 
-> So you need to keep zlib license instead of the standard GPLv2?
+> It's not entirely clear to me that this is GPL compatible... 
 
-The base codes license is zlib license.
-It is not so easy to change.
+Some file of kernel lib/zlib_deflate and lib/zlib_inflate are same license.
+
+also see:
+
+http://www.gnu.org/licenses/license-list.en.html#ZLib
+
+> 
+> > +#define MCI_A_REG_A			0
+> > +#define MCB_A_REG_AINC			0x80
+> 
+> All these definitions need to be namespaced.
+> 
+
+How should these change concretely?
+
+Thanks,
 
 Yoichi
