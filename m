@@ -1,31 +1,58 @@
 From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH 0/4] Add generic DMA DT binding support
-Date: Fri, 18 Jan 2013 17:03:40 +0530
-Message-ID: <1358508824-20352-1-git-send-email-padma.v@samsung.com>
+Subject: [PATCH 1/4] DMA: PL330: Add xlate function
+Date: Fri, 18 Jan 2013 17:03:41 +0530
+Message-ID: <1358508824-20352-2-git-send-email-padma.v@samsung.com>
+References: <1358508824-20352-1-git-send-email-padma.v@samsung.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1358508824-20352-1-git-send-email-padma.v@samsung.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: padma.v@samsung.com, padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
 Cc: sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch set adds support for generic dma device tree bindings for
-Samsung platforms and is dependent on the following patches from
-Vinod Koul next branch
-1)of: Add generic device tree DMA helpers
-2)dmaengine: add helper function to request a slave DMA channel
+Add xlate to translate the device-tree binding information into
+the appropriate format. The filter function requires the dma
+controller device node and dma channel number as filter_params.
 
-This patch set is made based Kukjin Kim for-next branch
+Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+---
+ drivers/dma/pl330.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
 
-Padmavathi Venna (4):
-  DMA: PL330: Add xlate function
-  DMA: PL330: Register the DMA controller with the generic DMA helpers
-  ARM: dts: Add #dma-cells for generic dma binding support
-  DMA: PL330: Modify pl330 filter based on new generic dma dt bindings.
-
- .../devicetree/bindings/dma/arm-pl330.txt          |    9 +++-
- arch/arm/boot/dts/exynos5250.dtsi                  |    4 ++
- drivers/dma/pl330.c                                |   48 ++++++++++++++++----
- 3 files changed, 49 insertions(+), 12 deletions(-)
-
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 80680ee..b0a9080 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -25,6 +25,7 @@
+ #include <linux/amba/pl330.h>
+ #include <linux/scatterlist.h>
+ #include <linux/of.h>
++#include <linux/of_dma.h>
+ 
+ #include "dmaengine.h"
+ #define PL330_MAX_CHAN		8
+@@ -2352,6 +2353,22 @@ static void dma_pl330_rqcb(void *token, enum pl330_op_err err)
+ 	tasklet_schedule(&pch->task);
+ }
+ 
++struct dma_chan *of_dma_pl330_xlate(struct of_phandle_args *dma_spec,
++						struct of_dma *ofdma)
++{
++	int count = dma_spec->args_count;
++	struct of_dma_filter_info *info = ofdma->of_dma_data;
++
++	if (!info || !info->filter_fn)
++		return NULL;
++
++	if (count != 1)
++		return NULL;
++
++	return dma_request_channel(info->dma_cap, info->filter_fn, dma_spec);
++}
++EXPORT_SYMBOL_GPL(of_dma_pl330_xlate);
++
+ bool pl330_filter(struct dma_chan *chan, void *param)
+ {
+ 	u8 *peri_id;
 -- 
 1.7.4.4
