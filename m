@@ -1,8 +1,8 @@
 From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH V6 08/10] ARM: dts: Modify SPI nodes according generic DMA DT
- bindings
-Date: Fri, 18 Jan 2013 17:17:07 +0530
-Message-ID: <1358509629-20471-9-git-send-email-padma.v@samsung.com>
+Subject: [PATCH V6 09/10] ASoC: Samsung: Update Kconfig for I2S,SPDIF and PCM
+ audio
+Date: Fri, 18 Jan 2013 17:17:08 +0530
+Message-ID: <1358509629-20471-10-git-send-email-padma.v@samsung.com>
 References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 In-reply-to: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
@@ -11,53 +11,46 @@ To: padma.v@samsung.com, padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org,
 Cc: sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes custom way of adding spi dma channels and
-adds according to new generic DMA DT bindings.
+Update Kconfig file to enable I2S,PCM audio for wm8994 and spdif on all
+samsung platforms.
 
+Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
+Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
 Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
 ---
- arch/arm/boot/dts/exynos5250.dtsi |   15 +++++++++------
- 1 files changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/samsung/Kconfig |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
-index 3aaa8ce..c6c69b2 100644
---- a/arch/arm/boot/dts/exynos5250.dtsi
-+++ b/arch/arm/boot/dts/exynos5250.dtsi
-@@ -217,8 +217,9 @@
- 		compatible = "samsung,exynos4210-spi";
- 		reg = <0x12d20000 0x100>;
- 		interrupts = <0 66 0>;
--		tx-dma-channel = <&pdma0 5>; /* preliminary */
--		rx-dma-channel = <&pdma0 4>; /* preliminary */
-+		dmas = <&pdma0 5
-+			&pdma0 4>;
-+		dma-names = "tx", "rx";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 	};
-@@ -227,8 +228,9 @@
- 		compatible = "samsung,exynos4210-spi";
- 		reg = <0x12d30000 0x100>;
- 		interrupts = <0 67 0>;
--		tx-dma-channel = <&pdma1 5>; /* preliminary */
--		rx-dma-channel = <&pdma1 4>; /* preliminary */
-+		dmas = <&pdma1 5
-+			&pdma1 4>;
-+		dma-names = "tx", "rx";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 	};
-@@ -237,8 +239,9 @@
- 		compatible = "samsung,exynos4210-spi";
- 		reg = <0x12d40000 0x100>;
- 		interrupts = <0 68 0>;
--		tx-dma-channel = <&pdma0 7>; /* preliminary */
--		rx-dma-channel = <&pdma0 6>; /* preliminary */
-+		dmas = <&pdma0 7
-+			&pdma0 6>;
-+		dma-names = "tx", "rx";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 	};
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 3c7c3a5..90e7e66 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -63,7 +63,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM8994
+ 	tristate "SoC I2S Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 || MACH_SMDK4212)
++	depends on SND_SOC_SAMSUNG
+ 	depends on I2C=y && GENERIC_HARDIRQS
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
+@@ -162,7 +162,7 @@ config SND_SOC_GONI_AQUILA_WM8994
+ 
+ config SND_SOC_SAMSUNG_SMDK_SPDIF
+ 	tristate "SoC S/PDIF Audio support for SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210 || MACH_SMDKV310 || MACH_SMDK4212)
++	depends on SND_SOC_SAMSUNG
+ 	select SND_SAMSUNG_SPDIF
+ 	help
+ 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
+@@ -177,7 +177,7 @@ config SND_SOC_SMDK_WM8580_PCM
+ 
+ config SND_SOC_SMDK_WM8994_PCM
+ 	tristate "SoC PCM Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310 || MACH_SMDK4212)
++	depends on SND_SOC_SAMSUNG
+ 	depends on I2C=y && GENERIC_HARDIRQS
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
 -- 
 1.7.4.4
