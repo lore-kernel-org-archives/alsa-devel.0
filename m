@@ -1,37 +1,36 @@
-From: Miro Hodak <mhodak127@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: HD-audio regression after commit
 	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Fri, 18 Jan 2013 02:31:49 -0500
-Message-ID: <CA+S_cwqE6AgcVjp+wtPuJA_AcJqUvL0Ocoq_QA5JVWQVYCsYSg@mail.gmail.com>
+Date: Fri, 18 Jan 2013 15:43:04 +0800
+Message-ID: <CAN8cciaQtNHM1QjVKtpRLEnkYN17LjuTHKZS-XPud=ZSscp8rw@mail.gmail.com>
 References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <CAN8ccia1N-eseNR2dET=ghXuyK0E0gXaakehW3VAN8u1UxUQ8Q@mail.gmail.com>
+ <20130114133122.52cadb99@gmail.com> <s5h7gngc4lt.wl%tiwai@suse.de>
+ <20130114135947.1f0bbbf4@gmail.com> <s5h1udndihf.wl%tiwai@suse.de>
+ <20130114172354.1f47f49b@gmail.com>
+ <CAN8cciaoAt75sRUtLM6Ov4VGBQ1pFgPwO-EZT88q6d1gm-JggQ@mail.gmail.com>
+ <20130115095325.7aa2dfdd@gmail.com>
+ <CAN8cciYrMSBhpp-9QjHdE8aVMHh_JwHswwfPfjtGY6OB_E4NcQ@mail.gmail.com>
+ <20130116094941.0e1170b2@gmail.com> <s5hwqvd33va.wl%tiwai@suse.de>
+ <20130116133952.18449985@gmail.com> <s5hbocpp9tn.wl%tiwai@suse.de>
+ <20130116140412.01c73523@gmail.com> <s5h8v7tp8s8.wl%tiwai@suse.de>
+ <20130116145509.434c0bb9@gmail.com> <s5h1udlp5to.wl%tiwai@suse.de>
+ <CAN8ccib5gpbsyLPmfoaC4edwYjird8ViZbKKiTbo-iP4DsjsOA@mail.gmail.com>
  <s5hehhk2uee.wl%tiwai@suse.de>
  <CAN8cciZEWPdKcX2J=16ry9UVoXZwasF7GfN9O4JGwJPx+0Y8zQ@mail.gmail.com>
  <s5h8v7s2tja.wl%tiwai@suse.de>
  <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
- <s5hvcaw18qf.wl%tiwai@suse.de>
- <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
- <s5hsj6017km.wl%tiwai@suse.de>
- <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
- <s5hobgo16ct.wl%tiwai@suse.de>
- <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
- <s5hlibs154t.wl%tiwai@suse.de>
- <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
- <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
- <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
- <s5hfw1zomf2.wl%tiwai@suse.de> <20130117191224.44794728@gmail.com>
- <s5hfw1z1s6a.wl%tiwai@suse.de> <20130117214043.5a1574ee@gmail.com>
- <s5h7gnb0y5z.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 33BF2265243
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 08:31:52 +0100 (CET)
-Received: by mail-ie0-f181.google.com with SMTP id 16so5970531iea.12
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 23:31:50 -0800 (PST)
-In-Reply-To: <s5h7gnb0y5z.wl%tiwai@suse.de>
+Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
+ [209.85.223.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CADC265243
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 08:43:04 +0100 (CET)
+Received: by mail-ie0-f175.google.com with SMTP id qd14so5840049ieb.20
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2013 23:43:04 -0800 (PST)
+In-Reply-To: <CA+S_cwowFrLAWSRiQvPX5AZwuyo9DdA4qS7Xn3bMYy=AzzpHdg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,28 +40,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, basinilya@gmail.com, =?ISO-8859-1?Q?Manolo_D=EDaz?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
+To: Miro Hodak <mhodak127@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 18, 2013 at 2:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> I was finally able to do some testing on my board (Asus Rampage II Gene).
+Using latest sound-unstable I can confirm that the crashes in XFCE mixer
+are gone. Also, labels in alsamixer make more sense now - I have microphone
+plugged to the back and previously I had to enable Front Mic as an input
+source to for the microphone to work. Now, it works over "Rear Mic" as
+expected. Also, multistream playback works with "Independent HP" enabled.
+And yes, less controls then before ... Overall, a big improvement.
+>
+> My alsa-info can be found here: http://pastebin.com/RaxrnZKK
+>
+> Should I try with branch 'test/hda-gen-parser'  (what is the difference,
+BTW?)
+>
+> Anything else to test?
 
->
-> Thanks.  It turned out that simply missing unsol_event handlers in the
-> codec driver code.  The patch below should fix the issue.  It's
-> already merged in test/hda-migrate and master branches.
->
->
-> Takashi
->
-> ---
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Fix missing unsol event handler in some codec
->  drivers
->
-> This resulted in non-working auto-mute behavior, of course...
->
->
-Tested and it works for me!
+Does the Mic really work since missing boost control ?
 
-Thanks for great work.
+         HDA_CODEC_VOLUME("Front Mic Boost Volume", 0x39, 0x0, HDA_OUTPUT),
+       HDA_CODEC_VOLUME("Mic Boost Volume", 0x3c, 0x0, HDA_OUTPUT),
+
+Take a diff of alsa-info the auto model and 6stack-dig
