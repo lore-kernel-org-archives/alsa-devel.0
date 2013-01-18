@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: hda - Fix invalid mute in path
-	activation
-Date: Fri, 18 Jan 2013 11:24:02 +0100
-Message-ID: <1358504643-13593-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/4] ALSA: hda - Keep autocfg.input idx value
+	in imux table
+Date: Fri, 18 Jan 2013 11:24:00 +0100
+Message-ID: <1358504643-13593-2-git-send-email-tiwai@suse.de>
 References: <1358504643-13593-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 21990265E02
+ by alsa0.perex.cz (Postfix) with ESMTP id 1270E2650FF
  for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 11:24:05 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id DFD1BA3DDF
+ by mx2.suse.de (Postfix) with ESMTP id D9263A3A78
  for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 11:24:04 +0100 (CET)
 In-Reply-To: <1358504643-13593-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,134 +29,85 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When an amp in the activation path is associated with mixer controls,
-activate_amp() tries to skip the initialization.  It's good, but only
-if the mixer really initializes both mute and volume.  Otherwise,
-either the mute of the volume is left uninitialized.
+Since the imux table entries can be a subset of autocfg.input table,
+the indices of these aren't always same.  For passing the proper index
+value of autocfg.input at creating input ctl labels (via
+snd_hda_autocfg_input_label()), keep the corresponding autocfg.input
+idx value in the index field of each imux item, which isn't used in
+the generic driver.
 
-This patch adds this missing check and properly initialize the
-partially controlled amps in an activation path.
+Also, this makes easier to check the invalid imux pin for stereo mix.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 60 +++++++++++++++++++++++++++++++--------------
- 1 file changed, 42 insertions(+), 18 deletions(-)
+ sound/pci/hda/hda_generic.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index ebb5584..edec98f 100644
+index ef4c04a..7444d2e 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -315,11 +315,10 @@ static bool is_ctl_used(struct hda_codec *codec, unsigned int val, int type)
+@@ -2478,7 +2478,8 @@ static int check_dyn_adc_switch(struct hda_codec *codec)
  
- /* check whether a control with the given (nid, dir, idx) was assigned */
- static bool is_ctl_associated(struct hda_codec *codec, hda_nid_t nid,
--			      int dir, int idx)
-+			      int dir, int idx, int type)
+ /* parse capture source paths from the given pin and create imux items */
+ static int parse_capture_source(struct hda_codec *codec, hda_nid_t pin,
+-				int num_adcs, const char *label, int anchor)
++				int cfg_idx, int num_adcs,
++				const char *label, int anchor)
  {
- 	unsigned int val = HDA_COMPOSE_AMP_VAL(nid, 3, idx, dir);
--	return is_ctl_used(codec, val, NID_PATH_VOL_CTL) ||
--		is_ctl_used(codec, val, NID_PATH_MUTE_CTL);
-+	return is_ctl_used(codec, val, type);
- }
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	struct hda_input_mux *imux = &spec->input_mux;
+@@ -2501,8 +2502,7 @@ static int parse_capture_source(struct hda_codec *codec, hda_nid_t pin,
  
- static void print_nid_path(const char *pfx, struct nid_path *path)
-@@ -590,12 +589,10 @@ static bool is_active_nid(struct hda_codec *codec, hda_nid_t nid,
- 
- /* get the default amp value for the target state */
- static int get_amp_val_to_activate(struct hda_codec *codec, hda_nid_t nid,
--				   int dir, bool enable)
-+				   int dir, unsigned int caps, bool enable)
- {
--	unsigned int caps;
- 	unsigned int val = 0;
- 
--	caps = query_amp_caps(codec, nid, dir);
- 	if (caps & AC_AMPCAP_NUM_STEPS) {
- 		/* set to 0dB */
- 		if (enable)
-@@ -611,19 +608,49 @@ static int get_amp_val_to_activate(struct hda_codec *codec, hda_nid_t nid,
- /* initialize the amp value (only at the first time) */
- static void init_amp(struct hda_codec *codec, hda_nid_t nid, int dir, int idx)
- {
--	int val = get_amp_val_to_activate(codec, nid, dir, false);
-+	unsigned int caps = query_amp_caps(codec, nid, dir);
-+	int val = get_amp_val_to_activate(codec, nid, dir, caps, false);
- 	snd_hda_codec_amp_init_stereo(codec, nid, dir, idx, 0xff, val);
- }
- 
-+/* calculate amp value mask we can modify;
-+ * if the given amp is controlled by mixers, don't touch it
-+ */
-+static unsigned int get_amp_mask_to_modify(struct hda_codec *codec,
-+					   hda_nid_t nid, int dir, int idx,
-+					   unsigned int caps)
-+{
-+	unsigned int mask = 0xff;
-+
-+	if (caps & AC_AMPCAP_MUTE) {
-+		if (is_ctl_associated(codec, nid, dir, idx, NID_PATH_MUTE_CTL))
-+			mask &= ~0x80;
-+	}
-+	if (caps & AC_AMPCAP_NUM_STEPS) {
-+		if (is_ctl_associated(codec, nid, dir, idx, NID_PATH_VOL_CTL) ||
-+		    is_ctl_associated(codec, nid, dir, idx, NID_PATH_BOOST_CTL))
-+			mask &= ~0x7f;
-+	}
-+	return mask;
-+}
-+
- static void activate_amp(struct hda_codec *codec, hda_nid_t nid, int dir,
--			 int idx, bool enable)
-+			 int idx, int idx_to_check, bool enable)
- {
--	int val;
--	if (is_ctl_associated(codec, nid, dir, idx) ||
--	    (!enable && is_active_nid(codec, nid, dir, idx)))
-+	unsigned int caps;
-+	unsigned int mask, val;
-+
-+	if (!enable && is_active_nid(codec, nid, dir, idx))
-+		return;
-+
-+	caps = query_amp_caps(codec, nid, dir);
-+	val = get_amp_val_to_activate(codec, nid, dir, caps, enable);
-+	mask = get_amp_mask_to_modify(codec, nid, dir, idx_to_check, caps);
-+	if (!mask)
- 		return;
--	val = get_amp_val_to_activate(codec, nid, dir, enable);
--	snd_hda_codec_amp_stereo(codec, nid, dir, idx, 0xff, val);
-+
-+	val &= mask;
-+	snd_hda_codec_amp_stereo(codec, nid, dir, idx, mask, val);
- }
- 
- static void activate_amp_out(struct hda_codec *codec, struct nid_path *path,
-@@ -631,7 +658,7 @@ static void activate_amp_out(struct hda_codec *codec, struct nid_path *path,
- {
- 	hda_nid_t nid = path->path[i];
- 	init_amp(codec, nid, HDA_OUTPUT, 0);
--	activate_amp(codec, nid, HDA_OUTPUT, 0, enable);
-+	activate_amp(codec, nid, HDA_OUTPUT, 0, 0, enable);
- }
- 
- static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
-@@ -655,16 +682,13 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
- 	for (n = 0; n < nums; n++)
- 		init_amp(codec, nid, HDA_INPUT, n);
- 
--	if (is_ctl_associated(codec, nid, HDA_INPUT, idx))
--		return;
--
- 	/* here is a little bit tricky in comparison with activate_amp_out();
- 	 * when aa-mixer is available, we need to enable the path as well
- 	 */
- 	for (n = 0; n < nums; n++) {
- 		if (n != idx && (!add_aamix || conn[n] != spec->mixer_nid))
- 			continue;
--		activate_amp(codec, nid, HDA_INPUT, n, enable);
-+		activate_amp(codec, nid, HDA_INPUT, n, idx, enable);
+ 		if (!imux_added) {
+ 			spec->imux_pins[imux->num_items] = pin;
+-			snd_hda_add_imux_item(imux, label,
+-					      imux->num_items, NULL);
++			snd_hda_add_imux_item(imux, label, cfg_idx, NULL);
+ 			imux_added = true;
+ 		}
  	}
- }
+@@ -2513,6 +2513,9 @@ static int parse_capture_source(struct hda_codec *codec, hda_nid_t pin,
+ /*
+  * create playback/capture controls for input pins
+  */
++
++#define CFG_IDX_MIX	99	/* a dummy cfg->input idx for stereo mix */
++
+ static int create_input_ctls(struct hda_codec *codec)
+ {
+ 	struct hda_gen_spec *spec = codec->spec;
+@@ -2556,7 +2559,8 @@ static int create_input_ctls(struct hda_codec *codec)
+ 			}
+ 		}
  
+-		err = parse_capture_source(codec, pin, num_adcs, label, -mixer);
++		err = parse_capture_source(codec, pin, i,
++					   num_adcs, label, -mixer);
+ 		if (err < 0)
+ 			return err;
+ 
+@@ -2568,7 +2572,7 @@ static int create_input_ctls(struct hda_codec *codec)
+ 	}
+ 
+ 	if (mixer && spec->add_stereo_mix_input) {
+-		err = parse_capture_source(codec, mixer, num_adcs,
++		err = parse_capture_source(codec, mixer, CFG_IDX_MIX, num_adcs,
+ 					   "Stereo Mix", 0);
+ 		if (err < 0)
+ 			return err;
+@@ -2909,7 +2913,11 @@ static int create_multi_cap_vol_ctl(struct hda_codec *codec)
+ 	for (i = 0; i < imux->num_items; i++) {
+ 		const char *label;
+ 		bool inv_dmic;
+-		label = hda_get_autocfg_input_label(codec, &spec->autocfg, i);
++
++		if (imux->items[i].index >= spec->autocfg.num_inputs)
++			continue;
++		label = hda_get_autocfg_input_label(codec, &spec->autocfg,
++						    imux->items[i].index);
+ 		if (prev_label && !strcmp(label, prev_label))
+ 			type_idx++;
+ 		else
 -- 
 1.8.1
