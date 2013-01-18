@@ -1,34 +1,54 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix mute led for another HP machine
-Date: Fri, 18 Jan 2013 12:00:47 +0100
-Message-ID: <1358506847-4862-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 0/4] Fixes for missing boost controls in
+ generic parser
+Date: Fri, 18 Jan 2013 12:08:57 +0100
+Message-ID: <50F92D49.1060607@canonical.com>
+References: <1358504643-13593-1-git-send-email-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C30002650FF
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 12:08:56 +0100 (CET)
+In-Reply-To: <1358504643-13593-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This machine also has the "HP_Mute_LED_0_A" string in DMI information.
+On 01/18/2013 11:23 AM, Takashi Iwai wrote:
+> Hi,
+>
+> this is a series of patches to fix the missing boost controls in the
+> generic parser.  I found the problem not only on AD1988 but some others,
+> and while debugging this issue, more issues have been revealed, thus
+> it became more volumes than expected.
+>
+> All patches are found in sound-unstable tree test/hda-gen-parser
+> branch.  And, now both test/hda-gen-parser branch and test/hda-migrate
+> branch become identical.  It doesn't matter which branch you take.
+> Also, it's already merged in master branch of sound-unstable tree.
 
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugs.launchpad.net/bugs/1096789
-Tested-by: Tammy Yang <tammy.yang@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+Does this mean your current plan is to merge all codecs in 3.9?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f519627..6369b23 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6251,6 +6251,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_MIC2_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x1972, "HP Pavilion 17", ALC269_FIXUP_MIC1_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x1977, "HP Pavilion 14", ALC269_FIXUP_MIC1_MUTE_LED),
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+> So.. at this point, it'd be helpful if anyone can test this tree, and
+> let me know any issues.
+
+I will try to make some DKMS packages for easy testing on top of earlier 
+kernels. Both for testing on my own stuff here, and for helping other 
+Ubuntu users to test.
+
+
 -- 
-1.7.9.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
