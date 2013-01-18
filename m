@@ -1,18 +1,37 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/3] ALSA: hda - don't compare with yourself in
-	fill_input_pin_labels
-Date: Fri, 18 Jan 2013 15:43:02 +0100
-Message-ID: <1358520183-2908-3-git-send-email-david.henningsson@canonical.com>
-References: <1358520183-2908-1-git-send-email-david.henningsson@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HD-audio regression after commit
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Fri, 18 Jan 2013 22:49:37 +0800
+Message-ID: <CAN8ccibdPa+wOD99cY1sxfK0MSbUeL0MA6emiPCb93u3KMmrSg@mail.gmail.com>
+References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <CA+S_cwq7mDPkjPCVpRecO93UW2gpYo7BpMfFARu0PZCvNT-w4A@mail.gmail.com>
+ <s5hsj6017km.wl%tiwai@suse.de>
+ <CA+S_cwo2mZn+5P3JuNWXZ+3taQcSHmvRhm95vjupY1o+FA+cpw@mail.gmail.com>
+ <s5hobgo16ct.wl%tiwai@suse.de>
+ <CA+S_cwqeP90pFpFviKns-bxxBS6ahunPgRfCG0BQTa5ZLPtE-Q@mail.gmail.com>
+ <s5hlibs154t.wl%tiwai@suse.de>
+ <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+ <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
+ <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
+ <s5hfw1zomf2.wl%tiwai@suse.de> <20130117191224.44794728@gmail.com>
+ <s5hfw1z1s6a.wl%tiwai@suse.de> <20130117214043.5a1574ee@gmail.com>
+ <s5h7gnb0y5z.wl%tiwai@suse.de>
+ <CA+S_cwqE6AgcVjp+wtPuJA_AcJqUvL0Ocoq_QA5JVWQVYCsYSg@mail.gmail.com>
+ <20130118090839.4a0725f8@gmail.com>
+ <CA+S_cwoKMERXHR14t4WK0Him=bjcRQQPJH+tX6BHyeBUv9tntg@mail.gmail.com>
+ <s5hy5fqztge.wl%tiwai@suse.de> <20130118133753.3eabbb18@gmail.com>
+ <s5hr4limwj2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 566C0265F3F
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 15:43:03 +0100 (CET)
-In-Reply-To: <1358520183-2908-1-git-send-email-david.henningsson@canonical.com>
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1458726510D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 15:49:38 +0100 (CET)
+Received: by mail-ie0-f173.google.com with SMTP id e13so6373504iej.18
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2013 06:49:38 -0800 (PST)
+In-Reply-To: <s5hr4limwj2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +41,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org, Miro Hodak <mhodak127@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Just stumbled over this one while reading the code.
+> > It's already in the repository. Now none of the input sources work for
+> > me: front-mic, rear-mic nor input line. Alsa-info output is attached.
+> >
+> > commit 77ecb70ef5b022a1ee80169583753d85d7a9c396
+>
+> Hmm, through a quick glance, all look OK.
+>
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_generic.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It is strange that three input source are line but audio selector are not
+the same
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 13e13df..a5b87c5 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -2555,7 +2555,7 @@ static int fill_input_pin_labels(struct hda_codec *codec)
- 
- 		label = hda_get_autocfg_input_label(codec, cfg, i);
- 		idx = 0;
--		for (j = i; j >= 0; j--) {
-+		for (j = i-1; j >= 0; j--) {
- 			if (spec->input_labels[j] &&
- 			    !strcmp(spec->input_labels[j], label)) {
- 				idx = spec->input_label_idxs[j] + 1;
--- 
-1.7.9.5
+Simple mixer control 'Input Source',0
+  Capabilities: cenum
+  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD'
+  Item0: 'Line'
+Simple mixer control 'Input Source',1
+  Capabilities: cenum
+  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD'
+  Item0: 'Line'
+Simple mixer control 'Input Source',2
+  Capabilities: cenum
+  Items: 'Front Mic' 'Rear Mic' 'Line' 'CD'
+  Item0: 'Line'
+
+Node 0x0c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Control: name="Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Capture Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x36 0x36]
+  Connection: 11
+     0x38 0x39 0x3a* 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20 0x1f
+Node 0x0d [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Control: name="Capture Volume", index=1, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Capture Switch", index=1, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x36 0x36]
+  Connection: 10
+     0x38 0x39* 0x3a 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20
+Node 0x0e [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Control: name="Capture Volume", index=2, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Capture Switch", index=2, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x27, nsteps=0x36, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x36 0x36]
+  Connection: 10
+     0x38 0x39* 0x3a 0x3b 0x3c 0x18 0x24 0x25 0x3d 0x20
