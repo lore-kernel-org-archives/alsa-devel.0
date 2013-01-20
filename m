@@ -1,21 +1,38 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: [patch] 18i6 mixer implementation -- was Focusrite
- Scarlett 18i6 mixer
-Date: Sun, 20 Jan 2013 20:25:07 +0100
-Message-ID: <50FC4493.4030807@gareus.org>
-References: <50F8C9FB.3010200@gareus.org>
+From: Miro Hodak <mhodak127@gmail.com>
+Subject: Re: HD-audio regression after commit
+	34588709af61be1550b4e2bcee5c85d0ac4f34d4
+Date: Sun, 20 Jan 2013 14:54:39 -0500
+Message-ID: <CA+S_cwqzWHf92zXj3gFHHB+SAr_7o=Z+70FMh39nKoxzvBXZRA@mail.gmail.com>
+References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
+ <s5hlibs154t.wl%tiwai@suse.de>
+ <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
+ <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
+ <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
+ <s5hfw1zomf2.wl%tiwai@suse.de> <20130117191224.44794728@gmail.com>
+ <s5hfw1z1s6a.wl%tiwai@suse.de> <20130117214043.5a1574ee@gmail.com>
+ <s5h7gnb0y5z.wl%tiwai@suse.de>
+ <CA+S_cwqE6AgcVjp+wtPuJA_AcJqUvL0Ocoq_QA5JVWQVYCsYSg@mail.gmail.com>
+ <20130118090839.4a0725f8@gmail.com>
+ <CA+S_cwoKMERXHR14t4WK0Him=bjcRQQPJH+tX6BHyeBUv9tntg@mail.gmail.com>
+ <s5hy5fqztge.wl%tiwai@suse.de> <20130118133753.3eabbb18@gmail.com>
+ <s5hr4limwj2.wl%tiwai@suse.de>
+ <CAN8ccibdPa+wOD99cY1sxfK0MSbUeL0MA6emiPCb93u3KMmrSg@mail.gmail.com>
+ <s5hbocmmrtu.wl%tiwai@suse.de> <20130118174823.4795313b@gmail.com>
+ <s5hmww6l96r.wl%tiwai@suse.de> <20130118185115.442a3d97@gmail.com>
+ <20130118192047.403f52d0@gmail.com> <s5hr4liz5xi.wl%tiwai@suse.de>
+ <CA+S_cwrH6mjunDsn2w76Vpyk7XovOKpH0k_KoU_8SXjmisLAYw@mail.gmail.com>
+ <s5hhamdzau9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.161])
- by alsa0.perex.cz (Postfix) with ESMTP id 847E72616A3
- for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2013 20:25:13 +0100 (CET)
-Received: from [10.8.0.6] (rg42.org [85.214.110.134])
- by smtp.strato.de (jorabe mo50) (RZmta 31.13 AUTH)
- with ESMTPA id z0618ap0KH8Thg for <alsa-devel@alsa-project.org>;
- Sun, 20 Jan 2013 20:25:12 +0100 (CET)
-In-Reply-To: <50F8C9FB.3010200@gareus.org>
+Received: from mail-ia0-f176.google.com (mail-ia0-f176.google.com
+ [209.85.210.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D7362616A3
+ for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2013 20:54:41 +0100 (CET)
+Received: by mail-ia0-f176.google.com with SMTP id i18so2317920iac.7
+ for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2013 11:54:40 -0800 (PST)
+In-Reply-To: <s5hhamdzau9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +42,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, basinilya@gmail.com, =?ISO-8859-1?Q?Manolo_D=EDaz?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/18/2013 05:05 AM, Robin Gareus wrote:
-> Hi,
-> 
-> I've started to reverse engineer the 18i6 mixer protocol and came up
-> with a proof-of-concept test script which includes documentation:
-> 
->   https://github.com/x42/scarlettmixer
-> 
-> Except for a few fixed controls and switches, the 18i6's mixer and
-> router is [likely] too complex to be exposed via ALSA's mixer interface.
-> AFAICT it'll require a dedicated control application - like hdspmixer -
-> in order to make full use of it.
+On Sat, Jan 19, 2013 at 6:11 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-OK. I'll eat my words on that. While a dedicated app will certainly be
-more appropriate to access the 18x6 mixter matrix and routing schema.
-The whole interface can be exported as standard ALSA mixer:
+> At Sat, 19 Jan 2013 00:33:52 -0500,
+> Miro Hodak wrote:
+> >
+> > Testing latest updates in sound-unstable:
+> >
+> > commit f741c8a1f649379f8f3eb81119df2676c46075cf
+> > Merge: d821c1e 164a7ad
+> > Author: Takashi Iwai <tiwai@suse.de>
+> > Date:   Fri Jan 18 18:30:00 2013 +0100
+> >
+> > Playback and capture appear to work correctly with one possible caveats:
+> >
+> > Item labeled "Front" controls the level of sound through the speakers. I
+> > would expect that it would only control sound from front HP. This happens
+> > whether Independent HP is on and off.
+>
+> When you look at other controls, there are "Surround", "Center", and
+> "LFE", and these are mixer controls for other two line-out jacks.
+> In that sense, "Front" is corresponding to the same group, the line
+> out jack.
+>
+> You have an individual "Headphone" output.  Isn't it obvious?
+>
+>
+> Takashi
+>
 
-The patch is rather large, please view it on github:
-https://github.com/x42/alsa-driver/commit/3d9c17a3a0a8f4d86489fe9ff8ddff53dde8cdc5
+Not always, most labels are one word long and can be open to different
+interpretations. In alsamixer, ordering of capture controls is the
+following:
 
-It is based on the latest git.alsa-project.org/alsa-driver.git but
-rebases cleanly onto vanilla and rt linux. Tested on debian/wheezy with
-linux 3.2.35-2-rt.
+Master  Headphon   PCM     Front   Front Mi  Surround  Center    LFE
+Side  Line Boo  S/PDIF  S/PDIF D Auto-Mut Independ <Rear Mic>
 
-Comments and feedback are welcome.
+and thus "Front" is next to "Front Mi" - that should connect at the front I
+assume - rather then to other outputs at the back. Thus it is very easy to
+get confused.
 
-Cheers!
-robin
+Here are outputs as specified in my MB manual and my attempt to pair them
+to items in alsamixer (Capture only):
+
+MB description                                   Alsa control (capture)
+BACK PORTS:
+Line In                                                  Line Boost (its
+boost only, I know)
+Front Speaker Out                             Front
+Mic In                                                   Rear Mic Boost
+Center/Subwoofer                             Center
+Rear Speaker Out                             ???
+Side Speaker Out                              Side
+
+FRONT PORTS:
+Headphone Out                                Headphone
+Front Mic In                                        Front Mic Boost
+
+There are two items that have not been assigned - Surround and LFE,
+presumably one of them should correspond to the "Rear Speaker Out" for
+which I could not identify ALSA control. Not being familiar with more than
+2-channle audio, I do not know how to assign these.
