@@ -1,21 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/12] ALSA: hda - Fix conflicts between
-	Loopback Mixing and Independent HP
-Date: Mon, 21 Jan 2013 17:06:12 +0100
-Message-ID: <1358784377-26102-8-git-send-email-tiwai@suse.de>
+Subject: [PATCH 12/12] ALSA: hda - Set individual name to
+	secondary analog PCM stream
+Date: Mon, 21 Jan 2013 17:06:17 +0100
+Message-ID: <1358784377-26102-13-git-send-email-tiwai@suse.de>
 References: <1358784377-26102-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9294A2625F7
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A34D26260F
  for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 17:06:19 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
+Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id EA07CA51D9
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 17:06:18 +0100 (CET)
+ by mx2.suse.de (Postfix) with ESMTP id 35979A51FE
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 17:06:19 +0100 (CET)
 In-Reply-To: <1358784377-26102-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,164 +29,46 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch eventually fixes two issues:
-- Handle the case where the primary output is a headphone and can have
-  independent HP mode;
-  so far we checked only the case where the headphone is the secondary
-  output.
-
-- Fix the conflict of HP independent mode and aamix mode;
-  when switched to aamix mode, the DAC might be also switched to
-  another widget shared with other outputs.  Then even if we disable
-  the DAC for the original output, it doesn't change -- because the
-  active route is from another (shared) DAC to HP pin through aamix.
-  So, in such a case, we have to prohibit the switch to aamix for HP
-  routes.
-
-This fixes issues appearing on VT codecs.
+It'd be better to give another name to the secondary (alt) analog PCM
+stream, which is dedicated for the independent HP out and extra
+inputs.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c | 59 +++++++++++++++++++++++++++++++++++++++------
- sound/pci/hda/hda_generic.h |  1 +
- 2 files changed, 52 insertions(+), 8 deletions(-)
+ sound/pci/hda/hda_generic.c | 5 ++++-
+ sound/pci/hda/hda_generic.h | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index e26e8d3..6d1e843 100644
+index 6d1e843..63d12ef 100644
 --- a/sound/pci/hda/hda_generic.c
 +++ b/sound/pci/hda/hda_generic.c
-@@ -1845,6 +1845,10 @@ static int indep_hp_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static void update_aamix_paths(struct hda_codec *codec, bool do_mix,
-+			       int nomix_path_idx, int mix_path_idx,
-+			       int out_type);
-+
- static int indep_hp_put(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
-@@ -1860,11 +1864,31 @@ static int indep_hp_put(struct snd_kcontrol *kcontrol,
- 	}
- 
- 	if (spec->indep_hp_enabled != select) {
-+		hda_nid_t *dacp;
-+		if (spec->autocfg.line_out_type == AUTO_PIN_HP_OUT)
-+			dacp = &spec->private_dac_nids[0];
-+		else
-+			dacp = &spec->multiout.hp_out_nid[0];
-+
-+		/* update HP aamix paths in case it conflicts with indep HP */
-+		if (spec->have_aamix_ctl) {
-+			if (spec->autocfg.line_out_type == AUTO_PIN_HP_OUT)
-+				update_aamix_paths(codec, spec->aamix_mode,
-+						   spec->out_paths[0],
-+						   spec->aamix_out_paths[0],
-+						   spec->autocfg.line_out_type);
-+			else
-+				update_aamix_paths(codec, spec->aamix_mode,
-+						   spec->hp_paths[0],
-+						   spec->aamix_out_paths[1],
-+						   AUTO_PIN_HP_OUT);
-+		}
-+
- 		spec->indep_hp_enabled = select;
- 		if (spec->indep_hp_enabled)
--			spec->multiout.hp_out_nid[0] = 0;
-+			*dacp = 0;
- 		else
--			spec->multiout.hp_out_nid[0] = spec->alt_dac_nid;
-+			*dacp = spec->alt_dac_nid;
- 		ret = 1;
- 	}
-  unlock:
-@@ -1884,16 +1908,21 @@ static const struct snd_kcontrol_new indep_hp_ctl = {
- static int create_indep_hp_ctls(struct hda_codec *codec)
- {
- 	struct hda_gen_spec *spec = codec->spec;
-+	hda_nid_t dac;
- 
- 	if (!spec->indep_hp)
- 		return 0;
--	if (!spec->multiout.hp_out_nid[0]) {
-+	if (spec->autocfg.line_out_type == AUTO_PIN_HP_OUT)
-+		dac = spec->multiout.dac_nids[0];
-+	else
-+		dac = spec->multiout.hp_out_nid[0];
-+	if (!dac) {
- 		spec->indep_hp = 0;
- 		return 0;
- 	}
- 
- 	spec->indep_hp_enabled = false;
--	spec->alt_dac_nid = spec->multiout.hp_out_nid[0];
-+	spec->alt_dac_nid = dac;
- 	if (!snd_hda_gen_add_kctl(spec, NULL, &indep_hp_ctl))
- 		return -ENOMEM;
- 	return 0;
-@@ -2026,14 +2055,24 @@ static int loopback_mixing_get(struct snd_kcontrol *kcontrol,
- }
- 
- static void update_aamix_paths(struct hda_codec *codec, bool do_mix,
--			       int nomix_path_idx, int mix_path_idx)
-+			       int nomix_path_idx, int mix_path_idx,
-+			       int out_type)
- {
-+	struct hda_gen_spec *spec = codec->spec;
- 	struct nid_path *nomix_path, *mix_path;
- 
- 	nomix_path = snd_hda_get_path_from_idx(codec, nomix_path_idx);
- 	mix_path = snd_hda_get_path_from_idx(codec, mix_path_idx);
- 	if (!nomix_path || !mix_path)
- 		return;
-+
-+	/* if HP aamix path is driven from a different DAC and the
-+	 * independent HP mode is ON, can't turn on aamix path
-+	 */
-+	if (out_type == AUTO_PIN_HP_OUT && spec->indep_hp_enabled &&
-+	    mix_path->path[0] != spec->alt_dac_nid)
-+		do_mix = false;
-+
- 	if (do_mix) {
- 		snd_hda_activate_path(codec, nomix_path, false, true);
- 		snd_hda_activate_path(codec, mix_path, true, true);
-@@ -2054,11 +2093,14 @@ static int loopback_mixing_put(struct snd_kcontrol *kcontrol,
- 		return 0;
- 	spec->aamix_mode = val;
- 	update_aamix_paths(codec, val, spec->out_paths[0],
--			   spec->aamix_out_paths[0]);
-+			   spec->aamix_out_paths[0],
-+			   spec->autocfg.line_out_type);
- 	update_aamix_paths(codec, val, spec->hp_paths[0],
--			   spec->aamix_out_paths[1]);
-+			   spec->aamix_out_paths[1],
-+			   AUTO_PIN_HP_OUT);
- 	update_aamix_paths(codec, val, spec->speaker_paths[0],
--			   spec->aamix_out_paths[2]);
-+			   spec->aamix_out_paths[2],
-+			   AUTO_PIN_SPEAKER_OUT);
- 	return 1;
- }
- 
-@@ -2081,6 +2123,7 @@ static int create_loopback_mixing_ctl(struct hda_codec *codec)
- 		return 0;
- 	if (!snd_hda_gen_add_kctl(spec, NULL, &loopback_mixing_enum))
- 		return -ENOMEM;
-+	spec->have_aamix_ctl = 1;
- 	return 0;
- }
- 
+@@ -4531,9 +4531,12 @@ int snd_hda_gen_build_pcms(struct hda_codec *codec)
+ 		!spec->dyn_adc_switch && !spec->auto_mic;
+ 	/* Additional Analaog capture for index #2 */
+ 	if (spec->alt_dac_nid || have_multi_adcs) {
++		fill_pcm_stream_name(spec->stream_name_alt_analog,
++				     sizeof(spec->stream_name_alt_analog),
++			     " Alt Analog", codec->chip_name);
+ 		codec->num_pcms = 3;
+ 		info = spec->pcm_rec + 2;
+-		info->name = spec->stream_name_analog;
++		info->name = spec->stream_name_alt_analog;
+ 		if (spec->alt_dac_nid) {
+ 			p = spec->stream_analog_alt_playback;
+ 			if (!p)
 diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 696b606..9c63555 100644
+index 9c63555..980707f 100644
 --- a/sound/pci/hda/hda_generic.h
 +++ b/sound/pci/hda/hda_generic.h
-@@ -212,6 +212,7 @@ struct hda_gen_spec {
- 	unsigned int no_analog:1; /* digital I/O only */
- 	unsigned int dyn_adc_switch:1; /* switch ADCs (for ALC275) */
- 	unsigned int indep_hp_enabled:1; /* independent HP enabled */
-+	unsigned int have_aamix_ctl:1;
+@@ -80,6 +80,8 @@ struct hda_gen_spec {
+ 	char stream_name_analog[32];	/* analog PCM stream */
+ 	const struct hda_pcm_stream *stream_analog_playback;
+ 	const struct hda_pcm_stream *stream_analog_capture;
++
++	char stream_name_alt_analog[32]; /* alternative analog PCM stream */
+ 	const struct hda_pcm_stream *stream_analog_alt_playback;
+ 	const struct hda_pcm_stream *stream_analog_alt_capture;
  
- 	/* loopback mixing mode */
- 	bool aamix_mode;
 -- 
 1.8.1.1
