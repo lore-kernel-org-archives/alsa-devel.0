@@ -1,39 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HD-audio regression after commit
-	34588709af61be1550b4e2bcee5c85d0ac4f34d4
-Date: Mon, 21 Jan 2013 12:01:39 +0800
-Message-ID: <CAN8ccia4VwORKsiMAoMHbeYwLo1vcH6LmeVezS-DLrVEjMK=xQ@mail.gmail.com>
-References: <CA+S_cwraM+wofw5Nz_d0ctOget5dY-0nr5pRHCzOJtLX+JM2TA@mail.gmail.com>
- <s5hlibs154t.wl%tiwai@suse.de>
- <CA+S_cwoLe=2tUr=EyFM0TxvbBaB12DCE2yDPwf3OzoRcO8jQug@mail.gmail.com>
- <CAN8cciama4q0EOiUsjp-KyyzehcvjwmdPdBQ9vsitbnR8g1PgA@mail.gmail.com>
- <CA+S_cwrmHguxk6WBxjAJTOaV8xV-4PH0gkpibFKs1P8bRxAsAg@mail.gmail.com>
- <s5hfw1zomf2.wl%tiwai@suse.de> <20130117191224.44794728@gmail.com>
- <s5hfw1z1s6a.wl%tiwai@suse.de> <20130117214043.5a1574ee@gmail.com>
- <s5h7gnb0y5z.wl%tiwai@suse.de>
- <CA+S_cwqE6AgcVjp+wtPuJA_AcJqUvL0Ocoq_QA5JVWQVYCsYSg@mail.gmail.com>
- <20130118090839.4a0725f8@gmail.com>
- <CA+S_cwoKMERXHR14t4WK0Him=bjcRQQPJH+tX6BHyeBUv9tntg@mail.gmail.com>
- <s5hy5fqztge.wl%tiwai@suse.de> <20130118133753.3eabbb18@gmail.com>
- <s5hr4limwj2.wl%tiwai@suse.de>
- <CAN8ccibdPa+wOD99cY1sxfK0MSbUeL0MA6emiPCb93u3KMmrSg@mail.gmail.com>
- <s5hbocmmrtu.wl%tiwai@suse.de> <20130118174823.4795313b@gmail.com>
- <s5hmww6l96r.wl%tiwai@suse.de> <20130118185115.442a3d97@gmail.com>
- <20130118192047.403f52d0@gmail.com> <s5hr4liz5xi.wl%tiwai@suse.de>
- <CA+S_cwrH6mjunDsn2w76Vpyk7XovOKpH0k_KoU_8SXjmisLAYw@mail.gmail.com>
- <s5hhamdzau9.wl%tiwai@suse.de>
- <CA+S_cwqzWHf92zXj3gFHHB+SAr_7o=Z+70FMh39nKoxzvBXZRA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: question on snd_soc_dai_link_event
+Date: Mon, 21 Jan 2013 13:31:16 +0900
+Message-ID: <20130121043115.GA4598@opensource.wolfsonmicro.com>
+References: <9C1683ABA24673439FCD019782C9F4BBDA2A1C1582@SAFEX1MAIL1.st.com>
+ <20121026170142.GZ18814@opensource.wolfsonmicro.com>
+ <9C1683ABA24673439FCD019782C9F4BBE7D4E072A2@SAFEX1MAIL1.st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f174.google.com (mail-ia0-f174.google.com
- [209.85.210.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 12D832615B9
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 05:01:40 +0100 (CET)
-Received: by mail-ia0-f174.google.com with SMTP id o25so2430838iad.5
- for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2013 20:01:40 -0800 (PST)
-In-Reply-To: <CA+S_cwqzWHf92zXj3gFHHB+SAr_7o=Z+70FMh39nKoxzvBXZRA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B2D872615B9
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 05:37:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9C1683ABA24673439FCD019782C9F4BBE7D4E072A2@SAFEX1MAIL1.st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -43,78 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Miro Hodak <mhodak127@gmail.com>, Rigel-Kentaurus-A10@yandex.ua
-Cc: Takashi Iwai <tiwai@suse.de>, basinilya@gmail.com, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, alsa-devel@alsa-project.org
+To: Sebastien LEDUC <sebastien.leduc@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->> >
->> > Testing latest updates in sound-unstable:
->> >
->> > commit f741c8a1f649379f8f3eb81119df2676c46075cf
->> > Merge: d821c1e 164a7ad
->> > Author: Takashi Iwai <tiwai@suse.de>
->> > Date:   Fri Jan 18 18:30:00 2013 +0100
->> >
->> > Playback and capture appear to work correctly with one possible
-caveats:
->> >
->> > Item labeled "Front" controls the level of sound through the speakers.
-I
->> > would expect that it would only control sound from front HP. This
-happens
->> > whether Independent HP is on and off.
->>
->> When you look at other controls, there are "Surround", "Center", and
->> "LFE", and these are mixer controls for other two line-out jacks.
->> In that sense, "Front" is corresponding to the same group, the line
->> out jack.
->>
->> You have an individual "Headphone" output.  Isn't it obvious?
->
-> Not always, most labels are one word long and can be open to different
-interpretations. In alsamixer, ordering of capture controls is the
-following:
->
-> Master  Headphon   PCM     Front   Front Mi  Surround  Center    LFE
-Side  Line Boo  S/PDIF  S/PDIF D Auto-Mut Independ <Rear Mic>
->
-> and thus "Front" is next to "Front Mi" - that should connect at the front
-I assume - rather then to other outputs at the back. Thus it is very easy
-to get confused.
->
-> Here are outputs as specified in my MB manual and my attempt to pair them
-to items in alsamixer (Capture only):
->
-> MB description                                   Alsa control (capture)
-> BACK PORTS:
-> Line In                                                  Line Boost (its
-boost only, I know)
-> Front Speaker Out                             Front
-> Mic In                                                   Rear Mic Boost
-> Center/Subwoofer                             Center
-> Rear Speaker Out                             ???
-> Side Speaker Out                              Side
->
-> FRONT PORTS:
-> Headphone Out                                Headphone
-> Front Mic In                                        Front Mic Boost
->
-> There are two items that have not been assigned - Surround and LFE,
-presumably one of them should correspond to the "Rear Speaker Out" for
-which I could not identify ALSA control. Not being familiar with more than
-2-channle audio, I do not know how to assign these.
+On Fri, Jan 18, 2013 at 03:07:29PM +0100, Sebastien LEDUC wrote:
 
-Try
+Once again, don't top post.
 
-speaker-test -D hw:0 -c 8 -t wav
+> I am even thinking that it could be worth creating an internal PCM 
+> for the  dai link that has the params field, and to call the standard
+> soc functions (soc_pcm_open, ...) on it from the dai_link widget DAPM 
+> callback to start / stop the PCM.
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=blob_plain;f=Documentation/sound/alsa/HD-Audio.txt;hb=HEAD
+> Any feedback?
 
-http://git.alsa-project.org/?p=alsa-tools.git;a=blob_plain;f=hdajackretask/README;hb=HEAD
-
-Your can also use early patching or hda-jack-retask
-
-1)the three stacks model by change the pin default of the black, orange and
-grey jacks as [N/A] to test the channel mode switch
-
-2) retasking front Mic Jack as another front headphone jack or vice versa
+I think what's important here is that any resulting code looks sane and
+works well; I'm not sure that going all the way up the stack is going to
+help with that as you're more likely to expose assumptions about the
+calling environment but I've not paid it much concrete attention.
