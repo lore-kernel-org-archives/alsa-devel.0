@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/12] ALSA: hda - Correct more array rooms in
-	hda_gen_spec
-Date: Mon, 21 Jan 2013 17:06:06 +0100
-Message-ID: <1358784377-26102-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 04/12] ALSA: hda - Set the pin targets after
+	deciding output config
+Date: Mon, 21 Jan 2013 17:06:09 +0100
+Message-ID: <1358784377-26102-5-git-send-email-tiwai@suse.de>
 References: <1358784377-26102-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D02B261624
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E56C26163F
  for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 17:06:19 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
+Received: from relay1.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id D9FB1A51C9
+ by mx2.suse.de (Postfix) with ESMTP id D9C0FA50E4
  for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 17:06:18 +0100 (CET)
 In-Reply-To: <1358784377-26102-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,43 +29,77 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Looking through the whole definitions, some fields have inappropriate
-array sizes, especially about the capture.  The array assigned to each
-input (pin) should have HDA_MAX_NUM_INPUTS entries while the array
-assigned to each ADC should have AUTO_CFG_MAX_INS entries.
+Since fill_and_eval_dacs() may be called repeatedly with different
+configurations, setting pinctls at each time there isn't optimal.
+We can set it better only once after deciding the output configuration
+in parse_output_paths().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_generic.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index eacfca9..696b606 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -102,11 +102,11 @@ struct hda_gen_spec {
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 37d7ed7..7b739b5 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1352,7 +1352,6 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	int i, err, badness;
+-	unsigned int val;
  
- 	/* capture */
- 	unsigned int num_adc_nids;
--	hda_nid_t adc_nids[AUTO_CFG_MAX_OUTS];
-+	hda_nid_t adc_nids[AUTO_CFG_MAX_INS];
- 	hda_nid_t dig_in_nid;		/* digital-in NID; optional */
- 	hda_nid_t mixer_nid;		/* analog-mixer NID */
--	const char *input_labels[AUTO_CFG_MAX_INS];
--	int input_label_idxs[AUTO_CFG_MAX_INS];
-+	const char *input_labels[HDA_MAX_NUM_INPUTS];
-+	int input_label_idxs[HDA_MAX_NUM_INPUTS];
+ 	/* set num_dacs once to full for look_for_dac() */
+ 	spec->multiout.num_dacs = cfg->line_outs;
+@@ -1489,20 +1488,6 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ 				   spec->multiout.extra_out_nid,
+ 				   spec->speaker_paths);
  
- 	/* capture setup for dynamic dual-adc switch */
- 	hda_nid_t cur_adc;
-@@ -148,7 +148,7 @@ struct hda_gen_spec {
- 	int num_all_dacs;
- 	hda_nid_t all_dacs[16];
- 	int num_all_adcs;
--	hda_nid_t all_adcs[AUTO_CFG_MAX_OUTS];
-+	hda_nid_t all_adcs[AUTO_CFG_MAX_INS];
+-	/* set initial pinctl targets */
+-	if (spec->prefer_hp_amp || cfg->line_out_type == AUTO_PIN_HP_OUT)
+-		val = PIN_HP;
+-	else
+-		val = PIN_OUT;
+-	set_pin_targets(codec, cfg->line_outs, cfg->line_out_pins, val);
+-	if (cfg->line_out_type != AUTO_PIN_HP_OUT)
+-		set_pin_targets(codec, cfg->hp_outs, cfg->hp_pins, PIN_HP);
+-	if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
+-		val = spec->prefer_hp_amp ? PIN_HP : PIN_OUT;
+-		set_pin_targets(codec, cfg->speaker_outs,
+-				cfg->speaker_pins, val);
+-	}
+-
+ 	return badness;
+ }
  
- 	/* path list */
- 	struct snd_array paths;
+@@ -1604,6 +1589,7 @@ static int parse_output_paths(struct hda_codec *codec)
+ 	struct hda_gen_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	struct auto_pin_cfg *best_cfg;
++	unsigned int val;
+ 	int best_badness = INT_MAX;
+ 	int badness;
+ 	bool fill_hardwired = true, fill_mio_first = true;
+@@ -1693,6 +1679,20 @@ static int parse_output_paths(struct hda_codec *codec)
+ 						HDA_OUTPUT, spec->vmaster_tlv);
+ 	}
+ 
++	/* set initial pinctl targets */
++	if (spec->prefer_hp_amp || cfg->line_out_type == AUTO_PIN_HP_OUT)
++		val = PIN_HP;
++	else
++		val = PIN_OUT;
++	set_pin_targets(codec, cfg->line_outs, cfg->line_out_pins, val);
++	if (cfg->line_out_type != AUTO_PIN_HP_OUT)
++		set_pin_targets(codec, cfg->hp_outs, cfg->hp_pins, PIN_HP);
++	if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
++		val = spec->prefer_hp_amp ? PIN_HP : PIN_OUT;
++		set_pin_targets(codec, cfg->speaker_outs,
++				cfg->speaker_pins, val);
++	}
++
+ 	kfree(best_cfg);
+ 	return 0;
+ }
 -- 
 1.8.1.1
