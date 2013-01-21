@@ -1,18 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 3/5] ASoC: tegra: Make 'ahub_auxdata' static
-Date: Mon, 21 Jan 2013 14:59:24 +0530
-Message-ID: <1358760566-3803-4-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/5] ASoC: tegra: Use NULL instead of 0 for
+	pointers
+Date: Mon, 21 Jan 2013 14:59:25 +0530
+Message-ID: <1358760566-3803-5-git-send-email-sachin.kamat@linaro.org>
 References: <1358760566-3803-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f50.google.com (mail-da0-f50.google.com
- [209.85.210.50])
- by alsa0.perex.cz (Postfix) with ESMTP id D190F26523F
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 10:38:21 +0100 (CET)
-Received: by mail-da0-f50.google.com with SMTP id h15so2625843dan.37
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 01:38:20 -0800 (PST)
+Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
+ [209.85.160.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2122B2625D2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 10:38:24 +0100 (CET)
+Received: by mail-pb0-f50.google.com with SMTP id wz7so3231750pbc.23
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 01:38:24 -0800 (PST)
 In-Reply-To: <1358760566-3803-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,28 +28,39 @@ To: alsa-devel@alsa-project.org
 Cc: sachin.kamat@linaro.org, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, swarren@nvidia.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixes the following sparse warning:
-sound/soc/tegra/tegra30_ahub.c:302:23: warning:
-symbol 'ahub_auxdata' was not declared. Should it be static?
+Fixes the following sparse warnings:
+sound/soc/tegra/tegra30_ahub.c:583:16: warning:
+Using plain integer as NULL pointer
+sound/soc/tegra/tegra30_ahub.c:600:16: warning:
+Using plain integer as NULL pointer
 
 Cc: Stephen Warren <swarren@nvidia.com>
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/tegra/tegra30_ahub.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/tegra/tegra30_ahub.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index f354dc3..ad217cc 100644
+index ad217cc..89c7423 100644
 --- a/sound/soc/tegra/tegra30_ahub.c
 +++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -299,7 +299,7 @@ static const char * const configlink_clocks[] = {
- 	"spdif_in",
- };
+@@ -580,7 +580,7 @@ err_clk_put_apbif:
+ 	clk_put(ahub->clk_apbif);
+ err_clk_put_d_audio:
+ 	clk_put(ahub->clk_d_audio);
+-	ahub = 0;
++	ahub = NULL;
+ err:
+ 	return ret;
+ }
+@@ -597,7 +597,7 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
+ 	clk_put(ahub->clk_apbif);
+ 	clk_put(ahub->clk_d_audio);
  
--struct of_dev_auxdata ahub_auxdata[] = {
-+static struct of_dev_auxdata ahub_auxdata[] = {
- 	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080300, "tegra30-i2s.0", NULL),
- 	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080400, "tegra30-i2s.1", NULL),
- 	OF_DEV_AUXDATA("nvidia,tegra30-i2s", 0x70080500, "tegra30-i2s.2", NULL),
+-	ahub = 0;
++	ahub = NULL;
+ 
+ 	return 0;
+ }
 -- 
 1.7.4.1
