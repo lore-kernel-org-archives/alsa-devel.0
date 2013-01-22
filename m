@@ -1,49 +1,59 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 05/15] ASoC: fsl: fiq and dma cannot both be modules
-Date: Tue, 22 Jan 2013 11:50:30 +0800
-Message-ID: <20130122035028.GB29677@S2100-06.ap.freescale.net>
-References: <1358788568-11137-1-git-send-email-arnd@arndb.de>
- <1358788568-11137-6-git-send-email-arnd@arndb.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 3/5] ASoC: tegra: Make 'ahub_auxdata' static
+Date: Tue, 22 Jan 2013 10:26:51 +0530
+Message-ID: <CAK9yfHxTrkT6z90adFHYvi6-+e27jiBYv1k9iW94_QduCVBXpQ@mail.gmail.com>
+References: <1358760566-3803-1-git-send-email-sachin.kamat@linaro.org>
+ <1358760566-3803-4-git-send-email-sachin.kamat@linaro.org>
+ <50FD77EE.8030800@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1358788568-11137-6-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, arm@kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D2EC26167D
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2013 05:56:52 +0100 (CET)
+Received: by mail-ob0-f173.google.com with SMTP id xn12so6699951obc.18
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2013 20:56:52 -0800 (PST)
+In-Reply-To: <50FD77EE.8030800@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, swarren@nvidia.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 21, 2013 at 05:15:58PM +0000, Arnd Bergmann wrote:
-> The dma and fiq portions of the imx-pcm driver both
-> have a module_init() call, of which there can be only
-> one in any given module. This changes Kconfig to enforce
-> either the driver to be built-in in the kernel, or
-> to have only one of the two when building imx-pcm as
-> a module.
-> 
-> Without this patch, we cannot build the ARM 'allmodconfig', or
-> we get this error:
-> 
-> sound/soc/fsl/imx-pcm-dma.o: In function `init_module':
-> sound/soc/fsl/imx-pcm-dma.c:177: multiple definition of `init_module'
-> sound/soc/fsl/imx-pcm-fiq.o:sound/soc/fsl/imx-pcm-fiq.c:334: first defined here
-> sound/soc/fsl/imx-pcm-dma.o: In function `cleanup_module':
-> sound/soc/fsl/imx-pcm-dma.c:177: multiple definition of `cleanup_module'
-> sound/soc/fsl/imx-pcm-fiq.o:sound/soc/fsl/imx-pcm-fiq.c:334: first defined here
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Cc: alsa-devel@alsa-project.org
+On 21 January 2013 22:46, Stephen Warren <swarren@wwwdotorg.org> wrote:
+> On 01/21/2013 02:29 AM, Sachin Kamat wrote:
+>> Fixes the following sparse warning:
+>> sound/soc/tegra/tegra30_ahub.c:302:23: warning:
+>> symbol 'ahub_auxdata' was not declared. Should it be static?
+>
+>> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+>
+>> -struct of_dev_auxdata ahub_auxdata[] = {
+>> +static struct of_dev_auxdata ahub_auxdata[] = {
+>
+> This array is being removed from the driver for 3.9 in a patch being
+> taken through the Tegra tree. As such, please drop this one patch.
 
-I sent a fix [1] for that queued by Mark.
+OK.
+
+>
+> The rest look fine to me, so the series,
+> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+
+Thanks Stephen.
 
 Mark,
+Do you want me to re-post this series after dropping this patch?
 
-Is the patch on the way to 3.8-rc?
-
-Shawn
-
-[1] http://thread.gmane.org/gmane.linux.alsa.devel/104434
+-- 
+With warm regards,
+Sachin
