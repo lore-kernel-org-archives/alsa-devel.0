@@ -1,80 +1,51 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Release firmware on error
-Date: Tue, 22 Jan 2013 16:40:25 +0900
-Message-ID: <20130122073930.GD1766@opensource.wolfsonmicro.com>
-References: <1358758951-29281-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 33/33] ASoC: Convert to devm_ioremap_resource()
+Date: Tue, 22 Jan 2013 16:48:26 +0900
+Message-ID: <20130122074824.GE1766@opensource.wolfsonmicro.com>
+References: <1358762966-20791-1-git-send-email-thierry.reding@avionic-design.de>
+ <1358762966-20791-34-git-send-email-thierry.reding@avionic-design.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2417313744981283643=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6481D264F24
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2013 08:40:46 +0100 (CET)
-In-Reply-To: <1358758951-29281-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xkXJwpr35CY/Lc3I"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1358762966-20791-34-git-send-email-thierry.reding@avionic-design.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thierry Reding <thierry.reding@avionic-design.de>
+Cc: linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2417313744981283643==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ns7jmDPpOpCD+GE/"
-Content-Disposition: inline
-
-
---Ns7jmDPpOpCD+GE/
+--xkXJwpr35CY/Lc3I
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 21, 2013 at 09:02:31AM +0000, Charles Keepax wrote:
-> This patch correctly releases the firmware if the magic string in the
-> firmware header does not match.
->=20
-> Change-Id: I2d08f7fff92b2f0e0f2ab1fb937007e3783f815e
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Mon, Jan 21, 2013 at 11:09:26AM +0100, Thierry Reding wrote:
+> Convert all uses of devm_request_and_ioremap() to the newly introduced
+> devm_ioremap_resource() which provides more consistent error handling.
 
-Applied but:
- - Don't include noise like Change-Ids in upstream submissions.
- - Always CC maintainers on patches (you've missed Liam).
+Applied, thanks.
 
---Ns7jmDPpOpCD+GE/
+--xkXJwpr35CY/Lc3I
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJQ/kI8AAoJELSic+t+oim9pZMQAIElbhHP5DB20oxm11WgL5t0
-PaHpzT5rK0gZaxW+Mgt6Ks49vMkcVNql+fZ4ODwTVag9hP8PRxmye1o1KTH/vF8+
-7Ar1zeI+i7qvOjTnVLfLmYWXp6M6sq+o86VFfkhi1CyKKyd/vhV3sCwqTxIe3eFR
-3W/aRdN+I93l9kJFcflFc6BzMq0GsnPEzUOQEJ6BWU+rlqVgdxeTkgWXrgKC6v5s
-clYcTHrrz18sODDWBZlX85kJ55kTSO43su/yA9JJ+6ANS/lKb+VlZ1G7zxe4pxEg
-56AYp3LJx1puB9sJmXAYe8TJdmAEojR7ff7XYcvJUrrWH2FNf6cCIPSAEc0p2OH1
-HPif7h69JKPsXPJE6Bcif1nO0N4Q8rMe751OqjCjF/+DycxG2kFU9kftoUdw5IsO
-kkCqdS+jxDcmPNWX3oEqZsOKeEL8GpHpdge4x329fPfYKa1IT2Drqw0muZ6MaN1b
-jvgDlhCDI8JT9Tq7EVnRv+4kd9EEdu7SLQ3OUBjMsRUM1B9xcxGxpa5Ug5+ugk88
-zALCNOaL/ZceZKV+Xfu1kebezOlYp4oRCcmwalkgkcsMki1EIhac62TzeEmpAfGx
-AbSg9YmxcsW0Y4PjhuaEfk3LkV0WlOd6tUJdjccbadWR6m3v9SbZs52ymNYPMlY1
-7lKTcfHhLJmLEbVzy5Wa
-=GkiX
+iQIcBAEBAgAGBQJQ/kQ/AAoJELSic+t+oim9+lgP/RtT2ZaN2eqUjZNYvk28lze2
+DyqZeuuk3YeAQuOwlgAvyhPIwWjb/JQFlsti1msIvFP2IdJAIqWlH4ej8cRynh3z
+qYcdpYRXJdvntFJHFyRBhJ+LmL6dnhqt3yQssvLChl3Dw3axs/yOFmgWxjUIxU0I
+T4kqkLENT8xES/gvqg09rEeEaEkXT4/7iRrUV1CvG2IMfaUKkfmuJKGqypbjjZ/z
+GkTLcIVWAXoQOEMNsXc0z1Fntz3budhVpg2XycBKD2OwNI74h91gLv/XL0ahZSV7
+A2iz+RqcUlWdMWmY+688owz71bPun2+hOpgM0bC/nqUlD3gd0ritW7YQnrSbxvBA
+2Mh+dyt/LwiaAbBXE1nMbk432VkFnwv0M3+tz0uJ7Mew/0eL5BEKpVORS21o1Inu
+o+HpA8at6X+AFOBbhhsxk7bFr8NYg/yI7m+U56o1uxs4TjY3tNBcHK+p7DX2uIs0
+ZPM93BDwDTSWpqgopJ72p8Zgy2+3pPJ4Kr8IA1QSnyUkqHc2HPe+9AhbOzMAz5xo
+bJtTLlKWxoPV9aCtcdPUXiX8Pyev0fKDMd+aYVJNfq+YF0vCMW3NdnwfFSKtAsct
+njE4qIuRiyIIqn7xHi7EXR0s7q5jwPYjO3DxpPp073xiC1kT8nrju7lknRLpjAyG
+t4s1ciaHCpekeoGJytAF
+=l7Ak
 -----END PGP SIGNATURE-----
 
---Ns7jmDPpOpCD+GE/--
-
---===============2417313744981283643==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2417313744981283643==--
+--xkXJwpr35CY/Lc3I--
