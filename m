@@ -1,63 +1,59 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: core: Add support for platform and CODEC
-	drivers on same device
-Date: Thu, 24 Jan 2013 09:49:11 +0000
-Message-ID: <1359020951-25904-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH V2 2/2] ASoC: Davinci: machine: Add device
+ tree binding
+Date: Thu, 24 Jan 2013 18:02:55 +0800
+Message-ID: <20130124100252.GE4955@opensource.wolfsonmicro.com>
+References: <1357293277-25543-1-git-send-email-gururaja.hebbar@ti.com>
+ <1357293277-25543-3-git-send-email-gururaja.hebbar@ti.com>
+ <20130104122612.GM4627@opensource.wolfsonmicro.com>
+ <1BAFE6F6C881BF42822005164F1491C33EB50DCF@DBDE01.ent.ti.com>
+ <20130123154804.GB4565@opensource.wolfsonmicro.com>
+ <1BAFE6F6C881BF42822005164F1491C33EB52FD9@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 43F212615D0
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 10:51:43 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0H629O+sVkh21xTi"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EB52FD9@DBDE01.ent.ti.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "rob@landley.net" <rob@landley.net>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently DAI playback and capture widgets are created during
-soc_probe_codec and soc_probe_platform, using the device associated with
-the DAI to check which widgets should be created. If a device registers
-both a CODEC and platform driver this leads the CODEC playback and
-capture widgets being overwritten by the widgets created by the platform
-probe.
 
-It is more sensible to retain the CODEC widgets as the most common use
-case for registering both a CODEC and platform driver on the same chip
-is a CODEC which contains a DSP for compressed playback. In this
-situation it is more sensible to attach the routing information to the
-CODEC and add a thin platform driver interface to link into the
-compressed API.
+--0H629O+sVkh21xTi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So this patch will check for existing widgets during soc_probe_platform
-and only create new widgets if no existing ones exist.
+On Thu, Jan 24, 2013 at 09:33:34AM +0000, Hebbar, Gururaja wrote:
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+> So, by just using the SND_SOC_DAPM_POST_PMU & SND_SOC_DAPM_PRE_PMD I can =
+mask=20
+> & handle one particular voltage.=20
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 04af2a6..53efe1d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1159,7 +1159,8 @@ static int soc_probe_platform(struct snd_soc_card *card,
- 
- 	/* Create DAPM widgets for each DAI stream */
- 	list_for_each_entry(dai, &dai_list, list) {
--		if (dai->dev != platform->dev)
-+		if (dai->dev != platform->dev ||
-+		    dai->playback_widget || dai->capture_widget)
- 			continue;
- 
- 		snd_soc_dapm_new_dai_widgets(&platform->dapm, dai);
--- 
-1.7.2.5
+What makes you say that?  That is just not true.
+
+--0H629O+sVkh21xTi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRAQaiAAoJELSic+t+oim989gP/3s05LPnDp1GYNt6NHZKILPC
+BWHP9plRUyXYc6ErgL67ohO3tPMQKRLo8Flp5F93BPXDLRVRurQXk6Nw+Ctk7IOF
+5i0UMFxDYOpZ9WllQf57FPsqcL1L4LUpZWsX9SCVg/VEqurk8uxtG/e3Pty/jmIl
+O+dQH/PygFQx/TDiQqGBpv7SLv1vW2QCyLLy1KXUb4EWEUV93xLHwmbcA8TM3/cJ
+FE0hBvGELoIFvQIJSeN83wE29qMw/Ccr9+hDSH0ZFHbzSlNcIFHFcGu4Rn5nn5Ch
+T96ZMXKPwqfefN7Kbpn2AYKXGl4HdhwnWJ3D7JWEUe/fGlwDk2r8oaxPYb7dNTPJ
+3uZ2ww+HDNBsKv/LpMoSJIH+fgtG4LNdhRaO0mYfDsYkq3osUWuo07E8lhUbM6ig
+wj5JoydLuH10auhobokeCTeJQydLokvFHF3NXH71B3FrOT8g5c/SjEDeybi+JO/B
+5viN+UL7eSaFajyAbwthCTn3aBP2KzDLd8waI6gptEEiiKzu7hunuKuK49z3h/7q
+FKUXl48Zb4lBKDMlVtLo6xK9V9fCkhvoROXxKCYigX2IQCMUxRDBNnClgXDQxx1M
+zOJTstQgwHyK7FjDzwAD7ZsA+4p4hcUfpyMPCga2WBkRznef4jLHRg6iBis6NCQ8
+mhfFO0iGMzhUgptP6ISv
+=UMWh
+-----END PGP SIGNATURE-----
+
+--0H629O+sVkh21xTi--
