@@ -1,49 +1,72 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: spdif input, source synchronous?
-Date: Thu, 24 Jan 2013 12:49:43 +0100
-Message-ID: <51011FD7.5020405@ladisch.de>
-References: <50A17AEC.2080102@radagast.org>
- <1B9FEF259F5D4B4F83CD1C9FF0CF0FDB@mediascore.mediascore.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 5ACFF261696
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 12:49:45 +0100 (CET)
-In-Reply-To: <1B9FEF259F5D4B4F83CD1C9FF0CF0FDB@mediascore.mediascore.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rafal Powierski <powierski@mediascore.de>
-Cc: alsa-devel@alsa-project.org, Dave Platt <dplatt@radagast.org>
+From: "R. Chandrasekar" <rcsekar@samsung.com>
+Subject: [PATCH] Asoc: Samsung: Add support for I2S runtime S2R
+Date: Thu, 24 Jan 2013 18:05:30 +0530
+Message-ID: <1359030931-27354-1-git-send-email-rcsekar@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com, "R. Chandrasekar" <rcsekar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rafal Powierski wrote:
-> ... ALC886 SPDIF input.
-> The test results show that the input is not "source synchronous"
->
-> It seams that my HDA clock is a bit slower then definition ( about -10ppm)
-> Therefore resampling starts below -10ppm
-> It probably means that when spdif signal is 0ppm, about 10ppm of samples are missing.
+From: "R. Chandrasekar" <rcsekar@samsung.com>
 
-And real S/PDIF inputs probably are all over the map ...
+This patch adds runtime suspend to resume support for I2S.
 
-> Is this a bug? or it is planed like this?
+Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+Signed-off-by: R. Chandrasekar <rcsekar@samsung.com>
+---
+ sound/soc/samsung/i2s.c |   26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-The HDA specification describes source synchronous streams, but does
-not mandate them.
-
-Apparently, the ALC886 does not support source synchronous streams.
-A quick Google search shows only the WM8850 (which also has a real
-sample rate converter).
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index d2d124f..27a5ab1 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -993,6 +993,26 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+ 	return i2s;
+ }
+ 
++#ifdef CONFIG_PM_RUNTIME
++static int i2s_runtime_suspend(struct device *dev)
++{
++	struct i2s_dai *i2s = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(i2s->clk);
++
++	return 0;
++}
++
++static int i2s_runtime_resume(struct device *dev)
++{
++	struct i2s_dai *i2s = dev_get_drvdata(dev);
++
++	clk_prepare_enable(i2s->clk);
++
++	return 0;
++}
++#endif /* CONFIG_PM_RUNTIME */
++
+ static int samsung_i2s_probe(struct platform_device *pdev)
+ {
+ 	u32 dma_pl_chan, dma_cp_chan, dma_pl_sec_chan;
+@@ -1143,12 +1163,18 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct dev_pm_ops samsung_i2s_pm = {
++	SET_RUNTIME_PM_OPS(i2s_runtime_suspend,
++				i2s_runtime_resume, NULL)
++};
++
+ static struct platform_driver samsung_i2s_driver = {
+ 	.probe  = samsung_i2s_probe,
+ 	.remove = samsung_i2s_remove,
+ 	.driver = {
+ 		.name = "samsung-i2s",
+ 		.owner = THIS_MODULE,
++		.pm = &samsung_i2s_pm,
+ 	},
+ };
+ 
+-- 
+1.7.9.5
