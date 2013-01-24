@@ -1,53 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V6 01/10] ASoC: Samsung: Rename samsung i2s secondary
- device name
-Date: Thu, 24 Jan 2013 14:41:12 +0800
-Message-ID: <20130124064111.GC4955@opensource.wolfsonmicro.com>
-References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
- <1358509629-20471-2-git-send-email-padma.v@samsung.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH Resend 0/4] ASoC: tegra: Some fixes in codec
+	files
+Date: Thu, 24 Jan 2013 14:51:14 +0530
+Message-ID: <1359019278-1199-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1358509629-20471-2-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DD802615CD
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 10:30:13 +0100 (CET)
+Received: by mail-pa0-f46.google.com with SMTP id kp14so3990695pab.19
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 01:30:12 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, swarren@nvidia.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Resending this series with Stephen Warren's 'Reviewed-by' tag and dropping
+a patch as suggested by him.
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Compile tested using tegra_defconfig on the for-next branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
-On Fri, Jan 18, 2013 at 05:17:00PM +0530, Padmavathi Venna wrote:
-> All Samsung SoCs has max 3 i2s controllers. So the i2s secondary fifo
-> interface device id was named as samsung-i2s.4. Renaming this to
-> "samsung-i2s-sec" to support device tree in i2s driver.
 
-Applied, thanks.
+Sachin Kamat (4):
+  ASoC: tegra_wm9712: Remove __devinitconst attribute
+  ASoC: tegra20_ac97: Remove __devinitconst attribute
+  ASoC: tegra: Use NULL instead of 0 for pointers
+  ASoC: tegra: Staticize some functions in tegra30_i2s.c
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ sound/soc/tegra/tegra20_ac97.c |    2 +-
+ sound/soc/tegra/tegra30_ahub.c |    4 ++--
+ sound/soc/tegra/tegra30_i2s.c  |    4 ++--
+ sound/soc/tegra/tegra_wm9712.c |    2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRANeAAAoJELSic+t+oim9ndQP/ima1hyyIS6X1SLkrMFm14t+
-W5/vP87orHdz/7MHaBfPO+syHV5uzsuN5MUfrJsIzGt7UemIVDEtkz+1wB8VB5oy
-mUwoeh8uKDzbHHD+Lc7PKuQOma/rgNX9WGVNap+MFqnL5fPwuRCeTaDBjfnbqtTE
-JvRZexCTKCKCkR2zMaJ4a6YXM4UwIyB9G7CMhodt479daraHJKqswuIVx8sU0C9Q
-MTIE93fF4fznteriRXBUfQsdbxLCgSj37/0kLEN6qek6K61oFnj0jBG9khGxNwaI
-Bio6fUaneH5Z2zkbviTl2wVMFFgH3Vff7gv0TI4lk6XB6zP6HN6b42aT1APRiwFc
-75S4Qlx8HVbluS2N+cFO//vtjtGg0niFxTZHnOD/Z5ojeC8yChJCowljqshEkt5+
-oMSien9dRMgi1Po0YF6uMd2p80eKF2glWZNVcDL0+06SeSurC8AULi6EDPxVNtCk
-jEFqH5CqDIipBUFOPxcwwMmbOj8UToIrv6uY539n/durXDtlHQt6oBR3pN11gvgU
-LIV7GjPAk9RvYkfIb9HcG8jOtIXS9QJu6KDMYEy0renkIwiD+Nts1t9I1Tl60SAo
-PKC+tyTF7Owu22aoU+IqAvRbKzz2qzexY1wiPWZ+rus5i3atkkKJJMfqpXEvGlqI
-rKpC4pS1jWi84VqxNE5g
-=twyB
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
+-- 
+1.7.4.1
