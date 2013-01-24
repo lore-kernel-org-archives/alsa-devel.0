@@ -1,21 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/13] ALSA: hda - Add chained_before flag to
-	the fixup entry
-Date: Thu, 24 Jan 2013 18:37:53 +0100
-Message-ID: <1359049082-5880-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH 10/13] ALSA: hda - Synchronize the power state
+	at the end of codec init
+Date: Thu, 24 Jan 2013 18:37:59 +0100
+Message-ID: <1359049082-5880-11-git-send-email-tiwai@suse.de>
 References: <1359049082-5880-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AF84C2616F4
+ by alsa0.perex.cz (Postfix) with ESMTP id AFBC52616F8
  for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 18:38:15 +0100 (CET)
-Received: from relay1.suse.de (unknown [195.135.220.254])
+Received: from relay2.suse.de (unknown [195.135.220.254])
  (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id E7450A50F4
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 18:38:14 +0100 (CET)
+ by mx2.suse.de (Postfix) with ESMTP id 018DFA51BB
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 18:38:15 +0100 (CET)
 In-Reply-To: <1359049082-5880-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,81 +29,65 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sometimes we want to call a fixup after applying other existing
-fixups, but currently the fixup chain mechanism allows only the call
-the others after the target fixup.  This patch adds a new flag,
-chained_before, to struct hda_fixup, for allowing the chained call
-before the current execution.
+Put the power state synchronization at the end of the parsing of
+codec.  This is necessary when the power filter is changed during the
+codec probe.  Since the first power-up sequence is performed without
+the special filter, all widgets are supposed to be ON at this point.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_auto_parser.c | 18 +++++++++++-------
- sound/pci/hda/hda_local.h       |  3 ++-
- 2 files changed, 13 insertions(+), 8 deletions(-)
+ sound/pci/hda/hda_codec.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index 0088bb0..96a05c4 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -696,20 +696,18 @@ static void set_pin_targets(struct hda_codec *codec,
- 		snd_hda_set_pin_ctl_cache(codec, cfg->nid, cfg->val);
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 19ff923..2311114 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3765,6 +3765,37 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 	return state;
  }
  
--void snd_hda_apply_fixup(struct hda_codec *codec, int action)
-+static void apply_fixup(struct hda_codec *codec, int id, int action, int depth)
- {
--	int id = codec->fixup_id;
- #ifdef CONFIG_SND_DEBUG_VERBOSE
- 	const char *modelname = codec->fixup_name;
- #endif
--	int depth = 0;
--
--	if (!codec->fixup_list)
--		return;
- 
- 	while (id >= 0) {
- 		const struct hda_fixup *fix = codec->fixup_list + id;
- 
-+		if (fix->chained_before)
-+			apply_fixup(codec, fix->chain_id, action, depth + 1);
-+
- 		switch (fix->type) {
- 		case HDA_FIXUP_PINS:
- 			if (action != HDA_FIXUP_ACT_PRE_PROBE || !fix->v.pins)
-@@ -749,13 +747,19 @@ void snd_hda_apply_fixup(struct hda_codec *codec, int action)
- 				   codec->chip_name, fix->type);
- 			break;
- 		}
--		if (!fix->chained)
-+		if (!fix->chained || fix->chained_before)
- 			break;
- 		if (++depth > 10)
- 			break;
- 		id = fix->chain_id;
- 	}
- }
-+
-+void snd_hda_apply_fixup(struct hda_codec *codec, int action)
++/* sync power states of all widgets;
++ * this is called at the end of codec parsing
++ */
++static void sync_power_up_states(struct hda_codec *codec)
 +{
-+	if (codec->fixup_list)
-+		apply_fixup(codec, codec->fixup_id, action, 0);
++	hda_nid_t nid = codec->start_nid;
++	int i;
++
++	/* don't care if no or standard filter is used */
++	if (!codec->power_filter || codec->power_filter == default_power_filter)
++		return;
++
++	for (i = 0; i < codec->num_nodes; i++, nid++) {
++		unsigned int wcaps = get_wcaps(codec, nid);
++		unsigned int state, target;
++		if (!(wcaps & AC_WCAP_POWER))
++			continue;
++		target = codec->power_filter(codec, nid, AC_PWRST_D0);
++		if (target == AC_PWRST_D0)
++			continue;
++		state = snd_hda_codec_read(codec, nid, 0,
++					   AC_VERB_GET_POWER_STATE, 0);
++		if (state & AC_PWRST_ERROR)
++			continue;
++		state = (state >> 4) & 0x0f;
++		if (state != target)
++			snd_hda_codec_write(codec, nid, 0,
++					    AC_VERB_SET_POWER_STATE, target);
++	}
 +}
- EXPORT_SYMBOL_HDA(snd_hda_apply_fixup);
++
+ #ifdef CONFIG_SND_HDA_HWDEP
+ /* execute additional init verbs */
+ static void hda_exec_init_verbs(struct hda_codec *codec)
+@@ -3952,6 +3983,7 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
+ 		hda_jackpoll_work(&codec->jackpoll_work.work);
+ 	else
+ 		snd_hda_jack_report_sync(codec); /* call at the last init point */
++	sync_power_up_states(codec);
+ 	return 0;
+ }
  
- void snd_hda_pick_fixup(struct hda_codec *codec,
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index f92979c..2ff62dc 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -401,7 +401,8 @@ struct hda_model_fixup {
- 
- struct hda_fixup {
- 	int type;
--	bool chained;
-+	bool chained:1;		/* call the chained fixup(s) after this */
-+	bool chained_before:1;	/* call the chained fixup(s) before this */
- 	int chain_id;
- 	union {
- 		const struct hda_pintbl *pins;
 -- 
 1.8.1.1
