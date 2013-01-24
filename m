@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 3/4] ASoC: tegra: Use NULL instead of 0 for
-	pointers
-Date: Thu, 24 Jan 2013 14:51:17 +0530
-Message-ID: <1359019278-1199-4-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/4] ASoC: tegra: Staticize some functions in
+	tegra30_i2s.c
+Date: Thu, 24 Jan 2013 14:51:18 +0530
+Message-ID: <1359019278-1199-5-git-send-email-sachin.kamat@linaro.org>
 References: <1359019278-1199-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 126D42615D0
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 10:30:23 +0100 (CET)
-Received: by mail-pa0-f54.google.com with SMTP id bi5so5370875pad.13
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 01:30:23 -0800 (PST)
+Received: from mail-pb0-f49.google.com (mail-pb0-f49.google.com
+ [209.85.160.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27BD32615E3
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 10:30:26 +0100 (CET)
+Received: by mail-pb0-f49.google.com with SMTP id un15so5328244pbc.36
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 01:30:26 -0800 (PST)
 In-Reply-To: <1359019278-1199-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,39 +28,40 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, swarren@nvidia.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixes the following sparse warnings:
-sound/soc/tegra/tegra30_ahub.c:583:16: warning:
-Using plain integer as NULL pointer
-sound/soc/tegra/tegra30_ahub.c:600:16: warning:
-Using plain integer as NULL pointer
+'tegra30_i2s_startup' and 'tegra30_i2s_shutdown' are used only in this file and
+hence made static. Fixes the following sparse warnings:
+sound/soc/tegra/tegra30_i2s.c:74:5: warning:
+symbol 'tegra30_i2s_startup' was not declared. Should it be static?
+sound/soc/tegra/tegra30_i2s.c:101:6: warning:
+symbol 'tegra30_i2s_shutdown' was not declared. Should it be static?
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 Reviewed-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/tegra/tegra30_ahub.c |    4 ++--
+ sound/soc/tegra/tegra30_i2s.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index f354dc3..dd146f1 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -580,7 +580,7 @@ err_clk_put_apbif:
- 	clk_put(ahub->clk_apbif);
- err_clk_put_d_audio:
- 	clk_put(ahub->clk_d_audio);
--	ahub = 0;
-+	ahub = NULL;
- err:
- 	return ret;
- }
-@@ -597,7 +597,7 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
- 	clk_put(ahub->clk_apbif);
- 	clk_put(ahub->clk_d_audio);
- 
--	ahub = 0;
-+	ahub = NULL;
- 
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 27e91dd..f4e1ce8 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -71,7 +71,7 @@ static int tegra30_i2s_runtime_resume(struct device *dev)
  	return 0;
  }
+ 
+-int tegra30_i2s_startup(struct snd_pcm_substream *substream,
++static int tegra30_i2s_startup(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
+ {
+ 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -98,7 +98,7 @@ int tegra30_i2s_startup(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-void tegra30_i2s_shutdown(struct snd_pcm_substream *substream,
++static void tegra30_i2s_shutdown(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
+ {
+ 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
 -- 
 1.7.4.1
