@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: soc-compress: Add missing
-	brackets around else
-Date: Thu, 24 Jan 2013 18:54:41 +0800
-Message-ID: <20130124105440.GJ4955@opensource.wolfsonmicro.com>
-References: <1359020670-25684-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH Resend 0/4] ASoC: tegra: Some fixes in
+	codec files
+Date: Thu, 24 Jan 2013 18:55:45 +0800
+Message-ID: <20130124105543.GK4955@opensource.wolfsonmicro.com>
+References: <1359019278-1199-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4812616834934331112=="
+Content-Type: multipart/mixed; boundary="===============6477560303746182349=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E66542615E6
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 11:54:47 +0100 (CET)
-In-Reply-To: <1359020670-25684-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E1C62615E6
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 11:55:51 +0100 (CET)
+In-Reply-To: <1359019278-1199-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, swarren@nvidia.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4812616834934331112==
+--===============6477560303746182349==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fU0UwhtRbpo05rnG"
+	protocol="application/pgp-signature"; boundary="uuKVzAmB+c+zQlhu"
 Content-Disposition: inline
 
 
---fU0UwhtRbpo05rnG
+--uuKVzAmB+c+zQlhu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 24, 2013 at 09:44:28AM +0000, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Thu, Jan 24, 2013 at 02:51:14PM +0530, Sachin Kamat wrote:
+> Resending this series with Stephen Warren's 'Reviewed-by' tag and dropping
+> a patch as suggested by him.
 
-Applied, thanks.
+Applied all, thanks.
 
---fU0UwhtRbpo05rnG
+--uuKVzAmB+c+zQlhu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRARLkAAoJELSic+t+oim97UIP/Rx2zZIASjStaWukbAS+BT8H
-OrmQ+Nujhqw2BnHaCXnK9Rns1yf6xRBMrnvPMiNJQakckjxJf/VATechSOKECKo/
-wnBE9t2sRDb0KKDToYmYlaFAOjrpXfcPPwsEDgAQmUpjUj7ZBu4iBynO229KrqfM
-7wd8p1inXLMk5H3QwpwoFe9RqEJQeGoI3ndRpTl/3/WV0lVjmKwJ4j/mT20Z2WUa
-1/SCPocw8yNCSsNVWbAp8Z3o1WbRTbMURbD6rsiAzuURfI7TRzaxQOOrgGROsl36
-jCRlG7z2w8fhEDJQFgzy5lWperBL37N5bv+oFkW9BuBC9RNQnoz78p5+Vyjgx+4Z
-0ncBiw07MiRck47Y2tukOVwVQZTSmfCAAIk/GTXwkhNXOHK+3qX5km63VH2TLi/p
-jnHe1WIEJfde0SAzGyJKVfQ5zFHK4fCmF14a9ACHiaHIZpnmpWBPMatfGaD8u1d/
-T2bvzOmjXg67dRBe0BLQ5DQcN3vl6+FbF3IDTgJU5FsQi6b4j0azUsxt1crzf14n
-JHXqbI3Bs6olIEjGa3VMeXt6bTHOZ3TTP4o55ynwmS2xqwiGMpdgB+q2yTYegTlm
-Ui60+L2k9X0vgxNoP2pZN0fC30kW/op70NJkMI1V5T1LvYkQIadmQo5EG/Vl751W
-l51UHBwn/CzueO/EtfB7
-=+JHP
+iQIcBAEBAgAGBQJRARMiAAoJELSic+t+oim9frMP/0tpCOQtQFAcdrmAPs1XtYPW
+ir0/eSwF1qULmA8Tfnay9oIwKqMqXkKVPysuTbdKX48FDbasCqYj/pg4pyhcjEQn
+Y31/GNJWGPl17YhEnowgYEGW7eFZw0HIBW8pCk9SQPbAeJnBsTR1ilHfzpRC/Efe
+HBiJQHcz3ZjxuvEKARbU298DiWCy83ECQvpJ/SPQSSfkQWR2udAyAoMUDxZG4brR
+KLi7fifqpHl1XZvhO0llc2h4LGVm2PLuzwAmFqH+O2mYPC4ZPnrGZNDx6ccJ77Ro
+V2DRqGLDKB95yy7bXHQ+jpe/TSmtOYKRh8WkCuTkVoCKgqWrmYNlsBsbYXnXsnp+
+EMjIj1A2XrLdlBAhgmdVKCUD+6nm6CcsyUTF3mu4Y6ukh/T9J0Lajr6CCyTWpzxP
+j3WQxFLdZ7zfX5QS86AH8A776MVcfndaLH+rvzW/qwS4qBE1QGXmjWYaIscEvxIc
+ntL2s9Q8v8hfhzVuKqs9EYeW67++FbEkFpWTLGRimlsfRQKt+xEbePV8dpRYfF0o
+ZE/PHvd2VXOA2FxR2mLQQVDe81WSY1ZzpSHJivemR81BoQj6ER8Pgeh7pU5cwjXN
+DT6X2LUv37HpL4l8QVBENcEH8aUHqpIiiajzuuW0TPo6YVSWCtkgF3efOOzFVO6R
+ShSwQVwYn4PF5+Ygi3Rj
+=uQPY
 -----END PGP SIGNATURE-----
 
---fU0UwhtRbpo05rnG--
+--uuKVzAmB+c+zQlhu--
 
---===============4812616834934331112==
+--===============6477560303746182349==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4812616834934331112==--
+--===============6477560303746182349==--
