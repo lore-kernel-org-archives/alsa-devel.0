@@ -1,16 +1,21 @@
-From: "Rafal Powierski" <powierski@mediascore.de>
-Subject: Re: spdif input, source synchronous?
-Date: Wed, 23 Jan 2013 22:19:02 +0100
-Message-ID: <1B9FEF259F5D4B4F83CD1C9FF0CF0FDB@mediascore.mediascore.de>
-References: <50A17AEC.2080102@radagast.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HD-audio generic parser merged to linux-next
+Date: Thu, 24 Jan 2013 11:26:35 +0800
+Message-ID: <CAN8cciZ=v=9MJwmTA9+AEBSJJnFGPQ+x3qZX2WVQdwTDBbK=8A@mail.gmail.com>
+References: <s5hbocg1etr.wl%tiwai@suse.de>
+ <CAN8cciaXbeyCJsOf5v2q7vunb1VrE8-0hYFXBZeAk9pd+dychA@mail.gmail.com>
+ <s5h4ni81d17.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 99FA42602F9
- for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2013 22:19:02 +0100 (CET)
-In-Reply-To: <50A17AEC.2080102@radagast.org>
+Received: from mail-ve0-f182.google.com (mail-ve0-f182.google.com
+ [209.85.128.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DE00260311
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2013 04:26:38 +0100 (CET)
+Received: by mail-ve0-f182.google.com with SMTP id pb11so1286004veb.41
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2013 19:26:37 -0800 (PST)
+In-Reply-To: <s5h4ni81d17.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,108 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dave Platt <dplatt@radagast.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dave,
+>
+> > Some feature is only available when the hardware meet minimum
+requirement
+> > e.g. independent headphone require at least two DAC
+>
+> Why it's a regression?
+>
 
-it took me some time, but I finally got a proper equipment to test ALC886 =
+Those hda codecs  with a single DAC (e.g. stac920x, alc260) and ad1986a
+does no support independent headphone
 
-SPDIF input. (hw:1,1,0)
-The test results show that the input is not "source synchronous"
+Also those alc66x datasheet does not mention the support of multi-streaming
+playback
 
-experiment:
-Analog->digital (spdif,toslink) Audio converter box, where internal crystal =
+Don't create the control when there is internal speaker
 
-is removed and replaced with precision adjustable PLL-based gen.
-2 simple independent sinus audio generators, providing audio source for ADC =
+When driver assign two DAC to internal speaker and subwoofer (vt1802 on
+Asus g75) and it is confusing when there is no headphone playback volume
+control
 
-L,R inputs
+Don't create the control when there is no headphone Jack  when the user is
+retasked  the headphone Jack to Mic by early patching
 
-software:
-stream consequent samples (L,R) are compared.
-frequency of identical consequent samples (32bits) is calculated (ppm)
-results:
-crystal marking is: 12288000 =3D 256*48kHz
-
-gen. Hz | gen. ppm | duplicate probability (ppm)
-
-12288000     0        0
-12287856    -11.72    2
-12287840    -13.02    4
-12287824    -14.32    5
-12287808    -15.62    7
-12287792    -16.93    9
-12287776    -18.22    10
-12287760    -19.53    13
-12287744    -20.83    14
-12287728    -22.13    16
-12287712    -23.44    17
-12287696    -24.74    18
-12287680    -26.04    20
-12287664    -27.34    21
-
-It seams that my HDA clock is a bit slower then definition ( about -10ppm)
-Therefore resampling starts below -10ppm
-It probably means that when spdif signal is 0ppm, about 10ppm of samples ar=
-e =
-
-missing.
-
-Is this a bug? or it is planed like this?
-Is this a software problem or hardware problem (codec or DMA sequencer) or =
-
-configuration problem?
-since it is not a real resampling (no signal reconstruction takes place) =
-
-samples are just repeated or skipped,
-it seams not right to me.
-Who could comment on this?
-
-
-Regards,
-Rafal
-
-
------Original Message----- =
-
-From: Dave Platt
-Sent: Monday, November 12, 2012 11:40 PM
-To: powierski@mediascore.de
-Subject: re: [alsa-devel] spdif input, source synchronous?
-
-> Does anyone know how the SPDIF input is working on HDA?
-> Is it using a source-synchronous data transfer over HDA?
-> In my arrangement (ALC886) I can set up any rate and I am receiving a =
-
-> rectangular =93resampling=94.
-> =96 is this a bug?
-> will this stay? so I can use higher ratio and some kind of software PLL t=
-o =
-
-> recover input rate?
-
-I tested out S/PDIF input on my ALC262 setup some time ago.
-
-What I found, at the time, was that the data capture did appear
-to be driven by the rate of the incoming signal.  My outboard
-ADC provides a 44100 sample/second rate, and that seemed to be
-what I was getting.  I tried forcing the capture to 48000 samples
-per second, and saw no difference in the captured file size... the
-number of samples per second actually captured seemed to be the
-same (within experimental error) and I didn't see any evidence
-of resampling going on.
-
-Now, this was a capture with "hw:Intel,1" as the device.  I
-expect that I would have seen resampling, and a different
-type of delivery if I had specified "plughw:Intel,1" or some
-other input style which had gone through the plug interface.
-
-Unfortunately I don't have any way of generating a CD-rate
-data stream with a specific set of known values... I'd need
-a CD player with an S/PDIF output and I don't have one of
-those handy.  If I can figure out a way of doing this I'll
-try generating a set of CDs with a known-value pattern, play
-it, capture it, and see if it does or does not exactly
-correlate.
+Automatically disable for those headphone mic  jack when the HP Jack is
+retasked as mic
