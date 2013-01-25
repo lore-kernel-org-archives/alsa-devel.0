@@ -1,22 +1,15 @@
-From: Jerry Wong <Jerry.Wong@maximintegrated.com>
-Subject: Re: [PATCH 002/002] ASoC: Replace max98090 Device
-	Driver
-Date: Fri, 25 Jan 2013 09:02:45 -0800
-Message-ID: <A453F1AE3B5DC14DB19666C506CE75A7108684F4D1@ITSVLEX06.it.maxim-ic.internal>
-References: <A453F1AE3B5DC14DB19666C506CE75A7108684F403@ITSVLEX06.it.maxim-ic.internal>
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4C7@ITSVLEX06.it.maxim-ic.internal>,
- <20130125072131.GA6403@opensource.wolfsonmicro.com>,
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4CC@ITSVLEX06.it.maxim-ic.internal>
+From: =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?=
+ <benoit.thebaudeau@advansee.com>
+Subject: [PATCH] ASoC: tlv320aic3x: Fix mono
+Date: Fri, 25 Jan 2013 18:19:20 +0100
+Message-ID: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam02.maximintegrated.com (antispam02.maxim-ic.com
- [205.153.101.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 73DE42650D6
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 18:04:25 +0100 (CET)
-In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F4CC@ITSVLEX06.it.maxim-ic.internal>
-Content-Language: en-US
+Received: from zose-mta15.web4all.fr (zose-mta15.web4all.fr [178.33.204.94])
+ by alsa0.perex.cz (Postfix) with ESMTP id D29172650BA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 18:20:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,69 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerry Wong <Jerry.Wong@maximintegrated.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jwong@jwassociates.com" <jwong@jwassociates.com>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Beno=C3=AEt=20Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-Shall I make the change listed third below, or shall I wait for feedback on yesterdays submission first?
-
-Jerry
-________________________________________
-From: Mark Brown [broonie@opensource.wolfsonmicro.com]
-Sent: Thursday, January 24, 2013 11:21 PM
-To: Jerry Wong
-Cc: jwong@jwassociates.com; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel][PATCH 002/002] ASoC: Replace max98090 Device Driver
-
-On Thu, Jan 24, 2013 at 03:28:54PM -0800, Jerry Wong wrote:
-
-> This is an odd control that is a combination of an enum and a power
-> management widget. The 0 value of the enum  turns power off.
-> Not sure what is another choice. The enum value needs to be
-> saved so it can be restored when DAPM turns the control on.
-
-> That doesn't appear to be what your control actually does - what happens
-> if someone writes ot the control while the widget is powered down?
-
-It stores the desired value for DAPM to use when the widget is powered up.
-
-> > +static const struct snd_kcontrol_new max98090_snd_controls[] = {
-> > +       SOC_SINGLE("MIC Bias VCM Bandgap", M98090_REG_BIAS_CNTL,
-> > +               M98090_VCM_MODE_SHIFT, M98090_VCM_MODE_NUM - 1, 0),
-
-> > Why is this a user visible control?
-
-> It is not controlled by DAPM. The low power function is taken care of by
-> /SHDN\, so this retains the user choice of bandgap or divider reference.
-
-> Why would the user want this choice?
-
-This allows the user to select VCM Bandgap for all their references (higher power
-and higher audio quality when in use), or divider reference (lower power and lower
-audio quality when in use). /SHDN\ prevents power drain when either is not in use.
-
-> > +static int max98090_runtime_resume(struct device *dev)
-> > +{
-> > +       struct max98090_priv *max98090 = dev_get_drvdata(dev);
-> > +
-> > +       regcache_cache_only(max98090->regmap, false);
-> > +
-> > +       max98090_reset(max98090);
-> > +
-> > +       regcache_sync(max98090->regmap);
-
-> > Do you really need to reset the device here?  If anything I'd expect it
-> > on suspend since the reset state is probably the lowest power state.
-
-> Yes, for a soft reset where the device is not power cycled, DAPM has
-> the device go in and out of the low power /SHDN\ state, and the old
-> register values are retained. Without this, we would need to specify
-> that the PMIC power cycle the chip.
-
-> This doesn't really answer my questions.  Why would it matter if the
-> PMIC has power cycled the chip, and if you do need to do this why is
-> resume the time to do it?
-
-I see what you are asking. Good point. I will move it to probe.
+VGhlIFRMVjMyMEFJQzN4IERBSSBzdXBwb3J0cyBvbmx5IHN0ZXJlby4gVGhpcyBwYXRjaCBmaXhl
+cyBtb25vIHN1cHBvcnQgZm9yIHRoaXMKY29kZWMgYnkgYWxsb3dpbmcgb25seSBzdGVyZW8gYXQg
+Y29kZWMgbGV2ZWwuCgpUZXN0ZWQgd2l0aCBpbXgtc3NpIGFuZCBUTFYzMjBBSUMzMTA0LgoKQ2M6
+IExpYW0gR2lyZHdvb2QgPGxnaXJkd29vZEBnbWFpbC5jb20+CkNjOiBNYXJrIEJyb3duIDxicm9v
+bmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KQ2M6IDxhbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmc+ClNpZ25lZC1vZmYtYnk6IEJlbm/DrnQgVGjDqWJhdWRlYXUgPGJlbm9pdC50aGVi
+YXVkZWF1QGFkdmFuc2VlLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMg
+fCAgICA0ICsrLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jIGIvc291bmQv
+c29jL2NvZGVjcy90bHYzMjBhaWMzeC5jCmluZGV4IDU3MDhhOTcuLjQ5ODkxNDMgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYworKysgYi9zb3VuZC9zb2MvY29kZWNz
+L3RsdjMyMGFpYzN4LmMKQEAgLTEyMTAsMTMgKzEyMTAsMTMgQEAgc3RhdGljIHN0cnVjdCBzbmRf
+c29jX2RhaV9kcml2ZXIgYWljM3hfZGFpID0gewogCS5uYW1lID0gInRsdjMyMGFpYzN4LWhpZmki
+LAogCS5wbGF5YmFjayA9IHsKIAkJLnN0cmVhbV9uYW1lID0gIlBsYXliYWNrIiwKLQkJLmNoYW5u
+ZWxzX21pbiA9IDEsCisJCS5jaGFubmVsc19taW4gPSAyLAogCQkuY2hhbm5lbHNfbWF4ID0gMiwK
+IAkJLnJhdGVzID0gQUlDM1hfUkFURVMsCiAJCS5mb3JtYXRzID0gQUlDM1hfRk9STUFUUyx9LAog
+CS5jYXB0dXJlID0gewogCQkuc3RyZWFtX25hbWUgPSAiQ2FwdHVyZSIsCi0JCS5jaGFubmVsc19t
+aW4gPSAxLAorCQkuY2hhbm5lbHNfbWluID0gMiwKIAkJLmNoYW5uZWxzX21heCA9IDIsCiAJCS5y
+YXRlcyA9IEFJQzNYX1JBVEVTLAogCQkuZm9ybWF0cyA9IEFJQzNYX0ZPUk1BVFMsfSwKLS0gCjEu
+Ny4xMC40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
