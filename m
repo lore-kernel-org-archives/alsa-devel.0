@@ -1,15 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Accept 0 as a parameter block
-	address
-Date: Sat, 26 Jan 2013 00:30:53 +0800
-Message-ID: <1359131453-5163-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Smeefer <camversion@jinbo.net>
+Subject: Re: Trouble about Roland UA-55 and snd-usb-audio module
+Date: Fri, 25 Jan 2013 19:24:20 +0000 (UTC)
+Message-ID: <loom.20130125T202229-943@post.gmane.org>
+References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
+ <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
+ <50FC3009.9070401@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3A4265139
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 19:02:52 +0100 (CET)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CCBA265141
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:40 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TyotT-0003yb-PC
+ for alsa-devel@alsa-project.org; Fri, 25 Jan 2013 20:24:56 +0100
+Received: from c-66-235-47-206.sea.wa.customer.broadstripe.net
+ ([66.235.47.206]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:55 +0100
+Received: from camversion by c-66-235-47-206.sea.wa.customer.broadstripe.net
+ with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:55 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,120 +31,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |   85 ++++++++++++++++++--------------------------
- 1 file changed, 35 insertions(+), 50 deletions(-)
+One member of the AV Linux development team (trulan) told me that they can 
+add a patch to the next kernel build and I can test it out on my 
+system. If you send me a link where I can download your driver code, 
+then I can link it in this forum:
+http://www.remastersys.com/forums/index.php?topic=2857.0
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index bc5e383..3ba4237 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -589,27 +589,21 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
- 				  be32_to_cpu(adsp1_alg[i].dm),
- 				  be32_to_cpu(adsp1_alg[i].zm));
- 
--			if (adsp1_alg[i].dm) {
--				region = kzalloc(sizeof(*region), GFP_KERNEL);
--				if (!region)
--					return -ENOMEM;
--				region->type = WMFW_ADSP1_DM;
--				region->alg = be32_to_cpu(adsp1_alg[i].alg.id);
--				region->base = be32_to_cpu(adsp1_alg[i].dm);
--				list_add_tail(&region->list,
--					      &dsp->alg_regions);
--			}
-+			region = kzalloc(sizeof(*region), GFP_KERNEL);
-+			if (!region)
-+				return -ENOMEM;
-+			region->type = WMFW_ADSP1_DM;
-+			region->alg = be32_to_cpu(adsp1_alg[i].alg.id);
-+			region->base = be32_to_cpu(adsp1_alg[i].dm);
-+			list_add_tail(&region->list, &dsp->alg_regions);
- 
--			if (adsp1_alg[i].zm) {
--				region = kzalloc(sizeof(*region), GFP_KERNEL);
--				if (!region)
--					return -ENOMEM;
--				region->type = WMFW_ADSP1_ZM;
--				region->alg = be32_to_cpu(adsp1_alg[i].alg.id);
--				region->base = be32_to_cpu(adsp1_alg[i].zm);
--				list_add_tail(&region->list,
--					      &dsp->alg_regions);
--			}
-+			region = kzalloc(sizeof(*region), GFP_KERNEL);
-+			if (!region)
-+				return -ENOMEM;
-+			region->type = WMFW_ADSP1_ZM;
-+			region->alg = be32_to_cpu(adsp1_alg[i].alg.id);
-+			region->base = be32_to_cpu(adsp1_alg[i].zm);
-+			list_add_tail(&region->list, &dsp->alg_regions);
- 			break;
- 
- 		case WMFW_ADSP2:
-@@ -623,38 +617,29 @@ static int wm_adsp_setup_algs(struct wm_adsp *dsp)
- 				  be32_to_cpu(adsp2_alg[i].ym),
- 				  be32_to_cpu(adsp2_alg[i].zm));
- 
--			if (adsp2_alg[i].xm) {
--				region = kzalloc(sizeof(*region), GFP_KERNEL);
--				if (!region)
--					return -ENOMEM;
--				region->type = WMFW_ADSP2_XM;
--				region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
--				region->base = be32_to_cpu(adsp2_alg[i].xm);
--				list_add_tail(&region->list,
--					      &dsp->alg_regions);
--			}
-+			region = kzalloc(sizeof(*region), GFP_KERNEL);
-+			if (!region)
-+				return -ENOMEM;
-+			region->type = WMFW_ADSP2_XM;
-+			region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
-+			region->base = be32_to_cpu(adsp2_alg[i].xm);
-+			list_add_tail(&region->list, &dsp->alg_regions);
- 
--			if (adsp2_alg[i].ym) {
--				region = kzalloc(sizeof(*region), GFP_KERNEL);
--				if (!region)
--					return -ENOMEM;
--				region->type = WMFW_ADSP2_YM;
--				region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
--				region->base = be32_to_cpu(adsp2_alg[i].ym);
--				list_add_tail(&region->list,
--					      &dsp->alg_regions);
--			}
-+			region = kzalloc(sizeof(*region), GFP_KERNEL);
-+			if (!region)
-+				return -ENOMEM;
-+			region->type = WMFW_ADSP2_YM;
-+			region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
-+			region->base = be32_to_cpu(adsp2_alg[i].ym);
-+			list_add_tail(&region->list, &dsp->alg_regions);
- 
--			if (adsp2_alg[i].zm) {
--				region = kzalloc(sizeof(*region), GFP_KERNEL);
--				if (!region)
--					return -ENOMEM;
--				region->type = WMFW_ADSP2_ZM;
--				region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
--				region->base = be32_to_cpu(adsp2_alg[i].zm);
--				list_add_tail(&region->list,
--					      &dsp->alg_regions);
--			}
-+			region = kzalloc(sizeof(*region), GFP_KERNEL);
-+			if (!region)
-+				return -ENOMEM;
-+			region->type = WMFW_ADSP2_ZM;
-+			region->alg = be32_to_cpu(adsp2_alg[i].alg.id);
-+			region->base = be32_to_cpu(adsp2_alg[i].zm);
-+			list_add_tail(&region->list, &dsp->alg_regions);
- 			break;
- 		}
- 	}
--- 
-1.7.10.4
+I'm excited to get working on this! Thank you.
+
+Smeefer
