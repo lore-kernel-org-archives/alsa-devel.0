@@ -1,12 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH - TINYCOMPRESS 1/4] compress: Extend limit on
-	error messages
-Date: Fri, 25 Jan 2013 10:43:11 +0000
-Message-ID: <1359110594-20163-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 04/19] oss/dmabuf: use dma_map_single
+Date: Fri, 25 Jan 2013 14:14:21 +0000
+Message-ID: <1359123276-15833-5-git-send-email-arnd@arndb.de>
+References: <1359123276-15833-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id 636ED262624
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 15:14:59 +0100 (CET)
+In-Reply-To: <1359123276-15833-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,27 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org, vinod.koul@linux.intel.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: linux-arm-kernel@list.infradead.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-32 characters is a very short size for the error message, extend this
-to 128 characters to prevent clipping on the majority of messages.
+The virt_to_bus/bus_to_virt functions have been deprecated
+for as long as I can remember, and they are used in very
+few remaining instances, usually in obscure ISA device
+drivers. The OSS sound drivers are the only ones that are
+still used on the ARM architecture, and only on some of
+the earliest StrongARM machines.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+The problem for converting the OSS subsystem to use
+dma_map_single instead is that the caller of virt_to_bus
+does not have a device pointer, since the subsystem has
+never been ported to use the common device infrastructure.
 
-diff --git a/compress.c b/compress.c
-index faef982..05e54ae 100644
---- a/compress.c
-+++ b/compress.c
-@@ -75,7 +75,7 @@
- #include "sound/compress_offload.h"
- #include "tinycompress/tinycompress.h"
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/oss/dmabuf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/oss/dmabuf.c b/sound/oss/dmabuf.c
+index bcc3e8e..a59c888 100644
+--- a/sound/oss/dmabuf.c
++++ b/sound/oss/dmabuf.c
+@@ -114,7 +114,7 @@ static int sound_alloc_dmap(struct dma_buffparms *dmap)
+ 		}
+ 	}
+ 	dmap->raw_buf = start_addr;
+-	dmap->raw_buf_phys = virt_to_bus(start_addr);
++	dmap->raw_buf_phys = dma_map_single(NULL, start_addr, dmap->buffsize, DMA_BIDIRECTIONAL);
  
--#define COMPR_ERR_MAX 32
-+#define COMPR_ERR_MAX 128
+ 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
+ 		SetPageReserved(page);
+@@ -139,6 +139,7 @@ static void sound_free_dmap(struct dma_buffparms *dmap)
+ 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
+ 		ClearPageReserved(page);
  
- struct compress {
- 	int fd;
++	dma_unmap_single(NULL, dmap->raw_buf_phys, dmap->buffsize, DMA_BIDIRECTIONAL);
+ 	free_pages((unsigned long) dmap->raw_buf, sz);
+ 	dmap->raw_buf = NULL;
+ }
 -- 
-1.7.2.5
+1.8.0
