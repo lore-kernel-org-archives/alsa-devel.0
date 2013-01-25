@@ -1,60 +1,78 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-compress: Cancel delayed power down
-	if needed
-Date: Fri, 25 Jan 2013 15:38:19 +0000
-Message-ID: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Ricardo Neri <rneri@dextratech.com>
+Subject: Re: [alsa-devel] [RESEND PATCH v3 2/5] ARM: OMAP4: Assign IDs to
+ DSS HDMI devices
+Date: Fri, 25 Jan 2013 10:23:49 -0600
+Message-ID: <5102B195.5000801@dextratech.com>
+References: <1357341987-3327-1-git-send-email-rneri@dextratech.com> <1357341987-3327-3-git-send-email-rneri@dextratech.com> <51029A30.7070903@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BC45C265091
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 16:40:48 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <51029A30.7070903@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Sebastien Guiriec <s-guiriec@ti.com>
+Cc: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com, tony@atomide.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, dzuniga@dextratech.com
 List-Id: alsa-devel@alsa-project.org
 
-When a new stream is being opened it is necessary to cancel any delayed
-power down of the audio.
+Hi Sebastien,
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/soc-compress.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+On 01/25/2013 08:44 AM, Sebastien Guiriec wrote:
+> Hi Ricardo,
+>
+> You need to rebase this patch as the code has been moved to dss-common.c
+> file now. So it would not apply.
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index f9fb112..eb8191b 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -194,6 +194,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-@@ -216,6 +217,12 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 			goto out;
- 	}
- 
-+	/* cancel any delayed stream shutdown that is pending */
-+	if (codec_dai->pop_wait) {
-+		codec_dai->pop_wait = 0;
-+		cancel_delayed_work(&rtd->delayed_work);
-+	}
-+
- 	snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
- 				SND_SOC_DAPM_STREAM_START);
- 
--- 
-1.7.2.5
+Thanks! I will send a new rebased version.
+
+Ricardo
+>
+> Sebastien
+>
+> On 01/05/2013 12:26 AM, Ricardo Neri wrote:
+>> While Pandaboard and SDP4430 have only one HDMI output connector, it
+>> may be
+>> possible that future boards and SoCs support more than one HDMI output.
+>> Thus, we define the identifier of the device. This is used by display
+>> common code to identify and create the platform devices for HDMI audio
+>> drivers.
+>>
+>> Signed-off-by: Ricardo Neri <rneri@dextratech.com>
+>> ---
+>>   arch/arm/mach-omap2/board-4430sdp.c    |    3 +++
+>>   arch/arm/mach-omap2/board-omap4panda.c |    3 +++
+>>   2 files changed, 6 insertions(+)
+>>
+>> diff --git a/arch/arm/mach-omap2/board-4430sdp.c
+>> b/arch/arm/mach-omap2/board-4430sdp.c
+>> index 3669c12..5a486d9 100644
+>> --- a/arch/arm/mach-omap2/board-4430sdp.c
+>> +++ b/arch/arm/mach-omap2/board-4430sdp.c
+>> @@ -666,6 +666,9 @@ static struct omap_dss_device sdp4430_hdmi_device = {
+>>       .type = OMAP_DISPLAY_TYPE_HDMI,
+>>       .channel = OMAP_DSS_CHANNEL_DIGIT,
+>>       .data = &sdp4430_hdmi_data,
+>> +    .dev = {
+>> +        .id = -1,
+>> +    },
+>>   };
+>>
+>>   static struct picodlp_panel_data sdp4430_picodlp_pdata = {
+>> diff --git a/arch/arm/mach-omap2/board-omap4panda.c
+>> b/arch/arm/mach-omap2/board-omap4panda.c
+>> index bfcd397..9f336a3 100644
+>> --- a/arch/arm/mach-omap2/board-omap4panda.c
+>> +++ b/arch/arm/mach-omap2/board-omap4panda.c
+>> @@ -440,6 +440,9 @@ static struct omap_dss_device
+>> omap4_panda_hdmi_device = {
+>>       .type = OMAP_DISPLAY_TYPE_HDMI,
+>>       .channel = OMAP_DSS_CHANNEL_DIGIT,
+>>       .data = &omap4_panda_hdmi_data,
+>> +    .dev = {
+>> +        .id = -1,
+>> +    },
+>>   };
+>>
+>>   static struct omap_dss_device *omap4_panda_dss_devices[] = {
+>>
+>
+
