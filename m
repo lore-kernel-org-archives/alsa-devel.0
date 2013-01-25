@@ -1,70 +1,65 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 04/19] oss/dmabuf: use dma_map_single
-Date: Fri, 25 Jan 2013 14:14:21 +0000
-Message-ID: <1359123276-15833-5-git-send-email-arnd@arndb.de>
-References: <1359123276-15833-1-git-send-email-arnd@arndb.de>
+From: Sebastien Guiriec <s-guiriec@ti.com>
+Subject: Re: [alsa-devel] [RESEND PATCH v3 2/5] ARM: OMAP4: Assign IDs to
+ DSS HDMI devices
+Date: Fri, 25 Jan 2013 15:44:00 +0100
+Message-ID: <51029A30.7070903@ti.com>
+References: <1357341987-3327-1-git-send-email-rneri@dextratech.com> <1357341987-3327-3-git-send-email-rneri@dextratech.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 636ED262624
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 15:14:59 +0100 (CET)
-In-Reply-To: <1359123276-15833-1-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@list.infradead.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1357341987-3327-3-git-send-email-rneri@dextratech.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Ricardo Neri <rneri@dextratech.com>
+Cc: tomi.valkeinen@ti.com, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com, tony@atomide.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, dzuniga@dextratech.com
 List-Id: alsa-devel@alsa-project.org
 
-The virt_to_bus/bus_to_virt functions have been deprecated
-for as long as I can remember, and they are used in very
-few remaining instances, usually in obscure ISA device
-drivers. The OSS sound drivers are the only ones that are
-still used on the ARM architecture, and only on some of
-the earliest StrongARM machines.
+Hi Ricardo,
 
-The problem for converting the OSS subsystem to use
-dma_map_single instead is that the caller of virt_to_bus
-does not have a device pointer, since the subsystem has
-never been ported to use the common device infrastructure.
+You need to rebase this patch as the code has been moved to dss-common.c 
+file now. So it would not apply.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/oss/dmabuf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Sebastien
 
-diff --git a/sound/oss/dmabuf.c b/sound/oss/dmabuf.c
-index bcc3e8e..a59c888 100644
---- a/sound/oss/dmabuf.c
-+++ b/sound/oss/dmabuf.c
-@@ -114,7 +114,7 @@ static int sound_alloc_dmap(struct dma_buffparms *dmap)
- 		}
- 	}
- 	dmap->raw_buf = start_addr;
--	dmap->raw_buf_phys = virt_to_bus(start_addr);
-+	dmap->raw_buf_phys = dma_map_single(NULL, start_addr, dmap->buffsize, DMA_BIDIRECTIONAL);
- 
- 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
- 		SetPageReserved(page);
-@@ -139,6 +139,7 @@ static void sound_free_dmap(struct dma_buffparms *dmap)
- 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
- 		ClearPageReserved(page);
- 
-+	dma_unmap_single(NULL, dmap->raw_buf_phys, dmap->buffsize, DMA_BIDIRECTIONAL);
- 	free_pages((unsigned long) dmap->raw_buf, sz);
- 	dmap->raw_buf = NULL;
- }
--- 
-1.8.0
+On 01/05/2013 12:26 AM, Ricardo Neri wrote:
+> While Pandaboard and SDP4430 have only one HDMI output connector, it may be
+> possible that future boards and SoCs support more than one HDMI output.
+> Thus, we define the identifier of the device. This is used by display
+> common code to identify and create the platform devices for HDMI audio drivers.
+>
+> Signed-off-by: Ricardo Neri <rneri@dextratech.com>
+> ---
+>   arch/arm/mach-omap2/board-4430sdp.c    |    3 +++
+>   arch/arm/mach-omap2/board-omap4panda.c |    3 +++
+>   2 files changed, 6 insertions(+)
+>
+> diff --git a/arch/arm/mach-omap2/board-4430sdp.c b/arch/arm/mach-omap2/board-4430sdp.c
+> index 3669c12..5a486d9 100644
+> --- a/arch/arm/mach-omap2/board-4430sdp.c
+> +++ b/arch/arm/mach-omap2/board-4430sdp.c
+> @@ -666,6 +666,9 @@ static struct omap_dss_device sdp4430_hdmi_device = {
+>   	.type = OMAP_DISPLAY_TYPE_HDMI,
+>   	.channel = OMAP_DSS_CHANNEL_DIGIT,
+>   	.data = &sdp4430_hdmi_data,
+> +	.dev = {
+> +		.id = -1,
+> +	},
+>   };
+>
+>   static struct picodlp_panel_data sdp4430_picodlp_pdata = {
+> diff --git a/arch/arm/mach-omap2/board-omap4panda.c b/arch/arm/mach-omap2/board-omap4panda.c
+> index bfcd397..9f336a3 100644
+> --- a/arch/arm/mach-omap2/board-omap4panda.c
+> +++ b/arch/arm/mach-omap2/board-omap4panda.c
+> @@ -440,6 +440,9 @@ static struct omap_dss_device  omap4_panda_hdmi_device = {
+>   	.type = OMAP_DISPLAY_TYPE_HDMI,
+>   	.channel = OMAP_DSS_CHANNEL_DIGIT,
+>   	.data = &omap4_panda_hdmi_data,
+> +	.dev = {
+> +		.id = -1,
+> +	},
+>   };
+>
+>   static struct omap_dss_device *omap4_panda_dss_devices[] = {
+>
+
