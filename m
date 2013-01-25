@@ -1,27 +1,17 @@
-From: Smeefer <camversion@jinbo.net>
-Subject: Re: Trouble about Roland UA-55 and snd-usb-audio module
-Date: Fri, 25 Jan 2013 19:24:20 +0000 (UTC)
-Message-ID: <loom.20130125T202229-943@post.gmane.org>
-References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
- <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
- <50FC3009.9070401@ladisch.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 04/19] oss/dmabuf: use dma_map_single
+Date: Fri, 25 Jan 2013 22:44:03 +0000
+Message-ID: <1359153858-31992-5-git-send-email-arnd@arndb.de>
+References: <1359123276-15833-1-git-send-email-arnd@arndb.de>
+ <1359153858-31992-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CCBA265141
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:40 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1TyotT-0003yb-PC
- for alsa-devel@alsa-project.org; Fri, 25 Jan 2013 20:24:56 +0100
-Received: from c-66-235-47-206.sea.wa.customer.broadstripe.net
- ([66.235.47.206]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:55 +0100
-Received: from camversion by c-66-235-47-206.sea.wa.customer.broadstripe.net
- with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 20:24:55 +0100
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id C93A9265173
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2013 23:46:29 +0100 (CET)
+In-Reply-To: <1359153858-31992-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,15 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-One member of the AV Linux development team (trulan) told me that they can 
-add a patch to the next kernel build and I can test it out on my 
-system. If you send me a link where I can download your driver code, 
-then I can link it in this forum:
-http://www.remastersys.com/forums/index.php?topic=2857.0
+The virt_to_bus/bus_to_virt functions have been deprecated
+for as long as I can remember, and they are used in very
+few remaining instances, usually in obscure ISA device
+drivers. The OSS sound drivers are the only ones that are
+still used on the ARM architecture, and only on some of
+the earliest StrongARM machines.
 
-I'm excited to get working on this! Thank you.
+The problem for converting the OSS subsystem to use
+dma_map_single instead is that the caller of virt_to_bus
+does not have a device pointer, since the subsystem has
+never been ported to use the common device infrastructure.
 
-Smeefer
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/oss/dmabuf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/oss/dmabuf.c b/sound/oss/dmabuf.c
+index bcc3e8e..a59c888 100644
+--- a/sound/oss/dmabuf.c
++++ b/sound/oss/dmabuf.c
+@@ -114,7 +114,7 @@ static int sound_alloc_dmap(struct dma_buffparms *dmap)
+ 		}
+ 	}
+ 	dmap->raw_buf = start_addr;
+-	dmap->raw_buf_phys = virt_to_bus(start_addr);
++	dmap->raw_buf_phys = dma_map_single(NULL, start_addr, dmap->buffsize, DMA_BIDIRECTIONAL);
+ 
+ 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
+ 		SetPageReserved(page);
+@@ -139,6 +139,7 @@ static void sound_free_dmap(struct dma_buffparms *dmap)
+ 	for (page = virt_to_page(start_addr); page <= virt_to_page(end_addr); page++)
+ 		ClearPageReserved(page);
+ 
++	dma_unmap_single(NULL, dmap->raw_buf_phys, dmap->buffsize, DMA_BIDIRECTIONAL);
+ 	free_pages((unsigned long) dmap->raw_buf, sz);
+ 	dmap->raw_buf = NULL;
+ }
+-- 
+1.8.0
