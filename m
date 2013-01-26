@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 002/002] ASoC: Replace max98090 Device
 	Driver
-Date: Sat, 26 Jan 2013 15:12:54 +0800
-Message-ID: <20130126071252.GG10580@opensource.wolfsonmicro.com>
+Date: Sat, 26 Jan 2013 15:15:59 +0800
+Message-ID: <20130126071558.GH10580@opensource.wolfsonmicro.com>
 References: <A453F1AE3B5DC14DB19666C506CE75A7108684F403@ITSVLEX06.it.maxim-ic.internal>
  <A453F1AE3B5DC14DB19666C506CE75A7108684F4C7@ITSVLEX06.it.maxim-ic.internal>
  <20130125072131.GA6403@opensource.wolfsonmicro.com>
  <A453F1AE3B5DC14DB19666C506CE75A7108684F4CC@ITSVLEX06.it.maxim-ic.internal>
+ <A453F1AE3B5DC14DB19666C506CE75A7108684F4D1@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8976173323678817321=="
+Content-Type: multipart/mixed; boundary="===============7988655680989196666=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B8F532616E4
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 08:13:01 +0100 (CET)
-In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F4CC@ITSVLEX06.it.maxim-ic.internal>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 464C72616E4
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 08:16:08 +0100 (CET)
+In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F4D1@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,79 +29,52 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jwong@jwassoci
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8976173323678817321==
+--===============7988655680989196666==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="924gEkU1VlJlwnwX"
+	protocol="application/pgp-signature"; boundary="9/eUdp+dLtKXvemk"
 Content-Disposition: inline
 
 
---924gEkU1VlJlwnwX
+--9/eUdp+dLtKXvemk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 25, 2013 at 07:39:45AM -0800, Jerry Wong wrote:
-> On Thu, Jan 24, 2013 at 03:28:54PM -0800, Jerry Wong wrote:
+On Fri, Jan 25, 2013 at 09:02:45AM -0800, Jerry Wong wrote:
 
-> > This is an odd control that is a combination of an enum and a power
-> > management widget. The 0 value of the enum  turns power off.
-> > Not sure what is another choice. The enum value needs to be
-> > saved so it can be restored when DAPM turns the control on.
+> Shall I make the change listed third below, or shall I wait for
+> feedback on yesterdays submission first?
 
-> > That doesn't appear to be what your control actually does - what happens
-> > if someone writes ot the control while the widget is powered down?
+Do the updates then I'll review all at once.
 
-> It stores the desired value for DAPM to use when the widget is powered up.
-
-It looks like it's a SOC_ENUM_SINGLE so it should map directly on to the
-register map?
-
-> > > +static const struct snd_kcontrol_new max98090_snd_controls[] = {
-> > > +       SOC_SINGLE("MIC Bias VCM Bandgap", M98090_REG_BIAS_CNTL,
-> > > +               M98090_VCM_MODE_SHIFT, M98090_VCM_MODE_NUM - 1, 0),
-
-> > > Why is this a user visible control?
-
-> > It is not controlled by DAPM. The low power function is taken care of by
-> > /SHDN\, so this retains the user choice of bandgap or divider reference.
-
-> > Why would the user want this choice?
-
-> This allows the user to select VCM Bandgap for all their references (higher power
-> and higher audio quality when in use), or divider reference (lower power and lower
-> audio quality when in use). /SHDN\ prevents power drain when either is not in use.
-
-So in that case I'd recommend doing something like making it an
-enmerated control which makes the tradeoff clear.
-
---924gEkU1VlJlwnwX
+--9/eUdp+dLtKXvemk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRA4EAAAoJELSic+t+oim9Wa0P/iM+epTiasyUT4ccah1ik0ue
-AU41El8cEcSe+yssEnPKfwPmv2/YuaTDZPO0sltHJWtuNkWwyS6jNgSwjZoy1+BE
-qMOnB7BT2mAVn7wroifI51hJmsjERU7z+ERklGLj2sn/ppQTNDBpJ85RjBWvnMEV
-KQmHJV9+jrVwRIzi55DXUvpcycf/rvDf/2ie5AyxASpoksmjp84iUlbsWuAndR8B
-rS67nFPCH8SeeVW0f+E+Ehy7+hSdnr1pXre+OQo4C/btg8BJK3ZwvkGTjtLd4QdE
-kHZwPeDJFF3rCzIGNt+WyfMcGF/CF6OeQiJ4jLGJN7BywLoIbYP2OZ4UAfbpkyeZ
-/xiTZWnVizClFuxZRpIFbj+YbB2iVW9aV9J+kx6Xd3BC8/Hiqom21iMMjPGkckte
-euDExOlD1OPomnLUdxSkVSVzhEVAfVW80mqqy6/1LrI725wkJi3zZUx5/OezIYID
-P/ssumBBtb1udJRhPWs8eX+4ZctwFwSOG/9pdxN5rGYJWNMrVCwBa5zkRgjs4EyJ
-WqxuWtuxDwxlJReLmhPS35WCWh/aAnvnj4vSDZzoaZPlIBbJ51ZW1uMMHA/FmUgI
-frH/+bELA3OqyZG1ac1J+kg66CyMtqqr5ZqZorg9ZlXLYwFbdikx/CQ7HObtQptC
-ypw+JS5+xf8XHhULFEQK
-=+6CT
+iQIcBAEBAgAGBQJRA4KGAAoJELSic+t+oim9oIkP/RcXdWrHUmdGmT/t64Aj4LUf
+8RUnmXtbUoTSa+Yr4Q1RngR42KiQBFKDSm0F6W5zigZwlUPTuCOFkTBZH8szcoXo
+4LUBgjMlMAG4nDDgjRN22rWJF8w3ynBzV+k56uAHgsElvEmsOS26HQ+M/0ZkUYzE
+7aQxsV+relLttLsWx+6d17yQ1reDdEWI1EvY4ox0sqphNA2YBWeR6HDCaxCSHg28
+1GjNuz9tQl6OiPnGCT/TI/VVma/ohLErmRQefdeyqXPTgJ85HpgWjK2dOJ6X88yu
+rY3e6fkOc2KQykOhN7G4ipTkwauolFoyhaPYlVCJiw1QGiFrJrhyPnw+QQsRS18y
+i7MA/X1mkwcxw9lM4F7q3xLOcPZkYgEdwWIh+j/ekHkTSPBLyHneLvMwxOP6EgBd
+EiKukcJTDq4uLvEJIJApRMpQT/AA1LEV423mx9CTiKvRELm/MVuIttgY3jZZ8ms6
+nme86gz3ZV6/W430eboejgc+/eiP9/sjr2KbjImll17tjbaARNc7jipnnhch7iKU
+Z2Y+9/cHLmwWU+QN17QY2HsH2odm5IYBFw5C60DmigDcIfHzojGUdwHHX5Cf4jI3
+K7h61oT3MrH4F//P8IkRv0ta9X+jlbS2RRFogzIqPcgsJCVzKV2X0YSniJacCcga
+OQKDdR6Q7DN6RoWeMBGz
+=tASf
 -----END PGP SIGNATURE-----
 
---924gEkU1VlJlwnwX--
+--9/eUdp+dLtKXvemk--
 
---===============8976173323678817321==
+--===============7988655680989196666==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8976173323678817321==--
+--===============7988655680989196666==--
