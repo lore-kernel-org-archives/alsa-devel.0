@@ -1,58 +1,75 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Asoc: Samsung: Add support for I2S runtime S2R
-Date: Sat, 26 Jan 2013 15:27:13 +0800
-Message-ID: <20130126072711.GN10580@opensource.wolfsonmicro.com>
-References: <1359030931-27354-1-git-send-email-rcsekar@samsung.com>
+Subject: Re: [patch] ASoC: dwc: fix support for more than two
+	channels
+Date: Sat, 26 Jan 2013 15:37:44 +0800
+Message-ID: <20130126073742.GQ10580@opensource.wolfsonmicro.com>
+References: <20130125064343.GE4882@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pz/qqzCPDfGwIFOg"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1359030931-27354-1-git-send-email-rcsekar@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: "R. Chandrasekar" <rcsekar@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com
+Content-Type: multipart/mixed; boundary="===============7436025302862414486=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D462C26170F
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 08:37:50 +0100 (CET)
+In-Reply-To: <20130125064343.GE4882@elgon.mountain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Pz/qqzCPDfGwIFOg
+--===============7436025302862414486==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uQ3BaAlxDi9XKvis"
+Content-Disposition: inline
+
+
+--uQ3BaAlxDi9XKvis
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 24, 2013 at 06:05:30PM +0530, R. Chandrasekar wrote:
-> From: "R. Chandrasekar" <rcsekar@samsung.com>
->=20
-> This patch adds runtime suspend to resume support for I2S.
->=20
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> Signed-off-by: R. Chandrasekar <rcsekar@samsung.com>
+On Fri, Jan 25, 2013 at 09:43:43AM +0300, Dan Carpenter wrote:
+> There were missing break statements so everything used
+> TWO_CHANNEL_SUPPORT.
 
-This is good but doesn't apply against topic/samsung, please check and
-resend.  Note that the signoffs should be in author order - the author
-should be first, then people forwarding on the patch.  Other people
-should have other tags like Acked-by or Reviewed-by.
+Applied, thanks.
 
---Pz/qqzCPDfGwIFOg
+--uQ3BaAlxDi9XKvis
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRA4VEAAoJELSic+t+oim9j1EQAIBFX3sFbqMgZoyBRj1s2Rk4
-K7s1MbyR1dOvhSw4LVJzF7ktgXcjAyy/AT8KsJCFfffs7Da4EcRo3qv7ar3W9gwb
-e9qx7i312Hb8BFWljwm7o1v+6+Fcg1/CxntoNPmOwAx6agA+YPjGKfvNfdNMiZqn
-U93J0w1h+FHu5R7YG2I63S7G3vVqlkbHZdAz2hpLPCS5mP0X0eCYl0QIdOIvkbc5
-ilMaXGkQAKofezaDN7wjSGxcLINXgbFfy5FLR70P8UrwUjv8N0kjOdHBuM/gT45P
-g4TSBzw6PjPKwlRt7huMd2Mnb6v/1sVvXIragQH8+2dP6m0KHpNyZjtzvRnN/PLt
-WmxSyr44wtaF3e5Yvrkq5cZwfkexJWWD8Z+i192Df88duUmdg5Y2Rr9lTCLOjb3P
-CBBYxv8SX/itnmcmoRv+9/w0s8JErr0fTWnlCZz7x0FQLt3w1NXdu564AqM/Bj5i
-9hGkFPgr5FBOLDeTyP1ChHhOJQdDlotztGFlDX7bDuTP70L7W8PkIjCrbbJ3xV4E
-AeSVdBelfcg1LTpKY5mbfnBu+1/wurGgz8ARiQ7d8A7K9zwBjkCyOQhNJII2xNgu
-7lwfvJQaFMeWtQcyF+T38U6fbV+FQ9jW0ixokbWnLW5DvaXJ9KGe+PRr+anV7/WT
-/kFn/63bdnwpwBhLrxhO
-=FeGH
+iQIcBAEBAgAGBQJRA4e8AAoJELSic+t+oim9oBsP/jYhh6epLBqtd1klK62Twcee
+tvKiYPSUFtCx7OrNP9ceMYvPqrxPSjfVmuc3DzEcMAA3STtNhzJsU11TOEIaD2P/
+9BG7DlAGDKsFp0+7uG6nTGsC8Cx+yNd/CjJHtKEPnAV54Aid853N+5r3SxAe7p1u
+WVcAE3T0M4Ncla+UU5vz2NIz3sm1lhvmRU6swvNn3fqBGE4bGQtRIFLgSRtOKl4q
+t2NNNekUJ9TZTHiDUi0wFnC9Z/UMnCjgnWVb7PaXVsbjCCIp2C2quJtomTe1civL
+8sDcdCusYAwgC3DbGeuRIhhjNHskvocOLxhPRlL0IT9w7RaszoxYMs+kQmtAuRzB
+nAYQ7dx3hFKzKw2rXBM0pxmqg9G7UC/qIkza0r8ySNmTroKFxeO0UHjQqXnBiALJ
+mWC9mf1mIGb4dNG96re4oWhPejVwLaEGon52/uGKcC0KJkHJD67g7ODtqzsONhwR
+ky82Vtl/DSwz7z8rbIzNtvBtI4ldLY5Tc5loTQTwjPr3DDAc7iMQL/BZocVTMasL
+izmRuYANWStY2dy4Y1WdpLxGGkziKLxwq+wA3pdeasKWCJpZKm4Tm0i8QEzwhgOn
+Zmgh4xW11PgNa5AYM7HmnonIiDtJCFYo0n6o+qcoctc4aicorFXKBis5wqlZKXPJ
+irElBisBzQ/oJp0hIuJ8
+=xKas
 -----END PGP SIGNATURE-----
 
---Pz/qqzCPDfGwIFOg--
+--uQ3BaAlxDi9XKvis--
+
+--===============7436025302862414486==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7436025302862414486==--
