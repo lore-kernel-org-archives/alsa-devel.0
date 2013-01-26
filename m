@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix mono
-Date: Sat, 26 Jan 2013 16:55:14 +0800
-Message-ID: <20130126085512.GC30594@opensource.wolfsonmicro.com>
-References: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
+Subject: Re: [PATCH] ASoC: soc-compress: Cancel delayed power
+	down if needed
+Date: Sat, 26 Jan 2013 16:52:36 +0800
+Message-ID: <20130126085234.GB30594@opensource.wolfsonmicro.com>
+References: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2368583195449019932=="
+Content-Type: multipart/mixed; boundary="===============7525364130753770081=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D12092616F3
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 09:55:20 +0100 (CET)
-In-Reply-To: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D9392616E7
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 10:02:53 +0100 (CET)
+In-Reply-To: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2368583195449019932==
+--===============7525364130753770081==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
+	protocol="application/pgp-signature"; boundary="3lcZGd9BuhuYXNfi"
 Content-Disposition: inline
 
 
---vEao7xgI/oilGqZ+
-Content-Type: text/plain; charset=iso-8859-1
+--3lcZGd9BuhuYXNfi
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 25, 2013 at 06:19:20PM +0100, Beno=EEt Th=E9baudeau wrote:
-> The TLV320AIC3x DAI supports only stereo. This patch fixes mono support f=
-or this
-> codec by allowing only stereo at codec level.
+On Fri, Jan 25, 2013 at 03:38:19PM +0000, Charles Keepax wrote:
 
-So, this doesn't actually fix mono - it removes support for it.  It's a
-bit surprising that this is a requirement actually, the device seems to
-support DSP modes which usually do mono totally happily (I2S style modes
-have problems due to the clocking).  I'd like to see some confirmation
-that there's not some other issue in your system...
+> +	/* cancel any delayed stream shutdown that is pending */
+> +	if (codec_dai->pop_wait) {
+> +		codec_dai->pop_wait = 0;
+> +		cancel_delayed_work(&rtd->delayed_work);
+> +	}
 
---vEao7xgI/oilGqZ+
+This looks racy - the check for pop_wait can't be doing a huge amount
+here, the work might already have been scheduled.
+
+--3lcZGd9BuhuYXNfi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRA5noAAoJELSic+t+oim9AJsP+waeZd2IFqecTr9Pf9ieVxCJ
-x3LuBBfuEu2ZbElMnHQlAuH+6VPAUaNgWi4f9CnvHO3849c5G9O1+6jBAQvDBt75
-Z40bK9yKKUffYfLoH1tqQhtA8AUVFSFmXcN7XtFVK/D9+2wLUvYbgyC+NlDQccVb
-Z8BBCZn+QHQD3i1WFc602NtmEWfE1dSn/6StVN3CuCkB95hTqyD+ZBmoaPFnbaQR
-ZbHFMBMbnKOkJA3PAnYMdtnB6pbPVygeIjrzb6OppRvw4S4/YM8bMg5b/6t+NNDj
-whTNK+ycFUKkAO2nkqun3akMFwJ3WJXtjok1x//TSF8wD9Uh2euz8gDZKX5Fj5ip
-nW0HTRpNOvGFh7eMEgUzofxMmcb491clcFkSJprYBk4d7pzcRxXzvWoYoGWiNDw6
-WJ+T/t/OeoHSLYcq90RKzezuIweUSNDZz0XkdR1+QiVwBAB1LxVisiWbpUiBXOBT
-gjcdRf78qPVXTKkSPSGleuM+28LKdKzsY2BL1w45ZnhLPHyhFjY1JgYtD16g2NHM
-+K4Qql6bMvYfCtyy49w/mQ9TDLuzQ1ebRt4BPnTJJe9BWsrZTVS53y/gTNDOUpWj
-AAfDmbRYR0DVG5W2JQY1IaqZG5IH70d/nc7kU66L7SsESjCesB4bG9oROwUTrx5M
-PD4lXz5xOPsnWvyGB9VH
-=23ZM
+iQIcBAEBAgAGBQJRA5lLAAoJELSic+t+oim9FLQP/je8JbSLKx/qaL+AtBsNkJV4
+c+GWV5hLTtDOdTFB0ewtpxgqQJaTtjEzUC7qEcCNXBOMEGBnOuGTM/ecCiUbJx6x
+WgLK885Ibm3y6l3CFN3kFDK0ci2HRtlIUvjwBgX53eEQ9/f2PBJLZTddD3YaWYlB
+lc5OefzV8b5kg413jZ1GgZS5lhmXAxix+DGZeglpHmiqx+PEoPFfMMkfc2TexSDE
+5OXEQGpv43wck11nux/YfuMyGoq6X63cf6+4vAFTqXk7CDPCqDuRH98Asb9wPIej
+gE+Qi/zUFNEpLFreKJETyuetK6ketvBEm/MsQr1Phz/TI30GE+qiqEasB/d7pVta
+xmT/vov01L4tyalZmUOfrCEdRLvmAJzFi/ohL8yWQEOoJM89TacDMtOyRce77hxB
+b4r1mHyiMCOmzDh9A5NliqPyBxVntCOXdMuCVg/GuR2q5c0Edf5q08c3GjQR/ja8
+y4W6SmuA1ldsU/NNii2R41cSGzo8+ZNxlKvDMZhAXDLwRoB1JAYjlBHNIb82Q/nQ
+IfmbxPcTLGWF/od8yQ3ojNt/Kk5rNVHoYwrkV+EPcotynOi/ZhQJqpFHZDw38qeB
+MvRL5AIsV8b1UeSuNXaJldayFjhTFNGM5lE/EDWhgATUFx+T6XORGnj1rwGTrqQj
+NlUiqTtv+0dk6TZbE6wg
+=SNoZ
 -----END PGP SIGNATURE-----
 
---vEao7xgI/oilGqZ+--
+--3lcZGd9BuhuYXNfi--
 
---===============2368583195449019932==
+--===============7525364130753770081==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2368583195449019932==--
+--===============7525364130753770081==--
