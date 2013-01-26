@@ -1,17 +1,14 @@
-From: Jonas Petersen <jnsptrsn1@gmail.com>
-Subject: M-Audio Audiophile 192 (ice1724)'s broken spdif capture
-Date: Sat, 26 Jan 2013 17:35:50 +0100
-Message-ID: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [git pull] usb-audio: RME Babyface/Fireface fix
+Date: Sat, 26 Jan 2013 17:56:33 +0100
+Message-ID: <51040AC1.4080802@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id C8D23261602
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 17:35:50 +0100 (CET)
-Received: by mail-wi0-f180.google.com with SMTP id hj13so389057wib.1
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 08:35:50 -0800 (PST)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 6C696262601
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 17:57:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +18,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+The following change since commit 29594404d7fe73cd80eaa4ee8c43dcc53970c60e:
 
-I'm trying to get spdif capture to work properly on the M-Audio Audiophile
-192 (VT1724/Envy24HT). It is generally working, but I don't get a clean
-signal.
+  Linux 3.7 (2012-12-10 19:30:57 -0800)
 
-I have "Multi Track Internal Clock" set to "IEC958 In" (spdif in). When I
-capture via Jack, arecord or Audacity I experience the following two
-phenomenons (always):
+is available in the git repository at:
 
-1.) The captured signal ends up 6 dB(FS) to loud (200%)! Everything above
--6 dB is distorting. A 1 kHz sine test signal at -12 dB (25%) will be
-captured as -6 dB (50%).
+  git://git.alsa-project.org/alsa-kprivate.git usb-audio-fix
 
-2.) The left and right channels are shifted by one sample! When I feed a 1
-kHz test signal (L+R are _exactly_ the same signal), the right channel will
-be offset by exactly one sample. Zooming into the waveform clearly shows
-that. Analyzing the signal with a goniometer shows a (slight but obvious)
-vertical eliptical shape and not the expected single vertical line.
+for you to fetch changes up to 5fcbad428a81efa318f15bfcfbcd8f0a98ec0b11:
 
-To make sure the hardware actually works fine, I did install a Windows 7 on
-the exact same machine, installed the drivers from M-Audio and did some
-recording with audacity. The result is as expected: the -12 dB signal ends
-up as -12 dB and the left and right channel exactly match each other. So
-the hardware is willing.
+  ALSA: usb-audio: fix invalid length check for RME and other UAC 2 devices (2013-01-26 17:49:35 +0100)
 
-I am running a Lubuntu 12.10 and I'm am able to compile and run the current
-alsa-driver source with the 3.5.0-22 kernel. I played around a bit with the
-alsa driver source (e.g. pci/ice1712/ice1724.c, pci/ice1712/revo.c) and I
-am able to compile and load a modified driver. So far I only was able to
-make the problem worse though.
+----------------------------------------------------------------
+Clemens Ladisch (1):
+      ALSA: usb-audio: fix invalid length check for RME and other UAC 2 devices
 
-I'd now like to ask for some advice on how to approach the problem. I guess
-the fact that the left and right channel differ - even though they
-shouldn't - might be a thing to look for. This must be happening at some
-stage in the capturing. Is there a way to hook in at different places to
-narrow down what causes this?
+ sound/usb/mixer.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-Maybe this even already rings somebody's bells?
+ALSA: usb-audio: fix invalid length check for RME and other UAC 2 devices
 
-I'll be glad to deliver more information when needed.
+Commit 23caaf19b11e (ALSA: usb-mixer: Add support for Audio Class v2.0)
+forgot to adjust the length check for UAC 2.0 feature unit descriptors.
+This would make the code abort on encountering a feature unit without
+per-channel controls, and thus prevented the driver to work with any
+device having such a unit, such as the RME Babyface or Fireface UCX.
 
-Thanks and regards,
-Jonas
+Reported-by: Florian Hanisch <fhanisch@uni-potsdam.de>
+Tested-by: Matthew Robbetts <wingfeathera@gmail.com>
+Tested-by: Michael Beer <beerml@sigma6audio.de>
+Cc: Daniel Mack <daniel@caiaq.de>
+Cc: 2.6.35+ <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 298070e..41e8bfb 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1259,16 +1259,23 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 		}
+ 		channels = (hdr->bLength - 7) / csize - 1;
+ 		bmaControls = hdr->bmaControls;
++		if (hdr->bLength < 7 + csize) {
++			snd_printk(KERN_ERR "usbaudio: unit %u: "
++				   "invalid UAC_FEATURE_UNIT descriptor\n",
++				   unitid);
++			return -EINVAL;
++		}
+ 	} else {
+ 		struct uac2_feature_unit_descriptor *ftr = _ftr;
+ 		csize = 4;
+ 		channels = (hdr->bLength - 6) / 4 - 1;
+ 		bmaControls = ftr->bmaControls;
+-	}
+-
+-	if (hdr->bLength < 7 || !csize || hdr->bLength < 7 + csize) {
+-		snd_printk(KERN_ERR "usbaudio: unit %u: invalid UAC_FEATURE_UNIT descriptor\n", unitid);
+-		return -EINVAL;
++		if (hdr->bLength < 6 + csize) {
++			snd_printk(KERN_ERR "usbaudio: unit %u: "
++				   "invalid UAC_FEATURE_UNIT descriptor\n",
++				   unitid);
++			return -EINVAL;
++		}
+ 	}
+
+ 	/* parse the source unit */
