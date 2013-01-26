@@ -1,22 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: upsampling
-Date: Sat, 26 Jan 2013 16:07:00 +0100
-Message-ID: <5103F114.1030404@ladisch.de>
-References: <CAJ2oMh+JadrL31WhD6Hr0YaFmpuZu9u5cgLp5yU=m2wD78gWFg@mail.gmail.com>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: M-Audio Audiophile 192 (ice1724)'s broken spdif capture
+Date: Sat, 26 Jan 2013 17:35:50 +0100
+Message-ID: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id EAA152625EB
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 16:07:51 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 3312C20C21
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 10:07:51 -0500 (EST)
-Received: from [192.168.42.11] (unknown [176.6.185.40])
- by mail.messagingengine.com (Postfix) with ESMTPA id A33988E088E
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 10:07:50 -0500 (EST)
-In-Reply-To: <CAJ2oMh+JadrL31WhD6Hr0YaFmpuZu9u5cgLp5yU=m2wD78gWFg@mail.gmail.com>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8D23261602
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 17:35:50 +0100 (CET)
+Received: by mail-wi0-f180.google.com with SMTP id hj13so389057wib.1
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 08:35:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,9 +24,47 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ran Shalit wrote:
-> I would like to ask if I can use alsa-lib to resample (downsample or
-> sample)  input audio and playback audio.
+Hi there,
 
-Already answered elsewhere:
-http://e2e.ti.com/support/embedded/linux/f/354/t/241272.aspx
+I'm trying to get spdif capture to work properly on the M-Audio Audiophile
+192 (VT1724/Envy24HT). It is generally working, but I don't get a clean
+signal.
+
+I have "Multi Track Internal Clock" set to "IEC958 In" (spdif in). When I
+capture via Jack, arecord or Audacity I experience the following two
+phenomenons (always):
+
+1.) The captured signal ends up 6 dB(FS) to loud (200%)! Everything above
+-6 dB is distorting. A 1 kHz sine test signal at -12 dB (25%) will be
+captured as -6 dB (50%).
+
+2.) The left and right channels are shifted by one sample! When I feed a 1
+kHz test signal (L+R are _exactly_ the same signal), the right channel will
+be offset by exactly one sample. Zooming into the waveform clearly shows
+that. Analyzing the signal with a goniometer shows a (slight but obvious)
+vertical eliptical shape and not the expected single vertical line.
+
+To make sure the hardware actually works fine, I did install a Windows 7 on
+the exact same machine, installed the drivers from M-Audio and did some
+recording with audacity. The result is as expected: the -12 dB signal ends
+up as -12 dB and the left and right channel exactly match each other. So
+the hardware is willing.
+
+I am running a Lubuntu 12.10 and I'm am able to compile and run the current
+alsa-driver source with the 3.5.0-22 kernel. I played around a bit with the
+alsa driver source (e.g. pci/ice1712/ice1724.c, pci/ice1712/revo.c) and I
+am able to compile and load a modified driver. So far I only was able to
+make the problem worse though.
+
+I'd now like to ask for some advice on how to approach the problem. I guess
+the fact that the left and right channel differ - even though they
+shouldn't - might be a thing to look for. This must be happening at some
+stage in the capturing. Is there a way to hook in at different places to
+narrow down what causes this?
+
+Maybe this even already rings somebody's bells?
+
+I'll be glad to deliver more information when needed.
+
+Thanks and regards,
+Jonas
