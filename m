@@ -1,17 +1,22 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix mono
-Date: Sat, 26 Jan 2013 15:17:01 +0100 (CET)
-Message-ID: <1343658253.242147.1359209821129.JavaMail.root@advansee.com>
-References: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
- <20130126085512.GC30594@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: upsampling
+Date: Sat, 26 Jan 2013 16:07:00 +0100
+Message-ID: <5103F114.1030404@ladisch.de>
+References: <CAJ2oMh+JadrL31WhD6Hr0YaFmpuZu9u5cgLp5yU=m2wD78gWFg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta15.web4all.fr (zose-mta15.web4all.fr [178.33.204.94])
- by alsa0.perex.cz (Postfix) with ESMTP id 5545C2625EB
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 15:17:05 +0100 (CET)
-In-Reply-To: <20130126085512.GC30594@opensource.wolfsonmicro.com>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id EAA152625EB
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 16:07:51 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 3312C20C21
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 10:07:51 -0500 (EST)
+Received: from [192.168.42.11] (unknown [176.6.185.40])
+ by mail.messagingengine.com (Postfix) with ESMTPA id A33988E088E
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 10:07:50 -0500 (EST)
+In-Reply-To: <CAJ2oMh+JadrL31WhD6Hr0YaFmpuZu9u5cgLp5yU=m2wD78gWFg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +26,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0dXJkYXksIEphbnVhcnkgMjYsIDIwMTMgOTo1NToxNCBBTSwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBGcmksIEphbiAyNSwgMjAxMyBhdCAwNjoxOToyMFBNICswMTAwLCBCZW5vw650IFRo
-w6liYXVkZWF1IHdyb3RlOgo+ID4gVGhlIFRMVjMyMEFJQzN4IERBSSBzdXBwb3J0cyBvbmx5IHN0
-ZXJlby4gVGhpcyBwYXRjaCBmaXhlcyBtb25vIHN1cHBvcnQgZm9yCj4gPiB0aGlzCj4gPiBjb2Rl
-YyBieSBhbGxvd2luZyBvbmx5IHN0ZXJlbyBhdCBjb2RlYyBsZXZlbC4KPiAKPiBTbywgdGhpcyBk
-b2Vzbid0IGFjdHVhbGx5IGZpeCBtb25vIC0gaXQgcmVtb3ZlcyBzdXBwb3J0IGZvciBpdC4KClll
-cywgZm9yIHRoaXMgZHJpdmVyLCBidXQgdGhpcyBmaXhlcyBtb25vIGZvciB0aGUgd2hvbGUgc3lz
-dGVtLCBtZWFuaW5nIHRoYXQKZS5nLiBpdCBmaXhlcyBtb25vIHBsYXliYWNrIHN1cHBvcnQgd2l0
-aCBwbGF5ZXJzIGxpa2UgTVBsYXllci4gSSB3aWxsIHJld29yZCBpZgp5b3UgcHJlZmVyLgoKPiAg
-SXQncyBhCj4gYml0IHN1cnByaXNpbmcgdGhhdCB0aGlzIGlzIGEgcmVxdWlyZW1lbnQgYWN0dWFs
-bHksIHRoZSBkZXZpY2Ugc2VlbXMgdG8KPiBzdXBwb3J0IERTUCBtb2RlcyB3aGljaCB1c3VhbGx5
-IGRvIG1vbm8gdG90YWxseSBoYXBwaWx5IChJMlMgc3R5bGUgbW9kZXMKPiBoYXZlIHByb2JsZW1z
-IGR1ZSB0byB0aGUgY2xvY2tpbmcpLiAgSSdkIGxpa2UgdG8gc2VlIHNvbWUgY29uZmlybWF0aW9u
-Cj4gdGhhdCB0aGVyZSdzIG5vdCBzb21lIG90aGVyIGlzc3VlIGluIHlvdXIgc3lzdGVtLi4uCgpJ
-J3ZlIG9ubHkgdGVzdGVkIHdpdGggScKyUyAoaW14LXNzaSkuIEJ1dCBmb3IgYWxsIHRoZSBhdmFp
-bGFibGUgREFJIG1vZGVzLCB0aGUKZGF0YSBzaGVldCBnaXZlcyB0aGUgZW5jb2RpbmcgZm9yIGJv
-dGggc3RlcmVvIGNoYW5uZWxzIChmcm9tIHAuIDIxKSwgYW5kIG5vd2hlcmUKaXQgc2F5cyB0aGF0
-IG1vbm8gaXMgYW4gb3B0aW9uIGZvciBEQUk6Cmh0dHA6Ly93d3cudGkuY29tL2xpdC9kcy9zeW1s
-aW5rL3RsdjMyMGFpYzMxMDQucGRmCgpJIHdpbGwgcmV0ZXN0IHdpdGggRFNQIG1vZGVzIGlmIHlv
-dSBwcmVmZXIuCgpUaGUgaWRlYSB3YXMgdGhlIHNhbWUgYXMgZm9yIHRoaXMgY29tbWl0OgpodHRw
-Oi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC9uZXh0L2xpbnV4LW5leHQuZ2l0
-O2E9Y29tbWl0ZGlmZjtoPTM3ZjQ1Y2M1NGNiMDNjYWM0YTZiODY1YjMyYmM3MDViYjBjYjFkMjkK
-RXZlbiB0aG91Z2ggdGhlIE1DMTM3ODMgb25seSBzdXBwb3J0cyBJwrJTIGFuZCBNU0IganVzdGlm
-aWVkIG1vZGVzLCBhbmQgdGhlcmUgbWF5CmJlIGFuIGlzc3VlIHNwZWNpZmljIHRvIGl0OgpodHRw
-Oi8vY2FjaGUuZnJlZXNjYWxlLmNvbS9maWxlcy9yZl9pZi9kb2MvZGF0YV9zaGVldC9NQzEzNzgz
-LnBkZj9wc3BsbD0xCgpCZXN0IHJlZ2FyZHMsCkJlbm/DrnQKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Ran Shalit wrote:
+> I would like to ask if I can use alsa-lib to resample (downsample or
+> sample)  input audio and playback audio.
+
+Already answered elsewhere:
+http://e2e.ti.com/support/embedded/linux/f/354/t/241272.aspx
