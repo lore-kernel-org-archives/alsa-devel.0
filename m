@@ -1,21 +1,22 @@
 From: Jonas Petersen <jnsptrsn1@gmail.com>
 Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
 	capture
-Date: Sat, 26 Jan 2013 22:29:27 +0100
-Message-ID: <CAF+J8Lc76JEJMg++3EJ=3Zq_vEvEwwko=Aov57y5yV4t5zYjvQ@mail.gmail.com>
+Date: Sat, 26 Jan 2013 23:37:03 +0100
+Message-ID: <CAF+J8Lcorc93p3Yk=u8ciKe39OxadKZ8rNN7BUp=8gYt4u=E4Q@mail.gmail.com>
 References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
  <51042EE5.5070900@perex.cz>
+ <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f43.google.com (mail-oa0-f43.google.com
- [209.85.219.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A2B62625FE
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 22:29:30 +0100 (CET)
-Received: by mail-oa0-f43.google.com with SMTP id k7so40819oag.2
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 13:29:27 -0800 (PST)
-In-Reply-To: <51042EE5.5070900@perex.cz>
+Received: from mail-oa0-f67.google.com (mail-oa0-f67.google.com
+ [209.85.219.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8239C264F0A
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 23:37:05 +0100 (CET)
+Received: by mail-oa0-f67.google.com with SMTP id n12so442923oag.10
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2013 14:37:04 -0800 (PST)
+In-Reply-To: <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +26,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+In revo.c I found this:
 
-I think I found it. I followed the spdif in and it leads to U19 which is an
-AKM AK4114VQ ("High Feature 192kHz 24bit Digital Audio Interface
-Transceiver"). It's the topmost of the very right of the card (below the
-"M-AUDIO" lettering).
+/* AK4114 support on Audiophile 192 */
+/* CDTO (pin 32) -- GPIO2 pin 52
+ * CDTI (pin 33) -- GPIO3 pin 53 (shared with AK4358)
+ * CCLK (pin 34) -- GPIO1 pin 51 (shared with AK4358)
+ * CSN  (pin 35) -- GPIO7 pin 59
+ */
+#define AK4114_ADDR 0x02
 
-There is code for this chip in the driver-source (i2c/other/ak4114.c) and
-it's also referenced in the code for the Audiophile 192 (see revo.c and
-revo.h).
+I verified these mappings and can confirm that they're correct.
 
-Or do you think there's another chip involved?
+I found one more connection:
+
+INT0 (pin36) -- GPIO6 pin 58
+
+So the complete (?) list with complete pin names on the AK4114 would be:
+
+ICE1724 -> AK4114
+
+GPIO1 -> OCKS1/CCLK/SCL
+GPIO2 -> CM0/CDTO/CAD1
+GPIO3 -> CM1/CDTI/SDA
+GPIO6 -> INT0
+GPIO7 -> OCKS0/CSN/CAD0
+
+I can not rule out that there are more connections! If you think there
+should be more connections I'll do some more tracing.
+It is a bit tedious <http://www.dict.cc/englisch-deutsch/tedious.html> because
+not all connections can be traced visually. I did that with a multimeter.
+
+If anybody needs datasheets for the VT1724 or AK4114, I have them available.
+
+What would be next? Right now I have no idea how to verify that in the
+existing code.
 
 - Jonas
 
 
-2013/1/26 Jaroslav Kysela <perex@perex.cz>
+2013/1/26 Pavel Hofman <pavel.hofman@ivitera.com>
 
 >
-> I believe that there must be a S/PDIF receiver IC somewhere on the board
-> and this IC may be wrongly configured. This IC is not handled in the
-> current ALSA driver at all. Could you look to your board and check the
-> used chips? From pictures on internet, a suspicious IC is in the middle
-> of top on this PCI card. The AKM IC's are for analog audio outputs.
+> http://www.nix.ru/autocatalog/m_audio_midiman_sound/34397_2245_draft.jpg
+> reveals it is AK4114, just like in ESI Juli. Its default serial data
+> protocol  is not 24bit I2S, the format expected by ICE1724.
 >
-> The ICE1724 chip has only serial SPDIF input and SPDIF input clock pins.
-> The input samples should be copied to the DMA without any modifications
-> (no volume control etc.).
+> It should be feasible to trace the GPIOs from ICE1724 to AK4114 and add
+> the config code.
 >
->                                         Jaroslav
+> Regards,
 >
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project; Red Hat, Inc.
+> Pavel.
+>
 >
