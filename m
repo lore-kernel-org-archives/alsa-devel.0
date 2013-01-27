@@ -1,97 +1,51 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix mono
-Date: Sun, 27 Jan 2013 10:58:47 +0800
-Message-ID: <20130127025844.GC4650@opensource.wolfsonmicro.com>
-References: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
- <20130126085512.GC30594@opensource.wolfsonmicro.com>
- <1343658253.242147.1359209821129.JavaMail.root@advansee.com>
+Subject: Re: [PATCH V6 10/10] dmaengine: Fix compilation error in non-DT case
+Date: Sun, 27 Jan 2013 11:39:31 +0800
+Message-ID: <20130127033929.GH4650@opensource.wolfsonmicro.com>
+References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
+ <1358509629-20471-11-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3667029944539542381=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2EEB4260314
- for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2013 03:59:04 +0100 (CET)
-In-Reply-To: <1343658253.242147.1359209821129.JavaMail.root@advansee.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pfTAc8Cvt8L6I27a"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1358509629-20471-11-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3667029944539542381==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VywGB/WGlW4DM4P8"
+--pfTAc8Cvt8L6I27a
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
+On Fri, Jan 18, 2013 at 05:17:09PM +0530, Padmavathi Venna wrote:
+> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
 
---VywGB/WGlW4DM4P8
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This should be sent separately to Vinod for merge into v3.8, it's not
+obviously related to the rest of the series and is a bug fix.
 
-On Sat, Jan 26, 2013 at 03:17:01PM +0100, Beno=EEt Th=E9baudeau wrote:
-> On Saturday, January 26, 2013 9:55:14 AM, Mark Brown wrote:
-
-> > So, this doesn't actually fix mono - it removes support for it.
-
-> Yes, for this driver, but this fixes mono for the whole system, meaning t=
-hat
-> e.g. it fixes mono playback support with players like MPlayer. I will rew=
-ord if
-> you prefer.
-
-Yes, please.
-
-> I've only tested with I=B2S (imx-ssi). But for all the available DAI mode=
-s, the
-> data sheet gives the encoding for both stereo channels (from p. 21), and =
-nowhere
-> it says that mono is an option for DAI:
-
-I2S isn't really relevant here, it's not possible to clock I2S as a mono
-interface.
-
-> I will retest with DSP modes if you prefer.
-
-Yes, please.
-
---VywGB/WGlW4DM4P8
+--pfTAc8Cvt8L6I27a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRBJfRAAoJELSic+t+oim9i+IP/jGUMGmL75UtbrBiyMXSIZIm
-cj+k/K4Ws/lYN52DWzhZAZ0dAA3j2B2ueKxBmGk6JnE6icBHMJfu6ExIUFy0zkPC
-3Bs6k+MUlG5xyESbgwR64xtXVFoPU0/4Wqk9yk5bl/73IUR2V+mP+2sGBf0s3Gku
-bkQibcttTmeTbYFpLRZOx2b6UHAwJnMSgEJYPrRI2o+n1nfnKn8M1kRglS3KN/VO
-DdZ8GGfc3XzkgJ3PSxN9v7FS0ibRW/px95rvZv8EtY7hoXHNMAwcoS61Q+IdiuJI
-mmySjUIUmkc7+8++2VzyrF7/9pSsph8f8UIgfcDL5VzUt3sHhR8ohfmtSJTxRlnm
-UIYeI8jg42Vv327MGbOrepOUEsLOQTbquq6EXl7p9uxCacCiB209k6ZMx4R4Zt6T
-gfQKHR8FG0ATlNS44r0usbYH3KSbk3KsBqGHgtWGc1u18+yi3+fshzwM9NWgXSF+
-/611xoB10e2X2ZHvV7EaQL2dGfv5wbpqH4vmMfXhRYQFnVewEIfZxBn4UD6ja1hS
-N65ROxQMabe2K6VStLmImgjxy79WjvVb4LV9FkWJJrxIWKWKcxXVw8zHIMPsC3SF
-dKB1PVj5Z7wr/JZWYXaJx4AuTvv0OGyHZds8s6uhrNHKSkHn5YU9gWta3nUyUa7W
-W0REPgPxukZJelp4qWM7
-=o2p+
+iQIcBAEBAgAGBQJRBKFqAAoJELSic+t+oim9TSEP/iq5gmQgg6rdn6kuy5M6vBJL
+qUjbUMe8eZ2Bmtd8tXQLD1VjEixOmHCdX9GrLYsITFkNCQ7uyTM6ZapNh9Hbp4Qr
+UIAGrsLg2oDP0p39ThwBIgHYV58h/zCgNdLTWOidq9KESWtqlivfA4d+IwNaQolr
+sVZAY5FOoyg69i3oQafI7knJ7cySL4G1FBwJ2i6nKTsDOw0iSzCsj7zYrIdTY9pl
+x/NIpN+jUcht/1RWRXfwNqitiq/hClOKOSy+wobVKNvPCO7sGZH82PpRBm3ekeBw
+RXIN8cA6ZDQQOU/MbBus0zg+nuoh9UZYy96mC0wgWxz8h9WMF3rkJF2Juub+jLjR
+g87fW/a6VX7jKFw3wtdpMGsCdNTHW1A1zfuRWYTIaL/6+1eM/2V9NUvvG99BkRPW
+8NMSSoFBm4hfHs0G/om4dkKi2y6EHIU3mR4B1x2P6eqGa2jHy8YW8YEnPMs+Dlwp
+MY8BpdORaLTAQN/y09nf2d3d1k/G+qeiUoWS8eI+6IW7UPqJTGYUjPOpIkLxtucr
+fa03uvqM6pW1uqF8sfJCKngzrzb79BCLJ5+IvOhRx0AsDKJfXqnu80EJ2WZR4okd
+zZ+BcINTHntQTdD4Vme52Xjrp/aZm16rxKRBZvRakf7rdwsO05/7TW571+E6q5hx
+CA1+OXWGO7L2HXSWI+W+
+=y9Cg
 -----END PGP SIGNATURE-----
 
---VywGB/WGlW4DM4P8--
-
---===============3667029944539542381==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3667029944539542381==--
+--pfTAc8Cvt8L6I27a--
