@@ -1,55 +1,47 @@
 From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: [PATCH 1/6] Force a cast to silence a warning from "sparse"
-Date: Mon, 28 Jan 2013 23:42:27 +0100
-Message-ID: <1359412952-1680-2-git-send-email-ospite@studenti.unina.it>
+Subject: [PATCH 3/6] Documentation/DocBook/writing-an-alsa-driver.tmpl: fix some typos
+Date: Mon, 28 Jan 2013 23:42:29 +0100
+Message-ID: <1359412952-1680-4-git-send-email-ospite@studenti.unina.it>
 References: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-doc-owner@vger.kernel.org>
 In-Reply-To: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-doc-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Antonio Ospite <ao2@amarulasolutions.com>, Takashi Iwai <tiwai@suse.de>, Michael Trimarchi <michael@amarulasolutions.com>, linux-kernel@vger.kernel.org
+Cc: Antonio Ospite <ao2@amarulasolutions.com>, Takashi Iwai <tiwai@suse.de>, Michael Trimarchi <michael@amarulasolutions.com>, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Antonio Ospite <ao2@amarulasolutions.com>
 
-  Some audio drivers are calling snd_dma_continuous_data(GFP_KERNEL)
-  which makes "sparse" give a warning:
-
-    $ make C=2 M=sound/usb modules
-      ...
-    sound/usb/6fire/pcm.c:625:25: warning: cast from restricted gfp_t
-    sound/usb/caiaq/audio.c:845:41: warning: cast from restricted gfp_t
-    sound/usb/usx2y/usbusx2yaudio.c:997:54: warning: cast from restricted gfp_t
-    sound/usb/usx2y/usbusx2yaudio.c:1001:54: warning: cast from restricted gfp_t
-    sound/usb/usx2y/usx2yhwdeppcm.c:774:54: warning: cast from restricted gfp_t
-    sound/usb/usx2y/usx2yhwdeppcm.c:778:54: warning: cast from restricted gfp_t
-
-  Add __force to the cast to silence the warning.
+s/PAUSE_PUSE/PAUSE_PUSH/
+s/happense/happens/
 
 Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
 ---
+ Documentation/DocBook/writing-an-alsa-driver.tmpl |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-CCing linux-kernel on just this patch of the series as there may be
-comments about this practice of forcing casts.
-
-Regards,
-   Antonio
-
- include/sound/memalloc.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 844af65..cf15b82 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -37,7 +37,7 @@ struct snd_dma_device {
- #ifndef snd_dma_pci_data
- #define snd_dma_pci_data(pci)	(&(pci)->dev)
- #define snd_dma_isa_data()	NULL
--#define snd_dma_continuous_data(x)	((struct device *)(unsigned long)(x))
-+#define snd_dma_continuous_data(x)	((struct device *)(__force unsigned long)(x))
- #endif
+diff --git a/Documentation/DocBook/writing-an-alsa-driver.tmpl b/Documentation/DocBook/writing-an-alsa-driver.tmpl
+index da2f443..c0781bb 100644
+--- a/Documentation/DocBook/writing-an-alsa-driver.tmpl
++++ b/Documentation/DocBook/writing-an-alsa-driver.tmpl
+@@ -2897,7 +2897,7 @@ struct _snd_pcm_runtime {
  
- 
+         <para>
+           When the pcm supports the pause operation (given in the info
+-        field of the hardware table), the <constant>PAUSE_PUSE</constant>
++        field of the hardware table), the <constant>PAUSE_PUSH</constant>
+         and <constant>PAUSE_RELEASE</constant> commands must be
+         handled here, too. The former is the command to pause the pcm,
+         and the latter to restart the pcm again. 
+@@ -3084,7 +3084,7 @@ struct _snd_pcm_runtime {
+       <section id="pcm-interface-interrupt-handler-timer">
+         <title>High frequency timer interrupts</title>
+         <para>
+-	This happense when the hardware doesn't generate interrupts
++	This happens when the hardware doesn't generate interrupts
+         at the period boundary but issues timer interrupts at a fixed
+         timer rate (e.g. es1968 or ymfpci drivers). 
+         In this case, you need to check the current hardware
 -- 
 1.7.10.4
+
