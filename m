@@ -1,66 +1,40 @@
-From: shal@free.fr
-Subject: Re: Some information about UsbPre2 UAC2 support
-Date: Mon, 28 Jan 2013 14:48:16 +0100 (CET)
-Message-ID: <1565248075.1826245.1359380896039.JavaMail.root@spooler2-g27.priv.proxad.net>
-References: <510678AE.7000204@ladisch.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 0/4] Add generic DMA DT binding support
+Date: Mon, 28 Jan 2013 05:43:06 -0800
+Message-ID: <20130128134305.GU26562@intel.com>
+References: <1358508824-20352-1-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 0366E2652FB
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 14:48:21 +0100 (CET)
-Received: from spooler2-g27.priv.proxad.net (unknown [172.20.243.240])
- by smtp4-g21.free.fr (Postfix) with ESMTP id 6ED3D4C81B8
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 14:48:17 +0100 (CET)
-In-Reply-To: <510678AE.7000204@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1358508824-20352-1-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>, arnd@arndb.de
+Cc: padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-CgotLS0tLSBNYWlsIG9yaWdpbmFsIC0tLS0tCj4gRGU6ICJDbGVtZW5zIExhZGlzY2giIDxjbGVt
-ZW5zQGxhZGlzY2guZGU+Cj4gw4A6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IEVudm95
-w6k6IEx1bmRpIDI4IEphbnZpZXIgMjAxMyAxNDoxMDowNgo+IE9iamV0OiBSZTogW2Fsc2EtZGV2
-ZWxdIFNvbWUgaW5mb3JtYXRpb24gYWJvdXQgVXNiUHJlMiBVQUMyIHN1cHBvcnQKPiAKPiBzaGFs
-QGZyZWUuZnIgd3JvdGU6Cj4gPj4KPiA+PiBzaGFsQGZyZWUuZnIgd3JvdGU6Cj4gPiBJdCdzIHNl
-ZW1zIHRoYXQgdGhlIGJlaGF2aW9yIG9mIHRoZSBzb3VuZCBjYXJkIGRlcGVuZHMgdG8gdGhlIGZp
-cnN0Cj4gPiBnZXRfY29uZmlndXJhdGlvbigpIGFuZCBrZWVwIGl0IHVudGlsIHBvd2VyZWQuCj4g
-PiBJIGRpc2NvdmVycyB0aGF0IHdoZW4gSSBwZXJmb3JtcyBhIHJlYm9vdCBpbiBvcmRlciB0byB0
-ZXN0IG15Cj4gPiBtb2RpZmllZCBrZXJuZWwgOiBUaGUgc291bmQgY2FyZCByZW1haW5zIGluIFVB
-QzEuCj4gCj4gPiBJIGhhdmUgdG8gcGx1Zy91bnBsdWcgdGhlIHNvdW5kIGNhcmQgaW4gb3JkZXIg
-dG8gaGF2ZSAyCj4gPiBjb25maWd1cmF0aW9ucwo+ID4gZGVzY3JpcHRvciBmb3IgdGhpcyBkZXZp
-Y2UuCj4gCj4gVGhhdCdzIHN0cmFuZ2U7IHRoZSBnZXRfZGVzY3JpcHRvciByZXF1ZXN0IHNob3Vs
-ZCBiZSB0aGUgc2FtZS4KClRoZSBzY2VuYXJpbyBpcyA6Ci0gSSB1c2VkIGEgc3RhbmRhcmQga2Vy
-bmVsICh3aXRoIDY0IGFzIGdldF9kZXNjcmlwdG9yIGJ1ZmZlciBzaXplKQotIEkgY29ubmVjdCB0
-aGUgc291bmQgY2FyZAotIHRoZSBzb3VuZCBjYXJkIHJlY29nbml6ZSB0aGUgT1MgYXMgYSBXaW5k
-b3dzIGFuZCBzZW5kcyBhIFVBQzEgb25seSBjb25maWd1cmF0aW9uIGFuZCBrZWVwIHRoaXMgc3Rh
-dGUgZm9yIGFsbCBnZXRfY29uZmlndXJhdGlvbgotIEkgcmVib290IHdpdGggbW9kaWZpZWQga2Vy
-bmVsICh3aXRoIDY1IGFzIGdldF9kZXNjcmlwdG9yIGJ1ZmZlciBzaXplKQotIFRoZSBzb3VuZCBj
-YXJkIGFscmVhZHkgcHJvdmlkZXMgYSBVQUMxIG9ubHkgY29uZmlndXJhdGlvbgotIEkgcGx1Zy91
-bnBsdWcgdGhlIHNvdW5kIGNhcmQgKHRoZSBVYnNQcmUyIGlzIHVzYiBwb3dlcmVkKQotIE5vdyB0
-aGUgc291bmQgY2FyZCBwcm92aWRlcyBhIFVBQzErVUFDMiBjb25maWd1cmF0aW9uCgo+ID4gQSB1
-c2JfcmVzZXQoKSBjYW4gYmUgaGVscGZ1bCwgcGVyaGFwcz8KPiAKPiBQZXJoYXBzLgoKPT4gSSB3
-aWxsIHRyeSB0aGlzIDoKLSBzdGFuZGFyZCB1c2IgY29yZSBkcml2ZXIgKHJldmVydCBteSB1Z2x5
-IHBhdGNoIG9uIGh1Yy5jIGFuZCBnZW5lcmljLmMpCi0gaW4gdGhlIHVzYiBhdWRpbyBJIHdpbGwg
-YWRkIGEgcXVpcmsgZm9yIHRoZSB2ZW5kb3IvcHJvZHVjdCBJRCBvZiBteSBzb3VuZCBjYXJkCi0g
-SSBwZXJmb3JtZWQgYSB1c2JfcmVzZXQoKQotIEkgcGVyZm9ybWVkIGEgZ2V0X2Rlc2NyaXB0b3Ig
-dXNpbmcgYSB1c2JfY29udHJvbCgpIHdpdGggNjUgYXMgYnVmZmVyIHNpemUKLSBJIGNob29zZSB0
-aGUgMm5kIGNvbmZpZ3VyYXRpb24gZGVzY3JpcHRvcgoKVGhlcmUgaXMgYW55IGNoYW5jZSB0aGF0
-IGl0IHdvcmtzID8KCj4gCj4gPiBQZXJoYXBzLCB3ZSBjYW4gZG8gdGhlIHNhbWUgdGhpbmcgdGhh
-dCB0aGUgQVNJTyBkcml2ZXIuCj4gCj4gVGhhdCdzIHdoYXQgSSBtZWFudCB3aXRoIHRoZSBxdWly
-ay4gIChUaGUgZmlyc3QgY29uZmlndXJhdGlvbiBkb2VzCj4gaGF2ZQo+IGVuZHBvaW50cyBmb3Ig
-aGlnaCBzYW1wbGUgcmF0ZXMsIGJ1dCB0aGVzZSBhcmVuJ3QgbWFya2VkIGFzIGJlaW5nCj4gY29t
-cGF0aWJsZSB3aXRoIGVpdGhlciBVQUMgMSBvciAyLikKCkkgd2lsbCBhc2sgbW9yZSBpbmZvcm1h
-dGlvbiB0byB0aGUgU291bmQgRGV2aWNlcyBkZXZlbG9wcGVyLgoKVGhhbmssCgpiZXN0IHJlZ2Fy
-ZHMsCk9saXZpZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Fri, Jan 18, 2013 at 05:03:40PM +0530, Padmavathi Venna wrote:
+> This patch set adds support for generic dma device tree bindings for
+> Samsung platforms and is dependent on the following patches from
+> Vinod Koul next branch
+> 1)of: Add generic device tree DMA helpers
+> 2)dmaengine: add helper function to request a slave DMA channel
+Changes look fairly decent. I need somone with better knowldge of DT to akc this
+before this is applied. Arnd...?
+> 
+> This patch set is made based Kukjin Kim for-next branch
+> 
+> Padmavathi Venna (4):
+>   DMA: PL330: Add xlate function
+>   DMA: PL330: Register the DMA controller with the generic DMA helpers
+>   ARM: dts: Add #dma-cells for generic dma binding support
+>   DMA: PL330: Modify pl330 filter based on new generic dma dt bindings.
+> 
+>  .../devicetree/bindings/dma/arm-pl330.txt          |    9 +++-
+>  arch/arm/boot/dts/exynos5250.dtsi                  |    4 ++
+>  drivers/dma/pl330.c                                |   48 ++++++++++++++++----
+>  3 files changed, 49 insertions(+), 12 deletions(-)
+> 
+> -- 
+> 1.7.4.4
+> 
