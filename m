@@ -1,45 +1,57 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/4] DMA: PL330: Register the DMA controller with the generic DMA helpers
-Date: Mon, 28 Jan 2013 18:01:13 +0000
-Message-ID: <201301281801.13865.arnd@arndb.de>
-References: <1358508824-20352-1-git-send-email-padma.v@samsung.com> <201301281451.00364.arnd@arndb.de> <5106BB5C.1010302@ti.com>
+From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix mono
+Date: Mon, 28 Jan 2013 22:03:40 +0100 (CET)
+Message-ID: <1064296906.226931.1359407020092.JavaMail.root@advansee.com>
+References: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
+ <20130126085512.GC30594@opensource.wolfsonmicro.com>
+ <1343658253.242147.1359209821129.JavaMail.root@advansee.com>
+ <20130127025844.GC4650@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <5106BB5C.1010302@ti.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Jon Hunter <jon-hunter@ti.com>
-Cc: devicetree-discuss@lists.ozlabs.org, boojin.kim@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, swarren@nvidia.com, Padmavathi Venna <padma.v@samsung.com>, sbkim73@samsung.com, jassisinghbrar@gmail.com, vinod.koul@intel.com, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from zose-mta11.web4all.fr (zose-mta11.web4all.fr [178.33.204.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42B38265371
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 22:03:41 +0100 (CET)
+In-Reply-To: <20130127025844.GC4650@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 28 January 2013, Jon Hunter wrote:
-> On 01/28/2013 08:51 AM, Arnd Bergmann wrote:
-> > On Friday 18 January 2013, Padmavathi Venna wrote:
-> >> +       pfi = devm_kzalloc(&adev->dev, sizeof(*pfi), GFP_KERNEL);
-> >> +       if (!pfi) {
-> >> +               dev_err(&adev->dev, "unable to allocate mem\n");
-> >> +               return -ENOMEM;
-> >> +       }
-> >> +
-> >> +       pfi->dma_cap = pd->cap_mask;
-> >> +       pfi->filter_fn = pl330_filter;
-> >> +
-> >> +       ret = of_dma_controller_register(adev->dev.of_node,
-> >> +                                        of_dma_pl330_xlate, pfi);
-> > 
-> > Why do you pass a 'struct of_dma_filter_info' here? I would
-> > expect that you pass the pdmac object as the third argument.
-> 
-> I believe it is because that is the data that the xlate function is
-> using. Are you suggesting the data should be stored in the pdmac object
-> and extracted from there? That could be done too given that this
-> controller has its own xlate.
-
-It just seems weird that we are passing a constant cap_mask in
-a data structure, and that we need our own filter function still,
-but don't pass the pointer to the data structure that we actually
-need in the filter function (the dma_device *).
-
-	Arnd
+T24gU3VuZGF5LCBKYW51YXJ5IDI3LCAyMDEzIDM6NTg6NDcgQU0sIE1hcmsgQnJvd24gd3JvdGU6
+Cj4gT24gU2F0LCBKYW4gMjYsIDIwMTMgYXQgMDM6MTc6MDFQTSArMDEwMCwgQmVub8OudCBUaMOp
+YmF1ZGVhdSB3cm90ZToKPiA+IE9uIFNhdHVyZGF5LCBKYW51YXJ5IDI2LCAyMDEzIDk6NTU6MTQg
+QU0sIE1hcmsgQnJvd24gd3JvdGU6Cj4gPiBJJ3ZlIG9ubHkgdGVzdGVkIHdpdGggScKyUyAoaW14
+LXNzaSkuIEJ1dCBmb3IgYWxsIHRoZSBhdmFpbGFibGUgREFJIG1vZGVzLAo+ID4gdGhlCj4gPiBk
+YXRhIHNoZWV0IGdpdmVzIHRoZSBlbmNvZGluZyBmb3IgYm90aCBzdGVyZW8gY2hhbm5lbHMgKGZy
+b20gcC4gMjEpLCBhbmQKPiA+IG5vd2hlcmUKPiA+IGl0IHNheXMgdGhhdCBtb25vIGlzIGFuIG9w
+dGlvbiBmb3IgREFJOgo+IAo+IEkyUyBpc24ndCByZWFsbHkgcmVsZXZhbnQgaGVyZSwgaXQncyBu
+b3QgcG9zc2libGUgdG8gY2xvY2sgSTJTIGFzIGEgbW9ubwo+IGludGVyZmFjZS4KPiAKPiA+IEkg
+d2lsbCByZXRlc3Qgd2l0aCBEU1AgbW9kZXMgaWYgeW91IHByZWZlci4KPiAKPiBZZXMsIHBsZWFz
+ZS4KCkkgaGF2ZSBub3cgdGVzdGVkIGFsbCB0aGUgREFJIGZvcm1hdHMgY29tcGF0aWJsZSB3aXRo
+IGJvdGggaW14LXNzaSBhbmQKdGx2MzIwYWljM3gsIGkuZS46CiAtIEkyUyB8IE5CX05GIHwgQ0JN
+X0NGTSwKIC0gRFNQX0EgfCBJQl9ORiB8IENCTV9DRk0sCiAtIERTUF9CIHwgSUJfTkYgfCBDQk1f
+Q0ZNLAogLSBMRUZUX0ogfCBOQl9ORiB8IENCTV9DRk0uCgpJbiBhbGwgY2FzZXMsIHN0ZXJlbyB3
+b3JrcyBqdXN0IGZpbmUuCgpBcyB0byBtb25vLCBzZXR0aW5nIC5jaGFubmVsc19taW4gdG8gMiBh
+bHNvIGFsd2F5cyB3b3JrcyBmaW5lIChhcyBleHBlY3RlZCwgYnV0Cm5vdCBpbnRlcmVzdGluZyBo
+ZXJlKS4KCkZvciBtb25vIHdpdGggLmNoYW5uZWxzX21pbiA9IDEgKGkuZS4gd2l0aG91dCB0aGlz
+IHBhdGNoKSwgSSBoYXZlIHRyaWVkIHdpdGg6CgoxKSBzbmRfc29jX2RhaV9zZXRfdGRtX3Nsb3Qo
+Y3B1X2RhaSwgMHhmZmZmZmZjLCAweGZmZmZmZmMsIDIsIDApOwotPiBhbGwgREFJIGZvcm1hdHM6
+IHdyb25nIHNhbXBsZSByYXRlIGZvciBML1IsIHBsYXlpbmcgdHdpY2UgdG9vIGZhc3QKCjIpIHNu
+ZF9zb2NfZGFpX3NldF90ZG1fc2xvdChjcHVfZGFpLCAweGZmZmZmZmUsIDB4ZmZmZmZmZSwgMSwg
+MCk7Ci0+IGFsbCBEQUkgZm9ybWF0czogbm90aGluZyBvbiBSLCB3cm9uZyBzYW1wbGUgcmF0ZSBm
+b3IgTCwgcGxheWluZyB0d2ljZSB0b28KICAgZmFzdCwgcGx1cyBsb3VkIG5vaXNlIHN1cGVyaW1w
+b3NlZCBmb3IgTEVGVF9KCgpTbywgSSBkb24ndCBzZWUgaG93IHRvIGF2b2lkIHRoaXMgcGF0Y2gu
+CgpJIHdpbGwgc2VuZCBhIHJld29yZGVkIHVwZGF0ZS4KCkJlc3QgcmVnYXJkcywKQmVub8OudApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
