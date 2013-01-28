@@ -1,57 +1,81 @@
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix mono
-Date: Mon, 28 Jan 2013 22:03:40 +0100 (CET)
-Message-ID: <1064296906.226931.1359407020092.JavaMail.root@advansee.com>
-References: <1359134360-25482-1-git-send-email-benoit.thebaudeau@advansee.com>
- <20130126085512.GC30594@opensource.wolfsonmicro.com>
- <1343658253.242147.1359209821129.JavaMail.root@advansee.com>
- <20130127025844.GC4650@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [RFC][PATCH 2/2 v2] ASoC: simple-card: add Device Tree support
+Date: Mon, 28 Jan 2013 14:11:38 -0700
+Message-ID: <5106E98A.6070103@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+ <50E71618.8090302@wwwdotorg.org>
+ <20130104193712.GN4627@opensource.wolfsonmicro.com>
+ <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zose-mta11.web4all.fr (zose-mta11.web4all.fr [178.33.204.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 42B38265371
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 22:03:41 +0100 (CET)
-In-Reply-To: <20130127025844.GC4650@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87vcazyxr1.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuZGF5LCBKYW51YXJ5IDI3LCAyMDEzIDM6NTg6NDcgQU0sIE1hcmsgQnJvd24gd3JvdGU6
-Cj4gT24gU2F0LCBKYW4gMjYsIDIwMTMgYXQgMDM6MTc6MDFQTSArMDEwMCwgQmVub8OudCBUaMOp
-YmF1ZGVhdSB3cm90ZToKPiA+IE9uIFNhdHVyZGF5LCBKYW51YXJ5IDI2LCAyMDEzIDk6NTU6MTQg
-QU0sIE1hcmsgQnJvd24gd3JvdGU6Cj4gPiBJJ3ZlIG9ubHkgdGVzdGVkIHdpdGggScKyUyAoaW14
-LXNzaSkuIEJ1dCBmb3IgYWxsIHRoZSBhdmFpbGFibGUgREFJIG1vZGVzLAo+ID4gdGhlCj4gPiBk
-YXRhIHNoZWV0IGdpdmVzIHRoZSBlbmNvZGluZyBmb3IgYm90aCBzdGVyZW8gY2hhbm5lbHMgKGZy
-b20gcC4gMjEpLCBhbmQKPiA+IG5vd2hlcmUKPiA+IGl0IHNheXMgdGhhdCBtb25vIGlzIGFuIG9w
-dGlvbiBmb3IgREFJOgo+IAo+IEkyUyBpc24ndCByZWFsbHkgcmVsZXZhbnQgaGVyZSwgaXQncyBu
-b3QgcG9zc2libGUgdG8gY2xvY2sgSTJTIGFzIGEgbW9ubwo+IGludGVyZmFjZS4KPiAKPiA+IEkg
-d2lsbCByZXRlc3Qgd2l0aCBEU1AgbW9kZXMgaWYgeW91IHByZWZlci4KPiAKPiBZZXMsIHBsZWFz
-ZS4KCkkgaGF2ZSBub3cgdGVzdGVkIGFsbCB0aGUgREFJIGZvcm1hdHMgY29tcGF0aWJsZSB3aXRo
-IGJvdGggaW14LXNzaSBhbmQKdGx2MzIwYWljM3gsIGkuZS46CiAtIEkyUyB8IE5CX05GIHwgQ0JN
-X0NGTSwKIC0gRFNQX0EgfCBJQl9ORiB8IENCTV9DRk0sCiAtIERTUF9CIHwgSUJfTkYgfCBDQk1f
-Q0ZNLAogLSBMRUZUX0ogfCBOQl9ORiB8IENCTV9DRk0uCgpJbiBhbGwgY2FzZXMsIHN0ZXJlbyB3
-b3JrcyBqdXN0IGZpbmUuCgpBcyB0byBtb25vLCBzZXR0aW5nIC5jaGFubmVsc19taW4gdG8gMiBh
-bHNvIGFsd2F5cyB3b3JrcyBmaW5lIChhcyBleHBlY3RlZCwgYnV0Cm5vdCBpbnRlcmVzdGluZyBo
-ZXJlKS4KCkZvciBtb25vIHdpdGggLmNoYW5uZWxzX21pbiA9IDEgKGkuZS4gd2l0aG91dCB0aGlz
-IHBhdGNoKSwgSSBoYXZlIHRyaWVkIHdpdGg6CgoxKSBzbmRfc29jX2RhaV9zZXRfdGRtX3Nsb3Qo
-Y3B1X2RhaSwgMHhmZmZmZmZjLCAweGZmZmZmZmMsIDIsIDApOwotPiBhbGwgREFJIGZvcm1hdHM6
-IHdyb25nIHNhbXBsZSByYXRlIGZvciBML1IsIHBsYXlpbmcgdHdpY2UgdG9vIGZhc3QKCjIpIHNu
-ZF9zb2NfZGFpX3NldF90ZG1fc2xvdChjcHVfZGFpLCAweGZmZmZmZmUsIDB4ZmZmZmZmZSwgMSwg
-MCk7Ci0+IGFsbCBEQUkgZm9ybWF0czogbm90aGluZyBvbiBSLCB3cm9uZyBzYW1wbGUgcmF0ZSBm
-b3IgTCwgcGxheWluZyB0d2ljZSB0b28KICAgZmFzdCwgcGx1cyBsb3VkIG5vaXNlIHN1cGVyaW1w
-b3NlZCBmb3IgTEVGVF9KCgpTbywgSSBkb24ndCBzZWUgaG93IHRvIGF2b2lkIHRoaXMgcGF0Y2gu
-CgpJIHdpbGwgc2VuZCBhIHJld29yZGVkIHVwZGF0ZS4KCkJlc3QgcmVnYXJkcywKQmVub8OudApf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 01/14/2013 07:40 PM, Kuninori Morimoto wrote:
+> Support for loading the simple-card module via devicetree.
+> It requests cpu/codec/platform information for probing.
+
+> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+
+> +Required properties:
+> +
+> +- compatible					: "simple-audio"
+> +- simple-audio,card-name			: simple-audio card name
+> +
+> +- simple-audio,platform,controller		: phandle for platform
+
+Rename that simple-audio,dma-controller perhaps? "platform" is a word
+specific to ASoC, and the bindings really should be generic across OSs.
+
+But I wonder why you'd even need the ASoC platform to be specified in
+DT; instead, the following seem better:
+
+a) Have the CPU DAI's driver register the platform itself. Tegra does this.
+
+b) Assume the ASoC "platform" device simply does DMA via a standard
+dmaengine driber, and instead refer to the DMA controller using DMA
+engine DT bindings.
+
+> +- simple-audio,platform,name			: simple-audio platform name
+
+Can you explain why you'd need the platform name in the DT? Doesn't the
+phandle always uniquely identify it? The example doesn't use this property.
+
+> +- simple-audio,cpu,controller			: phandle for CPU DAI
+> +- simple-audio,cpu,dai,name			: simple-audio CPU DAI name
+
+It'd be a bit more typical of device-tree to have a single property that
+defines both the controller and any properties of the controller at
+once, e.g. something like:
+
+simple-audio,cpu-interface = <&codec_phandle AK4648_I2S_ITF_A>;
+
+where we assume something like:
+
+#define AK4648_I2S_ITF_A 0 // Interface A's ID
+
+That would remove the need to put string names into the DT.
+
+> +simple-audio,xxx,dai,clock-gating
+> +	"continuous"
+> +	"gated"
+
+Don't you need to use the common clock bindings to define which clock to
+gate? Or, is the I2S/... node's binding supposed to provide that
+information?
