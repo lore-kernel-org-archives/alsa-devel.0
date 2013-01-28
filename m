@@ -1,19 +1,22 @@
-From: shal@free.fr
-Subject: Re: Some information about UsbPre2 UAC2 support
-Date: Mon, 28 Jan 2013 13:43:31 +0100 (CET)
-Message-ID: <859779859.1409131.1359376918692.JavaMail.root@spooler2-g27.priv.proxad.net>
-References: <51043C96.40508@ladisch.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
+ capture
+Date: Mon, 28 Jan 2013 13:52:10 +0100
+Message-ID: <5106747A.5070803@ivitera.com>
+References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
+ <51042EE5.5070900@perex.cz>
+ <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
+ <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
+ <510644E5.1040505@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id B7E6D265293
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 13:46:49 +0100 (CET)
-Received: from spooler2-g27.priv.proxad.net (unknown [172.20.243.240])
- by smtp1-g21.free.fr (Postfix) with ESMTP id 8CBF6940063
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 13:46:45 +0100 (CET)
-In-Reply-To: <51043C96.40508@ladisch.de>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+ [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CE59265293
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 13:52:11 +0100 (CET)
+In-Reply-To: <510644E5.1040505@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Jonas Petersen <jnsptrsn1@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQ2xlbWVucywKCldlIGFscmVhZHkgaGF2ZSBiZWVuIGluIGNvbnRhY3QgZm9yIGEgYnVnIHJl
-c29sdXRpb24gb24gbXkgRWRpcm9sIFVBLTEwMDAuCgpNeSByZXNwb25zZSBiZWxsb3cuCgoKLS0t
-LS0gTWFpbCBvcmlnaW5hbCAtLS0tLQo+IERlOiAiQ2xlbWVucyBMYWRpc2NoIiA8Y2xlbWVuc0Bs
-YWRpc2NoLmRlPgo+IMOAOiBzaGFsQGZyZWUuZnIKPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCj4gRW52b3nDqTogU2FtZWRpIDI2IEphbnZpZXIgMjAxMyAyMToyOToxMAo+IE9iamV0
-OiBSZTogW2Fsc2EtZGV2ZWxdIFNvbWUgaW5mb3JtYXRpb24gYWJvdXQgVXNiUHJlMiBVQUMyIHN1
-cHBvcnQKPiAKPiBzaGFsQGZyZWUuZnIgd3JvdGU6Cj4gPiBGb3Igc29tZSBjb21wYXRpYmlsaXR5
-IHJhaXNvbiwgU291bmQgZGV2aWNlIGRldmVsb3BlciB3YW50IG9ubHkKPiA+IHNlbmQgYSBVQUMx
-IGNvbmZpZ3VyYXRpb24gd2hlbiB0aGUgT3BlcmF0aW5nIHN5c3RlbSBpcyBXaW5kb3dzLgo+ID4g
-VGhlIHVzZWQgbWV0aG9kIGlzIGJhc2VkIG9uIHRoZSBsZW5ndGggb2YgdGhlICBzZXR1cCBwYWNr
-ZXQgZHVyaW5nCj4gPiB0aGUgZGV2aWNlIGdldF9kZXNjcmlwdG9yIGZ1bmN0aW9uLgo+ID4gSWYg
-dGhlIGxlbmd0aCBpcyA2NCwgdGhlIE9TIGlzIGNvbnNpZGVyZWQgYXMgV2luZG93cy4KPiA+IExp
-bnV4IGhhdmUgY2hvb3NlbiBhbHNvIHRoaXMgdmFsdWUuCj4gCj4gQmVjYXVzZSB0aGVyZSBhcmUg
-YnVnZ3kgZGV2aWNlcyB0aGF0IGhhdmVuIGJlZW4gdGVzdGVkIG9ubHkgd2l0aAo+IFdpbmRvd3MK
-PiBhbmQgd2lsbCBibG93IHVwIGlmIG90aGVyIHZhbHVlcyBhcmUgY2hvc2VuLgo+IAo+IEkgZ3Vl
-c3Mgc29tZWJvZHkgaGFzIHRvIGFkZCBhIHF1aXJrIGZvciB0aGlzIGRldmljZSB0byB0aGUgZHJp
-dmVyLgoKSXQgaXMgbW9yZSBjb21wbGljYXRlZDogU291bmQgRGV2aWNlcyBkb24ndCB3YW50IHRo
-ZSBzYW1lIGJlaGF2aW9yIGJldHdlZW4gTWFjIE9TWCBhbmQgV2luZG93cy4KU29tZSBXaW5kb3dz
-IGRvZXMgbm90IHN1cHBvcnQgVUFDMiBieSBkZWZhdWx0ICh3aXRob3V0IEFTSU8gZHJpdmVyKS4K
-ClRoZSBTb3VuZCBEZXZpY2VzIGd1eSBzYXlzIDoKIldoZW4gdGhlIGNvbXB1dGVyIGlzc3VlcyBh
-IFNUQU5EQVJEX1JFUVVFU1RfR0VUX0RFU0NSSVBUT1Igd2UgY2hlY2sgdGhlIHNldHVwUGFja2V0
-LndMZW5ndGggZmllbGQuIElmIGl0IGlzIDY0IHRoZW4gd2UgbGltaXQgdGhlIG51bWJlciBvZiBj
-b25maWd1cmF0aW9ucyB0byAxLiBXaW5kb3dzIHdpbGwgb25seSBsb2FkIHRoZSBjb21wb3NpdGUg
-Y2xhc3MgZHJpdmVyIGlmIHRoZSBjb25maWd1cmF0aW9uIG51bWJlciBpcyAxLiAocmVmZXIgdG8K
-IGh0dHA6Ly9taW5pbGllbi5mci9hMG03cGogLSBub3RlIHRoZSBsaW5lIHdoaWNoIHNheXMgJ1Ro
-ZSBkZXZpY2UgbXVzdCBoYXZlIGEgc2luZ2xlIGNvbmZpZ3VyYXRpb24nLiApIgoKSXQncyBzZWVt
-cyB0aGF0IHRoZSBiZWhhdmlvciBvZiB0aGUgc291bmQgY2FyZCBkZXBlbmRzIHRvIHRoZSBmaXJz
-dCBnZXRfY29uZmlndXJhdGlvbigpIGFuZCBrZWVwIGl0IHVudGlsIHBvd2VyZWQuCkkgZGlzY292
-ZXJzIHRoYXQgd2hlbiBJIHBlcmZvcm1zIGEgcmVib290IGluIG9yZGVyIHRvIHRlc3QgbXkgbW9k
-aWZpZWQga2VybmVsIDogVGhlIHNvdW5kIGNhcmQgcmVtYWlucyBpbiBVQUMxLgpJIGhhdmUgdG8g
-cGx1Zy91bnBsdWcgdGhlIHNvdW5kIGNhcmQgaW4gb3JkZXIgdG8gaGF2ZSAyIGNvbmZpZ3VyYXRp
-b25zIGRlc2NyaXB0b3IgZm9yIHRoaXMgZGV2aWNlLgoKSSBhbSBhZnJhaWQgdGhhdCBpdCdzIGEg
-ZGlmZmljdWx0IHByb2JsZW0gdG8gcmVzb2x2ZWQuCkkgaGF2ZSBub3QgdGVzdGVkIGFsbCBwb3Nz
-aWJpbGl0aWVzLgpDYW4gd2UgaGF2ZSB0aGUgdmVuZG9yL3Byb2R1Y3QgSUQgYmVmb3JlIHRoZSBm
-aXJzdCBnZXRfY29uZmlndXJhdGlvbigpID8KQSB1c2JfcmVzZXQoKSBjYW4gYmUgaGVscGZ1bCwg
-cGVyaGFwcz8KUGVyaGFwcywgd2UgY2FuIGRvIHRoZSBzYW1lIHRoaW5nIHRoYXQgdGhlIEFTSU8g
-ZHJpdmVyLgoKCj4gPiBOb3csIHRoZSBVU0IgZGV2aWNlIGRlc2NyaXB0b3IgaGFzIHR3byBjb25m
-aWd1cmF0aW9uIGRlc2NyaXB0b3JzCj4gPiA6dGhlIGZpcnN0IGlzIGEgVUFDMSBhbmQgdGhlIHNl
-Y29uZCBpcyBhIFVBQzIuCj4gPgo+ID4gQXMgVUFDMSBpcyBhIHZhbGlkIGNvbmZpZ3VyYXRpb24g
-ZGVzY3JpcHRvciwgdGhlIHVzYiBzdGFjayBjaG9vc2UKPiA+IHRoaXMgY29uZmlndXJhdGlvbi4K
-PiA+Cj4gPiBJIGhhdmUgcGF0Y2hlZCB0aGUgdXNiX2Nob29zZV9jb25maWd1cmF0aW9uKCkgZnVu
-Y3Rpb24gaW4gZmlsZQo+ID4gZHJpdmVyL3VzYi9jb3JlL2dlbmVyaWMuYyBmb3Igb3ZlcndyaXRl
-IHRoZSB2YWx1ZSB3aXRoIHRoZSBnb29kCj4gPiBvbmUuCj4gCj4gVGhpcyBjYW4gYmUgY2hhbmdl
-ZCBsYXRlciBpbiB0aGUgZHJpdmVyIHdpdGgKPiB1c2JfZHJpdmVyX3NldF9jb25maWd1cmF0aW9u
-KCkuCgpUaGFuaywgSSB3aWxsIHRyeSB0byB3cml0ZSBhIGNsZWFuIHBhdGNoIGFzIGEgcXVpcmsg
-Zm9yIHRoaXMgcHJvYmxlbS4KClJlZ2FyZHMsCk9saXZpZXIKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 28.1.2013 10:29, Jaroslav Kysela wrote:
+> Date 27.1.2013 16:49, Jonas Petersen wrote:
+>> in ap192_ak4114_init() of revo.c I see this:
+>> 
+>> ---- static const unsigned char ak4114_init_vals[] = { AK4114_RST |
+>> AK4114_PWN | AK4114_OCKS0 | AK4114_OCKS1, AK4114_DIF_I24I2S, 
+>> AK4114_TX1E, AK4114_EFH_1024 | AK4114_DIT | AK4114_IPS(1), 0, 0 }; 
+>> static const unsigned char ak4114_init_txcsb[] = { 0x41, 0x02,
+>> 0x2c, 0x00, 0x00 }; ----
+>> 
+>> Something wrong here maybe?
+>> 
+>> I noticed that the ak4114_init_vals array has 6 values but in 
+>> ap192_ak4114_init() 7 values get written to ak4114.regmap.
+> 
+> Looking to the AK4114 datasheet. I would try the clock mode 2 
+> (CM1=1,CM0=0) and also, check if there is a 11.2896Mhz crystal used
+> for the reference clock (XTL1, XTL0). Also, the note in revo.c that
+> the input rate reported by AK4114 is unstable, clearly shows that the
+> clock logic is screwed (misconfigured).
+
+
+The crystal is not used
+http://www.nix.ru/autocatalog/m_audio_midiman_sound/34397_2245_draft.jpg
+. IME ak411x cards without the auxiliary Xiling fpga do not provide the
+independent clock from ak411X and thus cannot report the input rate
+correctly. That is why I do not make use of the value in the driver
+(ak->check_flags = AK4114_CHECK_NO_RATE)
+
+Jonas, please could you check if ak4114 pins XTL0/1 (10, 11) are
+connected to logical high? They should be :)
+
+Regards,
+
+Pavel.
