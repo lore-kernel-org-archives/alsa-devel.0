@@ -1,7 +1,7 @@
 From: Daniel Griscom <griscom@suitable.com>
 Subject: Re: ALSA versions versus kernel versions
-Date: Mon, 28 Jan 2013 11:14:59 -0500
-Message-ID: <p06240807cd2c4ef1c890@[192.168.1.8]>
+Date: Mon, 28 Jan 2013 10:50:04 -0500
+Message-ID: <p06240804cd2c4ac9cf39@[192.168.1.8]>
 References: <1357341987-3327-1-git-send-email-rneri@dextratech.com>
  <1357341987-3327-3-git-send-email-rneri@dextratech.com>
  <51029A30.7070903@ti.com>	<p06240807cd284c6a33a7@[192.168.1.8]>
@@ -10,13 +10,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway13.websitewelcome.com (gateway13.websitewelcome.com
- [67.18.22.80]) by alsa0.perex.cz (Postfix) with ESMTP id A6EC62652E8
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 17:15:06 +0100 (CET)
+Received: from gateway14.websitewelcome.com (gateway14.websitewelcome.com
+ [69.93.243.15]) by alsa0.perex.cz (Postfix) with ESMTP id 3594C2652E8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 17:15:18 +0100 (CET)
 Received: from gator683.hostgator.com (gator683.hostgator.com
  [174.132.158.226])
- by gateway13.websitewelcome.com (Postfix) with ESMTP id 97EB42B2DF923
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 10:14:57 -0600 (CST)
+ by gateway14.websitewelcome.com (Postfix) with ESMTP id 5D91F1B90CED8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 10:15:04 -0600 (CST)
 In-Reply-To: <s5hr4l58gxy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -41,9 +41,9 @@ At 4:28 PM +0100 1/28/13, Takashi Iwai wrote:
 >It's the second time, so I guess the previous time wasn't an
 >accident.
 
-Are there hidden email headers that maintain threads independent of 
-the subject line? If so then my apologies: my (antique) email client 
-has been hiding them from me.
+How so? Is there a hidden email field that tracks threads independent 
+of the thread titles? If so, my apologies: my (antique) email client 
+must be doing things behind my back.
 
 >  > not even an RTFM (although I'm
 >>  pretty sure this isn't in the M). So, in case anyone else is
@@ -61,16 +61,14 @@ has been hiding them from me.
 >And note that the alsa-driver version number has been already
 >deprecated in the recent kernel.  The confusing number 1.0.25 was
 >dropped, finally.
->
+
+Ah. Is there somewhere I could find out information such as this?
+
 >In short, forget about alsa-driver released packages.  Stick with the
 >driver included in your kernel, or use alsa-driver snapshot tarball
 >(but carefully).
-
-Well, that's good to know. How do you refer to ALSA release versions 
-now? Just by the kernel version that the various file versions are 
-included into?
-
->  > - The alsa-driver package installs items that are NOT a part of the
+>
+>>  - The alsa-driver package installs items that are NOT a part of the
 >>  kernel package. The alsasound startup script and the ALSA headers are
 >>  the examples I've found so far, but there may be more items.
 >
@@ -78,19 +76,13 @@ included into?
 >mostly harmless.  You can run "make install-modules" to install only
 >modules.
 
-But, I don't want to just install the alsa-driver-1.0.25 modules if 
-more recent ones are included in the kernel distributions; I only 
-need whatever's in alsa-driver that is NOT in the kernel 
-distributions, for example:
+Is the installed /etc/init.d/alsasound not needed? It seems to do a 
+number of tasks when starting and stopping.
 
-- Is /etc/init.d/alsasound not needed? It seems to do a number of 
-things on startup/shutdown.
+How do I install the ALSA headers without installing the rest of the 
+(obsolete) contents? "make install-headers" inside alsa-driver-1.0.25?
 
-- How can I independently install the ALSA headers: "make 
-headers-install" inside alsa-driver-1.0.25?
-
-And, are there any other components that alsa-driver installs that 
-are NOT included in the kernel distributions?
+And, does alsa-driver install anything else outside of the kernel modules?
 
 >  > - When installed, the alsa-driver package installs its modules into
 >>  the currently running kernel's directories. So, if you want to have
@@ -102,11 +94,7 @@ are NOT included in the kernel distributions?
 >extra) directory is suggested.  Pass a proper --with-moddir configure
 >option.
 
-I missed that: thanks.
 
-Reading the INSTALL doc on that option, it mentions using a relative 
-path to put the installed modules in a subdirectory so as to preserve 
-the existing versions: why would I want to do that?
 
 >  > <rant>
 >>  ALSA's Achilles heel has always been its documentation, whether for
@@ -121,28 +109,85 @@ the existing versions: why would I want to do that?
 >
 >You seem to overestimate the numbers.  I dream of dozen of core
 >developers, too.
-
-I hear you. But, that makes it even more important that the 
-documentation be as complete as possible, so that a) you few 
-developers don't get pestered by we not-yet-in-the-know users, and b) 
-the knowledge you each have built up over the years isn't lost when 
-one of you moves on to other projects.
-
+>
 >Speaking of implicit feedback: it's been since 3.5, but lots of bug
 >fixes are found in 3.7.  So better to use 3.7, I guess.
-
-That's good information.
-
+>
+>
 >HTH,
 >
 >Takashi
+>
+>>
+>>
+>>  Thanks,
+>>  Dan
+>>
+>>
+>>  At 4:12 PM -0500 1/17/13, Daniel Griscom wrote:
+>>  >We're working to build a consistent Linux audio environment for our
+>>  >embedded audio product,with known versions of both ALSA and the
+>>  >kernel (we're specifically considering kernel 3.6.6). We are not
+>>  >clear, however, exactly what version of the ALSA kernel-space tools
+>>  >are included with the kernel, nor are we clear on exactly what each
+>>  >ALSA package is used for.
+>>  >
+>>  >In order to simplify any responses, I'll give my best guess as to
+>>  >what's included in the kernel and each ALSA package: let me know
+>  > >where I went wrong.
+>>  >
+>>  >
+>>  >So, am I right that...
+>>  >
+>>  >- Kernel 3.6.6 includes exactly alsa-driver-1.0.25 (I'm actually
+>>  >guessing not, but let me know.)
+>>  >
+>>  >- alsa-driver-1.0.25 is all included in the kernel release, and 
+>>can be ignored
+>>  >
+>>  >- alsa-lib is the user-space library that we complile our tools
+>>  >against, and that communicates with ALSA in the kernel through the
+>>  >device and /proc tree (required)
+>>  >
+>>  >- alsa-utils are various generic ALSA command line tools, such as
+>>  >amixer, aplay, alsaconf, etc (required)
+>>  >
+>>  >- alsa-tools are various more obscure tools and loaders (probably
+>>  >not required)
+>>  >
+>>  >- alsa-firmware are binary drivers for various third-party products
+>>  >(probably not required)
+>>  >
+>>  >- alsa-plugins are plugins for various ALSA needs (e.g. Jack)
+>>  >(probably not required)
+>>  >
+>>  >- alsa-oss is the OSS compatibilty layer (not required)
+>>  >
+>>  >- pyalsa is the Python bindings for ALSA (not required)
+>>  >
+>>  >
+>>  >And, some final questions:
+>>  >
+>>  >- What version of ALSA and the kernel are needed to fully support
+>>  >implicit feedback?
+>>  >
+>>  >- Given our audio focus, what version kernel would you recommend?
+>>  >
+>>  >
+>>  >Thanks,
+>>  >Dan
+>>
+>>  --
+>>  Daniel T. Griscom             griscom@suitable.com
+>>  Suitable Systems              http://www.suitable.com/
+>>  1 Centre Street, Suite 204    (781) 665-0053
+>>  Wakefield, MA  01880-2400
+>>  _______________________________________________
+>>  Alsa-devel mailing list
+>>  Alsa-devel@alsa-project.org
+>>  http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
 
-It most definitely does. Thank you.
-
-
-Dan
-
-P.S. And, I'll make sure to start a new thread next time.
 
 -- 
 Daniel T. Griscom             griscom@suitable.com
