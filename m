@@ -1,47 +1,61 @@
 From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: [PATCH 3/6] Documentation/DocBook/writing-an-alsa-driver.tmpl: fix some typos
-Date: Mon, 28 Jan 2013 23:42:29 +0100
-Message-ID: <1359412952-1680-4-git-send-email-ospite@studenti.unina.it>
+Subject: [PATCH 2/6]
+	Documentation/DocBook/writing-an-alsa-driver.tmpl: fix some thinkos
+Date: Mon, 28 Jan 2013 23:42:28 +0100
+Message-ID: <1359412952-1680-3-git-send-email-ospite@studenti.unina.it>
 References: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
-Return-path: <linux-doc-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14228265B47
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 23:43:56 +0100 (CET)
 In-Reply-To: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
-Sender: linux-doc-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Antonio Ospite <ao2@amarulasolutions.com>, Takashi Iwai <tiwai@suse.de>, Michael Trimarchi <michael@amarulasolutions.com>, linux-doc@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, Michael Trimarchi <michael@amarulasolutions.com>, Antonio Ospite <ao2@amarulasolutions.com>, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Antonio Ospite <ao2@amarulasolutions.com>
 
-s/PAUSE_PUSE/PAUSE_PUSH/
-s/happense/happens/
-
 Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
 ---
- Documentation/DocBook/writing-an-alsa-driver.tmpl |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/DocBook/writing-an-alsa-driver.tmpl |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/Documentation/DocBook/writing-an-alsa-driver.tmpl b/Documentation/DocBook/writing-an-alsa-driver.tmpl
-index da2f443..c0781bb 100644
+index fb32aea..da2f443 100644
 --- a/Documentation/DocBook/writing-an-alsa-driver.tmpl
 +++ b/Documentation/DocBook/writing-an-alsa-driver.tmpl
-@@ -2897,7 +2897,7 @@ struct _snd_pcm_runtime {
+@@ -871,9 +871,8 @@
+       <para>
+       This function itself doesn't allocate the data space. The data
+       must be allocated manually beforehand, and its pointer is passed
+-      as the argument. This pointer is used as the
+-      (<parameter>chip</parameter> identifier in the above example)
+-      for the instance. 
++      as the argument. This pointer (<parameter>chip</parameter> in the
++      above example) is used as the identifier for the instance.
+       </para>
  
-         <para>
-           When the pcm supports the pause operation (given in the info
--        field of the hardware table), the <constant>PAUSE_PUSE</constant>
-+        field of the hardware table), the <constant>PAUSE_PUSH</constant>
-         and <constant>PAUSE_RELEASE</constant> commands must be
-         handled here, too. The former is the command to pause the pcm,
-         and the latter to restart the pcm again. 
-@@ -3084,7 +3084,7 @@ struct _snd_pcm_runtime {
-       <section id="pcm-interface-interrupt-handler-timer">
-         <title>High frequency timer interrupts</title>
-         <para>
--	This happense when the hardware doesn't generate interrupts
-+	This happens when the hardware doesn't generate interrupts
-         at the period boundary but issues timer interrupts at a fixed
-         timer rate (e.g. es1968 or ymfpci drivers). 
-         In this case, you need to check the current hardware
+       <para>
+@@ -2304,7 +2303,7 @@ struct _snd_pcm_runtime {
+         <constant>SNDRV_PCM_INFO_XXX</constant>. Here, at least, you
+         have to specify whether the mmap is supported and which
+         interleaved format is supported.
+-        When the is supported, add the
++        When the hardware supports mmap, add the
+         <constant>SNDRV_PCM_INFO_MMAP</constant> flag here. When the
+         hardware supports the interleaved or the non-interleaved
+         formats, <constant>SNDRV_PCM_INFO_INTERLEAVED</constant> or
 -- 
 1.7.10.4
-
