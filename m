@@ -1,51 +1,41 @@
-From: Jon Hunter <jon-hunter@ti.com>
-Subject: Re: [PATCH 2/4] DMA: PL330: Register the DMA controller with the
- generic DMA helpers
-Date: Mon, 28 Jan 2013 15:11:01 -0600
-Message-ID: <5106E965.4080308@ti.com>
-References: <1358508824-20352-1-git-send-email-padma.v@samsung.com> <201301281451.00364.arnd@arndb.de> <5106BB5C.1010302@ti.com> <201301281801.13865.arnd@arndb.de>
+From: Smeefer <camversion@jinbo.net>
+Subject: Re: Trouble about Roland UA-55 and snd-usb-audio module
+Date: Mon, 28 Jan 2013 21:21:24 +0000 (UTC)
+Message-ID: <loom.20130128T221942-836@post.gmane.org>
+References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
+ <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
+ <50FC3009.9070401@ladisch.de> <loom.20130125T202229-943@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <201301281801.13865.arnd@arndb.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: devicetree-discuss@lists.ozlabs.org, boojin.kim@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, swarren@nvidia.com, Padmavathi Venna <padma.v@samsung.com>, sbkim73@samsung.com, jassisinghbrar@gmail.com, vinod.koul@intel.com, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2C43265372
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 22:21:40 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Tzw9M-0000e8-OS
+ for alsa-devel@alsa-project.org; Mon, 28 Jan 2013 22:21:57 +0100
+Received: from c-66-235-47-206.sea.wa.customer.broadstripe.net
+ ([66.235.47.206]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 22:21:56 +0100
+Received: from camversion by c-66-235-47-206.sea.wa.customer.broadstripe.net
+ with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2013 22:21:56 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Clemens,
 
-On 01/28/2013 12:01 PM, Arnd Bergmann wrote:
-> On Monday 28 January 2013, Jon Hunter wrote:
->> On 01/28/2013 08:51 AM, Arnd Bergmann wrote:
->>> On Friday 18 January 2013, Padmavathi Venna wrote:
->>>> +       pfi = devm_kzalloc(&adev->dev, sizeof(*pfi), GFP_KERNEL);
->>>> +       if (!pfi) {
->>>> +               dev_err(&adev->dev, "unable to allocate mem\n");
->>>> +               return -ENOMEM;
->>>> +       }
->>>> +
->>>> +       pfi->dma_cap = pd->cap_mask;
->>>> +       pfi->filter_fn = pl330_filter;
->>>> +
->>>> +       ret = of_dma_controller_register(adev->dev.of_node,
->>>> +                                        of_dma_pl330_xlate, pfi);
->>>
->>> Why do you pass a 'struct of_dma_filter_info' here? I would
->>> expect that you pass the pdmac object as the third argument.
->>
->> I believe it is because that is the data that the xlate function is
->> using. Are you suggesting the data should be stored in the pdmac object
->> and extracted from there? That could be done too given that this
->> controller has its own xlate.
-> 
-> It just seems weird that we are passing a constant cap_mask in
-> a data structure, and that we need our own filter function still,
-> but don't pass the pointer to the data structure that we actually
-> need in the filter function (the dma_device *).
+What kernel version do you prefer me to work with?
 
-Gotcha. I was still thinking about the generic case, but in this case if
-you know the dma controller, it is redundant.
-
-Cheers
-Jon
+Smeefer
