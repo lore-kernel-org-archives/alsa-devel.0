@@ -1,71 +1,60 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V6 04/10] spi: s3c64xx: Modify SPI driver to use generic
- DMA DT support
-Date: Tue, 29 Jan 2013 13:19:46 +0800
-Message-ID: <20130129051943.GE6878@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V6 03/10] ARM: SAMSUNG: Make dma request compatible to
+ generic dma bindings.
+Date: Tue, 29 Jan 2013 14:20:11 +0800
+Message-ID: <20130129061958.GF6878@opensource.wolfsonmicro.com>
 References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
- <1358509629-20471-5-git-send-email-padma.v@samsung.com>
+ <1358509629-20471-4-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Rgf3q3z9SdmXC6oT"
+	protocol="application/pgp-signature"; boundary="1Y7d0dPL928TPQbc"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1358509629-20471-5-git-send-email-padma.v@samsung.com>
+In-Reply-To: <1358509629-20471-4-git-send-email-padma.v@samsung.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Padmavathi Venna <padma.v@samsung.com>
 Cc: padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Rgf3q3z9SdmXC6oT
+--1Y7d0dPL928TPQbc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 18, 2013 at 05:17:03PM +0530, Padmavathi Venna wrote:
-> This patch modifies the SPI driver to use generic dma dt bindings
-> support. This passes all the required arguments to dma dev request
-> functon which in turn calls the dma_request_slave_channel or dma__
-> request_channel based on DT or non-DT respectively.
+On Fri, Jan 18, 2013 at 05:17:02PM +0530, Padmavathi Venna wrote:
+> This patch make the dma dev request operation compatible for both
+> DT and non-DT cases. It takes the all the arguments required for
+> dma_request_slave_channel and dma_request_channel. If the driver
+> is initiated via DT or non-DT the corresponding call will be made.
 
-This loooks OK and I'm actually applying SPI patches so I could apply it
-but I'm not sure I see the relevance of this patch to the rest of the
-series (which is about ASoC).  Is there some reason why it's included in
-this patch series or can it be applied to the SPI tree?  The SMDKs use
-I2C for their CODEC control rather than SPI.
+OK, so this is where the SPI change came from - the API has been changed
+incompatibly and SPI needs updating.  For bisection this API update
+ought to be done in a single commit, otherwise there will be steps in
+the bisection where nothing will work.
 
-Also is there a binding document update or device tree file update to go
-with this?
+Anyway, I'll go ahead and apply this, the SPI and the ASoC ones but this
+is something to bear in mind for the future.
 
-> +	if (!sdd->pdev->dev.of_node) {
-> +		res = platform_get_resource(pdev, IORESOURCE_DMA,  0);
-> +		if (!res) {
-> +			dev_err(&pdev->dev, "Unable to get SPI tx dma "
-> +					"resource\n");
-
-I appreciate that this is cut'n'paste from the code you're refactoring
-but please don't split error messages over lines, it makes it hard to
-grep for them in the kernel source.
-
---Rgf3q3z9SdmXC6oT
+--1Y7d0dPL928TPQbc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRB1vTAAoJELSic+t+oim9b2UP/RWygjy50b9hux8CIRbD7Iv8
-TgraLNnL4RdJwBL3AKDGdRAa28A3zN5ssSlU21bj9hUsPuw/FR6j0xBE32VS2ERw
-y0J0Zk6fab/QWP0FeNLyZHPaIRFmfMfSfFoXAhLnoDb67w3IGxr00awKgMqlr6Dt
-DBWKQ2fP+IZAq41ejf7J1QtPJyv6Tj8T1zKdSPOmrxECJBolY9YCUD3mExxWHzvK
-Tc28/hO6K7qFstHYK2LvDeLT7AGxoCfpeJZYlKXphH5tY7xp11WJjmj14JXbJfGc
-+kVFcjuOGeaBKlgfchYY96a2kZlIuZ3Tqy/aD9fxH7YuctFCi/C3UiGZgn+aBpFu
-akn+S5dMMVcU8rSMIfNUQl1RjYnDQdBWDtmrOxlNaatlj7iFB24tSM/nwMQBL7zQ
-Q9L4XXB+QrwRvzKAr19stbgBSR30yoBn4bxjyjFi51ZUunRyLo+yXA2vL01IWrUA
-fokRTGvtO+oqe5C5Vft6sdCixtNukwOIZVR0b9YvsVlFzDa94Rn4eATmyi0rwnT3
-NzOaG599ZYXEPwbt+ZO1BHTb5QFqaWh80KQ33XvGzTZWzAXMWBW4WNgaJBTy1r3n
-jaO0fIqF1BPwZfH7sSZzbq/YX7dpLM3sGYJmIzJlF5kC2HzIwavCe+3+gmwsaCyT
-rVe55qCv9Hp7EfQrc/TZ
-=YEaM
+iQIcBAEBAgAGBQJRB2n8AAoJELSic+t+oim9GgUP/2aPCUUCEzzZ84pZU/YE0x7k
+P6yNjLxF9nCd3VnQ1skcw4Avmc/Z9oWAoBzqrWtSO2j9HrvHNw26shCZ/vcUY85q
+9B7SmXO+Ig7kao9bjguCD4ofQ6NKU5ijo4j8oGg7+ASZqfi29Kjvc1Y48ay4Xgad
+mnFrBrapuF+FeHJ793emSX1l6m54vMcxUu6cR4aTJStCHwogGiT218n4n5Tbfb9K
+SLCuJxkoUdiZR4kH6IipOp/jb3zJUoKXRnVDB56CHslF+EAYAL5andk8zxUb3S5+
+8cwpuVIn9tKEdvHvnEn0NN6I+QGM9YdQX3KkhcgRLJjXs/HIAhx98UZdXm1R8Xl+
+KkQlyTP8vkZhh7lV6SSYe2rjJtP5yyfPPHNjJMxCjr47pF9HkHzfAS1UNz95Z0en
+PAo4z/WPOl6xbbV3a37LD1YSuw7/TxxHObveIp+VHjYhFaD3fGJbseGem+qc8Lfm
+kqk9nTNBHyKneLhl2BZyr4ZIrg55zru2/Utz56yQWW3Uv6wcwXLMPzq+FJz4KQpG
+vNlYSa1laVeD9wnvPBGubx9f9cLoWVCTaheb7nEo0b/dIoCS8www11kU8WmYdnWM
+s6i2cIag/5eti5YjNK22viZEp2OcsZT00NhRF65b1EP89DSxHPzLOk/aftHEfCoJ
+YJlm0eElFpXJBl923UJa
+=gZTf
 -----END PGP SIGNATURE-----
 
---Rgf3q3z9SdmXC6oT--
+--1Y7d0dPL928TPQbc--
