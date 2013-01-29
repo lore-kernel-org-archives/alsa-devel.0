@@ -1,64 +1,85 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Enable LPIB delay count for
-	Poulsbo / Oaktrail
-Date: Tue, 29 Jan 2013 15:16:43 +0100
-Message-ID: <1359469003-32065-1-git-send-email-tiwai@suse.de>
+From: Gleb Natapov <gleb@redhat.com>
+Subject: Re: [PATCH 1/3] x86: KVM: Fix warnings by returning bool
+Date: Tue, 29 Jan 2013 18:36:03 +0200
+Message-ID: <20130129163603.GD627@redhat.com>
+References: <1359304802-28240-1-git-send-email-emilgoode@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 44F7B261619
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 15:16:44 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mx2.suse.de (Postfix) with ESMTP id ADBBAA524D
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 15:16:43 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=cp1255
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <kvm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1359304802-28240-1-git-send-email-emilgoode@gmail.com>
+Sender: kvm-owner@vger.kernel.org
+To: Emil Goode <emilgoode@gmail.com>
+Cc: mtosatti@redhat.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, avi@redhat.com, mst@redhat.com, perex@perex.cz, tiwai@suse.de, crimsun@ubuntu.com, wfp5p@virginia.edu, peter.senna@gmail.com, x86@kernel.org, kvm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently we use LPIB forcibly for both playback and capture for
-Poulsbo and Oaktrail devices, and this seems rather problematic.
-The recent fix for LPIB delay count seems working well with these
-devices, so let's enable it instead.
+On Sun, Jan 27, 2013 at 05:40:00PM +0100, Emil Goode wrote:
+> The function pointer x2apic_available in struct hypervisor_x86 is
+> supposed to point to functions that return bool. This patch changes
+> the return type of the kvm_para_available function to bool.
+>=20
+> Sparse warnings:
+>=20
+> arch/x86/kernel/kvm.c:508:35: warning:
+> 	incorrect type in initializer (different signedness)
+> 	arch/x86/kernel/kvm.c:508:35:
+> 	expected bool ( *x2apic_available )( ... )
+> 	arch/x86/kernel/kvm.c:508:35:
+> 	got int ( static inline [toplevel] *<noident> )( ... )
+>=20
+> arch/x86/kernel/kvm.c:508:2: warning:
+> 	initialization from incompatible pointer type [enabled by default]
+>=20
+> arch/x86/kernel/kvm.c:508:2: warning:
+> 	(near initialization for =91x86_hyper_kvm.x2apic_available=92)
+> 	[enabled by default]
+>=20
+The breakage was in tip x86/apic tree only and it was fixed by
+3b4a505821 there.
 
-Reported-by: Martin Weishart <martin.weishart@telosalliance.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> Signed-off-by: Emil Goode <emilgoode@gmail.com>
+> ---
+>  arch/x86/include/asm/kvm_para.h |    8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/k=
+vm_para.h
+> index 0be7039..695399f 100644
+> --- a/arch/x86/include/asm/kvm_para.h
+> +++ b/arch/x86/include/asm/kvm_para.h
+> @@ -85,13 +85,13 @@ static inline long kvm_hypercall4(unsigned int nr=
+, unsigned long p1,
+>  	return ret;
+>  }
+> =20
+> -static inline int kvm_para_available(void)
+> +static inline bool kvm_para_available(void)
+>  {
+>  	unsigned int eax, ebx, ecx, edx;
+>  	char signature[13];
+> =20
+>  	if (boot_cpu_data.cpuid_level < 0)
+> -		return 0;	/* So we don't blow up on old processors */
+> +		return false;	/* So we don't blow up on old processors */
+> =20
+>  	if (cpu_has_hypervisor) {
+>  		cpuid(KVM_CPUID_SIGNATURE, &eax, &ebx, &ecx, &edx);
+> @@ -101,10 +101,10 @@ static inline int kvm_para_available(void)
+>  		signature[12] =3D 0;
+> =20
+>  		if (strcmp(signature, "KVMKVMKVM") =3D=3D 0)
+> -			return 1;
+> +			return true;
+>  	}
+> =20
+> -	return 0;
+> +	return false;
+>  }
+> =20
+>  static inline unsigned int kvm_arch_para_features(void)
+> --=20
+> 1.7.10.4
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0b6aeba..bf0a004 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -3613,13 +3613,12 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	/* 5 Series/3400 */
- 	{ PCI_DEVICE(0x8086, 0x3b56),
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
--	/* SCH */
-+	/* Poulsbo */
- 	{ PCI_DEVICE(0x8086, 0x811b),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
--	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_LPIB }, /* Poulsbo */
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	/* Oaktrail */
- 	{ PCI_DEVICE(0x8086, 0x080a),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_SCH_SNOOP |
--	  AZX_DCAPS_BUFSIZE | AZX_DCAPS_POSFIX_LPIB }, /* Oaktrail */
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
- 	/* ICH */
- 	{ PCI_DEVICE(0x8086, 0x2668),
- 	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
--- 
-1.8.1.1
+--
+			Gleb.
