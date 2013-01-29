@@ -1,22 +1,16 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Tue, 29 Jan 2013 10:39:24 +0100
-Message-ID: <510798CC.3080006@ivitera.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASOC: wm8962: add some operation in
+ wm8962_runtime_resume()
+Date: Tue, 29 Jan 2013 17:39:29 +0800
+Message-ID: <20130129093926.GD32597@opensource.wolfsonmicro.com>
+References: <1359445810-2105-1-git-send-email-b13634@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1847182293773443636=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id AC00F265339
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 10:39:28 +0100 (CET)
-In-Reply-To: <5107188F.3060001@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8BCD265D56
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 10:39:39 +0100 (CET)
+In-Reply-To: <1359445810-2105-1-git-send-email-b13634@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,83 +20,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonas Petersen <jnsptrsn1@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Gary Zhang <b13634@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 29.1.2013 01:32, Jonas Petersen wrote:
-> Am 28.01.2013 13:36, schrieb Pavel Hofman:
->> Right, looks like a bug in snd_ak4114_create. Nevertheless the 7th reg
->> RCS0 is read-only, writing anything bogus should not affect the
->> operation.
-> Ok. I once filled it with a zero with no effect.
 
-That is what I thought. We will fix the code though.
-> 
->> What does the ak4114 regs dump in /proc/asound... dir of your
->> audiophile192 look like? The snd_ak4114_proc_regs_read method reads real
->> values from the regs.
-> You know what, there ist no ak4114... See the attached
-> Audiophile192-proc.txt. That's everything in proc.
-> Before I was doing some printk's in snd_ak4114_create() and
-> snd_ak4114_reg_write() and other places. They ended up in kern.log.
-> Then was also fiddling around with the configuration (ak4114_init_vals)
-> which didn't change anything in the capture behaviour. I even entirely
-> removed the snd_ak4114_create() call. It was still just capturing spdif
-> 6 dB to loud with the shifted signals as described before.
-> So the ak4114 code is not in operation at all?
-
-First, please tell us your alsa version (/proc/asound/version)
-
-Please move the ak4114 init call from the controls section to the init
-section (just like in juli.c) and test:
-
-diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
-index 7641080..bb6c82a 100644
---- a/sound/pci/ice1712/revo.c
-+++ b/sound/pci/ice1712/revo.c
-@@ -562,6 +562,9 @@ static int revo_init(struct snd_ice1712 *ice)
-                                               ice);
-                if (err < 0)
-                        return err;
-+               err = ap192_ak4114_init(ice);
-+               if (err < 0)
-+                       return err;
-
-                /* unmute all codecs */
-                snd_ice1712_gpio_write_bits(ice, VT1724_REVO_MUTE,
-@@ -597,9 +600,6 @@ static int revo_add_controls(struct snd_ice1712 *ice)
-                err = snd_ice1712_akm4xxx_build_controls(ice);
-                if (err < 0)
-                        return err;
--               err = ap192_ak4114_init(ice);
--               if (err < 0)
--                       return err;
-                break;
-        }
-        return 0;
-
-> 
-> 
->>> @Pavel, btw. I also have an ESI Juli@. Spdif capture with this one
->>> does not
->>> work at all (as compared to "kind of working" with the Audiophile 192).
->> Interesting. I am pretty sure I tested the SPDIF input of Juli quite
->> extensively. It even reported the incoming samplerate correctly. How did
->> you test it? Please list amixer contents and ak4114 regs here. Thanks.
-> 
-> I just tried again. The Juli just seem to freeze the whole alsa when I
-> try to access the spdif input.
-
-OK, let's do some troubleshooting. Do you have SPDIF signal present at
-Juli's input when you try to capture?
-
-Does it lock the moment you open the capture stream (i.e. start the
-capturing), or when you switch the rate selector to IEC958-In?
+--===============1847182293773443636==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="FUaywKC54iCcLzqT"
+Content-Disposition: inline
 
 
-What is your kernel (uname -a)?
+--FUaywKC54iCcLzqT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
+On Tue, Jan 29, 2013 at 03:50:10PM +0800, Gary Zhang wrote:
+> 1. in this function, after wm8962_reset() is called, WM8962_SYSCLK_ENA bit
+> is reset to 1. make sure it is off so we can safely write to registers if
+> the device is declocked.
+> 2. add bias level management
 
-Pavel.
+Split separate changes into separate patches; obviously there's bias
+level management in the driver since otherwise it'd be totally
+non-functional.
+
+> @@ -3721,6 +3721,24 @@ static int wm8962_runtime_resume(struct device *de=
+v)
+> =20
+>  	regcache_sync(wm8962->regmap);
+> =20
+> +	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+> +				WM8962_SYSCLK_ENA, 0);
+> +
+
+This seems like a bodge to work around some other problem in your
+system.  The device should never be runtime suspended with an active
+clock, and this seems like it isn't going to work as most of the
+register cache restore will be done with SYSCLK enabled.  We need to
+figure out what went wrong to allow the device to enter runtime suspend
+with SYSCLK on.
+
+> +	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
+> +				WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
+> +				WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
+> +
+> +	/* Bias enable at 2*50k for ramp */
+> +	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
+> +				WM8962_VMID_SEL_MASK | WM8962_BIAS_ENA,
+> +				WM8962_BIAS_ENA | 0x180);
+> +
+> +	msleep(5);
+> +
+> +	/* VMID back to 2x250k for standby */
+> +	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
+> +				WM8962_VMID_SEL_MASK, 0x100);
+
+We already have code to ramp VMID when exiting _OFF...
+
+--FUaywKC54iCcLzqT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRB5jBAAoJELSic+t+oim9Hu4QAJaEKGQu1zH1Ne+9eRNBdJUr
+wZ1U5ga7OeYNLUcyksuZhepV97tKGYQhQYPkNXD+CLT7e4oHbMbYk6/E3tPRHozR
+GMbFAaa80uWsxQUERaAvEL/2dNmC3M30PraWPTICZcGnbJr8jeE9QhNLRZLTQX4N
+BsMJa1ZhfGjit5d+U0lHvp3Pm9uiUW0Vzpp5luSshWZlRr3k523N/aTsdy72ow+B
+W6NldaJl29mSj5cy3l2NfF5gNt8/l49kIafeCSCvxCIqOIC160/LWKl/r1MtJJJ+
+NtIc2CT0Da0EhARlZiBpyZR5AhGbpWyhINY1H6guBLJEHj60gq//uflkAQ0ahbHT
+z3Mh2Va/EPgw0qlMiewrSB8SydhblI548KkE+helK4AMMfwiauNwj+OaePrfo6mH
+rQS8DazOMetBD3nbXr5/QWmuoUa25dnj+gZMRzP8bwSq4H83kZMoIdX5twPnEy05
+nHTJokFD8VPR5sHgcRlygm7Kgta6F1lzhczNwFGpPwqBPK7oJiTyyqLpFHAt31at
+IUzMiH76QQEp2zwlWRtZ/ERv8u1f0UM06hG+FulddWdmjIfJL2Twqkxak1eejvrs
+h+fwTC4rpdF+9WQzDb79FYSIQpPz7uTnNelcibRdBQorxjDErVW4MbwoRQB3R6qz
++ipPicCBxCoRtmr7OUTX
+=1baw
+-----END PGP SIGNATURE-----
+
+--FUaywKC54iCcLzqT--
+
+--===============1847182293773443636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1847182293773443636==--
