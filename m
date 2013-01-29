@@ -1,22 +1,25 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH 4/6] sound/usb/caiaq/device.c: fix use of
- MODULE_SUPPORTED_DEVICES()
-Date: Tue, 29 Jan 2013 12:59:37 +0100
-Message-ID: <20130129125937.f303cade107e996832446fc7@studenti.unina.it>
-References: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
- <1359412952-1680-5-git-send-email-ospite@studenti.unina.it>
- <89689420-8f6b-4119-b728-fb40f78be7d7@email.android.com>
- <s5h1ud4tpdi.wl%tiwai@suse.de>
- <20130129110833.6a085d126806be524fa223cc@studenti.unina.it>
- <s5h7gmwz2j9.wl%tiwai@suse.de>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
+ capture
+Date: Tue, 29 Jan 2013 14:10:22 +0100
+Message-ID: <5107CA3E.9000104@gmail.com>
+References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
+ <51042EE5.5070900@perex.cz>
+ <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
+ <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
+ <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
+ <510798CC.3080006@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id AD38D261600
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 12:59:39 +0100 (CET)
-In-Reply-To: <s5h7gmwz2j9.wl%tiwai@suse.de>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id F041B26160D
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 14:10:24 +0100 (CET)
+Received: by mail-lb0-f176.google.com with SMTP id s4so699596lbc.35
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 05:10:24 -0800 (PST)
+In-Reply-To: <510798CC.3080006@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,44 +29,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: Michael Trimarchi <michael@amarulasolutions.com>, Antonio Ospite <ao2@amarulasolutions.com>, Daniel Mack <zonque@gmail.com>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 29 Jan 2013 11:50:18 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Am 29.01.2013 10:39, schrieb Pavel Hofman:
+> @Pavel, btw. I also have an ESI Juli@. Spdif capture with this one
+> does not
+> work at all (as compared to "kind of working" with the Audiophile 192).
+>>> Interesting. I am pretty sure I tested the SPDIF input of Juli quite
+>>> extensively. It even reported the incoming samplerate correctly. How did
+>>> you test it? Please list amixer contents and ak4114 regs here. Thanks.
+>> I just tried again. The Juli just seem to freeze the whole alsa when I
+>> try to access the spdif input.
+> OK, let's do some troubleshooting. Do you have SPDIF signal present at
+> Juli's input when you try to capture?
 
-> At Tue, 29 Jan 2013 11:08:33 +0100,
-> Antonio Ospite wrote:
-> > 
-> > On Tue, 29 Jan 2013 08:33:29 +0100
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-[...] 
-> > > The patches didn't reach me, possibly because of a problem of my
-> > > server I've hit in this morning.
-> > > 
-> > > Antonio, could you repost the patch to me (and add Daniels' ack)?
-> > > 
-> > 
-> > I will, I guess you missed the other patches in the same series as well?
-> > Should I re-send all of them to you only?
-> 
-> Yes.  You don't have to resend to ML in this case.
+Yes, normally I have a 1 kHz Sine/-12dB(25%)/44100 coming in when testing.
 
-Done.
+> Does it lock the moment you open the capture stream (i.e. start the
+> capturing), or when you switch the rate selector to IEC958-In?
 
-> (BTW, did you add me to Cc in the original posts?)
+I have the Juli card in another machine right now. I'm using the analog 
+out there, which is working fine. It's running a Ubuntu 12.10. 'uname 
+-a' says
 
-Yes, I did.
+Linux rakete 3.5.0-22-generic #34-Ubuntu SMP Tue Jan 8 21:41:11 UTC 2013 
+i686 i686 i686 GNU/Linux
 
-Regards,
-   Antonio
+/proc/asound/version says:
 
--- 
-Antonio Ospite
-http://ao2.it
+Advanced Linux Sound Architecture Driver Version 1.0.25.
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+I behaves like this:
+
+If I switch 'Multi Track Internal Clock' to 'IEC958 In', the whole 
+system goes crazy. Not instantly, but when I start alsamixer it locks up 
+(only alsamixer, it can not be killed -9 then). When doing 'ps -aux' it 
+locks up somewhere in the middle of the list.
+This is all with a signal going in the spdif input.
+When I reboot (still with signal), the login screen locks up. I can move 
+the mouse, but I can not input the password. Also the background image 
+does not load (which normally does). I can switch to another terminal 
+(e.g. ctrl-alt-f1) and log in. But it will hang sooner or later.
+No way switch back the 'Multi Track Internal Clock' to a fixed rate.
+Only if I disconnect the signal from the spdif input and reboot, then I 
+can switch it back and bring the system back to reason. Pew...
+
+- Jonas
