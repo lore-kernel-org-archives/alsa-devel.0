@@ -1,121 +1,114 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [RFC][PATCH 2/2 v2] ASoC: simple-card: add Device
-	Tree support
-Date: Tue, 29 Jan 2013 09:53:12 -0700
-Message-ID: <5107FE78.6030001@wwwdotorg.org>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [RFC][PATCH 2/2 v2] ASoC: simple-card: add Device Tree support
+Date: Tue, 29 Jan 2013 09:57:59 -0700
+Message-ID: <5107FF97.1070601@wwwdotorg.org>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
  <20130104193712.GN4627@opensource.wolfsonmicro.com>
  <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
  <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
- <5106E98A.6070103@wwwdotorg.org>
- <87txq03fcb.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 0226F261643
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 17:53:18 +0100 (CET)
-In-Reply-To: <87txq03fcb.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87obg8z4u4.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2013 07:14 PM, Kuninori Morimoto wrote:
+On 01/29/2013 03:00 AM, Kuninori Morimoto wrote:
 > 
-> Hi Stephen
+> Hi Mark, Stephen
 > 
-> Thank you for checking path
+>>> 	simple-audio,codec {
+>>> 		simple-audio,dev = &phandle;
+>>> 		simple-audio,system-clock-frequency = 122880000;
+>>> 	};
 > 
->>> +Required properties:
->>> +
->>> +- compatible					: "simple-audio"
->>> +- simple-audio,card-name			: simple-audio card name
->>> +
->>> +- simple-audio,platform,controller		: phandle for platform
->>
->> Rename that simple-audio,dma-controller perhaps? "platform" is a word
->> specific to ASoC, and the bindings really should be generic across OSs.
->>
->> But I wonder why you'd even need the ASoC platform to be specified in
->> DT; instead, the following seem better:
->>
->> a) Have the CPU DAI's driver register the platform itself. Tegra does this.
->>
->> b) Assume the ASoC "platform" device simply does DMA via a standard
->> dmaengine driber, and instead refer to the DMA controller using DMA
->> engine DT bindings.
+> I would like to ask you before creating v3 patch.
+> I got some opinions from you.
+>  - cpu/codec style (above)
+>  - "controller" naming
+>  - it is using "name" property (it is must item for matching)
 > 
-> This is the feature of this "simple-audio" driver.
-> "simple-audio" produces board/SoC specific relationship between codec/cpu.
+> Then, what do you think about this style ?
 > 
-> For example, we are using FSI for cpu, and AK4642/WM8978/DA7210 for codec.
-> In our old style, we created fsi-ak4642, fsi-wm8978, fsi-da7210...
-> This means that new fsi-xxx driver is required whenever new boards were created.
-> This simple-audio was created to avoid it
+> fai_ak4642 {
 
-I still don't understand why the ASoC platform has to be exposed in
-device tree; it seems like something completely internal to the ASoC
-driver. Take a look at the Tegra ASoC DT bindings; the platform isn't in
-DT at all there.
+The node would usually be named after the type of object, not the
+identity of the object, so more like "sound".
 
->>> +- simple-audio,platform,name			: simple-audio platform name
->>
->> Can you explain why you'd need the platform name in the DT? Doesn't the
->> phandle always uniquely identify it? The example doesn't use this property.
+>         compatible = "simple-audio";
 > 
-> Ahh yes, this simple-audio supports both phandle and name matching for compatibility.
-> example showed phandle matching only.
+>         simple-audio,card-name = "FSI2A-AK4648";
 
-I think the DT binding should only support phandle-based resolution.
-Name-based resolution would be quite odd for a device tree binding.
+OK.
 
->>> +- simple-audio,cpu,controller			: phandle for CPU DAI
->>> +- simple-audio,cpu,dai,name			: simple-audio CPU DAI name
->>
->> It'd be a bit more typical of device-tree to have a single property that
->> defines both the controller and any properties of the controller at
->> once, e.g. something like:
->>
->> simple-audio,cpu-interface = <&codec_phandle AK4648_I2S_ITF_A>;
->>
->> where we assume something like:
->>
->> #define AK4648_I2S_ITF_A 0 // Interface A's ID
->>
->> That would remove the need to put string names into the DT.
+>         /* platform */
+>         simple-audio,platform {
+
+I still don't understand why you need to even represent the platform in DT.
+
+Introducing sub-nodes seems to just add to the complexity without much gain.
+
+>              compatible = "ak4642-hifi";  /* platform name (if needed) */
+
+The "compatible" property has a very specific meaning in DT already. I
+don't think we should re-use that property name for other purposes.
+
+>              simple-audio,dev = <&sh_fsi2>;
+
+
+>              /* format and inversion are here */
+>              simple-audio,format = "left_j";
+>              simple-audio,bitclock-inversion;
+
+Those properties appear more relevant to the I2S link than the ASoC
+platform object.
+
+>         }
 > 
-> Hmm... this "name" is required on ASoC matching...
-> Especially, "codec dai name" is must item.
+>         /* codec and cpu are same style */
 > 
-> Should I modify ASoC itself ?
+>         /* codec */
+>         simple-audio,codec {
+>              compatible = "ak4642-hifi";  /* codec dai name (this is must item on ASoC) */
 
-When I was thinking about a more generic DT binding for audio, quite a
-while ago, I certainly was planning to have each CODEC expose some kind
-of "of_xlate" function that could prase the integer interface ID in
-device tree, and convert it to a string name for internal use by ASoC.
+If you absolutely must use named-based binding here rather than the
+standard phandle+args style, rename that property to something more like
+simple-audio,dai-name.
 
->>> +simple-audio,xxx,dai,clock-gating
->>> +	"continuous"
->>> +	"gated"
->>
->> Don't you need to use the common clock bindings to define which clock to
->> gate? Or, is the I2S/... node's binding supposed to provide that
->> information?
+>              simple-audio,dev = <&ak4648>;
+>              simple-audio,bitclock-master;
+>  
+>              /* clock gating is here */
+>             simple-audio,clock-gating = "continuous";
+
+I think this should be a Boolean property; present means yes, missing
+means no.
+
+>         }
 > 
-> I guess it is dependent on SoC/board.
-> No ?
-
-OK, I guess if this is I2S bus clock rather than I2S module clock, then
-this is fine as-is. Not all I2S controllers can implement this though.
+>         /* cpu */
+>         simple-audio,cpu {
+>              compatible = "fsia-dai"; /* cpu dai name (if needed) */
+>              simple-audio,dev = <&sh_fsi2>;
+>              simple-audio,system-clock-frequency = <11289600>;
+>         }
+> }
