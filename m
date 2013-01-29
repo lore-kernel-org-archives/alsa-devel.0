@@ -1,25 +1,17 @@
-From: Jonas Petersen <jnsptrsn1@gmail.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Tue, 29 Jan 2013 20:14:47 +0100
-Message-ID: <51081FA7.70907@gmail.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
- <510798CC.3080006@ivitera.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+From: =?iso-8859-1?Q?J=E9r=F4me_Forissier?= <jerome@taodyne.com>
+Subject: Thread safety of snd_pcm_open?
+Date: Tue, 29 Jan 2013 20:15:13 +0100
+Message-ID: <23152B82-AC4E-4F64-9F70-43866D910A0F@taodyne.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
- [209.85.214.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 85516261609
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 20:14:49 +0100 (CET)
-Received: by mail-bk0-f53.google.com with SMTP id j10so463876bkw.40
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 11:14:49 -0800 (PST)
-In-Reply-To: <510798CC.3080006@ivitera.com>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 284F3261689
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 20:15:23 +0100 (CET)
+Received: by mail-wi0-f181.google.com with SMTP id c10so798853wiw.14
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 11:15:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,77 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 29.01.2013 10:39, schrieb Pavel Hofman:
->>> What does the ak4114 regs dump in /proc/asound... dir of your
->>> audiophile192 look like? The snd_ak4114_proc_regs_read method reads real
->>> values from the regs.
->> You know what, there ist no ak4114... See the attached
->> Audiophile192-proc.txt. That's everything in proc.
->> Before I was doing some printk's in snd_ak4114_create() and
->> snd_ak4114_reg_write() and other places. They ended up in kern.log.
->> Then was also fiddling around with the configuration (ak4114_init_vals)
->> which didn't change anything in the capture behaviour. I even entirely
->> removed the snd_ak4114_create() call. It was still just capturing spdif
->> 6 dB to loud with the shifted signals as described before.
->> So the ak4114 code is not in operation at all?
-> First, please tell us your alsa version (/proc/asound/version)
+Hello,
 
-~$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.25.
-Compiled on Jan 28 2013 for kernel 3.5.0-22-generic (SMP).
+I'm having problems using ALSA with LibVLC.
+The project page http://www.alsa-project.org/main/index.php/SMP_Design claims that the snd_*_open() calls are thread safe, yet it seems that when LibVLC calls them from several threads it can lead to errors like:
+ALSA lib conf.c:4571:(parse_args) Unknown parameter CARD
+ALSA lib conf.c:4571:(parse_args) Unknown parameter DEV
+ALSA lib conf.c:4704:(snd_config_expand) Parse arguments error: No such file or directory
+ALSA lib conf.c:4687:(snd_config_expand) Unknown parameters CARD=NVidia,DEV=0
+ALSA lib conf.c:4571:(parse_args) Unknown parameter CARD
+ALSA lib conf.c:4687:(snd_config_expand) Unknown parameters CARD=PCH,DEV=0
+ALSA lib conf.c:4687:(snd_config_expand) Unknown parameters CARD=NVidia,DEV=0
+ALSA lib conf.c:4571:(parse_args) Unknown parameter DEV
+(Please see http://mailman.videolan.org/pipermail/vlc-devel/2013-January/091603.html and also http://mailman.videolan.org/pipermail/vlc-devel/2013-January/091633.html for a reproducer on top of LibVLC).
 
-~$ uname -a
-Linux proto2c 3.5.0-22-generic #34-Ubuntu SMP Tue Jan 8 21:41:11 UTC 
-2013 i686 athlon i686 GNU/Linux
+I'm not familiar with the internals of ALSA lib, nor with the internals of LibVLC. The VLC devs claim that they respect the rules regarding ALSA access, but I can't tell for sure...
 
-By the way, I'm compiling a driver snapshot from 24-01-2013. The plain 
-1.0.25 gives errors.
+I'm currently running my reproducer with valgrind, but before I dig too deeply, could you please give some advice?
 
+I have noticed that pcm_direct.c calls getgrnam() which is not reentrant (but replacing it with getgrnam_r is not enough to fix my problem).
+Also there does not seem to be any locking around snd_pcm_open[_noupdate]. Are those functions supposed to be reentrant?
 
-> Please move the ak4114 init call from the controls section to the init
-> section (just like in juli.c) and test:
->
-> diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
-> index 7641080..bb6c82a 100644
-> --- a/sound/pci/ice1712/revo.c
-> +++ b/sound/pci/ice1712/revo.c
-> @@ -562,6 +562,9 @@ static int revo_init(struct snd_ice1712 *ice)
->                                                 ice);
->                  if (err < 0)
->                          return err;
-> +               err = ap192_ak4114_init(ice);
-> +               if (err < 0)
-> +                       return err;
->
->                  /* unmute all codecs */
->                  snd_ice1712_gpio_write_bits(ice, VT1724_REVO_MUTE,
-> @@ -597,9 +600,6 @@ static int revo_add_controls(struct snd_ice1712 *ice)
->                  err = snd_ice1712_akm4xxx_build_controls(ice);
->                  if (err < 0)
->                          return err;
-> -               err = ap192_ak4114_init(ice);
-> -               if (err < 0)
-> -                       return err;
->                  break;
->          }
->          return 0;
+Thanks for your help,
 
-I did that with no success. Same behaviour, no change, still no ak4114. 
-The only difference I got was:
-
-$ diff ~/Audiophile192-proc-a.txt ~/Audiophile192-proc-b.txt
-90c90
-<   MT05     : 0x08
----
- >   MT05     : 0x00
-
-I printk'ed a message in ap192_ak4114_init() and it's definitely being 
-called.
-
-Any other ideas?
-
-- Jonas
+-- 
+Jerome
