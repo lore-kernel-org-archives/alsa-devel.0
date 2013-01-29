@@ -1,52 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V6 09/10] ASoC: Samsung: Update Kconfig for I2S,SPDIF and
- PCM audio
-Date: Tue, 29 Jan 2013 15:40:27 +0800
-Message-ID: <20130129074025.GB32597@opensource.wolfsonmicro.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH V6 10/10] dmaengine: Fix compilation error in non-DT case
+Date: Tue, 29 Jan 2013 14:23:05 +0530
+Message-ID: <CAAgF-BddMcNZs-99Jw=ZhRs9CCO_-eev=b5TW5BR2DS9gM_2Qw@mail.gmail.com>
 References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
- <1358509629-20471-10-git-send-email-padma.v@samsung.com>
+	<1358509629-20471-11-git-send-email-padma.v@samsung.com>
+	<20130128134726.GV26562@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1358509629-20471-10-git-send-email-padma.v@samsung.com>
+In-Reply-To: <20130128134726.GV26562@intel.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>
-Cc: padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---5I6of5zJg18YgZEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Jan 28, 2013 at 7:17 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+> On Fri, Jan 18, 2013 at 05:17:09PM +0530, Padmavathi Venna wrote:
+>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+>> ---
+>>  include/linux/dmaengine.h |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+>> index 8cd0e25..c88f302 100644
+>> --- a/include/linux/dmaengine.h
+>> +++ b/include/linux/dmaengine.h
+>> @@ -992,7 +992,7 @@ static inline struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask,
+>>  static inline struct dma_chan *dma_request_slave_channel(struct device *dev,
+>>                                                        char *name)
+>>  {
+>> -     return NULL
+>> +     return NULL;
+> what tree was this generated against? this was fixed by 678bd8
 
-On Fri, Jan 18, 2013 at 05:17:08PM +0530, Padmavathi Venna wrote:
-> Update Kconfig file to enable I2S,PCM audio for wm8994 and spdif on all
-> samsung platforms.
+I generated against Kukjin for-next branch. I just noticed that it's
+fixed in your next branch. I will drop this patch.
 
-Applied, thanks.
-
---5I6of5zJg18YgZEa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRB3zLAAoJELSic+t+oim9iAgP/iWQQmsX1NQIGtPVUqskyNbA
-rWSIX8IgNW39O6DqKIA/AInPFKdZZVv8Rs6DQv5/ZrjYxAtTM2K4U0p+zUqA4Xur
-FZbZhooCL7vHPitjEhUHgWqnVRMY76T7ansphOQ0tt1SOZsiID/FMrlRENvjsnjz
-ZRaI48RnSD0axBq4FNy+vAxgqcgQIzIUeqXdkVEQOCCuJs6sWsyj+LyYJe0hjaH6
-d2aYEdVOP3N4Zu9Yy8reRUoImdoJbwJRwdw7XmuxMTvtaQLLLkiPBrzI9vqegcgd
-WDu1FXR1CvPRxyx2sjaaxjUv+t97eJ9P24AiHu9u33sz6q3kfkTA598fXmxOUaTG
-oGIQG0fYES4wvsL6wJhAMnE6LEu3IAZKilfZytvW885/3BNTOYmVMtqRWtYmfjFn
-6zbxghOduzClSTKaZ30mI54VyjpgIqH+rAD5s/zHsmil0M9m/8K2zKf8qUCBdO9m
-PtKEDCl/TqZds2m65351SExQuA6nxNtxuH7qD1JW8L58yYxxpF90n9rR0Gv2g6FB
-UK/dMB//RMj2RoDH6bGr7aqUwkDrguVWAYfqD+hvnyj9XkmTHpBr9qQac8xNrvfk
-AVFGkGtdHs4GqI8MANtv59WWXnAJfDdBIy91FYNSLrqTJYmXsWIcqFOWrq+aNc/J
-2WAdQ4VLJRoGzj7rsLar
-=gaPS
------END PGP SIGNATURE-----
-
---5I6of5zJg18YgZEa--
+Thanks
+Padma
+>
+> --
+> ~Vinod
