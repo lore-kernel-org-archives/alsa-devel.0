@@ -1,85 +1,121 @@
-From: Gleb Natapov <gleb@redhat.com>
-Subject: Re: [PATCH 1/3] x86: KVM: Fix warnings by returning bool
-Date: Tue, 29 Jan 2013 18:36:03 +0200
-Message-ID: <20130129163603.GD627@redhat.com>
-References: <1359304802-28240-1-git-send-email-emilgoode@gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [RFC][PATCH 2/2 v2] ASoC: simple-card: add Device
+	Tree support
+Date: Tue, 29 Jan 2013 09:53:12 -0700
+Message-ID: <5107FE78.6030001@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+ <50E71618.8090302@wwwdotorg.org>
+ <20130104193712.GN4627@opensource.wolfsonmicro.com>
+ <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <5106E98A.6070103@wwwdotorg.org>
+ <87txq03fcb.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=cp1255
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <kvm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1359304802-28240-1-git-send-email-emilgoode@gmail.com>
-Sender: kvm-owner@vger.kernel.org
-To: Emil Goode <emilgoode@gmail.com>
-Cc: mtosatti@redhat.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, avi@redhat.com, mst@redhat.com, perex@perex.cz, tiwai@suse.de, crimsun@ubuntu.com, wfp5p@virginia.edu, peter.senna@gmail.com, x86@kernel.org, kvm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0226F261643
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 17:53:18 +0100 (CET)
+In-Reply-To: <87txq03fcb.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 27, 2013 at 05:40:00PM +0100, Emil Goode wrote:
-> The function pointer x2apic_available in struct hypervisor_x86 is
-> supposed to point to functions that return bool. This patch changes
-> the return type of the kvm_para_available function to bool.
->=20
-> Sparse warnings:
->=20
-> arch/x86/kernel/kvm.c:508:35: warning:
-> 	incorrect type in initializer (different signedness)
-> 	arch/x86/kernel/kvm.c:508:35:
-> 	expected bool ( *x2apic_available )( ... )
-> 	arch/x86/kernel/kvm.c:508:35:
-> 	got int ( static inline [toplevel] *<noident> )( ... )
->=20
-> arch/x86/kernel/kvm.c:508:2: warning:
-> 	initialization from incompatible pointer type [enabled by default]
->=20
-> arch/x86/kernel/kvm.c:508:2: warning:
-> 	(near initialization for =91x86_hyper_kvm.x2apic_available=92)
-> 	[enabled by default]
->=20
-The breakage was in tip x86/apic tree only and it was fixed by
-3b4a505821 there.
+On 01/28/2013 07:14 PM, Kuninori Morimoto wrote:
+> 
+> Hi Stephen
+> 
+> Thank you for checking path
+> 
+>>> +Required properties:
+>>> +
+>>> +- compatible					: "simple-audio"
+>>> +- simple-audio,card-name			: simple-audio card name
+>>> +
+>>> +- simple-audio,platform,controller		: phandle for platform
+>>
+>> Rename that simple-audio,dma-controller perhaps? "platform" is a word
+>> specific to ASoC, and the bindings really should be generic across OSs.
+>>
+>> But I wonder why you'd even need the ASoC platform to be specified in
+>> DT; instead, the following seem better:
+>>
+>> a) Have the CPU DAI's driver register the platform itself. Tegra does this.
+>>
+>> b) Assume the ASoC "platform" device simply does DMA via a standard
+>> dmaengine driber, and instead refer to the DMA controller using DMA
+>> engine DT bindings.
+> 
+> This is the feature of this "simple-audio" driver.
+> "simple-audio" produces board/SoC specific relationship between codec/cpu.
+> 
+> For example, we are using FSI for cpu, and AK4642/WM8978/DA7210 for codec.
+> In our old style, we created fsi-ak4642, fsi-wm8978, fsi-da7210...
+> This means that new fsi-xxx driver is required whenever new boards were created.
+> This simple-audio was created to avoid it
 
-> Signed-off-by: Emil Goode <emilgoode@gmail.com>
-> ---
->  arch/x86/include/asm/kvm_para.h |    8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/k=
-vm_para.h
-> index 0be7039..695399f 100644
-> --- a/arch/x86/include/asm/kvm_para.h
-> +++ b/arch/x86/include/asm/kvm_para.h
-> @@ -85,13 +85,13 @@ static inline long kvm_hypercall4(unsigned int nr=
-, unsigned long p1,
->  	return ret;
->  }
-> =20
-> -static inline int kvm_para_available(void)
-> +static inline bool kvm_para_available(void)
->  {
->  	unsigned int eax, ebx, ecx, edx;
->  	char signature[13];
-> =20
->  	if (boot_cpu_data.cpuid_level < 0)
-> -		return 0;	/* So we don't blow up on old processors */
-> +		return false;	/* So we don't blow up on old processors */
-> =20
->  	if (cpu_has_hypervisor) {
->  		cpuid(KVM_CPUID_SIGNATURE, &eax, &ebx, &ecx, &edx);
-> @@ -101,10 +101,10 @@ static inline int kvm_para_available(void)
->  		signature[12] =3D 0;
-> =20
->  		if (strcmp(signature, "KVMKVMKVM") =3D=3D 0)
-> -			return 1;
-> +			return true;
->  	}
-> =20
-> -	return 0;
-> +	return false;
->  }
-> =20
->  static inline unsigned int kvm_arch_para_features(void)
-> --=20
-> 1.7.10.4
+I still don't understand why the ASoC platform has to be exposed in
+device tree; it seems like something completely internal to the ASoC
+driver. Take a look at the Tegra ASoC DT bindings; the platform isn't in
+DT at all there.
 
---
-			Gleb.
+>>> +- simple-audio,platform,name			: simple-audio platform name
+>>
+>> Can you explain why you'd need the platform name in the DT? Doesn't the
+>> phandle always uniquely identify it? The example doesn't use this property.
+> 
+> Ahh yes, this simple-audio supports both phandle and name matching for compatibility.
+> example showed phandle matching only.
+
+I think the DT binding should only support phandle-based resolution.
+Name-based resolution would be quite odd for a device tree binding.
+
+>>> +- simple-audio,cpu,controller			: phandle for CPU DAI
+>>> +- simple-audio,cpu,dai,name			: simple-audio CPU DAI name
+>>
+>> It'd be a bit more typical of device-tree to have a single property that
+>> defines both the controller and any properties of the controller at
+>> once, e.g. something like:
+>>
+>> simple-audio,cpu-interface = <&codec_phandle AK4648_I2S_ITF_A>;
+>>
+>> where we assume something like:
+>>
+>> #define AK4648_I2S_ITF_A 0 // Interface A's ID
+>>
+>> That would remove the need to put string names into the DT.
+> 
+> Hmm... this "name" is required on ASoC matching...
+> Especially, "codec dai name" is must item.
+> 
+> Should I modify ASoC itself ?
+
+When I was thinking about a more generic DT binding for audio, quite a
+while ago, I certainly was planning to have each CODEC expose some kind
+of "of_xlate" function that could prase the integer interface ID in
+device tree, and convert it to a string name for internal use by ASoC.
+
+>>> +simple-audio,xxx,dai,clock-gating
+>>> +	"continuous"
+>>> +	"gated"
+>>
+>> Don't you need to use the common clock bindings to define which clock to
+>> gate? Or, is the I2S/... node's binding supposed to provide that
+>> information?
+> 
+> I guess it is dependent on SoC/board.
+> No ?
+
+OK, I guess if this is I2S bus clock rather than I2S module clock, then
+this is fine as-is. Not all I2S controllers can implement this though.
