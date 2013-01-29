@@ -1,114 +1,150 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [RFC][PATCH 2/2 v2] ASoC: simple-card: add Device Tree support
-Date: Tue, 29 Jan 2013 09:57:59 -0700
-Message-ID: <5107FF97.1070601@wwwdotorg.org>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
- <50E71618.8090302@wwwdotorg.org>
- <20130104193712.GN4627@opensource.wolfsonmicro.com>
- <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
- <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
- <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix non-snoop page handling
+Date: Tue, 29 Jan 2013 18:22:43 +0100
+Message-ID: <1359480163-30693-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <87obg8z4u4.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F607261643
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 18:22:43 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx2.suse.de (Postfix) with ESMTP id 4058CA5233
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 18:22:43 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/29/2013 03:00 AM, Kuninori Morimoto wrote:
-> 
-> Hi Mark, Stephen
-> 
->>> 	simple-audio,codec {
->>> 		simple-audio,dev = &phandle;
->>> 		simple-audio,system-clock-frequency = 122880000;
->>> 	};
-> 
-> I would like to ask you before creating v3 patch.
-> I got some opinions from you.
->  - cpu/codec style (above)
->  - "controller" naming
->  - it is using "name" property (it is must item for matching)
-> 
-> Then, what do you think about this style ?
-> 
-> fai_ak4642 {
+For non-snoop mode, we fiddle with the page attributes of CORB/RIRB
+and the position buffer, but also the ring buffers.  The problem is
+that the current code blindly assumes that the buffer is contiguous.
+However, the ring buffers may be SG-buffers, thus a wrong vmapped
+address is passed there, leading to Oops.
 
-The node would usually be named after the type of object, not the
-identity of the object, so more like "sound".
+This patch fixes the handling for SG-buffers.
 
->         compatible = "simple-audio";
-> 
->         simple-audio,card-name = "FSI2A-AK4648";
+Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=800701
 
-OK.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 40 ++++++++++++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
->         /* platform */
->         simple-audio,platform {
-
-I still don't understand why you need to even represent the platform in DT.
-
-Introducing sub-nodes seems to just add to the complexity without much gain.
-
->              compatible = "ak4642-hifi";  /* platform name (if needed) */
-
-The "compatible" property has a very specific meaning in DT already. I
-don't think we should re-use that property name for other purposes.
-
->              simple-audio,dev = <&sh_fsi2>;
-
-
->              /* format and inversion are here */
->              simple-audio,format = "left_j";
->              simple-audio,bitclock-inversion;
-
-Those properties appear more relevant to the I2S link than the ASoC
-platform object.
-
->         }
-> 
->         /* codec and cpu are same style */
-> 
->         /* codec */
->         simple-audio,codec {
->              compatible = "ak4642-hifi";  /* codec dai name (this is must item on ASoC) */
-
-If you absolutely must use named-based binding here rather than the
-standard phandle+args style, rename that property to something more like
-simple-audio,dai-name.
-
->              simple-audio,dev = <&ak4648>;
->              simple-audio,bitclock-master;
->  
->              /* clock gating is here */
->             simple-audio,clock-gating = "continuous";
-
-I think this should be a Boolean property; present means yes, missing
-means no.
-
->         }
-> 
->         /* cpu */
->         simple-audio,cpu {
->              compatible = "fsia-dai"; /* cpu dai name (if needed) */
->              simple-audio,dev = <&sh_fsi2>;
->              simple-audio,system-clock-frequency = <11289600>;
->         }
-> }
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index bf0a004..c78286f 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -656,29 +656,43 @@ static char *driver_short_names[] = {
+ #define get_azx_dev(substream) (substream->runtime->private_data)
+ 
+ #ifdef CONFIG_X86
+-static void __mark_pages_wc(struct azx *chip, void *addr, size_t size, bool on)
++static void __mark_pages_wc(struct azx *chip, struct snd_dma_buffer *dmab, bool on)
+ {
++	int pages;
++
+ 	if (azx_snoop(chip))
+ 		return;
+-	if (addr && size) {
+-		int pages = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
++	if (!dmab || !dmab->area || !dmab->bytes)
++		return;
++
++#ifdef CONFIG_SND_DMA_SGBUF
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_SG) {
++		struct snd_sg_buf *sgbuf = dmab->private_data;
+ 		if (on)
+-			set_memory_wc((unsigned long)addr, pages);
++			set_pages_array_wc(sgbuf->page_table, sgbuf->pages);
+ 		else
+-			set_memory_wb((unsigned long)addr, pages);
++			set_pages_array_wb(sgbuf->page_table, sgbuf->pages);
++		return;
+ 	}
++#endif
++
++	pages = (dmab->bytes + PAGE_SIZE - 1) >> PAGE_SHIFT;
++	if (on)
++		set_memory_wc((unsigned long)dmab->area, pages);
++	else
++		set_memory_wb((unsigned long)dmab->area, pages);
+ }
+ 
+ static inline void mark_pages_wc(struct azx *chip, struct snd_dma_buffer *buf,
+ 				 bool on)
+ {
+-	__mark_pages_wc(chip, buf->area, buf->bytes, on);
++	__mark_pages_wc(chip, buf, on);
+ }
+ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+-				   struct snd_pcm_runtime *runtime, bool on)
++				   struct snd_pcm_substream *substream, bool on)
+ {
+ 	if (azx_dev->wc_marked != on) {
+-		__mark_pages_wc(chip, runtime->dma_area, runtime->dma_bytes, on);
++		__mark_pages_wc(chip, snd_pcm_get_dma_buf(substream), on);
+ 		azx_dev->wc_marked = on;
+ 	}
+ }
+@@ -689,7 +703,7 @@ static inline void mark_pages_wc(struct azx *chip, struct snd_dma_buffer *buf,
+ {
+ }
+ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+-				   struct snd_pcm_runtime *runtime, bool on)
++				   struct snd_pcm_substream *substream, bool on)
+ {
+ }
+ #endif
+@@ -1968,11 +1982,10 @@ static int azx_pcm_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
+ 	struct azx *chip = apcm->chip;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct azx_dev *azx_dev = get_azx_dev(substream);
+ 	int ret;
+ 
+-	mark_runtime_wc(chip, azx_dev, runtime, false);
++	mark_runtime_wc(chip, azx_dev, substream, false);
+ 	azx_dev->bufsize = 0;
+ 	azx_dev->period_bytes = 0;
+ 	azx_dev->format_val = 0;
+@@ -1980,7 +1993,7 @@ static int azx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 					params_buffer_bytes(hw_params));
+ 	if (ret < 0)
+ 		return ret;
+-	mark_runtime_wc(chip, azx_dev, runtime, true);
++	mark_runtime_wc(chip, azx_dev, substream, true);
+ 	return ret;
+ }
+ 
+@@ -1989,7 +2002,6 @@ static int azx_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
+ 	struct azx_dev *azx_dev = get_azx_dev(substream);
+ 	struct azx *chip = apcm->chip;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct hda_pcm_stream *hinfo = apcm->hinfo[substream->stream];
+ 
+ 	/* reset BDL address */
+@@ -2002,7 +2014,7 @@ static int azx_pcm_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	snd_hda_codec_cleanup(apcm->codec, hinfo, substream);
+ 
+-	mark_runtime_wc(chip, azx_dev, runtime, false);
++	mark_runtime_wc(chip, azx_dev, substream, false);
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-- 
+1.8.1.1
