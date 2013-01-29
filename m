@@ -1,75 +1,32 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH 4/6] sound/usb/caiaq/device.c: fix use of
- MODULE_SUPPORTED_DEVICES()
-Date: Tue, 29 Jan 2013 11:08:33 +0100
-Message-ID: <20130129110833.6a085d126806be524fa223cc@studenti.unina.it>
-References: <1359412952-1680-1-git-send-email-ospite@studenti.unina.it>
- <1359412952-1680-5-git-send-email-ospite@studenti.unina.it>
- <89689420-8f6b-4119-b728-fb40f78be7d7@email.android.com>
- <s5h1ud4tpdi.wl%tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/4] DMA: PL330: Add xlate function
+Date: Tue, 29 Jan 2013 10:27:19 +0000
+Message-ID: <201301291027.19325.arnd@arndb.de>
+References: <1358508824-20352-1-git-send-email-padma.v@samsung.com> <201301281458.15219.arnd@arndb.de> <CAAgF-BcxqNyf8VQcndJbRnQYEcZyRayTYq-hqkB73Jd+FVTaYg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
- by alsa0.perex.cz (Postfix) with ESMTP id 05B072615D6
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2013 11:08:36 +0100 (CET)
-In-Reply-To: <s5h1ud4tpdi.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Michael Trimarchi <michael@amarulasolutions.com>, Antonio Ospite <ao2@amarulasolutions.com>, Daniel Mack <zonque@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAAgF-BcxqNyf8VQcndJbRnQYEcZyRayTYq-hqkB73Jd+FVTaYg@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padma Venkat <padma.kvr@gmail.com>, Jon Hunter <jon-hunter@ti.com>
+Cc: devicetree-discuss@lists.ozlabs.org, Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, kgene.kim@samsung.com, swarren@nvidia.com, boojin.kim@samsung.com, sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 29 Jan 2013 08:33:29 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Tuesday 29 January 2013, Padma Venkat wrote:
+> of_dma_simple_xlate is just passing the dma channel number to the
+> filter function. But I also need
+> to compare against device node as my requested channel can belong to
+> any of the available dma controller
+> on SoC. So I implemented a xlate which passes the whole dma_spec.
 
-> At Tue, 29 Jan 2013 07:33:53 +0800,
-> Daniel Mack wrote:
-> > 
-> > Antonio Ospite <ospite@studenti.unina.it> wrote:
-> > 
-> > >From: Antonio Ospite <ao2@amarulasolutions.com>
-> > >
-> > >It looks like MODULE_SUPPORTED_DEVICES() is not implemented yet, but
-> > >still, having the entries in the list consistently separated by commas
-> > >and with balanced parenthesis won't hurt.
-> > >
-> > >Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
-> > 
-> > Acked-by: Daniel Mack <zonque@gmail.com>
-> 
-> The patches didn't reach me, possibly because of a problem of my
-> server I've hit in this morning.
-> 
-> Antonio, could you repost the patch to me (and add Daniels' ack)?
-> 
+Hmm, this seems to be a universal requirement for anyone using the
+simple xlate function. Jon, how did you expect drivers to handle
+this? Assuming that there is only one DMA controller in the system
+does not sound like a good idea.
 
-I will, I guess you missed the other patches in the same series as well?
-Should I re-send all of them to you only?
+Padma, please have a look at how I did this in the dw_dma patch
+I posted yesterday.
 
-Just for the record, in cases like this I'd import MBOX data from
-mailing list archives[1] and remove duplicate messages in my email
-client (Sylpheed). This way Message-IDs are intact and threads won't be
-broken on reply.
-
-Regards,
-   Antonio
-
-[1]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January.txt.gz
-
--- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+	Arnd
