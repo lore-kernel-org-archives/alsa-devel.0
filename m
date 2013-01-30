@@ -1,85 +1,62 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device
-	Tree support
-Date: Wed, 30 Jan 2013 13:14:07 -0700
-Message-ID: <51097F0F.2030501@wwwdotorg.org>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
- <50E71618.8090302@wwwdotorg.org>
- <20130104193712.GN4627@opensource.wolfsonmicro.com>
- <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
- <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
- <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C8EB2650FD
- for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2013 21:14:12 +0100 (CET)
-In-Reply-To: <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: [PATCH] ASoC: fsl: Fix multiple symbol definitions
+Date: Wed, 30 Jan 2013 21:24:31 +0100
+Message-ID: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/30/2013 02:09 AM, Kuninori Morimoto wrote:
-> Support for loading the simple-card module via devicetree.
-> It requests cpu/codec information for probing.
+Commit 25b8d31 (ASoC: fsl: fix multiple definition of init_module) fixed
+a build error due to multiple symbol definitions when building as a
+module. However, it causes the build to break when the driver is builtin
+because the imx-pcm.o object is included multiple times. Solve the issue
+by adding imx-pcm.o to each of the modules that require it, but only add
+it to the kernel once when one or both drivers are builtin.
 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+---
+ sound/soc/fsl/Makefile | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-> +Simple-Card:
-> +
-> +Required properties:
-> +
-> +- compatible			: "simple-audio"
-> +- simple-audio,card-name	: simple-audio card name
-> +- simple-audio,format		: see below
-> +
-> +Optional properties:
-> +
-> +- simple-audio,bitclock-inversion
-> +- simple-audio,frame-inversion
-> +
-> +CPU / CODEC DAI is represented as a sub-node.
-> +Then, sub-node name should be "simple-audio,cpu" or "simple-audio,codec".
-
-Why require sub-nodes? it seem over-complex.
-
-> +Required subnode properties:
-> +- simple-audio,dev		: phandle for CPU/CODEC
-> +
-> +Optional subnode properties:
-> +
-> +- simple-audio,dai-name			: simple-audio CPU/CODEC DAI name
-
-OK, I see those two are CPU-/CODEC-specific. However, you could easily
-just have different property names for the two.
-
-I assume you didn't like my idea of not putting the DAI names into the
-DT, but using extra arguments after the phandles instead? Doing so would
-be more alike most existing DT bindings.
-
-> +- simple-audio,system-clock-frequency	: system clock rate
-> +- simple-audio,frame-master
-> +- simple-audio,bitclock-master
-
-Aren't those a property of the CPU<->CODEC link, hence the clock
-frequency is identical, and the two "master" properties are the inverse
-of each-other in between CPU and CODEC. Specifying these right in the
-top-level node seems simpler.
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index ec14579..8446d49 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -30,21 +30,24 @@ obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
+ # i.MX Platform Support
+ snd-soc-imx-ssi-objs := imx-ssi.o
+ snd-soc-imx-audmux-objs := imx-audmux.o
+-snd-soc-imx-pcm-objs := imx-pcm.o
+-ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
+-	snd-soc-imx-pcm-objs += imx-pcm-fiq.o
+-endif
+-ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
+-	snd-soc-imx-pcm-objs += imx-pcm-dma.o
+-endif
+ 
+ obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
+ obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
+ 
+ obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += snd-soc-imx-pcm-fiq.o
+-snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o imx-pcm.o
++snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o
++ifeq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),m)
++snd-soc-imx-pcm-fiq-y += imx-pcm.o
++else
++obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm.o
++endif
+ obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += snd-soc-imx-pcm-dma.o
+-snd-soc-imx-pcm-dma-y := imx-pcm-dma.o imx-pcm.o
++snd-soc-imx-pcm-dma-y := imx-pcm-dma.o
++ifeq ($(CONFIG_SND_SOC_IMX_PCM_DMA),m)
++snd-soc-imx-pcm-dma-y := imx-pcm.o
++else
++obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm.o
++endif
+ 
+ # i.MX Machine Support
+ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+-- 
+1.8.1.2
