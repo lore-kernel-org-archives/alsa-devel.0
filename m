@@ -1,27 +1,22 @@
-From: Jonas Petersen <jnsptrsn1@gmail.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Thu, 31 Jan 2013 23:25:10 +0100
-Message-ID: <510AEF46.1080608@gmail.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
- <510798CC.3080006@ivitera.com> <51081FA7.70907@gmail.com>
- <5108F541.3010300@ivitera.com> <5109BADB.30403@gmail.com>
- <510A485F.9060100@ivitera.com>
+From: Harald Sitter <sitter@kde.org>
+Subject: Re: crashes in namehint
+Date: Thu, 31 Jan 2013 23:39:27 +0100
+Message-ID: <CAEc+18HTW6JVpu5yYrsxqpAiU8DBu3tSjdOyMDGTtApA=QsZDQ@mail.gmail.com>
+References: <CAEc+18GnWriRtYnd+u5hiQ7OpcAytp1hakhbdZjYVzxcdTFwcQ@mail.gmail.com>
+ <s5hehh1725q.wl%tiwai@suse.de>
+ <F94018B2-6AD4-4AB0-B94F-CB6828D4C4B9@taodyne.com>
+ <s5hk3qtw73u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 75378262632
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 23:25:12 +0100 (CET)
-Received: by mail-bk0-f48.google.com with SMTP id jf20so1555645bkc.7
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 14:25:12 -0800 (PST)
-In-Reply-To: <510A485F.9060100@ivitera.com>
+Received: from mail-pb0-f51.google.com (mail-pb0-f51.google.com
+ [209.85.160.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B041264EF3
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 23:39:49 +0100 (CET)
+Received: by mail-pb0-f51.google.com with SMTP id un15so1817549pbc.38
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 14:39:48 -0800 (PST)
+In-Reply-To: <s5hk3qtw73u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,94 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: colin@mageia.org, Martin Sandsmark <sandsmark@samfundet.no>
 List-Id: alsa-devel@alsa-project.org
 
-Am 31.01.2013 11:33, schrieb Pavel Hofman:
-> OK, it looks we have a problem in communication with the chip. IMO the
-> 4wire_start and 4wire_finish code is incorrect. As chip-select it takes
-> VT1724_REVO_CS1, but for ak4114 it should be VT1724_REVO_CS3 (as defined
-> in revo.h)
->
-> IMO the two methods should be:
-> static unsigned int ap192_4wire_start(struct snd_ice1712 *ice)
-> {
-> 	unsigned int tmp;
->
-> 	snd_ice1712_save_gpio_status(ice);
-> 	tmp = snd_ice1712_gpio_read(ice);
-> 	tmp |= VT1724_REVO_CCLK; /* high at init */
-> 	tmp |= VT1724_REVO_CS0;
-> 	tmp &= ~VT1724_REVO_CS3;
-> 	snd_ice1712_gpio_write(ice, tmp);
-> 	udelay(1);
-> 	return tmp;
-> }
-
-
-Btw. is it really intended that CS0 is set and CS3 is unset in 
-4wire_start? (In 4wire_finish CS0 is set again.)
-
-
-> static void ap192_4wire_finish(struct snd_ice1712 *ice, unsigned int tmp)
-> {
-> 	tmp |= VT1724_REVO_CS0;
-> 	tmp |= VT1724_REVO_CS3;
-> 	snd_ice1712_gpio_write(ice, tmp);
-> 	udelay(1);
-> 	snd_ice1712_restore_gpio_status(ice);
-> }
->
-> Provided that VT1724_REVO_CS0 is chip-select for AK4358 DAC and
-> VT1724_REVO_CS3 chip-select for AK4114. The AK5385 ADC has no control.
-
-CS0 (0x10) is GPIO4 and CS3 (0x80) is GPIO7, right?
-
-Physically GPIO7 goes to CSN (pin 35) of the AK4114, as I confirmed before.
-
-GPIO4 goes to CSN (pin 21) of the AK4358. I just did a physical check to 
-confirm that also!
-
-So I guess (hope) that would confirm that "VT1724_REVO_CS0 is 
-chip-select for AK4358 DAC and
-VT1724_REVO_CS3 chip-select for AK4114"
-
-One question: What do you mean by "The AK5385 ADC has no control."? Is 
-that by nature of the chip?
-
-
-> IMO the ak4xxx config section should use VT1724_REVO_CS3 instead of
-> VT1724_REVO_CS1 too:
->
-> static struct snd_ak4xxx_private akm_ap192_priv = {
-> 	.caddr = 2,
-> 	.cif = 0,
-> 	.data_mask = VT1724_REVO_CDOUT,
-> 	.clk_mask = VT1724_REVO_CCLK,
-> 	.cs_mask = VT1724_REVO_CS0 | VT1724_REVO_CS3,
-> 	.cs_addr = VT1724_REVO_CS3,
-> 	.cs_none = VT1724_REVO_CS0 | VT1724_REVO_CS3,
-> 	.add_flags = VT1724_REVO_CCLK, /* high at init */
-> 	.mask_flags = 0,
-> };
->
-> If I am not mistaken VT1724_REVO_CS1 is not used on ap192 at all. Is
-> that correct?
-
-That woud be GPIO5, right? I'm not sure. If this is the case, wouldn't 
-that pin not be tied to some level (high or low)?
-
-
-> Sorry for not using proper patches but I cannot test the result anyway.
-
-No problem. I tested, but still no succes.. :(
-
-I noticed one more thing:
-
-VT1724_REVO_CDIN (GPIO2) goes to CDTO and
-VT1724_REVO_CDOUT (GPIO3) goes to CDTI of the AK4114. "IN" is "O" and 
-"OUT" is "I". Ist that correct? I tried to swap them once but that 
-didn't help either.
-
-- Jonas
+T24gVGh1LCBKYW4gMzEsIDIwMTMgYXQgNzoxNiBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKCj4gQXQgVGh1LCAzMSBKYW4gMjAxMyAxOTowMTo0OCArMDEwMCwKPiBKw6ly
+w7RtZSBGb3Jpc3NpZXIgd3JvdGU6Cj4gPgo+ID4KPiA+IE9uIDMxIGphbnYuIDIwMTMsIGF0IDE3
+OjIyLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPgo+ID4gPiBBdCBUaHUsIDMxIEphbiAyMDEzIDE3
+OjA2OjU2ICswMTAwLAo+ID4gPiBIYXJhbGQgU2l0dGVyIHdyb3RlOgo+ID4gPj4KPiA+ID4+IGFs
+b2hhLAo+ID4gPj4KPiA+ID4+IEkgYW0gd29ya2luZyBvbiBrZGUgbXVsdGltZWRpYSBhbmQgd2Ug
+YXJlIGdldHRpbmcgYSBjb25zaWRlcmFibGUKPiBhbW91bnQgb2YKPiA+ID4+IGNyYXNoIHJlcG9y
+dHMgZnJvbSB4ODYgdWJ1bnR1IGFuZCBmZWRvcmEgdXNlcnMuCj4gPiA8Li4uPgo+ID4gPgo+ID4g
+PiBSaWdodCBub3cgd2UgZml4ZWQgc25kX2RldmljZV9uYW1lX2hpbnQoKSB0byBiZSByZWVudHJh
+bnQsIHNvIGl0J3MKPiA+ID4gd29ydGggdG8gY2hlY2sgd2hldGhlciB0aGUgbGF0ZXN0IGdpdCB3
+b3JrcyBmb3IgeW91Li4uCj4gPgo+ID4gSSBzdXBwb3NlIHlvdSBhcmUgcmVmZXJyaW5nIHRvIHRo
+ZSBwYXRjaGVzIEkndmUganVzdCBzdWJtaXR0ZWQgZm9yCj4gcmV2aWV3PyBbMV0gRGlkIHlvdSBj
+b21taXQgdGhlbSB5ZXQ/IDpvKQo+ID4gSSBkb24ndCBzZWUgdGhlbSBvbiB0aGUgcmVwbyBbMl0u
+Cj4KPiBPaCwgSSBvYnZpb3VzbHkgZm9yZ290IHRvIHB1c2guICBOb3cgcHVzaGVkIG91dC4KPgo+
+IEhhcmFsZCwgY291bGQgeW91IHJldHJ5IHRoZSBhbHNhLWxpYiBnaXQgdHJlZSBsYXRlcj8KPiBU
+aGUgdG9wbW9zdCBjb21taXQgaXMKPgo+IGNvbW1pdCBmNDliMmRjNTIyYTI1NjQzMTVjNzZkMDc1
+MjAzYjE1YTM5OTQxZThhCj4gICAgIHNuZF9kZXZpY2VfbmFtZV9oaW50KCk6IGRvIG5vdCB1c2Ug
+Z2xvYmFsIHNuZF9jb25maWcuCj4KCml0IHdvcmtzIFxvLwoKdGhhbmtzIGd1eXMuIHRoaXMgaXMg
+cmVhbGx5IGF3ZXNvbWUuCgpIUwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
