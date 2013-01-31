@@ -1,89 +1,78 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device
-	Tree support
-Date: Thu, 31 Jan 2013 09:35:02 +0800
-Message-ID: <20130131013500.GA4759@opensource.wolfsonmicro.com>
-References: <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
- <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
- <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
- <51097F0F.2030501@wwwdotorg.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: fsl: Fix multiple symbol definitions
+Date: Thu, 31 Jan 2013 09:42:17 +0800
+Message-ID: <20130131014214.GD2765@S2101-09.ap.freescale.net>
+References: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2206422297862230303=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0DEDA265115
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 02:35:17 +0100 (CET)
-In-Reply-To: <51097F0F.2030501@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thierry Reding <thierry.reding@avionic-design.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jan 30, 2013 at 09:24:31PM +0100, Thierry Reding wrote:
+> Commit 25b8d31 (ASoC: fsl: fix multiple definition of init_module) fixed
+> a build error due to multiple symbol definitions when building as a
+> module. However, it causes the build to break when the driver is builtin
+> because the imx-pcm.o object is included multiple times. Solve the issue
+> by adding imx-pcm.o to each of the modules that require it, but only add
+> it to the kernel once when one or both drivers are builtin.
+> 
+> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
 
---===============2206422297862230303==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
-Content-Disposition: inline
+Thanks, Thierry.  The Kconfig is already complex.  To avoid having them
+even more complex, I have chosen to revert my patch and have a little
+surgery on the code [1] to make it match the Kconfig rational.
 
+Shawn
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[1] http://thread.gmane.org/gmane.linux.alsa.devel/105018
 
-On Wed, Jan 30, 2013 at 01:14:07PM -0700, Stephen Warren wrote:
-
-> > +CPU / CODEC DAI is represented as a sub-node.
-> > +Then, sub-node name should be "simple-audio,cpu" or "simple-audio,codec".
-
-> Why require sub-nodes? it seem over-complex.
-
-I suggested this because it seemed more legible to repeat the properties
-by having a named structure for each property rather than by repeating
-them all with slightly different names.
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRCco9AAoJELSic+t+oim983IP/RjRLT1qppfCvXILB0oBVk0k
-/H+UTHEURUpACVItD+MNG3L9PCZOEd1tMffrV7rBIqXqposwPvfSOp0Wvq6DA/Ze
-MbQYWR0R2Qg9K0ARBokcz5WLvejlEebMBXFTfzSnlWaiqPfIJnKNSndW9a8akEkj
-aS+6Z/6ifW3M+lHB3rfi2eNO57Cluf0Su8SKJH8pOpIPf3Bs8zhyzjK+T+2dS6rz
-2b1WiaG6ZB12KS8Bt4Vf6JvjMY1uR6HANdPCr829vYt9ee8B+kR6N4GaANPHSIVf
-23kllsGcsrXgtcNli/ML/LnjCZrCZLwLR7SsgnQMGoDzKz8E9i91EGNfT/D4MdOo
-fu8n3P3W7M6te6M9Ccv3KG1KgX1vDxPsyLvPYTQ97Jgdi0Svh13mfD+jCgMnjzTR
-Ndxu6LKBPPvYdqUZ5UWaLWAp82VpYkX+FKfPpo+8GxBJVAPHcN51znmgO3jFXfdy
-fwb1DoiFcUNf6uNbO8/Z+MrB+uy63sP3AjxYMGw+lL5DqKmBGYRQs4yu8sIi/mNT
-nYWJ5fHRxM9Jog6Sc7QI8yNwp8RarX22ewq7DeT4dobKK+3FUfiixJLAt/pQwSOX
-mVyeb1j56pmV7o6jBKPX8LhiZ6gTb3tALLmKuh3tDHXNBOtwqWrVUvHnT9cUgpij
-lI1QZGkLJZBE1FpV2f4s
-=vCAk
------END PGP SIGNATURE-----
-
---J2SCkAp4GZ/dPZZf--
-
---===============2206422297862230303==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2206422297862230303==--
+> ---
+>  sound/soc/fsl/Makefile | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+> index ec14579..8446d49 100644
+> --- a/sound/soc/fsl/Makefile
+> +++ b/sound/soc/fsl/Makefile
+> @@ -30,21 +30,24 @@ obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
+>  # i.MX Platform Support
+>  snd-soc-imx-ssi-objs := imx-ssi.o
+>  snd-soc-imx-audmux-objs := imx-audmux.o
+> -snd-soc-imx-pcm-objs := imx-pcm.o
+> -ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
+> -	snd-soc-imx-pcm-objs += imx-pcm-fiq.o
+> -endif
+> -ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
+> -	snd-soc-imx-pcm-objs += imx-pcm-dma.o
+> -endif
+>  
+>  obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
+>  obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
+>  
+>  obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += snd-soc-imx-pcm-fiq.o
+> -snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o imx-pcm.o
+> +snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o
+> +ifeq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),m)
+> +snd-soc-imx-pcm-fiq-y += imx-pcm.o
+> +else
+> +obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm.o
+> +endif
+>  obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += snd-soc-imx-pcm-dma.o
+> -snd-soc-imx-pcm-dma-y := imx-pcm-dma.o imx-pcm.o
+> +snd-soc-imx-pcm-dma-y := imx-pcm-dma.o
+> +ifeq ($(CONFIG_SND_SOC_IMX_PCM_DMA),m)
+> +snd-soc-imx-pcm-dma-y := imx-pcm.o
+> +else
+> +obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm.o
+> +endif
+>  
+>  # i.MX Machine Support
+>  snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+> -- 
+> 1.8.1.2
+> 
