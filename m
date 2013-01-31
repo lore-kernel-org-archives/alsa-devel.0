@@ -1,63 +1,47 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/4] ASoC: tlv320aic3x: Convert mic bias to a supply
- widget
-Date: Thu, 31 Jan 2013 19:30:38 +0800
-Message-ID: <20130131113035.GF11078@opensource.wolfsonmicro.com>
-References: <1359631394-9511-1-git-send-email-gururaja.hebbar@ti.com>
- <1359631394-9511-2-git-send-email-gururaja.hebbar@ti.com>
- <20130131112414.GE11078@opensource.wolfsonmicro.com>
- <1BAFE6F6C881BF42822005164F1491C33EB5A48E@DBDE01.ent.ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/2] Fix thread safety issues
+Date: Thu, 31 Jan 2013 12:38:29 +0100
+Message-ID: <510A57B5.1000102@perex.cz>
+References: <1359559337-15533-1-git-send-email-jerome@taodyne.com>
+ <s5hfw1i64k0.wl%tiwai@suse.de>
+ <DBCAE20C-2070-4D0C-A7C0-E62D85846AD4@taodyne.com>
+ <s5hwqutwx3z.wl%tiwai@suse.de>
+ <712BEC00-37D2-458C-B8C1-A0EECBF6C608@taodyne.com>
+ <s5hpq0lwtnw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zjcmjzIkjQU2rmur"
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EB5A48E@DBDE01.ent.ti.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "tony@atomide.com" <tony@atomide.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "Nori, Sekhar" <nsekhar@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "rob@landley.net" <rob@landley.net>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B3E42602AC
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 12:38:30 +0100 (CET)
+In-Reply-To: <s5hpq0lwtnw.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Date 31.1.2013 11:09, Takashi Iwai wrote:
+> Jaroslav, could you add some texts like below?  (Feel free to
+> rephrase.)
+> 
+> "There are a few global variables that are used in alsa-lib, such as
+>  the global error handler pointer and the global root config pointer.
+>  Accessing / modifying these would be thread-unsafe."
 
---zjcmjzIkjQU2rmur
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Added.
 
-On Thu, Jan 31, 2013 at 11:27:07AM +0000, Hebbar, Gururaja wrote:
-> On Thu, Jan 31, 2013 at 16:54:16, Mark Brown wrote:
+				Jaroslav
 
-> > As mentioned when you posted this before this patch needs to update the
-> > machine drivers using the device too.
-
-> The patch-set 2/4 does the same thing. Since I have da850-evm at my end, =
-I=20
-> have modified that machine driver and sent-it as 2/4.
-
-Two problems here.  One is that the update should be done in the same
-patch and the other is that you need to update *all* the machine drivers
-using the device, not just one of them.
-
---zjcmjzIkjQU2rmur
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRClXUAAoJELSic+t+oim9EpIQAIUYX4o4ixs0ed/xnJUVQVcA
-Ep1sEUz3mGiUQHakiulo2cfc8BSRI+WuAVapxT2QdH+CHVqXW1k3SIUxfSIurTiD
-4kjWRtUyIcYn2WubbYqVWvPVcojsfEfkQNxxLgTpDWQFfoSiQHYVZaK+y22kFbmb
-Px6v+FJ864eDo7wlfQcM6K2lXYA5XmbYDZIxy19+2cKz3+CsvlOQgztL1Pb6Tvw4
-cnovIA9iCWFWiyDoHW6oPLmACBL42NKMlL8AEsURXcVlbI5qEfLIVEALmgHCdYJ9
-7YM9UQz7G+ykKYRILyOAMwNrdX8C0seM7gDDU/rMB21yVTbO0OGsiAC8DPIROBdL
-ap8AYhPt+OazCjqxNn1xKI7+TUZ1mXdfa4xMAI2bG/gOaDwPcSF+fLOSgDytFczK
-38sXYQjlawanhiTH6JwjKH+GUEh98WV0hRz2PwKGyhAYo1/OM09JtKN+49Zd1kJN
-Za5E3/pg86ehF2bjaGAQpQrrH8zmf7ckw9ViVrKyPonVnAo+Ewf8iCdsnnRq11PT
-JZ1jU+MIE9oqSkd70fmXioDfMttRscUoHwW3Xh7bttid70FKpfT9qvmqBA/FRP+a
-zAea+NUtAqaXrodE8TUKimG88aLM6/OU0pmgS/N3diZJZSZql+7W7tH978MjkxWU
-TMoGhyxaGsTe8/qCV6Te
-=x5pW
------END PGP SIGNATURE-----
-
---zjcmjzIkjQU2rmur--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
