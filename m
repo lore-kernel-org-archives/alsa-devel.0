@@ -1,7 +1,7 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 2/4] ASoC: atmel_ssc_dai: remove error set private data
-Date: Thu, 31 Jan 2013 11:53:38 +0800
-Message-ID: <1359604420-15171-3-git-send-email-voice.shen@atmel.com>
+Subject: [PATCH 3/4] ASoC: atmel_ssc_dai: correct sequence when unload
+Date: Thu, 31 Jan 2013 11:53:39 +0800
+Message-ID: <1359604420-15171-4-git-send-email-voice.shen@atmel.com>
 References: <1359604420-15171-1-git-send-email-voice.shen@atmel.com>
 Return-path: <linux-sound-owner@vger.kernel.org>
 In-Reply-To: <1359604420-15171-1-git-send-email-voice.shen@atmel.com>
@@ -10,42 +10,27 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-ssc private data has been set in ssc driver, this cause the error
-private data set to ssc, remove it
+correct the sequence when unload this module
 
 Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
- sound/soc/atmel/atmel_ssc_dai.c |   10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 1c76634..2763aea 100644
+index 2763aea..1fab8d5 100644
 --- a/sound/soc/atmel/atmel_ssc_dai.c
 +++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -679,15 +679,6 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
- #  define atmel_ssc_resume	NULL
- #endif /* CONFIG_PM */
+@@ -780,8 +780,8 @@ void atmel_ssc_put_audio(int ssc_id)
+ {
+ 	struct ssc_device *ssc = ssc_info[ssc_id].ssc;
  
--static int atmel_ssc_probe(struct snd_soc_dai *dai)
--{
--	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
--
--	snd_soc_dai_set_drvdata(dai, ssc_p);
--
--	return 0;
--}
--
- #define ATMEL_SSC_RATES (SNDRV_PCM_RATE_8000_96000)
+-	ssc_free(ssc);
+ 	asoc_ssc_exit(&ssc->pdev->dev);
++	ssc_free(ssc);
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_put_audio);
  
- #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
-@@ -703,7 +694,6 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
- };
- 
- static struct snd_soc_dai_driver atmel_ssc_dai = {
--		.probe = atmel_ssc_probe,
- 		.suspend = atmel_ssc_suspend,
- 		.resume = atmel_ssc_resume,
- 		.playback = {
 -- 
 1.7.9.5
 
