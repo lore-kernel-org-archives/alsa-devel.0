@@ -1,78 +1,91 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: fsl: Fix multiple symbol definitions
-Date: Thu, 31 Jan 2013 09:42:17 +0800
-Message-ID: <20130131014214.GD2765@S2101-09.ap.freescale.net>
-References: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320aic3x: Convert mic bias to
+ a supply widget
+Date: Thu, 31 Jan 2013 10:32:25 +0800
+Message-ID: <20130131023221.GA6027@opensource.wolfsonmicro.com>
+References: <1359552155-17426-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Thierry Reding <thierry.reding@avionic-design.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4397238554561808038=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BC249265115
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 03:32:32 +0100 (CET)
+In-Reply-To: <1359552155-17426-1-git-send-email-gururaja.hebbar@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hebbar Gururaja <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, sudhakar.raj@ti.com, tony@atomide.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, lgirdwood@gmail.com, alsa-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 30, 2013 at 09:24:31PM +0100, Thierry Reding wrote:
-> Commit 25b8d31 (ASoC: fsl: fix multiple definition of init_module) fixed
-> a build error due to multiple symbol definitions when building as a
-> module. However, it causes the build to break when the driver is builtin
-> because the imx-pcm.o object is included multiple times. Solve the issue
-> by adding imx-pcm.o to each of the modules that require it, but only add
-> it to the kernel once when one or both drivers are builtin.
-> 
-> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
 
-Thanks, Thierry.  The Kconfig is already complex.  To avoid having them
-even more complex, I have chosen to revert my patch and have a little
-surgery on the code [1] to make it match the Kconfig rational.
+--===============4397238554561808038==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
 
-Shawn
 
-[1] http://thread.gmane.org/gmane.linux.alsa.devel/105018
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  sound/soc/fsl/Makefile | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-> index ec14579..8446d49 100644
-> --- a/sound/soc/fsl/Makefile
-> +++ b/sound/soc/fsl/Makefile
-> @@ -30,21 +30,24 @@ obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
->  # i.MX Platform Support
->  snd-soc-imx-ssi-objs := imx-ssi.o
->  snd-soc-imx-audmux-objs := imx-audmux.o
-> -snd-soc-imx-pcm-objs := imx-pcm.o
-> -ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
-> -	snd-soc-imx-pcm-objs += imx-pcm-fiq.o
-> -endif
-> -ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
-> -	snd-soc-imx-pcm-objs += imx-pcm-dma.o
-> -endif
->  
->  obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
->  obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
->  
->  obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += snd-soc-imx-pcm-fiq.o
-> -snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o imx-pcm.o
-> +snd-soc-imx-pcm-fiq-y := imx-pcm-fiq.o
-> +ifeq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),m)
-> +snd-soc-imx-pcm-fiq-y += imx-pcm.o
-> +else
-> +obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm.o
-> +endif
->  obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += snd-soc-imx-pcm-dma.o
-> -snd-soc-imx-pcm-dma-y := imx-pcm-dma.o imx-pcm.o
-> +snd-soc-imx-pcm-dma-y := imx-pcm-dma.o
-> +ifeq ($(CONFIG_SND_SOC_IMX_PCM_DMA),m)
-> +snd-soc-imx-pcm-dma-y := imx-pcm.o
-> +else
-> +obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm.o
-> +endif
->  
->  # i.MX Machine Support
->  snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
-> -- 
-> 1.8.1.2
-> 
+On Wed, Jan 30, 2013 at 06:52:35PM +0530, Hebbar Gururaja wrote:
+
+> Convert MicBias widgets to supply widget.
+
+> On tlv320aic3x, Mic bias power on/off shares the same register bits
+> with output mic bias voltage.  So, when power on mic bias, we need
+> reclaim it to voltage value.
+
+This should update machine drivers that use the CODEC too.
+
+> +- ai3x-micbias-vg - MicBias Voltage required.
+> +	1 - MICBIAS output is powered to 2.0V,
+> +	2 - MICBIAS output is powered to 2.5V,
+> +	3 - MICBIAS output is connected to AVDD,
+> +	If this node is not mentioned or if the value is incorrect, then MicBias
+> +	is powered down.
+
+Would 2.0V not be a more sensible default (it is the lowest voltage so
+is unlikely to cause hardware damage if it's wrong)?
+
+Otherwise this looks good.
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRCdefAAoJELSic+t+oim9tTcQAIaTFkHf6i1Sl4bl8wTp0yzW
+GhkpZstZv5ZfWcHSClQlfw1AKbTQHiceBtE8Nyi/aBZuVxwg1Jvs9mG1szoG7xs2
+qJrfjFmir3+5rDawjbmm1+DuZeDm0rL9evoHuQ+pNjc/YC3GUnMdvDAcAA5Z7q1F
+FgmPzBfycxuPaWyDP9s2PssEYwDha2tn1hZROQcccpIfE39dGq93NdX6mY+ZV07S
+Ov5t8wMjXjjkqPxFbFzIY9+mTSeQpFGuCbSXRjZL3vBKPKEaCUFIluq8imFPxVzY
+EL2XlLFyglcghvviX0s4TOWeeG5eDgJCoerWfJ3obfecaX+WLiM+ENYPbTz7i32m
+5WPyyzoCNumBQxl7NF1rv8jJLRtzPPERGZ+DXL48I8+9iXrAL0r4VWv3Stj+Qj9R
+U3LBHhPYKGr92Nic7jOyQ2sTI44ugb8L/gFqjzx02d2YHTHLSBlcHkZ3I4gujbZ+
+gx4niax6jB6OMNdEx6sGpza/og8OOoEQ1Jv6dMxeJZa5nwlbopfYw7AWavllxD+5
+vD/3NQiaVhBgtC5ixz9ayz+VZDg66YlQp0Q+Yy2DPfb2NDECbUAozXI+StrmEpb9
+S/Q85jLhxw5Yr1Afi3uX82xStE8+n4QLt89rJ6Bv5L89SI4WFIs+YD8WaBLWPnwO
+OQlS6rCjIYIw6aRJTkvG
+=SP/7
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
+
+--===============4397238554561808038==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4397238554561808038==--
