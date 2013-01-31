@@ -1,38 +1,63 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: RE: [PATCH v3 1/4] ASoC: tlv320aic3x: Convert mic bias to a supply
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 1/4] ASoC: tlv320aic3x: Convert mic bias to a supply
  widget
-Date: Thu, 31 Jan 2013 11:27:07 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB5A48E@DBDE01.ent.ti.com>
+Date: Thu, 31 Jan 2013 19:30:38 +0800
+Message-ID: <20130131113035.GF11078@opensource.wolfsonmicro.com>
 References: <1359631394-9511-1-git-send-email-gururaja.hebbar@ti.com>
  <1359631394-9511-2-git-send-email-gururaja.hebbar@ti.com>
  <20130131112414.GE11078@opensource.wolfsonmicro.com>
+ <1BAFE6F6C881BF42822005164F1491C33EB5A48E@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zjcmjzIkjQU2rmur"
 Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <20130131112414.GE11078@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1BAFE6F6C881BF42822005164F1491C33EB5A48E@DBDE01.ent.ti.com>
 Sender: linux-doc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "tony@atomide.com" <tony@atomide.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "Nori, Sekhar" <nsekhar@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "rob@landley.net" <rob@landley.net>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 31, 2013 at 16:54:16, Mark Brown wrote:
-> On Thu, Jan 31, 2013 at 04:53:10PM +0530, Hebbar Gururaja wrote:
-> 
-> > :100644 100644 e7b98f4... f47c3f5... M	Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-> > :100644 100644 ffd9bc7... 9407fd0... M	include/sound/tlv320aic3x.h
-> > :100644 100644 4989143... 65d09d6... M	sound/soc/codecs/tlv320aic3x.c
-> > :100644 100644 6db3c41... e521ac3... M	sound/soc/codecs/tlv320aic3x.h
-> 
-> As mentioned when you posted this before this patch needs to update the
-> machine drivers using the device too.
 
-The patch-set 2/4 does the same thing. Since I have da850-evm at my end, I 
-have modified that machine driver and sent-it as 2/4.
+--zjcmjzIkjQU2rmur
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
+On Thu, Jan 31, 2013 at 11:27:07AM +0000, Hebbar, Gururaja wrote:
+> On Thu, Jan 31, 2013 at 16:54:16, Mark Brown wrote:
 
+> > As mentioned when you posted this before this patch needs to update the
+> > machine drivers using the device too.
 
-Regards, 
-Gururaja
+> The patch-set 2/4 does the same thing. Since I have da850-evm at my end, =
+I=20
+> have modified that machine driver and sent-it as 2/4.
+
+Two problems here.  One is that the update should be done in the same
+patch and the other is that you need to update *all* the machine drivers
+using the device, not just one of them.
+
+--zjcmjzIkjQU2rmur
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRClXUAAoJELSic+t+oim9EpIQAIUYX4o4ixs0ed/xnJUVQVcA
+Ep1sEUz3mGiUQHakiulo2cfc8BSRI+WuAVapxT2QdH+CHVqXW1k3SIUxfSIurTiD
+4kjWRtUyIcYn2WubbYqVWvPVcojsfEfkQNxxLgTpDWQFfoSiQHYVZaK+y22kFbmb
+Px6v+FJ864eDo7wlfQcM6K2lXYA5XmbYDZIxy19+2cKz3+CsvlOQgztL1Pb6Tvw4
+cnovIA9iCWFWiyDoHW6oPLmACBL42NKMlL8AEsURXcVlbI5qEfLIVEALmgHCdYJ9
+7YM9UQz7G+ykKYRILyOAMwNrdX8C0seM7gDDU/rMB21yVTbO0OGsiAC8DPIROBdL
+ap8AYhPt+OazCjqxNn1xKI7+TUZ1mXdfa4xMAI2bG/gOaDwPcSF+fLOSgDytFczK
+38sXYQjlawanhiTH6JwjKH+GUEh98WV0hRz2PwKGyhAYo1/OM09JtKN+49Zd1kJN
+Za5E3/pg86ehF2bjaGAQpQrrH8zmf7ckw9ViVrKyPonVnAo+Ewf8iCdsnnRq11PT
+JZ1jU+MIE9oqSkd70fmXioDfMttRscUoHwW3Xh7bttid70FKpfT9qvmqBA/FRP+a
+zAea+NUtAqaXrodE8TUKimG88aLM6/OU0pmgS/N3diZJZSZql+7W7tH978MjkxWU
+TMoGhyxaGsTe8/qCV6Te
+=x5pW
+-----END PGP SIGNATURE-----
+
+--zjcmjzIkjQU2rmur--
