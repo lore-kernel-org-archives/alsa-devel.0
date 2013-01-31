@@ -1,57 +1,95 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Asoc: Samsung: I2S: Add support for runtime S2R
-Date: Thu, 31 Jan 2013 15:36:34 +0800
-Message-ID: <20130131073632.GG7663@opensource.wolfsonmicro.com>
-References: <1359547864-1057-1-git-send-email-rcsekar@samsung.com>
+From: Gary Zhang <b13634@freescale.com>
+Subject: [PATCH] ASOC: imx: audmux: add a integrated
+	configuration function
+Date: Thu, 31 Jan 2013 14:42:46 +0800
+Message-ID: <1359614566-4660-1-git-send-email-b13634@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sClP8c1IaQxyux9v"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1359547864-1057-1-git-send-email-rcsekar@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: "R. Chandrasekar" <rcsekar@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe003.messaging.microsoft.com [216.32.180.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2870D26171B
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 08:41:12 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, shawn.guo@linaro.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+based on imx_audmux_v2_configure_port(), add a integrated
+interface to configure audmux port conveniently
 
---sClP8c1IaQxyux9v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Gary Zhang <b13634@freescale.com>
+---
+ sound/soc/fsl/imx-audmux.c |   43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 42 insertions(+), 1 deletions(-)
 
-On Wed, Jan 30, 2013 at 05:41:04PM +0530, R. Chandrasekar wrote:
-> From: "R. Chandrasekar" <rcsekar@samsung.com>
->=20
-> This patch adds runtime suspend to resume support for I2S.
-> I2S clk is disabled at suspend and enabled at resume.
-
-Applied, thanks.  Please use subject lines appropriate to the subsystem
-and keep your signoffs in order:
-
-> Signed-off-by: R. Chandrasekar <rcsekar@samsung.com>
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-
---sClP8c1IaQxyux9v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRCh7yAAoJELSic+t+oim9GOkP/0Mtqfvuq2OBLXEDHiueVLBj
-o/jRAFnBehTPJ/eBGJZTD21AiWuXpoM+QykH7KfUUR3McAeue9CWvfGcKA0etRxx
-MidMR/28vo9zMP1s8kHrPTm8e2Vq2PTpoPNh9jPdzLlZ+/326IiMdOZvyA1bUN52
-dwrR9LkxqrCAdKoni+mXeuPrqK6nD63zcHgyiz5JbpYGUfXaiXmSoO3KAq7EoAbO
-tXnXvWn7hEWHbqk6hhdcfJYeXDbZtlREX0nlgHMLsf4MCdm/uzYgZQ9TtEccQEVv
-DS6rv3RKCpkAmhdVJ3kKAUjwy9U+MsGiRDlL4TV3gABxzByMwAfxGdjhGDRTx/Ua
-D54dTvK8ypXPFAjnWhiP7fbBy08otVSoNJu2nedaZRAVUD7NOpI1MsvElPZHClT9
-cZSt/RR8NAmMHaAiLySkcbzBbfdfUW2R2Iis/ZBF/2VcwUoB4Foe9yiL8YkWSNbo
-zJjl6do5aj5AGCfypfm3mfIPciGlWAD6fiMSqdBFwAL5JDf46xySkoghrwAdtpT5
-XHyk7EVvS9+4rgKpzDzHVH9iYsWyRVnlb3RJHo/mjj2lL8KydnsCEANsLDcdATOp
-pyAWnv0a0HEwwfZMaN4IxeyI0RAalZaGJxgHbxoc9muTq07vyKIMxO/LF3ubRYWJ
-Tb9aw5tu5BaOaM3PDIvt
-=n7X8
------END PGP SIGNATURE-----
-
---sClP8c1IaQxyux9v--
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 251f4d9..ebd38a0 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2012 Freescale Semiconductor, Inc.
++ * Copyright 2012-2013 Freescale Semiconductor, Inc.
+  * Copyright 2012 Linaro Ltd.
+  * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
+  *
+@@ -244,6 +244,47 @@ int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
+ }
+ EXPORT_SYMBOL_GPL(imx_audmux_v2_configure_port);
+ 
++int imx_audmux_configure_port(unsigned int int_port, unsigned int ext_port)
++{
++	int ret;
++
++	if ((int_port > 7) || (ext_port > 7))
++		return -EINVAL;
++
++	if (audmux_type != IMX31_AUDMUX)
++		return -EINVAL;
++
++	if (!audmux_base)
++		return -ENOSYS;
++
++	if (audmux_clk)
++		clk_prepare_enable(audmux_clk);
++
++	int_port--;
++	ext_port--;
++	ret = imx_audmux_v2_configure_port(int_port,
++			IMX_AUDMUX_V2_PTCR_SYN |
++			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
++			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
++			IMX_AUDMUX_V2_PTCR_TFSDIR |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
++	if (ret) {
++		pr_err("audmux internal port setup failed\n");
++		return ret;
++	}
++	imx_audmux_v2_configure_port(ext_port,
++			IMX_AUDMUX_V2_PTCR_SYN,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
++	if (ret) {
++		pr_err("audmux external port setup failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(imx_audmux_configure_port);
++
+ static int imx_audmux_probe(struct platform_device *pdev)
+ {
+ 	struct resource *res;
+-- 
+1.7.0.4
