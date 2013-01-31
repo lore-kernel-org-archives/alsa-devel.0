@@ -1,15 +1,18 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: Sound/ARM/i.MX/SSI: fix SDMA starvation
-Date: Thu, 31 Jan 2013 11:15:13 +0800
-Message-ID: <20130131031510.GA17607__36773.1458427899$1359602171$gmane$org@S2101-09.ap.freescale.net>
-References: <201301240956.30641.jbe@pengutronix.de>
- <201301301444.25814.jbe@pengutronix.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ALSA: core: don't return uninitialized
+ snd_compr_tstamp
+Date: Wed, 30 Jan 2013 18:53:54 -0800
+Message-ID: <20130131025354.GA3143@intel.com>
+References: <1359599832-6210-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E56C32615E1
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 04:19:05 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <201301301444.25814.jbe@pengutronix.de>
+In-Reply-To: <1359599832-6210-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,148 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-sound@vger.kernel.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@linux.jf.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the fix, Juergen.
-
-The patch subject could be written in a better form with a proper
-prefix added.  "git log sound/soc/fsl/fsl_ssi.c" should give example.
-To have the patch get in sooner, you should copy Mark Brown on it.
-
-Also MAINTAINERS file gives the following, so you still do not have
-the right list copied.
-
-SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
-M:      Liam Girdwood <lrg@ti.com>
-M:      Mark Brown <broonie@opensource.wolfsonmicro.com>
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-L:      alsa-devel@alsa-project.org (moderated for non-subscribers)
-W:      http://alsa-project.org/main/index.php/ASoC
-S:      Supported
-F:      sound/soc/
-F:      include/sound/soc*
-
-On Wed, Jan 30, 2013 at 02:44:25PM +0100, Juergen Beisert wrote:
-> Juergen Beisert wrote:
-> > In cases when capturing is already running and someone enables also
-> > playback, the SDMA unit of the i.MX SoC does not see an edge on its TX DMA
-> > request line. This is due to the TX FIFOs are empty, and this request line
-> > is active all the time, when the CCSR_SSI_SIER_TDMAE bit is set.
-> > In this case also the TX FIFO underrun interrupt will flood the system
-> > forever.
-> >
-> > To ensure the first edge happens after enabling the TX side of the SSI unit
-> > and to trigger the SDMA unit successfully enable the CCSR_SSI_SIER_TDMAE on
-> > demand only. To be sure, this patch does the same for the
-> > CCSR_SSI_SIER_RDMAE (RX side) bit.
-> >
-> > Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
-
-I can see the patch does fix the problem.  A small comment below,
-otherwise
-
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
-
-> >
-> > ---
-> >  sound/soc/fsl/fsl_ssi.c |   24 ++++++++++++++++--------
-> >  1 file changed, 16 insertions(+), 8 deletions(-)
-> >
-> > Index: linux.git/sound/soc/fsl/fsl_ssi.c
-> > ===================================================================
-> > --- linux.git.orig/sound/soc/fsl/fsl_ssi.c
-> > +++ linux.git/sound/soc/fsl/fsl_ssi.c
-> > @@ -86,10 +86,9 @@ static inline void write_ssi_mask(u32 __
-> >  #endif
-> >
-> >  /* SIER bitflag of interrupts to enable */
-> > -#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
-> > -		    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
-> > -		    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
-> > -		    CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
-> > +#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TIE | \
-> > +		    CCSR_SSI_SIER_TUE0_EN | CCSR_SSI_SIER_TUE1_EN | \
-> > +		    CCSR_SSI_SIER_RFRC_EN | CCSR_SSI_SIER_RIE | \
-
-It takes me sometime to see the real change here is to remove flags
-CCSR_SSI_SIER_TDMAE and CCSR_SSI_SIER_RDMAE.  Then the changes below
-should look less dramatic and ease the reviewers a little bit, I think.
-
-Shawn
-
---8<---
-
-@@ -86,10 +86,9 @@ static inline void write_ssi_mask(u32 __iomem *addr, u32 clear, u32 set)
- #endif
-
- /* SIER bitflag of interrupts to enable */
--#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_TDMAE | \
-+#define SIER_FLAGS (CCSR_SSI_SIER_TFRC_EN | CCSR_SSI_SIER_RIE | \
-                    CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TUE0_EN | \
-                    CCSR_SSI_SIER_TUE1_EN | CCSR_SSI_SIER_RFRC_EN | \
--                   CCSR_SSI_SIER_RDMAE | CCSR_SSI_SIER_RIE | \
-                    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
-
-
-> >  		    CCSR_SSI_SIER_ROE0_EN | CCSR_SSI_SIER_ROE1_EN)
-> >
-> >  /**
-> > @@ -489,6 +488,9 @@ static int fsl_ssi_hw_params(struct snd_
-> >   *
-> >   * The DMA channel is in external master start and pause mode, which
-> >   * means the SSI completely controls the flow of data.
-> > + *
-> > + * To use the i.MX's SDMA unit it is important to create an edge on the
-> > + * corresponding request line. Otherwise the request will be ignored!
-> >   */
-> >  static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
-> >  			   struct snd_soc_dai *dai)
-> > @@ -500,20 +502,26 @@ static int fsl_ssi_trigger(struct snd_pc
-> >  	switch (cmd) {
-> >  	case SNDRV_PCM_TRIGGER_START:
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> >  			write_ssi_mask(&ssi->scr, 0,
-> >  				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE);
-> > -		else
-> > +			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TDMAE);
-> > +		} else {
-> >  			write_ssi_mask(&ssi->scr, 0,
-> >  				CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE);
-> > +			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RDMAE);
-> > +		}
-> >  		break;
-> >
-> >  	case SNDRV_PCM_TRIGGER_STOP:
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> >  			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_TE, 0);
-> > -		else
-> > +			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TDMAE, 0);
-> > +		} else {
-> >  			write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_RE, 0);
-> > +			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RDMAE, 0);
-> > +		}
-> >  		break;
-> >
-> >  	default:
+On Thu, Jan 31, 2013 at 10:37:12AM +0800, Mark Brown wrote:
+> From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 > 
-> Any comments on this patch?
+> The snd_compr_update_tstamp() can only fill in the snd_compr_tstamp
+> if the codec implements the pointer() function. If that happened
+> the code was previously returning uninitialized garbage in the
+> tstamp because it wasn't initialized anywhere.
 > 
-> jbe
+> This change zero-fills the tstamp in the two places it is used
+> before calling snd_compr_update_tstamp(), and also has
+> snd_compr_update_tstamp() return an error indication if it
+> can't provide a tstamp. For the case of snd_compr_calc_avail()
+> it ignores this error because we still need to return info on
+> the available buffer space even if we can't provide tstamp
+> info - when the tstamp is not valid all fields are now
+> guaranteed to be zero.
 > 
-> -- 
-> Pengutronix e.K.                              | Juergen Beisert             |
-> Linux Solutions for Science and Industry      | Phone: +49-5121-206917-5128 |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany    | Fax:   +49-5121-206917-5555 |
-> Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
+--
+~Vinod
