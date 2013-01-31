@@ -1,25 +1,25 @@
-From: Jonas Petersen <jnsptrsn1@gmail.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Thu, 31 Jan 2013 02:19:39 +0100
-Message-ID: <5109C6AB.8050407@gmail.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510644E5.1040505@perex.cz> <5106747A.5070803@ivitera.com>
- <5106ECE1.7040608@gmail.com> <510799FE.3020904@ivitera.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device
+	Tree support
+Date: Thu, 31 Jan 2013 09:35:02 +0800
+Message-ID: <20130131013500.GA4759@opensource.wolfsonmicro.com>
+References: <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2206422297862230303=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
- [209.85.214.52])
- by alsa0.perex.cz (Postfix) with ESMTP id E0C37265115
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 02:19:42 +0100 (CET)
-Received: by mail-bk0-f52.google.com with SMTP id jk13so1097673bkc.39
- for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2013 17:19:42 -0800 (PST)
-In-Reply-To: <510799FE.3020904@ivitera.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0DEDA265115
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 02:35:17 +0100 (CET)
+In-Reply-To: <51097F0F.2030501@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,21 +29,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am 29.01.2013 10:44, schrieb Pavel Hofman:
-> On 28.1.2013 22:25, Jonas Petersen wrote:
->>> Jonas, please could you check if ak4114 pins XTL0/1 (10, 11) are
->>> connected to logical high? They should be :)
->> Physically they're both on ground. I don't know what active state that
->> chip has though.
-> Let 's wait until we get the ak4114 register dump file :)
 
-Can't wait. :) I did a quick test in Windows 7. This driver is able to 
-detect the sample rate. If I set the clock source to "spdif in" at the 
-control pannel, then I can see the rate changing when I switch to 
-another rate on the spdif source.
+--===============2206422297862230303==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
+Content-Disposition: inline
 
-- Jonas
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jan 30, 2013 at 01:14:07PM -0700, Stephen Warren wrote:
+
+> > +CPU / CODEC DAI is represented as a sub-node.
+> > +Then, sub-node name should be "simple-audio,cpu" or "simple-audio,codec".
+
+> Why require sub-nodes? it seem over-complex.
+
+I suggested this because it seemed more legible to repeat the properties
+by having a named structure for each property rather than by repeating
+them all with slightly different names.
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRCco9AAoJELSic+t+oim983IP/RjRLT1qppfCvXILB0oBVk0k
+/H+UTHEURUpACVItD+MNG3L9PCZOEd1tMffrV7rBIqXqposwPvfSOp0Wvq6DA/Ze
+MbQYWR0R2Qg9K0ARBokcz5WLvejlEebMBXFTfzSnlWaiqPfIJnKNSndW9a8akEkj
+aS+6Z/6ifW3M+lHB3rfi2eNO57Cluf0Su8SKJH8pOpIPf3Bs8zhyzjK+T+2dS6rz
+2b1WiaG6ZB12KS8Bt4Vf6JvjMY1uR6HANdPCr829vYt9ee8B+kR6N4GaANPHSIVf
+23kllsGcsrXgtcNli/ML/LnjCZrCZLwLR7SsgnQMGoDzKz8E9i91EGNfT/D4MdOo
+fu8n3P3W7M6te6M9Ccv3KG1KgX1vDxPsyLvPYTQ97Jgdi0Svh13mfD+jCgMnjzTR
+Ndxu6LKBPPvYdqUZ5UWaLWAp82VpYkX+FKfPpo+8GxBJVAPHcN51znmgO3jFXfdy
+fwb1DoiFcUNf6uNbO8/Z+MrB+uy63sP3AjxYMGw+lL5DqKmBGYRQs4yu8sIi/mNT
+nYWJ5fHRxM9Jog6Sc7QI8yNwp8RarX22ewq7DeT4dobKK+3FUfiixJLAt/pQwSOX
+mVyeb1j56pmV7o6jBKPX8LhiZ6gTb3tALLmKuh3tDHXNBOtwqWrVUvHnT9cUgpij
+lI1QZGkLJZBE1FpV2f4s
+=vCAk
+-----END PGP SIGNATURE-----
+
+--J2SCkAp4GZ/dPZZf--
+
+--===============2206422297862230303==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2206422297862230303==--
