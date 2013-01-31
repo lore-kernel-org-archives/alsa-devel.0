@@ -1,69 +1,71 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: tlv320aic3x: Convert mic bias to
- a supply widget
-Date: Thu, 31 Jan 2013 05:27:26 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB59A8C@DBDE01.ent.ti.com>
-References: <1359552155-17426-1-git-send-email-gururaja.hebbar@ti.com>
- <20130131023221.GA6027@opensource.wolfsonmicro.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH] ASoC: fsl: Fix multiple symbol definitions
+Date: Thu, 31 Jan 2013 08:06:58 +0100
+Message-ID: <20130131070658.GB31996@avionic-0098.mockup.avionic-design.de>
+References: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
+ <20130131014214.GD2765@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CA5D2616DB
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 06:27:35 +0100 (CET)
-In-Reply-To: <20130131023221.GA6027@opensource.wolfsonmicro.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara,
- Sudhakar" <sudhakar.raj@ti.com>, "tony@atomide.com" <tony@atomide.com>, "Nori,
- Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130131014214.GD2765@S2101-09.ap.freescale.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 31, 2013 at 08:02:25, Mark Brown wrote:
-> On Wed, Jan 30, 2013 at 06:52:35PM +0530, Hebbar Gururaja wrote:
-> 
-> > Convert MicBias widgets to supply widget.
-> 
-> > On tlv320aic3x, Mic bias power on/off shares the same register bits
-> > with output mic bias voltage.  So, when power on mic bias, we need
-> > reclaim it to voltage value.
-> 
-> This should update machine drivers that use the CODEC too.
 
-Yes. I have that patch ready. Once this is accepted, I will send all 
-the patch as a series
+--s/l3CgOIzMHHjg/5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > +- ai3x-micbias-vg - MicBias Voltage required.
-> > +	1 - MICBIAS output is powered to 2.0V,
-> > +	2 - MICBIAS output is powered to 2.5V,
-> > +	3 - MICBIAS output is connected to AVDD,
-> > +	If this node is not mentioned or if the value is incorrect, then MicBias
-> > +	is powered down.
-> 
-> Would 2.0V not be a more sensible default (it is the lowest voltage so
-> is unlikely to cause hardware damage if it's wrong)?
+On Thu, Jan 31, 2013 at 09:42:17AM +0800, Shawn Guo wrote:
+> On Wed, Jan 30, 2013 at 09:24:31PM +0100, Thierry Reding wrote:
+> > Commit 25b8d31 (ASoC: fsl: fix multiple definition of init_module) fixed
+> > a build error due to multiple symbol definitions when building as a
+> > module. However, it causes the build to break when the driver is builtin
+> > because the imx-pcm.o object is included multiple times. Solve the issue
+> > by adding imx-pcm.o to each of the modules that require it, but only add
+> > it to the kernel once when one or both drivers are builtin.
+> >=20
+> > Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+>=20
+> Thanks, Thierry.  The Kconfig is already complex.  To avoid having them
+> even more complex, I have chosen to revert my patch and have a little
+> surgery on the code [1] to make it match the Kconfig rational.
+>=20
+> Shawn
+>=20
+> [1] http://thread.gmane.org/gmane.linux.alsa.devel/105018
 
-The only reason I made this choice was because none of the existing platforms
-using this codec are setting the MicBias.
+That does indeed look much better than fiddling with the Makefile. My
+automated ARM builds of linux-next were failing for a few days because
+of this, so I guess the fix (as well as the MMC one) just hadn't made it
+into linux-next yet.
 
-> 
-> Otherwise this looks good.
+Thierry
 
-Ok. I will send all the patch as a series now.
+--s/l3CgOIzMHHjg/5
+Content-Type: application/pgp-signature
 
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
 
+iQIcBAEBAgAGBQJRChgSAAoJEN0jrNd/PrOhNmAP/i9n/hOsn8/wfh9qj2wAJfZp
+YKODS1X0L2Q09MYfMPCvHpi86ZshiMuWMCWLT5WHFq5VxXTX3Fo86kTw+FMB3TW5
+eq20uoqEPwaYlpdKTAsAJwNXlSJbizrgZZJzIP8eX0uIjg8YSNCS447HywRrg1mW
+0CBCkoqlgifrrVtyXkZvyAplrL7dEWUhWdSSsicIudgg8BtGdMmI8ApJ/MYUCH5t
+cm/8Z4l4WyoLIqCLvvUIXacm3JR2cGXpDc+bTkycTFYdoyxdPT3VnIuh7HjIkZx7
+AGIc0t1KnWZFk6dOOF4uoHdTBYENkueOVBdBVZIY2LS4pfyYzFRRjS0dif2z7Kdf
+L/7HPlQHp5d1mxadGs7vs8/7kA4JS8C7Val6WF6j25LduqHHjuQSyFK7J5GyXhTM
+xggkmsClwL4yK5x2DVsgmG0No6Ng0KksbnzmHPDA7G2DRMEVg5uuD3WYkQlGI97E
+dw9EnIRrXcyMBZFbPCydesk1v/39AE4hSi8xxM+0wMfUsg2DEniwkr3GZzysKyu5
+F9GmKhsk69y8aGNolZixWm937CFsd7kpiEYn1RwJa60u4VQSkEXWpS0LHpfbu+VT
+OlkyjcIqradPQ6mpWxjNRDfWN3EZEtITBaiF9RT9ZHJ8nJ8dvop9hEzqbQDLi01I
+v4+1+ppMBhfMznplYOMm
+=f90e
+-----END PGP SIGNATURE-----
 
-Regards, 
-Gururaja
+--s/l3CgOIzMHHjg/5--
