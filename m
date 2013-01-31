@@ -1,22 +1,27 @@
-From: Brent Weatherall <brentweatherall@gmail.com>
-Subject: Re: PandaBoard ES Audio Problems
-Date: Thu, 31 Jan 2013 14:13:27 -0800
-Message-ID: <CAAo96ZAZvceSonfd7rzNRCpr0Ey-SQP9vV2rwsy89yT63=Ze5A@mail.gmail.com>
-References: <CAAo96ZCNBTGBToLbKnvQ1k_eewJcg94KZBRKt7TKkE3T8xqsQw@mail.gmail.com>
- <510AA9A0.4060009@ladisch.de> <1359656599.10392.13.camel@loki>
- <CAAo96ZDNUY8Sp=kmjGXy5Ro0q7x22XVtO3Uv0VhhJBugUvOfTw@mail.gmail.com>
- <510AC999.2090205@ladisch.de> <1359662400.10392.26.camel@loki>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
+ capture
+Date: Thu, 31 Jan 2013 23:25:10 +0100
+Message-ID: <510AEF46.1080608@gmail.com>
+References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
+ <51042EE5.5070900@perex.cz>
+ <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
+ <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
+ <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
+ <510798CC.3080006@ivitera.com> <51081FA7.70907@gmail.com>
+ <5108F541.3010300@ivitera.com> <5109BADB.30403@gmail.com>
+ <510A485F.9060100@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f48.google.com (mail-da0-f48.google.com
- [209.85.210.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 535D2262632
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 23:13:29 +0100 (CET)
-Received: by mail-da0-f48.google.com with SMTP id k18so1472179dae.7
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 14:13:27 -0800 (PST)
-In-Reply-To: <1359662400.10392.26.camel@loki>
+Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
+ [209.85.214.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75378262632
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 23:25:12 +0100 (CET)
+Received: by mail-bk0-f48.google.com with SMTP id jf20so1555645bkc.7
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 14:25:12 -0800 (PST)
+In-Reply-To: <510A485F.9060100@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,66 +31,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Liam,
+Am 31.01.2013 11:33, schrieb Pavel Hofman:
+> OK, it looks we have a problem in communication with the chip. IMO the
+> 4wire_start and 4wire_finish code is incorrect. As chip-select it takes
+> VT1724_REVO_CS1, but for ak4114 it should be VT1724_REVO_CS3 (as defined
+> in revo.h)
+>
+> IMO the two methods should be:
+> static unsigned int ap192_4wire_start(struct snd_ice1712 *ice)
+> {
+> 	unsigned int tmp;
+>
+> 	snd_ice1712_save_gpio_status(ice);
+> 	tmp = snd_ice1712_gpio_read(ice);
+> 	tmp |= VT1724_REVO_CCLK; /* high at init */
+> 	tmp |= VT1724_REVO_CS0;
+> 	tmp &= ~VT1724_REVO_CS3;
+> 	snd_ice1712_gpio_write(ice, tmp);
+> 	udelay(1);
+> 	return tmp;
+> }
 
-     Before I begin to dig around, do you know if there is the possibility
-a newer kernel (like 3.7 or something) will have fixed this issue?
 
-Regards,
-
-Brent
+Btw. is it really intended that CS0 is set and CS3 is unset in 
+4wire_start? (In 4wire_finish CS0 is set again.)
 
 
-On Thu, Jan 31, 2013 at 12:00 PM, Liam Girdwood <
-liam.r.girdwood@linux.intel.com> wrote:
+> static void ap192_4wire_finish(struct snd_ice1712 *ice, unsigned int tmp)
+> {
+> 	tmp |= VT1724_REVO_CS0;
+> 	tmp |= VT1724_REVO_CS3;
+> 	snd_ice1712_gpio_write(ice, tmp);
+> 	udelay(1);
+> 	snd_ice1712_restore_gpio_status(ice);
+> }
+>
+> Provided that VT1724_REVO_CS0 is chip-select for AK4358 DAC and
+> VT1724_REVO_CS3 chip-select for AK4114. The AK5385 ADC has no control.
 
-> On Thu, 2013-01-31 at 20:44 +0100, Clemens Ladisch wrote:
-> >
-> > The problem is that the kernel driver returns wrong min/max values.
-> >
-> > > Liam Girdwood wrote:
-> > >> The OMAP4 ABE driver doesn't actually know the exact constraints if
-> > >> there is not a valid playback path between source PCM and sink (it
-> will
-> > >> still throw out anything insane though). This is because it can route
-> > >> audio from most of it's PCMs to most of it's components, e.g. HS, HF,
-> > >> BT, MODEM, Earpiece, etc where some components have different
-> > >> constraints. It's possible that you dont have a path in your case.
-> >
-> > In theory, what the driver should do is:
-> > - don't allow the PCM device to be opened if there is no valid route
-> >   configuration (or just never allow a completely invalid
-> >   configuration); and
+CS0 (0x10) is GPIO4 and CS3 (0x80) is GPIO7, right?
+
+Physically GPIO7 goes to CSN (pin 35) of the AK4114, as I confirmed before.
+
+GPIO4 goes to CSN (pin 21) of the AK4358. I just did a physical check to 
+confirm that also!
+
+So I guess (hope) that would confirm that "VT1724_REVO_CS0 is 
+chip-select for AK4358 DAC and
+VT1724_REVO_CS3 chip-select for AK4114"
+
+One question: What do you mean by "The AK5385 ADC has no control."? Is 
+that by nature of the chip?
+
+
+> IMO the ak4xxx config section should use VT1724_REVO_CS3 instead of
+> VT1724_REVO_CS1 too:
 >
-> Ah, this was my initial design too :)
+> static struct snd_ak4xxx_private akm_ap192_priv = {
+> 	.caddr = 2,
+> 	.cif = 0,
+> 	.data_mask = VT1724_REVO_CDOUT,
+> 	.clk_mask = VT1724_REVO_CCLK,
+> 	.cs_mask = VT1724_REVO_CS0 | VT1724_REVO_CS3,
+> 	.cs_addr = VT1724_REVO_CS3,
+> 	.cs_none = VT1724_REVO_CS0 | VT1724_REVO_CS3,
+> 	.add_flags = VT1724_REVO_CCLK, /* high at init */
+> 	.mask_flags = 0,
+> };
 >
-> Some userspace software will actually and validly open a PCM, configure
-> some mixers and then perform a hw_params() -> trigger(). So locking out
-> the PCM at open() for invalid paths breaks some userspace code.
->
-> > - while the PCM device is open, lock the route configuration, or
->
-> We cant do this either as we have to support runtime switching between
-> different use cases (that use different back end components) e.g. MP3
-> playback to Phonecall
->
-> > - if changing the route during playback is necessary, allow to set
-> >   only those routes that are possible with the current PCM
-> >   configuration.
->
-> We do this already, but will first try and fixup any of the
-> configuration differences in the DSP so that the userspace operation
-> succeeds.
->
-> I guess Peter/Brent will have to look at the min/max values in more
-> detail.
->
-> Liam
->
->
->
->
+> If I am not mistaken VT1724_REVO_CS1 is not used on ap192 at all. Is
+> that correct?
+
+That woud be GPIO5, right? I'm not sure. If this is the case, wouldn't 
+that pin not be tied to some level (high or low)?
+
+
+> Sorry for not using proper patches but I cannot test the result anyway.
+
+No problem. I tested, but still no succes.. :(
+
+I noticed one more thing:
+
+VT1724_REVO_CDIN (GPIO2) goes to CDTO and
+VT1724_REVO_CDOUT (GPIO3) goes to CDTI of the AK4114. "IN" is "O" and 
+"OUT" is "I". Ist that correct? I tried to swap them once but that 
+didn't help either.
+
+- Jonas
