@@ -1,56 +1,57 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: Fix multiple symbol definitions
-Date: Thu, 31 Jan 2013 15:09:39 +0800
-Message-ID: <20130131070937.GF7663@opensource.wolfsonmicro.com>
-References: <1359577471-15029-1-git-send-email-thierry.reding@avionic-design.de>
- <20130131014214.GD2765@S2101-09.ap.freescale.net>
- <20130131070658.GB31996@avionic-0098.mockup.avionic-design.de>
+Subject: Re: [PATCH] Asoc: Samsung: I2S: Add support for runtime S2R
+Date: Thu, 31 Jan 2013 15:36:34 +0800
+Message-ID: <20130131073632.GG7663@opensource.wolfsonmicro.com>
+References: <1359547864-1057-1-git-send-email-rcsekar@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s5/bjXLgkIwAv6Hi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="sClP8c1IaQxyux9v"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130131070658.GB31996@avionic-0098.mockup.avionic-design.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Thierry Reding <thierry.reding@avionic-design.de>
-Cc: Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1359547864-1057-1-git-send-email-rcsekar@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: "R. Chandrasekar" <rcsekar@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, ben-linux@fluff.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---s5/bjXLgkIwAv6Hi
+--sClP8c1IaQxyux9v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 31, 2013 at 08:06:58AM +0100, Thierry Reding wrote:
+On Wed, Jan 30, 2013 at 05:41:04PM +0530, R. Chandrasekar wrote:
+> From: "R. Chandrasekar" <rcsekar@samsung.com>
+>=20
+> This patch adds runtime suspend to resume support for I2S.
+> I2S clk is disabled at suspend and enabled at resume.
 
-> That does indeed look much better than fiddling with the Makefile. My
-> automated ARM builds of linux-next were failing for a few days because
-> of this, so I guess the fix (as well as the MMC one) just hadn't made it
-> into linux-next yet.
+Applied, thanks.  Please use subject lines appropriate to the subsystem
+and keep your signoffs in order:
 
-The last -next was on the 29th, once it's rebuilt the fix should be
-there.
+> Signed-off-by: R. Chandrasekar <rcsekar@samsung.com>
+> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
 
---s5/bjXLgkIwAv6Hi
+--sClP8c1IaQxyux9v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRChioAAoJELSic+t+oim9VREP/ik7S6DHy8qnVVYRbHIcbpG9
-AzLpAmttnJjG4gr9PM3nqdUe5n8oah1/eLrf6RcIlryoS1rVkUDPNvcmMqtdmWdx
-9hHQmyJZ3exop9m8sMkQKnKac1VSTBgRTRRgPkxt4RIW1rYQ7t6Uzh+ASawjQB/X
-LQoLyinxu1jvq+kYizBWYEU5MEeFK/HoikyYkFp1x0oCojkVq6tF1xHQZgep3EjV
-Y+bJUX0rKEh6Naga40xWF1swgAwegEAqEHPvme53ktGSUxRE3wpCCFTEmh+aWTXV
-gv3U2SmQ+v+C3O2A8denmoKe8CGyccIKabCbbXfxg+DrXElNaIgi8X0ENFPINBc7
-qnFjGbJEh0al9AWlD2nPt1ijPviR26BH2tl+vis7B/I7YB6pHJ5CBGaVtMfzZh2A
-JazDw2U/RIE4sNvReHgKzgIh3lHFIRzABoPS+OUw+yiCgm8PkMIGqns5i+icfDAG
-Eyet+kdJ7cdRPPiKHruENk3Rc/2GyUKvCCNDU5qDqMG1YqNtHJzgk1RDBnx+p6Tu
-eUMDHUZa81n6dslYSyhNId9V6jBh2pH53K3KJmog/U/Q+s6dlIrtCGjrY04UCn6I
-HBUDJgEoU30dHFhrrbGDCoVWkpnU7a4O0LUy9GJYybsK4nIoUkf5Jx3ereJe40qS
-A15uF+QKNHZYpd/t8uOW
-=m/1B
+iQIcBAEBAgAGBQJRCh7yAAoJELSic+t+oim9GOkP/0Mtqfvuq2OBLXEDHiueVLBj
+o/jRAFnBehTPJ/eBGJZTD21AiWuXpoM+QykH7KfUUR3McAeue9CWvfGcKA0etRxx
+MidMR/28vo9zMP1s8kHrPTm8e2Vq2PTpoPNh9jPdzLlZ+/326IiMdOZvyA1bUN52
+dwrR9LkxqrCAdKoni+mXeuPrqK6nD63zcHgyiz5JbpYGUfXaiXmSoO3KAq7EoAbO
+tXnXvWn7hEWHbqk6hhdcfJYeXDbZtlREX0nlgHMLsf4MCdm/uzYgZQ9TtEccQEVv
+DS6rv3RKCpkAmhdVJ3kKAUjwy9U+MsGiRDlL4TV3gABxzByMwAfxGdjhGDRTx/Ua
+D54dTvK8ypXPFAjnWhiP7fbBy08otVSoNJu2nedaZRAVUD7NOpI1MsvElPZHClT9
+cZSt/RR8NAmMHaAiLySkcbzBbfdfUW2R2Iis/ZBF/2VcwUoB4Foe9yiL8YkWSNbo
+zJjl6do5aj5AGCfypfm3mfIPciGlWAD6fiMSqdBFwAL5JDf46xySkoghrwAdtpT5
+XHyk7EVvS9+4rgKpzDzHVH9iYsWyRVnlb3RJHo/mjj2lL8KydnsCEANsLDcdATOp
+pyAWnv0a0HEwwfZMaN4IxeyI0RAalZaGJxgHbxoc9muTq07vyKIMxO/LF3ubRYWJ
+Tb9aw5tu5BaOaM3PDIvt
+=n7X8
 -----END PGP SIGNATURE-----
 
---s5/bjXLgkIwAv6Hi--
+--sClP8c1IaQxyux9v--
