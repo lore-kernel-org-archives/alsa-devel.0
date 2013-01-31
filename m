@@ -1,19 +1,17 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASOC: imx: audmux: add a integrated
- configuration function
-Date: Thu, 31 Jan 2013 22:22:45 +0800
-Message-ID: <20130131142243.GE2735@S2101-09.ap.freescale.net>
-References: <1359614566-4660-1-git-send-email-b13634@freescale.com>
+From: Jerome Forissier <jerome@taodyne.com>
+Subject: [PATCH 2/3] snd_device_name_hint(): do not change the
+	global error handler.
+Date: Thu, 31 Jan 2013 15:47:24 +0100
+Message-ID: <1359643645-33558-3-git-send-email-jerome@taodyne.com>
+References: <1359643645-33558-1-git-send-email-jerome@taodyne.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe005.messaging.microsoft.com [213.199.154.208])
- by alsa0.perex.cz (Postfix) with ESMTP id F29BB2602F7
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 15:22:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1359614566-4660-1-git-send-email-b13634@freescale.com>
+Received: from ubuntu (102.30.7.109.rev.sfr.net [109.7.30.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 141872615A1
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 15:47:34 +0100 (CET)
+In-Reply-To: <1359643645-33558-1-git-send-email-jerome@taodyne.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Gary Zhang <b13634@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Jerome Forissier <jerome@taodyne.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 31, 2013 at 02:42:46PM +0800, Gary Zhang wrote:
-> based on imx_audmux_v2_configure_port(), add a integrated
-> interface to configure audmux port conveniently
-> 
-> Signed-off-by: Gary Zhang <b13634@freescale.com>
-> ---
->  sound/soc/fsl/imx-audmux.c |   43 ++++++++++++++++++++++++++++++++++++++++++-
->  1 files changed, 42 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-> index 251f4d9..ebd38a0 100644
-> --- a/sound/soc/fsl/imx-audmux.c
-> +++ b/sound/soc/fsl/imx-audmux.c
-> @@ -1,5 +1,5 @@
->  /*
-> - * Copyright 2012 Freescale Semiconductor, Inc.
-> + * Copyright 2012-2013 Freescale Semiconductor, Inc.
->   * Copyright 2012 Linaro Ltd.
->   * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
->   *
-> @@ -244,6 +244,47 @@ int imx_audmux_v2_configure_port(unsigned int port, unsigned int ptcr,
->  }
->  EXPORT_SYMBOL_GPL(imx_audmux_v2_configure_port);
->  
-> +int imx_audmux_configure_port(unsigned int int_port, unsigned int ext_port)
+This is the first step towards making this function reentrant.
 
-We have imx_audmux_v1_configure_port and imx_audmux_v2_configure_port,
-but you name a imx_audmux_v2_configure_port only helper as
-imx_audmux_configure_port which is not good.
+Signed-off-by: Jerome Forissier <jerome@taodyne.com>
+---
+ src/control/namehint.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-> +{
-> +	int ret;
-> +
-> +	if ((int_port > 7) || (ext_port > 7))
-> +		return -EINVAL;
-
-This check is not really scalable, as we may have different ports
-on different SoCs.
-
-> +
-> +	if (audmux_type != IMX31_AUDMUX)
-> +		return -EINVAL;
-> +
-> +	if (!audmux_base)
-> +		return -ENOSYS;
-
-These checks will be done imx_audmux_v2_configure_port() again then.
-So all in all, this consolidation does not really fit well.
-
-Mark,
-
-I just found there are much more code between imx_sgtl5000_probe
-and imx_wm8962_probe than just above audmux setup.  I'm thinking
-about consolidate them at a higher level.  But can you give it a
-go on Gary's patch, and then I can start the consolidation from
-there?  I promise I will send a follow-up patch to do it.
-
-Shawn
-
-> +
-> +	if (audmux_clk)
-> +		clk_prepare_enable(audmux_clk);
-> +
-> +	int_port--;
-> +	ext_port--;
-> +	ret = imx_audmux_v2_configure_port(int_port,
-> +			IMX_AUDMUX_V2_PTCR_SYN |
-> +			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-> +			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-> +			IMX_AUDMUX_V2_PTCR_TFSDIR |
-> +			IMX_AUDMUX_V2_PTCR_TCLKDIR,
-> +			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
-> +	if (ret) {
-> +		pr_err("audmux internal port setup failed\n");
-> +		return ret;
-> +	}
-> +	imx_audmux_v2_configure_port(ext_port,
-> +			IMX_AUDMUX_V2_PTCR_SYN,
-> +			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
-> +	if (ret) {
-> +		pr_err("audmux external port setup failed\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(imx_audmux_configure_port);
+diff --git a/src/control/namehint.c b/src/control/namehint.c
+index 19352be..defc036 100644
+--- a/src/control/namehint.c
++++ b/src/control/namehint.c
+@@ -80,7 +80,8 @@ static void zero_handler(const char *file ATTRIBUTE_UNUSED,
+ 			 int line ATTRIBUTE_UNUSED,
+ 			 const char *function ATTRIBUTE_UNUSED,
+ 			 int err ATTRIBUTE_UNUSED,
+-			 const char *fmt ATTRIBUTE_UNUSED, ...)
++			 const char *fmt ATTRIBUTE_UNUSED,
++			 va_list arg ATTRIBUTE_UNUSED)
+ {
+ }
+ 
+@@ -212,7 +213,7 @@ static int try_config(struct hint_list *list,
+ 		      const char *base,
+ 		      const char *name)
+ {
+-	snd_lib_error_handler_t eh;
++	snd_local_error_handler_t eh;
+ 	snd_config_t *res = NULL, *cfg, *cfg1, *n;
+ 	snd_config_iterator_t i, next;
+ 	char *buf, *buf1 = NULL, *buf2;
+@@ -239,10 +240,9 @@ static int try_config(struct hint_list *list,
+ 		sprintf(buf, "%s:CARD=%s", name, snd_ctl_card_info_get_id(list->info));
+ 	else
+ 		strcpy(buf, name);
+-	eh = snd_lib_error;
+-	snd_lib_error_set_handler(&zero_handler);
++	eh = snd_lib_error_set_local(&zero_handler);
+ 	err = snd_config_search_definition(snd_config, base, buf, &res);
+-	snd_lib_error_set_handler(eh);
++	snd_lib_error_set_local(eh);
+ 	if (err < 0)
+ 		goto __skip_add;
+ 	cleanup_res = 1;
+@@ -337,10 +337,9 @@ static int try_config(struct hint_list *list,
+ 		goto __ok;
+ 	/* find, if all parameters have a default, */
+ 	/* otherwise filter this definition */
+-	eh = snd_lib_error;
+-	snd_lib_error_set_handler(&zero_handler);
++	eh = snd_lib_error_set_local(&zero_handler);
+ 	err = snd_config_search_alias_hooks(snd_config, base, buf, &res);
+-	snd_lib_error_set_handler(eh);
++	snd_lib_error_set_local(eh);
+ 	if (err < 0)
+ 		goto __cleanup;
+ 	if (snd_config_search(res, "@args", &cfg) >= 0) {
+-- 
+1.8.1.2
