@@ -1,21 +1,14 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
 Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device Tree support
-Date: Fri, 1 Feb 2013 01:11:59 +0800
-Message-ID: <20130131171158.GA15376@opensource.wolfsonmicro.com>
-References: <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
- <51097F0F.2030501@wwwdotorg.org>
- <20130131013500.GA4759@opensource.wolfsonmicro.com>
- <510AA551.30400@wwwdotorg.org>
+Date: Thu, 31 Jan 2013 10:15:55 -0700
+Message-ID: <510AA6CB.3050809@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>	<87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>	<50E71618.8090302@wwwdotorg.org>	<20130104193712.GN4627@opensource.wolfsonmicro.com>	<87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>	<87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>	<20130127035943.GJ4650@opensource.wolfsonmicro.com>	<87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>	<20130129014808.GC4748@opensource.wolfsonmicro.com>	<87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>	<87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>	<5107FF97.1070601@wwwdotorg.org>	<87halz82bm.wl%kuninori.morimoto.gx@renesas.com>	<51097F0F.2030501@wwwdotorg.org>
+ <877gmuqir2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1963437220710323606=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <510AA551.30400-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+In-Reply-To: <877gmuqir2.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -26,69 +19,92 @@ List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
 Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 Sender: "devicetree-discuss"
  <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/30/2013 05:49 PM, Kuninori Morimoto wrote:
 
---===============1963437220710323606==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
+>>> +- simple-audio,system-clock-frequency	: system clock rate
+>>> +- simple-audio,frame-master
+>>> +- simple-audio,bitclock-master
+>>
+>> Aren't those a property of the CPU<->CODEC link, hence the clock
+>> frequency is identical,
+> 
+> This clock connection/frequency depends on SoC/board.
+> There is a case where system clock is not connected to both cpu/codec.
+> 
+> system clock    bit/frame
+> --------[codec]---------> [cpu]
 
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In that diagram, it looks like the CPU-side simply doesn't receive a
+system clock at all, so it's recovering any clock by multiplying up the
+bit clock.
 
-On Thu, Jan 31, 2013 at 10:09:37AM -0700, Stephen Warren wrote:
-> On 01/30/2013 06:35 PM, Mark Brown wrote:
+That seems like a different case to the two ends both receiving a system
+clock but the frequency being different.
 
-> > I suggested this because it seemed more legible to repeat the
-> > properties by having a named structure for each property rather
-> > than by repeating them all with slightly different names.
+How does the CPU DAI driver know (based on the binding) whether it
+receives a system clock or not, or whether it should extract a clock
+from the bit clock? Perhaps the HW design of the CPU DAI determines
+this, so the binding doesn't need to specify it?
 
-> So the only need to repeat them at all was if the two DAIs needed
-> different values for some of the properties rather than being
-> identical (e.g. signal polarity) or precise inversions (e.g. which end
-> is master), right?
+>> and the two "master" properties are the inverse
+>> of each-other in between CPU and CODEC. Specifying these right in the
+>> top-level node seems simpler.
+> 
+> If I put these in top-level node, it needs
+> 
+>   simple-audio,xxx,frame-master;
+>   simple-audio,xxx,bitclock-master;     xxx = cpu / codec
+> 
+> This is same things ?
+> 
+> Of course I can do like
+> 
+>   simple-audio,frame-master = "cpu";
+>   simple-audio,bitclock-master = "cpu";
+> 
+> But, this style can't use snd_soc_of_parse_daifmt()
 
-There's more attributes that we might want to configure on the devices
-than just the actual DAI link.  Clocks for example.
+I think the usual style for this would be a Boolean property indicating
+whether the CPU DAI is the master or slave, and same for bitclock.
+That'd be something like:
 
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+simple-audio,cpu-frame-master;
+simple-audio,cpu-bitclock-master;
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+and those two properties would be present (for true) or missing (for false).
 
-iQIcBAEBAgAGBQJRCqXWAAoJELSic+t+oim9CMMP/Az+KtaXSZQbONOKhhAYfw+/
-7KxVE4SX7j/ixgGKSxAqXFcFtnkTky2Al3lYZ9JqGiA2MCvcBCacD95pihHK3xk3
-JVCNVomeqgPZVWgSCzVpIQv5+8HhHYb7uvz1s456Y97TH30ySk78Y5AGKcjMGl0D
-g23hNph8b/Dfg8aydz6dpGKwhbsrTor0v8zx/RarjUcvraHdFZ7UK/9uq+1D/qCq
-4yjDhXTK5uyOswJEZSsiVu6j13u+f5/OkOHR+CDW8X+dDjQ2SS4QdzL2g1a7VOx7
-ztKDqq0DFqGc0gS8Q3fCF9uztEOapktzYhbrXHVrhL5KEWsWsfSoiLhZOIih2+SQ
-pz/x61PydLxkSpkvmJdYc3aWxIE+6cddNSR7aFtMQ3Qn3sRHxko/HdSKxQbpdPp4
-NFTdO8IjxBTeNWRT85HKtQP2CtL6zc9fB3i5ow38Kg0d/tuiz6p4v2MvhMP3NXRu
-UElk4sXvIozk0d10lmiwsEJ0sG1RX2MdaNZVfqic9J8rcyHQGy9S/wX8RIGngCnU
-l+OtcsX9UHqYps+c7IbezrekvO4Rxx5RQJcKl2XrqUQrac+5U+dPxJV7QJwfl6xN
-3FtBaJ06Z6QMoSHviY84BBZfZcbqXjQD7alUva+s/eddPlmRC+a6ZuY4rQr2yfeJ
-l/JY+MO+cCFLxAUAM9ib
-=B2Z5
------END PGP SIGNATURE-----
+>>> +Required subnode properties:
+>>> +- simple-audio,dev		: phandle for CPU/CODEC
+>>> +
+>>> +Optional subnode properties:
+>>> +
+>>> +- simple-audio,dai-name			: simple-audio CPU/CODEC DAI name
+>>
+>> OK, I see those two are CPU-/CODEC-specific. However, you could easily
+>> just have different property names for the two.
+>>
+>> I assume you didn't like my idea of not putting the DAI names into the
+>> DT, but using extra arguments after the phandles instead? Doing so would
+>> be more alike most existing DT bindings.
+> 
+> I'm confusing about this.
+> What does this "different property name" mean ?
 
---17pEHd4RhPHOinZp--
+Instead of:
 
---===============1963437220710323606==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+nodea {
+    simple-audio,dev = ...;
+}
+nodeb {
+    simple-audio,dev = ...;
+}
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
+You'd have:
 
---===============1963437220710323606==--
+simple-audio,cpu-dai = ...;
+simple-audio,codec = ...;
