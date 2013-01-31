@@ -1,26 +1,22 @@
-From: Jonas Petersen <jnsptrsn1@gmail.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Thu, 31 Jan 2013 21:56:04 +0100
-Message-ID: <510ADA64.9030506@gmail.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510644E5.1040505@perex.cz> <5106747A.5070803@ivitera.com>
- <5106ECE1.7040608@gmail.com> <510799FE.3020904@ivitera.com>
- <5109C6AB.8050407@gmail.com> <510A3399.1010600@ivitera.com>
+From: Brent Weatherall <brentweatherall@gmail.com>
+Subject: Re: PandaBoard ES Audio Problems
+Date: Thu, 31 Jan 2013 14:13:27 -0800
+Message-ID: <CAAo96ZAZvceSonfd7rzNRCpr0Ey-SQP9vV2rwsy89yT63=Ze5A@mail.gmail.com>
+References: <CAAo96ZCNBTGBToLbKnvQ1k_eewJcg94KZBRKt7TKkE3T8xqsQw@mail.gmail.com>
+ <510AA9A0.4060009@ladisch.de> <1359656599.10392.13.camel@loki>
+ <CAAo96ZDNUY8Sp=kmjGXy5Ro0q7x22XVtO3Uv0VhhJBugUvOfTw@mail.gmail.com>
+ <510AC999.2090205@ladisch.de> <1359662400.10392.26.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
- [209.85.214.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 86130262618
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 21:56:06 +0100 (CET)
-Received: by mail-bk0-f42.google.com with SMTP id jk7so1549034bkc.29
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 12:56:06 -0800 (PST)
-In-Reply-To: <510A3399.1010600@ivitera.com>
+Received: from mail-da0-f48.google.com (mail-da0-f48.google.com
+ [209.85.210.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 535D2262632
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 23:13:29 +0100 (CET)
+Received: by mail-da0-f48.google.com with SMTP id k18so1472179dae.7
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 14:13:27 -0800 (PST)
+In-Reply-To: <1359662400.10392.26.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,108 +26,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Am 31.01.2013 10:04, schrieb Pavel Hofman:
-> On 31.1.2013 02:19, Jonas Petersen wrote:
->> Am 29.01.2013 10:44, schrieb Pavel Hofman:
->>> On 28.1.2013 22:25, Jonas Petersen wrote:
->>>>> Jonas, please could you check if ak4114 pins XTL0/1 (10, 11) are
->>>>> connected to logical high? They should be :)
->>>> Physically they're both on ground. I don't know what active state that
->>>> chip has though.
-> That would mean the chip is fed 11.2896MHz clock. I do not see any
-> crystal on
-> http://www.nix.ru/autocatalog/m_audio_midiman_sound/34397_2245_draft.jpg
-> . Is it the same card you have, with the crystal position empty? Are you
-> really sure they are not on power supply?
+Liam,
 
-I double-checked. There is zero ohms between these pins and ground (e.g. =
+     Before I begin to dig around, do you know if there is the possibility
+a newer kernel (like 3.7 or something) will have fixed this issue?
 
-outer of the spdif connectors, or pin B3 of PCI). The adjacent pins are =
+Regards,
 
-also on ground which are "VIN" (12), "P/SN" (9) and "IPS1/IIC" (8).
-
-Yeah, pretty much excactly the same card. The crystal position is empty, =
-
-like on the picture from nix.ru.
+Brent
 
 
+On Thu, Jan 31, 2013 at 12:00 PM, Liam Girdwood <
+liam.r.girdwood@linux.intel.com> wrote:
 
-> I did a quick test in Windows 7. This driver is able to
->> detect the sample rate. If I set the clock source to "spdif in" at the
->> control pannel, then I can see the rate changing when I switch to
->> another rate on the spdif source.
-> Did you test 192kHz and 176,4kHz?
->   The receiver can work in two modes.
-> Either it knows it is fed an independent clock and detects the sample
-> rate precisely, or it simply reads the sample rate from SPDIF preamble
-> of the incoming stream.
-
-You mean probably this from the datasheet:
-
-The AK4114 has two methods for detecting the sampling frequency as follows.
-1. Clock comparison between recovered clock and X=92tal oscillator
-2. Sampling frequency information on channel status
-Those could be selected by XTL1, 0 bits. And the detected frequency is =
-
-reported on FS3-0 bits.
-
-It is indeed strange. There is an example system design in the datasheet =
-
-that also has XTL0,1 on ground, but there is a 11 MHz Crystal on XTI and =
-
-XTO.
-
->   The mode is select by the XTL0,1 pins. Often the
-> streams do not contain correct information, especially for consumer mode
-> which does not have room for the larger samplerates code. Could you
-> please test both consumer and professional modes, all common samplerates?
-
-I tested 32, 44.1, 48, 64, 88.2, and 92 kHz with both modes. All rates =
-
-except 64 kHz are always reliably detected (64 kHz is not in the list of =
-
-supported frequencies of the chip). They are detected no matter what =
-
-mode I select (prof/consumer) on both sides, even if they do not match. =
-
-I tried all combinations.
-
-For these tests I was using an RME Multiface. I guess one can expect =
-
-correct streams from this device...
-
-Now I checked the spdif signal from a dbx 376 tube channel strip. 44.1, =
-
-48, 88.2 and 96 are detected properly.
-
-Ok.. and now I just connected the ESI Juli(a) spdif out to the ap192 =
-
-spdif in. I'm chaning the internal clock rate in alsamixer. Everything =
-
-is detected, only 176.4 and 192 result in 88.2 and 96... But this might =
-
-as well be the Juli failing, doesn't it? I wasn't able to play any sound =
-
-at these rates neither.
-
-By the way, the Windows 7 "M-Audio Delta Control Panel" has this "sync =
-
-source" lamp. It is normally green an says "locked" if there is any =
-
-detected signal. When I change the rate it will become red for a moment =
-
-and say "rate missmatch", then it will display the detected rate and =
-
-turn green again.
-
-If I do nothing with a green "locked", it will periodically (about every =
-
-6 seconds) show a red "unlocked !" for maybe half a second. Only if I =
-
-use the signal in a program (e.g. audacity) it will stay "locked" and green.
-
-- Jonas
+> On Thu, 2013-01-31 at 20:44 +0100, Clemens Ladisch wrote:
+> >
+> > The problem is that the kernel driver returns wrong min/max values.
+> >
+> > > Liam Girdwood wrote:
+> > >> The OMAP4 ABE driver doesn't actually know the exact constraints if
+> > >> there is not a valid playback path between source PCM and sink (it
+> will
+> > >> still throw out anything insane though). This is because it can route
+> > >> audio from most of it's PCMs to most of it's components, e.g. HS, HF,
+> > >> BT, MODEM, Earpiece, etc where some components have different
+> > >> constraints. It's possible that you dont have a path in your case.
+> >
+> > In theory, what the driver should do is:
+> > - don't allow the PCM device to be opened if there is no valid route
+> >   configuration (or just never allow a completely invalid
+> >   configuration); and
+>
+> Ah, this was my initial design too :)
+>
+> Some userspace software will actually and validly open a PCM, configure
+> some mixers and then perform a hw_params() -> trigger(). So locking out
+> the PCM at open() for invalid paths breaks some userspace code.
+>
+> > - while the PCM device is open, lock the route configuration, or
+>
+> We cant do this either as we have to support runtime switching between
+> different use cases (that use different back end components) e.g. MP3
+> playback to Phonecall
+>
+> > - if changing the route during playback is necessary, allow to set
+> >   only those routes that are possible with the current PCM
+> >   configuration.
+>
+> We do this already, but will first try and fixup any of the
+> configuration differences in the DSP so that the userspace operation
+> succeeds.
+>
+> I guess Peter/Brent will have to look at the min/max values in more
+> detail.
+>
+> Liam
+>
+>
+>
+>
