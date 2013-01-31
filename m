@@ -1,15 +1,15 @@
 From: Jerome Forissier <jerome@taodyne.com>
-Subject: [PATCH 2/3] snd_device_name_hint(): do not change the
-	global error handler.
-Date: Thu, 31 Jan 2013 15:47:24 +0100
-Message-ID: <1359643645-33558-3-git-send-email-jerome@taodyne.com>
+Subject: [PATCH 1/3] Add snd_lib_error_set_local() to install a
+	thread-local error handler.
+Date: Thu, 31 Jan 2013 15:47:23 +0100
+Message-ID: <1359643645-33558-2-git-send-email-jerome@taodyne.com>
 References: <1359643645-33558-1-git-send-email-jerome@taodyne.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ubuntu (102.30.7.109.rev.sfr.net [109.7.30.102])
- by alsa0.perex.cz (Postfix) with ESMTP id 141872615A1
+ by alsa0.perex.cz (Postfix) with ESMTP id 1053B2602F7
  for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2013 15:47:34 +0100 (CET)
 In-Reply-To: <1359643645-33558-1-git-send-email-jerome@taodyne.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,61 +25,102 @@ To: alsa-devel@alsa-project.org
 Cc: Jerome Forissier <jerome@taodyne.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is the first step towards making this function reentrant.
+This is required so we can make other functions reentrant (such as
+snd_device_name_hint()).
+The default error handling function snd_lib_error_default() now checks
+if a local handler exists, and if so, calls it. Otherwise, the previous
+behavior is unchanged.
 
 Signed-off-by: Jerome Forissier <jerome@taodyne.com>
 ---
- src/control/namehint.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ configure.in    | 10 ++++++++++
+ include/error.h |  6 ++++++
+ src/error.c     | 24 +++++++++++++++++++++++-
+ 3 files changed, 39 insertions(+), 1 deletion(-)
 
-diff --git a/src/control/namehint.c b/src/control/namehint.c
-index 19352be..defc036 100644
---- a/src/control/namehint.c
-+++ b/src/control/namehint.c
-@@ -80,7 +80,8 @@ static void zero_handler(const char *file ATTRIBUTE_UNUSED,
- 			 int line ATTRIBUTE_UNUSED,
- 			 const char *function ATTRIBUTE_UNUSED,
- 			 int err ATTRIBUTE_UNUSED,
--			 const char *fmt ATTRIBUTE_UNUSED, ...)
-+			 const char *fmt ATTRIBUTE_UNUSED,
-+			 va_list arg ATTRIBUTE_UNUSED)
- {
+diff --git a/configure.in b/configure.in
+index 4af917b..d675678 100644
+--- a/configure.in
++++ b/configure.in
+@@ -281,6 +281,16 @@ else
+   AC_MSG_RESULT(no)
+ fi
+ 
++dnl Check for __thread
++AC_MSG_CHECKING([for __thread])
++AC_LINK_IFELSE([AC_LANG_PROGRAM([#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)) && ((__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 1) || (__GNUC__ == 4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ < 2))
++#error gcc has this bug: http://gcc.gnu.org/ml/gcc-bugs/2006-09/msg02275.html
++#endif], [static __thread int p = 0])],
++[AC_DEFINE(HAVE___THREAD, 1,
++Define to 1 if compiler supports __thread)
++AC_MSG_RESULT([yes])],
++[AC_MSG_RESULT([no])])
++
+ dnl Check for librt
+ AC_MSG_CHECKING(for librt)
+ AC_ARG_WITH(librt,
+diff --git a/include/error.h b/include/error.h
+index 6d27083..256cd5f 100644
+--- a/include/error.h
++++ b/include/error.h
+@@ -74,5 +74,11 @@ extern int snd_lib_error_set_handler(snd_lib_error_handler_t handler);
+ }
+ #endif
+ 
++typedef void (*snd_local_error_handler_t)(const char *file, int line,
++					  const char *func, int err,
++					  const char *fmt, va_list arg);
++
++snd_local_error_handler_t snd_lib_error_set_local(snd_local_error_handler_t func);
++
+ #endif /* __ALSA_ERROR_H */
+ 
+diff --git a/src/error.c b/src/error.c
+index 7d5f509..85cea5e 100644
+--- a/src/error.c
++++ b/src/error.c
+@@ -60,6 +60,21 @@ const char *snd_strerror(int errnum)
+ 	return snd_error_codes[errnum];
  }
  
-@@ -212,7 +213,7 @@ static int try_config(struct hint_list *list,
- 		      const char *base,
- 		      const char *name)
++#ifdef HAVE___THREAD
++#define TLS_PFX		__thread
++#else
++#define TLS_PFX		/* NOP */
++#endif
++
++static TLS_PFX snd_local_error_handler_t local_error = NULL;
++
++snd_local_error_handler_t snd_lib_error_set_local(snd_local_error_handler_t func)
++{
++	snd_local_error_handler_t old = local_error;
++	local_error = func;
++	return old;
++}
++
+ /**
+  * \brief The default error handler function.
+  * \param file The filename where the error was hit.
+@@ -69,12 +84,19 @@ const char *snd_strerror(int errnum)
+  * \param fmt The message (including the format characters).
+  * \param ... Optional arguments.
+  *
+- * Prints the error message including location to \c stderr.
++ * If a local error function has been installed for the current thread by
++ * \ref snd_lib_error_set_local, it is called. Otherwise, prints the error
++ * message including location to \c stderr.
+  */
+ static void snd_lib_error_default(const char *file, int line, const char *function, int err, const char *fmt, ...)
  {
--	snd_lib_error_handler_t eh;
-+	snd_local_error_handler_t eh;
- 	snd_config_t *res = NULL, *cfg, *cfg1, *n;
- 	snd_config_iterator_t i, next;
- 	char *buf, *buf1 = NULL, *buf2;
-@@ -239,10 +240,9 @@ static int try_config(struct hint_list *list,
- 		sprintf(buf, "%s:CARD=%s", name, snd_ctl_card_info_get_id(list->info));
- 	else
- 		strcpy(buf, name);
--	eh = snd_lib_error;
--	snd_lib_error_set_handler(&zero_handler);
-+	eh = snd_lib_error_set_local(&zero_handler);
- 	err = snd_config_search_definition(snd_config, base, buf, &res);
--	snd_lib_error_set_handler(eh);
-+	snd_lib_error_set_local(eh);
- 	if (err < 0)
- 		goto __skip_add;
- 	cleanup_res = 1;
-@@ -337,10 +337,9 @@ static int try_config(struct hint_list *list,
- 		goto __ok;
- 	/* find, if all parameters have a default, */
- 	/* otherwise filter this definition */
--	eh = snd_lib_error;
--	snd_lib_error_set_handler(&zero_handler);
-+	eh = snd_lib_error_set_local(&zero_handler);
- 	err = snd_config_search_alias_hooks(snd_config, base, buf, &res);
--	snd_lib_error_set_handler(eh);
-+	snd_lib_error_set_local(eh);
- 	if (err < 0)
- 		goto __cleanup;
- 	if (snd_config_search(res, "@args", &cfg) >= 0) {
+ 	va_list arg;
+ 	va_start(arg, fmt);
++	if (local_error) {
++		local_error(file, line, function, err, fmt, arg);
++		va_end(arg);
++		return;
++	}
+ 	fprintf(stderr, "ALSA lib %s:%i:(%s) ", file, line, function);
+ 	vfprintf(stderr, fmt, arg);
+ 	if (err)
 -- 
 1.8.1.2
