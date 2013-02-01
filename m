@@ -1,11 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH RFC 0/4] Driver for RME MADI FX
-Date: Fri,  1 Feb 2013 13:48:37 +0100
-Message-ID: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH RFC 1/4] ALSA: madifx - Makefile entries for
+	RME MADI FX
+Date: Fri,  1 Feb 2013 13:48:38 +0100
+Message-ID: <1359722921-18769-2-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +22,24 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Add Makefile entries for RME MADI FX cards.
 
-I've been developing an out-of-tree driver for the RME MADI FX. History
-is available at
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-   https://github.com/adiknoth/madifx
-
-but doesn't follow any kernel convention regarding commit isolation, it
-was basically a backup/scratchpad during development.
-
-I don't have too much feedback, yet, but I guess it makes sense to
-mainline it earlier than later, increase the driver's exposure and fix
-any problems when the card is in more widespread use.
-
-Note that this patch series is essentially RFC right now to gather
-developer feedback.
-
-
-
-Cheers
-
-Adrian Knoth (4):
-  ALSA: madifx - Makefile entries for RME MADI FX
-  ALSA: Add RME MADI FX Kconfig entries
-  ALSA: madifx - Expose preliminary userspace interface
-  ALSA: madifx - Add support for RME MADI FX
-
- include/uapi/sound/madifx.h |  173 ++
- sound/pci/Kconfig           |   21 +
- sound/pci/rme9652/Makefile  |    2 +
- sound/pci/rme9652/madifx.c  | 3986 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 4182 insertions(+)
- create mode 100644 include/uapi/sound/madifx.h
- create mode 100644 sound/pci/rme9652/madifx.c
-
+diff --git a/sound/pci/rme9652/Makefile b/sound/pci/rme9652/Makefile
+index dcba560..e483dce 100644
+--- a/sound/pci/rme9652/Makefile
++++ b/sound/pci/rme9652/Makefile
+@@ -6,8 +6,10 @@
+ snd-rme9652-objs := rme9652.o
+ snd-hdsp-objs := hdsp.o
+ snd-hdspm-objs := hdspm.o
++snd-madifx-objs := madifx.o
+ 
+ # Toplevel Module Dependency
+ obj-$(CONFIG_SND_RME9652) += snd-rme9652.o
+ obj-$(CONFIG_SND_HDSP) += snd-hdsp.o
+ obj-$(CONFIG_SND_HDSPM) +=snd-hdspm.o
++obj-$(CONFIG_SND_MADIFX) +=snd-madifx.o
 -- 
 1.7.10.4
