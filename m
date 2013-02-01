@@ -1,23 +1,11 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: PandaBoard ES Audio Problems
-Date: Fri, 01 Feb 2013 11:56:18 +0100
-Message-ID: <510B9F52.6030503@amarulasolutions.com>
-References: <CAAo96ZCNBTGBToLbKnvQ1k_eewJcg94KZBRKt7TKkE3T8xqsQw@mail.gmail.com>
- <510AA9A0.4060009@ladisch.de> <1359656599.10392.13.camel@loki>
- <CAAo96ZDNUY8Sp=kmjGXy5Ro0q7x22XVtO3Uv0VhhJBugUvOfTw@mail.gmail.com>
- <510AC999.2090205@ladisch.de> <1359662400.10392.26.camel@loki>
- <CAAo96ZAZvceSonfd7rzNRCpr0Ey-SQP9vV2rwsy89yT63=Ze5A@mail.gmail.com>
- <1359707373.2432.5.camel@loki> <510B9E49.7000908@ti.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH RFC 0/4] Driver for RME MADI FX
+Date: Fri,  1 Feb 2013 13:48:37 +0100
+Message-ID: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f48.google.com (mail-ee0-f48.google.com [74.125.83.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D571265001
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 11:56:22 +0100 (CET)
-Received: by mail-ee0-f48.google.com with SMTP id t10so2071518eei.21
- for <alsa-devel@alsa-project.org>; Fri, 01 Feb 2013 02:56:21 -0800 (PST)
-In-Reply-To: <510B9E49.7000908@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,32 +15,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Brent Weatherall <brentweatherall@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Guiriec, Sebastien" <s-guiriec@ti.com>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi!
 
-On 02/01/2013 11:51 AM, Peter Ujfalusi wrote:
-> On 02/01/2013 09:29 AM, Liam Girdwood wrote:
->> On Thu, 2013-01-31 at 14:13 -0800, Brent Weatherall wrote:
->>> Liam,
->>
->>>      Before I begin to dig around, do you know if there is the
->>> possibility a newer kernel (like 3.7 or something) will have fixed
->>> this issue?
->>>
->> I think Peter will probably have an 3.8rc development branch on
->> gitorious here :-
->>
->> git@gitorious.org:omap-audio/linux-audio.git next/ti-audio-next
-> 
-> Yes, we have that but it is with dynamic FW which demands different ABE
-> firmware...
-> I'll go through the thread and try to give some pointers.
-> Do we know where to get the sources for the '3.4.0-1487-omap4'?
-> 
+I've been developing an out-of-tree driver for the RME MADI FX. History
+is available at
 
-git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.git
+   https://github.com/adiknoth/madifx
 
-Michael
+but doesn't follow any kernel convention regarding commit isolation, it
+was basically a backup/scratchpad during development.
+
+I don't have too much feedback, yet, but I guess it makes sense to
+mainline it earlier than later, increase the driver's exposure and fix
+any problems when the card is in more widespread use.
+
+Note that this patch series is essentially RFC right now to gather
+developer feedback.
+
+
+
+Cheers
+
+Adrian Knoth (4):
+  ALSA: madifx - Makefile entries for RME MADI FX
+  ALSA: Add RME MADI FX Kconfig entries
+  ALSA: madifx - Expose preliminary userspace interface
+  ALSA: madifx - Add support for RME MADI FX
+
+ include/uapi/sound/madifx.h |  173 ++
+ sound/pci/Kconfig           |   21 +
+ sound/pci/rme9652/Makefile  |    2 +
+ sound/pci/rme9652/madifx.c  | 3986 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 4182 insertions(+)
+ create mode 100644 include/uapi/sound/madifx.h
+ create mode 100644 sound/pci/rme9652/madifx.c
+
+-- 
+1.7.10.4
