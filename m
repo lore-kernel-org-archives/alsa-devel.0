@@ -1,21 +1,18 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASOC: imx: audmux: add a integrated
- configuration function
-Date: Fri, 1 Feb 2013 21:10:09 +0800
-Message-ID: <20130201131007.GA23922@S2101-09.ap.freescale.net>
-References: <1359614566-4660-1-git-send-email-b13634@freescale.com>
- <20130131142243.GE2735@S2101-09.ap.freescale.net>
- <20130131163517.GC13321@opensource.wolfsonmicro.com>
+From: =?ISO-8859-15?Q?R=FCdi?= <ruedi@battle-eggs.de>
+Subject: New one on board - a damn rooky :">
+Date: Fri, 01 Feb 2013 15:40:36 +0100
+Message-ID: <510BD3E4.2050808@battle-eggs.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 0274C265020
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 14:11:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20130131163517.GC13321@opensource.wolfsonmicro.com>
+Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.160])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81D5026522D
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 15:40:37 +0100 (CET)
+Received: from [192.168.71.158] (77-21-33-21-dynip.superkabel.de [77.21.33.21])
+ by smtp.strato.de (jored mo12) (RZmta 31.14 DYNA|AUTH)
+ with ESMTPA id N028b6p11EW83H for <alsa-devel@alsa-project.org>;
+ Fri, 1 Feb 2013 15:40:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Gary Zhang <b13634@freescale.com>, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 01, 2013 at 12:35:19AM +0800, Mark Brown wrote:
-> On Thu, Jan 31, 2013 at 10:22:45PM +0800, Shawn Guo wrote:
-> 
-> > Mark,
-> 
-> > I just found there are much more code between imx_sgtl5000_probe
-> > and imx_wm8962_probe than just above audmux setup.  I'm thinking
-> > about consolidate them at a higher level.  But can you give it a
-> > go on Gary's patch, and then I can start the consolidation from
-> > there?  I promise I will send a follow-up patch to do it.
-> 
-> I'm not sure what you mean here?  I don't have any intention to work on
-> this stuff.
+Hello @ all,
 
-You had a comment on Gary's imx-wm8962 patch, saying that the audmux
-setup should become a helper.  And that's why Gary came up this patch.
-But the patch does not look good.  While reviewing the patch, I found
-there are much more than just audmux setup code could be shared between
-imx-sgtl5000 and imx-wm8960 driver.  I'm asking if you can merge Gary's
-the patch with leaving audmux setup as it is, and let me consolidate
-the common part between imx-sgtl5000 and imx-wm8960 with a follow-up
-patch.
+I'm R=FCdiger from Germany. I'm no programmer, that's my biggest fault =
 
-In any case, I'm not expecting you work on this stuff :)
+here. But because of a "private" problem with ALSA and Intel HDA I want =
 
-Shawn
+to help whereever I can - at least with that special problem.
+
+I'm running a Lenovo ThinkCentre A58 with a ALC662 rev. 1 chip on board. =
+
+The mainboard has 3 jacks at the back of the PC and 2 ones at it's front =
+
+(mic and headphones).
+
+The problem is, that the connectors are not automatically arranged to =
+
+playback 5.1 surround sound. I must manually set the "model" to =
+
+"asusmode4" to get 5.1 and then run a script as root, to set the =
+
+backside jacks to output and to Center/LFE and rear speaker. Also I have =
+
+to mute the internal speaker.
+
+I've tried to patch the module manually, but this went wrong somehow. I =
+
+don't know how to proceed.
+
+So maybe you can help me and I can help you to complete the ALSA code =
+
+for this special mainboard/PC - hopefully.
+
+So long, I would thank you for your feedback.
+
+Regards,
+R=FCdiger
