@@ -1,19 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: New one on board - a damn rooky :">
-Date: Fri, 1 Feb 2013 23:36:49 +0800
-Message-ID: <CAN8ccia+ugadFXht6twVgXLQDio8E+KmnbgGuXgi+GF4tTA4FQ@mail.gmail.com>
-References: <510BD3E4.2050808@battle-eggs.de>
+From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm2200: Add Rx ANC input select control
+Date: Fri,  1 Feb 2013 15:40:41 +0000
+Message-ID: <1359733241-26633-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f172.google.com (mail-ia0-f172.google.com
- [209.85.210.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C79226522D
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 16:36:51 +0100 (CET)
-Received: by mail-ia0-f172.google.com with SMTP id u8so5573835iag.31
- for <alsa-devel@alsa-project.org>; Fri, 01 Feb 2013 07:36:50 -0800 (PST)
-In-Reply-To: <510BD3E4.2050808@battle-eggs.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 78C0526522D
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 16:41:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UsO8ZGk=?= <ruedi@battle-eggs.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBIZWxsbyBAIGFsbCwKPgo+IEknbSBSw7xkaWdlciBmcm9tIEdlcm1hbnkuIEknbSBubyBwcm9n
-cmFtbWVyLCB0aGF0J3MgbXkgYmlnZ2VzdCBmYXVsdApoZXJlLiBCdXQgYmVjYXVzZSBvZiBhICJw
-cml2YXRlIiBwcm9ibGVtIHdpdGggQUxTQSBhbmQgSW50ZWwgSERBIEkgd2FudCB0bwpoZWxwIHdo
-ZXJlZXZlciBJIGNhbiAtIGF0IGxlYXN0IHdpdGggdGhhdCBzcGVjaWFsIHByb2JsZW0uCj4KPiBJ
-J20gcnVubmluZyBhIExlbm92byBUaGlua0NlbnRyZSBBNTggd2l0aCBhIEFMQzY2MiByZXYuIDEg
-Y2hpcCBvbiBib2FyZC4KVGhlIG1haW5ib2FyZCBoYXMgMyBqYWNrcyBhdCB0aGUgYmFjayBvZiB0
-aGUgUEMgYW5kIDIgb25lcyBhdCBpdCdzIGZyb250CihtaWMgYW5kIGhlYWRwaG9uZXMpLgo+Cj4g
-VGhlIHByb2JsZW0gaXMsIHRoYXQgdGhlIGNvbm5lY3RvcnMgYXJlIG5vdCBhdXRvbWF0aWNhbGx5
-IGFycmFuZ2VkIHRvCnBsYXliYWNrIDUuMSBzdXJyb3VuZCBzb3VuZC4gSSBtdXN0IG1hbnVhbGx5
-IHNldCB0aGUgIm1vZGVsIiB0byAiYXN1c21vZGU0Igp0byBnZXQgNS4xIGFuZCB0aGVuIHJ1biBh
-IHNjcmlwdCBhcyByb290LCB0byBzZXQgdGhlIGJhY2tzaWRlIGphY2tzIHRvCm91dHB1dCBhbmQg
-dG8gQ2VudGVyL0xGRSBhbmQgcmVhciBzcGVha2VyLiBBbHNvIEkgaGF2ZSB0byBtdXRlIHRoZSBp
-bnRlcm5hbApzcGVha2VyLgo+Cj4gSSd2ZSB0cmllZCB0byBwYXRjaCB0aGUgbW9kdWxlIG1hbnVh
-bGx5LCBidXQgdGhpcyB3ZW50IHdyb25nIHNvbWVob3cuIEkKZG9uJ3Qga25vdyBob3cgdG8gcHJv
-Y2VlZC4KPgo+IFNvIG1heWJlIHlvdSBjYW4gaGVscCBtZSBhbmQgSSBjYW4gaGVscCB5b3UgdG8g
-Y29tcGxldGUgdGhlIEFMU0EgY29kZSBmb3IKdGhpcyBzcGVjaWFsIG1haW5ib2FyZC9QQyAtIGhv
-cGVmdWxseS4KPgo+IFNvIGxvbmcsIEkgd291bGQgdGhhbmsgeW91IGZvciB5b3VyIGZlZWRiYWNr
-Lgo+CgpodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9zb3Vu
-ZC5naXQ7YT1ibG9iX3BsYWluO2Y9RG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLUNv
-bnRyb2xzLnR4dDtoYj1IRUFECgoKUmVhbHRlayBjb2RlY3MKLS0tLS0tLS0tLS0tLS0KCiogQ2hh
-bm5lbCBNb2RlCiAgVGhpcyBpcyBhbiBlbnVtIGNvbnRyb2wgdG8gY2hhbmdlIHRoZSBzdXJyb3Vu
-ZC1jaGFubmVsIHNldHVwLCBhcHBlYXJzCm9ubHkgd2hlbiB0aGUgc3Vycm91bmQgY2hhbm5lbHMg
-YXJlIGF2YWlsYWJsZS4KICBJdCBnaXZlcyB0aGUgbnVtYmVyIG9mIGNoYW5uZWxzIHRvIGJlIHVz
-ZWQsICIyY2giLCAiNGNoIiwgIjZjaCIsIGFuZAoiOGNoIi4gIEFjY29yZGluZyB0byB0aGUgY29u
-ZmlndXJhdGlvbiwgdGhpcyBhbHNvIGNvbnRyb2xzIHRoZQpqYWNrLXJldGFza2luZyBvZiBtdWx0
-aS1JL08gamFja3MuCgpBdXRvLU11dGUgTW9kZQogIFRoaXMgaXMgYW4gZW51bSBjb250cm9sIHRv
-IGNoYW5nZSB0aGUgYXV0by1tdXRlIGJlaGF2aW9yIG9mIHRoZSBoZWFkcGhvbmUKYW5kIGxpbmUt
-b3V0IGphY2tzLiAgSWYgYnVpbHQtaW4gc3BlYWtlcnMgYW5kIGhlYWRwaG9uIGFuZC9vciBsaW5l
-LW91dApqYWNrcyBhcmUgYXZhaWxhYmxlIG9uIGEgbWFjaGluZSwgdGhpcyBjb250cm9sIGFwcGVh
-cnMuCiAgV2hlbiB0aGVyZSBhcmUgb25seSBlaXRoZXIgaGVhZHBob25lcyBvciBsaW5lLW91dCBq
-YWNrcywgaXQgZ2l2ZXMKIkRpc2FibGVkIiBhbmQgIkVuYWJsZWQiIHN0YXRlLiAgV2hlbiBlbmFi
-bGVkLCB0aGUgc3BlYWtlciBpcyBtdXRlZAphdXRvbWF0aWNhbGx5IHdoZW4gYSBqYWNrIGlzIHBs
-dWdnZWQuCgogIFdoZW4gYm90aCBoZWFkcGhvbmUgYW5kIGxpbmUtb3V0IGphY2tzIGFyZSBwcmVz
-ZW50LCBpdCBnaXZlcyAiRGlzYWJsZWQiLAoiU3BlYWtlciBPbmx5IiBhbmQgIkxpbmUtT3V0K1Nw
-ZWFrZXIiLiAgV2hlbiBzcGVha2VyLW9ubHkgaXMgY2hvc2VuLApwbHVnZ2luZyBpbnRvIGEgaGVh
-ZHBob25lIG9yIGEgbGluZS1vdXQgamFjayBtdXRlcyB0aGUgc3BlYWtlcnMsIGJ1dCBub3QKbGlu
-ZS1vdXRzLiAgV2hlbiBsaW5lLW91dCtzcGVha2VyIGlzIHNlbGVjdGVkLCBwbHVnZ2luZyB0byBh
-IGhlYWRwaG9uZSBqYWNrCm11dGVzIGJvdGggc3BlYWtlcnMgYW5kICBsaW5lLW91dHMuCgpDYW4g
-eW91IHRyeSB0aGUgZGFpbHkgc25hcHNob3QgdGFyYmFsbCB3aXRoIG1vZGVsPWF1dG8gYW5kIHBv
-c3QgdGhlIG91dHB1dApvZiBhbHNhLWluZm8uc2ggPwoKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDEzLUphbnVhcnkvMDU4MjE4Lmh0bWwKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Change-Id: Iee28d1898327633a3166dd340410a37796959c0c
+---
+ sound/soc/codecs/wm2200.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index bdd3d80..a915c76 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -1109,6 +1109,16 @@ static int wm2200_mixer_values[] = {
+ 	static WM2200_MUX_CTL_DECL(name##_aux5); \
+ 	static WM2200_MUX_CTL_DECL(name##_aux6);
+ 
++static const char *wm2200_rxanc_input_sel_texts[] = {
++	"None", "IN1", "IN2", "IN3",
++};
++
++static const struct soc_enum wm2200_rxanc_input_sel =
++	SOC_ENUM_SINGLE(WM2200_RXANC_SRC,
++			WM2200_IN_RXANC_SEL_SHIFT,
++			ARRAY_SIZE(wm2200_rxanc_input_sel_texts),
++			wm2200_rxanc_input_sel_texts);
++
+ static const struct snd_kcontrol_new wm2200_snd_controls[] = {
+ SOC_SINGLE("IN1 High Performance Switch", WM2200_IN1L_CONTROL,
+ 	   WM2200_IN1_OSR_SHIFT, 1, 0),
+@@ -1168,6 +1178,7 @@ SOC_DOUBLE_R_TLV("OUT2 Digital Volume", WM2200_DAC_DIGITAL_VOLUME_2L,
+ 		 digital_tlv),
+ SOC_DOUBLE("OUT2 Switch", WM2200_PDM_1, WM2200_SPK1L_MUTE_SHIFT,
+ 	   WM2200_SPK1R_MUTE_SHIFT, 1, 1),
++SOC_ENUM("RxANC Src", wm2200_rxanc_input_sel),
+ };
+ 
+ WM2200_MIXER_ENUMS(OUT1L, WM2200_OUT1LMIX_INPUT_1_SOURCE);
+-- 
+1.7.2.5
