@@ -1,21 +1,20 @@
-From: El boulangero <elboulangero@gmail.com>
-Subject: Re: Loopback interface: suspend/resume leads to a
-	kernel crash
-Date: Sat, 2 Feb 2013 16:05:54 +0100
-Message-ID: <CALGUdm824az4+6D2YwqB08ROvx_Z6GpfMoVjcCu4+NK=-=VOaA@mail.gmail.com>
-References: <CALGUdm_O4pP=CUxnHWQszJi=hc0b2u52St3pwdMmDPWJPtw0gA@mail.gmail.com>
- <s5h7gms5bu2.wl%tiwai@suse.de> <s5h4nhw5bl5.wl%tiwai@suse.de>
+From: Andre Schramm <andre.schramm@iosono-sound.com>
+Subject: Re: [PATCH RFC 2/4] ALSA: Add RME MADI FX Kconfig
+ entries
+Date: Sat, 2 Feb 2013 16:16:36 +0100
+Message-ID: <20130202161636.23c04179@rvllap.ps13>
+References: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1359722921-18769-2-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1359722921-18769-3-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f180.google.com (mail-ie0-f180.google.com
- [209.85.223.180])
- by alsa0.perex.cz (Postfix) with ESMTP id C9CFB26171C
- for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 16:05:55 +0100 (CET)
-Received: by mail-ie0-f180.google.com with SMTP id bn7so3311300ieb.25
- for <alsa-devel@alsa-project.org>; Sat, 02 Feb 2013 07:05:54 -0800 (PST)
-In-Reply-To: <s5h4nhw5bl5.wl%tiwai@suse.de>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+ [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2049F26171C
+ for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 16:16:39 +0100 (CET)
+In-Reply-To: <1359722921-18769-3-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,83 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, thanks for your quick reply.
+On Fri,  1 Feb 2013 13:48:39 +0100
+Adrian Knoth <adi@drcomp.erfurt.thur.de> wrote:
 
 
-> Which kernel are you using?  Some races in aloop driver have been
-> fixed in 3.7 kernel.
+Hi.
 
-I tried different kernel versions, including:
- + official debian kernel (3.2.0-4)
- + liquorix debian kernel (3.7.0-4)
- + upstream kernel from kernel.org (git repository, 3.8.0-rc6 at the moment)
+> 
+> Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> 
+> diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+> index 947cfb4..d1fe845 100644
+> --- a/sound/pci/Kconfig
+> +++ b/sound/pci/Kconfig
+> @@ -598,6 +598,27 @@ config SND_HDSPM
+>  	  To compile this driver as a module, choose M here: the
+> module will be called snd-hdspm.
+>  
+> +config SND_MADIFX
+> +	tristate "RME Hammerfall DSP MADI FX"
+> +	select SND_HWDEP
+> +	select SND_RAWMIDI
+> +	select SND_PCM
+> +	help
+> +	  Say Y here to include support for RME Hammerfall DSP MADI
+> FX
+> +	  soundcards.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> module
+> +	  will be called snd-hdspm.
+> +
+Should this be "snd-madifx"? Also, the the mail on patch 4/4 seems to be
+lost - can you resend it?
 
-The bug is present in every version.
 
-
-> If the problem is still seen on 3.6 kernel, try the patch below.
-> Let me know if it fixes the problem.
-
-I applied this patch to the upstream kernel, and it fixes the problem.
-Thanks a lot !
-
-Regards,
-Arnaud.
-
-
-2013/2/1 Takashi Iwai <tiwai@suse.de>:
-> At Fri, 01 Feb 2013 15:48:53 +0100,
-> Takashi Iwai wrote:
->>
->> At Thu, 31 Jan 2013 21:09:13 +0100,
->> El boulangero wrote:
->> >
->> > Hi,
->> >
->> > I use the loopback device all the time. It works pretty good, except
->> > when I suspend my computer to RAM. On resume, I've got a kernel call
->> > trace.
->>
->> Which kernel are you using?  Some races in aloop driver have been
->> fixed in 3.7 kernel.
->
-> If the problem is still seen on 3.6 kernel, try the patch below.
-> Let me know if it fixes the problem.
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-> index 3d82232..64d5347 100644
-> --- a/sound/drivers/aloop.c
-> +++ b/sound/drivers/aloop.c
-> @@ -286,12 +286,14 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
->                         loopback_active_notify(dpcm);
->                 break;
->         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +       case SNDRV_PCM_TRIGGER_SUSPEND:
->                 spin_lock(&cable->lock);
->                 cable->pause |= stream;
->                 loopback_timer_stop(dpcm);
->                 spin_unlock(&cable->lock);
->                 break;
->         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +       case SNDRV_PCM_TRIGGER_RESUME:
->                 spin_lock(&cable->lock);
->                 dpcm->last_jiffies = jiffies;
->                 cable->pause &= ~stream;
-> @@ -563,7 +565,8 @@ static snd_pcm_uframes_t loopback_pointer(struct snd_pcm_substream *substream)
->  static struct snd_pcm_hardware loopback_pcm_hardware =
->  {
->         .info =         (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP |
-> -                        SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE),
-> +                        SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE |
-> +                        SNDRV_PCM_INFO_RESUME),
->         .formats =      (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
->                          SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |
->                          SNDRV_PCM_FMTBIT_FLOAT_LE | SNDRV_PCM_FMTBIT_FLOAT_BE),
+Cheers,
+  Andre
