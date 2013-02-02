@@ -1,20 +1,16 @@
-From: Andre Schramm <andre.schramm@iosono-sound.com>
-Subject: Re: [PATCH RFC 2/4] ALSA: Add RME MADI FX Kconfig
- entries
-Date: Sat, 2 Feb 2013 16:16:36 +0100
-Message-ID: <20130202161636.23c04179@rvllap.ps13>
-References: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
- <1359722921-18769-2-git-send-email-adi@drcomp.erfurt.thur.de>
- <1359722921-18769-3-git-send-email-adi@drcomp.erfurt.thur.de>
+From: IOhannes m zmoelnig - LAC 2013 Organizing Team <zmoelnig@iem.at>
+Subject: LAC 2013: the Linux Audio Conference - Deadline
+	Extension
+Date: Sat, 02 Feb 2013 17:54:36 +0100
+Message-ID: <510d44cc.LJAjdwR9Vcw5qQXk%zmoelnig@iem.at>
+Reply-To: lac@linuxaudio.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
- [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 2049F26171C
- for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 16:16:39 +0100 (CET)
-In-Reply-To: <1359722921-18769-3-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mail.iem.at (inf185.kug.ac.at [193.170.191.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6098264EBF
+ for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 17:54:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri,  1 Feb 2013 13:48:39 +0100
-Adrian Knoth <adi@drcomp.erfurt.thur.de> wrote:
+sorry for ><  please >> <<
 
+Hi all,
 
-Hi.
+The Linux Audio Conference submissions deadline has been extended! It is now February 17th, 2013 (23:59 HAST)
 
-> 
-> Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-> 
-> diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-> index 947cfb4..d1fe845 100644
-> --- a/sound/pci/Kconfig
-> +++ b/sound/pci/Kconfig
-> @@ -598,6 +598,27 @@ config SND_HDSPM
->  	  To compile this driver as a module, choose M here: the
-> module will be called snd-hdspm.
->  
-> +config SND_MADIFX
-> +	tristate "RME Hammerfall DSP MADI FX"
-> +	select SND_HWDEP
-> +	select SND_RAWMIDI
-> +	select SND_PCM
-> +	help
-> +	  Say Y here to include support for RME Hammerfall DSP MADI
-> FX
-> +	  soundcards.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> module
-> +	  will be called snd-hdspm.
-> +
-Should this be "snd-madifx"? Also, the the mail on patch 4/4 seems to be
-lost - can you resend it?
+So, if you were considering to submit a paper but couldn't make up your mind yet, here is your chance to become active! Never forget that this conference lives through the people participating in it.
 
+FEBRUARY 17th is the new deadline for all submission types: papers, music, installations, workshop proposals. 
 
-Cheers,
-  Andre
+Check out the link below more info:
+ http://lac.linuxaudio.org/2013/participation
+
+Please spread this information to anyone who might be interested.
+If you have any questions, drop us a line at lac@linuxaudio.org
+
+We are looking forward to seeing you in Graz in May!
+Thanks and happy last-minute music-and-paper-submissions,
+
+on behalf of the LAC2013 organization team,
+IOhannes m zmoelnig
+
+---
+LAC 2013: the Linux Audio Conference
+May 9-12, 2013 @ IEM, Graz/Austria
+lac@linuxaudio.org
+http://lac.iem.at
