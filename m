@@ -1,26 +1,21 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
- capture
-Date: Sat, 02 Feb 2013 11:44:36 +0100
-Message-ID: <510CEE14.2050800@ivitera.com>
-References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
- <51042EE5.5070900@perex.cz>
- <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
- <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
- <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
- <510798CC.3080006@ivitera.com> <51081FA7.70907@gmail.com>
- <5108F541.3010300@ivitera.com> <5109BADB.30403@gmail.com>
- <510A485F.9060100@ivitera.com> <510AEF46.1080608@gmail.com>
- <510C6A3C.1000501@gmail.com>
+From: El boulangero <elboulangero@gmail.com>
+Subject: Re: Loopback interface: suspend/resume leads to a
+	kernel crash
+Date: Sat, 2 Feb 2013 16:05:54 +0100
+Message-ID: <CALGUdm824az4+6D2YwqB08ROvx_Z6GpfMoVjcCu4+NK=-=VOaA@mail.gmail.com>
+References: <CALGUdm_O4pP=CUxnHWQszJi=hc0b2u52St3pwdMmDPWJPtw0gA@mail.gmail.com>
+ <s5h7gms5bu2.wl%tiwai@suse.de> <s5h4nhw5bl5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 657DF2602C6
- for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 11:44:40 +0100 (CET)
-In-Reply-To: <510C6A3C.1000501@gmail.com>
+Received: from mail-ie0-f180.google.com (mail-ie0-f180.google.com
+ [209.85.223.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9CFB26171C
+ for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2013 16:05:55 +0100 (CET)
+Received: by mail-ie0-f180.google.com with SMTP id bn7so3311300ieb.25
+ for <alsa-devel@alsa-project.org>; Sat, 02 Feb 2013 07:05:54 -0800 (PST)
+In-Reply-To: <s5h4nhw5bl5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,60 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonas Petersen <jnsptrsn1@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2.2.2013 02:22, Jonas Petersen wrote:
-> :-)
-> 
-> I've got some progress here. The AK4114_ADDR was wrong. I changed it
-> from 0x02 to 0x00 (according to datasheet).
+Hi Takashi, thanks for your quick reply.
 
-Fantastic, congrats.
 
-> 
-> Now I had some meat in the ak4114 file, but no signal was coming in.
-> Then I found that the wrong spdif receiver channel was selected (the
-> AK4114 has 4). After selecting the right one (0 instead of 1) I got the
-> signal!
+> Which kernel are you using?  Some races in aloop driver have been
+> fixed in 3.7 kernel.
 
-Yes, that is a common issue, every card uses a different ak411X input :)
-Great you found it.
+I tried different kernel versions, including:
+ + official debian kernel (3.2.0-4)
+ + liquorix debian kernel (3.7.0-4)
+ + upstream kernel from kernel.org (git repository, 3.8.0-rc6 at the moment)
 
-> 
-> Its at the right level (-12dB) and the L/R channels match. But it's
-> somehow capturing twice the rate. The 1 kHz come in as 2 kHz. There must
-> still be something wrong.
+The bug is present in every version.
 
-That is actually quite common  too :) Please take a look at the initial
-comment section of prodigy192.c where I describe the setup I had to
-figure out experimentally. You will have to play with OCKS0/1 of ak4114
-(initial chip config in ap192_ak4114_init). Should you not be able to
-find the right combination suitable for all incoming samplerates, you
-can play with  VT1724_MT_I2S_MCLK_128X of ice1724 (default defined in
-ice1724.c:stdclock_set_spdif_clock , can be overriden in
-ice->set_spdif_clock for the ap192).
 
-> 
-> Regarding the sample rate detection. It seems it's the channel status
-> bits that get interpreted by the windows driver. The fs bits from the
-> AK4114 seem to be unused. But the channel status definitely changes some
-> bits on sample rate changes.
+> If the problem is still seen on 3.6 kernel, try the patch below.
+> Let me know if it fixes the problem.
 
-Good catch. Would the FSx registers provide correct info, or
-interpretation of the RX Channel status bytes will have to implemented
-into ak4114.c:snd_ak4114_rate_get?
+I applied this patch to the upstream kernel, and it fixes the problem.
+Thanks a lot !
 
-Back to the light indicating "sync source" in the windows driver. I
-think it is reading status of GPIO06 as you reported "INT0 (pin36) --
-GPIO6 pin 58". It would be possible to add a new read-only control for
-sync source to revo.c for ap192. It might be useful. Of course a generic
-method for ak4114.c would be more suitable but we would have to abstract
-the reading method.
+Regards,
+Arnaud.
 
-Thanks a lot for your effort.
 
-Best regards,
-
-Pavel.
+2013/2/1 Takashi Iwai <tiwai@suse.de>:
+> At Fri, 01 Feb 2013 15:48:53 +0100,
+> Takashi Iwai wrote:
+>>
+>> At Thu, 31 Jan 2013 21:09:13 +0100,
+>> El boulangero wrote:
+>> >
+>> > Hi,
+>> >
+>> > I use the loopback device all the time. It works pretty good, except
+>> > when I suspend my computer to RAM. On resume, I've got a kernel call
+>> > trace.
+>>
+>> Which kernel are you using?  Some races in aloop driver have been
+>> fixed in 3.7 kernel.
+>
+> If the problem is still seen on 3.6 kernel, try the patch below.
+> Let me know if it fixes the problem.
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+> index 3d82232..64d5347 100644
+> --- a/sound/drivers/aloop.c
+> +++ b/sound/drivers/aloop.c
+> @@ -286,12 +286,14 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
+>                         loopback_active_notify(dpcm);
+>                 break;
+>         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +       case SNDRV_PCM_TRIGGER_SUSPEND:
+>                 spin_lock(&cable->lock);
+>                 cable->pause |= stream;
+>                 loopback_timer_stop(dpcm);
+>                 spin_unlock(&cable->lock);
+>                 break;
+>         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +       case SNDRV_PCM_TRIGGER_RESUME:
+>                 spin_lock(&cable->lock);
+>                 dpcm->last_jiffies = jiffies;
+>                 cable->pause &= ~stream;
+> @@ -563,7 +565,8 @@ static snd_pcm_uframes_t loopback_pointer(struct snd_pcm_substream *substream)
+>  static struct snd_pcm_hardware loopback_pcm_hardware =
+>  {
+>         .info =         (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP |
+> -                        SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE),
+> +                        SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE |
+> +                        SNDRV_PCM_INFO_RESUME),
+>         .formats =      (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+>                          SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |
+>                          SNDRV_PCM_FMTBIT_FLOAT_LE | SNDRV_PCM_FMTBIT_FLOAT_BE),
