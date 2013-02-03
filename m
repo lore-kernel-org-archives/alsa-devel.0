@@ -1,19 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] UAC2 clock selector - fixed?
-Date: Sun, 03 Feb 2013 16:31:25 +0100
-Message-ID: <510E82CD.1010105@gmail.com>
-References: <3388A7F4-A801-4013-8A4A-66E52AA70947@museresearch.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - Fix default multichannel HDMI
+	mapping regression
+Date: Sun,  3 Feb 2013 17:55:45 +0200
+Message-ID: <1359906945-25861-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
- [209.85.214.50])
- by alsa0.perex.cz (Postfix) with ESMTP id CF8A22615C0
- for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2013 16:32:21 +0100 (CET)
-Received: by mail-bk0-f50.google.com with SMTP id jg9so2472818bkc.37
- for <alsa-devel@alsa-project.org>; Sun, 03 Feb 2013 07:32:21 -0800 (PST)
-In-Reply-To: <3388A7F4-A801-4013-8A4A-66E52AA70947@museresearch.com>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 779022615DB
+ for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2013 16:56:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Louis Gorenfeld <louis@museresearch.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03.01.2013 02:01, Louis Gorenfeld wrote:
-> Hi,
->   I'd been struggling with a UAC2 device that I couldn't set the clock on. I finally got in touch with a driver author who pointed me to some official 	documentation (the USB Device Class Definition for Audio Devices). Where the ALSA code always sends a 16-bit packet to control mixer settings, the docs say that the clock selector control uses layout 1 which is 8-bit. By changing the routine to send an 8-bit packet, that control now works.
-> 
-> This is the patch that fixes the problem for me (for ALSA 1.0.25). Is this proper?
+Commit d45e6889ee69456a4d5b1bbb32252f460cd48fa9 ("ALSA: hda - Provide
+the proper channel mapping for generic HDMI driver") added support for
+custom channel maps in the HDA HDMI driver. Due to a mistake in an
+'if' condition the custom map is always used even when no such map has
+been set. This causes incorrect channel mapping for multichannel audio
+by default.
 
-Sorry for the late reply!
+Pass per_pin->chmap_set to hdmi_setup_channel_mapping() as a parameter
+so that it can use it for detecting if a custom map has been set instead
+of checking if map is NULL (which is never the case).
 
-> --- a/linux-3.4/sound/usb/mixer.c	2012-05-20 15:29:13.000000000 -0700
-> +++ b/vanilla-3.4/sound/usb/mixer.c	2013-01-02 17:06:11.009660059 -0800
-> @@ -422,8 +422,13 @@
->  	if (cval->mixer->protocol == UAC_VERSION_1) {
->  		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
->  	} else { /* UAC_VERSION_2 */
-> -		/* audio class v2 controls are always 2 bytes in size */
-> -		val_len = sizeof(__u16);
-> +		/* audio class v2 controls are often but not always 2 bytes in size */
-> +		/* For example, the clock selector (see 5.2.5.2.1 in the Universal Serial
-> +		 * Bus Device Class Definition for Audio Devices document) */
-> +		if (cval->control == UAC2_CX_CLOCK_SELECTOR)
-> +			val_len = sizeof(__u8);
-> +		else
-> +			val_len = sizeof(__u16);
+Reported-by: Staffan Lindberg <pike@xbmc.org>
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: stable@vger.kernel.org
+---
 
-This seems about right. Please provide a proper patch with your
-Signed-off-by line (see Documentantation/SubmittingPatches for details).
+This also affects stable 3.7, but not earlier versions.
 
-You can add my Acked-by: right away when posting.
+ sound/pci/hda/patch_hdmi.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-
-Thanks a lot,
-Daniel
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 807a2aa..e85959f 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -714,9 +714,10 @@ static void hdmi_setup_fake_chmap(unsigned char *map, int ca)
+ 
+ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid, bool non_pcm, int ca,
+-				       int channels, unsigned char *map)
++				       int channels, unsigned char *map,
++				       bool chmap_set)
+ {
+-	if (!non_pcm && map) {
++	if (!non_pcm && chmap_set) {
+ 		hdmi_manual_setup_channel_mapping(codec, pin_nid,
+ 						  channels, map);
+ 	} else {
+@@ -905,7 +906,8 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+ 			    pin_nid,
+ 			    channels);
+ 		hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+-					   channels, per_pin->chmap);
++					   channels, per_pin->chmap,
++					   per_pin->chmap_set);
+ 		hdmi_stop_infoframe_trans(codec, pin_nid);
+ 		hdmi_fill_audio_infoframe(codec, pin_nid,
+ 					    ai.bytes, sizeof(ai));
+@@ -915,7 +917,8 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, int pin_idx,
+ 		 * accordingly */
+ 		if (per_pin->non_pcm != non_pcm)
+ 			hdmi_setup_channel_mapping(codec, pin_nid, non_pcm, ca,
+-						   channels, per_pin->chmap);
++						   channels, per_pin->chmap,
++						   per_pin->chmap_set);
+ 	}
+ 
+ 	per_pin->non_pcm = non_pcm;
+-- 
+1.7.10
