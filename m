@@ -1,15 +1,16 @@
-From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm2200: Provide platform data for
-	MICBIAS configuration
-Date: Mon,  4 Feb 2013 18:10:03 +0000
-Message-ID: <1360001403-2183-1-git-send-email-crattray@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm2200: Provide platform data for
+ MICBIAS configuration
+Date: Mon, 4 Feb 2013 18:25:01 +0000
+Message-ID: <20130204182501.GP4720@opensource.wolfsonmicro.com>
+References: <1360001403-2183-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7817268432960477160=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A9B89260321
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2013 19:10:15 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 15C7F261635
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2013 19:25:03 +0100 (CET)
+In-Reply-To: <1360001403-2183-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,111 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
+To: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
----
- include/sound/wm2200.h    |   22 +++++++++++++++++++++-
- sound/soc/codecs/wm2200.c |   31 +++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/wm2200.h b/include/sound/wm2200.h
-index 79bf55b..26ea6ae 100644
---- a/include/sound/wm2200.h
-+++ b/include/sound/wm2200.h
-@@ -12,6 +12,7 @@
- #define __LINUX_SND_WM2200_H
- 
- #define WM2200_GPIO_SET 0x10000
-+#define WM2200_MAX_MICBIAS 2
- 
- enum wm2200_in_mode {
- 	WM2200_IN_SE = 0,
-@@ -25,6 +26,24 @@ enum wm2200_dmic_sup {
- 	WM2200_DMIC_SUP_MICBIAS2 = 2,
- };
- 
-+enum wm2200_mbias_lvl {
-+	WM2200_MBIAS_LVL_1V5 = 0,
-+	WM2200_MBIAS_LVL_1V8 = 1,
-+	WM2200_MBIAS_LVL_1V9 = 2,
-+	WM2200_MBIAS_LVL_2V0 = 3,
-+	WM2200_MBIAS_LVL_2V2 = 4,
-+	WM2200_MBIAS_LVL_2V4 = 5,
-+	WM2200_MBIAS_LVL_2V5 = 6,
-+	WM2200_MBIAS_LVL_2V6 = 7,
-+};
-+
-+struct wm2200_micbias {
-+	enum wm2200_mbias_lvl mb_lvl;      /** Regulated voltage */
-+	unsigned int discharge:1;          /** Actively discharge */
-+	unsigned int fast_start:1;         /** Enable aggressive startup ramp rate */
-+	unsigned int bypass:1;             /** Use bypass mode */
-+};
-+
- struct wm2200_pdata {
- 	int reset;      /** GPIO controlling /RESET, if any */
- 	int ldo_ena;    /** GPIO controlling LODENA, if any */
-@@ -35,7 +54,8 @@ struct wm2200_pdata {
- 	enum wm2200_in_mode in_mode[3];
- 	enum wm2200_dmic_sup dmic_sup[3];
- 
--	int micbias_cfg[2];  /** Register value to configure MICBIAS */
-+	/** MICBIAS configurations */
-+	struct wm2200_micbias micbias[WM2200_MAX_MICBIAS];
- };
- 
- #endif
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index bdd3d80..e458252 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -2192,6 +2192,7 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
- 	struct wm2200_priv *wm2200;
- 	unsigned int reg;
- 	int ret, i;
-+	int val;
- 
- 	wm2200 = devm_kzalloc(&i2c->dev, sizeof(struct wm2200_priv),
- 			      GFP_KERNEL);
-@@ -2342,6 +2343,36 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
- 		regmap_write(wm2200->regmap, WM2200_AUDIO_IF_1_16 + i, i);
- 	}
- 
-+	for (i = 0; i < WM2200_MAX_MICBIAS; i++) {
-+		if (!wm2200->pdata.micbias[i].mb_lvl &&
-+		    !wm2200->pdata.micbias[i].bypass)
-+			continue;
-+
-+		/* Apply default for bypass mode */
-+		if (!wm2200->pdata.micbias[i].mb_lvl)
-+			wm2200->pdata.micbias[i].mb_lvl
-+					= WM2200_MBIAS_LVL_1V5;
-+
-+		val = wm2200->pdata.micbias[i].mb_lvl
-+					<< WM2200_MICB1_LVL_SHIFT;
-+
-+		if (wm2200->pdata.micbias[i].discharge)
-+			val |= WM2200_MICB1_DISCH;
-+
-+		if (wm2200->pdata.micbias[i].fast_start)
-+			val |= WM2200_MICB1_RATE;
-+
-+		if (wm2200->pdata.micbias[i].bypass)
-+			val |= WM2200_MICB1_MODE;
-+
-+		regmap_update_bits(wm2200->regmap,
-+				   WM2200_MIC_BIAS_CTRL_1 + i,
-+				   WM2200_MICB1_LVL_MASK |
-+				   WM2200_MICB1_DISCH |
-+				   WM2200_MICB1_MODE |
-+				   WM2200_MICB1_RATE, val);
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(wm2200->pdata.in_mode); i++) {
- 		regmap_update_bits(wm2200->regmap, wm2200_mic_ctrl_reg[i],
- 				   WM2200_IN1_MODE_MASK |
--- 
-1.7.2.5
+--===============7817268432960477160==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="v9g2r9e2kvGs7M7R"
+Content-Disposition: inline
+
+
+--v9g2r9e2kvGs7M7R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 04, 2013 at 06:10:03PM +0000, Chris Rattray wrote:
+
+> +enum wm2200_mbias_lvl {
+> +	WM2200_MBIAS_LVL_1V5 = 0,
+> +	WM2200_MBIAS_LVL_1V8 = 1,
+> +	WM2200_MBIAS_LVL_1V9 = 2,
+> +	WM2200_MBIAS_LVL_2V0 = 3,
+> +	WM2200_MBIAS_LVL_2V2 = 4,
+> +	WM2200_MBIAS_LVL_2V4 = 5,
+> +	WM2200_MBIAS_LVL_2V5 = 6,
+> +	WM2200_MBIAS_LVL_2V6 = 7,
+> +};
+
+It would be better to specify this in terms of milivolts; this means
+that if the user does not specify anything then we'll use the chip
+default which should be sane and is generally the expected behaviour.
+
+--v9g2r9e2kvGs7M7R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRD/zaAAoJELSic+t+oim9AwUP/jgv+EOizLJ2R7q48wuyKA8W
+rU0PeQpwD7pbRga5EQnOlYCItsYQa2N5bi0qdUa6SyYMta4kQmiGiGkUEWSvuG9q
+3+X7exa7IXUTnS3cgnSQpPamtqSBjvm/hWNxrTGJJoWDfXNrW/Om34N8KwPbtOdx
+scnwzFwVEdINyMd38IrhDrfWCog/rYtg3Jc7KyZFaB7vSzjFEMnlKrbPBZP9hPSd
+ctqKeKhuA6IU8t+Okmq/FBc25SbWL08z+AOZQtQU67xWcdMVdGzaoQOSc7lF5sJt
+6AbjDGpdXWh4zLe4ppZAH5hZ1n9uzRYPiYHOLHHYPrjy8P0TichmjE07xB+iQYTW
+dYmObE42tndTRzEetABwdtLNsbjCQ9h+BFnG4vjWfaDlaB7E+UHHcskKCujWe8nd
+NRxAz/YwPS65vsGYMU/2Q8zBd7oJlXrq7A7G+NN0tqgYsBfnqbLPYN9dscCCo6Cp
+EowakVJIl0M4D1EbcrgHeEqvjdT5FXEUjjRxtdDMwEGzLf4Z373yGhHJT1GqUPgk
+rRDIYhhbPXUprRBHIUSXrIjlmc8dp+2MqjcvNsa3JjV4K1VuA+1vlbUlSZTMizSY
+aqGI8cOMvNVkiwlFKJqTu6ri7oJhgUTiaucw/PP8Pp/ZVgJJ2UyXWqbh437W12UR
+yhrA++QycJrAIn3Q5sIg
+=Hqb8
+-----END PGP SIGNATURE-----
+
+--v9g2r9e2kvGs7M7R--
+
+--===============7817268432960477160==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7817268432960477160==--
