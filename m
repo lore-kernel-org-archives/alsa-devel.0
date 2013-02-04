@@ -1,56 +1,56 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/4] ASoC: atmel: fixes for working as module
-Date: Mon, 4 Feb 2013 18:34:30 +0000
-Message-ID: <20130204183430.GR4720@opensource.wolfsonmicro.com>
-References: <1359604420-15171-1-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH v4 1/3] ASoC: tlv320aic3x: Convert mic bias to a supply
+ widget
+Date: Mon, 4 Feb 2013 18:35:42 +0000
+Message-ID: <20130204183542.GS4720@opensource.wolfsonmicro.com>
+References: <1359636786-7056-1-git-send-email-gururaja.hebbar@ti.com>
+ <1359636786-7056-2-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IUSVF+LtaR4kWxuH"
-Return-path: <linux-sound-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="QHhm1I6mwQR20oIa"
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1359604420-15171-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1359636786-7056-2-git-send-email-gururaja.hebbar@ti.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Hebbar Gururaja <gururaja.hebbar@ti.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, tony@atomide.com, lgirdwood@gmail.com, perex@perex.cz, nsekhar@ti.com, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, rob@landley.net, grant.likely@secretlab.ca
 List-Id: alsa-devel@alsa-project.org
 
 
---IUSVF+LtaR4kWxuH
+--QHhm1I6mwQR20oIa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 31, 2013 at 11:53:36AM +0800, Bo Shen wrote:
-> The following patches fixes the audio part when working as module
+On Thu, Jan 31, 2013 at 06:23:04PM +0530, Hebbar Gururaja wrote:
+> Convert MicBias widgets to supply widget.
 >=20
-> Bo Shen (4):
->   ASoC: atmel_pcm: make it buildable as module
->   ASoC: atmel_ssc_dai: remove error set private data
->   ASoC: atmel_ssc_dai: correct sequence when unload
->   ASoC: sam9g20_wm8731: disable clock and correct sequence when unload
+> On tlv320aic3x, Mic bias power on/off shares the same register bits
+> with output mic bias voltage.  So, when power on mic bias, we need
+> reclaim it to voltage value.
 
-Applied all, thanks.
+Applied, thanks.
 
---IUSVF+LtaR4kWxuH
+--QHhm1I6mwQR20oIa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRD/8uAAoJELSic+t+oim9fI8QAJhfjNvAMLWfOh9D+qNvZ9wX
-Fpxf9Dvk4Mx8IBUMWALzc55crUyUNef6NYMcahStxXp3UKLDcUGLrgw61Lw9soT7
-Q2vwnh3X1Wbd6EI+4NnzULSv5e6kJDSooDfrQbg53OjRyiK0p26jy3GFD497OtGM
-XIvwv+Egtz+C8kd3UNiEZ+DRZa2iqISGw71SigkPUjI58pyTSk/5TAB7iS+40IRC
-BY0DTEWRYjyKl+Kgf4IF+rKOIV8qekqq0kCpmkV5J6wNyFCt2/SKoNG2h9QbSOyi
-C325yyE+DC5ng6Dm+BHC96KAZ29ivKPb0TEmnDUfRC5in/3pdw4sc/07HPEXxPZT
-jVH1mtmG11y6vGtR08V24wH2MzwaZ4eAMYtmVG+pEmk15AKZvhHeuV2ZYmqsrhZV
-YyhYaVaXRV8E9lRncbGqO3/NRCz+zecqjKXz9bPqAEXm3yHt3qe4z7xO68aBbnTH
-0UWfL/ooyjucl4mXdZHjHO1d58y1FfW3Lw088hYvc069bLpRJ+c/AyNLpILIX9Uk
-b9u0ba/tAj6nO2VEfCscGXbk+nM5mX143hhE+xfrRhvpdn5fyESeVGpuJCFLXUAd
-gOL/3dbAaOE7TMZnFzs7lOqCKnL935abQicjnZrroeqYdKRmqeu1CtPAQCP/Y3ab
-PgXzM911iVH/FudDNMqW
-=FkwC
+iQIcBAEBAgAGBQJRD/92AAoJELSic+t+oim918AP/3bN7+tsV2XR+Vsun5TsEEVO
+3TJNYN4+rp6GmK+6zrvRaeRG/DueKGcLyPKx5N/SdWtncb1Cb708/lyYobz6RjmU
+APSI0h4v7xCJXYrSACzM5g06EkAgpnlRD/BoS8um5jc25BDlfmtwLKO1ztE03ml2
+vcTIEqfw9GLnYIse6P+3aiHeKYujQxZ9OY05MFAU1546/wzkCBxWdcePC9aGNFt/
+fyxGMF1n3T5GlB9K45Ns42TFUKO/nTC0NbIV4gpEiMzXSgaz7/JQCXB//MJ+e9QM
+NyiWhJEUGlh163S9de24WjR1XZfZ4qjxnocifnqssykQ6kmN0utUe5QAZzi04Ee4
+tOYOLCJAZaz8/a7WlO4F9vIFOuWE5vHl4nytDq2ah7bL03ZwyIT74H/N+YaEBB1f
+Uf6dwQRUCLgSyV+qWDdquatuCSME9JN8FH9JNE4+m5k+7T0yaIaCVjujqg34JZvJ
+C0YFVxWYrDaJ+xPzCfTfq869+Xg8mCPypjeMUNvdbawUA0lxLWFETBuHgVm48txo
+OEo3pmSJjMSprcwIyZPs4KgupjQGAbK5hFOVtxTtbOn847nga3FbbncHaZU36x6N
+5xHKCYORQ3k4izByWTeMlJfV2C/YI1/ileBegt7M0+lPYZx9bBE1WTwOrmsBL9yi
+H6JUyE1nwofq0of77aVq
+=Ko0U
 -----END PGP SIGNATURE-----
 
---IUSVF+LtaR4kWxuH--
+--QHhm1I6mwQR20oIa--
