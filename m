@@ -1,218 +1,79 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Use asynchronous I/O to write
-	firmware and coefficients
-Date: Mon,  4 Feb 2013 19:53:23 +0000
-Message-ID: <1360007603-24984-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device Tree support
+Date: Mon, 04 Feb 2013 15:22:21 -0700
+Message-ID: <5110349D.3050308@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+ <50E71618.8090302@wwwdotorg.org>
+ <20130104193712.GN4627@opensource.wolfsonmicro.com>
+ <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C09D261635
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2013 20:53:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87halw7sij.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Allow the regmap API to use asynchronous I/O where supported to minimise
-the delay between transfers, reducing firmware download times.
+On 01/31/2013 06:05 PM, Kuninori Morimoto wrote:
+> 
+> Hi Stephen, Mark
+> 
+>>> +- simple-audio,dai-name			: simple-audio CPU/CODEC DAI name
+>>
+>> OK, I see those two are CPU-/CODEC-specific. However, you could easily
+>> just have different property names for the two.
+>>
+>> I assume you didn't like my idea of not putting the DAI names into the
+>> DT, but using extra arguments after the phandles instead? Doing so would
+>> be more alike most existing DT bindings.
+> 
+> The reason why I need "dai-name" is that phandle can select "cpu/codec device"
+> itself, but, it can't select "port".
+> This port is called/controlled as "xxx_dai_name" on ASoC I think.
+> 
+> like this
+> 
+> +-------------+
+> | FSI  port A |--> ak4642
+> |      port B |--> HDMI
+> +-------------+
+> 
+> Then, I would like to ask Stephen, Mark
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |   82 +++++++++++++++++++++++++++++++++++---------
- 1 file changed, 66 insertions(+), 16 deletions(-)
+Yes it can.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5487a94..be45e2b 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -15,6 +15,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/firmware.h>
-+#include <linux/list.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -153,6 +154,43 @@
- #define ADSP2_RAM_RDY_SHIFT                    0
- #define ADSP2_RAM_RDY_WIDTH                    1
- 
-+struct wm_adsp_buf {
-+	struct list_head list;
-+	void *buf;
-+};
-+
-+static struct wm_adsp_buf *wm_adsp_buf_alloc(const void *src, size_t len,
-+					     struct list_head *list)
-+{
-+	struct wm_adsp_buf *buf = kzalloc(sizeof(*buf), GFP_KERNEL);
-+
-+	if (buf == NULL)
-+		return NULL;
-+
-+	buf->buf = kmemdup(src, len, GFP_KERNEL | GFP_DMA);
-+	if (!buf->buf) {
-+		kfree(buf);
-+		return NULL;
-+	}
-+
-+	if (list)
-+		list_add_tail(&buf->list, list);
-+
-+	return buf;
-+}
-+
-+static void wm_adsp_buf_free(struct list_head *list)
-+{
-+	while (!list_empty(list)) {
-+		struct wm_adsp_buf *buf = list_first_entry(list,
-+							   struct wm_adsp_buf,
-+							   list);
-+		list_del(&buf->list);
-+		kfree(buf->buf);
-+		kfree(buf);
-+	}
-+}
-+
- #define WM_ADSP_NUM_FW 4
- 
- static const char *wm_adsp_fw_text[WM_ADSP_NUM_FW] = {
-@@ -254,6 +292,7 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *region,
- 
- static int wm_adsp_load(struct wm_adsp *dsp)
- {
-+	LIST_HEAD(buf_list);
- 	const struct firmware *firmware;
- 	struct regmap *regmap = dsp->regmap;
- 	unsigned int pos = 0;
-@@ -265,7 +304,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 	const struct wm_adsp_region *mem;
- 	const char *region_name;
- 	char *file, *text;
--	void *buf;
-+	struct wm_adsp_buf *buf;
- 	unsigned int reg;
- 	int regions = 0;
- 	int ret, offset, type, sizes;
-@@ -420,18 +459,16 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 		}
- 
- 		if (reg) {
--			buf = kmemdup(region->data, le32_to_cpu(region->len),
--				      GFP_KERNEL | GFP_DMA);
-+			buf = wm_adsp_buf_alloc(region->data,
-+						le32_to_cpu(region->len),
-+						&buf_list);
- 			if (!buf) {
- 				adsp_err(dsp, "Out of memory\n");
- 				return -ENOMEM;
- 			}
- 
--			ret = regmap_raw_write(regmap, reg, buf,
--					       le32_to_cpu(region->len));
--
--			kfree(buf);
--
-+			ret = regmap_raw_write_async(regmap, reg, buf->buf,
-+						     le32_to_cpu(region->len));
- 			if (ret != 0) {
- 				adsp_err(dsp,
- 					"%s.%d: Failed to write %d bytes at %d in %s: %d\n",
-@@ -445,12 +482,20 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 		pos += le32_to_cpu(region->len) + sizeof(*region);
- 		regions++;
- 	}
--	
-+
-+	ret = regmap_async_complete(regmap);
-+	if (ret != 0) {
-+		adsp_err(dsp, "Failed to complete async write: %d\n", ret);
-+		goto out_fw;
-+	}
-+
- 	if (pos > firmware->size)
- 		adsp_warn(dsp, "%s.%d: %zu bytes at end of file\n",
- 			  file, regions, pos - firmware->size);
- 
- out_fw:
-+	regmap_async_complete(regmap);
-+	wm_adsp_buf_free(&buf_list);
- 	release_firmware(firmware);
- out:
- 	kfree(file);
-@@ -655,6 +700,7 @@ out:
- 
- static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- {
-+	LIST_HEAD(buf_list);
- 	struct regmap *regmap = dsp->regmap;
- 	struct wmfw_coeff_hdr *hdr;
- 	struct wmfw_coeff_item *blk;
-@@ -664,7 +710,7 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 	const char *region_name;
- 	int ret, pos, blocks, type, offset, reg;
- 	char *file;
--	void *buf;
-+	struct wm_adsp_buf *buf;
- 
- 	file = kzalloc(PAGE_SIZE, GFP_KERNEL);
- 	if (file == NULL)
-@@ -776,8 +822,9 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 		}
- 
- 		if (reg) {
--			buf = kmemdup(blk->data, le32_to_cpu(blk->len),
--				      GFP_KERNEL | GFP_DMA);
-+			buf = wm_adsp_buf_alloc(blk->data,
-+						le32_to_cpu(blk->len),
-+						&buf_list);
- 			if (!buf) {
- 				adsp_err(dsp, "Out of memory\n");
- 				return -ENOMEM;
-@@ -786,27 +833,30 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 			adsp_dbg(dsp, "%s.%d: Writing %d bytes at %x\n",
- 				 file, blocks, le32_to_cpu(blk->len),
- 				 reg);
--			ret = regmap_raw_write(regmap, reg, blk->data,
--					       le32_to_cpu(blk->len));
-+			ret = regmap_raw_write_async(regmap, reg, buf->buf,
-+						     le32_to_cpu(blk->len));
- 			if (ret != 0) {
- 				adsp_err(dsp,
- 					"%s.%d: Failed to write to %x in %s\n",
- 					file, blocks, reg, region_name);
- 			}
--
--			kfree(buf);
- 		}
- 
- 		pos += le32_to_cpu(blk->len) + sizeof(*blk);
- 		blocks++;
- 	}
- 
-+	ret = regmap_async_complete(regmap);
-+	if (ret != 0)
-+		adsp_err(dsp, "Failed to complete async write: %d\n", ret);
-+
- 	if (pos > firmware->size)
- 		adsp_warn(dsp, "%s.%d: %zu bytes at end of file\n",
- 			  file, blocks, pos - firmware->size);
- 
- out_fw:
- 	release_firmware(firmware);
-+	wm_adsp_buf_free(&buf_list);
- out:
- 	kfree(file);
- 	return 0;
--- 
-1.7.10.4
+In most DT bindings where phandles are used, you specify both a phandle
+and some arguments related to that phandle. The arguments could easily
+encode the port ID. In other words, instead of:
+
+simple-audio,codec = <&phandle>;
+
+you could write:
+
+simple-audio,codec = <&phandle PORT_NUMBER>;
+
+where PORT_NUMBER could be 0, 1, 2, or any other integer value or
+sequence of integer values, which the driver for the CODEC would
+interpret itself, and return an ASoC-internal port name.
