@@ -1,20 +1,20 @@
-From: Jerry Wong <Jerry.Wong@maximintegrated.com>
-Subject: [PATCH 002/002] ASoC: Replace max98090 Device Driver
-Date: Thu, 31 Jan 2013 21:13:27 -0800
-Message-ID: <A453F1AE3B5DC14DB19666C506CE75A7108684F566@ITSVLEX06.it.maxim-ic.internal>
-References: <A453F1AE3B5DC14DB19666C506CE75A7108684F403@ITSVLEX06.it.maxim-ic.internal>,
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4C7@ITSVLEX06.it.maxim-ic.internal>,
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4ED@ITSVLEX06.it.maxim-ic.internal>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH RFC 2/4] ALSA: Add RME MADI FX Kconfig
+	entries
+Date: Mon, 04 Feb 2013 17:24:57 +0100
+Message-ID: <510FE0D9.5060508@drcomp.erfurt.thur.de>
+References: <1359722921-18769-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1359722921-18769-2-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1359722921-18769-3-git-send-email-adi@drcomp.erfurt.thur.de>
+ <20130202161636.23c04179@rvllap.ps13> <510E4F7C.90904@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam02.maximintegrated.com (antispam02.maxim-ic.com
- [205.153.101.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 5797B260320
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2013 06:13:33 +0100 (CET)
-In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F4ED@ITSVLEX06.it.maxim-ic.internal>
-Content-Language: en-US
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 052BB2602F7
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2013 17:25:11 +0100 (CET)
+In-Reply-To: <510E4F7C.90904@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,4068 +24,4076 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerry Wong <Jerry.Wong@maximintegrated.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "jwong@jwassociates.com" <jwong@jwassociates.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Andre Schramm <andre.schramm@iosono-sound.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jerry Wong <jerry.wong@maximintegrated.com>
+On 02/03/2013 12:52 PM, Adrian Knoth wrote:
 
-This patch completes the replacement of the existing max98090 driver,
-by installing a more complete driver.
+>> Also, the the mail on patch 4/4 seems to be lost - can you resend it?
+> Weird, it was in my backup (cause I was automatically CCed), but neither
+> gmane nor you received it.
 
-Signed-off-by: Jerry Wong <jerry.wong@maximintegrated.com>
-Tested-by: Matthew Mowdy <matthew.mowdy@maximintegrated.com>
-Reviewed-by: Ralph Birt <ralph.birt@maximintegrated.com>
----
-Mark,
-I have rebased and remade the patches.
-Jerry
+It still doesn't show up. OK, let's include it here:
 
- include/sound/max98090.h    |   29 +
- sound/soc/codecs/Kconfig    |    4 +
- sound/soc/codecs/Makefile   |    2 +
- sound/soc/codecs/max98090.c | 2398 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98090.h | 1549 ++++++++++++++++++++++++++++
- 5 files changed, 3982 insertions(+), 0 deletions(-)
- create mode 100755 include/sound/max98090.h
- create mode 100755 sound/soc/codecs/max98090.c
- create mode 100755 sound/soc/codecs/max98090.h
 
-diff --git a/include/sound/max98090.h b/include/sound/max98090.h
-new file mode 100755
-index 0000000..95efb13
+>From 3e779e85c63fb8746db2ce23a553ebc259776e3d Mon Sep 17 00:00:00 2001
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Date: Fri, 1 Feb 2013 13:11:42 +0100
+Subject: [PATCH RFC 4/4] ALSA: madifx - Add support for RME MADI FX
+
+Early support for the new 390 channel RME MADI FX audio interface.
+Current status:
+
+ * PCM playback/capture working (SS and DS tested, QS untested)
+ * MIDI probably working (untested)
+ * All card settings working (e.g. TX64, SMUX, AESpro, WC-Term,
+   WC-singlespeed...)
+ * Mirror-MADI1-to-Out2+3 maybe working (untested)
+ * Redundancy mode maybe working (untested)
+ * some ioctls implemented
+ * Static mixer working (fixed 1:1 mapping)
+ * DSP **NOT** working. RME doesn't intend to release any information
+   regarding the DSP.
+ * Adjustable mixer **NOT** working (needs new userspace tools)
+ * Levelmetering **NOT** working (maybe wrong, needs new userspace
+   tools)
+
+See https://github.com/adiknoth/madifx/ for additional information and
+helper tools.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+diff --git a/sound/pci/rme9652/madifx.c b/sound/pci/rme9652/madifx.c
+new file mode 100644
+index 0000000..b02b59e
 --- /dev/null
-+++ b/include/sound/max98090.h
-@@ -0,0 +1,29 @@
++++ b/sound/pci/rme9652/madifx.c
+@@ -0,0 +1,3986 @@
 +/*
-+ * Platform data for MAX98090
++ *   ALSA driver for RME Hammerfall DSP MADI FX audio interface(s)
 + *
-+ * Copyright 2011-2012 Maxim Integrated Products
++ *      Based on hdspm.c
++ *      Copyright (c) 2003 Winfried Ritsch (IEM)
++ *      code based on hdsp.c   Paul Davis
++ *                             Marcus Andersson
++ *                             Thomas Charbonnel
++ *                             Florian Faber
++ *                             Adrian Knoth
 + *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA
 + *
 + */
-+
-+#ifndef __SOUND_MAX98090_PDATA_H__
-+#define __SOUND_MAX98090_PDATA_H__
-+
-+/* codec platform data */
-+struct max98090_pdata {
-+
-+       /* Analog/digital microphone configuration:
-+        * 0 = analog microphone input (normal setting)
-+        * 1 = digital microphone input
-+        */
-+       unsigned int digmic_left_mode:1;
-+       unsigned int digmic_right_mode:1;
-+       unsigned int digmic_3_mode:1;
-+       unsigned int digmic_4_mode:1;
-+};
-+
-+#endif
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0e368d4..3a84782 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -44,6 +44,7 @@ config SND_SOC_ALL_CODECS
-        select SND_SOC_LM4857 if I2C
-        select SND_SOC_LM49453 if I2C
-        select SND_SOC_MAX98088 if I2C
-+       select SND_SOC_MAX98090 if I2C
-        select SND_SOC_MAX98095 if I2C
-        select SND_SOC_MAX9850 if I2C
-        select SND_SOC_MAX9768 if I2C
-@@ -267,6 +268,9 @@ config SND_SOC_LM49453
- config SND_SOC_MAX98088
-        tristate
-
-+config SND_SOC_MAX98090
-+       tristate
-+
- config SND_SOC_MAX98095
-        tristate
-
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index aa56312..f6e8e36 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -34,6 +34,7 @@ snd-soc-lm4857-objs := lm4857.o
- snd-soc-lm49453-objs := lm49453.o
- snd-soc-max9768-objs := max9768.o
- snd-soc-max98088-objs := max98088.o
-+snd-soc-max98090-objs := max98090.o
- snd-soc-max98095-objs := max98095.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-mc13783-objs := mc13783.o
-@@ -157,6 +158,7 @@ obj-$(CONFIG_SND_SOC_LM4857)        += snd-soc-lm4857.o
- obj-$(CONFIG_SND_SOC_LM49453)   += snd-soc-lm49453.o
- obj-$(CONFIG_SND_SOC_MAX9768)  += snd-soc-max9768.o
- obj-$(CONFIG_SND_SOC_MAX98088) += snd-soc-max98088.o
-+obj-$(CONFIG_SND_SOC_MAX98090) += snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095) += snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX9850)  += snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MC13783)  += snd-soc-mc13783.o
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-new file mode 100755
-index 0000000..590ac94
---- /dev/null
-+++ b/sound/soc/codecs/max98090.c
-@@ -0,0 +1,2398 @@
-+/*
-+ * max98090.c -- MAX98090 ALSA SoC Audio driver
-+ *
-+ * Copyright 2011-2012 Maxim Integrated Products
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
++#include <linux/init.h>
 +#include <linux/delay.h>
-+#include <linux/i2c.h>
++#include <linux/interrupt.h>
 +#include <linux/module.h>
-+#include <linux/pm.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
 +#include <linux/slab.h>
-+#include <sound/jack.h>
++#include <linux/pci.h>
++#include <linux/math64.h>
++#include <linux/io.h>
++
++#include <sound/core.h>
++#include <sound/control.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include <sound/max98090.h>
-+#include "max98090.h"
-+
-+#include <linux/version.h>
-+
-+#define DEBUG
-+#define EXTMIC_METHOD
-+#define EXTMIC_METHOD_TEST
-+
-+/* Allows for sparsely populated register maps */
-+static struct reg_default max98090_reg[] = {
-+       { 0x00, 0x00 }, /* 00 Software Reset */
-+       { 0x03, 0x04 }, /* 03 Interrupt Masks */
-+       { 0x04, 0x00 }, /* 04 System Clock Quick */
-+       { 0x05, 0x00 }, /* 05 Sample Rate Quick */
-+       { 0x06, 0x00 }, /* 06 DAI Interface Quick */
-+       { 0x07, 0x00 }, /* 07 DAC Path Quick */
-+       { 0x08, 0x00 }, /* 08 Mic/Direct to ADC Quick */
-+       { 0x09, 0x00 }, /* 09 Line to ADC Quick */
-+       { 0x0A, 0x00 }, /* 0A Analog Mic Loop Quick */
-+       { 0x0B, 0x00 }, /* 0B Analog Line Loop Quick */
-+       { 0x0C, 0x00 }, /* 0C Reserved */
-+       { 0x0D, 0x00 }, /* 0D Input Config */
-+       { 0x0E, 0x1B }, /* 0E Line Input Level */
-+       { 0x0F, 0x00 }, /* 0F Line Config */
-+
-+       { 0x10, 0x14 }, /* 10 Mic1 Input Level */
-+       { 0x11, 0x14 }, /* 11 Mic2 Input Level */
-+       { 0x12, 0x00 }, /* 12 Mic Bias Voltage */
-+       { 0x13, 0x00 }, /* 13 Digital Mic Config */
-+       { 0x14, 0x00 }, /* 14 Digital Mic Mode */
-+       { 0x15, 0x00 }, /* 15 Left ADC Mixer */
-+       { 0x16, 0x00 }, /* 16 Right ADC Mixer */
-+       { 0x17, 0x03 }, /* 17 Left ADC Level */
-+       { 0x18, 0x03 }, /* 18 Right ADC Level */
-+       { 0x19, 0x00 }, /* 19 ADC Biquad Level */
-+       { 0x1A, 0x00 }, /* 1A ADC Sidetone */
-+       { 0x1B, 0x00 }, /* 1B System Clock */
-+       { 0x1C, 0x00 }, /* 1C Clock Mode */
-+       { 0x1D, 0x00 }, /* 1D Any Clock 1 */
-+       { 0x1E, 0x00 }, /* 1E Any Clock 2 */
-+       { 0x1F, 0x00 }, /* 1F Any Clock 3 */
-+
-+       { 0x20, 0x00 }, /* 20 Any Clock 4 */
-+       { 0x21, 0x00 }, /* 21 Master Mode */
-+       { 0x22, 0x00 }, /* 22 Interface Format */
-+       { 0x23, 0x00 }, /* 23 TDM Format 1*/
-+       { 0x24, 0x00 }, /* 24 TDM Format 2*/
-+       { 0x25, 0x00 }, /* 25 I/O Configuration */
-+       { 0x26, 0x80 }, /* 26 Filter Config */
-+       { 0x27, 0x00 }, /* 27 DAI Playback Level */
-+       { 0x28, 0x00 }, /* 28 EQ Playback Level */
-+       { 0x29, 0x00 }, /* 29 Left HP Mixer */
-+       { 0x2A, 0x00 }, /* 2A Right HP Mixer */
-+       { 0x2B, 0x00 }, /* 2B HP Control */
-+       { 0x2C, 0x1A }, /* 2C Left HP Volume */
-+       { 0x2D, 0x1A }, /* 2D Right HP Volume */
-+       { 0x2E, 0x00 }, /* 2E Left Spk Mixer */
-+       { 0x2F, 0x00 }, /* 2F Right Spk Mixer */
-+
-+       { 0x30, 0x00 }, /* 30 Spk Control */
-+       { 0x31, 0x2C }, /* 31 Left Spk Volume */
-+       { 0x32, 0x2C }, /* 32 Right Spk Volume */
-+       { 0x33, 0x00 }, /* 33 ALC Timing */
-+       { 0x34, 0x00 }, /* 34 ALC Compressor */
-+       { 0x35, 0x00 }, /* 35 ALC Expander */
-+       { 0x36, 0x00 }, /* 36 ALC Gain */
-+       { 0x37, 0x00 }, /* 37 Rcv/Line OutL Mixer */
-+       { 0x38, 0x00 }, /* 38 Rcv/Line OutL Control */
-+       { 0x39, 0x15 }, /* 39 Rcv/Line OutL Volume */
-+       { 0x3A, 0x00 }, /* 3A Line OutR Mixer */
-+       { 0x3B, 0x00 }, /* 3B Line OutR Control */
-+       { 0x3C, 0x15 }, /* 3C Line OutR Volume */
-+       { 0x3D, 0x00 }, /* 3D Jack Detect */
-+       { 0x3E, 0x00 }, /* 3E Input Enable */
-+       { 0x3F, 0x00 }, /* 3F Output Enable */
-+
-+       { 0x40, 0x00 }, /* 40 Level Control */
-+       { 0x41, 0x00 }, /* 41 DSP Filter Enable */
-+       { 0x42, 0x00 }, /* 42 Bias Control */
-+       { 0x43, 0x00 }, /* 43 DAC Control */
-+       { 0x44, 0x06 }, /* 44 ADC Control */
-+       { 0x45, 0x00 }, /* 45 Device Shutdown */
-+       { 0x46, 0x00 }, /* 46 Equalizer Band 1 Coefficient B0 */
-+       { 0x47, 0x00 }, /* 47 Equalizer Band 1 Coefficient B0 */
-+       { 0x48, 0x00 }, /* 48 Equalizer Band 1 Coefficient B0 */
-+       { 0x49, 0x00 }, /* 49 Equalizer Band 1 Coefficient B1 */
-+       { 0x4A, 0x00 }, /* 4A Equalizer Band 1 Coefficient B1 */
-+       { 0x4B, 0x00 }, /* 4B Equalizer Band 1 Coefficient B1 */
-+       { 0x4C, 0x00 }, /* 4C Equalizer Band 1 Coefficient B2 */
-+       { 0x4D, 0x00 }, /* 4D Equalizer Band 1 Coefficient B2 */
-+       { 0x4E, 0x00 }, /* 4E Equalizer Band 1 Coefficient B2 */
-+       { 0x4F, 0x00 }, /* 4F Equalizer Band 1 Coefficient A1 */
-+
-+       { 0x50, 0x00 }, /* 50 Equalizer Band 1 Coefficient A1 */
-+       { 0x51, 0x00 }, /* 51 Equalizer Band 1 Coefficient A1 */
-+       { 0x52, 0x00 }, /* 52 Equalizer Band 1 Coefficient A2 */
-+       { 0x53, 0x00 }, /* 53 Equalizer Band 1 Coefficient A2 */
-+       { 0x54, 0x00 }, /* 54 Equalizer Band 1 Coefficient A2 */
-+       { 0x55, 0x00 }, /* 55 Equalizer Band 2 Coefficient B0 */
-+       { 0x56, 0x00 }, /* 56 Equalizer Band 2 Coefficient B0 */
-+       { 0x57, 0x00 }, /* 57 Equalizer Band 2 Coefficient B0 */
-+       { 0x58, 0x00 }, /* 58 Equalizer Band 2 Coefficient B1 */
-+       { 0x59, 0x00 }, /* 59 Equalizer Band 2 Coefficient B1 */
-+       { 0x5A, 0x00 }, /* 5A Equalizer Band 2 Coefficient B1 */
-+       { 0x5B, 0x00 }, /* 5B Equalizer Band 2 Coefficient B2 */
-+       { 0x5C, 0x00 }, /* 5C Equalizer Band 2 Coefficient B2 */
-+       { 0x5D, 0x00 }, /* 5D Equalizer Band 2 Coefficient B2 */
-+       { 0x5E, 0x00 }, /* 5E Equalizer Band 2 Coefficient A1 */
-+       { 0x5F, 0x00 }, /* 5F Equalizer Band 2 Coefficient A1 */
-+
-+       { 0x60, 0x00 }, /* 60 Equalizer Band 2 Coefficient A1 */
-+       { 0x61, 0x00 }, /* 61 Equalizer Band 2 Coefficient A2 */
-+       { 0x62, 0x00 }, /* 62 Equalizer Band 2 Coefficient A2 */
-+       { 0x63, 0x00 }, /* 63 Equalizer Band 2 Coefficient A2 */
-+       { 0x64, 0x00 }, /* 64 Equalizer Band 3 Coefficient B0 */
-+       { 0x65, 0x00 }, /* 65 Equalizer Band 3 Coefficient B0 */
-+       { 0x66, 0x00 }, /* 66 Equalizer Band 3 Coefficient B0 */
-+       { 0x67, 0x00 }, /* 67 Equalizer Band 3 Coefficient B1 */
-+       { 0x68, 0x00 }, /* 68 Equalizer Band 3 Coefficient B1 */
-+       { 0x69, 0x00 }, /* 69 Equalizer Band 3 Coefficient B1 */
-+       { 0x6A, 0x00 }, /* 6A Equalizer Band 3 Coefficient B2 */
-+       { 0x6B, 0x00 }, /* 6B Equalizer Band 3 Coefficient B2 */
-+       { 0x6C, 0x00 }, /* 6C Equalizer Band 3 Coefficient B2 */
-+       { 0x6D, 0x00 }, /* 6D Equalizer Band 3 Coefficient A1 */
-+       { 0x6E, 0x00 }, /* 6E Equalizer Band 3 Coefficient A1 */
-+       { 0x6F, 0x00 }, /* 6F Equalizer Band 3 Coefficient A1 */
-+
-+       { 0x70, 0x00 }, /* 70 Equalizer Band 3 Coefficient A2 */
-+       { 0x71, 0x00 }, /* 71 Equalizer Band 3 Coefficient A2 */
-+       { 0x72, 0x00 }, /* 72 Equalizer Band 3 Coefficient A2 */
-+       { 0x73, 0x00 }, /* 73 Equalizer Band 4 Coefficient B0 */
-+       { 0x74, 0x00 }, /* 74 Equalizer Band 4 Coefficient B0 */
-+       { 0x75, 0x00 }, /* 75 Equalizer Band 4 Coefficient B0 */
-+       { 0x76, 0x00 }, /* 76 Equalizer Band 4 Coefficient B1 */
-+       { 0x77, 0x00 }, /* 77 Equalizer Band 4 Coefficient B1 */
-+       { 0x78, 0x00 }, /* 78 Equalizer Band 4 Coefficient B1 */
-+       { 0x79, 0x00 }, /* 79 Equalizer Band 4 Coefficient B2 */
-+       { 0x7A, 0x00 }, /* 7A Equalizer Band 4 Coefficient B2 */
-+       { 0x7B, 0x00 }, /* 7B Equalizer Band 4 Coefficient B2 */
-+       { 0x7C, 0x00 }, /* 7C Equalizer Band 4 Coefficient A1 */
-+       { 0x7D, 0x00 }, /* 7D Equalizer Band 4 Coefficient A1 */
-+       { 0x7E, 0x00 }, /* 7E Equalizer Band 4 Coefficient A1 */
-+       { 0x7F, 0x00 }, /* 7F Equalizer Band 4 Coefficient A2 */
-+
-+       { 0x80, 0x00 }, /* 80 Equalizer Band 4 Coefficient A2 */
-+       { 0x81, 0x00 }, /* 81 Equalizer Band 4 Coefficient A2 */
-+       { 0x82, 0x00 }, /* 82 Equalizer Band 5 Coefficient B0 */
-+       { 0x83, 0x00 }, /* 83 Equalizer Band 5 Coefficient B0 */
-+       { 0x84, 0x00 }, /* 84 Equalizer Band 5 Coefficient B0 */
-+       { 0x85, 0x00 }, /* 85 Equalizer Band 5 Coefficient B1 */
-+       { 0x86, 0x00 }, /* 86 Equalizer Band 5 Coefficient B1 */
-+       { 0x87, 0x00 }, /* 87 Equalizer Band 5 Coefficient B1 */
-+       { 0x88, 0x00 }, /* 88 Equalizer Band 5 Coefficient B2 */
-+       { 0x89, 0x00 }, /* 89 Equalizer Band 5 Coefficient B2 */
-+       { 0x8A, 0x00 }, /* 8A Equalizer Band 5 Coefficient B2 */
-+       { 0x8B, 0x00 }, /* 8B Equalizer Band 5 Coefficient A1 */
-+       { 0x8C, 0x00 }, /* 8C Equalizer Band 5 Coefficient A1 */
-+       { 0x8D, 0x00 }, /* 8D Equalizer Band 5 Coefficient A1 */
-+       { 0x8E, 0x00 }, /* 8E Equalizer Band 5 Coefficient A2 */
-+       { 0x8F, 0x00 }, /* 8F Equalizer Band 5 Coefficient A2 */
-+
-+       { 0x90, 0x00 }, /* 90 Equalizer Band 5 Coefficient A2 */
-+       { 0x91, 0x00 }, /* 91 Equalizer Band 6 Coefficient B0 */
-+       { 0x92, 0x00 }, /* 92 Equalizer Band 6 Coefficient B0 */
-+       { 0x93, 0x00 }, /* 93 Equalizer Band 6 Coefficient B0 */
-+       { 0x94, 0x00 }, /* 94 Equalizer Band 6 Coefficient B1 */
-+       { 0x95, 0x00 }, /* 95 Equalizer Band 6 Coefficient B1 */
-+       { 0x96, 0x00 }, /* 96 Equalizer Band 6 Coefficient B1 */
-+       { 0x97, 0x00 }, /* 97 Equalizer Band 6 Coefficient B2 */
-+       { 0x98, 0x00 }, /* 98 Equalizer Band 6 Coefficient B2 */
-+       { 0x99, 0x00 }, /* 99 Equalizer Band 6 Coefficient B2 */
-+       { 0x9A, 0x00 }, /* 9A Equalizer Band 6 Coefficient A1 */
-+       { 0x9B, 0x00 }, /* 9B Equalizer Band 6 Coefficient A1 */
-+       { 0x9C, 0x00 }, /* 9C Equalizer Band 6 Coefficient A1 */
-+       { 0x9D, 0x00 }, /* 9D Equalizer Band 6 Coefficient A2 */
-+       { 0x9E, 0x00 }, /* 9E Equalizer Band 6 Coefficient A2 */
-+       { 0x9F, 0x00 }, /* 9F Equalizer Band 6 Coefficient A2 */
-+
-+       { 0xA0, 0x00 }, /* A0 Equalizer Band 7 Coefficient B0 */
-+       { 0xA1, 0x00 }, /* A1 Equalizer Band 7 Coefficient B0 */
-+       { 0xA2, 0x00 }, /* A2 Equalizer Band 7 Coefficient B0 */
-+       { 0xA3, 0x00 }, /* A3 Equalizer Band 7 Coefficient B1 */
-+       { 0xA4, 0x00 }, /* A4 Equalizer Band 7 Coefficient B1 */
-+       { 0xA5, 0x00 }, /* A5 Equalizer Band 7 Coefficient B1 */
-+       { 0xA6, 0x00 }, /* A6 Equalizer Band 7 Coefficient B2 */
-+       { 0xA7, 0x00 }, /* A7 Equalizer Band 7 Coefficient B2 */
-+       { 0xA8, 0x00 }, /* A8 Equalizer Band 7 Coefficient B2 */
-+       { 0xA9, 0x00 }, /* A9 Equalizer Band 7 Coefficient A1 */
-+       { 0xAA, 0x00 }, /* AA Equalizer Band 7 Coefficient A1 */
-+       { 0xAB, 0x00 }, /* AB Equalizer Band 7 Coefficient A1 */
-+       { 0xAC, 0x00 }, /* AC Equalizer Band 7 Coefficient A2 */
-+       { 0xAD, 0x00 }, /* AD Equalizer Band 7 Coefficient A2 */
-+       { 0xAE, 0x00 }, /* AE Equalizer Band 7 Coefficient A2 */
-+       { 0xAF, 0x00 }, /* AF ADC Biquad Coefficient B0 */
-+
-+       { 0xB0, 0x00 }, /* B0 ADC Biquad Coefficient B0 */
-+       { 0xB1, 0x00 }, /* B1 ADC Biquad Coefficient B0 */
-+       { 0xB2, 0x00 }, /* B2 ADC Biquad Coefficient B1 */
-+       { 0xB3, 0x00 }, /* B3 ADC Biquad Coefficient B1 */
-+       { 0xB4, 0x00 }, /* B4 ADC Biquad Coefficient B1 */
-+       { 0xB5, 0x00 }, /* B5 ADC Biquad Coefficient B2 */
-+       { 0xB6, 0x00 }, /* B6 ADC Biquad Coefficient B2 */
-+       { 0xB7, 0x00 }, /* B7 ADC Biquad Coefficient B2 */
-+       { 0xB8, 0x00 }, /* B8 ADC Biquad Coefficient A1 */
-+       { 0xB9, 0x00 }, /* B9 ADC Biquad Coefficient A1 */
-+       { 0xBA, 0x00 }, /* BA ADC Biquad Coefficient A1 */
-+       { 0xBB, 0x00 }, /* BB ADC Biquad Coefficient A2 */
-+       { 0xBC, 0x00 }, /* BC ADC Biquad Coefficient A2 */
-+       { 0xBD, 0x00 }, /* BD ADC Biquad Coefficient A2 */
-+       { 0xBE, 0x00 }, /* BE Digital Mic 3 Volume */
-+       { 0xBF, 0x00 }, /* BF Digital Mic 4 Volume */
-+
-+       { 0xC0, 0x00 }, /* C0 Digital Mic 34 Biquad Pre Atten */
-+       { 0xC1, 0x00 }, /* C1 Record TDM Slot */
-+       { 0xC2, 0x00 }, /* C2 Sample Rate */
-+       { 0xC3, 0x00 }, /* C3 Digital Mic 34 Biquad Coefficient C3 */
-+       { 0xC4, 0x00 }, /* C4 Digital Mic 34 Biquad Coefficient C4 */
-+       { 0xC5, 0x00 }, /* C5 Digital Mic 34 Biquad Coefficient C5 */
-+       { 0xC6, 0x00 }, /* C6 Digital Mic 34 Biquad Coefficient C6 */
-+       { 0xC7, 0x00 }, /* C7 Digital Mic 34 Biquad Coefficient C7 */
-+       { 0xC8, 0x00 }, /* C8 Digital Mic 34 Biquad Coefficient C8 */
-+       { 0xC9, 0x00 }, /* C9 Digital Mic 34 Biquad Coefficient C9 */
-+       { 0xCA, 0x00 }, /* CA Digital Mic 34 Biquad Coefficient CA */
-+       { 0xCB, 0x00 }, /* CB Digital Mic 34 Biquad Coefficient CB */
-+       { 0xCC, 0x00 }, /* CC Digital Mic 34 Biquad Coefficient CC */
-+       { 0xCD, 0x00 }, /* CD Digital Mic 34 Biquad Coefficient CD */
-+       { 0xCE, 0x00 }, /* CE Digital Mic 34 Biquad Coefficient CE */
-+       { 0xCF, 0x00 }, /* CF Digital Mic 34 Biquad Coefficient CF */
-+
-+       { 0xD0, 0x00 }, /* D0 Digital Mic 34 Biquad Coefficient D0 */
-+       { 0xD1, 0x00 }, /* D1 Digital Mic 34 Biquad Coefficient D1 */
-+};
-+
-+static bool max98090_volatile_register(struct device *dev, unsigned int reg)
-+{
-+       switch (reg) {
-+       case M98090_REG_DEVICE_STATUS:
-+       case M98090_REG_JACK_STATUS:
-+       case M98090_REG_REVISION_ID:
-+               return true;
-+       default:
-+               return false;
-+       }
-+}
-+
-+static bool max98090_readable_register(struct device *dev, unsigned int reg)
-+{
-+       switch (reg) {
-+       case M98090_REG_DEVICE_STATUS:
-+       case M98090_REG_JACK_STATUS:
-+       case M98090_REG_INTERRUPT_S:
-+       case M98090_REG_RESERVED:
-+       case M98090_REG_LINE_INPUT_CONFIG:
-+       case M98090_REG_LINE_INPUT_LEVEL:
-+       case M98090_REG_INPUT_MODE:
-+       case M98090_REG_MIC1_INPUT_LEVEL:
-+       case M98090_REG_MIC2_INPUT_LEVEL:
-+       case M98090_REG_MIC_BIAS_VOLTAGE:
-+       case M98090_REG_DIGITAL_MIC_ENABLE:
-+       case M98090_REG_DIGITAL_MIC_CONFIG:
-+       case M98090_REG_LEFT_ADC_MIXER:
-+       case M98090_REG_RIGHT_ADC_MIXER:
-+       case M98090_REG_LEFT_ADC_LEVEL:
-+       case M98090_REG_RIGHT_ADC_LEVEL:
-+       case M98090_REG_ADC_BIQUAD_LEVEL:
-+       case M98090_REG_ADC_SIDETONE:
-+       case M98090_REG_SYSTEM_CLOCK:
-+       case M98090_REG_CLOCK_MODE:
-+       case M98090_REG_CLOCK_RATIO_NI_MSB:
-+       case M98090_REG_CLOCK_RATIO_NI_LSB:
-+       case M98090_REG_CLOCK_RATIO_MI_MSB:
-+       case M98090_REG_CLOCK_RATIO_MI_LSB:
-+       case M98090_REG_MASTER_MODE:
-+       case M98090_REG_INTERFACE_FORMAT:
-+       case M98090_REG_TDM_CONTROL:
-+       case M98090_REG_TDM_FORMAT:
-+       case M98090_REG_IO_CONFIGURATION:
-+       case M98090_REG_FILTER_CONFIG:
-+       case M98090_REG_DAI_PLAYBACK_LEVEL:
-+       case M98090_REG_DAI_PLAYBACK_LEVEL_EQ:
-+       case M98090_REG_LEFT_HP_MIXER:
-+       case M98090_REG_RIGHT_HP_MIXER:
-+       case M98090_REG_HP_CONTROL:
-+       case M98090_REG_LEFT_HP_VOLUME:
-+       case M98090_REG_RIGHT_HP_VOLUME:
-+       case M98090_REG_LEFT_SPK_MIXER:
-+       case M98090_REG_RIGHT_SPK_MIXER:
-+       case M98090_REG_SPK_CONTROL:
-+       case M98090_REG_LEFT_SPK_VOLUME:
-+       case M98090_REG_RIGHT_SPK_VOLUME:
-+       case M98090_REG_DRC_TIMING:
-+       case M98090_REG_DRC_COMPRESSOR:
-+       case M98090_REG_DRC_EXPANDER:
-+       case M98090_REG_DRC_GAIN:
-+       case M98090_REG_RCV_LOUTL_MIXER:
-+       case M98090_REG_RCV_LOUTL_CONTROL:
-+       case M98090_REG_RCV_LOUTL_VOLUME:
-+       case M98090_REG_LOUTR_MIXER:
-+       case M98090_REG_LOUTR_CONTROL:
-+       case M98090_REG_LOUTR_VOLUME:
-+       case M98090_REG_JACK_DETECT:
-+       case M98090_REG_INPUT_ENABLE:
-+       case M98090_REG_OUTPUT_ENABLE:
-+       case M98090_REG_LEVEL_CONTROL:
-+       case M98090_REG_DSP_FILTER_ENABLE:
-+       case M98090_REG_BIAS_CONTROL:
-+       case M98090_REG_DAC_CONTROL:
-+       case M98090_REG_ADC_CONTROL:
-+       case M98090_REG_DEVICE_SHUTDOWN:
-+       case M98090_REG_EQUALIZER_BASE ... M98090_REG_EQUALIZER_BASE + 0x68:
-+       case M98090_REG_RECORD_BIQUAD_BASE ... M98090_REG_RECORD_BIQUAD_BASE + 0x0E:
-+       case M98090_REG_DMIC3_VOLUME:
-+       case M98090_REG_DMIC4_VOLUME:
-+       case M98090_REG_DMIC34_BQ_PREATTEN:
-+       case M98090_REG_RECORD_TDM_SLOT:
-+       case M98090_REG_SAMPLE_RATE:
-+       case M98090_REG_DMIC34_BIQUAD_BASE ... M98090_REG_DMIC34_BIQUAD_BASE + 0x0E:
-+               return true;
-+       default:
-+               return false;
-+       }
-+}
-+
-+static int max98090_reset(struct max98090_priv *max98090)
-+{
-+       int ret;
-+
-+       /* Reset the codec by writing to this write-only reset register */
-+       ret = regmap_write(max98090->regmap, M98090_REG_SOFTWARE_RESET,
-+               M98090_SWRESET_MASK);
-+       if (ret < 0) {
-+               dev_err(max98090->codec->dev,
-+                       "Failed to reset codec: %d\n", ret);
-+               return ret;
-+       }
-+
-+       msleep(20);
-+       return ret;
-+}
-+
-+static const unsigned int max98090_micboost_tlv[] = {
-+       TLV_DB_RANGE_HEAD(2),
-+       0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
-+       2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
-+};
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_mic_tlv, 0, 100, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_line_single_ended_tlv,
-+       -600, 600, 0);
-+
-+static const unsigned int max98090_line_tlv[] = {
-+       TLV_DB_RANGE_HEAD(2),
-+       0, 3, TLV_DB_SCALE_ITEM(-600, 300, 0),
-+       4, 5, TLV_DB_SCALE_ITEM(1400, 600, 0),
-+};
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_avg_tlv, 0, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(max98090_av_tlv, -1200, 100, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_dvg_tlv, 0, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(max98090_dv_tlv, -1500, 100, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_sidetone_tlv, -6050, 200, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(max98090_alc_tlv, -1500, 100, 0);
-+static const DECLARE_TLV_DB_SCALE(max98090_alcmakeup_tlv, 0, 100, 0);
-+static const DECLARE_TLV_DB_SCALE(max98090_alccomp_tlv, -3100, 100, 0);
-+static const DECLARE_TLV_DB_SCALE(max98090_drcexp_tlv, -6600, 100, 0);
-+
-+static const unsigned int max98090_mixout_tlv[] = {
-+       TLV_DB_RANGE_HEAD(2),
-+       0, 1, TLV_DB_SCALE_ITEM(-1200, 250, 0),
-+       2, 3, TLV_DB_SCALE_ITEM(-600, 600, 0),
-+};
-+
-+static const unsigned int max98090_hp_tlv[] = {
-+       TLV_DB_RANGE_HEAD(5),
-+       0, 6, TLV_DB_SCALE_ITEM(-6700, 400, 0),
-+       7, 14, TLV_DB_SCALE_ITEM(-4000, 300, 0),
-+       15, 21, TLV_DB_SCALE_ITEM(-1700, 200, 0),
-+       22, 27, TLV_DB_SCALE_ITEM(-400, 100, 0),
-+       28, 31, TLV_DB_SCALE_ITEM(150, 50, 0),
-+};
-+
-+static const unsigned int max98090_spk_tlv[] = {
-+       TLV_DB_RANGE_HEAD(5),
-+       0, 4, TLV_DB_SCALE_ITEM(-4800, 400, 0),
-+       5, 10, TLV_DB_SCALE_ITEM(-2900, 300, 0),
-+       11, 14, TLV_DB_SCALE_ITEM(-1200, 200, 0),
-+       15, 29, TLV_DB_SCALE_ITEM(-500, 100, 0),
-+       30, 39, TLV_DB_SCALE_ITEM(950, 50, 0),
-+};
-+
-+static const unsigned int max98090_rcv_lout_tlv[] = {
-+       TLV_DB_RANGE_HEAD(5),
-+       0, 6, TLV_DB_SCALE_ITEM(-6200, 400, 0),
-+       7, 14, TLV_DB_SCALE_ITEM(-3500, 300, 0),
-+       15, 21, TLV_DB_SCALE_ITEM(-1200, 200, 0),
-+       22, 27, TLV_DB_SCALE_ITEM(100, 100, 0),
-+       28, 31, TLV_DB_SCALE_ITEM(650, 50, 0),
-+};
-+
-+static int max98090_get_enab_tlv(struct snd_kcontrol *kcontrol,
-+                               struct snd_ctl_elem_value *ucontrol)
-+{
-+       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct soc_mixer_control *mc =
-+               (struct soc_mixer_control *)kcontrol->private_value;
-+       unsigned int mask = (1 << fls(mc->max)) - 1;
-+       unsigned int val = snd_soc_read(codec, mc->reg);
-+       unsigned int *select;
-+
-+       switch (mc->reg) {
-+       case M98090_REG_MIC1_INPUT_LEVEL:
-+               select = &(max98090->pa1en);
-+               break;
-+       case M98090_REG_MIC2_INPUT_LEVEL:
-+               select = &(max98090->pa2en);
-+               break;
-+       case M98090_REG_ADC_SIDETONE:
-+               select = &(max98090->sidetone);
-+               break;
-+       default:
-+               return -EINVAL;
-+       }
-+
-+       val = (val >> mc->shift) & mask;
-+
-+       if (val >= 1) {
-+               /* If on, return the volume */
-+               val = val - 1;
-+               *select = val;
-+       } else {
-+               /* If off, return last stored value */
-+               val = *select;
-+       }
-+
-+       ucontrol->value.integer.value[0] = val;
-+       return 0;
-+}
-+
-+static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
-+                               struct snd_ctl_elem_value *ucontrol)
-+{
-+       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct soc_mixer_control *mc =
-+               (struct soc_mixer_control *)kcontrol->private_value;
-+       unsigned int mask = (1 << fls(mc->max)) - 1;
-+       unsigned int sel = ucontrol->value.integer.value[0];
-+       unsigned int val = snd_soc_read(codec, mc->reg);
-+       unsigned int *select;
-+
-+       switch (mc->reg) {
-+       case M98090_REG_MIC1_INPUT_LEVEL:
-+               select = &(max98090->pa1en);
-+               break;
-+       case M98090_REG_MIC2_INPUT_LEVEL:
-+               select = &(max98090->pa2en);
-+               break;
-+       case M98090_REG_ADC_SIDETONE:
-+               select = &(max98090->sidetone);
-+               break;
-+       default:
-+               return -EINVAL;
-+       }
-+
-+       val = (val >> mc->shift) & mask;
-+
-+       *select = sel;
-+
-+       /* Setting a volume is only valid if it is already On */
-+       if (val >= 1) {
-+               sel = sel + 1;
-+       } else {
-+               /* Write what was already there */
-+               sel = val;
-+       }
-+
-+       snd_soc_update_bits(codec, mc->reg,
-+               mask << mc->shift,
-+               sel << mc->shift);
-+
-+       return 0;
-+}
-+
-+static const char * max98090_perf_pwr_text[] =
-+       { "High Performance", "Low Power" };
-+static const char * max98090_pwr_perf_text[] =
-+       { "Low Power", "High Performance" };
-+
-+static const struct soc_enum max98090_vcmbandgap_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_BIAS_CONTROL, M98090_VCM_MODE_SHIFT,
-+               ARRAY_SIZE(max98090_pwr_perf_text), max98090_pwr_perf_text);
-+
-+static const char * max98090_osr128_text[] = { "64*fs", "128*fs" };
-+
-+static const struct soc_enum max98090_osr128_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_ADC_CONTROL, M98090_OSR128_SHIFT,
-+               ARRAY_SIZE(max98090_osr128_text), max98090_osr128_text);
-+
-+static const char *max98090_mode_text[] = { "Voice", "Music" };
-+
-+static const struct soc_enum max98090_mode_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_FILTER_CONFIG, M98090_MODE_SHIFT,
-+               ARRAY_SIZE(max98090_mode_text), max98090_mode_text);
-+
-+static const struct soc_enum max98090_filter_dmic34mode_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_FILTER_CONFIG,
-+               M98090_FLT_DMIC34MODE_SHIFT,
-+               ARRAY_SIZE(max98090_mode_text), max98090_mode_text);
-+
-+static const char * max98090_drcatk_text[] =
-+       { "0.5ms", "1ms", "5ms", "10ms", "25ms", "50ms", "100ms", "200ms" };
-+
-+static const struct soc_enum max98090_drcatk_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCATK_SHIFT,
-+               ARRAY_SIZE(max98090_drcatk_text), max98090_drcatk_text);
-+
-+static const char * max98090_drcrls_text[] =
-+       { "8s", "4s", "2s", "1s", "0.5s", "0.25s", "0.125s", "0.0625s" };
-+
-+static const struct soc_enum max98090_drcrls_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCRLS_SHIFT,
-+               ARRAY_SIZE(max98090_drcrls_text), max98090_drcrls_text);
-+
-+static const char * max98090_alccmp_text[] =
-+       { "1:1", "1:1.5", "1:2", "1:4", "1:INF" };
-+
-+static const struct soc_enum max98090_alccmp_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DRC_COMPRESSOR, M98090_DRCCMP_SHIFT,
-+               ARRAY_SIZE(max98090_alccmp_text), max98090_alccmp_text);
-+
-+static const char * max98090_drcexp_text[] = { "1:1", "2:1", "3:1" };
-+
-+static const struct soc_enum max98090_drcexp_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DRC_EXPANDER, M98090_DRCEXP_SHIFT,
-+               ARRAY_SIZE(max98090_drcexp_text), max98090_drcexp_text);
-+
-+static const struct soc_enum max98090_dac_perfmode_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DAC_CONTROL, M98090_PERFMODE_SHIFT,
-+               ARRAY_SIZE(max98090_perf_pwr_text), max98090_perf_pwr_text);
-+
-+static const struct soc_enum max98090_dachp_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_DAC_CONTROL, M98090_DACHP_SHIFT,
-+               ARRAY_SIZE(max98090_pwr_perf_text), max98090_pwr_perf_text);
-+
-+static const struct soc_enum max98090_adchp_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_ADC_CONTROL, M98090_ADCHP_SHIFT,
-+               ARRAY_SIZE(max98090_pwr_perf_text), max98090_pwr_perf_text);
-+
-+static const struct snd_kcontrol_new max98090_snd_controls[] = {
-+       SOC_ENUM("MIC Bias VCM Bandgap", max98090_vcmbandgap_enum),
-+
-+       SOC_SINGLE("DMIC MIC Comp Filter Config", M98090_REG_DIGITAL_MIC_CONFIG,
-+               M98090_DMIC_COMP_SHIFT, M98090_DMIC_COMP_NUM - 1, 0),
-+
-+       SOC_SINGLE_EXT_TLV("MIC1 Boost Volume",
-+               M98090_REG_MIC1_INPUT_LEVEL, M98090_MIC_PA1EN_SHIFT,
-+               M98090_MIC_PA1EN_NUM - 1, 0, max98090_get_enab_tlv,
-+               max98090_put_enab_tlv, max98090_micboost_tlv),
-+
-+       SOC_SINGLE_EXT_TLV("MIC2 Boost Volume",
-+               M98090_REG_MIC2_INPUT_LEVEL, M98090_MIC_PA2EN_SHIFT,
-+               M98090_MIC_PA2EN_NUM - 1, 0, max98090_get_enab_tlv,
-+               max98090_put_enab_tlv, max98090_micboost_tlv),
-+
-+       SOC_SINGLE_TLV("MIC1 Volume", M98090_REG_MIC1_INPUT_LEVEL,
-+               M98090_MIC_PGAM1_SHIFT, M98090_MIC_PGAM1_NUM - 1, 1,
-+               max98090_mic_tlv),
-+
-+       SOC_SINGLE_TLV("MIC2 Volume", M98090_REG_MIC2_INPUT_LEVEL,
-+               M98090_MIC_PGAM2_SHIFT, M98090_MIC_PGAM2_NUM - 1, 1,
-+               max98090_mic_tlv),
-+
-+       SOC_SINGLE_RANGE_TLV("LINEA Single Ended Volume",
-+               M98090_REG_LINE_INPUT_LEVEL, M98090_MIXG135_SHIFT, 0,
-+               M98090_MIXG135_NUM - 1, 1, max98090_line_single_ended_tlv),
-+
-+       SOC_SINGLE_RANGE_TLV("LINEB Single Ended Volume",
-+               M98090_REG_LINE_INPUT_LEVEL, M98090_MIXG246_SHIFT, 0,
-+               M98090_MIXG246_NUM - 1, 1, max98090_line_single_ended_tlv),
-+
-+       SOC_SINGLE_RANGE_TLV("LINEA Volume", M98090_REG_LINE_INPUT_LEVEL,
-+               M98090_LINAPGA_SHIFT, 0, M98090_LINAPGA_NUM - 1, 1,
-+               max98090_line_tlv),
-+
-+       SOC_SINGLE_RANGE_TLV("LINEB Volume", M98090_REG_LINE_INPUT_LEVEL,
-+               M98090_LINBPGA_SHIFT, 0, M98090_LINBPGA_NUM - 1, 1,
-+               max98090_line_tlv),
-+
-+       SOC_SINGLE("LINEA Ext Resistor Gain Mode", M98090_REG_INPUT_MODE,
-+               M98090_EXTBUFA_SHIFT, M98090_EXTBUFA_NUM - 1, 0),
-+       SOC_SINGLE("LINEB Ext Resistor Gain Mode", M98090_REG_INPUT_MODE,
-+               M98090_EXTBUFB_SHIFT, M98090_EXTBUFB_NUM - 1, 0),
-+
-+       SOC_SINGLE_TLV("ADCL Boost Volume", M98090_REG_LEFT_ADC_LEVEL,
-+               M98090_AVLG_SHIFT, M98090_AVLG_NUM - 1, 0,
-+               max98090_avg_tlv),
-+       SOC_SINGLE_TLV("ADCR Boost Volume", M98090_REG_RIGHT_ADC_LEVEL,
-+               M98090_AVRG_SHIFT, M98090_AVLG_NUM - 1, 0,
-+               max98090_avg_tlv),
-+
-+       SOC_SINGLE_TLV("ADCL Volume", M98090_REG_LEFT_ADC_LEVEL,
-+               M98090_AVL_SHIFT, M98090_AVL_NUM - 1, 1,
-+               max98090_av_tlv),
-+       SOC_SINGLE_TLV("ADCR Volume", M98090_REG_RIGHT_ADC_LEVEL,
-+               M98090_AVR_SHIFT, M98090_AVR_NUM - 1, 1,
-+               max98090_av_tlv),
-+
-+       SOC_ENUM("ADC Oversampling Rate", max98090_osr128_enum),
-+       SOC_SINGLE("ADC Quantizer Dither", M98090_REG_ADC_CONTROL,
-+               M98090_ADCDITHER_SHIFT, M98090_ADCDITHER_NUM - 1, 0),
-+       SOC_ENUM("ADC High Performance Mode", max98090_adchp_enum),
-+
-+       SOC_SINGLE("DAC Mono Mode", M98090_REG_IO_CONFIGURATION,
-+               M98090_DMONO_SHIFT, M98090_DMONO_NUM - 1, 0),
-+       SOC_SINGLE("SDIN Mode", M98090_REG_IO_CONFIGURATION,
-+               M98090_SDIEN_SHIFT, M98090_SDIEN_NUM - 1, 0),
-+       SOC_SINGLE("SDOUT Mode", M98090_REG_IO_CONFIGURATION,
-+               M98090_SDOEN_SHIFT, M98090_SDOEN_NUM - 1, 0),
-+       SOC_SINGLE("SDOUT Hi-Z Mode", M98090_REG_IO_CONFIGURATION,
-+               M98090_HIZOFF_SHIFT, M98090_HIZOFF_NUM - 1, 1),
-+       SOC_ENUM("Filter Mode", max98090_mode_enum),
-+       SOC_SINGLE("Record Path DC Blocking", M98090_REG_FILTER_CONFIG,
-+               M98090_AHPF_SHIFT, M98090_AHPF_NUM - 1, 0),
-+       SOC_SINGLE("Playback Path DC Blocking", M98090_REG_FILTER_CONFIG,
-+               M98090_DHPF_SHIFT, M98090_DHPF_NUM - 1, 0),
-+       SOC_SINGLE_TLV("Digital BQ Volume", M98090_REG_ADC_BIQUAD_LEVEL,
-+               M98090_AVBQ_SHIFT, M98090_AVBQ_NUM - 1, 1, max98090_dv_tlv),
-+       SOC_SINGLE_EXT_TLV("Digital Sidetone Volume",
-+               M98090_REG_ADC_SIDETONE, M98090_DVST_SHIFT,
-+               M98090_DVST_NUM - 1, 1, max98090_get_enab_tlv,
-+               max98090_put_enab_tlv, max98090_micboost_tlv),
-+       SOC_SINGLE_TLV("Digital Coarse Volume", M98090_REG_DAI_PLAYBACK_LEVEL,
-+               M98090_DVG_SHIFT, M98090_DVG_NUM - 1, 0,
-+               max98090_dvg_tlv),
-+       SOC_SINGLE_TLV("Digital Volume", M98090_REG_DAI_PLAYBACK_LEVEL,
-+               M98090_DV_SHIFT, M98090_DV_NUM - 1, 1,
-+               max98090_dv_tlv),
-+       SND_SOC_BYTES("EQ Coefficients", M98090_REG_EQUALIZER_BASE, 105),
-+       SOC_SINGLE("Digital EQ 3 Band Switch", M98090_REG_DSP_FILTER_ENABLE,
-+               M98090_EQ3BANDEN_SHIFT, M98090_EQ3BANDEN_NUM - 1, 0),
-+       SOC_SINGLE("Digital EQ 5 Band Switch", M98090_REG_DSP_FILTER_ENABLE,
-+               M98090_EQ5BANDEN_SHIFT, M98090_EQ5BANDEN_NUM - 1, 0),
-+       SOC_SINGLE("Digital EQ 7 Band Switch", M98090_REG_DSP_FILTER_ENABLE,
-+               M98090_EQ7BANDEN_SHIFT, M98090_EQ7BANDEN_NUM - 1, 0),
-+       SOC_SINGLE("Digital EQ Clipping Detection", M98090_REG_DAI_PLAYBACK_LEVEL_EQ,
-+               M98090_EQCLPN_SHIFT, M98090_EQCLPN_NUM - 1,
-+               1),
-+       SOC_SINGLE_TLV("Digital EQ Volume", M98090_REG_DAI_PLAYBACK_LEVEL_EQ,
-+               M98090_DVEQ_SHIFT, M98090_DVEQ_NUM - 1, 1,
-+               max98090_dv_tlv),
-+
-+       SOC_SINGLE("ALC Enable", M98090_REG_DRC_TIMING,
-+               M98090_DRCEN_SHIFT, M98090_DRCEN_NUM - 1, 0),
-+       SOC_ENUM("ALC Attack Time", max98090_drcatk_enum),
-+       SOC_ENUM("ALC Release Time", max98090_drcrls_enum),
-+       SOC_SINGLE_TLV("ALC Make Up Volume", M98090_REG_DRC_GAIN,
-+               M98090_DRCG_SHIFT, M98090_DRCG_NUM - 1, 0,
-+               max98090_alcmakeup_tlv),
-+       SOC_ENUM("ALC Compression Ratio", max98090_alccmp_enum),
-+       SOC_ENUM("ALC Expansion Ratio", max98090_drcexp_enum),
-+       SOC_SINGLE_TLV("ALC Compression Threshold Volume",
-+               M98090_REG_DRC_COMPRESSOR, M98090_DRCTHC_SHIFT,
-+               M98090_DRCTHC_NUM - 1, 1, max98090_alccomp_tlv),
-+       SOC_SINGLE_TLV("ALC Expansion Threshold Volume",
-+               M98090_REG_DRC_EXPANDER, M98090_DRCTHE_SHIFT,
-+               M98090_DRCTHE_NUM - 1, 1, max98090_drcexp_tlv),
-+
-+       SOC_ENUM("DAC HP Playback Performance Mode",
-+               max98090_dac_perfmode_enum),
-+       SOC_ENUM("DAC High Performance Mode", max98090_dachp_enum),
-+
-+       SOC_SINGLE_TLV("Headphone Left Mixer Volume",
-+               M98090_REG_HP_CONTROL, M98090_MIXHPLG_SHIFT,
-+               M98090_MIXHPLG_NUM - 1, 1, max98090_mixout_tlv),
-+       SOC_SINGLE_TLV("Headphone Right Mixer Volume",
-+               M98090_REG_HP_CONTROL, M98090_MIXHPRG_SHIFT,
-+               M98090_MIXHPRG_NUM - 1, 1, max98090_mixout_tlv),
-+
-+       SOC_SINGLE_TLV("Speaker Left Mixer Volume",
-+               M98090_REG_SPK_CONTROL, M98090_MIXSPLG_SHIFT,
-+               M98090_MIXSPLG_NUM - 1, 1, max98090_mixout_tlv),
-+       SOC_SINGLE_TLV("Speaker Right Mixer Volume",
-+               M98090_REG_SPK_CONTROL, M98090_MIXSPRG_SHIFT,
-+               M98090_MIXSPRG_NUM - 1, 1, max98090_mixout_tlv),
-+
-+       SOC_SINGLE_TLV("Receiver Left Mixer Volume",
-+               M98090_REG_RCV_LOUTL_CONTROL, M98090_MIXRCVLG_SHIFT,
-+               M98090_MIXRCVLG_NUM - 1, 1, max98090_mixout_tlv),
-+       SOC_SINGLE_TLV("Receiver Right Mixer Volume",
-+               M98090_REG_LOUTR_CONTROL, M98090_MIXRCVRG_SHIFT,
-+               M98090_MIXRCVRG_NUM - 1, 1, max98090_mixout_tlv),
-+
-+       SOC_DOUBLE_R_TLV("Headphone Volume", M98090_REG_LEFT_HP_VOLUME,
-+               M98090_REG_RIGHT_HP_VOLUME, M98090_HPVOLL_SHIFT,
-+               M98090_HPVOLL_NUM - 1, 0, max98090_hp_tlv),
-+
-+       SOC_DOUBLE_R_RANGE_TLV("Speaker Volume",
-+               M98090_REG_LEFT_SPK_VOLUME, M98090_REG_RIGHT_SPK_VOLUME,
-+               M98090_SPVOLL_SHIFT, 24, M98090_SPVOLL_NUM - 1 + 24,
-+               0, max98090_spk_tlv),
-+
-+       SOC_DOUBLE_R_TLV("Receiver Volume", M98090_REG_RCV_LOUTL_VOLUME,
-+               M98090_REG_LOUTR_VOLUME, M98090_RCVLVOL_SHIFT,
-+               M98090_RCVLVOL_NUM - 1, 0, max98090_rcv_lout_tlv),
-+
-+       SOC_SINGLE("Headphone Left Switch", M98090_REG_LEFT_HP_VOLUME,
-+               M98090_HPLM_SHIFT, 1, 1),
-+       SOC_SINGLE("Headphone Right Switch", M98090_REG_RIGHT_HP_VOLUME,
-+               M98090_HPRM_SHIFT, 1, 1),
-+
-+       SOC_SINGLE("Speaker Left Switch", M98090_REG_LEFT_SPK_VOLUME,
-+               M98090_SPLM_SHIFT, 1, 1),
-+       SOC_SINGLE("Speaker Right Switch", M98090_REG_RIGHT_SPK_VOLUME,
-+               M98090_SPRM_SHIFT, 1, 1),
-+
-+       SOC_SINGLE("Receiver Left Switch", M98090_REG_RCV_LOUTL_VOLUME,
-+               M98090_RCVLM_SHIFT, 1, 1),
-+       SOC_SINGLE("Receiver Right Switch", M98090_REG_LOUTR_VOLUME,
-+               M98090_RCVRM_SHIFT, 1, 1),
-+
-+       SOC_SINGLE("Zero-Crossing Detection", M98090_REG_LEVEL_CONTROL,
-+               M98090_ZDENN_SHIFT, M98090_ZDENN_NUM - 1, 1),
-+       SOC_SINGLE("Enhanced Vol Smoothing", M98090_REG_LEVEL_CONTROL,
-+               M98090_VS2ENN_SHIFT, M98090_VS2ENN_NUM - 1, 1),
-+       SOC_SINGLE("Volume Adjustment Smoothing", M98090_REG_LEVEL_CONTROL,
-+               M98090_VSENN_SHIFT, M98090_VSENN_NUM - 1, 1),
-+
-+       SND_SOC_BYTES("Biquad Coefficients", M98090_REG_RECORD_BIQUAD_BASE, 15),
-+       SOC_SINGLE("Biquad Switch", M98090_REG_DSP_FILTER_ENABLE,
-+               M98090_ADCBQEN_SHIFT, M98090_ADCBQEN_NUM - 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new max98091_snd_controls[] = {
-+
-+       SOC_SINGLE("DMIC34 Zeropad", M98090_REG_SAMPLE_RATE,
-+               M98090_DMIC34_ZEROPAD_SHIFT,
-+               M98090_DMIC34_ZEROPAD_NUM - 1, 0),
-+
-+       SOC_ENUM("Filter DMIC34 Mode", max98090_filter_dmic34mode_enum),
-+       SOC_SINGLE("DMIC34 DC Blocking", M98090_REG_FILTER_CONFIG,
-+               M98090_FLT_DMIC34HPF_SHIFT,
-+               M98090_FLT_DMIC34HPF_NUM - 1, 0),
-+
-+       SOC_SINGLE_TLV("DMIC3 Boost Volume", M98090_REG_DMIC3_VOLUME,
-+               M98090_DMIC_AV3G_SHIFT, M98090_DMIC_AV3G_NUM - 1, 0,
-+               max98090_avg_tlv),
-+       SOC_SINGLE_TLV("DMIC4 Boost Volume", M98090_REG_DMIC4_VOLUME,
-+               M98090_DMIC_AV4G_SHIFT, M98090_DMIC_AV4G_NUM - 1, 0,
-+               max98090_avg_tlv),
-+
-+       SOC_SINGLE_TLV("DMIC3 Volume", M98090_REG_DMIC3_VOLUME,
-+               M98090_DMIC_AV3_SHIFT, M98090_DMIC_AV3_NUM - 1, 1,
-+               max98090_av_tlv),
-+       SOC_SINGLE_TLV("DMIC4 Volume", M98090_REG_DMIC4_VOLUME,
-+               M98090_DMIC_AV4_SHIFT, M98090_DMIC_AV4_NUM - 1, 1,
-+               max98090_av_tlv),
-+
-+       SND_SOC_BYTES("DMIC34 Biquad Coefficients",
-+               M98090_REG_DMIC34_BIQUAD_BASE, 15),
-+       SOC_SINGLE("DMIC34 Biquad Switch", M98090_REG_DSP_FILTER_ENABLE,
-+               M98090_DMIC34BQEN_SHIFT, M98090_DMIC34BQEN_NUM - 1, 0),
-+
-+       SOC_SINGLE_TLV("DMIC34 BQ PreAttenuation Volume",
-+               M98090_REG_DMIC34_BQ_PREATTEN, M98090_AV34BQ_SHIFT,
-+               M98090_AV34BQ_NUM - 1, 1, max98090_dv_tlv),
-+};
-+
-+static int max98090_micinput_event(struct snd_soc_dapm_widget *w,
-+                                struct snd_kcontrol *kcontrol, int event)
-+{
-+       struct snd_soc_codec *codec = w->codec;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+
-+       unsigned int val = snd_soc_read(codec, w->reg);
-+
-+       if (w->reg == M98090_REG_MIC1_INPUT_LEVEL)
-+               val = (val & M98090_MIC_PA1EN_MASK) >> M98090_MIC_PA1EN_SHIFT;
-+       else
-+               val = (val & M98090_MIC_PA2EN_MASK) >> M98090_MIC_PA2EN_SHIFT;
-+
-+
-+       if (val >= 1) {
-+               if (w->reg == M98090_REG_MIC1_INPUT_LEVEL) {
-+                       max98090->pa1en = val - 1; /* Update for volatile */
-+               } else {
-+                       max98090->pa2en = val - 1; /* Update for volatile */
-+               }
-+       }
-+
-+       switch (event) {
-+       case SND_SOC_DAPM_POST_PMU:
-+               /* If turning on, set to most recently selected volume */
-+               if (w->reg == M98090_REG_MIC1_INPUT_LEVEL)
-+                       val = max98090->pa1en + 1;
-+               else
-+                       val = max98090->pa2en + 1;
-+               break;
-+       case SND_SOC_DAPM_POST_PMD:
-+               /* If turning off, turn off */
-+               val = 0;
-+               break;
-+       default:
-+               return -EINVAL;
-+       }
-+
-+       if (w->reg == M98090_REG_MIC1_INPUT_LEVEL)
-+               snd_soc_update_bits(codec, w->reg, M98090_MIC_PA1EN_MASK,
-+                       val << M98090_MIC_PA1EN_SHIFT);
-+       else
-+               snd_soc_update_bits(codec, w->reg, M98090_MIC_PA2EN_MASK,
-+                       val << M98090_MIC_PA2EN_SHIFT);
-+
-+       return 0;
-+}
-+
-+static const char *mic1_mux_text[] = { "IN12", "IN56" };
-+
-+static const struct soc_enum mic1_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_INPUT_MODE, M98090_EXTMIC1_SHIFT,
-+               ARRAY_SIZE(mic1_mux_text), mic1_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_mic1_mux =
-+       SOC_DAPM_ENUM("MIC1 Mux", mic1_mux_enum);
-+
-+static const char *mic2_mux_text[] = { "IN34", "IN56" };
-+
-+static const struct soc_enum mic2_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_INPUT_MODE, M98090_EXTMIC2_SHIFT,
-+               ARRAY_SIZE(mic2_mux_text), mic2_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_mic2_mux =
-+       SOC_DAPM_ENUM("MIC2 Mux", mic2_mux_enum);
-+
-+static const char * max98090_micpre_text[] = { "Off", "On" };
-+
-+static const struct soc_enum max98090_pa1en_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_MIC1_INPUT_LEVEL, M98090_MIC_PA1EN_SHIFT,
-+               ARRAY_SIZE(max98090_micpre_text), max98090_micpre_text);
-+
-+static const struct soc_enum max98090_pa2en_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_MIC2_INPUT_LEVEL, M98090_MIC_PA2EN_SHIFT,
-+               ARRAY_SIZE(max98090_micpre_text), max98090_micpre_text);
-+
-+/* LINEA mixer switch */
-+static const struct snd_kcontrol_new max98090_linea_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("IN1 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN1SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN3 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN3SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN5 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN5SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN34 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN34DIFF_SHIFT, 1, 0),
-+};
-+
-+/* LINEB mixer switch */
-+static const struct snd_kcontrol_new max98090_lineb_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("IN2 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN2SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN4 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN4SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN6 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN6SEEN_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN56 Switch", M98090_REG_LINE_INPUT_CONFIG,
-+               M98090_IN56DIFF_SHIFT, 1, 0),
-+};
-+
-+/* Left ADC mixer switch */
-+static const struct snd_kcontrol_new max98090_left_adc_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("IN12 Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_IN12DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN34 Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_IN34DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN56 Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_IN65DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_LEFT_ADC_MIXER,
-+               M98090_MIXADL_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Right ADC mixer switch */
-+static const struct snd_kcontrol_new max98090_right_adc_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("IN12 Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_IN12DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN34 Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_IN34DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("IN56 Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_IN65DIFF_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_RIGHT_ADC_MIXER,
-+               M98090_MIXADR_MIC2_SHIFT, 1, 0),
-+};
-+
-+static const char *lten_mux_text[] = { "Normal", "Loopthrough" };
-+
-+static const struct soc_enum ltenl_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_IO_CONFIGURATION, M98090_LTEN_SHIFT,
-+               ARRAY_SIZE(lten_mux_text), lten_mux_text);
-+
-+static const struct soc_enum ltenr_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_IO_CONFIGURATION, M98090_LTEN_SHIFT,
-+               ARRAY_SIZE(lten_mux_text), lten_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_ltenl_mux =
-+       SOC_DAPM_ENUM("LTENL Mux", ltenl_mux_enum);
-+
-+static const struct snd_kcontrol_new max98090_ltenr_mux =
-+       SOC_DAPM_ENUM("LTENR Mux", ltenr_mux_enum);
-+
-+static const char *lben_mux_text[] = { "Normal", "Loopback" };
-+
-+static const struct soc_enum lbenl_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_IO_CONFIGURATION, M98090_LBEN_SHIFT,
-+               ARRAY_SIZE(lben_mux_text), lben_mux_text);
-+
-+static const struct soc_enum lbenr_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_IO_CONFIGURATION, M98090_LBEN_SHIFT,
-+               ARRAY_SIZE(lben_mux_text), lben_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_lbenl_mux =
-+       SOC_DAPM_ENUM("LBENL Mux", lbenl_mux_enum);
-+
-+static const struct snd_kcontrol_new max98090_lbenr_mux =
-+       SOC_DAPM_ENUM("LBENR Mux", lbenr_mux_enum);
-+
-+static const char *stenl_mux_text[] = { "Normal", "Sidetone Left" };
-+
-+static const char *stenr_mux_text[] = { "Normal", "Sidetone Right" };
-+
-+static const struct soc_enum stenl_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_ADC_SIDETONE, M98090_DSTSL_SHIFT,
-+               ARRAY_SIZE(stenl_mux_text), stenl_mux_text);
-+
-+static const struct soc_enum stenr_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_ADC_SIDETONE, M98090_DSTSR_SHIFT,
-+               ARRAY_SIZE(stenr_mux_text), stenr_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_stenl_mux =
-+       SOC_DAPM_ENUM("STENL Mux", stenl_mux_enum);
-+
-+static const struct snd_kcontrol_new max98090_stenr_mux =
-+       SOC_DAPM_ENUM("STENR Mux", stenr_mux_enum);
-+
-+/* Left speaker mixer switch */
-+static const struct
-+       snd_kcontrol_new max98090_left_speaker_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_LEFT_SPK_MIXER,
-+               M98090_MIXSPL_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Right speaker mixer switch */
-+static const struct
-+       snd_kcontrol_new max98090_right_speaker_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_RIGHT_SPK_MIXER,
-+               M98090_MIXSPR_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Left headphone mixer switch */
-+static const struct snd_kcontrol_new max98090_left_hp_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_LEFT_HP_MIXER,
-+               M98090_MIXHPL_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Right headphone mixer switch */
-+static const struct snd_kcontrol_new max98090_right_hp_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_RIGHT_HP_MIXER,
-+               M98090_MIXHPR_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Left receiver mixer switch */
-+static const struct snd_kcontrol_new max98090_left_rcv_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_RCV_LOUTL_MIXER,
-+               M98090_MIXRCVL_MIC2_SHIFT, 1, 0),
-+};
-+
-+/* Right receiver mixer switch */
-+static const struct snd_kcontrol_new max98090_right_rcv_mixer_controls[] = {
-+       SOC_DAPM_SINGLE("Left DAC Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_DACL_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_DACR_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEA Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_LINEA_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("LINEB Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_LINEB_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC1 Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_MIC1_SHIFT, 1, 0),
-+       SOC_DAPM_SINGLE("MIC2 Switch", M98090_REG_LOUTR_MIXER,
-+               M98090_MIXRCVR_MIC2_SHIFT, 1, 0),
-+};
-+
-+static const char *linmod_mux_text[] = { "Left Only", "Left and Right" };
-+
-+static const struct soc_enum linmod_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_LOUTR_MIXER, M98090_LINMOD_SHIFT,
-+               ARRAY_SIZE(linmod_mux_text), linmod_mux_text);
-+
-+static const struct snd_kcontrol_new max98090_linmod_mux =
-+       SOC_DAPM_ENUM("LINMOD Mux", linmod_mux_enum);
-+
-+static const char *mixhpsel_mux_text[] = { "DAC Only", "HP Mixer" };
-+
-+/*
-+ * This is a mux as it selects the HP output, but to DAPM it is a Mixer enable
++#include <sound/info.h>
++#include <sound/asoundef.h>
++#include <sound/rawmidi.h>
++#include <sound/hwdep.h>
++#include <sound/initval.h>
++
++#include <sound/madifx.h>
++
++static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	  /* Index 0-MAX */
++static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	  /* ID for this card */
++static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;/* Enable
+this card */
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "Index value for RME HDSPM interface.");
++
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string for RME HDSPM interface.");
++
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "Enable/disable specific HDSPM soundcards.");
++
++
++MODULE_AUTHOR
++(
++	"Adrian Knoth <adi@drcomp.erfurt.thur.de>"
++);
++MODULE_DESCRIPTION("RME MADIFX");
++MODULE_LICENSE("GPL");
++MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADIFX}}");
++
++/* New mixer support is still work in progress. All references to the old
++ * mixer are disabled but shipped nevertheless to ease hacking.
 + */
-+static const struct soc_enum mixhplsel_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_HP_CONTROL, M98090_MIXHPLSEL_SHIFT,
-+               ARRAY_SIZE(mixhpsel_mux_text), mixhpsel_mux_text);
++#define OLD_MIXER   0
 +
-+static const struct snd_kcontrol_new max98090_mixhplsel_mux =
-+       SOC_DAPM_ENUM("MIXHPLSEL Mux", mixhplsel_mux_enum);
++/* --- Write registers. ---
++  These are defined as byte-offsets from the iobase value.  */
 +
-+static const struct soc_enum mixhprsel_mux_enum =
-+       SOC_ENUM_SINGLE(M98090_REG_HP_CONTROL, M98090_MIXHPRSEL_SHIFT,
-+               ARRAY_SIZE(mixhpsel_mux_text), mixhpsel_mux_text);
++#define MADIFX_CONTROL_REG	(0*4)
++#define MADIFX_IRQ_ACK		(3*4)
++#define MADIFX_FREQ_REG		(1*4)
++#define MADIFX_SETTINGS_REG	(2*4)
++#define MADIFX_START_LEVEL	(6*4)
++#define MADIFX_midi_out0_data   (8*4)
++#define MADIFX_midi_out1_data   (9*4)
++#define MADIFX_midi_out2_data	(10*4)
++#define MADIFX_midi_out3_data	(11*4)
++#define MADIFX_ENABLE_OUTPUT	(64*4)
++#define MADIFX_ENABLE_INPUT	(96*4)
++#define MADIFX_MIXER_LIST_VOL	(16384*4)
++#define MADIFX_MIXER_LIST_CH	(20480*4)
++#define MADIFX_WR_OUTPUT_GAIN	((24576+256)*4)
 +
-+static const struct snd_kcontrol_new max98090_mixhprsel_mux =
-+       SOC_DAPM_ENUM("MIXHPRSEL Mux", mixhprsel_mux_enum);
++#define MADIFX_SAMPLE_FRAMES_PER_BUFFER		8192
 +
-+static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
++#define MADIFX_PAGE_ADDRESS_LIST   (8192*4)
 +
-+       SND_SOC_DAPM_INPUT("MIC1"),
-+       SND_SOC_DAPM_INPUT("MIC2"),
-+       SND_SOC_DAPM_INPUT("DMICL"),
-+       SND_SOC_DAPM_INPUT("DMICR"),
-+       SND_SOC_DAPM_INPUT("IN1"),
-+       SND_SOC_DAPM_INPUT("IN2"),
-+       SND_SOC_DAPM_INPUT("IN3"),
-+       SND_SOC_DAPM_INPUT("IN4"),
-+       SND_SOC_DAPM_INPUT("IN5"),
-+       SND_SOC_DAPM_INPUT("IN6"),
-+       SND_SOC_DAPM_INPUT("IN12"),
-+       SND_SOC_DAPM_INPUT("IN34"),
-+       SND_SOC_DAPM_INPUT("IN56"),
++/* page table size in entries, multiply by 4 to get byte offset */
++#define MADIFX_MAX_PAGE_TABLE_SIZE	4096
++#define MADIFX_LPTI_HMFX    (MADIFX_MAX_PAGE_TABLE_SIZE/2+25*32768*8/4096)
++#define MADIFX_LPTI_MFXT    (MADIFX_MAX_PAGE_TABLE_SIZE/2+26*32768*8/4096)
 +
-+       SND_SOC_DAPM_SUPPLY("MICBIAS", M98090_REG_INPUT_ENABLE,
-+               M98090_MBEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("SHDN", M98090_REG_DEVICE_SHUTDOWN,
-+               M98090_SHDNN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("SDIEN", M98090_REG_IO_CONFIGURATION,
-+               M98090_SDIEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("SDOEN", M98090_REG_IO_CONFIGURATION,
-+               M98090_SDOEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("DMICL_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
-+                M98090_DIGMICL_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("DMICR_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
-+                M98090_DIGMICR_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("AHPF", M98090_REG_FILTER_CONFIG,
-+               M98090_AHPF_SHIFT, 0, NULL, 0),
++#define HDSPM_MADI_mixerBase    32768	/* 32768-65535 for 2x64x64 Fader */
 +
-+/*
-+ * Note: Sysclk and misc power supplies are taken care of by SHDN
-+ */
++#define HDSPM_MATRIX_MIXER_SIZE  8192	/* = 2*64*64 * 4 Byte => 32kB */
 +
-+       SND_SOC_DAPM_MUX("MIC1 Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_mic1_mux),
++/* --- Read registers. ---
++   These are defined as byte-offsets from the iobase value */
 +
-+       SND_SOC_DAPM_MUX("MIC2 Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_mic2_mux),
++#define MADIFX_RD_STATUS	(0*4)
++#define MADIFX_RD_INP_STATUS	(1*4)
++#define MADIFX_RD_INP_FREQ	(2*4)
++#define MADIFX_RD_PLL_FREQ	(3*4)
++#define MADIFX_RD_VERSION	(4*4) /* card_type(7..0) & "0000" &
+build(19..0) */
++#define MADIFX_RD_FLASH		(5*4)
++#define MADIFX_RD_BARCODE0	(6*4)
++#define MADIFX_RD_BARCODE1	(7*4)
++#define MADIFX_RD_DSP_DATA	(8*4)
++#define MADIFX_RD_DSP_STATUS	(9*4)
++#define MADIFX_midi_in0_data	(12*4)
++#define MADIFX_midi_in1_data	(13*4)
++#define MADIFX_midi_in2_data	(14*4)
++#define MADIFX_midi_in3_data	(15*4)
++#define MADIFX_midi_out0_status	(16*4)
++#define MADIFX_midi_out1_status	(17*4)
++#define MADIFX_midi_out2_status	(18*4)
++#define MADIFX_midi_out3_status	(19*4)
++#define MADIFX_midi_in0_status	(20*4)
++#define MADIFX_midi_in1_status	(21*4)
++#define MADIFX_midi_in2_status	(22*4)
++#define MADIFX_midi_in3_status	(23*4)
 +
-+       SND_SOC_DAPM_PGA_E("MIC1 Input", M98090_REG_MIC1_INPUT_LEVEL,
-+               M98090_MIC_PA1EN_SHIFT, 0, NULL, 0, max98090_micinput_event,
-+               SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++/* input status */
 +
-+       SND_SOC_DAPM_PGA_E("MIC2 Input", M98090_REG_MIC2_INPUT_LEVEL,
-+               M98090_MIC_PA2EN_SHIFT, 0, NULL, 0, max98090_micinput_event,
-+               SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++#define MADIFX_madi1_lock	0x0001
++#define MADIFX_madi2_lock	0x0002
++#define MADIFX_madi3_lock	0x0004
++#define MADIFX_aes_lock		0x0008
++#define MADIFX_word_lock	0x0010
++#define MADIFX_madi1_sync	0x0020
++#define MADIFX_madi2_sync	0x0040
++#define MADIFX_madi3_sync	0x0080
++#define MADIFX_word_sync	0x0100
++#define MADIFX_aes_sync		0x0200
++#define MADIFX_madi1_rx_64ch	0x0400
++#define MADIFX_madi2_rx_64ch	0x0800
++#define MADIFX_madi3_rx_64ch	0x1000
++#define MADIFX_SelSyncRef0	0x2000
++#define MADIFX_SelSyncRef1	0x4000
++#define MADIFX_SelSyncRef2	0x8000
++#define MADIFX_MADIInput0	0x10000
++#define MADIFX_MADIInput1	0x20000
++#define MADIFX_redundancy_rb	0x40000
++#define MADIFX_mirror_out_rb	0x80000
++#define MADIFX_sync_in_lock	0x100000
++#define MADIFX_sync_in_sync	0x200000
 +
-+       SND_SOC_DAPM_MIXER("LINEA Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_linea_mixer_controls[0],
-+               ARRAY_SIZE(max98090_linea_mixer_controls)),
++/* control register bits */
 +
-+       SND_SOC_DAPM_MIXER("LINEB Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_lineb_mixer_controls[0],
-+               ARRAY_SIZE(max98090_lineb_mixer_controls)),
++#define MADIFX_START		0x00000001
++#define MADIFX_freq0		0x00000002
++#define MADIFX_freq1		0x00000004
++#define MADIFX_freq2		0x00000008
++#define MADIFX_freq3		0x00000010
++#define MADIFX_BUF_SIZ_0	0x00000020
++#define MADIFX_BUF_SIZ_1	0x00000040
++#define MADIFX_BUF_SIZ_2	0x00000080
++#define MADIFX_LAT_0		0x00000100
++#define MADIFX_LAT_1		0x00000200
++#define MADIFX_LAT_2		0x00000400
++#define MADIFX_LAT_3		0x00000800
++#define MADIFX_IE_AUDIO		0x00001000
++#define MADIFX_IEN0		0x00002000
++#define MADIFX_IEN1		0x00004000
++#define MADIFX_IEN2		0x00008000
++#define MADIFX_IEN3		0x00010000
++#define MADIFX_float_format	0x00020000
++#define MADIFX_CLR_TMS		0x00040000
++#define MADIFX_Dolby		0x00080000
 +
-+       SND_SOC_DAPM_PGA("LINEA Input", M98090_REG_INPUT_ENABLE,
-+               M98090_LINEAEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_PGA("LINEB Input", M98090_REG_INPUT_ENABLE,
-+               M98090_LINEBEN_SHIFT, 0, NULL, 0),
++#define MADIFX_kFrequencyMask	(MADIFX_freq0 + MADIFX_freq1 +
+MADIFX_freq2 + MADIFX_freq3)
++#define MADIFX_kBufferPositionMask	0xFFF0
 +
-+       SND_SOC_DAPM_MIXER("Left ADC Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_left_adc_mixer_controls[0],
-+               ARRAY_SIZE(max98090_left_adc_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Right ADC Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_right_adc_mixer_controls[0],
-+               ARRAY_SIZE(max98090_right_adc_mixer_controls)),
-+
-+       SND_SOC_DAPM_ADC("ADCL", NULL, M98090_REG_INPUT_ENABLE,
-+               M98090_ADLEN_SHIFT, 0),
-+       SND_SOC_DAPM_ADC("ADCR", NULL, M98090_REG_INPUT_ENABLE,
-+               M98090_ADREN_SHIFT, 0),
-+
-+       SND_SOC_DAPM_AIF_OUT("AIFOUTL", "HiFi Capture", 0,
-+               SND_SOC_NOPM, 0, 0),
-+       SND_SOC_DAPM_AIF_OUT("AIFOUTR", "HiFi Capture", 1,
-+               SND_SOC_NOPM, 0, 0),
-+
-+       SND_SOC_DAPM_MUX("LBENL Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_lbenl_mux),
-+
-+       SND_SOC_DAPM_MUX("LBENR Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_lbenr_mux),
-+
-+       SND_SOC_DAPM_MUX("LTENL Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_ltenl_mux),
-+
-+       SND_SOC_DAPM_MUX("LTENR Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_ltenr_mux),
-+
-+       SND_SOC_DAPM_MUX("STENL Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_stenl_mux),
-+
-+       SND_SOC_DAPM_MUX("STENR Mux", SND_SOC_NOPM,
-+               0, 0, &max98090_stenr_mux),
-+
-+       SND_SOC_DAPM_AIF_IN("AIFINL", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
-+       SND_SOC_DAPM_AIF_IN("AIFINR", "HiFi Playback", 1, SND_SOC_NOPM, 0, 0),
-+
-+       SND_SOC_DAPM_DAC("DACL", NULL, M98090_REG_OUTPUT_ENABLE,
-+               M98090_DALEN_SHIFT, 0),
-+       SND_SOC_DAPM_DAC("DACR", NULL, M98090_REG_OUTPUT_ENABLE,
-+               M98090_DAREN_SHIFT, 0),
-+
-+       SND_SOC_DAPM_MIXER("Left Headphone Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_left_hp_mixer_controls[0],
-+               ARRAY_SIZE(max98090_left_hp_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Right Headphone Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_right_hp_mixer_controls[0],
-+               ARRAY_SIZE(max98090_right_hp_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Left Speaker Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_left_speaker_mixer_controls[0],
-+               ARRAY_SIZE(max98090_left_speaker_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Right Speaker Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_right_speaker_mixer_controls[0],
-+               ARRAY_SIZE(max98090_right_speaker_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Left Receiver Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_left_rcv_mixer_controls[0],
-+               ARRAY_SIZE(max98090_left_rcv_mixer_controls)),
-+
-+       SND_SOC_DAPM_MIXER("Right Receiver Mixer", SND_SOC_NOPM, 0, 0,
-+               &max98090_right_rcv_mixer_controls[0],
-+               ARRAY_SIZE(max98090_right_rcv_mixer_controls)),
-+
-+       SND_SOC_DAPM_MUX("LINMOD Mux", M98090_REG_LOUTR_MIXER,
-+               M98090_LINMOD_SHIFT, 0, &max98090_linmod_mux),
-+
-+       SND_SOC_DAPM_MUX("MIXHPLSEL Mux", M98090_REG_HP_CONTROL,
-+               M98090_MIXHPLSEL_SHIFT, 0, &max98090_mixhplsel_mux),
-+
-+       SND_SOC_DAPM_MUX("MIXHPRSEL Mux", M98090_REG_HP_CONTROL,
-+               M98090_MIXHPRSEL_SHIFT, 0, &max98090_mixhprsel_mux),
-+
-+       SND_SOC_DAPM_PGA("HP Left Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_HPLEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_PGA("HP Right Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_HPREN_SHIFT, 0, NULL, 0),
-+
-+       SND_SOC_DAPM_PGA("SPK Left Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_SPLEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_PGA("SPK Right Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_SPREN_SHIFT, 0, NULL, 0),
-+
-+       SND_SOC_DAPM_PGA("RCV Left Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_RCVLEN_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_PGA("RCV Right Out", M98090_REG_OUTPUT_ENABLE,
-+               M98090_RCVREN_SHIFT, 0, NULL, 0),
-+
-+       SND_SOC_DAPM_OUTPUT("HPL"),
-+       SND_SOC_DAPM_OUTPUT("HPR"),
-+       SND_SOC_DAPM_OUTPUT("SPKL"),
-+       SND_SOC_DAPM_OUTPUT("SPKR"),
-+       SND_SOC_DAPM_OUTPUT("RCVL"),
-+       SND_SOC_DAPM_OUTPUT("RCVR"),
++enum {
++	MADIFX_kFrequency32kHz		= 0,
++	MADIFX_kFrequency44_1kHz	= MADIFX_freq0,
++	MADIFX_kFrequency48kHz		= MADIFX_freq1,
++	MADIFX_kFrequency64kHz		= MADIFX_freq2 + 0,
++	MADIFX_kFrequency88_2kHz	= MADIFX_freq2 + MADIFX_freq0,
++	MADIFX_kFrequency96kHz		= MADIFX_freq2 + MADIFX_freq1,
++	MADIFX_kFrequency128kHz		= MADIFX_freq3 + MADIFX_freq2 + 0,
++	MADIFX_kFrequency176_4kHz	= MADIFX_freq3 + MADIFX_freq2 + MADIFX_freq0,
++	MADIFX_kFrequency192kHz		= MADIFX_freq3 + MADIFX_freq2 + MADIFX_freq1
 +};
 +
-+static const struct snd_soc_dapm_widget max98091_dapm_widgets[] = {
++/* settings register bits */
 +
-+       SND_SOC_DAPM_INPUT("DMIC3"),
-+       SND_SOC_DAPM_INPUT("DMIC4"),
++#define MADIFX_SyncRef0		0x00000001
++#define MADIFX_SyncRef1		0x00000002
++#define MADIFX_SyncRef2		0x00000004
++#define MADIFX_PRO		0x00000008
++#define MADIFX_DSP_EN		0x00000010
++#define MADIFX_WCK_TERM		0x00000020
++#define MADIFX_WCK48		0x00000040
++#define MADIFX_madi1_tx_64ch	0x00000080
++#define MADIFX_madi2_tx_64ch	0x00000100
++#define MADIFX_madi3_tx_64ch	0x00000200
++#define MADIFX_madi1_smux	0x00000400
++#define MADIFX_madi2_smux	0x00000800
++#define MADIFX_madi3_smux	0x00001000
++#define MADIFX_redundancy_mode	0x00002000
++#define MADIFX_mirror_madi_out	0x00004000
 +
-+       SND_SOC_DAPM_SUPPLY("DMIC3_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
-+                M98090_DIGMIC3_SHIFT, 0, NULL, 0),
-+       SND_SOC_DAPM_SUPPLY("DMIC4_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
-+                M98090_DIGMIC4_SHIFT, 0, NULL, 0),
++#define MADIFX_SyncRefMask	(MADIFX_SyncRef0 | MADIFX_SyncRef1 |
+MADIFX_SyncRef2)
++
++/* input freq register bits */
++
++#define MADIFX_madi1_freq0	0x00001
++#define MADIFX_madi1_freq1	0x00002
++#define MADIFX_madi1_freq2	0x00004
++#define MADIFX_madi1_freq3	0x00008
++#define MADIFX_madi2_freq0	0x00010
++#define MADIFX_madi2_freq1	0x00020
++#define MADIFX_madi2_freq2	0x00040
++#define MADIFX_madi2_freq3	0x00080
++#define MADIFX_madi3_freq0	0x00100
++#define MADIFX_madi3_freq1	0x00200
++#define MADIFX_madi3_freq2	0x00400
++#define MADIFX_madi3_freq3	0x00800
++#define MADIFX_aes_freq0	0x01000
++#define MADIFX_aes_freq1	0x02000
++#define MADIFX_aes_freq2	0x04000
++#define MADIFX_aes_freq3	0x08000
++#define MADIFX_word_freq0	0x10000
++#define MADIFX_word_freq1	0x20000
++#define MADIFX_word_freq2	0x40000
++#define MADIFX_word_freq3	0x80000
++#define MADIFX_sync_in_freq0	0x100000
++#define MADIFX_sync_in_freq1	0x200000
++#define MADIFX_sync_in_freq2	0x400000
++#define MADIFX_sync_in_freq3	0x800000
++
++/* Index to DMA level buffer in uint32_t units */
++#define MADIFX_RD_RMS_IN	(0*1)
++#define MADIFX_RD_PEAK_IN	(512*1)
++#define MADIFX_RD_RMS_PLAY	(1024*1)
++#define MADIFX_RD_PEAK_PLAY	(1536*1)
++#define MADIFX_RD_RMS_OUT	(2048*1)
++#define MADIFX_RD_PEAK_OUT	(2560*1)
++#define MADIFX_RD_RMS_IN_PRE	(3072*1)
++#define MADIFX_RD_PEAK_IN_PRE	(3584*1)
++#define MADIFX_RD_RMS_OUT_PRE	(4096*1)
++#define MADIFX_RD_PEAK_OUT_PRE	(4608*1)
++
++/* MADIFX MIDI Interrupt enable */
++#define MADIFX_IEN0		0x00002000
++#define MADIFX_IEN1		0x00004000
++#define MADIFX_IEN2		0x00008000
++#define MADIFX_IEN3		0x00010000
++
++/* status register, MIDI IRQ Pending */
++#define MADIFX_mIRQ0		0x10000000
++#define MADIFX_mIRQ1		0x20000000
++#define MADIFX_mIRQ2		0x40000000
++#define MADIFX_mIRQ3		0x80000000
++
++/* --- bit helper defines */
++#define MADIFX_LatencyMask
+(MADIFX_LAT_0|MADIFX_LAT_1|MADIFX_LAT_2|MADIFX_LAT_3)
++
++#define madifx_encode_latency(x)       (((x)<<8) & MADIFX_LatencyMask)
++#define madifx_decode_latency(x)       ((((x) & MADIFX_LatencyMask)>>8))
++
++/* speemode is enum 0,1,2 for ss/ds/qs, so (1<<speedmode) returns 1, 2,
+4. */
++#define madifx_speed_multiplier(x)	(1<<(x)->speedmode)
++
++
++#define HDSPM_audioIRQPending    (1<<0)	/* IRQ is high and pending */
++
++
++
++/* Mixer Values */
++#define UNITY_GAIN          32768	/* = 65536/2 */
++#define MINUS_INFINITY_GAIN 0
++
++/* Number of channels for different Speed Modes */
++#define MADIFX_SS_IN_CHANNELS       194
++#define MADIFX_DS_IN_CHANNELS       98
++#define MADIFX_QS_IN_CHANNELS       50
++
++#define MADIFX_SS_OUT_CHANNELS       196
++#define MADIFX_DS_OUT_CHANNELS       100
++#define MADIFX_QS_OUT_CHANNELS       52
++
++
++#define HDSPM_MADIFX_REV	213
++
++/* speed factor modes */
++#define HDSPM_SPEED_SINGLE 0
++#define HDSPM_SPEED_DOUBLE 1
++#define HDSPM_SPEED_QUAD   2
++
++/* DMA buffers in byte; 8192 samples per channel, each 4 bytes wide */
++#define NUM_INPUTS_S_MFXT	(64*3+4)
++#define NUM_OUTPUTS_S_MFXT	(64*3+6)
++#define INPUT_DMA_BUFFER_SIZE (NUM_INPUTS_S_MFXT*32768)
++#define OUTPUT_DMA_BUFFER_SIZE (NUM_OUTPUTS_S_MFXT*32768)
++
++
++
++/* names for speed modes */
++static char *madifx_speed_names[] = { "single", "double", "quad" };
++
++static char *texts_madifx_clock_source[] = {
++	"Internal",
++	"AES In",
++	"Word Clock",
++	"MADI 1 In",
++	"MADI 2 In",
++	"MADI 3 In",
++	"Sync In"
 +};
 +
-+static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
 +
-+       {"MIC1 Input", NULL, "MIC1"},
-+       {"MIC2 Input", NULL, "MIC2"},
++static char *texts_freq[] = {
++	"No Lock",
++	"32 kHz",
++	"44.1 kHz",
++	"48 kHz",
++	"64 kHz",
++	"88.2 kHz",
++	"96 kHz",
++	"128 kHz",
++	"176.4 kHz",
++	"192 kHz"
++};
 +
-+       {"DMICL", NULL, "DMICL_ENA"},
-+       {"DMICR", NULL, "DMICR_ENA"},
-+       {"DMICL", NULL, "AHPF"},
-+       {"DMICR", NULL, "AHPF"},
 +
-+       /* MIC1 input mux */
-+       {"MIC1 Mux", "IN12", "IN12"},
-+       {"MIC1 Mux", "IN56", "IN56"},
++struct madifx_midi {
++	struct hdspm *hdspm;
++	int id;
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_substream *input;
++	struct snd_rawmidi_substream *output;
++	char istimer;		/* timer in use */
++	struct timer_list timer;
++	spinlock_t lock;
++	int pending;
++	int dataIn;
++	int statusIn;
++	int dataOut;
++	int statusOut;
++	int ie;
++	int irq;
++};
 +
-+       /* MIC2 input mux */
-+       {"MIC2 Mux", "IN34", "IN34"},
-+       {"MIC2 Mux", "IN56", "IN56"},
 +
-+       {"MIC1 Input", NULL, "MIC1 Mux"},
-+       {"MIC2 Input", NULL, "MIC2 Mux"},
++struct hdspm {
++	spinlock_t lock;
++	/* only one playback and/or capture stream */
++	struct snd_pcm_substream *capture_substream;
++	struct snd_pcm_substream *playback_substream;
 +
-+       /* Left ADC input mixer */
-+       {"Left ADC Mixer", "IN12 Switch", "IN12"},
-+       {"Left ADC Mixer", "IN34 Switch", "IN34"},
-+       {"Left ADC Mixer", "IN56 Switch", "IN56"},
-+       {"Left ADC Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Left ADC Mixer", "LINEB Switch", "LINEB Input"},
-+       {"Left ADC Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Left ADC Mixer", "MIC2 Switch", "MIC2 Input"},
++	char *card_name;	     /* for procinfo */
++	unsigned short firmware_rev;
 +
-+       /* Right ADC input mixer */
-+       {"Right ADC Mixer", "IN12 Switch", "IN12"},
-+       {"Right ADC Mixer", "IN34 Switch", "IN34"},
-+       {"Right ADC Mixer", "IN56 Switch", "IN56"},
-+       {"Right ADC Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Right ADC Mixer", "LINEB Switch", "LINEB Input"},
-+       {"Right ADC Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Right ADC Mixer", "MIC2 Switch", "MIC2 Input"},
++	uint8_t io_type;
 +
-+       /* Line A input mixer */
-+       {"LINEA Mixer", "IN1 Switch", "IN1"},
-+       {"LINEA Mixer", "IN3 Switch", "IN3"},
-+       {"LINEA Mixer", "IN5 Switch", "IN5"},
-+       {"LINEA Mixer", "IN34 Switch", "IN34"},
++	int monitor_outs;	/* set up monitoring outs init flag */
 +
-+       /* Line B input mixer */
-+       {"LINEB Mixer", "IN2 Switch", "IN2"},
-+       {"LINEB Mixer", "IN4 Switch", "IN4"},
-+       {"LINEB Mixer", "IN6 Switch", "IN6"},
-+       {"LINEB Mixer", "IN56 Switch", "IN56"},
++	u32 control_register;	/* cached value */
++	u32 control2_register;	/* cached value */
++	u32 settings_register;
 +
-+       {"LINEA Input", NULL, "LINEA Mixer"},
-+       {"LINEB Input", NULL, "LINEB Mixer"},
++	struct madifx_midi midi[4];
++	struct tasklet_struct midi_tasklet;
 +
-+       /* Inputs */
-+       {"ADCL", NULL, "Left ADC Mixer"},
-+       {"ADCR", NULL, "Right ADC Mixer"},
-+       {"ADCL", NULL, "SHDN"},
-+       {"ADCR", NULL, "SHDN"},
++	size_t period_bytes;
++	unsigned char ss_in_channels;
++	unsigned char ds_in_channels;
++	unsigned char qs_in_channels;
++	unsigned char ss_out_channels;
++	unsigned char ds_out_channels;
++	unsigned char qs_out_channels;
 +
-+       {"LBENL Mux", "Normal", "ADCL"},
-+       {"LBENL Mux", "Normal", "DMICL"},
-+       {"LBENL Mux", "Loopback", "LTENL Mux"},
-+       {"LBENR Mux", "Normal", "ADCR"},
-+       {"LBENR Mux", "Normal", "DMICR"},
-+       {"LBENR Mux", "Loopback", "LTENR Mux"},
++	unsigned char max_channels_in;
++	unsigned char max_channels_out;
 +
-+       {"AIFOUTL", NULL, "LBENL Mux"},
-+       {"AIFOUTR", NULL, "LBENR Mux"},
-+       {"AIFOUTL", NULL, "SHDN"},
-+       {"AIFOUTR", NULL, "SHDN"},
-+       {"AIFOUTL", NULL, "SDOEN"},
-+       {"AIFOUTR", NULL, "SDOEN"},
++	char **port_names_in;
++	char **port_names_out;
 +
-+       {"LTENL Mux", "Normal", "AIFINL"},
-+       {"LTENL Mux", "Loopthrough", "LBENL Mux"},
-+       {"LTENR Mux", "Normal", "AIFINR"},
-+       {"LTENR Mux", "Loopthrough", "LBENR Mux"},
++	char **port_names_in_ss, **port_names_in_ds, **port_names_in_qs;
++	char **port_names_out_ss, **port_names_out_ds, **port_names_out_qs;
 +
-+       {"DACL", NULL, "LTENL Mux"},
-+       {"DACR", NULL, "LTENR Mux"},
++	unsigned char *playback_buffer;	/* suitably aligned address */
++	unsigned char *capture_buffer;	/* suitably aligned address */
++	u32 *level_buffer;	/* suitably aligned address */
 +
-+       {"STENL Mux", "Sidetone Left", "ADCL"},
-+       {"STENL Mux", "Sidetone Left", "DMICL"},
-+       {"STENR Mux", "Sidetone Right", "ADCR"},
-+       {"STENR Mux", "Sidetone Right", "DMICR"},
-+       {"DACL", "NULL", "STENL Mux"},
-+       {"DACR", "NULL", "STENL Mux"},
++	pid_t capture_pid;	/* process id which uses capture */
++	pid_t playback_pid;	/* process id which uses capture */
++	int running;		/* running status */
 +
-+       {"AIFINL", NULL, "SHDN"},
-+       {"AIFINR", NULL, "SHDN"},
-+       {"AIFINL", NULL, "SDIEN"},
-+       {"AIFINR", NULL, "SDIEN"},
-+       {"DACL", NULL, "SHDN"},
-+       {"DACR", NULL, "SHDN"},
++	int last_external_sample_rate;	/* samplerate mystic ... */
++	int last_internal_sample_rate;
++	int system_sample_rate;
 +
-+       /* Left headphone output mixer */
-+       {"Left Headphone Mixer", "Left DAC Switch", "DACL"},
-+       {"Left Headphone Mixer", "Right DAC Switch", "DACR"},
-+       {"Left Headphone Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Left Headphone Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Left Headphone Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Left Headphone Mixer", "LINEB Switch", "LINEB Input"},
++	int dev;		/* Hardware vars... */
++	int irq;
++	unsigned long port;
++	void __iomem *iobase;
 +
-+       /* Right headphone output mixer */
-+       {"Right Headphone Mixer", "Left DAC Switch", "DACL"},
-+       {"Right Headphone Mixer", "Right DAC Switch", "DACR"},
-+       {"Right Headphone Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Right Headphone Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Right Headphone Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Right Headphone Mixer", "LINEB Switch", "LINEB Input"},
++	int irq_count;		/* for debug */
++	int midiPorts;
 +
-+       /* Left speaker output mixer */
-+       {"Left Speaker Mixer", "Left DAC Switch", "DACL"},
-+       {"Left Speaker Mixer", "Right DAC Switch", "DACR"},
-+       {"Left Speaker Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Left Speaker Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Left Speaker Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Left Speaker Mixer", "LINEB Switch", "LINEB Input"},
++	struct snd_card *card;	/* one card */
++	struct snd_pcm *pcm;		/* has one pcm */
++	struct snd_hwdep *hwdep;	/* and a hwdep for additional ioctl */
++	struct pci_dev *pci;	/* and an pci info */
 +
-+       /* Right speaker output mixer */
-+       {"Right Speaker Mixer", "Left DAC Switch", "DACL"},
-+       {"Right Speaker Mixer", "Right DAC Switch", "DACR"},
-+       {"Right Speaker Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Right Speaker Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Right Speaker Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Right Speaker Mixer", "LINEB Switch", "LINEB Input"},
++	/* Mixer vars */
++#if OLD_MIXER
++	/* fast alsa mixer */
++	struct snd_kcontrol *playback_mixer_ctls[HDSPM_MAX_CHANNELS];
++	/* but input to much, so not used */
++	struct snd_kcontrol *input_mixer_ctls[HDSPM_MAX_CHANNELS];
++#endif /* OLD_MIXER */
++	/* full mixer accessible over mixer ioctl or hwdep-device */
++	struct madifx_newmixer *newmixer;
++	dma_addr_t *dmaPageTable;
++	struct snd_dma_buffer dmaLevelBuffer;
 +
-+       /* Left Receiver output mixer */
-+       {"Left Receiver Mixer", "Left DAC Switch", "DACL"},
-+       {"Left Receiver Mixer", "Right DAC Switch", "DACR"},
-+       {"Left Receiver Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Left Receiver Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Left Receiver Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Left Receiver Mixer", "LINEB Switch", "LINEB Input"},
++	char **texts_clocksource;
++	int texts_clocksource_items;
 +
-+       /* Right Receiver output mixer */
-+       {"Right Receiver Mixer", "Left DAC Switch", "DACL"},
-+       {"Right Receiver Mixer", "Right DAC Switch", "DACR"},
-+       {"Right Receiver Mixer", "MIC1 Switch", "MIC1 Input"},
-+       {"Right Receiver Mixer", "MIC2 Switch", "MIC2 Input"},
-+       {"Right Receiver Mixer", "LINEA Switch", "LINEA Input"},
-+       {"Right Receiver Mixer", "LINEB Switch", "LINEB Input"},
++	cycles_t last_interrupt;
 +
-+       {"MIXHPLSEL Mux", "HP Mixer", "Left Headphone Mixer"},
++	unsigned int serial;
 +
-+       /*
-+        * Disable this for lowest power if bypassing
-+        * the DAC with an analog signal
-+        */
-+       {"HP Left Out", NULL, "DACL"},
-+       {"HP Left Out", NULL, "MIXHPLSEL Mux"},
++	int speedmode;
 +
-+       {"MIXHPRSEL Mux", "HP Mixer", "Right Headphone Mixer"},
-+
-+       /*
-+        * Disable this for lowest power if bypassing
-+        * the DAC with an analog signal
-+        */
-+       {"HP Right Out", NULL, "DACR"},
-+       {"HP Right Out", NULL, "MIXHPRSEL Mux"},
-+
-+       {"SPK Left Out", NULL, "Left Speaker Mixer"},
-+       {"SPK Right Out", NULL, "Right Speaker Mixer"},
-+       {"RCV Left Out", NULL, "Left Receiver Mixer"},
-+
-+       {"LINMOD Mux", "Left and Right", "Right Receiver Mixer"},
-+       {"LINMOD Mux", "Left Only",  "Left Receiver Mixer"},
-+       {"RCV Right Out", NULL, "LINMOD Mux"},
-+
-+       {"HPL", NULL, "HP Left Out"},
-+       {"HPR", NULL, "HP Right Out"},
-+       {"SPKL", NULL, "SPK Left Out"},
-+       {"SPKR", NULL, "SPK Right Out"},
-+       {"RCVL", NULL, "RCV Left Out"},
-+       {"RCVR", NULL, "RCV Right Out"},
++#ifdef CONFIG_SND_MADIFX_BROKEN
++	struct madifx_level_buffer peak_rms;
++#endif
 +
 +};
 +
-+static const struct snd_soc_dapm_route max98091_dapm_routes[] = {
 +
-+       /* DMIC inputs */
-+       {"DMIC3", NULL, "DMIC3_ENA"},
-+       {"DMIC4", NULL, "DMIC4_ENA"},
-+       {"DMIC3", NULL, "AHPF"},
-+       {"DMIC4", NULL, "AHPF"},
-+
++static DEFINE_PCI_DEVICE_TABLE(snd_madifx_ids) = {
++	{
++	 .vendor = PCI_VENDOR_ID_XILINX,
++	 .device = 0x3fc7,
++	 .subvendor = PCI_ANY_ID,
++	 .subdevice = PCI_ANY_ID,
++	 .class = 0,
++	 .class_mask = 0,
++	 .driver_data = 0},
++	{0,}
 +};
 +
-+static int max98090_add_widgets(struct snd_soc_codec *codec)
++MODULE_DEVICE_TABLE(pci, snd_madifx_ids);
++
++/* prototypes */
++static int snd_madifx_create_alsa_devices(struct snd_card *card,
++						   struct hdspm *hdspm);
++static int snd_madifx_create_pcm(struct snd_card *card,
++					  struct hdspm *hdspm);
++
++static inline void snd_madifx_initialize_midi_flush(struct hdspm *hdspm);
++static int madifx_external_freq_index(struct hdspm *hdspm, enum
+madifx_syncsource port);
++static int madifx_get_clock_select(struct hdspm *hdspm);
++static int snd_madifx_set_defaults(struct hdspm *hdspm);
++static int madifx_system_clock_mode(struct hdspm *hdspm);
++
++static inline int HDSPM_bit2freq(int n)
 +{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct snd_soc_dapm_context *dapm = &codec->dapm;
-+
-+       snd_soc_add_codec_controls(codec, max98090_snd_controls,
-+               ARRAY_SIZE(max98090_snd_controls));
-+
-+       if (max98090->devtype == MAX98091) {
-+               snd_soc_add_codec_controls(codec, max98091_snd_controls,
-+                       ARRAY_SIZE(max98091_snd_controls));
-+       }
-+
-+       snd_soc_dapm_new_controls(dapm, max98090_dapm_widgets,
-+               ARRAY_SIZE(max98090_dapm_widgets));
-+
-+       snd_soc_dapm_add_routes(dapm, max98090_dapm_routes,
-+               ARRAY_SIZE(max98090_dapm_routes));
-+
-+       if (max98090->devtype == MAX98091) {
-+               snd_soc_dapm_new_controls(dapm, max98091_dapm_widgets,
-+                       ARRAY_SIZE(max98091_dapm_widgets));
-+
-+               snd_soc_dapm_add_routes(dapm, max98091_dapm_routes,
-+                       ARRAY_SIZE(max98091_dapm_routes));
-+
-+       }
-+
-+       return 0;
++	static const int bit2freq_tab[] = {
++		0, 32000, 44100, 48000, 64000, 88200,
++		96000, 128000, 176400, 192000 };
++	if (n < 1 || n > 9)
++		return 0;
++	return bit2freq_tab[n];
 +}
 +
-+static const int pclk_rates[] = {
-+       12000000, 12000000, 13000000, 13000000,
-+       16000000, 16000000, 19200000, 19200000
-+};
++/* Write/read to/from HDSPM with Adresses in Bytes
++   not words but only 32Bit writes are allowed */
 +
-+static const int lrclk_rates[] = {
-+       8000, 16000, 8000, 16000,
-+       8000, 16000, 8000, 16000
-+};
-+
-+static const int user_pclk_rates[] = {
-+       13000000, 13000000
-+};
-+
-+static const int user_lrclk_rates[] = {
-+       44100, 48000
-+};
-+
-+static const unsigned long long ni_value[] = {
-+       3528, 768
-+};
-+
-+static const unsigned long long mi_value[] = {
-+       8125, 1625
-+};
-+
-+static void max98090_configure_bclk(struct snd_soc_codec *codec)
++static inline void madifx_write(struct hdspm *hdspm, unsigned int reg,
++			       unsigned int val)
 +{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       unsigned long long ni;
-+       int i;
-+
-+       if (!max98090->sysclk) {
-+               dev_err(codec->dev, "No SYSCLK configured\n");
-+               return;
-+       }
-+
-+       if (!max98090->bclk || !max98090->lrclk) {
-+               dev_err(codec->dev, "No audio clocks configured\n");
-+               return;
-+       }
-+
-+       /* Skip configuration when operating as slave */
-+       if (!(snd_soc_read(codec, M98090_REG_MASTER_MODE) &
-+               M98090_MAS_MASK)) {
-+               return;
-+       }
-+
-+       /* Check for supported PCLK to LRCLK ratios */
-+       for (i = 0; i < ARRAY_SIZE(pclk_rates); i++) {
-+               if ((pclk_rates[i] == max98090->sysclk) &&
-+                       (lrclk_rates[i] == max98090->lrclk)) {
-+                       dev_dbg(codec->dev,
-+                               "Found supported PCLK to LRCLK rates 0x%x\n",
-+                               i + 0x8);
-+
-+                       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+                               M98090_FREQ_MASK,
-+                               (i + 0x8) << M98090_FREQ_SHIFT);
-+                       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+                               M98090_USE_M1_MASK, 0);
-+                       return;
-+               }
-+       }
-+
-+       /* Check for user calculated MI and NI ratios */
-+       for (i = 0; i < ARRAY_SIZE(user_pclk_rates); i++) {
-+               if ((user_pclk_rates[i] == max98090->sysclk) &&
-+                       (user_lrclk_rates[i] == max98090->lrclk)) {
-+                       dev_dbg(codec->dev,
-+                               "Found user supported PCLK to LRCLK rates\n");
-+                       dev_dbg(codec->dev, "i %d ni %lld mi %lld\n",
-+                               i, ni_value[i], mi_value[i]);
-+
-+                       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+                               M98090_FREQ_MASK, 0);
-+                       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+                               M98090_USE_M1_MASK,
-+                                       1 << M98090_USE_M1_SHIFT);
-+
-+                       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_NI_MSB,
-+                               (ni_value[i] >> 8) & 0x7F);
-+                       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_NI_LSB,
-+                               ni_value[i] & 0xFF);
-+                       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_MI_MSB,
-+                               (mi_value[i] >> 8) & 0x7F);
-+                       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_MI_LSB,
-+                               mi_value[i] & 0xFF);
-+
-+                       return;
-+               }
-+       }
-+
-+       /*
-+        * Calculate based on MI = 65536 (not as good as either method above)
-+        */
-+       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+               M98090_FREQ_MASK, 0);
-+       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+               M98090_USE_M1_MASK, 0);
-+
-+       /*
-+        * Configure NI when operating as master
-+        * Note: There is a small, but significant audio quality improvement
-+        * by calculating ni and mi.
-+        */
-+       ni = 65536ULL * (max98090->lrclk < 50000 ? 96ULL : 48ULL)
-+                       * (unsigned long long int)max98090->lrclk;
-+       do_div(ni, (unsigned long long int)max98090->sysclk);
-+       dev_info(codec->dev, "No better method found\n");
-+       dev_info(codec->dev, "Calculating ni %lld with mi 65536\n", ni);
-+       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_NI_MSB,
-+               (ni >> 8) & 0x7F);
-+       snd_soc_write(codec, M98090_REG_CLOCK_RATIO_NI_LSB, ni & 0xFF);
++	writel(val, hdspm->iobase + reg);
 +}
 +
-+static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
-+                                unsigned int fmt)
++static inline unsigned int madifx_read(struct hdspm *hdspm, unsigned
+int reg)
 +{
-+       struct snd_soc_codec *codec = codec_dai->codec;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct max98090_cdata *cdata;
-+       u8 regval;
-+
-+       max98090->dai_fmt = fmt;
-+       cdata = &max98090->dai[0];
-+
-+       if (fmt != cdata->fmt) {
-+               cdata->fmt = fmt;
-+
-+               regval = 0;
-+               switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+               case SND_SOC_DAIFMT_CBS_CFS:
-+                       /* Set to slave mode PLL - MAS mode off */
-+                       snd_soc_write(codec,
-+                               M98090_REG_CLOCK_RATIO_NI_MSB, 0x00);
-+                       snd_soc_write(codec,
-+                               M98090_REG_CLOCK_RATIO_NI_LSB, 0x00);
-+                       snd_soc_update_bits(codec, M98090_REG_CLOCK_MODE,
-+                               M98090_USE_M1_MASK, 0);
-+                       break;
-+               case SND_SOC_DAIFMT_CBM_CFM:
-+                       /* Set to master mode */
-+                       if (max98090->tdm_slots == 4) {
-+                               /* TDM */
-+                               regval |= M98090_MAS_MASK |
-+                                       M98090_BSEL_64;
-+                       } else if (max98090->tdm_slots == 3) {
-+                               /* TDM */
-+                               regval |= M98090_MAS_MASK |
-+                                       M98090_BSEL_48;
-+                       } else {
-+                               /* Few TDM slots, or No TDM */
-+                               regval |= M98090_MAS_MASK |
-+                                       M98090_BSEL_32;
-+                       }
-+                       break;
-+               case SND_SOC_DAIFMT_CBS_CFM:
-+               case SND_SOC_DAIFMT_CBM_CFS:
-+               default:
-+                       dev_err(codec->dev, "DAI clock mode unsupported");
-+                       return -EINVAL;
-+               }
-+               snd_soc_write(codec, M98090_REG_MASTER_MODE, regval);
-+
-+               regval = 0;
-+               switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+               case SND_SOC_DAIFMT_I2S:
-+                       regval |= M98090_DLY_MASK;
-+                       break;
-+               case SND_SOC_DAIFMT_LEFT_J:
-+                       break;
-+               case SND_SOC_DAIFMT_RIGHT_J:
-+                       regval |= M98090_RJ_MASK;
-+                       break;
-+               case SND_SOC_DAIFMT_DSP_A:
-+                       /* Not supported mode */
-+               default:
-+                       dev_err(codec->dev, "DAI format unsupported");
-+                       return -EINVAL;
-+               }
-+
-+               switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+               case SND_SOC_DAIFMT_NB_NF:
-+                       break;
-+               case SND_SOC_DAIFMT_NB_IF:
-+                       regval |= M98090_WCI_MASK;
-+                       break;
-+               case SND_SOC_DAIFMT_IB_NF:
-+                       regval |= M98090_BCI_MASK;
-+                       break;
-+               case SND_SOC_DAIFMT_IB_IF:
-+                       regval |= M98090_BCI_MASK|M98090_WCI_MASK;
-+                       break;
-+               default:
-+                       dev_err(codec->dev, "DAI invert mode unsupported");
-+                       return -EINVAL;
-+               }
-+
-+               /*
-+                * This accommodates an inverted logic in the MAX98090 chip
-+                * for Bit Clock Invert (BCI). The inverted logic is only
-+                * seen for the case of TDM mode. The remaining cases have
-+                * normal logic.
-+                */
-+               if (max98090->tdm_slots > 1) {
-+                       regval ^= M98090_BCI_MASK;
-+               }
-+
-+               snd_soc_write(codec,
-+                       M98090_REG_INTERFACE_FORMAT, regval);
-+       }
-+
-+       return 0;
++	return readl(hdspm->iobase + reg);
 +}
 +
-+static int max98090_set_tdm_slot(struct snd_soc_dai *codec_dai,
-+       unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
++#if OLD_MIXER
++/* for each output channel (chan) I have an Input (in) and Playback
+(pb) Fader
++   mixer is write only on hardware so we have to cache him for read
++   each fader is a u32, but uses only the first 16 bit */
++
++static inline int madifx_read_in_gain(struct hdspm *hdspm, unsigned int
+chan,
++				     unsigned int in)
 +{
-+       struct snd_soc_codec *codec = codec_dai->codec;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct max98090_cdata *cdata;
-+       cdata = &max98090->dai[0];
++	if (chan >= HDSPM_MIXER_CHANNELS || in >= HDSPM_MIXER_CHANNELS)
++		return 0;
 +
-+       if (slots < 0 || slots > 4)
-+               return -EINVAL;
-+
-+       max98090->tdm_slots = slots;
-+       max98090->tdm_width = slot_width;
-+
-+       if (max98090->tdm_slots > 1) {
-+               /* SLOTL SLOTR SLOTDLY */
-+               snd_soc_write(codec, M98090_REG_TDM_FORMAT,
-+                       0 << M98090_TDM_SLOTL_SHIFT |
-+                       1 << M98090_TDM_SLOTR_SHIFT |
-+                       0 << M98090_TDM_SLOTDLY_SHIFT);
-+
-+               /* FSW TDM */
-+               snd_soc_update_bits(codec, M98090_REG_TDM_CONTROL,
-+                       M98090_TDM_MASK,
-+                       M98090_TDM_MASK);
-+       }
-+
-+       /*
-+        * Normally advisable to set TDM first, but this permits either order
-+        */
-+       cdata->fmt = 0;
-+       max98090_dai_set_fmt(codec_dai, max98090->dai_fmt);
-+
-+       return 0;
++	return hdspm->mixer->ch[chan].in[in];
 +}
 +
-+static int max98090_set_bias_level(struct snd_soc_codec *codec,
-+                                  enum snd_soc_bias_level level)
++static inline int madifx_read_pb_gain(struct hdspm *hdspm, unsigned int
+chan,
++				     unsigned int pb)
 +{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       int ret;
-+
-+       switch (level) {
-+       case SND_SOC_BIAS_ON:
-+               if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+                       ret = regcache_sync(max98090->regmap);
-+
-+                       if (ret != 0) {
-+                               dev_err(codec->dev,
-+                                       "Failed to sync cache: %d\n", ret);
-+                               return ret;
-+                       }
-+               }
-+
-+               if (max98090->jack_state == M98090_JACK_STATE_HEADSET) {
-+                       /*
-+                        * Set to normal bias level.
-+                        */
-+                       snd_soc_update_bits(codec, M98090_REG_MIC_BIAS_VOLTAGE,
-+                               M98090_MBVSEL_MASK, M98090_MBVSEL_2V8);
-+               }
-+               break;
-+
-+       case SND_SOC_BIAS_PREPARE:
-+               break;
-+
-+       case SND_SOC_BIAS_STANDBY:
-+       case SND_SOC_BIAS_OFF:
-+               /* Set internal pull-up to lowest power mode */
-+               snd_soc_update_bits(codec, M98090_REG_JACK_DETECT,
-+                       M98090_JDWK_MASK, M98090_JDWK_MASK);
-+               regcache_mark_dirty(max98090->regmap);
-+               break;
-+       }
-+       codec->dapm.bias_level = level;
-+       return 0;
++	if (chan >= HDSPM_MIXER_CHANNELS || pb >= HDSPM_MIXER_CHANNELS)
++		return 0;
++	return hdspm->mixer->ch[chan].pb[pb];
 +}
 +
-+static const int comp_pclk_rates[] = {
-+       11289600, 12288000, 12000000, 13000000, 19200000
++static int madifx_write_in_gain(struct hdspm *hdspm, unsigned int chan,
++				      unsigned int in, unsigned short data)
++{
++	if (chan >= HDSPM_MIXER_CHANNELS || in >= HDSPM_MIXER_CHANNELS)
++		return -1;
++
++	madifx_write(hdspm,
++		    HDSPM_MADI_mixerBase +
++		    ((in + 128 * chan) * sizeof(u32)),
++		    (hdspm->mixer->ch[chan].in[in] = data & 0xFFFF));
++	return 0;
++}
++
++static int madifx_write_pb_gain(struct hdspm *hdspm, unsigned int chan,
++				      unsigned int pb, unsigned short data)
++{
++	if (chan >= HDSPM_MIXER_CHANNELS || pb >= HDSPM_MIXER_CHANNELS)
++		return -1;
++
++	madifx_write(hdspm,
++		    HDSPM_MADI_mixerBase +
++		    ((64 + pb + 128 * chan) * sizeof(u32)),
++		    (hdspm->mixer->ch[chan].pb[pb] = data & 0xFFFF));
++	return 0;
++}
++#endif /* OLD_MIXER */
++
++
++/* enable DMA for specific channels, now available for DSP-MADI */
++static inline void snd_madifx_enable_in(struct hdspm *hdspm, int i, int v)
++{
++	madifx_write(hdspm, MADIFX_ENABLE_INPUT + (4 * i), v);
++}
++
++static inline void snd_madifx_enable_out(struct hdspm *hdspm, int i, int v)
++{
++	madifx_write(hdspm, MADIFX_ENABLE_OUTPUT + (4 * i), v);
++}
++
++/* check if same process is writing and reading */
++static int snd_madifx_use_is_exclusive(struct hdspm *hdspm)
++{
++	unsigned long flags;
++	int ret = 1;
++
++	spin_lock_irqsave(&hdspm->lock, flags);
++	if ((hdspm->playback_pid != hdspm->capture_pid) &&
++	    (hdspm->playback_pid >= 0) && (hdspm->capture_pid >= 0)) {
++		ret = 0;
++	}
++	spin_unlock_irqrestore(&hdspm->lock, flags);
++	return ret;
++}
++
++
++/* return latency in samples per period */
++static int madifx_get_latency(struct hdspm *hdspm)
++{
++	int n;
++
++	n = madifx_decode_latency(hdspm->control_register);
++
++	return 1 << (n + 5);
++}
++
++/* Latency function */
++static inline void madifx_compute_period_size(struct hdspm *hdspm)
++{
++	hdspm->period_bytes = 4 * madifx_get_latency(hdspm);
++}
++
++
++/* position of the hardware pointer in the buffer */
++static snd_pcm_uframes_t madifx_hw_pointer(struct hdspm *hdspm)
++{
++	u32 position;
++
++	position = madifx_read(hdspm, MADIFX_RD_STATUS);
++
++	position &= MADIFX_kBufferPositionMask;
++	position >>= 4;
++	position *= 4;
++#if 0
++	position -= 4; /* safety offset */
++#endif
++	position &= (MADIFX_SAMPLE_FRAMES_PER_BUFFER-1);
++
++	return position;
++}
++
++static inline void madifx_start_audio(struct hdspm *s)
++{
++	s->control_register |= (MADIFX_IE_AUDIO | MADIFX_START);
++	madifx_write(s, MADIFX_CONTROL_REG, s->control_register);
++}
++
++static inline void madifx_stop_audio(struct hdspm *s)
++{
++	s->control_register &= ~(MADIFX_START | MADIFX_IE_AUDIO);
++	madifx_write(s, MADIFX_CONTROL_REG, s->control_register);
++}
++
++static void madifx_silence_playback(struct hdspm *hdspm)
++{
++	void *buf = hdspm->playback_buffer;
++
++	if (buf == NULL)
++		return;
++
++	memset(buf, 0, OUTPUT_DMA_BUFFER_SIZE);
++}
++
++static int madifx_set_interrupt_interval(struct hdspm *s, unsigned int
+frames)
++{
++	int n;
++
++	spin_lock_irq(&s->lock);
++
++	/* FIXME: We have four bits, but we don't know the mapping to frames,
++	 * yet.
++	 * LAT_3 is 2048
++	 * LAT_2 is 128
++	 * LAT_1 is 32
++	 * LAT_0 is 16
++	 *
++	 * 2^(n+4), encode n to 4 bits
++	 */
++	n = 0;
++	frames >>= 6;
++	while (frames) {
++		n++;
++		frames >>= 1;
++	}
++
++	s->control_register &= ~MADIFX_LatencyMask;
++	s->control_register |= madifx_encode_latency(n);
++
++	madifx_write(s, MADIFX_CONTROL_REG, s->control_register);
++
++	madifx_compute_period_size(s);
++
++	spin_unlock_irq(&s->lock);
++
++	return 0;
++}
++
++static u64 madifx_calc_dds_value(struct hdspm *hdspm, u64 period)
++{
++	u64 freq_const;
++
++	if (period == 0)
++		return 0;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		freq_const = 131072000000000ULL;
++		break;
++	default:
++		snd_BUG();
++		return 0;
++	}
++
++	return div_u64(freq_const, period);
++}
++
++
++static void madifx_set_dds_value(struct hdspm *hdspm, int rate)
++{
++	u64 n;
++
++	if (rate >= 112000)
++		rate /= 4;
++	else if (rate >= 56000)
++		rate /= 2;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		n = 131072000000000ULL;  /* 125 MHz */
++		break;
++	default:
++		snd_BUG();
++		return;
++	}
++
++	n = div_u64(n, rate);
++	/* n should be less than 2^32 for being written to FREQ register */
++	snd_BUG_ON(n >> 32);
++	madifx_write(hdspm, MADIFX_FREQ_REG, (u32)n);
++}
++
++static int madifx_get_external_rate(struct hdspm *hdspm)
++{
++	int current_clock = madifx_get_clock_select(hdspm);
++
++	switch (current_clock) {
++	case 0:
++	case 6:
++		/* Master or Sync-In */
++		break;
++	case 1:
++	case 2:
++		/* 1 == AES, 2 == WC; map to enum madifx_syncsource,
++		 * so that 3 == AES, 4 == WC */
++		current_clock += 2;
++		break;
++	case 3:
++	case 4:
++	case 5:
++		/* MADI1 == 3, MADI2 == 4, MADI3 == 5 map to
++		 * MADI1 == 0, MADI2 = 1, MADI3 == 2
++		 */
++		current_clock -= 3;
++		break;
++	default:
++		snd_printk(KERN_ERR "MADIFX: Unknown clock source\n");
++		return 0;
++	}
++
++
++
++	return HDSPM_bit2freq(madifx_external_freq_index(hdspm, current_clock));
++}
++
++/* dummy set rate lets see what happens */
++static int madifx_set_rate(struct hdspm *hdspm, int rate, int
+called_internally)
++{
++	int current_rate;
++	int rate_bits;
++	int not_set = 0;
++	int current_speed, target_speed;
++
++	/* ASSUMPTION: hdspm->lock is either set, or there is no need for
++	   it (e.g. during module initialization).
++	 */
++
++	if (1 == madifx_system_clock_mode(hdspm)) {
++
++		/* SLAVE --- */
++		if (called_internally) {
++
++			/* request from ctl or card initialization
++			   just make a warning an remember setting
++			   for future master mode switching */
++
++			snd_printk(KERN_WARNING
++				"MADIFX: Warning: device is not running as a clock master.\n");
++			not_set = 1;
++		} else {
++			int external_freq = madifx_get_external_rate(hdspm);
++
++
++
++			if (rate != external_freq) {
++				snd_printk(KERN_WARNING
++				    "MADIFX: Warning: No AutoSync source for requested rate\n");
++				not_set = 1;
++			}
++		}
++	}
++
++	current_rate = hdspm->system_sample_rate;
++
++	/* Changing between Singe, Double and Quad speed is not
++	   allowed if any substreams are open. This is because such a change
++	   causes a shift in the location of the DMA buffers and a reduction
++	   in the number of available buffers.
++
++	   Note that a similar but essentially insoluble problem exists for
++	   externally-driven rate changes. All we can do is to flag rate
++	   changes in the read/write routines.
++	 */
++
++	if (current_rate <= 56000)
++		current_speed = HDSPM_SPEED_SINGLE;
++	else if (current_rate <= 96000)
++		current_speed = HDSPM_SPEED_DOUBLE;
++	else
++		current_speed = HDSPM_SPEED_QUAD;
++
++	if (rate <= 48000)
++		target_speed = HDSPM_SPEED_SINGLE;
++	else if (rate <= 112000)
++		target_speed = HDSPM_SPEED_DOUBLE;
++	else
++		target_speed = HDSPM_SPEED_QUAD;
++
++	switch (rate) {
++	case 32000:
++		rate_bits = MADIFX_kFrequency32kHz;
++		break;
++	case 44100:
++		rate_bits = MADIFX_kFrequency44_1kHz;
++		break;
++	case 48000:
++		rate_bits = MADIFX_kFrequency48kHz;
++		break;
++	case 64000:
++		rate_bits = MADIFX_kFrequency64kHz;
++		break;
++	case 88200:
++		rate_bits = MADIFX_kFrequency88_2kHz;
++		break;
++	case 96000:
++		rate_bits = MADIFX_kFrequency96kHz;
++		break;
++	case 128000:
++		rate_bits = MADIFX_kFrequency128kHz;
++		break;
++	case 176400:
++		rate_bits = MADIFX_kFrequency176_4kHz;
++		break;
++	case 192000:
++		rate_bits = MADIFX_kFrequency192kHz;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (current_speed != target_speed
++	    && (hdspm->capture_pid >= 0 || hdspm->playback_pid >= 0)) {
++		snd_printk
++		    (KERN_ERR "HDSPM: "
++		     "cannot change from %s speed to %s speed mode "
++		     "(capture PID = %d, playback PID = %d)\n",
++		     madifx_speed_names[current_speed],
++		     madifx_speed_names[target_speed],
++		     hdspm->capture_pid, hdspm->playback_pid);
++		return -EBUSY;
++	}
++
++	madifx_set_dds_value(hdspm, rate);
++
++	hdspm->control_register &= ~MADIFX_kFrequencyMask;
++	hdspm->control_register |= rate_bits;
++	madifx_write(hdspm, MADIFX_CONTROL_REG, hdspm->control_register);
++
++
++
++	hdspm->system_sample_rate = rate;
++
++	if (rate <= 56000) {
++		hdspm->max_channels_in = hdspm->ss_in_channels;
++		hdspm->max_channels_out = hdspm->ss_out_channels;
++		hdspm->port_names_in = hdspm->port_names_in_ss;
++		hdspm->port_names_out = hdspm->port_names_out_ss;
++		hdspm->speedmode = ss;
++	} else if (rate <= 112000) {
++		hdspm->max_channels_in = hdspm->ds_in_channels;
++		hdspm->max_channels_out = hdspm->ds_out_channels;
++		hdspm->port_names_in = hdspm->port_names_in_ds;
++		hdspm->port_names_out = hdspm->port_names_out_ds;
++		hdspm->speedmode = ds;
++	} else {
++		hdspm->max_channels_in = hdspm->qs_in_channels;
++		hdspm->max_channels_out = hdspm->qs_out_channels;
++		hdspm->port_names_in = hdspm->port_names_in_qs;
++		hdspm->port_names_out = hdspm->port_names_out_qs;
++		hdspm->speedmode = qs;
++	}
++
++	if (not_set != 0)
++		return -1;
++
++	return 0;
++}
++
++/*----------------------------------------------------------------------------
++   MIDI
++
+----------------------------------------------------------------------------*/
++
++static inline unsigned char snd_madifx_midi_read_byte(struct hdspm *hdspm,
++						      int id)
++{
++	/* the hardware already does the relevant bit-mask with 0xff */
++	return madifx_read(hdspm, hdspm->midi[id].dataIn);
++}
++
++static inline void snd_madifx_midi_write_byte(struct hdspm *hdspm, int id,
++					      int val)
++{
++	/* the hardware already does the relevant bit-mask with 0xff */
++	return madifx_write(hdspm, hdspm->midi[id].dataOut, val);
++}
++
++static inline int snd_madifx_midi_input_available(struct hdspm *hdspm,
+int id)
++{
++	return madifx_read(hdspm, hdspm->midi[id].statusIn) & 0xFF;
++}
++
++static inline int snd_madifx_midi_output_possible(struct hdspm *hdspm,
+int id)
++{
++	int fifo_bytes_used;
++
++	fifo_bytes_used = madifx_read(hdspm, hdspm->midi[id].statusOut) & 0xFF;
++
++	if (fifo_bytes_used < 128)
++		return  128 - fifo_bytes_used;
++	else
++		return 0;
++}
++
++static void snd_madifx_flush_midi_input(struct hdspm *hdspm, int id)
++{
++	while (snd_madifx_midi_input_available(hdspm, id))
++		snd_madifx_midi_read_byte(hdspm, id);
++}
++
++static int snd_madifx_midi_output_write(struct madifx_midi *hmidi)
++{
++	unsigned long flags;
++	int n_pending;
++	int to_write;
++	int i;
++	unsigned char buf[128];
++
++	/* Output is not interrupt driven */
++
++	spin_lock_irqsave(&hmidi->lock, flags);
++	if (hmidi->output &&
++	    !snd_rawmidi_transmit_empty(hmidi->output)) {
++		n_pending = snd_madifx_midi_output_possible(hmidi->hdspm,
++							    hmidi->id);
++		if (n_pending > 0) {
++			if (n_pending > (int)sizeof(buf))
++				n_pending = sizeof(buf);
++
++			to_write = snd_rawmidi_transmit(hmidi->output, buf,
++							 n_pending);
++			if (to_write > 0) {
++				for (i = 0; i < to_write; ++i)
++					snd_madifx_midi_write_byte(hmidi->hdspm,
++								   hmidi->id,
++								   buf[i]);
++			}
++		}
++	}
++	spin_unlock_irqrestore(&hmidi->lock, flags);
++	return 0;
++}
++
++static int snd_madifx_midi_input_read(struct madifx_midi *hmidi)
++{
++	unsigned char buf[128]; /* this buffer is designed to match the MIDI
++				 * input FIFO size
++				 */
++	unsigned long flags;
++	int n_pending;
++	int i;
++
++	spin_lock_irqsave(&hmidi->lock, flags);
++	n_pending = snd_madifx_midi_input_available(hmidi->hdspm, hmidi->id);
++	if (n_pending > 0) {
++		if (hmidi->input) {
++			if (n_pending > (int)sizeof(buf))
++				n_pending = sizeof(buf);
++			for (i = 0; i < n_pending; ++i)
++				buf[i] = snd_madifx_midi_read_byte(hmidi->hdspm,
++								   hmidi->id);
++			if (n_pending)
++				snd_rawmidi_receive(hmidi->input, buf,
++						     n_pending);
++		} else {
++			/* flush the MIDI input FIFO */
++			while (n_pending--)
++				snd_madifx_midi_read_byte(hmidi->hdspm,
++							  hmidi->id);
++		}
++	}
++	hmidi->pending = 0;
++	spin_unlock_irqrestore(&hmidi->lock, flags);
++
++	spin_lock_irqsave(&hmidi->hdspm->lock, flags);
++	hmidi->hdspm->control_register |= hmidi->ie;
++	madifx_write(hmidi->hdspm, MADIFX_CONTROL_REG,
++		    hmidi->hdspm->control_register);
++	spin_unlock_irqrestore(&hmidi->hdspm->lock, flags);
++
++	return snd_madifx_midi_output_write(hmidi);
++}
++
++static void
++snd_madifx_midi_input_trigger(struct snd_rawmidi_substream *substream,
+int up)
++{
++	struct hdspm *hdspm;
++	struct madifx_midi *hmidi;
++	unsigned long flags;
++
++	hmidi = substream->rmidi->private_data;
++	hdspm = hmidi->hdspm;
++
++	spin_lock_irqsave(&hdspm->lock, flags);
++	if (up) {
++		if (!(hdspm->control_register & hmidi->ie)) {
++			snd_madifx_flush_midi_input(hdspm, hmidi->id);
++			hdspm->control_register |= hmidi->ie;
++		}
++	} else {
++		hdspm->control_register &= ~hmidi->ie;
++	}
++
++	madifx_write(hdspm, MADIFX_CONTROL_REG, hdspm->control_register);
++	spin_unlock_irqrestore(&hdspm->lock, flags);
++}
++
++static void snd_madifx_midi_output_timer(unsigned long data)
++{
++	struct madifx_midi *hmidi = (struct madifx_midi *) data;
++	unsigned long flags;
++
++	snd_madifx_midi_output_write(hmidi);
++	spin_lock_irqsave(&hmidi->lock, flags);
++
++	/* this does not bump hmidi->istimer, because the
++	   kernel automatically removed the timer when it
++	   expired, and we are now adding it back, thus
++	   leaving istimer wherever it was set before.
++	*/
++
++	if (hmidi->istimer) {
++		hmidi->timer.expires = 1 + jiffies;
++		add_timer(&hmidi->timer);
++	}
++
++	spin_unlock_irqrestore(&hmidi->lock, flags);
++}
++
++static void
++snd_madifx_midi_output_trigger(struct snd_rawmidi_substream *substream,
+int up)
++{
++	struct madifx_midi *hmidi;
++	unsigned long flags;
++
++	hmidi = substream->rmidi->private_data;
++	spin_lock_irqsave(&hmidi->lock, flags);
++	if (up) {
++		if (!hmidi->istimer) {
++			init_timer(&hmidi->timer);
++			hmidi->timer.function = snd_madifx_midi_output_timer;
++			hmidi->timer.data = (unsigned long) hmidi;
++			hmidi->timer.expires = 1 + jiffies;
++			add_timer(&hmidi->timer);
++			hmidi->istimer++;
++		}
++	} else {
++		if (hmidi->istimer && --hmidi->istimer <= 0)
++			del_timer(&hmidi->timer);
++	}
++	spin_unlock_irqrestore(&hmidi->lock, flags);
++	if (up)
++		snd_madifx_midi_output_write(hmidi);
++}
++
++static int snd_madifx_midi_input_open(struct snd_rawmidi_substream
+*substream)
++{
++	struct madifx_midi *hmidi;
++
++	hmidi = substream->rmidi->private_data;
++	spin_lock_irq(&hmidi->lock);
++	snd_madifx_flush_midi_input(hmidi->hdspm, hmidi->id);
++	hmidi->input = substream;
++	spin_unlock_irq(&hmidi->lock);
++
++	return 0;
++}
++
++static int snd_madifx_midi_output_open(struct snd_rawmidi_substream
+*substream)
++{
++	struct madifx_midi *hmidi;
++
++	hmidi = substream->rmidi->private_data;
++	spin_lock_irq(&hmidi->lock);
++	hmidi->output = substream;
++	spin_unlock_irq(&hmidi->lock);
++
++	return 0;
++}
++
++static int snd_madifx_midi_input_close(struct snd_rawmidi_substream
+*substream)
++{
++	struct madifx_midi *hmidi;
++
++	snd_madifx_midi_input_trigger(substream, 0);
++
++	hmidi = substream->rmidi->private_data;
++	spin_lock_irq(&hmidi->lock);
++	hmidi->input = NULL;
++	spin_unlock_irq(&hmidi->lock);
++
++	return 0;
++}
++
++static int snd_madifx_midi_output_close(struct snd_rawmidi_substream
+*substream)
++{
++	struct madifx_midi *hmidi;
++
++	snd_madifx_midi_output_trigger(substream, 0);
++
++	hmidi = substream->rmidi->private_data;
++	spin_lock_irq(&hmidi->lock);
++	hmidi->output = NULL;
++	spin_unlock_irq(&hmidi->lock);
++
++	return 0;
++}
++
++static struct snd_rawmidi_ops snd_madifx_midi_output = {
++	.open =		snd_madifx_midi_output_open,
++	.close =	snd_madifx_midi_output_close,
++	.trigger =	snd_madifx_midi_output_trigger,
 +};
 +
-+static const int dmic_micclk[] = {
-+       2, 2, 2, 2, 4, 2
++static struct snd_rawmidi_ops snd_madifx_midi_input = {
++	.open =		snd_madifx_midi_input_open,
++	.close =	snd_madifx_midi_input_close,
++	.trigger =	snd_madifx_midi_input_trigger,
 +};
 +
-+static const int comp_lrclk_rates[] = {
-+       8000, 16000, 32000, 44100, 48000, 96000
-+};
-+
-+static const int dmic_comp[6][6] = {
-+       {7, 8, 3, 3, 3, 3},
-+       {7, 8, 3, 3, 3, 3},
-+       {7, 8, 3, 3, 3, 3},
-+       {7, 8, 3, 1, 1, 1},
-+       {7, 8, 3, 1, 2, 2},
-+       {7, 8, 3, 3, 3, 3}
-+};
-+
-+static int max98090_dai_hw_params(struct snd_pcm_substream *substream,
-+                                  struct snd_pcm_hw_params *params,
-+                                  struct snd_soc_dai *dai)
++static int snd_madifx_create_midi(struct snd_card *card,
++					    struct hdspm *hdspm, int id)
 +{
-+       struct snd_soc_codec *codec = dai->codec;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct max98090_cdata *cdata;
-+       int i, j;
++	int err;
++	char buf[32];
 +
-+       cdata = &max98090->dai[0];
-+       max98090->bclk = snd_soc_params_to_bclk(params);
-+       if (params_channels(params) == 1)
-+               max98090->bclk *= 2;
++	hdspm->midi[id].id = id;
++	hdspm->midi[id].hdspm = hdspm;
++	spin_lock_init(&hdspm->midi[id].lock);
 +
-+       max98090->lrclk = params_rate(params);
++	switch (id) {
++	case 0:
++		hdspm->midi[0].dataIn = MADIFX_midi_in0_data;
++		hdspm->midi[0].statusIn = MADIFX_midi_in0_status;
++		hdspm->midi[0].dataOut = MADIFX_midi_out0_data;
++		hdspm->midi[0].statusOut = MADIFX_midi_out0_status;
++		hdspm->midi[0].ie = MADIFX_IEN0;
++		hdspm->midi[0].irq = MADIFX_mIRQ0;
++		break;
 +
-+       switch (params_format(params)) {
-+       case SNDRV_PCM_FORMAT_S16_LE:
-+               snd_soc_update_bits(codec, M98090_REG_INTERFACE_FORMAT,
-+                       M98090_WS_MASK, 0);
-+               break;
-+       default:
-+               return -EINVAL;
-+       }
++	case 1:
++		hdspm->midi[1].dataIn = MADIFX_midi_in1_data;
++		hdspm->midi[1].statusIn = MADIFX_midi_in1_status;
++		hdspm->midi[1].dataOut = MADIFX_midi_out1_data;
++		hdspm->midi[1].statusOut = MADIFX_midi_out1_status;
++		hdspm->midi[1].ie = MADIFX_IEN1;
++		hdspm->midi[1].irq = MADIFX_mIRQ1;
++		break;
 +
-+       max98090_configure_bclk(codec);
++	case 2:
++		hdspm->midi[2].dataIn = MADIFX_midi_in2_data;
++		hdspm->midi[2].statusIn = MADIFX_midi_in2_status;
++		hdspm->midi[2].dataOut = MADIFX_midi_out2_data;
++		hdspm->midi[2].statusOut = MADIFX_midi_out2_status;
++		hdspm->midi[2].ie = MADIFX_IEN2;
++		hdspm->midi[2].irq = MADIFX_mIRQ2;
++		break;
 +
-+       cdata->rate = max98090->lrclk;
++	case 3:
++		hdspm->midi[3].dataIn = MADIFX_midi_in3_data;
++		hdspm->midi[3].statusIn = MADIFX_midi_in3_status;
++		hdspm->midi[3].dataOut = MADIFX_midi_out3_data;
++		hdspm->midi[3].statusOut = MADIFX_midi_out3_status;
++		hdspm->midi[3].ie = MADIFX_IEN3;
++		hdspm->midi[3].irq = MADIFX_mIRQ3;
++		break;
 +
-+       /* Update filter mode */
-+       if (max98090->lrclk < 24000)
-+               snd_soc_update_bits(codec, M98090_REG_FILTER_CONFIG,
-+                       M98090_MODE_MASK, 0);
-+       else
-+               snd_soc_update_bits(codec, M98090_REG_FILTER_CONFIG,
-+                       M98090_MODE_MASK, M98090_MODE_MASK);
++	default:
++		snd_printk(KERN_ERR "MADIFX: Unknown MIDI port %i\n", id);
++		return -EINVAL;
 +
-+       /* Update sample rate mode */
-+       if (max98090->lrclk < 50000)
-+               snd_soc_update_bits(codec, M98090_REG_FILTER_CONFIG,
-+                       M98090_DHF_MASK, 0);
-+       else
-+               snd_soc_update_bits(codec, M98090_REG_FILTER_CONFIG,
-+                       M98090_DHF_MASK, M98090_DHF_MASK);
++	}
 +
-+       /* Check for supported PCLK to LRCLK ratios */
-+       for (j = 0; j < ARRAY_SIZE(comp_pclk_rates); j++) {
-+               if (comp_pclk_rates[j] == max98090->sysclk) {
-+                       break;
-+               }
-+       }
++	sprintf(buf, "%s MIDIoverMADI %d", card->shortname, id+1);
 +
-+       for (i = 0; i < ARRAY_SIZE(comp_lrclk_rates) - 1; i++) {
-+               if (max98090->lrclk <= (comp_lrclk_rates[i] +
-+                       comp_lrclk_rates[i + 1]) / 2) {
-+                       break;
-+               }
-+       }
++	err = snd_rawmidi_new(card, buf, id, 1, 1,
++			&hdspm->midi[id].rmidi);
++	if (err < 0)
++		return err;
 +
-+       snd_soc_update_bits(codec, M98090_REG_DIGITAL_MIC_ENABLE,
-+                       M98090_MICCLK_MASK,
-+                       dmic_micclk[j] << M98090_MICCLK_SHIFT);
++	sprintf(hdspm->midi[id].rmidi->name, "%s MIDI %d",
++			card->id, id+1);
++	hdspm->midi[id].rmidi->private_data = &hdspm->midi[id];
 +
-+       snd_soc_update_bits(codec, M98090_REG_DIGITAL_MIC_CONFIG,
-+                       M98090_DMIC_COMP_MASK,
-+                       dmic_comp[j][i] << M98090_DMIC_COMP_SHIFT);
++	snd_rawmidi_set_ops(hdspm->midi[id].rmidi,
++			SNDRV_RAWMIDI_STREAM_OUTPUT,
++			&snd_madifx_midi_output);
++	snd_rawmidi_set_ops(hdspm->midi[id].rmidi,
++			SNDRV_RAWMIDI_STREAM_INPUT,
++			&snd_madifx_midi_input);
 +
-+       return 0;
++	hdspm->midi[id].rmidi->info_flags |=
++		SNDRV_RAWMIDI_INFO_OUTPUT |
++		SNDRV_RAWMIDI_INFO_INPUT |
++		SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
 +}
 +
-+/*
-+ * PLL / Sysclk
-+ */
-+static int max98090_dai_set_sysclk(struct snd_soc_dai *dai,
-+                                  int clk_id, unsigned int freq, int dir)
++
++static void madifx_midi_tasklet(unsigned long arg)
 +{
-+       struct snd_soc_codec *codec = dai->codec;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
++	struct hdspm *hdspm = (struct hdspm *)arg;
++	int i = 0;
 +
-+       /* Requested clock frequency is already setup */
-+       if (freq == max98090->sysclk)
-+               return 0;
++	while (i < hdspm->midiPorts) {
++		if (hdspm->midi[i].pending)
++			snd_madifx_midi_input_read(&hdspm->midi[i]);
 +
-+       /* Setup clocks for slave mode, and using the PLL
-+        * PSCLK = 0x01 (when master clk is 10MHz to 20MHz)
-+        *               0x02 (when master clk is 20MHz to 40MHz)..
-+        *               0x03 (when master clk is 40MHz to 60MHz)..
-+        */
-+       if ((freq >= 10000000) && (freq < 20000000)) {
-+               snd_soc_write(codec, M98090_REG_SYSTEM_CLOCK,
-+                       M98090_PSCLK_DIV1);
-+       } else if ((freq >= 20000000) && (freq < 40000000)) {
-+               snd_soc_write(codec, M98090_REG_SYSTEM_CLOCK,
-+                       M98090_PSCLK_DIV2);
-+       } else if ((freq >= 40000000) && (freq < 60000000)) {
-+               snd_soc_write(codec, M98090_REG_SYSTEM_CLOCK,
-+                       M98090_PSCLK_DIV4);
-+       } else {
-+               dev_err(codec->dev, "Invalid master clock frequency\n");
-+               return -EINVAL;
-+       }
-+
-+       max98090->sysclk = freq;
-+
-+       max98090_configure_bclk(codec);
-+
-+       return 0;
++		i++;
++	}
 +}
 +
-+static int max98090_dai_digital_mute(struct snd_soc_dai *codec_dai, int mute)
-+{
-+       struct snd_soc_codec *codec = codec_dai->codec;
-+       int regval;
 +
-+       regval = mute ? M98090_DVM_MASK : 0;
-+       snd_soc_update_bits(codec, M98090_REG_DAI_PLAYBACK_LEVEL,
-+               M98090_DVM_MASK, regval);
++/*-----------------------------------------------------------------------------
++  Status Interface
 +
-+       return 0;
-+}
+----------------------------------------------------------------------------*/
 +
-+static void max98090_jack_work(struct work_struct *work)
-+{
-+       struct max98090_priv *max98090 = container_of(work,
-+               struct max98090_priv,
-+               jack_work.work);
-+       struct snd_soc_codec *codec = max98090->codec;
-+       struct snd_soc_dapm_context *dapm = &codec->dapm;
-+       int status = 0;
-+       int reg;
++/* get the system sample rate which is set */
 +
-+       /* Read a second time */
-+       if (max98090->jack_state == M98090_JACK_STATE_NO_HEADSET) {
-+
-+               /* Strong pull up allows mic detection */
-+               snd_soc_update_bits(codec, M98090_REG_JACK_DETECT,
-+                       M98090_JDWK_MASK, 0);
-+
-+               msleep(50);
-+
-+               reg = snd_soc_read(codec, M98090_REG_JACK_STATUS);
-+
-+               /* Weak pull up allows only insertion detection */
-+               snd_soc_update_bits(codec, M98090_REG_JACK_DETECT,
-+                       M98090_JDWK_MASK, M98090_JDWK_MASK);
-+       } else {
-+               reg = snd_soc_read(codec, M98090_REG_JACK_STATUS);
-+       }
-+
-+       reg = snd_soc_read(codec, M98090_REG_JACK_STATUS);
-+
-+       switch (reg & (M98090_LSNS_MASK | M98090_JKSNS_MASK)) {
-+               case M98090_LSNS_MASK | M98090_JKSNS_MASK:
-+                       dev_dbg(codec->dev, "No Headset Detected\n");
-+
-+                       max98090->jack_state = M98090_JACK_STATE_NO_HEADSET;
-+
-+                       status |= 0;
-+
-+                       break;
-+
-+               case 0:
-+                       if (max98090->jack_state ==
-+                               M98090_JACK_STATE_HEADSET) {
-+
-+                               dev_dbg(codec->dev,
-+                                       "Headset Button Down Detected\n");
-+
-+                               /*
-+                                * max98090_headset_button_event(codec)
-+                                * could be defined, then called here.
-+                                */
-+
-+                               status |= SND_JACK_HEADSET;
-+                               status |= SND_JACK_BTN_0;
-+
-+                               break;
-+                       }
-+
-+                       /* Line is reported as Headphone */
-+                       /* Nokia Headset is reported as Headphone */
-+                       /* Mono Headphone is reported as Headphone */
-+                       dev_dbg(codec->dev, "Headphone Detected\n");
-+
-+                       max98090->jack_state = M98090_JACK_STATE_HEADPHONE;
-+
-+                       status |= SND_JACK_HEADPHONE;
-+
-+                       break;
-+
-+               case M98090_JKSNS_MASK:
-+                       dev_dbg(codec->dev, "Headset Detected\n");
-+
-+                       max98090->jack_state = M98090_JACK_STATE_HEADSET;
-+
-+                       status |= SND_JACK_HEADSET;
-+
-+                       break;
-+
-+               default:
-+                       dev_dbg(codec->dev, "Unrecognized Jack Status\n");
-+                       break;
-+       }
-+
-+       snd_soc_jack_report(max98090->jack, status,
-+                           SND_JACK_HEADSET | SND_JACK_BTN_0);
-+
-+       snd_soc_dapm_sync(dapm);
-+}
-+
-+static irqreturn_t max98090_interrupt(int irq, void *data)
-+{
-+       struct snd_soc_codec *codec = data;
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       int ret;
-+       unsigned int mask;
-+       unsigned int active;
-+
-+       dev_dbg(codec->dev, "***** max98090_interrupt *****\n");
-+
-+       ret = regmap_read(max98090->regmap, M98090_REG_INTERRUPT_S, &mask);
-+
-+       if (ret != 0) {
-+               dev_err(codec->dev,
-+                       "failed to read M98090_REG_INTERRUPT_S: %d\n",
-+                       ret);
-+               return IRQ_NONE;
-+       }
-+
-+       ret = regmap_read(max98090->regmap, M98090_REG_DEVICE_STATUS, &active);
-+
-+       if (ret != 0) {
-+               dev_err(codec->dev,
-+                       "failed to read M98090_REG_DEVICE_STATUS: %d\n",
-+                       ret);
-+               return IRQ_NONE;
-+       }
-+
-+       dev_dbg(codec->dev, "active=0x%02x mask=0x%02x -> active=0x%02x\n",
-+               active, mask, active & mask);
-+
-+       active &= mask;
-+
-+       if (!active)
-+               return IRQ_NONE;
-+
-+       if (active & M98090_CLD_MASK) {
-+               dev_err(codec->dev, "M98090_CLD_MASK\n");
-+       }
-+
-+       if (active & M98090_SLD_MASK) {
-+               dev_dbg(codec->dev, "M98090_SLD_MASK\n");
-+       }
-+
-+       if (active & M98090_ULK_MASK) {
-+               dev_err(codec->dev, "M98090_ULK_MASK\n");
-+       }
-+
-+       if (active & M98090_JDET_MASK) {
-+               dev_dbg(codec->dev, "M98090_JDET_MASK\n");
-+
-+               pm_wakeup_event(codec->dev, 100);
-+
-+               schedule_delayed_work(&max98090->jack_work,
-+                       msecs_to_jiffies(100));
-+       }
-+
-+       if (active & M98090_DRCACT_MASK) {
-+               dev_dbg(codec->dev, "M98090_DRCACT_MASK\n");
-+       }
-+
-+       if (active & M98090_DRCCLP_MASK) {
-+               dev_err(codec->dev, "M98090_DRCCLP_MASK\n");
-+       }
-+
-+       return IRQ_HANDLED;
-+}
 +
 +/**
-+ * max98090_mic_detect - Enable microphone detection via the MAX98090 IRQ
-+ *
-+ * @codec:  MAX98090 codec
-+ * @jack:   jack to report detection events on
-+ *
-+ * Enable microphone detection via IRQ on the MAX98090.  If GPIOs are
-+ * being used to bring out signals to the processor then only platform
-+ * data configuration is needed for MAX98090 and processor GPIOs should
-+ * be configured using snd_soc_jack_add_gpios() instead.
-+ *
-+ * If no jack is supplied detection will be disabled.
-+ */
-+int max98090_mic_detect(struct snd_soc_codec *codec,
-+       struct snd_soc_jack *jack)
++ * Calculate the real sample rate from the
++ * current DDS value.
++ **/
++static int madifx_get_system_sample_rate(struct hdspm *hdspm)
 +{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
++	unsigned int period, rate;
 +
-+       dev_dbg(codec->dev, "max98090_mic_detect\n");
++	period = madifx_read(hdspm, MADIFX_RD_PLL_FREQ);
++	rate = madifx_calc_dds_value(hdspm, period) *
++		madifx_speed_multiplier(hdspm);
 +
-+       max98090->jack = jack;
-+       if (jack) {
-+               snd_soc_update_bits(codec, M98090_REG_INTERRUPT_S,
-+                       M98090_IJDET_MASK,
-+                       1 << M98090_IJDET_SHIFT);
-+       } else {
-+               snd_soc_update_bits(codec, M98090_REG_INTERRUPT_S,
-+                       M98090_IJDET_MASK,
-+                       0);
-+       }
-+
-+       /* Send an initial empty report */
-+       snd_soc_jack_report(max98090->jack, 0,
-+                           SND_JACK_HEADSET | SND_JACK_BTN_0);
-+
-+       schedule_delayed_work(&max98090->jack_work,
-+               msecs_to_jiffies(100));
-+
-+       return 0;
-+}
-+EXPORT_SYMBOL_GPL(max98090_mic_detect);
-+
-+#define MAX98090_RATES SNDRV_PCM_RATE_8000_96000
-+#define MAX98090_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static struct snd_soc_dai_ops max98090_dai_ops = {
-+       .set_sysclk = max98090_dai_set_sysclk,
-+       .set_fmt = max98090_dai_set_fmt,
-+       .set_tdm_slot = max98090_set_tdm_slot,
-+       .hw_params = max98090_dai_hw_params,
-+       .digital_mute = max98090_dai_digital_mute,
-+};
-+
-+static struct snd_soc_dai_driver max98090_dai[] = {
-+{
-+       .name = "HiFi",
-+       .playback = {
-+               .stream_name = "HiFi Playback",
-+               .channels_min = 2,
-+               .channels_max = 2,
-+               .rates = MAX98090_RATES,
-+               .formats = MAX98090_FORMATS,
-+       },
-+       .capture = {
-+               .stream_name = "HiFi Capture",
-+               .channels_min = 1,
-+               .channels_max = 2,
-+               .rates = MAX98090_RATES,
-+               .formats = MAX98090_FORMATS,
-+       },
-+        .ops = &max98090_dai_ops,
-+}
-+};
-+
-+static void max98090_handle_pdata(struct snd_soc_codec *codec)
-+{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct max98090_pdata *pdata = max98090->pdata;
-+
-+       if (!pdata) {
-+               dev_err(codec->dev, "No platform data\n");
-+               return;
-+       }
-+
++	return rate;
 +}
 +
-+static int max98090_probe(struct snd_soc_codec *codec)
-+{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+       struct max98090_cdata *cdata;
-+       int ret = 0;
 +
-+       dev_dbg(codec->dev, "max98090_probe\n");
-+
-+       max98090->codec = codec;
-+
-+       codec->control_data = max98090->regmap;
-+
-+       ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
-+       if (ret != 0) {
-+               dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+               return ret;
-+       }
-+
-+       /* Reset the codec, the DSP core, and disable all interrupts */
-+       max98090_reset(max98090);
-+
-+       /* Initialize private data */
-+
-+       max98090->sysclk = (unsigned)-1;
-+
-+       cdata = &max98090->dai[0];
-+       cdata->rate = (unsigned)-1;
-+       cdata->fmt  = (unsigned)-1;
-+
-+       max98090->lin_state = 0;
-+       max98090->pa1en = 0;
-+       max98090->pa2en = 0;
-+       max98090->extmic_mux = 0;
-+
-+       ret = snd_soc_read(codec, M98090_REG_REVISION_ID);
-+       if (ret < 0) {
-+               dev_err(codec->dev, "Failed to read device revision: %d\n",
-+                       ret);
-+               goto err_access;
-+       }
-+
-+       if ((ret >= M98090_REVA) && (ret <= M98090_REVA + 0x0f)) {
-+               max98090->devtype = MAX98090;
-+               dev_info(codec->dev, "MAX98090 REVID=0x%02x\n", ret);
-+       } else if ((ret >= M98091_REVA) && (ret <= M98091_REVA + 0x0f)) {
-+               max98090->devtype = MAX98091;
-+               dev_info(codec->dev, "MAX98091 REVID=0x%02x\n", ret);
-+       } else {
-+               max98090->devtype = MAX98090;
-+               dev_err(codec->dev, "Unrecognized revision 0x%02x\n", ret);
-+       }
-+
-+       max98090->jack_state = M98090_JACK_STATE_NO_HEADSET;
-+
-+       INIT_DELAYED_WORK(&max98090->jack_work, max98090_jack_work);
-+
-+       /* Enable jack detection */
-+       snd_soc_write(codec, M98090_REG_JACK_DETECT,
-+               M98090_JDETEN_MASK | M98090_JDEB_25MS);
-+
-+       /* Register for interrupts */
-+       dev_dbg(codec->dev, "irq = %d\n", max98090->irq);
-+
-+       ret = request_threaded_irq(max98090->irq, NULL,
-+               max98090_interrupt, IRQF_TRIGGER_FALLING,
-+               "max98090_interrupt", codec);
-+       if (ret < 0) {
-+               dev_err(codec->dev, "request_irq failed: %d\n",
-+                       ret);
-+       }
-+
-+       /*
-+        * Clear any old interrupts.
-+        * An old interrupt ocurring prior to installing the ISR
-+        * can keep a new interrupt from generating a trigger.
-+        */
-+       snd_soc_read(codec, M98090_REG_DEVICE_STATUS);
-+
-+       /* High Performance is default */
-+       snd_soc_update_bits(codec, M98090_REG_DAC_CONTROL,
-+               M98090_DACHP_MASK,
-+               1 << M98090_DACHP_SHIFT);
-+       snd_soc_update_bits(codec, M98090_REG_DAC_CONTROL,
-+               M98090_PERFMODE_MASK,
-+               0 << M98090_PERFMODE_SHIFT);
-+       snd_soc_update_bits(codec, M98090_REG_ADC_CONTROL,
-+               M98090_ADCHP_MASK,
-+               1 << M98090_ADCHP_SHIFT);
-+
-+       /* Turn on VCM bandgap reference */
-+       snd_soc_write(codec, M98090_REG_BIAS_CONTROL,
-+               M98090_VCM_MODE_MASK);
-+
-+       max98090_handle_pdata(codec);
-+
-+       max98090_add_widgets(codec);
-+
-+err_access:
-+       return ret;
++#define HDSPM_SYSTEM_SAMPLE_RATE(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.index = xindex, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |\
++		SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
++	.info = snd_madifx_info_system_sample_rate, \
++	.put = snd_madifx_put_system_sample_rate, \
++	.get = snd_madifx_get_system_sample_rate \
 +}
 +
-+static int max98090_remove(struct snd_soc_codec *codec)
++static int snd_madifx_info_system_sample_rate(struct snd_kcontrol
+*kcontrol,
++					     struct snd_ctl_elem_info *uinfo)
 +{
-+       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-+
-+       cancel_delayed_work_sync(&max98090->jack_work);
-+
-+       return 0;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 27000;
++	uinfo->value.integer.max = 207000;
++	uinfo->value.integer.step = 1;
++	return 0;
 +}
 +
-+static struct snd_soc_codec_driver soc_codec_dev_max98090 = {
-+       .probe   = max98090_probe,
-+       .remove  = max98090_remove,
-+       .set_bias_level = max98090_set_bias_level,
-+};
 +
-+static const struct regmap_config max98090_regmap = {
-+       .reg_bits = 8,
-+       .val_bits = 8,
-+
-+       .max_register = MAX98090_MAX_REGISTER,
-+       .reg_defaults = max98090_reg,
-+       .num_reg_defaults = ARRAY_SIZE(max98090_reg),
-+       .volatile_reg = max98090_volatile_register,
-+       .readable_reg = max98090_readable_register,
-+       .cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int max98090_i2c_probe(struct i2c_client *i2c,
-+                                const struct i2c_device_id *id)
++static int snd_madifx_get_system_sample_rate(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *
++					    ucontrol)
 +{
-+       struct max98090_priv *max98090;
-+       int ret;
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
 +
-+       pr_debug("max98090_i2c_probe\n");
-+
-+       max98090 = devm_kzalloc(&i2c->dev, sizeof(struct max98090_priv),
-+               GFP_KERNEL);
-+       if (max98090 == NULL)
-+               return -ENOMEM;
-+
-+       max98090->devtype = id->driver_data;
-+       i2c_set_clientdata(i2c, max98090);
-+       max98090->control_data = i2c;
-+       max98090->pdata = i2c->dev.platform_data;
-+       max98090->irq = i2c->irq;
-+
-+       max98090->regmap = regmap_init_i2c(i2c, &max98090_regmap);
-+       if (IS_ERR(max98090->regmap)) {
-+               ret = PTR_ERR(max98090->regmap);
-+               dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
-+               goto err_enable;
-+       }
-+
-+       ret = snd_soc_register_codec(&i2c->dev,
-+                       &soc_codec_dev_max98090, max98090_dai,
-+                       ARRAY_SIZE(max98090_dai));
-+       if (ret < 0)
-+               regmap_exit(max98090->regmap);
-+
-+err_enable:
-+       return ret;
++	ucontrol->value.integer.value[0] = madifx_get_system_sample_rate(hdspm);
++	return 0;
 +}
 +
-+static int max98090_i2c_remove(struct i2c_client *client)
++static int snd_madifx_put_system_sample_rate(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *
++					    ucontrol)
 +{
-+       struct max98090_priv *max98090 = dev_get_drvdata(&client->dev);
-+       snd_soc_unregister_codec(&client->dev);
-+       regmap_exit(max98090->regmap);
-+       return 0;
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++
++	madifx_set_dds_value(hdspm, ucontrol->value.enumerated.item[0]);
++	return 0;
 +}
 +
-+static int max98090_runtime_resume(struct device *dev)
++
++
++static int madifx_external_freq_index(struct hdspm *hdspm, enum
+madifx_syncsource port)
 +{
-+       struct max98090_priv *max98090 = dev_get_drvdata(dev);
++	int i = 0;
++	int freq0_bit;
++	int inp_freq;
++	int lock_bit;
++	int inp_status;
 +
-+       regcache_cache_only(max98090->regmap, false);
++	inp_status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++	inp_freq = madifx_read(hdspm, MADIFX_RD_INP_FREQ);
 +
-+       regcache_sync(max98090->regmap);
++	switch (port) {
++	case syncsource_madi1:
++		lock_bit = MADIFX_madi1_lock;
++		freq0_bit = MADIFX_madi1_freq0;
++		break;
++	case syncsource_madi2:
++		lock_bit = MADIFX_madi2_lock;
++		freq0_bit = MADIFX_madi2_freq0;
++		break;
++	case syncsource_madi3:
++		lock_bit = MADIFX_madi3_lock;
++		freq0_bit = MADIFX_madi3_freq0;
++		break;
++	case syncsource_aes:
++		lock_bit = MADIFX_aes_lock;
++		freq0_bit = MADIFX_aes_freq0;
++		break;
++	case syncsource_wc:
++		lock_bit = MADIFX_word_lock;
++		freq0_bit = MADIFX_word_freq0;
++		break;
++	case syncsource_syncin:
++		lock_bit = MADIFX_sync_in_lock;
++		freq0_bit = MADIFX_sync_in_freq0;
++		break;
++	default:
++		snd_printk(KERN_ERR "MADIFX: Unknown external port ID %i\n", port);
++		return 0;
++	}
 +
-+       return 0;
++	if (!(inp_status & lock_bit)) {
++		i = 0;
++	} else {
++		int freq_bits = inp_freq & (freq0_bit*15);
++		if      (freq_bits == freq0_bit * 1)
++			i = 1;
++		else if (freq_bits == freq0_bit * 2)
++			i = 2;
++		else if (freq_bits == freq0_bit * 3)
++			i = 3;
++		else if (freq_bits == freq0_bit * 4)
++			i = 4;
++		else if (freq_bits == freq0_bit * 5)
++			i = 5;
++		else if (freq_bits == freq0_bit * 6)
++			i = 6;
++		else if (freq_bits == freq0_bit * 7)
++			i = 7;
++		else if (freq_bits == freq0_bit * 8)
++			i = 8;
++		else if (freq_bits == freq0_bit * 9)
++			i = 9;
++		else
++			i = 0;
++	}
++	return i;
 +}
 +
-+static int max98090_runtime_suspend(struct device *dev)
-+{
-+       struct max98090_priv *max98090 = dev_get_drvdata(dev);
 +
-+       regcache_cache_only(max98090->regmap, true);
-+
-+       return 0;
++#define HDSPM_AUTOSYNC_SAMPLE_RATE(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.private_value = xindex, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READ, \
++	.info = snd_madifx_info_autosync_sample_rate, \
++	.get = snd_madifx_get_autosync_sample_rate \
 +}
 +
-+static struct dev_pm_ops max98090_pm = {
-+       SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
-+               max98090_runtime_resume, NULL)
++
++static int snd_madifx_info_autosync_sample_rate(struct snd_kcontrol
+*kcontrol,
++					       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = 10;
++
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
++	strcpy(uinfo->value.enumerated.name,
++			texts_freq[uinfo->value.enumerated.item]);
++	return 0;
++}
++
++
++static int snd_madifx_get_autosync_sample_rate(struct snd_kcontrol
+*kcontrol,
++					      struct snd_ctl_elem_value *
++					      ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		ucontrol->value.enumerated.item[0] =
++			madifx_external_freq_index(hdspm, kcontrol->private_value);
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++#define MADIFX_MADI_CHANNELCOUNT(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.private_value = xindex, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READ, \
++	.info = snd_madifx_info_channelcount, \
++	.get = snd_madifx_get_channelcount \
++}
++
++
++static int snd_madifx_info_channelcount(struct snd_kcontrol *kcontrol,
++					       struct snd_ctl_elem_info *uinfo)
++{
++	static char *texts[] = { "64", "56", "32", "28", "16", "14", "No lock" };
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = 7;
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item =
++			uinfo->value.enumerated.items - 1;
++	strcpy(uinfo->value.enumerated.name,
++			texts[uinfo->value.enumerated.item]);
++
++	return 0;
++}
++
++static int madifx_get_madichannelcount(struct hdspm *hdspm, int idx)
++{
++	int rate_index;
++	int i = 0;
++	int inp_status;
++	int rx_64ch_bit = (MADIFX_madi1_rx_64ch << idx);
++
++	inp_status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++
++
++	/* Check for speed. If rate_index is zero, there's no lock */
++	rate_index = madifx_external_freq_index(hdspm, idx);
++	if (0 == rate_index)
++		i = 6;
++	else {
++		if (inp_status & rx_64ch_bit)
++			i = 0;
++		else
++			i = 1;
++
++		/* I know this is ugly */
++		if (rate_index > 3)
++			i += 2; /* Double speed */
++		if (rate_index > 6)
++			i += 2; /* Quad speed */
++	}
++
++	return i;
++
++}
++
++
++static int snd_madifx_get_channelcount(struct snd_kcontrol *kcontrol,
++					      struct snd_ctl_elem_value *
++					      ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int idx = kcontrol->private_value;
++
++
++	ucontrol->value.enumerated.item[0] =
++		madifx_get_madichannelcount(hdspm, idx);
++
++	return 0;
++}
++
++
++
++/**
++ * Returns the system clock mode for the given card.
++ * @returns 0 - master, 1 - slave
++ **/
++static int madifx_system_clock_mode(struct hdspm *hdspm)
++{
++	u32 status;
++
++	status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++	if ((status & (MADIFX_SelSyncRef0 * 7)) == (MADIFX_SelSyncRef0 * 7))
++		return 0;
++
++	return 1;
++}
++
++
++#define HDSPM_INTERNAL_CLOCK(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.index = xindex, \
++	.info = snd_madifx_info_clock_source, \
++	.get = snd_madifx_get_clock_source, \
++	.put = snd_madifx_put_clock_source \
++}
++
++
++static int madifx_clock_source(struct hdspm *hdspm)
++{
++	switch (hdspm->system_sample_rate) {
++	case 32000: return 0;
++	case 44100: return 1;
++	case 48000: return 2;
++	case 64000: return 3;
++	case 88200: return 4;
++	case 96000: return 5;
++	case 128000: return 6;
++	case 176400: return 7;
++	case 192000: return 8;
++	}
++
++	return -1;
++}
++
++static int madifx_set_clock_source(struct hdspm *hdspm, int mode)
++{
++	int rate;
++	switch (mode) {
++	case 0:
++		rate = 32000; break;
++	case 1:
++		rate = 44100; break;
++	case 2:
++		rate = 48000; break;
++	case 3:
++		rate = 64000; break;
++	case 4:
++		rate = 88200; break;
++	case 5:
++		rate = 96000; break;
++	case 6:
++		rate = 128000; break;
++	case 7:
++		rate = 176400; break;
++	case 8:
++		rate = 192000; break;
++	default:
++		rate = 48000;
++	}
++	madifx_set_rate(hdspm, rate, 1);
++	return 0;
++}
++
++static int snd_madifx_info_clock_source(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = 9;
++
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item =
++		    uinfo->value.enumerated.items - 1;
++
++	strcpy(uinfo->value.enumerated.name,
++	       texts_freq[uinfo->value.enumerated.item+1]);
++
++	return 0;
++}
++
++static int snd_madifx_get_clock_source(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.enumerated.item[0] = madifx_clock_source(hdspm);
++	return 0;
++}
++
++static int snd_madifx_put_clock_source(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int change;
++	int val;
++
++	if (!snd_madifx_use_is_exclusive(hdspm))
++		return -EBUSY;
++	val = ucontrol->value.enumerated.item[0];
++	if (val < 0)
++		val = 0;
++	if (val > 9)
++		val = 9;
++	spin_lock_irq(&hdspm->lock);
++	if (val != madifx_clock_source(hdspm))
++		change = (madifx_set_clock_source(hdspm, val) == 0) ? 1 : 0;
++	else
++		change = 0;
++	spin_unlock_irq(&hdspm->lock);
++	return change;
++}
++
++
++static int madifx_get_clock_select(struct hdspm *hdspm)
++{
++	switch (hdspm->io_type) {
++	case MADIFX:
++		{
++			int i;
++			u32 status;
++
++			status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++
++			switch (status & (MADIFX_SelSyncRef0 * 7)) {
++			case MADIFX_SelSyncRef0 * 0:
++				i = 0; break;
++			case MADIFX_SelSyncRef0 * 1:
++				i = 1; break;
++			case MADIFX_SelSyncRef0 * 2:
++				i = 2; break;
++			case MADIFX_SelSyncRef0 * 3:
++				i = 3; break;
++			case MADIFX_SelSyncRef0 * 4:
++				i = 4; break;
++			case MADIFX_SelSyncRef0 * 5:
++				i = 5; break;
++			case MADIFX_SelSyncRef0 * 6:
++				i = 6; break;
++			default:
++						     /* We are master */
++						     i = 0;
++						     break;
++			}
++			return i;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return -1;
++}
++
++static int madifx_set_clock_select(struct hdspm *hdspm, int val)
++{
++	hdspm->settings_register &= ~MADIFX_SyncRefMask;
++	hdspm->settings_register |= MADIFX_SyncRef0 * val;
++	madifx_write(hdspm, MADIFX_SETTINGS_REG, hdspm->settings_register);
++
++	if (val > 0) {
++		/* switched to slave mode */
++		hdspm->system_sample_rate = madifx_get_external_rate(hdspm);
++	}
++
++	return 0;
++}
++
++
++
++#define MADIFX_CLOCK_SELECT(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.index = xindex, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |\
++			SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
++	.info = snd_madifx_info_clock_select, \
++	.get = snd_madifx_get_clock_select, \
++	.put = snd_madifx_put_clock_select \
++}
++
++
++static int snd_madifx_info_clock_select(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_info *uinfo)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = hdspm->texts_clocksource_items;
++
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item =
++			uinfo->value.enumerated.items - 1;
++
++	strcpy(uinfo->value.enumerated.name,
++			hdspm->texts_clocksource[uinfo->value.enumerated.item]);
++
++	return 0;
++}
++
++static int snd_madifx_get_clock_select(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int psf = madifx_get_clock_select(hdspm);
++
++	if (psf >= 0) {
++		ucontrol->value.enumerated.item[0] = psf;
++		return 0;
++	}
++
++	return -1;
++}
++
++static int snd_madifx_put_clock_select(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int val, change = 0;
++
++	if (!snd_madifx_use_is_exclusive(hdspm))
++		return -EBUSY;
++
++	val = ucontrol->value.enumerated.item[0];
++
++	if (val < 0)
++		val = 0;
++	else if (val >= hdspm->texts_clocksource_items)
++		val = hdspm->texts_clocksource_items-1;
++
++	spin_lock_irq(&hdspm->lock);
++	if (val != madifx_get_clock_select(hdspm))
++		change = (0 == madifx_set_clock_select(hdspm, val)) ? 1 : 0;
++
++	spin_unlock_irq(&hdspm->lock);
++	return change;
++}
++
++
++
++#define MADIFX_TOGGLE_SETTING(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.private_value = xindex, \
++	.info = snd_madifx_info_toggle_setting, \
++	.get = snd_madifx_get_toggle_setting, \
++	.put = snd_madifx_put_toggle_setting \
++}
++
++static int madifx_read_toggle_setting(struct hdspm *hdspm, u32 reg)
++{
++	return (hdspm->settings_register & (reg)) ? 1 : 0;
++}
++
++static int madifx_set_toggle_setting(struct hdspm *hdspm, u32 reg, int out)
++{
++	if (out)
++		hdspm->settings_register |= (reg);
++	else
++		hdspm->settings_register &= ~(reg);
++	madifx_write(hdspm, MADIFX_SETTINGS_REG, hdspm->settings_register);
++
++	return 0;
++}
++
++#define snd_madifx_info_toggle_setting		snd_ctl_boolean_mono_info
++
++static int snd_madifx_get_toggle_setting(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++
++	spin_lock_irq(&hdspm->lock);
++	ucontrol->value.integer.value[0] = madifx_read_toggle_setting(hdspm,
++			kcontrol->private_value);
++	spin_unlock_irq(&hdspm->lock);
++	return 0;
++}
++
++static int snd_madifx_put_toggle_setting(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int change;
++	u32 reg = kcontrol->private_value;
++	unsigned int val;
++
++	if (!snd_madifx_use_is_exclusive(hdspm))
++		return -EBUSY;
++	val = ucontrol->value.integer.value[0] & 1;
++	spin_lock_irq(&hdspm->lock);
++	change = (int) val != madifx_read_toggle_setting(hdspm, reg);
++	madifx_set_toggle_setting(hdspm, reg, val);
++	spin_unlock_irq(&hdspm->lock);
++	return change;
++}
++
++
++
++#define HDSPM_MIXER(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_HWDEP, \
++	.name = xname, \
++	.index = xindex, \
++	.device = 0, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
++		SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
++	.info = snd_madifx_info_mixer, \
++	.get = snd_madifx_get_mixer, \
++	.put = snd_madifx_put_mixer \
++}
++
++#if OLD_MIXER
++static int snd_madifx_info_mixer(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 3;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 65535;
++	uinfo->value.integer.step = 1;
++	return 0;
++}
++
++static int snd_madifx_get_mixer(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int source;
++	int destination;
++
++	source = ucontrol->value.integer.value[0];
++	if (source < 0)
++		source = 0;
++	else if (source >= 2 * HDSPM_MAX_CHANNELS)
++		source = 2 * HDSPM_MAX_CHANNELS - 1;
++
++	destination = ucontrol->value.integer.value[1];
++	if (destination < 0)
++		destination = 0;
++	else if (destination >= HDSPM_MAX_CHANNELS)
++		destination = HDSPM_MAX_CHANNELS - 1;
++
++	spin_lock_irq(&hdspm->lock);
++	if (source >= HDSPM_MAX_CHANNELS)
++		ucontrol->value.integer.value[2] =
++		    madifx_read_pb_gain(hdspm, destination,
++				       source - HDSPM_MAX_CHANNELS);
++	else
++		ucontrol->value.integer.value[2] =
++		    madifx_read_in_gain(hdspm, destination, source);
++
++	spin_unlock_irq(&hdspm->lock);
++
++	return 0;
++}
++
++static int snd_madifx_put_mixer(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int change;
++	int source;
++	int destination;
++	int gain;
++
++	if (!snd_madifx_use_is_exclusive(hdspm))
++		return -EBUSY;
++
++	source = ucontrol->value.integer.value[0];
++	destination = ucontrol->value.integer.value[1];
++
++	if (source < 0 || source >= 2 * HDSPM_MAX_CHANNELS)
++		return -1;
++	if (destination < 0 || destination >= HDSPM_MAX_CHANNELS)
++		return -1;
++
++	gain = ucontrol->value.integer.value[2];
++
++	spin_lock_irq(&hdspm->lock);
++
++	if (source >= HDSPM_MAX_CHANNELS)
++		change = gain != madifx_read_pb_gain(hdspm, destination,
++						    source -
++						    HDSPM_MAX_CHANNELS);
++	else
++		change = gain != madifx_read_in_gain(hdspm, destination,
++						    source);
++
++	if (change) {
++		if (source >= HDSPM_MAX_CHANNELS)
++			madifx_write_pb_gain(hdspm, destination,
++					    source - HDSPM_MAX_CHANNELS,
++					    gain);
++		else
++			madifx_write_in_gain(hdspm, destination, source,
++					    gain);
++	}
++	spin_unlock_irq(&hdspm->lock);
++
++	return change;
++}
++
++/* The simple mixer control(s) provide gain control for the
++   basic 1:1 mappings of playback streams to output
++   streams.
++*/
++
++#define HDSPM_PLAYBACK_MIXER \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_WRITE | \
++		SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
++	.info = snd_madifx_info_playback_mixer, \
++	.get = snd_madifx_get_playback_mixer, \
++	.put = snd_madifx_put_playback_mixer \
++}
++
++static int snd_madifx_info_playback_mixer(struct snd_kcontrol *kcontrol,
++					 struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 64;
++	uinfo->value.integer.step = 1;
++	return 0;
++}
++
++static int snd_madifx_get_playback_mixer(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int channel;
++
++	channel = ucontrol->id.index - 1;
++
++	if (snd_BUG_ON(channel < 0 || channel >= HDSPM_MAX_CHANNELS))
++		return -EINVAL;
++
++	spin_lock_irq(&hdspm->lock);
++	ucontrol->value.integer.value[0] =
++	  (madifx_read_pb_gain(hdspm, channel, channel)*64)/UNITY_GAIN;
++	spin_unlock_irq(&hdspm->lock);
++
++	return 0;
++}
++
++static int snd_madifx_put_playback_mixer(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int change;
++	int channel;
++	int gain;
++
++	if (!snd_madifx_use_is_exclusive(hdspm))
++		return -EBUSY;
++
++	channel = ucontrol->id.index - 1;
++
++	if (snd_BUG_ON(channel < 0 || channel >= HDSPM_MAX_CHANNELS))
++		return -EINVAL;
++
++	gain = ucontrol->value.integer.value[0]*UNITY_GAIN/64;
++
++	spin_lock_irq(&hdspm->lock);
++	change =
++	    gain != madifx_read_pb_gain(hdspm, channel,
++				       channel);
++	if (change)
++		madifx_write_pb_gain(hdspm, channel, channel,
++				    gain);
++	spin_unlock_irq(&hdspm->lock);
++	return change;
++}
++#endif /* OLD_MIXER */
++
++#define HDSPM_SYNC_CHECK(xname, xindex) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.private_value = xindex, \
++	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE, \
++	.info = snd_madifx_info_sync_check, \
++	.get = snd_madifx_get_sync_check \
++}
++
++
++static int snd_madifx_info_sync_check(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_info *uinfo)
++{
++	static char *texts[] = { "No Lock", "Lock", "Sync", "N/A" };
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++	uinfo->value.enumerated.items = 4;
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item =
++			uinfo->value.enumerated.items - 1;
++	strcpy(uinfo->value.enumerated.name,
++			texts[uinfo->value.enumerated.item]);
++	return 0;
++}
++
++
++static int madifx_sync_check(struct hdspm *hdspm, int idx)
++{
++	u32 status, lockmask, syncmask;
++	int lock, sync;
++
++	status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++
++	if (5 == idx) {
++		/* Sync-In was added later, so it's further up in the register */
++		lockmask = MADIFX_sync_in_lock;
++		syncmask = MADIFX_sync_in_sync;
++	} else {
++		lockmask = (MADIFX_madi1_lock << idx);
++		syncmask = (MADIFX_madi1_sync << idx);
++	}
++
++	lock = (status & lockmask) ? 1 : 0;
++	sync = (status & syncmask) ? 1 : 0;
++
++	if (lock && sync)
++		return 2;
++	else if (lock)
++		return 1;
++	return 0;
++}
++
++
++
++
++static int snd_madifx_get_sync_check(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdspm *hdspm = snd_kcontrol_chip(kcontrol);
++	int val = -1;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		val = madifx_sync_check(hdspm, kcontrol->private_value);
++		break;
++	}
++
++	if (-1 == val)
++		val = 3;
++
++	ucontrol->value.enumerated.item[0] = val;
++	return 0;
++}
++
++
++
++static struct snd_kcontrol_new snd_madifx_controls_madi[] = {
++	HDSPM_SYSTEM_SAMPLE_RATE("System Sample Rate", 0),
++	HDSPM_INTERNAL_CLOCK("Internal Clock", 0),
++	HDSPM_SYNC_CHECK("MADI 1 SyncCheck", 0),
++	HDSPM_SYNC_CHECK("MADI 2 SyncCheck", 1),
++	HDSPM_SYNC_CHECK("MADI 3 SyncCheck", 2),
++	HDSPM_SYNC_CHECK("WC SyncCheck", 3),
++	HDSPM_SYNC_CHECK("AES SyncCheck", 4),
++	HDSPM_AUTOSYNC_SAMPLE_RATE("MADI 1 Frequency", 0),
++	HDSPM_AUTOSYNC_SAMPLE_RATE("MADI 2 Frequency", 1),
++	HDSPM_AUTOSYNC_SAMPLE_RATE("MADI 3 Frequency", 2),
++	HDSPM_AUTOSYNC_SAMPLE_RATE("WC Frequency", 3),
++	HDSPM_AUTOSYNC_SAMPLE_RATE("AES Frequency", 4),
++	MADIFX_MADI_CHANNELCOUNT("MADI 1 RX #ch", 0),
++	MADIFX_MADI_CHANNELCOUNT("MADI 2 RX #ch", 1),
++	MADIFX_MADI_CHANNELCOUNT("MADI 3 RX #ch", 2),
++	MADIFX_TOGGLE_SETTING("MADI 1 TX 64ch mode", MADIFX_madi1_tx_64ch),
++	MADIFX_TOGGLE_SETTING("MADI 2 TX 64ch mode", MADIFX_madi2_tx_64ch),
++	MADIFX_TOGGLE_SETTING("MADI 3 TX 64ch mode", MADIFX_madi3_tx_64ch),
++	MADIFX_TOGGLE_SETTING("MADI 1 SMUX mode", MADIFX_madi1_smux),
++	MADIFX_TOGGLE_SETTING("MADI 2 SMUX mode", MADIFX_madi2_smux),
++	MADIFX_TOGGLE_SETTING("MADI 3 SMUX mode", MADIFX_madi3_smux),
++	MADIFX_TOGGLE_SETTING("WC Term", MADIFX_WCK_TERM),
++	MADIFX_TOGGLE_SETTING("WC single speed", MADIFX_WCK48),
++	MADIFX_TOGGLE_SETTING("AES professional", MADIFX_PRO),
++	MADIFX_TOGGLE_SETTING("Redundancy mode", MADIFX_redundancy_mode),
++	MADIFX_TOGGLE_SETTING("Mirror MADI out", MADIFX_mirror_madi_out),
++	MADIFX_CLOCK_SELECT("Clock Selection", 0)
 +};
 +
-+static const struct i2c_device_id max98090_i2c_id[] = {
-+       { "max98090", MAX98090 },
-+       { }
-+};
-+MODULE_DEVICE_TABLE(i2c, max98090_i2c_id);
 +
-+static struct i2c_driver max98090_i2c_driver = {
-+       .driver = {
-+               .name = "max98090",
-+               .owner = THIS_MODULE,
-+               .pm = &max98090_pm,
-+       },
-+       .probe  = max98090_i2c_probe,
-+       .remove = max98090_i2c_remove,
-+       .id_table = max98090_i2c_id,
-+};
-+
-+module_i2c_driver(max98090_i2c_driver);
-+
-+MODULE_DESCRIPTION("ALSA SoC MAX98090 driver");
-+MODULE_AUTHOR("Peter Hsiang, Jesse Marroqin, Jerry Wong");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/max98090.h b/sound/soc/codecs/max98090.h
-new file mode 100755
-index 0000000..6c9fa34
---- /dev/null
-+++ b/sound/soc/codecs/max98090.h
-@@ -0,0 +1,1549 @@
-+/*
-+ * max98090.h -- MAX98090 ALSA SoC Audio driver
-+ *
-+ * Copyright 2011-2012 Maxim Integrated Products
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _MAX98090_H
-+#define _MAX98090_H
-+
-+#include <linux/version.h>
-+
-+/* One can override the Linux version here with an explicit version number */
-+#define M98090_LINUX_VERSION LINUX_VERSION_CODE
-+
-+/*
-+ * MAX98090 Register Definitions
-+ */
-+
-+#define M98090_REG_SOFTWARE_RESET              0x00
-+#define M98090_REG_DEVICE_STATUS               0x01
-+#define M98090_REG_JACK_STATUS                 0x02
-+#define M98090_REG_INTERRUPT_S                 0x03
-+#define M98090_REG_QUICK_SYSTEM_CLOCK          0x04
-+#define M98090_REG_QUICK_SAMPLE_RATE           0x05
-+#define M98090_REG_DAI_INTERFACE               0x06
-+#define M98090_REG_DAC_PATH                    0x07
-+#define M98090_REG_MIC_DIRECT_TO_ADC           0x08
-+#define M98090_REG_LINE_TO_ADC                 0x09
-+#define M98090_REG_ANALOG_MIC_LOOP             0x0A
-+#define M98090_REG_ANALOG_LINE_LOOP            0x0B
-+#define M98090_REG_RESERVED                    0x0C
-+#define M98090_REG_LINE_INPUT_CONFIG           0x0D
-+#define M98090_REG_LINE_INPUT_LEVEL            0x0E
-+#define M98090_REG_INPUT_MODE                  0x0F
-+#define M98090_REG_MIC1_INPUT_LEVEL            0x10
-+#define M98090_REG_MIC2_INPUT_LEVEL            0x11
-+#define M98090_REG_MIC_BIAS_VOLTAGE            0x12
-+#define M98090_REG_DIGITAL_MIC_ENABLE          0x13
-+#define M98090_REG_DIGITAL_MIC_CONFIG          0x14
-+#define M98090_REG_LEFT_ADC_MIXER              0x15
-+#define M98090_REG_RIGHT_ADC_MIXER             0x16
-+#define M98090_REG_LEFT_ADC_LEVEL              0x17
-+#define M98090_REG_RIGHT_ADC_LEVEL             0x18
-+#define M98090_REG_ADC_BIQUAD_LEVEL            0x19
-+#define M98090_REG_ADC_SIDETONE                        0x1A
-+#define M98090_REG_SYSTEM_CLOCK                        0x1B
-+#define M98090_REG_CLOCK_MODE                  0x1C
-+#define M98090_REG_CLOCK_RATIO_NI_MSB          0x1D
-+#define M98090_REG_CLOCK_RATIO_NI_LSB          0x1E
-+#define M98090_REG_CLOCK_RATIO_MI_MSB          0x1F
-+#define M98090_REG_CLOCK_RATIO_MI_LSB          0x20
-+#define M98090_REG_MASTER_MODE                 0x21
-+#define M98090_REG_INTERFACE_FORMAT            0x22
-+#define M98090_REG_TDM_CONTROL                 0x23
-+#define M98090_REG_TDM_FORMAT                  0x24
-+#define M98090_REG_IO_CONFIGURATION            0x25
-+#define M98090_REG_FILTER_CONFIG               0x26
-+#define M98090_REG_DAI_PLAYBACK_LEVEL          0x27
-+#define M98090_REG_DAI_PLAYBACK_LEVEL_EQ       0x28
-+#define M98090_REG_LEFT_HP_MIXER               0x29
-+#define M98090_REG_RIGHT_HP_MIXER              0x2A
-+#define M98090_REG_HP_CONTROL                  0x2B
-+#define M98090_REG_LEFT_HP_VOLUME              0x2C
-+#define M98090_REG_RIGHT_HP_VOLUME             0x2D
-+#define M98090_REG_LEFT_SPK_MIXER              0x2E
-+#define M98090_REG_RIGHT_SPK_MIXER             0x2F
-+#define M98090_REG_SPK_CONTROL                 0x30
-+#define M98090_REG_LEFT_SPK_VOLUME             0x31
-+#define M98090_REG_RIGHT_SPK_VOLUME            0x32
-+#define M98090_REG_DRC_TIMING                  0x33
-+#define M98090_REG_DRC_COMPRESSOR              0x34
-+#define M98090_REG_DRC_EXPANDER                        0x35
-+#define M98090_REG_DRC_GAIN                    0x36
-+#define M98090_REG_RCV_LOUTL_MIXER             0x37
-+#define M98090_REG_RCV_LOUTL_CONTROL           0x38
-+#define M98090_REG_RCV_LOUTL_VOLUME            0x39
-+#define M98090_REG_LOUTR_MIXER                 0x3A
-+#define M98090_REG_LOUTR_CONTROL               0x3B
-+#define M98090_REG_LOUTR_VOLUME                        0x3C
-+#define M98090_REG_JACK_DETECT                 0x3D
-+#define M98090_REG_INPUT_ENABLE                        0x3E
-+#define M98090_REG_OUTPUT_ENABLE               0x3F
-+#define M98090_REG_LEVEL_CONTROL               0x40
-+#define M98090_REG_DSP_FILTER_ENABLE           0x41
-+#define M98090_REG_BIAS_CONTROL                        0x42
-+#define M98090_REG_DAC_CONTROL                 0x43
-+#define M98090_REG_ADC_CONTROL                 0x44
-+#define M98090_REG_DEVICE_SHUTDOWN             0x45
-+#define M98090_REG_EQUALIZER_BASE              0x46
-+#define M98090_REG_RECORD_BIQUAD_BASE          0xAF
-+#define M98090_REG_DMIC3_VOLUME                        0xBE
-+#define M98090_REG_DMIC4_VOLUME                        0xBF
-+#define M98090_REG_DMIC34_BQ_PREATTEN          0xC0
-+#define M98090_REG_RECORD_TDM_SLOT             0xC1
-+#define M98090_REG_SAMPLE_RATE                 0xC2
-+#define M98090_REG_DMIC34_BIQUAD_BASE          0xC3
-+#define M98090_REG_REVISION_ID                 0xFF
-+
-+#define M98090_REG_CNT                         (0xFF+1)
-+#define MAX98090_MAX_REGISTER                  0xFF
-+
-+/* MAX98090 Register Bit Fields */
-+
-+/*
-+ * M98090_REG_SOFTWARE_RESET
-+ */
-+#define M98090_SWRESET_MASK            (1<<7)
-+#define M98090_SWRESET_SHIFT           7
-+#define M98090_SWRESET_WIDTH           1
-+
-+/*
-+ * M98090_REG_DEVICE_STATUS
-+ */
-+#define M98090_CLD_MASK                        (1<<7)
-+#define M98090_CLD_SHIFT               7
-+#define M98090_CLD_WIDTH               1
-+#define M98090_SLD_MASK                        (1<<6)
-+#define M98090_SLD_SHIFT               6
-+#define M98090_SLD_WIDTH               1
-+#define M98090_ULK_MASK                        (1<<5)
-+#define M98090_ULK_SHIFT               5
-+#define M98090_ULK_WIDTH               1
-+#define M98090_JDET_MASK               (1<<2)
-+#define M98090_JDET_SHIFT              2
-+#define M98090_JDET_WIDTH              1
-+#define M98090_DRCACT_MASK             (1<<1)
-+#define M98090_DRCACT_SHIFT            1
-+#define M98090_DRCACT_WIDTH            1
-+#define M98090_DRCCLP_MASK             (1<<0)
-+#define M98090_DRCCLP_SHIFT            0
-+#define M98090_DRCCLP_WIDTH            1
-+
-+/*
-+ * M98090_REG_JACK_STATUS
-+ */
-+#define M98090_LSNS_MASK               (1<<2)
-+#define M98090_LSNS_SHIFT              2
-+#define M98090_LSNS_WIDTH              1
-+#define M98090_JKSNS_MASK              (1<<1)
-+#define M98090_JKSNS_SHIFT             1
-+#define M98090_JKSNS_WIDTH             1
-+
-+/*
-+ * M98090_REG_INTERRUPT_S
-+ */
-+#define M98090_ICLD_MASK               (1<<7)
-+#define M98090_ICLD_SHIFT              7
-+#define M98090_ICLD_WIDTH              1
-+#define M98090_ISLD_MASK               (1<<6)
-+#define M98090_ISLD_SHIFT              6
-+#define M98090_ISLD_WIDTH              1
-+#define M98090_IULK_MASK               (1<<5)
-+#define M98090_IULK_SHIFT              5
-+#define M98090_IULK_WIDTH              1
-+#define M98090_IJDET_MASK              (1<<2)
-+#define M98090_IJDET_SHIFT             2
-+#define M98090_IJDET_WIDTH             1
-+#define M98090_IDRCACT_MASK            (1<<1)
-+#define M98090_IDRCACT_SHIFT           1
-+#define M98090_IDRCACT_WIDTH           1
-+#define M98090_IDRCCLP_MASK            (1<<0)
-+#define M98090_IDRCCLP_SHIFT           0
-+#define M98090_IDRCCLP_WIDTH           1
-+
-+/*
-+ * M98090_REG_QUICK_SYSTEM_CLOCK
-+ */
-+#define M98090_26M_MASK                        (1<<7)
-+#define M98090_26M_SHIFT               7
-+#define M98090_26M_WIDTH               1
-+#define M98090_19P2M_MASK              (1<<6)
-+#define M98090_19P2M_SHIFT             6
-+#define M98090_19P2M_WIDTH             1
-+#define M98090_13M_MASK                        (1<<5)
-+#define M98090_13M_SHIFT               5
-+#define M98090_13M_WIDTH               1
-+#define M98090_12P288M_MASK            (1<<4)
-+#define M98090_12P288M_SHIFT           4
-+#define M98090_12P288M_WIDTH           1
-+#define M98090_12M_MASK                        (1<<3)
-+#define M98090_12M_SHIFT               3
-+#define M98090_12M_WIDTH               1
-+#define M98090_11P2896M_MASK           (1<<2)
-+#define M98090_11P2896M_SHIFT          2
-+#define M98090_11P2896M_WIDTH          1
-+#define M98090_256FS_MASK              (1<<0)
-+#define M98090_256FS_SHIFT             0
-+#define M98090_256FS_WIDTH             1
-+#define M98090_CLK_ALL_SHIFT           0
-+#define M98090_CLK_ALL_WIDTH           8
-+#define M98090_CLK_ALL_NUM             (1<<M98090_CLK_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_QUICK_SAMPLE_RATE
-+ */
-+#define M98090_SR_96K_MASK             (1<<5)
-+#define M98090_SR_96K_SHIFT            5
-+#define M98090_SR_96K_WIDTH            1
-+#define M98090_SR_32K_MASK             (1<<4)
-+#define M98090_SR_32K_SHIFT            4
-+#define M98090_SR_32K_WIDTH            1
-+#define M98090_SR_48K_MASK             (1<<3)
-+#define M98090_SR_48K_SHIFT            3
-+#define M98090_SR_48K_WIDTH            1
-+#define M98090_SR_44K1_MASK            (1<<2)
-+#define M98090_SR_44K1_SHIFT           2
-+#define M98090_SR_44K1_WIDTH           1
-+#define M98090_SR_16K_MASK             (1<<1)
-+#define M98090_SR_16K_SHIFT            1
-+#define M98090_SR_16K_WIDTH            1
-+#define M98090_SR_8K_MASK              (1<<0)
-+#define M98090_SR_8K_SHIFT             0
-+#define M98090_SR_8K_WIDTH             1
-+#define M98090_SR_MASK                 0x3F
-+#define M98090_SR_ALL_SHIFT            0
-+#define M98090_SR_ALL_WIDTH            8
-+#define M98090_SR_ALL_NUM              (1<<M98090_SR_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_DAI_INTERFACE
-+ */
-+#define M98090_RJ_M_MASK               (1<<5)
-+#define M98090_RJ_M_SHIFT              5
-+#define M98090_RJ_M_WIDTH              1
-+#define M98090_RJ_S_MASK               (1<<4)
-+#define M98090_RJ_S_SHIFT              4
-+#define M98090_RJ_S_WIDTH              1
-+#define M98090_LJ_M_MASK               (1<<3)
-+#define M98090_LJ_M_SHIFT              3
-+#define M98090_LJ_M_WIDTH              1
-+#define M98090_LJ_S_MASK               (1<<2)
-+#define M98090_LJ_S_SHIFT              2
-+#define M98090_LJ_S_WIDTH              1
-+#define M98090_I2S_M_MASK              (1<<1)
-+#define M98090_I2S_M_SHIFT             1
-+#define M98090_I2S_M_WIDTH             1
-+#define M98090_I2S_S_MASK              (1<<0)
-+#define M98090_I2S_S_SHIFT             0
-+#define M98090_I2S_S_WIDTH             1
-+#define M98090_DAI_ALL_SHIFT           0
-+#define M98090_DAI_ALL_WIDTH           8
-+#define M98090_DAI_ALL_NUM             (1<<M98090_DAI_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_DAC_PATH
-+ */
-+#define M98090_DIG2_HP_MASK            (1<<7)
-+#define M98090_DIG2_HP_SHIFT           7
-+#define M98090_DIG2_HP_WIDTH           1
-+#define M98090_DIG2_EAR_MASK           (1<<6)
-+#define M98090_DIG2_EAR_SHIFT          6
-+#define M98090_DIG2_EAR_WIDTH          1
-+#define M98090_DIG2_SPK_MASK           (1<<5)
-+#define M98090_DIG2_SPK_SHIFT          5
-+#define M98090_DIG2_SPK_WIDTH          1
-+#define M98090_DIG2_LOUT_MASK          (1<<4)
-+#define M98090_DIG2_LOUT_SHIFT         4
-+#define M98090_DIG2_LOUT_WIDTH         1
-+#define M98090_DIG2_ALL_SHIFT          0
-+#define M98090_DIG2_ALL_WIDTH          8
-+#define M98090_DIG2_ALL_NUM            (1<<M98090_DIG2_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_MIC_DIRECT_TO_ADC
-+ */
-+#define M98090_IN12_MIC1_MASK          (1<<7)
-+#define M98090_IN12_MIC1_SHIFT         7
-+#define M98090_IN12_MIC1_WIDTH         1
-+#define M98090_IN34_MIC2_MASK          (1<<6)
-+#define M98090_IN34_MIC2_SHIFT         6
-+#define M98090_IN34_MIC2_WIDTH         1
-+#define M98090_IN56_MIC1_MASK          (1<<5)
-+#define M98090_IN56_MIC1_SHIFT         5
-+#define M98090_IN56_MIC1_WIDTH         1
-+#define M98090_IN56_MIC2_MASK          (1<<4)
-+#define M98090_IN56_MIC2_SHIFT         4
-+#define M98090_IN56_MIC2_WIDTH         1
-+#define M98090_IN12_DADC_MASK          (1<<3)
-+#define M98090_IN12_DADC_SHIFT         3
-+#define M98090_IN12_DADC_WIDTH         1
-+#define M98090_IN34_DADC_MASK          (1<<2)
-+#define M98090_IN34_DADC_SHIFT         2
-+#define M98090_IN34_DADC_WIDTH         1
-+#define M98090_IN56_DADC_MASK          (1<<1)
-+#define M98090_IN56_DADC_SHIFT         1
-+#define M98090_IN56_DADC_WIDTH         1
-+#define M98090_MIC_ALL_SHIFT           0
-+#define M98090_MIC_ALL_WIDTH           8
-+#define M98090_MIC_ALL_NUM             (1<<M98090_MIC_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_LINE_TO_ADC
-+ */
-+#define M98090_IN12S_AB_MASK           (1<<7)
-+#define M98090_IN12S_AB_SHIFT          7
-+#define M98090_IN12S_AB_WIDTH          1
-+#define M98090_IN34S_AB_MASK           (1<<6)
-+#define M98090_IN34S_AB_SHIFT          6
-+#define M98090_IN34S_AB_WIDTH          1
-+#define M98090_IN56S_AB_MASK           (1<<5)
-+#define M98090_IN56S_AB_SHIFT          5
-+#define M98090_IN56S_AB_WIDTH          1
-+#define M98090_IN34D_A_MASK            (1<<4)
-+#define M98090_IN34D_A_SHIFT           4
-+#define M98090_IN34D_A_WIDTH           1
-+#define M98090_IN56D_B_MASK            (1<<3)
-+#define M98090_IN56D_B_SHIFT           3
-+#define M98090_IN56D_B_WIDTH           1
-+#define M98090_LINE_ALL_SHIFT          0
-+#define M98090_LINE_ALL_WIDTH          8
-+#define M98090_LINE_ALL_NUM            (1<<M98090_LINE_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_ANALOG_MIC_LOOP
-+ */
-+#define M98090_IN12_M1HPL_MASK         (1<<7)
-+#define M98090_IN12_M1HPL_SHIFT                7
-+#define M98090_IN12_M1HPL_WIDTH                1
-+#define M98090_IN12_M1SPKL_MASK                (1<<6)
-+#define M98090_IN12_M1SPKL_SHIFT       6
-+#define M98090_IN12_M1SPKL_WIDTH       1
-+#define M98090_IN12_M1EAR_MASK         (1<<5)
-+#define M98090_IN12_M1EAR_SHIFT                5
-+#define M98090_IN12_M1EAR_WIDTH                1
-+#define M98090_IN12_M1LOUTL_MASK       (1<<4)
-+#define M98090_IN12_M1LOUTL_SHIFT      4
-+#define M98090_IN12_M1LOUTL_WIDTH      1
-+#define M98090_IN34_M2HPR_MASK         (1<<3)
-+#define M98090_IN34_M2HPR_SHIFT                3
-+#define M98090_IN34_M2HPR_WIDTH                1
-+#define M98090_IN34_M2SPKR_MASK                (1<<2)
-+#define M98090_IN34_M2SPKR_SHIFT       2
-+#define M98090_IN34_M2SPKR_WIDTH       1
-+#define M98090_IN34_M2EAR_MASK         (1<<1)
-+#define M98090_IN34_M2EAR_SHIFT                1
-+#define M98090_IN34_M2EAR_WIDTH                1
-+#define M98090_IN34_M2LOUTR_MASK       (1<<0)
-+#define M98090_IN34_M2LOUTR_SHIFT      0
-+#define M98090_IN34_M2LOUTR_WIDTH      1
-+#define M98090_AMIC_ALL_SHIFT          0
-+#define M98090_AMIC_ALL_WIDTH          8
-+#define M98090_AMIC_ALL_NUM            (1<<M98090_AMIC_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_ANALOG_LINE_LOOP
-+ */
-+#define M98090_IN12S_ABHP_MASK         (1<<7)
-+#define M98090_IN12S_ABHP_SHIFT                7
-+#define M98090_IN12S_ABHP_WIDTH                1
-+#define M98090_IN34D_ASPKL_MASK                (1<<6)
-+#define M98090_IN34D_ASPKL_SHIFT       6
-+#define M98090_IN34D_ASPKL_WIDTH       1
-+#define M98090_IN34D_AEAR_MASK         (1<<5)
-+#define M98090_IN34D_AEAR_SHIFT                5
-+#define M98090_IN34D_AEAR_WIDTH                1
-+#define M98090_IN12S_ABLOUT_MASK       (1<<4)
-+#define M98090_IN12S_ABLOUT_SHIFT      4
-+#define M98090_IN12S_ABLOUT_WIDTH      1
-+#define M98090_IN34S_ABHP_MASK         (1<<3)
-+#define M98090_IN34S_ABHP_SHIFT                3
-+#define M98090_IN34S_ABHP_WIDTH                1
-+#define M98090_IN56D_BSPKR_MASK                (1<<2)
-+#define M98090_IN56D_BSPKR_SHIFT       2
-+#define M98090_IN56D_BSPKR_WIDTH       1
-+#define M98090_IN56D_BEAR_MASK         (1<<1)
-+#define M98090_IN56D_BEAR_SHIFT                1
-+#define M98090_IN56D_BEAR_WIDTH                1
-+#define M98090_IN34S_ABLOUT_MASK       (1<<0)
-+#define M98090_IN34S_ABLOUT_SHIFT      0
-+#define M98090_IN34S_ABLOUT_WIDTH      1
-+#define M98090_ALIN_ALL_SHIFT          0
-+#define M98090_ALIN_ALL_WIDTH          8
-+#define M98090_ALIN_ALL_NUM            (1<<M98090_ALIN_ALL_WIDTH)
-+
-+/*
-+ * M98090_REG_RESERVED
-+ */
-+
-+/*
-+ * M98090_REG_LINE_INPUT_CONFIG
-+ */
-+#define M98090_IN34DIFF_MASK           (1<<7)
-+#define M98090_IN34DIFF_SHIFT          7
-+#define M98090_IN34DIFF_WIDTH          1
-+#define M98090_IN56DIFF_MASK           (1<<6)
-+#define M98090_IN56DIFF_SHIFT          6
-+#define M98090_IN56DIFF_WIDTH          1
-+#define M98090_IN1SEEN_MASK            (1<<5)
-+#define M98090_IN1SEEN_SHIFT           5
-+#define M98090_IN1SEEN_WIDTH           1
-+#define M98090_IN2SEEN_MASK            (1<<4)
-+#define M98090_IN2SEEN_SHIFT           4
-+#define M98090_IN2SEEN_WIDTH           1
-+#define M98090_IN3SEEN_MASK            (1<<3)
-+#define M98090_IN3SEEN_SHIFT           3
-+#define M98090_IN3SEEN_WIDTH           1
-+#define M98090_IN4SEEN_MASK            (1<<2)
-+#define M98090_IN4SEEN_SHIFT           2
-+#define M98090_IN4SEEN_WIDTH           1
-+#define M98090_IN5SEEN_MASK            (1<<1)
-+#define M98090_IN5SEEN_SHIFT           1
-+#define M98090_IN5SEEN_WIDTH           1
-+#define M98090_IN6SEEN_MASK            (1<<0)
-+#define M98090_IN6SEEN_SHIFT           0
-+#define M98090_IN6SEEN_WIDTH           1
-+
-+/*
-+ * M98090_REG_LINE_INPUT_LEVEL
-+ */
-+#define M98090_MIXG135_MASK            (1<<7)
-+#define M98090_MIXG135_SHIFT           7
-+#define M98090_MIXG135_WIDTH           1
-+#define M98090_MIXG135_NUM             (1<<M98090_MIXG135_WIDTH)
-+#define M98090_MIXG246_MASK            (1<<6)
-+#define M98090_MIXG246_SHIFT           6
-+#define M98090_MIXG246_WIDTH           1
-+#define M98090_MIXG246_NUM             (1<<M98090_MIXG246_WIDTH)
-+#define M98090_LINAPGA_MASK            (7<<3)
-+#define M98090_LINAPGA_SHIFT           3
-+#define M98090_LINAPGA_WIDTH           3
-+#define M98090_LINAPGA_NUM             6
-+#define M98090_LINBPGA_MASK            (7<<0)
-+#define M98090_LINBPGA_SHIFT           0
-+#define M98090_LINBPGA_WIDTH           3
-+#define M98090_LINBPGA_NUM             6
-+
-+/*
-+ * M98090_REG_INPUT_MODE
-+ */
-+#define M98090_EXTBUFA_MASK            (1<<7)
-+#define M98090_EXTBUFA_SHIFT           7
-+#define M98090_EXTBUFA_WIDTH           1
-+#define M98090_EXTBUFA_NUM             (1<<M98090_EXTBUFA_WIDTH)
-+#define M98090_EXTBUFB_MASK            (1<<6)
-+#define M98090_EXTBUFB_SHIFT           6
-+#define M98090_EXTBUFB_WIDTH           1
-+#define M98090_EXTBUFB_NUM             (1<<M98090_EXTBUFB_WIDTH)
-+#define M98090_EXTMIC_MASK             (3<<0)
-+#define M98090_EXTMIC_SHIFT            0
-+#define M98090_EXTMIC1_SHIFT           0
-+#define M98090_EXTMIC2_SHIFT           1
-+#define M98090_EXTMIC_WIDTH            2
-+#define M98090_EXTMIC_NONE             (0<<0)
-+#define M98090_EXTMIC_MIC1             (1<<0)
-+#define M98090_EXTMIC_MIC2             (2<<0)
-+
-+/*
-+ * M98090_REG_MIC1_INPUT_LEVEL
-+ */
-+#define M98090_MIC_PA1EN_MASK          (3<<5)
-+#define M98090_MIC_PA1EN_SHIFT         5
-+#define M98090_MIC_PA1EN_WIDTH         2
-+#define M98090_MIC_PA1EN_NUM           3
-+#define M98090_MIC_PGAM1_MASK          (31<<0)
-+#define M98090_MIC_PGAM1_SHIFT         0
-+#define M98090_MIC_PGAM1_WIDTH         5
-+#define M98090_MIC_PGAM1_NUM           21
-+
-+/*
-+ * M98090_REG_MIC2_INPUT_LEVEL
-+ */
-+#define M98090_MIC_PA2EN_MASK          (3<<5)
-+#define M98090_MIC_PA2EN_SHIFT         5
-+#define M98090_MIC_PA2EN_WIDTH         2
-+#define M98090_MIC_PA2EN_NUM           3
-+#define M98090_MIC_PGAM2_MASK          (31<<0)
-+#define M98090_MIC_PGAM2_SHIFT         0
-+#define M98090_MIC_PGAM2_WIDTH         5
-+#define M98090_MIC_PGAM2_NUM           21
-+
-+/*
-+ * M98090_REG_MIC_BIAS_VOLTAGE
-+ */
-+#define M98090_MBVSEL_MASK             (3<<0)
-+#define M98090_MBVSEL_SHIFT            0
-+#define M98090_MBVSEL_WIDTH            2
-+#define M98090_MBVSEL_2V8              (3<<0)
-+#define M98090_MBVSEL_2V55             (2<<0)
-+#define M98090_MBVSEL_2V4              (1<<0)
-+#define M98090_MBVSEL_2V2              (0<<0)
-+
-+/*
-+ * M98090_REG_DIGITAL_MIC_ENABLE
-+ */
-+#define M98090_MICCLK_MASK             (7<<4)
-+#define M98090_MICCLK_SHIFT            4
-+#define M98090_MICCLK_WIDTH            3
-+#define M98090_DIGMIC4_MASK            (1<<3)
-+#define M98090_DIGMIC4_SHIFT           3
-+#define M98090_DIGMIC4_WIDTH           1
-+#define M98090_DIGMIC4_NUM             (1<<M98090_DIGMIC4_WIDTH)
-+#define M98090_DIGMIC3_MASK            (1<<2)
-+#define M98090_DIGMIC3_SHIFT           2
-+#define M98090_DIGMIC3_WIDTH           1
-+#define M98090_DIGMIC3_NUM             (1<<M98090_DIGMIC3_WIDTH)
-+#define M98090_DIGMICR_MASK            (1<<1)
-+#define M98090_DIGMICR_SHIFT           1
-+#define M98090_DIGMICR_WIDTH           1
-+#define M98090_DIGMICR_NUM             (1<<M98090_DIGMICR_WIDTH)
-+#define M98090_DIGMICL_MASK            (1<<0)
-+#define M98090_DIGMICL_SHIFT           0
-+#define M98090_DIGMICL_WIDTH           1
-+#define M98090_DIGMICL_NUM             (1<<M98090_DIGMICL_WIDTH)
-+
-+/*
-+ * M98090_REG_DIGITAL_MIC_CONFIG
-+ */
-+#define M98090_DMIC_COMP_MASK          (15<<4)
-+#define M98090_DMIC_COMP_SHIFT         4
-+#define M98090_DMIC_COMP_WIDTH         4
-+#define M98090_DMIC_COMP_NUM           (1<<M98090_DMIC_COMP_WIDTH)
-+#define M98090_DMIC_FREQ_MASK          (3<<0)
-+#define M98090_DMIC_FREQ_SHIFT         0
-+#define M98090_DMIC_FREQ_WIDTH         2
-+
-+/*
-+ * M98090_REG_LEFT_ADC_MIXER
-+ */
-+#define M98090_MIXADL_MIC2_MASK                (1<<6)
-+#define M98090_MIXADL_MIC2_SHIFT       6
-+#define M98090_MIXADL_MIC2_WIDTH       1
-+#define M98090_MIXADL_MIC1_MASK                (1<<5)
-+#define M98090_MIXADL_MIC1_SHIFT       5
-+#define M98090_MIXADL_MIC1_WIDTH       1
-+#define M98090_MIXADL_LINEB_MASK       (1<<4)
-+#define M98090_MIXADL_LINEB_SHIFT      4
-+#define M98090_MIXADL_LINEB_WIDTH      1
-+#define M98090_MIXADL_LINEA_MASK       (1<<3)
-+#define M98090_MIXADL_LINEA_SHIFT      3
-+#define M98090_MIXADL_LINEA_WIDTH      1
-+#define M98090_MIXADL_IN65DIFF_MASK    (1<<2)
-+#define M98090_MIXADL_IN65DIFF_SHIFT   2
-+#define M98090_MIXADL_IN65DIFF_WIDTH   1
-+#define M98090_MIXADL_IN34DIFF_MASK    (1<<1)
-+#define M98090_MIXADL_IN34DIFF_SHIFT   1
-+#define M98090_MIXADL_IN34DIFF_WIDTH   1
-+#define M98090_MIXADL_IN12DIFF_MASK    (1<<0)
-+#define M98090_MIXADL_IN12DIFF_SHIFT   0
-+#define M98090_MIXADL_IN12DIFF_WIDTH   1
-+#define M98090_MIXADL_MASK             (255<<0)
-+#define M98090_MIXADL_SHIFT            0
-+#define M98090_MIXADL_WIDTH            8
-+
-+/*
-+ * M98090_REG_RIGHT_ADC_MIXER
-+ */
-+#define M98090_MIXADR_MIC2_MASK                (1<<6)
-+#define M98090_MIXADR_MIC2_SHIFT       6
-+#define M98090_MIXADR_MIC2_WIDTH       1
-+#define M98090_MIXADR_MIC1_MASK                (1<<5)
-+#define M98090_MIXADR_MIC1_SHIFT       5
-+#define M98090_MIXADR_MIC1_WIDTH       1
-+#define M98090_MIXADR_LINEB_MASK       (1<<4)
-+#define M98090_MIXADR_LINEB_SHIFT      4
-+#define M98090_MIXADR_LINEB_WIDTH      1
-+#define M98090_MIXADR_LINEA_MASK       (1<<3)
-+#define M98090_MIXADR_LINEA_SHIFT      3
-+#define M98090_MIXADR_LINEA_WIDTH      1
-+#define M98090_MIXADR_IN65DIFF_MASK    (1<<2)
-+#define M98090_MIXADR_IN65DIFF_SHIFT   2
-+#define M98090_MIXADR_IN65DIFF_WIDTH   1
-+#define M98090_MIXADR_IN34DIFF_MASK    (1<<1)
-+#define M98090_MIXADR_IN34DIFF_SHIFT   1
-+#define M98090_MIXADR_IN34DIFF_WIDTH   1
-+#define M98090_MIXADR_IN12DIFF_MASK    (1<<0)
-+#define M98090_MIXADR_IN12DIFF_SHIFT   0
-+#define M98090_MIXADR_IN12DIFF_WIDTH   1
-+#define M98090_MIXADR_MASK             (255<<0)
-+#define M98090_MIXADR_SHIFT            0
-+#define M98090_MIXADR_WIDTH            8
-+
-+/*
-+ * M98090_REG_LEFT_ADC_LEVEL
-+ */
-+#define M98090_AVLG_MASK               (7<<4)
-+#define M98090_AVLG_SHIFT              4
-+#define M98090_AVLG_WIDTH              3
-+#define M98090_AVLG_NUM                        (1<<M98090_AVLG_WIDTH)
-+#define M98090_AVL_MASK                        (15<<0)
-+#define M98090_AVL_SHIFT               0
-+#define M98090_AVL_WIDTH               4
-+#define M98090_AVL_NUM                 (1<<M98090_AVL_WIDTH)
-+
-+/*
-+ * M98090_REG_RIGHT_ADC_LEVEL
-+ */
-+#define M98090_AVRG_MASK               (7<<4)
-+#define M98090_AVRG_SHIFT              4
-+#define M98090_AVRG_WIDTH              3
-+#define M98090_AVRG_NUM                        (1<<M98090_AVRG_WIDTH)
-+#define M98090_AVR_MASK                        (15<<0)
-+#define M98090_AVR_SHIFT               0
-+#define M98090_AVR_WIDTH               4
-+#define M98090_AVR_NUM                 (1<<M98090_AVR_WIDTH)
-+
-+/*
-+ * M98090_REG_ADC_BIQUAD_LEVEL
-+ */
-+#define M98090_AVBQ_MASK               (15<<0)
-+#define M98090_AVBQ_SHIFT              0
-+#define M98090_AVBQ_WIDTH              4
-+#define M98090_AVBQ_NUM                        (1<<M98090_AVBQ_WIDTH)
-+
-+/*
-+ * M98090_REG_ADC_SIDETONE
-+ */
-+#define M98090_DSTSR_MASK              (1<<7)
-+#define M98090_DSTSR_SHIFT             7
-+#define M98090_DSTSR_WIDTH             1
-+#define M98090_DSTSL_MASK              (1<<6)
-+#define M98090_DSTSL_SHIFT             6
-+#define M98090_DSTSL_WIDTH             1
-+#define M98090_DVST_MASK               (31<<0)
-+#define M98090_DVST_SHIFT              0
-+#define M98090_DVST_WIDTH              5
-+#define M98090_DVST_NUM                        31
-+
-+/*
-+ * M98090_REG_SYSTEM_CLOCK
-+ */
-+#define M98090_PSCLK_MASK              (3<<4)
-+#define M98090_PSCLK_SHIFT             4
-+#define M98090_PSCLK_WIDTH             2
-+#define M98090_PSCLK_DISABLED          (0<<4)
-+#define M98090_PSCLK_DIV1              (1<<4)
-+#define M98090_PSCLK_DIV2              (2<<4)
-+#define M98090_PSCLK_DIV4              (3<<4)
-+
-+/*
-+ * M98090_REG_CLOCK_MODE
-+ */
-+#define M98090_FREQ_MASK               (15<<4)
-+#define M98090_FREQ_SHIFT              4
-+#define M98090_FREQ_WIDTH              4
-+#define M98090_USE_M1_MASK             (1<<0)
-+#define M98090_USE_M1_SHIFT            0
-+#define M98090_USE_M1_WIDTH            1
-+#define M98090_USE_M1_NUM              (1<<M98090_USE_M1_WIDTH)
-+
-+/*
-+ * M98090_REG_CLOCK_RATIO_NI_MSB
-+ */
-+#define M98090_NI_HI_MASK              (127<<0)
-+#define M98090_NI_HI_SHIFT             0
-+#define M98090_NI_HI_WIDTH             7
-+#define M98090_NI_HI_NUM               (1<<M98090_NI_HI_WIDTH)
-+
-+/*
-+ * M98090_REG_CLOCK_RATIO_NI_LSB
-+ */
-+#define M98090_NI_LO_MASK              (255<<0)
-+#define M98090_NI_LO_SHIFT             0
-+#define M98090_NI_LO_WIDTH             8
-+#define M98090_NI_LO_NUM               (1<<M98090_NI_LO_WIDTH)
-+
-+/*
-+ * M98090_REG_CLOCK_RATIO_MI_MSB
-+ */
-+#define M98090_MI_HI_MASK              (255<<0)
-+#define M98090_MI_HI_SHIFT             0
-+#define M98090_MI_HI_WIDTH             8
-+#define M98090_MI_HI_NUM               (1<<M98090_MI_HI_WIDTH)
-+
-+/*
-+ * M98090_REG_CLOCK_RATIO_MI_LSB
-+ */
-+#define M98090_MI_LO_MASK              (255<<0)
-+#define M98090_MI_LO_SHIFT             0
-+#define M98090_MI_LO_WIDTH             8
-+#define M98090_MI_LO_NUM               (1<<M98090_MI_LO_WIDTH)
-+
-+/*
-+ * M98090_REG_MASTER_MODE
-+ */
-+#define M98090_MAS_MASK                        (1<<7)
-+#define M98090_MAS_SHIFT               7
-+#define M98090_MAS_WIDTH               1
-+#define M98090_BSEL_MASK               (1<<0)
-+#define M98090_BSEL_SHIFT              0
-+#define M98090_BSEL_WIDTH              1
-+#define M98090_BSEL_32                 (1<<0)
-+#define M98090_BSEL_48                 (2<<0)
-+#define M98090_BSEL_64                 (3<<0)
-+
-+/*
-+ * M98090_REG_INTERFACE_FORMAT
-+ */
-+#define M98090_RJ_MASK                 (1<<5)
-+#define M98090_RJ_SHIFT                        5
-+#define M98090_RJ_WIDTH                        1
-+#define M98090_WCI_MASK                        (1<<4)
-+#define M98090_WCI_SHIFT               4
-+#define M98090_WCI_WIDTH               1
-+#define M98090_BCI_MASK                        (1<<3)
-+#define M98090_BCI_SHIFT               3
-+#define M98090_BCI_WIDTH               1
-+#define M98090_DLY_MASK                        (1<<2)
-+#define M98090_DLY_SHIFT               2
-+#define M98090_DLY_WIDTH               1
-+#define M98090_WS_MASK                 (3<<0)
-+#define M98090_WS_SHIFT                        0
-+#define M98090_WS_WIDTH                        2
-+#define M98090_WS_NUM                  (1<<M98090_WS_WIDTH)
-+
-+/*
-+ * M98090_REG_TDM_CONTROL
-+ */
-+#define M98090_FSW_MASK                        (1<<1)
-+#define M98090_FSW_SHIFT               1
-+#define M98090_FSW_WIDTH               1
-+#define M98090_TDM_MASK                        (1<<0)
-+#define M98090_TDM_SHIFT               0
-+#define M98090_TDM_WIDTH               1
-+#define M98090_TDM_NUM                 (1<<M98090_TDM_WIDTH)
-+
-+/*
-+ * M98090_REG_TDM_FORMAT
-+ */
-+#define M98090_TDM_SLOTL_MASK          (3<<6)
-+#define M98090_TDM_SLOTL_SHIFT         6
-+#define M98090_TDM_SLOTL_WIDTH         2
-+#define M98090_TDM_SLOTL_NUM           (1<<M98090_TDM_SLOTL_WIDTH)
-+#define M98090_TDM_SLOTR_MASK          (3<<4)
-+#define M98090_TDM_SLOTR_SHIFT         4
-+#define M98090_TDM_SLOTR_WIDTH         2
-+#define M98090_TDM_SLOTR_NUM           (1<<M98090_TDM_SLOTR_WIDTH)
-+#define M98090_TDM_SLOTDLY_MASK                (15<<0)
-+#define M98090_TDM_SLOTDLY_SHIFT       0
-+#define M98090_TDM_SLOTDLY_WIDTH       4
-+#define M98090_TDM_SLOTDLY_NUM         (1<<M98090_TDM_SLOTDLY_WIDTH)
-+
-+/*
-+ * M98090_REG_IO_CONFIGURATION
-+ */
-+#define M98090_LTEN_MASK               (1<<5)
-+#define M98090_LTEN_SHIFT              5
-+#define M98090_LTEN_WIDTH              1
-+#define M98090_LTEN_NUM                        (1<<M98090_LTEN_WIDTH)
-+#define M98090_LBEN_MASK               (1<<4)
-+#define M98090_LBEN_SHIFT              4
-+#define M98090_LBEN_WIDTH              1
-+#define M98090_LBEN_NUM                        (1<<M98090_LBEN_WIDTH)
-+#define M98090_DMONO_MASK              (1<<3)
-+#define M98090_DMONO_SHIFT             3
-+#define M98090_DMONO_WIDTH             1
-+#define M98090_DMONO_NUM               (1<<M98090_DMONO_WIDTH)
-+#define M98090_HIZOFF_MASK             (1<<2)
-+#define M98090_HIZOFF_SHIFT            2
-+#define M98090_HIZOFF_WIDTH            1
-+#define M98090_HIZOFF_NUM              (1<<M98090_HIZOFF_WIDTH)
-+#define M98090_SDOEN_MASK              (1<<1)
-+#define M98090_SDOEN_SHIFT             1
-+#define M98090_SDOEN_WIDTH             1
-+#define M98090_SDOEN_NUM               (1<<M98090_SDOEN_WIDTH)
-+#define M98090_SDIEN_MASK              (1<<0)
-+#define M98090_SDIEN_SHIFT             0
-+#define M98090_SDIEN_WIDTH             1
-+#define M98090_SDIEN_NUM               (1<<M98090_SDIEN_WIDTH)
-+
-+/*
-+ * M98090_REG_FILTER_CONFIG
-+ */
-+#define M98090_MODE_MASK               (1<<7)
-+#define M98090_MODE_SHIFT              7
-+#define M98090_MODE_WIDTH              1
-+#define M98090_AHPF_MASK               (1<<6)
-+#define M98090_AHPF_SHIFT              6
-+#define M98090_AHPF_WIDTH              1
-+#define M98090_AHPF_NUM                        (1<<M98090_AHPF_WIDTH)
-+#define M98090_DHPF_MASK               (1<<5)
-+#define M98090_DHPF_SHIFT              5
-+#define M98090_DHPF_WIDTH              1
-+#define M98090_DHPF_NUM                        (1<<M98090_DHPF_WIDTH)
-+#define M98090_DHF_MASK                        (1<<4)
-+#define M98090_DHF_SHIFT               4
-+#define M98090_DHF_WIDTH               1
-+#define M98090_FLT_DMIC34MODE_MASK     (1<<3)
-+#define M98090_FLT_DMIC34MODE_SHIFT    3
-+#define M98090_FLT_DMIC34MODE_WIDTH    1
-+#define M98090_FLT_DMIC34HPF_MASK      (1<<2)
-+#define M98090_FLT_DMIC34HPF_SHIFT     2
-+#define M98090_FLT_DMIC34HPF_WIDTH     1
-+#define M98090_FLT_DMIC34HPF_NUM       (1<<M98090_FLT_DMIC34HPF_WIDTH)
-+
-+/*
-+ * M98090_REG_DAI_PLAYBACK_LEVEL
-+ */
-+#define M98090_DVM_MASK                        (1<<7)
-+#define M98090_DVM_SHIFT               7
-+#define M98090_DVM_WIDTH               1
-+#define M98090_DVG_MASK                        (3<<4)
-+#define M98090_DVG_SHIFT               4
-+#define M98090_DVG_WIDTH               2
-+#define M98090_DVG_NUM                 (1<<M98090_DVG_WIDTH)
-+#define M98090_DV_MASK                 (15<<0)
-+#define M98090_DV_SHIFT                        0
-+#define M98090_DV_WIDTH                        4
-+#define M98090_DV_NUM                  (1<<M98090_DV_WIDTH)
-+
-+/*
-+ * M98090_REG_DAI_PLAYBACK_LEVEL_EQ
-+ */
-+#define M98090_EQCLPN_MASK             (1<<4)
-+#define M98090_EQCLPN_SHIFT            4
-+#define M98090_EQCLPN_WIDTH            1
-+#define M98090_EQCLPN_NUM              (1<<M98090_EQCLPN_WIDTH)
-+#define M98090_DVEQ_MASK               (15<<0)
-+#define M98090_DVEQ_SHIFT              0
-+#define M98090_DVEQ_WIDTH              4
-+#define M98090_DVEQ_NUM                        (1<<M98090_DVEQ_WIDTH)
-+
-+/*
-+ * M98090_REG_LEFT_HP_MIXER
-+ */
-+#define M98090_MIXHPL_MIC2_MASK                (1<<5)
-+#define M98090_MIXHPL_MIC2_SHIFT       5
-+#define M98090_MIXHPL_MIC2_WIDTH       1
-+#define M98090_MIXHPL_MIC1_MASK                (1<<4)
-+#define M98090_MIXHPL_MIC1_SHIFT       4
-+#define M98090_MIXHPL_MIC1_WIDTH       1
-+#define M98090_MIXHPL_LINEB_MASK       (1<<3)
-+#define M98090_MIXHPL_LINEB_SHIFT      3
-+#define M98090_MIXHPL_LINEB_WIDTH      1
-+#define M98090_MIXHPL_LINEA_MASK       (1<<2)
-+#define M98090_MIXHPL_LINEA_SHIFT      2
-+#define M98090_MIXHPL_LINEA_WIDTH      1
-+#define M98090_MIXHPL_DACR_MASK                (1<<1)
-+#define M98090_MIXHPL_DACR_SHIFT       1
-+#define M98090_MIXHPL_DACR_WIDTH       1
-+#define M98090_MIXHPL_DACL_MASK                (1<<0)
-+#define M98090_MIXHPL_DACL_SHIFT       0
-+#define M98090_MIXHPL_DACL_WIDTH       1
-+#define M98090_MIXHPL_MASK             (63<<0)
-+#define M98090_MIXHPL_SHIFT            0
-+#define M98090_MIXHPL_WIDTH            6
-+
-+/*
-+ * M98090_REG_RIGHT_HP_MIXER
-+ */
-+#define M98090_MIXHPR_MIC2_MASK                (1<<5)
-+#define M98090_MIXHPR_MIC2_SHIFT       5
-+#define M98090_MIXHPR_MIC2_WIDTH       1
-+#define M98090_MIXHPR_MIC1_MASK                (1<<4)
-+#define M98090_MIXHPR_MIC1_SHIFT       4
-+#define M98090_MIXHPR_MIC1_WIDTH       1
-+#define M98090_MIXHPR_LINEB_MASK       (1<<3)
-+#define M98090_MIXHPR_LINEB_SHIFT      3
-+#define M98090_MIXHPR_LINEB_WIDTH      1
-+#define M98090_MIXHPR_LINEA_MASK       (1<<2)
-+#define M98090_MIXHPR_LINEA_SHIFT      2
-+#define M98090_MIXHPR_LINEA_WIDTH      1
-+#define M98090_MIXHPR_DACR_MASK                (1<<1)
-+#define M98090_MIXHPR_DACR_SHIFT       1
-+#define M98090_MIXHPR_DACR_WIDTH       1
-+#define M98090_MIXHPR_DACL_MASK                (1<<0)
-+#define M98090_MIXHPR_DACL_SHIFT       0
-+#define M98090_MIXHPR_DACL_WIDTH       1
-+#define M98090_MIXHPR_MASK             (63<<0)
-+#define M98090_MIXHPR_SHIFT            0
-+#define M98090_MIXHPR_WIDTH            6
-+
-+/*
-+ * M98090_REG_HP_CONTROL
-+ */
-+#define M98090_MIXHPRSEL_MASK          (1<<5)
-+#define M98090_MIXHPRSEL_SHIFT         5
-+#define M98090_MIXHPRSEL_WIDTH         1
-+#define M98090_MIXHPLSEL_MASK          (1<<4)
-+#define M98090_MIXHPLSEL_SHIFT         4
-+#define M98090_MIXHPLSEL_WIDTH         1
-+#define M98090_MIXHPRG_MASK            (3<<2)
-+#define M98090_MIXHPRG_SHIFT           2
-+#define M98090_MIXHPRG_WIDTH           2
-+#define M98090_MIXHPRG_NUM             (1<<M98090_MIXHPRG_WIDTH)
-+#define M98090_MIXHPLG_MASK            (3<<0)
-+#define M98090_MIXHPLG_SHIFT           0
-+#define M98090_MIXHPLG_WIDTH           2
-+#define M98090_MIXHPLG_NUM             (1<<M98090_MIXHPLG_WIDTH)
-+
-+/*
-+ * M98090_REG_LEFT_HP_VOLUME
-+ */
-+#define M98090_HPLM_MASK               (1<<7)
-+#define M98090_HPLM_SHIFT              7
-+#define M98090_HPLM_WIDTH              1
-+#define M98090_HPVOLL_MASK             (31<<0)
-+#define M98090_HPVOLL_SHIFT            0
-+#define M98090_HPVOLL_WIDTH            5
-+#define M98090_HPVOLL_NUM              (1<<M98090_HPVOLL_WIDTH)
-+
-+/*
-+ * M98090_REG_RIGHT_HP_VOLUME
-+ */
-+#define M98090_HPRM_MASK               (1<<7)
-+#define M98090_HPRM_SHIFT              7
-+#define M98090_HPRM_WIDTH              1
-+#define M98090_HPVOLR_MASK             (31<<0)
-+#define M98090_HPVOLR_SHIFT            0
-+#define M98090_HPVOLR_WIDTH            5
-+#define M98090_HPVOLR_NUM              (1<<M98090_HPVOLR_WIDTH)
-+
-+/*
-+ * M98090_REG_LEFT_SPK_MIXER
-+ */
-+#define M98090_MIXSPL_MIC2_MASK                (1<<5)
-+#define M98090_MIXSPL_MIC2_SHIFT       5
-+#define M98090_MIXSPL_MIC2_WIDTH       1
-+#define M98090_MIXSPL_MIC1_MASK                (1<<4)
-+#define M98090_MIXSPL_MIC1_SHIFT       4
-+#define M98090_MIXSPL_MIC1_WIDTH       1
-+#define M98090_MIXSPL_LINEB_MASK       (1<<3)
-+#define M98090_MIXSPL_LINEB_SHIFT      3
-+#define M98090_MIXSPL_LINEB_WIDTH      1
-+#define M98090_MIXSPL_LINEA_MASK       (1<<2)
-+#define M98090_MIXSPL_LINEA_SHIFT      2
-+#define M98090_MIXSPL_LINEA_WIDTH      1
-+#define M98090_MIXSPL_DACR_MASK                (1<<1)
-+#define M98090_MIXSPL_DACR_SHIFT       1
-+#define M98090_MIXSPL_DACR_WIDTH       1
-+#define M98090_MIXSPL_DACL_MASK                (1<<0)
-+#define M98090_MIXSPL_DACL_SHIFT       0
-+#define M98090_MIXSPL_DACL_WIDTH       1
-+#define M98090_MIXSPL_MASK             (63<<0)
-+#define M98090_MIXSPL_SHIFT            0
-+#define M98090_MIXSPL_WIDTH            6
-+#define M98090_MIXSPR_DACR_MASK                (1<<1)
-+#define M98090_MIXSPR_DACR_SHIFT       1
-+#define M98090_MIXSPR_DACR_WIDTH       1
-+
-+
-+/*
-+ * M98090_REG_RIGHT_SPK_MIXER
-+ */
-+#define M98090_SPK_SLAVE_MASK          (1<<6)
-+#define M98090_SPK_SLAVE_SHIFT         6
-+#define M98090_SPK_SLAVE_WIDTH         1
-+#define M98090_MIXSPR_MIC2_MASK                (1<<5)
-+#define M98090_MIXSPR_MIC2_SHIFT       5
-+#define M98090_MIXSPR_MIC2_WIDTH       1
-+#define M98090_MIXSPR_MIC1_MASK                (1<<4)
-+#define M98090_MIXSPR_MIC1_SHIFT       4
-+#define M98090_MIXSPR_MIC1_WIDTH       1
-+#define M98090_MIXSPR_LINEB_MASK       (1<<3)
-+#define M98090_MIXSPR_LINEB_SHIFT      3
-+#define M98090_MIXSPR_LINEB_WIDTH      1
-+#define M98090_MIXSPR_LINEA_MASK       (1<<2)
-+#define M98090_MIXSPR_LINEA_SHIFT      2
-+#define M98090_MIXSPR_LINEA_WIDTH      1
-+#define M98090_MIXSPR_DACR_MASK                (1<<1)
-+#define M98090_MIXSPR_DACR_SHIFT       1
-+#define M98090_MIXSPR_DACR_WIDTH       1
-+#define M98090_MIXSPR_DACL_MASK                (1<<0)
-+#define M98090_MIXSPR_DACL_SHIFT       0
-+#define M98090_MIXSPR_DACL_WIDTH       1
-+#define M98090_MIXSPR_MASK             (63<<0)
-+#define M98090_MIXSPR_SHIFT            0
-+#define M98090_MIXSPR_WIDTH            6
-+
-+/*
-+ * M98090_REG_SPK_CONTROL
-+ */
-+#define M98090_MIXSPRG_MASK            (3<<2)
-+#define M98090_MIXSPRG_SHIFT           2
-+#define M98090_MIXSPRG_WIDTH           2
-+#define M98090_MIXSPRG_NUM             (1<<M98090_MIXSPRG_WIDTH)
-+#define M98090_MIXSPLG_MASK            (3<<0)
-+#define M98090_MIXSPLG_SHIFT           0
-+#define M98090_MIXSPLG_WIDTH           2
-+#define M98090_MIXSPLG_NUM             (1<<M98090_MIXSPLG_WIDTH)
-+
-+/*
-+ * M98090_REG_LEFT_SPK_VOLUME
-+ */
-+#define M98090_SPLM_MASK               (1<<7)
-+#define M98090_SPLM_SHIFT              7
-+#define M98090_SPLM_WIDTH              1
-+#define M98090_SPVOLL_MASK             (63<<0)
-+#define M98090_SPVOLL_SHIFT            0
-+#define M98090_SPVOLL_WIDTH            6
-+#define M98090_SPVOLL_NUM              40
-+
-+/*
-+ * M98090_REG_RIGHT_SPK_VOLUME
-+ */
-+#define M98090_SPRM_MASK               (1<<7)
-+#define M98090_SPRM_SHIFT              7
-+#define M98090_SPRM_WIDTH              1
-+#define M98090_SPVOLR_MASK             (63<<0)
-+#define M98090_SPVOLR_SHIFT            0
-+#define M98090_SPVOLR_WIDTH            6
-+#define M98090_SPVOLR_NUM              40
-+
-+/*
-+ * M98090_REG_DRC_TIMING
-+ */
-+#define M98090_DRCEN_MASK              (1<<7)
-+#define M98090_DRCEN_SHIFT             7
-+#define M98090_DRCEN_WIDTH             1
-+#define M98090_DRCEN_NUM               (1<<M98090_DRCEN_WIDTH)
-+#define M98090_DRCRLS_MASK             (7<<4)
-+#define M98090_DRCRLS_SHIFT            4
-+#define M98090_DRCRLS_WIDTH            3
-+#define M98090_DRCATK_MASK             (7<<0)
-+#define M98090_DRCATK_SHIFT            0
-+#define M98090_DRCATK_WIDTH            3
-+
-+/*
-+ * M98090_REG_DRC_COMPRESSOR
-+ */
-+#define M98090_DRCCMP_MASK             (7<<5)
-+#define M98090_DRCCMP_SHIFT            5
-+#define M98090_DRCCMP_WIDTH            3
-+#define M98090_DRCTHC_MASK             (31<<0)
-+#define M98090_DRCTHC_SHIFT            0
-+#define M98090_DRCTHC_WIDTH            5
-+#define M98090_DRCTHC_NUM              (1<<M98090_DRCTHC_WIDTH)
-+
-+/*
-+ * M98090_REG_DRC_EXPANDER
-+ */
-+#define M98090_DRCEXP_MASK             (7<<5)
-+#define M98090_DRCEXP_SHIFT            5
-+#define M98090_DRCEXP_WIDTH            3
-+#define M98090_DRCTHE_MASK             (31<<0)
-+#define M98090_DRCTHE_SHIFT            0
-+#define M98090_DRCTHE_WIDTH            5
-+#define M98090_DRCTHE_NUM              (1<<M98090_DRCTHE_WIDTH)
-+
-+/*
-+ * M98090_REG_DRC_GAIN
-+ */
-+#define M98090_DRCG_MASK               (31<<0)
-+#define M98090_DRCG_SHIFT              0
-+#define M98090_DRCG_WIDTH              5
-+#define M98090_DRCG_NUM                        13
-+
-+/*
-+ * M98090_REG_RCV_LOUTL_MIXER
-+ */
-+#define M98090_MIXRCVL_MIC2_MASK       (1<<5)
-+#define M98090_MIXRCVL_MIC2_SHIFT      5
-+#define M98090_MIXRCVL_MIC2_WIDTH      1
-+#define M98090_MIXRCVL_MIC1_MASK       (1<<4)
-+#define M98090_MIXRCVL_MIC1_SHIFT      4
-+#define M98090_MIXRCVL_MIC1_WIDTH      1
-+#define M98090_MIXRCVL_LINEB_MASK      (1<<3)
-+#define M98090_MIXRCVL_LINEB_SHIFT     3
-+#define M98090_MIXRCVL_LINEB_WIDTH     1
-+#define M98090_MIXRCVL_LINEA_MASK      (1<<2)
-+#define M98090_MIXRCVL_LINEA_SHIFT     2
-+#define M98090_MIXRCVL_LINEA_WIDTH     1
-+#define M98090_MIXRCVL_DACR_MASK       (1<<1)
-+#define M98090_MIXRCVL_DACR_SHIFT      1
-+#define M98090_MIXRCVL_DACR_WIDTH      1
-+#define M98090_MIXRCVL_DACL_MASK       (1<<0)
-+#define M98090_MIXRCVL_DACL_SHIFT      0
-+#define M98090_MIXRCVL_DACL_WIDTH      1
-+#define M98090_MIXRCVL_MASK            (63<<0)
-+#define M98090_MIXRCVL_SHIFT           0
-+#define M98090_MIXRCVL_WIDTH           6
-+
-+/*
-+ * M98090_REG_RCV_LOUTL_CONTROL
-+ */
-+#define M98090_MIXRCVLG_MASK           (3<<0)
-+#define M98090_MIXRCVLG_SHIFT          0
-+#define M98090_MIXRCVLG_WIDTH          2
-+#define M98090_MIXRCVLG_NUM            (1<<M98090_MIXRCVLG_WIDTH)
-+
-+/*
-+ * M98090_REG_RCV_LOUTL_VOLUME
-+ */
-+#define M98090_RCVLM_MASK              (1<<7)
-+#define M98090_RCVLM_SHIFT             7
-+#define M98090_RCVLM_WIDTH             1
-+#define M98090_RCVLVOL_MASK            (31<<0)
-+#define M98090_RCVLVOL_SHIFT           0
-+#define M98090_RCVLVOL_WIDTH           5
-+#define M98090_RCVLVOL_NUM             (1<<M98090_RCVLVOL_WIDTH)
-+
-+/*
-+ * M98090_REG_LOUTR_MIXER
-+ */
-+#define M98090_LINMOD_MASK             (1<<7)
-+#define M98090_LINMOD_SHIFT            7
-+#define M98090_LINMOD_WIDTH            1
-+#define M98090_MIXRCVR_MIC2_MASK       (1<<5)
-+#define M98090_MIXRCVR_MIC2_SHIFT      5
-+#define M98090_MIXRCVR_MIC2_WIDTH      1
-+#define M98090_MIXRCVR_MIC1_MASK       (1<<4)
-+#define M98090_MIXRCVR_MIC1_SHIFT      4
-+#define M98090_MIXRCVR_MIC1_WIDTH      1
-+#define M98090_MIXRCVR_LINEB_MASK      (1<<3)
-+#define M98090_MIXRCVR_LINEB_SHIFT     3
-+#define M98090_MIXRCVR_LINEB_WIDTH     1
-+#define M98090_MIXRCVR_LINEA_MASK      (1<<2)
-+#define M98090_MIXRCVR_LINEA_SHIFT     2
-+#define M98090_MIXRCVR_LINEA_WIDTH     1
-+#define M98090_MIXRCVR_DACR_MASK       (1<<1)
-+#define M98090_MIXRCVR_DACR_SHIFT      1
-+#define M98090_MIXRCVR_DACR_WIDTH      1
-+#define M98090_MIXRCVR_DACL_MASK       (1<<0)
-+#define M98090_MIXRCVR_DACL_SHIFT      0
-+#define M98090_MIXRCVR_DACL_WIDTH      1
-+#define M98090_MIXRCVR_MASK            (63<<0)
-+#define M98090_MIXRCVR_SHIFT           0
-+#define M98090_MIXRCVR_WIDTH           6
-+
-+/*
-+ * M98090_REG_LOUTR_CONTROL
-+ */
-+#define M98090_MIXRCVRG_MASK           (3<<0)
-+#define M98090_MIXRCVRG_SHIFT          0
-+#define M98090_MIXRCVRG_WIDTH          2
-+#define M98090_MIXRCVRG_NUM            (1<<M98090_MIXRCVRG_WIDTH)
-+
-+/*
-+ * M98090_REG_LOUTR_VOLUME
-+ */
-+#define M98090_RCVRM_MASK              (1<<7)
-+#define M98090_RCVRM_SHIFT             7
-+#define M98090_RCVRM_WIDTH             1
-+#define M98090_RCVRVOL_MASK            (31<<0)
-+#define M98090_RCVRVOL_SHIFT           0
-+#define M98090_RCVRVOL_WIDTH           5
-+#define M98090_RCVRVOL_NUM             (1<<M98090_RCVRVOL_WIDTH)
-+
-+/*
-+ * M98090_REG_JACK_DETECT
-+ */
-+#define M98090_JDETEN_MASK             (1<<7)
-+#define M98090_JDETEN_SHIFT            7
-+#define M98090_JDETEN_WIDTH            1
-+#define M98090_JDWK_MASK               (1<<6)
-+#define M98090_JDWK_SHIFT              6
-+#define M98090_JDWK_WIDTH              1
-+#define M98090_JDEB_MASK               (3<<0)
-+#define M98090_JDEB_SHIFT              0
-+#define M98090_JDEB_WIDTH              2
-+#define M98090_JDEB_25MS               (0<<0)
-+#define M98090_JDEB_50MS               (1<<0)
-+#define M98090_JDEB_100MS              (2<<0)
-+#define M98090_JDEB_200MS              (3<<0)
-+
-+/*
-+ * M98090_REG_INPUT_ENABLE
-+ */
-+#define M98090_MBEN_MASK               (1<<4)
-+#define M98090_MBEN_SHIFT              4
-+#define M98090_MBEN_WIDTH              1
-+#define M98090_LINEAEN_MASK            (1<<3)
-+#define M98090_LINEAEN_SHIFT           3
-+#define M98090_LINEAEN_WIDTH           1
-+#define M98090_LINEBEN_MASK            (1<<2)
-+#define M98090_LINEBEN_SHIFT           2
-+#define M98090_LINEBEN_WIDTH           1
-+#define M98090_ADREN_MASK              (1<<1)
-+#define M98090_ADREN_SHIFT             1
-+#define M98090_ADREN_WIDTH             1
-+#define M98090_ADLEN_MASK              (1<<0)
-+#define M98090_ADLEN_SHIFT             0
-+#define M98090_ADLEN_WIDTH             1
-+
-+/*
-+ * M98090_REG_OUTPUT_ENABLE
-+ */
-+#define M98090_HPREN_MASK              (1<<7)
-+#define M98090_HPREN_SHIFT             7
-+#define M98090_HPREN_WIDTH             1
-+#define M98090_HPLEN_MASK              (1<<6)
-+#define M98090_HPLEN_SHIFT             6
-+#define M98090_HPLEN_WIDTH             1
-+#define M98090_SPREN_MASK              (1<<5)
-+#define M98090_SPREN_SHIFT             5
-+#define M98090_SPREN_WIDTH             1
-+#define M98090_SPLEN_MASK              (1<<4)
-+#define M98090_SPLEN_SHIFT             4
-+#define M98090_SPLEN_WIDTH             1
-+#define M98090_RCVLEN_MASK             (1<<3)
-+#define M98090_RCVLEN_SHIFT            3
-+#define M98090_RCVLEN_WIDTH            1
-+#define M98090_RCVREN_MASK             (1<<2)
-+#define M98090_RCVREN_SHIFT            2
-+#define M98090_RCVREN_WIDTH            1
-+#define M98090_DAREN_MASK              (1<<1)
-+#define M98090_DAREN_SHIFT             1
-+#define M98090_DAREN_WIDTH             1
-+#define M98090_DALEN_MASK              (1<<0)
-+#define M98090_DALEN_SHIFT             0
-+#define M98090_DALEN_WIDTH             1
-+
-+/*
-+ * M98090_REG_LEVEL_CONTROL
-+ */
-+#define M98090_ZDENN_MASK              (1<<2)
-+#define M98090_ZDENN_SHIFT             2
-+#define M98090_ZDENN_WIDTH             1
-+#define M98090_ZDENN_NUM               (1<<M98090_ZDENN_WIDTH)
-+#define M98090_VS2ENN_MASK             (1<<1)
-+#define M98090_VS2ENN_SHIFT            1
-+#define M98090_VS2ENN_WIDTH            1
-+#define M98090_VS2ENN_NUM              (1<<M98090_VS2ENN_WIDTH)
-+#define M98090_VSENN_MASK              (1<<0)
-+#define M98090_VSENN_SHIFT             0
-+#define M98090_VSENN_WIDTH             1
-+#define M98090_VSENN_NUM               (1<<M98090_VSENN_WIDTH)
-+
-+/*
-+ * M98090_REG_DSP_FILTER_ENABLE
-+ */
-+#define M98090_DMIC34BQEN_MASK         (1<<4)
-+#define M98090_DMIC34BQEN_SHIFT                4
-+#define M98090_DMIC34BQEN_WIDTH                1
-+#define M98090_DMIC34BQEN_NUM          (1<<M98090_DMIC34BQEN_WIDTH)
-+#define M98090_ADCBQEN_MASK            (1<<3)
-+#define M98090_ADCBQEN_SHIFT           3
-+#define M98090_ADCBQEN_WIDTH           1
-+#define M98090_ADCBQEN_NUM             (1<<M98090_ADCBQEN_WIDTH)
-+#define M98090_EQ3BANDEN_MASK          (1<<2)
-+#define M98090_EQ3BANDEN_SHIFT         2
-+#define M98090_EQ3BANDEN_WIDTH         1
-+#define M98090_EQ3BANDEN_NUM           (1<<M98090_EQ3BANDEN_WIDTH)
-+#define M98090_EQ5BANDEN_MASK          (1<<1)
-+#define M98090_EQ5BANDEN_SHIFT         1
-+#define M98090_EQ5BANDEN_WIDTH         1
-+#define M98090_EQ5BANDEN_NUM           (1<<M98090_EQ5BANDEN_WIDTH)
-+#define M98090_EQ7BANDEN_MASK          (1<<0)
-+#define M98090_EQ7BANDEN_SHIFT         0
-+#define M98090_EQ7BANDEN_WIDTH         1
-+#define M98090_EQ7BANDEN_NUM           (1<<M98090_EQ7BANDEN_WIDTH)
-+
-+/*
-+ * M98090_REG_BIAS_CONTROL
-+ */
-+#define M98090_VCM_MODE_MASK           (1<<0)
-+#define M98090_VCM_MODE_SHIFT          0
-+#define M98090_VCM_MODE_WIDTH          1
-+#define M98090_VCM_MODE_NUM            (1<<M98090_VCM_MODE_WIDTH)
-+
-+/*
-+ * M98090_REG_DAC_CONTROL
-+ */
-+#define M98090_PERFMODE_MASK           (1<<1)
-+#define M98090_PERFMODE_SHIFT          1
-+#define M98090_PERFMODE_WIDTH          1
-+#define M98090_PERFMODE_NUM            (1<<M98090_PERFMODE_WIDTH)
-+#define M98090_DACHP_MASK              (1<<0)
-+#define M98090_DACHP_SHIFT             0
-+#define M98090_DACHP_WIDTH             1
-+#define M98090_DACHP_NUM               (1<<M98090_DACHP_WIDTH)
-+
-+/*
-+ * M98090_REG_ADC_CONTROL
-+ */
-+#define M98090_OSR128_MASK             (1<<2)
-+#define M98090_OSR128_SHIFT            2
-+#define M98090_OSR128_WIDTH            1
-+#define M98090_ADCDITHER_MASK          (1<<1)
-+#define M98090_ADCDITHER_SHIFT         1
-+#define M98090_ADCDITHER_WIDTH         1
-+#define M98090_ADCDITHER_NUM           (1<<M98090_ADCDITHER_WIDTH)
-+#define M98090_ADCHP_MASK              (1<<0)
-+#define M98090_ADCHP_SHIFT             0
-+#define M98090_ADCHP_WIDTH             1
-+#define M98090_ADCHP_NUM               (1<<M98090_ADCHP_WIDTH)
-+
-+/*
-+ * M98090_REG_DEVICE_SHUTDOWN
-+ */
-+#define M98090_SHDNN_MASK              (1<<7)
-+#define M98090_SHDNN_SHIFT             7
-+#define M98090_SHDNN_WIDTH             1
-+
-+/*
-+ * M98090_REG_EQUALIZER_BASE
-+ */
-+#define M98090_B0_1_HI_MASK            (255<<0)
-+#define M98090_B0_1_HI_SHIFT           0
-+#define M98090_B0_1_HI_WIDTH           8
-+#define M98090_B0_1_MID_MASK           (255<<0)
-+#define M98090_B0_1_MID_SHIFT          0
-+#define M98090_B0_1_MID_WIDTH          8
-+#define M98090_B0_1_LO_MASK            (255<<0)
-+#define M98090_B0_1_LO_SHIFT           0
-+#define M98090_B0_1_LO_WIDTH           8
-+#define M98090_B1_1_HI_MASK            (255<<0)
-+#define M98090_B1_1_HI_SHIFT           0
-+#define M98090_B1_1_HI_WIDTH           8
-+#define M98090_B1_1_MID_MASK           (255<<0)
-+#define M98090_B1_1_MID_SHIFT          0
-+#define M98090_B1_1_MID_WIDTH          8
-+#define M98090_B1_1_LO_MASK            (255<<0)
-+#define M98090_B1_1_LO_SHIFT           0
-+#define M98090_B1_1_LO_WIDTH           8
-+#define M98090_B2_1_HI_MASK            (255<<0)
-+#define M98090_B2_1_HI_SHIFT           0
-+#define M98090_B2_1_HI_WIDTH           8
-+#define M98090_B2_1_MID_MASK           (255<<0)
-+#define M98090_B2_1_MID_SHIFT          0
-+#define M98090_B2_1_MID_WIDTH          8
-+#define M98090_B2_1_LO_MASK            (255<<0)
-+#define M98090_B2_1_LO_SHIFT           0
-+#define M98090_B2_1_LO_WIDTH           8
-+#define M98090_A1_1_HI_MASK            (255<<0)
-+#define M98090_A1_1_HI_SHIFT           0
-+#define M98090_A1_1_HI_WIDTH           8
-+#define M98090_A1_1_MID_MASK           (255<<0)
-+#define M98090_A1_1_MID_SHIFT          0
-+#define M98090_A1_1_MID_WIDTH          8
-+#define M98090_A1_1_LO_MASK            (255<<0)
-+#define M98090_A1_1_LO_SHIFT           0
-+#define M98090_A1_1_LO_WIDTH           8
-+#define M98090_A2_1_HI_MASK            (255<<0)
-+#define M98090_A2_1_HI_SHIFT           0
-+#define M98090_A2_1_HI_WIDTH           8
-+#define M98090_A2_1_MID_MASK           (255<<0)
-+#define M98090_A2_1_MID_SHIFT          0
-+#define M98090_A2_1_MID_WIDTH          8
-+#define M98090_A2_1_LO_MASK            (255<<0)
-+#define M98090_A2_1_LO_SHIFT           0
-+#define M98090_A2_1_LO_WIDTH           8
-+
-+#define M98090_COEFS_PER_BAND          5
-+#define M98090_COEFS_BLK_SZ            (M98090_COEFS_PER_BAND * 3)
-+#define M98090_COEFS_MAX_SZ            (M98090_COEFS_BLK_SZ * 7)
-+
-+/*
-+ * M98090_REG_RECORD_BIQUAD_BASE
-+ */
-+#define M98090_REC_B0_HI_MASK          (255<<0)
-+#define M98090_REC_B0_HI_SHIFT         0
-+#define M98090_REC_B0_HI_WIDTH         8
-+#define M98090_REC_B0_MID_MASK         (255<<0)
-+#define M98090_REC_B0_MID_SHIFT                0
-+#define M98090_REC_B0_MID_WIDTH                8
-+#define M98090_REC_B0_LO_MASK          (255<<0)
-+#define M98090_REC_B0_LO_SHIFT         0
-+#define M98090_REC_B0_LO_WIDTH         8
-+#define M98090_REC_B1_HI_MASK          (255<<0)
-+#define M98090_REC_B1_HI_SHIFT         0
-+#define M98090_REC_B1_HI_WIDTH         8
-+#define M98090_REC_B1_MID_MASK         (255<<0)
-+#define M98090_REC_B1_MID_SHIFT                0
-+#define M98090_REC_B1_MID_WIDTH                8
-+#define M98090_REC_B1_LO_MASK          (255<<0)
-+#define M98090_REC_B1_LO_SHIFT         0
-+#define M98090_REC_B1_LO_WIDTH         8
-+#define M98090_REC_B2_HI_MASK          (255<<0)
-+#define M98090_REC_B2_HI_SHIFT         0
-+#define M98090_REC_B2_HI_WIDTH         8
-+#define M98090_REC_B2_MID_MASK         (255<<0)
-+#define M98090_REC_B2_MID_SHIFT                0
-+#define M98090_REC_B2_MID_WIDTH                8
-+#define M98090_REC_B2_LO_MASK          (255<<0)
-+#define M98090_REC_B2_LO_SHIFT         0
-+#define M98090_REC_B2_LO_WIDTH         8
-+#define M98090_REC_A1_HI_MASK          (255<<0)
-+#define M98090_REC_A1_HI_SHIFT         0
-+#define M98090_REC_A1_HI_WIDTH         8
-+#define M98090_REC_A1_MID_MASK         (255<<0)
-+#define M98090_REC_A1_MID_SHIFT                0
-+#define M98090_REC_A1_MID_WIDTH                8
-+#define M98090_REC_A1_LO_MASK          (255<<0)
-+#define M98090_REC_A1_LO_SHIFT         0
-+#define M98090_REC_A1_LO_WIDTH         8
-+#define M98090_REC_A2_HI_MASK          (255<<0)
-+#define M98090_REC_A2_HI_SHIFT         0
-+#define M98090_REC_A2_HI_WIDTH         8
-+#define M98090_REC_A2_MID_MASK         (255<<0)
-+#define M98090_REC_A2_MID_SHIFT                0
-+#define M98090_REC_A2_MID_WIDTH                8
-+#define M98090_REC_A2_LO_MASK          (255<<0)
-+#define M98090_REC_A2_LO_SHIFT         0
-+#define M98090_REC_A2_LO_WIDTH         8
-+
-+/*
-+ * M98090_REG_DMIC3_VOLUME
-+ */
-+#define M98090_DMIC_AV3G_MASK          (7<<4)
-+#define M98090_DMIC_AV3G_SHIFT         4
-+#define M98090_DMIC_AV3G_WIDTH         3
-+#define M98090_DMIC_AV3G_NUM           (1<<M98090_DMIC_AV3G_WIDTH)
-+#define M98090_DMIC_AV3_MASK           (15<<0)
-+#define M98090_DMIC_AV3_SHIFT          0
-+#define M98090_DMIC_AV3_WIDTH          4
-+#define M98090_DMIC_AV3_NUM            (1<<M98090_DMIC_AV3_WIDTH)
-+
-+/*
-+ * M98090_REG_DMIC4_VOLUME
-+ */
-+#define M98090_DMIC_AV4G_MASK          (7<<4)
-+#define M98090_DMIC_AV4G_SHIFT         4
-+#define M98090_DMIC_AV4G_WIDTH         3
-+#define M98090_DMIC_AV4G_NUM           (1<<M98090_DMIC_AV4G_WIDTH)
-+#define M98090_DMIC_AV4_MASK           (15<<0)
-+#define M98090_DMIC_AV4_SHIFT          0
-+#define M98090_DMIC_AV4_WIDTH          4
-+#define M98090_DMIC_AV4_NUM            (1<<M98090_DMIC_AV4_WIDTH)
-+
-+/*
-+ * M98090_REG_DMIC34_BQ_PREATTEN
-+ */
-+#define M98090_AV34BQ_MASK             (15<<0)
-+#define M98090_AV34BQ_SHIFT            0
-+#define M98090_AV34BQ_WIDTH            4
-+#define M98090_AV34BQ_NUM              (1<<M98090_AV34BQ_WIDTH)
-+
-+/*
-+ * M98090_REG_RECORD_TDM_SLOT
-+ */
-+#define M98090_TDM_SLOTADCL_MASK       (3<<6)
-+#define M98090_TDM_SLOTADCL_SHIFT      6
-+#define M98090_TDM_SLOTADCL_WIDTH      2
-+#define M98090_TDM_SLOTADCL_NUM                (1<<M98090_TDM_SLOTADCL_WIDTH)
-+#define M98090_TDM_SLOTADCR_MASK       (3<<4)
-+#define M98090_TDM_SLOTADCR_SHIFT      4
-+#define M98090_TDM_SLOTADCR_WIDTH      2
-+#define M98090_TDM_SLOTADCR_NUM                (1<<M98090_TDM_SLOTADCR_WIDTH)
-+#define M98090_TDM_SLOTDMIC3_MASK      (3<<2)
-+#define M98090_TDM_SLOTDMIC3_SHIFT     2
-+#define M98090_TDM_SLOTDMIC3_WIDTH     2
-+#define M98090_TDM_SLOTDMIC3_NUM       (1<<M98090_TDM_SLOTDMIC3_WIDTH)
-+#define M98090_TDM_SLOTDMIC4_MASK      (3<<0)
-+#define M98090_TDM_SLOTDMIC4_SHIFT     0
-+#define M98090_TDM_SLOTDMIC4_WIDTH     2
-+#define M98090_TDM_SLOTDMIC4_NUM       (1<<M98090_TDM_SLOTDMIC4_WIDTH)
-+
-+/*
-+ * M98090_REG_SAMPLE_RATE
-+ */
-+#define M98090_DMIC34_ZEROPAD_MASK     (1<<4)
-+#define M98090_DMIC34_ZEROPAD_SHIFT    4
-+#define M98090_DMIC34_ZEROPAD_WIDTH    1
-+#define M98090_DMIC34_ZEROPAD_NUM      (1<<M98090_DIGMIC4_WIDTH)
-+#define M98090_DMIC34_SRDIV_MASK       (7<<0)
-+#define M98090_DMIC34_SRDIV_SHIFT      0
-+#define M98090_DMIC34_SRDIV_WIDTH      3
-+
-+/*
-+ * M98090_REG_DMIC34_BIQUAD_BASE
-+ */
-+#define M98090_DMIC34_B0_HI_MASK       (255<<0)
-+#define M98090_DMIC34_B0_HI_SHIFT      0
-+#define M98090_DMIC34_B0_HI_WIDTH      8
-+#define M98090_DMIC34_B0_MID_MASK      (255<<0)
-+#define M98090_DMIC34_B0_MID_SHIFT     0
-+#define M98090_DMIC34_B0_MID_WIDTH     8
-+#define M98090_DMIC34_B0_LO_MASK       (255<<0)
-+#define M98090_DMIC34_B0_LO_SHIFT      0
-+#define M98090_DMIC34_B0_LO_WIDTH      8
-+#define M98090_DMIC34_B1_HI_MASK       (255<<0)
-+#define M98090_DMIC34_B1_HI_SHIFT      0
-+#define M98090_DMIC34_B1_HI_WIDTH      8
-+#define M98090_DMIC34_B1_MID_MASK      (255<<0)
-+#define M98090_DMIC34_B1_MID_SHIFT     0
-+#define M98090_DMIC34_B1_MID_WIDTH     8
-+#define M98090_DMIC34_B1_LO_MASK       (255<<0)
-+#define M98090_DMIC34_B1_LO_SHIFT      0
-+#define M98090_DMIC34_B1_LO_WIDTH      8
-+#define M98090_DMIC34_B2_HI_MASK       (255<<0)
-+#define M98090_DMIC34_B2_HI_SHIFT      0
-+#define M98090_DMIC34_B2_HI_WIDTH      8
-+#define M98090_DMIC34_B2_MID_MASK      (255<<0)
-+#define M98090_DMIC34_B2_MID_SHIFT     0
-+#define M98090_DMIC34_B2_MID_WIDTH     8
-+#define M98090_DMIC34_B2_LO_MASK       (255<<0)
-+#define M98090_DMIC34_B2_LO_SHIFT      0
-+#define M98090_DMIC34_B2_LO_WIDTH      8
-+#define M98090_DMIC34_A1_HI_MASK       (255<<0)
-+#define M98090_DMIC34_A1_HI_SHIFT      0
-+#define M98090_DMIC34_A1_HI_WIDTH      8
-+#define M98090_DMIC34_A1_MID_MASK      (255<<0)
-+#define M98090_DMIC34_A1_MID_SHIFT     0
-+#define M98090_DMIC34_A1_MID_WIDTH     8
-+#define M98090_DMIC34_A1_LO_MASK       (255<<0)
-+#define M98090_DMIC34_A1_LO_SHIFT      0
-+#define M98090_DMIC34_A1_LO_WIDTH      8
-+#define M98090_DMIC34_A2_HI_MASK       (255<<0)
-+#define M98090_DMIC34_A2_HI_SHIFT      0
-+#define M98090_DMIC34_A2_HI_WIDTH      8
-+#define M98090_DMIC34_A2_MID_MASK      (255<<0)
-+#define M98090_DMIC34_A2_MID_SHIFT     0
-+#define M98090_DMIC34_A2_MID_WIDTH     8
-+#define M98090_DMIC34_A2_LO_MASK       (255<<0)
-+#define M98090_DMIC34_A2_LO_SHIFT      0
-+#define M98090_DMIC34_A2_LO_WIDTH      8
-+
-+#define M98090_JACK_STATE_NO_HEADSET   0
-+#define M98090_JACK_STATE_NO_HEADSET_2 1
-+#define M98090_JACK_STATE_HEADPHONE    2
-+#define M98090_JACK_STATE_HEADSET      3
-+
-+/*
-+ * M98090_REG_REVISION_ID
-+ */
-+#define M98090_REVID_MASK              (255<<0)
-+#define M98090_REVID_SHIFT             0
-+#define M98090_REVID_WIDTH             8
-+#define M98090_REVID_NUM               (1<<M98090_REVID_WIDTH)
-+
-+#define M98090_BYTE1(w) ((w >> 8) & 0xff)
-+#define M98090_BYTE0(w) (w & 0xff)
-+
-+/* Silicon revision number */
-+#define M98090_REVA                    0x40
-+#define M98091_REVA                    0x50
-+
-+enum max98090_type {
-+       MAX98090,
-+       MAX98091,
-+};
-+
-+struct max98090_cdata {
-+       unsigned int rate;
-+       unsigned int fmt;
-+};
-+
-+struct max98090_priv {
-+       struct regmap *regmap;
-+       struct snd_soc_codec *codec;
-+       enum max98090_type devtype;
-+       void *control_data;
-+       struct max98090_pdata *pdata;
-+       unsigned int sysclk;
-+       unsigned int bclk;
-+       unsigned int lrclk;
-+       struct max98090_cdata dai[1];
-+       int irq;
-+       int jack_state;
-+       struct delayed_work jack_work;
-+       struct snd_soc_jack *jack;
-+       unsigned int dai_fmt;
-+       int tdm_slots;
-+       int tdm_width;
-+       u8 lin_state;
-+       unsigned int pa1en;
-+       unsigned int pa2en;
-+       unsigned int extmic_mux;
-+       unsigned int sidetone;
-+};
-+
-+int max98090_mic_detect(struct snd_soc_codec *codec,
-+       struct snd_soc_jack *jack);
-+
++#if OLD_MIXER
++static struct snd_kcontrol_new snd_madifx_playback_mixer =
+HDSPM_PLAYBACK_MIXER;
++
++
++static int madifx_update_simple_mixer_controls(struct hdspm *hdspm)
++{
++	int i;
++	snd_printk(KERN_WARNING "MADIFX: updating broken mixer\n");
++
++	for (i = hdspm->ds_out_channels; i < hdspm->ss_out_channels; ++i) {
++		if (hdspm->system_sample_rate > 48000) {
++			hdspm->playback_mixer_ctls[i]->vd[0].access =
++				SNDRV_CTL_ELEM_ACCESS_INACTIVE |
++				SNDRV_CTL_ELEM_ACCESS_READ |
++				SNDRV_CTL_ELEM_ACCESS_VOLATILE;
++		} else {
++			hdspm->playback_mixer_ctls[i]->vd[0].access =
++				SNDRV_CTL_ELEM_ACCESS_READWRITE |
++				SNDRV_CTL_ELEM_ACCESS_VOLATILE;
++		}
++		snd_ctl_notify(hdspm->card, SNDRV_CTL_EVENT_MASK_VALUE |
++				SNDRV_CTL_EVENT_MASK_INFO,
++				&hdspm->playback_mixer_ctls[i]->id);
++	}
++
++	return 0;
++}
 +#endif
---
-1.7.0.4
++
++
++static int snd_madifx_create_controls(struct snd_card *card,
++					struct hdspm *hdspm)
++{
++	unsigned int idx, limit;
++	int err;
++	struct snd_kcontrol_new *list = NULL;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		list = snd_madifx_controls_madi;
++		limit = ARRAY_SIZE(snd_madifx_controls_madi);
++		break;
++	}
++
++	if (NULL != list) {
++		for (idx = 0; idx < limit; idx++) {
++			err = snd_ctl_add(card,
++					snd_ctl_new1(&list[idx], hdspm));
++			if (err < 0)
++				return err;
++		}
++	}
++
++
++	/* FIXME: MADI FX, we don't know how to mix, yet */
++#if 0
++	/* create simple 1:1 playback mixer controls */
++	snd_madifx_playback_mixer.name = "Chn";
++	if (hdspm->system_sample_rate >= 128000) {
++		limit = hdspm->qs_out_channels;
++	} else if (hdspm->system_sample_rate >= 64000) {
++		limit = hdspm->ds_out_channels;
++	} else {
++		limit = hdspm->ss_out_channels;
++	}
++	for (idx = 0; idx < limit; ++idx) {
++		struct snd_kcontrol *kctl;
++		snd_madifx_playback_mixer.index = idx + 1;
++		kctl = snd_ctl_new1(&snd_madifx_playback_mixer, hdspm);
++		err = snd_ctl_add(card, kctl);
++		if (err < 0)
++			return err;
++		hdspm->playback_mixer_ctls[idx] = kctl;
++	}
++#endif
++
++
++	return 0;
++}
++
++/*------------------------------------------------------------
++   /proc interface
++ ------------------------------------------------------------*/
++
++static void
++snd_madifx_proc_read_madifx(struct snd_info_entry *entry,
++			 struct snd_info_buffer *buffer)
++{
++	struct hdspm *hdspm = entry->private_data;
++	u32 status, inp_status, control, freq;
++
++	char *system_clock_mode;
++	int x;
++
++	unsigned int period;
++	u64 freq_const = 0;
++	u32 rate;
++
++	status = madifx_read(hdspm, MADIFX_RD_STATUS);
++	inp_status = madifx_read(hdspm, MADIFX_RD_INP_STATUS);
++	control = hdspm->control_register;
++	freq = madifx_read(hdspm, MADIFX_RD_INP_FREQ);
++
++#if 0
++	snd_iprintf(buffer, "%s (Card #%d) Rev.%x Status2first3bits: %x\n",
++			hdspm->card_name, hdspm->card->number + 1,
++			hdspm->firmware_rev,
++			(status2 & HDSPM_version0) |
++			(status2 & HDSPM_version1) | (status2 &
++				HDSPM_version2));
++#endif
++	snd_iprintf(buffer, "HW Serial: 0x%x\n", madifx_read(hdspm,
++				MADIFX_RD_VERSION));
++
++	snd_iprintf(buffer, "IRQ: %d Registers bus: 0x%lx VM: 0x%lx\n",
++			hdspm->irq, hdspm->port, (unsigned long)hdspm->iobase);
++
++	snd_iprintf(buffer, "--- System ---\n");
++
++	snd_iprintf(buffer,
++		"IRQ Pending: Audio=%d, MIDI0=%d, MIDI1=%d, MIDI2=%d MIDI3=%d
+IRQcount=%d\n",
++		status & HDSPM_audioIRQPending,
++		(status & MADIFX_mIRQ0) ? 1 : 0,
++		(status & MADIFX_mIRQ1) ? 1 : 0,
++		(status & MADIFX_mIRQ2) ? 1 : 0,
++		(status & MADIFX_mIRQ3) ? 1 : 0,
++		hdspm->irq_count);
++
++	snd_iprintf(buffer,
++		"MIDI FIFO: Out0=0x%x, Out1=0x%x, Out2=0x%x, Out3=0x%x\n",
++		madifx_read(hdspm, MADIFX_midi_out0_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_out1_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_out2_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_out3_status) & 0xFF);
++	snd_iprintf(buffer,
++		"MIDI FIFO: in0=0x%x, in1=0x%x, in2=0x%x, in3=0x%x\n",
++		madifx_read(hdspm, MADIFX_midi_in0_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_in1_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_in2_status) & 0xFF,
++		madifx_read(hdspm, MADIFX_midi_in3_status) & 0xFF);
++	snd_iprintf(buffer,
++		"Register:\ncontrol=0x%x, settings=0x%x, status=0x%x, "
++		"input=0x%x inp_freq=0x%x\n",
++		hdspm->control_register, hdspm->settings_register,
++		status, inp_status, freq);
++
++		switch (hdspm->io_type) {
++		case MADIFX:
++			freq_const = 131072000000000ULL;
++			break;
++		}
++
++		period = madifx_read(hdspm, MADIFX_RD_PLL_FREQ);
++		snd_iprintf(buffer, "    period: %u\n", period);
++
++
++		/* rate = freq_const/period; */
++		rate = div_u64(freq_const, period);
++
++		rate *= madifx_speed_multiplier(hdspm);
++
++
++		snd_iprintf(buffer, "  Frequency: %u Hz\n",
++				(unsigned int) rate);
++
++
++	snd_iprintf(buffer, "--- Settings ---\n");
++
++	x = madifx_get_latency(hdspm);
++
++	snd_iprintf(buffer,
++		"Size (Latency): %d samples\n", x);
++
++#if 0
++	snd_iprintf(buffer, "Line out: %s\n",
++		(hdspm->control_register & HDSPM_LineOut) ? "on " : "off");
++
++	switch (hdspm->control_register & HDSPM_InputMask) {
++	case HDSPM_InputOptical:
++		insel = "Optical";
++		break;
++	case HDSPM_InputCoaxial:
++		insel = "Coaxial";
++		break;
++	default:
++		insel = "Unknown";
++	}
++
++	snd_iprintf(buffer,
++		"ClearTrackMarker = %s, Transmit in %s Channel Mode, "
++		"Auto Input %s\n",
++		(hdspm->control_register & HDSPM_clr_tms) ? "on" : "off",
++		(hdspm->control_register & HDSPM_TX_64ch) ? "64" : "56",
++		(hdspm->control_register & HDSPM_AutoInp) ? "on" : "off");
++#endif
++
++
++	if (1 == madifx_system_clock_mode(hdspm))
++		system_clock_mode = "Slave";
++	else
++		system_clock_mode = "Master";
++	snd_iprintf(buffer, "AutoSync Reference: %s\n", system_clock_mode);
++
++	snd_iprintf(buffer, "Selected clock source: %s\n",
++			hdspm->texts_clocksource[madifx_get_clock_select(hdspm)]);
++
++	snd_iprintf(buffer, "System Clock Frequency: %d\n",
++			hdspm->system_sample_rate);
++
++
++#if 0
++	snd_iprintf(buffer, "--- Status:\n");
++
++	x = status & HDSPM_madiSync;
++	x2 = status2 & HDSPM_wcSync;
++
++	snd_iprintf(buffer, "Inputs MADI=%s, WordClock=%s\n",
++			(status & HDSPM_madiLock) ? (x ? "Sync" : "Lock") :
++			"NoLock",
++			(status2 & HDSPM_wcLock) ? (x2 ? "Sync" : "Lock") :
++			"NoLock");
++
++	switch (madifx_autosync_ref(hdspm)) {
++	case HDSPM_AUTOSYNC_FROM_SYNC_IN:
++		autosync_ref = "Sync In";
++		break;
++	case HDSPM_AUTOSYNC_FROM_TCO:
++		autosync_ref = "TCO";
++		break;
++	case HDSPM_AUTOSYNC_FROM_WORD:
++		autosync_ref = "Word Clock";
++		break;
++	case HDSPM_AUTOSYNC_FROM_MADI:
++		autosync_ref = "MADI Sync";
++		break;
++	case HDSPM_AUTOSYNC_FROM_NONE:
++		autosync_ref = "Input not valid";
++		break;
++	default:
++		autosync_ref = "---";
++		break;
++	}
++	snd_iprintf(buffer,
++		"AutoSync: Reference= %s, Freq=%d (MADI = %d, Word = %d)\n",
++		autosync_ref, madifx_external_sample_rate(hdspm),
++		(status & HDSPM_madiFreqMask) >> 22,
++		(status2 & HDSPM_wcFreqMask) >> 5);
++
++	snd_iprintf(buffer, "Input: %s, Mode=%s\n",
++		(status & HDSPM_AB_int) ? "Coax" : "Optical",
++		(status & HDSPM_RX_64ch) ? "64 channels" :
++		"56 channels");
++#endif
++
++	snd_iprintf(buffer, "\n");
++}
++
++
++#ifdef CONFIG_SND_DEBUG
++static void
++snd_madifx_proc_read_debug(struct snd_info_entry *entry,
++			  struct snd_info_buffer *buffer)
++{
++	struct hdspm *hdspm = entry->private_data;
++
++	int j, i;
++
++	for (i = 0; i < 256 /* 1024*64 */; i += j) {
++		snd_iprintf(buffer, "0x%08X: ", i);
++		for (j = 0; j < 16; j += 4)
++			snd_iprintf(buffer, "%08X ", madifx_read(hdspm, i + j));
++		snd_iprintf(buffer, "\n");
++	}
++}
++#endif
++
++
++#if 0
++/* FIXME: Portnames not implemented, yet. hdspm->port_names_in and _out are
++ * set to NULL, so don't derefence them for the time being.
++ */
++static void snd_madifx_proc_ports_in(struct snd_info_entry *entry,
++			  struct snd_info_buffer *buffer)
++{
++	struct hdspm *hdspm = entry->private_data;
++	int i;
++
++	snd_iprintf(buffer, "# generated by hdspm\n");
++
++	for (i = 0; i < hdspm->max_channels_in; i++)
++		snd_iprintf(buffer, "%d=%s\n", i+1, hdspm->port_names_in[i]);
++}
++
++static void snd_madifx_proc_ports_out(struct snd_info_entry *entry,
++			  struct snd_info_buffer *buffer)
++{
++	struct hdspm *hdspm = entry->private_data;
++	int i;
++
++	snd_iprintf(buffer, "# generated by hdspm\n");
++
++	for (i = 0; i < hdspm->max_channels_out; i++)
++		snd_iprintf(buffer, "%d=%s\n", i+1, hdspm->port_names_out[i]);
++}
++#endif
++
++
++static void snd_madifx_proc_init(struct hdspm *hdspm)
++{
++	struct snd_info_entry *entry;
++
++	if (!snd_card_proc_new(hdspm->card, "madifx", &entry)) {
++		switch (hdspm->io_type) {
++		case MADIFX:
++			snd_info_set_text_ops(entry, hdspm,
++					snd_madifx_proc_read_madifx);
++			break;
++		}
++	}
++
++#if 0
++	/* FIXME: port names still missing for MADIFX */
++	if (!snd_card_proc_new(hdspm->card, "ports.in", &entry))
++		snd_info_set_text_ops(entry, hdspm, snd_madifx_proc_ports_in);
++
++	if (!snd_card_proc_new(hdspm->card, "ports.out", &entry))
++		snd_info_set_text_ops(entry, hdspm, snd_madifx_proc_ports_out);
++#endif
++
++#ifdef CONFIG_SND_DEBUG
++	/* debug file to read all hdspm registers */
++	if (!snd_card_proc_new(hdspm->card, "debug", &entry))
++		snd_info_set_text_ops(entry, hdspm,
++				snd_madifx_proc_read_debug);
++#endif
++}
++
++/*------------------------------------------------------------
++   hdspm intitialize
++ ------------------------------------------------------------*/
++
++static int snd_madifx_set_defaults(struct hdspm *hdspm)
++{
++	/* ASSUMPTION: hdspm->lock is either held, or there is no need to
++	   hold it (e.g. during module initialization).
++	   */
++
++	/* set defaults:       */
++
++	hdspm->settings_register = 0;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		/* OSX: LAT_3+BUF_SIZ_1+BUF_SIZ_2+freq1; */
++		hdspm->control_register = MADIFX_LAT_3 + MADIFX_BUF_SIZ_1 +
++			MADIFX_BUF_SIZ_2 + MADIFX_freq1;
++		/* PRO+madi1_tx_64ch+madi2_tx_64ch+madi3_tx_64ch; */
++		hdspm->settings_register = 0x8 + 0x80 + 0x100 + 0x200;
++		break;
++	}
++
++	madifx_write(hdspm, MADIFX_CONTROL_REG, hdspm->control_register);
++
++	madifx_compute_period_size(hdspm);
++
++	madifx_write(hdspm, MADIFX_SETTINGS_REG, hdspm->settings_register);
++
++	/* set a default rate so that the channel map is set up. */
++	madifx_set_rate(hdspm, 48000, 1);
++
++	return 0;
++}
++
++
++/*------------------------------------------------------------
++   interrupt
++ ------------------------------------------------------------*/
++
++static irqreturn_t snd_madifx_interrupt(int irq, void *dev_id)
++{
++	struct hdspm *hdspm = (struct hdspm *) dev_id;
++	unsigned int status;
++	int i, audio, midi, schedule = 0;
++	/* cycles_t now; */
++
++	status = madifx_read(hdspm, MADIFX_RD_STATUS);
++
++	audio = status & HDSPM_audioIRQPending;
++	midi = status & (MADIFX_mIRQ0 | MADIFX_mIRQ1 |
++			MADIFX_mIRQ2 | MADIFX_mIRQ3);
++
++	/* now = get_cycles(); */
++	/**
++	 *   LAT_2..LAT_0 period  counter (win)  counter (mac)
++	 *          6       4096   ~256053425     ~514672358
++	 *          5       2048   ~128024983     ~257373821
++	 *          4       1024    ~64023706     ~128718089
++	 *          3        512    ~32005945      ~64385999
++	 *          2        256    ~16003039      ~32260176
++	 *          1        128     ~7998738      ~16194507
++	 *          0         64     ~3998231       ~8191558
++	 **/
++	/*
++	   snd_printk(KERN_INFO "snd_madifx_interrupt %llu @ %llx\n",
++	   now-hdspm->last_interrupt, status & 0xFFC0);
++	   hdspm->last_interrupt = now;
++	*/
++
++	if (!audio && !midi)
++		return IRQ_NONE;
++
++	madifx_write(hdspm, MADIFX_IRQ_ACK, 0);
++	hdspm->irq_count++;
++
++
++	if (audio) {
++		if (hdspm->capture_substream)
++			snd_pcm_period_elapsed(hdspm->capture_substream);
++
++		if (hdspm->playback_substream)
++			snd_pcm_period_elapsed(hdspm->playback_substream);
++	}
++
++	if (midi) {
++		i = 0;
++		while (i < hdspm->midiPorts) {
++			if ((madifx_read(hdspm,
++				hdspm->midi[i].statusIn) & 0xff) &&
++					(status & hdspm->midi[i].irq)) {
++				/* we disable interrupts for this input until
++				 * processing is done
++				 */
++				hdspm->control_register &= ~hdspm->midi[i].ie;
++				madifx_write(hdspm, MADIFX_CONTROL_REG,
++						hdspm->control_register);
++				hdspm->midi[i].pending = 1;
++				schedule = 1;
++			}
++
++			i++;
++		}
++
++		if (schedule)
++			tasklet_hi_schedule(&hdspm->midi_tasklet);
++	}
++
++	return IRQ_HANDLED;
++}
++
++/*------------------------------------------------------------
++   pcm interface
++  ------------------------------------------------------------*/
++
++
++static snd_pcm_uframes_t snd_madifx_hw_pointer(struct snd_pcm_substream
++					      *substream)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	return madifx_hw_pointer(hdspm);
++}
++
++
++static int snd_madifx_reset(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	struct snd_pcm_substream *other;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		other = hdspm->capture_substream;
++	else
++		other = hdspm->playback_substream;
++
++	if (hdspm->running)
++		runtime->status->hw_ptr = madifx_hw_pointer(hdspm);
++	else
++		runtime->status->hw_ptr = 0;
++	if (other) {
++		struct snd_pcm_substream *s;
++		struct snd_pcm_runtime *oruntime = other->runtime;
++		snd_pcm_group_for_each_entry(s, substream) {
++			if (s == other) {
++				oruntime->status->hw_ptr =
++					runtime->status->hw_ptr;
++				break;
++			}
++		}
++	}
++	return 0;
++}
++
++static int snd_madifx_hw_params(struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	int err;
++	int i;
++	pid_t this_pid;
++	pid_t other_pid;
++
++	spin_lock_irq(&hdspm->lock);
++
++	if (substream->pstr->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		this_pid = hdspm->playback_pid;
++		other_pid = hdspm->capture_pid;
++	} else {
++		this_pid = hdspm->capture_pid;
++		other_pid = hdspm->playback_pid;
++	}
++
++	if (other_pid > 0 && this_pid != other_pid) {
++
++		/* The other stream is open, and not by the same
++		   task as this one. Make sure that the parameters
++		   that matter are the same.
++		   */
++
++		if (params_rate(params) != hdspm->system_sample_rate) {
++			spin_unlock_irq(&hdspm->lock);
++			_snd_pcm_hw_param_setempty(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++			return -EBUSY;
++		}
++
++		if (params_period_size(params) != hdspm->period_bytes / 4) {
++			spin_unlock_irq(&hdspm->lock);
++			_snd_pcm_hw_param_setempty(params,
++					SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++			return -EBUSY;
++		}
++
++	}
++	/* We're fine. */
++	spin_unlock_irq(&hdspm->lock);
++
++	/* how to make sure that the rate matches an externally-set one ?   */
++
++	spin_lock_irq(&hdspm->lock);
++	err = madifx_set_rate(hdspm, params_rate(params), 0);
++	if (err < 0) {
++		snd_printk(KERN_INFO "err on madifx_set_rate: %d\n", err);
++		spin_unlock_irq(&hdspm->lock);
++		_snd_pcm_hw_param_setempty(params,
++				SNDRV_PCM_HW_PARAM_RATE);
++		return err;
++	}
++	spin_unlock_irq(&hdspm->lock);
++
++	err = madifx_set_interrupt_interval(hdspm,
++			params_period_size(params));
++	if (err < 0) {
++		snd_printk(KERN_INFO "err on madifx_set_interrupt_interval: %d\n", err);
++		_snd_pcm_hw_param_setempty(params,
++				SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++		return err;
++	}
++
++	/* Memory allocation */
++#define NUM_AES_PAGES (32768*2/4096)
++#define NUM_MADI_PAGES (32768*192/4096)
++#define NUM_DMA_CH_PAGES (32768*8/4096)
++#define MADIFX_HARDWARE_PAGE_SIZE 4096
++
++	{
++		int wanted;
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			wanted = OUTPUT_DMA_BUFFER_SIZE;
++		else
++			wanted = INPUT_DMA_BUFFER_SIZE;
++
++		err = snd_pcm_lib_malloc_pages(substream, wanted);
++		if (err < 0) {
++			snd_printk(KERN_INFO "err on snd_pcm_lib_malloc_pages: %d\n", err);
++			return err;
++		}
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++
++		/* initialise default DMA table. Will be
++		 * overwritten in a second. */
++		for (i = 0; i < MADIFX_MAX_PAGE_TABLE_SIZE/2; i++)
++			hdspm->dmaPageTable[i] = snd_pcm_sgbuf_get_addr(substream, 0);
++
++		/* AES Out, stereo */
++		for (i = 0; i < NUM_AES_PAGES; i++)
++			hdspm->dmaPageTable[i] = snd_pcm_sgbuf_get_addr(substream,
++					i * MADIFX_HARDWARE_PAGE_SIZE);
++
++		/* Phones Out, stereo */
++		for (i = 0; i < NUM_AES_PAGES; i++)
++			hdspm->dmaPageTable[i+1*NUM_DMA_CH_PAGES] =
++				snd_pcm_sgbuf_get_addr(substream,
++						(i+1*NUM_AES_PAGES) * MADIFX_HARDWARE_PAGE_SIZE);
++
++		/* MADI Out, 192 channels */
++		for (i = 0; i < NUM_MADI_PAGES; i++)
++			hdspm->dmaPageTable[i+2*NUM_DMA_CH_PAGES] =
++				snd_pcm_sgbuf_get_addr(substream,
++						(i+2*NUM_AES_PAGES) * MADIFX_HARDWARE_PAGE_SIZE);
++
++		for (i = 0; i < MADIFX_MAX_PAGE_TABLE_SIZE/2; i++)
++			madifx_write(hdspm, MADIFX_PAGE_ADDRESS_LIST + (4 * i),
++					hdspm->dmaPageTable[i]);
++
++		for (i = 0; i < 32; ++i)
++			snd_madifx_enable_out(hdspm, i, 1);
++
++		hdspm->playback_buffer =
++			(unsigned char *) substream->runtime->dma_area;
++		snd_printdd("Allocated sample buffer for playback at %p\n",
++				hdspm->playback_buffer);
++	} else {
++		/* initialise default DMA table. Will be
++		 * overwritten in a second. */
++		for (i = MADIFX_MAX_PAGE_TABLE_SIZE/2;
++				i < MADIFX_MAX_PAGE_TABLE_SIZE; i++) {
++			hdspm->dmaPageTable[i] = snd_pcm_sgbuf_get_addr(substream, 0);
++		}
++
++		/* setup DMA page table */
++		/* AES In, stereo */
++		for (i = 0; i < NUM_AES_PAGES; i++) {
++			hdspm->dmaPageTable[i+MADIFX_MAX_PAGE_TABLE_SIZE/2] =
++				snd_pcm_sgbuf_get_addr(substream,
++						i * MADIFX_HARDWARE_PAGE_SIZE);
++		}
++
++		/* MADI In, 192 channels */
++		for (i = 0; i < NUM_MADI_PAGES; i++) {
++			hdspm->dmaPageTable[i + MADIFX_MAX_PAGE_TABLE_SIZE / 2 +
+NUM_DMA_CH_PAGES] =
++				snd_pcm_sgbuf_get_addr(substream,
++						(i + NUM_AES_PAGES) * MADIFX_HARDWARE_PAGE_SIZE);
++		}
++
++		for (i = MADIFX_MAX_PAGE_TABLE_SIZE/2;
++				i < MADIFX_MAX_PAGE_TABLE_SIZE; i++) {
++			madifx_write(hdspm, MADIFX_PAGE_ADDRESS_LIST + (4 * i),
++					hdspm->dmaPageTable[i]);
++		}
++
++		for (i = 0; i < 32; ++i)
++			snd_madifx_enable_in(hdspm, i, 1);
++
++		hdspm->capture_buffer =
++			(unsigned char *) substream->runtime->dma_area;
++		snd_printdd("Allocated sample buffer for capture at %p\n",
++				hdspm->capture_buffer);
++	}
++
++	/* Switch to native float format if requested */
++	if (SNDRV_PCM_FORMAT_FLOAT_LE == params_format(params)) {
++		if (!(hdspm->control_register & MADIFX_float_format))
++			snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE float
+format.\n");
++
++		hdspm->control_register |= MADIFX_float_format;
++	} else if (SNDRV_PCM_FORMAT_S32_LE == params_format(params)) {
++		if (hdspm->control_register & MADIFX_float_format)
++			snd_printk(KERN_INFO "hdspm: Switching to native 32bit LE integer
+format.\n");
++
++		hdspm->control_register &= ~MADIFX_float_format;
++	}
++	madifx_write(hdspm, MADIFX_CONTROL_REG, hdspm->control_register);
++
++	return 0;
++}
++
++static int snd_madifx_hw_free(struct snd_pcm_substream *substream)
++{
++	int i;
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++
++		/* params_channels(params) should be enough,
++		   but to get sure in case of error */
++		for (i = 0; i < 32; ++i)
++			snd_madifx_enable_out(hdspm, i, 0);
++
++		hdspm->playback_buffer = NULL;
++	} else {
++		for (i = 0; i < 32; ++i)
++			snd_madifx_enable_in(hdspm, i, 0);
++
++		hdspm->capture_buffer = NULL;
++
++	}
++
++	snd_pcm_lib_free_pages(substream);
++
++	return 0;
++}
++
++
++static int snd_madifx_channel_info(struct snd_pcm_substream *substream,
++		struct snd_pcm_channel_info *info)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		int last_madi_channel = 193;
++
++		if (snd_BUG_ON(info->channel >= hdspm->max_channels_out)) {
++			snd_printk(KERN_INFO
++				"snd_madifx_channel_info: output channel out of range (%d)\n",
++				info->channel);
++			return -EINVAL;
++		}
++
++		switch (hdspm->speedmode) {
++		case ss:
++			/* MADI FX Playback channel map
++			   Outputstream 0 with 2 channels at byte offset 0          AES
++			   Outputstream 1 with 8 channels at byte offset 131072     MADI
++			   Outputstream 2 with 8 channels at byte offset 393216
++			   Outputstream 3 with 8 channels at byte offset 655360
++			   Outputstream 4 with 8 channels at byte offset 917504
++			   Outputstream 5 with 8 channels at byte offset 1179648
++			   Outputstream 6 with 8 channels at byte offset 1441792
++			   Outputstream 7 with 8 channels at byte offset 1703936
++			   Outputstream 8 with 8 channels at byte offset 1966080
++			   Outputstream 9 with 8 channels at byte offset 2228224
++			   Outputstream 10 with 8 channels at byte offset 2490368
++			   Outputstream 11 with 8 channels at byte offset 2752512
++			   Outputstream 12 with 8 channels at byte offset 3014656
++			   Outputstream 13 with 8 channels at byte offset 3276800
++			   Outputstream 14 with 8 channels at byte offset 3538944
++			   Outputstream 15 with 8 channels at byte offset 3801088
++			   Outputstream 16 with 8 channels at byte offset 4063232
++			   Outputstream 17 with 8 channels at byte offset 4325376
++			   Outputstream 18 with 8 channels at byte offset 4587520
++			   Outputstream 19 with 8 channels at byte offset 4849664
++			   Outputstream 20 with 8 channels at byte offset 5111808
++			   Outputstream 21 with 8 channels at byte offset 5373952
++			   Outputstream 22 with 8 channels at byte offset 5636096
++			   Outputstream 23 with 8 channels at byte offset 5898240
++			   Outputstream 24 with 8 channels at byte offset 6160384
++			   Outputstream 25 with 2 channels at byte offset 65536     Phones
++			   */
++
++			/* Note: channels start at zero */
++			last_madi_channel = 193;
++			break;
++		case ds:
++			last_madi_channel = 97;
++			break;
++		case qs:
++			last_madi_channel = 49;
++			break;
++		}
++	info->offset = (info->channel < 2) ?
++	    0 : ((info->channel > last_madi_channel) ? 65536 :
++		    131072 + 8 * 4 * 8192 * ((info->channel-2)/8));
++	info->first = (info->channel < 2 || info->channel > last_madi_channel) ?
++	    32 * info->channel : 32 * ((info->channel-2) % 8);
++	info->step = (info->channel < 2 || info->channel > last_madi_channel) ?
++	    64 : 256;
++	} else {
++		if (snd_BUG_ON(info->channel >= hdspm->max_channels_in)) {
++			snd_printk(KERN_INFO
++				"snd_madifx_channel_info: input channel out of range (%d)\n",
++					info->channel);
++			return -EINVAL;
++		}
++
++		switch (hdspm->speedmode) {
++			/* MADI FX Input channel map
++			   Inputstream 0 with 2 channels at byte offset 0           AES
++			   Inputstream 1 with 8 channels at byte offset 65536       MADI
++			   Inputstream 2 with 8 channels at byte offset 327680
++			   Inputstream 3 with 8 channels at byte offset 589824
++			   Inputstream 4 with 8 channels at byte offset 851968
++			   Inputstream 5 with 8 channels at byte offset 1114112
++			   Inputstream 6 with 8 channels at byte offset 1376256
++			   Inputstream 7 with 8 channels at byte offset 1638400
++			   Inputstream 8 with 8 channels at byte offset 1900544
++			   Inputstream 9 with 8 channels at byte offset 2162688
++			   Inputstream 10 with 8 channels at byte offset 2424832
++			   Inputstream 11 with 8 channels at byte offset 2686976
++			   Inputstream 12 with 8 channels at byte offset 2949120
++			   Inputstream 13 with 8 channels at byte offset 3211264
++			   Inputstream 14 with 8 channels at byte offset 3473408
++			   Inputstream 15 with 8 channels at byte offset 3735552
++			   Inputstream 16 with 8 channels at byte offset 3997696
++			   Inputstream 17 with 8 channels at byte offset 4259840
++			   Inputstream 18 with 8 channels at byte offset 4521984
++			   Inputstream 19 with 8 channels at byte offset 4784128
++			   Inputstream 20 with 8 channels at byte offset 5046272
++			   Inputstream 21 with 8 channels at byte offset 5308416
++			   Inputstream 22 with 8 channels at byte offset 5570560
++			   Inputstream 23 with 8 channels at byte offset 5832704
++			   Inputstream 24 with 8 channels at byte offset 6094848
++			   */
++		case ss:
++		case ds:
++		case qs:
++			info->offset = (info->channel < 2) ? 0 : 65536 + 8 * 4 * 8192 *
++				((info->channel-2)/8);
++			info->first = (info->channel < 2) ? 32 * info->channel :
++				32 * ((info->channel-2) % 8);
++			info->step = (info->channel < 2) ? 64 : 256;
++			break;
++		}
++	}
++
++	return 0;
++}
++
++
++static int snd_madifx_ioctl(struct snd_pcm_substream *substream,
++		unsigned int cmd, void *arg)
++{
++	switch (cmd) {
++	case SNDRV_PCM_IOCTL1_RESET:
++		return snd_madifx_reset(substream);
++
++	case SNDRV_PCM_IOCTL1_CHANNEL_INFO:
++		{
++			struct snd_pcm_channel_info *info = arg;
++			return snd_madifx_channel_info(substream, info);
++		}
++	default:
++		break;
++	}
++
++	return snd_pcm_lib_ioctl(substream, cmd, arg);
++}
++
++static int snd_madifx_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	struct snd_pcm_substream *other;
++	int running;
++
++	spin_lock(&hdspm->lock);
++	running = hdspm->running;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		running |= 1 << substream->stream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		running &= ~(1 << substream->stream);
++		break;
++	default:
++		snd_BUG();
++		spin_unlock(&hdspm->lock);
++		return -EINVAL;
++	}
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		other = hdspm->capture_substream;
++	else
++		other = hdspm->playback_substream;
++
++	if (other) {
++		struct snd_pcm_substream *s;
++		snd_pcm_group_for_each_entry(s, substream) {
++			if (s == other) {
++				snd_pcm_trigger_done(s, substream);
++				if (cmd == SNDRV_PCM_TRIGGER_START)
++					running |= 1 << s->stream;
++				else
++					running &= ~(1 << s->stream);
++				goto _ok;
++			}
++		}
++		if (cmd == SNDRV_PCM_TRIGGER_START) {
++			if (!(running & (1 << SNDRV_PCM_STREAM_PLAYBACK))
++					&& substream->stream ==
++					SNDRV_PCM_STREAM_CAPTURE)
++				madifx_silence_playback(hdspm);
++		} else {
++			if (running &&
++				substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++				madifx_silence_playback(hdspm);
++		}
++	} else {
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			madifx_silence_playback(hdspm);
++	}
++_ok:
++	snd_pcm_trigger_done(substream, substream);
++	if (!hdspm->running && running)
++		madifx_start_audio(hdspm);
++	else if (hdspm->running && !running)
++		madifx_stop_audio(hdspm);
++	hdspm->running = running;
++	spin_unlock(&hdspm->lock);
++
++	return 0;
++}
++
++static int snd_madifx_prepare(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static struct snd_pcm_hardware snd_madifx_playback_subinfo = {
++	.info = (SNDRV_PCM_INFO_MMAP |
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_COMPLEX |
++		 SNDRV_PCM_INFO_SYNC_START | SNDRV_PCM_INFO_DOUBLE),
++	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE,
++	.rates = (SNDRV_PCM_RATE_32000 |
++		  SNDRV_PCM_RATE_44100 |
++		  SNDRV_PCM_RATE_48000 |
++		  SNDRV_PCM_RATE_64000 |
++		  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++		  SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000),
++	.rate_min = 32000,
++	.rate_max = 192000,
++	.channels_min = 1,
++	.channels_max = 196,
++	.buffer_bytes_max = OUTPUT_DMA_BUFFER_SIZE,
++	.period_bytes_min = (32 * 4),
++	.period_bytes_max = OUTPUT_DMA_BUFFER_SIZE,
++	.periods_min = 2,
++	.periods_max = 1024,
++	.fifo_size = 0
++};
++
++static struct snd_pcm_hardware snd_madifx_capture_subinfo = {
++	.info = (SNDRV_PCM_INFO_MMAP |
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_COMPLEX |
++		 SNDRV_PCM_INFO_SYNC_START),
++	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE,
++	.rates = (SNDRV_PCM_RATE_32000 |
++		  SNDRV_PCM_RATE_44100 |
++		  SNDRV_PCM_RATE_48000 |
++		  SNDRV_PCM_RATE_64000 |
++		  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++		  SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000),
++	.rate_min = 32000,
++	.rate_max = 192000,
++	.channels_min = 1,
++	.channels_max = 194,
++	.buffer_bytes_max = INPUT_DMA_BUFFER_SIZE,
++	.period_bytes_min = (32 * 4),
++	.period_bytes_max = INPUT_DMA_BUFFER_SIZE,
++	.periods_min = 2,
++	.periods_max = 1024,
++	.fifo_size = 0
++};
++
++static int snd_madifx_hw_rule_in_channels_rate(struct snd_pcm_hw_params
+*params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++
++	if (r->min > 96000 && r->max <= 192000) {
++		struct snd_interval t = {
++			.min = hdspm->qs_in_channels,
++			.max = hdspm->qs_in_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	} else if (r->min > 48000 && r->max <= 96000) {
++		struct snd_interval t = {
++			.min = hdspm->ds_in_channels,
++			.max = hdspm->ds_in_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	} else if (r->max < 64000) {
++		struct snd_interval t = {
++			.min = hdspm->ss_in_channels,
++			.max = hdspm->ss_in_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	}
++
++	return 0;
++}
++
++static int snd_madifx_hw_rule_out_channels_rate(struct
+snd_pcm_hw_params *params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++
++	if (r->min > 96000 && r->max <= 192000) {
++		struct snd_interval t = {
++			.min = hdspm->qs_out_channels,
++			.max = hdspm->qs_out_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	} else if (r->min > 48000 && r->max <= 96000) {
++		struct snd_interval t = {
++			.min = hdspm->ds_out_channels,
++			.max = hdspm->ds_out_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	} else if (r->max < 64000) {
++		struct snd_interval t = {
++			.min = hdspm->ss_out_channels,
++			.max = hdspm->ss_out_channels,
++			.integer = 1,
++		};
++		return snd_interval_refine(c, &t);
++	} else {
++	}
++	return 0;
++}
++
++static int snd_madifx_hw_rule_rate_in_channels(struct snd_pcm_hw_params
+*params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++
++	if (c->min >= hdspm->ss_in_channels) {
++		struct snd_interval t = {
++			.min = 32000,
++			.max = 48000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	} else if (c->max <= hdspm->qs_in_channels) {
++		struct snd_interval t = {
++			.min = 128000,
++			.max = 192000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	} else if (c->max <= hdspm->ds_in_channels) {
++		struct snd_interval t = {
++			.min = 64000,
++			.max = 96000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	}
++
++	return 0;
++}
++static int snd_madifx_hw_rule_rate_out_channels(struct
+snd_pcm_hw_params *params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++	    hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++
++	if (c->min >= hdspm->ss_out_channels) {
++		struct snd_interval t = {
++			.min = 32000,
++			.max = 48000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	} else if (c->max <= hdspm->qs_out_channels) {
++		struct snd_interval t = {
++			.min = 128000,
++			.max = 192000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	} else if (c->max <= hdspm->ds_out_channels) {
++		struct snd_interval t = {
++			.min = 64000,
++			.max = 96000,
++			.integer = 1,
++		};
++		return snd_interval_refine(r, &t);
++	}
++
++	return 0;
++}
++
++static int snd_madifx_hw_rule_in_channels(struct snd_pcm_hw_params *params,
++				      struct snd_pcm_hw_rule *rule)
++{
++	unsigned int list[3];
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	list[0] = hdspm->qs_in_channels;
++	list[1] = hdspm->ds_in_channels;
++	list[2] = hdspm->ss_in_channels;
++	return snd_interval_list(c, 3, list, 0);
++}
++
++static int snd_madifx_hw_rule_out_channels(struct snd_pcm_hw_params
+*params,
++				      struct snd_pcm_hw_rule *rule)
++{
++	unsigned int list[3];
++	struct hdspm *hdspm = rule->private;
++	struct snd_interval *c = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	list[0] = hdspm->qs_out_channels;
++	list[1] = hdspm->ds_out_channels;
++	list[2] = hdspm->ss_out_channels;
++	return snd_interval_list(c, 3, list, 0);
++}
++
++
++static int snd_madifx_playback_open(struct snd_pcm_substream *substream)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	spin_lock_irq(&hdspm->lock);
++
++	snd_pcm_set_sync(substream);
++
++
++	runtime->hw = snd_madifx_playback_subinfo;
++
++	if (hdspm->capture_substream == NULL)
++		madifx_stop_audio(hdspm);
++
++	hdspm->playback_pid = current->pid;
++	hdspm->playback_substream = substream;
++
++	spin_unlock_irq(&hdspm->lock);
++
++	snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	snd_pcm_hw_constraint_pow2(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++					     32, 4096);
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++					     8192, 8192);
++		break;
++
++	default:
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++					     64, 8192);
++		break;
++	}
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++			snd_madifx_hw_rule_rate_out_channels, hdspm,
++			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			snd_madifx_hw_rule_out_channels, hdspm,
++			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			snd_madifx_hw_rule_out_channels_rate, hdspm,
++			SNDRV_PCM_HW_PARAM_RATE, -1);
++
++	return 0;
++}
++
++static int snd_madifx_playback_release(struct snd_pcm_substream *substream)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++
++	spin_lock_irq(&hdspm->lock);
++
++	hdspm->playback_pid = -1;
++	hdspm->playback_substream = NULL;
++
++	spin_unlock_irq(&hdspm->lock);
++
++	return 0;
++}
++
++
++static int snd_madifx_capture_open(struct snd_pcm_substream *substream)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	spin_lock_irq(&hdspm->lock);
++	snd_pcm_set_sync(substream);
++	runtime->hw = snd_madifx_capture_subinfo;
++
++	if (hdspm->playback_substream == NULL)
++		madifx_stop_audio(hdspm);
++
++	hdspm->capture_pid = current->pid;
++	hdspm->capture_substream = substream;
++
++	spin_unlock_irq(&hdspm->lock);
++
++	snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	snd_pcm_hw_constraint_pow2(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++					     32, 4096);
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++					     8192, 8192);
++		break;
++
++	default:
++		snd_pcm_hw_constraint_minmax(runtime,
++					     SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++					     64, 8192);
++		break;
++	}
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++			snd_madifx_hw_rule_rate_in_channels, hdspm,
++			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			snd_madifx_hw_rule_in_channels, hdspm,
++			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++
++	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			snd_madifx_hw_rule_in_channels_rate, hdspm,
++			SNDRV_PCM_HW_PARAM_RATE, -1);
++
++	return 0;
++}
++
++static int snd_madifx_capture_release(struct snd_pcm_substream *substream)
++{
++	struct hdspm *hdspm = snd_pcm_substream_chip(substream);
++
++	spin_lock_irq(&hdspm->lock);
++
++	hdspm->capture_pid = -1;
++	hdspm->capture_substream = NULL;
++
++	spin_unlock_irq(&hdspm->lock);
++	return 0;
++}
++
++static int snd_madifx_hwdep_dummy_op(struct snd_hwdep *hw, struct file
+*file)
++{
++	/* we have nothing to initialize but the call is required */
++	return 0;
++}
++
++static inline int copy_u32_le(void __user *dest, void __iomem *src)
++{
++	u32 val = readl(src);
++	return copy_to_user(dest, &val, 4);
++}
++
++static int snd_madifx_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
++		unsigned int cmd, unsigned long arg)
++{
++	void __user *argp = (void __user *)arg;
++	struct hdspm *hdspm = hw->private_data;
++	struct madifx_config info;
++	struct madifx_status status;
++#ifdef CONFIG_SND_MADIFX_BROKEN
++	struct madifx_level_buffer *levels;
++	struct madifx_mixer_ioctl mixer;
++	long unsigned int s;
++#endif /* CONFIG_SND_MADIFX_BROKEN */
++	int i = 0;
++
++	switch (cmd) {
++
++#ifdef CONFIG_SND_MADIFX_BROKEN
++	case SNDRV_MADIFX_IOCTL_GET_LEVEL:
++		{
++			int row;
++
++			levels = &(hdspm->peak_rms);
++			for (row = 1; row <= 5 ; row++) {
++				int rms_index, peak_index;
++				u32 *target_rms, *target_peak;
++
++				switch (row) {
++				case 1:
++					rms_index = MADIFX_RD_RMS_IN;
++					peak_index = MADIFX_RD_PEAK_IN;
++					target_rms = levels->rms_in;
++					target_peak = levels->peak_in;
++					break;
++				case 2:
++					rms_index = MADIFX_RD_RMS_PLAY;
++					peak_index = MADIFX_RD_PEAK_PLAY;
++					target_rms = levels->rms_play;
++					target_peak = levels->peak_play;
++					break;
++				case 3:
++					rms_index = MADIFX_RD_RMS_OUT;
++					peak_index = MADIFX_RD_PEAK_OUT;
++					target_rms = levels->rms_out;
++					target_peak = levels->peak_out;
++					break;
++				case 4:
++					rms_index = MADIFX_RD_RMS_IN_PRE;
++					peak_index = MADIFX_RD_PEAK_IN_PRE;
++					target_rms = levels->rms_in_pre;
++					target_peak = levels->peak_in_pre;
++					break;
++				default:
++					rms_index = MADIFX_RD_RMS_OUT_PRE;
++					peak_index = MADIFX_RD_PEAK_OUT_PRE;
++					target_rms = levels->rms_out_pre;
++					target_peak = levels->peak_out_pre;
++					break;
++				}
++
++				for (i = 0; i < 2 * 256; i++)
++					*(target_rms + i) = hdspm->level_buffer[rms_index + i];
++
++				for (i = 0; i < 256; i++)
++					*(target_peak + i) = hdspm->level_buffer[peak_index + i];
++			}
++
++		}
++
++
++		levels->speed = hdspm->speedmode;
++
++		s = copy_to_user(argp, levels, sizeof(struct madifx_level_buffer));
++		if (0 != s) {
++			/* snd_printk(KERN_ERR "copy_to_user(.., .., %lu): %lu
++			 [Levels]\n", sizeof(struct madifx_peak_rms), s);
++			 */
++			return -EFAULT;
++		}
++
++		madifx_write(hdspm, MADIFX_START_LEVEL, 0);
++
++		break;
++#endif /* CONFIG_SND_MADIFX_BROKEN */
++
++
++	case SNDRV_MADIFX_IOCTL_GET_CONFIG:
++
++		memset(&info, 0, sizeof(info));
++		spin_lock_irq(&hdspm->lock);
++
++		for (i = 0; i < ARRAY_SIZE(info.madi_tx_64); i++) {
++			info.madi_tx_64[i] = madifx_read_toggle_setting(hdspm,
++					(MADIFX_madi1_tx_64ch << i));
++
++			info.madi_smux[i] = madifx_read_toggle_setting(hdspm,
++					(MADIFX_madi1_smux << i));
++		}
++
++		info.wcterm = madifx_read_toggle_setting(hdspm,
++				MADIFX_WCK_TERM);
++
++		info.wck48 = madifx_read_toggle_setting(hdspm, MADIFX_WCK48);
++
++		info.aespro = madifx_read_toggle_setting(hdspm, MADIFX_PRO);
++
++		info.redundancy_mode = madifx_read_toggle_setting(hdspm,
++				MADIFX_redundancy_mode);
++
++		info.mirror_madi_out = madifx_read_toggle_setting(hdspm,
++				MADIFX_mirror_madi_out);
++
++
++		spin_unlock_irq(&hdspm->lock);
++		if (copy_to_user(argp, &info, sizeof(info)))
++			return -EFAULT;
++		break;
++
++	case SNDRV_MADIFX_IOCTL_GET_STATUS:
++		memset(&status, 0, sizeof(status));
++
++		status.card_type = hdspm->io_type;
++
++		status.clock_selection = madifx_get_clock_select(hdspm);
++
++		status.system_sample_rate =
++			madifx_get_system_sample_rate(hdspm);
++
++
++		for (i = 0; i < ARRAY_SIZE(status.sync_check); i++) {
++			status.sync_check[i] = madifx_sync_check(hdspm, i);
++			status.external_sample_rates[i] =
++				HDSPM_bit2freq(madifx_external_freq_index(hdspm, i));
++		}
++
++		for (i = 0; i < ARRAY_SIZE(status.madi_channelcount); i++) {
++			status.madi_channelcount[i] =
++				madifx_get_madichannelcount(hdspm, i);
++		}
++
++
++		if (copy_to_user(argp, &status, sizeof(status)))
++			return -EFAULT;
++
++
++		break;
++
++#ifdef CONFIG_SND_MADIFX_BROKEN
++	case SNDRV_HDSPM_IOCTL_GET_MIXER:
++		if (copy_from_user(&mixer, argp, sizeof(mixer)))
++			return -EFAULT;
++		if (copy_to_user((void __user *)mixer.mixer, hdspm->newmixer,
++					sizeof(struct madifx_newmixer)))
++			return -EFAULT;
++		break;
++#endif /* CONFIG_SND_MADIFX_BROKEN */
++
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static struct snd_pcm_ops snd_madifx_playback_ops = {
++	.open = snd_madifx_playback_open,
++	.close = snd_madifx_playback_release,
++	.ioctl = snd_madifx_ioctl,
++	.hw_params = snd_madifx_hw_params,
++	.hw_free = snd_madifx_hw_free,
++	.prepare = snd_madifx_prepare,
++	.trigger = snd_madifx_trigger,
++	.pointer = snd_madifx_hw_pointer,
++	.page = snd_pcm_sgbuf_ops_page,
++};
++
++static struct snd_pcm_ops snd_madifx_capture_ops = {
++	.open = snd_madifx_capture_open,
++	.close = snd_madifx_capture_release,
++	.ioctl = snd_madifx_ioctl,
++	.hw_params = snd_madifx_hw_params,
++	.hw_free = snd_madifx_hw_free,
++	.prepare = snd_madifx_prepare,
++	.trigger = snd_madifx_trigger,
++	.pointer = snd_madifx_hw_pointer,
++	.page = snd_pcm_sgbuf_ops_page,
++};
++
++static int snd_madifx_create_hwdep(struct snd_card *card,
++					    struct hdspm *hdspm)
++{
++	struct snd_hwdep *hw;
++	int err;
++
++	err = snd_hwdep_new(card, "MADIFX hwdep", 0, &hw);
++	if (err < 0)
++		return err;
++
++	hdspm->hwdep = hw;
++	hw->private_data = hdspm;
++	strcpy(hw->name, "MADIFX hwdep interface");
++
++	hw->ops.open = snd_madifx_hwdep_dummy_op;
++	hw->ops.ioctl = snd_madifx_hwdep_ioctl;
++	hw->ops.ioctl_compat = snd_madifx_hwdep_ioctl;
++	hw->ops.release = snd_madifx_hwdep_dummy_op;
++
++	return 0;
++}
++
++
++/*------------------------------------------------------------
++   memory interface
++ ------------------------------------------------------------*/
++static int snd_madifx_preallocate_memory(struct hdspm *hdspm)
++{
++	int err;
++	int i;
++	int lpti; /* level page table index */
++	struct snd_pcm *pcm;
++	size_t wanted;
++	dma_addr_t levelPageTable[MADIFX_NUM_LEVEL_PAGES];
++
++	pcm = hdspm->pcm;
++
++
++	wanted = max(INPUT_DMA_BUFFER_SIZE, OUTPUT_DMA_BUFFER_SIZE);
++
++	hdspm->dmaPageTable = kzalloc(sizeof(dma_addr_t) *
++			MADIFX_MAX_PAGE_TABLE_SIZE, GFP_KERNEL);
++
++	if (!hdspm->dmaPageTable) {
++		snd_printk(KERN_ERR
++				"MADIFX: unable to kmalloc dmaPageTable memory\n");
++		return -ENOMEM;
++	}
++
++	err =
++	     snd_pcm_lib_preallocate_pages_for_all(pcm,
++						   SNDRV_DMA_TYPE_DEV_SG,
++						   snd_dma_pci_data(hdspm->pci),
++						   wanted,
++						   wanted);
++	if (err < 0) {
++		snd_printdd("Could not preallocate %zd Bytes\n", wanted);
++
++		return err;
++	} else
++		snd_printdd(" Preallocated %zd Bytes\n", wanted);
++
++	/* allocate level buffer */
++	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
++			snd_dma_pci_data(hdspm->pci),
++			MADIFX_LEVEL_BUFFER_SIZE, &hdspm->dmaLevelBuffer);
++	if (err < 0) {
++		snd_printk(KERN_ERR
++				"MADIFX: Unable to allocate DMA level buffer\n");
++		return -ENOMEM;
++	}
++
++	/* Fill level page table */
++	for (i = 0; i < MADIFX_NUM_LEVEL_PAGES; i++) {
++		levelPageTable[i] = snd_sgbuf_get_addr(&(hdspm->dmaLevelBuffer),
++				i * MADIFX_HARDWARE_PAGE_SIZE);
++
++	}
++
++	/* Write level page table to device */
++	lpti = (MADIFX == hdspm->io_type) ? MADIFX_LPTI_HMFX :
++		MADIFX_LPTI_MFXT;
++
++	for (i = 0; i < MADIFX_NUM_LEVEL_PAGES; i++) {
++		madifx_write(hdspm, MADIFX_PAGE_ADDRESS_LIST + (4 * (lpti + i)),
++				levelPageTable[i]);
++	}
++
++	hdspm->level_buffer = snd_sgbuf_get_ptr(&(hdspm->dmaLevelBuffer), 0);
++
++	memset(hdspm->level_buffer, 0, MADIFX_LEVEL_BUFFER_SIZE);
++
++
++	return 0;
++}
++
++
++/* ------------- ALSA Devices ---------------------------- */
++static int snd_madifx_create_pcm(struct snd_card *card,
++					  struct hdspm *hdspm)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(card, hdspm->card_name, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	hdspm->pcm = pcm;
++	pcm->private_data = hdspm;
++	strcpy(pcm->name, hdspm->card_name);
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			&snd_madifx_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++			&snd_madifx_capture_ops);
++
++	pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
++
++	err = snd_madifx_preallocate_memory(hdspm);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static inline void snd_madifx_initialize_midi_flush(struct hdspm *hdspm)
++{
++	int i;
++
++	for (i = 0; i < hdspm->midiPorts; i++)
++		snd_madifx_flush_midi_input(hdspm, i);
++}
++
++static int snd_madifx_create_alsa_devices(struct snd_card *card,
++						   struct hdspm *hdspm)
++{
++	int err, i;
++
++	snd_printdd("Create card...\n");
++	err = snd_madifx_create_pcm(card, hdspm);
++	if (err < 0)
++		return err;
++
++	i = 0;
++	while (i < hdspm->midiPorts) {
++		err = snd_madifx_create_midi(card, hdspm, i);
++		if (err < 0)
++			return err;
++		i++;
++	}
++
++	err = snd_madifx_create_controls(card, hdspm);
++	if (err < 0)
++		return err;
++
++	err = snd_madifx_create_hwdep(card, hdspm);
++	if (err < 0)
++		return err;
++
++	snd_printdd("proc init...\n");
++	snd_madifx_proc_init(hdspm);
++
++	hdspm->system_sample_rate = -1;
++	hdspm->last_external_sample_rate = -1;
++	hdspm->last_internal_sample_rate = -1;
++	hdspm->playback_pid = -1;
++	hdspm->capture_pid = -1;
++	hdspm->capture_substream = NULL;
++	hdspm->playback_substream = NULL;
++
++	snd_printdd("Set defaults...\n");
++	err = snd_madifx_set_defaults(hdspm);
++	if (err < 0)
++		return err;
++
++	snd_printdd("Update mixer controls...\n");
++#if 0
++	/* FIXME: MADI FX disable, old mixer is broken */
++	madifx_update_simple_mixer_controls(hdspm);
++#endif
++
++	snd_printdd("Initializeing complete ???\n");
++
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_printk(KERN_ERR "MADIFX: error registering card\n");
++		return err;
++	}
++
++	snd_printdd("... yes now\n");
++
++	return 0;
++}
++
++static int snd_madifx_create(struct snd_card *card,
++		struct hdspm *hdspm) {
++
++	struct pci_dev *pci = hdspm->pci;
++	int err;
++	unsigned long io_extent;
++
++	hdspm->irq = -1;
++	hdspm->card = card;
++
++	spin_lock_init(&hdspm->lock);
++
++	pci_read_config_word(hdspm->pci,
++			PCI_CLASS_REVISION, &hdspm->firmware_rev);
++
++	strcpy(card->mixername, "Xilinx FPGA");
++	strcpy(card->driver, "MADIFX");
++
++	switch (hdspm->firmware_rev) {
++	case HDSPM_MADIFX_REV:
++		hdspm->io_type = MADIFX;
++		hdspm->card_name = "RME MADI FX";
++		hdspm->midiPorts = 4;
++		break;
++	default:
++		snd_printk(KERN_ERR
++				"MADIFX: unknown firmware revision %x\n",
++				hdspm->firmware_rev);
++		return -ENODEV;
++	}
++
++	err = pci_enable_device(pci);
++	if (err < 0)
++		return err;
++
++	pci_set_master(hdspm->pci);
++
++	err = pci_request_regions(pci, "hdspm");
++	if (err < 0)
++		return err;
++
++	hdspm->port = pci_resource_start(pci, 0);
++	io_extent = pci_resource_len(pci, 0);
++
++	snd_printdd("grabbed memory region 0x%lx-0x%lx\n",
++			hdspm->port, hdspm->port + io_extent - 1);
++
++	hdspm->iobase = ioremap_nocache(hdspm->port, io_extent);
++	if (!hdspm->iobase) {
++		snd_printk(KERN_ERR
++				"HDSPM: unable to remap region 0x%lx-0x%lx\n",
++				hdspm->port, hdspm->port + io_extent - 1);
++		return -EBUSY;
++	}
++	snd_printdd("remapped region (0x%lx) 0x%lx-0x%lx\n",
++			(unsigned long)hdspm->iobase, hdspm->port,
++			hdspm->port + io_extent - 1);
++
++	if (request_irq(pci->irq, snd_madifx_interrupt,
++			IRQF_SHARED, KBUILD_MODNAME, hdspm)) {
++		snd_printk(KERN_ERR "HDSPM: unable to use IRQ %d\n", pci->irq);
++		return -EBUSY;
++	}
++
++	snd_printdd("use IRQ %d\n", pci->irq);
++
++	hdspm->irq = pci->irq;
++
++	snd_printdd("kmalloc Mixer memory of %zd Bytes\n",
++			sizeof(struct madifx_mixer));
++
++	hdspm->newmixer = kzalloc(sizeof(struct madifx_newmixer), GFP_KERNEL);
++	if (!hdspm->newmixer) {
++		snd_printk(KERN_ERR
++				"HDSPM: unable to kmalloc Mixer memory of %d Bytes\n",
++				(int)sizeof(struct madifx_newmixer));
++		return -ENOMEM;
++	}
++
++	{
++		/* This somehow initialises the mixer. I have no idea what it
++		 * does exactly.
++		 */
++		int i;
++		for (i = 0; i < MADIFX_NUM_OUTPUT_GAINS; i++)
++			hdspm->newmixer->output_gain[i] = 0x9000;
++
++		for (i = 0; i < MADIFX_LIST_LENGTH; i++) {
++			hdspm->newmixer->listCh[i] = 0;
++			hdspm->newmixer->listVol[i] = 0;
++		}
++
++		for (i = 0; i < 196; i++) {
++			hdspm->newmixer->listCh[i] = (256 + i) | (i << 9);
++			hdspm->newmixer->listVol[i] = 32768+(32768>>3);
++		}
++
++		/* Of course, the data has to be written to the device before
++		 * something can happen.
++		 */
++		for (i = 0; i < MADIFX_LIST_LENGTH; i++) {
++			madifx_write(hdspm, MADIFX_MIXER_LIST_CH + (4 * i),
++					hdspm->newmixer->listCh[i]);
++			madifx_write(hdspm, MADIFX_MIXER_LIST_VOL + (4 * i),
++					hdspm->newmixer->listVol[i]);
++		}
++
++		for (i = 0; i < MADIFX_NUM_OUTPUT_GAINS; i++) {
++			madifx_write(hdspm, MADIFX_WR_OUTPUT_GAIN + (4 * i),
++					hdspm->newmixer->output_gain[i]);
++		}
++	}
++
++
++	hdspm->port_names_in = NULL;
++	hdspm->port_names_out = NULL;
++
++	switch (hdspm->io_type) {
++	case MADIFX:
++		hdspm->ss_in_channels = MADIFX_SS_IN_CHANNELS;
++		hdspm->ds_in_channels = MADIFX_DS_IN_CHANNELS;
++		hdspm->qs_in_channels = MADIFX_QS_IN_CHANNELS;
++		hdspm->ss_out_channels = MADIFX_SS_OUT_CHANNELS;
++		hdspm->ds_out_channels = MADIFX_DS_OUT_CHANNELS;
++		hdspm->qs_out_channels = MADIFX_QS_OUT_CHANNELS;
++		/* FIXME: portnames and stuff missing */
++		break;
++	}
++
++
++	/* texts */
++	switch (hdspm->io_type) {
++	/* Keep the switch if MFXT will be different */
++	case MADIFX:
++		hdspm->texts_clocksource = texts_madifx_clock_source;
++		hdspm->texts_clocksource_items =
++			ARRAY_SIZE(texts_madifx_clock_source);
++		break;
++	}
++
++	tasklet_init(&hdspm->midi_tasklet,
++			madifx_midi_tasklet, (unsigned long) hdspm);
++
++
++	sprintf(card->id, "MADIFXtest");
++	snd_card_set_id(card, card->id);
++
++	snd_printdd("create alsa devices.\n");
++	err = snd_madifx_create_alsa_devices(card, hdspm);
++	if (err < 0)
++		return err;
++
++	snd_madifx_initialize_midi_flush(hdspm);
++
++	return 0;
++}
++
++
++static int snd_madifx_free(struct hdspm *hdspm)
++{
++
++	if (hdspm->port) {
++
++		/* stop th audio, and cancel all interrupts */
++		hdspm->control_register &=
++		    ~(MADIFX_START | MADIFX_IE_AUDIO |
++		      MADIFX_IEN0 | MADIFX_IEN1 |
++		      MADIFX_IEN2 | MADIFX_IEN3);
++		madifx_write(hdspm, MADIFX_CONTROL_REG,
++			    hdspm->control_register);
++		madifx_write(hdspm, MADIFX_START_LEVEL, 0);
++	}
++
++	if (hdspm->irq >= 0)
++		free_irq(hdspm->irq, (void *) hdspm);
++
++	kfree(hdspm->newmixer);
++	kfree(hdspm->dmaPageTable);
++	snd_dma_free_pages(&(hdspm->dmaLevelBuffer));
++
++	if (hdspm->iobase)
++		iounmap(hdspm->iobase);
++
++	if (hdspm->port)
++		pci_release_regions(hdspm->pci);
++
++	pci_disable_device(hdspm->pci);
++	return 0;
++}
++
++
++static void snd_madifx_card_free(struct snd_card *card)
++{
++	struct hdspm *hdspm = card->private_data;
++
++	if (hdspm)
++		snd_madifx_free(hdspm);
++}
++
++
++static int snd_madifx_probe(struct pci_dev *pci,
++				     const struct pci_device_id *pci_id)
++{
++	static int dev;
++	struct hdspm *hdspm;
++	struct snd_card *card;
++	int err;
++
++	if (dev >= SNDRV_CARDS)
++		return -ENODEV;
++	if (!enable[dev]) {
++		dev++;
++		return -ENOENT;
++	}
++
++	err = snd_card_create(index[dev], id[dev],
++			THIS_MODULE, sizeof(struct hdspm), &card);
++	if (err < 0)
++		return err;
++
++	hdspm = card->private_data;
++	card->private_free = snd_madifx_card_free;
++	hdspm->dev = dev;
++	hdspm->pci = pci;
++
++	snd_card_set_dev(card, &pci->dev);
++
++	err = snd_madifx_create(card, hdspm);
++	if (err < 0) {
++		snd_card_free(card);
++		return err;
++	}
++
++	sprintf(card->shortname, "%s_%x",
++			hdspm->card_name,
++			hdspm->serial);
++	sprintf(card->longname, "%s S/N 0x%x at 0x%lx, irq %d",
++			hdspm->card_name,
++			hdspm->serial,
++			hdspm->port, hdspm->irq);
++
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_card_free(card);
++		return err;
++	}
++
++	pci_set_drvdata(pci, card);
++
++	madifx_write(hdspm, MADIFX_START_LEVEL, 1);
++
++	dev++;
++	return 0;
++}
++
++static void snd_madifx_remove(struct pci_dev *pci)
++{
++	snd_card_free(pci_get_drvdata(pci));
++	pci_set_drvdata(pci, NULL);
++}
++
++static struct pci_driver madifx_driver = {
++	.name = KBUILD_MODNAME,
++	.id_table = snd_madifx_ids,
++	.probe = snd_madifx_probe,
++	.remove = snd_madifx_remove,
++};
++
++module_pci_driver(madifx_driver);
+-- 
+1.7.10.4
