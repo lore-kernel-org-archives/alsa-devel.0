@@ -1,16 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-pcm: No need to set constraint
-	at open time
-Date: Tue, 5 Feb 2013 13:55:16 +0000
-Message-ID: <20130205135516.GZ4720@opensource.wolfsonmicro.com>
-References: <1360068219-32156-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3] ASoC: soc-compress: Add support for not
+ memory mapped DSPs
+Date: Tue, 5 Feb 2013 13:56:19 +0000
+Message-ID: <20130205135619.GA4720@opensource.wolfsonmicro.com>
+References: <1359104400-18527-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20130128040416.GJ26562@intel.com>
+ <20130128045609.GA5683@opensource.wolfsonmicro.com>
+ <20130128060914.GM26562@intel.com>
+ <20130128064440.GB5683@opensource.wolfsonmicro.com>
+ <20130128093449.GO26562@intel.com>
+ <20130128104910.GB14418@opensource.wolfsonmicro.com>
+ <20130129185116.GA27083@opensource.wolfsonmicro.com>
+ <20130131030232.GB3143@intel.com>
+ <20130205104147.GA22562@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1002350551691557562=="
+Content-Type: multipart/mixed; boundary="===============5855639535340143244=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 911042615D7
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 14:55:18 +0100 (CET)
-In-Reply-To: <1360068219-32156-1-git-send-email-peter.ujfalusi@ti.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9EB152615DF
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 14:56:20 +0100 (CET)
+In-Reply-To: <20130205104147.GA22562@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +29,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <liam.r.girdwood@intel.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, tiwai@suse.de, liam.r.girdwood@intel.com, vinod.koul@linux.jf.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1002350551691557562==
+--===============5855639535340143244==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+vcRm3WFmV0Q/ShD"
+	protocol="application/pgp-signature"; boundary="+9kyDs7IugQ0lHaC"
 Content-Disposition: inline
 
 
---+vcRm3WFmV0Q/ShD
+--+9kyDs7IugQ0lHaC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 05, 2013 at 01:43:39PM +0100, Peter Ujfalusi wrote:
-> The same constraint is going to be set in the snd_dmaengine_pcm_open()
-> function, so there is no need to set it here as well.
+On Tue, Feb 05, 2013 at 10:41:47AM +0000, Charles Keepax wrote:
+> The ASoC compressed API did not implement the copy callback in its
+> compressed ops which is required for DSPs that are not memory mapped.
 
 Applied, thanks.
 
---+vcRm3WFmV0Q/ShD
+--+9kyDs7IugQ0lHaC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJREQ89AAoJELSic+t+oim9MLYQAIpngSe/ZnfhGqNzhFCul4It
-yaY2xum9pV7CKDyq9sjpjPzP/sNXh2ygmJkP4CFlM9cSOXv+6CQS1wjnuDPzbUgM
-q/c57GGDQS3Ht7hZA1ZW4Dbe6FcV+aP8uc1SSWi/Av4O4Xq8p/2pH++cXzk8oQwt
-akb/wNYFBkJs3nkSUt1xNFeXPAfX3AE7Pqs4TixIYysYZoEGBkIEYl7g7Jlg1uyh
-sydh1TFNqXlyBFuP9BWvfnI3OK4wdA2UKuhCKTuz4NiYfsDUg66iWbr1la73oWQW
-ROiV4tFR59gOrrpWAFcnxF/prvW5/2j80VBp1rHDemXI6zJZltm1DUEgS8uRZcau
-tcajpy2Xe7KyOJcZodQDgO1/xS2VR9iNeKSLKM8AC7LlzdpVdomDoi9lZWdEX7xw
-1iIdAnAf2Pm33s1FFb62KRvuE6rLVCPOsCtOgywhBGqCHeN0oNhhmHE7mYhV2sKQ
-VnyEJNpn2CQMdNALNS5VhsRxSTFM8+26ArMDUfna4mBrpTEZRCf2SjLClM5/NA+u
-CEl5e9ZWeEui0gzsdePlj/H3x+meikFYLymp8kdwLHEvyHjkexjfoDGsTYpKqiQj
-/LUD9kct9RF5QRFM2uXS8KpUEk7wqyb+jYE8CXzc0hB2GJoLIInT5p0RmVEc+MYV
-24K1nwSIYn+R4BhfAIvT
-=QZEX
+iQIcBAEBAgAGBQJREQ97AAoJELSic+t+oim95TwP/3M+8tO1zdz+QqvICw3TG3tZ
+5W1LUKYsI7Sm4JRxFpCqTQzH3ezO1m4f5tH7+Tf9iemdmeheNk4j3thrYm0SHN0G
+aRCYmRxG58KqS8DE9coP1ZG9XCtAgN4QM0iUsELObr+TAeHz1B0CmF0X9Y1UmCMd
+Hj8UGgZRTCeBOPquDHm/W+MiJufi2u1gMuiV8WwM26t6BuMCAQmPXZs1+JjQjI7/
+eEhpV1ucT1G18BrVHhf4UsxzXPB8lCWkfPep4ghT90D+8Xbicfw4pS4K4sflAmRU
++4bmdGz+cSonGZjRUZiKHDPyQ4o4GBoiCVsR2SZVJI3e/u12YRaKXco7H6nFUf/9
+FX9AC5CgVdYN7kXpsC8UQC7SslXgIMjj43oQqyUg3HmwC8cb6ZX7ztlbk1rvqmVm
+l4B4r6d7X4bE20kqywgA1o+ztYKNDIboRzOY3atu95c7eeHzXVY9yAukjqEsmTLQ
+4foSdCItYWDBP85sRWgPialzZcumxONrLpgR9kfiNvg/pCrp94QvYHHlLqJ9HpQj
+rIRNIFEeP3/FOITiKur7NNhfQ4NjZoXw5wkCHkz1AZHcFZqHjykzqKnrH/Wnb6SZ
+incLxiFMK4J/pWKqBv6booV0Pm65qiGbH0BfspfoVv53glT1XGxGkwVPAm4F8M5X
+0vWIOuvHWiaB3I0eJrIF
+=uVoQ
 -----END PGP SIGNATURE-----
 
---+vcRm3WFmV0Q/ShD--
+--+9kyDs7IugQ0lHaC--
 
---===============1002350551691557562==
+--===============5855639535340143244==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1002350551691557562==--
+--===============5855639535340143244==--
