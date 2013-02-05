@@ -1,20 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 001/002] ASoC: Replace max98090 Device
-	Driver
-Date: Tue, 5 Feb 2013 14:05:49 +0000
-Message-ID: <20130205140548.GB4720@opensource.wolfsonmicro.com>
-References: <A453F1AE3B5DC14DB19666C506CE75A7108684F402@ITSVLEX06.it.maxim-ic.internal>
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4C6@ITSVLEX06.it.maxim-ic.internal>
- <A453F1AE3B5DC14DB19666C506CE75A7108684F4EC@ITSVLEX06.it.maxim-ic.internal>
- <A453F1AE3B5DC14DB19666C506CE75A7108684F565@ITSVLEX06.it.maxim-ic.internal>
- <A453F1AE3B5DC14DB19666C506CE75A7108684F584@ITSVLEX06.it.maxim-ic.internal>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [RFC] compress: add support for gapless playback
+Date: Tue,  5 Feb 2013 06:21:25 -0800
+Message-ID: <1360074085-562-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4289763606005772442=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50EA92615DF
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 15:05:50 +0100 (CET)
-In-Reply-To: <A453F1AE3B5DC14DB19666C506CE75A7108684F584@ITSVLEX06.it.maxim-ic.internal>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27031260305
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 15:46:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +18,210 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerry Wong <Jerry.Wong@maximintegrated.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jwong@jwassociates.com" <jwong@jwassociates.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, broonie@opensource.wolfsonmicro.com, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Jeeja KP <jeeja.kp@intel.com>
 
---===============4289763606005772442==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DaTEgnRu5pEC8TLg"
-Content-Disposition: inline
+this add new API for sound compress to support gapless playback.
+As noted in Documentation change, we add API to send metadata of encoder and
+padding delay to DSP. Also add API for indicating EOF and switching to
+subsequent track
 
+Also bump the compress API version
 
---DaTEgnRu5pEC8TLg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ Documentation/sound/alsa/compress_offload.txt |   22 +++++++++++
+ include/sound/compress_driver.h               |    2 +
+ include/uapi/sound/compress_offload.h         |   18 ++++++++-
+ sound/core/compress_offload.c                 |   51 +++++++++++++++++++++++++
+ 4 files changed, 92 insertions(+), 1 deletions(-)
 
-On Mon, Feb 04, 2013 at 09:48:47PM -0800, Jerry Wong wrote:
-> From: Jerry Wong <jerry.wong@maximintegrated.com>
->=20
-> This patch removes the existing max98090 driver prior to installing a more
-> complete one.
-
-Please test applying your patches yourself before you send them, these
-still don't apply against Linus' latest release.  It's possible this is
-something to do with your mail program corrupting your patches, try
-e-mailing to yourself.
-
---DaTEgnRu5pEC8TLg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRERG1AAoJELSic+t+oim9sccP/30+JPleT+9sUL4RES1JwZmx
-BNAxDwhIOBgAWTdbX1pWofGECJt6gr0v9pRIBUs5+i09wKIjW6dWAECCyic0nEPR
-dBnGl77J/KV3lFnp6jyWEMt+egi2B+y2jfPDg7SvBUw0qPCPBMBZcUeBUtkDk02h
-//Q4uJhohhr5ha6aUn25y/StefHF0uXq6EJRz/gfGY1g0T2kQU6JMRH9df1DSYEX
-Pm9xlAkR7hnbiqmkxXqb5p3UMWfWSoDTawYCSMll5AAs6EHEcG1H9II5mw0HfJaQ
-a+wtWH1Laz5XEVf4Qaqho3i44gbotU0TndIz31s+CekxkgvoNjThCkOb5Fb4t1qw
-9HzBAvXNaC2Qu7/Kv/2QQ28OrkDsOaLGORK0ZmB/ecpq+Bgrl+MAYdYMmPibk6iP
-bi44rPKrYd61dKUbBtONhQGls4wQofWWiEqSmz5n6s2F/VzmXJxfkvV1IIJBh438
-BMBRkJpXJmomXPiyMm4Y+Nab68I1h0khQCbJwb+fgQJfRl1KQZ1niv5l1Rhq0Gmt
-KUwRrIuKSP2DlxC/n+UEM4wANNucCuMLSuuTHBnu52ngpbTdPmXXi2/9MqHSti/E
-VQczEZQB/BkiMv3fLevEWMDWz5Enzcc90uoEfr13c+SA04lDlpCrykVLBV13B6JT
-iQyVQbvWqlAAGdSZHaRX
-=Fq3s
------END PGP SIGNATURE-----
-
---DaTEgnRu5pEC8TLg--
-
---===============4289763606005772442==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4289763606005772442==--
+diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
+index 90e9b3a..071c4b6 100644
+--- a/Documentation/sound/alsa/compress_offload.txt
++++ b/Documentation/sound/alsa/compress_offload.txt
+@@ -145,6 +145,28 @@ Modifications include:
+ - Addition of encoding options when required (derived from OpenMAX IL)
+ - Addition of rateControlSupported (missing in OpenMAX AL)
+ 
++Gapless Playback
++================
++When playing thru an album, the decoders have the ability to skip the encoder
++delay and padding and directly move from one track content to another. The end
++user can perceive this as gapless playback as we dont have silence while
++switching from one track to another
++
++The decoder needs to know the encoder delay and encoder padding. So we need to
++pass this to DSP. Also DSP and userspace needs to switch from one track to
++another and start using data for second track.
++
++The main additions are:
++
++- set_metadata
++This routine sets the encoder delay and encoder padding. This can be used by
++decoder to strip the silence
++
++- partial drain
++This is called when end of file is reached. The userspace can inform DSP that
++EOF is reached and now DSP can start skipping padding delay. Also next write
++data would belong to next track
++
+ Not supported:
+ 
+ - Support for VoIP/circuit-switched calls is not the target of this
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index f2912ab..42d6d7c 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -110,6 +110,8 @@ struct snd_compr_ops {
+ 			struct snd_compr_params *params);
+ 	int (*get_params)(struct snd_compr_stream *stream,
+ 			struct snd_codec *params);
++	int (*set_metadata)(struct snd_compr_stream *stream,
++			struct snd_compr_metadata *metadata);
+ 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
+ 	int (*pointer)(struct snd_compr_stream *stream,
+ 			struct snd_compr_tstamp *tstamp);
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 05341a4..65ca2f1 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -30,7 +30,7 @@
+ #include <sound/compress_params.h>
+ 
+ 
+-#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 0)
++#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 1)
+ /**
+  * struct snd_compressed_buffer: compressed buffer
+  * @fragment_size: size of buffer fragment in bytes
+@@ -122,6 +122,18 @@ struct snd_compr_codec_caps {
+ };
+ 
+ /**
++ * struct snd_compr_metadata: compressed stream metadata
++ * @encoder_delay: no of samples inserted by the encoder at the beginning
++ * of the track
++ * @encoder_padding: no of samples appended by the encoder at the end
++ * of the track
++ */
++struct snd_compr_metadata {
++	 __u32 encoder_delay;
++	 __u32 encoder_padding;
++};
++
++/**
+  * compress path ioctl definitions
+  * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
+  * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec
+@@ -145,6 +157,8 @@ struct snd_compr_codec_caps {
+ 						struct snd_compr_codec_caps)
+ #define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x12, struct snd_compr_params)
+ #define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x13, struct snd_codec)
++#define SNDRV_COMPRESS_SET_METADATA	_IOW('C', 0x14,\
++						 struct snd_compr_metadata)
+ #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+ #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+ #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+@@ -152,10 +166,12 @@ struct snd_compr_codec_caps {
+ #define SNDRV_COMPRESS_START		_IO('C', 0x32)
+ #define SNDRV_COMPRESS_STOP		_IO('C', 0x33)
+ #define SNDRV_COMPRESS_DRAIN		_IO('C', 0x34)
++#define SNDRV_COMPRESS_PARTIAL_DRAIN	_IO('C', 0x35)
+ /*
+  * TODO
+  * 1. add mmap support
+  *
+  */
+ #define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
++#define SND_COMPR_TRIGGER_PARTIAL_DRAIN 8
+ #endif
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index ad11dc9..2928971 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -514,6 +514,37 @@ out:
+ 	return retval;
+ }
+ 
++static int
++snd_compr_set_metadata(struct snd_compr_stream *stream, unsigned long arg)
++{
++	struct snd_compr_metadata *metadata;
++	int retval;
++
++	if (!stream->ops->set_metadata)
++		return -ENXIO;
++	/*
++	* we should allow parameter change only when stream has been
++	* opened not in other cases
++	*/
++	metadata = kmalloc(sizeof(*metadata), GFP_KERNEL);
++	if (!metadata)
++		return -ENOMEM;
++	if (copy_from_user(metadata, (void __user *)arg,
++				sizeof(*metadata))) {
++		retval = -EFAULT;
++		goto out;
++	}
++
++	pr_debug("metadata encoder delay=%x encoder padding=%x\n",
++			 metadata->encoder_delay,  metadata->encoder_padding);
++
++	retval = stream->ops->set_metadata(stream, metadata);
++
++out:
++	kfree(metadata);
++	return retval;
++}
++
+ static inline int
+ snd_compr_tstamp(struct snd_compr_stream *stream, unsigned long arg)
+ {
+@@ -594,6 +625,20 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
+ 	return retval;
+ }
+ 
++static int snd_compr_partial_drain(struct snd_compr_stream *stream)
++{
++	int retval;
++	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
++			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
++	if (retval)
++		pr_err("Partial drain returned failure\n");
++	else
++		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++	return retval;
++}
++
+ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ {
+ 	struct snd_compr_file *data = f->private_data;
+@@ -623,6 +668,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
+ 		retval = snd_compr_get_params(stream, arg);
+ 		break;
++	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
++		retval = snd_compr_set_metadata(stream, arg);
++		break;
+ 	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
+ 		retval = snd_compr_tstamp(stream, arg);
+ 		break;
+@@ -644,6 +692,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
+ 		retval = snd_compr_drain(stream);
+ 		break;
++	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
++		retval = snd_compr_partial_drain(stream);
++		break;
+ 	}
+ 	mutex_unlock(&stream->device->lock);
+ 	return retval;
+-- 
+1.7.0.4
