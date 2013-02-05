@@ -1,127 +1,129 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 05/15] ASoC: fsl: fiq and dma cannot both be modules
-Date: Tue, 5 Feb 2013 16:21:12 +0000
-Message-ID: <201302051621.12320.arnd@arndb.de>
-References: <1358788568-11137-1-git-send-email-arnd@arndb.de> <20130122035028.GB29677@S2100-06.ap.freescale.net> <20130122063331.GA1766@opensource.wolfsonmicro.com>
+From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm2200: Provide platform data for
+	MICBIAS configuration
+Date: Tue,  5 Feb 2013 16:26:43 +0000
+Message-ID: <1360081603-2795-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130122063331.GA1766@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, arm@kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CEE8E261629
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 17:26:46 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 22 January 2013, Mark Brown wrote:
->   Show Details
->   On Tue, Jan 22, 2013 at 11:50:30AM +0800, Shawn Guo wrote:
-> > On Mon, Jan 21, 2013 at 05:15:58PM +0000, Arnd Bergmann wrote:
-> 
-> > > Without this patch, we cannot build the ARM 'allmodconfig', or
-> > > we get this error:
-> 
-> > > sound/soc/fsl/imx-pcm-dma.o: In function `init_module':
-> > > sound/soc/fsl/imx-pcm-dma.c:177: multiple definition of `init_module'
-> > > sound/soc/fsl/imx-pcm-fiq.o:sound/soc/fsl/imx-pcm-fiq.c:334: first defined here
-> > > sound/soc/fsl/imx-pcm-dma.o: In function `cleanup_module':
-> > > sound/soc/fsl/imx-pcm-dma.c:177: multiple definition of `cleanup_module'
-> > > sound/soc/fsl/imx-pcm-fiq.o:sound/soc/fsl/imx-pcm-fiq.c:334: first defined here
-> 
-> > I sent a fix [1] for that queued by Mark.
-> 
-> > Mark,
-> 
-> > Is the patch on the way to 3.8-rc?
-> 
-> Yes, should be.
->   
+Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+---
+ include/sound/wm2200.h    |   22 +++++++++++++++++++++-
+ sound/soc/codecs/wm2200.c |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+), 1 deletions(-)
 
-Hmm, I tried building 3.8-rc again, which contains the fix to make
-'make allmodconfig' work with this code, but it broke 'make allyesconfig', which
-was working before :(
-
-8<----------
-Subject: [PATCH] ASoC: fsl: fix allyesconfig build for imx-pcm
-
-Patch 25b8d314 "ASoC: fsl: fix multiple definition of init_module changed
-the Makefile for imx-pcm.ko to build two modules that both contain the
-imx-pcm.c file, which nicely solves the problem of building both versions
-of the driver as modules, but it causes two new problems:
-
-1. Since imx-pcm.c is now used in two different modules, Kbuild no longer
-sets the KBUILD_MODNAME symbol when building the object file, which makes
-it impossible to use dynamic pr_debug code, resulting in this error
-
-sound/soc/fsl/imx-pcm.c: In function 'snd_imx_pcm_mmap':
-sound/soc/fsl/imx-pcm.c:28:121: error: 'KBUILD_MODNAME' undeclared (first use in this function)
-sound/soc/fsl/imx-pcm.c:28:121: note: each undeclared identifier is reported only once for each function it appears insound/soc/fsl/snd-soc-imx-pcm-dma.o: In function `imx_pcm_free':
-
-2. If we don't use the dynamic debug code, we get a link error since we now
-try to link together the same file into built-in.o twice:
-
-sound/soc/fsl/imx-pcm.c:80: multiple definition of `imx_pcm_free'
-sound/soc/fsl/snd-soc-imx-pcm-fiq.o:/sound/soc/fsl/imx-pcm.c:80: first defined here
-sound/soc/fsl/snd-soc-imx-pcm-dma.o: In function `snd_imx_pcm_mmap':
-sound/soc/fsl/imx-pcm.c:21: multiple definition of `snd_imx_pcm_mmap'
-sound/soc/fsl/snd-soc-imx-pcm-fiq.o:/sound/soc/fsl/imx-pcm.c:21: first defined here
-sound/soc/fsl/snd-soc-imx-pcm-dma.o: In function `imx_pcm_new':
-sound/soc/fsl/imx-pcm.c:52: multiple definition of `imx_pcm_new'
-sound/soc/fsl/snd-soc-imx-pcm-fiq.o:/sound/soc/fsl/imx-pcm.c:52: first defined here
-
-I originally suggested disallowing the selection of both the DMA and FIQ
-code in the same kernel. That is not very nice, but it resolves the
-build error for both built-in and modular code.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index e24e417..3f20cb7 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -122,7 +122,7 @@ config SND_SOC_IMX_AUDMUX
- config SND_MXC_SOC_WM1133_EV1
- 	tristate "Audio on the i.MX31ADS with WM1133-EV1 fitted"
- 	depends on MACH_MX31ADS_WM1133_EV1
--	depends on !SND_SOC_IMX_PCM_DMA || SND_IMX_SOC=y
-+	depends on !SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_WM8350
- 	select SND_SOC_IMX_PCM_FIQ
- 	select SND_SOC_IMX_AUDMUX
-@@ -145,7 +145,7 @@ config SND_SOC_MX27VIS_AIC32X4
- config SND_SOC_PHYCORE_AC97
- 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
- 	depends on MACH_PCM043 || MACH_PCA100
--	depends on !SND_SOC_IMX_PCM_DMA || SND_IMX_SOC=y
-+	depends on !SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_AC97_BUS
- 	select SND_SOC_WM9712
- 	select SND_SOC_IMX_PCM_FIQ
-@@ -162,7 +162,7 @@ config SND_SOC_EUKREA_TLV320
- 		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
- 		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
- 	depends on I2C
--	depends on !SND_SOC_IMX_PCM_DMA || SND_IMX_SOC=y
-+	depends on !SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_TLV320AIC23
- 	select SND_SOC_IMX_PCM_FIQ
- 	select SND_SOC_IMX_AUDMUX
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index ec14579..ddd9076 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -30,13 +30,6 @@ obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
- # i.MX Platform Support
- snd-soc-imx-ssi-objs := imx-ssi.o
- snd-soc-imx-audmux-objs := imx-audmux.o
--snd-soc-imx-pcm-objs := imx-pcm.o
--ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
--	snd-soc-imx-pcm-objs += imx-pcm-fiq.o
--endif
--ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
--	snd-soc-imx-pcm-objs += imx-pcm-dma.o
--endif
+diff --git a/include/sound/wm2200.h b/include/sound/wm2200.h
+index 79bf55b..bc7ab1a 100644
+--- a/include/sound/wm2200.h
++++ b/include/sound/wm2200.h
+@@ -12,6 +12,7 @@
+ #define __LINUX_SND_WM2200_H
  
- obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
- obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
+ #define WM2200_GPIO_SET 0x10000
++#define WM2200_MAX_MICBIAS 2
+ 
+ enum wm2200_in_mode {
+ 	WM2200_IN_SE = 0,
+@@ -25,6 +26,24 @@ enum wm2200_dmic_sup {
+ 	WM2200_DMIC_SUP_MICBIAS2 = 2,
+ };
+ 
++enum wm2200_mbias_lvl {
++	WM2200_MBIAS_LVL_1V5 = 1,
++	WM2200_MBIAS_LVL_1V8 = 2,
++	WM2200_MBIAS_LVL_1V9 = 3,
++	WM2200_MBIAS_LVL_2V0 = 4,
++	WM2200_MBIAS_LVL_2V2 = 5,
++	WM2200_MBIAS_LVL_2V4 = 6,
++	WM2200_MBIAS_LVL_2V5 = 7,
++	WM2200_MBIAS_LVL_2V6 = 8,
++};
++
++struct wm2200_micbias {
++	enum wm2200_mbias_lvl mb_lvl;      /** Regulated voltage */
++	unsigned int discharge:1;          /** Actively discharge */
++	unsigned int fast_start:1;         /** Enable aggressive startup ramp rate */
++	unsigned int bypass:1;             /** Use bypass mode */
++};
++
+ struct wm2200_pdata {
+ 	int reset;      /** GPIO controlling /RESET, if any */
+ 	int ldo_ena;    /** GPIO controlling LODENA, if any */
+@@ -35,7 +54,8 @@ struct wm2200_pdata {
+ 	enum wm2200_in_mode in_mode[3];
+ 	enum wm2200_dmic_sup dmic_sup[3];
+ 
+-	int micbias_cfg[2];  /** Register value to configure MICBIAS */
++	/** MICBIAS configurations */
++	struct wm2200_micbias micbias[WM2200_MAX_MICBIAS];
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index bdd3d80..bbd8383 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -2192,6 +2192,7 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	struct wm2200_priv *wm2200;
+ 	unsigned int reg;
+ 	int ret, i;
++	int val;
+ 
+ 	wm2200 = devm_kzalloc(&i2c->dev, sizeof(struct wm2200_priv),
+ 			      GFP_KERNEL);
+@@ -2342,6 +2343,36 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
+ 		regmap_write(wm2200->regmap, WM2200_AUDIO_IF_1_16 + i, i);
+ 	}
+ 
++	for (i = 0; i < WM2200_MAX_MICBIAS; i++) {
++		if (!wm2200->pdata.micbias[i].mb_lvl &&
++		    !wm2200->pdata.micbias[i].bypass)
++			continue;
++
++		/* Apply default for bypass mode */
++		if (!wm2200->pdata.micbias[i].mb_lvl)
++			wm2200->pdata.micbias[i].mb_lvl
++					= WM2200_MBIAS_LVL_1V5;
++
++		val = (wm2200->pdata.micbias[i].mb_lvl -1)
++					<< WM2200_MICB1_LVL_SHIFT;
++
++		if (wm2200->pdata.micbias[i].discharge)
++			val |= WM2200_MICB1_DISCH;
++
++		if (wm2200->pdata.micbias[i].fast_start)
++			val |= WM2200_MICB1_RATE;
++
++		if (wm2200->pdata.micbias[i].bypass)
++			val |= WM2200_MICB1_MODE;
++
++		regmap_update_bits(wm2200->regmap,
++				   WM2200_MIC_BIAS_CTRL_1 + i,
++				   WM2200_MICB1_LVL_MASK |
++				   WM2200_MICB1_DISCH |
++				   WM2200_MICB1_MODE |
++				   WM2200_MICB1_RATE, val);
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(wm2200->pdata.in_mode); i++) {
+ 		regmap_update_bits(wm2200->regmap, wm2200_mic_ctrl_reg[i],
+ 				   WM2200_IN1_MODE_MASK |
+-- 
+1.7.2.5
