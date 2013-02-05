@@ -1,8 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 1/3] ASoC: use list_add_tail() instead of list_add() for
- platform/codec/dai list
-Date: Tue, 05 Feb 2013 02:11:06 -0800 (PST)
-Message-ID: <87d2wfrryg.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 2/3] ASoC: add snd_soc_of_get_port_dai_name()
+Date: Tue, 05 Feb 2013 02:11:17 -0800 (PST)
+Message-ID: <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
@@ -39,55 +38,56 @@ To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Mark Brown
 Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Current ASoC is using list_add() in order to add new list to
-platform/codec/dai list.
-But it breaks added list's order.
-This patch use list_add_tail() instead of list_add() to solve this issue.
+This patch adds snd_soc_of_get_port_dai_name() to get
+dai name from device_node and port number.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 ---
- sound/soc/soc-core.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |   18 ++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e227880..be3cdd6 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1171,6 +1171,8 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 				   const char *propname);
+ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix);
++const char *snd_soc_of_get_port_dai_name(struct device_node *of_node,
++					 int port);
+ 
+ #include <sound/soc-dai.h>
+ 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 689eb04..63f2627 100644
+index 63f2627..2cf3a94 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3738,7 +3738,7 @@ int snd_soc_register_dai(struct device *dev,
- 	if (!dai->codec)
- 		dai->dapm.idle_bias_off = 1;
+@@ -4286,6 +4286,24 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
  
--	list_add(&dai->list, &dai_list);
-+	list_add_tail(&dai->list, &dai_list);
- 
- 	mutex_unlock(&client_mutex);
- 
-@@ -3829,7 +3829,7 @@ int snd_soc_register_dais(struct device *dev,
- 		if (!dai->codec)
- 			dai->dapm.idle_bias_off = 1;
- 
--		list_add(&dai->list, &dai_list);
-+		list_add_tail(&dai->list, &dai_list);
- 
- 		mutex_unlock(&client_mutex);
- 
-@@ -3892,7 +3892,7 @@ int snd_soc_register_platform(struct device *dev,
- 	mutex_init(&platform->mutex);
- 
- 	mutex_lock(&client_mutex);
--	list_add(&platform->list, &platform_list);
-+	list_add_tail(&platform->list, &platform_list);
- 	mutex_unlock(&client_mutex);
- 
- 	dev_dbg(dev, "ASoC: Registered platform '%s'\n", platform->name);
-@@ -4043,7 +4043,7 @@ int snd_soc_register_codec(struct device *dev,
- 	}
- 
- 	mutex_lock(&client_mutex);
--	list_add(&codec->list, &codec_list);
-+	list_add_tail(&codec->list, &codec_list);
- 	mutex_unlock(&client_mutex);
- 
- 	/* register any DAIs */
++const char *snd_soc_of_get_port_dai_name(struct device_node *of_node, int port)
++{
++	struct snd_soc_dai *dai;
++	int i = 0;
++
++	list_for_each_entry(dai, &dai_list, list) {
++		if (dai->dev->of_node == of_node) {
++			if (port == i)
++				return dai->name;
++
++			i++;
++		}
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_of_get_port_dai_name);
++
+ static int __init snd_soc_init(void)
+ {
+ #ifdef CONFIG_DEBUG_FS
 -- 
 1.7.9.5
