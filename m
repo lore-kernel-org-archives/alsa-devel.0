@@ -1,26 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3] ASoC: soc-compress: Add support for not
-	memory mapped	DSPs
-Date: Tue, 5 Feb 2013 10:41:47 +0000
-Message-ID: <20130205104147.GA22562@opensource.wolfsonmicro.com>
-References: <1359104400-18527-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130128040416.GJ26562@intel.com>
- <20130128045609.GA5683@opensource.wolfsonmicro.com>
- <20130128060914.GM26562@intel.com>
- <20130128064440.GB5683@opensource.wolfsonmicro.com>
- <20130128093449.GO26562@intel.com>
- <20130128104910.GB14418@opensource.wolfsonmicro.com>
- <20130129185116.GA27083@opensource.wolfsonmicro.com>
- <20130131030232.GB3143@intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - Fix phantom jacks on VT1708
+Date: Tue,  5 Feb 2013 12:02:33 +0100
+Message-ID: <1360062154-10458-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B5EB265131
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 11:47:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20130131030232.GB3143@intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C5F3265131
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 12:02:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,93 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com, vinod.koul@linux.jf.intel.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ASoC compressed API did not implement the copy callback in its
-compressed ops which is required for DSPs that are not memory mapped.
+The VT1708 has no unsol event capability, and polling is set using
+the "Jack Detect" alsamixer control. In order not to create
+phantom Jack controls, temporary enable jackpoll during build_controls.
 
-This patch creates a local copy of the compress ops for each runtime and
-modifies them with a copy callback as appropriate.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/soc-compress.c |   38 +++++++++++++++++++++++++++++++++++---
- 1 files changed, 35 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_via.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 3ea7956..c81aeec 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -302,6 +302,22 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 9641c0e..d46c448 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -661,6 +661,17 @@ static int via_init(struct hda_codec *codec)
  	return 0;
  }
  
-+static int soc_compr_copy(struct snd_compr_stream *cstream,
-+			  const char __user *buf, size_t count)
++static int vt1708_build_controls(struct hda_codec *codec)
 +{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
-+		ret = platform->driver->compr_ops->copy(cstream, buf, count);
-+
-+	mutex_unlock(&rtd->pcm_mutex);
-+	return ret;
++	/* In order not to create "Phantom Jack" controls,
++	   temporary enable jackpoll */
++	int old_interval = codec->jackpoll_interval;
++	codec->jackpoll_interval = msecs_to_jiffies(100);
++	err = via_build_controls(codec);
++	codec->jackpoll_interval = old_interval;
++	return err;
 +}
 +
- /* ASoC Compress operations */
- static struct snd_compr_ops soc_compr_ops = {
- 	.open		= soc_compr_open,
-@@ -319,6 +335,7 @@ static struct snd_compr_ops soc_compr_ops = {
- int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ static int vt1708_build_pcms(struct hda_codec *codec)
  {
- 	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_compr *compr;
-@@ -335,14 +352,25 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		return -ENOMEM;
- 	}
+ 	struct via_spec *spec = codec->spec;
+@@ -723,6 +734,7 @@ static int patch_vt1708(struct hda_codec *codec)
+ 	spec->init_verbs[spec->num_iverbs++] = vt1708_init_verbs;
  
--	compr->ops = &soc_compr_ops;
-+	compr->ops = devm_kzalloc(rtd->card->dev, sizeof(soc_compr_ops),
-+				  GFP_KERNEL);
-+	if (compr->ops == NULL) {
-+		dev_err(rtd->card->dev, "Cannot allocate compressed ops\n");
-+		ret = -ENOMEM;
-+		goto compr_err;
-+	}
-+	memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
-+
-+	/* Add copy callback for not memory mapped DSPs */
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
-+		compr->ops->copy = soc_compr_copy;
-+
- 	mutex_init(&compr->lock);
- 	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
- 	if (ret < 0) {
- 		pr_err("compress asoc: can't create compress for codec %s\n",
- 			codec->name);
--		kfree(compr);
--		return ret;
-+		goto compr_err;
- 	}
+ 	codec->patch_ops = via_patch_ops;
++	codec->patch_ops.build_controls = vt1708_build_controls;
+ 	codec->patch_ops.build_pcms = vt1708_build_pcms;
  
- 	/* DAPM dai link stream work */
-@@ -354,4 +382,8 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
- 		cpu_dai->name);
- 	return ret;
-+
-+compr_err:
-+	kfree(compr);
-+	return ret;
- }
+ 	/* clear jackpoll_interval again; it's set dynamically */
 -- 
-1.7.2.5
+1.7.9.5
