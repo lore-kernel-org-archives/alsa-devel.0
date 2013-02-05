@@ -1,14 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC] compress: add support for gapless playback
-Date: Tue,  5 Feb 2013 06:21:25 -0800
-Message-ID: <1360074085-562-1-git-send-email-vinod.koul@intel.com>
+From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm2200: Provide platform data for
+	MICBIAS configuration
+Date: Tue,  5 Feb 2013 14:40:44 +0000
+Message-ID: <1360075244-21973-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 27031260305
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 15:46:26 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E9A3260305
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 15:47:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,210 +19,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, broonie@opensource.wolfsonmicro.com, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@intel.com
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
-
-this add new API for sound compress to support gapless playback.
-As noted in Documentation change, we add API to send metadata of encoder and
-padding delay to DSP. Also add API for indicating EOF and switching to
-subsequent track
-
-Also bump the compress API version
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Change-Id: I65da7c50baf7134d20e0bfeecc601d82828a8de1
 ---
- Documentation/sound/alsa/compress_offload.txt |   22 +++++++++++
- include/sound/compress_driver.h               |    2 +
- include/uapi/sound/compress_offload.h         |   18 ++++++++-
- sound/core/compress_offload.c                 |   51 +++++++++++++++++++++++++
- 4 files changed, 92 insertions(+), 1 deletions(-)
+ include/sound/wm2200.h    |   22 +++++++++++++++++++++-
+ sound/soc/codecs/wm2200.c |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+), 1 deletions(-)
 
-diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
-index 90e9b3a..071c4b6 100644
---- a/Documentation/sound/alsa/compress_offload.txt
-+++ b/Documentation/sound/alsa/compress_offload.txt
-@@ -145,6 +145,28 @@ Modifications include:
- - Addition of encoding options when required (derived from OpenMAX IL)
- - Addition of rateControlSupported (missing in OpenMAX AL)
+diff --git a/include/sound/wm2200.h b/include/sound/wm2200.h
+index 79bf55b..bc7ab1a 100644
+--- a/include/sound/wm2200.h
++++ b/include/sound/wm2200.h
+@@ -12,6 +12,7 @@
+ #define __LINUX_SND_WM2200_H
  
-+Gapless Playback
-+================
-+When playing thru an album, the decoders have the ability to skip the encoder
-+delay and padding and directly move from one track content to another. The end
-+user can perceive this as gapless playback as we dont have silence while
-+switching from one track to another
-+
-+The decoder needs to know the encoder delay and encoder padding. So we need to
-+pass this to DSP. Also DSP and userspace needs to switch from one track to
-+another and start using data for second track.
-+
-+The main additions are:
-+
-+- set_metadata
-+This routine sets the encoder delay and encoder padding. This can be used by
-+decoder to strip the silence
-+
-+- partial drain
-+This is called when end of file is reached. The userspace can inform DSP that
-+EOF is reached and now DSP can start skipping padding delay. Also next write
-+data would belong to next track
-+
- Not supported:
+ #define WM2200_GPIO_SET 0x10000
++#define WM2200_MAX_MICBIAS 2
  
- - Support for VoIP/circuit-switched calls is not the target of this
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index f2912ab..42d6d7c 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -110,6 +110,8 @@ struct snd_compr_ops {
- 			struct snd_compr_params *params);
- 	int (*get_params)(struct snd_compr_stream *stream,
- 			struct snd_codec *params);
-+	int (*set_metadata)(struct snd_compr_stream *stream,
-+			struct snd_compr_metadata *metadata);
- 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
- 	int (*pointer)(struct snd_compr_stream *stream,
- 			struct snd_compr_tstamp *tstamp);
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index 05341a4..65ca2f1 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -30,7 +30,7 @@
- #include <sound/compress_params.h>
- 
- 
--#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 0)
-+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 1)
- /**
-  * struct snd_compressed_buffer: compressed buffer
-  * @fragment_size: size of buffer fragment in bytes
-@@ -122,6 +122,18 @@ struct snd_compr_codec_caps {
+ enum wm2200_in_mode {
+ 	WM2200_IN_SE = 0,
+@@ -25,6 +26,24 @@ enum wm2200_dmic_sup {
+ 	WM2200_DMIC_SUP_MICBIAS2 = 2,
  };
  
- /**
-+ * struct snd_compr_metadata: compressed stream metadata
-+ * @encoder_delay: no of samples inserted by the encoder at the beginning
-+ * of the track
-+ * @encoder_padding: no of samples appended by the encoder at the end
-+ * of the track
-+ */
-+struct snd_compr_metadata {
-+	 __u32 encoder_delay;
-+	 __u32 encoder_padding;
++enum wm2200_mbias_lvl {
++	WM2200_MBIAS_LVL_1V5 = 1,
++	WM2200_MBIAS_LVL_1V8 = 2,
++	WM2200_MBIAS_LVL_1V9 = 3,
++	WM2200_MBIAS_LVL_2V0 = 4,
++	WM2200_MBIAS_LVL_2V2 = 5,
++	WM2200_MBIAS_LVL_2V4 = 6,
++	WM2200_MBIAS_LVL_2V5 = 7,
++	WM2200_MBIAS_LVL_2V6 = 8,
 +};
 +
-+/**
-  * compress path ioctl definitions
-  * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
-  * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec
-@@ -145,6 +157,8 @@ struct snd_compr_codec_caps {
- 						struct snd_compr_codec_caps)
- #define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x12, struct snd_compr_params)
- #define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x13, struct snd_codec)
-+#define SNDRV_COMPRESS_SET_METADATA	_IOW('C', 0x14,\
-+						 struct snd_compr_metadata)
- #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
- #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
- #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
-@@ -152,10 +166,12 @@ struct snd_compr_codec_caps {
- #define SNDRV_COMPRESS_START		_IO('C', 0x32)
- #define SNDRV_COMPRESS_STOP		_IO('C', 0x33)
- #define SNDRV_COMPRESS_DRAIN		_IO('C', 0x34)
-+#define SNDRV_COMPRESS_PARTIAL_DRAIN	_IO('C', 0x35)
- /*
-  * TODO
-  * 1. add mmap support
-  *
-  */
- #define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
-+#define SND_COMPR_TRIGGER_PARTIAL_DRAIN 8
- #endif
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index ad11dc9..2928971 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -514,6 +514,37 @@ out:
- 	return retval;
- }
- 
-+static int
-+snd_compr_set_metadata(struct snd_compr_stream *stream, unsigned long arg)
-+{
-+	struct snd_compr_metadata *metadata;
-+	int retval;
++struct wm2200_micbias {
++	enum wm2200_mbias_lvl mb_lvl;      /** Regulated voltage */
++	unsigned int discharge:1;          /** Actively discharge */
++	unsigned int fast_start:1;         /** Enable aggressive startup ramp rate */
++	unsigned int bypass:1;             /** Use bypass mode */
++};
 +
-+	if (!stream->ops->set_metadata)
-+		return -ENXIO;
-+	/*
-+	* we should allow parameter change only when stream has been
-+	* opened not in other cases
-+	*/
-+	metadata = kmalloc(sizeof(*metadata), GFP_KERNEL);
-+	if (!metadata)
-+		return -ENOMEM;
-+	if (copy_from_user(metadata, (void __user *)arg,
-+				sizeof(*metadata))) {
-+		retval = -EFAULT;
-+		goto out;
+ struct wm2200_pdata {
+ 	int reset;      /** GPIO controlling /RESET, if any */
+ 	int ldo_ena;    /** GPIO controlling LODENA, if any */
+@@ -35,7 +54,8 @@ struct wm2200_pdata {
+ 	enum wm2200_in_mode in_mode[3];
+ 	enum wm2200_dmic_sup dmic_sup[3];
+ 
+-	int micbias_cfg[2];  /** Register value to configure MICBIAS */
++	/** MICBIAS configurations */
++	struct wm2200_micbias micbias[WM2200_MAX_MICBIAS];
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index bdd3d80..bbd8383 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -2192,6 +2192,7 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
+ 	struct wm2200_priv *wm2200;
+ 	unsigned int reg;
+ 	int ret, i;
++	int val;
+ 
+ 	wm2200 = devm_kzalloc(&i2c->dev, sizeof(struct wm2200_priv),
+ 			      GFP_KERNEL);
+@@ -2342,6 +2343,36 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
+ 		regmap_write(wm2200->regmap, WM2200_AUDIO_IF_1_16 + i, i);
+ 	}
+ 
++	for (i = 0; i < WM2200_MAX_MICBIAS; i++) {
++		if (!wm2200->pdata.micbias[i].mb_lvl &&
++		    !wm2200->pdata.micbias[i].bypass)
++			continue;
++
++		/* Apply default for bypass mode */
++		if (!wm2200->pdata.micbias[i].mb_lvl)
++			wm2200->pdata.micbias[i].mb_lvl
++					= WM2200_MBIAS_LVL_1V5;
++
++		val = (wm2200->pdata.micbias[i].mb_lvl -1)
++					<< WM2200_MICB1_LVL_SHIFT;
++
++		if (wm2200->pdata.micbias[i].discharge)
++			val |= WM2200_MICB1_DISCH;
++
++		if (wm2200->pdata.micbias[i].fast_start)
++			val |= WM2200_MICB1_RATE;
++
++		if (wm2200->pdata.micbias[i].bypass)
++			val |= WM2200_MICB1_MODE;
++
++		regmap_update_bits(wm2200->regmap,
++				   WM2200_MIC_BIAS_CTRL_1 + i,
++				   WM2200_MICB1_LVL_MASK |
++				   WM2200_MICB1_DISCH |
++				   WM2200_MICB1_MODE |
++				   WM2200_MICB1_RATE, val);
 +	}
 +
-+	pr_debug("metadata encoder delay=%x encoder padding=%x\n",
-+			 metadata->encoder_delay,  metadata->encoder_padding);
-+
-+	retval = stream->ops->set_metadata(stream, metadata);
-+
-+out:
-+	kfree(metadata);
-+	return retval;
-+}
-+
- static inline int
- snd_compr_tstamp(struct snd_compr_stream *stream, unsigned long arg)
- {
-@@ -594,6 +625,20 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
- 	return retval;
- }
- 
-+static int snd_compr_partial_drain(struct snd_compr_stream *stream)
-+{
-+	int retval;
-+	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
-+			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
-+		return -EPERM;
-+	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
-+	if (retval)
-+		pr_err("Partial drain returned failure\n");
-+	else
-+		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	return retval;
-+}
-+
- static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- {
- 	struct snd_compr_file *data = f->private_data;
-@@ -623,6 +668,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
- 		retval = snd_compr_get_params(stream, arg);
- 		break;
-+	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
-+		retval = snd_compr_set_metadata(stream, arg);
-+		break;
- 	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
- 		retval = snd_compr_tstamp(stream, arg);
- 		break;
-@@ -644,6 +692,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
- 		retval = snd_compr_drain(stream);
- 		break;
-+	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
-+		retval = snd_compr_partial_drain(stream);
-+		break;
- 	}
- 	mutex_unlock(&stream->device->lock);
- 	return retval;
+ 	for (i = 0; i < ARRAY_SIZE(wm2200->pdata.in_mode); i++) {
+ 		regmap_update_bits(wm2200->regmap, wm2200_mic_ctrl_reg[i],
+ 				   WM2200_IN1_MODE_MASK |
 -- 
-1.7.0.4
+1.7.2.5
