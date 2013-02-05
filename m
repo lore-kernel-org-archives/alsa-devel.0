@@ -1,7 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 2/3] ASoC: add snd_soc_of_get_port_dai_name()
-Date: Tue, 05 Feb 2013 02:11:17 -0800 (PST)
-Message-ID: <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 3/3 v4] ASoC: simple-card: add Device Tree support
+Date: Tue, 05 Feb 2013 02:12:06 -0800 (PST)
+Message-ID: <87a9rjrrwt.wl%kuninori.morimoto.gx@renesas.com>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
@@ -38,56 +38,257 @@ To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Mark Brown
 Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds snd_soc_of_get_port_dai_name() to get
-dai name from device_node and port number.
+Support for loading the simple-card module via devicetree.
+It requests cpu/codec information for probing.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 ---
- include/sound/soc.h  |    2 ++
- sound/soc/soc-core.c |   18 ++++++++++++++++++
- 2 files changed, 20 insertions(+)
+v3 -> v4
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e227880..be3cdd6 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1171,6 +1171,8 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname);
- unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
- 				     const char *prefix);
-+const char *snd_soc_of_get_port_dai_name(struct device_node *of_node,
-+					 int port);
+ - removed port-name
+ - it gets dai_name from node and port number
+
+ .../devicetree/bindings/sound/simple-card.txt      |   61 ++++++++++
+ sound/soc/generic/simple-card.c                    |  124 +++++++++++++++++++-
+ 2 files changed, 180 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/simple-card.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+new file mode 100644
+index 0000000..dc94b51
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -0,0 +1,61 @@
++Simple-Card:
++
++Required properties:
++
++ [prefix] means cpu/codec here
++
++- compatible					: "simple-audio"
++- simple-audio,card-name			: simple-audio card name
++- simple-audio,format				: see below
++- simple-audio,[prefix],dai			: phandle and port for CPU/CODEC
++- simple-audio,[prefix],frame-master		: frame master
++- simple-audio,[prefix],bitclock-master		: bitclock master
++
++Optional properties:
++
++- simple-audio,system-clock-frequency		: system clock rate if it is connected to both CPU/CODEC
++- simple-audio,bitclock-inversion		: bit clock inversion for both CPU/CODEC
++- simple-audio,frame-inversion			: frame inversion for both CPU/CODEC
++
++- simple-audio,[prefix],bitclock-inversion	: if CPU/CODEC needs clock inversion
++- simple-audio,[prefix],frame-inversion		: if CPU/CODEC needs frame inversion
++- simple-audio,[prefix],system-clock-frequency	: system clock rate for each CPU/CODEC
++
++simple-audio,format
++	"i2s"
++	"right_j"
++	"left_j"
++	"dsp_a"
++	"dsp_b"
++	"ac97"
++	"pdm"
++	"msb"
++	"lsb"
++
++Example:
++
++sound {
++	compatible = "simple-audio";
++
++	simple-audio,card-name = "FSI2A-AK4648";
++	simple-audio,format = "left_j";
++	simple-audio,cpu,dai = <&sh_fsi2 0>;
++	simple-audio,codec,dai = <&ak4648 0>;
++	simple-audio,codec,bitclock-master;
++	simple-audio,codec,frame-master;
++	simple-audio,codec,system-clock-frequency = <11289600>;
++};
++
++&i2c0 {
++	ak4648: ak4648@0x12 {
++		compatible = "asahi-kasei,ak4648";
++		reg = <0x12>;
++	};
++};
++
++sh_fsi2: sh_fsi2@0xec230000 {
++	compatible = "renesas,sh_fsi2";
++	reg = <0xec230000 0x400>;
++	interrupt-parent = <&gic>;
++	interrupts = <0 146 0x4>;
++};
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 6cf8355..c28ebcc 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -9,6 +9,7 @@
+  * published by the Free Software Foundation.
+  */
  
- #include <sound/soc-dai.h>
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 63f2627..2cf3a94 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4286,6 +4286,24 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <sound/simple_card.h>
+@@ -52,11 +53,114 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
  
-+const char *snd_soc_of_get_port_dai_name(struct device_node *of_node, int port)
++static struct device_node*
++__asoc_simple_card_parse_of(struct device_node *np,
++			    struct asoc_simple_dai *dai,
++			    const char *prefix)
 +{
-+	struct snd_soc_dai *dai;
-+	int i = 0;
++	const __be32 *list;
++	struct device_node *node;
++	char prop[128];
++	int size, port;
 +
-+	list_for_each_entry(dai, &dai_list, list) {
-+		if (dai->dev->of_node == of_node) {
-+			if (port == i)
-+				return dai->name;
++	/* get [prefix]dai = <&phandle port-num> */
++	snprintf(prop, sizeof(prop), "%s,dai", prefix);
++	list = of_get_property(np, prop, &size);
++	if (!list)
++		return NULL;
 +
-+			i++;
-+		}
++	if (2 != size / sizeof(*list))
++		return NULL;
++
++	node = of_find_node_by_phandle(be32_to_cpup(list++));
++	if (!node)
++		return NULL;
++
++	of_node_put(node);
++
++	/* get port number */
++	port = be32_to_cpup(list);
++
++	/* get dai-name from node and port */
++	dai->name = snd_soc_of_get_port_dai_name(node, port);
++
++	/* get dai specific format */
++	dai->fmt = snd_soc_of_parse_daifmt(np, prefix);
++
++	/* get "[prefix]system-clock-frequency = <xxx>" */
++	snprintf(prop, sizeof(prop), "%s,system-clock-frequency", prefix);
++	of_property_read_u32(np, prop, &dai->sysclk);
++
++	return node;
++}
++
++static void asoc_simple_card_parse_of(struct device_node *np,
++				      struct asoc_simple_card_info *info,
++				      struct device *dev,
++				      struct device_node **of_cpu,
++				      struct device_node **of_codec,
++				      struct device_node **of_platform)
++{
++	u32 sysclk = 0;
++
++	of_property_read_string(np, "simple-audio,card-name", &info->card);
++	info->name = info->card;
++
++	info->daifmt = snd_soc_of_parse_daifmt(np, "simple-audio,") &
++		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
++
++	of_property_read_u32(np,
++			"simple-audio,system-clock-frequency", &sysclk);
++
++	info->cpu_dai.sysclk = sysclk;
++	info->codec_dai.sysclk = sysclk;
++
++	*of_cpu   = __asoc_simple_card_parse_of(np, &info->cpu_dai,
++						"simple-audio,cpu");
++	*of_codec = __asoc_simple_card_parse_of(np, &info->codec_dai,
++						"simple-audio,codec");
++
++	/* simple-card assumes platform == cpu */
++	*of_platform = *of_cpu;
++
++	dev_dbg(dev, "card-name : %s\n", info->card);
++	dev_dbg(dev, "platform : %04x / %p\n",
++		info->daifmt,
++		*of_platform);
++	dev_dbg(dev, "cpu : %s / %04x / %d / %p\n",
++		info->cpu_dai.name,
++		info->cpu_dai.fmt,
++		info->cpu_dai.sysclk,
++		*of_cpu);
++	dev_dbg(dev, "codec : %s / %04x / %d / %p\n",
++		info->codec_dai.name,
++		info->codec_dai.fmt,
++		info->codec_dai.sysclk,
++		*of_codec);
++}
++
+ static int asoc_simple_card_probe(struct platform_device *pdev)
+ {
+-	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
++	struct asoc_simple_card_info *cinfo;
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *of_cpu, *of_codec, *of_platform;
+ 	struct device *dev = &pdev->dev;
+ 
++	cinfo		= NULL;
++	of_cpu		= NULL;
++	of_codec	= NULL;
++	of_platform	= NULL;
++	if (np && of_device_is_available(np)) {
++		cinfo = devm_kzalloc(dev, sizeof(*cinfo), GFP_KERNEL);
++		if (cinfo)
++			asoc_simple_card_parse_of(np, cinfo, dev,
++						  &of_cpu,
++						  &of_codec,
++						  &of_platform);
++	} else {
++		cinfo = pdev->dev.platform_data;
 +	}
 +
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_get_port_dai_name);
+ 	if (!cinfo) {
+ 		dev_err(dev, "no info for asoc-simple-card\n");
+ 		return -EINVAL;
+@@ -64,10 +168,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 
+ 	if (!cinfo->name	||
+ 	    !cinfo->card	||
+-	    !cinfo->codec	||
+-	    !cinfo->platform	||
+-	    !cinfo->cpu_dai.name ||
+-	    !cinfo->codec_dai.name) {
++	    !cinfo->codec_dai.name	||
++	    !(cinfo->codec		|| of_codec)	||
++	    !(cinfo->platform		|| of_platform)	||
++	    !(cinfo->cpu_dai.name	|| of_cpu)) {
+ 		dev_err(dev, "insufficient asoc_simple_card_info settings\n");
+ 		return -EINVAL;
+ 	}
+@@ -81,6 +185,9 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	cinfo->snd_link.platform_name	= cinfo->platform;
+ 	cinfo->snd_link.codec_name	= cinfo->codec;
+ 	cinfo->snd_link.codec_dai_name	= cinfo->codec_dai.name;
++	cinfo->snd_link.cpu_of_node	= of_cpu;
++	cinfo->snd_link.codec_of_node	= of_codec;
++	cinfo->snd_link.platform_of_node = of_platform;
+ 	cinfo->snd_link.init		= asoc_simple_card_dai_init;
+ 
+ 	/*
+@@ -102,9 +209,16 @@ static int asoc_simple_card_remove(struct platform_device *pdev)
+ 	return snd_soc_unregister_card(&cinfo->snd_card);
+ }
+ 
++static const struct of_device_id asoc_simple_of_match[] = {
++	{ .compatible = "simple-audio", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
 +
- static int __init snd_soc_init(void)
- {
- #ifdef CONFIG_DEBUG_FS
+ static struct platform_driver asoc_simple_card = {
+ 	.driver = {
+ 		.name	= "asoc-simple-card",
++		.of_match_table = asoc_simple_of_match,
+ 	},
+ 	.probe		= asoc_simple_card_probe,
+ 	.remove		= asoc_simple_card_remove,
 -- 
 1.7.9.5
