@@ -1,15 +1,25 @@
-From: Chris Rattray <crattray@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm2200: Provide platform data for
-	MICBIAS configuration
-Date: Tue,  5 Feb 2013 14:40:44 +0000
-Message-ID: <1360075244-21973-1-git-send-email-crattray@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 2/2 v3] ASoC: simple-card: add Device
+	Tree support
+Date: Tue, 5 Feb 2013 15:23:45 +0000
+Message-ID: <20130205152344.GE4720@opensource.wolfsonmicro.com>
+References: <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <20130131013500.GA4759@opensource.wolfsonmicro.com>
+ <510AA551.30400@wwwdotorg.org>
+ <20130131171158.GA15376@opensource.wolfsonmicro.com>
+ <510AA720.9000904@wwwdotorg.org>
+ <20130131172150.GC15376@opensource.wolfsonmicro.com>
+ <87fw1g7q8g.wl%kuninori.morimoto.gx@renesas.com>
+ <511034F5.3070809@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1842838136300170143=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E9A3260305
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 15:47:55 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8FB9D2615D1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 16:23:46 +0100 (CET)
+In-Reply-To: <511034F5.3070809@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,112 +29,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Chris Rattray <crattray@opensource.wolfsonmicro.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
-Change-Id: I65da7c50baf7134d20e0bfeecc601d82828a8de1
----
- include/sound/wm2200.h    |   22 +++++++++++++++++++++-
- sound/soc/codecs/wm2200.c |   31 +++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/wm2200.h b/include/sound/wm2200.h
-index 79bf55b..bc7ab1a 100644
---- a/include/sound/wm2200.h
-+++ b/include/sound/wm2200.h
-@@ -12,6 +12,7 @@
- #define __LINUX_SND_WM2200_H
- 
- #define WM2200_GPIO_SET 0x10000
-+#define WM2200_MAX_MICBIAS 2
- 
- enum wm2200_in_mode {
- 	WM2200_IN_SE = 0,
-@@ -25,6 +26,24 @@ enum wm2200_dmic_sup {
- 	WM2200_DMIC_SUP_MICBIAS2 = 2,
- };
- 
-+enum wm2200_mbias_lvl {
-+	WM2200_MBIAS_LVL_1V5 = 1,
-+	WM2200_MBIAS_LVL_1V8 = 2,
-+	WM2200_MBIAS_LVL_1V9 = 3,
-+	WM2200_MBIAS_LVL_2V0 = 4,
-+	WM2200_MBIAS_LVL_2V2 = 5,
-+	WM2200_MBIAS_LVL_2V4 = 6,
-+	WM2200_MBIAS_LVL_2V5 = 7,
-+	WM2200_MBIAS_LVL_2V6 = 8,
-+};
-+
-+struct wm2200_micbias {
-+	enum wm2200_mbias_lvl mb_lvl;      /** Regulated voltage */
-+	unsigned int discharge:1;          /** Actively discharge */
-+	unsigned int fast_start:1;         /** Enable aggressive startup ramp rate */
-+	unsigned int bypass:1;             /** Use bypass mode */
-+};
-+
- struct wm2200_pdata {
- 	int reset;      /** GPIO controlling /RESET, if any */
- 	int ldo_ena;    /** GPIO controlling LODENA, if any */
-@@ -35,7 +54,8 @@ struct wm2200_pdata {
- 	enum wm2200_in_mode in_mode[3];
- 	enum wm2200_dmic_sup dmic_sup[3];
- 
--	int micbias_cfg[2];  /** Register value to configure MICBIAS */
-+	/** MICBIAS configurations */
-+	struct wm2200_micbias micbias[WM2200_MAX_MICBIAS];
- };
- 
- #endif
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index bdd3d80..bbd8383 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -2192,6 +2192,7 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
- 	struct wm2200_priv *wm2200;
- 	unsigned int reg;
- 	int ret, i;
-+	int val;
- 
- 	wm2200 = devm_kzalloc(&i2c->dev, sizeof(struct wm2200_priv),
- 			      GFP_KERNEL);
-@@ -2342,6 +2343,36 @@ static int wm2200_i2c_probe(struct i2c_client *i2c,
- 		regmap_write(wm2200->regmap, WM2200_AUDIO_IF_1_16 + i, i);
- 	}
- 
-+	for (i = 0; i < WM2200_MAX_MICBIAS; i++) {
-+		if (!wm2200->pdata.micbias[i].mb_lvl &&
-+		    !wm2200->pdata.micbias[i].bypass)
-+			continue;
-+
-+		/* Apply default for bypass mode */
-+		if (!wm2200->pdata.micbias[i].mb_lvl)
-+			wm2200->pdata.micbias[i].mb_lvl
-+					= WM2200_MBIAS_LVL_1V5;
-+
-+		val = (wm2200->pdata.micbias[i].mb_lvl -1)
-+					<< WM2200_MICB1_LVL_SHIFT;
-+
-+		if (wm2200->pdata.micbias[i].discharge)
-+			val |= WM2200_MICB1_DISCH;
-+
-+		if (wm2200->pdata.micbias[i].fast_start)
-+			val |= WM2200_MICB1_RATE;
-+
-+		if (wm2200->pdata.micbias[i].bypass)
-+			val |= WM2200_MICB1_MODE;
-+
-+		regmap_update_bits(wm2200->regmap,
-+				   WM2200_MIC_BIAS_CTRL_1 + i,
-+				   WM2200_MICB1_LVL_MASK |
-+				   WM2200_MICB1_DISCH |
-+				   WM2200_MICB1_MODE |
-+				   WM2200_MICB1_RATE, val);
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(wm2200->pdata.in_mode); i++) {
- 		regmap_update_bits(wm2200->regmap, wm2200_mic_ctrl_reg[i],
- 				   WM2200_IN1_MODE_MASK |
--- 
-1.7.2.5
+--===============1842838136300170143==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jk/5KjyVsvxWSMIA"
+Content-Disposition: inline
+
+
+--jk/5KjyVsvxWSMIA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 04, 2013 at 03:23:49PM -0700, Stephen Warren wrote:
+
+> It seems extremely odd to me that the data delay would just happen to
+> end up meaning that inverting the clock works out to magically make
+> everything work.
+
+> Still, if there really is a use-case for this in otherwise simple audio
+> systems, then I guess specifying all the DAI properties in sub-nodes is
+> indeed to simplest/most-flexible way to go.
+
+I've heard of this before when things get routed through an inverter for
+buffering (or sometimes a FPGA for something more fancy).
+
+--jk/5KjyVsvxWSMIA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRESPsAAoJELSic+t+oim9gJQP/iNARiAqqyh5AT0X+bPPAomF
+2pkmZN86eFhm01qjK9QBONAmISkHFqbwQv2TwUY0ZQ53m+bZFsb9baU53j9Nk7+M
+AgJcsYROcwkp/13wHoURL4bvk6zPBqSn/W/4y5c35RS0nJvZZ8JpuU4iVRvngetB
+wCn53P5EFLpYWvWsEFMtzPOKOI0IutgvCbdbTa+WlXUlnSsgJDxLSaTOlBPHCI3y
+3wSJXxl8dGYKlm9opG4PpGaTo7KwStHZzKKmsWnWV081lfwybvI6Ms6LSDCFXkPL
+utpV5xb91/Z6TcS9whVTIRi06C5BFg2dlSY3ZQEcPWqvkSEbVAKat6XUqkdCfgbS
+6w19ro3TItW9EXS5eyahdPOfTYMULButBdNlfkW10Oe4LrNA88/e6BMT/DpA1GEm
+ThhCtQRaGH9kCMuyc8Iufkak0VWlKzs1fCa/Tq2j/EG22wlNaWcmIJL0XtGCqpfg
+6QCVWAwx2YQaceT5z8aqZKuQoxMPdnd8urExPVmRWSgbqohE93TFvlZGNXmfRowG
+KODNmrCIEDGjPUyA7cG6LRYadllrL3kxCZwJLe2gAWUMqrmjvTkbI+JiMVcJXaMV
+p7Rp9R+fsPX02+oBH8pVzmCiqHLTlTqu2tMvBH/kPZtme9LxORMmxyHFAvFUE0s9
+6jg2m6gSG3+XLhy6Y+iF
+=iVKv
+-----END PGP SIGNATURE-----
+
+--jk/5KjyVsvxWSMIA--
+
+--===============1842838136300170143==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1842838136300170143==--
