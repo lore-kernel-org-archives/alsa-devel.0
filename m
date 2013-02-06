@@ -1,21 +1,14 @@
-From: Brent Weatherall <brentweatherall@gmail.com>
-Subject: Re: [PATCH 0/2] ASoC: OMAP4+ABE (ubuntu): Might fix
-	OpenMax on PandaBoard
-Date: Wed, 6 Feb 2013 07:37:36 -0800
-Message-ID: <CAAo96ZBtky=XmVMG8KsTCLhQco0v72kG7rULJPyQcGVdxp1F1A@mail.gmail.com>
-References: <CAAo96ZCNBTGBToLbKnvQ1k_eewJcg94KZBRKt7TKkE3T8xqsQw@mail.gmail.com>
- <1360163409-25607-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: compress: Only mute playback streams
+Date: Wed,  6 Feb 2013 17:55:44 +0000
+Message-ID: <1360173344-27930-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C575265247
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2013 16:37:38 +0100 (CET)
-Received: by mail-pa0-f45.google.com with SMTP id kl14so869438pab.18
- for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2013 07:37:37 -0800 (PST)
-In-Reply-To: <1360163409-25607-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91A6126007E
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2013 18:55:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +18,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, michael@amarulasolutions.com, Clemens Ladisch <clemens@ladisch.de>, s-guiriec@ti.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Otherwise capture activity on a compressed DAI would mute any playback
+on the same DAI.
 
-     I apologize if you have sent me previous messages.  I think my e-mail
-filters are off and this one almost got trashed.  I will try to get time on
-this in the next couple of days as I can work it in.  Thanks for looking at
-this.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-compress.c |   17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-Regards,
-
-Brent
-
-
-On Wed, Feb 6, 2013 at 7:10 AM, Peter Ujfalusi <peter.ujfalusi@ti.com>wrote:
-
-> Hi Brent,
->
-> Could you try the following two patch on top of your ubuntu kernel:
-> git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.gitubuntu/ti-ubuntu-3.4-1487
->
-> It fixes similar issue on my board when using mplayer with ABE.
->
-> Regards,
-> Peter
-> ---
-> Peter Ujfalusi (2):
->   ASoC: omap-abe-mmap: Make the hwrule function to be more generic
->   ASoC: omap-abe-mmap: Place constraint to buffer size as well
->
->  sound/soc/omap/omap-abe-mmap.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> --
-> 1.8.1.1
->
->
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index c81aeec..35726cb 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -116,13 +116,12 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
+ 		cpu_dai->playback_active--;
+ 		codec_dai->playback_active--;
++		snd_soc_dai_digital_mute(codec_dai, 1);
+ 	} else {
+ 		cpu_dai->capture_active--;
+ 		codec_dai->capture_active--;
+ 	}
+ 
+-	snd_soc_dai_digital_mute(codec_dai, 1);
+-
+ 	cpu_dai->active--;
+ 	codec_dai->active--;
+ 	codec->active--;
+@@ -179,10 +178,16 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 			goto out;
+ 	}
+ 
+-	if (cmd == SNDRV_PCM_TRIGGER_START)
+-		snd_soc_dai_digital_mute(codec_dai, 0);
+-	else if (cmd == SNDRV_PCM_TRIGGER_STOP)
+-		snd_soc_dai_digital_mute(codec_dai, 1);
++	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
++		switch (cmd) {
++		case SNDRV_PCM_TRIGGER_START:
++			snd_soc_dai_digital_mute(codec_dai, 0);
++			break;
++		case SNDRV_PCM_TRIGGER_STOP:
++			snd_soc_dai_digital_mute(codec_dai, 1);
++			break;
++		}
++	}
+ 
+ out:
+ 	mutex_unlock(&rtd->pcm_mutex);
+-- 
+1.7.10.4
