@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC] compress: add support for gapless playback
-Date: Wed, 6 Feb 2013 06:31:18 -0800
-Message-ID: <20130206143118.GL3143@intel.com>
-References: <1360074085-562-1-git-send-email-vinod.koul@intel.com>
- <s5hk3ql8rd5.wl%tiwai@suse.de> <20130206140932.GJ3143@intel.com>
- <s5ha9rh8pmt.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 2/2] ASoC: omap-abe-mmap: Place constraint to
+	buffer size as well
+Date: Wed, 6 Feb 2013 16:10:09 +0100
+Message-ID: <1360163409-25607-3-git-send-email-peter.ujfalusi@ti.com>
+References: <CAAo96ZCNBTGBToLbKnvQ1k_eewJcg94KZBRKt7TKkE3T8xqsQw@mail.gmail.com>
+ <1360163409-25607-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B422261985
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2013 15:56:03 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5ha9rh8pmt.wl%tiwai@suse.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52C20265237
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2013 16:10:17 +0100 (CET)
+In-Reply-To: <1360163409-25607-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
+To: brentweatherall@gmail.com
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, michael@amarulasolutions.com, clemens@ladisch.de, s-guiriec@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 06, 2013 at 03:48:26PM +0100, Takashi Iwai wrote:
-> > > How is the operation flow?  Does it drain until which point?
-> > Right, we want to move from one track to another. And while at this DSP needs to
-> > exhaust the buffers from first track and then we should start writing second
-> > track. When userspace has finsihed wirting first track it sends partial_drain
-> > and DSP decods finsihed off and returns when it is ready to accept second track
-> > data. The userland sends the metadata for this followed by data write.
-> 
-> Hm, could you depict the flow?  Will be like below?
-> 
-> - Open
-> - Get caps / codec caps
-> - Set params
-> - Set metadata of the first track
-> - Fill data of the first track
-> - Trigger START
-> - User-space finished sending all, then trigger PARTIAL_DRAIN
-PARTAIL_DRAIN is returned when DSP has finished most of data from first track
-and is ready to accept second track data
-> - Set metadata of the next track
-> - Fill data of the next track
-DSP switches to second track
-Keep writing till we finish track, then trigger PARTIAL_DRAIN
-Continue till you reach end of album
-Then trigger DRAIN
-Close
+In this we can make sure that applications will figure out the correct
+combination of period size and buffer size.
 
-I will add this to documentation patch as well...
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/omap/omap-abe-mmap.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> OK, then PARTIAL_DRAIN doesn't sound intuitive.
-> Something like CONTINUE_TO_NEXT?
-Sure, anyone else with a better name :-)
-> 
-> (I'm not particularly good at naming, so someone must have a better
->  idea...)
-Welcome to club, I wont mind naming after you :D
-
---
-~Vinod
+diff --git a/sound/soc/omap/omap-abe-mmap.c b/sound/soc/omap/omap-abe-mmap.c
+index e5654c9..0aea7ec 100644
+--- a/sound/soc/omap/omap-abe-mmap.c
++++ b/sound/soc/omap/omap-abe-mmap.c
+@@ -122,7 +122,7 @@ static int aess_open(struct snd_pcm_substream *substream)
+ 		break;
+ 	default:
+ 		/*
+-		 * Period size must be aligned with the Audio Engine
++		 * Period and buffer size must be aligned with the Audio Engine
+ 		 * processing loop which is 250 us long
+ 		 */
+ 		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
+@@ -130,6 +130,11 @@ static int aess_open(struct snd_pcm_substream *substream)
+ 					omap_abe_hwrule_size_step,
+ 					NULL,
+ 					SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
++		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
++					SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++					omap_abe_hwrule_size_step,
++					NULL,
++					SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
+ 		break;
+ 	}
+ 
+-- 
+1.8.1.1
