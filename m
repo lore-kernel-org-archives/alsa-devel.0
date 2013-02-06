@@ -1,113 +1,80 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: How to use implicit feedback with full duplex?
-Date: Tue, 5 Feb 2013 23:50:19 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1302052326150.1207@xoschi>
-References: <51116F36.9040106@ladisch.de>
+From: Daniel J Blueman <daniel@quora.org>
+Subject: Re: 3.8-rc1 patch_cirrus 4.0 regression...
+Date: Wed, 6 Feb 2013 08:47:41 +0800
+Message-ID: <CAMVG2ssBaD=W3mAecKjCH8+G-HiVpHqQ5iSoyA4n9_3Mgz=VWQ@mail.gmail.com>
+References: <CAMVG2suCiLak3CbeKZtEgjeJqw3=1fD3k9FMsm=tYE7h3cuVjQ@mail.gmail.com>
+	<s5hsj5aag7z.wl%tiwai@suse.de>
+	<CAMVG2stEPHuk-cNwZHjtnOP=PeXwF7SMxMSp=HVaOy9SzW2Dgw@mail.gmail.com>
+	<s5hobfyafeg.wl%tiwai@suse.de>
+	<s5hd2weacbe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 54136261737
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2013 23:50:28 +0100 (CET)
-Received: by mail-bk0-f41.google.com with SMTP id q16so362264bkw.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Feb 2013 14:50:26 -0800 (PST)
-In-Reply-To: <51116F36.9040106@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hd2weacbe.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi Clemens,
-
-On Tue, 5 Feb 2013, Clemens Ladisch wrote:
-> Hi,
-> 
-> I thought I'd try to use implicit feedback with my simple audio device:
-> 
->     Interface Descriptor:
->       bInterfaceNumber        1
->       bAlternateSetting       0
->     Interface Descriptor:
->       bInterfaceNumber        1
->       bAlternateSetting       1
->       AudioStreaming Interface Descriptor:
->         ...
->       Endpoint Descriptor:
->         bEndpointAddress     0x01  EP 1 OUT
->     Interface Descriptor:
->       bInterfaceNumber        2
->       bAlternateSetting       0
->     Interface Descriptor:
->       bInterfaceNumber        2
->       bAlternateSetting       1
->       AudioStreaming Interface Descriptor:
->         ...
->       Endpoint Descriptor:
->         bEndpointAddress     0x82  EP 2 IN
+On 6 February 2013 01:40, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 05 Feb 2013 17:34:15 +0100,
+> Takashi Iwai wrote:
+>>
+>> At Wed, 6 Feb 2013 00:29:54 +0800,
+>> Daniel J Blueman wrote:
+>> >
+>> > On 6 February 2013 00:16, Takashi Iwai <tiwai@suse.de> wrote:
+>> > > At Wed, 6 Feb 2013 00:10:30 +0800,
+>> > > Daniel J Blueman wrote:
+>> > >>
+>> > >> Hi Takashi,
+>> > >>
+>> > >> The v3.8-rc kernels have regressed from v3.7 with the quad-speaker
+>> > >> arrangement on my Macbook Pro 10,1 - only the higher-frequency
+>> > >> speakers work despite the front and rear channels being exposed in the
+>> > >> mixer.
+>> > >
+>> > > Interesting.  So you have a machine with 4.0 built-in speaker instead
+>> > > of 2.1?  Then we need to add a device-specific flag for it.  Currently
+>> > > the driver assumes 2.1 system blindly because majority of machines
+>> > > have that.
+>> > >
+>> > > FWIW, the codec parser code has been totally rewritten for 3.9, so any
+>> > > patch to 3.8 won't be applied to 3.9 (and vice versa)...
+>> > >
+>> > > Could you give alsa-info.sh output on 3.8 kernel?  Then I'll try to
+>> > > cook it for 3.9 (and maybe backport to 3.8).
+>> >
+>> > Here's the output from the current alsa-info.sh on 3.8-rc6 with the
+>> > two cited patches reverted [1]; let me know if you'd like 3.8-rc6
+>> > pure.
+>>
+>> Thanks.
+>>
+>> > The sound is pretty impressive for a laptop when the low-frequecy
+>> > speakers are enabled.
+>>
+>> Which program are you using for testing the surrounds?
+>> I'm interested in it because the commit you reverted is basically
+>> providing only an additional information for the channel map, and it
+>> doesn't change anything else.  It implies that some applications are
+>> really referring to the chmap info.
 >
-> So I wrote a patch to configure it like those M-Audio devices:
-> 
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -391,6 +391,17 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
->  	attr = fmt->ep_attr & USB_ENDPOINT_SYNCTYPE;
-> 
->  	switch (subs->stream->chip->usb_id) {
-> +	case USB_ID(0x0582, 0x0018):
-> +		if (is_playback) {
-> +			implicit_fb = 1;
-> +			ep = 0x82;
-> +			iface = usb_ifnum_to_if(dev, 2);
-> +			if (!iface || iface->num_altsetting < 2)
-> +				return -EINVAL;
-> +			alts = &iface->altsetting[1];
-> +			goto add_sync_ep;
-> +		}
-> +		break;
+> Or, it might be that the mixer value is simply not set correct.
+>
+> To be sure, could you try again 3.8-rc6 without reversing patches,
+> adjust "Speaker" and "Bass Speaker" volumes properly, and retest?
+> If it still doesn't work, please take alsa-info.sh snapshot at this
+> state for comparing with the previous result.
 
-Looks good to me. 
+My apologies! We do now have "Bass Speaker" which affects both bass
+speakers. It was always being restored to level 0 and works when set
+up.
 
->  	case USB_ID(0x0763, 0x2030): /* M-Audio Fast Track C400 */
->  		if (is_playback) {
->  			implicit_fb = 1;
-> 
-> This works fine when playing something:
-...
-> But when I then try to record at the same time, the driver refuses to
-> configure the input endpoint (to the only format, which is already set):
-> 
->   kernel: setting usb interface 2:1
->   kernel: Re-using EP 82 in iface 2,1 @ffff8801fd2ac000
->   kernel: Unable to change format on ep #82: already in use
-> 
-> And despite that "alreay in use" check, the input endpoint is affected
-> so much that playback breaks.
-> 
-> Is full duplex supposed to work?  Does it work with other devices?
+There is a "Subwoofer" slider in addition to "Balance" and "Fade" in
+the GNOME mixer UI which is greyed out; presumably this is intended as
+the same mixer control?
 
-This is probably a "yes, but" :)
-I use my device mostly full duplex, but with jack opening both 
-playback and capture at the same time.
-
-I assume you are opening two different streams, one for playback and
-one for capture. In that case, the capture EP is of course already
-in use, as a source for timing.
-If I try opening 2 different streams I get the same here - but playback 
-doesn't break for me. I wonder why that happens.
-
-Can you try using jackd -d alsa -d hw:x with the device and see if that 
-works for you?
-
-Cheers,
-Eldad
+Dan
+-- 
+Daniel J Blueman
