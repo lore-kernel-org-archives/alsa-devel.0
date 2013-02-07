@@ -1,51 +1,23 @@
 From: Rahul Sharma <rahul.sharma@samsung.com>
-Subject: [RFC PATCH v2 0/5] exynos-hdmi to CDF compliant display driver
-Date: Thu, 07 Feb 2013 06:59:32 -0500
-Message-ID: <1360238377-14806-1-git-send-email-rahul.sharma@samsung.com>
+Subject: [RFC PATCH v2 1/5] video: display: add event handling,
+ set mode and hdmi ops to cdf core
+Date: Thu, 07 Feb 2013 06:59:33 -0500
+Message-ID: <1360238377-14806-2-git-send-email-rahul.sharma@samsung.com>
+References: <1360238377-14806-1-git-send-email-rahul.sharma@samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
+In-reply-to: <1360238377-14806-1-git-send-email-rahul.sharma@samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org
 Cc: tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, inki.dae@samsung.com, kyungmin.park@samsung.com, r.sh.open@gmail.com, joshi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-V2:
-1) Adding hdmi sound card using cdf based hdmi audio codec.
-2) DAPM and JACK control to hdmi codec.
-3) Offload event handler by adding work queue.
-4) Rework based on v1 comments.
-
-Tested for:
-1) Mode setting and switching using modetest.
-2) Video with HPD and Power related scenarios.
-3) Audio playback with Hotplug-Scenarios.
-4) DAPM control for hdmi playback.
-
-Pending:
-1) Not moved exynos_hdmi to driver/video/display since it will make it
-difficult to analyze the code changes.
-
-V1:
-This patch set is a proposal to change Exynos Drm Hdmi driver to a CDF
-complaint panel driver. This migration serves 2 purposes. One is to eliminate
-duplication due to v4l and drm hdmi drivers. Second is to add support for Hdmi
-audio ALSA codec which is not possible with drm/v4l hdmi driver (specially for
-exynos as hdmi audio and hdmi core registers are intermixed.).
-
-This patch series is based on the Second RFC of CDF from Laurent Pinchart,
-(http://lists.freedesktop.org/archives/dri-devel/2012-November/030888.html)
-applied to 'for-next' branch at
-git.kernel.org/pub/scm/linux/kernel/git/kgene/linux-samsung.git.
-
-[PATCH 1/4] video: display: add event handling, set mode and hdmi ops to cdf
-core
-
-This patch adds:
+This patch adds
 1) Event Notification to CDF Core:
 	Adds simple event notification mechanism supports multiple
 	subscribers. This is used for hot-plug notification to the clients
 	of hdmi display i.e. exynos-drm and alsa-codec. CDF Core maintains
 	multiple subscriber list. When entity reports a event Core will
-	route it to all of them. Un-subscription is not implemented which
+	route it to all of them. Un-superscription is not implemented which
 	can be done if notification callback is Null.
 
 2) set_mode to generic ops:
@@ -76,55 +48,304 @@ entity:
 	(i2s/ spdif), SF, Audio Channels, BPS.
 	set_audiostate: enable disable audio.
 
-[PATCH 2/4] drm/edid: temporarily exposing generic edid-read interface from drm
+Signed-off-by: Rahul Sharma <rahul.sharma@samsung.com>
+---
+ drivers/video/display/display-core.c |  85 +++++++++++++++++++++++++++
+ include/video/display.h              | 111 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 193 insertions(+), 3 deletions(-)
 
-It exposes generic interface from drm_edid.c to get the edid data and length
-by any display entity. Once I get clear idea about edid handling in CDF, I need
-to revert these temporary changes.
-
-[PATCH 3/4] drm/exynos: moved drm hdmi driver to cdf framework
-
-This patch implements exynos_hdmi_cdf.c which is a glue component between
-exynos DRM and hdmi cdf panel. It is a platform driver register through
-exynos_drm_drv.c. Exynos_hdmi.c is modified to register hdmi as display panel.
-exynos_hdmi_cdf.c registers for exynos hdmi display entity and if successful,
-proceeds for mode setting.
-
-[PATCH 4/4] alsa/soc: add hdmi audio codec based on cdf
-
-It registers hdmi-audio codec to the ALSA framework. This is the second client
-to the hdmi panel. Once notified by the CDF Core it proceeds towards audio
-setting and audio control. It also subscribes for hpd notification to implement
-hpd related audio requirements.
-
-Rahul Sharma (5):
-  video: display: add event handling, set mode and hdmi ops to cdf core
-  drm/edid: temporarily exposing generic edid-read interface from drm
-  drm/exynos: moved drm hdmi driver to cdf framework
-  alsa/soc: add hdmi audio codec based on cdf
-  alsa/soc: add hdmi audio card using cdf based hdmi codec
-
- drivers/gpu/drm/drm_edid.c               |  88 ++++++
- drivers/gpu/drm/exynos/Kconfig           |   6 +
- drivers/gpu/drm/exynos/Makefile          |   1 +
- drivers/gpu/drm/exynos/exynos_drm_drv.c  |  24 ++
- drivers/gpu/drm/exynos/exynos_drm_drv.h  |   1 +
- drivers/gpu/drm/exynos/exynos_hdmi.c     | 445 ++++++++++++++++---------------
- drivers/gpu/drm/exynos/exynos_hdmi_cdf.c | 370 +++++++++++++++++++++++++
- drivers/video/display/display-core.c     |  85 ++++++
- include/video/display.h                  | 111 +++++++-
- include/video/exynos_hdmi.h              |  25 ++
- sound/soc/codecs/Kconfig                 |   3 +
- sound/soc/codecs/Makefile                |   2 +
- sound/soc/codecs/exynos_hdmi_audio.c     | 424 +++++++++++++++++++++++++++++
- sound/soc/samsung/Kconfig                |   8 +
- sound/soc/samsung/Makefile               |   2 +
- sound/soc/samsung/hdmi.c                 | 260 ++++++++++++++++++
- 16 files changed, 1638 insertions(+), 217 deletions(-)
- create mode 100644 drivers/gpu/drm/exynos/exynos_hdmi_cdf.c
- create mode 100644 include/video/exynos_hdmi.h
- create mode 100644 sound/soc/codecs/exynos_hdmi_audio.c
- create mode 100644 sound/soc/samsung/hdmi.c
-
+diff --git a/drivers/video/display/display-core.c b/drivers/video/display/display-core.c
+index 55a7399..12fb882 100644
+--- a/drivers/video/display/display-core.c
++++ b/drivers/video/display/display-core.c
+@@ -99,6 +99,14 @@ int display_entity_get_modes(struct display_entity *entity,
+ }
+ EXPORT_SYMBOL_GPL(display_entity_get_modes);
+ 
++int display_entity_set_mode(struct display_entity *entity,
++		   const struct videomode *mode)
++{
++	if (!entity->opt_ctrl.hdmi || !entity->ops.ctrl->set_mode)
++		return 0;
++	return entity->ops.ctrl->set_mode(entity, mode);
++}
++EXPORT_SYMBOL_GPL(display_entity_set_mode);
+ /**
+ * display_entity_get_size - Get display entity physical size
+ * @entity: The display entity
+@@ -140,6 +148,37 @@ int display_entity_get_params(struct display_entity *entity,
+ }
+ EXPORT_SYMBOL_GPL(display_entity_get_params);
+ 
++int display_entity_subscribe_event(struct display_entity *entity,
++		struct display_event_subscriber *subscriber)
++{
++	if (!entity || !subscriber || !subscriber->notify)
++		return -EINVAL;
++
++	mutex_lock(&entity->entity_mutex);
++	list_add_tail(&subscriber->list, &entity->list_subscribers);
++	mutex_unlock(&entity->entity_mutex);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(display_entity_subscribe_event);
++
++int display_entity_notify_event_subscriber(struct display_entity *entity,
++		enum display_entity_event_type type, unsigned int value)
++{
++	struct display_event_subscriber *subscriber;
++
++	if (!entity || type < 0)
++		return -EINVAL;
++
++	mutex_lock(&entity->entity_mutex);
++	list_for_each_entry(subscriber, &entity->list_subscribers, list) {
++		subscriber->notify(entity, type, value, subscriber->context);
++	}
++	mutex_unlock(&entity->entity_mutex);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(display_entity_notify_event_subscriber);
++
+ /* -----------------------------------------------------------------------------
+ * Video operations
+ */
+@@ -312,6 +351,9 @@ int __must_check __display_entity_register(struct display_entity *entity,
+ 	kref_init(&entity->ref);
+ 	entity->owner = owner;
+ 	entity->state = DISPLAY_ENTITY_STATE_OFF;
++	entity->list_subscribers.next = &entity->list_subscribers;
++	entity->list_subscribers.prev = &entity->list_subscribers;
++	mutex_init(&entity->entity_mutex);
+ 
+ 	mutex_lock(&display_entity_mutex);
+ 	list_add(&entity->list, &display_entity_list);
+@@ -357,6 +399,49 @@ void display_entity_unregister(struct display_entity *entity)
+ }
+ EXPORT_SYMBOL_GPL(display_entity_unregister);
+ 
++/* -----------------------------------------------------------------------------
++ * Display Entity Hdmi ops
++ */
++
++int display_entity_hdmi_get_edid(struct display_entity *entity,
++			struct display_entity_edid *edid)
++{
++	if (!entity->opt_ctrl.hdmi || !entity->opt_ctrl.hdmi->get_edid)
++		return 0;
++
++	return entity->opt_ctrl.hdmi->get_edid(entity, edid);
++}
++EXPORT_SYMBOL_GPL(display_entity_hdmi_get_edid);
++
++int display_entity_hdmi_check_mode(struct display_entity *entity,
++		   const struct videomode *mode)
++{
++	if (!entity->opt_ctrl.hdmi || !entity->opt_ctrl.hdmi->check_mode)
++		return 0;
++
++	return entity->opt_ctrl.hdmi->check_mode(entity, mode);
++}
++EXPORT_SYMBOL_GPL(display_entity_hdmi_check_mode);
++
++int display_entity_hdmi_init_audio(struct display_entity *entity,
++		const struct display_entity_audio_params *params)
++{
++	if (!entity->opt_ctrl.hdmi || !entity->opt_ctrl.hdmi->init_audio)
++		return 0;
++
++	return entity->opt_ctrl.hdmi->init_audio(entity, params);
++}
++EXPORT_SYMBOL_GPL(display_entity_hdmi_init_audio);
++
++int display_entity_hdmi_set_audiostate(struct display_entity *entity,
++	enum display_entity_audiostate state)
++{
++	if (!entity->opt_ctrl.hdmi || !entity->opt_ctrl.hdmi->set_audiostate)
++		return 0;
++
++	return entity->opt_ctrl.hdmi->set_audiostate(entity, state);
++}
++EXPORT_SYMBOL_GPL(display_entity_hdmi_set_audiostate);
+ MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");
+ MODULE_DESCRIPTION("Display Core");
+ MODULE_LICENSE("GPL");
+diff --git a/include/video/display.h b/include/video/display.h
+index 817f4ae..eae373f 100644
+--- a/include/video/display.h
++++ b/include/video/display.h
+@@ -66,22 +66,64 @@ enum display_entity_stream_state {
+ 	DISPLAY_ENTITY_STREAM_CONTINUOUS,
+ };
+ 
++enum display_entity_event_type {
++	DISPLAY_ENTITY_HDMI_HOTPLUG,
++};
++
+ enum display_entity_interface_type {
+ 	DISPLAY_ENTITY_INTERFACE_DPI,
++	DISPLAY_ENTITY_INTERFACE_HDMI,
++};
++
++enum display_entity_audio_interface {
++	DISPLAY_ENTITY_AUDIO_I2S,
++	DISPLAY_ENTITY_AUDIO_SPDIF,
++};
++
++enum display_entity_audiostate {
++	DISPLAY_ENTITY_AUDIOSTATE_OFF,
++	DISPLAY_ENTITY_AUDIOSTATE_ON,
+ };
+ 
+ struct display_entity_interface_params {
+ 	enum display_entity_interface_type type;
+ };
+ 
++struct display_event_subscriber {
++	struct list_head list;
++	void(*notify)(struct display_entity *ent,
++		enum display_entity_event_type type,
++		unsigned int value, void *context);
++	void *context;
++};
++
++struct display_entity_edid {
++	u8		*edid;
++	int		len;
++};
++
++struct display_entity_audio_params {
++	enum display_entity_audio_interface	type;
++	int	channels;
++	int	sf;
++	int	bits_per_sample;
++};
++
+ struct display_entity_control_ops {
+ 	int (*set_state)(struct display_entity *ent,
+ 			enum display_entity_state state);
++
+ 	int (*update)(struct display_entity *ent);
++
+ 	int (*get_modes)(struct display_entity *ent,
+ 			const struct videomode **modes);
++
++	int (*set_mode)(struct display_entity *entity,
++		const struct videomode *modes);
++
+ 	int (*get_params)(struct display_entity *ent,
+ 			struct display_entity_interface_params *params);
++
+ 	int (*get_size)(struct display_entity *ent,
+ 			unsigned int *width, unsigned int *height);
+ };
+@@ -91,8 +133,29 @@ struct display_entity_video_ops {
+ 			enum display_entity_stream_state state);
+ };
+ 
++struct display_entity_hdmi_control_ops {
++
++	int (*get_edid)(struct display_entity *ent,
++		struct display_entity_edid *edid);
++
++	int (*check_mode)(struct display_entity *entity,
++		const struct videomode *modes);
++
++	int (*init_audio)(struct display_entity *entity,
++		const struct display_entity_audio_params *params);
++
++	int (*set_audiostate)(struct display_entity *entity,
++		enum display_entity_audiostate state);
++};
++
++struct display_entity_hdmi_video_ops {
++	int (*get_edid)(struct display_entity *ent,
++			    enum display_entity_stream_state state);
++};
++
+ struct display_entity {
+ 	struct list_head list;
++	struct list_head list_subscribers;
+ 	struct device *dev;
+ 	struct module *owner;
+ 	struct kref ref;
+@@ -104,26 +167,51 @@ struct display_entity {
+ 		const struct display_entity_video_ops *video;
+ 	} ops;
+ 
++	union {
++		const struct display_entity_hdmi_control_ops *hdmi;
++	} opt_ctrl;
++
++	union {
++		const struct display_entity_hdmi_video_ops *hdmi;
++	} opt_video;
++
+ 	void(*release)(struct display_entity *ent);
+ 
+ 	enum display_entity_state state;
++	struct mutex	entity_mutex;
++	void		*private;
+ };
+ 
++/* generic display entity ops */
++
+ int display_entity_set_state(struct display_entity *entity,
+ 				enum display_entity_state state);
++
+ int display_entity_update(struct display_entity *entity);
++
+ int display_entity_get_modes(struct display_entity *entity,
+ 				const struct videomode **modes);
++
++int display_entity_set_mode(struct display_entity *entity,
++		const struct videomode *modes);
++
+ int display_entity_get_params(struct display_entity *entity,
+-				struct display_entity_interface_params *params);
++		struct display_entity_interface_params *params);
++
+ int display_entity_get_size(struct display_entity *entity,
+-			unsigned int *width, unsigned int *height);
++		unsigned int *width, unsigned int *height);
+ 
+ int display_entity_set_stream(struct display_entity *entity,
+ 				enum display_entity_stream_state state);
+ 
++int display_entity_subscribe_event(struct display_entity *entity,
++		struct display_event_subscriber *subscriber);
++
++int display_entity_notify_event_subscriber(struct display_entity *entity,
++		enum display_entity_event_type type, unsigned int value);
++
+ static inline void display_entity_connect(struct display_entity *source,
+-					struct display_entity *sink)
++				struct display_entity *sink)
+ {
+ 	sink->source = source;
+ }
+@@ -147,4 +235,21 @@ void display_entity_unregister_notifier(struct display_entity_notifier *notifier
+ #define display_entity_register(display_entity) \
+ 	__display_entity_register(display_entity, THIS_MODULE)
+ 
++/* hdmi ops */
++
++int display_entity_hdmi_get_edid(struct display_entity *entity,
++		struct display_entity_edid *edid);
++
++int display_entity_hdmi_check_mode(struct display_entity *entity,
++		const struct videomode *modes);
++
++int display_entity_hdmi_get_hpdstate(struct display_entity *entity,
++			unsigned int *hpd_state);
++
++int display_entity_hdmi_init_audio(struct display_entity *entity,
++	const struct display_entity_audio_params *params);
++
++int display_entity_hdmi_set_audiostate(struct display_entity *entity,
++	enum display_entity_audiostate state);
++
+ #endif /* __DISPLAY_H__ */
 -- 
 1.8.0
