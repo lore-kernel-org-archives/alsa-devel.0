@@ -1,1204 +1,491 @@
 From: Rahul Sharma <rahul.sharma@samsung.com>
-Subject: [RFC PATCH v2 3/5] drm/exynos: moved drm hdmi driver to cdf framework
-Date: Thu, 07 Feb 2013 07:12:10 -0500
-Message-ID: <1360239132-15557-1-git-send-email-rahul.sharma@samsung.com>
+Subject: [RFC PATCH v2 4/5] alsa/soc: add hdmi audio codec based on cdf
+Date: Thu, 07 Feb 2013 07:12:11 -0500
+Message-ID: <1360239132-15557-2-git-send-email-rahul.sharma@samsung.com>
+References: <1360239132-15557-1-git-send-email-rahul.sharma@samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
+In-reply-to: <1360239132-15557-1-git-send-email-rahul.sharma@samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org
 Cc: tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, inki.dae@samsung.com, kyungmin.park@samsung.com, r.sh.open@gmail.com, joshi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch implements exynos_hdmi_cdf.c which is a glue component between
-exynos DRM and hdmi cdf panel. It is a platform driver register through
-exynos_drm_drv.c. Exynos_hdmi.c is modified to register hdmi as display panel.
-exynos_hdmi_cdf.c registers for exynos hdmi display entity and if successful,
-proceeds for mode setting.
+V2:
+- DAPM and JACK control to hdmi codec.
+
+This patch registers hdmi-audio codec to the ALSA framework. This is the second
+client to the hdmi panel. Once notified by the CDF Core it proceeds towards
+audio setting and audio control. It also subscribes for hpd notification to
+implement hpd related audio requirements.
 
 Signed-off-by: Rahul Sharma <rahul.sharma@samsung.com>
 ---
- drivers/gpu/drm/exynos/Kconfig           |   6 +
- drivers/gpu/drm/exynos/Makefile          |   1 +
- drivers/gpu/drm/exynos/exynos_drm_drv.c  |  24 ++
- drivers/gpu/drm/exynos/exynos_drm_drv.h  |   1 +
- drivers/gpu/drm/exynos/exynos_hdmi.c     | 445 ++++++++++++++++---------------
- drivers/gpu/drm/exynos/exynos_hdmi_cdf.c | 370 +++++++++++++++++++++++++
- include/video/exynos_hdmi.h              |  25 ++
- 7 files changed, 658 insertions(+), 214 deletions(-)
- create mode 100644 drivers/gpu/drm/exynos/exynos_hdmi_cdf.c
- create mode 100644 include/video/exynos_hdmi.h
+ sound/soc/codecs/Kconfig             |   3 +
+ sound/soc/codecs/Makefile            |   2 +
+ sound/soc/codecs/exynos_hdmi_audio.c | 424 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 429 insertions(+)
+ create mode 100644 sound/soc/codecs/exynos_hdmi_audio.c
 
-diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kconfig
-index 1d1f1e5..309e62a 100644
---- a/drivers/gpu/drm/exynos/Kconfig
-+++ b/drivers/gpu/drm/exynos/Kconfig
-@@ -34,6 +34,12 @@ config DRM_EXYNOS_HDMI
- 	help
- 	  Choose this option if you want to use Exynos HDMI for DRM.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 3a84782..d3e0874 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -512,3 +512,6 @@ config SND_SOC_ML26124
  
-+config DRM_EXYNOS_HDMI_CDF
-+	bool "Exynos DRM HDMI using CDF"
-+	depends on DRM_EXYNOS_HDMI && DRM_EXYNOS && !VIDEO_SAMSUNG_S5P_TV
-+	help
-+	  Choose this option if you want to use Exynos HDMI for DRM using CDF.
+ config SND_SOC_TPA6130A2
+ 	tristate
 +
- config DRM_EXYNOS_VIDI
- 	bool "Exynos DRM Virtual Display"
- 	depends on DRM_EXYNOS
-diff --git a/drivers/gpu/drm/exynos/Makefile b/drivers/gpu/drm/exynos/Makefile
-index 639b49e..e946ed6 100644
---- a/drivers/gpu/drm/exynos/Makefile
-+++ b/drivers/gpu/drm/exynos/Makefile
-@@ -20,5 +20,6 @@ exynosdrm-$(CONFIG_DRM_EXYNOS_IPP)	+= exynos_drm_ipp.o
- exynosdrm-$(CONFIG_DRM_EXYNOS_FIMC)	+= exynos_drm_fimc.o
- exynosdrm-$(CONFIG_DRM_EXYNOS_ROTATOR)	+= exynos_drm_rotator.o
- exynosdrm-$(CONFIG_DRM_EXYNOS_GSC)	+= exynos_drm_gsc.o
-+exynosdrm-$(CONFIG_DRM_EXYNOS_HDMI_CDF) += exynos_hdmi_cdf.o
++config SND_SOC_EXYNOS_HDMI_CODEC
++	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index f6e8e36..388da28 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -115,6 +115,7 @@ snd-soc-wm9705-objs := wm9705.o
+ snd-soc-wm9712-objs := wm9712.o
+ snd-soc-wm9713-objs := wm9713.o
+ snd-soc-wm-hubs-objs := wm_hubs.o
++snd-soc-exynos-hdmi-audio-objs := exynos_hdmi_audio.o
  
- obj-$(CONFIG_DRM_EXYNOS)		+= exynosdrm.o
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_drv.c b/drivers/gpu/drm/exynos/exynos_drm_drv.c
-index 3da5c2d..7876c3c 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_drv.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_drv.c
-@@ -40,6 +40,9 @@
- /* platform device pointer for eynos drm device. */
- static struct platform_device *exynos_drm_pdev;
+ # Amp
+ snd-soc-max9877-objs := max9877.o
+@@ -236,6 +237,7 @@ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
+ obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+ obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
+ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
++obj-$(CONFIG_SND_SOC_EXYNOS_HDMI_CODEC)	+= snd-soc-exynos-hdmi-audio.o
  
-+/* platform device pointer for eynos hdmi cdf device. */
-+static struct platform_device *exynos_hdmi_cdf_pdev;
-+
- static int exynos_drm_load(struct drm_device *dev, unsigned long flags)
- {
- 	struct exynos_drm_private *private;
-@@ -331,6 +334,18 @@ static int __init exynos_drm_init(void)
- #endif
- 
- #ifdef CONFIG_DRM_EXYNOS_HDMI
-+
-+	ret = platform_driver_register(&hdmi_cdf_driver);
-+	if (ret < 0)
-+		goto out_hdmi_cdf_driver;
-+
-+	exynos_hdmi_cdf_pdev = platform_device_register_simple(
-+		"exynos-hdmi-cdf", -1, NULL, 0);
-+	if (IS_ERR_OR_NULL(exynos_hdmi_cdf_pdev)) {
-+		ret = PTR_ERR(exynos_hdmi_cdf_pdev);
-+		goto out_hdmi_cdf_device;
-+	}
-+
- 	ret = platform_driver_register(&hdmi_driver);
- 	if (ret < 0)
- 		goto out_hdmi;
-@@ -438,6 +453,13 @@ out_common_hdmi:
- out_mixer:
- 	platform_driver_unregister(&hdmi_driver);
- out_hdmi:
-+
-+out_hdmi_cdf_device:
-+	platform_device_unregister(exynos_hdmi_cdf_pdev);
-+
-+out_hdmi_cdf_driver:
-+	platform_driver_unregister(&hdmi_cdf_driver);
-+
- #endif
- 
- #ifdef CONFIG_DRM_EXYNOS_FIMD
-@@ -480,6 +502,8 @@ static void __exit exynos_drm_exit(void)
- 	platform_driver_unregister(&exynos_drm_common_hdmi_driver);
- 	platform_driver_unregister(&mixer_driver);
- 	platform_driver_unregister(&hdmi_driver);
-+	platform_driver_unregister(&hdmi_cdf_driver);
-+	platform_device_unregister(exynos_hdmi_cdf_pdev);
- #endif
- 
- #ifdef CONFIG_DRM_EXYNOS_VIDI
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_drv.h b/drivers/gpu/drm/exynos/exynos_drm_drv.h
-index b9e51bc..961fe14 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_drv.h
-+++ b/drivers/gpu/drm/exynos/exynos_drm_drv.h
-@@ -332,6 +332,7 @@ void exynos_platform_device_hdmi_unregister(void);
- extern struct platform_driver fimd_driver;
- extern struct platform_driver hdmi_driver;
- extern struct platform_driver mixer_driver;
-+extern struct platform_driver hdmi_cdf_driver;
- extern struct platform_driver exynos_drm_common_hdmi_driver;
- extern struct platform_driver vidi_driver;
- extern struct platform_driver g2d_driver;
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
-index 6f844b1..548cd32 100755
---- a/drivers/gpu/drm/exynos/exynos_hdmi.c
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
-@@ -34,13 +34,12 @@
- #include <linux/regulator/consumer.h>
- #include <linux/io.h>
- #include <linux/of_gpio.h>
-+#include <video/display.h>
-+#include "video/exynos_hdmi.h"
- #include <plat/gpio-cfg.h>
- 
- #include <drm/exynos_drm.h>
- 
--#include "exynos_drm_drv.h"
--#include "exynos_drm_hdmi.h"
--
- #include "exynos_hdmi.h"
- 
- #include <linux/gpio.h>
-@@ -157,14 +156,12 @@ struct hdmi_v14_conf {
- 
- struct hdmi_context {
- 	struct device			*dev;
--	struct drm_device		*drm_dev;
- 	bool				hpd;
- 	bool				powered;
- 	bool				dvi_mode;
- 	struct mutex			hdmi_mutex;
- 
- 	void __iomem			*regs;
--	void				*parent_ctx;
- 	int				external_irq;
- 	int				internal_irq;
- 
-@@ -180,6 +177,7 @@ struct hdmi_context {
- 	int				hpd_gpio;
- 
- 	enum hdmi_type			type;
-+	struct display_entity		entity;
- };
- 
- /* HDMI Version 1.3 */
-@@ -973,39 +971,8 @@ static void hdmi_reg_infoframe(struct hdmi_context *hdata,
- 	}
- }
- 
--static bool hdmi_is_connected(void *ctx)
--{
--	struct hdmi_context *hdata = ctx;
--
--	return hdata->hpd;
--}
--
--static int hdmi_get_edid(void *ctx, struct drm_connector *connector,
--				u8 *edid, int len)
--{
--	struct edid *raw_edid;
--	struct hdmi_context *hdata = ctx;
--
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	if (!hdata->ddc_port)
--		return -ENODEV;
--
--	raw_edid = drm_get_edid(connector, hdata->ddc_port->adapter);
--	if (raw_edid) {
--		hdata->dvi_mode = !drm_detect_hdmi_monitor(raw_edid);
--		memcpy(edid, raw_edid, min((1 + raw_edid->extensions)
--					* EDID_LENGTH, len));
--		DRM_DEBUG_KMS("%s : width[%d] x height[%d]\n",
--			(hdata->dvi_mode ? "dvi monitor" : "hdmi monitor"),
--			raw_edid->width_cm, raw_edid->height_cm);
--		kfree(raw_edid);
--	} else {
--		return -ENODEV;
--	}
--
--	return 0;
--}
-+extern int generic_drm_get_edid(struct i2c_adapter *adapter,
-+				struct display_entity_edid *edid);
- 
- static int hdmi_v13_check_timing(struct fb_videomode *check_timing)
- {
-@@ -1061,22 +1028,6 @@ static int hdmi_v14_check_timing(struct fb_videomode *check_timing)
- 	return -EINVAL;
- }
- 
--static int hdmi_check_timing(void *ctx, struct fb_videomode *timing)
--{
--	struct hdmi_context *hdata = ctx;
--
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	DRM_DEBUG_KMS("[%d]x[%d] [%d]Hz [%x]\n", timing->xres,
--			timing->yres, timing->refresh,
--			timing->vmode);
--
--	if (hdata->type == HDMI_TYPE13)
--		return hdmi_v13_check_timing(timing);
--	else
--		return hdmi_v14_check_timing(timing);
--}
--
- static void hdmi_set_acr(u32 freq, u8 *acr)
- {
- 	u32 n, cts;
-@@ -1143,15 +1094,22 @@ static void hdmi_reg_acr(struct hdmi_context *hdata, u8 *acr)
- 		hdmi_reg_writeb(hdata, HDMI_ACR_CON, 4);
- }
- 
--static void hdmi_audio_init(struct hdmi_context *hdata)
-+static void hdmi_spdif_audio_init(struct hdmi_context *hdata,
-+		const struct display_entity_audio_params *params)
-+{
-+		DRM_ERROR("SPDIF AUDIO NOT IMPLEMENTED YET");
-+}
-+
-+static void hdmi_i2s_audio_init(struct hdmi_context *hdata,
-+		const struct display_entity_audio_params *params)
- {
- 	u32 sample_rate, bits_per_sample, frame_size_code;
- 	u32 data_num, bit_ch, sample_frq;
- 	u32 val;
- 	u8 acr[7];
- 
--	sample_rate = 44100;
--	bits_per_sample = 16;
-+	sample_rate = params->sf;
-+	bits_per_sample = params->bits_per_sample;
- 	frame_size_code = 0;
- 
- 	switch (bits_per_sample) {
-@@ -1685,8 +1643,6 @@ static void hdmi_conf_apply(struct hdmi_context *hdata)
- 	hdmi_conf_init(hdata);
- 	mutex_unlock(&hdata->hdmi_mutex);
- 
--	hdmi_audio_init(hdata);
--
- 	/* setting core registers */
- 	hdmi_timing_apply(hdata);
- 	hdmi_audio_control(hdata, true);
-@@ -1694,58 +1650,6 @@ static void hdmi_conf_apply(struct hdmi_context *hdata)
- 	hdmi_regs_dump(hdata, "start");
- }
- 
--static void hdmi_mode_fixup(void *ctx, struct drm_connector *connector,
--				const struct drm_display_mode *mode,
--				struct drm_display_mode *adjusted_mode)
--{
--	struct drm_display_mode *m;
--	struct hdmi_context *hdata = ctx;
--	int index;
--
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	drm_mode_set_crtcinfo(adjusted_mode, 0);
--
--	if (hdata->type == HDMI_TYPE13)
--		index = hdmi_v13_conf_index(adjusted_mode);
--	else
--		index = hdmi_v14_find_phy_conf(adjusted_mode->clock * 1000);
--
--	/* just return if user desired mode exists. */
--	if (index >= 0)
--		return;
--
--	/*
--	 * otherwise, find the most suitable mode among modes and change it
--	 * to adjusted_mode.
--	 */
--	list_for_each_entry(m, &connector->modes, head) {
--		if (hdata->type == HDMI_TYPE13)
--			index = hdmi_v13_conf_index(m);
--		else
--			index = hdmi_v14_find_phy_conf(m->clock * 1000);
--
--		if (index >= 0) {
--			struct drm_mode_object base;
--			struct list_head head;
--
--			DRM_INFO("desired mode doesn't exist so\n");
--			DRM_INFO("use the most suitable mode among modes.\n");
--
--			DRM_DEBUG_KMS("Adjusted Mode: [%d]x[%d] [%d]Hz\n",
--				m->hdisplay, m->vdisplay, m->vrefresh);
--
--			/* preserve display mode header while copying. */
--			head = adjusted_mode->head;
--			base = adjusted_mode->base;
--			memcpy(adjusted_mode, m, sizeof(*m));
--			adjusted_mode->head = head;
--			adjusted_mode->base = base;
--			break;
--		}
--	}
--}
--
- static void hdmi_set_reg(u8 *reg_pair, int num_bytes, u32 value)
- {
- 	int i;
-@@ -1862,42 +1766,6 @@ static void hdmi_v14_mode_set(struct hdmi_context *hdata,
- 
- }
- 
--static void hdmi_mode_set(void *ctx, void *mode)
--{
--	struct hdmi_context *hdata = ctx;
--	int conf_idx;
--
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	if (hdata->type == HDMI_TYPE13) {
--		conf_idx = hdmi_v13_conf_index(mode);
--		if (conf_idx >= 0)
--			hdata->cur_conf = conf_idx;
--		else
--			DRM_DEBUG_KMS("not supported mode\n");
--	} else {
--		hdmi_v14_mode_set(hdata, mode);
--	}
--}
--
--static void hdmi_get_max_resol(void *ctx, unsigned int *width,
--					unsigned int *height)
--{
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	*width = MAX_WIDTH;
--	*height = MAX_HEIGHT;
--}
--
--static void hdmi_commit(void *ctx)
--{
--	struct hdmi_context *hdata = ctx;
--
--	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
--
--	hdmi_conf_apply(hdata);
--}
--
- static void hdmi_poweron(struct hdmi_context *hdata)
- {
- 	struct hdmi_resources *res = &hdata->res;
-@@ -1953,62 +1821,215 @@ out:
- 	mutex_unlock(&hdata->hdmi_mutex);
- }
- 
--static void hdmi_dpms(void *ctx, int mode)
-+int hdmi_get_size(struct display_entity *ent,
-+		  unsigned int *width, unsigned int *height)
- {
--	struct hdmi_context *hdata = ctx;
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
--	DRM_DEBUG_KMS("[%d] %s mode %d\n", __LINE__, __func__, mode);
-+	*width = MAX_WIDTH;
-+	*height = MAX_HEIGHT;
- 
--	switch (mode) {
--	case DRM_MODE_DPMS_ON:
--		if (pm_runtime_suspended(hdata->dev))
--			pm_runtime_get_sync(hdata->dev);
--		break;
--	case DRM_MODE_DPMS_STANDBY:
--	case DRM_MODE_DPMS_SUSPEND:
--	case DRM_MODE_DPMS_OFF:
-+	return 0;
-+}
-+
-+void hdmi_send_hpdevent(struct display_entity *entity, int hpd)
-+{
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	display_entity_notify_event_subscriber(entity,
-+		DISPLAY_ENTITY_HDMI_HOTPLUG, hpd);
-+}
-+
-+int hdmi_get_hpdstate(struct display_entity *entity, unsigned int *hpd_state)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	if (hpd_state) {
-+		*hpd_state = hdata->hpd;
-+		return 0;
-+	}
-+	return -1;
-+}
-+
-+int hdmi_get_edid(struct display_entity *entity,
-+	struct display_entity_edid *edid)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+	struct edid *raw_edid;
-+	int ret;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	if (!hdata->ddc_port)
-+		return -ENODEV;
-+
-+	ret = generic_drm_get_edid(hdata->ddc_port->adapter, edid);
-+	if (ret) {
-+		DRM_ERROR("[%d]%s, Edid Read Fail!!! ret = %d\n",
-+			__LINE__, __func__, ret);
-+		return -EINVAL;
-+	}
-+
-+	raw_edid = (struct edid *)edid->edid;
-+
-+	if (raw_edid)
-+		hdata->dvi_mode = !drm_detect_hdmi_monitor(raw_edid);
-+	else
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+int hdmi_check_mode(struct display_entity *entity,
-+		   const struct videomode *mode)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+	struct fb_videomode *timing = (struct fb_videomode *)mode;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	DRM_DEBUG_KMS("[%d]x[%d] [%d]Hz [%x]\n", timing->xres,
-+			timing->yres, timing->refresh,
-+			timing->vmode);
-+
-+	if (hdata->type == HDMI_TYPE13)
-+		return hdmi_v13_check_timing(timing);
-+	else
-+		return hdmi_v14_check_timing(timing);
-+}
-+
-+int hdmi_set_mode(struct display_entity *entity,
-+		   const struct videomode *mode)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+	struct drm_display_mode *m = (struct drm_display_mode *)mode;
-+	int conf_idx;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	if (hdata->type == HDMI_TYPE13) {
-+		conf_idx = hdmi_v13_conf_index(m);
-+		if (conf_idx >= 0)
-+			hdata->cur_conf = conf_idx;
-+		else
-+			DRM_DEBUG_KMS("not supported mode\n");
-+	} else {
-+		hdmi_v14_mode_set(hdata, m);
-+	}
-+
-+	return 0;
-+}
-+
-+int hdmi_update(struct display_entity *entity)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	hdmi_conf_apply(hdata);
-+	return 0;
-+}
-+
-+int hdmi_set_state(struct display_entity *entity,
-+		   enum display_entity_state state)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+
-+	DRM_DEBUG_KMS("[%d] %s %d\n", __LINE__, __func__, state);
-+
-+	switch (state) {
-+	case DISPLAY_ENTITY_STATE_OFF:
-+	case DISPLAY_ENTITY_STATE_STANDBY:
- 		if (!pm_runtime_suspended(hdata->dev))
- 			pm_runtime_put_sync(hdata->dev);
- 		break;
--	default:
--		DRM_DEBUG_KMS("unknown dpms mode: %d\n", mode);
-+
-+	case DISPLAY_ENTITY_STATE_ON:
-+		if (pm_runtime_suspended(hdata->dev))
-+			pm_runtime_get_sync(hdata->dev);
- 		break;
-+	default:
-+		return -EINVAL;
- 	}
-+	return 0;
-+}
-+
-+int hdmi_init_audio(struct display_entity *entity,
-+		const struct display_entity_audio_params *params)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	if (params->type == DISPLAY_ENTITY_AUDIO_I2S)
-+		hdmi_i2s_audio_init(hdata, params);
-+	else if (params->type == DISPLAY_ENTITY_AUDIO_SPDIF)
-+		hdmi_spdif_audio_init(hdata, params);
-+	else
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+
-+int hdmi_set_audiostate(struct display_entity *entity,
-+		enum display_entity_audiostate state)
-+{
-+	struct hdmi_context *hdata =
-+		container_of(entity, struct hdmi_context, entity);
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	if (state == DISPLAY_ENTITY_AUDIOSTATE_ON)
-+		hdmi_audio_control(hdata, true);
-+	else
-+		hdmi_audio_control(hdata, false);
-+
-+	return 0;
- }
- 
--static struct exynos_hdmi_ops hdmi_ops = {
--	/* display */
--	.is_connected	= hdmi_is_connected,
--	.get_edid	= hdmi_get_edid,
--	.check_timing	= hdmi_check_timing,
--
--	/* manager */
--	.mode_fixup	= hdmi_mode_fixup,
--	.mode_set	= hdmi_mode_set,
--	.get_max_resol	= hdmi_get_max_resol,
--	.commit		= hdmi_commit,
--	.dpms		= hdmi_dpms,
-+struct display_entity_control_ops entity_ctrl_ops = {
-+	.get_size		= hdmi_get_size,
-+	.update		= hdmi_update,
-+	.set_state	= hdmi_set_state,
-+	.set_mode		= hdmi_set_mode,
-+};
-+
-+struct display_entity_hdmi_control_ops hdmi_ctrl_ops = {
-+	.get_edid		= hdmi_get_edid,
-+	.check_mode	= hdmi_check_mode,
-+	.init_audio	= hdmi_init_audio,
-+	.set_audiostate	= hdmi_set_audiostate,
-+};
-+
-+struct exynos_hdmi_control_ops exynos_hdmi_ctrl_ops = {
-+	.get_hpdstate	= hdmi_get_hpdstate,
- };
- 
- static irqreturn_t hdmi_external_irq_thread(int irq, void *arg)
- {
--	struct exynos_drm_hdmi_context *ctx = arg;
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = arg;
- 
- 	mutex_lock(&hdata->hdmi_mutex);
- 	hdata->hpd = gpio_get_value(hdata->hpd_gpio);
- 	mutex_unlock(&hdata->hdmi_mutex);
- 
--	if (ctx->drm_dev)
--		drm_helper_hpd_irq_event(ctx->drm_dev);
-+	hdmi_send_hpdevent(&hdata->entity, hdata->hpd);
- 
- 	return IRQ_HANDLED;
- }
- 
- static irqreturn_t hdmi_internal_irq_thread(int irq, void *arg)
- {
--	struct exynos_drm_hdmi_context *ctx = arg;
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = arg;
- 	u32 intc_flag;
- 
- 	intc_flag = hdmi_reg_read(hdata, HDMI_INTC_FLAG);
-@@ -2017,16 +2038,17 @@ static irqreturn_t hdmi_internal_irq_thread(int irq, void *arg)
- 		DRM_DEBUG_KMS("unplugged\n");
- 		hdmi_reg_writemask(hdata, HDMI_INTC_FLAG, ~0,
- 			HDMI_INTC_FLAG_HPD_UNPLUG);
-+		hdata->hpd = 0;
-+		hdmi_send_hpdevent(&hdata->entity, hdata->hpd);
- 	}
- 	if (intc_flag & HDMI_INTC_FLAG_HPD_PLUG) {
- 		DRM_DEBUG_KMS("plugged\n");
- 		hdmi_reg_writemask(hdata, HDMI_INTC_FLAG, ~0,
- 			HDMI_INTC_FLAG_HPD_PLUG);
-+		hdata->hpd = 1;
-+		hdmi_send_hpdevent(&hdata->entity, hdata->hpd);
- 	}
- 
--	if (ctx->drm_dev)
--		drm_helper_hpd_irq_event(ctx->drm_dev);
--
- 	return IRQ_HANDLED;
- }
- 
-@@ -2176,16 +2198,20 @@ static struct of_device_id hdmi_match_types[] = {
- };
- #endif
- 
-+static void hdmi_release(struct display_entity *entity)
-+{
-+	DRM_DEBUG_KMS("[%d][%s]\n", __LINE__, __func__);
-+}
-+
- static int hdmi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct exynos_drm_hdmi_context *drm_hdmi_ctx;
- 	struct hdmi_context *hdata;
- 	struct s5p_hdmi_platform_data *pdata;
- 	struct resource *res;
- 	int ret;
- 
--	DRM_DEBUG_KMS("[%d]\n", __LINE__);
-+	DRM_DEBUG_KMS("[%d][%s]\n", __LINE__, __func__);
- 
- 	if (pdev->dev.of_node) {
- 		pdata = drm_hdmi_dt_parse_pdata(dev);
-@@ -2202,13 +2228,6 @@ static int hdmi_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
--	drm_hdmi_ctx = devm_kzalloc(&pdev->dev, sizeof(*drm_hdmi_ctx),
--								GFP_KERNEL);
--	if (!drm_hdmi_ctx) {
--		DRM_ERROR("failed to allocate common hdmi context.\n");
--		return -ENOMEM;
--	}
--
- 	hdata = devm_kzalloc(&pdev->dev, sizeof(struct hdmi_context),
- 								GFP_KERNEL);
- 	if (!hdata) {
-@@ -2218,10 +2237,7 @@ static int hdmi_probe(struct platform_device *pdev)
- 
- 	mutex_init(&hdata->hdmi_mutex);
- 
--	drm_hdmi_ctx->ctx = (void *)hdata;
--	hdata->parent_ctx = (void *)drm_hdmi_ctx;
--
--	platform_set_drvdata(pdev, drm_hdmi_ctx);
-+	platform_set_drvdata(pdev, hdata);
- 
- 	if (dev->of_node) {
- 		const struct of_device_id *match;
-@@ -2299,7 +2315,7 @@ static int hdmi_probe(struct platform_device *pdev)
- 	ret = request_threaded_irq(hdata->external_irq, NULL,
- 			hdmi_external_irq_thread, IRQF_TRIGGER_RISING |
- 			IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
--			"hdmi_external", drm_hdmi_ctx);
-+			"hdmi_external", hdata);
- 	if (ret) {
- 		DRM_ERROR("failed to register hdmi external interrupt\n");
- 		goto err_hdmiphy;
-@@ -2307,24 +2323,31 @@ static int hdmi_probe(struct platform_device *pdev)
- 
- 	ret = request_threaded_irq(hdata->internal_irq, NULL,
- 			hdmi_internal_irq_thread, IRQF_ONESHOT,
--			"hdmi_internal", drm_hdmi_ctx);
-+			"hdmi_internal", hdata);
- 	if (ret) {
- 		DRM_ERROR("failed to register hdmi internal interrupt\n");
- 		goto err_free_irq;
- 	}
- 
--	/* Attach HDMI Driver to common hdmi. */
--	exynos_hdmi_drv_attach(drm_hdmi_ctx);
-+	pm_runtime_enable(dev);
- 
--	/* register specific callbacks to common hdmi. */
--	exynos_hdmi_ops_register(&hdmi_ops);
-+	hdata->entity.dev = &pdev->dev;
-+	hdata->entity.release = hdmi_release;
-+	hdata->entity.ops.ctrl = &entity_ctrl_ops;
-+	hdata->entity.opt_ctrl.hdmi = &hdmi_ctrl_ops;
- 
--	pm_runtime_enable(dev);
-+	hdata->entity.private = &exynos_hdmi_ctrl_ops;
-+
-+	ret = display_entity_register(&hdata->entity);
-+	if (ret < 0) {
-+		DRM_ERROR("[%d][%s]\n", __LINE__, __func__);
-+		return ret;
-+	}
- 
- 	return 0;
- 
- err_free_irq:
--	free_irq(hdata->external_irq, drm_hdmi_ctx);
-+	free_irq(hdata->external_irq, hdata);
- err_hdmiphy:
- 	i2c_del_driver(&hdmiphy_driver);
- err_ddc:
-@@ -2335,8 +2358,7 @@ err_ddc:
- static int hdmi_remove(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct exynos_drm_hdmi_context *ctx = platform_get_drvdata(pdev);
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = platform_get_drvdata(pdev);
- 
- 	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
-@@ -2357,8 +2379,7 @@ static int hdmi_remove(struct platform_device *pdev)
- #ifdef CONFIG_PM_SLEEP
- static int hdmi_suspend(struct device *dev)
- {
--	struct exynos_drm_hdmi_context *ctx = get_hdmi_context(dev);
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = get_hdmi_context(dev);
- 
- 	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
-@@ -2366,8 +2387,7 @@ static int hdmi_suspend(struct device *dev)
- 	disable_irq(hdata->external_irq);
- 
- 	hdata->hpd = false;
--	if (ctx->drm_dev)
--		drm_helper_hpd_irq_event(ctx->drm_dev);
-+	hdmi_send_hpdevent(&hdata->entity, hdata->hpd);
- 
- 	if (pm_runtime_suspended(dev)) {
- 		DRM_DEBUG_KMS("%s : Already suspended\n", __func__);
-@@ -2381,8 +2401,7 @@ static int hdmi_suspend(struct device *dev)
- 
- static int hdmi_resume(struct device *dev)
- {
--	struct exynos_drm_hdmi_context *ctx = get_hdmi_context(dev);
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = get_hdmi_context(dev);
- 
- 	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
-@@ -2405,8 +2424,7 @@ static int hdmi_resume(struct device *dev)
- #ifdef CONFIG_PM_RUNTIME
- static int hdmi_runtime_suspend(struct device *dev)
- {
--	struct exynos_drm_hdmi_context *ctx = get_hdmi_context(dev);
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = get_hdmi_context(dev);
- 	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
- 	hdmi_poweroff(hdata);
-@@ -2416,8 +2434,7 @@ static int hdmi_runtime_suspend(struct device *dev)
- 
- static int hdmi_runtime_resume(struct device *dev)
- {
--	struct exynos_drm_hdmi_context *ctx = get_hdmi_context(dev);
--	struct hdmi_context *hdata = ctx->ctx;
-+	struct hdmi_context *hdata = get_hdmi_context(dev);
- 	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
- 
- 	hdmi_poweron(hdata);
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi_cdf.c b/drivers/gpu/drm/exynos/exynos_hdmi_cdf.c
+ # Amp
+ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+diff --git a/sound/soc/codecs/exynos_hdmi_audio.c b/sound/soc/codecs/exynos_hdmi_audio.c
 new file mode 100644
-index 0000000..e1c862f
+index 0000000..e2cf94c
 --- /dev/null
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi_cdf.c
-@@ -0,0 +1,370 @@
++++ b/sound/soc/codecs/exynos_hdmi_audio.c
+@@ -0,0 +1,424 @@
 +/*
-+ * Copyright (C) 2011 Samsung Electronics Co.Ltd
-+ * Authors:
-+ * Seung-Woo Kim <sw0312.kim@samsung.com>
-+ *	Inki Dae <inki.dae@samsung.com>
-+ *	Joonyoung Shim <jy0922.shim@samsung.com>
++ * ALSA SoC codec driver for HDMI audio on Samsung Exynos processors.
++ * Copyright (C) 2013 Samsung corp.
++ * Author: Rahul Sharma <rahul.sharma@samsung.com>
 + *
-+ * Based on drivers/media/video/s5p-tv/hdmi_drv.c
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
 + *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
 + *
 + */
-+
-+#include <drm/drmP.h>
-+#include <drm/drm_edid.h>
-+#include <drm/drm_crtc_helper.h>
-+
-+#include "regs-hdmi.h"
-+
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <video/display.h>
-+#include "video/exynos_hdmi.h"
-+
-+#include <drm/exynos_drm.h>
-+#include "exynos_drm_drv.h"
-+#include "exynos_drm_hdmi.h"
++#include <linux/module.h>
++#include <linux/delay.h>
 +#include <linux/of_platform.h>
 +#include <linux/platform_device.h>
 +
-+#include "exynos_hdmi.h"
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
 +
-+#define get_hdmi_context(dev)	platform_get_drvdata(to_platform_device(dev))
++#include <video/display.h>
++#include <video/exynos_hdmi.h>
 +
-+struct hdmi_cdf_context {
-+	struct device			*dev;
-+	struct drm_device			*drm_dev;
-+	unsigned int			hpd;
++#define get_ctx(dev) ((struct hdmi_audio_context *)platform_get_drvdata\
++			(to_platform_device((struct device *)dev)))
++
++/* platform device pointer for eynos hdmi audio codec device. */
++static struct platform_device *exynos_hdmi_codec_pdev;
++
++struct hdmi_audio_context {
++	struct platform_device		*pdev;
++	atomic_t			plugged;
++	atomic_t			enabled;
++	struct workqueue_struct		*event_wq;
++	struct delayed_work			hotplug_work;
++	struct display_entity_audio_params	audio_params;
 +	struct display_entity		*entity;
 +	struct display_entity_notifier	notf;
 +	struct display_event_subscriber	subscriber;
-+	void				*parent_ctx;
++	struct snd_soc_jack			hdmi_jack;
 +};
 +
-+extern bool hdmi_cdf_is_connected(void *ctx)
++static int exynos_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params,
++		struct snd_soc_dai *dai)
 +{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+
-+	DRM_DEBUG_KMS("[%d] %s hpd %d\n", __LINE__, __func__, hdata->hpd);
-+	return (bool)hdata->hpd;
-+}
-+
-+extern int hdmi_cdf_get_edid(void *ctx, struct drm_connector *connector,
-+	u8 *edid, int len)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+	struct display_entity_edid edid_st;
-+	struct edid *raw_edid;
++	struct snd_soc_codec *codec = dai->codec;
++	struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
 +	int ret;
 +
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
++	dev_dbg(codec->dev, "[%d] %s\n", __LINE__, __func__);
 +
-+	ret = display_entity_hdmi_get_edid(hdata->entity, &edid_st);
-+	if (ret) {
-+		DRM_ERROR("[%d]%s, Edid Read Fail!!! ret = %d\n",
-+			__LINE__, __func__, ret);
-+		return -EINVAL;
-+	}
-+
-+	raw_edid = (struct edid *)edid_st.edid;
-+
-+	if (raw_edid) {
-+		memcpy(edid, raw_edid, min(edid_st.len, len));
-+		kfree(raw_edid);
-+	} else {
++	/* report failure if hdmi sink is unplugged. */
++	if (!atomic_read(&ctx->plugged))
 +		return -ENODEV;
-+	}
 +
-+	return 0;
-+}
++	ctx->audio_params.type = DISPLAY_ENTITY_AUDIO_I2S;
 +
-+extern int hdmi_cdf_check_timing(void *ctx, struct fb_videomode *timing)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+	int ret;
-+
-+	ret = display_entity_hdmi_check_mode(hdata->entity,
-+			(struct videomode *)timing);
-+	if (ret) {
-+		DRM_DEBUG_KMS("[%d]%s, Mode NOT Supported! %dx%d@%d%s\n",
-+			__LINE__, __func__, timing->xres, timing->yres,
-+			timing->refresh, timing->flag
-+			& FB_VMODE_INTERLACED ? "I" : "P");
-+		return -EINVAL;
-+	}
-+
-+	DRM_DEBUG_KMS("[%d]%s, Mode Supported! %dx%d@%d%s\n", __LINE__,
-+		__func__, timing->xres, timing->yres, timing->refresh,
-+		timing->flag & FB_VMODE_INTERLACED ? "I" : "P");
-+
-+	return 0;
-+}
-+
-+extern int hdmi_cdf_power_on(void *ctx, int mode)
-+{
-+	return 0;
-+}
-+
-+extern void hdmi_cdf_mode_fixup(void *ctx, struct drm_connector *connector,
-+			const struct drm_display_mode *mode,
-+			struct drm_display_mode *adjusted_mode)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+	struct drm_display_mode *m;
-+	struct fb_videomode timing;
-+	int index;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	drm_mode_set_crtcinfo(adjusted_mode, 0);
-+
-+	timing.xres = adjusted_mode->hdisplay;
-+	timing.yres = adjusted_mode->vdisplay;
-+	timing.refresh = adjusted_mode->vrefresh;
-+	timing.pixclock = adjusted_mode->clock * 1000;
-+	timing.flag = ((adjusted_mode->flags & DRM_MODE_FLAG_INTERLACE) ?
-+				 FB_VMODE_INTERLACED : 0);
-+
-+	index = display_entity_hdmi_check_mode(hdata->entity,
-+		(struct videomode *)&timing);
-+
-+	/* just return if user desired mode exists. */
-+	if (index == 0)
-+		return;
-+
-+	/*
-+	 * otherwise, find the most suitable mode among modes and change it
-+	 * to adjusted_mode.
-+	 */
-+	list_for_each_entry(m, &connector->modes, head) {
-+
-+		timing.xres = m->hdisplay;
-+		timing.yres = m->vdisplay;
-+		timing.refresh = m->vrefresh;
-+		timing.pixclock = m->clock * 1000;
-+		timing.flag = ((m->flags & DRM_MODE_FLAG_INTERLACE) ?
-+					 FB_VMODE_INTERLACED : 0);
-+
-+		index = display_entity_hdmi_check_mode(hdata->entity,
-+			(struct videomode *)&timing);
-+
-+		if (index == 0) {
-+			struct drm_mode_object base;
-+			struct list_head head;
-+
-+			DRM_INFO("desired mode doesn't exist so\n");
-+			DRM_INFO("use most suitable mode.\n");
-+
-+			DRM_DEBUG_KMS("Adjusted Mode: [%d]x[%d][%d]Hz\n",
-+				m->hdisplay, m->vdisplay, m->vrefresh);
-+
-+			/* preserve display mode header while copying. */
-+			head = adjusted_mode->head;
-+			base = adjusted_mode->base;
-+			memcpy(adjusted_mode, m, sizeof(*m));
-+			adjusted_mode->head = head;
-+			adjusted_mode->base = base;
-+			break;
-+		}
-+	}
-+}
-+
-+extern void hdmi_cdf_mode_set(void *ctx, void *mode)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+	struct drm_display_mode *m = mode;
-+	int ret;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	ret = display_entity_set_mode(hdata->entity, (struct videomode *)m);
-+	if (ret) {
-+		DRM_DEBUG_KMS("[%d]%s, Mode NOT Set! %dx%d@%d%s\n",
-+			__LINE__, __func__, m->hdisplay, m->vdisplay,
-+			m->vrefresh, (m->flags & DRM_MODE_FLAG_INTERLACE)
-+			? "I" : "P");
-+	}
-+}
-+
-+extern void hdmi_cdf_get_max_resol(void *ctx, unsigned int *width,
-+	unsigned int *height)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	display_entity_get_size(hdata->entity, width, height);
-+}
-+
-+extern void hdmi_cdf_commit(void *ctx)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	display_entity_update(hdata->entity);
-+}
-+
-+extern void hdmi_cdf_dpms(void *ctx, int mode)
-+{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)ctx;
-+	enum display_entity_state state;
-+
-+	DRM_DEBUG_KMS("[%d] %s\n", __LINE__, __func__);
-+
-+	switch (mode) {
-+	case DRM_MODE_DPMS_ON:
-+		state = DISPLAY_ENTITY_STATE_ON;
-+		break;
-+	case DRM_MODE_DPMS_STANDBY:
-+		state = DISPLAY_ENTITY_STATE_STANDBY;
-+		break;
-+	case DRM_MODE_DPMS_SUSPEND:
-+	case DRM_MODE_DPMS_OFF:
-+		state = DISPLAY_ENTITY_STATE_STANDBY;
++	switch (params_channels(params)) {
++	case 6:
++	case 4:
++	case 2:
++	case 1:
++		ctx->audio_params.channels = params_channels(params);
 +		break;
 +	default:
-+		DRM_DEBUG_KMS("unknown dpms mode: %d\n", mode);
-+		return;
++		dev_err(codec->dev, "%d channels not supported\n",
++				params_channels(params));
++		return -EINVAL;
 +	}
 +
-+	display_entity_set_state(hdata->entity, state);
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		ctx->audio_params.bits_per_sample = 8;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		ctx->audio_params.bits_per_sample = 12;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		ctx->audio_params.bits_per_sample = 16;
++		break;
++	default:
++		dev_err(codec->dev, "Format(%d) not supported\n",
++				params_format(params));
++		return -EINVAL;
++	}
++
++	switch (params_rate(params)) {
++	case 32000:
++	case 44100:
++	case 88200:
++	case 176400:
++	case 48000:
++	case 96000:
++	case 192000:
++		ctx->audio_params.sf = params_rate(params);
++		break;
++	default:
++		dev_err(codec->dev, "%d Rate supported\n",
++				params_rate(params));
++		return -EINVAL;
++	}
++
++	ret =
++	display_entity_hdmi_init_audio(ctx->entity, &ctx->audio_params);
++	if (ret)
++		dev_err(codec->dev, "initaudio failed ret %d\n", ret);
++	return ret;
 +}
 +
-+void event_notify(struct display_entity *entity,
-+	enum display_entity_event_type type, unsigned int value,
-+	void *context)
++static int exynos_hdmi_audio_trigger(struct snd_pcm_substream *substream,
++			int cmd, struct snd_soc_dai *dai)
 +{
-+	struct hdmi_cdf_context *hdata = (struct hdmi_cdf_context *)context;
-+	struct exynos_drm_hdmi_context *ctx = get_hdmi_context(hdata->dev);
++	struct snd_soc_codec *codec = dai->codec;
++	struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	dev_dbg(codec->dev, "[%d] %s\n", __LINE__, __func__);
++
++	/* report failure if hdmi sink is unplugged. */
++	if (!atomic_read(&ctx->plugged))
++		return -EINVAL;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* Don't start if hdmi audio is disabled. return Success. */
++		if (!atomic_read(&ctx->enabled))
++			return 0;
++
++		ret = display_entity_hdmi_set_audiostate(ctx->entity,
++			DISPLAY_ENTITY_AUDIOSTATE_ON);
++		if (ret) {
++			dev_err(codec->dev, "audio enable failed.\n");
++			return -EINVAL;
++		}
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		ret = display_entity_hdmi_set_audiostate(ctx->entity,
++			DISPLAY_ENTITY_AUDIOSTATE_OFF);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_dai_ops exynos_hdmi_audio_dai_ops = {
++	.hw_params = exynos_hdmi_audio_hw_params,
++	.trigger = exynos_hdmi_audio_trigger,
++};
++
++static struct snd_soc_dai_driver hdmi_codec_dai = {
++	.name = "exynos-hdmi-audio-dai",
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_32000 |
++			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S24_LE,
++	},
++	.ops = &exynos_hdmi_audio_dai_ops,
++};
++
++void hdmi_audio_event_notify(struct display_entity *entity,
++		enum display_entity_event_type type,
++		unsigned int value, void *context)
++{
++	struct hdmi_audio_context *ctx = (struct hdmi_audio_context *)context;
 +
 +	if (type == DISPLAY_ENTITY_HDMI_HOTPLUG) {
-+		DRM_DEBUG_KMS("[%d][%s] hpd(%d)\n",
-+			__LINE__, __func__, value);
-+		hdata->hpd = value;
++		dev_dbg(&ctx->pdev->dev, "[%d][%s] hpd(%d)\n", __LINE__,
++			__func__, value);
++		atomic_set(&ctx->plugged, !!value);
 +
-+		if (ctx->drm_dev)
-+			drm_helper_hpd_irq_event(ctx->drm_dev);
++		/* should set audio regs after ip, phy got stable. 5ms suff */
++		queue_delayed_work(ctx->event_wq, &ctx->hotplug_work,
++				msecs_to_jiffies(5));
 +	}
 +}
 +
-+int display_entity_notification(struct display_entity_notifier *notf,
-+	struct display_entity *entity, int status)
++static void hotplug_event_handler(struct work_struct *work)
 +{
-+	struct hdmi_cdf_context *hdata = container_of(notf,
-+		struct hdmi_cdf_context, notf);
++	struct hdmi_audio_context *ctx = container_of(work,
++		struct hdmi_audio_context, hotplug_work.work);
++
++	if (atomic_read(&ctx->plugged)) {
++		display_entity_hdmi_init_audio(ctx->entity,
++			&ctx->audio_params);
++
++		if (atomic_read(&ctx->enabled))
++			display_entity_hdmi_set_audiostate(ctx->entity,
++				DISPLAY_ENTITY_AUDIOSTATE_ON);
++		else
++			display_entity_hdmi_set_audiostate(ctx->entity,
++				DISPLAY_ENTITY_AUDIOSTATE_OFF);
++	}
++
++	snd_soc_jack_report(&ctx->hdmi_jack,
++			    atomic_read(&ctx->plugged) ? SND_JACK_AVOUT
++			    : 0, SND_JACK_AVOUT);
++}
++
++int exynos_hdmi_audio_notification(struct display_entity_notifier *notf,
++		struct display_entity *entity, int status)
++{
++	struct hdmi_audio_context *ctx = container_of(notf,
++		struct hdmi_audio_context, notf);
 +	struct exynos_hdmi_control_ops *exynos_ops =
 +		(struct exynos_hdmi_control_ops *)entity->private;
++	int hpd;
 +
 +	if (status != DISPLAY_ENTITY_NOTIFIER_CONNECT && entity)
 +		return -EINVAL;
 +
-+	DRM_DEBUG_KMS("[%d][%s] NOTIFIER_CONNECT\n", __LINE__, __func__);
++	dev_dbg(&ctx->pdev->dev, "[%d][%s]\n", __LINE__, __func__);
 +
-+	hdata->entity = entity;
++	ctx->entity = entity;
 +
-+	hdata->subscriber.context = hdata;
-+	hdata->subscriber.notify = event_notify;
-+	display_entity_subscribe_event(entity, &hdata->subscriber);
++	ctx->subscriber.context = ctx;
++	ctx->subscriber.notify = hdmi_audio_event_notify;
 +
-+	exynos_ops->get_hpdstate(entity, &hdata->hpd);
++	display_entity_subscribe_event(entity, &ctx->subscriber);
++
++	exynos_ops->get_hpdstate(entity, &hpd);
++	atomic_set(&ctx->plugged, !!hpd);
++
 +	return 0;
 +}
 +
-+static struct exynos_hdmi_ops hdmi_ops = {
-+	/* display */
-+	.is_connected	= hdmi_cdf_is_connected,
-+	.get_edid		= hdmi_cdf_get_edid,
-+	.check_timing	= hdmi_cdf_check_timing,
++static int get_hdmi(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdmi_audio_context *ctx = get_ctx(kcontrol->private_value);
 +
-+	/* manager */
-+	.mode_fixup	= hdmi_cdf_mode_fixup,
-+	.mode_set		= hdmi_cdf_mode_set,
-+	.get_max_resol	= hdmi_cdf_get_max_resol,
-+	.commit		= hdmi_cdf_commit,
-+	.dpms		= hdmi_cdf_dpms,
++	if (!ctx) {
++		dev_err(&ctx->pdev->dev, "invalid context.\n");
++		return 0;
++	}
++
++	ucontrol->value.integer.value[0] = atomic_read(&ctx->enabled);
++	return 1;
++}
++
++static int put_hdmi(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct hdmi_audio_context *ctx = get_ctx(kcontrol->private_value);
++	int enable = (int)ucontrol->value.integer.value[0];
++
++	if (!ctx) {
++		dev_err(&ctx->pdev->dev, "invalid context.\n");
++		return 0;
++	}
++
++	atomic_set(&ctx->enabled, !!enable);
++
++	if (!atomic_read(&ctx->plugged))
++		return 1;
++	else if (enable)
++		display_entity_hdmi_set_audiostate(ctx->entity,
++			DISPLAY_ENTITY_AUDIOSTATE_ON);
++	else
++		display_entity_hdmi_set_audiostate(ctx->entity,
++			DISPLAY_ENTITY_AUDIOSTATE_OFF);
++
++	return 1;
++}
++
++static struct snd_kcontrol_new hdmi_dapm_controls[] = {
++	SOC_SINGLE_BOOL_EXT("HDMI Playback Switch", 0, get_hdmi, put_hdmi),
 +};
 +
-+static int hdmi_cdf_probe(struct platform_device *pdev)
++static int hdmi_codec_init(struct snd_soc_codec *codec)
 +{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *dev_node;
-+	struct platform_device *disp_pdev;
-+	struct exynos_drm_hdmi_context *drm_hdmi_ctx;
-+	struct hdmi_cdf_context *hdata;
++	struct hdmi_audio_context *ctx = get_ctx(codec->dev);
 +	int ret;
 +
-+	DRM_DEBUG_KMS("[%d][%s]\n", __LINE__, __func__);
++	ret = snd_soc_jack_new(codec, "HDMI Jack",
++			 SND_JACK_AVOUT, &ctx->hdmi_jack);
++	if (ret) {
++		dev_err(codec->dev, "audio enable failed.\n");
++		return ret;
++	}
++
++	hdmi_dapm_controls[0].private_value = (unsigned long)codec->dev;
++	return 0;
++}
++
++static struct snd_soc_codec_driver hdmi_codec = {
++	.probe	= hdmi_codec_init,
++	.controls = hdmi_dapm_controls,
++	.num_controls = ARRAY_SIZE(hdmi_dapm_controls),
++};
++
++static int hdmi_codec_probe(struct platform_device *pdev)
++{
++	struct hdmi_audio_context *ctx;
++	struct device_node *dev_node;
++	struct platform_device *disp_pdev;
++	int ret;
++
++	dev_dbg(&pdev->dev, "[%d][%s]\n", __LINE__, __func__);
++
++	ret = snd_soc_register_codec(&pdev->dev, &hdmi_codec,
++			&hdmi_codec_dai, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "register_codec failed (%d)\n", ret);
++		return ret;
++	}
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(struct hdmi_audio_context),
++				GFP_KERNEL);
++	if (ctx == NULL)
++		return -ENOMEM;
++
++	ctx->pdev = pdev;
++	atomic_set(&ctx->enabled, 1);
++	platform_set_drvdata(pdev, ctx);
++
++	/* create workqueue and hotplug work */
++	ctx->event_wq = alloc_workqueue("hdmi-audio-event",
++			WQ_UNBOUND | WQ_NON_REENTRANT, 1);
++	if (ctx->event_wq == NULL) {
++		dev_err(&pdev->dev, "failed to create workqueue\n");
++		ret = -ENOMEM;
++	}
++	INIT_DELAYED_WORK(&ctx->hotplug_work, hotplug_event_handler);
 +
 +	dev_node = of_find_compatible_node(NULL, NULL,
 +			"samsung,exynos5-hdmi");
 +	if (!dev_node) {
-+		DRM_DEBUG_KMS("[ERROR][%d][%s] dt node not found.\n",
-+			__LINE__, __func__);
++		dev_err(&pdev->dev, "[%d][%s] dt node not found.\n",
++				__LINE__, __func__);
 +		return -EINVAL;
 +	}
 +
 +	disp_pdev = of_find_device_by_node(dev_node);
 +	if (!disp_pdev) {
-+		DRM_DEBUG_KMS("[ERROR][%d][%s] No pdev\n",
-+			__LINE__, __func__);
++		dev_err(&pdev->dev, "[ERROR][%d][%s] No pdev\n",
++				__LINE__, __func__);
 +		return -EINVAL;
 +	}
 +
-+	drm_hdmi_ctx = devm_kzalloc(&pdev->dev, sizeof(*drm_hdmi_ctx),
-+		GFP_KERNEL);
-+	if (!drm_hdmi_ctx) {
-+		DRM_ERROR("failed to allocate common hdmi context.\n");
-+		return -ENOMEM;
-+	}
++	ctx->notf.dev = &disp_pdev->dev;
++	ctx->notf.notify = exynos_hdmi_audio_notification;
 +
-+	hdata = devm_kzalloc(&pdev->dev, sizeof(struct hdmi_cdf_context),
-+		GFP_KERNEL);
-+	if (!hdata) {
-+		DRM_ERROR("out of memory\n");
-+		return -ENOMEM;
-+	}
-+
-+	drm_hdmi_ctx->ctx = (void *)hdata;
-+	hdata->parent_ctx = (void *)drm_hdmi_ctx;
-+
-+	platform_set_drvdata(pdev, drm_hdmi_ctx);
-+
-+	/* Attach HDMI Driver to common hdmi. */
-+	exynos_hdmi_drv_attach(drm_hdmi_ctx);
-+
-+	/* register specific callbacks to common hdmi. */
-+	exynos_hdmi_ops_register(&hdmi_ops);
-+
-+	hdata->dev = dev;
-+	hdata->notf.dev = &disp_pdev->dev;
-+	hdata->notf.notify = display_entity_notification;
-+
-+	ret = display_entity_register_notifier(&hdata->notf);
++	ret = display_entity_register_notifier(&ctx->notf);
 +	if (ret) {
-+		DRM_DEBUG_KMS("[ERROR][%d][%s] entity registe failed.\n",
++		dev_err(&pdev->dev, "[%d][%s] entity registe failed.\n",
 +			__LINE__, __func__);
-+		return -EINVAL;
++		ret = -EINVAL;
++		goto err_workq;
 +	}
 +
 +	return 0;
++
++err_workq:
++	destroy_workqueue(ctx->event_wq);
++	return ret;
 +}
 +
-+static int hdmi_cdf_remove(struct platform_device *pdev)
++static int hdmi_codec_remove(struct platform_device *pdev)
 +{
++	struct hdmi_audio_context *ctx = get_ctx(&pdev->dev);
++	dev_dbg(&pdev->dev, "[%d][%s]\n", __LINE__, __func__);
++	mdelay(1000);
++
++	display_entity_register_notifier(&ctx->notf);
++	snd_soc_unregister_codec(&pdev->dev);
++	destroy_workqueue(ctx->event_wq);
 +	return 0;
 +}
 +
-+struct platform_driver hdmi_cdf_driver = {
-+	.probe		= hdmi_cdf_probe,
-+	.remove		= hdmi_cdf_remove,
++static struct platform_driver hdmi_codec_driver = {
 +	.driver		= {
-+		.name	= "exynos-hdmi-cdf",
++		.name	= "exynos-hdmi-audio-codec",
 +		.owner	= THIS_MODULE,
 +	},
++
++	.probe		= hdmi_codec_probe,
++	.remove		= hdmi_codec_remove,
 +};
 +
-diff --git a/include/video/exynos_hdmi.h b/include/video/exynos_hdmi.h
-new file mode 100644
-index 0000000..cc8d613
---- /dev/null
-+++ b/include/video/exynos_hdmi.h
-@@ -0,0 +1,25 @@
-+/*
-+ * Display Core
-+ *
-+ * Copyright (C) 2012 Renesas Solutions Corp.
-+ *
-+ * Contacts: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
++static int __init hdmi_audio_codec_init(void)
++{
++	int ret;
 +
-+#ifndef __EXYNOS_HDMI_H__
-+#define __EXYNOS_HDMI_H__
++	ret = platform_driver_register(&hdmi_codec_driver);
++	if (ret < 0)
++		return -EINVAL;
 +
-+#include <linux/kref.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
++	exynos_hdmi_codec_pdev = platform_device_register_simple
++		("exynos-hdmi-audio-codec", -1, NULL, 0);
++	if (IS_ERR_OR_NULL(exynos_hdmi_codec_pdev)) {
++		ret = PTR_ERR(exynos_hdmi_codec_pdev);
++		platform_driver_unregister(&hdmi_codec_driver);
++		return ret;
++	}
 +
-+struct exynos_hdmi_control_ops {
-+	int (*get_hpdstate)(struct display_entity *entity,
-+		unsigned int *hpd_state);
-+};
++	return 0;
++}
++static void __exit hdmi_audio_codec_exit(void)
++{
++	platform_driver_unregister(&hdmi_codec_driver);
++	platform_device_unregister(exynos_hdmi_codec_pdev);
++}
 +
-+#endif /* __EXYNOS_HDMI_H__ */
++module_init(hdmi_audio_codec_init);
++module_exit(hdmi_audio_codec_exit);
++
++MODULE_AUTHOR("Rahul Sharma <rahul.sharma@samsung.com>");
++MODULE_DESCRIPTION("ASoC EXYNOS HDMI codec driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:exynos-hdmi-codec");
 -- 
 1.8.0
