@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-analyzer: Make parsing code more robust
-	against future proc file changes
-Date: Thu,  7 Feb 2013 14:47:33 +0100
-Message-ID: <1360244853-22301-1-git-send-email-david.henningsson@canonical.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: core: Allow digital mute for capture
+Date: Thu, 7 Feb 2013 05:34:47 -0800
+Message-ID: <20130207133447.GQ3143@intel.com>
+References: <1360173556-28048-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 4604F2652AB
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2013 14:47:34 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8BDA2652AF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2013 14:59:30 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1360173556-28048-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Historically, new additions to the codec proc file has crashed hda-analyzer.
-With this patch, new additions will instead be ignored.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hda-analyzer/hda_proc.py |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/hda-analyzer/hda_proc.py b/hda-analyzer/hda_proc.py
-index 3d544c8..10aa662 100644
---- a/hda-analyzer/hda_proc.py
-+++ b/hda-analyzer/hda_proc.py
-@@ -644,9 +644,8 @@ class HDACodecProc(HDACodec, HDABaseProc):
-     if line == 'Invalid AFG subtree':
-       print "Invalid AFG subtree for codec %s?" % self.proc_codec_id
-       return
--    while line.startswith('Power-Map: ') or \
--          line.startswith('Analog Loopback: '):
--      print 'Sigmatel specific "%s" verb ignored for the moment' % line
-+    while not line.startswith('Node '):
-+      print 'Vendor specific "%s" verb ignored at the moment' % line
-       idx += 1
-       line = lines[idx].strip()
-     node = None
-@@ -728,7 +727,7 @@ class HDACodecProc(HDACodec, HDABaseProc):
-         elif line.startswith('  Volume-Knob: '):
-           node.add_volknob(line[15:])
-         else:
--          self.wrongfile(line)
-+          print 'Node line "%s" ignored at the moment' % line
-         idx += 1
-         if idx < len(lines):
-           line = lines[idx]
--- 
-1.7.9.5
+On Wed, Feb 06, 2013 at 05:59:16PM +0000, Mark Brown wrote:
+> Help avoid noise from the power up of the capture path propagating through
+> into the start of the recording (especially noise caused by the ramp of
+> microphone biases) by keeping the capture muted until after we've finished
+> powering things up with DAPM in the same manner we do for playback. This
+> allows us to take advantage of soft mute support in the hardware more
+> effectively and is more consistent.
+> 
+> The core code using the existing digital mute operation is updated to take
+> advantage of this. Some additional cases in the soc-pcm code and suspend
+> will need separate handling but these are less practically relevant than
+> the main runtime stream start/stop case.
+> 
+> Rather than refactor the digital mute function in every single driver a
+> new operation is added for drivers taking advantage of this functionality,
+> the old operation should be phased out over time.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by Vinod Koul <vinod.koul@intel.com>
