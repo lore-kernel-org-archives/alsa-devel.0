@@ -1,7 +1,8 @@
 From: Rahul Sharma <rahul.sharma@samsung.com>
-Subject: [RFC PATCH v2 4/5] alsa/soc: add hdmi audio codec based on cdf
-Date: Thu, 07 Feb 2013 07:12:11 -0500
-Message-ID: <1360239132-15557-2-git-send-email-rahul.sharma@samsung.com>
+Subject: [RFC PATCH v2 5/5] alsa/soc: add hdmi audio card using cdf based hdmi
+ codec
+Date: Thu, 07 Feb 2013 07:12:12 -0500
+Message-ID: <1360239132-15557-3-git-send-email-rahul.sharma@samsung.com>
 References: <1360239132-15557-1-git-send-email-rahul.sharma@samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-reply-to: <1360239132-15557-1-git-send-email-rahul.sharma@samsung.com>
@@ -10,61 +11,64 @@ To: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@als
 Cc: tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, broonie@opensource.wolfsonmicro.com, inki.dae@samsung.com, kyungmin.park@samsung.com, r.sh.open@gmail.com, joshi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-V2:
-- DAPM and JACK control to hdmi codec.
-
-This patch registers hdmi-audio codec to the ALSA framework. This is the second
-client to the hdmi panel. Once notified by the CDF Core it proceeds towards
-audio setting and audio control. It also subscribes for hpd notification to
-implement hpd related audio requirements.
+It registers hdmi-audio card to ALSA framework which associates i2s dai and
+cdf based hdmi audio codec.
 
 Signed-off-by: Rahul Sharma <rahul.sharma@samsung.com>
 ---
- sound/soc/codecs/Kconfig             |   3 +
- sound/soc/codecs/Makefile            |   2 +
- sound/soc/codecs/exynos_hdmi_audio.c | 424 +++++++++++++++++++++++++++++++++++
- 3 files changed, 429 insertions(+)
- create mode 100644 sound/soc/codecs/exynos_hdmi_audio.c
+ sound/soc/samsung/Kconfig  |   8 ++
+ sound/soc/samsung/Makefile |   2 +
+ sound/soc/samsung/hdmi.c   | 260 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 270 insertions(+)
+ create mode 100644 sound/soc/samsung/hdmi.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 3a84782..d3e0874 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -512,3 +512,6 @@ config SND_SOC_ML26124
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 90e7e66..d5b92ab 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -185,6 +185,14 @@ config SND_SOC_SMDK_WM8994_PCM
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the SMDK
  
- config SND_SOC_TPA6130A2
- 	tristate
++config SND_SOC_EXYNOS_HDMI_AUDIO
++	tristate "SoC I2S Audio support for HDMI"
++	depends on SND_SOC_SAMSUNG && DRM_EXYNOS_HDMI_CDF
++	select SND_SAMSUNG_I2S
++	select SND_SOC_EXYNOS_HDMI_CODEC
++	help
++		Say Y if you want to add support for hdmi audio on the Exynos.
 +
-+config SND_SOC_EXYNOS_HDMI_CODEC
-+	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index f6e8e36..388da28 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -115,6 +115,7 @@ snd-soc-wm9705-objs := wm9705.o
- snd-soc-wm9712-objs := wm9712.o
- snd-soc-wm9713-objs := wm9713.o
- snd-soc-wm-hubs-objs := wm_hubs.o
-+snd-soc-exynos-hdmi-audio-objs := exynos_hdmi_audio.o
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+ 	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 709f605..ab1c151 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -8,6 +8,7 @@ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+ snd-soc-samsung-spdif-objs := spdif.o
+ snd-soc-pcm-objs := pcm.o
+ snd-soc-i2s-objs := i2s.o
++snd-soc-hdmi-objs := hdmi.o
  
- # Amp
- snd-soc-max9877-objs := max9877.o
-@@ -236,6 +237,7 @@ obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
- obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
- obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
-+obj-$(CONFIG_SND_SOC_EXYNOS_HDMI_CODEC)	+= snd-soc-exynos-hdmi-audio.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG) += snd-soc-s3c24xx.o
+ obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
+@@ -18,6 +19,7 @@ obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
+ obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
+ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
+ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
++obj-$(CONFIG_SND_SOC_EXYNOS_HDMI_AUDIO) += snd-soc-hdmi.o
  
- # Amp
- obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
-diff --git a/sound/soc/codecs/exynos_hdmi_audio.c b/sound/soc/codecs/exynos_hdmi_audio.c
+ # S3C24XX Machine Support
+ snd-soc-jive-wm8750-objs := jive_wm8750.o
+diff --git a/sound/soc/samsung/hdmi.c b/sound/soc/samsung/hdmi.c
 new file mode 100644
-index 0000000..e2cf94c
+index 0000000..a600a84
 --- /dev/null
-+++ b/sound/soc/codecs/exynos_hdmi_audio.c
-@@ -0,0 +1,424 @@
++++ b/sound/soc/samsung/hdmi.c
+@@ -0,0 +1,260 @@
 +/*
-+ * ALSA SoC codec driver for HDMI audio on Samsung Exynos processors.
++ * ALSA SoC Card driver for HDMI audio on Samsung Exynos processors.
 + * Copyright (C) 2013 Samsung corp.
 + * Author: Rahul Sharma <rahul.sharma@samsung.com>
 + *
@@ -78,414 +82,250 @@ index 0000000..e2cf94c
 + * General Public License for more details.
 + *
 + */
++
 +#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
++#include <linux/of.h>
++#include <linux/clk.h>
 +
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
++#include <sound/soc.h>
 +
-+#include <video/display.h>
-+#include <video/exynos_hdmi.h>
++#include "i2s.h"
 +
-+#define get_ctx(dev) ((struct hdmi_audio_context *)platform_get_drvdata\
-+			(to_platform_device((struct device *)dev)))
++/* platform device pointer for eynos hdmi audio device. */
++static struct platform_device *exynos_hdmi_audio_pdev;
 +
-+/* platform device pointer for eynos hdmi audio codec device. */
-+static struct platform_device *exynos_hdmi_codec_pdev;
-+
-+struct hdmi_audio_context {
-+	struct platform_device		*pdev;
-+	atomic_t			plugged;
-+	atomic_t			enabled;
-+	struct workqueue_struct		*event_wq;
-+	struct delayed_work			hotplug_work;
-+	struct display_entity_audio_params	audio_params;
-+	struct display_entity		*entity;
-+	struct display_entity_notifier	notf;
-+	struct display_event_subscriber	subscriber;
-+	struct snd_soc_jack			hdmi_jack;
-+};
-+
-+static int exynos_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
++static int set_epll_rate(unsigned long rate)
 +{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
 +	int ret;
++	struct clk *fout_epll;
 +
-+	dev_dbg(codec->dev, "[%d] %s\n", __LINE__, __func__);
++	fout_epll = clk_get(NULL, "fout_epll");
 +
-+	/* report failure if hdmi sink is unplugged. */
-+	if (!atomic_read(&ctx->plugged))
-+		return -ENODEV;
++	if (IS_ERR(fout_epll))
++		return PTR_ERR(fout_epll);
 +
-+	ctx->audio_params.type = DISPLAY_ENTITY_AUDIO_I2S;
++	if (rate == clk_get_rate(fout_epll))
++		goto out;
 +
-+	switch (params_channels(params)) {
-+	case 6:
-+	case 4:
-+	case 2:
-+	case 1:
-+		ctx->audio_params.channels = params_channels(params);
-+		break;
-+	default:
-+		dev_err(codec->dev, "%d channels not supported\n",
-+				params_channels(params));
-+		return -EINVAL;
-+	}
++	ret = clk_set_rate(fout_epll, rate);
++	if (ret < 0)
++		goto out;
++
++out:
++	clk_put(fout_epll);
++
++	return 0;
++}
++
++static int hdmi_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	int bfs, psr, rfs, ret;
++	unsigned long rclk;
++	unsigned long xtal;
++	struct clk *xtal_clk;
++
++	dev_dbg(rtd->dev, "[%d][%s]\n", __LINE__, __func__);
 +
 +	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		ctx->audio_params.bits_per_sample = 8;
++	case SNDRV_PCM_FORMAT_U24:
++	case SNDRV_PCM_FORMAT_S24:
++		bfs = 48;
 +		break;
++	case SNDRV_PCM_FORMAT_U16_LE:
 +	case SNDRV_PCM_FORMAT_S16_LE:
-+		ctx->audio_params.bits_per_sample = 12;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		ctx->audio_params.bits_per_sample = 16;
++		bfs = 32;
 +		break;
 +	default:
-+		dev_err(codec->dev, "Format(%d) not supported\n",
-+				params_format(params));
 +		return -EINVAL;
 +	}
 +
 +	switch (params_rate(params)) {
++	case 16000:
++	case 22050:
++	case 24000:
 +	case 32000:
 +	case 44100:
-+	case 88200:
-+	case 176400:
 +	case 48000:
++	case 88200:
 +	case 96000:
-+	case 192000:
-+		ctx->audio_params.sf = params_rate(params);
-+		break;
-+	default:
-+		dev_err(codec->dev, "%d Rate supported\n",
-+				params_rate(params));
-+		return -EINVAL;
-+	}
-+
-+	ret =
-+	display_entity_hdmi_init_audio(ctx->entity, &ctx->audio_params);
-+	if (ret)
-+		dev_err(codec->dev, "initaudio failed ret %d\n", ret);
-+	return ret;
-+}
-+
-+static int exynos_hdmi_audio_trigger(struct snd_pcm_substream *substream,
-+			int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct hdmi_audio_context *ctx = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	dev_dbg(codec->dev, "[%d] %s\n", __LINE__, __func__);
-+
-+	/* report failure if hdmi sink is unplugged. */
-+	if (!atomic_read(&ctx->plugged))
-+		return -EINVAL;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		/* Don't start if hdmi audio is disabled. return Success. */
-+		if (!atomic_read(&ctx->enabled))
-+			return 0;
-+
-+		ret = display_entity_hdmi_set_audiostate(ctx->entity,
-+			DISPLAY_ENTITY_AUDIOSTATE_ON);
-+		if (ret) {
-+			dev_err(codec->dev, "audio enable failed.\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		ret = display_entity_hdmi_set_audiostate(ctx->entity,
-+			DISPLAY_ENTITY_AUDIOSTATE_OFF);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_dai_ops exynos_hdmi_audio_dai_ops = {
-+	.hw_params = exynos_hdmi_audio_hw_params,
-+	.trigger = exynos_hdmi_audio_trigger,
-+};
-+
-+static struct snd_soc_dai_driver hdmi_codec_dai = {
-+	.name = "exynos-hdmi-audio-dai",
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.ops = &exynos_hdmi_audio_dai_ops,
-+};
-+
-+void hdmi_audio_event_notify(struct display_entity *entity,
-+		enum display_entity_event_type type,
-+		unsigned int value, void *context)
-+{
-+	struct hdmi_audio_context *ctx = (struct hdmi_audio_context *)context;
-+
-+	if (type == DISPLAY_ENTITY_HDMI_HOTPLUG) {
-+		dev_dbg(&ctx->pdev->dev, "[%d][%s] hpd(%d)\n", __LINE__,
-+			__func__, value);
-+		atomic_set(&ctx->plugged, !!value);
-+
-+		/* should set audio regs after ip, phy got stable. 5ms suff */
-+		queue_delayed_work(ctx->event_wq, &ctx->hotplug_work,
-+				msecs_to_jiffies(5));
-+	}
-+}
-+
-+static void hotplug_event_handler(struct work_struct *work)
-+{
-+	struct hdmi_audio_context *ctx = container_of(work,
-+		struct hdmi_audio_context, hotplug_work.work);
-+
-+	if (atomic_read(&ctx->plugged)) {
-+		display_entity_hdmi_init_audio(ctx->entity,
-+			&ctx->audio_params);
-+
-+		if (atomic_read(&ctx->enabled))
-+			display_entity_hdmi_set_audiostate(ctx->entity,
-+				DISPLAY_ENTITY_AUDIOSTATE_ON);
++		if (bfs == 48)
++			rfs = 384;
 +		else
-+			display_entity_hdmi_set_audiostate(ctx->entity,
-+				DISPLAY_ENTITY_AUDIOSTATE_OFF);
-+	}
-+
-+	snd_soc_jack_report(&ctx->hdmi_jack,
-+			    atomic_read(&ctx->plugged) ? SND_JACK_AVOUT
-+			    : 0, SND_JACK_AVOUT);
-+}
-+
-+int exynos_hdmi_audio_notification(struct display_entity_notifier *notf,
-+		struct display_entity *entity, int status)
-+{
-+	struct hdmi_audio_context *ctx = container_of(notf,
-+		struct hdmi_audio_context, notf);
-+	struct exynos_hdmi_control_ops *exynos_ops =
-+		(struct exynos_hdmi_control_ops *)entity->private;
-+	int hpd;
-+
-+	if (status != DISPLAY_ENTITY_NOTIFIER_CONNECT && entity)
++			rfs = 256;
++		break;
++	case 64000:
++		rfs = 384;
++		break;
++	case 8000:
++	case 11025:
++	case 12000:
++		if (bfs == 48)
++			rfs = 768;
++		else
++			rfs = 512;
++		break;
++	default:
 +		return -EINVAL;
-+
-+	dev_dbg(&ctx->pdev->dev, "[%d][%s]\n", __LINE__, __func__);
-+
-+	ctx->entity = entity;
-+
-+	ctx->subscriber.context = ctx;
-+	ctx->subscriber.notify = hdmi_audio_event_notify;
-+
-+	display_entity_subscribe_event(entity, &ctx->subscriber);
-+
-+	exynos_ops->get_hpdstate(entity, &hpd);
-+	atomic_set(&ctx->plugged, !!hpd);
-+
-+	return 0;
-+}
-+
-+static int get_hdmi(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hdmi_audio_context *ctx = get_ctx(kcontrol->private_value);
-+
-+	if (!ctx) {
-+		dev_err(&ctx->pdev->dev, "invalid context.\n");
-+		return 0;
 +	}
 +
-+	ucontrol->value.integer.value[0] = atomic_read(&ctx->enabled);
-+	return 1;
-+}
++	rclk = params_rate(params) * rfs;
 +
-+static int put_hdmi(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hdmi_audio_context *ctx = get_ctx(kcontrol->private_value);
-+	int enable = (int)ucontrol->value.integer.value[0];
-+
-+	if (!ctx) {
-+		dev_err(&ctx->pdev->dev, "invalid context.\n");
-+		return 0;
++	switch (rclk) {
++	case 4096000:
++	case 5644800:
++	case 6144000:
++	case 8467200:
++	case 9216000:
++		psr = 8;
++		break;
++	case 8192000:
++	case 11289600:
++	case 12288000:
++	case 16934400:
++	case 18432000:
++		psr = 4;
++		break;
++	case 22579200:
++	case 24576000:
++	case 33868800:
++	case 36864000:
++		psr = 2;
++		break;
++	case 67737600:
++	case 73728000:
++		psr = 1;
++		break;
++	default:
++		dev_err(rtd->dev, "rclk = %lu is not yet supported!\n", rclk);
++		return -EINVAL;
 +	}
 +
-+	atomic_set(&ctx->enabled, !!enable);
-+
-+	if (!atomic_read(&ctx->plugged))
-+		return 1;
-+	else if (enable)
-+		display_entity_hdmi_set_audiostate(ctx->entity,
-+			DISPLAY_ENTITY_AUDIOSTATE_ON);
-+	else
-+		display_entity_hdmi_set_audiostate(ctx->entity,
-+			DISPLAY_ENTITY_AUDIOSTATE_OFF);
-+
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new hdmi_dapm_controls[] = {
-+	SOC_SINGLE_BOOL_EXT("HDMI Playback Switch", 0, get_hdmi, put_hdmi),
-+};
-+
-+static int hdmi_codec_init(struct snd_soc_codec *codec)
-+{
-+	struct hdmi_audio_context *ctx = get_ctx(codec->dev);
-+	int ret;
-+
-+	ret = snd_soc_jack_new(codec, "HDMI Jack",
-+			 SND_JACK_AVOUT, &ctx->hdmi_jack);
-+	if (ret) {
-+		dev_err(codec->dev, "audio enable failed.\n");
++	ret = set_epll_rate(rclk * psr);
++	if (ret < 0)
 +		return ret;
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++					   SND_SOC_DAIFMT_NB_NF |
++					   SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	xtal_clk = clk_get(NULL, "xtal"); /*xtal clk is input to codec MCLK1*/
++	if (IS_ERR(xtal_clk)) {
++		dev_err(rtd->dev, "%s: failed to get xtal clock\n", __func__);
++		return PTR_ERR(xtal_clk);
 +	}
 +
-+	hdmi_dapm_controls[0].private_value = (unsigned long)codec->dev;
++	xtal = clk_get_rate(xtal_clk);
++	clk_put(xtal_clk);
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
++					0, SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, SAMSUNG_I2S_DIV_BCLK, bfs);
++	if (ret < 0)
++		return ret;
++
 +	return 0;
 +}
 +
-+static struct snd_soc_codec_driver hdmi_codec = {
-+	.probe	= hdmi_codec_init,
-+	.controls = hdmi_dapm_controls,
-+	.num_controls = ARRAY_SIZE(hdmi_dapm_controls),
++/*
++ * HDMI DAI operations.
++ */
++static struct snd_soc_ops hdmi_ops = {
++	.hw_params = hdmi_hw_params,
 +};
 +
-+static int hdmi_codec_probe(struct platform_device *pdev)
-+{
-+	struct hdmi_audio_context *ctx;
-+	struct device_node *dev_node;
-+	struct platform_device *disp_pdev;
-+	int ret;
++static struct snd_soc_dai_link hdmi_dai[] = {
++	{ /* HDMI Playback i/f */
++		.name = "HDMI Playback",
++		.stream_name = "i2s_Dai",
++		.cpu_dai_name = "samsung-i2s.0",
++		.codec_dai_name = "exynos-hdmi-audio-dai",
++		.platform_name = "samsung-i2s.0",
++		.codec_name = "exynos-hdmi-audio-codec",
++		.ops = &hdmi_ops,
++	},
++};
 +
++static struct snd_soc_card hdmi = {
++	.name = "HDMI-AUDIO",
++	.owner = THIS_MODULE,
++	.dai_link = hdmi_dai,
++	.num_links = ARRAY_SIZE(hdmi_dai),
++};
++
++static int hdmi_audio_probe(struct platform_device *pdev)
++{
++	int ret;
++	struct snd_soc_card *card = &hdmi;
++
++	card->dev = &pdev->dev;
 +	dev_dbg(&pdev->dev, "[%d][%s]\n", __LINE__, __func__);
 +
-+	ret = snd_soc_register_codec(&pdev->dev, &hdmi_codec,
-+			&hdmi_codec_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register_codec failed (%d)\n", ret);
-+		return ret;
-+	}
++	ret = snd_soc_register_card(card);
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card() failed:%d\n", ret);
 +
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(struct hdmi_audio_context),
-+				GFP_KERNEL);
-+	if (ctx == NULL)
-+		return -ENOMEM;
-+
-+	ctx->pdev = pdev;
-+	atomic_set(&ctx->enabled, 1);
-+	platform_set_drvdata(pdev, ctx);
-+
-+	/* create workqueue and hotplug work */
-+	ctx->event_wq = alloc_workqueue("hdmi-audio-event",
-+			WQ_UNBOUND | WQ_NON_REENTRANT, 1);
-+	if (ctx->event_wq == NULL) {
-+		dev_err(&pdev->dev, "failed to create workqueue\n");
-+		ret = -ENOMEM;
-+	}
-+	INIT_DELAYED_WORK(&ctx->hotplug_work, hotplug_event_handler);
-+
-+	dev_node = of_find_compatible_node(NULL, NULL,
-+			"samsung,exynos5-hdmi");
-+	if (!dev_node) {
-+		dev_err(&pdev->dev, "[%d][%s] dt node not found.\n",
-+				__LINE__, __func__);
-+		return -EINVAL;
-+	}
-+
-+	disp_pdev = of_find_device_by_node(dev_node);
-+	if (!disp_pdev) {
-+		dev_err(&pdev->dev, "[ERROR][%d][%s] No pdev\n",
-+				__LINE__, __func__);
-+		return -EINVAL;
-+	}
-+
-+	ctx->notf.dev = &disp_pdev->dev;
-+	ctx->notf.notify = exynos_hdmi_audio_notification;
-+
-+	ret = display_entity_register_notifier(&ctx->notf);
-+	if (ret) {
-+		dev_err(&pdev->dev, "[%d][%s] entity registe failed.\n",
-+			__LINE__, __func__);
-+		ret = -EINVAL;
-+		goto err_workq;
-+	}
-+
-+	return 0;
-+
-+err_workq:
-+	destroy_workqueue(ctx->event_wq);
 +	return ret;
 +}
 +
-+static int hdmi_codec_remove(struct platform_device *pdev)
++static int hdmi_audio_remove(struct platform_device *pdev)
 +{
-+	struct hdmi_audio_context *ctx = get_ctx(&pdev->dev);
-+	dev_dbg(&pdev->dev, "[%d][%s]\n", __LINE__, __func__);
-+	mdelay(1000);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	display_entity_register_notifier(&ctx->notf);
-+	snd_soc_unregister_codec(&pdev->dev);
-+	destroy_workqueue(ctx->event_wq);
++	snd_soc_unregister_card(card);
++
 +	return 0;
 +}
 +
-+static struct platform_driver hdmi_codec_driver = {
++static struct platform_driver hdmi_audio_driver = {
 +	.driver		= {
-+		.name	= "exynos-hdmi-audio-codec",
++		.name	= "exynos-hdmi-audio",
 +		.owner	= THIS_MODULE,
++		.pm	= &snd_soc_pm_ops,
 +	},
-+
-+	.probe		= hdmi_codec_probe,
-+	.remove		= hdmi_codec_remove,
++	.probe		= hdmi_audio_probe,
++	.remove		= hdmi_audio_remove,
 +};
 +
-+static int __init hdmi_audio_codec_init(void)
++static int __init hdmi_audio_init(void)
 +{
 +	int ret;
 +
-+	ret = platform_driver_register(&hdmi_codec_driver);
++	ret = platform_driver_register(&hdmi_audio_driver);
 +	if (ret < 0)
 +		return -EINVAL;
 +
-+	exynos_hdmi_codec_pdev = platform_device_register_simple
-+		("exynos-hdmi-audio-codec", -1, NULL, 0);
-+	if (IS_ERR_OR_NULL(exynos_hdmi_codec_pdev)) {
-+		ret = PTR_ERR(exynos_hdmi_codec_pdev);
-+		platform_driver_unregister(&hdmi_codec_driver);
++	exynos_hdmi_audio_pdev = platform_device_register_simple
++		("exynos-hdmi-audio", -1, NULL, 0);
++	if (IS_ERR_OR_NULL(exynos_hdmi_audio_pdev)) {
++		ret = PTR_ERR(exynos_hdmi_audio_pdev);
++		platform_driver_unregister(&hdmi_audio_driver);
 +		return ret;
 +	}
 +
 +	return 0;
 +}
-+static void __exit hdmi_audio_codec_exit(void)
++
++static void __exit hdmi_audio_exit(void)
 +{
-+	platform_driver_unregister(&hdmi_codec_driver);
-+	platform_device_unregister(exynos_hdmi_codec_pdev);
++	platform_driver_unregister(&hdmi_audio_driver);
++	platform_device_unregister(exynos_hdmi_audio_pdev);
 +}
 +
-+module_init(hdmi_audio_codec_init);
-+module_exit(hdmi_audio_codec_exit);
++module_init(hdmi_audio_init);
++module_exit(hdmi_audio_exit);
 +
 +MODULE_AUTHOR("Rahul Sharma <rahul.sharma@samsung.com>");
-+MODULE_DESCRIPTION("ASoC EXYNOS HDMI codec driver");
++MODULE_DESCRIPTION("ALSA SoC HDMI AUDIO Card");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:exynos-hdmi-codec");
++MODULE_ALIAS("platform:hdmi-audio");
 -- 
 1.8.0
