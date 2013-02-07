@@ -1,20 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [RFC] compress: add support for gapless playback
-Date: Thu, 7 Feb 2013 08:34:18 -0800
-Message-ID: <20130207163418.GS3143@intel.com>
+Date: Thu, 7 Feb 2013 08:51:28 -0800
+Message-ID: <20130207165128.GT3143@intel.com>
 References: <1360074085-562-1-git-send-email-vinod.koul@intel.com>
  <37A133201056E44A80888420ECA881BF1093DC5F68@EXCMB2.wolfsonmicro.main>
  <20130207011518.GA30348@opensource.wolfsonmicro.com>
  <20130207021807.GM3143@intel.com> <s5ha9rg5x0e.wl%tiwai@suse.de>
+ <20130207113738.GA15824@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 9415626501D
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2013 17:59:02 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6289026501D
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2013 18:16:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5ha9rg5x0e.wl%tiwai@suse.de>
+In-Reply-To: <20130207113738.GA15824@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +25,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, liam.r.girdwood@intel.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 07, 2013 at 09:49:37AM +0100, Takashi Iwai wrote:
-> At Wed, 6 Feb 2013 18:18:07 -0800,
-> Vinod Koul wrote:
-> > 
-> > On Thu, Feb 07, 2013 at 01:15:54AM +0000, Richard Fitzgerald wrote:
-> > > > +- partial drain
-> > > > +This is called when end of file is reached. The userspace can inform DSP that
-> > > > +EOF is reached and now DSP can start skipping padding delay. Also next write
-> > > > +data would belong to next track
-> > > 
-> > > We're really doing two different tasks inside the "partial drain". The name,
-> > > and the reason we are doing two tasks in one, comes from a particular higher-
-> > > layer scenario, but there's no reason the driver API need use the same
-> > > terminology as one particular application of the functionality.
-> > > The two tasks are:
-> > > 
-> > > 1) Tell the DSP that we have sent all data for the current track and following
-> > > data will be for the next track. This lets the DSP lay down a marker for where
-> > > it should strip padding at the end of a track, and know it should be expecting
-> > > more data for another track to follow gaplessly where it must strip the
-> > > encoder delay from the start.
-> > > 
-> > > 2) Ask for notification when DSP has reached the changeover point between the
-> > > playback of the two tracks
-> > > 
-> > > I think it would be more logical and less confusing not to combine the two into
-> > > a single ioctl. Instead, add only one new ioctl specifically to provide the
-> > > track changeover hint, something like SNDRV_COMPRESS_NEXT_TRACK (meaning DSP
-> > > should expect data for next track to follow). Don't add a new drain, just use
-> > > the existing SNDRV_COMPRESS_DRAIN - the driver/DSP can make a decision whether
-> > > it needs to do something special with the drain if we have told it that we
-> > > will be sending it some more data for a following track.
-> > > 
-> > > So the SNDRV_COMPRESS_PARTIAL_DRAIN in this patch would become
-> > > 
+On Thu, Feb 07, 2013 at 11:37:38AM +0000, Richard Fitzgerald wrote:
 > > > 1) Send SNDRV_COMPRESS_NEXT_TRACK
 > > > 2) Send SNDRV_COMPRESS_DRAIN
 > > The problem would be in that case the defination of SNDRV_COMPRESS_DRAIN which
@@ -72,20 +39,54 @@ On Thu, Feb 07, 2013 at 09:49:37AM +0100, Takashi Iwai wrote:
 > > SNDRV_COMPRESS_DRAIN to indicate. Yes we can put conditional check but IMO that
 > > would overtly complicate this. If we are not doing proper drian lets not
 > > call it that.
-> > 
-> > But I think I like the idea of splitting the two up to do a cleaner interface.
-> > Let me check this...
 > 
-> In the way above, NEXT_TRACK is no longer a trigger op, but it's
-> rather an operational option.  This would set a flag something like
-> 	compr->drain_mode = SND_COMPR_DRAIN_RESTART;
-> while its default is SND_COMPR_DRAIN_STOP.
-> (Or, set compr->next_track_after_drain = true, or whatever.)
-So the basic difference would be that stream is never stopped in gapless case.
-The stream should retain running state maybe trasition to intermediate one for
-book keeping but then needs to go back to running.
+> Ok, so let's keep the partial drain but split out the NEXT_TRACK hint so we keep
+> the two operations separate. It's clearer to understand. NEXT_TRACK tells DSP to
+> prepare for data for new track, PARTIAL_DRAIN asks DSP when it has played all
+> data of current track. I don't think that application _must_ drain when doing
+> gapless, only if it cares to know when DSP reaches the join between tracks.
+If we split this then I dont see why next write/meta_data call should wait. Then
+the PARTIAL_DRAIN should be used for knowing in userpsace that switch happened,
+right?
 
-But, should framework really care about that as DSP is doing handling!
+> Possible problem - application calls NEXT_TRACK and PARTIAL_DRAIN when DSP has
+> already reached end of current track, so what does PARTIAL_DRAIN mean in this
+> case? 
+It should just return immediately, and if your output is starved you are in
+error state, that can happen when you dont give data as well.
+
+> Also can we make metadata a key-pair list as Takashi suggested, with unlimited
+> length. Something like
+> 
+> struct snd_compr_metadata_pair {
+> 	enum snd_compr_metadata_key key;
+> 	u32 value;
+> };
+No enums... Thats not how kernel ABI is designed.
+I am leaning towards key/value pair, but is this fair assumption that value is
+always 32bit, what if we have larger single value, then should we split?
+
+> 
+> struct snd_compr_metadata {
+> 	int count; /* number of actual entries in following array */
+> 	struct snd_compr_metadata_pair *pairs;
+> };
+> 
+> Should we union the u32 value with a u8* buf to allow for any case where the
+> value needs to be a buffer of binary data? Is there any known case like this?
+Again nope, that aint good from ABI POV.
+
+What I think it should be is:
+
+enum {
+	SNDRV_COMPRESS_ENCODER_PADDING = 1,
+	SNDRV_COMPRESS_ENCODER_DELAY = 2,
+};
+
+struct snd_compr_metadata {
+	u32 key;
+	u32 value;
+};
 
 --
 ~Vinod
