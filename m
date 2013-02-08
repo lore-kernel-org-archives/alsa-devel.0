@@ -1,26 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC]Connection list of hda widget
-Date: Fri, 8 Feb 2013 16:37:51 +0800
-Message-ID: <CAN8cciYXLRWe9dS6DT8uGF8+m=h=gBtgY998s6QGh8TLDfOcww@mail.gmail.com>
-References: <CAN8cciaMRg55oO3iMJqngcFqeW==POKiv=+_NraPQ-WzEm4gFQ@mail.gmail.com>
- <CAN8cciYwRrsNPqQhe4zbBYmBpNNEEgQPkosT8dYd4dBFXdHxGA@mail.gmail.com>
- <CAN8cciaaPLvJZH2vP0tVD6d9gppaFRcUgNcytkdac+6HoCc7sg@mail.gmail.com>
- <CAN8ccibiu+_n3rB+Er-8DE-RR7Wy2PHr5Q+gQVE3Ojfny6wtqw@mail.gmail.com>
- <CAN8cciYcdYum7tZMf2wBqk4vVjzKEWNYxQDmaRmo8+Hatk--xQ@mail.gmail.com>
- <5113C3AF.8020709@canonical.com> <s5h4nhoc9vk.wl%tiwai@suse.de>
- <CAN8cciYYeWtTmJ6+UnBW2wcO_0yqgEY=cugEMdnjZaDZjzgtcg@mail.gmail.com>
- <s5hd2wb8fo8.wl%tiwai@suse.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH 1/3] [ALSA] hda - Support rereading widgets
+	under the function group
+Date: Fri,  8 Feb 2013 17:09:31 -0500
+Message-ID: <1360361371-4337-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f172.google.com (mail-ie0-f172.google.com
- [209.85.223.172])
- by alsa0.perex.cz (Postfix) with ESMTP id C468526532C
- for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2013 09:37:52 +0100 (CET)
-Received: by mail-ie0-f172.google.com with SMTP id c10so4788847ieb.3
- for <alsa-devel@alsa-project.org>; Fri, 08 Feb 2013 00:37:51 -0800 (PST)
-In-Reply-To: <s5hd2wb8fo8.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24E96265346
+ for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2013 10:09:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,75 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, Miro Hodak <mhodak127@gmail.com>, basinilya@gmail.com, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > > > >
-> > > > > Treat vendor defined widget different from audio selector/audio
-input
-> > > > > widget since hda_proc.c query the connection list of vendor
-defined
-> > widget
-> > > > >
-> > > > > ADI codecs  have vendor defined widgets ( BIAS Power-Down and VREF
-> > > > > Power-Down) which have connection list
-> > > > >
-> > > > > static void print_conn_list(struct snd_info_buffer *buffer,
-> > > > >      struct hda_codec *codec, hda_nid_t nid,
-> > > > >      unsigned int wid_type, hda_nid_t *conn,
-> > > > >      int conn_len)
-> > > > > {
-> > > > > int c, curr = -1;
-> > > > >
-> > > > > if (conn_len > 1 &&
-> > > > >      wid_type != AC_WID_AUD_MIX &&
-> > > > >      wid_type != AC_WID_VOL_KNB &&
-> > > > > +     wide_type != AC_WID_VENDOR &&
-> > > > >      wid_type != AC_WID_POWER)
-> > > > > curr = snd_hda_codec_read(codec, nid, 0,
-> > > > >    AC_VERB_GET_CONNECT_SEL, 0);
-> > > > > snd_iprintf(buffer, "  Connection: %d\n", conn_len);
-> > > > >
+From: Mengdong Lin <mengdong.lin@intel.com>
 
->
-> > Node 0x2f [Vendor Defined Widget] wcaps 0xf00100: Mono
-> >     Connection: 6
-> > 0x11* 0x12 0x14 0x15 0x16 0x17
-> >
-> > My proposed patch just remove "*" from the connection list since there
-is
-> > no way to know the vendor defined widget support the verb
-GET_CONNECT_SELECT
->
-> You should have written _this_ text at the first place!
-> The biggest problem is that your description doesn't match with what
-> you write in your patch.
->
-> But still, it's still an open question.  In the specification, the use
-> of selector isn't prohibited for vendor-spec widgets.  So, some crazy
-> h/w designer may think of it.
->
+A codec may allow software to hide some unused pin/cvt widgets.
 
-Yes, it depend on how you interept "Other"
+Sometimes BIOS does not enable the hidden widgets properly although they are
+needed for the board. Thus the driver need to enable them as a board-specific
+fixup and the whole tree will change.
 
-7.3.3.2 Connection Select Control
-Applies to:
-Input Converter
-Selector Widget
-Pin Complex
-Other
+This patch implements a common code for rereading codec widgets. So the fixup
+code can call it after enabling the hidden widgets.
 
-I think your patch is not necessary, what is missing are the codec
-responses when error occur on ad1882
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
--static const char * const ad1882_models[AD1986A_MODELS] = {
-+static const char * const ad1882_models[AD19882_MODELS] = {
-         [AD1882_AUTO]           = "auto",
-         [AD1882_3STACK]         = "3stack",
-         [AD1882_6STACK]         = "6stack",
-         [AD1882_3STACK_AUTOMUTE] = "3stack-automute",
-};
-
->
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 3c92514..e80f835 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1441,6 +1441,30 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_new);
+ 
++int snd_hda_codec_update_widgets(struct hda_codec *codec)
++{
++	hda_nid_t fg;
++	int err;
++
++	/* Assume the function group node does not change,
++	 * only the widget nodes may change.
++	 */
++	kfree(codec->wcaps);
++	fg = codec->afg ? codec->afg : codec->mfg;
++	err = read_widget_caps(codec, fg);
++	if (err < 0) {
++		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
++		return err;
++	}
++
++	snd_array_free(&codec->init_pins);
++	err = read_pin_defaults(codec);
++
++	return err;
++}
++EXPORT_SYMBOL_HDA(snd_hda_codec_update_widgets);
++
++
+ /**
+  * snd_hda_codec_configure - (Re-)configure the HD-audio codec
+  * @codec: the HDA codec
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 0be1826..e8c9442 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -935,6 +935,7 @@ int snd_hda_bus_new(struct snd_card *card, const struct hda_bus_template *temp,
+ int snd_hda_codec_new(struct hda_bus *bus, unsigned int codec_addr,
+ 		      struct hda_codec **codecp);
+ int snd_hda_codec_configure(struct hda_codec *codec);
++int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ 
+ /*
+  * low level functions
+-- 
+1.7.10.4
