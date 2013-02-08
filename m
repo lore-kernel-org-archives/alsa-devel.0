@@ -1,15 +1,15 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH 1/3] [ALSA] hda - Support rereading widgets
-	under the function group
-Date: Fri,  8 Feb 2013 17:09:31 -0500
-Message-ID: <1360361371-4337-1-git-send-email-mengdong.lin@intel.com>
+Subject: [PATCH 2/3] [ALSA] hda - Add fixup for Haswell to
+	enable all pin and convertor widgets
+Date: Fri,  8 Feb 2013 17:09:52 -0500
+Message-ID: <1360361392-4373-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 24E96265346
- for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2013 10:09:21 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 242C7265346
+ for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2013 10:09:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,63 +25,86 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-A codec may allow software to hide some unused pin/cvt widgets.
+Some Haswell machines support more than one display outputs (HDMI or DP),
+but its BIOS may not enable the codec's 2nd and 3rd pin and output cvt widgets.
 
-Sometimes BIOS does not enable the hidden widgets properly although they are
-needed for the board. Thus the driver need to enable them as a board-specific
-fixup and the whole tree will change.
-
-This patch implements a common code for rereading codec widgets. So the fixup
-code can call it after enabling the hidden widgets.
+This patch implements a board-specific fixup for Intel Haswell Machines:
+If the hidden pins are not enabled by BIOS, the driver will enable them
+and call common code to update the codec tree.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 3c92514..e80f835 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1441,6 +1441,30 @@ int snd_hda_codec_new(struct hda_bus *bus,
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 899c4fb..54243c4 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1714,6 +1714,57 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec)
+ 	snd_hda_override_conn_list(codec, 0x07, 3, list);
  }
- EXPORT_SYMBOL_HDA(snd_hda_codec_new);
  
-+int snd_hda_codec_update_widgets(struct hda_codec *codec)
++#define INTEL_VENDOR_NID 0x08
++#define INTEL_GET_VENDOR_VERB 0xf81
++#define INTEL_SET_VENDOR_VERB 0x781
++#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
++#define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
++
++static void intel_haswell_enable_all_pins(struct hda_codec *codec,
++					const struct hda_fixup *fix, int action)
 +{
-+	hda_nid_t fg;
-+	int err;
++	unsigned int vendor_param;
 +
-+	/* Assume the function group node does not change,
-+	 * only the widget nodes may change.
-+	 */
-+	kfree(codec->wcaps);
-+	fg = codec->afg ? codec->afg : codec->mfg;
-+	err = read_widget_caps(codec, fg);
-+	if (err < 0) {
-+		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
-+		return err;
-+	}
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
++				INTEL_GET_VENDOR_VERB, 0);
++	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
++		return;
 +
-+	snd_array_free(&codec->init_pins);
-+	err = read_pin_defaults(codec);
++	vendor_param |= INTEL_EN_ALL_PIN_CVTS;
++	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
++				INTEL_SET_VENDOR_VERB, vendor_param);
++	if (vendor_param == -1)
++		return;
 +
-+	return err;
++	snd_hda_codec_update_widgets(codec);
++	return;
 +}
-+EXPORT_SYMBOL_HDA(snd_hda_codec_update_widgets);
 +
 +
- /**
-  * snd_hda_codec_configure - (Re-)configure the HD-audio codec
-  * @codec: the HDA codec
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 0be1826..e8c9442 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -935,6 +935,7 @@ int snd_hda_bus_new(struct snd_card *card, const struct hda_bus_template *temp,
- int snd_hda_codec_new(struct hda_bus *bus, unsigned int codec_addr,
- 		      struct hda_codec **codecp);
- int snd_hda_codec_configure(struct hda_codec *codec);
-+int snd_hda_codec_update_widgets(struct hda_codec *codec);
++/* available models for fixup */
++enum {
++	INTEL_HASWELL,
++};
++
++static const struct hda_model_fixup hdmi_models[] = {
++	{.id = INTEL_HASWELL, .name = "Haswell"},
++	{}
++};
++
++static const struct snd_pci_quirk hdmi_fixup_tbl[] = {
++	SND_PCI_QUIRK(0x8086, 0x2010, "Haswell", INTEL_HASWELL),
++	{} /* terminator */
++};
++
++static const struct hda_fixup hdmi_fixups[] = {
++	[INTEL_HASWELL] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = intel_haswell_enable_all_pins,
++	},
++};
++
  
- /*
-  * low level functions
+ static int patch_generic_hdmi(struct hda_codec *codec)
+ {
+@@ -1725,6 +1776,9 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 
+ 	codec->spec = spec;
+ 
++	snd_hda_pick_fixup(codec, hdmi_models, hdmi_fixup_tbl, hdmi_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
+ 	if (codec->vendor_id == 0x80862807)
+ 		intel_haswell_fixup_connect_list(codec);
+ 
 -- 
 1.7.10.4
