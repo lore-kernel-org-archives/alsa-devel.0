@@ -1,7 +1,7 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 3/4] ALSA: CA0132: Add latency monitoring
-Date: Fri, 8 Feb 2013 18:31:44 -0800
-Message-ID: <1360377105-2480-4-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 4/4] ALSA: CA0132: Update hp unsol event handler
+Date: Fri, 8 Feb 2013 18:31:45 -0800
+Message-ID: <1360377105-2480-5-git-send-email-ian_minett@creativelabs.com>
 References: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,159 +23,87 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
-Add latency monitoring for playback, capture and DSP effects.
+Manage the delayed work queue in hp unsol event handler.
 
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index b52f00c..c797f65 100644
+index c797f65..61d74db 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -133,6 +133,12 @@ enum {
- /* Effects values size*/
- #define EFFECT_VALS_MAX_COUNT 12
+@@ -749,6 +749,9 @@ struct ca0132_spec {
+ 	long voicefx_val;
+ 	long cur_mic_boost;
  
-+#define DSP_CAPTURE_INIT_LATENCY        0
-+#define DSP_CRYSTAL_VOICE_LATENCY       124
-+#define DSP_PLAYBACK_INIT_LATENCY       13
-+#define DSP_PLAY_ENHANCEMENT_LATENCY    30
-+#define DSP_SPEAKER_OUT_LATENCY         7
++	struct hda_codec *codec;
++	struct delayed_work unsol_hp_work;
 +
- struct ct_effect {
- 	char name[44];
- 	hda_nid_t nid;
-@@ -2761,8 +2767,27 @@ static void ca0132_cleanup_stream(struct hda_codec *codec, hda_nid_t nid)
+ #ifdef ENABLE_TUNING_CONTROLS
+ 	long cur_ctl_vals[TUNING_CTLS_COUNT];
+ #endif
+@@ -3338,6 +3341,14 @@ exit:
+ 	return err < 0 ? err : 0;
  }
  
- /*
-- * PCM callbacks
-+ * PCM playbacks
-  */
-+static unsigned int ca0132_get_playback_latency(struct hda_codec *codec)
++static void ca0132_unsol_hp_delayed(struct work_struct *work)
 +{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int latency = DSP_PLAYBACK_INIT_LATENCY;
-+
-+	if (!dspload_is_loaded(codec))
-+		return 0;
-+
-+	if (spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID]) {
-+		if ((spec->effects_switch[SURROUND - EFFECT_START_NID]) ||
-+		    (spec->effects_switch[DIALOG_PLUS - EFFECT_START_NID]))
-+			latency += DSP_PLAY_ENHANCEMENT_LATENCY;
-+	}
-+
-+	if (spec->cur_out_type == SPEAKER_OUT)
-+		latency += DSP_SPEAKER_OUT_LATENCY;
-+	return latency;
++	struct ca0132_spec *spec = container_of(
++		to_delayed_work(work), struct ca0132_spec, unsol_hp_work);
++	ca0132_select_out(spec->codec);
++	snd_hda_jack_report_sync(spec->codec);
 +}
 +
- static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 			struct hda_codec *codec,
- 			unsigned int stream_tag,
-@@ -2770,6 +2795,16 @@ static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 			struct snd_pcm_substream *substream)
+ static void ca0132_set_dmic(struct hda_codec *codec, int enable);
+ static int ca0132_mic_boost_set(struct hda_codec *codec, long val);
+ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val);
+@@ -4540,8 +4551,9 @@ static void ca0132_process_dsp_response(struct hda_codec *codec)
+ 
+ static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
+ {
+-	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
++	struct ca0132_spec *spec = codec->spec;
+ 
++	snd_printdd(KERN_INFO "ca0132_unsol_event: 0x%x\n", res);
+ 
+ 	if (((res >> AC_UNSOL_RES_TAG_SHIFT) & 0x3f) == UNSOL_TAG_DSP) {
+ 		ca0132_process_dsp_response(codec);
+@@ -4553,8 +4565,10 @@ static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
+ 
+ 		switch (res) {
+ 		case UNSOL_TAG_HP:
+-			ca0132_select_out(codec);
+-			snd_hda_jack_report_sync(codec);
++			cancel_delayed_work_sync(&spec->unsol_hp_work);
++			queue_delayed_work(codec->bus->workq,
++					   &spec->unsol_hp_work,
++					   msecs_to_jiffies(500));
+ 			break;
+ 		case UNSOL_TAG_AMIC1:
+ 			ca0132_select_mic(codec);
+@@ -4729,6 +4743,7 @@ static void ca0132_free(struct hda_codec *codec)
  {
  	struct ca0132_spec *spec = codec->spec;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	unsigned int latency = ca0132_get_playback_latency(codec);
-+
-+	if (spec->dsp_state == DSP_DOWNLOADING) {
-+		spec->dsp_stream_id = stream_tag;
-+		return 0;
-+	}
-+
-+	runtime->delay = bytes_to_frames(runtime, (latency * runtime->rate *
-+					runtime->byte_align) / 1000);
  
- 	ca0132_setup_stream(codec, spec->dacs[0], stream_tag, 0, format);
++	cancel_delayed_work_sync(&spec->unsol_hp_work);
+ 	snd_hda_power_up(codec);
+ 	snd_hda_sequence_write(codec, spec->base_exit_verbs);
+ 	ca0132_exit_chip(codec);
+@@ -4794,6 +4809,7 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	if (!spec)
+ 		return -ENOMEM;
+ 	codec->spec = spec;
++	spec->codec = codec;
  
-@@ -2834,8 +2869,22 @@ static int ca0132_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
- }
+ 	spec->num_mixers = 1;
+ 	spec->mixers[0] = ca0132_mixer;
+@@ -4804,6 +4820,8 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	spec->init_verbs[1] = ca0132_init_verbs1;
+ 	spec->num_init_verbs = 2;
  
- /*
-- * Analog capture
-+ * PCM capture
-  */
++	INIT_DELAYED_WORK(&spec->unsol_hp_work, ca0132_unsol_hp_delayed);
 +
-+static unsigned int ca0132_get_capture_latency(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int latency = DSP_CAPTURE_INIT_LATENCY;
-+
-+	if (!dspload_is_loaded(codec))
-+		return 0;
-+
-+	if (spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID])
-+		latency += DSP_CRYSTAL_VOICE_LATENCY;
-+	return latency;
-+}
-+
- static int ca0132_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
- 					struct hda_codec *codec,
- 					unsigned int stream_tag,
-@@ -2843,9 +2892,16 @@ static int ca0132_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
- 					struct snd_pcm_substream *substream)
- {
- 	struct ca0132_spec *spec = codec->spec;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	unsigned int latency = ca0132_get_capture_latency(codec);
+ 	ca0132_init_chip(codec);
  
--	ca0132_setup_stream(codec, spec->adcs[substream->number],
--			    stream_tag, 0, format);
-+	if (spec->dsp_state == DSP_DOWNLOADING)
-+		return 0;
-+
-+	runtime->delay = bytes_to_frames(runtime, (latency * runtime->rate *
-+					runtime->byte_align) / 1000);
-+
-+	ca0132_setup_stream(codec, hinfo->nid, stream_tag, 0, format);
- 
- 	return 0;
- }
-@@ -3429,6 +3485,33 @@ static int ca0132_voicefx_set(struct hda_codec *codec, int enable)
- 	return 1;
- }
- 
-+static void ca0132_update_latency(struct hda_codec *codec,
-+				  unsigned int direction)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int latency;
-+	struct snd_pcm_substream *substr;
-+	struct snd_pcm_runtime *runtime;
-+
-+	if (spec->dsp_state == DSP_DOWNLOADING)
-+		return;
-+
-+	latency = (direction == SNDRV_PCM_STREAM_PLAYBACK)
-+			? ca0132_get_playback_latency(codec)
-+			: ca0132_get_capture_latency(codec);
-+
-+	substr = codec->pcm_info->pcm->streams[direction].substream;
-+	while (substr) {
-+		runtime = substr->runtime;
-+		/* update latency only when frame_bits is set */
-+		if (runtime && runtime->frame_bits)
-+			runtime->delay = bytes_to_frames(runtime,
-+					(latency * runtime->rate *
-+					runtime->byte_align) / 1000);
-+		substr = substr->next;
-+	}
-+}
-+
- /*
-  * Set the effects parameters
-  */
-@@ -3468,6 +3551,9 @@ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val)
- 	err = dspio_set_uint_param(codec, ca0132_effects[idx].mid,
- 				   ca0132_effects[idx].reqs[0], on);
- 
-+	ca0132_update_latency(codec, SNDRV_PCM_STREAM_PLAYBACK);
-+	ca0132_update_latency(codec, SNDRV_PCM_STREAM_CAPTURE);
-+
- 	if (err < 0)
- 		return 0; /* no changed */
- 
+ 	ca0132_config(codec);
 -- 
 1.7.4.1
