@@ -1,8 +1,8 @@
 From: Ian Minett <ian_minett@creativelabs.com>
-Subject: [PATCH 1/4] ALSA: CA0132: Add SpeakerEQ feature
-	firmware loading
-Date: Fri, 8 Feb 2013 18:31:42 -0800
-Message-ID: <1360377105-2480-2-git-send-email-ian_minett@creativelabs.com>
+Subject: [PATCH 2/4] ALSA: CA0132: Improve the DSP transfer
+	timeout calculations
+Date: Fri, 8 Feb 2013 18:31:43 -0800
+Message-ID: <1360377105-2480-3-git-send-email-ian_minett@creativelabs.com>
 References: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,116 +24,127 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ian Minett <ian_minett@creativelabs.com>
 
-Use request_firmware() to fetch an image containing EQ data. 
-This is then loaded onto the DSP chip for use by the SpeakerEQ effect.
-The DSP will carry on as normal without the EQ settings in the event that 
-the SpeakerEQ f/w is missing or fails to load.
+Base the DSP firmware transfer and communication timeouts on jiffy values.
 
 Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 639a282..a4b61a9 100644
+index a4b61a9..b52f00c 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -73,9 +73,11 @@
- #define SCP_SET    0
- #define SCP_GET    1
- 
-+#define SPEQ_FILE  "ctspeq.bin"
- #define EFX_FILE   "ctefx.bin"
- 
- #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
-+MODULE_FIRMWARE(SPEQ_FILE);
- MODULE_FIRMWARE(EFX_FILE);
- #endif
- 
-@@ -2516,6 +2518,42 @@ exit:
- 	return status;
- }
- 
-+/**
-+ * Write the SpeakerEQ coefficient data to DSP memories
-+ *
-+ * @codec: the HDA codec
-+ * @x,y:   location to write x and y coeff data to
-+ *
-+ * Returns zero or a negative error code.
-+ */
-+static int dspload_get_speakereq_addx(struct hda_codec *codec,
-+				unsigned int *x,
-+				unsigned int *y)
-+{
-+	int status = 0;
-+	struct { unsigned short y, x; } speakereq_info;
-+	unsigned int size = sizeof(speakereq_info);
-+
-+	snd_printdd(KERN_INFO "dspload_get_speakereq_addx() -- begin");
-+	status = dspio_scp(codec, MASTERCONTROL,
-+			MASTERCONTROL_QUERY_SPEAKER_EQ_ADDRESS,
-+			SCP_GET, NULL, 0, &speakereq_info, &size);
-+
-+	if (status < 0) {
-+		snd_printdd(KERN_INFO "dspload_get_speakereq_addx: SCP Failed");
-+		return -EIO;
-+	}
-+
-+	*x = speakereq_info.x;
-+	*y = speakereq_info.y;
-+	snd_printdd(KERN_INFO "dspload_get_speakereq_addx: X=0x%x Y=0x%x\n",
-+		    *x, *y);
-+
-+	snd_printdd(KERN_INFO "dspload_get_speakereq_addx() -- complete");
-+
-+	return status;
-+}
-+
- /*
-  * CA0132 DSP download stuffs.
-  */
-@@ -2602,6 +2640,35 @@ static int dspload_image(struct hda_codec *codec,
- 	return status;
- }
- 
-+static int dspload_speakereq(struct hda_codec *codec)
-+{
-+	int status = 0;
-+	const struct dsp_image_seg *image;
-+	unsigned int x, y;
-+	const struct firmware *fw_speq;
-+
-+	snd_printdd(KERN_INFO "dspload_speakereq() -- begin");
-+
-+	if (request_firmware(&fw_speq, SPEQ_FILE,
-+			     codec->bus->card->dev) != 0)
-+		return -EIO;
-+
-+	image = (struct dsp_image_seg *)(fw_speq->data);
-+
-+	status = dspload_get_speakereq_addx(codec, &x, &y);
-+	if (status < 0)
-+		goto done;
-+
-+	status = dspload_image(codec, image, 1, y, 0, 8);
-+
-+done:
-+	release_firmware(fw_speq);
-+
-+	snd_printdd(KERN_INFO "dspload_speakereq() -- complete");
-+
-+	return status;
-+}
-+
- static bool dspload_is_loaded(struct hda_codec *codec)
+@@ -785,7 +785,7 @@ static int chipio_send(struct hda_codec *codec,
+ 		       unsigned int data)
  {
- 	unsigned int data = 0;
-@@ -4335,6 +4402,8 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	unsigned int res;
+-	int retry = 50;
++	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
  
- 	release_firmware(fw_entry);
- 
-+	if (dsp_loaded)
-+		dspload_speakereq(codec);
- 
- 	return dsp_loaded;
+ 	/* send bits of data specified by reg */
+ 	do {
+@@ -793,7 +793,9 @@ static int chipio_send(struct hda_codec *codec,
+ 					 reg, data);
+ 		if (res == VENDOR_STATUS_CHIPIO_OK)
+ 			return 0;
+-	} while (--retry);
++		msleep(20);
++	} while (time_before(jiffies, timeout));
++
+ 	return -EIO;
  }
+ 
+@@ -1059,14 +1061,15 @@ static int dspio_send(struct hda_codec *codec, unsigned int reg,
+ 		      unsigned int data)
+ {
+ 	int res;
+-	int retry = 50;
++	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
+ 
+ 	/* send bits of data specified by reg to dsp */
+ 	do {
+ 		res = snd_hda_codec_read(codec, WIDGET_DSP_CTRL, 0, reg, data);
+ 		if ((res >= 0) && (res != VENDOR_STATUS_DSPIO_BUSY))
+ 			return res;
+-	} while (--retry);
++		msleep(20);
++	} while (time_before(jiffies, timeout));
+ 
+ 	return -EIO;
+ }
+@@ -1298,7 +1301,6 @@ static int dspio_send_scp_message(struct hda_codec *codec,
+ 				  unsigned int *bytes_returned)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	int retry;
+ 	int status = -1;
+ 	unsigned int scp_send_size = 0;
+ 	unsigned int total_size;
+@@ -1345,13 +1347,13 @@ static int dspio_send_scp_message(struct hda_codec *codec,
+ 	}
+ 
+ 	if (waiting_for_resp) {
++		unsigned long timeout = jiffies + msecs_to_jiffies(1000);
+ 		memset(return_buf, 0, return_buf_size);
+-		retry = 50;
+ 		do {
+ 			msleep(20);
+-		} while (spec->wait_scp && (--retry != 0));
++		} while (spec->wait_scp && time_before(jiffies, timeout));
+ 		waiting_for_resp = false;
+-		if (retry != 0) {
++		if (!spec->wait_scp) {
+ 			ret_msg = (struct scp_msg *)return_buf;
+ 			memcpy(&ret_msg->hdr, &spec->scp_resp_header, 4);
+ 			memcpy(&ret_msg->data, spec->scp_resp_data,
+@@ -2244,7 +2246,8 @@ static int dspxfr_one_seg(struct hda_codec *codec,
+ 	u32 chip_addx_remainder;
+ 	unsigned int run_size_words;
+ 	const struct dsp_image_seg *hci_write = NULL;
+-	int retry;
++	unsigned long timeout;
++	bool dma_active;
+ 
+ 	if (fls == NULL)
+ 		return -EINVAL;
+@@ -2362,11 +2365,17 @@ static int dspxfr_one_seg(struct hda_codec *codec,
+ 			status = dspxfr_hci_write(codec, hci_write);
+ 			hci_write = NULL;
+ 		}
+-		retry = 5000;
+-		while (dsp_is_dma_active(codec, dma_chan)) {
+-			if (--retry <= 0)
++
++		timeout = jiffies + msecs_to_jiffies(2000);
++		do {
++			dma_active = dsp_is_dma_active(codec, dma_chan);
++			if (!dma_active)
+ 				break;
+-		}
++			msleep(20);
++		} while (time_before(jiffies, timeout));
++		if (dma_active)
++			break;
++
+ 		snd_printdd(KERN_INFO "+++++ DMA complete");
+ 		dma_set_state(dma_engine, DMA_STATE_STOP);
+ 		dma_reset(dma_engine);
+@@ -2683,15 +2692,15 @@ static bool dspload_is_loaded(struct hda_codec *codec)
+ 
+ static bool dspload_wait_loaded(struct hda_codec *codec)
+ {
+-	int retry = 100;
++	unsigned long timeout = jiffies + msecs_to_jiffies(2000);
+ 
+ 	do {
+-		msleep(20);
+ 		if (dspload_is_loaded(codec)) {
+ 			pr_info("ca0132 DOWNLOAD OK :-) DSP IS RUNNING.\n");
+ 			return true;
+ 		}
+-	} while (--retry);
++		msleep(20);
++	} while (time_before(jiffies, timeout));
+ 
+ 	pr_err("ca0132 DOWNLOAD FAILED!!! DSP IS NOT RUNNING.\n");
+ 	return false;
 -- 
 1.7.4.1
