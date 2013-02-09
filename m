@@ -1,35 +1,39 @@
-From: James Ralston <james.d.ralston@intel.com>
-Subject: [PATCH 2/5] hda_intel: Add Device IDs for Intel Wellsburg PCH
-Date: Fri,  8 Feb 2013 17:29:40 -0800
-Message-ID: <1360373380-2016-1-git-send-email-james.d.ralston@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Seth Heasley <seth.heasley@intel.com>, James Ralston <james.d.ralston@intel.com>
+From: Ian Minett <ian_minett@creativelabs.com>
+Subject: [PATCH 0/4] ALSA: Updates for the CA0132 codec
+Date: Fri, 8 Feb 2013 18:31:41 -0800
+Message-ID: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the HD Audio Device IDs for the Intel Wellsburg PCH
+From: Ian Minett <ian_minett@creativelabs.com>
 
-Signed-off-by: James Ralston <james.d.ralston@intel.com>
----
- sound/pci/hda/hda_intel.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+Hi,
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c78286f..3218f4a 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -3611,6 +3611,11 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	/* Lynx Point */
- 	{ PCI_DEVICE(0x8086, 0x8c20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	/* Wellsburg */
-+	{ PCI_DEVICE(0x8086, 0x8d20),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE(0x8086, 0x8d21),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
- 	/* Lynx Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9c20),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
--- 
-1.7.7.6
+This series contains the following updates to CA0132:
+
+1: Add firmware loading for the SpeakerEQ DSP effect.
+2: Improve DSP transfer timeout calculations.
+3: Add stream and effect latency monitoring routines 
+4: Update hp unsolicited event handler to manage queued work.
+
+These were based on the latest sound.git, but please let me know if 
+they should be against sound-unstable tree instead.
+
+Thanks very much,
+- Ian
+
+Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
