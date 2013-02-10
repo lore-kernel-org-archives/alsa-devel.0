@@ -1,14 +1,14 @@
 From: Antonio Ospite <ao2@amarulasolutions.com>
 Subject: [PATCH] Add M2Tech hiFace USB-SPDIF driver
-Date: Mon, 11 Feb 2013 00:11:27 +0100
-Message-ID: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
+Date: Mon, 11 Feb 2013 00:06:49 +0100
+Message-ID: <1360537610-9188-1-git-send-email-ao2@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DBAA26030A
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 00:11:45 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 31989260314
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 00:27:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
