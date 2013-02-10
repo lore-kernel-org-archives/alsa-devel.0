@@ -1,17 +1,14 @@
-From: wendelin klimann <wklimann@gmail.com>
-Subject: ASoC: BeagleBoard driver development (PCM3168)
-Date: Sun, 10 Feb 2013 22:50:37 +0100
-Message-ID: <CAGxc5aCJisVLrC09YsWAoh3U9_kKGKwFqiK4KM-u7JZ7SpW58w@mail.gmail.com>
+From: Antonio Ospite <ao2@amarulasolutions.com>
+Subject: [PATCH] Add M2Tech hiFace USB-SPDIF driver
+Date: Mon, 11 Feb 2013 00:11:27 +0100
+Message-ID: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
- [209.85.215.43])
- by alsa0.perex.cz (Postfix) with ESMTP id E752A260307
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 22:50:37 +0100 (CET)
-Received: by mail-la0-f43.google.com with SMTP id ek20so5201688lab.2
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 13:50:37 -0800 (PST)
+Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DBAA26030A
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 00:11:45 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,514 +19,1203 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-hello
-
-I try to implement an PCM3168 audio codec from TI to the BeagleBoard but
-actually i am stuck and it would be rally nice if one could help me a
-little bit.
-My ALSA driver version is 1.0.24 and i use an 3.2.18 kernel.
-As a startingpoint i used the files
-
-*/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3008.c*
-*/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3008.h*
-
-
-The files                   (see end of e-mail)
-
-*/linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
-/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.c
-/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.h*
-
-could be compiled successfully and also the insmod loads the modules
-
-*$: insmod
-/lib/modules/3.2.18/kernel/sound/soc/omap/snd-soc-pcm3168_soundcard.ko*
-
-*$: lsmod*
-Module                  Size  Used by
-snd_soc_pcm3168         1886  0
-snd_soc_pcm3168_soundcard     2094  0
-twl4
-030_madc_hwmon      2569  0
-snd_soc_omap3beagle     2239  0
-rtc_twl                 4382  0
-snd_soc_twl4030        37616  1
-rtc_ds1307              6642  0
-snd_soc_omap            3521  1
-snd_soc_omap_mcbsp      8374  1
-snd_soc_core          107346  6
-snd_soc_pcm3168,snd_soc_pcm3168_soundcard,snd_soc_omap3beagle,snd_soc_twl4030,snd_soc_omap,snd_soc_omap_mcbsp
-regmap_spi              1263  1 snd_soc_core
-snd_pcm                78039  4
-snd_soc_twl4030,snd_soc_omap,snd_soc_omap_mcbsp,snd_soc_core
-snd_timer              18848  1 snd_pcm
-snd                    57930  3 snd_soc_core,snd_pcm,snd_timer
-soundcore               6954  1 snd
-iptable_nat             3819  0
-snd_page_alloc          4979  1 snd_pcm
-nf_nat                 16515  1 iptable_nat
-nf_conntrack_ipv4      12018  3 iptable_nat,nf_nat
-nf_conntrack           71219  3 iptable_nat,nf_nat,nf_conntrack_ipv4
-nf_defrag_ipv4          1379  1 nf_conntrack_ipv4
-ip_tables              10537  1 iptable_nat
-x_tables               16505  2 iptable_nat,ip_tables
-gpio_keys               7117  0
-autofs4                20492  2
-
-but the new ALSA device is not recognized
-
-*$:aplay -l*
-**** List of PLAYBACK Hardware Devices ****
-card 0: omap3beagle [omap3beagle], device 0: TWL4030 twl4030-hifi-0 []
-  Subdevices
-: 1/1
-  Subdevice #0: subdevice #0
-
-So i tried to get some information in
-
-*$: cd /sys/kernel/debug/asoc*
-
-*/sys/kernel/debug/asoc$: ls*
-codecs       dais         omap3beagle  pcm3168      platforms
-
-*/sys/kernel/debug/asoc$: cat codecs*
-pcm3168-codec.0
-twl4030-codec
-
-*/sys/kernel/debug/asoc$: cat dais*
-pcm3168-hifi
-twl4030-voice
-twl4030-hifi
-omap-mcbsp-dai.4
-omap-mcbsp-dai.3
-omap-mcbsp-dai.2
-omap-mcbsp-dai.1
-omap-mcbsp-dai.0
-
-*/sys/kernel/debug/asoc$: cat platforms*
-omap-pcm-audio
-snd-soc-dummy
-
-*/sys/kernel/debug/asoc$:cd omap3beagle*
-
-*/sys/kernel/debug/asoc/omap3beagle$:ls*
-dapm           dapm_pop_time  twl4030-codec
-
-*/sys/kernel/debug/asoc/omap3beagle$:cd /sys/kernel/debug/asoc/pcm3168*
-
-*/sys/kernel/debug/asoc/pcm3168$: ls*
-dapm_pop_time
-
-
-At this point i have no idea how to solve the problem or how to debug
-further and i would be very grateful for any hint.
-
-Thanks a lot
-Wendelin
-
-
-
-
-*
-***********************************************************************************************
-*
-/linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
-*
-**
-***********************************************************************************************
-
-*/*
- * PCM3168 ASoC driver for BeagleBoard.
- *
- * Author:    Hugo Villeneuve
- * Copyright (C) 2008 Lyrtech inc
- *
- * adapted by Klimann Wendelin <wklimann@hotmail.com>
- *
- *
- * Based on ASoC driver for TI DAVINCI EVM platform, original copyright
-follow:
- * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- */
-
-#include <linux/clk.h>
-#include <linux/platform_device.h>
-#include <linux/module.h>
-#include <linux/moduleparam.h>
-#include <linux/timer.h>
-#include <linux/interrupt.h>
-#include <linux/platform_device.h>
-#include <linux/gpio.h>
-#include <sound/core.h>
-#include <sound/pcm.h>
-#include <sound/pcm_params.h>
-#include <sound/soc.h>
-#include <sound/soc-dapm.h>
-
-#include <asm/mach-types.h>
-//#include <asm/dma.h>
-#include <mach/hardware.h>
-#include <mach/gpio.h>
-//#include <mach/edma.h>
-#include <plat/mcbsp.h>
-
-#include "omap-mcbsp.h"
-#include "omap-pcm.h"
-
-#include "../codecs/pcm3168.h"
-
-/*
- * CLKX and CLKR are the inputs for the Sample Rate Generator.
- * FSX and FSR are outputs, driven by the sample Rate Generator.
- */
-/*
- * SND_SOC_DAIFMT_CBS_CFS
- * for codec in slave mode
- */
-#define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B |    \
-              SND_SOC_DAIFMT_CBM_CFM |    \
-              SND_SOC_DAIFMT_IB_NF)
-
-static int pcm3168_hw_params(struct snd_pcm_substream *substream,
-                struct snd_pcm_hw_params *params)
-{
-    struct snd_soc_pcm_runtime *rtd = substream->private_data;
-    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-    int fs;
-    int ret = 0;
-
-
-printk("in hw_params -> by kli");
-
-
-    /* Fsref can be 8000 to 96000. */
-    fs = params_rate(params);
-
-    /* set cpu DAI configuration */
-    ret = snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
-    if (ret < 0) {
-        printk(KERN_ERR "can't set cpu DAI configuration\n");
-        return ret;
-    }
-
-    pr_debug("pcm3168_hw_params: rate = %d Hz\n", fs);
-
-    return 0;
-}
-
-static struct snd_soc_ops pcm3168_ops = {
-    .hw_params = pcm3168_hw_params,
-};
-
-/* omap-pcm3168 digital audio interface glue - connects codec <--> CPU */
-static struct snd_soc_dai_link pcm3168_dai = {
-    .name = "PCM3168",  /* Codec name */
-    .stream_name = "PCM3168",
-    .cpu_dai_name = "omap-mcbsp-dai.2",
-    .codec_dai_name = "pcm3168-hifi",
-    .codec_name = "pcm3168-codec",
-    .platform_name = "omap-pcm-audio",
-    .ops = &pcm3168_ops,
-};
-
-/* omap-pcm3168 audio machine driver */
-static struct snd_soc_card snd_soc_pcm3168 = {
-    .name = "pcm3168",                      // -> "OMAP pcm3168"
-    .owner = THIS_MODULE,
-    .dai_link = &pcm3168_dai,
-    .num_links = 1,
-};
-
-/* pcm3168 audio private data */
-static struct pcm3168_setup_data pcm3168_pcm3168_setup = {
-//    .dem0_pin = GPIO(45),
-//    .dem1_pin = GPIO(46),
-//    .pdad_pin = GPIO(47),
-//    .pdda_pin = GPIO(38),
-};
-
-struct platform_device pcm3168_codec = {
-        .name = "pcm3168-codec",
-        .id = 0,
-        .dev = {
-                .platform_data = &pcm3168_pcm3168_setup,
-        },
-};
-
-
-
-static struct platform_device *pcm3168_snd_device;
-
-static int __init pcm3168_init(void)
-{
-    int ret;
-
-printk(KERN_ALERT "in init soundcard \n");
-
-    if (!(machine_is_omap3_beagle()))
-        return -ENODEV;
-
-    platform_device_register(&pcm3168_codec);
-
-    pcm3168_snd_device = platform_device_alloc("soc-audio", 0);
-    if (!pcm3168_snd_device) {
-        printk(KERN_ERR "platform device allocation failed\n");
-        return -ENOMEM;
-    }
-
-    platform_set_drvdata(pcm3168_snd_device, &snd_soc_pcm3168);
-//    platform_device_add_data(pcm3168_snd_device, &pcm3168_snd_data,
-//                 sizeof(pcm3168_snd_data));
-
-/*    ret = platform_device_add_resources(pcm3168_snd_device,
-                        pcm3168_snd_resources,
-                        ARRAY_SIZE(pcm3168_snd_resources));
-    if (ret) {
-        printk(KERN_ERR "platform device add resources failed\n");
-        goto error;
-    }
-*/
-    ret = platform_device_add(pcm3168_snd_device);
-    if (ret)
-        goto error;
-
-    return ret;
-
-error:
-    platform_device_put(pcm3168_snd_device);
-    return ret;
-}
-
-static void __exit pcm3168_exit(void)
-{
-    platform_device_unregister(pcm3168_snd_device);
-    platform_device_unregister(&pcm3168_codec);
-}
-
-module_init(pcm3168_init);
-module_exit(pcm3168_exit);
-
-MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
-MODULE_DESCRIPTION("PCM3168 Beagle ASoC driver");
-MODULE_LICENSE("GPL");
-MODULE_ALIAS("platform:pcm3168-soc-audio");
-
-
-
-
-*
-***********************************************************************************************
-*
-/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.c
-   *
-**
-***********************************************************************************************
-
-*/*
- * ALSA Soc PCM3168 codec support
- *
- * Author:    Hugo Villeneuve
- * Copyright (C) 2008 Lyrtech inc
- *
- * adapted by Klimann Wendelin
- *
- *
- * Based on AC97 Soc codec, original copyright follow:
- * Copyright 2005 Wolfson Microelectronics PLC.
- *
- *  This program is free software; you can redistribute  it and/or modify it
- *  under  the terms of  the GNU General  Public License as published by the
- *  Free Software Foundation;  either version 2 of the  License, or (at your
- *  option) any later version.
- *
- * Generic PCM3168 support.
- */
-
-#include <linux/init.h>
-#include <linux/kernel.h>
-#include <linux/device.h>
-#include <linux/gpio.h>
-#include <linux/slab.h>
-#include <linux/module.h>
-#include <linux/clk.h>
-#include <linux/platform_device.h>
-#include <linux/module.h>
-#include <sound/core.h>
-#include <sound/initval.h>
-#include <sound/pcm.h>
-#include <sound/pcm_params.h>
-//#include <sound/soc-dapm.h>
-#include <sound/soc.h>
-
-#include <asm/mach-types.h>
-#include <mach/hardware.h>
-#include <mach/gpio.h>
-#include <plat/mcbsp.h>
-
-#include "../omap/omap-mcbsp.h"
-#include "../omap/omap-pcm.h"
-
-#include "pcm3168.h"
-
-
-
-#define PCM3168_VERSION "0.1"
-
-#define PCM3168_RATES   SNDRV_PCM_RATE_8000_96000 /*(SNDRV_PCM_RATE_32000 |
-SNDRV_PCM_RATE_44100 |    \
-               SNDRV_PCM_RATE_48000)*/
-
-static struct snd_soc_dai_driver pcm3168_dai = {
-
-    .name = "pcm3168-hifi",
-    .playback = {
-        .stream_name = "PCM3168 Playback",
-        .channels_min = 2,
-        .channels_max = 8,
-        .rates = PCM3168_RATES,
-        .formats = SNDRV_PCM_FMTBIT_S16_LE, //SNDRV_PCM_FMTBIT_S32_LE
-    },
-    .capture = {
-        .stream_name = "PCM3168 Capture",
-        .channels_min = 2,
-        .channels_max = 6,
-        .rates = PCM3168_RATES,
-        .formats = SNDRV_PCM_FMTBIT_S16_LE, //SNDRV_PCM_FMTBIT_S32_LE
-    },
-};
-
-static void pcm3168_gpio_free(struct pcm3168_setup_data *setup)
-{
-//    gpio_free(setup->dem0_pin);
-//    gpio_free(setup->dem1_pin);
-//    gpio_free(setup->pdad_pin);
-//    gpio_free(setup->pdda_pin);
-}
-
-static int pcm3168_soc_probe(struct snd_soc_codec *codec)
-{
-    struct pcm3168_setup_data *setup = codec->dev->platform_data;
-    int ret = 0;
-
-printk(KERN_ALERT "in SOC Probe -> kli \n");
-
-    printk(KERN_INFO "PCM3168 SoC Audio Codec %s\n", PCM3168_VERSION);
-
-    return ret;
-
-gpio_err:
-//    pcm3168_gpio_free(setup);
-
-    return ret;
-}
-
-static int pcm3168_soc_remove(struct snd_soc_codec *codec)
-{
-    struct pcm3168_setup_data *setup = codec->dev->platform_data;
-
-//    pcm3168_gpio_free(setup);
-    return 0;
-}
-
-
-#define pcm3168_soc_suspend NULL
-#define pcm3168_soc_resume NULL
-
-
-static struct snd_soc_codec_driver soc_codec_dev_pcm3168 = {
-    .probe =     pcm3168_soc_probe,
-    .remove =     pcm3168_soc_remove,
-    .suspend =    pcm3168_soc_suspend,
-    .resume =    pcm3168_soc_resume,
-};
-
-static int __devinit pcm3168_codec_probe(struct platform_device *pdev)
-{
-    int ret;
-    printk(KERN_ALERT "probe pcm3168 -> kli \n");
-
-    ret = snd_soc_register_codec(&pdev->dev,
-            &soc_codec_dev_pcm3168, &pcm3168_dai, 1);
-
-    printk(KERN_ALERT "probe_after pcm3168 -> kli = %d \n", ret);
-
-    return ret;
-}
-
-static int __devexit pcm3168_codec_remove(struct platform_device *pdev)
-{
-    printk(KERN_ALERT "remove pcm3168 -> kli \n");
-
-    snd_soc_unregister_codec(&pdev->dev);
-    return 0;
-}
-
-MODULE_ALIAS("platform:pcm3168-codec");
-
-static struct platform_driver pcm3168_codec_driver = {
-    .probe        = pcm3168_codec_probe,
-    .remove        = __devexit_p(pcm3168_codec_remove),
-    .driver        = {
-    .name        = "pcm3168-codec",
-    .owner        = THIS_MODULE,
-    },
-};
-
-static int __init pcm3168_modinit(void)
-{
-    printk(KERN_ALERT "in init of 3168 -> kli \n");
-    return platform_driver_register(&pcm3168_codec_driver);
-}
-module_init(pcm3168_modinit);
-
-static void __exit pcm3168_exit(void)
-{
-    printk(KERN_ALERT "in exit of 3168 -> kli \n");
-    platform_driver_unregister(&pcm3168_codec_driver);
-}
-module_exit(pcm3168_exit);
-
-MODULE_DESCRIPTION("Soc PCM3168 driver");
-MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
-MODULE_LICENSE("GPL");
-
-
-*
-***********************************************************************************************
-*
-/linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.h
-    *
-***********************************************************************************************
-*
-
-/*
- * PCM3168 ALSA SoC Layer
- *
- * Author:    Hugo Villeneuve
- * Copyright (C) 2008 Lyrtech inc
- *
- * adapted by Klimann Wendelin <wklimann@hotmail.com>
- *
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- */
-
-#ifndef __LINUX_SND_SOC_PCM3168_2_H
-#define __LINUX_SND_SOC_PCM3168_2_H
-
-struct pcm3168_setup_data {
-//    unsigned dem0_pin;
-//    unsigned dem1_pin;
-//    unsigned pdad_pin;
-//    unsigned pdda_pin;
-};
-
-#endif
+Add driver for M2Tech hiFace USB-SPDIF interface and compatible devices.
+
+The supported products are:
+
+  * M2Tech Young
+  * M2Tech hiFace
+  * M2Tech North Star
+  * M2Tech W4S Young
+  * M2Tech Corrson
+  * M2Tech AUDIA
+  * M2Tech SL Audio
+  * M2Tech Empirical
+  * M2Tech Rockna
+  * M2Tech Pathos
+  * M2Tech Metronome
+  * M2Tech CAD
+  * M2Tech Audio Esclusive
+  * M2Tech Rotel
+  * M2Tech Eeaudio
+  * The Chord Company CHORD
+  * AVA Group A/S Vitus
+
+Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
+---
+
+Hi,
+
+this is my first ALSA driver I still have some doubts and I marked them in the
+comments below with a XXX prefix, could someone please take a look at them?
+
+I plan on submitting a version 2 of the driver after I get some feedback,
+especially on those doubts.
+
+I also noticed that many drivers under sound/usb/ have text in the Kconfig
+entry stating "Say Y here to include support for ..." but I only see "[N/m/?]"
+as options when I run "make oldconfig" maybe because of some dependency, I am
+not sure, should such text be removed in order to avoid confusion?
+
+Thanks,
+   Antonio
+
+ sound/usb/Kconfig         |   33 +++
+ sound/usb/Makefile        |    2 +-
+ sound/usb/hiface/Makefile |    2 +
+ sound/usb/hiface/chip.c   |  331 ++++++++++++++++++++++
+ sound/usb/hiface/chip.h   |   34 +++
+ sound/usb/hiface/pcm.c    |  666 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/hiface/pcm.h    |   24 ++
+ 7 files changed, 1091 insertions(+), 1 deletion(-)
+ create mode 100644 sound/usb/hiface/Makefile
+ create mode 100644 sound/usb/hiface/chip.c
+ create mode 100644 sound/usb/hiface/chip.h
+ create mode 100644 sound/usb/hiface/pcm.c
+ create mode 100644 sound/usb/hiface/pcm.h
+
+diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+index 225dfd7..2b206e8 100644
+--- a/sound/usb/Kconfig
++++ b/sound/usb/Kconfig
+@@ -115,5 +115,38 @@ config SND_USB_6FIRE
+           and further help can be found at
+           http://sixfireusb.sourceforge.net
+ 
++config SND_USB_HIFACE
++        tristate "M2Tech hiFace USB-SPDIF driver"
++        select SND_PCM
++        help
++	  Say Y here to include support for M2Tech hiFace USB-SPDIF interface.
++
++	  M2Tech hiFace and compatible devices offer a Hi-End S/PDIF Output
++	  Interface, see http://www.m2tech.biz/hiface.html
++
++	  This driver supports the original M2Tech hiFace and some other
++	  compatible devices. The supported products are:
++
++	    * M2Tech Young
++	    * M2Tech hiFace
++	    * M2Tech North Star
++	    * M2Tech W4S Young
++	    * M2Tech Corrson
++	    * M2Tech AUDIA
++	    * M2Tech SL Audio
++	    * M2Tech Empirical
++	    * M2Tech Rockna
++	    * M2Tech Pathos
++	    * M2Tech Metronome
++	    * M2Tech CAD
++	    * M2Tech Audio Esclusive
++	    * M2Tech Rotel
++	    * M2Tech Eeaudio
++	    * The Chord Company CHORD
++	    * AVA Group A/S Vitus
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-usb-hiface.
++
+ endif	# SND_USB
+ 
+diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+index ac256dc..abe668f 100644
+--- a/sound/usb/Makefile
++++ b/sound/usb/Makefile
+@@ -23,4 +23,4 @@ obj-$(CONFIG_SND_USB_UA101) += snd-usbmidi-lib.o
+ obj-$(CONFIG_SND_USB_USX2Y) += snd-usbmidi-lib.o
+ obj-$(CONFIG_SND_USB_US122L) += snd-usbmidi-lib.o
+ 
+-obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/
++obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/
+diff --git a/sound/usb/hiface/Makefile b/sound/usb/hiface/Makefile
+new file mode 100644
+index 0000000..463b136
+--- /dev/null
++++ b/sound/usb/hiface/Makefile
+@@ -0,0 +1,2 @@
++snd-usb-hiface-objs := chip.o pcm.o
++obj-$(CONFIG_SND_USB_HIFACE) += snd-usb-hiface.o
+diff --git a/sound/usb/hiface/chip.c b/sound/usb/hiface/chip.c
+new file mode 100644
+index 0000000..dce74e9
+--- /dev/null
++++ b/sound/usb/hiface/chip.c
+@@ -0,0 +1,331 @@
++/*
++ * Linux driver for M2Tech HiFace compatible devices
++ *
++ * Copyright 2012-2013 (C) M2TECH S.r.l and Amarula Solutions B.V.
++ *
++ * Authors:  Michael Trimarchi <michael@amarulasolutions.com>
++ *           Antonio Ospite <ao2@amarulasolutions.com>
++ *
++ * The driver is based on the work done in TerraTec DMX 6Fire USB
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <sound/initval.h>
++
++#include "chip.h"
++#include "pcm.h"
++
++MODULE_AUTHOR("Michael Trimarchi <michael@amarulasolutions.com>");
++MODULE_AUTHOR("Antonio Ospite <ao2@amarulasolutions.com>");
++MODULE_DESCRIPTION("M2Tech HiFace USB audio driver");
++MODULE_LICENSE("GPL v2");
++MODULE_SUPPORTED_DEVICE("{{HiFace, Evo}}");
++
++static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
++static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for card */
++static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable this card */
++
++#define DRIVER_NAME "snd-usb-hiface"
++#define CARD_NAME "HiFace"
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard.");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string for " CARD_NAME " soundcard.");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "Enable " CARD_NAME " soundcard.");
++
++static struct hiface_chip *chips[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
++
++static DEFINE_MUTEX(register_mutex);
++
++struct hiface_vendor_quirk {
++	const char *device_name;
++	u8 extra_freq;
++};
++
++static int hiface_dev_free(struct snd_device *device)
++{
++	struct hiface_chip *chip = device->device_data;
++	kfree(chip);
++	return 0;
++}
++
++static int hiface_chip_create(struct usb_device *device, int idx,
++			      const struct hiface_vendor_quirk *quirk,
++			      struct hiface_chip **rchip)
++{
++	struct snd_card *card = NULL;
++	struct hiface_chip *chip;
++	int ret;
++	static struct snd_device_ops ops = {
++		.dev_free =	hiface_dev_free,
++	};
++
++	*rchip = NULL;
++
++	/* if we are here, card can be registered in alsa. */
++	ret = snd_card_create(index[idx], id[idx], THIS_MODULE, 0, &card);
++	if (ret < 0) {
++		snd_printk(KERN_ERR "cannot create alsa card.\n");
++		return ret;
++	}
++
++	strcpy(card->driver, DRIVER_NAME);
++
++	if (quirk && quirk->device_name)
++		strcpy(card->shortname, quirk->device_name);
++	else
++		strcpy(card->shortname, "M2Tech generic audio");
++
++	sprintf(card->longname, "%s at %d:%d", card->shortname,
++			device->bus->busnum, device->devnum);
++
++	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++	if (!chip) {
++		snd_card_free(card);
++		return -ENOMEM;
++	}
++
++	chip->dev = device;
++	chip->index = idx;
++	chip->card = card;
++
++	ret = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (ret < 0) {
++			kfree(chip);
++			snd_card_free(card);
++			return ret;
++	}
++
++	*rchip = chip;
++	return 0;
++}
++
++static int hiface_chip_probe(struct usb_interface *intf,
++			     const struct usb_device_id *usb_id)
++{
++	const struct hiface_vendor_quirk *quirk = (struct hiface_vendor_quirk *)usb_id->driver_info;
++	int ret;
++	int i;
++	struct hiface_chip *chip;
++	struct usb_device *device = interface_to_usbdev(intf);
++
++	pr_info("Probe " DRIVER_NAME " driver.\n");
++
++	ret = usb_set_interface(device, 0, 0);
++	if (ret != 0) {
++		snd_printk(KERN_ERR "can't set first interface for " CARD_NAME " device.\n");
++		return -EIO;
++	}
++
++	/* check whether the card is already registered */
++	chip = NULL;
++	mutex_lock(&register_mutex);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (chips[i] && chips[i]->dev == device) {
++			if (chips[i]->shutdown) {
++				snd_printk(KERN_ERR CARD_NAME " device is in the shutdown state, cannot create a card instance\n");
++				ret = -ENODEV;
++				goto err;
++			}
++			chip = chips[i];
++			break;
++		}
++	}
++	if (!chip) {
++		/* it's a fresh one.
++		 * now look for an empty slot and create a new card instance
++		 */
++		for (i = 0; i < SNDRV_CARDS; i++)
++			if (enable[i] && !chips[i]) {
++				ret = hiface_chip_create(device, i, quirk,
++							 &chip);
++				if (ret < 0)
++					goto err;
++
++				snd_card_set_dev(chip->card, &intf->dev);
++				break;
++			}
++		if (!chip) {
++			snd_printk(KERN_ERR "no available " CARD_NAME " audio device\n");
++			ret = -ENODEV;
++			goto err;
++		}
++	}
++
++	ret = hiface_pcm_init(chip, quirk ? quirk->extra_freq : 0);
++	if (ret < 0)
++		goto err_chip_destroy;
++
++	ret = snd_card_register(chip->card);
++	if (ret < 0) {
++		snd_printk(KERN_ERR "cannot register " CARD_NAME " card\n");
++		goto err_chip_destroy;
++	}
++
++	chips[chip->index] = chip;
++	chip->intf_count++;
++
++	mutex_unlock(&register_mutex);
++
++	usb_set_intfdata(intf, chip);
++	return 0;
++
++err_chip_destroy:
++	snd_card_free(chip->card);
++err:
++	mutex_unlock(&register_mutex);
++	return ret;
++}
++
++static void hiface_chip_disconnect(struct usb_interface *intf)
++{
++	struct hiface_chip *chip;
++	struct snd_card *card;
++
++	pr_debug("%s: called.\n", __func__);
++
++	chip = usb_get_intfdata(intf);
++	if (!chip)
++		return;
++
++	card = chip->card;
++	chip->intf_count--;
++	if (chip->intf_count <= 0) {
++		/* Make sure that the userspace cannot create new request */
++		snd_card_disconnect(card);
++
++		mutex_lock(&register_mutex);
++		chips[chip->index] = NULL;
++		mutex_unlock(&register_mutex);
++
++		chip->shutdown = true;
++		hiface_pcm_abort(chip);
++		snd_card_free_when_closed(card);
++	}
++}
++
++static struct usb_device_id device_table[] = {
++	{
++		USB_DEVICE(0x04b4, 0x0384),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Young",
++			.extra_freq = 1,
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x930b),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "hiFace",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x931b),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "North Star",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x931c),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "W4S Young",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x931d),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Corrson",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x931e),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "AUDIA",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x931f),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "SL Audio",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x9320),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Empirical",
++		}
++	},
++	{
++		USB_DEVICE(0x04b4, 0x9321),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Rockna",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x9001),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Pathos",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x9002),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Metronome",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x9006),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "CAD",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x9008),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Audio Esclusive",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x931c),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Rotel",
++		}
++	},
++	{
++		USB_DEVICE(0x249c, 0x932c),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Eeaudio",
++		}
++	},
++	{
++		USB_DEVICE(0x245f, 0x931c),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "CHORD",
++		}
++	},
++	{
++		USB_DEVICE(0x25c6, 0x9002),
++		.driver_info = (unsigned long)&(const struct hiface_vendor_quirk) {
++			.device_name = "Vitus",
++		}
++	},
++	{}
++};
++
++MODULE_DEVICE_TABLE(usb, device_table);
++
++static struct usb_driver hiface_usb_driver = {
++	.name = DRIVER_NAME,
++	.probe = hiface_chip_probe,
++	.disconnect = hiface_chip_disconnect,
++	.id_table = device_table,
++};
++
++module_usb_driver(hiface_usb_driver);
+diff --git a/sound/usb/hiface/chip.h b/sound/usb/hiface/chip.h
+new file mode 100644
+index 0000000..c2e9fda
+--- /dev/null
++++ b/sound/usb/hiface/chip.h
+@@ -0,0 +1,34 @@
++/*
++ * Linux driver for M2Tech HiFace compatible devices
++ *
++ * Copyright 2012-2013 (C) M2TECH S.r.l and Amarula Solutions B.V.
++ *
++ * Authors:  Michael Trimarchi <michael@amarulasolutions.com>
++ *           Antonio Ospite <ao2@amarulasolutions.com>
++ *
++ * The driver is based on the work done in TerraTec DMX 6Fire USB
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#ifndef HIFACE_CHIP_H
++#define HIFACE_CHIP_H
++
++#include <linux/usb.h>
++#include <sound/core.h>
++
++struct pcm_runtime;
++
++struct hiface_chip {
++	struct usb_device *dev;
++	struct snd_card *card;
++	int intf_count; /* number of registered interfaces */
++	int index; /* index in module parameter arrays */
++	bool shutdown;
++
++	struct pcm_runtime *pcm;
++};
++#endif /* HIFACE_CHIP_H */
+diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+new file mode 100644
+index 0000000..34fe0ed
+--- /dev/null
++++ b/sound/usb/hiface/pcm.c
+@@ -0,0 +1,666 @@
++/*
++ * Linux driver for M2Tech HiFace compatible devices
++ *
++ * Copyright 2012-2013 (C) M2TECH S.r.l and Amarula Solutions B.V.
++ *
++ * Authors:  Michael Trimarchi <michael@amarulasolutions.com>
++ *           Antonio Ospite <ao2@amarulasolutions.com>
++ *
++ * The driver is based on the work done in TerraTec DMX 6Fire USB
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#include <linux/slab.h>
++#include <sound/pcm.h>
++
++#include "pcm.h"
++#include "chip.h"
++
++#define OUT_EP              0x2
++#define PCM_N_URBS          8
++#define PCM_MAX_PACKET_SIZE 4096
++#define MAX_BUFSIZE         (2 * PCM_N_URBS * PCM_MAX_PACKET_SIZE)
++
++struct pcm_urb {
++	struct hiface_chip *chip;
++
++	struct urb instance;
++	struct usb_anchor submitted;
++	u8 *buffer;
++};
++
++struct pcm_substream {
++	spinlock_t lock;
++	struct snd_pcm_substream *instance;
++
++	bool active;
++	snd_pcm_uframes_t dma_off;    /* current position in alsa dma_area */
++	snd_pcm_uframes_t period_off; /* current position in current period */
++};
++
++enum { /* pcm streaming states */
++	STREAM_DISABLED, /* no pcm streaming */
++	STREAM_STARTING, /* pcm streaming requested, waiting to become ready */
++	STREAM_RUNNING,  /* pcm streaming running */
++	STREAM_STOPPING
++};
++
++struct pcm_runtime {
++	struct hiface_chip *chip;
++	struct snd_pcm *instance;
++
++	struct pcm_substream playback;
++	bool panic; /* if set driver won't do anymore pcm on device */
++
++	struct pcm_urb out_urbs[PCM_N_URBS];
++
++	struct mutex stream_mutex;
++	u8 stream_state; /* one of STREAM_XXX */
++	u8 rate; /* one of PCM_RATE_XXX */
++	u8 extra_freq;
++	wait_queue_head_t stream_wait_queue;
++	bool stream_wait_cond;
++};
++
++static const unsigned int rates[] = { 44100, 48000, 88200, 96000, 176400, 192000,
++			     352800, 384000 };
++static struct snd_pcm_hw_constraint_list constraints_rates = {
++	.count = ARRAY_SIZE(rates) - 2, /* by default rates up to 192000 are supported */
++	.list = rates,
++	.mask = 0,
++};
++
++static const int rates_alsaid[] = {
++	SNDRV_PCM_RATE_44100, SNDRV_PCM_RATE_48000,
++	SNDRV_PCM_RATE_88200, SNDRV_PCM_RATE_96000,
++	SNDRV_PCM_RATE_176400, SNDRV_PCM_RATE_192000,
++	SNDRV_PCM_RATE_KNOT, SNDRV_PCM_RATE_KNOT };
++
++static const struct snd_pcm_hardware pcm_hw = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_PAUSE |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_BATCH,
++
++	.formats = SNDRV_PCM_FMTBIT_S32_LE,
++
++	.rates = SNDRV_PCM_RATE_44100 |
++		SNDRV_PCM_RATE_48000 |
++		SNDRV_PCM_RATE_88200 |
++		SNDRV_PCM_RATE_96000 |
++		SNDRV_PCM_RATE_176400 |
++		SNDRV_PCM_RATE_192000 |
++		SNDRV_PCM_RATE_KNOT,
++
++	.rate_min = 44100,
++	.rate_max = 192000, /* changes in hiface_pcm_open to support extra rates */
++	.channels_min = 2,
++	.channels_max = 2,
++	.buffer_bytes_max = MAX_BUFSIZE,
++	.period_bytes_min = PCM_MAX_PACKET_SIZE,
++	.period_bytes_max = MAX_BUFSIZE,
++	.periods_min = 2,
++	.periods_max = 1024
++};
++
++static int hiface_pcm_set_rate(struct pcm_runtime *rt, unsigned int rate)
++{
++	u8 rate_value[] = { 0x43, 0x4b, 0x42, 0x4a, 0x40, 0x48, 0x58, 0x68 };
++	int ret;
++	struct usb_device *device = rt->chip->dev;
++
++	/* We are already sure that the rate is supported here thanks to the
++	 * contraints set in hiface_pcm_open(), but we have to retrieve the
++	 * index to access rate_value.
++	 */
++	for (rt->rate = 0; rt->rate < ARRAY_SIZE(rates); rt->rate++)
++		if (rate == rates[rt->rate])
++			break;
++
++	if (unlikely(rt->rate == ARRAY_SIZE(rates))) {
++		pr_err("Unsupported rate %d\n", rate);
++		return -EINVAL;
++	}
++
++	/*
++	 * USBIO: Vendor 0xb0(wValue=0x0043, wIndex=0x0000)
++	 * 43 b0 43 00 00 00 00 00
++	 * USBIO: Vendor 0xb0(wValue=0x004b, wIndex=0x0000)
++	 * 43 b0 4b 00 00 00 00 00
++	 * This control message doesn't have any ack from the
++	 * other side
++	 */
++	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0),
++				0xb0,
++				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				rate_value[rt->rate], 0, NULL, 0, 100);
++	if (ret < 0) {
++		snd_printk(KERN_ERR "Error setting samplerate %d.\n",
++				rates[rt->rate]);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct pcm_substream *hiface_pcm_get_substream(
++		struct snd_pcm_substream *alsa_sub)
++{
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++
++	if (alsa_sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		return &rt->playback;
++
++	pr_debug("Error getting pcm substream slot.\n");
++	return NULL;
++}
++
++/* call with stream_mutex locked */
++static void hiface_pcm_stream_stop(struct pcm_runtime *rt)
++{
++	int i, time;
++
++	if (rt->stream_state != STREAM_DISABLED) {
++		rt->stream_state = STREAM_STOPPING;
++
++		for (i = 0; i < PCM_N_URBS; i++) {
++			time = usb_wait_anchor_empty_timeout(
++					&rt->out_urbs[i].submitted, 100);
++			if (!time)
++				usb_kill_anchored_urbs(
++					&rt->out_urbs[i].submitted);
++			usb_kill_urb(&rt->out_urbs[i].instance);
++		}
++
++		rt->stream_state = STREAM_DISABLED;
++	}
++}
++
++/* call with stream_mutex locked */
++static int hiface_pcm_stream_start(struct pcm_runtime *rt)
++{
++	int ret = 0, i;
++
++	if (rt->stream_state == STREAM_DISABLED) {
++		/* submit our out urbs zero init */
++		rt->stream_state = STREAM_STARTING;
++		for (i = 0; i < PCM_N_URBS; i++) {
++			memset(rt->out_urbs[i].buffer, 0, PCM_MAX_PACKET_SIZE);
++			usb_anchor_urb(&rt->out_urbs[i].instance,
++				       &rt->out_urbs[i].submitted);
++			ret = usb_submit_urb(&rt->out_urbs[i].instance,
++					GFP_ATOMIC);
++			if (ret) {
++				hiface_pcm_stream_stop(rt);
++				return ret;
++			}
++		}
++
++		/* wait for first out urb to return (sent in in urb handler) */
++		wait_event_timeout(rt->stream_wait_queue, rt->stream_wait_cond,
++				HZ);
++		if (rt->stream_wait_cond) {
++			pr_debug("%s: Stream is running wakeup event\n",
++				 __func__);
++			rt->stream_state = STREAM_RUNNING;
++		} else {
++			hiface_pcm_stream_stop(rt);
++			return -EIO;
++		}
++	}
++	return ret;
++}
++
++
++/* The hardware wants word-swapped 32-bit values */
++void memcpy_swahw32(u8 *dest, u8 *src, unsigned int n)
++{
++	unsigned int i;
++
++	for (i = 0; i < n / 4; i++)
++		((u32 *)dest)[i] = swahw32(((u32 *)src)[i]);
++}
++
++/* call with substream locked */
++static int hiface_pcm_playback(struct pcm_substream *sub,
++		struct pcm_urb *urb)
++{
++	struct snd_pcm_runtime *alsa_rt = sub->instance->runtime;
++	u8 *source;
++	unsigned int pcm_buffer_size;
++
++	/* XXX Can an invalid format make it to here?
++	 * Isn't ALSA checking pcm_hw.formats ?
++	 */
++	if (alsa_rt->format != SNDRV_PCM_FORMAT_S32_LE) {
++		pr_err("Unsupported sample format\n");
++		return -EINVAL;
++	}
++
++	pcm_buffer_size = snd_pcm_lib_buffer_bytes(sub->instance);
++
++	if (sub->dma_off + PCM_MAX_PACKET_SIZE <= pcm_buffer_size) {
++		pr_debug("%s: (1) buffer_size %#x dma_offset %#x\n", __func__,
++			 (unsigned int) pcm_buffer_size,
++			 (unsigned int) sub->dma_off);
++
++		source = alsa_rt->dma_area + sub->dma_off;
++		memcpy_swahw32(urb->buffer, source, PCM_MAX_PACKET_SIZE);
++	} else {
++		/* wrap around at end of ring buffer */
++		unsigned int len;
++
++		pr_debug("%s: (2) buffer_size %#x dma_offset %#x\n", __func__,
++			 (unsigned int) pcm_buffer_size,
++			 (unsigned int) sub->dma_off);
++
++		len = pcm_buffer_size - sub->dma_off;
++
++		source = alsa_rt->dma_area + sub->dma_off;
++		memcpy_swahw32(urb->buffer, source, len);
++
++		source = alsa_rt->dma_area;
++		memcpy_swahw32(urb->buffer + len, source,
++			       PCM_MAX_PACKET_SIZE - len);
++	}
++	sub->dma_off += PCM_MAX_PACKET_SIZE;
++	if (sub->dma_off >= pcm_buffer_size)
++		sub->dma_off -= pcm_buffer_size;
++
++	sub->period_off += PCM_MAX_PACKET_SIZE;
++
++	return 0;
++}
++
++static void hiface_pcm_out_urb_handler(struct urb *usb_urb)
++{
++	struct pcm_urb *out_urb = usb_urb->context;
++	struct pcm_runtime *rt = out_urb->chip->pcm;
++	struct pcm_substream *sub;
++	unsigned long flags;
++
++	pr_debug("%s: called.\n", __func__);
++
++	if (usb_urb->status || rt->panic || rt->stream_state == STREAM_STOPPING)
++		return;
++
++	if (rt->stream_state == STREAM_STARTING) {
++		rt->stream_wait_cond = true;
++		wake_up(&rt->stream_wait_queue);
++	}
++
++	/* now send our playback data (if a free out urb was found) */
++	sub = &rt->playback;
++	spin_lock_irqsave(&sub->lock, flags);
++	if (sub->active) {
++		int ret;
++
++		ret = hiface_pcm_playback(sub, out_urb);
++		if (ret < 0) {
++			spin_unlock_irqrestore(&sub->lock, flags);
++			goto out_fail;
++		}
++		if (sub->period_off >= sub->instance->runtime->period_size) {
++			sub->period_off %= sub->instance->runtime->period_size;
++			spin_unlock_irqrestore(&sub->lock, flags);
++			snd_pcm_period_elapsed(sub->instance);
++		} else {
++			spin_unlock_irqrestore(&sub->lock, flags);
++		}
++	} else {
++		memset(out_urb->buffer, 0, PCM_MAX_PACKET_SIZE);
++		spin_unlock_irqrestore(&sub->lock, flags);
++	}
++out_fail:
++	usb_submit_urb(&out_urb->instance, GFP_ATOMIC);
++}
++
++static int hiface_pcm_open(struct snd_pcm_substream *alsa_sub)
++{
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++	struct pcm_substream *sub = NULL;
++	struct snd_pcm_runtime *alsa_rt = alsa_sub->runtime;
++	int ret;
++
++	pr_debug("%s: called.\n", __func__);
++
++	if (rt->panic)
++		return -EPIPE;
++
++	mutex_lock(&rt->stream_mutex);
++	alsa_rt->hw = pcm_hw;
++
++	if (alsa_sub->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++
++		/* XXX can we avoid setting hw.rates below?
++		 *
++		 * FWIU setting alsa_rt->hw.rates in the open callback can be
++		 * useful in two cases:
++		 *
++		 *   - different hardware revisions have different
++		 *     capabilities
++		 *
++		 *   - different stream types must have the same capabilities
++		 *
++		 * but in our case it should not be needed as we only have one
++		 * playback stream and we define the capabilities via
++		 * constraints already to avoid invalid rates to be used.
++		 *
++		 * Moreover, following the code stolen from 6fire it seems
++		 * impossible to get to setting alsa_rt->hw.rates here:
++		 *
++		 *   hiface_pcm_init:
++		 *     rt->rate = ARRAY_SIZE(rates);
++		 *
++		 *   hiface_pcm_open:
++		 *     if (rt->rate < ARRAY_SIZE(rates))
++		 *       alsa_rt->hw.rates = rates_alsaid[rt->rate];
++		 *       // So it does not get here on the first open
++		 *
++		 *   hiface_pcm_prepare:
++		 *     hiface_pcm_set_rate:
++		 *       for (rt->rate = 0; rt->rate < ARRAY_SIZE(rates); rt->rate++)
++		 *         if (rate == rates[rt->rate])
++		 *           break;
++		 *
++		 *   hiface_pcm_close:
++		 *     rt->rate = ARRAY_SIZE(rates);
++		 *     // So it won't set alsa_rt->hw.rates at the next open either
++		 *
++		 * So the only way to set alsa_rt->hw.rates is to have two
++		 * calls to the open callback, is that even possible? ALSA
++		 * does not allow sharing PCM streams AFAIK and we use only
++		 * one playback stream.
++		 *
++		 * Maybe the 6fire driver was setting alsa_rt->hw.rates in
++		 * order to have the playback stream and the capture stream
++		 * use the same rate? I.e. the first open,prepare,set_rate()
++		 * sequence on one type of stream will decide the rate and the
++		 * second open on the other type would restrict the supported
++		 * rate to the one already in use, but I am not sure.
++		 *
++		 * If the rationale makes sense then we don't need to set
++		 * alsa_rt->hw.rates and we can remove this and related code.
++		 */
++		if (rt->rate < ARRAY_SIZE(rates))
++			alsa_rt->hw.rates = rates_alsaid[rt->rate];
++
++		sub = &rt->playback;
++	}
++
++	if (!sub) {
++		mutex_unlock(&rt->stream_mutex);
++		pr_err("Invalid stream type\n");
++		return -EINVAL;
++	}
++
++	if (rt->extra_freq) {
++		alsa_rt->hw.rate_max = 384000;
++		constraints_rates.count = ARRAY_SIZE(rates);
++	}
++
++	ret = snd_pcm_hw_constraint_list(alsa_sub->runtime, 0,
++					 SNDRV_PCM_HW_PARAM_RATE,
++					 &constraints_rates);
++	if (ret < 0) {
++		mutex_unlock(&rt->stream_mutex);
++		return ret;
++	}
++
++	sub->instance = alsa_sub;
++	sub->active = false;
++	mutex_unlock(&rt->stream_mutex);
++	return 0;
++}
++
++static int hiface_pcm_close(struct snd_pcm_substream *alsa_sub)
++{
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
++	unsigned long flags;
++
++	if (rt->panic)
++		return 0;
++
++	pr_debug("%s: called.\n", __func__);
++
++	mutex_lock(&rt->stream_mutex);
++	if (sub) {
++		/* deactivate substream */
++		spin_lock_irqsave(&sub->lock, flags);
++		sub->instance = NULL;
++		sub->active = false;
++		spin_unlock_irqrestore(&sub->lock, flags);
++
++		/* all substreams closed? if so, stop streaming */
++		if (!rt->playback.instance) {
++			hiface_pcm_stream_stop(rt);
++			rt->rate = ARRAY_SIZE(rates);
++		}
++	}
++	mutex_unlock(&rt->stream_mutex);
++	return 0;
++}
++
++static int hiface_pcm_hw_params(struct snd_pcm_substream *alsa_sub,
++		struct snd_pcm_hw_params *hw_params)
++{
++	pr_debug("%s: called.\n", __func__);
++	return snd_pcm_lib_malloc_pages(alsa_sub,
++			params_buffer_bytes(hw_params));
++}
++
++static int hiface_pcm_hw_free(struct snd_pcm_substream *alsa_sub)
++{
++	pr_debug("%s: called.\n", __func__);
++	return snd_pcm_lib_free_pages(alsa_sub);
++}
++
++static int hiface_pcm_prepare(struct snd_pcm_substream *alsa_sub)
++{
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
++	struct snd_pcm_runtime *alsa_rt = alsa_sub->runtime;
++	int ret;
++
++	pr_debug("%s: called.\n", __func__);
++
++	if (rt->panic)
++		return -EPIPE;
++	if (!sub)
++		return -ENODEV;
++
++	mutex_lock(&rt->stream_mutex);
++
++	sub->dma_off = 0;
++	sub->period_off = 0;
++
++	if (rt->stream_state == STREAM_DISABLED) {
++
++		ret = hiface_pcm_set_rate(rt, alsa_rt->rate);
++		if (ret) {
++			mutex_unlock(&rt->stream_mutex);
++			return ret;
++		}
++		ret = hiface_pcm_stream_start(rt);
++		if (ret) {
++			mutex_unlock(&rt->stream_mutex);
++			return ret;
++		}
++	}
++	mutex_unlock(&rt->stream_mutex);
++	return 0;
++}
++
++static int hiface_pcm_trigger(struct snd_pcm_substream *alsa_sub, int cmd)
++{
++	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++	unsigned long flags;
++
++	pr_debug("%s: called.\n", __func__);
++
++	if (rt->panic)
++		return -EPIPE;
++	if (!sub)
++		return -ENODEV;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		spin_lock_irqsave(&sub->lock, flags);
++		sub->active = true;
++		spin_unlock_irqrestore(&sub->lock, flags);
++		return 0;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		spin_lock_irqsave(&sub->lock, flags);
++		sub->active = false;
++		spin_unlock_irqrestore(&sub->lock, flags);
++		return 0;
++
++	default:
++		return -EINVAL;
++	}
++}
++
++static snd_pcm_uframes_t hiface_pcm_pointer(struct snd_pcm_substream *alsa_sub)
++{
++	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
++	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
++	unsigned long flags;
++	snd_pcm_uframes_t dma_offset;
++
++	if (rt->panic || !sub)
++		return SNDRV_PCM_STATE_XRUN;
++
++	spin_lock_irqsave(&sub->lock, flags);
++	dma_offset = sub->dma_off;
++	spin_unlock_irqrestore(&sub->lock, flags);
++	return bytes_to_frames(alsa_sub->runtime, dma_offset);
++}
++
++static struct snd_pcm_ops pcm_ops = {
++	.open = hiface_pcm_open,
++	.close = hiface_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = hiface_pcm_hw_params,
++	.hw_free = hiface_pcm_hw_free,
++	.prepare = hiface_pcm_prepare,
++	.trigger = hiface_pcm_trigger,
++	.pointer = hiface_pcm_pointer,
++};
++
++static int hiface_pcm_init_urb(struct pcm_urb *urb,
++			       struct hiface_chip *chip,
++			       unsigned int ep,
++			       void (*handler)(struct urb *))
++{
++	urb->chip = chip;
++	usb_init_urb(&urb->instance);
++
++	urb->buffer = kzalloc(PCM_MAX_PACKET_SIZE, GFP_KERNEL);
++	if (!urb->buffer)
++		return -ENOMEM;
++
++	usb_fill_bulk_urb(&urb->instance, chip->dev,
++			  usb_sndbulkpipe(chip->dev, ep), (void *)urb->buffer,
++			  PCM_MAX_PACKET_SIZE, handler, urb);
++	init_usb_anchor(&urb->submitted);
++
++	return 0;
++}
++
++void hiface_pcm_abort(struct hiface_chip *chip)
++{
++	struct pcm_runtime *rt = chip->pcm;
++
++	if (rt) {
++		rt->panic = true;
++
++		if (rt->playback.instance) {
++			snd_pcm_stop(rt->playback.instance,
++					SNDRV_PCM_STATE_XRUN);
++		}
++		mutex_lock(&rt->stream_mutex);
++		hiface_pcm_stream_stop(rt);
++		mutex_unlock(&rt->stream_mutex);
++	}
++}
++
++static void hiface_pcm_destroy(struct hiface_chip *chip)
++{
++	struct pcm_runtime *rt = chip->pcm;
++	int i;
++
++	for (i = 0; i < PCM_N_URBS; i++)
++		kfree(rt->out_urbs[i].buffer);
++
++	kfree(chip->pcm);
++	chip->pcm = NULL;
++}
++
++static void hiface_pcm_free(struct snd_pcm *pcm)
++{
++	struct pcm_runtime *rt = pcm->private_data;
++
++	pr_debug("%s: called.\n", __func__);
++
++	if (rt)
++		hiface_pcm_destroy(rt->chip);
++}
++
++int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq)
++{
++	int i;
++	int ret;
++	struct snd_pcm *pcm;
++	struct pcm_runtime *rt;
++
++	rt = kzalloc(sizeof(*rt), GFP_KERNEL);
++	if (!rt)
++		return -ENOMEM;
++
++	rt->chip = chip;
++	rt->stream_state = STREAM_DISABLED;
++	rt->rate = ARRAY_SIZE(rates);
++	if (extra_freq)
++		rt->extra_freq = 1;
++
++	init_waitqueue_head(&rt->stream_wait_queue);
++	mutex_init(&rt->stream_mutex);
++	spin_lock_init(&rt->playback.lock);
++
++	for (i = 0; i < PCM_N_URBS; i++)
++		hiface_pcm_init_urb(&rt->out_urbs[i], chip, OUT_EP,
++				hiface_pcm_out_urb_handler);
++
++	ret = snd_pcm_new(chip->card, "USB-SPDIF Audio", 0, 1, 0, &pcm);
++	if (ret < 0) {
++		kfree(rt);
++		pr_err("Cannot create pcm instance\n");
++		return ret;
++	}
++
++	pcm->private_data = rt;
++	pcm->private_free = hiface_pcm_free;
++
++	strcpy(pcm->name, "USB-SPDIF Audio");
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_ops);
++
++	snd_pcm_lib_preallocate_pages_for_all(pcm,
++					SNDRV_DMA_TYPE_CONTINUOUS,
++					snd_dma_continuous_data(GFP_KERNEL),
++					MAX_BUFSIZE, MAX_BUFSIZE);
++	rt->instance = pcm;
++
++	chip->pcm = rt;
++	return 0;
++}
+diff --git a/sound/usb/hiface/pcm.h b/sound/usb/hiface/pcm.h
+new file mode 100644
+index 0000000..ddc9fe7
+--- /dev/null
++++ b/sound/usb/hiface/pcm.h
+@@ -0,0 +1,24 @@
++/*
++ * Linux driver for M2Tech HiFace compatible devices
++ *
++ * Copyright 2012-2013 (C) M2TECH S.r.l and Amarula Solutions B.V.
++ *
++ * Authors:  Michael Trimarchi <michael@amarulasolutions.com>
++ *           Antonio Ospite <ao2@amarulasolutions.com>
++ *
++ * The driver is based on the work done in TerraTec DMX 6Fire USB
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#ifndef HIFACE_PCM_H
++#define HIFACE_PCM_H
++
++struct hiface_chip;
++
++int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq);
++void hiface_pcm_abort(struct hiface_chip *chip);
++#endif /* HIFACE_PCM_H */
+-- 
+1.7.10.4
