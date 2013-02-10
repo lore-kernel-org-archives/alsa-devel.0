@@ -1,15 +1,15 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH TINYCOMPRESS 1/14] compress: Add function to
-	get timestamp	in samples
-Date: Sun, 10 Feb 2013 00:02:27 +0000
-Message-ID: <20130210000227.GA31139@opensource.wolfsonmicro.com>
+Subject: [PATCH TINYCOMPRESS 2/14] compress: Change
+	compress_write() to	take buffer as const void *
+Date: Sun, 10 Feb 2013 00:04:09 +0000
+Message-ID: <20130210000409.GB31139@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 994E42615F2
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:02:30 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 904A82615F2
+ for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:04:11 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,65 +24,54 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The compress_get_hpointer() converts the timestamp into actual
-time. But Android needs it in samples. To avoid the inefficiency
-of using compress_get_hpointer() and converting into time and then
-back into samples, this change adds compress_get_tstamp() which
-returns the raw struct snd_compr_tstamp.
+The input buffer to compress_write() should be const, and is
+better defined as void * so the caller doesn't have to cast.
 
 diff --git a/compress.c b/compress.c
-index faef982..19b9366 100644
+index 19b9366..ee11988 100644
 --- a/compress.c
 +++ b/compress.c
-@@ -287,6 +287,18 @@ int compress_get_hpointer(struct compress *compress,
+@@ -299,11 +299,12 @@ int compress_get_tstamp(struct compress *compress,
  	return 0;
  }
-
-+int compress_get_tstamp(struct compress *compress,
-+			struct snd_compr_tstamp *tstamp )
-+{
-+	if (!is_compress_ready(compress))
-+		return oops(compress, -ENODEV, "device not ready");
-+
-+	if (ioctl(compress->fd, SNDRV_COMPRESS_TSTAMP, tstamp))
-+		return oops(compress, errno, "cannot get avail");
-+
-+	return 0;
-+}
-+
- int compress_write(struct compress *compress, char *buf, unsigned int size)
+ 
+-int compress_write(struct compress *compress, char *buf, unsigned int size)
++int compress_write(struct compress *compress, const void *buf, unsigned int size)
  {
  	struct snd_compr_avail avail;
+ 	struct pollfd fds;
+ 	int to_write, written, total = 0, ret;
++	const char* cbuf = buf;
+ 
+ 	if (!(compress->flags & COMPRESS_IN))
+ 		return oops(compress, -EINVAL, "Invalid flag set");
+@@ -343,12 +344,12 @@ int compress_write(struct compress *compress, char *buf, unsigned int size)
+ 			to_write =  avail.avail;
+ 		else
+ 			to_write = size;
+-		written = write(compress->fd, buf, to_write);
++		written = write(compress->fd, cbuf, to_write);
+ 		if (written < 0)
+ 			return oops(compress, errno, "write failed!\n");
+ 
+ 		size -= written;
+-		buf += written;
++		cbuf += written;
+ 		total += written;
+ 	}
+ 	return total;
 diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
-index 13dea3e..8a98527 100644
+index 8a98527..e285bd4 100644
 --- a/include/tinycompress/tinycompress.h
 +++ b/include/tinycompress/tinycompress.h
-@@ -73,6 +73,7 @@ struct compr_config {
- #define COMPRESS_IN         0x10000000
-
- struct compress;
-+struct snd_compr_tstamp;
-
- /*
-  * compress_open: open a new compress stream
-@@ -103,6 +104,18 @@ void compress_close(struct compress *compress);
+@@ -125,7 +125,7 @@ int compress_get_tstamp(struct compress *compress,
+  * @buf: pointer to data
+  * @size: number of bytes to be written
   */
- int compress_get_hpointer(struct compress *compress,
- 		unsigned int *avail, struct timespec *tstamp);
-+
-+
-+/*
-+ * compress_get_tstamp: get the raw hw timestamp
-+ * return 0 on success, negative on error
-+ *
-+ * @compress: compress stream on which query is made
-+ * @tstamp: timestamp information
-+ */
-+int compress_get_tstamp(struct compress *compress,
-+						struct snd_compr_tstamp *tstamp );
-+
+-int compress_write(struct compress *compress, char *buf, unsigned int size);
++int compress_write(struct compress *compress, const void *buf, unsigned int size);
+ 
  /*
-  * compress_write: write data to the compress stream
-  * return bytes written on success, negative on error
---
+  * compress_read: read data from the compress stream
+-- 
 1.7.2.5
