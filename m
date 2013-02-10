@@ -1,15 +1,15 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH TINYCOMPRESS 12/14] compress: Add makefile for
-	building	under standard linux
-Date: Sun, 10 Feb 2013 00:21:01 +0000
-Message-ID: <20130210002101.GL31139@opensource.wolfsonmicro.com>
+Subject: [PATCH TINYCOMPRESS 13/14] compress: Prevent
+	divide-by-zero faults	in get_hpointer()
+Date: Sun, 10 Feb 2013 00:22:16 +0000
+Message-ID: <20130210002216.GM31139@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B18C2616A0
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:21:03 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21ED22616A0
+ for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:22:18 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,48 +24,33 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Do not assume that the returned snd_compr_avail contains a
+snd_compr_tstamp with a valid sampling_rate. Check for zero
+before attempting to use it.
 
-diff --git a/makefile.linux b/makefile.linux
-new file mode 100644
-index 0000000..60d6c04
---- /dev/null
-+++ b/makefile.linux
-@@ -0,0 +1,35 @@
-+LIB = libtinycompress
-+BIN = cplay
-+VER = 0.1
-+LIBSRC = compress.c
-+SRC = cplay.c
-+LIBOBJ = ${LIBSRC:.c=.o}
-+OBJ = ${SRC:.c=.o}
-+
-+CC = gcc
-+CROSS_COMPILE =
-+
-+CFLAGS += -std=c99 -Wall -Wextra -Wunused -DVERSION=\"${VER}\" -I./include
-+LDFLAGS += -L. -ltinycompress
-+LIBLDFLAGS = -lasound
-+
-+all: libtinycompress cplay
-+
-+$(LIB): ${LIBOBJ}
-+	@echo "  LD	"$@
-+	@${CROSS_COMPILE}${CC} ${CFLAGS} -shared -Wl,-soname,$@.so -o $@.so ${LIBOBJ} ${LIBLDFLAGS}
-+
-+$(BIN): ${OBJ} ${LIB}
-+	@echo "  LD	"$@
-+	@${CROSS_COMPILE}${CC} ${CFLAGS} -o $@ ${OBJ} ${LDFLAGS}
-+
-+
-+%.o: %.c
-+	@echo "  CC	"$<
-+	@${CROSS_COMPILE}${CC} ${CFLAGS} -c -fPIC -o $@ $<
-+
-+clean:
-+	@rm -rf ${BIN} ${OBJ} ${LIB}.so ${LIBOBJ}
-+
-+
-+.PHONY: all clean
+diff --git a/compress.c b/compress.c
+index cfd0219..c0e81a3 100644
+--- a/compress.c
++++ b/compress.c
+@@ -297,10 +297,15 @@ int compress_get_hpointer(struct compress *compress,
+ 	if (ioctl(compress->fd, SNDRV_COMPRESS_AVAIL, &kavail))
+ 		return oops(compress, errno, "cannot get avail");
+ 	*avail = (unsigned int)kavail.avail;
+-	time = kavail.tstamp.pcm_io_frames / kavail.tstamp.sampling_rate;
+-	tstamp->tv_sec = time;
+-	time = kavail.tstamp.pcm_io_frames % kavail.tstamp.sampling_rate;
+-	tstamp->tv_nsec = time * 1000000000 / kavail.tstamp.sampling_rate;
++	if (kavail.tstamp.sampling_rate != 0) {
++		time = kavail.tstamp.pcm_io_frames / kavail.tstamp.sampling_rate;
++		tstamp->tv_sec = time;
++		time = kavail.tstamp.pcm_io_frames % kavail.tstamp.sampling_rate;
++		tstamp->tv_nsec = time * 1000000000 / kavail.tstamp.sampling_rate;
++	} else {
++		tstamp->tv_sec = 0;
++		tstamp->tv_nsec = 0;
++	}
+ 	return 0;
+ }
+ 
 -- 
 1.7.2.5
