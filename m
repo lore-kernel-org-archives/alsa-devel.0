@@ -1,15 +1,15 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH TINYCOMPRESS 3/14] compress: Remove unused
-	buffer_size	member from struct compress
-Date: Sun, 10 Feb 2013 00:06:45 +0000
-Message-ID: <20130210000645.GC31139@opensource.wolfsonmicro.com>
+Subject: [PATCH TINYCOMPRESS 4/14] compress: Change running
+	from bitfield	to plain int
+Date: Sun, 10 Feb 2013 00:08:06 +0000
+Message-ID: <20130210000806.GD31139@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76A712615F2
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:06:47 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 652822615F2
+ for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2013 01:08:08 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,17 +24,23 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Declaring running as a single-bit bitfield does not save any space
+or give any coding advantages, but does leave potential opportunities
+for the compiler to be inefficient in how it handles bitfields compared
+to how it would handle a machine int.
+
 diff --git a/compress.c b/compress.c
-index ee11988..fa2d43f 100644
+index fa2d43f..c4f215c 100644
 --- a/compress.c
 +++ b/compress.c
-@@ -80,7 +80,6 @@
- struct compress {
- 	int fd;
+@@ -82,7 +82,7 @@ struct compress {
  	unsigned int flags;
--	__u64 buffer_size;
  	char error[COMPR_ERR_MAX];
  	struct compr_config *config;
- 	int running:1;
+-	int running:1;
++	int running;
+ };
+ 
+ static int oops(struct compress *compress, int e, const char *fmt, ...)
 -- 
 1.7.2.5
