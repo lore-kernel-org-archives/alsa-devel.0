@@ -1,122 +1,86 @@
-From: Anil Kumar <anilk4.v@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: Sound record on Devkit8000 with DT boot issue
-Date: Mon, 11 Feb 2013 23:28:04 +0530
-Message-ID: <CABYxbz7HcZTK+y20mtDR+1coRUbUMgNHNDdJ3O7Ln7U7d0LEzA@mail.gmail.com>
+Date: Mon, 11 Feb 2013 19:14:05 +0100
+Message-ID: <511934ED.2020104@ti.com>
 References: <CABYxbz5ECxoWZtkfL3UbZ=R4LVoNeMVxjYbPdZoarstCod-gQw@mail.gmail.com>
-	<5118EF75.30107@ti.com>
+ <5118EF75.30107@ti.com>
+ <CABYxbz7HcZTK+y20mtDR+1coRUbUMgNHNDdJ3O7Ln7U7d0LEzA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5118EF75.30107@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, tony@atomide.com, thomas@tomweber.eu, perex@perex.cz, tiwai@suse.de, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 038822602F9
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 19:14:10 +0100 (CET)
+In-Reply-To: <CABYxbz7HcZTK+y20mtDR+1coRUbUMgNHNDdJ3O7Ln7U7d0LEzA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anil Kumar <anilk4.v@gmail.com>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, tiwai@suse.de, thomas@tomweber.eu
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Hi,
 
-Thanks for helping me. please see my comment inline
-
-On Mon, Feb 11, 2013 at 6:47 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> On 02/10/2013 04:21 PM, Anil Kumar wrote:
->> Hi All,
+On 02/11/2013 06:58 PM, Anil Kumar wrote:
+>> Here you should have something like:
+>> ti,audio-routing =3D
+>>         "Ext Spk", "PREDRIVEL",
+>>         "Ext Spk", "PREDRIVER",
+>>         "MAINMIC", "Main Mic",
+>>         "Main Mic", "Mic Bias 1";
 >>
->> I am working on Devkit8000 and adding DT support for that. I am trying
->> to add sound DT node support for this boards.
->> I have nearly done with this but facing issue on record. I do not have
->> much knowledge of twl4030 audio codec but with
->> small Hack[1] (as MainMic connected to the input jack)  i am able to
->> record sound on Devkit8000.
->> I do not know that MICBIAS1_EN can be enable by amixer commands.
->> Could you please help me to get out of this ?
->
-> You need to pass the routing information via DT for Devkit8000. This is not
-> done for the BeagleBoard since it works without it (no need for MICBIAS for
-> example)
->
->>
->>
->> 1) Hack [1]
->>
->> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
->> index 63b280b..6780681 100644
->> --- a/sound/soc/codecs/twl4030.c
->> +++ b/sound/soc/codecs/twl4030.c
->> @@ -1473,7 +1473,7 @@ static const struct snd_soc_dapm_widget
->> twl4030_dapm_widgets[] = {
->>         SND_SOC_DAPM_SUPPLY("micbias2 select", TWL4030_REG_MICBIAS_CTL, 6, 0,
->>                             NULL, 0),
->>
->> -       SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 0),
->> +       SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 1),
->
-> Yes, this is HACK and it is wrong at the same time.
+>> So you connect the MicBias1 to Main Mic. When you start playback MicBias=
+1 will
+>> be turned on for you.
+> =
 
-Agree
+> I tried with this routing (next-20130211 tag kernel). But it is not
+> working for me.
+> So i have gone through other board and found snd_soc_dapm_route for
+> =
 
->
->>         SND_SOC_DAPM_MICBIAS("Mic Bias 2", TWL4030_REG_MICBIAS_CTL, 1, 0),
->>         SND_SOC_DAPM_MICBIAS("Headset Mic Bias", TWL4030_REG_MICBIAS_CTL, 2, 0),
->>
->>
->> 2) Sound DT node patch for Devkit8000
->>
->> diff --git a/arch/arm/boot/dts/omap3-
->> devkit8000.dts b/arch/arm/boot/dts/omap3-devkit8000.dts
->> index dc59272..5f3eec0 100644
->> --- a/arch/arm/boot/dts/omap3-devkit8000.dts
->> +++ b/arch/arm/boot/dts/omap3-devkit8000.dts
->> @@ -44,11 +44,22 @@
->>                  };
->>
->>         };
->> +
->> +       sound {
->> +               compatible = "ti,omap-twl4030";
->> +               ti,model = "devkit8000";
->> +
->> +               ti,mcbsp = <&mcbsp2>;
->> +               ti,codec = <&twl_audio>;
->
-> Here you should have something like:
-> ti,audio-routing =
->         "Ext Spk", "PREDRIVEL",
->         "Ext Spk", "PREDRIVER",
->         "MAINMIC", "Main Mic",
->         "Main Mic", "Mic Bias 1";
->
-> So you connect the MicBias1 to Main Mic. When you start playback MicBias1 will
-> be turned on for you.
+> 1) zoom2.c
+>        {"MAINMIC", NULL, "Mic Bias 1"},
+>        {"Mic Bias 1", NULL, "Ext Mic"},
+> =
 
-I tried with this routing (next-20130211 tag kernel). But it is not
-working for me.
-So i have gone through other board and found snd_soc_dapm_route for
+> 2) omap3pandora.c
+>         {"MAINMIC", NULL, "Mic Bias 1"},
+>         {"Mic Bias 1", NULL, "Mic (internal)"},
+> =
 
-1) zoom2.c
-       {"MAINMIC", NULL, "Mic Bias 1"},
-       {"Mic Bias 1", NULL, "Ext Mic"},
+> But for omap-twl4030.c it is
+>         {"MAINMIC", NULL, "Main Mic"},
+>         {"Main Mic", NULL, "Mic Bias 1"},
+> =
 
-2) omap3pandora.c
-        {"MAINMIC", NULL, "Mic Bias 1"},
-        {"Mic Bias 1", NULL, "Mic (internal)"},
+>  It Should will be as ?
+>         {"MAINMIC", NULL, "Mic Bias 1"},
+>         {"Mic Bias 1", NULL, "Main Mic"},
+> =
 
-But for omap-twl4030.c it is
-        {"MAINMIC", NULL, "Main Mic"},
-        {"Main Mic", NULL, "Mic Bias 1"},
+> Because with this i am able to get audio on Devkit8000 as
+>              ti,audio-routing =3D
+>                         "Ext Spk", "PREDRIVEL",
+>                         "Ext Spk", "PREDRIVER",
+>                         "MAINMIC", "Mic Bias 1",
+>                         "Mic Bias 1", "Main Mic";
 
- It Should will be as ?
-        {"MAINMIC", NULL, "Mic Bias 1"},
-        {"Mic Bias 1", NULL, "Main Mic"},
+In 3.9 this should not work...
 
-Because with this i am able to get audio on Devkit8000 as
-             ti,audio-routing =
-                        "Ext Spk", "PREDRIVEL",
-                        "Ext Spk", "PREDRIVER",
-                        "MAINMIC", "Mic Bias 1",
-                        "Mic Bias 1", "Main Mic";
+linux-next should not have zoom2 at least and I converted the machine drive=
+rs
+as well in regards to micbias handling:
+e04d6e5 ASoC: twl4030: Convert MICBIAS to SUPPLY widget
+57d61b9 ASoC: OMAP: Remove obsolete machine drivers for Zoom2 and SDP3430
 
-Sorry if i am saying nonsense.
+-- =
 
-Thanks,
-Anil
-[...]
+P=E9ter
