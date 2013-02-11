@@ -1,88 +1,53 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: hda/ca0132 - fix error handling for
- dsp_chip_to_dsp_addx()
-Date: Mon, 11 Feb 2013 22:05:24 +0300
-Message-ID: <20130211190524.GC19768@elgon.mountain>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: use list_add_tail() instead of list_add() for
+ platform/codec/dai list
+Date: Mon, 11 Feb 2013 14:26:05 -0700
+Message-ID: <511961ED.8010400@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
+ <50E71618.8090302@wwwdotorg.org>
+ <20130104193712.GN4627@opensource.wolfsonmicro.com>
+ <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
+ <5110349D.3050308@wwwdotorg.org>
+ <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
+ <87d2wfrryg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AA84260304
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 20:05:44 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Ian Minett <ian_minett@creativelabs.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87d2wfrryg.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The error handling here won't work on 64 bit systems.
-INVALID_CHIP_ADDRESS is an unsigned long defined like this:
+On 02/05/2013 03:11 AM, Kuninori Morimoto wrote:
+> Current ASoC is using list_add() in order to add new list to
+> platform/codec/dai list.
+> But it breaks added list's order.
+> This patch use list_add_tail() instead of list_add() to solve this issue.
 
-#define INVALID_CHIP_ADDRESS        (~0UL)
+Do these lists have a defined order, such that changing the order does
+actually /break/ something?
 
-But we truncate the high bits away before returning and then we save it
-in an unsigned 32bit and then we compare it against the unsigned long
-version.
-
-I've changed everything to unsigned long.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 639a282..42114e9 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1581,7 +1581,7 @@ static int dsp_reset(struct hda_codec *codec)
- /*
-  * Convert chip address to DSP address
-  */
--static unsigned int dsp_chip_to_dsp_addx(unsigned int chip_addx,
-+static unsigned long dsp_chip_to_dsp_addx(unsigned int chip_addx,
- 					bool *code, bool *yram)
- {
- 	*code = *yram = false;
-@@ -1596,7 +1596,7 @@ static unsigned int dsp_chip_to_dsp_addx(unsigned int chip_addx,
- 		return Y_OFF(chip_addx);
- 	}
- 
--	return (unsigned int)INVALID_CHIP_ADDRESS;
-+	return INVALID_CHIP_ADDRESS;
- }
- 
- /*
-@@ -1620,7 +1620,7 @@ static int dsp_dma_setup_common(struct hda_codec *codec,
- {
- 	int status = 0;
- 	unsigned int chnl_prop;
--	unsigned int dsp_addx;
-+	unsigned long dsp_addx;
- 	unsigned int active;
- 	bool code, yram;
- 
-@@ -1712,7 +1712,7 @@ static int dsp_dma_setup_common(struct hda_codec *codec,
- 	snd_printdd(KERN_INFO "   dsp_dma_setup_common()    Write IRQCNT");
- 
- 	snd_printdd(
--		   "ChipA=0x%x,DspA=0x%x,dmaCh=%u, "
-+		   "ChipA=0x%x,DspA=0x%lx,dmaCh=%u, "
- 		   "CHSEL=0x%x,CHPROP=0x%x,Active=0x%x\n",
- 		   chip_addx, dsp_addx, dma_chan,
- 		   port_map_mask, chnl_prop, active);
-@@ -1732,7 +1732,7 @@ static int dsp_dma_setup(struct hda_codec *codec,
- {
- 	int status = 0;
- 	bool code, yram;
--	unsigned int dsp_addx;
-+	unsigned long dsp_addx;
- 	unsigned int addr_field;
- 	unsigned int incr_field;
- 	unsigned int base_cnt;
+I'm just curious what the motivation for this patch is really; is it
+just cosmetic?
