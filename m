@@ -1,18 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH TINYCOMPRESS 1/14] compress: Add function
- to get timestamp in samples
-Date: Mon, 11 Feb 2013 08:11:04 -0600
-Message-ID: <5118FBF8.9060804@linux.intel.com>
-References: <20130210000227.GA31139@opensource.wolfsonmicro.com>
- <20130211063448.GA3789@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HD-audio generic parser merged to linux-next
+Date: Mon, 11 Feb 2013 22:20:15 +0800
+Message-ID: <CAN8ccia4vHek6n5xZi26nNZV0wmzv3H6cBjP4q+UTi3ubyTHSw@mail.gmail.com>
+References: <s5hbocg1etr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id DEDAD2602AD
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 15:11:06 +0100 (CET)
-In-Reply-To: <20130211063448.GA3789@intel.com>
+Received: from mail-ia0-f174.google.com (mail-ia0-f174.google.com
+ [209.85.210.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB99D2602AD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 15:20:16 +0100 (CET)
+Received: by mail-ia0-f174.google.com with SMTP id o25so6460260iad.33
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 06:20:15 -0800 (PST)
+In-Reply-To: <s5hbocg1etr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>
+> If you encounter any regression by the recent update, please let me
+> know.
+>
 
->> The compress_get_hpointer() converts the timestamp into actual
->> time. But Android needs it in samples. To avoid the inefficiency
->> of using compress_get_hpointer() and converting into time and then
->> back into samples, this change adds compress_get_tstamp() which
->> returns the raw struct snd_compr_tstamp.
-> I am fine with adding new API for returning the samples, but then why return the
-> raw struct. Would make sense to just get samples if that is only thing desired.
+Refer to commit 657e1b931d42882cb0a59b599247bef696c22406
 
-Loss of efficiency? It's not that bad really and the conversion could be 
-handled in tinycompress (user-space) rather than adding a new kernel 
-ioctl that everyone will need to implement. The htimestamp could give 
-you better precision than samples if a wall clock is available in the 
-hardware.
--Pierre
+ALSA: hda - Select auto-parser as default for AD codecs
+
+it seem that independent hp is enabled on AD1986A which does not support
+indepedent headphone
+
+Attach PCM dev 0, name AD1986A Analog, type audio, play #1, capture #1
+send: NID=0x2, VERB=0xf00(get_parameters), PARM=0xa(PCM)
+receive: 0x20060
+send: NID=0x2, VERB=0xf00(get_parameters), PARM=0xb(stream)
+receive: 0x5
+Attach PCM dev 1, name AD1986A Digital, type SPDIF, play #1, capture #0
+send: NID=0x1, VERB=0xf00(get_parameters), PARM=0xa(PCM)
+receive: 0xe007f
+send: NID=0x5, VERB=0xf00(get_parameters), PARM=0xb(stream)
+receive: 0x0
+send: NID=0x1, VERB=0xf00(get_parameters), PARM=0xb(stream)
+receive: 0x1
+Attach PCM dev 2, name AD1986A Alt Analog, type audio, play #1, capture #0
+# Init and building controls...
