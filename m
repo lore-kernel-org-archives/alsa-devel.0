@@ -1,20 +1,16 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - Fix the workaround for
-	conflicting IEC958 controls
-Date: Mon, 11 Feb 2013 13:20:03 +0200
-Message-ID: <38a2644a9142828043dab3b331c1c707@mail.onse.fi>
-References: <s5hobk7k918.wl%tiwai@suse.de>
- <1360363479-15678-1-git-send-email-anssi.hannula@iki.fi>
- <s5hk3qgzc6t.wl%tiwai@suse.de> <51177EEA.7080704@iki.fi>
- <s5hobfrqg1k.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: round to 4-byte boundary
+ for coeff file blocks
+Date: Mon, 11 Feb 2013 11:22:28 +0000
+Message-ID: <20130211112228.GB4607@opensource.wolfsonmicro.com>
+References: <1360333935-4939-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8791134914287308492=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 88D6D261669
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 12:20:07 +0100 (CET)
-In-Reply-To: <s5hobfrqg1k.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B6FDB26169B
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 12:22:30 +0100 (CET)
+In-Reply-To: <1360333935-4939-1-git-send-email-crattray@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,217 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Chris Rattray <crattray@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11.02.2013 12:51, Takashi Iwai wrote:
-> At Sun, 10 Feb 2013 13:05:14 +0200,
-> Anssi Hannula wrote:
->>
->> 10.02.2013 12:38, Takashi Iwai kirjoitti:
->> > At Sat,  9 Feb 2013 00:44:39 +0200,
->> > Anssi Hannula wrote:
->> >>
->> >> Commit dcda5806165c155d90b9aa466a1602cf4726012b ("ALSA: hda - Add
->> >> workaround for conflicting IEC958 controls") added a workaround 
->> for
->> >> cards that have both an S/PDIF and an HDMI device, so that S/PDIF 
->> IEC958
->> >> controls will be moved to device=1 on such cards.
->> >>
->> >> However, the workaround did not take it into account that the 
->> S/PDIF and
->> >> HDMI devices may be on different codecs of the same card. 
->> Currently this
->> >> is always the case, and the workaround therefore fails to work.
->> >>
->> >> Fix the workaround to handle card-wide IEC958 conflicts.
->> >>
->> >> Reported-by: Stephan Raue <stephan@openelec.tv>
->> >> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->> >> ---
->> >>
->> >> Unfortunately this seems to cause a nasty issue with alsa-lib 
->> 1.0.26:
->> >> $ amixer scontrols -c 0
->> >> ALSA lib simple_none.c:1551:(simple_add1) helem (MIXER,'IEC958 
->> Playback Switch',0,1,0) appears twice or more
->> >> amixer: Mixer hw:0 load error: Invalid argument
->> >>
->> >> The non-simple-mode "amixer controls -c 0" works fine, though.
->> >>
->> >> Not really sure what to do now then, do we revert the workaround
->> >> completely and devise a different workaround/fix for this, or do 
->> you
->> >> have some other good ideas?
->> >
->> > If the element isn't really dup'ed, it must be a bug in alsa-lib 
->> mixer
->> > abstraction, so it should be fixed there.
->>
->> This is because the simple mixer interface only identifies controls 
->> by
->> name+index:
->> 
->> http://www.alsa-project.org/alsa-doc/alsa-lib/group___simple_mixer.html
->>
->> So controls that only differ by device (or subdevice?) are 
->> considered
->> duplicated. I did look at the code but saw no straight-forward way 
->> to
->> fix it, other than to introduce devices (and subdevices) to the 
->> simple
->> mixer API (which is used by outside applications).
->
-> OK, so it's a limitation of alsa-lib mixer simple abst
-> implementation.  We need to live with that for now...
->
->> Anyway, wouldn't breaking "old" alsa-lib make this way of fixing it 
->> a
->> no-go (the error is fatal and mixer creation fails completely)?
->
-> No, it's a general rule in the kernel that we can't break the old
-> user-space.
 
-Isn't that a "yes" for my no-go? ;)
+--===============8791134914287308492==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="H1spWtNR+x+ondvy"
+Content-Disposition: inline
 
->> > Could you add alsa-info.sh output of this board (at best before 
->> and
->> > after your patch)?
->>
->> Here's one after patch (can't get one before patch right now, but I
->> guess it isn't needed since the cause is very clear):
->> 
->> http://www.alsa-project.org/db/?f=bb3fc8680b372c0475719d42d7fc8b2bb7bfb4eb
->> (this one has alsa-lib hack applied which ignores the failure to add 
->> the
->> control so that the mixer error is non-fatal)
->
-> Thinking it again, maybe an ugly but working workaround is to shift
-> the SPDIF index to high enough not conflicting with HDMI, instead of
-> changing the ctl device.
->
-> The quick patch below is to put the SPDIF stuff into index=16+.  It
-> also fixes the issue of multiple codecs.
->
-> Of course, this will require a similar fix in alsa-lib config.
-> Instead of changing dev to 1, just change index to 16.
 
-OK, patch looks fine to me. I'll test this later today or tomorrow and 
-report
-back.
+--H1spWtNR+x+ondvy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also, sorry for not catching this earlier.
+On Fri, Feb 08, 2013 at 02:32:15PM +0000, Chris Rattray wrote:
+> Signed-off-by: Chris Rattray <crattray@opensource.wolfsonmicro.com>
 
-Thanks.
+Applied, thanks.
 
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index e80f835..04b5738 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -2332,11 +2332,12 @@ struct snd_kcontrol
-> *snd_hda_find_mixer_ctl(struct hda_codec *codec,
->  EXPORT_SYMBOL_HDA(snd_hda_find_mixer_ctl);
->
->  static int find_empty_mixer_ctl_idx(struct hda_codec *codec, const
-> char *name,
-> -				    int dev)
-> +				    int start_idx)
->  {
-> -	int idx;
-> -	for (idx = 0; idx < 16; idx++) { /* 16 ctlrs should be large enough 
-> */
-> -		if (!find_mixer_ctl(codec, name, dev, idx))
-> +	int i, idx;
-> +	/* 16 ctlrs should be large enough */
-> +	for (i = 0, idx = start_idx; i < 16; i++, idx++) {
-> +		if (!find_mixer_ctl(codec, name, 0, idx))
->  			return idx;
->  	}
->  	return -EBUSY;
-> @@ -3305,30 +3306,29 @@ int snd_hda_create_dig_out_ctls(struct
-> hda_codec *codec,
->  	int err;
->  	struct snd_kcontrol *kctl;
->  	struct snd_kcontrol_new *dig_mix;
-> -	int idx, dev = 0;
-> -	const int spdif_pcm_dev = 1;
-> +	int idx = 0;
-> +	const int spdif_index = 16;
->  	struct hda_spdif_out *spdif;
-> +	struct hda_bus *bus = codec->bus;
->
-> -	if (codec->primary_dig_out_type == HDA_PCM_TYPE_HDMI &&
-> +	if (bus->primary_dig_out_type == HDA_PCM_TYPE_HDMI &&
->  	    type == HDA_PCM_TYPE_SPDIF) {
-> -		dev = spdif_pcm_dev;
-> -	} else if (codec->primary_dig_out_type == HDA_PCM_TYPE_SPDIF &&
-> +		idx = spdif_index;
-> +	} else if (bus->primary_dig_out_type == HDA_PCM_TYPE_SPDIF &&
->  		   type == HDA_PCM_TYPE_HDMI) {
-> -		for (idx = 0; idx < codec->spdif_out.used; idx++) {
-> -			spdif = snd_array_elem(&codec->spdif_out, idx);
-> -			for (dig_mix = dig_mixes; dig_mix->name; dig_mix++) {
-> -				kctl = find_mixer_ctl(codec, dig_mix->name, 0, idx);
-> -				if (!kctl)
-> -					break;
-> -				kctl->id.device = spdif_pcm_dev;
-> -			}
-> +		/* suppose a single SPDIF device */
-> +		for (dig_mix = dig_mixes; dig_mix->name; dig_mix++) {
-> +			kctl = find_mixer_ctl(codec, dig_mix->name, 0, 0);
-> +			if (!kctl)
-> +				break;
-> +			kctl->id.index = spdif_index;
->  		}
-> -		codec->primary_dig_out_type = HDA_PCM_TYPE_HDMI;
-> +		bus->primary_dig_out_type = HDA_PCM_TYPE_HDMI;
->  	}
-> -	if (!codec->primary_dig_out_type)
-> -		codec->primary_dig_out_type = type;
-> +	if (!bus->primary_dig_out_type)
-> +		bus->primary_dig_out_type = type;
->
-> -	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Playback Switch", 
-> dev);
-> +	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Playback Switch", 
-> idx);
->  	if (idx < 0) {
->  		printk(KERN_ERR "hda_codec: too many IEC958 outputs\n");
->  		return -EBUSY;
-> @@ -3338,7 +3338,6 @@ int snd_hda_create_dig_out_ctls(struct
-> hda_codec *codec,
->  		kctl = snd_ctl_new1(dig_mix, codec);
->  		if (!kctl)
->  			return -ENOMEM;
-> -		kctl->id.device = dev;
->  		kctl->id.index = idx;
->  		kctl->private_value = codec->spdif_out.used - 1;
->  		err = snd_hda_ctl_add(codec, associated_nid, kctl);
-> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-> index e8c9442..23ca172 100644
-> --- a/sound/pci/hda/hda_codec.h
-> +++ b/sound/pci/hda/hda_codec.h
-> @@ -679,6 +679,8 @@ struct hda_bus {
->  	unsigned int response_reset:1;	/* controller was reset */
->  	unsigned int in_reset:1;	/* during reset operation */
->  	unsigned int power_keep_link_on:1; /* don't power off HDA link */
-> +
-> +	int primary_dig_out_type;	/* primary digital out PCM type */
->  };
->
->  /*
-> @@ -846,7 +848,6 @@ struct hda_codec {
->  	struct mutex hash_mutex;
->  	struct snd_array spdif_out;
->  	unsigned int spdif_in_enable;	/* SPDIF input enable? */
-> -	int primary_dig_out_type;	/* primary digital out PCM type */
->  	const hda_nid_t *slave_dig_outs; /* optional digital out slave 
-> widgets */
->  	struct snd_array init_pins;	/* initial (BIOS) pin configurations */
->  	struct snd_array driver_pins;	/* pin configs set by codec parser */
+--H1spWtNR+x+ondvy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRGNRoAAoJELSic+t+oim9QogQAIWMOOiYwjuHkoONuZ068xW2
+vhTUaBAUmpAdrTrdvcT9i4RgeXvAlp1TQgTDuTTdXJQoj4KVdvqmizUljm5kIncQ
+agC04B4dWtNGWMo24p8VIMs30JP/BgMUcVJMIqHYTO28x+nbT9rkea8P3KmSFUJP
+0aDVodvBpOMe6AA2NoWrDAzcMmBA2EVP9sgtYuRIJd4YbCwyDcds1EjeUa5/K4ow
+cnWB3MRRh4nkW/7+Mv+M0sXZ6PuqxujpW3pLRWO1aZ4ryYbHWjFTuz7MCmq4QcWM
+HHVoQSgJY1ib+Ol1ZhWZAvnV1ZjlY/nUoLbA5JRSjwLcajGk0vRoT3s9/3OhX34Q
+ALnEbYfH9xbyWVXIN9wC37yyS/kV44O6rqdMEe5yaS8y8pKbcO1C2F5iFR3EXVNv
++NoCDWl6Tl7zHYma1pF31e7j29CMUHIusgejbdi/jjcqqPL9ApFadUWx2GUFFJEX
+B9a4b99E5W/5Mf6/2MzZgaK6lFBikiHv6DRD3Yjw9bKnGv2+8hhuAeM8bvrp92Z8
+0FdhvHTT5eFHT7x+mosnrSlaOniSGuqAbfjEeo/GE6X5pWbrkeWxU+qggUrhZc4F
+Jl5mjLdR9bedEhL0DpeRybK88zl5Kx/E7coGMSi9zlz42Osvhg1FjdWwW1zoKyBD
+H3i9YPIO3fI4Y4YTXjst
+=R3Ds
+-----END PGP SIGNATURE-----
+
+--H1spWtNR+x+ondvy--
+
+--===============8791134914287308492==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8791134914287308492==--
