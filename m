@@ -1,76 +1,122 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: imx-audmux: Fix sparse warning
-Date: Mon, 11 Feb 2013 16:55:07 +0000
-Message-ID: <20130211165507.GI4607@opensource.wolfsonmicro.com>
-References: <1360597148-6420-1-git-send-email-festevam@gmail.com>
+From: Anil Kumar <anilk4.v@gmail.com>
+Subject: Re: Sound record on Devkit8000 with DT boot issue
+Date: Mon, 11 Feb 2013 23:28:04 +0530
+Message-ID: <CABYxbz7HcZTK+y20mtDR+1coRUbUMgNHNDdJ3O7Ln7U7d0LEzA@mail.gmail.com>
+References: <CABYxbz5ECxoWZtkfL3UbZ=R4LVoNeMVxjYbPdZoarstCod-gQw@mail.gmail.com>
+	<5118EF75.30107@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6830107669510098845=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9E5B226505A
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2013 18:03:01 +0100 (CET)
-In-Reply-To: <1360597148-6420-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5118EF75.30107@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, tony@atomide.com, thomas@tomweber.eu, perex@perex.cz, tiwai@suse.de, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Peter,
 
---===============6830107669510098845==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+ZmrHH5cGjskQnY1"
-Content-Disposition: inline
+Thanks for helping me. please see my comment inline
 
+On Mon, Feb 11, 2013 at 6:47 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+> On 02/10/2013 04:21 PM, Anil Kumar wrote:
+>> Hi All,
+>>
+>> I am working on Devkit8000 and adding DT support for that. I am trying
+>> to add sound DT node support for this boards.
+>> I have nearly done with this but facing issue on record. I do not have
+>> much knowledge of twl4030 audio codec but with
+>> small Hack[1] (as MainMic connected to the input jack)  i am able to
+>> record sound on Devkit8000.
+>> I do not know that MICBIAS1_EN can be enable by amixer commands.
+>> Could you please help me to get out of this ?
+>
+> You need to pass the routing information via DT for Devkit8000. This is not
+> done for the BeagleBoard since it works without it (no need for MICBIAS for
+> example)
+>
+>>
+>>
+>> 1) Hack [1]
+>>
+>> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+>> index 63b280b..6780681 100644
+>> --- a/sound/soc/codecs/twl4030.c
+>> +++ b/sound/soc/codecs/twl4030.c
+>> @@ -1473,7 +1473,7 @@ static const struct snd_soc_dapm_widget
+>> twl4030_dapm_widgets[] = {
+>>         SND_SOC_DAPM_SUPPLY("micbias2 select", TWL4030_REG_MICBIAS_CTL, 6, 0,
+>>                             NULL, 0),
+>>
+>> -       SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 0),
+>> +       SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 1),
+>
+> Yes, this is HACK and it is wrong at the same time.
 
---+ZmrHH5cGjskQnY1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agree
 
-On Mon, Feb 11, 2013 at 01:39:08PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Fix the following sparse warning:
+>
+>>         SND_SOC_DAPM_MICBIAS("Mic Bias 2", TWL4030_REG_MICBIAS_CTL, 1, 0),
+>>         SND_SOC_DAPM_MICBIAS("Headset Mic Bias", TWL4030_REG_MICBIAS_CTL, 2, 0),
+>>
+>>
+>> 2) Sound DT node patch for Devkit8000
+>>
+>> diff --git a/arch/arm/boot/dts/omap3-
+>> devkit8000.dts b/arch/arm/boot/dts/omap3-devkit8000.dts
+>> index dc59272..5f3eec0 100644
+>> --- a/arch/arm/boot/dts/omap3-devkit8000.dts
+>> +++ b/arch/arm/boot/dts/omap3-devkit8000.dts
+>> @@ -44,11 +44,22 @@
+>>                  };
+>>
+>>         };
+>> +
+>> +       sound {
+>> +               compatible = "ti,omap-twl4030";
+>> +               ti,model = "devkit8000";
+>> +
+>> +               ti,mcbsp = <&mcbsp2>;
+>> +               ti,codec = <&twl_audio>;
+>
+> Here you should have something like:
+> ti,audio-routing =
+>         "Ext Spk", "PREDRIVEL",
+>         "Ext Spk", "PREDRIVER",
+>         "MAINMIC", "Main Mic",
+>         "Main Mic", "Mic Bias 1";
+>
+> So you connect the MicBias1 to Main Mic. When you start playback MicBias1 will
+> be turned on for you.
 
-Applied, thanks.
+I tried with this routing (next-20130211 tag kernel). But it is not
+working for me.
+So i have gone through other board and found snd_soc_dapm_route for
 
---+ZmrHH5cGjskQnY1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+1) zoom2.c
+       {"MAINMIC", NULL, "Mic Bias 1"},
+       {"Mic Bias 1", NULL, "Ext Mic"},
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+2) omap3pandora.c
+        {"MAINMIC", NULL, "Mic Bias 1"},
+        {"Mic Bias 1", NULL, "Mic (internal)"},
 
-iQIcBAEBAgAGBQJRGSJTAAoJELSic+t+oim9OjwP/jUBokCj9VTk/jHf/TPC6WKD
-JBy5ouffehOBUBHik+1SRFKOZRgdSYnuFwZx9UzTAXu+ZNzcPD0dUJjviU8OK1Qw
-TfMZbXvO/99nLVtOO3peRQTAEsB7pM/XxYOAqv7JwpUuNgRVkS6yMfZIPYPT28se
-8iN9SFXJfu5TWUZ71gEZYoMUYni1K9RHP5a0N8QxOlKhva2rDP8aZltdIv4i2X6V
-0vIFfs7dzobrDJxZOMbYTD5i1Or+i4Q/R1ItIDM9t0/3Wu8q2pTwOI8mkpkyInbh
-UJib/CMQdRuyU8JWmRwVPVHHK/WxDuk0dxSmq9V0Iq4qWjCqB/+t14Qg7JAc+bQI
-S5JR/wweweUoaPWsMmfMh/Mos0mT16uh37wp7r5bq47olGworYXOCS7PYQ1oRIAR
-y+0qiCUIR1v47eZdt5g7EPmVixOfghN8P/ueStzdqM9dEgWzPAIH0Bw0YYjehGW2
-0PGL1mDiLsTWDJvyts0VMg4LqcKkSeNbnFZ6pQGeAjPijTs+kr6xPR6+KdB5yR6H
-1hjYK1+IbfpeEjlqZhjNQf8EEJHLtNkyrpNbeRc2CkfSGuelGDSV3DMaXIpk3mCT
-QgwVISd/g2yJaQyuOU2woMBdnnci1maH5e8926i+hlgKlZZnAVB7NBZJjgkKD1Nf
-9uJfdVFzL5tbqOsAGReu
-=ztc3
------END PGP SIGNATURE-----
+But for omap-twl4030.c it is
+        {"MAINMIC", NULL, "Main Mic"},
+        {"Main Mic", NULL, "Mic Bias 1"},
 
---+ZmrHH5cGjskQnY1--
+ It Should will be as ?
+        {"MAINMIC", NULL, "Mic Bias 1"},
+        {"Mic Bias 1", NULL, "Main Mic"},
 
---===============6830107669510098845==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Because with this i am able to get audio on Devkit8000 as
+             ti,audio-routing =
+                        "Ext Spk", "PREDRIVEL",
+                        "Ext Spk", "PREDRIVER",
+                        "MAINMIC", "Mic Bias 1",
+                        "Mic Bias 1", "Main Mic";
 
+Sorry if i am saying nonsense.
 
---===============6830107669510098845==--
+Thanks,
+Anil
+[...]
