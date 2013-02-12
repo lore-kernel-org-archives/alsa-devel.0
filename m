@@ -1,14 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] compress: add support for gapless playback
-Date: Tue, 12 Feb 2013 10:31:55 -0800
-Message-ID: <1360693915-22595-1-git-send-email-vinod.koul@intel.com>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: Takashi: please help (compiling alsa-driver)
+Date: Tue, 12 Feb 2013 22:58:37 +0100
+Message-ID: <511ABB0D.90808@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B325F265082
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2013 19:57:08 +0100 (CET)
+Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
+ [209.85.214.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A804264F13
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2013 22:58:39 +0100 (CET)
+Received: by mail-bk0-f52.google.com with SMTP id jk13so259474bkc.11
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2013 13:58:38 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,336 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, broonie@opensource.wolfsonmicro.com, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@intel.com
+To: tiwai@suse.de
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Hi Takashi,
 
-this add new API for sound compress to support gapless playback.
-As noted in Documentation change, we add API to send metadata of encoder and
-padding delay to DSP. Also add API for indicating EOF and switching to
-subsequent track
+I'm talking to you directly because this
 
-Also bump the compress API version
+ftp://ftp.suse.com/pub/people/tiwai/snapshot/alsa-driver-unstable-snapshot.tar.gz
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- v3:
-- Change back to ioctl struct with padding
-- adding states for next_track and metadata for proper transistion
+is the only alsa-driver source that I'm able to compile so far. I can unpack this and simply run ./configure && make && make install. It works great. (I compile against the kernel-headers from ubuntu).
 
- v2:
-- Make it a patch, not RFC
-- split metadata to key/value pairs, and send multiple keys
-- add get_metadata api
-- split partial_drain to next_data & partial_drain
-- add stream states for transistion
-- update documentation
----
-Documentation/sound/alsa/compress_offload.txt |   46 ++++++++++
- include/sound/compress_driver.h               |    8 ++
- include/uapi/sound/compress_offload.h         |   23 +++++-
- sound/core/compress_offload.c                 |  116 +++++++++++++++++++++++++
- 4 files changed, 192 insertions(+), 1 deletions(-)
+I spent hours in trying to compile from several other sources.
 
-diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/alsa/compress_offload.txt
-index 90e9b3a..0bcc551 100644
---- a/Documentation/sound/alsa/compress_offload.txt
-+++ b/Documentation/sound/alsa/compress_offload.txt
-@@ -145,6 +145,52 @@ Modifications include:
- - Addition of encoding options when required (derived from OpenMAX IL)
- - Addition of rateControlSupported (missing in OpenMAX AL)
- 
-+Gapless Playback
-+================
-+When playing thru an album, the decoders have the ability to skip the encoder
-+delay and padding and directly move from one track content to another. The end
-+user can perceive this as gapless playback as we dont have silence while
-+switching from one track to another
-+
-+Also, there might be low-intensity noises due to encoding. Perfect gapless is
-+difficult to reach with all types of compressed data, but works fine with most
-+music content. The decoder needs to know the encoder delay and encoder padding.
-+So we need to pass this to DSP. This metadata is extracted from ID3/MP4 headers
-+and are not present by default in the bitstream, hence the need for a new
-+interface to pass this information to the DSP. Also DSP and userspace needs to
-+switch from one track to another and start using data for second track.
-+
-+The main additions are:
-+
-+- set_metadata
-+This routine sets the encoder delay and encoder padding. This can be used by
-+decoder to strip the silence. This needs to be set before the data in the track
-+is written.
-+
-+- set_next_track
-+This routine tells DSP that metadata and write operation sent after this would
-+correspond to subsequent track
-+
-+- partial drain
-+This is called when end of file is reached. The userspace can inform DSP that
-+EOF is reached and now DSP can start skipping padding delay. Also next write
-+data would belong to next track
-+
-+Sequence flow for gapless would be:
-+- Open
-+- Get caps / codec caps
-+- Set params
-+- Set metadata of the first track
-+- Fill data of the first track
-+- Trigger start
-+- User-space finished sending all,
-+- Indicaite next track data by sending set_next_track
-+- Set metadata of the next track
-+- then call partial_drain to flush most of buffer in DSP
-+- Fill data of the next track
-+- DSP switches to second track
-+(note: order for partial_drain and write for next track can be reversed as well)
-+
- Not supported:
- 
- - Support for VoIP/circuit-switched calls is not the target of this
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index f2912ab..ff6c741 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -71,6 +71,8 @@ struct snd_compr_runtime {
-  * @runtime: pointer to runtime structure
-  * @device: device pointer
-  * @direction: stream direction, playback/recording
-+ * @metadata_set: metadata set flag, true when set
-+ * @next_track: has userspace signall next track transistion, true when set
-  * @private_data: pointer to DSP private data
-  */
- struct snd_compr_stream {
-@@ -79,6 +81,8 @@ struct snd_compr_stream {
- 	struct snd_compr_runtime *runtime;
- 	struct snd_compr *device;
- 	enum snd_compr_direction direction;
-+	bool metadata_set;
-+	bool next_track;
- 	void *private_data;
- };
- 
-@@ -110,6 +114,10 @@ struct snd_compr_ops {
- 			struct snd_compr_params *params);
- 	int (*get_params)(struct snd_compr_stream *stream,
- 			struct snd_codec *params);
-+	int (*set_metadata)(struct snd_compr_stream *stream,
-+			struct snd_compr_metadata *metadata);
-+	int (*get_metadata)(struct snd_compr_stream *stream,
-+			struct snd_compr_metadata *metadata);
- 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
- 	int (*pointer)(struct snd_compr_stream *stream,
- 			struct snd_compr_tstamp *tstamp);
-diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
-index 05341a4..8903fe4 100644
---- a/include/uapi/sound/compress_offload.h
-+++ b/include/uapi/sound/compress_offload.h
-@@ -30,7 +30,7 @@
- #include <sound/compress_params.h>
- 
- 
--#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 0)
-+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 1)
- /**
-  * struct snd_compressed_buffer: compressed buffer
-  * @fragment_size: size of buffer fragment in bytes
-@@ -122,6 +122,19 @@ struct snd_compr_codec_caps {
- };
- 
- /**
-+ * struct snd_compr_metadata: compressed stream metadata
-+ * @encoder_delay: no of samples inserted by the encoder at the beginning
-+ * of the track
-+ * @encoder_padding: no of samples appended by the encoder at the end
-+ * of the track
-+ */
-+struct snd_compr_metadata {
-+	 __u32 encoder_delay;
-+	 __u32 encoder_padding;
-+	 __u32 reserved[12];
-+};
-+
-+/**
-  * compress path ioctl definitions
-  * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
-  * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec
-@@ -145,6 +158,10 @@ struct snd_compr_codec_caps {
- 						struct snd_compr_codec_caps)
- #define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x12, struct snd_compr_params)
- #define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x13, struct snd_codec)
-+#define SNDRV_COMPRESS_SET_METADATA	_IOW('C', 0x14,\
-+						 struct snd_compr_metadata)
-+#define SNDRV_COMPRESS_GET_METADATA	_IOW('C', 0x15,\
-+						 struct snd_compr_metadata)
- #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
- #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
- #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
-@@ -152,10 +169,14 @@ struct snd_compr_codec_caps {
- #define SNDRV_COMPRESS_START		_IO('C', 0x32)
- #define SNDRV_COMPRESS_STOP		_IO('C', 0x33)
- #define SNDRV_COMPRESS_DRAIN		_IO('C', 0x34)
-+#define SNDRV_COMPRESS_NEXT_TRACK	_IO('C', 0x35)
-+#define SNDRV_COMPRESS_PARTIAL_DRAIN	_IO('C', 0x36)
- /*
-  * TODO
-  * 1. add mmap support
-  *
-  */
- #define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
-+#define SND_COMPR_TRIGGER_NEXT_TRACK 8
-+#define SND_COMPR_TRIGGER_PARTIAL_DRAIN 9
- #endif
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index ad11dc9..ba2f0ad 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -514,6 +514,69 @@ out:
- 	return retval;
- }
- 
-+static int
-+snd_compr_get_metadata(struct snd_compr_stream *stream, unsigned long arg)
-+{
-+	struct snd_compr_metadata *metadata;
-+	int retval;
-+
-+	if (!stream->ops->get_metadata)
-+		return -ENXIO;
-+
-+	metadata = kmalloc(sizeof(*metadata), GFP_KERNEL);
-+	if (!metadata)
-+		return -ENOMEM;
-+	if (copy_from_user(metadata, (void __user *)arg, sizeof(*metadata))) {
-+		retval = -EFAULT;
-+		goto out;
-+	}
-+
-+	retval = stream->ops->get_metadata(stream, metadata);
-+	if (retval != 0)
-+		goto out;
-+
-+	if (copy_to_user((void __user *)arg, metadata, sizeof(*metadata))) {
-+		retval = -EFAULT;
-+		goto out;
-+	}
-+
-+out:
-+	kfree(metadata);
-+	return retval;
-+}
-+
-+static int
-+snd_compr_set_metadata(struct snd_compr_stream *stream, unsigned long arg)
-+{
-+	struct snd_compr_metadata *metadata;
-+	int retval;
-+
-+	if (!stream->ops->set_metadata)
-+		return -ENXIO;
-+	/*
-+	* we should allow parameter change only when stream has been
-+	* opened not in other cases
-+	*/
-+	metadata = kmalloc(sizeof(*metadata), GFP_KERNEL);
-+	if (!metadata)
-+		return -ENOMEM;
-+	if (copy_from_user(metadata, (void __user *)arg,
-+				sizeof(*metadata))) {
-+		retval = -EFAULT;
-+		goto out;
-+	}
-+
-+	pr_debug("metadata encoder delay=%x encoder padding=%x\n",
-+			 metadata->encoder_delay,  metadata->encoder_padding);
-+
-+	retval = stream->ops->set_metadata(stream, metadata);
-+	stream->metadata_set = true;
-+
-+out:
-+	kfree(metadata);
-+	return retval;
-+}
-+
- static inline int
- snd_compr_tstamp(struct snd_compr_stream *stream, unsigned long arg)
- {
-@@ -594,6 +657,46 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
- 	return retval;
- }
- 
-+static int snd_compr_next_track(struct snd_compr_stream *stream)
-+{
-+	int retval;
-+
-+	/* only a running stream can transition to next track */
-+	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
-+		return -EPERM;
-+
-+	/* you can signal next track isf this is intended to be a gapless stream
-+	 * and current track metadata is set
-+	 */
-+	if (stream->metadata_set == false)
-+		return -EPERM;
-+
-+	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_NEXT_TRACK);
-+	if (retval != 0)
-+		return retval;
-+	stream->metadata_set = false;
-+	stream->next_track = true;
-+	return 0;
-+}
-+
-+static int snd_compr_partial_drain(struct snd_compr_stream *stream)
-+{
-+	int retval;
-+	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
-+			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
-+		return -EPERM;
-+	/* stream can be drained only when next track has been signalled */
-+	if (stream->next_track == false)
-+		return -EPERM;
-+
-+	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
-+	if (retval)
-+		pr_err("Partial drain returned failure\n");
-+
-+	stream->next_track = false;
-+	return retval;
-+}
-+
- static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- {
- 	struct snd_compr_file *data = f->private_data;
-@@ -623,6 +726,12 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
- 		retval = snd_compr_get_params(stream, arg);
- 		break;
-+	case _IOC_NR(SNDRV_COMPRESS_SET_METADATA):
-+		retval = snd_compr_set_metadata(stream, arg);
-+		break;
-+	case _IOC_NR(SNDRV_COMPRESS_GET_METADATA):
-+		retval = snd_compr_get_metadata(stream, arg);
-+		break;
- 	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
- 		retval = snd_compr_tstamp(stream, arg);
- 		break;
-@@ -644,6 +753,13 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
- 		retval = snd_compr_drain(stream);
- 		break;
-+	case _IOC_NR(SNDRV_COMPRESS_PARTIAL_DRAIN):
-+		retval = snd_compr_partial_drain(stream);
-+		break;
-+	case _IOC_NR(SNDRV_COMPRESS_NEXT_TRACK):
-+		retval = snd_compr_next_track(stream);
-+		break;
-+
- 	}
- 	mutex_unlock(&stream->device->lock);
- 	return retval;
--- 
-1.7.0.4
+* The plain1.0.25 release (complains about missing symbols).
+* The snapshots fromhttp://www.alsa-project.org/snapshot/  (will complain about missing 'uapi' stuff)
+* Btw. where did the snapshots fromhttp://ftp.kernel.org/pub/linux/kernel/people/tiwai/alsa/  go (Advertised here:http://www.alsa-project.org/main/index.php/Download)?
+* Checked out alsa-driver from git. But no luck, tried many things. e.g.: Branch release, then autoconf, but not even ./configure succeeds.
+
+Id like to submit some patches and be able to work with the current state from git. How is that supposed to work?
+
+Btw. I often read that the alsa-kernel is needed to compile. But it is not neede with this above mentioned 'unstable-snapshot'. It will just compile against the ubuntu kernel-headers (Lubuntu 12.10).
+
+How do you generate these snapshots?
+
+Thanks and sorry if that's stupid questions..
+Jonas
