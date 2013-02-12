@@ -1,97 +1,82 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 3/3 v5] ASoC: simple-card: add Device Tree support
-Date: Mon, 11 Feb 2013 14:40:17 -0700
-Message-ID: <51196541.8010207@wwwdotorg.org>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
- <50E71618.8090302@wwwdotorg.org>
- <20130104193712.GN4627@opensource.wolfsonmicro.com>
- <87y5fvyy18.wl%kuninori.morimoto.gx@renesas.com>
- <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
- <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
- <51097F0F.2030501@wwwdotorg.org>
- <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
- <5110349D.3050308@wwwdotorg.org>
- <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
- <87a9rjrrwt.wl%kuninori.morimoto.gx@renesas.com>
- <87zjzhymbs.wl%kuninori.morimoto.gx@renesas.com>
+From: Anil Kumar <anilk4.v@gmail.com>
+Subject: Re: Sound record on Devkit8000 with DT boot issue
+Date: Tue, 12 Feb 2013 08:50:33 +0530
+Message-ID: <CABYxbz7FjutV3zgGYEszzUXMn=Vuk4Vpd3-cP+aVATx5k2yxBQ@mail.gmail.com>
+References: <CABYxbz5ECxoWZtkfL3UbZ=R4LVoNeMVxjYbPdZoarstCod-gQw@mail.gmail.com>
+	<5118EF75.30107@ti.com>
+	<CABYxbz7HcZTK+y20mtDR+1coRUbUMgNHNDdJ3O7Ln7U7d0LEzA@mail.gmail.com>
+	<511934ED.2020104@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <87zjzhymbs.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <511934ED.2020104@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, tony@atomide.com, thomas@tomweber.eu, perex@perex.cz, tiwai@suse.de, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/2013 05:55 PM, Kuninori Morimoto wrote:
-> Support for loading the simple-card module via devicetree.
-> It requests cpu/codec information for probing.
+Hi Peter,
 
+On Mon, Feb 11, 2013 at 11:44 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+> Hi,
+>
+> On 02/11/2013 06:58 PM, Anil Kumar wrote:
+>>> Here you should have something like:
+>>> ti,audio-routing =
+>>>         "Ext Spk", "PREDRIVEL",
+>>>         "Ext Spk", "PREDRIVER",
+>>>         "MAINMIC", "Main Mic",
+>>>         "Main Mic", "Mic Bias 1";
+>>>
+>>> So you connect the MicBias1 to Main Mic. When you start playback MicBias1 will
+>>> be turned on for you.
+>>
+>> I tried with this routing (next-20130211 tag kernel). But it is not
+>> working for me.
+>> So i have gone through other board and found snd_soc_dapm_route for
+>>
+>> 1) zoom2.c
+>>        {"MAINMIC", NULL, "Mic Bias 1"},
+>>        {"Mic Bias 1", NULL, "Ext Mic"},
 
-> +Simple-Card:
-> +
-> +Required properties:
-> +
-> + [prefix] means cpu/codec here
-> +
-> +- compatible					: "simple-audio"
-> +- simple-audio,card-name			: simple-audio card name
-> +- simple-audio,format				: see below
+I was giving zoom2 reference from kernel 3.8-rc5.
 
-> +- simple-audio,[prefix],dai			: phandle and port for CPU/CODEC
-> +- simple-audio,[prefix],frame-master		: frame master
-> +- simple-audio,[prefix],bitclock-master		: bitclock master
-> +
-> +Optional properties:
-> +
-> +- simple-audio,system-clock-frequency		: system clock rate if it is connected to both CPU/CODEC
-> +- simple-audio,bitclock-inversion		: bit clock inversion for both CPU/CODEC
-> +- simple-audio,frame-inversion			: frame inversion for both CPU/CODEC
-> +
-> +- simple-audio,[prefix],bitclock-inversion	: if CPU/CODEC needs clock inversion
-> +- simple-audio,[prefix],frame-inversion		: if CPU/CODEC needs frame inversion
-> +- simple-audio,[prefix],system-clock-frequency	: system clock rate for each CPU/CODEC
+>>
+>> 2) omap3pandora.c
+>>         {"MAINMIC", NULL, "Mic Bias 1"},
+>>         {"Mic Bias 1", NULL, "Mic (internal)"},
 
-I know Mark had a preference to store DAI-specific data in sub-nodes
-rather than using this "[prefix]" thing... If that doesn't end up
-happening though, rather than "[prefix],", I think it'd be more typical
-to use "[prefix]-" since I've never seen a DT property name with two
-","; "-" is typically used as the word separator in DT property names.
+same as above comment.
 
-> +sound {
-> +	compatible = "simple-audio";
-...
-> +	simple-audio,codec,dai = <&ak4648 0>;
-...
-> +sh_fsi2: sh_fsi2@0xec230000 {
-> +	compatible = "renesas,sh_fsi2";
-> +	reg = <0xec230000 0x400>;
-> +	interrupt-parent = <&gic>;
-> +	interrupts = <0 146 0x4>;
-> +};
+>>
+>> But for omap-twl4030.c it is
+>>         {"MAINMIC", NULL, "Main Mic"},
+>>         {"Main Mic", NULL, "Mic Bias 1"},
+>>
+>>  It Should will be as ?
+>>         {"MAINMIC", NULL, "Mic Bias 1"},
+>>         {"Mic Bias 1", NULL, "Main Mic"},
+>>
+>> Because with this i am able to get audio on Devkit8000 as
+>>              ti,audio-routing =
+>>                         "Ext Spk", "PREDRIVEL",
+>>                         "Ext Spk", "PREDRIVER",
+>>                         "MAINMIC", "Mic Bias 1",
+>>                         "Mic Bias 1", "Main Mic";
+>
+> In 3.9 this should not work...
+>
+> linux-next should not have zoom2 at least and I converted the machine drivers
+> as well in regards to micbias handling:
+> e04d6e5 ASoC: twl4030: Convert MICBIAS to SUPPLY widget
+> 57d61b9 ASoC: OMAP: Remove obsolete machine drivers for Zoom2 and SDP3430
 
-Note that the DT binding documentation for renesas,sh_fsi2 needs to define:
+My board is not botting with linux-next ((next-20130211). So i have
+taken omap-twl4030.c changes from next-20130211
+and merged into 3.8-rc5 as it does have. But missed changes for
+twl4030.c. With these all changes it is working for me now .
+Sorry for noise.
 
-a) The value of the #sound-dai-cells property that's missing from the
-sh_fsi2 node.
-
-b) The legal values for the "0" in the "simple-audio,codec,dai" property
-in the "sound" node above, and which DAI on the device each value
-represents.
+I am really thanks for this.
+Anil
+[...]
