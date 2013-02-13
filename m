@@ -1,147 +1,76 @@
-From: Anil Kumar <anilk4.v@gmail.com>
-Subject: Re: Use of of_parse_phandle()/of_node_put()
-Date: Wed, 13 Feb 2013 22:32:11 +0530
-Message-ID: <CABYxbz7_9cwgswHq2Pq3BWx-8-c0tkJNW8z16u45+pAJV6YS0w@mail.gmail.com>
-References: <F3DBB1B3EF102E4994C89758CFCA32412C6E52@DBDE01.ent.ti.com>
-	<511BB6C2.3060105@ti.com>
-	<CABYxbz6xEEVxL1BBM+Mb7net27d3zTD-6+uoS63LXXvifn_TNw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] compress: add support for gapless playback
+Date: Wed, 13 Feb 2013 22:33:22 +0530
+Message-ID: <20130213170322.GA7777@intel.com>
+References: <1360771234-13006-1-git-send-email-vinod.koul@intel.com>
+ <s5hzjz8upzo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CABYxbz6xEEVxL1BBM+Mb7net27d3zTD-6+uoS63LXXvifn_TNw@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "Kumar, Anil" <anilkumar.v@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Alsa Devel List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABDE4265248
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 18:04:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hzjz8upzo.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+On Wed, Feb 13, 2013 at 05:40:11PM +0100, Takashi Iwai wrote:
+> At Wed, 13 Feb 2013 08:00:34 -0800,
+> Vinod Koul wrote:
+> > 
+> > +static int
+> > +snd_compr_get_metadata(struct snd_compr_stream *stream, unsigned long arg)
+> > +{
+> > +	struct snd_compr_metadata *metadata;
+> > +	int retval;
+> > +
+> > +	if (!stream->ops->get_metadata)
+> > +		return -ENXIO;
+> > +
+> > +	metadata = kmalloc(sizeof(*metadata), GFP_KERNEL);
+> 
+> There is no merit to use kmalloc just for two integers at all.
+> Simply put on stack:
+> 	struct snd_compr_metadata metdata;
+> 	if (copy_from_user(&metadata, (void __user *)arg, sizeof(metadata)))
+> 	...
+while doing this I had thought on this, but my laziness got better of me :(
+> 
+> Ditto for snd_compr_set_metadata().
+> 
+> > +static int snd_compr_partial_drain(struct snd_compr_stream *stream)
+> > +{
+> > +	int retval;
+> > +	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
+> > +			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
+> > +		return -EPERM;
+> > +	/* stream can be drained only when next track has been signalled */
+> > +	if (stream->next_track == false)
+> > +		return -EPERM;
+> > +
+> > +	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
+> > +	if (retval)
+> > +		pr_err("Partial drain returned failure\n");
+> 
+> I don't think it's good to spew errors.
+ok
+> 
+> Also, the initialization of new stream fields is missing in other
+> places like prepare callback?  Otherwise the values will retain.
+The stream is created at open. Since it used kzalloc, these variables would be
+init to false.
 
-On Wed, Feb 13, 2013 at 10:10 PM, Anil Kumar <anilk4.v@gmail.com> wrote=
-:
-> Hi,
->
-> On Wed, Feb 13, 2013 at 9:22 PM, Peter Ujfalusi <peter.ujfalusi@ti.co=
-m> wrote:
->> On 02/13/2013 07:04 AM, Kumar, Anil wrote:
->>> Hi  Peter,
->>>
->>> Just trying to understand.
->>>
->>> In omap-twl4030.c file probe function :-
->>>
->>> dai_node =3D of_parse_phandle(node, "ti,mcbsp", 0);
->>>                 if (!dai_node) {
->>>                         dev_err(&pdev->dev, "McBSP node is not prov=
-ided\n");
->>>                         return -EINVAL;
->>>                 }
->>>
->>> Here  =93of_parse_phandle()=94  is used to get  =93of_device=94 nod=
-e pointer.
->>> of_parse_phandle() suggest to use of_node_put()  on it when done.
->>>
->>> It looks when code request for an =93of_device=94 node, kernel  mai=
-ntains
->>> =93refcount=94 for this.
->>> It check =93refcount=94  before giving pointer of of_device node an=
-d  WARN_ON()
->>> in case of refcount  > 0 and increase it on success.
->>>
->>> Should this code need to use of_node_put() on the requested =93of_d=
-evice=94 when done
->>> so that this can be get  again ?
->>
->> Hrm, one thing or sure we should not call it of_node_put() while we =
-have the
->> card loaded since the node is used runtime by the core.
->>
->> However when we unload the machine driver it might be needed, but no=
-t sure
->> about this. None of the existing machine drivers doing it (tegra, sa=
-msung,
->> omap, etc).
->> But if it is needed it might be better to be done by the core?
->>
-
-Sorry i forgot to mention.
-
-Yes, I think soc core may have something like[1] to release cpu_of_node=
-=2E
-
-[1]
-------------8---------------
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b7e84a7..9000f4a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1044,6 +1044,13 @@ static void soc_remove_dai_links(struct
-snd_soc_card *card)
-                        soc_remove_link_dais(card, dai, order);
-        }
-
-+       /* release cpu_of_node */
-+       if(card->dai_link) {
-+               int i;
-+               for(i =3D 0; i < card->num_links; i++)
-+                       of_node_put(card->dai_link[i].cpu_of_node);
-+       }
-+
-
-Thanks,
-Anil
-
->
-> It looks issue is different here.
-> I have done some testing here with patch[1]. In this patch i tried to
-> get same "of_device" node pointer
-> again and found refcount for this dt node is 1 [Result].
->
-> As of_parse_phandle() says it "returns the device_node pointer with
-> refcount incremented".
-> But why refcount  value is 1 [Result] again ?
->
-> -----------------------------8---------------------
-> Patch[1]:-
-> diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4=
-030.c
-> index fd98509..0828a5c 100644
-> --- a/sound/soc/omap/omap-twl4030.c
-> +++ b/sound/soc/omap/omap-twl4030.c
-> @@ -297,6 +297,16 @@ static int omap_twl4030_probe(struct platform_de=
-vice *pdev)
->                         dev_err(&pdev->dev, "McBSP node is not provid=
-ed\n");
->                         return -EINVAL;
->                 }
-> +               printk(KERN_ERR"refcount 0x%x",
-> atomic_read(&dai_node->kref.refcount));
-> +
-> +               dai_node =3D of_parse_phandle(node, "ti,mcbsp", 0);
-> +                if (!dai_node) {
-> +                        dev_err(&pdev->dev, "McBSP node is not provi=
-ded\n");
-> +                        return -EINVAL;
-> +                }
-> +               printk(KERN_ERR"refcount 0x%x",
-> atomic_read(&dai_node->kref.refcount));
-> +
-> +
->                 omap_twl4030_dai_links[0].cpu_dai_name  =3D NULL;
->                 omap_twl4030_dai_links[0].cpu_of_node =3D dai_node;
->
-> [Result]:-
-> root@DevKit8000:/# insmod snd-soc-omap-twl4030.ko
-> [   95.718109] refcount 0x1
-> [   95.720611] refcount 0x1 [   95.818054] omap-twl4030 sound.20:
-> twl4030-hifi <-> 49022000.mcbsp mapping ok
->
->
-> Thanks,
-> Anil
-> [...]
 --
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+~Vinod
