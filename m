@@ -1,19 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] compress: add support for gapless playback
-Date: Wed, 13 Feb 2013 05:39:03 -0800
-Message-ID: <20130213133903.GF17659@intel.com>
-References: <1360693915-22595-1-git-send-email-vinod.koul@intel.com>
- <s5hobfovijf.wl%tiwai@suse.de> <20130213063547.GD17659@intel.com>
- <s5hhalgvf4k.wl%tiwai@suse.de>
+From: Antonio Ospite <ospite@studenti.unina.it>
+Subject: Re: [PATCH] Add M2Tech hiFace USB-SPDIF driver
+Date: Wed, 13 Feb 2013 15:09:55 +0100
+Message-ID: <20130213150955.71734db195cfdaa6470facac@studenti.unina.it>
+References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
+ <5118B186.1020801@ladisch.de>
+ <20130212133521.39628e4aef556560b8b14dd8@studenti.unina.it>
+ <511A51BF.6000602@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 62C88265112
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 15:03:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hhalgvf4k.wl%tiwai@suse.de>
+Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id E27BB265112
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 15:10:02 +0100 (CET)
+In-Reply-To: <511A51BF.6000602@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 13, 2013 at 08:37:15AM +0100, Takashi Iwai wrote:
-> At Tue, 12 Feb 2013 22:35:47 -0800,
-> Vinod Koul wrote:
-> > 
-> > On Wed, Feb 13, 2013 at 07:23:32AM +0100, Takashi Iwai wrote:
-> > > But this makes difficult to know which parameter is unavailable in
-> > > this kernel, as already mentioned in the thread.  You need to add
-> > > another ioctl or add a mask in the struct.  Or, take back to single
-> > > key/value pairs, so user can see the -ENOENT or such error for
-> > > non-existing parameters.
-> > Right, but we have the API version.
-> 
-> But what if a driver doesn't support a particular metadata?
-> Or would you mandate for every driver to support all metadata?
-yes you have point. We cant expect everyone to support all metadate.
-So I think going back to simple single key/value is easy.
-
-Driver cna implement what it supports and return error for ones it doesn't. This
-becomes scalable as well.
-But we can't keep them in core as we dont know which ones will change...
-
-Expect updated patch soon :)
-
---
-~Vinod
+T24gVHVlLCAxMiBGZWIgMjAxMyAxNToyOToxOSArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
+bnNAbGFkaXNjaC5kZT4gd3JvdGU6Cgo+IEFudG9uaW8gT3NwaXRlIHdyb3RlOgo+ID4gQ2xlbWVu
+cyBMYWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+IHdyb3RlOgo+ID4+IEFudG9uaW8gT3NwaXRl
+IHdyb3RlOgoKWy4uLl0KPiA+Pj4gKwlpZiAocXVpcmsgJiYgcXVpcmstPmRldmljZV9uYW1lKQo+
+ID4+PiArCQlzdHJjcHkoY2FyZC0+c2hvcnRuYW1lLCBxdWlyay0+ZGV2aWNlX25hbWUpOwo+ID4+
+PiArCWVsc2UKPiA+Pj4gKwkJc3RyY3B5KGNhcmQtPnNob3J0bmFtZSwgIk0yVGVjaCBnZW5lcmlj
+IGF1ZGlvIik7Cj4gPj4KPiA+PiBEb24ndCB0aGUgZGV2aWNlcyBoYXZlIHRoZWlyIG5hbWUgaW4g
+dGhlIGRldmljZSBkZXNjcmlwdG9yPwo+ID4KPiA+IEl0IGxvb2tzIGxpa2UgdGhlIGlQcm9kdWN0
+IGZpZWxkIGlzIG5vdCByZWxpYWJsZSBlbm91Z2gsIGRpZmZlcmVudAo+ID4gZGV2aWNlcyBjb3Vs
+ZCBoYXZlIHRoZSBzYW1lIHZhbHVlIHRoZXJlLgo+IAo+IFRoZSBpUHJvZHVjdCBmaWVsZCBpcyB0
+aGUgbnVtYmVyIG9mIHRoZSBzdHJpbmcgZGVzY3JpcHRvci4KPiBUaGF0IHN0cmluZyBtaWdodCBi
+ZSB1c2VmdWwgYXQgbGVhc3QgaW4gdGhlIG5vbi1xdWlyayBjYXNlCj4gKHdoaWNoIHNob3VsZG4n
+dCBoYXBwZW4gaW4gdGhlIGZpcnN0IGNhc2UgQUZBSUNTKS4KPiAKClRoZSBvcmlnaW5hbCBhdXRo
+b3JzIG9mIHRoZSBkcml2ZXIgcHJlZmVycmVkIHRvIGhhdmUgYWxsIHRoZSBkZXZpY2UKbmFtZXMg
+aGFyZGNvZGVkIGluIHRoZSBkcml2ZXIsIEkgZ3Vlc3MgdGhleSBoYWQgYSByZWFzb24gZm9yIHRo
+YXQ7IGZvcgpub3cgSSdsbCBsZWF2ZSBpdCB0aGlzIHdheSBhcyBJIGRvIG5vdCBoYXZlIGFsbCB0
+aGUgc3VwcG9ydGVkIGRldmljZXMgdG8KdmVyaWZ5IHRoZSBwcm9kdWN0IHN0cmluZ3MgZm9yIGFs
+bCBvZiB0aGVtLiBJZiBQaWV0cm8gY2FuIHByb3ZpZGUgdGhpcwppbmZvIEkgd2lsbCB1cGRhdGUg
+dGhlIGRyaXZlciB0byByZWx5IG9uIGluZm8gZnJvbSB0aGUgZGV2aWNlcwp0aGVtc2VsdmVzLgoK
+PiA+Pj4gK3N0YXRpYyB2b2lkIGhpZmFjZV9wY21fb3V0X3VyYl9oYW5kbGVyKHN0cnVjdCB1cmIg
+KnVzYl91cmIpCj4gPj4+ICt7Cj4gPj4+ICsJaWYgKHVzYl91cmItPnN0YXR1cyB8fCBydC0+cGFu
+aWMgfHwgcnQtPnN0cmVhbV9zdGF0ZSA9PSBTVFJFQU1fU1RPUFBJTkcpCj4gPj4+ICsJCXJldHVy
+bjsKPiA+Pgo+ID4+IEluIHNvbWUgZXJyb3IgY2FzZXMsIHlvdSBtaWdodCBjb25zaWRlciBzdG9w
+cGluZyB0aGUgc3RyZWFtLgo+ID4KPiA+IFlvdSBtZWFuIEkgc2hvdWxkIGNoZWNrIGV4cGxpY2l0
+bHkgZm9yIHNvbWUgdmFsdWVzIG9mIHVzYl91cmItPnN0YXR1cwo+ID4gYW5kIHN0b3AgdGhlIHN0
+cmVhbSBpZiB0aGV5IGhhcHBlbj8gTGlrZSB5b3UgZG8gaW4KPiA+IHNvdW5kL3VzYi9taXNjL3Vh
+MTAxLmM6OmNhcHR1cmVfdXJiX2NvbXBsZXRlKCk/Cj4gCj4gSWYgb25seSBvbmUgVVJCIGRvZXNu
+J3QgZ2V0IGRlbGl2ZXJlZCBmb3Igd2hhdGV2ZXIgcmVhc29uLCBob3cgc2hvdWxkCj4gdGhlIGRy
+aXZlciByZWFjdD8gIElmIHlvdSBqdXN0IGV4aXQgZnJvbSB0aGUgY29tcGxldGlvbiBoYW5kbGVy
+LCB0aGUKPiBkcml2ZXIgd2lsbCBjb250aW51ZSB0byBmaWxsIGFuZCBxdWV1ZSBhbGwgdGhlIG90
+aGVyIFVSQnMuCj4gQW5kIHdoYXQgaGFwcGVucyB3aGVuIHRoZSBkZXZpY2UgaXMgdW5wbHVnZ2Vk
+Pwo+CgpJIHNlZSwgc2luY2Ug4oCUYXMgVGFrYXNoaSBzYWlk4oCUIGtpbGxpbmcgVVJCcyBpcyBu
+b3Qgc2FmZSBpbiB0aGUKY29tcGxldGUgY2FsbGJhY2sgSSdsbCBqdXN0IHNldCBydC0+cGFuaWMg
+dG8gdHJ1ZSB3aGVuIFVSQnMgZmFpbDoKCmh0dHBzOi8vZ2l0aHViLmNvbS9wYW5pY2tpbmcvc25k
+LXVzYi1hc3luY2F1ZGlvL2NvbW1pdC8wYjc0MTVlNTU5ZTFhODY4MjQwYWM4N2E1NGFjODA1Y2E2
+OWZlNGU3Cgo+ID4+PiArCQlyZXQgPSBoaWZhY2VfcGNtX3BsYXliYWNrKHN1Yiwgb3V0X3VyYik7
+Cj4gPj4+ICsJCWlmIChyZXQgPCAwKSB7Cj4gPj4+ICsJCQlzcGluX3VubG9ja19pcnFyZXN0b3Jl
+KCZzdWItPmxvY2ssIGZsYWdzKTsKPiA+Pj4gKwkJCWdvdG8gb3V0X2ZhaWw7Cj4gPj4+ICsJCX0K
+PiA+Pj4gKy4uLgo+ID4+PiArb3V0X2ZhaWw6Cj4gPj4+ICsJdXNiX3N1Ym1pdF91cmIoJm91dF91
+cmItPmluc3RhbmNlLCBHRlBfQVRPTUlDKTsKPiA+Pgo+ID4+IFNhbWUgaGVyZS4KPiA+Cj4gPiBJ
+ZiBJIHJlbW92ZSB0aGUgY2hlY2sgZm9yIGZvcm1hdCBpbiBoaWZhY2VfcGNtX3BsYXliYWNrKCkg
+dGhlbiB0aGlzCj4gPiBsYWJlbCB3b3VsZCBnbyBhd2F5IHRvbyBhbmQgdGhpcyB3b24ndCBiZSBh
+biBlcnJvciBwYXRoIGFueW1vcmUsIGJ1dAo+ID4gbWF5YmUgeW91IG1lYW50IHRoYXQgSSBuZWVk
+IHRvIGNoZWNrIHRoZSByZXR1cm4gdmFsdWUgb2YgdXNiX3N1Ym1pdF91cmIKPiA+ICgpIGFuZCBz
+dG9wIHRoZSBzdHJlYW0gd2hlbiB0aGUgbGF0dGVyIGZhaWxzPwo+IAo+IEF0IHRoZSBtb21lbnQs
+IHlvdSBhcmUgdHJ5aW5nIHRvIHF1ZXVlIGEgVVJCIHdpdGggaW52YWxpZCBzYW1wbGVzLgo+IAoK
+SSBhbSBnb2luZyB0byBzZW5kIGEgdmVyc2lvbiAyIHNvb24uCgpUaGFua3MgYWdhaW4sCiAgIEFu
+dG9uaW8KCi0tIApBbnRvbmlvIE9zcGl0ZQpodHRwOi8vYW8yLml0CgpBOiBCZWNhdXNlIGl0IG1l
+c3NlcyB1cCB0aGUgb3JkZXIgaW4gd2hpY2ggcGVvcGxlIG5vcm1hbGx5IHJlYWQgdGV4dC4KICAg
+U2VlIGh0dHA6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUG9zdGluZ19zdHlsZQpROiBXaHkgaXMg
+dG9wLXBvc3Rpbmcgc3VjaCBhIGJhZCB0aGluZz8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
