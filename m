@@ -1,19 +1,16 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH] Add M2Tech hiFace USB-SPDIF driver
-Date: Wed, 13 Feb 2013 15:09:55 +0100
-Message-ID: <20130213150955.71734db195cfdaa6470facac@studenti.unina.it>
-References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
- <5118B186.1020801@ladisch.de>
- <20130212133521.39628e4aef556560b8b14dd8@studenti.unina.it>
- <511A51BF.6000602@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Use of of_parse_phandle()/of_node_put()
+Date: Wed, 13 Feb 2013 16:52:34 +0100
+Message-ID: <511BB6C2.3060105@ti.com>
+References: <F3DBB1B3EF102E4994C89758CFCA32412C6E52@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
- by alsa0.perex.cz (Postfix) with ESMTP id E27BB265112
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 15:10:02 +0100 (CET)
-In-Reply-To: <511A51BF.6000602@ladisch.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D897526523A
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 16:52:39 +0100 (CET)
+In-Reply-To: <F3DBB1B3EF102E4994C89758CFCA32412C6E52@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
+To: "Kumar, Anil" <anilkumar.v@ti.com>
+Cc: Alsa Devel List <alsa-devel@alsa-project.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAxMiBGZWIgMjAxMyAxNToyOToxOSArMDEwMApDbGVtZW5zIExhZGlzY2ggPGNsZW1l
-bnNAbGFkaXNjaC5kZT4gd3JvdGU6Cgo+IEFudG9uaW8gT3NwaXRlIHdyb3RlOgo+ID4gQ2xlbWVu
-cyBMYWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+IHdyb3RlOgo+ID4+IEFudG9uaW8gT3NwaXRl
-IHdyb3RlOgoKWy4uLl0KPiA+Pj4gKwlpZiAocXVpcmsgJiYgcXVpcmstPmRldmljZV9uYW1lKQo+
-ID4+PiArCQlzdHJjcHkoY2FyZC0+c2hvcnRuYW1lLCBxdWlyay0+ZGV2aWNlX25hbWUpOwo+ID4+
-PiArCWVsc2UKPiA+Pj4gKwkJc3RyY3B5KGNhcmQtPnNob3J0bmFtZSwgIk0yVGVjaCBnZW5lcmlj
-IGF1ZGlvIik7Cj4gPj4KPiA+PiBEb24ndCB0aGUgZGV2aWNlcyBoYXZlIHRoZWlyIG5hbWUgaW4g
-dGhlIGRldmljZSBkZXNjcmlwdG9yPwo+ID4KPiA+IEl0IGxvb2tzIGxpa2UgdGhlIGlQcm9kdWN0
-IGZpZWxkIGlzIG5vdCByZWxpYWJsZSBlbm91Z2gsIGRpZmZlcmVudAo+ID4gZGV2aWNlcyBjb3Vs
-ZCBoYXZlIHRoZSBzYW1lIHZhbHVlIHRoZXJlLgo+IAo+IFRoZSBpUHJvZHVjdCBmaWVsZCBpcyB0
-aGUgbnVtYmVyIG9mIHRoZSBzdHJpbmcgZGVzY3JpcHRvci4KPiBUaGF0IHN0cmluZyBtaWdodCBi
-ZSB1c2VmdWwgYXQgbGVhc3QgaW4gdGhlIG5vbi1xdWlyayBjYXNlCj4gKHdoaWNoIHNob3VsZG4n
-dCBoYXBwZW4gaW4gdGhlIGZpcnN0IGNhc2UgQUZBSUNTKS4KPiAKClRoZSBvcmlnaW5hbCBhdXRo
-b3JzIG9mIHRoZSBkcml2ZXIgcHJlZmVycmVkIHRvIGhhdmUgYWxsIHRoZSBkZXZpY2UKbmFtZXMg
-aGFyZGNvZGVkIGluIHRoZSBkcml2ZXIsIEkgZ3Vlc3MgdGhleSBoYWQgYSByZWFzb24gZm9yIHRo
-YXQ7IGZvcgpub3cgSSdsbCBsZWF2ZSBpdCB0aGlzIHdheSBhcyBJIGRvIG5vdCBoYXZlIGFsbCB0
-aGUgc3VwcG9ydGVkIGRldmljZXMgdG8KdmVyaWZ5IHRoZSBwcm9kdWN0IHN0cmluZ3MgZm9yIGFs
-bCBvZiB0aGVtLiBJZiBQaWV0cm8gY2FuIHByb3ZpZGUgdGhpcwppbmZvIEkgd2lsbCB1cGRhdGUg
-dGhlIGRyaXZlciB0byByZWx5IG9uIGluZm8gZnJvbSB0aGUgZGV2aWNlcwp0aGVtc2VsdmVzLgoK
-PiA+Pj4gK3N0YXRpYyB2b2lkIGhpZmFjZV9wY21fb3V0X3VyYl9oYW5kbGVyKHN0cnVjdCB1cmIg
-KnVzYl91cmIpCj4gPj4+ICt7Cj4gPj4+ICsJaWYgKHVzYl91cmItPnN0YXR1cyB8fCBydC0+cGFu
-aWMgfHwgcnQtPnN0cmVhbV9zdGF0ZSA9PSBTVFJFQU1fU1RPUFBJTkcpCj4gPj4+ICsJCXJldHVy
-bjsKPiA+Pgo+ID4+IEluIHNvbWUgZXJyb3IgY2FzZXMsIHlvdSBtaWdodCBjb25zaWRlciBzdG9w
-cGluZyB0aGUgc3RyZWFtLgo+ID4KPiA+IFlvdSBtZWFuIEkgc2hvdWxkIGNoZWNrIGV4cGxpY2l0
-bHkgZm9yIHNvbWUgdmFsdWVzIG9mIHVzYl91cmItPnN0YXR1cwo+ID4gYW5kIHN0b3AgdGhlIHN0
-cmVhbSBpZiB0aGV5IGhhcHBlbj8gTGlrZSB5b3UgZG8gaW4KPiA+IHNvdW5kL3VzYi9taXNjL3Vh
-MTAxLmM6OmNhcHR1cmVfdXJiX2NvbXBsZXRlKCk/Cj4gCj4gSWYgb25seSBvbmUgVVJCIGRvZXNu
-J3QgZ2V0IGRlbGl2ZXJlZCBmb3Igd2hhdGV2ZXIgcmVhc29uLCBob3cgc2hvdWxkCj4gdGhlIGRy
-aXZlciByZWFjdD8gIElmIHlvdSBqdXN0IGV4aXQgZnJvbSB0aGUgY29tcGxldGlvbiBoYW5kbGVy
-LCB0aGUKPiBkcml2ZXIgd2lsbCBjb250aW51ZSB0byBmaWxsIGFuZCBxdWV1ZSBhbGwgdGhlIG90
-aGVyIFVSQnMuCj4gQW5kIHdoYXQgaGFwcGVucyB3aGVuIHRoZSBkZXZpY2UgaXMgdW5wbHVnZ2Vk
-Pwo+CgpJIHNlZSwgc2luY2Ug4oCUYXMgVGFrYXNoaSBzYWlk4oCUIGtpbGxpbmcgVVJCcyBpcyBu
-b3Qgc2FmZSBpbiB0aGUKY29tcGxldGUgY2FsbGJhY2sgSSdsbCBqdXN0IHNldCBydC0+cGFuaWMg
-dG8gdHJ1ZSB3aGVuIFVSQnMgZmFpbDoKCmh0dHBzOi8vZ2l0aHViLmNvbS9wYW5pY2tpbmcvc25k
-LXVzYi1hc3luY2F1ZGlvL2NvbW1pdC8wYjc0MTVlNTU5ZTFhODY4MjQwYWM4N2E1NGFjODA1Y2E2
-OWZlNGU3Cgo+ID4+PiArCQlyZXQgPSBoaWZhY2VfcGNtX3BsYXliYWNrKHN1Yiwgb3V0X3VyYik7
-Cj4gPj4+ICsJCWlmIChyZXQgPCAwKSB7Cj4gPj4+ICsJCQlzcGluX3VubG9ja19pcnFyZXN0b3Jl
-KCZzdWItPmxvY2ssIGZsYWdzKTsKPiA+Pj4gKwkJCWdvdG8gb3V0X2ZhaWw7Cj4gPj4+ICsJCX0K
-PiA+Pj4gKy4uLgo+ID4+PiArb3V0X2ZhaWw6Cj4gPj4+ICsJdXNiX3N1Ym1pdF91cmIoJm91dF91
-cmItPmluc3RhbmNlLCBHRlBfQVRPTUlDKTsKPiA+Pgo+ID4+IFNhbWUgaGVyZS4KPiA+Cj4gPiBJ
-ZiBJIHJlbW92ZSB0aGUgY2hlY2sgZm9yIGZvcm1hdCBpbiBoaWZhY2VfcGNtX3BsYXliYWNrKCkg
-dGhlbiB0aGlzCj4gPiBsYWJlbCB3b3VsZCBnbyBhd2F5IHRvbyBhbmQgdGhpcyB3b24ndCBiZSBh
-biBlcnJvciBwYXRoIGFueW1vcmUsIGJ1dAo+ID4gbWF5YmUgeW91IG1lYW50IHRoYXQgSSBuZWVk
-IHRvIGNoZWNrIHRoZSByZXR1cm4gdmFsdWUgb2YgdXNiX3N1Ym1pdF91cmIKPiA+ICgpIGFuZCBz
-dG9wIHRoZSBzdHJlYW0gd2hlbiB0aGUgbGF0dGVyIGZhaWxzPwo+IAo+IEF0IHRoZSBtb21lbnQs
-IHlvdSBhcmUgdHJ5aW5nIHRvIHF1ZXVlIGEgVVJCIHdpdGggaW52YWxpZCBzYW1wbGVzLgo+IAoK
-SSBhbSBnb2luZyB0byBzZW5kIGEgdmVyc2lvbiAyIHNvb24uCgpUaGFua3MgYWdhaW4sCiAgIEFu
-dG9uaW8KCi0tIApBbnRvbmlvIE9zcGl0ZQpodHRwOi8vYW8yLml0CgpBOiBCZWNhdXNlIGl0IG1l
-c3NlcyB1cCB0aGUgb3JkZXIgaW4gd2hpY2ggcGVvcGxlIG5vcm1hbGx5IHJlYWQgdGV4dC4KICAg
-U2VlIGh0dHA6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUG9zdGluZ19zdHlsZQpROiBXaHkgaXMg
-dG9wLXBvc3Rpbmcgc3VjaCBhIGJhZCB0aGluZz8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+On 02/13/2013 07:04 AM, Kumar, Anil wrote:
+> Hi  Peter,
+>  =
+
+> Just trying to understand.
+>  =
+
+> In omap-twl4030.c file probe function :-
+>  =
+
+> dai_node =3D of_parse_phandle(node, "ti,mcbsp", 0);
+>                 if (!dai_node) {
+>                         dev_err(&pdev->dev, "McBSP node is not provided\n=
+");
+>                         return -EINVAL;
+>                 }
+>  =
+
+> Here  =93of_parse_phandle()=94  is used to get  =93of_device=94 node poin=
+ter.
+> of_parse_phandle() suggest to use of_node_put()  on it when done.
+>  =
+
+> It looks when code request for an =93of_device=94 node, kernel  maintains
+> =93refcount=94 for this.
+> It check =93refcount=94  before giving pointer of of_device node and  WAR=
+N_ON()
+> in case of refcount  > 0 and increase it on success.
+>  =
+
+> Should this code need to use of_node_put() on the requested =93of_device=
+=94 when done
+> so that this can be get  again ?
+
+Hrm, one thing or sure we should not call it of_node_put() while we have the
+card loaded since the node is used runtime by the core.
+
+However when we unload the machine driver it might be needed, but not sure
+about this. None of the existing machine drivers doing it (tegra, samsung,
+omap, etc).
+But if it is needed it might be better to be done by the core?
+
+>  =
+
+> I am taking reference of Linux-next kernel.
+>  =
+
+> I'm sorry if this question is very vague or  missing something.
+>  =
+
+> Thanks,
+> Anil
+>  =
+
+>  =
+
+>  =
+
+>  =
+
+>  =
+
+>  =
+
+
+
+-- =
+
+P=E9ter
