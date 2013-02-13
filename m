@@ -1,17 +1,28 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Channel map for Logitech Web Camera
-Date: Wed, 13 Feb 2013 10:49:17 +0800
-Message-ID: <CAN8ccia396NDB-stUZaVfeaArcwyHWv-L5_R1YoFNoUHaX5dPg@mail.gmail.com>
+Subject: Re: [RFC]Connection list of hda widget
+Date: Wed, 13 Feb 2013 11:16:15 +0800
+Message-ID: <CAN8ccibsGJZ53juGDG07XuUNc5p8LehdkpYxirmrizbpyenQvg@mail.gmail.com>
+References: <CAN8cciaMRg55oO3iMJqngcFqeW==POKiv=+_NraPQ-WzEm4gFQ@mail.gmail.com>
+ <CAN8cciYwRrsNPqQhe4zbBYmBpNNEEgQPkosT8dYd4dBFXdHxGA@mail.gmail.com>
+ <CAN8cciaaPLvJZH2vP0tVD6d9gppaFRcUgNcytkdac+6HoCc7sg@mail.gmail.com>
+ <CAN8ccibiu+_n3rB+Er-8DE-RR7Wy2PHr5Q+gQVE3Ojfny6wtqw@mail.gmail.com>
+ <CAN8cciYcdYum7tZMf2wBqk4vVjzKEWNYxQDmaRmo8+Hatk--xQ@mail.gmail.com>
+ <5113C3AF.8020709@canonical.com> <s5h4nhoc9vk.wl%tiwai@suse.de>
+ <CAN8cciYYeWtTmJ6+UnBW2wcO_0yqgEY=cugEMdnjZaDZjzgtcg@mail.gmail.com>
+ <s5hd2wb8fo8.wl%tiwai@suse.de>
+ <CAN8cciYXLRWe9dS6DT8uGF8+m=h=gBtgY998s6QGh8TLDfOcww@mail.gmail.com>
+ <s5hy5ezb1n6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A3782650E7
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 03:49:19 +0100 (CET)
-Received: by mail-ie0-f169.google.com with SMTP id 13so1105494iea.14
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2013 18:49:18 -0800 (PST)
+Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
+ [209.85.223.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75B732650E7
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2013 04:16:17 +0100 (CET)
+Received: by mail-ie0-f175.google.com with SMTP id c12so1108671ieb.6
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2013 19:16:16 -0800 (PST)
+In-Reply-To: <s5hy5ezb1n6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,154 +32,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?B?TWFub2xvIETDrWF6?= <diaz.manolo@gmail.com>, Miro Hodak <mhodak127@gmail.com>, basinilya@gmail.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-It seem that channel map is still missing for Logitech Web Camera
-since I can find the corresponding entries of hda-intel and the
-patched au8830 in asound.state except the Logitech Web Camera
+> > > > > > >
+> > > > > > > ADI codecs  have vendor defined widgets ( BIAS Power-Down and
+VREF
+> > > > > > > Power-Down) which have connection list
+> >
+> > >
+> > > > Node 0x2f [Vendor Defined Widget] wcaps 0xf00100: Mono
+> > > >     Connection: 6
+> > > > 0x11* 0x12 0x14 0x15 0x16 0x17
+> > > >
+> > > > My proposed patch just remove "*" from the connection list since
+there
+> > is
+> > > > no way to know the vendor defined widget support the verb
+> > GET_CONNECT_SELECT
+> > >
+> > > You should have written _this_ text at the first place!
+> > > The biggest problem is that your description doesn't match with what
+> > > you write in your patch.
+> > >
+> > > But still, it's still an open question.  In the specification, the use
+> > > of selector isn't prohibited for vendor-spec widgets.  So, some crazy
+> > > h/w designer may think of it.
+> > >
+> >
+> > Yes, it depend on how you interept "Other"
+> >
+> > 7.3.3.2 Connection Select Control
+> > Applies to:
+> > Input Converter
+> > Selector Widget
+> > Pin Complex
+> > Other
+>
+> Heh, and obviously h/w manufacturers thought vendor-spec widget
+> belongs to "Other".
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=5fdaecdb0d8fd8131d2adb9ca0ae2b77707b36ca
+
+do you have the connection list in node 0x12 of ad1986a ?
 
 
-state.U0x46d0x992 {
-	control.1 {
-		iface MIXER
-		name 'Mic Capture Switch'
-		value false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.2 {
-		iface MIXER
-		name 'Mic Capture Volume'
-		value 3041
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 3072'
-			dbmin 1800
-			dbmax 3000
-			dbvalue.0 2987
-		}
-	}
-}
+If you prefer the patch to blacklist specific widgets similar to power
+widget
 
+Refer to Table 13.Connection List of AD1882 dartasheet
 
-   Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         2
-      bInterfaceCount         2
-      bFunctionClass          1 Audio
-      bFunctionSubClass       2 Streaming
-      bFunctionProtocol       0
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           38
-        bInCollection           1
-        baInterfaceNr( 0)       3
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0201 Microphone
-        bAssocTerminal          0
-        bNrChannels             1
-        wChannelConfig     0x0000
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          1
-        bSourceID               5
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 8
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 5
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute Control
-          Volume Control
-        iFeature                0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           3
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        16000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0044  1x 68 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
+23 A2209811 BC30AE24 NID 11 1 18 20 1 22 24 1 2E 30 1 3C
+2F 00171514 NID 14 15 17
+
+Refer to Table 13.Connection List of AD1988 dartasheet
+
+23 25249811 2120BD38 Length 8 NID 11 1 18  24  25  38 1 3D  20  21
+2F 15141211 00001716 Length 6  NID 11  12  14  15  16  17
+
+Blacklist ADI codec's vendor defined widgets ( BIAS Power-Down and VREF
+Power-Down) which have connection list for not sending
+AC_VERB_GET_CONNECT_SEL
+
+static void print_conn_list(struct snd_info_buffer *buffer,
+    struct hda_codec *codec, hda_nid_t nid,
+    unsigned int wid_type, hda_nid_t *conn,
+    int conn_len)
+{
+int c, curr = -1;
+
+if (conn_len > 1 &&
+    wid_type != AC_WID_AUD_MIX &&
+    wid_type != AC_WID_VOL_KNB &&
++     (wide_type != AC_WID _VENDOR && ((codec->vendor_id >> 16) != 0x11d4))
+&&
+    wid_type != AC_WID_POWER)
+curr = snd_hda_codec_read(codec, nid, 0,
+  AC_VERB_GET_CONNECT_SEL, 0);
+snd_iprintf(buffer, "  Connection: %d\n", conn_len);
