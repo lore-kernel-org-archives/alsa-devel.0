@@ -1,7 +1,8 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 2/3] ASoC: add snd_soc_of_get_port_dai_name()
-Date: Wed, 13 Feb 2013 16:33:54 -0700
-Message-ID: <511C22E2.60701@wwwdotorg.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 3/3 v5] ASoC: simple-card: add Device Tree
+	support
+Date: Wed, 13 Feb 2013 16:36:13 -0700
+Message-ID: <511C236D.6060300@wwwdotorg.org>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <87sj6t484z.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
@@ -19,62 +20,73 @@ References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
  <5110349D.3050308@wwwdotorg.org>
  <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
- <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
- <511963F8.5020107@wwwdotorg.org>
- <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
+ <87a9rjrrwt.wl%kuninori.morimoto.gx@renesas.com>
+ <87zjzhymbs.wl%kuninori.morimoto.gx@renesas.com>
+ <51196541.8010207@wwwdotorg.org>
+ <874nhhf22h.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <87bobqf5yq.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD87D26163E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2013 00:36:16 +0100 (CET)
+In-Reply-To: <874nhhf22h.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/11/2013 10:37 PM, Kuninori Morimoto wrote:
+On 02/12/2013 06:13 PM, Kuninori Morimoto wrote:
 > 
 > Hi Stephen
 > 
->> 2) Call an "of_xlate" function on that driver, passing it the "portspec"
->> I mentioned above; the driver will interpret the portspec, maps it to
->> the ASoC port name, and return it.
+>>> +- simple-audio,[prefix],bitclock-inversion	: if CPU/CODEC needs clock inversion
+>>> +- simple-audio,[prefix],frame-inversion		: if CPU/CODEC needs frame inversion
+>>> +- simple-audio,[prefix],system-clock-frequency	: system clock rate for each CPU/CODEC
 >>
->> The DT binding for each audio component must define the list of valid
->> port IDs, and the number of cells used to encode the value.
->>
->> See for example the GPIO and PWM subsystem's of_xlate functions.
+>> I know Mark had a preference to store DAI-specific data in sub-nodes
+>> rather than using this "[prefix]" thing... If that doesn't end up
+>> happening though, rather than "[prefix],", I think it'd be more typical
+>> to use "[prefix]-" since I've never seen a DT property name with two
+>> ","; "-" is typically used as the word separator in DT property names.
 > 
 > Hmm...
-> I guess this means struct snd_soc_dai_driver or similar has .of_xlate() callback ?
+> If I can use sub-node, I can use below style for getting dai name ?
+> I guess it is easy/simple, but, what do you think about this ?
+> 
+> sound {
+> 	ak4642-hifi {
 
-Yes, something like that.
+If you want the "simple-audio" binding and driver to be completely
+generic, you had better name this node something generic like "codec".
 
-> But, this simple-audio is "independent" from cpu/codec.
+> 		simple-audio,codec;
 
-Well, any driver that could be used with it will need to implement the
-.of_xlate() callback. The simple-audio code would still be 100%
-independent from any CPU or CODEC, since of_xlate would be a standard
-interface/API that any CPU or CODEC driver could implement, and any ASoC
-machine driver could call.
+Then, you wouldn't need that property to identify what type of child
+node this is.
 
-> For example, basically, we can use this simple-audio for FSI-wm8903 matching.
-> But, this wm8903 is used on tegra too.
-> Then, FSI-wm8903 (which use simple-audio) needs .of_xlate on wm8903 driver to get interpreted port name,
-> but tegra-wm8903 don't need it.
+> 		simple-audio,dev = <&ak4642>;
 
-Yes, .of_xlate() wouldn't have to be implemented by the WM8903 CODEC
-driver for the tegra-wm8903 machine driver to use the WM8903 CODEC.
-However, if it /was/ implemented, it wouldn't stop tegra-wm8903 from
-working. And later, it may help unify all the simple Tegra machine
-drivers into one, since they could also become CODEC-independent, and
-hence become unified (or at least mostly unified) code.
+Make that value <&ak4642 0> in order to select which AK4642 port you
+want to connect.
+
+> 		...
+> 	}
+> 	fsia-dai {
+
+Name this node something generic like "CPU".
+
+> 		simple-audio,cpu;
+> 		simple-audio,dev = <&sh_fsi2>;
+> 		...
+> 	}
+> }
