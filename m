@@ -1,8 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 3/4 v6] ASoC: fsi: enable .of_xlate_dai_name on struct
- snd_soc_dai_driver
-Date: Thu, 14 Feb 2013 01:22:32 -0800 (PST)
-Message-ID: <87y5ertfl7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 4/4 v6] ASoC: simple-card: add Device Tree support
+Date: Thu, 14 Feb 2013 01:24:24 -0800 (PST)
+Message-ID: <87wqubtfi3.wl%kuninori.morimoto.gx@renesas.com>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
  <20130104193712.GN4627@opensource.wolfsonmicro.com>
@@ -46,63 +45,268 @@ To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Mark Brown
 Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-fsi driver can be used from simple-card driver
-which requires .of_xlate_dai_name.
-
-This patch supports .of_xlate_dai_name.
+Support for loading the simple-card module via devicetree.
+It requests cpu/codec information,
+and .of_xlate_dai_name support on each driver for probing.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 ---
 v5 -> v6
 
- - new patch
+ - cpu/codec become sub-node
+ - it is using new .of_xlate_dai_name based
+   snd_soc_of_get_port_dai_name()
+ - update Documentation
 
- .../devicetree/bindings/sound/renesas,fsi.txt      |    9 +++++++++
- sound/soc/sh/fsi.c                                 |    2 ++
- 2 files changed, 11 insertions(+)
+ .../devicetree/bindings/sound/simple-card.txt      |   75 +++++++++++++
+ sound/soc/generic/simple-card.c                    |  118 +++++++++++++++++++-
+ 2 files changed, 188 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/simple-card.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.txt b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-index c5be003..a403ec1 100644
---- a/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-@@ -13,9 +13,18 @@ Required properties:
- - fsib,stream-mode-support	: same as fsia
- - fsib,use-internal-clock	: same as fsia
- 
-+Optional
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+new file mode 100644
+index 0000000..86e0d9f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -0,0 +1,75 @@
++Simple-Card:
 +
-+  #sound-dai-cells		: enable DAI specifier, it must be 1
++Required properties:
 +
-+  Valid values for the DAI specifier are:
-+  0: FSI port A
-+  1: FSI port B
++- compatible				: "simple-audio"
++- simple-audio,card-name		: simple-audio card name
++- simple-audio,format			: see below
++- simple-audio,cpu			: CPU sub-node, see below
++- simple-audio,codec			: CODEC sub-node, see below
 +
- Example:
- 
- sh_fsi2: sh_fsi2@0xec230000 {
++Optional properties:
++
++- simple-audio,system-clock-frequency	: system clock rate if it is connected to both CPU/CODEC
++- simple-audio,bitclock-inversion	: bit clock inversion for both CPU/CODEC
++- simple-audio,frame-inversion		: frame inversion for both CPU/CODEC
++
++Required cpu/codec subnode properties:
++
++- simple-audio,dev			: phandle and port for CPU/CODEC
++- simple-audio,frame-master		: frame master
++- simple-audio,bitclock-master		: bitclock master
++#sound-dai-cells integer is required on simple-audio,dev phandle's node
++
++Optional subnode properties:
++
++- simple-audio,bitclock-inversion	: if CPU/CODEC needs clock inversion
++- simple-audio,frame-inversion		: if CPU/CODEC needs frame inversion
++- simple-audio,system-clock-frequency	: system clock rate for each CPU/CODEC
++
++simple-audio,format
++	"i2s"
++	"right_j"
++	"left_j"
++	"dsp_a"
++	"dsp_b"
++	"ac97"
++	"pdm"
++	"msb"
++	"lsb"
++
++Example:
++
++sound {
++	compatible = "simple-audio";
++
++	simple-audio,card-name = "FSI2A-AK4648";
++	simple-audio,format = "left_j";
++
++	simple-audio,cpu {
++		simple-audio,dev = <&sh_fsi2 0>;
++	};
++
++	simple-audio,codec {
++		simple-audio,dev = <&ak4648 0>;
++		simple-audio,bitclock-master;
++		simple-audio,frame-master;
++		simple-audio,system-clock-frequency = <11289600>;
++	};
++};
++
++&i2c0 {
++	ak4648: ak4648@0x12 {
++		#sound-dai-cells = <1>;
++		compatible = "asahi-kasei,ak4648";
++		reg = <0x12>;
++	};
++};
++
++sh_fsi2: sh_fsi2@0xec230000 {
 +	#sound-dai-cells = <1>;
- 	compatible = "renesas,sh_fsi2";
- 	reg = <0xec230000 0x400>;
- 	interrupts = <0 146 0x4>;
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index c724026a..afa6fd0 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1861,6 +1861,7 @@ static struct snd_soc_dai_driver fsi_soc_dai[] = {
- 			.channels_max	= 2,
- 		},
- 		.ops = &fsi_dai_ops,
-+		.of_xlate_dai_name = snd_soc_common_of_xlate_dai_name,
- 	},
- 	{
- 		.name			= "fsib-dai",
-@@ -1877,6 +1878,7 @@ static struct snd_soc_dai_driver fsi_soc_dai[] = {
- 			.channels_max	= 2,
- 		},
- 		.ops = &fsi_dai_ops,
-+		.of_xlate_dai_name = snd_soc_common_of_xlate_dai_name,
- 	},
- };
++	compatible = "renesas,sh_fsi2";
++	reg = <0xec230000 0x400>;
++	interrupt-parent = <&gic>;
++	interrupts = <0 146 0x4>;
++};
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 6cf8355..e50e415 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -9,6 +9,7 @@
+  * published by the Free Software Foundation.
+  */
  
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <sound/simple_card.h>
+@@ -52,11 +53,108 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
++static struct device_node*
++__asoc_simple_card_parse_of(struct device_node *np,
++			    struct asoc_simple_dai *dai)
++{
++	struct device_node *node;
++	char prop[128];
++
++	/* get "simple-audio,dev = <&phandle port>" */
++	snprintf(prop, sizeof(prop), "simple-audio,dev");
++	node = of_parse_phandle(np, prop, 0);
++	if (!node)
++		return NULL;
++
++	of_node_put(node);
++
++	/* get dai-name  */
++	dai->name = snd_soc_of_get_port_dai_name(np, prop);
++
++	/* get dai specific format */
++	dai->fmt = snd_soc_of_parse_daifmt(np, "simple-audio,");
++
++	/* get "simple-audio,system-clock-frequency = <xxx>" */
++	snprintf(prop, sizeof(prop), "simple-audio,system-clock-frequency");
++	of_property_read_u32(np, prop, &dai->sysclk);
++
++	return node;
++}
++
++static void asoc_simple_card_parse_of(struct device_node *node,
++				      struct asoc_simple_card_info *info,
++				      struct device *dev,
++				      struct device_node **of_cpu,
++				      struct device_node **of_codec,
++				      struct device_node **of_platform)
++{
++	struct device_node *np;
++	u32 sysclk = 0;
++
++	of_property_read_string(node, "simple-audio,card-name", &info->card);
++	info->name = info->card;
++
++	/* cpu/codec common daifmt */
++	info->daifmt = snd_soc_of_parse_daifmt(node, "simple-audio,") &
++		(SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK);
++
++	/* cpu/codec common clock */
++	of_property_read_u32(node,
++			"simple-audio,system-clock-frequency", &sysclk);
++	info->cpu_dai.sysclk = sysclk;
++	info->codec_dai.sysclk = sysclk;
++
++	/* cpu/codec sub-node */
++	for_each_child_of_node(node, np) {
++		if (0 == strcmp("simple-audio,cpu", np->name))
++			*of_cpu = __asoc_simple_card_parse_of(np,
++							&info->cpu_dai);
++		if (0 == strcmp("simple-audio,codec", np->name))
++			*of_codec = __asoc_simple_card_parse_of(np,
++							&info->codec_dai);
++	}
++
++	/* simple-card assumes platform == cpu */
++	*of_platform = *of_cpu;
++
++	dev_dbg(dev, "card-name : %s\n", info->card);
++	dev_dbg(dev, "platform : %04x / %p\n",
++		info->daifmt,
++		*of_platform);
++	dev_dbg(dev, "cpu : %s / %04x / %d / %p\n",
++		info->cpu_dai.name,
++		info->cpu_dai.fmt,
++		info->cpu_dai.sysclk,
++		*of_cpu);
++	dev_dbg(dev, "codec : %s / %04x / %d / %p\n",
++		info->codec_dai.name,
++		info->codec_dai.fmt,
++		info->codec_dai.sysclk,
++		*of_codec);
++}
++
+ static int asoc_simple_card_probe(struct platform_device *pdev)
+ {
+-	struct asoc_simple_card_info *cinfo = pdev->dev.platform_data;
++	struct asoc_simple_card_info *cinfo;
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *of_cpu, *of_codec, *of_platform;
+ 	struct device *dev = &pdev->dev;
+ 
++	cinfo		= NULL;
++	of_cpu		= NULL;
++	of_codec	= NULL;
++	of_platform	= NULL;
++	if (np && of_device_is_available(np)) {
++		cinfo = devm_kzalloc(dev, sizeof(*cinfo), GFP_KERNEL);
++		if (cinfo)
++			asoc_simple_card_parse_of(np, cinfo, dev,
++						  &of_cpu,
++						  &of_codec,
++						  &of_platform);
++	} else {
++		cinfo = pdev->dev.platform_data;
++	}
++
+ 	if (!cinfo) {
+ 		dev_err(dev, "no info for asoc-simple-card\n");
+ 		return -EINVAL;
+@@ -64,10 +162,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 
+ 	if (!cinfo->name	||
+ 	    !cinfo->card	||
+-	    !cinfo->codec	||
+-	    !cinfo->platform	||
+-	    !cinfo->cpu_dai.name ||
+-	    !cinfo->codec_dai.name) {
++	    !cinfo->codec_dai.name	||
++	    !(cinfo->codec		|| of_codec)	||
++	    !(cinfo->platform		|| of_platform)	||
++	    !(cinfo->cpu_dai.name	|| of_cpu)) {
+ 		dev_err(dev, "insufficient asoc_simple_card_info settings\n");
+ 		return -EINVAL;
+ 	}
+@@ -81,6 +179,9 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	cinfo->snd_link.platform_name	= cinfo->platform;
+ 	cinfo->snd_link.codec_name	= cinfo->codec;
+ 	cinfo->snd_link.codec_dai_name	= cinfo->codec_dai.name;
++	cinfo->snd_link.cpu_of_node	= of_cpu;
++	cinfo->snd_link.codec_of_node	= of_codec;
++	cinfo->snd_link.platform_of_node = of_platform;
+ 	cinfo->snd_link.init		= asoc_simple_card_dai_init;
+ 
+ 	/*
+@@ -102,9 +203,16 @@ static int asoc_simple_card_remove(struct platform_device *pdev)
+ 	return snd_soc_unregister_card(&cinfo->snd_card);
+ }
+ 
++static const struct of_device_id asoc_simple_of_match[] = {
++	{ .compatible = "simple-audio", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
++
+ static struct platform_driver asoc_simple_card = {
+ 	.driver = {
+ 		.name	= "asoc-simple-card",
++		.of_match_table = asoc_simple_of_match,
+ 	},
+ 	.probe		= asoc_simple_card_probe,
+ 	.remove		= asoc_simple_card_remove,
 -- 
 1.7.9.5
