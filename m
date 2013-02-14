@@ -1,8 +1,8 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 2/4 v6] ASoC: ak4642: enable .of_xlate_dai_name on struct
+Subject: [PATCH 3/4 v6] ASoC: fsi: enable .of_xlate_dai_name on struct
  snd_soc_dai_driver
-Date: Thu, 14 Feb 2013 01:22:10 -0800 (PST)
-Message-ID: <87zjz7tflt.wl%kuninori.morimoto.gx@renesas.com>
+Date: Thu, 14 Feb 2013 01:22:32 -0800 (PST)
+Message-ID: <87y5ertfl7.wl%kuninori.morimoto.gx@renesas.com>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
  <20130104193712.GN4627@opensource.wolfsonmicro.com>
@@ -46,7 +46,7 @@ To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Mark Brown
 Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ak4642 driver can be used from simple-card driver
+fsi driver can be used from simple-card driver
 which requires .of_xlate_dai_name.
 
 This patch supports .of_xlate_dai_name.
@@ -57,41 +57,52 @@ v5 -> v6
 
  - new patch
 
- Documentation/devicetree/bindings/sound/ak4642.txt |    5 +++++
- sound/soc/codecs/ak4642.c                          |    1 +
- 2 files changed, 6 insertions(+)
+ .../devicetree/bindings/sound/renesas,fsi.txt      |    9 +++++++++
+ sound/soc/sh/fsi.c                                 |    2 ++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4642.txt b/Documentation/devicetree/bindings/sound/ak4642.txt
-index 623d4e7..c9bb4e5 100644
---- a/Documentation/devicetree/bindings/sound/ak4642.txt
-+++ b/Documentation/devicetree/bindings/sound/ak4642.txt
-@@ -7,10 +7,15 @@ Required properties:
-   - compatible : "asahi-kasei,ak4642" or "asahi-kasei,ak4643" or "asahi-kasei,ak4648"
-   - reg : The chip select number on the I2C bus
+diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.txt b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
+index c5be003..a403ec1 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,fsi.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
+@@ -13,9 +13,18 @@ Required properties:
+ - fsib,stream-mode-support	: same as fsia
+ - fsib,use-internal-clock	: same as fsia
  
 +Optional
 +
-+  #sound-dai-cells : enable DAI specifier, it must be 1
++  #sound-dai-cells		: enable DAI specifier, it must be 1
++
++  Valid values for the DAI specifier are:
++  0: FSI port A
++  1: FSI port B
 +
  Example:
  
- &i2c {
- 	ak4648: ak4648@0x12 {
-+		#sound-dai-cells = <1>;
- 		compatible = "asahi-kasei,ak4642";
- 		reg = <0x12>;
- 	};
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index c78794d..4b212f9 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -452,6 +452,7 @@ static struct snd_soc_dai_driver ak4642_dai = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE },
- 	.ops = &ak4642_dai_ops,
- 	.symmetric_rates = 1,
-+	.of_xlate_dai_name = snd_soc_common_of_xlate_dai_name,
+ sh_fsi2: sh_fsi2@0xec230000 {
++	#sound-dai-cells = <1>;
+ 	compatible = "renesas,sh_fsi2";
+ 	reg = <0xec230000 0x400>;
+ 	interrupts = <0 146 0x4>;
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index c724026a..afa6fd0 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1861,6 +1861,7 @@ static struct snd_soc_dai_driver fsi_soc_dai[] = {
+ 			.channels_max	= 2,
+ 		},
+ 		.ops = &fsi_dai_ops,
++		.of_xlate_dai_name = snd_soc_common_of_xlate_dai_name,
+ 	},
+ 	{
+ 		.name			= "fsib-dai",
+@@ -1877,6 +1878,7 @@ static struct snd_soc_dai_driver fsi_soc_dai[] = {
+ 			.channels_max	= 2,
+ 		},
+ 		.ops = &fsi_dai_ops,
++		.of_xlate_dai_name = snd_soc_common_of_xlate_dai_name,
+ 	},
  };
  
- static int ak4642_resume(struct snd_soc_codec *codec)
 -- 
 1.7.9.5
