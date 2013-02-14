@@ -1,75 +1,38 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: Allocating DMA buffer for non-PCM
-Date: Thu, 14 Feb 2013 19:46:39 +0100
-Message-ID: <511D310F.8020207@drcomp.erfurt.thur.de>
-References: <511D18F9.3040906@drcomp.erfurt.thur.de>
- <511D22F6.2060600@ladisch.de> <20130214175251.GD15334@ltw.loris.tv>
- <511D2688.3020002@ladisch.de>
+From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+Subject: Re: [PATCH V6 02/10] ASoC: SAMSUNG: Add DT support for i2s
+Date: Thu, 14 Feb 2013 21:33:00 +0100
+Message-ID: <511D49FC.4080402@gmail.com>
+References: <1358509629-20471-1-git-send-email-padma.v@samsung.com> <1358509629-20471-3-git-send-email-padma.v@samsung.com> <511CC11B.5030700@samsung.com> <20130214114337.GD13249@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
- by alsa0.perex.cz (Postfix) with ESMTP id 45CA1265359
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2013 19:46:41 +0100 (CET)
-In-Reply-To: <511D2688.3020002@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130214114337.GD13249@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Padmavathi Venna <padma.v@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/14/2013 07:01 PM, Clemens Ladisch wrote:
+On 02/14/2013 12:43 PM, Mark Brown wrote:
+> On Thu, Feb 14, 2013 at 11:48:59AM +0100, Sylwester Nawrocki wrote:
+>
+>> NAK.
+>
+>> Why we should live with this temporary code when there is already
+>> pinctrl support for Exynos SoCs ?
+>
+>> If the pinctrl driver for Exynos5 was updated you could instead just do
+>
+>> devm_pinctrl_get_select_default(&i2s->pdev->dev);
+>
+> Too late, this stuff is already merged and on its way upstream.
 
->> On Thu, Feb 14, 2013 at 06:46:30PM +0100, Clemens Ladisch wrote:
->>>> Would you say that the following is the proper way to allocate a DMA
->>>> buffer used to hold level data?
->>>>
->>>> 	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
->>>> 			snd_dma_pci_data(hdspm->pci),
->>>> 			MADIFX_LEVEL_BUFFER_SIZE, &hdspm->dmaLevelBuffer);
->>>>
->>>>     hdspm->level_buffer = snd_sgbuf_get_ptr(&(hdspm->dmaLevelBuffer), 0);
->>>
->>> I don't see the code asking for the address of the second page, so I
->>> guess there isn't one.
->>
->> Exactly.
-> 
-> So MADIFX_LEVEL_BUFFER_SIZE is guaranteed to not exceed the page size
-> on all architectures?
-
-Absolutely not, it's known to be multiples of the page size, but the
-purpose of hdspm->level_buffer is to hold the continuous virtual
-address, so apparently, I was using the wrong getter function in the
-first place (I was actually looking for .area).
-
-The code for accessing the other pages was omitted for the sake of
-simplicity, but since you've asked, here it is:
-
-   	/* Fill level page table */
-	for (i = 0; i < MADIFX_NUM_LEVEL_PAGES; i++) {
-		levelPageTable[i] = snd_sgbuf_get_addr(&(hdspm->dmaLevelBuffer),
-				i * MADIFX_HARDWARE_PAGE_SIZE);
-
-	}
-
-	/* Write level page table to device */
-	lpti = (MADIFX == hdspm->io_type) ? MADIFX_LPTI_HMFX :
-		MADIFX_LPTI_MFXT;
-
-	for (i = 0; i < MADIFX_NUM_LEVEL_PAGES; i++) {
-		madifx_write(hdspm, MADIFX_PAGE_ADDRESS_LIST + (4 * (lpti + i)),
-				levelPageTable[i]);
-	}
-
-
-
-Cheers
+My apologies for the late review. It's already sixth version of this patch
+series... But I noticed it just now when applying it for Exynos4. The GPIO
+part of the bindings is now incompatible with Exynos4 and the bindings will
+need to be changed. Leaving the compatibility code in the I2S driver, when
+we could have it done well right from the beginning. If I'm not mistaken
+a file similar to arch/arm/boot/dts/exynos4x12-pinctrl.dtsi with at least
+entries for the I2S devices is needed and an addition of related pinctrl
+nodes in exynos5250.dtsi. But I guess this is not something that could be
+fixed in the -rc period ?
