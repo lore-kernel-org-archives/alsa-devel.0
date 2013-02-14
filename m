@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: codecs: Add da7213 codec
-Date: Thu, 14 Feb 2013 17:29:44 +0000
-Message-ID: <20130214172943.GT13249@opensource.wolfsonmicro.com>
-References: <201302141202.r1EC2pAn022174@swsrvapps-01.diasemi.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Allocating DMA buffer for non-PCM
+Date: Thu, 14 Feb 2013 18:46:30 +0100
+Message-ID: <511D22F6.2060600@ladisch.de>
+References: <511D18F9.3040906@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7662714126396987139=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A220265353
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2013 18:29:46 +0100 (CET)
-In-Reply-To: <201302141202.r1EC2pAn022174@swsrvapps-01.diasemi.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CC10E265359
+ for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2013 18:47:32 +0100 (CET)
+In-Reply-To: <511D18F9.3040906@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian Knoth wrote:
+> Would you say that the following is the proper way to allocate a DMA
+> buffer used to hold level data?
+>
+> 	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
+> 			snd_dma_pci_data(hdspm->pci),
+> 			MADIFX_LEVEL_BUFFER_SIZE, &hdspm->dmaLevelBuffer);
+>
+>     hdspm->level_buffer = snd_sgbuf_get_ptr(&(hdspm->dmaLevelBuffer), 0);
 
---===============7662714126396987139==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qKhyKP9HH88saeqA"
-Content-Disposition: inline
+I don't see the code asking for the address of the second page, so I
+guess there isn't one.  But then you don't need SG in the first place.
 
+> Better use SNDRV_DMA_TYPE_DEV instead?
 
---qKhyKP9HH88saeqA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 14, 2013 at 12:02:51PM +0000, Adam Thomson wrote:
-> This patch adds support for the Dialog DA7213 audio codec.
-
-Applied, thanks.
-
---qKhyKP9HH88saeqA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRHR64AAoJELSic+t+oim96C8P/jMxin3XnaLed9y9NI+n3e7a
-XUyzurAsssuBETswTo+YuJ8i8QlJQrWA8Fu+rf0Z849Q5KEyiBysR5zDFHic5z7u
-jx3rn9VmjkDHhmnMZxr6R0TX/TBToLyd4zJx7kv1YPq7kefLUVXGbJpNcwbv9VIL
-wrek7ePrbF3FLdmoQYLg2qU2ycXx6p09nFRQuh96sKpArmB4RJ/VKBu0WJ6ywy1y
-XPBNnXSFxrCDWrpDGOYMRBUggXD6Fqxb3akEC8eLzarX4Jf9IBZF55j6W38+rKip
-Ea/UdGvyIEO55v3YEvepEc4k4fKvBUkz6esItDRxD23qZPFeMvAVDihndt/dEmIw
-BXlNsESyKiFYbxdevkiDQBT29yHxNbr4jLhtMW0f6V7E2E4+MVVXE/QP/DVAzwzz
-ODPRo0qXsVNhP2ISrq+QRUA84eRUhUUJv8CDg33oTgi6z8zFVAFg2Ajt8YGK3Tsi
-Q51kAkxnq1Pi4Px8zQibxivODDNRe4R8pXJt74iIpg6X9cupGQSFCzcHaMGkD/Jb
-+wpo/JTitepMrL179wsITp4LZsHyg1tsyYpvhueb9+6071rpqIGHa9eF/MxqH4HL
-oO51otC1VfVtEB7TJ+JpTkcAkf5Q22EDRtQc1DRo+8FvZmW56EJQdpFP7j2hMWa6
-odL4Qz+V0IZ3qCdItpDe
-=QLL5
------END PGP SIGNATURE-----
-
---qKhyKP9HH88saeqA--
-
---===============7662714126396987139==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Yes.
 
 
---===============7662714126396987139==--
+Regards,
+Clemens
