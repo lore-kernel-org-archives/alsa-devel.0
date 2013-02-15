@@ -1,62 +1,96 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V6 02/10] ASoC: SAMSUNG: Add DT support for i2s
-Date: Fri, 15 Feb 2013 12:01:45 +0000
-Message-ID: <20130215120145.GC22283@opensource.wolfsonmicro.com>
-References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
- <1358509629-20471-3-git-send-email-padma.v@samsung.com>
- <511CC11B.5030700@samsung.com>
- <20130214114337.GD13249@opensource.wolfsonmicro.com>
- <511D49FC.4080402@gmail.com>
+Subject: Re: [PATCH] ASoC: Jack: add configurable option for
+ irq_flag
+Date: Fri, 15 Feb 2013 12:17:27 +0000
+Message-ID: <20130215121727.GD22283@opensource.wolfsonmicro.com>
+References: <1360647422-12404-1-git-send-email-omair.m.abdullah@linux.intel.com>
+ <20130212114752.GA1678@opensource.wolfsonmicro.com>
+ <63969.10.223.96.90.1360733997.squirrel@linux.intel.com>
+ <20130213131917.GF5062@opensource.wolfsonmicro.com>
+ <20130215071000.GA23031@oma-dev>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="raC6veAxrt5nqIoY"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <511D49FC.4080402@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, padma.kvr@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
+Content-Type: multipart/mixed; boundary="===============0894676558025640773=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1219D2615C3
+ for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2013 13:17:29 +0100 (CET)
+In-Reply-To: <20130215071000.GA23031@oma-dev>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Omair M. Abdullah" <omair.m.abdullah@intel.com>
+Cc: Ramesh Babu <ramesh.babu@linux.intel.com>, alsa-devel@alsa-project.org, vinod.koul@linux.intel.com, vaibhav.agarwal@intel.com, lgirdwood@gmail.com, Omair Mohammed Abdullah <omair.m.abdullah@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---raC6veAxrt5nqIoY
+--===============0894676558025640773==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="q9KOos5vDmpwPx9o"
+Content-Disposition: inline
+
+
+--q9KOos5vDmpwPx9o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 14, 2013 at 09:33:00PM +0100, Sylwester Nawrocki wrote:
+On Fri, Feb 15, 2013 at 12:40:00PM +0530, Omair M. Abdullah wrote:
 
-> My apologies for the late review. It's already sixth version of this patch
-> series... But I noticed it just now when applying it for Exynos4. The GPIO
-> part of the bindings is now incompatible with Exynos4 and the bindings will
-> need to be changed. Leaving the compatibility code in the I2S driver, when
-> we could have it done well right from the beginning. If I'm not mistaken
-> a file similar to arch/arm/boot/dts/exynos4x12-pinctrl.dtsi with at least
-> entries for the I2S devices is needed and an addition of related pinctrl
-> nodes in exynos5250.dtsi. But I guess this is not something that could be
-> fixed in the -rc period ?
+> This patch is mainly to handle GPIOs where there is some toggling of the GPIO
+> lines due to the switch bouncing, and the debounce time cannot be increased
+> further due to other constraints. In such cases, providing the specific
+> edge on which to trigger the interrupt helps increase the robustness.
 
-Yes, and incremental fix would be fine.
+>      ___   _                _   _________
+> e.g.    |_| |______________| |_|
 
---raC6veAxrt5nqIoY
+> insert followed by removal, where we want to trigger on the falling edge in both
+> cases.
+
+This doesn't make much sense to me, it's a *very* non-obvious change and
+it doesn't reflect what's actually happening well.  If you happen to be
+lucky and get no bounce it'll fail.  If it's working on your system
+there is a fair element of luck in there.
+
+It sounds like all you're looking for here is a better debounce
+algorithm, for example one that delays for a bit then starts polling the
+GPIO state at a higher rate and declares a result when the GPIO state
+doesn't change for a few polls.
+
+--q9KOos5vDmpwPx9o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRHiOTAAoJELSic+t+oim9GPEP/AtrJRFWIHCLk4NEnjR/2P+2
-7mppHqMPnc2/7vWPnawjUzwULGLTiJl7WwMtyGcCD82KQJnoLv6kvgRfAiBUwOf+
-lC/P0WPjWHtbEpa9Fi2Z6j1GmpdNorggPTiRFhvoZ+TKxhKRgQyhqxuC8Pgg1rVm
-Kq7HXwg8lDW/6d32luN7jkCT+F2kBg7hhTicSyWpnR1+tbGW1cWdj8qDeY5K46Iz
-H/L1POHTnLVCEb8PmwAithPeHJXYi6hZ69npeob+FvG8MQCtZj3LI2zninincEpE
-F5wt3Gp9N2o5bxtPZFv9XTKJZum0Hsl7hpFHHHvqDKMnX/LZ2pSPnQlNaz6pII69
-XY/rTNYsN71k3LJ+m7DXD1dgEM5z2Bv202ycrQ3OHlFmNqUN9uXQStywnum4qejb
-Lo86uC9mn6sn8ab3TiV793RgkS/2kVq9QU0zAsHjclH3zDBz3WV0ispUyYwEAGp+
-erez1A475WN7QarKpFveHCglz1/nkBpvnnSNsXmdFA8cDhpQXnki3IcLMijjsiWZ
-B7P2Kam5HwJBpt16e20F0yXn1hNOmY0hfwMo9S787ZobwZ5VWMpatw6pWVgDFfCu
-851CcJ4Bh3Mq/lnkdWEGrU8DATTTIJfAgg4z/6IG1lTc+E9uI1MLfKgWEU89Qloj
-bn8sT8HH7WzJ1oDyHTTE
-=hMEl
+iQIcBAEBAgAGBQJRHidAAAoJELSic+t+oim9MEEQAJQPcOS28igEasMrB6tjXeBb
+qQ9qKfWJRu05KFBT76gBmhZZwr0QeV0356nJn1uTC2wpV2ZSvnAFQfvMYpRo/blC
+kuwtKb0prOnuCDm1oEVrcxOBrDweP5X27JvlJXmt2DkMb9YY7kix+d+miS2xbQd/
+5MVP5YAinahFItfZkAdp5mR2XTnn8ZWhzVr2H0LKZeTQWV6iqyda0aUtTDAXYPW5
+momnZFbo2K7S9vLTYDsgOoIeKUkOpzmdPaicBgO+YL3tTl2uQMbCTQH51YW0CeUF
+9E0m6NSCFGJEYFAfRosU2BDZEkPXfSW4Q061KjWPOnrB6NQ0JGtCPl7jR1+FS3zM
+k3S6CgF/YSxbHeXHupoWRtUMd5zTcvDtc+/JWIMxHfBRqtCJRxEXZ3sfW3A2s+Ot
+Lxb04mh83dXty4a4rNUuErCBReqNr4DrfbDBPgX90KPcZOI/mcTNWurgfzjTYUXJ
+1QLs0YEKMEahlWVC/nmU6wfUmmBdap37z6gqe7ZWQwi/PwxxRpX8xYQeIiFW6seV
++cKKgrePqc6LpmtAfnmXr//1OBBPA5MU90h/doezZeLC4po9b8mNOmMsUm/a8cgE
+pcCS5k58kaBWGbb3T/Nrbhhq8XBgLFo8zjLzAU6JUp+67WTQ5Jr2lgco/UVRlD4u
+nhhlXeXAkZr9Tp6YEO6T
+=6d40
 -----END PGP SIGNATURE-----
 
---raC6veAxrt5nqIoY--
+--q9KOos5vDmpwPx9o--
+
+--===============0894676558025640773==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0894676558025640773==--
