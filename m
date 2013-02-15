@@ -1,18 +1,13 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH] ASoC: max98088: Add TLV data for volume
-	controls.
-Date: Fri, 15 Feb 2013 08:55:10 -0800
-Message-ID: <1360947310-15217-1-git-send-email-dgreid@chromium.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for v3.9
+Date: Fri, 15 Feb 2013 17:15:05 +0000
+Message-ID: <20130215171505.GE22283@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9035134242726947923=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f201.google.com (mail-ve0-f201.google.com
- [209.85.128.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F1A9261704
- for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2013 17:56:34 +0100 (CET)
-Received: by mail-ve0-f201.google.com with SMTP id 14so367567vea.2
- for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2013 08:56:33 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BBC9D261704
+ for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2013 18:15:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +17,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dylan Reid <dgreid@chromium.org>, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, evan.ragsdale@maxim-ic.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Specify volumes as defined in the MAX98088/9 data sheet.  Allows ALSA
-lib snd_mixer_selem_get_playback_dB_range and related functions to
-work.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/soc/codecs/max98088.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+--===============9035134242726947923==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5oH/S/bF6lOfqCQb"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index a4c16fd..3a7b7fd 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -739,14 +739,32 @@ static const unsigned int max98088_micboost_tlv[] = {
-        2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
- };
- 
-+static const unsigned int max98088_hp_tlv[] = {
-+	TLV_DB_RANGE_HEAD(5),
-+	0, 6, TLV_DB_SCALE_ITEM(-6700, 400, 0),
-+	7, 14, TLV_DB_SCALE_ITEM(-4000, 300, 0),
-+	15, 21, TLV_DB_SCALE_ITEM(-1700, 200, 0),
-+	22, 27, TLV_DB_SCALE_ITEM(-400, 100, 0),
-+	28, 31, TLV_DB_SCALE_ITEM(150, 50, 0),
-+};
-+
-+static const unsigned int max98088_spk_tlv[] = {
-+	TLV_DB_RANGE_HEAD(5),
-+	0, 6, TLV_DB_SCALE_ITEM(-6200, 400, 0),
-+	7, 14, TLV_DB_SCALE_ITEM(-3500, 300, 0),
-+	15, 21, TLV_DB_SCALE_ITEM(-1200, 200, 0),
-+	22, 27, TLV_DB_SCALE_ITEM(100, 100, 0),
-+	28, 31, TLV_DB_SCALE_ITEM(650, 50, 0),
-+};
-+
- static const struct snd_kcontrol_new max98088_snd_controls[] = {
- 
--       SOC_DOUBLE_R("Headphone Volume", M98088_REG_39_LVL_HP_L,
--               M98088_REG_3A_LVL_HP_R, 0, 31, 0),
--       SOC_DOUBLE_R("Speaker Volume", M98088_REG_3D_LVL_SPK_L,
--               M98088_REG_3E_LVL_SPK_R, 0, 31, 0),
--       SOC_DOUBLE_R("Receiver Volume", M98088_REG_3B_LVL_REC_L,
--               M98088_REG_3C_LVL_REC_R, 0, 31, 0),
-+	SOC_DOUBLE_R_TLV("Headphone Volume", M98088_REG_39_LVL_HP_L,
-+			 M98088_REG_3A_LVL_HP_R, 0, 31, 0, max98088_hp_tlv),
-+	SOC_DOUBLE_R_TLV("Speaker Volume", M98088_REG_3D_LVL_SPK_L,
-+			 M98088_REG_3E_LVL_SPK_R, 0, 31, 0, max98088_spk_tlv),
-+	SOC_DOUBLE_R_TLV("Receiver Volume", M98088_REG_3B_LVL_REC_L,
-+			 M98088_REG_3C_LVL_REC_R, 0, 31, 0, max98088_spk_tlv),
- 
-        SOC_DOUBLE_R("Headphone Switch", M98088_REG_39_LVL_HP_L,
-                M98088_REG_3A_LVL_HP_R, 7, 1, 1),
--- 
-1.8.0
+
+--5oH/S/bF6lOfqCQb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 699ba4546cfe3f4eee73aff4f307bf16362f9232:
+
+  Merge remote-tracking branch 'asoc/topic/wm8993' into asoc-next (2013-02-11 11:06:55 +0000)
+
+are available in the git repository at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-3.9-updates
+
+for you to fetch changes up to 54759313ececcbd07e43fad75e0683e39a1f2a25:
+
+  Merge remote-tracking branch 'asoc/topic/da7213' into asoc-next (2013-02-14 17:28:00 +0000)
+
+----------------------------------------------------------------
+
+ASoC: Final updates for v3.9
+
+A few more updates from the past week - a new driver from Dialog and
+some small fixes and tweaks.
+
+----------------------------------------------------------------
+Adam Thomson (1):
+      ASoC: codecs: Add da7213 codec
+
+Fabio Estevam (1):
+      ASoC: fsl: imx-audmux: Fix sparse warning
+
+Mark Brown (6):
+      ASoC: wm8994: Fix variable double use
+      ASoC: arizona: Automatically manage input mutes
+      Merge remote-tracking branch 'asoc/topic/fsl' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/omap' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/wm8994' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/da7213' into asoc-next
+
+Sebastien Guiriec (1):
+      ASoC: omap-mcpdm: Remove useless ressource get.
+
+ include/sound/da7213.h      |   52 ++
+ sound/soc/codecs/Kconfig    |    4 +
+ sound/soc/codecs/Makefile   |    2 +
+ sound/soc/codecs/arizona.c  |   17 +
+ sound/soc/codecs/da7213.c   | 1599 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/da7213.h   |  523 ++++++++++++++
+ sound/soc/codecs/wm5102.c   |   13 -
+ sound/soc/codecs/wm5110.c   |   17 -
+ sound/soc/codecs/wm8994.c   |   10 +-
+ sound/soc/fsl/imx-audmux.c  |    2 +-
+ sound/soc/omap/omap-mcpdm.c |    4 -
+ 11 files changed, 2203 insertions(+), 40 deletions(-)
+ create mode 100644 include/sound/da7213.h
+ create mode 100644 sound/soc/codecs/da7213.c
+ create mode 100644 sound/soc/codecs/da7213.h
+
+--5oH/S/bF6lOfqCQb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRHmz0AAoJELSic+t+oim9nSYP/jPflSXUyYhEd03U3k7WEmRR
+gcbptxlcNo0Or/C5XoA08KsdlXUyUS3XzZG5w+u4XuqZcj4ZcqkpXazLwLEIO23l
+WaJiGUxwK0cy8jEjgbdOERBuo6sAsUZ8f5d3BCt/k2aL/ukRbTbFxPh9EgM8Xfua
+/lhD+nfYe/Qb2w7gjAI0E0yP1qV9f4jI5rXvg3mPGGsKbhceh6CdJqzdsdEEaOpz
+UpyfrqSsU1WW3LT8/2RrvcChl9QQPGHeGEXr9EEi1tdG6ECEtsy8ZcXPuupHYnfF
+NX90OdkkogpQuLP9XfvAgpMXQ4dmAxr+QbbJjKynJUXjEDqYpNCC3inVWl9Xetrq
+QUIPfnoahu+/GF+U0GMoD/kFEBeK07GRwwlzQv54EREHf1B/SPX1hDIJgA1tqd7B
+tU05bcl3LF3ZF4/B38wfe4qtGrbBkUNmPM3lrWuuqv4Hycmu/5/n19HlYaiRVDSW
+kmu77qLHXhXa8gpHA4lgfDqNQBXV7miUfWvh9qx/NV651q+V0G7NgIR9exCxO72y
+Ns2rOJ9Rz8i9OPl0onNmQ5PTV1zh90u8yWnR8frdpITTYiFBn8LFXsv861LqhmOz
+b7xxFLMKcwxZYSXtdw6MV4tZCoug1ioom6Tc/xTJZzo0tyLLx1qXI6j6loojQQVX
+NzWmjF8eqyX8Y7equIum
+=0mW4
+-----END PGP SIGNATURE-----
+
+--5oH/S/bF6lOfqCQb--
+
+--===============9035134242726947923==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9035134242726947923==--
