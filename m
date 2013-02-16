@@ -1,94 +1,95 @@
-From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-Subject: Re: [PATCH 4/6] ASoC: tegra_alc5632: assume CONFIG_OF, and other cleanup
-Date: Sat, 16 Feb 2013 16:24:41 +0200
-Message-ID: <CALq1K=LrbsVTLrZy_tJh1WFpKVm_EA_ihvUA2rsfurpSQMaOqA@mail.gmail.com>
-References: <1360973255-344-1-git-send-email-swarren@wwwdotorg.org> <1360973255-344-4-git-send-email-swarren@wwwdotorg.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1360973255-344-4-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - Avoid outputting HDMI audio before prepare() and after close()
+Date: Sat, 16 Feb 2013 18:40:22 +0200
+Message-ID: <1361032822-4041-1-git-send-email-anssi.hannula@iki.fi>
+References: <511EEDB0.6010603@iki.fi>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <511EEDB0.6010603@iki.fi>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 16, 2013 at 2:07 AM, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org> wrote:
->
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->
-> Tegra only supports, and always enables, device tree. Remove all runtime
-> checks for DT support from the driver.
->
-> Also, various minor cleanups so that the probe() body more closely
-> resembles other drivers, for easier comparison.
->
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> ---
->  sound/soc/tegra/tegra_alc5632.c |   15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
+Some HDMI codecs (at least NVIDIA 0x10de000b:0x10de0101:0x100100) start
+transmitting an empty audio stream as soon as PIN_OUT and AC_DIG1_ENABLE
+are enabled.
 
-Thanks.
+Since commit 6169b673618bf0b2518ce413b54925782a603f06 ("ALSA: hda -
+Always turn on pins for HDMI/DP") this happens at first open() time, and
+will continue even after close().
 
+Additionally, some codecs (at least Intel PantherPoint HDMI) currently
+continue transmitting HDMI audio even after close() in case some actual
+audio was output after open() (this happens regardless of PIN_OUT).
 
->
-> diff --git a/sound/soc/tegra/tegra_alc5632.c
-> b/sound/soc/tegra/tegra_alc5632.c
-> index c80adb9..48d05d9 100644
-> --- a/sound/soc/tegra/tegra_alc5632.c
-> +++ b/sound/soc/tegra/tegra_alc5632.c
-> @@ -161,20 +161,13 @@ static int tegra_alc5632_probe(struct
-> platform_device *pdev)
->                         sizeof(struct tegra_alc5632), GFP_KERNEL);
->         if (!alc5632) {
->                 dev_err(&pdev->dev, "Can't allocate tegra_alc5632\n");
-> -               ret = -ENOMEM;
-> -               goto err;
-> +               return -ENOMEM;
->         }
->
->         card->dev = &pdev->dev;
->         platform_set_drvdata(pdev, card);
->         snd_soc_card_set_drvdata(card, alc5632);
->
-> -       if (!(pdev->dev.of_node)) {
-> -               dev_err(&pdev->dev, "Must be instantiated using device
-> tree\n");
-> -               ret = -EINVAL;
-> -               goto err;
-> -       }
-> -
->         alc5632->gpio_hp_det = of_get_named_gpio(np,
-> "nvidia,hp-det-gpios", 0);
->         if (alc5632->gpio_hp_det == -EPROBE_DEFER)
->                 return -EPROBE_DEFER;
-> @@ -197,11 +190,11 @@ static int tegra_alc5632_probe(struct
-> platform_device *pdev)
->                 goto err;
->         }
->
-> -       tegra_alc5632_dai.cpu_of_node = of_parse_phandle(
-> -                       pdev->dev.of_node, "nvidia,i2s-controller", 0);
-> +       tegra_alc5632_dai.cpu_of_node = of_parse_phandle(np,
-> +                       "nvidia,i2s-controller", 0);
->         if (!tegra_alc5632_dai.cpu_of_node) {
->                 dev_err(&pdev->dev,
-> -               "Property 'nvidia,i2s-controller' missing or invalid\n");
-> +                       "Property 'nvidia,i2s-controller' missing or
-> invalid\n");
->                 ret = -EINVAL;
->                 goto err;
->         }
-> --
-> 1.7.10.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Empty HDMI audio transmission when not intended has the effect that a
+possible HDMI audio sink/receiver may prefer the empty HDMI audio stream
+over an actual audio stream on its S/PDIF inputs.
+
+To avoid the issue before first prepare(), set stream format to 0 on
+codec initialization. 0 is not a valid format value for HDMI and will
+prevent the audio stream from being output.
+
+Additionally, at close() time, make sure that the stream is cleaned up.
+This will ensure that the format is reset to 0 at that time, preventing
+audio from being output in that case.
+
+Thanks to OpenELEC developers and users for their help in investigating
+this issue on the affected NVIDIA "ION2" hardware, and for the initial
+bug report of the issue. Testing of the final version on NVIDIA ION2 was
+done by OpenELEC user "MrXIII". Testing on Intel PantherPoint was done
+by myself.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: stable@vger.kernel.org
+---
+
+This also supersedes the patch I attached yesterday as it fixes both
+cases.
+
+I guess the alternative to this approach would be to fiddle with
+AC_DIG1_ENABLE when preparing and closing the device, but with a quick
+look that seemed to be possibly more complex since AC_DIG1_ENABLE is
+already meddled with at quite a few places in hda_codec.c.
+
+WDYT, is this OK or should we try a AC_DIG1_ENABLE based approach or
+something else?
 
 
+ sound/pci/hda/patch_hdmi.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-
---
-Leon Romanovsky | Independent Linux Consultant
-        www.leon.nu | leon-2ukJVAZIZ/Y@public.gmane.org
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 807a2aa..bcb83c7 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1253,6 +1253,14 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 	if (err < 0)
+ 		return err;
+ 
++	/*
++	 * Some HDMI codecs (at least NVIDIA 0x10de000b:0x10de0101:0x100100)
++	 * start transmitting an empty audio stream as soon as PIN_OUT and
++	 * AC_DIG1_ENABLE are enabled, which happens at open() time.
++	 * To avoid that, set format to 0, which is not valid for HDMI.
++	 */
++	snd_hda_codec_write(codec, cvt_nid, 0, AC_VERB_SET_STREAM_FORMAT, 0);
++
+ 	spec->num_cvts++;
+ 
+ 	return 0;
+@@ -1372,6 +1380,12 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+ 	struct hdmi_spec_per_pin *per_pin;
+ 
+ 	if (hinfo->nid) {
++		/*
++		 * Make sure no empty audio is output after this point by
++		 * setting stream format to 0, which is not valid for HDMI.
++		 */
++		__snd_hda_codec_cleanup_stream(codec, hinfo->nid, 1);
++
+ 		cvt_idx = cvt_nid_to_cvt_index(spec, hinfo->nid);
+ 		if (snd_BUG_ON(cvt_idx < 0))
+ 			return -EINVAL;
+-- 
+1.7.10
