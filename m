@@ -1,107 +1,90 @@
-From: Anil Kumar <anilk4.v-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH V2] ARM: dts: omap3-devkit8000: Enable audio support
-Date: Sat, 16 Feb 2013 13:03:56 +0530
-Message-ID: <1361000036-18121-1-git-send-email-anilk4.v@gmail.com>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Sat, 16 Feb 2013 21:55:05 +1030
+Message-ID: <20130216112505.GE4164@marvin.atrad.com.au>
+References: <20130104042423.GD15726@marvin.atrad.com.au>
+ <CAN8cciYhydz6e6oz2QU4NeQgWsJU+4BQrhW6CK1tYd_+4E6pBw@mail.gmail.com>
+ <20130105031254.GD11016@marvin.atrad.com.au>
+ <CAN8ccib6xbxAjpNXzxQQGVSo9vuNNPU7NdB7FPFWaNCXLpn+Gw@mail.gmail.com>
+ <20130105071605.GA11323@marvin.atrad.com.au>
+ <s5hvcb7ohly.wl%tiwai@suse.de>
+ <20130113043936.GA8822@marvin.atrad.com.au>
+ <s5h8v7xjw4f.wl%tiwai@suse.de>
+ <20130210114707.GA26574@marvin.atrad.com.au>
+ <s5hzjzbql3a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: peter.ujfalusi-l0cyMroinI0@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, thomas-xePHB1Atl/Dsq35pWSNszA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAA6F260783
+ for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2013 12:25:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hzjzbql3a.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the needed sections to enable audio support on
-Devkit8000 when booted with DT blob.
+On Mon, Feb 11, 2013 at 10:02:49AM +0100, Takashi Iwai wrote:
+> > I'm now back from linux.conf.au and would like to pick up this issue.  Given
+> > that several weeks have elapsed since we last touched base, what would now
+> > be the best tree to test to determine where we are at and what the next
+> > steps should be to restoring the previous functionality for the Fujitsu
+> > S7020 laptop?
+> 
+> Try sound.git tree for-next branch.  It already contains all stuff for
+> 3.9 kernel.
 
-Signed-off-by: Anil Kumar <anilk4.v-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
-This patch is based on top of kernel 3.8-rc5 and
-the following patches.
+I've been able to test this (snapshot as of two days ago, reports version
+number 3.8.0-rc5+ via uname).  As expected there have been some
+improvements.
 
-Peter Ujfalusi:-
-ASoC: twl4030: Correct the support for Voice port
-ASoC: twl4030: Convert MICBIAS to SUPPLY widget
-ASoC: omap-twl4030: Add support for routing, voice port and jack detect
+Things which work:
 
-Anil Kumar:-
-ARM: dts: add minimal DT support for DevKit8000
-https://patchwork.kernel.org/patch/2122461/
+ * "Headphone Jack Mode" allows switching between "Headphone" and "Line
+   out".  Both of these mode settings appear to work.
 
--Tested for playback and capture on Devkit8000.
+ * There are separate "Headphone" and "Speaker" volume controls.
 
- Test process:-
+ * The "Headphone" volume control influences the headphone jack volume.
 
- #amixer set 'PredriveR Mixer AudioR2' on
- #amixer set 'PredriveL Mixer AudioL2' on
- #amixer set PreDriv 100 unmute
- #amixer set 'DAC2 Digital Fine' 100
- #amixer cset numid=27 1
- #arecord | aplay
+ * An "Auto-Mute Mode" control appears in alsamixer (it was missing on
+   earlier versions).
 
-For V2:
- - Remove pin mux as done at device boot time by default.
+ * Alsamixer recognises the presence of two ADCs, giving "Capture" and
+   "Capture 1" controls, with corresponding "Input Source" controls.
 
-:100644 100644 6338993... c70116f... M	arch/arm/boot/dts/omap3-devkit8000.dts
- arch/arm/boot/dts/omap3-devkit8000.dts |   23 +++++++++++++++++++----
- 1 files changed, 19 insertions(+), 4 deletions(-)
+Things which don't work or are missing:
 
-diff --git a/arch/arm/boot/dts/omap3-devkit8000.dts b/arch/arm/boot/dts/omap3-devkit8000.dts
-index 6338993..c70116f 100644
---- a/arch/arm/boot/dts/omap3-devkit8000.dts
-+++ b/arch/arm/boot/dts/omap3-devkit8000.dts
-@@ -42,6 +42,19 @@
-                 };
- 
- 	};
-+
-+	sound {
-+		compatible = "ti,omap-twl4030";
-+		ti,model = "devkit8000";
-+
-+		ti,mcbsp = <&mcbsp2>;
-+		ti,codec = <&twl_audio>;
-+		ti,audio-routing =
-+			"Ext Spk", "PREDRIVEL",
-+			"Ext Spk", "PREDRIVER",
-+			"MAINMIC", "Main Mic",
-+			"Main Mic", "Mic Bias 1";
-+	};
- };
- 
- &i2c1 {
-@@ -51,6 +64,12 @@
- 		reg = <0x48>;
- 		interrupts = <7>;	/* SYS_NIRQ cascaded to intc */
- 		interrupt-parent = <&intc>;
-+
-+		twl_audio: audio {
-+			compatible = "ti,twl4030-audio";
-+			codec {
-+			};
-+		};
- 	};
- };
- 
-@@ -86,10 +105,6 @@
- 	status = "disabled";
- };
- 
--&mcbsp2 {
--	status = "disabled";
--};
--
- &mcbsp3 {
- 	status = "disabled";
- };
--- 
-1.7.0.4
+ * "Headphone Jack Mode" lacks options to enable various "mic" or "line in"
+   modes (all of which are possible on this system)
+
+ * The "Input source" controls don't offer the "headphone jack" as a
+   possible source.
+
+ * The built-in speaker is completely silent under all situations I have
+   come up with.  The setting of "Auto-Mute Mode" has no effect, neither
+   does a manual unmute of the "Speaker" volume control.  While I don't
+   personally care much about this I suspect others might.
+
+ * As eluded to above, the "Auto-Mute Mode" control appears to do nothing.
+
+ * There's no "Mic Jack Mode" control to control the mode of the "mic" jack.
+   This jack supports line-in mode as well as the various "mic" modes which
+   give varying bias voltages.
+
+Is there further information I could provide or other tests I could do to
+help address the "don't work or are missing" items?
+
+Regards
+  jonathan
