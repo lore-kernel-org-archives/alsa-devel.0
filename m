@@ -1,357 +1,246 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH 6/6] ASoC: tegra_wm8903: assume CONFIG_OF, remove platform data
-Date: Fri, 15 Feb 2013 17:07:35 -0700
-Message-ID: <1360973255-344-6-git-send-email-swarren@wwwdotorg.org>
-References: <1360973255-344-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1360973255-344-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: HDMI regression on close (was: ALSA: hda - Always turn
+ on pins for HDMI/DP)
+Date: Sat, 16 Feb 2013 04:23:44 +0200
+Message-ID: <511EEDB0.6010603@iki.fi>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------060002000806050702000902"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gw-out1.cc.tut.fi (mail-gw-out1.cc.tut.fi [130.230.160.32])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D3A52607C3
+ for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2013 03:23:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+This is a multi-part message in MIME format.
+--------------060002000806050702000902
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Tegra only supports, and always enables, device tree. Remove all runtime
-checks for DT support from the driver.
+Hi!
 
-This allows removal of the hard-coded Harmony ASoC mapping table, since
-Harmony only boots with DT now.
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Fri, 14 Dec 2012 09:22:35 +0000 (+0100)
+> Subject: ALSA: hda - Always turn on pins for HDMI/DP
+> X-Git-Tag: v3.8-rc1~29^2~7
+> X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Fstable%2Flinux-stable.git;a=commitdiff_plain;h=6169b673618bf0b2518ce413b54925782a603f06
+> 
+> ALSA: hda - Always turn on pins for HDMI/DP
+> 
+> We've seen the broken HDMI *video* output on some machines with GM965,
+> and the debugging session pointed that the culprit is the disabled
+> audio output pins.  Toggling these pins dynamically on demand caused
+> flickering of HDMI TV.
+> 
+> This patch changes the behavior to keep the pin ON constantly.
 
-All board-specific configuration now comes from device tree, so there is
-no need to have a platform_data structure. Rework the driver to parse the
-device tree directly into struct tegra_wm8903.
+Unfortunately this seems to cause a regression on at least some "NVIDIA
+ION2" systems.
 
-Also some slight re-ordering of probe() so that the code more closely
-resembles other drivers for easier comparison. Inparticular, the GPIO DT
-parsing and initial programming are moved together for each GPIO.
+When running snd_pcm_open() and snd_pcm_close() on an hdmi device on an
+affected system, the HDMI port seemingly continues to transmit an empty
+audio stream.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- include/sound/tegra_wm8903.h   |   26 ------
- sound/soc/tegra/tegra_wm8903.c |  179 ++++++++++++++++------------------------
- 2 files changed, 70 insertions(+), 135 deletions(-)
- delete mode 100644 include/sound/tegra_wm8903.h
+However, when hw_params have been set and snd_pcm_prepare() called
+before closing the device (and optionally audio has been output), the
+HDMI port stops transmitting at snd_pcm_close() time.
 
-diff --git a/include/sound/tegra_wm8903.h b/include/sound/tegra_wm8903.h
-deleted file mode 100644
-index 57b202e..0000000
---- a/include/sound/tegra_wm8903.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/*
-- * Copyright 2011 NVIDIA, Inc.
-- *
-- * This software is licensed under the terms of the GNU General Public
-- * License version 2, as published by the Free Software Foundation, and
-- * may be copied, distributed, and modified under those terms.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- */
--
--#ifndef __SOUND_TEGRA_WM38903_H
--#define __SOUND_TEGRA_WM38903_H
--
--struct tegra_wm8903_platform_data {
--	int gpio_spkr_en;
--	int gpio_hp_det;
--	int gpio_hp_mute;
--	int gpio_int_mic_en;
--	int gpio_ext_mic_en;
--};
--
--#endif
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index bbd79bf..4ac7373 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -39,7 +39,6 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <sound/tegra_wm8903.h>
- 
- #include "../codecs/wm8903.h"
- 
-@@ -48,7 +47,11 @@
- #define DRV_NAME "tegra-snd-wm8903"
- 
- struct tegra_wm8903 {
--	struct tegra_wm8903_platform_data pdata;
-+	int gpio_spkr_en;
-+	int gpio_hp_det;
-+	int gpio_hp_mute;
-+	int gpio_int_mic_en;
-+	int gpio_ext_mic_en;
- 	struct tegra_asoc_utils_data util_data;
- };
- 
-@@ -129,12 +132,11 @@ static int tegra_wm8903_event_int_spk(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
--	struct tegra_wm8903_platform_data *pdata = &machine->pdata;
- 
--	if (!gpio_is_valid(pdata->gpio_spkr_en))
-+	if (!gpio_is_valid(machine->gpio_spkr_en))
- 		return 0;
- 
--	gpio_set_value_cansleep(pdata->gpio_spkr_en,
-+	gpio_set_value_cansleep(machine->gpio_spkr_en,
- 				SND_SOC_DAPM_EVENT_ON(event));
- 
- 	return 0;
-@@ -146,12 +148,11 @@ static int tegra_wm8903_event_hp(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
--	struct tegra_wm8903_platform_data *pdata = &machine->pdata;
- 
--	if (!gpio_is_valid(pdata->gpio_hp_mute))
-+	if (!gpio_is_valid(machine->gpio_hp_mute))
- 		return 0;
- 
--	gpio_set_value_cansleep(pdata->gpio_hp_mute,
-+	gpio_set_value_cansleep(machine->gpio_hp_mute,
- 				!SND_SOC_DAPM_EVENT_ON(event));
- 
- 	return 0;
-@@ -163,17 +164,6 @@ static const struct snd_soc_dapm_widget tegra_wm8903_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- };
- 
--static const struct snd_soc_dapm_route harmony_audio_map[] = {
--	{"Headphone Jack", NULL, "HPOUTR"},
--	{"Headphone Jack", NULL, "HPOUTL"},
--	{"Int Spk", NULL, "ROP"},
--	{"Int Spk", NULL, "RON"},
--	{"Int Spk", NULL, "LOP"},
--	{"Int Spk", NULL, "LON"},
--	{"Mic Jack", NULL, "MICBIAS"},
--	{"IN1L", NULL, "Mic Jack"},
--};
--
- static const struct snd_kcontrol_new tegra_wm8903_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Int Spk"),
- };
-@@ -185,10 +175,9 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct snd_soc_card *card = codec->card;
- 	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
--	struct tegra_wm8903_platform_data *pdata = &machine->pdata;
- 
--	if (gpio_is_valid(pdata->gpio_hp_det)) {
--		tegra_wm8903_hp_jack_gpio.gpio = pdata->gpio_hp_det;
-+	if (gpio_is_valid(machine->gpio_hp_det)) {
-+		tegra_wm8903_hp_jack_gpio.gpio = machine->gpio_hp_det;
- 		snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
- 				&tegra_wm8903_hp_jack);
- 		snd_soc_jack_add_pins(&tegra_wm8903_hp_jack,
-@@ -226,9 +215,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
- static struct snd_soc_dai_link tegra_wm8903_dai = {
- 	.name = "WM8903",
- 	.stream_name = "WM8903 PCM",
--	.codec_name = "wm8903.0-001a",
--	.platform_name = "tegra20-i2s.0",
--	.cpu_dai_name = "tegra20-i2s.0",
- 	.codec_dai_name = "wm8903-hifi",
- 	.init = tegra_wm8903_init,
- 	.ops = &tegra_wm8903_ops,
-@@ -257,96 +243,25 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct snd_soc_card *card = &snd_soc_tegra_wm8903;
- 	struct tegra_wm8903 *machine;
--	struct tegra_wm8903_platform_data *pdata;
- 	int ret;
- 
--	if (!pdev->dev.platform_data && !pdev->dev.of_node) {
--		dev_err(&pdev->dev, "No platform data supplied\n");
--		return -EINVAL;
--	}
--
- 	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_wm8903),
- 			       GFP_KERNEL);
- 	if (!machine) {
- 		dev_err(&pdev->dev, "Can't allocate tegra_wm8903 struct\n");
--		ret = -ENOMEM;
--		goto err;
-+		return -ENOMEM;
- 	}
--	pdata = &machine->pdata;
- 
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 	snd_soc_card_set_drvdata(card, machine);
- 
--	if (pdev->dev.platform_data) {
--		memcpy(pdata, card->dev->platform_data, sizeof(*pdata));
--	} else if (np) {
--		pdata->gpio_spkr_en = of_get_named_gpio(np,
--						"nvidia,spkr-en-gpios", 0);
--		if (pdata->gpio_spkr_en == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--
--		pdata->gpio_hp_mute = of_get_named_gpio(np,
--						"nvidia,hp-mute-gpios", 0);
--		if (pdata->gpio_hp_mute == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--
--		pdata->gpio_hp_det = of_get_named_gpio(np,
--						"nvidia,hp-det-gpios", 0);
--		if (pdata->gpio_hp_det == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--
--		pdata->gpio_int_mic_en = of_get_named_gpio(np,
--						"nvidia,int-mic-en-gpios", 0);
--		if (pdata->gpio_int_mic_en == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--
--		pdata->gpio_ext_mic_en = of_get_named_gpio(np,
--						"nvidia,ext-mic-en-gpios", 0);
--		if (pdata->gpio_ext_mic_en == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--	}
--
--	if (np) {
--		ret = snd_soc_of_parse_card_name(card, "nvidia,model");
--		if (ret)
--			goto err;
--
--		ret = snd_soc_of_parse_audio_routing(card,
--						     "nvidia,audio-routing");
--		if (ret)
--			goto err;
--
--		tegra_wm8903_dai.codec_name = NULL;
--		tegra_wm8903_dai.codec_of_node = of_parse_phandle(np,
--				"nvidia,audio-codec", 0);
--		if (!tegra_wm8903_dai.codec_of_node) {
--			dev_err(&pdev->dev,
--				"Property 'nvidia,audio-codec' missing or invalid\n");
--			ret = -EINVAL;
--			goto err;
--		}
--
--		tegra_wm8903_dai.cpu_dai_name = NULL;
--		tegra_wm8903_dai.cpu_of_node = of_parse_phandle(np,
--				"nvidia,i2s-controller", 0);
--		if (!tegra_wm8903_dai.cpu_of_node) {
--			dev_err(&pdev->dev,
--				"Property 'nvidia,i2s-controller' missing or invalid\n");
--			ret = -EINVAL;
--			goto err;
--		}
--
--		tegra_wm8903_dai.platform_name = NULL;
--		tegra_wm8903_dai.platform_of_node =
--					tegra_wm8903_dai.cpu_of_node;
--	} else {
--		card->dapm_routes = harmony_audio_map;
--		card->num_dapm_routes = ARRAY_SIZE(harmony_audio_map);
--	}
--
--	if (gpio_is_valid(pdata->gpio_spkr_en)) {
--		ret = devm_gpio_request_one(&pdev->dev, pdata->gpio_spkr_en,
-+	machine->gpio_spkr_en = of_get_named_gpio(np, "nvidia,spkr-en-gpios",
-+						  0);
-+	if (machine->gpio_spkr_en == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+	if (gpio_is_valid(machine->gpio_spkr_en)) {
-+		ret = devm_gpio_request_one(&pdev->dev, machine->gpio_spkr_en,
- 					    GPIOF_OUT_INIT_LOW, "spkr_en");
- 		if (ret) {
- 			dev_err(card->dev, "cannot get spkr_en gpio\n");
-@@ -354,8 +269,12 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (gpio_is_valid(pdata->gpio_hp_mute)) {
--		ret = devm_gpio_request_one(&pdev->dev, pdata->gpio_hp_mute,
-+	machine->gpio_hp_mute = of_get_named_gpio(np, "nvidia,hp-mute-gpios",
-+						  0);
-+	if (machine->gpio_hp_mute == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+	if (gpio_is_valid(machine->gpio_hp_mute)) {
-+		ret = devm_gpio_request_one(&pdev->dev, machine->gpio_hp_mute,
- 					    GPIOF_OUT_INIT_HIGH, "hp_mute");
- 		if (ret) {
- 			dev_err(card->dev, "cannot get hp_mute gpio\n");
-@@ -363,9 +282,18 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (gpio_is_valid(pdata->gpio_int_mic_en)) {
-+	machine->gpio_hp_det = of_get_named_gpio(np, "nvidia,hp-det-gpios", 0);
-+	if (machine->gpio_hp_det == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+
-+	machine->gpio_int_mic_en = of_get_named_gpio(np,
-+						"nvidia,int-mic-en-gpios", 0);
-+	if (machine->gpio_int_mic_en == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+	if (gpio_is_valid(machine->gpio_int_mic_en)) {
- 		/* Disable int mic; enable signal is active-high */
--		ret = devm_gpio_request_one(&pdev->dev, pdata->gpio_int_mic_en,
-+		ret = devm_gpio_request_one(&pdev->dev,
-+					    machine->gpio_int_mic_en,
- 					    GPIOF_OUT_INIT_LOW, "int_mic_en");
- 		if (ret) {
- 			dev_err(card->dev, "cannot get int_mic_en gpio\n");
-@@ -373,9 +301,14 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (gpio_is_valid(pdata->gpio_ext_mic_en)) {
-+	machine->gpio_ext_mic_en = of_get_named_gpio(np,
-+						"nvidia,ext-mic-en-gpios", 0);
-+	if (machine->gpio_ext_mic_en == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+	if (gpio_is_valid(machine->gpio_ext_mic_en)) {
- 		/* Enable ext mic; enable signal is active-low */
--		ret = devm_gpio_request_one(&pdev->dev, pdata->gpio_ext_mic_en,
-+		ret = devm_gpio_request_one(&pdev->dev,
-+					    machine->gpio_ext_mic_en,
- 					    GPIOF_OUT_INIT_LOW, "ext_mic_en");
- 		if (ret) {
- 			dev_err(card->dev, "cannot get ext_mic_en gpio\n");
-@@ -383,6 +316,34 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	ret = snd_soc_of_parse_card_name(card, "nvidia,model");
-+	if (ret)
-+		goto err;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "nvidia,audio-routing");
-+	if (ret)
-+		goto err;
-+
-+	tegra_wm8903_dai.codec_of_node = of_parse_phandle(np,
-+						"nvidia,audio-codec", 0);
-+	if (!tegra_wm8903_dai.codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,audio-codec' missing or invalid\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	tegra_wm8903_dai.cpu_of_node = of_parse_phandle(np,
-+			"nvidia,i2s-controller", 0);
-+	if (!tegra_wm8903_dai.cpu_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,i2s-controller' missing or invalid\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	tegra_wm8903_dai.platform_of_node = tegra_wm8903_dai.cpu_of_node;
-+
- 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
- 	if (ret)
- 		goto err;
+(I use "transmitting" here to mean that the HDMI sink/receiver
+receives/shows a an active audio stream)
+
+On systems _not_ affected by the issue, the HDMI port never starts
+transmitting if just snd_pcm_open()+snd_pcm_close() have been called
+(but note [1]).
+
+HDMI port continuing transmitting has the unfortunate effect that when
+the user has connected the system to an amplifier via HDMI (for video
+playback purposes), the amplifier may continue to play back empty audio
+from HDMI even when there is actual audio data on its S/PDIF input.
+An snd_pcm_open()+snd_pcm_close() sequence can be caused by e.g. device
+probing by an application.
+
+Several OpenELEC users have reported this issue on stable 3.7.x, here's
+some alsainfo:
+http://onse.fi/files/ion-regression-alsainfo-1.txt
+http://onse.fi/files/ion-regression-alsainfo-2.txt
+Both of these have the Nvidia GPU 0b HDMI/DP codecs:
+Vendor Id: 0x10de000b
+Subsystem Id: 0x10de0101
+Revision Id: 0x100200
+
+However, e.g. my non-ION2 laptop with 0b codecs (but different rev) is
+_not_ affected:
+Vendor Id: 0x10de000b
+Subsystem Id: 0x10de0101
+Revision Id: 0x100100
+http://www.alsa-project.org/db/?f=bc940d23d19ae7e2ee1e83895d85f711c2d0e5b1
+
+I'm still working with the OpenELEC devs and users to pinpoint the issue
+further, but it is progressing rather slowly due to not many people
+having affected systems (especially in the affected dual HDMI + S/PDIF
+cabled configuration).
+
+Feel free to suggest anything we should try out if you have some ideas :)
+In the meantime, I'll continue investigating exactly why snd_pcm_close()
+doesn't stop the HDMI output on the affected systems (or why does a
+simple snd_pcm_open() even start outputting the audio, since that does
+not seem to happen on other systems).
+
+I'll keep you posted.
+
+
+[1] It seems that on my Intel HDMI system (
+http://www.alsa-project.org/db/?f=bb3fc8680b372c0475719d42d7fc8b2bb7bfb4eb
+) the HDMI port keeps transmitting in approximately reversed situation
+than in the above ION2 case. That is, if audio has been output in the
+port e.g. with a speaker-test command, closing the device will not cause
+the stream to stop (and therefore the above issue happens again,
+receives ignores S/PDIF stream as HDMI stream is given higher priority
+by default). I found out that the attached patch solves that one.
+What are your thoughts on that?
+(obviously the patch will not solve the ION2 regression, since cleanup()
+is not called if prepare() has not been called; or at least I assume so,
+way too tired to check that now...)
+Note that closing the device after audio has been output stops HDMI port
+transmission even without the patch on both the NVIDIA ION2 systems and
+on my NVIDIA laptop, it is just the Intel HDMI codec where that does not
+happen (well, of the tested ones, at least).
+
+
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=51421
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 0fcfa6f..37dd06d 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -431,9 +431,11 @@ static void hdmi_init_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+>  	if (get_wcaps(codec, pin_nid) & AC_WCAP_OUT_AMP)
+>  		snd_hda_codec_write(codec, pin_nid, 0,
+>  				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
+> -	/* Disable pin out until stream is active*/
+> +	/* Enable pin out: some machines with GM965 gets broken output when
+> +	 * the pin is disabled or changed while using with HDMI
+> +	 */
+>  	snd_hda_codec_write(codec, pin_nid, 0,
+> -			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0);
+> +			    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
+>  }
+>  
+>  static int hdmi_get_channel_count(struct hda_codec *codec, hda_nid_t cvt_nid)
+> @@ -1341,7 +1343,6 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+>  	struct hdmi_spec *spec = codec->spec;
+>  	int pin_idx = hinfo_to_pin_index(spec, hinfo);
+>  	hda_nid_t pin_nid = spec->pins[pin_idx].pin_nid;
+> -	int pinctl;
+>  	bool non_pcm;
+>  
+>  	non_pcm = check_non_pcm_per_cvt(codec, cvt_nid);
+> @@ -1350,11 +1351,6 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+>  
+>  	hdmi_setup_audio_infoframe(codec, pin_idx, non_pcm, substream);
+>  
+> -	pinctl = snd_hda_codec_read(codec, pin_nid, 0,
+> -				    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+> -	snd_hda_codec_write(codec, pin_nid, 0,
+> -			    AC_VERB_SET_PIN_WIDGET_CONTROL, pinctl | PIN_OUT);
+> -
+>  	return hdmi_setup_stream(codec, cvt_nid, pin_nid, stream_tag, format);
+>  }
+>  
+> @@ -1374,7 +1370,6 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+>  	int cvt_idx, pin_idx;
+>  	struct hdmi_spec_per_cvt *per_cvt;
+>  	struct hdmi_spec_per_pin *per_pin;
+> -	int pinctl;
+>  
+>  	if (hinfo->nid) {
+>  		cvt_idx = cvt_nid_to_cvt_index(spec, hinfo->nid);
+> @@ -1391,11 +1386,6 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
+>  			return -EINVAL;
+>  		per_pin = &spec->pins[pin_idx];
+>  
+> -		pinctl = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
+> -					    AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+> -		snd_hda_codec_write(codec, per_pin->pin_nid, 0,
+> -				    AC_VERB_SET_PIN_WIDGET_CONTROL,
+> -				    pinctl & ~PIN_OUT);
+>  		snd_hda_spdif_ctls_unassign(codec, pin_idx);
+>  		per_pin->chmap_set = false;
+>  		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
+
+
 -- 
-1.7.10.4
+Anssi Hannula
+
+--------------060002000806050702000902
+Content-Type: text/x-patch;
+ name="0001-ALSA-hda-Always-clean-up-HDMI-streams-in-cleanup-cal.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-hda-Always-clean-up-HDMI-streams-in-cleanup-cal.pa";
+ filename*1="tch"
+
+>From de006e0d6ccfa3709447757f1f4084621eb84dd7 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Sat, 16 Feb 2013 03:41:35 +0200
+Subject: [PATCH] ALSA: hda - Always clean up HDMI streams in cleanup callback
+
+Currently actual HDMI stream cleanup (resetting CHANNEL_STREAMID and
+STREAM_FORMAT to zero) is deferred to a later time by
+snd_hda_codec_cleanup_stream() like with other HDA streams.
+
+On at least some Intel codecs (but not in at least some NVIDIA ones)
+this will cause the HDMI port to continue transmitting an audio stream
+after the device has been closed. This has the effect that a receiver
+connected to such a port may give the HDMI port audio higher priority
+than e.g. an actually active S/PDIF input port, causing silence to be
+heard instead of audio of the S/PDIF input port of the receiver.
+
+Change the cleanup callback to always clean up the streams to avoid such
+issues.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+ sound/pci/hda/patch_hdmi.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 807a2aa..283ed55 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1358,7 +1358,8 @@ static int generic_hdmi_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+ 					     struct hda_codec *codec,
+ 					     struct snd_pcm_substream *substream)
+ {
+-	snd_hda_codec_cleanup_stream(codec, hinfo->nid);
++	/* Avoid outputting silence after cleanup */
++	__snd_hda_codec_cleanup_stream(codec, hinfo->nid, 1);
+ 	return 0;
+ }
+ 
+-- 
+1.7.10
+
+
+--------------060002000806050702000902
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------060002000806050702000902--
