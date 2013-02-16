@@ -1,27 +1,20 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
- codec)
-Date: Sat, 16 Feb 2013 21:55:05 +1030
-Message-ID: <20130216112505.GE4164@marvin.atrad.com.au>
-References: <20130104042423.GD15726@marvin.atrad.com.au>
- <CAN8cciYhydz6e6oz2QU4NeQgWsJU+4BQrhW6CK1tYd_+4E6pBw@mail.gmail.com>
- <20130105031254.GD11016@marvin.atrad.com.au>
- <CAN8ccib6xbxAjpNXzxQQGVSo9vuNNPU7NdB7FPFWaNCXLpn+Gw@mail.gmail.com>
- <20130105071605.GA11323@marvin.atrad.com.au>
- <s5hvcb7ohly.wl%tiwai@suse.de>
- <20130113043936.GA8822@marvin.atrad.com.au>
- <s5h8v7xjw4f.wl%tiwai@suse.de>
- <20130210114707.GA26574@marvin.atrad.com.au>
- <s5hzjzbql3a.wl%tiwai@suse.de>
+From: wendelin klimann <wklimann@gmail.com>
+Subject: Re: ASoC: BeagleBoard driver development (PCM3168)
+Date: Sat, 16 Feb 2013 13:05:02 +0100
+Message-ID: <CAGxc5aCZarD+-4EqSA9QZx_RvXRvJuGpKXtp=RiUPdcATuxFng@mail.gmail.com>
+References: <CAGxc5aCJisVLrC09YsWAoh3U9_kKGKwFqiK4KM-u7JZ7SpW58w@mail.gmail.com>
+ <5118F700.90006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
- by alsa0.perex.cz (Postfix) with ESMTP id DAA6F260783
- for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2013 12:25:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hzjzbql3a.wl%tiwai@suse.de>
+Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B91A2615B4
+ for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2013 13:05:03 +0100 (CET)
+Received: by mail-lb0-f170.google.com with SMTP id ge1so3272459lbb.1
+ for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2013 04:05:03 -0800 (PST)
+In-Reply-To: <5118F700.90006@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,60 +24,807 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 11, 2013 at 10:02:49AM +0100, Takashi Iwai wrote:
-> > I'm now back from linux.conf.au and would like to pick up this issue.  Given
-> > that several weeks have elapsed since we last touched base, what would now
-> > be the best tree to test to determine where we are at and what the next
-> > steps should be to restoring the previous functionality for the Fujitsu
-> > S7020 laptop?
-> 
-> Try sound.git tree for-next branch.  It already contains all stuff for
-> 3.9 kernel.
+Hello and thanks for the support!
 
-I've been able to test this (snapshot as of two days ago, reports version
-number 3.8.0-rc5+ via uname).  As expected there have been some
-improvements.
+2013/2/11 Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Things which work:
+> Hi,
+>
+> On 02/10/2013 10:50 PM, wendelin klimann wrote:
+> > hello
+> >
+> > I try to implement an PCM3168 audio codec from TI to the BeagleBoard but
+> > actually i am stuck and it would be rally nice if one could help me a
+> > little bit.
+> > My ALSA driver version is 1.0.24 and i use an 3.2.18 kernel.
+> > As a startingpoint i used the files
+> >
+> > */linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3008.c*
+> > */linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3008.h*
+> >
+> >
+> > The files                   (see end of e-mail)
+> >
+> > */linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
+> > /linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.c
+> > /linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.h*
+> >
+> > could be compiled successfully and also the insmod loads the modules
+> >
+> > *$: insmod
+> > /lib/modules/3.2.18/kernel/sound/soc/omap/snd-soc-pcm3168_soundcard.ko*
+> >
+> > *$: lsmod*
+> > Module                  Size  Used by
+> > snd_soc_pcm3168         1886  0
+> > snd_soc_pcm3168_soundcard     2094  0
+> > twl4
+> > 030_madc_hwmon      2569  0
+> > snd_soc_omap3beagle     2239  0
+> > rtc_twl                 4382  0
+> > snd_soc_twl4030        37616  1
+> > rtc_ds1307              6642  0
+> > snd_soc_omap            3521  1
+> > snd_soc_omap_mcbsp      8374  1
+> > snd_soc_core          107346  6
+> >
+> snd_soc_pcm3168,snd_soc_pcm3168_soundcard,snd_soc_omap3beagle,snd_soc_twl=
+4030,snd_soc_omap,snd_soc_omap_mcbsp
+> > regmap_spi              1263  1 snd_soc_core
+> > snd_pcm                78039  4
+> > snd_soc_twl4030,snd_soc_omap,snd_soc_omap_mcbsp,snd_soc_core
+> > snd_timer              18848  1 snd_pcm
+> > snd                    57930  3 snd_soc_core,snd_pcm,snd_timer
+> > soundcore               6954  1 snd
+> > iptable_nat             3819  0
+> > snd_page_alloc          4979  1 snd_pcm
+> > nf_nat                 16515  1 iptable_nat
+> > nf_conntrack_ipv4      12018  3 iptable_nat,nf_nat
+> > nf_conntrack           71219  3 iptable_nat,nf_nat,nf_conntrack_ipv4
+> > nf_defrag_ipv4          1379  1 nf_conntrack_ipv4
+> > ip_tables              10537  1 iptable_nat
+> > x_tables               16505  2 iptable_nat,ip_tables
+> > gpio_keys               7117  0
+> > autofs4                20492  2
+> >
+> > but the new ALSA device is not recognized
+> >
+> > *$:aplay -l*
+> > **** List of PLAYBACK Hardware Devices ****
+> > card 0: omap3beagle [omap3beagle], device 0: TWL4030 twl4030-hifi-0 []
+> >   Subdevices
+> > : 1/1
+> >   Subdevice #0: subdevice #0
+> >
+> > So i tried to get some information in
+> >
+> > *$: cd /sys/kernel/debug/asoc*
+> >
+> > */sys/kernel/debug/asoc$: ls*
+> > codecs       dais         omap3beagle  pcm3168      platforms
+> >
+> > */sys/kernel/debug/asoc$: cat codecs*
+> > pcm3168-codec.0
+> > twl4030-codec
+> >
+> > */sys/kernel/debug/asoc$: cat dais*
+> > pcm3168-hifi
+> > twl4030-voice
+> > twl4030-hifi
+> > omap-mcbsp-dai.4
+> > omap-mcbsp-dai.3
+> > omap-mcbsp-dai.2
+> > omap-mcbsp-dai.1
+> > omap-mcbsp-dai.0
+> >
+> > */sys/kernel/debug/asoc$: cat platforms*
+> > omap-pcm-audio
+> > snd-soc-dummy
+> >
+> > */sys/kernel/debug/asoc$:cd omap3beagle*
+> >
+> > */sys/kernel/debug/asoc/omap3beagle$:ls*
+> > dapm           dapm_pop_time  twl4030-codec
+> >
+> > */sys/kernel/debug/asoc/omap3beagle$:cd /sys/kernel/debug/asoc/pcm3168*
+> >
+> > */sys/kernel/debug/asoc/pcm3168$: ls*
+> > dapm_pop_time
+> >
+> >
+> > At this point i have no idea how to solve the problem or how to debug
+> > further and i would be very grateful for any hint.
+> >
+> > Thanks a lot
+> > Wendelin
+> >
+> >
+> >
+> >
+> > *
+> >
+> *************************************************************************=
+**********************
+> > *
+> > /linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
+> > *
+> > **
+> >
+> *************************************************************************=
+**********************
+> >
+> > */*
+> >  * PCM3168 ASoC driver for BeagleBoard.
+> >  *
+> >  * Author:    Hugo Villeneuve
+> >  * Copyright (C) 2008 Lyrtech inc
+> >  *
+> >  * adapted by Klimann Wendelin <wklimann@hotmail.com>
+> >  *
+> >  *
+> >  * Based on ASoC driver for TI DAVINCI EVM platform, original copyright
+> > follow:
+> >  * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
+> >  *
+> >  * This program is free software; you can redistribute it and/or modify
+> >  * it under the terms of the GNU General Public License version 2 as
+> >  * published by the Free Software Foundation.
+> >  */
+> >
+> > #include <linux/clk.h>
+> > #include <linux/platform_device.h>
+> > #include <linux/module.h>
+> > #include <linux/moduleparam.h>
+> > #include <linux/timer.h>
+> > #include <linux/interrupt.h>
+> > #include <linux/platform_device.h>
+> > #include <linux/gpio.h>
+> > #include <sound/core.h>
+> > #include <sound/pcm.h>
+> > #include <sound/pcm_params.h>
+> > #include <sound/soc.h>
+> > #include <sound/soc-dapm.h>
+> >
+> > #include <asm/mach-types.h>
+> > //#include <asm/dma.h>
+> > #include <mach/hardware.h>
+> > #include <mach/gpio.h>
+> > //#include <mach/edma.h>
+> > #include <plat/mcbsp.h>
+> >
+> > #include "omap-mcbsp.h"
+> > #include "omap-pcm.h"
+> >
+> > #include "../codecs/pcm3168.h"
+> >
+> > /*
+> >  * CLKX and CLKR are the inputs for the Sample Rate Generator.
+> >  * FSX and FSR are outputs, driven by the sample Rate Generator.
+> >  */
+> > /*
+> >  * SND_SOC_DAIFMT_CBS_CFS
+> >  * for codec in slave mode
+> >  */
+> > #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B |    \
+> >               SND_SOC_DAIFMT_CBM_CFM |    \
+> >               SND_SOC_DAIFMT_IB_NF)
+> >
+> > static int pcm3168_hw_params(struct snd_pcm_substream *substream,
+> >                 struct snd_pcm_hw_params *params)
+> > {
+> >     struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> >     struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+> >     int fs;
+> >     int ret =3D 0;
+> >
+> >
+> > printk("in hw_params -> by kli");
+> >
+> >
+> >     /* Fsref can be 8000 to 96000. */
+> >     fs =3D params_rate(params);
+> >
+> >     /* set cpu DAI configuration */
+> >     ret =3D snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
+> >     if (ret < 0) {
+> >         printk(KERN_ERR "can't set cpu DAI configuration\n");
+> >         return ret;
+> >     }
+> >
+> >     pr_debug("pcm3168_hw_params: rate =3D %d Hz\n", fs);
+> >
+> >     return 0;
+> > }
+> >
+> > static struct snd_soc_ops pcm3168_ops =3D {
+> >     .hw_params =3D pcm3168_hw_params,
+> > };
+> >
+> > /* omap-pcm3168 digital audio interface glue - connects codec <--> CPU =
+*/
+> > static struct snd_soc_dai_link pcm3168_dai =3D {
+> >     .name =3D "PCM3168",  /* Codec name */
+> >     .stream_name =3D "PCM3168",
+> >     .cpu_dai_name =3D "omap-mcbsp-dai.2",
+>
+> Are you sure you connect the codec to McBSP2?
+> If so I think it is better to disable the omap-twl4030 driver, but it
+> should
+> not cause problems if you have it, just make sure you are not running the
+> two
+> card at the same time.
+>
 
- * "Headphone Jack Mode" allows switching between "Headphone" and "Line
-   out".  Both of these mode settings appear to work.
+The Beagleboard uses the omap3beagle.c file to include the TWL4030 and it
+uses the "omap-mcbsp-dai.1" interface so i think there should be no proplem
+in using booth drivers at the same time
 
- * There are separate "Headphone" and "Speaker" volume controls.
 
- * The "Headphone" volume control influences the headphone jack volume.
+>
+> >     .codec_dai_name =3D "pcm3168-hifi",
+> >     .codec_name =3D "pcm3168-codec",
+>
+> codec name should be: pcm3168-codec.0
+>
 
- * An "Auto-Mute Mode" control appears in alsamixer (it was missing on
-   earlier versions).
+Thanks that helpt to get the (old machine-driver) driver to load correctly
+and now i can start with the mcbsp and hardware-testing.
 
- * Alsamixer recognises the presence of two ADCs, giving "Capture" and
-   "Capture 1" controls, with corresponding "Input Source" controls.
 
-Things which don't work or are missing:
+>
+> >     .platform_name =3D "omap-pcm-audio",
+> >     .ops =3D &pcm3168_ops,
+> > };
+> >
+> > /* omap-pcm3168 audio machine driver */
+> > static struct snd_soc_card snd_soc_pcm3168 =3D {
+> >     .name =3D "pcm3168",                      // -> "OMAP pcm3168"
+> >     .owner =3D THIS_MODULE,
+> >     .dai_link =3D &pcm3168_dai,
+> >     .num_links =3D 1,
+> > };
+> >
+> > /* pcm3168 audio private data */
+> > static struct pcm3168_setup_data pcm3168_pcm3168_setup =3D {
+> > //    .dem0_pin =3D GPIO(45),
+> > //    .dem1_pin =3D GPIO(46),
+> > //    .pdad_pin =3D GPIO(47),
+> > //    .pdda_pin =3D GPIO(38),
+> > };
+> >
+> > struct platform_device pcm3168_codec =3D {
+> >         .name =3D "pcm3168-codec",
+> >         .id =3D 0,
+> >         .dev =3D {
+> >                 .platform_data =3D &pcm3168_pcm3168_setup,
+> >         },
+> > };
+> >
+> >
+> >
+> > static struct platform_device *pcm3168_snd_device;
+> >
+> > static int __init pcm3168_init(void)
+> > {
+> >     int ret;
+> >
+> > printk(KERN_ALERT "in init soundcard \n");
+> >
+> >     if (!(machine_is_omap3_beagle()))
+> >         return -ENODEV;
+> >
+> >     platform_device_register(&pcm3168_codec);
+> >
+> >     pcm3168_snd_device =3D platform_device_alloc("soc-audio", 0);
+> >     if (!pcm3168_snd_device) {
+> >         printk(KERN_ERR "platform device allocation failed\n");
+> >         return -ENOMEM;
+> >     }
+> >
+> >     platform_set_drvdata(pcm3168_snd_device, &snd_soc_pcm3168);
+> > //    platform_device_add_data(pcm3168_snd_device, &pcm3168_snd_data,
+> > //                 sizeof(pcm3168_snd_data));
+> >
+> > /*    ret =3D platform_device_add_resources(pcm3168_snd_device,
+> >                         pcm3168_snd_resources,
+> >                         ARRAY_SIZE(pcm3168_snd_resources));
+> >     if (ret) {
+> >         printk(KERN_ERR "platform device add resources failed\n");
+> >         goto error;
+> >     }
+> > */
+> >     ret =3D platform_device_add(pcm3168_snd_device);
+> >     if (ret)
+> >         goto error;
+> >
+> >     return ret;
+> >
+> > error:
+> >     platform_device_put(pcm3168_snd_device);
+> >     return ret;
+> > }
+>
+> You should update you machine driver to use snd_soc_register_card() see
+> other
+> machine drivers as example (omap-twl4030.c is in the same directory for
+> example and it is really simple).
+>
 
- * "Headphone Jack Mode" lacks options to enable various "mic" or "line in"
-   modes (all of which are possible on this system)
+I took the omap3beagle.c (and the omap-twl4030.c with same results) file as
+template and adapted it. The driver can be compiled correctly but when i
+load it it is not inseting the corresponding codec (snd_soc_pcm3168.ko).
+Even if i load the snd_soc_pcm3168.ko driver manually and after load the
+snd_soc_pcm3168_soundcard.ko driver i do not find the soundcard and the
+codec in:
 
- * The "Input source" controls don't offer the "headphone jack" as a
-   possible source.
+ $/sys/kernel/debug/asoc$: ls
+       codecs       dais         omap3beagle      platforms
 
- * The built-in speaker is completely silent under all situations I have
-   come up with.  The setting of "Auto-Mute Mode" has no effect, neither
-   does a manual unmute of the "Speaker" volume control.  While I don't
-   personally care much about this I suspect others might.
+ $/sys/kernel/debug/asoc$: cat codecs
+       twl4030-codec
 
- * As eluded to above, the "Auto-Mute Mode" control appears to do nothing.
+***************************************************************************=
+***************************************************************
+*   new
+machine-driver:
+*
+*
+/linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
+*
+*
+*
+*
+START
+*
+***************************************************************************=
+***************************************************************
 
- * There's no "Mic Jack Mode" control to control the mode of the "mic" jack.
-   This jack supports line-in mode as well as the various "mic" modes which
-   give varying bias voltages.
+/*
+ * PCM3168 ASoC driver for BeagleBoard.
+ *
+ * based on:
+ *   > omap3beagle.c  --  SoC audio for OMAP3 Beagle
+ *   > Author: Steve Sakoman <steve@sakoman.com>
+ *
+ * adapted by Klimann Wendelin <wklimann@hotmail.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ */
 
-Is there further information I could provide or other tests I could do to
-help address the "don't work or are missing" items?
+#include <linux/clk.h>
+#include <linux/platform_device.h>
+#include <linux/module.h>
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/soc.h>
 
-Regards
-  jonathan
+#include <asm/mach-types.h>
+#include <mach/hardware.h>
+#include <mach/gpio.h>
+#include <plat/mcbsp.h>
+
+#include "omap-mcbsp.h"
+#include "omap-pcm.h"
+
+
+static int pcm3168_hw_params(struct snd_pcm_substream *substream,
+    struct snd_pcm_hw_params *params)
+{
+    struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+    struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+    struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+    unsigned int fmt;
+    int ret;
+
+        fmt =3D    SND_SOC_DAIFMT_DSP_B |
+            SND_SOC_DAIFMT_CBM_CFM |
+            SND_SOC_DAIFMT_IB_NF;
+
+
+    /* Set codec DAI configuration */
+    ret =3D snd_soc_dai_set_fmt(codec_dai, fmt);
+    if (ret < 0) {
+        printk(KERN_ERR "can't set codec DAI configuration\n");
+        return ret;
+    }
+
+    /* Set cpu DAI configuration */
+    ret =3D snd_soc_dai_set_fmt(cpu_dai, fmt);
+    if (ret < 0) {
+        printk(KERN_ERR "can't set cpu DAI configuration\n");
+        return ret;
+    }
+
+    /* Set the codec system clock for DAC and ADC */
+    ret =3D snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
+                     SND_SOC_CLOCK_IN);
+    if (ret < 0) {
+        printk(KERN_ERR "can't set codec system clock\n");
+        return ret;
+    }
+
+    return 0;
+}
+
+static struct snd_soc_ops pcm3168_ops =3D {
+    .hw_params =3D pcm3168_hw_params,
+};
+
+/* Digital audio interface glue - connects codec <--> CPU */
+static struct snd_soc_dai_link pcm3168_dai =3D {
+    .name =3D "PCM3168",
+    .stream_name =3D "PCM3168",
+    .cpu_dai_name =3D "omap-mcbsp-dai.2",
+    .platform_name =3D "omap-pcm-audio",
+    .codec_dai_name =3D "pcm3168-hifi",
+    .codec_name =3D "pcm3168-codec.0",
+    .ops =3D &pcm3168_ops,
+};
+
+/* Audio machine driver */
+static struct snd_soc_card snd_soc_pcm3168 =3D {
+    .name =3D "pcm3168",
+    .owner =3D THIS_MODULE,
+    .dai_link =3D &pcm3168_dai,
+    .num_links =3D 1,
+};
+
+static int __devinit pcm3168_soc_probe(struct platform_device *pdev)
+{
+    struct snd_soc_card *card =3D &snd_soc_pcm3168;
+    int ret;
+
+    pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
+
+    card->dev =3D &pdev->dev;
+
+    ret =3D snd_soc_register_card(card);
+    if (ret) {
+        dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+            ret);
+        return ret;
+    }
+
+    return 0;
+}
+
+static int __devexit pcm3168_soc_remove(struct platform_device *pdev)
+{
+    struct snd_soc_card *card =3D platform_get_drvdata(pdev);
+
+    snd_soc_unregister_card(card);
+
+    return 0;
+}
+
+static struct platform_driver pcm3168_driver =3D {
+    .driver =3D {
+        .name =3D "pcm3168-soc-audio",
+        .owner =3D THIS_MODULE,
+    },
+
+    .probe =3D pcm3168_soc_probe,
+    .remove =3D __devexit_p(pcm3168_soc_remove),
+};
+
+static int __init pcm3168_soc_init(void)
+{
+    return platform_driver_register(&pcm3168_driver);
+}
+module_init(pcm3168_soc_init);
+
+static void __exit pcm3168_soc_exit(void)
+{
+    platform_driver_unregister(&pcm3168_driver);
+}
+module_exit(pcm3168_soc_exit);
+
+MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
+MODULE_DESCRIPTION("ALSA SoC PCM3168 add on Soundcard");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:pcm3168-soc-audio");
+
+***************************************************************************=
+***************************************************************
+*   new
+machine-driver:
+*
+*
+/linux-mainline-3.2.18-r121b/git/sound/soc/omap/pcm3168_soundcard.c
+*
+*
+*
+*
+    END
+
+*
+***************************************************************************=
+***************************************************************
+
+
+>
+>
+> >
+> > static void __exit pcm3168_exit(void)
+> > {
+> >     platform_device_unregister(pcm3168_snd_device);
+> >     platform_device_unregister(&pcm3168_codec);
+> > }
+> >
+> > module_init(pcm3168_init);
+> > module_exit(pcm3168_exit);
+> >
+> > MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
+> > MODULE_DESCRIPTION("PCM3168 Beagle ASoC driver");
+> > MODULE_LICENSE("GPL");
+> > MODULE_ALIAS("platform:pcm3168-soc-audio");
+> >
+> >
+> >
+> >
+> > *
+> >
+> *************************************************************************=
+**********************
+> > *
+> > /linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.c
+> >    *
+> > **
+> >
+> *************************************************************************=
+**********************
+> >
+> > */*
+> >  * ALSA Soc PCM3168 codec support
+> >  *
+> >  * Author:    Hugo Villeneuve
+> >  * Copyright (C) 2008 Lyrtech inc
+> >  *
+> >  * adapted by Klimann Wendelin
+> >  *
+> >  *
+> >  * Based on AC97 Soc codec, original copyright follow:
+> >  * Copyright 2005 Wolfson Microelectronics PLC.
+> >  *
+> >  *  This program is free software; you can redistribute  it and/or
+> modify it
+> >  *  under  the terms of  the GNU General  Public License as published by
+> the
+> >  *  Free Software Foundation;  either version 2 of the  License, or (at
+> your
+> >  *  option) any later version.
+> >  *
+> >  * Generic PCM3168 support.
+> >  */
+> >
+> > #include <linux/init.h>
+> > #include <linux/kernel.h>
+> > #include <linux/device.h>
+> > #include <linux/gpio.h>
+> > #include <linux/slab.h>
+> > #include <linux/module.h>
+> > #include <linux/clk.h>
+> > #include <linux/platform_device.h>
+> > #include <linux/module.h>
+> > #include <sound/core.h>
+> > #include <sound/initval.h>
+> > #include <sound/pcm.h>
+> > #include <sound/pcm_params.h>
+> > //#include <sound/soc-dapm.h>
+> > #include <sound/soc.h>
+> >
+> > #include <asm/mach-types.h>
+> > #include <mach/hardware.h>
+> > #include <mach/gpio.h>
+> > #include <plat/mcbsp.h>
+> >
+> > #include "../omap/omap-mcbsp.h"
+> > #include "../omap/omap-pcm.h"
+> >
+> > #include "pcm3168.h"
+> >
+> >
+> >
+> > #define PCM3168_VERSION "0.1"
+> >
+> > #define PCM3168_RATES   SNDRV_PCM_RATE_8000_96000
+> /*(SNDRV_PCM_RATE_32000 |
+> > SNDRV_PCM_RATE_44100 |    \
+> >                SNDRV_PCM_RATE_48000)*/
+> >
+> > static struct snd_soc_dai_driver pcm3168_dai =3D {
+> >
+> >     .name =3D "pcm3168-hifi",
+> >     .playback =3D {
+> >         .stream_name =3D "PCM3168 Playback",
+> >         .channels_min =3D 2,
+> >         .channels_max =3D 8,
+> >         .rates =3D PCM3168_RATES,
+> >         .formats =3D SNDRV_PCM_FMTBIT_S16_LE, //SNDRV_PCM_FMTBIT_S32_LE
+> >     },
+> >     .capture =3D {
+> >         .stream_name =3D "PCM3168 Capture",
+> >         .channels_min =3D 2,
+> >         .channels_max =3D 6,
+> >         .rates =3D PCM3168_RATES,
+> >         .formats =3D SNDRV_PCM_FMTBIT_S16_LE, //SNDRV_PCM_FMTBIT_S32_LE
+> >     },
+> > };
+> >
+> > static void pcm3168_gpio_free(struct pcm3168_setup_data *setup)
+> > {
+> > //    gpio_free(setup->dem0_pin);
+> > //    gpio_free(setup->dem1_pin);
+> > //    gpio_free(setup->pdad_pin);
+> > //    gpio_free(setup->pdda_pin);
+> > }
+> >
+> > static int pcm3168_soc_probe(struct snd_soc_codec *codec)
+> > {
+> >     struct pcm3168_setup_data *setup =3D codec->dev->platform_data;
+> >     int ret =3D 0;
+> >
+> > printk(KERN_ALERT "in SOC Probe -> kli \n");
+> >
+> >     printk(KERN_INFO "PCM3168 SoC Audio Codec %s\n", PCM3168_VERSION);
+> >
+> >     return ret;
+> >
+> > gpio_err:
+> > //    pcm3168_gpio_free(setup);
+> >
+> >     return ret;
+> > }
+> >
+> > static int pcm3168_soc_remove(struct snd_soc_codec *codec)
+> > {
+> >     struct pcm3168_setup_data *setup =3D codec->dev->platform_data;
+> >
+> > //    pcm3168_gpio_free(setup);
+> >     return 0;
+> > }
+> >
+> >
+> > #define pcm3168_soc_suspend NULL
+> > #define pcm3168_soc_resume NULL
+> >
+> >
+> > static struct snd_soc_codec_driver soc_codec_dev_pcm3168 =3D {
+> >     .probe =3D     pcm3168_soc_probe,
+> >     .remove =3D     pcm3168_soc_remove,
+> >     .suspend =3D    pcm3168_soc_suspend,
+> >     .resume =3D    pcm3168_soc_resume,
+> > };
+> >
+> > static int __devinit pcm3168_codec_probe(struct platform_device *pdev)
+> > {
+> >     int ret;
+> >     printk(KERN_ALERT "probe pcm3168 -> kli \n");
+> >
+> >     ret =3D snd_soc_register_codec(&pdev->dev,
+> >             &soc_codec_dev_pcm3168, &pcm3168_dai, 1);
+> >
+> >     printk(KERN_ALERT "probe_after pcm3168 -> kli =3D %d \n", ret);
+> >
+> >     return ret;
+> > }
+> >
+> > static int __devexit pcm3168_codec_remove(struct platform_device *pdev)
+> > {
+> >     printk(KERN_ALERT "remove pcm3168 -> kli \n");
+> >
+> >     snd_soc_unregister_codec(&pdev->dev);
+> >     return 0;
+> > }
+> >
+> > MODULE_ALIAS("platform:pcm3168-codec");
+> >
+> > static struct platform_driver pcm3168_codec_driver =3D {
+> >     .probe        =3D pcm3168_codec_probe,
+> >     .remove        =3D __devexit_p(pcm3168_codec_remove),
+> >     .driver        =3D {
+> >     .name        =3D "pcm3168-codec",
+> >     .owner        =3D THIS_MODULE,
+> >     },
+> > };
+>
+> According to the datasheet the PCM3168 have I2C or SPI control interface.
+> You
+> should have the driver as i2c/spi device so you can actually control it.
+>
+
+As it is my first attempt to implement an audio codec i thought to start as
+simple as possible and do all the setup with the external pins and avoid to
+use the I2C or SPI at first. Of course i want to add it later on but i
+thought it would be wise to test the hardware first.
+
+
+>
+> >
+> > static int __init pcm3168_modinit(void)
+> > {
+> >     printk(KERN_ALERT "in init of 3168 -> kli \n");
+> >     return platform_driver_register(&pcm3168_codec_driver);
+> > }
+> > module_init(pcm3168_modinit);
+> >
+> > static void __exit pcm3168_exit(void)
+> > {
+> >     printk(KERN_ALERT "in exit of 3168 -> kli \n");
+> >     platform_driver_unregister(&pcm3168_codec_driver);
+> > }
+> > module_exit(pcm3168_exit);
+> >
+> > MODULE_DESCRIPTION("Soc PCM3168 driver");
+> > MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
+> > MODULE_LICENSE("GPL");
+> >
+> >
+> > *
+> >
+> *************************************************************************=
+**********************
+> > *
+> > /linux-mainline-3.2.18-r121b/git/sound/soc/codecs/pcm3168.h
+> >     *
+> >
+> *************************************************************************=
+**********************
+> > *
+> >
+> > /*
+> >  * PCM3168 ALSA SoC Layer
+> >  *
+> >  * Author:    Hugo Villeneuve
+> >  * Copyright (C) 2008 Lyrtech inc
+> >  *
+> >  * adapted by Klimann Wendelin <wklimann@hotmail.com>
+> >  *
+> >  *
+> >  * This program is free software; you can redistribute it and/or modify
+> >  * it under the terms of the GNU General Public License version 2 as
+> >  * published by the Free Software Foundation.
+> >  */
+> >
+> > #ifndef __LINUX_SND_SOC_PCM3168_2_H
+> > #define __LINUX_SND_SOC_PCM3168_2_H
+> >
+> > struct pcm3168_setup_data {
+> > //    unsigned dem0_pin;
+> > //    unsigned dem1_pin;
+> > //    unsigned pdad_pin;
+> > //    unsigned pdda_pin;
+> > };
+> >
+> > #endif
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+>
+>
+> --
+> P=E9ter
+>
+
+Thanks
+Wendelin
