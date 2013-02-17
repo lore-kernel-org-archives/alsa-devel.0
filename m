@@ -1,41 +1,39 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V6 02/10] ASoC: SAMSUNG: Add DT support for i2s
-Date: Sun, 17 Feb 2013 06:01:53 +0530
-Message-ID: <CAAgF-BdopAF4CxT4Wb4O6OoYVA0Yib+1hwm7Nu_KkXjFcky2gQ@mail.gmail.com>
-References: <1358509629-20471-1-git-send-email-padma.v@samsung.com>
-	<1358509629-20471-3-git-send-email-padma.v@samsung.com>
-	<511CC11B.5030700@samsung.com>
-	<20130214114337.GD13249@opensource.wolfsonmicro.com>
-	<511D49FC.4080402@gmail.com>
-	<20130215120145.GC22283@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130215120145.GC22283@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Padmavathi Venna <padma.v@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, sbkim73@samsung.com, vinod.koul@intel.com, grant.likely@secretlab.ca, swarren@nvidia.com, boojin.kim@samsung.com, kgene.kim@samsung.com, jassisinghbrar@gmail.com, thomas.abraham@linaro.org, lrg@ti.com, tiwai@suse.de, ben-linux@fluff.org
+From: Tim Hewett <tghewett2@onetel.com>
+Subject: Discovery of device characteristics
+Date: Sun, 17 Feb 2013 02:39:53 +0000
+Message-ID: <B053C7AF-BC91-4B13-B3AE-963AB6CC988C@onetel.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.2 \(1499\))
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-beusergroup.xen.exoware.net (smtp.beusergroup.co.uk
+ [213.229.88.3]) by alsa0.perex.cz (Postfix) with ESMTP id B47AD26166B
+ for <alsa-devel@alsa-project.org>; Sun, 17 Feb 2013 03:39:54 +0100 (CET)
+Received: from [192.168.1.4] (94-193-221-212.zone7.bethere.co.uk
+ [94.193.221.212])
+ by smtp-beusergroup.xen.exoware.net (8.14.4/8.14.4) with ESMTP id
+ r1H3iO6m007733
+ for <alsa-devel@alsa-project.org>; Sun, 17 Feb 2013 03:44:25 GMT
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I'm writing software looking to discover the available sample rates, channel formats etc. for a device. I have been taking the approach of testing a sample rate from a list of potential rates, then setting the device to that rate to then test the channel formats etc..
 
-On Fri, Feb 15, 2013 at 5:31 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Feb 14, 2013 at 09:33:00PM +0100, Sylwester Nawrocki wrote:
->
->> My apologies for the late review. It's already sixth version of this patch
->> series... But I noticed it just now when applying it for Exynos4. The GPIO
->> part of the bindings is now incompatible with Exynos4 and the bindings will
->> need to be changed. Leaving the compatibility code in the I2S driver, when
->> we could have it done well right from the beginning. If I'm not mistaken
->> a file similar to arch/arm/boot/dts/exynos4x12-pinctrl.dtsi with at least
->> entries for the I2S devices is needed and an addition of related pinctrl
->> nodes in exynos5250.dtsi. But I guess this is not something that could be
->> fixed in the -rc period ?
->
-> Yes, and incremental fix would be fine.
+The structure is initialised using snd_pcm_hw_params_any() then snd_pcm_hw_params_test_rate() is called for a set of rates followed by snd_pcm_hw_params_set_rate() if the previous call is successful, then snd_pcm_hw_params_test_format() for a set of formats followed by snd_pcm_hw_params_set_format() if that is successful, then snd_pcm_hw_params_test_channels(), the point being to narrow down the characteristics available for given sample rates and channel formats.
 
-I will send a patch for required pinctrl support soon.
+For example I have a device which supports up to 8 channels at sample rates of 44.1kHz and 48kHz but only 2 channels at 96kHz.
 
-Thanks
-Padma
+It works ok usually but keeps failing to detect that the device supports 24-bit channel formats, both for SND_PCM_FORMAT_S24_LE/BE and SND_PCM_FORMAT_S24_3LE/3BE. It detects the 16-bit formats without any problem.
+
+Online source taken from http://download.atmark-techno.com/misc/demos/usb-audio-a500-howto/hw_params.c does detect the 24-bit format but doesn't set the sample rate first - each characteristic is tested in isolation - snd_pcm_hw_params_any() is called before each one.
+
+I am wondering if my way is not the correct way to determine device characteristics.
