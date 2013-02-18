@@ -1,26 +1,18 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
- codec)
-Date: Tue, 19 Feb 2013 08:43:24 +1030
-Message-ID: <20130218221324.GA2088@marvin.atrad.com.au>
-References: <20130210114707.GA26574@marvin.atrad.com.au>
- <s5hzjzbql3a.wl%tiwai@suse.de>
- <20130216112505.GE4164@marvin.atrad.com.au>
- <s5h8v6ncpcp.wl%tiwai@suse.de>
- <20130217125316.GA25824@marvin.atrad.com.au>
- <s5h1ucedgge.wl%tiwai@suse.de> <s5hzjz2c1ui.wl%tiwai@suse.de>
- <s5h7gm6huq5.wl%tiwai@suse.de>
- <20130218125003.GC14697@marvin.atrad.com.au>
- <CAN8cciawuZ7byQ89OY9x48_0wY60KwWX5YoyEnPrRU0NzLe0Wg@mail.gmail.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: [PATCH 0/3] Make HDMI ELD usable with hotplug
+Date: Tue, 19 Feb 2013 00:39:42 +0200
+Message-ID: <20130218223942.GB3605@sci.fi>
+References: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
+ <s5h4nh9hhi6.wl%tiwai@suse.de> <512231B9.6000408@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 586A926513B
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 23:13:29 +0100 (CET)
+Received: from filtteri1.pp.htv.fi (filtteri1.pp.htv.fi [213.243.153.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id A76DA26513B
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 23:39:46 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAN8cciawuZ7byQ89OY9x48_0wY60KwWX5YoyEnPrRU0NzLe0Wg@mail.gmail.com>
+In-Reply-To: <512231B9.6000408@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,35 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, fengguang.wu@intel.com, pierre-louis.bossart@linux.intel.com, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 18, 2013 at 08:58:28PM +0800, Raymond Yau wrote:
+On Mon, Feb 18, 2013 at 02:50:49PM +0100, David Henningsson wrote:
+> On 02/18/2013 02:35 PM, Takashi Iwai wrote:
+> > At Mon, 18 Feb 2013 14:11:10 +0100,
+> > David Henningsson wrote:
+> >>
+> >> I'm experimenting with using ELD information in PulseAudio and found
+> >> that it didn't work very well with hotplugging.
+> >> Neither the proc file nor the ELD kcontrol was cleared correctly after
+> >> unplug, and there was no way (except polling) to find out when ELD
+> >> has become available.
 > >
-> > > > To confirm the behaviour: the "Headphone Jack Mode" control appears in
-> > > > 3.8.0-rc5+ but a corresponding control for the mic/line-in jack does not.
-> > >
-> > > Ah, I see.  This doesn't appear as default.  You need to pass a hint
-> > > string in the firmware patch file.  See a brief description in
-> > > Documentation/sound/alsa/HD-Audio.txt.
+> > Did you try Xingchao's patch for drm/i915?  It's queued in
+> > drm-intel-next:
 > >
-> > Right.  I'll take a look at this documentation.  I must say that it strikes
-> > me as a little odd that input jacks don't have a mode control by default. I
-> > would have expected that such controls would be desired by enough people to
-> > justify having them appear by default without each user having to mess
-> > around with firmware patch files and the like.
+> >      commit 7b9f35a6dd72f89452c58bbdbaf063027bf857ec
+> >      Author: Wang Xingchao <xingchao.wang@intel.com>
+> >      Date:   Tue Jan 22 23:25:25 2013 +0800
 > >
-> > I assume the magic knob is add_in_jack_modes.
-> >
-> > Is there any reason why alc260_fixup_fsc_s7020() couldn't set
-> > spec->gen.add_in_jack_modes to 1 in the HDA_FIXUP_ACT_PRE_PROBE phase much
-> > like it already sets add_out_jack_modes?
-> 
-> Is it possible to add spec->gen.add_in_jack_modes automatically when
-> automic is disabled and there is no line in jack
+> >      drm/i915: HDMI/DP - ELD info refresh support for Haswell
+> =
 
-That would work for me - it sounds like a good idea.
+> Thanks for the hint. I'm currently developing not on a Haswell machine, =
 
-Regards
-  jonathan
+> but an (I think) Arrandale that I bought a few years ago. So I guess =
+
+> this patch does not have any effect on my hw?
+
+While reviewing that patch I asked whether we need something like that
+on other platforms. Unfortunately I didn't get a real answer. The logic
+in the patch would seem to apply equally to all platforms, not just HSW.
+We also seem to be doing silly things like flipping the ELD valid bit
+in the register on and off a few times when we update the ELD. But I'm
+not all that familiar with the topic so take my ramblings with a pinch
+of salt.
+
+But in any case, if you're seeing a problem with the behaviour of i915
+you should definitely report it.
+
+-- =
+
+Ville Syrj=E4l=E4
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
