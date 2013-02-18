@@ -1,8 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/3] ALSA: hda - hdmi: Do not expose eld data
-	when eld is invalid
-Date: Mon, 18 Feb 2013 14:11:12 +0100
-Message-ID: <1361193073-7199-3-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 1/3] ALSA: hda - hdmi: ELD shouldn't be valid
+	after unplug
+Date: Mon, 18 Feb 2013 14:11:11 +0100
+Message-ID: <1361193073-7199-2-git-send-email-david.henningsson@canonical.com>
 References: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BCD9D26506E
+ by alsa0.perex.cz (Postfix) with ESMTP id BB6F126501A
  for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 14:11:14 +0100 (CET)
 In-Reply-To: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,66 +26,26 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org, fengguang.wu@intel.com, pierre-l
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously, it was possible to read the eld data of the previous
-monitor connected. This should not be allowed.
-
-Also refactor the function slightly.
+Currently, eld_valid is never set to false, except at kernel module
+load time. This patch makes sure that eld is no longer valid when
+the cable is (hot-)unplugged.
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_hdmi.c |   24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/pci/hda/patch_hdmi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 32adaa6..9236cdb 100644
+index b9af281b..32adaa6 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -343,14 +343,17 @@ static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_info *uinfo)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hdmi_spec *spec;
-+	struct hdmi_spec *spec = codec->spec;
-+	struct hdmi_eld *eld;
- 	int pin_idx;
+@@ -1176,6 +1176,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
+ 		codec->addr, pin_nid, eld->monitor_present, eld_valid);
  
--	spec = codec->spec;
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
- 
- 	pin_idx = kcontrol->private_value;
--	uinfo->count = spec->pins[pin_idx].sink_eld.eld_size;
-+	eld = &spec->pins[pin_idx].sink_eld;
-+
-+	if (eld->eld_valid)
-+		uinfo->count = eld->eld_valid ? eld->eld_size : 0;
- 
- 	return 0;
- }
-@@ -359,14 +362,21 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hdmi_spec *spec;
-+	struct hdmi_spec *spec = codec->spec;
-+	struct hdmi_eld *eld;
- 	int pin_idx;
- 
--	spec = codec->spec;
- 	pin_idx = kcontrol->private_value;
-+	eld = &spec->pins[pin_idx].sink_eld;
-+
-+	if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data)) {
-+		snd_BUG();
-+		return -EINVAL;
-+	}
- 
--	memcpy(ucontrol->value.bytes.data,
--		spec->pins[pin_idx].sink_eld.eld_buffer, ELD_MAX_SIZE);
-+	if (eld->eld_valid)
-+		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
-+		       eld->eld_size);
- 
- 	return 0;
- }
++	eld->eld_valid = false;
+ 	if (eld_valid) {
+ 		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
+ 			snd_hdmi_show_eld(eld);
 -- 
 1.7.9.5
