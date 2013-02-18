@@ -1,17 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/2] ASoC: mid-x86 - add support for metedata
-	apis
-Date: Mon, 18 Feb 2013 15:59:41 +0530
-Message-ID: <1361183381-30010-2-git-send-email-vinod.koul@intel.com>
-References: <1361183381-30010-1-git-send-email-vinod.koul@intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - add quirks for mute LED on two HP
+	machines
+Date: Mon, 18 Feb 2013 11:41:55 +0100
+Message-ID: <1361184115-6388-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 552AE264F0A
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 11:30:36 +0100 (CET)
-In-Reply-To: <1361183381-30010-1-git-send-email-vinod.koul@intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE7E264F07
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 11:41:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>, 1128934@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-while at it, update the copyright timeline too
+These two machines have no mute LED string in BIOS.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+BugLink: https://bugs.launchpad.net/bugs/1128934
+Tested-by: Tammy Yang <tammy.yang@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/mid-x86/sst_platform.c |   12 +++++++++++-
- 1 files changed, 11 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index a263cbe..968656c 100644
---- a/sound/soc/mid-x86/sst_platform.c
-+++ b/sound/soc/mid-x86/sst_platform.c
-@@ -1,7 +1,7 @@
- /*
-  *  sst_platform.c - Intel MID Platform driver
-  *
-- *  Copyright (C) 2010-2012 Intel Corp
-+ *  Copyright (C) 2010-2013 Intel Corp
-  *  Author: Vinod Koul <vinod.koul@intel.com>
-  *  Author: Harsha Priya <priya.harsha@intel.com>
-  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -652,11 +652,21 @@ static int sst_platform_compr_get_codec_caps(struct snd_compr_stream *cstream,
- 	return stream->compr_ops->get_codec_caps(codec);
+Should be sent to stable too, but I guess the patch have to be
+rewritten to fit.
+
+ sound/pci/hda/patch_realtek.c |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 48c9d10..e575685 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2726,6 +2726,18 @@ static void alc269_fixup_hp_mute_led(struct hda_codec *codec,
+ 	}
  }
  
-+static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
-+					struct snd_compr_metadata *metadata)
++static void alc269_fixup_hp_mute_led_mic1(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
 +{
-+	struct sst_runtime_stream *stream  =
-+		 cstream->runtime->private_data;
-+
-+	return stream->compr_ops->set_metadata(stream->id, metadata);
++	struct alc_spec *spec = codec->spec;
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mute_led_polarity = 0;
++		spec->mute_led_nid = 0x18;
++		spec->gen.vmaster_mute.hook = alc269_fixup_mic_mute_hook;
++		spec->gen.vmaster_mute_enum = 1;
++	}
 +}
 +
- static struct snd_compr_ops sst_platform_compr_ops = {
- 
- 	.open = sst_platform_compr_open,
- 	.free = sst_platform_compr_free,
- 	.set_params = sst_platform_compr_set_params,
-+	.set_metadata = sst_platform_compr_set_metadata,
- 	.trigger = sst_platform_compr_trigger,
- 	.pointer = sst_platform_compr_pointer,
- 	.ack = sst_platform_compr_ack,
+ static void alc269_fixup_hp_mute_led_mic2(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -2771,6 +2783,7 @@ enum {
+ 	ALC269VB_FIXUP_AMIC,
+ 	ALC269VB_FIXUP_DMIC,
+ 	ALC269_FIXUP_HP_MUTE_LED,
++	ALC269_FIXUP_HP_MUTE_LED_MIC1,
+ 	ALC269_FIXUP_HP_MUTE_LED_MIC2,
+ 	ALC269_FIXUP_INV_DMIC,
+ 	ALC269_FIXUP_LENOVO_DOCK,
+@@ -2903,6 +2916,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_hp_mute_led,
+ 	},
++	[ALC269_FIXUP_HP_MUTE_LED_MIC1] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_hp_mute_led_mic1,
++	},
+ 	[ALC269_FIXUP_HP_MUTE_LED_MIC2] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_hp_mute_led_mic2,
+@@ -2947,6 +2964,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x029b, "Acer 1810TZ", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x0349, "Acer AOD260", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
++	SND_PCI_QUIRK(0x103c, 0x1973, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
++	SND_PCI_QUIRK(0x103c, 0x1983, "HP Pavilion", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_DMIC),
 -- 
-1.7.0.4
+1.7.9.5
