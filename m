@@ -1,22 +1,18 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - Avoid outputting HDMI audio
-	before prepare() and after close()
-Date: Mon, 18 Feb 2013 13:26:04 +0200
-Message-ID: <7e5e105c908951e69c7188eaf6ff8a1b@mail.onse.fi>
-References: <511EEDB0.6010603@iki.fi>
- <1361032822-4041-1-git-send-email-anssi.hannula@iki.fi>
- <511FF33C.6050709@iki.fi> <s5hd2vzcppm.wl%tiwai@suse.de>
- <5120CBB9.6090602@iki.fi> <s5hvc9qc11r.wl%tiwai@suse.de>
- <CAP+ghcLagpQUpBUd85xL1PjnLUf8OnOFD61QY7E7S3BH=7fZPw@mail.gmail.com>
- <s5hehgdhoj3.wl%tiwai@suse.de>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/5] ASoC: max98090: Remove unneeded version.h
+	header include
+Date: Mon, 18 Feb 2013 17:02:10 +0530
+Message-ID: <1361187134-7525-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E4D5264F07
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 12:26:08 +0100 (CET)
-In-Reply-To: <s5hehgdhoj3.wl%tiwai@suse.de>
+Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
+ [209.85.220.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0EBB264F07
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 12:42:09 +0100 (CET)
+Received: by mail-pa0-f50.google.com with SMTP id fa11so2831346pad.9
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 03:42:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,128 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, jerry.wong@maximintegrated.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTguMDIuMjAxMyAxMzowMywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFN1biwgMTcgRmVi
-IDIwMTMgMTk6NTc6NTcgKzAyMDAsCj4gQW5zc2kgSGFubnVsYSB3cm90ZToKPj4KPj4gT24gU3Vu
-ZGF5LCBGZWJydWFyeSAxNywgMjAxMywgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKPj4gPiBBdCBTdW4sIDE3IEZlYiAyMDEzIDE0OjIzOjIxICswMjAwLAo+PiA+IEFuc3NpIEhh
-bm51bGEgd3JvdGU6Cj4+ID4+Cj4+ID4+IDE3LjAyLjIwMTMgMTA6MjQsIFRha2FzaGkgSXdhaSBr
-aXJqb2l0dGk6Cj4+ID4+ID4gQXQgU2F0LCAxNiBGZWIgMjAxMyAyMjo1OTo0MCArMDIwMCwKPj4g
-Pj4gPiBBbnNzaSBIYW5udWxhIHdyb3RlOgo+PiA+PiA+Pgo+PiA+PiA+PiAxNi4wMi4yMDEzIDE4
-OjQwLCBBbnNzaSBIYW5udWxhIGtpcmpvaXR0aToKPj4gPj4gPj4+IFNvbWUgSERNSSBjb2RlY3Mg
-KGF0IGxlYXN0IE5WSURJQSAKPj4gMHgxMGRlMDAwYjoweDEwZGUwMTAxOjB4MTAwMTAwKQo+PiBz
-dGFydAo+PiA+PiA+Pj4gdHJhbnNtaXR0aW5nIGFuIGVtcHR5IGF1ZGlvIHN0cmVhbSBhcyBzb29u
-IGFzIFBJTl9PVVQgYW5kCj4+IEFDX0RJRzFfRU5BQkxFCj4+ID4+ID4+PiBhcmUgZW5hYmxlZC4K
-Pj4gPj4gPj4+Cj4+ID4+ID4+PiBTaW5jZSBjb21taXQgNjE2OWI2NzM2MThiZjBiMjUxOGNlNDEz
-YjU0OTI1NzgyYTYwM2YwNiAoIkFMU0E6IAo+PiBoZGEgLQo+PiA+PiA+Pj4gQWx3YXlzIHR1cm4g
-b24gcGlucyBmb3IgSERNSS9EUCIpIHRoaXMgaGFwcGVucyBhdCBmaXJzdCAKPj4gb3BlbigpIHRp
-bWUsCj4+IGFuZAo+PiA+PiA+Pj4gd2lsbCBjb250aW51ZSBldmVuIGFmdGVyIGNsb3NlKCkuCj4+
-ID4+ID4+Pgo+PiA+PiA+Pj4gQWRkaXRpb25hbGx5LCBzb21lIGNvZGVjcyAoYXQgbGVhc3QgSW50
-ZWwgUGFudGhlclBvaW50IEhETUkpCj4+IGN1cnJlbnRseQo+PiA+PiA+Pj4gY29udGludWUgdHJh
-bnNtaXR0aW5nIEhETUkgYXVkaW8gZXZlbiBhZnRlciBjbG9zZSgpIGluIGNhc2UgCj4+IHNvbWUK
-Pj4gYWN0dWFsCj4+ID4+ID4+PiBhdWRpbyB3YXMgb3V0cHV0IGFmdGVyIG9wZW4oKSAodGhpcyBo
-YXBwZW5zIHJlZ2FyZGxlc3Mgb2YgCj4+IFBJTl9PVVQpLgo+PiA+PiA+Pj4KPj4gPj4gPj4+IEVt
-cHR5IEhETUkgYXVkaW8gdHJhbnNtaXNzaW9uIHdoZW4gbm90IGludGVuZGVkIGhhcyB0aGUgCj4+
-IGVmZmVjdCB0aGF0IGEKPj4gPj4gPj4+IHBvc3NpYmxlIEhETUkgYXVkaW8gc2luay9yZWNlaXZl
-ciBtYXkgcHJlZmVyIHRoZSBlbXB0eSBIRE1JIAo+PiBhdWRpbwo+PiBzdHJlYW0KPj4gPj4gPj4+
-IG92ZXIgYW4gYWN0dWFsIGF1ZGlvIHN0cmVhbSBvbiBpdHMgUy9QRElGIGlucHV0cy4KPj4gPj4g
-Pj4+Cj4+ID4+ID4+PiBUbyBhdm9pZCB0aGUgaXNzdWUgYmVmb3JlIGZpcnN0IHByZXBhcmUoKSwg
-c2V0IHN0cmVhbSBmb3JtYXQgCj4+IHRvIDAgb24KPj4gPj4gPj4+IGNvZGVjIGluaXRpYWxpemF0
-aW9uLiAwIGlzIG5vdCBhIHZhbGlkIGZvcm1hdCB2YWx1ZSBmb3IgSERNSSAKPj4gYW5kIHdpbGwK
-Pj4gPj4gPj4+IHByZXZlbnQgdGhlIGF1ZGlvIHN0cmVhbSBmcm9tIGJlaW5nIG91dHB1dC4KPj4g
-Pj4gPj4+Cj4+ID4+ID4+PiBBZGRpdGlvbmFsbHksIGF0IGNsb3NlKCkgdGltZSwgbWFrZSBzdXJl
-IHRoYXQgdGhlIHN0cmVhbSBpcyAKPj4gY2xlYW5lZAo+PiB1cC4KPj4gPj4gPj4+IFRoaXMgd2ls
-bCBlbnN1cmUgdGhhdCB0aGUgZm9ybWF0IGlzIHJlc2V0IHRvIDAgYXQgdGhhdCB0aW1lLAo+PiBw
-cmV2ZW50aW5nCj4+ID4+ID4+PiBhdWRpbyBmcm9tIGJlaW5nIG91dHB1dCBpbiB0aGF0IGNhc2Uu
-Cj4+ID4+ID4+Pgo+PiA+PiA+Pj4gVGhhbmtzIHRvIE9wZW5FTEVDIGRldmVsb3BlcnMgYW5kIHVz
-ZXJzIGZvciB0aGVpciBoZWxwIGluCj4+IGludmVzdGlnYXRpbmcKPj4gPj4gPj4+IHRoaXMgaXNz
-dWUgb24gdGhlIGFmZmVjdGVkIE5WSURJQSAiSU9OMiIgaGFyZHdhcmUsIGFuZCBmb3IgCj4+IHRo
-ZQo+PiBpbml0aWFsCj4+ID4+ID4+PiBidWcgcmVwb3J0IG9mIHRoZSBpc3N1ZS4gVGVzdGluZyBv
-ZiB0aGUgZmluYWwgdmVyc2lvbiBvbiAKPj4gTlZJRElBIElPTjIKPj4gd2FzCj4+ID4+ID4+PiBk
-b25lIGJ5IE9wZW5FTEVDIHVzZXIgIk1yWElJSSIuIFRlc3Rpbmcgb24gSW50ZWwgUGFudGhlclBv
-aW50IAo+PiB3YXMKPj4gZG9uZQo+PiA+PiA+Pj4gYnkgbXlzZWxmLgo+PiA+PiA+Pj4KPj4gPj4g
-Pj4+IFNpZ25lZC1vZmYtYnk6IEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPgo+
-PiA+PiA+Pj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPj4gPj4gPj4+IC0tLQo+PiA+PiA+
-Pj4KPj4gPj4gPj4+IFRoaXMgYWxzbyBzdXBlcnNlZGVzIHRoZSBwYXRjaCBJIGF0dGFjaGVkIHll
-c3RlcmRheSBhcyBpdCAKPj4gZml4ZXMgYm90aAo+PiA+PiA+Pj4gY2FzZXMuCj4+ID4+ID4+Pgo+
-PiA+PiA+Pj4gSSBndWVzcyB0aGUgYWx0ZXJuYXRpdmUgdG8gdGhpcyBhcHByb2FjaCB3b3VsZCBi
-ZSB0byBmaWRkbGUgCj4+IHdpdGgKPj4gPj4gPj4+IEFDX0RJRzFfRU5BQkxFIHdoZW4gcHJlcGFy
-aW5nIGFuZCBjbG9zaW5nIHRoZSBkZXZpY2UsIGJ1dCAKPj4gd2l0aCBhCj4+IHF1aWNrCj4+ID4+
-ID4+PiBsb29rIHRoYXQgc2VlbWVkIHRvIGJlIHBvc3NpYmx5IG1vcmUgY29tcGxleCBzaW5jZSAK
-Pj4gQUNfRElHMV9FTkFCTEUgaXMKPj4gPj4gPj4+IGFscmVhZHkgbWVkZGxlZCB3aXRoIGF0IHF1
-aXRlIGEgZmV3IHBsYWNlcyBpbiBoZGFfY29kZWMuYy4KPj4gPj4gPj4KPj4gPj4gPj4gSG1tLi4u
-IGFjdHVhbGx5LCB0aGF0IHdvdWxkIG5vdCBiZSBzbyBtdWNoIG1vcmUgY29tcGxleCwganVzdCAK
-Pj4gbWFraW5nCj4+ID4+ID4+IHN1cmUgQUNfRElHMV9FTkFCTEUgaXMgb2ZmIGluIGhkbWlfYWRk
-X2N2dCgpIChieSBlLmcuIHplcm9pbmcKPj4gPj4gPj4gQUNfVkVSQl9TRVRfRElHSV9DT05WRVJU
-XzEpIGFuZCBtYWtpbmcgCj4+IHNuZF9oZGFfc3BkaWZfY3Rsc191bmFzc2lnbigpCj4+ID4+ID4+
-IGNhbGwgInNldF9zcGRpZl9jdGxzKGNvZGVjLCBzcGRpZi0+bmlkLCAwLCAtMSk7Ii4KPj4gPj4g
-Pj4KPj4gPj4gPj4gSG93ZXZlciwgaXQgd291bGQgc3RpbGwgbWVhbiB0aGF0IGp1c3QgYSBzaW1w
-bGUgc25kX3BjbV9vcGVuKCkgCj4+IGNvdWxkCj4+ID4+ID4+IGNhdXNlIGFuIGVtcHR5IHN0cmVh
-bSB0byBiZSBvdXRwdXQgKGlmIGZvcm1hdCBpcyB2YWxpZCksIHNpbmNlIAo+PiBpZWM5NTgKPj4g
-Pj4gPj4gY29udHJvbHMgYXJlIGFzc2lnbmVkIGF0IG9wZW4oKSB0aW1lLCBhbmQgaWVjOTU4IG11
-dGUgY29udHJvbHMKPj4gPj4gPj4gQUNfRElHMV9FTkFCTEUuIE9yIHdlIGNvdWxkIGFkZCBhZGRp
-dGlvbmFsIGNvZGUgaW4gaGRhX2NvZGVjLmMgCj4+IHRvCj4+ID4+ID4+IHByZXZlbnQgQUNfRElH
-MV9FTkFCTEUgYmVpbmcgc2V0IGlmIHByZXBhcmUoKSBoYXMgbm90IGJlZW4gCj4+IGNhbGxlZC4K
-Pj4gPj4gPgo+PiA+PiA+IElzIHRoZSBwcm9ibGVtIGZpeGVkIGlmIHlvdSBzZXQgY29kZWMtPm5v
-X3N0aWNreV9zdHJlYW0gPSAxPwo+PiA+Pgo+PiA+PiBUaGUgaXNzdWUgb24gTlZJRElBIHJlcG9y
-dGVkIGJ5IHVzZXJzLCBubywgdGhhdCBmbGFnIGlzIG5vdCB1c2VkIAo+PiBpbiBhCj4+ID4+IHNp
-bXBsZSBvcGVuKCkrY2xvc2UoKSBwYXRoLgo+PiA+Cj4+ID4gSXQgaXMuICBUaGUgZmxhZyBpcyB1
-c2VkIGluIGhkYV9jb2RlYy5jLiAgSXQncyBhIGZsYWcgZm9yIHNldHRpbmcKPj4gPiBGT1JNQVQg
-c3R1ZmYsIG5vdCB0aGUgU1BESUYgc3RhdHVzLgo+Pgo+PiBUaGUgb25seSB1c2UgSSBzZWUgdGhl
-cmUgaXMgaW4gX19zbmRfaGRhX2NvZGVjX2NsZWFudXBfc3RyZWFtKCksIGJ1dCAKPj4gQUZBSUNT
-Cj4+IHRoYXQgaXMgbm90IGNhbGxlZCBieSBvcGVuL2Nsb3NlIGNhbGxiYWNrcyBvZiBoZG1pLCBz
-aW5jZSB0aGUgc3RyZWFtIAo+PiBpcwo+PiBvbmx5IGFsbG9jYXRlZCBpbiBwcmVwYXJlKCkuIEFt
-IEkgbWlzc2luZyBzb21ldGhpbmc/Cj4KPiBJdCBjaGFuZ2VzIHRoZSBiZWhhdmlvciBvZiBjbGVh
-bnVwLiAgVGhlIGNsZWFudXAgaXMgaW1wbGljaXRseSBjYWxsZWQKPiBiZWZvcmUgY2xvc2Ugdmlh
-IGh3X2ZyZWUuCgpBaCwgaW5kZWVkLCB0aGF0J3Mgd2hhdCBJIHdhcyBtaXNzaW5nLiBTb21laG93
-IEkgdGhvdWdodCBjbGVhbnVwKCkgd2FzIApvbmx5CmNhbGxlZCBpZiBwcmVwYXJlKCkgd2FzLgoK
-PiBXaGVuIGNsZWFudXAgY2FsbGJhY2sgaXNuJ3QgZGVmaW5lZCwgc25kX2hkYV9jb2RlY19jbGVh
-bnVwX3N0cmVhbSgpIAo+IGlzCj4gaW52b2tlZCBhcyBkZWZhdWx0LiAgQW5kIG5vX3N0aWNreV9z
-dHJlYW0gZmxhZyBpcyBldmFsdWF0ZWQgdGhlcmUuCj4gSGVuY2UsIGl0IG11c3QgaW5mbHVlbmNl
-IG9uIHNpbXBsZV9oZG1pIGNhc2UsIHRvby4KClJpZ2h0ICh0aG91Z2ggd2l0aCAic2ltcGxlIiBJ
-IG1lYW50ICJwcmVwYXJlKCkgbm90IGNhbGxlZCIsIGV2ZXJ5dGhpbmcgCkkgd3JvdGUKd2FzIGFi
-b3V0IGdlbmVyaWNfaGRtaSkuCgo+Pgo+PiA+PiBNeSBpc3N1ZSBvbiBJbnRlbCwgeWVzLgo+PiA+
-Pgo+PiA+PiA+IEFjdHVhbGx5LCB0aGUgY3VycmVudCBiZWhhdmlvciBpcyBpbnRlbnRpb25hbC4g
-IFRoZXJlIGhhdmUgYmVlbiAKPj4gYnVnCj4+ID4+ID4gcmVwb3J0cyB0aGF0IGp1c3QgcmVvcGVu
-aW5nIGEgZGV2aWNlIGNhdXNlcyB0aGUgcmVjZWl2ZXIgbm90IAo+PiByZWFjdGluZwo+PiA+PiA+
-IGltbWVkaWF0ZWx5LiAgSW4gdGhlIHdvcnN0IGNhc2UsIGl0IHRha2VzIGEgZmV3IHNlY29uZHMg
-dG8gCj4+IHN5bmMuIFNvIHdlCj4+ID4+ID4gaW50cm9kdWNlZCBhIG1lY2hhbmlzbSB0byBrZWVw
-IHRoZSBQQ00gc3RyZWFtIGFzc2lnbm1lbnQuCj4+ID4+Cj4+ID4+IEhtbS4uIElmIHRoZSBpbnRl
-bnRpb24gaXMgdG8ga2VlcCBhIHNpbGVudCBzdHJlYW0gcGxheWluZyBldmVuIAo+PiBhZnRlcgo+
-PiA+PiBkZXZpY2UgaGFzIGJlZW4gY2xvc2VkLCB3aHkgd2FzIFBJTl9PVVQgZGlzYWJsZWQgb24g
-Y2xvc2UgdW50aWwgCj4+ICJBTFNBOgo+PiA+PiBoZGEgLSBBbHdheXMgdHVybiBvbiBwaW5zIGZv
-ciBIRE1JL0RQIiBpbiBEZWNlbWJlcj8KPj4gPgo+PiA+IFRoZSBpbnRlbnRpb24gaXNuJ3QgdG8g
-a2VlcCB0aGUgc3RyZWFtIHBsYXlpbmcsIGJ1dCBpdCBrZWVwcyB0aGUKPj4gPiBTVFJFQU0gdGFn
-LiAgSXQncyBqdXN0IGEgd2VpcmQgaGFyZHdhcmUgaW1wbGVtZW50YXRpb24gdGhhdCBpdCAKPj4g
-a2VlcHMKPj4gPiBwbGF5aW5nLiAgQW5kLCB0aGUgZmVhdHVyZSB3YXMgaW1wbGVtZW50ZWQgZmFy
-IGJlZm9yZSB0aGUgbmV3IAo+PiBkeW5hbWljCj4+ID4gU1BESUYgc3RhdHVzIGNvbnRyb2wgYXNz
-aWdubWVudCBhbmQgdGhlIGR5bmFtaWMgcGluIGRvd24uICBTbywgaXQgCj4+IGdvdAo+PiA+IGJy
-b2tlbiBieSB0aGF0IHN0dWZmIHNvbWV0aW1lIGFnby4KPj4KPj4gQWgsIHNvIHlvdSBtZWFuIHNv
-bWV0aGluZyBkaWZmZXJlbnQgd2l0aCDigJ5sb3N0IHN5bmPigJ4sIEkgdXNlZCB0aGF0Cj4+IGlu
-dGVyY2hhbmdlYWJseSB3aXRoIOKAnmhkbWkgc3RyZWFtIHN0b3BwZWTigJ4uICBDYW4geW91IGV4
-cGxhaW4gdGhlCj4+IGRpZmZlcmVuY2UsIHRvIGdldCB1cyBvbiB0aGUgc2FtZSBwYWdlPyA6KQo+
-Cj4gU29tZSByZWNlaXZlcnMgc2VlbSB0byBrZWVwIHN5bmMgZXZlbiBpZiB5b3Ugc3RvcCB0aGUg
-c3RyZWFtIGFzIGxvbmcKPiBhcyB0aGUgRk9STUFUIHRhZyBpc24ndCBjaGFuZ2VkLiAgVGhhdCdz
-IHRoZSBvbmx5IHBvaW50IG9mIHRoZSBzdGlja3kKPiBQQ00gc3RyZWFtLiAgSXQncyBub3QgaW50
-ZW5kZWQgdG8ga2VlcCB0aGUgc3RyZWFtIHJ1bm5pbmcuCgpJIHdvbmRlciB3aGF0IGlzIHRoZSBh
-Y3R1YWwgZGlmZmVyZW5jZSBpbiB0aGUgYWN0dWFsIEhETUkgdHJhbnNtaXNzaW9uCmJldHdlZW4g
-InN0cmVhbSBydW5uaW5nIiBhbmQgInN5bmMga2VwdCIuIEFueSBpZGVhPwoKPiBJJ2Qgc2F5IGl0
-J3MgcmF0aGVyIGEgYnVnIG9mIGhhcmR3YXJlIG9yIGRyaXZlciBkb2luZyB0aGF0LiAgTWF5YmUK
-PiBpdCdzIGp1c3QgZm9yIGF2b2lkaW5nIHRoZSBvdXQtb2Ytc3luYyBzaXR1YXRpb24uCgpPZiBj
-b3Vyc2UgSSBjYW4ndCB0ZWxsIGlmIGl0IGlzIHJlYWxseSBqdXN0IG15IHJlY2VpdmVyIHRoYXQg
-aGFuZGxlcyAKeW91cgoic3luYyBrZXB0IiBzdGF0ZSBhcyBpZiB0aGUgc3RyZWFtIHdhcyBydW5u
-aW5nLgoKPiBXaGF0IG1ha2VzIGhhcmRlciBpbiB0aGUgY2FzZSBvZiBIRE1JL0RQLCBpdCdzIG5v
-dCBvbmx5IGFib3V0IHRoZQo+IGhhcmR3YXJlIGJ1dCByZWxhdGVkIGFsc28gd2l0aCB0aGUgdmlk
-ZW8gZHJpdmVyLiAgSSB3b24ndCBiZSAKPiBzdXJwcmlzZWQKPiBpZiBkaWZmZXJlbnQgYmVoYXZp
-b3IgaXMgc2VlbiBiZXR3ZWVuIHRoZSBvcGVuLXNvdXJjZSBhbmQgYmluYXJ5LW9ubHkKPiBkcml2
-ZXJzLCBvciBiZXR3ZWVuIGRpZmZlcmVudCBkcml2ZXIgdmVyc2lvbnMuICBBbmQsIHBsdXMsIHRo
-ZQo+IGJlaGF2aW9yIGRlcGVuZHMgb24gdGhlIHJlY2VpdmVyLCB0b28uCj4KPiBTbywgd2UgYWx3
-YXlzIG5lZWQgdG8gdGhpbmsgb2YgdGhyZWUgdGhpbmdzIGlmIHdlIGRlYnVnIHRoaXMga2luZCBv
-Zgo+IHByb2JsZW1zOgo+IC0gSERNSSBhdWRpbyBjb2RlYwo+IC0gVmlkZW8gZHJpdmVyLCB2ZXJz
-aW9uCj4gLSBSZWNlaXZlciBoYXJkd2FyZQoKSW5kZWVkLgoKLS0gCkFuc3NpIEhhbm51bGEKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+version.h header file inclusion is not required as detected by versioncheck.
+
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+All patches in this series are build tested and based on for-next branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tree.
+---
+ sound/soc/codecs/max98090.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index fc17604..9ea73aa 100755
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -23,8 +23,6 @@
+ #include <sound/max98090.h>
+ #include "max98090.h"
+ 
+-#include <linux/version.h>
+-
+ #define DEBUG
+ #define EXTMIC_METHOD
+ #define EXTMIC_METHOD_TEST
+-- 
+1.7.4.1
