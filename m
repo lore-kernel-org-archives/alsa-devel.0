@@ -1,46 +1,64 @@
-From: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH 3/6] ASoC: tegra_wm9712: assume CONFIG_OF
-Date: Mon, 18 Feb 2013 18:11:01 +0100
-Message-ID: <1361207461.6494.0.camel@localhost>
-References: <1360973255-344-1-git-send-email-swarren@wwwdotorg.org>
-	 <1360973255-344-3-git-send-email-swarren@wwwdotorg.org>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Tue, 19 Feb 2013 08:43:24 +1030
+Message-ID: <20130218221324.GA2088@marvin.atrad.com.au>
+References: <20130210114707.GA26574@marvin.atrad.com.au>
+ <s5hzjzbql3a.wl%tiwai@suse.de>
+ <20130216112505.GE4164@marvin.atrad.com.au>
+ <s5h8v6ncpcp.wl%tiwai@suse.de>
+ <20130217125316.GA25824@marvin.atrad.com.au>
+ <s5h1ucedgge.wl%tiwai@suse.de> <s5hzjz2c1ui.wl%tiwai@suse.de>
+ <s5h7gm6huq5.wl%tiwai@suse.de>
+ <20130218125003.GC14697@marvin.atrad.com.au>
+ <CAN8cciawuZ7byQ89OY9x48_0wY60KwWX5YoyEnPrRU0NzLe0Wg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1360973255-344-3-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 586A926513B
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 23:13:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAN8cciawuZ7byQ89OY9x48_0wY60KwWX5YoyEnPrRU0NzLe0Wg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, den 15.02.2013, 17:07 -0700 schrieb Stephen Warren:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Mon, Feb 18, 2013 at 08:58:28PM +0800, Raymond Yau wrote:
+> >
+> > > > To confirm the behaviour: the "Headphone Jack Mode" control appears in
+> > > > 3.8.0-rc5+ but a corresponding control for the mic/line-in jack does not.
+> > >
+> > > Ah, I see.  This doesn't appear as default.  You need to pass a hint
+> > > string in the firmware patch file.  See a brief description in
+> > > Documentation/sound/alsa/HD-Audio.txt.
+> >
+> > Right.  I'll take a look at this documentation.  I must say that it strikes
+> > me as a little odd that input jacks don't have a mode control by default. I
+> > would have expected that such controls would be desired by enough people to
+> > justify having them appear by default without each user having to mess
+> > around with firmware patch files and the like.
+> >
+> > I assume the magic knob is add_in_jack_modes.
+> >
+> > Is there any reason why alc260_fixup_fsc_s7020() couldn't set
+> > spec->gen.add_in_jack_modes to 1 in the HDA_FIXUP_ACT_PRE_PROBE phase much
+> > like it already sets add_out_jack_modes?
 > 
-> Tegra only supports, and always enables, device tree. Remove all runtime
-> checks for DT support from the driver.
-> 
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> Is it possible to add spec->gen.add_in_jack_modes automatically when
+> automic is disabled and there is no line in jack
 
-Acked-by: Lucas Stach <dev-8ppwABl0HbeELgA04lAiVw@public.gmane.org>
+That would work for me - it sounds like a good idea.
 
-> ---
->  sound/soc/tegra/tegra_wm9712.c |    5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-> index 68d4240..ce98e5b 100644
-> --- a/sound/soc/tegra/tegra_wm9712.c
-> +++ b/sound/soc/tegra/tegra_wm9712.c
-> @@ -79,11 +79,6 @@ static int tegra_wm9712_driver_probe(struct platform_device *pdev)
->  	struct tegra_wm9712 *machine;
->  	int ret;
->  
-> -	if (!pdev->dev.of_node) {
-> -		dev_err(&pdev->dev, "No platform data supplied\n");
-> -		return -EINVAL;
-> -	}
-> -
->  	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_wm9712),
->  			       GFP_KERNEL);
->  	if (!machine) {
+Regards
+  jonathan
