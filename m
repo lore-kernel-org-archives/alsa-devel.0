@@ -1,18 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 3/3] ALSA: hda - hdmi: Notify userspace when
-	ELD control changes
-Date: Mon, 18 Feb 2013 14:11:13 +0100
-Message-ID: <1361193073-7199-4-git-send-email-david.henningsson@canonical.com>
-References: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 0/3] Make HDMI ELD usable with hotplug
+Date: Mon, 18 Feb 2013 14:11:10 +0100
+Message-ID: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BE27A26507C
+ by alsa0.perex.cz (Postfix) with ESMTP id B91E7264FEB
  for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2013 14:11:14 +0100 (CET)
-In-Reply-To: <1361193073-7199-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,55 +23,22 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org, fengguang.wu@intel.com, pierre-l
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since ELD sometimes becomes available a while after we have detected
-presence, we need to be able to listen for changes on the ELD control.
+I'm experimenting with using ELD information in PulseAudio and found
+that it didn't work very well with hotplugging.
+Neither the proc file nor the ELD kcontrol was cleared correctly after
+unplug, and there was no way (except polling) to find out when ELD
+has become available.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_hdmi.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+Could use advice on which ones of these that should or should not
+be sent to stable.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 9236cdb..d3b1a93 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -74,6 +74,7 @@ struct hdmi_spec_per_pin {
- 
- 	struct hda_codec *codec;
- 	struct hdmi_eld sink_eld;
-+	struct snd_kcontrol *eld_ctl;
- 	struct delayed_work work;
- 	int repoll_count;
- 	bool non_pcm;
-@@ -406,6 +407,7 @@ static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
- 	if (err < 0)
- 		return err;
- 
-+	spec->pins[pin_idx].eld_ctl = kctl;
- 	return 0;
- }
- 
-@@ -1175,6 +1177,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 	 */
- 	int present = snd_hda_pin_sense(codec, pin_nid);
- 	bool eld_valid = false;
-+	bool old_eld_valid = eld->eld_valid;
- 
- 	memset(eld, 0, offsetof(struct hdmi_eld, eld_buffer));
- 
-@@ -1196,6 +1199,13 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 					   msecs_to_jiffies(300));
- 		}
- 	}
-+
-+	if (eld->eld_valid != old_eld_valid && per_pin->eld_ctl) {
-+		snd_ctl_notify(codec->bus->card,
-+			       SNDRV_CTL_EVENT_MASK_VALUE | SNDRV_CTL_EVENT_MASK_INFO,
-+			       &per_pin->eld_ctl->id);
-+	}
-+
- }
- 
- static void hdmi_repoll_eld(struct work_struct *work)
+David Henningsson (3):
+  ALSA: hda - hdmi: ELD shouldn't be valid after unplug
+  ALSA: hda - hdmi: Do not expose eld data when eld is invalid
+  ALSA: hda - hdmi: Notify userspace when ELD control changes
+
+ sound/pci/hda/patch_hdmi.c |   35 ++++++++++++++++++++++++++++-------
+ 1 file changed, 28 insertions(+), 7 deletions(-)
+
 -- 
 1.7.9.5
