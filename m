@@ -1,18 +1,39 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v5 2/5] ALSA: hda - hdmi: Do not expose eld
-	data when eld is invalid
-Date: Tue, 19 Feb 2013 16:11:23 +0100
-Message-ID: <1361286686-21884-3-git-send-email-david.henningsson@canonical.com>
-References: <1361286686-21884-1-git-send-email-david.henningsson@canonical.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/4 v6] ASoC: add .of_xlate_dai_name
+ callback on struct snd_soc_dai_driver
+Date: Tue, 19 Feb 2013 16:50:39 +0100
+Message-ID: <51239F4F.4040605@metafoo.de>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcazyxr1.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
+ <5110349D.3050308@wwwdotorg.org>
+ <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
+ <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
+ <511963F8.5020107@wwwdotorg.org>
+ <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
+ <511C22E2.60701@wwwdotorg.org>
+ <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
+ <511C6A1B.9000507@wwwdotorg.org>
+ <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
+ <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
+ <871ucjuu7g.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 34097265247
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2013 16:11:23 +0100 (CET)
-In-Reply-To: <1361286686-21884-1-git-send-email-david.henningsson@canonical.com>
+Received: from smtp-out-117.synserver.de (smtp-out-117.synserver.de
+ [212.40.185.117])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0DD4265232
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2013 16:49:12 +0100 (CET)
+In-Reply-To: <871ucjuu7g.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,71 +43,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: fengguang.wu@intel.com, pierre-louis.bossart@linux.intel.com, David Henningsson <david.henningsson@canonical.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously, it was possible to read the eld data of the previous
-monitor connected. This should not be allowed.
+On 02/14/2013 10:21 AM, Kuninori Morimoto wrote:
+[...]
+> +const char *snd_soc_of_get_port_dai_name(struct device_node *of_node,
+> +					 const char *prop)
+> +{
+> +	struct snd_soc_dai *dai;
+> +	struct of_phandle_args args;
+> +	const char *name;
+> +	int ret;
+> +
+> +	ret = of_parse_phandle_with_args(of_node, prop,
+> +					 "#sound-dai-cells", 0, &args);
+> +	if (ret)
+> +		return NULL;
+> +
+> +	of_node_put(args.np);
 
-Also refactor the function slightly.
+You should keep the reference until after the link.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_hdmi.c |   25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+> +
+> +	list_for_each_entry(dai, &dai_list, list) {
+> +		if (dai->dev->of_node != args.np)
+> +			continue;
+> +
+> +		if (dai->driver->of_xlate_dai_name) {
+> +			name = dai->driver->of_xlate_dai_name(dai, &args);
+> +			if (name)
+> +				return name;
+> +		}
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 32adaa6..6bcdd66 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -343,14 +343,16 @@ static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_info *uinfo)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hdmi_spec *spec;
-+	struct hdmi_spec *spec = codec->spec;
-+	struct hdmi_eld *eld;
- 	int pin_idx;
- 
--	spec = codec->spec;
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
- 
- 	pin_idx = kcontrol->private_value;
--	uinfo->count = spec->pins[pin_idx].sink_eld.eld_size;
-+	eld = &spec->pins[pin_idx].sink_eld;
-+
-+	uinfo->count = eld->eld_valid ? eld->eld_size : 0;
- 
- 	return 0;
- }
-@@ -359,14 +361,23 @@ static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hdmi_spec *spec;
-+	struct hdmi_spec *spec = codec->spec;
-+	struct hdmi_eld *eld;
- 	int pin_idx;
- 
--	spec = codec->spec;
- 	pin_idx = kcontrol->private_value;
-+	eld = &spec->pins[pin_idx].sink_eld;
-+
-+	if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data)) {
-+		snd_BUG();
-+		return -EINVAL;
-+	}
- 
--	memcpy(ucontrol->value.bytes.data,
--		spec->pins[pin_idx].sink_eld.eld_buffer, ELD_MAX_SIZE);
-+	memset(ucontrol->value.bytes.data, 0,
-+	       ARRAY_SIZE(ucontrol->value.bytes.data));
-+	if (eld->eld_valid)
-+		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
-+		       eld->eld_size);
- 
- 	return 0;
- }
--- 
-1.7.9.5
+Hm, this is not really a translate function, but rather a match function. It
+iterates over all dais of the device and returns the name of the first one
+which matches. But there is no translation going on. If the dai matches the
+callback will always want to return dai->driver->name. Anything else doesn't
+make much sense.
+
+> +	}
+> +
+> +	return NULL;
+> +}
