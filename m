@@ -1,18 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH v5 1/5] ALSA: hda - hdmi: ELD shouldn't be
-	valid after unplug
-Date: Tue, 19 Feb 2013 16:11:22 +0100
-Message-ID: <1361286686-21884-2-git-send-email-david.henningsson@canonical.com>
-References: <1361286686-21884-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH v5 0/5] Make HDMI ELD usable for hotplug
+Date: Tue, 19 Feb 2013 16:11:21 +0100
+Message-ID: <1361286686-21884-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 73625265232
+ by alsa0.perex.cz (Postfix) with ESMTP id 7302D26522F
  for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2013 16:11:22 +0100 (CET)
-In-Reply-To: <1361286686-21884-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: fengguang.wu@intel.com, pierre-louis.bossart@linux.intel.com, David Henningsson <david.henningsson@canonical.com>, stable@kernel.org
+Cc: fengguang.wu@intel.com, pierre-louis.bossart@linux.intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, eld_valid is never set to false, except at kernel module
-load time. This patch makes sure that eld is no longer valid when
-the cable is (hot-)unplugged.
+Just more fixups according to Takashi's comments.
 
-Cc: stable@kernel.org
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_hdmi.c |    1 +
- 1 file changed, 1 insertion(+)
+David Henningsson (5):
+  ALSA: hda - hdmi: ELD shouldn't be valid after unplug
+  ALSA: hda - hdmi: Do not expose eld data when eld is invalid
+  ALSA: hda - hdmi: Refactor hdmi_eld into parsed_hdmi_eld
+  ALSA: hda - hdmi: Protect ELD buffer
+  ALSA: hda - hdmi: Notify userspace when ELD control changes
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index b9af281b..32adaa6 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1176,6 +1176,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
- 		codec->addr, pin_nid, eld->monitor_present, eld_valid);
- 
-+	eld->eld_valid = false;
- 	if (eld_valid) {
- 		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
- 			snd_hdmi_show_eld(eld);
+ sound/pci/hda/hda_eld.c    |   52 +++++++++++-----------
+ sound/pci/hda/hda_local.h  |   28 +++++++-----
+ sound/pci/hda/patch_hdmi.c |  105 ++++++++++++++++++++++++++++++++++----------
+ 3 files changed, 127 insertions(+), 58 deletions(-)
+
 -- 
 1.7.9.5
