@@ -1,38 +1,54 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/8] ASoC: arizona: Add support for
-	directly setting	the FLL REFCLK
-Date: Wed, 20 Feb 2013 17:22:28 +0000
-Message-ID: <20130220172228.GB14994@opensource.wolfsonmicro.com>
-References: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130220164409.GH2726@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 1/6] ASoC: tegra: assume CONFIG_OF in
+ tegra_asoc_utils_init
+Date: Wed, 20 Feb 2013 17:25:49 +0000
+Message-ID: <20130220172549.GR2726@opensource.wolfsonmicro.com>
+References: <1360973255-344-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B42352616F1
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 18:22:29 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2z7AKWNQ4hR/M4ga"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20130220164409.GH2726@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+In-Reply-To: <1360973255-344-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 20, 2013 at 04:44:09PM +0000, Mark Brown wrote:
-> These don't apply to either topic/arizona (where I'd expect them to go)
-> or ASoC -next.
 
-Apologies not sure what happened there they seem to apply to
-for-next for me, since I am sending a v2 anyway I will rebase on
-topic/arizona.
+--2z7AKWNQ4hR/M4ga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Charles
+On Fri, Feb 15, 2013 at 05:07:30PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> Tegra only supports, and always enables, device tree. Remove all runtime
+> checks for DT support from the driver.
+
+Applied all, thanks.
+
+--2z7AKWNQ4hR/M4ga
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRJQcUAAoJELSic+t+oim9MIAP/j0yCs2zp6OcEWSG8uNSKxQD
+sWry22mw3qcMfNZjX7/jF7ajEWRilR9LrzO6DReern/Lwzsq5+NIBztKiV/61Sre
+9vEHmwJyCUXRZisv7VR0T2OcM1MEN2JIum6Ej8T6GSve32yNY3kGm5xk258sYyZH
+X9JhzD/pr3/IPQn+dk3EU7dxbhREgixOmGTJBW/erUWm1PE8jyOKc4vuqldzdfGn
+QdpBGooXSyMWHNAmwrDC4/Tu6KvUzDKtaVOCWuTBni2OGZm7CpH9fueo7B06RIzL
+lHJI6aRanVHJijQvBb1GlYAmu5ZhpMAdycEESDMQ1rmKlPT2RpHbIxEGQ+Ee/sQI
+Hoxr23rS6aik4S9vF8cHb2wHEXjcpFJVtlohkM2fDwrIDKgBPUqg+BZuUNKUs9QL
+LoqmJU8hFkW0D3Ugf1FfYUsXk8pkKxXS4L1PVtWUu9MRavPSSDRiBT/al38ywZFk
+jITz2xqtIo/+U7+EAfxTbjMabsuEeUPenfXsyid2VhTBppzaSH/hVBV2HPvs3r6/
+C+w4QDoFWAMVOfio7lDjoobD839WCijmnl2oM2FQNiNOM891OdmmnnFrnu7OV7er
+/ZrP00RHEQRtUfT2K7CQXLHq8W9DpiBMi3FrSkgewJQVDs8JmL0X7xYDVDGBSGei
+lojiTsWu1YZHDM3a8dpg
+=3rD9
+-----END PGP SIGNATURE-----
+
+--2z7AKWNQ4hR/M4ga--
