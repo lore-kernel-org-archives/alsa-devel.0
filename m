@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/8] ASoC: arizona: Add support for directly
-	setting the FLL REFCLK
-Date: Wed, 20 Feb 2013 16:09:31 +0000
-Message-ID: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/8] ASoC: arizona: Factor out check for
+	enabled FLL
+Date: Wed, 20 Feb 2013 16:09:34 +0000
+Message-ID: <1361376579-29051-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 087732616DD
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 17:12:12 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9214261721
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 17:12:15 +0100 (CET)
+In-Reply-To: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,36 +25,62 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds support for specifying the source of
-REFCLK directly for Wolfson Arizona based devices. This should
-allow for improved performance by using the highest available
-REFCLK source. Should the REFCLK source not be directly specified
-then the patches will default to the older behaviour of using the
-32kHz clock for REFCLK.
+In preparation for additional features on the FLL this patch factors out
+the code which checks if an FLL is currently enabled into a seperate
+function.
 
-REFCLK is configured using a call to snd_soc_codec_set_pll
-specifying one of the new WM51xx_FLLx_REFCLK defines as the
-pll_id. It is valid to clear the SYNCCLK source by setting the
-source to ARIZONA_FLL_SRC_NONE, however once a REFCLK source it
-can only be replaced with another valid REFCLK source.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   25 +++++++++++++++++--------
+ 1 files changed, 17 insertions(+), 8 deletions(-)
 
-Charles Keepax (8):
-  ASoC: arizona: Move selection of FLL REFCLK into init
-  ASoC: arizona: Tidy up SYNCCLK selection and cache values
-  ASoC: arizona: Factor out check for enabled FLL
-  ASoC: arizona: Factor out FLL disable
-  ASoC: arizona: Factor out FLL enable
-  ASoC: arizona: Improve suppression of noop FLL updates
-  ASoC: arizona: Add support for directly setting the FLL REFCLK
-  ASoC: arizona: Add convience define for clearing SYNCCLK
-
- sound/soc/codecs/arizona.c |  191 ++++++++++++++++++++++++++++++--------------
- sound/soc/codecs/arizona.h |    9 ++-
- sound/soc/codecs/wm5102.c  |    6 ++
- sound/soc/codecs/wm5102.h  |    6 +-
- sound/soc/codecs/wm5110.c  |    6 ++
- sound/soc/codecs/wm5110.h  |    6 +-
- 6 files changed, 158 insertions(+), 66 deletions(-)
-
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 64d0335..0f86634 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1074,12 +1074,27 @@ static void arizona_apply_fll(struct arizona *arizona, unsigned int base,
+ 			   ARIZONA_FLL1_CTRL_UPD | cfg->n);
+ }
+ 
++static bool arizona_is_enabled_fll(struct arizona_fll *fll)
++{
++	struct arizona *arizona = fll->arizona;
++	unsigned int reg;
++	int ret;
++
++	ret = regmap_read(arizona->regmap, fll->base + 1, &reg);
++	if (ret != 0) {
++		arizona_fll_err(fll, "Failed to read current state: %d\n",
++				ret);
++		return ret;
++	}
++
++	return reg & ARIZONA_FLL1_ENA;
++}
++
+ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 		    unsigned int Fref, unsigned int Fout)
+ {
+ 	struct arizona *arizona = fll->arizona;
+ 	struct arizona_fll_cfg ref, sync;
+-	unsigned int reg;
+ 	bool ena;
+ 	int ret;
+ 
+@@ -1111,13 +1126,7 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 		fll->sync_freq = Fref;
+ 	}
+ 
+-	ret = regmap_read(arizona->regmap, fll->base + 1, &reg);
+-	if (ret != 0) {
+-		arizona_fll_err(fll, "Failed to read current state: %d\n",
+-				ret);
+-		return ret;
+-	}
+-	ena = reg & ARIZONA_FLL1_ENA;
++	ena = arizona_is_enabled_fll(fll);
+ 
+ 	if (Fout) {
+ 		regmap_update_bits(arizona->regmap, fll->base + 5,
 -- 
 1.7.2.5
