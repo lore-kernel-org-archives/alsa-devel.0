@@ -1,70 +1,109 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
- codec)
-Date: Wed, 20 Feb 2013 22:40:55 +1030
-Message-ID: <20130220121055.GA23804@marvin.atrad.com.au>
-References: <s5hvcb7ohly.wl%tiwai@suse.de>
- <20130113043936.GA8822@marvin.atrad.com.au>
- <s5h8v7xjw4f.wl%tiwai@suse.de>
- <20130210114707.GA26574@marvin.atrad.com.au>
- <s5hzjzbql3a.wl%tiwai@suse.de>
- <20130216112505.GE4164@marvin.atrad.com.au>
- <s5h8v6ncpcp.wl%tiwai@suse.de>
- <20130217125316.GA25824@marvin.atrad.com.au>
- <s5h1ucedgge.wl%tiwai@suse.de> <s5hzjyzi8a5.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 4/4 v6] ASoC: simple-card: add Device Tree
+ support
+Date: Wed, 20 Feb 2013 13:17:57 +0100
+Message-ID: <5124BEF5.4040703@metafoo.de>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
+ <5110349D.3050308@wwwdotorg.org>
+ <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
+ <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
+ <511963F8.5020107@wwwdotorg.org>
+ <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
+ <511C22E2.60701@wwwdotorg.org>
+ <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
+ <511C6A1B.9000507@wwwdotorg.org>
+ <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
+ <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
+ <87wqubtfi3.wl%kuninori.morimoto.gx@renesas.com>
+ <5123A0F5.2030001@metafoo.de>
+ <87r4kb95f3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 692C42625D8
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 13:11:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hzjyzi8a5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87r4kb95f3.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 20, 2013 at 11:33:54AM +0100, Takashi Iwai wrote:
-> > > > > Things which don't work or are missing:
-> > > > > 
-> > > > >  * "Headphone Jack Mode" lacks options to enable various "mic" or "line in"
-> > > > >    modes (all of which are possible on this system)
-> > > > 
-> > > > Yes, it is still unimplemented.  So, it's expected not to be there
-> > > > yet.  If you can hack it by yourself, let me know.
-> > > 
-> > > I may be able to give this a go, but from what I recall there was some
-> > > debate as to how this should be implemented.  Has that been resolved yet?
-> > 
-> > No, we need to try to implement something and discuss later.
-> > I think simply implementing two things would work: providing the vref
-> > setup in Headphone Jack Mode enum, and add a pin to the Input Source.
-> > User would require two setups, but it's less conflicting with giving
-> > implicit dependency with each other, IMO.
+On 02/20/2013 01:48 AM, Kuninori Morimoto wrote:
 > 
-> FYI, sound-unstable git tree test/hda-hp-mic branch contains the new
-> patches.  Pass model=fujitsu-jwse option, and all features will be
-> enabled.
+> Hi Lars
 > 
-> The patch isn't complete, but it should be somehow workable 
+> Thank you for checking patch
+> 
+>>> +- simple-audio,dev			: phandle and port for CPU/CODEC
+>>> +- simple-audio,frame-master		: frame master
+>>> +- simple-audio,bitclock-master		: bitclock master
+>>> +#sound-dai-cells integer is required on simple-audio,dev phandle's node
+>>
+>> Shouldn't the names of '#sound-dai-cells' and 'simple-audio,dev' kind of
+>> match? E.g. '#sound-dai-cells' and 'sound-dai'. Maybe drop the sound, since
+>> the a in dai kind of implies this.
+> 
+> Thank you, but I would like to keep "simple-audio" name for it too.
+> So, can I use
+> simple-audio-dai
+> #simple-audio-dai-cells
 
-Sounds good - I will test in the next day or so and report back.  What's the
-most efficient way to get hold of this tree / branch given that I have the
-for-next branch of sound.git?  Can I somehow leverage this, or do I need to
-do a completely separate checkout?  Apologies if this is a basic question -
-I'm still coming to terms with git.
+The requirement to be able to find the DAI via devicetree is not specific to
+the simple-audio driver. I'd prefer if we could come up with a common
+binding which can be used by multiple drivers. Since you also add the xlate
+(or match) function to the sound core it makes sense - in my option - to
+also have a generic phandle -> DAI look-up method in the core.
 
-OOI, what's "jwse" stand for?
+- Lars
 
-Regards
-  jonathan
+> 
+>>> +static struct device_node*
+>>> +__asoc_simple_card_parse_of(struct device_node *np,
+>>> +			    struct asoc_simple_dai *dai)
+>>> +{
+>>> +	struct device_node *node;
+>>> +	char prop[128];
+>>> +
+>>> +	/* get "simple-audio,dev = <&phandle port>" */
+>>> +	snprintf(prop, sizeof(prop), "simple-audio,dev");
+>>
+>> Why do you need the extra buffer? Can you just pass, "simple-audio,dev"
+>> directly to of_parse_phandle?
+> 
+> Indeed, thank you.
+> 
+>>> +	node = of_parse_phandle(np, prop, 0);
+>>> +	if (!node)
+>>> +		return NULL;
+>>> +
+>>> +	of_node_put(node);
+>>
+>> You shouldn't drop the reference until you are done processing it. Which in
+>> this case is only after the device has been unregistered, since you pass the
+>> node on to the ASoC core.
+> 
+> I see, will fix
+> 
+> Best regards
+> ---
+> Kuninori Morimoto
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
