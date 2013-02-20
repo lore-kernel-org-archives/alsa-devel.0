@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] ASoC: max98090: Make struct dev_pm_ops
-	const
-Date: Wed, 20 Feb 2013 16:58:47 +0000
-Message-ID: <20130220165847.GN2726@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/5] ASoC: max98090: Fix checkpatch errors
+ related to spacing
+Date: Wed, 20 Feb 2013 17:02:37 +0000
+Message-ID: <20130220170237.GO2726@opensource.wolfsonmicro.com>
 References: <1361187134-7525-1-git-send-email-sachin.kamat@linaro.org>
- <1361187134-7525-3-git-send-email-sachin.kamat@linaro.org>
+ <1361187134-7525-5-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7455478248808484805=="
+Content-Type: multipart/mixed; boundary="===============7488810558141423753=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A3542261723
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 17:58:48 +0100 (CET)
-In-Reply-To: <1361187134-7525-3-git-send-email-sachin.kamat@linaro.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33AF02616F1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 18:02:39 +0100 (CET)
+In-Reply-To: <1361187134-7525-5-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,52 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, jerry.wong@maximintegrated.com, 
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7455478248808484805==
+--===============7488810558141423753==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WeDu0lr7bteb/II5"
+	protocol="application/pgp-signature"; boundary="+wSiqF7c0ySQ2tNi"
 Content-Disposition: inline
 
 
---WeDu0lr7bteb/II5
+--+wSiqF7c0ySQ2tNi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 18, 2013 at 05:02:12PM +0530, Sachin Kamat wrote:
-> Silences the following checkpatch warning:
-> WARNING: struct dev_pm_ops should normally be const.
+On Mon, Feb 18, 2013 at 05:02:14PM +0530, Sachin Kamat wrote:
+> Fixes the following type of checkpatch errors:
+> ERROR: "foo * bar" should be "foo *bar"
+> ERROR: space required before the open brace '{'
 
-Applied, thanks.
+This doesn't apply, probably due to depending on patch 4.
 
---WeDu0lr7bteb/II5
+--+wSiqF7c0ySQ2tNi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRJQDAAAoJELSic+t+oim9LJAP+we0qwJXPZdA+g0LRs94lZY4
-VPBas4Lm8gtvYOeHBrxPQ10J0EMhQenrkki5eusjVmsjlfkyEq1J6Yj2HNz9DDqM
-BEGHPY2KK3v6Hse8+AjQiCuwl/xwtmJdr1oMJ0+aynRD4NPsscyBf6T9gAaWqVZV
-2qxXpJ8nXBbQdocpnIGNQr0rH9CEnyvpNp+H/9J0DQ8c33KYCysZrWZilIthi0/k
-gKFQ+9I731TbFEtvxTmPfB8hNrOaYhHGcVYl26N8ScyUEn2m7Z4hJohkI+V3H5Mo
-1INlwubcofhDhMjlQa5LIm+am4xOA8Hu5GV53yeqAGk/l005/WKRV1MO3pgNFNIY
-/NwL78uGPrf1ZHwt21hn1ZNEiPsowCiQ08zqJR4tF2NEYpJ1dOdJfNWHvblof80n
-c7OijLBBlDg01fP4oGQIznCIT+9NVlQlxEku0ZmL9FaN23jiXYp5/T5V+g7v2cfG
-4KpeOvHmwmLVKRxZ1tYaBFrveCa2pU03cKH1xyT92gTBAfGHider6uD6Pz/8nANt
-K46BCtcrzV6WQHeCKfa4RzVoz6uZ3wjBsltDqdnB/niuLC9gtasueDm+68OYrPjx
-C5OKcCF7QxlBtyXMBGPwHb902I7bmS3wcil0FOvP7Ns2x2mVWls7DX4zMqLJG6kY
-x5h0qQEAkhQCeVy500fo
-=ChM3
+iQIcBAEBAgAGBQJRJQGjAAoJELSic+t+oim9g2QP/jqclSZpXml+M40auq8q2VTO
+a7e5Tsurj+vyv6YxeFgN6QcDvwt5u6KpEku3ge7DYNEFSjY/5pknoMv8gsNN2XFy
+FnW9SubOo2CetrU4OYpOm3FSjWSuLjC3XcHhaZazBMMJwu4FfDEC5kO4qlBjUXnQ
+5Tc95ioKxx1npNyWbXyBdNPBo0QvN3im361XgemrbGOvVm73OGjtj5A8XSvXcv+l
+0SrIRDBQhra9vC4MjsYHhUxTewv0KR2lnclvAcDj58sC7sPbhZzgoARv9lOfiqo2
+I929QFgAbPQgeRtxtpQvOgpQ7d5CxDFxpE8yo35+VWJ7lWmfBwECFtSiQTshiaHx
+QkkhYhC0P5ehMOySKqxBHc+qyujNBzNBIPPgCWa43Atb/ttsx+mj8SQ8S/OGdIkE
+ISrDI8fa1D6sF06C65+DXrP9uUDXPL0YKeM0IT9Kj0S/PNkEWZhp2S14CqO6xclg
+Bp06dx/VkMjQiRzltyeNiK3bG68ILJchKn9UxLwG/jDXubbvNaOjVXLlTg0qMjsZ
+KEEP0T8w1RWtabW4IC2IY44TE5oL5ACsUz4wUhlJyxqVW86Pfi2DqDN/j/I377jc
+PTP6D8iClefzwQ8WSc85m5Y6l16+It8lNn6YxCb3r1fKk93leljGqWVgfZcK3Urp
+WxnufE6R0jJyGC+LjVpi
+=Yl83
 -----END PGP SIGNATURE-----
 
---WeDu0lr7bteb/II5--
+--+wSiqF7c0ySQ2tNi--
 
---===============7455478248808484805==
+--===============7488810558141423753==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7455478248808484805==--
+--===============7488810558141423753==--
