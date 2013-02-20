@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 7/8] ASoC: arizona: Add support for directly
-	setting the FLL REFCLK
-Date: Wed, 20 Feb 2013 16:09:38 +0000
-Message-ID: <1361376579-29051-8-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 8/8] ASoC: arizona: Add convience define for
+	clearing SYNCCLK
+Date: Wed, 20 Feb 2013 16:09:39 +0000
+Message-ID: <1361376579-29051-9-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C4109265364
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 17:12:21 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 25AE6261705
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 17:12:23 +0100 (CET)
 In-Reply-To: <1361376579-29051-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,147 +25,63 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch allows the REFCLK to be set directly allowing much greater
-flexibility in how the FLLs are configured.
-
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c |   39 +++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/arizona.h |    2 ++
- sound/soc/codecs/wm5102.c  |    6 ++++++
- sound/soc/codecs/wm5102.h  |    6 ++++--
- sound/soc/codecs/wm5110.c  |    6 ++++++
- sound/soc/codecs/wm5110.h  |    6 ++++--
- 6 files changed, 61 insertions(+), 4 deletions(-)
+ sound/soc/codecs/arizona.c |    8 ++++----
+ sound/soc/codecs/arizona.h |    1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 7283bda..b12a489 100644
+index b12a489..6a00904 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -1139,6 +1139,45 @@ static void arizona_disable_fll(struct arizona_fll *fll)
- 		pm_runtime_put_autosuspend(arizona->dev);
- }
+@@ -1185,7 +1185,7 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 	int ret;
  
-+int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
-+			   unsigned int Fref, unsigned int Fout)
-+{
-+	struct arizona_fll_cfg ref, sync;
-+	int ret;
-+
-+	if (source < 0)
-+		return -EINVAL;
-+
-+	if (fll->ref_src == source && fll->ref_freq == Fref &&
-+	    fll->fout == Fout)
-+		return 0;
-+
-+	if (Fout) {
-+		ret = arizona_calc_fll(fll, &ref, Fref, Fout);
-+		if (ret != 0)
-+			return ret;
-+
-+		if (fll->sync_src >= 0) {
-+			ret = arizona_calc_fll(fll, &sync, fll->sync_freq, Fout);
-+			if (ret != 0)
-+				return ret;
-+		}
-+	}
-+
-+	fll->ref_src = source;
-+	fll->ref_freq = Fref;
-+	fll->fout = Fout;
-+
-+	if (Fout) {
-+		arizona_enable_fll(fll, &ref, &sync);
-+	} else {
-+		arizona_disable_fll(fll);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(arizona_set_fll_refclk);
-+
- int arizona_set_fll(struct arizona_fll *fll, int source,
- 		    unsigned int Fref, unsigned int Fout)
- {
+ 	if (fll->ref_src < 0 || fll->ref_src == source) {
+-		if (fll->sync_src == -1 &&
++		if (fll->sync_src == ARIZONA_FLL_SRC_NONE &&
+ 		    fll->ref_src == source && fll->ref_freq == Fref &&
+ 		    fll->fout == Fout)
+ 			return 0;
+@@ -1196,7 +1196,7 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 				return ret;
+ 		}
+ 
+-		fll->sync_src = -1;
++		fll->sync_src = ARIZONA_FLL_SRC_NONE;
+ 		fll->ref_src = source;
+ 		fll->ref_freq = Fref;
+ 	} else if (fll->ref_src != source) {
+@@ -1240,7 +1240,7 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
+ 	fll->id = id;
+ 	fll->base = base;
+ 	fll->arizona = arizona;
+-	fll->sync_src = -1;
++	fll->sync_src = ARIZONA_FLL_SRC_NONE;
+ 
+ 	/* Configure default refclk to 32kHz if we have one */
+ 	regmap_read(arizona->regmap, ARIZONA_CLOCK_32K_1, &val);
+@@ -1250,7 +1250,7 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
+ 		fll->ref_src = val & ARIZONA_CLK_32K_SRC_MASK;
+ 		break;
+ 	default:
+-		fll->ref_src = -1;
++		fll->ref_src = ARIZONA_FLL_SRC_NONE;
+ 	}
+ 	fll->ref_freq = 32768;
+ 
 diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index bedf12a..f2ca41f 100644
+index f2ca41f..3f84943 100644
 --- a/sound/soc/codecs/arizona.h
 +++ b/sound/soc/codecs/arizona.h
-@@ -211,6 +211,8 @@ struct arizona_fll {
+@@ -32,6 +32,7 @@
+ #define ARIZONA_CLK_SRC_AIF2BCLK 0x9
+ #define ARIZONA_CLK_SRC_AIF3BCLK 0xa
  
- extern int arizona_init_fll(struct arizona *arizona, int id, int base,
- 			    int lock_irq, int ok_irq, struct arizona_fll *fll);
-+extern int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
-+				  unsigned int Fref, unsigned int Fout);
- extern int arizona_set_fll(struct arizona_fll *fll, int source,
- 			   unsigned int Fref, unsigned int Fout);
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index ab69c83..6071673 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1479,6 +1479,12 @@ static int wm5102_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
- 		return arizona_set_fll(&wm5102->fll[0], source, Fref, Fout);
- 	case WM5102_FLL2:
- 		return arizona_set_fll(&wm5102->fll[1], source, Fref, Fout);
-+	case WM5102_FLL1_REFCLK:
-+		return arizona_set_fll_refclk(&wm5102->fll[0], source, Fref,
-+					      Fout);
-+	case WM5102_FLL2_REFCLK:
-+		return arizona_set_fll_refclk(&wm5102->fll[1], source, Fref,
-+					      Fout);
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/codecs/wm5102.h b/sound/soc/codecs/wm5102.h
-index d30477f..adb3804 100644
---- a/sound/soc/codecs/wm5102.h
-+++ b/sound/soc/codecs/wm5102.h
-@@ -15,7 +15,9 @@
- 
- #include "arizona.h"
- 
--#define WM5102_FLL1 1
--#define WM5102_FLL2 2
-+#define WM5102_FLL1        1
-+#define WM5102_FLL2        2
-+#define WM5102_FLL1_REFCLK 3
-+#define WM5102_FLL2_REFCLK 4
- 
- #endif
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index a163132..623e433 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -876,6 +876,12 @@ static int wm5110_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
- 		return arizona_set_fll(&wm5110->fll[0], source, Fref, Fout);
- 	case WM5110_FLL2:
- 		return arizona_set_fll(&wm5110->fll[1], source, Fref, Fout);
-+	case WM5110_FLL1_REFCLK:
-+		return arizona_set_fll_refclk(&wm5110->fll[0], source, Fref,
-+					      Fout);
-+	case WM5110_FLL2_REFCLK:
-+		return arizona_set_fll_refclk(&wm5110->fll[1], source, Fref,
-+					      Fout);
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/codecs/wm5110.h b/sound/soc/codecs/wm5110.h
-index 75e9351..e6c0cd4 100644
---- a/sound/soc/codecs/wm5110.h
-+++ b/sound/soc/codecs/wm5110.h
-@@ -15,7 +15,9 @@
- 
- #include "arizona.h"
- 
--#define WM5110_FLL1 1
--#define WM5110_FLL2 2
-+#define WM5110_FLL1        1
-+#define WM5110_FLL2        2
-+#define WM5110_FLL1_REFCLK 3
-+#define WM5110_FLL2_REFCLK 4
- 
- #endif
++#define ARIZONA_FLL_SRC_NONE      -1
+ #define ARIZONA_FLL_SRC_MCLK1      0
+ #define ARIZONA_FLL_SRC_MCLK2      1
+ #define ARIZONA_FLL_SRC_SLIMCLK    3
 -- 
 1.7.2.5
