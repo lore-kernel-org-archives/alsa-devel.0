@@ -1,75 +1,61 @@
-From: Pawel Moll <mail@pawelmoll.com>
-Subject: [PATCH] ALSA: usb: Fix Processing Unit Descriptor parsers
-Date: Thu, 21 Feb 2013 01:55:50 +0000
-Message-ID: <1361411750-30056-1-git-send-email-mail@pawelmoll.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: Daniel Mack <daniel@caiaq.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pawel Moll <mail@pawelmoll.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: HD-audio generic parser merged to linux-next
+ (desktop with internal speaker)
+Date: Thu, 21 Feb 2013 10:43:51 +0800
+Message-ID: <CAN8cciY0xfiJoVsDrE_zD_dpqhoS6ft5cqhjNC1jyKOFzgb=cQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ia0-f174.google.com (mail-ia0-f174.google.com
+ [209.85.210.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9CF22615F7
+ for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 03:43:52 +0100 (CET)
+Received: by mail-ia0-f174.google.com with SMTP id u20so3666442iag.33
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 18:43:51 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 99fc86450c439039d2ef88d06b222fd51a779176 "ALSA: usb-mixer:
-parse descriptors with structs" introduced a set of useful parsers
-for descriptors. Unfortunately the parses for the Processing Unit
-Descriptor came with a very subtle bug...
-
-Functions uac_processing_unit_iProcessing() and
-uac_processing_unit_specific() were indexing the baSourceID array
-forgetting the fields before the iProcessing and process-specific
-descriptors.
-
-The problem was observed with Sound Blaster Extigy mixer,
-where nNrModes in Up/Down-mix Processing Unit Descriptor
-was accessed at offset 10 of the descriptor (value 0)
-instead of offset 15 (value 7). In result the resulting
-control had interesting limit values:
-
-Simple mixer control 'Channel Routing Mode Select',0
-  Capabilities: volume volume-joined penum
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - -1
-  Mono: -1 [100%]
-
-Fixed by starting from the bmControls, which was calculated
-correctly, instead of baSourceID.
-
-Now the mentioned control is fine:
-
-Simple mixer control 'Channel Routing Mode Select',0
-  Capabilities: volume volume-joined penum
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 6
-  Mono: 0 [0%]
-
-Signed-off-by: Pawel Moll <mail@pawelmoll.com>
----
- include/uapi/linux/usb/audio.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
-index ac90037..d2314be 100644
---- a/include/uapi/linux/usb/audio.h
-+++ b/include/uapi/linux/usb/audio.h
-@@ -384,14 +384,16 @@ static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_de
- 						   int protocol)
- {
- 	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
--	return desc->baSourceID[desc->bNrInPins + control_size];
-+	return *(uac_processing_unit_bmControls(desc, protocol)
-+			+ control_size);
- }
- 
- static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc,
- 						 int protocol)
- {
- 	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
--	return &desc->baSourceID[desc->bNrInPins + control_size + 1];
-+	return uac_processing_unit_bmControls(desc, protocol)
-+			+ control_size + 1;
- }
- 
- /* 4.5.2 Class-Specific AS Interface Descriptor */
--- 
-1.7.10.4
+PiA+ID4gPgo+ID4gPiA+IGhkYS1lbXUgY29kZWNzL2FsYzY2Mi1pbnRlbC1kOTQ1Z2NsZjIKPiA+
+ID4KPiA+ID4gQnV0IGl0J3MgaXJyZWxldmFudCBmcm9tIHdoZXRoZXIgeW91IGVuYWJsZSBpbmRl
+cGVuZGVudCBIUCBtb2RlIG9yCj4gPiA+IG5vdC4gIEl0J3MganVzdCB0aGUgcG9saWN5IG9mIGJh
+ZG5lc3MgZXZhbHVhdGlvbi4gIEl0J3MgcG9zc2libGUgdG8KPiA+ID4gaGF2ZSBhIGRpZmZlcmVu
+dCByZXN1bHQgYnkgYWRqdXN0aW5nIHRoZSBiYWRuZXNzIHBhcmFtZXRlcnMuCj4gPgo+ID4gSU9X
+LCB0aGUgcGF0Y2ggbGlrZSBiZWxvdyB3aWxsIG1ha2Ugc3Vycm91bmRzIGJhY2sgZm9yIHRoZSBk
+ZXZpY2UsCj4gPiBmb3IgdGhlIGNvc3Qgb2YgbG9zaW5nIGluZGl2aWR1YWwgaGVhZHBob25lIHZv
+bHVtZSBjb250cm9sLgo+ID4KPiA+IEl0IHNlZW1zIHRoYXQgaXQgd291bGQgbWFrZSBtb3JlIHNl
+bnNlIGZvciBoYXZpbmcgc3Vycm91bmRzIGZvciBzdWNoCj4gPiBkZXNrdG9wIHNldHVwcywgYW5k
+IHRoZSBwYXRjaCBkb2Vzbid0IGFwcGVhciB0byBhZmZlY3QgdG9vIHNldmVyZWx5Lgo+ID4gT25s
+eSBBTEM2NjIvNjYzIGFuZCBvbmUgQ01JOTg4MCBjb25maWdzIGhhdmUgYmVlbiBjaGFuZ2VkIGJ5
+IHRoaXMsIGFuZAo+ID4gYWxsIGxvb2sgcmVhc29uYWJsZS4gIFNvIEknbSBnb2luZyB0byBhcHBs
+eSBpdC4KPgo+IEJUVywgSSBzaG91bGQgbWVudGlvbiBiZWZvcmVoYW5kIHRoYXQgdGhlIHByZXZp
+b3VzIHBhdGNoIHdvbid0IHN1ZmZpY2UKPiBmb3IgdGhlIGRldmljZSBsaWtlIFRoaW5rQ2VudGVy
+IEE1OCB3aGVyZSB0aGUgaGVhZHBob25lIGNhbid0IGJlCj4gc2hhcmVkIHdpdGggdGhlIHByaW1h
+cnkgREFDLiAgRm9yIGFsbG93aW5nIHRoZSBzdXJyb3VuZHMgb24gc3VjaAo+IG1hY2hpbmVzLCB3
+ZSBuZWVkIHRvIGltcGxlbWVudCBtb3JlIGNvbXBsZXggd29ya2Fyb3VuZCAoaS5lLiBtYWtlCj4g
+c3Vycm91bmRzIGV4Y2x1c2l2ZSwgYW5kIHR1cm4gb2ZmIG90aGVycyB3aGlsZSB1c2luZyBzdXJy
+b3VuZHMpLgoKaHR0cDovL3d3dy5pbnRlbC5jb20vY29udGVudC93d3cvdXMvZW4vbW90aGVyYm9h
+cmRzL2Rlc2t0b3AtbW90aGVyYm9hcmRzL2Rlc2t0b3AtYm9hcmQtZDk0NWdzZWp0Lmh0bWwKClJl
+YWx0ZWsgQUxDNjYyKiBjb2RlYyBmb3IgMisyY2ggKG11bHRpLXN0cmVhbWluZykgSW50ZWzCriBI
+aWdoIERlZmluaXRpb24KQXVkaW8gKEludGVswq4gSEQgQXVkaW8pOgpGcm9udCBwYW5lbCBtaWNy
+b3Bob25lL2hlYWRwaG9uZSBoZWFkZXIKUy9QRElGIGRpZ2l0YWwgYXVkaW8gaGVhZGVyCkludGVy
+bmFsIG1vbm8gc3BlYWtlciBoZWFkZXIKCmh0dHBzOi8vbGF1bmNocGFkbGlicmFyaWFuLm5ldC85
+MjExNzI0MS9DYXJkMC5Db2RlY3MuY29kZWMuMC50eHQKClRoZSByZXN1bHQgb2YgaGRhLWVtdSBz
+ZWVtIE9LIGZvciBUaGlua0NlbnRlciBNNTUgKEFEMTk4OCkgd2hpY2ggaGF2ZQp2b2x1bWUgY29u
+dHJvbHMgZm9yIHRoZSBpbnRlcm5hbCBzcGVha2VyCgpodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5j
+b20vYXR0YWNobWVudC5jZ2k/aWQ9MzM1NDgxCgpCdXQgaGF2ZSBzYW1lIHByb2JsZW0gd2l0aCB0
+aG9zZSA2LWNoYW5uZWwgSERBIGNvZGVjCgpNNTcvTTU3UChBRDE4ODIpCgpodHRwczovL2xhdW5j
+aHBhZGxpYnJhcmlhbi5uZXQvNjMzMjY0NjAvQ2FyZDAuQ29kZWNzLmNvZGVjLjIudHh0Cl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
