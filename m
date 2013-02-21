@@ -1,18 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 1/2] ASoC: max98090: Fix checkpatch errors
-	related to spacing
-Date: Thu, 21 Feb 2013 12:24:59 +0530
-Message-ID: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/2] ASoC: max98090: Remove unnecessary braces
+Date: Thu, 21 Feb 2013 12:25:00 +0530
+Message-ID: <1361429700-27457-2-git-send-email-sachin.kamat@linaro.org>
+References: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f45.google.com (mail-da0-f45.google.com
- [209.85.210.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 547E82602C6
- for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 08:05:02 +0100 (CET)
-Received: by mail-da0-f45.google.com with SMTP id v40so460990dad.4
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 23:05:01 -0800 (PST)
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 890092602C7
+ for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 08:05:05 +0100 (CET)
+Received: by mail-pa0-f54.google.com with SMTP id fa10so4588609pad.41
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 23:05:04 -0800 (PST)
+In-Reply-To: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,79 +27,66 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, jerry.wong@maximintegrated.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixes the following type of checkpatch errors:
-ERROR: "foo * bar" should be "foo *bar"
+Braces are not required for single line statements.
+Silences the following checkpatch warnings:
+WARNING: braces {} are not necessary for single statement blocks.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/soc/codecs/max98090.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/max98090.c |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 1cf017f..89f83f8 100755
+index 89f83f8..ce0d364 100755
 --- a/sound/soc/codecs/max98090.c
 +++ b/sound/soc/codecs/max98090.c
-@@ -507,16 +507,16 @@ static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
- 	return 0;
+@@ -1701,9 +1701,8 @@ static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
+ 		 * seen for the case of TDM mode. The remaining cases have
+ 		 * normal logic.
+ 		 */
+-		if (max98090->tdm_slots > 1) {
++		if (max98090->tdm_slots > 1)
+ 			regval ^= M98090_BCI_MASK;
+-		}
+ 
+ 		snd_soc_write(codec,
+ 			M98090_REG_INTERFACE_FORMAT, regval);
+@@ -2057,17 +2056,14 @@ static irqreturn_t max98090_interrupt(int irq, void *data)
+ 	if (!active)
+ 		return IRQ_NONE;
+ 
+-	if (active & M98090_CLD_MASK) {
++	if (active & M98090_CLD_MASK)
+ 		dev_err(codec->dev, "M98090_CLD_MASK\n");
+-	}
+ 
+-	if (active & M98090_SLD_MASK) {
++	if (active & M98090_SLD_MASK)
+ 		dev_dbg(codec->dev, "M98090_SLD_MASK\n");
+-	}
+ 
+-	if (active & M98090_ULK_MASK) {
++	if (active & M98090_ULK_MASK)
+ 		dev_err(codec->dev, "M98090_ULK_MASK\n");
+-	}
+ 
+ 	if (active & M98090_JDET_MASK) {
+ 		dev_dbg(codec->dev, "M98090_JDET_MASK\n");
+@@ -2078,13 +2074,11 @@ static irqreturn_t max98090_interrupt(int irq, void *data)
+ 			msecs_to_jiffies(100));
+ 	}
+ 
+-	if (active & M98090_DRCACT_MASK) {
++	if (active & M98090_DRCACT_MASK)
+ 		dev_dbg(codec->dev, "M98090_DRCACT_MASK\n");
+-	}
+ 
+-	if (active & M98090_DRCCLP_MASK) {
++	if (active & M98090_DRCCLP_MASK)
+ 		dev_err(codec->dev, "M98090_DRCCLP_MASK\n");
+-	}
+ 
+ 	return IRQ_HANDLED;
  }
- 
--static const char * max98090_perf_pwr_text[] =
-+static const char *max98090_perf_pwr_text[] =
- 	{ "High Performance", "Low Power" };
--static const char * max98090_pwr_perf_text[] =
-+static const char *max98090_pwr_perf_text[] =
- 	{ "Low Power", "High Performance" };
- 
- static const struct soc_enum max98090_vcmbandgap_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_BIAS_CONTROL, M98090_VCM_MODE_SHIFT,
- 		ARRAY_SIZE(max98090_pwr_perf_text), max98090_pwr_perf_text);
- 
--static const char * max98090_osr128_text[] = { "64*fs", "128*fs" };
-+static const char *max98090_osr128_text[] = { "64*fs", "128*fs" };
- 
- static const struct soc_enum max98090_osr128_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_ADC_CONTROL, M98090_OSR128_SHIFT,
-@@ -533,28 +533,28 @@ static const struct soc_enum max98090_filter_dmic34mode_enum =
- 		M98090_FLT_DMIC34MODE_SHIFT,
- 		ARRAY_SIZE(max98090_mode_text), max98090_mode_text);
- 
--static const char * max98090_drcatk_text[] =
-+static const char *max98090_drcatk_text[] =
- 	{ "0.5ms", "1ms", "5ms", "10ms", "25ms", "50ms", "100ms", "200ms" };
- 
- static const struct soc_enum max98090_drcatk_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCATK_SHIFT,
- 		ARRAY_SIZE(max98090_drcatk_text), max98090_drcatk_text);
- 
--static const char * max98090_drcrls_text[] =
-+static const char *max98090_drcrls_text[] =
- 	{ "8s", "4s", "2s", "1s", "0.5s", "0.25s", "0.125s", "0.0625s" };
- 
- static const struct soc_enum max98090_drcrls_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCRLS_SHIFT,
- 		ARRAY_SIZE(max98090_drcrls_text), max98090_drcrls_text);
- 
--static const char * max98090_alccmp_text[] =
-+static const char *max98090_alccmp_text[] =
- 	{ "1:1", "1:1.5", "1:2", "1:4", "1:INF" };
- 
- static const struct soc_enum max98090_alccmp_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_DRC_COMPRESSOR, M98090_DRCCMP_SHIFT,
- 		ARRAY_SIZE(max98090_alccmp_text), max98090_alccmp_text);
- 
--static const char * max98090_drcexp_text[] = { "1:1", "2:1", "3:1" };
-+static const char *max98090_drcexp_text[] = { "1:1", "2:1", "3:1" };
- 
- static const struct soc_enum max98090_drcexp_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_DRC_EXPANDER, M98090_DRCEXP_SHIFT,
-@@ -857,7 +857,7 @@ static const struct soc_enum mic2_mux_enum =
- static const struct snd_kcontrol_new max98090_mic2_mux =
- 	SOC_DAPM_ENUM("MIC2 Mux", mic2_mux_enum);
- 
--static const char * max98090_micpre_text[] = { "Off", "On" };
-+static const char *max98090_micpre_text[] = { "Off", "On" };
- 
- static const struct soc_enum max98090_pa1en_enum =
- 	SOC_ENUM_SINGLE(M98090_REG_MIC1_INPUT_LEVEL, M98090_MIC_PA1EN_SHIFT,
 -- 
 1.7.4.1
