@@ -1,18 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HD-audio generic parser merged to linux-next
- (desktop with internal speaker)
-Date: Thu, 21 Feb 2013 10:43:51 +0800
-Message-ID: <CAN8cciY0xfiJoVsDrE_zD_dpqhoS6ft5cqhjNC1jyKOFzgb=cQ@mail.gmail.com>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: [PATCH 1/2] ASoC: max98090: Fix checkpatch errors
+	related to spacing
+Date: Thu, 21 Feb 2013 12:24:59 +0530
+Message-ID: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f174.google.com (mail-ia0-f174.google.com
- [209.85.210.174])
- by alsa0.perex.cz (Postfix) with ESMTP id E9CF22615F7
- for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 03:43:52 +0100 (CET)
-Received: by mail-ia0-f174.google.com with SMTP id u20so3666442iag.33
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 18:43:51 -0800 (PST)
+Received: from mail-da0-f45.google.com (mail-da0-f45.google.com
+ [209.85.210.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 547E82602C6
+ for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 08:05:02 +0100 (CET)
+Received: by mail-da0-f45.google.com with SMTP id v40so460990dad.4
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 23:05:01 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@opensource.wolfsonmicro.com, jerry.wong@maximintegrated.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID4gPgo+ID4gPiA+IGhkYS1lbXUgY29kZWNzL2FsYzY2Mi1pbnRlbC1kOTQ1Z2NsZjIKPiA+
-ID4KPiA+ID4gQnV0IGl0J3MgaXJyZWxldmFudCBmcm9tIHdoZXRoZXIgeW91IGVuYWJsZSBpbmRl
-cGVuZGVudCBIUCBtb2RlIG9yCj4gPiA+IG5vdC4gIEl0J3MganVzdCB0aGUgcG9saWN5IG9mIGJh
-ZG5lc3MgZXZhbHVhdGlvbi4gIEl0J3MgcG9zc2libGUgdG8KPiA+ID4gaGF2ZSBhIGRpZmZlcmVu
-dCByZXN1bHQgYnkgYWRqdXN0aW5nIHRoZSBiYWRuZXNzIHBhcmFtZXRlcnMuCj4gPgo+ID4gSU9X
-LCB0aGUgcGF0Y2ggbGlrZSBiZWxvdyB3aWxsIG1ha2Ugc3Vycm91bmRzIGJhY2sgZm9yIHRoZSBk
-ZXZpY2UsCj4gPiBmb3IgdGhlIGNvc3Qgb2YgbG9zaW5nIGluZGl2aWR1YWwgaGVhZHBob25lIHZv
-bHVtZSBjb250cm9sLgo+ID4KPiA+IEl0IHNlZW1zIHRoYXQgaXQgd291bGQgbWFrZSBtb3JlIHNl
-bnNlIGZvciBoYXZpbmcgc3Vycm91bmRzIGZvciBzdWNoCj4gPiBkZXNrdG9wIHNldHVwcywgYW5k
-IHRoZSBwYXRjaCBkb2Vzbid0IGFwcGVhciB0byBhZmZlY3QgdG9vIHNldmVyZWx5Lgo+ID4gT25s
-eSBBTEM2NjIvNjYzIGFuZCBvbmUgQ01JOTg4MCBjb25maWdzIGhhdmUgYmVlbiBjaGFuZ2VkIGJ5
-IHRoaXMsIGFuZAo+ID4gYWxsIGxvb2sgcmVhc29uYWJsZS4gIFNvIEknbSBnb2luZyB0byBhcHBs
-eSBpdC4KPgo+IEJUVywgSSBzaG91bGQgbWVudGlvbiBiZWZvcmVoYW5kIHRoYXQgdGhlIHByZXZp
-b3VzIHBhdGNoIHdvbid0IHN1ZmZpY2UKPiBmb3IgdGhlIGRldmljZSBsaWtlIFRoaW5rQ2VudGVy
-IEE1OCB3aGVyZSB0aGUgaGVhZHBob25lIGNhbid0IGJlCj4gc2hhcmVkIHdpdGggdGhlIHByaW1h
-cnkgREFDLiAgRm9yIGFsbG93aW5nIHRoZSBzdXJyb3VuZHMgb24gc3VjaAo+IG1hY2hpbmVzLCB3
-ZSBuZWVkIHRvIGltcGxlbWVudCBtb3JlIGNvbXBsZXggd29ya2Fyb3VuZCAoaS5lLiBtYWtlCj4g
-c3Vycm91bmRzIGV4Y2x1c2l2ZSwgYW5kIHR1cm4gb2ZmIG90aGVycyB3aGlsZSB1c2luZyBzdXJy
-b3VuZHMpLgoKaHR0cDovL3d3dy5pbnRlbC5jb20vY29udGVudC93d3cvdXMvZW4vbW90aGVyYm9h
-cmRzL2Rlc2t0b3AtbW90aGVyYm9hcmRzL2Rlc2t0b3AtYm9hcmQtZDk0NWdzZWp0Lmh0bWwKClJl
-YWx0ZWsgQUxDNjYyKiBjb2RlYyBmb3IgMisyY2ggKG11bHRpLXN0cmVhbWluZykgSW50ZWzCriBI
-aWdoIERlZmluaXRpb24KQXVkaW8gKEludGVswq4gSEQgQXVkaW8pOgpGcm9udCBwYW5lbCBtaWNy
-b3Bob25lL2hlYWRwaG9uZSBoZWFkZXIKUy9QRElGIGRpZ2l0YWwgYXVkaW8gaGVhZGVyCkludGVy
-bmFsIG1vbm8gc3BlYWtlciBoZWFkZXIKCmh0dHBzOi8vbGF1bmNocGFkbGlicmFyaWFuLm5ldC85
-MjExNzI0MS9DYXJkMC5Db2RlY3MuY29kZWMuMC50eHQKClRoZSByZXN1bHQgb2YgaGRhLWVtdSBz
-ZWVtIE9LIGZvciBUaGlua0NlbnRlciBNNTUgKEFEMTk4OCkgd2hpY2ggaGF2ZQp2b2x1bWUgY29u
-dHJvbHMgZm9yIHRoZSBpbnRlcm5hbCBzcGVha2VyCgpodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5j
-b20vYXR0YWNobWVudC5jZ2k/aWQ9MzM1NDgxCgpCdXQgaGF2ZSBzYW1lIHByb2JsZW0gd2l0aCB0
-aG9zZSA2LWNoYW5uZWwgSERBIGNvZGVjCgpNNTcvTTU3UChBRDE4ODIpCgpodHRwczovL2xhdW5j
-aHBhZGxpYnJhcmlhbi5uZXQvNjMzMjY0NjAvQ2FyZDAuQ29kZWNzLmNvZGVjLjIudHh0Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Fixes the following type of checkpatch errors:
+ERROR: "foo * bar" should be "foo *bar"
+
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ sound/soc/codecs/max98090.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 1cf017f..89f83f8 100755
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -507,16 +507,16 @@ static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static const char * max98090_perf_pwr_text[] =
++static const char *max98090_perf_pwr_text[] =
+ 	{ "High Performance", "Low Power" };
+-static const char * max98090_pwr_perf_text[] =
++static const char *max98090_pwr_perf_text[] =
+ 	{ "Low Power", "High Performance" };
+ 
+ static const struct soc_enum max98090_vcmbandgap_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_BIAS_CONTROL, M98090_VCM_MODE_SHIFT,
+ 		ARRAY_SIZE(max98090_pwr_perf_text), max98090_pwr_perf_text);
+ 
+-static const char * max98090_osr128_text[] = { "64*fs", "128*fs" };
++static const char *max98090_osr128_text[] = { "64*fs", "128*fs" };
+ 
+ static const struct soc_enum max98090_osr128_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_ADC_CONTROL, M98090_OSR128_SHIFT,
+@@ -533,28 +533,28 @@ static const struct soc_enum max98090_filter_dmic34mode_enum =
+ 		M98090_FLT_DMIC34MODE_SHIFT,
+ 		ARRAY_SIZE(max98090_mode_text), max98090_mode_text);
+ 
+-static const char * max98090_drcatk_text[] =
++static const char *max98090_drcatk_text[] =
+ 	{ "0.5ms", "1ms", "5ms", "10ms", "25ms", "50ms", "100ms", "200ms" };
+ 
+ static const struct soc_enum max98090_drcatk_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCATK_SHIFT,
+ 		ARRAY_SIZE(max98090_drcatk_text), max98090_drcatk_text);
+ 
+-static const char * max98090_drcrls_text[] =
++static const char *max98090_drcrls_text[] =
+ 	{ "8s", "4s", "2s", "1s", "0.5s", "0.25s", "0.125s", "0.0625s" };
+ 
+ static const struct soc_enum max98090_drcrls_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_DRC_TIMING, M98090_DRCRLS_SHIFT,
+ 		ARRAY_SIZE(max98090_drcrls_text), max98090_drcrls_text);
+ 
+-static const char * max98090_alccmp_text[] =
++static const char *max98090_alccmp_text[] =
+ 	{ "1:1", "1:1.5", "1:2", "1:4", "1:INF" };
+ 
+ static const struct soc_enum max98090_alccmp_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_DRC_COMPRESSOR, M98090_DRCCMP_SHIFT,
+ 		ARRAY_SIZE(max98090_alccmp_text), max98090_alccmp_text);
+ 
+-static const char * max98090_drcexp_text[] = { "1:1", "2:1", "3:1" };
++static const char *max98090_drcexp_text[] = { "1:1", "2:1", "3:1" };
+ 
+ static const struct soc_enum max98090_drcexp_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_DRC_EXPANDER, M98090_DRCEXP_SHIFT,
+@@ -857,7 +857,7 @@ static const struct soc_enum mic2_mux_enum =
+ static const struct snd_kcontrol_new max98090_mic2_mux =
+ 	SOC_DAPM_ENUM("MIC2 Mux", mic2_mux_enum);
+ 
+-static const char * max98090_micpre_text[] = { "Off", "On" };
++static const char *max98090_micpre_text[] = { "Off", "On" };
+ 
+ static const struct soc_enum max98090_pa1en_enum =
+ 	SOC_ENUM_SINGLE(M98090_REG_MIC1_INPUT_LEVEL, M98090_MIC_PA1EN_SHIFT,
+-- 
+1.7.4.1
