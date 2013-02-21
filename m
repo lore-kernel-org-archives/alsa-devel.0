@@ -1,60 +1,75 @@
-From: Harald Becker <ralda@gmx.de>
-Subject: HDA Beep Device for Asus EeeBox EB1501P
-Date: Wed, 20 Feb 2013 22:51:53 +0100
-Message-ID: <20130220225153.603edc5e@ralda.gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 80D28265B62
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 22:51:59 +0100 (CET)
-Received: from mailout-de.gmx.net ([10.1.76.28]) by mrigmx.server.lan
- (mrigmx002) with ESMTP (Nemesis) id 0Lur0x-1Uq6gs0qnp-0106Ep for
- <alsa-devel@alsa-project.org>; Wed, 20 Feb 2013 22:51:55 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Pawel Moll <mail@pawelmoll.com>
+Subject: [PATCH] ALSA: usb: Fix Processing Unit Descriptor parsers
+Date: Thu, 21 Feb 2013 01:55:50 +0000
+Message-ID: <1361411750-30056-1-git-send-email-mail@pawelmoll.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: Daniel Mack <daniel@caiaq.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pawel Moll <mail@pawelmoll.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Commit 99fc86450c439039d2ef88d06b222fd51a779176 "ALSA: usb-mixer:
+parse descriptors with structs" introduced a set of useful parsers
+for descriptors. Unfortunately the parses for the Processing Unit
+Descriptor came with a very subtle bug...
 
-I own an Asus EeeBox EB1501P with an ALC662 codec and had no HDA mixer
-channel for the speaker beep device. After digging somewhat in the
-kernel source I found that I only need to add a single line in the
-beep_white_list in patch_realtek.c. May be this entry can be included
-in the mainstream drivers:
+Functions uac_processing_unit_iProcessing() and
+uac_processing_unit_specific() were indexing the baSourceID array
+forgetting the fields before the iProcessing and process-specific
+descriptors.
 
-SND_PCI_QUIRK(0x1043, 0x8376, "EeePC", 1),
+The problem was observed with Sound Blaster Extigy mixer,
+where nNrModes in Up/Down-mix Processing Unit Descriptor
+was accessed at offset 10 of the descriptor (value 0)
+instead of offset 15 (value 7). In result the resulting
+control had interesting limit values:
 
-After recompiling the driver with this entry, the mixer device for the
-beep channel appears and the digital beep sound is emitted on the
-connected speakers.
+Simple mixer control 'Channel Routing Mode Select',0
+  Capabilities: volume volume-joined penum
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - -1
+  Mono: -1 [100%]
 
-... with one problem:
+Fixed by starting from the bmControls, which was calculated
+correctly, instead of baSourceID.
 
-If I use echo -e "\a" in a shell or run the beep command utility the
-sound appears only on second and following invocations. Whenever the
-frequency changes with the beep command the first invocation stays
-silent or just produce some click due to ALSA driver power saving. On
-all further invocations with same frequency the requested tone is
-generated on external speakers. There is no difference in behavior if
-the commands are called in a terminal emulator or directly on a virtual
-text console.
+Now the mentioned control is fine:
 
-Does this happen only on my machine or is this a known problem? Is
-there anything I can do to fix this behavior?
+Simple mixer control 'Channel Routing Mode Select',0
+  Capabilities: volume volume-joined penum
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 6
+  Mono: 0 [0%]
 
-The kernel I used for testing is 3.8.0 from Gentoo Sources.
+Signed-off-by: Pawel Moll <mail@pawelmoll.com>
+---
+ include/uapi/linux/usb/audio.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Feel free to ask for any information you may need for debugging.
-
-Thx for any help ahead
-Harald
+diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
+index ac90037..d2314be 100644
+--- a/include/uapi/linux/usb/audio.h
++++ b/include/uapi/linux/usb/audio.h
+@@ -384,14 +384,16 @@ static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_de
+ 						   int protocol)
+ {
+ 	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
+-	return desc->baSourceID[desc->bNrInPins + control_size];
++	return *(uac_processing_unit_bmControls(desc, protocol)
++			+ control_size);
+ }
+ 
+ static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc,
+ 						 int protocol)
+ {
+ 	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
+-	return &desc->baSourceID[desc->bNrInPins + control_size + 1];
++	return uac_processing_unit_bmControls(desc, protocol)
++			+ control_size + 1;
+ }
+ 
+ /* 4.5.2 Class-Specific AS Interface Descriptor */
+-- 
+1.7.10.4
