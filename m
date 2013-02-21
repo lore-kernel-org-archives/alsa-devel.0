@@ -1,29 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
-	codec)
-Date: Thu, 21 Feb 2013 22:01:58 +0800
-Message-ID: <CAN8cciYK=o_bEW-u63+U-hOj6mYtypQ63vwVv2u7foicNr98cQ@mail.gmail.com>
-References: <s5hzjzbql3a.wl%tiwai@suse.de>
- <20130216112505.GE4164@marvin.atrad.com.au>
- <s5h8v6ncpcp.wl%tiwai@suse.de>
- <20130217125316.GA25824@marvin.atrad.com.au>
- <s5h1ucedgge.wl%tiwai@suse.de> <s5hzjyzi8a5.wl%tiwai@suse.de>
- <20130220121055.GA23804@marvin.atrad.com.au>
- <s5hip5ni0ur.wl%tiwai@suse.de>
- <20130221121540.GA11524@marvin.atrad.com.au>
- <CAN8ccibAsWUVCcEem-ykcouJ6RXEG8k-eq9mPf7VV7qPied6nw@mail.gmail.com>
- <20130221135230.GA12678@marvin.atrad.com.au>
+From: Mihail Zenkov <mihail.zenkov@gmail.com>
+Subject: [PATCH] Fix regression in emu1010 firmware loading
+Date: Thu, 21 Feb 2013 21:06:14 +0000
+Message-ID: <CAD-m0i87HKAb-2DM1tWBtCTneUh9eUm2J71z3FimfD4Gwyeyiw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=00504502c72ef8c2df04d6427110
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f180.google.com (mail-ie0-f180.google.com
- [209.85.223.180])
- by alsa0.perex.cz (Postfix) with ESMTP id DB5CB265005
- for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 15:01:59 +0100 (CET)
-Received: by mail-ie0-f180.google.com with SMTP id bn7so11466198ieb.11
- for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 06:01:58 -0800 (PST)
-In-Reply-To: <20130221135230.GA12678@marvin.atrad.com.au>
+Received: from mail-qc0-f171.google.com (mail-qc0-f171.google.com
+ [209.85.216.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EE5F26525B
+ for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 22:06:16 +0100 (CET)
+Received: by mail-qc0-f171.google.com with SMTP id d1so431166qca.16
+ for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2013 13:06:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,21 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Woithe <jwoithe@just42.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, peter.golden@btinternet.com, ullinux@ymail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > Can you confirm that the speaker really need this patch to work ?
-> >
-> >
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=978e77e78cff7a85a31ad552ffd8afee319e8721
->
-> No.  The speaker required this patch:
->
->
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=e6e0ee507f630350d883bb3343e78cab30cad5e2
+--00504502c72ef8c2df04d6427110
+Content-Type: text/plain; charset=ISO-8859-1
 
-Is this patch also need ?
+This patch fix regression in emu1010 firmware loading after
+http://git.alsa-project.org/?p=alsa-kprivate.git;a=commitdiff;h=b209c4dfcd960ab176d4746ab7dc442a3edb4575
 
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound.git;a=commit;h=39aedee7a1cc3c72d68674ff6ff142299fa0897b
+I just revert small part of this commit. Tested on emu1212m pci.
+
+--00504502c72ef8c2df04d6427110
+Content-Type: application/octet-stream;
+	name="kernel-fix_emu_firmware_load.patch"
+Content-Disposition: attachment;
+	filename="kernel-fix_emu_firmware_load.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: file0
+
+LS0tIGxpbnV4LTMuOC9zb3VuZC9wY2kvZW11MTBrMS9lbXUxMGsxX21haW4uYworKysgbGludXgt
+My44LTEvc291bmQvcGNpL2VtdTEwazEvZW11MTBrMV9tYWluLmMKQEAgLTg2MCw2ICs4NjAsMTEg
+QEAKIAkJfQogCQlzbmRfcHJpbnRrKEtFUk5fSU5GTyAiZW11MTAxMDogZmlybXdhcmUgZmlsZSA9
+ICVzLCBzaXplID0gMHglenhcbiIsCiAJCQkgICBmaWxlbmFtZSwgZW11LT5maXJtd2FyZS0+c2l6
+ZSk7CisJCWVyciA9IHNuZF9lbXUxMDEwX2xvYWRfZmlybXdhcmUoZW11KTsKKwkJaWYgKGVyciAh
+PSAwKSB7CisJCQlzbmRfcHJpbnRrKEtFUk5fSU5GTyAiZW11MTAxMDogTG9hZGluZyBGaXJtd2Fy
+ZSBmaWxlICVzIGZhaWxlZFxuIiwgZmlsZW5hbWUpOworCQkJcmV0dXJuIGVycjsKKwkJfQogCX0K
+IAogCS8qIElELCBzaG91bGQgcmVhZCAmIDB4N2YgPSAweDU1IHdoZW4gRlBHQSBwcm9ncmFtbWVk
+LiAqLwo=
+--00504502c72ef8c2df04d6427110
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--00504502c72ef8c2df04d6427110--
