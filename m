@@ -1,34 +1,40 @@
-From: Boojin Kim <boojin.kim@samsung.com>
-Subject: [PATCH v2 4/4] ASoC: samsung: add to configure dma maxburst size
-Date: Fri, 22 Feb 2013 17:10:10 +0900
-Message-ID: <001c01ce10d4$088ea3c0$19abeb40$%kim@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-References: 
-In-reply-to: 
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, spi-devel-general@lists.sourceforge.net, alsa-devel@alsa-project.org
-Cc: 'Vinod Koul' <vinod.koul@intel.com>, 'Dan Williams' <djbw@fb.com>, 'Russell King' <linux@arm.linux.org.uk>, 'Kukjin Kim' <kgene.kim@samsung.com>, 'Grant Likely' <grant.likely@secretlab.ca>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Rob Herring' <rob.herring@calxeda.com>, 'Sangbeom Kim' <sbkim73@samsung.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - hdmi: Make jacks phantom, if they're not detectable
+Date: Fri, 22 Feb 2013 10:16:28 +0100
+Message-ID: <1361524588-30448-1-git-send-email-david.henningsson@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 961286@bugs.launchpad.org, superquad.vortex2@gmail.com, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds to configure dma maxburst size.
+Just as for analog codecs, a jack that isn't suitable for detection
+(in this case, NO_PRESENCE was set) should be a phantom Jack
+instead of a normal one.
 
-Signed-off-by: Boojin Kim <boojin.kim@samsung.com>
+Thanks to Raymond Yau for spotting.
+
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/961286
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=903869
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/samsung/dma.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/pci/hda/patch_hdmi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-index 21b7926..bd4faa0 100644
---- a/sound/soc/samsung/dma.c
-+++ b/sound/soc/samsung/dma.c
-@@ -172,6 +172,7 @@ static int dma_hw_params(struct snd_pcm_substream *substream,
- 			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
- 			? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
- 		config.width = prtd->params->dma_size;
-+		config.maxburst = 1;
- 		config.fifo = prtd->params->dma_addr;
- 		prtd->params->ch = prtd->params->ops->request(
- 				prtd->params->channel, &req, rtd->cpu_dai->dev,
---
-1.7.5.4
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 21425fb..78e1827 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1640,6 +1640,9 @@ static int generic_hdmi_build_jack(struct hda_codec *codec, int pin_idx)
+ 
+ 	if (pcmdev > 0)
+ 		sprintf(hdmi_str + strlen(hdmi_str), ",pcm=%d", pcmdev);
++	if (!is_jack_detectable(codec, per_pin->pin_nid))
++		strncat(hdmi_str, " Phantom",
++			sizeof(hdmi_str) - strlen(hdmi_str) - 1);
+ 
+ 	return snd_hda_jack_add_kctl(codec, per_pin->pin_nid, hdmi_str, 0);
+ }
+-- 
+1.7.9.5
