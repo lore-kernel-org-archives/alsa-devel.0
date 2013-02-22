@@ -1,17 +1,19 @@
-From: Mihail Zenkov <mihail.zenkov@gmail.com>
-Subject: [PATCH] Allow to switch hardware sampe rate on EMU
-Date: Fri, 22 Feb 2013 17:59:38 +0000
-Message-ID: <CAD-m0i9NwmVsGH53cphNM3ikDAanBU2bwE7Wa0KTASbwnW-aqA@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH TINYCOMPRESS 1/14 v2] compress: Add
+ function to get timestamp in samples
+Date: Fri, 22 Feb 2013 23:39:22 +0530
+Message-ID: <20130222180922.GA23711@intel.com>
+References: <20130210000227.GA31139@opensource.wolfsonmicro.com>
+ <20130222155618.GA21174@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f46.google.com (mail-qa0-f46.google.com
- [209.85.216.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 61B9C2625CB
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 18:59:39 +0100 (CET)
-Received: by mail-qa0-f46.google.com with SMTP id o13so544214qaj.12
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 09:59:38 -0800 (PST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7D3B2625CB
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 19:10:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20130222155618.GA21174@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 57e5c63007955838043e34c732d224b2cbbb128f "emu10k1: allow to
-disable the SRC"
-force hardware use only one rate (48000 hz), but EMU have support two hardware
-sampling rates (44100 and 48000 hz).
+On Fri, Feb 22, 2013 at 03:56:18PM +0000, Richard Fitzgerald wrote:
+> The compress_get_hpointer() converts the timestamp into actual
+> time. But Android needs it in samples. To avoid the inefficiency
+> of using compress_get_hpointer() and converting into time and then
+> back into samples, this change adds compress_get_tstamp() which
+> returns the raw sample count.
+Applied all, thanks
 
-Signed-off-by: Mihail Zenkov <mihail.zenkov@gmail.com>
 
---- linux-3.8/sound/pci/emu10k1/emupcm.c
-+++ linux-3.8-1/sound/pci/emu10k1/emupcm.c
-@@ -1127,7 +1127,7 @@
- 	struct snd_emu10k1_pcm *epcm;
- 	struct snd_emu10k1_pcm_mixer *mix;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int i, err;
-+	int i, err, sample_rate;
-
- 	epcm = kzalloc(sizeof(*epcm), GFP_KERNEL);
- 	if (epcm == NULL)
-@@ -1146,7 +1146,11 @@
- 		kfree(epcm);
- 		return err;
- 	}
--	err = snd_pcm_hw_rule_noresample(runtime, 48000);
-+	if (emu->card_capabilities->emu_model && emu->emu1010.internal_clock == 0)
-+		sample_rate = 44100;
-+	else
-+		sample_rate = 48000;
-+	err = snd_pcm_hw_rule_noresample(runtime, sample_rate);
- 	if (err < 0) {
- 		kfree(epcm);
- 		return err;
+> 
+> ---
+>  compress.c                          |   16 ++++++++++++++++
+>  include/tinycompress/tinycompress.h |   14 ++++++++++++++
+>  2 files changed, 30 insertions(+), 0 deletions(-)
+> 
+> diff --git a/compress.c b/compress.c
+> index 27c03d9..01fb3f0 100644
+> --- a/compress.c
+> +++ b/compress.c
+> @@ -296,6 +296,22 @@ int compress_get_hpointer(struct compress *compress,
+>  	return 0;
+>  }
+>  
+> +int compress_get_tstamp(struct compress *compress,
+> +			unsigned long *samples, unsigned int *sampling_rate)
+> +{
+> +	struct snd_compr_tstamp ktstamp;
+> +
+> +	if (!is_compress_ready(compress))
+> +		return oops(compress, -ENODEV, "device not ready");
+> +
+> +	if (ioctl(compress->fd, SNDRV_COMPRESS_TSTAMP, &ktstamp))
+> +		return oops(compress, errno, "cannot get tstamp");
+> +
+> +	*samples = ktstamp.pcm_io_frames;
+> +	*sampling_rate = ktstamp.sampling_rate;
+> +	return 0;
+> +}
+> +
+>  int compress_write(struct compress *compress, char *buf, unsigned int size)
+>  {
+>  	struct snd_compr_avail avail;
+> diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
+> index 13dea3e..b1fbc65 100644
+> --- a/include/tinycompress/tinycompress.h
+> +++ b/include/tinycompress/tinycompress.h
+> @@ -73,6 +73,7 @@ struct compr_config {
+>  #define COMPRESS_IN         0x10000000
+>  
+>  struct compress;
+> +struct snd_compr_tstamp;
+>  
+>  /*
+>   * compress_open: open a new compress stream
+> @@ -103,6 +104,19 @@ void compress_close(struct compress *compress);
+>   */
+>  int compress_get_hpointer(struct compress *compress,
+>  		unsigned int *avail, struct timespec *tstamp);
+> +
+> +
+> +/*
+> + * compress_get_tstamp: get the raw hw timestamp
+> + * return 0 on success, negative on error
+> + *
+> + * @compress: compress stream on which query is made
+> + * @samples: number of decoded samples played
+> + * @sampling_rate: sampling rate of decoded samples
+> + */
+> +int compress_get_tstamp(struct compress *compress,
+> +		unsigned long *samples, unsigned int *sampling_rate);
+> +
+>  /*
+>   * compress_write: write data to the compress stream
+>   * return bytes written on success, negative on error
+> -- 
+> 1.7.2.5
+> 
