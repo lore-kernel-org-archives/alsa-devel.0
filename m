@@ -1,19 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH TINYCOMPRESS 1/14 v2] compress: Add
- function to get timestamp in samples
-Date: Fri, 22 Feb 2013 23:39:22 +0530
-Message-ID: <20130222180922.GA23711@intel.com>
-References: <20130210000227.GA31139@opensource.wolfsonmicro.com>
- <20130222155618.GA21174@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] tinycompress: add gapless meta data APIs
+Date: Fri, 22 Feb 2013 23:45:00 +0530
+Message-ID: <20130222181500.GB23711@intel.com>
+References: <1361526760-20468-1-git-send-email-vinod.koul@intel.com>
+ <20130222162410.GA21630@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A7D3B2625CB
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 19:10:11 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90C492625DB
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 19:15:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20130222155618.GA21174@opensource.wolfsonmicro.com>
+In-Reply-To: <20130222162410.GA21630@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +26,24 @@ To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 22, 2013 at 03:56:18PM +0000, Richard Fitzgerald wrote:
-> The compress_get_hpointer() converts the timestamp into actual
-> time. But Android needs it in samples. To avoid the inefficiency
-> of using compress_get_hpointer() and converting into time and then
-> back into samples, this change adds compress_get_tstamp() which
-> returns the raw sample count.
-Applied all, thanks
+On Fri, Feb 22, 2013 at 04:24:10PM +0000, Richard Fitzgerald wrote:
+> I'd prefer that we don't require that a next track has been set in order to be
+> able to call a partial_drain. It would be awkward to implement in Android
+> because the decision to append the next track to the end of the current stream
+> and pass down metadata is made in a higher level of code than the part which
+> handles issuing drain control and there's no actual synchronization between
+> these two operations or knowledge in the lower (drain-handling) level of any
+> notion of gapless playback.
+> 
+> A partial drain just drains to the end of the current track... it doesn't really
+> matter whether that happens to be the last track.
 
+If you are in gapless mode (yes it may be last track), you can signal next track
+and then call partial drain. But later if you find that if you are the last
+track, you can call drain or stop.
+Now why normal drain wont work... the reason being drain will return when
+complete track is rendered, we don't want that here, so we drain partially to
+allow DSP to switch to next track if required.
 
-> 
-> ---
->  compress.c                          |   16 ++++++++++++++++
->  include/tinycompress/tinycompress.h |   14 ++++++++++++++
->  2 files changed, 30 insertions(+), 0 deletions(-)
-> 
-> diff --git a/compress.c b/compress.c
-> index 27c03d9..01fb3f0 100644
-> --- a/compress.c
-> +++ b/compress.c
-> @@ -296,6 +296,22 @@ int compress_get_hpointer(struct compress *compress,
->  	return 0;
->  }
->  
-> +int compress_get_tstamp(struct compress *compress,
-> +			unsigned long *samples, unsigned int *sampling_rate)
-> +{
-> +	struct snd_compr_tstamp ktstamp;
-> +
-> +	if (!is_compress_ready(compress))
-> +		return oops(compress, -ENODEV, "device not ready");
-> +
-> +	if (ioctl(compress->fd, SNDRV_COMPRESS_TSTAMP, &ktstamp))
-> +		return oops(compress, errno, "cannot get tstamp");
-> +
-> +	*samples = ktstamp.pcm_io_frames;
-> +	*sampling_rate = ktstamp.sampling_rate;
-> +	return 0;
-> +}
-> +
->  int compress_write(struct compress *compress, char *buf, unsigned int size)
->  {
->  	struct snd_compr_avail avail;
-> diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
-> index 13dea3e..b1fbc65 100644
-> --- a/include/tinycompress/tinycompress.h
-> +++ b/include/tinycompress/tinycompress.h
-> @@ -73,6 +73,7 @@ struct compr_config {
->  #define COMPRESS_IN         0x10000000
->  
->  struct compress;
-> +struct snd_compr_tstamp;
->  
->  /*
->   * compress_open: open a new compress stream
-> @@ -103,6 +104,19 @@ void compress_close(struct compress *compress);
->   */
->  int compress_get_hpointer(struct compress *compress,
->  		unsigned int *avail, struct timespec *tstamp);
-> +
-> +
-> +/*
-> + * compress_get_tstamp: get the raw hw timestamp
-> + * return 0 on success, negative on error
-> + *
-> + * @compress: compress stream on which query is made
-> + * @samples: number of decoded samples played
-> + * @sampling_rate: sampling rate of decoded samples
-> + */
-> +int compress_get_tstamp(struct compress *compress,
-> +		unsigned long *samples, unsigned int *sampling_rate);
-> +
->  /*
->   * compress_write: write data to the compress stream
->   * return bytes written on success, negative on error
-> -- 
-> 1.7.2.5
-> 
+--
+~Vinod
