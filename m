@@ -1,17 +1,15 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] tinycompress: add gapless meta data APIs
-Date: Fri, 22 Feb 2013 16:24:10 +0000
-Message-ID: <20130222162410.GA21630@opensource.wolfsonmicro.com>
-References: <1361526760-20468-1-git-send-email-vinod.koul@intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Don't enable FLL on REFCLK
+	configuration
+Date: Fri, 22 Feb 2013 17:10:37 +0000
+Message-ID: <1361553037-423-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BD5B265DCE
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 17:24:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1361526760-20468-1-git-send-email-vinod.koul@intel.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 36D452650A8
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 18:12:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,17 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'd prefer that we don't require that a next track has been set in order to be
-able to call a partial_drain. It would be awkward to implement in Android
-because the decision to append the next track to the end of the current stream
-and pass down metadata is made in a higher level of code than the part which
-handles issuing drain control and there's no actual synchronization between
-these two operations or knowledge in the lower (drain-handling) level of any
-notion of gapless playback.
+Enabling the FLL when REFCLK is being configured is not what the user
+would expect and can cause issues if SYNCCLK has no specified frequency.
 
-A partial drain just drains to the end of the current track... it doesn't really
-matter whether that happens to be the last track.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 6837863..eb25ab9 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1148,17 +1148,17 @@ int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
+ 	if (source < 0)
+ 		return -EINVAL;
+ 
+-	if (fll->ref_src == source && fll->ref_freq == Fref &&
+-	    fll->fout == Fout)
++	if (fll->ref_src == source && fll->ref_freq == Fref)
+ 		return 0;
+ 
+-	if (Fout) {
+-		ret = arizona_calc_fll(fll, &ref, Fref, Fout);
++	if (fll->fout) {
++		ret = arizona_calc_fll(fll, &ref, Fref, fll->fout);
+ 		if (ret != 0)
+ 			return ret;
+ 
+ 		if (fll->sync_src >= 0) {
+-			ret = arizona_calc_fll(fll, &sync, fll->sync_freq, Fout);
++			ret = arizona_calc_fll(fll, &sync, fll->sync_freq,
++					       fll->fout);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+@@ -1166,12 +1166,9 @@ int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
+ 
+ 	fll->ref_src = source;
+ 	fll->ref_freq = Fref;
+-	fll->fout = Fout;
+ 
+-	if (Fout) {
++	if (fll->fout) {
+ 		arizona_enable_fll(fll, &ref, &sync);
+-	} else {
+-		arizona_disable_fll(fll);
+ 	}
+ 
+ 	return 0;
+-- 
+1.7.2.5
