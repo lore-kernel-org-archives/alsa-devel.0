@@ -1,18 +1,18 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH TINYCOMPRESS 1/14 v2] compress:
-	Add	function to get timestamp in samples
-Date: Fri, 22 Feb 2013 15:56:18 +0000
-Message-ID: <20130222155618.GA21174@opensource.wolfsonmicro.com>
-References: <20130210000227.GA31139@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH TINYCOMPRESS 2/14 v2] compress:
+	Change	compress_write() to take buffer as const void *
+Date: Fri, 22 Feb 2013 15:57:35 +0000
+Message-ID: <20130222155735.GB21174@opensource.wolfsonmicro.com>
+References: <20130210000409.GB31139@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64B27265378
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 16:56:20 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DCC2C265378
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2013 16:57:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20130210000227.GA31139@opensource.wolfsonmicro.com>
+In-Reply-To: <20130210000409.GB31139@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +26,59 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The compress_get_hpointer() converts the timestamp into actual
-time. But Android needs it in samples. To avoid the inefficiency
-of using compress_get_hpointer() and converting into time and then
-back into samples, this change adds compress_get_tstamp() which
-returns the raw sample count.
+The input buffer to compress_write() should be const, and is
+better defined as void * so the caller doesn't have to cast.
 
 ---
- compress.c                          |   16 ++++++++++++++++
- include/tinycompress/tinycompress.h |   14 ++++++++++++++
- 2 files changed, 30 insertions(+), 0 deletions(-)
+ compress.c                          |    7 ++++---
+ include/tinycompress/tinycompress.h |    2 +-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/compress.c b/compress.c
-index 27c03d9..01fb3f0 100644
+index 01fb3f0..5429754 100644
 --- a/compress.c
 +++ b/compress.c
-@@ -296,6 +296,22 @@ int compress_get_hpointer(struct compress *compress,
+@@ -312,11 +312,12 @@ int compress_get_tstamp(struct compress *compress,
  	return 0;
  }
  
-+int compress_get_tstamp(struct compress *compress,
-+			unsigned long *samples, unsigned int *sampling_rate)
-+{
-+	struct snd_compr_tstamp ktstamp;
-+
-+	if (!is_compress_ready(compress))
-+		return oops(compress, -ENODEV, "device not ready");
-+
-+	if (ioctl(compress->fd, SNDRV_COMPRESS_TSTAMP, &ktstamp))
-+		return oops(compress, errno, "cannot get tstamp");
-+
-+	*samples = ktstamp.pcm_io_frames;
-+	*sampling_rate = ktstamp.sampling_rate;
-+	return 0;
-+}
-+
- int compress_write(struct compress *compress, char *buf, unsigned int size)
+-int compress_write(struct compress *compress, char *buf, unsigned int size)
++int compress_write(struct compress *compress, const void *buf, unsigned int size)
  {
  	struct snd_compr_avail avail;
+ 	struct pollfd fds;
+ 	int to_write, written, total = 0, ret;
++	const char* cbuf = buf;
+ 
+ 	if (!(compress->flags & COMPRESS_IN))
+ 		return oops(compress, -EINVAL, "Invalid flag set");
+@@ -355,12 +356,12 @@ int compress_write(struct compress *compress, char *buf, unsigned int size)
+ 			to_write =  avail.avail;
+ 		else
+ 			to_write = size;
+-		written = write(compress->fd, buf, to_write);
++		written = write(compress->fd, cbuf, to_write);
+ 		if (written < 0)
+ 			return oops(compress, errno, "write failed!");
+ 
+ 		size -= written;
+-		buf += written;
++		cbuf += written;
+ 		total += written;
+ 	}
+ 	return total;
 diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
-index 13dea3e..b1fbc65 100644
+index b1fbc65..49c0ff2 100644
 --- a/include/tinycompress/tinycompress.h
 +++ b/include/tinycompress/tinycompress.h
-@@ -73,6 +73,7 @@ struct compr_config {
- #define COMPRESS_IN         0x10000000
- 
- struct compress;
-+struct snd_compr_tstamp;
- 
- /*
-  * compress_open: open a new compress stream
-@@ -103,6 +104,19 @@ void compress_close(struct compress *compress);
+@@ -126,7 +126,7 @@ int compress_get_tstamp(struct compress *compress,
+  * @buf: pointer to data
+  * @size: number of bytes to be written
   */
- int compress_get_hpointer(struct compress *compress,
- 		unsigned int *avail, struct timespec *tstamp);
-+
-+
-+/*
-+ * compress_get_tstamp: get the raw hw timestamp
-+ * return 0 on success, negative on error
-+ *
-+ * @compress: compress stream on which query is made
-+ * @samples: number of decoded samples played
-+ * @sampling_rate: sampling rate of decoded samples
-+ */
-+int compress_get_tstamp(struct compress *compress,
-+		unsigned long *samples, unsigned int *sampling_rate);
-+
+-int compress_write(struct compress *compress, char *buf, unsigned int size);
++int compress_write(struct compress *compress, const void *buf, unsigned int size);
+ 
  /*
-  * compress_write: write data to the compress stream
-  * return bytes written on success, negative on error
+  * compress_read: read data from the compress stream
 -- 
 1.7.2.5
