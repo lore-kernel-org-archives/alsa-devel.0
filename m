@@ -1,20 +1,29 @@
-From: Harald Becker <ralda@gmx.de>
-Subject: Re: HDA Beep Device for Asus EeeBox EB1501P
-Date: Sat, 23 Feb 2013 21:01:54 +0100
-Message-ID: <20130223210154.09d77f2a@ralda.gmx.de>
-References: <20130220225153.603edc5e@ralda.gmx.de>
- <s5hwqu0crjm.wl%tiwai@suse.de>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: Re: M-Audio Audiophile 192 (ice1724)'s broken spdif
+ capture
+Date: Sat, 23 Feb 2013 23:13:42 +0100
+Message-ID: <51293F16.6030209@gmail.com>
+References: <CAF+J8LeejgAx6vs0Ee8svWpmGYyk3-7SK+mE1ev-bWXYy-7v6Q@mail.gmail.com>
+ <51042EE5.5070900@perex.cz>
+ <7adcf466397b198e2e079e35b47686bc.squirrel@mail.insite.cz>
+ <CAF+J8LduUEPqaguteL0oyiACXa4jVXGTVVTCm4Tw=jMxRTmLWA@mail.gmail.com>
+ <510670CC.2090904@ivitera.com> <5107188F.3060001@gmail.com>
+ <510798CC.3080006@ivitera.com> <51081FA7.70907@gmail.com>
+ <5108F541.3010300@ivitera.com> <5109BADB.30403@gmail.com>
+ <510A485F.9060100@ivitera.com> <510AEF46.1080608@gmail.com>
+ <510C6A3C.1000501@gmail.com> <510CEE14.2050800@ivitera.com>
+ <510D9799.6070307@gmail.com> <510FE856.9050206@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 0995E264F45
- for <alsa-devel@alsa-project.org>; Sat, 23 Feb 2013 21:05:39 +0100 (CET)
-Received: from mailout-de.gmx.net ([10.1.76.20]) by mrigmx.server.lan
- (mrigmx001) with ESMTP (Nemesis) id 0LkDzQ-1Uh2UA3jnG-00c6DG for
- <alsa-devel@alsa-project.org>; Sat, 23 Feb 2013 21:01:56 +0100
-In-Reply-To: <s5hwqu0crjm.wl%tiwai@suse.de>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BD03264FDF
+ for <alsa-devel@alsa-project.org>; Sat, 23 Feb 2013 23:13:45 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so770173bkc.24
+ for <alsa-devel@alsa-project.org>; Sat, 23 Feb 2013 14:13:44 -0800 (PST)
+In-Reply-To: <510FE856.9050206@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +33,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi !
+Ok, let's keep this going... I'll post a patch of the current state that 
+I got (for the M-Audio Audiophile 192). I think it's already worth a 
+review/commit since spdif input is now working properly.
 
-> 22-02-2013 16:11 Takashi Iwai <tiwai@suse.de>:
+There is still potential for more improvements, concerning the sample 
+frequency detection.
 
-> > I own an Asus EeeBox EB1501P with an ALC662 codec and had no HDA
-> > mixer channel for the speaker beep device. After digging somewhat
-> > in the kernel source I found that I only need to add a single line
-> > in the beep_white_list in patch_realtek.c. May be this entry can be
-> > included in the mainstream drivers:
-> > 
-> > SND_PCI_QUIRK(0x1043, 0x8376, "EeePC", 1),
 
-> Could you submit a proper patch for it?
+Am 04.02.2013 17:56, schrieb Pavel Hofman:
+> On 2.2.2013 23:47, Jonas Petersen wrote:
+>> Now, how is the windows driver detecting the rate if there is a) no
+>> crystal in there and b) no Channel Status available? Might it be the
+>> clock being on PLL (I'm not realy aware of what that means right now)?
+> I do not know, are you sure there is really no channel status available?
 
-Sorry, no. Do not have the right source base for creating patches. It
-is just a single line to add the system ID for my EeeBox to the
-beep_white_list table in patch_realtek.c. Are you able to create a
-patch for this? 
- 
-> > If I use echo -e "\a" in a shell or run the beep command utility the
-> > sound appears only on second and following invocations. Whenever the
-> > frequency changes with the beep command the first invocation stays
-> > silent or just produce some click due to ALSA driver power saving.
-> > On all further invocations with same frequency the requested tone is
-> > generated on external speakers. There is no difference in behavior
-> > if the commands are called in a terminal emulator or directly on a
-> > virtual text console.
-> > 
-> > Does this happen only on my machine or is this a known problem? Is
-> > there anything I can do to fix this behavior?
-> 
-> So, the behavior above disappears if you disable the power save?
+Quite sure. It seems to be an ESI Juli phenomenon. I did plug my several 
+devices into the AP192 spdif input while observing the channel status. 
+The ESI is not sending any channel status, the others are...
 
-Can't do further testing on this (see below), but it did not look to
-depend on the power saving feature. Power saving produces a noticeable
-speaker click (sic!). That click was there even on first invocation. So
-the speakers got turned on but no sound was produced.
+But, as you suggested let's address the Juli later, maybe in a separate 
+thread.
 
-> Does the patch like below have any influence on the behavior?
 
-I recreated my kernel changing several configuration parameters
-centering about the problem to get the IT87 hwmon module to load
-instead of ATK0110. Finally I managed to get this working using the
-kernel option acpi_enforce_resources=lax. Now *ALL* hardware
-devices/functions of my EeeBox 1501P seam to work correct, including fan
-speed control. 
+>>> Back to the light indicating "sync source" in the windows driver. I
+>>> think it is reading status of GPIO06 as you reported "INT0 (pin36) --
+>>> GPIO6 pin 58". It would be possible to add a new read-only control for
+>>> sync source to revo.c for ap192. It might be useful. Of course a generic
+>>> method for ak4114.c would be more suitable but we would have to abstract
+>>> the reading method.
+>> Ok, why not adding a control for that. But first explain something to
+>> me. I see these 15 control definitions "snd_ak4114_iec958_controls[]" in
+>> ak4114.c. How are they accessed? Where can I read for example the
+>> "IEC958 External Rate" value? In the proc dir they do not show up.
+>> Neither at Juli nor at AP192. Are these only API functions?
+> see output of amixer contents. They are defined as PCM-type controls
+> (not MIXER type and do not apper e.g. in alsamixer.
 
-In addition this changed behavior of HDA Beep device. It now works
-correct on all invocations of beep utility. So I can't reproduce
-behavior. I do not know if my configuration modifications changed
-something or I did something wrong on my first tests. So please drop
-this issue request for now and just add the system ID to the
-beep_white_list. With this my EeeBox 1501P works fine, now!
+Thanks, found it. Would that help in finding out how the card is 
+detecting rate without any clue?
 
-If any trouble reappear, I will drop a new request on this. Sorry for
-the noise.
+I once read somwhere about a kind of hackish way of detecting sampling 
+frequency by just capturing some samples (at a fixed rate) and 
+calculating by comparing what you get to what you're supposed to get (or 
+something like that, don't remember exactly). Can't find it anywhere 
+right now though.
 
-Thx for your assistance
-Harald
+Might it be that the windows driver is doing something like that as a 
+fallback (or even always) when there is no channel status?
+
+I'd like to once send the card a - let's say - 44.1 kHz signal with a - 
+let's say - 96 kHz info in the channel status and see what the windows 
+driver says. :)
+
+- Jonas
