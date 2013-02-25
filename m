@@ -1,17 +1,19 @@
-From: mateen <abdulmateen.shaikh@gmail.com>
-Subject: Issue with Dmix
-Date: Mon, 25 Feb 2013 11:38:58 +0530
-Message-ID: <CADryByFhCKh0VjkCpeqj=y1XAWxqAL+eFu04AMerncgenDo38Q@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Bug#701498: hda: Internal mic does not work on
+ Thinkpad T420s (CX20590 codec)
+Date: Mon, 25 Feb 2013 07:16:28 +0100
+Message-ID: <512B01BC.2090206@canonical.com>
+References: <20130223194257.7554.82839.reportbug@katniss.segie>
+ <1361735995.27602.118.camel@deadeye.wl.decadent.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f177.google.com (mail-ve0-f177.google.com
- [209.85.128.177])
- by alsa0.perex.cz (Postfix) with ESMTP id DA71B26514B
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2013 07:08:59 +0100 (CET)
-Received: by mail-ve0-f177.google.com with SMTP id m1so1899065ves.22
- for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2013 22:08:59 -0800 (PST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5085526514F
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2013 07:16:30 +0100 (CET)
+In-Reply-To: <1361735995.27602.118.camel@deadeye.wl.decadent.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: alsa-devel@alsa-project.org, Adrian Lang <debian@adrianlang.de>, 701498@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-HI
+On 02/24/2013 08:59 PM, Ben Hutchings wrote:
+> On Sat, 2013-02-23 at 20:42 +0100, Adrian Lang wrote:
+>> Package: src:linux
+>> Version: 3.2.35-2
+>> Severity: normal
+>>
+>> There are two microphones in alsamixer and Gnome 3 audio settings (i. e.,
+>> pulseaudio), but I can't get any sound using either of them. I think that's the
+>> same problem as reported to [openSUSE] and [Ubuntu].
+>>
+>> The problem persists with 3.7 (3.7.8-1~experimental.1) from
+>> experimental.
+>>
+>> [openSUSE]
+>> http://forums.opensuse.org/english/get-technical-help-here/laptop/469210-opensuse-12-1-cannot-get-internal-mic-work-lenovo-g770-laptop.html
+>> [Ubuntu]
+>> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/938644
 
+These are different bugs as they concern different hardware.
 
+> I happen to have a Thinkpad T420 with the same audio codec, and the
+> internal mic works fine.  (There does seem to be a problem with external
+> mics, now that I check, but let's ignore that for now.)  So this is more
+> board-specific, not chip-specific, behaviour.
 
-We have enabled DMIX plugin for sample rate conversion and mixing of 2 pcm
-streams in our alsa package (Alsa lib 1.0.22 and alsa driver 1.0.22.1)  to
-48K output Sample rate.However we are seeing a noise issue with 44100
-Sample rate input streams or Unsigned Stereo 48K stream.
+Ok. For the internal mic, this could be the cancelling out problem; see 
+the "Inverted Internal Mic" section of this blog post [1] for more 
+information.
 
+...as these bugs can sometimes be very specific - when the factory 
+finally assembles the laptop, they might select a different component 
+just for the DMIC, that has this problem.
 
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
 
-This is how our current design  is:
-
-We call snd_pcm_lib_malloc_page() in which alsa driver internally allocates
-a dma buffer and map it when Dmix is invoked.
-
-We currently reads from that mmaped buffer to our hardware buffer inside a
-transfer_ack_begin() function which is called from snd_pcm_period_elapsed().
-
-However we are getting a problem in understanding how do we know how much
-data has been written by dmix lib in mapped buffer? As we see no ioctl or
-corresponding hardware function call where dmix may pass information on
-Size of data being written to our driver.
-
-
-
-We do see appl_ptr and hw_ptr in runtime->mmap->control and status struct.
-Out architecture doesn=92t support defining and mapping of these status and
-control structure at hardware level.Thus Dmix lib allocates them and copy
-them to runtime substream via ioctl. As far as I could understand both
-appl_ptr and hw_ptr are initialised to 0 and then appl_ptr is the one
-adjusted by lib after every write. Should we tap this value to update
-hw_ptr value in status information? Will difference of hw_ptr and appl_ptr
-will let us know amount of frames been written?
-
-Can anyone please help us to understand criteria and concept of data copy
-from intermediate to hardware buffer?
-
-Any information on this would be of immense help.
-
-
-Regards,
-Shaikh Mateen
+[1] 
+http://voices.canonical.com/david.henningsson/2012/05/22/three-audio-bugs-in-12-04/
