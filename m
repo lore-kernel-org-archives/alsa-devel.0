@@ -1,7 +1,8 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 1/5 v7][RFC] ASoC: add snd_soc_register_cpu()
-Date: Mon, 25 Feb 2013 00:51:48 -0800 (PST)
-Message-ID: <878v6cg4io.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 2/5 v7][RFC] ASoC: add .of_xlate_dai_name on
+ snd_soc_cpu_cpu/codec_driver
+Date: Mon, 25 Feb 2013 00:53:49 -0800 (PST)
+Message-ID: <877glwg4fb.wl%kuninori.morimoto.gx@renesas.com>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <50E71618.8090302@wwwdotorg.org>
  <20130104193712.GN4627@opensource.wolfsonmicro.com>
@@ -46,161 +47,130 @@ To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Mark Brown
 Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Current ASoC has register function for platform/codec/dai/card,
-but doesn't have for cpu.
-It often produces confusion and fault on ASoC.
-This patch adds very basic register function for cpu
+ASoC sound driver requires CPU/CODEC drivers for probing,
+and each CPU/CODEC has some DAI on it.
+Then, "dai name matching" have been used to identify
+CPU-CODEC DAI pair on ASoC.
+
+But, the "dai port number matching" is now required from DeviceTree.
+The solution of this issue is to replace the dai port number into dai name,
+and it needs some kind of .of_xlate function on each driver.
+
+This patch adds .of_xlate_dai_name callback interface
+on each struct snd_soc_cpu/codec_driver,
+and snd_soc_of_get_cpu/codec_dai_name() which is using .of_xlate_dai_name.
+
+Then, #sound-dai-cells which enables DAI specifier is required
+on CPU/CODEC device tree properties.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 ---
 v6 -> v7
 
- - new feature
- - based on snd_soc_register_codec()
+ - return int instead of char*
+ - for_each from cpu/codec list
+ - used sound-dai and #sound-dai-cells
 
- include/sound/soc.h  |   19 ++++++++++++
- sound/soc/soc-core.c |   78 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 97 insertions(+)
+ include/sound/soc.h  |   14 ++++++++++++++
+ sound/soc/soc-core.c |   40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e227880..faffc9c 100644
+index faffc9c..343a7c5 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -322,6 +322,8 @@ struct snd_soc_dai_link;
- struct snd_soc_platform_driver;
- struct snd_soc_codec;
- struct snd_soc_codec_driver;
-+struct snd_soc_cpu;
-+struct snd_soc_cpu_driver;
- struct soc_enum;
- struct snd_soc_jack;
- struct snd_soc_jack_zone;
-@@ -375,6 +377,10 @@ int snd_soc_register_codec(struct device *dev,
- 		const struct snd_soc_codec_driver *codec_drv,
- 		struct snd_soc_dai_driver *dai_drv, int num_dai);
- void snd_soc_unregister_codec(struct device *dev);
-+int snd_soc_register_cpu(struct device *dev,
-+			 const struct snd_soc_cpu_driver *cpu_drv,
-+			 struct snd_soc_dai_driver *dai_drv, int num_dai);
-+void snd_soc_unregister_cpu(struct device *dev);
- int snd_soc_codec_volatile_register(struct snd_soc_codec *codec,
- 				    unsigned int reg);
- int snd_soc_codec_readable_register(struct snd_soc_codec *codec,
-@@ -839,6 +845,19 @@ struct snd_soc_platform {
- #endif
+@@ -13,6 +13,7 @@
+ #ifndef __LINUX_SND_SOC_H
+ #define __LINUX_SND_SOC_H
+ 
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <linux/notifier.h>
+@@ -770,6 +771,11 @@ struct snd_soc_codec_driver {
+ 	/* codec stream completion event */
+ 	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
+ 
++	/* DT */
++	int (*of_xlate_dai_name)(struct snd_soc_codec *codec,
++				 struct of_phandle_args *args,
++				 const char **dai_name);
++
+ 	bool ignore_pmdown_time;  /* Doesn't benefit from pmdown delay */
+ 
+ 	/* probe ordering - for components with runtime dependencies */
+@@ -846,6 +852,10 @@ struct snd_soc_platform {
  };
  
-+struct snd_soc_cpu_driver {
-+};
-+
-+struct snd_soc_cpu {
-+	const char *name;
-+	int id;
-+	int num_dai;
-+	struct device *dev;
-+	struct list_head list;
-+
-+	const struct snd_soc_cpu_driver *driver;
-+};
-+
- struct snd_soc_dai_link {
- 	/* config - must be set by machine driver */
- 	const char *name;			/* Codec name */
+ struct snd_soc_cpu_driver {
++	/* DT */
++	int (*of_xlate_dai_name)(struct snd_soc_cpu *codec,
++				 const struct of_phandle_args *args,
++				 const char **dai_name);
+ };
+ 
+ struct snd_soc_cpu {
+@@ -1190,6 +1200,10 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 				   const char *propname);
+ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix);
++int snd_soc_of_get_codec_dai_name(struct device_node *of_node,
++				  const char **dai_name);
++int snd_soc_of_get_cpu_dai_name(struct device_node *of_node,
++				const char **dai_name);
+ 
+ #include <sound/soc-dai.h>
+ 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 5f44d22..14976ff 100644
+index 14976ff..da9a93d 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -58,6 +58,7 @@ static DEFINE_MUTEX(client_mutex);
- static LIST_HEAD(dai_list);
- static LIST_HEAD(platform_list);
- static LIST_HEAD(codec_list);
-+static LIST_HEAD(cpu_list);
- 
- /*
-  * This is a timeout to do a DAPM powerdown after a stream is closed().
-@@ -4095,6 +4096,83 @@ found:
+@@ -4361,6 +4361,46 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
  }
- EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
  
-+
-+/**
-+ * snd_soc_register_cpu - Register a cpu with the ASoC core
-+ *
-+ */
-+int snd_soc_register_cpu(struct device *dev,
-+			 const struct snd_soc_cpu_driver *cpu_drv,
-+			 struct snd_soc_dai_driver *dai_drv,
-+			 int num_dai)
-+{
-+	struct snd_soc_cpu *cpu;
-+	int ret;
-+
-+	dev_dbg(dev, "cpu register %s\n", dev_name(dev));
-+
-+	cpu = kzalloc(sizeof(struct snd_soc_cpu), GFP_KERNEL);
-+	if (!cpu)
-+		return -ENOMEM;
-+
-+	cpu->name = fmt_single_name(dev, &cpu->id);
-+	if (!cpu->name) {
-+		ret = -ENOMEM;
-+		goto error_cpu;
-+	}
-+
-+	cpu->dev = dev;
-+	cpu->driver = cpu_drv;
-+	cpu->num_dai = num_dai;
-+
-+	mutex_lock(&client_mutex);
-+	list_add(&cpu->list, &cpu_list);
-+	mutex_unlock(&client_mutex);
-+
-+	ret = snd_soc_register_dais(dev, dai_drv, num_dai);
-+	if (ret < 0) {
-+		dev_err(cpu->dev, "ASoC: Failed to regster DAIs: %d\n", ret);
-+		goto error_cpu_name;
-+	}
-+
-+	dev_dbg(cpu->dev, "ASoC: Registered cpu '%s'\n", cpu->name);
-+
-+	return ret;
-+
-+error_cpu_name:
-+	kfree(cpu->name);
-+error_cpu:
-+	kfree(cpu);
-+
-+	return ret;
++#define SND_SOC_OF_GET_DAI_NAME(contents) \
++int snd_soc_of_get_ ## contents ## _dai_name(struct device_node *of_node,\
++					 const char **dai_name)		\
++{									\
++	struct snd_soc_ ## contents *pos;				\
++	struct of_phandle_args args;					\
++	int ret;							\
++									\
++	ret = of_parse_phandle_with_args(of_node, "sound-dai",		\
++					 "#sound-dai-cells", 0, &args);	\
++	if (ret)							\
++		return ret;						\
++									\
++	ret = -EPROBE_DEFER;						\
++									\
++	mutex_lock(&client_mutex);					\
++	list_for_each_entry(pos, &contents ## _list, list) {		\
++		if (pos->dev->of_node != args.np)			\
++			continue;					\
++									\
++		if (!pos->driver->of_xlate_dai_name) {			\
++			ret = -EIO;					\
++			break;						\
++		}							\
++									\
++		ret = pos->driver->of_xlate_dai_name(pos, &args, dai_name);\
++		break;							\
++	}								\
++	mutex_unlock(&client_mutex);					\
++									\
++	of_node_put(args.np);						\
++									\
++	return ret;							\
 +}
 +
-+/**
-+ * snd_soc_unregister_cpu - Unregister a cpu from the ASoC core
-+ *
-+ */
-+void snd_soc_unregister_cpu(struct device *dev)
-+{
-+	struct snd_soc_cpu *cpu;
++SND_SOC_OF_GET_DAI_NAME(codec)
++SND_SOC_OF_GET_DAI_NAME(cpu)
++EXPORT_SYMBOL_GPL(snd_soc_of_get_codec_dai_name);
++EXPORT_SYMBOL_GPL(snd_soc_of_get_cpu_dai_name);
 +
-+	list_for_each_entry(cpu, &cpu_list, list) {
-+		if (dev == cpu->dev)
-+			goto found;
-+	}
-+	return;
-+
-+found:
-+	snd_soc_unregister_dais(dev, cpu->num_dai);
-+
-+	mutex_lock(&client_mutex);
-+	list_del(&cpu->list);
-+	mutex_unlock(&client_mutex);
-+
-+	dev_dbg(dev, "ASoC: Unregistered cpu '%s'\n", cpu->name);
-+	kfree(cpu->name);
-+	kfree(cpu);
-+}
-+
- /* Retrieve a card's name from device tree */
- int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- 			       const char *propname)
+ static int __init snd_soc_init(void)
+ {
+ #ifdef CONFIG_DEBUG_FS
 -- 
 1.7.9.5
