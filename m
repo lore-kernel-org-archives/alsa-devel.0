@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: wm8994: Defer declaration of open
-	circuit microphones
-Date: Tue, 26 Feb 2013 17:15:33 +0000
-Message-ID: <1361898934-615-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1361898934-615-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
+ of serializers
+Date: Tue, 26 Feb 2013 19:40:37 +0100
+Message-ID: <512D01A5.8050206@topic.nl>
+References: <1631475.f7GPhLiLxV@ganymedes>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2660265326
- for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2013 18:15:40 +0100 (CET)
-In-Reply-To: <1361898934-615-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from atl4mhob13.myregisteredsite.com
+ (atl4mhob13.myregisteredsite.com [209.17.115.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF054265329
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2013 19:40:39 +0100 (CET)
+Received: from mailpod.hostingplatform.com (mail.networksolutionsemail.com
+ [205.178.146.50])
+ by atl4mhob13.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id
+ r1QIecEh030785
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2013 13:40:38 -0500
+In-Reply-To: <1631475.f7GPhLiLxV@ganymedes>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,103 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide a bit of debounce to handle pathological cases with slow input
-better by allowing the microphone detection to run for a bit longer.
+On 02/26/2013 03:06 PM, Michal Bachraty wrote:
+> Hi,
+> I'm  working on multichannel version of davinci-mcasp and also davinci-pcm. I
+> have first version running and now I want to refine code. I found one confusion
+> in davinci-mcasp with using of DT property "tx-num-evt".  In DT binding
+> documentation "tx-num-evt" is defined as "FIFO levels", but in Mcasp src, there
+> is code, which mixes tx-num-evt with number of serializers (i2s data lines)
+> that are enabled for data playback and receive (dev->txnumevt * tx_ser)
+>
+> mcasp_mod_bits(dev->base + MCASP_VER3_WFIFOCTL,
+>                  (((dev->txnumevt * tx_ser) << 8), NUMEVT_MASK);
+>
+>  From dacinci pcm,  DMA data tranfer use txnumevt as number of serializers and
+> also for data prefetching.
+> I undestand definition "FIFO levels" as how many prefetched data are in FIFO.
+> Prefetched data are for me frame data / 2  ( all left or right channels for
+> one sampling time). This results me from AM335x FIFO documantation.
+> What is original purpose for "tx-num-evt" parameter?
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   40 +++++++++++++++++++++++++++++++---------
- sound/soc/codecs/wm8994.h |    1 +
- 2 files changed, 32 insertions(+), 9 deletions(-)
+ From what I remember (I'm using the davinci to record from up to 8 
+codecs chips simultaneously) the value sets a threshold for the DMA 
+request (if the FIFO is enabled - and I can't think of a reason why 
+anyone would NOT want to enable the fifo...).
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index d6e994d..1d98f28 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3474,6 +3474,31 @@ static void wm8958_button_det(struct snd_soc_codec *codec, u16 status)
- 			    wm8994->btn_mask);
- }
- 
-+static void wm8958_open_circuit_work(struct work_struct *work)
-+{
-+	struct wm8994_priv *wm8994 = container_of(work,
-+						  struct wm8994_priv,
-+						  open_circuit_work.work);
-+	struct device *dev = wm8994->wm8994->dev;
-+
-+	mutex_lock(&wm8994->accdet_lock);
-+
-+	dev_dbg(dev, "Reporting open circuit\n");
-+
-+	wm8994->jack_mic = false;
-+	wm8994->mic_detecting = true;
-+
-+	wm1811_micd_stop(wm8994->hubs.codec);
-+
-+	wm8958_micd_set_rate(wm8994->hubs.codec);
-+
-+	snd_soc_jack_report(wm8994->micdet[0].jack, 0,
-+			    wm8994->btn_mask |
-+			    SND_JACK_HEADSET);
-+
-+	mutex_unlock(&wm8994->accdet_lock);
-+}
-+
- static void wm8958_mic_id(void *data, u16 status)
- {
- 	struct snd_soc_codec *codec = data;
-@@ -3483,16 +3508,9 @@ static void wm8958_mic_id(void *data, u16 status)
- 	if (!(status & WM8958_MICD_STS)) {
- 		/* If nothing present then clear our statuses */
- 		dev_dbg(codec->dev, "Detected open circuit\n");
--		wm8994->jack_mic = false;
--		wm8994->mic_detecting = true;
--
--		wm1811_micd_stop(codec);
- 
--		wm8958_micd_set_rate(codec);
--
--		snd_soc_jack_report(wm8994->micdet[0].jack, 0,
--				    wm8994->btn_mask |
--				    SND_JACK_HEADSET);
-+		schedule_delayed_work(&wm8994->open_circuit_work,
-+				      msecs_to_jiffies(500));
- 		return;
- 	}
- 
-@@ -3778,6 +3796,8 @@ static irqreturn_t wm8958_mic_irq(int irq, void *data)
- 	if (!(snd_soc_read(codec, WM8958_MIC_DETECT_1) & WM8958_MICD_ENA))
- 		return IRQ_HANDLED;
- 
-+	cancel_delayed_work_sync(&wm8994->open_circuit_work);
-+
- 	pm_runtime_get_sync(codec->dev);
- 
- 	/* We may occasionally read a detection without an impedence
-@@ -3877,6 +3897,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 	mutex_init(&wm8994->accdet_lock);
- 	INIT_DELAYED_WORK(&wm8994->jackdet_bootstrap,
- 			  wm1811_jackdet_bootstrap);
-+	INIT_DELAYED_WORK(&wm8994->open_circuit_work,
-+			  wm8958_open_circuit_work);
- 
- 	switch (control->type) {
- 	case WM8994:
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index 20356b3..130ce93 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -134,6 +134,7 @@ struct wm8994_priv {
- 	struct mutex accdet_lock;
- 	struct wm8994_micdet micdet[2];
- 	struct delayed_work mic_work;
-+	struct delayed_work open_circuit_work;
- 	bool mic_detecting;
- 	bool jack_mic;
- 	int btn_mask;
+Postponing the DMA request until there are #channels data entries in the 
+fifo buffer makes sense to me. Setting the txnumevt to a higher value 
+might reduce the load on the memory controller (that's what TI claims), 
+at the cost of a higher risk of overrunning the fifo, and increased 
+latency. Setting it to less than the number of channels isn't useful 
+either - which application would be interested in "half" the channel data?
+
+I have always considered the parameter to be a boolean (please use the 
+fifo) rather than an integer setting.
+
 -- 
-1.7.10.4
+Mike Looijmans - Topic Automation
