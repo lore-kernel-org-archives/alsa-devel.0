@@ -1,130 +1,108 @@
-From: Anil Kumar <anilk4.v-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH V2] ARM: dts: omap3-devkit8000: Enable audio support
-Date: Wed, 27 Feb 2013 08:12:52 +0530
-Message-ID: <CABYxbz5izBpc96EG++Qa2dZM3XCFeygQ-d8TOdEVw0DCeT6Qsg@mail.gmail.com>
-References: <1361000036-18121-1-git-send-email-anilk4.v@gmail.com>
- <51220E78.5000409@ti.com>
+From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Subject: Re: [PATCH v4 0/3] ASoC davinci/tlv320aic3x updates,
+ fixes & DT support
+Date: Wed, 27 Feb 2013 07:10:40 +0000
+Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB76CE8@DBDE01.ent.ti.com>
+References: <1359636786-7056-1-git-send-email-gururaja.hebbar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <51220E78.5000409-l0cyMroinI0@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: Alsa Devel List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas-xePHB1Atl/Dsq35pWSNszA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE6622616CF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2013 08:10:53 +0100 (CET)
+In-Reply-To: <1359636786-7056-1-git-send-email-gururaja.hebbar@ti.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "Nori, Sekhar" <nsekhar@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "rob@landley.net" <rob@landley.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Mark,
 
-On Mon, Feb 18, 2013 at 4:50 PM, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> wro=
-te:
-> On 02/16/2013 08:33 AM, Anil Kumar wrote:
->> Add the needed sections to enable audio support on
->> Devkit8000 when booted with DT blob.
->>
->> Signed-off-by: Anil Kumar <anilk4.v-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->
-> Looks good:
-> Acked-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+On Thu, Jan 31, 2013 at 18:23:03, Hebbar, Gururaja wrote:
+> 1. Convert tlv320aic3x mic bias to a supply widget and related machine driver
+> 2. Add DT support for Davinci machine platform
+> 3. Remove __dev* attributes
+> 
+> This patch-set is tested on Davinci platform (DA850 EVM). This series applies on
+> top of tag next-20130128 git tree
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> 
+> These patches cannot be tested directly on mainline kernel (DT based).
+> This is because dma is not yet completely ported to Davinci ASoC. I had to add
+> few hacks to get Audio working on Davinci DA850 platform.
+> 
+> For reference, I have placed the entire working tree @
+> Tree :  https://github.com/ghebbar/linux.git
+> Branch : dev_next-20130128_davinci_asoc_dt_v3
 
-Gentle Ping. As there are no review comments on this patch,
-Could you please pull this patch ?
+Only one patch out of the 3 is accepted.  I haven't received any review comments
+from anyone for the other 2.
 
-Thanks,
-Anil
->
->> ---
->> This patch is based on top of kernel 3.8-rc5 and
->> the following patches.
->>
->> Peter Ujfalusi:-
->> ASoC: twl4030: Correct the support for Voice port
->> ASoC: twl4030: Convert MICBIAS to SUPPLY widget
->> ASoC: omap-twl4030: Add support for routing, voice port and jack detect
->>
->> Anil Kumar:-
->> ARM: dts: add minimal DT support for DevKit8000
->> https://patchwork.kernel.org/patch/2122461/
->>
->> -Tested for playback and capture on Devkit8000.
->>
->>  Test process:-
->>
->>  #amixer set 'PredriveR Mixer AudioR2' on
->>  #amixer set 'PredriveL Mixer AudioL2' on
->>  #amixer set PreDriv 100 unmute
->>  #amixer set 'DAC2 Digital Fine' 100
->>  #amixer cset numid=3D27 1
->>  #arecord | aplay
->>
->> For V2:
->>  - Remove pin mux as done at device boot time by default.
->>
->> :100644 100644 6338993... c70116f... M        arch/arm/boot/dts/omap3-de=
-vkit8000.dts
->>  arch/arm/boot/dts/omap3-devkit8000.dts |   23 +++++++++++++++++++----
->>  1 files changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/omap3-devkit8000.dts b/arch/arm/boot/dts/=
-omap3-devkit8000.dts
->> index 6338993..c70116f 100644
->> --- a/arch/arm/boot/dts/omap3-devkit8000.dts
->> +++ b/arch/arm/boot/dts/omap3-devkit8000.dts
->> @@ -42,6 +42,19 @@
->>                  };
->>
->>       };
->> +
->> +     sound {
->> +             compatible =3D "ti,omap-twl4030";
->> +             ti,model =3D "devkit8000";
->> +
->> +             ti,mcbsp =3D <&mcbsp2>;
->> +             ti,codec =3D <&twl_audio>;
->> +             ti,audio-routing =3D
->> +                     "Ext Spk", "PREDRIVEL",
->> +                     "Ext Spk", "PREDRIVER",
->> +                     "MAINMIC", "Main Mic",
->> +                     "Main Mic", "Mic Bias 1";
->> +     };
->>  };
->>
->>  &i2c1 {
->> @@ -51,6 +64,12 @@
->>               reg =3D <0x48>;
->>               interrupts =3D <7>;       /* SYS_NIRQ cascaded to intc */
->>               interrupt-parent =3D <&intc>;
->> +
->> +             twl_audio: audio {
->> +                     compatible =3D "ti,twl4030-audio";
->> +                     codec {
->> +                     };
->> +             };
->>       };
->>  };
->>
->> @@ -86,10 +105,6 @@
->>       status =3D "disabled";
->>  };
->>
->> -&mcbsp2 {
->> -     status =3D "disabled";
->> -};
->> -
->>  &mcbsp3 {
->>       status =3D "disabled";
->>  };
->>
->
->
-> --
-> P=E9ter
+Kindly let me know if any further changes are required in the remaining changes 
+or if I have missed any of comments.
+
+If not, Could you please accept the remaining patch?
+
+Remaining patches
+ASoC: davinci: remove __dev* attributes [1]
+ASoC: davinci: machine: Add device tree binding [2]
+
+
+[1]
+http://lkml.org/lkml/2013/1/31/243
+
+
+[2]
+http://lkml.org/lkml/2013/1/31/244
+
+
+Regards, 
+Gururaja
+
+> 
+> Changes in v4
+> 	 - updated pending machine driver to change in micbias -> supply widget
+> 	 - merge codec & machine driver change into a single commit
+> 
+> Changes in v3
+> 	- drop mcasp pinctrl handler patch from series as it is now handled
+> 	  centrally.
+> 	- Convert tlv320aic3x mic bias to a supply widget and related machine
+> 	  driver
+> 	- remove __dev* attributes
+> 
+> Changes in v2
+> 	 - Remove reference to Linux & software details from DT binding
+> 
+> Hebbar Gururaja (2):
+>   ASoC: tlv320aic3x: Convert mic bias to a supply widget
+>   ASoC: davinci: remove __dev* attributes
+> 
+> Hebbar, Gururaja (1):
+>   ASoC: davinci: machine: Add device tree binding
+> 
+>  .../bindings/sound/davinci-evm-audio.txt           |   53 ++++++
+>  .../devicetree/bindings/sound/tlv320aic3x.txt      |    6 +
+>  include/sound/tlv320aic3x.h                        |   10 ++
+>  sound/soc/codecs/tlv320aic3x.c                     |   83 ++++++++-
+>  sound/soc/codecs/tlv320aic3x.h                     |    4 +
+>  sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++---
+>  sound/soc/omap/n810.c                              |    4 +-
+>  sound/soc/omap/rx51.c                              |    8 +-
+>  8 files changed, 318 insertions(+), 35 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
+> 
+> -- 
+> 1.7.9.5
+> 
+> 
