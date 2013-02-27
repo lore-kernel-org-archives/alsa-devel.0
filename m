@@ -1,18 +1,16 @@
-From: "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
-Subject: Re: [PATCH v4 0/3] ASoC davinci/tlv320aic3x updates,
- fixes & DT support
-Date: Wed, 27 Feb 2013 07:10:40 +0000
-Message-ID: <1BAFE6F6C881BF42822005164F1491C33EB76CE8@DBDE01.ent.ti.com>
-References: <1359636786-7056-1-git-send-email-gururaja.hebbar@ti.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: ASoC: no-pcm (backend) error propagation
+Date: Wed, 27 Feb 2013 16:23:53 +0800
+Message-ID: <1361953433.28121.33.camel@vega>
+References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id CE6622616CF
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2013 08:10:53 +0100 (CET)
-In-Reply-To: <1359636786-7056-1-git-send-email-gururaja.hebbar@ti.com>
-Content-Language: en-US
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7744A2617AF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2013 09:24:01 +0100 (CET)
+In-Reply-To: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
-Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "Nori, Sekhar" <nsekhar@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "rob@landley.net" <rob@landley.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On Thu, Jan 31, 2013 at 18:23:03, Hebbar, Gururaja wrote:
-> 1. Convert tlv320aic3x mic bias to a supply widget and related machine driver
-> 2. Add DT support for Davinci machine platform
-> 3. Remove __dev* attributes
+On Wed, 2013-02-27 at 02:21 +0000, Frkuska, Joshua wrote:
+> Hello,
 > 
-> This patch-set is tested on Davinci platform (DA850 EVM). This series applies on
-> top of tag next-20130128 git tree
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> I am working off of the 3.5.7 branch of the kernel using a frontend-backend approach for my driver. No additional patches have been added for ASoC/ALSA from the 3.5.7 kernel branch.
 > 
-> These patches cannot be tested directly on mainline kernel (DT based).
-> This is because dma is not yet completely ported to Davinci ASoC. I had to add
-> few hacks to get Audio working on Davinci DA850 platform.
+> My question relates to the way the no-pcm (backend) propagates errors to the front end. My FE(frontend) consists of a cpu-dai, a pcm platform driver, and a dummy-codec. My BE(backend) consists of another cpu-dai, a non-pcm platform driver, and a real codec.
+> The non-pcm operates with the dmaengine but just in an autonomous fashion external to the PCM's knowledge.
 > 
-> For reference, I have placed the entire working tree @
-> Tree :  https://github.com/ghebbar/linux.git
-> Branch : dev_next-20130128_davinci_asoc_dt_v3
-
-Only one patch out of the 3 is accepted.  I haven't received any review comments
-from anyone for the other 2.
-
-Kindly let me know if any further changes are required in the remaining changes 
-or if I have missed any of comments.
-
-If not, Could you please accept the remaining patch?
-
-Remaining patches
-ASoC: davinci: remove __dev* attributes [1]
-ASoC: davinci: machine: Add device tree binding [2]
-
-
-[1]
-http://lkml.org/lkml/2013/1/31/243
-
-
-[2]
-http://lkml.org/lkml/2013/1/31/244
-
-
-Regards, 
-Gururaja
-
+> I have the pcm-platform driver passing data to the FE cpu-dai and the backend platform then takes the data from the frontend's cpu-dai and passes it on to the BE cpu-dai, which then configures the codec-dai to get output.
 > 
-> Changes in v4
-> 	 - updated pending machine driver to change in micbias -> supply widget
-> 	 - merge codec & machine driver change into a single commit
+> In the frontend if/whenever there is an underrun error in the cpu-dai, I can directly call snd_pcm_stop to stop the stream and report the error state. I can do this because the substream->ops have properly been defined in the frontend pcm. However, in the backend, the substream->ops never get initialized and rightfully so since there isn't a valid pcm for the backend.
 > 
-> Changes in v3
-> 	- drop mcasp pinctrl handler patch from series as it is now handled
-> 	  centrally.
-> 	- Convert tlv320aic3x mic bias to a supply widget and related machine
-> 	  driver
-> 	- remove __dev* attributes
+> My question is, what is the correct/any way to let the frontend PCM stream know that an underrun has occurred in the backend? Is there a mechanism to handle this in ASoC? Looking through the code, I cannot find such a mechanism. I have a feeling that there should be something like snd_soc_pcm_stop to check to see if we are in a FE/BE configuration and act accordingly to stop the FE PCM stream and report errors.
 > 
-> Changes in v2
-> 	 - Remove reference to Linux & software details from DT binding
-> 
-> Hebbar Gururaja (2):
->   ASoC: tlv320aic3x: Convert mic bias to a supply widget
->   ASoC: davinci: remove __dev* attributes
-> 
-> Hebbar, Gururaja (1):
->   ASoC: davinci: machine: Add device tree binding
-> 
->  .../bindings/sound/davinci-evm-audio.txt           |   53 ++++++
->  .../devicetree/bindings/sound/tlv320aic3x.txt      |    6 +
->  include/sound/tlv320aic3x.h                        |   10 ++
->  sound/soc/codecs/tlv320aic3x.c                     |   83 ++++++++-
->  sound/soc/codecs/tlv320aic3x.h                     |    4 +
->  sound/soc/davinci/davinci-evm.c                    |  185 +++++++++++++++++---
->  sound/soc/omap/n810.c                              |    4 +-
->  sound/soc/omap/rx51.c                              |    8 +-
->  8 files changed, 318 insertions(+), 35 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-evm-audio.txt
-> 
-> -- 
-> 1.7.9.5
-> 
-> 
+
+It was originally intended that any underrun / overrun issues in a BE
+DAI would be handled internally by the audio DSP (and this worked well
+with the OMAP4 ABE). However, it is probably a good a idea to have a
+better mechanism for reporting BE xrun issues up the stack to the host
+CPU side too. 
+
+Currently the FE PCM xrun mechanism and FE pointer() callback could be
+used by the host to get the size of any FE:BE underrun/overrun. This
+isn't ideal and wont work when there can be multiple BEs for a FE. 
+
+It looks like some new code is required here to get this working
+correctly for BEs. 
+
+Regards
+
+Liam
