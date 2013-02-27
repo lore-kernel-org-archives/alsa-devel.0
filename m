@@ -1,8 +1,8 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add
-	snd_soc_register_cpu()
-Date: Wed, 27 Feb 2013 15:45:45 -0700
-Message-ID: <512E8C99.2040708@wwwdotorg.org>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 2/5 v7][RFC] ASoC: add .of_xlate_dai_name on
+ snd_soc_cpu_cpu/codec_driver
+Date: Wed, 27 Feb 2013 15:56:50 -0700
+Message-ID: <512E8F32.9090501@wwwdotorg.org>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <20130127035943.GJ4650@opensource.wolfsonmicro.com>
  <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
@@ -24,44 +24,81 @@ References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
  <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
  <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <878v6cg4io.wl%kuninori.morimoto.gx@renes as.com>
+ <877glwg4fb.wl%kuninori.morimoto.gx@renes as.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id BC956265B97
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2013 23:45:50 +0100 (CET)
-In-Reply-To: <878v6cg4io.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <877glwg4fb.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/25/2013 01:51 AM, Kuninori Morimoto wrote:
-> Current ASoC has register function for platform/codec/dai/card,
-> but doesn't have for cpu.
-> It often produces confusion and fault on ASoC.
-> This patch adds very basic register function for cpu
+On 02/25/2013 01:53 AM, Kuninori Morimoto wrote:
+> ASoC sound driver requires CPU/CODEC drivers for probing,
+> and each CPU/CODEC has some DAI on it.
+> Then, "dai name matching" have been used to identify
+> CPU-CODEC DAI pair on ASoC.
+> 
+> But, the "dai port number matching" is now required from DeviceTree.
+> The solution of this issue is to replace the dai port number into dai name,
+> and it needs some kind of .of_xlate function on each driver.
+> 
+> This patch adds .of_xlate_dai_name callback interface
+> on each struct snd_soc_cpu/codec_driver,
+> and snd_soc_of_get_cpu/codec_dai_name() which is using .of_xlate_dai_name.
+> 
+> Then, #sound-dai-cells which enables DAI specifier is required
+> on CPU/CODEC device tree properties.
 
-This seems reasonable to me.
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
 
-I can't recall how much influence the existing CODEC objects have on the
-various routing/matching decisions inside the ASoC core. While this
-patch does register and unregister CPU objects, I wonder if it should
-have more impact on any of the existing core code? Certainly I'd expect
-the CPU objects to show up in ASoC's debugfs and any similar files...
+>  struct snd_soc_cpu_driver {
+> +	/* DT */
+> +	int (*of_xlate_dai_name)(struct snd_soc_cpu *codec,
 
-So as far as it goes,
-Reviewed-by: Stephen Warren <swarren@nvidia.com>
+s/codec/cpu/
 
-But I suspect this patch might need to do a bunch of other stuff too, or
-add a bunch of follow-on patches for that?
+> +int snd_soc_of_get_codec_dai_name(struct device_node *of_node,
+> +				  const char **dai_name);
+> +int snd_soc_of_get_cpu_dai_name(struct device_node *of_node,
+> +				const char **dai_name);
+
+I think you need to return the CODEC and CPU object or name here too.
+That'll be needed to fill in the machine driver's {codec,cpu}_of_node
+DAI link fields.
+
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+
+> +#define SND_SOC_OF_GET_DAI_NAME(contents) \
+> +int snd_soc_of_get_ ## contents ## _dai_name(struct device_node *of_node,\
+
+I would personally leave out the spaces around the ##; seems more
+readable to me, but maybe you'd disagree.
+
+s/contents/type/?
+
+...
+> +	mutex_lock(&client_mutex);					\
+> +	list_for_each_entry(pos, &contents ## _list, list) {		\
+> +		if (pos->dev->of_node != args.np)			\
+> +			continue;					\
+> +									\
+> +		if (!pos->driver->of_xlate_dai_name) {			\
+> +			ret = -EIO;					\
+
+-ENOSYS seems more appropriate. Even if not, EIO doesn't seem right.
+
+> +EXPORT_SYMBOL_GPL(snd_soc_of_get_codec_dai_name);
+
+I think you can put that macro call into SND_SOC_OF_GET_DAI_NAME().
