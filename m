@@ -1,15 +1,20 @@
-From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: [PATCH v3] davinci-mcasp: Add support for multichannel
-	playback
-Date: Thu, 28 Feb 2013 16:07:08 +0100
-Message-ID: <1362064028-12666-1-git-send-email-michal.bachraty@streamunlimited.com>
+From: Arkadiusz =?utf-8?q?Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Subject: Re: Thinkpad T400 - internal mic doesn't work,
+	can't set CAPTURE - schematics included
+Date: Thu, 28 Feb 2013 18:23:04 +0100
+Message-ID: <201302281823.04889.arekm@maven.pl>
+References: <201302271858.07005.arekm@maven.pl>
+ <512F2330.9050407@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx02.lb01.inode.at [62.99.145.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 1706D265DB4
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 16:07:42 +0100 (CET)
+Received: from mail-ee0-f45.google.com (mail-ee0-f45.google.com [74.125.83.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AB4F26520A
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 18:23:07 +0100 (CET)
+Received: by mail-ee0-f45.google.com with SMTP id b57so1667281eek.18
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 09:23:07 -0800 (PST)
+In-Reply-To: <512F2330.9050407@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,238 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Davinci McASP has support for I2S multichannel playback.
-For I2S playback/receive, each serializer is capable to play 2 channels
-(L/R) audio data.Serializer function (Playback-receive-none) is configured
-in DT, depending on hardware specification. It is possible to play less
-channels than configured in DT. For that purpose,only specific number of
-active serializers are enabled. McASP FIFO need to have DMA transfer Bcnt
-set to number of enabled serializers, otherwise no data are transfered to
-McASP and Alsa generates "DMA/IRQ playback write error (DMA or IRQ trouble?)"
-error. For TDM mode, McASP is capable to play or receive 32 channels for one
-serializer. McAsp has support for max 16 serializer, therefore max channels
-is 32 * 8.
-
-Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
----
- sound/soc/davinci/davinci-mcasp.c |   66 ++++++++++++++++++++++++++++++++-----
- sound/soc/davinci/davinci-pcm.c   |   16 +++++----
- sound/soc/davinci/davinci-pcm.h   |    1 +
- 3 files changed, 68 insertions(+), 15 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index d2ca682..0a1af1a 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -235,6 +235,10 @@
- #define DISMOD		(val)(val<<2)
- #define TXSTATE		BIT(4)
- #define RXSTATE		BIT(5)
-+#define SRMOD_MASK	3
-+#define SRMOD_INACTIVE	0
-+#define SRMOD_TX	1
-+#define SRMOD_RX	2
- 
- /*
-  * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
-@@ -657,12 +661,15 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
- 	return 0;
- }
- 
--static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
-+static int davinci_hw_common_param(struct davinci_audio_dev *dev, int stream,
-+				    int channels)
- {
- 	int i;
- 	u8 tx_ser = 0;
- 	u8 rx_ser = 0;
--
-+	u8 ser;
-+	u8 slots = dev->tdm_slots;
-+	u8 max_active_serializers = (channels + slots - 1) / slots;
- 	/* Default configuration */
- 	mcasp_set_bits(dev->base + DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
- 
-@@ -680,16 +687,42 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
- 	}
- 
- 	for (i = 0; i < dev->num_serializer; i++) {
-+		if (dev->serial_dir[i] == TX_MODE)
-+			tx_ser++;
-+		if (dev->serial_dir[i] == RX_MODE)
-+			rx_ser++;
-+	}
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		ser = tx_ser;
-+	else
-+		ser = rx_ser;
-+
-+	if (ser < max_active_serializers) {
-+		dev_warn(dev->dev, "stream has more channels (%d) than are "
-+			"enabled in mcasp (%d)\n", channels, ser * slots);
-+		return -EINVAL;
-+	}
-+
-+	tx_ser = 0;
-+	rx_ser = 0;
-+
-+	for (i = 0; i < dev->num_serializer; i++) {
- 		mcasp_set_bits(dev->base + DAVINCI_MCASP_XRSRCTL_REG(i),
- 					dev->serial_dir[i]);
--		if (dev->serial_dir[i] == TX_MODE) {
-+		if (dev->serial_dir[i] == TX_MODE &&
-+					tx_ser < max_active_serializers) {
- 			mcasp_set_bits(dev->base + DAVINCI_MCASP_PDIR_REG,
- 					AXR(i));
- 			tx_ser++;
--		} else if (dev->serial_dir[i] == RX_MODE) {
-+		} else if (dev->serial_dir[i] == RX_MODE &&
-+					rx_ser < max_active_serializers) {
- 			mcasp_clr_bits(dev->base + DAVINCI_MCASP_PDIR_REG,
- 					AXR(i));
- 			rx_ser++;
-+		} else {
-+			mcasp_mod_bits(dev->base + DAVINCI_MCASP_XRSRCTL_REG(i),
-+					SRMOD_INACTIVE, SRMOD_MASK);
- 		}
- 	}
- 
-@@ -729,6 +762,8 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
- 				((dev->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
- 		}
- 	}
-+
-+	return 0;
- }
- 
- static void davinci_hw_param(struct davinci_audio_dev *dev, int stream)
-@@ -812,8 +847,14 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 					&dev->dma_params[substream->stream];
- 	int word_length;
- 	u8 fifo_level;
-+	u8 slots = dev->tdm_slots;
-+	int channels;
-+	struct snd_interval *pcm_channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
-+	channels = pcm_channels->min;
- 
--	davinci_hw_common_param(dev, substream->stream);
-+	if (davinci_hw_common_param(dev, substream->stream, channels) == -EINVAL)
-+		return -EINVAL;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		fifo_level = dev->txnumevt;
- 	else
-@@ -862,6 +903,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 		dma_params->acnt = dma_params->data_type;
- 
- 	dma_params->fifo_level = fifo_level;
-+	dma_params->active_serializers = (channels + slots - 1) / slots;
- 	davinci_config_channel_size(dev, word_length);
- 
- 	return 0;
-@@ -936,13 +978,13 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
- 		.name		= "davinci-mcasp.0",
- 		.playback	= {
- 			.channels_min	= 2,
--			.channels_max 	= 2,
-+			.channels_max	= 32 * 16,
- 			.rates 		= DAVINCI_MCASP_RATES,
- 			.formats	= DAVINCI_MCASP_PCM_FMTS,
- 		},
- 		.capture 	= {
- 			.channels_min 	= 2,
--			.channels_max 	= 2,
-+			.channels_max	= 32 * 16,
- 			.rates 		= DAVINCI_MCASP_RATES,
- 			.formats	= DAVINCI_MCASP_PCM_FMTS,
- 		},
-@@ -1015,8 +1057,16 @@ static struct snd_platform_data *davinci_mcasp_set_pdata_from_of(
- 		pdata->op_mode = val;
- 
- 	ret = of_property_read_u32(np, "tdm-slots", &val);
--	if (ret >= 0)
-+	if (ret >= 0) {
-+		if (val < 2 || val > 32) {
-+			dev_err(&pdev->dev,
-+				"tdm-slots must be in rage [2-32]\n");
-+			ret = -EINVAL;
-+			goto nodata;
-+		}
-+
- 		pdata->tdm_slots = val;
-+	}
- 
- 	ret = of_property_read_u32(np, "num-serializer", &val);
- 	if (ret >= 0)
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index bb57552..3af8b50 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -182,6 +182,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 	unsigned short acnt;
- 	unsigned int count;
- 	unsigned int fifo_level;
-+	unsigned char serializers = prtd->params->active_serializers;
- 
- 	period_size = snd_pcm_lib_period_bytes(substream);
- 	dma_offset = prtd->period * period_size;
-@@ -195,14 +196,14 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 	data_type = prtd->params->data_type;
- 	count = period_size / data_type;
- 	if (fifo_level)
--		count /= fifo_level;
-+		count /= fifo_level * serializers;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		src = dma_pos;
- 		dst = prtd->params->dma_addr;
- 		src_bidx = data_type;
--		dst_bidx = 0;
--		src_cidx = data_type * fifo_level;
-+		dst_bidx = 4;
-+		src_cidx = data_type * fifo_level * serializers;
- 		dst_cidx = 0;
- 	} else {
- 		src = prtd->params->dma_addr;
-@@ -210,7 +211,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 		src_bidx = 0;
- 		dst_bidx = data_type;
- 		src_cidx = 0;
--		dst_cidx = data_type * fifo_level;
-+		dst_cidx = data_type * fifo_level * serializers;
- 	}
- 
- 	acnt = prtd->params->acnt;
-@@ -224,9 +225,10 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 		edma_set_transfer_params(prtd->asp_link[0], acnt, count, 1, 0,
- 							ASYNC);
- 	else
--		edma_set_transfer_params(prtd->asp_link[0], acnt, fifo_level,
--							count, fifo_level,
--							ABSYNC);
-+		edma_set_transfer_params(prtd->asp_link[0], acnt,
-+						fifo_level * serializers,
-+						count, fifo_level * serializers,
-+						ABSYNC);
- }
- 
- static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
-diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
-index fbb710c..0d84d32 100644
---- a/sound/soc/davinci/davinci-pcm.h
-+++ b/sound/soc/davinci/davinci-pcm.h
-@@ -27,6 +27,7 @@ struct davinci_pcm_dma_params {
- 	unsigned char data_type;	/* xfer data type */
- 	unsigned char convert_mono_stereo;
- 	unsigned int fifo_level;
-+	unsigned char active_serializers; /* num. of active audio serializers */
- };
- 
- int davinci_soc_platform_register(struct device *dev);
--- 
-1.7.9.5
+T24gVGh1cnNkYXkgMjggb2YgRmVicnVhcnkgMjAxMywgRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6
+Cj4gT24gMDIvMjcvMjAxMyAwNjo1OCBQTSwgQXJrYWRpdXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+
+ID4gSGksCj4gPiAKPiA+IE15IFRoaW5rcGFkIFQ0MDAgKDI3NjRDVE8gbW9kZWwpIGRvZXNuJ3Qg
+aGF2ZSBhYmlsaXR5IHRvIHNldCBDQVBUVVJFIG9uCj4gPiBtaWNyb3Bob25lIGlucHV0cyB3aXRo
+IGFsc2EuIE1vc3QgbGlrZWx5IHNvbWUgcXVpcmsgaXMgbWlzc2luZy4KPiA+IAo+ID4gVGhlIGxh
+cHRvcCBoYXMgaW50ZXJuYWwgbWljcm9waG9uZSwgbWljcm9waG9uZSBpbiBpbnB1dCwgaGVhZHBo
+b25lcyBvdXQKPiA+IG91dHB1dCBhbmQgMiBpbnRlcm5hbCBzcGVha2Vycy4gVGhhdCdzIGFsbC4K
+PiA+IAo+ID4gSXMgdXNlcyBDb25leGFudCBDWDIwNTYxXzE1WiBpbnRlcm5hbGx5IGFuZCB0aGVy
+ZSBpcyBkZXRhaWxlZCBUNDAwCj4gPiBzY2hlbWF0aWMgYXZhaWxhYmxlOgo+ID4gaHR0cDovL2t5
+dGh1YXRwaGFuY3VuZy5jb20vZG93bmxvYWQvbGVub3ZvLXRoaW5rcGFkLXQ0MDAtc2NoZW1hdGlj
+LQo+ID4gZGlhZ3JhbS5odG1sP2RsCj4gPiAoZm9yIGF1ZGlvIGxvb2sgYXJvdW5kIHBhZ2UgNDMp
+Lgo+ID4gCj4gPiBLZXJuZWxzIDMuNy54LCBmcmVzaCAzLjggLSBubyBsdWNrLiBUcmllZCBldmVu
+IGxpbnV4LW5leHQgZnJvbSB0b2RheSBidXQKPiA+IGl0IGRpZXMgZWFybHkgb24gYWxzYSB1bnJl
+bGF0ZWQgaXNzdWVzLgo+ID4gCj4gPiBJJ3ZlIHRyaWVkIG1vZGVsIG9wdGlvbnMgbGFwdG9wLCBo
+cCwgaHAtZHY2NzM2LCBocC03MDAsIHRvc2hpYmEsIGlkZWFwYWQsCj4gPiBhdXRvLiBOb25lIG9m
+IHRoZXNlIHdvcmsgZmluZS4gV2l0aCBtb2RlbD1ocC03MDAgSSBjYW4gc2V0IENBUFRVUkUgYnV0
+IGl0Cj4gPiBkb2Vzbid0IHdvcmsgKHNpbGVudCBhdWRpbyBpcyBjYXB0dXJlZCB1c2luZyBhcmVj
+b3JkIG9yIGluIGdvb2dsZQo+ID4gaGFuZ291dCkuIEV4dGVybmFsIG1pYyBjb25uZWN0ZWQgYWxz
+byBkb2Vzbid0IHdvcmsgd2l0aCB0aGVzZSBzZXR1cHMuCj4gPiAKPiA+IGh0dHA6Ly93d3cuYWxz
+YS1wcm9qZWN0Lm9yZy9kYi8/Zj0zOTRmZjRjZGNhMzNlNzVjOGE0NzIwM2Q0MmI4OWQ4ZGUzNmRl
+Y2EKPiA+IDcgWzMuOCBrZXJuZWxdCj4gPiAKPiA+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9y
+Zy9kYi8/Zj0zMDI4NzdlNTBmOTk4MzUwNzVkMDM4MjA3ZjZkYjBkZmQ4OTg3M2IKPiA+IDAgWzMu
+NyBrZXJuZWxdCj4gPiAKPiA+IFRoaW5rcGFkIGlzIDI3NjRDVE8gbW9kZWwgZXhhY3RseS4KPiA+
+IAo+ID4gSSBjYW4gdGVzdCB2YXJpb3VzIGhhY2tzLCBwYXRjaGVzIGV0YyBlYXNpbHkuIENvdWxk
+IHNvbWVvbmUgbG9vayBhdAo+ID4gc2NoZW1hdGljIGFuZCBwcm92aWRlIHF1aXJrcyB0byB0ZXN0
+Pwo+IAo+IEhpLAo+IAo+IFdoYXQgZG8geW91IG1lYW4gd2l0aCAiZG9lc24ndCBoYXZlIGFiaWxp
+dHkgdG8gc2V0IENBUFRVUkUiPyAKCk9uIHNvbWUgb3RoZXIgbm90ZWJvb2sgSSBoYWQgbWljIGlu
+cHV0IHRoYXQgSSBjb3VsZCBzZXQgdG8gQ0FQVFVSRSBtb2RlIHVzaW5nIApzcGFjZSBpbiBhbHNh
+bWl4ZXIgRjQ6IENhcHR1cmUgbWVudS4gSGVyZSBJIGNhbid0IHNldCBjYXB0dXJlIG9uIGFueSBv
+ZiBpbnB1dHMgCihwcmVzc2luZyBzcGFjZSBjYXVzZXMgbm8gY2hhbmdlKS4gCgo+IFdoYXQgaW5w
+dXQKPiBpcyB1c2VkIGlzIGF1dG9tYXRpY2FsbHkgc2VsZWN0ZWQgZGVwZW5kaW5nIG9uIHdoYXQg
+eW91IGhhdmUgcGx1Z2dlZCBpbiwKPiBhbmQgaXRzIGxldmVsIGlzIHNldCB1c2luZyBtaXhlciBj
+b250cm9scyAod2hpY2ggaW4geW91ciBhbHNhLWluZm8gaXMKPiBzZXQgdG8gbWluaW11bSBsZXZl
+bHMpLgoKVGhlcmUgYXJlIHR3byBqYWNrIHNvY2tldHMgaW4gdGhpcyBsYXB0b3AsIG9uZSB3aXRo
+IGhlYWRwaG9uZXMgaWNvbiBhbmQgb3RoZXIgCndpdGggbWljIGljb24gKG9uIHRoZSBsYXB0b3Ag
+Y2FzZSBpdHNlbGYpIGFzIG9uIHRoaXMgcGhvdG86Cmh0dHA6Ly93d3cubm90ZWJvb2tyZXZpZXcu
+Y29tL3NoYXJlZC9waWN0dXJlLmFzcD9mPTQyMjAwCgpPay4uLiBtYXhpbmcgYWxsIG1peGVyIGNv
+bnRyb2xzIGFuZCBjb25uZWN0aW5nIGV4dGVybmFsIG1pY3JvcGhvbmUgSSBnZXQgCmV4dGVybmFs
+IG1pYyBiZWluZyByZWNvcmRlZC4gVGhlIG1peGVyIGNvbnRyb2xzIHRoYXQgc2VlbSB0byBiZSB3
+b3JraW5nIGluIApzdWNoIG1vZGUgYXJlOiAiTWljIiwgIk1pYyBib29zdCIgYW5kICJEaWdpdGFs
+Ii4gV2hhdCdzIHdlaXJkIGlzIHRoYXQgd2hlbiAKIkRpZ2l0aWFsIiBpcyBzZXQgdG8gMCB0aGVu
+IG5vIHNvdW5kIGZyb20gbWljcm9waG9uZSBpcyBiZWluZyByZWNvcmRlZCAKKHRlc3Rpbmcgd2l0
+aCBhcmVjb3JkIC1mIGNkIHwgYXBsYXkpLiBUaGUgIk1pYyIgYW5kICJNaWMgYm9vc3QiIHNlZW1z
+IHRvIHdvcmsgCmFzIGV4cGVjdGVkZi4gUXVlc3Rpb246IHdoeSAiRGlnaXRhbCIgaGFzIGFueSBp
+bmZsdWVuY2UgaGVyZT8KClVuZm9ydHVuYXRlbHkgSSdtIHVuYWJsZSB0byBnZXQgaW50ZXJuYWwg
+bWljcm9waG9uZSB3b3JraW5nIGF0IGFsbC4gRXZlbiB3aXRoIAphbGwgb3V0cHV0cyBzZXQgdG8g
+bWF4aW11bSBsaWtlIHRoaXM6CgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9OWE3
+ZTFjYTY4YjJmMmZhMmY3N2RjZTZlYWQyYjVmYjE1OGI3NDY1MgoKSW50ZXJuYWwgbWljIGlzIG15
+IHByaW1hcnkgcHJvYmxlbS4KClRoYW5rcyEKLS0gCkFya2FkaXVzeiBNacWba2lld2ljeiwgYXJl
+a20gLyBtYXZlbi5wbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
