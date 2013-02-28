@@ -1,78 +1,88 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 3/5 v7][RFC] ASoC: simple-card: add Device Tree support
-Date: Thu, 28 Feb 2013 12:16:05 -0700
-Message-ID: <512FACF5.1030608@wwwdotorg.org>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <20130127035943.GJ4650@opensource.wolfsonmicro.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
- <51097F0F.2030501@wwwdotorg.org>
- <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
- <5110349D.3050308@wwwdotorg.org>
- <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
- <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
- <511963F8.5020107@wwwdotorg.org>
- <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
- <511C22E2.60701@wwwdotorg.org>
- <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
- <511C6A1B.9000507@wwwdotorg.org>
- <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
- <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
- <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <87lia9tg1r.wl%kuninori.morimoto.gx@renes as.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Thinkpad T400 - internal mic doesn't work,
+ can't set CAPTURE - schematics included
+Date: Thu, 28 Feb 2013 20:25:56 +0100
+Message-ID: <512FAF44.7010508@canonical.com>
+References: <201302271858.07005.arekm@maven.pl>
+ <512F2330.9050407@canonical.com> <201302281823.04889.arekm@maven.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <87lia9tg1r.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B602265DD2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 20:25:54 +0100 (CET)
+In-Reply-To: <201302281823.04889.arekm@maven.pl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?QXJrYWRpdXN6IE1pxZtraWV3aWN6?= <arekm@maven.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/27/2013 05:53 PM, Kuninori Morimoto wrote:
-> 
-> Hi Stephen
-> 
-> Thank you for your reply
-> 
->>> Support for loading the simple-card module via devicetree.
->>> It requests cpu/codec information,
->>> and .of_xlate_dai_name support on each driver for probing.
->>
->>> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
->>
->>
->>> +Optional properties:
->> ...
->>> +- simple-audio,bitclock-inversion	: bit clock inversion for both CPU/CODEC
->>> +- simple-audio,frame-inversion		: frame inversion for both CPU/CODEC
->>
->> I think that Mark pointed out those would be best stored in the CPU and
->> CODEC child nodes, since random buffering/inverting on the board might
->> make the values at the two DAIs the opposite of each-other.
-> 
-> Sub node has same properties too,
-> and this is hybrid result of your/Mark comments.
-> 
-> If "sound node" has these properties, these will go to both CPU/CODEC,
-> this means "cpu/codec common properties"
-> if "cpu/codec sub node" has it, it will go to itself only.
-> I guess "common property" is useful ?
-
-OK, that makes sense. I didn't get that impression from reading the DT
-binding document though. Perhaps I read it too fast. The document should
-explicitly mention which nodes those properties can exist in.
+T24gMDIvMjgvMjAxMyAwNjoyMyBQTSwgQXJrYWRpdXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+IE9u
+IFRodXJzZGF5IDI4IG9mIEZlYnJ1YXJ5IDIwMTMsIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+
+PiBPbiAwMi8yNy8yMDEzIDA2OjU4IFBNLCBBcmthZGl1c3ogTWnFm2tpZXdpY3ogd3JvdGU6Cj4+
+PiBIaSwKPj4+Cj4+PiBNeSBUaGlua3BhZCBUNDAwICgyNzY0Q1RPIG1vZGVsKSBkb2Vzbid0IGhh
+dmUgYWJpbGl0eSB0byBzZXQgQ0FQVFVSRSBvbgo+Pj4gbWljcm9waG9uZSBpbnB1dHMgd2l0aCBh
+bHNhLiBNb3N0IGxpa2VseSBzb21lIHF1aXJrIGlzIG1pc3NpbmcuCj4+Pgo+Pj4gVGhlIGxhcHRv
+cCBoYXMgaW50ZXJuYWwgbWljcm9waG9uZSwgbWljcm9waG9uZSBpbiBpbnB1dCwgaGVhZHBob25l
+cyBvdXQKPj4+IG91dHB1dCBhbmQgMiBpbnRlcm5hbCBzcGVha2Vycy4gVGhhdCdzIGFsbC4KPj4+
+Cj4+PiBJcyB1c2VzIENvbmV4YW50IENYMjA1NjFfMTVaIGludGVybmFsbHkgYW5kIHRoZXJlIGlz
+IGRldGFpbGVkIFQ0MDAKPj4+IHNjaGVtYXRpYyBhdmFpbGFibGU6Cj4+PiBodHRwOi8va3l0aHVh
+dHBoYW5jdW5nLmNvbS9kb3dubG9hZC9sZW5vdm8tdGhpbmtwYWQtdDQwMC1zY2hlbWF0aWMtCj4+
+PiBkaWFncmFtLmh0bWw/ZGwKPj4+IChmb3IgYXVkaW8gbG9vayBhcm91bmQgcGFnZSA0MykuCj4+
+Pgo+Pj4gS2VybmVscyAzLjcueCwgZnJlc2ggMy44IC0gbm8gbHVjay4gVHJpZWQgZXZlbiBsaW51
+eC1uZXh0IGZyb20gdG9kYXkgYnV0Cj4+PiBpdCBkaWVzIGVhcmx5IG9uIGFsc2EgdW5yZWxhdGVk
+IGlzc3Vlcy4KPj4+Cj4+PiBJJ3ZlIHRyaWVkIG1vZGVsIG9wdGlvbnMgbGFwdG9wLCBocCwgaHAt
+ZHY2NzM2LCBocC03MDAsIHRvc2hpYmEsIGlkZWFwYWQsCj4+PiBhdXRvLiBOb25lIG9mIHRoZXNl
+IHdvcmsgZmluZS4gV2l0aCBtb2RlbD1ocC03MDAgSSBjYW4gc2V0IENBUFRVUkUgYnV0IGl0Cj4+
+PiBkb2Vzbid0IHdvcmsgKHNpbGVudCBhdWRpbyBpcyBjYXB0dXJlZCB1c2luZyBhcmVjb3JkIG9y
+IGluIGdvb2dsZQo+Pj4gaGFuZ291dCkuIEV4dGVybmFsIG1pYyBjb25uZWN0ZWQgYWxzbyBkb2Vz
+bid0IHdvcmsgd2l0aCB0aGVzZSBzZXR1cHMuCj4+Pgo+Pj4gaHR0cDovL3d3dy5hbHNhLXByb2pl
+Y3Qub3JnL2RiLz9mPTM5NGZmNGNkY2EzM2U3NWM4YTQ3MjAzZDQyYjg5ZDhkZTM2ZGVjYQo+Pj4g
+NyBbMy44IGtlcm5lbF0KPj4+Cj4+PiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9
+MzAyODc3ZTUwZjk5ODM1MDc1ZDAzODIwN2Y2ZGIwZGZkODk4NzNiCj4+PiAwIFszLjcga2VybmVs
+XQo+Pj4KPj4+IFRoaW5rcGFkIGlzIDI3NjRDVE8gbW9kZWwgZXhhY3RseS4KPj4+Cj4+PiBJIGNh
+biB0ZXN0IHZhcmlvdXMgaGFja3MsIHBhdGNoZXMgZXRjIGVhc2lseS4gQ291bGQgc29tZW9uZSBs
+b29rIGF0Cj4+PiBzY2hlbWF0aWMgYW5kIHByb3ZpZGUgcXVpcmtzIHRvIHRlc3Q/Cj4+Cj4+IEhp
+LAo+Pgo+PiBXaGF0IGRvIHlvdSBtZWFuIHdpdGggImRvZXNuJ3QgaGF2ZSBhYmlsaXR5IHRvIHNl
+dCBDQVBUVVJFIj8KPgo+IE9uIHNvbWUgb3RoZXIgbm90ZWJvb2sgSSBoYWQgbWljIGlucHV0IHRo
+YXQgSSBjb3VsZCBzZXQgdG8gQ0FQVFVSRSBtb2RlIHVzaW5nCj4gc3BhY2UgaW4gYWxzYW1peGVy
+IEY0OiBDYXB0dXJlIG1lbnUuIEhlcmUgSSBjYW4ndCBzZXQgY2FwdHVyZSBvbiBhbnkgb2YgaW5w
+dXRzCj4gKHByZXNzaW5nIHNwYWNlIGNhdXNlcyBubyBjaGFuZ2UpLgoKV2UncmUgaW5jcmVhc2lu
+Z2x5IG1vdmluZyBhd2F5IGZyb20gbWFudWFsIGlucHV0IHNlbGVjdGlvbiB0byBhdXRvbWF0aWMg
+CmJhc2VkIG9uIHdoYXQgaXMgcGx1Z2dlZCBpbi4KCj4+IFdoYXQgaW5wdXQKPj4gaXMgdXNlZCBp
+cyBhdXRvbWF0aWNhbGx5IHNlbGVjdGVkIGRlcGVuZGluZyBvbiB3aGF0IHlvdSBoYXZlIHBsdWdn
+ZWQgaW4sCj4+IGFuZCBpdHMgbGV2ZWwgaXMgc2V0IHVzaW5nIG1peGVyIGNvbnRyb2xzICh3aGlj
+aCBpbiB5b3VyIGFsc2EtaW5mbyBpcwo+PiBzZXQgdG8gbWluaW11bSBsZXZlbHMpLgo+Cj4gVGhl
+cmUgYXJlIHR3byBqYWNrIHNvY2tldHMgaW4gdGhpcyBsYXB0b3AsIG9uZSB3aXRoIGhlYWRwaG9u
+ZXMgaWNvbiBhbmQgb3RoZXIKPiB3aXRoIG1pYyBpY29uIChvbiB0aGUgbGFwdG9wIGNhc2UgaXRz
+ZWxmKSBhcyBvbiB0aGlzIHBob3RvOgo+IGh0dHA6Ly93d3cubm90ZWJvb2tyZXZpZXcuY29tL3No
+YXJlZC9waWN0dXJlLmFzcD9mPTQyMjAwCj4KPiBPay4uLiBtYXhpbmcgYWxsIG1peGVyIGNvbnRy
+b2xzIGFuZCBjb25uZWN0aW5nIGV4dGVybmFsIG1pY3JvcGhvbmUgSSBnZXQKPiBleHRlcm5hbCBt
+aWMgYmVpbmcgcmVjb3JkZWQuIFRoZSBtaXhlciBjb250cm9scyB0aGF0IHNlZW0gdG8gYmUgd29y
+a2luZyBpbgo+IHN1Y2ggbW9kZSBhcmU6ICJNaWMiLCAiTWljIGJvb3N0IiBhbmQgIkRpZ2l0YWwi
+LiBXaGF0J3Mgd2VpcmQgaXMgdGhhdCB3aGVuCj4gIkRpZ2l0aWFsIiBpcyBzZXQgdG8gMCB0aGVu
+IG5vIHNvdW5kIGZyb20gbWljcm9waG9uZSBpcyBiZWluZyByZWNvcmRlZAo+ICh0ZXN0aW5nIHdp
+dGggYXJlY29yZCAtZiBjZCB8IGFwbGF5KS4gVGhlICJNaWMiIGFuZCAiTWljIGJvb3N0IiBzZWVt
+cyB0byB3b3JrCj4gYXMgZXhwZWN0ZWRmLiBRdWVzdGlvbjogd2h5ICJEaWdpdGFsIiBoYXMgYW55
+IGluZmx1ZW5jZSBoZXJlPwo+Cj4gVW5mb3J0dW5hdGVseSBJJ20gdW5hYmxlIHRvIGdldCBpbnRl
+cm5hbCBtaWNyb3Bob25lIHdvcmtpbmcgYXQgYWxsLiBFdmVuIHdpdGgKPiBhbGwgb3V0cHV0cyBz
+ZXQgdG8gbWF4aW11bSBsaWtlIHRoaXM6Cj4KPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcv
+ZGIvP2Y9OWE3ZTFjYTY4YjJmMmZhMmY3N2RjZTZlYWQyYjVmYjE1OGI3NDY1Mgo+Cj4gSW50ZXJu
+YWwgbWljIGlzIG15IHByaW1hcnkgcHJvYmxlbS4KCiBGcm9tIGEgcXVpY2sgbG9vayBhdCB0aGUg
+YWxzYS1pbmZvIHRoaW5ncyBsb29rIGZpbmUsIHNvIEkgZG9uJ3Qga25vdyAKd2hhdCBoYXMgaGFw
+cGVuZWQgaGVyZS4gSXMgaXQgYSByZWdyZXNzaW9uIGZyb20gYW4gb2xkZXIga2VybmVsLCBvciBk
+aWQgCml0IG5ldmVyIHdvcms/CgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRk
+LgpodHRwczovL2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
