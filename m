@@ -1,83 +1,72 @@
-From: Arkadiusz =?utf-8?q?Mi=C5=9Bkiewicz?= <arekm@maven.pl>
-Subject: Re: Thinkpad T400 - internal mic doesn't work,
-	can't set CAPTURE - schematics included
-Date: Thu, 28 Feb 2013 18:23:04 +0100
-Message-ID: <201302281823.04889.arekm@maven.pl>
-References: <201302271858.07005.arekm@maven.pl>
- <512F2330.9050407@canonical.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add snd_soc_register_cpu()
+Date: Thu, 28 Feb 2013 12:14:52 -0700
+Message-ID: <512FACAC.1000808@wwwdotorg.org>
+References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
+ <20130127035943.GJ4650@opensource.wolfsonmicro.com>
+ <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
+ <20130129014808.GC4748@opensource.wolfsonmicro.com>
+ <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
+ <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
+ <5107FF97.1070601@wwwdotorg.org>
+ <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
+ <51097F0F.2030501@wwwdotorg.org>
+ <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
+ <5110349D.3050308@wwwdotorg.org>
+ <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
+ <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
+ <511963F8.5020107@wwwdotorg.org>
+ <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
+ <511C22E2.60701@wwwdotorg.org>
+ <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
+ <511C6A1B.9000507@wwwdotorg.org>
+ <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
+ <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
+ <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
+ <87mwuptgju.wl%kuninori.morimoto.gx@renes as.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f45.google.com (mail-ee0-f45.google.com [74.125.83.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AB4F26520A
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 18:23:07 +0100 (CET)
-Received: by mail-ee0-f45.google.com with SMTP id b57so1667281eek.18
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 09:23:07 -0800 (PST)
-In-Reply-To: <512F2330.9050407@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <87mwuptgju.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1cnNkYXkgMjggb2YgRmVicnVhcnkgMjAxMywgRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6
-Cj4gT24gMDIvMjcvMjAxMyAwNjo1OCBQTSwgQXJrYWRpdXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+
-ID4gSGksCj4gPiAKPiA+IE15IFRoaW5rcGFkIFQ0MDAgKDI3NjRDVE8gbW9kZWwpIGRvZXNuJ3Qg
-aGF2ZSBhYmlsaXR5IHRvIHNldCBDQVBUVVJFIG9uCj4gPiBtaWNyb3Bob25lIGlucHV0cyB3aXRo
-IGFsc2EuIE1vc3QgbGlrZWx5IHNvbWUgcXVpcmsgaXMgbWlzc2luZy4KPiA+IAo+ID4gVGhlIGxh
-cHRvcCBoYXMgaW50ZXJuYWwgbWljcm9waG9uZSwgbWljcm9waG9uZSBpbiBpbnB1dCwgaGVhZHBo
-b25lcyBvdXQKPiA+IG91dHB1dCBhbmQgMiBpbnRlcm5hbCBzcGVha2Vycy4gVGhhdCdzIGFsbC4K
-PiA+IAo+ID4gSXMgdXNlcyBDb25leGFudCBDWDIwNTYxXzE1WiBpbnRlcm5hbGx5IGFuZCB0aGVy
-ZSBpcyBkZXRhaWxlZCBUNDAwCj4gPiBzY2hlbWF0aWMgYXZhaWxhYmxlOgo+ID4gaHR0cDovL2t5
-dGh1YXRwaGFuY3VuZy5jb20vZG93bmxvYWQvbGVub3ZvLXRoaW5rcGFkLXQ0MDAtc2NoZW1hdGlj
-LQo+ID4gZGlhZ3JhbS5odG1sP2RsCj4gPiAoZm9yIGF1ZGlvIGxvb2sgYXJvdW5kIHBhZ2UgNDMp
-Lgo+ID4gCj4gPiBLZXJuZWxzIDMuNy54LCBmcmVzaCAzLjggLSBubyBsdWNrLiBUcmllZCBldmVu
-IGxpbnV4LW5leHQgZnJvbSB0b2RheSBidXQKPiA+IGl0IGRpZXMgZWFybHkgb24gYWxzYSB1bnJl
-bGF0ZWQgaXNzdWVzLgo+ID4gCj4gPiBJJ3ZlIHRyaWVkIG1vZGVsIG9wdGlvbnMgbGFwdG9wLCBo
-cCwgaHAtZHY2NzM2LCBocC03MDAsIHRvc2hpYmEsIGlkZWFwYWQsCj4gPiBhdXRvLiBOb25lIG9m
-IHRoZXNlIHdvcmsgZmluZS4gV2l0aCBtb2RlbD1ocC03MDAgSSBjYW4gc2V0IENBUFRVUkUgYnV0
-IGl0Cj4gPiBkb2Vzbid0IHdvcmsgKHNpbGVudCBhdWRpbyBpcyBjYXB0dXJlZCB1c2luZyBhcmVj
-b3JkIG9yIGluIGdvb2dsZQo+ID4gaGFuZ291dCkuIEV4dGVybmFsIG1pYyBjb25uZWN0ZWQgYWxz
-byBkb2Vzbid0IHdvcmsgd2l0aCB0aGVzZSBzZXR1cHMuCj4gPiAKPiA+IGh0dHA6Ly93d3cuYWxz
-YS1wcm9qZWN0Lm9yZy9kYi8/Zj0zOTRmZjRjZGNhMzNlNzVjOGE0NzIwM2Q0MmI4OWQ4ZGUzNmRl
-Y2EKPiA+IDcgWzMuOCBrZXJuZWxdCj4gPiAKPiA+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9y
-Zy9kYi8/Zj0zMDI4NzdlNTBmOTk4MzUwNzVkMDM4MjA3ZjZkYjBkZmQ4OTg3M2IKPiA+IDAgWzMu
-NyBrZXJuZWxdCj4gPiAKPiA+IFRoaW5rcGFkIGlzIDI3NjRDVE8gbW9kZWwgZXhhY3RseS4KPiA+
-IAo+ID4gSSBjYW4gdGVzdCB2YXJpb3VzIGhhY2tzLCBwYXRjaGVzIGV0YyBlYXNpbHkuIENvdWxk
-IHNvbWVvbmUgbG9vayBhdAo+ID4gc2NoZW1hdGljIGFuZCBwcm92aWRlIHF1aXJrcyB0byB0ZXN0
-Pwo+IAo+IEhpLAo+IAo+IFdoYXQgZG8geW91IG1lYW4gd2l0aCAiZG9lc24ndCBoYXZlIGFiaWxp
-dHkgdG8gc2V0IENBUFRVUkUiPyAKCk9uIHNvbWUgb3RoZXIgbm90ZWJvb2sgSSBoYWQgbWljIGlu
-cHV0IHRoYXQgSSBjb3VsZCBzZXQgdG8gQ0FQVFVSRSBtb2RlIHVzaW5nIApzcGFjZSBpbiBhbHNh
-bWl4ZXIgRjQ6IENhcHR1cmUgbWVudS4gSGVyZSBJIGNhbid0IHNldCBjYXB0dXJlIG9uIGFueSBv
-ZiBpbnB1dHMgCihwcmVzc2luZyBzcGFjZSBjYXVzZXMgbm8gY2hhbmdlKS4gCgo+IFdoYXQgaW5w
-dXQKPiBpcyB1c2VkIGlzIGF1dG9tYXRpY2FsbHkgc2VsZWN0ZWQgZGVwZW5kaW5nIG9uIHdoYXQg
-eW91IGhhdmUgcGx1Z2dlZCBpbiwKPiBhbmQgaXRzIGxldmVsIGlzIHNldCB1c2luZyBtaXhlciBj
-b250cm9scyAod2hpY2ggaW4geW91ciBhbHNhLWluZm8gaXMKPiBzZXQgdG8gbWluaW11bSBsZXZl
-bHMpLgoKVGhlcmUgYXJlIHR3byBqYWNrIHNvY2tldHMgaW4gdGhpcyBsYXB0b3AsIG9uZSB3aXRo
-IGhlYWRwaG9uZXMgaWNvbiBhbmQgb3RoZXIgCndpdGggbWljIGljb24gKG9uIHRoZSBsYXB0b3Ag
-Y2FzZSBpdHNlbGYpIGFzIG9uIHRoaXMgcGhvdG86Cmh0dHA6Ly93d3cubm90ZWJvb2tyZXZpZXcu
-Y29tL3NoYXJlZC9waWN0dXJlLmFzcD9mPTQyMjAwCgpPay4uLiBtYXhpbmcgYWxsIG1peGVyIGNv
-bnRyb2xzIGFuZCBjb25uZWN0aW5nIGV4dGVybmFsIG1pY3JvcGhvbmUgSSBnZXQgCmV4dGVybmFs
-IG1pYyBiZWluZyByZWNvcmRlZC4gVGhlIG1peGVyIGNvbnRyb2xzIHRoYXQgc2VlbSB0byBiZSB3
-b3JraW5nIGluIApzdWNoIG1vZGUgYXJlOiAiTWljIiwgIk1pYyBib29zdCIgYW5kICJEaWdpdGFs
-Ii4gV2hhdCdzIHdlaXJkIGlzIHRoYXQgd2hlbiAKIkRpZ2l0aWFsIiBpcyBzZXQgdG8gMCB0aGVu
-IG5vIHNvdW5kIGZyb20gbWljcm9waG9uZSBpcyBiZWluZyByZWNvcmRlZCAKKHRlc3Rpbmcgd2l0
-aCBhcmVjb3JkIC1mIGNkIHwgYXBsYXkpLiBUaGUgIk1pYyIgYW5kICJNaWMgYm9vc3QiIHNlZW1z
-IHRvIHdvcmsgCmFzIGV4cGVjdGVkZi4gUXVlc3Rpb246IHdoeSAiRGlnaXRhbCIgaGFzIGFueSBp
-bmZsdWVuY2UgaGVyZT8KClVuZm9ydHVuYXRlbHkgSSdtIHVuYWJsZSB0byBnZXQgaW50ZXJuYWwg
-bWljcm9waG9uZSB3b3JraW5nIGF0IGFsbC4gRXZlbiB3aXRoIAphbGwgb3V0cHV0cyBzZXQgdG8g
-bWF4aW11bSBsaWtlIHRoaXM6CgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9OWE3
-ZTFjYTY4YjJmMmZhMmY3N2RjZTZlYWQyYjVmYjE1OGI3NDY1MgoKSW50ZXJuYWwgbWljIGlzIG15
-IHByaW1hcnkgcHJvYmxlbS4KClRoYW5rcyEKLS0gCkFya2FkaXVzeiBNacWba2lld2ljeiwgYXJl
-a20gLyBtYXZlbi5wbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 02/27/2013 05:42 PM, Kuninori Morimoto wrote:
+> 
+> Hi Stephen
+> 
+>> On 02/25/2013 01:51 AM, Kuninori Morimoto wrote:
+>>> Current ASoC has register function for platform/codec/dai/card,
+>>> but doesn't have for cpu.
+>>> It often produces confusion and fault on ASoC.
+>>> This patch adds very basic register function for cpu
+>>
+>> This seems reasonable to me.
+>>
+>> I can't recall how much influence the existing CODEC objects have on the
+>> various routing/matching decisions inside the ASoC core. While this
+>> patch does register and unregister CPU objects, I wonder if it should
+>> have more impact on any of the existing core code? Certainly I'd expect
+>> the CPU objects to show up in ASoC's debugfs and any similar files...
+> 
+> This patch doesn't have any impact to existing drivers.
+> It just added new cpu list.
+
+Sure. My point was that now you've added the list, perhaps the core ASoC
+code might want to make use of it in the same way it makes use of CODEC
+objects, since it's logically equivalent.
+
+Perhaps this could be a separate set of follow-on patches. That's all
+entirely Mark's call.
