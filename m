@@ -1,20 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Use LPIB position fix for Acer
-	AO751h
-Date: Thu, 28 Feb 2013 11:05:20 +0100
-Message-ID: <512F2BE0.1000704@canonical.com>
-References: <1362035910-6594-1-git-send-email-david.henningsson@canonical.com>
- <s5hmwuonbs8.wl%tiwai@suse.de> <512F1A13.8090507@canonical.com>
- <s5hd2vkn5v7.wl%tiwai@suse.de>
+From: Michal Bachraty <michal.bachraty@streamunlimited.com>
+Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
+	of serializers
+Date: Thu, 28 Feb 2013 12:02 +0100
+Message-ID: <2559045.s5gCxPtNFX@ganymedes>
+References: <1631475.f7GPhLiLxV@ganymedes> <8652573.mejjkM8Cr8@ganymedes>
+ <512F241F.9080305@topic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 48AE226535D
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 11:05:23 +0100 (CET)
-In-Reply-To: <s5hd2vkn5v7.wl%tiwai@suse.de>
+Received: from mx.inode.at (mx04.lb01.inode.at [62.99.145.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FED5265D81
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 12:02:01 +0100 (CET)
+In-Reply-To: <512F241F.9080305@topic.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,95 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: 1132562@bugs.launchpad.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mike Looijmans <mike.looijmans@topic.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/28/2013 10:29 AM, Takashi Iwai wrote:
-> At Thu, 28 Feb 2013 09:49:23 +0100,
-> David Henningsson wrote:
->>
->> On 02/28/2013 08:21 AM, Takashi Iwai wrote:
->>> At Thu, 28 Feb 2013 08:18:30 +0100,
->>> David Henningsson wrote:
->>>>
->>>> The user reports a regression (choppy audio), and that
->>>> position_fix=1 (or position_fix=4) fixes the issue.
->>>>
->>>> This is a Poulsbo controller (8086:811b (rev 07)), so might be
->>>> worth checking if other Poulsbo machines suffer from the same bug.
->>>>
->>>> Cc: stable@vger.kernel.org [v3.7+]
->>>> BugLink: https://bugs.launchpad.net/bugs/1132562
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>
->>> Please check whether the latest sound git tree works as is.
->>> We enabled the LPIB delay counting for Poulsbo there, and it may fix
->>> most cases.
->>
->> The test was done on a 3.8 based kernel. Isn't LPIB delay counting
->> enabled there as well?
->
-> No, it was added fairly recently.
-> I didn't put Cc to stable for the commit
-> f748abcc5bf62de007019d841f7caba81cc3d673.  If this is confirmed to
-> work in general for Poulsbo, we can merge to stable.
->
-> But, overall I wonder why POSFIX_LPIB is needed for this device.
-> In the recent kernels up to 3.8, LPIB is used as default for Poulsbo.
 
-According to "git describe --contains", this commit was added to 
-v3.8-rc6, and released into Ubuntu before this bug was filed. Probably 
-this commit is was what caused the regression then, and so the cc to 
-stable should be to 3.8+, not 3.7+.
+On Thursday, February 28, 2013 10:32:15 Mike Looijmans wrote:
 
-> Takashi
->
->
-> Takashi
+> That's a big improvement over "rx_num_evt". The first time I saw this
+> struct, I thought I had to set rx_num_evt to the number of receiving AXR
+> pins in use.
+> 
+> Maybe call it "rx_min_fifo_depth" because just "depth" might be
+> interpreted as the capaciity or maximum size of the fifo, while in fact
+> the parameter is a minimum amount of data to be put into the FIFO
+> buffer. Of maybe "rx_fifo_thd" to indicate it's a threshhold. And use
+> the same name for the "tx" part as well (tx_fifo_thd or tx_fifo_min_depth).
 
-Have you cloned yourself, or is it just a race condition? :-)
+ "rx_min_fifo_depth" or  "tx_min_fifo_depth"  seem to be fine.
+If I'll have time, I'll prepare patch. That's cosmetic upgrade, but should 
+help others.
 
->
->>
->> (Alsa-info is here: https://launchpadlibrarian.net/132247367/AlsaInfo.txt )
->>
->>>
->>>
->>> Takashi
->>>
->>>
->>>> ---
->>>>    sound/pci/hda/hda_intel.c |    1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->>>> index 4cea6bb6..3505f1e 100644
->>>> --- a/sound/pci/hda/hda_intel.c
->>>> +++ b/sound/pci/hda/hda_intel.c
->>>> @@ -3114,6 +3114,7 @@ static bool check_hdmi_disabled(struct pci_dev *pci)
->>>>     * white/black-listing for position_fix
->>>>     */
->>>>    static struct snd_pci_quirk position_fix_list[] = {
->>>> +	SND_PCI_QUIRK(0x1025, 0x0244, "Acer AO751h", POS_FIX_LPIB),
->>>>    	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
->>>>    	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
->>>>    	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
->>>> --
->>>> 1.7.9.5
->>>>
->>>
->>
->>
->>
->> --
->> David Henningsson, Canonical Ltd.
->> https://launchpad.net/~diwic
->>
->
-
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Michal.
