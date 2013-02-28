@@ -1,7 +1,7 @@
 From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add snd_soc_register_cpu()
-Date: Thu, 28 Feb 2013 12:14:52 -0700
-Message-ID: <512FACAC.1000808@wwwdotorg.org>
+Subject: Re: [PATCH 3/5 v7][RFC] ASoC: simple-card: add Device Tree support
+Date: Thu, 28 Feb 2013 12:16:05 -0700
+Message-ID: <512FACF5.1030608@wwwdotorg.org>
 References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <20130127035943.GJ4650@opensource.wolfsonmicro.com>
  <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
@@ -23,12 +23,12 @@ References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
  <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
  <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
  <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <87mwuptgju.wl%kuninori.morimoto.gx@renes as.com>
+ <87lia9tg1r.wl%kuninori.morimoto.gx@renes as.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <87mwuptgju.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <87lia9tg1r.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -43,30 +43,36 @@ To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.
 Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/27/2013 05:42 PM, Kuninori Morimoto wrote:
+On 02/27/2013 05:53 PM, Kuninori Morimoto wrote:
 > 
 > Hi Stephen
 > 
->> On 02/25/2013 01:51 AM, Kuninori Morimoto wrote:
->>> Current ASoC has register function for platform/codec/dai/card,
->>> but doesn't have for cpu.
->>> It often produces confusion and fault on ASoC.
->>> This patch adds very basic register function for cpu
->>
->> This seems reasonable to me.
->>
->> I can't recall how much influence the existing CODEC objects have on the
->> various routing/matching decisions inside the ASoC core. While this
->> patch does register and unregister CPU objects, I wonder if it should
->> have more impact on any of the existing core code? Certainly I'd expect
->> the CPU objects to show up in ASoC's debugfs and any similar files...
+> Thank you for your reply
 > 
-> This patch doesn't have any impact to existing drivers.
-> It just added new cpu list.
+>>> Support for loading the simple-card module via devicetree.
+>>> It requests cpu/codec information,
+>>> and .of_xlate_dai_name support on each driver for probing.
+>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+>>
+>>
+>>> +Optional properties:
+>> ...
+>>> +- simple-audio,bitclock-inversion	: bit clock inversion for both CPU/CODEC
+>>> +- simple-audio,frame-inversion		: frame inversion for both CPU/CODEC
+>>
+>> I think that Mark pointed out those would be best stored in the CPU and
+>> CODEC child nodes, since random buffering/inverting on the board might
+>> make the values at the two DAIs the opposite of each-other.
+> 
+> Sub node has same properties too,
+> and this is hybrid result of your/Mark comments.
+> 
+> If "sound node" has these properties, these will go to both CPU/CODEC,
+> this means "cpu/codec common properties"
+> if "cpu/codec sub node" has it, it will go to itself only.
+> I guess "common property" is useful ?
 
-Sure. My point was that now you've added the list, perhaps the core ASoC
-code might want to make use of it in the same way it makes use of CODEC
-objects, since it's logically equivalent.
-
-Perhaps this could be a separate set of follow-on patches. That's all
-entirely Mark's call.
+OK, that makes sense. I didn't get that impression from reading the DT
+binding document though. Perhaps I read it too fast. The document should
+explicitly mention which nodes those properties can exist in.
