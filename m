@@ -1,18 +1,18 @@
-From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
-	of serializers
-Date: Thu, 28 Feb 2013 10:06:58 +0100
-Message-ID: <8652573.mejjkM8Cr8@ganymedes>
-References: <1631475.f7GPhLiLxV@ganymedes> <4506811.gzuv2dFpKQ@ganymedes>
- <512DF67A.5030906@topic.nl>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Thinkpad T400 - internal mic doesn't work,
+ can't set CAPTURE - schematics included
+Date: Thu, 28 Feb 2013 10:28:16 +0100
+Message-ID: <512F2330.9050407@canonical.com>
+References: <201302271858.07005.arekm@maven.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx02.lb01.inode.at [62.99.145.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AD52264F23
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 10:07:01 +0100 (CET)
-In-Reply-To: <512DF67A.5030906@topic.nl>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29820265D41
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 10:28:20 +0100 (CET)
+In-Reply-To: <201302271858.07005.arekm@maven.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mike Looijmans <mike.looijmans@topic.nl>
+To: =?UTF-8?B?QXJrYWRpdXN6IE1pxZtraWV3aWN6?= <arekm@maven.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mike,
-
-Many thanks!
-Now all about "tx-num-evt" or "rx-num-evt" make sense.  
-
-> Maybe the misleading "rx_num_evt" should be renamed to "use_rx_fifo". I
-> understand that not all McASP interfaces have a FIFO
-
-Maybe, "rx_fifo_depth" could be also used.
-
-Best 
-Michal
+T24gMDIvMjcvMjAxMyAwNjo1OCBQTSwgQXJrYWRpdXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+Cj4g
+SGksCj4KPiBNeSBUaGlua3BhZCBUNDAwICgyNzY0Q1RPIG1vZGVsKSBkb2Vzbid0IGhhdmUgYWJp
+bGl0eSB0byBzZXQgQ0FQVFVSRSBvbgo+IG1pY3JvcGhvbmUgaW5wdXRzIHdpdGggYWxzYS4gTW9z
+dCBsaWtlbHkgc29tZSBxdWlyayBpcyBtaXNzaW5nLgo+Cj4gVGhlIGxhcHRvcCBoYXMgaW50ZXJu
+YWwgbWljcm9waG9uZSwgbWljcm9waG9uZSBpbiBpbnB1dCwgaGVhZHBob25lcyBvdXQgb3V0cHV0
+Cj4gYW5kIDIgaW50ZXJuYWwgc3BlYWtlcnMuIFRoYXQncyBhbGwuCj4KPiBJcyB1c2VzIENvbmV4
+YW50IENYMjA1NjFfMTVaIGludGVybmFsbHkgYW5kIHRoZXJlIGlzIGRldGFpbGVkIFQ0MDAgc2No
+ZW1hdGljCj4gYXZhaWxhYmxlOgo+IGh0dHA6Ly9reXRodWF0cGhhbmN1bmcuY29tL2Rvd25sb2Fk
+L2xlbm92by10aGlua3BhZC10NDAwLXNjaGVtYXRpYy0KPiBkaWFncmFtLmh0bWw/ZGwKPiAoZm9y
+IGF1ZGlvIGxvb2sgYXJvdW5kIHBhZ2UgNDMpLgo+Cj4gS2VybmVscyAzLjcueCwgZnJlc2ggMy44
+IC0gbm8gbHVjay4gVHJpZWQgZXZlbiBsaW51eC1uZXh0IGZyb20gdG9kYXkgYnV0IGl0Cj4gZGll
+cyBlYXJseSBvbiBhbHNhIHVucmVsYXRlZCBpc3N1ZXMuCj4KPiBJJ3ZlIHRyaWVkIG1vZGVsIG9w
+dGlvbnMgbGFwdG9wLCBocCwgaHAtZHY2NzM2LCBocC03MDAsIHRvc2hpYmEsIGlkZWFwYWQsCj4g
+YXV0by4gTm9uZSBvZiB0aGVzZSB3b3JrIGZpbmUuIFdpdGggbW9kZWw9aHAtNzAwIEkgY2FuIHNl
+dCBDQVBUVVJFIGJ1dCBpdAo+IGRvZXNuJ3Qgd29yayAoc2lsZW50IGF1ZGlvIGlzIGNhcHR1cmVk
+IHVzaW5nIGFyZWNvcmQgb3IgaW4gZ29vZ2xlIGhhbmdvdXQpLgo+IEV4dGVybmFsIG1pYyBjb25u
+ZWN0ZWQgYWxzbyBkb2Vzbid0IHdvcmsgd2l0aCB0aGVzZSBzZXR1cHMuCj4KPiBodHRwOi8vd3d3
+LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9Mzk0ZmY0Y2RjYTMzZTc1YzhhNDcyMDNkNDJiODlkOGRl
+MzZkZWNhNwo+IFszLjgga2VybmVsXQo+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2Ri
+Lz9mPTMwMjg3N2U1MGY5OTgzNTA3NWQwMzgyMDdmNmRiMGRmZDg5ODczYjAKPiBbMy43IGtlcm5l
+bF0KPgo+IFRoaW5rcGFkIGlzIDI3NjRDVE8gbW9kZWwgZXhhY3RseS4KPgo+IEkgY2FuIHRlc3Qg
+dmFyaW91cyBoYWNrcywgcGF0Y2hlcyBldGMgZWFzaWx5LiBDb3VsZCBzb21lb25lIGxvb2sgYXQg
+c2NoZW1hdGljCj4gYW5kIHByb3ZpZGUgcXVpcmtzIHRvIHRlc3Q/CgpIaSwKCldoYXQgZG8geW91
+IG1lYW4gd2l0aCAiZG9lc24ndCBoYXZlIGFiaWxpdHkgdG8gc2V0IENBUFRVUkUiPyBXaGF0IGlu
+cHV0IAppcyB1c2VkIGlzIGF1dG9tYXRpY2FsbHkgc2VsZWN0ZWQgZGVwZW5kaW5nIG9uIHdoYXQg
+eW91IGhhdmUgcGx1Z2dlZCBpbiwgCmFuZCBpdHMgbGV2ZWwgaXMgc2V0IHVzaW5nIG1peGVyIGNv
+bnRyb2xzICh3aGljaCBpbiB5b3VyIGFsc2EtaW5mbyBpcyAKc2V0IHRvIG1pbmltdW0gbGV2ZWxz
+KS4KCgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNo
+cGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
