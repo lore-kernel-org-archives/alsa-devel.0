@@ -1,18 +1,20 @@
-From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
-	of serializers
-Date: Thu, 28 Feb 2013 12:02 +0100
-Message-ID: <2559045.s5gCxPtNFX@ganymedes>
-References: <1631475.f7GPhLiLxV@ganymedes> <8652573.mejjkM8Cr8@ganymedes>
- <512F241F.9080305@topic.nl>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Thinkpad T400 - internal mic doesn't work,
+ can't set CAPTURE - schematics included
+Date: Thu, 28 Feb 2013 19:30:07 +0800
+Message-ID: <CAN8ccibK4DyhksKXY2v3nS7jPYakfXqEDFi6c22sS6hQS0CjiA@mail.gmail.com>
+References: <201302271858.07005.arekm@maven.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx04.lb01.inode.at [62.99.145.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FED5265D81
- for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 12:02:01 +0100 (CET)
-In-Reply-To: <512F241F.9080305@topic.nl>
+Received: from mail-ve0-f175.google.com (mail-ve0-f175.google.com
+ [209.85.128.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 928E1265D82
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 12:30:08 +0100 (CET)
+Received: by mail-ve0-f175.google.com with SMTP id cy12so1649875veb.6
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2013 03:30:07 -0800 (PST)
+In-Reply-To: <201302271858.07005.arekm@maven.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mike Looijmans <mike.looijmans@topic.nl>
+To: =?UTF-8?Q?Arkadiusz_Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On Thursday, February 28, 2013 10:32:15 Mike Looijmans wrote:
-
-> That's a big improvement over "rx_num_evt". The first time I saw this
-> struct, I thought I had to set rx_num_evt to the number of receiving AXR
-> pins in use.
-> 
-> Maybe call it "rx_min_fifo_depth" because just "depth" might be
-> interpreted as the capaciity or maximum size of the fifo, while in fact
-> the parameter is a minimum amount of data to be put into the FIFO
-> buffer. Of maybe "rx_fifo_thd" to indicate it's a threshhold. And use
-> the same name for the "tx" part as well (tx_fifo_thd or tx_fifo_min_depth).
-
- "rx_min_fifo_depth" or  "tx_min_fifo_depth"  seem to be fine.
-If I'll have time, I'll prepare patch. That's cosmetic upgrade, but should 
-help others.
-
-Michal.
+MjAxMy0yLTI4IOS4iuWNiDE6NTgg5pa8ICJBcmthZGl1c3ogTWnFm2tpZXdpY3oiIDxhcmVrbUBt
+YXZlbi5wbD4g5a+r6YGT77yaCj4KPgo+IEhpLAo+Cj4gTXkgVGhpbmtwYWQgVDQwMCAoMjc2NENU
+TyBtb2RlbCkgZG9lc24ndCBoYXZlIGFiaWxpdHkgdG8gc2V0IENBUFRVUkUgb24KPiBtaWNyb3Bo
+b25lIGlucHV0cyB3aXRoIGFsc2EuIE1vc3QgbGlrZWx5IHNvbWUgcXVpcmsgaXMgbWlzc2luZy4K
+Pgo+IFRoZSBsYXB0b3AgaGFzIGludGVybmFsIG1pY3JvcGhvbmUsIG1pY3JvcGhvbmUgaW4gaW5w
+dXQsIGhlYWRwaG9uZXMgb3V0Cm91dHB1dAo+IGFuZCAyIGludGVybmFsIHNwZWFrZXJzLiBUaGF0
+J3MgYWxsLgo+Cj4gSXMgdXNlcyBDb25leGFudCBDWDIwNTYxXzE1WiBpbnRlcm5hbGx5IGFuZCB0
+aGVyZSBpcyBkZXRhaWxlZCBUNDAwCnNjaGVtYXRpYwo+IGF2YWlsYWJsZToKPiBodHRwOi8va3l0
+aHVhdHBoYW5jdW5nLmNvbS9kb3dubG9hZC9sZW5vdm8tdGhpbmtwYWQtdDQwMC1zY2hlbWF0aWMt
+Cj4gZGlhZ3JhbS5odG1sP2RsCj4gKGZvciBhdWRpbyBsb29rIGFyb3VuZCBwYWdlIDQzKS4KPgo+
+IEtlcm5lbHMgMy43LngsIGZyZXNoIDMuOCAtIG5vIGx1Y2suIFRyaWVkIGV2ZW4gbGludXgtbmV4
+dCBmcm9tIHRvZGF5IGJ1dAppdAo+IGRpZXMgZWFybHkgb24gYWxzYSB1bnJlbGF0ZWQgaXNzdWVz
+Lgo+Cj4gSSd2ZSB0cmllZCBtb2RlbCBvcHRpb25zIGxhcHRvcCwgaHAsIGhwLWR2NjczNiwgaHAt
+NzAwLCB0b3NoaWJhLCBpZGVhcGFkLAo+IGF1dG8uIE5vbmUgb2YgdGhlc2Ugd29yayBmaW5lLiBX
+aXRoIG1vZGVsPWhwLTcwMCBJIGNhbiBzZXQgQ0FQVFVSRSBidXQgaXQKPiBkb2Vzbid0IHdvcmsg
+KHNpbGVudCBhdWRpbyBpcyBjYXB0dXJlZCB1c2luZyBhcmVjb3JkIG9yIGluIGdvb2dsZQpoYW5n
+b3V0KS4KPiBFeHRlcm5hbCBtaWMgY29ubmVjdGVkIGFsc28gZG9lc24ndCB3b3JrIHdpdGggdGhl
+c2Ugc2V0dXBzLgo+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTM5NGZmNGNk
+Y2EzM2U3NWM4YTQ3MjAzZDQyYjg5ZDhkZTM2ZGVjYTcKPiBbMy44IGtlcm5lbF0KPgo+IGh0dHA6
+Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0zMDI4NzdlNTBmOTk4MzUwNzVkMDM4MjA3ZjZk
+YjBkZmQ4OTg3M2IwCj4gWzMuNyBrZXJuZWxdCj4KPiBUaGlua3BhZCBpcyAyNzY0Q1RPIG1vZGVs
+IGV4YWN0bHkuCj4KPiBJIGNhbiB0ZXN0IHZhcmlvdXMgaGFja3MsIHBhdGNoZXMgZXRjIGVhc2ls
+eS4gQ291bGQgc29tZW9uZSBsb29rIGF0CnNjaGVtYXRpYwo+IGFuZCBwcm92aWRlIHF1aXJrcyB0
+byB0ZXN0Pwo+CgpTZWVtIHRob3NlIGRyaXZlciBwaW4gY29uZmlnIGxvc3QgaW4gaGRhX3Byb2Mu
+YwoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvZHJpdmVyX3Bpbl9jb25maWdzOgoweDE2IDB4MDQy
+MTQwZmYKMHgxNyAweDIxYTExMDAwCjB4MTkgMHgyMTIxMTAzZgoweDFjIDB4MjE0NDAxMDAKCk5v
+ZGUgMHgxNyBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDhiOiBTdGVyZW8gQW1wLUluCiAgQ29u
+dHJvbDogbmFtZT0iRG9jayBNaWMgQm9vc3QgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAg
+IENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9
+IkRvY2sgTWljIEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgw
+MCwgbnN0ZXBzPTB4MDQsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAgWzB4
+MDAgMHgwMF0KICBQaW5jYXAgMHgwMDAwMTIyNDogSU4gRGV0ZWN0CiAgICBWcmVmIGNhcHM6IDUw
+IDgwCiAgUGluIERlZmF1bHQgMHg2MWExOTBmMDogW04vQV0gTWljIGF0IFNlcCBSZWFyCiAgICBD
+b25uID0gMS84LCBDb2xvciA9IFBpbmsKICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5j
+ZSA9IDB4MAogIFBpbi1jdGxzOiAweDI0OiBJTiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6IHRhZz0w
+NCwgZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGlu
+Zz1EMCwgYWN0dWFsPUQwCgpOb2RlIDB4MTkgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTog
+U3RlcmVvCiAgQ29udHJvbDogbmFtZT0iRG9jayBIZWFkcGhvbmUgSmFjayIsIGluZGV4PTAsIGRl
+dmljZT0wCiAgUGluY2FwIDB4MDAwMDAwMTQ6IE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQw
+ZjAwMGYwOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3Ig
+PSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4t
+Y3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMSwgZW5hYmxlZD0xCiAgUG93ZXIg
+c3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29u
+bmVjdGlvbjogMgogICAgIDB4MTAgMHgxMSoKCgpOb2RlIDB4MWMgW1BpbiBDb21wbGV4XSB3Y2Fw
+cyAweDQwMDcwMTogU3RlcmVvIERpZ2l0YWwKICBDb250cm9sOiBuYW1lPSJTUERJRiBQaGFudG9t
+IEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAogIFBpbmNhcCAweDAwMDAwMDEwOiBPVVQKICBQaW4g
+RGVmYXVsdCAweDQwZjAwMWYwOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5r
+bm93biwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2Ug
+PSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBQb3dl
+ciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBD
+b25uZWN0aW9uOiAxCiAgICAgMHgxMgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
