@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Michal Bachraty <michal.bachraty@streamunlimited.com>
 Subject: Re: [PATCH v3] davinci-mcasp: Add support for
 	multichannel playback
-Date: Fri, 1 Mar 2013 22:21:20 +0800
-Message-ID: <20130301142117.GC25302@opensource.wolfsonmicro.com>
+Date: Fri, 01 Mar 2013 15:42:07 +0100
+Message-ID: <1751937.m7T84ofGdH@ganymedes>
 References: <1362064028-12666-1-git-send-email-michal.bachraty@streamunlimited.com>
+ <5130AFA1.7000808@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8429886518637214305=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E0B1B265E25
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 15:22:28 +0100 (CET)
-In-Reply-To: <1362064028-12666-1-git-send-email-michal.bachraty@streamunlimited.com>
+Received: from mx.inode.at (mx14.lb01.inode.at [62.99.145.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B9B72650C1
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 15:42:11 +0100 (CET)
+In-Reply-To: <5130AFA1.7000808@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Cc: tiwai@suse.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Vaibhav Bedia <vaibhav.bedia@ti.com>, linux-kernel@vger.kernel.org, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
 
---===============8429886518637214305==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qTzJm9l2qECmSDiM"
-Content-Disposition: inline
+Thanks for testing.
 
+> One thing that has to be considered by users of the driver is that the
+> 'serial-dir' DT property has to contain enough '1' entries for
+> multichannel playback (or enough '2's for multichannel record). So this
+> information is not actually something that describes the hardware, but
+> rather some resource that can be and should be allocated dynamically by
+> the driver at run-time. Should we consider dropping this property?
 
---qTzJm9l2qECmSDiM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Not really, ' serial-dir' also  configures specific serializer binded with 
+certain AXR pin . That means, when you have harware, which do not have aviable 
+AXR0, you can enable other ARX pin.  
 
-On Thu, Feb 28, 2013 at 04:07:08PM +0100, Michal Bachraty wrote:
-> Davinci McASP has support for I2S multichannel playback.
-> For I2S playback/receive, each serializer is capable to play 2 channels
-> (L/R) audio data.Serializer function (Playback-receive-none) is configured
+example:
 
-Applied, thanks.
+serial-dir = <  1 0 0 0 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
+// activate serializer 0, active pin ARX0 in Transmit mode, first audio 
+// channels are played on ARX0 pin 
 
-I am slightly surprised by the TDM slots being in DT but then it's
-already there so no problem for this patch.
+serial-dir = < 0 1 1 2 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
+// activate serializer 1,2,3 active pin ARX1 in TX mode, ARX2, in TX mode, 
+// ARX3 in RX mode
 
---qTzJm9l2qECmSDiM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+In this case, if you are using TDM mode with 2 slots, first two channels will 
+be played on ARX1 and second two on ARX2. 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+McAsp fills data for serializers in loop (receive and playback has separate 
+loop), so if you have configuration:
 
-iQIcBAEBAgAGBQJRMLlWAAoJELSic+t+oim9g9gP/3mCBa0fa1AeNmyv7lBulC9n
-oynUbe9M17fPI3emsTqBjPFk4yp0hx1g98xadZuwGe7F14Vy8jYv6IVEHvBBiq5d
-tTplKQkuzriuWG1KlYP7tJ3f7O1B5dZqq58qId5fku8CuYzVKZOc7GijwBjdcBVw
-kGw+IegKG/8/vfovKXgGVCkZ0hkOgJeCi846pICkW7kpvs/+Ek1vojLDL1F2CBJf
-244hSBdW0Zyoh4u03Uv7nrpncfOwMT+MRKrA9sFogrURDh7vzeyQI2v6R2ik2Uxv
-hXsgk9/+jmE3Z5ByLaM8OiG2/sdY7ulGS3wAfmVlJqVw6YG1fb6LTYOKyNRXoMMN
-PBoloLrdcaxYN+z6sdpyxu4A1IImsz/o4/eSe8O/MjkK5Luqh4Lkheu1eISP7khj
-eY/rMxwdJIml+7BPJy+34bfRhP1iATUmZm+uxMXsu1jO01nMOa2HagdPwpp6pnJO
-Ov1V3QzMwP9yRAbvvnLH/uGeAlrJ2RJgs91rmmhVUm9582+dhxd2v8ytw0HrTGwL
-aDtaQKyBjyNpEFBndixO6qckjBUY2mFQ5uqMc55FIjq1OTchDz24yjl9wWmLpH2Z
-2C+DCGHkUHdfDn4jXMCB4eP0aIlru6iK9wmWTpBTraIA0hvr4rsvBl83C3cgQ+V8
-iAJvUBO0CPV8+bJXaUBk
-=rQ7P
------END PGP SIGNATURE-----
+serial-dir = < 1 2 0 1 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
+// first two channels are played on ARX0 pin, and second two on ARX3
 
---qTzJm9l2qECmSDiM--
-
---===============8429886518637214305==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8429886518637214305==--
+Best,
+Michal
