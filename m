@@ -1,16 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Don't enable FLL on REFCLK
-	configuration
-Date: Fri, 1 Mar 2013 19:12:35 +0800
-Message-ID: <20130301111232.GX25302@opensource.wolfsonmicro.com>
-References: <1361553037-423-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Fri, 1 Mar 2013 21:46:16 +1030
+Message-ID: <20130301111616.GA9661@marvin.atrad.com.au>
+References: <s5h8v7xjw4f.wl%tiwai@suse.de>
+ <20130210114707.GA26574@marvin.atrad.com.au>
+ <s5hzjzbql3a.wl%tiwai@suse.de>
+ <20130216112505.GE4164@marvin.atrad.com.au>
+ <s5h8v6ncpcp.wl%tiwai@suse.de>
+ <20130217125316.GA25824@marvin.atrad.com.au>
+ <s5h1ucedgge.wl%tiwai@suse.de> <s5hzjyzi8a5.wl%tiwai@suse.de>
+ <20130220121055.GA23804@marvin.atrad.com.au>
+ <s5hip5ni0ur.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8184335050037439415=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BFCB6265DF4
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 12:13:03 +0100 (CET)
-In-Reply-To: <1361553037-423-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B228265DF4
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 12:16:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hip5ni0ur.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +30,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi
 
---===============8184335050037439415==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RLVVO53zhS75EYih"
-Content-Disposition: inline
+On Wed, Feb 20, 2013 at 02:14:20PM +0100, Takashi Iwai wrote:
+> > Sounds good - I will test in the next day or so and report back.  What's the
+> > most efficient way to get hold of this tree / branch given that I have the
+> > for-next branch of sound.git?  Can I somehow leverage this, or do I need to
+> > do a completely separate checkout?  Apologies if this is a basic question -
+> > I'm still coming to terms with git.
+> 
+> sound-unstable git tree always contains the sound git tree master
+> branch, so everything is there basically. ...
 
+What's the next step in the process?  I've reported the outcome of the tests
+of sound-unstable as per that report progress is being made.  Is it a case
+of waiting for things to stabilise, or do you need me to do something to
+move things along?  If so, what?
 
---RLVVO53zhS75EYih
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Feb 22, 2013 at 05:10:37PM +0000, Charles Keepax wrote:
-> Enabling the FLL when REFCLK is being configured is not what the user
-> would expect and can cause issues if SYNCCLK has no specified frequency.
-
-Applied, thanks.
-
---RLVVO53zhS75EYih
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRMI0IAAoJELSic+t+oim9sdwP/3u2H9HbQAsQXDswCn3ZNeu2
-Ym5WzKmKkhdwTaNnU9l5tdz9FFy0L8M40iIrFA/vVBpvYCEP8/KVKkLmbCQNAX0o
-PP049+9EE0BF+rBbRyT7C8s9CJxgePzCEVJZn3jGTv0WsphENmcchgJ1xtihn2J9
-mCZY6SBd/Jd5A6zUrXlu4Ql1nwLhlz/RQrymFPnmtNM9Bumcv1BCsN+QKkP7Hj+9
-/SGcm44QsrYFLDClJ6RJ43qpxK238ay52RN3qWn4TKQggCSP3rZGGcPxwv+qiIAL
-yuggLX1RARMvNjrwp05bu0MYIjukbKG4yks70lwXoTX5W5XrmKTjeVhPHzeBQpC1
-UYXNIl2wO0f4VBNgfNeGydPePArzQo+wKuzamZ3AOZcXvBkTFQV2emP8WoK4BWla
-UJpWwCNkaZRXC1+1JQKSq7W6FVRl5fR+GI+tZRTZl7QIIPAnqaxuh3kYVWL4r/8x
-KHDgDyfLWO7WH9dUIQQoCsk+59D4c83gGE8dBYFkhD59eyqFU3HKuSy8ME6nGpFr
-ZpqCtU1DXYA6ec70zuoF+CfKAgHvqC2XFRj5hlsqnfLypxwQZMyZ4SbKDACJq+dP
-c/spemxCeFWob5vp63gKxwB3eIWnWBQWuPC6YbMCApl/OHhE2C/Za1kVUdBA/Lg0
-ZlY0qxXAQPgNlL/ciXIQ
-=bjFG
------END PGP SIGNATURE-----
-
---RLVVO53zhS75EYih--
-
---===============8184335050037439415==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8184335050037439415==--
+Regards
+  jonathan
