@@ -1,22 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Thinkpad T400 - internal mic doesn't work,
- can't set CAPTURE - schematics included
-Date: Fri, 1 Mar 2013 22:52:14 +0800
-Message-ID: <CAN8cciY_=jRQ=uCeP7Q=hGJQeZ12cDv3oa8rGzGw3gh3sCZQxA@mail.gmail.com>
-References: <201302271858.07005.arekm@maven.pl>
- <512F2330.9050407@canonical.com>
- <201302281823.04889.arekm@maven.pl>
+From: wendelin klimann <wklimann@gmail.com>
+Subject: Re: ASoC: BeagleBoard driver development (PCM3168)
+Date: Fri, 1 Mar 2013 21:00:28 +0100
+Message-ID: <CAGxc5aBQcHE7qWNZrQHqJ8g5o2E85uXCaQv2W4GV17Z_AMFCkQ@mail.gmail.com>
+References: <CAGxc5aCJisVLrC09YsWAoh3U9_kKGKwFqiK4KM-u7JZ7SpW58w@mail.gmail.com>
+ <5118F700.90006@ti.com>
+ <CAGxc5aCZarD+-4EqSA9QZx_RvXRvJuGpKXtp=RiUPdcATuxFng@mail.gmail.com>
+ <51235D8E.7040705@ti.com>
+ <CAGxc5aDQ5btyvhcEnCcvNJZhRuCZWz8XS9SxOqcgmgBSx+bYZQ@mail.gmail.com>
+ <5124D1EB.9030404@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 757332650C2
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 15:52:15 +0100 (CET)
-Received: by mail-ie0-f169.google.com with SMTP id 13so3627897iea.14
- for <alsa-devel@alsa-project.org>; Fri, 01 Mar 2013 06:52:14 -0800 (PST)
-In-Reply-To: <201302281823.04889.arekm@maven.pl>
+Received: from mail-la0-f54.google.com (mail-la0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4069D260202
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 21:00:29 +0100 (CET)
+Received: by mail-la0-f54.google.com with SMTP id gw10so3251798lab.41
+ for <alsa-devel@alsa-project.org>; Fri, 01 Mar 2013 12:00:28 -0800 (PST)
+In-Reply-To: <5124D1EB.9030404@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,85 +28,219 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Arkadiusz_Mi=C5=9Bkiewicz?= <arekm@maven.pl>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMy0zLTEg5LiK5Y2IMToyMyDmlrwgIkFya2FkaXVzeiBNacWba2lld2ljeiIgPGFyZWttQG1h
-dmVuLnBsPiDlr6vpgZPvvJoKPgo+IE9uIFRodXJzZGF5IDI4IG9mIEZlYnJ1YXJ5IDIwMTMsIERh
-dmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+ID4gT24gMDIvMjcvMjAxMyAwNjo1OCBQTSwgQXJrYWRp
-dXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+ID4gPiBIaSwKPiA+ID4KPiA+ID4gTXkgVGhpbmtwYWQg
-VDQwMCAoMjc2NENUTyBtb2RlbCkgZG9lc24ndCBoYXZlIGFiaWxpdHkgdG8gc2V0IENBUFRVUkUK
-b24KPiA+ID4gbWljcm9waG9uZSBpbnB1dHMgd2l0aCBhbHNhLiBNb3N0IGxpa2VseSBzb21lIHF1
-aXJrIGlzIG1pc3NpbmcuCj4gPiA+Cj4gPiA+IFRoZSBsYXB0b3AgaGFzIGludGVybmFsIG1pY3Jv
-cGhvbmUsIG1pY3JvcGhvbmUgaW4gaW5wdXQsIGhlYWRwaG9uZXMKb3V0Cj4gPiA+IG91dHB1dCBh
-bmQgMiBpbnRlcm5hbCBzcGVha2Vycy4gVGhhdCdzIGFsbC4KPiA+ID4KPiA+ID4gSXMgdXNlcyBD
-b25leGFudCBDWDIwNTYxXzE1WiBpbnRlcm5hbGx5IGFuZCB0aGVyZSBpcyBkZXRhaWxlZCBUNDAw
-Cj4gPiA+IHNjaGVtYXRpYyBhdmFpbGFibGU6Cj4gPiA+IGh0dHA6Ly9reXRodWF0cGhhbmN1bmcu
-Y29tL2Rvd25sb2FkL2xlbm92by10aGlua3BhZC10NDAwLXNjaGVtYXRpYy0KPiA+ID4gZGlhZ3Jh
-bS5odG1sP2RsCj4gPiA+IChmb3IgYXVkaW8gbG9vayBhcm91bmQgcGFnZSA0MykuCj4gPiA+Cj4g
-PiA+IEtlcm5lbHMgMy43LngsIGZyZXNoIDMuOCAtIG5vIGx1Y2suIFRyaWVkIGV2ZW4gbGludXgt
-bmV4dCBmcm9tIHRvZGF5CmJ1dAo+ID4gPiBpdCBkaWVzIGVhcmx5IG9uIGFsc2EgdW5yZWxhdGVk
-IGlzc3Vlcy4KPiA+ID4KPiA+ID4gSSd2ZSB0cmllZCBtb2RlbCBvcHRpb25zIGxhcHRvcCwgaHAs
-IGhwLWR2NjczNiwgaHAtNzAwLCB0b3NoaWJhLAppZGVhcGFkLAo+ID4gPiBhdXRvLiBOb25lIG9m
-IHRoZXNlIHdvcmsgZmluZS4gV2l0aCBtb2RlbD1ocC03MDAgSSBjYW4gc2V0IENBUFRVUkUKYnV0
-IGl0Cj4gPiA+IGRvZXNuJ3Qgd29yayAoc2lsZW50IGF1ZGlvIGlzIGNhcHR1cmVkIHVzaW5nIGFy
-ZWNvcmQgb3IgaW4gZ29vZ2xlCj4gPiA+IGhhbmdvdXQpLiBFeHRlcm5hbCBtaWMgY29ubmVjdGVk
-IGFsc28gZG9lc24ndCB3b3JrIHdpdGggdGhlc2Ugc2V0dXBzLgo+ID4gPgo+ID4gPgpodHRwOi8v
-d3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9Mzk0ZmY0Y2RjYTMzZTc1YzhhNDcyMDNkNDJiODlk
-OGRlMzZkZWNhCj4gPiA+IDcgWzMuOCBrZXJuZWxdCj4gPiA+Cj4gPiA+Cmh0dHA6Ly93d3cuYWxz
-YS1wcm9qZWN0Lm9yZy9kYi8/Zj0zMDI4NzdlNTBmOTk4MzUwNzVkMDM4MjA3ZjZkYjBkZmQ4OTg3
-M2IKPiA+ID4gMCBbMy43IGtlcm5lbF0KPiA+ID4KPiA+ID4gVGhpbmtwYWQgaXMgMjc2NENUTyBt
-b2RlbCBleGFjdGx5Lgo+ID4gPgo+ID4gPiBJIGNhbiB0ZXN0IHZhcmlvdXMgaGFja3MsIHBhdGNo
-ZXMgZXRjIGVhc2lseS4gQ291bGQgc29tZW9uZSBsb29rIGF0Cj4gPiA+IHNjaGVtYXRpYyBhbmQg
-cHJvdmlkZSBxdWlya3MgdG8gdGVzdD8KPiA+Cj4gPiBIaSwKPiA+Cj4gPiBXaGF0IGRvIHlvdSBt
-ZWFuIHdpdGggImRvZXNuJ3QgaGF2ZSBhYmlsaXR5IHRvIHNldCBDQVBUVVJFIj8KPgo+IE9uIHNv
-bWUgb3RoZXIgbm90ZWJvb2sgSSBoYWQgbWljIGlucHV0IHRoYXQgSSBjb3VsZCBzZXQgdG8gQ0FQ
-VFVSRSBtb2RlCnVzaW5nCj4gc3BhY2UgaW4gYWxzYW1peGVyIEY0OiBDYXB0dXJlIG1lbnUuIEhl
-cmUgSSBjYW4ndCBzZXQgY2FwdHVyZSBvbiBhbnkgb2YKaW5wdXRzCj4gKHByZXNzaW5nIHNwYWNl
-IGNhdXNlcyBubyBjaGFuZ2UpLgo+Cj4gPiBXaGF0IGlucHV0Cj4gPiBpcyB1c2VkIGlzIGF1dG9t
-YXRpY2FsbHkgc2VsZWN0ZWQgZGVwZW5kaW5nIG9uIHdoYXQgeW91IGhhdmUgcGx1Z2dlZCBpbiwK
-PiA+IGFuZCBpdHMgbGV2ZWwgaXMgc2V0IHVzaW5nIG1peGVyIGNvbnRyb2xzICh3aGljaCBpbiB5
-b3VyIGFsc2EtaW5mbyBpcwo+ID4gc2V0IHRvIG1pbmltdW0gbGV2ZWxzKS4KPgo+IFRoZXJlIGFy
-ZSB0d28gamFjayBzb2NrZXRzIGluIHRoaXMgbGFwdG9wLCBvbmUgd2l0aCBoZWFkcGhvbmVzIGlj
-b24gYW5kCm90aGVyCj4gd2l0aCBtaWMgaWNvbiAob24gdGhlIGxhcHRvcCBjYXNlIGl0c2VsZikg
-YXMgb24gdGhpcyBwaG90bzoKPiBodHRwOi8vd3d3Lm5vdGVib29rcmV2aWV3LmNvbS9zaGFyZWQv
-cGljdHVyZS5hc3A/Zj00MjIwMAo+Cj4gT2suLi4gbWF4aW5nIGFsbCBtaXhlciBjb250cm9scyBh
-bmQgY29ubmVjdGluZyBleHRlcm5hbCBtaWNyb3Bob25lIEkgZ2V0Cj4gZXh0ZXJuYWwgbWljIGJl
-aW5nIHJlY29yZGVkLiBUaGUgbWl4ZXIgY29udHJvbHMgdGhhdCBzZWVtIHRvIGJlIHdvcmtpbmcg
-aW4KPiBzdWNoIG1vZGUgYXJlOiAiTWljIiwgIk1pYyBib29zdCIgYW5kICJEaWdpdGFsIi4gV2hh
-dCdzIHdlaXJkIGlzIHRoYXQgd2hlbgo+ICJEaWdpdGlhbCIgaXMgc2V0IHRvIDAgdGhlbiBubyBz
-b3VuZCBmcm9tIG1pY3JvcGhvbmUgaXMgYmVpbmcgcmVjb3JkZWQKPiAodGVzdGluZyB3aXRoIGFy
-ZWNvcmQgLWYgY2QgfCBhcGxheSkuIFRoZSAiTWljIiBhbmQgIk1pYyBib29zdCIgc2VlbXMgdG8K
-d29yawo+IGFzIGV4cGVjdGVkZi4gUXVlc3Rpb246IHdoeSAiRGlnaXRhbCIgaGFzIGFueSBpbmZs
-dWVuY2UgaGVyZT8KPgo+IFVuZm9ydHVuYXRlbHkgSSdtIHVuYWJsZSB0byBnZXQgaW50ZXJuYWwg
-bWljcm9waG9uZSB3b3JraW5nIGF0IGFsbC4gRXZlbgp3aXRoCj4gYWxsIG91dHB1dHMgc2V0IHRv
-IG1heGltdW0gbGlrZSB0aGlzOgo+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9m
-PTlhN2UxY2E2OGIyZjJmYTJmNzdkY2U2ZWFkMmI1ZmIxNThiNzQ2NTIKPgo+IEludGVybmFsIG1p
-YyBpcyBteSBwcmltYXJ5IHByb2JsZW0uCj4KCkRvIHlvdSBtZWFuIGR5bmFtaWMgYWRjIHN3aXRj
-aCBkb2VzIG5vdCB3b3JrIGFzIGV4cGVjdGVkIG9yICJEb2NrIG1pYwpjYXB0dXJlIHZvbHVtZSIg
-YW5kICJpbnRlcm5hbCBNaWNoYWVsIGNhcHR1cmUgdm9sdW1lIiBjb250cm9scyBjYW5ub3Qgc2hh
-cmUKdGhlIHNhbWUgYW1wIGluID8KCk5vZGUgMHgxNCBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAw
-ZDFiOiBTdGVyZW8gQW1wLUluIFIvTAogIENvbnRyb2w6IG5hbWU9IkRvY2sgTWljIENhcHR1cmUg
-Vm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4s
-IGlkeD0xLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkludGVybmFsIE1pYyBDYXB0dXJlIFZvbHVt
-ZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9
-MCwgb2ZzPTAKICBEZXZpY2U6IG5hbWU9IkNPTkVYQU5UIEFuYWxvZyIsIHR5cGU9IkF1ZGlvIiwg
-ZGV2aWNlPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4NGEsIG5zdGVwcz0weDUwLCBzdGVwc2l6ZT0w
-eDAzLCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDUwIDB4NTBdIFsweDUwIDB4NTBdCiAgQ29u
-dmVydGVyOiBzdHJlYW09NCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIFBDTToKICAgIHJh
-dGVzIFsweDE2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAog
-ICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dl
-cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMgogICAgIDB4MWQqIDB4MTcK
-Tm9kZSAweDE1IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDBkMWI6IFN0ZXJlbyBBbXAtSW4gUi9M
-CiAgQ29udHJvbDogbmFtZT0iTWljIENhcHR1cmUgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAK
-ICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBz
-OiBvZnM9MHg0YSwgbnN0ZXBzPTB4NTAsIHN0ZXBzaXplPTB4MDMsIG11dGU9MAogIEFtcC1JbiB2
-YWxzOiAgWzB4NTAgMHg1MF0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREkt
-U2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4MTYwXTogNDQxMDAgNDgwMDAgOTYwMDAKICAg
-IGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0
-ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0
-aW9uOiAxCiAgICAgMHgxOApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Hello and thanks for the support
+
+
+I would advice to update. Eventually you want to upstream the codec driver,
+> so
+> it is going to be easier for you.
+>
+
+Well i followed your advice and updated to kernel version 3.7.4+ and to
+ALSA version k3.7.4+, and i will be glad to upstram the finalized driver.
+As you recommended i am using your omap_twl4030.c file as a starting-point
+for my driver development, and i am trying to get the adapted machine
+driver to run but without success.
+The machine driver is not even going into
+
+*   static __devinit int omap_pcm3168_probe(struct platform_device *pdev)*
+
+and i am really stuck at this point.
+
+It would be really nice if you could help me.
+
+
+Regards
+Wendelin
+
+
+File:
+
+/*
+ * omap-pcm3168.c  --  PCM3168 ASoC driver for the BeagleBoard.
+ *
+ * based on:
+ *    > omap-twl4030.c  --  SoC audio for TI SoC based boards with twl4030
+codec
+ *    >
+ *    > Copyright (C) 2012 Texas Instruments Incorporated -
+http://www.ti.com
+ *    > All rights reserved.
+ *    >
+ *    > Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+ *
+ * adapted by Klimann Wendelin <wklimann@hotmail.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ */
+
+#include <linux/platform_device.h>
+//#include <linux/platform_data/omap-twl4030.h>
+#include <linux/module.h>
+#include <linux/of.h>
+
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/soc.h>
+
+#include "omap-mcbsp.h"
+#include "omap-pcm.h"
+
+static int omap_pcm3168_hw_params(struct snd_pcm_substream *substream,
+    struct snd_pcm_hw_params *params)
+{
+    struct snd_soc_pcm_runtime *rtd = substream->private_data;
+    struct snd_soc_dai *codec_dai = rtd->codec_dai;
+    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+    struct snd_soc_codec *codec = rtd->codec;
+    struct snd_soc_card *card = codec->card;
+    unsigned int fmt;
+    int ret;
+
+    fmt =    SND_SOC_DAIFMT_DSP_B     |
+            SND_SOC_DAIFMT_CBM_CFM  |
+            SND_SOC_DAIFMT_IB_NF;
+
+    /* Set codec DAI configuration */
+    ret = snd_soc_dai_set_fmt(codec_dai, fmt);
+    if (ret < 0) {
+        dev_err(card->dev, "can't set codec DAI configuration\n");
+        return ret;
+    }
+
+    /* Set cpu DAI configuration */
+    ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
+    if (ret < 0) {
+        dev_err(card->dev, "can't set cpu DAI configuration\n");
+        return ret;
+    }
+
+    return 0;
+}
+
+static struct snd_soc_ops omap_pcm3168_ops = {
+    .hw_params = omap_pcm3168_hw_params,
+};
+
+/* Digital audio interface glue - connects codec <--> CPU */
+static struct snd_soc_dai_link omap_pcm3168_dai_links[] = {
+    {
+        .name = "PCM3168",
+        .stream_name = "PCM3168",
+        .cpu_dai_name = "omap-mcbsp.3",
+        .codec_dai_name = "pcm3168-hifi",
+        .platform_name = "omap-pcm-audio",
+        .codec_name = "pcm3168-codec.0",
+        .ops = &omap_pcm3168_ops,
+    },
+};
+
+/* Audio machine driver */
+static struct snd_soc_card omap_pcm3168_card = {
+    .owner = THIS_MODULE,
+    .dai_link = omap_pcm3168_dai_links,
+    .num_links = ARRAY_SIZE(omap_pcm3168_dai_links),
+};
+
+static __devinit int omap_pcm3168_probe(struct platform_device *pdev)
+{
+    printk("in __devinit omap_pcm3168_probe -> by kli");
+
+    struct omap_tw4030_pdata *pdata = dev_get_platdata(&pdev->dev);
+    struct device_node *node = pdev->dev.of_node;
+    struct snd_soc_card *card = &omap_pcm3168_card;
+    int ret = 0;
+
+    card->dev = &pdev->dev;
+
+    if (node) {
+        struct device_node *dai_node;
+
+        if (snd_soc_of_parse_card_name(card, "ti,model")) {
+            dev_err(&pdev->dev, "Card name is not provided\n");
+            return -ENODEV;
+        }
+
+        dai_node = of_parse_phandle(node, "ti,mcbsp", 0);
+        if (!dai_node) {
+            dev_err(&pdev->dev, "McBSP node is not provided\n");
+            return -EINVAL;
+        }
+        omap_pcm3168_dai_links[0].cpu_dai_name  = NULL;
+        omap_pcm3168_dai_links[0].cpu_of_node = dai_node;
+
+    }
+    /*else if (pdata) {
+        if (pdata->card_name) {
+            card->name = pdata->card_name;
+        } else {
+            dev_err(&pdev->dev, "Card name is not provided\n");
+            return -ENODEV;
+        }
+    }*/
+    else {
+        dev_err(&pdev->dev, "Missing pdata\n");
+        return -ENODEV;
+    }
+
+    ret = snd_soc_register_card(card);
+    if (ret) {
+        dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+            ret);
+        return ret;
+    }
+
+    return 0;
+}
+
+static int __devexit omap_pcm3168_remove(struct platform_device *pdev)
+{
+    struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+    snd_soc_unregister_card(card);
+
+    return 0;
+}
+
+
+static const struct of_device_id omap_pcm3168_of_match[] = {
+    {.compatible = "ti,omap-pcm3168", },
+    { },
+};
+MODULE_DEVICE_TABLE(of, omap_pcm3168_of_match);
+
+static struct platform_driver omap_pcm3168_driver = {
+    .driver = {
+        .name = "omap-pcm3168",
+        .owner = THIS_MODULE,
+//        .pm = &snd_soc_pm_ops,
+//        .of_match_table = omap_pcm3168_of_match,
+    },
+    .probe = omap_pcm3168_probe,
+    .remove = __devexit_p(omap_pcm3168_remove),
+};
+
+module_platform_driver(omap_pcm3168_driver);
+
+MODULE_AUTHOR("Klimann Wendelin <wklimann@hotmail.com>");
+MODULE_DESCRIPTION("ALSA SoC PCM3168 add on Soundcard");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:omap-pcm3168");
