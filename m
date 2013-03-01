@@ -1,18 +1,22 @@
-From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: Re: [PATCH v3] davinci-mcasp: Add support for
-	multichannel playback
-Date: Fri, 01 Mar 2013 15:42:07 +0100
-Message-ID: <1751937.m7T84ofGdH@ganymedes>
-References: <1362064028-12666-1-git-send-email-michal.bachraty@streamunlimited.com>
- <5130AFA1.7000808@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Thinkpad T400 - internal mic doesn't work,
+ can't set CAPTURE - schematics included
+Date: Fri, 1 Mar 2013 22:52:14 +0800
+Message-ID: <CAN8cciY_=jRQ=uCeP7Q=hGJQeZ12cDv3oa8rGzGw3gh3sCZQxA@mail.gmail.com>
+References: <201302271858.07005.arekm@maven.pl>
+ <512F2330.9050407@canonical.com>
+ <201302281823.04889.arekm@maven.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx14.lb01.inode.at [62.99.145.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B9B72650C1
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 15:42:11 +0100 (CET)
-In-Reply-To: <5130AFA1.7000808@gmail.com>
+Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 757332650C2
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 15:52:15 +0100 (CET)
+Received: by mail-ie0-f169.google.com with SMTP id 13so3627897iea.14
+ for <alsa-devel@alsa-project.org>; Fri, 01 Mar 2013 06:52:14 -0800 (PST)
+In-Reply-To: <201302281823.04889.arekm@maven.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +26,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Vaibhav Bedia <vaibhav.bedia@ti.com>, linux-kernel@vger.kernel.org, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>
+To: =?UTF-8?Q?Arkadiusz_Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
-
-Thanks for testing.
-
-> One thing that has to be considered by users of the driver is that the
-> 'serial-dir' DT property has to contain enough '1' entries for
-> multichannel playback (or enough '2's for multichannel record). So this
-> information is not actually something that describes the hardware, but
-> rather some resource that can be and should be allocated dynamically by
-> the driver at run-time. Should we consider dropping this property?
-
-Not really, ' serial-dir' also  configures specific serializer binded with 
-certain AXR pin . That means, when you have harware, which do not have aviable 
-AXR0, you can enable other ARX pin.  
-
-example:
-
-serial-dir = <  1 0 0 0 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
-// activate serializer 0, active pin ARX0 in Transmit mode, first audio 
-// channels are played on ARX0 pin 
-
-serial-dir = < 0 1 1 2 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
-// activate serializer 1,2,3 active pin ARX1 in TX mode, ARX2, in TX mode, 
-// ARX3 in RX mode
-
-In this case, if you are using TDM mode with 2 slots, first two channels will 
-be played on ARX1 and second two on ARX2. 
-
-McAsp fills data for serializers in loop (receive and playback has separate 
-loop), so if you have configuration:
-
-serial-dir = < 1 2 0 1 >; /* 0: INACTIVE, 1: TX, 2: RX */ 
-// first two channels are played on ARX0 pin, and second two on ARX3
-
-Best,
-Michal
+MjAxMy0zLTEg5LiK5Y2IMToyMyDmlrwgIkFya2FkaXVzeiBNacWba2lld2ljeiIgPGFyZWttQG1h
+dmVuLnBsPiDlr6vpgZPvvJoKPgo+IE9uIFRodXJzZGF5IDI4IG9mIEZlYnJ1YXJ5IDIwMTMsIERh
+dmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+ID4gT24gMDIvMjcvMjAxMyAwNjo1OCBQTSwgQXJrYWRp
+dXN6IE1pxZtraWV3aWN6IHdyb3RlOgo+ID4gPiBIaSwKPiA+ID4KPiA+ID4gTXkgVGhpbmtwYWQg
+VDQwMCAoMjc2NENUTyBtb2RlbCkgZG9lc24ndCBoYXZlIGFiaWxpdHkgdG8gc2V0IENBUFRVUkUK
+b24KPiA+ID4gbWljcm9waG9uZSBpbnB1dHMgd2l0aCBhbHNhLiBNb3N0IGxpa2VseSBzb21lIHF1
+aXJrIGlzIG1pc3NpbmcuCj4gPiA+Cj4gPiA+IFRoZSBsYXB0b3AgaGFzIGludGVybmFsIG1pY3Jv
+cGhvbmUsIG1pY3JvcGhvbmUgaW4gaW5wdXQsIGhlYWRwaG9uZXMKb3V0Cj4gPiA+IG91dHB1dCBh
+bmQgMiBpbnRlcm5hbCBzcGVha2Vycy4gVGhhdCdzIGFsbC4KPiA+ID4KPiA+ID4gSXMgdXNlcyBD
+b25leGFudCBDWDIwNTYxXzE1WiBpbnRlcm5hbGx5IGFuZCB0aGVyZSBpcyBkZXRhaWxlZCBUNDAw
+Cj4gPiA+IHNjaGVtYXRpYyBhdmFpbGFibGU6Cj4gPiA+IGh0dHA6Ly9reXRodWF0cGhhbmN1bmcu
+Y29tL2Rvd25sb2FkL2xlbm92by10aGlua3BhZC10NDAwLXNjaGVtYXRpYy0KPiA+ID4gZGlhZ3Jh
+bS5odG1sP2RsCj4gPiA+IChmb3IgYXVkaW8gbG9vayBhcm91bmQgcGFnZSA0MykuCj4gPiA+Cj4g
+PiA+IEtlcm5lbHMgMy43LngsIGZyZXNoIDMuOCAtIG5vIGx1Y2suIFRyaWVkIGV2ZW4gbGludXgt
+bmV4dCBmcm9tIHRvZGF5CmJ1dAo+ID4gPiBpdCBkaWVzIGVhcmx5IG9uIGFsc2EgdW5yZWxhdGVk
+IGlzc3Vlcy4KPiA+ID4KPiA+ID4gSSd2ZSB0cmllZCBtb2RlbCBvcHRpb25zIGxhcHRvcCwgaHAs
+IGhwLWR2NjczNiwgaHAtNzAwLCB0b3NoaWJhLAppZGVhcGFkLAo+ID4gPiBhdXRvLiBOb25lIG9m
+IHRoZXNlIHdvcmsgZmluZS4gV2l0aCBtb2RlbD1ocC03MDAgSSBjYW4gc2V0IENBUFRVUkUKYnV0
+IGl0Cj4gPiA+IGRvZXNuJ3Qgd29yayAoc2lsZW50IGF1ZGlvIGlzIGNhcHR1cmVkIHVzaW5nIGFy
+ZWNvcmQgb3IgaW4gZ29vZ2xlCj4gPiA+IGhhbmdvdXQpLiBFeHRlcm5hbCBtaWMgY29ubmVjdGVk
+IGFsc28gZG9lc24ndCB3b3JrIHdpdGggdGhlc2Ugc2V0dXBzLgo+ID4gPgo+ID4gPgpodHRwOi8v
+d3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9Mzk0ZmY0Y2RjYTMzZTc1YzhhNDcyMDNkNDJiODlk
+OGRlMzZkZWNhCj4gPiA+IDcgWzMuOCBrZXJuZWxdCj4gPiA+Cj4gPiA+Cmh0dHA6Ly93d3cuYWxz
+YS1wcm9qZWN0Lm9yZy9kYi8/Zj0zMDI4NzdlNTBmOTk4MzUwNzVkMDM4MjA3ZjZkYjBkZmQ4OTg3
+M2IKPiA+ID4gMCBbMy43IGtlcm5lbF0KPiA+ID4KPiA+ID4gVGhpbmtwYWQgaXMgMjc2NENUTyBt
+b2RlbCBleGFjdGx5Lgo+ID4gPgo+ID4gPiBJIGNhbiB0ZXN0IHZhcmlvdXMgaGFja3MsIHBhdGNo
+ZXMgZXRjIGVhc2lseS4gQ291bGQgc29tZW9uZSBsb29rIGF0Cj4gPiA+IHNjaGVtYXRpYyBhbmQg
+cHJvdmlkZSBxdWlya3MgdG8gdGVzdD8KPiA+Cj4gPiBIaSwKPiA+Cj4gPiBXaGF0IGRvIHlvdSBt
+ZWFuIHdpdGggImRvZXNuJ3QgaGF2ZSBhYmlsaXR5IHRvIHNldCBDQVBUVVJFIj8KPgo+IE9uIHNv
+bWUgb3RoZXIgbm90ZWJvb2sgSSBoYWQgbWljIGlucHV0IHRoYXQgSSBjb3VsZCBzZXQgdG8gQ0FQ
+VFVSRSBtb2RlCnVzaW5nCj4gc3BhY2UgaW4gYWxzYW1peGVyIEY0OiBDYXB0dXJlIG1lbnUuIEhl
+cmUgSSBjYW4ndCBzZXQgY2FwdHVyZSBvbiBhbnkgb2YKaW5wdXRzCj4gKHByZXNzaW5nIHNwYWNl
+IGNhdXNlcyBubyBjaGFuZ2UpLgo+Cj4gPiBXaGF0IGlucHV0Cj4gPiBpcyB1c2VkIGlzIGF1dG9t
+YXRpY2FsbHkgc2VsZWN0ZWQgZGVwZW5kaW5nIG9uIHdoYXQgeW91IGhhdmUgcGx1Z2dlZCBpbiwK
+PiA+IGFuZCBpdHMgbGV2ZWwgaXMgc2V0IHVzaW5nIG1peGVyIGNvbnRyb2xzICh3aGljaCBpbiB5
+b3VyIGFsc2EtaW5mbyBpcwo+ID4gc2V0IHRvIG1pbmltdW0gbGV2ZWxzKS4KPgo+IFRoZXJlIGFy
+ZSB0d28gamFjayBzb2NrZXRzIGluIHRoaXMgbGFwdG9wLCBvbmUgd2l0aCBoZWFkcGhvbmVzIGlj
+b24gYW5kCm90aGVyCj4gd2l0aCBtaWMgaWNvbiAob24gdGhlIGxhcHRvcCBjYXNlIGl0c2VsZikg
+YXMgb24gdGhpcyBwaG90bzoKPiBodHRwOi8vd3d3Lm5vdGVib29rcmV2aWV3LmNvbS9zaGFyZWQv
+cGljdHVyZS5hc3A/Zj00MjIwMAo+Cj4gT2suLi4gbWF4aW5nIGFsbCBtaXhlciBjb250cm9scyBh
+bmQgY29ubmVjdGluZyBleHRlcm5hbCBtaWNyb3Bob25lIEkgZ2V0Cj4gZXh0ZXJuYWwgbWljIGJl
+aW5nIHJlY29yZGVkLiBUaGUgbWl4ZXIgY29udHJvbHMgdGhhdCBzZWVtIHRvIGJlIHdvcmtpbmcg
+aW4KPiBzdWNoIG1vZGUgYXJlOiAiTWljIiwgIk1pYyBib29zdCIgYW5kICJEaWdpdGFsIi4gV2hh
+dCdzIHdlaXJkIGlzIHRoYXQgd2hlbgo+ICJEaWdpdGlhbCIgaXMgc2V0IHRvIDAgdGhlbiBubyBz
+b3VuZCBmcm9tIG1pY3JvcGhvbmUgaXMgYmVpbmcgcmVjb3JkZWQKPiAodGVzdGluZyB3aXRoIGFy
+ZWNvcmQgLWYgY2QgfCBhcGxheSkuIFRoZSAiTWljIiBhbmQgIk1pYyBib29zdCIgc2VlbXMgdG8K
+d29yawo+IGFzIGV4cGVjdGVkZi4gUXVlc3Rpb246IHdoeSAiRGlnaXRhbCIgaGFzIGFueSBpbmZs
+dWVuY2UgaGVyZT8KPgo+IFVuZm9ydHVuYXRlbHkgSSdtIHVuYWJsZSB0byBnZXQgaW50ZXJuYWwg
+bWljcm9waG9uZSB3b3JraW5nIGF0IGFsbC4gRXZlbgp3aXRoCj4gYWxsIG91dHB1dHMgc2V0IHRv
+IG1heGltdW0gbGlrZSB0aGlzOgo+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9m
+PTlhN2UxY2E2OGIyZjJmYTJmNzdkY2U2ZWFkMmI1ZmIxNThiNzQ2NTIKPgo+IEludGVybmFsIG1p
+YyBpcyBteSBwcmltYXJ5IHByb2JsZW0uCj4KCkRvIHlvdSBtZWFuIGR5bmFtaWMgYWRjIHN3aXRj
+aCBkb2VzIG5vdCB3b3JrIGFzIGV4cGVjdGVkIG9yICJEb2NrIG1pYwpjYXB0dXJlIHZvbHVtZSIg
+YW5kICJpbnRlcm5hbCBNaWNoYWVsIGNhcHR1cmUgdm9sdW1lIiBjb250cm9scyBjYW5ub3Qgc2hh
+cmUKdGhlIHNhbWUgYW1wIGluID8KCk5vZGUgMHgxNCBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAw
+ZDFiOiBTdGVyZW8gQW1wLUluIFIvTAogIENvbnRyb2w6IG5hbWU9IkRvY2sgTWljIENhcHR1cmUg
+Vm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4s
+IGlkeD0xLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkludGVybmFsIE1pYyBDYXB0dXJlIFZvbHVt
+ZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9
+MCwgb2ZzPTAKICBEZXZpY2U6IG5hbWU9IkNPTkVYQU5UIEFuYWxvZyIsIHR5cGU9IkF1ZGlvIiwg
+ZGV2aWNlPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4NGEsIG5zdGVwcz0weDUwLCBzdGVwc2l6ZT0w
+eDAzLCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDUwIDB4NTBdIFsweDUwIDB4NTBdCiAgQ29u
+dmVydGVyOiBzdHJlYW09NCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIFBDTToKICAgIHJh
+dGVzIFsweDE2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAog
+ICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dl
+cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMgogICAgIDB4MWQqIDB4MTcK
+Tm9kZSAweDE1IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDBkMWI6IFN0ZXJlbyBBbXAtSW4gUi9M
+CiAgQ29udHJvbDogbmFtZT0iTWljIENhcHR1cmUgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAK
+ICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBz
+OiBvZnM9MHg0YSwgbnN0ZXBzPTB4NTAsIHN0ZXBzaXplPTB4MDMsIG11dGU9MAogIEFtcC1JbiB2
+YWxzOiAgWzB4NTAgMHg1MF0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREkt
+U2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4MTYwXTogNDQxMDAgNDgwMDAgOTYwMDAKICAg
+IGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0
+ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0
+aW9uOiAxCiAgICAgMHgxOApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
