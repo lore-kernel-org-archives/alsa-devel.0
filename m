@@ -1,18 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Subject: Re: ASoC: no-pcm (backend) error propagation
-Date: Fri, 01 Mar 2013 21:24:50 +0000
-Message-ID: <1362173090.4439.44.camel@loki>
+Date: Fri, 01 Mar 2013 21:25:13 +0000
+Message-ID: <1362173113.4439.46.camel@loki>
 References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
- <1361953433.28121.33.camel@vega>
- <190351B32828744FBA3BD9565204D27B01CA4E06@NA-MBX-03.mgc.mentorg.com>
+ <1361953433.28121.33.camel@vega> <512E29B8.8050708@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C0B102602F9
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 22:25:03 +0100 (CET)
-In-Reply-To: <190351B32828744FBA3BD9565204D27B01CA4E06@NA-MBX-03.mgc.mentorg.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id E871526036C
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 22:25:18 +0100 (CET)
+In-Reply-To: <512E29B8.8050708@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIFRodSwgMjAxMy0wMi0yOCBhdCAwMDo0OSArMDAwMCwgRnJrdXNrYSwgSm9zaHVhIHdyb3Rl
-Ogo+ID4gT24gV2VkLCAyMDEzLTAyLTI3IGF0IDAyOjIxICswMDAwLCBGcmt1c2thLCBKb3NodWEg
-d3JvdGU6Cj4gPiA+IEhlbGxvLAo+ID4gPgo+ID4gPiBJIGFtIHdvcmtpbmcgb2ZmIG9mIHRoZSAz
-LjUuNyBicmFuY2ggb2YgdGhlIGtlcm5lbCB1c2luZyBhIGZyb250ZW5kLWJhY2tlbmQKPiA+IGFw
-cHJvYWNoIGZvciBteSBkcml2ZXIuIE5vIGFkZGl0aW9uYWwgcGF0Y2hlcyBoYXZlIGJlZW4gYWRk
-ZWQgZm9yIEFTb0MvQUxTQQo+ID4gZnJvbSB0aGUgMy41Ljcga2VybmVsIGJyYW5jaC4KPiA+ID4K
-PiA+ID4gTXkgcXVlc3Rpb24gcmVsYXRlcyB0byB0aGUgd2F5IHRoZSBuby1wY20gKGJhY2tlbmQp
-IHByb3BhZ2F0ZXMgZXJyb3JzIHRvIHRoZQo+ID4gZnJvbnQgZW5kLiBNeSBGRShmcm9udGVuZCkg
-Y29uc2lzdHMgb2YgYSBjcHUtZGFpLCBhIHBjbSBwbGF0Zm9ybSBkcml2ZXIsIGFuZCBhCj4gPiBk
-dW1teS1jb2RlYy4gTXkgQkUoYmFja2VuZCkgY29uc2lzdHMgb2YgYW5vdGhlciBjcHUtZGFpLCBh
-IG5vbi1wY20gcGxhdGZvcm0KPiA+IGRyaXZlciwgYW5kIGEgcmVhbCBjb2RlYy4KPiA+ID4gVGhl
-IG5vbi1wY20gb3BlcmF0ZXMgd2l0aCB0aGUgZG1hZW5naW5lIGJ1dCBqdXN0IGluIGFuIGF1dG9u
-b21vdXMgZmFzaGlvbgo+ID4gZXh0ZXJuYWwgdG8gdGhlIFBDTSdzIGtub3dsZWRnZS4KPiA+ID4K
-PiA+ID4gSSBoYXZlIHRoZSBwY20tcGxhdGZvcm0gZHJpdmVyIHBhc3NpbmcgZGF0YSB0byB0aGUg
-RkUgY3B1LWRhaSBhbmQgdGhlIGJhY2tlbmQKPiA+IHBsYXRmb3JtIHRoZW4gdGFrZXMgdGhlIGRh
-dGEgZnJvbSB0aGUgZnJvbnRlbmQncyBjcHUtZGFpIGFuZCBwYXNzZXMgaXQgb24gdG8gdGhlCj4g
-PiBCRSBjcHUtZGFpLCB3aGljaCB0aGVuIGNvbmZpZ3VyZXMgdGhlIGNvZGVjLWRhaSB0byBnZXQg
-b3V0cHV0Lgo+ID4gPgo+ID4gPiBJbiB0aGUgZnJvbnRlbmQgaWYvd2hlbmV2ZXIgdGhlcmUgaXMg
-YW4gdW5kZXJydW4gZXJyb3IgaW4gdGhlIGNwdS1kYWksIEkgY2FuCj4gPiBkaXJlY3RseSBjYWxs
-IHNuZF9wY21fc3RvcCB0byBzdG9wIHRoZSBzdHJlYW0gYW5kIHJlcG9ydCB0aGUgZXJyb3Igc3Rh
-dGUuIEkgY2FuCj4gPiBkbyB0aGlzIGJlY2F1c2UgdGhlIHN1YnN0cmVhbS0+b3BzIGhhdmUgcHJv
-cGVybHkgYmVlbiBkZWZpbmVkIGluIHRoZSBmcm9udGVuZAo+ID4gcGNtLiBIb3dldmVyLCBpbiB0
-aGUgYmFja2VuZCwgdGhlIHN1YnN0cmVhbS0+b3BzIG5ldmVyIGdldCBpbml0aWFsaXplZCBhbmQK
-PiA+IHJpZ2h0ZnVsbHkgc28gc2luY2UgdGhlcmUgaXNuJ3QgYSB2YWxpZCBwY20gZm9yIHRoZSBi
-YWNrZW5kLgo+ID4gPgo+ID4gPiBNeSBxdWVzdGlvbiBpcywgd2hhdCBpcyB0aGUgY29ycmVjdC9h
-bnkgd2F5IHRvIGxldCB0aGUgZnJvbnRlbmQgUENNIHN0cmVhbQo+ID4ga25vdyB0aGF0IGFuIHVu
-ZGVycnVuIGhhcyBvY2N1cnJlZCBpbiB0aGUgYmFja2VuZD8gSXMgdGhlcmUgYSBtZWNoYW5pc20g
-dG8KPiA+IGhhbmRsZSB0aGlzIGluIEFTb0M/IExvb2tpbmcgdGhyb3VnaCB0aGUgY29kZSwgSSBj
-YW5ub3QgZmluZCBzdWNoIGEgbWVjaGFuaXNtLgo+ID4gSSBoYXZlIGEgZmVlbGluZyB0aGF0IHRo
-ZXJlIHNob3VsZCBiZSBzb21ldGhpbmcgbGlrZSBzbmRfc29jX3BjbV9zdG9wIHRvIGNoZWNrCj4g
-PiB0byBzZWUgaWYgd2UgYXJlIGluIGEgRkUvQkUgY29uZmlndXJhdGlvbiBhbmQgYWN0IGFjY29y
-ZGluZ2x5IHRvIHN0b3AgdGhlIEZFIFBDTQo+ID4gc3RyZWFtIGFuZCByZXBvcnQgZXJyb3JzLgo+
-ID4gPgo+ID4gCj4gPiBJdCB3YXMgb3JpZ2luYWxseSBpbnRlbmRlZCB0aGF0IGFueSB1bmRlcnJ1
-biAvIG92ZXJydW4gaXNzdWVzIGluIGEgQkUgREFJIHdvdWxkCj4gPiBiZSBoYW5kbGVkIGludGVy
-bmFsbHkgYnkgdGhlIGF1ZGlvIERTUCAoYW5kIHRoaXMgd29ya2VkIHdlbGwgd2l0aCB0aGUgT01B
-UDQKPiA+IEFCRSkuIEhvd2V2ZXIsIGl0IGlzIHByb2JhYmx5IGEgZ29vZCBhIGlkZWEgdG8gaGF2
-ZSBhIGJldHRlciBtZWNoYW5pc20gZm9yCj4gPiByZXBvcnRpbmcgQkUgeHJ1biBpc3N1ZXMgdXAg
-dGhlIHN0YWNrIHRvIHRoZSBob3N0IENQVSBzaWRlIHRvby4KPiA+IAo+IAo+IFdpdGggYXJjaGl0
-ZWN0dXJlcyB0aGF0IGhhdmUgYW4gYXVkaW8gRFNQLCBJIHRoaW5rIGl0IG1ha2VzIHNlbnNlIHRv
-IGRvIGl0IGFzIGl0IGlzIGRvbmUgd2l0aCBPTUFQIHdoZXJlIHVuZGVycnVucyBjYW4gYmUgaGFu
-ZGxlZCBpbnRlcm5hbGx5IGJ5IHRoZSBEU1AuIFRoZSBuZWVkIGNhbWUgdXAgZm9yIG1lIGJlY2F1
-c2UgaW4gbXkgc2V0dXAgdGhlcmUgaXNu4oCZdCBhIGRlZGljYXRlZCBhdWRpbyBEU1AgYW5kIHRo
-ZSBCRSBjb21wb25lbnRzIGFyZSBvbiB0aGUgc2FtZSBTb0MgYXMgdGhlIEZFLCBydW5uaW5nL2Nv
-bnRyb2xsZWQgYnkgbGludXguICh3aXRoIHRoZSBleGNlcHRpb24gb2YgdGhlIGNvZGVjKQo+IAoK
-U28gaWYgdGhlcmUgaXMgbm8gYXVkaW8gRFNQIGFyY2hpdGVjdHVyZSB0aGVuIEkgYXNzdW1lIHlv
-dSBoYXZlIHNvbWUgc29ydCBvZiBEQUkgc3dpdGNoIG1hdHJpeC9taXhlcnMgaW4gdGhlIEhXIGFu
-ZCB5b3UgZG9uJ3QgZG8gYW55IEFTUkMgPyAKCj4gPiBDdXJyZW50bHkgdGhlIEZFIFBDTSB4cnVu
-IG1lY2hhbmlzbSBhbmQgRkUgcG9pbnRlcigpIGNhbGxiYWNrIGNvdWxkIGJlIHVzZWQgYnkKPiA+
-IHRoZSBob3N0IHRvIGdldCB0aGUgc2l6ZSBvZiBhbnkgRkU6QkUgdW5kZXJydW4vb3ZlcnJ1bi4g
-VGhpcyBpc24ndCBpZGVhbCBhbmQgd29udAo+ID4gd29yayB3aGVuIHRoZXJlIGNhbiBiZSBtdWx0
-aXBsZSBCRXMgZm9yIGEgRkUuCj4gPiAKPiAKPiBNYXkgSSBhc2sgd2hhdCBGRSBQQ00geHJ1biBt
-ZWNoYW5pc20geW91IGFyZSByZWZlcnJpbmcgdG8/IEkgYW0gdW5hd2FyZSBvZiB0aGlzIG1lY2hh
-bmlzbSBpbiBBU29DLiBBbG9uZyB3aXRoIGVycm9ycywgZGVsYXkgdG9vIG1heSB3YW50IHRvIGJl
-IGNvbnNpZGVyZWQgZnJvbSB0aGUgYmFja2VuZCBhcyB0aGUgZW50aXJlIGRhdGEgcGF0aCBzdGFy
-dHMgYXQgdGhlIEZFIGFuZCBlbmRzIGF0IHRoZSBCRS4gKEp1c3QgYSB0aG91Z2h0KQoKQUxTQSBj
-YW4gcmVwb3J0IFBDTSAoRkUpIHhydW5zIHVwIHRoZSBzdGFjay4gQSBxdWljayBncmVwIGluIHNv
-dW5kL2NvcmUvIGZvciBYUlVOIHdpbGwgc2hvdyB0aGUgbWVjaGFuaXNtLgoKVGhlcmUgaXMgYSBk
-ZWxheSByZXBvcnRpbmcgZm9yIERBSXMsIGJ1dCBpdCB3b3VsZCBuZWVkIHNvbWUgZXh0cmEgbG9n
-aWMgdG8gZXh0ZW5kIGl0IHRvIEJFIERBSXMgYXRtLiAKCkxpYW0KCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, 2013-02-27 at 09:43 -0600, Pierre-Louis Bossart wrote:
+> > It was originally intended that any underrun / overrun issues in a BE
+> > DAI would be handled internally by the audio DSP (and this worked well
+> > with the OMAP4 ABE). However, it is probably a good a idea to have a
+> > better mechanism for reporting BE xrun issues up the stack to the host
+> > CPU side too.
+> >
+> > Currently the FE PCM xrun mechanism and FE pointer() callback could be
+> > used by the host to get the size of any FE:BE underrun/overrun. This
+> > isn't ideal and wont work when there can be multiple BEs for a FE.
+> >
+> > It looks like some new code is required here to get this working
+> > correctly for BEs.
+> 
+> 
+> My view is that that underruns at the DSP level are fatal anyway, and 
+> that they a) should be avoided with proper real-time designs and b) they 
+> should be logged as error conditions to debug should they occur, not be 
+> tied to a FE. It would be really complicated to add code to 
+> back-propagate the errors, and if you have mixing/routing what 
+> individual FEs would do when this is a system error really.
+> -Pierre
+
+I agree, it would mostly be useful for DSP debug purposes e.g. things
+like DSP clock scaling/gating, FW errors. It was certainly never an
+issue with the OMAP ABE and we wont need it for SST audio either.
+
+Fwiw, it may not even be too complicated to implement since the BE PCM
+is a subset of the standard PCM and there is some code that already back
+propagates the routing when we re-parent BE's. It really depends on
+whether anyone cares enough to scope out a solution.
+
+Liam 
