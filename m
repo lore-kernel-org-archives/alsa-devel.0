@@ -1,39 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add
-	snd_soc_register_cpu()
-Date: Fri, 01 Mar 2013 21:50:07 +0100
-Message-ID: <5131147F.5090901@metafoo.de>
-References: <87zk11487a.wl%kuninori.morimoto.gx@renesas.com>
- <87vcag3hcj.wl%kuninori.morimoto.gx@renesas.com>
- <20130129014808.GC4748@opensource.wolfsonmicro.com>
- <87sj5k3f83.wl%kuninori.morimoto.gx@renesas.com>
- <87obg8z4u4.wl%kuninori.morimoto.gx@renesas.com>
- <5107FF97.1070601@wwwdotorg.org>
- <87halz82bm.wl%kuninori.morimoto.gx@renesas.com>
- <51097F0F.2030501@wwwdotorg.org>
- <87halw7sij.wl%kuninori.morimoto.gx@renesas.com>
- <5110349D.3050308@wwwdotorg.org>
- <87ehgvrs1h.wl%kuninori.morimoto.gx@renesas.com>
- <87bobzrry6.wl%kuninori.morimoto.gx@renesas.com>
- <511963F8.5020107@wwwdotorg.org>
- <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
- <511C22E2.60701@wwwdotorg.org>
- <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
- <511C6A1B.9000507@wwwdotorg.org>
- <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
- <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
- <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <87mwuptgju.wl%kuninori.morimoto.gx@renes as.com>
- <512FACAC.1000808@wwwdotorg.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: ASoC: no-pcm (backend) error propagation
+Date: Fri, 01 Mar 2013 21:24:50 +0000
+Message-ID: <1362173090.4439.44.camel@loki>
+References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
+ <1361953433.28121.33.camel@vega>
+ <190351B32828744FBA3BD9565204D27B01CA4E06@NA-MBX-03.mgc.mentorg.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 26F742602AC
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 21:48:13 +0100 (CET)
-In-Reply-To: <512FACAC.1000808@wwwdotorg.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0B102602F9
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 22:25:03 +0100 (CET)
+In-Reply-To: <190351B32828744FBA3BD9565204D27B01CA4E06@NA-MBX-03.mgc.mentorg.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -43,43 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/28/2013 08:14 PM, Stephen Warren wrote:
-> On 02/27/2013 05:42 PM, Kuninori Morimoto wrote:
->>
->> Hi Stephen
->>
->>> On 02/25/2013 01:51 AM, Kuninori Morimoto wrote:
->>>> Current ASoC has register function for platform/codec/dai/card,
->>>> but doesn't have for cpu.
->>>> It often produces confusion and fault on ASoC.
->>>> This patch adds very basic register function for cpu
->>>
->>> This seems reasonable to me.
->>>
->>> I can't recall how much influence the existing CODEC objects have on the
->>> various routing/matching decisions inside the ASoC core. While this
->>> patch does register and unregister CPU objects, I wonder if it should
->>> have more impact on any of the existing core code? Certainly I'd expect
->>> the CPU objects to show up in ASoC's debugfs and any similar files...
->>
->> This patch doesn't have any impact to existing drivers.
->> It just added new cpu list.
-> 
-> Sure. My point was that now you've added the list, perhaps the core ASoC
-> code might want to make use of it in the same way it makes use of CODEC
-> objects, since it's logically equivalent.
-
-In my opinion it makes sense to get rid of the distinction between CPU objects
-and CODEC objects in this case and instead introduce some kind of DAI container
-object. I mean the distinction is mostly for historic reasons from a time where
-it was only possible to bind a the cpu_dai of a link to a CPU DAI and the
-codec_dai to a CODEC DAI. But these dais both can for example be bound CODEC
-DAIs. I think to have a common base here would allow us to do some cleanups to
-the ASoC core and also avoid the duplication with snd_soc_of_get_cpu_dai_name
-and snd_soc_of_get_codec_dai_name which was introduced in this series.
-
-- Lars
+Ck9uIFRodSwgMjAxMy0wMi0yOCBhdCAwMDo0OSArMDAwMCwgRnJrdXNrYSwgSm9zaHVhIHdyb3Rl
+Ogo+ID4gT24gV2VkLCAyMDEzLTAyLTI3IGF0IDAyOjIxICswMDAwLCBGcmt1c2thLCBKb3NodWEg
+d3JvdGU6Cj4gPiA+IEhlbGxvLAo+ID4gPgo+ID4gPiBJIGFtIHdvcmtpbmcgb2ZmIG9mIHRoZSAz
+LjUuNyBicmFuY2ggb2YgdGhlIGtlcm5lbCB1c2luZyBhIGZyb250ZW5kLWJhY2tlbmQKPiA+IGFw
+cHJvYWNoIGZvciBteSBkcml2ZXIuIE5vIGFkZGl0aW9uYWwgcGF0Y2hlcyBoYXZlIGJlZW4gYWRk
+ZWQgZm9yIEFTb0MvQUxTQQo+ID4gZnJvbSB0aGUgMy41Ljcga2VybmVsIGJyYW5jaC4KPiA+ID4K
+PiA+ID4gTXkgcXVlc3Rpb24gcmVsYXRlcyB0byB0aGUgd2F5IHRoZSBuby1wY20gKGJhY2tlbmQp
+IHByb3BhZ2F0ZXMgZXJyb3JzIHRvIHRoZQo+ID4gZnJvbnQgZW5kLiBNeSBGRShmcm9udGVuZCkg
+Y29uc2lzdHMgb2YgYSBjcHUtZGFpLCBhIHBjbSBwbGF0Zm9ybSBkcml2ZXIsIGFuZCBhCj4gPiBk
+dW1teS1jb2RlYy4gTXkgQkUoYmFja2VuZCkgY29uc2lzdHMgb2YgYW5vdGhlciBjcHUtZGFpLCBh
+IG5vbi1wY20gcGxhdGZvcm0KPiA+IGRyaXZlciwgYW5kIGEgcmVhbCBjb2RlYy4KPiA+ID4gVGhl
+IG5vbi1wY20gb3BlcmF0ZXMgd2l0aCB0aGUgZG1hZW5naW5lIGJ1dCBqdXN0IGluIGFuIGF1dG9u
+b21vdXMgZmFzaGlvbgo+ID4gZXh0ZXJuYWwgdG8gdGhlIFBDTSdzIGtub3dsZWRnZS4KPiA+ID4K
+PiA+ID4gSSBoYXZlIHRoZSBwY20tcGxhdGZvcm0gZHJpdmVyIHBhc3NpbmcgZGF0YSB0byB0aGUg
+RkUgY3B1LWRhaSBhbmQgdGhlIGJhY2tlbmQKPiA+IHBsYXRmb3JtIHRoZW4gdGFrZXMgdGhlIGRh
+dGEgZnJvbSB0aGUgZnJvbnRlbmQncyBjcHUtZGFpIGFuZCBwYXNzZXMgaXQgb24gdG8gdGhlCj4g
+PiBCRSBjcHUtZGFpLCB3aGljaCB0aGVuIGNvbmZpZ3VyZXMgdGhlIGNvZGVjLWRhaSB0byBnZXQg
+b3V0cHV0Lgo+ID4gPgo+ID4gPiBJbiB0aGUgZnJvbnRlbmQgaWYvd2hlbmV2ZXIgdGhlcmUgaXMg
+YW4gdW5kZXJydW4gZXJyb3IgaW4gdGhlIGNwdS1kYWksIEkgY2FuCj4gPiBkaXJlY3RseSBjYWxs
+IHNuZF9wY21fc3RvcCB0byBzdG9wIHRoZSBzdHJlYW0gYW5kIHJlcG9ydCB0aGUgZXJyb3Igc3Rh
+dGUuIEkgY2FuCj4gPiBkbyB0aGlzIGJlY2F1c2UgdGhlIHN1YnN0cmVhbS0+b3BzIGhhdmUgcHJv
+cGVybHkgYmVlbiBkZWZpbmVkIGluIHRoZSBmcm9udGVuZAo+ID4gcGNtLiBIb3dldmVyLCBpbiB0
+aGUgYmFja2VuZCwgdGhlIHN1YnN0cmVhbS0+b3BzIG5ldmVyIGdldCBpbml0aWFsaXplZCBhbmQK
+PiA+IHJpZ2h0ZnVsbHkgc28gc2luY2UgdGhlcmUgaXNuJ3QgYSB2YWxpZCBwY20gZm9yIHRoZSBi
+YWNrZW5kLgo+ID4gPgo+ID4gPiBNeSBxdWVzdGlvbiBpcywgd2hhdCBpcyB0aGUgY29ycmVjdC9h
+bnkgd2F5IHRvIGxldCB0aGUgZnJvbnRlbmQgUENNIHN0cmVhbQo+ID4ga25vdyB0aGF0IGFuIHVu
+ZGVycnVuIGhhcyBvY2N1cnJlZCBpbiB0aGUgYmFja2VuZD8gSXMgdGhlcmUgYSBtZWNoYW5pc20g
+dG8KPiA+IGhhbmRsZSB0aGlzIGluIEFTb0M/IExvb2tpbmcgdGhyb3VnaCB0aGUgY29kZSwgSSBj
+YW5ub3QgZmluZCBzdWNoIGEgbWVjaGFuaXNtLgo+ID4gSSBoYXZlIGEgZmVlbGluZyB0aGF0IHRo
+ZXJlIHNob3VsZCBiZSBzb21ldGhpbmcgbGlrZSBzbmRfc29jX3BjbV9zdG9wIHRvIGNoZWNrCj4g
+PiB0byBzZWUgaWYgd2UgYXJlIGluIGEgRkUvQkUgY29uZmlndXJhdGlvbiBhbmQgYWN0IGFjY29y
+ZGluZ2x5IHRvIHN0b3AgdGhlIEZFIFBDTQo+ID4gc3RyZWFtIGFuZCByZXBvcnQgZXJyb3JzLgo+
+ID4gPgo+ID4gCj4gPiBJdCB3YXMgb3JpZ2luYWxseSBpbnRlbmRlZCB0aGF0IGFueSB1bmRlcnJ1
+biAvIG92ZXJydW4gaXNzdWVzIGluIGEgQkUgREFJIHdvdWxkCj4gPiBiZSBoYW5kbGVkIGludGVy
+bmFsbHkgYnkgdGhlIGF1ZGlvIERTUCAoYW5kIHRoaXMgd29ya2VkIHdlbGwgd2l0aCB0aGUgT01B
+UDQKPiA+IEFCRSkuIEhvd2V2ZXIsIGl0IGlzIHByb2JhYmx5IGEgZ29vZCBhIGlkZWEgdG8gaGF2
+ZSBhIGJldHRlciBtZWNoYW5pc20gZm9yCj4gPiByZXBvcnRpbmcgQkUgeHJ1biBpc3N1ZXMgdXAg
+dGhlIHN0YWNrIHRvIHRoZSBob3N0IENQVSBzaWRlIHRvby4KPiA+IAo+IAo+IFdpdGggYXJjaGl0
+ZWN0dXJlcyB0aGF0IGhhdmUgYW4gYXVkaW8gRFNQLCBJIHRoaW5rIGl0IG1ha2VzIHNlbnNlIHRv
+IGRvIGl0IGFzIGl0IGlzIGRvbmUgd2l0aCBPTUFQIHdoZXJlIHVuZGVycnVucyBjYW4gYmUgaGFu
+ZGxlZCBpbnRlcm5hbGx5IGJ5IHRoZSBEU1AuIFRoZSBuZWVkIGNhbWUgdXAgZm9yIG1lIGJlY2F1
+c2UgaW4gbXkgc2V0dXAgdGhlcmUgaXNu4oCZdCBhIGRlZGljYXRlZCBhdWRpbyBEU1AgYW5kIHRo
+ZSBCRSBjb21wb25lbnRzIGFyZSBvbiB0aGUgc2FtZSBTb0MgYXMgdGhlIEZFLCBydW5uaW5nL2Nv
+bnRyb2xsZWQgYnkgbGludXguICh3aXRoIHRoZSBleGNlcHRpb24gb2YgdGhlIGNvZGVjKQo+IAoK
+U28gaWYgdGhlcmUgaXMgbm8gYXVkaW8gRFNQIGFyY2hpdGVjdHVyZSB0aGVuIEkgYXNzdW1lIHlv
+dSBoYXZlIHNvbWUgc29ydCBvZiBEQUkgc3dpdGNoIG1hdHJpeC9taXhlcnMgaW4gdGhlIEhXIGFu
+ZCB5b3UgZG9uJ3QgZG8gYW55IEFTUkMgPyAKCj4gPiBDdXJyZW50bHkgdGhlIEZFIFBDTSB4cnVu
+IG1lY2hhbmlzbSBhbmQgRkUgcG9pbnRlcigpIGNhbGxiYWNrIGNvdWxkIGJlIHVzZWQgYnkKPiA+
+IHRoZSBob3N0IHRvIGdldCB0aGUgc2l6ZSBvZiBhbnkgRkU6QkUgdW5kZXJydW4vb3ZlcnJ1bi4g
+VGhpcyBpc24ndCBpZGVhbCBhbmQgd29udAo+ID4gd29yayB3aGVuIHRoZXJlIGNhbiBiZSBtdWx0
+aXBsZSBCRXMgZm9yIGEgRkUuCj4gPiAKPiAKPiBNYXkgSSBhc2sgd2hhdCBGRSBQQ00geHJ1biBt
+ZWNoYW5pc20geW91IGFyZSByZWZlcnJpbmcgdG8/IEkgYW0gdW5hd2FyZSBvZiB0aGlzIG1lY2hh
+bmlzbSBpbiBBU29DLiBBbG9uZyB3aXRoIGVycm9ycywgZGVsYXkgdG9vIG1heSB3YW50IHRvIGJl
+IGNvbnNpZGVyZWQgZnJvbSB0aGUgYmFja2VuZCBhcyB0aGUgZW50aXJlIGRhdGEgcGF0aCBzdGFy
+dHMgYXQgdGhlIEZFIGFuZCBlbmRzIGF0IHRoZSBCRS4gKEp1c3QgYSB0aG91Z2h0KQoKQUxTQSBj
+YW4gcmVwb3J0IFBDTSAoRkUpIHhydW5zIHVwIHRoZSBzdGFjay4gQSBxdWljayBncmVwIGluIHNv
+dW5kL2NvcmUvIGZvciBYUlVOIHdpbGwgc2hvdyB0aGUgbWVjaGFuaXNtLgoKVGhlcmUgaXMgYSBk
+ZWxheSByZXBvcnRpbmcgZm9yIERBSXMsIGJ1dCBpdCB3b3VsZCBuZWVkIHNvbWUgZXh0cmEgbG9n
+aWMgdG8gZXh0ZW5kIGl0IHRvIEJFIERBSXMgYXRtLiAKCkxpYW0KCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
