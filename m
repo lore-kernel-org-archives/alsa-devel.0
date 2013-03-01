@@ -1,91 +1,94 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add snd_soc_register_cpu()
-Date: Fri, 1 Mar 2013 17:44:08 +0800
-Message-ID: <20130301094406.GT25302@opensource.wolfsonmicro.com>
-References: <511963F8.5020107@wwwdotorg.org>
- <87bobqf5yq.wl%kuninori.morimoto.gx@renesas.com>
- <511C22E2.60701@wwwdotorg.org>
- <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
- <511C6A1B.9000507@wwwdotorg.org>
- <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
- <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
- <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <878v6cg4io.wl%kuninori.morimoto.gx@renesas.com>
- <512E8C99.2040708@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
+ of serializers
+Date: Fri, 1 Mar 2013 18:08:27 +0800
+Message-ID: <20130301100820.GU25302@opensource.wolfsonmicro.com>
+References: <1631475.f7GPhLiLxV@ganymedes> <8652573.mejjkM8Cr8@ganymedes>
+ <512F241F.9080305@topic.nl> <2559045.s5gCxPtNFX@ganymedes>
+ <512F5959.9030004@gmail.com> <512F5B1C.4020508@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6157299305784695833=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <512E8C99.2040708-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============4746500233710087427=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28A0B265DC7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2013 11:08:57 +0100 (CET)
+In-Reply-To: <512F5B1C.4020508@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Mike Looijmans <mike.looijmans@topic.nl>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6157299305784695833==
+--===============4746500233710087427==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O0IT7rLmWuveAsNR"
+	protocol="application/pgp-signature"; boundary="b3OyYALfe3DXUU4J"
 Content-Disposition: inline
 
 
---O0IT7rLmWuveAsNR
+--b3OyYALfe3DXUU4J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 27, 2013 at 03:45:45PM -0700, Stephen Warren wrote:
+On Thu, Feb 28, 2013 at 02:26:52PM +0100, Daniel Mack wrote:
+> On 28.02.2013 14:19, Daniel Mack wrote:
 
-> I can't recall how much influence the existing CODEC objects have on the
-> various routing/matching decisions inside the ASoC core. While this
-> patch does register and unregister CPU objects, I wonder if it should
-> have more impact on any of the existing core code? Certainly I'd expect
-> the CPU objects to show up in ASoC's debugfs and any similar files...
+> > Be careful with such changes. In general, DT bindings are forever in
+> > general, because you can't update all the users out there, and so every
+> > binding that has ever existed has to be supported in the future, for
+> > backwards compatibility.
 
-All that happens with routing is that routes will be bound within the
-current DAPM context before other objects are searched, otherwise
-everything is very flat.
+> > In this case, we might make an exception, given that for AM33xx, the
+> > necessary DMA bits are still not missing, and Davinci is not yet fully
+> > ported to DT either. So nobody really uses the driver on this platforms.
 
---O0IT7rLmWuveAsNR
+> Sorry, let me rephrase that last paragraph:
+
+> In this case, we might make an exception, given that for AM33xx, the
+> necessary DMA bits are still missing, and Davinci is not yet fully
+> ported to DT either. So supposedly nobody really uses the driver on this
+> platforms via DT.
+
+Sounds plausible, though without having seen the actual change I can't
+comment for certain.
+
+--b3OyYALfe3DXUU4J
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRMHgGAAoJELSic+t+oim97/oP/2TNpljLhzSrddkLe2VSV2ug
-DZgK/BI12KepHmVNPzSNNicIUvCcDFhoQml2a/qkwT/DYAsHsIkOxgO7ec9QIbTy
-zVxFXDjFIIiLh8FucwzCZWrTxC5MaFEhKG4qcxjXeDwr/hL39jepSvhvrEJ4791b
-uAPK7t10G2IN+d+HDlPbAinowAPgcCY7nDQXmA/kNvfwEJLmcdD5Gxf1blDyLDyn
-QEpKlmTJmBRnYHkOztnXcmTjDf6TIyymYItdyDSaNrOARaMWUh4Mky+nbCswiKHX
-T61z59pKPUmdJDLg+kHWT3Fax1upNtfYAVmDOSuBRQYecZIU/TIHlNOs4C0zrR6S
-hKY+1PTn4k3Zf5puQeyCqfFQUBb3I4Mm+dfSo0oxpUTH94X14tnB+D2dQ9NNnZH9
-fOIY8AOSuIVkWBbu64cIgHCXZAf42lVfDNnxTgZMDvdXK4jseT85viu9or7BWKX3
-nd5J37wAlI1CKhcz98lQyBcOU04Agku8VVTvDsS/6JVxPp/7rpU4dyiGHXBWn9gY
-QcSjXIyKeytFmrqOthsqqkyQ/y9cBkR7NXkJyOpToUAlM5Br+ocTq7rAkzDICC1A
-wJlr/x52hJXVPo+Tg1UOrQBcaoEzc8ng6jLALDdM/RwRVJdj8eozXowwt+0uTs3j
-9rgc0ZSb2om57Vg6hmyx
-=o9uO
+iQIcBAEBAgAGBQJRMH4NAAoJELSic+t+oim9o6YP/3JojW3GEU7AjpfgXfT/lk6S
+Gvd/HKGqOYXECGXDC8mq3xqSJ9IHvLuqxzOO7oV5zEubUMczFVxuip07hk6yp4N8
+Qb1XtBvIN3xWlzEVX+pNJTJb2fImCm9C/HDBBrRzlWALWf5dnN6qmXWwJMTprG3n
+vme2xtDrRggHi4v3TnSgdjcvCJEnY+T3mBpAiJVCbKV+7+UZTREorsiVg8/e4vsS
+GtM2LgSN3LB+bk9Ya4cYXi2Gkr/pS27AiMFR6yY5AGweEA8KNh4frXRtJpYt0jQs
+/R0j/TbywO8T48pmywiiD+y50mRlODgy30Qk6BxLXTmLD7R5eQ0AlmSSKtX59qBB
+G7SDZKqkblDFOuqNccyPIlQiZnvJaGsyDCX/RrCzMZ9JthFULupVGcUySJbRoWAr
+Z6To517GzrsDjEFtoxs3oKw5V9ctWeEvcW0C9Vgz6GD5W31Q6NJV9Tuj5ln32B7G
+/78s8tLir860Xkvs0q2bk+MVj1nv32PlP74t2oaM1xTDrTX6Jo/12bh8kuy84mSt
+rd03nPw8EU0wOu/A2S8nkDFOagGysJ8zBbohlmRdtbKSHo4LJtmfsqiw0/GHHSI1
+4iE3JwP1cYOMFRr98yB7upKnJANbFhWsYIjxAAh8Idn8SBjYwkwEU5+FyDzKy0jn
+FSeZWrzeqBbdSi4KriiE
+=DwGQ
 -----END PGP SIGNATURE-----
 
---O0IT7rLmWuveAsNR--
+--b3OyYALfe3DXUU4J--
 
---===============6157299305784695833==
+--===============4746500233710087427==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============6157299305784695833==--
+--===============4746500233710087427==--
