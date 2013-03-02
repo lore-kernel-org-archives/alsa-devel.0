@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-core: use
-	snd_soc_register_dais() on codec
-Date: Sat, 2 Mar 2013 11:51:36 +0800
-Message-ID: <20130302035134.GF6610@opensource.wolfsonmicro.com>
-References: <87bob8g517.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: max98090: Fix checkpatch errors
+ related to spacing
+Date: Sat, 2 Mar 2013 12:05:18 +0800
+Message-ID: <20130302040516.GH6610@opensource.wolfsonmicro.com>
+References: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0303347406702092323=="
+Content-Type: multipart/mixed; boundary="===============8531624163802623119=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9EBC3260799
- for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 04:52:03 +0100 (CET)
-In-Reply-To: <87bob8g517.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 359B6260799
+ for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 05:05:46 +0100 (CET)
+In-Reply-To: <1361429700-27457-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, jerry.wong@maximintegrated.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0303347406702092323==
+--===============8531624163802623119==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="H4SyuGOnfnj3aJqJ"
+	protocol="application/pgp-signature"; boundary="J/zg8ciPNcraoWb6"
 Content-Disposition: inline
 
 
---H4SyuGOnfnj3aJqJ
+--J/zg8ciPNcraoWb6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 25, 2013 at 12:40:40AM -0800, Kuninori Morimoto wrote:
-> snd_soc_register_dais() considers dai counts inside.
-> snd_soc_register_codec() does not need to care for it.
+On Thu, Feb 21, 2013 at 12:24:59PM +0530, Sachin Kamat wrote:
+> Fixes the following type of checkpatch errors:
+> ERROR: "foo * bar" should be "foo *bar"
 
-Applied, thanks.
+Applied both, thanks.
 
---H4SyuGOnfnj3aJqJ
+--J/zg8ciPNcraoWb6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRMXc+AAoJELSic+t+oim9iBgP/AwShsuqtq5NlayH0+XaFGVP
-r+AkAmAfowWc1yVFqG6enWnlb35V3osVila6srrqJO/6r31FlwKuOo/yeYmZAhoz
-GRQ4oDaw/eCSSdCD4/0zAG5f0idlmqefpx3RTUGpLBFJU9vVKfIZLhbz2rx0aPOB
-UvQMwJJlYmLW+A+HvZ0w613yRR1UnJVl0VridEsbowwAMrbrmDJ5CRMlAGyPotoi
-51Vsiv5QuYa0YK7X/9qqn5LNpiABFUaN2re/yF+gcuHFqt6KGodvh5R4/nusn2I7
-7RtCseqRPTU2fCcf61SHmz9JFmIlv4qtxiLSHZumMq/i8BLAZVDezWc8NaS1H5rp
-u0c8GReMWGvx+948BccZvZgNH1E/DxJzZWpvAKuf/EZxktYIv7OEnX+P9mAtDeoD
-9PF39v2toQV7IQU2w3WfmW0t/E/51smHVLXU/HjPYLN1fcrVokHeRSZNjScpv95o
-NwmeYurybSMZzngP4gtZHZ50nlNZC+Zu0A3TC4Ot3vN0mZJbS8x5bgebFFfOcA1b
-pBkbDwD9JkjnaS1mIT9p4GL7zHh/oxpJFSMBalswwVwGfmeGGN9ly5LeSR1C120/
-1qW3lyWeSzr6jZanFcCKdqMnEGPY/dLdfHHvCfJ2Xd/vgcDtaCSzCGw0D4hhFvOs
-oFcTerb061aSrl3+nx+S
-=2aux
+iQIcBAEBAgAGBQJRMXpzAAoJELSic+t+oim9eqMP/1HaoP18vXF1bwO2VV1ZMJzy
++EzyYclVpe4noARsosCbeFZUjAh0GDdRBJcv3A0KZXvYayBiVI7ILmyAx4K1LyUt
+WkcHeZD5LN9pLvy/xlaMRO7zpcHssmaCLMso/+DHZScwqLlsPR1A7twswFEjeMca
+bSuVx7kq+kRW5yUehF6qsy/Le5k5rWPRttJeqloAKCqFhORHLilPOjofgVealbIj
+C3XSsckAmpEobM0jcTJcYN90g1QL2rcTr027v47/QbVgrF5qnxviz15Pa26/cTPR
+YGw2vShRllGhRTM4IIEQrPb+EvKGzdtu1iHfuZxxedCiVUIQlMSnPinYUVFKDN6T
+18vsVgHdI0bsDhlb0dypKLT1pfohScX0M8ICHc6nlxR7rDte0Y9YH1IzH/qeoKLz
+hOQY5xuLclAledbGb79iKadiAgCXQPSzgDW2v4SPInqdgQLgnPC3Nuj2T4nOVZ5K
+PD2Ab/C/BOiEBnyEPNbPUWGym+mkZ24KouJ16+VS3t3CYjcK/AIRsPSsPxref0sf
+hacQZBSwz55295jfz9xLNa0WP47S5CML05rwvc2cttnguaJFprThlcXZtieZDFu3
+lGctrMoLwHi2HFNfhrMoBn/mn65W3D2GpOxLwIpcs90IDLdj/YobOvQv3u+2T1K6
+FGvpbJtm1Lj8eahTmYWS
+=Wrsl
 -----END PGP SIGNATURE-----
 
---H4SyuGOnfnj3aJqJ--
+--J/zg8ciPNcraoWb6--
 
---===============0303347406702092323==
+--===============8531624163802623119==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0303347406702092323==--
+--===============8531624163802623119==--
