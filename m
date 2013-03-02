@@ -1,51 +1,39 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] ASoC: omap: Check regulator enable for DAC
-	on Pandora
-Date: Sun, 03 Mar 2013 11:11:50 +0200
-Message-ID: <1362301910.2226.4.camel@puukko.homenet-68>
-References: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <5132146E.602@ti.com>
+From: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
+Subject: Re: [PATCH v2 3/4] spi: s3c64xx: add dma maxburst size initialization
+Date: Sat, 02 Mar 2013 22:23:40 +0000
+Message-ID: <20130302222340.6C4E13E2499@localhost>
+References: <001b01ce10d3$e9f78620$bde69260$%kim@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 365932616D2
- for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 10:12:21 +0100 (CET)
-In-Reply-To: <5132146E.602@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <spi-devel-general-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+In-Reply-To: <001b01ce10d3$e9f78620$bde69260$%kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/spi-devel-general>,
+	<mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=spi-devel-general>
+List-Post: <mailto:spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+List-Help: <mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/spi-devel-general>,
+	<mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
+Errors-To: spi-devel-general-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+To: Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: 'Kukjin Kim' <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, 'Russell King' <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, 'Vinod Koul' <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, 'Mark Brown' <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, 'Rob Herring' <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, 'Sangbeom Kim' <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, 'Dan Williams' <djbw-b10kYP2dOMg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2013-03-02 at 16:02 +0100, Peter Ujfalusi wrote:
-> > diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-> > index 805512f..953483e 100644
-> > --- a/sound/soc/omap/omap3pandora.c
-> > +++ b/sound/soc/omap/omap3pandora.c
-> > @@ -85,7 +85,11 @@ static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
-> >  	 * VCC power on/off and /PD pin high/low
-> >  	 */
-> >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> > -		regulator_enable(omap3pandora_dac_reg);
-> > +		ret = regulator_enable(omap3pandora_dac_reg);
-> > +		if (ret != 0) {
+On Fri, 22 Feb 2013 17:09:18 +0900, Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
+> This patch adds dma maxburst size initialization.
+> The maxburst should be set by MODE_CFGn.DMA_TYPE,
+> because the pl330 dma driver supports burst mode.
 > 
-> The rest of this machine driver uses "if (ret < 0)" or "if (ret)". I would use:
->  +		if (ret) {
-> 
-...
-> Otherwise:
-> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> 
-To whatever version of (ret != 0), (ret) or (ret < 0) is used :-)
+> Signed-off-by: Hyeonkook Kim <hk619.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Applied, thanks.
+
+g.
+
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
