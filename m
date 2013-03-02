@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add
-	snd_soc_register_cpu()
-Date: Sat, 2 Mar 2013 11:25:13 +0800
-Message-ID: <20130302032511.GB6610@opensource.wolfsonmicro.com>
-References: <511C22E2.60701@wwwdotorg.org>
- <87obfnofsx.wl%kuninori.morimoto.gx@renesas.com>
- <511C6A1B.9000507@wwwdotorg.org>
- <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
- <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
- <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <87mwuptgju.wl%kuninori.morimoto.gx@renesas.com>
- <512FACAC.1000808@wwwdotorg.org> <5131147F.5090901@metafoo.de>
- <1362174130.4439.61.camel@loki>
+Subject: Re: ASoC: no-pcm (backend) error propagation
+Date: Sat, 2 Mar 2013 11:32:07 +0800
+Message-ID: <20130302033205.GC6610@opensource.wolfsonmicro.com>
+References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
+ <1361953433.28121.33.camel@vega>
+ <190351B32828744FBA3BD9565204D27B01CA4E06@NA-MBX-03.mgc.mentorg.com>
+ <1362173090.4439.44.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8129127873562433938=="
+Content-Type: multipart/mixed; boundary="===============5134347528446804567=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2A27260799
- for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 04:25:50 +0100 (CET)
-In-Reply-To: <1362174130.4439.61.camel@loki>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5ADE26086D
+ for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 04:32:35 +0100 (CET)
+In-Reply-To: <1362173090.4439.44.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,85 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Frkuska,
+ Joshua" <Joshua_Frkuska@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8129127873562433938==
+--===============5134347528446804567==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
+	protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
 Content-Disposition: inline
 
 
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
+--1SQmhf2mF2YjsYvc
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2013 at 09:42:10PM +0000, Liam Girdwood wrote:
-> On Fri, 2013-03-01 at 21:50 +0100, Lars-Peter Clausen wrote:
+On Fri, Mar 01, 2013 at 09:24:50PM +0000, Liam Girdwood wrote:
+> On Thu, 2013-02-28 at 00:49 +0000, Frkuska, Joshua wrote:
 
-> > object. I mean the distinction is mostly for historic reasons from a time where
-> > it was only possible to bind a the cpu_dai of a link to a CPU DAI and the
-> > codec_dai to a CODEC DAI. But these dais both can for example be bound CODEC
-> > DAIs. I think to have a common base here would allow us to do some cleanups to
-> > the ASoC core and also avoid the duplication with snd_soc_of_get_cpu_dai_name
-> > and snd_soc_of_get_codec_dai_name which was introduced in this series.
+Reflowed both sets of text into 80 columns...
 
-> I've been thinking about this distinction for some time too (since
-> multi-component support). You are right, the division with CODEC and CPU
-> DAIs is entirely historical. The same logic also applies to platform and
-> codec drivers too.
+> > With architectures that have an audio DSP, I think it makes sense to
+> > do it as it is done with OMAP where underruns can be handled
+> > internally by the DSP. The need came up for me because in my setup
+> > there isn=E2=80=99t a dedicated audio DSP and the BE components are on =
+the
+> > same SoC as the FE, running/controlled by linux. (with the exception
+> > of the codec)
 
-The DAIs are now the same of course, it's just the containing object
-that differs.  Platform drivers are a bit different to CODEC drivers for
-me though in that they encapsulate the DMA equivalent of a DAI - I can
-see a SoC having multiple platform drivers if it's got a couple of
-different DMA controllers for example (I've seen some which have a
-fancier one on faster buses for example).
+> So if there is no audio DSP architecture then I assume you have some
+> sort of DAI switch matrix/mixers in the HW and you don't do any ASRC ?=20
 
-> This does need some mechanical cleanup where we have a generic audio
-> component driver object that contains generic DAIs. i.e. codec and
-> platform drivers would become generic component drivers with generic
-> DAIs.
+The modern Samsung SoCs are an example of this in mainline (currently a
+bit bodged rather than using soc-pcm) - they've got a couple of DAIs
+with a simple mixer that outputs on a single physical output, requiring
+that both streams be at the same sample rate.  There's no meaningful
+handling of underruns to do except for propagate them back up to the
+application layer, each stream can error totally independently.
 
-There's also the perennial questions about code churn and if it's worth
-it of course.
-
-Should we be adding a chip driver type rather than a CPU one here and
-then going through and doing the work to make sure that you can use a
-chip driver wherever you use a CODEC driver so we can start converting
-things over?
-
---9zSXsLTf0vkW971A
+--1SQmhf2mF2YjsYvc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRMXD+AAoJELSic+t+oim9WRMQAJ5D3YRxlL6pam+ufL3Ws/D0
-3drALnddtO203v9kS7VnJlW+zdv+raSC3rLLQghBq66EJb7mvN29RxRs1VpHXcBL
-XjNObAdIeamoOHHvBuiDZn1/oPuBRDnsVzw62ZrF+4ZbejwZaKhoqA5POv73sCBo
-LD9YtsiaiOKKjdMLZMf4DYIQwE4aUpB27pDkfZLS+7qp2HuZFa51157PiR2De7in
-s94P7pYu8YtrIJsNrmwUjLLSywyIc6a2l3GfGGoCkQsyXJMBZTdfVFZPAZE40Xt5
-WzWhZJwk9pTHyPX1TFdQaEDHRnFjoGx7pxixOEnbKowJiChkpLeRsCvkjj+bvx05
-3u6T7bWcuqFoB6Poo6+MRj6AlNDZrVjd81q/tYdLjxdSsxX9z7QaBYVlVl90Bcrd
-Z7jjuII6w86gsXt9WAOQ0lcjxfrmkFS3v6AV1ScneejJu6XGMxlfuVXTmZtUQJ03
-xWalQNKlWC5OfcKPqfQ64HBA8TjtZJ+veFslIUpHP70tUTI8BTNxKffWKIV2s5cx
-EnYbbQMmtL/7RLwEN4ohS9r+hPAEVKFcorQQ4gdjA58ysDMdLXli4xGS4cHzV57A
-gcG155PsGkZ+3lXpK74v/X/vAVCM7XuElVDIeUhu3GH//dOFnV/xtSxLVDTVGWNb
-/SPFA4frXq6HhIjzJrAv
-=mr5t
+iQIcBAEBAgAGBQJRMXKtAAoJELSic+t+oim90QoP/2sjAd21R8QZsFc2s3yi+hTZ
+Iw3vWp+ePIF2MbG3+QE9IVo7atpd6S9Dss8HX/1k7VYrwhkvfBMzVzuLgLSDVqMQ
+4qtxmsLLqfzT2aSei8FPgYvLygIJ7LAOvKoR5amwrM/6Rd2+2ARynI9dKTZ5BMck
+yYIdVp0KcrMnAcK56L6i+NBHatr5zCmMy7QS2uAMM17fVuVeXGOyvq2VvwHqL6We
+MFIQhxu4a2Zp7XUB4U8p8o6sO1pDrnocn84i/nmbBTaeQIDB9hKRMucdgTDEuY0F
+QhzcSXXXMxkeEhkjfblIU02RY8JEo6DpdXBoN17oe3JLfM8WSDDz3qIJ+Lg/rBMI
+H63GEAhmoZSH5iFZD7DqsKtJd+88rnGR5a7zYKzBQkREybgk+Jyyhvs0VqWJ6vQl
+XLEhYfLHkYqeBj3OdDtvj7owoBQx2N8hPxSbbbDRq5FmgLtv1gmeRY/SW7eZu5LL
+Sa0GkH7RFyUA7/wGd/7yoF0l7kn7jCY+EjAGVZmCkV5clULEOeXefCt4O6zUGNTE
+NIgwG4F3/NxonxO1xVSXl0kre9li+YGyGMfdB16CTjychKJDB+ua49/zo/iHjKwS
+fb/16c9VYhgeAuQomVzVQTGdu/k4OXu1W8Vd6lpzbyf2vF0I2TXdPQRXTTktLmSD
+lYEvSd3oMX3An3jrCc3H
+=9LbE
 -----END PGP SIGNATURE-----
 
---9zSXsLTf0vkW971A--
+--1SQmhf2mF2YjsYvc--
 
---===============8129127873562433938==
+--===============5134347528446804567==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8129127873562433938==--
+--===============5134347528446804567==--
