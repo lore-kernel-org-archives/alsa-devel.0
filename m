@@ -1,19 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: usb: Work around CM6631 sample rate
- change bug
-Date: Sat, 02 Mar 2013 14:12:33 +0100
-Message-ID: <5131FAC1.30007@gmail.com>
-References: <20130302130403.GD4452@pvv.ntnu.no>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap: Check regulator enable for DAC
+	on Pandora
+Date: Sat, 2 Mar 2013 16:02:06 +0100
+Message-ID: <5132146E.602@ti.com>
+References: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f52.google.com (mail-ee0-f52.google.com [74.125.83.52])
- by alsa0.perex.cz (Postfix) with ESMTP id DF873261636
- for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 14:12:36 +0100 (CET)
-Received: by mail-ee0-f52.google.com with SMTP id b15so2915723eek.11
- for <alsa-devel@alsa-project.org>; Sat, 02 Mar 2013 05:12:36 -0800 (PST)
-In-Reply-To: <20130302130403.GD4452@pvv.ntnu.no>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3E22261658
+ for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 16:01:39 +0100 (CET)
+In-Reply-To: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Torstein Hegge <hegge@resisty.net>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02.03.2013 14:04, Torstein Hegge wrote:
-> The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
-> sampling frequency while the interface is active.
+On 03/02/2013 08:49 AM, Mark Brown wrote:
+> This will probably never fail but it's better style.
 > 
-> Reset the interface after setting the sampling frequency, to ensure that the
-> sample rate set by snd_usb_init_sample_rate() is used. Otherwise, the device
-> will try to use the sample rate of the previous file, causing distorted sound
-> on sample rate changes.
-> 
-> Signed-off-by: Torstein Hegge <hegge@resisty.net>
-
-Acked-by: Daniel Mack <zonque@gmail.com>
-
-
-Thanks!
-
-Daniel
-
-
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/usb/pcm.c |   10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  sound/soc/omap/omap3pandora.c |    6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index d82e378..01978a6 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -710,6 +710,16 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->  		subs->need_setup_ep = false;
->  	}
->  
-> +	/* Some devices doesn't respond to sample rate changes while the
-> +	 * interface is active. */
-> +	switch (subs->stream->chip->usb_id) {
-> +	case USB_ID(0x0d8c, 0x0304): /* C-Media - Schiit USB Interface */
-> +	case USB_ID(0x0d8c, 0x0309): /* C-Media CM6631 */
-> +		usb_set_interface(subs->dev, subs->cur_audiofmt->iface,
-> +					subs->cur_audiofmt->altset_idx);
-> +		break;
-> +	}
-> +
->  	/* some unit conversions in runtime */
->  	subs->data_endpoint->maxframesize =
->  		bytes_to_frames(runtime, subs->data_endpoint->maxpacksize);
+> diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+> index 805512f..953483e 100644
+> --- a/sound/soc/omap/omap3pandora.c
+> +++ b/sound/soc/omap/omap3pandora.c
+> @@ -85,7 +85,11 @@ static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
+>  	 * VCC power on/off and /PD pin high/low
+>  	 */
+>  	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> -		regulator_enable(omap3pandora_dac_reg);
+> +		ret = regulator_enable(omap3pandora_dac_reg);
+> +		if (ret != 0) {
+
+The rest of this machine driver uses "if (ret < 0)" or "if (ret)". I would use:
+ +		if (ret) {
+
+> +			dev_err(w->dapm.dev, "Failed to power DAC: %d\n", ret);
+> +			return ret;
+> +		}
+>  		mdelay(1);
+>  		gpio_set_value(OMAP3_PANDORA_DAC_POWER_GPIO, 1);
+>  	} else {
 > 
+
+Otherwise:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
