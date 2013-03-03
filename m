@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap: Check regulator enable for DAC
-	on Pandora
-Date: Sat, 2 Mar 2013 16:02:06 +0100
-Message-ID: <5132146E.602@ti.com>
-References: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: wm8350: Use jiffies rather than
+ msecs in schedule_delayed_work()
+Date: Sun, 03 Mar 2013 16:20:50 +0800
+Message-ID: <1362298850.9569.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id E3E22261658
- for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2013 16:01:39 +0100 (CET)
-In-Reply-To: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-pb0-f46.google.com (mail-pb0-f46.google.com
+ [209.85.160.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8601D2616C9
+ for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 09:21:03 +0100 (CET)
+Received: by mail-pb0-f46.google.com with SMTP id uo15so2529114pbc.19
+ for <alsa-devel@alsa-project.org>; Sun, 03 Mar 2013 00:21:02 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2013 08:49 AM, Mark Brown wrote:
-> This will probably never fail but it's better style.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/omap/omap3pandora.c |    6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-> index 805512f..953483e 100644
-> --- a/sound/soc/omap/omap3pandora.c
-> +++ b/sound/soc/omap/omap3pandora.c
-> @@ -85,7 +85,11 @@ static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
->  	 * VCC power on/off and /PD pin high/low
->  	 */
->  	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> -		regulator_enable(omap3pandora_dac_reg);
-> +		ret = regulator_enable(omap3pandora_dac_reg);
-> +		if (ret != 0) {
+The delay parameter of schedule_delayed_work() is number of jiffies to wait
+rather than miliseconds.
 
-The rest of this machine driver uses "if (ret < 0)" or "if (ret)". I would use:
- +		if (ret) {
+Before commit 6d3c26bcb "ASoC: Use delayed work to debounce WM8350 jack IRQs",
+the debounce time is 200 miliseconds in wm8350_hp_jack_handler().
+So I think this is a bug when convert to use delayed work.
 
-> +			dev_err(w->dapm.dev, "Failed to power DAC: %d\n", ret);
-> +			return ret;
-> +		}
->  		mdelay(1);
->  		gpio_set_value(OMAP3_PANDORA_DAC_POWER_GPIO, 1);
->  	} else {
-> 
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/wm8350.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Otherwise:
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index ec0efc1..0e8b3aa 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1301,7 +1301,7 @@ static irqreturn_t wm8350_hpl_jack_handler(int irq, void *data)
+ 	if (device_may_wakeup(wm8350->dev))
+ 		pm_wakeup_event(wm8350->dev, 250);
+ 
+-	schedule_delayed_work(&priv->hpl.work, 200);
++	schedule_delayed_work(&priv->hpl.work, msecs_to_jiffies(200));
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1318,7 +1318,7 @@ static irqreturn_t wm8350_hpr_jack_handler(int irq, void *data)
+ 	if (device_may_wakeup(wm8350->dev))
+ 		pm_wakeup_event(wm8350->dev, 250);
+ 
+-	schedule_delayed_work(&priv->hpr.work, 200);
++	schedule_delayed_work(&priv->hpr.work, msecs_to_jiffies(200));
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+1.7.9.5
