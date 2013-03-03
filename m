@@ -1,100 +1,55 @@
-From: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
-Subject: Re: [PATCH v2 3/4] spi: s3c64xx: add dma maxburst size initialization
-Date: Sat, 02 Mar 2013 22:27:10 +0000
-Message-ID: <20130302222710.AE2143E2E65@localhost>
-References: <001b01ce10d3$e9f78620$bde69260$%kim@samsung.com>
+From: LH <lhyyryne@live.com>
+Subject: Re: Trouble about Roland UA-55 and snd-usb-audio module
+Date: Sun, 3 Mar 2013 14:25:42 +0200
+Message-ID: <BLU0-SMTP3373EB4C32D8FE75E0B686A7F90@phx.gbl>
+References: <50A349A5.6010403@firebuntu.com> <50A34C36.7080506@ladisch.de>
+ <50A56FE6.3050009@firebuntu.com> <loom.20130109T124035-460@post.gmane.org>
+ <50FC3009.9070401@ladisch.de> <loom.20130125T202229-943@post.gmane.org>
+ <loom.20130128T221942-836@post.gmane.org> <5106F107.90704@ladisch.de>
+ <loom.20130131T042847-100@post.gmane.org> <51140FFD.3060907@ladisch.de>
+ <5114F5D6.4070404@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <spi-devel-general-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-In-Reply-To: <001b01ce10d3$e9f78620$bde69260$%kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/spi-devel-general>,
-	<mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=spi-devel-general>
-List-Post: <mailto:spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-List-Help: <mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/spi-devel-general>,
-	<mailto:spi-devel-general-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
-Errors-To: spi-devel-general-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-To: Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: 'Kukjin Kim' <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, 'Russell King' <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, 'Vinod Koul' <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, 'Mark Brown' <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, 'Rob Herring' <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, 'Sangbeom Kim' <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, 'Dan Williams' <djbw-b10kYP2dOMg@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from blu0-omc3-s16.blu0.hotmail.com (blu0-omc3-s16.blu0.hotmail.com
+ [65.55.116.91]) by alsa0.perex.cz (Postfix) with ESMTP id 7B6F62616EF
+ for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 13:25:46 +0100 (CET)
+In-Reply-To: <5114F5D6.4070404@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 22 Feb 2013 17:09:18 +0900, Boojin Kim <boojin.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
-> This patch adds dma maxburst size initialization.
-> The maxburst should be set by MODE_CFGn.DMA_TYPE,
-> because the pl330 dma driver supports burst mode.
-> 
-> Signed-off-by: Hyeonkook Kim <hk619.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+On 02/08/2013 02:55 PM, Clemens Ladisch wrote:
+> I wrote:
+>>        ALSA: usb-audio: detect implicit feedback on Roland devices
+> This probably works only with the first rate (44.1 kHz), but please
+> test anyway.
+>
+>
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
+I can confirm the current version 
+0ddd4478912f64e6976774c00d29a5d24adab479 works at 44.1kHz with the 
+Roland Quad-Capture.
 
-Acked-by: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
+$ lsusb|grep Roland
+Bus 003 Device 002: ID 0582:012f Roland Corp.
 
-This series probably needs to be merged together through the arm-soc
-tree.
 
-g.
-
-> ---
->  drivers/spi/spi-s3c64xx.c |   18 ++++++++++++++++++
->  1 files changed, 18 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index e862ab8..5e6cafe 100644
-> --- a/drivers/spi/spi-s3c64xx.c
-> +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -287,10 +287,20 @@ static void prepare_dma(struct s3c64xx_spi_dma_data *dma,
->  	struct s3c64xx_spi_driver_data *sdd;
->  	struct samsung_dma_prep info;
->  	struct samsung_dma_config config;
-> +	void __iomem *regs;
-> +	unsigned int mode_cfg;
-> 
->  	if (dma->direction == DMA_DEV_TO_MEM) {
->  		sdd = container_of((void *)dma,
->  			struct s3c64xx_spi_driver_data, rx_dma);
-> +
-> +		regs = sdd->regs;
-> +		mode_cfg = readl(regs + S3C64XX_SPI_MODE_CFG);
-> +		if (mode_cfg & S3C64XX_SPI_MODE_4BURST)
-> +			config.maxburst = 4;
-> +		else
-> +			config.maxburst = 1;
-> +
->  		config.direction = sdd->rx_dma.direction;
->  		config.fifo = sdd->sfr_start + S3C64XX_SPI_RX_DATA;
->  		config.width = sdd->cur_bpw / 8;
-> @@ -298,6 +308,14 @@ static void prepare_dma(struct s3c64xx_spi_dma_data *dma,
->  	} else {
->  		sdd = container_of((void *)dma,
->  			struct s3c64xx_spi_driver_data, tx_dma);
-> +
-> +		regs = sdd->regs;
-> +		mode_cfg = readl(regs + S3C64XX_SPI_MODE_CFG);
-> +		if (mode_cfg & S3C64XX_SPI_MODE_4BURST)
-> +			config.maxburst = 4;
-> +		else
-> +			config.maxburst = 1;
-> +
->  		config.direction =  sdd->tx_dma.direction;
->  		config.fifo = sdd->sfr_start + S3C64XX_SPI_TX_DATA;
->  		config.width = sdd->cur_bpw / 8;
-> --
-> 1.7.5.4
-> 
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-
--- 
-Grant Likely, B.Sc, P.Eng.
-Secret Lab Technologies, Ltd.
-
-------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
+Regards,
+Lasse
