@@ -1,18 +1,19 @@
-From: Mark Hills <mark@xwax.org>
-Subject: [PATCH RFC 3/4] snd-usb-audio: Trust fields given in
-	the quirk
-Date: Sun,  3 Mar 2013 17:57:36 +0000
-Message-ID: <1362333457-23895-3-git-send-email-mark@xwax.org>
-References: <alpine.LNX.2.01.1303021621060.8986@localhost>
- <1362333457-23895-1-git-send-email-mark@xwax.org>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: [PATCH] ALSA: usb: Work around CM6631 sample rate
+ change bug
+Date: Sun, 3 Mar 2013 20:29:22 +0100
+Message-ID: <20130303192922.GE4452@pvv.ntnu.no>
+References: <20130302130403.GD4452@pvv.ntnu.no>
+ <5131FAC1.30007@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F31E2625D7
- for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 18:57:39 +0100 (CET)
-In-Reply-To: <1362333457-23895-1-git-send-email-mark@xwax.org>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DC472625D9
+ for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 20:29:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <5131FAC1.30007@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Damien Zammit <damien@zamaudio.com>, Chris J Arges <christopherarges@gmail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The maxpacksize field is given in some quirks, but it gets ignored
-(in favour of wMaxPacketSize from the first endpoint.) This patch
-favours the one in the quirk.
+On Sat, Mar 02, 2013 at 02:12:33PM +0100, Daniel Mack wrote:
+> On 02.03.2013 14:04, Torstein Hegge wrote:
+> > The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
+> > sampling frequency while the interface is active.
+> > 
+> > Reset the interface after setting the sampling frequency, to ensure that the
+> > sample rate set by snd_usb_init_sample_rate() is used. Otherwise, the device
+> > will try to use the sample rate of the previous file, causing distorted sound
+> > on sample rate changes.
+> > 
+> > Signed-off-by: Torstein Hegge <hegge@resisty.net>
+> 
+> Acked-by: Daniel Mack <zonque@gmail.com>
 
-Digidesign Mbox and Mbox 2 are the only affected quirks and the
-devices are assumed to be working without this patch. So for safety
-against the values in the quirk being incorrect, remove them.
+While this does fix the sample rate change problem, it introduces a new
+problem. With at least one media player application (xbmc) this patch
+causes the usb sound card to not output sound when starting a video
+file. Skipping forward or backward in the video stream restores audio
+output.
 
-The datainterval is also ignored but there are not currently any
-quirks which choose to override this.
+I haven't yet been able to look into why this happens, or why xbmc
+behaves different from mplayer and vlc.
 
-Cc: Damien Zammit <damien@zamaudio.com>
-Cc: Chris J Arges <christopherarges@gmail.com>
----
- sound/usb/quirks-table.h | 3 ---
- sound/usb/quirks.c       | 6 ++++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
+Torstein
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 1c8db85..3614e9b 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2965,7 +2965,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
- 					.endpoint = 0x02,
- 					.ep_attr = 0x01,
--					.maxpacksize = 0x130,
- 					.rates = SNDRV_PCM_RATE_44100 |
- 						 SNDRV_PCM_RATE_48000,
- 					.rate_min = 44100,
-@@ -3013,7 +3012,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 					.attributes = 0x00,
- 					.endpoint = 0x03,
- 					.ep_attr = USB_ENDPOINT_SYNC_ASYNC,
--					.maxpacksize = 0x128,
- 					.rates = SNDRV_PCM_RATE_48000,
- 					.rate_min = 48000,
- 					.rate_max = 48000,
-@@ -3039,7 +3037,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
- 					.endpoint = 0x85,
- 					.ep_attr = USB_ENDPOINT_SYNC_SYNC,
--					.maxpacksize = 0x128,
- 					.rates = SNDRV_PCM_RATE_48000,
- 					.rate_min = 48000,
- 					.rate_max = 48000,
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index b0f7140..0745eea 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -165,8 +165,10 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		return -EINVAL;
- 	}
- 	alts = &iface->altsetting[fp->altset_idx];
--	fp->datainterval = snd_usb_parse_datainterval(chip, alts);
--	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-+	if (fp->datainterval == 0)
-+		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
-+	if (fp->maxpacksize == 0)
-+		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
- 	usb_set_interface(chip->dev, fp->iface, 0);
- 	snd_usb_init_pitch(chip, fp->iface, alts, fp);
- 	snd_usb_init_sample_rate(chip, fp->iface, alts, fp, fp->rate_max);
--- 
-1.7.12.1
+> > ---
+> >  sound/usb/pcm.c |   10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> > index d82e378..01978a6 100644
+> > --- a/sound/usb/pcm.c
+> > +++ b/sound/usb/pcm.c
+> > @@ -710,6 +710,16 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+> >  		subs->need_setup_ep = false;
+> >  	}
+> >  
+> > +	/* Some devices doesn't respond to sample rate changes while the
+> > +	 * interface is active. */
+> > +	switch (subs->stream->chip->usb_id) {
+> > +	case USB_ID(0x0d8c, 0x0304): /* C-Media - Schiit USB Interface */
+> > +	case USB_ID(0x0d8c, 0x0309): /* C-Media CM6631 */
+> > +		usb_set_interface(subs->dev, subs->cur_audiofmt->iface,
+> > +					subs->cur_audiofmt->altset_idx);
+> > +		break;
+> > +	}
+> > +
+> >  	/* some unit conversions in runtime */
+> >  	subs->data_endpoint->maxframesize =
+> >  		bytes_to_frames(runtime, subs->data_endpoint->maxpacksize);
+> > 
