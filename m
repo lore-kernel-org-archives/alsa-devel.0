@@ -1,17 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: max98090: Convert to devm_regmap_init_i2c
-Date: Sun, 03 Mar 2013 16:49:06 +0800
-Message-ID: <1362300546.9569.6.camel@phoenix>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH] ASoC: omap: Check regulator enable for DAC
+	on Pandora
+Date: Sun, 03 Mar 2013 11:11:50 +0200
+Message-ID: <1362301910.2226.4.camel@puukko.homenet-68>
+References: <1362210594-17633-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <5132146E.602@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f46.google.com (mail-da0-f46.google.com
- [209.85.210.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 060902616CF
- for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 09:49:16 +0100 (CET)
-Received: by mail-da0-f46.google.com with SMTP id z8so2054672dad.33
- for <alsa-devel@alsa-project.org>; Sun, 03 Mar 2013 00:49:15 -0800 (PST)
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 365932616D2
+ for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 10:12:21 +0100 (CET)
+In-Reply-To: <5132146E.602@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Ralph Birt <ralph.birt@maximintegrated.com>, Jerry Wong <jerry.wong@maximintegrated.com>, Matthew Mowdy <matthew.mowdy@maximintegrated.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/max98090.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+On Sat, 2013-03-02 at 16:02 +0100, Peter Ujfalusi wrote:
+> > diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+> > index 805512f..953483e 100644
+> > --- a/sound/soc/omap/omap3pandora.c
+> > +++ b/sound/soc/omap/omap3pandora.c
+> > @@ -85,7 +85,11 @@ static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
+> >  	 * VCC power on/off and /PD pin high/low
+> >  	 */
+> >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> > -		regulator_enable(omap3pandora_dac_reg);
+> > +		ret = regulator_enable(omap3pandora_dac_reg);
+> > +		if (ret != 0) {
+> 
+> The rest of this machine driver uses "if (ret < 0)" or "if (ret)". I would use:
+>  +		if (ret) {
+> 
+...
+> Otherwise:
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> 
+To whatever version of (ret != 0), (ret) or (ret < 0) is used :-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index fc17604..6dd36da 100755
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2324,28 +2324,20 @@ static int max98090_i2c_probe(struct i2c_client *i2c,
- 	max98090->pdata = i2c->dev.platform_data;
- 	max98090->irq = i2c->irq;
- 
--	max98090->regmap = regmap_init_i2c(i2c, &max98090_regmap);
-+	max98090->regmap = devm_regmap_init_i2c(i2c, &max98090_regmap);
- 	if (IS_ERR(max98090->regmap)) {
- 		ret = PTR_ERR(max98090->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
--		goto err_enable;
-+		return ret;
- 	}
- 
--	ret = snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_max98090, max98090_dai,
--			ARRAY_SIZE(max98090_dai));
--	if (ret < 0)
--		regmap_exit(max98090->regmap);
--
--err_enable:
--	return ret;
-+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98090,
-+				      max98090_dai, ARRAY_SIZE(max98090_dai));
- }
- 
- static int max98090_i2c_remove(struct i2c_client *client)
- {
--	struct max98090_priv *max98090 = dev_get_drvdata(&client->dev);
- 	snd_soc_unregister_codec(&client->dev);
--	regmap_exit(max98090->regmap);
- 	return 0;
- }
- 
--- 
-1.7.9.5
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
