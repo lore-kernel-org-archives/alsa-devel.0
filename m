@@ -1,18 +1,17 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: wm8350: Use jiffies rather than
- msecs in schedule_delayed_work()
-Date: Sun, 03 Mar 2013 16:20:50 +0800
-Message-ID: <1362298850.9569.2.camel@phoenix>
+Subject: [PATCH] ASoC: max98090: Convert to devm_regmap_init_i2c
+Date: Sun, 03 Mar 2013 16:49:06 +0800
+Message-ID: <1362300546.9569.6.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f46.google.com (mail-pb0-f46.google.com
- [209.85.160.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 8601D2616C9
- for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 09:21:03 +0100 (CET)
-Received: by mail-pb0-f46.google.com with SMTP id uo15so2529114pbc.19
- for <alsa-devel@alsa-project.org>; Sun, 03 Mar 2013 00:21:02 -0800 (PST)
+Received: from mail-da0-f46.google.com (mail-da0-f46.google.com
+ [209.85.210.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 060902616CF
+ for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2013 09:49:16 +0100 (CET)
+Received: by mail-da0-f46.google.com with SMTP id z8so2054672dad.33
+ for <alsa-devel@alsa-project.org>; Sun, 03 Mar 2013 00:49:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Ralph Birt <ralph.birt@maximintegrated.com>, Jerry Wong <jerry.wong@maximintegrated.com>, Matthew Mowdy <matthew.mowdy@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
-
-The delay parameter of schedule_delayed_work() is number of jiffies to wait
-rather than miliseconds.
-
-Before commit 6d3c26bcb "ASoC: Use delayed work to debounce WM8350 jack IRQs",
-the debounce time is 200 miliseconds in wm8350_hp_jack_handler().
-So I think this is a bug when convert to use delayed work.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/wm8350.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/max98090.c |   16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index ec0efc1..0e8b3aa 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -1301,7 +1301,7 @@ static irqreturn_t wm8350_hpl_jack_handler(int irq, void *data)
- 	if (device_may_wakeup(wm8350->dev))
- 		pm_wakeup_event(wm8350->dev, 250);
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index fc17604..6dd36da 100755
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2324,28 +2324,20 @@ static int max98090_i2c_probe(struct i2c_client *i2c,
+ 	max98090->pdata = i2c->dev.platform_data;
+ 	max98090->irq = i2c->irq;
  
--	schedule_delayed_work(&priv->hpl.work, 200);
-+	schedule_delayed_work(&priv->hpl.work, msecs_to_jiffies(200));
+-	max98090->regmap = regmap_init_i2c(i2c, &max98090_regmap);
++	max98090->regmap = devm_regmap_init_i2c(i2c, &max98090_regmap);
+ 	if (IS_ERR(max98090->regmap)) {
+ 		ret = PTR_ERR(max98090->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
+-		goto err_enable;
++		return ret;
+ 	}
  
- 	return IRQ_HANDLED;
+-	ret = snd_soc_register_codec(&i2c->dev,
+-			&soc_codec_dev_max98090, max98090_dai,
+-			ARRAY_SIZE(max98090_dai));
+-	if (ret < 0)
+-		regmap_exit(max98090->regmap);
+-
+-err_enable:
+-	return ret;
++	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98090,
++				      max98090_dai, ARRAY_SIZE(max98090_dai));
  }
-@@ -1318,7 +1318,7 @@ static irqreturn_t wm8350_hpr_jack_handler(int irq, void *data)
- 	if (device_may_wakeup(wm8350->dev))
- 		pm_wakeup_event(wm8350->dev, 250);
  
--	schedule_delayed_work(&priv->hpr.work, 200);
-+	schedule_delayed_work(&priv->hpr.work, msecs_to_jiffies(200));
- 
- 	return IRQ_HANDLED;
+ static int max98090_i2c_remove(struct i2c_client *client)
+ {
+-	struct max98090_priv *max98090 = dev_get_drvdata(&client->dev);
+ 	snd_soc_unregister_codec(&client->dev);
+-	regmap_exit(max98090->regmap);
+ 	return 0;
  }
+ 
 -- 
 1.7.9.5
