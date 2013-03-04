@@ -1,19 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC: no-pcm (backend) error propagation
-Date: Mon, 04 Mar 2013 19:42:10 +0000
-Message-ID: <1362426130.4448.62.camel@loki>
-References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
- <1361953433.28121.33.camel@vega> <512E29B8.8050708@linux.intel.com>
- <1362173113.4439.46.camel@loki>
- <190351B32828744FBA3BD9565204D27B01CA7704@NA-MBX-03.mgc.mentorg.com>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: [PATCH] ALSA: usb: Work around CM6631 sample rate
+ change bug
+Date: Mon, 4 Mar 2013 22:29:19 +0100
+Message-ID: <20130304212919.GF4452@pvv.ntnu.no>
+References: <20130302130403.GD4452@pvv.ntnu.no> <5131FAC1.30007@gmail.com>
+ <20130303192922.GE4452@pvv.ntnu.no> <s5hlia3ilzx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1890826515C
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 20:42:22 +0100 (CET)
-In-Reply-To: <190351B32828744FBA3BD9565204D27B01CA7704@NA-MBX-03.mgc.mentorg.com>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 320B6265160
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 22:29:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hlia3ilzx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,18 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-UmUtZmxvd2VkLgoKT24gTW9uLCAyMDEzLTAzLTA0IGF0IDAxOjMwICswMDAwLCBGcmt1c2thLCBK
-b3NodWEgd3JvdGU6Cgo+IElmIHlvdSBjb3VsZCB0ZWxsIG1lIHRoZSBhcmVhIHlvdSBoYXZlIGlu
-IG1pbmQgZm9yIHRoZSByb3V0aW5nIGJhY2sKcHJvcGFnYXRpb24gd2hlbiByZS1wYXJlbnRpbmcs
-IEkgY2FuIHN0dWR5IHRoYXQsIGJlZm9yZSBjcmVhdGluZwpzb21ldGhpbmcgdGhhdCBpc27igJl0
-IGlubGluZSB3aXRoIHRoZSBleGlzdGluZyBjb2RlLgo+IAoKVGhlcmUgaXMgc29tZSByZSBwYXJl
-bnRpbmcgY29kZSBpbiBzb2MtcGNtLmMgZHBjbV9iZV9yZXBhcmVudCgpLiBJdApzaG93cyB0aGUg
-bGlzdCBjb25uZWN0IGVhY2ggRkUgYW5kIEJFIGFuZCBzaG91bGQgZ2l2ZSBzb21lIGlkZWFzIGZv
-ciB0aGUKYmFjayByb3V0aW5nLiAKCkxpYW0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Mar 04, 2013 at 09:53:54AM +0100, Takashi Iwai wrote:
+> At Sun, 3 Mar 2013 20:29:22 +0100,
+> Torstein Hegge wrote:
+> > While this does fix the sample rate change problem, it introduces a new
+> > problem. With at least one media player application (xbmc) this patch
+> > causes the usb sound card to not output sound when starting a video
+> > file. Skipping forward or backward in the video stream restores audio
+> > output.
+> > 
+> > I haven't yet been able to look into why this happens, or why xbmc
+> > behaves different from mplayer and vlc.
+> 
+> If the reset of interface is needed only when *changing* SRC, we can
+> check the current rate against the previous rate and skip the reset?
+
+That's right. I tried that, and it appears to have solved the issue with
+xbmc. I'll clean up that code and send an updated patch.
+
+Thanks.
+
+Torstein
