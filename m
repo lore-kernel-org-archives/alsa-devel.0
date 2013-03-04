@@ -1,18 +1,16 @@
-From: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
-Subject: Re: ASoC: no-pcm (backend) error propagation
-Date: Mon, 4 Mar 2013 01:30:52 +0000
-Message-ID: <190351B32828744FBA3BD9565204D27B01CA7704@NA-MBX-03.mgc.mentorg.com>
-References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
- <1361953433.28121.33.camel@vega> <512E29B8.8050708@linux.intel.com>
- <1362173113.4439.46.camel@loki>
+From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Subject: Re: am335x: mcasp in DIT mode
+Date: Mon, 4 Mar 2013 06:22:18 +0000
+Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED3B63C@DBDE01.ent.ti.com>
+References: <CAGm1_kt83A2i-ew_gUaySRZpMeuQPEpTvEH_xX9BvfpUKob_Ug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 62783264ECA
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 02:30:55 +0100 (CET)
-In-Reply-To: <1362173113.4439.46.camel@loki>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id E61F9264F1C
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 07:22:24 +0100 (CET)
+In-Reply-To: <CAGm1_kt83A2i-ew_gUaySRZpMeuQPEpTvEH_xX9BvfpUKob_Ug@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,52 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Yegor Yefremov <yegorslists@googlemail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Porter, Matt" <mporter@ti.com>, Daniel Mack <zonque@gmail.com>, "Fernandes,
+ Joel A" <joelagnel@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBGcm9tOiBMaWFtIEdpcmR3b29kIFNlbnQ6IFNhdHVyZGF5LCBNYXJjaCAwMiwgMjAxMyA2OjI1
-IEFNDQo+IE9uIFdlZCwgMjAxMy0wMi0yNyBhdCAwOTo0MyAtMDYwMCwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6DQo+ID4gPiBJdCB3YXMgb3JpZ2luYWxseSBpbnRlbmRlZCB0aGF0IGFueSB1
-bmRlcnJ1biAvIG92ZXJydW4gaXNzdWVzIGluIGENCj4gPiA+IEJFIERBSSB3b3VsZCBiZSBoYW5k
-bGVkIGludGVybmFsbHkgYnkgdGhlIGF1ZGlvIERTUCAoYW5kIHRoaXMgd29ya2VkDQo+ID4gPiB3
-ZWxsIHdpdGggdGhlIE9NQVA0IEFCRSkuIEhvd2V2ZXIsIGl0IGlzIHByb2JhYmx5IGEgZ29vZCBh
-IGlkZWEgdG8NCj4gPiA+IGhhdmUgYSBiZXR0ZXIgbWVjaGFuaXNtIGZvciByZXBvcnRpbmcgQkUg
-eHJ1biBpc3N1ZXMgdXAgdGhlIHN0YWNrIHRvDQo+ID4gPiB0aGUgaG9zdCBDUFUgc2lkZSB0b28u
-DQo+ID4gPg0KPiA+ID4gQ3VycmVudGx5IHRoZSBGRSBQQ00geHJ1biBtZWNoYW5pc20gYW5kIEZF
-IHBvaW50ZXIoKSBjYWxsYmFjayBjb3VsZA0KPiA+ID4gYmUgdXNlZCBieSB0aGUgaG9zdCB0byBn
-ZXQgdGhlIHNpemUgb2YgYW55IEZFOkJFIHVuZGVycnVuL292ZXJydW4uDQo+ID4gPiBUaGlzIGlz
-bid0IGlkZWFsIGFuZCB3b250IHdvcmsgd2hlbiB0aGVyZSBjYW4gYmUgbXVsdGlwbGUgQkVzIGZv
-ciBhIEZFLg0KPiA+ID4NCj4gPiA+IEl0IGxvb2tzIGxpa2Ugc29tZSBuZXcgY29kZSBpcyByZXF1
-aXJlZCBoZXJlIHRvIGdldCB0aGlzIHdvcmtpbmcNCj4gPiA+IGNvcnJlY3RseSBmb3IgQkVzLg0K
-PiA+DQo+ID4NCj4gPiBNeSB2aWV3IGlzIHRoYXQgdGhhdCB1bmRlcnJ1bnMgYXQgdGhlIERTUCBs
-ZXZlbCBhcmUgZmF0YWwgYW55d2F5LCBhbmQNCj4gPiB0aGF0IHRoZXkgYSkgc2hvdWxkIGJlIGF2
-b2lkZWQgd2l0aCBwcm9wZXIgcmVhbC10aW1lIGRlc2lnbnMgYW5kIGIpDQo+ID4gdGhleSBzaG91
-bGQgYmUgbG9nZ2VkIGFzIGVycm9yIGNvbmRpdGlvbnMgdG8gZGVidWcgc2hvdWxkIHRoZXkgb2Nj
-dXIsDQo+ID4gbm90IGJlIHRpZWQgdG8gYSBGRS4gSXQgd291bGQgYmUgcmVhbGx5IGNvbXBsaWNh
-dGVkIHRvIGFkZCBjb2RlIHRvDQo+ID4gYmFjay1wcm9wYWdhdGUgdGhlIGVycm9ycywgYW5kIGlm
-IHlvdSBoYXZlIG1peGluZy9yb3V0aW5nIHdoYXQNCj4gPiBpbmRpdmlkdWFsIEZFcyB3b3VsZCBk
-byB3aGVuIHRoaXMgaXMgYSBzeXN0ZW0gZXJyb3IgcmVhbGx5Lg0KPiA+IC1QaWVycmUNCj4gDQo+
-IEkgYWdyZWUsIGl0IHdvdWxkIG1vc3RseSBiZSB1c2VmdWwgZm9yIERTUCBkZWJ1ZyBwdXJwb3Nl
-cyBlLmcuIHRoaW5ncyBsaWtlIERTUA0KPiBjbG9jayBzY2FsaW5nL2dhdGluZywgRlcgZXJyb3Jz
-LiBJdCB3YXMgY2VydGFpbmx5IG5ldmVyIGFuIGlzc3VlIHdpdGggdGhlIE9NQVANCj4gQUJFIGFu
-ZCB3ZSB3b250IG5lZWQgaXQgZm9yIFNTVCBhdWRpbyBlaXRoZXIuDQo+IA0KPiBGd2l3LCBpdCBt
-YXkgbm90IGV2ZW4gYmUgdG9vIGNvbXBsaWNhdGVkIHRvIGltcGxlbWVudCBzaW5jZSB0aGUgQkUg
-UENNIGlzIGENCj4gc3Vic2V0IG9mIHRoZSBzdGFuZGFyZCBQQ00gYW5kIHRoZXJlIGlzIHNvbWUg
-Y29kZSB0aGF0IGFscmVhZHkgYmFjaw0KPiBwcm9wYWdhdGVzIHRoZSByb3V0aW5nIHdoZW4gd2Ug
-cmUtcGFyZW50IEJFJ3MuIEl0IHJlYWxseSBkZXBlbmRzIG9uIHdoZXRoZXINCj4gYW55b25lIGNh
-cmVzIGVub3VnaCB0byBzY29wZSBvdXQgYSBzb2x1dGlvbi4NCg0KSSBhbSBjdXJyZW50bHkgaGVh
-ZGluZyBpbiB0aGlzIGRpcmVjdGlvbi4gSW4gbXkgc2V0dXAsIEJFIHVuZGVycnVucyBhcmUgbm90
-IGZhdGFsLCBlc3BlY2lhbGx5IGlmIHRoZXJlIGlzIGEgdGhyb3VnaHB1dCBtaXNtYXRjaCBvbiB0
-aGUgZnJvbnRlbmQgYW5kIGJhY2tlbmQgcmVnYXJkaW5nIGRtYSB0cmFuc2ZlcnJpbmcuIFRoZSBh
-cHBsaWNhdGlvbiBuZWVkcyB0byBiZSBtYWRlIGF3YXJlIG9mIHRoZSB1bmRlcnJ1biBpbiB0aGUg
-QkUgdG8gYmUgYWJsZSB0byBkeW5hbWljYWxseSBhZGp1c3QgdGhlIGRtYSB3YXRlcm1hcmsgb2Yg
-dGhlIEJFIGRhaSBhbmQgcG90ZW50aWFsbHkgcmViYWxhbmNlIHRoZSB0aHJvdWdocHV0IG9yIGFk
-anVzdCBsYXRlbmN5IGluIHRoZSBkYXRhIHN0cmVhbS4NCg0KSWYgeW91IGNvdWxkIHRlbGwgbWUg
-dGhlIGFyZWEgeW91IGhhdmUgaW4gbWluZCBmb3IgdGhlIHJvdXRpbmcgYmFjayBwcm9wYWdhdGlv
-biB3aGVuIHJlLXBhcmVudGluZywgSSBjYW4gc3R1ZHkgdGhhdCwgYmVmb3JlIGNyZWF0aW5nIHNv
-bWV0aGluZyB0aGF0IGlzbuKAmXQgaW5saW5lIHdpdGggdGhlIGV4aXN0aW5nIGNvZGUuDQoNClRo
-YW5rcyBpbiBhZHZhbmNlZCwNCg0KSm9zaHVhDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Yegor,
+
+On Fri, Mar 01, 2013 at 16:23:53, Yegor Yefremov wrote:
+> I've solved the problem with DIT/SPDIF mode (see the issue description
+> here: http://e2e.ti.com/support/arm/sitara_arm/f/791/p/247447/870030.aspx).
+> 
+> In davinci_mcasp_hw_params() the DIT or I2S params will be set in the
+> beginning. DIT mode configures the DAVINCI_MCASP_TXMASK_REG and
+> DAVINCI_MCASP_TXFMT_REG.
+> 
+> And here comes the problem:
+> 
+> at the end of davinci_mcasp_hw_params() the
+> davinci_config_channel_size() will touch the same registers again and
+> thus overwrite the settings necessary for DIT. After I commented this
+> routine I got the sound over S/PDIF and sii9022a HDMI transmitter and
+> I could see the proper bits appearing on my oscilloscope.
+> 
+> What were the best way to solve this problem?
+> 
+> 1. execute  davinci_config_channel_size() only if not in DIT mode?
+> 2. for DIT only change the DAVINCI_MCASP_TXMASK_REG according to channel width?
+> 3. execute
+> 
+> if (dev->op_mode == DAVINCI_MCASP_DIT_MODE)
+>                 davinci_hw_dit_param(dev);
+> else
+>                 davinci_hw_param(dev, substream->stream);
+> 
+> after davinci_config_channel_size()
+> 
+
+AFAIK DIT mode was working on Davinci platforms some time back. Since AM335x
+has the same hardware block I was surprised to see this bug report. Not having
+a setup handy to test out DIT related changes, I looked at the commits on the
+mcasp file to figure out what happened. I suspect one of the recent patches which
+added 24bit support inadvertently broke the DIT support. Would it be possible
+for you to do a git-bisect to find out what change it was? It would be good
+to reference that change in the final patch.
+
+Coming to the 3 options that you have listed I would suggest going with #1.
+DIT mode requires the configuration to be 32 bit slot with rotation set to 24
+but looks like the current implementation of davinci_config_channel_size()
+doesn't handle this scenario very well. I think the driver needs a bit of
+rework to ensure Tx and Rx paths don't end up overwriting the configuration
+but that needs to be taken up separately.
+
+#2 looks to more of a workaround and IMO #3 places an implicit dependency
+on the call order without solving the overwrite issue that you hit.
+
+Regards,
+Vaibhav
