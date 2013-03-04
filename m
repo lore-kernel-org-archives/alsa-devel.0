@@ -1,7 +1,7 @@
-From: Daniel Mack <zonque@gmail.com>
+From: Yegor Yefremov <yegorslists@googlemail.com>
 Subject: Re: am335x: mcasp in DIT mode
-Date: Mon, 04 Mar 2013 09:03:54 +0100
-Message-ID: <5134556A.4060709@gmail.com>
+Date: Mon, 4 Mar 2013 09:05:10 +0100
+Message-ID: <CAGm1_kuZ1XL9ubfQf4SePK9DNEWXeB1e5Cpc_rzU+6ki57KMXQ@mail.gmail.com>
 References: <CAGm1_kt83A2i-ew_gUaySRZpMeuQPEpTvEH_xX9BvfpUKob_Ug@mail.gmail.com>
  <B5906170F1614E41A8A28DE3B8D121433ED3B63C@DBDE01.ent.ti.com>
  <51345389.2030502@gmail.com>
@@ -9,12 +9,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f177.google.com (mail-we0-f177.google.com
- [74.125.82.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F38E264F2B
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 09:03:53 +0100 (CET)
-Received: by mail-we0-f177.google.com with SMTP id d7so4209146wer.8
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 00:03:52 -0800 (PST)
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2544264F41
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 09:05:30 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so2268016bkc.10
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 00:05:30 -0800 (PST)
 In-Reply-To: <51345389.2030502@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,15 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Fernandes,
- Joel A" <joelagnel@ti.com>, Yegor Yefremov <yegorslists@googlemail.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bedia,
+ Vaibhav" <vaibhav.bedia@ti.com>, "Fernandes, Joel A" <joelagnel@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04.03.2013 08:55, Daniel Mack wrote:
+On Mon, Mar 4, 2013 at 8:55 AM, Daniel Mack <zonque@gmail.com> wrote:
 > Hi Vaibhav,
 > Hi Yegor,
-> 
+>
 > On 04.03.2013 07:22, Bedia, Vaibhav wrote:
 >> On Fri, Mar 01, 2013 at 16:23:53, Yegor Yefremov wrote:
 >>> I've solved the problem with DIT/SPDIF mode (see the issue description
@@ -72,16 +72,39 @@ On 04.03.2013 08:55, Daniel Mack wrote:
 >> added 24bit support inadvertently broke the DIT support. Would it be possible
 >> for you to do a git-bisect to find out what change it was? It would be good
 >> to reference that change in the final patch.
-> 
+>
 > I agree, but I also believe it's not easy to do, given the number of
 > different trees you need for AM33xx support in general.
+>
+> You could revert them one-by-one, but then again, you probably need most
+> of them in order to make the driver work on AM33xx and in setups that
+> differ from what the davici driver was originally written for.
+>
+>> Coming to the 3 options that you have listed I would suggest going with #1.
+>> DIT mode requires the configuration to be 32 bit slot with rotation set to 24
+>> but looks like the current implementation of davinci_config_channel_size()
+>> doesn't handle this scenario very well.
+>
+> Hmm, if that's the case, I fail to see how the 24-bit patches you
+> mentioned could possibly account for that, given that they don't touch
+> the logical around this area. Unless I miss anything very obvious :) Can
+> you be a bit more specific about which of these patches you suspect?
 
-Just to be clear: I was referring to the number of commits in different
-areas that you needed by the time these mcasp patches were merged. I
-think they make it tricky to bisect back from the current state now. But
-maybe Yegor's setup looks differently, who knows.
+I think the DIT support was dead on arrival ;-) Look at the initial
+commit: http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/sound/soc/davinci/davinci-mcasp.c?id=b67f4487295560599f6cca55fb7e8773ff27f00a
 
+Size adjustment is made after DIT mode settings and though
+davinci_config_channel_size(dev, word_length) doesn't overwrite all
+needed settings, it overwrites XSSZ value and thus disables 32-bit
+slot. Do I see it right?
 
+>> I think the driver needs a bit of
+>> rework to ensure Tx and Rx paths don't end up overwriting the configuration
+>> but that needs to be taken up separately.
+>
+> Yegor - could you send me a patch that fixes the problem for you? I can
+> do regression tests on my platform.
 
-Thanks,
-Daniel
+I'll do.
+
+Yegor
