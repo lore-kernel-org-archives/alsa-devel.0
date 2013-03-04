@@ -1,19 +1,23 @@
-From: mateen <abdulmateen.shaikh@gmail.com>
-Subject: Re: Issue with Dmix
-Date: Mon, 4 Mar 2013 15:55:06 +0530
-Message-ID: <CADryByEhPB5c+jL5ESjofb2fC=0QxnximH9fWDm9i8egZi0Y8A@mail.gmail.com>
-References: <CADryByFhCKh0VjkCpeqj=y1XAWxqAL+eFu04AMerncgenDo38Q@mail.gmail.com>
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Subject: Re: am335x: mcasp in DIT mode
+Date: Mon, 4 Mar 2013 11:26:47 +0100
+Message-ID: <CAGm1_ksJiVZVLLp_B==fyS0K6iMg1gVoxBvh7PynaME7SphprQ@mail.gmail.com>
+References: <CAGm1_kt83A2i-ew_gUaySRZpMeuQPEpTvEH_xX9BvfpUKob_Ug@mail.gmail.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3B63C@DBDE01.ent.ti.com>
+ <51345389.2030502@gmail.com>
+ <CAGm1_kuZ1XL9ubfQf4SePK9DNEWXeB1e5Cpc_rzU+6ki57KMXQ@mail.gmail.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3B924@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f47.google.com (mail-vb0-f47.google.com
- [209.85.212.47])
- by alsa0.perex.cz (Postfix) with ESMTP id C9F14264F24
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 11:25:09 +0100 (CET)
-Received: by mail-vb0-f47.google.com with SMTP id e21so835738vbm.20
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 02:25:07 -0800 (PST)
-In-Reply-To: <CADryByFhCKh0VjkCpeqj=y1XAWxqAL+eFu04AMerncgenDo38Q@mail.gmail.com>
+Received: from mail-bk0-f51.google.com (mail-bk0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70FE8264FEB
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 11:27:07 +0100 (CET)
+Received: by mail-bk0-f51.google.com with SMTP id ik5so2285662bkc.24
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 02:27:07 -0800 (PST)
+In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED3B924@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +27,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Fernandes,
+ Joel A" <joelagnel@ti.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-Can anybody please guide us in this situation.
-
-
-On Mon, Feb 25, 2013 at 11:38 AM, mateen <abdulmateen.shaikh@gmail.com>wrot=
-e:
-
-> HI
->
->
->
-> We have enabled DMIX plugin for sample rate conversion and mixing of 2 pcm
-> streams in our alsa package (Alsa lib 1.0.22 and alsa driver 1.0.22.1)  to
-> 48K output Sample rate.However we are seeing a noise issue with 44100
-> Sample rate input streams or Unsigned Stereo 48K stream.
->
->
->
-> This is how our current design  is:
->
-> We call snd_pcm_lib_malloc_page() in which alsa driver internally
-> allocates a dma buffer and map it when Dmix is invoked.
->
-> We currently reads from that mmaped buffer to our hardware buffer inside a
-> transfer_ack_begin() function which is called from snd_pcm_period_elapsed=
-().
->
-> However we are getting a problem in understanding how do we know how much
-> data has been written by dmix lib in mapped buffer? As we see no ioctl or
-> corresponding hardware function call where dmix may pass information on
-> Size of data being written to our driver.
->
->
->
-> We do see appl_ptr and hw_ptr in runtime->mmap->control and status struct.
-> Out architecture doesn=92t support defining and mapping of these status a=
-nd
-> control structure at hardware level.Thus Dmix lib allocates them and copy
-> them to runtime substream via ioctl. As far as I could understand both
-> appl_ptr and hw_ptr are initialised to 0 and then appl_ptr is the one
-> adjusted by lib after every write. Should we tap this value to update
-> hw_ptr value in status information? Will difference of hw_ptr and appl_ptr
-> will let us know amount of frames been written?
->
-> Can anyone please help us to understand criteria and concept of data copy
-> from intermediate to hardware buffer?
->
-> Any information on this would be of immense help.
->
->
-> Regards,
-> Shaikh Mateen
->
-
-
-
--- =
-
-Regards,
-Shaikh Mateen S.
-09423350444
+T24gTW9uLCBNYXIgNCwgMjAxMyBhdCAxMToxMCBBTSwgQmVkaWEsIFZhaWJoYXYgPHZhaWJoYXYu
+YmVkaWFAdGkuY29tPiB3cm90ZToKPiBPbiBNb24sIE1hciAwNCwgMjAxMyBhdCAxMzozNToxMCwg
+WWVnb3IgWWVmcmVtb3Ygd3JvdGU6Cj4+IE9uIE1vbiwgTWFyIDQsIDIwMTMgYXQgODo1NSBBTSwg
+RGFuaWVsIE1hY2sgPHpvbnF1ZUBnbWFpbC5jb20+IHdyb3RlOgo+PiA+IEhpIFZhaWJoYXYsCj4+
+ID4gSGkgWWVnb3IsCj4+ID4KPj4gPiBPbiAwNC4wMy4yMDEzIDA3OjIyLCBCZWRpYSwgVmFpYmhh
+diB3cm90ZToKPj4gPj4gT24gRnJpLCBNYXIgMDEsIDIwMTMgYXQgMTY6MjM6NTMsIFllZ29yIFll
+ZnJlbW92IHdyb3RlOgo+PiA+Pj4gSSd2ZSBzb2x2ZWQgdGhlIHByb2JsZW0gd2l0aCBESVQvU1BE
+SUYgbW9kZSAoc2VlIHRoZSBpc3N1ZSBkZXNjcmlwdGlvbgo+PiA+Pj4gaGVyZTogaHR0cDovL2Uy
+ZS50aS5jb20vc3VwcG9ydC9hcm0vc2l0YXJhX2FybS9mLzc5MS9wLzI0NzQ0Ny84NzAwMzAuYXNw
+eCkuCj4+ID4+Pgo+PiA+Pj4gSW4gZGF2aW5jaV9tY2FzcF9od19wYXJhbXMoKSB0aGUgRElUIG9y
+IEkyUyBwYXJhbXMgd2lsbCBiZSBzZXQgaW4gdGhlCj4+ID4+PiBiZWdpbm5pbmcuIERJVCBtb2Rl
+IGNvbmZpZ3VyZXMgdGhlIERBVklOQ0lfTUNBU1BfVFhNQVNLX1JFRyBhbmQKPj4gPj4+IERBVklO
+Q0lfTUNBU1BfVFhGTVRfUkVHLgo+PiA+Pj4KPj4gPj4+IEFuZCBoZXJlIGNvbWVzIHRoZSBwcm9i
+bGVtOgo+PiA+Pj4KPj4gPj4+IGF0IHRoZSBlbmQgb2YgZGF2aW5jaV9tY2FzcF9od19wYXJhbXMo
+KSB0aGUKPj4gPj4+IGRhdmluY2lfY29uZmlnX2NoYW5uZWxfc2l6ZSgpIHdpbGwgdG91Y2ggdGhl
+IHNhbWUgcmVnaXN0ZXJzIGFnYWluIGFuZAo+PiA+Pj4gdGh1cyBvdmVyd3JpdGUgdGhlIHNldHRp
+bmdzIG5lY2Vzc2FyeSBmb3IgRElULiBBZnRlciBJIGNvbW1lbnRlZCB0aGlzCj4+ID4+PiByb3V0
+aW5lIEkgZ290IHRoZSBzb3VuZCBvdmVyIFMvUERJRiBhbmQgc2lpOTAyMmEgSERNSSB0cmFuc21p
+dHRlciBhbmQKPj4gPj4+IEkgY291bGQgc2VlIHRoZSBwcm9wZXIgYml0cyBhcHBlYXJpbmcgb24g
+bXkgb3NjaWxsb3Njb3BlLgo+PiA+Pj4KPj4gPj4+IFdoYXQgd2VyZSB0aGUgYmVzdCB3YXkgdG8g
+c29sdmUgdGhpcyBwcm9ibGVtPwo+PiA+Pj4KPj4gPj4+IDEuIGV4ZWN1dGUgIGRhdmluY2lfY29u
+ZmlnX2NoYW5uZWxfc2l6ZSgpIG9ubHkgaWYgbm90IGluIERJVCBtb2RlPwo+PiA+Pj4gMi4gZm9y
+IERJVCBvbmx5IGNoYW5nZSB0aGUgREFWSU5DSV9NQ0FTUF9UWE1BU0tfUkVHIGFjY29yZGluZyB0
+byBjaGFubmVsIHdpZHRoPwo+PiA+Pj4gMy4gZXhlY3V0ZQo+PiA+Pj4KPj4gPj4+IGlmIChkZXYt
+Pm9wX21vZGUgPT0gREFWSU5DSV9NQ0FTUF9ESVRfTU9ERSkKPj4gPj4+ICAgICAgICAgICAgICAg
+ICBkYXZpbmNpX2h3X2RpdF9wYXJhbShkZXYpOwo+PiA+Pj4gZWxzZQo+PiA+Pj4gICAgICAgICAg
+ICAgICAgIGRhdmluY2lfaHdfcGFyYW0oZGV2LCBzdWJzdHJlYW0tPnN0cmVhbSk7Cj4+ID4+Pgo+
+PiA+Pj4gYWZ0ZXIgZGF2aW5jaV9jb25maWdfY2hhbm5lbF9zaXplKCkKPj4gPj4+Cj4+ID4+Cj4+
+ID4+IEFGQUlLIERJVCBtb2RlIHdhcyB3b3JraW5nIG9uIERhdmluY2kgcGxhdGZvcm1zIHNvbWUg
+dGltZSBiYWNrLiBTaW5jZSBBTTMzNXgKPj4gPj4gaGFzIHRoZSBzYW1lIGhhcmR3YXJlIGJsb2Nr
+IEkgd2FzIHN1cnByaXNlZCB0byBzZWUgdGhpcyBidWcgcmVwb3J0LiBOb3QgaGF2aW5nCj4+ID4+
+IGEgc2V0dXAgaGFuZHkgdG8gdGVzdCBvdXQgRElUIHJlbGF0ZWQgY2hhbmdlcywgSSBsb29rZWQg
+YXQgdGhlIGNvbW1pdHMgb24gdGhlCj4+ID4+IG1jYXNwIGZpbGUgdG8gZmlndXJlIG91dCB3aGF0
+IGhhcHBlbmVkLiBJIHN1c3BlY3Qgb25lIG9mIHRoZSByZWNlbnQgcGF0Y2hlcyB3aGljaAo+PiA+
+PiBhZGRlZCAyNGJpdCBzdXBwb3J0IGluYWR2ZXJ0ZW50bHkgYnJva2UgdGhlIERJVCBzdXBwb3J0
+LiBXb3VsZCBpdCBiZSBwb3NzaWJsZQo+PiA+PiBmb3IgeW91IHRvIGRvIGEgZ2l0LWJpc2VjdCB0
+byBmaW5kIG91dCB3aGF0IGNoYW5nZSBpdCB3YXM/IEl0IHdvdWxkIGJlIGdvb2QKPj4gPj4gdG8g
+cmVmZXJlbmNlIHRoYXQgY2hhbmdlIGluIHRoZSBmaW5hbCBwYXRjaC4KPj4gPgo+PiA+IEkgYWdy
+ZWUsIGJ1dCBJIGFsc28gYmVsaWV2ZSBpdCdzIG5vdCBlYXN5IHRvIGRvLCBnaXZlbiB0aGUgbnVt
+YmVyIG9mCj4+ID4gZGlmZmVyZW50IHRyZWVzIHlvdSBuZWVkIGZvciBBTTMzeHggc3VwcG9ydCBp
+biBnZW5lcmFsLgo+PiA+Cj4+ID4gWW91IGNvdWxkIHJldmVydCB0aGVtIG9uZS1ieS1vbmUsIGJ1
+dCB0aGVuIGFnYWluLCB5b3UgcHJvYmFibHkgbmVlZCBtb3N0Cj4+ID4gb2YgdGhlbSBpbiBvcmRl
+ciB0byBtYWtlIHRoZSBkcml2ZXIgd29yayBvbiBBTTMzeHggYW5kIGluIHNldHVwcyB0aGF0Cj4+
+ID4gZGlmZmVyIGZyb20gd2hhdCB0aGUgZGF2aWNpIGRyaXZlciB3YXMgb3JpZ2luYWxseSB3cml0
+dGVuIGZvci4KPj4gPgo+PiA+PiBDb21pbmcgdG8gdGhlIDMgb3B0aW9ucyB0aGF0IHlvdSBoYXZl
+IGxpc3RlZCBJIHdvdWxkIHN1Z2dlc3QgZ29pbmcgd2l0aCAjMS4KPj4gPj4gRElUIG1vZGUgcmVx
+dWlyZXMgdGhlIGNvbmZpZ3VyYXRpb24gdG8gYmUgMzIgYml0IHNsb3Qgd2l0aCByb3RhdGlvbiBz
+ZXQgdG8gMjQKPj4gPj4gYnV0IGxvb2tzIGxpa2UgdGhlIGN1cnJlbnQgaW1wbGVtZW50YXRpb24g
+b2YgZGF2aW5jaV9jb25maWdfY2hhbm5lbF9zaXplKCkKPj4gPj4gZG9lc24ndCBoYW5kbGUgdGhp
+cyBzY2VuYXJpbyB2ZXJ5IHdlbGwuCj4+ID4KPj4gPiBIbW0sIGlmIHRoYXQncyB0aGUgY2FzZSwg
+SSBmYWlsIHRvIHNlZSBob3cgdGhlIDI0LWJpdCBwYXRjaGVzIHlvdQo+PiA+IG1lbnRpb25lZCBj
+b3VsZCBwb3NzaWJseSBhY2NvdW50IGZvciB0aGF0LCBnaXZlbiB0aGF0IHRoZXkgZG9uJ3QgdG91
+Y2gKPj4gPiB0aGUgbG9naWNhbCBhcm91bmQgdGhpcyBhcmVhLiBVbmxlc3MgSSBtaXNzIGFueXRo
+aW5nIHZlcnkgb2J2aW91cyA6KSBDYW4KPj4gPiB5b3UgYmUgYSBiaXQgbW9yZSBzcGVjaWZpYyBh
+Ym91dCB3aGljaCBvZiB0aGVzZSBwYXRjaGVzIHlvdSBzdXNwZWN0Pwo+Pgo+Cj4gSSBsb29rZWQg
+YXQgRGFuaWVsJ3MgY2hhbmdlcyBhIGJpdCBjbG9zZXIgYW5kIGl0IGhhcyBub3QgY2hhbmdlZCB0
+aGUgYmVoYXZpb3IuCj4gU29ycnkgYWJvdXQgdGhhdC4gQnV0IHRoaXMgd291bGQgYWxzbyBpbXBs
+eSB0aGF0IERJVCBtb2RlIGhhcyBiZWVuIGJyb2tlbiBmb3IKPiBxdWl0ZSBzb21lIHRpbWUgbm93
+IDooCj4KPj4gSSB0aGluayB0aGUgRElUIHN1cHBvcnQgd2FzIGRlYWQgb24gYXJyaXZhbCA7LSkg
+TG9vayBhdCB0aGUgaW5pdGlhbAo+PiBjb21taXQ6IGh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0
+L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9zb3VuZC9zb2MvZGF2
+aW5jaS9kYXZpbmNpLW1jYXNwLmM/aWQ9YjY3ZjQ0ODcyOTU1NjA1OTlmNmNjYTU1ZmI3ZTg3NzNm
+ZjI3ZjAwYQo+Pgo+PiBTaXplIGFkanVzdG1lbnQgaXMgbWFkZSBhZnRlciBESVQgbW9kZSBzZXR0
+aW5ncyBhbmQgdGhvdWdoCj4+IGRhdmluY2lfY29uZmlnX2NoYW5uZWxfc2l6ZShkZXYsIHdvcmRf
+bGVuZ3RoKSBkb2Vzbid0IG92ZXJ3cml0ZSBhbGwKPj4gbmVlZGVkIHNldHRpbmdzLCBpdCBvdmVy
+d3JpdGVzIFhTU1ogdmFsdWUgYW5kIHRodXMgZGlzYWJsZXMgMzItYml0Cj4+IHNsb3QuIERvIEkg
+c2VlIGl0IHJpZ2h0Pwo+Pgo+Cj4gSSBjYW4gb25seSBhc3N1bWUgdGhhdCB0aGUgb3JpZ2luYWwg
+YXV0aG9yIHRlc3RlZCB0aGUgY29kZSBiZWZvcmUgcG9zdGluZyBpdCA6KAo+Cj4gSSBjYW4ndCBm
+aW5kIGFueXRoaW5nIGluIHRoZSBzcGVjIHdoaWNoIG1lbnRpb25zIHRoYXQgdGhlIHNsb3Qgc2l6
+ZSBtYXR0ZXJzCj4gaW4gRElUIG1vZGUuIFRoZSBvbmx5IHJlc3RyaWN0aW9uIHNlZW1zIHRvIGJl
+IHRoYXQgdGhlIHZhbGlkIGRhdGEgYml0cyBhcmUgaW4KPiBiaXRzIDI0OjAuIFdoZW4gdGhlIGFj
+dHVhbCB0cmFuc21pdCBoYXBwZW5zIG90aGVyIHRoaW5ncyBsaWtlIHRoZSBwcmVhbWJsZSwKPiBW
+VUNQIGJpdHMgd2lsbCBnZXQgZmlsbGVkIGluIGFuZCBJIGFtIGd1ZXNzaW5nIHRoaXMgZG9lcyBu
+b3QgZGVwZW5kIG9uIHRoZSBzbG90Cj4gc2l6ZSB0aGF0IGlzIHByb2dyYW1tZWQuIFRoYXQncyB0
+aGUgb25seSBzY2VuYXJpbyBpbiB3aGljaCB0aGUgb3JpZ2luYWwgY29kZQo+IGNvdWxkIGhhdmUg
+d29ya2VkLgoKSSBmb3VuZCB0aGlzIHBhc3NhZ2UgaW4gMjIuMy44LjMuMiBvZiB0aGUgIkFNMzM1
+eCBBUk3CriBDb3J0ZXjihKItQTgKTWljcm9wcm9jZXNzb3JzIChNUFVzKSBUZWNobmljYWwgUmVm
+ZXJlbmNlIE1hbnVhbCIgTGl0ZXJhdHVyZSBOdW1iZXI6ClNQUlVINzNHCgpUaGUgRElUIHRyYW5z
+bWl0dGVyIG9ubHkgd29ya3MgaW4gdGhlIGZvbGxvd2luZyBjb25maWd1cmF0aW9uOgrigKIgSW4g
+dHJhbnNtaXQgZnJhbWUgY29udHJvbCByZWdpc3RlciAoQUZTWENUTCk6CuKAkyBJbnRlcm5hbGx5
+LWdlbmVyYXRlZCB0cmFuc21pdCBmcmFtZSBzeW5jLCBGU1hNID0gMS4K4oCTIFJpc2luZy1lZGdl
+IGZyYW1lIHN5bmMsIEZTWFAgPSAwLgrigJMgQml0LXdpZHRoIGZyYW1lIHN5bmMsIEZYV0lEID0g
+MC4K4oCTIDM4NC1zbG90IFRETSwgWE1PRCA9IDEgMTAwMCAwMDAwYi4K4oCiIEluIHRyYW5zbWl0
+IGNsb2NrIGNvbnRyb2wgcmVnaXN0ZXIgKEFDTEtYQ1RMKSwgQVNZTkMgPSAxLgrigKIgSW4gdHJh
+bnNtaXQgYml0c3RyZWFtIGZvcm1hdCByZWdpc3RlciAoWEZNVCksIFhTU1ogPSAxMTExICgzMi1i
+aXQgc2xvdCBzaXplKS4KClNvIHNsb3Qgc2l6ZSBkb2VzIG1hdHRlciBmb3IgRElUIG1vZGUuIE9u
+IHRoZSBzYW1lIHBhZ2UgeW91IGhhdmUgZnJhbWUKZm9ybWF0IGRlc2NyaXB0aW9uLiBJdCBzYXlz
+IHRoYXQgdHdvIGZvbGxvd2luZyByb3RhdGlvbiBzZXR0aW5ncyBhcmUKdmFsaWQgZm9yIERJVCBY
+Uk9UID0gMDEwIGFuZCBYUk9UID0gMDAwLCBidXQgdGhlIG9ubHkgb25lIHdvcmtpbmcgd2l0aApy
+aWdodC1hbGlnbmVkIGRhdGEgaXMgMHg2IGkuZS4gMjQtYml0IHJvdGF0aW9uLiBUaGlzIHZhbHVl
+IHdhcyB1c2VkIGluCnRoZSBkYXZpbmNpLW1jYXNwLmMgZHJpdmVyIHNvdXJjZS4KClllZ29yCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
