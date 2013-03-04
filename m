@@ -1,20 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v3] davinci-mcasp: don't overwrite DIT
-	settings
-Date: Mon, 04 Mar 2013 11:11:38 +0100
-Message-ID: <5134735A.8070004@gmail.com>
-References: <1362391330-4731-1-git-send-email-yegorslists@googlemail.com>
+From: mateen <abdulmateen.shaikh@gmail.com>
+Subject: Re: Issue with Dmix
+Date: Mon, 4 Mar 2013 15:55:06 +0530
+Message-ID: <CADryByEhPB5c+jL5ESjofb2fC=0QxnximH9fWDm9i8egZi0Y8A@mail.gmail.com>
+References: <CADryByFhCKh0VjkCpeqj=y1XAWxqAL+eFu04AMerncgenDo38Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f182.google.com (mail-ea0-f182.google.com
- [209.85.215.182])
- by alsa0.perex.cz (Postfix) with ESMTP id B9710264F24
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 11:11:43 +0100 (CET)
-Received: by mail-ea0-f182.google.com with SMTP id a12so754627eaa.27
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 02:11:43 -0800 (PST)
-In-Reply-To: <1362391330-4731-1-git-send-email-yegorslists@googlemail.com>
+Received: from mail-vb0-f47.google.com (mail-vb0-f47.google.com
+ [209.85.212.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9F14264F24
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 11:25:09 +0100 (CET)
+Received: by mail-vb0-f47.google.com with SMTP id e21so835738vbm.20
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 02:25:07 -0800 (PST)
+In-Reply-To: <CADryByFhCKh0VjkCpeqj=y1XAWxqAL+eFu04AMerncgenDo38Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yegorslists@googlemail.com
-Cc: mporter@ti.com, alsa-devel@alsa-project.org, vaibhav.bedia@ti.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04.03.2013 11:02, yegorslists@googlemail.com wrote:
-> From: Yegor Yefremov <yegorslists@googlemail.com>
-> 
-> Channel size settings will be made at the end of
-> davinci_mcasp_hw_params() routine and thus overwrite frame
-> format settings made for DIT mode. This patch fixes this issue
-> by taking op_mode into account. Tested with official PSP 3.2
-> kernel and sii9022a HDMI transmitter.
-> 
-> Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-
-Ah, and when resending, please make sure to prefix your subject with
-"ALSA: ASoC: " ...
+Hi,
+Can anybody please guide us in this situation.
 
 
-Daniel
+On Mon, Feb 25, 2013 at 11:38 AM, mateen <abdulmateen.shaikh@gmail.com>wrot=
+e:
+
+> HI
+>
+>
+>
+> We have enabled DMIX plugin for sample rate conversion and mixing of 2 pcm
+> streams in our alsa package (Alsa lib 1.0.22 and alsa driver 1.0.22.1)  to
+> 48K output Sample rate.However we are seeing a noise issue with 44100
+> Sample rate input streams or Unsigned Stereo 48K stream.
+>
+>
+>
+> This is how our current design  is:
+>
+> We call snd_pcm_lib_malloc_page() in which alsa driver internally
+> allocates a dma buffer and map it when Dmix is invoked.
+>
+> We currently reads from that mmaped buffer to our hardware buffer inside a
+> transfer_ack_begin() function which is called from snd_pcm_period_elapsed=
+().
+>
+> However we are getting a problem in understanding how do we know how much
+> data has been written by dmix lib in mapped buffer? As we see no ioctl or
+> corresponding hardware function call where dmix may pass information on
+> Size of data being written to our driver.
+>
+>
+>
+> We do see appl_ptr and hw_ptr in runtime->mmap->control and status struct.
+> Out architecture doesn=92t support defining and mapping of these status a=
+nd
+> control structure at hardware level.Thus Dmix lib allocates them and copy
+> them to runtime substream via ioctl. As far as I could understand both
+> appl_ptr and hw_ptr are initialised to 0 and then appl_ptr is the one
+> adjusted by lib after every write. Should we tap this value to update
+> hw_ptr value in status information? Will difference of hw_ptr and appl_ptr
+> will let us know amount of frames been written?
+>
+> Can anyone please help us to understand criteria and concept of data copy
+> from intermediate to hardware buffer?
+>
+> Any information on this would be of immense help.
+>
+>
+> Regards,
+> Shaikh Mateen
+>
+
+
+
+-- =
+
+Regards,
+Shaikh Mateen S.
+09423350444
