@@ -1,25 +1,17 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: Re: am335x: mcasp in DIT mode
-Date: Mon, 4 Mar 2013 16:56:25 +0100
-Message-ID: <CAGm1_kvC7qzx3khq_JA37YzVRUOCVZd1GuEMFveanmQsyWXwLQ@mail.gmail.com>
-References: <CAGm1_kt83A2i-ew_gUaySRZpMeuQPEpTvEH_xX9BvfpUKob_Ug@mail.gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3B63C@DBDE01.ent.ti.com>
- <51345389.2030502@gmail.com>
- <CAGm1_kuZ1XL9ubfQf4SePK9DNEWXeB1e5Cpc_rzU+6ki57KMXQ@mail.gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3B924@DBDE01.ent.ti.com>
- <CAGm1_ksJiVZVLLp_B==fyS0K6iMg1gVoxBvh7PynaME7SphprQ@mail.gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3BA43@DBDE01.ent.ti.com>
+From: John Graham <johngavingraham@googlemail.com>
+Subject: ALSA SOC Driver (mxs-wm8753)
+Date: Mon, 4 Mar 2013 18:25:05 +0000
+Message-ID: <CAFio4Nem+9fj+=iUxN1awP=ZBzh=1Eca1kPi1ShjjjLR_9eO6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 4838E265116
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 16:56:48 +0100 (CET)
-Received: by mail-pa0-f54.google.com with SMTP id fa10so3222515pad.41
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 07:56:47 -0800 (PST)
-In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED3BA43@DBDE01.ent.ti.com>
+Received: from mail-da0-f50.google.com (mail-da0-f50.google.com
+ [209.85.210.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1C5D26514B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 19:25:07 +0100 (CET)
+Received: by mail-da0-f50.google.com with SMTP id h15so2647439dan.23
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 10:25:06 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,43 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Cc: "Porter, Matt" <mporter@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Fernandes,
- Joel A" <joelagnel@ti.com>, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgNCwgMjAxMyBhdCAxMjoyNSBQTSwgQmVkaWEsIFZhaWJoYXYgPHZhaWJoYXYu
-YmVkaWFAdGkuY29tPiB3cm90ZToKPiBPbiBNb24sIE1hciAwNCwgMjAxMyBhdCAxNTo1Njo0Nywg
-WWVnb3IgWWVmcmVtb3Ygd3JvdGU6Cj4gWy4uLl0KPj4KPj4gSSBmb3VuZCB0aGlzIHBhc3NhZ2Ug
-aW4gMjIuMy44LjMuMiBvZiB0aGUgIkFNMzM1eCBBUk3CriBDb3J0ZXjihKItQTgKPj4gTWljcm9w
-cm9jZXNzb3JzIChNUFVzKSBUZWNobmljYWwgUmVmZXJlbmNlIE1hbnVhbCIgTGl0ZXJhdHVyZSBO
-dW1iZXI6Cj4+IFNQUlVINzNHCj4+Cj4+IFRoZSBESVQgdHJhbnNtaXR0ZXIgb25seSB3b3JrcyBp
-biB0aGUgZm9sbG93aW5nIGNvbmZpZ3VyYXRpb246Cj4+IOKAoiBJbiB0cmFuc21pdCBmcmFtZSBj
-b250cm9sIHJlZ2lzdGVyIChBRlNYQ1RMKToKPj4g4oCTIEludGVybmFsbHktZ2VuZXJhdGVkIHRy
-YW5zbWl0IGZyYW1lIHN5bmMsIEZTWE0gPSAxLgo+PiDigJMgUmlzaW5nLWVkZ2UgZnJhbWUgc3lu
-YywgRlNYUCA9IDAuCj4+IOKAkyBCaXQtd2lkdGggZnJhbWUgc3luYywgRlhXSUQgPSAwLgo+PiDi
-gJMgMzg0LXNsb3QgVERNLCBYTU9EID0gMSAxMDAwIDAwMDBiLgo+PiDigKIgSW4gdHJhbnNtaXQg
-Y2xvY2sgY29udHJvbCByZWdpc3RlciAoQUNMS1hDVEwpLCBBU1lOQyA9IDEuCj4+IOKAoiBJbiB0
-cmFuc21pdCBiaXRzdHJlYW0gZm9ybWF0IHJlZ2lzdGVyIChYRk1UKSwgWFNTWiA9IDExMTEgKDMy
-LWJpdCBzbG90IHNpemUpLgo+Pgo+PiBTbyBzbG90IHNpemUgZG9lcyBtYXR0ZXIgZm9yIERJVCBt
-b2RlLiBPbiB0aGUgc2FtZSBwYWdlIHlvdSBoYXZlIGZyYW1lCj4+IGZvcm1hdCBkZXNjcmlwdGlv
-bi4gSXQgc2F5cyB0aGF0IHR3byBmb2xsb3dpbmcgcm90YXRpb24gc2V0dGluZ3MgYXJlCj4+IHZh
-bGlkIGZvciBESVQgWFJPVCA9IDAxMCBhbmQgWFJPVCA9IDAwMCwgYnV0IHRoZSBvbmx5IG9uZSB3
-b3JraW5nIHdpdGgKPj4gcmlnaHQtYWxpZ25lZCBkYXRhIGlzIDB4NiBpLmUuIDI0LWJpdCByb3Rh
-dGlvbi4gVGhpcyB2YWx1ZSB3YXMgdXNlZCBpbgo+PiB0aGUgZGF2aW5jaS1tY2FzcC5jIGRyaXZl
-ciBzb3VyY2UuCj4+Cj4KPiBPay4gU2luY2UgeW91IHNlZW0gdG8gaGF2ZSBhIGgvdyBoYW5keSwg
-aWYgeW91IGhhdmUgdGltZSB0byBzcGFyZSwgY291bGQgeW91Cj4gcGxlYXNlIHRyeSBvdXQgYSBj
-b25maWcgd2hpY2ggc2V0cyB0aGUgc2xvdCBzaXplIHRvIDE2IGluc3RlYWQgb2YgMzIgYW5kIGxl
-dAo+IHVzIGtub3cgd2hldGhlciBpdCB3b3Jrcz8gRGVwZW5kaW5nIG9uIHRoZSB0ZXN0IHJlc3Vs
-dCB3ZSdsbCBrbm93IGZvciBzdXJlCj4gd2hldGhlciB0aGUgb3JpZ2luYWwgY29kZSBldmVyIHdv
-cmtlZC4KCkkndmUgbWFkZSB0ZXN0IHdpdGggWFNTWiA9PSAweDcgKDE2LWJpdCkgYW5kIEkgaGVh
-cmQgc291bmQuIFNvIHRoZQppbml0aWFsIHZlcnNpb24gY291bGQgYmUgZnVuY3Rpb25hbCwgYmVj
-YXVzZSBvbmx5IFhTU1ogd2FzIHRvdWNoZWQuCkxhdGVyIGNhbWUgc2V0dGluZ3MgZm9yIG1hc2sg
-YW5kIHJvdGF0aW9uLiBJdCBzZWVtcyBsaWtlIHJvdGF0aW9uIGlzCnRoZSBtb3N0IGltcG9ydGFu
-dCBzZXR0aW5nIGZvciBESVQuIFNvIHRoZSBUZWNobmljYWwgUmVmZXJlbmNlIE1hbnVhbApzaG91
-bGQgYmUgdGhvcm91Z2hseSByZXZpc2VkOgoKMS4gWFNTWiAzMi1iaXQgaXMgbm90IG1hbmRhdG9y
-eQoyLiByb3RhdGlvbiBmb3IgcmlnaHQtYWxpZ25lZCBkYXRhIG11c3QgcHJvcGVybHkgc3BlY2lm
-aWVkICgweDYgLQoyNC1iaXQgYW5kIG5vdCAweDApCgpZZWdvcgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi there,
+
+I'm completely new to both kernel/ALSA driver programming (at least at
+a serious level) and was looking for some help on a project I'm
+working on - I'm part way there but I've kind of hit a brick wall and
+don't know where to turn.
+
+I'm trying to get a codec working on a new platform (new for the codec
+- the platform itself is not new). Here are the details:
+
+The audio codec is the Wolfson WM8753, which already has a codec
+driver in the kernel mainline tree. We also have a vendor-supplied
+(but GPL) patch to make the wm8753 work on a CC9M2443 (based on the
+Samsung S3C2443). This includes the glue code ("platform" code?) in
+sound/soc/s3c24xx/cc9m2443js_wm8753.c. We have a product with this
+combination fully working.
+
+The platform is the Karo TX28 (based on the Freescale i.MX28), and
+there are already drivers in the kernel tree to make the TX28 work
+with an SGTL5000 codec in sound/soc/mxs/mxs-sgtl5000.c. We also have a
+product with this combination fully working.
+
+Now we want to move the WM8753 over from the CC9M2443 to work on the TX28.
+
+To simplify, what I *have* is:
+
+    CC9M2443 <----> WM8753
+    TX28     <----> SGTL5000
+
+and what I *want* is:
+
+                /-> WM8753
+    TX28     <-/
+
+What I was hoping I could do was just "mash" the existing drivers
+together - i.e. copy sound/soc/mxs/mxs-sgtl5000.c into
+sound/soc/mxs/mxs-wm8753.c, change the parts in it that were specific
+for the SGTL5000 to the parts that drive the wm8753 in
+sound/soc/s3c24xx/cc9m2443js_wm8753.c, tell the TX28 to probe for it
+and that it would "magically work" (hey, crazier things have
+happened...).
+
+Obviously, it does not work, but I've got it a little way down the
+line. The WM8752 is probed for by the TX28 and recognized - the I2C
+control works, and you can change the mixer settings with amixer. When
+I try to record (using arecord) I can see with an oscilloscope the I2S
+clock lines look correct (in that they look the same as when the
+CC9M2443 talks to the WM8753 at the same audio rate).
+
+The problem now is that the I2S data lines don't look right - the line
+from codec to TX28 looks like a (more-or-less) square wave with the
+same period as the I2S clock, but only going from ~3.1 - ~3.5 V, as
+opposed to the 0 - ~3.3 V I expect. Furthermore, it's a pretty regular
+square wave - it doesn't have all the breaks you see on a working I2S
+data line.
+
+I know I probably haven't provided the right detail to get to the
+bottom of this problem, but part of my problem is that I'm so new to
+this that I'm not entirely sure where the problem might lie, or what
+extra detail to include to ask for more help. Is anyone able to point
+me in the right direction/suggest some ideas as to what might be
+wrong/anything else at all?
+
+Any help would be much appreciated - many thanks,
+
+John Graham
