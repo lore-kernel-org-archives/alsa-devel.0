@@ -1,15 +1,24 @@
-From: Christine Spang <christine.spang@oracle.com>
-Subject: [PATCH] Make snd_BUG_ON() always evaluate and return
-	the conditional expression.
-Date: Mon,  4 Mar 2013 17:02:59 -0500
-Message-ID: <1362434579-7733-1-git-send-email-christine.spang@oracle.com>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: [PATCH v2] ALSA: usb: Work around CM6631 sample rate
+	change bug
+Date: Mon, 4 Mar 2013 23:39:37 +0100
+Message-ID: <20130304223937.GI4452@pvv.ntnu.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id B3322265167
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 23:03:27 +0100 (CET)
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26FB8265171
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2013 23:39:42 +0100 (CET)
+Received: from horisont.pvv.ntnu.no ([129.241.210.175] ident=Debian-exim)
+ by microbel.pvv.ntnu.no with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.72) (envelope-from <torstehe@pvv.ntnu.no>)
+ id 1UCe2j-00075E-UT
+ for alsa-devel@alsa-project.org; Mon, 04 Mar 2013 23:39:41 +0100
+Received: from torstehe by horisont.pvv.ntnu.no with local (Exim 4.72)
+ (envelope-from <torstehe@pvv.ntnu.no>) id 1UCe2j-00060G-GJ
+ for alsa-devel@alsa-project.org; Mon, 04 Mar 2013 23:39:37 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,87 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Sasha Levin <sasha.levin@oracle.com>, alsa-devel@alsa-project.org, Jamie Iles <jamie.iles@oracle.com>, Christine Spang <christine.spang@oracle.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Having snd_BUG_ON() only evaluate its conditional when CONFIG_SND_DEBUG
-is set leads to frequent bugs, since other similar macros in the kernel
-have different behavior. Let's make snd_BUG_ON() act like those macros
-so it will stop being accidentally misused.
+The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
+sample rate while the interface is active.
 
-Signed-off-by: Christine Spang <christine.spang@oracle.com>
+Reset the interface after setting the sampling frequency on sample rate
+changes, to ensure that the sample rate set by snd_usb_init_sample_rate() is
+used. Otherwise, the device will try to use the sample rate of the previous
+stream, causing distorted sound on sample rate changes.
+
+Signed-off-by: Torstein Hegge <hegge@resisty.net>
 ---
- Documentation/DocBook/writing-an-alsa-driver.tmpl | 12 +++++-------
- include/sound/core.h                              | 24 ++++++++---------------
- 2 files changed, 13 insertions(+), 23 deletions(-)
+ sound/usb/clock.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/Documentation/DocBook/writing-an-alsa-driver.tmpl b/Documentation/DocBook/writing-an-alsa-driver.tmpl
-index bd6fee2..06741e9 100644
---- a/Documentation/DocBook/writing-an-alsa-driver.tmpl
-+++ b/Documentation/DocBook/writing-an-alsa-driver.tmpl
-@@ -6164,14 +6164,12 @@ struct _snd_pcm_runtime {
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 5e634a2..d12a9c4 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -255,6 +255,7 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 	unsigned char data[4];
+ 	int err, crate;
+ 	int clock = snd_usb_clock_find_source(chip, fmt->clock);
++	unsigned int previous_rate;
  
-       <para>
-         The macro takes an conditional expression to evaluate.
--	When <constant>CONFIG_SND_DEBUG</constant>, is set, the
--	expression is actually evaluated. If it's non-zero, it shows
--	the warning message such as
-+	When <constant>CONFIG_SND_DEBUG</constant>, is set, if the
-+	expression is non-zero, it shows the warning message such as
- 	<computeroutput>BUG? (xxx)</computeroutput>
--	normally followed by stack trace.  It returns the evaluated
--	value.
--	When no <constant>CONFIG_SND_DEBUG</constant> is set, this
--	macro always returns zero.
-+	normally followed by stack trace.
+ 	if (clock < 0)
+ 		return clock;
+@@ -266,6 +267,18 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 		return -ENXIO;
+ 	}
+ 
++	if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
++				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
++				   UAC2_CS_CONTROL_SAM_FREQ << 8,
++				   snd_usb_ctrl_intf(chip) | (clock << 8),
++				   data, sizeof(data))) < 0) {
++		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2)\n",
++			   dev->devnum, iface, fmt->altsetting);
++		return err;
++	}
 +
-+	In both cases it returns the evaluated value.
-       </para>
- 
-     </section>
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 7cede2d..a63680b 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -379,18 +379,10 @@ void __snd_printk(unsigned int level, const char *file, int line,
-  * snd_BUG_ON - debugging check macro
-  * @cond: condition to evaluate
-  *
-- * When CONFIG_SND_DEBUG is set, this macro evaluates the given condition,
-- * and call WARN() and returns the value if it's non-zero.
-- * 
-- * When CONFIG_SND_DEBUG is not set, this just returns zero, and the given
-- * condition is ignored.
-- *
-- * NOTE: the argument won't be evaluated at all when CONFIG_SND_DEBUG=n.
-- * Thus, don't put any statement that influences on the code behavior,
-- * such as pre/post increment, to the argument of this macro.
-- * If you want to evaluate and give a warning, use standard WARN_ON().
-+ * Has the same behavior as WARN_ON when CONFIG_SND_DEBUG is set,
-+ * otherwise just evaluates the conditional and returns the value.
-  */
--#define snd_BUG_ON(cond)	WARN((cond), "BUG? (%s)\n", __stringify(cond))
-+#define snd_BUG_ON(cond)	WARN_ON((cond))
- 
- #else /* !CONFIG_SND_DEBUG */
- 
-@@ -400,11 +392,11 @@ __printf(2, 3)
- static inline void _snd_printd(int level, const char *format, ...) {}
- 
- #define snd_BUG()			do { } while (0)
--static inline int __snd_bug_on(int cond)
--{
--	return 0;
--}
--#define snd_BUG_ON(cond)	__snd_bug_on(0 && (cond))  /* always false */
++	previous_rate = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 +
-+#define snd_BUG_ON(condition) ({ \
-+	int __ret_warn_on = !!(condition); \
-+	unlikely(__ret_warn_on); \
-+})
+ 	data[0] = rate;
+ 	data[1] = rate >> 8;
+ 	data[2] = rate >> 16;
+@@ -294,6 +307,18 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 	if (crate != rate)
+ 		snd_printd(KERN_WARNING "current rate %d is different from the runtime rate %d\n", crate, rate);
  
- #endif /* CONFIG_SND_DEBUG */
++	/* Some devices doesn't respond to sample rate changes while the
++	 * interface is active. */
++	if (crate != previous_rate) {
++		switch (chip->usb_id) {
++		case USB_ID(0x0d8c, 0x0304): /* C-Media - Schiit USB */
++		case USB_ID(0x0d8c, 0x0309): /* C-Media CM6631 */
++			usb_set_interface(dev, iface, 0);
++			usb_set_interface(dev, iface, fmt->altsetting);
++			break;
++		}
++	}
++
+ 	return 0;
+ }
  
 -- 
-1.8.2.rc0
+1.7.10.4
