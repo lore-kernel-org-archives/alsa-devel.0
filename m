@@ -1,55 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: common way for hardware metering and monitoring
- between kernel/user land
-Date: Tue, 05 Mar 2013 20:06:06 +0100
-Message-ID: <5136421E.4090307@ladisch.de>
-References: <513623A6.7070905@sakamocchi.jp>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/12] ARM: mxs: move to generic DMA device tree binding
+Date: Tue, 5 Mar 2013 19:39:00 +0000
+Message-ID: <201303051939.00808.arnd@arndb.de>
+References: <1362486244-24593-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id F26772652C0
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 20:07:16 +0100 (CET)
-In-Reply-To: <513623A6.7070905@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-serial-owner@vger.kernel.org>
+In-Reply-To: <1362486244-24593-1-git-send-email-shawn.guo@linaro.org>
+Sender: linux-serial-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>, Marek Vasut <marek.vasut@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>, Huang Shijie <b32955@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Artem Bityutskiy <dedekind1@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Chris Ball <cjb@laptop.org>, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> Now i'm working in kernel land to support Echo's Fireworks (TM) devices
-> with better integration.
-> [...]
-> Well, now I need your advice about common ways for hardware metering and
-> monitoring between kernel land and user land.
+On Tuesday 05 March 2013, Shawn Guo wrote:
+> The series converts mxs-dma and its clients to generic DMA device tree
+> binding/helper.
+> 
+> I published a branch below to ease people who is willing to help
+> testing the series.
 
-For almost all FireWire audio devices, it would not be possible to
-create ALSA mixer controls that would allow to control the device in
-a sensible way with a generic mixer application like alsamixer.  (Things
-like matrix mixers, or meters integrated with corresponding volume
-sliders.)  Therefore, custom mixer applications are required.
+Looks all good, aside from the bug I found in the first patch.
 
-Because devices typically have most of their customizations in the way
-in which they handle (mixer) controls, the FFADO guys and me have agreed
-that the kernel driver handles only stuff required for audio streaming;
-all other controls are accessed *only* from user space by going directly
-through /dev/fw* (or through a hwdep device if the kernel driver and
-userspace tools need to share a communication channel).
-
-So for now, there's no integration needed in the kernel driver.
-
-
-(I won't have time to test your driver before the next weekend.)
-
-
-Regards,
-Clemens
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
