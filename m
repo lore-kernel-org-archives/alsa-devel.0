@@ -1,19 +1,20 @@
-From: Torstein Hegge <hegge@resisty.net>
-Subject: Re: [PATCH v2] ALSA: usb: Work around CM6631 sample
- rate change bug
-Date: Tue, 5 Mar 2013 11:26:16 +0100
-Message-ID: <20130305102616.GB20417@pvv.ntnu.no>
-References: <20130304223937.GI4452@pvv.ntnu.no>
- <CAOf5uwmf4L0bonZ=gJD+NkTpBY5=gL20JnVCfAP-AGskWo_Fkg@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] ALSA: usb: Work around CM6631 sample rate
+ change bug
+Date: Tue, 05 Mar 2013 11:35:35 +0100
+Message-ID: <5135CA77.2000805@ladisch.de>
+References: <20130302130403.GD4452@pvv.ntnu.no> <5131FAC1.30007@gmail.com>
+ <20130303192922.GE4452@pvv.ntnu.no> <s5hlia3ilzx.wl%tiwai@suse.de>
+ <5134781F.4050607@ladisch.de> <20130304213311.GG4452@pvv.ntnu.no>
+ <5135A4D7.2050301@ladisch.de> <20130305102203.GA20417@pvv.ntnu.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1834426520A
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 11:26:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAOf5uwmf4L0bonZ=gJD+NkTpBY5=gL20JnVCfAP-AGskWo_Fkg@mail.gmail.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 15D9E26520A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 11:35:37 +0100 (CET)
+In-Reply-To: <20130305102203.GA20417@pvv.ntnu.no>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: alsa-devel@alsa-project.org
+To: Torstein Hegge <hegge@resisty.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 05, 2013 at 07:02:58AM +0100, Michael Trimarchi wrote:
-> Hi
-> 
-> Some comments:
-> 
-> On 4 Mar 2013 23:40, "Torstein Hegge" <hegge@resisty.net> wrote:
-> >
-> > The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
-> > sample rate while the interface is active.
-> >
-> > Reset the interface after setting the sampling frequency on sample rate
-> > changes, to ensure that the sample rate set by snd_usb_init_sample_rate()
-> is
-> > used. Otherwise, the device will try to use the sample rate of the
-> previous
-> > stream, causing distorted sound on sample rate changes.
-> >
-> > Signed-off-by: Torstein Hegge <hegge@resisty.net>
-> > ---
-> >  sound/usb/clock.c |   25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >
-> > diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-> > index 5e634a2..d12a9c4 100644
-> > --- a/sound/usb/clock.c
-> > +++ b/sound/usb/clock.c
-> > @@ -255,6 +255,7 @@ static int set_sample_rate_v2(struct snd_usb_audio
-> *chip, int iface,
-> >         unsigned char data[4];
-> >         int err, crate;
-> >         int clock = snd_usb_clock_find_source(chip, fmt->clock);
-> > +       unsigned int previous_rate;
-> >
-> 
-> crate and previous_rate are different types.
-> Why don't call it prate or change both name?
+Torstein Hegge wrote:
+> On Tue, Mar 05, 2013 at 08:55:03AM +0100, Clemens Ladisch wrote:
+>> From that driver's .inf file:
+>>
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0301&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0302&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0304&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0305&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0306&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0309&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0310&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0311&MI_00	;CM6610A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0312&MI_00	;CM6620A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0313&MI_00	;CM6630A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0314&MI_00	;CM6631A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0319&MI_00	;CM6631A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0315&MI_00	;CM6632A
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_200C&PID_1030&MI_00
+>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_054C&PID_06CF&MI_00
+>
+> I'm not quite sure how to interpret that. I guess most of those are
+> similar devices that doesn't necessarily need this workaround?
 
-How about int cur_rate, prev_rate; ?
+Those are all the IDs that the C-Media driver attaches to.  The
+hardware is always the same; I would be surprised if the firmware
+did not have the same bug.
 
-> >         if (clock < 0)
-> >                 return clock;
-> > @@ -266,6 +267,18 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
-> >                 return -ENXIO;
-> >         }
-> >
-> > +       if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
-> 
-> Is it more clear to assign it and then test?
 
-I agree that separate assign and test would be more readable, but this
-is consistent with the four other calls to snd_usb_ctl_msg() in clock.c.
-
-Torstein
+Regards,
+Clemens
