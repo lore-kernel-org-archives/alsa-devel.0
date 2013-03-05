@@ -1,24 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5 v7][RFC] ASoC: add
-	snd_soc_register_cpu()
-Date: Tue, 5 Mar 2013 11:05:48 +0800
-Message-ID: <20130305030546.GB9391@opensource.wolfsonmicro.com>
-References: <511C6A1B.9000507@wwwdotorg.org>
- <874nhfv5mb.wl%kuninori.morimoto.gx@renesas.com>
- <8738wzuu9g.wl%kuninori.morimoto.gx@renesas.com>
- <87a9qsg4lp.wl%kuninori.morimoto.gx@renesas.com>
- <87mwuptgju.wl%kuninori.morimoto.gx@renesas.com>
- <512FACAC.1000808@wwwdotorg.org> <5131147F.5090901@metafoo.de>
- <1362174130.4439.61.camel@loki>
- <20130302032511.GB6610@opensource.wolfsonmicro.com>
- <1362426516.4448.68.camel@loki>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH v2] ALSA: usb: Work around CM6631 sample
+ rate change bug
+Date: Tue, 5 Mar 2013 07:02:58 +0100
+Message-ID: <CAOf5uwmf4L0bonZ=gJD+NkTpBY5=gL20JnVCfAP-AGskWo_Fkg@mail.gmail.com>
+References: <20130304223937.GI4452@pvv.ntnu.no>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2197954645150016053=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8094926518D
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 04:06:18 +0100 (CET)
-In-Reply-To: <1362426516.4448.68.camel@loki>
+Received: from mail-ia0-f173.google.com (mail-ia0-f173.google.com
+ [209.85.210.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EED2651A0
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 07:02:59 +0100 (CET)
+Received: by mail-ia0-f173.google.com with SMTP id h37so5715578iak.18
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 22:02:58 -0800 (PST)
+In-Reply-To: <20130304223937.GI4452@pvv.ntnu.no>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,60 +24,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Torstein Hegge <hegge@resisty.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============2197954645150016053==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
-Content-Disposition: inline
+Some comments:
 
+On 4 Mar 2013 23:40, "Torstein Hegge" <hegge@resisty.net> wrote:
+>
+> The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
+> sample rate while the interface is active.
+>
+> Reset the interface after setting the sampling frequency on sample rate
+> changes, to ensure that the sample rate set by snd_usb_init_sample_rate()
+is
+> used. Otherwise, the device will try to use the sample rate of the
+previous
+> stream, causing distorted sound on sample rate changes.
+>
+> Signed-off-by: Torstein Hegge <hegge@resisty.net>
+> ---
+>  sound/usb/clock.c |   25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index 5e634a2..d12a9c4 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -255,6 +255,7 @@ static int set_sample_rate_v2(struct snd_usb_audio
+*chip, int iface,
+>         unsigned char data[4];
+>         int err, crate;
+>         int clock = snd_usb_clock_find_source(chip, fmt->clock);
+> +       unsigned int previous_rate;
+>
 
---xXmbgvnjoT4axfJE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+crate and previous_rate are different types.
+Why don't call it prate or change both name?
 
-On Mon, Mar 04, 2013 at 07:48:36PM +0000, Liam Girdwood wrote:
+>         if (clock < 0)
+>                 return clock;
+> @@ -266,6 +267,18 @@ static int set_sample_rate_v2(struct snd_usb_audio
+*chip, int iface,
+>                 return -ENXIO;
+>         }
+>
+> +       if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
+UAC2_CS_CUR,
 
-> I think we probably have more in common between platforms and codecs now
-> than we have that is different (certainly, things were very different in
-> the past). But you are right, is it really worth the big churn.....=20
+Is it more clear to assign it and then test?
 
-Definitely, I'm just not sure that the existing platform object really
-captures the new bits or if it maps more onto DAIs.
+> +                                  USB_TYPE_CLASS | USB_RECIP_INTERFACE |
+USB_DIR_IN,
+> +                                  UAC2_CS_CONTROL_SAM_FREQ << 8,
+> +                                  snd_usb_ctrl_intf(chip) | (clock << 8),
+> +                                  data, sizeof(data))) < 0) {
+> +               snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq
+(v2)\n",
+> +                          dev->devnum, iface, fmt->altsetting);
+> +               return err;
+> +       }
+> +
+> +       previous_rate = data[0] | (data[1] << 8) | (data[2] << 16) |
+(data[3] << 24);
+> +
+>         data[0] = rate;
+>         data[1] = rate >> 8;
+>         data[2] = rate >> 16;
+> @@ -294,6 +307,18 @@ static int set_sample_rate_v2(struct snd_usb_audio
+*chip, int iface,
+>         if (crate != rate)
+>                 snd_printd(KERN_WARNING "current rate %d is different
+from the runtime rate %d\n", crate, rate);
+>
+> +       /* Some devices doesn't respond to sample rate changes while the
+> +        * interface is active. */
+> +       if (crate != previous_rate) {
+> +               switch (chip->usb_id) {
+> +               case USB_ID(0x0d8c, 0x0304): /* C-Media - Schiit USB */
+> +               case USB_ID(0x0d8c, 0x0309): /* C-Media CM6631 */
+> +                       usb_set_interface(dev, iface, 0);
+> +                       usb_set_interface(dev, iface, fmt->altsetting);
+> +                       break;
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
+> --
+> 1.7.10.4
+>
+>
 
---xXmbgvnjoT4axfJE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRNWDrAAoJELSic+t+oim9if4P/3FAqZVRLaz1fVF2AV3ygIKb
-mlxK2jl/eU0iqQ8pJID7g2n1HI/b1gUtRHHV+TdkMnFrY4/+IolOVXwt112O72qN
-1M3/00KsPksB8bDbEqJyKjLBmnRTyNtoDv1VZxP5c3K0pYCnng4ajkm5HKsgPxkX
-1hTkFZKPRnvSQ+Xvaa6WuvkgZaUCuiyI0BGpwe+mNCutvGC1sBJ6/8EHDGCar/+6
-ao4oP4g9pnU4OweiJCod7KCJjlQZBgtFyO6CUz3Qw5wVXjD3B+PspC8Ifzg1p0h9
-4EmHW0lJGR2k84h4rKugaJGBGQCSA5TKVsP+iJLyZOtq5IK/RtwUUf78jci/0nWt
-C7q8a6pDxmhDa2RK++Es1XOR7VK7J74waSONWZffp8ityAPTLqTWFTQWIRx1T9xb
-I/TfISRhhA4k0HWTg4A56tpAL4nm+Otr8NbZbMbnET+Q/yuVNyJoqCoI3RGCvcTX
-CUzrbjf3+S+e2pmTT6NPeuoERuaBkvWHPU0h4DB6jX0YAsLeCAYU/L8R49Z3OeU7
-zjcpxD33mweZlayC4DWqTzEK3uzOsQfMNVVWykeNHtJaOYY0vZfy0hdAMLwrpV6N
-XXcpsSINOiUC5h7DdimJcw2h7UnILbymHArE4pTmX30t4GtfQCY11KcpFhzioMUL
-167vttmcqEsD46TtBKSm
-=1CNM
------END PGP SIGNATURE-----
-
---xXmbgvnjoT4axfJE--
-
---===============2197954645150016053==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2197954645150016053==--
+Michael
+_______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
