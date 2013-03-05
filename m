@@ -1,120 +1,54 @@
-From: JongHo Kim <furmuwon@gmail.com>
-Subject: ASoC : playback and capture counts in soc_new_pcm
-Date: Tue, 5 Mar 2013 11:37:03 +0900
-Message-ID: <CANXQt8a6XyQVgb50+e-jQ-QXn5d-fS_AGZZrnXo4oU9WOQbKXw@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH V2] ASoC: tegra: fix I2S bit count mask
+Date: Tue, 5 Mar 2013 10:42:59 +0800
+Message-ID: <20130305024254.GA9391@opensource.wolfsonmicro.com>
+References: <1362442220-28718-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id CC43426518D
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 03:37:04 +0100 (CET)
-Received: by mail-pb0-f45.google.com with SMTP id ro8so3750818pbb.32
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2013 18:37:03 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1362442220-28718-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi I am developing the ALSA ASoC part. I has some problem.
-Now my situation must only use the cpu_dai(AP I2S IP) to half duplex.
-So, I want to allocate either a capture substream or a playback substream.
-But ASoC(soc-pcm.c) referred to the playback(capture)_channel_min of
-codec_dai
-at the calling snd_pcm_new in soc_new_pcm.
-I do not want to modify the codec_dai codes.
-As a result, hope to see below
 
-/dev/snd/pcmC0D0p
-/dev/snd/pcmC0D1c
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-attach the ASCII schematic diagram.
+On Mon, Mar 04, 2013 at 05:10:20PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> This register field is 11 bits wide, not 15 bits wide. Given the way
+> this value is currently, used, this patch has no practical effect.
+> However, it's still best if the value is correct.
 
-Slaves                          Master
-+--------------+               +-----------------+
-|I2S.0 data_out|---------------|data_in(AIF1)    |
-|I2S.0 bclk    |-------+-------|bclk             |
-|I2S.0 lrclk   |-------|--+----|lrclk            |
-+--------------+       |  |    |                 |
-+--------------+       |  |    |   AUDIO CODEC   |
-|I2S.1 bclk    |-------+  |    |                 |
-|I2S.1 lrclk   |----------+    |                 |
-|I2S.1 data_in |---------------|data_out(AIF1)   |
-+--------------+               +-----------------+
+Applied, thanks.
 
-attach the i2s and dai_link codes.
------------------------------------------------------------------------------
-static struct snd_soc_dai_driver board_i2s_dai_hf_playback_template = {
-.probe = board_i2s_probe,
-.playback = {
-.stream_name = "Playback",
-.channels_min = 1,
-.channels_max = 2,
-.rates = SNDRV_PCM_RATE_8000_96000,
-.formats = SNDRV_PCM_FMTBIT_S16_LE,
-},
-.ops = &board_i2s_dai_ops,
-};
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-static struct snd_soc_dai_driver board_i2s_dai_hf_capture_template = {
-.probe = board_i2s_probe,
-.capture = {
-.stream_name = "Capture",
-.channels_min = 1,
-.channels_max = 2,
-.rates = SNDRV_PCM_RATE_8000_96000,
-.formats = SNDRV_PCM_FMTBIT_S16_LE,
-},
-.ops = &board_i2s_dai_ops,
-};
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-static struct snd_soc_dai_link board_dai[] = {
-{
-.name = "audcodec_l0",
-.stream_name = "audcodec HiFi",
-.cpu_dai_name = "board-i2s.0",
-.codec_dai_name = "audcodec-aif1",
-.platform_name = "board-pcm-audio",
-.codec_name = "audcodec-codec",
-.ops = &board_ops,
-},
-{
-.name = "audcodec_l1",
-.stream_name = "audcodec HiFi",
-.cpu_dai_name = "board-i2s.1",
-.codec_dai_name = "audcodec-aif1",
-.platform_name = "board-pcm-audio",
-.codec_name = "audcodec-codec",
-.ops = &board_ops,
-},
-};
------------------------------------------------------------------------------
+iQIcBAEBAgAGBQJRNVuUAAoJELSic+t+oim93CwP/3CHj8to8LDKE3LEiBimhym3
+GDbjw2WE0qcU0b1/HNweMdLKGoJqp6rPb2QES6Eli5MFIMqHL6ffQGvqnIGCdc/C
+hODua4UpTZR6EHPSdxIv7yrQX1FZ1aJrtDV3lt9Axl7DxNkIYmBANwYplT3O4uD5
+LNjjizCSIi34lhoeinKTEqMwgueHR8ktxOBBH/08ugil96AVK7/0CeLQON5a3TaZ
+scM7hGnqYjgaSxXPhSQO6ocGFw6aQ3WT/6qGm/4AltK6o66RnHARCZBPFgEUdcoU
+UEwhnWqklBbIxbD3tcuamEO3ae9cv13Ju7XE7udIPenobzDXLyHZaXOWqrdiVv1W
+GulqA1zDIQKJkhcr5+/p8suPiYHjLYVvFxG8MeabA9jw8CFq/DXuZuVmwGxB7OC+
+xLYXJYUStIRFwq5raQBhZXlXa/gv9pKyB09GBEk2VMpxAd6lJqC28lZDvxDWohMn
+FDSQcRq4KhlwtbUtFdcFyhWz/BCrPHLbkZBcO5hDAR48iXKQfdfRA3dWN4c9jLdm
+G0ZYQhgw+Mc0PbSmXUsI08UVKknZnF/iBn0gFoypr+Wfp4e0m9UcAm38Zc1/Fpd/
+ajja9I55gC3VxttsUFueEMo+30MedlwyxHsqC90CzhVBGW2IdW0EYA7e4Hysqu/8
+oe/AtNXvlaPGKdPFXg7n
+=7o0/
+-----END PGP SIGNATURE-----
 
-So, I suggest the next diff.
-
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2014,9 +2014,11 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int
-num)
-                if (cpu_dai->driver->capture.channels_min)
-                        capture = 1;
-        } else {
--               if (codec_dai->driver->playback.channels_min)
-+               if (codec_dai->driver->playback.channels_min &&
-+                   cpu_dai->driver->playback.channels_min)
-                        playback = 1;
--               if (codec_dai->driver->capture.channels_min)
-+               if (codec_dai->driver->playback.channels_min &&
-+                   cpu_dai->driver->playback.channels_min)
-                        capture = 1;
-        }
-
-Thanks.
+--cWoXeonUoKmBZSoM--
