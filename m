@@ -1,18 +1,21 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v3 09/12] ASoC: dmaengine_pcm: add
-	snd_dmaengine_generic_pcm_open()
-Date: Tue, 5 Mar 2013 22:37:27 +0800
-Message-ID: <1362494247-28909-1-git-send-email-shawn.guo@linaro.org>
-References: <1362486244-24593-10-git-send-email-shawn.guo@linaro.org>
+From: "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
+Subject: Re: ASoC: no-pcm (backend) error propagation
+Date: Tue, 5 Mar 2013 15:34:24 +0000
+Message-ID: <190351B32828744FBA3BD9565204D27B01CAC5EC@NA-MBX-03.mgc.mentorg.com>
+References: <190351B32828744FBA3BD9565204D27B01CA3AF2@NA-MBX-03.mgc.mentorg.com>
+ <1361953433.28121.33.camel@vega> <512E29B8.8050708@linux.intel.com>
+ <1362173113.4439.46.camel@loki>
+ <190351B32828744FBA3BD9565204D27B01CA7704@NA-MBX-03.mgc.mentorg.com>
+ <1362426130.4448.62.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe002.messaging.microsoft.com [213.199.154.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CD13265275
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 15:37:08 +0100 (CET)
-In-Reply-To: <1362486244-24593-10-git-send-email-shawn.guo@linaro.org>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85370265277
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 16:34:30 +0100 (CET)
+In-Reply-To: <1362426130.4448.62.camel@loki>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Huang Shijie <b32955@freescale.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Marek Vasut <marek.vasut@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-With generic DMA device tree binding and helper function
-dma_request_slave_channel() in place, dmaengine_pcm should support
-that in requesting DMA channel for users that support generic DMA
-device tree binding.
-
-Add a new API snd_dmaengine_generic_pcm_open() as the variant of
-snd_dmaengine_pcm_open().  It takes DMA client struct device pointer
-and slave channel name as arguments and calls generic DMA helper
-dma_request_slave_channel() to request DMA channel from dmaengine.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
----
-Changes since v2:
- - Drop 'const' from argument 'name' to fix the warning below.
-
-sound/soc/soc-dmaengine-pcm.c: In function 'snd_dmaengine_generic_pcm_open':
-sound/soc/soc-dmaengine-pcm.c:333:2: warning: passing argument 2 of 'dma_request_slave_channel' discards 'const' qualifier from pointer target type [enabled by default]
-include/linux/dmaengine.h:971:18: note: expected 'char *' but argument is of type 'const char *'
-
- include/sound/dmaengine_pcm.h |    2 ++
- sound/soc/soc-dmaengine-pcm.c |   39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
-
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index b877334..394272b 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -43,6 +43,8 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
- 
- int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
- 	dma_filter_fn filter_fn, void *filter_data);
-+int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-+				   struct device *dev, char *name);
- int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
- 
- struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream);
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-index 111b7d92..e9d9897 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
-@@ -304,6 +304,45 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
- 
- /**
-+ * snd_dmaengine_generic_pcm_open - Open a dmaengine based PCM substream
-+ * @substream: PCM substream
-+ * @dev: pointer to DMA client device structure
-+ * @name: DMA slave channel name
-+ *
-+ * Returns 0 on success, a negative error code otherwise.
-+ *
-+ * This function is a variant of snd_dmaengine_pcm_open(). It takes different
-+ * parameters and calls generic DMA helper dma_request_slave_channel() to
-+ * request a DMA channel from dmaengine.
-+ */
-+int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-+				   struct device *dev, char *name)
-+{
-+	struct dmaengine_pcm_runtime_data *prtd;
-+	int ret;
-+
-+	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		return ret;
-+
-+	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-+	if (!prtd)
-+		return -ENOMEM;
-+
-+	prtd->dma_chan = dma_request_slave_channel(dev, name);
-+	if (!prtd->dma_chan) {
-+		kfree(prtd);
-+		return -ENXIO;
-+	}
-+
-+	substream->runtime->private_data = prtd;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_generic_pcm_open);
-+
-+/**
-  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
-  * @substream: PCM substream
-  */
--- 
-1.7.9.5
+PiBPbiBNb24sIDIwMTMtMDMtMDQgYXQgMDE6MzAgKzAwMDAsIEZya3Vza2EsIEpvc2h1YSB3cm90
+ZToNCj4gDQo+ID4gSWYgeW91IGNvdWxkIHRlbGwgbWUgdGhlIGFyZWEgeW91IGhhdmUgaW4gbWlu
+ZCBmb3IgdGhlIHJvdXRpbmcgYmFjaw0KPiBwcm9wYWdhdGlvbiB3aGVuIHJlLXBhcmVudGluZywg
+SSBjYW4gc3R1ZHkgdGhhdCwgYmVmb3JlIGNyZWF0aW5nIHNvbWV0aGluZyB0aGF0DQo+IGlzbuKA
+mXQgaW5saW5lIHdpdGggdGhlIGV4aXN0aW5nIGNvZGUuDQo+ID4NCj4gDQo+IFRoZXJlIGlzIHNv
+bWUgcmUgcGFyZW50aW5nIGNvZGUgaW4gc29jLXBjbS5jIGRwY21fYmVfcmVwYXJlbnQoKS4gSXQg
+c2hvd3MgdGhlDQo+IGxpc3QgY29ubmVjdCBlYWNoIEZFIGFuZCBCRSBhbmQgc2hvdWxkIGdpdmUg
+c29tZSBpZGVhcyBmb3IgdGhlIGJhY2sgcm91dGluZy4NCj4gDQpMaWFtLA0KDQpUaGFuayB5b3Ug
+Zm9yIHlvdXIgYXNzaXN0YW5jZSwgaWYgSSBmZWVsIGxpa2UgSSBtYXkgaGF2ZSBhIHBvdGVudGlh
+bCBzb2x1dGlvbiwgSSB3aWxsIHBvc3QgYSBwYXRjaCB3aXRoIHRoZSBpZGVhcy4NCg0KQmVzdCBy
+ZWdhcmRzLA0KDQpKb3NodWENCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
