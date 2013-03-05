@@ -1,21 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: usb: Work around CM6631 sample rate
- change bug
-Date: Tue, 05 Mar 2013 22:39:55 +0100
-Message-ID: <5136662B.7020301@ladisch.de>
-References: <20130302130403.GD4452@pvv.ntnu.no> <5131FAC1.30007@gmail.com>
- <20130303192922.GE4452@pvv.ntnu.no> <s5hlia3ilzx.wl%tiwai@suse.de>
- <5134781F.4050607@ladisch.de> <20130304213311.GG4452@pvv.ntnu.no>
- <5135A4D7.2050301@ladisch.de> <20130305102203.GA20417@pvv.ntnu.no>
- <5135CA77.2000805@ladisch.de> <20130305212423.GC20417@pvv.ntnu.no>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: [PATCH v3] ALSA: usb: Work around CM6631 sample rate
+	change bug
+Date: Tue, 5 Mar 2013 23:03:03 +0100
+Message-ID: <20130305220303.GD20417@pvv.ntnu.no>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A5B24265238
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 22:41:05 +0100 (CET)
-In-Reply-To: <20130305212423.GC20417@pvv.ntnu.no>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 012172652CF
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 23:03:05 +0100 (CET)
+Received: from horisont.pvv.ntnu.no ([129.241.210.175] ident=Debian-exim)
+ by microbel.pvv.ntnu.no with esmtps (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.72) (envelope-from <torstehe@pvv.ntnu.no>)
+ id 1UCzwt-000540-Gj
+ for alsa-devel@alsa-project.org; Tue, 05 Mar 2013 23:03:05 +0100
+Received: from torstehe by horisont.pvv.ntnu.no with local (Exim 4.72)
+ (envelope-from <torstehe@pvv.ntnu.no>) id 1UCzwt-0002jM-9s
+ for alsa-devel@alsa-project.org; Tue, 05 Mar 2013 23:03:03 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +28,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Torstein Hegge <hegge@resisty.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Torstein Hegge wrote:
-> On Tue, Mar 05, 2013 at 11:35:35AM +0100, Clemens Ladisch wrote:
->> Torstein Hegge wrote:
->>> On Tue, Mar 05, 2013 at 08:55:03AM +0100, Clemens Ladisch wrote:
->>>> From that driver's .inf file:
->>>>
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0301&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0302&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0304&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0305&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0306&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0309&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0310&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0311&MI_00	;CM6610A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0312&MI_00	;CM6620A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0313&MI_00	;CM6630A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0314&MI_00	;CM6631A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0319&MI_00	;CM6631A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_0D8C&PID_0315&MI_00	;CM6632A
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_200C&PID_1030&MI_00
->>>> %CMUACWO.DeviceDesc%=CMUACWO,USB\VID_054C&PID_06CF&MI_00
->>>
->>> I'm not quite sure how to interpret that. I guess most of those are
->>> similar devices that doesn't necessarily need this workaround?
->>
->> Those are all the IDs that the C-Media driver attaches to.  The
->> hardware is always the same; I would be surprised if the firmware
->> did not have the same bug.
->
-> The ids listed covers CM6610, CM6620 and CM6631, which are distinct
-> pieces of hardware, or at least they are sold as if they were.
+The C-Media CM6631 USB-to-S/PDIF receiver doesn't respond to changes in
+sample rate while the interface is active.
 
-All the same chip with different labels.  I don't know if C-Media even
-bothers to fuse off the unused features in the lower models.
+Reset the interface after setting the sampling frequency on sample rate
+changes, to ensure that the sample rate set by snd_usb_init_sample_rate() is
+used. Otherwise, the device will try to use the sample rate of the previous
+stream, causing distorted sound on sample rate changes.
 
-> It might be a fair assumption that all current C-Media UAC V2.0 devices
-> have this issue.
+The reset is performed for all current C-Media UAC V2.0 devices, including
+CM6610, CM6620 and CM6631, but has only been tested with CM6631.
 
-Indeed.  In any case, re-setting the interface should not hurt *any*
-compliant device.
+Signed-off-by: Torstein Hegge <hegge@resisty.net>
+---
+Changes since v2:
+- More USB ids covered.
+- int crate -> int cur_rate
+- unsigned int previous_rate -> int prev_rate
 
+ sound/usb/clock.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 46 insertions(+), 4 deletions(-)
 
-Regards,
-Clemens
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 5e634a2..98c4e26 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -253,7 +253,7 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	unsigned char data[4];
+-	int err, crate;
++	int err, cur_rate, prev_rate;
+ 	int clock = snd_usb_clock_find_source(chip, fmt->clock);
+ 
+ 	if (clock < 0)
+@@ -266,6 +266,18 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 		return -ENXIO;
+ 	}
+ 
++	if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
++				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
++				   UAC2_CS_CONTROL_SAM_FREQ << 8,
++				   snd_usb_ctrl_intf(chip) | (clock << 8),
++				   data, sizeof(data))) < 0) {
++		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2)\n",
++			   dev->devnum, iface, fmt->altsetting);
++		return err;
++	}
++
++	prev_rate = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
++
+ 	data[0] = rate;
+ 	data[1] = rate >> 8;
+ 	data[2] = rate >> 16;
+@@ -290,9 +302,39 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 		return err;
+ 	}
+ 
+-	crate = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+-	if (crate != rate)
+-		snd_printd(KERN_WARNING "current rate %d is different from the runtime rate %d\n", crate, rate);
++	cur_rate = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
++	if (cur_rate != rate) {
++		snd_printd(KERN_WARNING
++			   "current rate %d is different from the runtime rate %d\n",
++			   cur_rate, rate);
++	}
++
++	/* Some devices doesn't respond to sample rate changes while the
++	 * interface is active. */
++	if (cur_rate != prev_rate) {
++		switch (chip->usb_id) {
++		/* C-Media CM6610/CM6620/CM6631 */
++		case USB_ID(0x054c, 0x06cf): /* Sony */
++		case USB_ID(0x0b05, 0x17a8): /* Asus Xonar Essence One */
++		case USB_ID(0x0d8c, 0x0301):
++		case USB_ID(0x0d8c, 0x0302):
++		case USB_ID(0x0d8c, 0x0304): /* CM6631 (Schiit) */
++		case USB_ID(0x0d8c, 0x0305):
++		case USB_ID(0x0d8c, 0x0306):
++		case USB_ID(0x0d8c, 0x0309): /* CM6631 */
++		case USB_ID(0x0d8c, 0x0310):
++		case USB_ID(0x0d8c, 0x0311): /* CM6610A */
++		case USB_ID(0x0d8c, 0x0312): /* CM6620A */
++		case USB_ID(0x0d8c, 0x0313): /* CM6630A */
++		case USB_ID(0x0d8c, 0x0314): /* CM6631A */
++		case USB_ID(0x0d8c, 0x0315): /* CM6632A */
++		case USB_ID(0x0d8c, 0x0319): /* CM6631A */
++		case USB_ID(0x200c, 0x1030): /* Reloop */
++			usb_set_interface(dev, iface, 0);
++			usb_set_interface(dev, iface, fmt->altsetting);
++			break;
++		}
++	}
+ 
+ 	return 0;
+ }
+-- 
+1.7.10.4
