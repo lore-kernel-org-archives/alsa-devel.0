@@ -1,54 +1,150 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH V2] ASoC: tegra: fix I2S bit count mask
-Date: Tue, 5 Mar 2013 10:42:59 +0800
-Message-ID: <20130305024254.GA9391@opensource.wolfsonmicro.com>
-References: <1362442220-28718-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: If we only have a clock to
+	synchronise with make it REFCLK
+Date: Tue,  5 Mar 2013 10:02:24 +0800
+Message-ID: <1362448944-25952-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1362442220-28718-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB88426518D
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2013 03:46:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+If there is only one clock active the FLL should use REFCLK rather than
+SYNCCLK as the clock to synchronise with since REFCLK is always required.
 
---cWoXeonUoKmBZSoM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   76 ++++++++++++++++++++++----------------------
+ 1 file changed, 38 insertions(+), 38 deletions(-)
 
-On Mon, Mar 04, 2013 at 05:10:20PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> This register field is 11 bits wide, not 15 bits wide. Given the way
-> this value is currently, used, this patch has no practical effect.
-> However, it's still best if the value is correct.
-
-Applied, thanks.
-
---cWoXeonUoKmBZSoM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRNVuUAAoJELSic+t+oim93CwP/3CHj8to8LDKE3LEiBimhym3
-GDbjw2WE0qcU0b1/HNweMdLKGoJqp6rPb2QES6Eli5MFIMqHL6ffQGvqnIGCdc/C
-hODua4UpTZR6EHPSdxIv7yrQX1FZ1aJrtDV3lt9Axl7DxNkIYmBANwYplT3O4uD5
-LNjjizCSIi34lhoeinKTEqMwgueHR8ktxOBBH/08ugil96AVK7/0CeLQON5a3TaZ
-scM7hGnqYjgaSxXPhSQO6ocGFw6aQ3WT/6qGm/4AltK6o66RnHARCZBPFgEUdcoU
-UEwhnWqklBbIxbD3tcuamEO3ae9cv13Ju7XE7udIPenobzDXLyHZaXOWqrdiVv1W
-GulqA1zDIQKJkhcr5+/p8suPiYHjLYVvFxG8MeabA9jw8CFq/DXuZuVmwGxB7OC+
-xLYXJYUStIRFwq5raQBhZXlXa/gv9pKyB09GBEk2VMpxAd6lJqC28lZDvxDWohMn
-FDSQcRq4KhlwtbUtFdcFyhWz/BCrPHLbkZBcO5hDAR48iXKQfdfRA3dWN4c9jLdm
-G0ZYQhgw+Mc0PbSmXUsI08UVKknZnF/iBn0gFoypr+Wfp4e0m9UcAm38Zc1/Fpd/
-ajja9I55gC3VxttsUFueEMo+30MedlwyxHsqC90CzhVBGW2IdW0EYA7e4Hysqu/8
-oe/AtNXvlaPGKdPFXg7n
-=7o0/
------END PGP SIGNATURE-----
-
---cWoXeonUoKmBZSoM--
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e456cb4..0599ff8 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1132,14 +1132,30 @@ static void arizona_enable_fll(struct arizona_fll *fll,
+ 	struct arizona *arizona = fll->arizona;
+ 	int ret;
+ 
+-	regmap_update_bits(arizona->regmap, fll->base + 5,
+-			   ARIZONA_FLL1_OUTDIV_MASK,
+-			   ref->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
+-
+-	arizona_apply_fll(arizona, fll->base, ref, fll->ref_src);
+-	if (fll->sync_src >= 0)
+-		arizona_apply_fll(arizona, fll->base + 0x10, sync,
++	/*
++	 * If we have both REFCLK and SYNCCLK then enable both,
++	 * otherwise apply the SYNCCLK settings to REFCLK.
++	 */
++	if (fll->ref_src >= 0 && fll->ref_src != fll->sync_src) {
++		regmap_update_bits(arizona->regmap, fll->base + 5,
++				   ARIZONA_FLL1_OUTDIV_MASK,
++				   ref->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
++
++		arizona_apply_fll(arizona, fll->base, ref, fll->ref_src);
++		if (fll->sync_src >= 0)
++			arizona_apply_fll(arizona, fll->base + 0x10, sync,
++					  fll->sync_src);
++	} else if (fll->sync_src >= 0) {
++		regmap_update_bits(arizona->regmap, fll->base + 5,
++				   ARIZONA_FLL1_OUTDIV_MASK,
++				   sync->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
++
++		arizona_apply_fll(arizona, fll->base, sync,
+ 				  fll->sync_src);
++	} else {
++		arizona_fll_err(fll, "No clocks provided\n");
++		return;
++	}
+ 
+ 	if (!arizona_is_enabled_fll(fll))
+ 		pm_runtime_get(arizona->dev);
+@@ -1149,7 +1165,8 @@ static void arizona_enable_fll(struct arizona_fll *fll,
+ 
+ 	regmap_update_bits(arizona->regmap, fll->base + 1,
+ 			   ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
+-	if (fll->sync_src >= 0)
++	if (fll->ref_src >= 0 && fll->sync_src >= 0 &&
++	    fll->ref_src != fll->sync_src)
+ 		regmap_update_bits(arizona->regmap, fll->base + 0x11,
+ 				   ARIZONA_FLL1_SYNC_ENA,
+ 				   ARIZONA_FLL1_SYNC_ENA);
+@@ -1180,9 +1197,6 @@ int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
+ 	struct arizona_fll_cfg ref, sync;
+ 	int ret;
+ 
+-	if (source < 0)
+-		return -EINVAL;
+-
+ 	if (fll->ref_src == source && fll->ref_freq == Fref)
+ 		return 0;
+ 
+@@ -1216,39 +1230,25 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
+ 	struct arizona_fll_cfg ref, sync;
+ 	int ret;
+ 
+-	if (fll->ref_src < 0 || fll->ref_src == source) {
+-		if (fll->sync_src == ARIZONA_FLL_SRC_NONE &&
+-		    fll->ref_src == source && fll->ref_freq == Fref &&
+-		    fll->fout == Fout)
+-			return 0;
+-
+-		if (Fout) {
+-			ret = arizona_calc_fll(fll, &ref, Fref, Fout);
+-			if (ret != 0)
+-				return ret;
+-		}
+-
+-		fll->sync_src = ARIZONA_FLL_SRC_NONE;
+-		fll->ref_src = source;
+-		fll->ref_freq = Fref;
+-	} else {
+-		if (fll->sync_src == source &&
+-		    fll->sync_freq == Fref && fll->fout == Fout)
+-			return 0;
+-
+-		if (Fout) {
+-			ret = arizona_calc_fll(fll, &ref, fll->ref_freq, Fout);
+-			if (ret != 0)
+-				return ret;
++	if (fll->sync_src == source &&
++	    fll->sync_freq == Fref && fll->fout == Fout)
++		return 0;
+ 
+-			ret = arizona_calc_fll(fll, &sync, Fref, Fout);
++	if (Fout) {
++		if (fll->ref_src >= 0) {
++			ret = arizona_calc_fll(fll, &ref, fll->ref_freq,
++					       Fout);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+ 
+-		fll->sync_src = source;
+-		fll->sync_freq = Fref;
++		ret = arizona_calc_fll(fll, &sync, Fref, Fout);
++		if (ret != 0)
++			return ret;
+ 	}
++
++	fll->sync_src = source;
++	fll->sync_freq = Fref;
+ 	fll->fout = Fout;
+ 
+ 	if (Fout) {
+-- 
+1.7.10.4
