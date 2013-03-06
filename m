@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] mfd: wm5102: Map in additional FLL control
-	registers
-Date: Wed,  6 Mar 2013 14:28:14 +0800
-Message-ID: <1362551296-14920-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: arizona: Optimise FLL loop gains
+Date: Wed,  6 Mar 2013 14:28:16 +0800
+Message-ID: <1362551296-14920-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1362551296-14920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 488D1265327
- for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 07:29:23 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90DB226535C
+ for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 07:29:38 +0100 (CET)
 In-Reply-To: <1362551296-14920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,74 +24,116 @@ To: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <liam.r.girdwood@intel.c
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+For optimal performance the FLL loop gain should be adjusted depending on
+the frequency of the input clock for the loop.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- drivers/mfd/wm5102-tables.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/arizona.c |   43 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/wm5102-tables.c b/drivers/mfd/wm5102-tables.c
-index f3c2e9a..768fd42 100644
---- a/drivers/mfd/wm5102-tables.c
-+++ b/drivers/mfd/wm5102-tables.c
-@@ -291,12 +291,14 @@ static const struct reg_default wm5102_reg_default[] = {
- 	{ 0x00000176, 0x0000 },   /* R374   - FLL1 Control 6 */ 
- 	{ 0x00000177, 0x0181 },   /* R375   - FLL1 Loop Filter Test 1 */ 
- 	{ 0x00000178, 0x0000 },   /* R376   - FLL1 NCO Test 0 */
-+	{ 0x00000179, 0x0000 },   /* R377   - FLL1 Control 7 */
- 	{ 0x00000181, 0x0000 },   /* R385   - FLL1 Synchroniser 1 */ 
- 	{ 0x00000182, 0x0000 },   /* R386   - FLL1 Synchroniser 2 */ 
- 	{ 0x00000183, 0x0000 },   /* R387   - FLL1 Synchroniser 3 */ 
- 	{ 0x00000184, 0x0000 },   /* R388   - FLL1 Synchroniser 4 */ 
- 	{ 0x00000185, 0x0000 },   /* R389   - FLL1 Synchroniser 5 */ 
- 	{ 0x00000186, 0x0000 },   /* R390   - FLL1 Synchroniser 6 */ 
-+	{ 0x00000187, 0x0001 },   /* R391   - FLL1 Synchroniser 7 */
- 	{ 0x00000189, 0x0000 },   /* R393   - FLL1 Spread Spectrum */ 
- 	{ 0x0000018A, 0x0004 },   /* R394   - FLL1 GPIO Clock */ 
- 	{ 0x00000191, 0x0000 },   /* R401   - FLL2 Control 1 */ 
-@@ -307,12 +309,14 @@ static const struct reg_default wm5102_reg_default[] = {
- 	{ 0x00000196, 0x0000 },   /* R406   - FLL2 Control 6 */ 
- 	{ 0x00000197, 0x0000 },   /* R407   - FLL2 Loop Filter Test 1 */ 
- 	{ 0x00000198, 0x0000 },   /* R408   - FLL2 NCO Test 0 */
-+	{ 0x00000199, 0x0000 },   /* R409   - FLL2 Control 7 */
- 	{ 0x000001A1, 0x0000 },   /* R417   - FLL2 Synchroniser 1 */ 
- 	{ 0x000001A2, 0x0000 },   /* R418   - FLL2 Synchroniser 2 */ 
- 	{ 0x000001A3, 0x0000 },   /* R419   - FLL2 Synchroniser 3 */ 
- 	{ 0x000001A4, 0x0000 },   /* R420   - FLL2 Synchroniser 4 */ 
- 	{ 0x000001A5, 0x0000 },   /* R421   - FLL2 Synchroniser 5 */ 
- 	{ 0x000001A6, 0x0000 },   /* R422   - FLL2 Synchroniser 6 */ 
-+	{ 0x000001A7, 0x0001 },   /* R423   - FLL2 Synchroniser 7 */
- 	{ 0x000001A9, 0x0000 },   /* R425   - FLL2 Spread Spectrum */ 
- 	{ 0x000001AA, 0x0004 },   /* R426   - FLL2 GPIO Clock */ 
- 	{ 0x00000200, 0x0006 },   /* R512   - Mic Charge Pump 1 */ 
-@@ -1056,12 +1060,14 @@ static bool wm5102_readable_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_FLL1_CONTROL_6:
- 	case ARIZONA_FLL1_LOOP_FILTER_TEST_1:
- 	case ARIZONA_FLL1_NCO_TEST_0:
-+	case ARIZONA_FLL1_CONTROL_7:
- 	case ARIZONA_FLL1_SYNCHRONISER_1:
- 	case ARIZONA_FLL1_SYNCHRONISER_2:
- 	case ARIZONA_FLL1_SYNCHRONISER_3:
- 	case ARIZONA_FLL1_SYNCHRONISER_4:
- 	case ARIZONA_FLL1_SYNCHRONISER_5:
- 	case ARIZONA_FLL1_SYNCHRONISER_6:
-+	case ARIZONA_FLL1_SYNCHRONISER_7:
- 	case ARIZONA_FLL1_SPREAD_SPECTRUM:
- 	case ARIZONA_FLL1_GPIO_CLOCK:
- 	case ARIZONA_FLL2_CONTROL_1:
-@@ -1072,12 +1078,14 @@ static bool wm5102_readable_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_FLL2_CONTROL_6:
- 	case ARIZONA_FLL2_LOOP_FILTER_TEST_1:
- 	case ARIZONA_FLL2_NCO_TEST_0:
-+	case ARIZONA_FLL2_CONTROL_7:
- 	case ARIZONA_FLL2_SYNCHRONISER_1:
- 	case ARIZONA_FLL2_SYNCHRONISER_2:
- 	case ARIZONA_FLL2_SYNCHRONISER_3:
- 	case ARIZONA_FLL2_SYNCHRONISER_4:
- 	case ARIZONA_FLL2_SYNCHRONISER_5:
- 	case ARIZONA_FLL2_SYNCHRONISER_6:
-+	case ARIZONA_FLL2_SYNCHRONISER_7:
- 	case ARIZONA_FLL2_SPREAD_SPECTRUM:
- 	case ARIZONA_FLL2_GPIO_CLOCK:
- 	case ARIZONA_MIC_CHARGE_PUMP_1:
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 41c116f..29dd641 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1175,6 +1175,16 @@ static struct {
+ 	{ 1000000, 13500000, 0,  1 },
+ };
+ 
++static struct {
++	unsigned int min;
++	unsigned int max;
++	u16 gain;
++} fll_gains[] = {
++	{       0,   256000, 0 },
++	{  256000,  1000000, 2 },
++	{ 1000000, 13500000, 4 },
++};
++
+ struct arizona_fll_cfg {
+ 	int n;
+ 	int theta;
+@@ -1182,6 +1192,7 @@ struct arizona_fll_cfg {
+ 	int refdiv;
+ 	int outdiv;
+ 	int fratio;
++	int gain;
+ };
+ 
+ static int arizona_calc_fll(struct arizona_fll *fll,
+@@ -1241,6 +1252,18 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 		return -EINVAL;
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(fll_gains); i++) {
++		if (fll_gains[i].min <= Fref && Fref <= fll_gains[i].max) {
++			cfg->gain = fll_gains[i].gain;
++			break;
++		}
++	}
++	if (i == ARRAY_SIZE(fll_gains)) {
++		arizona_fll_err(fll, "Unable to find gain for Fref=%uHz\n",
++				Fref);
++		return -EINVAL;
++	}
++
+ 	cfg->n = target / (ratio * Fref);
+ 
+ 	if (target % (ratio * Fref)) {
+@@ -1268,13 +1291,15 @@ static int arizona_calc_fll(struct arizona_fll *fll,
+ 			cfg->n, cfg->theta, cfg->lambda);
+ 	arizona_fll_dbg(fll, "FRATIO=%x(%d) OUTDIV=%x REFCLK_DIV=%x\n",
+ 			cfg->fratio, cfg->fratio, cfg->outdiv, cfg->refdiv);
++	arizona_fll_dbg(fll, "GAIN=%d\n", cfg->gain);
+ 
+ 	return 0;
+ 
+ }
+ 
+ static void arizona_apply_fll(struct arizona *arizona, unsigned int base,
+-			      struct arizona_fll_cfg *cfg, int source)
++			      struct arizona_fll_cfg *cfg, int source,
++			      bool sync)
+ {
+ 	regmap_update_bits(arizona->regmap, base + 3,
+ 			   ARIZONA_FLL1_THETA_MASK, cfg->theta);
+@@ -1289,6 +1314,15 @@ static void arizona_apply_fll(struct arizona *arizona, unsigned int base,
+ 			   cfg->refdiv << ARIZONA_FLL1_CLK_REF_DIV_SHIFT |
+ 			   source << ARIZONA_FLL1_CLK_REF_SRC_SHIFT);
+ 
++	if (sync)
++		regmap_update_bits(arizona->regmap, base + 0x7,
++				   ARIZONA_FLL1_GAIN_MASK,
++				   cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
++	else
++		regmap_update_bits(arizona->regmap, base + 0x9,
++				   ARIZONA_FLL1_GAIN_MASK,
++				   cfg->gain << ARIZONA_FLL1_GAIN_SHIFT);
++
+ 	regmap_update_bits(arizona->regmap, base + 2,
+ 			   ARIZONA_FLL1_CTRL_UPD | ARIZONA_FLL1_N_MASK,
+ 			   ARIZONA_FLL1_CTRL_UPD | cfg->n);
+@@ -1326,17 +1360,18 @@ static void arizona_enable_fll(struct arizona_fll *fll,
+ 				   ARIZONA_FLL1_OUTDIV_MASK,
+ 				   ref->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
+ 
+-		arizona_apply_fll(arizona, fll->base, ref, fll->ref_src);
++		arizona_apply_fll(arizona, fll->base, ref, fll->ref_src,
++				  false);
+ 		if (fll->sync_src >= 0)
+ 			arizona_apply_fll(arizona, fll->base + 0x10, sync,
+-					  fll->sync_src);
++					  fll->sync_src, true);
+ 	} else if (fll->sync_src >= 0) {
+ 		regmap_update_bits(arizona->regmap, fll->base + 5,
+ 				   ARIZONA_FLL1_OUTDIV_MASK,
+ 				   sync->outdiv << ARIZONA_FLL1_OUTDIV_SHIFT);
+ 
+ 		arizona_apply_fll(arizona, fll->base, sync,
+-				  fll->sync_src);
++				  fll->sync_src, false);
+ 	} else {
+ 		arizona_fll_err(fll, "No clocks provided\n");
+ 		return;
 -- 
 1.7.10.4
