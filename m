@@ -1,32 +1,40 @@
-From: Thomas Abraham <thomas.abraham@linaro.org>
-Subject: Re: [PATCH] ASoC: samsung: let device core setup the default pin configuration
-Date: Wed, 6 Mar 2013 17:22:11 +0530
-Message-ID: <CAJuYYwS29ToJ+-1S4G+K=3W1C1TRxLcfPrE=rC_OE4fHyWSc5g@mail.gmail.com>
-References: <1362570951-14403-1-git-send-email-thomas.abraham@linaro.org>
-	<20130306113741.GA19556@opensource.wolfsonmicro.com>
-	<201303061242.09978.heiko@sntech.de>
-	<20130306114918.GB19556@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] Make snd_BUG_ON() always evaluate and return
+ the conditional expression.
+Date: Wed, 06 Mar 2013 14:49:28 +0100
+Message-ID: <51374968.4070805@canonical.com>
+References: <1362434579-7733-1-git-send-email-christine.spang@oracle.com> <s5h8v62gqt0.wl%tiwai@suse.de> <51365862.9050401@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130306114918.GB19556@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>, alsa-devel@alsa-project.org, lrg@ti.com, jassisinghbrar@gmail.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, kgene.kim@samsung.com, t.figa@samsung.com, patches@linaro.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <51365862.9050401@oracle.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christine Spang <christine.spang@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sasha.levin@oracle.com>, alsa-devel@alsa-project.org, Jamie Iles <jamie.iles@oracle.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6 March 2013 17:19, Mark Brown <broonie@opensource.wolfsonmicro.com>=
- wrote:
-> On Wed, Mar 06, 2013 at 12:42:09PM +0100, Heiko St=FCbner wrote:
->
->> What is going away is the deprecated non-pinctrl way to setup the pi=
-ns on dt
->> platforms.
->
-> OK, can we have a changelog improvement please?  I didn't read the pa=
-tch
-> properly because the changelog said it would break my primary
-> development system.
+2013-03-05 21:41, Christine Spang skrev:
+> On 03/05/2013 04:05 AM, Takashi Iwai wrote:
+>> At Mon,  4 Mar 2013 17:02:59 -0500,
+>> Christine Spang wrote:
+>>> Having snd_BUG_ON() only evaluate its conditional when CONFIG_SND_DEBUG
+>>> is set leads to frequent bugs, since other similar macros in the kernel
+>>> have different behavior. Let's make snd_BUG_ON() act like those macros
+>>> so it will stop being accidentally misused.
+>>>
+>>> Signed-off-by: Christine Spang <christine.spang@oracle.com>
+>> Sounds reasonable.  The dependency on CONFIG_SND_DEBUG was for
+>> allowing more optimization, but since we use this for more places than
+>> expected, this change would be safer indeed.
+>>
+>> If no one has objection, I'll apply it for 3.10 kernel.
 
-Ok. I will repost again with additional details in the changelog.
+If snd_BUG_ON now works like WARN_ON rather than BUG_ON (at least it 
+does with this change, if I understand things right), maybe we should 
+rename it to snd_WARN_ON for consistency?
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
