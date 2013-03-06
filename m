@@ -1,20 +1,15 @@
-From: Devin Anderson <surfacepatterns@gmail.com>
-Subject: Re: How to send non-SysEx system messages via ALSA?
-Date: Tue, 5 Mar 2013 21:09:53 -0800
-Message-ID: <CAG7zqTpP84eitHHguZiDnfT8qp4Z9BWiKYpGa8h6BNu654vRVQ@mail.gmail.com>
-References: <8E4C156DA5797D418DBFADFD8CE655A422BA54AFBB@HE113481.emea1.cds.t-internal.com>
- <5135DC3C.20706@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5102: Apply a SYSCLK patch for later
+	revs
+Date: Wed,  6 Mar 2013 14:20:21 +0800
+Message-ID: <1362550821-14859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f182.google.com (mail-ia0-f182.google.com
- [209.85.210.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 433E2265312
- for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 06:09:54 +0100 (CET)
-Received: by mail-ia0-f182.google.com with SMTP id w21so723090iac.41
- for <alsa-devel@alsa-project.org>; Tue, 05 Mar 2013 21:09:53 -0800 (PST)
-In-Reply-To: <5135DC3C.20706@ladisch.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91EAD265327
+ for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 07:28:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Joerg-Cyril.Hoehle@t-systems.com
+To: Liam Girdwood <liam.r.girdwood@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 5, 2013 at 3:51 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Joerg-Cyril.Hoehle@t-systems.com wrote:
->> B. Use SND_SEQ_EVENT_TICK
->
-> This is not a MIDI message.  (In fact, this message is not used at all.
-> Er, and don't believe what its comment says.)
+Evaluation has identified some performance improvements to the device.
 
-I thought SND_SEQ_EVENT_TICK corresponded to a non-standard (formerly
-standard?) MIDI message:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm5102.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-    http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/tick.htm
-
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index deb1097..cef288c 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -573,6 +573,13 @@ static const struct reg_default wm5102_sysclk_reva_patch[] = {
+ 	{ 0x025e, 0x0112 },
+ };
+ 
++static const struct reg_default wm5102_sysclk_revb_patch[] = {
++	{ 0x3081, 0x08FE },
++	{ 0x3083, 0x00ED },
++	{ 0x30C1, 0x08FE },
++	{ 0x30C3, 0x00ED },
++};
++
+ static int wm5102_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 			    struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -587,6 +594,10 @@ static int wm5102_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 		patch = wm5102_sysclk_reva_patch;
+ 		patch_size = ARRAY_SIZE(wm5102_sysclk_reva_patch);
+ 		break;
++	default:
++		patch = wm5102_sysclk_revb_patch;
++		patch_size = ARRAY_SIZE(wm5102_sysclk_revb_patch);
++		break;
+ 	}
+ 
+ 	switch (event) {
 -- 
-Devin Anderson
-surfacepatterns (at) gmail (dot) com
-
-blog - http://surfacepatterns.blogspot.com/
-midisnoop - http://midisnoop.googlecode.com/
-psinsights - http://psinsights.googlecode.com/
-synthclone - http://synthclone.googlecode.com/
+1.7.10.4
