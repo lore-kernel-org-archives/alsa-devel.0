@@ -1,58 +1,178 @@
-From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: [PATCH v2] davinci-mcasp: Add support for
- multichannel playback
-Date: Wed, 6 Mar 2013 11:19:07 +0000
-Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED3D448@DBDE01.ent.ti.com>
-References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
- <513616F7.2020201@gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D3ED@DBDE01.ent.ti.com>
- <20130306105713.GF4896@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D90E265388
- for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 12:19:12 +0100 (CET)
-In-Reply-To: <20130306105713.GF4896@opensource.wolfsonmicro.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michal Bachraty <michal.bachraty@streamunlimited.com>, Daniel Mack <zonque@gmail.com>
+From: Thomas Abraham <thomas.abraham@linaro.org>
+Subject: [PATCH] ASoC: samsung: let device core setup the default pin
+ configuration
+Date: Wed, 06 Mar 2013 17:25:51 +0530
+Message-ID: <1362570951-14403-1-git-send-email-thomas.abraham@linaro.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: lrg@ti.com, broonie@opensource.wolfsonmicro.com, jassisinghbrar@gmail.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, kgene.kim@samsung.com, t.figa@samsung.com, heiko@sntech.de, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 06, 2013 at 16:27:15, Mark Brown wrote:
-> On Wed, Mar 06, 2013 at 10:54:52AM +0000, Bedia, Vaibhav wrote:
-> 
-> > Since you are using a multichannel codec things are a lot simplified for you :)
-> > Someone might want to hook up multiple codecs to get multi-channel behavior.
-> > There will be only 1 CPU DAI but there can be upto 16 CODEC DAIs operating in
-> > sync. I haven't really followed the recent ASoC changes so I don't know whether
-> > something like this can be handled right now.
-> 
-> > Mark, Liam,
-> 
-> > Any suggestions?
-> 
-> Nobody with any interest in such systems has stepped up to work on the
-> framework, and of course relatively little CPU hardware supports
-> multiple streams on a single DAI.
-> 
+With device core now able to setup the default pin configuration,
+the pin configuration code based on the deprecated Samsung specific
+gpio bindings in i2s driver is removed.
 
-Ok. Thinking more on this I guess the situation I described above will indeed be a rare
-case. There would be additional complexity in ensuring that the codecs are always operating
-in sync. It would perhaps be simpler to cascade the codecs (if supported) and use only one
-interface to transfer the data. Or just use multichannel codec like Michal and Daniel
-are doing.
+Signed-off-by: Thomas Abraham <thomas.abraham@linaro.org>
+---
+ .../devicetree/bindings/sound/samsung-i2s.txt      |   30 +--------
+ sound/soc/samsung/i2s.c                            |   67 +------------------
+ 2 files changed, 8 insertions(+), 89 deletions(-)
 
-Regards,
-Vaibhav
+diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+index 3070046..1db65e5 100644
+--- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
+@@ -20,23 +20,11 @@ Optional SoC Specific Properties:
+   then this flag is enabled.
+ - samsung,idma-addr: Internal DMA register base address of the audio
+   sub system(used in secondary sound source).
+-
+-Required Board Specific Properties:
+-
+-- gpios: The gpio specifier for data out,data in, LRCLK, CDCLK and SCLK
+-  interface lines. The format of the gpio specifier depends on the gpio
+-  controller.
+-  The syntax of samsung gpio specifier is
+-	<[phandle of the gpio controller node]
+-	 [pin number within the gpio controller]
+-	 [mux function]
+-	 [flags and pull up/down]
+-	 [drive strength]>
++- pinctrl-0: Should specify pin control groups used for this controller.
++- pinctrl-names: Should contain only one value - "default".
+ 
+ Example:
+ 
+-- SoC Specific Portion:
+-
+ i2s@03830000 {
+ 	compatible = "samsung,i2s-v5";
+ 	reg = <0x03830000 0x100>;
+@@ -48,16 +36,6 @@ i2s@03830000 {
+ 	samsung,supports-rstclr;
+ 	samsung,supports-secdai;
+ 	samsung,idma-addr = <0x03000000>;
+-};
+-
+-- Board Specific Portion:
+-
+-i2s@03830000 {
+-	gpios = <&gpz 0 2 0 0>, /* I2S_0_SCLK */
+-		<&gpz 1 2 0 0>, /* I2S_0_CDCLK */
+-		<&gpz 2 2 0 0>, /* I2S_0_LRCK */
+-		<&gpz 3 2 0 0>, /* I2S_0_SDI */
+-		<&gpz 4 2 0 0>, /* I2S_0_SDO[1] */
+-		<&gpz 5 2 0 0>, /* I2S_0_SDO[2] */
+-		<&gpz 6 2 0 0>; /* I2S_0_SDO[3] */
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s0_bus>;
+ };
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index d7231e3..f982a83 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -16,7 +16,6 @@
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ 
+ #include <sound/soc.h>
+@@ -79,7 +78,6 @@ struct i2s_dai {
+ 	u32	suspend_i2smod;
+ 	u32	suspend_i2scon;
+ 	u32	suspend_i2spsr;
+-	unsigned long gpios[7];	/* i2s gpio line numbers */
+ };
+ 
+ /* Lock for cross i/f checks */
+@@ -1009,52 +1007,6 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+ 	return i2s;
+ }
+ 
+-#ifdef CONFIG_OF
+-static int samsung_i2s_parse_dt_gpio(struct i2s_dai *i2s)
+-{
+-	struct device *dev = &i2s->pdev->dev;
+-	int index, gpio, ret;
+-
+-	for (index = 0; index < 7; index++) {
+-		gpio = of_get_gpio(dev->of_node, index);
+-		if (!gpio_is_valid(gpio)) {
+-			dev_err(dev, "invalid gpio[%d]: %d\n", index, gpio);
+-			goto free_gpio;
+-		}
+-
+-		ret = gpio_request(gpio, dev_name(dev));
+-		if (ret) {
+-			dev_err(dev, "gpio [%d] request failed\n", gpio);
+-			goto free_gpio;
+-		}
+-		i2s->gpios[index] = gpio;
+-	}
+-	return 0;
+-
+-free_gpio:
+-	while (--index >= 0)
+-		gpio_free(i2s->gpios[index]);
+-	return -EINVAL;
+-}
+-
+-static void samsung_i2s_dt_gpio_free(struct i2s_dai *i2s)
+-{
+-	unsigned int index;
+-	for (index = 0; index < 7; index++)
+-		gpio_free(i2s->gpios[index]);
+-}
+-#else
+-static int samsung_i2s_parse_dt_gpio(struct i2s_dai *dai)
+-{
+-	return -EINVAL;
+-}
+-
+-static void samsung_i2s_dt_gpio_free(struct i2s_dai *dai)
+-{
+-}
+-
+-#endif
+-
+ static const struct of_device_id exynos_i2s_match[];
+ 
+ static inline int samsung_i2s_get_driver_data(struct platform_device *pdev)
+@@ -1223,18 +1175,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		pri_dai->sec_dai = sec_dai;
+ 	}
+ 
+-	if (np) {
+-		if (samsung_i2s_parse_dt_gpio(pri_dai)) {
+-			dev_err(&pdev->dev, "Unable to configure gpio\n");
+-			ret = -EINVAL;
+-			goto err;
+-		}
+-	} else {
+-		if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
+-			dev_err(&pdev->dev, "Unable to configure gpio\n");
+-			ret = -EINVAL;
+-			goto err;
+-		}
++	if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
++		dev_err(&pdev->dev, "Unable to configure gpio\n");
++		ret = -EINVAL;
++		goto err;
+ 	}
+ 
+ 	snd_soc_register_dai(&pri_dai->pdev->dev, &pri_dai->i2s_dai_drv);
+@@ -1259,9 +1203,6 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ 	i2s = dev_get_drvdata(&pdev->dev);
+ 	other = i2s->pri_dai ? : i2s->sec_dai;
+ 
+-	if (!i2s_pdata->cfg_gpio && pdev->dev.of_node)
+-		samsung_i2s_dt_gpio_free(i2s->pri_dai);
+-
+ 	if (other) {
+ 		other->pri_dai = NULL;
+ 		other->sec_dai = NULL;
+-- 
+1.6.6.rc2
