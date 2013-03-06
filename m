@@ -1,19 +1,15 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v3 09/12] ASoC: dmaengine_pcm:
-	add	snd_dmaengine_generic_pcm_open()
-Date: Wed, 6 Mar 2013 17:13:33 +0000
-Message-ID: <20130306171333.GR17833@n2100.arm.linux.org.uk>
-References: <1362486244-24593-10-git-send-email-shawn.guo@linaro.org>
- <1362494247-28909-1-git-send-email-shawn.guo@linaro.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2] ALSA: ASoC: ak4104: convert to direct
+	regmap API usage
+Date: Wed,  6 Mar 2013 22:22:15 +0100
+Message-ID: <1362604936-13624-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 3BFCD265CD1
- for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 18:14:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1362494247-28909-1-git-send-email-shawn.guo@linaro.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71E0C260304
+ for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2013 22:22:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +19,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Marek Vasut <marek.vasut@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Huang Shijie <b32955@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 05, 2013 at 10:37:27PM +0800, Shawn Guo wrote:
-> With generic DMA device tree binding and helper function
-> dma_request_slave_channel() in place, dmaengine_pcm should support
-> that in requesting DMA channel for users that support generic DMA
-> device tree binding.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/ak4104.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-This purpetuates the brain-dead behaviour of the existing ASoC DMA
-engine layer, which makes it unsuitable for platforms with special DMA
-memory requirements.
-
-The problem is that the DMA mask to be used for allocating DMA-able
-memory is the DMA engine struct device, not the struct device associated
-with the ASoC device.
-
-I got this right in my ASoC generic DMA engine layer.  Converting this
-layer is far from trivial though, and as my test platform has now become
-my entire network firewall, I'm not doing any testing on that anymore.
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index 6f6c335..58f390d 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -55,6 +55,7 @@ static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int format)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
++	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
+ 	int val = 0;
+ 	int ret;
+ 
+@@ -77,9 +78,9 @@ static int ak4104_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	if ((format & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
+ 		return -EINVAL;
+ 
+-	ret = snd_soc_update_bits(codec, AK4104_REG_CONTROL1,
+-				  AK4104_CONTROL1_DIF0 | AK4104_CONTROL1_DIF1,
+-				  val);
++	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
++				 AK4104_CONTROL1_DIF0 | AK4104_CONTROL1_DIF1,
++				 val);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -91,11 +92,12 @@ static int ak4104_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
++	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
+ 	int val = 0;
+ 
+ 	/* set the IEC958 bits: consumer mode, no copyright bit */
+ 	val |= IEC958_AES0_CON_NOT_COPYRIGHT;
+-	snd_soc_write(codec, AK4104_REG_CHN_STATUS(0), val);
++	regmap_write(ak4104->regmap, AK4104_REG_CHN_STATUS(0), val);
+ 
+ 	val = 0;
+ 
+@@ -132,7 +134,7 @@ static int ak4104_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	return snd_soc_write(codec, AK4104_REG_CHN_STATUS(3), val);
++	return regmap_write(ak4104->regmap, AK4104_REG_CHN_STATUS(3), val);
+ }
+ 
+ static const struct snd_soc_dai_ops ak4101_dai_ops = {
+@@ -160,20 +162,17 @@ static int ak4104_probe(struct snd_soc_codec *codec)
+ 	int ret;
+ 
+ 	codec->control_data = ak4104->regmap;
+-	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+-	if (ret != 0)
+-		return ret;
+ 
+ 	/* set power-up and non-reset bits */
+-	ret = snd_soc_update_bits(codec, AK4104_REG_CONTROL1,
+-				  AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
+-				  AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
++	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
++				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN,
++				 AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* enable transmitter */
+-	ret = snd_soc_update_bits(codec, AK4104_REG_TX,
+-				  AK4104_TX_TXE, AK4104_TX_TXE);
++	ret = regmap_update_bits(ak4104->regmap, AK4104_REG_TX,
++				 AK4104_TX_TXE, AK4104_TX_TXE);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -182,8 +181,10 @@ static int ak4104_probe(struct snd_soc_codec *codec)
+ 
+ static int ak4104_remove(struct snd_soc_codec *codec)
+ {
+-	snd_soc_update_bits(codec, AK4104_REG_CONTROL1,
+-			    AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN, 0);
++	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
++
++	regmap_update_bits(ak4104->regmap, AK4104_REG_CONTROL1,
++			   AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN, 0);
+ 
+ 	return 0;
+ }
+-- 
+1.8.1.4
