@@ -1,35 +1,58 @@
-From: Heiko =?iso-8859-15?q?St=FCbner?= <heiko@sntech.de>
-Subject: Re: [PATCH] ASoC: samsung: let device core setup the default pin configuration
-Date: Wed, 6 Mar 2013 12:42:09 +0100
-Message-ID: <201303061242.09978.heiko@sntech.de>
-References: <1362570951-14403-1-git-send-email-thomas.abraham@linaro.org> <20130306113741.GA19556@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: samsung: let device core setup the default pin
+ configuration
+Date: Wed, 6 Mar 2013 19:49:20 +0800
+Message-ID: <20130306114918.GB19556@opensource.wolfsonmicro.com>
+References: <1362570951-14403-1-git-send-email-thomas.abraham@linaro.org>
+ <20130306113741.GA19556@opensource.wolfsonmicro.com>
+ <201303061242.09978.heiko@sntech.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130306113741.GA19556@opensource.wolfsonmicro.com>
+Content-Disposition: inline
+In-Reply-To: <201303061242.09978.heiko@sntech.de>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
 Cc: Thomas Abraham <thomas.abraham@linaro.org>, alsa-devel@alsa-project.org, lrg@ti.com, jassisinghbrar@gmail.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, kgene.kim@samsung.com, t.figa@samsung.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch, 6. M=E4rz 2013, 12:37:43 schrieb Mark Brown:
-> On Wed, Mar 06, 2013 at 05:25:51PM +0530, Thomas Abraham wrote:
-> > With device core now able to setup the default pin configuration,
-> > the pin configuration code based on the deprecated Samsung specific
-> > gpio bindings in i2s driver is removed.
->=20
-> There's rather a lot of non-DT Samsung platforms...
 
-I think the real non-dt platforms won't be affected.
+--xgyAXRrhYN0wYx8y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+       if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
-+               dev_err(&pdev->dev, "Unable to configure gpio\n");
-+               ret =3D -EINVAL;
-+               goto err;
+On Wed, Mar 06, 2013 at 12:42:09PM +0100, Heiko St=FCbner wrote:
 
-is still there for them.
+> What is going away is the deprecated non-pinctrl way to setup the pins on=
+ dt=20
+> platforms.
 
-What is going away is the deprecated non-pinctrl way to setup the pins =
-on dt=20
-platforms.
+OK, can we have a changelog improvement please?  I didn't read the patch
+properly because the changelog said it would break my primary
+development system.
+
+--xgyAXRrhYN0wYx8y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRNyzVAAoJELSic+t+oim99AkQAJrKu1NEkAW0Wy5DjaHwF6By
+K8qiXv7PRV+KSN66TUFS+Hp4HZk+/jW959DiufKIphrOFqfpaCHcZUyth5cTw/2N
+TkKTcyJCg/G8fZX5leLhDqzQbs43YxhIzuSg9AiNbzTa5VTVM32gAiP7qkJJJdxs
+1AbkL6CZsLbigv/vsIq1iCQxvi4jby2+ZMXv007dyqJfnA6gX150LNQX/+OvQe5t
+5GSzTCyjefrA/IaOl/i78DSgF8wE834BsrGUfv7Kd7tz8c0xzTM3bf5lAJz1TQNx
+l6SjTSDW+TGRDQ35BU2OWIy4WQEyuYWiwxGmXDPyfyQDRLTGNDJnfo7cFjMg9RkQ
+g7cwE2/tC4KjQRQz68lXIelmWvSiopnITFC6gpDkZ98CdLkTChRVEIJzliYGko57
+plx19JJ+YA5dGTQTesX3H/wt5x1vBiY/zcvZbJdobP/G/42jWKqe6CBATbhay21J
+27ICpznQiHCdRwGEwSxgOxxsJnVkmouVjHb+//W/MSDUrs/CkjP3cOs9NNbx1szO
+WNJMuVtztCTlQ3j6XhHOuUluyt7Pr/1clC9PNY6kKYBhq5MWdM8hbeKPpPi2FzmX
+nADV+auvs8IiO0MMgzDG6IEcplAk9bjZZXJ3R+SufH1Xl+RmF8Z0NRUdIoJAB6JM
+jAFY7wpeciD97F607MwU
+=C+2N
+-----END PGP SIGNATURE-----
+
+--xgyAXRrhYN0wYx8y--
