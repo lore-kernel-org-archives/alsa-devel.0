@@ -1,23 +1,20 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v3 09/12] ASoC: dmaengine_pcm:
-	add	snd_dmaengine_generic_pcm_open()
-Date: Thu, 7 Mar 2013 11:20:06 +0000
-Message-ID: <20130307112006.GD17833@n2100.arm.linux.org.uk>
-References: <1362486244-24593-10-git-send-email-shawn.guo@linaro.org>
- <1362494247-28909-1-git-send-email-shawn.guo@linaro.org>
- <20130306171333.GR17833@n2100.arm.linux.org.uk>
- <20130307023316.GA22554@opensource.wolfsonmicro.com>
- <20130307091804.GA17833@n2100.arm.linux.org.uk>
- <20130307093117.GB14315@opensource.wolfsonmicro.com>
+From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Subject: Re: [PATCH v2] davinci-mcasp: Add support for
+ multichannel playback
+Date: Thu, 7 Mar 2013 11:59:10 +0000
+Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED3E15B@DBDE01.ent.ti.com>
+References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
+ <513616F7.2020201@gmail.com> <2762675.av4Ym1Kxhq@ganymedes>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 41A34261605
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2013 12:20:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20130307093117.GB14315@opensource.wolfsonmicro.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F506265D75
+ for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2013 12:59:24 +0100 (CET)
+In-Reply-To: <2762675.av4Ym1Kxhq@ganymedes>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,36 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Marek Vasut <marek.vasut@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Michal Bachraty <michal.bachraty@streamunlimited.com>, Daniel Mack <zonque@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 07, 2013 at 05:31:23PM +0800, Mark Brown wrote:
-> On Thu, Mar 07, 2013 at 09:18:04AM +0000, Russell King - ARM Linux wrote:
-> > On Thu, Mar 07, 2013 at 10:33:19AM +0800, Mark Brown wrote:
+On Wed, Mar 06, 2013 at 20:14:59, Michal Bachraty wrote:
+[...]
 > 
-> > > Could you go into more detail here please?  Looking at the code I'm not
-> > > seeing any allocations done by the library code at all, the allocations
-> > > are all done by the individual platform DMA drivers so I don't see
-> > > anything stopping them doing what they need.
+> Yes, threre is misleading with tx_num_evt in DT. This misleading is discussed 
+> in [alsa-devel] davici-mcasp: "tx-num-evt" confusion with number of 
+> serializers. thread. 
 > 
-> > I don't know what else you require apart from the description above.  Isn't
-> > it rather obvious that you can't preallocate the ALSA buffer against the
-> > DMA engine device if you can only obtain the DMA engine device in the open
-> > function?
+
+I responded to that thread yesterday. Can you please check that.
+ 
+> > >>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> > >>  	
+> > >>  		src = dma_pos;
+> > >>  		dst = prtd->params->dma_addr;
+> > >>  		src_bidx = data_type;
+> > >> 
+> > >> -		dst_bidx = 0;
+> > >> -		src_cidx = data_type * fifo_level;
+> > >> +		dst_bidx = 4;
+> > > 
+> > > Err.. this will most likely break other audio configurations. You should
+> > > look at how to avoid this change by making use of the mask and rotation
+> > > operations in the McASP code.> 
 > 
-> The bit I'm missing is why this is particularly hard to change, it
-> doesn't seem like a massive refactoring and there's not many users.
+> McAsp FIFO and McASP data port reg. is 32 bit wide, each new sample is copied 
+> to McASP after McAsp send DMA event. McASP also do data rotations and masking. 
+> When more serializers are enabled, each new sample for new serializer should 
+> be placed to new data room at +4 address. After that new DMA event is 
+> generated.
+> I tested it with TDM slots = 2 and also 6 with one serializer and also two 
+> serializer enabled. 
+> Why do you think that brokes other audio configurations? 
+> 
 
-Well, it requires the thing to be reworked along with everyone who uses
-it, specifically snd_dmaengine_pcm_open() and snd_dmaengine_pcm_close().
+Refer to section 22.3.10.1.2 of the AM335x TRM.
 
-Now, I could use your excuse that you've given me in the past: "I don't
-have much of that hardware so I can't test the changes, so I'm not going
-to touch this code evar again!"  (That's basically what you said about
-the AC'97 struct device stuff.)  You can't have it both ways and always
-shovel what you don't like onto other people.
+"To access through the data port, simply have the CPU or DMA access the XRBUF
+through its data port location. Through the data port, the DMA/CPU can service
+all the serializers through a single address. The McASP automatically cycles
+through the appropriate serializers.
 
-So... I'll just go back to quietly sitting on my SA11x0 ASoC support
-and totally ignoring mainline with it because of obstructive
-maintainers. :)
+For transmit operations through the data port, the DMA/CPU should write to the
+same XBUF data port address to service all of the active transmit serializers.
+In addition, the DMA/CPU should write to the XBUF for all active transmit
+serializers"
+
+The DMA controller is expected to write to the same address. I am a bit
+surprised the +4 thing works without issue. Still, you should not rely
+on that since that's not supported as per the specs.
+
+Regards,
+Vaibhav
