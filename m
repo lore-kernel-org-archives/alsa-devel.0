@@ -1,82 +1,47 @@
-From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: [PATCH v2] davinci-mcasp: Add support for
- multichannel playback
-Date: Thu, 7 Mar 2013 11:59:10 +0000
-Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED3E15B@DBDE01.ent.ti.com>
-References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
- <513616F7.2020201@gmail.com> <2762675.av4Ym1Kxhq@ganymedes>
+From: Sebastien Guiriec <s-guiriec@ti.com>
+Subject: [PATCH 0/5] ASoC: OMAP2+: Update Audio IP with sDMA binding for DT boot
+Date: Thu, 7 Mar 2013 13:43:19 +0100
+Message-ID: <1362660204-27074-1-git-send-email-s-guiriec@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F506265D75
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2013 12:59:24 +0100 (CET)
-In-Reply-To: <2762675.av4Ym1Kxhq@ganymedes>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Michal Bachraty <michal.bachraty@streamunlimited.com>, Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 06, 2013 at 20:14:59, Michal Bachraty wrote:
-[...]
-> 
-> Yes, threre is misleading with tx_num_evt in DT. This misleading is discussed 
-> in [alsa-devel] davici-mcasp: "tx-num-evt" confusion with number of 
-> serializers. thread. 
-> 
+This patch serie is converting OMAP Audio IPs in order to use OMAP sDMA DT
+binding in case of DT boot on OMAP2+ platforms.
 
-I responded to that thread yesterday. Can you please check that.
- 
-> > >>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> > >>  	
-> > >>  		src = dma_pos;
-> > >>  		dst = prtd->params->dma_addr;
-> > >>  		src_bidx = data_type;
-> > >> 
-> > >> -		dst_bidx = 0;
-> > >> -		src_cidx = data_type * fifo_level;
-> > >> +		dst_bidx = 4;
-> > > 
-> > > Err.. this will most likely break other audio configurations. You should
-> > > look at how to avoid this change by making use of the mask and rotation
-> > > operations in the McASP code.> 
-> 
-> McAsp FIFO and McASP data port reg. is 32 bit wide, each new sample is copied 
-> to McASP after McAsp send DMA event. McASP also do data rotations and masking. 
-> When more serializers are enabled, each new sample for new serializer should 
-> be placed to new data room at +4 address. After that new DMA event is 
-> generated.
-> I tested it with TDM slots = 2 and also 6 with one serializer and also two 
-> serializer enabled. 
-> Why do you think that brokes other audio configurations? 
-> 
+It is depending on the next patches:
 
-Refer to section 22.3.10.1.2 of the AM335x TRM.
+[1] http://www.spinics.net/lists/arm-kernel/msg227836.html
+[2] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg84668.html
 
-"To access through the data port, simply have the CPU or DMA access the XRBUF
-through its data port location. Through the data port, the DMA/CPU can service
-all the serializers through a single address. The McASP automatically cycles
-through the appropriate serializers.
+It has been tested on:
+- OMAP5 (sEVM/panda)in DT boot (McPDM/DMIC).
+- OMAP4 (SDP4430/Panda) in both DT/non DT boot (McPDM/DMIC)
+- OMAP3 (Beagle XM) in both DT/non DT boot (McBSP)
 
-For transmit operations through the data port, the DMA/CPU should write to the
-same XBUF data port address to service all of the active transmit serializers.
-In addition, the DMA/CPU should write to the XBUF for all active transmit
-serializers"
+Sebastien Guiriec (5):
+  ASoC: omap-pcm: Move to generic DMA for DT binding
+  ASoC: omap-dmic: Update driver for DMA DT binding.
+  ASoC: omap-mcpdm: Update driver for DMA DT binding.
+  ASoC: omap-mcbsp:Update driver for DMA DT binding.
+  ARM: dts: OMAP2+: Add SDMA Audio IPs bindings
 
-The DMA controller is expected to write to the same address. I am a bit
-surprised the +4 thing works without issue. Still, you should not rely
-on that since that's not supported as per the specs.
+ arch/arm/boot/dts/omap2420.dtsi |    6 ++++++
+ arch/arm/boot/dts/omap2430.dtsi |   15 +++++++++++++++
+ arch/arm/boot/dts/omap3.dtsi    |   15 +++++++++++++++
+ arch/arm/boot/dts/omap4.dtsi    |   17 +++++++++++++++++
+ arch/arm/boot/dts/omap5.dtsi    |   14 ++++++++++++++
+ sound/soc/omap/mcbsp.c          |   26 ++++++++++++++++----------
+ sound/soc/omap/omap-dmic.c      |   15 +++++++++------
+ sound/soc/omap/omap-mcpdm.c     |   22 ++++++++++++++--------
+ sound/soc/omap/omap-pcm.c       |   12 ++++++++++--
+ sound/soc/omap/omap-pcm.h       |    1 +
+ 10 files changed, 117 insertions(+), 26 deletions(-)
 
-Regards,
-Vaibhav
+-- 
+1.7.10.4
+
