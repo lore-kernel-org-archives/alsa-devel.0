@@ -1,69 +1,56 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/5] ASoC: OMAP2+: Update Audio IP with sDMA binding for
- DT boot
-Date: Thu, 7 Mar 2013 14:03:31 +0100
-Message-ID: <51389023.2000907@ti.com>
-References: <1362660204-27074-1-git-send-email-s-guiriec@ti.com>
+From: yegorslists@googlemail.com
+Subject: [PATCH v5 1/2] ALSA: ASoC: davinci-mcasp: don't
+	configure AFSX direction in DIT mode
+Date: Thu,  7 Mar 2013 14:38:02 +0100
+Message-ID: <1362663483-5886-1-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1362660204-27074-1-git-send-email-s-guiriec@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Sebastien Guiriec <s-guiriec@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?ISO-8859-1?Q?Beno=EEt_Cousson?= <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.visionsystems.de (hhlx01.visionsystems.de [62.145.30.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id E28BC26161C
+ for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2013 14:39:07 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Yegor Yefremov <yegorslists@googlemail.com>, vaibhav.bedia@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sebastien,
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-On 03/07/2013 01:43 PM, Sebastien Guiriec wrote:
-> This patch serie is converting OMAP Audio IPs in order to use OMAP sD=
-MA DT
-> binding in case of DT boot on OMAP2+ platforms.
+AFSX won't be used in DIT mode. The related pins are AHCLKX and
+the data pins.
 
-The content of the patches looks about right for me, however I would sq=
-uash
-together the IP and platform driver patches so we avoid breakage within=
- the
-series. Also I would put the patch for the .dtsi files as first one.
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Acked-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
+Tested-by: Daniel Mack <zonque@gmail.com>
+---
+v5: add Daniel's Tested-by
+v4: change subjuct to include "ALSA: ASoC: "
 
---=20
-P=E9ter
+ sound/soc/davinci/davinci-mcasp.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-> It is depending on the next patches:
->=20
-> [1] http://www.spinics.net/lists/arm-kernel/msg227836.html
-> [2] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg84668.h=
-tml
->=20
-> It has been tested on:
-> - OMAP5 (sEVM/panda)in DT boot (McPDM/DMIC).
-> - OMAP4 (SDP4430/Panda) in both DT/non DT boot (McPDM/DMIC)
-> - OMAP3 (Beagle XM) in both DT/non DT boot (McBSP)
->=20
-> Sebastien Guiriec (5):
->   ASoC: omap-pcm: Move to generic DMA for DT binding
->   ASoC: omap-dmic: Update driver for DMA DT binding.
->   ASoC: omap-mcpdm: Update driver for DMA DT binding.
->   ASoC: omap-mcbsp:Update driver for DMA DT binding.
->   ARM: dts: OMAP2+: Add SDMA Audio IPs bindings
->=20
->  arch/arm/boot/dts/omap2420.dtsi |    6 ++++++
->  arch/arm/boot/dts/omap2430.dtsi |   15 +++++++++++++++
->  arch/arm/boot/dts/omap3.dtsi    |   15 +++++++++++++++
->  arch/arm/boot/dts/omap4.dtsi    |   17 +++++++++++++++++
->  arch/arm/boot/dts/omap5.dtsi    |   14 ++++++++++++++
->  sound/soc/omap/mcbsp.c          |   26 ++++++++++++++++----------
->  sound/soc/omap/omap-dmic.c      |   15 +++++++++------
->  sound/soc/omap/omap-mcpdm.c     |   22 ++++++++++++++--------
->  sound/soc/omap/omap-pcm.c       |   12 ++++++++++--
->  sound/soc/omap/omap-pcm.h       |    1 +
->  10 files changed, 117 insertions(+), 26 deletions(-)
->=20
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 9321e5c..90a9b99 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -772,9 +772,6 @@ static void davinci_hw_param(struct davinci_audio_dev *dev, int stream)
+ /* S/PDIF */
+ static void davinci_hw_dit_param(struct davinci_audio_dev *dev)
+ {
+-	/* Set the PDIR for Serialiser as output */
+-	mcasp_set_bits(dev->base + DAVINCI_MCASP_PDIR_REG, AFSX);
+-
+ 	/* TXMASK for 24 bits */
+ 	mcasp_set_reg(dev->base + DAVINCI_MCASP_TXMASK_REG, 0x00FFFFFF);
+ 
+-- 
+1.7.7
