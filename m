@@ -1,7 +1,7 @@
 From: Sebastien Guiriec <s-guiriec@ti.com>
-Subject: [PATCH 1/5] ASoC: omap-pcm: Move to generic DMA for DT binding
-Date: Thu, 7 Mar 2013 13:43:20 +0100
-Message-ID: <1362660204-27074-2-git-send-email-s-guiriec@ti.com>
+Subject: [PATCH 3/5] ASoC: omap-mcpdm: Update driver for DMA DT binding.
+Date: Thu, 7 Mar 2013 13:43:22 +0100
+Message-ID: <1362660204-27074-4-git-send-email-s-guiriec@ti.com>
 References: <1362660204-27074-1-git-send-email-s-guiriec@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,55 +12,60 @@ To: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update in order to use OMAP DMA DT binding for OMAP2+. In case
-of DT boot snd_dmaengine_generic_pcm_open function is used.
+Update the driver in order to use OMAP DMA DT binding instead of
+hwmod data for DT boot.
 
 Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
 ---
- sound/soc/omap/omap-pcm.c |   12 ++++++++++--
- sound/soc/omap/omap-pcm.h |    1 +
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-mcpdm.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index c722c2e..df01a95 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -176,13 +176,21 @@ static int omap_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct omap_pcm_dma_data *dma_data;
-+	int ret;
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 5ca11bd..f41bac8 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -71,9 +71,11 @@ struct omap_mcpdm {
+ static struct omap_pcm_dma_data omap_mcpdm_dai_dma_params[] = {
+ 	{
+ 		.name = "Audio playback",
++		.dma_name = "dn_link",
+ 	},
+ 	{
+ 		.name = "Audio capture",
++		.dma_name = "up_link",
+ 	},
+ };
  
- 	snd_soc_set_runtime_hwparams(substream, &omap_pcm_hardware);
+@@ -449,17 +451,21 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
+ 	omap_mcpdm_dai_dma_params[0].port_addr = res->start + MCPDM_REG_DN_DATA;
+ 	omap_mcpdm_dai_dma_params[1].port_addr = res->start + MCPDM_REG_UP_DATA;
  
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "dn_link");
+-	if (!res)
+-		return -ENODEV;
++	if (!pdev->dev.of_node) {
++		res = platform_get_resource_byname(pdev, IORESOURCE_DMA,
++						   "dn_link");
++		if (!res)
++			return -ENODEV;
  
--	return snd_dmaengine_pcm_open(substream, omap_dma_filter_fn,
--				      &dma_data->dma_req);
-+	if (rtd->cpu_dai->dev->of_node)
-+		ret = snd_dmaengine_generic_pcm_open(substream,
-+						     rtd->cpu_dai->dev,
-+						     dma_data->dma_name);
-+	else
-+		ret = snd_dmaengine_pcm_open(substream, omap_dma_filter_fn,
-+					     &dma_data->dma_req);
-+
-+	return ret;
- }
+-	omap_mcpdm_dai_dma_params[0].dma_req = res->start;
++		omap_mcpdm_dai_dma_params[0].dma_req = res->start;
  
- static int omap_pcm_close(struct snd_pcm_substream *substream)
-diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-index cabe74c..06faa38 100644
---- a/sound/soc/omap/omap-pcm.h
-+++ b/sound/soc/omap/omap-pcm.h
-@@ -29,6 +29,7 @@ struct snd_pcm_substream;
+-	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "up_link");
+-	if (!res)
+-		return -ENODEV;
++		res = platform_get_resource_byname(pdev, IORESOURCE_DMA,
++						   "up_link");
++		if (!res)
++			return -ENODEV;
  
- struct omap_pcm_dma_data {
- 	char		*name;		/* stream identifier */
-+	char		*dma_name;	/* DMA request name */
- 	int		dma_req;	/* DMA request line */
- 	unsigned long	port_addr;	/* transmit/receive register */
- 	void (*set_threshold)(struct snd_pcm_substream *substream);
+-	omap_mcpdm_dai_dma_params[1].dma_req = res->start;
++		omap_mcpdm_dai_dma_params[1].dma_req = res->start;
++	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+ 	if (res == NULL)
 -- 
 1.7.10.4
 
