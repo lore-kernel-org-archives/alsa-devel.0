@@ -1,68 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3] ASoC: soc-compress: Cancel delayed power
-	down if needed
-Date: Fri, 8 Mar 2013 16:52:52 +0000
-Message-ID: <20130308165252.GA22868@opensource.wolfsonmicro.com>
-References: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130126085234.GB30594@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/5] ASoC: OMAP2+: Update Audio IP with sDMA binding for
+ DT boot
+Date: Sat, 9 Mar 2013 01:24:41 +0800
+Message-ID: <20130308172439.GE26088@opensource.wolfsonmicro.com>
+References: <1362660204-27074-1-git-send-email-s-guiriec@ti.com>
+ <51389023.2000907@ti.com>
+ <20130308092543.c355b2c6235c297efbe162e0@bitmer.com>
+ <5139AE1D.3080102@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C43A261741
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 17:52:53 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2qXFWqzzG3v1+95a"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130126085234.GB30594@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+In-Reply-To: <5139AE1D.3080102@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Sebastien Guiriec <s-guiriec@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, =?iso-8859-1?Q?Beno=EEt?= Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When a new stream is being opened it is necessary to cancel any delayed
-power down of the audio.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
+--2qXFWqzzG3v1+95a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Apologies for the delay on this.
+On Fri, Mar 08, 2013 at 10:23:41AM +0100, Peter Ujfalusi wrote:
 
-Charles
+> If we have them as separate we will have runtime regression between the
+> patches. It is better to have them squashed together.
 
+Other than the issues mentioned this looks OK to me.
 
- sound/soc/soc-compress.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+--2qXFWqzzG3v1+95a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b5b3db7..44bad67 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -198,6 +198,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-@@ -220,6 +221,10 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 			goto out;
- 	}
- 
-+	/* cancel any delayed stream shutdown that is pending */
-+	rtd->pop_wait = 0;
-+	cancel_delayed_work(&rtd->delayed_work);
-+
- 	snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
- 				SND_SOC_DAPM_STREAM_START);
- 
--- 
-1.7.2.5
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJROh7OAAoJELSic+t+oim9PvIP/jGgkQ0iIjnLH70X1AMESqsP
+ezM4N1Aj37X+lXWvzDJWcVwR6SI1rohxGM9YlOHmDTNS/T5RiXF2GGhvpju9pQX3
+X61xOKHz3+3Frs2n+DDkYcMRooqjdQLCm8B5n8Ygzx1aZ/K11VFj2Cv0r+sWIMWo
+0+Bd5z0hYZGVDmIO2/gXqO61+6zBNiGWzcxyBTDijOr66KBcSaYNVrIKtYbgyVAp
+0QJzmM4RLFgXPSMZilppUKFthIKZAfALDUl7jAPbMuJpbgQj+slZsCzN8DF7b6Y5
+hchDdRHoeZsNE5+ppQ3x872KHYCxYf7lZd19E2BAJXbTo+LUGKBtqBpdXuxtSiL7
+w66WkCcjbUUJdMs3BJpQQjXeL1ThpOEWyBPsr3kJFaNeI/8FXdEOGdL8HMm810EK
+rEtsu0sPE5LyebFz6+KJ45H6+GkwQpwPIwHma0oUM/oT4455Gt8WDxrL8yNJvlKE
+T5vcTDHWRq5cjEFT1xEf94JMLkUOYUtIpYWcxAUxRbdmkDz3lW9YjUtss49y6S9Z
+u8Q+dPeE7sTEXrZhpl/ErX6BfHJNTE+9T8dQYN9y7gN0QhOJ5zbV74R88Hdy/wpr
+3d1PtAP74xuPHyZKyjRbYOoqamCyAyHxlmcrYfdPm3OFfqvlpN2I/pl2whYsC7Wg
+YNBcyWNENynF3IgA+02E
+=pqYa
+-----END PGP SIGNATURE-----
+
+--2qXFWqzzG3v1+95a--
