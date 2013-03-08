@@ -1,94 +1,39 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] [RESEND] ASoC: davinci: drop SFFSDR_FPGA and
- CONFIG_SFFSDR_FPGA
-Date: Fri, 08 Mar 2013 10:12:27 +0100
-Message-ID: <1362733947.5994.40.camel@x61.thuisdomein>
-References: <1321211714.20271.85.camel@x61.thuisdomein>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/5] ASoC: OMAP2+: Update Audio IP with sDMA binding for
+ DT boot
+Date: Fri, 8 Mar 2013 10:23:41 +0100
+Message-ID: <5139AE1D.3080102@ti.com>
+References: <1362660204-27074-1-git-send-email-s-guiriec@ti.com> <51389023.2000907@ti.com> <20130308092543.c355b2c6235c297efbe162e0@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1321211714.20271.85.camel@x61.thuisdomein>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20130308092543.c355b2c6235c297efbe162e0@bitmer.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Sebastien Guiriec <s-guiriec@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?ISO-8859-1?Q?Beno=EE?= =?ISO-8859-1?Q?t_Cousson?= <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 08bd168696 ("ASoC: Add driver for the Lyrtech SFFSDR board")
-added a reference to a Kconfig symbol SFFSDR_FPGA. Commit ac37373b64
-("ASoC: DaVinci: Fix SFFSDR compilation error.") added a macro
-CONFIG_SFFSDR_FPGA. But there's no Kconfig symbol SFFSDR_FPGA and no
-define of CONFIG_SFFSDR_FPGA. So the select of SFFSDR_FPGA is a nop. It
-can be dropped. The checks for CONFIG_SFFSDR_FPGA can also be dropped.
+On 03/08/2013 08:25 AM, Jarkko Nikula wrote:
+>> The content of the patches looks about right for me, however I would
+>> squash together the IP and platform driver patches so we avoid break=
+age
+>> within the series. Also I would put the patch for the .dtsi files as
+>> first one.
+>>=20
+> Looks ok to me too at quick look. Would it be possible to avoid possi=
+ble
+> breakage if first patch is divided to omap-pcm.h change which come be=
+fore
+> audio link driver changes and do omap-pcm.c change last?
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
-0) First sent over a year ago. Reapplied on top of v3.9-rc1.
+If we have them as separate we will have runtime regression between the
+patches. It is better to have them squashed together.
 
-1) Still untested, and this might need (build, etc.) testing if we want
-to be thorough. But I do not have the hardware and neither do I have the
-toolchain needed at hand. The patch should be correct anyhow.
-
-2) Note that there's no file named *plat-sffsdr/sffsdr-fpga.h in the
-mainline tree. Neither is there a function or a macro named
-sffsdr_fpga_set_codec_fs(). So enabling SFFSDR_FPGA can currently never
-work.
-
- sound/soc/davinci/Kconfig          | 1 -
- sound/soc/davinci/davinci-sffsdr.c | 9 ---------
- 2 files changed, 10 deletions(-)
-
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 9e11a14..6a91206 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -59,7 +59,6 @@ config SND_DAVINCI_SOC_SFFSDR
- 	depends on SND_DAVINCI_SOC && MACH_SFFSDR
- 	select SND_DAVINCI_SOC_I2S
- 	select SND_SOC_PCM3008
--	select SFFSDR_FPGA
- 	help
- 	  Say Y if you want to add support for SoC audio on
- 	  Lyrtech SFFSDR board.
-diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index 5be65aa..ec4cb3a 100644
---- a/sound/soc/davinci/davinci-sffsdr.c
-+++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -24,9 +24,6 @@
- 
- #include <asm/dma.h>
- #include <asm/mach-types.h>
--#ifdef CONFIG_SFFSDR_FPGA
--#include <asm/plat-sffsdr/sffsdr-fpga.h>
--#endif
- 
- #include <mach/edma.h>
- 
-@@ -53,13 +50,11 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 	/* Fsref can be 32000, 44100 or 48000. */
- 	fs = params_rate(params);
- 
--#ifndef CONFIG_SFFSDR_FPGA
- 	/* Without the FPGA module, the Fs is fixed at 44100 Hz */
- 	if (fs != 44100) {
- 		pr_debug("warning: only 44.1 kHz is supported without SFFSDR FPGA module\n");
- 		return -EINVAL;
- 	}
--#endif
- 
- 	/* set cpu DAI configuration */
- 	ret = snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
-@@ -68,11 +63,7 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
- 
- 	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
- 
--#ifndef CONFIG_SFFSDR_FPGA
- 	return 0;
--#else
--	return sffsdr_fpga_set_codec_fs(fs);
--#endif
- }
- 
- static struct snd_soc_ops sffsdr_ops = {
--- 
-1.7.11.7
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
