@@ -1,28 +1,17 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v2] davinci-mcasp: Add support for
- multichannel playback
-Date: Fri, 08 Mar 2013 15:22:09 +0100
-Message-ID: <5139F411.10407@topic.nl>
-References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
- <513616F7.2020201@gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D3ED@DBDE01.ent.ti.com>
- <513721E0.8000605@gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D44D@DBDE01.ent.ti.com>
+From: Michal Bachraty <michal.bachraty@streamunlimited.com>
+Subject: Re: [PATCH] ALSA: ASoC: davinci-mcasp: clean ip
+	davinci_hw_common_param()
+Date: Fri, 08 Mar 2013 16:17:45 +0100
+Message-ID: <1768046.agBYzFzXsK@ganymedes>
+References: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atl4mhob14.myregisteredsite.com
- (atl4mhob14.myregisteredsite.com [209.17.115.52])
- by alsa0.perex.cz (Postfix) with ESMTP id ACC4726170B
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 15:22:12 +0100 (CET)
-Received: from mailpod.hostingplatform.com (mail.networksolutionsemail.com
- [205.178.146.50])
- by atl4mhob14.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id
- r28EMARt026564
- for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2013 09:22:11 -0500
-In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED3D44D@DBDE01.ent.ti.com>
+Received: from mx.inode.at (mx07.lb01.inode.at [62.99.145.7])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C0E126172C
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 16:17:46 +0100 (CET)
+In-Reply-To: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,49 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Vaibhav Bedia <vaibhav.bedia@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/06/2013 12:19 PM, Bedia, Vaibhav wrote:
-> On Wed, Mar 06, 2013 at 16:30:48, Daniel Mack wrote:
->> On 06.03.2013 11:54, Bedia, Vaibhav wrote:
->>> Hi Daniel,
->>>
->>> On Tue, Mar 05, 2013 at 21:31:59, Daniel Mack wrote:
->>> [...]
->>>>
->>>> As Michal described, we used a board with a multichannel Codec on it,
->>>> which connects 3 of its I2S inputs to the AM33xx's AXR data lines.
->>>>
->>>> Software wise, we tested with 'aplay -cX', and that seems to work just fine.
->>>>
->>>
->>> Since you are using a multichannel codec things are a lot simplified for you :)
->>> Someone might want to hook up multiple codecs to get multi-channel behavior.
->>> There will be only 1 CPU DAI but there can be upto 16 CODEC DAIs operating in
->>> sync. I haven't really followed the recent ASoC changes so I don't know whether
->>> something like this can be handled right now.
->>
->> I would rather instanciate multiple McASP cores for such setups, so you
->> can (in theory) also make them operate on different bit depths and clock
->> dividers. You think that's possible as well?
->
-> Yeah. Using multiple McASPs would be much simpler to handle both in s/w and h/w.
+On Friday, March 08, 2013 14:19:38 Daniel Mack wrote:
+> As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
+> Add support for multichannel playback") duplicated the logic of
+> counting the active serializers. That can be avoided by shifting
+> the code around a bit.
+> 
+> Also, drop two unused defines introduced by the same commit.
+> 
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> Cc: Michal Bachraty <michal.bachraty@streamunlimited.com>
+> Cc: Vaibhav Bedia <vaibhav.bedia@ti.com>
+> ---
+>  sound/soc/davinci/davinci-mcasp.c | 34 +++++++++++-----------------------
+>  1 file changed, 11 insertions(+), 23 deletions(-)
+> 
+> diff --git a/sound/soc/davinci/davinci-mcasp.c
+> b/sound/soc/davinci/davinci-mcasp.c index b386cad..8a9c0ee 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -237,8 +237,6 @@
+>  #define RXSTATE		BIT(5)
+>  #define SRMOD_MASK	3
+>  #define SRMOD_INACTIVE	0
+> -#define SRMOD_TX	1
+> -#define SRMOD_RX	2
+> 
+>  /*
+>   * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
+> @@ -691,27 +689,6 @@ static int davinci_hw_common_param(struct
+> davinci_audio_dev *dev, int stream, }
+> 
+>  	for (i = 0; i < dev->num_serializer; i++) {
+> -		if (dev->serial_dir[i] == TX_MODE)
+> -			tx_ser++;
+> -		if (dev->serial_dir[i] == RX_MODE)
+> -			rx_ser++;
+> -	}
+> -
+> -	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -		ser = tx_ser;
+> -	else
+> -		ser = rx_ser;
+> -
+> -	if (ser < max_active_serializers) {
+> -		dev_warn(dev->dev, "stream has more channels (%d) than are "
+> -			"enabled in mcasp (%d)\n", channels, ser * slots);
+> -		return -EINVAL;
+> -	}
+> -
+> -	tx_ser = 0;
+> -	rx_ser = 0;
+> -
+> -	for (i = 0; i < dev->num_serializer; i++) {
+>  		mcasp_set_bits(dev->base + DAVINCI_MCASP_XRSRCTL_REG(i),
+>  					dev->serial_dir[i]);
+>  		if (dev->serial_dir[i] == TX_MODE &&
+> @@ -730,6 +707,17 @@ static int davinci_hw_common_param(struct
+> davinci_audio_dev *dev, int stream, }
+>  	}
+> 
+> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		ser = tx_ser;
+> +	else
+> +		ser = rx_ser;
+> +
+> +	if (ser < max_active_serializers) {
+> +		dev_warn(dev->dev, "stream has more channels (%d) than are "
+> +			"enabled in mcasp (%d)\n", channels, ser * slots);
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (dev->txnumevt && stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>  		if (dev->txnumevt * tx_ser > 64)
+>  			dev->txnumevt = 1;
 
-Would it?
+It works fine. Code is also ok.
 
-The McASP has multiple serializers, but they all share the same clocks 
-and format settings. The data will come in as "L1 L2 L3 .. R1 R2 R3 .." 
-so the code would have keep track of which channels have to go where, 
-and rearrange it to the clients. And it must be able to dynamically 
-add/remove channels without disturbing the other streams.
-
-So unless you want to physically add more McASP hardware to the system, 
-I don't see how this would be "simpler" to handle than other options.
-
-A way to "group" the codecs together is much simpler to implement (which 
-is simply proven by the simple fact that I implemented it on my system) 
-and it makes it very easy to control on the user side too - the 
-selection of codecs is just a mixer control.
-
-Mike.
+Michal
