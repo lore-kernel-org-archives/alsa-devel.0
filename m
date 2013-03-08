@@ -1,17 +1,19 @@
-From: Anders Alex <alibobar@gmail.com>
-Subject: twl4030 and Puredata/jack
-Date: Fri, 8 Mar 2013 16:31:40 +0100
-Message-ID: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
+From: Michal Bachraty <michal.bachraty@streamunlimited.com>
+Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
+	of serializers
+Date: Fri, 08 Mar 2013 17:11:05 +0100
+Message-ID: <37886470.pk5FC04C8c@ganymedes>
+References: <1631475.f7GPhLiLxV@ganymedes>
+ <20130301100820.GU25302@opensource.wolfsonmicro.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3D3B4@DBDE01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
- [209.85.220.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 831D2261731
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 16:31:41 +0100 (CET)
-Received: by mail-pa0-f49.google.com with SMTP id kp6so1363001pab.8
- for <alsa-devel@alsa-project.org>; Fri, 08 Mar 2013 07:31:40 -0800 (PST)
+Received: from mx.inode.at (mx19.lb01.inode.at [62.99.145.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id B761626173B
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 17:11:04 +0100 (CET)
+In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED3D3B4@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mike Looijmans <mike.looijmans@topic.nl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>, Grant Likely <grant.likely@secretlab.ca>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ok,
+Hi Vaibhav,
 
-Let me start off that I know very little about audio and drivers.
+On Wednesday, March 06, 2013 10:51:05 Bedia, Vaibhav wrote:
+> Hi,
+> 
+> On Fri, Mar 01, 2013 at 15:38:27, Mark Brown wrote:
+> > On Thu, Feb 28, 2013 at 02:26:52PM +0100, Daniel Mack wrote:
+> > > On 28.02.2013 14:19, Daniel Mack wrote:
+> > > > Be careful with such changes. In general, DT bindings are forever in
+> > > > general, because you can't update all the users out there, and so
+> > > > every
+> > > > binding that has ever existed has to be supported in the future, for
+> > > > backwards compatibility.
+> > > > 
+> > > > In this case, we might make an exception, given that for AM33xx, the
+> > > > necessary DMA bits are still not missing, and Davinci is not yet fully
+> > > > ported to DT either. So nobody really uses the driver on this
+> > > > platforms.
+> > > 
+> > > Sorry, let me rephrase that last paragraph:
+> > > 
+> > > In this case, we might make an exception, given that for AM33xx, the
+> > > necessary DMA bits are still missing, and Davinci is not yet fully
+> > > ported to DT either. So supposedly nobody really uses the driver on this
+> > > platforms via DT.
+> > 
+> > Sounds plausible, though without having seen the actual change I can't
+> > comment for certain.
+> 
+> Even I have found this field name to be a bit confusing. As per my
+> understanding, tx/rx_num_evt is the trigger-level for generating the DMA
+> request. Taking the case of Tx, a DMA event is generated when the FIFO has
+> space of x words where x < 64. At the same time, y words are transferred
+> from the FIFO to the McASP, where y must be the number of active
+> serializers. To ensure that the FIFO always has enough words to service all
+> the active serializers, the driver needs to ensure that x is a non-zero
+> integral multiple of the number of active serializers.
+> 
+> Assuming tx-num-evt is set to 1 and 1 serializer in I2S mode is active
+> (which is the case before multi-serializer support), McASP is programmed to
+> generate a DMA event when there's a space for 1*1 = 1 word in the FIFO.
+> This minimizes the chance of under-runs but puts keeps the DMA controller
+> active. At the same time, the DMA controller is programmed to transfer
+> tx-num-evt ie. 1 sample (L or R). This is in sync with what the McASP
+> expects.
+> 
+> With tx-num-evt set to 1 and 4 serializers in I2S mode, MCASP is programmed
+> to generate a DMA event when there's a space for 1*4 = 4 words in the FIFO.
+> The DMA controller is programmed with Acnt = 2 (data_type) and Bcnt =
+> tx-num-evt = 1. So, every DMA event ends up transferring only 2 samples
+> whereas the data is being drained out @ 4 words! So, when you add-in
+> multi-serializer support, the current implementation results in a mismatch
+> between the DMA programming and McASP leading to DMA errors.
+> 
+> To fix the above issue, instead of passing around the number of active
+> serializers, like you did in your other patch, I would suggest making sure
+> dma_params->fifo_level is programmed to (tx/rx_num_evt * active
+> serializers). Do you see any issues with this approach?
 
-Recently I started looking in to running Puredata and possibly jack on the
-Pandora handheld.
-However I ran in to a number of problems getting these to interface with
-alsa.
-I should note that on the pandora we don't have too up to date versions of
-alsa and kernel so perhaps these are already resolved.
-In SL4P (slackware for pandora) I have:
+No, 
+In davinci-mcasp code, there is fifo_level assigned with txnumevt
 
-ALSA: 1.0.24
-Kernel: 3.2.30
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+		fifo_level = dev->txnumevt;
+	else
+		fifo_level = dev->rxnumevt;
 
-I will paste a couple of use-cases and their corresponding dmesg output:
-
-When I run ~$ pd -alsa I get:
-
-snd_pcm_hw_params (input): Invalid argument
-snd_pcm_hw_params (output): Invalid argument
-
-and:
-[201429.385345] omap_mcbsp_dai_hw_params: not enough bandwidth for desired
-rate and channels
-[201429.385375] asoc: interface omap-mcbsp-dai.1 hw params failed
-
-With 'jackd -d alsa -S'  (need s16_le):
-
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames (21.3 ms), buffer = 2 periods
-ALSA: final selected sample format for capture: 16bit little-endian
-ALSA: use 2 periods for capture
-ALSA: cannot set hardware parameters for capture
-ALSA: cannot configure capture channel
-
-
-cannot load driver module alsa
-
-and:
-[201746.759857] asoc: can't set codec twl4030-hifi hw params
-
-The pandora kernel-dev explained that the hardware can only handle stereo
-streams. However someone in #jack explains it as the following:
-"This typically means that the ALSA driver is incomplete or buggy when used
-the way JACK does (poll+mmap) vs. the way aplay does (blocking read+write).
-So things that do stuff the "aplay way" will work; things that do stuff the
-JACK way will not work."
-
-I hope someone can shed some light on this and perhaps give some ideas to
-how to get this working.
-
-cheers,
-alexander
+That code can  be changed to computing fifo_level to dev->txnumevt * 
+active_serializers and then it is needed to remove  active_serializers from 
+davinci-pcm. Code fuctionality will be same as is now with applied patch 
+[PATCH v3] davinci-mcasp: Add support for multichannel playback
+Also there is need to change dst_cidx from 4  to 0, othewise when no fifo is 
+used, it won't work properly. 
