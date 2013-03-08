@@ -1,17 +1,17 @@
-From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: Re: [PATCH] ALSA: ASoC: davinci-mcasp: clean ip
-	davinci_hw_common_param()
-Date: Fri, 08 Mar 2013 16:17:45 +0100
-Message-ID: <1768046.agBYzFzXsK@ganymedes>
-References: <1362748778-11076-1-git-send-email-zonque@gmail.com>
+From: Anders Alex <alibobar@gmail.com>
+Subject: twl4030 and Puredata/jack
+Date: Fri, 8 Mar 2013 16:31:40 +0100
+Message-ID: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx07.lb01.inode.at [62.99.145.7])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0E126172C
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 16:17:46 +0100 (CET)
-In-Reply-To: <1362748778-11076-1-git-send-email-zonque@gmail.com>
+Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
+ [209.85.220.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 831D2261731
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 16:31:41 +0100 (CET)
+Received: by mail-pa0-f49.google.com with SMTP id kp6so1363001pab.8
+ for <alsa-devel@alsa-project.org>; Fri, 08 Mar 2013 07:31:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,85 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Vaibhav Bedia <vaibhav.bedia@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, March 08, 2013 14:19:38 Daniel Mack wrote:
-> As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
-> Add support for multichannel playback") duplicated the logic of
-> counting the active serializers. That can be avoided by shifting
-> the code around a bit.
-> 
-> Also, drop two unused defines introduced by the same commit.
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> Cc: Michal Bachraty <michal.bachraty@streamunlimited.com>
-> Cc: Vaibhav Bedia <vaibhav.bedia@ti.com>
-> ---
->  sound/soc/davinci/davinci-mcasp.c | 34 +++++++++++-----------------------
->  1 file changed, 11 insertions(+), 23 deletions(-)
-> 
-> diff --git a/sound/soc/davinci/davinci-mcasp.c
-> b/sound/soc/davinci/davinci-mcasp.c index b386cad..8a9c0ee 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -237,8 +237,6 @@
->  #define RXSTATE		BIT(5)
->  #define SRMOD_MASK	3
->  #define SRMOD_INACTIVE	0
-> -#define SRMOD_TX	1
-> -#define SRMOD_RX	2
-> 
->  /*
->   * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
-> @@ -691,27 +689,6 @@ static int davinci_hw_common_param(struct
-> davinci_audio_dev *dev, int stream, }
-> 
->  	for (i = 0; i < dev->num_serializer; i++) {
-> -		if (dev->serial_dir[i] == TX_MODE)
-> -			tx_ser++;
-> -		if (dev->serial_dir[i] == RX_MODE)
-> -			rx_ser++;
-> -	}
-> -
-> -	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> -		ser = tx_ser;
-> -	else
-> -		ser = rx_ser;
-> -
-> -	if (ser < max_active_serializers) {
-> -		dev_warn(dev->dev, "stream has more channels (%d) than are "
-> -			"enabled in mcasp (%d)\n", channels, ser * slots);
-> -		return -EINVAL;
-> -	}
-> -
-> -	tx_ser = 0;
-> -	rx_ser = 0;
-> -
-> -	for (i = 0; i < dev->num_serializer; i++) {
->  		mcasp_set_bits(dev->base + DAVINCI_MCASP_XRSRCTL_REG(i),
->  					dev->serial_dir[i]);
->  		if (dev->serial_dir[i] == TX_MODE &&
-> @@ -730,6 +707,17 @@ static int davinci_hw_common_param(struct
-> davinci_audio_dev *dev, int stream, }
->  	}
-> 
-> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		ser = tx_ser;
-> +	else
-> +		ser = rx_ser;
-> +
-> +	if (ser < max_active_serializers) {
-> +		dev_warn(dev->dev, "stream has more channels (%d) than are "
-> +			"enabled in mcasp (%d)\n", channels, ser * slots);
-> +		return -EINVAL;
-> +	}
-> +
->  	if (dev->txnumevt && stream == SNDRV_PCM_STREAM_PLAYBACK) {
->  		if (dev->txnumevt * tx_ser > 64)
->  			dev->txnumevt = 1;
+Ok,
 
-It works fine. Code is also ok.
+Let me start off that I know very little about audio and drivers.
 
-Michal
+Recently I started looking in to running Puredata and possibly jack on the
+Pandora handheld.
+However I ran in to a number of problems getting these to interface with
+alsa.
+I should note that on the pandora we don't have too up to date versions of
+alsa and kernel so perhaps these are already resolved.
+In SL4P (slackware for pandora) I have:
+
+ALSA: 1.0.24
+Kernel: 3.2.30
+
+I will paste a couple of use-cases and their corresponding dmesg output:
+
+When I run ~$ pd -alsa I get:
+
+snd_pcm_hw_params (input): Invalid argument
+snd_pcm_hw_params (output): Invalid argument
+
+and:
+[201429.385345] omap_mcbsp_dai_hw_params: not enough bandwidth for desired
+rate and channels
+[201429.385375] asoc: interface omap-mcbsp-dai.1 hw params failed
+
+With 'jackd -d alsa -S'  (need s16_le):
+
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames (21.3 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 16bit little-endian
+ALSA: use 2 periods for capture
+ALSA: cannot set hardware parameters for capture
+ALSA: cannot configure capture channel
+
+
+cannot load driver module alsa
+
+and:
+[201746.759857] asoc: can't set codec twl4030-hifi hw params
+
+The pandora kernel-dev explained that the hardware can only handle stereo
+streams. However someone in #jack explains it as the following:
+"This typically means that the ALSA driver is incomplete or buggy when used
+the way JACK does (poll+mmap) vs. the way aplay does (blocking read+write).
+So things that do stuff the "aplay way" will work; things that do stuff the
+JACK way will not work."
+
+I hope someone can shed some light on this and perhaps give some ideas to
+how to get this working.
+
+cheers,
+alexander
