@@ -1,14 +1,14 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
-Date: Fri,  8 Mar 2013 12:07:13 +0100
-Message-ID: <1362740833-15704-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH] ALSA: ASoC: Add codec driver for AK5386
+Date: Fri,  8 Mar 2013 12:07:28 +0100
+Message-ID: <1362740848-15752-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id A3598261700
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 12:07:13 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 61B9D261703
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 12:07:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,700 +22,127 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a driver for TI's TA5086 6-channel PWM processor.
-
-This chip has a very unusual register layout, specifically because the
-registers are of unequal size, and multi-byte registers require bulk
-writes to take effect. Regmap does not support these kind of mappings.
-
-Currently, the driver does not touch any of the registers >= 0x20, so
-it doesn't matter, because the register map is mapped to an 8-bit array.
-In case more features will be added in the future that require access
-to higher registers, the entire regmap H/W I/O routines have to be
-open-coded.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- .../devicetree/bindings/sound/ti,tas5086.txt       |  32 ++
- sound/soc/codecs/Kconfig                           |   4 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/tas5086.c                         | 587 +++++++++++++++++++++
- 4 files changed, 625 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,tas5086.txt
- create mode 100644 sound/soc/codecs/tas5086.c
-
-diff --git a/Documentation/devicetree/bindings/sound/ti,tas5086.txt b/Documentation/devicetree/bindings/sound/ti,tas5086.txt
-new file mode 100644
-index 0000000..8ea4f5b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,tas5086.txt
-@@ -0,0 +1,32 @@
-+Texas Instruments TAS5086 6-channel PWM Processor
-+
-+Required properties:
-+
-+ - compatible:		Should contain "ti,tas5086".
-+ - reg:			The i2c address. Should contain <0x1b>.
-+
-+Optional properties:
-+
-+ - reset-gpio: 		A GPIO spec to define which pin is connected to the
-+			chip's !RESET pin. If specified, the driver will
-+			assert a hardware reset at probe time.
-+
-+ - ti,charge-period:	This property should contain the time in microseconds
-+			that closely matches the external single-ended
-+			split-capacitor charge period. The hardware chip
-+			waits for this period of time before starting the
-+			PWM signals. This helps reduce pops and clicks.
-+
-+			When not specified, the hardware default of 1300ms
-+			is retained.
-+
-+Examples:
-+
-+	i2c_bus {
-+		tas5086@1b {
-+			compatible = "ti,tas5086";
-+			reg = <0x1b>;
-+			reset-gpio = <&gpio 23 0>;
-+			ti,charge-period = <156000>;
-+		};
-+	};
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 45b7256..86b3524 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -63,6 +63,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_STA32X if I2C
- 	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
-+	select SND_SOC_TAS5086 if I2C
- 	select SND_SOC_TLV320AIC23 if I2C
- 	select SND_SOC_TLV320AIC26 if SPI_MASTER
- 	select SND_SOC_TLV320AIC32X4 if I2C
-@@ -320,6 +321,9 @@ config SND_SOC_STA529
- config SND_SOC_STAC9766
- 	tristate
- 
-+config SND_SOC_TAS5086
-+	tristate
-+
- config SND_SOC_TLV320AIC23
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 6a3b3c3..8077bc2 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -55,6 +55,7 @@ snd-soc-ssm2602-objs := ssm2602.o
- snd-soc-sta32x-objs := sta32x.o
- snd-soc-sta529-objs := sta529.o
- snd-soc-stac9766-objs := stac9766.o
-+snd-soc-tas5086-objs := tas5086.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic3x-objs := tlv320aic3x.o
-@@ -177,6 +178,7 @@ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
- obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
- obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
- obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
-+obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-new file mode 100644
-index 0000000..cd3c267
---- /dev/null
-+++ b/sound/soc/codecs/tas5086.c
-@@ -0,0 +1,587 @@
-+/*
-+ * TAS5086 ASoC codec driver
-+ *
-+ * Copyright (c) 2013 Daniel Mack <zonque@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * TODO:
-+ *  - implement DAPM and input muxing
-+ *  - implement modulation limit
-+ *  - implement non-default PWM start
-+ *
-+ * Note that this chip has a very unusual register layout, specifically
-+ * because the registers are of unequal size, and multi-byte registers
-+ * require bulk writes to take effect. Regmap does not support that kind
-+ * of devices.
-+ *
-+ * Currently, the driver does not touch any of the registers >= 0x20, so
-+ * it doesn't matter because the entire map can be accessed as 8-bit
-+ * array. In case more features will be added in the future
-+ * that require access to higher registers, the entire regmap H/W I/O
-+ * routines have to be open-coded.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/delay.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+#define TAS5086_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE  |		\
-+			     SNDRV_PCM_FMTBIT_S20_3LE |		\
-+			     SNDRV_PCM_FMTBIT_S24_3LE)
-+
-+#define TAS5086_PCM_RATES   (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100  | \
-+			     SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200  | \
-+			     SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 | \
-+			     SNDRV_PCM_RATE_192000)
-+
-+/*
-+ * TAS5086 registers
-+ */
-+#define TAS5086_CLOCK_CONTROL		0x00	/* Clock control register  */
-+#define TAS5086_CLOCK_RATE(val)		(val << 5)
-+#define TAS5086_CLOCK_RATE_MASK		(0x7 << 5)
-+#define TAS5086_CLOCK_RATIO(val)	(val << 2)
-+#define TAS5086_CLOCK_RATIO_MASK	(0x7 << 2)
-+#define TAS5086_CLOCK_SCLK_RATIO_48	(1 << 1)
-+#define TAS5086_CLOCK_VALID		(1 << 0)
-+
-+#define TAS5086_DEV_ID			0x01	/* Device ID register */
-+#define TAS5086_ERROR_STATUS		0x02	/* Error status register */
-+#define TAS5086_SYS_CONTROL_1		0x03	/* System control register 1 */
-+#define TAS5086_SERIAL_DATA_IF		0x04	/* Serial data interface register  */
-+#define TAS5086_SYS_CONTROL_2		0x05	/* System control register 2 */
-+#define TAS5086_SOFT_MUTE		0x06	/* Soft mute register */
-+#define TAS5086_MASTER_VOL		0x07	/* Master volume  */
-+#define TAS5086_CHANNEL_VOL(X)		(0x08 + (X))	/* Channel 1-6 volume */
-+#define TAS5086_VOLUME_CONTROL		0x09	/* Volume control register */
-+#define TAS5086_MOD_LIMIT		0x10	/* Modulation limit register */
-+#define TAS5086_PWM_START		0x18	/* PWM start register */
-+#define TAS5086_SURROUND		0x19	/* Surround register */
-+#define TAS5086_SPLIT_CAP_CHARGE	0x1a	/* Split cap charge period register */
-+#define TAS5086_OSC_TRIM		0x1b	/* Oscillator trim register */
-+#define TAS5086_BKNDERR 		0x1c
-+
-+#define TAS5086_DEEMPH_MASK		0x03
-+
-+/*
-+ * Default TAS5086 power-up configuration
-+ */
-+static const struct reg_default tas5086_reg_defaults[] = {
-+	{ 0x00,	0x6c },
-+	{ 0x01,	0x03 },
-+	{ 0x02,	0x00 },
-+	{ 0x03,	0xa0 },
-+	{ 0x04,	0x05 },
-+	{ 0x05,	0x60 },
-+	{ 0x06,	0x00 },
-+	{ 0x07,	0xff },
-+	{ 0x08,	0x30 },
-+	{ 0x09,	0x30 },
-+	{ 0x0a,	0x30 },
-+	{ 0x0b,	0x30 },
-+	{ 0x0c,	0x30 },
-+	{ 0x0d,	0x30 },
-+	{ 0x0e,	0xb1 },
-+	{ 0x0f,	0x00 },
-+	{ 0x10,	0x02 },
-+	{ 0x11,	0x00 },
-+	{ 0x12,	0x00 },
-+	{ 0x13,	0x00 },
-+	{ 0x14,	0x00 },
-+	{ 0x15,	0x00 },
-+	{ 0x16,	0x00 },
-+	{ 0x17,	0x00 },
-+	{ 0x18,	0x3f },
-+	{ 0x19,	0x00 },
-+	{ 0x1a,	0x18 },
-+	{ 0x1b,	0x82 },
-+	{ 0x1c,	0x05 },
-+};
-+
-+static bool tas5086_accessible_reg(struct device *dev, unsigned int reg)
-+{
-+	return !((reg == 0x0f) || (reg >= 0x11 && reg <= 0x17));
-+}
-+
-+static bool tas5086_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	return reg == TAS5086_DEV_ID ||
-+	       reg == TAS5086_ERROR_STATUS;
-+}
-+
-+static bool tas5086_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	return tas5086_accessible_reg(dev, reg) && (reg != TAS5086_DEV_ID);
-+}
-+
-+struct tas5086_private {
-+	struct regmap	*regmap;
-+	unsigned int	mclk, sclk;
-+	unsigned int	format;
-+	bool		deemph;
-+	/* Current sample rate for de-emphasis control */
-+	int		rate;
-+	/* GPIO driving Reset pin, if any */
-+	int		gpio_nreset;
-+};
-+
-+static int tas5086_deemph[] = { 0, 32000, 44100, 48000 };
-+
-+static int tas5086_set_deemph(struct snd_soc_codec *codec)
-+{
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	int i, val = 0;
-+
-+	if (priv->deemph)
-+		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++)
-+			if (tas5086_deemph[i] == priv->rate)
-+				val = i;
-+
-+	return regmap_update_bits(priv->regmap, TAS5086_SYS_CONTROL_1,
-+				  TAS5086_DEEMPH_MASK, val);
-+}
-+
-+static int tas5086_get_deemph(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.enumerated.item[0] = priv->deemph;
-+
-+	return 0;
-+}
-+
-+static int tas5086_put_deemph(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	priv->deemph = ucontrol->value.enumerated.item[0];
-+
-+	return tas5086_set_deemph(codec);
-+}
-+
-+
-+static int tas5086_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+				  int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (clk_id) {
-+	case 0:		/* MCLK */
-+		priv->mclk = freq;
-+		break;
-+	case 1:		/* SCLK */
-+		priv->sclk = freq;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tas5086_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+			       unsigned int format)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	/* The TAS5086 can only be slave to all clocks */
-+	if ((format & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
-+		dev_err(codec->dev, "Invalid clocking mode\n");
-+		return -EINVAL;
-+	}
-+
-+	/* we need to refer to the data format from hw_params() */
-+	priv->format = format;
-+
-+	return 0;
-+}
-+
-+static const int tas5086_sample_rates[] = {
-+	32000, 38000, 44100, 48000, 88200, 96000, 176400, 192000
-+};
-+
-+static const int tas5086_ratios[] = {
-+	64, 128, 192, 256, 384, 512
-+};
-+
-+static int index_in_array(const int *array, int len, int needle)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		if (array[i] == needle)
-+			return i;
-+
-+	return -ENOENT;
-+}
-+
-+static int tas5086_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val;
-+	int ret;
-+
-+	priv->rate = params_rate(params);
-+
-+	/* Look up the sample rate and refer to the offset in the list */
-+	val = index_in_array(tas5086_sample_rates,
-+			     ARRAY_SIZE(tas5086_sample_rates), priv->rate);
-+
-+	if (val < 0) {
-+		dev_err(codec->dev, "Invalid sample rate\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_update_bits(priv->regmap, TAS5086_CLOCK_CONTROL,
-+				 TAS5086_CLOCK_RATE_MASK,
-+				 TAS5086_CLOCK_RATE(val));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* MCLK / Fs ratio */
-+	val = index_in_array(tas5086_ratios, ARRAY_SIZE(tas5086_ratios),
-+			     priv->mclk / priv->rate);
-+	if (val < 0) {
-+		dev_err(codec->dev, "Inavlid MCLK / Fs ratio\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_update_bits(priv->regmap, TAS5086_CLOCK_CONTROL,
-+				 TAS5086_CLOCK_RATIO_MASK,
-+				 TAS5086_CLOCK_RATIO(val));
-+	if (ret < 0)
-+		return ret;
-+
-+
-+	ret = regmap_update_bits(priv->regmap, TAS5086_CLOCK_CONTROL,
-+				 TAS5086_CLOCK_SCLK_RATIO_48,
-+				 (priv->sclk == 48 * priv->rate) ? 
-+					TAS5086_CLOCK_SCLK_RATIO_48 : 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * The chip has a very unituitive register mapping and muxes information
-+	 * about data format and sample depth into the same register, but not on
-+	 * a logical bit-boundary. Hence, we have to refer to the format passed
-+	 * in the set_dai_fmt() callback and set up everything from here.
-+	 *
-+	 * First, determine the 'base' value, using the format ...
-+	 */
-+	switch (priv->format & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		val = 0x00;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		val = 0x03;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		val = 0x06;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid DAI format\n");
-+		return -EINVAL;
-+	}
-+
-+	/* ... then add the offset for the sample bit depth. */
-+	switch (params_format(params)) {
-+        case SNDRV_PCM_FORMAT_S16_LE:
-+		val += 0;
-+                break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		val += 1;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_3LE:
-+		val += 2;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid bit width\n");
-+		return -EINVAL;
-+	};
-+
-+	ret = regmap_write(priv->regmap, TAS5086_SERIAL_DATA_IF, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* clock is considered valid now */
-+	ret = regmap_update_bits(priv->regmap, TAS5086_CLOCK_CONTROL,
-+				 TAS5086_CLOCK_VALID, TAS5086_CLOCK_VALID);
-+	if (ret < 0)
-+		return ret;
-+
-+	return tas5086_set_deemph(codec);
-+}
-+
-+static int tas5086_digital_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	return regmap_write(priv->regmap, TAS5086_SOFT_MUTE,
-+			    mute ? 0x3f : 0x00);
-+}
-+
-+/* TAS5086 controls */
-+static const DECLARE_TLV_DB_SCALE(tas5086_dac_tlv, -10350, 50, 1);
-+
-+static const struct snd_kcontrol_new tas5086_controls[] = {
-+	SOC_SINGLE_TLV("Master Playback Volume", TAS5086_MASTER_VOL,
-+		       0, 0xff, 1, tas5086_dac_tlv),
-+	SOC_DOUBLE_R_TLV("Channel 1/2 Playback Volume",
-+			 TAS5086_CHANNEL_VOL(0), TAS5086_CHANNEL_VOL(1),
-+			 0, 0xff, 1, tas5086_dac_tlv),
-+	SOC_DOUBLE_R_TLV("Channel 3/4 Playback Volume",
-+			 TAS5086_CHANNEL_VOL(2), TAS5086_CHANNEL_VOL(3),
-+			 0, 0xff, 1, tas5086_dac_tlv),
-+	SOC_DOUBLE_R_TLV("Channel 5/6 Playback Volume",
-+			 TAS5086_CHANNEL_VOL(4), TAS5086_CHANNEL_VOL(5),
-+			 0, 0xff, 1, tas5086_dac_tlv),
-+	SOC_SINGLE_BOOL_EXT("De-emphasis Switch", 0,
-+			    tas5086_get_deemph, tas5086_put_deemph),
-+};
-+
-+static const struct snd_soc_dai_ops tas5086_dai_ops = {
-+	.hw_params	= tas5086_hw_params,
-+	.set_sysclk	= tas5086_set_dai_sysclk,
-+	.set_fmt	= tas5086_set_dai_fmt,
-+	.digital_mute	= tas5086_digital_mute,
-+};
-+
-+static struct snd_soc_dai_driver tas5086_dai = {
-+	.name = "tas5086-hifi",
-+	.playback = {
-+		.stream_name	= "Playback",
-+		.channels_min	= 2,
-+		.channels_max	= 6,
-+		.rates		= TAS5086_PCM_RATES,
-+		.formats	= TAS5086_PCM_FORMATS,
-+	},
-+	.ops = &tas5086_dai_ops,
-+};
-+
-+#ifdef CONFIG_PM
-+static int tas5086_soc_suspend(struct snd_soc_codec *codec)
-+{
-+	return 0;
-+}
-+
-+static int tas5086_soc_resume(struct snd_soc_codec *codec)
-+{
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	/* Restore codec state */
-+	return regcache_sync(priv->regmap);
-+}
-+#else
-+#define tas5086_soc_suspend	NULL
-+#define tas5086_soc_resume	NULL
-+#endif /* CONFIG_PM */
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id tas5086_dt_ids[] = {
-+	{ .compatible = "ti,tas5086", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, tas5086_dt_ids);
-+#endif
-+
-+/* charge period values in microseconds */
-+static const int tas5086_charge_period[] = {
-+	  13000,  16900,   23400,   31200,   41600,   54600,   72800,   96200,
-+	 130000, 156000,  234000,  312000,  416000,  546000,  728000,  962000,
-+	1300000, 169000, 2340000, 3120000, 4160000, 5460000, 7280000, 9620000,
-+};
-+
-+static int tas5086_probe(struct snd_soc_codec *codec)
-+{
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+	int charge_period = 1300000; /* hardware default is 1300 ms */
-+	int gpio_nreset = -EINVAL;
-+	int i, ret;
-+
-+	if (of_match_device(of_match_ptr(tas5086_dt_ids), codec->dev)) {
-+		struct device_node *of_node = codec->dev->of_node;
-+
-+		gpio_nreset = of_get_named_gpio(of_node, "reset-gpio", 0);
-+		of_property_read_u32(of_node, "ti,charge-period", &charge_period);
-+	}
-+
-+	if (gpio_nreset >= 0)
-+		if (devm_gpio_request(codec->dev, gpio_nreset, "TAS5086 Reset"))
-+			gpio_nreset = -EINVAL;
-+	if (gpio_nreset >= 0) {
-+		/* Reset codec - minimum assertion time is 400ns */
-+		gpio_direction_output(gpio_nreset, 0);
-+		udelay(1);
-+		gpio_set_value(gpio_nreset, 1);
-+
-+		/* Codec needs ~15ms to wake up */
-+		msleep(15);
-+	}
-+msleep(300);
-+	priv->gpio_nreset = gpio_nreset;
-+
-+	/* The TAS5086 always returns 0x03 in its TAS5086_DEV_ID register */
-+	ret = regmap_read(priv->regmap, TAS5086_DEV_ID, &i);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (i != 0x3) {
-+		dev_err(codec->dev,
-+			"Failed to identify TAS5086 codec (got %02x)\n", i);
-+		return -ENODEV;
-+	}
-+
-+	/* lookup and set split-capacitor charge period */
-+	if (charge_period == 0) {
-+		regmap_write(priv->regmap, TAS5086_SPLIT_CAP_CHARGE, 0);
-+	} else {
-+		i = index_in_array(tas5086_charge_period,
-+				   ARRAY_SIZE(tas5086_charge_period),
-+				   charge_period);
-+		if (i >= 0)
-+			regmap_write(priv->regmap, TAS5086_SPLIT_CAP_CHARGE,
-+				     i + 0x08);
-+		else
-+			dev_warn(codec->dev,
-+				 "Invalid split-cap charge period of %d ns.\n",
-+				 charge_period);
-+	}
-+
-+	/* enable factory trim */
-+	ret = regmap_write(priv->regmap, TAS5086_OSC_TRIM, 0x00);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* start all channels */
-+	ret = regmap_write(priv->regmap, TAS5086_SYS_CONTROL_2, 0x20);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set master volume to 0 dB */
-+	ret = regmap_write(priv->regmap, TAS5086_MASTER_VOL, 0x30);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int tas5086_remove(struct snd_soc_codec *codec)
-+{
-+	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	if (gpio_is_valid(priv->gpio_nreset))
-+		/* Set codec to the reset state */
-+		gpio_set_value(priv->gpio_nreset, 0);
-+
-+	return 0;
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_tas5086 = {
-+	.probe			= tas5086_probe,
-+	.remove			= tas5086_remove,
-+	.suspend		= tas5086_soc_suspend,
-+	.resume			= tas5086_soc_resume,
-+	.controls		= tas5086_controls,
-+	.num_controls		= ARRAY_SIZE(tas5086_controls),
-+};
-+
-+static const struct i2c_device_id tas5086_i2c_id[] = {
-+	{ "tas5086", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, tas5086_i2c_id);
-+
-+static const struct regmap_config tas5086_regmap = {
-+	.reg_bits		= 8,
-+	.val_bits		= 8,
-+	.max_register		= ARRAY_SIZE(tas5086_reg_defaults),
-+	.reg_defaults		= tas5086_reg_defaults,
-+	.num_reg_defaults	= ARRAY_SIZE(tas5086_reg_defaults),
-+	.cache_type		= REGCACHE_RBTREE,
-+	.volatile_reg		= tas5086_volatile_reg,
-+	.writeable_reg		= tas5086_writeable_reg,
-+	.readable_reg		= tas5086_accessible_reg,
-+};
-+
-+static int tas5086_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	struct tas5086_private *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->regmap = devm_regmap_init_i2c(i2c, &tas5086_regmap);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		dev_err(&i2c->dev, "Failed to create regmap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	i2c_set_clientdata(i2c, priv);
-+
-+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_tas5086,
-+		&tas5086_dai, 1);
-+}
-+
-+static int tas5086_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+	return 0;
-+}
-+
-+static struct i2c_driver tas5086_i2c_driver = {
-+	.driver = {
-+		.name	= "tas5086",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = of_match_ptr(tas5086_dt_ids),
-+	},
-+	.id_table	= tas5086_i2c_id,
-+	.probe		= tas5086_i2c_probe,
-+	.remove		= tas5086_i2c_remove,
-+};
-+
-+static int __init tas5086_modinit(void)
-+{
-+	return i2c_add_driver(&tas5086_i2c_driver);
-+}
-+module_init(tas5086_modinit);
-+
-+static void __exit tas5086_modexit(void)
-+{
-+	i2c_del_driver(&tas5086_i2c_driver);
-+}
-+module_exit(tas5086_modexit);
-+
-+MODULE_AUTHOR("Daniel Mack <zonque@gmail.com>");
-+MODULE_DESCRIPTION("Texas Instruments TAS5086 ALSA SoC Codec Driver");
-+MODULE_LICENSE("GPL");
--- 
-1.8.1.4
+QWRkcyBhIGRyaXZlciBmb3IgQXNhaGkgS2FzZWkncyBBSzUzODYgU2luZ2xlLWVuZGVkIDI0LUJp
+dCAxOTJrSHoKZGVsdGEtc2lnbWEgQURDLiBUaGUgZGV2aWNlIGhhcyBubyBjb250cm9sIHBvcnQg
+aW50ZXJmYWNlIGJ1dCBhbgpvcHRpb25hbCBSRVNFVC9QRE4gR1BJTyBwaW4uCgpTaWduZWQtb2Zm
+LWJ5OiBEYW5pZWwgTWFjayA8em9ucXVlQGdtYWlsLmNvbT4KLS0tCiBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3Mvc291bmQvYWs1Mzg2LnR4dCB8ICAxOSArKysKIHNvdW5kL3NvYy9j
+b2RlY3MvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICsKIHNvdW5kL3Nv
+Yy9jb2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIHNvdW5k
+L3NvYy9jb2RlY3MvYWs1Mzg2LmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTUyICsrKysr
+KysrKysrKysrKysrKysrKwogNCBmaWxlcyBjaGFuZ2VkLCAxNzcgaW5zZXJ0aW9ucygrKQogY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9h
+azUzODYudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2NvZGVjcy9hazUzODYuYwoK
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hazUz
+ODYudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2FrNTM4Ni50
+eHQKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uZGMzOTE0ZgotLS0gL2Rldi9u
+dWxsCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hazUzODYu
+dHh0CkBAIC0wLDAgKzEsMTkgQEAKK0FLNTM4NiBTaW5nbGUtZW5kZWQgMjQtQml0IDE5MmtIeiBk
+ZWx0YS1zaWdtYSBBREMKKworVGhpcyBkZXZpY2UgaGFzIG5vIGNvbnRyb2wgaW50ZXJmYWNlLgor
+CitSZXF1aXJlZCBwcm9wZXJ0aWVzOgorCisgIC0gY29tcGF0aWJsZSA6ICJhc2FoaS1rYXNlaSxh
+azUzODYiCisKK09wdGlvbmFsIHByb3BlcnRpZXM6CisKKyAgLSByZXNldC1ncGlvIDogYSBHUElP
+IHNwZWMgZm9yIHRoZSByZXNldC9wb3dlciBkb3duIHBpbi4KKwkJIElmIHNwZWNpZmllZCwgaXQg
+d2lsbCBiZSBkZWFzc2VydGVkIGF0IHByb2JlIHRpbWUuCisKK0V4YW1wbGU6CisKK3NwZGlmOiBh
+azUzODZAMCB7CisJY29tcGF0aWJsZSA9ICJhc2FoaS1rYXNlaSxhazUzODYiOworCXJlc2V0LWdw
+aW8gPSA8JmdwaW8wIDIzPjsKK307CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL0tjb25m
+aWcgYi9zb3VuZC9zb2MvY29kZWNzL0tjb25maWcKaW5kZXggODZiMzUyNC4uMThmZWExMCAxMDA2
+NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9LY29uZmlnCisrKyBiL3NvdW5kL3NvYy9jb2RlY3Mv
+S2NvbmZpZwpAQCAtMjYsNiArMjYsNyBAQCBjb25maWcgU05EX1NPQ19BTExfQ09ERUNTCiAJc2Vs
+ZWN0IFNORF9TT0NfQUs0NjQxIGlmIEkyQwogCXNlbGVjdCBTTkRfU09DX0FLNDY0MiBpZiBJMkMK
+IAlzZWxlY3QgU05EX1NPQ19BSzQ2NzEgaWYgSTJDCisJc2VsZWN0IFNORF9TT0NfQUs1Mzg2CiAJ
+c2VsZWN0IFNORF9TT0NfQUxDNTYyMyBpZiBJMkMKIAlzZWxlY3QgU05EX1NPQ19BTEM1NjMyIGlm
+IEkyQwogCXNlbGVjdCBTTkRfU09DX0NRMDA5M1ZDIGlmIE1GRF9EQVZJTkNJX1ZPSUNFQ09ERUMK
+QEAgLTIwNCw2ICsyMDUsOSBAQCBjb25maWcgU05EX1NPQ19BSzQ2NDIKIGNvbmZpZyBTTkRfU09D
+X0FLNDY3MQogCXRyaXN0YXRlCiAKK2NvbmZpZyBTTkRfU09DX0FLNTM4NgorCXRyaXN0YXRlCisK
+IGNvbmZpZyBTTkRfU09DX0FMQzU2MjMKICAgICAgICB0cmlzdGF0ZQogY29uZmlnIFNORF9TT0Nf
+QUxDNTYzMgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9NYWtlZmlsZSBiL3NvdW5kL3Nv
+Yy9jb2RlY3MvTWFrZWZpbGUKaW5kZXggODA3N2JjMi4uYjllNDFjOSAxMDA2NDQKLS0tIGEvc291
+bmQvc29jL2NvZGVjcy9NYWtlZmlsZQorKysgYi9zb3VuZC9zb2MvY29kZWNzL01ha2VmaWxlCkBA
+IC0xNCw2ICsxNCw3IEBAIHNuZC1zb2MtYWs0NTM1LW9ianMgOj0gYWs0NTM1Lm8KIHNuZC1zb2Mt
+YWs0NjQxLW9ianMgOj0gYWs0NjQxLm8KIHNuZC1zb2MtYWs0NjQyLW9ianMgOj0gYWs0NjQyLm8K
+IHNuZC1zb2MtYWs0NjcxLW9ianMgOj0gYWs0NjcxLm8KK3NuZC1zb2MtYWs1Mzg2LW9ianMgOj0g
+YWs1Mzg2Lm8KIHNuZC1zb2MtYXJpem9uYS1vYmpzIDo9IGFyaXpvbmEubwogc25kLXNvYy1jcTkz
+dmMtb2JqcyA6PSBjcTkzdmMubwogc25kLXNvYy1jczQybDUxLW9ianMgOj0gY3M0Mmw1MS5vCkBA
+IC0xMzgsNiArMTM5LDcgQEAgb2JqLSQoQ09ORklHX1NORF9TT0NfQUs0NTM1KQkrPSBzbmQtc29j
+LWFrNDUzNS5vCiBvYmotJChDT05GSUdfU05EX1NPQ19BSzQ2NDEpCSs9IHNuZC1zb2MtYWs0NjQx
+Lm8KIG9iai0kKENPTkZJR19TTkRfU09DX0FLNDY0MikJKz0gc25kLXNvYy1hazQ2NDIubwogb2Jq
+LSQoQ09ORklHX1NORF9TT0NfQUs0NjcxKQkrPSBzbmQtc29jLWFrNDY3MS5vCitvYmotJChDT05G
+SUdfU05EX1NPQ19BSzUzODYpCSs9IHNuZC1zb2MtYWs1Mzg2Lm8KIG9iai0kKENPTkZJR19TTkRf
+U09DX0FMQzU2MjMpICAgICs9IHNuZC1zb2MtYWxjNTYyMy5vCiBvYmotJChDT05GSUdfU05EX1NP
+Q19BTEM1NjMyKQkrPSBzbmQtc29jLWFsYzU2MzIubwogb2JqLSQoQ09ORklHX1NORF9TT0NfQVJJ
+Wk9OQSkJKz0gc25kLXNvYy1hcml6b25hLm8KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mv
+YWs1Mzg2LmMgYi9zb3VuZC9zb2MvY29kZWNzL2FrNTM4Ni5jCm5ldyBmaWxlIG1vZGUgMTAwNjQ0
+CmluZGV4IDAwMDAwMDAuLjFmMzAzOTgKLS0tIC9kZXYvbnVsbAorKysgYi9zb3VuZC9zb2MvY29k
+ZWNzL2FrNTM4Ni5jCkBAIC0wLDAgKzEsMTUyIEBACisvKgorICogQUxTQSBTb0MgZHJpdmVyIGZv
+cgorICogICAgQXNhaGkgS2FzZWkgQUs1Mzg2IFNpbmdsZS1lbmRlZCAyNC1CaXQgMTkya0h6IGRl
+bHRhLXNpZ21hIEFEQworICoKKyAqIChjKSAyMDEzIERhbmllbCBNYWNrIDx6b25xdWVAZ21haWwu
+Y29tPgorICoKKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlz
+dHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdO
+VSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcworICogcHVibGlzaGVkIGJ5IHRo
+ZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCisgKi8KKworI2luY2x1ZGUgPGxpbnV4L21vZHVs
+ZS5oPgorI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KKyNpbmNsdWRlIDxsaW51eC9vZi5oPgorI2lu
+Y2x1ZGUgPGxpbnV4L29mX2dwaW8uaD4KKyNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4KKyNp
+bmNsdWRlIDxzb3VuZC9zb2MuaD4KKyNpbmNsdWRlIDxzb3VuZC9wY20uaD4KKyNpbmNsdWRlIDxz
+b3VuZC9pbml0dmFsLmg+CisKK3N0cnVjdCBhazUzODZfcHJpdiB7CisJaW50IHJlc2V0X2dwaW87
+Cit9OworCitzdGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVyIHNvY19jb2RlY19hazUz
+ODY7CisKK3N0YXRpYyBpbnQgYWs1Mzg2X3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAq
+Y29kZWNfZGFpLAorCQkJICAgICAgdW5zaWduZWQgaW50IGZvcm1hdCkKK3sKKwlzdHJ1Y3Qgc25k
+X3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVjOworCisJZm9ybWF0ICY9IFNORF9T
+T0NfREFJRk1UX0ZPUk1BVF9NQVNLOworCWlmIChmb3JtYXQgIT0gU05EX1NPQ19EQUlGTVRfTEVG
+VF9KICYmCisJICAgIGZvcm1hdCAhPSBTTkRfU09DX0RBSUZNVF9JMlMpIHsKKwkJZGV2X2Vycihj
+b2RlYy0+ZGV2LCAiSW52YWxpZCBEQUkgZm9ybWF0XG4iKTsKKwkJcmV0dXJuIC1FSU5WQUw7CisJ
+fQorCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgYWs1Mzg2X2h3X3BhcmFtcyhzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKKwkJCSAgICBzdHJ1Y3Qgc25kX3BjbV9od19w
+YXJhbXMgKnBhcmFtcywKKwkJCSAgICBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKK3sKKwlzdHJ1
+Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBkYWktPmNvZGVjOworCXN0cnVjdCBhazUzODZfcHJp
+diAqcHJpdiA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOworCisJLyoKKwkgKiBG
+cm9tIHRoZSBkYXRhc2hlZXQ6CisJICoKKwkgKiBBbGwgZXh0ZXJuYWwgY2xvY2tzIChNQ0xLLCBT
+Q0xLIGFuZCBMUkNLKSBtdXN0IGJlIHByZXNlbnQgdW5sZXNzCisJICogUEROIHBpbiA9IOKAnEzi
+gJ0uIElmIHRoZXNlIGNsb2NrcyBhcmUgbm90IHByb3ZpZGVkLCB0aGUgQUs1Mzg2IG1heQorCSAq
+IGRyYXcgZXhjZXNzIGN1cnJlbnQgZHVlIHRvIGl0cyB1c2Ugb2YgaW50ZXJuYWwgZHluYW1pY2Fs
+bHkKKwkgKiByZWZyZXNoZWQgbG9naWMuIElmIHRoZSBleHRlcm5hbCBjbG9ja3MgYXJlIG5vdCBw
+cmVzZW50LCBwbGFjZQorCSAqIHRoZSBBSzUzODYgaW4gcG93ZXItZG93biBtb2RlIChQRE4gcGlu
+ID0g4oCcTOKAnSkuCisJICovCisKKwlpZiAoZ3Bpb19pc192YWxpZChwcml2LT5yZXNldF9ncGlv
+KSkKKwkJZ3Bpb19zZXRfdmFsdWUocHJpdi0+cmVzZXRfZ3BpbywgMSk7CisKKwlyZXR1cm4gMDsK
+K30KKworc3RhdGljIGludCBhazUzODZfaHdfZnJlZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
+KnN1YnN0cmVhbSwKKwkJCSAgc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCit7CisJc3RydWN0IHNu
+ZF9zb2NfY29kZWMgKmNvZGVjID0gZGFpLT5jb2RlYzsKKwlzdHJ1Y3QgYWs1Mzg2X3ByaXYgKnBy
+aXYgPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKKworCWlmIChncGlvX2lzX3Zh
+bGlkKHByaXYtPnJlc2V0X2dwaW8pKQorCQlncGlvX3NldF92YWx1ZShwcml2LT5yZXNldF9ncGlv
+LCAwKTsKKworCXJldHVybiAwOworfQorCitzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFp
+X29wcyBhazUzODZfZGFpX29wcyA9IHsKKwkuc2V0X2ZtdAk9IGFrNTM4Nl9zZXRfZGFpX2ZtdCwK
+KwkuaHdfcGFyYW1zCT0gYWs1Mzg2X2h3X3BhcmFtcywKKwkuaHdfZnJlZQk9IGFrNTM4Nl9od19m
+cmVlLAorfTsKKworc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgYWs1Mzg2X2RhaSA9
+IHsKKwkubmFtZQkJPSAiYWs1Mzg2LWhpZmkiLAorCS5jYXB0dXJlCT0geworCQkuc3RyZWFtX25h
+bWUJPSAiQ2FwdHVyZSIsCisJCS5jaGFubmVsc19taW4JPSAxLAorCQkuY2hhbm5lbHNfbWF4CT0g
+MiwKKwkJLnJhdGVzCQk9IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwLAorCQkuZm9ybWF0cwk9
+IFNORFJWX1BDTV9GTVRCSVRfUzggICAgIHwKKwkJCQkgIFNORFJWX1BDTV9GTVRCSVRfUzE2X0xF
+IHwKKwkJCQkgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwKKwkJCQkgIFNORFJWX1BDTV9GTVRC
+SVRfUzI0XzNMRSwKKwl9LAorCS5vcHMJPSAmYWs1Mzg2X2RhaV9vcHMsCit9OworCisjaWZkZWYg
+Q09ORklHX09GCitzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBhazUzODZfZHRfaWRz
+W10gPSB7CisJeyAuY29tcGF0aWJsZSA9ICJhc2FoaS1rYXNlaSxhazUzODYiLCB9LAorCXsgfQor
+fTsKK01PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIGFrNTM4Nl9kdF9pZHMpOworI2VuZGlmCisKK3N0
+YXRpYyBpbnQgYWs1Mzg2X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCit7CisJ
+c3RydWN0IGRldmljZSAqZGV2ID0gJnBkZXYtPmRldjsKKwlzdHJ1Y3QgYWs1Mzg2X3ByaXYgKnBy
+aXY7CisKKwlwcml2ID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpwcml2KSwgR0ZQX0tFUk5F
+TCk7CisJaWYgKCFwcml2KQorCQlyZXR1cm4gLUVOT01FTTsKKworCXByaXYtPnJlc2V0X2dwaW8g
+PSAtRUlOVkFMOworCWRldl9zZXRfZHJ2ZGF0YShkZXYsIHByaXYpOworCisJaWYgKG9mX21hdGNo
+X2RldmljZShvZl9tYXRjaF9wdHIoYWs1Mzg2X2R0X2lkcyksIGRldikpCisJCXByaXYtPnJlc2V0
+X2dwaW8gPSBvZl9nZXRfbmFtZWRfZ3BpbyhkZXYtPm9mX25vZGUsCisJCQkJCQkgICAgICAicmVz
+ZXQtZ3BpbyIsIDApOworCisJaWYgKGdwaW9faXNfdmFsaWQocHJpdi0+cmVzZXRfZ3BpbykpCisJ
+CWlmIChkZXZtX2dwaW9fcmVxdWVzdF9vbmUoZGV2LCBwcml2LT5yZXNldF9ncGlvLAorCQkJCQkg
+IEdQSU9GX09VVF9JTklUX0xPVywKKwkJCQkJICAiQUs1Mzg2IFJlc2V0IikpCisJCQlwcml2LT5y
+ZXNldF9ncGlvID0gLUVJTlZBTDsKKworCXJldHVybiBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKGRl
+diwgJnNvY19jb2RlY19hazUzODYsCisJCQkJICAgICAgJmFrNTM4Nl9kYWksIDEpOworfQorCitz
+dGF0aWMgaW50IGFrNTM4Nl9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKK3sK
+KwlzbmRfc29jX3VucmVnaXN0ZXJfY29kZWMoJnBkZXYtPmRldik7CisJcmV0dXJuIDA7Cit9CisK
+K3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGFrNTM4Nl9kcml2ZXIgPSB7CisJLnByb2Jl
+CQk9IGFrNTM4Nl9wcm9iZSwKKwkucmVtb3ZlCQk9IGFrNTM4Nl9yZW1vdmUsCisJLmRyaXZlcgkJ
+PSB7CisJCS5uYW1lCT0gImFrNTM4NiIsCisJCS5vd25lcgk9IFRISVNfTU9EVUxFLAorCQkub2Zf
+bWF0Y2hfdGFibGUgPSBvZl9tYXRjaF9wdHIoYWs1Mzg2X2R0X2lkcyksCisJfSwKK307CisKK21v
+ZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYWs1Mzg2X2RyaXZlcik7CisKK01PRFVMRV9ERVNDUklQVElP
+TigiQVNvQyBkcml2ZXIgZm9yIEFLNTM4NiBBREMiKTsKK01PRFVMRV9BVVRIT1IoIkRhbmllbCBN
+YWNrIDx6b25xdWVAZ21haWwuY29tPiIpOworTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOwotLSAKMS44
+LjEuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
