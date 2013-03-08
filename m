@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ALSA: ASoC: add codec driver for TI
-	TAS5086
-Date: Fri, 8 Mar 2013 21:07:11 +0800
-Message-ID: <20130308130706.GK28481@opensource.wolfsonmicro.com>
-References: <1362747129-7932-1-git-send-email-zonque@gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH v2] davinci-mcasp: Add support for
+ multichannel playback
+Date: Fri, 08 Mar 2013 14:11:32 +0100
+Message-ID: <5139E384.2090005@gmail.com>
+References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6109834594660189844=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23436261717
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 14:07:47 +0100 (CET)
-In-Reply-To: <1362747129-7932-1-git-send-email-zonque@gmail.com>
+Received: from mail-ee0-f41.google.com (mail-ee0-f41.google.com [74.125.83.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1799126171E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2013 14:11:33 +0100 (CET)
+Received: by mail-ee0-f41.google.com with SMTP id c13so1039613eek.28
+ for <alsa-devel@alsa-project.org>; Fri, 08 Mar 2013 05:11:32 -0800 (PST)
+In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +24,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Michal Bachraty <michal.bachraty@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Vaibhav,
+Hi Michal,
 
---===============6109834594660189844==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5dNcufZ4prhark0F"
-Content-Disposition: inline
+On 05.03.2013 12:06, Bedia, Vaibhav wrote:
+> On Wed, Feb 27, 2013 at 22:08:45, Michal Bachraty wrote:
+>> Davinci McASP has support for I2S multichannel playback.
+>> For I2S playback/receive, each serializer is capable to play 2 channels
+>> (L/R) audio data.Serializer function (Playback-receive-none) is configured
+>> in DT, depending on hardware specification. It is possible to play less
+>> channels than configured in DT. For that purpose,only specific number of
+>> active serializers are enabled. McASP FIFO need to have DMA transfer Bcnt
+>> set to number of enabled serializers, otherwise no data are transfered to
+>> McASP and Alsa generates "DMA/IRQ playback write error (DMA or IRQ trouble?)"
+>> error.
+>>
+> 
+> Thanks for looking into this. Before going into details, a few generic comments.
+> All serializers configured in Tx (or Rx) work off common clock generators and
+> hence the serializers will be operating in sync. I assume the setup that you
+> have matches this requirement. Based on the DMA programming assumed in the
+> implementation the user needs to ensure that buffer has the data in the right
+> format. Can you please describe the setup that you have and how you tested this? 
+> 
+>> Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
+>> ---
+>>  sound/soc/davinci/davinci-mcasp.c |   56 ++++++++++++++++++++++++++++++++-----
+>>  sound/soc/davinci/davinci-pcm.c   |   16 ++++++-----
+>>  sound/soc/davinci/davinci-pcm.h   |    1 +
+>>  3 files changed, 59 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+>> index afef3fb..b84bb73 100644
+>> --- a/sound/soc/davinci/davinci-mcasp.c
+>> +++ b/sound/soc/davinci/davinci-mcasp.c
+>> @@ -235,6 +235,10 @@
+>>  #define DISMOD		(val)(val<<2)
+>>  #define TXSTATE		BIT(4)
+>>  #define RXSTATE		BIT(5)
+>> +#define SRMOD_MASK	3
+>> +#define SRMOD_INACTIVE	0
+>> +#define SRMOD_TX	1
+>> +#define SRMOD_RX	2
+> 
+> I don't see SRMOD_TX/RX being used anywhere.
+> 
+>>  
+>>  /*
+>>   * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
+>> @@ -657,12 +661,15 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
+>>  	return 0;
+>>  }
+>>  
+>> -static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
+>> +static int davinci_hw_common_param(struct davinci_audio_dev *dev, int stream,
+>> +				    int channels)
+>>  {
+>>  	int i;
+>>  	u8 tx_ser = 0;
+>>  	u8 rx_ser = 0;
+>> -
+>> +	u8 ser;
+>> +	u8 slots = dev->tdm_slots;
+>> +	u8 max_active_serializers = (channels + slots - 1) / slots;
+>>  	/* Default configuration */
+>>  	mcasp_set_bits(dev->base + DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
+>>  
+>> @@ -680,16 +687,42 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
+>>  	}
+>>  
+>>  	for (i = 0; i < dev->num_serializer; i++) {
+>> +		if (dev->serial_dir[i] == TX_MODE)
+>> +			tx_ser++;
+>> +		if (dev->serial_dir[i] == RX_MODE)
+>> +			rx_ser++;
+>> +	}
+>> +
+>> +	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+>> +		ser = tx_ser;
+>> +	else
+>> +		ser = rx_ser;
+>> +
+>> +	if (ser < max_active_serializers) {
+>> +		dev_warn(dev->dev, "stream has more channels (%d) than are "
+>> +			"enabled in mcasp (%d)\n", channels, ser * slots);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	tx_ser = 0;
+>> +	rx_ser = 0;
+> 
+> The number of active serializers is already being calculated below.
+
+FWIW, I'm now sending a cleanup patch for the two details I quoted
+above. With those out of the way, the rest (namely the dst_bidx issue)
+can be solved separately.
+
+Please have a look and tell me if you're ok with that.
 
 
---5dNcufZ4prhark0F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your review!
 
-On Fri, Mar 08, 2013 at 01:52:09PM +0100, Daniel Mack wrote:
-> This patch adds a driver for TI's TA5086 6-channel PWM processor.
->=20
-> This chip has a very unusual register layout, specifically because the
-> registers are of unequal size, and multi-byte registers require bulk
-> writes to take effect. Regmap does not support these kind of mappings.
-
-Applied, thanks.
-
---5dNcufZ4prhark0F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJROeJMAAoJELSic+t+oim9RZwP/0pjIJ+AQugkbUgZpvHE1daJ
-CbP6ecOxi4Gva6s365grnv2HC2/tqmTgD4bgq4/QErJuOE1+RKkKDgefynNatqWz
-GK0+Wvl6nfRmJe2sBvCUoj1yG8GMuxxK+l7PpbktTBUCpRHQvOqIHWtAIz1Wf8vS
-TbtCmOSdqNEk4XZau5aQW2vDKt9wqVDR4mTjCle5FVFKHCazrKPqlwpShvsOA5GY
-iqebQ5J0UJuSEfU1GWfLkytd5fbzVxYDg/7zGHCQAgu2Bh8SNwrbZNTMk1kQ9LJp
-wh4WqNEuauNueJ9o1q3N2sUMDBJViUsIOGRZWaQA0Bjx7YnhKM6raQ349dXvd5Rd
-pLX5l63LITZ9u2Cp1bls6sKpdEDWR3yCdrOM6vgDtgR7cTZTTBa895vFKGUIOSDs
-fWHnDDaFoibU3bqEcvmIyZi3PDhpIXZvSe63suhyKenW7LxLgIeUlNiOpO0C6rWA
-nGJXqCqRTG7CQDkJ6tJUTIRkNsd3V/KK1+7i/p52RyL7iYaeQoOua0bnd5Ee121Y
-kA1E0B68lB12QnjZ0RNIgXENJ7Cs4iI42Lgb0zlZkX5tV3GtHcBU6PJR3/kK1vy/
-AYxO6HKCj0t3kpfvokCIspc1jiBn2lG9dFMTwTmYQA0cwdsS0qWibykNWxPZSNst
-MT1I7rkdxvVzcq1LHoyW
-=Uaax
------END PGP SIGNATURE-----
-
---5dNcufZ4prhark0F--
-
---===============6109834594660189844==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6109834594660189844==--
+Daniel
