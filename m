@@ -1,19 +1,19 @@
 From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: How to send non-SysEx system messages via ALSA?
-Date: Sat, 09 Mar 2013 11:42:33 -0800
-Message-ID: <513B90A9.7070309@gmail.com>
-References: <8E4C156DA5797D418DBFADFD8CE655A422BA54AFBB@HE113481.emea1.cds.t-internal.com>
+Subject: Re: twl4030 and Puredata/jack
+Date: Sat, 09 Mar 2013 12:21:20 -0800
+Message-ID: <513B99C0.8020805@gmail.com>
+References: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f48.google.com (mail-da0-f48.google.com
- [209.85.210.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 58BA6265005
- for <alsa-devel@alsa-project.org>; Sat,  9 Mar 2013 20:42:46 +0100 (CET)
-Received: by mail-da0-f48.google.com with SMTP id w4so391293dam.7
- for <alsa-devel@alsa-project.org>; Sat, 09 Mar 2013 11:42:45 -0800 (PST)
-In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A422BA54AFBB@HE113481.emea1.cds.t-internal.com>
+Received: from mail-da0-f49.google.com (mail-da0-f49.google.com
+ [209.85.210.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B642265017
+ for <alsa-devel@alsa-project.org>; Sat,  9 Mar 2013 21:21:28 +0100 (CET)
+Received: by mail-da0-f49.google.com with SMTP id t11so397786daj.22
+ for <alsa-devel@alsa-project.org>; Sat, 09 Mar 2013 12:21:23 -0800 (PST)
+In-Reply-To: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joerg-Cyril.Hoehle@t-systems.com
+To: Anders Alex <alibobar@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2013 02:56 AM, Joerg-Cyril.Hoehle@t-systems.com wrote:
-> Now, consider an app playing a MIDI file or a debug tool that allows
-> to send arbitrary messages.  How should such an app send e.g. the
-> 2-byte MTC Quarter Frame sequence via ALSA?
+On 03/08/2013 07:31 AM, Anders Alex wrote:
+> I will paste a couple of use-cases and their corresponding dmesg output:
+>
+> When I run ~$ pd -alsa I get:
+>
+> snd_pcm_hw_params (input): Invalid argument
+> snd_pcm_hw_params (output): Invalid argument
+>
+> and:
+> [201429.385345] omap_mcbsp_dai_hw_params: not enough bandwidth for desired
+> rate and channels
+> [201429.385375] asoc: interface omap-mcbsp-dai.1 hw params failed
 
-If you want to send arbitrary MIDI messages, you'll find the rawmidi 
-interface more flexible.  The seq interface is very restrictive in this 
-case.
+Strange.  In kernel 3.2, omap-mcbsp-dai.1 (McBSP1) is used for the 
+codec.  But in the mainline it's omap-mcbsp-dai.2.
 
-For example, I think you can send arbitrary (even random/invalid) stuff 
-using the CLI `amidi`.  It was intended for Sysex dumps, but I think 
-it's more flexable.  It uses the rawmidi api.
+So the question is... how is the board wired?  And does your kernel 
+match the board?
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___raw_midi.html
+> With 'jackd -d alsa -S'  (need s16_le):
+>
+> loading driver ..
+> creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+> control device hw:0
+> configuring for 48000Hz, period = 1024 frames (21.3 ms), buffer = 2 periods
+> ALSA: final selected sample format for capture: 16bit little-endian
+> ALSA: use 2 periods for capture
+> ALSA: cannot set hardware parameters for capture
+> ALSA: cannot configure capture channel
 
-The down-side of using rawmidi is that you're now on your own for 
-sequencing (timing).
+Looking at the source, it looks like hw:0,0 has no capture port.  Try 
+adding the -P parameter to jackd.  Playback only.
 
-> A. Use a 2 byte buffer F1 xx and snd_seq_ev_set_sysex(&event, 2, buf);
+Also, post the output of:
 
-Set up a snd_seq_event_t with type SND_SEQ_EVENT_QFRAME and fill out the 
-snd_seq_event_t::control structure with the appropriate data.  Your 
-1-byte payload message should go into the 'value' field... and ignore 
-the 'channel' and 'param' fields.
-
-> B. Use SND_SEQ_EVENT_TICK and figure out some copy&paste code from seqmidi.h, perhaps
->     snd_seq_ev_set_queue_control(ev,SND_SEQ_EVENT_TICK,SND_SEQ_QUEUE_DIRECT,xx)
->     But why does that alter my destination port via
->      snd_seq_ev_set_dest(ev, SND_SEQ_CLIENT_SYSTEM, SND_SEQ_PORT_SYSTEM_TIMER)?
-
-Inspecting the source, it looks like the kernel seq driver drops the 
-non-standard 'Tick' message (0xF9).  The only way I know to send it is 
-to use the rawmidi API.  [Anybody: please correct me if I'm wrong here.]
-
-> Background: Wine on Linux needs to generate such messages on behalf of
-> applications and users with real MIDI HW.
-> So far Wine assumes that it can encapsulate all system messages in a SysEx,
-> IOW Wine does A.  Is that usage of the set_sysex API correct?
-> More generally, can Wine transparently stuff system messages into a byte buffer
-> and send them off via snd_seq_ev_set_sysex?
-
-Since Wine is sending/receiving midi data (without timing) that is to be 
-sent/received _immediately_ -- you might find life easier by using the 
-rawmidi api.  Using this, it might even be as simple as passing raw data 
-back and forth without having to decode anything yourself.
+    $ cat /proc/asound/devices
 
 -gabriel
