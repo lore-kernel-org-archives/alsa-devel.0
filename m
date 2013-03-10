@@ -1,18 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Doug McLain <doug@nostar.net>
 Subject: Re: plans for fireworks driver
-Date: Sun, 10 Mar 2013 18:04:21 +0900
-Message-ID: <513C4C95.1050305@sakamocchi.jp>
+Date: Sun, 10 Mar 2013 05:30:47 -0400
+Message-ID: <513C52C7.7010101@nostar.net>
 References: <513A5CF4.9090803@nostar.net> <513B2B62.9040307@sakamocchi.jp>
  <513BA114.3000305@nostar.net> <513BEBE6.6030708@sakamocchi.jp>
- <513C360C.60804@nostar.net>
+ <513C360C.60804@nostar.net> <513C4C95.1050305@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 30BFE2650D1
- for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 10:04:27 +0100 (CET)
-In-Reply-To: <513C360C.60804@nostar.net>
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id F23EF2650D4
+ for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 10:30:52 +0100 (CET)
+Received: by mail-qc0-f182.google.com with SMTP id k19so1117502qcs.13
+ for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 01:30:51 -0800 (PST)
+In-Reply-To: <513C4C95.1050305@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Doug McLain <doug@nostar.net>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRG91ZywKCkkgbm90ZSB0aGF0IHlvdXIgc3lzdGVtIGNhbm5vdCBjb21tdW5pY2F0ZSB0byB5
-b3VyIGRldmljZSB2aWEgRkZBRE8gCmJlY2F1c2UgdGhlIGRldmljZSBpcyBhbHJlYWR5IHVzZWQg
-YnkgbXkgbW9kdWxlLiBZb3UgY2FuIGV4ZWN1dGUgCiJtb2Rwcm9iZSAtciBzbmQtZmlyZXdvcmtz
-IiBpZiB5b3Ugd2FudCB0byB1c2UgRkZBRE8uCgogPiBJbnRlcmVzdGluZ2x5IHRob3VnaCwgSSBo
-YXZlIGJlZW4gcnVubmluZyA1LjcgZm9yIGEgY291cGxlIHllYXJzIHVzaW5nCiA+IHRoZSBzbmQt
-ZmlyZXdvcmtzIGRyaXZlciB3aXRoIG5vIHByb2JsZW1zLiAgSSBoYXZlIG5vIHVzZSBmb3IgdGhl
-IG1peGVyCiA+IG9uIHRoZSBBRjEyIGFmdGVyIEkgaW5pdGlhbGx5IHNldCBpdCB1cCB3YXkgYmVm
-b3JlIHRoZSBmaXJtd2FyZSBwcm9ibGVtCiA+IGNhbWUgYWJvdXQsIHNvIEkgbmV2ZXIgbm90aWNl
-ZCBhbnl0aGluZyB3YXMgd3JvbmcuICBZb3VyIGRyaXZlciBub3cKID4gZGlzY292ZXJzIHRoZSBB
-RjEyIGZpbmU6CgpNbW0sIGludGVyZXN0aW5nLi4uIEkgd2FudCB0byBpbnZlc3RpZ2F0ZSBhZnRl
-ciBpbXBsZW1lbnRhdGlvbiBvZiAKbXVsdGljaGFubmVsIHBsYXliYWNrIGFuZCBjYXB0dXJlLgoK
-QW55d2F5IEkgY29tbWl0IHlvdXIgbG9nLgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvc25k
-LWZpcmV3aXJlLWltcHJvdmUvY29tbWl0L2Q2NDMxYWQ4NzE5NDAxMTM0MDYxOGRiNWMxYjNlZjZj
-NDA3NzJiNTUKCiA+IFlvdXIgZHJpdmVyIG5vdyBkaXNjb3ZlcnMgdGhlIEFGMTIgZmluZToKClRo
-ZW4gSSBob3BlIHlvdSB0byB0cnkgcGxheWJhY2suSSByZWNjb21lbmQgYmVsb3cgcHJvY2VzczoK
-MS4gdXNlIGFsc2FtaXhlciB0byBjaGFuZ2Ugc2FtcGxpbmcgcmF0ZSB0aGF0IHlvdSBob3BlCjIu
-IHVzZSBqYWNrZCBpbiB1c3VhbCB3YXksIG9yIGFwbGF5IHdpdGggcGx1Z2h3IGludGVyZmFjZQoz
-LiBoZWFyIDEvMmNoIG9yIG5vdAoKVGhhbmtzCgoKVGFrYXNoaSBTYWthbW90bwpvLXRha2FzaGlA
-c2FrYW1vY2NoaS5qcAoKKDIwMTPlubQwM+aciDEw5pelIDE2OjI4KSwgRG91ZyBNY0xhaW4gd3Jv
-dGU6Cj4gQWZ0ZXIgcmVhbGl6aW5nIHRoYXQgdGhlIGZmYWRvLW1peGVyIGFsc28gZGlkbid0IHdv
-cmsgb24gbXkgQUYxMiwgSQo+IGZvdW5kIHRoYXQgZWNobyBmaXJtd2FyZSA+IDQuOCBicm9rZSBm
-ZmFkbyBmb3IgdGhlIEFGMTIgJiBBRjg6Cj4KPiBodHRwOi8vc3VidmVyc2lvbi5mZmFkby5vcmcv
-dGlja2V0LzM2MAo+Cj4gSW50ZXJlc3RpbmdseSB0aG91Z2gsIEkgaGF2ZSBiZWVuIHJ1bm5pbmcg
-NS43IGZvciBhIGNvdXBsZSB5ZWFycyB1c2luZwo+IHRoZSBzbmQtZmlyZXdvcmtzIGRyaXZlciB3
-aXRoIG5vIHByb2JsZW1zLiAgSSBoYXZlIG5vIHVzZSBmb3IgdGhlIG1peGVyCj4gb24gdGhlIEFG
-MTIgYWZ0ZXIgSSBpbml0aWFsbHkgc2V0IGl0IHVwIHdheSBiZWZvcmUgdGhlIGZpcm13YXJlIHBy
-b2JsZW0KPiBjYW1lIGFib3V0LCBzbyBJIG5ldmVyIG5vdGljZWQgYW55dGhpbmcgd2FzIHdyb25n
-LiAgWW91ciBkcml2ZXIgbm93Cj4gZGlzY292ZXJzIHRoZSBBRjEyIGZpbmU6Cj4KPiAkIGNhdCAv
-cHJvYy9hc291bmQvY2FyZDEvZWZjX2hhcmR3YXJlCj4gZmxhZ3M6IDB4MTEKPiBndWlkX2hpOiAw
-eDE0ODYwRgo+IGd1aWRfbG86IDB4QzQ0QTg0QTYKPiB0eXBlOiAweEFGMTIKPiB2ZXJzaW9uOiAw
-eDAKPiB2ZW5kb3JfbmFtZTogRWNobyBEaWdpdGFsIEF1ZGlvCj4gbW9kZWxfbmFtZTogQXVkaW9G
-aXJlMTIKPiBzdXBwb3J0ZWRfY2xvY2s6IDB4NQo+IG5iXzEzOTRfcGxheWJhY2tfY2hhbm5lbHM6
-IDB4Qwo+IG5iXzEzOTRfY2FwdHVyZV9jaGFubmVsczogMHhDCj4gbmJfcGh5c19hdWRpb19vdXQ6
-IDB4Qwo+IG5iX3BoeXNfYXVkaW9faW46IDB4Qwo+IG5iX291dF9ncm91cHM6IDB4MQo+IG91dF9n
-cm91cFsweDBdOiB0eXBlIDB4MCwgY291bnQgMHgxMgo+IG91dF9ncm91cFsweDFdOiB0eXBlIDB4
-MCwgY291bnQgMHgwCj4gb3V0X2dyb3VwWzB4Ml06IHR5cGUgMHgwLCBjb3VudCAweDAKPiBvdXRf
-Z3JvdXBbMHgzXTogdHlwZSAweDAsIGNvdW50IDB4MAo+IG91dF9ncm91cFsweDRdOiB0eXBlIDB4
-MCwgY291bnQgMHgwCj4gb3V0X2dyb3VwWzB4NV06IHR5cGUgMHgwLCBjb3VudCAweDAKPiBvdXRf
-Z3JvdXBbMHg2XTogdHlwZSAweDAsIGNvdW50IDB4MAo+IG91dF9ncm91cFsweDddOiB0eXBlIDB4
-MCwgY291bnQgMHgwCj4gbmJfaW5fZ3JvdXBzOiAweDEKPiBvdXRfZ3JvdXBbMHgwXTogdHlwZSAw
-eDAsIGNvdW50IDB4MTIKPiBvdXRfZ3JvdXBbMHgxXTogdHlwZSAweDAsIGNvdW50IDB4MAo+IG91
-dF9ncm91cFsweDJdOiB0eXBlIDB4MCwgY291bnQgMHgwCj4gb3V0X2dyb3VwWzB4M106IHR5cGUg
-MHgwLCBjb3VudCAweDAKPiBvdXRfZ3JvdXBbMHg0XTogdHlwZSAweDAsIGNvdW50IDB4MAo+IG91
-dF9ncm91cFsweDVdOiB0eXBlIDB4MCwgY291bnQgMHgwCj4gb3V0X2dyb3VwWzB4Nl06IHR5cGUg
-MHgwLCBjb3VudCAweDAKPiBvdXRfZ3JvdXBbMHg3XTogdHlwZSAweDAsIGNvdW50IDB4MAo+IG5i
-X21pZGlfb3V0OiAweDEKPiBuYl9taWRpX2luOiAweDEKPiBtYXhfc2FtcGxlX3JhdGU6IDB4MkVF
-MDAKPiBtaW5fc2FtcGxlX3JhdGU6IDB4N0QwMAo+IGRzcF92ZXJzaW9uOiAweDQwODAwMDAKPiBh
-cm1fdmVyc2lvbjogMHg0MDgwMDAwCj4gbWl4ZXJfcGxheWJhY2tfY2hhbm5lbHM6IDB4Qwo+IG1p
-eGVyX2NhcHR1cmVfY2hhbm5lbHM6IDB4Qwo+IGZwZ2FfdmVyc2lvbjogMHgwCj4gbmJfMTM5NF9w
-bGF5YmFja19jaGFubmVsc18yeDogMHhDCj4gbmJfMTM5NF9jYXB0dXJlX2NoYW5uZWxzXzJ4OiAw
-eEMKPiBuYl8xMzk0X3BsYXliYWNrX2NoYW5uZWxzXzR4OiAweEMKPiBuYl8xMzk0X2NhcHR1cmVf
-Y2hhbm5lbHNfNHg6IDB4Qwo+Cj4KPgo+IEludGVyZXN0aW5nbHkgdGhvdWdoLCBJJ3ZlIGJlZW4g
-cnVubmluZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> I note that your system cannot communicate to your device via FFADO
+> because the device is already used by my module. You can execute
+> "modprobe -r snd-fireworks" if you want to use FFADO.
+
+That's not true.  The ffado tools (the mixer, the discovery & diagnostic 
+tools, etc) work fine whether or not the alsa module is loaded, and 
+whether or not jack is running on the device.  The problem with the AF12 
+and your driver was whatever the problem is with ffado and AF firmware > 
+4.8.  Somehow the Clemens snd-fireworks driver was unaffected.  I dont 
+know enough about the driver and hardware to understand why, but I'm 
+sure you will figure it out.  I'm glad to see progress on this driver so 
+do not hesitate to ask for anything.
+
+> Then I hope you to try playback.I reccomend below process:
+> 1. use alsamixer to change sampling rate that you hope
+> 2. use jackd in usual way, or aplay with plughw interface
+> 3. hear 1/2ch or not
+
+Alsamixer successfully changes SR and clock source.  I started jack and 
+played back and edited an ardour session with no problems.  As you said 
+earlier, capture doesn't work.  the ports are there but no signal.  Once 
+that works Ill start using this driver full time.
+
+-D
