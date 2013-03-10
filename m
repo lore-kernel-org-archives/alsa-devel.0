@@ -1,47 +1,175 @@
-From: Tim Gardner <tim.gardner@canonical.com>
-Subject: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow warning
-Date: Sun, 10 Mar 2013 11:34:38 -0600
-Message-ID: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Tim Gardner <tim.gardner@canonical.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH 08/10] ASoC: dmaengine_pcm: Add open function for DT DMA
+ request
+Date: Sun, 10 Mar 2013 19:33:09 +0100
+Message-ID: <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1362940391-8338-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
-amd64 the result of the ones complement operator is then truncated to
-unsigned int according to the prototype of snd_soc_update_bits(). I think
-gcc is correctly warning that the upper 32 bits are lost.
+Add a function to open a DMA PCM substream using devicetree data
+provided via the client device node. The patch introduces a public
+function and a private subfunction that is called by both open
+functions.
 
-sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
-sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
-
-gcc version 4.6.3
-
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: device-drivers-devel@blackfin.uclinux.org
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/codecs/adau1373.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/dmaengine_pcm.h |  2 +
+ sound/soc/soc-dmaengine-pcm.c | 89 ++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 72 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 068b3ae..56ed788 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -132,7 +132,7 @@ struct adau1373 {
- #define ADAU1373_DAI_FORMAT_I2S		0x2
- #define ADAU1373_DAI_FORMAT_DSP		0x3
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index b877334..358951a 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -43,6 +43,8 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
  
--#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
-+#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
- #define ADAU1373_BCLKDIV_32		0x03
- #define ADAU1373_BCLKDIV_64		0x02
- #define ADAU1373_BCLKDIV_128		0x01
+ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	dma_filter_fn filter_fn, void *filter_data);
++int of_snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
++	struct device_node *client_node, const char *name);
+ int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
+ 
+ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream);
+diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+index 111b7d92..017b691 100644
+--- a/sound/soc/soc-dmaengine-pcm.c
++++ b/sound/soc/soc-dmaengine-pcm.c
+@@ -20,6 +20,8 @@
+  */
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/of.h>
++#include <linux/of_dma.h>
+ #include <linux/dmaengine.h>
+ #include <linux/slab.h>
+ #include <sound/pcm.h>
+@@ -260,24 +262,21 @@ static int dmaengine_pcm_request_channel(struct dmaengine_pcm_runtime_data *prtd
+ 	return 0;
+ }
+ 
+-/**
+- * snd_dmaengine_pcm_open - Open a dmaengine based PCM substream
+- * @substream: PCM substream
+- * @filter_fn: Filter function used to request the DMA channel
+- * @filter_data: Data passed to the DMA filter function
+- *
+- * Returns 0 on success, a negative error code otherwise.
+- *
+- * This function will request a DMA channel using the passed filter function and
+- * data. The function should usually be called from the pcm open callback.
+- *
+- * Note that this function will use private_data field of the substream's
+- * runtime. So it is not availabe to your pcm driver implementation. If you need
+- * to keep additional data attached to a substream use
+- * snd_dmaengine_pcm_{set,get}_data.
+- */
+-int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+-	dma_filter_fn filter_fn, void *filter_data)
++static int of_dmaengine_pcm_request_channel(
++		struct dmaengine_pcm_runtime_data *prtd, struct device_node *np,
++		const char *name)
++{
++	prtd->dma_chan = of_dma_request_slave_channel(np, name);
++
++	if (!prtd->dma_chan)
++		return -ENXIO;
++
++	return 0;
++}
++
++static int _snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
++		dma_filter_fn filter_fn, void *filter_data,
++		struct device_node *np, const char *slave_name)
+ {
+ 	struct dmaengine_pcm_runtime_data *prtd;
+ 	int ret;
+@@ -291,7 +290,11 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	if (!prtd)
+ 		return -ENOMEM;
+ 
+-	ret = dmaengine_pcm_request_channel(prtd, filter_fn, filter_data);
++	if (np)
++		ret = of_dmaengine_pcm_request_channel(prtd, np, slave_name);
++	else
++		ret = dmaengine_pcm_request_channel(prtd, filter_fn,
++						    filter_data);
+ 	if (ret < 0) {
+ 		kfree(prtd);
+ 		return ret;
+@@ -301,9 +304,57 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	return 0;
+ }
++
++/**
++ * snd_dmaengine_pcm_open - Open a dmaengine based PCM substream
++ * @substream: PCM substream
++ * @filter_fn: Filter function used to request the DMA channel
++ * @filter_data: Data passed to the DMA filter function
++ *
++ * Returns 0 on success, a negative error code otherwise.
++ *
++ * This function will request a DMA channel using the passed filter function and
++ * data. The function should usually be called from the pcm open callback.
++ *
++ * Note that this function will use private_data field of the substream's
++ * runtime. So it is not availabe to your pcm driver implementation. If you need
++ * to keep additional data attached to a substream use
++ * snd_dmaengine_pcm_{set,get}_data.
++ */
++int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
++	dma_filter_fn filter_fn, void *filter_data)
++{
++	return _snd_dmaengine_pcm_open(substream, filter_fn, filter_data, NULL,
++					NULL);
++}
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
+ 
+ /**
++ * of_snd_dmaengine_pcm_open - Open a dmaengine based PCM substream using oftree data
++ * @substream: PCM substream
++ * @client_node: DMA client oftree node used to request a DMA channel
++ * @name: DMA request name
++ *
++ * Returns 0 on success, a negative error code otherwise.
++ *
++ * This function will request a DMA channel using devicetree data.
++ *
++ * Note that this function will use private_data field of the substream's
++ * runtime. So it is not availabe to your pcm driver implementation. If you need
++ * to keep additional data attached to a substream use
++ * snd_dmaengine_pcm_{set,get}_data.
++ *
++ * Use the normal snd_dmaengine_pcm_close function to close the substream.
++ */
++int of_snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
++		struct device_node *client_node, const char *name)
++{
++	return _snd_dmaengine_pcm_open(substream, NULL, NULL, client_node,
++					name);
++}
++EXPORT_SYMBOL_GPL(of_snd_dmaengine_pcm_open);
++
++/**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream
+  */
 -- 
-1.7.9.5
+1.8.1.5
