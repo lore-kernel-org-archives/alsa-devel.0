@@ -1,40 +1,44 @@
-From: Vicentiu Ciorbaru <cvicentiu@gmail.com>
-Subject: Re: [PATCH] emu10k1: Fix coccicheck warning
-Date: Sun, 10 Mar 2013 21:59:13 +0200
-Message-ID: <CACzaYTNGou67KhL5iRW8w2qViu2Q05TMdnUjmeSVebdYwS9g0A@mail.gmail.com>
-References: <1362919067-17250-1-git-send-email-cvicentiu@gmail.com>
-	<513CB587.5010304@ladisch.de>
-	<CACzaYTOE=tVst3=TvUCtxpMuUOtJiHQ3o2wbgWeMvxwZy41DMw@mail.gmail.com>
-	<513CE3B8.9020308@ladisch.de>
+From: Marc Schultz <marcschultz27@gmail.com>
+Subject: Add ALSA driver to Buildroot image or add / load it
+	after booting the image
+Date: Sun, 10 Mar 2013 21:19:40 +0100
+Message-ID: <CAMFO430h8z+gNbkjq0WHAbRQ48iLDtfvknEpnNAjuRKBgwzXSQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <513CE3B8.9020308@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: perex@perex.cz, tiwai@suse.de, wfp5p@virginia.edu, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f174.google.com (mail-vc0-f174.google.com
+ [209.85.220.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id B593B2651B1
+ for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 21:19:41 +0100 (CET)
+Received: by mail-vc0-f174.google.com with SMTP id n11so1714277vch.19
+ for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 13:19:40 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> My reasoning behind the patch is that the C standard does not require a
->> specific cast of a void pointer in order to set it to the type of the
->> member gpr_map of the struct snd_emu10k1_fx8010_code. I named it redundant
->> because the compiler would cast to it anyway.
->
-> That's correct as far as the C standard is concerned.  However, __user is
-> a non-standard extension.
->
->> The line also appears as a warning when running make coccicheck.
->
-> And when you remove the __user, you get a warning when running make C=x.
->
-> Both coccinelle and sparse are merely tools for finding likely bugs.
-> When it isn't possible to make them both happy with or without the cast,
-> that just shows that the code itself is badly designed.
->
-> The driver should be redesigned to not access user and kernel space
-> memory through the same pointer.
+Hey ALSA-Devel community,
 
-In that case I thank you for the quick feedback and I will try looking
-more deeply into the issue.
+I'm successfully booting a Buildroot made Linux image on my board.
+This board has an Cirrus Logic CS4270 sound chip and now I want to
+activate the specific sound card driver for it. Is there a good way to
+put the CS4270 driver files into the Linux Kernel folders of Buildroot
+to get them compressed into the Linux image or do I have to go one of
+the following ways after booting the image on my target hardware?
 
-Vicentiu
+http://www.alsa-project.org/main/index.php/Matrix:Module-cs4270
+
+http://www.alsa-project.org/main/index.php/Driver_Compilation)
+
+Do you have a good workflow for me to get this thing working?
+
+Best regards,
+Marc Schultz
