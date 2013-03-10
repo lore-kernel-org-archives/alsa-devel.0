@@ -1,73 +1,47 @@
 From: Tim Gardner <tim.gardner@canonical.com>
-Subject: [PATCH linux-next] ASoC: wm_hubs: Silence reg_r and reg_l 'may be used uninitialized' warnings
-Date: Sun, 10 Mar 2013 10:58:21 -0600
-Message-ID: <1362934701-75951-1-git-send-email-tim.gardner@canonical.com>
+Subject: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow warning
+Date: Sun, 10 Mar 2013 11:34:38 -0600
+Message-ID: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Tim Gardner <tim.gardner@canonical.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Tim Gardner <tim.gardner@canonical.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Return an error from wm_hubs_read_dc_servo() if hubs->dcs_readback_mode is not
-correctly initialized. You might as well bail out since nothing is likely to
-work correctly afterwards.
+ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
+amd64 the result of the ones complement operator is then truncated to
+unsigned int according to the prototype of snd_soc_update_bits(). I think
+gcc is correctly warning that the upper 32 bits are lost.
 
-sound/soc/codecs/wm_hubs.c:321:11: warning: 'reg_r' may be used uninitialized in this function [-Wuninitialized]
-sound/soc/codecs/wm_hubs.c:251:13: note: 'reg_r' was declared here
-sound/soc/codecs/wm_hubs.c:322:11: warning: 'reg_l' may be used uninitialized in this function [-Wuninitialized]
-sound/soc/codecs/wm_hubs.c:251:6: note: 'reg_l' was declared here
+sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
+sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
 
 gcc version 4.6.3
 
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
-Cc: patches@opensource.wolfsonmicro.com
+Cc: device-drivers-devel@blackfin.uclinux.org
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
 ---
- sound/soc/codecs/wm_hubs.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/codecs/adau1373.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 867ae97..f5d81b9 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -199,11 +199,12 @@ static void wm_hubs_dcs_cache_set(struct snd_soc_codec *codec, u16 dcs_cfg)
- 	list_add_tail(&cache->list, &hubs->dcs_cache);
- }
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index 068b3ae..56ed788 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -132,7 +132,7 @@ struct adau1373 {
+ #define ADAU1373_DAI_FORMAT_I2S		0x2
+ #define ADAU1373_DAI_FORMAT_DSP		0x3
  
--static void wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
-+static int wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
- 				  u16 *reg_l, u16 *reg_r)
- {
- 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
- 	u16 dcs_reg, reg;
-+	int ret = 0;
- 
- 	switch (hubs->dcs_readback_mode) {
- 	case 2:
-@@ -236,8 +237,9 @@ static void wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
- 		break;
- 	default:
- 		WARN(1, "Unknown DCS readback method\n");
--		return;
-+		ret = -1;
- 	}
-+	return ret;
- }
- 
- /*
-@@ -286,7 +288,8 @@ static void enable_dc_servo(struct snd_soc_codec *codec)
- 				  WM8993_DCS_TRIG_STARTUP_1);
- 	}
- 
--	wm_hubs_read_dc_servo(codec, &reg_l, &reg_r);
-+	if (wm_hubs_read_dc_servo(codec, &reg_l, &reg_r) < 0)
-+		return;
- 
- 	dev_dbg(codec->dev, "DCS input: %x %x\n", reg_l, reg_r);
- 
+-#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
++#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
+ #define ADAU1373_BCLKDIV_32		0x03
+ #define ADAU1373_BCLKDIV_64		0x02
+ #define ADAU1373_BCLKDIV_128		0x01
 -- 
 1.7.9.5
