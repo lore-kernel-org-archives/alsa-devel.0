@@ -1,7 +1,8 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH 10/10] ASoC: imx-ssi: Add imx27 and pca100 DT support
-Date: Sun, 10 Mar 2013 19:33:11 +0100
-Message-ID: <1362940391-8338-11-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH 09/10] ASoC: imx-pcm-dma: Add support for DMA init by device
+ node
+Date: Sun, 10 Mar 2013 19:33:10 +0100
+Message-ID: <1362940391-8338-10-git-send-email-mpa@pengutronix.de>
 References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,234 +23,86 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings for generic imx-ssi support and specifically for
-pca100 with two custom reset functions. At the moment those functions
-are defined in mach-pca100.c. So until DT is the only method for
-booting, the ac97 reset functions have to be exported in mach-pca100.c.
+Add support for DMA initialization using devicetree node.
+
+This patch adds two fields to imx_pcm_dma_params to pass device node
+information from other imx drivers to this one. If the dma_node is set,
+this driver tries to initialize a PCM DMA substream based on the
+dma_node and name.
 
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- .../devicetree/bindings/sound/fsl-imx-ssi          | 34 +++++++++
- arch/arm/mach-imx/mach-pca100.c                    |  7 +-
- sound/soc/fsl/imx-ssi.c                            | 85 +++++++++++++++++++---
- 3 files changed, 115 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl-imx-ssi
+ sound/soc/fsl/imx-pcm-dma.c | 31 ++++++++++++++++++++-----------
+ sound/soc/fsl/imx-pcm.h     |  6 ++++++
+ 2 files changed, 26 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-imx-ssi b/Documentation/devicetree/bindings/sound/fsl-imx-ssi
-new file mode 100644
-index 0000000..853afeb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl-imx-ssi
-@@ -0,0 +1,34 @@
-+Freescale imx ssi driver
-+
-+Required properties:
-+- compatible : "fsl,imx27-ssi" or "phytec,imx27-pca100-ssi"
-+- reg : Should contain registers location and length
-+- interrupts : Should be the ssi interrupt
-+- clocks : Define at least one clock to be used.
-+
-+Optional properties:
-+- dmas : DMA client request phandle list with arguements as defined by the DMA
-+	controller used. See generic DMA devicetree bindings for more information.
-+- dma-names : Names of the defined DMA client requests. "rx0" and "tx0" have to
-+	be defined.
-+- imx-ssi-ac97 : Use AC97
-+- imx-ssi-i2s-slave : Use I2S slave
-+- imx-ssi-net
-+- imx-ssi-syn
-+
-+
-+Example:
-+ssi1: ssi@10010000 {
-+	compatible = "fsl,imx27-ssi";
-+	reg = <0x10010000 0x1000>;
-+	interrupts = <14>;
-+	dmas = <&dma 8
-+		&dma 9
-+		&dma 10
-+		&dma 11>;
-+	dma-names = "rx0", "tx0", "rx1", "tx1";
-+	clocks = <&clks 25>;
-+	clock-names = "ipg";
-+	imx-ssi-ac97;
-+	status = "disabled";
-+};
-diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
-index b8b15bb..0d54921 100644
---- a/arch/arm/mach-imx/mach-pca100.c
-+++ b/arch/arm/mach-imx/mach-pca100.c
-@@ -25,6 +25,7 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
- #include <linux/irq.h>
-+#include <linux/export.h>
- #include <linux/delay.h>
- #include <linux/gpio.h>
- #include <linux/usb/otg.h>
-@@ -208,7 +209,7 @@ static const struct spi_imx_master pca100_spi0_data __initconst = {
- 	.num_chipselect = ARRAY_SIZE(pca100_spi_cs),
- };
- 
--static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index 500f8ce..794103b 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -101,26 +101,35 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
  {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
- 	gpio_set_value(GPIO_PORTC + 20, 1);
-@@ -217,8 +218,9 @@ static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC20_PF_SSI1_FS);
- 	msleep(2);
- }
-+EXPORT_SYMBOL(pca100_ac97_warm_reset);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct imx_pcm_dma_params *dma_params;
+-	struct imx_dma_data *dma_data;
++	struct imx_dma_data *dma_data = NULL;
+ 	int ret;
  
--static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
- 	gpio_set_value(GPIO_PORTC + 20, 0);
-@@ -232,6 +234,7 @@ static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC22_PF_SSI1_TXD);
- 	msleep(2);
- }
-+EXPORT_SYMBOL(pca100_ac97_cold_reset);
+ 	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
  
- static const struct imx_ssi_platform_data pca100_ssi_pdata __initconst = {
- 	.ac97_reset		= pca100_ac97_cold_reset,
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 96e24a3..58de760 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -38,6 +38,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+ 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
  
-@@ -53,6 +54,46 @@
- 
- #define SSI_SACNT_DEFAULT (SSI_SACNT_AC97EN | SSI_SACNT_FV)
- 
-+#ifdef CONFIG_MACH_PCA100
-+extern void pca100_ac97_cold_reset(struct snd_ac97 *ac97);
-+extern void pca100_ac97_warm_reset(struct snd_ac97 *ac97);
-+#else
-+void pca100_ac97_cold_reset(struct snd_ac97 *ac97) { }
-+void pca100_ac97_warm_reset(struct snd_ac97 *ac97) { }
-+#endif
-+
-+
-+enum imx_ssi_type {
-+	IMX27_SSI = 0,
-+	IMX27_PCA100_SSI,
-+};
-+
-+static const struct imx_ssi_platform_data imx_ssi_devtype[] = {
-+	{
-+		.ac97_reset = NULL,
-+		.ac97_warm_reset = NULL,
-+	},
-+	{
-+		.ac97_reset = pca100_ac97_cold_reset,
-+		.ac97_warm_reset = pca100_ac97_warm_reset,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static const struct of_device_id imx_ssi_of_dev_id[] = {
-+	{
-+		.compatible = "fsl,imx27-ssi",
-+		.data = &imx_ssi_devtype[IMX27_SSI],
-+	}, {
-+		.compatible = "phytec,imx27-pca100-ssi",
-+		.data = &imx_ssi_devtype[IMX27_PCA100_SSI],
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(of, imx_ssi_of_dev_id);
-+
- /*
-  * SSI Network Mode or TDM slots configuration.
-  * Should only be called when port is inactive (i.e. SSIEN = 0).
-@@ -528,9 +569,12 @@ static int imx_ssi_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	struct imx_ssi *ssi;
--	struct imx_ssi_platform_data *pdata = pdev->dev.platform_data;
-+	const struct imx_ssi_platform_data *pdata = pdev->dev.platform_data;
- 	int ret = 0;
- 	struct snd_soc_dai_driver *dai;
-+	const struct of_device_id *of_id;
-+
-+	of_id = of_match_device(imx_ssi_of_dev_id, &pdev->dev);
- 
- 	ssi = devm_kzalloc(&pdev->dev, sizeof(*ssi), GFP_KERNEL);
- 	if (!ssi)
-@@ -538,10 +582,25 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, ssi);
- 
- 	if (pdata) {
--		ssi->ac97_reset = pdata->ac97_reset;
--		ssi->ac97_warm_reset = pdata->ac97_warm_reset;
- 		ssi->flags = pdata->flags;
+-	dma_data = kzalloc(sizeof(*dma_data), GFP_KERNEL);
+-	if (!dma_data)
+-		return -ENOMEM;
++	if (dma_params->dma_client_node) {
++		ret = of_snd_dmaengine_pcm_open(substream,
++				dma_params->dma_client_node,
++				dma_params->dma_req_name);
++		if (ret)
++			return ret;
 +	} else {
-+		pdata = of_id->data;
-+		ssi->flags = 0;
++		dma_data = kzalloc(sizeof(*dma_data), GFP_KERNEL);
++		if (!dma_data)
++			return -ENOMEM;
+ 
+-	dma_data->peripheral_type = dma_params->shared_peripheral ?
++		dma_data->peripheral_type = dma_params->shared_peripheral ?
+ 					IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI;
+-	dma_data->priority = DMA_PRIO_HIGH;
+-	dma_data->dma_request = dma_params->dma;
++		dma_data->priority = DMA_PRIO_HIGH;
++		dma_data->dma_request = dma_params->dma;
+ 
+-	ret = snd_dmaengine_pcm_open(substream, filter, dma_data);
+-	if (ret) {
+-		kfree(dma_data);
+-		return ret;
++		ret = snd_dmaengine_pcm_open(substream, filter, dma_data);
 +
-+		if (of_property_read_bool(pdev->dev.of_node, "dmas"))
-+			ssi->flags |= IMX_SSI_DMA;
-+		if (of_property_read_bool(pdev->dev.of_node, "imx-ssi-ac97"))
-+			ssi->flags |= IMX_SSI_USE_AC97;
-+		if (of_property_read_bool(pdev->dev.of_node, "imx-ssi-net"))
-+			ssi->flags |= IMX_SSI_NET;
-+		if (of_property_read_bool(pdev->dev.of_node, "imx-ssi-syn"))
-+			ssi->flags |= IMX_SSI_SYN;
-+		if (of_property_read_bool(pdev->dev.of_node,
-+					"imx-ssi-i2s-slave"))
-+			ssi->flags |= IMX_SSI_USE_I2S_SLAVE;
++		if (ret) {
++			kfree(dma_data);
++			return ret;
++		}
  	}
-+	ssi->ac97_reset = pdata->ac97_reset;
-+	ssi->ac97_warm_reset = pdata->ac97_warm_reset;
  
- 	ssi->irq = platform_get_irq(pdev, 0);
- 
-@@ -586,13 +645,20 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	ssi->dma_params_tx.burstsize = 6;
- 	ssi->dma_params_rx.burstsize = 4;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx0");
--	if (res)
--		ssi->dma_params_tx.dma = res->start;
-+	if (pdev->dev.platform_data) {
-+		res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx0");
-+		if (res)
-+			ssi->dma_params_tx.dma = res->start;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx0");
--	if (res)
--		ssi->dma_params_rx.dma = res->start;
-+		res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx0");
-+		if (res)
-+			ssi->dma_params_rx.dma = res->start;
-+	} else {
-+		ssi->dma_params_rx.dma_client_node = pdev->dev.of_node;
-+		ssi->dma_params_rx.dma_req_name = "rx0";
-+		ssi->dma_params_tx.dma_client_node = pdev->dev.of_node;
-+		ssi->dma_params_tx.dma_req_name = "tx0";
-+	}
- 
- 	platform_set_drvdata(pdev, ssi);
- 
-@@ -673,6 +739,7 @@ static struct platform_driver imx_ssi_driver = {
- 	.driver = {
- 		.name = "imx-ssi",
- 		.owner = THIS_MODULE,
-+		.of_match_table = imx_ssi_of_dev_id,
- 	},
+ 	snd_dmaengine_pcm_set_data(substream, dma_data);
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index 5ae13a1..d281fe2 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -23,6 +23,12 @@ struct imx_pcm_dma_params {
+ 	unsigned long dma_addr;
+ 	int burstsize;
+ 	bool shared_peripheral;	/* The peripheral is on SPBA bus */
++
++	/* If set, the DMA channel is requested using this devicetree node while
++	 * ignoring fields 'dma' and 'shared_peripheral'. They have to be set
++	 * in devicetree according to the DMA Controller devicetree bindings. */
++	struct device_node *dma_client_node;
++	const char *dma_req_name; /* DMA Request name from devicetree */
  };
  
+ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
 -- 
 1.8.1.5
