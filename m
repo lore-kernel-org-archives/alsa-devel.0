@@ -1,19 +1,18 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 7/7] ALSA: hdspm - Enable new TCO ALSA controls
-Date: Sun, 10 Mar 2013 00:37:27 +0100
-Message-ID: <1362872247-29029-8-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1362872247-29029-1-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-2-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-3-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-4-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-5-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-6-git-send-email-adi@drcomp.erfurt.thur.de>
- <1362872247-29029-7-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Sun, 10 Mar 2013 15:28:54 +1030
+Message-ID: <20130310045854.GB22874@marvin.atrad.com.au>
+References: <mailman.1440.1362696800.805.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1362872247-29029-7-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C0962650B9
+ for <alsa-devel@alsa-project.org>; Sun, 10 Mar 2013 05:58:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <mailman.1440.1362696800.805.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, superquad.vortex2@gmail.com, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
-Expose the newly added TCO LTC and sync check functions to userspace.
+Hi Takashi
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> > On Wed, Feb 20, 2013 at 02:14:20PM +0100, Takashi Iwai wrote:
+> > > > Sounds good - I will test in the next day or so and report back.  What's the
+> > > > most efficient way to get hold of this tree / branch given that I have the
+> > > > for-next branch of sound.git?  Can I somehow leverage this, or do I need to
+> > > > do a completely separate checkout?  Apologies if this is a basic question -
+> > > > I'm still coming to terms with git.
+> > > 
+> > > sound-unstable git tree always contains the sound git tree master
+> > > branch, so everything is there basically. ...
+> > 
+> > What's the next step in the process?  I've reported the outcome of the tests
+> > of sound-unstable as per that report progress is being made.  Is it a case
+> > of waiting for things to stabilise, or do you need me to do something to
+> > move things along?  If so, what?
+> 
+> I merged the patches to the main sound git tree for-next branch now.
+> 
+> Also a few updates are merged there, too: now the hp mic jack mode
+> should be able to change the pin control no matter whether which
+> capture source is.  Also, the capture source won't change the hp/mic
+> pinctl when the jack mode enum is created.  This reduces the
+> automation but also reduces the confusion, too.  After all, when jack
+> mode is present, user wants to control the pin by himself.
+> 
+> Let me know if anything else is missing or broken.
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index f5ef788..c3516ed 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -4363,7 +4363,11 @@ static struct snd_kcontrol_new snd_hdspm_controls_tco[] = {
- 	HDSPM_TCO_WCK_CONVERSION("TCO WCK Conversion", 0),
- 	HDSPM_TCO_FRAME_RATE("TCO Frame Rate", 0),
- 	HDSPM_TCO_SYNC_SOURCE("TCO Sync Source", 0),
--	HDSPM_TCO_WORD_TERM("TCO Word Term", 0)
-+	HDSPM_TCO_WORD_TERM("TCO Word Term", 0),
-+	HDSPM_TCO_LOCK_CHECK("TCO Input Check", 11),
-+	HDSPM_TCO_LOCK_CHECK("TCO LTC Valid", 12),
-+	HDSPM_TCO_LTC_FRAMES("TCO Detected Frame Rate", 0),
-+	HDSPM_TCO_VIDEO_INPUT_FORMAT("Video Input Format", 0)
- };
- 
- 
--- 
-1.7.10.4
+I've given this new revision a quick test; sorry for the delay.  With this
+revision, when using "model=fujitsu-jwse" things seem to be working pretty
+well.  In particular, the updates you mention greatly improve usability; the
+lack of automatic interaction between mixer controls makes it much easier to
+use and understand.
+
+I think everything is present and accounted for in this latest revision. 
+Thanks for your work on this.
+
+The only slightly odd thing I noticed was that whenever the driver is loaded
+the "headphone mic jack mode" defaults to "mic bias 80pc", rather than "line
+out" or "headphone" which I would have expected.  Obviously this can be
+manually or automatically overridden after module load, but in many ways it
+would be good if it defaulted to one of the output modes (given that the
+jack's primary purpose is for output).
+
+Where does this leave us now?  Is the "fujitsu-jwse" a permanent thing, or
+will the respective changes be rolled into something more generic?
+
+Regards
+  jonathan
