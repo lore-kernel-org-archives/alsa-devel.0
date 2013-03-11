@@ -1,78 +1,69 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH linux-next v2] ASoC: adau1373: adau1373_hw_params: Silence
- overflow warning
-Date: Mon, 11 Mar 2013 20:26:40 +0100
-Message-ID: <513E2FF0.1000608@metafoo.de>
-References: <513E2895.6040904@metafoo.de> <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH 01/10] imx-ssi: Fix AC97 rates
+Date: Mon, 11 Mar 2013 20:51:08 +0100
+Message-ID: <20130311195108.GC18350@pengutronix.de>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-2-git-send-email-mpa@pengutronix.de>
+ <CAOMZO5A8F81PzCjKHrkZ_AtGMr341d6OmYHMQvdzgunmGFDVsw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tim Gardner <tim.gardner@canonical.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5A8F81PzCjKHrkZ_AtGMr341d6OmYHMQvdzgunmGFDVsw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/2013 08:18 PM, Tim Gardner wrote:
-> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
-> amd64 the result of the ones complement operator is then truncated to
-> unsigned int according to the prototype of snd_soc_update_bits(). I think
-> gcc is correctly warning that the upper 32 bits are lost.
-> 
-> sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
-> sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
-> 
-> gcc version 4.6.3
-> 
-> Add 2 more BCLKDIV mask macros as explained by Lars:
-> 
-> The BCLKDIV has three fields. The bitclock divider (bit 0-1), the samplerate
-> (bit 2-4) and the source select (bit 5). Here we want to update the bitclock
-> divider field and the samplerate field. When I wrote the code I was lazy and
-> used ~ADAU1373_BCLKDIV_SOURCE as the mask, which for this register is
-> functionally equivalent to ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK.
-> 
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: device-drivers-devel@blackfin.uclinux.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Hi Fabio,
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-
-Thanks.
-
-> ---
-> v1 - simple cast solution
-> v2 - Implement a full set of field masks as suggested by Lars.
+On Sun, Mar 10, 2013 at 03:47:10PM -0300, Fabio Estevam wrote:
+> Hi Markus,
 > 
->  sound/soc/codecs/adau1373.c |    5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> On Sun, Mar 10, 2013 at 3:33 PM, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org> wrote:
+> > From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> >
+> > This device supports multiple rates as described in later AC97
+> > standards. This patch allows playback of different sample frequencies
+> > without conversion.
+> >
+> > Signed-off-by: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> > Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> > ---
+> >  sound/soc/fsl/imx-ssi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-> index 068b3ae..1aa10dd 100644
-> --- a/sound/soc/codecs/adau1373.c
-> +++ b/sound/soc/codecs/adau1373.c
-> @@ -133,6 +133,8 @@ struct adau1373 {
->  #define ADAU1373_DAI_FORMAT_DSP		0x3
->  
->  #define ADAU1373_BCLKDIV_SOURCE		BIT(5)
-> +#define ADAU1373_BCLKDIV_SR_MASK	(0x07 << 2)
-> +#define ADAU1373_BCLKDIV_BCLK_MASK	0x03
->  #define ADAU1373_BCLKDIV_32		0x03
->  #define ADAU1373_BCLKDIV_64		0x02
->  #define ADAU1373_BCLKDIV_128		0x01
-> @@ -937,7 +939,8 @@ static int adau1373_hw_params(struct snd_pcm_substream *substream,
->  	adau1373_dai->enable_src = (div != 0);
->  
->  	snd_soc_update_bits(codec, ADAU1373_BCLKDIV(dai->id),
-> -		~ADAU1373_BCLKDIV_SOURCE, (div << 2) | ADAU1373_BCLKDIV_64);
-> +		ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK,
-> +		(div << 2) | ADAU1373_BCLKDIV_64);
->  
->  	switch (params_format(params)) {
->  	case SNDRV_PCM_FORMAT_S16_LE:
+> Currently we have the following ssi drivers for imx:
+> 
+> sound/soc/fsl/imx-ssi.c: for i.mx SoCs running on non-dt platform
+> sound/soc/fsl/fsl_ssi.c: for PowerPC and i.mx SoCs running on dt platforms
+> 
+> I see that in this series you convert sound/soc/fsl/imx-ssi.c into dt.
+> 
+> Shouldn't we use sound/soc/fsl/fsl_ssi.c instead and maybe even get
+> rid of sound/soc/fsl/imx-ssi.c when all imx become converted to dt?
+> 
+
+At the moment fsl-ssi and imx-ssi don't seem to have very much in
+common. However I could try to merge the imx-ssi driver code into
+fsl_ssi and make it handle imx27-ssi differently.
+
+Regards,
+
+Markus
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
