@@ -1,55 +1,90 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 2/2] ASoC: OMAP2+: Move McBSP, DMIC and McPDM to
- generic DMA DT binding
-Date: Mon, 11 Mar 2013 14:33:03 +0000
-Message-ID: <20130311143303.GC10617@opensource.wolfsonmicro.com>
-References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
- <1362988223-22455-3-git-send-email-s-guiriec@ti.com>
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: Re: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow
+ warning
+Date: Mon, 11 Mar 2013 09:37:57 -0600
+Message-ID: <513DFA55.2050104@canonical.com>
+References: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com> <513DAB80.1020900@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xesSdrSSBC0PokLI"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1362988223-22455-3-git-send-email-s-guiriec@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Sebastien Guiriec <s-guiriec@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, =?iso-8859-1?Q?Beno=EEt?= Cousson <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <513DAB80.1020900@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 03/11/2013 04:01 AM, Lars-Peter Clausen wrote:
+> On 03/10/2013 06:34 PM, Tim Gardner wrote:
+>> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
+>> amd64 the result of the ones complement operator is then truncated to
+>> unsigned int according to the prototype of snd_soc_update_bits(). I think
+>> gcc is correctly warning that the upper 32 bits are lost.
+>>
+>> sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
+>> sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+>>
+>> gcc version 4.6.3
+>>
+>> Cc: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+>> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>> Cc: Jaroslav Kysela <perex@perex.cz>
+>> Cc: Takashi Iwai <tiwai@suse.de>
+>> Cc: device-drivers-devel@blackfin.uclinux.org
+>> Cc: alsa-devel@alsa-project.org
+>> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+>> ---
+>>  sound/soc/codecs/adau1373.c |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+>> index 068b3ae..56ed788 100644
+>> --- a/sound/soc/codecs/adau1373.c
+>> +++ b/sound/soc/codecs/adau1373.c
+>> @@ -132,7 +132,7 @@ struct adau1373 {
+>>  #define ADAU1373_DAI_FORMAT_I2S		0x2
+>>  #define ADAU1373_DAI_FORMAT_DSP		0x3
+>>  
+>> -#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
+>> +#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
+> 
+> Hm, that's a bit ugly. How about the following instead:
+> 
+> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+> index 068b3ae..1aa10dd 100644
+> --- a/sound/soc/codecs/adau1373.c
+> +++ b/sound/soc/codecs/adau1373.c
+> @@ -133,6 +133,8 @@ struct adau1373 {
+>  #define ADAU1373_DAI_FORMAT_DSP		0x3
+> 
+>  #define ADAU1373_BCLKDIV_SOURCE		BIT(5)
+> +#define ADAU1373_BCLKDIV_SR_MASK	(0x07 << 2)
+> +#define ADAU1373_BCLKDIV_BCLK_MASK	0x03
+>  #define ADAU1373_BCLKDIV_32		0x03
+>  #define ADAU1373_BCLKDIV_64		0x02
+>  #define ADAU1373_BCLKDIV_128		0x01
+> @@ -937,7 +939,8 @@ static int adau1373_hw_params(struct snd_pcm_substream
+> *substream,
+>  	adau1373_dai->enable_src = (div != 0);
+> 
+>  	snd_soc_update_bits(codec, ADAU1373_BCLKDIV(dai->id),
+> -		~ADAU1373_BCLKDIV_SOURCE, (div << 2) | ADAU1373_BCLKDIV_64);
+> +		ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK,
+> +		(div << 2) | ADAU1373_BCLKDIV_64);
+> 
+>  	switch (params_format(params)) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+> 
+> 
 
---xesSdrSSBC0PokLI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That seems way more complicated then need be. It also uses 2 bits in the
+mask whereas the original code only used 1, e.g., bit 5. Is that correct ?
 
-On Mon, Mar 11, 2013 at 08:50:22AM +0100, Sebastien Guiriec wrote:
-> Update OMAP2+ driver in order to use OMAP DMA DT binding for OMAP2+.
-> In case of DT boot snd_dmaengine_generic_pcm_open function is used.
+How about just open coding the macro thusly:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+#define ADAU1373_BCLKDIV_SOURCE (1<<5) /*BIT(5)*/
 
-or I can apply to ASoC if people prefer, I don't think it makes much
-difference either way.
-
---xesSdrSSBC0PokLI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRPesSAAoJELSic+t+oim9OzsP/jeqct/lwEiSuCtkBOC9YnXb
-Ngrq4OTQtgPhrosdE7lDExDLDKeyhJe0binhaPmlW87nrgrYphfVe+j/jU6qWMOZ
-gigzqL0Kl7d0OYPZ2vpXSYT2pmId1LUrF7vec68gLfelu68iPh/6zlVmfIHmxDfg
-PzlYna830BsTESUhBoFEmAYKaAHFG6LHntXojc20CjrPh4cuM/ZsimYwtAQy4Eu8
-8Xxl0IcgkwxeSoM3cUHET5gtAZ4BWx9T/DMOnD8HZdd172+9eFZE7AlhT5SSJW9k
-fm+/+6p5m5XdIqwIo4X4UPq2hH4BH/EW8Op0+0YCSy/7IUZuEhK9GvC6WNA9Pua4
-8QIo/5/4jk6HEQ34EaHbv1hyq/PIFvs0XRh17KY0ICeCfAQA+ezgPXPNSnxT+xDh
-t8mtf47oLVVOYZv2RehMhtKhhiF4B9zSvBxCke1NDgL+43uZcFlkU1S0nQgTBSNT
-4FSTaG7bEeJIUE02P1/t9XITWqHo7NBtoouRr8ZaFdeqbp8sgn7EcdJDv12bs8ik
-4hr01pAGrXqpXKbo5Z8+xhA4e74QPAYrPtTZGhuw+GJnRjK1k8dLya6WaSNoWV80
-fpzwma/heVPH7TUl4ho9f8NrjeZ7Wld19eT/gfJ1naRFqN3Vq2/Wtgq3BOUEgxBq
-cw8kOgSTVpTD7j/ln9Oc
-=CKC/
------END PGP SIGNATURE-----
-
---xesSdrSSBC0PokLI--
+rtg
+-- 
+Tim Gardner tim.gardner@canonical.com
