@@ -1,23 +1,17 @@
 From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: [PATCH v2] davinci-mcasp: Add support for
- multichannel playback
-Date: Mon, 11 Mar 2013 07:01:58 +0000
-Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED40278@DBDE01.ent.ti.com>
-References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
- <513616F7.2020201@gmail.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D3ED@DBDE01.ent.ti.com>
- <20130306105713.GF4896@opensource.wolfsonmicro.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D448@DBDE01.ent.ti.com>
- <5139936D.9080001@topic.nl>
+Subject: Re: [PATCH] ALSA: ASoC: davinci-mcasp: clean ip
+ davinci_hw_common_param()
+Date: Mon, 11 Mar 2013 07:09:11 +0000
+Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED402CB@DBDE01.ent.ti.com>
+References: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id EB2A72650A9
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 08:02:09 +0100 (CET)
-In-Reply-To: <5139936D.9080001@topic.nl>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0272D2650DD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 08:09:15 +0100 (CET)
+In-Reply-To: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,41 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Michal Bachraty <michal.bachraty@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 08, 2013 at 12:59:49, Mike Looijmans wrote:
+On Fri, Mar 08, 2013 at 18:49:38, Daniel Mack wrote:
+> As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
+> Add support for multichannel playback") duplicated the logic of
+> counting the active serializers. That can be avoided by shifting
+> the code around a bit.
 > 
-> I have 9 codecs connected, and the main problem to solve was to get the 
-> system to start ALL of them instead of just one.
-> 
-> I solved that by creating a "multiplex" codec, which in itself doesn't 
-> do anything. It exports a mixer where you can switch on/off the codecs 
-> you want to use, and it forwards all commands (_ops) to the codecs that 
-> are enabled. The serializer settings are sent to the asp driver as if 
-> they are TDM masks (using the bits to enable serializers instead).
-> 
-> In userland you see 10 codecs, you can use each separately, or use the 
-> 10th codec (the multiplexer) to use any combination of other codecs.
+> Also, drop two unused defines introduced by the same commit.
 > 
 
-Interesting approach. I was thinking more on the lines of how to expose
-the different serializer-codec pairs to the core. Since there's only one
-DMA interface for the different serializers doing this in a generic
-manner looked complicated, at least to me.
+s/clean ip/clean up/ in the $subject.
 
-I am aware of couple of multi-channel systems that preferred the approach
-that I mentioned. In one, a cascading of codecs was preferred so as to free
-up the extra serializer pads for different functions at the SoC level. 
-There was a custom app to split the data coming in from different channels
-but since it freed up a few pads, this approach was preferred. In another,
-sending SPDIF data to an HDMI transmitter was preferred, again to free up
-some pads. It finally depends on what the use-case is and which system level
-constraints are more important to satisfy.
+Other than that, this looks fine to me.
 
-It would be good if you could post the changes that made so that we can
-discuss on how the approach in detail and possibly enhance the core to
-handle the multi-codec scenarios that use-cases like your require.
-
-Regards,
-Vaibhav
+Acked-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
