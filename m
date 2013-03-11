@@ -1,33 +1,82 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH][RESEND] Add a USB audio quirk for the NuForce UDH-100
- device.
-Date: Mon, 11 Mar 2013 09:32:12 +0100
-Message-ID: <513D968C.1060905@ladisch.de>
-References: <1362973920-4942-1-git-send-email-helstroom@google.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: [PATCH v2] davinci-mcasp: Add support for
+ multichannel playback
+Date: Mon, 11 Mar 2013 09:33:50 +0100
+Message-ID: <513D96EE.9070003@topic.nl>
+References: <1361983125-32717-1-git-send-email-michal.bachraty@streamunlimited.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3C660@DBDE01.ent.ti.com>
+ <513616F7.2020201@gmail.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3D3ED@DBDE01.ent.ti.com>
+ <20130306105713.GF4896@opensource.wolfsonmicro.com>
+ <B5906170F1614E41A8A28DE3B8D121433ED3D448@DBDE01.ent.ti.com>
+ <5139936D.9080001@topic.nl>
+ <B5906170F1614E41A8A28DE3B8D121433ED40278@DBDE01.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1362973920-4942-1-git-send-email-helstroom@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Helstroom <helstroom@google.com>
-Cc: perex@perex.cz, tiwai@suse.de, eldad@fogrefinery.com, damien@zamaudio.com, pete.leigh@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atl4mhob08.myregisteredsite.com
+ (atl4mhob08.myregisteredsite.com [209.17.115.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F79E2650DD
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 09:33:54 +0100 (CET)
+Received: from mailpod.hostingplatform.com (mail.networksolutionsemail.com
+ [205.178.146.50])
+ by atl4mhob08.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id
+ r2B8XqPP027249
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 04:33:52 -0400
+In-Reply-To: <B5906170F1614E41A8A28DE3B8D121433ED40278@DBDE01.ent.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-David Helstroom wrote:
-> Interface 1 does not exist
+On 03/11/2013 08:01 AM, Bedia, Vaibhav wrote:
+> On Fri, Mar 08, 2013 at 12:59:49, Mike Looijmans wrote:
+>>
+>> I have 9 codecs connected, and the main problem to solve was to get the
+>> system to start ALL of them instead of just one.
+>>
+>> I solved that by creating a "multiplex" codec, which in itself doesn't
+>> do anything. It exports a mixer where you can switch on/off the codecs
+>> you want to use, and it forwards all commands (_ops) to the codecs that
+>> are enabled. The serializer settings are sent to the asp driver as if
+>> they are TDM masks (using the bits to enable serializers instead).
+>>
+>> In userland you see 10 codecs, you can use each separately, or use the
+>> 10th codec (the multiplexer) to use any combination of other codecs.
+>>
+>
+> Interesting approach. I was thinking more on the lines of how to expose
+> the different serializer-codec pairs to the core. Since there's only one
+> DMA interface for the different serializers doing this in a generic
+> manner looked complicated, at least to me.
+>
+> I am aware of couple of multi-channel systems that preferred the approach
+> that I mentioned. In one, a cascading of codecs was preferred so as to free
+> up the extra serializer pads for different functions at the SoC level.
+> There was a custom app to split the data coming in from different channels
+> but since it freed up a few pads, this approach was preferred. In another,
+> sending SPDIF data to an HDMI transmitter was preferred, again to free up
+> some pads. It finally depends on what the use-case is and which system level
+> constraints are more important to satisfy.
+>
+> It would be good if you could post the changes that made so that we can
+> discuss on how the approach in detail and possibly enhance the core to
+> handle the multi-codec scenarios that use-cases like your require.
 
-Then it doesn't need a quirk, does it?
+I'll post the code, but it's based on a 2.6.37 kernel and it's tailored 
+to "my" platform, with numerous changes to clock settings and such. So 
+don't expect it to be useful. It's only interesting as an "example" or 
+for illustrating the general idea, but entirely useless for inclusion in 
+mainstream.
 
-> and Interface 0 should be ignored.
-
-Why?
-
-If the driver doesn't like something in interface 0, that bug should be
-fixed.
-
-What is the output of "lsusb -v" for this device?
-
-
-Regards,
-Clemens
+-- 
+Mike Looijmans - Topic Automation
