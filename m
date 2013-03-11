@@ -1,22 +1,17 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: twl4030 and Puredata/jack
-Date: Mon, 11 Mar 2013 18:57:23 +0200
-Message-ID: <CANOLnOPeY_PWGQV9tuMbrnJB6zXWeoPK9uZaKZb=mfLTi-CWsg@mail.gmail.com>
+Date: Mon, 11 Mar 2013 18:31:22 +0100
+Message-ID: <513E14EA.7000305@ti.com>
 References: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
- <513B99C0.8020805@gmail.com>
- <CAAuz6apRE90QU5Hm-+jeEB4nxcZHUNp4_Hhfcgb_p7854FiwBw@mail.gmail.com>
- <513DB503.5020109@ti.com>
+ <513DE004.2060305@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 078E9265344
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 17:57:24 +0100 (CET)
-Received: by mail-ob0-f173.google.com with SMTP id dn14so3576779obc.32
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 09:57:23 -0700 (PDT)
-In-Reply-To: <513DB503.5020109@ti.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61A5326535E
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 18:31:31 +0100 (CET)
+In-Reply-To: <513DE004.2060305@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,25 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Anders Alex <alibobar@gmail.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+To: Anders Alex <alibobar@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgMTEsIDIwMTMgYXQgMTI6NDIgUE0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51
-amZhbHVzaUB0aS5jb20+IHdyb3RlOgo+IE9uIDAzLzExLzIwMTMgMDI6NDIgQU0sIEFuZGVycyBB
-bGV4IHdyb3RlOgo+PiBPbiBTYXQsIE1hciA5LCAyMDEzIGF0IDk6MjEgUE0sIEdhYnJpZWwgTS4g
-QmVkZGluZ2ZpZWxkCj4+IDxnYWJyYmVkZEBnbWFpbC5jb20+d3JvdGU6Cj4+Cj4+PiBTdHJhbmdl
-LiAgSW4ga2VybmVsIDMuMiwgb21hcC1tY2JzcC1kYWkuMSAoTWNCU1AxKSBpcyB1c2VkIGZvciB0
-aGUgY29kZWMuCj4+PiAgQnV0IGluIHRoZSBtYWlubGluZSBpdCdzIG9tYXAtbWNic3AtZGFpLjIu
-Cj4+Pgo+Pj4gU28gdGhlIHF1ZXN0aW9uIGlzLi4uIGhvdyBpcyB0aGUgYm9hcmQgd2lyZWQ/ICBB
-bmQgZG9lcyB5b3VyIGtlcm5lbCBtYXRjaAo+Pj4gdGhlIGJvYXJkPwo+Pgo+PiAxKSBubyBpZGVh
-IDIpIGl0IHNob3VsZCwgeWVzLgo+Cj4gTWNCU1AyIGlzIGNvbm5lY3RlZCB0byBQQ00xNzczIGZv
-ciBwbGF5YmFjawo+IE1jQlNQNCBpcyBjb25uZWN0ZWQgdG8gVFdMNDAzMCBmb3IgY2FwdHVyZQo+
-Cj4gQm90aCBjb2RlYyBpcyBzbGF2ZSwgYnV0IHRoZSBDTEtTIG9mIE1jQlNQIGlzIGNvbm5lY3Rl
-ZCB0byBUV0w0MDMwJ3MgQ0xLUyBvdXQKPiAyNTZmcy4KClRoYXQncyByaWdodCwgdGhlIGRpZmZl
-cmVuY2UgaXMgYmVjYXVzZSB0aGUgZGFpIG51bWJlcmluZyBoYXMgY2hhbmdlZAppbiBjb21taXQg
-NDU2NTZiNDQgKHVzZWQgdG8gYmUgLi4uLWRhaS4xIC8gLWRhaS4zIGZvciBNY0JTUDIvTWNCU1A0
-CmFuZCBpcyBub3cgLi4uLWRhaS4yIGFuZCAtZGFpLjQpLgoKCi0tIApHcmHFvnZ5ZGFzCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 03/11/2013 02:45 PM, Peter Ujfalusi wrote:
+> On 03/08/2013 04:31 PM, Anders Alex wrote:
+>> With 'jackd -d alsa -S'  (need s16_le):
+> =
+
+> I'm not really a jack user, but can you try:
+> jackd -d alsa -o 2 -i 2 -S -C hw:0,1 -P hw:0,0
+> =
+
+> So you tell jack to play on hw:0,0 record on hw:0,1 use stereo for both.
+
+I have tried jack on my BeagleBoard (using twl4030 codec):
+
+jackd -d alsa -o 2 -i 2 -S -C hw:0,0 -P hw:0,0
+mplayer -ao jack media/music/nin-echoplex.flac
+
+It works fine.
+
+-- =
+
+P=E9ter
