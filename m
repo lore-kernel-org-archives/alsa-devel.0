@@ -1,21 +1,18 @@
-From: Tom Horsley <horsley1953@gmail.com>
-Subject: In 3.8 kernel alsa only talks HDMI,
- hardware also has S/PDIF optical
-Date: Mon, 11 Mar 2013 19:18:01 -0400
-Message-ID: <20130311191801.035a7e29@zooty>
+From: Mihail Zenkov <mihail.zenkov@gmail.com>
+Subject: [PATCH] salsa-lib: define __SALSA_EXPORT_FUNC in
+	version.h
+Date: Tue, 12 Mar 2013 01:43:29 +0200
+Message-ID: <CAD-m0i-T-H8bgdLYe3HDaTghjyUDkyqFvxfTgwOvwazXiQtzbQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f178.google.com (mail-gg0-f178.google.com
- [209.85.161.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F7E4265CBB
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 00:18:04 +0100 (CET)
-Received: by mail-gg0-f178.google.com with SMTP id 21so732559ggh.37
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 16:18:03 -0700 (PDT)
-Received: from zooty (localhost [127.0.0.1]) (Authenticated sender: tom)
- by zooty.my.lan (Postfix) with ESMTPA id 2E7BFA0FE4
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 19:18:02 -0400 (EDT)
+Received: from mail-qc0-f171.google.com (mail-qc0-f171.google.com
+ [209.85.216.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25148265CBE
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 00:43:30 +0100 (CET)
+Received: by mail-qc0-f171.google.com with SMTP id d1so1799354qca.30
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 16:43:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,23 +25,16 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-See https://bugzilla.redhat.com/show_bug.cgi?id=919630
-for details.
+We have to include "global.h" to define __SALSA_EXPORT_FUNC
 
-Comment 4 in that bug is from someone who says it looks
-like the driver only created the HDMI and not the separate
-optical S/PDIF output.
+--- salsa-lib-0.1.3/src/version.h.in
++++ salsa-lib-0.1.3-1/src/version.h.in
+@@ -1,6 +1,8 @@
+ #ifndef __ALSA_VERSION_H
+ #define __ALSA_VERSION_H
 
-On my Asus P8H67-V there really are two physically
-separate audio outputs. I have the optical port
-connected to my receiver for when I want to pass
-through the 5.1 audio tracks in movie files and
-DVDs and the HDMI connected to the TV for more
-ordinary audio (error beeps from the computer, etc).
-
-In kernel 3.7.9 I could output to both devices
-(one at a time - never tried simultaneous).
-
-I've seen a bunch of patches in the archives that seem
-to be related to this, but if fedora 18 has those patches,
-they don't seem to be working.
++#include "global.h"
++
+ #define SND_LIB_MAJOR		@SND_LIB_MAJOR@
+ #define SND_LIB_MINOR		@SND_LIB_MINOR@
+ #define SND_LIB_SUBMINOR	@SND_LIB_SUBMINOR@
