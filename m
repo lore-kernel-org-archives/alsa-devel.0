@@ -1,45 +1,50 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH V2 2/2] ASoC: OMAP2+: Move McBSP, DMIC and McPDM to
- generic DMA DT binding
-Date: Mon, 11 Mar 2013 09:38:00 -0700
-Message-ID: <20130311163800.GK26093@atomide.com>
-References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
- <1362988223-22455-3-git-send-email-s-guiriec@ti.com>
- <20130311143303.GC10617@opensource.wolfsonmicro.com>
- <20130311162700.GI26093@atomide.com>
- <20130311162814.GD10617@opensource.wolfsonmicro.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: twl4030 and Puredata/jack
+Date: Mon, 11 Mar 2013 18:57:23 +0200
+Message-ID: <CANOLnOPeY_PWGQV9tuMbrnJB6zXWeoPK9uZaKZb=mfLTi-CWsg@mail.gmail.com>
+References: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
+ <513B99C0.8020805@gmail.com>
+ <CAAuz6apRE90QU5Hm-+jeEB4nxcZHUNp4_Hhfcgb_p7854FiwBw@mail.gmail.com>
+ <513DB503.5020109@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130311162814.GD10617@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, =?utf-8?Q?Beno=C3=AEt?= Cousson <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 078E9265344
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 17:57:24 +0100 (CET)
+Received: by mail-ob0-f173.google.com with SMTP id dn14so3576779obc.32
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 09:57:23 -0700 (PDT)
+In-Reply-To: <513DB503.5020109@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Anders Alex <alibobar@gmail.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [130311 09:32]:
-> On Mon, Mar 11, 2013 at 09:27:00AM -0700, Tony Lindgren wrote:
-> 
-> > I suggest you take the driver changes and Benoit takes the .dts
-> > changes as those should be queued separately to avoid unnecessary
-> > merge conflicts with the .dts files.
-> 
-> Won't that cause a bisect issue if the driver starts looking for generic
-> DT stuff that's not in the DTS files?
-
-It should only affect additional features being enabled. When the .dts
-changes get merged the new features just starts working. Or if the .dts
-changes go in first, the driver starts working when the driver changes
-go in.
-
-If there's some dependency between the driver and the .dts changes
-breaking booting etc, that should be fixed in the patches by
-for example removing old legacy code later on in a separate series.
-
-This allows us to break the dependency between arch/arm code and
-drivers in most cases to keep things simpler.
-
-Regards,
-
-Tony
+T24gTW9uLCBNYXIgMTEsIDIwMTMgYXQgMTI6NDIgUE0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51
+amZhbHVzaUB0aS5jb20+IHdyb3RlOgo+IE9uIDAzLzExLzIwMTMgMDI6NDIgQU0sIEFuZGVycyBB
+bGV4IHdyb3RlOgo+PiBPbiBTYXQsIE1hciA5LCAyMDEzIGF0IDk6MjEgUE0sIEdhYnJpZWwgTS4g
+QmVkZGluZ2ZpZWxkCj4+IDxnYWJyYmVkZEBnbWFpbC5jb20+d3JvdGU6Cj4+Cj4+PiBTdHJhbmdl
+LiAgSW4ga2VybmVsIDMuMiwgb21hcC1tY2JzcC1kYWkuMSAoTWNCU1AxKSBpcyB1c2VkIGZvciB0
+aGUgY29kZWMuCj4+PiAgQnV0IGluIHRoZSBtYWlubGluZSBpdCdzIG9tYXAtbWNic3AtZGFpLjIu
+Cj4+Pgo+Pj4gU28gdGhlIHF1ZXN0aW9uIGlzLi4uIGhvdyBpcyB0aGUgYm9hcmQgd2lyZWQ/ICBB
+bmQgZG9lcyB5b3VyIGtlcm5lbCBtYXRjaAo+Pj4gdGhlIGJvYXJkPwo+Pgo+PiAxKSBubyBpZGVh
+IDIpIGl0IHNob3VsZCwgeWVzLgo+Cj4gTWNCU1AyIGlzIGNvbm5lY3RlZCB0byBQQ00xNzczIGZv
+ciBwbGF5YmFjawo+IE1jQlNQNCBpcyBjb25uZWN0ZWQgdG8gVFdMNDAzMCBmb3IgY2FwdHVyZQo+
+Cj4gQm90aCBjb2RlYyBpcyBzbGF2ZSwgYnV0IHRoZSBDTEtTIG9mIE1jQlNQIGlzIGNvbm5lY3Rl
+ZCB0byBUV0w0MDMwJ3MgQ0xLUyBvdXQKPiAyNTZmcy4KClRoYXQncyByaWdodCwgdGhlIGRpZmZl
+cmVuY2UgaXMgYmVjYXVzZSB0aGUgZGFpIG51bWJlcmluZyBoYXMgY2hhbmdlZAppbiBjb21taXQg
+NDU2NTZiNDQgKHVzZWQgdG8gYmUgLi4uLWRhaS4xIC8gLWRhaS4zIGZvciBNY0JTUDIvTWNCU1A0
+CmFuZCBpcyBub3cgLi4uLWRhaS4yIGFuZCAtZGFpLjQpLgoKCi0tIApHcmHFvnZ5ZGFzCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
