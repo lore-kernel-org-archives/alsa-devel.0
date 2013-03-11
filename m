@@ -1,16 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: twl4030 and Puredata/jack
-Date: Mon, 11 Mar 2013 14:45:40 +0100
-Message-ID: <513DE004.2060305@ti.com>
-References: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH v2] ALSA: ASoC: davinci-mcasp: clean up
+	davinci_hw_common_param()
+Date: Mon, 11 Mar 2013 15:09:55 +0100
+Message-ID: <1363010995-349-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C84126503E
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 14:45:47 +0100 (CET)
-In-Reply-To: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0926F26508C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 15:10:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,20 +19,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anders Alex <alibobar@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Michal Bachraty <michal.bachraty@streamunlimited.com>, Vaibhav Bedia <vaibhav.bedia@ti.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/08/2013 04:31 PM, Anders Alex wrote:
-> With 'jackd -d alsa -S'  (need s16_le):
+As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
+Add support for multichannel playback") duplicated the logic of
+counting the active serializers. That can be avoided by shifting
+the code around a bit.
 
-I'm not really a jack user, but can you try:
-jackd -d alsa -o 2 -i 2 -S -C hw:0,1 -P hw:0,0
+Also, drop two unused defines introduced by the same commit.
 
-So you tell jack to play on hw:0,0 record on hw:0,1 use stereo for both.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: Michal Bachraty <michal.bachraty@streamunlimited.com>
+Cc: Vaibhav Bedia <vaibhav.bedia@ti.com>
+---
+v2: fix typo in subject
 
+ sound/soc/davinci/davinci-mcasp.c | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index b386cad..8a9c0ee 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -237,8 +237,6 @@
+ #define RXSTATE		BIT(5)
+ #define SRMOD_MASK	3
+ #define SRMOD_INACTIVE	0
+-#define SRMOD_TX	1
+-#define SRMOD_RX	2
+ 
+ /*
+  * DAVINCI_MCASP_LBCTL_REG - Loop Back Control Register Bits
+@@ -691,27 +689,6 @@ static int davinci_hw_common_param(struct davinci_audio_dev *dev, int stream,
+ 	}
+ 
+ 	for (i = 0; i < dev->num_serializer; i++) {
+-		if (dev->serial_dir[i] == TX_MODE)
+-			tx_ser++;
+-		if (dev->serial_dir[i] == RX_MODE)
+-			rx_ser++;
+-	}
+-
+-	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		ser = tx_ser;
+-	else
+-		ser = rx_ser;
+-
+-	if (ser < max_active_serializers) {
+-		dev_warn(dev->dev, "stream has more channels (%d) than are "
+-			"enabled in mcasp (%d)\n", channels, ser * slots);
+-		return -EINVAL;
+-	}
+-
+-	tx_ser = 0;
+-	rx_ser = 0;
+-
+-	for (i = 0; i < dev->num_serializer; i++) {
+ 		mcasp_set_bits(dev->base + DAVINCI_MCASP_XRSRCTL_REG(i),
+ 					dev->serial_dir[i]);
+ 		if (dev->serial_dir[i] == TX_MODE &&
+@@ -730,6 +707,17 @@ static int davinci_hw_common_param(struct davinci_audio_dev *dev, int stream,
+ 		}
+ 	}
+ 
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ser = tx_ser;
++	else
++		ser = rx_ser;
++
++	if (ser < max_active_serializers) {
++		dev_warn(dev->dev, "stream has more channels (%d) than are "
++			"enabled in mcasp (%d)\n", channels, ser * slots);
++		return -EINVAL;
++	}
++
+ 	if (dev->txnumevt && stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (dev->txnumevt * tx_ser > 64)
+ 			dev->txnumevt = 1;
+-- 
+1.8.1.4
