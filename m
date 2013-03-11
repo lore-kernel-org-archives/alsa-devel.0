@@ -1,277 +1,33 @@
-From: Sebastien Guiriec <s-guiriec@ti.com>
-Subject: [PATCH V2 1/2] ARM: dts: OMAP2+: Add SDMA Audio IPs bindings
-Date: Mon, 11 Mar 2013 08:50:21 +0100
-Message-ID: <1362988223-22455-2-git-send-email-s-guiriec@ti.com>
-References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH][RESEND] Add a USB audio quirk for the NuForce UDH-100
+ device.
+Date: Mon, 11 Mar 2013 09:32:12 +0100
+Message-ID: <513D968C.1060905@ladisch.de>
+References: <1362973920-4942-1-git-send-email-helstroom@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1362973920-4942-1-git-send-email-helstroom@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Helstroom <helstroom@google.com>
+Cc: perex@perex.cz, tiwai@suse.de, eldad@fogrefinery.com, damien@zamaudio.com, pete.leigh@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Populate DMA client information for McBSP DMIC and McPDM periperhal on
-OMAP2+ devices.
+David Helstroom wrote:
+> Interface 1 does not exist
 
-Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
----
- arch/arm/boot/dts/omap2420.dtsi |    6 ++++++
- arch/arm/boot/dts/omap2430.dtsi |   15 +++++++++++++++
- arch/arm/boot/dts/omap3.dtsi    |   15 +++++++++++++++
- arch/arm/boot/dts/omap4.dtsi    |   17 +++++++++++++++++
- arch/arm/boot/dts/omap5.dtsi    |   14 ++++++++++++++
- 5 files changed, 67 insertions(+)
+Then it doesn't need a quirk, does it?
 
-diff --git a/arch/arm/boot/dts/omap2420.dtsi b/arch/arm/boot/dts/omap2420.dtsi
-index af65609..45930f2 100644
---- a/arch/arm/boot/dts/omap2420.dtsi
-+++ b/arch/arm/boot/dts/omap2420.dtsi
-@@ -37,6 +37,9 @@
- 				     <60>; /* RX interrupt */
- 			interrupt-names = "tx", "rx";
- 			ti,hwmods = "mcbsp1";
-+			dmas = <&sdma 31>,
-+			       <&sdma 32>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp2: mcbsp@48076000 {
-@@ -47,6 +50,9 @@
- 				     <63>; /* RX interrupt */
- 			interrupt-names = "tx", "rx";
- 			ti,hwmods = "mcbsp2";
-+			dmas = <&sdma 33>,
-+			       <&sdma 34>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		timer1: timer@48028000 {
-diff --git a/arch/arm/boot/dts/omap2430.dtsi b/arch/arm/boot/dts/omap2430.dtsi
-index c392445..cfe7ed9 100644
---- a/arch/arm/boot/dts/omap2430.dtsi
-+++ b/arch/arm/boot/dts/omap2430.dtsi
-@@ -40,6 +40,9 @@
- 			interrupt-names = "common", "tx", "rx", "rx_overflow";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp1";
-+			dmas = <&sdma 31>,
-+			       <&sdma 32>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp2: mcbsp@48076000 {
-@@ -52,6 +55,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp2";
-+			dmas = <&sdma 33>,
-+			       <&sdma 34>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp3: mcbsp@4808c000 {
-@@ -64,6 +70,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp3";
-+			dmas = <&sdma 17>,
-+			       <&sdma 18>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp4: mcbsp@4808e000 {
-@@ -76,6 +85,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp4";
-+			dmas = <&sdma 19>,
-+			       <&sdma 20>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp5: mcbsp@48096000 {
-@@ -88,6 +100,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp5";
-+			dmas = <&sdma 21>,
-+			       <&sdma 22>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		timer1: timer@49018000 {
-diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
-index 4e7acb6..f901404 100644
---- a/arch/arm/boot/dts/omap3.dtsi
-+++ b/arch/arm/boot/dts/omap3.dtsi
-@@ -289,6 +289,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp1";
-+			dmas = <&sdma 31>,
-+			       <&sdma 32>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp2: mcbsp@49022000 {
-@@ -303,6 +306,9 @@
- 			interrupt-names = "common", "tx", "rx", "sidetone";
- 			ti,buffer-size = <1280>;
- 			ti,hwmods = "mcbsp2", "mcbsp2_sidetone";
-+			dmas = <&sdma 33>,
-+			       <&sdma 34>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp3: mcbsp@49024000 {
-@@ -317,6 +323,9 @@
- 			interrupt-names = "common", "tx", "rx", "sidetone";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp3", "mcbsp3_sidetone";
-+			dmas = <&sdma 17>,
-+			       <&sdma 18>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp4: mcbsp@49026000 {
-@@ -329,6 +338,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp4";
-+			dmas = <&sdma 19>,
-+			       <&sdma 20>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp5: mcbsp@48096000 {
-@@ -341,6 +353,9 @@
- 			interrupt-names = "common", "tx", "rx";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp5";
-+			dmas = <&sdma 21>,
-+			       <&sdma 22>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		timer1: timer@48318000 {
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
-index 827f6f3..413c683 100644
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -388,6 +388,9 @@
- 			reg-names = "mpu", "dma";
- 			interrupts = <0 112 0x4>;
- 			ti,hwmods = "mcpdm";
-+			dmas = <&sdma 65>,
-+			       <&sdma 66>;
-+			dma-names = "up_link", "dn_link";
- 		};
- 
- 		dmic: dmic@4012e000 {
-@@ -397,6 +400,8 @@
- 			reg-names = "mpu", "dma";
- 			interrupts = <0 114 0x4>;
- 			ti,hwmods = "dmic";
-+			dmas = <&sdma 67>;
-+			dma-names = "up_link";
- 		};
- 
- 		mcbsp1: mcbsp@40122000 {
-@@ -408,6 +413,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp1";
-+			dmas = <&sdma 33>,
-+			       <&sdma 34>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp2: mcbsp@40124000 {
-@@ -419,6 +427,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp2";
-+			dmas = <&sdma 17>,
-+			       <&sdma 18>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp3: mcbsp@40126000 {
-@@ -430,6 +441,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp3";
-+			dmas = <&sdma 19>,
-+			       <&sdma 20>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp4: mcbsp@48096000 {
-@@ -440,6 +454,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp4";
-+			dmas = <&sdma 31>,
-+			       <&sdma 32>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		keypad: keypad@4a31c000 {
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
-index 39b8d76..5aa6086 100644
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -364,6 +364,9 @@
- 			reg-names = "mpu", "dma";
- 			interrupts = <0 112 0x4>;
- 			ti,hwmods = "mcpdm";
-+			dmas = <&sdma 65>,
-+			       <&sdma 66>;
-+			dma-names = "up_link", "dn_link";
- 		};
- 
- 		dmic: dmic@4012e000 {
-@@ -373,6 +376,8 @@
- 			reg-names = "mpu", "dma";
- 			interrupts = <0 114 0x4>;
- 			ti,hwmods = "dmic";
-+			dmas = <&sdma 67>;
-+			dma-names = "up_link";
- 		};
- 
- 		mcbsp1: mcbsp@40122000 {
-@@ -384,6 +389,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp1";
-+			dmas = <&sdma 33>,
-+			       <&sdma 34>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp2: mcbsp@40124000 {
-@@ -395,6 +403,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp2";
-+			dmas = <&sdma 17>,
-+			       <&sdma 18>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		mcbsp3: mcbsp@40126000 {
-@@ -406,6 +417,9 @@
- 			interrupt-names = "common";
- 			ti,buffer-size = <128>;
- 			ti,hwmods = "mcbsp3";
-+			dmas = <&sdma 19>,
-+			       <&sdma 20>;
-+			dma-names = "tx", "rx";
- 		};
- 
- 		timer1: timer@4ae18000 {
--- 
-1.7.10.4
+> and Interface 0 should be ignored.
 
+Why?
+
+If the driver doesn't like something in interface 0, that bug should be
+fixed.
+
+What is the output of "lsusb -v" for this device?
+
+
+Regards,
+Clemens
