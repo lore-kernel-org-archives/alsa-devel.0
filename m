@@ -1,76 +1,67 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow
- warning
-Date: Mon, 11 Mar 2013 11:01:36 +0100
-Message-ID: <513DAB80.1020900@metafoo.de>
-References: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: running 32 chan AD/DA on Linux
+Date: Mon, 11 Mar 2013 11:02:10 +0100
+Message-ID: <513DABA2.3010306@gmail.com>
+References: <50F158F5.4050605@AntelopeAudio.com>
+ <CAFa_cK=pShsoXHa8VGyERoCfn2+yPTeMBTMFAfsJaK0d-KEUuw@mail.gmail.com>
+ <50F59673.4010603@AntelopeAudio.com>
+ <CAFa_cKmfDC1NethK=p-f7bEWGvzCDLWpx0Y0qOSqic=-7qUb2A@mail.gmail.com>
+ <50FBE020.7090606@AntelopeAudio.com>
+ <CAFa_cK=fiRUXu2YNKkR8owx=B-MS+PR==PKPokzYXM+Q6XmcpQ@mail.gmail.com>
+ <513D97CC.7060603@AntelopeAudio.com> <513D9A55.8050405@gmail.com>
+ <513D9C38.1090901@AntelopeAudio.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tim Gardner <tim.gardner@canonical.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
+ [209.85.212.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FF9926086D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 11:02:08 +0100 (CET)
+Received: by mail-wi0-f177.google.com with SMTP id hm14so815593wib.4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 03:02:08 -0700 (PDT)
+In-Reply-To: <513D9C38.1090901@AntelopeAudio.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Igor Levin <IgorL@AntelopeAudio.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Paul Davis <paul@linuxaudiosystems.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2013 06:34 PM, Tim Gardner wrote:
-> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
-> amd64 the result of the ones complement operator is then truncated to
-> unsigned int according to the prototype of snd_soc_update_bits(). I think
-> gcc is correctly warning that the upper 32 bits are lost.
-> 
-> sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
-> sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
-> 
-> gcc version 4.6.3
-> 
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: device-drivers-devel@blackfin.uclinux.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-> ---
->  sound/soc/codecs/adau1373.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-> index 068b3ae..56ed788 100644
-> --- a/sound/soc/codecs/adau1373.c
-> +++ b/sound/soc/codecs/adau1373.c
-> @@ -132,7 +132,7 @@ struct adau1373 {
->  #define ADAU1373_DAI_FORMAT_I2S		0x2
->  #define ADAU1373_DAI_FORMAT_DSP		0x3
->  
-> -#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
-> +#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
+Hi Igor,
 
-Hm, that's a bit ugly. How about the following instead:
+On 11.03.2013 09:56, Igor Levin wrote:
+> Thank you so much for a quick answer, are you in Europe by any chance?
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 068b3ae..1aa10dd 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -133,6 +133,8 @@ struct adau1373 {
- #define ADAU1373_DAI_FORMAT_DSP		0x3
+Yes, in Germany.
 
- #define ADAU1373_BCLKDIV_SOURCE		BIT(5)
-+#define ADAU1373_BCLKDIV_SR_MASK	(0x07 << 2)
-+#define ADAU1373_BCLKDIV_BCLK_MASK	0x03
- #define ADAU1373_BCLKDIV_32		0x03
- #define ADAU1373_BCLKDIV_64		0x02
- #define ADAU1373_BCLKDIV_128		0x01
-@@ -937,7 +939,8 @@ static int adau1373_hw_params(struct snd_pcm_substream
-*substream,
- 	adau1373_dai->enable_src = (div != 0);
+> Could you give us a link where we can browse the source code on the Net, 
+> or tell us where to get those files
+> mentioned as there seem to be so many Linux source files floating in the 
+> web. Please forgive my ignorance
+> if this question seems so naive, I am really a hardware engineer :)
 
- 	snd_soc_update_bits(codec, ADAU1373_BCLKDIV(dai->id),
--		~ADAU1373_BCLKDIV_SOURCE, (div << 2) | ADAU1373_BCLKDIV_64);
-+		ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK,
-+		(div << 2) | ADAU1373_BCLKDIV_64);
+There's Linus' repository which ends up in the official tarball releases
+on a regular basis. You can browse that tree online in its cgit:
 
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
+
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/sound/usb/
+
+> Do you believe the code base as it stands will work with 32 channels 
+> In/Out pipes or do we need to
+> get the unit to one of you guys to test it and make corrections as needed?
+
+I'm not aware of any sound specific limitations in that area. Just try
+it, and let us know how it goes. Sending the output of 'lsusb -v' for a
+descriptor dump is mandatory in order to understand how your device is
+designed.
+
+
+Thanks,
+Daniel
