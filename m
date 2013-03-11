@@ -1,53 +1,45 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ASoC: core: fix possible memory leak in snd_soc_bytes_put()
-Date: Tue, 12 Mar 2013 00:35:14 +0800
-Message-ID: <CAPgLHd_DuPDciAt9Qdn-1K2CSL14GDKt6XR+8gaac8hgvLScaw@mail.gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH V2 2/2] ASoC: OMAP2+: Move McBSP, DMIC and McPDM to
+ generic DMA DT binding
+Date: Mon, 11 Mar 2013 09:38:00 -0700
+Message-ID: <20130311163800.GK26093@atomide.com>
+References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
+ <1362988223-22455-3-git-send-email-s-guiriec@ti.com>
+ <20130311143303.GC10617@opensource.wolfsonmicro.com>
+ <20130311162700.GI26093@atomide.com>
+ <20130311162814.GD10617@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, rob.herring@calxeda.com
-Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130311162814.GD10617@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, =?utf-8?Q?Beno=C3=AEt?= Cousson <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [130311 09:32]:
+> On Mon, Mar 11, 2013 at 09:27:00AM -0700, Tony Lindgren wrote:
+> 
+> > I suggest you take the driver changes and Benoit takes the .dts
+> > changes as those should be queued separately to avoid unnecessary
+> > merge conflicts with the .dts files.
+> 
+> Won't that cause a bisect issue if the driver starts looking for generic
+> DT stuff that's not in the DTS files?
 
-'data' is malloced in snd_soc_bytes_put() and should be freed
-before leaving from the error handling cases, otherwise it will cause
-memory leak.
+It should only affect additional features being enabled. When the .dts
+changes get merged the new features just starts working. Or if the .dts
+changes go in first, the driver starts working when the driver changes
+go in.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/soc-core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+If there's some dependency between the driver and the .dts changes
+breaking booting etc, that should be fixed in the patches by
+for example removing old legacy code later on in a separate series.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b7e84a7..93341de 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3140,7 +3140,7 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- 	if (params->mask) {
- 		ret = regmap_read(codec->control_data, params->base, &val);
- 		if (ret != 0)
--			return ret;
-+			goto out;
- 
- 		val &= params->mask;
- 
-@@ -3158,13 +3158,15 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- 			((u32 *)data)[0] |= cpu_to_be32(val);
- 			break;
- 		default:
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto out;
- 		}
- 	}
- 
- 	ret = regmap_raw_write(codec->control_data, params->base,
- 			       data, len);
- 
-+out:
- 	kfree(data);
- 
- 	return ret;
+This allows us to break the dependency between arch/arm code and
+drivers in most cases to keep things simpler.
+
+Regards,
+
+Tony
