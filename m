@@ -1,46 +1,35 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ASoC: wm_adsp: fix possible memory leak in wm_adsp_load_coeff()
-Date: Tue, 12 Mar 2013 00:23:15 +0800
-Message-ID: <CAPgLHd9K-jMNYXY=sTkANCfzk_fCAF8arZUZHJmvBRAnCx1SUw@mail.gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH V2 2/2] ASoC: OMAP2+: Move McBSP, DMIC and McPDM to
+ generic DMA DT binding
+Date: Mon, 11 Mar 2013 09:27:00 -0700
+Message-ID: <20130311162700.GI26093@atomide.com>
+References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
+ <1362988223-22455-3-git-send-email-s-guiriec@ti.com>
+ <20130311143303.GC10617@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
-Cc: yongjun_wei@trendmicro.com.cn, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130311143303.GC10617@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, =?utf-8?Q?Beno=C3=AEt?= Cousson <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [130311 07:37]:
+> On Mon, Mar 11, 2013 at 08:50:22AM +0100, Sebastien Guiriec wrote:
+> > Update OMAP2+ driver in order to use OMAP DMA DT binding for OMAP2+.
+> > In case of DT boot snd_dmaengine_generic_pcm_open function is used.
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> or I can apply to ASoC if people prefer, I don't think it makes much
+> difference either way.
 
-'file' is malloced in wm_adsp_load_coeff() and should be freed
-before leaving from the error handling cases, otherwise it will cause
-memory leak.
+I suggest you take the driver changes and Benoit takes the .dts
+changes as those should be queued separately to avoid unnecessary
+merge conflicts with the .dts files.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/codecs/wm_adsp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f3f7e75..9af1bdd 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -828,7 +828,8 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
- 						&buf_list);
- 			if (!buf) {
- 				adsp_err(dsp, "Out of memory\n");
--				return -ENOMEM;
-+				ret = -ENOMEM;
-+				goto out_fw;
- 			}
- 
- 			adsp_dbg(dsp, "%s.%d: Writing %d bytes at %x\n",
-@@ -865,7 +866,7 @@ out_fw:
- 	wm_adsp_buf_free(&buf_list);
- out:
- 	kfree(file);
--	return 0;
-+	return ret;
- }
- 
- int wm_adsp1_init(struct wm_adsp *adsp)
+Tony
