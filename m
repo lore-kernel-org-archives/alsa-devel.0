@@ -1,42 +1,46 @@
 From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ALSA: asihpi - fix potential NULL pointer dereference
-Date: Tue, 12 Mar 2013 00:16:40 +0800
-Message-ID: <CAPgLHd8oUa=YMtQ1P5Qo4=M0ysqJV4L7U9RCN0W7aB+A4xLbvA@mail.gmail.com>
+Subject: [PATCH] ASoC: wm_adsp: fix possible memory leak in wm_adsp_load_coeff()
+Date: Tue, 12 Mar 2013 00:23:15 +0800
+Message-ID: <CAPgLHd9K-jMNYXY=sTkANCfzk_fCAF8arZUZHJmvBRAnCx1SUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
+Cc: yongjun_wei@trendmicro.com.cn, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-The dereference should be moved below the NULL test.
+'file' is malloced in wm_adsp_load_coeff() and should be freed
+before leaving from the error handling cases, otherwise it will cause
+memory leak.
 
 Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
- sound/pci/asihpi/asihpi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 3536b07..0aabfed 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -2549,7 +2549,7 @@ static int snd_asihpi_sampleclock_add(struct snd_card_asihpi *asihpi,
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f3f7e75..9af1bdd 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -828,7 +828,8 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
+ 						&buf_list);
+ 			if (!buf) {
+ 				adsp_err(dsp, "Out of memory\n");
+-				return -ENOMEM;
++				ret = -ENOMEM;
++				goto out_fw;
+ 			}
  
- static int snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
- {
--	struct snd_card *card = asihpi->card;
-+	struct snd_card *card;
- 	unsigned int idx = 0;
- 	unsigned int subindex = 0;
- 	int err;
-@@ -2557,6 +2557,7 @@ static int snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
+ 			adsp_dbg(dsp, "%s.%d: Writing %d bytes at %x\n",
+@@ -865,7 +866,7 @@ out_fw:
+ 	wm_adsp_buf_free(&buf_list);
+ out:
+ 	kfree(file);
+-	return 0;
++	return ret;
+ }
  
- 	if (snd_BUG_ON(!asihpi))
- 		return -EINVAL;
-+	card = asihpi->card;
- 	strcpy(card->mixername, "Asihpi Mixer");
- 
- 	err =
+ int wm_adsp1_init(struct wm_adsp *adsp)
