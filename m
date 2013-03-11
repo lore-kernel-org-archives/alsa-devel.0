@@ -1,54 +1,48 @@
-From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: davici-mcasp: "tx-num-evt" confusion with number
- of serializers
-Date: Mon, 11 Mar 2013 07:09:11 +0000
-Message-ID: <B5906170F1614E41A8A28DE3B8D121433ED402D0@DBDE01.ent.ti.com>
-References: <1631475.f7GPhLiLxV@ganymedes>
- <20130301100820.GU25302@opensource.wolfsonmicro.com>
- <B5906170F1614E41A8A28DE3B8D121433ED3D3B4@DBDE01.ent.ti.com>
- <37886470.pk5FC04C8c@ganymedes>
+From: Sebastien Guiriec <s-guiriec@ti.com>
+Subject: [PATCH V2 0/2] ASoC: OMAP2+: Update Audio IP with sDMA binding for DT boot
+Date: Mon, 11 Mar 2013 08:50:20 +0100
+Message-ID: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id A020B2650E5
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 08:09:16 +0100 (CET)
-In-Reply-To: <37886470.pk5FC04C8c@ganymedes>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mike Looijmans <mike.looijmans@topic.nl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>, Grant Likely <grant.likely@secretlab.ca>, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <b-cousson@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 08, 2013 at 21:41:05, Michal Bachraty wrote:
-> 
-> No, 
-> In davinci-mcasp code, there is fifo_level assigned with txnumevt
-> 
-> 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> 		fifo_level = dev->txnumevt;
-> 	else
-> 		fifo_level = dev->rxnumevt;
-> 
-> That code can  be changed to computing fifo_level to dev->txnumevt * 
-> active_serializers and then it is needed to remove  active_serializers from 
-> davinci-pcm. Code fuctionality will be same as is now with applied patch 
-> [PATCH v3] davinci-mcasp: Add support for multichannel playback
-> Also there is need to change dst_cidx from 4  to 0, othewise when no fifo is 
-> used, it won't work properly. 
-> 
+This patch serie is converting OMAP Audio IPs in order to use OMAP sDMA DT
+binding in case of DT boot on OMAP2+ platforms.
 
-Ok. Can you submit the next version addressing these issues?
+It is depending on the next patches:
 
-Regards,
-Vaibhav
+[1] http://www.spinics.net/lists/arm-kernel/msg227836.html
+[2] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg84668.html
+
+It has been tested on:
+- OMAP5 (sEVM/panda)in DT boot (McPDM/DMIC).
+- OMAP4 (SDP4430/Panda) in both DT/non DT boot (McPDM/DMIC)
+- OMAP3 (Beagle XM) in both DT/non DT boot (McBSP)
+
+Update since v1:
+- Put DTS patch in first.
+- Squash all OMAP IPs patch together.
+
+Sebastien Guiriec (2):
+  ARM: dts: OMAP2+: Add SDMA Audio IPs bindings
+  ASoC: OMAP2+: Move McBSP, DMIC and McPDM to generic DMA DT binding
+
+ arch/arm/boot/dts/omap2420.dtsi |    6 ++++++
+ arch/arm/boot/dts/omap2430.dtsi |   15 +++++++++++++++
+ arch/arm/boot/dts/omap3.dtsi    |   15 +++++++++++++++
+ arch/arm/boot/dts/omap4.dtsi    |   17 +++++++++++++++++
+ arch/arm/boot/dts/omap5.dtsi    |   14 ++++++++++++++
+ sound/soc/omap/mcbsp.c          |   26 ++++++++++++++++----------
+ sound/soc/omap/omap-dmic.c      |   15 +++++++++------
+ sound/soc/omap/omap-mcpdm.c     |   22 ++++++++++++++--------
+ sound/soc/omap/omap-pcm.c       |   12 ++++++++++--
+ sound/soc/omap/omap-pcm.h       |    1 +
+ 10 files changed, 117 insertions(+), 26 deletions(-)
+
+-- 
+1.7.10.4
+
