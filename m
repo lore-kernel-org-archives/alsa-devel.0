@@ -1,63 +1,76 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v4] ASoC: soc-compress: Cancel delayed power
-	down if needed
-Date: Mon, 11 Mar 2013 09:25:26 +0000
-Message-ID: <20130311092526.GA2141@opensource.wolfsonmicro.com>
-References: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130126085234.GB30594@opensource.wolfsonmicro.com>
- <20130308165252.GA22868@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow
+ warning
+Date: Mon, 11 Mar 2013 11:01:36 +0100
+Message-ID: <513DAB80.1020900@metafoo.de>
+References: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E50F26086D
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 10:25:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20130308165252.GA22868@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tim Gardner <tim.gardner@canonical.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When a new stream is being opened it is necessary to cancel any delayed
-power down of the audio.
+On 03/10/2013 06:34 PM, Tim Gardner wrote:
+> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
+> amd64 the result of the ones complement operator is then truncated to
+> unsigned int according to the prototype of snd_soc_update_bits(). I think
+> gcc is correctly warning that the upper 32 bits are lost.
+> 
+> sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
+> sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+> 
+> gcc version 4.6.3
+> 
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: device-drivers-devel@blackfin.uclinux.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
+>  sound/soc/codecs/adau1373.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+> index 068b3ae..56ed788 100644
+> --- a/sound/soc/codecs/adau1373.c
+> +++ b/sound/soc/codecs/adau1373.c
+> @@ -132,7 +132,7 @@ struct adau1373 {
+>  #define ADAU1373_DAI_FORMAT_I2S		0x2
+>  #define ADAU1373_DAI_FORMAT_DSP		0x3
+>  
+> -#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
+> +#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/soc-compress.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+Hm, that's a bit ugly. How about the following instead:
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b5b3db7..44bad67 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -198,6 +198,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-@@ -220,6 +221,10 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 			goto out;
- 	}
- 
-+	/* cancel any delayed stream shutdown that is pending */
-+	rtd->pop_wait = 0;
-+	cancel_delayed_work_sync(&rtd->delayed_work);
-+
- 	snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
- 				SND_SOC_DAPM_STREAM_START);
- 
--- 
-1.7.2.5
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index 068b3ae..1aa10dd 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -133,6 +133,8 @@ struct adau1373 {
+ #define ADAU1373_DAI_FORMAT_DSP		0x3
+
+ #define ADAU1373_BCLKDIV_SOURCE		BIT(5)
++#define ADAU1373_BCLKDIV_SR_MASK	(0x07 << 2)
++#define ADAU1373_BCLKDIV_BCLK_MASK	0x03
+ #define ADAU1373_BCLKDIV_32		0x03
+ #define ADAU1373_BCLKDIV_64		0x02
+ #define ADAU1373_BCLKDIV_128		0x01
+@@ -937,7 +939,8 @@ static int adau1373_hw_params(struct snd_pcm_substream
+*substream,
+ 	adau1373_dai->enable_src = (div != 0);
+
+ 	snd_soc_update_bits(codec, ADAU1373_BCLKDIV(dai->id),
+-		~ADAU1373_BCLKDIV_SOURCE, (div << 2) | ADAU1373_BCLKDIV_64);
++		ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK,
++		(div << 2) | ADAU1373_BCLKDIV_64);
+
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
