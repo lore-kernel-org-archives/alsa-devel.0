@@ -1,48 +1,52 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: twl4030 and Puredata/jack
-Date: Mon, 11 Mar 2013 18:31:22 +0100
-Message-ID: <513E14EA.7000305@ti.com>
-References: <CAAuz6aqqixPxBZQQ5GJinPDfseSVKcnBCvMnLt-6Uad4fP9uPw@mail.gmail.com>
- <513DE004.2060305@ti.com>
+From: Dave Helstroom <helstroom@google.com>
+Subject: Re: [PATCH][RESEND] Add a USB audio quirk for the NuForce UDH-100 device.
+Date: Mon, 11 Mar 2013 11:03:42 -0700
+Message-ID: <CAOcFWma6fMqwqzMxFfCM7hOqk04FBk9JkKZjwekki_GFUR2jSQ@mail.gmail.com>
+References: <1362973920-4942-1-git-send-email-helstroom@google.com>
+	<513D968C.1060905@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 61A5326535E
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2013 18:31:31 +0100 (CET)
-In-Reply-To: <513DE004.2060305@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anders Alex <alibobar@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <513D968C.1060905@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: perex@perex.cz, tiwai@suse.de, eldad@fogrefinery.com, damien@zamaudio.com, pete.leigh@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/2013 02:45 PM, Peter Ujfalusi wrote:
-> On 03/08/2013 04:31 PM, Anders Alex wrote:
->> With 'jackd -d alsa -S'  (need s16_le):
-> =
+On 11 March 2013 01:32, Clemens Ladisch <clemens@ladisch.de> wrote:
+> David Helstroom wrote:
+>> Interface 1 does not exist
+>
+> Then it doesn't need a quirk, does it?
 
-> I'm not really a jack user, but can you try:
-> jackd -d alsa -o 2 -i 2 -S -C hw:0,1 -P hw:0,0
-> =
+Perhaps that's the case. I just know that without
+QUIRK_IGNORE_INTERFACE for ifnum 1, the kernel refuses to properly
+configure the output device. From dmesg without this patch:
+[ 3254.192225] usb 1-1: new high-speed USB device number 6 using ehci_hcd
+[ 3254.343554] usb 1-1: config 1 has an invalid interface number: 3 but max is 2
+[ 3254.343558] usb 1-1: config 1 has an invalid interface number: 3 but max is 2
+[ 3254.343562] usb 1-1: config 1 has an invalid interface number: 3 but max is 2
+[ 3254.343565] usb 1-1: config 1 has an invalid interface number: 3 but max is 2
+[ 3254.343568] usb 1-1: config 1 has no interface number 1
+[ 3254.345988] input: Nuforce Inc., Nuforce 192k USB DAC as
+/devices/pci0000:00/0000:00:1a.7/usb1/1-1/1-1:1.0/input/input10
+[ 3254.346202] generic-usb 0003:16D0:0631.0007: input,hidraw0: USB HID
+v1.00 Device [Nuforce Inc., Nuforce 192k USB DAC] on
+usb-0000:00:1a.7-1/input0
+[ 3254.355970] Audio class v2 interfaces need an interface association
+[ 3254.355988] snd-usb-audio: probe of 1-1:1.2 failed with error -5
+[ 3254.356045] usbcore: registered new interface driver snd-usb-audio
 
-> So you tell jack to play on hw:0,0 record on hw:0,1 use stereo for both.
+>> and Interface 0 should be ignored.
+>
+> Why?
+>
+> If the driver doesn't like something in interface 0, that bug should be
+> fixed.
+>
+> What is the output of "lsusb -v" for this device?
 
-I have tried jack on my BeagleBoard (using twl4030 codec):
-
-jackd -d alsa -o 2 -i 2 -S -C hw:0,0 -P hw:0,0
-mplayer -ao jack media/music/nin-echoplex.flac
-
-It works fine.
-
--- =
-
-P=E9ter
+I've put up the relevant output on: http://pastebin.com/i4wpQ35B
+Note that I'm testing on an older kernel here (3.2.5), so perhaps a
+more fundamental fix has already made its way into the USB audio
+stack. I'll arrange to test on a more recent kernel too.
