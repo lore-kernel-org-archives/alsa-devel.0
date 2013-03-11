@@ -1,90 +1,64 @@
-From: Tim Gardner <tim.gardner@canonical.com>
-Subject: Re: [PATCH] ASoC: adau1373: adau1373_hw_params: Silence overflow
- warning
-Date: Mon, 11 Mar 2013 09:37:57 -0600
-Message-ID: <513DFA55.2050104@canonical.com>
-References: <1362936878-84443-1-git-send-email-tim.gardner@canonical.com> <513DAB80.1020900@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <513DAB80.1020900@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+From: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+Subject: [PATCH] omap: convert to devm_ioremap_resource()
+Date: Mon, 11 Mar 2013 17:58:57 +0200
+Message-ID: <1363017537-11602-1-git-send-email-silviupopescu1990@gmail.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/2013 04:01 AM, Lars-Peter Clausen wrote:
-> On 03/10/2013 06:34 PM, Tim Gardner wrote:
->> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
->> amd64 the result of the ones complement operator is then truncated to
->> unsigned int according to the prototype of snd_soc_update_bits(). I think
->> gcc is correctly warning that the upper 32 bits are lost.
->>
->> sound/soc/codecs/adau1373.c: In function 'adau1373_hw_params':
->> sound/soc/codecs/adau1373.c:940:3: warning: large integer implicitly truncated to unsigned type [-Woverflow]
->>
->> gcc version 4.6.3
->>
->> Cc: Lars-Peter Clausen <lars@metafoo.de>
->> Cc: Liam Girdwood <lgirdwood@gmail.com>
->> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
->> Cc: Jaroslav Kysela <perex@perex.cz>
->> Cc: Takashi Iwai <tiwai@suse.de>
->> Cc: device-drivers-devel@blackfin.uclinux.org
->> Cc: alsa-devel@alsa-project.org
->> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
->> ---
->>  sound/soc/codecs/adau1373.c |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
->> index 068b3ae..56ed788 100644
->> --- a/sound/soc/codecs/adau1373.c
->> +++ b/sound/soc/codecs/adau1373.c
->> @@ -132,7 +132,7 @@ struct adau1373 {
->>  #define ADAU1373_DAI_FORMAT_I2S		0x2
->>  #define ADAU1373_DAI_FORMAT_DSP		0x3
->>  
->> -#define ADAU1373_BCLKDIV_SOURCE		BIT(5)
->> +#define ADAU1373_BCLKDIV_SOURCE		(unsigned int)BIT(5)
-> 
-> Hm, that's a bit ugly. How about the following instead:
-> 
-> diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-> index 068b3ae..1aa10dd 100644
-> --- a/sound/soc/codecs/adau1373.c
-> +++ b/sound/soc/codecs/adau1373.c
-> @@ -133,6 +133,8 @@ struct adau1373 {
->  #define ADAU1373_DAI_FORMAT_DSP		0x3
-> 
->  #define ADAU1373_BCLKDIV_SOURCE		BIT(5)
-> +#define ADAU1373_BCLKDIV_SR_MASK	(0x07 << 2)
-> +#define ADAU1373_BCLKDIV_BCLK_MASK	0x03
->  #define ADAU1373_BCLKDIV_32		0x03
->  #define ADAU1373_BCLKDIV_64		0x02
->  #define ADAU1373_BCLKDIV_128		0x01
-> @@ -937,7 +939,8 @@ static int adau1373_hw_params(struct snd_pcm_substream
-> *substream,
->  	adau1373_dai->enable_src = (div != 0);
-> 
->  	snd_soc_update_bits(codec, ADAU1373_BCLKDIV(dai->id),
-> -		~ADAU1373_BCLKDIV_SOURCE, (div << 2) | ADAU1373_BCLKDIV_64);
-> +		ADAU1373_BCLKDIV_SR_MASK | ADAU1373_BCLKDIV_BCLK_MASK,
-> +		(div << 2) | ADAU1373_BCLKDIV_64);
-> 
->  	switch (params_format(params)) {
->  	case SNDRV_PCM_FORMAT_S16_LE:
-> 
-> 
+Convert all uses of devm_request_and_ioremap() to the newly introduced
+devm_ioremap_resource() which provides more consistent error handling.
 
-That seems way more complicated then need be. It also uses 2 bits in the
-mask whereas the original code only used 1, e.g., bit 5. Is that correct ?
+devm_ioremap_resource() provides its own error messages so all explicit
+error messages can be removed from the failure code paths.
 
-How about just open coding the macro thusly:
+Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+---
+ sound/soc/omap/omap-dmic.c  |    9 +++------
+ sound/soc/omap/omap-mcpdm.c |    8 +++-----
+ 2 files changed, 6 insertions(+), 11 deletions(-)
 
-#define ADAU1373_BCLKDIV_SOURCE (1<<5) /*BIT(5)*/
-
-rtg
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 77e9e7e..8ebaf11 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -493,12 +493,9 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 		goto err_put_clk;
+ 	}
+ 
+-	dmic->io_base = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!dmic->io_base) {
+-		dev_err(&pdev->dev, "cannot remap\n");
+-		ret = -ENOMEM;
+-		goto err_put_clk;
+-	}
++	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(dmic->io_base))
++		return PTR_ERR(dmic->io_base);
+ 
+ 	ret = snd_soc_register_dai(&pdev->dev, &omap_dmic_dai);
+ 	if (ret)
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 079f277..ddfcc18 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -464,11 +464,9 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
+ 	if (res == NULL)
+ 		return -ENOMEM;
+ 
+-	mcpdm->io_base = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!mcpdm->io_base) {
+-		dev_err(&pdev->dev, "cannot remap\n");
+-		return -ENOMEM;
+-	}
++	mcpdm->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mcpdm->io_base))
++		return PTR_ERR(mcpdm->io_base);
+ 
+ 	mcpdm->irq = platform_get_irq(pdev, 0);
+ 	if (mcpdm->irq < 0)
 -- 
-Tim Gardner tim.gardner@canonical.com
+1.7.9.5
+
