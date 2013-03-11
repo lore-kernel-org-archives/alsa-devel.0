@@ -1,24 +1,31 @@
 From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH V2 2/2] ASoC: OMAP2+: Move McBSP, DMIC and McPDM to generic
- DMA DT binding
-Date: Mon, 11 Mar 2013 20:29:23 +0200
-Message-ID: <513E2283.5000100@bitmer.com>
-References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com> <1362988223-22455-3-git-send-email-s-guiriec@ti.com> <513DE7BB.90303@ti.com>
+Subject: Re: [PATCH] omap: convert to devm_ioremap_resource()
+Date: Mon, 11 Mar 2013 20:43:47 +0200
+Message-ID: <513E25E3.5050907@bitmer.com>
+References: <1363017537-11602-1-git-send-email-silviupopescu1990@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <513DE7BB.90303@ti.com>
+In-Reply-To: <1363017537-11602-1-git-send-email-silviupopescu1990@gmail.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Sebastien Guiriec <s-guiriec@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?ISO-8859-1?Q?Beno=EE?= =?ISO-8859-1?Q?t_Cousson?= <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+To: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+Cc: linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/2013 04:18 PM, Peter Ujfalusi wrote:
-> On 03/11/2013 08:50 AM, Sebastien Guiriec wrote:
->> Update OMAP2+ driver in order to use OMAP DMA DT binding for OMAP2+.
->> In case of DT boot snd_dmaengine_generic_pcm_open function is used.
+Hi
+
+On 03/11/2013 05:58 PM, Silviu-Mihai Popescu wrote:
+> Convert all uses of devm_request_and_ioremap() to the newly introduced
+> devm_ioremap_resource() which provides more consistent error handling.
 > 
-> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> devm_ioremap_resource() provides its own error messages so all explicit
+> error messages can be removed from the failure code paths.
+> 
+> Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+> ---
+>  sound/soc/omap/omap-dmic.c  |    9 +++------
+>  sound/soc/omap/omap-mcpdm.c |    8 +++-----
+>  2 files changed, 6 insertions(+), 11 deletions(-)
 > 
 Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
