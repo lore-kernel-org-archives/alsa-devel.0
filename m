@@ -1,7 +1,7 @@
 From: David Helstroom <helstroom@google.com>
-Subject: [PATCH] Add a new USB audio quirk for the NuForce UDH-100 device. Interface 1 does not exist and Interface 0 should be ignored. Before this patch, the device would not show up in /dev/snd (and dmesg showed Error -5 from the snd-alsa-usb module); after this patch, the device shows up correctly in /dev/snd and ALSA/Pulseaudio can access it.
-Date: Sun, 10 Mar 2013 19:26:41 -0700
-Message-ID: <1362968801-871-1-git-send-email-helstroom@google.com>
+Subject: [PATCH][RESEND] Add a USB audio quirk for the NuForce UDH-100 device.
+Date: Sun, 10 Mar 2013 20:52:00 -0700
+Message-ID: <1362973920-4942-1-git-send-email-helstroom@google.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.de
@@ -9,6 +9,11 @@ Cc: eldad@fogrefinery.com, damien@zamaudio.com, clemens@ladisch.de, pete.leigh@g
 List-Id: alsa-devel@alsa-project.org
 
 From: Dave Helstroom <helstroom@google.com>
+
+Interface 1 does not exist and Interface 0 should be ignored. Before this
+patch, the device would not show up in /dev/snd (and dmesg showed Error -5
+from the snd-alsa-usb module); after this patch, the device shows up
+correctly in /dev/snd and ALSA/Pulseaudio can access it.
 
 
 Signed-off-by: Dave Helstroom <helstroom@google.com>
