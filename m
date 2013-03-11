@@ -1,64 +1,42 @@
-From: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
-Subject: [PATCH] omap: convert to devm_ioremap_resource()
-Date: Mon, 11 Mar 2013 17:58:57 +0200
-Message-ID: <1363017537-11602-1-git-send-email-silviupopescu1990@gmail.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] ALSA: asihpi - fix potential NULL pointer dereference
+Date: Tue, 12 Mar 2013 00:16:40 +0800
+Message-ID: <CAPgLHd8oUa=YMtQ1P5Qo4=M0ysqJV4L7U9RCN0W7aB+A4xLbvA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert all uses of devm_request_and_ioremap() to the newly introduced
-devm_ioremap_resource() which provides more consistent error handling.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-devm_ioremap_resource() provides its own error messages so all explicit
-error messages can be removed from the failure code paths.
+The dereference should be moved below the NULL test.
 
-Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
- sound/soc/omap/omap-dmic.c  |    9 +++------
- sound/soc/omap/omap-mcpdm.c |    8 +++-----
- 2 files changed, 6 insertions(+), 11 deletions(-)
+ sound/pci/asihpi/asihpi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index 77e9e7e..8ebaf11 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -493,12 +493,9 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 		goto err_put_clk;
- 	}
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 3536b07..0aabfed 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -2549,7 +2549,7 @@ static int snd_asihpi_sampleclock_add(struct snd_card_asihpi *asihpi,
  
--	dmic->io_base = devm_request_and_ioremap(&pdev->dev, res);
--	if (!dmic->io_base) {
--		dev_err(&pdev->dev, "cannot remap\n");
--		ret = -ENOMEM;
--		goto err_put_clk;
--	}
-+	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(dmic->io_base))
-+		return PTR_ERR(dmic->io_base);
+ static int snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
+ {
+-	struct snd_card *card = asihpi->card;
++	struct snd_card *card;
+ 	unsigned int idx = 0;
+ 	unsigned int subindex = 0;
+ 	int err;
+@@ -2557,6 +2557,7 @@ static int snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
  
- 	ret = snd_soc_register_dai(&pdev->dev, &omap_dmic_dai);
- 	if (ret)
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 079f277..ddfcc18 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -464,11 +464,9 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- 	if (res == NULL)
- 		return -ENOMEM;
+ 	if (snd_BUG_ON(!asihpi))
+ 		return -EINVAL;
++	card = asihpi->card;
+ 	strcpy(card->mixername, "Asihpi Mixer");
  
--	mcpdm->io_base = devm_request_and_ioremap(&pdev->dev, res);
--	if (!mcpdm->io_base) {
--		dev_err(&pdev->dev, "cannot remap\n");
--		return -ENOMEM;
--	}
-+	mcpdm->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(mcpdm->io_base))
-+		return PTR_ERR(mcpdm->io_base);
- 
- 	mcpdm->irq = platform_get_irq(pdev, 0);
- 	if (mcpdm->irq < 0)
--- 
-1.7.9.5
-
+ 	err =
