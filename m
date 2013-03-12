@@ -1,77 +1,79 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: davinci-mcasp: clean ip
- davinci_hw_common_param()
-Date: Tue, 12 Mar 2013 19:04:19 +0000
-Message-ID: <20130312190418.GZ19942@opensource.wolfsonmicro.com>
-References: <1362748778-11076-1-git-send-email-zonque@gmail.com>
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: Re: [PATCH linux-next v2] ASoC: adau1373: adau1373_hw_params: Silence
+ overflow warning
+Date: Tue, 12 Mar 2013 13:17:26 -0600
+Message-ID: <513F7F46.3050200@canonical.com>
+References: <513E2895.6040904@metafoo.de> <1363029503-23880-1-git-send-email-tim.gardner@canonical.com> <20130312184741.GP19942@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2077729164114889799=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 94E6D265DF9
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 20:04:20 +0100 (CET)
-In-Reply-To: <1362748778-11076-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, Vaibhav Bedia <vaibhav.bedia@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130312184741.GP19942@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
---===============2077729164114889799==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mu4zWe6QekgCAJVd"
-Content-Disposition: inline
+On 03/12/2013 12:47 PM, Mark Brown wrote:
+> On Mon, Mar 11, 2013 at 01:18:23PM -0600, Tim Gardner wrote:
+>> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL
+>> constants. On amd64 the result of the ones complement operator is
+>> then truncated to
+> 
+> Applied, but please don't bury patches in the middle of e-mail
+> threads (I nearly deleted this unread) and avoid including
+> 
 
+Point taken. In the future I'll start a new thread for each v(n).
 
---mu4zWe6QekgCAJVd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> Cc: Lars-Peter Clausen <lars@metafoo.de> Cc: Liam Girdwood
+>> <lgirdwood@gmail.com> Cc: Mark Brown
+>> <broonie@opensource.wolfsonmicro.com> Cc: Jaroslav Kysela
+>> <perex@perex.cz> Cc: Takashi Iwai <tiwai@suse.de> Cc:
+>> device-drivers-devel@blackfin.uclinux.org Cc:
+>> alsa-devel@alsa-project.org Signed-off-by: Tim Gardner
+>> <tim.gardner@canonical.com>
+> 
+> enormous CC lists like this in the body of the mail.
+> 
 
-On Fri, Mar 08, 2013 at 02:19:38PM +0100, Daniel Mack wrote:
-> As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
-> Add support for multichannel playback") duplicated the logic of
-> counting the active serializers. That can be avoided by shifting
-> the code around a bit.
+I'm just going by the default output of scripts/get_maintainer.pl. Are
+there better options to filter the roles ? In this case I received a
+review from a supporter (Lars), and the patch is being committed by
+yet another supporter (yourself). Would you have noticed this patch
+had I restricted the Cc list to just maintainers and lists ?
 
-Applied, thanks.
+Lars-Peter Clausen <lars@metafoo.de> (supporter:ANALOG DEVICES IN...)
+Liam Girdwood <lgirdwood@gmail.com> (supporter:SOUND - SOC LAYER...)
+Mark Brown <broonie@opensource.wolfsonmicro.com> (supporter:SOUND -
+SOC LAYER...)
+Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
+Takashi Iwai <tiwai@suse.de> (maintainer:SOUND)
+device-drivers-devel@blackfin.uclinux.org (open list:ANALOG DEVICES IN...)
+alsa-devel@alsa-project.org (moderated list:ANALOG DEVICES IN...)
+linux-kernel@vger.kernel.org (open list)
 
---mu4zWe6QekgCAJVd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
+rtg
+- -- 
+Tim Gardner tim.gardner@canonical.com
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
 
-iQIcBAEBAgAGBQJRP3wsAAoJELSic+t+oim9MVAP/19R0aQ1h0Gca9SCUXxNT3z/
-oisGIPEVAJaRjXA+lK0qnctiwyA2beb5J1GBt13iwSOFm2FYtRC4ncouDYghRPu4
-bba4hNwFT6SGN+UJvGShTBv2LmfiKsATeR4Qx0Nu2UO2im/1pWon0SYDO2Ga51S3
-LY7bmEYNhtn9YHZ99+4oWdta3bYzKbtZB440YomxTWMCbskDw7B4vKn5nRqpaJ7w
-RZnsjI2Y91sF2Kkv3T9ohGrCEiJz0hjzGUEbUBDhpWeo+/mJvXk7rmsnx2doQYDZ
-W44rf8Frilww6E487GuCi9IH1C5grjnooaWKS/cbmF9Ssn9Gwq/JM5+DoX5+s1Qe
-ab6ML6kJKNUgzgA72H0tv+nCQSayRLWGvhyyN3sossDpOXAay0gNT6YxIWAwv4/E
-793OhTZqSvHinFR+7JB3mgv56JCzpqeDj6tz8wJibGTK/PUnFLtyvGzCt9Dmj5/U
-zpfVnOsLXTNQRFvkKYPf02RkmSCJG82Jr9Wi0SFvNSzEmaqixIb/hIN1MnF5gAzT
-+lz3V/24x43KKTVHTbwCM3z5JJD8JSFr8W/VsTYXrwrTpNeSJ+H8m57q9OY4PMtj
-Hz++7kzxDVgXldUOF8VwgowSBud6+AScwImkHsw0+IP5Zb8et82q3GPe92nDI6G6
-bh6DBpxTK8IheYjEZe/x
-=lJGi
+iQIcBAEBCgAGBQJRP38/AAoJED12yEX6FEfKppEP/jAi6jFpqKwNF3KPiH4j7E9m
+PYiydQTVHxgHlqzhJw+7+hyfz7fgbDSew0BpC84gtUYp2xcqCePkNoExT8COk08U
+wzIVm6Z1OT57RZDBMoICcH/Xm9/Y2/cf4eXOgiEw5tfP25Gwae2Vep9NcHkCz3iA
+4XNg+Cpq+Bu+l4f0WTTUmZlJmhbuai/knEodz413hIHXOhAXLe/ZnMSE2wh9/UnD
+H17z7pijKcAMAtcYJmLGT928U2rereW4rlR3+jh9k7CQ4wADo8XrJHNVXo7fgS4Q
+ws7hTWsaMuDTXKvg6fWbD9uMJc3OFodZ/ig0uEbZz7LXoxQd1M8MywJnInz6mGBQ
+9UnSg4AZOqs64Hm9X98902Fzro8dAa0ltjyPCxYgFhuORG86+SFseS514Y8aYWS8
+3/fdgR/kb4kNK4Zd+bDZv34/IEeIJiXlkUshIbhc58ErzVKP54shova2793UVcOk
+f5JmM7Tx/ctm2jzj3NYUS6HUsXucaE1K6HSPZ5qJlZyk6s59jJJwNWTILkwNu3Nj
+qxlPLWlRcyY8QuPQILx5podOhDmmAduPc8VOVF0YRed+J39BHJRVer3k/i2S/jkz
+ACULLlA6edESk3/poeGdBP1S0UhuI3PlzMh9Kwkkx6O8r8COgNVa1hfBSc6DAj+i
+YRSlhhPGE022ZQ6VhKUf
+=VhzH
 -----END PGP SIGNATURE-----
-
---mu4zWe6QekgCAJVd--
-
---===============2077729164114889799==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2077729164114889799==--
