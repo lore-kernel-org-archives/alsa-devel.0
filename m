@@ -1,59 +1,238 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH -next] ASoC: tas5086: use module_i2c_driver to simplify
- the code
-Date: Tue, 12 Mar 2013 14:40:29 +0100
-Message-ID: <513F304D.4090405@gmail.com>
-References: <CAPgLHd_J+xdx6UdSFahEGmPJX-SXEkQBL7xHA7MEGKf21=32Uw@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] Revert "ALSA: hda - Remove limit of widget
+	connections"
+Date: Tue, 12 Mar 2013 15:05:02 +0100
+Message-ID: <1363097102-7654-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAPgLHd_J+xdx6UdSFahEGmPJX-SXEkQBL7xHA7MEGKf21=32Uw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, rob.herring@calxeda.com, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53A1E261666
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 15:05:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12.03.2013 14:36, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> 
-> Use the module_i2c_driver() macro to make the code smaller
-> and a bit simpler.
+This reverts commit 4eea30914facd2c99061cd70e5b05d3c76c743a2.
 
-Thanks for catching this!
+The commit causes an error with node ranges: In my case, connection
+list length is 3, with a connection list read of 0x1e9915: a total of
+6 nids (0x15, 0x16, 0x17, 0x18, 0x19, 0x1e). Since the new code makes
+us allocate only 3 nids to the array sent to get_raw_connections,
+the function fails.
+---
+ sound/pci/hda/hda_codec.c  |   62 +++++++++++++++-----------------------------
+ sound/pci/hda/hda_codec.h  |    4 ++-
+ sound/pci/hda/hda_proc.c   |   20 +++-----------
+ sound/pci/hda/patch_hdmi.c |    3 ---
+ 4 files changed, 28 insertions(+), 61 deletions(-)
 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-
-Acked-by: Daniel Mack <zonque@gmail.com>
-
-
-
-> ---
->  sound/soc/codecs/tas5086.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-> index 008bea4..40cee84 100644
-> --- a/sound/soc/codecs/tas5086.c
-> +++ b/sound/soc/codecs/tas5086.c
-> @@ -584,17 +584,7 @@ static struct i2c_driver tas5086_i2c_driver = {
->  	.remove		= tas5086_i2c_remove,
->  };
->  
-> -static int __init tas5086_modinit(void)
-> -{
-> -	return i2c_add_driver(&tas5086_i2c_driver);
-> -}
-> -module_init(tas5086_modinit);
-> -
-> -static void __exit tas5086_modexit(void)
-> -{
-> -	i2c_del_driver(&tas5086_i2c_driver);
-> -}
-> -module_exit(tas5086_modexit);
-> +module_i2c_driver(tas5086_i2c_driver);
->  
->  MODULE_AUTHOR("Daniel Mack <zonque@gmail.com>");
->  MODULE_DESCRIPTION("Texas Instruments TAS5086 ALSA SoC Codec Driver");
-> 
-> 
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 97c68dd..e5e8549 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -382,23 +382,13 @@ static void remove_conn_list(struct hda_codec *codec)
+ /* read the connection and add to the cache */
+ static int read_and_add_raw_conns(struct hda_codec *codec, hda_nid_t nid)
+ {
+-	hda_nid_t list[32];
+-	hda_nid_t *result = list;
++	hda_nid_t list[HDA_MAX_CONNECTIONS];
+ 	int len;
+ 
+ 	len = snd_hda_get_raw_connections(codec, nid, list, ARRAY_SIZE(list));
+-	if (len == -ENOSPC) {
+-		len = snd_hda_get_num_raw_conns(codec, nid);
+-		result = kmalloc(sizeof(hda_nid_t) * len, GFP_KERNEL);
+-		if (!result)
+-			return -ENOMEM;
+-		len = snd_hda_get_raw_connections(codec, nid, result, len);
+-	}
+-	if (len >= 0)
+-		len = snd_hda_override_conn_list(codec, nid, len, result);
+-	if (result != list)
+-		kfree(result);
+-	return len;
++	if (len < 0)
++		return len;
++	return snd_hda_override_conn_list(codec, nid, len, list);
+ }
+ 
+ /**
+@@ -476,27 +466,6 @@ int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_get_connections);
+ 
+-/* return CONNLIST_LEN parameter of the given widget */
+-static unsigned int get_num_conns(struct hda_codec *codec, hda_nid_t nid)
+-{
+-	unsigned int wcaps = get_wcaps(codec, nid);
+-	unsigned int parm;
+-
+-	if (!(wcaps & AC_WCAP_CONN_LIST) &&
+-	    get_wcaps_type(wcaps) != AC_WID_VOL_KNB)
+-		return 0;
+-
+-	parm = snd_hda_param_read(codec, nid, AC_PAR_CONNLIST_LEN);
+-	if (parm == -1)
+-		parm = 0;
+-	return parm;
+-}
+-
+-int snd_hda_get_num_raw_conns(struct hda_codec *codec, hda_nid_t nid)
+-{
+-	return get_num_conns(codec, nid) & AC_CLIST_LENGTH;
+-}
+-
+ /**
+  * snd_hda_get_raw_connections - copy connection list without cache
+  * @codec: the HDA codec
+@@ -514,16 +483,19 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
+ 	unsigned int parm;
+ 	int i, conn_len, conns;
+ 	unsigned int shift, num_elems, mask;
++	unsigned int wcaps;
+ 	hda_nid_t prev_nid;
+ 	int null_count = 0;
+ 
+ 	if (snd_BUG_ON(!conn_list || max_conns <= 0))
+ 		return -EINVAL;
+ 
+-	parm = get_num_conns(codec, nid);
+-	if (!parm)
++	wcaps = get_wcaps(codec, nid);
++	if (!(wcaps & AC_WCAP_CONN_LIST) &&
++	    get_wcaps_type(wcaps) != AC_WID_VOL_KNB)
+ 		return 0;
+ 
++	parm = snd_hda_param_read(codec, nid, AC_PAR_CONNLIST_LEN);
+ 	if (parm & AC_CLIST_LONG) {
+ 		/* long form */
+ 		shift = 16;
+@@ -580,13 +552,21 @@ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
+ 				continue;
+ 			}
+ 			for (n = prev_nid + 1; n <= val; n++) {
+-				if (conns >= max_conns)
+-					return -ENOSPC;
++				if (conns >= max_conns) {
++					snd_printk(KERN_ERR "hda_codec: "
++						   "Too many connections %d for NID 0x%x\n",
++						   conns, nid);
++					return -EINVAL;
++				}
+ 				conn_list[conns++] = n;
+ 			}
+ 		} else {
+-			if (conns >= max_conns)
+-				return -ENOSPC;
++			if (conns >= max_conns) {
++				snd_printk(KERN_ERR "hda_codec: "
++					   "Too many connections %d for NID 0x%x\n",
++					   conns, nid);
++				return -EINVAL;
++			}
+ 			conn_list[conns++] = val;
+ 		}
+ 		prev_nid = val;
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 23ca172..246ed53 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -551,6 +551,9 @@ enum {
+ 	AC_JACK_PORT_BOTH,
+ };
+ 
++/* max. connections to a widget */
++#define HDA_MAX_CONNECTIONS	32
++
+ /* max. codec address */
+ #define HDA_MAX_CODEC_ADDRESS	0x0f
+ 
+@@ -957,7 +960,6 @@ snd_hda_get_num_conns(struct hda_codec *codec, hda_nid_t nid)
+ {
+ 	return snd_hda_get_connections(codec, nid, NULL, 0);
+ }
+-int snd_hda_get_num_raw_conns(struct hda_codec *codec, hda_nid_t nid);
+ int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
+ 			    hda_nid_t *conn_list, int max_conns);
+ int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index 0fee8fa..5e02f26 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -22,7 +22,6 @@
+  */
+ 
+ #include <linux/init.h>
+-#include <linux/slab.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+@@ -624,7 +623,7 @@ static void print_codec_info(struct snd_info_entry *entry,
+ 			snd_hda_param_read(codec, nid,
+ 					   AC_PAR_AUDIO_WIDGET_CAP);
+ 		unsigned int wid_type = get_wcaps_type(wid_caps);
+-		hda_nid_t *conn = NULL;
++		hda_nid_t conn[HDA_MAX_CONNECTIONS];
+ 		int conn_len = 0;
+ 
+ 		snd_iprintf(buffer, "Node 0x%02x [%s] wcaps 0x%x:", nid,
+@@ -661,18 +660,9 @@ static void print_codec_info(struct snd_info_entry *entry,
+ 		if (wid_type == AC_WID_VOL_KNB)
+ 			wid_caps |= AC_WCAP_CONN_LIST;
+ 
+-		if (wid_caps & AC_WCAP_CONN_LIST) {
+-			conn_len = snd_hda_get_num_raw_conns(codec, nid);
+-			if (conn_len > 0) {
+-				conn = kmalloc(sizeof(hda_nid_t) * conn_len,
+-					       GFP_KERNEL);
+-				if (!conn)
+-					return;
+-				if (snd_hda_get_raw_connections(codec, nid, conn,
+-								conn_len) < 0)
+-					conn_len = 0;
+-			}
+-		}
++		if (wid_caps & AC_WCAP_CONN_LIST)
++			conn_len = snd_hda_get_raw_connections(codec, nid, conn,
++							   HDA_MAX_CONNECTIONS);
+ 
+ 		if (wid_caps & AC_WCAP_IN_AMP) {
+ 			snd_iprintf(buffer, "  Amp-In caps: ");
+@@ -745,8 +735,6 @@ static void print_codec_info(struct snd_info_entry *entry,
+ 
+ 		if (codec->proc_widget_hook)
+ 			codec->proc_widget_hook(buffer, codec, nid);
+-
+-		kfree(conn);
+ 	}
+ 	snd_hda_power_down(codec);
+ }
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 78e1827..d24af4a 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -64,9 +64,6 @@ struct hdmi_spec_per_cvt {
+ 	unsigned int maxbps;
+ };
+ 
+-/* max. connections to a widget */
+-#define HDA_MAX_CONNECTIONS	32
+-
+ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
+ 	int num_mux_nids;
+-- 
+1.7.9.5
