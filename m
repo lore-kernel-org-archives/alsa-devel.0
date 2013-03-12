@@ -1,79 +1,76 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 05/10] ASoC: pcm030 audio fabric: remove __init from probe
-Date: Tue, 12 Mar 2013 18:55:50 +0000
-Message-ID: <20130312185549.GW19942@opensource.wolfsonmicro.com>
-References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-6-git-send-email-mpa@pengutronix.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2 v2] ASoC: add
+	snd_soc_register_component()
+Date: Tue, 12 Mar 2013 19:57:47 +0100
+Message-ID: <513F7AAB.8040401@metafoo.de>
+References: <87fw06ace9.wl%kuninori.morimoto.gx@renesas.com>
+ <87k3pdtnlk.wl%kuninori.morimoto.gx@renesas.com>
+ <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
+ <513F71BF.3040608@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6991229811840859789=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1362940391-8338-6-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-039.synserver.de (smtp-out-044.synserver.de
+ [212.40.185.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9585D265F1A
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:56:17 +0100 (CET)
+In-Reply-To: <513F71BF.3040608@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/12/2013 07:19 PM, Stephen Warren wrote:
+> On 03/11/2013 07:27 PM, Kuninori Morimoto wrote:
+>> Current ASoC has register function for platform/codec/dai/card,
+>> but doesn't have for cpu.
+>> It often produces confusion and fault on ASoC.
+>>
+>> As result of ASoC community discussion,
+>> we consider new struct snd_soc_component for CPU/CODEC,
+>> and will switch over to use it.
+>>
+>> This patch adds very basic struct snd_soc_component,
+>> and register function for it.
+> 
+> The series seems reasonable enough to me, as a basis for future work on
+> the DT stuff, so,
+> 
+> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+> 
+> I wonder how much work it is to convert all users of
+> snd_soc_register_dais() to this new API; is it worth doing so?
 
---===============6991229811840859789==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+1d8mk/W7pQzMfc7"
-Content-Disposition: inline
+If we allow the component driver to be NULL it's pretty much straight
+forward using coccinelle. Don't know if it is worth it to conver them all
+right away.
 
+@@
+expression dev;
+@@
+-snd_soc_register_dais(
++snd_soc_register_component(
+ dev,
++NULL,
+ ...)
 
---+1d8mk/W7pQzMfc7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+@@
+expression dev;
+expression num_dais;
+@@
+-snd_soc_unregister_dais(
++snd_soc_unregister_component(
+ dev,
+-num_dais
+ )
 
-On Sun, Mar 10, 2013 at 07:33:06PM +0100, Markus Pargmann wrote:
-> Remove probe function from the init section.
->=20
-> Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-
-Applied, thanks.
-
---+1d8mk/W7pQzMfc7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRP3ovAAoJELSic+t+oim9IagQAIAgTj49yWUfNlLhJA38sTDb
-cOo0dI74d+OcBf3H7X1lgFvbgEpP56ekouznk/0O3cOnk+qu93RWVefNKmMFwS6c
-EgdMPOj/gK0g07gDaAlFv6l/OlFlgoM0MxrsJzrOhQ9/hHMNU7nvAWLhZ5LH6ESw
-yf/yMvXirCy8XEvvrmAjjztUZz0ldCXRM1F87EXthdePDQd2lnhTIBLyzE4SX2WB
-LWRX10wDS83qeNCQ+fK/Uj07wASsiq+NiE/JXFWvJ0IFk8ERet9W9Th7T3NlCDG1
-LxlSMGB43hgZbegrof5fSN4AekZr67+2cSHICc80BDvvSVeNNJsdCQ+eTGqb255Y
-9nRY5W9caxL8Z+aFjHFnTJ8/xqiElXbZsvCuCpumfID0XhiPV4jqFIpCCTbU54+X
-kQUyvLkIrus3MtaVlY3GriveeNiwZW3IByaUCInsNmTmAeDErGbAfbYwgoQ9fElu
-bW8USFBZor0OxbM8sXiVDrp6ANpXjyRrCxFzybDENFPRvidw0/CvfuYPD3tzd/m3
-XMqi3b3fh4F6/USgbqCSWkAtBv+C6BgApGzgM5FjoxnNXaJRHSQwLW5bUy5GcaIU
-hqAKJh2np+TmPu0q7y6gpXhGjPvJJhR+facfUeOtSWeD9BmoRWsLUZRRXumNfF4k
-oKUd6ikZklnp6XkFY6Dl
-=6/bq
------END PGP SIGNATURE-----
-
---+1d8mk/W7pQzMfc7--
-
---===============6991229811840859789==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============6991229811840859789==--
+- Lars
