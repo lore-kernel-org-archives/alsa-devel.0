@@ -1,76 +1,114 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/2 v2] ASoC: add
-	snd_soc_register_component()
-Date: Tue, 12 Mar 2013 19:57:47 +0100
-Message-ID: <513F7AAB.8040401@metafoo.de>
-References: <87fw06ace9.wl%kuninori.morimoto.gx@renesas.com>
- <87k3pdtnlk.wl%kuninori.morimoto.gx@renesas.com>
- <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
- <513F71BF.3040608@wwwdotorg.org>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 07/10] ASoC: phycore-ac97: Add DT support
+Date: Tue, 12 Mar 2013 18:59:22 +0000
+Message-ID: <20130312185921.GX19942@opensource.wolfsonmicro.com>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-8-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-039.synserver.de (smtp-out-044.synserver.de
- [212.40.185.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 9585D265F1A
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:56:17 +0100 (CET)
-In-Reply-To: <513F71BF.3040608@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: multipart/mixed; boundary="===============4198827805944969795=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1362940391-8338-8-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/12/2013 07:19 PM, Stephen Warren wrote:
-> On 03/11/2013 07:27 PM, Kuninori Morimoto wrote:
->> Current ASoC has register function for platform/codec/dai/card,
->> but doesn't have for cpu.
->> It often produces confusion and fault on ASoC.
->>
->> As result of ASoC community discussion,
->> we consider new struct snd_soc_component for CPU/CODEC,
->> and will switch over to use it.
->>
->> This patch adds very basic struct snd_soc_component,
->> and register function for it.
-> 
-> The series seems reasonable enough to me, as a basis for future work on
-> the DT stuff, so,
-> 
-> Reviewed-by: Stephen Warren <swarren@nvidia.com>
-> 
-> I wonder how much work it is to convert all users of
-> snd_soc_register_dais() to this new API; is it worth doing so?
 
-If we allow the component driver to be NULL it's pretty much straight
-forward using coccinelle. Don't know if it is worth it to conver them all
-right away.
+--===============4198827805944969795==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4PR/+zdSfVlxyWed"
+Content-Disposition: inline
 
-@@
-expression dev;
-@@
--snd_soc_register_dais(
-+snd_soc_register_component(
- dev,
-+NULL,
- ...)
 
-@@
-expression dev;
-expression num_dais;
-@@
--snd_soc_unregister_dais(
-+snd_soc_unregister_component(
- dev,
--num_dais
- )
+--4PR/+zdSfVlxyWed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Lars
+On Sun, Mar 10, 2013 at 07:33:08PM +0100, Markus Pargmann wrote:
+> Add devicetree support for this audio soc fabric driver.
+>=20
+> Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> ---
+>  sound/soc/fsl/phycore-ac97.c | 148 ++++++++++++++++++++++++++++++++++++-=
+------
+>  1 file changed, 125 insertions(+), 23 deletions(-)
+
+A binding document is mandatory for new bindings.
+
+> +#ifdef CONFIG_MACH_IMX27_DT
+> +		.cpu_dai_name	=3D "10010000.ssi",
+> +		.platform_name	=3D "imx-fiq-pcm-audio",
+> +#else
+
+This looks wrong, at least the CPU DAI name should be being looked up
+via the DT.
+
+> +static const struct of_device_id imx_phycore_ac97_of_dev_id[] =3D {
+> +	{
+> +		.compatible =3D "phytec,imx27-pca100-ac97",
+> +		.data =3D (void *)MX27_PCA100,
+> +	}, {
+> +		.compatible =3D "phytec,imx27-pcm043-ac97",
+> +		.data =3D (void *)MX27_PCM043
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +MODULE_DEVICE_TABLE(of, imx_phycore_ac97_of_dev_id);
+
+It seems like we ought to be able to describe the properties of the
+boards in this class rather than just enumerating the boards.  What are
+the differences?
+
+>  MODULE_AUTHOR("Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>");
+> -MODULE_DESCRIPTION("PhyCORE ALSA SoC driver");
+> +MODULE_DESCRIPTION(DRV_NAME ": PhyCORE ALSA SoC fabric driver");
+
+Please don't make up terms like "fabric driver".
+
+--4PR/+zdSfVlxyWed
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRP3sDAAoJELSic+t+oim9wMwP/RoGVToEOungyy+z0NHpmXAQ
+lfElfdmodx3Qz2lj9cgfWtJduBdDucgqtMb67RvbVc3ILn8Urz6ofXTwSuyeoN0N
+lY584ERPAnvof+J2SG3qbeQyEFn6GuHCW2PJwuepiAQMMPfyZFbjUoNhScmoGiqw
+5z0kzjvTDEQmSQQycBqs8Zc+uEkwZqulc/aMaBd2UATFu+8ZkJZtyQdxT9/r5G8p
+rB0zENwGrKJyiStLNdc/lW4BcAw4eTfyiKB6TMMEduJjUhVXg5KqheTDfreER+n6
+de8o+lBiQ6U304QilfPqV2+YSKGqyVNVszERzNNoUQ12fhIJ9HNp24RVa+kqNMIN
+k+jfC/HO3kWruddm91yd8jw46N+HSnv4waeLt2ChxPxnSxh6BPEkD54LWYau0SO3
+LuJ8W0PUN+7LGkNbBayA+piziRxW74mpcSN6UQRLEU7RCgT9sVKCtkHNYmB5NzlC
+Xu/XgDrhu1gw+Kk8aYMn8EWKA9RttuuUiFZFASKbnkSYVkRT6nXZORQgXhuBr1k+
+rgT2572QI6haGWirQCBZptVjkq1ecIaowmuoJPt+CgaF2u0gQ5NVnZs3smlmO4EO
+60CboHfUv0coBDqcbvqOMdHcYIp84YamBsK1y/5YCW3HE2mTPwj0ZkZzD5DdQmTW
+tPJgTw7MsD7ikicVUHu1
+=2kNB
+-----END PGP SIGNATURE-----
+
+--4PR/+zdSfVlxyWed--
+
+--===============4198827805944969795==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============4198827805944969795==--
