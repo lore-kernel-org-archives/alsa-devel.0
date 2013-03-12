@@ -1,45 +1,61 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] ASoC: samsung: remove last traces of neo1973-gta01
-Date: Tue, 12 Mar 2013 23:09:35 +0100
-Message-ID: <1363126175.3137.160.camel@x61.thuisdomein>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
+ codec)
+Date: Wed, 13 Mar 2013 08:55:43 +1030
+Message-ID: <20130312222543.GA8909@marvin.atrad.com.au>
+References: <mailman.1440.1362696800.805.alsa-devel@alsa-project.org>
+ <20130310045854.GB22874@marvin.atrad.com.au>
+ <s5hfw02l3mx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 154E2265EAF
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 23:25:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hfw02l3mx.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: superquad.vortex2@gmail.com, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
 List-Id: alsa-devel@alsa-project.org
 
-The (rudimentary) support for the Openmoko Neo1973 GTA01 got removed in
-commit 1ae5cbc52e7c6619a3f44b87809fd25370df31bb ("ASoC: neo1973_wm8753:
-remove references to the neo1973-gta01 machine"). Remove its last traces
-in the Kconfig file too.
+On Mon, Mar 11, 2013 at 09:52:38AM +0100, Takashi Iwai wrote:
+> At Sun, 10 Mar 2013 15:28:54 +1030,
+> Jonathan Woithe wrote:
+> > The only slightly odd thing I noticed was that whenever the driver is loaded
+> > the "headphone mic jack mode" defaults to "mic bias 80pc", rather than "line
+> > out" or "headphone" which I would have expected.  Obviously this can be
+> > manually or automatically overridden after module load, but in many ways it
+> > would be good if it defaulted to one of the output modes (given that the
+> > jack's primary purpose is for output).
+> 
+> Indeed, it's an overlooked bug.  I merged the fix patch below.
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
-Untested.
+That looks like it'll do the trick.  I'll check it explicitly when I get a
+chance over the next few days.
 
- sound/soc/samsung/Kconfig | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> > Where does this leave us now?  Is the "fujitsu-jwse" a permanent thing, or
+> > will the respective changes be rolled into something more generic?
+> 
+> I'm inclined to keep as is.
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 90e7e66..475fb0d 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -35,11 +35,10 @@ config SND_SAMSUNG_I2S
- 	tristate
- 
- config SND_SOC_SAMSUNG_NEO1973_WM8753
--	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA01/GTA02)"
--	depends on SND_SOC_SAMSUNG && (MACH_NEO1973_GTA01 || MACH_NEO1973_GTA02)
-+	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
-+	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_WM8753
--	select SND_SOC_LM4857 if MACH_NEO1973_GTA01
- 	select SND_SOC_DFBMCS320
- 	help
- 	  Say Y here to enable audio support for the Openmoko Neo1973
--- 
-1.7.11.7
+Ok, suits me.
+
+Do you think that a more descriptive model (eg: fujitsu-fullmixer or
+something) is warranted?
+
+BTW, I will attempt to determine precisely what it is about the default
+initialisation sequence that causes the internal speaker to be permanently
+muted.  For now though the workarounds in "fujitsu-jwse" work well.
+
+Regards
+  jonathan
