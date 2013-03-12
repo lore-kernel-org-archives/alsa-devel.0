@@ -1,13 +1,13 @@
 From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 04/10] ASoC: Kconfig: imx-ssi needs imx-fiq and imx-dma
-Date: Tue, 12 Mar 2013 18:55:10 +0000
-Message-ID: <20130312185510.GV19942@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/10] ASoC: pcm030 audio fabric: remove __init from probe
+Date: Tue, 12 Mar 2013 18:55:50 +0000
+Message-ID: <20130312185549.GW19942@opensource.wolfsonmicro.com>
 References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-5-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-6-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5673740431734987900=="
+Content-Type: multipart/mixed; boundary="===============6991229811840859789=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1362940391-8338-5-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+In-Reply-To: <1362940391-8338-6-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -23,51 +23,49 @@ Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5673740431734987900==
+--===============6991229811840859789==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tYlHSoJ8Aop8eNG2"
+	protocol="application/pgp-signature"; boundary="+1d8mk/W7pQzMfc7"
 Content-Disposition: inline
 
 
---tYlHSoJ8Aop8eNG2
+--+1d8mk/W7pQzMfc7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2013 at 07:33:05PM +0100, Markus Pargmann wrote:
+On Sun, Mar 10, 2013 at 07:33:06PM +0100, Markus Pargmann wrote:
+> Remove probe function from the init section.
+>=20
+> Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 
->  config SND_SOC_IMX_SSI
-> +	select SND_SOC_IMX_PCM_DMA
-> +	select SND_SOC_IMX_PCM_FIQ
->  	tristate
+Applied, thanks.
 
-Really?  I'd expect this to be an or, if we've got DMA I can't see any
-reason why we'd want to use the FIQ.
-
---tYlHSoJ8Aop8eNG2
+--+1d8mk/W7pQzMfc7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRP3oBAAoJELSic+t+oim9LCIP/iQCXHJ9k97fm42yRMnNedc2
-c6ul4WD6IitX3feYP0WRUsXZahPAgoP4kJ/O4c+TffENs9M5kNhD3jDPXiLTnoZq
-Scdv8dGFjoJSGl7WpP4GvzOIEzg6hLwaKd2MsovTjo78xO2Z66y4N/gYBjFJKHRr
-X9z9m3Hhm6/R1GrWEceAEEgZFOxcUpFR3I3x4y8TEAdKa09kVTUgdQvTNTTfmas5
-e75Vvwi6oY8mmNUyArl34MN8SDj4XgmaeqPzQ46BZDq7CTq25Qsc3NOxdmoJTmC8
-U70r57nS62DYS5Dz9huYynB6kYsIyAMIegEAsDUAirTGBtvloXQW5P2WiGahQuUl
-HQeWNs0qr3CdLZFpdRu0FAaSNWyhttAxzX7DZgDf25xV9XVY/JGt4/CKV7H+GA3n
-9IAM7YMiqznkT0P+qYBJHUiJy56oNAncUOtKcP5Do01/YmbaVAwz2EU3mnNNhimE
-SAOHa0+rlMEe+b6MQg6YCiJzQf2MUeBPMKvWnnIdPRV56ec5RkYL6nUaOYHOY8+o
-SFw9ldga31AWydemkok4gkzos8opapa3plcbkiI4jQbdWVZxe//1XuFTAb0ZOn3G
-HlLqpR6sEwQvyjT/SXWGiHZn4hODIin76i09zNFCAmxB1Q3VAasL1mAs9IbxkrO/
-ACAtTAbh3A548M/cxFt6
-=sRWF
+iQIcBAEBAgAGBQJRP3ovAAoJELSic+t+oim9IagQAIAgTj49yWUfNlLhJA38sTDb
+cOo0dI74d+OcBf3H7X1lgFvbgEpP56ekouznk/0O3cOnk+qu93RWVefNKmMFwS6c
+EgdMPOj/gK0g07gDaAlFv6l/OlFlgoM0MxrsJzrOhQ9/hHMNU7nvAWLhZ5LH6ESw
+yf/yMvXirCy8XEvvrmAjjztUZz0ldCXRM1F87EXthdePDQd2lnhTIBLyzE4SX2WB
+LWRX10wDS83qeNCQ+fK/Uj07wASsiq+NiE/JXFWvJ0IFk8ERet9W9Th7T3NlCDG1
+LxlSMGB43hgZbegrof5fSN4AekZr67+2cSHICc80BDvvSVeNNJsdCQ+eTGqb255Y
+9nRY5W9caxL8Z+aFjHFnTJ8/xqiElXbZsvCuCpumfID0XhiPV4jqFIpCCTbU54+X
+kQUyvLkIrus3MtaVlY3GriveeNiwZW3IByaUCInsNmTmAeDErGbAfbYwgoQ9fElu
+bW8USFBZor0OxbM8sXiVDrp6ANpXjyRrCxFzybDENFPRvidw0/CvfuYPD3tzd/m3
+XMqi3b3fh4F6/USgbqCSWkAtBv+C6BgApGzgM5FjoxnNXaJRHSQwLW5bUy5GcaIU
+hqAKJh2np+TmPu0q7y6gpXhGjPvJJhR+facfUeOtSWeD9BmoRWsLUZRRXumNfF4k
+oKUd6ikZklnp6XkFY6Dl
+=6/bq
 -----END PGP SIGNATURE-----
 
---tYlHSoJ8Aop8eNG2--
+--+1d8mk/W7pQzMfc7--
 
---===============5673740431734987900==
+--===============6991229811840859789==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -78,4 +76,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============5673740431734987900==--
+--===============6991229811840859789==--
