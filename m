@@ -1,88 +1,52 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH linux-next v2] ASoC: adau1373:
- adau1373_hw_params: Silence overflow warning
-Date: Tue, 12 Mar 2013 18:47:41 +0000
-Message-ID: <20130312184741.GP19942@opensource.wolfsonmicro.com>
-References: <513E2895.6040904@metafoo.de>
- <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
+Subject: Re: [PATCH linux-next] ASoC: wm_hubs: Silence reg_r and reg_l 'may
+ be used uninitialized' warnings
+Date: Tue, 12 Mar 2013 18:50:28 +0000
+Message-ID: <20130312185027.GR19942@opensource.wolfsonmicro.com>
+References: <1362934701-75951-1-git-send-email-tim.gardner@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5996867450056859680=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 362E7265DE5
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:47:43 +0100 (CET)
-In-Reply-To: <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xSu31lw3TgkWXnjh"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1362934701-75951-1-git-send-email-tim.gardner@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Tim Gardner <tim.gardner@canonical.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5996867450056859680==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X78YbkCBd9ye7Cvs"
-Content-Disposition: inline
-
-
---X78YbkCBd9ye7Cvs
+--xSu31lw3TgkWXnjh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 11, 2013 at 01:18:23PM -0600, Tim Gardner wrote:
-> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
-> amd64 the result of the ones complement operator is then truncated to
+On Sun, Mar 10, 2013 at 10:58:21AM -0600, Tim Gardner wrote:
+> Return an error from wm_hubs_read_dc_servo() if hubs->dcs_readback_mode is not
+> correctly initialized. You might as well bail out since nothing is likely to
+> work correctly afterwards.
 
-Applied, but please don't bury patches in the middle of e-mail threads
-(I nearly deleted this unread) and avoid including
+Applied, thanks.
 
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: device-drivers-devel@blackfin.uclinux.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
-
-enormous CC lists like this in the body of the mail.
-
---X78YbkCBd9ye7Cvs
+--xSu31lw3TgkWXnjh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRP3hDAAoJELSic+t+oim9H8kP/18ttTtwtABrcpaX7PlnMdtM
-lCfAQCsMyUZsWzTler3FfLViVeu17B2ltNQbhqpQoPAbB9CgpDxLtpp7nrVkhojV
-+i9wnSYCIHqDRcuj8mlMsyNU8lqRcCCigmZxjcHB89nqrLF92dmiEDCdZf2XAw57
-NGkvz7N0RYErfEW1yyDp8VCbIHFoEbwNv72Iud3y/dhpREOkJagMlmzWtHzh38yu
-XQxYI4QBd+QWvW7RSS0FxDIGXV4tFVFPwXq4uJTXbGWJuv6u2b7xWeavYyW71G+I
-uW5ubWO/ENQ+iJR9RxX2ZNPa3M3/6U9QG34/6UZiqqS0H5RQ0hzzzPlVNqthfFXw
-/vpafYXxIRUxxjwQkJtzhs2gTfEIiP4Lh4GI8IvAZEHFRfFSID8yuSLbQFa3S1+N
-mUy1LJtJYtHnzvT+fF9Jcl0DRCMAliask2U24k6zG7DC5aHe9+NDW5xsh03a0F2/
-yRgf7WJvxHUzYD5Ah5JBlk05vl6EO2IODW/lYJEDKEpjBVUYf4yI8e96WnhhQ6fe
-X/6N/NNqu/GH3GhXVA4RhKcpEzcvPLv+XVS0WsWxgCLisOwZ11VXEcn5g+tZfAKG
-Bf4DBTM8DEkIDrz4N1rDHLgpmqr5M6JkunhGoFKTtqlgDMmgtJD1egAWgWsXAslD
-MvHoccKywIdYU7snaS2E
-=fA33
+iQIcBAEBAgAGBQJRP3jkAAoJELSic+t+oim9CSIP/RFVcTmc22XxZl8Q6p/trVEr
+omNQG590T5Jp32Ge0SkGvsPDrRXuhpbqMqO5PHvt9zhlrgkKMZQ+P4MW5s2FxJxR
+nkKOrXyywafb3gocGcW3p7CZaFAIFCGa0E5fJT5lJXnnSlMb+/0y9NTPdA7Vd34H
+6LyEAD0VGk4AD11pb4WlZEzP7X669uMiX4sJVTSndNB1v+sFTCEzTqGEXdk5vUeX
+CDhQiuGVpp/U3u844f1HaMoeLZaEGXcEjI76wPg2b6g9g+1QDLVYjYS9NxW+binp
+fBean9HWdF011zNfd0aaX5X2xe3t1W2K3ZzSrsvy66pe5XRkpOtKd2BvFpaEhHpT
+9UW5GcWisaA1c7IEoEEvyk/iR0F1qkQdWbBF8YLnjBM0aYuQusRZbdwbfjoWTeAw
+cq8g4WYXxJtjcOKCxiLkFvUNatbnFbeJxgrXNXmHcsP6i3tFSyn6qC+UT5tqTzLB
+nylTBa21Bv8T9CK43XmBN0u5RtANv4TVG6oEiQ6SNEWAXM3H/osXy7pVRp4K5zBS
+Jg7qBPH9WHy/RMnJenUr2oq/cQ2dzVElZCfRp7UoXUIOd/hNIsftxgEjSOi9VDIS
+q6A4maRo7ik6y9uULCw4mV01f1BgGwC5JZANvARAHhVCrpqTXvXNauYhY3rrlB0w
+HGaWJtKK9kYGWZ1b5oWZ
+=/4gn
 -----END PGP SIGNATURE-----
 
---X78YbkCBd9ye7Cvs--
-
---===============5996867450056859680==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5996867450056859680==--
+--xSu31lw3TgkWXnjh--
