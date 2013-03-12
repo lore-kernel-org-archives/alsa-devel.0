@@ -1,79 +1,90 @@
-From: Tim Gardner <tim.gardner@canonical.com>
-Subject: Re: [PATCH linux-next v2] ASoC: adau1373: adau1373_hw_params: Silence
- overflow warning
-Date: Tue, 12 Mar 2013 13:17:26 -0600
-Message-ID: <513F7F46.3050200@canonical.com>
-References: <513E2895.6040904@metafoo.de> <1363029503-23880-1-git-send-email-tim.gardner@canonical.com> <20130312184741.GP19942@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH linux-next v2] ASoC: adau1373:
+ adau1373_hw_params: Silence overflow warning
+Date: Tue, 12 Mar 2013 19:39:41 +0000
+Message-ID: <20130312193940.GF19942@opensource.wolfsonmicro.com>
+References: <513E2895.6040904@metafoo.de>
+ <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
+ <20130312184741.GP19942@opensource.wolfsonmicro.com>
+ <513F7F46.3050200@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130312184741.GP19942@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, device-drivers-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3876250339201599066=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 141DE265D97
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 20:39:43 +0100 (CET)
+In-Reply-To: <513F7F46.3050200@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Gardner <tim.gardner@canonical.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
 
-On 03/12/2013 12:47 PM, Mark Brown wrote:
-> On Mon, Mar 11, 2013 at 01:18:23PM -0600, Tim Gardner wrote:
->> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL
->> constants. On amd64 the result of the ones complement operator is
->> then truncated to
-> 
-> Applied, but please don't bury patches in the middle of e-mail
-> threads (I nearly deleted this unread) and avoid including
-> 
+--===============3876250339201599066==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Mjcb6KWfk+dITC8b"
+Content-Disposition: inline
 
-Point taken. In the future I'll start a new thread for each v(n).
 
->> Cc: Lars-Peter Clausen <lars@metafoo.de> Cc: Liam Girdwood
->> <lgirdwood@gmail.com> Cc: Mark Brown
->> <broonie@opensource.wolfsonmicro.com> Cc: Jaroslav Kysela
->> <perex@perex.cz> Cc: Takashi Iwai <tiwai@suse.de> Cc:
->> device-drivers-devel@blackfin.uclinux.org Cc:
->> alsa-devel@alsa-project.org Signed-off-by: Tim Gardner
->> <tim.gardner@canonical.com>
-> 
-> enormous CC lists like this in the body of the mail.
-> 
+--Mjcb6KWfk+dITC8b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'm just going by the default output of scripts/get_maintainer.pl. Are
-there better options to filter the roles ? In this case I received a
-review from a supporter (Lars), and the patch is being committed by
-yet another supporter (yourself). Would you have noticed this patch
-had I restricted the Cc list to just maintainers and lists ?
+On Tue, Mar 12, 2013 at 01:17:26PM -0600, Tim Gardner wrote:
 
-Lars-Peter Clausen <lars@metafoo.de> (supporter:ANALOG DEVICES IN...)
-Liam Girdwood <lgirdwood@gmail.com> (supporter:SOUND - SOC LAYER...)
-Mark Brown <broonie@opensource.wolfsonmicro.com> (supporter:SOUND -
-SOC LAYER...)
-Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
-Takashi Iwai <tiwai@suse.de> (maintainer:SOUND)
-device-drivers-devel@blackfin.uclinux.org (open list:ANALOG DEVICES IN...)
-alsa-devel@alsa-project.org (moderated list:ANALOG DEVICES IN...)
-linux-kernel@vger.kernel.org (open list)
+> > threads (I nearly deleted this unread) and avoid including
 
-rtg
-- -- 
-Tim Gardner tim.gardner@canonical.com
+> > enormous CC lists like this in the body of the mail.
+
+> I'm just going by the default output of scripts/get_maintainer.pl. Are
+> there better options to filter the roles ? In this case I received a
+> review from a supporter (Lars), and the patch is being committed by
+> yet another supporter (yourself). Would you have noticed this patch
+> had I restricted the Cc list to just maintainers and lists ?
+
+I specifically mean don't include the lists in the body of the mail - it
+means they either litter the git log or need to be manually deleted.  If
+you're just using unfiltered get_maintainer output then I'd suggest that
+you generate the CCs in your scripts when sending rather than putting
+them in the changelog.
+
+--Mjcb6KWfk+dITC8b
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with undefined - http://www.enigmail.net/
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBCgAGBQJRP38/AAoJED12yEX6FEfKppEP/jAi6jFpqKwNF3KPiH4j7E9m
-PYiydQTVHxgHlqzhJw+7+hyfz7fgbDSew0BpC84gtUYp2xcqCePkNoExT8COk08U
-wzIVm6Z1OT57RZDBMoICcH/Xm9/Y2/cf4eXOgiEw5tfP25Gwae2Vep9NcHkCz3iA
-4XNg+Cpq+Bu+l4f0WTTUmZlJmhbuai/knEodz413hIHXOhAXLe/ZnMSE2wh9/UnD
-H17z7pijKcAMAtcYJmLGT928U2rereW4rlR3+jh9k7CQ4wADo8XrJHNVXo7fgS4Q
-ws7hTWsaMuDTXKvg6fWbD9uMJc3OFodZ/ig0uEbZz7LXoxQd1M8MywJnInz6mGBQ
-9UnSg4AZOqs64Hm9X98902Fzro8dAa0ltjyPCxYgFhuORG86+SFseS514Y8aYWS8
-3/fdgR/kb4kNK4Zd+bDZv34/IEeIJiXlkUshIbhc58ErzVKP54shova2793UVcOk
-f5JmM7Tx/ctm2jzj3NYUS6HUsXucaE1K6HSPZ5qJlZyk6s59jJJwNWTILkwNu3Nj
-qxlPLWlRcyY8QuPQILx5podOhDmmAduPc8VOVF0YRed+J39BHJRVer3k/i2S/jkz
-ACULLlA6edESk3/poeGdBP1S0UhuI3PlzMh9Kwkkx6O8r8COgNVa1hfBSc6DAj+i
-YRSlhhPGE022ZQ6VhKUf
-=VhzH
+iQIcBAEBAgAGBQJRP4R2AAoJELSic+t+oim9P3AQAIPWUyxRmtIcvzCU0Yed7hil
+nAB3vybN+CHd3/rF+wjKTfXuoZFgDyixcHjgjhV8u1APMl1PNdyixznsT5k2gBxy
+VJEvO3y97vFBvbgF5DTYdKkDzxjx79TqFgqlqwkPPhD98Z0btN+1RbV5c75/yJen
+r45kuZbEbtYgi4L3ghOH3x8vg1mKZaZhRDZYBNx+mvC7f+pfzjABn9MA/xz/CTWo
+R433fKvi08fD1WuxWDEkvHP0lIFUZt8w930bjzzxFsHwUFYyyXZjBcU5FFuTR2O0
+KzWZU0C0SAWZqyxfdmdrhUtZJPwfj70p4lVi9fsFOJaPdyGd+d0ReCbuu5dPfRfz
+EH/OEY0CRGyBw3A3R8c9Zp2XzZ+Sh1w3zC/USeJcce0V4TXXdz/xvlRx3Vx5ByOF
+mWmDhuq1qWPJ/xzJnO9Ig47nMVfjKD7v0Zvotawczge6YjFdOSdxpmBNczCIbAbr
+Aik4ZYWGOuNVYyOWzN8Agm29IDpbKDNBr7yrDBsS4LAL5+gE12CJtKih49YAKFAL
+Io4H4tUrwqkUJKA1NUiXamUl6cfLtGpKK7K5MoenuOCZpOjccfaq3pDMJTWr/rhc
+d1L8mlt61zze7us5mSWuuCDT6QkfI68MQxEq1LtfBiIr9Bj5eX7+qKh5bttWCD6+
+rFwkAie9O4uFGFIEZczh
+=FY2y
 -----END PGP SIGNATURE-----
+
+--Mjcb6KWfk+dITC8b--
+
+--===============3876250339201599066==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3876250339201599066==--
