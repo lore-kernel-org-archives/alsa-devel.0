@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open
- function for DT DMA request
-Date: Tue, 12 Mar 2013 19:02:07 +0000
-Message-ID: <20130312190206.GY19942@opensource.wolfsonmicro.com>
-References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH] ALSA: ASoC: davinci-mcasp: clean ip
+ davinci_hw_common_param()
+Date: Tue, 12 Mar 2013 19:04:19 +0000
+Message-ID: <20130312190418.GZ19942@opensource.wolfsonmicro.com>
+References: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0911268487793710241=="
+Content-Type: multipart/mixed; boundary="===============2077729164114889799=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CC7FF265DF9
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 20:02:08 +0100 (CET)
-In-Reply-To: <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 94E6D265DF9
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 20:04:20 +0100 (CET)
+In-Reply-To: <1362748778-11076-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Michal Bachraty <michal.bachraty@streamunlimited.com>, Vaibhav Bedia <vaibhav.bedia@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0911268487793710241==
+--===============2077729164114889799==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ELMKpCVvjiB+uwRu"
+	protocol="application/pgp-signature"; boundary="mu4zWe6QekgCAJVd"
 Content-Disposition: inline
 
 
---ELMKpCVvjiB+uwRu
+--mu4zWe6QekgCAJVd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
-> Add a function to open a DMA PCM substream using devicetree data
-> provided via the client device node. The patch introduces a public
-> function and a private subfunction that is called by both open
-> functions.
+On Fri, Mar 08, 2013 at 02:19:38PM +0100, Daniel Mack wrote:
+> As pointed of by Vaibhav, commit 2952b27e2 ("ASoC: davinci-mcasp:
+> Add support for multichannel playback") duplicated the logic of
+> counting the active serializers. That can be avoided by shifting
+> the code around a bit.
 
-Someone (I think it was Shawn) sent a very similar patch just recently
-which appears to have fallen out of my inbox unfortunately - can you
-please check what's going on there and coordinate with them?  Let me
-know if you can't find the patch and I'll dig it out.
+Applied, thanks.
 
---ELMKpCVvjiB+uwRu
+--mu4zWe6QekgCAJVd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRP3ujAAoJELSic+t+oim9H/8P/j8uNdekHBn0RrtdgHL3ykO5
-NNW26DLgtlvPR7bf4IrdMfLr92c4OWvIKALfZwHgGI3ozaiRSzmEIMWY5wNrhAC9
-UJi+hY+aJjBrd0jK12jOKmKqDVNnEjqD6y+4+bfueGYZ0o8xNo/WlolfjIcpQfvl
-KAPNQ0pmw6LRekNzkTAEYEOR9ZTdYCH1w9n8fw0rVWKgK4ZEkLhrb7aOGsmYqkF5
-oOLgIQdZJtVLLuJngvuzg4HnuXBh6ny+ps8zpjphm+GaCOBVOtrYMg1Oc6HmcV0f
-LRMwmc6tMOcwnwmQiEZ1lJjle8G96WQENM+2uROkGcuJLFMWbaq0sXxGKI+AeYv1
-5Q+zUp99J+42Yfzf2/hZ+4jKT7zYYdDg2oz6njVvu6BCoEZtFgXgGAke8I/JhxYh
-n/T+V18ZDFLvHX0PahmaTw8jLmlB+LcJiA2vN7/RJLcoGQo0+GhowIVoKPAPIK6h
-3jirA2J4hQCMixF1I6uSCVK3Puqbe+E7u1uSLkSR2suUXfuT47dtdf65o9Eq8S76
-zr8Q0B1OtjjfUTigpF2/eEby9LhZhqB/P26oBk5vDQM9KEkFfeho11p5IRNYx+DC
-e3HnlZniFS9gAL+JwI48ko5z7tw12o+OXDfOToI+/Ce5GMhr6dHlFgVghOmHY7tW
-27m3ESkHyOwHy9kBjCjj
-=2vC7
+iQIcBAEBAgAGBQJRP3wsAAoJELSic+t+oim9MVAP/19R0aQ1h0Gca9SCUXxNT3z/
+oisGIPEVAJaRjXA+lK0qnctiwyA2beb5J1GBt13iwSOFm2FYtRC4ncouDYghRPu4
+bba4hNwFT6SGN+UJvGShTBv2LmfiKsATeR4Qx0Nu2UO2im/1pWon0SYDO2Ga51S3
+LY7bmEYNhtn9YHZ99+4oWdta3bYzKbtZB440YomxTWMCbskDw7B4vKn5nRqpaJ7w
+RZnsjI2Y91sF2Kkv3T9ohGrCEiJz0hjzGUEbUBDhpWeo+/mJvXk7rmsnx2doQYDZ
+W44rf8Frilww6E487GuCi9IH1C5grjnooaWKS/cbmF9Ssn9Gwq/JM5+DoX5+s1Qe
+ab6ML6kJKNUgzgA72H0tv+nCQSayRLWGvhyyN3sossDpOXAay0gNT6YxIWAwv4/E
+793OhTZqSvHinFR+7JB3mgv56JCzpqeDj6tz8wJibGTK/PUnFLtyvGzCt9Dmj5/U
+zpfVnOsLXTNQRFvkKYPf02RkmSCJG82Jr9Wi0SFvNSzEmaqixIb/hIN1MnF5gAzT
++lz3V/24x43KKTVHTbwCM3z5JJD8JSFr8W/VsTYXrwrTpNeSJ+H8m57q9OY4PMtj
+Hz++7kzxDVgXldUOF8VwgowSBud6+AScwImkHsw0+IP5Zb8et82q3GPe92nDI6G6
+bh6DBpxTK8IheYjEZe/x
+=lJGi
 -----END PGP SIGNATURE-----
 
---ELMKpCVvjiB+uwRu--
+--mu4zWe6QekgCAJVd--
 
---===============0911268487793710241==
+--===============2077729164114889799==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0911268487793710241==--
+--===============2077729164114889799==--
