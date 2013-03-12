@@ -1,52 +1,82 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH linux-next] ASoC: wm_hubs: Silence reg_r and reg_l 'may
- be used uninitialized' warnings
-Date: Tue, 12 Mar 2013 18:50:28 +0000
-Message-ID: <20130312185027.GR19942@opensource.wolfsonmicro.com>
-References: <1362934701-75951-1-git-send-email-tim.gardner@canonical.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 01/10] imx-ssi: Fix AC97 rates
+Date: Tue, 12 Mar 2013 18:52:26 +0000
+Message-ID: <20130312185225.GS19942@opensource.wolfsonmicro.com>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-2-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xSu31lw3TgkWXnjh"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1362934701-75951-1-git-send-email-tim.gardner@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tim Gardner <tim.gardner@canonical.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2269780330286167394=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1362940391-8338-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---xSu31lw3TgkWXnjh
-Content-Type: text/plain; charset=us-ascii
+--===============2269780330286167394==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZmeoGP/RI+eIV+cU"
 Content-Disposition: inline
 
-On Sun, Mar 10, 2013 at 10:58:21AM -0600, Tim Gardner wrote:
-> Return an error from wm_hubs_read_dc_servo() if hubs->dcs_readback_mode is not
-> correctly initialized. You might as well bail out since nothing is likely to
-> work correctly afterwards.
 
-Applied, thanks.
+--ZmeoGP/RI+eIV+cU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---xSu31lw3TgkWXnjh
+On Sun, Mar 10, 2013 at 07:33:02PM +0100, Markus Pargmann wrote:
+> From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+>=20
+> This device supports multiple rates as described in later AC97
+> standards. This patch allows playback of different sample frequencies
+> without conversion.
+
+Applied, but some notes about why this is already supported would be
+useful and *always* use subject lines appropriate for the subsystem.
+
+--ZmeoGP/RI+eIV+cU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRP3jkAAoJELSic+t+oim9CSIP/RFVcTmc22XxZl8Q6p/trVEr
-omNQG590T5Jp32Ge0SkGvsPDrRXuhpbqMqO5PHvt9zhlrgkKMZQ+P4MW5s2FxJxR
-nkKOrXyywafb3gocGcW3p7CZaFAIFCGa0E5fJT5lJXnnSlMb+/0y9NTPdA7Vd34H
-6LyEAD0VGk4AD11pb4WlZEzP7X669uMiX4sJVTSndNB1v+sFTCEzTqGEXdk5vUeX
-CDhQiuGVpp/U3u844f1HaMoeLZaEGXcEjI76wPg2b6g9g+1QDLVYjYS9NxW+binp
-fBean9HWdF011zNfd0aaX5X2xe3t1W2K3ZzSrsvy66pe5XRkpOtKd2BvFpaEhHpT
-9UW5GcWisaA1c7IEoEEvyk/iR0F1qkQdWbBF8YLnjBM0aYuQusRZbdwbfjoWTeAw
-cq8g4WYXxJtjcOKCxiLkFvUNatbnFbeJxgrXNXmHcsP6i3tFSyn6qC+UT5tqTzLB
-nylTBa21Bv8T9CK43XmBN0u5RtANv4TVG6oEiQ6SNEWAXM3H/osXy7pVRp4K5zBS
-Jg7qBPH9WHy/RMnJenUr2oq/cQ2dzVElZCfRp7UoXUIOd/hNIsftxgEjSOi9VDIS
-q6A4maRo7ik6y9uULCw4mV01f1BgGwC5JZANvARAHhVCrpqTXvXNauYhY3rrlB0w
-HGaWJtKK9kYGWZ1b5oWZ
-=/4gn
+iQIcBAEBAgAGBQJRP3lfAAoJELSic+t+oim9xBoQAJe3rLMGLA2jyoSuiZ963G9w
+wcx7qnAtUO69Q8IY+KD0taZ2jNTesExE89/TV3xLAbDuy2royWFui1awjyhbE7pS
+/t5fESe5H5UHLxZOY/kXdKDA0eaH1Ow8dKr92CAMZA31P0womMO4yUA4Wh5UEED1
+/eOlwXdmFT25ee5j9AcmjcXJxwRCbqNa6l0Ym8Yf2V1dnQyGYsEgNfl8oPMAavxD
+2OkvA4GlDP/+75dfaTVPMrqXF8BYUvw2a6ghv96qiy+9xwDtnL9RAmi5qmMQLqJ+
+8XJTRaC8BA3h+0sYYNPWTrojx2dEHOvoPevqBOoHKXw5UsjeHHoXugqO+wMSytPN
+60P9dygcC6/n0xqUDgVudmcBRY0T79tdk2SvleN8DIRiFfQlVx+UoLlr8Vco6pq9
+UABGyA2X4ml09V2mWo2U7rkBhquiq8F6f+WK76Lr8iA+PduSVGUhFeBsmX0MhXbO
+k0VIAmSfU1mF8XyXBT7M1iY+WZBIsL6wZFwhu7z+IGvX2YXGG7hC33OIOxqaq1ga
+fQtqWBBwYGorcFdF0X8V4R+gO9G08ukYJIsy15D4sug1XAp6Zq5lz194twYY0VqA
+c85IOjTvhIZ5QFLwgXaZ87orjyDwzvTqm0lPRuWfvDR38T/aZGboKVS+N/VK0Psj
+Xww9zVtiHO4+xX4IJHPZ
+=dIv+
 -----END PGP SIGNATURE-----
 
---xSu31lw3TgkWXnjh--
+--ZmeoGP/RI+eIV+cU--
+
+--===============2269780330286167394==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============2269780330286167394==--
