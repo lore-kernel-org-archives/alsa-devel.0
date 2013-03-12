@@ -1,19 +1,18 @@
-From: Torstein Hegge <hegge@resisty.net>
-Subject: Re: [PATCH v3] ALSA: usb: Work around CM6631 sample
- rate change bug
-Date: Tue, 12 Mar 2013 09:28:29 +0100
-Message-ID: <20130312082829.GQ20417@pvv.ntnu.no>
-References: <20130305220303.GD20417@pvv.ntnu.no>
- <20130311213908.GP20417@pvv.ntnu.no> <513EDF8B.6000504@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] omap: convert to devm_ioremap_resource()
+Date: Tue, 12 Mar 2013 09:32:05 +0100
+Message-ID: <513EE805.6040509@ti.com>
+References: <1363017537-11602-1-git-send-email-silviupopescu1990@gmail.com>
+ <513EE454.5040302@ti.com>
+ <CAPWTe+K1E1Tm1E2B_rnj9x9hvCcUXgi2hg-DQNWHO3uZaVt+Pg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BFC64265D36
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 09:28:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <513EDF8B.6000504@ladisch.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 136FA265D36
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 09:32:10 +0100 (CET)
+In-Reply-To: <CAPWTe+K1E1Tm1E2B_rnj9x9hvCcUXgi2hg-DQNWHO3uZaVt+Pg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Silviu Popescu <silviupopescu1990@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 12, 2013 at 08:55:55AM +0100, Clemens Ladisch wrote:
-> Torstein Hegge wrote:
-> > There are still some issues with the Schiit Bifrost as described by
-> > Chris Hermansen in "Status of CM6631 USB" on alsa-user [1]. While the
-> > workaround fixes the sample rate change issue in some cases, he still
-> > sometimes get mangled audio on sample rate change.
-> >
-> > Any ideas on what could be causing this difference between seemingly
-> > similar hardware would be appreciated.
-> 
-> Different firmware.
-> 
-> > One difference is that 'lsusb -v' from the Schiit Bifrost [2] lists
-> > interface 2-5, 7 and 8. My Corda [3] and the Asus card only lists
-> > 0, Audio, Control Device
-> > 1, Audio, Streaming
-> > 2, Human Interface Device (this is number 6 in the Schiit)
-> >
-> > The extra interfaces listed by the Schiit is probably not backed by any
-> > hardware in the CM6631.
-> 
-> Does the Schiit have all those Line/Mic/SPDIF/MIDI ports?
-
-It only has a USB input. The SPDIF output of the CM6631 is connected to
-a CS8416 SPDIF receiver.
-
-
-Torstein
+T24gMDMvMTIvMjAxMyAwOToyNCBBTSwgU2lsdml1IFBvcGVzY3Ugd3JvdGU6Cj4gQXMgZmFyIGFz
+IEkgY2FuIHRlbGwgZnJvbSB0aGUgbWFpbHMgdGhhdCB5b3UgaGF2ZSBwcm92aWRlZCwgdGhvc2UK
+PiBwYXRjaGVzIHJlcGxhY2UgZGV2bV9yZXF1ZXN0X21lbV9yZWdpb24oKSwgZm9sbG93ZWQgYnkg
+ZGV2bV9pb3JlbWFwKCkKPiB3aXRoIGRldm1fcmVxdWVzdF9hbmRfaW9yZW1hcCgpLgo+IFdoYXQg
+dGhpcyBwYXRjaCBhdHRlbXB0cyB0byBkbyBpcyByZXBsYWNlIGRldm1fcmVxdWVzdF9hbmRfaW9y
+ZW1hcCgpCj4gd2l0aCB0aGUgbmV3bHkgaW50cm9kdWNlZCBkZXZtX2lvcmVtYXBfcmVzb3VyY2Uo
+KSwgZm9yIHRoZSByZWFzb25zCj4gZXhwcmVzc2VkIGluIHRoZSBwYXRjaCBib2R5LgoKQWgsIHRy
+dWUuCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
