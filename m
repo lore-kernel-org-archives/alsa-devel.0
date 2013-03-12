@@ -1,54 +1,48 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH -next] ASoC: tas5086: use module_i2c_driver to simplify
- the code
-Date: Tue, 12 Mar 2013 18:17:30 +0000
-Message-ID: <20130312181729.GC19942@opensource.wolfsonmicro.com>
-References: <CAPgLHd_J+xdx6UdSFahEGmPJX-SXEkQBL7xHA7MEGKf21=32Uw@mail.gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 1/2 v2] ASoC: add
+	snd_soc_register_component()
+Date: Tue, 12 Mar 2013 12:19:43 -0600
+Message-ID: <513F71BF.3040608@wwwdotorg.org>
+References: <87fw06ace9.wl%kuninori.morimoto.gx@renesas.com>
+ <87k3pdtnlk.wl%kuninori.morimoto.gx@renesas.com>
+ <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1ccMZA6j1vT5UqiK"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPgLHd_J+xdx6UdSFahEGmPJX-SXEkQBL7xHA7MEGKf21=32Uw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, rob.herring@calxeda.com, zonque@gmail.com, yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 872DC265DE5
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:19:49 +0100 (CET)
+In-Reply-To: <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03/11/2013 07:27 PM, Kuninori Morimoto wrote:
+> Current ASoC has register function for platform/codec/dai/card,
+> but doesn't have for cpu.
+> It often produces confusion and fault on ASoC.
+> 
+> As result of ASoC community discussion,
+> we consider new struct snd_soc_component for CPU/CODEC,
+> and will switch over to use it.
+> 
+> This patch adds very basic struct snd_soc_component,
+> and register function for it.
 
---1ccMZA6j1vT5UqiK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The series seems reasonable enough to me, as a basis for future work on
+the DT stuff, so,
 
-On Tue, Mar 12, 2013 at 09:36:24PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Use the module_i2c_driver() macro to make the code smaller
-> and a bit simpler.
+Reviewed-by: Stephen Warren <swarren@nvidia.com>
 
-Applied, thanks.
-
---1ccMZA6j1vT5UqiK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRP3EzAAoJELSic+t+oim9gQkQAIh5mymwNCFCWXqCILfcWpZk
-ji+8kCuTU63tfewuVEaiv0tq0hFbtpPEFaDP5r0TqSpw/R6XeynVuhFEuleX3SWj
-qayrwDwlat5SX1RFIgxuKlpnYpoAQ2HA5sDWeKzr7ZlNm2+FZJmKs0caEmibLBNS
-d7QwhUzCCW3D6nG2SFg4D3yfCDDOuMeiFOjt3rh2y1r6zT6uY6aITt845vxbTuq5
-LtL2rJQCeTN1HiAysk3GnVd91D1FFPW0NiJ7L/HyQf6385h+wZxy1n1zGUnRDHrW
-SarSzPAto8rMqSY/bD8Yh+MiUl5fYv2IamUy8KlESYISPhnT33DXmwp4pC68Y2KW
-/oH4FfwbMsb7ZBsN0R5SI/KMM2pDXsRE5MXYAl8Ty4xXcLRyEDtwO1792tO60wrd
-N8KEfls3vAcIuZ4FecqtTWwut1CwqWeXXTe9gQQRHSNBkf64RirhQE2p7iKGIHAH
-13CI1hGj3/m27QcBEd+vxC89uFH6S/R6+DRAeDdmDsasOF4GUxC9JIBCiaElb3qI
-TbYLggHQBYCkuawAiTk1fYn5/AfNar3GSMPEyUE/Uy296UwdDCrjlMhDet9SEnE6
-W3nkjxXdMehb9m5ZLehEsjTG2GCTQVfzhUgQMVE0Xpo7hJFAwt+84iR3sY8Wsqyg
-x+MsplbYOOpU6mHK78ow
-=/tqE
------END PGP SIGNATURE-----
-
---1ccMZA6j1vT5UqiK--
+I wonder how much work it is to convert all users of
+snd_soc_register_dais() to this new API; is it worth doing so?
