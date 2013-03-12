@@ -1,16 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/2] ASoC: fsl: imx-audmux: Use devm_clk_get()
-Date: Tue, 12 Mar 2013 20:51:28 -0300
-Message-ID: <1363132289-15211-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: fsl: imx-sgtl5000: Use devm_clk_get()
+Date: Tue, 12 Mar 2013 20:51:29 -0300
+Message-ID: <1363132289-15211-2-git-send-email-festevam@gmail.com>
+References: <1363132289-15211-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f41.google.com (mail-ee0-f41.google.com [74.125.83.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F7ED265DCF
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 00:51:46 +0100 (CET)
-Received: by mail-ee0-f41.google.com with SMTP id c13so190048eek.28
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 16:51:45 -0700 (PDT)
+Received: from mail-ee0-f54.google.com (mail-ee0-f54.google.com [74.125.83.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52EEE265DDD
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 00:51:49 +0100 (CET)
+Received: by mail-ee0-f54.google.com with SMTP id c41so181645eek.27
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 16:51:49 -0700 (PDT)
+In-Reply-To: <1363132289-15211-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +28,46 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-By using devm_clk_get() we can save a call to clk_put().
+Using devm_clk_get() can make the code smaller and simpler.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/imx-audmux.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/fsl/imx-sgtl5000.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 3f333e5..47f046a 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -262,7 +262,7 @@ static int imx_audmux_probe(struct platform_device *pdev)
- 		return PTR_ERR(pinctrl);
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 424347e..74a4628 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -128,7 +128,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 		goto fail;
  	}
  
--	audmux_clk = clk_get(&pdev->dev, "audmux");
-+	audmux_clk = devm_clk_get(&pdev->dev, "audmux");
- 	if (IS_ERR(audmux_clk)) {
- 		dev_dbg(&pdev->dev, "cannot get clock: %ld\n",
- 				PTR_ERR(audmux_clk));
-@@ -282,7 +282,6 @@ static int imx_audmux_remove(struct platform_device *pdev)
+-	data->codec_clk = clk_get(&codec_dev->dev, NULL);
++	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+ 	if (IS_ERR(data->codec_clk)) {
+ 		/* assuming clock enabled by default */
+ 		data->codec_clk = NULL;
+@@ -175,7 +175,6 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, data);
+ clk_fail:
+-	clk_put(data->codec_clk);
+ fail:
+ 	if (ssi_np)
+ 		of_node_put(ssi_np);
+@@ -189,10 +188,9 @@ static int imx_sgtl5000_remove(struct platform_device *pdev)
  {
- 	if (audmux_type == IMX31_AUDMUX)
- 		audmux_debugfs_remove();
--	clk_put(audmux_clk);
+ 	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
+ 
+-	if (data->codec_clk) {
++	if (data->codec_clk)
+ 		clk_disable_unprepare(data->codec_clk);
+-		clk_put(data->codec_clk);
+-	}
++
+ 	snd_soc_unregister_card(&data->card);
  
  	return 0;
- }
 -- 
 1.7.9.5
