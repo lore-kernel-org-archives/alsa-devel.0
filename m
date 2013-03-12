@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi: remove unused irq
-Date: Tue, 12 Mar 2013 18:45:43 +0000
-Message-ID: <20130312184543.GO19942@opensource.wolfsonmicro.com>
-References: <87wqtehgur.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v2] ASoC: adau1373:
+ adau1373_hw_params: Silence overflow warning
+Date: Tue, 12 Mar 2013 18:47:41 +0000
+Message-ID: <20130312184741.GP19942@opensource.wolfsonmicro.com>
+References: <513E2895.6040904@metafoo.de>
+ <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1190378349678121530=="
+Content-Type: multipart/mixed; boundary="===============5996867450056859680=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85F2F265DE5
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:45:45 +0100 (CET)
-In-Reply-To: <87wqtehgur.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 362E7265DE5
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 19:47:43 +0100 (CET)
+In-Reply-To: <1363029503-23880-1-git-send-email-tim.gardner@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Tim Gardner <tim.gardner@canonical.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1190378349678121530==
+--===============5996867450056859680==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5PFZVUeDPxlnBcQp"
+	protocol="application/pgp-signature"; boundary="X78YbkCBd9ye7Cvs"
 Content-Disposition: inline
 
 
---5PFZVUeDPxlnBcQp
+--X78YbkCBd9ye7Cvs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Mar 10, 2013 at 06:20:47PM -0700, Kuninori Morimoto wrote:
-> FSI is using devm_request_irq() from
-> 1ddd82868cc888e008ed520465c172a6cdddd689
-> (ASoC: fsi: use devm_request_irq())
+On Mon, Mar 11, 2013 at 01:18:23PM -0600, Tim Gardner wrote:
+> ADAU1373_BCLKDIV_SOURCE is defined as BIT(5) which uses UL constants. On
+> amd64 the result of the ones complement operator is then truncated to
 
-This doesn't apply against v3.9-rc2 and there's no pending fsi patches,
-can you please check and resend?
+Applied, but please don't bury patches in the middle of e-mail threads
+(I nearly deleted this unread) and avoid including
 
---5PFZVUeDPxlnBcQp
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: device-drivers-devel@blackfin.uclinux.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+
+enormous CC lists like this in the body of the mail.
+
+--X78YbkCBd9ye7Cvs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRP3fQAAoJELSic+t+oim95C8QAJU+OlebplPPnVehqpydD6du
-PIRFKW/daWSfXhEY+SDP+7TKiZ5QrLfHArEtfgdJEDycs/jwuDt+/fC0p2VixeWo
-bzc3bjq1H4xv5NVlxI7xJ+LplWABS3ULMfYcY6tTTk5nUZAo0CgZm7Xrf9LrhrrM
-9kbbdYbM1bG60E8mdXCowJi7/sbeKj0XC1Yr4CDwdlVtE6axZCae04GquEB+8lUI
-ubGXybLhf6VI2q0LqZaxGIyipsP0WoDzQ0/HB+Uz1kCtWjFl0iY23XAYxvF8CKJl
-tqt9fWbeDgiob5BasGPoIs3+EI7HRhLeIbTfhKbhp7SM5KK8W4rufx3aMiFCg5Uu
-ukgW53Ak3gX5tm9UnwrdFYLP5qL4bA1zVm5U6zNS9naqyyd2VXnK//l5DEW2uzPV
-+xuQz7NFfinymy1rlz9Nibbg6fZoKdlPnRgNNuuzavI0x85nF0fEP3gXtA7lyQeB
-Za+Xdqixar1A3NXvWQmuZhwlIAc2Rov2HkFIsa01lSMGuj/y+lyYJZ6pSJIw3OSy
-sk+mXFR35ByxKRwgT4AzVkzk384uAUf7eMaGytaOjstQKsv79E3mGE+D6FFz+A7O
-fI55wG0yJqEq5ELp6NAl3VmO6ucJ9NFnMrqpiT2CHzZc/f8aRgKVmRICoGfxttWa
-1SW7Dm4wcVZHEL3OEhc9
-=qh7O
+iQIcBAEBAgAGBQJRP3hDAAoJELSic+t+oim9H8kP/18ttTtwtABrcpaX7PlnMdtM
+lCfAQCsMyUZsWzTler3FfLViVeu17B2ltNQbhqpQoPAbB9CgpDxLtpp7nrVkhojV
++i9wnSYCIHqDRcuj8mlMsyNU8lqRcCCigmZxjcHB89nqrLF92dmiEDCdZf2XAw57
+NGkvz7N0RYErfEW1yyDp8VCbIHFoEbwNv72Iud3y/dhpREOkJagMlmzWtHzh38yu
+XQxYI4QBd+QWvW7RSS0FxDIGXV4tFVFPwXq4uJTXbGWJuv6u2b7xWeavYyW71G+I
+uW5ubWO/ENQ+iJR9RxX2ZNPa3M3/6U9QG34/6UZiqqS0H5RQ0hzzzPlVNqthfFXw
+/vpafYXxIRUxxjwQkJtzhs2gTfEIiP4Lh4GI8IvAZEHFRfFSID8yuSLbQFa3S1+N
+mUy1LJtJYtHnzvT+fF9Jcl0DRCMAliask2U24k6zG7DC5aHe9+NDW5xsh03a0F2/
+yRgf7WJvxHUzYD5Ah5JBlk05vl6EO2IODW/lYJEDKEpjBVUYf4yI8e96WnhhQ6fe
+X/6N/NNqu/GH3GhXVA4RhKcpEzcvPLv+XVS0WsWxgCLisOwZ11VXEcn5g+tZfAKG
+Bf4DBTM8DEkIDrz4N1rDHLgpmqr5M6JkunhGoFKTtqlgDMmgtJD1egAWgWsXAslD
+MvHoccKywIdYU7snaS2E
+=fA33
 -----END PGP SIGNATURE-----
 
---5PFZVUeDPxlnBcQp--
+--X78YbkCBd9ye7Cvs--
 
---===============1190378349678121530==
+--===============5996867450056859680==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1190378349678121530==--
+--===============5996867450056859680==--
