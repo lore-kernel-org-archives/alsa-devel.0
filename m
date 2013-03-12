@@ -1,20 +1,16 @@
-From: Jonathan Woithe <jwoithe@just42.net>
-Subject: Re: HDA regression on Fujitsu S7020 laptop (ALC260
- codec)
-Date: Wed, 13 Mar 2013 08:55:43 +1030
-Message-ID: <20130312222543.GA8909@marvin.atrad.com.au>
-References: <mailman.1440.1362696800.805.alsa-devel@alsa-project.org>
- <20130310045854.GB22874@marvin.atrad.com.au>
- <s5hfw02l3mx.wl%tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 2/2] ASoC: fsl: imx-audmux: Use devm_clk_get()
+Date: Tue, 12 Mar 2013 20:51:28 -0300
+Message-ID: <1363132289-15211-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 154E2265EAF
- for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 23:25:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hfw02l3mx.wl%tiwai@suse.de>
+Received: from mail-ee0-f41.google.com (mail-ee0-f41.google.com [74.125.83.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F7ED265DCF
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 00:51:46 +0100 (CET)
+Received: by mail-ee0-f41.google.com with SMTP id c13so190048eek.28
+ for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2013 16:51:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: superquad.vortex2@gmail.com, alsa-devel@alsa-project.org, jwoithe@just42.net, peter.golden@btinternet.com
+To: broonie@opensource.wolfsonmicro.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 11, 2013 at 09:52:38AM +0100, Takashi Iwai wrote:
-> At Sun, 10 Mar 2013 15:28:54 +1030,
-> Jonathan Woithe wrote:
-> > The only slightly odd thing I noticed was that whenever the driver is loaded
-> > the "headphone mic jack mode" defaults to "mic bias 80pc", rather than "line
-> > out" or "headphone" which I would have expected.  Obviously this can be
-> > manually or automatically overridden after module load, but in many ways it
-> > would be good if it defaulted to one of the output modes (given that the
-> > jack's primary purpose is for output).
-> 
-> Indeed, it's an overlooked bug.  I merged the fix patch below.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-That looks like it'll do the trick.  I'll check it explicitly when I get a
-chance over the next few days.
+By using devm_clk_get() we can save a call to clk_put().
 
-> > Where does this leave us now?  Is the "fujitsu-jwse" a permanent thing, or
-> > will the respective changes be rolled into something more generic?
-> 
-> I'm inclined to keep as is.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-audmux.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Ok, suits me.
-
-Do you think that a more descriptive model (eg: fujitsu-fullmixer or
-something) is warranted?
-
-BTW, I will attempt to determine precisely what it is about the default
-initialisation sequence that causes the internal speaker to be permanently
-muted.  For now though the workarounds in "fujitsu-jwse" work well.
-
-Regards
-  jonathan
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 3f333e5..47f046a 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -262,7 +262,7 @@ static int imx_audmux_probe(struct platform_device *pdev)
+ 		return PTR_ERR(pinctrl);
+ 	}
+ 
+-	audmux_clk = clk_get(&pdev->dev, "audmux");
++	audmux_clk = devm_clk_get(&pdev->dev, "audmux");
+ 	if (IS_ERR(audmux_clk)) {
+ 		dev_dbg(&pdev->dev, "cannot get clock: %ld\n",
+ 				PTR_ERR(audmux_clk));
+@@ -282,7 +282,6 @@ static int imx_audmux_remove(struct platform_device *pdev)
+ {
+ 	if (audmux_type == IMX31_AUDMUX)
+ 		audmux_debugfs_remove();
+-	clk_put(audmux_clk);
+ 
+ 	return 0;
+ }
+-- 
+1.7.9.5
