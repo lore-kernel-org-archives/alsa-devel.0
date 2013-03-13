@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 v2] ASoC: add
-	snd_soc_register_component()
-Date: Wed, 13 Mar 2013 11:08:26 +0000
-Message-ID: <20130313110825.GK25610@opensource.wolfsonmicro.com>
-References: <87fw06ace9.wl%kuninori.morimoto.gx@renesas.com>
- <87k3pdtnlk.wl%kuninori.morimoto.gx@renesas.com>
- <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [patch] ALSA: ASoC: tas5086: signedness bug in
+ tas5086_hw_params()
+Date: Wed, 13 Mar 2013 11:09:24 +0000
+Message-ID: <20130313110924.GL25610@opensource.wolfsonmicro.com>
+References: <20130313053253.GA17674@longonot.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1567197277174685906=="
+Content-Type: multipart/mixed; boundary="===============2512783431652636634=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DC302265E0A
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 12:08:30 +0100 (CET)
-In-Reply-To: <87ip4xtnka.wl%kuninori.morimoto.gx@renesas.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C8BF265E22
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 12:09:26 +0100 (CET)
+In-Reply-To: <20130313053253.GA17674@longonot.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Daniel Mack <zonque@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, kbuild@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1567197277174685906==
+--===============2512783431652636634==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tKtFalx5NIx0HZ72"
+	protocol="application/pgp-signature"; boundary="5LiOUhUlsRX0HDkW"
 Content-Disposition: inline
 
 
---tKtFalx5NIx0HZ72
+--5LiOUhUlsRX0HDkW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 11, 2013 at 06:27:21PM -0700, Kuninori Morimoto wrote:
-> Current ASoC has register function for platform/codec/dai/card,
-> but doesn't have for cpu.
-> It often produces confusion and fault on ASoC.
+On Wed, Mar 13, 2013 at 08:32:53AM +0300, Dan Carpenter wrote:
+> "val" has to be signed for the error handling to work.
 
 Applied, thanks.
 
---tKtFalx5NIx0HZ72
+--5LiOUhUlsRX0HDkW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRQF4gAAoJELSic+t+oim9D0wP+wcVqZe7lwKMj5dadwEWGYsv
-p1FlTNQYHInxpCUY7nmXTlUmJwk7mDChCUjOa0s4lStcMazc3PrJaWqZCXippUiK
-DcGlEEVrSzcoYtiOVg2ezqh9R5YKoJLDzC9/lsYPcEDRTK1v4s5U+nn84f3nkFVA
-YB5IgGrZ7k1Z7g0iOFn35ze8VGz+gM7tZPVEeHqE85ADDmq8UM8vmjO+UX7g1lqu
-6aFQMQ5rt20lxO5cwkAi+wT4QvPijYBo3awWfc6uR6XAt1iXtWJw5D/oLc2877Up
-5sh46vdoAaiOB1anBv0gheeDWfsTdXrj/XXGo6l7r4sY6DgeFYZikovE/jILmFVZ
-RfDvNb+sNHkYz9//vYAXrb2+crQGmNNogJQMt3TR2R1C7Je1Y2dugZo75maGyPy2
-HJTeMdVQFbv4DKgFDtOh/1zZOcAEydAu3zRK/jOOstDtD1Te0WEltSMxK41h6C5z
-dSMjeuQqEYgkaF6MowUbUyRxA0+afZru3lCSBxj343aEp5CMcD7LqUbVrzPbWgIq
-sUdEEFgv9YZpc8wB/4iIGJWUQSDYYeam35qkaQVeCJXnyhoMHrJHWbOi6zMyLkJO
-twtnmrBNiCpic54MF3DS5lXCMa+5BvD+skuJSQnkEbXq9ifiReQfbU3NKAkRgIiS
-Jo/AQIPAEjQjTTxp6QQ2
-=z0cy
+iQIcBAEBAgAGBQJRQF5WAAoJELSic+t+oim9RaEP/R3Ygor7kfC8wck8RrkuK9Ed
+FzspzUwTxKDsMKHJ5a3a6L6k1/V8ytTll8lq+4fXLFsu7n5aBwC+FaiXzKfvSUWE
+4gK9n9O8t1a+8elFf7iTh6aCjMqOqbcKhricsiafNLDLNq7zc00Ha/7Wh1ljrvLM
+JDKHft+UB9gQPN0IJWjXZJID8tYyTssCCV5818e9ESG0f6epJQbkimAUA2t0MbaE
+6GfW+WSF0Ivqbucz5zcuKxsMQ2NUuEa1c81u4fd8xe/8vMylkQL/Sx4M+3aP72Yt
+BdmNWCjQ3HV6QrgThxco9QDbatMWi4dxK/UdIdr9uwXdBENA1CrBrDeJmPY1b0V1
+3t3idR0HJ4KXuIhD9oT1PguiHeX0oQs/5J9TINsWjieLR1reS76YREUqUur4GRQM
+Ie/VxFizAGdHLecYjGLJJRl2oASUyYcavnFrze3XMzNV2TIruOUF5ak7lJkBW7Lt
+kHp5vcpWQNdrHsltd8Mw1vwXDqzBQy2J6vQnPx/6kV5iyO9awOhyAKJkWDrVOZ/2
+J7pkrLbLWgRvugswm4CyeJ4JxxuIbHkQowEDN1gZW0anocI/cpq/3mX6eyiFbXz4
+Twy8K8PZGZoX+fx2Ox1RJi5oXgWMR/WVrL3CL4Ys/A001RGeGBimfWGK8KEgGWt4
+ZG74jsUu99KrsUBnQfrw
+=6MqM
 -----END PGP SIGNATURE-----
 
---tKtFalx5NIx0HZ72--
+--5LiOUhUlsRX0HDkW--
 
---===============1567197277174685906==
+--===============2512783431652636634==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1567197277174685906==--
+--===============2512783431652636634==--
