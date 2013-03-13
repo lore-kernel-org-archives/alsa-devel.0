@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl: imx-sgtl5000: Use
+Subject: Re: [PATCH 2/2] ASoC: fsl: imx-audmux: Use
 	devm_clk_get()
-Date: Wed, 13 Mar 2013 10:39:08 +0000
-Message-ID: <20130313103908.GF25610@opensource.wolfsonmicro.com>
+Date: Wed, 13 Mar 2013 10:39:45 +0000
+Message-ID: <20130313103945.GG25610@opensource.wolfsonmicro.com>
 References: <1363132289-15211-1-git-send-email-festevam@gmail.com>
- <1363132289-15211-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6758980449716200327=="
+Content-Type: multipart/mixed; boundary="===============4170210632758622360=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 65C9F265E04
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 11:39:10 +0100 (CET)
-In-Reply-To: <1363132289-15211-2-git-send-email-festevam@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C772265E0A
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 11:39:47 +0100 (CET)
+In-Reply-To: <1363132289-15211-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,59 +25,53 @@ Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6758980449716200327==
+--===============4170210632758622360==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="27ZtN5FSuKKSZcBU"
+	protocol="application/pgp-signature"; boundary="2E/hm+v6kSLEYT3h"
 Content-Disposition: inline
 
 
---27ZtN5FSuKKSZcBU
+--2E/hm+v6kSLEYT3h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2013 at 08:51:29PM -0300, Fabio Estevam wrote:
+On Tue, Mar 12, 2013 at 08:51:28PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> By using devm_clk_get() we can save a call to clk_put().
 
-> -	data->codec_clk = clk_get(&codec_dev->dev, NULL);
-> +	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
->  	if (IS_ERR(data->codec_clk)) {
+Applied, thanks.
 
-This doesn't look right, we're using the CODEC device here but this is
-the card driver.  That means that if we unload and reload the card the
-clock will get acquired twice.  Should be mostly harmless but still it's
-not good practice and would eventually run us out of memory.
-
-Really the CODEC should be doing this but then we get into the fact that
-the clock API isn't reliably available and so on...
-
---27ZtN5FSuKKSZcBU
+--2E/hm+v6kSLEYT3h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRQFdGAAoJELSic+t+oim9H88P/R+fxHHsj+wZjNsgnaDRqkPu
-lOCzSOQH0EiL8W+FK76uSyu/KwNp1iMSkpwf33QpQHIXTNaC/B6R2spfqiJP/xkF
-EnKn9csYjUlCTXo4lR3qq8IR/5zgn+c3z8m/0q+/kbWaV8sXZZJJeDsnY+otA8Kd
-IDyfuVEUpp0JMFVbDysYVkGWslqeCW8R3AVxiQ+0R3Ov39CjmrKM8SC8v4HgkBtK
-ha089LBmcqKGV1+bEox5hZ9tt5Muc/GqqvQ3BbgNKcsr+eGU2jLJxs2o5+HrrEbj
-qoHqsYp1Z33U4h1595reEv9+x3RzEXwSPseVS5EOSXcGdc44L+TUKUl0GTAghc3y
-jPvXYvuPEhm+zl4ykRsESbgkUjDwKVeTKMvCTD7NUq6Ih8Wou6FfcH9yGPPeMBow
-ZL89lwPMaYAEOxh0k/VvMTpUD3fmNLJ8YGR1Ae/Ee5/kL2YvDnnwjRQ/xTV06IDW
-0JTxRGHlG62ahCGEFppfPUF1VjV2v+Hzr1/vu98wupuns4gsv9EkDaKb0w/NlXpo
-Ux1m1MFK8NcMHkSANxxLXDAqsKP29464QHNl48cJK/fiQwcPQxJgf9SV5V+CMQZy
-3b4rXPV9Zi5U8N0gXtQtrS/vi24JJenupY2TannRQ9y5PmYIpmGjf+pjhfLd5dVn
-9Pox7z5a/ox52Axs5gk8
-=1iSF
+iQIcBAEBAgAGBQJRQFdrAAoJELSic+t+oim9kBsP/jMnckY1oBBfTBevFWVEnqa2
+mJnjiNcPylUodNbe8yZaGI/KfoLrvfsF6czfd48ibbeKhlIuaJMhmcIoTl4Wjr/X
+br0gRXLf4meYBdLnnbllmqJ4OPfPpjM0y+aswwabUAjH+pW+t6C3VUOb3D9nuLUZ
+4N7CxGMslQmYCPSfVd7VdFLj24rukCkfbmVZVSkL5bAYhiFh7hEhK+D09exVkRzt
+A/P91wrwrJS08e5gsNU2Xb7sCab68gfXjaCRpXexreaiYRpaPft3ovaRYuqI+MWO
++ZgZQeFbIVTjZzw7E87Ega4jy38QKKzY4c2rIw97p8aMXARRXZHH+JsF50wjNhmm
+cHY3IOeWUPzvrRxT5NKRu8qTEXAd2kC8/Qpz6zc+EkQ5BZJQktjlB5lhQwAiDpih
+nPO0t2h6OfASEJe1kDMkmmvKYWYVNYok0xa2ohcg1pGMQhdXw2f4PJfbhmH26yLe
+CAisSwX3b7PNlcbLb18YShpzTl8xLhnKaKbMxqGq2sCaJebklt1iuzeKnIoAHsPb
+uSb8rObld24oHYhcWFb/zadMiBpvK2PemAoBfeEuJnHOpNYed6LngppPPoHsUqrB
+8+R6Swybcc733NQuRVmwDY/T0TYNDEGyJe5T5Kita5y9Ga1arQqPTSXUnxgYh4wP
+FIMOYR24qIc/vUVDe6NZ
+=sXRt
 -----END PGP SIGNATURE-----
 
---27ZtN5FSuKKSZcBU--
+--2E/hm+v6kSLEYT3h--
 
---===============6758980449716200327==
+--===============4170210632758622360==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6758980449716200327==--
+--===============4170210632758622360==--
