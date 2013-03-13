@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: samsung: remove last traces of
-	neo1973-gta01
-Date: Wed, 13 Mar 2013 10:23:00 +0000
-Message-ID: <20130313102300.GC25610@opensource.wolfsonmicro.com>
-References: <1363126175.3137.160.camel@x61.thuisdomein>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [patch] ALSA: ASoC: tas5086: signedness bug in
+	tas5086_hw_params()
+Date: Wed, 13 Mar 2013 11:29:01 +0100
+Message-ID: <514054ED.7050501@gmail.com>
+References: <20130313053253.GA17674@longonot.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4221754964043216569=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82F64264F0A
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 11:23:01 +0100 (CET)
-In-Reply-To: <1363126175.3137.160.camel@x61.thuisdomein>
+Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
+ [209.85.214.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9475264F0A
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 11:30:50 +0100 (CET)
+Received: by mail-bk0-f48.google.com with SMTP id jf20so358784bkc.21
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 03:30:50 -0700 (PDT)
+In-Reply-To: <20130313053253.GA17674@longonot.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-samsung-soc@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>, kbuild@01.org
 List-Id: alsa-devel@alsa-project.org
 
+On 13.03.2013 06:32, Dan Carpenter wrote:
+> "val" has to be signed for the error handling to work.
 
---===============4221754964043216569==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
-Content-Disposition: inline
+Absolutely.
 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
---kVXhAStRUZ/+rrGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 12, 2013 at 11:09:35PM +0100, Paul Bolle wrote:
-> The (rudimentary) support for the Openmoko Neo1973 GTA01 got removed in
-> commit 1ae5cbc52e7c6619a3f44b87809fd25370df31bb ("ASoC: neo1973_wm8753:
-> remove references to the neo1973-gta01 machine"). Remove its last traces
-> in the Kconfig file too.
-
-The support wasn't rudimentary, it was a pretty much complete audio
-driver.  Anyway I've applied this with a fixed up commit message.
-
---kVXhAStRUZ/+rrGn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRQFN0AAoJELSic+t+oim9DwAP/iQJhVjm91JrgipPMtlcxS2F
-y7cs4SYGwMxFz/bmrhDRtnMuMLZvV4Vu2NcpRCEphrCPD50k2D/Ky6w1mbm7VaMv
-cSPLL4m/rtH/1XkETBJjeB99je8NjdgcrwPQ5XstyGsiP7chtdaNjBn6Sv2cHbiy
-VQouBtFHtcGrY5vr8WBzxA2d5Vt35IXo8r38AFoP/zArbbbSHcEjwvGY03S6yZS8
-GSQguTDvSd0B7cr5e8pmZcHSyMydFajyozv1DDtEWifW/lwEroUoJQYWhEYz5ZJp
-gzxi1k0m2avLjO0fS2l2ZoT/oKCocNkb5UQ7YzZGvC9wgeQ0ArjUw+5uDqxyboXQ
-NNgKZ6Shp6WOoK4jKhqcV5cXNqN/m5VgSUn9DHOPNpimxSnHzxUizWHQN1pyQqv9
-nsRm7gMXBo1MZiGh0dyUcxPMt4cfVCRwD74nJxWSc3LGivMYyz5JFznEJaeAARH1
-4E5+VdE8Zxa+8x/Vssuy30od8wWiXm9YjFhpj3XKynya55OrNu/Rq2c8XnrESAGL
-s4/SX8fIgvJCzUsR2l4aweTBRnPyQFcjFqwC5qhgB2ZVLvDTwNkkShuhNf/o6CeU
-fwKzdWyWpMKTfmZMLyyOXeBRrLEy9DD6Tf3d+wft9RvRYMRO6o80Ws0LF6lsXQmq
-Il8w5kmCBKs4ZrUImIwZ
-=pAAo
------END PGP SIGNATURE-----
-
---kVXhAStRUZ/+rrGn--
-
---===============4221754964043216569==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Daniel Mack <zonque@gmail.com>
 
 
---===============4221754964043216569==--
+> 
+> diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+> index 008bea4..41d03ae 100644
+> --- a/sound/soc/codecs/tas5086.c
+> +++ b/sound/soc/codecs/tas5086.c
+> @@ -251,7 +251,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
+>  {
+>  	struct snd_soc_codec *codec = dai->codec;
+>  	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+> -	unsigned int val;
+> +	int val;
+>  	int ret;
+>  
+>  	priv->rate = params_rate(params);
+> 
