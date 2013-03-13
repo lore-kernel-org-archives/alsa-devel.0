@@ -1,55 +1,43 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH] ASoC: samsung: remove last traces of neo1973-gta01
-Date: Wed, 13 Mar 2013 14:10:37 +0900
-Message-ID: <093301ce1fa9$19903ba0$4cb0b2e0$%kim@samsung.com>
-References: <1363126175.3137.160.camel@x61.thuisdomein>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: ASoC: tas5086: signedness bug in
+	tas5086_hw_params()
+Date: Wed, 13 Mar 2013 08:32:53 +0300
+Message-ID: <20130313053253.GA17674@longonot.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1363126175.3137.160.camel@x61.thuisdomein>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Paul Bolle' <pebolle@tiscali.nl>, 'Ben Dooks' <ben-linux@fluff.org>, 'Sangbeom Kim' <sbkim73@samsung.com>, 'Liam Girdwood' <lgirdwood@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D80F265DEE
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 06:34:32 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>, Daniel Mack <zonque@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, kbuild@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Bolle wrote:
-> 
-> The (rudimentary) support for the Openmoko Neo1973 GTA01 got removed in
-> commit 1ae5cbc52e7c6619a3f44b87809fd25370df31bb ("ASoC: neo1973_wm8753:
-> remove references to the neo1973-gta01 machine"). Remove its last traces
-> in the Kconfig file too.
-> 
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+"val" has to be signed for the error handling to work.
 
-Acked-by: Kukjin Kim <kgene.kim@samsung.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-- Kukjin
-
-> ---
-> Untested.
-> 
->  sound/soc/samsung/Kconfig | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-> index 90e7e66..475fb0d 100644
-> --- a/sound/soc/samsung/Kconfig
-> +++ b/sound/soc/samsung/Kconfig
-> @@ -35,11 +35,10 @@ config SND_SAMSUNG_I2S
->  	tristate
-> 
->  config SND_SOC_SAMSUNG_NEO1973_WM8753
-> -	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA01/GTA02)"
-> -	depends on SND_SOC_SAMSUNG && (MACH_NEO1973_GTA01 || MACH_NEO1973_GTA02)
-> +	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
-> +	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
->  	select SND_S3C24XX_I2S
->  	select SND_SOC_WM8753
-> -	select SND_SOC_LM4857 if MACH_NEO1973_GTA01
->  	select SND_SOC_DFBMCS320
->  	help
->  	  Say Y here to enable audio support for the Openmoko Neo1973
-> --
-> 1.7.11.7
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 008bea4..41d03ae 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -251,7 +251,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val;
++	int val;
+ 	int ret;
+ 
+ 	priv->rate = params_rate(params);
