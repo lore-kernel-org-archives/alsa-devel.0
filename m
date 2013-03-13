@@ -1,51 +1,55 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open function for DT DMA
- request
-Date: Wed, 13 Mar 2013 10:18:29 +0800
-Message-ID: <20130313021712.GD27461@S2101-09.ap.freescale.net>
-References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
- <20130312190206.GY19942@opensource.wolfsonmicro.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH] ASoC: samsung: remove last traces of neo1973-gta01
+Date: Wed, 13 Mar 2013 14:10:37 +0900
+Message-ID: <093301ce1fa9$19903ba0$4cb0b2e0$%kim@samsung.com>
+References: <1363126175.3137.160.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20130312190206.GY19942-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1363126175.3137.160.camel@x61.thuisdomein>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Paul Bolle' <pebolle@tiscali.nl>, 'Ben Dooks' <ben-linux@fluff.org>, 'Sangbeom Kim' <sbkim73@samsung.com>, 'Liam Girdwood' <lgirdwood@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@suse.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 12, 2013 at 07:02:07PM +0000, Mark Brown wrote:
-> On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
-> > Add a function to open a DMA PCM substream using devicetree data
-> > provided via the client device node. The patch introduces a public
-> > function and a private subfunction that is called by both open
-> > functions.
+Paul Bolle wrote:
 > 
-> Someone (I think it was Shawn) sent a very similar patch just recently
-> which appears to have fallen out of my inbox unfortunately - can you
-> please check what's going on there and coordinate with them?  Let me
-> know if you can't find the patch and I'll dig it out.
+> The (rudimentary) support for the Openmoko Neo1973 GTA01 got removed in
+> commit 1ae5cbc52e7c6619a3f44b87809fd25370df31bb ("ASoC: neo1973_wm8753:
+> remove references to the neo1973-gta01 machine"). Remove its last traces
+> in the Kconfig file too.
+> 
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 
-It's here, Markus.
+Acked-by: Kukjin Kim <kgene.kim@samsung.com>
 
-http://thread.gmane.org/gmane.linux.alsa.devel/106027/focus=106031
+- Kukjin
 
-Mark,
-
-I did not see any objection from you on that patch, so I'm waiting for
-you to publish a branch for it, so that my mxs-dma generic binding
-series can move forward.
-
-Shawn
+> ---
+> Untested.
+> 
+>  sound/soc/samsung/Kconfig | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+> index 90e7e66..475fb0d 100644
+> --- a/sound/soc/samsung/Kconfig
+> +++ b/sound/soc/samsung/Kconfig
+> @@ -35,11 +35,10 @@ config SND_SAMSUNG_I2S
+>  	tristate
+> 
+>  config SND_SOC_SAMSUNG_NEO1973_WM8753
+> -	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA01/GTA02)"
+> -	depends on SND_SOC_SAMSUNG && (MACH_NEO1973_GTA01 || MACH_NEO1973_GTA02)
+> +	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
+> +	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
+>  	select SND_S3C24XX_I2S
+>  	select SND_SOC_WM8753
+> -	select SND_SOC_LM4857 if MACH_NEO1973_GTA01
+>  	select SND_SOC_DFBMCS320
+>  	help
+>  	  Say Y here to enable audio support for the Openmoko Neo1973
+> --
+> 1.7.11.7
