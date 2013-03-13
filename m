@@ -1,15 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Ensure we clock two channels
-	for I2S mode
-Date: Wed, 13 Mar 2013 19:06:13 +0000
-Message-ID: <1363201573-3057-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Subject: Re: [Alsa-user] Master volume control
+Date: Wed, 13 Mar 2013 13:17:00 -0700
+Message-ID: <E7C08FBDE6B748B29CE67CB33629E12A@PAULD>
+References: <B3AC1EE66F1142FF99DDC145B8669DDD@PAULD>
+ <512F0AF5.3050502@googlemail.com> <DB754736B2E5480F987C1DE8E330AC7C@PAULD>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F0E726257E
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 20:06:16 +0100 (CET)
+Received: from elasmtp-kukur.atl.sa.earthlink.net
+ (elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BB84265E28
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 21:17:13 +0100 (CET)
+Received: from [76.173.239.98] (helo=PAULD)
+ by elasmtp-kukur.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+ (envelope-from <pderocco@ix.netcom.com>) id 1UFs6o-0004Jm-71
+ for alsa-devel@alsa-project.org; Wed, 13 Mar 2013 16:17:10 -0400
+In-Reply-To: <DB754736B2E5480F987C1DE8E330AC7C@PAULD>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: 'Alsa-devel' <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I2S requires stereo clocking even for mono data.
+More on this.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+My synth app, running on a dual-core Atom, has two sound generation threads,
+running at a "nice" value of -20, and a normal control thread running at
+nice 0. The control thread is what calls snd_ctl_elem_write when I move the
+volume slider. My sound threads normally consume less than 50% of their
+respective CPUs, but when I move the volume slider, I get underruns.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 0c70d503..2b0803e 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -818,7 +818,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 	struct arizona *arizona = priv->arizona;
- 	int base = dai->driver->base;
- 	const int *rates;
--	int i, ret;
-+	int i, ret, val;
- 	int chan_limit = arizona->pdata.max_channels_clocked[dai->id - 1];
- 	int bclk, lrclk, wl, frame, bclk_target;
- 
-@@ -834,6 +834,13 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 		bclk_target *= chan_limit;
- 	}
- 
-+	/* Force stereo for I2S mode */
-+	val = snd_soc_read(codec, base + ARIZONA_AIF_FORMAT);
-+	if (params_channels(params) == 1 && (val & ARIZONA_AIF1_FMT_MASK)) {
-+		arizona_aif_dbg(dai, "Forcing stereo mode\n");
-+		bclk_target *= 2;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(arizona_44k1_bclk_rates); i++) {
- 		if (rates[i] >= bclk_target &&
- 		    rates[i] % params_rate(params) == 0) {
+If I run "top -H" in a terminal window, I see three other processes that
+suddenly consume gobs of CPU time as I change the volume.
+
+	name            nice    CPU%
+	pulseaudio      -11      19
+	threaded-ml       0      14
+	indicator-sound   0      11
+
+If instead of using my synth's volume slider, I open alsamixer in another
+terminal window, I don't see the same CPU usage, but I now attribute that to
+the fact that the keyboard is issuing volume changes at a much slower rate
+than my slider, which is read in a 200Hz loop. In fact, when I use
+alsamixer, and ramp the volume up and down, every now and then I do get an
+underrun. So it apparently won't matter whether I use snd_ctl_elem_write or
+snd_mixer_selem_set_playback_volume.
+
+So what I'd like to know is why the hell does changing the volume every 5ms
+suck up 44% of one CPU core? I get the feeling that the above processes
+aren't integral to ALSA, and may go away when I move my app to a pure
+embedded system, as opposed to Ubuntu. Is that the case? Am I chasing
+phantoms? Since I'm not doing _anything_ related to sound on this machine,
+other than developing my synth app (I don't even need a terminal beep), is
+there any way I can uninstall the things that are hogging the CPU, like
+pulseaudio?
+
 -- 
-1.7.10.4
+
+Ciao,               Paul D. DeRocco
+Paul                mailto:pderocco@ix.netcom.com 
