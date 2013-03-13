@@ -1,20 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: hda - Don't apply EAPD power filter
-	as default
-Date: Wed, 13 Mar 2013 17:42:39 +0100
-Message-ID: <1363192959-11917-3-git-send-email-tiwai@suse.de>
-References: <1363192959-11917-1-git-send-email-tiwai@suse.de>
+From: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+Subject: Re: [Alsa-user] Master volume control
+Date: Wed, 13 Mar 2013 09:47:59 -0700
+Message-ID: <DB754736B2E5480F987C1DE8E330AC7C@PAULD>
+References: <B3AC1EE66F1142FF99DDC145B8669DDD@PAULD>
+ <512F0AF5.3050502@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 75C1B2625CF
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 17:42:39 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 46888A51BB
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 17:42:39 +0100 (CET)
-In-Reply-To: <1363192959-11917-1-git-send-email-tiwai@suse.de>
+Received: from elasmtp-kukur.atl.sa.earthlink.net
+ (elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D74A26257E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2013 17:48:13 +0100 (CET)
+Received: from [76.173.239.98] (helo=PAULD)
+ by elasmtp-kukur.atl.sa.earthlink.net with esmtpa (Exim 4.67)
+ (envelope-from <pderocco@ix.netcom.com>) id 1UFoqX-0004bE-J1
+ for alsa-devel@alsa-project.org; Wed, 13 Mar 2013 12:48:09 -0400
+In-Reply-To: <512F0AF5.3050502@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,124 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-So far, the driver doesn't power down the widget at going down to D3
-when the widget node has an EAPD capability and EAPD is actually set
-on all codecs unless codec->power_filter is set explicitly.
-This caused a problem on some Conexant codecs, leading to click
-noises, and we set it as NULL there.  But it is very unlikely that the
-problem hits only these codecs.
+> From: Clemens Ladisch [mailto:cladisch@googlemail.com] 
+> 
+> #include <stdio.h>
+> #include <stdlib.h>
+> #include <alsa/asoundlib.h>
+> 
+> static void check(int err, const char *f)
+> {
+>         if (err < 0) {
+>                 fprintf(stderr, "%s failed: %s\n", f, 
+> snd_strerror(err));
+>                 exit(EXIT_FAILURE);
+>         }
+> }
+> #define CHECK(f) check(f, #f)
+> 
+> int main()
+> {
+>         snd_ctl_t *ctl;
+>         snd_ctl_elem_value_t *value;
+> 
+>         CHECK(snd_ctl_open(&ctl, "default", 0));
+> 
+>         snd_ctl_elem_value_alloca(&value);
+>         snd_ctl_elem_value_set_interface(value, 
+> SND_CTL_ELEM_IFACE_MIXER);
+>         snd_ctl_elem_value_set_name(value, "Master Playback Volume");
+>         snd_ctl_elem_value_set_integer(value, 0, 42);
+>         CHECK(snd_ctl_elem_write(ctl, value));
+> 
+>         snd_ctl_close(ctl);
+>         return 0;
+> }
 
-Looking back at the development history, this workaround for EAPD was
-introduced just for some laptops with STAC9200 codec, then we applied
-it blindly for all.  Now, since it's revealed to have an ill effect,
-we should disable this workaround per default and apply only for the
-known requiring systems.
+Well, I finally got a chance to try this. It "works", but the
+snd_ctl_elem_write call takes a couple of milliseconds (that's around a
+million instructions on my Atom), and it apparently spends this time in
+kernel state, because it causes my sound thread to underrun, so it's not
+usable.
 
-The EAPD workaround is implemented now as snd_hda_codec_eapd_power_filter(),
-and this has to be set explicitly by the codec driver when needed.
-As of now, only patch_stac9200() sets this one.
+If I use alsamixer, I don't have this problem; I can manipulate the master
+volume smoothly while I'm playing my synth app. So I went through the
+source, and found that it's using snd_mixer_selem_set_playback_volume. This
+is apparently part of something called the "Simple Mixer Interface", yet
+another section of ALSA which is completely undocumented, other than the
+Doxygen stuff (which is only meaningful as a reference for someone who
+already knows it inside out, but can't remember e.g. whether playback_pcm
+comes before or after capture_pcm in the snd_mixer_selem_regopt structure).
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c      | 13 ++++++-------
- sound/pci/hda/hda_local.h      |  4 ++++
- sound/pci/hda/patch_conexant.c |  1 -
- sound/pci/hda/patch_sigmatel.c |  1 +
- 4 files changed, 11 insertions(+), 8 deletions(-)
+So what's the minimum I need to do in order to get at the Master Playback
+Volume, via the Simple Mixer Interface?
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index a1c5053..8cca987 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1296,8 +1296,6 @@ static bool snd_hda_codec_get_supported_ps(struct hda_codec *codec,
- 
- static unsigned int hda_set_power_state(struct hda_codec *codec,
- 				unsigned int power_state);
--static unsigned int default_power_filter(struct hda_codec *codec, hda_nid_t nid,
--					 unsigned int power_state);
- 
- /**
-  * snd_hda_codec_new - create a HDA codec
-@@ -1418,7 +1416,6 @@ int snd_hda_codec_new(struct hda_bus *bus,
- #endif
- 	codec->epss = snd_hda_codec_get_supported_ps(codec, fg,
- 					AC_PWRST_EPSS);
--	codec->power_filter = default_power_filter;
- 
- 	/* power-up all before initialization */
- 	hda_set_power_state(codec, AC_PWRST_D0);
-@@ -3759,8 +3756,9 @@ static unsigned int hda_sync_power_state(struct hda_codec *codec,
- }
- 
- /* don't power down the widget if it controls eapd and EAPD_BTLENABLE is set */
--static unsigned int default_power_filter(struct hda_codec *codec, hda_nid_t nid,
--					 unsigned int power_state)
-+unsigned int snd_hda_codec_eapd_power_filter(struct hda_codec *codec,
-+					     hda_nid_t nid,
-+					     unsigned int power_state)
- {
- 	if (power_state == AC_PWRST_D3 &&
- 	    get_wcaps_type(get_wcaps(codec, nid)) == AC_WID_PIN &&
-@@ -3772,6 +3770,7 @@ static unsigned int default_power_filter(struct hda_codec *codec, hda_nid_t nid,
- 	}
- 	return power_state;
- }
-+EXPORT_SYMBOL_HDA(snd_hda_codec_eapd_power_filter);
- 
- /*
-  * set power state of the codec, and return the power state
-@@ -3816,8 +3815,8 @@ static void sync_power_up_states(struct hda_codec *codec)
- 	hda_nid_t nid = codec->start_nid;
- 	int i;
- 
--	/* don't care if no or standard filter is used */
--	if (!codec->power_filter || codec->power_filter == default_power_filter)
-+	/* don't care if no filter is used */
-+	if (!codec->power_filter)
- 		return;
- 
- 	for (i = 0; i < codec->num_nodes; i++, nid++) {
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 83b7486..e0bf753 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -670,6 +670,10 @@ snd_hda_check_power_state(struct hda_codec *codec, hda_nid_t nid,
- 	return (state != target_state);
- }
- 
-+unsigned int snd_hda_codec_eapd_power_filter(struct hda_codec *codec,
-+					     hda_nid_t nid,
-+					     unsigned int power_state);
-+
- /*
-  * AMP control callbacks
-  */
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 941bf6c..7d941ef 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3350,7 +3350,6 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 	switch (codec->vendor_id) {
- 	case 0x14f15045:
- 		codec->single_adc_amp = 1;
--		codec->power_filter = NULL; /* Needs speaker amp to D3 to avoid click */
- 		break;
- 	case 0x14f15047:
- 		codec->pin_amp_workaround = 1;
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 83d5335..d57c81e 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -3774,6 +3774,7 @@ static int patch_stac9200(struct hda_codec *codec)
- 	spec->gen.own_eapd_ctl = 1;
- 
- 	codec->patch_ops = stac_patch_ops;
-+	codec->power_filter = snd_hda_codec_eapd_power_filter;
- 
- 	snd_hda_add_verbs(codec, stac9200_eapd_init);
- 
 -- 
-1.8.1.4
+
+Ciao,               Paul D. DeRocco
+Paul                mailto:pderocco@ix.netcom.com 
