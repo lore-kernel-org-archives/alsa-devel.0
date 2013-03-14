@@ -1,59 +1,87 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open function for DT
- DMA request
-Date: Thu, 14 Mar 2013 14:08:32 +0100
-Message-ID: <20130314130832.GE32452@pengutronix.de>
-References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
- <20130312190206.GY19942@opensource.wolfsonmicro.com>
- <20130313021712.GD27461@S2101-09.ap.freescale.net>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH v2] ALSA: hda - Disable IDT eapd_switch if
+	there are no internal speakers
+Date: Thu, 14 Mar 2013 15:28:29 +0100
+Message-ID: <1363271309-2920-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20130313021712.GD27461-rvtDTF3kK1ictlrPMvKcciBecyulp+rMXqFh9Ls21Oc@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B40260306
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 15:28:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 13, 2013 at 10:18:29AM +0800, Shawn Guo wrote:
-> On Tue, Mar 12, 2013 at 07:02:07PM +0000, Mark Brown wrote:
-> > On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
-> > > Add a function to open a DMA PCM substream using devicetree data
-> > > provided via the client device node. The patch introduces a public
-> > > function and a private subfunction that is called by both open
-> > > functions.
-> > 
-> > Someone (I think it was Shawn) sent a very similar patch just recently
-> > which appears to have fallen out of my inbox unfortunately - can you
-> > please check what's going on there and coordinate with them?  Let me
-> > know if you can't find the patch and I'll dig it out.
-> 
-> It's here, Markus.
-> 
-> http://thread.gmane.org/gmane.linux.alsa.devel/106027/focus=106031
-> 
+If there are no internal speakers, we should not turn the eapd switch
+off, because it might be necessary to keep high for Headphone.
 
-Thanks. Do you already have a patch for the non-generic function which I
-could use instead?
+BugLink: https://bugs.launchpad.net/bugs/1155016
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_sigmatel.c |   29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Regards
+I'm okay with your suggestion. I only changed from "false" to "0" to be consistent
+with other usage of eapd_switch.
 
-Markus
-
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index d57c81e..3566731 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -815,6 +815,29 @@ static int find_mute_led_cfg(struct hda_codec *codec, int default_polarity)
+ 	return 0;
+ }
+ 
++/* check whether a built-in speaker is included in parsed pins */
++static bool has_builtin_speaker(struct hda_codec *codec)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	hda_nid_t *nid_pin;
++	int nids, i;
++
++	if (spec->gen.autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT) {
++		nid_pin = spec->gen.autocfg.line_out_pins;
++		nids = spec->gen.autocfg.line_outs;
++	} else {
++		nid_pin = spec->gen.autocfg.speaker_pins;
++		nids = spec->gen.autocfg.speaker_outs;
++	}
++
++	for (i = 0; i < nids; i++) {
++		unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid_pin[i]);
++		if (snd_hda_get_input_pin_attr(def_conf) == INPUT_PIN_ATTR_INT)
++			return true;
++	}
++	return false;
++}
++
+ /*
+  * PC beep controls
+  */
+@@ -3891,6 +3914,12 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
+ 		return err;
+ 	}
+ 
++	/* Don't GPIO-mute speakers if there are no internal speakers, because
++	 * the GPIO might be necessary for Headphone
++	 */
++	if (spec->eapd_switch && !has_builtin_speaker(codec))
++		spec->eapd_switch = 0;
++
+ 	codec->proc_widget_hook = stac92hd7x_proc_hook;
+ 
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.9.5
