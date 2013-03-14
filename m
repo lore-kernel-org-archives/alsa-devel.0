@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] Master volume control
-Date: Thu, 14 Mar 2013 21:08:47 +0100
-Message-ID: <51422E4F.5090803@ladisch.de>
-References: <B3AC1EE66F1142FF99DDC145B8669DDD@PAULD>
- <512F0AF5.3050502@googlemail.com> <DB754736B2E5480F987C1DE8E330AC7C@PAULD>
- <5141E854.206@ladisch.de> <1D8C99720146460FA33752A5FE614436@PAULD>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: dapm: Fix pointer dereference in
+	is_connected_output_ep()
+Date: Thu, 14 Mar 2013 21:26:24 +0100
+Message-ID: <1363292784-20537-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0DDE42615E6
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 21:10:04 +0100 (CET)
-In-Reply-To: <1D8C99720146460FA33752A5FE614436@PAULD>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EAD82615E8
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 21:26:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Paul D. DeRocco" <pderocco@ix.netcom.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul D. DeRocco wrote:
->> I'd guess that some driver uses a busy loop for writing the codec
->> registers.
->>
->> Which drivers are you using for your sound hardware?
->
-> It's Intel HD Audio.
+*path is not yet initialized when we check if the widget is connected.
 
-That driver works fine.
+The compiler also warns about this:
+sound/soc/soc-dapm.c: In function 'is_connected_output_ep':
+sound/soc/soc-dapm.c:824:18: warning: 'path' may be used uninitialized in this function
 
-> But the point is that three other processes light up when I move the slider.
-> I think they're all monitoring the master volume changes, and not actually
-> involved in doing the volume change.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Mark, Liam,
 
-I guess your CPU doesn't have too many cores ...
-
-> What I'm wondering about these processes (pulseaudio, threaded-ml,
-> indicator-sound)
-
-PulseAudio has its own virtual volume sliders on top of the hardware
-controls.  indicator-sound appears to be an OSD of your desktop
-environment.  I don't know what threaded-ml is (maybe part of Chrome?).
-
-> I would expect lots of CPU usage if I had alsamixer open at the time,
-> because it monitors these changes, and updates its display.
-
-Well, how much increas in CPU usage do you get wth alsamixer?
-
-> * If I create my own minimal embedded distro (I'm trying to use the Yocto
-> project for that), will they simply not be there
-
-If you don't included the relevant packages.
-
+This patch is for the for-next branch.
+I got NULL pointer dereference because of this depending on the used toolchain.
 
 Regards,
-Clemens
+Peter
+
+ sound/soc/soc-dapm.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eaf9b74..33acd8b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -821,7 +821,6 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+ 		    (widget->id == snd_soc_dapm_line &&
+ 		     !list_empty(&widget->sources))) {
+ 			widget->outputs = snd_soc_dapm_suspend_check(widget);
+-			path->walking = 0;
+ 			return widget->outputs;
+ 		}
+ 	}
+-- 
+1.8.1.5
