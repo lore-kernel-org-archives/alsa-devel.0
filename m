@@ -1,17 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] ASoC: cs4271: preserve "Master Playback
-	Switch" setting
-Date: Fri, 15 Mar 2013 06:35:48 +0100
-Message-ID: <1363325748-6429-2-git-send-email-zonque@gmail.com>
-References: <1363325748-6429-1-git-send-email-zonque@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] sound: sequencer: cap array index in
+	seq_chn_common_event()
+Date: Fri, 15 Mar 2013 09:14:22 +0300
+Message-ID: <20130315061422.GB3793@longonot.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D298261717
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 06:36:02 +0100 (CET)
-In-Reply-To: <1363325748-6429-1-git-send-email-zonque@gmail.com>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 220CF26171B
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 07:15:56 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,136 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, subaparts@yandex.ru, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, both the ALSA control for "Digital Master Playback Switch"
-and the ALSA core (by calling dai_ops->mute_stream()) control the same
-bits in the CS4271_VOL[AB]_MUTE registers.
+"chn" here is a number between 0 and 255, but ->chn_info[] only has
+16 elements so there is a potential write beyond the end of the
+array.
 
-That's a problem for applications which intentionally want to keep the
-flag switched off from userspace, even though the stream is already
-playing.
+If the seq_mode isn't SEQ_2 then we let the individual drivers
+(either opl3.c or midi_synth.c) handle it.  Those functions all
+do a bounds check on "chn" so I haven't changed anything here.
+The opl3.c driver has up to 18 channels and not 16.
 
-Fix this by keeping track of the states on both sides - the ALSA
-control and the ASoC core - and actually mute the Codec if either one
-of the two flags is set.
-
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-by: Michael Hirsch <m.hirsch@raumfeld.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- sound/soc/codecs/cs4271.c | 74 +++++++++++++++++++++++++++++++++--------------
- 1 file changed, 53 insertions(+), 21 deletions(-)
+Static checker stuff.
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 03036b3..3a2ab48 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -171,6 +171,9 @@ struct cs4271_private {
- 	int				gpio_disable;
- 	/* enable soft reset workaround */
- 	bool				enable_soft_reset;
-+	/* keep track of playback mute flags */
-+	bool				mute_control;
-+	bool				digital_mute;
- };
+diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
+index 30bcfe4..4ff60a6 100644
+--- a/sound/oss/sequencer.c
++++ b/sound/oss/sequencer.c
+@@ -545,6 +545,9 @@ static void seq_chn_common_event(unsigned char *event_rec)
+ 		case MIDI_PGM_CHANGE:
+ 			if (seq_mode == SEQ_2)
+ 			{
++				if (chn > 15)
++					break;
++
+ 				synth_devs[dev]->chn_info[chn].pgm_num = p1;
+ 				if ((int) dev >= num_synths)
+ 					synth_devs[dev]->set_instr(dev, chn, p1);
+@@ -596,6 +599,9 @@ static void seq_chn_common_event(unsigned char *event_rec)
+ 		case MIDI_PITCH_BEND:
+ 			if (seq_mode == SEQ_2)
+ 			{
++				if (chn > 15)
++					break;
++
+ 				synth_devs[dev]->chn_info[chn].bender_value = w14;
  
- /*
-@@ -281,6 +284,51 @@ static int cs4271_put_deemph(struct snd_kcontrol *kcontrol,
- 	return cs4271_set_deemph(codec);
- }
- 
-+static int cs4271_set_mute(struct snd_soc_codec *codec)
-+{
-+	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+	int val_a = 0;
-+	int val_b = 0;
-+	int ret;
-+
-+	if (cs4271->digital_mute || cs4271->mute_control) {
-+		val_a = CS4271_VOLA_MUTE;
-+		val_b = CS4271_VOLB_MUTE;
-+	}
-+
-+	ret = regmap_update_bits(cs4271->regmap, CS4271_VOLA,
-+				 CS4271_VOLA_MUTE, val_a);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regmap_update_bits(cs4271->regmap, CS4271_VOLB,
-+				 CS4271_VOLB_MUTE, val_b);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int cs4271_get_playback_switch(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.enumerated.item[0] = !cs4271->mute_control;
-+	return 0;
-+}
-+
-+static int cs4271_put_playback_switch(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
-+
-+	cs4271->mute_control = !ucontrol->value.enumerated.item[0];
-+	return cs4271_set_mute(codec);
-+}
-+
- struct cs4271_clk_cfg {
- 	bool		master;		/* codec mode */
- 	u8		speed_mode;	/* codec speed mode: 1x, 2x, 4x */
-@@ -392,28 +440,12 @@ static int cs4271_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
--	int ret;
--	int val_a = 0;
--	int val_b = 0;
- 
--	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
--		return 0;
--
--	if (mute) {
--		val_a = CS4271_VOLA_MUTE;
--		val_b = CS4271_VOLB_MUTE;
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		cs4271->digital_mute = mute;
-+		return cs4271_set_mute(codec);
- 	}
- 
--	ret = regmap_update_bits(cs4271->regmap, CS4271_VOLA,
--				 CS4271_VOLA_MUTE, val_a);
--	if (ret < 0)
--		return ret;
--
--	ret = regmap_update_bits(cs4271->regmap, CS4271_VOLB,
--				 CS4271_VOLB_MUTE, val_b);
--	if (ret < 0)
--		return ret;
--
- 	return 0;
- }
- 
-@@ -437,8 +469,8 @@ static const struct snd_kcontrol_new cs4271_snd_controls[] = {
- 	SOC_DOUBLE("Master Capture Switch", CS4271_ADCCTL, 3, 2, 1, 1),
- 	SOC_SINGLE("Dither 16-Bit Data Switch", CS4271_ADCCTL, 5, 1, 0),
- 	SOC_DOUBLE("High Pass Filter Switch", CS4271_ADCCTL, 1, 0, 1, 1),
--	SOC_DOUBLE_R("Master Playback Switch", CS4271_VOLA, CS4271_VOLB,
--		7, 1, 1),
-+	SOC_SINGLE_BOOL_EXT("Master Playback Switch", 0,
-+		cs4271_get_playback_switch, cs4271_put_playback_switch),
- };
- 
- static const struct snd_soc_dai_ops cs4271_dai_ops = {
--- 
-1.8.1.4
+ 				if ((int) dev < num_synths)
