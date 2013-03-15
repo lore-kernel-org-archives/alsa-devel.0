@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: dapm: Add support for platform
- and CODEC drivers on same device
-Date: Fri, 15 Mar 2013 18:00:17 +0000
-Message-ID: <20130315180017.GE8988@opensource.wolfsonmicro.com>
-References: <1359020951-25904-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130126092020.GH30594@opensource.wolfsonmicro.com>
- <20130315153540.GC2141@opensource.wolfsonmicro.com>
- <20130315153821.GD2141@opensource.wolfsonmicro.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH 0/4] ALSA: Updates for the CA0132 codec
+Date: Fri, 15 Mar 2013 11:39:50 -0700
+Message-ID: <CAEUnVG7kEEZt9rYMD32LWLPe4_x0U5sogrLbN=EZGebjDnxhrg@mail.gmail.com>
+References: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
+ <s5ha9rczba1.wl%tiwai@suse.de>
+ <CAEUnVG6r+Ov9c2aMwUhpBgDsj8A4vPnsA4WA3nzyvnEPR=0T2A@mail.gmail.com>
+ <s5hvc8thxxk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4589225279448904934=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D4842264FBA
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 19:00:29 +0100 (CET)
-In-Reply-To: <20130315153821.GD2141@opensource.wolfsonmicro.com>
+Received: from mail-ea0-f171.google.com (mail-ea0-f171.google.com
+ [209.85.215.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A93C264FD1
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 19:40:12 +0100 (CET)
+Received: by mail-ea0-f171.google.com with SMTP id b15so1718065eae.16
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 11:40:12 -0700 (PDT)
+In-Reply-To: <s5hvc8thxxk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,84 +26,367 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Mar 15, 2013 at 1:25 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 14 Mar 2013 17:34:34 -0700,
+> Dylan Reid wrote:
+>>
+>> On Sun, Feb 10, 2013 at 2:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > Hi Ian,
+>> >
+>> > At Fri, 8 Feb 2013 18:31:41 -0800,
+>> > Ian Minett wrote:
+>> >>
+>> >> From: Ian Minett <ian_minett@creativelabs.com>
+>> >>
+>> >> Hi,
+>> >>
+>> >> This series contains the following updates to CA0132:
+>> >>
+>> >> 1: Add firmware loading for the SpeakerEQ DSP effect.
+>> >> 2: Improve DSP transfer timeout calculations.
+>> >> 3: Add stream and effect latency monitoring routines
+>> >> 4: Update hp unsolicited event handler to manage queued work.
+>> >
+>> > Thanks, I took the one now but leave others.  See my reply to each.
+>> >
+>> >>
+>> >> These were based on the latest sound.git, but please let me know if
+>> >> they should be against sound-unstable tree instead.
+>> >
+>> > sound.git tree for-next branch would be the place to look at.
+>> > If I start a new branch for ca0132, I'll let you know.
+>> >
+>> >
+>> > But, before going further: as I already mailed you, I could get a test
+>> > board and started testing.  The result wasn't good.  At the first time
+>> > the driver loads, the DSP loading fails always.  When the driver is
+>> > reloaded after that, it's working.  So, something is still pretty
+>> > fragile.
+>>
+>> I tried this today and I can't get it to work.  It is failing in
+>> snd_hda_lock_devices called from azx_load_dsp_prepare.  The DSP is
+>> loaded from ca0132_init which is called as the result of open/resume.
+>> Both the check for open control files and attached substreams are
+>> failing. How can that be avoided?
+>
+> snd_hda_lock_devices() is obviously not suitable for the power-saving
+> or PM resume.  OK, this must be fixed indeed...
+>
+> How about the patch below?  (Note that it's just compile tested.)
 
---===============4589225279448904934==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6e7ZaeXHKrTJCxdu"
-Content-Disposition: inline
+Thanks Takashi.  This works for the init case, but it deadlocks in the
+case the load originates from open:
+azx_pcm_open -> calls snd_hda_power_up_d3wait -> ... -> ca0132_init ->
+azx_load_dsp_prepare
 
+both open and load_dsp_prepare grab open_mutex.
 
---6e7ZaeXHKrTJCxdu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Fix abuse of snd_hda_lock_devices() for DSP
+>  loader
+>
+> The current DSP loader code abuses snd_hda_lock_devices() for ensuring
+> the DSP loader not conflicting with the other normal operations.  But
+> this trick obviously doesn't work for the PM resume since the streams
+> are kept opened there where snd_hda_lock_devices() returns -EBUSY.
+> That means we need another lock mechanism instead of abuse.
+>
+> This patch provides the new lock state to azx_dev.  Theoretically it's
+> possible that the DSP loader conflicts with the stream that has been
+> already assigned for another PCM.  If it's running, the DSP loader
+> should simply fail.  If not -- it's the case for PM resume --, we
+> should assign this stream temporarily to the DSP loader, and take it
+> back to the PCM after finishing DSP loading.  If the PCM is operated
+> during the DSP loading, it should get an error, too.
+>
+> Reported-by: Dylan Reid <dgreid@chromium.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_intel.c | 119 ++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 100 insertions(+), 19 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 4cea6bb6..61abf8b 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -415,6 +415,8 @@ struct azx_dev {
+>         unsigned int opened :1;
+>         unsigned int running :1;
+>         unsigned int irq_pending :1;
+> +       unsigned int prepared:1;
+> +       unsigned int locked:1;
+>         /*
+>          * For VIA:
+>          *  A flag to ensure DMA position is 0
+> @@ -426,8 +428,25 @@ struct azx_dev {
+>
+>         struct timecounter  azx_tc;
+>         struct cyclecounter azx_cc;
+> +
+> +#ifdef CONFIG_SND_HDA_DSP_LOADER
+> +       struct mutex dsp_mutex;
+> +#endif
+>  };
+>
+> +/* DSP lock helpers */
+> +#ifdef CONFIG_SND_HDA_DSP_LOADER
+> +#define dsp_lock_init(dev)     mutex_init(&(dev)->dsp_mutex)
+> +#define dsp_lock(dev)          mutex_lock(&(dev)->dsp_mutex)
+> +#define dsp_unlock(dev)                mutex_unlock(&(dev)->dsp_mutex)
+> +#define dsp_is_locked(dev)     ((dev)->locked)
+> +#else
+> +#define dsp_lock_init(dev)     do {} while (0)
+> +#define dsp_lock(dev)          do {} while (0)
+> +#define dsp_unlock(dev)                do {} while (0)
+> +#define dsp_is_locked(dev)     0
+> +#endif
+> +
+>  /* CORB/RIRB */
+>  struct azx_rb {
+>         u32 *buf;               /* CORB/RIRB buffer
+> @@ -527,6 +546,10 @@ struct azx {
+>
+>         /* card list (for power_save trigger) */
+>         struct list_head list;
+> +
+> +#ifdef CONFIG_SND_HDA_DSP_LOADER
+> +       struct azx_dev saved_azx_dev;
+> +#endif
+>  };
+>
+>  #define CREATE_TRACE_POINTS
+> @@ -1794,7 +1817,8 @@ azx_assign_device(struct azx *chip, struct snd_pcm_substream *substream)
+>                 nums = chip->capture_streams;
+>         }
+>         for (i = 0; i < nums; i++, dev++)
+> -               if (!chip->azx_dev[dev].opened) {
+> +               if (!chip->azx_dev[dev].opened &&
+> +                   !dsp_is_locked(&chip->azx_dev[dev])) {
+>                         res = &chip->azx_dev[dev];
+>                         if (res->assigned_key == key)
+>                                 break;
+> @@ -2009,6 +2033,12 @@ static int azx_pcm_hw_params(struct snd_pcm_substream *substream,
+>         struct azx_dev *azx_dev = get_azx_dev(substream);
+>         int ret;
+>
+> +       dsp_lock(azx_dev);
+> +       if (dsp_is_locked(azx_dev)) {
+> +               ret = -EBUSY;
+> +               goto unlock;
+> +       }
+> +
+>         mark_runtime_wc(chip, azx_dev, substream, false);
+>         azx_dev->bufsize = 0;
+>         azx_dev->period_bytes = 0;
+> @@ -2016,8 +2046,10 @@ static int azx_pcm_hw_params(struct snd_pcm_substream *substream,
+>         ret = snd_pcm_lib_malloc_pages(substream,
+>                                         params_buffer_bytes(hw_params));
+>         if (ret < 0)
+> -               return ret;
+> +               goto unlock;
+>         mark_runtime_wc(chip, azx_dev, substream, true);
+> + unlock:
+> +       dsp_unlock(azx_dev);
+>         return ret;
+>  }
+>
+> @@ -2029,16 +2061,21 @@ static int azx_pcm_hw_free(struct snd_pcm_substream *substream)
+>         struct hda_pcm_stream *hinfo = apcm->hinfo[substream->stream];
+>
+>         /* reset BDL address */
+> -       azx_sd_writel(azx_dev, SD_BDLPL, 0);
+> -       azx_sd_writel(azx_dev, SD_BDLPU, 0);
+> -       azx_sd_writel(azx_dev, SD_CTL, 0);
+> -       azx_dev->bufsize = 0;
+> -       azx_dev->period_bytes = 0;
+> -       azx_dev->format_val = 0;
+> +       dsp_lock(azx_dev);
+> +       if (!dsp_is_locked(azx_dev)) {
+> +               azx_sd_writel(azx_dev, SD_BDLPL, 0);
+> +               azx_sd_writel(azx_dev, SD_BDLPU, 0);
+> +               azx_sd_writel(azx_dev, SD_CTL, 0);
+> +               azx_dev->bufsize = 0;
+> +               azx_dev->period_bytes = 0;
+> +               azx_dev->format_val = 0;
+> +       }
+>
+>         snd_hda_codec_cleanup(apcm->codec, hinfo, substream);
+>
+>         mark_runtime_wc(chip, azx_dev, substream, false);
+> +       azx_dev->prepared = 0;
+> +       dsp_unlock(azx_dev);
+>         return snd_pcm_lib_free_pages(substream);
+>  }
+>
+> @@ -2055,6 +2092,12 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+>                 snd_hda_spdif_out_of_nid(apcm->codec, hinfo->nid);
+>         unsigned short ctls = spdif ? spdif->ctls : 0;
+>
+> +       dsp_lock(azx_dev);
+> +       if (dsp_is_locked(azx_dev)) {
+> +               err = -EBUSY;
+> +               goto unlock;
+> +       }
+> +
+>         azx_stream_reset(chip, azx_dev);
+>         format_val = snd_hda_calc_stream_format(runtime->rate,
+>                                                 runtime->channels,
+> @@ -2065,7 +2108,8 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+>                 snd_printk(KERN_ERR SFX
+>                            "%s: invalid format_val, rate=%d, ch=%d, format=%d\n",
+>                            pci_name(chip->pci), runtime->rate, runtime->channels, runtime->format);
+> -               return -EINVAL;
+> +               err = -EINVAL;
+> +               goto unlock;
+>         }
+>
+>         bufsize = snd_pcm_lib_buffer_bytes(substream);
+> @@ -2084,7 +2128,7 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+>                 azx_dev->no_period_wakeup = runtime->no_period_wakeup;
+>                 err = azx_setup_periods(chip, substream, azx_dev);
+>                 if (err < 0)
+> -                       return err;
+> +                       goto unlock;
+>         }
+>
+>         /* wallclk has 24Mhz clock source */
+> @@ -2101,8 +2145,14 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
+>         if ((chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND) &&
+>             stream_tag > chip->capture_streams)
+>                 stream_tag -= chip->capture_streams;
+> -       return snd_hda_codec_prepare(apcm->codec, hinfo, stream_tag,
+> +       err = snd_hda_codec_prepare(apcm->codec, hinfo, stream_tag,
+>                                      azx_dev->format_val, substream);
+> +
+> + unlock:
+> +       if (!err)
+> +               azx_dev->prepared = 1;
+> +       dsp_unlock(azx_dev);
+> +       return err;
+>  }
+>
+>  static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> @@ -2117,6 +2167,9 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+>         azx_dev = get_azx_dev(substream);
+>         trace_azx_pcm_trigger(chip, azx_dev, cmd);
+>
+> +       if (!dsp_is_locked(azx_dev) || !azx_dev->prepared)
+> +               return -EPIPE;
+> +
+>         switch (cmd) {
+>         case SNDRV_PCM_TRIGGER_START:
+>                 rstart = 1;
+> @@ -2621,17 +2674,28 @@ static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
+>         struct azx_dev *azx_dev;
+>         int err;
+>
+> -       if (snd_hda_lock_devices(bus))
+> -               return -EBUSY;
+> +       azx_dev = azx_get_dsp_loader_dev(chip);
+> +
+> +       mutex_lock(&chip->open_mutex);
 
-On Fri, Mar 15, 2013 at 03:38:21PM +0000, Charles Keepax wrote:
-> Currently DAI playback and capture widgets are created during
-> soc_probe_codec and soc_probe_platform using the device associated
+This mutex could already be held if this call originates from
+azx_pcm_open powering the codec back up.
 
-Don't bury patches in the middle of threads, especially if it's several
-months after the fact - it just makes it more likely that the patch will
-be missed or ignored.
+> +       dsp_lock(azx_dev);
+> +       spin_lock_irq(&chip->reg_lock);
+> +       if (azx_dev->running || azx_dev->locked) {
+> +               spin_unlock_irq(&chip->reg_lock);
+> +               err = -EBUSY;
+> +               goto unlock;
+> +       }
+> +       azx_dev->prepared = 0;
+> +       chip->saved_azx_dev = *azx_dev;
+> +       azx_dev->locked = 1;
+> +       spin_unlock_irq(&chip->reg_lock);
+>
+>         err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG,
+>                                   snd_dma_pci_data(chip->pci),
+>                                   byte_size, bufp);
+>         if (err < 0)
+> -               goto unlock;
+> +               goto err_alloc;
+>
+>         mark_pages_wc(chip, bufp, true);
+> -       azx_dev = azx_get_dsp_loader_dev(chip);
+>         azx_dev->bufsize = byte_size;
+>         azx_dev->period_bytes = byte_size;
+>         azx_dev->format_val = format;
+> @@ -2649,13 +2713,21 @@ static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
+>                 goto error;
+>
+>         azx_setup_controller(chip, azx_dev);
 
-Anyway now I remember the full context...
+Does this need a dsp_unlock(azx_dev)?
 
-> with the platform/codec to locate the DAI upon which the widgets
-> should be created. If a device registers both a CODEC and platform
-> driver this leads the widgets created during CODEC probe being
-> overwritten by the widgets created during the platform probe.
-
-> In general we want to retain the existing playback and capture widgets
-> because routes may have already been added to them. This patch will
-> check for existing widgets during snd_soc_dapm_new_dai_widgets and
-> only create new widgets if none exist.
-
-This still seems like it's bodging things in the wrong place.  The issue
-is that we're trying to instantiate the DAI multiple times because we've
-not got a firm idea of the chip as a whole.  Adding checks like this to
-the code is just going to make everything more and more complicated to
-understand over time without addressing the source of complexity.
-
-This is especially true now that Morimoto-san has added component
-objects which exist to provide that sort of grouping, we should be
-addressing things like this by pulling them up to the component level
-so that we know we're only doing them once per chip.  I think the first
-step here is to add the ability to create DAIs based on components, then
-to let components sit where CODECs sit in terms of setting up DAIs so we
-can start moving CODEC drivers over into components.
-
---6e7ZaeXHKrTJCxdu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRQ2GqAAoJELSic+t+oim9SGoP/RzemUEBVXjFXwrzXmGyQ6yX
-daATVCmO0Pc11PC4b4eiU+WhvE5+3E9shdMu74O44sYZ2vAk1xAH+sYe3+CPfYGr
-9ISiWjLpudreT0MiKruLyfqLuYtr+d96epqaAGOwE1cmoDtXX6qyp4ipQrCoigei
-cRg8NlYacI7kSQe7Y562hq0p7yHx4Eu1iN0pJ80g5YCVLsNR3oCEMOcMIGD7z1tM
-OPwl6jAC0TckVPxVJW8aQaAb1yvsdy6Z/msL+perDqiXBYQZhxzOgrP06ZOr63lM
-VxW+jG8wrV5nBWPHxxGy2ZZJSXhXcYboCHy+R7tgzADLffWTFayFn0cmGDoTdnah
-rfL89qgGn2BZ4XUCybbcbledIa9O2KLa7DZlZwDSRSnOZEIVbQu0Cly0xb0lkLyN
-uSLQfdaTPqHe8GtYwEwS/RukHuEy9z/UpCkTkPKs/xv2IKAEaxekoPwnq1YExXoC
-zKSQnuutB/RAjvzeX2TdkTj/ThD9/S2gP9ngvgkWWUofM64Mqu9HOpGM6dA2ThpE
-oj3pGqJQ6KQOHLMSeYWAVCHmDQq1e9iUZiQBUwFaZjA0lPdSO3IOqb0CRIWIMU+/
-024ut9VX3akVeseGFN0J2wV4uunyvBsyJjkr+KgEqWgNEony8Osij23ZxBGGOHdu
-FM27P8pTGT3huhWW3XWH
-=02yl
------END PGP SIGNATURE-----
-
---6e7ZaeXHKrTJCxdu--
-
---===============4589225279448904934==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4589225279448904934==--
+> +       mutex_unlock(&chip->open_mutex);
+>         return azx_dev->stream_tag;
+>
+>   error:
+>         mark_pages_wc(chip, bufp, false);
+>         snd_dma_free_pages(bufp);
+> -unlock:
+> -       snd_hda_unlock_devices(bus);
+> + err_alloc:
+> +       spin_lock_irq(&chip->reg_lock);
+> +       if (azx_dev->opened)
+> +               *azx_dev = chip->saved_azx_dev;
+> +       azx_dev->locked = 0;
+> +       spin_unlock_irq(&chip->reg_lock);
+> + unlock:
+> +       dsp_unlock(azx_dev);
+> +       mutex_unlock(&chip->open_mutex);
+>         return err;
+>  }
+>
+> @@ -2677,9 +2749,11 @@ static void azx_load_dsp_cleanup(struct hda_bus *bus,
+>         struct azx *chip = bus->private_data;
+>         struct azx_dev *azx_dev = azx_get_dsp_loader_dev(chip);
+>
+> -       if (!dmab->area)
+> +       if (!dmab->area || !azx_dev->locked)
+>                 return;
+>
+> +       mutex_lock(&chip->open_mutex);
+> +       dsp_lock(azx_dev);
+>         /* reset BDL address */
+>         azx_sd_writel(azx_dev, SD_BDLPL, 0);
+>         azx_sd_writel(azx_dev, SD_BDLPU, 0);
+> @@ -2692,7 +2766,13 @@ static void azx_load_dsp_cleanup(struct hda_bus *bus,
+>         snd_dma_free_pages(dmab);
+>         dmab->area = NULL;
+>
+> -       snd_hda_unlock_devices(bus);
+> +       spin_lock_irq(&chip->reg_lock);
+> +       if (azx_dev->opened)
+> +               *azx_dev = chip->saved_azx_dev;
+> +       azx_dev->locked = 0;
+> +       spin_unlock_irq(&chip->reg_lock);
+> +       dsp_unlock(azx_dev);
+> +       mutex_unlock(&chip->open_mutex);
+>  }
+>  #endif /* CONFIG_SND_HDA_DSP_LOADER */
+>
+> @@ -3481,6 +3561,7 @@ static int azx_first_init(struct azx *chip)
+>         }
+>
+>         for (i = 0; i < chip->num_streams; i++) {
+> +               dsp_lock_init(&chip->azx_dev[i]);
+>                 /* allocate memory for the BDL for each stream */
+>                 err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV,
+>                                           snd_dma_pci_data(chip->pci),
+> --
+> 1.8.1.4
+>
