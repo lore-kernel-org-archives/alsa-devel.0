@@ -1,19 +1,17 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 0/4] ALSA: Updates for the CA0132 codec
-Date: Thu, 14 Mar 2013 17:34:34 -0700
-Message-ID: <CAEUnVG6r+Ov9c2aMwUhpBgDsj8A4vPnsA4WA3nzyvnEPR=0T2A@mail.gmail.com>
-References: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
- <s5ha9rczba1.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ALSA: ASoC: cs4271: convert to direct
+	regmap API usage
+Date: Fri, 15 Mar 2013 01:09:29 +0000
+Message-ID: <20130315010928.GA4931@opensource.wolfsonmicro.com>
+References: <1362696792-11681-1-git-send-email-zonque@gmail.com>
+ <5141EECD.1000607@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1034694947587924845=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f46.google.com (mail-ee0-f46.google.com [74.125.83.46])
- by alsa0.perex.cz (Postfix) with ESMTP id F26FC26161F
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 01:34:55 +0100 (CET)
-Received: by mail-ee0-f46.google.com with SMTP id e49so1319146eek.5
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 17:34:55 -0700 (PDT)
-In-Reply-To: <s5ha9rczba1.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1D7C261639
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 02:09:35 +0100 (CET)
+In-Reply-To: <5141EECD.1000607@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 10, 2013 at 2:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Hi Ian,
->
-> At Fri, 8 Feb 2013 18:31:41 -0800,
-> Ian Minett wrote:
->>
->> From: Ian Minett <ian_minett@creativelabs.com>
->>
->> Hi,
->>
->> This series contains the following updates to CA0132:
->>
->> 1: Add firmware loading for the SpeakerEQ DSP effect.
->> 2: Improve DSP transfer timeout calculations.
->> 3: Add stream and effect latency monitoring routines
->> 4: Update hp unsolicited event handler to manage queued work.
->
-> Thanks, I took the one now but leave others.  See my reply to each.
->
->>
->> These were based on the latest sound.git, but please let me know if
->> they should be against sound-unstable tree instead.
->
-> sound.git tree for-next branch would be the place to look at.
-> If I start a new branch for ca0132, I'll let you know.
->
->
-> But, before going further: as I already mailed you, I could get a test
-> board and started testing.  The result wasn't good.  At the first time
-> the driver loads, the DSP loading fails always.  When the driver is
-> reloaded after that, it's working.  So, something is still pretty
-> fragile.
 
-I tried this today and I can't get it to work.  It is failing in
-snd_hda_lock_devices called from azx_load_dsp_prepare.  The DSP is
-loaded from ca0132_init which is called as the result of open/resume.
-Both the check for open control files and attached substreams are
-failing. How can that be avoided?
+--===============1034694947587924845==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
 
-Thanks,
 
-Dylan
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> I checked the code, and fixed a few overlooked things.  Now I wonder
-> why dma_reset() must be called at each DSP chunk load.  It reallocates
-> the whole buffer, and I see no reason.  It seems working even if I
-> comment it out.  Could you clarify?
->
-> Another thing I noticed is that I got a short burst noise at the very
-> first playback.  After that, the driver starts working well.
-> Is it some uninitialized buffer or so?
->
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On Thu, Mar 14, 2013 at 04:37:49PM +0100, Daniel Mack wrote:
+
+> Ok, so nobody cared for a week now. Mark, do you think it's ok to apply
+> it anyway, given the regmap usage? The driver works well on I2C, I'm
+> just concerned about SPI.
+
+Yeah, I tend to leave it for about a week (usually rounded up) if I
+expect that someone might do some review.
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRQnS7AAoJELSic+t+oim9H+UP/0HcOdIzCcyOO++C2ZuYlxPy
+QBRnxmfHVcvrGXAHPNJHRK9/WfZCf7LFCHzuBSlDsBA7ll/KXExeLa81SNs0sDbw
+Xv7tghI8gqOrX9Hj2aVyg4iD43PnzdCvriwPTfxGymY/cLlDesyjKgOXtALjr8Jm
+7FNrlp22883evQH2fvtUog1UJesChwAtYjiDDTzwt1MtuCVeAEh5ZA6p3XuxjVSt
+zJGbgxSSYOkS8b1wJV0v3wFlRLKSvdzL1lHxXxDik/yOD342e6GjDLaa1L03m6NK
+jZTXjmt27FAHzQu+JBhjxWtDaVG+ddH+WVh4/xDZ72ddKo1Wd0P1OYgW8VlLlWdm
+CRYAdDo9WeWNAZxTEr2L28KhAaWUL1eUMXE2X6JumE4paUIDy3CC8KR/QnyszU1b
+uwc6b7PEaj1Bi9o7jPbjmdvZd5F0uq1dSJhXZ25JStxW0Llqm05pezg32fBilfMS
+ORyiXohLO2Pb9hwQZzOj5yHYYBhoElqwMg+R+ZCm2jFq9TzJ2Jxwc47PD1aEhU39
+V8wxLhkgalHEaVCR3P1oxH3epUhWv7ivC+d/peXyeWPrc3JKtBELVEtAUA9d8BbF
+5Lr+bqMihKonQWPW/DxzATC/olknMKqGSznwy32AHnjkXwsOIt9GnSc/9sUstnQi
+Z3D32KETnVIw71kW0u0c
+=Xi0u
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
+
+--===============1034694947587924845==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1034694947587924845==--
