@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix pointer dereference in
- is_connected_output_ep()
-Date: Fri, 15 Mar 2013 01:29:41 +0000
-Message-ID: <20130315012941.GE4931@opensource.wolfsonmicro.com>
-References: <1363292784-20537-1-git-send-email-peter.ujfalusi@ti.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/2] ASoC: dmaengine_pcm: support generic DMA
+	binding users
+Date: Fri, 15 Mar 2013 11:36:39 +0800
+Message-ID: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6841582922028997256=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5FBF8261643
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 02:29:44 +0100 (CET)
-In-Reply-To: <1363292784-20537-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5401261658
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 04:36:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The series adds a snd_dmaengine_generic_pcm_open() for users that
+adopt generic DMA binding and helplers.
 
---===============6841582922028997256==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UnaWdueM1EBWVRzC"
-Content-Disposition: inline
+Vinod,
 
+AS per the request from Mark, I add the first patch to mark name
+parameter of dmaengine helpers as const, so that clients can mark
+const on their side.
 
---UnaWdueM1EBWVRzC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We need to have these two patches on a topic branch, as I've heard
+a few people converting their ASoC driver needing the patches.  Can
+you ack the first patch, so that Mark can maintain them in a branch
+for anyone who needs it to pull?
 
-On Thu, Mar 14, 2013 at 09:26:24PM +0100, Peter Ujfalusi wrote:
-> *path is not yet initialized when we check if the widget is connected.
->=20
-> The compiler also warns about this:
-> sound/soc/soc-dapm.c: In function 'is_connected_output_ep':
-> sound/soc/soc-dapm.c:824:18: warning: 'path' may be used uninitialized in=
- this function
+Shawn Guo (2):
+  dmaengine: add const for name parameter
+  ASoC: dmaengine_pcm: add snd_dmaengine_generic_pcm_open()
 
-Applied, thanks.
+ drivers/dma/dmaengine.c       |    2 +-
+ drivers/dma/of-dma.c          |    6 +++---
+ include/linux/dmaengine.h     |    7 ++++---
+ include/linux/of_dma.h        |    2 +-
+ include/sound/dmaengine_pcm.h |    2 ++
+ sound/soc/soc-dmaengine-pcm.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 50 insertions(+), 8 deletions(-)
 
---UnaWdueM1EBWVRzC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRQnk8AAoJELSic+t+oim9xggQAJnC+bU6qUckW91D/H2vxDCL
-ncAyfbsGngZfE2Tdmd4uX7lSBQE6jrn9t9Qp2eTCtwnZ14XK59ELFPPrG6t9a4AK
-wAobVDPzi+a+ARRCOsdTbk9/9GbqmJXzGtEsIg2GbqLtlZwL18vKqI/DQtvn5VZy
-/ZLJjK9g0xolLXkR1ppmxUfEyXJn2MX0jWGnr+VTi3FwT6C/voTmTPx3KDH6F8ol
-QvuXPONaVu3bc1M021wsSrhv4ryBAX06OIvN9VtG0Ks2YEZhKq2bGiQLGkC1Zv+3
-OoNygqcWP2GcXpFtOc+KjPQaHcxKVNdwojdxNTNNgWZ85WVT+mIIN4BTxf41cytz
-NFVPdVxoVqPGzKYIbFYGxMMQ++kpPxOD5zeu0qMhSnmO+FvNkFgTg0g02ZUVbQZk
-BoD1eEQfMkU+qQSh3JrpTl6tfdYTfjohF168Tj1SW/EGIsZbPsGrkZ3U5ALSF+wo
-ENz1wUm07qzBL6v9p4+JPcewKuGSmcJNYWJrN2KUOxu5tZctMhQVICN1H1o0hCfc
-nrKUT7ZnBS5Uj1+yw+IyOsyfJjAEn2dnIpnqEpRCwgasITB/9j/cuSj4FyC53uhx
-tXeGCqg7hZ4CyxGn/og8IU27QtwlP3b2mBdcXHFqHG2rgmoLHRqtwkx28kyYGJRf
-YSnz9H4RvwperGoLcRa9
-=mxP0
------END PGP SIGNATURE-----
-
---UnaWdueM1EBWVRzC--
-
---===============6841582922028997256==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6841582922028997256==--
+-- 
+1.7.9.5
