@@ -1,15 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: dapm: Fix pointer dereference in
-	is_connected_output_ep()
-Date: Thu, 14 Mar 2013 21:26:24 +0100
-Message-ID: <1363292784-20537-1-git-send-email-peter.ujfalusi@ti.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH 0/3] ALSA: hda/ca0132 - Better handle a failed
+	DSP firmware load.
+Date: Thu, 14 Mar 2013 17:27:43 -0700
+Message-ID: <1363307266-30055-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EAD82615E8
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 21:26:29 +0100 (CET)
+Received: from mail-ye0-f202.google.com (mail-ye0-f202.google.com
+ [209.85.213.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AC9C261618
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 01:27:56 +0100 (CET)
+Received: by mail-ye0-f202.google.com with SMTP id q5so291492yen.5
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2013 17:27:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, chee_kin@ctl.creative.com, ian_minett@creativelabs.com
 List-Id: alsa-devel@alsa-project.org
 
-*path is not yet initialized when we check if the widget is connected.
+Enabling CONFIG_SND_HDA_CODEC_CA0132_DSP on the Chromebook Pixel leads
+to 10+ a second delay between running aplay and hearing audio.  This
+was caused by the driver thinking the DSP was loaded when it had
+actually failed.  The first two patches avoid that situation, the DSP
+still fails to load every time, but at least the system continues
+without a painful delay.  The third patch is just a cleanup that
+touches the same state variable.
 
-The compiler also warns about this:
-sound/soc/soc-dapm.c: In function 'is_connected_output_ep':
-sound/soc/soc-dapm.c:824:18: warning: 'path' may be used uninitialized in this function
+Dylan Reid (3):
+  ALSA: hda/ca0132 - Check if dspload_image succeeded.
+  ALSA: hda/ca0132 - Check download state of DSP.
+  ALSA: hda/ca0132 - Remove extra setting of dsp_state.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Hi Mark, Liam,
+ sound/pci/hda/patch_ca0132.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-This patch is for the for-next branch.
-I got NULL pointer dereference because of this depending on the used toolchain.
-
-Regards,
-Peter
-
- sound/soc/soc-dapm.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index eaf9b74..33acd8b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -821,7 +821,6 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
- 		    (widget->id == snd_soc_dapm_line &&
- 		     !list_empty(&widget->sources))) {
- 			widget->outputs = snd_soc_dapm_suspend_check(widget);
--			path->walking = 0;
- 			return widget->outputs;
- 		}
- 	}
 -- 
-1.8.1.5
+1.8.1.3.605.g02339dd
