@@ -1,136 +1,77 @@
 From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH 1/2] dmaengine: add const for name parameter
-Date: Fri, 15 Mar 2013 09:53:46 +0100
-Message-ID: <20130315085346.GA22650@pengutronix.de>
-References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
- <1363318601-31505-2-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open
+ function for DT DMA request
+Date: Fri, 15 Mar 2013 10:07:03 +0100
+Message-ID: <20130315090703.GB22650@pengutronix.de>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
+ <20130312190206.GY19942@opensource.wolfsonmicro.com>
+ <20130313021712.GD27461@S2101-09.ap.freescale.net>
+ <20130314130832.GE32452@pengutronix.de>
+ <20130315034246.GA18039@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 712CA2625FF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 10:07:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1363318601-31505-2-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+In-Reply-To: <20130315034246.GA18039@S2101-09.ap.freescale.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Mar 15, 2013 at 11:42:48AM +0800, Shawn Guo wrote:
+> On Thu, Mar 14, 2013 at 02:08:32PM +0100, Markus Pargmann wrote:
+> > On Wed, Mar 13, 2013 at 10:18:29AM +0800, Shawn Guo wrote:
+> > > On Tue, Mar 12, 2013 at 07:02:07PM +0000, Mark Brown wrote:
+> > > > On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
+> > > > > Add a function to open a DMA PCM substream using devicetree data
+> > > > > provided via the client device node. The patch introduces a public
+> > > > > function and a private subfunction that is called by both open
+> > > > > functions.
+> > > > 
+> > > > Someone (I think it was Shawn) sent a very similar patch just recently
+> > > > which appears to have fallen out of my inbox unfortunately - can you
+> > > > please check what's going on there and coordinate with them?  Let me
+> > > > know if you can't find the patch and I'll dig it out.
+> > > 
+> > > It's here, Markus.
+> > > 
+> > > http://thread.gmane.org/gmane.linux.alsa.devel/106027/focus=106031
+> > > 
+> > 
+> > Thanks. Do you already have a patch for the non-generic function which I
+> > could use instead?
+> > 
+> I do not follow.  With my patch in place, there will be two
+> dmaengine_pcm APIs.
+> 
+> int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+>         dma_filter_fn filter_fn, void *filter_data)
+> 
+> int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
+>                                    struct device *dev, const char *name)
+> 
+> The first one is for users that their dmaengine driver hasn't converted
+> to generic device tree bindings, and the second one is for users that
+> their dmaengine driver is converted to generic device tree bindings.
 
-I already sent a nearly identical patch:
-https://patchwork.kernel.org/patch/2179321/
+Sorry, I mixed up different patch versions and was confused.
 
 Regards,
 
 Markus
-
-On Fri, Mar 15, 2013 at 11:36:40AM +0800, Shawn Guo wrote:
-> Mark name parameter of generic device tree helpers as const, as it
-> shouldn't be changed anyway.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  drivers/dma/dmaengine.c   |    2 +-
->  drivers/dma/of-dma.c      |    6 +++---
->  include/linux/dmaengine.h |    7 ++++---
->  include/linux/of_dma.h    |    2 +-
->  4 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-> index b2728d6..2cbfefe 100644
-> --- a/drivers/dma/dmaengine.c
-> +++ b/drivers/dma/dmaengine.c
-> @@ -555,7 +555,7 @@ EXPORT_SYMBOL_GPL(__dma_request_channel);
->   * @dev:	pointer to client device structure
->   * @name:	slave channel name
->   */
-> -struct dma_chan *dma_request_slave_channel(struct device *dev, char *name)
-> +struct dma_chan *dma_request_slave_channel(struct device *dev, const char *name)
->  {
->  	/* If device-tree is present get slave info from here */
->  	if (dev->of_node)
-> diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-> index 69d04d2..6036cd0 100644
-> --- a/drivers/dma/of-dma.c
-> +++ b/drivers/dma/of-dma.c
-> @@ -172,8 +172,8 @@ EXPORT_SYMBOL_GPL(of_dma_controller_free);
->   * specifiers, matches the name provided. Returns 0 if the name matches and
->   * a valid pointer to the DMA specifier is found. Otherwise returns -ENODEV.
->   */
-> -static int of_dma_match_channel(struct device_node *np, char *name, int index,
-> -				struct of_phandle_args *dma_spec)
-> +static int of_dma_match_channel(struct device_node *np, const char *name,
-> +				int index, struct of_phandle_args *dma_spec)
->  {
->  	const char *s;
->  
-> @@ -198,7 +198,7 @@ static int of_dma_match_channel(struct device_node *np, char *name, int index,
->   * Returns pointer to appropriate dma channel on success or NULL on error.
->   */
->  struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-> -					      char *name)
-> +					      const char *name)
->  {
->  	struct of_phandle_args	dma_spec;
->  	struct of_dma		*ofdma;
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 91ac8da..68b4252 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -968,7 +968,8 @@ enum dma_status dma_sync_wait(struct dma_chan *chan, dma_cookie_t cookie);
->  enum dma_status dma_wait_for_async_tx(struct dma_async_tx_descriptor *tx);
->  void dma_issue_pending_all(void);
->  struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask, dma_filter_fn fn, void *fn_param);
-> -struct dma_chan *dma_request_slave_channel(struct device *dev, char *name);
-> +struct dma_chan *dma_request_slave_channel(struct device *dev,
-> +					   const char *name);
->  void dma_release_channel(struct dma_chan *chan);
->  #else
->  static inline enum dma_status dma_wait_for_async_tx(struct dma_async_tx_descriptor *tx)
-> @@ -984,7 +985,7 @@ static inline struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask,
->  	return NULL;
->  }
->  static inline struct dma_chan *dma_request_slave_channel(struct device *dev,
-> -							 char *name)
-> +							 const char *name)
->  {
->  	return NULL;
->  }
-> @@ -1007,7 +1008,7 @@ struct dma_chan *net_dma_find_channel(void);
->  static inline struct dma_chan
->  *__dma_request_slave_channel_compat(dma_cap_mask_t *mask, dma_filter_fn fn,
->  				  void *fn_param, struct device *dev,
-> -				  char *name)
-> +				  const char *name)
->  {
->  	struct dma_chan *chan;
->  
-> diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
-> index d15073e..0c4a82e 100644
-> --- a/include/linux/of_dma.h
-> +++ b/include/linux/of_dma.h
-> @@ -40,7 +40,7 @@ extern int of_dma_controller_register(struct device_node *np,
->  		void *data);
->  extern int of_dma_controller_free(struct device_node *np);
->  extern struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-> -						     char *name);
-> +						     const char *name);
->  extern struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
->  		struct of_dma *ofdma);
->  #else
-> -- 
-> 1.7.9.5
-> 
-> 
-> 
 
 -- 
 Pengutronix e.K.                           |                             |
