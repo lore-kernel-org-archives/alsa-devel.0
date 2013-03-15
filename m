@@ -1,23 +1,14 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open
- function for DT DMA request
-Date: Fri, 15 Mar 2013 11:42:48 +0800
-Message-ID: <20130315034246.GA18039@S2101-09.ap.freescale.net>
-References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
- <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
- <20130312190206.GY19942@opensource.wolfsonmicro.com>
- <20130313021712.GD27461@S2101-09.ap.freescale.net>
- <20130314130832.GE32452@pengutronix.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2] ASoC: cs4271: switch to mute_stream
+Date: Fri, 15 Mar 2013 06:35:47 +0100
+Message-ID: <1363325748-6429-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id D8FDA2616DB
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 04:42:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20130314130832.GE32452@pengutronix.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 664E42616FC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 06:36:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, subaparts@yandex.ru, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 14, 2013 at 02:08:32PM +0100, Markus Pargmann wrote:
-> On Wed, Mar 13, 2013 at 10:18:29AM +0800, Shawn Guo wrote:
-> > On Tue, Mar 12, 2013 at 07:02:07PM +0000, Mark Brown wrote:
-> > > On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
-> > > > Add a function to open a DMA PCM substream using devicetree data
-> > > > provided via the client device node. The patch introduces a public
-> > > > function and a private subfunction that is called by both open
-> > > > functions.
-> > > 
-> > > Someone (I think it was Shawn) sent a very similar patch just recently
-> > > which appears to have fallen out of my inbox unfortunately - can you
-> > > please check what's going on there and coordinate with them?  Let me
-> > > know if you can't find the patch and I'll dig it out.
-> > 
-> > It's here, Markus.
-> > 
-> > http://thread.gmane.org/gmane.linux.alsa.devel/106027/focus=106031
-> > 
-> 
-> Thanks. Do you already have a patch for the non-generic function which I
-> could use instead?
-> 
-I do not follow.  With my patch in place, there will be two
-dmaengine_pcm APIs.
+Use the newly introduced mute_stream DAI operation, and don't mute the
+codec if it's called for the _CAPTURE stream.
 
-int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
-        dma_filter_fn filter_fn, void *filter_data)
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/cs4271.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-                                   struct device *dev, const char *name)
-
-The first one is for users that their dmaengine driver hasn't converted
-to generic device tree bindings, and the second one is for users that
-their dmaengine driver is converted to generic device tree bindings.
-
-Shawn
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index ac0d3b4..03036b3 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -388,7 +388,7 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 	return cs4271_set_deemph(codec);
+ }
+ 
+-static int cs4271_digital_mute(struct snd_soc_dai *dai, int mute)
++static int cs4271_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+@@ -396,6 +396,9 @@ static int cs4271_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	int val_a = 0;
+ 	int val_b = 0;
+ 
++	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++
+ 	if (mute) {
+ 		val_a = CS4271_VOLA_MUTE;
+ 		val_b = CS4271_VOLB_MUTE;
+@@ -442,7 +445,7 @@ static const struct snd_soc_dai_ops cs4271_dai_ops = {
+ 	.hw_params	= cs4271_hw_params,
+ 	.set_sysclk	= cs4271_set_dai_sysclk,
+ 	.set_fmt	= cs4271_set_dai_fmt,
+-	.digital_mute	= cs4271_digital_mute,
++	.mute_stream	= cs4271_mute_stream,
+ };
+ 
+ static struct snd_soc_dai_driver cs4271_dai = {
+-- 
+1.8.1.4
