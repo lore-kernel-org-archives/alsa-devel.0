@@ -1,107 +1,69 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 2/2] ASoC: dmaengine_pcm: add snd_dmaengine_generic_pcm_open()
-Date: Fri, 15 Mar 2013 11:36:41 +0800
-Message-ID: <1363318601-31505-3-git-send-email-shawn.guo@linaro.org>
-References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH 08/10] ASoC: dmaengine_pcm: Add open
+ function for DT DMA request
+Date: Fri, 15 Mar 2013 11:42:48 +0800
+Message-ID: <20130315034246.GA18039@S2101-09.ap.freescale.net>
+References: <1362940391-8338-1-git-send-email-mpa@pengutronix.de>
+ <1362940391-8338-9-git-send-email-mpa@pengutronix.de>
+ <20130312190206.GY19942@opensource.wolfsonmicro.com>
+ <20130313021712.GD27461@S2101-09.ap.freescale.net>
+ <20130314130832.GE32452@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8FDA2616DB
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 04:42:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20130314130832.GE32452@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-With generic DMA device tree binding and helper function
-dma_request_slave_channel() in place, dmaengine_pcm should support
-that in requesting DMA channel for users that support generic DMA
-device tree binding.
+On Thu, Mar 14, 2013 at 02:08:32PM +0100, Markus Pargmann wrote:
+> On Wed, Mar 13, 2013 at 10:18:29AM +0800, Shawn Guo wrote:
+> > On Tue, Mar 12, 2013 at 07:02:07PM +0000, Mark Brown wrote:
+> > > On Sun, Mar 10, 2013 at 07:33:09PM +0100, Markus Pargmann wrote:
+> > > > Add a function to open a DMA PCM substream using devicetree data
+> > > > provided via the client device node. The patch introduces a public
+> > > > function and a private subfunction that is called by both open
+> > > > functions.
+> > > 
+> > > Someone (I think it was Shawn) sent a very similar patch just recently
+> > > which appears to have fallen out of my inbox unfortunately - can you
+> > > please check what's going on there and coordinate with them?  Let me
+> > > know if you can't find the patch and I'll dig it out.
+> > 
+> > It's here, Markus.
+> > 
+> > http://thread.gmane.org/gmane.linux.alsa.devel/106027/focus=106031
+> > 
+> 
+> Thanks. Do you already have a patch for the non-generic function which I
+> could use instead?
+> 
+I do not follow.  With my patch in place, there will be two
+dmaengine_pcm APIs.
 
-Add a new API snd_dmaengine_generic_pcm_open() as the variant of
-snd_dmaengine_pcm_open().  It takes DMA client struct device pointer
-and slave channel name as arguments and calls generic DMA helper
-dma_request_slave_channel() to request DMA channel from dmaengine.
+int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+        dma_filter_fn filter_fn, void *filter_data)
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
- include/sound/dmaengine_pcm.h |    2 ++
- sound/soc/soc-dmaengine-pcm.c |   39 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
+                                   struct device *dev, const char *name)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index b877334..452df15 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -43,6 +43,8 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
- 
- int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
- 	dma_filter_fn filter_fn, void *filter_data);
-+int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-+				   struct device *dev, const char *name);
- int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
- 
- struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream);
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-index 111b7d92..970eb2b 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
-@@ -304,6 +304,45 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
- 
- /**
-+ * snd_dmaengine_generic_pcm_open - Open a dmaengine based PCM substream
-+ * @substream: PCM substream
-+ * @dev: pointer to DMA client device structure
-+ * @name: DMA slave channel name
-+ *
-+ * Returns 0 on success, a negative error code otherwise.
-+ *
-+ * This function is a variant of snd_dmaengine_pcm_open(). It takes different
-+ * parameters and calls generic DMA helper dma_request_slave_channel() to
-+ * request a DMA channel from dmaengine.
-+ */
-+int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-+				   struct device *dev, const char *name)
-+{
-+	struct dmaengine_pcm_runtime_data *prtd;
-+	int ret;
-+
-+	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		return ret;
-+
-+	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-+	if (!prtd)
-+		return -ENOMEM;
-+
-+	prtd->dma_chan = dma_request_slave_channel(dev, name);
-+	if (!prtd->dma_chan) {
-+		kfree(prtd);
-+		return -ENXIO;
-+	}
-+
-+	substream->runtime->private_data = prtd;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_generic_pcm_open);
-+
-+/**
-  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
-  * @substream: PCM substream
-  */
--- 
-1.7.9.5
+The first one is for users that their dmaengine driver hasn't converted
+to generic device tree bindings, and the second one is for users that
+their dmaengine driver is converted to generic device tree bindings.
+
+Shawn
