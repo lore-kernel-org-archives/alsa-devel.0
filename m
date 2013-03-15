@@ -1,18 +1,15 @@
-From: Sebastien Guiriec <s-guiriec@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: dmaengine_pcm: add
-	snd_dmaengine_generic_pcm_open()
-Date: Fri, 15 Mar 2013 11:00:46 +0100
-Message-ID: <5142F14E.7040503@ti.com>
-References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
- <1363318601-31505-3-git-send-email-shawn.guo@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] SoC: dma-sh7760: Fix compile error
+Date: Fri, 15 Mar 2013 11:26:15 +0100
+Message-ID: <1363343175-14744-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 406482625FE
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 11:01:32 +0100 (CET)
-In-Reply-To: <1363318601-31505-3-git-send-email-shawn.guo@linaro.org>
+Received: from smtp-out-220.synserver.de (smtp-out-220.synserver.de
+ [212.40.185.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A3792625FE
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 11:24:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+The dma-sh7760 currently fails with the following compile error:
+	sound/soc/sh/dma-sh7760.c:346:2: error: unknown field 'pcm_ops' specified in initializer
+	sound/soc/sh/dma-sh7760.c:346:2: warning: initialization from incompatible pointer type
+	sound/soc/sh/dma-sh7760.c:347:2: error: unknown field 'pcm_new' specified in initializer
+	sound/soc/sh/dma-sh7760.c:347:2: warning: initialization makes integer from pointer without a cast
+	sound/soc/sh/dma-sh7760.c:348:2: error: unknown field 'pcm_free' specified in initializer
+	sound/soc/sh/dma-sh7760.c:348:2: warning: initialization from incompatible pointer type
+	sound/soc/sh/dma-sh7760.c: In function 'sh7760_soc_platform_probe':
+	sound/soc/sh/dma-sh7760.c:353:2: warning: passing argument 2 of 'snd_soc_register_platform' from incompatible pointer type
+	include/sound/soc.h:368:5: note: expected 'struct snd_soc_platform_driver *' but argument is of type 'struct snd_soc_platform *'
 
-Test on OMAP with patches
-  http://www.spinics.net/lists/linux-omap/msg87893.html
+This is due the misnaming of the snd_soc_platform_driver type name and 'ops'
+field. The issue was introduced in commit f0fba2a("ASoC: multi-component - ASoC
+Multi-Component Support").
 
-Tested-by: Sebastien Guiriec <s-guiriec@ti.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-On 03/15/2013 04:36 AM, Shawn Guo wrote:
-> With generic DMA device tree binding and helper function
-> dma_request_slave_channel() in place, dmaengine_pcm should support
-> that in requesting DMA channel for users that support generic DMA
-> device tree binding.
->
-> Add a new API snd_dmaengine_generic_pcm_open() as the variant of
-> snd_dmaengine_pcm_open().  It takes DMA client struct device pointer
-> and slave channel name as arguments and calls generic DMA helper
-> dma_request_slave_channel() to request DMA channel from dmaengine.
->
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: alsa-devel@alsa-project.org
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   include/sound/dmaengine_pcm.h |    2 ++
->   sound/soc/soc-dmaengine-pcm.c |   39 +++++++++++++++++++++++++++++++++++++++
->   2 files changed, 41 insertions(+)
->
-> diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-> index b877334..452df15 100644
-> --- a/include/sound/dmaengine_pcm.h
-> +++ b/include/sound/dmaengine_pcm.h
-> @@ -43,6 +43,8 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
->
->   int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
->   	dma_filter_fn filter_fn, void *filter_data);
-> +int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-> +				   struct device *dev, const char *name);
->   int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
->
->   struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream);
-> diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
-> index 111b7d92..970eb2b 100644
-> --- a/sound/soc/soc-dmaengine-pcm.c
-> +++ b/sound/soc/soc-dmaengine-pcm.c
-> @@ -304,6 +304,45 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
->   EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
->
->   /**
-> + * snd_dmaengine_generic_pcm_open - Open a dmaengine based PCM substream
-> + * @substream: PCM substream
-> + * @dev: pointer to DMA client device structure
-> + * @name: DMA slave channel name
-> + *
-> + * Returns 0 on success, a negative error code otherwise.
-> + *
-> + * This function is a variant of snd_dmaengine_pcm_open(). It takes different
-> + * parameters and calls generic DMA helper dma_request_slave_channel() to
-> + * request a DMA channel from dmaengine.
-> + */
-> +int snd_dmaengine_generic_pcm_open(struct snd_pcm_substream *substream,
-> +				   struct device *dev, const char *name)
-> +{
-> +	struct dmaengine_pcm_runtime_data *prtd;
-> +	int ret;
-> +
-> +	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-> +					    SNDRV_PCM_HW_PARAM_PERIODS);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-> +	if (!prtd)
-> +		return -ENOMEM;
-> +
-> +	prtd->dma_chan = dma_request_slave_channel(dev, name);
-> +	if (!prtd->dma_chan) {
-> +		kfree(prtd);
-> +		return -ENXIO;
-> +	}
-> +
-> +	substream->runtime->private_data = prtd;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_dmaengine_generic_pcm_open);
-> +
-> +/**
->    * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
->    * @substream: PCM substream
->    */
->
+---
+Given that nobody noticed this over the course of the last three years the code
+is probably pretty dead by now anyway.
+---
+ sound/soc/sh/dma-sh7760.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 19eff8f..1a8b03e 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -342,8 +342,8 @@ static int camelot_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_platform sh7760_soc_platform = {
+-	.pcm_ops 	= &camelot_pcm_ops,
++static struct snd_soc_platform_driver sh7760_soc_platform = {
++	.ops		= &camelot_pcm_ops,
+ 	.pcm_new	= camelot_pcm_new,
+ 	.pcm_free	= camelot_pcm_free,
+ };
+-- 
+1.8.0
