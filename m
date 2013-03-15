@@ -1,71 +1,53 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: dapm: Add support for platform and
-	CODEC drivers	on same device
-Date: Fri, 15 Mar 2013 15:38:21 +0000
-Message-ID: <20130315153821.GD2141@opensource.wolfsonmicro.com>
-References: <1359020951-25904-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20130126092020.GH30594@opensource.wolfsonmicro.com>
- <20130315153540.GC2141@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V2 0/2] ASoC: OMAP2+: Update Audio IP with sDMA binding
+ for DT boot
+Date: Fri, 15 Mar 2013 16:56:10 +0000
+Message-ID: <20130315165609.GB8988@opensource.wolfsonmicro.com>
+References: <1362988223-22455-1-git-send-email-s-guiriec@ti.com>
+ <51432FEE.4060709@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BCE1D264F40
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 16:38:21 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zx4FCpZtqtKETZ7O"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130315153540.GC2141@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
+In-Reply-To: <51432FEE.4060709@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Benoit Cousson <b-cousson@ti.com>
+Cc: Sebastien Guiriec <s-guiriec@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently DAI playback and capture widgets are created during
-soc_probe_codec and soc_probe_platform using the device associated
-with the platform/codec to locate the DAI upon which the widgets
-should be created. If a device registers both a CODEC and platform
-driver this leads the widgets created during CODEC probe being
-overwritten by the widgets created during the platform probe.
 
-In general we want to retain the existing playback and capture widgets
-because routes may have already been added to them. This patch will
-check for existing widgets during snd_soc_dapm_new_dai_widgets and
-only create new widgets if none exist.
+--zx4FCpZtqtKETZ7O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+On Fri, Mar 15, 2013 at 03:27:58PM +0100, Benoit Cousson wrote:
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 33acd8b..6959304 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3351,7 +3351,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 	memset(&template, 0, sizeof(template));
- 	template.reg = SND_SOC_NOPM;
- 
--	if (dai->driver->playback.stream_name) {
-+	if (dai->driver->playback.stream_name && !dai->playback_widget) {
- 		template.id = snd_soc_dapm_dai;
- 		template.name = dai->driver->playback.stream_name;
- 		template.sname = dai->driver->playback.stream_name;
-@@ -3369,7 +3369,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 		dai->playback_widget = w;
- 	}
- 
--	if (dai->driver->capture.stream_name) {
-+	if (dai->driver->capture.stream_name && !dai->capture_widget) {
- 		template.id = snd_soc_dapm_dai;
- 		template.name = dai->driver->capture.stream_name;
- 		template.sname = dai->driver->capture.stream_name;
--- 
-1.7.2.5
+> I've just applied it in my for_3.10/dts branch on top of Jon's series
+> that does add the SDMA binding.
+
+The ASoC side doesn't build at present due to an unmerged dependency.
+
+--zx4FCpZtqtKETZ7O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRQ1KjAAoJELSic+t+oim9dt0P/398g+EhAYd1HJGB7M/Imo3D
+jtcs2lwHP5SE1r0xo/zzUZi4dS4G2fQhsZLiZZD2F0OR2HDXNjPIChWDbBufJ0S8
+9QgsCzXY4qJeMHFANx3qk0NLZd5vRlk6uAw6qgX+uNeMCdZ9jb+k3tSDmY7ghhNy
+eSN3IbsrK8H0WpZGvWqjeZu429UO4kp5JQwIMHkNcJW5wUm9iAfIkDleqbwcDJYa
+ZcLXcyig1SFmPGRSdzWgMS8IK7ha73ePKMtrVJ9+32FyS5/fmGRDMYwy+PaiybPa
+Ba9lS8iX3FuLfhLveGd4tKWcR6QOaXnW3IVkBCPKDGGwfoEVXEIjOBbPp/1lVxvd
+tvC/RkouKPs29w13ZzWVw2KaSEla7rEsb8ElpTlNEYgiirKCGEP1xrJ3cvGZx5vX
+ehLvi9IAtAaeTNpjcgXmbJ7a3Lcthfj+J9Ao2/ZhUKZOilNPPkmT4UAeyZ5Nc3jy
+m5ah4+MWBlHkTEExlMg64ertC1vjf88kM+YaCXl3z+M9il1YBsDxCXNaZ/w+bwut
+AUNdZHiejDxIrsKZpCAbvxVCqm6JQz72Q2H9/aIa1bj3sm3FN1bpsUAX3d2hW4TX
+KgiVdvWzCscV5+ZZV3KLPpltnBOcb6d+yGMAr358SaO4cFZOycEsKBEAA5uM+Hqo
+HMIPy2uHJvgS+NM2maVq
+=ztRf
+-----END PGP SIGNATURE-----
+
+--zx4FCpZtqtKETZ7O--
