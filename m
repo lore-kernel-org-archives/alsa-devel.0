@@ -1,16 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ALSA: ASoC: cs4271: convert to direct
-	regmap API usage
-Date: Fri, 15 Mar 2013 01:24:10 +0000
-Message-ID: <20130315012410.GC4931@opensource.wolfsonmicro.com>
-References: <1362696792-11681-1-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: add .name for
+	snd_soc_component_driver
+Date: Fri, 15 Mar 2013 01:25:13 +0000
+Message-ID: <20130315012512.GD4931@opensource.wolfsonmicro.com>
+References: <87fw06ace9.wl%kuninori.morimoto.gx@renesas.com>
+ <87k3pdtnlk.wl%kuninori.morimoto.gx@renesas.com>
+ <87hakhtnjl.wl%kuninori.morimoto.gx@renesas.com>
+ <20130312200253.GI19942@opensource.wolfsonmicro.com>
+ <87zjy8f82b.wl%kuninori.morimoto.gx@renesas.com>
+ <20130313101411.GB25610@opensource.wolfsonmicro.com>
+ <8738vy4fg3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3668435670564795016=="
+Content-Type: multipart/mixed; boundary="===============8226033583602118943=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 81A5426163E
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 02:24:12 +0100 (CET)
-In-Reply-To: <1362696792-11681-1-git-send-email-zonque@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 99E9D261643
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2013 02:25:15 +0100 (CET)
+In-Reply-To: <8738vy4fg3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3668435670564795016==
+--===============8226033583602118943==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
+	protocol="application/pgp-signature"; boundary="F8dlzb82+Fcn6AgP"
 Content-Disposition: inline
 
 
---GZVR6ND4mMseVXL/
+--F8dlzb82+Fcn6AgP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Mar 07, 2013 at 11:53:12PM +0100, Daniel Mack wrote:
-> By using the regmap API directly, we can make use of the
-> .write_flag_mask for SPI, which allows us to drop the strange register
-> hacks that were necessary so far.
+On Thu, Mar 14, 2013 at 12:18:41AM -0700, Kuninori Morimoto wrote:
+> This patch adds .name member on snd_soc_component_driver.
+> But this patch doesn't care about whether cmpnt_drv was NULL,
+> and/or its name was NULL in snd_soc_register_component()
+> at this point.
 
-Applied, but please do use subject lines appropraite to the subsystem.
+Applied both, thanks.
 
---GZVR6ND4mMseVXL/
+--F8dlzb82+Fcn6AgP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRQngzAAoJELSic+t+oim9OrkP/itBSN6xJDMuFeZ/aEcyB4EW
-9MBM6idNJNiTVSSZMTjgPvFPhQEVxsDZXxcyc3j0a0aKyhHwcaYuyH2mfBNZboV5
-ob9zRm43NDoPkvoXpWnmZGN10+nwWTjkj37rvRTvoVuwBwWcH/gQUF1m6F4kWF3W
-CL6oN7k5n/WGj0cC7FNe2yyFKPywLgcL7B/u9OMvqWb9GIi163diKcyB1z9H4V52
-nB7cwc0OE/eX2ysctSc8BiFlfcxuh1Js62RfuQl5mDZ98nS+fMqUqu72p12771f4
-rEhlAStxr1idoHuJpyJPq4Du+NKQfdVaxD5bBCcgWJeav2cUGUf/r2zZEjj82LSy
-ic0r0E3pW2KS7ZhQLk1vS7cKQaVEIrylG+ZNNCSU6gnoVrHAF1s124uY72MbZlt/
-O1OjzKGkGXWGT4vVQ9Ng1373iyRCGMAFVtMA0TKVwu/oMvJGTv2lLhrveZrvxzM0
-1vuHazhounF+TX0p/lNvZTSqofQr/1QorFvmCqAg8S5bP6EsiSL2Q3ZLLRJsXCmW
-OHl7ld05glpA5+UxSR9crkcA+sT32HFmJ6Lv0XDhJTsf12pPFir/U2BNzuraIf3G
-QhLmMpQ/WCTrqN+wcl8/qCy84OHmre2/o6/3aPMK0irz10mM3BMROQZ7yJYFLOvl
-L6Zz7wtd2UUJkf1UlLGe
-=8N/D
+iQIcBAEBAgAGBQJRQnhyAAoJELSic+t+oim98AEP/0Opve0LzdMg5WQNbhzkNwrl
+QB550pTNpfORKvO+IbUZM1SdVYiZq0RLErwvbSxuhlzNkv4Yf886vaEWNjQeSSpq
+wGkH1DQoqolohpZXWR+gnC65XYHvMinYi4R93oKXaHLtjzat85s9JCGuhsBRKutf
+tfoG87/AO+TWMwpEl+mM04l2D9Yto/GaPfsl2PLHfkAGdBJXBTVxIe9h+LNsY68s
+pn5U15s4Oqh2q5iQte8YSKOqSXyrfDGKwDfwVJim6aW24PH/pXV2eNICTGDHMtPA
+aG2HYSEo3qre2KuahLrSLYLk/m9kw6EnxvAXTtRRWgJahv3+6urnYDJGw4YcrDEF
+hufl0twcWtHFq9go9tvzY1kVV5pg7j6IqZO5ZFKYjBCRbROUzKHwRdzbWkCgoYl6
+ze7gu3mPyGl7ZcnXbhJaO2FU23anHvevKhWhu2XiKxIRfcBdCrG18EeWBOPhdUMb
+t839O6KQIYmxBnIssv2tXjGqj1/V18JrfvWYQLzQU/XJmLUDGTPhMCffSaGx5sTM
+7v12h+Uz9BNtd/xOvSnKqze2uSGuE1VuxHHRiTMlAzNF7TZ0PlECFDGrbJfPfujo
+xOQz5CCM5c76Ejfjwpz2zFONsSDD+BHcIQyn981dRat0YAeBYMLB/VdYZZbFTbCc
+hnooVc5T6GUoLTQEBj2q
+=cLL0
 -----END PGP SIGNATURE-----
 
---GZVR6ND4mMseVXL/--
+--F8dlzb82+Fcn6AgP--
 
---===============3668435670564795016==
+--===============8226033583602118943==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3668435670564795016==--
+--===============8226033583602118943==--
