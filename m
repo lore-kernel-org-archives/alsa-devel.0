@@ -1,40 +1,126 @@
-From: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
-Subject: [PATCH] sound: soc: fix invalid free of devm_ allocated data
-Date: Sat, 16 Mar 2013 13:45:34 +0200
-Message-ID: <1363434334-5461-1-git-send-email-silviupopescu1990@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+From: Mark Hills <mark@xwax.org>
+Subject: [PATCH 1/2] snd-usb-audio: Playback and MIDI support
+	for Novation Twitch DJ controller
+Date: Sat, 16 Mar 2013 13:22:57 +0000
+Message-ID: <1363440178-24925-1-git-send-email-mark@xwax.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20D7B26510C
+ for <alsa-devel@alsa-project.org>; Sat, 16 Mar 2013 14:23:02 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The objects allocated by devm_* APIs are managed by devres and are freed when
-the device is detached. Hence there is no need to use kfree() explicitly.
+The hardware also has a PCM capture device which is not implemented in
+this patch.
 
-Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+It may be possible to generalise this to Saffire 6 USB support and some
+of the other Focusrite interfaces, but as I don't have access to these
+devices we should wait until capture support is working first.
+
+Capture support is not implemented because the code assumes the endpoint
+to have its own interface (instead, it shares the interface with playback)
+and some thought will be needed to lift this limitation.
 ---
- sound/soc/soc-core.c |    2 --
- 1 file changed, 2 deletions(-)
+ sound/usb/quirks-table.h | 40 ++++++++++++++++++++++++++++++++++++++++
+ sound/usb/quirks.c       | 15 +++++++++++++++
+ 2 files changed, 55 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b7e84a7..407b0a3 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4197,7 +4197,6 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 			dev_err(card->dev,
- 				"ASoC: Property '%s' index %d could not be read: %d\n",
- 				propname, 2 * i, ret);
--			kfree(routes);
- 			return -EINVAL;
- 		}
- 		ret = of_property_read_string_index(np, propname,
-@@ -4206,7 +4205,6 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 			dev_err(card->dev,
- 				"ASoC: Property '%s' index %d could not be read: %d\n",
- 				propname, (2 * i) + 1, ret);
--			kfree(routes);
- 			return -EINVAL;
- 		}
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 820580a..1c8db85 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2677,6 +2677,46 @@ YAMAHA_DEVICE(0x7010, "UB99"),
  	}
+ },
+ {
++	USB_DEVICE(0x1235, 0x0018),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Novation",
++		.product_name = "Twitch",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000,
++					.rate_min = 44100,
++					.rate_max = 48000,
++					.nr_rates = 2,
++					.rate_table = (unsigned int[]) {
++						44100, 48000
++					}
++				}
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_MIDI_RAW_BYTES
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	USB_DEVICE_VENDOR_SPEC(0x1235, 0x4661),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "Novation",
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 0115289..b0f7140 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -446,6 +446,17 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
+ }
+ 
+ /*
++ * Novation Twitch DJ controller
++ */
++static int snd_usb_twitch_boot_quirk(struct usb_device *dev)
++{
++	/* preemptively set up the device because otherwise the
++	 * raw MIDI endpoints are not active */
++	usb_set_interface(dev, 0, 1);
++	return 0;
++}
++
++/*
+  * This call will put the synth in "USB send" mode, i.e it will send MIDI
+  * messages through USB (this is disabled at startup). The synth will
+  * acknowledge by sending a sysex on endpoint 0x85 and by displaying a USB
+@@ -746,6 +757,10 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+ 		/* Digidesign Mbox 2 */
+ 		return snd_usb_mbox2_boot_quirk(dev);
+ 
++	case USB_ID(0x1235, 0x0018):
++		/* Focusrite Novation Twitch */
++		return snd_usb_twitch_boot_quirk(dev);
++
+ 	case USB_ID(0x133e, 0x0815):
+ 		/* Access Music VirusTI Desktop */
+ 		return snd_usb_accessmusic_boot_quirk(dev);
 -- 
-1.7.9.5
+1.7.12.1
