@@ -1,18 +1,15 @@
-From: Mark Hills <mark@xwax.org>
-Subject: Re: [PATCH 1/2] snd-usb-audio: Playback and MIDI
- support for Novation Twitch DJ controller
-Date: Sun, 17 Mar 2013 11:09:02 +0000 (GMT)
-Message-ID: <alpine.LNX.2.01.1303171108150.30800@localhost>
-References: <1363440178-24925-1-git-send-email-mark@xwax.org>
- <s5hy5dmmlvt.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 0/3] ALSA: snd-usb: Some small fixes to make
+	Playback Design products work
+Date: Sun, 17 Mar 2013 20:07:23 +0800
+Message-ID: <1363522047-7515-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EDD226516E
- for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 12:09:04 +0100 (CET)
-In-Reply-To: <s5hy5dmmlvt.wl%tiwai@suse.de>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43137265172
+ for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 13:07:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 17 Mar 2013, Takashi Iwai wrote:
+Thanks to Andreas, I got my hands on a Playback Design MPD-3 and hacked
+up some small hanges necessary to make it fully work with snd-usb.
 
-[...]
-> Both patches look OK to apply, but could you give your sign-off?
+The device reports 0x80000000 in the bmFormats field of two of three of
+its alternate settings, which wrongly made the driver believe it's a
+usual PCM endpoint (actually due to a fix-up fallback). However, bit 31
+of this mask in fact denotes 'raw data'.
 
-Of course! Sorry about that. I re-sent the patches direct to you. Thanks
+The effect of this issue is that in addition to the first altsetting with
+a bit depth of 24, the driver exposed 8-bit and 16-bit native audio
+formats on the raw data endpoints, which do not work as expected.
+
+Also, those devices need a 50ms delay after switching the USB interface.
+
+
+Thanks,
+Daniel
+
+
+Daniel Mack (3):
+  ALSA: snd-usb: handle the bmFormats field as unsigned int
+  ALSA: snd-usb: handle raw data format of UAC2 devices
+  ALSA: snd-usb: add delay quirk for "Playback Design" products
+
+ include/linux/usb/audio-v2.h |    2 ++
+ sound/usb/format.c           |   20 ++++++++++++--------
+ sound/usb/format.h           |    2 +-
+ sound/usb/pcm.c              |    7 +++++++
+ sound/usb/stream.c           |    2 +-
+ 5 files changed, 23 insertions(+), 10 deletions(-)
 
 -- 
-Mark
+1.7.10.4
