@@ -1,16 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/3] ALSA: snd-usb: handle raw data format of
-	UAC2 devices
-Date: Sun, 17 Mar 2013 20:07:25 +0800
-Message-ID: <1363522047-7515-3-git-send-email-zonque@gmail.com>
+Subject: [PATCH 3/3] ALSA: snd-usb: add delay quirk for
+	"Playback Design" products
+Date: Sun, 17 Mar 2013 20:07:26 +0800
+Message-ID: <1363522047-7515-4-git-send-email-zonque@gmail.com>
 References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 74952265174
- for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 13:07:43 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8117826517C
+ for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 13:07:44 +0100 (CET)
 In-Reply-To: <1363522047-7515-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,63 +25,32 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-UAC2 compliant audio devices may announce the capability to transport
-raw audio data on their endpoints. Catch this and handle it as
-'special' stream on the ALSA side.
+"Playback Design" products need a 50ms delay after setting the USB
+interface.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 Reported-by: Andreas Koch <andreas@akdesigninc.com>
 ---
- include/linux/usb/audio-v2.h |    2 ++
- sound/usb/format.c           |   11 +++++++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ sound/usb/pcm.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
-index ed13053..c5f2158 100644
---- a/include/linux/usb/audio-v2.h
-+++ b/include/linux/usb/audio-v2.h
-@@ -170,6 +170,8 @@ struct uac2_as_header_descriptor {
- 	__u8 iChannelNames;
- } __attribute__((packed));
- 
-+#define UAC2_FORMAT_TYPE_I_RAW_DATA	(1 << 31)
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index f94397b..c263991 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -350,6 +350,13 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 				fmt->iface, fmt->altsetting);
+ 		subs->interface = fmt->iface;
+ 		subs->altset_idx = fmt->altset_idx;
 +
- /* 4.10.1.2 Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
- 
- struct uac2_iso_endpoint_descriptor {
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index b30d6fb..a695caf 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -47,7 +47,7 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
- 				     int protocol)
- {
- 	int sample_width, sample_bytes;
--	u64 pcm_formats;
-+	u64 pcm_formats = 0;
- 
- 	switch (protocol) {
- 	case UAC_VERSION_1:
-@@ -63,14 +63,17 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
- 		struct uac_format_type_i_ext_descriptor *fmt = _fmt;
- 		sample_width = fmt->bBitResolution;
- 		sample_bytes = fmt->bSubslotSize;
-+
-+		if (format & UAC2_FORMAT_TYPE_I_RAW_DATA)
-+			pcm_formats |= SNDRV_PCM_FMTBIT_SPECIAL;
-+
- 		format <<= 1;
- 		break;
- 	}
++		/*
++		 * "Playback Design" products need a 50ms delay after setting the
++		 * USB interface.
++		 */
++		if (le16_to_cpu(dev->descriptor.idVendor) == 0x23ba)
++			mdelay(50);
  	}
  
--	pcm_formats = 0;
--
--	if (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED)) {
-+	if ((pcm_formats == 0) &&
-+	    (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED))) {
- 		/* some devices don't define this correctly... */
- 		snd_printdd(KERN_INFO "%d:%u:%d : format type 0 is detected, processed as PCM\n",
- 			    chip->dev->devnum, fp->iface, fp->altsetting);
+ 	subs->data_endpoint = snd_usb_add_endpoint(subs->stream->chip,
 -- 
 1.7.10.4
