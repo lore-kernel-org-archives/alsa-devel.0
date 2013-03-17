@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: ASoC: atmel-pcm-dma: Leaking memory in
-	atmel_pcm_hw_params
-Date: Sun, 17 Mar 2013 15:39:58 +0100
-Message-ID: <5145D5BE.3090501@metafoo.de>
+From: Mihail Zenkov <mihail.zenkov@gmail.com>
+Subject: [PATCH] salsa-lib: Add seq_midi_event.h
+Date: Sun, 17 Mar 2013 14:57:31 +0000
+Message-ID: <CAD-m0i9nfOnZ3dq3NS5hhVG+Dqf=Za7A6mTPxbfwnW-VQCDpoQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
- [212.40.185.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A70726518E
- for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 15:38:00 +0100 (CET)
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5191265191
+ for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 15:57:32 +0100 (CET)
+Received: by mail-pd0-f169.google.com with SMTP id 3so609725pdj.0
+ for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2013 07:57:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +21,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--- salsa-lib-a55ce0c348cd16e7853dae11e8e0e1b5a101d884/configure.ac
++++ salsa-lib-a55ce0c348cd16e7853dae11e8e0e1b5a101d884-1/configure.ac
+@@ -273,6 +273,7 @@
+ test "$sndseq" = "yes" && echo "#include \"seq_event.h\"" >> src/asoundlib.h
+ test "$sndseq" = "yes" && echo "#include \"seq.h\"" >> src/asoundlib.h
+ test "$sndseq" = "yes" && echo "#include \"seqmid.h\"" >> src/asoundlib.h
++test "$sndseq" = "yes" && echo "#include \"seq_midi_event.h\"" >>
+src/asoundlib.h
+ cat "$srcdir"/src/asoundlib-tail.h >> src/asoundlib.h
 
-The dmaengine based pcm driver for atmel calls snd_dmaengine_pcm_open from
-it's hw_params callback. There is nothing preventing an application calling
-hw_params more than once. snd_dmaengine_pcm_open allocates a new prtd struct
-each time it gets called. So in case hw_params is called multiple times we
-leak memory here.
+ echo "SALSA-Lib build configuration:"
+--- salsa-lib-a55ce0c348cd16e7853dae11e8e0e1b5a101d884/src/Makefile.am
++++ salsa-lib-a55ce0c348cd16e7853dae11e8e0e1b5a101d884-1/src/Makefile.am
+@@ -60,7 +60,7 @@
+ endif
+ if BUILD_SEQ
+ alsainclude_HEADERS += \
+-	seq.h seq_event.h seqmid.h
++	seq.h seq_event.h seqmid.h seq_midi_event.h
+ endif
 
-Is there any specific reason why snd_dmaengine_pcm_open() needs to be called
-from the hw_params callback and why it can't be called from the open
-callback? The filter function depends on the data returned by
-snd_soc_dai_get_dma_data(), but as far as I can see the DAI driver calls
-snd_soc_dai_set_dma_data() from its startup() callback, so the data is
-available in the PCM drivers open callback.
-
-- Lars
+ noinst_HEADERS = local.h
+--- /dev/null
++++ salsa-lib-a55ce0c348cd16e7853dae11e8e0e1b5a101d884-1/src/seq_midi_event.h
+@@ -0,0 +1,78 @@
++#ifndef __ALSA_SEQ_MIDI_EVENT_H
++#define __ALSA_SEQ_MIDI_EVENT_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/**
++ *  \defgroup MIDI_Event Sequencer event <-> MIDI byte stream coder
++ *  \ingroup Sequencer
++ *  Sequencer event <-> MIDI byte stream coder
++ *  \{
++ */
++
++/** container for sequencer midi event parsers */
++typedef struct snd_midi_event {
++	size_t qlen;
++	size_t read;
++	int type;
++	unsigned char lastcmd;
++	unsigned char nostat;
++	size_t bufsize;
++	unsigned char *buf;
++} snd_midi_event_t;
++
++__SALSA_EXPORT_FUNC
++int snd_midi_event_new(size_t bufsize, snd_midi_event_t **rdev)
++{
++	return 0;
++}
++__SALSA_EXPORT_FUNC
++int snd_midi_event_resize_buffer(snd_midi_event_t *dev, size_t bufsize)
++{
++	return 0;
++}
++__SALSA_EXPORT_FUNC
++void snd_midi_event_free(snd_midi_event_t *dev)
++{
++}
++__SALSA_EXPORT_FUNC
++void snd_midi_event_init(snd_midi_event_t *dev)
++{
++}
++__SALSA_EXPORT_FUNC
++void snd_midi_event_reset_encode(snd_midi_event_t *dev)
++{
++}
++__SALSA_EXPORT_FUNC
++void snd_midi_event_reset_decode(snd_midi_event_t *dev)
++{
++}
++__SALSA_EXPORT_FUNC
++void snd_midi_event_no_status(snd_midi_event_t *dev, int on)
++{
++}
++__SALSA_EXPORT_FUNC
++long snd_midi_event_encode(snd_midi_event_t *dev, const unsigned char
+*buf, long count, snd_seq_event_t *ev)
++{
++	return 0;
++}
++__SALSA_EXPORT_FUNC
++int snd_midi_event_encode_byte(snd_midi_event_t *dev, int c,
+snd_seq_event_t *ev)
++{
++	return 0;
++}
++__SALSA_EXPORT_FUNC
++long snd_midi_event_decode(snd_midi_event_t *dev, unsigned char *buf,
+long count, const snd_seq_event_t *ev)
++{
++	return 0;
++}
++
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* __ALSA_SEQ_MIDI_EVENT_H */
++
