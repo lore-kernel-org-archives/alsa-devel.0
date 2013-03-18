@@ -1,21 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
- make Playback Design products work
-Date: Mon, 18 Mar 2013 14:49:05 +0100
-Message-ID: <51471B51.4000006@gmail.com>
-References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
- <s5h620pukb4.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC: atmel-pcm-dma: Leaking memory in
+	atmel_pcm_hw_params
+Date: Mon, 18 Mar 2013 16:36:02 +0100
+Message-ID: <51473462.7030605@metafoo.de>
+References: <5145D5BE.3090501@metafoo.de> <51469121.3070902@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D8D5265319
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2013 14:49:25 +0100 (CET)
-Received: by mail-wg0-f47.google.com with SMTP id dr13so4856546wgb.26
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2013 06:49:24 -0700 (PDT)
-In-Reply-To: <s5h620pukb4.wl%tiwai@suse.de>
+Received: from smtp-out-073.synserver.de (smtp-out-073.synserver.de
+ [212.40.185.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1030F26535F
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2013 16:34:10 +0100 (CET)
+In-Reply-To: <51469121.3070902@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ray@auraliti.com, andreas@akdesigninc.com, alsa-devel@alsa-project.org, clemens@ladisch.de, demian@auraliti.com
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 18.03.2013 10:30, Takashi Iwai wrote:
-> At Mon, 18 Mar 2013 10:15:44 +0100,
-> Daniel Mack wrote:
->>
->> On 18.03.2013 10:07, Takashi Iwai wrote:
->>> At Sun, 17 Mar 2013 20:07:23 +0800,
->>> Daniel Mack wrote:
->>>>
->>>> Thanks to Andreas, I got my hands on a Playback Design MPD-3 and hacked
->>>> up some small hanges necessary to make it fully work with snd-usb.
->>>>
->>>> The device reports 0x80000000 in the bmFormats field of two of three of
->>>> its alternate settings, which wrongly made the driver believe it's a
->>>> usual PCM endpoint (actually due to a fix-up fallback). However, bit 31
->>>> of this mask in fact denotes 'raw data'.
->>>>
->>>> The effect of this issue is that in addition to the first altsetting with
->>>> a bit depth of 24, the driver exposed 8-bit and 16-bit native audio
->>>> formats on the raw data endpoints, which do not work as expected.
->>>>
->>>> Also, those devices need a 50ms delay after switching the USB interface.
->>>
->>> Thanks, applied to for-next branch.
->>>
->>> The remaining question is which PCM format is suitable for the raw
->>> data.  SND_PCM_FORMAT_SPECIAL should be OK, it won't regress at least,
->>> as no apps support this format.
->>
->> Yes, I  thought about that for a while as well. In fact, the data format
->> the device supports on these altsettings is "DSD", but that doesn't have
->> a defined value in the UAC2 spec (and strictly speaking, DSD is not even
->> PCM).
->>
->> So when a device is as unspecific as 'raw data', there's not much we can
->> do about that except for exposing the same level of uncertainty down to
->> the apps, right?
+On 03/18/2013 04:59 AM, Bo Shen wrote:
+> Hi Lars,
 > 
-> Yes.  We can add a new format SND_PCM_FORMAT_RAW, but it's not much
-> better than SND_PCM_FORMAT_SPECIAL after all :)
+> On 3/17/2013 22:39, Lars-Peter Clausen wrote:
+>> Hi,
+>>
+>> The dmaengine based pcm driver for atmel calls snd_dmaengine_pcm_open from
+>> it's hw_params callback. There is nothing preventing an application calling
+>> hw_params more than once. snd_dmaengine_pcm_open allocates a new prtd struct
+>> each time it gets called. So in case hw_params is called multiple times we
+>> leak memory here. 
+> 
+> I use alsa utils and don't meet this issue. Please point out which software
+> you use meet this issue.
 
-Yes. If at all, we should add a SND_PCM_FORMAT_DSD, and a quirk for that
-device. But given that there is no application for DSD in userspace
-either, we probably don't need to care.
+I found the issue by looking at the code, but I think any application using
+the oss compatibility layer of ALSA will trigger this.
 
+> 
+>> Is there any specific reason why snd_dmaengine_pcm_open() needs to be called
+>> from the hw_params callback and why it can't be called from the open
+>> callback?
+> 
+> This is because dma data setting and usage.
+> 
+> The filter function depends on the data returned by
+>> snd_soc_dai_get_dma_data(), but as far as I can see the DAI driver calls
+>> snd_soc_dai_set_dma_data() from its startup() callback, so the data is
+>> available in the PCM drivers open callback.
+> 
+> Have you test this yet?
 
-Thanks,
-Daniel
+I don't have the hardware. I just looked at the code again, and it looks
+like I must have misread it the first time. snd_soc_dai_set_dma_data() is
+called from the DAI drivers hwparams callback. But the data that gets passed
+to snd_soc_dai_set_dma_data() doesn't really depend on anything that's only
+available in the hwparams callback. So the snd_soc_dai_set_dma_data() could
+easily be move to the DAI driver startup() callback.
+
+- Lars
