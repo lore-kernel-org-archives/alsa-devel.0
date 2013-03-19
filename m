@@ -1,20 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/53] ASoC: switch over to
-	use	snd_soc_register_component()
-Date: Tue, 19 Mar 2013 09:35:55 +0100
-Message-ID: <5148236B.8050405@metafoo.de>
-References: <87txo96xiu.wl%kuninori.morimoto.gx@renesas.com>
- <51473657.5000104@metafoo.de>
- <87vc8ofcuo.wl%kuninori.morimoto.gx@renesas.com>
+From: Rolf Anderegg <rolf.anderegg@weiss.ch>
+Subject: firewire-kernel-streaming branch into main kernel tree?
+Date: Tue, 19 Mar 2013 13:25:36 +0100
+Message-ID: <51485940.9070908@weiss.ch>
+Reply-To: rolf.anderegg@weiss.ch
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C8A5261639
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 09:33:41 +0100 (CET)
-In-Reply-To: <87vc8ofcuo.wl%kuninori.morimoto.gx@renesas.com>
+Received: from zhbdzmsp-mail13.bluewin.ch (zhbdzmsp-mail13.bluewin.ch
+ [195.186.99.121])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00C2D265D77
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 13:25:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Brian Karr <briank@tctechnologies.tc>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2013 01:32 AM, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
->>> These patches switch over to use snd_soc_register_component()
->>> instead of snd_soc_register_dai[s]() on all drivers
->>> Last patch moves snd_soc_[un]register_dai[s]() to non global function.
->>>
->>> I could compile test on some of them, but couldn't for all drivers
->>>
->>> These patches are based on asoc/topic/component branch
->>>
->>
->> Hi,
->>
->> quite a few drivers use snd_soc_register_dai(), while
->> snd_soc_register_component() uses snd_soc_register_dais().
->> snd_soc_register_dai() uses fmt_single_name(), while snd_soc_register_dais()
->> uses fmt_multiple_name() to create the name for the device. So for all
->> drivers using snd_soc_register_dai() the name of the DAI is different now,
->> which will break the name based matching of the dai link.
-> 
-> Thank you for pointing it.
-> I understand about this.
-> 
-> I think if snd_soc_register_component() can use propely
-> snd_soc_register_dai() and snd_soc_register_dais(),
-> this issue is solved ?
+Hello Clemens,
 
-This will fix it for most drivers, but there are a couple of drivers which use
-snd_soc_register_dais with 1 dai.
+it's been a long time since I last inquired about the snd_dice module
+provided by your firewire-kernel-streaming branch
+(http://git.alsa-project.org/?p=alsa-kprivate.git;a=shortlog;h=refs/heads/firewire-kernel-streaming),
+which is a good sign I guess. In the meantime we have been making heavy
+use of the snd_dice module for over a year with all of our Weiss DICE
+based products (obviously playback only), and it has proven to be
+extremely stable (currently 3.4.18-rt29, patched with
+firewire-kernel-streaming).
+Therefore I have been meaning to ask you for some time now whether you
+have any interest in merging this firewire-kernel-streaming branch into
+the main kernel tree (at least as an experimental option, mind you), or
+are there any major objections?
+Given that you don't have unlimited time at hand to further develop the
+snd_dice module, let alone provide capture support in the near future,
+AND the fact that DICE is likely to see its EOL soon (and replaced by a
+sophisticated successor by TCAT), I realize that this is probably not a
+high priority. However from our perspective it would be sad to see these
+ALSA Firewire proceedings be lost and not be appreciated by a larger
+audience. With respect to this:
+ * what would be the customary approach to requesting such a merge?
+ * what are your reservations, resp. are there any existing shortcomings
+that you are yet unhappy with?
+ * have you received any other (negative/positive) feedback from
+snd_dice users? I know of the Vortexbox community, which has been
+offering an optional patch to support Firewire plackback devices; as far
+as I know, they're happy with it.
+ * if you need any backing or assistance, we'd be happy to help out
 
-E.g. tegra/tegra20_ac97.c, sh/siu_dai.c, sh/hac.c, sh.ssi.c
+Keen to hear your feedback on this suggestion.
+Best regards,
 
-- Lars
+Rolf Anderegg
+
+(Weiss Engineering Ltd.)
