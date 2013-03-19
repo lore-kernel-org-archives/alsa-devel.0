@@ -1,16 +1,18 @@
-From: Rolf Anderegg <rolf.anderegg@weiss.ch>
-Subject: firewire-kernel-streaming branch into main kernel tree?
-Date: Tue, 19 Mar 2013 13:25:36 +0100
-Message-ID: <51485940.9070908@weiss.ch>
-Reply-To: rolf.anderegg@weiss.ch
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 25/53] ASoC: switch over to use
+ snd_soc_register_component() on omap mcbsp
+Date: Tue, 19 Mar 2013 13:36:09 +0100
+Message-ID: <51485BB9.3090803@ti.com>
+References: <87txo96xiu.wl%kuninori.morimoto.gx@renesas.com>
+ <87txo95inq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from zhbdzmsp-mail13.bluewin.ch (zhbdzmsp-mail13.bluewin.ch
- [195.186.99.121])
- by alsa0.perex.cz (Postfix) with ESMTP id 00C2D265D77
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 13:25:40 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id B108C265D78
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 13:36:17 +0100 (CET)
+In-Reply-To: <87txo95inq.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,43 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Brian Karr <briank@tctechnologies.tc>, Clemens Ladisch <clemens@ladisch.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Clemens,
+On 03/18/2013 07:25 AM, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c |    9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> =
 
-it's been a long time since I last inquired about the snd_dice module
-provided by your firewire-kernel-streaming branch
-(http://git.alsa-project.org/?p=alsa-kprivate.git;a=shortlog;h=refs/heads/firewire-kernel-streaming),
-which is a good sign I guess. In the meantime we have been making heavy
-use of the snd_dice module for over a year with all of our Weiss DICE
-based products (obviously playback only), and it has proven to be
-extremely stable (currently 3.4.18-rt29, patched with
-firewire-kernel-streaming).
-Therefore I have been meaning to ask you for some time now whether you
-have any interest in merging this firewire-kernel-streaming branch into
-the main kernel tree (at least as an experimental option, mind you), or
-are there any major objections?
-Given that you don't have unlimited time at hand to further develop the
-snd_dice module, let alone provide capture support in the near future,
-AND the fact that DICE is likely to see its EOL soon (and replaced by a
-sophisticated successor by TCAT), I realize that this is probably not a
-high priority. However from our perspective it would be sad to see these
-ALSA Firewire proceedings be lost and not be appreciated by a larger
-audience. With respect to this:
- * what would be the customary approach to requesting such a merge?
- * what are your reservations, resp. are there any existing shortcomings
-that you are yet unhappy with?
- * have you received any other (negative/positive) feedback from
-snd_dice users? I know of the Vortexbox community, which has been
-offering an optional patch to support Firewire plackback devices; as far
-as I know, they're happy with it.
- * if you need any backing or assistance, we'd be happy to help out
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index 8d2defd..f51685d 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -586,6 +586,10 @@ static struct snd_soc_dai_driver omap_mcbsp_dai =3D {
+>  	.ops =3D &mcbsp_dai_ops,
+>  };
+>  =
 
-Keen to hear your feedback on this suggestion.
-Best regards,
+> +static const struct snd_soc_component_driver omap_mcbsp_component =3D {
+> +	.name		=3D "omap-mcbsp",
+> +};
+> +
+>  static int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
+>  			struct snd_ctl_elem_info *uinfo)
+>  {
+> @@ -793,7 +797,8 @@ static int asoc_mcbsp_probe(struct platform_device *p=
+dev)
+>  =
 
-Rolf Anderegg
+>  	ret =3D omap_mcbsp_init(pdev);
+>  	if (!ret)
+> -		return snd_soc_register_dai(&pdev->dev, &omap_mcbsp_dai);
+> +		return snd_soc_register_component(&pdev->dev, &omap_mcbsp_component,
+> +						  &omap_mcbsp_dai, 1);
 
-(Weiss Engineering Ltd.)
+This certainly breaks OMAP audio without the 'ASoC:
+snd_soc_register_component() uses properly snd_soc_register_dai[s]()' patch
+sent within the thread. But the comment from Lars stands for the users who
+registers 1 dai with snd_soc_register_dais() call.
+
+On the other hand I'm not sure what is the long time aim with the
+snd_soc_register_component().
+In essence it is just a wrapper for snd_soc_register_dai/s() without any
+advantage, except that we register the DAIs with a new api which does not g=
+ive
+clue what it is doing.
+
+Or is the aim is to eventually merge the snd_soc_codec_driver struct into
+snd_soc_component_driver struct and use the same structure for the CPU/DAI =
+and
+CODEC/DAI registration and share the same code to do it?
+
+I'm sure this had been discussed at some conference but unfortunately I cou=
+ld
+not attend to them lately.
+
+All in all this is not going to break OMAP, but as of now I don't know the
+reasoning why this is a good thing...
+
+>  	return ret;
+>  }
+> @@ -802,7 +807,7 @@ static int asoc_mcbsp_remove(struct platform_device *=
+pdev)
+>  {
+>  	struct omap_mcbsp *mcbsp =3D platform_get_drvdata(pdev);
+>  =
+
+> -	snd_soc_unregister_dai(&pdev->dev);
+> +	snd_soc_unregister_component(&pdev->dev);
+>  =
+
+>  	if (mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+>  		mcbsp->pdata->ops->free(mcbsp->id);
+> =
+
+
+
+-- =
+
+P=E9ter
