@@ -1,21 +1,22 @@
 From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
  make Playback Design products work
-Date: Mon, 18 Mar 2013 19:37:51 -0700
-Message-ID: <5147CF7F.9070805@gmail.com>
+Date: Mon, 18 Mar 2013 19:51:09 -0700
+Message-ID: <5147D29D.70705@gmail.com>
 References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f46.google.com (mail-pb0-f46.google.com
- [209.85.160.46])
- by alsa0.perex.cz (Postfix) with ESMTP id BF356265CA9
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 03:38:05 +0100 (CET)
-Received: by mail-pb0-f46.google.com with SMTP id uo15so6949950pbc.19
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2013 19:38:04 -0700 (PDT)
-In-Reply-To: <s5hehfduld0.wl%tiwai@suse.de>
+Received: from mail-pb0-f42.google.com (mail-pb0-f42.google.com
+ [209.85.160.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCE09265CC5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 03:51:17 +0100 (CET)
+Received: by mail-pb0-f42.google.com with SMTP id xb4so5267pbc.1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2013 19:51:16 -0700 (PDT)
+In-Reply-To: <51471B51.4000006@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2013 02:07 AM, Takashi Iwai wrote:
+On 03/18/2013 06:49 AM, Daniel Mack wrote:
+>>> Yes, I  thought about that for a while as well. In fact, the data format
+>>> the device supports on these altsettings is "DSD", but that doesn't have
+>>> a defined value in the UAC2 spec (and strictly speaking, DSD is not even
+>>> PCM).
+>>>
+>>> So when a device is as unspecific as 'raw data', there's not much we can
+>>> do about that except for exposing the same level of uncertainty down to
+>>> the apps, right?
+>>
+>> Yes.  We can add a new format SND_PCM_FORMAT_RAW, but it's not much
+>> better than SND_PCM_FORMAT_SPECIAL after all :)
 >
-> The remaining question is which PCM format is suitable for the raw
-> data.  SND_PCM_FORMAT_SPECIAL should be OK, it won't regress at least,
-> as no apps support this format.
+> Yes. If at all, we should add a SND_PCM_FORMAT_DSD, and a quirk for that
+> device. But given that there is no application for DSD in userspace
+> either, we probably don't need to care.
 
-I got the impression that SND_PCM_FORMAT_SPECIAL was there for 
-appication-specific/device-specific hacks.  I.e. it's a non-format that 
-allows passing raw data through the system.  If so, is it appropriate 
-for a main-line driver?
++1
+
+However, more and more applications are wanting to send non-linear PCM 
+data through ALSA.  So, we probably /do/ need to care.
 
 -gabriel
