@@ -1,21 +1,15 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: usb: Parse UAC2 extension unit like
- for UAC1
-Date: Tue, 19 Mar 2013 20:26:22 +0100
-Message-ID: <5148BBDE.3020002@gmail.com>
-References: <20130319161214.GB7539@pvv.ntnu.no> <s5h7gl3l3ls.wl%tiwai@suse.de>
- <20130319181038.GC7539@pvv.ntnu.no>
+Subject: [PATCH 1/2] ALSA: snd-usb: mixer: propagate errors up
+	the call chain
+Date: Tue, 19 Mar 2013 21:09:24 +0100
+Message-ID: <1363723765-9197-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id AF3F92615D7
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 20:26:29 +0100 (CET)
-Received: by mail-bk0-f48.google.com with SMTP id jf20so405473bkc.21
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 12:26:29 -0700 (PDT)
-In-Reply-To: <20130319181038.GC7539@pvv.ntnu.no>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F5B12615DB
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2013 21:09:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Torstein Hegge <hegge@resisty.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, hegge@resisty.net, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 19.03.2013 19:10, Torstein Hegge wrote:
-> On Tue, Mar 19, 2013 at 06:08:15PM +0100, Takashi Iwai wrote:
->> At Tue, 19 Mar 2013 17:12:14 +0100,
->> Torstein Hegge wrote:
->>>
->>> UAC2_EXTENSION_UNIT_V2 differs from UAC1_EXTENSION_UNIT, but can be handled in
->>> the same way when parsing the unit. Otherwise parse_audio_unit() fails when it
->>> sees an extension unit on a UAC2 device.
->>>
->>> UAC2_EXTENSION_UNIT_V2 is outside the range allocated by UAC1.
->>>
->>> Signed-off-by: Torstein Hegge <hegge@resisty.net>
->>
->> Does this bug hit on any existing device with 3.9-rc kernel?
->> If it does, it'd be nice to have a bit actual description.
-> 
-> The bug was reported on a Focusrite Scarlett 8i6 USB with a 3.5.0 kernel [1],
-> where the unhandled subtype causes the card creation to fail:
-> 
-> [ 1144.857836] usb 2-1.2: new high-speed USB device number 4 using ehci_hcd
-> [ 1144.951520] usb 2-1.2: New USB device found, idVendor=1235, idProduct=8002
-> [ 1144.951531] usb 2-1.2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> [ 1144.951538] usb 2-1.2: Product: Scarlett 8i6 USB 
-> [ 1144.951543] usb 2-1.2: Manufacturer: Focusrite
-> [ 1144.951547] usb 2-1.2: SerialNumber: 00006B8B
-> [ 1144.956590] usbaudio: unit 51: unexpected type 0x09
-> [ 1144.956640] snd-usb-audio: probe of 2-1.2:1.0 failed with error -5
-> 
-> Still waiting for him to report back with a 3.9-rc kernel.
-> 
-> [1] http://thread.gmane.org/gmane.linux.alsa.user/37289/focus=37294
+In check_input_term() and parse_audio_feature_unit(), propagate the
+error value that has been returned by a failing function instead of
+-EINVAL. That helps cleaning up the error pathes in the mixer.
 
-The 3.9-rc kernel doesn't change anything about that, but two error path
-cleanup patches in the mixer code seem to have at least some effect.
-I'll post them in a while.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/mixer.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-I frankly think we should merge both this and my patches to 3.9, and
-maybe even mark the for @stable.
-
-
-Daniel
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 638e7f7..db30d02 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -715,8 +715,9 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 		case UAC2_CLOCK_SELECTOR: {
+ 			struct uac_selector_unit_descriptor *d = p1;
+ 			/* call recursively to retrieve the channel info */
+-			if (check_input_term(state, d->baSourceID[0], term) < 0)
+-				return -ENODEV;
++			err = check_input_term(state, d->baSourceID[0], term);
++			if (err < 0)
++				return err;
+ 			term->type = d->bDescriptorSubtype << 16; /* virtual type */
+ 			term->id = id;
+ 			term->name = uac_selector_unit_iSelector(d);
+@@ -1356,8 +1357,9 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 		return err;
+ 
+ 	/* determine the input source type and name */
+-	if (check_input_term(state, hdr->bSourceID, &iterm) < 0)
+-		return -EINVAL;
++	err = check_input_term(state, hdr->bSourceID, &iterm);
++	if (err < 0)
++		return err;
+ 
+ 	master_bits = snd_usb_combine_bytes(bmaControls, csize);
+ 	/* master configuration quirks */
+-- 
+1.8.1.4
