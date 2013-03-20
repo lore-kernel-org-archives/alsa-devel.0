@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/3] ASoC: omap-mcpdm: Collect link direction
-	configuration under a struct
-Date: Wed, 20 Mar 2013 10:47:12 +0100
-Message-ID: <1363772834-29820-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/3] ASoC: omap-mcpdm: Fix for full duplex
+	audio use case
+Date: Wed, 20 Mar 2013 10:47:13 +0100
+Message-ID: <1363772834-29820-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1363772834-29820-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 18DDD2616F3
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:47:21 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14FC92616FC
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:47:22 +0100 (CET)
 In-Reply-To: <1363772834-29820-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,127 +25,97 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.gird
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-mcpdm_link_config will collect the link direction related configurations like
-channel masks, FIFO threshold.
+Due to HW limitation within OMAP McPDM IP uplink and downlink need to be
+started at the same time. This causes issues when we have two streams
+running, for example:
+arecord | aplay
+
+In this case the playback stream would have no channels enabled since at the
+capture start we are not aware that a playback is going to start.
+
+The workaround is to configure the other direction to stereo when the first
+stream is started. When the second stream is coming we check the new stream's
+number of channels against the pre-configured channels. If it does not match
+we stop and restart McPDM to update the configuration. This might result a
+small pop. If the coming stream is a match we do nothing in the McPDM driver.
+
+This workaround can handle most use cases without the need to restart McPDM.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-mcpdm.c | 41 ++++++++++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 17 deletions(-)
+ sound/soc/omap/omap-mcpdm.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index ddfcc18..6e19f44 100644
+index 6e19f44..cd0e2ec 100644
 --- a/sound/soc/omap/omap-mcpdm.c
 +++ b/sound/soc/omap/omap-mcpdm.c
-@@ -45,6 +45,11 @@
- 
- #define OMAP44XX_MCPDM_L3_BASE		0x49032000
- 
-+struct mcpdm_link_config {
-+	u32 link_mask; /* channel mask for the direction */
-+	u32 threshold; /* FIFO threshold */
-+};
-+
- struct omap_mcpdm {
- 	struct device *dev;
- 	unsigned long phys_base;
-@@ -53,13 +58,8 @@ struct omap_mcpdm {
- 
- 	struct mutex mutex;
- 
--	/* channel data */
--	u32 dn_channels;
--	u32 up_channels;
--
--	/* McPDM FIFO thresholds */
--	u32 dn_threshold;
--	u32 up_threshold;
-+	/* Playback/Capture configuration */
-+	struct mcpdm_link_config config[2];
+@@ -63,6 +63,9 @@ struct omap_mcpdm {
  
  	/* McPDM dn offsets for rx1, and 2 channels */
  	u32 dn_rx_offset;
-@@ -130,11 +130,12 @@ static void omap_mcpdm_reg_dump(struct omap_mcpdm *mcpdm) {}
- static void omap_mcpdm_start(struct omap_mcpdm *mcpdm)
- {
- 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
-+	u32 link_mask = mcpdm->config[0].link_mask | mcpdm->config[1].link_mask;
++
++	/* McPDM needs to be restarted due to runtime reconfiguration */
++	bool restart;
+ };
  
- 	ctrl |= (MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
- 
--	ctrl |= mcpdm->dn_channels | mcpdm->up_channels;
-+	ctrl |= link_mask;
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
- 
- 	ctrl &= ~(MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
-@@ -148,11 +149,12 @@ static void omap_mcpdm_start(struct omap_mcpdm *mcpdm)
+ /*
+@@ -149,7 +152,7 @@ static void omap_mcpdm_start(struct omap_mcpdm *mcpdm)
  static void omap_mcpdm_stop(struct omap_mcpdm *mcpdm)
  {
  	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
-+	u32 link_mask = mcpdm->config[0].link_mask | mcpdm->config[1].link_mask;
+-	u32 link_mask = mcpdm->config[0].link_mask | mcpdm->config[1].link_mask;
++	u32 link_mask = MCPDM_PDM_DN_MASK | MCPDM_PDM_UP_MASK;
  
  	ctrl |= (MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
  	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
- 
--	ctrl &= ~(mcpdm->dn_channels | mcpdm->up_channels);
-+	ctrl &= ~(link_mask);
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
- 
- 	ctrl &= ~(MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
-@@ -188,8 +190,10 @@ static void omap_mcpdm_open_streams(struct omap_mcpdm *mcpdm)
- 		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
+@@ -287,6 +290,8 @@ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
+ 		if (omap_mcpdm_active(mcpdm)) {
+ 			omap_mcpdm_stop(mcpdm);
+ 			omap_mcpdm_close_streams(mcpdm);
++			mcpdm->config[0].link_mask = 0;
++			mcpdm->config[1].link_mask = 0;
+ 		}
  	}
  
--	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN, mcpdm->dn_threshold);
--	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP, mcpdm->up_threshold);
-+	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN,
-+			 mcpdm->config[SNDRV_PCM_STREAM_PLAYBACK].threshold);
-+	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP,
-+			 mcpdm->config[SNDRV_PCM_STREAM_CAPTURE].threshold);
- 
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_DMAENABLE_SET,
- 			MCPDM_DMA_DN_ENABLE | MCPDM_DMA_UP_ENABLE);
-@@ -296,6 +300,7 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
- 	int stream = substream->stream;
- 	struct omap_pcm_dma_data *dma_data;
-+	u32 threshold;
- 	int channels;
- 	int link_mask = 0;
- 
-@@ -325,15 +330,16 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	dma_data = snd_soc_dai_get_dma_data(dai, substream);
- 
-+	threshold = mcpdm->config[stream].threshold;
+@@ -334,11 +339,26 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
  	/* Configure McPDM channels, and DMA packet size */
  	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		mcpdm->dn_channels = link_mask << 3;
-+		link_mask <<= 3;
+ 		link_mask <<= 3;
++
++		/* If capture is not running assume a stereo stream to come */
++		if (!mcpdm->config[!stream].link_mask)
++			mcpdm->config[!stream].link_mask = 0x3;
++
  		dma_data->packet_size =
--			(MCPDM_DN_THRES_MAX - mcpdm->dn_threshold) * channels;
-+				(MCPDM_DN_THRES_MAX - threshold) * channels;
+ 				(MCPDM_DN_THRES_MAX - threshold) * channels;
  	} else {
--		mcpdm->up_channels = link_mask << 0;
--		dma_data->packet_size = mcpdm->up_threshold * channels;
-+		dma_data->packet_size = threshold * channels;
++		/* If playback is not running assume a stereo stream to come */
++		if (!mcpdm->config[!stream].link_mask)
++			mcpdm->config[!stream].link_mask = (0x3 << 3);
++
+ 		dma_data->packet_size = threshold * channels;
  	}
-+	mcpdm->config[stream].link_mask = link_mask;
++
++	/* Check if we need to restart McPDM with this stream */
++	if (mcpdm->config[stream].link_mask &&
++	    mcpdm->config[stream].link_mask != link_mask)
++		mcpdm->restart = true;
++
+ 	mcpdm->config[stream].link_mask = link_mask;
  
  	return 0;
- }
-@@ -380,8 +386,9 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+@@ -352,6 +372,11 @@ static int omap_mcpdm_prepare(struct snd_pcm_substream *substream,
+ 	if (!omap_mcpdm_active(mcpdm)) {
+ 		omap_mcpdm_start(mcpdm);
+ 		omap_mcpdm_reg_dump(mcpdm);
++	} else if (mcpdm->restart) {
++		omap_mcpdm_stop(mcpdm);
++		omap_mcpdm_start(mcpdm);
++		mcpdm->restart = false;
++		omap_mcpdm_reg_dump(mcpdm);
  	}
  
- 	/* Configure McPDM threshold values */
--	mcpdm->dn_threshold = 2;
--	mcpdm->up_threshold = MCPDM_UP_THRES_MAX - 3;
-+	mcpdm->config[SNDRV_PCM_STREAM_PLAYBACK].threshold = 2;
-+	mcpdm->config[SNDRV_PCM_STREAM_CAPTURE].threshold =
-+							MCPDM_UP_THRES_MAX - 3;
- 	return ret;
- }
- 
+ 	return 0;
 -- 
 1.8.1.5
