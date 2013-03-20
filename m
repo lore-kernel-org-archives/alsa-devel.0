@@ -1,17 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/3] ASoC: omap-mcpdm: Fix for full duplex
-	audio use case
-Date: Wed, 20 Mar 2013 10:47:13 +0100
-Message-ID: <1363772834-29820-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1363772834-29820-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sound: max98090: Remove executable bit
+Date: Wed, 20 Mar 2013 10:57:58 +0100
+Message-ID: <20130320095758.GD28775@opensource.wolfsonmicro.com>
+References: <1363730323.16270.11.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4584906078989465272=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 14FC92616FC
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:47:22 +0100 (CET)
-In-Reply-To: <1363772834-29820-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BDA0B2616E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:58:00 +0100 (CET)
+In-Reply-To: <1363730323.16270.11.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,101 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsarha@ti.com>
+To: Joe Perches <joe@perches.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Due to HW limitation within OMAP McPDM IP uplink and downlink need to be
-started at the same time. This causes issues when we have two streams
-running, for example:
-arecord | aplay
 
-In this case the playback stream would have no channels enabled since at the
-capture start we are not aware that a playback is going to start.
+--===============4584906078989465272==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
+Content-Disposition: inline
 
-The workaround is to configure the other direction to stereo when the first
-stream is started. When the second stream is coming we check the new stream's
-number of channels against the pre-configured channels. If it does not match
-we stop and restart McPDM to update the configuration. This might result a
-small pop. If the coming stream is a match we do nothing in the McPDM driver.
 
-This workaround can handle most use cases without the need to restart McPDM.
+--hoZxPH4CaxYzWscb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/omap-mcpdm.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+On Tue, Mar 19, 2013 at 02:58:43PM -0700, Joe Perches wrote:
+> Source files shouldn't have the executable bit set.
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 6e19f44..cd0e2ec 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -63,6 +63,9 @@ struct omap_mcpdm {
- 
- 	/* McPDM dn offsets for rx1, and 2 channels */
- 	u32 dn_rx_offset;
-+
-+	/* McPDM needs to be restarted due to runtime reconfiguration */
-+	bool restart;
- };
- 
- /*
-@@ -149,7 +152,7 @@ static void omap_mcpdm_start(struct omap_mcpdm *mcpdm)
- static void omap_mcpdm_stop(struct omap_mcpdm *mcpdm)
- {
- 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
--	u32 link_mask = mcpdm->config[0].link_mask | mcpdm->config[1].link_mask;
-+	u32 link_mask = MCPDM_PDM_DN_MASK | MCPDM_PDM_UP_MASK;
- 
- 	ctrl |= (MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
-@@ -287,6 +290,8 @@ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
- 		if (omap_mcpdm_active(mcpdm)) {
- 			omap_mcpdm_stop(mcpdm);
- 			omap_mcpdm_close_streams(mcpdm);
-+			mcpdm->config[0].link_mask = 0;
-+			mcpdm->config[1].link_mask = 0;
- 		}
- 	}
- 
-@@ -334,11 +339,26 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- 	/* Configure McPDM channels, and DMA packet size */
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		link_mask <<= 3;
-+
-+		/* If capture is not running assume a stereo stream to come */
-+		if (!mcpdm->config[!stream].link_mask)
-+			mcpdm->config[!stream].link_mask = 0x3;
-+
- 		dma_data->packet_size =
- 				(MCPDM_DN_THRES_MAX - threshold) * channels;
- 	} else {
-+		/* If playback is not running assume a stereo stream to come */
-+		if (!mcpdm->config[!stream].link_mask)
-+			mcpdm->config[!stream].link_mask = (0x3 << 3);
-+
- 		dma_data->packet_size = threshold * channels;
- 	}
-+
-+	/* Check if we need to restart McPDM with this stream */
-+	if (mcpdm->config[stream].link_mask &&
-+	    mcpdm->config[stream].link_mask != link_mask)
-+		mcpdm->restart = true;
-+
- 	mcpdm->config[stream].link_mask = link_mask;
- 
- 	return 0;
-@@ -352,6 +372,11 @@ static int omap_mcpdm_prepare(struct snd_pcm_substream *substream,
- 	if (!omap_mcpdm_active(mcpdm)) {
- 		omap_mcpdm_start(mcpdm);
- 		omap_mcpdm_reg_dump(mcpdm);
-+	} else if (mcpdm->restart) {
-+		omap_mcpdm_stop(mcpdm);
-+		omap_mcpdm_start(mcpdm);
-+		mcpdm->restart = false;
-+		omap_mcpdm_reg_dump(mcpdm);
- 	}
- 
- 	return 0;
--- 
-1.8.1.5
+I've applied this but I'm fed up to the back teeth of having to hand
+edit trivial patches from you because you ignore the subject line styles
+of subsystems and make up your own.
+
+--hoZxPH4CaxYzWscb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRSYgPAAoJELSic+t+oim9r5wQAIX2HXBqOQ6Cc+1F9vkpL5qN
+zuN9eL5jvQpTPDBKU1oWvNvMsPQD4zSUv+FdBHpmKGBHcYE/+mf7MhUN0U2F/6PY
+S1cXVQQG+5GC9ER4OxmF+FAgdx7OV7XOa+R7QTFIgn29ioc8YGpBgqfMVtkOMVUM
+h4pVW9UWTe5/vWXwni2sF0rS7+N/n2HU80+xvNY8rJ4QsVvmOM4GG3DOEboD4EWd
+1yBPGCsi2RGRQtc/Rta8a1E8cT53MsXKTzdhRtAlsMJ9neN3/zRtQiSnSq3e9DJE
+TiDN98zoo3GTFdowkLAO/uWb2ml/QO9PpEx6xuSx+vpYxIL3NkYGdvG45gihz3t0
+3TQqNL4ZLyTxB74diC2ms0y/MW7AWKxX+VdWRpqBEYdlcN8+RShbsp6Kpe1b9BLR
+Yegt/+pPuRn0aacbTHHirvtWit6nrjLoKSquQNyzc+LbdSm/82E40QN0byNgAQi0
+ayLWonnXoRVhaZnMvVZjsMF7VMX44Mbpyzj3Ilvo1P/8e9MJFsZ0f7UFlhPWBbAn
+iZHLvcOxN0BjqLpAC8SK54ccAAPFfmBeenA/uEXypWbp4uaAs1XnKdkPwDvS2DU1
+sKDjhX56OMRyJUxAE6IoSHVVV+K/Ew42Wrqg2Shc5LtbS6nYND/vOxAtEY/1xbHk
+M329uthhlbGi9AxF/zdb
+=7Suy
+-----END PGP SIGNATURE-----
+
+--hoZxPH4CaxYzWscb--
+
+--===============4584906078989465272==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4584906078989465272==--
