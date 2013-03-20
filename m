@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: Use 'unsigned int'
-	for period
-Date: Wed, 20 Mar 2013 10:59:05 +0100
-Message-ID: <20130320095904.GE28775@opensource.wolfsonmicro.com>
-References: <1363756960-11386-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Collect link
+ direction configuration under a struct
+Date: Wed, 20 Mar 2013 11:00:38 +0100
+Message-ID: <20130320100038.GF28775@opensource.wolfsonmicro.com>
+References: <1363772834-29820-1-git-send-email-peter.ujfalusi@ti.com>
+ <1363772834-29820-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8160449867504619221=="
+Content-Type: multipart/mixed; boundary="===============0723946952455810910=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5FF22616E2
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:59:06 +0100 (CET)
-In-Reply-To: <1363756960-11386-1-git-send-email-festevam@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D39382616E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 11:00:39 +0100 (CET)
+In-Reply-To: <1363772834-29820-2-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, s.hauer@pengutronix.de, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8160449867504619221==
+--===============0723946952455810910==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wTWi5aaYRw9ix9vO"
+	protocol="application/pgp-signature"; boundary="ULyIDA2m8JTe+TiX"
 Content-Disposition: inline
 
 
---wTWi5aaYRw9ix9vO
+--ULyIDA2m8JTe+TiX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2013 at 02:22:40AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Fix the following warning when building with W=3D1 option:
+On Wed, Mar 20, 2013 at 10:47:12AM +0100, Peter Ujfalusi wrote:
+> mcpdm_link_config will collect the link direction related configurations like
+> channel masks, FIFO threshold.
 
-Applied, thanks.
+Applied all, thanks.
 
---wTWi5aaYRw9ix9vO
+--ULyIDA2m8JTe+TiX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRSYhiAAoJELSic+t+oim90QEP/A3MrRhUMR89eBk0sdfVT2vz
-KJHP7wttEvnOZwFQHoTm+nNsYJBb1qYC83FYJLxXmEnEM1PGoJxMSH/Gzj5SQ9XY
-c/gtuilwR2TIXQSeqpMkN4Pju5CFTL8VTRSP2Tt7jdMdx72Q4/0xGqgRn0q7xgcC
-QbWgeo7eYG0rsjVzr63av5X5vj/ZxCTTCjA+lcOsjip8VtUY7UBeLPJQ2CSinZI0
-w0PtECeiz5BbQMtzLeVzGUVJFsQQsSJI0qQqwp6bROPM93Pj4iTp98fgND3MQY+e
-evteHWXyuEkBehYzLgVDlfJWAfsiPWnAkwrHBavsjIb7qlos0S0YVx97arIt6Rum
-BWZb3OH4Kpbr2cULXgQIRW4FZolmCXKj/Ls/O5SjeYxOv0YN+ovHBzhPUOXbHSi3
-pL7+2ZNyd9S0sJSFigtCP+W8b1rG7Vw8IJtDna+0wC/WEdjpGYh5dnDHzAhs2vlV
-p7bHn2l8myv/XuMndCFid+XuTFUCeFzm9s1A08p2g02NN9rolHwyFQ1aQCoK5DIk
-6XKKiwog1mg6EBy8gxs3yM9vzBMKTzigMSC2Q6VKnR4hp+o0zr3GGnq/VWaF9kNe
-HEtZUBC7xGkOcjePXgFkRPNCIjPo7fcVmrW/ozNakooAIk3QAR/VUSP4EnYamj05
-y2Z2DxBp5f5rA8SU5bdd
-=tWFf
+iQIcBAEBAgAGBQJRSYi7AAoJELSic+t+oim9PR8QAJHigmyBEdHHMUslfkEg2DF+
+X1eaaGQGtEsxx5PdFhKNt3fzutU3uUeXPaAaLkCWd66WXsIsUcM3S2HYkaLeJXQ+
+STPeLBznC2omGP8xsHOC3aA5Oi1hat0wjl2qwQPD3f+D66TFiieMOpkl22OAz/Jc
+D30iX4+XYtXy/FmzPx2ecEsVgdT1Xdn7kpROkRI7M+0fioXXgHO3etsJEeH3UNE0
+P8o6i9zNoXGFeaUiXo4yYu089HVg+VOAFlF8Z2ToiJV8deb6Pg29QZKNB45RJ7Gn
++60YDfp3zei/EiOiMMtFLS4+J5F8GOF0s5JIz04xoH1QgGnI8/+fqzFR/nOoITB4
+xfPsetXNqY5GwE79RfQMvgxqMCzc47xjGVIOxiR/DC5lOBKRovJHj4CeUVkK2iRc
+NNhuElNohaRJfrjtvzvWZMGQcMCFWncJb7f09R0XGxzoAVgmLQw4CyT2rMF727KY
+ftM1+7MXsV5mLTw1cRHqRgGopc+6KPENGPCCYZ+1tP7BO5REFp7D4yykwDuTrlt1
+VmKwxRbu99SpU+SusSQz47LGFcYA4DM+7tNg8+Yj22NE5cB0w4LF7IPT06JRTvA3
+BtCK6XWlVRsLN5PUM6QnZuEyyw09x4Y2AscAcj5057hzsFYCnvdy77KHF54yoAP3
+FAvw0DPE5K4ntHwc0za4
+=jzqb
 -----END PGP SIGNATURE-----
 
---wTWi5aaYRw9ix9vO--
+--ULyIDA2m8JTe+TiX--
 
---===============8160449867504619221==
+--===============0723946952455810910==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8160449867504619221==--
+--===============0723946952455810910==--
