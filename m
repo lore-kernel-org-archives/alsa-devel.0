@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound: max98090: Remove executable bit
-Date: Wed, 20 Mar 2013 10:57:58 +0100
-Message-ID: <20130320095758.GD28775@opensource.wolfsonmicro.com>
-References: <1363730323.16270.11.camel@joe-AO722>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-fiq: Use 'unsigned int'
+	for period
+Date: Wed, 20 Mar 2013 10:59:05 +0100
+Message-ID: <20130320095904.GE28775@opensource.wolfsonmicro.com>
+References: <1363756960-11386-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4584906078989465272=="
+Content-Type: multipart/mixed; boundary="===============8160449867504619221=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BDA0B2616E2
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:58:00 +0100 (CET)
-In-Reply-To: <1363730323.16270.11.camel@joe-AO722>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5FF22616E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 10:59:06 +0100 (CET)
+In-Reply-To: <1363756960-11386-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,57 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, s.hauer@pengutronix.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4584906078989465272==
+--===============8160449867504619221==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
+	protocol="application/pgp-signature"; boundary="wTWi5aaYRw9ix9vO"
 Content-Disposition: inline
 
 
---hoZxPH4CaxYzWscb
+--wTWi5aaYRw9ix9vO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2013 at 02:58:43PM -0700, Joe Perches wrote:
-> Source files shouldn't have the executable bit set.
+On Wed, Mar 20, 2013 at 02:22:40AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Fix the following warning when building with W=3D1 option:
 
-I've applied this but I'm fed up to the back teeth of having to hand
-edit trivial patches from you because you ignore the subject line styles
-of subsystems and make up your own.
+Applied, thanks.
 
---hoZxPH4CaxYzWscb
+--wTWi5aaYRw9ix9vO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRSYgPAAoJELSic+t+oim9r5wQAIX2HXBqOQ6Cc+1F9vkpL5qN
-zuN9eL5jvQpTPDBKU1oWvNvMsPQD4zSUv+FdBHpmKGBHcYE/+mf7MhUN0U2F/6PY
-S1cXVQQG+5GC9ER4OxmF+FAgdx7OV7XOa+R7QTFIgn29ioc8YGpBgqfMVtkOMVUM
-h4pVW9UWTe5/vWXwni2sF0rS7+N/n2HU80+xvNY8rJ4QsVvmOM4GG3DOEboD4EWd
-1yBPGCsi2RGRQtc/Rta8a1E8cT53MsXKTzdhRtAlsMJ9neN3/zRtQiSnSq3e9DJE
-TiDN98zoo3GTFdowkLAO/uWb2ml/QO9PpEx6xuSx+vpYxIL3NkYGdvG45gihz3t0
-3TQqNL4ZLyTxB74diC2ms0y/MW7AWKxX+VdWRpqBEYdlcN8+RShbsp6Kpe1b9BLR
-Yegt/+pPuRn0aacbTHHirvtWit6nrjLoKSquQNyzc+LbdSm/82E40QN0byNgAQi0
-ayLWonnXoRVhaZnMvVZjsMF7VMX44Mbpyzj3Ilvo1P/8e9MJFsZ0f7UFlhPWBbAn
-iZHLvcOxN0BjqLpAC8SK54ccAAPFfmBeenA/uEXypWbp4uaAs1XnKdkPwDvS2DU1
-sKDjhX56OMRyJUxAE6IoSHVVV+K/Ew42Wrqg2Shc5LtbS6nYND/vOxAtEY/1xbHk
-M329uthhlbGi9AxF/zdb
-=7Suy
+iQIcBAEBAgAGBQJRSYhiAAoJELSic+t+oim90QEP/A3MrRhUMR89eBk0sdfVT2vz
+KJHP7wttEvnOZwFQHoTm+nNsYJBb1qYC83FYJLxXmEnEM1PGoJxMSH/Gzj5SQ9XY
+c/gtuilwR2TIXQSeqpMkN4Pju5CFTL8VTRSP2Tt7jdMdx72Q4/0xGqgRn0q7xgcC
+QbWgeo7eYG0rsjVzr63av5X5vj/ZxCTTCjA+lcOsjip8VtUY7UBeLPJQ2CSinZI0
+w0PtECeiz5BbQMtzLeVzGUVJFsQQsSJI0qQqwp6bROPM93Pj4iTp98fgND3MQY+e
+evteHWXyuEkBehYzLgVDlfJWAfsiPWnAkwrHBavsjIb7qlos0S0YVx97arIt6Rum
+BWZb3OH4Kpbr2cULXgQIRW4FZolmCXKj/Ls/O5SjeYxOv0YN+ovHBzhPUOXbHSi3
+pL7+2ZNyd9S0sJSFigtCP+W8b1rG7Vw8IJtDna+0wC/WEdjpGYh5dnDHzAhs2vlV
+p7bHn2l8myv/XuMndCFid+XuTFUCeFzm9s1A08p2g02NN9rolHwyFQ1aQCoK5DIk
+6XKKiwog1mg6EBy8gxs3yM9vzBMKTzigMSC2Q6VKnR4hp+o0zr3GGnq/VWaF9kNe
+HEtZUBC7xGkOcjePXgFkRPNCIjPo7fcVmrW/ozNakooAIk3QAR/VUSP4EnYamj05
+y2Z2DxBp5f5rA8SU5bdd
+=tWFf
 -----END PGP SIGNATURE-----
 
---hoZxPH4CaxYzWscb--
+--wTWi5aaYRw9ix9vO--
 
---===============4584906078989465272==
+--===============8160449867504619221==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4584906078989465272==--
+--===============8160449867504619221==--
