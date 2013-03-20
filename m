@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound: soc: fix invalid free of devm_
-	allocated data
-Date: Wed, 20 Mar 2013 11:06:34 +0100
-Message-ID: <20130320100633.GI28775@opensource.wolfsonmicro.com>
-References: <1363434334-5461-1-git-send-email-silviupopescu1990@gmail.com>
+Subject: Re: [PATCH v4] ASoC: soc-compress: Cancel delayed
+ power down if needed
+Date: Wed, 20 Mar 2013 11:25:44 +0100
+Message-ID: <20130320102544.GK28775@opensource.wolfsonmicro.com>
+References: <1359128299-17161-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20130126085234.GB30594@opensource.wolfsonmicro.com>
+ <20130308165252.GA22868@opensource.wolfsonmicro.com>
+ <20130311092526.GA2141@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7225328368140327321=="
+Content-Type: multipart/mixed; boundary="===============1744859974446328478=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8B2C2616E2
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 11:06:35 +0100 (CET)
-In-Reply-To: <1363434334-5461-1-git-send-email-silviupopescu1990@gmail.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B2532616E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 11:25:47 +0100 (CET)
+In-Reply-To: <20130311092526.GA2141@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
-Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: vinod.koul@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7225328368140327321==
+--===============1744859974446328478==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gJNQRAHI5jiYqw2y"
+	protocol="application/pgp-signature"; boundary="q6mBvMCt6oafMx9a"
 Content-Disposition: inline
 
 
---gJNQRAHI5jiYqw2y
+--q6mBvMCt6oafMx9a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 16, 2013 at 01:45:34PM +0200, Silviu-Mihai Popescu wrote:
-> The objects allocated by devm_* APIs are managed by devres and are freed when
-> the device is detached. Hence there is no need to use kfree() explicitly.
+On Mon, Mar 11, 2013 at 09:25:26AM +0000, Charles Keepax wrote:
 
-...but I applied this anyway since it's clearly an improvement and a
-small leak is better than a crash.
+Sorry about the delay here, I had been waiting for review from Vinod.
 
---gJNQRAHI5jiYqw2y
+>  	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+> @@ -220,6 +221,10 @@ static int soc_compr_set_params(struct snd_compr_str=
+eam *cstream,
+>  			goto out;
+>  	}
+> =20
+> +	/* cancel any delayed stream shutdown that is pending */
+> +	rtd->pop_wait =3D 0;
+> +	cancel_delayed_work_sync(&rtd->delayed_work);
+> +
+
+The work here uses the pcm mutex but the cancel is done with the mutex
+held.  We need to either cancel outside the lock or just ensure that the
+work doesn't do anything if we have run (which it looks like the
+pop_wait flag actually does so we could probably just use a non-sync
+cancel).
+
+--q6mBvMCt6oafMx9a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRSYojAAoJELSic+t+oim9ZMwP/2tDSFrh3ESfDZn+INUM0gL8
-a2PPj2FJJukrYkLaNVaa8Ibjf/UOxbvT9HMFHdPa/MitoETZ2tsqt39z8O+KBhHs
-/dLgXf4X+zEwnE5FPtY2kBlLvo1D+vpaUVnV9jukfqMYnsl5ZcuiFX5MW6cNe3oq
-HQxTwy5FJjvhBqDRuhGYP3eU6IRQmNNgyg9sCpq+MzV/JmmFJTkm1iYPJdQgKtZP
-lPqxkIluFeaC7fRebJKlZA9QK+iemqveUactVeZDl3SMfjJXw+s20S+4tfE9m81A
-bp42tmvIYT/P3GhQfAm6UpJrFJVXhvh453PMJwqmS+PgWPKsH0pq+bl9yvC8B91u
-5+6mnvfAG/LkklMWwXv8uf0uJlRNXauP7cSj9DoJRTbyFojRxF8Fr/8lZIqGdbLy
-i4HVdVLsikIBx4fg5GyziNnB89J/K1NfyM8kXJ5mpEAAoyLKC3HFHxOm03HW1LJP
-LerQ7Hj5YhDkphAMxeUb7JoCUuX5sCjuRScvURArqyX5saCRgnjiz2bofQMXnw/r
-1zTg2SwoObzryBPMPYNoF7LtsURQYYQ9PZBOj8RFfXGIPd1wl3cHNCE1QAZTZF9Y
-0nAw5Bob4ityRcs9AXGjCdZZ4Tutq3LqN8nYAFGeOBooVtZ//+lzFoUfKSb1eFwl
-aRSv7botvPfzVzPQHGwq
-=eKjK
+iQIcBAEBAgAGBQJRSY6bAAoJELSic+t+oim9+bwP/ianKJoOYZz1NAeSqAl1qVid
+10e2OWREHBGq8aVsWK4s0YmU4PbnHdJL3kzpB6NNirYGONv/5Ckx4inM10cIwWsB
+S0bsfViDHkpXVIH0BcdlFR/dWLwX2G3Aky6QWS9aZl/KOTTlemekCnTIOLqZ4gFc
+iYuLbsE1bMoYFxlxlouHQrSWDsyekueSd4IZTbePyLK2nKzo+ZxD2DecQUOSlNKF
+wXH6WBrCz0mj0fLrrg6ef9lnHWP715zJ1DrdsnrXRnP7qYO52ZcQ96tHpjjYcqyH
+4m0pP8nCGKuO7/UhH7Z/gb3Egk8kMo3P7Eim5Enpym2xhukmbTbi8NwrZMlrQ7Pn
+XNdtGNe/k0SZwXT59F26MJ3YMa25U/ygPLH0BSU1URD+0ovpTe+7gYpsC+PTECDo
+jPPXHMpZ7idO9k9FnbXwFE8WyL5qCBg0gvTO/vq34ZcZzMzB6hyXB2jwAyHxcN0u
+hKd6PIS8RlYScsOH1TfZ8H0i+MrwlysP+ZjK+MxDxFuqiqFQQerI0oMKUN1pDVB/
+q+EsUCfObj9+nwbn8m8x2glBEvaEkuCjJENEd8LFjgvDLaSYAMKgFY9pNClsUKZ5
+Z70mVrafVIDdyYVpUOgpcW2dTqmKqOCgzDduNuPvFaooWYvRuoh+6bSl+lKdQHwG
+quHo48nCtjS2DRYMNRh8
+=EG6E
 -----END PGP SIGNATURE-----
 
---gJNQRAHI5jiYqw2y--
+--q6mBvMCt6oafMx9a--
 
---===============7225328368140327321==
+--===============1744859974446328478==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7225328368140327321==--
+--===============1744859974446328478==--
