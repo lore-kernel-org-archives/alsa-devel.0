@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] sound: soc: fix invalid free of devm_
 	allocated data
-Date: Wed, 20 Mar 2013 11:05:30 +0100
-Message-ID: <20130320100529.GH28775@opensource.wolfsonmicro.com>
+Date: Wed, 20 Mar 2013 11:06:34 +0100
+Message-ID: <20130320100633.GI28775@opensource.wolfsonmicro.com>
 References: <1363434334-5461-1-git-send-email-silviupopescu1990@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6473998745387212445=="
+Content-Type: multipart/mixed; boundary="===============7225328368140327321=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1C502616E3
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 11:05:31 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8B2C2616E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2013 11:06:35 +0100 (CET)
 In-Reply-To: <1363434334-5461-1-git-send-email-silviupopescu1990@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,13 +25,13 @@ Cc: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6473998745387212445==
+--===============7225328368140327321==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WRT3RXLOp/bBMgTI"
+	protocol="application/pgp-signature"; boundary="gJNQRAHI5jiYqw2y"
 Content-Disposition: inline
 
 
---WRT3RXLOp/bBMgTI
+--gJNQRAHI5jiYqw2y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -39,41 +39,38 @@ On Sat, Mar 16, 2013 at 01:45:34PM +0200, Silviu-Mihai Popescu wrote:
 > The objects allocated by devm_* APIs are managed by devres and are freed when
 > the device is detached. Hence there is no need to use kfree() explicitly.
 
-In this case since we're in error handling paths which might not be
-fatal (though I suspect they probably should be normally) it looks like
-the better fix is to use devm_kfree() to free immediately.  Otherwise
-the unused memory will end up hanging around for as long as the device
-is bound.
+...but I applied this anyway since it's clearly an improvement and a
+small leak is better than a crash.
 
---WRT3RXLOp/bBMgTI
+--gJNQRAHI5jiYqw2y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRSYniAAoJELSic+t+oim9DgMP/RhaQzY1ietaUuc+vH+VtI5N
-ol5d6apuq7ycsuP6h9ocY7hZS/tYoztXtF4p6LfiKUCDnf342DIe/apBbcHIcbiW
-udK7Bm9kIUcBV3T/1LBfjTB9iLD4JGwLZMazTjRF9L319zP8WaBiHQbKRSd75YnM
-N2yh+arJbDZVIhWK92zpIrcSmekrxcAVWK93tUnvydYEmOlaF1dUd7nT4QeuMgdL
-ynzDciIngVx1R7DHP+dCmG2ugU/VpBo3APMsGYsbLKuBKl9b3g8dMBar3OCGnV07
-60eOEoG4d2LRnKbu2KSjcNPaJwNpyPXWpFk/jpEoW1DoP/tt4U1QNpcG68eEfd2E
-reoCs1OsF0Is2nIlXXmHKQFdq+xP6EoumAEijLzpbhYnmBw8hBf8A3e/ZvzlibYC
-5Cb8qX1EhGQdqbNGCcaQdAFjzcC+RFd92qEaDKEUDAE0Gv/QGl71WqYYLz8T5F/J
-Pkw8jY/cEfdJJ5FHOjvVtHpUtCqnZ5pnzBbIcJg7bErk67+84oswUG7OKwGLr15M
-Oy2Mgep6L/AletJWRiirKQIo9WcgiRJ2RkV1yj47/BOxh/C0zIk+wCxZmTsH6bby
-mzCqMi/FMjPOIlHznYZYKCwiOKxgfgREUCxZFuQj7SS1I2qUxMS26h67ciIJtwkD
-xBNEIwbd6a/AcQjZZgvU
-=YJdM
+iQIcBAEBAgAGBQJRSYojAAoJELSic+t+oim9ZMwP/2tDSFrh3ESfDZn+INUM0gL8
+a2PPj2FJJukrYkLaNVaa8Ibjf/UOxbvT9HMFHdPa/MitoETZ2tsqt39z8O+KBhHs
+/dLgXf4X+zEwnE5FPtY2kBlLvo1D+vpaUVnV9jukfqMYnsl5ZcuiFX5MW6cNe3oq
+HQxTwy5FJjvhBqDRuhGYP3eU6IRQmNNgyg9sCpq+MzV/JmmFJTkm1iYPJdQgKtZP
+lPqxkIluFeaC7fRebJKlZA9QK+iemqveUactVeZDl3SMfjJXw+s20S+4tfE9m81A
+bp42tmvIYT/P3GhQfAm6UpJrFJVXhvh453PMJwqmS+PgWPKsH0pq+bl9yvC8B91u
+5+6mnvfAG/LkklMWwXv8uf0uJlRNXauP7cSj9DoJRTbyFojRxF8Fr/8lZIqGdbLy
+i4HVdVLsikIBx4fg5GyziNnB89J/K1NfyM8kXJ5mpEAAoyLKC3HFHxOm03HW1LJP
+LerQ7Hj5YhDkphAMxeUb7JoCUuX5sCjuRScvURArqyX5saCRgnjiz2bofQMXnw/r
+1zTg2SwoObzryBPMPYNoF7LtsURQYYQ9PZBOj8RFfXGIPd1wl3cHNCE1QAZTZF9Y
+0nAw5Bob4ityRcs9AXGjCdZZ4Tutq3LqN8nYAFGeOBooVtZ//+lzFoUfKSb1eFwl
+aRSv7botvPfzVzPQHGwq
+=eKjK
 -----END PGP SIGNATURE-----
 
---WRT3RXLOp/bBMgTI--
+--gJNQRAHI5jiYqw2y--
 
---===============6473998745387212445==
+--===============7225328368140327321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6473998745387212445==--
+--===============7225328368140327321==--
