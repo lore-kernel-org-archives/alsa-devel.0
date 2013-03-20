@@ -1,70 +1,60 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: wm8903: Add the DAC boost control
-Date: Wed, 20 Mar 2013 20:23:52 +0100
-Message-ID: <20130320192352.GV28775@opensource.wolfsonmicro.com>
-References: <1363797453-24723-1-git-send-email-alban.bedel@avionic-design.de>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] sound: max98090: Remove executable bit
+Date: Wed, 20 Mar 2013 15:54:32 -0700
+Message-ID: <1363820072.16270.43.camel@joe-AO722>
+References: <1363730323.16270.11.camel@joe-AO722>
+	 <20130320095758.GD28775@opensource.wolfsonmicro.com>
+	 <1363792936.16270.30.camel@joe-AO722>
+	 <20130320163627.GS28775@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8857452885041171960=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1363797453-24723-1-git-send-email-alban.bedel@avionic-design.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alban Bedel <alban.bedel@avionic-design.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130320163627.GS28775@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2013-03-20 at 17:36 +0100, Mark Brown wrote:
+> On Wed, Mar 20, 2013 at 08:22:16AM -0700, Joe Perches wrote:
+> > On Wed, 2013-03-20 at 10:57 +0100, Mark Brown wrote:
+> 
+> > > I've applied this but I'm fed up to the back teeth of having to hand
+> > > edit trivial patches from you because you ignore the subject line styles
+> > > of subsystems and make up your own.
+> 
+> > Your style rules just don't matter to me and
+> > you can ignore the patches and fix it yourself.
+> 
+> > Or better, create a tool for others to use that
+> > follow your silly style rules.
+> 
+> This is just like any other coding style thing - you should be creating
+> patches that look like other patches for the affected, if there's things
+> like obvious visual differences in what you're doing you're doing it
+> wrong.
 
---===============8857452885041171960==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aBaYPhOdNx+t7mr3"
-Content-Disposition: inline
+We've had this conversation before and I proposed
+to you a simple solution.
+https://lkml.org/lkml/2010/11/16/245
+and I still more or less agree with Florian
+https://lkml.org/lkml/2010/11/16/314
 
+I'm not doing it wrong.  You have another demand
+others don't.  I simply don't find it necessary to
+cater to you.
 
---aBaYPhOdNx+t7mr3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If you want it to be agreed that there is a specific
+form for subject headers that varies by maintainer tree,
+change SubmittingPatches Paragraph 11.
 
-On Wed, Mar 20, 2013 at 05:37:32PM +0100, Alban Bedel wrote:
-> Signed-off-by: Alban Bedel <alban.bedel@avionic-design.de>
+> Automation doesn't work for things like this, there's a good solid
+> reason why there's generally a human involved in patch; the other people
+> who submit lots of cleanups generally manage to figure this out
+> usefully, you might want to discuss techniques with them.
 
-Applied, thanks.
-
---aBaYPhOdNx+t7mr3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRSgy0AAoJELSic+t+oim9P0AQAJtkK3QQDdBOMEtOaZwV3cH7
-Fj4Ttwy/gZ/mBVtC5AVzbnl8mo/AlS+hKDNyAedMM4LVgyYZc/KzDyjy+60aEfm+
-rVp93fkohVIrCx0xAfqGgwHKUgcJ1Us9jU1sF1D43ZgLNQJJN2yZQBqgo0usW6YB
-VNQhUx9eHle7EGw80GMkcrwZEr1kUYY+Q8q3AnO9aZm0FbvK3mYdJllxZzUvRoTN
-JssuRUqIn+NDq8cY44Vqebcj8u7WYMheMxM3RtSsJUVvbEYN7NO2+JcJ2M4Av9SP
-UbRVRp8a9vab0GyxHez0zN6SCeRDtTZYETocdXqhvWrTTMlz4UQ+N5CtTi7JVVhd
-TBHOFKzAXiLeZSEbqWtH0vtLXA8TtGRDbwMqpN89zog2JmGDZmPyBtOgbLiqBvup
-ra274r7nySjAkVJ9vk2Z8w1KlxohEg5wDMOJurLO6hAjnlqYupr8eWeX0qZF2MlK
-KoeRTHhWvVWwFtdL281PtiAUQi3MalMbad9WIF2tOjqhce1Xd8iTFz0BoNDsXThA
-PXrdSkppJ5Ar/mRHCzeghWpRPTNgPiysaLkRGPuSQct38XbOA7pTqTHOvr46hmKB
-racA4b1VEBTz8oz+kCqokWORk8IpsPwMJJ14imBtCWpCG3Lin5ou6vY9XUEO6DXJ
-PlFH8IKmwIrXqO/yd0eF
-=e+sk
------END PGP SIGNATURE-----
-
---aBaYPhOdNx+t7mr3--
-
---===============8857452885041171960==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8857452885041171960==--
+I suggest you use a git pre-commit hook to your
+tree and use sed/perl to add a specific prefix
+if it doesn't exist.
+http://codeinthehole.com/writing/tips-for-using-a-git-pre-commit-hook/
