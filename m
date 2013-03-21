@@ -1,103 +1,82 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound: max98090: Remove executable bit
-Date: Thu, 21 Mar 2013 18:44:40 +0100
-Message-ID: <20130321174440.GG15926@opensource.wolfsonmicro.com>
-References: <1363730323.16270.11.camel@joe-AO722>
- <20130320095758.GD28775@opensource.wolfsonmicro.com>
- <1363792936.16270.30.camel@joe-AO722>
- <20130320163627.GS28775@opensource.wolfsonmicro.com>
- <1363820072.16270.43.camel@joe-AO722>
- <20130321162503.GC14768@opensource.wolfsonmicro.com>
- <1363886175.30275.10.camel@joe-AO722>
+From: Martin Fuzzey <mfuzzey@parkeon.com>
+Subject: Re: [PATCH] Sound: sgtl5000 Allow codec clock frequency to be set.
+Date: Thu, 21 Mar 2013 18:46:17 +0100
+Message-ID: <514B4769.30109@parkeon.com>
+References: <20130319170322.27828.7691.stgit@localhost>
+ <514A63EE.7000707@tabi.org> <514AC738.6050900@parkeon.com>
+ <CAOZdJXXv=O3vmSCJ1ojhis+Fn7FJ7yhd2wVt10m77Cixbew2BA@mail.gmail.com>
+Reply-To: mfuzzey@parkeon.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3340522654610998511=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA00D26600E
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 18:44:42 +0100 (CET)
-In-Reply-To: <1363886175.30275.10.camel@joe-AO722>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CAOZdJXXv=O3vmSCJ1ojhis+Fn7FJ7yhd2wVt10m77Cixbew2BA@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 21/03/13 17:11, Timur Tabi wrote:
+> On Thu, Mar 21, 2013 at 3:39 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
+>
+>> With this patch and that DT example the frequency of clock 162 will be _set_
+>> to 20MHz
+> Does that mean that it ignores the ' clocks' parameter?
+No, in this case the clocks parameter must contain the phandle of a clock
+whose rate is configurable.
 
---===============3340522654610998511==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3VRmKSg17yJg2MZg"
-Content-Disposition: inline
+> If clock-frequency is omitted the binding is still correct (hence the
+> optional) but the frequency of clock 162 would not be modified.
+>
+> In the documentation I wrote "If both a clock and clock-frequency are
+> provided the clock's rate will be set. " maybe this is not clear enough?
+> It's not clear what it will be set *to*.
+It will be set to the frequency specified by the clock-frquency attribute.
 
-
---3VRmKSg17yJg2MZg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 21, 2013 at 10:16:15AM -0700, Joe Perches wrote:
-> On Thu, 2013-03-21 at 17:25 +0100, Mark Brown wrote:
-
-> > I don't think you're quite understanding the issues with automation
-> > here.  Or indeed the desired end result.
-
-> What issue is that?
-
-That one needs a bit more taste and thought to work out what's
-appropraite than can be guaranteed easily with a script, things like
-working out drive level prefixes for example.
-
-> Maybe this would work for you...
-
-> $ cat .git/hooks/applypatch-msg
-> #!/bin/sh
-
-> . git-sh-setup
-
-> perl -p -i -e 's/^(?:ASoC:\s*)?(.*)$/ASoC: $1/g if 1 .. 1' {$1+"$@"}
-
-> test -x "$GIT_DIR/hooks/commit-msg" &&
-> 	exec "$GIT_DIR/hooks/commit-msg" ${1+"$@"}
-> :
-> $
-
-No, that's going to leave essentially every commit that needs fixing up
-still needing manual fixup.
-
---3VRmKSg17yJg2MZg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRS0cAAAoJELSic+t+oim9fDkP/2nzeZTbxPgI0H8GZWNMOQwy
-+wTQ+YXramvCTizU6lBbV16L1+OVi9CufxkCizcrued7z/gxUdcbYcX/e83JAHHf
-K2KtigiOncTCKdryuN0uwJMSQBxFKKyM/zj5i4WnVm/Hrpfd31A1IDq2p9ChoAsZ
-0L8GtJHp//6G1ddBiUH2hYQYMstcYJ9Xbr1MMRFullAILbOI3vlba7/9N260QNz3
-HTeAFymzrKEarZJj5d7grJyxiI5K1dyAvNZYesPx79JZkuVb7OdA9KA4hrmstHRd
-xvQVHHQCQaVEOnD6tXICnBpCzgpIqAqBd1JGXFzc5EcUPzxhZdvUidAS+2UrCf59
-r4sWLdlxIw3xTO+I/6KwiKggaIJWl0OsnelvkloqVqSoRJUpTrLm4NIcTJ47pGl1
-PGPN4TMoRfQmaeaPXi8MAFE5jcd9YLQZ3DJpiVV7lfMpl830aPC/doFFDFk8dkGR
-IU3RNHgQocIl+Wm8aq+EU9OwKRH/O1bqMOgy4zHJRvlmxSOTyLhiwHFA1xAEJunJ
-LKlYg+fRRL1Xz1c7Cn1NoDWUgYvyivgSD8jpPnHLnqZDeNvPv9h8F5Q1H0ajp1Yg
-W7/OjeIh4tT1ACUv/L6mj7Goq8a1ng1SACTuLpt1WPanU5mL21PRTZU0vgQtN4Tu
-a11zCGlntjfPAbD7s0Kd
-=HHzM
------END PGP SIGNATURE-----
-
---3VRmKSg17yJg2MZg--
-
---===============3340522654610998511==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Would
+"If both a clock and clock-frequency are provided clock must support
+the set_rate operation and its frequency will be set to the value specified
+by clock-frequency" be better?
 
 
---===============3340522654610998511==--
+The possible configurations and their use cases are:
+
+1) only 'clocks' specified
+clock points to a clock specified in the DT which already has an 
+appropriate frequency and is
+configured by some other means external to the sgtl5000 driver 
+(bootloader, board setup code, or just a fixed rate clock)
+
+2) only 'clock-frequency' specified
+The chip is assumed to be clocked by a signal having the given 
+frequency, which may even be generated by a clock unknown to linux.
+This could actually be represented as a special case of 1) by defining a 
+fixed-rate clock in the DT.
+
+3) Both 'clocks' and 'clock-frequency' specified
+The chip is assumed to be clocked by a rate programmable clock defined 
+in the clock tree.
+clk_set_rate() will be called for this clock to set its rate to that 
+specified by clock-frequency
+
+
+Cases 1 and 2 exist in the current code, this patch adds support for case 3.
+
+Prior to commit 81e8e4926167ab32593bbb915b45a42024ca1020 "ASoC: fsl: add 
+sgtl5000 clock support for imx-sgtl5000"
+only case 2 was supported
+This explains why 2 is not implemented as a special case of 1)
+plain 'clock-frequency' was supported before the driver learnt how to 
+get a clock from the DT
+
+Regards,
+
+Martin
