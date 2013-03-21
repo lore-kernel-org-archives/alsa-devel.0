@@ -1,96 +1,65 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ASoC: compress - add support for
-	metadata apis
-Date: Thu, 21 Mar 2013 10:01:12 +0530
-Message-ID: <20130321043112.GA10326@intel.com>
-References: <1361183381-30010-1-git-send-email-vinod.koul@intel.com>
- <20130218131928.GB30157@opensource.wolfsonmicro.com>
- <20130218133513.GA10950@intel.com>
- <20130218143554.GE30157@opensource.wolfsonmicro.com>
+From: Martin Fuzzey <mfuzzey@parkeon.com>
+Subject: Re: [PATCH] Sound: sgtl5000 Allow codec clock frequency to be set.
+Date: Thu, 21 Mar 2013 09:39:20 +0100
+Message-ID: <514AC738.6050900@parkeon.com>
+References: <20130319170322.27828.7691.stgit@localhost>
+ <514A63EE.7000707@tabi.org>
+Reply-To: mfuzzey@parkeon.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2683146433091003393=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 10025265E1D
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 05:56:13 +0100 (CET)
-In-Reply-To: <20130218143554.GE30157@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <514A63EE.7000707@tabi.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 21/03/13 02:35, Timur Tabi wrote:
+> Martin Fuzzey wrote:
+>> +If a clock is provided, clock-frequency is optional
+>> +
+>> +If no clock is provided clock-frequency is required (this represents 
+>> the codec
+>> +being clocked by an external signal not present in the clock tree)
+>> +
+>> +If both a clock and clock-frequency are provided the clock's rate 
+>> will be set.
+>> +
+>> +
+>>   Example:
+>>
+>>   codec: sgtl5000@0a {
+>>       compatible = "fsl,sgtl5000";
+>>       reg = <0x0a>;
+>> +    clock-frequency = <20000000>;
+>> +    clocks = <&clks 162>; /* cko1 */
+>
+> The code looks okay, but I'm not sure this example is right.  The 
+> binding says that clock-frequency is optional if 'clocks' is provided, 
+> but here you list both.  You should probably have two examples.
+>
+Hello and thank you for your review.
 
---===============2683146433091003393==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
-Content-Disposition: inline
+No the example is correct.
 
+With this patch and that DT example the frequency of clock 162 will be 
+_set_ to 20MHz
 
---ZPt4rx8FFjLCG7dd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If clock-frequency is omitted the binding is still correct (hence the 
+optional) but the frequency of clock 162 would not be modified.
 
-On Mon, Feb 18, 2013 at 02:35:55PM +0000, Mark Brown wrote:
-> On Mon, Feb 18, 2013 at 07:05:13PM +0530, Vinod Koul wrote:
-> > On Mon, Feb 18, 2013 at 01:19:28PM +0000, Mark Brown wrote:
->=20
-> > > Since we're expecting the merge window to open today or something
-> > > probably the easiest thing is for me to apply it after -rc1?
->=20
-> > okay, but it can go via takashi's tree after he merges asoc updates fro=
-m you.
-> > Since core support is getting into linus's tree in merge window it woul=
-d make
-> > sense for ASoC and driver update to go along as well.
->=20
-> There's probably not even enough time for it to sit in -next now...
+In the documentation I wrote "If both a clock and clock-frequency are 
+provided the clock's rate will be set. " maybe this is not clear enough?
 
-Ping...
+Regards,
 
-I didnt see this applied yet..
-
---
-~Vinod
-
---ZPt4rx8FFjLCG7dd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRSo0QAAoJEHwUBw8lI4NHe5QP/0yHCUcHeWZbcwCAWSaVIW6/
-OXYoiKqPxlRLrSk/qDkWzK47VMPV2pucSDyefN4mjea/oZjPRAP7bufz6PHg/DCp
-u+T9riGSDtu6Xqvc6PiraPiAd1LICxrCG52cOQoqBYmiUNeDjPjrwT+ROgk7kE17
-hhyqPiKRswEBUF9E2Y2K+okQYqm8ODP3CaNd2qWSgTOoGJaGxqHCdCjItdgrxR0V
-DO8CZ8RDT9vg5XxOHSlku5efEXm6esbqpqc2OAuSuXWizm/cYpTBXevZhg9ofwwc
-olRIRO6xEwovJYLC3o/Zacrh95Hw9gTQ5jyg8IrHKel8Y/iQSaS1F10dQEEWueLM
-qKQIwpVROyu4cIQc0CuYxqD25o/W7g6rfkgF2ytcTgLRSrfIcVjqfbB2SDiZeIFu
-vqRD21lEehNyMbYNSUy8w+4HLtaRwA3ufDLzrlIjz1jZAVIfm1dteKndshzoGB42
-4J0dfEOPr7STa8LO5+iUaWHORIprc1OWk1G5s8nFw7xUzDf7l+BqiX6mXPSlDETG
-VYk+ITn6jWC529AAIPgtQBB4rRNQ3uxALbTdse/TcnP8sALhGWpLbIC8NTRW8acl
-D79yCaFdVxQve/Ocv3cuSwwppGSujN0gfmYLxmmZSwTDh0KtrXuRXe808xACmDk5
-wLqJOeaeTTW8p7ORLQ2S
-=WGjD
------END PGP SIGNATURE-----
-
---ZPt4rx8FFjLCG7dd--
-
---===============2683146433091003393==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2683146433091003393==--
+Martin
