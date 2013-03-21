@@ -1,25 +1,14 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] sound: max98090: Remove executable bit
-Date: Thu, 21 Mar 2013 12:16:45 -0700
-Message-ID: <1363893405.30275.39.camel@joe-AO722>
-References: <1363730323.16270.11.camel@joe-AO722>
- <20130320095758.GD28775@opensource.wolfsonmicro.com>
- <1363792936.16270.30.camel@joe-AO722>
- <20130320163627.GS28775@opensource.wolfsonmicro.com>
- <1363820072.16270.43.camel@joe-AO722>
- <20130321162503.GC14768@opensource.wolfsonmicro.com>
- <1363886175.30275.10.camel@joe-AO722>
- <20130321174440.GG15926@opensource.wolfsonmicro.com>
- <1363888393.30275.31.camel@joe-AO722>
- <20130321184458.GH15926@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2 resend] ASoC: cs4271: switch to mute_stream
+Date: Thu, 21 Mar 2013 20:43:54 +0100
+Message-ID: <1363895035-20356-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 01F4A266044
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 20:16:46 +0100 (CET)
-In-Reply-To: <20130321184458.GH15926@opensource.wolfsonmicro.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id F30F0266046
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 20:44:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,41 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, subaparts@yandex.ru, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-03-21 at 19:44 +0100, Mark Brown wrote:
-> On Thu, Mar 21, 2013 at 10:53:13AM -0700, Joe Perches wrote:
-> > On Thu, 2013-03-21 at 18:44 +0100, Mark Brown wrote:
-> 
-> > > That one needs a bit more taste and thought to work out what's
-> > > appropraite than can be guaranteed easily with a script, things like
-> > > working out drive level prefixes for example.
-> 
-> > [perfectly useful git applypatch-msg hook script removed]
-> 
-> No, it really isn't.  Have you tried looking at the output?  It's not
-> going to do the right thing for the subject line here for example, never
-> mind any other cases.
+Use the newly introduced mute_stream DAI operation, and don't mute the
+codec if it's called for the _CAPTURE stream.
 
-Define "the right thing" for this instance.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Acked-by: Alexander Sverdlin <subaparts@yandex.ru>
+---
+ sound/soc/codecs/cs4271.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-The commit isn't in -next so I have no idea what
-you actually applied. (nor do I really care btw)
-
-Did you try it?
-
-It commits:
-
-ASoC: sound: max98080: Remove executable bit
-
-If you're really anal about it and you want
-sound: for sound/soc removed,
-
-perl -p -i -e 's/^(?:ASoC:\s*)?(?:sound:\s*)?(.*)$/ASoC: $1/g if 1 .. 1' ${1+"$@"}
-
-This is a "your taste" issue only, and do keep in mind
-mountains vs molehills.
-
-cheers, Joe
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index ac0d3b4..03036b3 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -388,7 +388,7 @@ static int cs4271_hw_params(struct snd_pcm_substream *substream,
+ 	return cs4271_set_deemph(codec);
+ }
+ 
+-static int cs4271_digital_mute(struct snd_soc_dai *dai, int mute)
++static int cs4271_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+@@ -396,6 +396,9 @@ static int cs4271_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	int val_a = 0;
+ 	int val_b = 0;
+ 
++	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++
+ 	if (mute) {
+ 		val_a = CS4271_VOLA_MUTE;
+ 		val_b = CS4271_VOLB_MUTE;
+@@ -442,7 +445,7 @@ static const struct snd_soc_dai_ops cs4271_dai_ops = {
+ 	.hw_params	= cs4271_hw_params,
+ 	.set_sysclk	= cs4271_set_dai_sysclk,
+ 	.set_fmt	= cs4271_set_dai_fmt,
+-	.digital_mute	= cs4271_digital_mute,
++	.mute_stream	= cs4271_mute_stream,
+ };
+ 
+ static struct snd_soc_dai_driver cs4271_dai = {
+-- 
+1.8.1.4
