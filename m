@@ -1,65 +1,147 @@
-From: Martin Fuzzey <mfuzzey@parkeon.com>
-Subject: Re: [PATCH] Sound: sgtl5000 Allow codec clock frequency to be set.
-Date: Thu, 21 Mar 2013 09:39:20 +0100
-Message-ID: <514AC738.6050900@parkeon.com>
-References: <20130319170322.27828.7691.stgit@localhost>
- <514A63EE.7000707@tabi.org>
-Reply-To: mfuzzey@parkeon.com
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] dmaengine: add const for name parameter
+Date: Thu, 21 Mar 2013 15:17:53 +0530
+Message-ID: <20130321094753.GN10326@intel.com>
+References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
+ <1363318601-31505-2-git-send-email-shawn.guo@linaro.org>
+ <20130315085346.GA22650@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <514A63EE.7000707@tabi.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE289265E48
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 11:13:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20130315085346.GA22650@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21/03/13 02:35, Timur Tabi wrote:
-> Martin Fuzzey wrote:
->> +If a clock is provided, clock-frequency is optional
->> +
->> +If no clock is provided clock-frequency is required (this represents 
->> the codec
->> +being clocked by an external signal not present in the clock tree)
->> +
->> +If both a clock and clock-frequency are provided the clock's rate 
->> will be set.
->> +
->> +
->>   Example:
->>
->>   codec: sgtl5000@0a {
->>       compatible = "fsl,sgtl5000";
->>       reg = <0x0a>;
->> +    clock-frequency = <20000000>;
->> +    clocks = <&clks 162>; /* cko1 */
->
-> The code looks okay, but I'm not sure this example is right.  The 
-> binding says that clock-frequency is optional if 'clocks' is provided, 
-> but here you list both.  You should probably have two examples.
->
-Hello and thank you for your review.
+On Fri, Mar 15, 2013 at 09:53:46AM +0100, Markus Pargmann wrote:
+> Hi,
+> 
+> I already sent a nearly identical patch:
+> https://patchwork.kernel.org/patch/2179321/
+I applied that one a while ago so Markus can you check my tree and see if
+anything is remaining, looks most of cases are covered
 
-No the example is correct.
-
-With this patch and that DT example the frequency of clock 162 will be 
-_set_ to 20MHz
-
-If clock-frequency is omitted the binding is still correct (hence the 
-optional) but the frequency of clock 162 would not be modified.
-
-In the documentation I wrote "If both a clock and clock-frequency are 
-provided the clock's rate will be set. " maybe this is not clear enough?
-
-Regards,
-
-Martin
+> 
+> Regards,
+> 
+> Markus
+> 
+> On Fri, Mar 15, 2013 at 11:36:40AM +0800, Shawn Guo wrote:
+> > Mark name parameter of generic device tree helpers as const, as it
+> > shouldn't be changed anyway.
+> > 
+> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> > ---
+> >  drivers/dma/dmaengine.c   |    2 +-
+> >  drivers/dma/of-dma.c      |    6 +++---
+> >  include/linux/dmaengine.h |    7 ++++---
+> >  include/linux/of_dma.h    |    2 +-
+> >  4 files changed, 9 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+> > index b2728d6..2cbfefe 100644
+> > --- a/drivers/dma/dmaengine.c
+> > +++ b/drivers/dma/dmaengine.c
+> > @@ -555,7 +555,7 @@ EXPORT_SYMBOL_GPL(__dma_request_channel);
+> >   * @dev:	pointer to client device structure
+> >   * @name:	slave channel name
+> >   */
+> > -struct dma_chan *dma_request_slave_channel(struct device *dev, char *name)
+> > +struct dma_chan *dma_request_slave_channel(struct device *dev, const char *name)
+> >  {
+> >  	/* If device-tree is present get slave info from here */
+> >  	if (dev->of_node)
+> > diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
+> > index 69d04d2..6036cd0 100644
+> > --- a/drivers/dma/of-dma.c
+> > +++ b/drivers/dma/of-dma.c
+> > @@ -172,8 +172,8 @@ EXPORT_SYMBOL_GPL(of_dma_controller_free);
+> >   * specifiers, matches the name provided. Returns 0 if the name matches and
+> >   * a valid pointer to the DMA specifier is found. Otherwise returns -ENODEV.
+> >   */
+> > -static int of_dma_match_channel(struct device_node *np, char *name, int index,
+> > -				struct of_phandle_args *dma_spec)
+> > +static int of_dma_match_channel(struct device_node *np, const char *name,
+> > +				int index, struct of_phandle_args *dma_spec)
+> >  {
+> >  	const char *s;
+> >  
+> > @@ -198,7 +198,7 @@ static int of_dma_match_channel(struct device_node *np, char *name, int index,
+> >   * Returns pointer to appropriate dma channel on success or NULL on error.
+> >   */
+> >  struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
+> > -					      char *name)
+> > +					      const char *name)
+> >  {
+> >  	struct of_phandle_args	dma_spec;
+> >  	struct of_dma		*ofdma;
+> > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> > index 91ac8da..68b4252 100644
+> > --- a/include/linux/dmaengine.h
+> > +++ b/include/linux/dmaengine.h
+> > @@ -968,7 +968,8 @@ enum dma_status dma_sync_wait(struct dma_chan *chan, dma_cookie_t cookie);
+> >  enum dma_status dma_wait_for_async_tx(struct dma_async_tx_descriptor *tx);
+> >  void dma_issue_pending_all(void);
+> >  struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask, dma_filter_fn fn, void *fn_param);
+> > -struct dma_chan *dma_request_slave_channel(struct device *dev, char *name);
+> > +struct dma_chan *dma_request_slave_channel(struct device *dev,
+> > +					   const char *name);
+> >  void dma_release_channel(struct dma_chan *chan);
+> >  #else
+> >  static inline enum dma_status dma_wait_for_async_tx(struct dma_async_tx_descriptor *tx)
+> > @@ -984,7 +985,7 @@ static inline struct dma_chan *__dma_request_channel(dma_cap_mask_t *mask,
+> >  	return NULL;
+> >  }
+> >  static inline struct dma_chan *dma_request_slave_channel(struct device *dev,
+> > -							 char *name)
+> > +							 const char *name)
+> >  {
+> >  	return NULL;
+> >  }
+> > @@ -1007,7 +1008,7 @@ struct dma_chan *net_dma_find_channel(void);
+> >  static inline struct dma_chan
+> >  *__dma_request_slave_channel_compat(dma_cap_mask_t *mask, dma_filter_fn fn,
+> >  				  void *fn_param, struct device *dev,
+> > -				  char *name)
+> > +				  const char *name)
+> >  {
+> >  	struct dma_chan *chan;
+> >  
+> > diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
+> > index d15073e..0c4a82e 100644
+> > --- a/include/linux/of_dma.h
+> > +++ b/include/linux/of_dma.h
+> > @@ -40,7 +40,7 @@ extern int of_dma_controller_register(struct device_node *np,
+> >  		void *data);
+> >  extern int of_dma_controller_free(struct device_node *np);
+> >  extern struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
+> > -						     char *name);
+> > +						     const char *name);
+> >  extern struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
+> >  		struct of_dma *ofdma);
+> >  #else
+> > -- 
+> > 1.7.9.5
+> > 
+> > 
+> > 
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
