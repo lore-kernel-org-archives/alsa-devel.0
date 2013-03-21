@@ -1,19 +1,19 @@
 From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 43/54 v2] ASoC: switch over to use
- snd_soc_register_component() on sh4 ssi
-Date: Thu, 21 Mar 2013 10:58:50 -0600
-Message-ID: <514B3C4A.7090807@wwwdotorg.org>
+Subject: Re: [PATCH 44/54 v2] ASoC: switch over to use
+ snd_soc_register_component() on sh4 siu
+Date: Thu, 21 Mar 2013 11:00:30 -0600
+Message-ID: <514B3CAE.9040400@wwwdotorg.org>
 References: <87txo96xiu.wl%kuninori.morimoto.gx@renesas.com>
  <8738vpf3qd.wl%kuninori.morimoto.gx@renesas.com>
- <87d2utca54.wl%kuninori.morimoto.gx@renesas.com>
+ <87boadca4t.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id BB3F0265F8C
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 17:58:53 +0100 (CET)
-In-Reply-To: <87d2utca54.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6942A265F8C
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 18:00:33 +0100 (CET)
+In-Reply-To: <87boadca4t.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,21 +29,26 @@ List-Id: alsa-devel@alsa-project.org
 
 On 03/21/2013 04:36 AM, Kuninori Morimoto wrote:
 
-> diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+> diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
 
->  static int sh4_soc_dai_probe(struct platform_device *pdev)
->  {
-> -	return snd_soc_register_dais(&pdev->dev, sh4_ssi_dai,
-> -			ARRAY_SIZE(sh4_ssi_dai));
-> +	return snd_soc_register_component(&pdev->dev, &sh4_ssi_component,
-> +					  sh4_ssi_dai, ARRAY_SIZE(sh4_ssi_dai));
->  }
+>  static struct snd_soc_dai_link migor_dai = {
+>  	.name = "wm8978",
+>  	.stream_name = "WM8978",
+> -	.cpu_dai_name = "siu-i2s-dai",
+> +	.cpu_dai_name = "siu-pcm-audio",
 
-ARRAY_SIZE(sh4_ssi_dai) might be 1 or 2 here, based on #ifdef
-CONFIG_CPU_SUBTYPE_SH7760. If it's 1, then this change switches the code
-from calling snd_soc_register_dais() to snd_soc_register_dai(). This
-might be a problem. In practice, perhaps it's won't since the .name
-fields in the array entries already are "ssi-dai.0" and "ssi-dai.1", so
-perhaps the device ID is already expected not to be appended (because
-it's -1 as the device is a singleton)? But, this needs to be checked by
-someone familiar with the platform...
+I'm not sure what that change is for. The need for it should be
+described in the commit description.
+
+> diff --git a/sound/soc/sh/siu_dai.c b/sound/soc/sh/siu_dai.c
+
+> @@ -783,7 +787,8 @@ static int siu_probe(struct platform_device *pdev)
+>  	dev_set_drvdata(&pdev->dev, info);
+>  
+>  	/* register using ARRAY version so we can keep dai name */
+> -	ret = snd_soc_register_dais(&pdev->dev, &siu_i2s_dai, 1);
+> +	ret = snd_soc_register_component(&pdev->dev, &siu_i2s_component,
+> +					 &siu_i2s_dai, 1);
+
+That changes from snd_soc_register_dais() to snd_soc_register_dai().
+Will that be a problem?
