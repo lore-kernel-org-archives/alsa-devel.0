@@ -1,20 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 0/2] ASoC: dmaengine_pcm: support generic
- DMA binding users
-Date: Thu, 21 Mar 2013 17:26:19 +0100
-Message-ID: <514B34AB.1080107@metafoo.de>
-References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
- <20130321023858.GD6281@S2101-09.ap.freescale.net> <514B21F3.90803@metafoo.de>
- <20130321152206.GA14768@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sound: max98090: Remove executable bit
+Date: Thu, 21 Mar 2013 17:25:03 +0100
+Message-ID: <20130321162503.GC14768@opensource.wolfsonmicro.com>
+References: <1363730323.16270.11.camel@joe-AO722>
+ <20130320095758.GD28775@opensource.wolfsonmicro.com>
+ <1363792936.16270.30.camel@joe-AO722>
+ <20130320163627.GS28775@opensource.wolfsonmicro.com>
+ <1363820072.16270.43.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8562652486683462570=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 2067B265F69
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 17:24:08 +0100 (CET)
-In-Reply-To: <20130321152206.GA14768@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75EF8265F87
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 17:25:05 +0100 (CET)
+In-Reply-To: <1363820072.16270.43.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +23,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Joe Perches <joe@perches.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2013 04:22 PM, Mark Brown wrote:
-> On Thu, Mar 21, 2013 at 04:06:27PM +0100, Lars-Peter Clausen wrote:
-> 
->> Hm, I only saw this series today would have been good to be on Cc. I've been
->> working on something very similar. My series goes a bit further though, it
->> implements an (almost generic) dmaengine based PCM driver using the of
->> bindings. So you need almost no platform code. The only things that are
->> platform specific at the moment is the pcm_hardware struct, but I'd like to
->> replace that in the future with something that queries the pcm hardware
->> parameter like max_period from the DMA engine driver. And another bit that is
->> still driver specific is a callback that fills the dma_slave_config struct.
-> 
-> FWIW it might be worth looking at the one rmk wrote but has never wanted
-> to submit for whatever reason.
 
-Ideally I'd like to eventually move this 'fill in slave config' callback to the
-DAI driver, since this is almost always DAI specific data, like for example the
-FIFO address, the burst length, the bus width, etc. But I'd like to do that in
-a second step. The first step should already help us to get rid of a large
-portion of redundant code we see in PCM drivers today.
+--===============8562652486683462570==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
+Content-Disposition: inline
 
-> 
->> In my series the channels are requested at probe time, so it is possible to
->> handle -EPROBE_DEFER properly and also we can allocate the audio buffers with
->> the dma device instead of the sound device, so stupid hacks like
-> 
->>     card->dev->dma_mask = &dma_mask;
->>     card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-> 
->> anymore. I'll try to post the series tomorrow.
-> 
-> This is the main thing his code has got that the library hasn't, it's
-> certainly the only issue he keeps mentioning.
 
-Yes, he definitely deserves credit for this, I probably wouldn't have
-implemented it, if he hadn't point this out.
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The problem with the current library is that we don't know yet which dmaengine
-device is going to be used by the time we pre-allocate the audio buffers, since
-the DMA filter parameters often are provided by the DAI driver. When using
-devicetree on the other hand the handle to the dmaengine comes from the
-devicetree itself and so it is available at the time we probe the PCM driver.
+On Wed, Mar 20, 2013 at 03:54:32PM -0700, Joe Perches wrote:
+> On Wed, 2013-03-20 at 17:36 +0100, Mark Brown wrote:
 
-There are some other drivers which don't really depend on runtime filter
-parameters, e.g. tegra, which doesn't use a filter function. So tegra can also
-easily make use of this new generic dmaengine based PCM driver.
+> > This is just like any other coding style thing - you should be creating
+> > patches that look like other patches for the affected, if there's things
+> > like obvious visual differences in what you're doing you're doing it
+> > wrong.
 
-- Lars
+> We've had this conversation before and I proposed
+> to you a simple solution.
+> https://lkml.org/lkml/2010/11/16/245
+
+If you want a script feel free to write one, as repeatedly discussed
+(including in that thread) it's not completely trivial.  Personally I
+don't feel it's a useful use of time and it's certainly not something
+I'd have any intention of using.
+
+> and I still more or less agree with Florian
+> https://lkml.org/lkml/2010/11/16/314
+
+What he's saying there is that maintainers should just hand edit the
+patches; that's just stupid especially for trivial patches where all
+that should be needed is a git am run.  You're doing this a lot, you
+should be getting it right.  First time and occasional submitters tend
+to get a lot more leeway but when submitters send a lot of patches but
+continually ignore feedback...
+
+> I'm not doing it wrong.  You have another demand
+> others don't.  I simply don't find it necessary to
+> cater to you.
+
+=2E..or even actively reject it then it shouldn't be a surprise when the
+strength of the pushback ends up increasing. =20
+
+> If you want it to be agreed that there is a specific
+> form for subject headers that varies by maintainer tree,
+> change SubmittingPatches Paragraph 11.
+
+This is all pretty basic stuff (and if it were going to be spelled out
+in more detail it'd be along with all the other stuff about writing good
+subject lines).  Like I say it's also most important to frequent
+submitters and not something it's essential to get right first time.
+
+> > Automation doesn't work for things like this, there's a good solid
+> > reason why there's generally a human involved in patch; the other people
+> > who submit lots of cleanups generally manage to figure this out
+> > usefully, you might want to discuss techniques with them.
+
+> I suggest you use a git pre-commit hook to your
+> tree and use sed/perl to add a specific prefix
+> if it doesn't exist.
+> http://codeinthehole.com/writing/tips-for-using-a-git-pre-commit-hook/
+
+I don't think you're quite understanding the issues with automation
+here.  Or indeed the desired end result.
+
+--UPT3ojh+0CqEDtpF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRSzRXAAoJELSic+t+oim9vmIP/1Zh0oPDNwsmrRJrKMqQqYWz
+Xegrr+vINO1K8F6OsaQ5tVa7mg297GL++fL2RXYVEl9s4OQEy8SG19j+TBSgpM/M
+PUiymlB1fWIDSfH3cEW2ioglxTZtr8hvK5n2uAFoNHwaXxhaS031503GNp++DSP5
+ueiJ7KrZI/ky5tX+F+8iYVD5akdjqmb+KNBBN5TU/ZGX/87CHoa08zWB/bUYDdeL
+TRozgvfdJORkarOYW5uk2dEOMHuAo5xDdpi9bomfJBUkg/ZUqURivCPNkZ8BEMK3
+yzximabuaa1RnH93vV/4Acl7y/nsPl1oYxrw9ZjhedkAEgRLP05RFedGFVraAZ0R
+DOjDt0q/JCOV04cmNSErHKj2qWrUjENqeDIB0rOOge0rVN6oz7pQZS1aBkQdzNXW
+SfkP19j00XeRDVAc7ueQBkkJl90AiblhPf1Diq+efQQBcxlEsIsZWfhfV8qQOBWt
+ZHDxHBib3FetLJ10BCKLJ7ampGS5mHGIXg4JFUQVcDeZX5OZjpii1/c3hVZK0Zcw
+No/JGqkwhmqP4uD7eTJNZv3FLTSEsFteM/IUDtk9NxvFocwBpSCUE15+IoBjuWaS
+cir4nQUY0tCyE+PhG4x43jjIhBVPiUQbL65t3zjgbkrgJYqltGfx4mAKbqpUivaG
+RtpeCNOHiGEX6vdxE03B
+=EU4z
+-----END PGP SIGNATURE-----
+
+--UPT3ojh+0CqEDtpF--
+
+--===============8562652486683462570==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8562652486683462570==--
