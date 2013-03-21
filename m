@@ -1,82 +1,92 @@
-From: Martin Fuzzey <mfuzzey@parkeon.com>
-Subject: Re: [PATCH] Sound: sgtl5000 Allow codec clock frequency to be set.
-Date: Thu, 21 Mar 2013 18:46:17 +0100
-Message-ID: <514B4769.30109@parkeon.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] Sound: sgtl5000 Allow codec clock
+	frequency to be set.
+Date: Thu, 21 Mar 2013 12:52:19 -0500
+Message-ID: <514B48D3.2010303@tabi.org>
 References: <20130319170322.27828.7691.stgit@localhost>
  <514A63EE.7000707@tabi.org> <514AC738.6050900@parkeon.com>
  <CAOZdJXXv=O3vmSCJ1ojhis+Fn7FJ7yhd2wVt10m77Cixbew2BA@mail.gmail.com>
-Reply-To: mfuzzey@parkeon.com
+ <514B4769.30109@parkeon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAOZdJXXv=O3vmSCJ1ojhis+Fn7FJ7yhd2wVt10m77Cixbew2BA@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Timur Tabi <timur@tabi.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47209266029
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 18:52:20 +0100 (CET)
+In-Reply-To: <514B4769.30109@parkeon.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mfuzzey@parkeon.com
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21/03/13 17:11, Timur Tabi wrote:
-> On Thu, Mar 21, 2013 at 3:39 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
->
->> With this patch and that DT example the frequency of clock 162 will be _set_
->> to 20MHz
-> Does that mean that it ignores the ' clocks' parameter?
-No, in this case the clocks parameter must contain the phandle of a clock
-whose rate is configurable.
+On 03/21/2013 12:46 PM, Martin Fuzzey wrote:
+> On 21/03/13 17:11, Timur Tabi wrote:
+>> On Thu, Mar 21, 2013 at 3:39 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
+>>
+>>> With this patch and that DT example the frequency of clock 162 will be _set_
+>>> to 20MHz
+>> Does that mean that it ignores the ' clocks' parameter?
+> No, in this case the clocks parameter must contain the phandle of a clock
+> whose rate is configurable.
+> 
+>> If clock-frequency is omitted the binding is still correct (hence the
+>> optional) but the frequency of clock 162 would not be modified.
+>>
+>> In the documentation I wrote "If both a clock and clock-frequency are
+>> provided the clock's rate will be set. " maybe this is not clear enough?
+>> It's not clear what it will be set *to*.
+> It will be set to the frequency specified by the clock-frquency attribute.
+> 
+> Would
+> "If both a clock and clock-frequency are provided clock must support
+> the set_rate operation and its frequency will be set to the value specified
+> by clock-frequency" be better?
 
-> If clock-frequency is omitted the binding is still correct (hence the
-> optional) but the frequency of clock 162 would not be modified.
->
-> In the documentation I wrote "If both a clock and clock-frequency are
-> provided the clock's rate will be set. " maybe this is not clear enough?
-> It's not clear what it will be set *to*.
-It will be set to the frequency specified by the clock-frquency attribute.
+Yes, that's much better.
 
-Would
-"If both a clock and clock-frequency are provided clock must support
-the set_rate operation and its frequency will be set to the value specified
-by clock-frequency" be better?
+> 
+> 
+> The possible configurations and their use cases are:
+> 
+> 1) only 'clocks' specified
+> clock points to a clock specified in the DT which already has an 
+> appropriate frequency and is
+> configured by some other means external to the sgtl5000 driver 
+> (bootloader, board setup code, or just a fixed rate clock)
+> 
+> 2) only 'clock-frequency' specified
+> The chip is assumed to be clocked by a signal having the given 
+> frequency, which may even be generated by a clock unknown to linux.
+> This could actually be represented as a special case of 1) by defining a 
+> fixed-rate clock in the DT.
+> 
+> 3) Both 'clocks' and 'clock-frequency' specified
+> The chip is assumed to be clocked by a rate programmable clock defined 
+> in the clock tree.
+> clk_set_rate() will be called for this clock to set its rate to that 
+> specified by clock-frequency
 
+This should all be in the binding document.
 
-The possible configurations and their use cases are:
+> Cases 1 and 2 exist in the current code, this patch adds support for case 3.
+> 
+> Prior to commit 81e8e4926167ab32593bbb915b45a42024ca1020 "ASoC: fsl: add 
+> sgtl5000 clock support for imx-sgtl5000"
+> only case 2 was supported
+> This explains why 2 is not implemented as a special case of 1)
+> plain 'clock-frequency' was supported before the driver learnt how to 
+> get a clock from the DT
 
-1) only 'clocks' specified
-clock points to a clock specified in the DT which already has an 
-appropriate frequency and is
-configured by some other means external to the sgtl5000 driver 
-(bootloader, board setup code, or just a fixed rate clock)
+And this should be in the patch description.
 
-2) only 'clock-frequency' specified
-The chip is assumed to be clocked by a signal having the given 
-frequency, which may even be generated by a clock unknown to linux.
-This could actually be represented as a special case of 1) by defining a 
-fixed-rate clock in the DT.
-
-3) Both 'clocks' and 'clock-frequency' specified
-The chip is assumed to be clocked by a rate programmable clock defined 
-in the clock tree.
-clk_set_rate() will be called for this clock to set its rate to that 
-specified by clock-frequency
-
-
-Cases 1 and 2 exist in the current code, this patch adds support for case 3.
-
-Prior to commit 81e8e4926167ab32593bbb915b45a42024ca1020 "ASoC: fsl: add 
-sgtl5000 clock support for imx-sgtl5000"
-only case 2 was supported
-This explains why 2 is not implemented as a special case of 1)
-plain 'clock-frequency' was supported before the driver learnt how to 
-get a clock from the DT
-
-Regards,
-
-Martin
+-- 
+Timur Tabi
