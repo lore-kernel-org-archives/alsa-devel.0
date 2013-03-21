@@ -1,44 +1,43 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] sound: max98090: Remove executable bit
-Date: Thu, 21 Mar 2013 10:16:15 -0700
-Message-ID: <1363886175.30275.10.camel@joe-AO722>
-References: <1363730323.16270.11.camel@joe-AO722>
-	 <20130320095758.GD28775@opensource.wolfsonmicro.com>
-	 <1363792936.16270.30.camel@joe-AO722>
-	 <20130320163627.GS28775@opensource.wolfsonmicro.com>
-	 <1363820072.16270.43.camel@joe-AO722>
-	 <20130321162503.GC14768@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 50/54 v2] ASoC: switch over to use
+ snd_soc_register_component() on tegra20 ac97
+Date: Thu, 21 Mar 2013 11:20:50 -0600
+Message-ID: <514B4172.5080501@wwwdotorg.org>
+References: <87txo96xiu.wl%kuninori.morimoto.gx@renesas.com>
+ <8738vpf3qd.wl%kuninori.morimoto.gx@renesas.com>
+ <8738vpca2z.wl%kuninori.morimoto.gx@renesas.com>
+ <514B3D68.9080104@wwwdotorg.org> <1363886347.1846.10.camel@antimon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130321162503.GC14768@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F1DA26600E
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 18:20:54 +0100 (CET)
+In-Reply-To: <1363886347.1846.10.camel@antimon>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lucas Stach <dev@lynxeye.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-03-21 at 17:25 +0100, Mark Brown wrote:
-> > I suggest you use a git pre-commit hook to your
-> > tree and use sed/perl to add a specific prefix
-> > if it doesn't exist.
-> > http://codeinthehole.com/writing/tips-for-using-a-git-pre-commit-hook/
-> 
-> I don't think you're quite understanding the issues with automation
-> here.  Or indeed the desired end result.
+On 03/21/2013 11:19 AM, Lucas Stach wrote:
+> Am Donnerstag, den 21.03.2013, 11:03 -0600 schrieb Stephen Warren:
+>> On 03/21/2013 04:37 AM, Kuninori Morimoto wrote:
+>>
+>> Lucas, can you please test this to make sure that the change from
+>> snd_soc_register_dais() to snd_soc_register_dai() (the latter inside
+>> snd_soc_register_component()) coupled with the change to the
+>> tegra_wm9712.c machine driver yields the correct results. Thanks.
+>
+> Can someone please FWD me the whole patch? I'm not subscribed to
+> ALSA-devel and wasn't on CC for this patch.
 
-What issue is that?
-
-Maybe this would work for you...
-
-$ cat .git/hooks/applypatch-msg
-#!/bin/sh
-
-. git-sh-setup
-
-perl -p -i -e 's/^(?:ASoC:\s*)?(.*)$/ASoC: $1/g if 1 .. 1' {$1+"$@"}
-
-test -x "$GIT_DIR/hooks/commit-msg" &&
-	exec "$GIT_DIR/hooks/commit-msg" ${1+"$@"}
-:
-$
+I'll do that off-list.
