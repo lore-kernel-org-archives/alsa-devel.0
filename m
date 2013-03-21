@@ -1,46 +1,71 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
- make Playback Design products work
-Date: Thu, 21 Mar 2013 23:21:30 +0200
-Message-ID: <514B79DA.6030203@sonarnerd.net>
-References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
- <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sound: max98090: Remove executable bit
+Date: Thu, 21 Mar 2013 22:26:24 +0100
+Message-ID: <20130321212623.GK15926@opensource.wolfsonmicro.com>
+References: <20130320163627.GS28775@opensource.wolfsonmicro.com>
+ <1363820072.16270.43.camel@joe-AO722>
+ <20130321162503.GC14768@opensource.wolfsonmicro.com>
+ <1363886175.30275.10.camel@joe-AO722>
+ <20130321174440.GG15926@opensource.wolfsonmicro.com>
+ <1363888393.30275.31.camel@joe-AO722>
+ <20130321184458.GH15926@opensource.wolfsonmicro.com>
+ <1363893405.30275.39.camel@joe-AO722>
+ <20130321203709.GJ15926@opensource.wolfsonmicro.com>
+ <1363898422.30275.47.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 535F6265117
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2013 22:21:31 +0100 (CET)
-In-Reply-To: <51471B51.4000006@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4e5ZDkbgLEOfWmLx"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1363898422.30275.47.camel@joe-AO722>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2013 03:49 PM, Daniel Mack wrote:
-> Yes. If at all, we should add a SND_PCM_FORMAT_DSD, and a quirk for that
-> device. But given that there is no application for DSD in userspace
-> either, we probably don't need to care.
 
-Yes there is? At least my application. And I'd be happy to support any 
-custom format created for the purpose... :)
+--4e5ZDkbgLEOfWmLx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-(http://www.signalyst.com/consumer.html for those who are interested)
+On Thu, Mar 21, 2013 at 01:40:22PM -0700, Joe Perches wrote:
+> On Thu, 2013-03-21 at 21:37 +0100, Mark Brown wrote:
 
-I would propose to create custom 8-bit sample formats for DSD purposes, 
-similar to the ASIO formats. Practically two main ones, byte with oldest 
-bit in MSB and byte with oldest bit in LSB. And maybe the "DSD-wide" one 
-which is 8-bit DSD sample.
+> > you routinely send very trivial
+> > patches which don't apply cleanly
 
+> That's demonstrably false.
 
-	- Jussi
+It's sadly not, at least for the things I get to see - as far as I have
+been able to tell you submit against either Linus' tree or the last
+release (I think the former) rather than the relevant development trees
+or even -next which means that if anyone else has looked at the same
+area of code there will be conflicts.
+
+> I'm done with this conversation.
+
+Oh, well.  Hopefully you'll take on board the feedback.
+
+--4e5ZDkbgLEOfWmLx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRS3r5AAoJELSic+t+oim9WXEP/jdUVnQTCHvs3LluOTcYyaJk
+eQKl6KH2mHUG+TM4dj3Wv5JosJ7IsU6mRn/ZunAHVqr103Dd8qkYMyXssY13Vajg
+e6iXM/F1bkrefc9qEC3RbvzvvmFS6lbxtzTNkmo2kWoVW5fyCNnykl0/p2QxCP+S
+itg63fF7+WBE7G+Gfm+JuNwFS1EDDtZD97DbEkcpUvoKOXCgGmUfBe359Qx6aEEi
+8XadmT4f35l0zei1NiU4qtUo7z2RAlKgRekA5YRlrisPE7LW21vRSknh/BOdAvnH
+uwDkax3/W6WfKDxH6x3yxGWXFP/HgGFwY1ttK4QDjKlAUsy5eNGMy5ubBzEuhpCa
+1/oTSxcxv+5Qf+FykP3mXMGZ+f5ONpCvBlDshXkgTZAUQnorRpNy9mCkOaCD1EbU
+CHQtQhUgGevCK5ycYaDr8WIQhPUyC1hEp7D6zQMIioUoV0NIKMLnyaYn/W2mWsXZ
+lWn1KjRFnDWcpwEw1Wz5mrW4Udn+Pv0/56tjoGYv3UNUzO8KHBWn1gvNvOiUGOxN
++F+xgk/cGRtXUfLq0dGUEgEBzwPpURPRXYG3UDmNANoyssyY4enTAwQxEBsxUFmt
+jbC16ikXqx77u78Dem6cEVpljSCcuITEpcmmFCs6bQATMv8WskfUrVA/lLf42oOR
+7NMsqJYyHPavK514Ez81
+=bRGv
+-----END PGP SIGNATURE-----
+
+--4e5ZDkbgLEOfWmLx--
