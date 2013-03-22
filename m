@@ -1,21 +1,17 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
- make Playback Design products work
-Date: Fri, 22 Mar 2013 12:15:16 +0200
-Message-ID: <514C2F34.6020307@sonarnerd.net>
-References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
- <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
- <514B79DA.6030203@sonarnerd.net>
- <7.0.0.16.2.20130321181551.0605bc60@akdesigninc.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2 resend] ASoC: cs4271: preserve "Master
+ Playback Switch" setting
+Date: Fri, 22 Mar 2013 11:18:20 +0100
+Message-ID: <20130322101820.GC22890@opensource.wolfsonmicro.com>
+References: <1363895035-20356-1-git-send-email-zonque@gmail.com>
+ <1363895035-20356-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8928599542819911409=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 52A6626515C
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:15:17 +0100 (CET)
-In-Reply-To: <7.0.0.16.2.20130321181551.0605bc60@akdesigninc.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D32026515C
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:18:22 +0100 (CET)
+In-Reply-To: <1363895035-20356-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,30 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Koch <andreas@akdesigninc.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/22/2013 03:27 AM, Andreas Koch wrote:
-> I wouldn't worry about DSD wide, because that is a dead format that I
-> was involved in launching for professional recording applications more
-> than 10 years ago. It never took off.
 
-I just need it for my own purposes, but I can make custom stuff as 
-necessary if there's no interest from others.
-
-Right now I'm just hoping to see a well defined common sample formats 
-defined for ALSA that can be utilized by drivers. DoP could be 
-implemented inside the driver or at ALSA layer instead of applications 
-doing it. Not that I would mind, but I would find it cleaner than the 
-current approach... :)
-
-Currently, ASIO is the only API to support DSD sample formats. I 
-understand that Microsoft or Apple is a slow to turn giant, but I'd hope 
-ALSA wouldn't be such. ;)
-
-There are already those IEC958 and DD/dts things being used for movie 
-playback, so this wouldn't be such a big difference afterall.
+--===============8928599542819911409==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="O3RTKUHj+75w1tg5"
+Content-Disposition: inline
 
 
-	- Jussi
+--O3RTKUHj+75w1tg5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 21, 2013 at 08:43:55PM +0100, Daniel Mack wrote:
+> Currently, both the ALSA control for "Digital Master Playback Switch"
+> and the ALSA core (by calling dai_ops->mute_stream()) control the same
+> bits in the CS4271_VOL[AB]_MUTE registers.
+
+> That's a problem for applications which intentionally want to keep the
+> flag switched off from userspace, even though the stream is already
+> playing.
+
+> Fix this by keeping track of the states on both sides - the ALSA
+> control and the ASoC core - and actually mute the Codec if either one
+> of the two flags is set.
+
+The usual fix for this is to just not have the mute operation if it's
+important.  Otherwise this seems like something we ought to implement in
+the core, it's not a silly feature by any stretch of the imagination but
+it applies to any device with a DAI mute unless there's some device
+specific thing I'm missing here.
+
+--O3RTKUHj+75w1tg5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRTC/jAAoJELSic+t+oim9IloP/1ZcrPsqjy91XCjc+te6qYRt
+T4EfkGBCzknEWDoTpneqGDP0GewjGlsKjAZmw2bGqwlJ1OqVKVqqVe+BHPrQPqJZ
+DyzM9hT+BfE4C35fI/VDHId4XVAtEMKrQXfQ3xlNgDRN81d0d4jm/QndsEaGvmYV
+VVC9HJtGgiM9p6jja56KQkTzRn+71lOp2GwYmcdiSmIwcBM9PEfgUS1Wbg64g70X
+fYyBW3xJogtDV8IVMUESEknuYzrhxtb0r5EunYv5HpDKjVatyAV1EB5tXIBsb6YM
+Szmh3HjPTGTLW86cIoxQizzOn47LWK8wuQcljDnycKBkPiPGGow8jkVY9lz4vRs7
+aB0dW0yyapgVKhn8TA0XmyWCBA+iWoPeaynXcBNnRIkrjujWAdugnVCSJxrn0CCo
+PGvC/SzjyzBWHIL1p7C9KhrIAJyqHZI3YkrpecDluhOQ6APtMLtYIeD5dAoRG8Vy
+QuMTdSYxaKv3rmqXeEJWkXWrxSAU3z/yfG1T6eYTGPQ3J6wiffNp05NTNUaqAQPK
+XGED69RdO0geJvbtL2KGcS8CfVn0nD/wFPt8abiWh33zGxDvuG+T+4LlnD7cEtsv
+p5tAwuyKjSbvqMn8kDedIMDh44U+cQTLL/goO4ErFk0wrV+bl6jTM/sW7za+05+L
+fLin7OlM8vs73SPxBsbt
+=O/6E
+-----END PGP SIGNATURE-----
+
+--O3RTKUHj+75w1tg5--
+
+--===============8928599542819911409==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8928599542819911409==--
