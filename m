@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 12/14] ASoC: imx-pcm: Embed the imx_dma_data
-	struct in the dma_params struct
-Date: Fri, 22 Mar 2013 14:12:12 +0100
-Message-ID: <1363957934-20059-13-git-send-email-lars@metafoo.de>
+Subject: [PATCH 13/14] ASoC: mxs: Embed the mxs_dma_data struct
+	in the mxs_pcm_dma_params struct
+Date: Fri, 22 Mar 2013 14:12:13 +0100
+Message-ID: <1363957934-20059-14-git-send-email-lars@metafoo.de>
 References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-087.synserver.de (smtp-out-087.synserver.de
  [212.40.185.87])
- by alsa0.perex.cz (Postfix) with ESMTP id A5DAF266562
+ by alsa0.perex.cz (Postfix) with ESMTP id F0A9F266566
  for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 14:11:18 +0100 (CET)
 In-Reply-To: <1363957934-20059-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,186 +23,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the imx_dma_data struct, which gets passed to the dmaengine driver, is
-allocated and constructed in the pcm driver from the data stored in the
-dma_params struct. The dma_params struct gets passed to the pcm driver from the
-dai driver. Instead of going this route of indirection embed the dma_data struct
-directly into the dma_params struct and let the dai driver fill it in. This
-allows us to simplify the imx-pcm-dma driver quite a bit, since it doesn't have
-care about memory managing the imx_dma_data struct anymore.
+Currently the mxs_dma_data struct, which gets passed to the dmaengine driver, is
+allocated in the pcm driver's open callback. The mxs_dma_data struct has exactly
+one field which is initialized from the the same field in the mxs_pcm_dma_params
+struct. The mxs_pcm_dma_params struct gets passed to the pcm driver from the dai
+driver. Instead of taking this indirection embed the mxs_dma_data struct
+directly in the mxs_pcm_dma_params struct. This allows us to simplify the pcm
+driver quite a bit, since we don't have to care about memory managing the
+mxs_dma_data struct anymore.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Shawn Guo <shawn.guo@linaro.org>
-Cc: Sascha Hauer <kernel@pengutronix.de>
 ---
- sound/soc/fsl/fsl_ssi.c     | 17 +++++++++--------
- sound/soc/fsl/imx-pcm-dma.c | 35 ++---------------------------------
- sound/soc/fsl/imx-pcm.h     | 17 +++++++++++++++--
- sound/soc/fsl/imx-ssi.c     | 12 ++++++++----
- 4 files changed, 34 insertions(+), 47 deletions(-)
+ sound/soc/mxs/mxs-pcm.c  | 43 +++++--------------------------------------
+ sound/soc/mxs/mxs-pcm.h  |  4 +++-
+ sound/soc/mxs/mxs-saif.c |  6 +++---
+ 3 files changed, 11 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7decbd9..2cce1ce 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -649,6 +649,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	const uint32_t *iprop;
- 	struct resource res;
- 	char name[64];
-+	bool shared;
+diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
+index 564b5b6..ebbef85 100644
+--- a/sound/soc/mxs/mxs-pcm.c
++++ b/sound/soc/mxs/mxs-pcm.c
+@@ -28,7 +28,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/dmaengine.h>
+-#include <linux/fsl/mxs-dma.h>
  
- 	/* SSIs that are not connected on the board should have a
- 	 *      status = "disabled"
-@@ -755,14 +756,14 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "could not get dma events\n");
- 			goto error_clk;
- 		}
--		ssi_private->dma_params_tx.dma = dma_events[0];
--		ssi_private->dma_params_rx.dma = dma_events[1];
+ #include <sound/core.h>
+ #include <sound/initval.h>
+@@ -39,11 +38,6 @@
+ 
+ #include "mxs-pcm.h"
+ 
+-struct mxs_pcm_dma_data {
+-	struct mxs_dma_data dma_data;
+-	struct mxs_pcm_dma_params *dma_params;
+-};
 -
--		ssi_private->dma_params_tx.shared_peripheral =
--				of_device_is_compatible(of_get_parent(np),
--							"fsl,spba-bus");
--		ssi_private->dma_params_rx.shared_peripheral =
--				ssi_private->dma_params_tx.shared_peripheral;
-+
-+		shared = of_device_is_compatible(of_get_parent(np),
-+			    "fsl,spba-bus");
-+
-+		imx_pcm_dma_params_init_data(&ssi_private->dma_params_tx,
-+			dma_events[0], shared);
-+		imx_pcm_dma_params_init_data(&ssi_private->dma_params_rx,
-+			dma_events[1], shared);
- 	}
- 
- 	/* Initialize the the device_attribute structure */
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index 500f8ce..6832c49 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -30,8 +30,6 @@
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include <linux/platform_data/dma-imx.h>
--
- #include "imx-pcm.h"
+ static struct snd_pcm_hardware snd_mxs_hardware = {
+ 	.info			= SNDRV_PCM_INFO_MMAP |
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+@@ -66,8 +60,7 @@ static struct snd_pcm_hardware snd_mxs_hardware = {
  
  static bool filter(struct dma_chan *chan, void *param)
-@@ -101,46 +99,17 @@ static int snd_imx_open(struct snd_pcm_substream *substream)
+ {
+-	struct mxs_pcm_dma_data *pcm_dma_data = param;
+-	struct mxs_pcm_dma_params *dma_params = pcm_dma_data->dma_params;
++	struct mxs_pcm_dma_params *dma_params = param;
+ 
+ 	if (!mxs_dma_is_apbx(chan))
+ 		return false;
+@@ -75,7 +68,7 @@ static bool filter(struct dma_chan *chan, void *param)
+ 	if (chan->chan_id != dma_params->chan_num)
+ 		return false;
+ 
+-	chan->private = &pcm_dma_data->dma_data;
++	chan->private = &dma_params->dma_data;
+ 
+ 	return true;
+ }
+@@ -91,37 +84,11 @@ static int snd_mxs_pcm_hw_params(struct snd_pcm_substream *substream,
+ static int snd_mxs_open(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct imx_pcm_dma_params *dma_params;
--	struct imx_dma_data *dma_data;
+-	struct mxs_pcm_dma_data *pcm_dma_data;
 -	int ret;
- 
- 	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
- 
- 	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
--	dma_data = kzalloc(sizeof(*dma_data), GFP_KERNEL);
--	if (!dma_data)
+-
+-	pcm_dma_data = kzalloc(sizeof(*pcm_dma_data), GFP_KERNEL);
+-	if (pcm_dma_data == NULL)
 -		return -ENOMEM;
 -
--	dma_data->peripheral_type = dma_params->shared_peripheral ?
--					IMX_DMATYPE_SSI_SP : IMX_DMATYPE_SSI;
--	dma_data->priority = DMA_PRIO_HIGH;
--	dma_data->dma_request = dma_params->dma;
+-	pcm_dma_data->dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	pcm_dma_data->dma_data.chan_irq = pcm_dma_data->dma_params->chan_irq;
 -
--	ret = snd_dmaengine_pcm_open(substream, filter, dma_data);
+-	ret = snd_dmaengine_pcm_open(substream, filter, pcm_dma_data);
 -	if (ret) {
--		kfree(dma_data);
+-		kfree(pcm_dma_data);
 -		return ret;
 -	}
--
--	snd_dmaengine_pcm_set_data(substream, dma_data);
+ 
+ 	snd_soc_set_runtime_hwparams(substream, &snd_mxs_hardware);
+ 
+-	snd_dmaengine_pcm_set_data(substream, pcm_dma_data);
 -
 -	return 0;
 -}
 -
--static int snd_imx_close(struct snd_pcm_substream *substream)
+-static int snd_mxs_close(struct snd_pcm_substream *substream)
 -{
--	struct imx_dma_data *dma_data = snd_dmaengine_pcm_get_data(substream);
+-	struct mxs_pcm_dma_data *pcm_dma_data = snd_dmaengine_pcm_get_data(substream);
 -
 -	snd_dmaengine_pcm_close(substream);
--	kfree(dma_data);
+-	kfree(pcm_dma_data);
 -
 -	return 0;
-+	return snd_dmaengine_pcm_open(substream, filter, &dma_params->dma_data);
++	return snd_dmaengine_pcm_open(substream, filter,
++		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream));
  }
  
- static struct snd_pcm_ops imx_pcm_ops = {
- 	.open		= snd_imx_open,
--	.close		= snd_imx_close,
+ static int snd_mxs_pcm_mmap(struct snd_pcm_substream *substream,
+@@ -137,7 +104,7 @@ static int snd_mxs_pcm_mmap(struct snd_pcm_substream *substream,
+ 
+ static struct snd_pcm_ops mxs_pcm_ops = {
+ 	.open		= snd_mxs_open,
+-	.close		= snd_mxs_close,
 +	.close		= snd_dmaengine_pcm_close,
  	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= snd_imx_pcm_hw_params,
+ 	.hw_params	= snd_mxs_pcm_hw_params,
  	.trigger	= snd_dmaengine_pcm_trigger,
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 5ae13a1..16eaf5a 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -13,18 +13,31 @@
- #ifndef _IMX_PCM_H
- #define _IMX_PCM_H
+diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
+index 35ba2ca..3aa918f 100644
+--- a/sound/soc/mxs/mxs-pcm.h
++++ b/sound/soc/mxs/mxs-pcm.h
+@@ -19,8 +19,10 @@
+ #ifndef _MXS_PCM_H
+ #define _MXS_PCM_H
  
-+#include <linux/platform_data/dma-imx.h>
++#include <linux/fsl/mxs-dma.h>
 +
- /*
-  * Do not change this as the FIQ handler depends on this size
-  */
- #define IMX_SSI_DMABUF_SIZE	(64 * 1024)
- 
- struct imx_pcm_dma_params {
--	int dma;
- 	unsigned long dma_addr;
- 	int burstsize;
--	bool shared_peripheral;	/* The peripheral is on SPBA bus */
-+	struct imx_dma_data dma_data;
+ struct mxs_pcm_dma_params {
+-	int chan_irq;
++	struct mxs_dma_data dma_data;
+ 	int chan_num;
  };
  
-+static inline void
-+imx_pcm_dma_params_init_data(struct imx_pcm_dma_params *params,
-+	int dma, bool shared)
-+{
-+	params->dma_data.dma_request = dma;
-+	params->dma_data.priority = DMA_PRIO_HIGH;
-+	if (shared)
-+		params->dma_data.peripheral_type = IMX_DMATYPE_SSI_SP;
-+	else
-+		params->dma_data.peripheral_type = IMX_DMATYPE_SSI;
-+}
-+
- int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 		     struct vm_area_struct *vma);
- int imx_pcm_new(struct snd_soc_pcm_runtime *rtd);
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 0e3fc8d..ffc518b 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -582,12 +582,16 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	ssi->dma_params_rx.burstsize = 4;
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 3a2aa1d..f13bd87 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -753,9 +753,9 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "tx0");
--	if (res)
--		ssi->dma_params_tx.dma = res->start;
-+	if (res) {
-+		imx_pcm_dma_params_init_data(&ssi->dma_params_tx, res->start,
-+			false);
-+	}
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_DMA, "rx0");
--	if (res)
--		ssi->dma_params_rx.dma = res->start;
-+	if (res) {
-+		imx_pcm_dma_params_init_data(&ssi->dma_params_rx, res->start,
-+			false);
-+	}
- 
- 	platform_set_drvdata(pdev, ssi);
- 
+-	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
+-	if (saif->dma_param.chan_irq < 0) {
+-		ret = saif->dma_param.chan_irq;
++	saif->dma_param.dma_data.chan_irq = platform_get_irq(pdev, 1);
++	if (saif->dma_param.dma_data.chan_irq < 0) {
++		ret = saif->dma_param.dma_data.chan_irq;
+ 		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
+ 			ret);
+ 		return ret;
 -- 
 1.8.0
