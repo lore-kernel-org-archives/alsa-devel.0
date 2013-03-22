@@ -1,16 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: compress - add support for
-	metadata apis
-Date: Fri, 22 Mar 2013 11:57:27 +0100
-Message-ID: <20130322105726.GG22890@opensource.wolfsonmicro.com>
-References: <1361183381-30010-1-git-send-email-vinod.koul@intel.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 2/2 resend] ASoC: cs4271: preserve "Master
+ Playback Switch" setting
+Date: Fri, 22 Mar 2013 12:04:54 +0100
+Message-ID: <514C3AD6.6080301@gmail.com>
+References: <1363895035-20356-1-git-send-email-zonque@gmail.com>
+ <1363895035-20356-2-git-send-email-zonque@gmail.com>
+ <20130322101820.GC22890@opensource.wolfsonmicro.com>
+ <514C3124.8010806@gmail.com>
+ <20130322103247.GF22890@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4057681977181437037=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1AAF82664C2
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 12:03:26 +0100 (CET)
-In-Reply-To: <1361183381-30010-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 902012664C2
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 12:05:16 +0100 (CET)
+Received: by mail-bk0-f47.google.com with SMTP id jc3so1802985bkc.34
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 04:05:16 -0700 (PDT)
+In-Reply-To: <20130322103247.GF22890@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +28,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 22.03.2013 11:32, Mark Brown wrote:
+> On Fri, Mar 22, 2013 at 11:23:32AM +0100, Daniel Mack wrote:
+>> On 22.03.2013 11:18, Mark Brown wrote:
+> 
+>>> The usual fix for this is to just not have the mute operation if it's
+>>> important.  Otherwise this seems like something we ought to implement in
+>>> the core, it's not a silly feature by any stretch of the imagination but
+>>> it applies to any device with a DAI mute unless there's some device
+>>> specific thing I'm missing here.
+> 
+>> So I'd say having a simple OR logic in this case is reasonable and
+>> serves all the needs I can think of, no?
+> 
+> You're not really responding to what I'm saying here.  What I'm saying
+> is that if this is useful it should be implemented in the core unless
+> there's some reason I'm missing why this is specific to this driver.
 
---===============4057681977181437037==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gm5TwAJMO0F2iVRz"
-Content-Disposition: inline
+Ok, point taken. It's just not really a drop-in equivalent, given that
+both the numid and the name string will change then.
 
-
---gm5TwAJMO0F2iVRz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 18, 2013 at 03:59:40PM +0530, Vinod Koul wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> Compress core added metadata apis in 9727b4, so add same in ASoC
-
-This doesn't appear to apply any more, it needs a rebase.
-
---gm5TwAJMO0F2iVRz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRTDi4AAoJELSic+t+oim92QYQAIAoKdHgj9qDSGPOCV4wxSTO
-il1LI3KzI+N2IKmu+838QelySPGnoto5DoFdZWWTAGJlAGK+5AqIPjb2E22Ct3PW
-RocfozZSJG8gnRqJwPAZIszG+ahJXjUgMwxL5WbLuGqa7C//Imk23sC/Cm7SeG9X
-2QleDp8h9s1OBia47wQqezcGOX977X5D5+q4OGw8U27L2gqzb4pRdvV8f3duagjg
-UJ0BUKrPK/XRNBZ924W+0B21mtBMuVhepWo9rDw6klX7J65H/XAoRLrjb8QvvWgb
-avQaH5cFSsGbNPdAXBkcYYkdx59+SuBrS5KVyANl6V0QlqdPLUWS4RJWShIJ22ov
-rI/ar/PBxu7YaxomPs29ssEi4lE6BCUvm+0xEe5rIo2DrUmLFirFP3Y2/1G4usW5
-72iY1/S7FTEs8TbOcra/caxWbVEyMARmXfL8xVrm/T6h6NKjXaeP84ixmnq87y2l
-GFHf5tFrLGZcWbp900U3PIZKhGGtdoekuqwouNM2QqJYsA1MnRmEb9P4h7qztj3q
-o1xWQDZGjXsIKpyBoCsyoVuJRb9W7fBXHFeAFq+LVwJCV1BYgsWjuSFvMx8lxPap
-BsHjfubizfQWA7JqgAKoOcfBACUd1q+KZa7fFiA/CAvjzEw4Gcizpp4KzF2G/RWr
-j6mSHUuSmVKb4i23c39X
-=ByD8
------END PGP SIGNATURE-----
-
---gm5TwAJMO0F2iVRz--
-
---===============4057681977181437037==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I'll see when I'll find some time to do that. Your idea is to have a
+"Master Playback Switch" for both the CPU and the Codec on each link, if
+the driver implements either ->mute_stream or ->digital_mute, right? And
+the control would default to "on"?
 
 
---===============4057681977181437037==--
+Thanks,
+Daniel
