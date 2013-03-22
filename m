@@ -1,20 +1,23 @@
-From: Sebastien Guiriec <s-guiriec@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: dmaengine_pcm: add
-	snd_dmaengine_generic_pcm_open()
-Date: Fri, 22 Mar 2013 09:07:21 +0100
-Message-ID: <514C1139.6050309@ti.com>
-References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
- <1363318601-31505-3-git-send-email-shawn.guo@linaro.org>
- <20130321095718.GO10326@intel.com>
- <20130321145258.GC23109@S2101-09.ap.freescale.net>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
+ make Playback Design products work
+Date: Fri, 22 Mar 2013 09:11:01 +0100
+Message-ID: <514C1215.9010708@gmail.com>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 47D8A26627F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:08:13 +0100 (CET)
-In-Reply-To: <20130321145258.GC23109@S2101-09.ap.freescale.net>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11E1326627F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:11:02 +0100 (CET)
+Received: by mail-wi0-f181.google.com with SMTP id hj8so289762wib.8
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 01:11:01 -0700 (PDT)
+In-Reply-To: <514B79DA.6030203@sonarnerd.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,70 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Jussi Laako <jussi@sonarnerd.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2013 03:53 PM, Shawn Guo wrote:
-> On Thu, Mar 21, 2013 at 03:27:18PM +0530, Vinod Koul wrote:
->> On Fri, Mar 15, 2013 at 11:36:41AM +0800, Shawn Guo wrote:
->>> With generic DMA device tree binding and helper function
->>> dma_request_slave_channel() in place, dmaengine_pcm should support
->>> that in requesting DMA channel for users that support generic DMA
->>> device tree binding.
->>>
->>> Add a new API snd_dmaengine_generic_pcm_open() as the variant of
->>> snd_dmaengine_pcm_open().  It takes DMA client struct device pointer
->>> and slave channel name as arguments and calls generic DMA helper
->>> dma_request_slave_channel() to request DMA channel from dmaengine.
->> NAK
->>
->> This is why we have dma_request_slave_channel_compat() API. You dont need to
->> write two open handlers here, just pass all the arguments and if DT is set it
->> will allocate a channel using dma_request_slave_channel() otherwise will do
->> dma_request_channel which is what you need.
->
-> I do not quite follow your comment.  Let me try to understand it.  Are
-> you suggesting that instead of the current call path:
->
-> 	snd_dmaengine_pcm_open()
-> 		dmaengine_pcm_request_channel()
-> 			dma_request_channel()
->
-> we should change it as below?
->
-> 	snd_dmaengine_pcm_open()
-> 		dmaengine_pcm_request_channel()
-> 			dma_request_slave_channel_compat()
->
-> If that's the case, you are fundamentally requesting to change the
-> fingerprint of API snd_dmaengine_pcm_open() from the existing:
->
-> int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
-> 			   dma_filter_fn filter_fn, void *filter_data)
->
-> to something like:
->
-> int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
-> 			   dma_filter_fn filter_fn, void *filter_data,
-> 			   struct device *dev, const char *name)
->
-> So every single user of snd_dmaengine_pcm_open() needs to adapt to the
-> interface change.
->
-> Is my understanding correct?  Or have I misunderstood your comment?
+Hi Jussi,
+Hi Andreas,
 
-This is what has been done on OMAP for other IPs. I have tested this 
-solution for Audio before you submit your first series and it is working.
+On 21.03.2013 22:21, Jussi Laako wrote:
+> On 03/18/2013 03:49 PM, Daniel Mack wrote:
+>> Yes. If at all, we should add a SND_PCM_FORMAT_DSD, and a quirk for that
+>> device. But given that there is no application for DSD in userspace
+>> either, we probably don't need to care.
+> 
+> Yes there is? At least my application. And I'd be happy to support any 
+> custom format created for the purpose... :)
 
-Now I will wait Lars serie to check again on OMAP and let Mark comment 
-on the best approach. Whereas update current API like you propose or 
-wait Lars series and move on according to the different comments done on 
-open function. As OMAP audio DMA binding are depending on the chosen 
-solution.
+Ah, interesting. So what *are* you using right now for your transport in
+userspace? Is your application abusing standard PCM interfaces that are
+'known' to be in fact DSD? How do other DACs expose their interfaces in
+the Linux world, and which ones did you test your application with?
 
-Sebastien.
->
-> Shawn
->
->
+If there's actual need for a new SND_PCM_FORMAT, it would be easy to
+patch it through all the layers down to userspace.
+
+> I would propose to create custom 8-bit sample formats for DSD purposes, 
+> similar to the ASIO formats. Practically two main ones, byte with oldest 
+> bit in MSB and byte with oldest bit in LSB. And maybe the "DSD-wide" one 
+> which is 8-bit DSD sample.
+
+Andreas, which modes does the MPD-3 accept exactly on its two 'raw data'
+interfaces? The only hint I have is that one of it is 8-bit and the
+other is 16-bit, but given the lack of a proper test setup for this
+format, I can't currently test anything.
+
+
+Thanks,
+Daniel
