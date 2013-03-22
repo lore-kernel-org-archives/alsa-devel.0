@@ -1,19 +1,19 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: Re: [PATCH 05/14] ASoC: ux500_pcm: No need to wrap
-	snd_dmaengine_pcm_close()
-Date: Fri, 22 Mar 2013 15:36:14 +0100
-Message-ID: <514C6C5E.5080300@stericsson.com>
+Subject: Re: [PATCH 07/14] ASoC: ux500_pcm: No need to use
+	snd_dmaengine_pcm_set_data()
+Date: Fri, 22 Mar 2013 16:01:04 +0100
+Message-ID: <514C7230.5070408@stericsson.com>
 References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
- <1363957934-20059-6-git-send-email-lars@metafoo.de>
+ <1363957934-20059-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
- [207.126.144.131])
- by alsa0.perex.cz (Postfix) with ESMTP id B2F422651AF
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 15:36:41 +0100 (CET)
-In-Reply-To: <1363957934-20059-6-git-send-email-lars@metafoo.de>
+Received: from eu1sys200aog119.obsmtp.com (eu1sys200aog119.obsmtp.com
+ [207.126.144.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C5632651A1
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 16:01:14 +0100 (CET)
+In-Reply-To: <1363957934-20059-8-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,46 +34,25 @@ Ola
 
 On 03/22/2013 02:12 PM, Lars-Peter Clausen wrote:
 
-> If a PCM driver using the dmaengine PCM helper functions doesn't need to do
-> anything special in its pcm_close callback, snd_dmaengine_pcm_close can be used
-> directly for as the pcm_close callback and there is no need to wrap it in a
-> custom function.
+> The driver never uses snd_dmaengine_pcm_get_data(), so there is no need to use
+> snd_dmaengine_pcm_set_data().
 > 
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 > Cc: Ola Lilja <ola.o.lilja@stericsson.com>
 > ---
->  sound/soc/ux500/ux500_pcm.c | 14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
+>  sound/soc/ux500/ux500_pcm.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
 > diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-> index 375ca6b..d000ba2 100644
+> index d000ba2..1ab36fa 100644
 > --- a/sound/soc/ux500/ux500_pcm.c
 > +++ b/sound/soc/ux500/ux500_pcm.c
-> @@ -160,18 +160,6 @@ static int ux500_pcm_open(struct snd_pcm_substream *substream)
+> @@ -155,8 +155,6 @@ static int ux500_pcm_open(struct snd_pcm_substream *substream)
+>  		return ret;
+>  	}
+>  
+> -	snd_dmaengine_pcm_set_data(substream, dma_cfg);
+> -
 >  	return 0;
 >  }
 >  
-> -static int ux500_pcm_close(struct snd_pcm_substream *substream)
-> -{
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai *dai = rtd->cpu_dai;
-> -
-> -	dev_dbg(dai->dev, "%s: Enter\n", __func__);
-> -
-> -	snd_dmaengine_pcm_close(substream);
-> -
-> -	return 0;
-> -}
-> -
->  static int ux500_pcm_hw_params(struct snd_pcm_substream *substream,
->  			struct snd_pcm_hw_params *hw_params)
->  {
-> @@ -246,7 +234,7 @@ static int ux500_pcm_mmap(struct snd_pcm_substream *substream,
->  
->  static struct snd_pcm_ops ux500_pcm_ops = {
->  	.open		= ux500_pcm_open,
-> -	.close		= ux500_pcm_close,
-> +	.close		= snd_dmaengine_pcm_close,
->  	.ioctl		= snd_pcm_lib_ioctl,
->  	.hw_params	= ux500_pcm_hw_params,
->  	.hw_free	= ux500_pcm_hw_free,
