@@ -1,17 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2 resend] ASoC: cs4271: preserve "Master
- Playback Switch" setting
-Date: Fri, 22 Mar 2013 11:18:20 +0100
-Message-ID: <20130322101820.GC22890@opensource.wolfsonmicro.com>
-References: <1363895035-20356-1-git-send-email-zonque@gmail.com>
- <1363895035-20356-2-git-send-email-zonque@gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re:
+ =?utf-8?b?562U5aSNOiDnrZTlpI06ICBob3cgdG8gY29tYmlu?=
+ =?utf-8?q?e_mutil-channel_in_playback_or_capture=3F?=
+Date: Fri, 22 Mar 2013 11:19:06 +0100
+Message-ID: <514C301A.6050408@gmail.com>
+References: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
+ <514C143F.8060100@gmail.com>
+ <6B947C8AC4195040A8C6876A496C644A081956F9@BJ-MAIL-04.vimicro.com>
+ <514C2414.90402@gmail.com>
+ <6B947C8AC4195040A8C6876A496C644A08195768@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8928599542819911409=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D32026515C
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:18:22 +0100 (CET)
-In-Reply-To: <1363895035-20356-2-git-send-email-zonque@gmail.com>
+Received: from mail-we0-f170.google.com (mail-we0-f170.google.com
+ [74.125.82.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04FD1266471
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:19:05 +0100 (CET)
+Received: by mail-we0-f170.google.com with SMTP id z2so1648205wey.1
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 03:19:05 -0700 (PDT)
+In-Reply-To: <6B947C8AC4195040A8C6876A496C644A08195768@BJ-MAIL-04.vimicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
+To: Zhang wei <zhangwei@vimicro.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8928599542819911409==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="O3RTKUHj+75w1tg5"
-Content-Disposition: inline
-
-
---O3RTKUHj+75w1tg5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 21, 2013 at 08:43:55PM +0100, Daniel Mack wrote:
-> Currently, both the ALSA control for "Digital Master Playback Switch"
-> and the ALSA core (by calling dai_ops->mute_stream()) control the same
-> bits in the CS4271_VOL[AB]_MUTE registers.
-
-> That's a problem for applications which intentionally want to keep the
-> flag switched off from userspace, even though the stream is already
-> playing.
-
-> Fix this by keeping track of the states on both sides - the ALSA
-> control and the ASoC core - and actually mute the Codec if either one
-> of the two flags is set.
-
-The usual fix for this is to just not have the mute operation if it's
-important.  Otherwise this seems like something we ought to implement in
-the core, it's not a silly feature by any stretch of the imagination but
-it applies to any device with a DAI mute unless there's some device
-specific thing I'm missing here.
-
---O3RTKUHj+75w1tg5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRTC/jAAoJELSic+t+oim9IloP/1ZcrPsqjy91XCjc+te6qYRt
-T4EfkGBCzknEWDoTpneqGDP0GewjGlsKjAZmw2bGqwlJ1OqVKVqqVe+BHPrQPqJZ
-DyzM9hT+BfE4C35fI/VDHId4XVAtEMKrQXfQ3xlNgDRN81d0d4jm/QndsEaGvmYV
-VVC9HJtGgiM9p6jja56KQkTzRn+71lOp2GwYmcdiSmIwcBM9PEfgUS1Wbg64g70X
-fYyBW3xJogtDV8IVMUESEknuYzrhxtb0r5EunYv5HpDKjVatyAV1EB5tXIBsb6YM
-Szmh3HjPTGTLW86cIoxQizzOn47LWK8wuQcljDnycKBkPiPGGow8jkVY9lz4vRs7
-aB0dW0yyapgVKhn8TA0XmyWCBA+iWoPeaynXcBNnRIkrjujWAdugnVCSJxrn0CCo
-PGvC/SzjyzBWHIL1p7C9KhrIAJyqHZI3YkrpecDluhOQ6APtMLtYIeD5dAoRG8Vy
-QuMTdSYxaKv3rmqXeEJWkXWrxSAU3z/yfG1T6eYTGPQ3J6wiffNp05NTNUaqAQPK
-XGED69RdO0geJvbtL2KGcS8CfVn0nD/wFPt8abiWh33zGxDvuG+T+4LlnD7cEtsv
-p5tAwuyKjSbvqMn8kDedIMDh44U+cQTLL/goO4ErFk0wrV+bl6jTM/sW7za+05+L
-fLin7OlM8vs73SPxBsbt
-=O/6E
------END PGP SIGNATURE-----
-
---O3RTKUHj+75w1tg5--
-
---===============8928599542819911409==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8928599542819911409==--
+SGksCgpwbGVhc2UgZG9uJ3QgdG9wLXBvc3QuCgpPbiAyMi4wMy4yMDEzIDExOjExLCBaaGFuZyB3
+ZWkgd3JvdGU6Cj4gQnV0IHdoYXQgaXMgdGhlIG1lY2hhbmlzbSB0byBzeW5jaHJvbml6ZSB0aGUg
+ZGF0YSBmcm9tIGRpZmZlcmVudAo+IGNoYW5uZWwsYW5kIG1heWJlIGRpZmZlcmVudCBjaGFubmVs
+IHBhaXJzIHVzZSBkaWZmZXJlbnQgRE1BIGJ1ZmZlci4KCllvdSBjYW4gdHJ5IGFuZCBzZWUgaWYg
+c3luY2luZyB0aGUgaW5kaXZpZHVhbCwgbm9uLWNvbWJpbmRlZCBQQ00gc3RyZWFtcwpoZWxwczoK
+CiAgaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2Fsc2EtZG9jL2Fsc2EtbGliL3BjbS5odG1s
+I3BjbV9zeW5jCgo+IFNvLCBJIGd1ZXNzICxhYm91dCB0aGUgY29tYmluZSAsYWNjb3JkaW5nIHRv
+IHRoZSBhbHNhLmNvbmYsdGhlIGFsc2EtbGliCj4gb3BlbmVkIHRoZSA0IGRldmljZXMoaW4gbXkg
+Y2FzZSkgYW5kIGdvdCBldmVyeSBjaGFubmVsIHBhcmlz4oCZcyBkYXRhIGluCj4gdHVybnMgaW4g
+YSBtb25lbnQuIEFuZCB0aGVuIGNvbWJpbmUgdGhlbSB0b2dldGhlciBpbiBvcmRlciBhcyBvbmUg
+ZnJhbWU/CgpJdCB3aWxsIGZlZWQgdGhlIGlucHV0IHRvIGFsbCBwY20gc3RyZWFtcy4gSSBkb24n
+dCByZWFsbHkga25vdyBpZiBpdAp1c2VzIHRoZSBzeW5jIG1lY2hhbmlzbSBvbiB0aGF0LCBidXQg
+SSdkIGd1ZXNzIHNvLgoKPiBCZWNhdXNlIGFsbCB0aGUgQ09ERUMgaGF2ZSB0aGUgc2FtZSBjbG9j
+ayB0aW1pbmcsc28gdGhlIGRpZmZlcmVudCBETUEKPiBidWZmZXIgc3RvcmVkIHRoZSBkaWZmZXJl
+bnQgY2hhbm5lbCBkYXRhIGZvciB0aGUgc2FtZSBtb21lbnQuIEFsc2EtbGliCj4gb2J0YWlucyB0
+aGUgc2FtZSBzaXplIGRhdGEgZnJvbSBlYWNoIGJ1ZmZlciBpbiB0dXJucyBpbiBvbmNlLnJlcGVh
+dCBpdAo+IGFnYWluIGFuZCBhZ2Fpbi4KPiAKPiBSaWdodD8KClllcywgYW5kIHNvIHRoZSBzdHJl
+YW1zIHdvbid0IGRyaWZ0LgoKV2h5IGRvbid0IHlvdSBqdXN0IGdvIGFoZWFkIGFuZCB0cnkgaXQ/
+IFlvdSBzaG91bGQgcGxheSBiYWNrIHNvbWUgd2F2CmZpbGUgd2l0aCBhIHRlc3QgcGF0dGVybiB3
+aGljaCB5b3UgY2FuIHJlY29nbml6ZSBvbiBhIERTTyBvciBJSVMKYW5hbHl6ZXIgb24gdGhlIGJ1
+cy4gVGhlbiBzZWUgaWYgdGhleSBhcmUgaW4gc3luYy4KCgpEYW5pZWwKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
