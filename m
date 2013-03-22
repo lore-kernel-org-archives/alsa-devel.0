@@ -1,23 +1,20 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
- make Playback Design products work
-Date: Fri, 22 Mar 2013 09:11:01 +0100
-Message-ID: <514C1215.9010708@gmail.com>
-References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
- <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
- <514B79DA.6030203@sonarnerd.net>
+Subject: Re: how to combine mutil-channel in playback or
+	capture?
+Date: Fri, 22 Mar 2013 09:20:15 +0100
+Message-ID: <514C143F.8060100@gmail.com>
+References: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 11E1326627F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:11:02 +0100 (CET)
-Received: by mail-wi0-f181.google.com with SMTP id hj8so289762wib.8
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 01:11:01 -0700 (PDT)
-In-Reply-To: <514B79DA.6030203@sonarnerd.net>
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B36626627F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:20:14 +0100 (CET)
+Received: by mail-wi0-f174.google.com with SMTP id hi8so7480999wib.1
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 01:20:14 -0700 (PDT)
+In-Reply-To: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,40 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jussi Laako <jussi@sonarnerd.net>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: Zhang wei <zhangwei@vimicro.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jussi,
-Hi Andreas,
+Hi Zhang,
 
-On 21.03.2013 22:21, Jussi Laako wrote:
-> On 03/18/2013 03:49 PM, Daniel Mack wrote:
->> Yes. If at all, we should add a SND_PCM_FORMAT_DSD, and a quirk for that
->> device. But given that there is no application for DSD in userspace
->> either, we probably don't need to care.
+On 22.03.2013 09:08, Zhang wei wrote:
+> I have already achieved the alsa-driver which can playback and
+> capture function with two channel.
+> My board based on ARM9 which have 3 ADC & 1 DAC in IIS bus and all
+> of them shared the same BCLK and LRCK. The pins figure Like this:
 > 
-> Yes there is? At least my application. And I'd be happy to support any 
-> custom format created for the purpose... :)
+>            _________________
+>            |        BCLK   |___________
+>            |               |
+>            |        LRCK   |___________
+>            |               |
+>            |       ADCDAT0 |___________
+>            |               |
+>            |       ADCDAT1 |___________
+>            |               |
+>            |       ADCDAT2 |___________
+>            |               |
+>            |       DACDATA |___________
+>            |               |
+>            |_______________|
+> 
+> Every ADCDATn(n=0,1,2) has two channel so the question is how can I
+> get multi-channel audio data such as 4 or 6 in capture funciton? 
 
-Ah, interesting. So what *are* you using right now for your transport in
-userspace? Is your application abusing standard PCM interfaces that are
-'known' to be in fact DSD? How do other DACs expose their interfaces in
-the Linux world, and which ones did you test your application with?
+It depends on how the whole setup looks like and what the driver for all
+the DAIs support. If you have 4 different stereo Codecs, you would
+usually instanciate 4 CPU DAI driver instances, each controlling one
+bi-directional I2S bus, and then build links between each of them and
+their Codec counterpart. If your Codec is capable of handling all 4
+stereo pairs, you need to have support for the same in you CPU DAI.
 
-If there's actual need for a new SND_PCM_FORMAT, it would be easy to
-patch it through all the layers down to userspace.
+So you need to be more specific about which components you are actually
+using, and what kind of alsa-driver you have written.
 
-> I would propose to create custom 8-bit sample formats for DSD purposes, 
-> similar to the ASIO formats. Practically two main ones, byte with oldest 
-> bit in MSB and byte with oldest bit in LSB. And maybe the "DSD-wide" one 
-> which is 8-bit DSD sample.
-
-Andreas, which modes does the MPD-3 accept exactly on its two 'raw data'
-interfaces? The only hint I have is that one of it is 8-bit and the
-other is 16-bit, but given the lack of a proper test setup for this
-format, I can't currently test anything.
+In general, please also read up the documents in
+Documentation/sound/alsa/soc/.
 
 
-Thanks,
+
 Daniel
