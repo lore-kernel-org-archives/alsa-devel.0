@@ -1,24 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 2/2 resend] ASoC: cs4271: preserve "Master
- Playback Switch" setting
-Date: Fri, 22 Mar 2013 12:04:54 +0100
-Message-ID: <514C3AD6.6080301@gmail.com>
-References: <1363895035-20356-1-git-send-email-zonque@gmail.com>
- <1363895035-20356-2-git-send-email-zonque@gmail.com>
- <20130322101820.GC22890@opensource.wolfsonmicro.com>
- <514C3124.8010806@gmail.com>
- <20130322103247.GF22890@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] SoC: dma-sh7760: Fix compile error
+Date: Fri, 22 Mar 2013 12:05:39 +0100
+Message-ID: <20130322110539.GI22890@opensource.wolfsonmicro.com>
+References: <1363343175-14744-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4436003888734788128=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
- [209.85.214.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 902012664C2
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 12:05:16 +0100 (CET)
-Received: by mail-bk0-f47.google.com with SMTP id jc3so1802985bkc.34
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 04:05:16 -0700 (PDT)
-In-Reply-To: <20130322103247.GF22890@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 83D612664C8
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 12:05:41 +0100 (CET)
+In-Reply-To: <1363343175-14744-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,35 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 22.03.2013 11:32, Mark Brown wrote:
-> On Fri, Mar 22, 2013 at 11:23:32AM +0100, Daniel Mack wrote:
->> On 22.03.2013 11:18, Mark Brown wrote:
-> 
->>> The usual fix for this is to just not have the mute operation if it's
->>> important.  Otherwise this seems like something we ought to implement in
->>> the core, it's not a silly feature by any stretch of the imagination but
->>> it applies to any device with a DAI mute unless there's some device
->>> specific thing I'm missing here.
-> 
->> So I'd say having a simple OR logic in this case is reasonable and
->> serves all the needs I can think of, no?
-> 
-> You're not really responding to what I'm saying here.  What I'm saying
-> is that if this is useful it should be implemented in the core unless
-> there's some reason I'm missing why this is specific to this driver.
 
-Ok, point taken. It's just not really a drop-in equivalent, given that
-both the numid and the name string will change then.
-
-I'll see when I'll find some time to do that. Your idea is to have a
-"Master Playback Switch" for both the CPU and the Codec on each link, if
-the driver implements either ->mute_stream or ->digital_mute, right? And
-the control would default to "on"?
+--===============4436003888734788128==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="N8NGGaQn1mzfvaPg"
+Content-Disposition: inline
 
 
-Thanks,
-Daniel
+--N8NGGaQn1mzfvaPg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Mar 15, 2013 at 11:26:15AM +0100, Lars-Peter Clausen wrote:
+> The dma-sh7760 currently fails with the following compile error:
+> 	sound/soc/sh/dma-sh7760.c:346:2: error: unknown field 'pcm_ops' specified in initializer
+
+Applied, thanks.
+
+--N8NGGaQn1mzfvaPg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRTDrzAAoJELSic+t+oim98oAP/3XIGEwxtyL8PTas6iZ4RIyi
+h13wSHkUYROX1QwB5tWKohdY3oN+3rRJyvgmHBamzyD3FZPe5QZP+7RkSOQSFY4M
+W5dOWyd5+vZ0YT5TB5UsXfEtrOT5A1+GiwP4nCED/7gBvesbwVibzXc5rC4f4kZW
+9zEA+qg7I8xk0oK7HvzTytnfksTlEEu5bD9OWnC8nII4CBitbBs0t0IohGdACKJp
+fHVHdIjjiENgjmt6iDJ/anByoLErJOWWwwlxFt8MxWYVxefOGW8KXodQs2F6TMS1
+ZS/oAcRolVcg7CmcTM0lwShHmzxsAhigqsupPZ3ame7ML5Gwa0coalt6itXeW8vg
+k1fCTZts4ksj6vdmPHNjKOK7hAGoaKM8LLKZXb+wHAGAR/x75g1/DIlAJaWQWlN2
+9ekC7FUtHbBEUAIVgtHQ2FFChTVlS2P3tN3wfceDDwrUUDU7uNYHBXzvj17WCsVB
+ZoT4k+j4n6pb4OCKZs6jlKtZc+7tQd57FJzgEuqRaMPBZNkdfOmdAmMvuZqLFWEM
+CNz5+9VXWNlVMh1KdBpncZXD334e4dIQxEAkpsjtMSyqBrAo0VSYBGOeBHR3XxRP
+yobntZC6EfUegNsKjYJlFz79huIBVyUIyEgFezxpEDT8RreJSrE/af5kTvE5ZuKs
+a1e8qbP5l12FiPJLrdWT
+=/2DK
+-----END PGP SIGNATURE-----
+
+--N8NGGaQn1mzfvaPg--
+
+--===============4436003888734788128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4436003888734788128==--
