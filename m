@@ -1,18 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 03/14] ASoC: omap-pcm: No need to wrap
-	snd_dmaengine_pcm_close()
-Date: Fri, 22 Mar 2013 14:13:12 +0100
-Message-ID: <514C58E8.4040605@ti.com>
-References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
- <1363957934-20059-4-git-send-email-lars@metafoo.de>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH V2] Sound: sgtl5000 Allow codec clock
+	frequency to be set.
+Date: Fri, 22 Mar 2013 09:08:41 -0500
+Message-ID: <CAOZdJXWi2pph-=vQg+FAty+yVVk9fJBU6rxYOf0J-J2f=Lwgxw@mail.gmail.com>
+References: <20130322093344.20605.49509.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id C24012665C7
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 14:13:17 +0100 (CET)
-In-Reply-To: <1363957934-20059-4-git-send-email-lars@metafoo.de>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id C75FF26519A
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 15:08:45 +0100 (CET)
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by muin.pair.com (Postfix) with ESMTPSA id 0E6A58FC30
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 10:08:42 -0400 (EDT)
+Received: by mail-la0-f41.google.com with SMTP id fo12so7371717lab.28
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 07:08:41 -0700 (PDT)
+In-Reply-To: <20130322093344.20605.49509.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Sebastien Guiriec <s-guiriec@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Martin Fuzzey <mfuzzey@parkeon.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/22/2013 02:12 PM, Lars-Peter Clausen wrote:
-> If a PCM driver using the dmaengine PCM helper functions doesn't need to =
-do
-> anything special in its pcm_close callback, snd_dmaengine_pcm_close can b=
-e used
-> directly for as the pcm_close callback and there is no need to wrap it in=
- a
-> custom function.
-> =
+On Fri, Mar 22, 2013 at 4:33 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Cc: Sebastien Guiriec <s-guiriec@ti.com>
-> ---
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index 424347e..71ce1f6 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -128,18 +128,30 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>                 goto fail;
+>         }
+>
+> +       ret = of_property_read_u32(codec_np, "clock-frequency",
+> +                                       &data->clk_frequency);
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+I just noticed that you assign 'ret' here, but you never check the
+value.  So I think you should either:
 
->  sound/soc/omap/omap-pcm.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> =
-
-> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-> index c722c2e..c6f477c 100644
-> --- a/sound/soc/omap/omap-pcm.c
-> +++ b/sound/soc/omap/omap-pcm.c
-> @@ -185,12 +185,6 @@ static int omap_pcm_open(struct snd_pcm_substream *s=
-ubstream)
->  				      &dma_data->dma_req);
->  }
->  =
-
-> -static int omap_pcm_close(struct snd_pcm_substream *substream)
-> -{
-> -	snd_dmaengine_pcm_close(substream);
-> -	return 0;
-> -}
-> -
->  static int omap_pcm_mmap(struct snd_pcm_substream *substream,
->  	struct vm_area_struct *vma)
->  {
-> @@ -204,7 +198,7 @@ static int omap_pcm_mmap(struct snd_pcm_substream *su=
-bstream,
->  =
-
->  static struct snd_pcm_ops omap_pcm_ops =3D {
->  	.open		=3D omap_pcm_open,
-> -	.close		=3D omap_pcm_close,
-> +	.close		=3D snd_dmaengine_pcm_close,
->  	.ioctl		=3D snd_pcm_lib_ioctl,
->  	.hw_params	=3D omap_pcm_hw_params,
->  	.hw_free	=3D omap_pcm_hw_free,
-> =
-
-
-
--- =
-
-P=E9ter
+1) Check the value of 'ret'
+2) Remove the "ret = "
