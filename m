@@ -1,39 +1,47 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [alsa-devel] channel swapping issue on OMAP3/TWL4030 is back
-Date: Fri, 22 Mar 2013 10:07:34 +0100
-Message-ID: <514C1F56.7080403@gmail.com>
-References: <alpine.DEB.2.01.1303220932150.7975@pmeerw.net> <514C1C78.3090702@gmail.com> <alpine.DEB.2.01.1303220958040.7975@pmeerw.net>
+Subject: Re:
+ =?utf-8?b?562U5aSNOiAgaG93IHRvIGNvbWJpbmUgbXV0aWwt?=
+ =?utf-8?q?channel_in_playback_or_capture=3F?=
+Date: Fri, 22 Mar 2013 10:27:48 +0100
+Message-ID: <514C2414.90402@gmail.com>
+References: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
+ <514C143F.8060100@gmail.com>
+ <6B947C8AC4195040A8C6876A496C644A081956F9@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.01.1303220958040.7975@pmeerw.net>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED0EF2663F6
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 10:27:48 +0100 (CET)
+Received: by mail-wg0-f47.google.com with SMTP id dt14so1194727wgb.26
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 02:27:48 -0700 (PDT)
+In-Reply-To: <6B947C8AC4195040A8C6876A496C644A081956F9@BJ-MAIL-04.vimicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zhang wei <zhangwei@vimicro.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 22.03.2013 10:03, Peter Meerwald wrote:
-> 
->>> I'm running Linux 3.7 on a beagle-xm and observe very reproducible stereo 
->>> channel swapping issue on playback of a stereo stream (one channel has a 
->>> sine, the other is zero); the channel swap occurs on starting the playback
-> 
->> Always? Or in like 50% of the runs? And is the record stream (IOW: the
->> clocks) already running when you switch on playback?
-> 
-> in 10 runs, the swap can maybe observed 3 times; so: not always
-> 
-> I can easily turn on/off the clock for the McBSP3/TLV320AIC3104 setup; 
-> with McBSP3 being master I ONLY have the issue when the clock is already 
-> running; when I start the stream first, then turn on the clock, there is 
-> NO SWAP
-
-Yes, that sounds familiar. I guess the problem is that the serial line
-driver does not respect a specific slope (like lo->hi) but will sync up
-to *any* slope once it gets its enable bit set. Which will give you
-arbitrary channel swaps.
-
-
-Daniel
-
+T24gMjIuMDMuMjAxMyAxMDoyMywgWmhhbmcgd2VpIHdyb3RlOgo+IFRoYW5rIHlvdS4gWWVzLHlv
+dSdyZSByaWdodC4gSSBuZWVkIDQgZGlmZmVyZW50IHN0ZXJlbyBDb2RlY3MgYXQKPiBsZWFzdCBt
+b3JlIHRoYW4gb25lIG9uIG15IGJvYXJkIGFuZCBpIHRoaW5rIHRoYXQgd2lsbCBiZSBtb3JlIGZ1
+bnkKPiB0aGFuIDEgQ29kZWMuSW4gdGhpcyBjYXNlICx0aGUgc3RydWN0IHNuZF9zb2NfY2FyZCB3
+aWxsIGJlCj4gaW5pdGlhbGl6ZWQgYXMgZm9sbG93aW5nOiBTdHJ1Y3Qgc25kX3NvY19jYXJkIHRl
+c3RfY2FyZD0geyAKPiAubmFtZT3igJ1UZXN0IENhcmTigJ0sIC5kYWlfbGluaz0mdGVzdF9kYWlf
+Y29kZWNzLCAubnVtX2xpbmtzPTQ7IH0gQXMgYQo+IHJlc3VsdCAsdGhlcmUgd291bGQgYmUgNCBk
+ZXZpY2VzIG5hbWVkIHBjbUMwRG5wKG49MCwxLDIsMykgdW5kZXIgdGhlCj4gZGlyZWN0b3J5IC9k
+ZXYvc25kLiBJIHdvdW5kZXIgaG93IGFuZCB3aG8gY29tYmluZXMgdGhlIG11bHRpLWNoYW5uZWwK
+PiBhdWRpbyBkYXRhIHRvZ290aGVyPyBJcyBpdCB0aGUgcGx1Z2luID8KClllcywgeW91IGNhbiB1
+c2UgdGhlIGFsc2EgdXNlcnNwYWNlIGZvciB0aGF0LgoKU2VlIGh0dHA6Ly93d3cuYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWluL2luZGV4LnBocC9Bc291bmRyYwoKCkRhbmllbApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
