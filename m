@@ -1,15 +1,20 @@
-From: "Zhang wei" <zhangwei@vimicro.com>
-Subject: how to combine mutil-channel in playback or capture?
-Date: Fri, 22 Mar 2013 16:08:03 +0800
-Message-ID: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
+From: Sebastien Guiriec <s-guiriec@ti.com>
+Subject: Re: [PATCH 2/2] ASoC: dmaengine_pcm: add
+	snd_dmaengine_generic_pcm_open()
+Date: Fri, 22 Mar 2013 09:07:21 +0100
+Message-ID: <514C1139.6050309@ti.com>
+References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
+ <1363318601-31505-3-git-send-email-shawn.guo@linaro.org>
+ <20130321095718.GO10326@intel.com>
+ <20130321145258.GC23109@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.vimicro.com (unknown [211.155.250.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A64326627C
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:08:08 +0100 (CET)
-Content-class: urn:content-classes:message
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47D8A26627F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 09:08:13 +0100 (CET)
+In-Reply-To: <20130321145258.GC23109@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-I have already achieved the alsa-driver which can playback and capture func=
-tion with two channel. =
+On 03/21/2013 03:53 PM, Shawn Guo wrote:
+> On Thu, Mar 21, 2013 at 03:27:18PM +0530, Vinod Koul wrote:
+>> On Fri, Mar 15, 2013 at 11:36:41AM +0800, Shawn Guo wrote:
+>>> With generic DMA device tree binding and helper function
+>>> dma_request_slave_channel() in place, dmaengine_pcm should support
+>>> that in requesting DMA channel for users that support generic DMA
+>>> device tree binding.
+>>>
+>>> Add a new API snd_dmaengine_generic_pcm_open() as the variant of
+>>> snd_dmaengine_pcm_open().  It takes DMA client struct device pointer
+>>> and slave channel name as arguments and calls generic DMA helper
+>>> dma_request_slave_channel() to request DMA channel from dmaengine.
+>> NAK
+>>
+>> This is why we have dma_request_slave_channel_compat() API. You dont need to
+>> write two open handlers here, just pass all the arguments and if DT is set it
+>> will allocate a channel using dma_request_slave_channel() otherwise will do
+>> dma_request_channel which is what you need.
+>
+> I do not quite follow your comment.  Let me try to understand it.  Are
+> you suggesting that instead of the current call path:
+>
+> 	snd_dmaengine_pcm_open()
+> 		dmaengine_pcm_request_channel()
+> 			dma_request_channel()
+>
+> we should change it as below?
+>
+> 	snd_dmaengine_pcm_open()
+> 		dmaengine_pcm_request_channel()
+> 			dma_request_slave_channel_compat()
+>
+> If that's the case, you are fundamentally requesting to change the
+> fingerprint of API snd_dmaengine_pcm_open() from the existing:
+>
+> int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+> 			   dma_filter_fn filter_fn, void *filter_data)
+>
+> to something like:
+>
+> int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+> 			   dma_filter_fn filter_fn, void *filter_data,
+> 			   struct device *dev, const char *name)
+>
+> So every single user of snd_dmaengine_pcm_open() needs to adapt to the
+> interface change.
+>
+> Is my understanding correct?  Or have I misunderstood your comment?
 
-My board based on ARM9 which have 3 ADC & 1 DAC in IIS bus and all of them =
-shared the same BCLK and LRCK. The pins figure Like this:
+This is what has been done on OMAP for other IPs. I have tested this 
+solution for Audio before you submit your first series and it is working.
 
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 _________________
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0 BCLK=A0=A0 |_________=
-__
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0 LRCK=A0=A0 |_________=
-__
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0 ADCDAT0 |___________
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0 ADCDAT1 |___________
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0 ADCDAT2 |___________
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0 DACDATA |___________
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |_______________|
+Now I will wait Lars serie to check again on OMAP and let Mark comment 
+on the best approach. Whereas update current API like you propose or 
+wait Lars series and move on according to the different comments done on 
+open function. As OMAP audio DMA binding are depending on the chosen 
+solution.
 
-Every ADCDATn(n=3D0,1,2) has two channel so the question is how can I get m=
-ulti-channel audio data such as 4 or 6 in capture funciton? =
-
-
-
-BR
+Sebastien.
+>
+> Shawn
+>
+>
