@@ -1,31 +1,56 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] channel swapping issue on OMAP3/TWL4030 is back
-Date: Fri, 22 Mar 2013 16:35:06 +0000
-Message-ID: <20130322163506.GL30923@n2100.arm.linux.org.uk>
-References: <alpine.DEB.2.01.1303220932150.7975@pmeerw.net> <alpine.DEB.2.01.1303221023070.7975@pmeerw.net> <514C2E5E.2040909@gmail.com> <alpine.DEB.2.01.1303221348250.7975@pmeerw.net> <514C56EA.7020304@ti.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
+ make Playback Design products work
+Date: Fri, 22 Mar 2013 21:37:06 +0200
+Message-ID: <514CB2E2.9050003@sonarnerd.net>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net> <514C1215.9010708@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <514C56EA.7020304@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>, Daniel Mack <zonque@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8EE8266588
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 20:37:09 +0100 (CET)
+In-Reply-To: <514C1215.9010708@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 22, 2013 at 02:04:42PM +0100, Peter Ujfalusi wrote:
-> Russell: can we remove the tasklet use from dma-omap and start the DMA right
-> away in omap_dma_issue_pending()? This is the only way to prevent channel
-> swap when starting audio.
+On 03/22/2013 10:11 AM, Daniel Mack wrote:
+> Ah, interesting. So what *are* you using right now for your transport in
+> userspace? Is your application abusing standard PCM interfaces that are
+> 'known' to be in fact DSD? How do other DACs expose their interfaces in
+> the Linux world, and which ones did you test your application with?
 
-What I fear is that we may run up against having too many DMA channels
-tied up to the peripherals.  I structured the driver in this way to
-allow us to move the physical DMA channel allocation to that tasklet
-when that becomes a problem.
+Yes, it's abuse of PCM (hw) interface, I'm using the DoP specification 
+as referred to in another post. All the DSD DACs that currently work 
+with Linux support this. Quite many at the moment in fact and more 
+coming all the time.
 
-Not only that but I was hoping to lift some more of this code out of
-DMA engine drivers, so DMA engine drivers had even less code in them.
+There's at least devices from Mytek, Fostex, Benchmark and Sonore/exD 
+that work with this setup. And I believe also Chord, but I haven't got 
+chance to test it yet.
 
-I guess we could keep the tasklet, but mark the audio DMA channels as
-"pre-reserved" and arrange for pre-reserved channels to avoid the
-tasklet, rather than throwing the tasklet out completely.
+Mytek has a vendor specific interface (RigiSystems USBPAL) that could 
+utilize a separate raw DSD sample format.
+
+Plus I have some of my own experiments implementing DSD on an ARM based 
+SoC where there's no need use DoP, but now I need to use custom hack for 
+the raw data. Thus sooner there's some officially defined ALSA formats, 
+less likely it becomes fragmented set of different incompatible hacks. 
+That would be a headache and nightmare for application developers.
+
+
+	- Jussi
