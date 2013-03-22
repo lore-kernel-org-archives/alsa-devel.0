@@ -1,47 +1,157 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re:
- =?utf-8?b?562U5aSNOiAgaG93IHRvIGNvbWJpbmUgbXV0aWwt?=
- =?utf-8?q?channel_in_playback_or_capture=3F?=
-Date: Fri, 22 Mar 2013 10:27:48 +0100
-Message-ID: <514C2414.90402@gmail.com>
-References: <6B947C8AC4195040A8C6876A496C644A0819563C@BJ-MAIL-04.vimicro.com>
- <514C143F.8060100@gmail.com>
- <6B947C8AC4195040A8C6876A496C644A081956F9@BJ-MAIL-04.vimicro.com>
+From: Martin Fuzzey <mfuzzey@parkeon.com>
+Subject: [PATCH V2] Sound: sgtl5000 Allow codec clock frequency to be set.
+Date: Fri, 22 Mar 2013 10:33:44 +0100
+Message-ID: <20130322093344.20605.49509.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id ED0EF2663F6
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 10:27:48 +0100 (CET)
-Received: by mail-wg0-f47.google.com with SMTP id dt14so1194727wgb.26
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 02:27:48 -0700 (PDT)
-In-Reply-To: <6B947C8AC4195040A8C6876A496C644A081956F9@BJ-MAIL-04.vimicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zhang wei <zhangwei@vimicro.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjIuMDMuMjAxMyAxMDoyMywgWmhhbmcgd2VpIHdyb3RlOgo+IFRoYW5rIHlvdS4gWWVzLHlv
-dSdyZSByaWdodC4gSSBuZWVkIDQgZGlmZmVyZW50IHN0ZXJlbyBDb2RlY3MgYXQKPiBsZWFzdCBt
-b3JlIHRoYW4gb25lIG9uIG15IGJvYXJkIGFuZCBpIHRoaW5rIHRoYXQgd2lsbCBiZSBtb3JlIGZ1
-bnkKPiB0aGFuIDEgQ29kZWMuSW4gdGhpcyBjYXNlICx0aGUgc3RydWN0IHNuZF9zb2NfY2FyZCB3
-aWxsIGJlCj4gaW5pdGlhbGl6ZWQgYXMgZm9sbG93aW5nOiBTdHJ1Y3Qgc25kX3NvY19jYXJkIHRl
-c3RfY2FyZD0geyAKPiAubmFtZT3igJ1UZXN0IENhcmTigJ0sIC5kYWlfbGluaz0mdGVzdF9kYWlf
-Y29kZWNzLCAubnVtX2xpbmtzPTQ7IH0gQXMgYQo+IHJlc3VsdCAsdGhlcmUgd291bGQgYmUgNCBk
-ZXZpY2VzIG5hbWVkIHBjbUMwRG5wKG49MCwxLDIsMykgdW5kZXIgdGhlCj4gZGlyZWN0b3J5IC9k
-ZXYvc25kLiBJIHdvdW5kZXIgaG93IGFuZCB3aG8gY29tYmluZXMgdGhlIG11bHRpLWNoYW5uZWwK
-PiBhdWRpbyBkYXRhIHRvZ290aGVyPyBJcyBpdCB0aGUgcGx1Z2luID8KClllcywgeW91IGNhbiB1
-c2UgdGhlIGFsc2EgdXNlcnNwYWNlIGZvciB0aGF0LgoKU2VlIGh0dHA6Ly93d3cuYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWluL2luZGV4LnBocC9Bc291bmRyYwoKCkRhbmllbApfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Currently the sgtl5000 driver allows its clock to be
+specified either as a raw frequency using "clock-frequency"
+in the device tree (the original method) or, since commit
+81e8e49 "ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000",
+as a preconfigured clock from the device tree.
+
+This patch adds, in addition to the existing methods,
+the possibility to use a rate configurable clock from the
+device tree and actually set its rate.
+
+This is done by specifiying both clocks and clock-frequency
+in the driver's DT node.
+
+This is useful when a programmable clock is used as the codec clock.
+
+Signed-off-by: Martin Fuzzey <mfuzzey@parkeon.com>
+---
+Changelog:
+V2 - Improved binding document and patch description following
+remarks from Timur Tabi.
+---
+ .../devicetree/bindings/sound/sgtl5000.txt         |   59 ++++++++++++++++++++
+ sound/soc/fsl/imx-sgtl5000.c                       |   20 +++++--
+ 2 files changed, 75 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+index 9cc4444..f586ba7 100644
+--- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+@@ -5,9 +5,68 @@ Required properties:
+ 
+ - reg : the I2C address of the device
+ 
++Optional properties:
++- clocks:		phandle to of codec clock
++- clock-frequency:	clock frequency to set or use (see below)
++
++If a clock is provided, clock-frequency is optional
++
++If no clock is provided clock-frequency is required (this represents the codec
++being clocked by an external signal not present in the clock tree)
++
++If both a clock and clock-frequency are provided clock must support
++the set_rate operation and its frequency will be set to the value specified
++by clock-frequency
++
++
++Hence the possible configurations and their use cases are:
++
++1) only 'clocks' specified
++clock points to a clock specified in the DT which already has an
++appropriate frequency and is configured by some other means external to the
++sgtl5000 driver (bootloader, board setup code, or just a fixed rate clock)
++
++Example:
++clocks {
++	audioclk: ext20Mz {
++		compatible = "fixed-clock";
++		clock-frequency = <20000000>;
++	};
++};
++
++codec: sgtl5000@0a {
++	compatible = "fsl,sgtl5000";
++	reg = <0x0a>;
++	clocks = <&audioclk>; /* cko1 */
++};
++
++
++2) only 'clock-frequency' specified
++The chip is assumed to be clocked by a signal having the given
++frequency, which may even be generated by a clock unknown to linux.
++This could actually be represented as a special case of 1) by defining a
++fixed-rate clock in the DT.
++
++Example:
++
++codec: sgtl5000@0a {
++	compatible = "fsl,sgtl5000";
++	reg = <0x0a>;
++	clock-frequency = <20000000>;
++};
++
++
++3) Both 'clocks' and 'clock-frequency' specified
++The chip is assumed to be clocked by a rate programmable clock defined
++in the clock tree.
++clk_set_rate() will be called for this clock to set its rate to that
++specified by clock-frequency
++
+ Example:
+ 
+ codec: sgtl5000@0a {
+ 	compatible = "fsl,sgtl5000";
+ 	reg = <0x0a>;
++	clocks = <&clks 162>; /* cko1 */
++	clock-frequency = <20000000>;
+ };
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 424347e..71ce1f6 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -128,18 +128,30 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
++	ret = of_property_read_u32(codec_np, "clock-frequency",
++					&data->clk_frequency);
+ 	data->codec_clk = clk_get(&codec_dev->dev, NULL);
++
+ 	if (IS_ERR(data->codec_clk)) {
+-		/* assuming clock enabled by default */
++		/* assuming clock enabled by default (frequency required) */
+ 		data->codec_clk = NULL;
+-		ret = of_property_read_u32(codec_np, "clock-frequency",
+-					&data->clk_frequency);
+-		if (ret) {
++		if (!data->clk_frequency) {
+ 			dev_err(&codec_dev->dev,
+ 				"clock-frequency missing or invalid\n");
+ 			goto fail;
+ 		}
+ 	} else {
++		if (data->clk_frequency) {
++			ret = clk_set_rate(
++					data->codec_clk, data->clk_frequency);
++			if (ret) {
++				dev_err(&codec_dev->dev,
++					"failed to set clock-frequency to %u\n",
++					data->clk_frequency);
++				goto fail;
++			}
++		}
++
+ 		data->clk_frequency = clk_get_rate(data->codec_clk);
+ 		clk_prepare_enable(data->codec_clk);
+ 	}
