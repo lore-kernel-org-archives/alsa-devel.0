@@ -1,19 +1,19 @@
 From: Ola Lilja <ola.o.lilja@stericsson.com>
-Subject: Re: [PATCH 01/14] ASoC: ux500_pcm: Remove duplicated
- SNDRV_PCM_HW_PARAM_PERIODS constraint
-Date: Fri, 22 Mar 2013 15:35:37 +0100
-Message-ID: <514C6C39.5000806@stericsson.com>
+Subject: Re: [PATCH 05/14] ASoC: ux500_pcm: No need to wrap
+	snd_dmaengine_pcm_close()
+Date: Fri, 22 Mar 2013 15:36:14 +0100
+Message-ID: <514C6C5E.5080300@stericsson.com>
 References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
- <1363957934-20059-2-git-send-email-lars@metafoo.de>
+ <1363957934-20059-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog112.obsmtp.com (eu1sys200aog112.obsmtp.com
- [207.126.144.133])
- by alsa0.perex.cz (Postfix) with ESMTP id CEB452651EE
+Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
+ [207.126.144.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2F422651AF
  for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 15:36:41 +0100 (CET)
-In-Reply-To: <1363957934-20059-2-git-send-email-lars@metafoo.de>
+In-Reply-To: <1363957934-20059-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,32 +34,46 @@ Ola
 
 On 03/22/2013 02:12 PM, Lars-Peter Clausen wrote:
 
-> The generic dmaengine based PCM driver code takes care of setting this
-> constraint, there is no need of doing it manually in the ux500 driver.
+> If a PCM driver using the dmaengine PCM helper functions doesn't need to do
+> anything special in its pcm_close callback, snd_dmaengine_pcm_close can be used
+> directly for as the pcm_close callback and there is no need to wrap it in a
+> custom function.
 > 
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 > Cc: Ola Lilja <ola.o.lilja@stericsson.com>
 > ---
->  sound/soc/ux500/ux500_pcm.c | 9 ---------
->  1 file changed, 9 deletions(-)
+>  sound/soc/ux500/ux500_pcm.c | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
 > 
 > diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-> index 846fa82..375ca6b 100644
+> index 375ca6b..d000ba2 100644
 > --- a/sound/soc/ux500/ux500_pcm.c
 > +++ b/sound/soc/ux500/ux500_pcm.c
-> @@ -111,15 +111,6 @@ static int ux500_pcm_open(struct snd_pcm_substream *substream)
->  		snd_soc_set_runtime_hwparams(substream,
->  					&ux500_pcm_hw_capture);
+> @@ -160,18 +160,6 @@ static int ux500_pcm_open(struct snd_pcm_substream *substream)
+>  	return 0;
+>  }
 >  
-> -	/* ensure that buffer size is a multiple of period size */
-> -	ret = snd_pcm_hw_constraint_integer(runtime,
-> -					SNDRV_PCM_HW_PARAM_PERIODS);
-> -	if (ret < 0) {
-> -		dev_err(dev, "%s: Error: snd_pcm_hw_constraints failed (%d)\n",
-> -			__func__, ret);
-> -		return ret;
-> -	}
+> -static int ux500_pcm_close(struct snd_pcm_substream *substream)
+> -{
+> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> -	struct snd_soc_dai *dai = rtd->cpu_dai;
 > -
->  	dev_dbg(dev, "%s: Set hw-struct for %s.\n", __func__,
->  		snd_pcm_stream_str(substream));
->  	runtime->hw = (stream_id == SNDRV_PCM_STREAM_PLAYBACK) ?
+> -	dev_dbg(dai->dev, "%s: Enter\n", __func__);
+> -
+> -	snd_dmaengine_pcm_close(substream);
+> -
+> -	return 0;
+> -}
+> -
+>  static int ux500_pcm_hw_params(struct snd_pcm_substream *substream,
+>  			struct snd_pcm_hw_params *hw_params)
+>  {
+> @@ -246,7 +234,7 @@ static int ux500_pcm_mmap(struct snd_pcm_substream *substream,
+>  
+>  static struct snd_pcm_ops ux500_pcm_ops = {
+>  	.open		= ux500_pcm_open,
+> -	.close		= ux500_pcm_close,
+> +	.close		= snd_dmaengine_pcm_close,
+>  	.ioctl		= snd_pcm_lib_ioctl,
+>  	.hw_params	= ux500_pcm_hw_params,
+>  	.hw_free	= ux500_pcm_hw_free,
