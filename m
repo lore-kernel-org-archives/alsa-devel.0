@@ -1,100 +1,100 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] channel swapping issue on OMAP3/TWL4030 is back
-Date: Fri, 22 Mar 2013 14:04:42 +0100
-Message-ID: <514C56EA.7020304@ti.com>
-References: <alpine.DEB.2.01.1303220932150.7975@pmeerw.net> <alpine.DEB.2.01.1303221023070.7975@pmeerw.net> <514C2E5E.2040909@gmail.com> <alpine.DEB.2.01.1303221348250.7975@pmeerw.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 00/14] ASoC: Cleanup dmaengine PCM users
+Date: Fri, 22 Mar 2013 14:12:00 +0100
+Message-ID: <1363957934-20059-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.01.1303221348250.7975@pmeerw.net>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Meerwald <pmeerw@pmeerw.net>, Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: Daniel Mack <zonque@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-087.synserver.de (smtp-out-087.synserver.de
+ [212.40.185.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7592226518B
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 14:10:23 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 03/22/2013 01:49 PM, Peter Meerwald wrote:
->=20
->>>> I'm running Linux 3.7 on a beagle-xm and observe very reproducible=
- stereo=20
->>>> channel swapping issue on playback of a stereo stream (one channel=
- has a=20
->>>> sine, the other is zero); the channel swap occurs on starting the =
-playback
->>>
->>>> it appears that the swapping issue is back, probably due to the DM=
-A rework=20
->>>> in recent kernel?
->>>
->>> kernel 3.4 does not have the issue
->>
->> Well, then, I guess, you'll have to bisect it down.
->=20
-> here it is:
-> 946cc36ae550ea52adee0f42ac5034a34b5393be is the first bad commit
-> commit 946cc36ae550ea52adee0f42ac5034a34b5393be
-> Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Date:   Fri Sep 14 15:05:58 2012 +0300
->=20
->     ASoC: omap-pcm: Convert to use dmaengine
->    =20
->     Original author: Russell King <rmk+kernel@arm.linux.org.uk>
->    =20
->     Switch the omap-pcm to use dmaengine.
->     Certain features are not supported by after dmaengine conversion:
->     1. No period wakeup mode
->        DMA engine has no way to communicate this information through
->        standard channels.
->    =20
->     Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->     Tested-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
->     Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This series cleans up a few of the current users of the dmaengine pcm lib in
+order to make the introduction of a new more generic PCM dmaengine driver more
+straight forward.
 
-Yes the issue surfaced again with the dmaengine conversion. But at the =
-end it
-boils down to the OMAP dmaengine implementation.
-=46or audio to work correctly we expect that the DMA _is_ started after=
- the
-omap_dma_issue_pending() call, but it is not true for OMAP.
+The series consists mainly of two types of changes. One is removing all
+unnecessary wrappers of snd_soc_dmaengine_close(). For some reason quite a few
+drivers started providing their own pcm_close callback, which does nothing but
+calls snd_soc_dmaengine_close, although snd_soc_dmaengine_close can be used
+directly as the pcm_close callback if nothing else needs to be done.
 
-omap_dma_issue_pending() will start a tasklet which is in charge to sta=
-rt the DMA.
+The other is getting rid of snd_dmaengine_pcm_{get,set}_data(). These two
+functions were initially introduced to deal with a few oddball dmaengine drivers
+which require that data is passed to them via the private_data field of the
+channel and we had to keep the data allocated until the channel had been
+released. A few other driver started using these functions although there is no
+need to do so. E.g. some drivers just call snd_dmaengine_pcm_set_data(), but
+never attempt to read the data again using snd_dmaengine_pcm_get_data().
+For the drivers, for which snd_dmaengine_pcm_{set,get}_data() was originally
+introduced, the responsibility of keeping the dma config allocated is shifted
+from the pcm driver to the i2s drivers. Which in turn makes the code much more
+straight forward since for most i2s drivers the dma config is either static or
+setup once at driver probe time.
 
-In audio case this is how the call chain looks like:
+The series has only been compile tested, so please test these patches,
+especially the non trivial ones for ep93xx, mmp, imx and mxs.
 
-beagle-gentoo ~ # aplay media/2ch-left-since.wav -q
-[  473.128753] omap-dma-engine omap-dma-engine: allocating channel for =
-33
-[  473.139587] omap_mcbsp_dai_set_dai_fmt
-[  473.148345] omap_mcbsp_dai_hw_params:
-[  473.155822] omap_mcbsp_config:
-[  473.160369] omap_pcm_trigger: start
-[  473.164062] omap_dma_prep_dma_cyclic (dma_ch: 2)
-[  473.173828] omap_dma_issue_pending (dma_ch: 2)
-[  473.177795] omap_mcbsp_dai_trigger: start
-[  473.182006] omap_mcbsp_start
-[  473.189025] omap_dma_sched
-[  473.191864] omap_dma_start_sg (dma_ch: 2)
+- Lars
 
-You can see that McBSP is started before the DMA because of the tasklet=
- in
-drivers/dma/dma-omap.c
+Lars-Peter Clausen (14):
+  ASoC: ux500_pcm: Remove duplicated SNDRV_PCM_HW_PARAM_PERIODS
+    constraint
+  ASoC: spear_pcm: No need to wrap snd_dmaengine_pcm_close()
+  ASoC: omap-pcm: No need to wrap snd_dmaengine_pcm_close()
+  ASoC: tegra_pcm: No need to wrap snd_dmaengine_pcm_close()
+  ASoC: ux500_pcm: No need to wrap snd_dmaengine_pcm_close()
+  ASoC: atmel-pcm-dma: No need to wrap snd_dmaengine_pcm_close()
+  ASoC: ux500_pcm: No need to use snd_dmaengine_pcm_set_data()
+  ASoC: speaer_pcm: No need to use snd_dmaengine_pcm_set_data()
+  ASoC: atmel-pcm-dma: Do not use snd_dmaengine_pcm_{set,get}_data()
+  ASoC: ep93xx: Use ep93xx_dma_params instead of ep93xx_pcm_dma_params
+  ASoC: mmp-pcm: Allocate dma filter parameters on the stack
+  ASoC: imx-pcm: Embed the imx_dma_data struct in the dma_params struct
+  ASoC: mxs: Embed the mxs_dma_data struct in the mxs_pcm_dma_params
+    struct
+  ASoC: dmaengine-pcm: Remove snd_dmaengine_pcm_{set,get}_data
 
-Russell: can we remove the tasklet use from dma-omap and start the DMA =
-right
-away in omap_dma_issue_pending()? This is the only way to prevent chann=
-el swap
-when starting audio.
-Other devices might not care if the DMA is not started at the time we t=
-ell it
-to start, but for audio we need to make sure it is.
+ include/sound/dmaengine_pcm.h   |  3 ---
+ sound/soc/atmel/atmel-pcm-dma.c | 23 +++++++---------------
+ sound/soc/cirrus/edb93xx.c      |  1 -
+ sound/soc/cirrus/ep93xx-ac97.c  |  9 +++++----
+ sound/soc/cirrus/ep93xx-i2s.c   | 12 ++++++------
+ sound/soc/cirrus/ep93xx-pcm.c   | 37 +++--------------------------------
+ sound/soc/cirrus/ep93xx-pcm.h   | 20 -------------------
+ sound/soc/cirrus/simone.c       |  2 --
+ sound/soc/cirrus/snappercl15.c  |  1 -
+ sound/soc/fsl/fsl_ssi.c         | 17 ++++++++--------
+ sound/soc/fsl/imx-pcm-dma.c     | 35 ++-------------------------------
+ sound/soc/fsl/imx-pcm.h         | 17 ++++++++++++++--
+ sound/soc/fsl/imx-ssi.c         | 12 ++++++++----
+ sound/soc/mxs/mxs-pcm.c         | 43 +++++------------------------------------
+ sound/soc/mxs/mxs-pcm.h         |  4 +++-
+ sound/soc/mxs/mxs-saif.c        |  6 +++---
+ sound/soc/omap/omap-pcm.c       |  8 +-------
+ sound/soc/pxa/mmp-pcm.c         | 33 +++++--------------------------
+ sound/soc/soc-dmaengine-pcm.c   | 29 ---------------------------
+ sound/soc/spear/spear_pcm.c     | 18 ++---------------
+ sound/soc/tegra/tegra_pcm.c     |  8 +-------
+ sound/soc/ux500/ux500_pcm.c     | 25 +-----------------------
+ 22 files changed, 76 insertions(+), 287 deletions(-)
+ delete mode 100644 sound/soc/cirrus/ep93xx-pcm.h
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+1.8.0
