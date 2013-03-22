@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 resend] ASoC: cs4271: switch to
-	mute_stream
-Date: Fri, 22 Mar 2013 11:13:25 +0100
-Message-ID: <20130322101325.GB22890@opensource.wolfsonmicro.com>
-References: <1363895035-20356-1-git-send-email-zonque@gmail.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
+ make Playback Design products work
+Date: Fri, 22 Mar 2013 12:15:16 +0200
+Message-ID: <514C2F34.6020307@sonarnerd.net>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net>
+ <7.0.0.16.2.20130321181551.0605bc60@akdesigninc.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0800302945637241787=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DD0326515C
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:13:27 +0100 (CET)
-In-Reply-To: <1363895035-20356-1-git-send-email-zonque@gmail.com>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52A6626515C
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2013 11:15:17 +0100 (CET)
+In-Reply-To: <7.0.0.16.2.20130321181551.0605bc60@akdesigninc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, subaparts@yandex.ru, lgirdwood@gmail.com
+To: Andreas Koch <andreas@akdesigninc.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
 List-Id: alsa-devel@alsa-project.org
 
+On 03/22/2013 03:27 AM, Andreas Koch wrote:
+> I wouldn't worry about DSD wide, because that is a dead format that I
+> was involved in launching for professional recording applications more
+> than 10 years ago. It never took off.
 
---===============0800302945637241787==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
-Content-Disposition: inline
+I just need it for my own purposes, but I can make custom stuff as 
+necessary if there's no interest from others.
 
+Right now I'm just hoping to see a well defined common sample formats 
+defined for ALSA that can be utilized by drivers. DoP could be 
+implemented inside the driver or at ALSA layer instead of applications 
+doing it. Not that I would mind, but I would find it cleaner than the 
+current approach... :)
 
---WYTEVAkct0FjGQmd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Currently, ASIO is the only API to support DSD sample formats. I 
+understand that Microsoft or Apple is a slow to turn giant, but I'd hope 
+ALSA wouldn't be such. ;)
 
-On Thu, Mar 21, 2013 at 08:43:54PM +0100, Daniel Mack wrote:
-> Use the newly introduced mute_stream DAI operation, and don't mute the
-> codec if it's called for the _CAPTURE stream.
-
-Applied, thanks.
-
---WYTEVAkct0FjGQmd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRTC6+AAoJELSic+t+oim9QzoP/i8BjHGZz0cqaaHtT3UjHCLH
-BDxBBdEQokm6K9/LoeRXWRAgYhD1EkMkjDhaBcaUoGB+P++0VeCQnp/fb2u2z/EL
-njyxqLq/w8OOwFlJSgnP4fb/FZ6OQ0qb7JhD3mVFYLoitRR1tvsl+SqCw24RdT96
-ACAgehafdmpMBEJ9OUYWzWsIpcdhBl8kyBChdeZDct5mJcJplBywt0uGo6mWmgCJ
-NkaN/0RimdrNAyRrsF3glVga+mdlCWi1VQt+cWg9nZ1AoO0wczdxb1YrkASjSUMI
-VdXMGeanSKuAZQdJkJBU1OIUtXLTqTo2xLEZU/V204lrmoeF9/Qc9fXPR8piZFyu
-7FNYo6AgcXSIEEoPFg7gtNtR6vtAn5sdQCG/o8zL0vWHC0/Td8+YUmfXjnhVGx4P
-E4VsBdofVDiMX2Tb98LwrwxDvJ68lKdUNMQTgEsXblPwo522fiOp9eEKVlcFn+HP
-XyWZ59gU6NfqJTyKZxafUfNQx2e0Xj3N9xjeCx7zkcK0rrYFdcekBA8gfhyGenzw
-Trxwoa9PBiFzI8p2zmXA1XE5i5kzwyB6CY7A0woOWLA6nROcT46Cz6k/NCJuUh8a
-Q9SCwjAlCiugoLzTI6enBY81uOQwtGXQQTrTrd1+dY40/35C3Ff5olJUU2KraJzz
-8ZXgXJc3inYckxbtGgfH
-=gXkp
------END PGP SIGNATURE-----
-
---WYTEVAkct0FjGQmd--
-
---===============0800302945637241787==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+There are already those IEC958 and DD/dts things being used for movie 
+playback, so this wouldn't be such a big difference afterall.
 
 
---===============0800302945637241787==--
+	- Jussi
