@@ -1,18 +1,24 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: tegra: Does the PCM_TRIGGER_{PAUSE,
- RESUME} emulation really work?
-Date: Sat, 23 Mar 2013 11:00:50 +0100
-Message-ID: <514D7D52.5020504@metafoo.de>
-References: <514C8618.9070307@metafoo.de> <514CEAA5.4040505@wwwdotorg.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Support for DSD streams (was: Re: [PATCH 0/3] ALSA:
+ snd-usb: Some small fixes to make Playback Design products work)
+Date: Sat, 23 Mar 2013 12:31:07 +0100
+Message-ID: <514D927B.3080000@gmail.com>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net> <514C1215.9010708@gmail.com>
+ <514CB2E2.9050003@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-087.synserver.de (smtp-out-087.synserver.de
- [212.40.185.87])
- by alsa0.perex.cz (Postfix) with ESMTP id F1DDB26523E
- for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2013 10:58:50 +0100 (CET)
-In-Reply-To: <514CEAA5.4040505@wwwdotorg.org>
+Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
+ [209.85.214.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A1F0265264
+ for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2013 12:31:01 +0100 (CET)
+Received: by mail-bk0-f43.google.com with SMTP id jm19so2193466bkc.16
+ for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2013 04:31:01 -0700 (PDT)
+In-Reply-To: <514CB2E2.9050003@sonarnerd.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +28,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Laxman Dewangan <ldewangan@nvidia.com>
+To: Jussi Laako <jussi@sonarnerd.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/23/2013 12:35 AM, Stephen Warren wrote:
-> On 03/22/2013 10:26 AM, Lars-Peter Clausen wrote:
->> Hi,
->>
->> The tegra pcm driver tries to emulate SNDRV_PCM_TRIGGER_PAUSE and
->> SNDRV_PCM_TRIGGER_RESUME. By passing SNDRV_PCM_TRIGGER_START and
->> SNDRV_PCM_TRIGGER_STOP to snd_dmaengine_pcm_trigger. But does this really
->> work? The old non-dmaengine based driver implemented this properly. I'd
->> reset the dma position pointer for SNDRV_PCM_TRIGGER_START, but keep it
->> where it was for SNDRV_PCM_TRIGGER_RESUME. But as far as I can see with the
->> dmaengine based driver the pointer always gets reset to 0 for both
->> SNDRV_PCM_TRIGGER_START and SNDRV_PCM_TRIGGER_RESUME.
+Hi Jussi,
+
+On 22.03.2013 20:37, Jussi Laako wrote:
+> On 03/22/2013 10:11 AM, Daniel Mack wrote:
+>> Ah, interesting. So what *are* you using right now for your transport in
+>> userspace? Is your application abusing standard PCM interfaces that are
+>> 'known' to be in fact DSD? How do other DACs expose their interfaces in
+>> the Linux world, and which ones did you test your application with?
 > 
-> It's quite possible this hasn't been tested, or tested recently. I don't
-> recall how to test PAUSE/RESUME. Can you enlighten me?
+> Yes, it's abuse of PCM (hw) interface, I'm using the DoP specification 
+> as referred to in another post.
 
-Hm, I don't know of an application that is specificity designed to test
-pause/resume, but any application using snd_pcm_pause, should be fine.
+It's really new to me that there are active users for this sample
+format, and we should clean up the mess by cleanly marking such streams
+correctly in the drivers. But I'm still not sure about the current
+situation in terms of hardware support. So let's shed some light ...
 
-- Lars
+> All the DSD DACs that currently work 
+> with Linux support this. Quite many at the moment in fact and more 
+> coming all the time.
+
+Ok, but how do you know about which interfaces are capable of handling
+that? Are you maintaining a white list?
+
+And does that mean these devices are also wrongly believed to have
+additional PCM interfaces? IOW: do they only work as DSD, breaking all
+applications that believe that they can use all devices that expose a
+PCM interface?
+
+Can you show the contents of /proc/asound/cardX/stream0 for such a card
+maybe?
+
+> There's at least devices from Mytek, Fostex, Benchmark and Sonore/exD 
+> that work with this setup. And I believe also Chord, but I haven't got 
+> chance to test it yet.
+
+Can you provide the output of "lsusb -v" for any of these?
+
+> Mytek has a vendor specific interface (RigiSystems USBPAL) that could 
+> utilize a separate raw DSD sample format.
+> 
+> Plus I have some of my own experiments implementing DSD on an ARM based 
+> SoC where there's no need use DoP, but now I need to use custom hack for 
+> the raw data. Thus sooner there's some officially defined ALSA formats, 
+> less likely it becomes fragmented set of different incompatible hacks. 
+> That would be a headache and nightmare for application developers.
+
+I'm afraid that adding a DSD format and teaching the driver quirks for
+interfaces that are known to support DSD would break applications that
+already expect to see a usual PCM interface.
+
+To be precise: which SND_PCM_FORMAT_* does your application accept, and
+what happens if it sees  SND_PCM_FORMAT_SPECIAL?
+
+As for the driver, I would not go any further than marking the streams
+as DSD, without touching the payload. The marker bytes as described in
+the DoP document could be handled by some sort of libasound convenience
+function maybe though.
+
+
+
+Daniel
