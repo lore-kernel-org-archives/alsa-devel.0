@@ -1,14 +1,23 @@
-From: David Flater <vger@flaterco.com>
-Subject: [bug] sbawe: the PnP won't stop
-Date: Sat, 23 Mar 2013 22:25:18 -0400
-Message-ID: <514E640E.4060502@flaterco.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
+ make Playback Design products work
+Date: Sun, 24 Mar 2013 12:50:57 +0200
+Message-ID: <514EDA91.9000305@sonarnerd.net>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net> <514C1215.9010708@gmail.com>
+ <7.0.0.16.2.20130322082602.0605cbc0@akdesigninc.com>
+ <514E0A2A.1000201@sonarnerd.net>
+ <7.0.0.16.2.20130323183543.0605ddb0@akdesigninc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay03.pair.com (relay03.pair.com [209.68.5.17])
- by alsa0.perex.cz (Postfix) with SMTP id 00EA626161A
- for <alsa-devel@alsa-project.org>; Sun, 24 Mar 2013 03:25:22 +0100 (CET)
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9E8E265335
+ for <alsa-devel@alsa-project.org>; Sun, 24 Mar 2013 11:50:59 +0100 (CET)
+In-Reply-To: <7.0.0.16.2.20130323183543.0605ddb0@akdesigninc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,55 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andreas Koch <andreas@akdesigninc.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
 List-Id: alsa-devel@alsa-project.org
 
-I've got an ISA PnP SB AWE type card in a system with a non-working DMA 5.
-Without intervention, the Sound Blaster always gets the broken DMA.  I have
-no BIOS options to control the allocation of DMAs, and the PnP configuration
-done within ALSA ignores /etc/isapnp.conf [*].  DMA 6 works fine if I can get
-sbawe to stop re-initializing the PnP and just use it.
+On 03/24/2013 03:50 AM, Andreas Koch wrote:
+> rate for PCM. If you plug that DAC into a Mac, the Mac will
+> automatically select 705.6kHz for PCM and then nothing will work because
+> the DAC doesn't support that in PCM. So then, the DAC would have to
+> define 2 complete interfaces: one for PCM and one for DSD. That
 
-# Use setup from isapnp with dma16 moved to 6.
-modprobe snd-sbawe isapnp=0 port=0x220 mpu_port=0x330 fm_port=0x388 awe_port=0x620 irq=5 dma8=1 dma16=6
-modprobe snd-emu8000-synth
+OK, the difference is that I don't use UAC2 at all, but completely 
+different protocol. So what I'm talking about is only how it looks from 
+the driver towards the application...
 
-Problem is, regardless whether isapnp is 0 or 1, sbawe always PnPs the card
-and puts it back on broken DMA 5.  If I have already got the card correctly
-configured with /sbin/isapnp beforehand, sbawe leaves the original resources
-tied up as a ghost card and allocates again (/proc/dma):
+DoP could be implemented similar way inside the UAC driver using for 
+example snd_pcm_hw_rule_add() between SNDRV_PCM_HW_PARAM_FORMAT and 
+SNDRV_PCM_HW_PARAM_RATE. And maybe enabled as quirks?
 
- 1: SoundBlaster - 8bit
- 2: floppy
- 3: SoundBlaster - 8bit
- 4: cascade
- 5: SoundBlaster - 16bit
- 6: SoundBlaster - 16bit
+There are many devices having constraints between rate and channels. In 
+this case we just have a constraint between rate and formats.
 
-To get it working I ripped the following lines of code out of kernel 3.8.4,
-blocking PnP completely.  As for a proper nondestructive fix, I'm not sure
-whether the intent was (A) you were only supposed to get one of the two
-registrations, or (B) the PnP registration was not supposed to reinit
-everything if it was already set up.
-
---- sound/isa/sb/sb16.c~	2013-03-14 14:27:14.000000000 -0400
-+++ sound/isa/sb/sb16.c	2013-03-23 20:18:50.137987332 -0400
-@@ -674,13 +674,6 @@
- #ifdef CONFIG_PNP
- 	if (!err)
- 		isa_registered = 1;
--
--	err = pnp_register_card_driver(&sb16_pnpc_driver);
--	if (!err)
--		pnp_registered = 1;
--
--	if (isa_registered)
--		err = 0;
- #endif
- 	return err;
- }
+Looking at the UAC driver there seems to be something a bit related:
+                 /* FIXME: there is no AC3 format defined yet */
+                 // fp->formats = SNDRV_PCM_FMTBIT_AC3;
+                 fp->formats = SNDRV_PCM_FMTBIT_U8; /* temporary hack to 
+receive
+  byte streams */
 
 
-[*] So is there a different config file for PnP within ALSA?
-
--- DWF
+	- Jussi
