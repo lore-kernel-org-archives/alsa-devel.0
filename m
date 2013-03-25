@@ -1,63 +1,68 @@
-From: chris hermansen <clhermansen@gmail.com>
-Subject: Re: [alsa-devel] Audio-gd NFB-17.32 (VIA VT1731)
-Date: Mon, 25 Mar 2013 09:28:41 -0300
-Message-ID: <CACc2_6-KBbv9KsuaF=cDPceAXvV2FAJT1Abx5iTUs2-EXV+XEg@mail.gmail.com>
-References: <20130322215650.GF7539@pvv.ntnu.no>
-	<514DD773.8060408@guest.arnes.si> <514E3778.1050801@guest.arnes.si>
-	<20130324205326.GB776@pvv.ntnu.no>
-	<514FFEE8.4070300@googlemail.com>
-	<20130325094841.GB18838@pvv.ntnu.no>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [alsa-devel] channel swapping issue on OMAP3/TWL4030 is back
+Date: Mon, 25 Mar 2013 13:39:29 +0100
+Message-ID: <51504581.10400@ti.com>
+References: <alpine.DEB.2.01.1303220932150.7975@pmeerw.net> <alpine.DEB.2.01.1303221023070.7975@pmeerw.net> <514C2E5E.2040909@gmail.com> <alpine.DEB.2.01.1303221348250.7975@pmeerw.net> <514C56EA.7020304@ti.com> <20130322163506.GL30923@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <20130325094841.GB18838@pvv.ntnu.no>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Torstein Hegge <hegge@resisty.net>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20130322163506.GL30923@n2100.arm.linux.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>, Daniel Mack <zonque@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Torstein, Clemens, list:
+On 03/22/2013 05:35 PM, Russell King - ARM Linux wrote:
+> On Fri, Mar 22, 2013 at 02:04:42PM +0100, Peter Ujfalusi wrote:
+>> Russell: can we remove the tasklet use from dma-omap and start the D=
+MA right
+>> away in omap_dma_issue_pending()? This is the only way to prevent ch=
+annel
+>> swap when starting audio.
+>=20
+> What I fear is that we may run up against having too many DMA channel=
+s
+> tied up to the peripherals.  I structured the driver in this way to
+> allow us to move the physical DMA channel allocation to that tasklet
+> when that becomes a problem.
+>=20
+> Not only that but I was hoping to lift some more of this code out of
+> DMA engine drivers, so DMA engine drivers had even less code in them.
 
-On Mon, Mar 25, 2013 at 6:48 AM, Torstein Hegge <hegge@resisty.net> wrote:
-> On Mon, Mar 25, 2013 at 08:38:16 +0100, Clemens Ladisch wrote:
->> Torstein Hegge wrote:
->> > I think we can conclude that the VIA VT1731 has the same issue as the
->> > C-Media CM6631.
->> >
->> > I'll add the VT1731 as one of the devices that needs a reset after
->> > sample rate change in the next iteration of the sample rate workaround
->> > patch.
->>
->> Why not just do it for all UAC 2 devices?
->
-> If new devices that needs this just keeps popping up, that might indeed
-> be the better solution.
+Not sure what you mean by this. Move dmaengine core's issue_pending to =
+a
+tasklet or is only OMAP internal restructuring?
 
-For what my opinion is worth, this seems like the ideal solution to
-me.  It doesn't seem to introduce much additional overhead and it
-improves the behaviour of two interfaces / three physical devices of
-which we are aware.
+> I guess we could keep the tasklet, but mark the audio DMA channels as
+> "pre-reserved" and arrange for pre-reserved channels to avoid the
+> tasklet, rather than throwing the tasklet out completely.
 
-Is it worth testing such a "universal" application against devices
-known to work without it?  Do any of us have such a device?
+Not sure if we really want to pre-reserve the DMA channels for audio:
+on OMAP3 we have 5 McBSP -> 10 DMA channels
+on OMAP4 we have 4 McBSP, one McPDM, one DMIC and one McASP + we have t=
+he
+AESS/ABE -> 8 + 2 + 1 + 1 + 8 (AESS/ABE).
+Do we really want to pre-allocate DMA channel for all of these?
 
+We could look omap_chan.cyclic which gives good indication that the cha=
+nnel is
+used for audio since only audio is using cyclic mode.
 
+I have a patch which removes the tasklet from omap-dma.c and it is work=
+ing
+fine on my systems (OMAP3 Zoom2, BeagleBoard, OMAP4 PandBoard, OMAP4 Bl=
+aze).
+
+I can modify it to not remove the taskelt, but when the omap_chan.cycli=
+c is
+true we would instead of starting the tasklet we just start the DMA rig=
+ht away.
+
+--=20
+P=E9ter
 --
-Chris Hermansen =B7 clhermansen "at" gmail "dot" com
-
-C'est ma fa=E7on de parler.
-
----------------------------------------------------------------------------=
----
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_mar
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
