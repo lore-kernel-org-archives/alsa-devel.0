@@ -1,95 +1,127 @@
-From: Daniel Wagner <wagi@monom.org>
-Subject: ALSA regression Macbook Air 5,2: No sound from the loudspeaker
-Date: Mon, 25 Mar 2013 19:46:28 +0100
-Message-ID: <51509B84.2050106@monom.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: BUG: soft lockup when recording audio on MX28EVK
+	with ASoC sgtl5000
+Date: Mon, 25 Mar 2013 16:31:56 -0300
+Message-ID: <CAOMZO5CWE-Q0Oh_LnP3ZOcnm5D68rJ6JGun=Tpq4EbS4TDQ+bw@mail.gmail.com>
+References: <51502C87.8050902@digi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary=089e01228e42a460d804d8c4db8f
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f44.google.com (mail-vb0-f44.google.com
+ [209.85.212.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DCAF2625E2
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 20:31:58 +0100 (CET)
+Received: by mail-vb0-f44.google.com with SMTP id fr13so4172407vbb.3
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 12:31:57 -0700 (PDT)
+In-Reply-To: <51502C87.8050902@digi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hector Palacios <hector.palacios@digi.com>
+Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawn.guo@linaro.org>, Dong Aisheng <b29396@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--089e01228e42a460d804d8c4db8f
+Content-Type: text/plain; charset=UTF-8
 
-I experience a regression on my Macbook Air 2012 model with the 3.9-rc 
-kernels (v3.9-rc2-284-gaea8b5d) The symptoms are that there is just no 
-sound from the loudspeakers. The headphone output works fine.
+Hi Hector,
 
-I was able to pin point it down to one commit
+On Mon, Mar 25, 2013 at 7:52 AM, Hector Palacios
+<hector.palacios@digi.com> wrote:
+> Hello,
+>
+> I just tried recording audio on Freescale's MX28EVK that uses ASoC sgtl5000
+> (kernel v3.8) with:
+>
+>         arecord -M -f cd sound.wav --duration 10
+>
+> and got a scheduler message:
+>
+> [  789.041847] [sched_delayed] sched: RT throttling activated
 
-1077a024 "ALSA: hda - Use generic parser for Cirrus codec"
+I have just tested arecord on 3.8,4 and I haven't seen the 'soft lockup' bug.
 
-If I revert this one and all came back to work. By comparing the 
-alsa-info.txt output I figured that there is something wrong with the 
-GPIO settings on node 0x01:
+However, I see that mxs saif gets busy after the record and any
+attempt to do an 'aplay' after the first arecord fails.
 
-This is the excerpt with the previous patch mentioned reverted:
+With the attached patch applied I am able to do arecord/aplay sequence
+several times.
+
+I don't have a cable handy here to actually test if the sound is
+recorded properly or not.
+
+Could you please test it against 3.8.4?
+
+Thanks,
+
+Fabio Estevam
+
+--089e01228e42a460d804d8c4db8f
+Content-Type: application/octet-stream; name="0001-Do-not-check-busy.patch"
+Content-Disposition: attachment; filename="0001-Do-not-check-busy.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_heq1708a0
+
+RnJvbSBkZGU5OGJlZWMwZmZkZDg0ZDQ5N2I2MzkyM2NmMjZlOGM5YjBhNWM3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBGYWJpbyBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2Fs
+ZS5jb20+CkRhdGU6IE1vbiwgMjUgTWFyIDIwMTMgMTY6MjM6MDQgLTAzMDAKU3ViamVjdDogW1BB
+VENIXSBBU29DOiBteHMtc2FpZjogRG8gbm90IGNoZWNrIGZvciBCTV9TQUlGX1NUQVRfQlVTWQoK
+U2lnbmVkLW9mZi1ieTogRmFiaW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZhbUBmcmVlc2NhbGUuY29t
+PgotLS0KIHNvdW5kL3NvYy9teHMvbXhzLXNhaWYuYyB8ICAgMzAgKystLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbXhzL214cy1zYWlmLmMgYi9zb3VuZC9zb2Mv
+bXhzL214cy1zYWlmLmMKaW5kZXggMzY1ZDlkMi4uMTk4NmRlYiAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL214cy9teHMtc2FpZi5jCisrKyBiL3NvdW5kL3NvYy9teHMvbXhzLXNhaWYuYwpAQCAtMjA3
+LDE3ICsyMDcsMTAgQEAgc3RhdGljIGludCBteHNfc2FpZl9zZXRfY2xrKHN0cnVjdCBteHNfc2Fp
+ZiAqc2FpZiwKIGludCBteHNfc2FpZl9wdXRfbWNsayh1bnNpZ25lZCBpbnQgc2FpZl9pZCkKIHsK
+IAlzdHJ1Y3QgbXhzX3NhaWYgKnNhaWYgPSBteHNfc2FpZltzYWlmX2lkXTsKLQl1MzIgc3RhdDsK
+IAogCWlmICghc2FpZikKIAkJcmV0dXJuIC1FSU5WQUw7CiAKLQlzdGF0ID0gX19yYXdfcmVhZGwo
+c2FpZi0+YmFzZSArIFNBSUZfU1RBVCk7Ci0JaWYgKHN0YXQgJiBCTV9TQUlGX1NUQVRfQlVTWSkg
+ewotCQlkZXZfZXJyKHNhaWYtPmRldiwgImVycm9yOiBidXN5XG4iKTsKLQkJcmV0dXJuIC1FQlVT
+WTsKLQl9Ci0KIAljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpZi0+Y2xrKTsKIAogCS8qIGRpc2Fi
+bGUgTUNMSyBvdXRwdXQgKi8KQEAgLTI0MSw3ICsyMzQsNiBAQCBpbnQgbXhzX3NhaWZfZ2V0X21j
+bGsodW5zaWduZWQgaW50IHNhaWZfaWQsIHVuc2lnbmVkIGludCBtY2xrLAogCQkJCQl1bnNpZ25l
+ZCBpbnQgcmF0ZSkKIHsKIAlzdHJ1Y3QgbXhzX3NhaWYgKnNhaWYgPSBteHNfc2FpZltzYWlmX2lk
+XTsKLQl1MzIgc3RhdDsKIAlpbnQgcmV0OwogCXN0cnVjdCBteHNfc2FpZiAqbWFzdGVyX3NhaWY7
+CiAKQEAgLTI2MiwxMiArMjU0LDYgQEAgaW50IG14c19zYWlmX2dldF9tY2xrKHVuc2lnbmVkIGlu
+dCBzYWlmX2lkLCB1bnNpZ25lZCBpbnQgbWNsaywKIAkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCi0J
+c3RhdCA9IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX1NUQVQpOwotCWlmIChzdGF0ICYg
+Qk1fU0FJRl9TVEFUX0JVU1kpIHsKLQkJZGV2X2VycihzYWlmLT5kZXYsICJlcnJvcjogYnVzeVxu
+Iik7Ci0JCXJldHVybiAtRUJVU1k7Ci0JfQotCiAJc2FpZi0+bWNsa19pbl91c2UgPSAxOwogCXJl
+dCA9IG14c19zYWlmX3NldF9jbGsoc2FpZiwgbWNsaywgcmF0ZSk7CiAJaWYgKHJldCkKQEAgLTI5
+MSwxNiArMjc3LDEwIEBAIEVYUE9SVF9TWU1CT0xfR1BMKG14c19zYWlmX2dldF9tY2xrKTsKICAq
+Lwogc3RhdGljIGludCBteHNfc2FpZl9zZXRfZGFpX2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNw
+dV9kYWksIHVuc2lnbmVkIGludCBmbXQpCiB7Ci0JdTMyIHNjciwgc3RhdDsKKwl1MzIgc2NyOwog
+CXUzMiBzY3IwOwogCXN0cnVjdCBteHNfc2FpZiAqc2FpZiA9IHNuZF9zb2NfZGFpX2dldF9kcnZk
+YXRhKGNwdV9kYWkpOwogCi0Jc3RhdCA9IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX1NU
+QVQpOwotCWlmIChzdGF0ICYgQk1fU0FJRl9TVEFUX0JVU1kpIHsKLQkJZGV2X2VycihjcHVfZGFp
+LT5kZXYsICJlcnJvcjogYnVzeVxuIik7Ci0JCXJldHVybiAtRUJVU1k7Ci0JfQotCiAJc2NyMCA9
+IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX0NUUkwpOwogCXNjcjAgPSBzY3IwICYgfkJN
+X1NBSUZfQ1RSTF9CSVRDTEtfRURHRSAmIH5CTV9TQUlGX0NUUkxfTFJDTEtfUE9MQVJJVFkgXAog
+CQkmIH5CTV9TQUlGX0NUUkxfSlVTVElGWSAmIH5CTV9TQUlGX0NUUkxfREVMQVk7CkBAIC0zOTcs
+NyArMzc3LDcgQEAgc3RhdGljIGludCBteHNfc2FpZl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21f
+c3Vic3RyZWFtICpzdWJzdHJlYW0sCiB7CiAJc3RydWN0IG14c19zYWlmICpzYWlmID0gc25kX3Nv
+Y19kYWlfZ2V0X2RydmRhdGEoY3B1X2RhaSk7CiAJc3RydWN0IG14c19zYWlmICptYXN0ZXJfc2Fp
+ZjsKLQl1MzIgc2NyLCBzdGF0OworCXUzMiBzY3I7CiAJaW50IHJldDsKIAogCW1hc3Rlcl9zYWlm
+ID0gbXhzX3NhaWZfZ2V0X21hc3RlcihzYWlmKTsKQEAgLTQxMCwxMiArMzkwLDYgQEAgc3RhdGlj
+IGludCBteHNfc2FpZl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
+YW0sCiAJCXJldHVybiAtRUlOVkFMOwogCX0KIAotCXN0YXQgPSBfX3Jhd19yZWFkbChzYWlmLT5i
+YXNlICsgU0FJRl9TVEFUKTsKLQlpZiAoc3RhdCAmIEJNX1NBSUZfU1RBVF9CVVNZKSB7Ci0JCWRl
+dl9lcnIoY3B1X2RhaS0+ZGV2LCAiZXJyb3I6IGJ1c3lcbiIpOwotCQlyZXR1cm4gLUVCVVNZOwot
+CX0KLQogCS8qCiAJICogU2V0IHNhaWYgY2xrIGJhc2VkIG9uIHNhbXBsZSByYXRlLgogCSAqIElm
+IG1jbGsgaXMgdXNlZCwgd2UgYWxzbyBzZXQgbWNsaywgaWYgbm90LCBzYWlmLT5tY2xrIGlzCi0t
+IAoxLjcuOS41Cgo=
+--089e01228e42a460d804d8c4db8f
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Codec: Cirrus Logic CS4206
-Address: 0
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x10134206
-Subsystem Id: 0x106b5600
-Revision Id: 0x100302
-No Modem Function Group found
-Default PCM:
-     rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-     bits [0x1e]: 16 20 24 32
-     formats [0x3]: PCM FLOAT
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-   Power states:  D0 D3 CLKSTOP EPSS
-   Power: setting=D0, actual=D0
-GPIO: io=4, o=0, i=0, unsolicited=0, wake=0
-   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[1]: enable=1, dir=1, wake=0, sticky=0, data=0, unsol=0
-   IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[3]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
-
-
-and here the output vanilla kernel:
-
-
-Codec: Cirrus Logic CS4206
-Address: 0
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x10134206
-Subsystem Id: 0x106b5600
-Revision Id: 0x100302
-No Modem Function Group found
-Default PCM:
-     rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-     bits [0x1e]: 16 20 24 32
-     formats [0x3]: PCM FLOAT
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-   Power states:  D0 D3 CLKSTOP EPSS
-   Power: setting=D0, actual=D0
-GPIO: io=4, o=0, i=0, unsolicited=0, wake=0
-   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[1]: enable=1, dir=1, wake=0, sticky=0, data=0, unsol=0
-   IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[3]: enable=1, dir=1, wake=0, sticky=0, data=0, unsol=0
-
-
-The diff is "IO[3] data=1 vs data=0". I used then the patch function 
-from the awesome hda-analyzer tool to patch this on the vanilla kernel 
-and there suddenly I have output from the speakers.
-
-I don't know if someone else has reported this already or if there is 
-already a fix. I was without internet for few days and didn't report 
-this in time. If that is the case, sorry for the noise.
-
-
-The complete logs from hda-analyzer are here:
-
-http://www.monom.org/misc/alsa/alsa-info.txt-v3.9-rc2-284-gaea8b5d
-http://www.monom.org/misc/alsa/alsa-info.txt-revert-1077a024
-
-
-cheers,
-daniel
+--089e01228e42a460d804d8c4db8f--
