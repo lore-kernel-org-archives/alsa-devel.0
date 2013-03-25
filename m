@@ -1,18 +1,20 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 09/14] ASoC: atmel-pcm-dma: Do not use
-	snd_dmaengine_pcm_{set, get}_data()
-Date: Mon, 25 Mar 2013 16:39:04 +0800
-Message-ID: <51500D28.9080607@atmel.com>
-References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
- <1363957934-20059-10-git-send-email-lars@metafoo.de>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: [Alsa-user]  Audio-gd NFB-17.32 (VIA VT1731)
+Date: Mon, 25 Mar 2013 10:48:41 +0100
+Message-ID: <20130325094841.GB18838@pvv.ntnu.no>
+References: <20130322215650.GF7539@pvv.ntnu.no>
+ <514DD773.8060408@guest.arnes.si> <514E3778.1050801@guest.arnes.si>
+ <20130324205326.GB776@pvv.ntnu.no>
+ <514FFEE8.4070300@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E542261694
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 09:39:10 +0100 (CET)
-In-Reply-To: <1363957934-20059-10-git-send-email-lars@metafoo.de>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 935E7261694
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 10:48:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <514FFEE8.4070300@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,82 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Clemens Ladisch <cladisch@googlemail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+On Mon, Mar 25, 2013 at 08:38:16 +0100, Clemens Ladisch wrote:
+> Torstein Hegge wrote:
+> > I think we can conclude that the VIA VT1731 has the same issue as the
+> > C-Media CM6631.
+> >
+> > I'll add the VT1731 as one of the devices that needs a reset after
+> > sample rate change in the next iteration of the sample rate workaround
+> > patch.
+> 
+> Why not just do it for all UAC 2 devices?
 
-On 3/22/2013 21:12, Lars-Peter Clausen wrote:
-> We want to get rid of snd_dmaengine_pcm_{set,get}_data(). All instances of
-> snd_dmaengine_pcm_get_data() in the atmel pcm driver can easily be replaced with
-> snd_soc_dai_get_dma_data().
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Bo Shen <voice.shen@atmel.com>
+If new devices that needs this just keeps popping up, that might indeed
+be the better solution.
 
-Tested-by: Bo Shen <voice.shen@atmel.com>
-Acked-by: Bo Shen <voice.shen@atmel.com>
 
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> ---
->   sound/soc/atmel/atmel-pcm-dma.c | 14 ++++++--------
->   1 file changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-> index 396bf78..b8570e3 100644
-> --- a/sound/soc/atmel/atmel-pcm-dma.c
-> +++ b/sound/soc/atmel/atmel-pcm-dma.c
-> @@ -67,9 +67,10 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
->   static void atmel_pcm_dma_irq(u32 ssc_sr,
->   	struct snd_pcm_substream *substream)
->   {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct atmel_pcm_dma_params *prtd;
->
-> -	prtd = snd_dmaengine_pcm_get_data(substream);
-> +	prtd = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
->
->   	if (ssc_sr & prtd->mask->ssc_error) {
->   		if (snd_pcm_running(substream))
-> @@ -104,15 +105,13 @@ static bool filter(struct dma_chan *chan, void *slave)
->   }
->
->   static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
-> -	struct snd_pcm_hw_params *params)
-> +	struct snd_pcm_hw_params *params, struct atmel_pcm_dma_params *prtd)
->   {
-> -	struct atmel_pcm_dma_params *prtd;
->   	struct ssc_device *ssc;
->   	struct dma_chan *dma_chan;
->   	struct dma_slave_config slave_config;
->   	int ret;
->
-> -	prtd = snd_dmaengine_pcm_get_data(substream);
->   	ssc = prtd->ssc;
->
->   	ret = snd_hwparams_to_dma_slave_config(substream, params,
-> @@ -164,9 +163,7 @@ static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
->   		return -EINVAL;
->   	}
->
-> -	snd_dmaengine_pcm_set_data(substream, prtd);
-> -
-> -	ret = atmel_pcm_configure_dma(substream, params);
-> +	ret = atmel_pcm_configure_dma(substream, params, prtd);
->   	if (ret) {
->   		pr_err("atmel-pcm: failed to configure dmai\n");
->   		goto err;
-> @@ -182,9 +179,10 @@ err:
->
->   static int atmel_pcm_dma_prepare(struct snd_pcm_substream *substream)
->   {
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct atmel_pcm_dma_params *prtd;
->
-> -	prtd = snd_dmaengine_pcm_get_data(substream);
-> +	prtd = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
->
->   	ssc_writex(prtd->ssc->regs, SSC_IER, prtd->mask->ssc_error);
->   	ssc_writex(prtd->ssc->regs, SSC_CR, prtd->mask->ssc_enable);
->
+Torstein
