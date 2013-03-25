@@ -1,72 +1,63 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 22/54 v2] ASoC: switch over to use
- snd_soc_register_component() on jz4740 i2s
-Date: Mon, 25 Mar 2013 11:48:36 +0100
-Message-ID: <51502B84.9040909@metafoo.de>
-References: <87txo96xiu.wl%kuninori.morimoto.gx@renesas.com>
- <8738vpf3qd.wl%kuninori.morimoto.gx@renesas.com>
- <877gl1dow7.wl%kuninori.morimoto.gx@renesas.com>
+From: chris hermansen <clhermansen@gmail.com>
+Subject: Re: [alsa-devel] Audio-gd NFB-17.32 (VIA VT1731)
+Date: Mon, 25 Mar 2013 09:28:41 -0300
+Message-ID: <CACc2_6-KBbv9KsuaF=cDPceAXvV2FAJT1Abx5iTUs2-EXV+XEg@mail.gmail.com>
+References: <20130322215650.GF7539@pvv.ntnu.no>
+	<514DD773.8060408@guest.arnes.si> <514E3778.1050801@guest.arnes.si>
+	<20130324205326.GB776@pvv.ntnu.no>
+	<514FFEE8.4070300@googlemail.com>
+	<20130325094841.GB18838@pvv.ntnu.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-222.synserver.de (smtp-out-222.synserver.de
- [212.40.185.222])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BD88261694
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 11:46:29 +0100 (CET)
-In-Reply-To: <877gl1dow7.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Simon <horms@verge.net.au>, Liam Girdwood <liam.r.girdwood@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <20130325094841.GB18838@pvv.ntnu.no>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Torstein Hegge <hegge@resisty.net>
+Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2013 11:32 AM, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Torstein, Clemens, list:
 
-> ---
->  sound/soc/jz4740/jz4740-i2s.c |    9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-> index 6cef491..9a12644 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -425,6 +425,10 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
->  	.resume = jz4740_i2s_resume,
->  };
->  
-> +static const struct snd_soc_component_driver jz4740_i2s_component = {
-> +	.name		= "jz4740-i2s",
-> +};
-> +
->  static int jz4740_i2s_dev_probe(struct platform_device *pdev)
->  {
->  	struct jz4740_i2s *i2s;
-> @@ -469,7 +473,8 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
->  	}
->  
->  	platform_set_drvdata(pdev, i2s);
-> -	ret = snd_soc_register_dai(&pdev->dev, &jz4740_i2s_dai);
-> +	ret = snd_soc_register_component(&pdev->dev, &jz4740_i2s_component,
-> +					 &jz4740_i2s_dai, 1);
->  
->  	if (ret) {
->  		dev_err(&pdev->dev, "Failed to register DAI\n");
-> @@ -496,7 +501,7 @@ static int jz4740_i2s_dev_remove(struct platform_device *pdev)
->  {
->  	struct jz4740_i2s *i2s = platform_get_drvdata(pdev);
->  
-> -	snd_soc_unregister_dai(&pdev->dev);
-> +	snd_soc_unregister_component(&pdev->dev);
->  
->  	clk_put(i2s->clk_i2s);
->  	clk_put(i2s->clk_aic);
+On Mon, Mar 25, 2013 at 6:48 AM, Torstein Hegge <hegge@resisty.net> wrote:
+> On Mon, Mar 25, 2013 at 08:38:16 +0100, Clemens Ladisch wrote:
+>> Torstein Hegge wrote:
+>> > I think we can conclude that the VIA VT1731 has the same issue as the
+>> > C-Media CM6631.
+>> >
+>> > I'll add the VT1731 as one of the devices that needs a reset after
+>> > sample rate change in the next iteration of the sample rate workaround
+>> > patch.
+>>
+>> Why not just do it for all UAC 2 devices?
+>
+> If new devices that needs this just keeps popping up, that might indeed
+> be the better solution.
+
+For what my opinion is worth, this seems like the ideal solution to
+me.  It doesn't seem to introduce much additional overhead and it
+improves the behaviour of two interfaces / three physical devices of
+which we are aware.
+
+Is it worth testing such a "universal" application against devices
+known to work without it?  Do any of us have such a device?
+
+
+--
+Chris Hermansen =B7 clhermansen "at" gmail "dot" com
+
+C'est ma fa=E7on de parler.
+
+---------------------------------------------------------------------------=
+---
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
