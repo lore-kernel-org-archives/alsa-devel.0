@@ -1,127 +1,212 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: BUG: soft lockup when recording audio on MX28EVK
-	with ASoC sgtl5000
-Date: Mon, 25 Mar 2013 16:31:56 -0300
-Message-ID: <CAOMZO5CWE-Q0Oh_LnP3ZOcnm5D68rJ6JGun=Tpq4EbS4TDQ+bw@mail.gmail.com>
-References: <51502C87.8050902@digi.com>
+From: Matt Sealey <matt@genesi-usa.com>
+Subject: Re: [PATCH V2] Sound: sgtl5000 Allow codec clock frequency to be set.
+Date: Mon, 25 Mar 2013 15:22:30 -0500
+Message-ID: <CAKGA1bnFiwECxr=2aja-WQVp+Qbr8ULzUmbZsEgSFOQV+nt7wg@mail.gmail.com>
+References: <20130322093344.20605.49509.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=089e01228e42a460d804d8c4db8f
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f44.google.com (mail-vb0-f44.google.com
- [209.85.212.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DCAF2625E2
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 20:31:58 +0100 (CET)
-Received: by mail-vb0-f44.google.com with SMTP id fr13so4172407vbb.3
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 12:31:57 -0700 (PDT)
-In-Reply-To: <51502C87.8050902@digi.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hector Palacios <hector.palacios@digi.com>
-Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawn.guo@linaro.org>, Dong Aisheng <b29396@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20130322093344.20605.49509.stgit@localhost>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Martin Fuzzey <mfuzzey@parkeon.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Linux ARM Kernel ML <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
---089e01228e42a460d804d8c4db8f
-Content-Type: text/plain; charset=UTF-8
+I'm a little confused why there need to be 3 different alternative bindings.
 
-Hi Hector,
+The first is valid (phandle only), the second is redundant
+(clock-frequency only) - why not just REQUIRE a clock phandle? There
+is not a single use case where you supply a valid clock on the PCB but
+cannot write it's frequency into a 3-line DT node, except in allowing
+non-internally-consistent device trees (which I frown at :)
 
-On Mon, Mar 25, 2013 at 7:52 AM, Hector Palacios
-<hector.palacios@digi.com> wrote:
-> Hello,
+I can think of several reasons I don't like the 3rd way (dynamic
+clock, phandle+frequency) because it implies lack of trust in the
+bootloader and/or early platform init code... that said since you need
+the frequency value to configure the codec, you either get it from the
+clock (but it may not be valid) or you force a value upon it from
+clock-frequency.. I would like a little warning, maybe, that the
+expected clock-frequency was not available at the time it read the
+value from the phandle, since this would allow sgtl5000-using hardware
+designers and linux implementers to know immediately that they have
+missed something important (bootloader setup of the codec clock).
+
+It's rare that any real hardware design house would leave a clock like
+that unconfigured as being able to test the frequency from whatever
+source and how clean it is and what the levels are for debugging is
+easier done in the bootloader than with an operating system running
+(re power management etc.) but for the cases where we, for want of a
+better way of describing it, forgot to actually set it up.. it should
+still really, really be in the bootloader and bitching about it.
+
+I wholeheartedly support the third method (clock+freq) in the hope
+that it forces bootloader developers to properly configure fixed
+clocks (such as the codec clock which is very hard to change at
+runtime) at boot, before the OS has any need for it (and to relieve it
+of the task of setting the clock frequency), but on the basis that
+eventually people would get a clue or get their task list in order for
+bootloader support and make it redundant (at which point it could be
+removed..).
+
+Second method (just the frequency alone) has to go away though in my
+opinion, third way should be considered a "legacy" check in migration
+from non-DT to DT support.
+
+-- 
+Matt Sealey <matt@genesi-usa.com>
+Product Development Analyst, Genesi USA, Inc.
+
+
+On Fri, Mar 22, 2013 at 4:33 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
+> Currently the sgtl5000 driver allows its clock to be
+> specified either as a raw frequency using "clock-frequency"
+> in the device tree (the original method) or, since commit
+> 81e8e49 "ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000",
+> as a preconfigured clock from the device tree.
 >
-> I just tried recording audio on Freescale's MX28EVK that uses ASoC sgtl5000
-> (kernel v3.8) with:
+> This patch adds, in addition to the existing methods,
+> the possibility to use a rate configurable clock from the
+> device tree and actually set its rate.
 >
->         arecord -M -f cd sound.wav --duration 10
+> This is done by specifiying both clocks and clock-frequency
+> in the driver's DT node.
 >
-> and got a scheduler message:
+> This is useful when a programmable clock is used as the codec clock.
 >
-> [  789.041847] [sched_delayed] sched: RT throttling activated
-
-I have just tested arecord on 3.8,4 and I haven't seen the 'soft lockup' bug.
-
-However, I see that mxs saif gets busy after the record and any
-attempt to do an 'aplay' after the first arecord fails.
-
-With the attached patch applied I am able to do arecord/aplay sequence
-several times.
-
-I don't have a cable handy here to actually test if the sound is
-recorded properly or not.
-
-Could you please test it against 3.8.4?
-
-Thanks,
-
-Fabio Estevam
-
---089e01228e42a460d804d8c4db8f
-Content-Type: application/octet-stream; name="0001-Do-not-check-busy.patch"
-Content-Disposition: attachment; filename="0001-Do-not-check-busy.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_heq1708a0
-
-RnJvbSBkZGU5OGJlZWMwZmZkZDg0ZDQ5N2I2MzkyM2NmMjZlOGM5YjBhNWM3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBGYWJpbyBFc3RldmFtIDxmYWJpby5lc3RldmFtQGZyZWVzY2Fs
-ZS5jb20+CkRhdGU6IE1vbiwgMjUgTWFyIDIwMTMgMTY6MjM6MDQgLTAzMDAKU3ViamVjdDogW1BB
-VENIXSBBU29DOiBteHMtc2FpZjogRG8gbm90IGNoZWNrIGZvciBCTV9TQUlGX1NUQVRfQlVTWQoK
-U2lnbmVkLW9mZi1ieTogRmFiaW8gRXN0ZXZhbSA8ZmFiaW8uZXN0ZXZhbUBmcmVlc2NhbGUuY29t
-PgotLS0KIHNvdW5kL3NvYy9teHMvbXhzLXNhaWYuYyB8ICAgMzAgKystLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyOCBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbXhzL214cy1zYWlmLmMgYi9zb3VuZC9zb2Mv
-bXhzL214cy1zYWlmLmMKaW5kZXggMzY1ZDlkMi4uMTk4NmRlYiAxMDA2NDQKLS0tIGEvc291bmQv
-c29jL214cy9teHMtc2FpZi5jCisrKyBiL3NvdW5kL3NvYy9teHMvbXhzLXNhaWYuYwpAQCAtMjA3
-LDE3ICsyMDcsMTAgQEAgc3RhdGljIGludCBteHNfc2FpZl9zZXRfY2xrKHN0cnVjdCBteHNfc2Fp
-ZiAqc2FpZiwKIGludCBteHNfc2FpZl9wdXRfbWNsayh1bnNpZ25lZCBpbnQgc2FpZl9pZCkKIHsK
-IAlzdHJ1Y3QgbXhzX3NhaWYgKnNhaWYgPSBteHNfc2FpZltzYWlmX2lkXTsKLQl1MzIgc3RhdDsK
-IAogCWlmICghc2FpZikKIAkJcmV0dXJuIC1FSU5WQUw7CiAKLQlzdGF0ID0gX19yYXdfcmVhZGwo
-c2FpZi0+YmFzZSArIFNBSUZfU1RBVCk7Ci0JaWYgKHN0YXQgJiBCTV9TQUlGX1NUQVRfQlVTWSkg
-ewotCQlkZXZfZXJyKHNhaWYtPmRldiwgImVycm9yOiBidXN5XG4iKTsKLQkJcmV0dXJuIC1FQlVT
-WTsKLQl9Ci0KIAljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpZi0+Y2xrKTsKIAogCS8qIGRpc2Fi
-bGUgTUNMSyBvdXRwdXQgKi8KQEAgLTI0MSw3ICsyMzQsNiBAQCBpbnQgbXhzX3NhaWZfZ2V0X21j
-bGsodW5zaWduZWQgaW50IHNhaWZfaWQsIHVuc2lnbmVkIGludCBtY2xrLAogCQkJCQl1bnNpZ25l
-ZCBpbnQgcmF0ZSkKIHsKIAlzdHJ1Y3QgbXhzX3NhaWYgKnNhaWYgPSBteHNfc2FpZltzYWlmX2lk
-XTsKLQl1MzIgc3RhdDsKIAlpbnQgcmV0OwogCXN0cnVjdCBteHNfc2FpZiAqbWFzdGVyX3NhaWY7
-CiAKQEAgLTI2MiwxMiArMjU0LDYgQEAgaW50IG14c19zYWlmX2dldF9tY2xrKHVuc2lnbmVkIGlu
-dCBzYWlmX2lkLCB1bnNpZ25lZCBpbnQgbWNsaywKIAkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCi0J
-c3RhdCA9IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX1NUQVQpOwotCWlmIChzdGF0ICYg
-Qk1fU0FJRl9TVEFUX0JVU1kpIHsKLQkJZGV2X2VycihzYWlmLT5kZXYsICJlcnJvcjogYnVzeVxu
-Iik7Ci0JCXJldHVybiAtRUJVU1k7Ci0JfQotCiAJc2FpZi0+bWNsa19pbl91c2UgPSAxOwogCXJl
-dCA9IG14c19zYWlmX3NldF9jbGsoc2FpZiwgbWNsaywgcmF0ZSk7CiAJaWYgKHJldCkKQEAgLTI5
-MSwxNiArMjc3LDEwIEBAIEVYUE9SVF9TWU1CT0xfR1BMKG14c19zYWlmX2dldF9tY2xrKTsKICAq
-Lwogc3RhdGljIGludCBteHNfc2FpZl9zZXRfZGFpX2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNw
-dV9kYWksIHVuc2lnbmVkIGludCBmbXQpCiB7Ci0JdTMyIHNjciwgc3RhdDsKKwl1MzIgc2NyOwog
-CXUzMiBzY3IwOwogCXN0cnVjdCBteHNfc2FpZiAqc2FpZiA9IHNuZF9zb2NfZGFpX2dldF9kcnZk
-YXRhKGNwdV9kYWkpOwogCi0Jc3RhdCA9IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX1NU
-QVQpOwotCWlmIChzdGF0ICYgQk1fU0FJRl9TVEFUX0JVU1kpIHsKLQkJZGV2X2VycihjcHVfZGFp
-LT5kZXYsICJlcnJvcjogYnVzeVxuIik7Ci0JCXJldHVybiAtRUJVU1k7Ci0JfQotCiAJc2NyMCA9
-IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX0NUUkwpOwogCXNjcjAgPSBzY3IwICYgfkJN
-X1NBSUZfQ1RSTF9CSVRDTEtfRURHRSAmIH5CTV9TQUlGX0NUUkxfTFJDTEtfUE9MQVJJVFkgXAog
-CQkmIH5CTV9TQUlGX0NUUkxfSlVTVElGWSAmIH5CTV9TQUlGX0NUUkxfREVMQVk7CkBAIC0zOTcs
-NyArMzc3LDcgQEAgc3RhdGljIGludCBteHNfc2FpZl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0sCiB7CiAJc3RydWN0IG14c19zYWlmICpzYWlmID0gc25kX3Nv
-Y19kYWlfZ2V0X2RydmRhdGEoY3B1X2RhaSk7CiAJc3RydWN0IG14c19zYWlmICptYXN0ZXJfc2Fp
-ZjsKLQl1MzIgc2NyLCBzdGF0OworCXUzMiBzY3I7CiAJaW50IHJldDsKIAogCW1hc3Rlcl9zYWlm
-ID0gbXhzX3NhaWZfZ2V0X21hc3RlcihzYWlmKTsKQEAgLTQxMCwxMiArMzkwLDYgQEAgc3RhdGlj
-IGludCBteHNfc2FpZl9od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
-YW0sCiAJCXJldHVybiAtRUlOVkFMOwogCX0KIAotCXN0YXQgPSBfX3Jhd19yZWFkbChzYWlmLT5i
-YXNlICsgU0FJRl9TVEFUKTsKLQlpZiAoc3RhdCAmIEJNX1NBSUZfU1RBVF9CVVNZKSB7Ci0JCWRl
-dl9lcnIoY3B1X2RhaS0+ZGV2LCAiZXJyb3I6IGJ1c3lcbiIpOwotCQlyZXR1cm4gLUVCVVNZOwot
-CX0KLQogCS8qCiAJICogU2V0IHNhaWYgY2xrIGJhc2VkIG9uIHNhbXBsZSByYXRlLgogCSAqIElm
-IG1jbGsgaXMgdXNlZCwgd2UgYWxzbyBzZXQgbWNsaywgaWYgbm90LCBzYWlmLT5tY2xrIGlzCi0t
-IAoxLjcuOS41Cgo=
---089e01228e42a460d804d8c4db8f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---089e01228e42a460d804d8c4db8f--
+> Signed-off-by: Martin Fuzzey <mfuzzey@parkeon.com>
+> ---
+> Changelog:
+> V2 - Improved binding document and patch description following
+> remarks from Timur Tabi.
+> ---
+>  .../devicetree/bindings/sound/sgtl5000.txt         |   59 ++++++++++++++++++++
+>  sound/soc/fsl/imx-sgtl5000.c                       |   20 +++++--
+>  2 files changed, 75 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> index 9cc4444..f586ba7 100644
+> --- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> +++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> @@ -5,9 +5,68 @@ Required properties:
+>
+>  - reg : the I2C address of the device
+>
+> +Optional properties:
+> +- clocks:              phandle to of codec clock
+> +- clock-frequency:     clock frequency to set or use (see below)
+> +
+> +If a clock is provided, clock-frequency is optional
+> +
+> +If no clock is provided clock-frequency is required (this represents the codec
+> +being clocked by an external signal not present in the clock tree)
+> +
+> +If both a clock and clock-frequency are provided clock must support
+> +the set_rate operation and its frequency will be set to the value specified
+> +by clock-frequency
+> +
+> +
+> +Hence the possible configurations and their use cases are:
+> +
+> +1) only 'clocks' specified
+> +clock points to a clock specified in the DT which already has an
+> +appropriate frequency and is configured by some other means external to the
+> +sgtl5000 driver (bootloader, board setup code, or just a fixed rate clock)
+> +
+> +Example:
+> +clocks {
+> +       audioclk: ext20Mz {
+> +               compatible = "fixed-clock";
+> +               clock-frequency = <20000000>;
+> +       };
+> +};
+> +
+> +codec: sgtl5000@0a {
+> +       compatible = "fsl,sgtl5000";
+> +       reg = <0x0a>;
+> +       clocks = <&audioclk>; /* cko1 */
+> +};
+> +
+> +
+> +2) only 'clock-frequency' specified
+> +The chip is assumed to be clocked by a signal having the given
+> +frequency, which may even be generated by a clock unknown to linux.
+> +This could actually be represented as a special case of 1) by defining a
+> +fixed-rate clock in the DT.
+> +
+> +Example:
+> +
+> +codec: sgtl5000@0a {
+> +       compatible = "fsl,sgtl5000";
+> +       reg = <0x0a>;
+> +       clock-frequency = <20000000>;
+> +};
+> +
+> +
+> +3) Both 'clocks' and 'clock-frequency' specified
+> +The chip is assumed to be clocked by a rate programmable clock defined
+> +in the clock tree.
+> +clk_set_rate() will be called for this clock to set its rate to that
+> +specified by clock-frequency
+> +
+>  Example:
+>
+>  codec: sgtl5000@0a {
+>         compatible = "fsl,sgtl5000";
+>         reg = <0x0a>;
+> +       clocks = <&clks 162>; /* cko1 */
+> +       clock-frequency = <20000000>;
+>  };
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index 424347e..71ce1f6 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -128,18 +128,30 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>                 goto fail;
+>         }
+>
+> +       ret = of_property_read_u32(codec_np, "clock-frequency",
+> +                                       &data->clk_frequency);
+>         data->codec_clk = clk_get(&codec_dev->dev, NULL);
+> +
+>         if (IS_ERR(data->codec_clk)) {
+> -               /* assuming clock enabled by default */
+> +               /* assuming clock enabled by default (frequency required) */
+>                 data->codec_clk = NULL;
+> -               ret = of_property_read_u32(codec_np, "clock-frequency",
+> -                                       &data->clk_frequency);
+> -               if (ret) {
+> +               if (!data->clk_frequency) {
+>                         dev_err(&codec_dev->dev,
+>                                 "clock-frequency missing or invalid\n");
+>                         goto fail;
+>                 }
+>         } else {
+> +               if (data->clk_frequency) {
+> +                       ret = clk_set_rate(
+> +                                       data->codec_clk, data->clk_frequency);
+> +                       if (ret) {
+> +                               dev_err(&codec_dev->dev,
+> +                                       "failed to set clock-frequency to %u\n",
+> +                                       data->clk_frequency);
+> +                               goto fail;
+> +                       }
+> +               }
+> +
+>                 data->clk_frequency = clk_get_rate(data->codec_clk);
+>                 clk_prepare_enable(data->codec_clk);
+>         }
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
