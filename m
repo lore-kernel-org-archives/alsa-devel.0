@@ -1,223 +1,65 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 3/4] ALSA: CA0132: Add latency monitoring
-Date: Mon, 25 Mar 2013 10:47:31 -0700
-Message-ID: <CAEUnVG5t5MHWbYRDnFW268cekt5bVGe6=-ba7uzW+5xn1h1uiA@mail.gmail.com>
-References: <1360377105-2480-1-git-send-email-ian_minett@creativelabs.com>
- <1360377105-2480-4-git-send-email-ian_minett@creativelabs.com>
- <s5hehgozbl5.wl%tiwai@suse.de>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: tegra: add Tegra114 support to the AHUB driver
+Date: Mon, 25 Mar 2013 18:32:00 +0000
+Message-ID: <20130325183159.GS18316@opensource.wolfsonmicro.com>
+References: <1363895802-20484-1-git-send-email-swarren@wwwdotorg.org>
+ <20130325155232.GR18316@opensource.wolfsonmicro.com>
+ <515078F9.1070800@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f46.google.com (mail-ee0-f46.google.com [74.125.83.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 53B402625DE
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 18:47:52 +0100 (CET)
-Received: by mail-ee0-f46.google.com with SMTP id e49so3315993eek.5
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 10:47:52 -0700 (PDT)
-In-Reply-To: <s5hehgozbl5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ian Minett <ian_minett@creativelabs.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZcSDOt7TZFizttpn"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <515078F9.1070800-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 10, 2013 at 2:51 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 8 Feb 2013 18:31:44 -0800,
-> Ian Minett wrote:
->>
->> From: Ian Minett <ian_minett@creativelabs.com>
->>
->> Add latency monitoring for playback, capture and DSP effects.
->
-> Please give a bit more descriptions.
-> Looking at the patch, it doesn't implement only the latency monitoring
-> but actually reflecting to the runtime->delay.
->
-> Also..
->
->
->> Signed-off-by: Ian Minett <ian_minett@creativelabs.com>
->>
->> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
->> index b52f00c..c797f65 100644
->> --- a/sound/pci/hda/patch_ca0132.c
->> +++ b/sound/pci/hda/patch_ca0132.c
->> @@ -133,6 +133,12 @@ enum {
->>  /* Effects values size*/
->>  #define EFFECT_VALS_MAX_COUNT 12
->>
->> +#define DSP_CAPTURE_INIT_LATENCY        0
->> +#define DSP_CRYSTAL_VOICE_LATENCY       124
->> +#define DSP_PLAYBACK_INIT_LATENCY       13
->> +#define DSP_PLAY_ENHANCEMENT_LATENCY    30
->> +#define DSP_SPEAKER_OUT_LATENCY         7
->> +
->>  struct ct_effect {
->>       char name[44];
->>       hda_nid_t nid;
->> @@ -2761,8 +2767,27 @@ static void ca0132_cleanup_stream(struct hda_codec *codec, hda_nid_t nid)
->>  }
->>
->>  /*
->> - * PCM callbacks
->> + * PCM playbacks
->>   */
->> +static unsigned int ca0132_get_playback_latency(struct hda_codec *codec)
->> +{
->> +     struct ca0132_spec *spec = codec->spec;
->> +     unsigned int latency = DSP_PLAYBACK_INIT_LATENCY;
->> +
->> +     if (!dspload_is_loaded(codec))
->> +             return 0;
->> +
->> +     if (spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID]) {
->> +             if ((spec->effects_switch[SURROUND - EFFECT_START_NID]) ||
->> +                 (spec->effects_switch[DIALOG_PLUS - EFFECT_START_NID]))
->> +                     latency += DSP_PLAY_ENHANCEMENT_LATENCY;
->> +     }
->> +
->> +     if (spec->cur_out_type == SPEAKER_OUT)
->> +             latency += DSP_SPEAKER_OUT_LATENCY;
->> +     return latency;
->> +}
->> +
->>  static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
->>                       struct hda_codec *codec,
->>                       unsigned int stream_tag,
->> @@ -2770,6 +2795,16 @@ static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
->>                       struct snd_pcm_substream *substream)
->>  {
->>       struct ca0132_spec *spec = codec->spec;
->> +     struct snd_pcm_runtime *runtime = substream->runtime;
->> +     unsigned int latency = ca0132_get_playback_latency(codec);
->> +
->> +     if (spec->dsp_state == DSP_DOWNLOADING) {
->> +             spec->dsp_stream_id = stream_tag;
->> +             return 0;
->> +     }
->> +
->> +     runtime->delay = bytes_to_frames(runtime, (latency * runtime->rate *
->> +                                     runtime->byte_align) / 1000);
->>
->>       ca0132_setup_stream(codec, spec->dacs[0], stream_tag, 0, format);
->>
->> @@ -2834,8 +2869,22 @@ static int ca0132_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
->>  }
->>
->>  /*
->> - * Analog capture
->> + * PCM capture
->>   */
->> +
->> +static unsigned int ca0132_get_capture_latency(struct hda_codec *codec)
->> +{
->> +     struct ca0132_spec *spec = codec->spec;
->> +     unsigned int latency = DSP_CAPTURE_INIT_LATENCY;
->> +
->> +     if (!dspload_is_loaded(codec))
->> +             return 0;
->> +
->> +     if (spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID])
->> +             latency += DSP_CRYSTAL_VOICE_LATENCY;
->> +     return latency;
->> +}
->> +
->>  static int ca0132_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
->>                                       struct hda_codec *codec,
->>                                       unsigned int stream_tag,
->> @@ -2843,9 +2892,16 @@ static int ca0132_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
->>                                       struct snd_pcm_substream *substream)
->>  {
->>       struct ca0132_spec *spec = codec->spec;
->> +     struct snd_pcm_runtime *runtime = substream->runtime;
->> +     unsigned int latency = ca0132_get_capture_latency(codec);
->>
->> -     ca0132_setup_stream(codec, spec->adcs[substream->number],
->> -                         stream_tag, 0, format);
->> +     if (spec->dsp_state == DSP_DOWNLOADING)
->> +             return 0;
->> +
->> +     runtime->delay = bytes_to_frames(runtime, (latency * runtime->rate *
->> +                                     runtime->byte_align) / 1000);
->> +
->> +     ca0132_setup_stream(codec, hinfo->nid, stream_tag, 0, format);
->>
->>       return 0;
->>  }
->> @@ -3429,6 +3485,33 @@ static int ca0132_voicefx_set(struct hda_codec *codec, int enable)
->>       return 1;
->>  }
->>
->> +static void ca0132_update_latency(struct hda_codec *codec,
->> +                               unsigned int direction)
->> +{
->> +     struct ca0132_spec *spec = codec->spec;
->> +     unsigned int latency;
->> +     struct snd_pcm_substream *substr;
->> +     struct snd_pcm_runtime *runtime;
->> +
->> +     if (spec->dsp_state == DSP_DOWNLOADING)
->> +             return;
->> +
->> +     latency = (direction == SNDRV_PCM_STREAM_PLAYBACK)
->> +                     ? ca0132_get_playback_latency(codec)
->> +                     : ca0132_get_capture_latency(codec);
->> +
->> +     substr = codec->pcm_info->pcm->streams[direction].substream;
->> +     while (substr) {
->> +             runtime = substr->runtime;
->> +             /* update latency only when frame_bits is set */
->> +             if (runtime && runtime->frame_bits)
->> +                     runtime->delay = bytes_to_frames(runtime,
->> +                                     (latency * runtime->rate *
->> +                                     runtime->byte_align) / 1000);
->> +             substr = substr->next;
->> +     }
->
-> I guess this isn't needed.  Usually the pointer callback is performed
-> always before the inquiry of runtime->delay.
 
-Thanks for pointing that out Takashi.  This will have no effect, as
-azx_get_position now recalculates the delay based on LPIB position.
+--ZcSDOt7TZFizttpn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What was trying to be solved was that there is a large delay in the
-codec, and other codecs with integrated DSP.  In this case it is
-greater than 100ms, depending on what effects are enabled.  Is there a
-good was to add this delay to what is reported?  Maybe allow the codec
-to specify a delay that is added to the calculation in
-azx_get_position?
+On Mon, Mar 25, 2013 at 10:19:05AM -0600, Stephen Warren wrote:
+> On 03/25/2013 09:52 AM, Mark Brown wrote:
+> > On Thu, Mar 21, 2013 at 01:56:41PM -0600, Stephen Warren wrote:
 
->
->
-> Takashi
->
->
->> +}
->> +
->>  /*
->>   * Set the effects parameters
->>   */
->> @@ -3468,6 +3551,9 @@ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val)
->>       err = dspio_set_uint_param(codec, ca0132_effects[idx].mid,
->>                                  ca0132_effects[idx].reqs[0], on);
->>
->> +     ca0132_update_latency(codec, SNDRV_PCM_STREAM_PLAYBACK);
->> +     ca0132_update_latency(codec, SNDRV_PCM_STREAM_CAPTURE);
->> +
->>       if (err < 0)
->>               return 0; /* no changed */
->>
->> --
->> 1.7.4.1
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >> +	clocks = <&tegra_car 106>, <&tegra_car 107>, <&tegra_car 30>, +
+> >> <&tegra_car 11>, <&tegra_car 18>, <&tegra_car 101>, +
+> >> <&tegra_car 102>, <&tegra_car 108>, <&tegra_car 109>, +
+> >> <&tegra_car 110>, <&tegra_car 162>; +	clock-names = "d_audio",
+> >> "apbif", "i2s0", "i2s1", "i2s2", +		"i2s3", "i2s4", "dam0",
+> >> "dam1", "dam2", +		"spdif_in";
+
+> > ...this is exactly what I was worried about with the clock bindings
+> > :/
+
+> What's the exact issue here? The length of the list is rather
+> determined by the HW, so I don't think there's much one can do about that.
+
+The fact that it's two lists that need to be matched up.
+
+--ZcSDOt7TZFizttpn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRUJgXAAoJELSic+t+oim9RnUP/3lwU0PopjjWG2Y2OYPiThJz
+jljVI9/d1CxlbxgxNytwszFwbknd/L6fOTTow/eADzQvLIuvYLp3CB/B2imVWL49
+o0TUo3sZuFWXW9oW++17fM83Ut5qyj1aXhhKUzPsOeHCgC2b1k9UgQbLGVX7nMIn
+nLnTFBCQhdntiMbNS8oCtgauTsWnftNxt1S1yyX/0j0oDymMzIoFFN0yCz2k2S04
+xgj9wXuLLM/YF1C+uUCkup6lAj3u3KYQEXKstVuqv9zXO5Um/QlZdibn8BCzEwTK
+qG2NdNiSA4BI8/yCWEHb5wPnrLZjdmQwisVtWLt5fjL2ff45QREBFtAf+4nNvEgL
+e/cGMl3UBSk/Ft3l3yF6c/CZoI7LUP0Zw+MO4LeR+5eE8oowetdXveF9cltxW967
+8nLL5BkGJTfRpn7D0ITe+dERcy1l/YihN669kmSbfyz4n7+09PJi0ekpJTFuXY4h
++9hqbeI/v2tQalD0FP7Bi7d+FBLl3kDAWj/+CD2POtZ9TKMyBHwNK+spReMnS4J3
+Uj5LvwwVJFHTqE5oVU/NnUaXLNn53Wt8LEl/C3P6It23mDus/VvQaK5Z5PGSluiU
+o5vg1uvtj/wWyVo6RUxjOk5BgSUHgFZ5djbz1KatrUkZOKlW6LGLLofNZlgwFTFk
+vsPeMmZOw6De5/+6AA8o
+=cAyq
+-----END PGP SIGNATURE-----
+
+--ZcSDOt7TZFizttpn--
