@@ -1,16 +1,19 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] ASoC: imx-sgtl5000: use of_node to match cpu
-	dai
-Date: Mon, 25 Mar 2013 11:19:12 +0800
-Message-ID: <1364181552-29521-1-git-send-email-shawn.guo@linaro.org>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 02/14] ASoC: spear_pcm: No need to wrap
+	snd_dmaengine_pcm_close()
+Date: Mon, 25 Mar 2013 09:21:45 +0530
+Message-ID: <514FC9D1.7090108@st.com>
+References: <1363957934-20059-1-git-send-email-lars@metafoo.de>
+ <1363957934-20059-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 68A4B2615EC
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 04:18:38 +0100 (CET)
+Received: from eu1sys200aog125.obsmtp.com (eu1sys200aog125.obsmtp.com
+ [207.126.144.159])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BB432615EC
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 04:51:51 +0100 (CET)
+In-Reply-To: <1363957934-20059-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since imx-sgtl5000 is only used on DT platform, it makes more sense to
-use cpu_of_node rather than cpu_dai_name to match cpu dai.
+On 3/22/2013 6:42 PM, Lars-Peter Clausen wrote:
+> If a PCM driver using the dmaengine PCM helper functions doesn't need to do
+> anything special in its pcm_close callback, snd_dmaengine_pcm_close can be used
+> directly for as the pcm_close callback and there is no need to wrap it in a
+> custom function.
+>
+> Signed-off-by: Lars-Peter Clausen<lars@metafoo.de>
+> Cc: Rajeev Kumar<rajeev-dlh.kumar@st.com>
+> ---
+>   sound/soc/spear/spear_pcm.c | 10 +---------
+>   1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
+> index dd71167..903ac15 100644
+> --- a/sound/soc/spear/spear_pcm.c
+> +++ b/sound/soc/spear/spear_pcm.c
+> @@ -73,14 +73,6 @@ static int spear_pcm_open(struct snd_pcm_substream *substream)
+>   	return 0;
+>   }
+>
+> -static int spear_pcm_close(struct snd_pcm_substream *substream)
+> -{
+> -
+> -	snd_dmaengine_pcm_close(substream);
+> -
+> -	return 0;
+> -}
+> -
+>   static int spear_pcm_mmap(struct snd_pcm_substream *substream,
+>   		struct vm_area_struct *vma)
+>   {
+> @@ -93,7 +85,7 @@ static int spear_pcm_mmap(struct snd_pcm_substream *substream,
+>
+>   static struct snd_pcm_ops spear_pcm_ops = {
+>   	.open		= spear_pcm_open,
+> -	.close		= spear_pcm_close,
+> +	.close		= snd_dmaengine_pcm_close,
+>   	.ioctl		= snd_pcm_lib_ioctl,
+>   	.hw_params	= spear_pcm_hw_params,
+>   	.hw_free	= spear_pcm_hw_free,
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/fsl/imx-sgtl5000.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 424347e..9584e78 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -148,7 +148,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	data->dai.stream_name = "HiFi";
- 	data->dai.codec_dai_name = "sgtl5000";
- 	data->dai.codec_of_node = codec_np;
--	data->dai.cpu_dai_name = dev_name(&ssi_pdev->dev);
-+	data->dai.cpu_of_node = ssi_np;
- 	data->dai.platform_name = "imx-pcm-audio";
- 	data->dai.init = &imx_sgtl5000_dai_init;
- 	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--- 
-1.7.9.5
+Acked-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
