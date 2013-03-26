@@ -1,163 +1,103 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: omap: Call omap_mcbsp_set_threshold()
- from mcbsp hw_params
-Date: Tue, 26 Mar 2013 10:25:12 +0100
-Message-ID: <51516978.60902@ti.com>
-References: <1364227096-12232-1-git-send-email-lars@metafoo.de>
+Subject: Re: [alsa-devel] channel swapping issue on OMAP3/TWL4030 is back
+Date: Tue, 26 Mar 2013 10:52:26 +0100
+Message-ID: <51516FDA.5040801@ti.com>
+References: <alpine.DEB.2.01.1303220932150.7975@pmeerw.net> <alpine.DEB.2.01.1303221023070.7975@pmeerw.net> <514C2E5E.2040909@gmail.com> <alpine.DEB.2.01.1303221348250.7975@pmeerw.net> <514C56EA.7020304@ti.com> <20130322163506.GL30923@n2100.arm.linux.org.uk> <51504581.10400@ti.com> <20130325171540.GO30923@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1364227096-12232-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <20130325171540.GO30923@n2100.arm.linux.org.uk>
 Sender: linux-omap-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>, Daniel Mack <zonque@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 03/25/2013 06:15 PM, Russell King - ARM Linux wrote:
+> What I'm talking about is having a physical channel scheduler in plac=
+e
+> across DMA engines which have more virtual channels than physical
+> channels.  Some DMA engine implementations sort of do this already (e=
+g,
+> AMBA PL08x stuff) but again, every driver implements this kind of thi=
+ng
+> by themselves.
 
-On 03/25/2013 04:58 PM, Lars-Peter Clausen wrote:
-> The omap PCM driver provides a set_threshold callback which gets called by the
-> PCM driver when either playback or capture is started. The only DAI driver which
-> sets this callback is the mcbsp driver. This patch removes the callback from the
-> PCM driver and moves the invocation of the omap_mcbsp_set_threshold() function
-> to the mcbsp hw_params callback since this is the only place where the threshold
-> size can change. Doing so allows us to use the default dmaengine PCM trigger
-> callback in the omap PCM driver.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> ---
-> Only compile tested, but I don't see why it should not work
+I see. So basically you want to grab a DMA channel for the upcoming tra=
+nsfer
+at issue_pending time. This is fine, but we do not need to have taskelt=
+ to do
+this. If we do it as the amba-pl08x.c does it it is fine. AMBA does not=
+ use
+tasklet and OMAP should not do that either.
+We might need to lift the code out from the legacy DMA code (and remove=
+ the
+code) from arch/arm/plat-omap/dma.c...
 
-Looks good and it also works. My only concern was with this on how I'm going
-to handle the upcoming OMAP4/5 AESS/ABE support since there we need to set
-custom McBSP threshold...
-But looking at the non upstream code I think I can handle things just fine
-with this change as well.
+>>> I guess we could keep the tasklet, but mark the audio DMA channels =
+as
+>>> "pre-reserved" and arrange for pre-reserved channels to avoid the
+>>> tasklet, rather than throwing the tasklet out completely.
+>>
+>> Not sure if we really want to pre-reserve the DMA channels for audio=
+:
+>> on OMAP3 we have 5 McBSP -> 10 DMA channels
+>> on OMAP4 we have 4 McBSP, one McPDM, one DMIC and one McASP + we hav=
+e the
+>> AESS/ABE -> 8 + 2 + 1 + 1 + 8 (AESS/ABE).
+>> Do we really want to pre-allocate DMA channel for all of these?
+>=20
+> Well, at the moment we are effectively pre-allocating a physical chan=
+nel
+> for every virtual channel - as each virtual channel gets allocated.  =
+So,
+> the physical channels are currently being permanently tied up.
+>=20
+> With a scheduling core, we need some way to dynamically reallocate
+> physical channels depending on the workload presented on the virtual
+> channels.  However, as we're still having to deal with the OMAP priva=
+te
+> DMA API, we can only change physical channels from task (or tasklet)
+> context.
+>=20
+> So, the only way to have audio channels in a condition where they can
+> be startable immediately in issue_pending is to avoid the tasklet, an=
+d
+> the only way to avoid that tasklet (where that tasklet eventually
+> becomes the channel scheduler) is to have pre-allocated the physical
+> channel.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+The issue has been noticed in audio but it can also affect other driver=
+s as
+well. It might be only latency/throughput issue for others, while audio=
+ suffer
+with the tasklet based DMA start.
 
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/omap/omap-mcbsp.c | 12 +++++-------
->  sound/soc/omap/omap-pcm.c   | 33 +--------------------------------
->  sound/soc/omap/omap-pcm.h   |  1 -
->  3 files changed, 6 insertions(+), 40 deletions(-)
-> 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 8d2defd..406fc87 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -62,24 +62,22 @@ enum {
->   * Stream DMA parameters. DMA request line and port address are set runtime
->   * since they are different between OMAP1 and later OMAPs
->   */
-> -static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
-> +static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream,
-> +		unsigned int packet_size)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->  	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
-> -	struct omap_pcm_dma_data *dma_data;
->  	int words;
->  
-> -	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> -
->  	/*
->  	 * Configure McBSP threshold based on either:
->  	 * packet_size, when the sDMA is in packet mode, or based on the
->  	 * period size in THRESHOLD mode, otherwise use McBSP threshold = 1
->  	 * for mono streams.
->  	 */
-> -	if (dma_data->packet_size)
-> -		words = dma_data->packet_size;
-> +	if (packet_size)
-> +		words = packet_size;
->  	else
->  		words = 1;
->  
-> @@ -245,7 +243,6 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
->  		return -EINVAL;
->  	}
->  	if (mcbsp->pdata->buffer_size) {
-> -		dma_data->set_threshold = omap_mcbsp_set_threshold;
->  		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
->  			int period_words, max_thrsh;
->  			int divider = 0;
-> @@ -276,6 +273,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
->  			/* Use packet mode for non mono streams */
->  			pkt_size = channels;
->  		}
-> +		omap_mcbsp_set_threshold(substream, pkt_size);
->  	}
->  
->  	dma_data->packet_size = pkt_size;
-> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-> index c722c2e..1626fb7 100644
-> --- a/sound/soc/omap/omap-pcm.c
-> +++ b/sound/soc/omap/omap-pcm.c
-> @@ -129,37 +129,6 @@ static int omap_pcm_hw_free(struct snd_pcm_substream *substream)
->  	return 0;
->  }
->  
-> -static int omap_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-> -{
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct omap_pcm_dma_data *dma_data;
-> -	int ret = 0;
-> -
-> -	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> -
-> -	switch (cmd) {
-> -	case SNDRV_PCM_TRIGGER_START:
-> -	case SNDRV_PCM_TRIGGER_RESUME:
-> -	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> -		/* Configure McBSP internal buffer usage */
-> -		if (dma_data->set_threshold)
-> -			dma_data->set_threshold(substream);
-> -		break;
-> -
-> -	case SNDRV_PCM_TRIGGER_STOP:
-> -	case SNDRV_PCM_TRIGGER_SUSPEND:
-> -	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> -		break;
-> -	default:
-> -		ret = -EINVAL;
-> -	}
-> -
-> -	if (ret == 0)
-> -		ret = snd_dmaengine_pcm_trigger(substream, cmd);
-> -
-> -	return ret;
-> -}
-> -
->  static snd_pcm_uframes_t omap_pcm_pointer(struct snd_pcm_substream *substream)
->  {
->  	snd_pcm_uframes_t offset;
-> @@ -208,7 +177,7 @@ static struct snd_pcm_ops omap_pcm_ops = {
->  	.ioctl		= snd_pcm_lib_ioctl,
->  	.hw_params	= omap_pcm_hw_params,
->  	.hw_free	= omap_pcm_hw_free,
-> -	.trigger	= omap_pcm_trigger,
-> +	.trigger	= snd_dmaengine_pcm_trigger,
->  	.pointer	= omap_pcm_pointer,
->  	.mmap		= omap_pcm_mmap,
->  };
-> diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-> index cabe74c..39e6e45 100644
-> --- a/sound/soc/omap/omap-pcm.h
-> +++ b/sound/soc/omap/omap-pcm.h
-> @@ -31,7 +31,6 @@ struct omap_pcm_dma_data {
->  	char		*name;		/* stream identifier */
->  	int		dma_req;	/* DMA request line */
->  	unsigned long	port_addr;	/* transmit/receive register */
-> -	void (*set_threshold)(struct snd_pcm_substream *substream);
->  	int		data_type;	/* 8, 16, 32 (bits) or 0 to let omap-pcm
->  					 * to decide the sDMA data type */
->  	int		packet_size;	/* packet size only in PACKET mode */
-> 
+>> I have a patch which removes the tasklet from omap-dma.c and it is w=
+orking
+>> fine on my systems (OMAP3 Zoom2, BeagleBoard, OMAP4 PandBoard, OMAP4=
+ Blaze).
+>=20
+> I'm sure you have, but that breaks the future direction of the driver
+> to dynamically allocate the physical channels.
+>=20
+> Had TI not effectively terminated my contract, I might be further for=
+ward
+> with this.  As things are, lack of contract and such like, all the OM=
+AP
+> work I was doing got shelved around Christmas time.  If you stop payi=
+ng
+> people, they generally stop doing useful work for you...
 
+Yeah, that is bad. If it makes you feel a bit better just look up in go=
+ogle:
+"Texas Instruments France"
+Hint: I'm in France...
 
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
