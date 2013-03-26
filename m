@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/2] ASoC: compress - add support for metadata
+Subject: [PATCH 2/2] ASoC: mid-x86 - add support for metedata
 	apis
-Date: Tue, 26 Mar 2013 21:22:28 +0530
-Message-ID: <1364313149-18569-1-git-send-email-vinod.koul@intel.com>
+Date: Tue, 26 Mar 2013 21:22:29 +0530
+Message-ID: <1364313149-18569-2-git-send-email-vinod.koul@intel.com>
+References: <1364313149-18569-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E8822650DE
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 17:18:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D3462650E7
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 17:18:51 +0100 (CET)
+In-Reply-To: <1364313149-18569-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +25,48 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
-
-Compress core added metadata apis in 9727b4, so add same in ASoC
+while at it, update the copyright timeline too
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
-Rebased on asoc-next
+ sound/soc/mid-x86/sst_platform.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
 
- sound/soc/soc-compress.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b5b3db7..f9b2197 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -322,11 +322,38 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
- 	return ret;
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index a263cbe..968656c 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -1,7 +1,7 @@
+ /*
+  *  sst_platform.c - Intel MID Platform driver
+  *
+- *  Copyright (C) 2010-2012 Intel Corp
++ *  Copyright (C) 2010-2013 Intel Corp
+  *  Author: Vinod Koul <vinod.koul@intel.com>
+  *  Author: Harsha Priya <priya.harsha@intel.com>
+  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -652,11 +652,21 @@ static int sst_platform_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 	return stream->compr_ops->get_codec_caps(codec);
  }
  
-+static int sst_compr_set_metadata(struct snd_compr_stream *cstream,
-+				struct snd_compr_metadata *metadata)
++static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
++					struct snd_compr_metadata *metadata)
 +{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
++	struct sst_runtime_stream *stream  =
++		 cstream->runtime->private_data;
 +
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->set_metadata)
-+		ret = platform->driver->compr_ops->set_metadata(cstream, metadata);
-+
-+	return ret;
++	return stream->compr_ops->set_metadata(stream->id, metadata);
 +}
 +
-+static int sst_compr_get_metadata(struct snd_compr_stream *cstream,
-+				struct snd_compr_metadata *metadata)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
-+
-+	if (platform->driver->compr_ops && platform->driver->compr_ops->get_metadata)
-+		ret = platform->driver->compr_ops->get_metadata(cstream, metadata);
-+
-+	return ret;
-+}
- /* ASoC Compress operations */
- static struct snd_compr_ops soc_compr_ops = {
- 	.open		= soc_compr_open,
- 	.free		= soc_compr_free,
- 	.set_params	= soc_compr_set_params,
-+	.set_metadata   = sst_compr_set_metadata,
-+	.get_metadata	= sst_compr_get_metadata,
- 	.get_params	= soc_compr_get_params,
- 	.trigger	= soc_compr_trigger,
- 	.pointer	= soc_compr_pointer,
+ static struct snd_compr_ops sst_platform_compr_ops = {
+ 
+ 	.open = sst_platform_compr_open,
+ 	.free = sst_platform_compr_free,
+ 	.set_params = sst_platform_compr_set_params,
++	.set_metadata = sst_platform_compr_set_metadata,
+ 	.trigger = sst_platform_compr_trigger,
+ 	.pointer = sst_platform_compr_pointer,
+ 	.ack = sst_platform_compr_ack,
 -- 
 1.7.0.4
