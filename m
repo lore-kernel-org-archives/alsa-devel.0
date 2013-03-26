@@ -1,15 +1,15 @@
 From: Martin Fuzzey <mfuzzey@parkeon.com>
 Subject: Re: [PATCH V2] Sound: sgtl5000 Allow codec clock frequency to be set.
-Date: Tue, 26 Mar 2013 10:54:44 +0100
-Message-ID: <51517064.4090404@parkeon.com>
+Date: Tue, 26 Mar 2013 11:28:11 +0100
+Message-ID: <5151783B.7050105@parkeon.com>
 References: <20130322093344.20605.49509.stgit@localhost>
- <CAKGA1bnFiwECxr=2aja-WQVp+Qbr8ULzUmbZsEgSFOQV+nt7wg@mail.gmail.com>
+ <CAOZdJXWi2pph-=vQg+FAty+yVVk9fJBU6rxYOf0J-J2f=Lwgxw@mail.gmail.com>
 Reply-To: mfuzzey@parkeon.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAKGA1bnFiwECxr=2aja-WQVp+Qbr8ULzUmbZsEgSFOQV+nt7wg@mail.gmail.com>
+In-Reply-To: <CAOZdJXWi2pph-=vQg+FAty+yVVk9fJBU6rxYOf0J-J2f=Lwgxw@mail.gmail.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -19,77 +19,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Matt Sealey <matt@genesi-usa.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Linux ARM Kernel ML <linux-arm-kernel@lists.infradead.org>
+To: Timur Tabi <timur@tabi.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matt,
-
-On 25/03/13 21:22, Matt Sealey wrote:
-> I'm a little confused why there need to be 3 different alternative bindings.
+On 22/03/13 15:08, Timur Tabi wrote:
+> On Fri, Mar 22, 2013 at 4:33 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
 >
-> The first is valid (phandle only), the second is redundant
-> (clock-frequency only) - why not just REQUIRE a clock phandle? There
-> is not a single use case where you supply a valid clock on the PCB but
-> cannot write it's frequency into a 3-line DT node, except in allowing
-> non-internally-consistent device trees (which I frown at :)
-Yes this is true, however the current code already has this method 
-(which was actually the first to be implemented).
-Removing it would break compatibility with existing DTs.
+>> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+>> index 424347e..71ce1f6 100644
+>> --- a/sound/soc/fsl/imx-sgtl5000.c
+>> +++ b/sound/soc/fsl/imx-sgtl5000.c
+>> @@ -128,18 +128,30 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>>                  goto fail;
+>>          }
+>>
+>> +       ret = of_property_read_u32(codec_np, "clock-frequency",
+>> +                                       &data->clk_frequency);
+> I just noticed that you assign 'ret' here, but you never check the
+> value.  So I think you should either:
+>
+> 1) Check the value of 'ret'
+> 2) Remove the "ret = "
+Initially I did check the value of 'ret', instead of checking 
+data->clk_frequency.
 
-I'm not sure what the policy on DT backwards compatibility is on the 
-scale "never break backwards compatibility" (like userspace) to 
-"anything goes if you fix the in tree damage" (internal kernel APIs). 
-But clearly over time it is going to have to be more on the "never break 
-backwards compatibility" side, especially If we are talking about 
-hosting the DTs elsewhere than in the kernel sources.
+However I found that checking a generic return variable 'ret' several 
+lines later
+to be not very clear (to see what 'ret' refers to you have to backtrack 
+while
+reading the code).
 
-> I can think of several reasons I don't like the 3rd way (dynamic
-> clock, phandle+frequency) because it implies lack of trust in the
-> bootloader and/or early platform init code... that said since you need
-> the frequency value to configure the codec, you either get it from the
-> clock (but it may not be valid) or you force a value upon it from
-> clock-frequency.. I would like a little warning, maybe, that the
-> expected clock-frequency was not available at the time it read the
-> value from the phandle, since this would allow sgtl5000-using hardware
-> designers and linux implementers to know immediately that they have
-> missed something important (bootloader setup of the codec clock).
-I don't agree here.
-In my opinion the bootloader should only need to set up the hardware 
-that is essential to boot
-(RAM timings and any hardware necessary to access the boot media)
+The ret can't be checked directly after assigning it as it's not always 
+an error
+condition (in the phandle only case an error here is normal).
 
-The rest can, and I believe should, be left to the kernel.
-Since:
-* there is only one kernel whereas there are multiple bootloaders.
-* on many platforms, updating the bootloader is more complicated and/or 
-risky than updating the kernel.
+Checking data->clk_frequency, IMHO makes the code more readable.
 
-> It's rare that any real hardware design house would leave a clock like
-> that unconfigured as being able to test the frequency from whatever
-> source and how clean it is and what the levels are for debugging is
-> easier done in the bootloader than with an operating system running
-> (re power management etc.) but for the cases where we, for want of a
-> better way of describing it, forgot to actually set it up.. it should
-> still really, really be in the bootloader and bitching about it.
-Yes it may well be easier in some cases to do hardware design / board 
-bringup from the bootloader but that doesn't mean that the bootloader 
-code used by the hardware engineers to do it will or even should be the 
-same as the production bootloader. So I still think the kernel should 
-make the minimum assumptions on what the bootloader has done.
+If I remove the "ret ="  no error code will be propagated back to the 
+caller.
+Sure I could add an assignment of ret to -EINVAL in the error case like 
+this:
 
-> I wholeheartedly support the third method (clock+freq) in the hope
-> that it forces bootloader developers to properly configure fixed
-> clocks (such as the codec clock which is very hard to change at
-> runtime) at boot, before the OS has any need for it (and to relieve it
-> of the task of setting the clock frequency), but on the basis that
-> eventually people would get a clue or get their task list in order for
-> bootloader support and make it redundant (at which point it could be
-> removed..).
-Sorry not following you here regarding the third (clock + freq) method - 
-first you say "I can think of several reasons I don't like the 3rd way" 
-then here "I wholeheartedly support the third method"
 
-Regards,
+     of_property_read_u32(codec_np, "clock-frequency",
+                     &data->clk_frequency);
+     data->codec_clk = clk_get(&codec_dev->dev, NULL);
+
+     if (IS_ERR(data->codec_clk)) {
+         /* assuming clock enabled by default (frequency required) */
+         data->codec_clk = NULL;
+         if (!data->clk_frequency) {
+             dev_err(&codec_dev->dev,
+                 "clock-frequency missing or invalid\n");
+             ret = -EINVAL;
+             goto fail;
+         }
+     } else {
+
+
+But I don't think this is better than just propating the value from 
+of_property_read_u32()
+as it loses information.
 
 Martin
