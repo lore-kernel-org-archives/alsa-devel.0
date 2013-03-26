@@ -1,17 +1,27 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: need help for PCM constraint/rules
-Date: Tue, 26 Mar 2013 19:24:09 +0100
-Message-ID: <5151E7C9.4030904@ladisch.de>
-References: <514F0696.1030109@sakamocchi.jp> <514F5010.5000707@ladisch.de>
- <5151D3B5.50301@sakamocchi.jp>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
+ make Playback Design products work
+Date: Tue, 26 Mar 2013 20:34:52 +0100
+Message-ID: <5151F85C.7070204@gmail.com>
+References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
+ <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
+ <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
+ <514B79DA.6030203@sonarnerd.net> <514C1215.9010708@gmail.com>
+ <7.0.0.16.2.20130322082602.0605cbc0@akdesigninc.com>
+ <514E0A2A.1000201@sonarnerd.net>
+ <7.0.0.16.2.20130323183543.0605ddb0@akdesigninc.com>
+ <514EDA91.9000305@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6E157265114
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 19:25:44 +0100 (CET)
-In-Reply-To: <5151D3B5.50301@sakamocchi.jp>
+Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
+ [209.85.214.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A21F2602AE
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 20:37:34 +0100 (CET)
+Received: by mail-bk0-f50.google.com with SMTP id jg1so389689bkc.9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 12:37:33 -0700 (PDT)
+In-Reply-To: <514EDA91.9000305@sonarnerd.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +31,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+To: Jussi Laako <jussi@sonarnerd.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, Andreas Koch <andreas@akdesigninc.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> about your firewire-kernel-streaming branch in alsa-kprivate.git.
-> There is no commit since last year and I'm anxious about the reason.
+On 24.03.2013 11:50, Jussi Laako wrote:
+> On 03/24/2013 03:50 AM, Andreas Koch wrote:
+>> rate for PCM. If you plug that DAC into a Mac, the Mac will
+>> automatically select 705.6kHz for PCM and then nothing will work because
+>> the DAC doesn't support that in PCM. So then, the DAC would have to
+>> define 2 complete interfaces: one for PCM and one for DSD. That
+> 
+> OK, the difference is that I don't use UAC2 at all, but completely 
+> different protocol. So what I'm talking about is only how it looks from 
+> the driver towards the application...
 
-Just lack of time.
+What protocol is that? Is there a driver for Linux?
 
 
-Regards,
-Clemens
+
+Daniel
