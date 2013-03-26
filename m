@@ -1,20 +1,16 @@
-From: Mihail Zenkov <mihail.zenkov@gmail.com>
-Subject: Re: [PATCH] salsa-lib: Add seq_midi_event.h
-Date: Mon, 25 Mar 2013 23:50:22 +0000
-Message-ID: <CAD-m0i9puLWgXgkrN66+km0_oAuQsp3n8jUv5kpzpfHw3Z6HHQ@mail.gmail.com>
-References: <CAD-m0i9nfOnZ3dq3NS5hhVG+Dqf=Za7A6mTPxbfwnW-VQCDpoQ@mail.gmail.com>
- <s5hsj3qghc8.wl%tiwai@suse.de>
+From: David Flater <vger@flaterco.com>
+Subject: Re: [bug] sbawe: the PnP won't stop
+Date: Mon, 25 Mar 2013 21:04:56 -0400
+Message-ID: <5150F438.6090902@flaterco.com>
+References: <514E640E.4060502@flaterco.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
- [209.85.192.173])
- by alsa0.perex.cz (Postfix) with ESMTP id EF5CE264EF9
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 00:50:23 +0100 (CET)
-Received: by mail-pd0-f173.google.com with SMTP id v10so2771285pde.4
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2013 16:50:23 -0700 (PDT)
-In-Reply-To: <s5hsj3qghc8.wl%tiwai@suse.de>
+Received: from relay01.pair.com (relay01.pair.com [209.68.5.15])
+ by alsa0.perex.cz (Postfix) with SMTP id 41A23264EFD
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 02:05:01 +0100 (CET)
+In-Reply-To: <514E640E.4060502@flaterco.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,93 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I apologize for a delay with the answer. Do you have any plans about
-inclusion of the minimum support of alsa-seq? Support of alsa-seq
-would allow to use salsa together with jack/pulsaudio or other audio
-server as full replacement of alsa-lib.
+This problem now appears to be bigger than just sbawe or ALSA.
 
+- The clone-and-reallocate behavior happened with the gameport too, even
+  though I didn't mess with that at all.  The gameport is discovered by some
+  driver as a legacy port, then later rediscovered and reallocated with
+  different resources as a PnP gameport.
 
---- salsa-lib-9e6b52f148fb5a6352f441d0b5a41419c3a57c79/configure.ac
-+++ salsa-lib-9e6b52f148fb5a6352f441d0b5a41419c3a57c79-1/configure.ac
-@@ -273,6 +273,7 @@
- test "$sndseq" = "yes" && echo "#include \"seq_event.h\"" >> src/asoundlib.h
- test "$sndseq" = "yes" && echo "#include \"seq.h\"" >> src/asoundlib.h
- test "$sndseq" = "yes" && echo "#include \"seqmid.h\"" >> src/asoundlib.h
-+test "$sndseq" = "yes" && echo "#include \"seq_midi_event.h\"" >>
-src/asoundlib.h
- cat "$srcdir"/src/asoundlib-tail.h >> src/asoundlib.h
+- The kernel parameter pnp_reserve_dma, which ought to be the right way to
+  avoid getting DMA 5, doesn't do anything.
 
- echo "SALSA-Lib build configuration:"
---- salsa-lib-9e6b52f148fb5a6352f441d0b5a41419c3a57c79/src/Makefile.am
-+++ salsa-lib-9e6b52f148fb5a6352f441d0b5a41419c3a57c79-1/src/Makefile.am
-@@ -60,7 +60,7 @@
- endif
- if BUILD_SEQ
- alsainclude_HEADERS += \
--	seq.h seq_event.h seqmid.h
-+	seq.h seq_event.h seqmid.h seq_midi_event.h
- endif
+The cleanest workaround seems to be to noisapnp the kernel, use the userspace
+/sbin/isapnp tool, and provide ALSA module options as for a non-PnP card.
 
- noinst_HEADERS = local.h
---- /dev/null
-+++ salsa-lib-9e6b52f148fb5a6352f441d0b5a41419c3a57c79-1/src/seq_midi_event.h
-@@ -0,0 +1,52 @@
-+#ifndef __ALSA_SEQ_MIDI_EVENT_H
-+#define __ALSA_SEQ_MIDI_EVENT_H
-+
-+typedef struct snd_midi_event snd_midi_event_t;
-+
-+__SALSA_EXPORT_FUNC
-+int snd_midi_event_new(size_t bufsize, snd_midi_event_t **rdev)
-+{
-+	return -ENOMEM;
-+}
-+__SALSA_EXPORT_FUNC
-+int snd_midi_event_resize_buffer(snd_midi_event_t *dev, size_t bufsize)
-+{
-+	return -ENOMEM;
-+}
-+__SALSA_EXPORT_FUNC
-+void snd_midi_event_free(snd_midi_event_t *dev)
-+{
-+}
-+__SALSA_EXPORT_FUNC
-+void snd_midi_event_init(snd_midi_event_t *dev)
-+{
-+}
-+__SALSA_EXPORT_FUNC
-+void snd_midi_event_reset_encode(snd_midi_event_t *dev)
-+{
-+}
-+__SALSA_EXPORT_FUNC
-+void snd_midi_event_reset_decode(snd_midi_event_t *dev)
-+{
-+}
-+__SALSA_EXPORT_FUNC
-+void snd_midi_event_no_status(snd_midi_event_t *dev, int on)
-+{
-+}
-+__SALSA_EXPORT_FUNC
-+long snd_midi_event_encode(snd_midi_event_t *dev, const unsigned char
-*buf, long count, snd_seq_event_t *ev)
-+{
-+	return -EINVAL;
-+}
-+__SALSA_EXPORT_FUNC
-+int snd_midi_event_encode_byte(snd_midi_event_t *dev, int c,
-snd_seq_event_t *ev)
-+{
-+	return -EINVAL;
-+}
-+__SALSA_EXPORT_FUNC
-+long snd_midi_event_decode(snd_midi_event_t *dev, unsigned char *buf,
-long count, const snd_seq_event_t *ev)
-+{
-+	return -ENOENT;
-+}
-+
-+#endif /* __ALSA_SEQ_MIDI_EVENT_H */
+On 03/23/2013 10:25 PM, David Flater wrote:
+> I've got an ISA PnP SB AWE type card in a system with a non-working DMA 5.
+> Without intervention, the Sound Blaster always gets the broken DMA.  I have
+> no BIOS options to control the allocation of DMAs, and the PnP configuration
+> done within ALSA ignores /etc/isapnp.conf [*].  DMA 6 works fine if I can get
+> sbawe to stop re-initializing the PnP and just use it.
