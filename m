@@ -1,13 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for v3.9
-Date: Tue, 26 Mar 2013 14:30:05 +0000
-Message-ID: <20130326143004.GC18316@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: compress - add support for metadata
+	apis
+Date: Tue, 26 Mar 2013 21:22:28 +0530
+Message-ID: <1364313149-18569-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1242180858415881393=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DA2DD2650C6
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 15:30:06 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E8822650DE
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 17:18:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,121 +19,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, broonie@opensource.wolfsonmicro.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Jeeja KP <jeeja.kp@intel.com>
 
---===============1242180858415881393==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8Bkcj4NmnZ79d4W7"
-Content-Disposition: inline
+Compress core added metadata apis in 9727b4, so add same in ASoC
 
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+Rebased on asoc-next
 
---8Bkcj4NmnZ79d4W7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ sound/soc/soc-compress.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
 
-The following changes since commit 8bb9660418e05bb1845ac1a2428444d78e322cc7:
-
-  Linux 3.9-rc4 (2013-03-23 16:52:44 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v3.9-rc4
-
-for you to fetch changes up to 40bac28eb1e39f229a94ad72e2ca8cdeef3ba31a:
-
-  Merge remote-tracking branch 'asoc/fix/spear' into asoc-next (2013-03-26 14:08:07 +0000)
-
-----------------------------------------------------------------
-
-ASoC: Fixes for v3.9
-
-A few more fixes here and there, including quite a few nasty driver
-specific ones, but nothing that has a major general impact.
-
-----------------------------------------------------------------
-Axel Lin (1):
-      ASoC: si476x: Add missing break for SNDRV_PCM_FORMAT_S8 switch case
-
-Joe Perches (1):
-      ASoC:: max98090: Remove executable bit
-
-Lars-Peter Clausen (2):
-      ASoC: spear_pcm: Update to new pcm_new() API
-      ASoC: dma-sh7760: Fix compile error
-
-Mark Brown (9):
-      ASoC: dapm: Fix handling of loops
-      Merge remote-tracking branch 'asoc/fix/adsp' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/core' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/fsl' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/max98090' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/sh' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/si476x' into asoc-next
-      Merge remote-tracking branch 'asoc/fix/spear' into asoc-next
-
-Markus Pargmann (1):
-      ASoC: pcm030 audio fabric: remove __init from probe
-
-Peter Ujfalusi (1):
-      ASoC: dapm: Fix pointer dereference in is_connected_output_ep()
-
-Sascha Hauer (1):
-      ASoC: imx-ssi: Fix occasional AC97 reset failure
-
-Silviu-Mihai Popescu (1):
-      ASoC: core: fix invalid free of devm_ allocated data
-
-Wei Yongjun (2):
-      ASoC: wm_adsp: fix possible memory leak in wm_adsp_load_coeff()
-      ASoC: core: fix possible memory leak in snd_soc_bytes_put()
-
- include/sound/soc-dapm.h            |    1 +
- sound/soc/codecs/si476x.c           |    1 +
- sound/soc/codecs/wm_adsp.c          |    5 +++--
- sound/soc/fsl/imx-ssi.c             |    5 +++++
- sound/soc/fsl/pcm030-audio-fabric.c |    2 +-
- sound/soc/sh/dma-sh7760.c           |    4 ++--
- sound/soc/soc-core.c                |    8 ++++----
- sound/soc/soc-dapm.c                |   14 ++++++++++++++
- sound/soc/spear/spear_pcm.c         |   12 ++++++------
- 9 files changed, 37 insertions(+), 15 deletions(-)
- mode change 100755 => 100644 include/sound/max98090.h
- mode change 100755 => 100644 sound/soc/codecs/max98090.c
- mode change 100755 => 100644 sound/soc/codecs/max98090.h
-
---8Bkcj4NmnZ79d4W7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRUbDmAAoJELSic+t+oim9lnYP/inAtxU13/gLUh8vyOF+lcad
-zrdCyIID/APigt3jRn5AbAbA60s10s6lTrURkOPFUhRgCPdp6GaD7CL0l8OokcAC
-Vd0zX40QCjFR+6yxS5WAxGAJhvgtzhQhKrxMFpBFtzP2oFmVcq+W/JjO77oOiNDA
-cRWja4R4vHOOb81V+jcBz7CTjp/3kpGUd72zsvBfg5gZmxUeu8ME6PZQTlLY7WHT
-ZgmEp9YlCZxkdtrtc65A0OB+EzaZ/fUAwipijinP2/qTEyDp8YmmYOimqukYRCuu
-wDOgy8oiigiGljMn5+ydsWBgRq0CTRNmRxPFZETdmlmGRz4HkeQqDVUY0YbxuPW8
-QkZVCmx40EgYYIn/ULWzXb4yAHciqxXaJZx01iUXdkPG80lzQk+Jg9ovDnSeNZF1
-24ZkgnY/yy4HHlGcydNXMlTq5PwBOKWI/C7A6ThBr1qThuYoEsmW9eKfHS32PrfS
-Fjn0FHXCaLVGz1PYRAQYAmoHkNc/1ccnqryKLR1Niub0FKtL987a0gyEeHZpTe3/
-QJKz5ZLK9jTe7T1dkmjpWXvfVatY6r40V/9D2UTeT2qtO1nYDXdQAi83rCtrrx4f
-YU3gFh77VNrHTvvx1vXZtmI8yPE7TiLbiFLXinZtY6/xpVwF86yWE8R7cqY++Jt4
-/694o7EyDx+2AH0bNVIP
-=/59l
------END PGP SIGNATURE-----
-
---8Bkcj4NmnZ79d4W7--
-
---===============1242180858415881393==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1242180858415881393==--
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index b5b3db7..f9b2197 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -322,11 +322,38 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+ 	return ret;
+ }
+ 
++static int sst_compr_set_metadata(struct snd_compr_stream *cstream,
++				struct snd_compr_metadata *metadata)
++{
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
++
++	if (platform->driver->compr_ops && platform->driver->compr_ops->set_metadata)
++		ret = platform->driver->compr_ops->set_metadata(cstream, metadata);
++
++	return ret;
++}
++
++static int sst_compr_get_metadata(struct snd_compr_stream *cstream,
++				struct snd_compr_metadata *metadata)
++{
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
++
++	if (platform->driver->compr_ops && platform->driver->compr_ops->get_metadata)
++		ret = platform->driver->compr_ops->get_metadata(cstream, metadata);
++
++	return ret;
++}
+ /* ASoC Compress operations */
+ static struct snd_compr_ops soc_compr_ops = {
+ 	.open		= soc_compr_open,
+ 	.free		= soc_compr_free,
+ 	.set_params	= soc_compr_set_params,
++	.set_metadata   = sst_compr_set_metadata,
++	.get_metadata	= sst_compr_get_metadata,
+ 	.get_params	= soc_compr_get_params,
+ 	.trigger	= soc_compr_trigger,
+ 	.pointer	= soc_compr_pointer,
+-- 
+1.7.0.4
