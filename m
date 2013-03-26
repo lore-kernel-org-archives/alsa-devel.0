@@ -1,85 +1,48 @@
-From: Martin Fuzzey <mfuzzey@parkeon.com>
-Subject: Re: [PATCH V2] Sound: sgtl5000 Allow codec clock frequency to be set.
-Date: Tue, 26 Mar 2013 11:28:11 +0100
-Message-ID: <5151783B.7050105@parkeon.com>
-References: <20130322093344.20605.49509.stgit@localhost>
- <CAOZdJXWi2pph-=vQg+FAty+yVVk9fJBU6rxYOf0J-J2f=Lwgxw@mail.gmail.com>
-Reply-To: mfuzzey@parkeon.com
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
+ codec in system resume
+Date: Tue, 26 Mar 2013 11:58:27 +0100
+Message-ID: <51517F53.7070608@canonical.com>
+References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAOZdJXWi2pph-=vQg+FAty+yVVk9fJBU6rxYOf0J-J2f=Lwgxw@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26C30264FF9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2013 11:58:27 +0100 (CET)
+In-Reply-To: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mengdong.lin@intel.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22/03/13 15:08, Timur Tabi wrote:
-> On Fri, Mar 22, 2013 at 4:33 AM, Martin Fuzzey <mfuzzey@parkeon.com> wrote:
+On 03/26/2013 07:12 PM, mengdong.lin@intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@intel.com>
 >
->> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
->> index 424347e..71ce1f6 100644
->> --- a/sound/soc/fsl/imx-sgtl5000.c
->> +++ b/sound/soc/fsl/imx-sgtl5000.c
->> @@ -128,18 +128,30 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
->>                  goto fail;
->>          }
->>
->> +       ret = of_property_read_u32(codec_np, "clock-frequency",
->> +                                       &data->clk_frequency);
-> I just noticed that you assign 'ret' here, but you never check the
-> value.  So I think you should either:
->
-> 1) Check the value of 'ret'
-> 2) Remove the "ret = "
-Initially I did check the value of 'ret', instead of checking 
-data->clk_frequency.
+> In system resume, Haswell codec cannot be programmed to D0 before Gfx driver
+> initializes the display pipeline and audio, which will trigger an unsol event
+> on the pin with HDMI/DP cable connected. Otherwise, the connected pin will
+> stay in D3 with right channel muted and thus no sound can be heard.
 
-However I found that checking a generic return variable 'ret' several 
-lines later
-to be not very clear (to see what 'ret' refers to you have to backtrack 
-while
-reading the code).
+Thanks for this patch!
 
-The ret can't be checked directly after assigning it as it's not always 
-an error
-condition (in the phandle only case an error here is normal).
-
-Checking data->clk_frequency, IMHO makes the code more readable.
-
-If I remove the "ret ="  no error code will be propagated back to the 
-caller.
-Sure I could add an assignment of ret to -EINVAL in the error case like 
-this:
+Just a question: Is there a difference between real system S3 here, and 
+just the normal idle power down? I e, I'm a little unsure myself, but it 
+seems like this 300 ms delay would trigger in both cases, causing an 
+(unnecessary?) 300 ms delay every time the codec is idle and you want to 
+start playback. Is this correct, or did I get something wrong?
 
 
-     of_property_read_u32(codec_np, "clock-frequency",
-                     &data->clk_frequency);
-     data->codec_clk = clk_get(&codec_dev->dev, NULL);
-
-     if (IS_ERR(data->codec_clk)) {
-         /* assuming clock enabled by default (frequency required) */
-         data->codec_clk = NULL;
-         if (!data->clk_frequency) {
-             dev_err(&codec_dev->dev,
-                 "clock-frequency missing or invalid\n");
-             ret = -EINVAL;
-             goto fail;
-         }
-     } else {
-
-
-But I don't think this is better than just propating the value from 
-of_property_read_u32()
-as it loses information.
-
-Martin
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
