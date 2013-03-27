@@ -1,61 +1,56 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ARM: clk: imx35 sound admux_gate bugfix
-Date: Wed, 27 Mar 2013 12:37:00 +0000
-Message-ID: <20130327123659.GT18316@opensource.wolfsonmicro.com>
-References: <1364383352-27267-1-git-send-email-mpa@pengutronix.de>
- <1364383352-27267-3-git-send-email-mpa@pengutronix.de>
- <1364385420.5442.12.camel@pizza.hi.pengutronix.de>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: [PATCH v5] ALSA: usb: Work around CM6631 sample
+ rate change bug
+Date: Wed, 27 Mar 2013 13:46:32 +0100
+Message-ID: <20130327124632.GF18838@pvv.ntnu.no>
+References: <20130326211004.GD18838@pvv.ntnu.no> <5152C53D.5060604@ladisch.de>
+ <20130327114703.GE18838@pvv.ntnu.no> <5152DD6E.6040707@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SENi13OXelf/Rv8V"
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDD1126517B
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 13:46:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1364385420.5442.12.camel@pizza.hi.pengutronix.de>
-Sender: stable-owner@vger.kernel.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Markus Pargmann <mpa@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, stable@vger.kernel.org
+In-Reply-To: <5152DD6E.6040707@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 27, 2013 at 12:52:14 +0100, Daniel Mack wrote:
+> On 27.03.2013 12:47, Torstein Hegge wrote:
+> > On Wed, Mar 27, 2013 at 11:09:01 +0100, Clemens Ladisch wrote:
+> >> Torstein Hegge wrote:
+> >>> The C-Media CM6631 USB receiver doesn't respond to changes in sample rate
+> >>> while the interface is active. The same behavior is observed in other UAC2
+> >>> hardware like the VIA VT1731.
+> >>
+> >> Might it be possible that these devices have reset the interface (see
+> >> UAC2 section 3.16.3), and that the driver hasn't noticed this because it
+> >> doesn't handle Active Alternate Setting Control interrupts?
+> > 
+> > If that was the case, wouldn't the device be in altsetting zero after
+> > the sample rate set and not be able to output sound at all? And as long
+> > as the current altsetting supports the target sample rate as reported in
+> > /proc/asound/card1/stream0, Active Alternate Setting Control shouldn't
+> > have to be invoked.
+> 
+> You could just try and catch that currently unhandled interrupt. We
+> should support that anyway at some point ...
 
---SENi13OXelf/Rv8V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It doesn't look like snd_usb_mixer_interrupt_v2() is invoked on sample
+rate changes. As far as I can tell, that should be invoked on any
+interrupts, but it was never triggered, so I might be wrong.
 
-On Wed, Mar 27, 2013 at 12:57:00PM +0100, Philipp Zabel wrote:
-> Am Mittwoch, den 27.03.2013, 12:22 +0100 schrieb Markus Pargmann:
-> > imx-ssi needs admux_gate clock to work on imx35. This patch registers
-> > this clock and enables it in the imx-ssi driver.
 
-> I have no idea what the admux_gate really is, but the ssi driver doesn't
-> seem like the right place. Isn't this more closely related to the
-> imx-audmux.c driver?
-
-This is a patch to the ASoC driver?  I just ignored it since it said it
-was an ARM patch...  Anyway, what I'd expect should be happening here is
-that the clock API walks up the tree enabling supply clocks - that would
-mean that either that code isn't there or there's a missing parent child
-relationship in the data.
-
---SENi13OXelf/Rv8V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRUuffAAoJELSic+t+oim9yuMQAIZQztgaAKzDhS/ThktbPaa0
-MqEB7Az1hSkW0FYanSSyHZ+EQJewMCXuMrKDrq9dO7q95RYhOS+uXQ/32AlZ9xXE
-MI9k2aaHruQXd2Bp1QMkvJZYQuflrlwLJYaBkLQ2NtuCPJ52RNs5tY020KilCn0o
-0lRqyF4GN9YiRBtfSH/gupSsWeVgWlOq2IrRXQFmVcYvfXwr9W940G7LT9IholtS
-SJTobjc7DUDd3xmy2a+38cam2zWUxAWSwqpmff+kv8dRxD7oF+tC3McsB/HSjGmE
-EnfKQseq6GRTi7uskz5uaE0n/wdDAppQsBsbJ0yNOR9MsPI4Be81UokJ4MH8XsEg
-sXnlL/MPtbxDvg2Q1DNLr+zVhZQcEaZzansFZ4+ygGckRQ5f7/zTk9c1aKpL4x44
-XhYwSLgeUqMFedCyDbN197ztyN8jaRozxK2qhBgAgTAwJUmuTFgrJT1XenaWVfzU
-LR4o/iST74KRhi9gPiDumJ/auWItW1FqzwSDFzgtNJUF7eAGvvGMMq8pN16LRWGY
-p7vjZemfJJ585eYdFfZZ7e0/3trR0USRfJyf7q+4UcS1B3mM5dWhLQsAYrg3iXaU
-SNnWCN0W/b2XcrUkkMZqXIT8nw5OPptNXjurF5FVV4wUi+RMHAT/xWz5LEB84FDK
-bwjzjdN8G0J3qgBHhAKM
-=Nfil
------END PGP SIGNATURE-----
-
---SENi13OXelf/Rv8V--
+Torstein
