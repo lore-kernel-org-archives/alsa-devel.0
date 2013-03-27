@@ -1,15 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v6] ASoC: soc-compress: Cancel delayed power
+Subject: [PATCH v7] ASoC: soc-compress: Cancel delayed power
 	down if needed
-Date: Wed, 27 Mar 2013 16:36:49 +0000
-Message-ID: <1364402209-6596-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 27 Mar 2013 16:39:01 +0000
+Message-ID: <1364402341-6702-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 101E62651B0
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 17:44:08 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 948E02651B8
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 17:46:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,30 +29,26 @@ power down of the audio.
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
 
-Well hopefully sixth time lucky, generated against the asoc tree
-for-next branch.
+ARGH! White space error.
 
 Charles
 
- sound/soc/soc-compress.c |   16 +++++++++++++---
- 1 files changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/soc-compress.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index f9b2197..4b4b5fa 100644
+index f9b2197..0f4cfce 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -198,8 +198,10 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+@@ -198,6 +198,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
  {
  	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
  	struct snd_soc_platform *platform = rtd->platform;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
  	int ret = 0;
  
-+
  	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
- 	/* first we call set_params for the platform driver
-@@ -211,19 +213,27 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+@@ -211,19 +212,27 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
  	if (platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
  		ret = platform->driver->compr_ops->set_params(cstream, params);
  		if (ret < 0)
