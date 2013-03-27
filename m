@@ -1,82 +1,55 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5102: Implement OSR support
-Date: Wed, 27 Mar 2013 12:52:42 +0000
-Message-ID: <1364388762-8477-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH 2/2] ARM: clk: imx35 sound admux_gate bugfix
+Date: Wed, 27 Mar 2013 16:04:20 +0100
+Message-ID: <20130327150420.GB6347@pengutronix.de>
+References: <1364383352-27267-1-git-send-email-mpa@pengutronix.de>
+ <1364383352-27267-3-git-send-email-mpa@pengutronix.de>
+ <1364385420.5442.12.camel@pizza.hi.pengutronix.de>
+ <20130327123659.GT18316@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9C90226517B
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 13:58:31 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=utf-8
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130327123659.GT18316@opensource.wolfsonmicro.com>
+Sender: stable-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5102.c |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Hi Mark,
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index b7a3fdc..99972a5 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -612,6 +612,26 @@ static int wm5102_sysclk_ev(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static const char *wm5102_osr_text[] = {
-+	"Low power", "Normal", "High performance",
-+};
-+
-+static const unsigned int wm5102_osr_val[] = {
-+	0x0, 0x3, 0x5,
-+};
-+
-+static const struct soc_enum wm5102_hpout_osr[] = {
-+	SOC_VALUE_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_1L,
-+			      ARIZONA_OUT1_OSR_SHIFT, 0xe00, 3,
-+			      wm5102_osr_text, wm5102_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_2L,
-+			      ARIZONA_OUT2_OSR_SHIFT, 0xe00, 3,
-+			      wm5102_osr_text, wm5102_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_3L,
-+			      ARIZONA_OUT3_OSR_SHIFT, 0xe00, 3,
-+			      wm5102_osr_text, wm5102_osr_val),
-+};
-+
- #define WM5102_NG_SRC(name, base) \
- 	SOC_SINGLE(name " NG HPOUT1L Switch",  base, 0, 1, 0), \
- 	SOC_SINGLE(name " NG HPOUT1R Switch",  base, 1, 1, 0), \
-@@ -761,6 +781,8 @@ ARIZONA_MIXER_CONTROLS("SPKOUTR", ARIZONA_OUT4RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT1L", ARIZONA_OUT5LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SPKDAT1R", ARIZONA_OUT5RMIX_INPUT_1_SOURCE),
- 
-+SOC_SINGLE("Speaker High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_4L,
-+	   ARIZONA_OUT4_OSR_SHIFT, 1, 0),
- SOC_SINGLE("SPKDAT1 High Performance Switch", ARIZONA_OUTPUT_PATH_CONFIG_5L,
- 	   ARIZONA_OUT5_OSR_SHIFT, 1, 0),
- 
-@@ -790,6 +812,10 @@ SOC_DOUBLE_R_TLV("SPKDAT1 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_5L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_5R, ARIZONA_OUT5L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
-+SOC_VAL_ENUM("HPOUT1 OSR", wm5102_hpout_osr[0]),
-+SOC_VAL_ENUM("HPOUT2 OSR", wm5102_hpout_osr[1]),
-+SOC_VAL_ENUM("HPOUT3 OSR", wm5102_hpout_osr[2]),
-+
- SOC_ENUM("Output Ramp Up", arizona_out_vi_ramp),
- SOC_ENUM("Output Ramp Down", arizona_out_vd_ramp),
- 
+On Wed, Mar 27, 2013 at 12:37:00PM +0000, Mark Brown wrote:
+> On Wed, Mar 27, 2013 at 12:57:00PM +0100, Philipp Zabel wrote:
+> > Am Mittwoch, den 27.03.2013, 12:22 +0100 schrieb Markus Pargmann:
+> > > imx-ssi needs admux_gate clock to work on imx35. This patch registers
+> > > this clock and enables it in the imx-ssi driver.
+> 
+> > I have no idea what the admux_gate really is, but the ssi driver doesn't
+> > seem like the right place. Isn't this more closely related to the
+> > imx-audmux.c driver?
+> 
+> This is a patch to the ASoC driver?  I just ignored it since it said it
+> was an ARM patch...  Anyway, what I'd expect should be happening here is
+> that the clock API walks up the tree enabling supply clocks - that would
+> mean that either that code isn't there or there's a missing parent child
+> relationship in the data.
+
+It changes some things in imx-ssi, sorry, perhaps I should have
+splitted it into two patches.
+
+admux clock does not seem to be a physical parent of the ssi clock, so
+I don't think it should be a parent in the clock tree. But imx-ssi (or
+some other evice) needs this clock to work. As mentioned in the other
+response, I will put it directly into clk-imx35.c so this won't be a
+patch for ASoC in the next version.
+
+Regards,
+
+Markus
+
+
 -- 
-1.7.10.4
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
