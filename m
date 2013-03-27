@@ -1,19 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
- codec in system resume
-Date: Wed, 27 Mar 2013 02:03:49 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8363D66@SHSMSX101.ccr.corp.intel.com>
-References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
- <51517F53.7070608@canonical.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - bug fix on return value when
+	getting HDMI ELD info
+Date: Wed, 27 Mar 2013 09:37:26 -0400
+Message-ID: <1364391446-23883-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E171A261725
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 03:03:53 +0100 (CET)
-In-Reply-To: <51517F53.7070608@canonical.com>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F538264F13
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 07:30:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of David Henningsson
-> Sent: Tuesday, March 26, 2013 6:58 PM
+From: Mengdong Lin <mengdong.lin@intel.com>
 
+In function snd_hdmi_get_eld(), the variable 'ret' should be initialized to 0.
+Otherwise it will be returned uninitialized as non-zero after ELD info is got
+successfully. Thus hdmi_present_sense() will always assume ELD info is invalid
+by mistake, and /proc file system cannot show the proper ELD info.
 
-> Just a question: Is there a difference between real system S3 here, and just the
-> normal idle power down? I e, I'm a little unsure myself, but it seems like this 300
-> ms delay would trigger in both cases, causing an
-> (unnecessary?) 300 ms delay every time the codec is idle and you want to start
-> playback. Is this correct, or did I get something wrong?
+This patch also let debug message show 'pin_eld->monitor_present' which is the
+real pin response to verb GET_PIN_SENSE.
 
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-Hi David,
-
-Thanks for your feedback!
-There will not be 300ms delay every time in normal idle power down case.
-
-Only the system resume will delay resuming a codec and cause a waiting on first codec access (eg. 1st playback ) after a system resume. Snd_hda_resume(), called by azx_resume(), will check whether a codec can support delay resume, skip these codecs and set the flag "resume_delayed" on them. Normal idle power down will not touch this flag. 
-
-The Haswell codec set_power_state ops (intel_haswell_set_power_state) will only wait if this is a delayed resume and clear this flag after waiting. And actually, there is no waiting even in this case. Because when 1st user operation after system resume happens, Gfx already finishes resuming and audio initialization, so as long as intel_haswell_wait_ready_to_resume() enable the unsol event, the unsol event comes and so so waiting finishes. The 300ms time out is set for safety consideration in case unsol event is lost. I've not observed any unsol event lost till now.
-
-BTW, would you please tell us how Ubuntu decides whether to enable the normal idle power down (parameter "power_save")?
-We found this bug on a Haswell mobile machine with "power_save" disabled, which means only system resume will program the codec back to D0. But on a another machine with "power_save" enabled, this bug is not visible because later runtime codec power up can program the codec to D0 and unmute the pin again.
-
-Thanks
-Mengdong
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index 7dd8463..d0d7ac1 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -320,7 +320,7 @@ int snd_hdmi_get_eld(struct hda_codec *codec, hda_nid_t nid,
+ 		     unsigned char *buf, int *eld_size)
+ {
+ 	int i;
+-	int ret;
++	int ret = 0;
+ 	int size;
+ 
+ 	/*
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 78e1827..de8ac5c 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1196,7 +1196,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 
+ 	_snd_printd(SND_PR_VERBOSE,
+ 		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
+-		codec->addr, pin_nid, eld->monitor_present, eld->eld_valid);
++		codec->addr, pin_nid, pin_eld->monitor_present, eld->eld_valid);
+ 
+ 	if (eld->eld_valid) {
+ 		if (snd_hdmi_get_eld(codec, pin_nid, eld->eld_buffer,
+-- 
+1.7.10.4
