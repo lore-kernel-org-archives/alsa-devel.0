@@ -1,18 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - bug fix on return value when
- getting HDMI ELD info
-Date: Wed, 27 Mar 2013 11:16:21 +0100
-Message-ID: <5152C6F5.1060007@canonical.com>
-References: <1364391446-23883-1-git-send-email-mengdong.lin@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/3] ASoC: Constify the 'ops' field of
+	snd_soc_platform_driver
+Date: Wed, 27 Mar 2013 12:02:23 +0100
+Message-ID: <1364382144-30151-2-git-send-email-lars@metafoo.de>
+References: <1364382144-30151-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 9237A265083
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 11:16:22 +0100 (CET)
-In-Reply-To: <1364391446-23883-1-git-send-email-mengdong.lin@intel.com>
+Received: from smtp-out-226.synserver.de (smtp-out-045.synserver.de
+ [212.40.185.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1272F265134
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 12:00:18 +0100 (CET)
+In-Reply-To: <1364382144-30151-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/27/2013 02:37 PM, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
->
-> In function snd_hdmi_get_eld(), the variable 'ret' should be initialized to 0.
-> Otherwise it will be returned uninitialized as non-zero after ELD info is got
-> successfully. Thus hdmi_present_sense() will always assume ELD info is invalid
-> by mistake, and /proc file system cannot show the proper ELD info.
->
-> This patch also let debug message show 'pin_eld->monitor_present' which is the
-> real pin response to verb GET_PIN_SENSE.
->
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+The ASoC core does not modify a platform driver's ops structure. Making it const
+allows ASoC platform drivers to declare their snd_pcm_ops struct as const.
 
-Reviewed-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Good findings.
-The first one is at least in 3.8 and so this should be sent to stable too.
-
-The second one (pin_eld) is new for 3.9, and probably caused by me, so, 
-sorry for that :-/
-
-
->
-> diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-> index 7dd8463..d0d7ac1 100644
-> --- a/sound/pci/hda/hda_eld.c
-> +++ b/sound/pci/hda/hda_eld.c
-> @@ -320,7 +320,7 @@ int snd_hdmi_get_eld(struct hda_codec *codec, hda_nid_t nid,
->   		     unsigned char *buf, int *eld_size)
->   {
->   	int i;
-> -	int ret;
-> +	int ret = 0;
->   	int size;
->
->   	/*
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 78e1827..de8ac5c 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -1196,7 +1196,7 @@ static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
->
->   	_snd_printd(SND_PR_VERBOSE,
->   		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
-> -		codec->addr, pin_nid, eld->monitor_present, eld->eld_valid);
-> +		codec->addr, pin_nid, pin_eld->monitor_present, eld->eld_valid);
->
->   	if (eld->eld_valid) {
->   		if (snd_hdmi_get_eld(codec, pin_nid, eld->eld_buffer,
->
-
-
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e666119..eae9c10 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -807,7 +807,7 @@ struct snd_soc_platform_driver {
+ 		struct snd_soc_dai *);
+ 
+ 	/* platform stream pcm ops */
+-	struct snd_pcm_ops *ops;
++	const struct snd_pcm_ops *ops;
+ 
+ 	/* platform stream compress ops */
+ 	struct snd_compr_ops *compr_ops;
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.8.0
