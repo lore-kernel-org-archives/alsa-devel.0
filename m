@@ -1,8 +1,8 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
  make Playback Design products work
-Date: Wed, 27 Mar 2013 10:45:36 +0100
-Message-ID: <5152BFC0.9080601@ladisch.de>
+Date: Wed, 27 Mar 2013 10:48:57 +0100
+Message-ID: <5152C089.5030707@gmail.com>
 References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
  <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
  <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
@@ -16,9 +16,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E7B9B26506D
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 10:45:39 +0100 (CET)
+Received: from mail-bk0-f49.google.com (mail-bk0-f49.google.com
+ [209.85.214.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7023526506D
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 10:49:04 +0100 (CET)
+Received: by mail-bk0-f49.google.com with SMTP id w12so611315bku.8
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2013 02:49:04 -0700 (PDT)
 In-Reply-To: <7.0.0.16.2.20130326224120.13b063e0@akdesigninc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,16 +33,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Andreas Koch <andreas@akdesigninc.com>
-Cc: Jussi Laako <jussi@sonarnerd.net>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
+Cc: Jussi Laako <jussi@sonarnerd.net>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, alsa-devel@alsa-project.org, demian@auraliti.com, ray@auraliti.com
 List-Id: alsa-devel@alsa-project.org
 
-Andreas Koch wrote:
-> ... your driver would send the DSD data in whatever format the DAC
-> requests via its descriptors. [...] The only potential fly in the
-> ointment is that we assume that the raw data format means DSD.
+On 27.03.2013 06:50, Andreas Koch wrote:
+> Hi Daniel
+> 
+>> Ok. So we could define 3 DSD formats, for 8-bit, 16-bit and 32-bit. On
+>> that three formats, arbitrary samples can be transported, and the
+>> mapping between the configured sample rate and the resulting DSD rates
+>> would be as follows (please tell me if I'm correct):
+>>
+>>         352.8kHz       705.6KHz    1411.2KHz
+>>
+>> 8-bit     2.8MHz         5.6MHz      11.2MHz
+>> 16-bit    5.6MHz        11.2MHz
+>> 32-bit   11.2MHz
+>>
+>> So driver would mark a stream as DSD capable (8, 16, 32bit, depending on
+>> the USB descriptors), and then leave it up to the application to do the
+>> sample frequency determination according to the above table, and also as
+>> stated in the DoP document. Other drivers for more sound cards
+>> (presumable on other bus types) might follow.
+>>
+>> I think it's ok to handle it like this, because after all, what an
+>> application sets as sample rate for the stream is the number of actual
+>> words that are transported, where as the DSD rate is referring to bits/s.
+>>
+>> Jussi, for your application, that means that you'd have to add these 3
+>> new formats, and teach your application that they can be used for DSD
+>> right away.
+>>
+>> The question is whether all DSD-capable USB DACs behave correctly in
+>> order to make this logic work. Andreas?
+> 
+> If I understand this correctly then your driver would send the DSD 
+> data in whatever format the DAC requests via its descriptors. The DSD 
+> rate would either control the word length (8,16,32) or the underlying 
+> sample rate (1x, 2x, 4x 352.8kHz). That would be the most flexible 
+> implementation and I don't see why any hardware implementation would 
+> have a problem with that.
 
-Add some vendor-specific descriptor to specify that raw means DSD.
+The question is whether all DACs would assume the same DSD rate as in
+the table above (ie, 8-bit, 352.8kHz == 2.8MHz DSD).
+
+And do we actually need a 32-bit format at all or is 8 and 16 enough?
+
+> The only potential fly in the ointment is 
+> that we assume that the raw data format means DSD. In other words, if 
+> a DAC uses raw data for any other purpose with similar wordlength 
+> and/or sample rate spec. then we are in trouble. The chance for that 
+> is small though.
+
+As there's nothing the UAC2 spec helps us with, we have to live with
+quirks for that.
 
 
-Regards,
-Clemens
+Daniel
