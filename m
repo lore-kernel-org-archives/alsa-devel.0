@@ -1,67 +1,34 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - bug fix on return value when
- getting HDMI ELD info
-Date: Thu, 28 Mar 2013 02:19:39 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8366A24@SHSMSX101.ccr.corp.intel.com>
-References: <1364391446-23883-1-git-send-email-mengdong.lin@intel.com>
- <5152C6F5.1060007@canonical.com>
+From: Rob Landley <rob@landley.net>
+Subject: Re: [PATCH] ALSA: hda - Clean up documentation a bit
+Date: Thu, 28 Mar 2013 00:14:36 -0500
+Message-ID: <1364447676.18069.3@driftwood>
+References: <1364373022.1390.331.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id E9BD0265B6E
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2013 03:19:43 +0100 (CET)
-In-Reply-To: <5152C6F5.1060007@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1364373022.1390.331.camel@x61.thuisdomein> (from
+	pebolle@tiscali.nl on Wed Mar 27 03:30:22 2013)
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: David Henningsson [mailto:david.henningsson@canonical.com]
-> Sent: Wednesday, March 27, 2013 6:16 PM
-> To: Lin, Mengdong
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - bug fix on return value when
-> getting HDMI ELD info
+On 03/27/2013 03:30:22 AM, Paul Bolle wrote:
+> CONFIG_SND_HDA_POWER_SAVE was removed in v3.6.7, see commit
+> 83012a7ccbb90dee33c97a004b3e374f988612af ("ALSA: hda - Clean up
+> CONFIG_SND_HDA_POWER_SAVE"). Clean up hda's documentation to reflect
+> that.
 > 
-> On 03/27/2013 02:37 PM, mengdong.lin@intel.com wrote:
-> > From: Mengdong Lin <mengdong.lin@intel.com>
-> >
-> > In function snd_hdmi_get_eld(), the variable 'ret' should be initialized to 0.
-> > Otherwise it will be returned uninitialized as non-zero after ELD info
-> > is got successfully. Thus hdmi_present_sense() will always assume ELD
-> > info is invalid by mistake, and /proc file system cannot show the proper ELD
-> info.
-> >
-> > This patch also let debug message show 'pin_eld->monitor_present'
-> > which is the real pin response to verb GET_PIN_SENSE.
-> >
-> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> Reviewed-by: David Henningsson <david.henningsson@canonical.com>
-> 
-> Good findings.
-> The first one is at least in 3.8 and so this should be sent to stable too.
-> 
-> The second one (pin_eld) is new for 3.9, and probably caused by me, so, sorry
-> for that :-/
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+> ---
+> 0) I send this to the sound maintainers. I guess this they need to  
+> send
+> it to the Documentation maintainer (after review).
 
-Hi David,
+No, it can go in via their tree. I'm more a librarian trying to keep  
+the shelves in order, and some light copyediting on the side. I'm not a  
+domain expert in everything, and thus can't _write_ most of this stuff.
 
-I've divided them into two patches. Please review.
-[PATCH v2 1/2] ALSA: hda - bug fix on return value when getting HDMI ELD info
-[PATCH v2 2/2] ALSA: hda - bug fix on HDMI ELD debug message
-
-Thanks again!
-Mengdong
+Rob
