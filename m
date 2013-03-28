@@ -1,24 +1,19 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: Re: [PATCH 0/3] ALSA: snd-usb: Some small fixes to
- make Playback Design products work
-Date: Thu, 28 Mar 2013 02:10:01 +0200
-Message-ID: <51538A59.1020909@sonarnerd.net>
-References: <1363522047-7515-1-git-send-email-zonque@gmail.com>
- <s5hehfduld0.wl%tiwai@suse.de> <5146DB40.2060000@gmail.com>
- <s5h620pukb4.wl%tiwai@suse.de> <51471B51.4000006@gmail.com>
- <514B79DA.6030203@sonarnerd.net> <514C1215.9010708@gmail.com>
- <7.0.0.16.2.20130322082602.0605cbc0@akdesigninc.com>
- <514E0A2A.1000201@sonarnerd.net>
- <7.0.0.16.2.20130323183543.0605ddb0@akdesigninc.com>
- <514EDA91.9000305@sonarnerd.net> <5151F85C.7070204@gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - bug fix on return value when
+ getting HDMI ELD info
+Date: Thu, 28 Mar 2013 01:08:21 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8366922@SHSMSX101.ccr.corp.intel.com>
+References: <1364391446-23883-1-git-send-email-mengdong.lin@intel.com>
+ <5152C6F5.1060007@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id CEF2B265344
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2013 01:10:02 +0100 (CET)
-In-Reply-To: <5151F85C.7070204@gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7A83265B59
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2013 02:08:28 +0100 (CET)
+In-Reply-To: <5152C6F5.1060007@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,27 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, Andreas Koch <andreas@akdesigninc.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/26/2013 09:34 PM, Daniel Mack wrote:
-> What protocol is that? Is there a driver for Linux?
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Wednesday, March 27, 2013 6:16 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org; tiwai@suse.de
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - bug fix on return value when
+> getting HDMI ELD info
+> 
+> On 03/27/2013 02:37 PM, mengdong.lin@intel.com wrote:
+> > From: Mengdong Lin <mengdong.lin@intel.com>
+> >
+> > In function snd_hdmi_get_eld(), the variable 'ret' should be initialized to 0.
+> > Otherwise it will be returned uninitialized as non-zero after ELD info
+> > is got successfully. Thus hdmi_present_sense() will always assume ELD
+> > info is invalid by mistake, and /proc file system cannot show the proper ELD
+> info.
+> >
+> > This patch also let debug message show 'pin_eld->monitor_present'
+> > which is the real pin response to verb GET_PIN_SENSE.
+> >
+> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> 
+> Reviewed-by: David Henningsson <david.henningsson@canonical.com>
+> 
+> Good findings.
+> The first one is at least in 3.8 and so this should be sent to stable too.
+> 
+> The second one (pin_eld) is new for 3.9, and probably caused by me, so, sorry
+> for that :-/
 
-Just a custom flow-controlled bulk-mode byte stream. I have some hacks 
-to make things work for my own prototype purposes, but I haven't got 
-time to make anything clean and worth releasing.
+Hi David,
 
-There's not much point in releasing a driver that nobody else has 
-hardware for... :)
+I'll divide this into 2 patches, as the 2nd one is not needed for 3.8.
 
-I was hoping to discuss the ALSA sample format topic already earlier in 
-context of getting DSD support to the RigiSystems USBPAL Linux driver, 
-but it doesn't seem to be proceeding anywhere and I don't have necessary 
-documentation (nor time)...
-https://github.com/lintweaker/mytekusb2
-I have the hardware though, so I can test & develop things at 
-application side.
+Thanks
+Mengdong
 
-
-	- Jussi
+> 
+> 
+> >
+> > diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+> > index 7dd8463..d0d7ac1 100644
+> > --- a/sound/pci/hda/hda_eld.c
+> > +++ b/sound/pci/hda/hda_eld.c
+> > @@ -320,7 +320,7 @@ int snd_hdmi_get_eld(struct hda_codec *codec,
+> hda_nid_t nid,
+> >   		     unsigned char *buf, int *eld_size)
+> >   {
+> >   	int i;
+> > -	int ret;
+> > +	int ret = 0;
+> >   	int size;
+> >
+> >   	/*
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index 78e1827..de8ac5c 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -1196,7 +1196,7 @@ static void hdmi_present_sense(struct
+> hdmi_spec_per_pin *per_pin, int repoll)
+> >
+> >   	_snd_printd(SND_PR_VERBOSE,
+> >   		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d
+> ELD_Valid=%d\n",
+> > -		codec->addr, pin_nid, eld->monitor_present, eld->eld_valid);
+> > +		codec->addr, pin_nid, pin_eld->monitor_present, eld->eld_valid);
+> >
+> >   	if (eld->eld_valid) {
+> >   		if (snd_hdmi_get_eld(codec, pin_nid, eld->eld_buffer,
+> >
+> 
+> 
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
