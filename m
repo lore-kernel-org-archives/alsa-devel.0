@@ -1,117 +1,69 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: Re: ASoC updates for v3.9
-Date: Fri, 29 Mar 2013 09:38:22 +0100
-Message-ID: <CAH5Jhw9g9079biLrFgf3iWv+kYhSHeZjpvC-5i2OTZZ3MRxKhQ@mail.gmail.com>
-References: <20130326143004.GC18316@opensource.wolfsonmicro.com>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 00/13] mach-mxs header files cleanup
+Date: Fri, 29 Mar 2013 16:55:36 +0800
+Message-ID: <1364547350-30498-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
- [209.85.217.178])
- by alsa0.perex.cz (Postfix) with ESMTP id CCF56265CF3
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 09:38:22 +0100 (CET)
-Received: by mail-lb0-f178.google.com with SMTP id q13so149196lbi.37
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 01:38:22 -0700 (PDT)
-In-Reply-To: <20130326143004.GC18316@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+The series cleans up mach-mxs headers files in order to support
+multiplatform build on mxs.
 
-As you might have guessed, I'm currently on vacation, so have little net
-connection.
-For urgent fixes, feel free to ask Linus to pull. But I guess this time
-it's unnecessary.
+Andrew, Jonathan, Mark,
 
-In anyway, I'll catch up all pending pulls and merges on the next Tuesday.
+Can you please give your ACK on the patch you are copied, so that the
+series can go via arm-soc as a whole?  Thanks.
 
-(Sorry for top-posting and other ugliness.)
+Shawn
 
-Takashi
- On Mar 26, 2013 3:40 PM, "Mark Brown" <broonie@opensource.wolfsonmicro.com>
-wrote:
+Shawn Guo (13):
+  rtc: stmp3xxx: use stmp_reset_block() instead
+  iio: mxs-lradc: remove unneeded mach header inclusion
+  ASoC: mxs-saif: remove mach header inclusion
+  ARM: mxs: remove empty hardware.h
+  ARM: mxs: get reset address from device tree
+  ARM: mxs: remove system.c
+  ARM: mxs: get ocotp base address from device tree
+  ARM: mxs: use debug_ll_io_init for low-level debug
+  ARM: mxs: remove mm.c
+  ARM: mxs: move mxs_get_ocotp() into mach-mxs.c
+  ARM: mxs: remove common.h
+  ARM: mxs: merge imx23 and imx28 into one machine_desc
+  ARM: mxs: remove unused headers
 
-> The following changes since commit
-> 8bb9660418e05bb1845ac1a2428444d78e322cc7:
->
->   Linux 3.9-rc4 (2013-03-23 16:52:44 -0700)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.gittags/asoc-fix-v3.9-rc4
->
-> for you to fetch changes up to 40bac28eb1e39f229a94ad72e2ca8cdeef3ba31a:
->
->   Merge remote-tracking branch 'asoc/fix/spear' into asoc-next (2013-03-26
-> 14:08:07 +0000)
->
-> ----------------------------------------------------------------
->
-> ASoC: Fixes for v3.9
->
-> A few more fixes here and there, including quite a few nasty driver
-> specific ones, but nothing that has a major general impact.
->
-> ----------------------------------------------------------------
-> Axel Lin (1):
->       ASoC: si476x: Add missing break for SNDRV_PCM_FORMAT_S8 switch case
->
-> Joe Perches (1):
->       ASoC:: max98090: Remove executable bit
->
-> Lars-Peter Clausen (2):
->       ASoC: spear_pcm: Update to new pcm_new() API
->       ASoC: dma-sh7760: Fix compile error
->
-> Mark Brown (9):
->       ASoC: dapm: Fix handling of loops
->       Merge remote-tracking branch 'asoc/fix/adsp' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/core' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/dapm' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/fsl' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/max98090' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/sh' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/si476x' into asoc-next
->       Merge remote-tracking branch 'asoc/fix/spear' into asoc-next
->
-> Markus Pargmann (1):
->       ASoC: pcm030 audio fabric: remove __init from probe
->
-> Peter Ujfalusi (1):
->       ASoC: dapm: Fix pointer dereference in is_connected_output_ep()
->
-> Sascha Hauer (1):
->       ASoC: imx-ssi: Fix occasional AC97 reset failure
->
-> Silviu-Mihai Popescu (1):
->       ASoC: core: fix invalid free of devm_ allocated data
->
-> Wei Yongjun (2):
->       ASoC: wm_adsp: fix possible memory leak in wm_adsp_load_coeff()
->       ASoC: core: fix possible memory leak in snd_soc_bytes_put()
->
->  include/sound/soc-dapm.h            |    1 +
->  sound/soc/codecs/si476x.c           |    1 +
->  sound/soc/codecs/wm_adsp.c          |    5 +++--
->  sound/soc/fsl/imx-ssi.c             |    5 +++++
->  sound/soc/fsl/pcm030-audio-fabric.c |    2 +-
->  sound/soc/sh/dma-sh7760.c           |    4 ++--
->  sound/soc/soc-core.c                |    8 ++++----
->  sound/soc/soc-dapm.c                |   14 ++++++++++++++
->  sound/soc/spear/spear_pcm.c         |   12 ++++++------
->  9 files changed, 37 insertions(+), 15 deletions(-)
->  mode change 100755 => 100644 include/sound/max98090.h
->  mode change 100755 => 100644 sound/soc/codecs/max98090.c
->  mode change 100755 => 100644 sound/soc/codecs/max98090.h
->
+ arch/arm/boot/dts/imx23.dtsi                 |    3 +-
+ arch/arm/boot/dts/imx28.dtsi                 |    3 +-
+ arch/arm/mach-mxs/Makefile                   |    4 -
+ arch/arm/mach-mxs/include/mach/common.h      |   25 ---
+ arch/arm/mach-mxs/include/mach/debug-macro.S |    9 +-
+ arch/arm/mach-mxs/include/mach/digctl.h      |   22 ---
+ arch/arm/mach-mxs/include/mach/hardware.h    |   23 ---
+ arch/arm/mach-mxs/include/mach/mx23.h        |  169 -------------------
+ arch/arm/mach-mxs/include/mach/mx28.h        |  225 --------------------------
+ arch/arm/mach-mxs/include/mach/mxs.h         |  116 -------------
+ arch/arm/mach-mxs/mach-mxs.c                 |  182 +++++++++++++++++----
+ arch/arm/mach-mxs/mm.c                       |   52 ------
+ arch/arm/mach-mxs/ocotp.c                    |   93 -----------
+ arch/arm/mach-mxs/system.c                   |  139 ----------------
+ drivers/rtc/rtc-stmp3xxx.c                   |    6 +-
+ drivers/staging/iio/adc/mxs-lradc.c          |    3 -
+ include/linux/clk/mxs.h                      |   16 ++
+ sound/soc/mxs/mxs-saif.c                     |    5 +-
+ 18 files changed, 180 insertions(+), 915 deletions(-)
+ delete mode 100644 arch/arm/mach-mxs/include/mach/common.h
+ delete mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
+ delete mode 100644 arch/arm/mach-mxs/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-mxs/include/mach/mx23.h
+ delete mode 100644 arch/arm/mach-mxs/include/mach/mx28.h
+ delete mode 100644 arch/arm/mach-mxs/include/mach/mxs.h
+ delete mode 100644 arch/arm/mach-mxs/mm.c
+ delete mode 100644 arch/arm/mach-mxs/ocotp.c
+ delete mode 100644 arch/arm/mach-mxs/system.c
+ create mode 100644 include/linux/clk/mxs.h
+
+-- 
+1.7.9.5
