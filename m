@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: wm0010: Constify usage of
-	firmware filenames
-Date: Fri, 29 Mar 2013 10:52:36 +0000
-Message-ID: <20130329105235.GB18316@opensource.wolfsonmicro.com>
-References: <1364550335-15023-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Implement mixer control sharing
+Date: Fri, 29 Mar 2013 10:53:34 +0000
+Message-ID: <20130329105333.GC18316@opensource.wolfsonmicro.com>
+References: <1364514790-28398-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1335513700137254018=="
+Content-Type: multipart/mixed; boundary="===============7787946553946141109=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF84726530E
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 11:52:43 +0100 (CET)
-In-Reply-To: <1364550335-15023-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F38B5265CBE
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 11:53:37 +0100 (CET)
+In-Reply-To: <1364514790-28398-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@wmail.com
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1335513700137254018==
+--===============7787946553946141109==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G9rK8GLJpzg+NdrG"
+	protocol="application/pgp-signature"; boundary="kX7wsrERV8Y1FKEw"
 Content-Disposition: inline
 
 
---G9rK8GLJpzg+NdrG
+--kX7wsrERV8Y1FKEw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 29, 2013 at 09:45:34AM +0000, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Thu, Mar 28, 2013 at 05:53:10PM -0600, Stephen Warren wrote:
 
-Applied both, thanks.
+> Mark, the goto here might be considered icky. It avoids heavy indent
+> levels. Should I separate out the control creation part of dapm_new_mixer()
+> into a separate function to avoid this?
 
---G9rK8GLJpzg+NdrG
+I think the fact that you're asking this question means you know the
+answer :)
+
+> Also, this commit has the potential for user-space impact, since control
+> names could change for existing drivers. However, in this case I suspect
+> the affected controls wouldn't have worked very well anyway, since they'd
+> be affected by one of the problems I mention in the commit description
+> above anyway, so I doubt this will be a practical problem.
+
+This isn't a big deal.
+
+--kX7wsrERV8Y1FKEw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRVXJqAAoJELSic+t+oim9qYgP/j3xMKA2MF1QPkwpa5D18f/E
-/fgw7K5C2jPr+agUmEcEso8FhlLCYSOpui8d6vuS1GEikNQqcZh5woxuHgnUXcTp
-CbrRa560u6tAXdUkApB8lPjUwrOXcKJx7Jyudy1tc/o3PmLIKlt3KrNbA9ZdpYBo
-bIjKct/ofRey0FZQRJ/41vRwVbTL1VYXrAmOyoFMWdoZq0E1w8qKK0uV1adWPxP/
-GcmkgH/Uqk3hd/rcuCLorOPJcArIHYEiXrwqAzJ2HCDINxgzVtKDVbciWR7g31C6
-Zoaui7QjsstGSDCm55wbGZNkDlwB5IaWzbKDX+fogzBFapLzci7wvFMUIm15gluo
-jSrgrQffmjlyAY4NMVuaKOcDn4H9QC9zowXy2K/PHcYhcShPKvEbtIOQkvSfZx1K
-HfvrYBzdcgvGcQcQbowlcY7pdOsXm2NGHtz0PXwouFW+8zRsT5NVocqxPMFJZXbW
-AFuNx/jVTbR/ehixydC2J+YE2G6i+F3Vlif/p/XqpVjj0tjHTjvFJ7HZvAUJ1SUo
-u3iQh8Kop5KprVh4AN4gOLsj/v0PNiCZM9pfQ0GGIOxd2onv4TOzAX8IhzkZo5A5
-i7p1Hz+RKWV3pgU06M0RjQpmhUSNaaUhVy2DzSET261PuA+0eU1FWUmPFEgVnUYA
-KUG6LLuYFUzeuDlfBhi4
-=4jFl
+iQIcBAEBAgAGBQJRVXKnAAoJELSic+t+oim9qI4P/jAcBeq6O71AERPKB4PPN+bq
+/wPj7vYzBJKztEOis/RmbkW0eljOH8Eb6zcnaWGIVcjthhI1Gz1Ro5fOgulYisYW
+KkNCG/aIPoq//KjLjg2cOUKW8wuRnj7UURUGpTSKl/XjfZxQhmPNqOcIlTNm0A3H
+5Nohn3xtmkc0fNnd8KGKICYTntrOHBEUMHmUry+wIv49UfxtoYmOCkZqY7Gx4Cy2
+1OgButKCL6aPGhu1yA0nW7KdFukSBRst1rvAGRFhXXn3oOJGjP61ZL3UOudnlGYS
+7g7OiJZ1OilrWR7IIUJdM3h2VnNkxqOcUx7Da5Z+TbN9qVh9af/X5a4gLJlMHXTe
+viauS+WIpqPsMhUGn/IGLh8fNS6Fzqf7Q25IAL5mzLPIC49nxrYS6s5Dr2IqGnnq
+0p/h1VZ4/+4ulcX8puqmVPkuERWu2O3lmKP9I6VNmPbnLQqSq/ZDEpTpVaq4xvkA
+yCtQ2BMFUrLQySgCPo+8OB+tCx0NMWbM1UnfmmTnJRq2U3Mh8aYTdvYsX8zcfp2+
+b+TIB1iw2zNOuG1vHpHcBUV5eFC73oCQGds5g22SCcn8/fnmUUrlQZziv+miJu2C
+4xBPhXWotkp98SKzU2bhCSLuW4RtrlUVxTLCzQw1uJDTAsQA+jGI+6i9lFiH0JhB
+wlWkLBfKdL0xoYaoFJP5
+=1qDe
 -----END PGP SIGNATURE-----
 
---G9rK8GLJpzg+NdrG--
+--kX7wsrERV8Y1FKEw--
 
---===============1335513700137254018==
+--===============7787946553946141109==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1335513700137254018==--
+--===============7787946553946141109==--
