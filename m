@@ -1,14 +1,19 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH] ASoC: Implement mixer control sharing
-Date: Thu, 28 Mar 2013 17:53:10 -0600
-Message-ID: <1364514790-28398-1-git-send-email-swarren@wwwdotorg.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: Re: ASoC updates for v3.9
+Date: Fri, 29 Mar 2013 09:38:22 +0100
+Message-ID: <CAH5Jhw9g9079biLrFgf3iWv+kYhSHeZjpvC-5i2OTZZ3MRxKhQ@mail.gmail.com>
+References: <20130326143004.GC18316@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id A2AB52652C1
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 00:53:27 +0100 (CET)
+Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
+ [209.85.217.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCF56265CF3
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 09:38:22 +0100 (CET)
+Received: by mail-lb0-f178.google.com with SMTP id q13so149196lbi.37
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 01:38:22 -0700 (PDT)
+In-Reply-To: <20130326143004.GC18316@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,179 +23,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
+Hi Mark,
 
-This is the equivalent of commit af46800 "ASoC: Implement mux control
-sharing", but applied to mixers instead of muxes.
+As you might have guessed, I'm currently on vacation, so have little net
+connection.
+For urgent fixes, feel free to ask Linus to pull. But I guess this time
+it's unnecessary.
 
-This allows a single control to affect multiple mixer widgets at once,
-which is useful when there is a single set of register bits that affects
-both multiple mixers in HW, for example both the L and R mixers of a
-stereo path.
+In anyway, I'll catch up all pending pulls and merges on the next Tuesday.
 
-Without this, you either:
+(Sorry for top-posting and other ugliness.)
 
-1) End up with multiple controls that affect the same register bits, but
-whose DAPM state falls out of sync with HW, since the DAPM state is only
-updated for the specific control that is modified, and not for other
-paths that are affected only by the other control.
+Takashi
+ On Mar 26, 2013 3:40 PM, "Mark Brown" <broonie@opensource.wolfsonmicro.com>
+wrote:
 
-2) False paths through DAPM, since you end up merging unconnected stereo
-paths together into a single widget which hosts the single control, and
-then branching back out again, thus conjoining the enable states of the
-two input paths.
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
-Mark, the goto here might be considered icky. It avoids heavy indent
-levels. Should I separate out the control creation part of dapm_new_mixer()
-into a separate function to avoid this?
-
-Also, this commit has the potential for user-space impact, since control
-names could change for existing drivers. However, in this case I suspect
-the affected controls wouldn't have worked very well anyway, since they'd
-be affected by one of the problems I mention in the commit description
-above anyway, so I doubt this will be a practical problem.
-
-FYI, this feature for muxes will be useful for the rt5640.c driver, which
-has a single register for the HPO MUX, which separately affects both a L
-and R path to the HP outputs.
-
- sound/soc/soc-dapm.c |   57 +++++++++++++++++++++++++++++++-------------------
- 1 file changed, 36 insertions(+), 21 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 33acd8b..9a87aa5 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -508,13 +508,15 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
- static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
--	int i, ret = 0;
-+	int i, ret;
- 	size_t name_len, prefix_len;
- 	struct snd_soc_dapm_path *path;
- 	struct snd_card *card = dapm->card->snd_card;
- 	const char *prefix;
- 	struct snd_soc_dapm_widget_list *wlist;
-+	int shared, wlistentries;
- 	size_t wlistsize;
-+	struct snd_kcontrol *kcontrol;
- 
- 	if (dapm->codec)
- 		prefix = dapm->codec->name_prefix;
-@@ -531,7 +533,6 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 
- 		/* match name */
- 		list_for_each_entry(path, &w->sources, list_sink) {
--
- 			/* mixer/mux paths name must match control name */
- 			if (path->name != (char *)w->kcontrol_news[i].name)
- 				continue;
-@@ -541,26 +542,41 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 				continue;
- 			}
- 
-+			shared = dapm_is_shared_kcontrol(dapm, w,
-+					&w->kcontrol_news[i], &kcontrol);
-+
-+			if (kcontrol) {
-+				wlist = kcontrol->private_data;
-+				wlistentries = wlist->num_widgets + 1;
-+			} else {
-+				wlist = NULL;
-+				wlistentries = 1;
-+			}
-+
- 			wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
--				    sizeof(struct snd_soc_dapm_widget *),
--			wlist = kzalloc(wlistsize, GFP_KERNEL);
-+					wlistentries *
-+					sizeof(struct snd_soc_dapm_widget *),
-+			wlist = krealloc(wlist, wlistsize, GFP_KERNEL);
- 			if (wlist == NULL) {
- 				dev_err(dapm->dev,
- 					"ASoC: can't allocate widget list for %s\n",
- 					w->name);
- 				return -ENOMEM;
- 			}
--			wlist->num_widgets = 1;
--			wlist->widgets[0] = w;
-+			wlist->num_widgets = wlistentries;
-+			wlist->widgets[wlistentries - 1] = w;
-+
-+			if (kcontrol)
-+				goto skip_new_control;
- 
- 			/* add dapm control with long name.
- 			 * for dapm_mixer this is the concatenation of the
- 			 * mixer and kcontrol name.
--			 * for dapm_mixer_named_ctl this is simply the
--			 * kcontrol name.
-+			 * for dapm_mixer_named_ctl or shared controls, this
-+			 * is simply the kcontrol name.
- 			 */
- 			name_len = strlen(w->kcontrol_news[i].name) + 1;
--			if (w->id != snd_soc_dapm_mixer_named_ctl)
-+			if (!shared && w->id != snd_soc_dapm_mixer_named_ctl)
- 				name_len += 1 + strlen(w->name);
- 
- 			path->long_name = kmalloc(name_len, GFP_KERNEL);
-@@ -570,8 +586,7 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 				return -ENOMEM;
- 			}
- 
--			switch (w->id) {
--			default:
-+			if (!shared && w->id != snd_soc_dapm_mixer_named_ctl)
- 				/* The control will get a prefix from
- 				 * the control creation process but
- 				 * we're also using the same prefix
-@@ -581,19 +596,15 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 				snprintf((char *)path->long_name, name_len,
- 					 "%s %s", w->name + prefix_len,
- 					 w->kcontrol_news[i].name);
--				break;
--			case snd_soc_dapm_mixer_named_ctl:
-+			else
- 				snprintf((char *)path->long_name, name_len,
- 					 "%s", w->kcontrol_news[i].name);
--				break;
--			}
- 
- 			((char *)path->long_name)[name_len - 1] = '\0';
- 
--			path->kcontrol = snd_soc_cnew(&w->kcontrol_news[i],
--						      wlist, path->long_name,
--						      prefix);
--			ret = snd_ctl_add(card, path->kcontrol);
-+			kcontrol = snd_soc_cnew(&w->kcontrol_news[i], wlist,
-+						path->long_name, prefix);
-+			ret = snd_ctl_add(card, kcontrol);
- 			if (ret < 0) {
- 				dev_err(dapm->dev, "ASoC: failed to add widget"
- 					" %s dapm kcontrol %s: %d\n",
-@@ -603,10 +614,14 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 				path->long_name = NULL;
- 				return ret;
- 			}
--			w->kcontrols[i] = path->kcontrol;
-+
-+skip_new_control:
-+			path->kcontrol = kcontrol;
-+			kcontrol->private_data = wlist;
-+			w->kcontrols[i] = kcontrol;
- 		}
- 	}
--	return ret;
-+	return 0;
- }
- 
- /* create new dapm mux control */
--- 
-1.7.10.4
+> The following changes since commit
+> 8bb9660418e05bb1845ac1a2428444d78e322cc7:
+>
+>   Linux 3.9-rc4 (2013-03-23 16:52:44 -0700)
+>
+> are available in the git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.gittags/asoc-fix-v3.9-rc4
+>
+> for you to fetch changes up to 40bac28eb1e39f229a94ad72e2ca8cdeef3ba31a:
+>
+>   Merge remote-tracking branch 'asoc/fix/spear' into asoc-next (2013-03-26
+> 14:08:07 +0000)
+>
+> ----------------------------------------------------------------
+>
+> ASoC: Fixes for v3.9
+>
+> A few more fixes here and there, including quite a few nasty driver
+> specific ones, but nothing that has a major general impact.
+>
+> ----------------------------------------------------------------
+> Axel Lin (1):
+>       ASoC: si476x: Add missing break for SNDRV_PCM_FORMAT_S8 switch case
+>
+> Joe Perches (1):
+>       ASoC:: max98090: Remove executable bit
+>
+> Lars-Peter Clausen (2):
+>       ASoC: spear_pcm: Update to new pcm_new() API
+>       ASoC: dma-sh7760: Fix compile error
+>
+> Mark Brown (9):
+>       ASoC: dapm: Fix handling of loops
+>       Merge remote-tracking branch 'asoc/fix/adsp' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/core' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/dapm' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/fsl' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/max98090' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/sh' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/si476x' into asoc-next
+>       Merge remote-tracking branch 'asoc/fix/spear' into asoc-next
+>
+> Markus Pargmann (1):
+>       ASoC: pcm030 audio fabric: remove __init from probe
+>
+> Peter Ujfalusi (1):
+>       ASoC: dapm: Fix pointer dereference in is_connected_output_ep()
+>
+> Sascha Hauer (1):
+>       ASoC: imx-ssi: Fix occasional AC97 reset failure
+>
+> Silviu-Mihai Popescu (1):
+>       ASoC: core: fix invalid free of devm_ allocated data
+>
+> Wei Yongjun (2):
+>       ASoC: wm_adsp: fix possible memory leak in wm_adsp_load_coeff()
+>       ASoC: core: fix possible memory leak in snd_soc_bytes_put()
+>
+>  include/sound/soc-dapm.h            |    1 +
+>  sound/soc/codecs/si476x.c           |    1 +
+>  sound/soc/codecs/wm_adsp.c          |    5 +++--
+>  sound/soc/fsl/imx-ssi.c             |    5 +++++
+>  sound/soc/fsl/pcm030-audio-fabric.c |    2 +-
+>  sound/soc/sh/dma-sh7760.c           |    4 ++--
+>  sound/soc/soc-core.c                |    8 ++++----
+>  sound/soc/soc-dapm.c                |   14 ++++++++++++++
+>  sound/soc/spear/spear_pcm.c         |   12 ++++++------
+>  9 files changed, 37 insertions(+), 15 deletions(-)
+>  mode change 100755 => 100644 include/sound/max98090.h
+>  mode change 100755 => 100644 sound/soc/codecs/max98090.c
+>  mode change 100755 => 100644 sound/soc/codecs/max98090.h
+>
