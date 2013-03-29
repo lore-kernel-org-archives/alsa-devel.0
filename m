@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: wm0010: Constify usage of firmware
-	filenames
-Date: Fri, 29 Mar 2013 09:45:34 +0000
-Message-ID: <1364550335-15023-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm0010: Report filename when we fail
+	to load firmware
+Date: Fri, 29 Mar 2013 09:45:35 +0000
+Message-ID: <1364550335-15023-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1364550335-15023-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9F8FB26530C
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 10:53:22 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4994D26530C
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 10:53:28 +0100 (CET)
+In-Reply-To: <1364550335-15023-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,21 +27,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm0010.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm0010.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index 40256b5..a5cd51f 100644
+index a5cd51f..a2b2bba 100644
 --- a/sound/soc/codecs/wm0010.c
 +++ b/sound/soc/codecs/wm0010.c
-@@ -342,7 +342,7 @@ static void byte_swap_64(u64 *data_in, u64 *data_out, u32 len)
- 		data_out[i] = cpu_to_be64(le64_to_cpu(data_in[i]));
- }
+@@ -361,8 +361,8 @@ static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
  
--static int wm0010_firmware_load(char *name, struct snd_soc_codec *codec)
-+static int wm0010_firmware_load(const char *name, struct snd_soc_codec *codec)
- {
- 	struct spi_device *spi = to_spi_device(codec->dev);
- 	struct wm0010_priv *wm0010 = snd_soc_codec_get_drvdata(codec);
+ 	ret = request_firmware(&fw, name, codec->dev);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request application: %d\n",
+-			ret);
++		dev_err(codec->dev, "Failed to request application(%s): %d\n",
++			name, ret);
+ 		return ret;
+ 	}
+ 
 -- 
 1.7.2.5
