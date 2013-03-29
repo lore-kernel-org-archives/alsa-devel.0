@@ -1,23 +1,15 @@
-From: Martin Cracauer <cracauer@cons.org>
-Subject: Guide to USB debugging in Windows?
-Date: Fri, 29 Mar 2013 11:36:39 -0400
-Message-ID: <20130329153639.GA72429@cons.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Split ADSP1 and ADSP2 firmware
+	controls
+Date: Fri, 29 Mar 2013 18:01:27 +0000
+Message-ID: <1364580087-5210-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from koef.zs64.net (koef.zs64.net [212.12.50.230])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B26026534C
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 16:36:42 +0100 (CET)
-Received: from koef.zs64.net (koef.zs64.net [IPv6:2a00:14b0:4200:32e0::1e6])
- by koef.zs64.net (8.14.6/8.14.5) with ESMTP id r2TFadSN076456
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 15:36:39 GMT
- (envelope-from cracauer@koef.zs64.net)
-Received: (from cracauer@localhost)
- by koef.zs64.net (8.14.6/8.14.5/Submit) id r2TFad3S076455
- for alsa-devel@alsa-project.org; Fri, 29 Mar 2013 11:36:39 -0400 (EDT)
- (envelope-from cracauer)
-Content-Disposition: inline
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6EB7260309
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2013 19:08:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,35 +19,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Does anyone have instructions on how to use a USB traffic monitor on
-windows to extract some bits needed to control a sound device under
-ALSA? As in, for people not normally developing in windows?
+Now that we have regular register mapped controls we should be splitting
+the control sets for ADSP1 and ADSP2 as the register maps are not
+identical. Do that.
 
-I have here a Sound Devices USBPre v1.  It is mostly USB 1.1 sound
-interface compatible and it accepts a stream played from ALSA under
-Linux just fine.  The problem is that the manufacturer has decided to,
-in addition to the standard usb sound interface, have all the
-different inputs on the device behind on/off switches, all of them
-controlled by secret bits in the windows and mac drivers, all of them
-default to off.  So thingie is a brick as-is.  I don't blame them too
-hard, they now make a v2 of this devices and fixed it.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm2200.c  |    2 +-
+ sound/soc/codecs/wm5102.c  |    2 +-
+ sound/soc/codecs/wm_adsp.c |   26 +++++++++++++++++++-------
+ sound/soc/codecs/wm_adsp.h |    3 ++-
+ 4 files changed, 23 insertions(+), 10 deletions(-)
 
-Just so that I don't appear more insane than usual, let me say why I
-want to bother.
-
-The windows drivers for this are only available in 32 bit, and the mac
-drivers are 32 bit only as well, in addition the mac drivers never
-went > 16bit/48KHz.  The inability to use this on modern macs and
-windows machines has pushed the price of these things very low on
-Ebay, considering it is a fully professional device with the best mic
-preamps you can get.  If would be really cool if this could work under
-ALSA, and as you see I figured it needs just a couple of bits that you
-need to flip with some magic to at least get it to run up to 16bit/48KHz.
-
-Martin
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index ddc98f0..57ba315 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -1565,7 +1565,7 @@ static int wm2200_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_add_codec_controls(codec, wm_adsp_fw_controls, 2);
++	ret = snd_soc_add_codec_controls(codec, wm_adsp1_fw_controls, 2);
+ 	if (ret != 0)
+ 		return ret;
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index d1b43eb..cb03cc4 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1572,7 +1572,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ 	if (ret != 0)
+ 		return ret;
+ 
+-	ret = snd_soc_add_codec_controls(codec, wm_adsp_fw_controls, 2);
++	ret = snd_soc_add_codec_controls(codec, wm_adsp2_fw_controls, 2);
+ 	if (ret != 0)
+ 		return ret;
+ 
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 3a481fd..bc03bae 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -247,7 +247,18 @@ static const struct soc_enum wm_adsp_fw_enum[] = {
+ 	SOC_ENUM_SINGLE(0, 3, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ };
+ 
+-static const struct soc_enum wm_adsp_rate_enum[] = {
++const struct snd_kcontrol_new wm_adsp1_fw_controls[] = {
++	SOC_ENUM_EXT("DSP1 Firmware", wm_adsp_fw_enum[0],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
++	SOC_ENUM_EXT("DSP2 Firmware", wm_adsp_fw_enum[1],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
++	SOC_ENUM_EXT("DSP3 Firmware", wm_adsp_fw_enum[2],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
++};
++EXPORT_SYMBOL_GPL(wm_adsp1_fw_controls);
++
++#if IS_ENABLED(CONFIG_SND_SOC_ARIZONA)
++static const struct soc_enum wm_adsp2_rate_enum[] = {
+ 	SOC_VALUE_ENUM_SINGLE(ARIZONA_DSP1_CONTROL_1,
+ 			      ARIZONA_DSP1_RATE_SHIFT, 0xf,
+ 			      ARIZONA_RATE_ENUM_SIZE,
+@@ -266,21 +277,22 @@ static const struct soc_enum wm_adsp_rate_enum[] = {
+ 			      arizona_rate_text, arizona_rate_val),
+ };
+ 
+-const struct snd_kcontrol_new wm_adsp_fw_controls[] = {
++const struct snd_kcontrol_new wm_adsp2_fw_controls[] = {
+ 	SOC_ENUM_EXT("DSP1 Firmware", wm_adsp_fw_enum[0],
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM("DSP1 Rate", wm_adsp_rate_enum[0]),
++	SOC_ENUM("DSP1 Rate", wm_adsp2_rate_enum[0]),
+ 	SOC_ENUM_EXT("DSP2 Firmware", wm_adsp_fw_enum[1],
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM("DSP2 Rate", wm_adsp_rate_enum[1]),
++	SOC_ENUM("DSP2 Rate", wm_adsp2_rate_enum[1]),
+ 	SOC_ENUM_EXT("DSP3 Firmware", wm_adsp_fw_enum[2],
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM("DSP3 Rate", wm_adsp_rate_enum[2]),
++	SOC_ENUM("DSP3 Rate", wm_adsp2_rate_enum[2]),
+ 	SOC_ENUM_EXT("DSP4 Firmware", wm_adsp_fw_enum[3],
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM("DSP4 Rate", wm_adsp_rate_enum[3]),
++	SOC_ENUM("DSP4 Rate", wm_adsp2_rate_enum[3]),
+ };
+-EXPORT_SYMBOL_GPL(wm_adsp_fw_controls);
++EXPORT_SYMBOL_GPL(wm_adsp2_fw_controls);
++#endif
+ 
+ static struct wm_adsp_region const *wm_adsp_find_region(struct wm_adsp *dsp,
+ 							int type)
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index cb8871a..9f90c9f 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -65,7 +65,8 @@ struct wm_adsp {
+ 	.shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+ 
+-extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
++extern const struct snd_kcontrol_new wm_adsp1_fw_controls[];
++extern const struct snd_kcontrol_new wm_adsp2_fw_controls[];
+ 
+ int wm_adsp1_init(struct wm_adsp *adsp);
+ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs);
 -- 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Martin Cracauer <cracauer@cons.org>   http://www.cons.org/cracauer/
+1.7.10.4
