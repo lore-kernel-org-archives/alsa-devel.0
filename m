@@ -1,69 +1,55 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH 00/13] mach-mxs header files cleanup
-Date: Fri, 29 Mar 2013 16:55:36 +0800
-Message-ID: <1364547350-30498-1-git-send-email-shawn.guo@linaro.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 03/13] ASoC: mxs-saif: remove mach header inclusion
+Date: Fri, 29 Mar 2013 16:55:39 +0800
+Message-ID: <1364547350-30498-4-git-send-email-shawn.guo@linaro.org>
+References: <1364547350-30498-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1364547350-30498-1-git-send-email-shawn.guo@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The series cleans up mach-mxs headers files in order to support
-multiplatform build on mxs.
+The header <mach/hardware.h> is not needed at all, and <mach/mxs.h> is
+needed only for macros MXS_SET_ADDR and MXS_CLR_ADDR.  Define the macros
+and remove the mach header inclusions.
 
-Andrew, Jonathan, Mark,
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/mxs/mxs-saif.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Can you please give your ACK on the patch you are copied, so that the
-series can go via arm-soc as a whole?  Thanks.
-
-Shawn
-
-Shawn Guo (13):
-  rtc: stmp3xxx: use stmp_reset_block() instead
-  iio: mxs-lradc: remove unneeded mach header inclusion
-  ASoC: mxs-saif: remove mach header inclusion
-  ARM: mxs: remove empty hardware.h
-  ARM: mxs: get reset address from device tree
-  ARM: mxs: remove system.c
-  ARM: mxs: get ocotp base address from device tree
-  ARM: mxs: use debug_ll_io_init for low-level debug
-  ARM: mxs: remove mm.c
-  ARM: mxs: move mxs_get_ocotp() into mach-mxs.c
-  ARM: mxs: remove common.h
-  ARM: mxs: merge imx23 and imx28 into one machine_desc
-  ARM: mxs: remove unused headers
-
- arch/arm/boot/dts/imx23.dtsi                 |    3 +-
- arch/arm/boot/dts/imx28.dtsi                 |    3 +-
- arch/arm/mach-mxs/Makefile                   |    4 -
- arch/arm/mach-mxs/include/mach/common.h      |   25 ---
- arch/arm/mach-mxs/include/mach/debug-macro.S |    9 +-
- arch/arm/mach-mxs/include/mach/digctl.h      |   22 ---
- arch/arm/mach-mxs/include/mach/hardware.h    |   23 ---
- arch/arm/mach-mxs/include/mach/mx23.h        |  169 -------------------
- arch/arm/mach-mxs/include/mach/mx28.h        |  225 --------------------------
- arch/arm/mach-mxs/include/mach/mxs.h         |  116 -------------
- arch/arm/mach-mxs/mach-mxs.c                 |  182 +++++++++++++++++----
- arch/arm/mach-mxs/mm.c                       |   52 ------
- arch/arm/mach-mxs/ocotp.c                    |   93 -----------
- arch/arm/mach-mxs/system.c                   |  139 ----------------
- drivers/rtc/rtc-stmp3xxx.c                   |    6 +-
- drivers/staging/iio/adc/mxs-lradc.c          |    3 -
- include/linux/clk/mxs.h                      |   16 ++
- sound/soc/mxs/mxs-saif.c                     |    5 +-
- 18 files changed, 180 insertions(+), 915 deletions(-)
- delete mode 100644 arch/arm/mach-mxs/include/mach/common.h
- delete mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
- delete mode 100644 arch/arm/mach-mxs/include/mach/hardware.h
- delete mode 100644 arch/arm/mach-mxs/include/mach/mx23.h
- delete mode 100644 arch/arm/mach-mxs/include/mach/mx28.h
- delete mode 100644 arch/arm/mach-mxs/include/mach/mxs.h
- delete mode 100644 arch/arm/mach-mxs/mm.c
- delete mode 100644 arch/arm/mach-mxs/ocotp.c
- delete mode 100644 arch/arm/mach-mxs/system.c
- create mode 100644 include/linux/clk/mxs.h
-
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 3a2aa1d..41a6136 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -33,11 +33,12 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <asm/mach-types.h>
+-#include <mach/hardware.h>
+-#include <mach/mxs.h>
+ 
+ #include "mxs-saif.h"
+ 
++#define MXS_SET_ADDR	0x4
++#define MXS_CLR_ADDR	0x8
++
+ static struct mxs_saif *mxs_saif[2];
+ 
+ /*
 -- 
 1.7.9.5
