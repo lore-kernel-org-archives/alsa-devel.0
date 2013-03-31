@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2] ASoC: Implement mixer control sharing
-Date: Sun, 31 Mar 2013 19:00:49 +0100
-Message-ID: <20130331180048.GP18316@opensource.wolfsonmicro.com>
-References: <1364593210-2373-1-git-send-email-swarren@wwwdotorg.org>
+Subject: [PATCH] ASoC: dapm: Remove redundant clear_walk() for
+	supply widgets
+Date: Sun, 31 Mar 2013 23:37:47 +0100
+Message-ID: <1364769467-17146-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5771851759287442657=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9811F2625D2
- for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2013 20:08:34 +0200 (CEST)
-In-Reply-To: <1364593210-2373-1-git-send-email-swarren@wwwdotorg.org>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A707E26157F
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2013 00:37:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>, Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
 
---===============5771851759287442657==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u8zu0/Xp8RxpBt3B"
-Content-Disposition: inline
+We already clear the walked state in dapm_widget_power_check(), no need
+to do it again.
 
+Signed-off-by: Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---u8zu0/Xp8RxpBt3B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Mar 29, 2013 at 03:40:10PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> This is the equivalent of commit af46800 "ASoC: Implement mux control
-> sharing", but applied to mixers instead of muxes.
-
-Applied, thanks.
-
---u8zu0/Xp8RxpBt3B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRWHnHAAoJELSic+t+oim9ou8P/jZG6aRLWK1nsknlUZYnV8K/
-tBCkg+/XX5W0u26ZavvkrJ/n4CI/z/QsXK1+qhEV9C3IIz7LR15VE1l6i1Ze1/ZV
-pZZQpnQIYFi+Jj2uC6fcQ8R84vX1EQbqwlhQQu+jicLYygnk0B0xHsSNzOb9X9jd
-Ue9in3aiKEGEvTHYOfbMvwGwJSNq2cU18thP5IS8ugt9qW/jjbzsXo+8Hpd0VV+w
-tc+ZEBnlaEPxfp/+IfuGzQQvUTdfKkh78szKD5l3gadsghLkszOFfkt4QwtzFZGa
-TMXDui5Gm2JzPeAiZLAvmUtuJ//PIbWZ8CUEB2kcVRxPH9Y3xrPXiLRdvw7/6iFY
-5hPApWyke3f1GG5T0qzl5R58dlqo3KzMNiS2BOliH5MA/3wrz6/8tq7LQOb6IK2v
-d0PjuxoCr9D4pIRwTRionLHSUU1SP6Fr5gTUjRkFDI967sDLPWZJ2VtMKXVvUrjw
-4tr/alSc7YmK6JV6C4MhLVUNNG1hQdhArP32JGNTEYNnmX7Lo+ppL0s9pmIT7Rs3
-Cmke8Q8NxqqZ/ZHuaUdEy+mJws5nS32v2xmbeV7fst6u0JO7tVOEAzthO+USwtX7
-kYVIst9Y9DemmaNnyUWcpY7E6B0AQC0Id1jNUijI0kLL6z+Eiu+c/xdTvBdfXdvk
-0aYdh6/HKBcFzMjYsQYs
-=VG7P
------END PGP SIGNATURE-----
-
---u8zu0/Xp8RxpBt3B--
-
---===============5771851759287442657==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5771851759287442657==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 1896a70..0a395eb 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1179,8 +1179,6 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ 			return 1;
+ 	}
+ 
+-	dapm_clear_walk(w->dapm);
+-
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
