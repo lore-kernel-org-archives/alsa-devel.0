@@ -1,18 +1,19 @@
 From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH 05/10] ALSA: usb-audio: use endianness macros
-Date: Sun, 31 Mar 2013 17:52:27 +0200
-Message-ID: <1364745152-1762-6-git-send-email-eldad@fogrefinery.com>
+Subject: [PATCH 06/10] ALSA: usb-audio: UAC2: do clock validity
+	check earlier
+Date: Sun, 31 Mar 2013 17:52:28 +0200
+Message-ID: <1364745152-1762-7-git-send-email-eldad@fogrefinery.com>
 References: <1364745152-1762-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 086F326171C
- for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2013 17:53:15 +0200 (CEST)
-Received: by mail-bk0-f41.google.com with SMTP id i18so676095bkv.0
- for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2013 08:53:14 -0700 (PDT)
+Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
+ [209.85.214.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B802261983
+ for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2013 17:53:19 +0200 (CEST)
+Received: by mail-bk0-f42.google.com with SMTP id jc3so670231bkc.15
+ for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2013 08:53:18 -0700 (PDT)
 In-Reply-To: <1364745152-1762-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,59 +28,138 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladi
 Cc: alsa-devel@alsa-project.org, Eldad Zack <eldad@fogrefinery.com>
 List-Id: alsa-devel@alsa-project.org
 
-Replace the endianness conversions with the kernel-wide swabbing macros.
+Move the check that parse_audio_format_rates_v2() do after
+receiving the clock source entity ID directly into the find
+function and add a validation flag to the function.
+
+This patch does not introduce any logic flow change.
 
 Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 ---
- sound/usb/clock.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/usb/clock.c  | 35 +++++++++++++++++++----------------
+ sound/usb/clock.h  |  3 ++-
+ sound/usb/format.c |  2 +-
+ 3 files changed, 22 insertions(+), 18 deletions(-)
 
 diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 5e634a2..47b601d 100644
+index 47b601d..08fa345 100644
 --- a/sound/usb/clock.c
 +++ b/sound/usb/clock.c
-@@ -252,7 +252,7 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 			      struct audioformat *fmt, int rate)
- {
- 	struct usb_device *dev = chip->dev;
--	unsigned char data[4];
-+	u32 data;
- 	int err, crate;
- 	int clock = snd_usb_clock_find_source(chip, fmt->clock);
+@@ -131,7 +131,8 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
+ }
  
-@@ -266,15 +266,12 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 		return -ENXIO;
+ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+-				   int entity_id, unsigned long *visited)
++				   int entity_id, unsigned long *visited,
++				   bool validate)
+ {
+ 	struct uac_clock_source_descriptor *source;
+ 	struct uac_clock_selector_descriptor *selector;
+@@ -148,8 +149,15 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 
+ 	/* first, see if the ID we're looking for is a clock source already */
+ 	source = snd_usb_find_clock_source(chip->ctrl_intf, entity_id);
+-	if (source)
+-		return source->bClockID;
++	if (source) {
++		entity_id = source->bClockID;
++		if (validate && !uac_clock_source_is_valid(chip, entity_id)) {
++			snd_printk(KERN_ERR "usb-audio:%d: clock source %d is not valid, cannot use\n",
++				   chip->dev->devnum, entity_id);
++			return -ENXIO;
++		}
++		return entity_id;
++	}
+ 
+ 	selector = snd_usb_find_clock_selector(chip->ctrl_intf, entity_id);
+ 	if (selector) {
+@@ -164,7 +172,7 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 		/* Selector values are one-based */
+ 
+ 		if (ret > selector->bNrInPins || ret < 1) {
+-			printk(KERN_ERR
++			snd_printk(KERN_ERR
+ 				"%s(): selector reported illegal value, id %d, ret %d\n",
+ 				__func__, selector->bClockID, ret);
+ 
+@@ -172,14 +180,14 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 		}
+ 
+ 		return __uac_clock_find_source(chip, selector->baCSourceID[ret-1],
+-					       visited);
++					       visited, validate);
  	}
  
--	data[0] = rate;
--	data[1] = rate >> 8;
--	data[2] = rate >> 16;
--	data[3] = rate >> 24;
-+	data = cpu_to_le32(rate);
+ 	/* FIXME: multipliers only act as pass-thru element for now */
+ 	multiplier = snd_usb_find_clock_multiplier(chip->ctrl_intf, entity_id);
+ 	if (multiplier)
+ 		return __uac_clock_find_source(chip, multiplier->bCSourceID,
+-						visited);
++						visited, validate);
+ 
+ 	return -EINVAL;
+ }
+@@ -195,11 +203,12 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+  *
+  * Returns the clock source UnitID (>=0) on success, or an error.
+  */
+-int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id)
++int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id,
++			      bool validate)
+ {
+ 	DECLARE_BITMAP(visited, 256);
+ 	memset(visited, 0, sizeof(visited));
+-	return __uac_clock_find_source(chip, entity_id, visited);
++	return __uac_clock_find_source(chip, entity_id, visited, validate);
+ }
+ 
+ static int set_sample_rate_v1(struct snd_usb_audio *chip, int iface,
+@@ -254,18 +263,12 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+ 	struct usb_device *dev = chip->dev;
+ 	u32 data;
+ 	int err, crate;
+-	int clock = snd_usb_clock_find_source(chip, fmt->clock);
++	int clock;
+ 
++	clock = snd_usb_clock_find_source(chip, fmt->clock, true);
+ 	if (clock < 0)
+ 		return clock;
+ 
+-	if (!uac_clock_source_is_valid(chip, clock)) {
+-		/* TODO: should we try to find valid clock setups by ourself? */
+-		snd_printk(KERN_ERR "%d:%d:%d: clock source %d is not valid, cannot use\n",
+-			   dev->devnum, iface, fmt->altsetting, clock);
+-		return -ENXIO;
+-	}
+-
+ 	data = cpu_to_le32(rate);
  	if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
  				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
- 				   UAC2_CS_CONTROL_SAM_FREQ << 8,
- 				   snd_usb_ctrl_intf(chip) | (clock << 8),
--				   data, sizeof(data))) < 0) {
-+				   &data, sizeof(data))) < 0) {
- 		snd_printk(KERN_ERR "%d:%d:%d: cannot set freq %d (v2)\n",
- 			   dev->devnum, iface, fmt->altsetting, rate);
- 		return err;
-@@ -284,13 +281,13 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
- 				   UAC2_CS_CONTROL_SAM_FREQ << 8,
- 				   snd_usb_ctrl_intf(chip) | (clock << 8),
--				   data, sizeof(data))) < 0) {
-+				   &data, sizeof(rate))) < 0) {
- 		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2)\n",
- 			   dev->devnum, iface, fmt->altsetting);
- 		return err;
- 	}
+diff --git a/sound/usb/clock.h b/sound/usb/clock.h
+index 4663093..d592e4a 100644
+--- a/sound/usb/clock.h
++++ b/sound/usb/clock.h
+@@ -5,6 +5,7 @@ int snd_usb_init_sample_rate(struct snd_usb_audio *chip, int iface,
+ 			     struct usb_host_interface *alts,
+ 			     struct audioformat *fmt, int rate);
  
--	crate = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
-+	crate = le32_to_cpu(data);
- 	if (crate != rate)
- 		snd_printd(KERN_WARNING "current rate %d is different from the runtime rate %d\n", crate, rate);
+-int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id);
++int snd_usb_clock_find_source(struct snd_usb_audio *chip, int entity_id,
++			     bool validate);
  
+ #endif /* __USBAUDIO_CLOCK_H */
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index e831ee4..1086b87 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -277,7 +277,7 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 	struct usb_device *dev = chip->dev;
+ 	unsigned char tmp[2], *data;
+ 	int nr_triplets, data_size, ret = 0;
+-	int clock = snd_usb_clock_find_source(chip, fp->clock);
++	int clock = snd_usb_clock_find_source(chip, fp->clock, false);
+ 
+ 	if (clock < 0) {
+ 		snd_printk(KERN_ERR "%s(): unable to find clock source (clock %d)\n",
 -- 
 1.8.1.5
