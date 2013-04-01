@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: dapm: Remove redundant clear_walk() for
-	supply widgets
-Date: Sun, 31 Mar 2013 23:37:47 +0100
-Message-ID: <1364769467-17146-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: [PATCH 06/10] ALSA: usb-audio: UAC2: do clock
+ validity check earlier
+Date: Mon, 1 Apr 2013 10:16:51 +0200
+Message-ID: <20130401081651.GH18838@pvv.ntnu.no>
+References: <1364745152-1762-1-git-send-email-eldad@fogrefinery.com>
+ <1364745152-1762-7-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A707E26157F
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2013 00:37:54 +0200 (CEST)
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE65226170F
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2013 10:17:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1364745152-1762-7-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>, Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
+To: Eldad Zack <eldad@fogrefinery.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
+On Sun, Mar 31, 2013 at 17:52:28 +0200, Eldad Zack wrote:
+> Move the check that parse_audio_format_rates_v2() do after
+> receiving the clock source entity ID directly into the find
+> function and add a validation flag to the function.
+> 
+> This patch does not introduce any logic flow change.
 
-We already clear the walked state in dapm_widget_power_check(), no need
-to do it again.
+What would be lost by letting __uac_clock_find_source() always check
+that the clock source is valid? It would avoid having to pass the
+validate parameter, at the cost of having parse_audio_format_rates_v2()
+validate clock source.
 
-Signed-off-by: Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1896a70..0a395eb 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1179,8 +1179,6 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
- 			return 1;
- 	}
- 
--	dapm_clear_walk(w->dapm);
--
- 	return 0;
- }
- 
--- 
-1.7.10.4
+Torstein
