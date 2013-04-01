@@ -1,37 +1,52 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: dapm: Remove redundant clear_walk()
- for supply widgets
-Date: Mon, 01 Apr 2013 17:55:19 +0100
-Message-ID: <1364835319.2416.13.camel@loki>
-References: <1364769467-17146-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: codecs: remove hidden prompt
+Date: Mon, 1 Apr 2013 22:22:17 +0100
+Message-ID: <20130401212213.GA23065@opensource.wolfsonmicro.com>
+References: <1363118918.3137.143.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 890FF264F42
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2013 18:55:35 +0200 (CEST)
-In-Reply-To: <1364769467-17146-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1363118918.3137.143.camel@x61.thuisdomein>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2013-03-31 at 23:37 +0100, Mark Brown wrote:
-> From: Ryo Tsutsui <Ryo.Tsutsui@wolfsonmicro.com>
-> 
-> We already clear the walked state in dapm_widget_power_check(), no need
-> to do it again.
-> 
-> Signed-off-by: Ryo Tsutsui <Ryo.Tsutsui@wolfosonmicro.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 12, 2013 at 09:08:38PM +0100, Paul Bolle wrote:
+> The Kconfig symbol SND_SOC_OF_SIMPLE got removed in commit
+> f0fba2ad1b6b53d5360125c41953b7afcd6deff0 ("ASoC: multi-component - ASoC
+> Multi-Component Support"). But that commit missed one instance. Remove
+> it now, together with the prompt it has effectively hidden ever since.
+
+Applied, thanks.
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRWfptAAoJELSic+t+oim9hVsP/1im8Tjraf8Wt62eDJi4p1TQ
+20bCaz6gmf8Kw1640gSazCjMuTyOnfTR9XhZkYd8MEGZgXHlH5k0hY4JmdzNSHnj
+pdoy28IKeb6tnAQ+xKXolKGoHqcgqJt4OMLsKlb3yLx0oxot3cB16CwJwONQxUPs
+jCkofJqqblSECFWGXLUULB9E3KpslDNYRHWK1JxQMqs9GMFmXwD1hIKPnIaldZS5
+vtN48dVnjrl25no+u+/UKlyWrE4HrFrdePAbjnM2npqCYPk8clwrpZ0y8PWodfNz
+adj8Gz+ow8o9hgHVLuz4qboKZEgj9C/JHFUMuFjQxZ8AUu7/KVt+IrLeU7QzWFk4
+FqY9BzxQVGHvtovs6bZGb60geE/CKTOJzkLi4su02nbwoYcyKccFGapeG3K/SWU/
+aBoUhnkgWhFwBmz9CKB8o2QEmb2fnPEnWN/mCTXnOc+Cwt8Ht6Tha/Aaub89K6DU
+/izq2vXF7j4FxkJtjx69LyXhogBie3SD3DVUSKKB/uvbRFrrco3Uy1kDhumzYIdk
+0YOppSblfwX1/ZFiK7mshbOvH8l2z1iNap2S9lgCsOmU+tSnBjCduqTVT3zxEfo7
+SifQkfXVs+9JUHBZScTgNTyxsSnsaOYOE7qzhLjGI2i5G/kL++9YgR2UnMkDVD+o
+tmVkrwL7rwOLtRatk/fE
+=gUcG
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
