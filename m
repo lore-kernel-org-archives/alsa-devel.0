@@ -1,52 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: codecs: remove hidden prompt
-Date: Mon, 1 Apr 2013 22:22:17 +0100
-Message-ID: <20130401212213.GA23065@opensource.wolfsonmicro.com>
-References: <1363118918.3137.143.camel@x61.thuisdomein>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH 06/10] ALSA: usb-audio: UAC2: do clock
+ validity check earlier
+Date: Tue, 2 Apr 2013 00:36:28 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1304020024300.1220@xoschi>
+References: <1364745152-1762-1-git-send-email-eldad@fogrefinery.com>
+ <1364745152-1762-7-git-send-email-eldad@fogrefinery.com>
+ <20130401081651.GH18838@pvv.ntnu.no>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1363118918.3137.143.camel@x61.thuisdomein>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id B900B264FFF
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 00:36:37 +0200 (CEST)
+Received: by mail-bk0-f47.google.com with SMTP id ik5so1089528bkc.6
+ for <alsa-devel@alsa-project.org>; Mon, 01 Apr 2013 15:36:37 -0700 (PDT)
+In-Reply-To: <20130401081651.GH18838@pvv.ntnu.no>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Torstein Hegge <hegge@resisty.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Torstein,
 
-On Tue, Mar 12, 2013 at 09:08:38PM +0100, Paul Bolle wrote:
-> The Kconfig symbol SND_SOC_OF_SIMPLE got removed in commit
-> f0fba2ad1b6b53d5360125c41953b7afcd6deff0 ("ASoC: multi-component - ASoC
-> Multi-Component Support"). But that commit missed one instance. Remove
-> it now, together with the prompt it has effectively hidden ever since.
+On Mon, 1 Apr 2013, Torstein Hegge wrote:
 
-Applied, thanks.
+> On Sun, Mar 31, 2013 at 17:52:28 +0200, Eldad Zack wrote:
+> > Move the check that parse_audio_format_rates_v2() do after
+> > receiving the clock source entity ID directly into the find
+> > function and add a validation flag to the function.
+> > 
+> > This patch does not introduce any logic flow change.
+> 
+> What would be lost by letting __uac_clock_find_source() always check
+> that the clock source is valid? It would avoid having to pass the
+> validate parameter, at the cost of having parse_audio_format_rates_v2()
+> validate clock source.
 
---6c2NcOVqGQ03X4Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I didn't want to change that logic since (1) I can't test it, my device
+doesn't go through that code and (2) failing there on account of that
+check would error out and not support the device (as far as I 
+understand from the code). So if a (theoretical) device would only 
+return valid one minute after it is connected, this will cause a
+regression. I might be wrong, but I figured it's better to do one thing 
+at a time.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRWfptAAoJELSic+t+oim9hVsP/1im8Tjraf8Wt62eDJi4p1TQ
-20bCaz6gmf8Kw1640gSazCjMuTyOnfTR9XhZkYd8MEGZgXHlH5k0hY4JmdzNSHnj
-pdoy28IKeb6tnAQ+xKXolKGoHqcgqJt4OMLsKlb3yLx0oxot3cB16CwJwONQxUPs
-jCkofJqqblSECFWGXLUULB9E3KpslDNYRHWK1JxQMqs9GMFmXwD1hIKPnIaldZS5
-vtN48dVnjrl25no+u+/UKlyWrE4HrFrdePAbjnM2npqCYPk8clwrpZ0y8PWodfNz
-adj8Gz+ow8o9hgHVLuz4qboKZEgj9C/JHFUMuFjQxZ8AUu7/KVt+IrLeU7QzWFk4
-FqY9BzxQVGHvtovs6bZGb60geE/CKTOJzkLi4su02nbwoYcyKccFGapeG3K/SWU/
-aBoUhnkgWhFwBmz9CKB8o2QEmb2fnPEnWN/mCTXnOc+Cwt8Ht6Tha/Aaub89K6DU
-/izq2vXF7j4FxkJtjx69LyXhogBie3SD3DVUSKKB/uvbRFrrco3Uy1kDhumzYIdk
-0YOppSblfwX1/ZFiK7mshbOvH8l2z1iNap2S9lgCsOmU+tSnBjCduqTVT3zxEfo7
-SifQkfXVs+9JUHBZScTgNTyxsSnsaOYOE7qzhLjGI2i5G/kL++9YgR2UnMkDVD+o
-tmVkrwL7rwOLtRatk/fE
-=gUcG
------END PGP SIGNATURE-----
-
---6c2NcOVqGQ03X4Wi--
+Cheers,
+Eldad
