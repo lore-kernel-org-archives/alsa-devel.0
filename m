@@ -1,21 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/2] dmaengine: add const for name parameter
-Date: Tue, 2 Apr 2013 23:21:28 +0530
-Message-ID: <20130402175128.GN10326@intel.com>
+Date: Tue, 2 Apr 2013 20:47:36 +0100
+Message-ID: <20130402194735.GL23065@opensource.wolfsonmicro.com>
 References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
  <1363318601-31505-2-git-send-email-shawn.guo@linaro.org>
  <20130315085346.GA22650@pengutronix.de>
  <20130321094753.GN10326@intel.com>
  <20130321145728.GD23109@S2101-09.ap.freescale.net>
+ <20130402175128.GN10326@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7445389918179522654=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id E595626524E
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 20:19:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130321145728.GD23109@S2101-09.ap.freescale.net>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7857926524A
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 21:47:43 +0200 (CEST)
+In-Reply-To: <20130402175128.GN10326@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 21, 2013 at 10:57:30PM +0800, Shawn Guo wrote:
-> Vinod,
-> 
-> On Thu, Mar 21, 2013 at 03:17:53PM +0530, Vinod Koul wrote:
-> > On Fri, Mar 15, 2013 at 09:53:46AM +0100, Markus Pargmann wrote:
-> > > Hi,
-> > > 
-> > > I already sent a nearly identical patch:
-> > > https://patchwork.kernel.org/patch/2179321/
-> > I applied that one a while ago so Markus can you check my tree and see if
-> > anything is remaining, looks most of cases are covered
-> > 
-> Can you maintain that patch on a topic branch, so that we can ask Mark
-> to pull it as dependency for the soc-dmaengine-pcm patch that support
-> generic DMA binding users?
-Looks like i never replied to this one, althoug I have pushed a branch
 
-Mark,
+--===============7445389918179522654==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="D9sZ58tf58331Q5M"
+Content-Disposition: inline
 
-You can pull commit a0c43a3 from topic/of or the entire branch into your tree
 
---
-Thanks
-~Vinod
+--D9sZ58tf58331Q5M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 02, 2013 at 11:21:28PM +0530, Vinod Koul wrote:
+
+> You can pull commit a0c43a3 from topic/of or the entire branch into your tree
+
+It's just a warning fix so I'm not too concerned about it - so long as
+everything is resolved by the time the merge window is over that ought
+to be fine.
+
+--D9sZ58tf58331Q5M
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRWzXJAAoJELSic+t+oim9Jb8P/RmTS23xHyLiFK0Qqr1dMasz
++PgUmgy4stTCCAvSmZPdR0ZqWUi7ocrK9HHpXXcxj9D+Z/kjjg4dHcY778Pf/AWy
+gFIEOw65o1B/aFCaf/m9jZ+Ee0sJjFTbat1klQ+kITNaGlbc+iTTUkVTvPePSZ49
+TPD7kBHFA9up3K4bkcjtj9vOErwd0uR8Jh9PJ5FqUVzVOjEOHn/fbX/JKE95U5l0
+fWUabLhXxs8dfJjGAD6aIjo0Sd1RI86xlc/IvuJ3vgJTXXTtYi9LOaGElqZgnwfN
+AJwoDIMaefhDE5aVX57eZgDXoVyU7/GOVpyB8Gqkp/qljN9ya9eHgTq32wxrNQJd
+xf2HsmSb2Y5KEE6EMy+DihFsfNPUtAW+UvYFlgU23Xz43JAVyt3Fjn9sgX+sO3ou
+MZXqUqoqKSFCqQvPo4XTGiGpbvyyu+aOIWD1SjLrhn7d8HTfzeqF3zrr1KnLTiYo
+rKi0hhv/YZUnTOsTJq5G3kn5rqhoqwIVun1bdNxTPG18SYw3X1grhAjGMrOq1lpw
+30O5/iTKbW3v0UX3VgW6jTGXSZayJuAtRz/Bcosm77HABYG3Lhn6sUGNDsd150/M
+80WN1oKUQej5sibGK21+1K77vSO7RQoncB2pOsGZiLgL5e2e6xfftozvcDYyxLRw
+oPczLBJ5zvNSaI8wX0Wk
+=AMNN
+-----END PGP SIGNATURE-----
+
+--D9sZ58tf58331Q5M--
+
+--===============7445389918179522654==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7445389918179522654==--
