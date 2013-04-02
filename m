@@ -1,22 +1,15 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: [PATCH 08/10] ALSA: usb-audio: UAC2: auto clock
- selection module param
-Date: Tue, 2 Apr 2013 22:27:30 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1304022220460.1104@xoschi>
-References: <1364745152-1762-1-git-send-email-eldad@fogrefinery.com>
- <1364745152-1762-9-git-send-email-eldad@fogrefinery.com>
- <s5htxnp8geg.wl%tiwai@suse.de>
+From: Israel Alejandro Arriaga Trejo
+ <israel.alejandro.arriaga.trejo@outlook.com>
+Subject: Audio capture on embedded system (via USB port)
+Date: Tue, 2 Apr 2013 15:47:33 -0600
+Message-ID: <BLU150-W51D42B9941715DD322B6328FDF0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f54.google.com (mail-bk0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 91AB5265262
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 22:27:32 +0200 (CEST)
-Received: by mail-bk0-f54.google.com with SMTP id q16so425798bkw.13
- for <alsa-devel@alsa-project.org>; Tue, 02 Apr 2013 13:27:32 -0700 (PDT)
-In-Reply-To: <s5htxnp8geg.wl%tiwai@suse.de>
+Received: from blu0-omc3-s14.blu0.hotmail.com (blu0-omc3-s14.blu0.hotmail.com
+ [65.55.116.89]) by alsa0.perex.cz (Postfix) with ESMTP id E876126525F
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 23:47:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
+ =
 
+I am writing to kindly ask for assistance with ALSA on an embedded platform=
+, in particular to record audio via a USB headset. The embedded platform I =
+am currently using has analog inputs and outputs for audio (mic and headpho=
+ne). So far I have been able to play and capture audio using the analog aud=
+io inputs/outputs with the commands aplay and arecord respectively from ALS=
+A without any problems. However this is not the case when I am trying to us=
+e a USB headset via the USB port, at least while trying to record audio (pl=
+aying audio is not a problem, it works perfectly fine for different rates a=
+nd formats and the devices are recognized when I type aplay =96l or arecord=
+ -l).  However, when I try to capture audio, using the ALSA command line ar=
+ecord as in:
+ =
 
-On Tue, 2 Apr 2013, Takashi Iwai wrote:
+$ arecord =96d 10 =96r 16000 =96f S16_LE =96t wav  =96Dhw:1,0  test.wav
+ =
 
-> At Sun, 31 Mar 2013 17:52:30 +0200,
-> Eldad Zack wrote:
-> > 
+even though the following message appears:
+ =
 
-> > +module_param(noautoclk, bool, 0444);
-> > +MODULE_PARM_DESC(noautoclk, "Disables auto-clock selection for UAC2 devices.");
-> 
-> Don't use "no" for a boolean option.  You can pass "yes" or "no" as an
-> option value, so it can confuse easily by passing noautoclk=yes.  See?
+$ Recording WAVE  =91test.wav=92 : Signed 16 bit Little Endian, Rate 16000 =
+Hz, Mono
+ =
 
-Ah, I understand. Good point. I'll change it to autoclock like you 
-suggested (also internally).
+the application seems =93to freeze=94.  In fact, the recording does not sto=
+p in the indicated 10 seconds, instead it continues =93working=94 for a lon=
+g period of time and creates the file test.wav which after is played it con=
+tains fragments of what actually was recorded via the microphone nonetheles=
+s, its content is unintelligible. In some cases the following error also ap=
+pears:
+ =
 
-Thanks!
+$ arecord: pcm_read:1617: read error: Input/Output error  =
 
-I'll add some text to the other patch and repost.
+ =
 
-Cheers,
-Eldad
+As mentioned previously this behavior is only observed during capture mode =
+(while attempting to record using the microphone) since the playback mode u=
+sing the USB headphone works properly. After browsing for a while I have fo=
+und similar situations reported, however I have not been able to find a sol=
+ution to my problem.
+I would highly appreciate for any hint that could help me to solve this iss=
+ue.
+ =
+
+Best regards,
+ =
+
+Alejandro =
+
+  		 	   		  =
