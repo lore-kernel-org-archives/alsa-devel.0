@@ -1,23 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
- codec in system resume
-Date: Tue, 02 Apr 2013 14:49:40 +0200
-Message-ID: <515AD3E4.2000208@canonical.com>
-References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
- <51517F53.7070608@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F8363D66@SHSMSX101.ccr.corp.intel.com>
- <5152AB91.4050501@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F8365EC0@SHSMSX101.ccr.corp.intel.com>
- <515AC6AC.8040504@canonical.com> <s5hr4it6s7n.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] dmaengine: add const for name parameter
+Date: Tue, 2 Apr 2013 23:21:28 +0530
+Message-ID: <20130402175128.GN10326@intel.com>
+References: <1363318601-31505-1-git-send-email-shawn.guo@linaro.org>
+ <1363318601-31505-2-git-send-email-shawn.guo@linaro.org>
+ <20130315085346.GA22650@pengutronix.de>
+ <20130321094753.GN10326@intel.com>
+ <20130321145728.GD23109@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 972F02651C8
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 14:49:42 +0200 (CEST)
-In-Reply-To: <s5hr4it6s7n.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id E595626524E
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 20:19:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130321145728.GD23109@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,77 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sebastien Guiriec <s-guiriec@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/02/2013 02:18 PM, Takashi Iwai wrote:
-> At Tue, 02 Apr 2013 13:53:16 +0200,
-> David Henningsson wrote:
->>
->> On 03/27/2013 11:01 AM, Lin, Mengdong wrote:
->>>> -----Original Message-----
->>>> From: David Henningsson [mailto:david.henningsson@canonical.com]
->>>> Sent: Wednesday, March 27, 2013 4:19 PM
->>>
->>>>> The Haswell codec set_power_state ops (intel_haswell_set_power_state) will
->>>> only wait if this is a delayed resume and clear this flag after waiting. And
->>>> actually, there is no waiting even in this case. Because when 1st user operation
->>>> after system resume happens, Gfx already finishes resuming and audio
->>>> initialization, so as long as intel_haswell_wait_ready_to_resume() enable the
->>>> unsol event, the unsol event comes and so so waiting finishes. The 300ms time
->>>> out is set for safety consideration in case unsol event is lost. I've not observed
->>>> any unsol event lost till now.
->>>>
->>>> As for the timeout, I suggest you use the codec->bus->workq instead of
->>>> creating a new workq. I think that will also give us some serialisation, i e,
->>>> protection against race conditions if the timeout happen at the same time as
->>>> the unsol event.
->>>
->>> Hi David,
->>>
->>> The new added "resume_wq" for hdmi codec is a wait queue, not a work queue like codec->bus->workq.
->>> It's expected to wake up as soon as the unsol event is got.
->>
->> Sure; but I don't see why you need a wait queue for that? Why don't you
->> just call the resume path from the unsol event handler
->> (hdmi_present_sense, or its caller), and then also cancel the timeout
->> handler (which can then be in the normal workq)?
->
-> Because the delayed resume actually fakes as if the resume is done.
-> This is necessary not to block other device's resume operation.
->
-> Since it looks as if ready, user-space might restart things soon again
-> before the delayed resume is really finished.  So, some serialization
-> is required there.
+On Thu, Mar 21, 2013 at 10:57:30PM +0800, Shawn Guo wrote:
+> Vinod,
+> 
+> On Thu, Mar 21, 2013 at 03:17:53PM +0530, Vinod Koul wrote:
+> > On Fri, Mar 15, 2013 at 09:53:46AM +0100, Markus Pargmann wrote:
+> > > Hi,
+> > > 
+> > > I already sent a nearly identical patch:
+> > > https://patchwork.kernel.org/patch/2179321/
+> > I applied that one a while ago so Markus can you check my tree and see if
+> > anything is remaining, looks most of cases are covered
+> > 
+> Can you maintain that patch on a topic branch, so that we can ask Mark
+> to pull it as dependency for the soc-dmaengine-pcm patch that support
+> generic DMA binding users?
+Looks like i never replied to this one, althoug I have pushed a branch
 
-Lin, would it be possible to add some chain of events description to the 
-bug commit? The different contexts are just boggling my mind :-)
+Mark,
 
-Assume we have two cases, system idle after S3 and immediate playback 
-after S3.
+You can pull commit a0c43a3 from topic/of or the entire branch into your tree
 
-Is this correct:
-
-System idle:
-  1. System skips hda_call_codec_resume and sets codec->resume_delayed.
-  2. Since the codec is not reinitialized, nothing powers up the codec, 
-so this is all that happens.
-  3. Since unsol events are not enabled (?), we have a bug that jack 
-detection does not work and cannot be detected from userspace...?
-
-Immediate playback:
-  1. System skips hda_call_codec_resume and sets codec->resume_delayed.
-  2. Process context wants to start playback, which powers up the codec 
-and calls intel_haswell_set_power_state.
-  3. intel_haswell_wait_ready_to_resume enables unsol events and starts 
-to wait on ready_to_resume
-  4. Gfx init finishes, and workq context fires the unsol event, which 
-calls hdmi_intrinsic_event, which triggers the resume_wq.
-  5. Process context and workq context now continues in parallel, 
-potentially (but hopefully not) leading to race conditions?
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--
+Thanks
+~Vinod
