@@ -1,73 +1,96 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH 2/2] ASoC: Samsung: set drvdata before adding secondary device
-Date: Tue, 02 Apr 2013 16:53:02 +0530
-Message-ID: <1364901782-16619-2-git-send-email-padma.v@samsung.com>
-References: <1364901782-16619-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1364901782-16619-1-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, padma.v@samsung.com, padma.kvr@gmail.com
-Cc: sbkim73@samsung.com, broonie@opensource.wolfsonmicro.com, kgene.kim@samsung.com, Prathyush K <prathyush.k@samsung.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
+ codec in system resume
+Date: Tue, 02 Apr 2013 13:53:16 +0200
+Message-ID: <515AC6AC.8040504@canonical.com>
+References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
+ <51517F53.7070608@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F8363D66@SHSMSX101.ccr.corp.intel.com>
+ <5152AB91.4050501@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F8365EC0@SHSMSX101.ccr.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33ACF2651C0
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2013 13:53:18 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F8365EC0@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Prathyush K <prathyush.k@samsung.com>
+On 03/27/2013 11:01 AM, Lin, Mengdong wrote:
+>> -----Original Message-----
+>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>> Sent: Wednesday, March 27, 2013 4:19 PM
+>
+>>> The Haswell codec set_power_state ops (intel_haswell_set_power_state) will
+>> only wait if this is a delayed resume and clear this flag after waiting. And
+>> actually, there is no waiting even in this case. Because when 1st user operation
+>> after system resume happens, Gfx already finishes resuming and audio
+>> initialization, so as long as intel_haswell_wait_ready_to_resume() enable the
+>> unsol event, the unsol event comes and so so waiting finishes. The 300ms time
+>> out is set for safety consideration in case unsol event is lost. I've not observed
+>> any unsol event lost till now.
+>>
+>> As for the timeout, I suggest you use the codec->bus->workq instead of
+>> creating a new workq. I think that will also give us some serialisation, i e,
+>> protection against race conditions if the timeout happen at the same time as
+>> the unsol event.
+>
+> Hi David,
+>
+> The new added "resume_wq" for hdmi codec is a wait queue, not a work queue like codec->bus->workq.
+> It's expected to wake up as soon as the unsol event is got.
 
-Currently, a new platform device is created for secondary device
-by calling platform_device_register_resndata and then the drvdata
-is set for this device.
+Sure; but I don't see why you need a wait queue for that? Why don't you 
+just call the resume path from the unsol event handler 
+(hdmi_present_sense, or its caller), and then also cancel the timeout 
+handler (which can then be in the normal workq)?
 
-The following patch has been added to driver core:
-"driver core: fix possible missing of device probe".
 
-This results in the added device getting probed immediately but
-the drvdata for the secondary device is not yet set.
-This patch removes the platform_device_register_resndata call and
-instead calls platform_device_alloc, platform_set_drvdata and
-platform_device_add which fixes the above issue.
+> And I think there will not be race between unsol event and idle time out.
+> Because until the first user operation trigger the delayed resume, the codec keeps in D3.
+> And only until intel_haswell_set_power_state(), which is called by hda_call_codec_resume(), finishes waiting and programing the codec to D0,
+> __snd_hda_power_up() will keep 'codec->power_transition' to '1'. Thus __snd_hda_power_down() will not schedule idle time out.
+>
+>
+>>> BTW, would you please tell us how Ubuntu decides whether to enable the
+>> normal idle power down (parameter "power_save")?
+>>> We found this bug on a Haswell mobile machine with "power_save" disabled,
+>> which means only system resume will program the codec back to D0. But on a
+>> another machine with "power_save" enabled, this bug is not visible because
+>> later runtime codec power up can program the codec to D0 and unmute the pin
+>> again.
+>>
+>> Hmm. I don't think there is any difference between the upstream default and
+>> Ubuntu in this case. I remember we had to turn off power_save for
+>> Pantherpoint once, before keep_power_link_on for PantherPoint was
+>> discovered and upstreamed. But that was quite a while ago.
+>>
+>> Then there is of course people playing with powertop and other tools, to
+>> override the defaults.
+>
+> The default power_value is 0 in Kconfig, which means off.
+> But on some HSW machines with ALC889 codec and Haswell display codec, both with EPSS support, I found that power_save is 1 after boot.
+> On another HSW machine with ALC262, no EPSS, power_save is 0.
+>
+> So I suspect the rule is that if all codecs support EPSS, power_save will be enabled. But who enables this?
 
-Signed-off-by: Prathyush K <prathyush.k@samsung.com>
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
----
+That does not seem to make sense. It might be something different?
 
-Based on Kukjin for-next branch
 
- sound/soc/samsung/i2s.c |   13 ++++++++-----
- 1 files changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index f1fc064..6bbeb0b 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -972,6 +972,7 @@ static const struct snd_soc_dai_ops samsung_i2s_dai_ops = {
- static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
- {
- 	struct i2s_dai *i2s;
-+	int ret;
- 
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dai), GFP_KERNEL);
- 	if (i2s == NULL)
-@@ -996,15 +997,17 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
- 		i2s->i2s_dai_drv.capture.channels_max = 2;
- 		i2s->i2s_dai_drv.capture.rates = SAMSUNG_I2S_RATES;
- 		i2s->i2s_dai_drv.capture.formats = SAMSUNG_I2S_FMTS;
-+		dev_set_drvdata(&i2s->pdev->dev, i2s);
- 	} else {	/* Create a new platform_device for Secondary */
--		i2s->pdev = platform_device_register_resndata(NULL,
--				"samsung-i2s-sec", -1, NULL, 0, NULL, 0);
-+		i2s->pdev = platform_device_alloc("samsung-i2s-sec", -1);
- 		if (IS_ERR(i2s->pdev))
- 			return NULL;
--	}
- 
--	/* Pre-assign snd_soc_dai_set_drvdata */
--	dev_set_drvdata(&i2s->pdev->dev, i2s);
-+		platform_set_drvdata(i2s->pdev, i2s);
-+		ret = platform_device_add(i2s->pdev);
-+		if (ret < 0)
-+			return NULL;
-+	}
- 
- 	return i2s;
- }
 -- 
-1.7.4.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
