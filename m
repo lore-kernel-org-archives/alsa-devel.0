@@ -1,120 +1,103 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH 2/2] ALSA: hda/ca0132 - Update latency based on
-	DSP state.
-Date: Wed,  3 Apr 2013 08:30:04 -0700
-Message-ID: <1365003004-7680-2-git-send-email-dgreid@chromium.org>
-References: <1365003004-7680-1-git-send-email-dgreid@chromium.org>
+From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] Asynchronous audio USB chips: choppy playback since
+ 3.8-rc7
+Date: Wed, 03 Apr 2013 17:37:16 +0200
+Message-ID: <515C4CAC.5020702@gmail.com>
+References: <515C013D.8090909@canonical.com> <515C0312.1090507@gmail.com> <515C34E5.3030306@amarulasolutions.com> <515C389B.80506@amarulasolutions.com> <515C4410.4030904@gmail.com> <515C4879.8090208@amarulasolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f73.google.com (mail-oa0-f73.google.com
- [209.85.219.73])
- by alsa0.perex.cz (Postfix) with ESMTP id B2B2D265D70
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 17:30:16 +0200 (CEST)
-Received: by mail-oa0-f73.google.com with SMTP id o6so401120oag.4
- for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2013 08:30:15 -0700 (PDT)
-In-Reply-To: <1365003004-7680-1-git-send-email-dgreid@chromium.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, ian_minett@creativelabs.com
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <515C4879.8090208-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Michael Trimarchi <michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org>
+Cc: David Henningsson <david.henningsson-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, 1136110-T8XWwAfLipRB/Vz2p19nDaxOck334EZe@public.gmane.org, "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The DSP in the CA0132 codec adds a variable latency to audio depending
-on what processing is being done.  Add a new patch op to return that
-latency for capture and playback streams.  The latency is determined
-by which blocks are enabled and knowing how much latency is added by
-each block.
+On 03.04.2013 17:19, Michael Trimarchi wrote:
+> Hi Daniel
+> 
+> On 03/04/13 17:00, Daniel Mack wrote:
+>> Hi Michael,
+>>
+>> On 03.04.2013 16:11, Michael Trimarchi wrote:
+>>> On 03/04/13 15:55, Michael Trimarchi wrote:
+>>>> On 03/04/13 12:23, Daniel Mack wrote:
+>>>>> Hi David,
+>>>>>
+>>>>> On 03.04.2013 12:15, David Henningsson wrote:
+>>>>>> Just to get your attention here on what seems to be an USB audio 
+>>>>>> regression.
+>>>>>>
+>>>>>> The bug is described in detail here:
+>>>>>>
+>>>>>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110?comments=all
+>>>>>>
+>>>>>> Quoting the bug:
+>>>>>>
+>>>>>> "
+>>>>>> This bug seems to affect only a certain kind of hardware, which is 
+>>>>>> called "Asynchronous USB Digital Audio Codec (DAC)". It's said that such 
+>>>>>> a DAC hosts the clock itself (USB Device Host). An ordinary DAC, so 
+>>>>>> called "Synchronous USB DAC", uses the clock hosted by the mother board, 
+>>>>>> which is not affected by this bug.
+>>>>>>
+>>>>>> When this bug affects an asynchronous USB DAC, the audio played by the 
+>>>>>> DAC is constantly interrupted. The playback itself does not stop, but 
+>>>>>> the output becomes discontinous, filling with constant crackling noises, 
+>>>>>> destroying everything the DAC plays.
+>>>>>> "
+>>>>>>
+>>>>>> According to the bug reporter, which seems to have done quite a bit of 
+>>>>>> research, this started between 3.8-rc6 and 3.8-rc7 as well as stable 
+>>>>>> kernels and the bug also lists a few commits which could be the cause, 
+>>>>>> none under sound/usb though.
+>>>>>
+>>>>> There were no relevant changes for snd-usb between the two versions
+>>>>> mentioned. The only patches that come in mind in this time window are:
+>>>>>
+>>>>>  3e619d041 "USB: EHCI: fix bug in scheduling periodic split transfers"
+>>>>>  b09a61cc0 "USB: EHCI: fix for leaking isochronous data"
+>>>>
+>>>> This last one, doesn't give me any problem, just a memory leak and not a choppy
+>>>> playback (tested on 48Khz, 96Khz, 192Khz 32bit on OMAP3 device) and I don't
+>>>> think that it can be the reason of the problem.
+>>
+>> Is OMAP3 at all a platform that is affected by the bug? It seems the
+>> effect is only seen on some special host controller hardware anyway.
+>>
+> 
+> Yes, omap3 ehci and m2tech products is not affected and I'm testing a dac with internal clock.
+> 
+>>> Sorry the comment was for a bug that is not included in this list and recently fixed.
+>>> USB: EHCI: fix bug in iTD/siTD DMA pool allocation
+>>
+>> Sorry, you lost me. So what's the status of this issue now? Does "USB:
+>> EHCI: fix bug in iTD/siTD DMA pool allocation" fix it?
+> 
+> With or without it, I don't have any choppy audio and this is not a fix
+> of this bug.
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
- sound/pci/hda/patch_ca0132.c | 52 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+If you cannot reproduce the bug, how can you reproduce a fix then?
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 12eb21a..dbecb03 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -131,6 +131,13 @@ enum {
- /* Effects values size*/
- #define EFFECT_VALS_MAX_COUNT 12
- 
-+/* Latency introduced by DSP blocks in frames. */
-+#define DSP_CAPTURE_INIT_LATENCY        0
-+#define DSP_CRYSTAL_VOICE_LATENCY       124
-+#define DSP_PLAYBACK_INIT_LATENCY       13
-+#define DSP_PLAY_ENHANCEMENT_LATENCY    30
-+#define DSP_SPEAKER_OUT_LATENCY         7
-+
- struct ct_effect {
- 	char name[44];
- 	hda_nid_t nid;
-@@ -4440,6 +4447,50 @@ static void ca0132_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
- }
- 
-+static unsigned int ca0132_get_playback_latency(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int latency = DSP_PLAYBACK_INIT_LATENCY;
-+
-+	/* Add latency if playback enhancement and either effect is enabled. */
-+	if (spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID]) {
-+		if ((spec->effects_switch[SURROUND - EFFECT_START_NID]) ||
-+		    (spec->effects_switch[DIALOG_PLUS - EFFECT_START_NID]))
-+			latency += DSP_PLAY_ENHANCEMENT_LATENCY;
-+	}
-+
-+	/* Applying Speaker EQ adds latency as well. */
-+	if (spec->cur_out_type == SPEAKER_OUT)
-+		latency += DSP_SPEAKER_OUT_LATENCY;
-+
-+	return latency;
-+}
-+
-+static unsigned int ca0132_get_capture_latency(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int latency = DSP_CAPTURE_INIT_LATENCY;
-+
-+	if (spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID])
-+		latency += DSP_CRYSTAL_VOICE_LATENCY;
-+
-+	return latency;
-+}
-+
-+static unsigned int ca0132_get_processing_delay(struct hda_codec *codec,
-+						unsigned int stream)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	if (spec->dsp_state != DSP_DOWNLOADED)
-+		return 0;
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return ca0132_get_playback_latency(codec);
-+
-+	return ca0132_get_capture_latency(codec);
-+}
-+
- /*
-  * Verbs tables.
-  */
-@@ -4617,6 +4668,7 @@ static struct hda_codec_ops ca0132_patch_ops = {
- 	.init = ca0132_init,
- 	.free = ca0132_free,
- 	.unsol_event = ca0132_unsol_event,
-+	.get_processing_delay = ca0132_get_processing_delay,
- };
- 
- static void ca0132_config(struct hda_codec *codec)
--- 
-1.8.1.5
+Also, if all users of snd-usb would be affected since 3.8-rc7, I'm sure
+this mailing list would be full of reports.
+
+The bug is only triggered by some sort of hardware (appearantly such
+with an internal clock), and only with some patch applied that went in
+between 3.8-rc6 and 3.8-rc7.
+
+Someone with hardware that shows the bug has to bisect between these two
+tags please. Given the number of patches between them (230), that
+shouldn't take long.
+
+ALSA is certainly not the culprit here, as there where only ASoC patches
+in that range. I'm copying the linux-usb ML.
+
+
+Thanks,
+Daniel
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
