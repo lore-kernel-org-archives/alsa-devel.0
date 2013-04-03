@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ALSA: compress_core: Update calc_avail to
-	use cumulative values
-Date: Wed,  3 Apr 2013 13:13:27 +0100
-Message-ID: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ALSA: compress_core: Split copy into
+	seperate read and write callbacks
+Date: Wed,  3 Apr 2013 13:13:28 +0100
+Message-ID: <1364991209-24653-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14975265B5B
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 14:22:34 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD7DC265CD8
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 14:22:36 +0200 (CEST)
+In-Reply-To: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +25,68 @@ To: broonie@opensource.wolfsonmicro.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The app_pointer is managed locally by the compress core for memory
-mapped DSPs but for DSPs that are not memory mapped this would have to
-be manually updated from within the DSP driver itself, which is hardly
-very idiomatic.
+The compress API for non-memory mapped DSPs shares a copy callback for
+both read and write, however the file operation of write passes a const
+buffer. Thus we can't maintain const correctness for the copy callback
+and support both read and write.
 
-This patch switches to using the cumulative values to calculate the
-available buffer space because these are already gracefully passed out
-of the DSP driver to the compress core and otherwise should be
-functionally equivalent.
+This patch seperates the read and write callbacks in the compressed API.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/core/compress_offload.c |   23 +++++------------------
- 1 files changed, 5 insertions(+), 18 deletions(-)
+ include/sound/compress_driver.h |    8 ++++++--
+ sound/core/compress_offload.c   |    6 +++---
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index ff6c741..4c64dd1 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -99,7 +99,9 @@ struct snd_compr_stream {
+  * @trigger: Trigger operations like start, pause, resume, drain, stop.
+  * This callback is mandatory
+  * @pointer: Retrieve current h/w pointer information. Mandatory
+- * @copy: Copy the compressed data to/from userspace, Optional
++ * @write: Copy the compressed data from userspace, Optional
++ * Can't be implemented if DSP supports mmap
++ * @read: Copy the compressed data to userspace, Optional
+  * Can't be implemented if DSP supports mmap
+  * @mmap: DSP mmap method to mmap DSP memory
+  * @ack: Ack for DSP when data is written to audio buffer, Optional
+@@ -121,7 +123,9 @@ struct snd_compr_ops {
+ 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
+ 	int (*pointer)(struct snd_compr_stream *stream,
+ 			struct snd_compr_tstamp *tstamp);
+-	int (*copy)(struct snd_compr_stream *stream, const char __user *buf,
++	int (*write)(struct snd_compr_stream *stream, const char __user *buf,
++		       size_t count);
++	int (*read)(struct snd_compr_stream *stream, char __user *buf,
+ 		       size_t count);
+ 	int (*mmap)(struct snd_compr_stream *stream,
+ 			struct vm_area_struct *vma);
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index c84abc8..27bd81a 100644
+index 27bd81a..78c6f97 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -160,8 +160,6 @@ static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
- static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 		struct snd_compr_avail *avail)
- {
--	long avail_calc; /*this needs to be signed variable */
--
- 	memset(avail, 0, sizeof(*avail));
- 	snd_compr_update_tstamp(stream, &avail->tstamp);
- 	/* Still need to return avail even if tstamp can't be filled in */
-@@ -184,22 +182,11 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 		return stream->runtime->buffer_size;
- 	}
+@@ -265,8 +265,8 @@ static ssize_t snd_compr_write(struct file *f, const char __user *buf,
+ 	if (avail > count)
+ 		avail = count;
  
--	/* FIXME: this routine isn't consistent, in one test we use
--	 * cumulative values and in the other byte offsets. Do we
--	 * really need the byte offsets if the cumulative values have
--	 * been updated? In the PCM interface app_ptr and hw_ptr are
--	 * already cumulative */
--
--	avail_calc = stream->runtime->buffer_size -
--		(stream->runtime->app_pointer - stream->runtime->hw_pointer);
--	pr_debug("calc avail as %ld, app_ptr %lld, hw+ptr %lld\n", avail_calc,
--			stream->runtime->app_pointer,
--			stream->runtime->hw_pointer);
--	if (avail_calc >= stream->runtime->buffer_size)
--		avail_calc -= stream->runtime->buffer_size;
--	pr_debug("ret avail as %ld\n", avail_calc);
--	avail->avail = avail_calc;
--	return avail_calc;
-+	avail->avail = stream->runtime->buffer_size -
-+		(stream->runtime->total_bytes_available -
-+		 stream->runtime->total_bytes_transferred);
-+	pr_debug("ret avail as %lld\n", avail->avail);
-+	return avail->avail;
- }
+-	if (stream->ops->copy)
+-		retval = stream->ops->copy(stream, buf, avail);
++	if (stream->ops->write)
++		retval = stream->ops->write(stream, buf, avail);
+ 	else
+ 		retval = snd_compr_write_data(stream, buf, avail);
+ 	if (retval > 0)
+@@ -403,7 +403,7 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+ 	void *buffer;
  
- static inline size_t snd_compr_get_avail(struct snd_compr_stream *stream)
+ 	buffer_size = params->buffer.fragment_size * params->buffer.fragments;
+-	if (stream->ops->copy) {
++	if (stream->ops->write) {
+ 		buffer = NULL;
+ 		/* if copy is defined the driver will be required to copy
+ 		 * the data from core
 -- 
 1.7.2.5
