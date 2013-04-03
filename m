@@ -1,21 +1,18 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: Asynchronous audio USB chips: choppy playback
- since 3.8-rc7
-Date: Wed, 03 Apr 2013 17:19:21 +0200
-Message-ID: <515C4879.8090208@amarulasolutions.com>
-References: <515C013D.8090909@canonical.com> <515C0312.1090507@gmail.com>
- <515C34E5.3030306@amarulasolutions.com> <515C389B.80506@amarulasolutions.com>
- <515C4410.4030904@gmail.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH 1/2] ALSA: hda - Add fixed codec delay to
+	runtime delay.
+Date: Wed,  3 Apr 2013 08:30:03 -0700
+Message-ID: <1365003004-7680-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 46B59265D66
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 17:19:25 +0200 (CEST)
-Received: by mail-wg0-f51.google.com with SMTP id b12so1673286wgh.18
- for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2013 08:19:24 -0700 (PDT)
-In-Reply-To: <515C4410.4030904@gmail.com>
+Received: from mail-oa0-f74.google.com (mail-oa0-f74.google.com
+ [209.85.219.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id A102A265D6D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 17:30:15 +0200 (CEST)
+Received: by mail-oa0-f74.google.com with SMTP id k14so401278oag.1
+ for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2013 08:30:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,88 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 1136110@bugs.launchpad.net, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Alan Stern <stern@rowland.harvard.edu>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, ian_minett@creativelabs.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel
+Allow a codec to specify a delay in addition to the delay before
+samples are passed through DMA.  Some codecs have large processing
+delays because of built-in DSPs that require codec-side buffers of
+many milliseconds.  Default to zero delay if the codec doesn't specify
+a callback to get the processing delay.
 
-On 03/04/13 17:00, Daniel Mack wrote:
-> Hi Michael,
-> 
-> On 03.04.2013 16:11, Michael Trimarchi wrote:
->> On 03/04/13 15:55, Michael Trimarchi wrote:
->>> On 03/04/13 12:23, Daniel Mack wrote:
->>>> Hi David,
->>>>
->>>> On 03.04.2013 12:15, David Henningsson wrote:
->>>>> Just to get your attention here on what seems to be an USB audio 
->>>>> regression.
->>>>>
->>>>> The bug is described in detail here:
->>>>>
->>>>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110?comments=all
->>>>>
->>>>> Quoting the bug:
->>>>>
->>>>> "
->>>>> This bug seems to affect only a certain kind of hardware, which is 
->>>>> called "Asynchronous USB Digital Audio Codec (DAC)". It's said that such 
->>>>> a DAC hosts the clock itself (USB Device Host). An ordinary DAC, so 
->>>>> called "Synchronous USB DAC", uses the clock hosted by the mother board, 
->>>>> which is not affected by this bug.
->>>>>
->>>>> When this bug affects an asynchronous USB DAC, the audio played by the 
->>>>> DAC is constantly interrupted. The playback itself does not stop, but 
->>>>> the output becomes discontinous, filling with constant crackling noises, 
->>>>> destroying everything the DAC plays.
->>>>> "
->>>>>
->>>>> According to the bug reporter, which seems to have done quite a bit of 
->>>>> research, this started between 3.8-rc6 and 3.8-rc7 as well as stable 
->>>>> kernels and the bug also lists a few commits which could be the cause, 
->>>>> none under sound/usb though.
->>>>
->>>> There were no relevant changes for snd-usb between the two versions
->>>> mentioned. The only patches that come in mind in this time window are:
->>>>
->>>>  3e619d041 "USB: EHCI: fix bug in scheduling periodic split transfers"
->>>>  b09a61cc0 "USB: EHCI: fix for leaking isochronous data"
->>>
->>> This last one, doesn't give me any problem, just a memory leak and not a choppy
->>> playback (tested on 48Khz, 96Khz, 192Khz 32bit on OMAP3 device) and I don't
->>> think that it can be the reason of the problem.
-> 
-> Is OMAP3 at all a platform that is affected by the bug? It seems the
-> effect is only seen on some special host controller hardware anyway.
-> 
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_codec.c | 17 +++++++++++++++++
+ sound/pci/hda/hda_codec.h |  4 ++++
+ sound/pci/hda/hda_intel.c |  2 ++
+ 3 files changed, 23 insertions(+)
 
-Yes, omap3 ehci and m2tech products is not affected and I'm testing a dac with internal clock.
-
->> Sorry the comment was for a bug that is not included in this list and recently fixed.
->> USB: EHCI: fix bug in iTD/siTD DMA pool allocation
-> 
-> Sorry, you lost me. So what's the status of this issue now? Does "USB:
-> EHCI: fix bug in iTD/siTD DMA pool allocation" fix it?
-
-With or without it, I don't have any choppy audio and this is not a fix
-of this bug.
-
-> 
-> If not - and assuming you can reproduce the bug - which patches of the
-> two I mentioned did you revert, and what was the effect of that? Did you
-> try and remove both as well?
-
-In my version I have the other two commits applied. I doubt that these two
-commits are the reason of the choppy audio. What I can do, it test it on my
-laptop tomorrow and send feedback result
-
-Michael
-
-
-
-> 
-> 
-> Thanks,
-> Daniel
->
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 17286b3..1d792dd 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3724,6 +3724,23 @@ void snd_hda_codec_set_power_to_all(struct hda_codec *codec, hda_nid_t fg,
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_set_power_to_all);
+ 
++/**
++ * snd_hda_codec_processing_delay - get the fixed delay through the codec
++ * @codec: HD-audio codec
++ * @stream: playback or capture
++ *
++ * This is needed for codecs that contain DSPs that cause long delays.
++ */
++unsigned int snd_hda_codec_processing_delay(struct hda_codec *codec,
++					    unsigned int stream)
++{
++	if (codec->patch_ops.get_processing_delay)
++		return codec->patch_ops.get_processing_delay(codec, stream);
++
++	return 0;
++}
++EXPORT_SYMBOL_HDA(snd_hda_codec_processing_delay);
++
+ /*
+  *  supported power states check
+  */
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 23ca172..23bd1e7 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -725,6 +725,8 @@ struct hda_codec_ops {
+ 	int (*check_power_status)(struct hda_codec *codec, hda_nid_t nid);
+ #endif
+ 	void (*reboot_notify)(struct hda_codec *codec);
++	unsigned int (*get_processing_delay)(struct hda_codec *codec,
++					     unsigned int stream);
+ };
+ 
+ /* record for amp information cache */
+@@ -1063,6 +1065,8 @@ void snd_hda_get_codec_name(struct hda_codec *codec, char *name, int namelen);
+ void snd_hda_bus_reboot_notify(struct hda_bus *bus);
+ void snd_hda_codec_set_power_to_all(struct hda_codec *codec, hda_nid_t fg,
+ 				    unsigned int power_state);
++unsigned int snd_hda_codec_processing_delay(struct hda_codec *codec,
++					    unsigned int stream);
+ 
+ int snd_hda_lock_devices(struct hda_bus *bus);
+ void snd_hda_unlock_devices(struct hda_bus *bus);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 418bfc0..422bfaf 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2349,6 +2349,7 @@ static unsigned int azx_get_position(struct azx *chip,
+ 				     struct azx_dev *azx_dev,
+ 				     bool with_check)
+ {
++	struct azx_pcm *apcm = snd_pcm_substream_chip(azx_dev->substream);
+ 	unsigned int pos;
+ 	int stream = azx_dev->substream->stream;
+ 	int delay = 0;
+@@ -2400,6 +2401,7 @@ static unsigned int azx_get_position(struct azx *chip,
+ 			chip->driver_caps &= ~AZX_DCAPS_COUNT_LPIB_DELAY;
+ 		}
+ 		azx_dev->substream->runtime->delay =
++			snd_hda_codec_processing_delay(apcm->codec, stream) +
+ 			bytes_to_frames(azx_dev->substream->runtime, delay);
+ 	}
+ 	trace_azx_get_position(chip, azx_dev, pos, delay);
+-- 
+1.8.1.5
