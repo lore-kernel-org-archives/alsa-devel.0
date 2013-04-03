@@ -1,21 +1,17 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: Re: How to use implicit feedback with full duplex?
-Date: Thu, 4 Apr 2013 00:08:41 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1304032359520.1453@xoschi>
-References: <51116F36.9040106@ladisch.de>
- <alpine.LNX.2.00.1302052326150.1207@xoschi> <5112B969.50905@ladisch.de>
- <alpine.LNX.2.00.1303242323480.5410@xoschi> <5151FFBE.7040304@gmail.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Handle large period size end-of-stream situation
+Date: Wed, 03 Apr 2013 15:22:51 -0700
+Message-ID: <515CABBB.3070509@codeaurora.org>
+References: <515C459A.5070209@codeaurora.org> <515C5D7E.6000609@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
- [209.85.214.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D9084260321
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 00:08:43 +0200 (CEST)
-Received: by mail-bk0-f43.google.com with SMTP id jm2so1150640bkc.30
- for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2013 15:08:43 -0700 (PDT)
-In-Reply-To: <5151FFBE.7040304@gmail.com>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+ [199.106.114.254])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2513E260321
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 00:23:07 +0200 (CEST)
+In-Reply-To: <515C5D7E.6000609@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,84 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 4/3/2013 9:49 AM, Clemens Ladisch wrote:
+> Patrick Lai wrote:
+>> Data is transferred in chunk equal to period size.
+>
+> Data is transferred in whatever chunk size the hardware uses.
+>
+> The period size specifies when the hardware raises an interrupt.
+> If some application is blocking, this interrupt is the only mechanism
+> by which userspace is woken up.
+>
+>> At the end of playback, there may not be enough audio data left in the
+>> music stream to fill entire period. If remaining audio data only takes
+>> up very small chunk of period, playback takes longer to stop. Given
+>> that period size I have to deal with is quite large, this problem is
+>> observed easily. If my understanding is correct, what is the standard/
+>> recommended way of handling end of stream case?
+>
+> I guess you wouldn't ask if your hardware supported smaller periods? ;-)
 
-On Tue, 26 Mar 2013, Daniel Mack wrote:
+The hardware can accept smaller period but smaller period would result
+in more frequent interrupt to application processor. This leads to
+higher power consumption.
 
-> On 24.03.2013 23:49, Eldad Zack wrote:
-> > 
-> > On Wed, 6 Feb 2013, Clemens Ladisch wrote:
-> > 
-> >>> Can you try using jackd -d alsa -d hw:x with the device and see if that
-> >>> works for you?
-> >>
-> >> That works.  This means that there is a race condition in the driver, or
-> >> that the different open/hw_params/prepare order trips it up.
-> > 
-> > Yes, and also on closing (close/hw_free).
-> > I finally had some time to look into this - patch below adds some 
-> > checks and with it:
-> >     
-> > * Starting playback, waiting, starting capture: capture doesn't start,
-> >   playback continues without breaking.
-> >     
-> > * Starting capture, waiting, starting playback: playback doesn't start,
-> >   capture breaks - but it is possible to restart the streams afterwards.
-> >   [On my setup (with xhci), when the streams break I must restart my box
-> >   to get them to work again with current code].
-> > 
-> > * Starting both - no change, works good.
-> > 
-> > This is the order the ops get called when both are start at once, if it 
-> > helps anyone:
-> > 
-> > playback	capture
-> > open
-> > 		open
-> > 		hw_params
-> > 		 set_format
-> >  		prepare
-> >  		 set_format
-> > hw_params
-> >  set_format
-> > prepare
-> >  set_format
-> > prepare
-> >  set_format
-> > 		prepare
-> > 		 set_format
-> >  trigger
-> > 		trigger
-> > 
-> > I'll try to figure out why capture breaks next.
-> > I still quite slow around the code and don't understand some parts of 
-> > it so this might take me a while.
-> 
-> Thanks for looking into this!
-> 
-> > @Daniel, do you have any hints for this case (capture breaking
-> > when starting playback)?
-> 
-> Give me some time to catch up and rebuild my FTU setup please. I hope
-> I'll be able to get back to you by the end of this week.
+>
+> Use non-blocking writes, and use some other timer to wait for the actual
+> data to be played.  (But if the hardware cannot report the current
+> playback position accurately, ALSA won't notice that the playback has
+> reached the end.)
 
-Cool, thank you!
+My concern is not about blocking too long but audio playback ending 
+longer than necessary. If I understand correctly, you are suggesting 
+that application, once done transferring residual data, set up timer 
+according to expected duration of residual data. Upon waking up from 
+timer, call ALSA library API to get the current hardware pointer.
+Is my understanding correct?
 
-And it just remembered something. I tried to make the "in use"
-check non-fatal (return 0) and with a couple of more changes
-(very hacky) I got it to start in both orders.
+>
+>
+> Regards,
+> Clemens
+>
 
-But the problem was that when I stopped the playback* stream my
-kernel "exploded" (hard lock up). But if I stopped the capture,
-it was ok. Playback didn't even stop.
-(It might have been the other way around, but I think it was 
-playback)
 
-I can find that branch when I find some time if you think it
-might help.
-
-Cheers,
-Eldad
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
