@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ALSA: compress_core: Split copy into
+Subject: [PATCH 3/3] ASoC: soc-compress: Split copy into
 	seperate read and write callbacks
-Date: Wed,  3 Apr 2013 13:13:28 +0100
-Message-ID: <1364991209-24653-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Date: Wed,  3 Apr 2013 13:13:29 +0100
+Message-ID: <1364991209-24653-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD7DC265CD8
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 14:22:36 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 195A1265CEA
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2013 14:22:50 +0200 (CEST)
 In-Reply-To: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,63 +30,72 @@ both read and write, however the file operation of write passes a const
 buffer. Thus we can't maintain const correctness for the copy callback
 and support both read and write.
 
-This patch seperates the read and write callbacks in the compressed API.
+This patch seperates the read and write callbacks in the ASoC compressed
+API.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- include/sound/compress_driver.h |    8 ++++++--
- sound/core/compress_offload.c   |    6 +++---
- 2 files changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/soc-compress.c |   34 +++++++++++++++++++++++++++-------
+ 1 files changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index ff6c741..4c64dd1 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -99,7 +99,9 @@ struct snd_compr_stream {
-  * @trigger: Trigger operations like start, pause, resume, drain, stop.
-  * This callback is mandatory
-  * @pointer: Retrieve current h/w pointer information. Mandatory
-- * @copy: Copy the compressed data to/from userspace, Optional
-+ * @write: Copy the compressed data from userspace, Optional
-+ * Can't be implemented if DSP supports mmap
-+ * @read: Copy the compressed data to userspace, Optional
-  * Can't be implemented if DSP supports mmap
-  * @mmap: DSP mmap method to mmap DSP memory
-  * @ack: Ack for DSP when data is written to audio buffer, Optional
-@@ -121,7 +123,9 @@ struct snd_compr_ops {
- 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
- 	int (*pointer)(struct snd_compr_stream *stream,
- 			struct snd_compr_tstamp *tstamp);
--	int (*copy)(struct snd_compr_stream *stream, const char __user *buf,
-+	int (*write)(struct snd_compr_stream *stream, const char __user *buf,
-+		       size_t count);
-+	int (*read)(struct snd_compr_stream *stream, char __user *buf,
- 		       size_t count);
- 	int (*mmap)(struct snd_compr_stream *stream,
- 			struct vm_area_struct *vma);
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 27bd81a..78c6f97 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -265,8 +265,8 @@ static ssize_t snd_compr_write(struct file *f, const char __user *buf,
- 	if (avail > count)
- 		avail = count;
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index f9b2197..0148d82 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -306,8 +306,8 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 	return 0;
+ }
  
--	if (stream->ops->copy)
--		retval = stream->ops->copy(stream, buf, avail);
-+	if (stream->ops->write)
-+		retval = stream->ops->write(stream, buf, avail);
- 	else
- 		retval = snd_compr_write_data(stream, buf, avail);
- 	if (retval > 0)
-@@ -403,7 +403,7 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
- 	void *buffer;
+-static int soc_compr_copy(struct snd_compr_stream *cstream,
+-			  const char __user *buf, size_t count)
++static int soc_compr_write(struct snd_compr_stream *cstream,
++			   const char __user *buf, size_t count)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
+@@ -315,8 +315,24 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
  
- 	buffer_size = params->buffer.fragment_size * params->buffer.fragments;
--	if (stream->ops->copy) {
-+	if (stream->ops->write) {
- 		buffer = NULL;
- 		/* if copy is defined the driver will be required to copy
- 		 * the data from core
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
+-		ret = platform->driver->compr_ops->copy(cstream, buf, count);
++	if (platform->driver->compr_ops && platform->driver->compr_ops->write)
++		ret = platform->driver->compr_ops->write(cstream, buf, count);
++
++	mutex_unlock(&rtd->pcm_mutex);
++	return ret;
++}
++
++static int soc_compr_read(struct snd_compr_stream *cstream,
++			  char __user *buf, size_t count)
++{
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
++
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
++
++	if (platform->driver->compr_ops && platform->driver->compr_ops->read)
++		ret = platform->driver->compr_ops->read(cstream, buf, count);
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+@@ -392,9 +408,13 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	}
+ 	memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
+ 
+-	/* Add copy callback for not memory mapped DSPs */
+-	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
+-		compr->ops->copy = soc_compr_copy;
++	/* Add write/read callback for not memory mapped DSPs */
++	if (platform->driver->compr_ops) {
++		if (platform->driver->compr_ops->write)
++			compr->ops->write = soc_compr_write;
++		if (platform->driver->compr_ops->read)
++			compr->ops->read = soc_compr_read;
++	}
+ 
+ 	mutex_init(&compr->lock);
+ 	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
 -- 
 1.7.2.5
