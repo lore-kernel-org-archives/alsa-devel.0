@@ -1,17 +1,20 @@
-From: yegorslists@googlemail.com
-Subject: [PATCH v6 2/2] ALSA: ASoC: davinci-mcasp: don't
-	overwrite DIT settings
-Date: Thu,  4 Apr 2013 16:13:20 +0200
-Message-ID: <1365084800-17929-2-git-send-email-yegorslists@googlemail.com>
-References: <1365084800-17929-1-git-send-email-yegorslists@googlemail.com>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: Handle large period size end-of-stream situation
+Date: Thu, 04 Apr 2013 08:09:42 -0700
+Message-ID: <515D97B6.1080701@gmail.com>
+References: <515C459A.5070209@codeaurora.org> <515D1122.9020502@gmail.com>
+ <515D477F.9010406@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.visionsystems.de (hhlx01.visionsystems.de [62.145.30.242])
- by alsa0.perex.cz (Postfix) with ESMTP id B2DB0265ED6
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 16:13:59 +0200 (CEST)
-In-Reply-To: <1365084800-17929-1-git-send-email-yegorslists@googlemail.com>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2FD5265EF4
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 17:09:58 +0200 (CEST)
+Received: by mail-pa0-f46.google.com with SMTP id lb1so1526961pab.19
+ for <alsa-devel@alsa-project.org>; Thu, 04 Apr 2013 08:09:57 -0700 (PDT)
+In-Reply-To: <515D477F.9010406@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Yegor Yefremov <yegorslists@googlemail.com>, vaibhav.bedia@ti.com, zonque@gmail.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Yegor Yefremov <yegorslists@googlemail.com>
+On 04/04/2013 02:27 AM, Clemens Ladisch wrote:
+> Gabriel M. Beddingfield wrote:
+>> In the typical end-of-stream case, you simply write the data that you
+>> have.  When the hw pointer catches up to the application pointer, you
+>> get an XRUN and the stream stops immediately.
+>
+> But that happens only when ALSA actually reads the hardware pointer.
+> The application could ask for the pointer position for some reason, but
+> when it is blocked, only the end-of-period interrupt will cause that.
 
-Channel size settings will be made at the end of
-davinci_mcasp_hw_params() routine and thus overwrite frame
-format settings made for DIT mode. This patch fixes this issue
-by taking op_mode into account. Tested with official PSP 3.2
-kernel and sii9022a HDMI transmitter.
+I stand corrected.  (Thanks also to Peter Ujfalusi for setting me straight.)
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
-Tested-by: Daniel Mack <zonque@gmail.com>
----
-v6: CC Mark Brown
-v5: add Daniel's Tested-by
-v4: change subjuct to include "ALSA: ASoC: "
-v3: don't set mask in davinci_hw_dit_param()
-v2: fix checkpatch.pl warnings
+So, if the hardware can detect it then the hardware needs to signal an 
+interrupt for the XRUN.
 
- sound/soc/davinci/davinci-mcasp.c |   25 +++++++++++++------------
- 1 files changed, 13 insertions(+), 12 deletions(-)
+Another option... from userspace you can call SYNC_PTR (e.g. 
+pcm_get_htimestamp() in tinyalsa) to update the hw and application 
+pointers, then inspect them to detect when all the data is transferred. 
+  When you see all is played, immediately stop the stream.  Again, this 
+presumes that the "hw" side is able to query the state of the pointer.
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 90a9b99..dcd56f2 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -643,16 +643,20 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
- 	/* mapping of the XSSZ bit-field as described in the datasheet */
- 	fmt = (word_length >> 1) - 1;
- 
--	mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMT_REG,
--					RXSSZ(fmt), RXSSZ(0x0F));
--	mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
--					TXSSZ(fmt), TXSSZ(0x0F));
--	mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG, TXROT(rotate),
--							TXROT(7));
--	mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMT_REG, RXROT(rotate),
--							RXROT(7));
-+	if (dev->op_mode != DAVINCI_MCASP_DIT_MODE) {
-+		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMT_REG,
-+				RXSSZ(fmt), RXSSZ(0x0F));
-+		mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
-+				TXSSZ(fmt), TXSSZ(0x0F));
-+		mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
-+				TXROT(rotate), TXROT(7));
-+		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMT_REG,
-+				RXROT(rotate), RXROT(7));
-+		mcasp_set_reg(dev->base + DAVINCI_MCASP_RXMASK_REG,
-+				mask);
-+	}
-+
- 	mcasp_set_reg(dev->base + DAVINCI_MCASP_TXMASK_REG, mask);
--	mcasp_set_reg(dev->base + DAVINCI_MCASP_RXMASK_REG, mask);
- 
- 	return 0;
- }
-@@ -772,9 +776,6 @@ static void davinci_hw_param(struct davinci_audio_dev *dev, int stream)
- /* S/PDIF */
- static void davinci_hw_dit_param(struct davinci_audio_dev *dev)
- {
--	/* TXMASK for 24 bits */
--	mcasp_set_reg(dev->base + DAVINCI_MCASP_TXMASK_REG, 0x00FFFFFF);
--
- 	/* Set the TX format : 24 bit right rotation, 32 bit slot, Pad 0
- 	   and LSB first */
- 	mcasp_set_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
--- 
-1.7.7
+-gabriel
