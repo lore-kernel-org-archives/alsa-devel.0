@@ -1,19 +1,14 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: ASOC snd_soc_dai_ops for clock mux control
-Date: Wed, 03 Apr 2013 22:55:05 -0700
-Message-ID: <515D15B9.8080608@gmail.com>
-References: <8F928A9825EEF0458AC402C3ABF8BEB1053E0DEF@HI2EXCH01.adit-jv.com>
+From: Rainer Koenig <Rainer.Koenig@ts.fujitsu.com>
+Subject: [PATCH] Enabling Realtek ALC 671 codec
+Date: Thu, 04 Apr 2013 08:40:38 +0200
+Message-ID: <515D2066.50500@ts.fujitsu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
- [209.85.192.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C1E1265E31
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 07:55:08 +0200 (CEST)
-Received: by mail-pd0-f181.google.com with SMTP id y10so1253773pdj.12
- for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2013 22:55:08 -0700 (PDT)
-In-Reply-To: <8F928A9825EEF0458AC402C3ABF8BEB1053E0DEF@HI2EXCH01.adit-jv.com>
+Received: from dgate10.ts.fujitsu.com (dgate10.ts.fujitsu.com [80.70.172.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 850D4260799
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 08:39:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gellner, Christoph (ADITG/SW1)" <cgellner@de.adit-jv.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/03/2013 09:22 AM, Gellner, Christoph (ADITG/SW1) wrote:
-> Hi all,
->
-> I'm working on the driver of an audio CPU DAI IP providing
-> -       Internal clocks which can be used for master clock generation by TX as well as RX section
-> -       One oversampling clock available to RX section
-> -       One oversampling clock available to TX section.
->
-> Kernel version is 3.5.7
->
-> I want to add support to the CPU DAI driver to
-> -       Specify the rate of the input clocks
-> -       Select which of the clock inputs shall be used by RX and which shall be used by TX section
->
-> I'm currently wondering how to map this to existing snd_soc_dai_ops functions.
-> Currently I see only set_sysclk, set_pll, set_clkdiv for clock control.
->
-> I plan to use set_sysclk to specify the rate as well as the direction of each clock.
->
-> What is currently missing for me is a way to specify the clock to be used by RX or TX section.
->
-> Do you have any recommendation how to implement ?
+Changes:
 
+* Added the device ID to the modalias list and assinged ALC662 patches =
 
-Let's say your CPU DAI IP has 3 clocks which we'll call MCLK (master 
-clock), FLL1, and FLL2 (the two oversampling clocks).
+for it
+* Added 4 port support for the device ID 0671 in alc662_parse_auto_config
 
-Are you wanting a way to say: "RX should use FLL1 and TX should use FLL2" ??
+Signed-off-by: Rainer Koenig <Rainer.Koenig@ts.fujitsu.com>
 
-If so, there's a couple options I can think of.  (A) You could call a 
-codec-specific API in your machine driver that expresses this intent. 
-(B) you could create "virtual" clock ID's that express the mapping (e.g. 
-FLL1_TX, FLL1_RX, FLL2_TX, FLL2_RX).  I think (A) is a cleaner solution 
-that clearly communicates what is happening.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7743775..fcbf4c9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6663,7 +6663,8 @@ static int alc662_parse_auto_config(struct =
 
--gabriel
+hda_codec *codec)
+  	const hda_nid_t *ssids;
+
+  	if (codec->vendor_id =3D=3D 0x10ec0272 || codec->vendor_id =3D=3D 0x10ec=
+0663 ||
+-	    codec->vendor_id =3D=3D 0x10ec0665 || codec->vendor_id =3D=3D 0x10ec0=
+670)
++	    codec->vendor_id =3D=3D 0x10ec0665 || codec->vendor_id =3D=3D 0x10ec0=
+670 ||
++	    codec->vendor_id =3D=3D 0x10ec0671)
+  		ssids =3D alc663_ssids;
+  	else
+  		ssids =3D alc662_ssids;
+@@ -7115,6 +7116,7 @@ static const struct hda_codec_preset =
+
+snd_hda_preset_realtek[] =3D {
+  	{ .id =3D 0x10ec0665, .name =3D "ALC665", .patch =3D patch_alc662 },
+  	{ .id =3D 0x10ec0668, .name =3D "ALC668", .patch =3D patch_alc662 },
+  	{ .id =3D 0x10ec0670, .name =3D "ALC670", .patch =3D patch_alc662 },
++	{ .id =3D 0x10ec0671, .name =3D "ALC671", .patch =3D patch_alc662 },
+  	{ .id =3D 0x10ec0680, .name =3D "ALC680", .patch =3D patch_alc680 },
+  	{ .id =3D 0x10ec0880, .name =3D "ALC880", .patch =3D patch_alc880 },
+  	{ .id =3D 0x10ec0882, .name =3D "ALC882", .patch =3D patch_alc882 },
+
+-- =
+
+Dipl.-Inf. (FH) Rainer Koenig
+Project Manager Linux Clients
+Dept. PDG WPS R&D SW OSE
+
+Fujitsu Technology Solutions
+B=FCrgermeister-Ullrich-Str. 100
+86199 Augsburg
+Germany
+
+Telephone: +49-821-804-3321
+Telefax:   +49-821-804-2131
+Mail:      mailto:Rainer.Koenig@ts.fujitsu.com
+
+Internet         ts.fujtsu.com
+Company Details  ts.fujitsu.com/imprint.html
