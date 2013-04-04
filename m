@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Handle large period size end-of-stream situation
-Date: Thu, 04 Apr 2013 11:27:27 +0200
-Message-ID: <515D477F.9010406@ladisch.de>
-References: <515C459A.5070209@codeaurora.org> <515D1122.9020502@gmail.com>
+From: mateen <abdulmateen.shaikh@gmail.com>
+Subject: Deadlock over semaphore issue with aplay while using
+	dmix
+Date: Thu, 4 Apr 2013 14:57:39 +0530
+Message-ID: <CADryByGnyH9rUDBuG_JRPrSgCb3LPwhaVdFXXeELiUYQv+ZHwQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0AEBA265E00
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 11:27:31 +0200 (CEST)
-In-Reply-To: <515D1122.9020502@gmail.com>
+Received: from mail-ve0-f171.google.com (mail-ve0-f171.google.com
+ [209.85.128.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00BB4265E12
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 11:27:40 +0200 (CEST)
+Received: by mail-ve0-f171.google.com with SMTP id b10so2439961vea.2
+ for <alsa-devel@alsa-project.org>; Thu, 04 Apr 2013 02:27:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,19 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gabriel M. Beddingfield wrote:
-> In the typical end-of-stream case, you simply write the data that you
-> have.  When the hw pointer catches up to the application pointer, you
-> get an XRUN and the stream stops immediately.
+Hi,
 
-But that happens only when ALSA actually reads the hardware pointer.
-The application could ask for the pointer position for some reason, but
-when it is blocked, only the end-of-period interrupt will cause that.
+I seeing sometimes deadlock issue with dmix when I press CTRL+C.
 
+Aplay's signal handler calls snd_pcm_close() if an interrupt occurs.
+snd_pcm_close() will internally call  pcm->ops->close() which will fall to
+snd_pcm_dmix_close() in case you are using dmix.
 
+snd_pcm_dmix_close() will try to acquire the semaphore with
+snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT).
+The same semaphore is acquired in snd_pcm_dmix_sync_area() with
+dmix_down_sem() in case of non-concurrent access.
+
+If semaphore is acquired in snd_pcm_dmix_sync_area() which is in thread
+context and interrupt comes, which invokes the signal handler which is in
+ISR context, which calls snd_pcm_close() which in turn calls
+snd_pcm_dmix_close() then we see a deadlock since semaphore is not released
+from thread context and ISR is waiting indefinitely on the same semaphore.
+
+Please suggest a suitable solution for this.
+
+-- 
 Regards,
-Clemens
+Shaikh Mateen S.
+09423350444
