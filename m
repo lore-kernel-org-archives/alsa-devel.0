@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5 1/2] ALSA: ASoC: davinci-mcasp: don't
- configure AFSX direction in DIT mode
-Date: Thu, 4 Apr 2013 11:58:26 +0100
-Message-ID: <20130404105824.GA9368@opensource.wolfsonmicro.com>
-References: <1362663483-5886-1-git-send-email-yegorslists@googlemail.com>
- <CAGm1_kuVfwFKfUZkPTLyjza4FcpegJqxH=fCKUhPykJKMXp48g@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Deadlock over semaphore issue with aplay while
+ using dmix
+Date: Thu, 04 Apr 2013 13:33:08 +0200
+Message-ID: <515D64F4.8030903@perex.cz>
+References: <CADryByGnyH9rUDBuG_JRPrSgCb3LPwhaVdFXXeELiUYQv+ZHwQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8057114832490391268=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72DEB265E9D
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 12:58:28 +0200 (CEST)
-In-Reply-To: <CAGm1_kuVfwFKfUZkPTLyjza4FcpegJqxH=fCKUhPykJKMXp48g@mail.gmail.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA169265E4E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 13:33:11 +0200 (CEST)
+Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8CF8C149927
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 13:33:10 +0200 (CEST)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+ by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+ 40685849BD
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 13:33:10 +0200 (CEST)
+In-Reply-To: <CADryByGnyH9rUDBuG_JRPrSgCb3LPwhaVdFXXeELiUYQv+ZHwQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +28,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: tiwai@suse.de, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vaibhav Bedia <vaibhav.bedia@ti.com>, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 4.4.2013 11:27, mateen wrote:
+> Hi,
+> 
+> I seeing sometimes deadlock issue with dmix when I press CTRL+C.
+> 
+> Aplay's signal handler calls snd_pcm_close() if an interrupt occurs.
+> snd_pcm_close() will internally call  pcm->ops->close() which will fall to
+> snd_pcm_dmix_close() in case you are using dmix.
+> 
+> snd_pcm_dmix_close() will try to acquire the semaphore with
+> snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT).
+> The same semaphore is acquired in snd_pcm_dmix_sync_area() with
+> dmix_down_sem() in case of non-concurrent access.
+> 
+> If semaphore is acquired in snd_pcm_dmix_sync_area() which is in thread
+> context and interrupt comes, which invokes the signal handler which is in
+> ISR context, which calls snd_pcm_close() which in turn calls
+> snd_pcm_dmix_close() then we see a deadlock since semaphore is not released
+> from thread context and ISR is waiting indefinitely on the same semaphore.
+> 
+> Please suggest a suitable solution for this.
 
---===============8057114832490391268==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
+It seems that also other configurations (alsa-lib plugins) have trouble
+with the closing from the signal handler - I hit mutex issues with the
+PulseAudio plugin, too.
 
+The question is, how we can do a clean path in this case. Looking to the
+current alsa-lib code, I would suggest to add the snd_pcm_abort()
+function (may be called from the interrupt handler) to notify the
+library to not ignore -EINTR return codes from poll() and other i/o ops
+and pass it to the caller (application) to finish the normal close sequence.
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Opinions?
 
-On Thu, Apr 04, 2013 at 12:49:32PM +0200, Yegor Yefremov wrote:
+					Jaroslav
 
-> Mark, could you please take a look at this patch and queue for 3.10?
-
-Don't send contentless pings.  If you want patches to be applied you
-need to send them to the maintainers as covered in SubmittingPatches,
-please do that.
-
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRXVzIAAoJELSic+t+oim9Xw4P/3bDV5+S/wUuyu8mo+cT4jAM
-v9gphLH9agSkaMr8zcgAIDQ7+hSUEtfI+5pU/+A8RZqBkdQR2cGXGKL09Oupqroq
-/3TYO/rdWrWFK3mnw9/8KB7DCgoZYfG7sXVhVSJT+0jh74peNi1omIa3p0BQ1HCn
-sPqX856mYxzC8+nrQyXi9rpoBlhy1O/hTikkE4+oUaR6TkY3x4gmBOnvFvoesJj3
-Pddnu0R4J0EFGFsWrnmcAOjLXTS1IwWYd4PHBFPlS4OIuK+JJqvwPgO1rLA4xb+G
-9mPJdUpsEfDqoNJWfFweswlMhwYXW40bMnI6x9trU4HmKWwWunW3ku4knB1SDN1H
-mqlG/R5az6HkTMVDe8NGBgmcmnNkmo3JU8FYHf7P0aW9TkAHI5GyBFgmTxRVh4oN
-FTVAk3M7sGr0x36TtadIgMFSrFAW78I13dGUUaCKwX4cFnyDKMXUA8nCeQ5LNj2F
-dEcF+UHNv8vCLh4+japmLUTCqEF2rtMbUBvj2UtImNE0X5nQqvPNsvLdFHZy5cPY
-ARQ8uUFnySC5DZJscKXIz38lYKOhvUmfZIk8yZ5NKXDBxiaoAb7xWNw6lsMEpV6R
-2ycsv4KMA61BUB9qYgoAoj3k7acODWFUlq6p6LHuoTI0Rdq06cgZw4WHmpg+0lAI
-BdiVaJQKDdtszsWKHoYs
-=Mxte
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
-
---===============8057114832490391268==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8057114832490391268==--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
