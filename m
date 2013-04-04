@@ -1,17 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/3] ALSA: compress_core: Update calc_avail
- to use cumulative values
-Date: Thu, 04 Apr 2013 13:22:27 -0500
-Message-ID: <515DC4E3.7040005@linux.intel.com>
-References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH v2] ALSA: hda/ca0132 - Update latency based on
+	DSP state.
+Date: Thu,  4 Apr 2013 13:55:09 -0700
+Message-ID: <1365108909-13587-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id D7CD426164C
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 20:22:30 +0200 (CEST)
-In-Reply-To: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mail-ob0-f202.google.com (mail-ob0-f202.google.com
+ [209.85.214.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B395265F27
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 22:55:14 +0200 (CEST)
+Received: by mail-ob0-f202.google.com with SMTP id wd20so748095obb.3
+ for <alsa-devel@alsa-project.org>; Thu, 04 Apr 2013 13:55:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +22,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, vinod.koul@intel.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/03/2013 07:13 AM, Charles Keepax wrote:
-> The app_pointer is managed locally by the compress core for memory
-> mapped DSPs but for DSPs that are not memory mapped this would have to
-> be manually updated from within the DSP driver itself, which is hardly
-> very idiomatic.
->
-> This patch switches to using the cumulative values to calculate the
-> available buffer space because these are already gracefully passed out
-> of the DSP driver to the compress core and otherwise should be
-> functionally equivalent.
+The DSP in the CA0132 codec adds a variable latency to audio depending
+on what processing is being done.  Add a new patch op to return that
+latency for capture and playback streams.  The latency is determined
+by which blocks are enabled and knowing how much latency is added by
+each block.
 
-This isn't very elegant. In your implementation you bypass app_ptr and 
-hw_ptr to use cumulative values, for 'memory-mapped' DSPs we use app_ptr 
-and hw_ptr everywhere else. This patch seems to make things more 
-confused when they could be simpler without all these redundant fields? 
-I am probably partly responsible for the introduction of these 
-cumulative values, now I think the time has come to simplify things.
--Pierre
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+Changes since v1:
+Rebase on tiwai's patch to add a pcm_op, this is dependent on that.
+Get ms to frames conversion right.
+Test loopback and compare measured vs reported latency.
+
+ sound/pci/hda/patch_ca0132.c | 55 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 12eb21a..841842c 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -131,6 +131,13 @@ enum {
+ /* Effects values size*/
+ #define EFFECT_VALS_MAX_COUNT 12
+ 
++/* Latency introduced by DSP blocks in milliseconds. */
++#define DSP_CAPTURE_INIT_LATENCY        0
++#define DSP_CRYSTAL_VOICE_LATENCY       124
++#define DSP_PLAYBACK_INIT_LATENCY       13
++#define DSP_PLAY_ENHANCEMENT_LATENCY    30
++#define DSP_SPEAKER_OUT_LATENCY         7
++
+ struct ct_effect {
+ 	char name[44];
+ 	hda_nid_t nid;
+@@ -2743,6 +2750,31 @@ static int ca0132_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+ 	return 0;
+ }
+ 
++static unsigned int ca0132_playback_pcm_delay(struct hda_pcm_stream *info,
++			struct hda_codec *codec,
++			struct snd_pcm_substream *substream)
++{
++	struct ca0132_spec *spec = codec->spec;
++	unsigned int latency = DSP_PLAYBACK_INIT_LATENCY;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (spec->dsp_state != DSP_DOWNLOADED)
++		return 0;
++
++	/* Add latency if playback enhancement and either effect is enabled. */
++	if (spec->effects_switch[PLAY_ENHANCEMENT - EFFECT_START_NID]) {
++		if ((spec->effects_switch[SURROUND - EFFECT_START_NID]) ||
++		    (spec->effects_switch[DIALOG_PLUS - EFFECT_START_NID]))
++			latency += DSP_PLAY_ENHANCEMENT_LATENCY;
++	}
++
++	/* Applying Speaker EQ adds latency as well. */
++	if (spec->cur_out_type == SPEAKER_OUT)
++		latency += DSP_SPEAKER_OUT_LATENCY;
++
++	return (latency * runtime->rate) / 1000;
++}
++
+ /*
+  * Digital out
+  */
+@@ -2811,6 +2843,23 @@ static int ca0132_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
+ 	return 0;
+ }
+ 
++static unsigned int ca0132_capture_pcm_delay(struct hda_pcm_stream *info,
++			struct hda_codec *codec,
++			struct snd_pcm_substream *substream)
++{
++	struct ca0132_spec *spec = codec->spec;
++	unsigned int latency = DSP_CAPTURE_INIT_LATENCY;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (spec->dsp_state != DSP_DOWNLOADED)
++		return 0;
++
++	if (spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID])
++		latency += DSP_CRYSTAL_VOICE_LATENCY;
++
++	return (latency * runtime->rate) / 1000;
++}
++
+ /*
+  * Controls stuffs.
+  */
+@@ -4002,7 +4051,8 @@ static struct hda_pcm_stream ca0132_pcm_analog_playback = {
+ 	.channels_max = 6,
+ 	.ops = {
+ 		.prepare = ca0132_playback_pcm_prepare,
+-		.cleanup = ca0132_playback_pcm_cleanup
++		.cleanup = ca0132_playback_pcm_cleanup,
++		.get_delay = ca0132_playback_pcm_delay,
+ 	},
+ };
+ 
+@@ -4012,7 +4062,8 @@ static struct hda_pcm_stream ca0132_pcm_analog_capture = {
+ 	.channels_max = 2,
+ 	.ops = {
+ 		.prepare = ca0132_capture_pcm_prepare,
+-		.cleanup = ca0132_capture_pcm_cleanup
++		.cleanup = ca0132_capture_pcm_cleanup,
++		.get_delay = ca0132_capture_pcm_delay,
+ 	},
+ };
+ 
+-- 
+1.8.1.5
