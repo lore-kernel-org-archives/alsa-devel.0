@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Handle large period size end-of-stream situation
-Date: Thu, 04 Apr 2013 19:08:45 +0200
-Message-ID: <515DB39D.1070506@ladisch.de>
-References: <515C459A.5070209@codeaurora.org> <515D1122.9020502@gmail.com>
- <515D477F.9010406@ladisch.de> <515D97B6.1080701@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/3] ALSA: compress_core: Split copy into
+ seperate read and write callbacks
+Date: Thu, 04 Apr 2013 13:01:57 -0500
+Message-ID: <515DC015.7040704@linux.intel.com>
+References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1364991209-24653-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C9B3B265ED6
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 19:08:52 +0200 (CEST)
-In-Reply-To: <515D97B6.1080701@gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 328F3261646
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2013 20:02:26 +0200 (CEST)
+In-Reply-To: <1364991209-24653-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Gabriel M. Beddingfield wrote:
-> So, if the hardware can detect it then the hardware needs to signal an interrupt for the XRUN.
+On 04/03/2013 07:13 AM, Charles Keepax wrote:
+> The compress API for non-memory mapped DSPs shares a copy callback for
+> both read and write, however the file operation of write passes a const
+> buffer. Thus we can't maintain const correctness for the copy callback
+> and support both read and write.
+>
+> This patch seperates the read and write callbacks in the compressed API.
 
-The hardware typically doesn't know the application pointer.
-
-> Another option... from userspace you can call SYNC_PTR (e.g.
-> pcm_get_htimestamp() in tinyalsa) to update the hw and application
-> pointers, then inspect them to detect when all the data is transferred.
-> When you see all is played, immediately stop the stream.
-
-ALSA checks for xruns before returning the pointer.  It's enough to just
-ask for the pointer (or the state).
-
-
-Regards,
-Clemens
+Why not remove the const to make this consistent with the PCM interface?
+-Pierre
