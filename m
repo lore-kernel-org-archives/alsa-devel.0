@@ -1,17 +1,20 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] ALSA: snd-usb: add quirks handler for DSD
-	streams
-Date: Sat,  6 Apr 2013 13:44:52 +0200
-Message-ID: <1365248693-27867-2-git-send-email-zonque@gmail.com>
-References: <1365248693-27867-1-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix endianness bug in
+	snd_nativeinstruments_*
+Date: Fri, 05 Apr 2013 20:53:24 +0200
+Message-ID: <daa26a21-b3b3-4d57-b873-cea59e59d9c7@email.android.com>
+References: <1365187787-2542-1-git-send-email-eldad@fogrefinery.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 5717C2617A4
- for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 13:44:49 +0200 (CEST)
-In-Reply-To: <1365248693-27867-1-git-send-email-zonque@gmail.com>
+Received: from mail-ea0-f174.google.com (mail-ea0-f174.google.com
+ [209.85.215.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A5A22625D9
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 20:53:31 +0200 (CEST)
+Received: by mail-ea0-f174.google.com with SMTP id m14so1456566eaj.5
+ for <alsa-devel@alsa-project.org>; Fri, 05 Apr 2013 11:53:30 -0700 (PDT)
+In-Reply-To: <1365187787-2542-1-git-send-email-eldad@fogrefinery.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +24,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: jussi@sonarnerd.net, tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: Eldad Zack <eldad@fogrefinery.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately, none of the UAC standards provides a way to identify DSD
-(Direct Stream Digital) formats. Hence, this patch adds a quirks
-handler to identify USB interfaces that are capable of handling DSD.
+Eldad Zack <eldad@fogrefinery.com> wrote:
 
-That quirks handler can augment the already parsed formats bit-field,
-typically by any of the new SNDRV_PCM_FMTBIT_DSD_DOP_{U8_U16}, and it
-currently does so for USB devices matching the 'Playback Design'
-vendor id.
+>The usb_control_msg() function expects __u16 types and performs
+>the endianness conversions by itself.
+>However, in three places, a conversion is performed before it is
+>handed over to usb_control_msg(), which leads to a double conversion
+>(= no conversion):
+>* snd_usb_nativeinstruments_boot_quirk()
+>* snd_nativeinstruments_control_get()
+>* snd_nativeinstruments_control_put()
+>
+>Caught by sparse:
+>
+>sound/usb/mixer_quirks.c:512:38: warning: incorrect type in argument 6
+>(different base types)
+>sound/usb/mixer_quirks.c:512:38:    expected unsigned short [unsigned]
+>[usertype] index
+>sound/usb/mixer_quirks.c:512:38:    got restricted __le16 [usertype]
+><noident>
+>sound/usb/mixer_quirks.c:543:35: warning: incorrect type in argument 5
+>(different base types)
+>sound/usb/mixer_quirks.c:543:35:    expected unsigned short [unsigned]
+>[usertype] value
+>sound/usb/mixer_quirks.c:543:35:    got restricted __le16 [usertype]
+><noident>
+>sound/usb/mixer_quirks.c:543:56: warning: incorrect type in argument 6
+>(different base types)
+>sound/usb/mixer_quirks.c:543:56:    expected unsigned short [unsigned]
+>[usertype] index
+>sound/usb/mixer_quirks.c:543:56:    got restricted __le16 [usertype]
+><noident>
+>sound/usb/quirks.c:502:35: warning: incorrect type in argument 5
+>(different base types)
+>sound/usb/quirks.c:502:35:    expected unsigned short [unsigned]
+>[usertype] value
+>sound/usb/quirks.c:502:35:    got restricted __le16 [usertype]
+><noident>
+>
+>Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/usb/format.c |  3 +++
- sound/usb/quirks.c | 23 +++++++++++++++++++++++
- sound/usb/quirks.h |  4 ++++
- 3 files changed, 30 insertions(+)
+Acked-by: Daniel Mack <zonque@gmail.com>
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index a695caf..a73d67a 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -136,6 +136,9 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
- 		snd_printk(KERN_INFO "%d:%u:%d : unsupported format bits %#x\n",
- 			   chip->dev->devnum, fp->iface, fp->altsetting, format);
- 	}
-+
-+	pcm_formats |= snd_usb_interface_dsd_format_quirks(chip, fp, sample_bytes);
-+
- 	return pcm_formats;
- }
- 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index a2ac004..2fcc984 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -905,3 +905,26 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 		mdelay(20);
- }
- 
-+/*
-+ * snd_usb_interface_dsd_format_quirks() is called from format.c to
-+ * augment the PCM format bit-field for DSD types. The UAC standards
-+ * don't have a designated bit field to denote DSD-capable interfaces,
-+ * hence all hardware that is known to support this format has to be
-+ * listed here.
-+ */
-+u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
-+					struct audioformat *fp,
-+					unsigned int sample_bytes)
-+{
-+	if ((le16_to_cpu(chip->dev->descriptor.idVendor) == 0x23ba) &&
-+	    fp->altsetting > 1) {
-+		switch (sample_bytes) {
-+		case 1:
-+			return SNDRV_PCM_FMTBIT_DSD_DOP_U8;
-+		case 2:
-+			return SNDRV_PCM_FMTBIT_DSD_DOP_U16;
-+		}
-+	}
-+
-+	return 0;
-+}
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index 0ca9e91..f10d00e 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -30,4 +30,8 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
- 			   __u16 index, void *data, __u16 size);
- 
-+u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
-+					struct audioformat *fp,
-+					unsigned int sample_bytes);
-+
- #endif /* __USBAUDIO_QUIRKS_H */
--- 
-1.8.1.4
+Thanks for catching this!
+
+
+Daniel
+
+>---
+> sound/usb/mixer_quirks.c | 4 ++--
+> sound/usb/quirks.c       | 2 +-
+> 2 files changed, 3 insertions(+), 3 deletions(-)
+>
+>diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+>index 497d274..ebe9144 100644
+>--- a/sound/usb/mixer_quirks.c
+>+++ b/sound/usb/mixer_quirks.c
+>@@ -509,7 +509,7 @@ static int snd_nativeinstruments_control_get(struct
+>snd_kcontrol *kcontrol,
+> 	else
+> 		ret = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0), bRequest,
+> 				  USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+>-				  0, cpu_to_le16(wIndex),
+>+				  0, wIndex,
+> 				  &tmp, sizeof(tmp), 1000);
+> 	up_read(&mixer->chip->shutdown_rwsem);
+> 
+>@@ -540,7 +540,7 @@ static int snd_nativeinstruments_control_put(struct
+>snd_kcontrol *kcontrol,
+> 	else
+> 		ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0), bRequest,
+> 				  USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+>-				  cpu_to_le16(wValue), cpu_to_le16(wIndex),
+>+				  wValue, wIndex,
+> 				  NULL, 0, 1000);
+> 	up_read(&mixer->chip->shutdown_rwsem);
+> 
+>diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+>index a2ac004..68e9220 100644
+>--- a/sound/usb/quirks.c
+>+++ b/sound/usb/quirks.c
+>@@ -499,7 +499,7 @@ static int
+>snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
+> {
+> 	int ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
+> 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>-				  cpu_to_le16(1), 0, NULL, 0, 1000);
+>+				  1, 0, NULL, 0, 1000);
+> 
+> 	if (ret < 0)
+> 		return ret;
