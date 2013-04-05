@@ -1,17 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH v2 2/2] alsa-lib: bring pcm.h and pcm.c in sync
-	with the kernel list
-Date: Sat,  6 Apr 2013 13:50:14 +0200
-Message-ID: <1365249014-2457-2-git-send-email-zonque@gmail.com>
-References: <1365249014-2457-1-git-send-email-zonque@gmail.com>
+From: mateen <abdulmateen.shaikh@gmail.com>
+Subject: Re: Deadlock over semaphore issue with aplay while
+	using dmix
+Date: Fri, 5 Apr 2013 19:02:08 +0530
+Message-ID: <CADryByFz6x_ekmwXW7uwn_wzSgwvDNb-HP9V7GCN1L=_BvOFeg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id E470C262635
- for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 13:50:09 +0200 (CEST)
-In-Reply-To: <1365249014-2457-1-git-send-email-zonque@gmail.com>
+Received: from mail-ve0-f179.google.com (mail-ve0-f179.google.com
+ [209.85.128.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45B5A265FA8
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 15:32:09 +0200 (CEST)
+Received: by mail-ve0-f179.google.com with SMTP id cz11so3520757veb.24
+ for <alsa-devel@alsa-project.org>; Fri, 05 Apr 2013 06:32:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +22,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: jussi@sonarnerd.net, tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In particular, this adds definitions and descriptions for G.723 and
-DSD types.
+Hi,
+I checked with Takshi's patch and would like to suggest couple of changes.
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- include/pcm.h | 14 +++++++++++++-
- src/pcm/pcm.c | 12 ++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
+1. We keep dmix_down_sem(dmix) and dmix_up_sem(dmix) as macros instead of
+defining them as functions.
+2. We free up the semaphore in snd_pcm_dmix_close() if it is recognized
+that the semaphore is held up by the same process, which will be indicated
+by dmix->semlocked flag.
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 2235678..768a4a7 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -199,7 +199,19 @@ typedef enum _snd_pcm_format {
- 	SND_PCM_FORMAT_U18_3LE,
- 	/** Unsigned 18bit Big Endian in 3bytes format */
- 	SND_PCM_FORMAT_U18_3BE,
--	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_U18_3BE,
-+	/* G.723 (ADPCM) 24 kbit/s, 8 samples in 3 bytes */
-+	SND_PCM_FORMAT_G723_24,
-+	/* G.723 (ADPCM) 24 kbit/s, 1 sample in 1 byte */
-+	SND_PCM_FORMAT_G723_24_1B,
-+	/* G.723 (ADPCM) 40 kbit/s, 8 samples in 3 bytes */
-+	SND_PCM_FORMAT_G723_40,
-+	/* G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte */
-+	SND_PCM_FORMAT_G723_40_1B,
-+	/* Direct Stream Digital (DSD) in 1-byte DOP samples (x8) */
-+	SND_PCM_FORMAT_DSD_DOP_U8,
-+	/* Direct Stream Digital (DSD) in 2-byte DOP samples (x16) */
-+	SND_PCM_FORMAT_DSD_DOP_U16,
-+	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_DOP_U16,
- 
- #if __BYTE_ORDER == __LITTLE_ENDIAN
- 	/** Signed 16 bit CPU endian */
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 2963711..60b840f 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -1554,6 +1554,12 @@ static const char *const snd_pcm_format_names[] = {
- 	FORMAT(S18_3BE),
- 	FORMAT(U18_3LE),
- 	FORMAT(U18_3BE),
-+	FORMAT(G723_24),
-+	FORMAT(G723_24_1B),
-+	FORMAT(G723_40),
-+	FORMAT(G723_40_1B),
-+	FORMAT(DSD_DOP_U8),
-+	FORMAT(DSD_DOP_U16),
- };
- 
- static const char *const snd_pcm_format_aliases[SND_PCM_FORMAT_LAST+1] = {
-@@ -1607,6 +1613,12 @@ static const char *const snd_pcm_format_descriptions[] = {
- 	FORMATD(S18_3BE, "Signed 18 bit Big Endian in 3bytes"),
- 	FORMATD(U18_3LE, "Unsigned 18 bit Little Endian in 3bytes"),
- 	FORMATD(U18_3BE, "Unsigned 18 bit Big Endian in 3bytes"),
-+	FORMATD(G723_24, "G.723 (ADPCM) 24 kbit/s, 8 samples in 3 bytes"),
-+	FORMATD(G723_24_1B, "G.723 (ADPCM) 24 kbit/s, 1 sample in 1 byte"),
-+	FORMATD(G723_40, "G.723 (ADPCM) 40 kbit/s, 8 samples in 3 bytes"),
-+	FORMATD(G723_40_1B, "G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte"),
-+	FORMATD(DSD_DOP_U8,  "Direct Stream Digital (DSD), 1-byte DOP samples (x8)"),
-+	FORMATD(DSD_DOP_U16, "Direct Stream Digital (DSD), 2-byte DOP samples (x16)"),
- };
- 
- static const char *const snd_pcm_type_names[] = {
+Mateen.
+
+diff -Nuar dir2/pcm_direct.h dir1/pcm_direct.h
+--- dir2/pcm_direct.h    2009-12-16 20:48:51.000000000 +0530
++++ dir1/pcm_direct.h    2013-04-05 17:06:48.331497000 +0530
+@@ -123,6 +123,7 @@
+     int ipc_gid;            /* IPC socket gid */
+     int semid;            /* IPC global semaphore identification */
+     int shmid;            /* IPC global shared memory identification */
++       int semlocked;
+     snd_pcm_direct_share_t *shmptr;    /* pointer to shared memory area */
+     snd_pcm_t *spcm;         /* slave PCM handle */
+     snd_pcm_uframes_t appl_ptr;
+diff -Nuar dir2/pcm_dmix.c dir1/pcm_dmix.c
+--- dir2/pcm_dmix.c    2009-12-16 20:48:51.000000000 +0530
++++ dir1/pcm_dmix.c    2013-04-05 17:04:02.781109000 +0530
+@@ -285,8 +285,17 @@
+  */
+ #ifndef DOC_HIDDEN
+ #ifdef NO_CONCURRENT_ACCESS
+-#define dmix_down_sem(dmix) snd_pcm_direct_semaphore_down(dmix,
+DIRECT_IPC_SEM_CLIENT)
+-#define dmix_up_sem(dmix) snd_pcm_direct_semaphore_up(dmix,
+DIRECT_IPC_SEM_CLIENT)
++#define dmix_down_sem(dmix)  \
++{\
++if (!dmix->semlocked++)\
++               snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);\
++}
++#define dmix_up_sem(dmix) \
++{\
++       if (!--dmix->semlocked)\
++               snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);\
++}
++
+ #else
+ #define dmix_down_sem(dmix)
+ #define dmix_up_sem(dmix)
+@@ -764,7 +773,13 @@
+
+     if (dmix->timer)
+         snd_timer_close(dmix->timer);
+-    snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
++      if(!dmix->semlocked)
++            snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
++      else{
++            snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
++            snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
++        }
++
+     snd_pcm_close(dmix->spcm);
+      if (dmix->server)
+          snd_pcm_direct_server_discard(dmix);
+
+
+
+
+------------------------------
+----------------------------------------
+
+Message: 1
+Date: Thu, 04 Apr 2013 18:30:01 +0200
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Deadlock over semaphore issue with aplay
+        while   using dmix
+Message-ID: <s5h38v645ti.wl%tiwai@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+
+At Thu, 04 Apr 2013 13:33:08 +0200,
+Jaroslav Kysela wrote:
+>
+> Date 4.4.2013 11:27, mateen wrote:
+> > Hi,
+> >
+> > I seeing sometimes deadlock issue with dmix when I press CTRL+C.
+> >
+> > Aplay's signal handler calls snd_pcm_close() if an interrupt occurs.
+> > snd_pcm_close() will internally call  pcm->ops->close() which will fall
+to
+> > snd_pcm_dmix_close() in case you are using dmix.
+> >
+> > snd_pcm_dmix_close() will try to acquire the semaphore with
+> > snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT).
+> > The same semaphore is acquired in snd_pcm_dmix_sync_area() with
+> > dmix_down_sem() in case of non-concurrent access.
+> >
+> > If semaphore is acquired in snd_pcm_dmix_sync_area() which is in thread
+> > context and interrupt comes, which invokes the signal handler which is
+in
+> > ISR context, which calls snd_pcm_close() which in turn calls
+> > snd_pcm_dmix_close() then we see a deadlock since semaphore is not
+released
+> > from thread context and ISR is waiting indefinitely on the same
+semaphore.
+> >
+> > Please suggest a suitable solution for this.
+>
+> It seems that also other configurations (alsa-lib plugins) have trouble
+> with the closing from the signal handler - I hit mutex issues with the
+> PulseAudio plugin, too.
+>
+> The question is, how we can do a clean path in this case. Looking to the
+> current alsa-lib code, I would suggest to add the snd_pcm_abort()
+> function (may be called from the interrupt handler) to notify the
+> library to not ignore -EINTR return codes from poll() and other i/o ops
+> and pass it to the caller (application) to finish the normal close
+sequence.
+>
+> Opinions?
+
+Isn't it only about the direct plugins with the case where no coherent
+memory is available?  If so, we may just avoid the deadlock by
+checking some internal flag like the patch below (untested)?
+It's no perfect but just some proof, of course.
+
+
+Takashi
+
+
 -- 
-1.8.1.4
+Regards,
+Shaikh Mateen S.
+09423350444
