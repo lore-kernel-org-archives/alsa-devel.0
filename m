@@ -1,19 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ALSA: compress_core: Update	calc_avail
-	to use cumulative values
-Date: Fri, 5 Apr 2013 09:36:04 +0100
-Message-ID: <20130405083604.GB20026@opensource.wolfsonmicro.com>
-References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <515DC4E3.7040005@linux.intel.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH 2/2] alsa-lib: bring pcm.h and pcm.c in
+ sync with the kernel list
+Date: Fri, 05 Apr 2013 23:48:13 +0300
+Message-ID: <515F388D.4060707@sonarnerd.net>
+References: <1364427144-30036-1-git-send-email-zonque@gmail.com>
+ <1364427144-30036-2-git-send-email-zonque@gmail.com>
+ <51538493.40309@sonarnerd.net>
+ <7.0.0.16.2.20130327213632.13b07718@akdesigninc.com>
+ <515E8105.9070607@gmail.com>
+ <7.0.0.16.2.20130405092937.144d10d0@akdesigninc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A2FF261704
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 10:36:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <515DC4E3.7040005@linux.intel.com>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B294262632
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 22:48:14 +0200 (CEST)
+In-Reply-To: <7.0.0.16.2.20130405092937.144d10d0@akdesigninc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, vinod.koul@intel.com
+To: Andreas Koch <andreas@akdesigninc.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 04, 2013 at 01:22:27PM -0500, Pierre-Louis Bossart wrote:
-> This isn't very elegant. In your implementation you bypass app_ptr and  
-> hw_ptr to use cumulative values, for 'memory-mapped' DSPs we use app_ptr  
-> and hw_ptr everywhere else. This patch seems to make things more  
-> confused when they could be simpler without all these redundant fields?  
-> I am probably partly responsible for the introduction of these  
-> cumulative values, now I think the time has come to simplify things.
+On 04/05/2013 10:59 PM, Andreas Koch wrote:
+> However, they are interpreting the ASIO spec for DSD differently.  They
+> express buffer size in samples, which means that for DSD it is measured
+> in bits.
 
-I am not sure I agree this is less elegant it greatly simplifies
-the calculation of the available data for one, also half of the
-avail function was using them anyway. The cumulative values make
-less assumptions about the underlying representation (although
-admittedly it is rather unlikely this will be anything other than
-a ring buffer) and contain more information (ie. how much data
-has been transferred so far).
+That's how pretty much everybody, including Sony who co-authored the 
+spec, has been interpreting it so far...
 
-You say we use app_ptr and hw_ptr everywhere else but only in
-places relating to situations where compress_offload is managing
-the buffer (ie. memory mapped DSPs). They feel more like internal
-buffer state, where the cumulative values surely reflect the
-stream state better.
+Otherwise all the latency calculations become inconsistent and need 
+special exceptions for DSD. I agree the ASIO spec is not very clear, 
+however it always talks about number of samples and then specifically 
+mentions that DSD samples are _packed_ into bytes and thus all buffer 
+sizes have to multiples of eight.
 
-If anything if we were looking to simplify I would be inclined to
-keep the cumulative values?
+I have a hidden configuration flag to flip that either way as necessary, 
+but default is that sizes are in _bits_.
+
+
+	- Jussi
