@@ -1,22 +1,20 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: Re: [PATCH 2/2] alsa-lib: bring pcm.h and pcm.c in
- sync with the kernel list
-Date: Fri, 05 Apr 2013 23:48:13 +0300
-Message-ID: <515F388D.4060707@sonarnerd.net>
-References: <1364427144-30036-1-git-send-email-zonque@gmail.com>
- <1364427144-30036-2-git-send-email-zonque@gmail.com>
- <51538493.40309@sonarnerd.net>
- <7.0.0.16.2.20130327213632.13b07718@akdesigninc.com>
- <515E8105.9070607@gmail.com>
- <7.0.0.16.2.20130405092937.144d10d0@akdesigninc.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
+ codec in system resume
+Date: Fri, 5 Apr 2013 16:58:54 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8374085@SHSMSX101.ccr.corp.intel.com>
+References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F8361C9E@SHSMSX101.ccr.corp.intel.com>
+ <s5ha9ph8diu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B294262632
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 22:48:14 +0200 (CEST)
-In-Reply-To: <7.0.0.16.2.20130405092937.144d10d0@akdesigninc.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 509012625C4
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 18:59:25 +0200 (CEST)
+In-Reply-To: <s5ha9ph8diu.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Koch <andreas@akdesigninc.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/05/2013 10:59 PM, Andreas Koch wrote:
-> However, they are interpreting the ASIO spec for DSD differently.  They
-> express buffer size in samples, which means that for DSD it is measured
-> in bits.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, April 02, 2013 5:53 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - delay resume haswell hdmi codec
+> in system resume
+> 
+> At Tue, 26 Mar 2013 07:02:54 +0000,
+> Lin, Mengdong wrote:
+> >
+> > Is it okay to add a new parameter to snd_hda_resume(), to indicate whether
+> codec resume should be delayed or not?
+> > Is because snd_hda_resume() is only only called by azx_resume() but also
+> called by azx_bus_reset().
+> > The latter can be called on a fatal verb execution failure and codec resume
+> delay is not suitable for this case.
+> 
+> Well, I prefer creating a new function (e.g. snd_hda_bus_reset()) called from
+> azx_bus_reset().
+> 
+> 
+> Takashi
 
-That's how pretty much everybody, including Sony who co-authored the 
-spec, has been interpreting it so far...
+Hi Takashi,
 
-Otherwise all the latency calculations become inconsistent and need 
-special exceptions for DSD. I agree the ASIO spec is not very clear, 
-however it always talks about number of samples and then specifically 
-mentions that DSD samples are _packed_ into bytes and thus all buffer 
-sizes have to multiples of eight.
+Do you mean that in azx_bus_reset(), we can merge the snd_hda_suspend() and snd_hda_resume() to a new function like snd_hda_bus_reset()?
+snd_hda_suspend() and snd_hda_resume() look symmetrical here and so I don't want to destroy the symmetry.
 
-I have a hidden configuration flag to flip that either way as necessary, 
-but default is that sizes are in _bits_.
+static void azx_bus_reset(struct hda_bus *bus)
+{
+	...
+#ifdef CONFIG_PM
+	if (chip->initialized) {
+		struct azx_pcm *p;
+		list_for_each_entry(p, &chip->pcm_list, list)
+			snd_pcm_suspend_all(p->pcm);
+		snd_hda_suspend(chip->bus);
+		snd_hda_resume(chip->bus);
+	}
+#endif
+	bus->in_reset = 0;
+}
 
-
-	- Jussi
+Thanks
+Mengdong
