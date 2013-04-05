@@ -1,18 +1,22 @@
-From: mateen <abdulmateen.shaikh@gmail.com>
-Subject: Re: Deadlock over semaphore issue with aplay while
-	using dmix
-Date: Fri, 5 Apr 2013 19:02:08 +0530
-Message-ID: <CADryByFz6x_ekmwXW7uwn_wzSgwvDNb-HP9V7GCN1L=_BvOFeg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hda/ca0132 - Update latency based
+ on DSP state.
+Date: Fri, 05 Apr 2013 16:24:11 -0500
+Message-ID: <515F40FB.4010907@linux.intel.com>
+References: <1365108909-13587-1-git-send-email-dgreid@chromium.org>
+ <s5hehep4jt9.wl%tiwai@suse.de> <515EE730.6080705@linux.intel.com>
+ <s5h4nfl2ea5.wl%tiwai@suse.de> <515EFBCA.9060101@linux.intel.com>
+ <CAEUnVG7iLokj+biNXfrppp_z_toDCNPww-Y4QJXU3voC2a-FHg@mail.gmail.com>
+ <515F07DA.1040608@linux.intel.com>
+ <CAEUnVG4Zu63G+aYm+v90aFwnmW3oHnJGr4VOsK_fd2FBrgY7BA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f179.google.com (mail-ve0-f179.google.com
- [209.85.128.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 45B5A265FA8
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 15:32:09 +0200 (CEST)
-Received: by mail-ve0-f179.google.com with SMTP id cz11so3520757veb.24
- for <alsa-devel@alsa-project.org>; Fri, 05 Apr 2013 06:32:08 -0700 (PDT)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BDCE26262B
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 23:24:14 +0200 (CEST)
+In-Reply-To: <CAEUnVG4Zu63G+aYm+v90aFwnmW3oHnJGr4VOsK_fd2FBrgY7BA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,141 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I checked with Takshi's patch and would like to suggest couple of changes.
 
-1. We keep dmix_down_sem(dmix) and dmix_up_sem(dmix) as macros instead of
-defining them as functions.
-2. We free up the semaphore in snd_pcm_dmix_close() if it is recognized
-that the semaphore is held up by the same process, which will be indicated
-by dmix->semlocked flag.
+> Is the 'audio' timestamp the one calculated in snd_pcm_update_hw_ptr0,
+> based on either the hardware or the delay (INFO_HAS_WALL_CLOCK)?
 
-Mateen.
+Yes, correct.
 
-diff -Nuar dir2/pcm_direct.h dir1/pcm_direct.h
---- dir2/pcm_direct.h    2009-12-16 20:48:51.000000000 +0530
-+++ dir1/pcm_direct.h    2013-04-05 17:06:48.331497000 +0530
-@@ -123,6 +123,7 @@
-     int ipc_gid;            /* IPC socket gid */
-     int semid;            /* IPC global semaphore identification */
-     int shmid;            /* IPC global shared memory identification */
-+       int semlocked;
-     snd_pcm_direct_share_t *shmptr;    /* pointer to shared memory area */
-     snd_pcm_t *spcm;         /* slave PCM handle */
-     snd_pcm_uframes_t appl_ptr;
-diff -Nuar dir2/pcm_dmix.c dir1/pcm_dmix.c
---- dir2/pcm_dmix.c    2009-12-16 20:48:51.000000000 +0530
-+++ dir1/pcm_dmix.c    2013-04-05 17:04:02.781109000 +0530
-@@ -285,8 +285,17 @@
-  */
- #ifndef DOC_HIDDEN
- #ifdef NO_CONCURRENT_ACCESS
--#define dmix_down_sem(dmix) snd_pcm_direct_semaphore_down(dmix,
-DIRECT_IPC_SEM_CLIENT)
--#define dmix_up_sem(dmix) snd_pcm_direct_semaphore_up(dmix,
-DIRECT_IPC_SEM_CLIENT)
-+#define dmix_down_sem(dmix)  \
-+{\
-+if (!dmix->semlocked++)\
-+               snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);\
-+}
-+#define dmix_up_sem(dmix) \
-+{\
-+       if (!--dmix->semlocked)\
-+               snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);\
-+}
-+
- #else
- #define dmix_down_sem(dmix)
- #define dmix_up_sem(dmix)
-@@ -764,7 +773,13 @@
-
-     if (dmix->timer)
-         snd_timer_close(dmix->timer);
--    snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
-+      if(!dmix->semlocked)
-+            snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
-+      else{
-+            snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
-+            snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
-+        }
-+
-     snd_pcm_close(dmix->spcm);
-      if (dmix->server)
-          snd_pcm_direct_server_discard(dmix);
-
-
-
-
-------------------------------
-----------------------------------------
-
-Message: 1
-Date: Thu, 04 Apr 2013 18:30:01 +0200
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Deadlock over semaphore issue with aplay
-        while   using dmix
-Message-ID: <s5h38v645ti.wl%tiwai@suse.de>
-Content-Type: text/plain; charset=US-ASCII
-
-At Thu, 04 Apr 2013 13:33:08 +0200,
-Jaroslav Kysela wrote:
+>> In other words, if you add the codec delay, it's fine but it needs to be
+>> accounted for in a symmetrical manner, otherwise the audio timestamp and the
+>> delay will be off by a fixed amount. Correcting the wallclock value and
+>> substracting the codec delay in azx_get_wallclk() would realign accounting
+>> methods.
 >
-> Date 4.4.2013 11:27, mateen wrote:
-> > Hi,
-> >
-> > I seeing sometimes deadlock issue with dmix when I press CTRL+C.
-> >
-> > Aplay's signal handler calls snd_pcm_close() if an interrupt occurs.
-> > snd_pcm_close() will internally call  pcm->ops->close() which will fall
-to
-> > snd_pcm_dmix_close() in case you are using dmix.
-> >
-> > snd_pcm_dmix_close() will try to acquire the semaphore with
-> > snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT).
-> > The same semaphore is acquired in snd_pcm_dmix_sync_area() with
-> > dmix_down_sem() in case of non-concurrent access.
-> >
-> > If semaphore is acquired in snd_pcm_dmix_sync_area() which is in thread
-> > context and interrupt comes, which invokes the signal handler which is
-in
-> > ISR context, which calls snd_pcm_close() which in turn calls
-> > snd_pcm_dmix_close() then we see a deadlock since semaphore is not
-released
-> > from thread context and ISR is waiting indefinitely on the same
-semaphore.
-> >
-> > Please suggest a suitable solution for this.
+> Would this problem manifest on systems that don't support wall clock?
+> Because the time based on delay will contain the codec delay?
+
+If wall clock is supported, audio timestamp doesn't account for codec delay
+If Wall clock is not suported, audio timestamp does account for codec 
+delay with your patches.
+
+> There are two distinct use cases:
 >
-> It seems that also other configurations (alsa-lib plugins) have trouble
-> with the closing from the signal handler - I hit mutex issues with the
-> PulseAudio plugin, too.
+> Wanting to know how the audio clock is drifting with respect to the
+> system clock. (don't care about codec delay)
+> Wanting to know when a sample will be rendered for AEC or A/V sync.
+> (codec delay critical)
 >
-> The question is, how we can do a clean path in this case. Looking to the
-> current alsa-lib code, I would suggest to add the snd_pcm_abort()
-> function (may be called from the interrupt handler) to notify the
-> library to not ignore -EINTR return codes from poll() and other i/o ops
-> and pass it to the caller (application) to finish the normal close
-sequence.
->
-> Opinions?
+> Can we keep them from affecting one another?  This seems possible if
+> the timestamp and delay are reported separately.
 
-Isn't it only about the direct plugins with the case where no coherent
-memory is available?  If so, we may just avoid the deadlock by
-checking some internal flag like the patch below (untested)?
-It's no perfect but just some proof, of course.
-
-
-Takashi
-
-
--- 
-Regards,
-Shaikh Mateen S.
-09423350444
+My suggestion is that the audio timestamp always accounts for codec 
+delays, which will allow you to track drift and track rendering time. 
+Btw for capture wallclocks are disabled for now since we don't really 
+know how to use them for digital inputs, and we really need to have a 
+consistent behavior for capture and playback.
+-Pierre
