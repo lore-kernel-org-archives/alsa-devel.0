@@ -1,18 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda/ca0132 - Update latency based
- on DSP state.
-Date: Fri, 05 Apr 2013 10:01:04 -0500
-Message-ID: <515EE730.6080705@linux.intel.com>
-References: <1365108909-13587-1-git-send-email-dgreid@chromium.org>
- <s5hehep4jt9.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6 1/2] ALSA: ASoC: davinci-mcasp: don't
+ configure AFSX direction in DIT mode
+Date: Fri, 5 Apr 2013 11:27:48 +0100
+Message-ID: <20130405102748.GI6597@opensource.wolfsonmicro.com>
+References: <1365084800-17929-1-git-send-email-yegorslists@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9219623700936680439=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id A260A265FDA
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 17:01:08 +0200 (CEST)
-In-Reply-To: <s5hehep4jt9.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 572E62616E1
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 12:27:50 +0200 (CEST)
+In-Reply-To: <1365084800-17929-1-git-send-email-yegorslists@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
+To: yegorslists@googlemail.com
+Cc: alsa-devel@alsa-project.org, vaibhav.bedia@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
->> The DSP in the CA0132 codec adds a variable latency to audio depending
->> on what processing is being done.  Add a new patch op to return that
->> latency for capture and playback streams.  The latency is determined
->> by which blocks are enabled and knowing how much latency is added by
->> each block.
->>
->> Signed-off-by: Dylan Reid <dgreid@chromium.org>
->
-> Thanks, applied.
+--===============9219623700936680439==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zgY/UHCnsaNnNXRx"
+Content-Disposition: inline
 
-This conflicts with the audio timestamp stuff I contributed last year.
-If the hardware supports a WALLCLK, and HDA does, the timestamp is just 
-a read of the counter plus a translation to ns. If it doesn't, the 
-timestamp corresponds to the delay. If you modify the definition of the 
-delay then the timestamp will be off on some platforms.
--Pierre
+
+--zgY/UHCnsaNnNXRx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 04, 2013 at 04:13:19PM +0200, yegorslists@googlemail.com wrote:
+> From: Yegor Yefremov <yegorslists@googlemail.com>
+>=20
+> AFSX won't be used in DIT mode. The related pins are AHCLKX and
+> the data pins.
+
+Applied both, thanks.  Please use subject lines matching the subsystem.
+
+--zgY/UHCnsaNnNXRx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRXqcaAAoJELSic+t+oim9YuQQAIvrVAceciqK0OZe4n7fmzKl
+WztemBxRuSW85UNZi5jZspzZNH+0gPhCElmuKooojnwZuSX13jQhrtlrEDK5ERtO
+e/sBS6CMdBFOq4aY0clbin4yRUn+JWSgKLIo+bg9E/litGwPjFjwA0yKqJADl8Jv
+7VdI3N0A5cjR5S57VxShKpw2iRg1MA7khh3VUwHe43tJTnGnp+beXj6+ejE2pDkw
+/n/UkzHEESOEejpD+wnpfRot3SgACDfXQRuHPL1zmNnJO7eHGTDF9Xtmf/ZOB+AW
++ruetpUWFb9F5EWKC5nkAuVY61dyzncB6+9b8e0zHar2Cf5UWP27iDzZpCmN3cdi
+HRmWNzQNq3X1bgNfgDHdJBSJjZV2zmgo2tV1k3rTnBKimihW0ZsAuQNjmtEsAUzP
+vqLzhi727mdGKYTUO2UEhiaKvXvQX0OhBC+JkEnxj/0ZmR5KEmfB0aifUaTqBsde
+dfURXQzLmJrpZl2nEUWey0GH7yozDRt8LNm+/Rr8trJmLhJ5DBCFcwxgNoh81doR
+tBoYcQikyK7XKK95zW0cCxtjDX2L61Fs1A0rj2dE7PPOKKBePE1EyvnrqrbNBPbj
+ms/1BOGLvvCptyE3O4WNMOYNBygQejXE4MdX/DYOgoBKZYD8jJ33LoRfq9Q4qwCA
+s7sVJVrSKmnG/PUhDohi
+=8qnp
+-----END PGP SIGNATURE-----
+
+--zgY/UHCnsaNnNXRx--
+
+--===============9219623700936680439==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9219623700936680439==--
