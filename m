@@ -1,20 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: add DSD formats
-Date: Sat, 06 Apr 2013 19:59:59 +0200
-Message-ID: <5160629F.50400@gmail.com>
-References: <1365248693-27867-1-git-send-email-zonque@gmail.com>
- <51606130.1080208@sonarnerd.net>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Deadlock over semaphore issue with aplay while
+ using dmix
+Date: Fri, 05 Apr 2013 17:19:52 +0200
+Message-ID: <515EEB98.9000809@perex.cz>
+References: <CADryByGnyH9rUDBuG_JRPrSgCb3LPwhaVdFXXeELiUYQv+ZHwQ@mail.gmail.com>
+ <515D64F4.8030903@perex.cz> <s5h38v645ti.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id EBAC2264FD1
- for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 19:59:52 +0200 (CEST)
-Received: by mail-bk0-f48.google.com with SMTP id jf3so2557519bkc.35
- for <alsa-devel@alsa-project.org>; Sat, 06 Apr 2013 10:59:52 -0700 (PDT)
-In-Reply-To: <51606130.1080208@sonarnerd.net>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9272A265FF0
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 17:19:53 +0200 (CEST)
+In-Reply-To: <s5h38v645ti.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +22,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jussi Laako <jussi@sonarnerd.net>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06.04.2013 19:53, Jussi Laako wrote:
-> On 04/06/2013 02:44 PM, Daniel Mack wrote:
->> +#define SNDRV_PCM_FMTBIT_DSD_DOP_U8	_SNDRV_PCM_FMTBIT(DSD_DOP_U8)
->> +#define SNDRV_PCM_FMTBIT_DSD_DOP_U16	_SNDRV_PCM_FMTBIT(DSD_DOP_U16)
+Date 4.4.2013 18:30, Takashi Iwai wrote:
+> At Thu, 04 Apr 2013 13:33:08 +0200,
+> Jaroslav Kysela wrote:
+>>
+>> Date 4.4.2013 11:27, mateen wrote:
+>>> Hi,
+>>>
+>>> I seeing sometimes deadlock issue with dmix when I press CTRL+C.
+>>>
+>>> Aplay's signal handler calls snd_pcm_close() if an interrupt occurs.
+>>> snd_pcm_close() will internally call  pcm->ops->close() which will fall to
+>>> snd_pcm_dmix_close() in case you are using dmix.
+>>>
+>>> snd_pcm_dmix_close() will try to acquire the semaphore with
+>>> snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT).
+>>> The same semaphore is acquired in snd_pcm_dmix_sync_area() with
+>>> dmix_down_sem() in case of non-concurrent access.
+>>>
+>>> If semaphore is acquired in snd_pcm_dmix_sync_area() which is in thread
+>>> context and interrupt comes, which invokes the signal handler which is in
+>>> ISR context, which calls snd_pcm_close() which in turn calls
+>>> snd_pcm_dmix_close() then we see a deadlock since semaphore is not released
+>>> from thread context and ISR is waiting indefinitely on the same semaphore.
+>>>
+>>> Please suggest a suitable solution for this.
+>>
+>> It seems that also other configurations (alsa-lib plugins) have trouble
+>> with the closing from the signal handler - I hit mutex issues with the
+>> PulseAudio plugin, too.
+>>
+>> The question is, how we can do a clean path in this case. Looking to the
+>> current alsa-lib code, I would suggest to add the snd_pcm_abort()
+>> function (may be called from the interrupt handler) to notify the
+>> library to not ignore -EINTR return codes from poll() and other i/o ops
+>> and pass it to the caller (application) to finish the normal close sequence.
+>>
+>> Opinions?
 > 
-> No, this is not good, DoP always has the 8-bit marker in the MSB and has 
-> to be either 24-bit or longer word. One byte marker and two bytes of 
-> payload, padded with one byte of zeros if payload is 32-bit dword.
+> Isn't it only about the direct plugins with the case where no coherent
+> memory is available?  If so, we may just avoid the deadlock by
+> checking some internal flag like the patch below (untested)?
+> It's no perfect but just some proof, of course.
+
+It does not seem like a clean solution. It's just a workaround. I see
+similar locking problems inside the PulseAudio plugin (client library)
+when it's closed from the interrupt handler. Also, looking to apps, the
+best way is to handle the graceful shutdown outside the interrupt
+handler and remove whole "extra" code from the interrupt handler like
+the file header fixups (arecord) from it.
+
+The "atomic" notification, that alsa-lib should abort all i/o wait
+operations, is a straigh way to do it. Again, syscalls returns EINTR,
+so we can detect this case and return to the app immediatelly.
+
+					Jaroslav
+
+> 
+> 
+> Takashi
+> 
+> ---
+> diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+> index 1c35dcb..0ad1475 100644
+> --- a/src/pcm/pcm_direct.h
+> +++ b/src/pcm/pcm_direct.h
+> @@ -123,6 +123,7 @@ struct snd_pcm_direct {
+>  	int ipc_gid;			/* IPC socket gid */
+>  	int semid;			/* IPC global semaphore identification */
+>  	int shmid;			/* IPC global shared memory identification */
+> +	int locked;
+>  	snd_pcm_direct_share_t *shmptr;	/* pointer to shared memory area */
+>  	snd_pcm_t *spcm; 		/* slave PCM handle */
+>  	snd_pcm_uframes_t appl_ptr;
+> diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+> index 16dba14..1b9aa6a 100644
+> --- a/src/pcm/pcm_dmix.c
+> +++ b/src/pcm/pcm_dmix.c
+> @@ -293,8 +293,17 @@ static void remix_areas(snd_pcm_direct_t *dmix,
+>   */
+>  #ifndef DOC_HIDDEN
+>  #ifdef NO_CONCURRENT_ACCESS
+> -#define dmix_down_sem(dmix) snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT)
+> -#define dmix_up_sem(dmix) snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT)
+> +static void dmix_down_sem(snd_pcm_direct_t *dmix)
+> +{
+> +	if (!dmix->locked++)
+> +		snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
+> +}
+> +
+> +static void dmix_up_sem(snd_pcm_direct_t *dmix)
+> +{
+> +	if (!--dmix->locked)
+> +		snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
+> +}
+>  #else
+>  #define dmix_down_sem(dmix)
+>  #define dmix_up_sem(dmix)
+> @@ -772,7 +781,8 @@ static int snd_pcm_dmix_close(snd_pcm_t *pcm)
+>  
+>  	if (dmix->timer)
+>  		snd_timer_close(dmix->timer);
+> -	snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
+> +	if (!dmix->locked)
+> +		snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
+>  	snd_pcm_close(dmix->spcm);
+>   	if (dmix->server)
+>   		snd_pcm_direct_server_discard(dmix);
 > 
 
-Well, the idea was to denote the fact that transport goes in multiple of
-8 or 16 bits, which can then be interpreted by the calculation of the
-actual sample rate. But I'm fine with anything else. What name would you
-pick, assuming that you're fine with the general approach?
 
-
-Thanks,
-Daniel
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
