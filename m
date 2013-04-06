@@ -1,21 +1,27 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 2/2] ALSA: snd-usb: add quirks handler for
-	DSD streams
-Date: Sat, 06 Apr 2013 13:48:45 +0200
-Message-ID: <51600B9D.5070008@gmail.com>
-References: <1365248693-27867-1-git-send-email-zonque@gmail.com>
- <1365248693-27867-3-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH 2/2] alsa-lib: bring pcm.h and pcm.c in
+ sync with the kernel list
+Date: Sat, 06 Apr 2013 19:58:34 +0200
+Message-ID: <5160624A.7070804@gmail.com>
+References: <1364427144-30036-1-git-send-email-zonque@gmail.com>
+ <1364427144-30036-2-git-send-email-zonque@gmail.com>
+ <51538493.40309@sonarnerd.net>
+ <7.0.0.16.2.20130327213632.13b07718@akdesigninc.com>
+ <515E8105.9070607@gmail.com>
+ <7.0.0.16.2.20130405092937.144d10d0@akdesigninc.com>
+ <515F388D.4060707@sonarnerd.net> <515F39B9.90202@sonarnerd.net>
+ <5160072E.8020500@gmail.com> <516060C1.9000101@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
  [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id B4F3626173E
- for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 13:48:36 +0200 (CEST)
-Received: by mail-bk0-f41.google.com with SMTP id i18so2436472bkv.14
- for <alsa-devel@alsa-project.org>; Sat, 06 Apr 2013 04:48:36 -0700 (PDT)
-In-Reply-To: <1365248693-27867-3-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AC5D9265038
+ for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 19:58:27 +0200 (CEST)
+Received: by mail-bk0-f41.google.com with SMTP id i18so2509811bkv.14
+ for <alsa-devel@alsa-project.org>; Sat, 06 Apr 2013 10:58:27 -0700 (PDT)
+In-Reply-To: <516060C1.9000101@sonarnerd.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,90 +31,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, jussi@sonarnerd.net, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
+To: Jussi Laako <jussi@sonarnerd.net>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, demian@auraliti.com, ray@auraliti.com, Andreas Koch <andreas@akdesigninc.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06.04.2013 13:44, Daniel Mack wrote:
-> Unfortunately, none of the UAC standards provides a way to identify DSD
-> (Direct Stream Digital) formats. Hence, this patch adds a quirks
-> handler to identify USB interfaces that are capable of handling DSD.
+On 06.04.2013 19:52, Jussi Laako wrote:
+>> All audio formats are specified in *bytes* for sample and buffer sizes,
+>> so we will also keep it that way for DSD.
 > 
-> That quirks handler can augment the already parsed formats bit-field,
-> typically by any of the new SNDRV_PCM_FMTBIT_DSD_DOP_{U8_U16}, and it
-> currently does so for USB devices matching the 'Playback Design'
-> vendor id.
+> Umm, IIRC, all the ALSA PCM API snd_pcm_*_period_size() stuff is in 
+> number of frames? (number of samples per channel)
 
-Sorry - this identical message got sent twice unintentionally. Please
-ignore one of the two ...
+I was talking about the SND_PCM_FORMAT_ definitions that I augmented.
+What they denote is bytes per sample frame, not bits.
+
+> Thus size of the 
+> buffer is period size * sample size * channels (* nperiods). So if we 
+> would use 2.8 MHz as sampling rate for DSD, then buffer size would be 
+> period size * 1/8 * channels, since one sample of DSD is eight' of a byte.
+
+No, you would choose 1/8 of the actual sample rate, because the actual
+transport goes in multiple of 8 bits.
+
+> And sampling rate is number of frames per second. So it is quite clear 
+> and non-confusing.
+
+... and one frame is also just 8 bits (or 16, for the second format). I
+think that matches the logic quite well.
 
 
 Daniel
-
-
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> ---
->  sound/usb/format.c |  3 +++
->  sound/usb/quirks.c | 23 +++++++++++++++++++++++
->  sound/usb/quirks.h |  4 ++++
->  3 files changed, 30 insertions(+)
-> 
-> diff --git a/sound/usb/format.c b/sound/usb/format.c
-> index a695caf..a73d67a 100644
-> --- a/sound/usb/format.c
-> +++ b/sound/usb/format.c
-> @@ -136,6 +136,9 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
->  		snd_printk(KERN_INFO "%d:%u:%d : unsupported format bits %#x\n",
->  			   chip->dev->devnum, fp->iface, fp->altsetting, format);
->  	}
-> +
-> +	pcm_formats |= snd_usb_interface_dsd_format_quirks(chip, fp, sample_bytes);
-> +
->  	return pcm_formats;
->  }
->  
-> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> index a2ac004..2fcc984 100644
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -905,3 +905,26 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
->  		mdelay(20);
->  }
->  
-> +/*
-> + * snd_usb_interface_dsd_format_quirks() is called from format.c to
-> + * augment the PCM format bit-field for DSD types. The UAC standards
-> + * don't have a designated bit field to denote DSD-capable interfaces,
-> + * hence all hardware that is known to support this format has to be
-> + * listed here.
-> + */
-> +u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
-> +					struct audioformat *fp,
-> +					unsigned int sample_bytes)
-> +{
-> +	if ((le16_to_cpu(chip->dev->descriptor.idVendor) == 0x23ba) &&
-> +	    fp->altsetting > 1) {
-> +		switch (sample_bytes) {
-> +		case 1:
-> +			return SNDRV_PCM_FMTBIT_DSD_DOP_U8;
-> +		case 2:
-> +			return SNDRV_PCM_FMTBIT_DSD_DOP_U16;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-> index 0ca9e91..f10d00e 100644
-> --- a/sound/usb/quirks.h
-> +++ b/sound/usb/quirks.h
-> @@ -30,4 +30,8 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
->  			   __u8 request, __u8 requesttype, __u16 value,
->  			   __u16 index, void *data, __u16 size);
->  
-> +u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
-> +					struct audioformat *fp,
-> +					unsigned int sample_bytes);
-> +
->  #endif /* __USBAUDIO_QUIRKS_H */
-> 
