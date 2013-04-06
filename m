@@ -1,24 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
- codec in system resume
-Date: Fri, 5 Apr 2013 16:42:43 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F837402E@SHSMSX101.ccr.corp.intel.com>
-References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
- <51517F53.7070608@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F8363D66@SHSMSX101.ccr.corp.intel.com>
- <5152AB91.4050501@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F8365EC0@SHSMSX101.ccr.corp.intel.com>
- <515AC6AC.8040504@canonical.com>	<s5hr4it6s7n.wl%tiwai@suse.de>
- <515AD3E4.2000208@canonical.com> <s5hmwtd2ksk.wl%tiwai@suse.de>
+From: "Zhang wei" <zhangwei@vimicro.com>
+Subject: got a segmentation fault when use multi-channel device
+Date: Sat, 6 Apr 2013 12:04:31 +0800
+Message-ID: <6B947C8AC4195040A8C6876A496C644A0824995C@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 70020261718
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 18:42:47 +0200 (CEST)
-In-Reply-To: <s5hmwtd2ksk.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail.vimicro.com (unknown [211.155.250.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A427261740
+ for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 06:04:37 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,133 +19,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi and David,
+hello everone.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, April 05, 2013 9:02 PM
-> To: David Henningsson
-> Cc: Lin, Mengdong; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - delay resume haswell hdmi codec
-> in system resume
-> 
-> At Tue, 02 Apr 2013 14:49:40 +0200,
-> David Henningsson wrote:
-> >
-> > On 04/02/2013 02:18 PM, Takashi Iwai wrote:
-> > > At Tue, 02 Apr 2013 13:53:16 +0200,
-> > > David Henningsson wrote:
-> > >>
-> > >> On 03/27/2013 11:01 AM, Lin, Mengdong wrote:
-> > >>>> -----Original Message-----
-> > >>>> From: David Henningsson [mailto:david.henningsson@canonical.com]
-> > >>>> Sent: Wednesday, March 27, 2013 4:19 PM
-> > >>>
-> > >>>>> The Haswell codec set_power_state ops
-> > >>>>> (intel_haswell_set_power_state) will
-> > >>>> only wait if this is a delayed resume and clear this flag after
-> > >>>> waiting. And actually, there is no waiting even in this case.
-> > >>>> Because when 1st user operation after system resume happens, Gfx
-> > >>>> already finishes resuming and audio initialization, so as long as
-> > >>>> intel_haswell_wait_ready_to_resume() enable the unsol event, the
-> > >>>> unsol event comes and so so waiting finishes. The 300ms time out
-> > >>>> is set for safety consideration in case unsol event is lost. I've not
-> observed any unsol event lost till now.
-> > >>>>
-> > >>>> As for the timeout, I suggest you use the codec->bus->workq
-> > >>>> instead of creating a new workq. I think that will also give us
-> > >>>> some serialisation, i e, protection against race conditions if
-> > >>>> the timeout happen at the same time as the unsol event.
-> > >>>
-> > >>> Hi David,
-> > >>>
-> > >>> The new added "resume_wq" for hdmi codec is a wait queue, not a work
-> queue like codec->bus->workq.
-> > >>> It's expected to wake up as soon as the unsol event is got.
-> > >>
-> > >> Sure; but I don't see why you need a wait queue for that? Why don't
-> > >> you just call the resume path from the unsol event handler
-> > >> (hdmi_present_sense, or its caller), and then also cancel the
-> > >> timeout handler (which can then be in the normal workq)?
-> > >
-> > > Because the delayed resume actually fakes as if the resume is done.
-> > > This is necessary not to block other device's resume operation.
-> > >
-> > > Since it looks as if ready, user-space might restart things soon
-> > > again before the delayed resume is really finished.  So, some
-> > > serialization is required there.
-> >
-> > Lin, would it be possible to add some chain of events description to
-> > the bug commit? The different contexts are just boggling my mind :-)
-> 
-> Yeah, a nice code flow picture would be helpful :)
-> 
-> > Assume we have two cases, system idle after S3 and immediate playback
-> > after S3.
-> >
-> > Is this correct:
-> >
-> > System idle:
-> >   1. System skips hda_call_codec_resume and sets codec->resume_delayed.
-> >   2. Since the codec is not reinitialized, nothing powers up the
-> > codec, so this is all that happens.
-> >   3. Since unsol events are not enabled (?), we have a bug that jack
-> > detection does not work and cannot be detected from userspace...?
+i am now debuging the multi-channel device on my embeded board with
+alsa-lib.The version alsa-driver and alsa-lib is 1.0.24.
 
-Yes. This is a side effect of this patch. The unsol event is delayed until the user operation triggers the delayed resume.
-Then intel_haswell_wait_ready_to_resume() will enable unsol events.
+ 
 
-> >
-> > Immediate playback:
-> >   1. System skips hda_call_codec_resume and sets codec->resume_delayed.
-> >   2. Process context wants to start playback, which powers up the
-> > codec and calls intel_haswell_set_power_state.
-> >   3. intel_haswell_wait_ready_to_resume enables unsol events and
-> > starts to wait on ready_to_resume
-> >   4. Gfx init finishes, and workq context fires the unsol event, which
-> > calls hdmi_intrinsic_event, which triggers the resume_wq.
-> >   5. Process context and workq context now continues in parallel,
-> > potentially (but hopefully not) leading to race conditions?
-> 
-> The current patch has a small race, but it can be avoided by clearing
-> spec->ready_to_resume early enough, e.g. in suspend callback or in
-> init callback, like the patch below.
-> 
+----------------------------->
 
-I think there is no race for Haswell. In my test I observed that the unsol evnet will not be received
-until intel_haswell_wait_ready_to_resume() enables the unsol event on the pins.
-So I put "spec->ready_to_resume = 0" before enabling the unsol event. 
+zz@board:$ ls /dev/snd/
 
-Thanks
-Mengdong
+by-path  controlC0  midiC0D0  pcmC0D0c  pcmC0D0p  pcmC0D1p  seq  timer
 
-> ---
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
-> 67e11ba..d0eafee 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -1740,6 +1740,9 @@ static int generic_hdmi_init(struct hda_codec
-> *codec)
->  		hdmi_init_pin(codec, pin_nid);
->  		snd_hda_jack_detect_enable(codec, pin_nid, pin_nid);
->  	}
-> +
-> +	spec->ready_to_resume = 0;
-> +
->  	return 0;
->  }
-> 
-> @@ -1876,8 +1879,6 @@ static void
-> intel_haswell_wait_ready_to_resume(struct hda_codec *codec)
->  	struct hdmi_spec *spec = codec->spec;
->  	int pin_idx;
-> 
-> -	spec->ready_to_resume = 0;
-> -
->  	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
->  		struct hdmi_spec_per_pin *per_pin;
->  		hda_nid_t pin_nid;
+<---------------------------
+
+i edit the asoundrc configure file.like this:
+
+ 
+
+--------------------------------------------------->
+
+ 
+
+pcm.!default{
+
+  type hw
+
+  card 0
+
+}
+
+ 
+
+ctl.!default{
+
+  type hw
+
+  card 0
+
+}
+
+ 
+
+#################################
+
+## create a virtul device which has 4 channels for playback.
+
+#################################
+
+pcm.multi_playback{
+
+  type multi;
+
+  slaves.a.pcm "hw:0,0";
+
+  slaves.a.channels 2;
+
+  slaves.b.pcm "hw:0,1";
+
+  slaves.b.channels 2;
+
+  bindings.0.slave a;
+
+  bindings.0.channel 0;
+
+  bindings.1.slave a;
+
+  bindings.1.channel 1;
+
+  bindings.2.slave b;
+
+  bindings.2.channel 0;
+
+  bindings.3.slave b;
+
+  bindings.3.channel 1;
+
+}
+
+ 
+
+ctl.multi_playback{
+
+  type hw; 
+
+  card 0;
+
+}
+
+ 
+
+pcm.ttable{
+
+  type route;
+
+  slave.pcm "multi_playback";
+
+  slave.channels 4;
+
+  ttable.0.0 1;
+
+  ttable.1.1 1;
+
+  ttable.2.2 1;
+
+  ttable.3.3 1;
+
+}
+
+ctl.ttable {
+
+  type hw;
+
+  card 0;
+
+}
+
+<--------------------------------------------------
+
+and then get the Segmentation fault:
+
+ 
+
+-------------------------------------------------------------->
+
+ 
+
+[root@board /tmp]#./pb_pcm_min 
+
+open...ver:[0.71]
+
+playback...capture...device=[multi_playback]
+
+ 
+
+#####################snd_pcm_open...
+
+zz[snd_dlsym_verify:122],vname=[_snd_config_hook_load_dlsym_config_hook_
+001]
+
+zz[snd_dlsym_verify:127]
+
+zz[snd_dlsym:167]
+
+zz[snd_dlsym:171],name=[snd_config_hook_load]
+
+zz[snd_pcm_open_conf:2163]
+
+zz[snd_dlsym_verify:122],vname=[__snd_pcm_multi_open_dlsym_pcm_001]
+
+Segmentation fault
+
+[root@board /tmp]#
+
+<---------------------------------------------------------------
+
+ 
+
+To my surpris, it will be fine when run on the PC under the Ubuntu
+system.I used the same alsa-lib source code and the configure file
+asoundrc.
+
+ 
+
+in my codec-driver .i have not call the functions
+:snd_soc_add_controls() / snd_soc_dapm_new_controls() /
+snd_soc_dapm_add_routes(). is it the reason? But the programm have not
+arrived here.
+
+ 
+
+i have traced the source code when the Segmentation fault happened the
+alsa-lib was calling the function dlysm() with the param
+vname=__snd_pcm_multi_open_dlsym_pcm_001. But this will not happen on my
+PC under Ubuntu. could you help me find out what's wrong with me?
+
+ 
+
+thanks a lot.
+
+zw
