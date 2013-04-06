@@ -1,26 +1,17 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH v2] ALSA: hda/ca0132 - Update latency based
- on DSP state.
-Date: Fri, 5 Apr 2013 14:44:48 -0700
-Message-ID: <CAEUnVG5JPckDkzX4t8McAUpAmME338fVJY-Qk-GMGALN=9En7Q@mail.gmail.com>
-References: <1365108909-13587-1-git-send-email-dgreid@chromium.org>
- <s5hehep4jt9.wl%tiwai@suse.de> <515EE730.6080705@linux.intel.com>
- <s5h4nfl2ea5.wl%tiwai@suse.de> <515EFBCA.9060101@linux.intel.com>
- <CAEUnVG7iLokj+biNXfrppp_z_toDCNPww-Y4QJXU3voC2a-FHg@mail.gmail.com>
- <515F07DA.1040608@linux.intel.com>
- <CAEUnVG4Zu63G+aYm+v90aFwnmW3oHnJGr4VOsK_fd2FBrgY7BA@mail.gmail.com>
- <515F40FB.4010907@linux.intel.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH v2 2/2] alsa-lib: bring pcm.h and pcm.c in sync
+	with the kernel list
+Date: Sat,  6 Apr 2013 13:50:14 +0200
+Message-ID: <1365249014-2457-2-git-send-email-zonque@gmail.com>
+References: <1365249014-2457-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
- [209.85.214.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 29BF1265074
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2013 23:45:10 +0200 (CEST)
-Received: by mail-bk0-f50.google.com with SMTP id jg1so2282530bkc.9
- for <alsa-devel@alsa-project.org>; Fri, 05 Apr 2013 14:45:09 -0700 (PDT)
-In-Reply-To: <515F40FB.4010907@linux.intel.com>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id E470C262635
+ for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2013 13:50:09 +0200 (CEST)
+In-Reply-To: <1365249014-2457-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,62 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: jussi@sonarnerd.net, tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 5, 2013 at 2:24 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->> Is the 'audio' timestamp the one calculated in snd_pcm_update_hw_ptr0,
->> based on either the hardware or the delay (INFO_HAS_WALL_CLOCK)?
->
->
-> Yes, correct.
->
->
->>> In other words, if you add the codec delay, it's fine but it needs to be
->>> accounted for in a symmetrical manner, otherwise the audio timestamp and
->>> the
->>> delay will be off by a fixed amount. Correcting the wallclock value and
->>> substracting the codec delay in azx_get_wallclk() would realign
->>> accounting
->>> methods.
->>
->>
->> Would this problem manifest on systems that don't support wall clock?
->> Because the time based on delay will contain the codec delay?
->
->
-> If wall clock is supported, audio timestamp doesn't account for codec delay
-> If Wall clock is not suported, audio timestamp does account for codec delay
-> with your patches.
+In particular, this adds definitions and descriptions for G.723 and
+DSD types.
 
-Good, I get it, thanks for the education!
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ include/pcm.h | 14 +++++++++++++-
+ src/pcm/pcm.c | 12 ++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
->
->
->> There are two distinct use cases:
->>
->> Wanting to know how the audio clock is drifting with respect to the
->> system clock. (don't care about codec delay)
->> Wanting to know when a sample will be rendered for AEC or A/V sync.
->> (codec delay critical)
->>
->> Can we keep them from affecting one another?  This seems possible if
->> the timestamp and delay are reported separately.
->
->
-> My suggestion is that the audio timestamp always accounts for codec delays,
-> which will allow you to track drift and track rendering time. Btw for
-> capture wallclocks are disabled for now since we don't really know how to
-> use them for digital inputs, and we really need to have a consistent
-> behavior for capture and playback.
-
-Sounds good, I'll take a look at adding the delay to the wallclock time as well.
-
-> -Pierre
->
->
->
->
+diff --git a/include/pcm.h b/include/pcm.h
+index 2235678..768a4a7 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -199,7 +199,19 @@ typedef enum _snd_pcm_format {
+ 	SND_PCM_FORMAT_U18_3LE,
+ 	/** Unsigned 18bit Big Endian in 3bytes format */
+ 	SND_PCM_FORMAT_U18_3BE,
+-	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_U18_3BE,
++	/* G.723 (ADPCM) 24 kbit/s, 8 samples in 3 bytes */
++	SND_PCM_FORMAT_G723_24,
++	/* G.723 (ADPCM) 24 kbit/s, 1 sample in 1 byte */
++	SND_PCM_FORMAT_G723_24_1B,
++	/* G.723 (ADPCM) 40 kbit/s, 8 samples in 3 bytes */
++	SND_PCM_FORMAT_G723_40,
++	/* G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte */
++	SND_PCM_FORMAT_G723_40_1B,
++	/* Direct Stream Digital (DSD) in 1-byte DOP samples (x8) */
++	SND_PCM_FORMAT_DSD_DOP_U8,
++	/* Direct Stream Digital (DSD) in 2-byte DOP samples (x16) */
++	SND_PCM_FORMAT_DSD_DOP_U16,
++	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_DOP_U16,
+ 
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+ 	/** Signed 16 bit CPU endian */
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 2963711..60b840f 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -1554,6 +1554,12 @@ static const char *const snd_pcm_format_names[] = {
+ 	FORMAT(S18_3BE),
+ 	FORMAT(U18_3LE),
+ 	FORMAT(U18_3BE),
++	FORMAT(G723_24),
++	FORMAT(G723_24_1B),
++	FORMAT(G723_40),
++	FORMAT(G723_40_1B),
++	FORMAT(DSD_DOP_U8),
++	FORMAT(DSD_DOP_U16),
+ };
+ 
+ static const char *const snd_pcm_format_aliases[SND_PCM_FORMAT_LAST+1] = {
+@@ -1607,6 +1613,12 @@ static const char *const snd_pcm_format_descriptions[] = {
+ 	FORMATD(S18_3BE, "Signed 18 bit Big Endian in 3bytes"),
+ 	FORMATD(U18_3LE, "Unsigned 18 bit Little Endian in 3bytes"),
+ 	FORMATD(U18_3BE, "Unsigned 18 bit Big Endian in 3bytes"),
++	FORMATD(G723_24, "G.723 (ADPCM) 24 kbit/s, 8 samples in 3 bytes"),
++	FORMATD(G723_24_1B, "G.723 (ADPCM) 24 kbit/s, 1 sample in 1 byte"),
++	FORMATD(G723_40, "G.723 (ADPCM) 40 kbit/s, 8 samples in 3 bytes"),
++	FORMATD(G723_40_1B, "G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte"),
++	FORMATD(DSD_DOP_U8,  "Direct Stream Digital (DSD), 1-byte DOP samples (x8)"),
++	FORMATD(DSD_DOP_U16, "Direct Stream Digital (DSD), 2-byte DOP samples (x16)"),
+ };
+ 
+ static const char *const snd_pcm_type_names[] = {
+-- 
+1.8.1.4
