@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v2 04/11] ASoC: fsl-ssi: Add SACNT definitions
-Date: Sun,  7 Apr 2013 21:25:14 +0200
-Message-ID: <1365362721-3731-5-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 03/11] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
+Date: Sun,  7 Apr 2013 21:25:13 +0200
+Message-ID: <1365362721-3731-4-git-send-email-mpa@pengutronix.de>
 References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,30 +22,101 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add definitions for AC97 control register.
+Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
+struct to pass all arguments.
 
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/fsl/fsl_ssi.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/fsl/imx-pcm-fiq.c | 14 +++++++-------
+ sound/soc/fsl/imx-pcm.h     |  9 +++++++++
+ sound/soc/fsl/imx-ssi.c     |  7 ++++++-
+ sound/soc/fsl/imx-ssi.h     |  1 +
+ 4 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
-index 2173000..e6b9a69 100644
---- a/sound/soc/fsl/fsl_ssi.h
-+++ b/sound/soc/fsl/fsl_ssi.h
-@@ -196,5 +196,13 @@ struct ccsr_ssi {
- #define CCSR_SSI_SOR_WAIT(x) (((x) & 3) << CCSR_SSI_SOR_WAIT_SHIFT)
- #define CCSR_SSI_SOR_SYNRST 		0x00000001
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index 920f945..995ed35 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -283,7 +283,7 @@ static struct snd_soc_platform_driver imx_soc_platform_fiq = {
  
-+#define CCSR_SSI_SACNT_FRDIV(x)		(((x) & 0x3f) << 5)
-+#define CCSR_SSI_SACNT_WR		0x00000010
-+#define CCSR_SSI_SACNT_RD		0x00000008
-+#define CCSR_SSI_SACNT_RDWR_MASK	0x00000018
-+#define CCSR_SSI_SACNT_TIF		0x00000004
-+#define CCSR_SSI_SACNT_FV		0x00000002
-+#define CCSR_SSI_SACNT_AC97EN		0x00000001
+ int imx_pcm_fiq_init(struct platform_device *pdev)
+ {
+-	struct imx_ssi *ssi = platform_get_drvdata(pdev);
++	struct imx_pcm_fiq_params *params = platform_get_drvdata(pdev);
+ 	int ret;
+ 
+ 	ret = claim_fiq(&fh);
+@@ -292,15 +292,15 @@ int imx_pcm_fiq_init(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	mxc_set_irq_fiq(ssi->irq, 1);
+-	ssi_irq = ssi->irq;
++	mxc_set_irq_fiq(params->irq, 1);
++	ssi_irq = params->irq;
+ 
+-	imx_pcm_fiq = ssi->irq;
++	imx_pcm_fiq = params->irq;
+ 
+-	imx_ssi_fiq_base = (unsigned long)ssi->base;
++	imx_ssi_fiq_base = (unsigned long)params->base;
+ 
+-	ssi->dma_params_tx.burstsize = 4;
+-	ssi->dma_params_rx.burstsize = 6;
++	params->dma_params_tx->burstsize = 4;
++	params->dma_params_rx->burstsize = 6;
+ 
+ 	ret = snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
+ 	if (ret)
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index ff0cfdf..f568a0e 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -31,6 +31,15 @@ struct imx_pcm_dma_params {
+ 	const char *dma_req_name; /* DMA Request name from devicetree */
+ };
+ 
++struct imx_pcm_fiq_params {
++	int irq;
++	void __iomem *base;
 +
- #endif
++	/* Pointer to original ssi driver to setup tx rx sizes */
++	struct imx_pcm_dma_params *dma_params_tx;
++	struct imx_pcm_dma_params *dma_params_rx;
++};
++
+ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
+ 		     struct vm_area_struct *vma);
+ int imx_pcm_new(struct snd_soc_pcm_runtime *rtd);
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index 96e24a3..93f7562 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -608,7 +608,12 @@ static int imx_ssi_probe(struct platform_device *pdev)
+ 		goto failed_pdev_fiq_alloc;
+ 	}
+ 
+-	platform_set_drvdata(ssi->soc_platform_pdev_fiq, ssi);
++	ssi->fiq_params.irq = ssi->irq;
++	ssi->fiq_params.base = ssi->base;
++	ssi->fiq_params.dma_params_rx = &ssi->dma_params_rx;
++	ssi->fiq_params.dma_params_tx = &ssi->dma_params_tx;
++
++	platform_set_drvdata(ssi->soc_platform_pdev_fiq, &ssi->fiq_params);
+ 	ret = platform_device_add(ssi->soc_platform_pdev_fiq);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to add platform device\n");
+diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+index dc114bd..90a45ef 100644
+--- a/sound/soc/fsl/imx-ssi.h
++++ b/sound/soc/fsl/imx-ssi.h
+@@ -206,6 +206,7 @@ struct imx_ssi {
+ 
+ 	struct imx_pcm_dma_params	dma_params_rx;
+ 	struct imx_pcm_dma_params	dma_params_tx;
++	struct imx_pcm_fiq_params	fiq_params;
+ 
+ 	int enabled;
  
 -- 
 1.8.1.5
