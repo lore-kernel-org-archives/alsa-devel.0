@@ -1,17 +1,20 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v2 08/11] ASoC: fsl-ssi: imx ac97 support
-Date: Sun, 07 Apr 2013 21:49:03 -0500
-Message-ID: <5162301F.9090000@tabi.org>
-References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
- <1365362721-3731-9-git-send-email-mpa@pengutronix.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: M-Audio Delta 1010LT: S/PDIF clock source not
+	working
+Date: Sun, 7 Apr 2013 21:35:45 +0100
+Message-ID: <201304072135.45811.gineera@aspect135.co.uk>
+References: <515EEF10.1020007@gmail.com> <5160C35A.8020403@gmail.com>
+ <5161A6D3.3060602@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
- [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 012D626528F
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2013 04:49:06 +0200 (CEST)
-In-Reply-To: <1365362721-3731-9-git-send-email-mpa@pengutronix.de>
+Received: from out1.ip06ir2.opaltelecom.net (out1.ip06ir2.opaltelecom.net
+ [62.24.128.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 549BC265173
+ for <alsa-devel@alsa-project.org>; Sun,  7 Apr 2013 22:29:38 +0200 (CEST)
+In-Reply-To: <5161A6D3.3060602@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,19 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Markus Pargmann wrote:
-> This patch copies some parts from imx-ssi to support AC97 on
-> imx27-pca100 and imx27-pcm043. It is activated with a new fsl,imx-ac97
-> bool property. It was tested on imx27-pca100.
+On Sunday 07 April 2013 18:03, Gabriel M. Beddingfield wrote:
+> On 04/06/2013 05:52 PM, Jonas Petersen wrote:
+> > It seems it's related to the ICE1712... I now tried the Audiophile 2496.
+> > Same behaviour! There is no way to clock from external (S/PDIF). The
+> > 'Multi Track Internal Clock Default' setting will always override the
+> > external clock rate and mess up the capturing.
+>
+> Well, it /should/ work -- according to the 1010's manual.  I'll bet it's
+> some register setting that's missing on the ice1712 -- but I have no
+> access to the specs/datasheets/schematics on these things.
+>
+> I wonder -- did this ever work on Linux?
 
-I'm not crazy about this patch -- it seems a bit hackish.  There are too 
-many "if (imx_ac97)" clauses.  Large pieces of code that don't appear to 
-be related to AC97 are indented in an if-clause.  I especially don't like 
-the "If we use AC97, the registers are already setup correctly".
+Can't confirm on Delta 1010 series, but this is/was working on Terratec 
+DMX6fire and STaudio DSP2000 (other ice1712 cards) since at least about Alsa 
+1.0.12.  More people have the 1010's, so I would expect it has been working 
+on those.  However I do seem to remember some relatively recent changes 
+related to external wordclock on the 1010; maybe it has been broken?
 
--- 
-Timur Tabi
+@Jonas - are you using 'envy24control' to toggle the settings?
+
+
+Regards
+
+Alan
