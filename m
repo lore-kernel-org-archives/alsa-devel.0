@@ -1,122 +1,199 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v2 03/11] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-Date: Sun,  7 Apr 2013 21:25:13 +0200
-Message-ID: <1365362721-3731-4-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v2 10/11] ASoC: fsl: Move fsl-ssi binding doc
+	to sound/
+Date: Sun,  7 Apr 2013 21:25:20 +0200
+Message-ID: <1365362721-3731-11-git-send-email-mpa@pengutronix.de>
 References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1365362721-3731-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 080E1265163
+ for <alsa-devel@alsa-project.org>; Sun,  7 Apr 2013 21:26:19 +0200 (CEST)
+In-Reply-To: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
-struct to pass all arguments.
+fsl-ssi was located in powerpc/fsl/ssi.txt. This is no powerpc specific
+device, so it should be moved to sound/ as it connects to differen audio
+codecs.
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 ---
- sound/soc/fsl/imx-pcm-fiq.c | 14 +++++++-------
- sound/soc/fsl/imx-pcm.h     |  9 +++++++++
- sound/soc/fsl/imx-ssi.c     |  7 ++++++-
- sound/soc/fsl/imx-ssi.h     |  1 +
- 4 files changed, 23 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/powerpc/fsl/ssi.txt        | 73 ----------------------
+ .../devicetree/bindings/sound/fsl,ssi.txt          | 73 ++++++++++++++++++++++
+ 2 files changed, 73 insertions(+), 73 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/powerpc/fsl/ssi.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.txt
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 920f945..995ed35 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -283,7 +283,7 @@ static struct snd_soc_platform_driver imx_soc_platform_fiq = {
- 
- int imx_pcm_fiq_init(struct platform_device *pdev)
- {
--	struct imx_ssi *ssi = platform_get_drvdata(pdev);
-+	struct imx_pcm_fiq_params *params = platform_get_drvdata(pdev);
- 	int ret;
- 
- 	ret = claim_fiq(&fh);
-@@ -292,15 +292,15 @@ int imx_pcm_fiq_init(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	mxc_set_irq_fiq(ssi->irq, 1);
--	ssi_irq = ssi->irq;
-+	mxc_set_irq_fiq(params->irq, 1);
-+	ssi_irq = params->irq;
- 
--	imx_pcm_fiq = ssi->irq;
-+	imx_pcm_fiq = params->irq;
- 
--	imx_ssi_fiq_base = (unsigned long)ssi->base;
-+	imx_ssi_fiq_base = (unsigned long)params->base;
- 
--	ssi->dma_params_tx.burstsize = 4;
--	ssi->dma_params_rx.burstsize = 6;
-+	params->dma_params_tx->burstsize = 4;
-+	params->dma_params_rx->burstsize = 6;
- 
- 	ret = snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
- 	if (ret)
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index ff0cfdf..f568a0e 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -31,6 +31,15 @@ struct imx_pcm_dma_params {
- 	const char *dma_req_name; /* DMA Request name from devicetree */
- };
- 
-+struct imx_pcm_fiq_params {
-+	int irq;
-+	void __iomem *base;
+diff --git a/Documentation/devicetree/bindings/powerpc/fsl/ssi.txt b/Documentation/devicetree/bindings/powerpc/fsl/ssi.txt
+deleted file mode 100644
+index 5ff76c9..0000000
+--- a/Documentation/devicetree/bindings/powerpc/fsl/ssi.txt
++++ /dev/null
+@@ -1,73 +0,0 @@
+-Freescale Synchronous Serial Interface
+-
+-The SSI is a serial device that communicates with audio codecs.  It can
+-be programmed in AC97, I2S, left-justified, or right-justified modes.
+-
+-Required properties:
+-- compatible:       Compatible list, contains "fsl,ssi".
+-- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
+-- reg:              Offset and length of the register set for the device.
+-- interrupts:       <a b> where a is the interrupt number and b is a
+-                    field that represents an encoding of the sense and
+-                    level information for the interrupt.  This should be
+-                    encoded based on the information in section 2)
+-                    depending on the type of interrupt controller you
+-                    have.
+-- interrupt-parent: The phandle for the interrupt controller that
+-                    services interrupts for this device.
+-- fsl,mode:         The operating mode for the SSI interface.
+-                    "i2s-slave" - I2S mode, SSI is clock slave
+-                    "i2s-master" - I2S mode, SSI is clock master
+-                    "lj-slave" - left-justified mode, SSI is clock slave
+-                    "lj-master" - l.j. mode, SSI is clock master
+-                    "rj-slave" - right-justified mode, SSI is clock slave
+-                    "rj-master" - r.j., SSI is clock master
+-                    "ac97-slave" - AC97 mode, SSI is clock slave
+-                    "ac97-master" - AC97 mode, SSI is clock master
+-- fsl,playback-dma: Phandle to a node for the DMA channel to use for
+-                    playback of audio.  This is typically dictated by SOC
+-                    design.  See the notes below.
+-- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
+-                    capture (recording) of audio.  This is typically dictated
+-                    by SOC design.  See the notes below.
+-- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
+-                    This number is the maximum allowed value for SFCSR[TFWM0].
+-- fsl,ssi-asynchronous:
+-                    If specified, the SSI is to be programmed in asynchronous
+-                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+-                    all be connected to valid signals.  In synchronous mode,
+-                    SRCK and SRFS are ignored.  Asynchronous mode allows
+-                    playback and capture to use different sample sizes and
+-                    sample rates.  Some drivers may require that SRCK and STCK
+-                    be connected together, and SRFS and STFS be connected
+-                    together.  This would still allow different sample sizes,
+-                    but not different sample rates.
+-
+-Optional properties:
+-- codec-handle:     Phandle to a 'codec' node that defines an audio
+-                    codec connected to this SSI.  This node is typically
+-                    a child of an I2C or other control node.
+-
+-Child 'codec' node required properties:
+-- compatible:       Compatible list, contains the name of the codec
+-
+-Child 'codec' node optional properties:
+-- clock-frequency:  The frequency of the input clock, which typically comes
+-                    from an on-board dedicated oscillator.
+-
+-Notes on fsl,playback-dma and fsl,capture-dma:
+-
+-On SOCs that have an SSI, specific DMA channels are hard-wired for playback
+-and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
+-playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
+-playback and DMA channel 3 for capture.  The developer can choose which
+-DMA controller to use, but the channels themselves are hard-wired.  The
+-purpose of these two properties is to represent this hardware design.
+-
+-The device tree nodes for the DMA channels that are referenced by
+-"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
+-"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
+-"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
+-"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
+-drivers (fsldma) will attempt to use them, and it will conflict with the
+-sound drivers.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+new file mode 100644
+index 0000000..5ff76c9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -0,0 +1,73 @@
++Freescale Synchronous Serial Interface
 +
-+	/* Pointer to original ssi driver to setup tx rx sizes */
-+	struct imx_pcm_dma_params *dma_params_tx;
-+	struct imx_pcm_dma_params *dma_params_rx;
-+};
++The SSI is a serial device that communicates with audio codecs.  It can
++be programmed in AC97, I2S, left-justified, or right-justified modes.
 +
- int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 		     struct vm_area_struct *vma);
- int imx_pcm_new(struct snd_soc_pcm_runtime *rtd);
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 96e24a3..93f7562 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -608,7 +608,12 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 		goto failed_pdev_fiq_alloc;
- 	}
- 
--	platform_set_drvdata(ssi->soc_platform_pdev_fiq, ssi);
-+	ssi->fiq_params.irq = ssi->irq;
-+	ssi->fiq_params.base = ssi->base;
-+	ssi->fiq_params.dma_params_rx = &ssi->dma_params_rx;
-+	ssi->fiq_params.dma_params_tx = &ssi->dma_params_tx;
++Required properties:
++- compatible:       Compatible list, contains "fsl,ssi".
++- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
++- reg:              Offset and length of the register set for the device.
++- interrupts:       <a b> where a is the interrupt number and b is a
++                    field that represents an encoding of the sense and
++                    level information for the interrupt.  This should be
++                    encoded based on the information in section 2)
++                    depending on the type of interrupt controller you
++                    have.
++- interrupt-parent: The phandle for the interrupt controller that
++                    services interrupts for this device.
++- fsl,mode:         The operating mode for the SSI interface.
++                    "i2s-slave" - I2S mode, SSI is clock slave
++                    "i2s-master" - I2S mode, SSI is clock master
++                    "lj-slave" - left-justified mode, SSI is clock slave
++                    "lj-master" - l.j. mode, SSI is clock master
++                    "rj-slave" - right-justified mode, SSI is clock slave
++                    "rj-master" - r.j., SSI is clock master
++                    "ac97-slave" - AC97 mode, SSI is clock slave
++                    "ac97-master" - AC97 mode, SSI is clock master
++- fsl,playback-dma: Phandle to a node for the DMA channel to use for
++                    playback of audio.  This is typically dictated by SOC
++                    design.  See the notes below.
++- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
++                    capture (recording) of audio.  This is typically dictated
++                    by SOC design.  See the notes below.
++- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
++                    This number is the maximum allowed value for SFCSR[TFWM0].
++- fsl,ssi-asynchronous:
++                    If specified, the SSI is to be programmed in asynchronous
++                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
++                    all be connected to valid signals.  In synchronous mode,
++                    SRCK and SRFS are ignored.  Asynchronous mode allows
++                    playback and capture to use different sample sizes and
++                    sample rates.  Some drivers may require that SRCK and STCK
++                    be connected together, and SRFS and STFS be connected
++                    together.  This would still allow different sample sizes,
++                    but not different sample rates.
 +
-+	platform_set_drvdata(ssi->soc_platform_pdev_fiq, &ssi->fiq_params);
- 	ret = platform_device_add(ssi->soc_platform_pdev_fiq);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to add platform device\n");
-diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
-index dc114bd..90a45ef 100644
---- a/sound/soc/fsl/imx-ssi.h
-+++ b/sound/soc/fsl/imx-ssi.h
-@@ -206,6 +206,7 @@ struct imx_ssi {
- 
- 	struct imx_pcm_dma_params	dma_params_rx;
- 	struct imx_pcm_dma_params	dma_params_tx;
-+	struct imx_pcm_fiq_params	fiq_params;
- 
- 	int enabled;
- 
++Optional properties:
++- codec-handle:     Phandle to a 'codec' node that defines an audio
++                    codec connected to this SSI.  This node is typically
++                    a child of an I2C or other control node.
++
++Child 'codec' node required properties:
++- compatible:       Compatible list, contains the name of the codec
++
++Child 'codec' node optional properties:
++- clock-frequency:  The frequency of the input clock, which typically comes
++                    from an on-board dedicated oscillator.
++
++Notes on fsl,playback-dma and fsl,capture-dma:
++
++On SOCs that have an SSI, specific DMA channels are hard-wired for playback
++and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
++playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
++playback and DMA channel 3 for capture.  The developer can choose which
++DMA controller to use, but the channels themselves are hard-wired.  The
++purpose of these two properties is to represent this hardware design.
++
++The device tree nodes for the DMA channels that are referenced by
++"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
++"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
++"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
++"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
++drivers (fsldma) will attempt to use them, and it will conflict with the
++sound drivers.
 -- 
 1.8.1.5
