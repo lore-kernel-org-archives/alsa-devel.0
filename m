@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v2 06/11] ASoC: fsl-ssi: Setup generic imx dma params
-Date: Sun,  7 Apr 2013 21:25:16 +0200
-Message-ID: <1365362721-3731-7-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v2 11/11] ASoC: fsl: Update fsl-ssi binding doc
+Date: Sun,  7 Apr 2013 21:25:21 +0200
+Message-ID: <1365362721-3731-12-git-send-email-mpa@pengutronix.de>
 References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,57 +22,48 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use device pointer as parameter for imx-pcm-dma. This allows usage of
-the generic DMA DT bindings.
+Update the fsl-ssi bindings. DMA is no required property anymore and
+uses the generic DMA bindings. imx-fiq is a new alternative to DMA
 
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index afb5a23..bb9a1e0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -742,7 +742,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		ssi_private->fifo_depth = 8;
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index 5ff76c9..46282ec 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -24,12 +24,6 @@ Required properties:
+                     "rj-master" - r.j., SSI is clock master
+                     "ac97-slave" - AC97 mode, SSI is clock slave
+                     "ac97-master" - AC97 mode, SSI is clock master
+-- fsl,playback-dma: Phandle to a node for the DMA channel to use for
+-                    playback of audio.  This is typically dictated by SOC
+-                    design.  See the notes below.
+-- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
+-                    capture (recording) of audio.  This is typically dictated
+-                    by SOC design.  See the notes below.
+ - fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
+                     This number is the maximum allowed value for SFCSR[TFWM0].
+ - fsl,ssi-asynchronous:
+@@ -43,10 +37,17 @@ Required properties:
+                     together.  This would still allow different sample sizes,
+                     but not different sample rates.
  
- 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx21-ssi")) {
--		u32 dma_events[2];
- 		ssi_private->ssi_on_imx = true;
- 
- 		ssi_private->clk = clk_get(&pdev->dev, NULL);
-@@ -765,18 +764,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, stx0);
- 		ssi_private->dma_params_rx.dma_addr =
- 			ssi_private->ssi_phys + offsetof(struct ccsr_ssi, srx0);
--		/*
--		 * TODO: This is a temporary solution and should be changed
--		 * to use generic DMA binding later when the helplers get in.
--		 */
--		ret = of_property_read_u32_array(pdev->dev.of_node,
--					"fsl,ssi-dma-events", dma_events, 2);
--		if (ret) {
--			dev_err(&pdev->dev, "could not get dma events\n");
--			goto error_clk;
--		}
--		ssi_private->dma_params_tx.dma = dma_events[0];
--		ssi_private->dma_params_rx.dma = dma_events[1];
++Note that either dmas, dma-names or fsl,imx-fiq are required.
 +
-+		ssi_private->dma_params_rx.dma_client_dev = &pdev->dev;
-+		ssi_private->dma_params_rx.dma_req_name = "rx";
-+		ssi_private->dma_params_tx.dma_client_dev = &pdev->dev;
-+		ssi_private->dma_params_tx.dma_req_name = "tx";
+ Optional properties:
+ - codec-handle:     Phandle to a 'codec' node that defines an audio
+                     codec connected to this SSI.  This node is typically
+                     a child of an I2C or other control node.
++- dmas:		    Generic dma devicetree binding as described in
++		    Documentation/devicetree/bindings/dma/dma.txt.
++- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
++		    is not defined.
++- fsl,imx-fiq:	    Bool property. Use imx-pcm-fiq instead of imx-pcm-dma.
  
- 		ssi_private->dma_params_tx.shared_peripheral =
- 				of_device_is_compatible(of_get_parent(np),
-@@ -887,7 +879,6 @@ error_dev:
- 	dev_set_drvdata(&pdev->dev, NULL);
- 	device_remove_file(&pdev->dev, dev_attr);
- 
--error_clk:
- 	if (ssi_private->ssi_on_imx) {
- 		clk_disable_unprepare(ssi_private->clk);
- 		clk_put(ssi_private->clk);
+ Child 'codec' node required properties:
+ - compatible:       Compatible list, contains the name of the codec
 -- 
 1.8.1.5
