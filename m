@@ -1,156 +1,94 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for imx-pcm-fiq
-Date: Sun,  7 Apr 2013 21:25:15 +0200
-Message-ID: <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
-References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1365362721-3731-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+From: Dan Savilonis <djs@n-cube.org>
+Subject: [PATCH] ALSA: hda: fix mute led on HP Envy 15
+Date: Sun,  7 Apr 2013 19:54:22 -0400
+Message-ID: <1365378862-10296-1-git-send-email-djs@n-cube.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, perex@perex.cz, Dan Savilonis <djs@n-cube.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for non-dma pcm for imx platforms with imx-pcm-fiq support.
-Instead of imx-pcm-audio, in this case imx-pcm-fiq-audio device is added
-and the SIER flags are set differently.
+This laptop reports the string HP_Mute_LED_P_G in DMI, but the guess made in
+hp_set_mute_led() is wrong. So, hard-code the GPIO id.
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Signed-off-by: Dan Savilonis <djs@n-cube.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 70 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 58 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_sigmatel.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7decbd9..afb5a23 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -120,10 +120,12 @@ struct fsl_ssi_private {
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 1d9d642..3a6b111 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -100,6 +100,7 @@ enum {
+ 	STAC_92HD83XXX_HEADSET_JACK,
+ 	STAC_92HD83XXX_HP,
+ 	STAC_HP_ENVY_BASS,
++	STAC_HP_ENVY_15,
+ 	STAC_92HD83XXX_MODELS
+ };
  
- 	bool new_binding;
- 	bool ssi_on_imx;
-+	bool dma;
- 	struct clk *clk;
- 	struct platform_device *imx_pcm_pdev;
- 	struct imx_pcm_dma_params dma_params_tx;
- 	struct imx_pcm_dma_params dma_params_rx;
-+	struct imx_pcm_fiq_params fiq_params;
- 
- 	struct {
- 		unsigned int rfrc;
-@@ -353,7 +355,8 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- 		 */
- 
- 		/* Enable the interrupts and DMA requests */
--		write_ssi(SIER_FLAGS, &ssi->sier);
-+		if (ssi_private->dma)
-+			write_ssi(SIER_FLAGS, &ssi->sier);
- 
- 		/*
- 		 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
-@@ -520,6 +523,18 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		return -EINVAL;
- 	}
- 
-+	if (!ssi_private->dma) {
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
-+			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN,
-+					&ssi->sier);
-+		} else {
-+			write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
-+			write_ssi(CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_RFF0_EN,
-+					&ssi->sier);
-+		}
-+	}
-+
- 	return 0;
+@@ -2092,6 +2093,15 @@ static void stac92hd83xxx_fixup_hp_mic_led(struct hda_codec *codec,
+ 		spec->mic_mute_led_gpio = 0x08; /* GPIO3 */
  }
  
-@@ -680,6 +695,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	       sizeof(fsl_ssi_dai_template));
- 	ssi_private->cpu_dai_drv.name = ssi_private->name;
- 
-+	ssi_private->dma = !of_property_read_bool(np, "fsl,imx-fiq");
++static void stac92hd83xxx_fixup_hp_envy_15(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
 +
- 	/* Get the addresses and IRQ */
- 	ret = of_address_to_resource(np, 0, &res);
- 	if (ret) {
-@@ -701,12 +718,15 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		goto error_iomap;
- 	}
- 
--	/* The 'name' should not have any slashes in it. */
--	ret = request_irq(ssi_private->irq, fsl_ssi_isr, 0, ssi_private->name,
--			  ssi_private);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "could not claim irq %u\n", ssi_private->irq);
--		goto error_irqmap;
-+	if (ssi_private->dma) {
-+		/* The 'name' should not have any slashes in it. */
-+		ret = request_irq(ssi_private->irq, fsl_ssi_isr, 0,
-+				ssi_private->name, ssi_private);
-+		if (ret < 0) {
-+			dev_err(&pdev->dev, "could not claim irq %u\n",
-+					ssi_private->irq);
-+			goto error_irqmap;
-+		}
- 	}
- 
- 	/* Are the RX and the TX clocks locked? */
-@@ -789,12 +809,38 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	if (ssi_private->ssi_on_imx) {
--		ssi_private->imx_pcm_pdev =
--			platform_device_register_simple("imx-pcm-audio",
-+		if (!ssi_private->dma) {
-+			ssi_private->imx_pcm_pdev = platform_device_alloc(
-+							"imx-fiq-pcm-audio",
-+							pdev->id);
-+			if (!ssi_private->imx_pcm_pdev) {
-+				ret = -ENOMEM;
-+				goto error_dev;
-+			}
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		spec->gpio_led = 0x01; /* GPIO0 */
++}
 +
-+			ssi_private->fiq_params.irq = ssi_private->irq;
-+			ssi_private->fiq_params.base = ssi_private->ssi;
-+			ssi_private->fiq_params.dma_params_rx =
-+				&ssi_private->dma_params_rx;
-+			ssi_private->fiq_params.dma_params_tx =
-+				&ssi_private->dma_params_tx;
-+
-+			platform_set_drvdata(ssi_private->imx_pcm_pdev,
-+					&ssi_private->fiq_params);
-+			ret = platform_device_add(ssi_private->imx_pcm_pdev);
-+			if (ret) {
-+				dev_err(&pdev->dev, "Failed to add imx-fiq-pcm-audio device\n");
-+				platform_device_put(ssi_private->imx_pcm_pdev);
-+				goto error_dev;
-+			}
-+		} else {
-+			ssi_private->imx_pcm_pdev =
-+				platform_device_register_simple("imx-pcm-audio",
- 							-1, NULL, 0);
--		if (IS_ERR(ssi_private->imx_pcm_pdev)) {
--			ret = PTR_ERR(ssi_private->imx_pcm_pdev);
--			goto error_dev;
-+			if (IS_ERR(ssi_private->imx_pcm_pdev)) {
-+				ret = PTR_ERR(ssi_private->imx_pcm_pdev);
-+				goto error_dev;
-+			}
- 		}
- 	}
+ static void stac92hd83xxx_fixup_headset_jack(struct hda_codec *codec,
+ 				   const struct hda_fixup *fix, int action)
+ {
+@@ -2101,6 +2111,7 @@ static void stac92hd83xxx_fixup_headset_jack(struct hda_codec *codec,
+ 		spec->headset_jack = 1;
+ }
  
++
+ static const struct hda_fixup stac92hd83xxx_fixups[] = {
+ 	[STAC_92HD83XXX_REF] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -2169,6 +2180,12 @@ static const struct hda_fixup stac92hd83xxx_fixups[] = {
+ 			{}
+ 		},
+ 	},
++	[STAC_HP_ENVY_15] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd83xxx_fixup_hp_envy_15,
++		.chained = true,
++		.chain_id = STAC_92HD83XXX_HP,
++	},
+ };
+ 
+ static const struct hda_model_fixup stac92hd83xxx_models[] = {
+@@ -2184,6 +2201,7 @@ static const struct hda_model_fixup stac92hd83xxx_models[] = {
+ 	{ .id = STAC_92HD83XXX_HP_MIC_LED, .name = "hp-mic-led" },
+ 	{ .id = STAC_92HD83XXX_HEADSET_JACK, .name = "headset-jack" },
+ 	{ .id = STAC_HP_ENVY_BASS, .name = "hp-envy-bass" },
++	{ .id = STAC_HP_ENVY_15, .name = "hp-envy-15" },
+ 	{}
+ };
+ 
+@@ -2269,6 +2287,8 @@ static const struct snd_pci_quirk stac92hd83xxx_fixup_tbl[] = {
+ 			  "HP Pavilion dv5", STAC_92HD83XXX_HP_INV_LED),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x148a,
+ 		      "HP Mini", STAC_92HD83XXX_HP_LED),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1688,
++			  "HP Envy 15", STAC_HP_ENVY_15),
+ 	SND_PCI_QUIRK_VENDOR(PCI_VENDOR_ID_HP, "HP", STAC_92HD83XXX_HP),
+ 	{} /* terminator */
+ };
+@@ -3968,6 +3988,7 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 
+ 	snd_hda_add_verbs(codec, stac92hd83xxx_core_init);
+ 
++
+ 	snd_hda_pick_fixup(codec, stac92hd83xxx_models, stac92hd83xxx_fixup_tbl,
+ 			   stac92hd83xxx_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
 -- 
-1.8.1.5
+1.8.1.2
