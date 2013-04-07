@@ -1,18 +1,17 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v2 10/11] ASoC: fsl: Move fsl-ssi binding
-	doc to sound/
-Date: Sun, 07 Apr 2013 19:20:20 -0500
-Message-ID: <51620D44.3030105@tabi.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 00/11] ASoC: fsl-ssi: ac97-slave support
+Date: Sun, 07 Apr 2013 21:39:31 +0200
+Message-ID: <5161CB73.4000302@metafoo.de>
 References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
- <1365362721-3731-11-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
- [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 3EE252651D0
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2013 02:20:23 +0200 (CEST)
-In-Reply-To: <1365362721-3731-11-git-send-email-mpa@pengutronix.de>
+Received: from smtp-out-249.synserver.de (smtp-out-251.synserver.de
+ [212.40.185.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D2DA265142
+ for <alsa-devel@alsa-project.org>; Sun,  7 Apr 2013 21:40:41 +0200 (CEST)
+In-Reply-To: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Markus Pargmann wrote:
-> fsl-ssi was located in powerpc/fsl/ssi.txt. This is no powerpc specific
-> device, so it should be moved to sound/ as it connects to differen audio
-> codecs.
+On 04/07/2013 09:25 PM, Markus Pargmann wrote:
+> Hi,
+> 
+> This series adds DT support for phycore-ac97 using the fsl-ssi driver. In
+> version 2 I discarded most of the imx-ssi work and integrated the ac97-slave
+> support in fsl-ssi, including support for imx-pcm-fiq as alternative to dma.
+> There are some other changes to get phycore-ac97 working. The first two patches
+> have notes about the detailed changes since version 1. The rest of the patches
+> is new and necessary for the ac97-slave support.
+> 
+> Regards,
+> 
+> Markus
+> 
 
-The only problem with this is that the driver supports two bindings, the 
-original binding and a newer one.  The original binding is used only on 
-PowerPC.
+Hi,
 
-I'm not sure that's relevant, though.
+The DMA PCM related changes won't apply anymore due to the recent dmaengine
+PCM cleanups. I've also been working on a more generic dmaengine PCM driver
+which has DT support and can be used by imx. The work in progress patches
+can be found here:
+https://github.com/lclausen-adi/linux-2.6/commits/asoc-dmaengine-cleanups
 
--- 
-Timur Tabi
+- Lars
+
+> 
+> Markus Pargmann (11):
+>   ASoC: phycore-ac97: Add DT support
+>   ASoC: imx-pcm-dma: Add support for DMA init by
+>   ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
+>   ASoC: fsl-ssi: Add SACNT definitions
+>   ASoC: fsl-ssi: Add support for imx-pcm-fiq
+>   ASoC: fsl-ssi: Setup generic imx dma params
+>   ARM: imx: Export ac97 reset functions
+>   ASoC: fsl-ssi: imx ac97 support
+>   ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
+>   ASoC: fsl: Move fsl-ssi binding doc to sound/
+>   ASoC: fsl: Update fsl-ssi binding doc
+> 
+>  Documentation/devicetree/bindings/powerpc/fsl/ssi.txt             |   73 -
+>  Documentation/devicetree/bindings/sound/fsl,ssi.txt               |   13 
+>  b/Documentation/devicetree/bindings/sound/fsl,ssi.txt             |   73 +
+>  b/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt |   12 
+>  b/arch/arm/mach-imx/mach-pca100.c                                 |    7 
+>  b/arch/arm/mach-imx/mach-pcm043.c                                 |    7 
+>  b/sound/soc/fsl/Kconfig                                           |    2 
+>  b/sound/soc/fsl/fsl_ssi.c                                         |   70 +
+>  b/sound/soc/fsl/fsl_ssi.h                                         |    8 
+>  b/sound/soc/fsl/imx-pcm-dma.c                                     |   31 
+>  b/sound/soc/fsl/imx-pcm-fiq.c                                     |   14 
+>  b/sound/soc/fsl/imx-pcm.h                                         |    6 
+>  b/sound/soc/fsl/imx-ssi.c                                         |    7 
+>  b/sound/soc/fsl/imx-ssi.h                                         |    1 
+>  b/sound/soc/fsl/phycore-ac97.c                                    |  185 ++++
+>  sound/soc/fsl/fsl_ssi.c                                           |  379 +++++++---
+>  sound/soc/fsl/imx-pcm.h                                           |    9 
+>  17 files changed, 664 insertions(+), 233 deletions(-)
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
