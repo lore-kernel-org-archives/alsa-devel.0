@@ -1,19 +1,13 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-cvslog] [ALSA GIT]ALSA utilities repository
- branch master updated. v1.0.26-26-ge05b903
-Date: Tue, 09 Apr 2013 18:38:31 +0200
-Message-ID: <51644407.9050503@perex.cz>
-References: <20130408125154.6264F2651CD@alsa0.perex.cz>
- <s5hbo9nyipb.wl%tiwai@suse.de> <51643937.5020602@perex.cz>
- <s5hhajfwuo8.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8903: Fix the bypass to HP/LINEOUT
+ when no DAC or ADC is running
+Date: Tue, 9 Apr 2013 17:44:38 +0100
+Message-ID: <20130409164438.GR9243@opensource.wolfsonmicro.com>
+References: <1365520439-15659-1-git-send-email-alban.bedel@avionic-design.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6871098085970718316=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id EF7C2265E50
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 18:38:31 +0200 (CEST)
-In-Reply-To: <s5hhajfwuo8.wl%tiwai@suse.de>
+In-Reply-To: <1365520439-15659-1-git-send-email-alban.bedel@avionic-design.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,107 +17,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alban Bedel <alban.bedel@avionic-design.de>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>
 List-Id: alsa-devel@alsa-project.org
 
-Date 9.4.2013 18:11, Takashi Iwai wrote:
-> At Tue, 09 Apr 2013 17:52:23 +0200,
-> Jaroslav Kysela wrote:
->>
->> Date 9.4.2013 14:47, Takashi Iwai wrote:
->>> At Mon,  8 Apr 2013 14:51:54 +0200 (CEST),
->>> GIT server wrote:
->>>>
->>>> This is an automated email from the git hooks/post-receive script. It was
->>>> generated because a ref change was pushed to the repository containing
->>>> the project "ALSA utilities repository".
->>>>
->>>> The branch, master has been updated
->>>>        via  e05b903b1fb16e967d838edac408304cd4470fee (commit)
->>>>       from  46cb355d4ff41c8065b02644b0534ab42d16cb72 (commit)
->>>>
->>>> Those revisions listed above that are new to this repository have
->>>> not appeared on any other notification email; so we list those
->>>> revisions in full, below.
->>>>
->>>> - Log -----------------------------------------------------------------
->>>> commit e05b903b1fb16e967d838edac408304cd4470fee
->>>> Author: Jaroslav Kysela <perex@perex.cz>
->>>> Date:   Mon Apr 8 14:49:31 2013 +0200
->>>>
->>>>     alsactl: move systemd config to the daemon mode
->>>>     
->>>>     Signed-off-by: Jaroslav Kysela <perex@perex.cz>
->>>
->>> I'm not thrilled by the silent default behavior change like this.
->>> This will affect all systems using systemd from now on.
->>>
->>> I understand the reason behind it, but I wonder whether it's an
->>> overkill.  Yet another daemon, unconditionally no matter whether
->>> hotplug or not?  Hmm...
->>
->> The question is, how we can detect the hotplug scheme. Almost all
->> systems have USB today and laptops have PCI express card slots, so....
->> Fedora has the systemd configs in the alsa-utils package. A removal of
->> this package is sufficient do disable the daemon.
-> 
-> Yes, but then this would break the formerly working environment, too.
-> 
->> Eventually, we can
->> save the state periodically using cron (without the changes tracking),
->> but my measurement is that the alsactl daemon eats approx. 150kb of memory.
-> 
-> I'm not concerned about alsactl memory footprint so much.
-> But having another daemon unconditionally just to save/restore the
-> mixer status is a question.
 
-Yes, it is. But it looks like the best (or at least easiest to manage)
-idea to solve the hotplug issues for the moment and we can optimize
-things later.
+--===============6871098085970718316==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tbn31orTZdSAVHoc"
+Content-Disposition: inline
 
->> Some other quick ideas:
->>
->> - make the static/hotplug schemes depending on an environment variable
->>   passed through the bootloader
 
-This variant seems most easy to implement using
-ConditionKernelCommandLine or ConditionPathExists (this second option
-may be probably better - a configuration file in /etc/alsa or so to
-change the state management behaviour looks good).
+--tbn31orTZdSAVHoc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> - another two packages on top of alsa-utils with two configs
-> 
-> Manageable, but maybe will become a bit messy...
-> 
->> - save the last state inside the driver and offer it to the userspace
->>   upon the card removal (seems overkill)
-> 
-> This won't be that bad, I think.  But, accessing the information after
-> removal is the problem, after all.  The device and proc files are
-> removed at disconnection, so user-space can't access it.  Otherwise
-> the normal "alsactl store" should have worked.  So this can't be a
-> card-basis interface.
-> 
-> A possible w/a would be that we can keep some stable ctl lists and
-> provide it as a (one-time) death message from a global proc or a sysfs
-> file, for example.  Then we don't need periodical sync.
-> 
-> Whether this is a better option?  I dunno, honestly, too...
-> 
->> - run multiple daemon instances per hotplug card; the question is how
->>   to detect the static card in the system (perhaps checking the PCI
->>   config?) to avoid the daemon startup for those static cards
-> 
-> Yeah, when thinking a PCI hotplug, it's not easy.
+On Tue, Apr 09, 2013 at 05:13:59PM +0200, Alban Bedel wrote:
+> The Charge Pump needs the DSP clock to work properly, without it the
+> bypass to HP/LINEOUT is not working properly. This requirement is not
+> mentioned in the datasheet but has been confirmed by Mark Brown from
+> Wolfson.
 
-I will add the ConditionPathExists=/etc/alsa/state-static.conf and
-ConditionPathExists=/etc/alsa/state-daemon.conf conditions and put back
-the old static config files, if no better idea is offered.
+Applied, thanks.
 
-					Jaroslav
+--tbn31orTZdSAVHoc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRZEVrAAoJELSic+t+oim9SFEP/3Tmad5GOfC0hxR1y1emyWZn
+R4mMDI8FMWG0+RmyewXvotT0MquezHg4s8aZ1yFoRwPGyjMP6dDal9Gcoz1Fk5jt
+BtyI4aHTMJuI1zMcbDnaoiymJ8xJpRw93kDjSUTl5ECo/I24Oj1ErXyFS9t2RDwC
+nBs7m0PvuYNaf1JOcfX5si4aj8gACgsYD+WhQ7DRVBfTPZQvjzJT9ac9ELTTtKTC
+X395utBLM2JvUxmEPxQvLzPxZQXjTfIt/njNXuohcnvjwNp7LE4YnlOLj6VBqF6V
+2bxyJ+xE92WG98bOKN2y60cjYgqGP6YSP3kwcEza91WJLttebe5ydeGd0/qRoF2H
+rl4BOikgG0vYuvrdfICKq6FxaGeydUe4oFTOlsH2Px0gZYyURgWvkPBbPZI5zgo+
+woFFKcZdKl478VmTjJx4PTQije2xg7z4ALS0A3LEmzeuXY5MubfGsU/eXUgF6p3j
+yFw0Ru6yO7020K5CwFJgb3lU8JgNhcwwJvIKevhMbmHiD9Gxvq1Qe6owPK71UA86
+wANzZanaOagYj4pC412KCBt32pShIARe6PD7rN1kZiVcnom48SsvnvVEyRGAtro9
+gsbS9ibW0HDLYR0qgrEf7KIJWCagyzqCqDSMrjk0lufFI/RP5ADndz9PR1FK/N/n
+mi61K0SOjF78h+C0utah
+=Y8sU
+-----END PGP SIGNATURE-----
+
+--tbn31orTZdSAVHoc--
+
+--===============6871098085970718316==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6871098085970718316==--
