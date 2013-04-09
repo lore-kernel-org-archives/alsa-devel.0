@@ -1,22 +1,17 @@
 From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH] ALSA: hda - Apply codec delay to wallclock.
-Date: Mon, 8 Apr 2013 17:05:35 -0700
-Message-ID: <CAEUnVG6LT+v8ne7UVTrsaihiMoEbHvOO8yAibbh-pnCHvgf-Bg@mail.gmail.com>
-References: <1365207724-6288-1-git-send-email-dgreid@chromium.org>
- <5162F0D0.7050402@linux.intel.com> <s5hy5ctx9po.wl%tiwai@suse.de>
- <CAEUnVG5Q05mtQSs=2=rMspUfMRYm8gS3G+FQRLZTWQq=Aap_rQ@mail.gmail.com>
- <5163549F.1050304@linux.intel.com>
+Subject: [PATCH v2] ALSA: hda - Apply codec delay to wallclock.
+Date: Mon,  8 Apr 2013 18:20:30 -0700
+Message-ID: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f179.google.com (mail-ea0-f179.google.com
- [209.85.215.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FE06265D26
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 02:05:56 +0200 (CEST)
-Received: by mail-ea0-f179.google.com with SMTP id f15so2523948eak.10
- for <alsa-devel@alsa-project.org>; Mon, 08 Apr 2013 17:05:56 -0700 (PDT)
-In-Reply-To: <5163549F.1050304@linux.intel.com>
+Received: from mail-ob0-f202.google.com (mail-ob0-f202.google.com
+ [209.85.214.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0198265D3B
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 03:20:34 +0200 (CEST)
+Received: by mail-ob0-f202.google.com with SMTP id va7so509154obc.5
+ for <alsa-devel@alsa-project.org>; Mon, 08 Apr 2013 18:20:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 8, 2013 at 4:37 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->> Of course you're right.  That's annoying, it will have to convert from
->> ms to frames (in get_delay) then to ns here.  Converting from frames
->> to ns here is a better idea, but for this particular codec, all I have
->> is ms resolution.
->
->
-> This is odd, looks completely arbitrary...
+For playback add the codec-side delay to the timestamp, for capture
+subtract it.  This brings the timestamps in line with the time that
+was recently added to the delay reporting.
 
-It does, I'll change this patch to convert from frames to ns, and
-check to see if the codec vendor can supply more accurate DSP latency
-numbers.
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+Changes since v1:
+Calculate nsec from frames, subtract delay for playback as well as
+capture.
 
->
->
->> Pierre,
->> What should the capture timestamp represent?  When the sample hits the
->> A-to-D or when it is read out of the buffer?
->
->
-> When the samples hit A-to-D, as close as possible to the input (or the
-> serial link if the codec doesn't report delay)
+ sound/pci/hda/hda_intel.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-OK, the codec latency will be subtracted from both the playback and
-capture times.
-
-Thanks for the clarifications!
-
--dg
-
-> -Pierre
->
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 735567e..3e6f2c6 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1889,6 +1889,23 @@ static void azx_timecounter_init(struct snd_pcm_substream *substream,
+ 		tc->cycle_last = last;
+ }
+ 
++static u64 azx_subtract_codec_delay(struct snd_pcm_substream *substream,
++				u64 nsec)
++{
++	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
++	struct hda_pcm_stream *hinfo = apcm->hinfo[substream->stream];
++	u64 codec_frames, codec_nsecs;
++
++	if (!hinfo->ops.get_delay)
++		return nsec;
++
++	codec_frames = hinfo->ops.get_delay(hinfo, apcm->codec, substream);
++	codec_nsecs = div_u64(codec_frames * 1000000000LL,
++			      substream->runtime->rate);
++
++	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
++}
++
+ static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
+ 				struct timespec *ts)
+ {
+@@ -1897,6 +1914,7 @@ static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
+ 
+ 	nsec = timecounter_read(&azx_dev->azx_tc);
+ 	nsec = div_u64(nsec, 3); /* can be optimized */
++	nsec = azx_subtract_codec_delay(substream, nsec);
+ 
+ 	*ts = ns_to_timespec(nsec);
+ 
+-- 
+1.8.1.3.605.g02339dd
