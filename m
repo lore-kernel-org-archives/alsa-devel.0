@@ -1,15 +1,15 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v2 1/3] ALSA: hda - add new function
-	snd_hda_bus_reset() for codec communitation error
-Date: Tue,  9 Apr 2013 08:24:17 -0400
-Message-ID: <1365510257-12285-1-git-send-email-mengdong.lin@intel.com>
+Subject: [PATCH v2 2/3] ALSA: hda - system resume may delay
+	resuming a codec
+Date: Tue,  9 Apr 2013 08:24:32 -0400
+Message-ID: <1365510272-12325-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4450E265D52
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 07:17:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 18A1F265D57
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 07:17:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,80 +25,50 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-A new function snd_hda_bus_reset() is defined to reset all codecs on the bus.
-This is implemented as temporary suspend-and-resume calls to codecs as an
-ad hoc solution.
+On system resume, a codec may not be ready to resume for some external
+dependency. e.g. Intel Haswell HDMI codec depends on Gfx to initialize the
+display pipeline before the codec can resume.
 
-It will be called by bus reset ops azx_bus_reset() as a rescue of codec
-communitation error, replacing calls to snd_hda_suspend and snd_hda_resume.
+To avoid the external dependency blocking system resume, this patch allow
+system resume ops "snd_hda_resume" skip a not ready codec and mark it as
+"resume delayed". So the codec resume is delayed until later codec access,
+assuming the external dependency may be resolved and waiting is acceptable
+at that time.
 
-It's because snd_hda_resume need change for system resume: It will delay
-resuming a codec that is not ready to resume for some external dependency, to
-avoid blocking system resume. But this change of "delay resume" is not suitable
-for recovering from codec communication error, which need resume the codec
-immediately after suspend to simulate a bus reset.
+A codec that needs delaying resume shall explicitly set "support_delay_resume"
+flag on initialization in its patch ops. And it's up to the codec when it's
+ready and how to finish the delayed resume.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 17286b3..ba147d7 100644
+index ba147d7..81e91b8 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -5523,6 +5523,29 @@ int snd_hda_resume(struct hda_bus *bus)
+@@ -5518,7 +5518,10 @@ int snd_hda_resume(struct hda_bus *bus)
+ 	struct hda_codec *codec;
+ 
+ 	list_for_each_entry(codec, &bus->codec_list, list) {
+-		hda_call_codec_resume(codec);
++		if (codec->support_delay_resume)
++			codec->resume_delayed = 1;
++		else
++			hda_call_codec_resume(codec);
+ 	}
  	return 0;
  }
- EXPORT_SYMBOL_HDA(snd_hda_resume);
-+
-+/**
-+ * snd_hda_bus_reset - reset the codecs on the bus.
-+ * @bus: the HDA bus
-+ *
-+ * This is implemented as temporary suspend-and-resume calls
-+ * to codecs as an ad hoc solution.
-+ *
-+ * Returns 0 if successful.
-+ */
-+int snd_hda_bus_reset(struct hda_bus *bus)
-+{
-+	struct hda_codec *codec;
-+
-+	list_for_each_entry(codec, &bus->codec_list, list) {
-+		cancel_delayed_work_sync(&codec->jackpoll_work);
-+		if (hda_codec_is_power_on(codec))
-+			hda_call_codec_suspend(codec, false);
-+		hda_call_codec_resume(codec);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_HDA(snd_hda_bus_reset);
- #endif /* CONFIG_PM */
- 
- /*
 diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index c93f902..6061360 100644
+index 6061360..5fe7362 100644
 --- a/sound/pci/hda/hda_codec.h
 +++ b/sound/pci/hda/hda_codec.h
-@@ -1076,6 +1076,7 @@ void snd_hda_unlock_devices(struct hda_bus *bus);
- #ifdef CONFIG_PM
- int snd_hda_suspend(struct hda_bus *bus);
- int snd_hda_resume(struct hda_bus *bus);
-+int snd_hda_bus_reset(struct hda_bus *bus);
- #endif
- 
- static inline
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 735567e..6f11c7a 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1659,8 +1659,7 @@ static void azx_bus_reset(struct hda_bus *bus)
- 		struct azx_pcm *p;
- 		list_for_each_entry(p, &chip->pcm_list, list)
- 			snd_pcm_suspend_all(p->pcm);
--		snd_hda_suspend(chip->bus);
--		snd_hda_resume(chip->bus);
-+		snd_hda_bus_reset(chip->bus);
- 	}
- #endif
- 	bus->in_reset = 0;
+@@ -889,6 +889,8 @@ struct hda_codec {
+ 	unsigned int d3_stop_clk:1;	/* support D3 operation without BCLK */
+ 	unsigned int pm_down_notified:1; /* PM notified to controller */
+ 	unsigned int in_pm:1;		/* suspend/resume being performed */
++	unsigned int support_delay_resume:1; /* codec support delay resume */
++	unsigned int resume_delayed:1; /* resume delayed by PM */
+ 	int power_transition;	/* power-state in transition */
+ 	int power_count;	/* current (global) power refcount */
+ 	struct delayed_work power_work; /* delayed task for powerdown */
 -- 
 1.7.10.4
