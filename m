@@ -1,17 +1,15 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH v2] ALSA: hda - Apply codec delay to wallclock.
-Date: Mon,  8 Apr 2013 18:20:30 -0700
-Message-ID: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 1/3] ALSA: hda - add new function
+	snd_hda_bus_reset() for codec communitation error
+Date: Tue,  9 Apr 2013 08:24:17 -0400
+Message-ID: <1365510257-12285-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f202.google.com (mail-ob0-f202.google.com
- [209.85.214.202])
- by alsa0.perex.cz (Postfix) with ESMTP id E0198265D3B
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 03:20:34 +0200 (CEST)
-Received: by mail-ob0-f202.google.com with SMTP id va7so509154obc.5
- for <alsa-devel@alsa-project.org>; Mon, 08 Apr 2013 18:20:33 -0700 (PDT)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4450E265D52
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 07:17:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +19,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, pierre-louis.bossart@linux.intel.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For playback add the codec-side delay to the timestamp, for capture
-subtract it.  This brings the timestamps in line with the time that
-was recently added to the delay reporting.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
----
-Changes since v1:
-Calculate nsec from frames, subtract delay for playback as well as
-capture.
+A new function snd_hda_bus_reset() is defined to reset all codecs on the bus.
+This is implemented as temporary suspend-and-resume calls to codecs as an
+ad hoc solution.
 
- sound/pci/hda/hda_intel.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+It will be called by bus reset ops azx_bus_reset() as a rescue of codec
+communitation error, replacing calls to snd_hda_suspend and snd_hda_resume.
 
+It's because snd_hda_resume need change for system resume: It will delay
+resuming a codec that is not ready to resume for some external dependency, to
+avoid blocking system resume. But this change of "delay resume" is not suitable
+for recovering from codec communication error, which need resume the codec
+immediately after suspend to simulate a bus reset.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 17286b3..ba147d7 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -5523,6 +5523,29 @@ int snd_hda_resume(struct hda_bus *bus)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_resume);
++
++/**
++ * snd_hda_bus_reset - reset the codecs on the bus.
++ * @bus: the HDA bus
++ *
++ * This is implemented as temporary suspend-and-resume calls
++ * to codecs as an ad hoc solution.
++ *
++ * Returns 0 if successful.
++ */
++int snd_hda_bus_reset(struct hda_bus *bus)
++{
++	struct hda_codec *codec;
++
++	list_for_each_entry(codec, &bus->codec_list, list) {
++		cancel_delayed_work_sync(&codec->jackpoll_work);
++		if (hda_codec_is_power_on(codec))
++			hda_call_codec_suspend(codec, false);
++		hda_call_codec_resume(codec);
++	}
++	return 0;
++}
++EXPORT_SYMBOL_HDA(snd_hda_bus_reset);
+ #endif /* CONFIG_PM */
+ 
+ /*
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index c93f902..6061360 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -1076,6 +1076,7 @@ void snd_hda_unlock_devices(struct hda_bus *bus);
+ #ifdef CONFIG_PM
+ int snd_hda_suspend(struct hda_bus *bus);
+ int snd_hda_resume(struct hda_bus *bus);
++int snd_hda_bus_reset(struct hda_bus *bus);
+ #endif
+ 
+ static inline
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 735567e..3e6f2c6 100644
+index 735567e..6f11c7a 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1889,6 +1889,23 @@ static void azx_timecounter_init(struct snd_pcm_substream *substream,
- 		tc->cycle_last = last;
- }
- 
-+static u64 azx_subtract_codec_delay(struct snd_pcm_substream *substream,
-+				u64 nsec)
-+{
-+	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
-+	struct hda_pcm_stream *hinfo = apcm->hinfo[substream->stream];
-+	u64 codec_frames, codec_nsecs;
-+
-+	if (!hinfo->ops.get_delay)
-+		return nsec;
-+
-+	codec_frames = hinfo->ops.get_delay(hinfo, apcm->codec, substream);
-+	codec_nsecs = div_u64(codec_frames * 1000000000LL,
-+			      substream->runtime->rate);
-+
-+	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
-+}
-+
- static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
- 				struct timespec *ts)
- {
-@@ -1897,6 +1914,7 @@ static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
- 
- 	nsec = timecounter_read(&azx_dev->azx_tc);
- 	nsec = div_u64(nsec, 3); /* can be optimized */
-+	nsec = azx_subtract_codec_delay(substream, nsec);
- 
- 	*ts = ns_to_timespec(nsec);
- 
+@@ -1659,8 +1659,7 @@ static void azx_bus_reset(struct hda_bus *bus)
+ 		struct azx_pcm *p;
+ 		list_for_each_entry(p, &chip->pcm_list, list)
+ 			snd_pcm_suspend_all(p->pcm);
+-		snd_hda_suspend(chip->bus);
+-		snd_hda_resume(chip->bus);
++		snd_hda_bus_reset(chip->bus);
+ 	}
+ #endif
+ 	bus->in_reset = 0;
 -- 
-1.8.1.3.605.g02339dd
+1.7.10.4
