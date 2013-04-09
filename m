@@ -1,14 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: wm8903: Fix the bypass to
- HP/LINEOUT when no DAC or ADC is running
-Date: Tue, 9 Apr 2013 15:33:12 +0100
-Message-ID: <20130409143312.GQ9243@opensource.wolfsonmicro.com>
-References: <1363797453-24723-1-git-send-email-alban.bedel@avionic-design.de>
- <1363797453-24723-2-git-send-email-alban.bedel@avionic-design.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [alsa-cvslog] [ALSA GIT]ALSA utilities repository
+ branch master updated. v1.0.26-26-ge05b903
+Date: Tue, 09 Apr 2013 17:52:23 +0200
+Message-ID: <51643937.5020602@perex.cz>
+References: <20130408125154.6264F2651CD@alsa0.perex.cz>
+ <s5hbo9nyipb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1248072299386288839=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1363797453-24723-2-git-send-email-alban.bedel@avionic-design.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 352C8265E3E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 17:52:26 +0200 (CEST)
+In-Reply-To: <s5hbo9nyipb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,69 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alban Bedel <alban.bedel@avionic-design.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Grant Likely <grant.likely@secretlab.ca>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 9.4.2013 14:47, Takashi Iwai wrote:
+> At Mon,  8 Apr 2013 14:51:54 +0200 (CEST),
+> GIT server wrote:
+>>
+>> This is an automated email from the git hooks/post-receive script. It was
+>> generated because a ref change was pushed to the repository containing
+>> the project "ALSA utilities repository".
+>>
+>> The branch, master has been updated
+>>        via  e05b903b1fb16e967d838edac408304cd4470fee (commit)
+>>       from  46cb355d4ff41c8065b02644b0534ab42d16cb72 (commit)
+>>
+>> Those revisions listed above that are new to this repository have
+>> not appeared on any other notification email; so we list those
+>> revisions in full, below.
+>>
+>> - Log -----------------------------------------------------------------
+>> commit e05b903b1fb16e967d838edac408304cd4470fee
+>> Author: Jaroslav Kysela <perex@perex.cz>
+>> Date:   Mon Apr 8 14:49:31 2013 +0200
+>>
+>>     alsactl: move systemd config to the daemon mode
+>>     
+>>     Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> 
+> I'm not thrilled by the silent default behavior change like this.
+> This will affect all systems using systemd from now on.
+> 
+> I understand the reason behind it, but I wonder whether it's an
+> overkill.  Yet another daemon, unconditionally no matter whether
+> hotplug or not?  Hmm...
 
---===============1248072299386288839==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U7F658e60E1K4csu"
-Content-Disposition: inline
+The question is, how we can detect the hotplug scheme. Almost all
+systems have USB today and laptops have PCI express card slots, so....
+Fedora has the systemd configs in the alsa-utils package. A removal of
+this package is sufficient do disable the daemon. Eventually, we can
+save the state periodically using cron (without the changes tracking),
+but my measurement is that the alsactl daemon eats approx. 150kb of memory.
 
+Some other quick ideas:
 
---U7F658e60E1K4csu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+- make the static/hotplug schemes depending on an environment variable
+  passed through the bootloader
+- another two packages on top of alsa-utils with two configs
+- save the last state inside the driver and offer it to the userspace
+  upon the card removal (seems overkill)
+- run multiple daemon instances per hotplug card; the question is how
+  to detect the static card in the system (perhaps checking the PCI
+  config?) to avoid the daemon startup for those static cards
 
-On Wed, Mar 20, 2013 at 05:37:33PM +0100, Alban Bedel wrote:
+					Jaroslav
 
-> output enable sequence requiere the DSP clock. Some input from Wolfson
-> will be needed to find out if this is just an undocumented requirement
-> or a chip bug.
-
-It seems it's an undocumented requirement.
-
-> +	{ "Left Output Mixer", "Left Bypass Switch", "CLK_DSP" },
-> +	{ "Left Output Mixer", "Right Bypass Switch", "CLK_DSP" },
-> +	{ "Right Output Mixer", "Left Bypass Switch", "CLK_DSP" },
-> +	{ "Right Output Mixer", "Right Bypass Switch", "CLK_DSP" },
-
-The actual change here should be to add a route:
-
-	{ "Charge Pump", NULL, "CLK_DSP" },
-
-Can you submit an update for this or should I do one?
-
---U7F658e60E1K4csu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRZCZpAAoJELSic+t+oim9WpsP/2vMxfyWMVzW22aX34Nw1cEA
-LvEJoINgmbZsPPBuG2kf0Via+s0jUOuEeIqQNIUHTErL1tHyTwh6PjNS7sag0KNv
-pOk2xMbiE9k43OhlZCOXagfHqnSi17K2/FEBKA+1DObFnKm8VLzprVp5O6lotgA1
-ESROE8r98bdwUu+pfOtLd8ArJfoURoTWzlWHqrjM3IBaiavI6sPUhnXkRhF3QZly
-U5hn5u6lqJ7mwOFwO+NVlGBDjm6yoI9MraTdbyM1/N6X4JtOBvU1s/OCNvi20VYv
-VQU3vdMGF+NYqABO6BYSl3aA3B1M2iXFA/LTIFAr2Ny1F44fNB6EoLQEkgdqEhl3
-L6EhPho1xsyqbbuKFB2uDg4m5A8w4TFJkOomgJqLtMMgORSF+BCNwY/WAzlVp60I
-gdJ6ElxpbazK77UKGit0vaCHb2OBo+SlOZS8fW9g7kbsn8/4dXm0OmZP3NnEFj0r
-M9tFcp0O/j7wwmPMkDFFWPIglr89lLff4WONBVDB3eqUboLdE2zooy/EFWflcpXq
-g08wIstdZbX+N7MyMddjyPn14xpsLEhHuP1rz4gytaCTBlBPYmcsoJe3wL5K90FG
-0AYpzu1yYESCJVFKw1DQHMU4JjlQHaXPA4E9dMIrzHV0/pRsUvJFkuRqRRN4p0vC
-UhUiSeZZOvNd6jN9oCQI
-=RtLk
------END PGP SIGNATURE-----
-
---U7F658e60E1K4csu--
-
---===============1248072299386288839==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1248072299386288839==--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
