@@ -1,19 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/3] ASoC: soc-compress: Split copy into
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ALSA: compress_core: Split copy into
  seperate read and write callbacks
-Date: Tue, 9 Apr 2013 16:45:51 +0530
-Message-ID: <20130409111551.GG31193@intel.com>
+Date: Tue, 9 Apr 2013 12:47:28 +0100
+Message-ID: <20130409114727.GP9243@opensource.wolfsonmicro.com>
 References: <1364991209-24653-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1364991209-24653-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1364991209-24653-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <515DC015.7040704@linux.intel.com>
+ <20130405082344.GA20026@opensource.wolfsonmicro.com>
+ <20130409111507.GF31193@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4503332843360346105=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id A854F265DF1
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 13:44:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1364991209-24653-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2016A265DF7
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 13:47:30 +0200 (CEST)
+In-Reply-To: <20130409111507.GF31193@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,85 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.jf.intel.com>, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 03, 2013 at 01:13:29PM +0100, Charles Keepax wrote:
-> The compress API for non-memory mapped DSPs shares a copy callback for
-> both read and write, however the file operation of write passes a const
-> buffer. Thus we can't maintain const correctness for the copy callback
-> and support both read and write.
-This should be part of 2nd patch, you break bisect by not doing so...
 
-> 
-> This patch seperates the read and write callbacks in the ASoC compressed
-> API.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-compress.c |   34 +++++++++++++++++++++++++++-------
->  1 files changed, 27 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-> index f9b2197..0148d82 100644
-> --- a/sound/soc/soc-compress.c
-> +++ b/sound/soc/soc-compress.c
-> @@ -306,8 +306,8 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
->  	return 0;
->  }
->  
-> -static int soc_compr_copy(struct snd_compr_stream *cstream,
-> -			  const char __user *buf, size_t count)
-> +static int soc_compr_write(struct snd_compr_stream *cstream,
-> +			   const char __user *buf, size_t count)
->  {
->  	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
->  	struct snd_soc_platform *platform = rtd->platform;
-> @@ -315,8 +315,24 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
->  
->  	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
->  
-> -	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
-> -		ret = platform->driver->compr_ops->copy(cstream, buf, count);
-> +	if (platform->driver->compr_ops && platform->driver->compr_ops->write)
-> +		ret = platform->driver->compr_ops->write(cstream, buf, count);
-> +
-> +	mutex_unlock(&rtd->pcm_mutex);
-> +	return ret;
-> +}
-> +
-> +static int soc_compr_read(struct snd_compr_stream *cstream,
-> +			  char __user *buf, size_t count)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-> +	struct snd_soc_platform *platform = rtd->platform;
-> +	int ret = 0;
-> +
-> +	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-> +
-> +	if (platform->driver->compr_ops && platform->driver->compr_ops->read)
-> +		ret = platform->driver->compr_ops->read(cstream, buf, count);
->  
->  	mutex_unlock(&rtd->pcm_mutex);
->  	return ret;
-> @@ -392,9 +408,13 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
->  	}
->  	memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
->  
-> -	/* Add copy callback for not memory mapped DSPs */
-> -	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
-> -		compr->ops->copy = soc_compr_copy;
-> +	/* Add write/read callback for not memory mapped DSPs */
-> +	if (platform->driver->compr_ops) {
-> +		if (platform->driver->compr_ops->write)
-> +			compr->ops->write = soc_compr_write;
-> +		if (platform->driver->compr_ops->read)
-> +			compr->ops->read = soc_compr_read;
-> +	}
->  
->  	mutex_init(&compr->lock);
->  	ret = snd_compress_new(rtd->card->snd_card, num, direction, compr);
-> -- 
-> 1.7.2.5
-> 
+--===============4503332843360346105==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MI2pJyvBeFc4alSb"
+Content-Disposition: inline
+
+
+--MI2pJyvBeFc4alSb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 09, 2013 at 04:45:07PM +0530, Vinod Koul wrote:
+> On Fri, Apr 05, 2013 at 09:23:45AM +0100, Charles Keepax wrote:
+> > On Thu, Apr 04, 2013 at 01:01:57PM -0500, Pierre-Louis Bossart wrote:
+
+> > > Why not remove the const to make this consistent with the PCM interface?
+
+> > I had been trying to avoid loosing the const from the write file
+> > operation, however I am happy to just loose this through casting
+> > instead. It is certainly a simpler change I will respin these to
+> > do so.
+
+> Keeping const of write seems to be a better idea... Ah i cant decide :(
+> I will asker wiser folks... Takashi, Mark?
+
+I generally prefer the const correctness, but on the other hand Pierre
+is right about the PCM interface and it's probably more trouble than
+it's worth to change that.  So meh, dunno :/
+
+--MI2pJyvBeFc4alSb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRY/+8AAoJELSic+t+oim9U6AP/2TFDFFuDXQWKivxWiJG1115
+1Jj8FENvZgRfQNSBdYm1O2RYyfvTvZhwEzf4pl1zLgtCI6crnyFBqa/0Bp3ltU1Z
+PH+nXM3bOKkOF1r890fxsy4tQ5PJS+oCXYXGLAfBOJncBGLtwa8y5N0HFzkUht1x
+Zgp3V4J9ntcWjgJmz6w2T+Z7UpaNEP6CVtZXZ95HRGHJVw1dQsrWnaQZO7Mpa+8X
+4xNwuq3uB+UlrdcZuMb1gJaONV4b67dC4xtEQ1Wr7k6G3qf+eL5GPPIibkCJviLA
+jvXBbpyzCNeJC0PPq2hfDy/G6S2zvmnyu7/lwfzf2lOuLhL5UGyCxF8jx6xDCGdD
+D/98lcMnMTUsxTwqx+NHK3YIm/RyMbv7+dbA0fIJu+jDbYF1nUyOMZ8exBN9vd5U
+wXHCw+FA4eLJ1ncTeYfmvL8GQ4fxYNd0kBTSLd6scu0tjP3vWCUpfhVmiC1x1Hlp
+41Vs0q2IdhL6uV7eeOKKH8ZFSL5KXpf7Lzhjhj4eNLXA7RTSgXrzCbDSPy2uh76p
+3LeWGCde9VSg7ehuBfvh6pbv0aWNRbuRF6O13xgGis2ZBt7iZ8ICMBaEve+aBHKw
+WRyOsM9bJrz9ZERi3vDWT8bcQ2fbFcRTDWReRV35zsLIXzdnI3oBfTapbs6uae4D
+3wr8A3/IpYjudGupOMmR
+=yNZc
+-----END PGP SIGNATURE-----
+
+--MI2pJyvBeFc4alSb--
+
+--===============4503332843360346105==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4503332843360346105==--
