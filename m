@@ -1,15 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: snd-usb: Playback Design: use
-	usb_set_inferface quirk from more locations
-Date: Wed, 10 Apr 2013 00:56:03 +0800
-Message-ID: <1365526563-19149-1-git-send-email-zonque@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [alsa-cvslog] [ALSA GIT]ALSA utilities repository
+ branch master updated. v1.0.26-26-ge05b903
+Date: Tue, 09 Apr 2013 22:07:03 +0200
+Message-ID: <516474E7.1030501@canonical.com>
+References: <20130408125154.6264F2651CD@alsa0.perex.cz>
+ <s5hbo9nyipb.wl%tiwai@suse.de> <51643937.5020602@perex.cz>
+ <s5hhajfwuo8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EE0C265E50
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 18:56:12 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2B5E265E77
+ for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 22:07:04 +0200 (CEST)
+In-Reply-To: <s5hhajfwuo8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,94 +24,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It turns out the devices from Playback Design need the delay quirk
-after usb_set_interface from clocks.c as well. Make it a proper
-quirks function and factor out the code to quirks.c.
+On 04/09/2013 06:11 PM, Takashi Iwai wrote:
+> At Tue, 09 Apr 2013 17:52:23 +0200,
+> Jaroslav Kysela wrote:
+>>
+>> Date 9.4.2013 14:47, Takashi Iwai wrote:
+>>> At Mon,  8 Apr 2013 14:51:54 +0200 (CEST),
+>>> GIT server wrote:
+>>>>
+>>>> This is an automated email from the git hooks/post-receive script. It was
+>>>> generated because a ref change was pushed to the repository containing
+>>>> the project "ALSA utilities repository".
+>>>>
+>>>> The branch, master has been updated
+>>>>         via  e05b903b1fb16e967d838edac408304cd4470fee (commit)
+>>>>        from  46cb355d4ff41c8065b02644b0534ab42d16cb72 (commit)
+>>>>
+>>>> Those revisions listed above that are new to this repository have
+>>>> not appeared on any other notification email; so we list those
+>>>> revisions in full, below.
+>>>>
+>>>> - Log -----------------------------------------------------------------
+>>>> commit e05b903b1fb16e967d838edac408304cd4470fee
+>>>> Author: Jaroslav Kysela <perex@perex.cz>
+>>>> Date:   Mon Apr 8 14:49:31 2013 +0200
+>>>>
+>>>>      alsactl: move systemd config to the daemon mode
+>>>>
+>>>>      Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>>>
+>>> I'm not thrilled by the silent default behavior change like this.
+>>> This will affect all systems using systemd from now on.
+>>>
+>>> I understand the reason behind it, but I wonder whether it's an
+>>> overkill.  Yet another daemon, unconditionally no matter whether
+>>> hotplug or not?  Hmm...
+>>
+>> The question is, how we can detect the hotplug scheme. Almost all
+>> systems have USB today and laptops have PCI express card slots, so....
+>> Fedora has the systemd configs in the alsa-utils package. A removal of
+>> this package is sufficient do disable the daemon.
+>
+> Yes, but then this would break the formerly working environment, too.
+>
+>> Eventually, we can
+>> save the state periodically using cron (without the changes tracking),
+>> but my measurement is that the alsactl daemon eats approx. 150kb of memory.
+>
+> I'm not concerned about alsactl memory footprint so much.
+> But having another daemon unconditionally just to save/restore the
+> mixer status is a question.
+>
+>> Some other quick ideas:
+>>
+>> - make the static/hotplug schemes depending on an environment variable
+>>    passed through the bootloader
+>> - another two packages on top of alsa-utils with two configs
+>
+> Manageable, but maybe will become a bit messy...
+>
+>> - save the last state inside the driver and offer it to the userspace
+>>    upon the card removal (seems overkill)
+>
+> This won't be that bad, I think.  But, accessing the information after
+> removal is the problem, after all.  The device and proc files are
+> removed at disconnection, so user-space can't access it.  Otherwise
+> the normal "alsactl store" should have worked.  So this can't be a
+> card-basis interface.
+>
+> A possible w/a would be that we can keep some stable ctl lists and
+> provide it as a (one-time) death message from a global proc or a sysfs
+> file, for example.  Then we don't need periodical sync.
+>
+> Whether this is a better option?  I dunno, honestly, too...
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/usb/clock.c  |    3 +++
- sound/usb/pcm.c    |    7 +------
- sound/usb/quirks.c |   10 ++++++++++
- sound/usb/quirks.h |    1 +
- 4 files changed, 15 insertions(+), 6 deletions(-)
+Coming from a non-systemd world...
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index ae35e7d..b0ec364 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -32,6 +32,7 @@
- #include "card.h"
- #include "helper.h"
- #include "clock.h"
-+#include "quirks.h"
- 
- static struct uac_clock_source_descriptor *
- 	snd_usb_find_clock_source(struct usb_host_interface *ctrl_iface,
-@@ -392,7 +393,9 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 	 * interface is active. */
- 	if (rate != prev_rate) {
- 		usb_set_interface(dev, iface, 0);
-+		snd_usb_set_interface_quirk(dev);
- 		usb_set_interface(dev, iface, fmt->altsetting);
-+		snd_usb_set_interface_quirk(dev);
- 	}
- 
- 	return 0;
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 754cb5b..815a37d 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -349,12 +349,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 		subs->interface = fmt->iface;
- 		subs->altset_idx = fmt->altset_idx;
- 
--		/*
--		 * "Playback Design" products need a 50ms delay after setting the
--		 * USB interface.
--		 */
--		if (le16_to_cpu(dev->descriptor.idVendor) == 0x23ba)
--			mdelay(50);
-+		snd_usb_set_interface_quirk(dev);
- 	}
- 
- 	subs->data_endpoint = snd_usb_add_endpoint(subs->stream->chip,
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 7882a82..551ae1a 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -892,6 +892,16 @@ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
- 		ep->skip_packets = 16;
- }
- 
-+void snd_usb_set_interface_quirk(struct usb_device *dev)
-+{
-+	/*
-+	 * "Playback Design" products need a 50ms delay after setting the
-+	 * USB interface.
-+	 */
-+	if (le16_to_cpu(dev->descriptor.idVendor) == 0x23ba)
-+		mdelay(50);
-+}
-+
- void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
- 			   __u16 index, void *data, __u16 size)
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index f10d00e..665e972 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -26,6 +26,7 @@ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip,
- 
- void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep);
- 
-+void snd_usb_set_interface_quirk(struct usb_device *dev);
- void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
- 			   __u16 index, void *data, __u16 size);
+Is the problem you're trying to solve that mixer state is not saved on 
+hot-unplug; and if so, is this not working for non-systemd installations 
+either then? Or is it systemd that causes this problem?
+
+I was expecting that when you unplug something, some kind of synchronous 
+udev event was fired, which could read the current mixer state and save 
+it, before it all goes away. But perhaps this was too optimistic...
+
+FWIW; another option is never to save it unless explicitly requested by 
+the user. There is definitely a use case where you want to avoid any 
+sound on bootup, e g if you often boot up your computer in a student 
+class - regardless of what it was when you turned it off earlier you 
+want silence on boot.
+
+(And now we haven't even touched PulseAudio's own save/restore volume 
+stuff...)
+
+
 -- 
-1.7.10.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
