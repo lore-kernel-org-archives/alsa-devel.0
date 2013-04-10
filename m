@@ -1,20 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [alsa-cvslog] [ALSA GIT]ALSA utilities repository
- branch master updated. v1.0.26-26-ge05b903
-Date: Tue, 09 Apr 2013 22:07:03 +0200
-Message-ID: <516474E7.1030501@canonical.com>
-References: <20130408125154.6264F2651CD@alsa0.perex.cz>
- <s5hbo9nyipb.wl%tiwai@suse.de> <51643937.5020602@perex.cz>
- <s5hhajfwuo8.wl%tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hda - Apply codec delay to
+	wallclock.
+Date: Tue, 09 Apr 2013 20:55:59 -0700
+Message-ID: <5164E2CF.2050207@linux.intel.com>
+References: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B2B5E265E77
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2013 22:07:04 +0200 (CEST)
-In-Reply-To: <s5hhajfwuo8.wl%tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2456C265E94
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2013 05:56:02 +0200 (CEST)
+In-Reply-To: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,104 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/09/2013 06:11 PM, Takashi Iwai wrote:
-> At Tue, 09 Apr 2013 17:52:23 +0200,
-> Jaroslav Kysela wrote:
->>
->> Date 9.4.2013 14:47, Takashi Iwai wrote:
->>> At Mon,  8 Apr 2013 14:51:54 +0200 (CEST),
->>> GIT server wrote:
->>>>
->>>> This is an automated email from the git hooks/post-receive script. It was
->>>> generated because a ref change was pushed to the repository containing
->>>> the project "ALSA utilities repository".
->>>>
->>>> The branch, master has been updated
->>>>         via  e05b903b1fb16e967d838edac408304cd4470fee (commit)
->>>>        from  46cb355d4ff41c8065b02644b0534ab42d16cb72 (commit)
->>>>
->>>> Those revisions listed above that are new to this repository have
->>>> not appeared on any other notification email; so we list those
->>>> revisions in full, below.
->>>>
->>>> - Log -----------------------------------------------------------------
->>>> commit e05b903b1fb16e967d838edac408304cd4470fee
->>>> Author: Jaroslav Kysela <perex@perex.cz>
->>>> Date:   Mon Apr 8 14:49:31 2013 +0200
->>>>
->>>>      alsactl: move systemd config to the daemon mode
->>>>
->>>>      Signed-off-by: Jaroslav Kysela <perex@perex.cz>
->>>
->>> I'm not thrilled by the silent default behavior change like this.
->>> This will affect all systems using systemd from now on.
->>>
->>> I understand the reason behind it, but I wonder whether it's an
->>> overkill.  Yet another daemon, unconditionally no matter whether
->>> hotplug or not?  Hmm...
->>
->> The question is, how we can detect the hotplug scheme. Almost all
->> systems have USB today and laptops have PCI express card slots, so....
->> Fedora has the systemd configs in the alsa-utils package. A removal of
->> this package is sufficient do disable the daemon.
+On 4/8/13 6:20 PM, Dylan Reid wrote:
+> For playback add the codec-side delay to the timestamp, for capture
+> subtract it.  This brings the timestamps in line with the time that
+> was recently added to the delay reporting.
 >
-> Yes, but then this would break the formerly working environment, too.
->
->> Eventually, we can
->> save the state periodically using cron (without the changes tracking),
->> but my measurement is that the alsactl daemon eats approx. 150kb of memory.
->
-> I'm not concerned about alsactl memory footprint so much.
-> But having another daemon unconditionally just to save/restore the
-> mixer status is a question.
->
->> Some other quick ideas:
->>
->> - make the static/hotplug schemes depending on an environment variable
->>    passed through the bootloader
->> - another two packages on top of alsa-utils with two configs
->
-> Manageable, but maybe will become a bit messy...
->
->> - save the last state inside the driver and offer it to the userspace
->>    upon the card removal (seems overkill)
->
-> This won't be that bad, I think.  But, accessing the information after
-> removal is the problem, after all.  The device and proc files are
-> removed at disconnection, so user-space can't access it.  Otherwise
-> the normal "alsactl store" should have worked.  So this can't be a
-> card-basis interface.
->
-> A possible w/a would be that we can keep some stable ctl lists and
-> provide it as a (one-time) death message from a global proc or a sysfs
-> file, for example.  Then we don't need periodical sync.
->
-> Whether this is a better option?  I dunno, honestly, too...
+> Signed-off-by: Dylan Reid <dgreid@chromium.org>
+> ---
+> Changes since v1:
+> Calculate nsec from frames, subtract delay for playback as well as
+> capture.
 
-Coming from a non-systemd world...
+> +	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
 
-Is the problem you're trying to solve that mixer state is not saved on 
-hot-unplug; and if so, is this not working for non-systemd installations 
-either then? Or is it systemd that causes this problem?
-
-I was expecting that when you unplug something, some kind of synchronous 
-udev event was fired, which could read the current mixer state and save 
-it, before it all goes away. But perhaps this was too optimistic...
-
-FWIW; another option is never to save it unless explicitly requested by 
-the user. There is definitely a use case where you want to avoid any 
-sound on bootup, e g if you often boot up your computer in a student 
-class - regardless of what it was when you turned it off earlier you 
-want silence on boot.
-
-(And now we haven't even touched PulseAudio's own save/restore volume 
-stuff...)
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Is this correct? I would think for capture you need to add the delay, 
+and subtract it for playback?
+-Pierre
