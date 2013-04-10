@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [alsa-cvslog] [ALSA GIT]ALSA utilities repository
  branch master updated. v1.0.26-26-ge05b903
-Date: Wed, 10 Apr 2013 08:32:05 +0200
-Message-ID: <51650765.80900@ladisch.de>
+Date: Wed, 10 Apr 2013 08:32:20 +0200
+Message-ID: <51650774.9060703@canonical.com>
 References: <20130408125154.6264F2651CD@alsa0.perex.cz>
  <s5hbo9nyipb.wl%tiwai@suse.de> <51643937.5020602@perex.cz>
  <s5hhajfwuo8.wl%tiwai@suse.de> <516474E7.1030501@canonical.com>
  <s5h4nfe29xa.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DD5B3262606
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2013 08:32:08 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B6FB262606
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2013 08:32:22 +0200 (CEST)
 In-Reply-To: <s5h4nfe29xa.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,15 +26,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On 04/10/2013 08:10 AM, Takashi Iwai wrote:
+> At Tue, 09 Apr 2013 22:07:03 +0200,
+> David Henningsson wrote:
+>>
+>> On 04/09/2013 06:11 PM, Takashi Iwai wrote:
+>>> At Tue, 09 Apr 2013 17:52:23 +0200,
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Date 9.4.2013 14:47, Takashi Iwai wrote:
+>>>>> At Mon,  8 Apr 2013 14:51:54 +0200 (CEST),
+>>>>> GIT server wrote:
+>>>>>>
+>>>>>> This is an automated email from the git hooks/post-receive script. It was
+>>>>>> generated because a ref change was pushed to the repository containing
+>>>>>> the project "ALSA utilities repository".
+>>>>>>
+>>>>>> The branch, master has been updated
+>>>>>>          via  e05b903b1fb16e967d838edac408304cd4470fee (commit)
+>>>>>>         from  46cb355d4ff41c8065b02644b0534ab42d16cb72 (commit)
+>>>>>>
+>>>>>> Those revisions listed above that are new to this repository have
+>>>>>> not appeared on any other notification email; so we list those
+>>>>>> revisions in full, below.
+>>>>>>
+>>>>>> - Log -----------------------------------------------------------------
+>>>>>> commit e05b903b1fb16e967d838edac408304cd4470fee
+>>>>>> Author: Jaroslav Kysela <perex@perex.cz>
+>>>>>> Date:   Mon Apr 8 14:49:31 2013 +0200
+>>>>>>
+>>>>>>       alsactl: move systemd config to the daemon mode
+>>>>>>
+>>>>>>       Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>>>>>
+>>>>> I'm not thrilled by the silent default behavior change like this.
+>>>>> This will affect all systems using systemd from now on.
+>>>>>
+>>>>> I understand the reason behind it, but I wonder whether it's an
+>>>>> overkill.  Yet another daemon, unconditionally no matter whether
+>>>>> hotplug or not?  Hmm...
+>>>>
+>>>> The question is, how we can detect the hotplug scheme. Almost all
+>>>> systems have USB today and laptops have PCI express card slots, so....
+>>>> Fedora has the systemd configs in the alsa-utils package. A removal of
+>>>> this package is sufficient do disable the daemon.
+>>>
+>>> Yes, but then this would break the formerly working environment, too.
+>>>
+>>>> Eventually, we can
+>>>> save the state periodically using cron (without the changes tracking),
+>>>> but my measurement is that the alsactl daemon eats approx. 150kb of memory.
+>>>
+>>> I'm not concerned about alsactl memory footprint so much.
+>>> But having another daemon unconditionally just to save/restore the
+>>> mixer status is a question.
+>>>
+>>>> Some other quick ideas:
+>>>>
+>>>> - make the static/hotplug schemes depending on an environment variable
+>>>>     passed through the bootloader
+>>>> - another two packages on top of alsa-utils with two configs
+>>>
+>>> Manageable, but maybe will become a bit messy...
+>>>
+>>>> - save the last state inside the driver and offer it to the userspace
+>>>>     upon the card removal (seems overkill)
+>>>
+>>> This won't be that bad, I think.  But, accessing the information after
+>>> removal is the problem, after all.  The device and proc files are
+>>> removed at disconnection, so user-space can't access it.  Otherwise
+>>> the normal "alsactl store" should have worked.  So this can't be a
+>>> card-basis interface.
+>>>
+>>> A possible w/a would be that we can keep some stable ctl lists and
+>>> provide it as a (one-time) death message from a global proc or a sysfs
+>>> file, for example.  Then we don't need periodical sync.
+>>>
+>>> Whether this is a better option?  I dunno, honestly, too...
+>>
+>> Coming from a non-systemd world...
+>>
+>> Is the problem you're trying to solve that mixer state is not saved on
+>> hot-unplug; and if so, is this not working for non-systemd installations
+>> either then? Or is it systemd that causes this problem?
+>>
+>> I was expecting that when you unplug something, some kind of synchronous
+>> udev event was fired, which could read the current mixer state and save
+>> it, before it all goes away. But perhaps this was too optimistic...
+>
+> This was the implementation, so far, and known to be broken.  alsactl
+> was triggered by udev. But, in the case of hotplug, when it's
+> unplugged, there is no more device file.  Thus you can't get the mixer
+> status _after_ the unplug. And, of course, the udev event is triggered
+> at the disconnection, that is, it's performed after the unplug.
+
+Is it possible to add a uevent that synchronously fires just before the 
+device file is removed? Then the mixer state could be read. (The mixer 
+state must be completely stored in kernel, of course, since you can't 
+read it from unplugged hardware.)
+
+> Jaroslav's change is to start alsactl as a system daemon by systemd,
+> and let it keeping all mixer states in background.
+
+Btw, one could also fire udev events on mixer changes (possibly delayed 
+by a few seconds to avoid a uevent storm). Then at least the daemon 
+would not be running constantly. As a minor benefit, this would also 
+protect against settings getting lost on sudden power outages.
+
+>> FWIW; another option is never to save it unless explicitly requested by
+>> the user. There is definitely a use case where you want to avoid any
+>> sound on bootup, e g if you often boot up your computer in a student
+>> class - regardless of what it was when you turned it off earlier you
+>> want silence on boot.
+>>
+>> (And now we haven't even touched PulseAudio's own save/restore volume
+>> stuff...)
+>
 > I wonder what about other OS.  Is the mixer status of a USB device
 > recorded and resumed after reboot at hotplug?
 
-(Some?) drivers save changed control values to the registry.
+Windows and Mac OS? I think they record it, but not sure. Slightly 
+related, I believe they're both system level (as is alsactl), where as 
+PulseAudio saves volume per user.
 
 
-Regards,
-Clemens
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
