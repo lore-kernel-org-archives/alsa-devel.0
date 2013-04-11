@@ -1,209 +1,68 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 18/30] ASoC: samsung: move plat/ headers to local directory
-Date: Thu, 11 Apr 2013 19:08:42 +0200
-Message-ID: <201304111908.42532.arnd@arndb.de>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <1365638712-1028578-19-git-send-email-arnd@arndb.de> <20130411164751.GK9243@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 18/30] ASoC: samsung: move plat/ headers to local
+ directory
+Date: Thu, 11 Apr 2013 18:19:38 +0100
+Message-ID: <20130411171938.GS9243@opensource.wolfsonmicro.com>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+ <1365638712-1028578-19-git-send-email-arnd@arndb.de>
+ <20130411164751.GK9243@opensource.wolfsonmicro.com>
+ <201304111908.42532.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130411164751.GK9243@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mCdhXfk5CmamXiy1"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201304111908.42532.arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 11 April 2013, Mark Brown wrote:
-> On Thu, Apr 11, 2013 at 02:05:00AM +0200, Arnd Bergmann wrote:
-> > The plat/iis.h and plat/ac97.h files in the samsung platform are
-> > only needed by the ASoC drivers, so they can be moved into the
-> > same directory, as one more step towards a multiplatform build.
-> 
-> This doesn't apply to my topic/samsung branch, can you please regenerate
-> it against that or let me know what to apply it against?
-> 
 
-This one should work. Unfortunately I now found during testing that the
-s3c24xx sound support has a few build errors at the moment, but this
-patch should not add any new ones:
+--mCdhXfk5CmamXiy1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-/git/arm-soc/sound/soc/samsung/idma.c: In function 'idma_close':
-/git/arm-soc/sound/soc/samsung/idma.c:327:11: error: 'IRQ_I2S0' undeclared (first use in this function)
-  free_irq(IRQ_I2S0, prtd);
-           ^
-make[5]: *** [sound/soc/samsung/idma.o] Error 1
-make[5]: *** Waiting for unfinished jobs....
+On Thu, Apr 11, 2013 at 07:08:42PM +0200, Arnd Bergmann wrote:
+> On Thursday 11 April 2013, Mark Brown wrote:
 
-make[5]: *** [sound/soc/samsung/i2s.o] Error 1
-/git/arm-soc/sound/soc/samsung/neo1973_wm8753.c:25:24: fatal error: mach/gta02.h: No such file or directory
- #include <mach/gta02.h>
-                        ^
+> > This doesn't apply to my topic/samsung branch, can you please regenerate
+> > it against that or let me know what to apply it against?
 
+> This one should work. Unfortunately I now found during testing that the
+> s3c24xx sound support has a few build errors at the moment, but this
+> patch should not add any new ones:
 
-	Arnd
+Applied (after hand editing the commit message), thanks.
 
-8<----
->From 91cb290e665b10d094729a42f9e676e2de154996 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Sat, 16 Mar 2013 09:10:15 +0100
-Subject: [PATCH] ASoC: samsung: move plat/ headers to local directory
+> make[5]: *** [sound/soc/samsung/i2s.o] Error 1
+> /git/arm-soc/sound/soc/samsung/neo1973_wm8753.c:25:24: fatal error: mach/gta02.h: No such file or directory
+>  #include <mach/gta02.h>
 
-The plat/regs-iis.h and plat/regs-ac97.h files in the samsung platform
-are only needed by the ASoC drivers, so they can be moved into the same
-directory, as one more step towards a multiplatform build.
+Hrm, someone killed GTA02 support?  That's sad...  if that's really the
+case we could kill the machine driver but not tonight as I'm running
+late...
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
+--mCdhXfk5CmamXiy1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/arch/arm/mach-s3c24xx/dma-s3c2410.c b/arch/arm/mach-s3c24xx/dma-s3c2410.c
-index 25d085a..a4a13c9 100644
---- a/arch/arm/mach-s3c24xx/dma-s3c2410.c
-+++ b/arch/arm/mach-s3c24xx/dma-s3c2410.c
-@@ -25,11 +25,9 @@
- 
- #include <plat/regs-serial.h>
- #include <mach/regs-gpio.h>
--#include <plat/regs-ac97.h>
- #include <plat/regs-dma.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- static struct s3c24xx_dma_map __initdata s3c2410_dma_mappings[] = {
-diff --git a/arch/arm/mach-s3c24xx/dma-s3c2412.c b/arch/arm/mach-s3c24xx/dma-s3c2412.c
-index d2408ba..6eaa7a4 100644
---- a/arch/arm/mach-s3c24xx/dma-s3c2412.c
-+++ b/arch/arm/mach-s3c24xx/dma-s3c2412.c
-@@ -25,11 +25,9 @@
- 
- #include <plat/regs-serial.h>
- #include <mach/regs-gpio.h>
--#include <plat/regs-ac97.h>
- #include <plat/regs-dma.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- #define MAP(x) { (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID, (x)| DMA_CH_VALID }
-diff --git a/arch/arm/mach-s3c24xx/dma-s3c2440.c b/arch/arm/mach-s3c24xx/dma-s3c2440.c
-index 0b86e74..477d450 100644
---- a/arch/arm/mach-s3c24xx/dma-s3c2440.c
-+++ b/arch/arm/mach-s3c24xx/dma-s3c2440.c
-@@ -25,11 +25,9 @@
- 
- #include <plat/regs-serial.h>
- #include <mach/regs-gpio.h>
--#include <plat/regs-ac97.h>
- #include <plat/regs-dma.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- static struct s3c24xx_dma_map __initdata s3c2440_dma_mappings[] = {
-diff --git a/arch/arm/mach-s3c24xx/dma-s3c2443.c b/arch/arm/mach-s3c24xx/dma-s3c2443.c
-index 0553625..80a8d56 100644
---- a/arch/arm/mach-s3c24xx/dma-s3c2443.c
-+++ b/arch/arm/mach-s3c24xx/dma-s3c2443.c
-@@ -25,11 +25,9 @@
- 
- #include <plat/regs-serial.h>
- #include <mach/regs-gpio.h>
--#include <plat/regs-ac97.h>
- #include <plat/regs-dma.h>
- #include <mach/regs-lcd.h>
- #include <mach/regs-sdi.h>
--#include <plat/regs-iis.h>
- #include <plat/regs-spi.h>
- 
- #define MAP(x) { \
-diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
-index 0df3c56..c76abdf 100644
---- a/sound/soc/samsung/ac97.c
-+++ b/sound/soc/samsung/ac97.c
-@@ -20,7 +20,7 @@
- #include <sound/soc.h>
- 
- #include <mach/dma.h>
--#include <plat/regs-ac97.h>
-+#include "regs-ac97.h"
- #include <linux/platform_data/asoc-s3c.h>
- 
- #include "dma.h"
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 15a3817..fa91376 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -20,7 +20,7 @@
- #include <sound/soc.h>
- #include <sound/jack.h>
- 
--#include <plat/regs-iis.h>
-+#include "regs-iis.h"
- #include <asm/mach-types.h>
- 
- #include "s3c24xx-i2s.h"
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index a301d8c..ccc601d 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -21,7 +21,7 @@
- #include <sound/soc.h>
- 
- #include <asm/mach-types.h>
--#include <plat/regs-iis.h>
-+#include "regs-iis.h"
- #include <mach/gta02.h>
- 
- #include "../codecs/wm8753.h"
-diff --git a/arch/arm/plat-samsung/include/plat/regs-ac97.h b/sound/soc/samsung/regs-ac97.h
-similarity index 100%
-rename from arch/arm/plat-samsung/include/plat/regs-ac97.h
-rename to sound/soc/samsung/regs-ac97.h
-diff --git a/arch/arm/plat-samsung/include/plat/regs-iis.h b/sound/soc/samsung/regs-iis.h
-similarity index 100%
-rename from arch/arm/plat-samsung/include/plat/regs-iis.h
-rename to sound/soc/samsung/regs-iis.h
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index a5826ea..704460a 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -24,7 +24,7 @@
- #include <sound/soc.h>
- #include <sound/jack.h>
- 
--#include <plat/regs-iis.h>
-+#include "regs-iis.h"
- #include <asm/mach-types.h>
- 
- #include "s3c24xx-i2s.h"
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 13f6dd1..a7b17c1 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -24,7 +24,7 @@
- #include <sound/pcm_params.h>
- 
- #include <mach/dma.h>
--#include <plat/regs-iis.h>
-+#include "regs-iis.h"
- 
- #include "dma.h"
- #include "s3c24xx-i2s.h"
-diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
-index 333e1b7..1b7b52b 100644
---- a/sound/soc/samsung/s3c24xx_uda134x.c
-+++ b/sound/soc/samsung/s3c24xx_uda134x.c
-@@ -18,7 +18,7 @@
- #include <sound/soc.h>
- #include <sound/s3c24xx_uda134x.h>
- 
--#include <plat/regs-iis.h>
-+#include "regs-iis.h"
- 
- #include "s3c24xx-i2s.h"
- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRZvCKAAoJELSic+t+oim9X90QAIzA2iY67PTVoYsbI1wpdzqS
+X3BABnsRX8jCeW4ddU6M798CiUzVfLqAmk1shpE4U4IJJ5bLlG2qCNECfdsCloDm
+dH5iVP6+b/6i3srwLrYByeGkS9YHlHVjQYwmDS1mR7m9lRKN8+5iNfBhEG1yagNO
+NIxPOuh0QxtmDbum7ZUN6ZzgSwQtLuk0AKicCFFEOISg3rx/2S3bu+q5HPU52kDb
+LgKQt4Q6PW/MviuIbtJ9qtNEs85GOVcV1fcrjkq6MBr56fGB7c8wIqh24/YAeR30
+5sVrviyutZOH8eP2+MFjiam/6Yi/otL7clho3yn6mvJvHzDd5qfNriT9QPSr5f38
+t+TQkeQKclfIQZjhk1U7Xdb5L9DM4COrbayZYhig1kKnsj9Cl/Bg0fEjXwvNMV9r
+w0XTeWQjXYbYEB79ei5RK6c6sFJZxI9v48+1rIj4/Dzqr37/rPYFMjem5sYPBKCH
+6zaFcGLR91LQlnk7i7XS/mdx17SFv0dTGZzDYEU9WYWe76WESoZqKtIPy7H3ew1t
+TwHqjx5iPFWeWKz2k4jSQjzFEOcqiPqB6uuXRAr2oqYNAZsQH+r/BuwECobWGk+I
+LD0l+KpWaHz57MLxsZPREeyNIlMjBMrc8OWhtbsnbeYA+Umlwu3HHVGe1mcJyNdO
+q/ELFztXkACZ5GaTXQv+
+=Hc1C
+-----END PGP SIGNATURE-----
+
+--mCdhXfk5CmamXiy1--
