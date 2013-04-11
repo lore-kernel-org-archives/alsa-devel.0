@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/7] ALSA: compress_core: Calculate avail
-	correctly for capture streams
-Date: Thu, 11 Apr 2013 19:00:40 +0100
-Message-ID: <1365703245-20738-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/7] ALSA: compress_core: Deconstify copy
+	callback buffer
+Date: Thu, 11 Apr 2013 19:00:41 +0100
+Message-ID: <1365703245-20738-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 013752660D2
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:58 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8DBB26623E
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:59 +0200 (CEST)
 In-Reply-To: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,67 +25,61 @@ To: broonie@opensource.wolfsonmicro.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The buffer passed to the copy callback should not be const because the
+copy callback can be used for capture and playback.
+
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/core/compress_offload.c |   29 ++++++++++++++++++-----------
- 1 files changed, 18 insertions(+), 11 deletions(-)
+ include/sound/compress_driver.h |    2 +-
+ sound/core/compress_offload.c   |    8 +++++---
+ sound/soc/soc-compress.c        |    2 +-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index ff6c741..db8273a 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -121,7 +121,7 @@ struct snd_compr_ops {
+ 	int (*trigger)(struct snd_compr_stream *stream, int cmd);
+ 	int (*pointer)(struct snd_compr_stream *stream,
+ 			struct snd_compr_tstamp *tstamp);
+-	int (*copy)(struct snd_compr_stream *stream, const char __user *buf,
++	int (*copy)(struct snd_compr_stream *stream, char __user *buf,
+ 		       size_t count);
+ 	int (*mmap)(struct snd_compr_stream *stream,
+ 			struct vm_area_struct *vma);
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 27bd81a..1f69863 100644
+index 1f69863..52ca4cc 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -153,7 +153,10 @@ static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
- 	pr_debug("dsp consumed till %d total %d bytes\n",
- 		tstamp->byte_offset, tstamp->copied_total);
- 	stream->runtime->hw_pointer = tstamp->byte_offset;
--	stream->runtime->total_bytes_transferred = tstamp->copied_total;
-+	if (stream->direction == SND_COMPRESS_PLAYBACK)
-+		stream->runtime->total_bytes_transferred = tstamp->copied_total;
-+	else
-+		stream->runtime->total_bytes_available = tstamp->copied_total;
- 	return 0;
+@@ -272,10 +272,12 @@ static ssize_t snd_compr_write(struct file *f, const char __user *buf,
+ 	if (avail > count)
+ 		avail = count;
+ 
+-	if (stream->ops->copy)
+-		retval = stream->ops->copy(stream, buf, avail);
+-	else
++	if (stream->ops->copy) {
++		char __user* cbuf = (char __user*)buf;
++		retval = stream->ops->copy(stream, cbuf, avail);
++	} else {
+ 		retval = snd_compr_write_data(stream, buf, avail);
++	}
+ 	if (retval > 0)
+ 		stream->runtime->total_bytes_available += retval;
+ 
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index f9b2197..d3f03f6 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -307,7 +307,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
  }
  
-@@ -164,12 +167,9 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 	snd_compr_update_tstamp(stream, &avail->tstamp);
- 	/* Still need to return avail even if tstamp can't be filled in */
- 
--	/* FIXME: This needs to be different for capture stream,
--	   available is # of compressed data, for playback it's
--	   remainder of buffer */
--
- 	if (stream->runtime->total_bytes_available == 0 &&
--			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
-+			stream->runtime->state == SNDRV_PCM_STATE_SETUP &&
-+			stream->direction == SND_COMPRESS_PLAYBACK) {
- 		pr_debug("detected init and someone forgot to do a write\n");
- 		return stream->runtime->buffer_size;
- 	}
-@@ -178,13 +178,20 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 			stream->runtime->total_bytes_transferred);
- 	if (stream->runtime->total_bytes_available ==
- 				stream->runtime->total_bytes_transferred) {
--		pr_debug("both pointers are same, returning full avail\n");
--		return stream->runtime->buffer_size;
-+		if (stream->direction == SND_COMPRESS_PLAYBACK) {
-+			pr_debug("both pointers are same, returning full avail\n");
-+			return stream->runtime->buffer_size;
-+		} else {
-+			pr_debug("both pointers are same, returning no avail\n");
-+			return 0;
-+		}
- 	}
- 
--	avail->avail = stream->runtime->buffer_size -
--		(stream->runtime->total_bytes_available -
--		 stream->runtime->total_bytes_transferred);
-+	avail->avail = stream->runtime->total_bytes_available -
-+			stream->runtime->total_bytes_transferred;
-+	if (stream->direction == SND_COMPRESS_PLAYBACK)
-+		avail->avail = stream->runtime->buffer_size - avail->avail;
-+
- 	pr_debug("ret avail as %lld\n", avail->avail);
- 	return avail->avail;
- }
+ static int soc_compr_copy(struct snd_compr_stream *cstream,
+-			  const char __user *buf, size_t count)
++			  char __user *buf, size_t count)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
 -- 
 1.7.2.5
