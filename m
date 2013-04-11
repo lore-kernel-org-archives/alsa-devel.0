@@ -1,18 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] asoc: add dummy codec
-Date: Thu, 11 Apr 2013 19:58:10 +0200
-Message-ID: <5166F9B2.7090107@metafoo.de>
+Date: Thu, 11 Apr 2013 20:02:33 +0200
+Message-ID: <5166FAB9.9010506@metafoo.de>
 References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
- <5166D295.2070400@list.ru>
+ <5166D295.2070400@list.ru> <5166DB38.1010706@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailhost.informatik.uni-hamburg.de
  (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 0153D266176
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 19:55:46 +0200 (CEST)
-In-Reply-To: <5166D295.2070400@list.ru>
+ by alsa0.perex.cz (Postfix) with ESMTP id D5F96266195
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:00:03 +0200 (CEST)
+In-Reply-To: <5166DB38.1010706@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@list.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>
+To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>, Stas Sergeev <stsp@list.ru>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMTEvMjAxMyAwNToxMSBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+IDExLjA0LjIwMTMg
-MTQ6NDEsIExhcnMtUGV0ZXIgQ2xhdXNlbiDQv9C40YjQtdGCOgo+PiBPbiAwNC8xMS8yMDEzIDEy
-OjM2IFBNLCBTdGFzIFNlcmdlZXYgd3JvdGU6Cj4+PiBIaS4KPj4+Cj4+PiBUaGUgYXR0YWNoZWQg
-cGF0Y2ggYWRkcyBhIGR1bW15IGNvZGVjIGZvciB0aGUKPj4+IGFzb2Mgc3Vic3lzdGVtLgo+Pj4g
-SSB1c2UgaXQgd2l0aCB0aGUgZHJpdmVyIHRoYXQgcHJvZ3JhbXMgdGhlIHNvYyB0byBkcml2ZQo+
-Pj4gSTJTIGZyb20gYW4gaW50ZXJuYWwgUExMcywgYW5kIHRoZSBhdWRpbyB0aGVuIGdvZXMgdG8K
-Pj4+IEhETUksIHNvIG5vIGV4dGVybmFsIGNvZGVjIGlzIHVzZWQuCj4+PiBJJ3ZlIGZvdW5kIHNw
-ZGlmX3RyYW5zY2lldmVyLmMsIHdoaWNoIGV4YWN0bHkgaXMgc3VjaCBhCj4+PiBkdW1teSBkcml2
-ZXIsIGJ1dCBpdCBpcyBib3VuZCB0byB0aGUgcGFydGljdWxhciBwbGF0Cj4+PiBkZXZpY2UsIHNv
-IEkgbWFkZSB0aGUgZGV2aWNlIG5hbWUgYSBjb25maWcgb3B0aW9uLCBhbmQKPj4+IGlmIG5vdCBz
-ZXQsIHRoZSBwbGF0IGRldmljZSBpcyBjcmVhdGVkIHdpdGggdGhlIGRlZmF1bHQKPj4+IG5hbWUu
-Cj4+Pgo+Pj4gSXQgbWF5IGJlIHBvc3NpYmxlIHRvIGF2b2lkIHRoZSB1c2FnZSBvZiB0aGUgY29k
-ZWMgZHJpdmVyCj4+PiBhdCBhbGwsIGJ1dCBJIGhhdmVuJ3Qgc3VjY2VlZGVkIHdpdGggdGhpcywg
-YW5kIHRoZSBleGlzdGFuY2UKPj4+IG9mIHNwZGlmX3RyYW5zY2lldmVyLmMgc3VnZ2VzdHMgdGhl
-cmUgaXMgbm8gc3VjaCB3YXkuCj4+PiBUaG91Z2h0cz8KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBT
-dGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNlZm9yZ2UubmV0Pgo+Pj4KPj4gSGksCj4+Cj4+
-IFRoZXJlIGlzIGFscmVhZHkgYSBkdW1teSBjb2RlYyBkcml2ZXIuCj4+Cj4+IFBsZWFzZSB0YWtl
-IGEgbG9vayBhdCBzb3VuZC9zb2Mvc29jLXV0aWxzLmMKPj4KPj4gLSBMYXJzCj4gTGFycywgaW5k
-ZWVkLCB0aGlzIGNvZGVjIGlzIHByZXNlbnQgaW4gYSBnaXQga2VybmVsIGFuZAo+IGl0IHdhc24n
-dCBpbiBtaW5lIGFuZHJvaWQga2VybmVsLgo+IEJ1dCwgdGhhdCBkcml2ZXIgaXMgdG9vIGR1bW15
-IHRvIGV2ZW4gd29yayBhdCBhbGwuCj4gCj4gVGhlIGF0dGFjaGVkIHBhdGNoIGFkZHMgYSBwbGF5
-YmFjayBzdHJlYW0gZm9yIHRoZSBkdW1teQo+IGNvZGVjLiBXb3VsZCBpdCBiZSBwb3NzaWJsZSB0
-byBhcHBseSB0aGlzPwoKTG9va3MgZmluZSB0byBtZSwgYWx0aG91Z2ggaXQgbWlnaHQgbWFrZSBz
-ZW5zZSB0byBhbHNvIGFkZCBhIGR1bW15IGNhcHR1cmUKc3RyZWFtLiBCdXQgeW91IG5lZWQgdG8g
-c2VuZCB0aGUgcGF0Y2ggdG8gTWFyayBhbmQgTGlhbSB3aG8gYXJlIHRoZSBBU29DCm1haW50YWlu
-ZXJzLiBBbHNvIHVzZSB0aGUgcHJvcGVyIHN1YnN5c3RlbSBwcmVmaXgsIHdoaWNoIGlzICJBU29D
-IiBub3QgImFzb2MiLAphZGQgYSBwYXRjaCBkZXNjcmlwdGlvbiwgc2lnbiBvZmYgb24gdGhlIHBh
-dGNoIGl0c2VsZiBhbmQgdHJ5IHRvIHNlbmQgaXQgaW5saW5lCmluc3RlYWQgb2YgYW4gYXR0YWNo
-bWVudC4KCi0gTGFycwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 04/11/2013 05:48 PM, Gabriel M. Beddingfield wrote:
+> On 04/11/2013 08:11 AM, Stas Sergeev wrote:
+>>> There is already a dummy codec driver.
+>>>
+>>> Please take a look at sound/soc/soc-utils.c
+>>>
+>>> - Lars
+>> Lars, indeed, this codec is present in a git kernel and
+>> it wasn't in mine android kernel.
+>> But, that driver is too dummy to even work at all.
+>>
+>> The attached patch adds a playback stream for the dummy
+>> codec. Would it be possible to apply this?
+> 
+> No... not like that.
+> 
+> Instead, wouldn't it be better to extend it by defining some platform data?  Maybe something like:
+
+Either you want a dummy or you want one with specific requirements. For the
+former case use the dummy codec, for the later case add a proper driver.
+Putting these kinds of things in your board file is in my opinion a bad habit.
+
+- Lars
+
+> 
+> diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+> index fe4541d..9d22718 100644
+> --- a/sound/soc/soc-utils.c
+> +++ b/sound/soc/soc-utils.c
+> @@ -96,9 +96,14 @@ static struct snd_soc_dai_driver dummy_dai = {
+>  
+>  static int snd_soc_dummy_probe(struct platform_device *pdev)
+>  {
+> +       struct snd_soc_dummy_dai_pdata *pdata = dev_get_platdata(&pdev->dev);
+>         int ret;
+>  
+> -       ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
+> +       if (pdata->n_dai > 0)
+> +               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec,
+> +                                            &pdata->dai, &pdata->n_dai);
+> +       else
+> +               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
+>         if (ret < 0)
+>                 return ret;
+>  
+> 
+> ...then you can define whatever kind of DAI you want in the machine driver.
+> 
+> -gabriel
+> 
