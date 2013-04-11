@@ -1,18 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] asoc: add dummy codec
-Date: Thu, 11 Apr 2013 20:02:33 +0200
-Message-ID: <5166FAB9.9010506@metafoo.de>
-References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
- <5166D295.2070400@list.ru> <5166DB38.1010706@gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/7] Add capture support to compress API
+Date: Thu, 11 Apr 2013 19:00:38 +0100
+Message-ID: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id D5F96266195
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:00:03 +0200 (CEST)
-In-Reply-To: <5166DB38.1010706@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C6DD266211
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>, Stas Sergeev <stsp@list.ru>
+To: broonie@opensource.wolfsonmicro.com, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/2013 05:48 PM, Gabriel M. Beddingfield wrote:
-> On 04/11/2013 08:11 AM, Stas Sergeev wrote:
->>> There is already a dummy codec driver.
->>>
->>> Please take a look at sound/soc/soc-utils.c
->>>
->>> - Lars
->> Lars, indeed, this codec is present in a git kernel and
->> it wasn't in mine android kernel.
->> But, that driver is too dummy to even work at all.
->>
->> The attached patch adds a playback stream for the dummy
->> codec. Would it be possible to apply this?
-> 
-> No... not like that.
-> 
-> Instead, wouldn't it be better to extend it by defining some platform data?  Maybe something like:
+This chain of patches does some clearing up and add capture
+support to the compressed API.
 
-Either you want a dummy or you want one with specific requirements. For the
-former case use the dummy codec, for the later case add a proper driver.
-Putting these kinds of things in your board file is in my opinion a bad habit.
+Missing is support for capture streams that don't use the
+copy callback. Also I have included two patches at the end
+of the chain that remove the buffer pointers and just use
+the cumulative values however as our setup uses the copy
+callback these are untested past build so should be taken
+with caution.
 
-- Lars
+Thanks,
+Charles
 
-> 
-> diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-> index fe4541d..9d22718 100644
-> --- a/sound/soc/soc-utils.c
-> +++ b/sound/soc/soc-utils.c
-> @@ -96,9 +96,14 @@ static struct snd_soc_dai_driver dummy_dai = {
->  
->  static int snd_soc_dummy_probe(struct platform_device *pdev)
->  {
-> +       struct snd_soc_dummy_dai_pdata *pdata = dev_get_platdata(&pdev->dev);
->         int ret;
->  
-> -       ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
-> +       if (pdata->n_dai > 0)
-> +               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec,
-> +                                            &pdata->dai, &pdata->n_dai);
-> +       else
-> +               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
->         if (ret < 0)
->                 return ret;
->  
-> 
-> ...then you can define whatever kind of DAI you want in the machine driver.
-> 
-> -gabriel
-> 
+Charles Keepax (7):
+  ALSA: compress_core: Update calc_avail to use cumulative values
+  ALSA: compress_core: Calculate avail correctly for capture streams
+  ALSA: compress_core: Deconstify copy callback buffer
+  ALSA: compress_core: Add support for capture streams
+  ASoC: soc-compress: Deduce stream direction
+  ALSA: compress_core: Remove unused hw_pointer
+  ALSA: compress_core: Rework writes to use cumulative values
+
+ include/sound/compress_driver.h |    4 +-
+ sound/core/compress_offload.c   |  117 +++++++++++++++++++++++++-------------
+ sound/soc/soc-compress.c        |   11 +++-
+ 3 files changed, 87 insertions(+), 45 deletions(-)
+
+-- 
+1.7.2.5
