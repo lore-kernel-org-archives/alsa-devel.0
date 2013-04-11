@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] mfd: wm5102: Map in additional FLL
-	control registers
-Date: Thu, 11 Apr 2013 18:22:11 +0100
-Message-ID: <20130411172211.GT9243@opensource.wolfsonmicro.com>
-References: <1362551296-14920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <1362551296-14920-2-git-send-email-broonie@opensource.wolfsonmicro.com>
- <20130408162223.GC24058@zurbaran>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] asoc: add dummy codec
+Date: Thu, 11 Apr 2013 19:58:10 +0200
+Message-ID: <5166F9B2.7090107@metafoo.de>
+References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
+ <5166D295.2070400@list.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0921800242016604487=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C1ED5266195
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 19:22:12 +0200 (CEST)
-In-Reply-To: <20130408162223.GC24058@zurbaran>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0153D266176
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 19:55:46 +0200 (CEST)
+In-Reply-To: <5166D295.2070400@list.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <liam.r.girdwood@intel.com>
+To: Stas Sergeev <stsp@list.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0921800242016604487==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CVqly4l7FfnzS7sR"
-Content-Disposition: inline
-
-
---CVqly4l7FfnzS7sR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Apr 08, 2013 at 06:22:23PM +0200, Samuel Ortiz wrote:
-> Hi Mark,
->=20
-> On Wed, Mar 06, 2013 at 02:28:14PM +0800, Mark Brown wrote:
-> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > ---
-> >  drivers/mfd/wm5102-tables.c |    8 ++++++++
-> >  1 file changed, 8 insertions(+)
-
-> Did you merge this patchset through the ASoC tree ?
-
-Yes, let me know if that's a problem and I can back stuff out but it
-seemed sensible.
-
---CVqly4l7FfnzS7sR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRZvE9AAoJELSic+t+oim9VsoP/1bYLEGFoaICCRzCbdB7zFU4
-vvY/w+c3b7LsHBDwM18tgeM1AUt8j9BFwuD3Op6g9ryMVC/LigI6XnqRuiiZd3Yy
-dktVikAp6BZ2q9F1+JsAHeNpmttiWd67GfWM74UV/3XD9bzyNldEssuOCdWx67nR
-mmaznT2i9Kg239gn9btYzXEA4igqZstJhQoEhBMjZ57hzN2FHgfWxBj7AZe9DAvE
-lz47nBtaXrd9tgdni5EQwuhW6yrGw4RGjKL0LwyHegIlTqKeUKxGebYBV6vT/bsn
-WOEKtqyBb9Yoy0D/B8fr9rCMf8XQtFr9O3J7J2xHElDfqG/OcLHWK18rdR0peMFB
-a0UPGKM+0JvlfrC6A/YyoFpRchAfXH/NGmLAp3pmQl46ltFYr5g6MBM3u4rjENF4
-O/LK2lKAZaFTrHIf7sgp8Opv35OvgoS63sJsWuimFKqs37kmZ0XYy+/xo9XWFVfa
-+xzVyNhOQPea0PD29w/4UFWYry7Odw5ezrMV4pU1elWo9KTYbNrbkGxqxXabK7Fo
-Jf0/r1xONxHcennIi1saZuM+VTMqkQl+tWFJQmekJXC51MPEMDVjPYE+v9FPrpga
-OjO27FdAsMssZ0x1v9p/xttIxusw1N8kbdhPbaSMsThdypStiQDnzBzJMs3SxuHZ
-aICOCeDT4I+fLmiKo+T6
-=QV7n
------END PGP SIGNATURE-----
-
---CVqly4l7FfnzS7sR--
-
---===============0921800242016604487==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0921800242016604487==--
+T24gMDQvMTEvMjAxMyAwNToxMSBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+IDExLjA0LjIwMTMg
+MTQ6NDEsIExhcnMtUGV0ZXIgQ2xhdXNlbiDQv9C40YjQtdGCOgo+PiBPbiAwNC8xMS8yMDEzIDEy
+OjM2IFBNLCBTdGFzIFNlcmdlZXYgd3JvdGU6Cj4+PiBIaS4KPj4+Cj4+PiBUaGUgYXR0YWNoZWQg
+cGF0Y2ggYWRkcyBhIGR1bW15IGNvZGVjIGZvciB0aGUKPj4+IGFzb2Mgc3Vic3lzdGVtLgo+Pj4g
+SSB1c2UgaXQgd2l0aCB0aGUgZHJpdmVyIHRoYXQgcHJvZ3JhbXMgdGhlIHNvYyB0byBkcml2ZQo+
+Pj4gSTJTIGZyb20gYW4gaW50ZXJuYWwgUExMcywgYW5kIHRoZSBhdWRpbyB0aGVuIGdvZXMgdG8K
+Pj4+IEhETUksIHNvIG5vIGV4dGVybmFsIGNvZGVjIGlzIHVzZWQuCj4+PiBJJ3ZlIGZvdW5kIHNw
+ZGlmX3RyYW5zY2lldmVyLmMsIHdoaWNoIGV4YWN0bHkgaXMgc3VjaCBhCj4+PiBkdW1teSBkcml2
+ZXIsIGJ1dCBpdCBpcyBib3VuZCB0byB0aGUgcGFydGljdWxhciBwbGF0Cj4+PiBkZXZpY2UsIHNv
+IEkgbWFkZSB0aGUgZGV2aWNlIG5hbWUgYSBjb25maWcgb3B0aW9uLCBhbmQKPj4+IGlmIG5vdCBz
+ZXQsIHRoZSBwbGF0IGRldmljZSBpcyBjcmVhdGVkIHdpdGggdGhlIGRlZmF1bHQKPj4+IG5hbWUu
+Cj4+Pgo+Pj4gSXQgbWF5IGJlIHBvc3NpYmxlIHRvIGF2b2lkIHRoZSB1c2FnZSBvZiB0aGUgY29k
+ZWMgZHJpdmVyCj4+PiBhdCBhbGwsIGJ1dCBJIGhhdmVuJ3Qgc3VjY2VlZGVkIHdpdGggdGhpcywg
+YW5kIHRoZSBleGlzdGFuY2UKPj4+IG9mIHNwZGlmX3RyYW5zY2lldmVyLmMgc3VnZ2VzdHMgdGhl
+cmUgaXMgbm8gc3VjaCB3YXkuCj4+PiBUaG91Z2h0cz8KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBT
+dGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNlZm9yZ2UubmV0Pgo+Pj4KPj4gSGksCj4+Cj4+
+IFRoZXJlIGlzIGFscmVhZHkgYSBkdW1teSBjb2RlYyBkcml2ZXIuCj4+Cj4+IFBsZWFzZSB0YWtl
+IGEgbG9vayBhdCBzb3VuZC9zb2Mvc29jLXV0aWxzLmMKPj4KPj4gLSBMYXJzCj4gTGFycywgaW5k
+ZWVkLCB0aGlzIGNvZGVjIGlzIHByZXNlbnQgaW4gYSBnaXQga2VybmVsIGFuZAo+IGl0IHdhc24n
+dCBpbiBtaW5lIGFuZHJvaWQga2VybmVsLgo+IEJ1dCwgdGhhdCBkcml2ZXIgaXMgdG9vIGR1bW15
+IHRvIGV2ZW4gd29yayBhdCBhbGwuCj4gCj4gVGhlIGF0dGFjaGVkIHBhdGNoIGFkZHMgYSBwbGF5
+YmFjayBzdHJlYW0gZm9yIHRoZSBkdW1teQo+IGNvZGVjLiBXb3VsZCBpdCBiZSBwb3NzaWJsZSB0
+byBhcHBseSB0aGlzPwoKTG9va3MgZmluZSB0byBtZSwgYWx0aG91Z2ggaXQgbWlnaHQgbWFrZSBz
+ZW5zZSB0byBhbHNvIGFkZCBhIGR1bW15IGNhcHR1cmUKc3RyZWFtLiBCdXQgeW91IG5lZWQgdG8g
+c2VuZCB0aGUgcGF0Y2ggdG8gTWFyayBhbmQgTGlhbSB3aG8gYXJlIHRoZSBBU29DCm1haW50YWlu
+ZXJzLiBBbHNvIHVzZSB0aGUgcHJvcGVyIHN1YnN5c3RlbSBwcmVmaXgsIHdoaWNoIGlzICJBU29D
+IiBub3QgImFzb2MiLAphZGQgYSBwYXRjaCBkZXNjcmlwdGlvbiwgc2lnbiBvZmYgb24gdGhlIHBh
+dGNoIGl0c2VsZiBhbmQgdHJ5IHRvIHNlbmQgaXQgaW5saW5lCmluc3RlYWQgb2YgYW4gYXR0YWNo
+bWVudC4KCi0gTGFycwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
