@@ -1,55 +1,71 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 20/30] ASoC: samsung: convert to dmaengine API
-Date: Thu, 11 Apr 2013 16:42:16 +0100
-Message-ID: <20130411154216.GE9243@opensource.wolfsonmicro.com>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
- <1365638712-1028578-21-git-send-email-arnd@arndb.de>
- <20130411142706.GB24971@opensource.wolfsonmicro.com>
- <201304111647.17796.arnd@arndb.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: [PATCH] asoc: add dummy codec
+Date: Thu, 11 Apr 2013 08:48:08 -0700
+Message-ID: <5166DB38.1010706@gmail.com>
+References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
+ <5166D295.2070400@list.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qABWltju4eaUXBmg"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201304111647.17796.arnd@arndb.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
+ [209.85.192.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A5BA2610AF
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 17:48:12 +0200 (CEST)
+Received: by mail-pd0-f179.google.com with SMTP id x11so916781pdj.38
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 08:48:12 -0700 (PDT)
+In-Reply-To: <5166D295.2070400@list.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stas Sergeev <stsp@list.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 04/11/2013 08:11 AM, Stas Sergeev wrote:
+>> There is already a dummy codec driver.
+>>
+>> Please take a look at sound/soc/soc-utils.c
+>>
+>> - Lars
+> Lars, indeed, this codec is present in a git kernel and
+> it wasn't in mine android kernel.
+> But, that driver is too dummy to even work at all.
+> 
+> The attached patch adds a playback stream for the dummy
+> codec. Would it be possible to apply this?
 
---qABWltju4eaUXBmg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No... not like that.
 
-On Thu, Apr 11, 2013 at 04:47:17PM +0200, Arnd Bergmann wrote:
+Instead, wouldn't it be better to extend it by defining some platform data?  Maybe something like:
 
-> Can you have a look at the other three ASoC patches in the series? I think
-> it would still be useful to merge them.
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index fe4541d..9d22718 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -96,9 +96,14 @@ static struct snd_soc_dai_driver dummy_dai = {
+ 
+ static int snd_soc_dummy_probe(struct platform_device *pdev)
+ {
++       struct snd_soc_dummy_dai_pdata *pdata = dev_get_platdata(&pdev->dev);
+        int ret;
+ 
+-       ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
++       if (pdata->n_dai > 0)
++               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec,
++                                            &pdata->dai, &pdata->n_dai);
++       else
++               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
+        if (ret < 0)
+                return ret;
+ 
 
-Yeah, they looked fine - just waiting for me to do a patch run.  Should
-get to it shortly.
+...then you can define whatever kind of DAI you want in the machine driver.
 
---qABWltju4eaUXBmg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRZtmvAAoJELSic+t+oim9eksQAIHss4c1H2YE7gZ0Owmqj5t1
-utbi6FdVD+K5XfrHqRIF0fFuCYAhpX0BwQ1PB6pA9YAjsqJ3V36F/0ikpsnhZlTj
-EwPEJX1Uq/8nO4rPTWxGOHWz9D4ZpG4SCLFUgvp8ZhKCeek4eVqnXN0OA5y17j4I
-lDMEqKVy9bRbWEi2prdq0uYO8P21OPlwVLd5pL05DpJ8BEA/a6ppGjIcKmDYfsko
-pk4CJkZTyUp1wFaCVP25zj1+dC3d7vycUduQ/iB5tuy1GGDnv8zEqWCHGoNDOtuu
-nl2QeUUgP/f5fKE6P9UTtYidDbCkl1a6nFEniVjPTyIs49ql4iAcC1bx7piMSOvl
-RHkvWpYF672+2FtzqPByE8ivqyUw4zhxsZoW8Uz/ZEkUKF7EHoQYS50hNyCXWClG
-pVbfL6Fk/5spyNipvcDqZR+D9S29+AAL0PXK5Ve0yCF07dG/3NmosTOZi/Up3GOE
-FdR3u7qOLZNj9hjry8diesmhRalUyBGO2lEWkuSPfyFnrG+raNWMaQpdxpMSrA4y
-p/mJt7/LDV8HFqSRBFQ/Z1uxP+TpnvO2NlIh6AyO6HKUBLfn8iB+MtY4nQf5lwyV
-yrTqp/X1RwhYSD+0JYlctRS7gxxwnQGysIxRHLD1oi+JZdyWKOYnaZVhfXaMjB6S
-hXE1F/MsVCDdOHFaiuT/
-=l4br
------END PGP SIGNATURE-----
-
---qABWltju4eaUXBmg--
+-gabriel
