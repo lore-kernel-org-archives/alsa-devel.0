@@ -1,17 +1,16 @@
-From: Torstein Hegge <hegge@resisty.net>
-Subject: Re: VIA VT1731
-Date: Thu, 11 Apr 2013 10:48:44 +0200
-Message-ID: <20130411084844.GD14619@pvv.ntnu.no>
-References: <CANbWPOaG-NoRcorvQRSFyUCvLpAnt1gTxZHTnuFJDk1ph6qseQ@mail.gmail.com>
+From: "Zhang wei" <zhangwei@vimicro.com>
+Subject: what is the difference between SNDRV_PCM_FMTBIT_S24_LE
+	and SNDRV_PCM_FMTBIT_S24_3LE
+Date: Thu, 11 Apr 2013 16:55:55 +0800
+Message-ID: <6B947C8AC4195040A8C6876A496C644A082F1EB2@BJ-MAIL-04.vimicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BDC55265FD0
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 10:48:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CANbWPOaG-NoRcorvQRSFyUCvLpAnt1gTxZHTnuFJDk1ph6qseQ@mail.gmail.com>
+Received: from mail.vimicro.com (mail.vimicro.com [211.155.250.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB0A6265072
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 10:56:01 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,19 +20,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALEKSANDR BOIKO <carmagff@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 11, 2013 at 11:50:11 +0400, ALEKSANDR BOIKO wrote:
-> I'm using DAC Audio-GD Master 7 with Voyage MPD. There is a problem with
-> playback audio files
-> different frequency. I've read there is a path - solution. How can I get
-> it?
+There are two definitions In the file include/sound/asound.h
+SNDRV_PCM_FORMAT_S24_3LE and SNDRV_PCM_FORMAT_S24_LE.
 
-The CM6631 / VT1731 workaround is included in kernel 3.9-rc6.
+What is the difference between them? 
 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=690a863ff03d9a29ace2b752b8f802fba78a842f
+Thanks a lot.
 
-
-Torstein
+zw
