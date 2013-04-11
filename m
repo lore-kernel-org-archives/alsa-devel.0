@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/7] ALSA: compress_core: Update calc_avail to
-	use cumulative values
-Date: Thu, 11 Apr 2013 19:00:39 +0100
-Message-ID: <1365703245-20738-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/7] ALSA: compress_core: Calculate avail
+	correctly for capture streams
+Date: Thu, 11 Apr 2013 19:00:40 +0100
+Message-ID: <1365703245-20738-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2EB9266212
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:56 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 013752660D2
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:58 +0200 (CEST)
 In-Reply-To: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +25,67 @@ To: broonie@opensource.wolfsonmicro.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The app_pointer is managed locally by the compress core for memory
-mapped DSPs but for DSPs that are not memory mapped this would have to
-be manually updated from within the DSP driver itself, which is hardly
-very idiomatic.
-
-This patch switches to using the cumulative values to calculate the
-available buffer space because these are already gracefully passed out
-of the DSP driver to the compress core and otherwise should be
-functionally equivalent.
-
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/core/compress_offload.c |   23 +++++------------------
- 1 files changed, 5 insertions(+), 18 deletions(-)
+ sound/core/compress_offload.c |   29 ++++++++++++++++++-----------
+ 1 files changed, 18 insertions(+), 11 deletions(-)
 
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index c84abc8..27bd81a 100644
+index 27bd81a..1f69863 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -160,8 +160,6 @@ static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
- static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 		struct snd_compr_avail *avail)
- {
--	long avail_calc; /*this needs to be signed variable */
--
- 	memset(avail, 0, sizeof(*avail));
- 	snd_compr_update_tstamp(stream, &avail->tstamp);
- 	/* Still need to return avail even if tstamp can't be filled in */
-@@ -184,22 +182,11 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
- 		return stream->runtime->buffer_size;
- 	}
- 
--	/* FIXME: this routine isn't consistent, in one test we use
--	 * cumulative values and in the other byte offsets. Do we
--	 * really need the byte offsets if the cumulative values have
--	 * been updated? In the PCM interface app_ptr and hw_ptr are
--	 * already cumulative */
--
--	avail_calc = stream->runtime->buffer_size -
--		(stream->runtime->app_pointer - stream->runtime->hw_pointer);
--	pr_debug("calc avail as %ld, app_ptr %lld, hw+ptr %lld\n", avail_calc,
--			stream->runtime->app_pointer,
--			stream->runtime->hw_pointer);
--	if (avail_calc >= stream->runtime->buffer_size)
--		avail_calc -= stream->runtime->buffer_size;
--	pr_debug("ret avail as %ld\n", avail_calc);
--	avail->avail = avail_calc;
--	return avail_calc;
-+	avail->avail = stream->runtime->buffer_size -
-+		(stream->runtime->total_bytes_available -
-+		 stream->runtime->total_bytes_transferred);
-+	pr_debug("ret avail as %lld\n", avail->avail);
-+	return avail->avail;
+@@ -153,7 +153,10 @@ static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
+ 	pr_debug("dsp consumed till %d total %d bytes\n",
+ 		tstamp->byte_offset, tstamp->copied_total);
+ 	stream->runtime->hw_pointer = tstamp->byte_offset;
+-	stream->runtime->total_bytes_transferred = tstamp->copied_total;
++	if (stream->direction == SND_COMPRESS_PLAYBACK)
++		stream->runtime->total_bytes_transferred = tstamp->copied_total;
++	else
++		stream->runtime->total_bytes_available = tstamp->copied_total;
+ 	return 0;
  }
  
- static inline size_t snd_compr_get_avail(struct snd_compr_stream *stream)
+@@ -164,12 +167,9 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
+ 	snd_compr_update_tstamp(stream, &avail->tstamp);
+ 	/* Still need to return avail even if tstamp can't be filled in */
+ 
+-	/* FIXME: This needs to be different for capture stream,
+-	   available is # of compressed data, for playback it's
+-	   remainder of buffer */
+-
+ 	if (stream->runtime->total_bytes_available == 0 &&
+-			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
++			stream->runtime->state == SNDRV_PCM_STATE_SETUP &&
++			stream->direction == SND_COMPRESS_PLAYBACK) {
+ 		pr_debug("detected init and someone forgot to do a write\n");
+ 		return stream->runtime->buffer_size;
+ 	}
+@@ -178,13 +178,20 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
+ 			stream->runtime->total_bytes_transferred);
+ 	if (stream->runtime->total_bytes_available ==
+ 				stream->runtime->total_bytes_transferred) {
+-		pr_debug("both pointers are same, returning full avail\n");
+-		return stream->runtime->buffer_size;
++		if (stream->direction == SND_COMPRESS_PLAYBACK) {
++			pr_debug("both pointers are same, returning full avail\n");
++			return stream->runtime->buffer_size;
++		} else {
++			pr_debug("both pointers are same, returning no avail\n");
++			return 0;
++		}
+ 	}
+ 
+-	avail->avail = stream->runtime->buffer_size -
+-		(stream->runtime->total_bytes_available -
+-		 stream->runtime->total_bytes_transferred);
++	avail->avail = stream->runtime->total_bytes_available -
++			stream->runtime->total_bytes_transferred;
++	if (stream->direction == SND_COMPRESS_PLAYBACK)
++		avail->avail = stream->runtime->buffer_size - avail->avail;
++
+ 	pr_debug("ret avail as %lld\n", avail->avail);
+ 	return avail->avail;
+ }
 -- 
 1.7.2.5
