@@ -1,68 +1,86 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 18/30] ASoC: samsung: move plat/ headers to local
- directory
-Date: Thu, 11 Apr 2013 18:19:38 +0100
-Message-ID: <20130411171938.GS9243@opensource.wolfsonmicro.com>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
- <1365638712-1028578-19-git-send-email-arnd@arndb.de>
- <20130411164751.GK9243@opensource.wolfsonmicro.com>
- <201304111908.42532.arnd@arndb.de>
+Subject: Re: [PATCH 2/4] mfd: wm5102: Map in additional FLL
+	control registers
+Date: Thu, 11 Apr 2013 18:22:11 +0100
+Message-ID: <20130411172211.GT9243@opensource.wolfsonmicro.com>
+References: <1362551296-14920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <1362551296-14920-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <20130408162223.GC24058@zurbaran>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mCdhXfk5CmamXiy1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201304111908.42532.arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============0921800242016604487=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C1ED5266195
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 19:22:12 +0200 (CEST)
+In-Reply-To: <20130408162223.GC24058@zurbaran>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---mCdhXfk5CmamXiy1
-Content-Type: text/plain; charset=us-ascii
+--===============0921800242016604487==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CVqly4l7FfnzS7sR"
 Content-Disposition: inline
 
-On Thu, Apr 11, 2013 at 07:08:42PM +0200, Arnd Bergmann wrote:
-> On Thursday 11 April 2013, Mark Brown wrote:
 
-> > This doesn't apply to my topic/samsung branch, can you please regenerate
-> > it against that or let me know what to apply it against?
+--CVqly4l7FfnzS7sR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This one should work. Unfortunately I now found during testing that the
-> s3c24xx sound support has a few build errors at the moment, but this
-> patch should not add any new ones:
+On Mon, Apr 08, 2013 at 06:22:23PM +0200, Samuel Ortiz wrote:
+> Hi Mark,
+>=20
+> On Wed, Mar 06, 2013 at 02:28:14PM +0800, Mark Brown wrote:
+> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > ---
+> >  drivers/mfd/wm5102-tables.c |    8 ++++++++
+> >  1 file changed, 8 insertions(+)
 
-Applied (after hand editing the commit message), thanks.
+> Did you merge this patchset through the ASoC tree ?
 
-> make[5]: *** [sound/soc/samsung/i2s.o] Error 1
-> /git/arm-soc/sound/soc/samsung/neo1973_wm8753.c:25:24: fatal error: mach/gta02.h: No such file or directory
->  #include <mach/gta02.h>
+Yes, let me know if that's a problem and I can back stuff out but it
+seemed sensible.
 
-Hrm, someone killed GTA02 support?  That's sad...  if that's really the
-case we could kill the machine driver but not tonight as I'm running
-late...
-
---mCdhXfk5CmamXiy1
+--CVqly4l7FfnzS7sR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRZvCKAAoJELSic+t+oim9X90QAIzA2iY67PTVoYsbI1wpdzqS
-X3BABnsRX8jCeW4ddU6M798CiUzVfLqAmk1shpE4U4IJJ5bLlG2qCNECfdsCloDm
-dH5iVP6+b/6i3srwLrYByeGkS9YHlHVjQYwmDS1mR7m9lRKN8+5iNfBhEG1yagNO
-NIxPOuh0QxtmDbum7ZUN6ZzgSwQtLuk0AKicCFFEOISg3rx/2S3bu+q5HPU52kDb
-LgKQt4Q6PW/MviuIbtJ9qtNEs85GOVcV1fcrjkq6MBr56fGB7c8wIqh24/YAeR30
-5sVrviyutZOH8eP2+MFjiam/6Yi/otL7clho3yn6mvJvHzDd5qfNriT9QPSr5f38
-t+TQkeQKclfIQZjhk1U7Xdb5L9DM4COrbayZYhig1kKnsj9Cl/Bg0fEjXwvNMV9r
-w0XTeWQjXYbYEB79ei5RK6c6sFJZxI9v48+1rIj4/Dzqr37/rPYFMjem5sYPBKCH
-6zaFcGLR91LQlnk7i7XS/mdx17SFv0dTGZzDYEU9WYWe76WESoZqKtIPy7H3ew1t
-TwHqjx5iPFWeWKz2k4jSQjzFEOcqiPqB6uuXRAr2oqYNAZsQH+r/BuwECobWGk+I
-LD0l+KpWaHz57MLxsZPREeyNIlMjBMrc8OWhtbsnbeYA+Umlwu3HHVGe1mcJyNdO
-q/ELFztXkACZ5GaTXQv+
-=Hc1C
+iQIcBAEBAgAGBQJRZvE9AAoJELSic+t+oim9VsoP/1bYLEGFoaICCRzCbdB7zFU4
+vvY/w+c3b7LsHBDwM18tgeM1AUt8j9BFwuD3Op6g9ryMVC/LigI6XnqRuiiZd3Yy
+dktVikAp6BZ2q9F1+JsAHeNpmttiWd67GfWM74UV/3XD9bzyNldEssuOCdWx67nR
+mmaznT2i9Kg239gn9btYzXEA4igqZstJhQoEhBMjZ57hzN2FHgfWxBj7AZe9DAvE
+lz47nBtaXrd9tgdni5EQwuhW6yrGw4RGjKL0LwyHegIlTqKeUKxGebYBV6vT/bsn
+WOEKtqyBb9Yoy0D/B8fr9rCMf8XQtFr9O3J7J2xHElDfqG/OcLHWK18rdR0peMFB
+a0UPGKM+0JvlfrC6A/YyoFpRchAfXH/NGmLAp3pmQl46ltFYr5g6MBM3u4rjENF4
+O/LK2lKAZaFTrHIf7sgp8Opv35OvgoS63sJsWuimFKqs37kmZ0XYy+/xo9XWFVfa
++xzVyNhOQPea0PD29w/4UFWYry7Odw5ezrMV4pU1elWo9KTYbNrbkGxqxXabK7Fo
+Jf0/r1xONxHcennIi1saZuM+VTMqkQl+tWFJQmekJXC51MPEMDVjPYE+v9FPrpga
+OjO27FdAsMssZ0x1v9p/xttIxusw1N8kbdhPbaSMsThdypStiQDnzBzJMs3SxuHZ
+aICOCeDT4I+fLmiKo+T6
+=QV7n
 -----END PGP SIGNATURE-----
 
---mCdhXfk5CmamXiy1--
+--CVqly4l7FfnzS7sR--
+
+--===============0921800242016604487==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0921800242016604487==--
