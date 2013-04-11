@@ -1,57 +1,94 @@
-From: TJ Olaes <contact@olaes.net>
-Subject: alsa-project.org access,
-	I want to tackle building an eClaro driver
-Date: Wed, 10 Apr 2013 21:59:37 +0000 (UTC)
-Message-ID: <loom.20130410T235339-86@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B85261B3E
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 00:05:07 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1UQ38Z-0008LL-Jy
- for alsa-devel@alsa-project.org; Thu, 11 Apr 2013 00:05:03 +0200
-Received: from 108.87.31.237 ([108.87.31.237])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 00:05:03 +0200
-Received: from contact by 108.87.31.237 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 00:05:03 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 19/30] ASoC: samsung: use irq resource for idma
+Date: Thu, 11 Apr 2013 02:05:01 +0200
+Message-ID: <1365638712-1028578-20-git-send-email-arnd@arndb.de>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+With multiplatform kernels, we cannot use hardwired IRQ
+numbers in device drivers. This changes the idma driver
+to use a proper resource, like all other drivers do.
 
-I hate to post to this mailing list regarding access to the alsa-project.org
-wiki, but I've gone through the site and can't, for the life of me, seem to
-find an admin email or something like it on the wiki.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+---
+ arch/arm/plat-samsung/devs.c |  6 ++++++
+ sound/soc/samsung/idma.c     | 10 ++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-I'm trying to sign up to the wiki and am having trouble with the Captcha.  I
-put in different version numbers of linux kernels but all my attempts to
-register seem to be thwarted because I'm not putting in the correct info.  I
-have no idea what I'm doing wrong.
-
-What I'm really trying to do is get involved in alsa driver development... I
-think this would be an appropriate place for me to attempt to address my
-issue, which is the lack of an HT Omega eClaro card driver.  I really,
-really want to contribute but it seems I'm being thwarted by the developer
-website.
-
-If I could get contact info for an admin or something, I would go bug them,
-but it seems that info isn't posted on the wiki.
-
-Sorry to bug y'all.  Thanks.
-
--TJ
+diff --git a/arch/arm/plat-samsung/devs.c b/arch/arm/plat-samsung/devs.c
+index 78be9c0..b441908 100644
+--- a/arch/arm/plat-samsung/devs.c
++++ b/arch/arm/plat-samsung/devs.c
+@@ -145,14 +145,20 @@ struct platform_device s3c_device_camif = {
+ 
+ /* ASOC DMA */
+ 
++#ifdef CONFIG_PLAT_S5P 
++static struct resource samsung_asoc_idma_resource = DEFINE_RES_IRQ(IRQ_I2S0);
++
+ struct platform_device samsung_asoc_idma = {
+ 	.name		= "samsung-idma",
+ 	.id		= -1,
++	.num_resources	= 1,
++	.resource	= &samsung_asoc_idma_resource,
+ 	.dev		= {
+ 		.dma_mask		= &samsung_device_dma_mask,
+ 		.coherent_dma_mask	= DMA_BIT_MASK(32),
+ 	}
+ };
++#endif
+ 
+ /* FB */
+ 
+diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+index a07950b..f36a541 100644
+--- a/sound/soc/samsung/idma.c
++++ b/sound/soc/samsung/idma.c
+@@ -68,6 +68,8 @@ static struct idma_info {
+ 	dma_addr_t	lp_tx_addr;
+ } idma;
+ 
++static int idma_irq;
++
+ static void idma_getpos(dma_addr_t *src)
+ {
+ 	*src = idma.lp_tx_addr +
+@@ -305,7 +307,7 @@ static int idma_open(struct snd_pcm_substream *substream)
+ 	if (prtd == NULL)
+ 		return -ENOMEM;
+ 
+-	ret = request_irq(IRQ_I2S0, iis_irq, 0, "i2s", prtd);
++	ret = request_irq(idma_irq, iis_irq, 0, "i2s", prtd);
+ 	if (ret < 0) {
+ 		pr_err("fail to claim i2s irq , ret = %d\n", ret);
+ 		kfree(prtd);
+@@ -324,7 +326,7 @@ static int idma_close(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct idma_ctrl *prtd = runtime->private_data;
+ 
+-	free_irq(IRQ_I2S0, prtd);
++	free_irq(idma_irq, prtd);
+ 
+ 	if (!prtd)
+ 		pr_err("idma_close called with prtd == NULL\n");
+@@ -418,6 +420,10 @@ static struct snd_soc_platform_driver asoc_idma_platform = {
+ 
+ static int asoc_idma_platform_probe(struct platform_device *pdev)
+ {
++	idma_irq = platform_get_irq(pdev, 0);
++	if (idma_irq < 0)
++		return idma_irq;
++
+ 	return snd_soc_register_platform(&pdev->dev, &asoc_idma_platform);
+ }
+ 
+-- 
+1.8.1.2
