@@ -1,47 +1,54 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [PATCH] asoc: add dummy codec
-Date: Thu, 11 Apr 2013 20:44:08 +0400
-Message-ID: <5166E858.2000508@list.ru>
-References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
- <5166D295.2070400@list.ru> <5166DB38.1010706@gmail.com>
- <5166DEBC.8070702@list.ru> <5166E141.2030401@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 18/30] ASoC: samsung: move plat/ headers to local
+ directory
+Date: Thu, 11 Apr 2013 17:47:51 +0100
+Message-ID: <20130411164751.GK9243@opensource.wolfsonmicro.com>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+ <1365638712-1028578-19-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp48.i.mail.ru (smtp48.i.mail.ru [94.100.177.108])
- by alsa0.perex.cz (Postfix) with ESMTP id B0B842610B0
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 18:44:15 +0200 (CEST)
-In-Reply-To: <5166E141.2030401@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Steve Chen <schen@mvista.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ttldl3tz4cUGhF4e"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1365638712-1028578-19-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-MTEuMDQuMjAxMyAyMDoxMywgR2FicmllbCBNLiBCZWRkaW5nZmllbGQg0L/QuNGI0LXRgjoKPiBP
-biAwNC8xMS8yMDEzIDA5OjAzIEFNLCBTdGFzIFNlcmdlZXYgd3JvdGU6Cj4+IFdoYXQgaXMgdGhl
-IHJlYXNvbiBvZiBhZGRpbmcgcGxhdGZvcm0gZGF0YSBmb3IgYSBkdW1teSBkcml2ZXI/Cj4KPiBC
-ZWNhdXNlIHNvbWUgYXVkaW8gImNvZGVjcyIgaGF2ZSBhIHN0YXRpYyBjb25maWd1cmF0aW9uIG9y
-IGFyZQo+IGNvbmZpZ3VyZWQgYnkgbWFnaWMuICAoRS5nLiBhIG1vZGVtIGluIGEgcGhvbmUuKSAg
-SSB0aGluayB0aGF0IGJlaW5nCj4gYWJsZSB0byBkZWNsYXJlIGEgYm9hcmQtc3BlY2lmaWMgc2V0
-IG9mICJkdW1teSBEQUkncyIgaW4gdGhlIGJvYXJkCj4gZmlsZSBpcyBoZWxwZnVsLgpJIGRvbid0
-IHVuZGVyc3RhbmQgeW91ciBzdWdnZXN0aW9uIHlldC4KQ3VycmVudGx5IHRoaXMgZHJpdmVyIGNy
-ZWF0ZXMgdGhlIHBsYXRmb3JtIGRldmljZSBvbiBpdHMgb3duLgpEbyB5b3UgcHJvcG9zZSB0byBy
-ZW1vdmUgdGhpcyBmaXJzdCwgYW5kIHJlbHkgb24gdGhlIGJvYXJkcwp0byBkZWZpbmUgInNuZC1z
-b2MtZHVtbXkiIGRldmljZSB3aXRoIHBsYXQgZGF0YT8KQ291bGQgeW91IHBsZWFzZSBhbHNvIGdp
-dmUgYSBwcmFjdGljYWwgZXhhbXBsZSB3aGVyZSB0aGUKY3VycmVudCAic25kLXNvYy1kdW1teS1k
-YWkiIGlzIG5vdCBlbm91Z2g/IE15IGRyaXZlcgpkZWZpbmVzIDIgREFJcywgYnV0IEkgbGlua2Vk
-IHRoZW0gYm90aCB0byAic25kLXNvYy1kdW1teS1kYWkiLAphbmQgdGhhdCBzZWVtIHRvIHdvcmsu
-IEJ1dCBJIGFtIG5vdCBmYW1pbGlhciB3aXRoIHRoaXMgc3Vic3lzdGVtLApzbyBtYXliZSBJIGRp
-ZCBzb21ldGhpbmcgd3JvbmcuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+
+--ttldl3tz4cUGhF4e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Apr 11, 2013 at 02:05:00AM +0200, Arnd Bergmann wrote:
+> The plat/iis.h and plat/ac97.h files in the samsung platform are
+> only needed by the ASoC drivers, so they can be moved into the
+> same directory, as one more step towards a multiplatform build.
+
+This doesn't apply to my topic/samsung branch, can you please regenerate
+it against that or let me know what to apply it against?
+
+--ttldl3tz4cUGhF4e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRZuj8AAoJELSic+t+oim9NfMP/3AFkNQ4vUYYj52O/TMmAbrb
+fdsNZ2zyj9Dm0O6dggeEpSzPwMnb8pDzjRItgKXtGg8kHXsy75RtLDO/azasnGwv
+UkKDAvlgOoAnZ9d7PLDXaxBwb46BH6+VTfHqYaF5DBGrvEiRFRjqUMi3fgrkmlzd
+2+hznWx9dASF2VxiJGkH+xZnYkPB5qrfJ0FgtU9caSAGVpu5gKLVcF22X/nELcGa
+ny6hrJf0lB4v/qanfrqGrRnHpLQPrOndG8vjAZ3UBBEm6urm4e2tclyKfzt28ajJ
+E7eiuMUrRSYKGv1jYeULJoJYYPBWlhQ7dwWDBMbMTa7eIEp6HC4gJrVPAbBHsy2/
+lEkFnLq/wgxNkm0Px0DUInYOgxUlM5KmmweJWgv2qR9UtXZvXw0H0Fpq8om5WdBP
+Gz9EFhmA62JJLEgxKpW/IV1DLCwN2WEl25QzAZIIyZ5usfwLzc87OJhrj+bO1ZL4
+kJCqfwCmKR7IJ6hvMXT4t2qHujny608MmlnEoS+bytQ7/ogbhzV58Xbyey3ykJeR
+E9lgQ9IRt0Z+3kZbFqRmcrkRbvpPhNVQuieMdXJ62svzGClRBxVTvAB9Sr1lNf6h
+b2Ux1/xnRGGwI2xE555AQiiAfc8rq7FLA9v7JXtXwXgm0jacAHNSDvqyqwXMEsBn
+EuksXjG51vffotJLIIft
+=jmpU
+-----END PGP SIGNATURE-----
+
+--ttldl3tz4cUGhF4e--
