@@ -1,18 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-project.org access,
- I want to tackle building an eClaro driver
-Date: Thu, 11 Apr 2013 10:25:00 +0200
-Message-ID: <5166735C.7080108@perex.cz>
-References: <loom.20130410T235339-86@post.gmane.org>
- <51666E07.9040507@ladisch.de>
+From: Torstein Hegge <hegge@resisty.net>
+Subject: Re: VIA VT1731
+Date: Thu, 11 Apr 2013 10:48:44 +0200
+Message-ID: <20130411084844.GD14619@pvv.ntnu.no>
+References: <CANbWPOaG-NoRcorvQRSFyUCvLpAnt1gTxZHTnuFJDk1ph6qseQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 9295E265072
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 10:25:01 +0200 (CEST)
-In-Reply-To: <51666E07.9040507@ladisch.de>
+Received: from microbel.pvv.ntnu.no (microbel.pvv.ntnu.no [129.241.210.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDC55265FD0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 10:48:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CANbWPOaG-NoRcorvQRSFyUCvLpAnt1gTxZHTnuFJDk1ph6qseQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, TJ Olaes <contact@olaes.net>
+To: ALEKSANDR BOIKO <carmagff@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 11.4.2013 10:02, Clemens Ladisch wrote:
-> TJ Olaes wrote:
->> I'm trying to sign up to the wiki and am having trouble with the Captcha.
-> 
-> As far as I can see, neither of the correct answers works.
+On Thu, Apr 11, 2013 at 11:50:11 +0400, ALEKSANDR BOIKO wrote:
+> I'm using DAC Audio-GD Master 7 with Voyage MPD. There is a problem with
+> playback audio files
+> different frequency. I've read there is a path - solution. How can I get
+> it?
 
-If you refer the question for date 2013-02-20, the correct answer was
-3.2.29 . I updated this question, now.
+The CM6631 / VT1731 workaround is included in kernel 3.9-rc6.
 
-					Jaroslav
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=690a863ff03d9a29ace2b752b8f802fba78a842f
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+
+Torstein
