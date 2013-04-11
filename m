@@ -1,26 +1,56 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 20/30] ASoC: samsung: convert to dmaengine API
-Date: Thu, 11 Apr 2013 15:27:06 +0100
-Message-ID: <20130411142706.GB24971@opensource.wolfsonmicro.com>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <1365638712-1028578-21-git-send-email-arnd@arndb.de>
+From: Stas Sergeev <stsp@list.ru>
+Subject: Re: [PATCH] asoc: add dummy codec
+Date: Thu, 11 Apr 2013 18:33:46 +0400
+Message-ID: <5166C9CA.9040601@list.ru>
+References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
+ <5166C139.8@list.ru> <5166C6F7.3070706@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1365638712-1028578-21-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp12.mail.ru (smtp12.mail.ru [94.100.176.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id E45742610A3
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 16:33:49 +0200 (CEST)
+In-Reply-To: <5166C6F7.3070706@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 11, 2013 at 02:05:02AM +0200, Arnd Bergmann wrote:
-> In order to build the exynos kernel with CONFIG_ARCH_MULTIPLATFORM,
-> we must convert all users of the Samsung private DMA interface to
-> the generic dmaengine API. This version of the patch adds the
-> generic dmaengine API as an alternative to the existing samsung
-> specific one. Once all the older platforms provide support for
-> the common dmaengine interfaces, we can remove the old code.
-
-There's generic ASoC dmaengine code which should be used instead of open
-coding this.  Lars-Peter Clausen and Lee Jones have been working on
-making this a totally generic driver, right now it's a library.
+MTEuMDQuMjAxMyAxODoyMSwgTGFycy1QZXRlciBDbGF1c2VuINC/0LjRiNC10YI6Cj4gT24gMDQv
+MTEvMjAxMyAwMzo1NyBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+PiAxMS4wNC4yMDEzIDE0OjQx
+LCBMYXJzLVBldGVyIENsYXVzZW4g0L/QuNGI0LXRgjoKPj4+IE9uIDA0LzExLzIwMTMgMTI6MzYg
+UE0sIFN0YXMgU2VyZ2VldiB3cm90ZToKPj4+PiBIaS4KPj4+Pgo+Pj4+IFRoZSBhdHRhY2hlZCBw
+YXRjaCBhZGRzIGEgZHVtbXkgY29kZWMgZm9yIHRoZQo+Pj4+IGFzb2Mgc3Vic3lzdGVtLgo+Pj4+
+IEkgdXNlIGl0IHdpdGggdGhlIGRyaXZlciB0aGF0IHByb2dyYW1zIHRoZSBzb2MgdG8gZHJpdmUK
+Pj4+PiBJMlMgZnJvbSBhbiBpbnRlcm5hbCBQTExzLCBhbmQgdGhlIGF1ZGlvIHRoZW4gZ29lcyB0
+bwo+Pj4+IEhETUksIHNvIG5vIGV4dGVybmFsIGNvZGVjIGlzIHVzZWQuCj4+Pj4gSSd2ZSBmb3Vu
+ZCBzcGRpZl90cmFuc2NpZXZlci5jLCB3aGljaCBleGFjdGx5IGlzIHN1Y2ggYQo+Pj4+IGR1bW15
+IGRyaXZlciwgYnV0IGl0IGlzIGJvdW5kIHRvIHRoZSBwYXJ0aWN1bGFyIHBsYXQKPj4+PiBkZXZp
+Y2UsIHNvIEkgbWFkZSB0aGUgZGV2aWNlIG5hbWUgYSBjb25maWcgb3B0aW9uLCBhbmQKPj4+PiBp
+ZiBub3Qgc2V0LCB0aGUgcGxhdCBkZXZpY2UgaXMgY3JlYXRlZCB3aXRoIHRoZSBkZWZhdWx0Cj4+
+Pj4gbmFtZS4KPj4+Pgo+Pj4+IEl0IG1heSBiZSBwb3NzaWJsZSB0byBhdm9pZCB0aGUgdXNhZ2Ug
+b2YgdGhlIGNvZGVjIGRyaXZlcgo+Pj4+IGF0IGFsbCwgYnV0IEkgaGF2ZW4ndCBzdWNjZWVkZWQg
+d2l0aCB0aGlzLCBhbmQgdGhlIGV4aXN0YW5jZQo+Pj4+IG9mIHNwZGlmX3RyYW5zY2lldmVyLmMg
+c3VnZ2VzdHMgdGhlcmUgaXMgbm8gc3VjaCB3YXkuCj4+Pj4gVGhvdWdodHM/Cj4+Pj4KPj4+PiBT
+aWduZWQtb2ZmLWJ5OiBTdGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNlZm9yZ2UubmV0Pgo+
+Pj4+Cj4+PiBIaSwKPj4+Cj4+PiBUaGVyZSBpcyBhbHJlYWR5IGEgZHVtbXkgY29kZWMgZHJpdmVy
+Lgo+Pj4KPj4+IFBsZWFzZSB0YWtlIGEgbG9vayBhdCBzb3VuZC9zb2Mvc29jLXV0aWxzLmMKPj4g
+SGksIEkndmUgc2VlbiB0aGF0LCBidXQgaG93IGNhbiBJIGdldCB1c2Ugb2YgaXQ/Cj4+IEl0IGRv
+ZXNuJ3QgZG8gc25kX3NvY19yZWdpc3Rlcl9jb2RlYygpLCBhbmQgaW4gZGVidWdmcwo+IEl0IGRv
+ZXM6Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFs
+ZHMvbGludXguZ2l0L3RyZWUvc291bmQvc29jL3NvYy11dGlscy5jI24xMDEKQXJyLCB0aGF0J3Mg
+aXQsIHRoYW5rIHlvdSEKSXQgZG9lc24ndCBkbyBzbyBvbiBhbiBhbmRyb2lkIGtlcm5lbCBJIGhh
+dmUgaGVyZQooYmFzZWQgb24gbGludXgtMy4wKSwgYnV0IGl0IGluZGVlZCBkb2VzIHNvIGluIGEg
+Z2l0IGtlcm5lbC4uLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
