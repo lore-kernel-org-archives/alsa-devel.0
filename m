@@ -1,15 +1,23 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [PATCH] asoc: add dummy codec
-Date: Thu, 11 Apr 2013 19:11:17 +0400
-Message-ID: <5166D295.2070400@list.ru>
-References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: what is the difference between
+ SNDRV_PCM_FMTBIT_S24_LE and SNDRV_PCM_FMTBIT_S24_3LE
+Date: Thu, 11 Apr 2013 08:27:21 -0700
+Message-ID: <5166D659.90505@gmail.com>
+References: <6B947C8AC4195040A8C6876A496C644A082F1EB2@BJ-MAIL-04.vimicro.com>
+ <51667BBC.3070609@ladisch.de>
+ <6B947C8AC4195040A8C6876A496C644A082F1EEE@BJ-MAIL-04.vimicro.com>
+ <516683FD.4000804@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050203080805050000090004"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp44.i.mail.ru (smtp44.i.mail.ru [94.100.177.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F1F42610AD
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 17:11:26 +0200 (CEST)
-In-Reply-To: <51669353.7090903@metafoo.de>
+Received: from mail-pb0-f47.google.com (mail-pb0-f47.google.com
+ [209.85.160.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BA562610AD
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 17:27:36 +0200 (CEST)
+Received: by mail-pb0-f47.google.com with SMTP id rq13so915731pbb.20
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 08:27:35 -0700 (PDT)
+In-Reply-To: <516683FD.4000804@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,83 +27,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Zhang wei <zhangwei@vimicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050203080805050000090004
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-11.04.2013 14:41, Lars-Peter Clausen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On 04/11/2013 12:36 PM, Stas Sergeev wrote:
->> Hi.
->>
->> The attached patch adds a dummy codec for the
->> asoc subsystem.
->> I use it with the driver that programs the soc to drive
->> I2S from an internal PLLs, and the audio then goes to
->> HDMI, so no external codec is used.
->> I've found spdif_transciever.c, which exactly is such a
->> dummy driver, but it is bound to the particular plat
->> device, so I made the device name a config option, and
->> if not set, the plat device is created with the default
->> name.
->>
->> It may be possible to avoid the usage of the codec driver
->> at all, but I haven't succeeded with this, and the existance
->> of spdif_transciever.c suggests there is no such way.
->> Thoughts?
->>
->> Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
->>
-> Hi,
+On 04/11/2013 02:35 AM, Clemens Ladisch wrote:
+> (please do not drop the mailing list from replies.)
 >
-> There is already a dummy codec driver.
+> Zhang wei wrote:
+>> I do not really understand. For example,an codec is wm8985 ...
 >
-> Please take a look at sound/soc/soc-utils.c
+> The SNDRV_PCM_* symbols specify the format in which samples are
+> stored in memory.
 >
-> - Lars
-Lars, indeed, this codec is present in a git kernel and
-it wasn't in mine android kernel.
-But, that driver is too dummy to even work at all.
+> I do not know how ASoC maps these symbols to on-the-wire formats.
 
-The attached patch adds a playback stream for the dummy
-codec. Would it be possible to apply this?
+The SNDRV_PCM_* symbol specifies the format of the audio in RAM, and 
+transfers that audio to the digital audio interface (DAI) on the CPU 
+side.  (E.g. the OMAP McBSP.)
 
-Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+The on-the-wire format is set up by the ASoC machine driver (i.e. "sound 
+card.")  It will configure the CPU DAI (e.g. the OMAP McBSP) and the 
+codec (e.g. wm8985) to expect the same "on-the-wire" format.  For 
+example, in sound/soc/omap/omap-twl4030.c (beagleboard's machine driver) 
+the on-the-wire format is done in omap_twl4030_hw_params() like this 
+(edited for brevity):
 
+         fmt =   SND_SOC_DAIFMT_I2S |
+                 SND_SOC_DAIFMT_NB_NF |
+                 SND_SOC_DAIFMT_CBM_CFM;
 
---------------050203080805050000090004
-Content-Type: application/x-patch;
- name="0001-asoc-define-playback-stream-in-dummy-codec.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="0001-asoc-define-playback-stream-in-dummy-codec.patch"
+         /* Set codec DAI configuration */
+         ret = snd_soc_dai_set_fmt(codec_dai, fmt);
 
-RnJvbSA5NzIzZWMzN2VkODZiMTU2NTAyZmM3OTcyYTFiZGVkMzVjNGU1NWMzIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBTdGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNl
-Zm9yZ2UubmV0PgpEYXRlOiBUaHUsIDExIEFwciAyMDEzIDE5OjA3OjIwICswNDAwClN1Ympl
-Y3Q6IFtQQVRDSF0gYXNvYzogZGVmaW5lIHBsYXliYWNrIHN0cmVhbSBpbiBkdW1teSBjb2Rl
-YwoKLS0tCiBzb3VuZC9zb2Mvc29jLXV0aWxzLmMgfCA3ICsrKysrKysKIDEgZmlsZSBjaGFu
-Z2VkLCA3IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLXV0aWxz
-LmMgYi9zb3VuZC9zb2Mvc29jLXV0aWxzLmMKaW5kZXggZmU0NTQxZC4uNTNlM2M4OSAxMDA2
-NDQKLS0tIGEvc291bmQvc29jL3NvYy11dGlscy5jCisrKyBiL3NvdW5kL3NvYy9zb2MtdXRp
-bHMuYwpAQCAtOTIsNiArOTIsMTMgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX3BsYXRmb3Jt
-X2RyaXZlciBkdW1teV9wbGF0Zm9ybSA9IHsKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jb2Rl
-Y19kcml2ZXIgZHVtbXlfY29kZWM7CiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZl
-ciBkdW1teV9kYWkgPSB7CiAJLm5hbWUgPSAic25kLXNvYy1kdW1teS1kYWkiLAorCS5wbGF5
-YmFjayAJPSB7CisJCS5zdHJlYW1fbmFtZQk9ICJQbGF5YmFjayIsCisJCS5jaGFubmVsc19t
-aW4JPSAxLAorCQkuY2hhbm5lbHNfbWF4CT0gMzg0LAorCQkucmF0ZXMJCT0gU05EUlZfUENN
-X1JBVEVfODAwMF85NjAwMCwKKwkJLmZvcm1hdHMJPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9M
-RSwKKwl9LAogfTsKIAogc3RhdGljIGludCBzbmRfc29jX2R1bW15X3Byb2JlKHN0cnVjdCBw
-bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCi0tIAoxLjcuMTEuNwoK
---------------050203080805050000090004
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+         /* Set cpu DAI configuration */
+         ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
 
+The CPU DAI is responsible for converting the SNDRV_PCM_* format into 
+the serial format.  Therefore, the conversions that it supports is 
+totally hardware-dependent.
 
---------------050203080805050000090004--
+-gabriel
