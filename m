@@ -1,18 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Enhance support for SigmaDSP chips
-Date: Thu, 11 Apr 2013 14:53:27 +0200
-Message-ID: <5166B247.807@metafoo.de>
-References: <516688D4.9040700@zonque.org> <5166959E.7010008@metafoo.de>
- <5166A649.2030509@gmail.com>
+From: Stas Sergeev <stsp@list.ru>
+Subject: Re: [PATCH] asoc: add dummy codec
+Date: Thu, 11 Apr 2013 17:57:13 +0400
+Message-ID: <5166C139.8@list.ru>
+References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-209.synserver.de (smtp-out-211.synserver.de
- [212.40.185.211])
- by alsa0.perex.cz (Postfix) with ESMTP id 05B9C261091
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 14:54:19 +0200 (CEST)
-In-Reply-To: <5166A649.2030509@gmail.com>
+Received: from smtp40.i.mail.ru (smtp40.i.mail.ru [94.100.177.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA73026109D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 15:57:21 +0200 (CEST)
+In-Reply-To: <51669353.7090903@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,103 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/2013 02:02 PM, Daniel Mack wrote:
-> Hi Lars,
-> 
-> (taking off Cliff's email address, as it's apparently not valid any more).
-> 
-> 
-> On 11.04.2013 12:51, Lars-Peter Clausen wrote:
->> On 04/11/2013 11:56 AM, Daniel Mack wrote:
->>> Hi Lars,
->>> Hi Cliff,
->>>
->>> I'm looking into the SigmaDSP AD1701 support, as a new prospective
->>> project will use it. What's going to be used on this chip is not the
->>> DAC/ADC features though, but the internal, programmable DSP things, and
->>> designers will use the SigmaStudio IDE to generate the firmware.
->>>
->>> So I'm wondering how to support this kind of chip properly in ALSA,
->>> which is not straight-forward, as the controls exported by it are
->>> specific to the loaded firmware of course. Also, the IDE is free to
->>> re-allocate every sub-addresses of its controls when something changes
->>> in the layout of the building blocks.
->>>
->>> One idea I have in mind is to have a little parser script that reads the
->>> generated sources of the IDE and dump a device-tree node snippet which
->>> can then be put into the final DT. The driver would need to learn about
->>> how to interpret that DT nodes, which will most likely just contain a
->>> name, a sub-address, along with some mask and shift values.
->>>
->>> I wanted to ask for your opinion on that before I start. Have you ever
->>> used any of the DSP features from ALSA/ASoC? Are there any pitfalls I
->>> should be aware of? Is anyone actively working on improvements on the
->>> driver?
->>>
->>> An alternative approach is to write a userspace library of course, but
->>> that's going to be problematic once anybody wants to use the DSP
->>> features in parallel to the DAC/ADC.
->>
->> Hi,
->>
->> I just yesterday wrote a small post how you can program the DSP registers.
->> http://ez.analog.com/message/83094#83094
-> 
-> Good timing :) Yes, I would add something like this, but in a generic
-> manner of course.
-> 
->> I'd like to be able to put the information about the different algorithms
->> into the DSP firmware file itself, so we can auto instantiate the controls
->> from the driver. The problem is that it is not so easy to generalize the
->> export of the algorithms from SigmaStudio.
-> 
-> But just to understand this right: the firmware exported by SigmaStudio
-> is already what the driver loads via the kernel firmware interface, right?
-
-Kind of, there is no support for generating the firmware from within
-SigmaStudio. But there is an external tool which takes data which has been
-exported form SigmaStudio and generates the firmware:
-
-http://wiki.analog.com/resources/tools-software/linux-software/sigmadsp_genfirmware
-
-> 
->> Another problem is that you don't know how to calculate the algorithm
->> parameters at runtime for some of the more complex algorithms.
-> 
-> I would just want to set the controls as specified by the exported
-> header file, whatever kind of control that is. I haven't done real-world
-> tests yet, but the output of a example project doesn't seem very
-> complicated. Which 'more complex algorithms' are you referring to?
-
-Basically anything that is not a push button or a gain selector. E.g. the
-coefficients for a compressor. You could expose these as SOC_BYTES control,
-but you'd still need a userspace application that is able to recalculate
-them at runtime.
-
-> 
->> I don't think it's a good idea to put the control info into the devicetree
->> and would rather prefer to see them go into the firmware.
-> 
-> I thought about this too, but after all, the DT describes the hardware,
-> and the hardware in this case is something that can be programmed. The
-> idea would be to have that script that generates the DT fragment, and
-> leave it up to the user to decide which controls to make accessible by
-> the driver.
-> 
-> From the driver's perspective, I don't know if defining a binary
-> interface format inside the firmware blob and parsing it at run-time is
-> really easier to achieve than using the DT, especially as we have all
-> convenient functions to read properties and iterate over nodes already
-> prepared. But as I don't have the full picture of the DSPs yet, I might
-> overlook the subtle details.
-
-Well the description in the device tree needs to match the firmware and the
-firmware is usually stored in userspace and can easily be replaced. It is in
-my opinion better to have both the DSP firmware and the control description
-in the same place.
-
-- Lars
+MTEuMDQuMjAxMyAxNDo0MSwgTGFycy1QZXRlciBDbGF1c2VuINC/0LjRiNC10YI6Cj4gT24gMDQv
+MTEvMjAxMyAxMjozNiBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+PiBIaS4KPj4KPj4gVGhlIGF0
+dGFjaGVkIHBhdGNoIGFkZHMgYSBkdW1teSBjb2RlYyBmb3IgdGhlCj4+IGFzb2Mgc3Vic3lzdGVt
+Lgo+PiBJIHVzZSBpdCB3aXRoIHRoZSBkcml2ZXIgdGhhdCBwcm9ncmFtcyB0aGUgc29jIHRvIGRy
+aXZlCj4+IEkyUyBmcm9tIGFuIGludGVybmFsIFBMTHMsIGFuZCB0aGUgYXVkaW8gdGhlbiBnb2Vz
+IHRvCj4+IEhETUksIHNvIG5vIGV4dGVybmFsIGNvZGVjIGlzIHVzZWQuCj4+IEkndmUgZm91bmQg
+c3BkaWZfdHJhbnNjaWV2ZXIuYywgd2hpY2ggZXhhY3RseSBpcyBzdWNoIGEKPj4gZHVtbXkgZHJp
+dmVyLCBidXQgaXQgaXMgYm91bmQgdG8gdGhlIHBhcnRpY3VsYXIgcGxhdAo+PiBkZXZpY2UsIHNv
+IEkgbWFkZSB0aGUgZGV2aWNlIG5hbWUgYSBjb25maWcgb3B0aW9uLCBhbmQKPj4gaWYgbm90IHNl
+dCwgdGhlIHBsYXQgZGV2aWNlIGlzIGNyZWF0ZWQgd2l0aCB0aGUgZGVmYXVsdAo+PiBuYW1lLgo+
+Pgo+PiBJdCBtYXkgYmUgcG9zc2libGUgdG8gYXZvaWQgdGhlIHVzYWdlIG9mIHRoZSBjb2RlYyBk
+cml2ZXIKPj4gYXQgYWxsLCBidXQgSSBoYXZlbid0IHN1Y2NlZWRlZCB3aXRoIHRoaXMsIGFuZCB0
+aGUgZXhpc3RhbmNlCj4+IG9mIHNwZGlmX3RyYW5zY2lldmVyLmMgc3VnZ2VzdHMgdGhlcmUgaXMg
+bm8gc3VjaCB3YXkuCj4+IFRob3VnaHRzPwo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTdGFzIFNlcmdl
+ZXYgPHN0c3BAdXNlcnMuc291cmNlZm9yZ2UubmV0Pgo+Pgo+IEhpLAo+Cj4gVGhlcmUgaXMgYWxy
+ZWFkeSBhIGR1bW15IGNvZGVjIGRyaXZlci4KPgo+IFBsZWFzZSB0YWtlIGEgbG9vayBhdCBzb3Vu
+ZC9zb2Mvc29jLXV0aWxzLmMKSGksIEkndmUgc2VlbiB0aGF0LCBidXQgaG93IGNhbiBJIGdldCB1
+c2Ugb2YgaXQ/Ckl0IGRvZXNuJ3QgZG8gc25kX3NvY19yZWdpc3Rlcl9jb2RlYygpLCBhbmQgaW4g
+ZGVidWdmcwpJIGNhbiBkbyAnY2F0IGFzb2MvY29kZWNzJyBhbmQgaXQgc2hvd3Mgb25seSAnZHVt
+bXktY29kZWMnLAp3aGljaCBpcyBpbnN0YWxsZWQgYnkgbXkgZHJpdmVyLgpTbyBjb3VsZCB5b3Ug
+cGxlYXNlIGNsYXJpZnk/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
