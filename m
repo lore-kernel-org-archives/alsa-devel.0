@@ -1,20 +1,17 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+From: Stas Sergeev <stsp@list.ru>
 Subject: Re: [PATCH] asoc: add dummy codec
-Date: Thu, 11 Apr 2013 08:48:08 -0700
-Message-ID: <5166DB38.1010706@gmail.com>
+Date: Thu, 11 Apr 2013 20:03:08 +0400
+Message-ID: <5166DEBC.8070702@list.ru>
 References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
- <5166D295.2070400@list.ru>
+ <5166D295.2070400@list.ru> <5166DB38.1010706@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A5BA2610AF
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 17:48:12 +0200 (CEST)
-Received: by mail-pd0-f179.google.com with SMTP id x11so916781pdj.38
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 08:48:12 -0700 (PDT)
-In-Reply-To: <5166D295.2070400@list.ru>
+Received: from smtp22.mail.ru (smtp22.mail.ru [94.100.176.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEFC12610B0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 18:03:10 +0200 (CEST)
+In-Reply-To: <5166DB38.1010706@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,48 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@list.ru>
+To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/2013 08:11 AM, Stas Sergeev wrote:
->> There is already a dummy codec driver.
->>
->> Please take a look at sound/soc/soc-utils.c
->>
->> - Lars
-> Lars, indeed, this codec is present in a git kernel and
-> it wasn't in mine android kernel.
-> But, that driver is too dummy to even work at all.
-> 
-> The attached patch adds a playback stream for the dummy
-> codec. Would it be possible to apply this?
-
-No... not like that.
-
-Instead, wouldn't it be better to extend it by defining some platform data?  Maybe something like:
-
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index fe4541d..9d22718 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -96,9 +96,14 @@ static struct snd_soc_dai_driver dummy_dai = {
- 
- static int snd_soc_dummy_probe(struct platform_device *pdev)
- {
-+       struct snd_soc_dummy_dai_pdata *pdata = dev_get_platdata(&pdev->dev);
-        int ret;
- 
--       ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
-+       if (pdata->n_dai > 0)
-+               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec,
-+                                            &pdata->dai, &pdata->n_dai);
-+       else
-+               ret = snd_soc_register_codec(&pdev->dev, &dummy_codec, &dummy_dai, 1);
-        if (ret < 0)
-                return ret;
- 
-
-...then you can define whatever kind of DAI you want in the machine driver.
-
--gabriel
+MTEuMDQuMjAxMyAxOTo0OCwgR2FicmllbCBNLiBCZWRkaW5nZmllbGQg0L/QuNGI0LXRgjoKPiBP
+biAwNC8xMS8yMDEzIDA4OjExIEFNLCBTdGFzIFNlcmdlZXYgd3JvdGU6Cj4+PiBUaGVyZSBpcyBh
+bHJlYWR5IGEgZHVtbXkgY29kZWMgZHJpdmVyLgo+Pj4KPj4+IFBsZWFzZSB0YWtlIGEgbG9vayBh
+dCBzb3VuZC9zb2Mvc29jLXV0aWxzLmMKPj4+Cj4+PiAtIExhcnMKPj4gTGFycywgaW5kZWVkLCB0
+aGlzIGNvZGVjIGlzIHByZXNlbnQgaW4gYSBnaXQga2VybmVsIGFuZAo+PiBpdCB3YXNuJ3QgaW4g
+bWluZSBhbmRyb2lkIGtlcm5lbC4KPj4gQnV0LCB0aGF0IGRyaXZlciBpcyB0b28gZHVtbXkgdG8g
+ZXZlbiB3b3JrIGF0IGFsbC4KPj4KPj4gVGhlIGF0dGFjaGVkIHBhdGNoIGFkZHMgYSBwbGF5YmFj
+ayBzdHJlYW0gZm9yIHRoZSBkdW1teQo+PiBjb2RlYy4gV291bGQgaXQgYmUgcG9zc2libGUgdG8g
+YXBwbHkgdGhpcz8KPiBOby4uLiBub3QgbGlrZSB0aGF0Lgo+Cj4gSW5zdGVhZCwgd291bGRuJ3Qg
+aXQgYmUgYmV0dGVyIHRvIGV4dGVuZCBpdCBieSBkZWZpbmluZyBzb21lIHBsYXRmb3JtIGRhdGE/
+ICBNYXliZSBzb21ldGhpbmcgbGlrZToKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLXV0
+aWxzLmMgYi9zb3VuZC9zb2Mvc29jLXV0aWxzLmMKPiBpbmRleCBmZTQ1NDFkLi45ZDIyNzE4IDEw
+MDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zb2MtdXRpbHMuYwo+ICsrKyBiL3NvdW5kL3NvYy9zb2Mt
+dXRpbHMuYwo+IEBAIC05Niw5ICs5NiwxNCBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2Ry
+aXZlciBkdW1teV9kYWkgPSB7Cj4gIAo+ICBzdGF0aWMgaW50IHNuZF9zb2NfZHVtbXlfcHJvYmUo
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgewo+ICsgICAgICAgc3RydWN0IHNuZF9z
+b2NfZHVtbXlfZGFpX3BkYXRhICpwZGF0YSA9IGRldl9nZXRfcGxhdGRhdGEoJnBkZXYtPmRldik7
+Cj4gICAgICAgICBpbnQgcmV0Owo+ICAKPiAtICAgICAgIHJldCA9IHNuZF9zb2NfcmVnaXN0ZXJf
+Y29kZWMoJnBkZXYtPmRldiwgJmR1bW15X2NvZGVjLCAmZHVtbXlfZGFpLCAxKTsKPiArICAgICAg
+IGlmIChwZGF0YS0+bl9kYWkgPiAwKQo+ICsgICAgICAgICAgICAgICByZXQgPSBzbmRfc29jX3Jl
+Z2lzdGVyX2NvZGVjKCZwZGV2LT5kZXYsICZkdW1teV9jb2RlYywKPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAmcGRhdGEtPmRhaSwgJnBkYXRhLT5uX2RhaSk7
+Cj4gKyAgICAgICBlbHNlCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNuZF9zb2NfcmVnaXN0ZXJf
+Y29kZWMoJnBkZXYtPmRldiwgJmR1bW15X2NvZGVjLCAmZHVtbXlfZGFpLCAxKTsKPiAgICAgICAg
+IGlmIChyZXQgPCAwKQo+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ICAKPgo+IC4uLnRo
+ZW4geW91IGNhbiBkZWZpbmUgd2hhdGV2ZXIga2luZCBvZiBEQUkgeW91IHdhbnQgaW4gdGhlIG1h
+Y2hpbmUgZHJpdmVyLgpCdXQgdGhhdCdzIGEgX2R1bW15XyBjb2RlYywgaXQgc2ltcGx5IGRvZXMg
+dGhpczoKLS0tCnNvY19kdW1teV9kZXYgPSBwbGF0Zm9ybV9kZXZpY2VfYWxsb2MoInNuZC1zb2Mt
+ZHVtbXkiLCAtMSk7CmlmICghc29jX2R1bW15X2RldikKcmV0dXJuIC1FTk9NRU07CnJldCA9IHBs
+YXRmb3JtX2RldmljZV9hZGQoc29jX2R1bW15X2Rldik7Ci0tLQppbiB0aGUgdmVyeSBzYW1lIHNv
+dXJjZSBmaWxlLgpXaGF0IGlzIHRoZSByZWFzb24gb2YgYWRkaW5nIHBsYXRmb3JtIGRhdGEgZm9y
+IGEgZHVtbXkgZHJpdmVyPwpUaGUgY29kZSBzbmlwcGV0IEkgcHJvcG9zZSwgaXMgY29waWVkIGZy
+b20gdGhlIHNwZGlmX3JlY2VpdmVyLmMsCnNvIGl0cyBub3Qgc29tZXRoaW5nIEkgaW52ZW50ZWQg
+bXlzZWxmLiA6KQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
