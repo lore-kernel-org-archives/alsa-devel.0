@@ -1,14 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/7] Add capture support to compress API
-Date: Thu, 11 Apr 2013 19:00:38 +0100
-Message-ID: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/7] ALSA: compress_core: Update calc_avail to
+	use cumulative values
+Date: Thu, 11 Apr 2013 19:00:39 +0100
+Message-ID: <1365703245-20738-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C6DD266211
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2EB9266212
  for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 20:09:56 +0200 (CEST)
+In-Reply-To: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +25,61 @@ To: broonie@opensource.wolfsonmicro.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This chain of patches does some clearing up and add capture
-support to the compressed API.
+The app_pointer is managed locally by the compress core for memory
+mapped DSPs but for DSPs that are not memory mapped this would have to
+be manually updated from within the DSP driver itself, which is hardly
+very idiomatic.
 
-Missing is support for capture streams that don't use the
-copy callback. Also I have included two patches at the end
-of the chain that remove the buffer pointers and just use
-the cumulative values however as our setup uses the copy
-callback these are untested past build so should be taken
-with caution.
+This patch switches to using the cumulative values to calculate the
+available buffer space because these are already gracefully passed out
+of the DSP driver to the compress core and otherwise should be
+functionally equivalent.
 
-Thanks,
-Charles
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/core/compress_offload.c |   23 +++++------------------
+ 1 files changed, 5 insertions(+), 18 deletions(-)
 
-Charles Keepax (7):
-  ALSA: compress_core: Update calc_avail to use cumulative values
-  ALSA: compress_core: Calculate avail correctly for capture streams
-  ALSA: compress_core: Deconstify copy callback buffer
-  ALSA: compress_core: Add support for capture streams
-  ASoC: soc-compress: Deduce stream direction
-  ALSA: compress_core: Remove unused hw_pointer
-  ALSA: compress_core: Rework writes to use cumulative values
-
- include/sound/compress_driver.h |    4 +-
- sound/core/compress_offload.c   |  117 +++++++++++++++++++++++++-------------
- sound/soc/soc-compress.c        |   11 +++-
- 3 files changed, 87 insertions(+), 45 deletions(-)
-
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index c84abc8..27bd81a 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -160,8 +160,6 @@ static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
+ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
+ 		struct snd_compr_avail *avail)
+ {
+-	long avail_calc; /*this needs to be signed variable */
+-
+ 	memset(avail, 0, sizeof(*avail));
+ 	snd_compr_update_tstamp(stream, &avail->tstamp);
+ 	/* Still need to return avail even if tstamp can't be filled in */
+@@ -184,22 +182,11 @@ static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
+ 		return stream->runtime->buffer_size;
+ 	}
+ 
+-	/* FIXME: this routine isn't consistent, in one test we use
+-	 * cumulative values and in the other byte offsets. Do we
+-	 * really need the byte offsets if the cumulative values have
+-	 * been updated? In the PCM interface app_ptr and hw_ptr are
+-	 * already cumulative */
+-
+-	avail_calc = stream->runtime->buffer_size -
+-		(stream->runtime->app_pointer - stream->runtime->hw_pointer);
+-	pr_debug("calc avail as %ld, app_ptr %lld, hw+ptr %lld\n", avail_calc,
+-			stream->runtime->app_pointer,
+-			stream->runtime->hw_pointer);
+-	if (avail_calc >= stream->runtime->buffer_size)
+-		avail_calc -= stream->runtime->buffer_size;
+-	pr_debug("ret avail as %ld\n", avail_calc);
+-	avail->avail = avail_calc;
+-	return avail_calc;
++	avail->avail = stream->runtime->buffer_size -
++		(stream->runtime->total_bytes_available -
++		 stream->runtime->total_bytes_transferred);
++	pr_debug("ret avail as %lld\n", avail->avail);
++	return avail->avail;
+ }
+ 
+ static inline size_t snd_compr_get_avail(struct snd_compr_stream *stream)
 -- 
 1.7.2.5
