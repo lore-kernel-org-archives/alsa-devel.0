@@ -1,55 +1,115 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: samsung: fix neo1973-wm8753 compilation
-Date: Fri, 12 Apr 2013 13:13:36 +0100
-Message-ID: <20130412121320.GX9243@opensource.wolfsonmicro.com>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
- <201304111908.42532.arnd@arndb.de>
- <20130411171938.GS9243@opensource.wolfsonmicro.com>
- <201304112102.43896.heiko@sntech.de>
+From: Stas Sergeev <stsp@list.ru>
+Subject: Re: [PATCH] ASoC: define playback and capture streams
+ in dummy codec
+Date: Fri, 12 Apr 2013 18:19:43 +0400
+Message-ID: <20130412181943.0338083b@stas>
+References: <5167E7C4.7080501@list.ru>
+ <20130412105943.GU9243@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zAIN9dnKNiFxaW1E"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201304112102.43896.heiko@sntech.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="MP_/tdcp.lfEuHkOwu1IxSHHVe."
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp16.mail.ru (smtp16.mail.ru [94.100.176.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id C682B2616B4
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 16:20:05 +0200 (CEST)
+In-Reply-To: <20130412105943.GU9243@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
---zAIN9dnKNiFxaW1E
-Content-Type: text/plain; charset=iso-8859-1
+--MP_/tdcp.lfEuHkOwu1IxSHHVe.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2013 at 09:02:43PM +0200, Heiko St=FCbner wrote:
-> Commit b2ca78717cea (ARM: S3C24XX: make gta02.h local) already replaced
-> the GTA02_GPIO_* constants in neo1973-wm8753.c but forgot to remove the
-> inclusion of mach/gta02.h before moving the file out of mach/.
+On Fri, 12 Apr 2013 11:59:44 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> > This patch adds a playback and capture streams to the dummy codec DAI
+> > configuration. Most permissive set of sampling rates and formats is used.
+> The changelog ought to explain why this is required...
+I can only tell that without this patch I am not getting any
+sound at all... which is probably a rather poor statement for
+the changelog. Could you please correct the changelog with the
+better knowledge of the details?
 
-Applied, thanks.
+> > Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+> Please send patches as documented in SubmittingPatches - even as an
+> attachment this isn't coming out as plain text for me.
+OK, now it should be as a plain text.
+--MP_/tdcp.lfEuHkOwu1IxSHHVe.
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-ASoC-define-playback-and-capture-streams-in-dummy-co.patch
 
---zAIN9dnKNiFxaW1E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>From 22813b2124d81d8de5cde19a4e2f9490bd23baab Mon Sep 17 00:00:00 2001
+From: Stas Sergeev <stsp@users.sourceforge.net>
+Date: Thu, 11 Apr 2013 19:07:20 +0400
+Subject: [PATCH] ASoC: define playback and capture streams in dummy codec
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+This patch adds a playback and capture streams to the dummy codec DAI
+configuration. Most permissive set of sampling rates and formats is used.
 
-iQIcBAEBAgAGBQJRZ/poAAoJELSic+t+oim9e0AP/R3Lu5s4gScu+xJ0G8nvLVAl
-YLNjq7WzVqz5m0gOzj9gYxCTxEnixXm2RvDyjkhif1QbTn68TGtWaxaiADOzwtEu
-c8BVVUGs/77WZhIBZj0rYLeQCO0W+46LmImbQXf5buToGxJzF/wEvdWiYR9HYOjU
-8assej7avGF4oDD2CjmmVxH+v35ygZmvKTb8nvx2aBiAHVuELnHfN0sM8lOYDQY6
-jynA+FkNjWUpK0u9agcblyflFHxOEcNpHdgEJk1ANV88FFYyLTjy3VR1hECE6Ha7
-jY7I6S2FAhs47a/C4nxmSGCU5Wjpf4Ucrcsygti5Dc01zui5EUTQZjp0sUkG1kcp
-OCBqwbV4K39ej0s5rDv0u5LZQEC+HOek1vg5SIwMuLP6wu3ss+W9H7mD5o/BVv2k
-7XNEe/myhvIsnNGjxSql1DLlUEDNQjXG6fPezbqgoNkRtWGg5D3FedGuRfmpGQnC
-pOuMg2T3bXwXmUrzKVov09fV/sVOR3v5Nxe46ej5YKr0MMDCnYjIq0H4dIz5gg2I
-4fCMJMPZzYHgclJN9osnWTqaR6hviGC402mLaP/3rsYVc8DIrSd53thnap/qhPFp
-lKxfQAXJIsCm0c2zBV3rUeKqaLwm4Ysj9OKhkiUP0Wp5CHwswwGQ12oqy66Dd8bh
-cLOtL0lrcYb3ccHLEDMJ
-=bWTJ
------END PGP SIGNATURE-----
+Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+---
+ sound/soc/soc-utils.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
---zAIN9dnKNiFxaW1E--
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index fe4541d..bf1f92a 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -90,8 +90,33 @@ static struct snd_soc_platform_driver dummy_platform = {
+ };
+ 
+ static struct snd_soc_codec_driver dummy_codec;
++
++#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
++			SNDRV_PCM_FMTBIT_U8 | \
++			SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_U16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | \
++			SNDRV_PCM_FMTBIT_U32_LE | \
++			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
+ static struct snd_soc_dai_driver dummy_dai = {
+ 	.name = "snd-soc-dummy-dai",
++	.playback 	= {
++		.stream_name	= "Playback",
++		.channels_min	= 1,
++		.channels_max	= 384,
++		.rates		= STUB_RATES,
++		.formats	= STUB_FORMATS,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min	= 1,
++		.channels_max	= 384,
++		.rates = STUB_RATES,
++		.formats = STUB_FORMATS,
++	 },
+ };
+ 
+ static int snd_soc_dummy_probe(struct platform_device *pdev)
+-- 
+1.7.11.7
+
+
+--MP_/tdcp.lfEuHkOwu1IxSHHVe.
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--MP_/tdcp.lfEuHkOwu1IxSHHVe.--
