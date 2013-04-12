@@ -1,14 +1,16 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: [PATCH] ASoC: define playback and capture streams in
-	dummy codec
-Date: Fri, 12 Apr 2013 14:53:56 +0400
-Message-ID: <5167E7C4.7080501@list.ru>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: define playback and capture streams
+	in dummy codec
+Date: Fri, 12 Apr 2013 11:59:44 +0100
+Message-ID: <20130412105943.GU9243@opensource.wolfsonmicro.com>
+References: <5167E7C4.7080501@list.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000801080803070904000003"
+Content-Type: multipart/mixed; boundary="===============1244427848236387915=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp34.i.mail.ru (smtp34.i.mail.ru [94.100.177.94])
- by alsa0.perex.cz (Postfix) with ESMTP id BE63726160D
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 12:54:05 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66FD326160D
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 12:59:45 +0200 (CEST)
+In-Reply-To: <5167E7C4.7080501@list.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,66 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+To: Stas Sergeev <stsp@list.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000801080803070904000003
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi.
+--===============1244427848236387915==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="S6lVrJQMb5zD9/0X"
+Content-Disposition: inline
 
-This patch adds a playback and capture streams to the dummy codec DAI
-configuration. Most permissive set of sampling rates and formats is used.
 
-Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+--S6lVrJQMb5zD9/0X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---------------000801080803070904000003
-Content-Type: application/x-patch;
- name="0001-ASoC-define-playback-and-capture-streams-in-dummy-co.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename*0="0001-ASoC-define-playback-and-capture-streams-in-dummy-co.pa";
- filename*1="tch"
+On Fri, Apr 12, 2013 at 02:53:56PM +0400, Stas Sergeev wrote:
+> Hi.
+>=20
+> This patch adds a playback and capture streams to the dummy codec DAI
+> configuration. Most permissive set of sampling rates and formats is used.
 
-RnJvbSAyMjgxM2IyMTI0ZDgxZDhkZTVjZGUxOWE0ZTJmOTQ5MGJkMjNiYWFiIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBTdGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNl
-Zm9yZ2UubmV0PgpEYXRlOiBUaHUsIDExIEFwciAyMDEzIDE5OjA3OjIwICswNDAwClN1Ympl
-Y3Q6IFtQQVRDSF0gQVNvQzogZGVmaW5lIHBsYXliYWNrIGFuZCBjYXB0dXJlIHN0cmVhbXMg
-aW4gZHVtbXkgY29kZWMKClRoaXMgcGF0Y2ggYWRkcyBhIHBsYXliYWNrIGFuZCBjYXB0dXJl
-IHN0cmVhbXMgdG8gdGhlIGR1bW15IGNvZGVjIERBSQpjb25maWd1cmF0aW9uLiBNb3N0IHBl
-cm1pc3NpdmUgc2V0IG9mIHNhbXBsaW5nIHJhdGVzIGFuZCBmb3JtYXRzIGlzIHVzZWQuCgpT
-aWduZWQtb2ZmLWJ5OiBTdGFzIFNlcmdlZXYgPHN0c3BAdXNlcnMuc291cmNlZm9yZ2UubmV0
-PgotLS0KIHNvdW5kL3NvYy9zb2MtdXRpbHMuYyB8IDI1ICsrKysrKysrKysrKysrKysrKysr
-KysrKysKIDEgZmlsZSBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL3NvYy11dGlscy5jIGIvc291bmQvc29jL3NvYy11dGlscy5jCmluZGV4IGZl
-NDU0MWQuLmJmMWY5MmEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zb2MtdXRpbHMuYworKysg
-Yi9zb3VuZC9zb2Mvc29jLXV0aWxzLmMKQEAgLTkwLDggKzkwLDMzIEBAIHN0YXRpYyBzdHJ1
-Y3Qgc25kX3NvY19wbGF0Zm9ybV9kcml2ZXIgZHVtbXlfcGxhdGZvcm0gPSB7CiB9OwogCiBz
-dGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWNfZHJpdmVyIGR1bW15X2NvZGVjOworCisjZGVm
-aW5lIFNUVUJfUkFURVMJU05EUlZfUENNX1JBVEVfODAwMF8xOTIwMDAKKyNkZWZpbmUgU1RV
-Ql9GT1JNQVRTCShTTkRSVl9QQ01fRk1UQklUX1M4IHwgXAorCQkJU05EUlZfUENNX0ZNVEJJ
-VF9VOCB8IFwKKwkJCVNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwgXAorCQkJU05EUlZfUENN
-X0ZNVEJJVF9VMTZfTEUgfCBcCisJCQlTTkRSVl9QQ01fRk1UQklUX1MyNF9MRSB8IFwKKwkJ
-CVNORFJWX1BDTV9GTVRCSVRfVTI0X0xFIHwgXAorCQkJU05EUlZfUENNX0ZNVEJJVF9TMzJf
-TEUgfCBcCisJCQlTTkRSVl9QQ01fRk1UQklUX1UzMl9MRSB8IFwKKwkJCVNORFJWX1BDTV9G
-TVRCSVRfSUVDOTU4X1NVQkZSQU1FX0xFKQogc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9k
-cml2ZXIgZHVtbXlfZGFpID0gewogCS5uYW1lID0gInNuZC1zb2MtZHVtbXktZGFpIiwKKwku
-cGxheWJhY2sgCT0geworCQkuc3RyZWFtX25hbWUJPSAiUGxheWJhY2siLAorCQkuY2hhbm5l
-bHNfbWluCT0gMSwKKwkJLmNoYW5uZWxzX21heAk9IDM4NCwKKwkJLnJhdGVzCQk9IFNUVUJf
-UkFURVMsCisJCS5mb3JtYXRzCT0gU1RVQl9GT1JNQVRTLAorCX0sCisJLmNhcHR1cmUgPSB7
-CisJCS5zdHJlYW1fbmFtZSA9ICJDYXB0dXJlIiwKKwkJLmNoYW5uZWxzX21pbgk9IDEsCisJ
-CS5jaGFubmVsc19tYXgJPSAzODQsCisJCS5yYXRlcyA9IFNUVUJfUkFURVMsCisJCS5mb3Jt
-YXRzID0gU1RVQl9GT1JNQVRTLAorCSB9LAogfTsKIAogc3RhdGljIGludCBzbmRfc29jX2R1
-bW15X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCi0tIAoxLjcuMTEuNwoK
+The changelog ought to explain why this is required...
 
---------------000801080803070904000003
+> Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+
+Please send patches as documented in SubmittingPatches - even as an
+attachment this isn't coming out as plain text for me.
+
+--S6lVrJQMb5zD9/0X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRZ+kYAAoJELSic+t+oim9WjkP/1K/RHoXYPmTazMivE8JlZBi
+zNvnWmbRiULmZKDvdhilbBJvsLS3QXq0Mdk6onPM4bEeFneiPdJaR2gvxsraMRX2
+UqyzR5ohXzZayZkGGib1Z1NSa7dqS37h55qGVwvEcbTse7uUISQjHck1KHIOWutn
+JZ6SaLhnj6FEmfp37vrjuiAr3tb6sw/6G6Kbrg6e9e0hCTP5DQbyAvK0zAV/dHQ9
+kUbcQBT+Sa1YVlG4NFnHDt59lgrnjaExF3f51yWpKmRoOrM2f7lCenbMl2J8XrY1
+9Jc033cuw0aJUgD8pZOg3eeHN2rV/cF8HIDDmep/ycwqfRxtSlr3FiBfyLumiy4q
+Q4qmYeGk4OlEwIk+LBQxEKHU1qWKhdaun5dujt4qDH5e+DnXgp+GwWIjyPP92CVu
+uE783DEDNA8fB762VO6fRVr54mmWikCSlZlY3ifgd+mhdPhC0u66p/6yeC/nSHnp
+OkkwFDL/p/jRh+sasFqxZjGCv4WqiFDQJbsbAUzmyHZgQfUwvQIZIYW6mef9Wo/L
+dlo+88waY8gjOwaaT1ZhPThUeR3l28E9mTzT+Pis0qdqPnyXqRCaWVim2mjJcVEj
+RQeGep2Qc6RZWITPvFnc3YT+UR3Su7GErbhBCWMYCEEuEO3SZ9Hb/19Fqpf5msxG
+J0M3DkpeTQt5Q2ZMezdo
+=Zgkj
+-----END PGP SIGNATURE-----
+
+--S6lVrJQMb5zD9/0X--
+
+--===============1244427848236387915==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------000801080803070904000003--
+--===============1244427848236387915==--
