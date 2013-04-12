@@ -1,20 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda - Apply codec delay to
-	wallclock.
-Date: Thu, 11 Apr 2013 19:17:10 -0600
-Message-ID: <51676096.9000003@linux.intel.com>
-References: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
- <5164E2CF.2050207@linux.intel.com>
- <CAEUnVG4g--gJo5XjUub3do8acAjqDXeu_GSrDPY=tZ0QfwLPoA@mail.gmail.com>
- <5165774C.2000507@linux.intel.com> <s5hvc7uh0we.wl%tiwai@suse.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: [PATCH] asoc: add dummy codec
+Date: Thu, 11 Apr 2013 19:50:18 -0700
+Message-ID: <5167766A.8060505@gmail.com>
+References: <51669249.8090100@list.ru> <51669353.7090903@metafoo.de>
+ <5166D295.2070400@list.ru> <5166DB38.1010706@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D2B86260319
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 03:17:13 +0200 (CEST)
-In-Reply-To: <s5hvc7uh0we.wl%tiwai@suse.de>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80F50260783
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 04:50:55 +0200 (CEST)
+Received: by mail-pd0-f172.google.com with SMTP id 5so1168239pdd.17
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2013 19:50:54 -0700 (PDT)
+In-Reply-To: <5166DB38.1010706@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
+To: Stas Sergeev <stsp@list.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Steve Chen <schen@mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-
->> For playback audio_timestamp = wallclk - codec_delay_in_nsec
->> for capture audio_timestamp = wallclk + codec_delay_in_nsec
+On 04/11/2013 08:48 AM, Gabriel M. Beddingfield wrote:
+>> The attached patch adds a playback stream for the dummy
+>> codec. Would it be possible to apply this?
 >
-> Hmm...  I'm confused, too.  From a pretty generic view,
->
-> - hwptr = the samples (frames) transferred on the (memory) buffer
-> - hwptr + PCM delay = the point being currently captured
->
-> Which position does the wall clock correspond?
+> No... not like that.
 
-you now have 3 positions:
+I was wrong.  Sorry.
 
-For capture:
-hwptr = sample in memory
-hwptr+ delay = sample recorded on link (tracked by LPIB and wallclock)
-hwptr+ delay + codec_delay = sample recorded by A/D
+That patch is on the right track.  As Lars said, it needs a Capture DAI, 
+too.  Might also consider adding more audio formats.
 
-For playback
-hwptr = next sample in memory to be DMA'ed
-hwptr - delay = sample pushed on link (tracked by LPIB and wallclock)
-hwptr - delay - codec_delay = sample played in A/D
+> Instead, wouldn't it be better to extend it by defining some platform data?
+ > Maybe something like:
 
-the wallclock is only at the soc/chipset level, it doesn't know anything 
-about the peripheral.
-Makes sense?
--Pierre
+I still think that making this extensible is a good idea (platform 
+data), but fall back on a very permissive default DAI (like in your patch).
+
+-gabriel
