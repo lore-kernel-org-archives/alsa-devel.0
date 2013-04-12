@@ -1,22 +1,20 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: define playback and capture streams
 	in dummy codec
-Date: Fri, 12 Apr 2013 08:24:55 -0700
-Message-ID: <51682747.9070300@gmail.com>
+Date: Fri, 12 Apr 2013 17:31:19 +0200
+Message-ID: <516828C7.5090203@metafoo.de>
 References: <5167E7C4.7080501@list.ru>
  <20130412105943.GU9243@opensource.wolfsonmicro.com>
  <20130412181943.0338083b@stas> <516824B4.20802@gmail.com>
  <51682633.70008@list.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
- [209.85.192.172])
- by alsa0.perex.cz (Postfix) with ESMTP id CED562616C1
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 17:25:04 +0200 (CEST)
-Received: by mail-pd0-f172.google.com with SMTP id 5so1469151pdd.17
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 08:25:03 -0700 (PDT)
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0820F2616DB
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 17:28:51 +0200 (CEST)
 In-Reply-To: <51682633.70008@list.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,21 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Stas Sergeev <stsp@list.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, stsp@users.sourceforge.net
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 04/12/2013 08:20 AM, Stas Sergeev wrote:
->> He means that the commit message. Your commit message says what the
->> patch does. It does not say why the patch is needed.
-> Yes.
-> But what should I add to the commit message, if the
-> only thing I know about this patch, is that I am not getting
-> any sound without it? :) The reason should be obvious for
-> whoever is familiar with that subsystem, but its not me.
->
-
-Yep, just formalize the "I am not getting any sound with it" statement. 
-:-)  Maybe something like: "Because snd-soc-dummy didn't declare any 
-DAI, it was unable to be used for any audio streams."
-
--gabriel
+T24gMDQvMTIvMjAxMyAwNToyMCBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+IDEyLjA0LjIwMTMg
+MTk6MTMsIEdhYnJpZWwgTS4gQmVkZGluZ2ZpZWxkINC/0LjRiNC10YI6Cj4+IE9uIDA0LzEyLzIw
+MTMgMDc6MTkgQU0sIFN0YXMgU2VyZ2VldiB3cm90ZToKPj4+IE9uIEZyaSwgMTIgQXByIDIwMTMg
+MTE6NTk6NDQgKzAxMDAKPj4+IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29u
+bWljcm8uY29tPiB3cm90ZToKPj4+Pj4gVGhpcyBwYXRjaCBhZGRzIGEgcGxheWJhY2sgYW5kIGNh
+cHR1cmUgc3RyZWFtcyB0byB0aGUgZHVtbXkgY29kZWMgREFJCj4+Pj4+IGNvbmZpZ3VyYXRpb24u
+IE1vc3QgcGVybWlzc2l2ZSBzZXQgb2Ygc2FtcGxpbmcgcmF0ZXMgYW5kIGZvcm1hdHMgaXMKPj4+
+Pj4gdXNlZC4KPj4+PiBUaGUgY2hhbmdlbG9nIG91Z2h0IHRvIGV4cGxhaW4gd2h5IHRoaXMgaXMg
+cmVxdWlyZWQuLi4KPj4+IEkgY2FuIG9ubHkgdGVsbCB0aGF0IHdpdGhvdXQgdGhpcyBwYXRjaCBJ
+IGFtIG5vdCBnZXR0aW5nIGFueQo+Pj4gc291bmQgYXQgYWxsLi4uIHdoaWNoIGlzIHByb2JhYmx5
+IGEgcmF0aGVyIHBvb3Igc3RhdGVtZW50IGZvcgo+Pj4gdGhlIGNoYW5nZWxvZy4gQ291bGQgeW91
+IHBsZWFzZSBjb3JyZWN0IHRoZSBjaGFuZ2Vsb2cgd2l0aCB0aGUKPj4+IGJldHRlciBrbm93bGVk
+Z2Ugb2YgdGhlIGRldGFpbHM/Cj4+Cj4+IEhlIG1lYW5zIHRoYXQgdGhlIGNvbW1pdCBtZXNzYWdl
+LiBZb3VyIGNvbW1pdCBtZXNzYWdlIHNheXMgd2hhdCB0aGUKPj4gcGF0Y2ggZG9lcy4gSXQgZG9l
+cyBub3Qgc2F5IHdoeSB0aGUgcGF0Y2ggaXMgbmVlZGVkLgo+IFllcy4KPiBCdXQgd2hhdCBzaG91
+bGQgSSBhZGQgdG8gdGhlIGNvbW1pdCBtZXNzYWdlLCBpZiB0aGUKPiBvbmx5IHRoaW5nIEkga25v
+dyBhYm91dCB0aGlzIHBhdGNoLCBpcyB0aGF0IEkgYW0gbm90IGdldHRpbmcKPiBhbnkgc291bmQg
+d2l0aG91dCBpdD8gOikgVGhlIHJlYXNvbiBzaG91bGQgYmUgb2J2aW91cyBmb3IKPiB3aG9ldmVy
+IGlzIGZhbWlsaWFyIHdpdGggdGhhdCBzdWJzeXN0ZW0sIGJ1dCBpdHMgbm90IG1lLgoKV2VsbCwg
+aWYgbm90IGV4cGxpY2l0bHkgaW5pdGlhbGl6ZWQgYSBmaWVsZCBpcyBzZXQgdG8gMC4gV2hpY2gg
+aXMga2luZCBvZiB0aGUKbW9zdCByZXN0cmljdGl2ZSBvcHRpb24gZm9yIG1hbnkgb2YgdGhlIGZp
+ZWxkcy4gRS5nLiBjaGFubmVsc19tYXgsIHJhdGVzLApmb3JtYXRzLCBldGMuIFdoZW4gdGhlIEFT
+b0MgY29yZSBjcmVhdGVzIGEgbmV3IFBDTSBkZXZpY2UgaXQgd2lsbCB0YWtlIHRoZQppbnRlcnNl
+Y3Rpb24gb2YgdGhlIENQVSBEQUkgYW5kIENPREVDIERBSSBmaWVsZHMgdG8gaW5pdGlhbGl6ZSB0
+aGUgZmllbGRzIHRoZQpQQ00uIFNvIGlmIGZvciBleGFtcGxlIGNoYW5uZWxzX21heCBpcyAwIGZv
+ciB0aGUgQ09ERUMgREFJLCBjaGFubmVsc19tYXggd2lsbAphbHNvIGJlIDAgZm9yIHRoZSBQQ00s
+IG5vIG1hdHRlciB3aGF0IGNoYW5uZWxzX21heCBpcyBzZXQgdG8gZm9yIHRoZSBDUFUgREFJLgpT
+YW1lIGdvZXMgZm9yIGZvcm1hdHMgYW5kIHJhdGVzLiBTbyBhIGR1bW15IENPREVDIHNob3VsZCBo
+YXZlIHNldCBpdHMgZmllbGRzIGluCmEgd2F5IHRoYXQgaXQgaXMgbW9zdCBwZXJtaXNzaXZlLCBz
+byB0aGF0IHRoZSBpbnRlcnNlY3Rpb24gb2YgdGhlIENPREVDIERBSQpmaWVsZHMgd2l0aCB0aGUg
+Q1BVIERBSSBmaWVsZHMgd2lsbCBiZSBlcXVhbCB0byB0aGUgQ1BVIERBSSBmaWVsZHMuCgotIExh
+cnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
