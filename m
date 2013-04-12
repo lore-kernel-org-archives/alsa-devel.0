@@ -1,92 +1,62 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC update for v3.9-rc6
-Date: Fri, 12 Apr 2013 12:21:45 +0100
-Message-ID: <20130412112144.GV9243@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 18/30] ASoC: samsung: move plat/ headers to
+ local directory
+Date: Fri, 12 Apr 2013 12:26:18 +0100
+Message-ID: <20130412112618.GW9243@opensource.wolfsonmicro.com>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+ <1365638712-1028578-19-git-send-email-arnd@arndb.de>
+ <20130411164751.GK9243@opensource.wolfsonmicro.com>
+ <201304111908.42532.arnd@arndb.de>
+ <20130411171938.GS9243@opensource.wolfsonmicro.com>
+ <5167EA36.5080505@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6867689015191745474=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84F8426162A
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 13:21:46 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ftt3SnK74BQwCaZF"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5167EA36.5080505@metafoo.de>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6867689015191745474==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7VYoR/Ws5oXf5rNY"
-Content-Disposition: inline
-
-
---7VYoR/Ws5oXf5rNY
+--Ftt3SnK74BQwCaZF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 31880c37c11e28cb81c70757e38392b42e695dc6:
+On Fri, Apr 12, 2013 at 01:04:22PM +0200, Lars-Peter Clausen wrote:
+> On 04/11/2013 07:19 PM, Mark Brown wrote:
 
-  Linux 3.9-rc6 (2013-04-07 20:49:54 -0700)
+> > Hrm, someone killed GTA02 support?  That's sad...  if that's really the
+> > case we could kill the machine driver but not tonight as I'm running
+> > late...
 
-are available in the git repository at:
+> I think the file was moved, we should pull over the audio relevant GPIO
+> definitions into the ASoC board driver.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-maintainers-v3.9-rc6
+Yeah, so I see - Heiko sent a patch fixing this.
 
-for you to fetch changes up to b02e48f2f8755e51fe8ce246988a29bd96f6b85e:
-
-  MAINTAINERS: Update e-mail address (2013-04-12 11:53:41 +0100)
-
-May as well go along with the other sound updates.
-
-----------------------------------------------------------------
-MAINTAINERS: Update e-mail address
-
-Update the e-mail address I use for subsystems.
-
-----------------------------------------------------------------
-Mark Brown (1):
-      MAINTAINERS: Update e-mail address
-
- MAINTAINERS |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
---7VYoR/Ws5oXf5rNY
+--Ftt3SnK74BQwCaZF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRZ+48AAoJELSic+t+oim92/MP/2jUdXsn6qmEOC6GlrsTUREh
-0A61A+ngeEogoXLPxwE813OGQMnTtKe6rFCO27gtsDhLQOGSUFgvn3HNTJdeq5v2
-Of6xUD+b2MRGSoR2yEiHCEPrgwzmO7YNlJcof+kPx3+/+yTpwjdzz8ieXi6cLQTY
-Tsxozp7iTX603DTg1vcqEgxjFfUzKUUua1Bi79alGOD6B+T5apP5mNqsG/+lAV/Y
-bRr6fspGznJdgA3cGomB5yZKwlCnrZrFxDw+WHP09DPIRRPwLtIg8Xuz0h1gIOxD
-ziPPD2UqCSOrjKxMLEpdp1GBZ66TJrRRZ02g37TKUkMeV1PjVZcbtugISKEENPBG
-h1Y82XwFIZhAT2C3mQLGWLCKeGn4eIqzf7aDZDyPvy+fOLQtF8ozVOWx7dyZPsry
-Q8IdcBU4OifZPYXmyxLN7n7tugWGeSrOnZhgJtsu3rBFSpSGY/ShRQq/nYzpab56
-ygyyQabyXd13Zn5Y0emXu5zvk4xIPOWAlhV1/sbKpNPm0wBEnv59xYM/vFBjVNnY
-09RWSUc83gabfx5nSTp/4MH3VfIoZNnTSbXD1YVYKIJWcL5F+6SUMJJj4Li47kyC
-drQ9/Nzwue3Dy2a3Z6LmKgq715ki0O+b51G2WhkAte/xQx1kvJnWp/WrWQQ/7TGs
-vDA5wwuH0sOV+67GULTw
-=N+dS
+iQIcBAEBAgAGBQJRZ+9TAAoJELSic+t+oim9uP8P/i1HOXQ5B8MtbPthMbo6BVVe
+UDbTO4LTWolXJPTtdWpTU55OfGFS+gpQyG81d0n+MXZU036gw3N70aPZJbRLuLn4
+TyTh7zdlTekhN/sRMyOYhM2JdJt/UBmu4i1lRVfh2te1Xlgitqg4N3ZQQLAkvX1n
+F2zGsJt2iF3hT5wvIaAmxDsOpD0s0qupy/SABfcrze/XL0jzDBCuuU+8bCyC74ol
+xZjmDiPMoZSWU64AU9eE84V2lcGEExFYWvbiHb61saHQ8RYrMc8Wew7M7T/3hHJm
+mC83zpvnqCysT0/1+aAbHk8fonBW7czR9JF0j+ebo+Ac3gnADlgVo3YKy/oKrnN1
+i6hwVrg9/KbIK8sq7HMEI16GHwXSqsF1+9GlNCmAxKqrpT3IawXfF4qnFnmk/uwc
+6QOgOpiMc7EhTKtOFvmIkT5tyj0jOiEh02PGetm6ieEqMzbdXuSO/xXiW+2c3TV5
+sEZ3bf7AyqTgaMY30Ql/71N8hYpUGyfSeKvLmjbyCTQA5cFaxmPRYnTDAb044x+d
+DBep/Exd5qDGQ7ooK6nlCeDF4cxGH6T7iWEAPKFsh+IoNZzr57NEifxprjxbpkoZ
+gigfJR5tGpDujl7fs010lmbSKUTJfZWDbXvdGptd5ypYKLsVzJmnxMcyPMVJw7l7
+0h4Dw09bMhf6JZkfGZe8
+=Dh60
 -----END PGP SIGNATURE-----
 
---7VYoR/Ws5oXf5rNY--
-
---===============6867689015191745474==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6867689015191745474==--
+--Ftt3SnK74BQwCaZF--
