@@ -1,17 +1,22 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [PATCH] ASoC: define playback and capture streams
- in dummy codec
-Date: Fri, 12 Apr 2013 18:19:43 +0400
-Message-ID: <20130412181943.0338083b@stas>
-References: <5167E7C4.7080501@list.ru>
- <20130412105943.GU9243@opensource.wolfsonmicro.com>
+From: Jonas Petersen <jnsptrsn1@gmail.com>
+Subject: Re: M-Audio Delta 1010LT: S/PDIF clock source not
+	working
+Date: Fri, 12 Apr 2013 16:53:01 +0200
+Message-ID: <51681FCD.5070800@gmail.com>
+References: <515EEF10.1020007@gmail.com> <5160C35A.8020403@gmail.com>
+ <5161A6D3.3060602@gmail.com> <201304072135.45811.gineera@aspect135.co.uk>
+ <51634B17.3050907@gmail.com> <516423F0.9020409@ivitera.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/tdcp.lfEuHkOwu1IxSHHVe."
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp16.mail.ru (smtp16.mail.ru [94.100.176.153])
- by alsa0.perex.cz (Postfix) with ESMTP id C682B2616B4
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 16:20:05 +0200 (CEST)
-In-Reply-To: <20130412105943.GU9243@opensource.wolfsonmicro.com>
+Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
+ [209.85.214.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF8BD2616B9
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 16:53:04 +0200 (CEST)
+Received: by mail-bk0-f50.google.com with SMTP id jg1so1403370bkc.23
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 07:53:04 -0700 (PDT)
+In-Reply-To: <516423F0.9020409@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,95 +26,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---MP_/tdcp.lfEuHkOwu1IxSHHVe.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Am 09.04.2013 16:21, schrieb Pavel Hofman:
+> Please check ice1712 register values, specifically MT RATE to make sure
+> ice1712 is switched to internal clocks when it should be clocked
+> externally instead (
+> http://ftp.sunet.se/pub/Linux/alsa/manuals/icensemble/envy24.pdf ). Or
+> just dump  ice1712 in proc here, I will check with the datasheet.
+>
+> Unfortunately there is no /proc register dump coded for cs8427 yet. If
+> you want to investigate further, you can add it to i2c/cs8427.c in a
+> manner similar to e.g.
+> http://git.alsa-project.org/?p=alsa-kmirror.git;a=blob;f=i2c/other/ak4114.c;h=fdf3c1b65e388414c995a597ef2b351b4ec2a220;hb=HEAD#l451
 
-On Fri, 12 Apr 2013 11:59:44 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> > This patch adds a playback and capture streams to the dummy codec DAI
-> > configuration. Most permissive set of sampling rates and formats is used.
-> The changelog ought to explain why this is required...
-I can only tell that without this patch I am not getting any
-sound at all... which is probably a rather poor statement for
-the changelog. Could you please correct the changelog with the
-better knowledge of the details?
+All right. I got cs8427 in proc now! I included registers 0x00 to 0x1f 
+plus 0x7f which "is I.D. and version". I'll post a patch later.
 
-> > Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
-> Please send patches as documented in SubmittingPatches - even as an
-> attachment this isn't coming out as plain text for me.
-OK, now it should be as a plain text.
---MP_/tdcp.lfEuHkOwu1IxSHHVe.
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-ASoC-define-playback-and-capture-streams-in-dummy-co.patch
+Now I have the following scenario: Delta 1010LT internal clock on 
+'IEC958 Input', internal clock default is 44100. I got a 1 kHz sine 
+signal at the S/PDIF input with 96kHz samplerate. Due to the reverted 
+patch it is capturing with 96kHz. Rate Locking / Rate Reset / Wordclock 
+Status / Wordclock Sync are all 'off'.
 
->From 22813b2124d81d8de5cde19a4e2f9490bd23baab Mon Sep 17 00:00:00 2001
-From: Stas Sergeev <stsp@users.sourceforge.net>
-Date: Thu, 11 Apr 2013 19:07:20 +0400
-Subject: [PATCH] ASoC: define playback and capture streams in dummy codec
+Using a jack app or recording directly from alsa with audacity shows 
+that the signal is not clean. It's got errors. Specifically once in a 
+while (about every 5 seconds) a single sample value will last over the 
+time of two samples. The signal gets shifted.
 
-This patch adds a playback and capture streams to the dummy codec DAI
-configuration. Most permissive set of sampling rates and formats is used.
+cs8427 register 0x04 bits 1:0 (RDX1:0: Recovered Input Clock Source) says:
 
-Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
----
- sound/soc/soc-utils.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+   01 - 256 * Fsi, where Fsi is derived from the AES3 input frame rate
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index fe4541d..bf1f92a 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -90,8 +90,33 @@ static struct snd_soc_platform_driver dummy_platform = {
- };
- 
- static struct snd_soc_codec_driver dummy_codec;
-+
-+#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
-+#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
-+			SNDRV_PCM_FMTBIT_U8 | \
-+			SNDRV_PCM_FMTBIT_S16_LE | \
-+			SNDRV_PCM_FMTBIT_U16_LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE | \
-+			SNDRV_PCM_FMTBIT_U24_LE | \
-+			SNDRV_PCM_FMTBIT_S32_LE | \
-+			SNDRV_PCM_FMTBIT_U32_LE | \
-+			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
- static struct snd_soc_dai_driver dummy_dai = {
- 	.name = "snd-soc-dummy-dai",
-+	.playback 	= {
-+		.stream_name	= "Playback",
-+		.channels_min	= 1,
-+		.channels_max	= 384,
-+		.rates		= STUB_RATES,
-+		.formats	= STUB_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min	= 1,
-+		.channels_max	= 384,
-+		.rates = STUB_RATES,
-+		.formats = STUB_FORMATS,
-+	 },
- };
- 
- static int snd_soc_dummy_probe(struct platform_device *pdev)
--- 
-1.7.11.7
+Whatever that means. Other values are:
 
+   00 - 256 * Fsi, where Fsi is derived from the ILRCK pin (only possible
+        when the serial audio input port is in slave mode)
 
---MP_/tdcp.lfEuHkOwu1IxSHHVe.
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+   10 - Bypass the PLL and apply an external 256 * Fsi clock through the
+        RMCK pin. The AES3 receiver is held in synchronous reset. This
+        setting is useful to prevent UNLOCK interrupts when using an
+        external RMCK and inputting data through the serial audio input
+        port.
 
+Serial audio input and output ports are in slave mode.
 
---MP_/tdcp.lfEuHkOwu1IxSHHVe.--
+Here's the full contents of the proc files (the binary representations 
+are in parenthesis added by a little tool that I wrote):
+
+/proc/asound/M1010LT/cs8427:
+-------------------------------------------
+0x00 = 0x00 (00000000)
+0x01 = 0x81 (10000001)
+0x02 = 0x00 (00000000)
+0x03 = 0x0c (00001100)
+0x04 = 0x41 (01000001)
+0x05 = 0x05 (00000101)
+0x06 = 0x05 (00000101)
+0x07 = 0x00 (00000000)
+0x08 = 0x00 (00000000)
+0x09 = 0x00 (00000000)
+0x0a = 0x00 (00000000)
+0x0b = 0x00 (00000000)
+0x0c = 0x00 (00000000)
+0x0d = 0x00 (00000000)
+0x0e = 0x00 (00000000)
+0x0f = 0x41 (01000001)
+0x10 = 0x00 (00000000)
+0x11 = 0xff (11111111)
+0x12 = 0x18 (00011000)
+0x13 = 0x12 (00010010)
+0x14 = 0x00 (00000000)
+0x15 = 0x00 (00000000)
+0x16 = 0x00 (00000000)
+0x17 = 0x00 (00000000)
+0x18 = 0x00 (00000000)
+0x19 = 0x00 (00000000)
+0x1a = 0x00 (00000000)
+0x1b = 0x00 (00000000)
+0x1c = 0x00 (00000000)
+0x1d = 0x00 (00000000)
+0x1e = 0x40 (01000000)
+0x1f = 0x00 (00000000)
+0x7f = 0x71 (01110001)
+-------------------------------------------
+
+/proc/asound/M1010LT/ak4524:
+-------------------------------------------
+chip 0: 0x00 = 0x07 (00000111)
+chip 0: 0x01 = 0x03 (00000011)
+chip 0: 0x02 = 0x60 (01100000)
+chip 0: 0x03 = 0x19 (00011001)
+chip 0: 0x04 = 0x7f (01111111)
+chip 0: 0x05 = 0x7f (01111111)
+chip 0: 0x06 = 0x00 (00000000)
+chip 0: 0x07 = 0x00 (00000000)
+chip 1: 0x00 = 0x07 (00000111)
+chip 1: 0x01 = 0x03 (00000011)
+chip 1: 0x02 = 0x60 (01100000)
+chip 1: 0x03 = 0x19 (00011001)
+chip 1: 0x04 = 0x00 (00000000)
+chip 1: 0x05 = 0x00 (00000000)
+chip 1: 0x06 = 0x00 (00000000)
+chip 1: 0x07 = 0x00 (00000000)
+chip 2: 0x00 = 0x07 (00000111)
+chip 2: 0x01 = 0x03 (00000011)
+chip 2: 0x02 = 0x60 (01100000)
+chip 2: 0x03 = 0x19 (00011001)
+chip 2: 0x04 = 0x00 (00000000)
+chip 2: 0x05 = 0x00 (00000000)
+chip 2: 0x06 = 0x00 (00000000)
+chip 2: 0x07 = 0x00 (00000000)
+chip 3: 0x00 = 0x07 (00000111)
+chip 3: 0x01 = 0x03 (00000011)
+chip 3: 0x02 = 0x60 (01100000)
+chip 3: 0x03 = 0x19 (00011001)
+chip 3: 0x04 = 0x00 (00000000)
+chip 3: 0x05 = 0x00 (00000000)
+chip 3: 0x06 = 0x00 (00000000)
+chip 3: 0x07 = 0x00 (00000000)
+-------------------------------------------
+
+/proc/asound/M1010LT/ice1712
+-------------------------------------------
+M Audio Delta 1010LT at 0xd040, irq 20
+
+EEPROM:
+   Subvendor        : 0x12143bd6
+   Size             : 29 bytes
+   Version          : 1
+   Codec            : 0x1f (00011111)
+   ACLink           : 0x80 (10000000)
+   I2S ID           : 0x72 (01110010)
+   S/PDIF           : 0x3 (00000011)
+   GPIO mask        : 0x4 (00000100)
+   GPIO state       : 0x7e (01111110)
+   GPIO direction   : 0xfb (11111011)
+   AC'97 main       : 0x0 (00000000)
+   AC'97 pcm        : 0x0 (00000000)
+   AC'97 record     : 0x0 (00000000)
+   AC'97 record src : 0x44 (01000100)
+   DAC ID #0        : 0x3 (00000011)
+   DAC ID #1        : 0x3 (00000011)
+   DAC ID #2        : 0x3 (00000011)
+   DAC ID #3        : 0x3 (00000011)
+   ADC ID #0        : 0x3 (00000011)
+   ADC ID #1        : 0x3 (00000011)
+   ADC ID #2        : 0x3 (00000011)
+   ADC ID #3        : 0x3 (00000011)
+   Extra #28        : 0x0 (00000000)
+
+Registers:
+   PSDOUT03         : 0x0000
+   CAPTURE          : 0x00000000
+   SPDOUT           : 0x0000
+   RATE             : 0x10 (00010000)
+   GPIO_DATA        : 0x5a (01011010)
+   GPIO_WRITE_MASK  : 0x04 (00000100)
+   GPIO_DIRECTION   : 0xfb (11111011)
+
+-------------------------------------------
+
+- Jonas
