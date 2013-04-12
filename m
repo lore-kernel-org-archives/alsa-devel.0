@@ -1,21 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Stas Sergeev <stsp@list.ru>
 Subject: Re: [PATCH] ASoC: define playback and capture streams
-	in dummy codec
-Date: Fri, 12 Apr 2013 17:31:19 +0200
-Message-ID: <516828C7.5090203@metafoo.de>
+ in dummy codec
+Date: Fri, 12 Apr 2013 20:37:16 +0400
+Message-ID: <20130412203716.0a203b69@stas>
 References: <5167E7C4.7080501@list.ru>
  <20130412105943.GU9243@opensource.wolfsonmicro.com>
  <20130412181943.0338083b@stas> <516824B4.20802@gmail.com>
- <51682633.70008@list.ru>
+ <51682633.70008@list.ru> <516828C7.5090203@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 0820F2616DB
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 17:28:51 +0200 (CEST)
-In-Reply-To: <51682633.70008@list.ru>
+Received: from smtp4.mail.ru (smtp4.mail.ru [94.100.176.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id A97502616DB
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 18:37:35 +0200 (CEST)
+In-Reply-To: <516828C7.5090203@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@list.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMTIvMjAxMyAwNToyMCBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+IDEyLjA0LjIwMTMg
-MTk6MTMsIEdhYnJpZWwgTS4gQmVkZGluZ2ZpZWxkINC/0LjRiNC10YI6Cj4+IE9uIDA0LzEyLzIw
-MTMgMDc6MTkgQU0sIFN0YXMgU2VyZ2VldiB3cm90ZToKPj4+IE9uIEZyaSwgMTIgQXByIDIwMTMg
-MTE6NTk6NDQgKzAxMDAKPj4+IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29u
-bWljcm8uY29tPiB3cm90ZToKPj4+Pj4gVGhpcyBwYXRjaCBhZGRzIGEgcGxheWJhY2sgYW5kIGNh
-cHR1cmUgc3RyZWFtcyB0byB0aGUgZHVtbXkgY29kZWMgREFJCj4+Pj4+IGNvbmZpZ3VyYXRpb24u
-IE1vc3QgcGVybWlzc2l2ZSBzZXQgb2Ygc2FtcGxpbmcgcmF0ZXMgYW5kIGZvcm1hdHMgaXMKPj4+
-Pj4gdXNlZC4KPj4+PiBUaGUgY2hhbmdlbG9nIG91Z2h0IHRvIGV4cGxhaW4gd2h5IHRoaXMgaXMg
-cmVxdWlyZWQuLi4KPj4+IEkgY2FuIG9ubHkgdGVsbCB0aGF0IHdpdGhvdXQgdGhpcyBwYXRjaCBJ
-IGFtIG5vdCBnZXR0aW5nIGFueQo+Pj4gc291bmQgYXQgYWxsLi4uIHdoaWNoIGlzIHByb2JhYmx5
-IGEgcmF0aGVyIHBvb3Igc3RhdGVtZW50IGZvcgo+Pj4gdGhlIGNoYW5nZWxvZy4gQ291bGQgeW91
-IHBsZWFzZSBjb3JyZWN0IHRoZSBjaGFuZ2Vsb2cgd2l0aCB0aGUKPj4+IGJldHRlciBrbm93bGVk
-Z2Ugb2YgdGhlIGRldGFpbHM/Cj4+Cj4+IEhlIG1lYW5zIHRoYXQgdGhlIGNvbW1pdCBtZXNzYWdl
-LiBZb3VyIGNvbW1pdCBtZXNzYWdlIHNheXMgd2hhdCB0aGUKPj4gcGF0Y2ggZG9lcy4gSXQgZG9l
-cyBub3Qgc2F5IHdoeSB0aGUgcGF0Y2ggaXMgbmVlZGVkLgo+IFllcy4KPiBCdXQgd2hhdCBzaG91
-bGQgSSBhZGQgdG8gdGhlIGNvbW1pdCBtZXNzYWdlLCBpZiB0aGUKPiBvbmx5IHRoaW5nIEkga25v
-dyBhYm91dCB0aGlzIHBhdGNoLCBpcyB0aGF0IEkgYW0gbm90IGdldHRpbmcKPiBhbnkgc291bmQg
-d2l0aG91dCBpdD8gOikgVGhlIHJlYXNvbiBzaG91bGQgYmUgb2J2aW91cyBmb3IKPiB3aG9ldmVy
-IGlzIGZhbWlsaWFyIHdpdGggdGhhdCBzdWJzeXN0ZW0sIGJ1dCBpdHMgbm90IG1lLgoKV2VsbCwg
-aWYgbm90IGV4cGxpY2l0bHkgaW5pdGlhbGl6ZWQgYSBmaWVsZCBpcyBzZXQgdG8gMC4gV2hpY2gg
-aXMga2luZCBvZiB0aGUKbW9zdCByZXN0cmljdGl2ZSBvcHRpb24gZm9yIG1hbnkgb2YgdGhlIGZp
-ZWxkcy4gRS5nLiBjaGFubmVsc19tYXgsIHJhdGVzLApmb3JtYXRzLCBldGMuIFdoZW4gdGhlIEFT
-b0MgY29yZSBjcmVhdGVzIGEgbmV3IFBDTSBkZXZpY2UgaXQgd2lsbCB0YWtlIHRoZQppbnRlcnNl
-Y3Rpb24gb2YgdGhlIENQVSBEQUkgYW5kIENPREVDIERBSSBmaWVsZHMgdG8gaW5pdGlhbGl6ZSB0
-aGUgZmllbGRzIHRoZQpQQ00uIFNvIGlmIGZvciBleGFtcGxlIGNoYW5uZWxzX21heCBpcyAwIGZv
-ciB0aGUgQ09ERUMgREFJLCBjaGFubmVsc19tYXggd2lsbAphbHNvIGJlIDAgZm9yIHRoZSBQQ00s
-IG5vIG1hdHRlciB3aGF0IGNoYW5uZWxzX21heCBpcyBzZXQgdG8gZm9yIHRoZSBDUFUgREFJLgpT
-YW1lIGdvZXMgZm9yIGZvcm1hdHMgYW5kIHJhdGVzLiBTbyBhIGR1bW15IENPREVDIHNob3VsZCBo
-YXZlIHNldCBpdHMgZmllbGRzIGluCmEgd2F5IHRoYXQgaXQgaXMgbW9zdCBwZXJtaXNzaXZlLCBz
-byB0aGF0IHRoZSBpbnRlcnNlY3Rpb24gb2YgdGhlIENPREVDIERBSQpmaWVsZHMgd2l0aCB0aGUg
-Q1BVIERBSSBmaWVsZHMgd2lsbCBiZSBlcXVhbCB0byB0aGUgQ1BVIERBSSBmaWVsZHMuCgotIExh
-cnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Fri, 12 Apr 2013 17:31:19 +0200
+Lars-Peter Clausen <lars@metafoo.de> wrote:
+> Well, if not explicitly initialized a field is set to 0. Which is kind of the
+> most restrictive option for many of the fields. E.g. channels_max, rates,
+> formats, etc. When the ASoC core creates a new PCM device it will take the
+> intersection of the CPU DAI and CODEC DAI fields to initialize the fields the
+> PCM. So if for example channels_max is 0 for the CODEC DAI, channels_max will
+> also be 0 for the PCM, no matter what channels_max is set to for the CPU DAI.
+> Same goes for formats and rates. So a dummy CODEC should have set its fields in
+> a way that it is most permissive, so that the intersection of the CODEC DAI
+> fields with the CPU DAI fields will be equal to the CPU DAI fields.
+Thanks for an explanation!
+But what happens when the DAI is considered mute
+by the effect of such intersection?
+>From what I can see, no callbacks from the DAI driver
+are called in this case (this is expected), but no
+error is returned to userspace, and, more importantly,
+the playback speed is still correct, so the userspace
+can get a playback position as if the playback is fine.
+While during the normal playback, if I stop calling
+snd_pcm_period_elapsed(), userspace is no longer getting
+the right position.
+That's why I am confused, I can't easily explain this
+"no sound but otherwise fine playback" effect, so I am
+a bit reluctant to try explaining this in a commit msg.
+Are there are some fallbacks? Such as when the DAI is
+considered mute, it gets somehow emulated, with the use
+of the system clock for correct timing etc?
