@@ -1,41 +1,92 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 18/30] ASoC: samsung: move plat/ headers
- to local directory
-Date: Fri, 12 Apr 2013 13:04:22 +0200
-Message-ID: <5167EA36.5080505@metafoo.de>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <1365638712-1028578-19-git-send-email-arnd@arndb.de> <20130411164751.GK9243@opensource.wolfsonmicro.com> <201304111908.42532.arnd@arndb.de> <20130411171938.GS9243@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for v3.9-rc6
+Date: Fri, 12 Apr 2013 12:21:45 +0100
+Message-ID: <20130412112144.GV9243@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130411171938.GS9243@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============6867689015191745474=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84F8426162A
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 13:21:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/2013 07:19 PM, Mark Brown wrote:
-> On Thu, Apr 11, 2013 at 07:08:42PM +0200, Arnd Bergmann wrote:
->> On Thursday 11 April 2013, Mark Brown wrote:
-> 
->>> This doesn't apply to my topic/samsung branch, can you please regenerate
->>> it against that or let me know what to apply it against?
-> 
->> This one should work. Unfortunately I now found during testing that the
->> s3c24xx sound support has a few build errors at the moment, but this
->> patch should not add any new ones:
-> 
-> Applied (after hand editing the commit message), thanks.
-> 
->> make[5]: *** [sound/soc/samsung/i2s.o] Error 1
->> /git/arm-soc/sound/soc/samsung/neo1973_wm8753.c:25:24: fatal error: mach/gta02.h: No such file or directory
->>  #include <mach/gta02.h>
-> 
-> Hrm, someone killed GTA02 support?  That's sad...  if that's really the
-> case we could kill the machine driver but not tonight as I'm running
-> late...
 
-I think the file was moved, we should pull over the audio relevant GPIO
-definitions into the ASoC board driver.
+--===============6867689015191745474==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7VYoR/Ws5oXf5rNY"
+Content-Disposition: inline
 
-- Lars
+
+--7VYoR/Ws5oXf5rNY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 31880c37c11e28cb81c70757e38392b42e695dc6:
+
+  Linux 3.9-rc6 (2013-04-07 20:49:54 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-maintainers-v3.9-rc6
+
+for you to fetch changes up to b02e48f2f8755e51fe8ce246988a29bd96f6b85e:
+
+  MAINTAINERS: Update e-mail address (2013-04-12 11:53:41 +0100)
+
+May as well go along with the other sound updates.
+
+----------------------------------------------------------------
+MAINTAINERS: Update e-mail address
+
+Update the e-mail address I use for subsystems.
+
+----------------------------------------------------------------
+Mark Brown (1):
+      MAINTAINERS: Update e-mail address
+
+ MAINTAINERS |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--7VYoR/Ws5oXf5rNY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRZ+48AAoJELSic+t+oim92/MP/2jUdXsn6qmEOC6GlrsTUREh
+0A61A+ngeEogoXLPxwE813OGQMnTtKe6rFCO27gtsDhLQOGSUFgvn3HNTJdeq5v2
+Of6xUD+b2MRGSoR2yEiHCEPrgwzmO7YNlJcof+kPx3+/+yTpwjdzz8ieXi6cLQTY
+Tsxozp7iTX603DTg1vcqEgxjFfUzKUUua1Bi79alGOD6B+T5apP5mNqsG/+lAV/Y
+bRr6fspGznJdgA3cGomB5yZKwlCnrZrFxDw+WHP09DPIRRPwLtIg8Xuz0h1gIOxD
+ziPPD2UqCSOrjKxMLEpdp1GBZ66TJrRRZ02g37TKUkMeV1PjVZcbtugISKEENPBG
+h1Y82XwFIZhAT2C3mQLGWLCKeGn4eIqzf7aDZDyPvy+fOLQtF8ozVOWx7dyZPsry
+Q8IdcBU4OifZPYXmyxLN7n7tugWGeSrOnZhgJtsu3rBFSpSGY/ShRQq/nYzpab56
+ygyyQabyXd13Zn5Y0emXu5zvk4xIPOWAlhV1/sbKpNPm0wBEnv59xYM/vFBjVNnY
+09RWSUc83gabfx5nSTp/4MH3VfIoZNnTSbXD1YVYKIJWcL5F+6SUMJJj4Li47kyC
+drQ9/Nzwue3Dy2a3Z6LmKgq715ki0O+b51G2WhkAte/xQx1kvJnWp/WrWQQ/7TGs
+vDA5wwuH0sOV+67GULTw
+=N+dS
+-----END PGP SIGNATURE-----
+
+--7VYoR/Ws5oXf5rNY--
+
+--===============6867689015191745474==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6867689015191745474==--
