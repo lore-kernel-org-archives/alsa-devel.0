@@ -1,57 +1,44 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [PATCH] ASoC: define playback and capture streams
-	in dummy codec
-Date: Fri, 12 Apr 2013 23:19:15 +0400
-Message-ID: <51685E33.4080401@list.ru>
-References: <5167E7C4.7080501@list.ru>
- <20130412105943.GU9243@opensource.wolfsonmicro.com>
- <20130412181943.0338083b@stas> <516824B4.20802@gmail.com>
- <51682633.70008@list.ru> <516828C7.5090203@metafoo.de>
- <20130412203716.0a203b69@stas> <51683C7F.6080803@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 20/30] ASoC: samsung: convert to dmaengine
+ API
+Date: Fri, 12 Apr 2013 21:27:27 +0200
+Message-ID: <5168601F.2070409@metafoo.de>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <1365638712-1028578-21-git-send-email-arnd@arndb.de> <20130411142706.GB24971@opensource.wolfsonmicro.com> <201304111647.17796.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp44.i.mail.ru (smtp44.i.mail.ru [94.100.177.104])
- by alsa0.perex.cz (Postfix) with ESMTP id AE6642616DB
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 21:20:48 +0200 (CEST)
-In-Reply-To: <51683C7F.6080803@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <201304111647.17796.arnd@arndb.de>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-MTIuMDQuMjAxMyAyMDo1NSwgTGFycy1QZXRlciBDbGF1c2VuINC/0LjRiNC10YI6Cj4gT24gMDQv
-MTIvMjAxMyAwNjozNyBQTSwgU3RhcyBTZXJnZWV2IHdyb3RlOgo+PiBUaGFua3MgZm9yIGFuIGV4
-cGxhbmF0aW9uIQo+PiBCdXQgd2hhdCBoYXBwZW5zIHdoZW4gdGhlIERBSSBpcyBjb25zaWRlcmVk
-IG11dGUKPj4gYnkgdGhlIGVmZmVjdCBvZiBzdWNoIGludGVyc2VjdGlvbj8KPj4gIEZyb20gd2hh
-dCBJIGNhbiBzZWUsIG5vIGNhbGxiYWNrcyBmcm9tIHRoZSBEQUkgZHJpdmVyCj4+IGFyZSBjYWxs
-ZWQgaW4gdGhpcyBjYXNlICh0aGlzIGlzIGV4cGVjdGVkKSwgYnV0IG5vCj4+IGVycm9yIGlzIHJl
-dHVybmVkIHRvIHVzZXJzcGFjZSwgYW5kLCBtb3JlIGltcG9ydGFudGx5LAo+PiB0aGUgcGxheWJh
-Y2sgc3BlZWQgaXMgc3RpbGwgY29ycmVjdCwgc28gdGhlIHVzZXJzcGFjZQo+PiBjYW4gZ2V0IGEg
-cGxheWJhY2sgcG9zaXRpb24gYXMgaWYgdGhlIHBsYXliYWNrIGlzIGZpbmUuCj4+IFdoaWxlIGR1
-cmluZyB0aGUgbm9ybWFsIHBsYXliYWNrLCBpZiBJIHN0b3AgY2FsbGluZwo+PiBzbmRfcGNtX3Bl
-cmlvZF9lbGFwc2VkKCksIHVzZXJzcGFjZSBpcyBubyBsb25nZXIgZ2V0dGluZwo+PiB0aGUgcmln
-aHQgcG9zaXRpb24uCj4+IFRoYXQncyB3aHkgSSBhbSBjb25mdXNlZCwgSSBjYW4ndCBlYXNpbHkg
-ZXhwbGFpbiB0aGlzCj4+ICJubyBzb3VuZCBidXQgb3RoZXJ3aXNlIGZpbmUgcGxheWJhY2siIGVm
-ZmVjdCwgc28gSSBhbQo+PiBhIGJpdCByZWx1Y3RhbnQgdG8gdHJ5IGV4cGxhaW5pbmcgdGhpcyBp
-biBhIGNvbW1pdCBtc2cuCj4+IEFyZSB0aGVyZSBhcmUgc29tZSBmYWxsYmFja3M/IFN1Y2ggYXMg
-d2hlbiB0aGUgREFJIGlzCj4+IGNvbnNpZGVyZWQgbXV0ZSwgaXQgZ2V0cyBzb21laG93IGVtdWxh
-dGVkLCB3aXRoIHRoZSB1c2UKPj4gb2YgdGhlIHN5c3RlbSBjbG9jayBmb3IgY29ycmVjdCB0aW1p
-bmcgZXRjPwo+IFRoYXQncyBhY3R1YWxseSBhIGJpdCBzdHJhbmdlIGluZGVlZCwgc2luY2UgeW91
-IHNob3VsZCBnZXQgYW4gZXJyb3Igd2hlbiB5b3UKPiB0cnkgdG8gb3BlbiB0aGUgcGNtIGRldmlj
-ZS4KQWggZ3JlYXQhCk5leHQgd2VlayBJJ2xsIGRvdWJsZS1jaGVjayB0aGF0IHRoZSBmYWxsLWJh
-Y2sgaXMgYWN0dWFsbHkKaW4gdXNlcnNwYWNlIChpbiBhbiBhbmRyb2lkIG1lZGlhIHN0YWNrIHBl
-cmhhcHMpLCBhbmQKdGhhdCB3aWxsIGJlIGVub3VnaCBpbmZvIGZvciB0aGUgcmVhc29uYWJsZSBj
-b21taXQgbXNnLiA6KQpUaGFua3MgZm9yIHlvdXIgaGVscCEKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 04/11/2013 04:47 PM, Arnd Bergmann wrote:
+> On Thursday 11 April 2013, Mark Brown wrote:
+>>
+>> On Thu, Apr 11, 2013 at 02:05:02AM +0200, Arnd Bergmann wrote:
+>>> In order to build the exynos kernel with CONFIG_ARCH_MULTIPLATFORM,
+>>> we must convert all users of the Samsung private DMA interface to
+>>> the generic dmaengine API. This version of the patch adds the
+>>> generic dmaengine API as an alternative to the existing samsung
+>>> specific one. Once all the older platforms provide support for
+>>> the common dmaengine interfaces, we can remove the old code.
+>>
+>> There's generic ASoC dmaengine code which should be used instead of open
+>> coding this.  Lars-Peter Clausen and Lee Jones have been working on
+>> making this a totally generic driver, right now it's a library.
+> 
+> Ok, I see. I'll drop this patch from my series then and will let someone
+> else handle this driver in 3.11. We can probably live without sound support
+> in 3.10 when running a multiplatform kernel, and it will keep working
+> for exynos-only kernels without the patch.
+
+I actually had a look at how the Samsung PCM driver a couple of days back,
+but I didn't fully grasp how things work with the secondary TX channel for
+the i2s driver and to make it work with the generic dmaengine PCM driver.
+The code handling this in the i2s driver seems to be rather messy with lots
+of ifs and elses. Also things would have would be a lot easier if the dt
+bindings had used two subnodes each with their own 'dmas' property.
+
+- Lars
