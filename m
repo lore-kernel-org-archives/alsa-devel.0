@@ -1,39 +1,57 @@
-From: Heiko =?iso-8859-15?q?St=FCbner?= <heiko@sntech.de>
-Subject: [PATCH] ASoC: samsung: fix neo1973-wm8753 compilation
-Date: Thu, 11 Apr 2013 21:02:43 +0200
-Message-ID: <201304112102.43896.heiko@sntech.de>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <201304111908.42532.arnd@arndb.de> <20130411171938.GS9243@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hda - Apply codec delay to
+	wallclock.
+Date: Thu, 11 Apr 2013 19:17:10 -0600
+Message-ID: <51676096.9000003@linux.intel.com>
+References: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
+ <5164E2CF.2050207@linux.intel.com>
+ <CAEUnVG4g--gJo5XjUub3do8acAjqDXeu_GSrDPY=tZ0QfwLPoA@mail.gmail.com>
+ <5165774C.2000507@linux.intel.com> <s5hvc7uh0we.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130411171938.GS9243@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2B86260319
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2013 03:17:13 +0200 (CEST)
+In-Reply-To: <s5hvc7uh0we.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit b2ca78717cea (ARM: S3C24XX: make gta02.h local) already replaced
-the GTA02_GPIO_* constants in neo1973-wm8753.c but forgot to remove the
-inclusion of mach/gta02.h before moving the file out of mach/.
 
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
----
- sound/soc/samsung/neo1973_wm8753.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+>> For playback audio_timestamp = wallclk - codec_delay_in_nsec
+>> for capture audio_timestamp = wallclk + codec_delay_in_nsec
+>
+> Hmm...  I'm confused, too.  From a pretty generic view,
+>
+> - hwptr = the samples (frames) transferred on the (memory) buffer
+> - hwptr + PCM delay = the point being currently captured
+>
+> Which position does the wall clock correspond?
 
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index a301d8c..68675dd 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -22,7 +22,6 @@
- 
- #include <asm/mach-types.h>
- #include <plat/regs-iis.h>
--#include <mach/gta02.h>
- 
- #include "../codecs/wm8753.h"
- #include "s3c24xx-i2s.h"
--- 
-1.7.2.3
+you now have 3 positions:
+
+For capture:
+hwptr = sample in memory
+hwptr+ delay = sample recorded on link (tracked by LPIB and wallclock)
+hwptr+ delay + codec_delay = sample recorded by A/D
+
+For playback
+hwptr = next sample in memory to be DMA'ed
+hwptr - delay = sample pushed on link (tracked by LPIB and wallclock)
+hwptr - delay - codec_delay = sample played in A/D
+
+the wallclock is only at the soc/chipset level, it doesn't know anything 
+about the peripheral.
+Makes sense?
+-Pierre
