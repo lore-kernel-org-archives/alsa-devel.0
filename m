@@ -1,44 +1,87 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 20/30] ASoC: samsung: convert to dmaengine
- API
-Date: Fri, 12 Apr 2013 21:27:27 +0200
-Message-ID: <5168601F.2070409@metafoo.de>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de> <1365638712-1028578-21-git-send-email-arnd@arndb.de> <20130411142706.GB24971@opensource.wolfsonmicro.com> <201304111647.17796.arnd@arndb.de>
+From: Calvin Owens <jcalvinowens@gmail.com>
+Subject: [PATCH] alsa/usb: Add quirk for 192KHz recording on E-Mu devices
+Date: Fri, 12 Apr 2013 22:33:59 -0500
+Message-ID: <20130413033359.GA1591@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <201304111647.17796.arnd@arndb.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Damien Zammit <damien@zamaudio.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Calvin Owens <jcalvinowens@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/2013 04:47 PM, Arnd Bergmann wrote:
-> On Thursday 11 April 2013, Mark Brown wrote:
->>
->> On Thu, Apr 11, 2013 at 02:05:02AM +0200, Arnd Bergmann wrote:
->>> In order to build the exynos kernel with CONFIG_ARCH_MULTIPLATFORM,
->>> we must convert all users of the Samsung private DMA interface to
->>> the generic dmaengine API. This version of the patch adds the
->>> generic dmaengine API as an alternative to the existing samsung
->>> specific one. Once all the older platforms provide support for
->>> the common dmaengine interfaces, we can remove the old code.
->>
->> There's generic ASoC dmaengine code which should be used instead of open
->> coding this.  Lars-Peter Clausen and Lee Jones have been working on
->> making this a totally generic driver, right now it's a library.
-> 
-> Ok, I see. I'll drop this patch from my series then and will let someone
-> else handle this driver in 3.11. We can probably live without sound support
-> in 3.10 when running a multiplatform kernel, and it will keep working
-> for exynos-only kernels without the patch.
+When recording at 176.2KHz or 192Khz, the device adds a 32-bit length
+header to the capture packets, which obviously needs to be ignored for
+recording to work properly.
 
-I actually had a look at how the Samsung PCM driver a couple of days back,
-but I didn't fully grasp how things work with the secondary TX channel for
-the i2s driver and to make it work with the generic dmaengine PCM driver.
-The code handling this in the i2s driver seems to be rather messy with lots
-of ifs and elses. Also things would have would be a lot easier if the dt
-bindings had used two subnodes each with their own 'dmas' property.
+Userspace expected:  L0 L1 L2 R0 R1 R2
+...but actually got: R2 L0 L1 L2 R0 R1
 
-- Lars
+Also, the last byte of the length header being interpreted as L0 of
+the first sample caused spikes every 0.5ms, resulting in a loud 16KHz
+tone (about the highest 'B' on a piano) being present throughout
+captures.
+
+Tested at all sample rates on an E-Mu 0404USB, and tested for
+regressions on a generic USB headset.
+
+Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
+---
+ sound/usb/card.h   | 1 +
+ sound/usb/pcm.c    | 2 +-
+ sound/usb/quirks.c | 1 +
+ sound/usb/stream.c | 1 +
+ 4 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 8a751b4..d32ea41 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -116,6 +116,7 @@ struct snd_usb_substream {
+ 	unsigned int altset_idx;     /* USB data format: index of alternate setting */
+ 	unsigned int txfr_quirk:1;	/* allow sub-frame alignment */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
++	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
+ 
+ 	unsigned int running: 1;	/* running status */
+ 
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index f94397b..a481fea 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1170,7 +1170,7 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
+ 	stride = runtime->frame_bits >> 3;
+ 
+ 	for (i = 0; i < urb->number_of_packets; i++) {
+-		cp = (unsigned char *)urb->transfer_buffer + urb->iso_frame_desc[i].offset;
++		cp = (unsigned char *)urb->transfer_buffer + urb->iso_frame_desc[i].offset + subs->pkt_offset_adj;
+ 		if (urb->iso_frame_desc[i].status && printk_ratelimit()) {
+ 			snd_printdd(KERN_ERR "frame %d active: %d\n", i, urb->iso_frame_desc[i].status);
+ 			// continue;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5325a38..7e292b9 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -837,6 +837,7 @@ static void set_format_emu_quirk(struct snd_usb_substream *subs,
+ 		break;
+ 	}
+ 	snd_emuusb_set_samplerate(subs->stream->chip, emu_samplerate_id);
++	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
+ }
+ 
+ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index ad181d5..0927cc6 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -94,6 +94,7 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
+ 	subs->dev = as->chip->dev;
+ 	subs->txfr_quirk = as->chip->txfr_quirk;
+ 	subs->speed = snd_usb_get_speed(subs->dev);
++	subs->pkt_offset_adj = 0;
+ 
+ 	snd_usb_set_pcm_ops(as->pcm, stream);
+ 
+-- 
+1.8.1.5
