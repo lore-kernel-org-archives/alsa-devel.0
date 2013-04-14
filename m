@@ -1,64 +1,61 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for imx-pcm-fiq
-Date: Sun, 14 Apr 2013 17:44:56 +0200
-Message-ID: <20130414154456.GF27394@pengutronix.de>
-References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
- <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
- <51620CEA.3010703@tabi.org> <20130414103819.GA27394@pengutronix.de>
- <516AB111.3000007@tabi.org> <20130414141015.GC27394@pengutronix.de>
- <516AC305.2000800@tabi.org> <20130414152016.GE27394@pengutronix.de>
- <516ACA7D.60807@tabi.org>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: USB Quirks for Boss JS-8
+Date: Mon, 15 Apr 2013 00:00:29 +0100
+Message-ID: <10860030.mWvl7vqFHg@kamdesktop>
+References: <201103181756.53155.maillist@superlative.org>
+ <loom.20121014T211933-673@post.gmane.org> <507D1110.1000609@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <516ACA7D.60807@tabi.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5CD9264F2C
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 01:00:31 +0200 (CEST)
+Received: by mail-wg0-f47.google.com with SMTP id j13so1627070wgh.26
+ for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2013 16:00:31 -0700 (PDT)
+In-Reply-To: <507D1110.1000609@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 14, 2013 at 10:25:49AM -0500, Timur Tabi wrote:
-> Markus Pargmann wrote:
-> >I only ported the imx-ssi ac97 driver code and tested twice using DMA
-> >without success. But there is a good description of the problem in
-> >imx-ssi:
-> >
-> >" The WM9712 with which this driver
-> >was developed with always sends GPIO status data in slot 12 which
-> >we receive in our (PCM-) data stream. The only chance we have is to
-> >manually skip this data in the FIQ handler."
+On Tuesday 16 Oct 2012 09:47:28 Daniel Mack wrote:
+> On 14.10.2012 21:43, Adolfo wrote:
+> > I am not able to hear any sounds in my JS-8 connected to my Fedora 17,
+> > 
+> > The device is recognised by the system, but no sound can be played,
+> > I've tried with jack too, but no luck,
+> > Can you please tell me if jackd needs any special parameters in order to
+> > run with JS-8?
 > 
-> Ah, so this is a work-around for a bug, where the codec is
-> incompatible with the SoC?  Mark, are you familiar with this issue?
-> Is there a way to reconfigure the codec so that it works better with
-> the SoC?  It seems ridiculous to add all this code just because an
-> incompatible codec was chosen for some board.
+> You might have hit a bug here that I introduced during a refactoring of
+> the driver. Unfortunately, I can't reproduce that with any of the
+> multiple USB audio devices I have at hand, but someone from the
+> alsa-user ML offered me to send over his device that also show this
+> problem, so I can have a look. Stay tuned please, and my apologies for
+> the trouble.
 > 
-> Either way, the board DTS needs to clearly state *why* we're
-> enabling FIQ mode when DMA mode should work.  And the patch that
-> adds FIQ support needs to say that it's for boards with broken DMA
-> support.
+> Meanwhile, you could check whether any of the kernels between 2.6.39 ->
+> 3.4 works for you - they all have the quirk for the JS-8.
 
-Okay, I will add those comments to the commit message, binding
-documentation and add parts of the imx-ssi problem description to
-fsl-ssi.
+If it's any help, I'm running Linux Mint 13 with a 3.2.0-34 kernel and it's 
+working for me. I do get the following in dmesg:
 
-Regards,
+[47696.764621] usb 1-6.2: new high-speed USB device number 12 using ehci_hcd
+[47696.858892] MIDIStreaming interface descriptor not found
+[47696.859099] init_device failed: MIDI 4-0: seq-midi
 
-Markus
+This is due to an error in the original quirk I submitted which was brought to 
+light when some changes were made to the USB driver. I will try to tidy it up 
+sometime.
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Cheers,
+
+Keith
