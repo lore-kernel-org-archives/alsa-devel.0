@@ -1,16 +1,13 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for imx-pcm-fiq
-Date: Sun, 14 Apr 2013 12:38:19 +0200
-Message-ID: <20130414103819.GA27394@pengutronix.de>
-References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
- <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
- <51620CEA.3010703@tabi.org>
+Subject: [PATCH v3 06/15] ASoC: imx-pcm-dma: DT support
+Date: Sun, 14 Apr 2013 13:42:50 +0200
+Message-ID: <1365939779-4507-7-git-send-email-mpa@pengutronix.de>
+References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <51620CEA.3010703-N01EOCouUvQ@public.gmane.org>
+In-Reply-To: <1365939779-4507-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -21,109 +18,36 @@ List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
 Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 Sender: "devicetree-discuss"
  <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Markus Pargmann <mpa-rffoE+Jg25C1LGEWPFfZhQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 07, 2013 at 07:18:50PM -0500, Timur Tabi wrote:
-> Markus Pargmann wrote:
-> >Add support for non-dma pcm for imx platforms with imx-pcm-fiq support.
-> >Instead of imx-pcm-audio, in this case imx-pcm-fiq-audio device is added
-> >and the SIER flags are set differently.
-> 
-> So just to be clear, this is interrupt-driven SSI audio?  So you're
-> generating an interrupt every time the transmit FIFO goes below the
-> threshold?
+From: Markus Pargmann <mpa-rffoE+Jg25C1LGEWPFfZhQ@public.gmane.org>
 
-Yes
+This patch adds the possibility to pass a of_node as platform_data which
+is used by generic-pcm-dma to request a DMA slave channel.
 
-> I wonder if it makes sense to enable both FIFOs, so that you take
-> half as many interrupts per second.
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+---
+ sound/soc/fsl/imx-pcm-dma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-It looks like imx-pcm-fiq and ssi-fiq.s do not support transmitting
-through two FIFOs at the moment.
-
-> 
-> >
-> >Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-> >---
-> >  sound/soc/fsl/fsl_ssi.c | 70 ++++++++++++++++++++++++++++++++++++++++---------
-> >  1 file changed, 58 insertions(+), 12 deletions(-)
-> >
-> >diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> >index 7decbd9..afb5a23 100644
-> >--- a/sound/soc/fsl/fsl_ssi.c
-> >+++ b/sound/soc/fsl/fsl_ssi.c
-> >@@ -120,10 +120,12 @@ struct fsl_ssi_private {
-> >
-> >  	bool new_binding;
-> >  	bool ssi_on_imx;
-> >+	bool dma;
-> 
-> Can you rename this to "use_dma" or something like that?
-
-Done.
-
-> 
-> >  	struct clk *clk;
-> >  	struct platform_device *imx_pcm_pdev;
-> >  	struct imx_pcm_dma_params dma_params_tx;
-> >  	struct imx_pcm_dma_params dma_params_rx;
-> >+	struct imx_pcm_fiq_params fiq_params;
-> >
-> >  	struct {
-> >  		unsigned int rfrc;
-> >@@ -353,7 +355,8 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
-> >  		 */
-> >
-> >  		/* Enable the interrupts and DMA requests */
-> >-		write_ssi(SIER_FLAGS, &ssi->sier);
-> >+		if (ssi_private->dma)
-> >+			write_ssi(SIER_FLAGS, &ssi->sier);
-> >
-> >  		/*
-> >  		 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
-> >@@ -520,6 +523,18 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
-> >  		return -EINVAL;
-> >  	}
-> >
-> >+	if (!ssi_private->dma) {
-> >+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> >+			write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
-> >+			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN,
-> >+					&ssi->sier);
-> >+		} else {
-> >+			write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
-> >+			write_ssi(CCSR_SSI_SIER_RIE | CCSR_SSI_SIER_RFF0_EN,
-> >+					&ssi->sier);
-> >+		}
-> >+	}
-> >+
-> >  	return 0;
-> >  }
-> >
-> >@@ -680,6 +695,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-> >  	       sizeof(fsl_ssi_dai_template));
-> >  	ssi_private->cpu_dai_drv.name = ssi_private->name;
-> >
-> >+	ssi_private->dma = !of_property_read_bool(np, "fsl,imx-fiq");
-> 
-> Instead of looking for the FIQ property, maybe you should just look
-> for the absence of a DMA property/node, and then default to
-> interrupts if there is no DMA.  That would make it more generic, and
-> even work on non-IMX systems.
-
-I do not think it is possible. For example imx27 ssi does support
-DMA but for specific boards we have to use fiq instead (phycore-ac97).
-So I would prefer to define the DMA in the chip dtsi file and choose
-fiq, if necessary, in the board dts.
-
-Regards,
-
-Markus
-
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index 9eb0021..a6cdae7 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -62,9 +62,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+ 
+ int imx_pcm_dma_init(struct platform_device *pdev)
+ {
++	if (pdev->dev.platform_data)
++		pdev->dev.of_node = pdev->dev.platform_data;
++
+ 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.1.5
