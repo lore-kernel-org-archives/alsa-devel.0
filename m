@@ -1,41 +1,58 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for
-	imx-pcm-fiq
-Date: Sun, 14 Apr 2013 09:53:57 -0500
-Message-ID: <516AC305.2000800@tabi.org>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for imx-pcm-fiq
+Date: Sun, 14 Apr 2013 17:20:16 +0200
+Message-ID: <20130414152016.GE27394@pengutronix.de>
 References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
  <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
  <51620CEA.3010703@tabi.org> <20130414103819.GA27394@pengutronix.de>
  <516AB111.3000007@tabi.org> <20130414141015.GC27394@pengutronix.de>
+ <516AC305.2000800@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
- [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 50A8F2615F5
- for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2013 16:54:00 +0200 (CEST)
-In-Reply-To: <20130414141015.GC27394@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <516AC305.2000800-N01EOCouUvQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Markus Pargmann wrote:
-> In general, imx27 does support SSI with DMA, for example
-> MACH_IMX27_VISSTRIM_M10 does use SSI with DMA. But there are special
-> boards like Eukrea TLV320 and phycore-ac97 that have to use FIQ instead.
-> All of them have a imx27 chip.
+On Sun, Apr 14, 2013 at 09:53:57AM -0500, Timur Tabi wrote:
+> Markus Pargmann wrote:
+> >In general, imx27 does support SSI with DMA, for example
+> >MACH_IMX27_VISSTRIM_M10 does use SSI with DMA. But there are special
+> >boards like Eukrea TLV320 and phycore-ac97 that have to use FIQ instead.
+> >All of them have a imx27 chip.
+> 
+> Why is the decision to use FIQ board-specific?  All of the hardware
+> is inside the SoC itself.  How could a board make using DMA
+> impossible?
 
-Why is the decision to use FIQ board-specific?  All of the hardware is 
-inside the SoC itself.  How could a board make using DMA impossible?
+I only ported the imx-ssi ac97 driver code and tested twice using DMA
+without success. But there is a good description of the problem in
+imx-ssi:
+
+" The WM9712 with which this driver
+was developed with always sends GPIO status data in slot 12 which
+we receive in our (PCM-) data stream. The only chance we have is to
+manually skip this data in the FIQ handler."
+
+Regards,
+
+Markus
 
 -- 
-Timur Tabi
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
