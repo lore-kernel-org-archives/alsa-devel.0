@@ -1,43 +1,59 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH v3 00/15] ASoC: fsl-ssi: ac97-slave support
-Date: Sun, 14 Apr 2013 14:13:15 +0200
-Message-ID: <516A9D5B.2070707@metafoo.de>
-References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for
+	imx-pcm-fiq
+Date: Sun, 14 Apr 2013 08:37:21 -0500
+Message-ID: <516AB111.3000007@tabi.org>
+References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
+ <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
+ <51620CEA.3010703@tabi.org> <20130414103819.GA27394@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1365939779-4507-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
+ [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id E30A02615DC
+ for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2013 15:37:24 +0200 (CEST)
+In-Reply-To: <20130414103819.GA27394@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/14/2013 01:42 PM, Markus Pargmann wrote:
-> Hi,
-> 
-> This series adds DT support for phycore-ac97. It is now based on the pcm dma
-> cleanups from Lars. Beside ac97 support, the series adds fsl-ssi imx-pcm-fiq
-> and generic DMA binding handling.
-> 
-> @Lars:
-> There are 4 new patches at the beginning of the series that fix some problems
-> of your cleanups. I think they were in the changes you posted. If not, could you
-> please add them to your branch?
+Markus Pargmann wrote:
+> I do not think it is possible. For example imx27 ssi does support
+> DMA but for specific boards we have to use fiq instead (phycore-ac97).
+> So I would prefer to define the DMA in the chip dtsi file and choose
+> fiq, if necessary, in the board dts.
 
-Hi,
+I'm not completely familiar with the way i.MX SSI bindings work, but isn't 
+there some property that says, "this SSI needs to use this DMA channel"? 
+So if that property is missing, then it means that there's no link between 
+the SSI and a DMA channel, and so you need to use FIQ.
 
-I had already fixed them localy. I'm in the process of polishing the last bits
-and pieces of my generic dmaengine PCM driver series right now and will submit
-it later today.
+For example, for PowerPC bindings, we have this:
 
-- Lars
+		ssi@16000 {
+			compatible = "fsl,mpc8610-ssi";
+			cell-index = <0>;
+			reg = <0x16000 0x100>;
+			interrupt-parent = <&mpic>;
+			interrupts = <62 2>;
+			fsl,mode = "i2s-slave";
+			codec-handle = <&cs4270>;
+-->			fsl,playback-dma = <&dma00>;
+-->			fsl,capture-dma = <&dma01>;
+
+So on PowerPC, if these two properties are missing, then we would use 
+interrupt mode.
+
+
+-- 
+Timur Tabi
