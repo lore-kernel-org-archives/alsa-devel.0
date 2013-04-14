@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v3 05/15] ASoC: phycore-ac97: Add DT support
-Date: Sun, 14 Apr 2013 13:42:49 +0200
-Message-ID: <1365939779-4507-6-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 12/15] ASoC: fsl-ssi: imx ac97 support
+Date: Sun, 14 Apr 2013 13:42:56 +0200
+Message-ID: <1365939779-4507-13-git-send-email-mpa@pengutronix.de>
 References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,294 +22,521 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree support for this audio soc fabric driver.
+This patch copies some parts from imx-ssi to support AC97 on
+imx27-pca100 and imx27-pcm043. This is a implementation of the
+ac97-slave mode.
 
-DT initialized drivers do not have real device ids, so
-imx-pcm-fiq-audio.0 is used without '.0'.
+For ac97, the registers have to be setup earlier than for other ssi
+modes because there is some communication with the external device
+before actual streaming. So this patch introduces a fsl_ssi_setup
+function to setup the registers at different times.
 
-This patch also simplifies the way audmux ports are configured. Before
-there was knowledge about the used board. As the audmux driver knows the
-used board, we know use the returned errorcodes to correctly set the
-audmux port. So this driver does not have to know which board it is
-running on.
+This patch was tested with imx27-pca100.
 
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
 
 Notes:
     Changes in v3:
-     - Add some more information in the commit message.
-    
-    Changes in v2:
-     - Simplify the driver, by combining audmux port configurations. The
-       audmux driver actually knows on which platform he is running and
-       will return the appropriate error code if we use functions for
-       another platform. So we don't need to have the knowledge about it
-       in phycore-ac97 and can try both functions. This removes the need
-       of different compatibilities and renames it to phycore-ac97.
-     - Use a phandle for the cpu_dai link.
-     - Add devicetree binding documentation.
-     - Rename binding to phytec,phycore-ac97 and fsl,ssi to phytec,ssi
-    
-    Changes in v2:
-     - Simplify the driver, by combining audmux port configurations. The
-       audmux driver actually knows on which platform he is running and
-       will return the appropriate error code if we use functions for
-       another platform. So we don't need to have the knowledge about it
-       in phycore-ac97 and can try both functions. This removes the need
-       of different compatibilities and renames it to imx27-ac97.
-     - Use a phandle for the cpu_dai link.
-     - Add devicetree binding documentation.
-     - Rename binding to phytec,phycore-ac97 and fsl,ssi to phytec,ssi
+     - Cleanup ac97 code by adding a fsl_ssi_setup function for initial register
+       setup. For ac97 the registers have to be setup earlier than in normal
+       mode.
 
- .../bindings/sound/phytec,phycore-ac97.txt         |  12 ++
- sound/soc/fsl/phycore-ac97.c                       | 184 ++++++++++++++++++---
- 2 files changed, 174 insertions(+), 22 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
+ sound/soc/fsl/fsl_ssi.c | 412 +++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 340 insertions(+), 72 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt b/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
-new file mode 100644
-index 0000000..e04221d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
-@@ -0,0 +1,12 @@
-+Phytec phycore AC97
-+
-+Required properties:
-+- compatible: "phytec,phycore-ac97"
-+- phytec,ssi: A phandle to the ssi device that is connected to ac97.
-+
-+Example:
-+
-+sound {
-+	compatible = "phytec,phycore-ac97";
-+	phytec,ssi = <&ssi1>;
-+};
-diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
-index f8da6dd..cebd93f 100644
---- a/sound/soc/fsl/phycore-ac97.c
-+++ b/sound/soc/fsl/phycore-ac97.c
-@@ -21,7 +21,10 @@
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 1ab66f8..0ffb898 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -121,6 +121,7 @@ struct fsl_ssi_private {
  
- #include "imx-audmux.h"
+ 	bool new_binding;
+ 	bool ssi_on_imx;
++	bool imx_ac97;
+ 	bool use_dma;
+ 	struct clk *clk;
+ 	struct platform_device *imx_pcm_pdev;
+@@ -130,6 +131,9 @@ struct fsl_ssi_private {
+ 	struct imx_dma_data filter_data_rx;
+ 	struct imx_pcm_fiq_params fiq_params;
  
-+#define DRV_NAME "phycore-audio-fabric"
++	void (*ac97_reset) (struct snd_ac97 *ac97);
++	void (*ac97_warm_reset)(struct snd_ac97 *ac97);
 +
- static struct snd_soc_card imx_phycore;
-+static struct device_node *phycore_dai_cpu_node;
+ 	struct {
+ 		unsigned int rfrc;
+ 		unsigned int tfrc;
+@@ -301,6 +305,124 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ 	return ret;
+ }
  
- static struct snd_soc_ops imx_phycore_hifi_ops = {
- };
-@@ -32,8 +35,12 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
- 		.stream_name	= "HiFi",
- 		.codec_dai_name		= "wm9712-hifi",
- 		.codec_name	= "wm9712-codec",
-+#ifdef CONFIG_MACH_IMX27_DT
-+		.platform_name	= "imx-fiq-pcm-audio",
-+#else
- 		.cpu_dai_name	= "imx-ssi.0",
- 		.platform_name	= "imx-fiq-pcm-audio.0",
-+#endif
- 		.ops		= &imx_phycore_hifi_ops,
- 	},
- };
-@@ -45,35 +52,78 @@ static struct snd_soc_card imx_phycore = {
- 	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
- };
- 
--static struct platform_device *imx_phycore_snd_ac97_device;
-+static int phycore_ac97_pca100_audmux(void)
++static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
 +{
-+	int ret;
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++	u8 i2s_mode;
++	u8 wm;
++	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
 +
-+	ret = imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
-+		IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
-+		IMX_AUDMUX_V1_PCR_TFCSEL(3) |
-+		IMX_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
-+		IMX_AUDMUX_V1_PCR_RXDSEL(3));
-+	if (ret)
-+		return ret;
-+
-+	ret = imx_audmux_v1_configure_port(3,
-+		IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
-+		IMX_AUDMUX_V1_PCR_TFCSEL(0) |
-+		IMX_AUDMUX_V1_PCR_TFSDIR |
-+		IMX_AUDMUX_V1_PCR_RXDSEL(0));
-+	return ret;
-+}
-+
-+static int phycore_ac97_pcm043_audmux(void)
-+{
-+	int ret;
-+
-+	ret = imx_audmux_v2_configure_port(3,
-+		IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
-+		IMX_AUDMUX_V2_PTCR_TFSEL(0) |
-+		IMX_AUDMUX_V2_PTCR_TFSDIR,
-+		IMX_AUDMUX_V2_PDCR_RXDSEL(0));
-+	if (ret)
-+		return ret;
-+
-+	ret = imx_audmux_v2_configure_port(0,
-+		IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
-+		IMX_AUDMUX_V2_PTCR_TCSEL(3) |
-+		IMX_AUDMUX_V2_PTCR_TCLKDIR, /* clock is output */
-+		IMX_AUDMUX_V2_PDCR_RXDSEL(3));
-+	return ret;
-+}
-+
-+static __maybe_unused int phycore_ac97_init_audmux(void)
-+{
-+	int ret;
++	if (ssi_private->imx_ac97)
++		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
++	else
++		i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
 +
 +	/*
-+	 * This driver doesn't need to know which actual hardware is used.
-+	 * The audmux driver has knowledge about it's type, and returns
-+	 * an error if executed on the wrong type of hardware.
++	 * Section 16.5 of the MPC8610 reference manual says that the SSI needs
++	 * to be disabled before updating the registers we set here.
 +	 */
-+	ret = phycore_ac97_pca100_audmux();
-+	if (!ret)
-+		return 0;
++	write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
 +
-+	ret = phycore_ac97_pcm043_audmux();
++	/*
++	 * Program the SSI into I2S Slave Non-Network Synchronous mode. Also
++	 * enable the transmit and receive FIFO.
++	 *
++	 * FIXME: Little-endian samples require a different shift dir
++	 */
++	write_ssi_mask(&ssi->scr,
++		CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
++		CCSR_SSI_SCR_TFR_CLK_DIS |
++		i2s_mode |
++		(synchronous ? CCSR_SSI_SCR_SYN : 0));
 +
-+	return ret;
-+}
++	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
++		 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
++		 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
 +
- static struct platform_device *imx_phycore_snd_device;
- 
-+#ifndef CONFIG_MACH_IMX27_DT
++	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
++		 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
++		 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
++	/*
++	 * The DC and PM bits are only used if the SSI is the clock master.
++	 */
 +
-+static struct platform_device *imx_phycore_snd_ac97_device;
++	/*
++	 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We don't
++	 * use FIFO 1. We program the transmit water to signal a DMA transfer
++	 * if there are only two (or fewer) elements left in the FIFO. Two
++	 * elements equals one frame (left channel, right channel). This value,
++	 * however, depends on the depth of the transmit buffer.
++	 *
++	 * We set the watermark on the same level as the DMA burstsize.  For
++	 * fiq it is probably better to use the biggest possible watermark
++	 * size.
++	 */
++	if (ssi_private->use_dma)
++		wm = ssi_private->fifo_depth - 2;
++	else
++		wm = ssi_private->fifo_depth;
 +
- static int __init imx_phycore_init(void)
- {
- 	int ret;
- 
- 	if (machine_is_pca100()) {
--		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
--			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V1_PCR_TFCSEL(3) |
--			IMX_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
--			IMX_AUDMUX_V1_PCR_RXDSEL(3));
--		imx_audmux_v1_configure_port(3,
--			IMX_AUDMUX_V1_PCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V1_PCR_TFCSEL(0) |
--			IMX_AUDMUX_V1_PCR_TFSDIR |
--			IMX_AUDMUX_V1_PCR_RXDSEL(0));
-+		phycore_ac97_pca100_audmux();
- 	} else if (machine_is_pcm043()) {
--		imx_audmux_v2_configure_port(3,
--			IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V2_PTCR_TFSEL(0) |
--			IMX_AUDMUX_V2_PTCR_TFSDIR,
--			IMX_AUDMUX_V2_PDCR_RXDSEL(0));
--		imx_audmux_v2_configure_port(0,
--			IMX_AUDMUX_V2_PTCR_SYN | /* 4wire mode */
--			IMX_AUDMUX_V2_PTCR_TCSEL(3) |
--			IMX_AUDMUX_V2_PTCR_TCLKDIR, /* clock is output */
--			IMX_AUDMUX_V2_PDCR_RXDSEL(3));
-+		phycore_ac97_pcm043_audmux();
- 	} else {
- 		/* return happy. We might run on a totally different machine */
- 		return 0;
-@@ -120,6 +170,96 @@ static void __exit imx_phycore_exit(void)
- late_initcall(imx_phycore_init);
- module_exit(imx_phycore_exit);
- 
-+#else  /* !CONFIG_MACH_IMX27_DT */
++	write_ssi(CCSR_SSI_SFCSR_TFWM0(wm) | CCSR_SSI_SFCSR_RFWM0(wm) |
++		CCSR_SSI_SFCSR_TFWM1(wm) | CCSR_SSI_SFCSR_RFWM1(wm),
++		&ssi->sfcsr);
 +
-+static const struct of_device_id imx_phycore_ac97_of_dev_id[] = {
-+	{
-+		.compatible = "phytec,phycore-ac97",
-+	}, {
-+		/* sentinel */
++	/*
++	 * For non-ac97 setups, we keep the SSI disabled because if we enable
++	 * it, then the DMA controller will start. It's not supposed to start
++	 * until the SCR.TE (or SCR.RE) bit is set, but it does anyway. The DMA
++	 * controller will transfer one "BWC" of data (i.e. the amount of data
++	 * that the MR.BWC bits are set to). The reason this is bad is because
++	 * at this point, the PCM driver has not finished initializing the DMA
++	 * controller.
++	 */
++
++
++	/*
++	 * For ac97 interrupts are enabled with the startup of the substream
++	 * because it is also running without an active substream. Normally SSI
++	 * is only enabled when there is a substream.
++	 */
++	if (!ssi_private->imx_ac97) {
++		/* Enable the interrupts and DMA requests */
++		if (ssi_private->use_dma)
++			write_ssi(SIER_FLAGS, &ssi->sier);
++		else
++			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN |
++					CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN, &ssi->sier);
++	} else {
++		/*
++		 * Setup the clock control register
++		 */
++		write_ssi(CCSR_SSI_SxCCR_WL(17) | CCSR_SSI_SxCCR_DC(13),
++				&ssi->stccr);
++		write_ssi(CCSR_SSI_SxCCR_WL(17) | CCSR_SSI_SxCCR_DC(13),
++				&ssi->srccr);
++
++		/*
++		 * Enable AC97 mode and startup the SSI
++		 */
++		write_ssi(CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV,
++				&ssi->sacnt);
++		write_ssi(0xff, &ssi->saccdis);
++		write_ssi(0x300, &ssi->saccen);
++
++		/*
++		 * Enable SSI
++		 */
++		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_SSIEN);
++		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
++
++		/*
++		 * Enable Transmit and Receive
++		 */
++		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
 +	}
-+};
-+MODULE_DEVICE_TABLE(of, imx_phycore_ac97_of_dev_id);
 +
-+static int phycore_ac97_setup_devices(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	imx_phycore_snd_device = platform_device_alloc("wm9712-codec", -1);
-+	if (!imx_phycore_snd_device)
-+		return -ENOMEM;
-+
-+	ret = platform_device_add(imx_phycore_snd_device);
-+	if (ret) {
-+		dev_err(&pdev->dev, "ASoC: Platform device allocation failed\n");
-+		goto fail1;
-+	}
-+
-+	ret = snd_soc_register_card(&imx_phycore);
-+	if (ret) {
-+		dev_err(&pdev->dev, "ASoC: soc card registration failed\n");
-+		goto fail2;
-+	}
 +	return 0;
-+
-+fail2:
-+	platform_device_del(imx_phycore_snd_device);
-+fail1:
-+	platform_device_put(imx_phycore_snd_device);
-+	return ret;
 +}
 +
-+static int imx_phycore_ac97_probe(struct platform_device *pdev)
++
+ /**
+  * fsl_ssi_startup: create a new substream
+  *
+@@ -322,75 +444,14 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 	 * and initialize the SSI registers.
+ 	 */
+ 	if (!ssi_private->first_stream) {
+-		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-
+ 		ssi_private->first_stream = substream;
+ 
+ 		/*
+-		 * Section 16.5 of the MPC8610 reference manual says that the
+-		 * SSI needs to be disabled before updating the registers we set
+-		 * here.
+-		 */
+-		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
+-
+-		/*
+-		 * Program the SSI into I2S Slave Non-Network Synchronous mode.
+-		 * Also enable the transmit and receive FIFO.
+-		 *
+-		 * FIXME: Little-endian samples require a different shift dir
+-		 */
+-		write_ssi_mask(&ssi->scr,
+-			CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
+-			CCSR_SSI_SCR_TFR_CLK_DIS | CCSR_SSI_SCR_I2S_MODE_SLAVE
+-			| (synchronous ? CCSR_SSI_SCR_SYN : 0));
+-
+-		write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
+-			 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
+-			 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
+-
+-		write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
+-			 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
+-			 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
+-
+-		/*
+-		 * The DC and PM bits are only used if the SSI is the clock
+-		 * master.
+-		 */
+-
+-		/* Enable the interrupts and DMA requests */
+-		if (ssi_private->use_dma)
+-			write_ssi(SIER_FLAGS, &ssi->sier);
+-		else
+-			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN |
+-					CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN, &ssi->sier);
+-
+-		/*
+-		 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
+-		 * don't use FIFO 1.  We program the transmit water to signal a
+-		 * DMA transfer if there are only two (or fewer) elements left
+-		 * in the FIFO.  Two elements equals one frame (left channel,
+-		 * right channel).  This value, however, depends on the depth of
+-		 * the transmit buffer.
+-		 *
+-		 * We program the receive FIFO to notify us if at least two
+-		 * elements (one frame) have been written to the FIFO.  We could
+-		 * make this value larger (and maybe we should), but this way
+-		 * data will be written to memory as soon as it's available.
+-		 */
+-		write_ssi(CCSR_SSI_SFCSR_TFWM0(ssi_private->fifo_depth - 2) |
+-			CCSR_SSI_SFCSR_RFWM0(ssi_private->fifo_depth - 2),
+-			&ssi->sfcsr);
+-
+-		/*
+-		 * We keep the SSI disabled because if we enable it, then the
+-		 * DMA controller will start.  It's not supposed to start until
+-		 * the SCR.TE (or SCR.RE) bit is set, but it does anyway.  The
+-		 * DMA controller will transfer one "BWC" of data (i.e. the
+-		 * amount of data that the MR.BWC bits are set to).  The reason
+-		 * this is bad is because at this point, the PCM driver has not
+-		 * finished initializing the DMA controller.
++		 * fsl_ssi_setup was already called by ac97_init earlier if
++		 * the driver is in ac97 mode.
+ 		 */
++		if (!ssi_private->imx_ac97)
++			fsl_ssi_setup(ssi_private);
+ 	} else {
+ 		if (synchronous) {
+ 			struct snd_pcm_runtime *first_runtime =
+@@ -545,8 +606,9 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	/*
+ 	 * If this is the last active substream, disable the SSI.
++	 * If AC97 is active, we don't want to disable SSI.
+ 	 */
+-	if (!ssi_private->first_stream) {
++	if (!ssi_private->first_stream && !ssi_private->imx_ac97) {
+ 		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 
+ 		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
+@@ -595,6 +657,176 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
+ 	.name		= "fsl-ssi",
+ };
+ 
++/**
++ * fsl_ssi_ac97_trigger: start and stop the AC97 receive/transmit.
++ *
++ * This function is called by ALSA to start, stop, pause, and resume the
++ * transfer of data.
++ */
++static int fsl_ssi_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
++			   struct snd_soc_dai *dai)
 +{
-+	int ret;
-+	struct device_node *ssi_np;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
 +
-+	imx_phycore.dev = &pdev->dev;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TIE |
++					CCSR_SSI_SIER_TFE0_EN);
++		else
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN);
++		break;
 +
-+	ret = phycore_ac97_init_audmux();
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to initialize audmux\n");
-+		return ret;
-+	}
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TIE |
++					CCSR_SSI_SIER_TFE0_EN, 0);
++		else
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN, 0);
++		break;
 +
-+	ssi_np = of_parse_phandle(pdev->dev.of_node, "phytec,ssi", 0);
-+	if (!ssi_np) {
-+		dev_err(&pdev->dev, "No valid ssi phandle found\n");
++	default:
 +		return -EINVAL;
 +	}
 +
-+	imx_phycore_dai_ac97[0].cpu_of_node = ssi_np;
-+	phycore_dai_cpu_node = ssi_np;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
++	else
++		write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
 +
-+
-+	ret = phycore_ac97_setup_devices(pdev);
-+	if (ret)
-+		of_node_put(phycore_dai_cpu_node);
-+
-+	return ret;
-+}
-+
-+static int imx_phycore_ac97_remove(struct platform_device *pdev)
-+{
-+	of_node_put(phycore_dai_cpu_node);
-+	platform_device_unregister(imx_phycore_snd_device);
 +	return 0;
 +}
 +
-+static struct platform_driver imx_phycore_ac97_driver = {
-+	.probe		= imx_phycore_ac97_probe,
-+	.remove		= imx_phycore_ac97_remove,
-+	.driver		= {
-+		.name	= DRV_NAME,
-+		.owner	= THIS_MODULE,
-+		.of_match_table = imx_phycore_ac97_of_dev_id,
-+	},
++static const struct snd_soc_dai_ops fsl_ssi_ac97_dai_ops = {
++	.startup	= fsl_ssi_startup,
++	.shutdown	= fsl_ssi_shutdown,
++	.trigger	= fsl_ssi_ac97_trigger,
 +};
 +
-+module_platform_driver(imx_phycore_ac97_driver);
++static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
++	.ac97_control = 1,
++	.playback = {
++		.stream_name = "AC97 Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "AC97 Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = &fsl_ssi_ac97_dai_ops,
++};
 +
-+#endif  /* CONFIG_MACH_IMX27_DT */
 +
- MODULE_AUTHOR("Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>");
--MODULE_DESCRIPTION("PhyCORE ALSA SoC driver");
-+MODULE_DESCRIPTION(DRV_NAME ": PhyCORE ALSA SoC fabric driver");
- MODULE_LICENSE("GPL");
++static struct fsl_ssi_private *fsl_ac97_data;
++
++static void fsl_ssi_ac97_init(void)
++{
++	fsl_ssi_setup(fsl_ac97_data);
++}
++
++static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
++		unsigned short val)
++{
++	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
++	unsigned int lreg;
++	unsigned int lval;
++
++	if (reg > 0x7f)
++		return;
++
++
++	lreg = reg <<  12;
++	write_ssi(lreg, &ssi->sacadd);
++
++	lval = val << 4;
++	write_ssi(lval , &ssi->sacdat);
++
++	write_ssi_mask(&ssi->sacnt, CCSR_SSI_SACNT_RDWR_MASK,
++			CCSR_SSI_SACNT_WR);
++	udelay(100);
++}
++
++static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
++		unsigned short reg)
++{
++	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
++
++	unsigned short val = -1;
++	unsigned int lreg;
++
++	lreg = (reg & 0x7f) <<  12 ;
++	write_ssi(lreg, &ssi->sacadd);
++	write_ssi_mask(&ssi->sacnt, CCSR_SSI_SACNT_RDWR_MASK,
++			CCSR_SSI_SACNT_RD);
++
++	udelay(100);
++
++	val = (read_ssi(&ssi->sacdat) >> 4) & 0xffff;
++
++	return val;
++}
++
++static void fsl_ssi_ac97_reset(struct snd_ac97 *ac97)
++{
++	struct fsl_ssi_private *ssi_private = fsl_ac97_data;
++
++	if (ssi_private->ac97_reset)
++		ssi_private->ac97_reset(ac97);
++	/* First read sometimes fails, do a dummy read */
++	fsl_ssi_ac97_read(ac97, 0);
++}
++
++static void fsl_ssi_ac97_warm_reset(struct snd_ac97 *ac97)
++{
++	struct fsl_ssi_private *ssi_private = fsl_ac97_data;
++
++	if (ssi_private->ac97_warm_reset)
++		ssi_private->ac97_warm_reset(ac97);
++
++	/* First read sometimes fails, do a dummy read */
++	fsl_ssi_ac97_read(ac97, 0);
++}
++
++struct snd_ac97_bus_ops soc_ac97_ops = {
++	.read		= fsl_ssi_ac97_read,
++	.write		= fsl_ssi_ac97_write,
++	.reset		= fsl_ssi_ac97_reset,
++	.warm_reset	= fsl_ssi_ac97_warm_reset
++};
++EXPORT_SYMBOL_GPL(soc_ac97_ops);
++
++/*
++ * Pointer to AC97 reset functions for specific boards
++ */
++#if IS_ENABLED(CONFIG_MACH_PCA100)
++extern void pca100_ac97_cold_reset(struct snd_ac97 *ac97);
++extern void pca100_ac97_warm_reset(struct snd_ac97 *ac97);
++#else
++void pca100_ac97_cold_reset(struct snd_ac97 *ac97) { }
++void pca100_ac97_warm_reset(struct snd_ac97 *ac97) { }
++#endif
++
++#if IS_ENABLED(CONFIG_MACH_PCM043)
++extern void pcm043_ac97_cold_reset(struct snd_ac97 *ac97);
++extern void pcm043_ac97_warm_reset(struct snd_ac97 *ac97);
++#else
++void pcm043_ac97_cold_reset(struct snd_ac97 *ac97) { }
++void pcm043_ac97_warm_reset(struct snd_ac97 *ac97) { }
++#endif
++
++
+ /* Show the statistics of a flag only if its interrupt is enabled.  The
+  * compiler will optimze this code to a no-op if the interrupt is not
+  * enabled.
+@@ -671,6 +903,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct resource res;
+ 	char name[64];
+ 	bool shared;
++	bool ac97 = false;
+ 
+ 	/* SSIs that are not connected on the board should have a
+ 	 *      status = "disabled"
+@@ -681,7 +914,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ 	/* We only support the SSI in "I2S Slave" mode */
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+-	if (!sprop || strcmp(sprop, "i2s-slave")) {
++	if (!sprop) {
++		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
++		return -EINVAL;
++	}
++	if (!strcmp(sprop, "ac97-slave")) {
++		ac97 = true;
++	} else if (strcmp(sprop, "i2s-slave")) {
+ 		dev_notice(&pdev->dev, "mode %s is unsupported\n", sprop);
+ 		return -ENODEV;
+ 	}
+@@ -697,13 +936,39 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ 	strcpy(ssi_private->name, p);
+ 
+-	/* Initialize this copy of the CPU DAI driver structure */
+-	memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+-	       sizeof(fsl_ssi_dai_template));
+-	ssi_private->cpu_dai_drv.name = ssi_private->name;
+-
+ 	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
+ 
++	if (ac97) {
++		sprop = of_get_property(of_find_node_by_path("/"), "compatible",
++				NULL);
++		p = strrchr(sprop, ',');
++		if (p)
++			sprop = p + 1;
++
++		if (!strcmp(sprop, "imx27-pca100")) {
++			ssi_private->ac97_reset = pca100_ac97_cold_reset;
++			ssi_private->ac97_warm_reset = pca100_ac97_warm_reset;
++		} else if (!strcmp(sprop, "imx27-pcm043")) {
++			ssi_private->ac97_reset = pcm043_ac97_cold_reset;
++			ssi_private->ac97_warm_reset = pcm043_ac97_warm_reset;
++		} else {
++			dev_err(&pdev->dev, "Failed to enable ssi AC97 mode, unknown board.\n");
++			ret = -EINVAL;
++			goto error_kmalloc;
++		}
++
++		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_ac97_dai,
++				sizeof(fsl_ssi_ac97_dai));
++
++		fsl_ac97_data = ssi_private;
++		ssi_private->imx_ac97 = true;
++	} else {
++		/* Initialize this copy of the CPU DAI driver structure */
++		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
++		       sizeof(fsl_ssi_dai_template));
++	}
++	ssi_private->cpu_dai_drv.name = ssi_private->name;
++
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+ 	if (ret) {
+@@ -894,6 +1159,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ done:
++	if (ssi_private->imx_ac97)
++		fsl_ssi_ac97_init();
++
+ 	return 0;
+ 
+ error_dai:
 -- 
 1.8.1.5
