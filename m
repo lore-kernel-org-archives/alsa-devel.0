@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v3 06/15] ASoC: imx-pcm-dma: DT support
-Date: Sun, 14 Apr 2013 13:42:50 +0200
-Message-ID: <1365939779-4507-7-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v3 03/15] ASoC: dmaengine-pcm: Fix function name
+Date: Sun, 14 Apr 2013 13:42:47 +0200
+Message-ID: <1365939779-4507-4-git-send-email-mpa@pengutronix.de>
 References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,30 +24,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Markus Pargmann <mpa-rffoE+Jg25C1LGEWPFfZhQ@public.gmane.org>
 
-This patch adds the possibility to pass a of_node as platform_data which
-is used by generic-pcm-dma to request a DMA slave channel.
-
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/fsl/imx-pcm-dma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index 9eb0021..a6cdae7 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -62,9 +62,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 2e25402..f752577 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -50,7 +50,8 @@ int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
+ 	if (ret)
+ 		return ret;
  
- int imx_pcm_dma_init(struct platform_device *pdev)
- {
-+	if (pdev->dev.platform_data)
-+		pdev->dev.of_node = pdev->dev.platform_data;
-+
- 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
--		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+-	snd_dmaengine_set_config_from_dai_data(substream, dma_data, slave_config);
++	snd_dmaengine_pcm_set_config_from_dai_data(substream, dma_data,
++			slave_config);
+ 
+ 	return 0;
  }
- 
 -- 
 1.8.1.5
