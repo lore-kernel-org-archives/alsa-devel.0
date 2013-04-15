@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 12/17] ASoC: imx: Use generic dmaengine PCM
-Date: Mon, 15 Apr 2013 19:19:59 +0200
-Message-ID: <1366046404-8759-13-git-send-email-lars@metafoo.de>
+Subject: [PATCH 13/17] ASoC: omap: Setup dma data in DAI probe
+Date: Mon, 15 Apr 2013 19:20:00 +0200
+Message-ID: <1366046404-8759-14-git-send-email-lars@metafoo.de>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-031.synserver.de (smtp-out-037.synserver.de
  [212.40.185.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 0456C265259
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B900265264
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:30 +0200 (CEST)
 In-Reply-To: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,175 +25,118 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the generic dmaengine PCM driver instead of a custom implementation.
+This allows us to access the DAI DMA data when we create the PCM. We'll use
+this when converting omap to generic DMA engine PCM driver.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/fsl/Kconfig       |  2 +-
- sound/soc/fsl/imx-pcm-dma.c | 76 +++++++++------------------------------------
- sound/soc/fsl/imx-pcm.c     |  6 +++-
- sound/soc/fsl/imx-pcm.h     |  5 +++
- 4 files changed, 26 insertions(+), 63 deletions(-)
+ sound/soc/omap/omap-dmic.c  |  4 +++-
+ sound/soc/omap/omap-hdmi.c  | 12 ++++++++++--
+ sound/soc/omap/omap-mcbsp.c |  6 +++---
+ sound/soc/omap/omap-mcpdm.c |  7 ++++---
+ 4 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3b98159..3843a18 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -118,7 +118,7 @@ config SND_SOC_IMX_PCM_FIQ
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 2ad0370..257b5e5 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -114,7 +114,6 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
  
- config SND_SOC_IMX_PCM_DMA
- 	bool
--	select SND_SOC_DMAENGINE_PCM
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select SND_SOC_IMX_PCM
+ 	mutex_unlock(&dmic->mutex);
  
- config SND_SOC_IMX_AUDMUX
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index c664782..c246fb5 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -11,22 +11,12 @@
-  *  Free Software Foundation;  either version 2 of the  License, or (at your
-  *  option) any later version.
-  */
--#include <linux/clk.h>
--#include <linux/delay.h>
--#include <linux/device.h>
--#include <linux/dma-mapping.h>
--#include <linux/init.h>
--#include <linux/interrupt.h>
--#include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/slab.h>
- #include <linux/dmaengine.h>
- #include <linux/types.h>
- 
- #include <sound/core.h>
--#include <sound/initval.h>
- #include <sound/pcm.h>
--#include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
- 
-@@ -44,32 +34,7 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return true;
+-	snd_soc_dai_set_dma_data(dai, substream, &dmic->dma_data);
+ 	return ret;
  }
  
--static int snd_imx_pcm_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
--	struct dma_slave_config slave_config;
--	int ret;
--
--	ret = snd_hwparams_to_dma_slave_config(substream, params, &slave_config);
--	if (ret)
--		return ret;
--
--	snd_dmaengine_pcm_set_config_from_dai_data(substream,
--			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream),
--			&slave_config);
--
--	ret = dmaengine_slave_config(chan, &slave_config);
--	if (ret)
--		return ret;
--
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--
--	return 0;
--}
--
--static struct snd_pcm_hardware snd_imx_hardware = {
-+static const struct snd_pcm_hardware imx_pcm_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_MMAP |
-@@ -88,33 +53,22 @@ static struct snd_pcm_hardware snd_imx_hardware = {
- 	.fifo_size = 0,
- };
+@@ -418,6 +417,9 @@ static int omap_dmic_probe(struct snd_soc_dai *dai)
  
--static int snd_imx_open(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--
--	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
--
--	return snd_dmaengine_pcm_open(substream, filter,
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream));
--}
--
--static struct snd_pcm_ops imx_pcm_ops = {
--	.open		= snd_imx_open,
--	.close		= snd_dmaengine_pcm_close_release_chan,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= snd_imx_pcm_hw_params,
--	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer_no_residue,
--	.mmap		= snd_imx_pcm_mmap,
--};
--
--static struct snd_soc_platform_driver imx_soc_platform_mx2 = {
--	.ops		= &imx_pcm_ops,
--	.pcm_new	= imx_pcm_new,
--	.pcm_free	= imx_pcm_free,
-+static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
-+	.pcm_hardware = &imx_pcm_hardware,
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+	.compat_filter_fn = filter,
-+	.prealloc_buffer_size = IMX_SSI_DMABUF_SIZE,
- };
- 
- int imx_pcm_dma_init(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &imx_soc_platform_mx2);
-+	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
-+		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-+		SND_DMAENGINE_PCM_FLAG_NO_DT |
-+		SND_DMAENGINE_PCM_FLAG_COMPAT);
-+}
+ 	/* Configure DMIC threshold value */
+ 	dmic->threshold = OMAP_DMIC_THRES_MAX - 3;
 +
-+void imx_pcm_dma_exit(struct platform_device *pdev)
-+{
-+	snd_dmaengine_pcm_unregister(&pdev->dev);
- }
-diff --git a/sound/soc/fsl/imx-pcm.c b/sound/soc/fsl/imx-pcm.c
-index 0d0625b..c498964 100644
---- a/sound/soc/fsl/imx-pcm.c
-+++ b/sound/soc/fsl/imx-pcm.c
-@@ -114,7 +114,11 @@ static int imx_pcm_probe(struct platform_device *pdev)
- 
- static int imx_pcm_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_platform(&pdev->dev);
-+	if (strcmp(pdev->id_entry->name, "imx-fiq-pcm-audio") == 0)
-+		snd_soc_unregister_platform(&pdev->dev);
-+	else
-+		imx_pcm_dma_exit(pdev);
++	dai->playback_dma_data = &dmic->dma_data;
 +
  	return 0;
  }
  
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index be9cc64..b7fa0d7 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -39,11 +39,16 @@ void imx_pcm_free(struct snd_pcm *pcm);
+diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
+index ced3b88..d5c5cf4 100644
+--- a/sound/soc/omap/omap-hdmi.c
++++ b/sound/soc/omap/omap-hdmi.c
+@@ -69,8 +69,6 @@ static int omap_hdmi_dai_startup(struct snd_pcm_substream *substream,
+ 		return -ENODEV;
+ 	}
  
- #ifdef CONFIG_SND_SOC_IMX_PCM_DMA
- int imx_pcm_dma_init(struct platform_device *pdev);
-+void imx_pcm_dma_exit(struct platform_device *pdev);
- #else
- static inline int imx_pcm_dma_init(struct platform_device *pdev)
- {
- 	return -ENODEV;
+-	snd_soc_dai_set_dma_data(dai, substream, &priv->dma_data);
+-
+ 	return 0;
  }
-+
-+static inline void imx_pcm_dma_exit(struct platform_device *pdev)
-+{
-+}
- #endif
  
- #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
+@@ -250,7 +248,17 @@ static const struct snd_soc_dai_ops omap_hdmi_dai_ops = {
+ 	.shutdown	= omap_hdmi_dai_shutdown,
+ };
+ 
++static int omap_hdmi_dai_probe(struct snd_soc_dai *dai)
++{
++	struct hdmi_priv *priv = snd_soc_dai_get_drvdata(dai);
++
++	dai->playback_dma_data = &priv->dma_data;
++
++	return 0;
++}
++
+ static struct snd_soc_dai_driver omap_hdmi_dai = {
++	.probe = omap_hdmi_dai_probe,
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 8,
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index eadbfb6..dd74933 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -149,9 +149,6 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 					   SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 2);
+ 	}
+ 
+-	snd_soc_dai_set_dma_data(cpu_dai, substream,
+-				 &mcbsp->dma_data[substream->stream]);
+-
+ 	return err;
+ }
+ 
+@@ -554,6 +551,9 @@ static int omap_mcbsp_probe(struct snd_soc_dai *dai)
+ 
+ 	pm_runtime_enable(mcbsp->dev);
+ 
++	dai->playback_dma_data = &mcbsp->dma_data[0];
++	dai->capture_dma_data = &mcbsp->dma_data[1];
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index eb05c7e..d8817a6 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -266,9 +266,6 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
+ 	}
+ 	mutex_unlock(&mcpdm->mutex);
+ 
+-	snd_soc_dai_set_dma_data(dai, substream,
+-				 &mcpdm->dma_data[substream->stream]);
+-
+ 	return 0;
+ }
+ 
+@@ -407,6 +404,10 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+ 	mcpdm->config[SNDRV_PCM_STREAM_PLAYBACK].threshold = 2;
+ 	mcpdm->config[SNDRV_PCM_STREAM_CAPTURE].threshold =
+ 							MCPDM_UP_THRES_MAX - 3;
++
++	dai->playback_dma_data = &mcpdm->dma_data[0];
++	dai->capture_dma_data = &mcpdm->dma_data[1];
++
+ 	return ret;
+ }
+ 
 -- 
 1.8.0
