@@ -1,15 +1,24 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Can Realtek HD-A codec ALC282 support D3cold?
-Date: Mon, 15 Apr 2013 07:57:44 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8382D55@SHSMSX101.ccr.corp.intel.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH v2] ALSA: hda - Apply codec delay to
+	wallclock.
+Date: Mon, 15 Apr 2013 01:02:29 -0700
+Message-ID: <CAEUnVG50-UFVQ6gH7JRuB6F3zi64DsMtGnDz-Q_kMFPr4ehz4Q@mail.gmail.com>
+References: <1365470430-22292-1-git-send-email-dgreid@chromium.org>
+ <5164E2CF.2050207@linux.intel.com>
+ <CAEUnVG4g--gJo5XjUub3do8acAjqDXeu_GSrDPY=tZ0QfwLPoA@mail.gmail.com>
+ <5165774C.2000507@linux.intel.com> <s5hvc7uh0we.wl%tiwai@suse.de>
+ <51676096.9000003@linux.intel.com> <s5hehegm8lc.wl%tiwai@suse.de>
+ <s5h4nfarers.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A6E4B262606
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 09:58:09 +0200 (CEST)
-Content-Language: en-US
+Received: from mail-ee0-f47.google.com (mail-ee0-f47.google.com [74.125.83.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7506126509A
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 10:02:30 +0200 (CEST)
+Received: by mail-ee0-f47.google.com with SMTP id t10so2043404eei.6
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 01:02:30 -0700 (PDT)
+In-Reply-To: <s5h4nfarers.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,25 +28,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Apr 13, 2013 1:55 AM, "Takashi Iwai" <tiwai@suse.de> wrote:
+>
+> At Fri, 12 Apr 2013 10:55:27 +0200,
+> Takashi Iwai wrote:
+> >
+> > At Thu, 11 Apr 2013 19:17:10 -0600,
+> > Pierre-Louis Bossart wrote:
+> > >
+> > >
+> > > >> For playback audio_timestamp = wallclk - codec_delay_in_nsec
+> > > >> for capture audio_timestamp = wallclk + codec_delay_in_nsec
+> > > >
+> > > > Hmm...  I'm confused, too.  From a pretty generic view,
+> > > >
+> > > > - hwptr = the samples (frames) transferred on the (memory) buffer
+> > > > - hwptr + PCM delay = the point being currently captured
+> > > >
+> > > > Which position does the wall clock correspond?
+> > >
+> > > you now have 3 positions:
+> > >
+> > > For capture:
+> > > hwptr = sample in memory
+> > > hwptr+ delay = sample recorded on link (tracked by LPIB and wallclock)
+> > > hwptr+ delay + codec_delay = sample recorded by A/D
+> > >
+> > > For playback
+> > > hwptr = next sample in memory to be DMA'ed
+> > > hwptr - delay = sample pushed on link (tracked by LPIB and wallclock)
+> > > hwptr - delay - codec_delay = sample played in A/D
+> > >
+> > > the wallclock is only at the soc/chipset level, it doesn't know
+anything
+> > > about the peripheral.
+> > > Makes sense?
+> >
+> > Thanks, now it's clearer.
+>
+> Dylan, could you care to submit the fix patch?
+>
 
-We want to put an idle HD-A codec into D3cold for more power saving and preparation for being power gated. The Realtek ALC282 is used in our test.
-Could anyone help to confirm whether ALC282 can support D3cold or not?
+It will be the first thing I do when I get to the office tomorrow morning.
 
-I'm told that ALC282 can support D3cold. But my test shows it cannot.
+Thanks,
 
-At first, ALC282 HW does not report that it can support D3cold.
-Its parameter "Supported Power States" returns 0xc000000f, means it only supports:  EPSS, CLKSTOP, D3hot, D2, D1 and D0.
-Is this a just mistake in reporting the bit, or D3cold is not supported all?
+Dylan
 
-
-Then when I explicitly set the audio function group to D3cold by verb 0x705, and then get its power state after 200ms by verb 0xf05,
-The codec response is 0x00000000: No PS-Error, both PS-Act and PS-set is D0. So it seems the command to D3cold is not processed by codec HW at all.
-
-Is there someone from Realtek or with experience on ALC282 here can share some information about this issue?
-
-Many thanks
-Mengdong
+>
+> thanks,
+>
+> Takashi
