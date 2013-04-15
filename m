@@ -1,16 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Stupid question #1 of many -- unit test harness?
-Date: Mon, 15 Apr 2013 16:38:16 +0200
-Message-ID: <516C10D8.2050201@ladisch.de>
-References: <loom.20130415T023733-422@post.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for
+	imx-pcm-fiq
+Date: Mon, 15 Apr 2013 17:15:45 +0100
+Message-ID: <20130415161544.GH15837@opensource.wolfsonmicro.com>
+References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
+ <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
+ <51620CEA.3010703@tabi.org> <20130414103819.GA27394@pengutronix.de>
+ <516AB111.3000007@tabi.org> <20130414141015.GC27394@pengutronix.de>
+ <516AC305.2000800@tabi.org> <20130414152016.GE27394@pengutronix.de>
+ <516ACA7D.60807@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3521264752745421134=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 5A6F926517E
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 16:38:31 +0200 (CEST)
-In-Reply-To: <loom.20130415T023733-422@post.gmane.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AEF1226517C
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 18:15:46 +0200 (CEST)
+In-Reply-To: <516ACA7D.60807@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,54 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: TJ Olaes <contact@olaes.net>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-TJ Olaes wrote:
-> So, I'm attempting to write the driver for the eClaro card for a couple of
-> reasons, one of which is that I currently don't have sound on mine.
->
-> So... is there some kind of test harness framework for new drivers?
 
-No.  You test drivers by trying to use them.
-
-> I have no prior idea how to move forward to build this thing, so I'm snoo=
-ping
-> around in the oxygen source files and trying to copy things that look like
-> they make sense.
-
-All the basic boilerplate code already is in oxygen_lib.c.  What's left
-for you are the _interesting_ parts where you have to know what you're
-doing.
-
-> For instance, I noted that there's mention of an "AK4396" related to
-> output.  I assume this is some kind of chip
-
-Yes, this is some kind of chip.  As the DAC for the front outputs (as
-mentioned on HT Omega's website), a quite important one.
-
-> and I saw in the Claro code that something called "ak4396_init(...)"
-> is called, so I just copied that line and pasted it into the
-> eclaro_init(...) function I'm writing.
-
-The other Claro cards have four AK4396 chips.  The eClaro has only one
-and handles the other six channels with a CS4362 chip.  This is more
-similar to the Xonar DX (so you might want to get inspiration from
-xonar_cs43xx.c), but the eClaro obviously uses SPI instead of I=B2C
-because that's the only protocol that the AK4396 supports.
-
-> I have no idea how I'm going to test this short of just compiling the ker=
-nel
-> and booting into it.
-
-You should compile the sound driver as a module, then you'll have to
-reboot only when it crashes.  ;-)
+--===============3521264752745421134==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Bg2esWel0ueIH/G/"
+Content-Disposition: inline
 
 
-It might be more productive for me to write the driver, if you are able
-to compile your own kernel and to test it.
+--Bg2esWel0ueIH/G/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Apr 14, 2013 at 10:25:49AM -0500, Timur Tabi wrote:
+
+> Ah, so this is a work-around for a bug, where the codec is
+> incompatible with the SoC?  Mark, are you familiar with this issue?
+> Is there a way to reconfigure the codec so that it works better with
+> the SoC?  It seems ridiculous to add all this code just because an
+> incompatible codec was chosen for some board.
+
+It's a limitation in the SoC - it sort of tries to bodge AC'97 in but
+doesn't do a great job of it and can't handle the idea that there's
+multiple streams of data on the bus.  This isn't something that can be
+configured in the CODEC.
+
+--Bg2esWel0ueIH/G/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRbCeqAAoJELSic+t+oim9bYYQAI+NTEDwKUPRZI2tpi87aRKA
+OxykfiWKM9jFMmgESGD8bEbD2fIAaTC9/yKzmmizbYVmbmuFUyFuH7WmHkfar+Qs
+/b53iAELJutkMfUXaA1QOE6/0Ju3jjSJCDwASA8MgvaNTpvVJ/B8K3QuC3ECK35l
+ew2dg/vmHkpTJ/91DnS7pfjA0JNJ7uEx2DbI4UMxwI3CoDgxdCXkA6HY5N/Goora
+BOHA+yGkOFEcLJmImF4HX/mmgy/mtuJKSVhgcjgBcGB5csv5Sfr19P4U5oveRF5w
+wNaUcbPH+duLMqLcZAajsAgeP6JwLYnO0t1MfhkEWwFxS8lyZ8a1HqpXWWV4VXru
+pAoNq/RqRwdq/F8qC+zZOvjtJGo0w5SV8f6OF1/mcpHRn044RmTXNXnr3VGRo0U3
+9pqjQJswDZjHScYH0TYgFnM3KYwo0BC4WSYjlrhF33+lisOxFNRGWWOQYQDGoRH5
+q+Cs6Ve+7RxztR2k8kF38yJ+X6AQsiFEBWuHFGg8YhToRo+jB6kv0p1xMO/ZQ8Ce
+FaJ+vTi0KQ3Y1PR6V93CADsajw8xdloXudIoXe0OvBIIQM59WoXF2PLAn3klofE2
+7tBYaHe4dR3yEXWKOQZGE2Tlgne1wH7bq8Gw4QAwyI/m6M4TQXdG2X2b7Jqtjh+P
+2cQkP6nLzOoBaJA47L/K
+=HQRy
+-----END PGP SIGNATURE-----
+
+--Bg2esWel0ueIH/G/--
+
+--===============3521264752745421134==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--===============3521264752745421134==--
