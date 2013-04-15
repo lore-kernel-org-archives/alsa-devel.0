@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 05/11] ASoC: fsl-ssi: Add support for
-	imx-pcm-fiq
-Date: Mon, 15 Apr 2013 17:15:45 +0100
-Message-ID: <20130415161544.GH15837@opensource.wolfsonmicro.com>
-References: <1365362721-3731-1-git-send-email-mpa@pengutronix.de>
- <1365362721-3731-6-git-send-email-mpa@pengutronix.de>
- <51620CEA.3010703@tabi.org> <20130414103819.GA27394@pengutronix.de>
- <516AB111.3000007@tabi.org> <20130414141015.GC27394@pengutronix.de>
- <516AC305.2000800@tabi.org> <20130414152016.GE27394@pengutronix.de>
- <516ACA7D.60807@tabi.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Fix headset mic support for
+ Asus X101CH
+Date: Mon, 15 Apr 2013 18:29:28 +0200
+Message-ID: <516C2AE8.5040001@canonical.com>
+References: <1366023002-5100-1-git-send-email-david.henningsson@canonical.com>
+ <s5hzjwzvqfw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3521264752745421134=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AEF1226517C
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 18:15:46 +0200 (CEST)
-In-Reply-To: <516ACA7D.60807@tabi.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09EE12651BF
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 18:29:28 +0200 (CEST)
+In-Reply-To: <s5hzjwzvqfw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,63 +23,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, 1169138@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
+On 04/15/2013 04:06 PM, Takashi Iwai wrote:
+> At Mon, 15 Apr 2013 12:50:02 +0200,
+> David Henningsson wrote:
+>>
+>> With this patch, a TRRS headset mic cannot be successfully detected
+>> on the Asus X101CH, and we can also distinguish between headphone
+>> and headset automatically.
+>>
+>> Buglink: https://bugs.launchpad.net/bugs/1169138
+>> Co-authored-by: Kailang <kailang@realtek.com>
+>> Tested-by: Luis Henriques <luis.henriques@canonical.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>> ---
+>>
+>> Now that we have better headset mic support infrastructure, I remembered I forgot
+>> to upstream this patch. It was originally provided by Realtek (therefore, I cannot
+>> answer for the msleeps and exactly why this is needed). I just rewrote it for the
+>> current kernel version.
+>
+> Applied now , but I had to rebase again after applying your headset
+> mic patch.  Please check whether it's OK later.
 
---===============3521264752745421134==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Bg2esWel0ueIH/G/"
-Content-Disposition: inline
+It looks ok at least.
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>>   sound/pci/hda/patch_realtek.c |   56 +++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 56 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index 6cf27f5..1b7aed5 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -2680,6 +2680,34 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
+>>   	spec->gen.automute_hook = alc269_quanta_automute;
+>>   }
+>>
+>> +static void alc269_x101_hp_automute_hook(struct hda_codec *codec,
+>> +					 struct hda_jack_tbl *jack)
+>> +{
+>> +	struct alc_spec *spec = codec->spec;
+>> +	int vref;
+>> +	msleep(200);
+>> +	snd_hda_gen_hp_automute(codec, jack);
+>> +
+>> +	vref = spec->gen.hp_jack_present ? PIN_VREF80 : 0;
+>> +	msleep(100);
+>> +	snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
+>> +			    vref);
+>> +	msleep(500);
+>> +	snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
+>> +			    vref);
+>> +}
+>> +
+>> +static void alc269_fixup_x101_headset_mic(struct hda_codec *codec,
+>> +				     const struct hda_fixup *fix, int action)
+>> +{
+>> +	struct alc_spec *spec = codec->spec;
+>> +	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+>> +		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
+>> +		spec->gen.hp_automute_hook = alc269_x101_hp_automute_hook;
+>> +	}
+>> +}
+>> +
+>> +
+>>   /* update mute-LED according to the speaker mute state via mic VREF pin */
+>>   static void alc269_fixup_mic_mute_hook(void *private_data, int enabled)
+>>   {
+>> @@ -2837,6 +2865,9 @@ enum {
+>>   	ALC269_FIXUP_INV_DMIC,
+>>   	ALC269_FIXUP_LENOVO_DOCK,
+>>   	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
+>> +	ALC269_FIXUP_ASUS_X101_FUNC,
+>> +	ALC269_FIXUP_ASUS_X101_VERB,
+>> +	ALC269_FIXUP_ASUS_X101,
+>>   	ALC271_FIXUP_AMIC_MIC2,
+>>   	ALC271_FIXUP_HP_GATE_MIC_JACK,
+>>   	ALC269_FIXUP_ACER_AC700,
+>> @@ -2996,6 +3027,30 @@ static const struct hda_fixup alc269_fixups[] = {
+>>   		.type = HDA_FIXUP_FUNC,
+>>   		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+>>   	},
+>> +	[ALC269_FIXUP_ASUS_X101_FUNC] = {
+>> +		.type = HDA_FIXUP_FUNC,
+>> +		.v.func = alc269_fixup_x101_headset_mic,
+>> +	},
+>> +	[ALC269_FIXUP_ASUS_X101_VERB] = {
+>> +		.type = HDA_FIXUP_VERBS,
+>> +		.v.verbs = (const struct hda_verb[]) {
+>> +			{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
+>> +			{0x20, AC_VERB_SET_COEF_INDEX, 0x08},
+>> +			{0x20, AC_VERB_SET_PROC_COEF,  0x0310},
+>> +			{ }
+>> +		},
+>> +		.chained = true,
+>> +		.chain_id = ALC269_FIXUP_ASUS_X101_FUNC
+>> +	},
+>> +	[ALC269_FIXUP_ASUS_X101] = {
+>> +		.type = HDA_FIXUP_PINS,
+>> +		.v.pins = (const struct hda_pintbl[]) {
+>> +			{ 0x18, 0x04a1182c }, /* Headset mic */
+>> +			{ }
+>> +		},
+>> +		.chained = true,
+>> +		.chain_id = ALC269_FIXUP_ASUS_X101_VERB
+>> +	},
+>>   	[ALC271_FIXUP_AMIC_MIC2] = {
+>>   		.type = HDA_FIXUP_PINS,
+>>   		.v.pins = (const struct hda_pintbl[]) {
+>> @@ -3044,6 +3099,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>>   	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
+>>   	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+>>   	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+>> +	SND_PCI_QUIRK(0x1043, 0x8516, "ASUS X101CH", ALC269_FIXUP_ASUS_X101),
+>>   	SND_PCI_QUIRK(0x104d, 0x9073, "Sony VAIO", ALC275_FIXUP_SONY_VAIO_GPIO2),
+>>   	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+>>   	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+>> --
+>> 1.7.9.5
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
 
---Bg2esWel0ueIH/G/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Sun, Apr 14, 2013 at 10:25:49AM -0500, Timur Tabi wrote:
-
-> Ah, so this is a work-around for a bug, where the codec is
-> incompatible with the SoC?  Mark, are you familiar with this issue?
-> Is there a way to reconfigure the codec so that it works better with
-> the SoC?  It seems ridiculous to add all this code just because an
-> incompatible codec was chosen for some board.
-
-It's a limitation in the SoC - it sort of tries to bodge AC'97 in but
-doesn't do a great job of it and can't handle the idea that there's
-multiple streams of data on the bus.  This isn't something that can be
-configured in the CODEC.
-
---Bg2esWel0ueIH/G/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRbCeqAAoJELSic+t+oim9bYYQAI+NTEDwKUPRZI2tpi87aRKA
-OxykfiWKM9jFMmgESGD8bEbD2fIAaTC9/yKzmmizbYVmbmuFUyFuH7WmHkfar+Qs
-/b53iAELJutkMfUXaA1QOE6/0Ju3jjSJCDwASA8MgvaNTpvVJ/B8K3QuC3ECK35l
-ew2dg/vmHkpTJ/91DnS7pfjA0JNJ7uEx2DbI4UMxwI3CoDgxdCXkA6HY5N/Goora
-BOHA+yGkOFEcLJmImF4HX/mmgy/mtuJKSVhgcjgBcGB5csv5Sfr19P4U5oveRF5w
-wNaUcbPH+duLMqLcZAajsAgeP6JwLYnO0t1MfhkEWwFxS8lyZ8a1HqpXWWV4VXru
-pAoNq/RqRwdq/F8qC+zZOvjtJGo0w5SV8f6OF1/mcpHRn044RmTXNXnr3VGRo0U3
-9pqjQJswDZjHScYH0TYgFnM3KYwo0BC4WSYjlrhF33+lisOxFNRGWWOQYQDGoRH5
-q+Cs6Ve+7RxztR2k8kF38yJ+X6AQsiFEBWuHFGg8YhToRo+jB6kv0p1xMO/ZQ8Ce
-FaJ+vTi0KQ3Y1PR6V93CADsajw8xdloXudIoXe0OvBIIQM59WoXF2PLAn3klofE2
-7tBYaHe4dR3yEXWKOQZGE2Tlgne1wH7bq8Gw4QAwyI/m6M4TQXdG2X2b7Jqtjh+P
-2cQkP6nLzOoBaJA47L/K
-=HQRy
------END PGP SIGNATURE-----
-
---Bg2esWel0ueIH/G/--
-
---===============3521264752745421134==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3521264752745421134==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
