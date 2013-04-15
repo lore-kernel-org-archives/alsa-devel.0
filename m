@@ -1,134 +1,65 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix headset mic support for Asus
-	X101CH
-Date: Mon, 15 Apr 2013 12:50:02 +0200
-Message-ID: <1366023002-5100-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 20/30] ASoC: samsung: convert to dmaengine
+ API
+Date: Mon, 15 Apr 2013 12:04:23 +0100
+Message-ID: <20130415110422.GA15837@opensource.wolfsonmicro.com>
+References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
+ <1365638712-1028578-21-git-send-email-arnd@arndb.de>
+ <20130411142706.GB24971@opensource.wolfsonmicro.com>
+ <201304111647.17796.arnd@arndb.de>
+ <5168601F.2070409@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 35BE026512F
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 12:50:04 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>, 1169138@bugs.launchpad.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5168601F.2070409@metafoo.de>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-With this patch, a TRRS headset mic cannot be successfully detected
-on the Asus X101CH, and we can also distinguish between headphone
-and headset automatically.
 
-Buglink: https://bugs.launchpad.net/bugs/1169138
-Co-authored-by: Kailang <kailang@realtek.com>
-Tested-by: Luis Henriques <luis.henriques@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Now that we have better headset mic support infrastructure, I remembered I forgot
-to upstream this patch. It was originally provided by Realtek (therefore, I cannot
-answer for the msleeps and exactly why this is needed). I just rewrote it for the
-current kernel version.
+On Fri, Apr 12, 2013 at 09:27:27PM +0200, Lars-Peter Clausen wrote:
 
- sound/pci/hda/patch_realtek.c |   56 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+> I actually had a look at how the Samsung PCM driver a couple of days back,
+> but I didn't fully grasp how things work with the secondary TX channel for
+> the i2s driver and to make it work with the generic dmaengine PCM driver.
+> The code handling this in the i2s driver seems to be rather messy with lots
+> of ifs and elses. Also things would have would be a lot easier if the dt
+> bindings had used two subnodes each with their own 'dmas' property.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6cf27f5..1b7aed5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2680,6 +2680,34 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
- 	spec->gen.automute_hook = alc269_quanta_automute;
- }
- 
-+static void alc269_x101_hp_automute_hook(struct hda_codec *codec,
-+					 struct hda_jack_tbl *jack)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	int vref;
-+	msleep(200);
-+	snd_hda_gen_hp_automute(codec, jack);
-+
-+	vref = spec->gen.hp_jack_present ? PIN_VREF80 : 0;
-+	msleep(100);
-+	snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			    vref);
-+	msleep(500);
-+	snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			    vref);
-+}
-+
-+static void alc269_fixup_x101_headset_mic(struct hda_codec *codec,
-+				     const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
-+		spec->gen.hp_automute_hook = alc269_x101_hp_automute_hook;
-+	}
-+}
-+
-+
- /* update mute-LED according to the speaker mute state via mic VREF pin */
- static void alc269_fixup_mic_mute_hook(void *private_data, int enabled)
- {
-@@ -2837,6 +2865,9 @@ enum {
- 	ALC269_FIXUP_INV_DMIC,
- 	ALC269_FIXUP_LENOVO_DOCK,
- 	ALC269_FIXUP_PINCFG_NO_HP_TO_LINEOUT,
-+	ALC269_FIXUP_ASUS_X101_FUNC,
-+	ALC269_FIXUP_ASUS_X101_VERB,
-+	ALC269_FIXUP_ASUS_X101,
- 	ALC271_FIXUP_AMIC_MIC2,
- 	ALC271_FIXUP_HP_GATE_MIC_JACK,
- 	ALC269_FIXUP_ACER_AC700,
-@@ -2996,6 +3027,30 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
- 	},
-+	[ALC269_FIXUP_ASUS_X101_FUNC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_x101_headset_mic,
-+	},
-+	[ALC269_FIXUP_ASUS_X101_VERB] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+			{0x20, AC_VERB_SET_COEF_INDEX, 0x08},
-+			{0x20, AC_VERB_SET_PROC_COEF,  0x0310},
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_ASUS_X101_FUNC
-+	},
-+	[ALC269_FIXUP_ASUS_X101] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x18, 0x04a1182c }, /* Headset mic */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_ASUS_X101_VERB
-+	},
- 	[ALC271_FIXUP_AMIC_MIC2] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -3044,6 +3099,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
-+	SND_PCI_QUIRK(0x1043, 0x8516, "ASUS X101CH", ALC269_FIXUP_ASUS_X101),
- 	SND_PCI_QUIRK(0x104d, 0x9073, "Sony VAIO", ALC275_FIXUP_SONY_VAIO_GPIO2),
- 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
--- 
-1.7.9.5
+Yeah, it's quite messy at the minute as it predates any subsystem
+support for things like multiple DMA channels going into a single DAI on
+an AP so it was having to do things it really shouldn't have done.  What
+ought to happen is that the driver gets refactored to use soc-pcm or
+change to represent the mixer block as a CODEC, I think if that happens
+then things ought to get easier.
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRa9tpAAoJELSic+t+oim9DLEP/19t3Inijm3BvaAQZ3bDV/Dd
+1aMM9yZDg5fUxb70/7wOVAXTcjVbuiWF0yGYq6OEZoAiJo3z6trivv7YZfQkLK4K
+QuZWXlGOzPIHjJy0GP+WT5/K23jAeV+tv8Np8W3auChNgfSmXCg3dGSnhECXewTM
+juaT1OGmdy8KD8uijDuR+odsAnUF7F93NFlCrCBtlhO74on2JnA5eT2+qd7V0MAT
+ryMmGlURlL4a113SQztU8pSbbJhGED0/6FPPnvBGuXpk0l1BIzR4JJiQJ2Rtj6Rz
+h1oGtnCPD0/mKoZqLZipxSxz+MvxeRgRbqft2K+Qjj0v7JeYI0xDrXeq93XyoIrq
+bpQnJdsYVgHOPmvXWbOzxytQwibBYBFqjcelCqAFkx3FChNslek0BHPFtN/ncDip
+IKBjOUP5OammxNaBZ/NHnjyUpu16PFdWgzI5r4v4KfodR4snq+bKP60q1dr3ZG8h
+WQevjfdnfI8uJlma2zKl801NYtKE4oLHGiDa/s2tfLzxuzfiGKD4G8ZeW9vv+Za6
+WyLx4tgln5nsnK6wW30cZJ+275XDI5oAxiz7dipiIlwJ3116PL4EWJoXmh4TgPt7
+iz24HRfgwNjxL2g7V1Ybg5S5rkcvTY0ASa8j3BwJUh1n6uJWKPOrgziCNVqix7AD
+XkBU9ywCTio05cVTLSmL
+=xjig
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
