@@ -1,65 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 20/30] ASoC: samsung: convert to dmaengine
- API
-Date: Mon, 15 Apr 2013 12:04:23 +0100
-Message-ID: <20130415110422.GA15837@opensource.wolfsonmicro.com>
-References: <1365638712-1028578-1-git-send-email-arnd@arndb.de>
- <1365638712-1028578-21-git-send-email-arnd@arndb.de>
- <20130411142706.GB24971@opensource.wolfsonmicro.com>
- <201304111647.17796.arnd@arndb.de>
- <5168601F.2070409@metafoo.de>
+From: Andrey Gelman <andrey.gelman@compulab.co.il>
+Subject: PROBLEM: iMX6 SSI - set up as a master of external
+	audio codec
+Date: Mon, 15 Apr 2013 14:13:58 +0300
+Message-ID: <516BE0F6.3060409@compulab.co.il>
+References: <516BDCE2.6010800@compulab.co.il>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5168601F.2070409@metafoo.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Kukjin Kim <kgene.kim@samsung.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from compulab.co.il (softlayer.compulab.co.il [50.23.254.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76549265148
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 13:14:01 +0200 (CEST)
+In-Reply-To: <516BDCE2.6010800@compulab.co.il>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, fabio.estevam@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi, everyone !
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm bringing up a wm8731 audio codec on an iMX6 based board. I use the
+slave mode, i.e. SSI outputs all the clocks towards the codec IC.
+I work with 3.0.35 Android kernel provided by freescale.
 
-On Fri, Apr 12, 2013 at 09:27:27PM +0200, Lars-Peter Clausen wrote:
+While, generally, the playback is Ok, I face 2 issues:
+- cannot play back mono streams (too high rate, one speaker produces
+only noise)
+- cannot play back streams with sampling rate as low as 8kHz (the sound
+is accompanied by high distortion)
+In the mainline kernel (commits to v3.6), there is a workaround to the
+1-st issue by simply removing mono support from imx-ssi.c. Similar
+approach would fix the 2-nd issue as well - SSI would report it does not
+support 8kHz sampling rate.
+In a later commit, this workaround has been reverted, enabling mono
+support back.
 
-> I actually had a look at how the Samsung PCM driver a couple of days back,
-> but I didn't fully grasp how things work with the secondary TX channel for
-> the i2s driver and to make it work with the generic dmaengine PCM driver.
-> The code handling this in the i2s driver seems to be rather messy with lots
-> of ifs and elses. Also things would have would be a lot easier if the dt
-> bindings had used two subnodes each with their own 'dmas' property.
+My question is this:
+Is this a real limitation of SSI ? Does it support mono playback or not ?
+Does SSI support 8kHz sampling rate ? If yes, what could be possible
+reason to the distortions I get, while higher rates are played back well ?
+Is there a real fix to these issues, or only workarounds are available ?
 
-Yeah, it's quite messy at the minute as it predates any subsystem
-support for things like multiple DMA channels going into a single DAI on
-an AP so it was having to do things it really shouldn't have done.  What
-ought to happen is that the driver gets refactored to use soc-pcm or
-change to represent the mixer block as a CODEC, I think if that happens
-then things ought to get easier.
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRa9tpAAoJELSic+t+oim9DLEP/19t3Inijm3BvaAQZ3bDV/Dd
-1aMM9yZDg5fUxb70/7wOVAXTcjVbuiWF0yGYq6OEZoAiJo3z6trivv7YZfQkLK4K
-QuZWXlGOzPIHjJy0GP+WT5/K23jAeV+tv8Np8W3auChNgfSmXCg3dGSnhECXewTM
-juaT1OGmdy8KD8uijDuR+odsAnUF7F93NFlCrCBtlhO74on2JnA5eT2+qd7V0MAT
-ryMmGlURlL4a113SQztU8pSbbJhGED0/6FPPnvBGuXpk0l1BIzR4JJiQJ2Rtj6Rz
-h1oGtnCPD0/mKoZqLZipxSxz+MvxeRgRbqft2K+Qjj0v7JeYI0xDrXeq93XyoIrq
-bpQnJdsYVgHOPmvXWbOzxytQwibBYBFqjcelCqAFkx3FChNslek0BHPFtN/ncDip
-IKBjOUP5OammxNaBZ/NHnjyUpu16PFdWgzI5r4v4KfodR4snq+bKP60q1dr3ZG8h
-WQevjfdnfI8uJlma2zKl801NYtKE4oLHGiDa/s2tfLzxuzfiGKD4G8ZeW9vv+Za6
-WyLx4tgln5nsnK6wW30cZJ+275XDI5oAxiz7dipiIlwJ3116PL4EWJoXmh4TgPt7
-iz24HRfgwNjxL2g7V1Ybg5S5rkcvTY0ASa8j3BwJUh1n6uJWKPOrgziCNVqix7AD
-XkBU9ywCTio05cVTLSmL
-=xjig
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+Thanks,
+Andrey Gelman
