@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/17] ASoC: mxs: Use generic dmaengine PCM
-Date: Mon, 15 Apr 2013 19:19:57 +0200
-Message-ID: <1366046404-8759-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/17] ASoC: imx: Setup dma data in DAI probe
+Date: Mon, 15 Apr 2013 19:19:58 +0200
+Message-ID: <1366046404-8759-12-git-send-email-lars@metafoo.de>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-031.synserver.de (smtp-out-037.synserver.de
  [212.40.185.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C5A2265234
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AE822265263
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:25 +0200 (CEST)
 In-Reply-To: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,206 +25,105 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the generic dmaengine PCM driver instead of a custom implementation.
+This allows us to access the DAI DMA data when we create the PCM. We'll use
+this when converting imx to generic DMA engine PCM driver.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/mxs/Kconfig   |   2 +-
- sound/soc/mxs/mxs-pcm.c | 135 ++++--------------------------------------------
- 2 files changed, 11 insertions(+), 126 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 19 +++++++++++++------
+ sound/soc/fsl/imx-ssi.c | 22 ++++------------------
+ 2 files changed, 17 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/mxs/Kconfig b/sound/soc/mxs/Kconfig
-index b6fa776..78d321c 100644
---- a/sound/soc/mxs/Kconfig
-+++ b/sound/soc/mxs/Kconfig
-@@ -1,7 +1,7 @@
- menuconfig SND_MXS_SOC
- 	tristate "SoC Audio for Freescale MXS CPUs"
- 	depends on ARCH_MXS
--	select SND_SOC_DMAENGINE_PCM
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the MXS SAIF interface.
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 7bceb16..d798de5 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -18,27 +18,18 @@
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-  */
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 42366d7..0f0bed6 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -425,12 +425,6 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 		ssi_private->second_stream = substream;
+ 	}
  
--#include <linux/clk.h>
--#include <linux/delay.h>
- #include <linux/device.h>
--#include <linux/dma-mapping.h>
- #include <linux/init.h>
--#include <linux/interrupt.h>
- #include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--#include <linux/dmaengine.h>
- 
- #include <sound/core.h>
--#include <sound/initval.h>
- #include <sound/pcm.h>
--#include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
- 
- #include "mxs-pcm.h"
- 
--static struct snd_pcm_hardware snd_mxs_hardware = {
-+static const struct snd_pcm_hardware snd_mxs_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
- 				  SNDRV_PCM_INFO_PAUSE |
-@@ -55,7 +46,6 @@ static struct snd_pcm_hardware snd_mxs_hardware = {
- 	.periods_max		= 52,
- 	.buffer_bytes_max	= 64 * 1024,
- 	.fifo_size		= 32,
+-	if (ssi_private->ssi_on_imx)
+-		snd_soc_dai_set_dma_data(dai, substream,
+-			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+-				&ssi_private->dma_params_tx :
+-				&ssi_private->dma_params_rx);
 -
- };
- 
- static bool filter(struct dma_chan *chan, void *param)
-@@ -73,129 +63,24 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return true;
+ 	return 0;
  }
  
--static int snd_mxs_pcm_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
+@@ -552,6 +546,18 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ 	}
+ }
+ 
++static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
++{
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(dai);
++
++	if (ssi_private->ssi_on_imx) {
++		dai->playback_dma_data = &ssi_private->dma_params_tx;
++		dai->capture_dma_data = &ssi_private->dma_params_rx;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ 	.startup	= fsl_ssi_startup,
+ 	.hw_params	= fsl_ssi_hw_params,
+@@ -561,6 +567,7 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ 
+ /* Template for the CPU dai driver structure */
+ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
++	.probe = fsl_ssi_dai_probe,
+ 	.playback = {
+ 		/* The SSI does not support monaural audio. */
+ 		.channels_min = 2,
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index 4ce2d60..902fab0 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -232,23 +232,6 @@ static int imx_ssi_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
+ 
+-static int imx_ssi_startup(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *cpu_dai)
 -{
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+-	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
+-	struct snd_dmaengine_dai_dma_data *dma_data;
+-
+-	/* Tx/Rx config */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_data = &ssi->dma_params_tx;
+-	else
+-		dma_data = &ssi->dma_params_rx;
+-
+-	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
 -
 -	return 0;
 -}
 -
--static int snd_mxs_open(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--
--	snd_soc_set_runtime_hwparams(substream, &snd_mxs_hardware);
--
--	return snd_dmaengine_pcm_open_request_chan(substream, filter,
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream));
--}
--
--static int snd_mxs_pcm_mmap(struct snd_pcm_substream *substream,
--		struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
--					runtime->dma_area,
--					runtime->dma_addr,
--					runtime->dma_bytes);
--}
--
--static struct snd_pcm_ops mxs_pcm_ops = {
--	.open		= snd_mxs_open,
--	.close		= snd_dmaengine_pcm_close_release_chan,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= snd_mxs_pcm_hw_params,
--	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer_no_residue,
--	.mmap		= snd_mxs_pcm_mmap,
--};
--
--static int mxs_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = snd_mxs_hardware.buffer_bytes_max;
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
--					   &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--	buf->bytes = size;
--
--	return 0;
--}
--
--static u64 mxs_pcm_dmamask = DMA_BIT_MASK(32);
--static int mxs_pcm_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_pcm *pcm = rtd->pcm;
--	int ret = 0;
--
--	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &mxs_pcm_dmamask;
--	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
--
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = mxs_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = mxs_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
--
--out:
--	return ret;
--}
--
--static void mxs_pcm_free(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--
--		dma_free_writecombine(pcm->card->dev, buf->bytes,
--				      buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--
--static struct snd_soc_platform_driver mxs_soc_platform = {
--	.ops		= &mxs_pcm_ops,
--	.pcm_new	= mxs_pcm_new,
--	.pcm_free	= mxs_pcm_free,
-+static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
-+	.pcm_hardware = &snd_mxs_hardware,
-+	.compat_filter_fn = filter,
-+	.prealloc_buffer_size = 64 * 1024,
- };
- 
- int mxs_pcm_platform_register(struct device *dev)
- {
--	return snd_soc_register_platform(dev, &mxs_soc_platform);
-+	return snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
-+		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
-+		SND_DMAENGINE_PCM_FLAG_NO_DT |
-+		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ /*
+  * Should only be called when port is inactive (i.e. SSIEN = 0),
+  * although can be called multiple times by upper layers.
+@@ -353,7 +336,6 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
  }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
  
- void mxs_pcm_platform_unregister(struct device *dev)
- {
--	snd_soc_unregister_platform(dev);
-+	snd_dmaengine_pcm_unregister(dev);
+ static const struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
+-	.startup	= imx_ssi_startup,
+ 	.hw_params	= imx_ssi_hw_params,
+ 	.set_fmt	= imx_ssi_set_dai_fmt,
+ 	.set_clkdiv	= imx_ssi_set_dai_clkdiv,
+@@ -373,6 +355,10 @@ static int imx_ssi_dai_probe(struct snd_soc_dai *dai)
+ 		SSI_SFCSR_RFWM0(ssi->dma_params_rx.maxburst);
+ 	writel(val, ssi->base + SSI_SFCSR);
+ 
++	/* Tx/Rx config */
++	dai->playback_dma_data = &ssi->dma_params_tx;
++	dai->capture_dma_data = &ssi->dma_params_rx;
++
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_unregister);
  
 -- 
 1.8.0
