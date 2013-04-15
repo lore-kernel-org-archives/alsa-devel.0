@@ -1,21 +1,34 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: M-Audio Delta 1010LT: S/PDIF clock source not
-	working
-Date: Mon, 15 Apr 2013 09:35:19 +0200
-Message-ID: <516BADB7.5000004@ivitera.com>
-References: <515EEF10.1020007@gmail.com> <5160C35A.8020403@gmail.com>
- <5161A6D3.3060602@gmail.com> <201304072135.45811.gineera@aspect135.co.uk>
- <51634B17.3050907@gmail.com> <516423F0.9020409@ivitera.com>
- <51681FCD.5070800@gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - delay resume haswell hdmi
+ codec in system resume
+Date: Mon, 15 Apr 2013 07:48:34 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8382D3B@SHSMSX101.ccr.corp.intel.com>
+References: <1364321572-2634-1-git-send-email-mengdong.lin@intel.com>
+ <s5hk3og3o47.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F83752F5@SHSMSX101.ccr.corp.intel.com>
+ <51629295.1000701@canonical.com> <s5h4nfh1fsh.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F83786D8@SHSMSX101.ccr.corp.intel.com>
+ <5162AB7D.40103@canonical.com> <s5hzjx9z10c.wl%tiwai@suse.de>
+ <5162B60C.6000509@canonical.com> <s5htxnhyzvu.wl%tiwai@suse.de>
+ <5162C671.90405@canonical.com> <s5hhajhyvww.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F83789F5@SHSMSX101.ccr.corp.intel.com>
+ <5163B90C.20107@canonical.com> <s5hhajg175u.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F837A47F@SHSMSX101.ccr.corp.intel.com>
+ <5163DC21.9020702@canonical.com> <s5hmwt8xdf2.wl%tiwai@suse.de>
+ <5164F8CF.6040905@canonical.com> <s5h7gkb0wfa.wl%tiwai@suse.de>
+ <5165006F.5070207@canonical.com> <s5hzjx6zxld.wl%tiwai@suse.de>
+ <5165412C.7050306@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F83826C6@SHSMSX101.ccr.corp.intel.com>
+ <516BA618.5050104@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 4069D26509A
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 09:35:20 +0200 (CEST)
-In-Reply-To: <51681FCD.5070800@gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 112F1262606
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 09:48:41 +0200 (CEST)
+In-Reply-To: <516BA618.5050104@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,159 +38,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonas Petersen <jnsptrsn1@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12.4.2013 16:53, Jonas Petersen wrote:
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Monday, April 15, 2013 3:03 PM
+> To: Lin, Mengdong
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - delay resume haswell hdmi codec
+> in system resume
 > 
-> All right. I got cs8427 in proc now! I included registers 0x00 to 0x1f
-> plus 0x7f which "is I.D. and version". I'll post a patch later.
-
-Great, thanks.
+> On 04/14/2013 03:48 PM, Lin, Mengdong wrote:
+> > Hi David and Takashi,
+> >
+> > I'm sorry for the late response. I was assigned other tasks this week
+> >
+> > We don't have a better solution for this issue now, still trying.
+> > The delay_resume() ops for a codec can help not delaying the unsol event. So
+> our patch can solve the problem after system suspend/resume if the cable is
+> connected.
+> > But I'm afraid that if the HDMI/DP cable removed during system suspend
+> > and connected again sometime after system is resumed, and if the codec
+> access happens before the cable is connected, waiting for unsol event can be
+> time out and codec cannot be properly resumed.
+> > And if runtime power saving is also disabled, the audio driver has no chance to
+> resume the codec again. I cannot verify such hot-plug case during
+> system/suspend now because my Haswell machines cannot reach a stable S3
+> and then resume.
+> > But we do observed a similar bug: if cable is connected after boot, the pin is in
+> D3 with right channel muted, as the codec is initialized before unsol event
+> comes.
+> > Audio driver cannot find a suitable time out to wait for the usnsol event as we
+> don't know when the cable will be connected.
 > 
-> Now I have the following scenario: Delta 1010LT internal clock on
-> 'IEC958 Input', internal clock default is 44100. I got a 1 kHz sine
-> signal at the S/PDIF input with 96kHz samplerate. Due to the reverted
-> patch it is capturing with 96kHz. Rate Locking / Rate Reset / Wordclock
-> Status / Wordclock Sync are all 'off'.
+> Takashi's latest suggestion was to enable unsol events, and nothing else,
+> directly on S3 resume. See suggested patch below.
 > 
-> Using a jack app or recording directly from alsa with audacity shows
-> that the signal is not clean. It's got errors. Specifically once in a
-> while (about every 5 seconds) a single sample value will last over the
-> time of two samples. The signal gets shifted.
+> Will that not help here? Then we would at least get some unsol events on
+> hotplug I assume?
+
+I think Takashi's patch can help when cable is connected during suspend/resume cycles.
+This patch enables unsol event, so make sure unsol event won't be delayed.
+
+So shall I improve the patch as Takashi suggested, to solve current suspend/resume issue?
+
+
+> > We'll try if we can fix this dependency issue in Gfx driver side, and by sync Gfx
+> and audio driver processing.
+> >
+> > And we cannot implement pm domain atm. Last Thursday, we have a meeting
+> with Gfx team, for Gfx power well support and audio dependency on Gfx.
+> > Linux PM maintainer Rafael also attended the meeting. He suggested us not
+> use pm domain now because it cannot fully support PCI devices (PM domains
+> ops will override PCI bus ops). We will use and extend the existing private gfx
+> driver API to control the powerwell and sequence the
+> initialization/suspend/resume events between gfx and audio for internal
+> releases. Once this is working well with the private API, we will then look at
+> either implementing this functionality as PM domain or PM runtime depending
+> on the best fit and upstream.
+> >
+> > I'm working on HD-A RTD3 for legacy audio in one or two weeks. After that,
+> I'll continue to work on this issue.
 > 
-> cs8427 register 0x04 bits 1:0 (RDX1:0: Recovered Input Clock Source) says:
-> 
->   01 - 256 * Fsi, where Fsi is derived from the AES3 input frame rate
+> The dependency on the Gfx driver, is it both codec-wide and per pin? It seems to
+> be at least per pin, which means that whenever we plug something in, we need
+> to redo our initialization of that pin after the Gfx driver has finished, is that
+> correct?
 
-That should be correct.
-> 
-> Whatever that means. Other values are:
-> 
->   00 - 256 * Fsi, where Fsi is derived from the ILRCK pin (only possible
->        when the serial audio input port is in slave mode)
-> 
->   10 - Bypass the PLL and apply an external 256 * Fsi clock through the
->        RMCK pin. The AES3 receiver is held in synchronous reset. This
->        setting is useful to prevent UNLOCK interrupts when using an
->        external RMCK and inputting data through the serial audio input
->        port.
-> 
-> Serial audio input and output ports are in slave mode.
+We're still investigating the Gfx driver sequence.
+In fact, not every hot plug will cause trouble. If the system is booted with cable connected, later hot-plug does not cause error, including switch between DP and HDMI cable.
+The dependency issue only happens on boot and resume. 
+Since the hot-plug will also make Gfx reconfig the display pipeline, so we want to compare the difference and locate the accurate dependency.
 
-I wondered if we should not try seeting this to master mode as the
-receiver supplies clock to Envy24. Quoting from the datasheet
-
-====
-A Serial Audio port may operate in either Master or
-Slave mode. When a port is a Master, it supplies
-the left-right clock and the serial clock to the external
-device that is sending or receiving the serial data.
-A port in slave mode must have its left-right clock
-and its serial clock supplied by an external device
-so that it may send or receive serial audio data.
-===
-
-BUT the fs selector for master mode offers only 64xfs and 128fs, no
-256xfs. Therefore IMO the slave mode is OK
-
-
-> 
-> Here's the full contents of the proc files (the binary representations
-> are in parenthesis added by a little tool that I wrote):
-> 
-> /proc/asound/M1010LT/cs8427:
-> -------------------------------------------
-> 0x00 = 0x00 (00000000)
-> 0x01 = 0x81 (10000001)
-> 0x02 = 0x00 (00000000)
-> 0x03 = 0x0c (00001100)
-> 0x04 = 0x41 (01000001)
-> 0x05 = 0x05 (00000101)
-> 0x06 = 0x05 (00000101)
-> 0x07 = 0x00 (00000000)
-> 0x08 = 0x00 (00000000)
-> 0x09 = 0x00 (00000000)
-> 0x0a = 0x00 (00000000)
-> 0x0b = 0x00 (00000000)
-> 0x0c = 0x00 (00000000)
-> 0x0d = 0x00 (00000000)
-> 0x0e = 0x00 (00000000)
-> 0x0f = 0x41 (01000001)
-> 0x10 = 0x00 (00000000)
-> 0x11 = 0xff (11111111)
-> 0x12 = 0x18 (00011000)
-> 0x13 = 0x12 (00010010)
-> 0x14 = 0x00 (00000000)
-> 0x15 = 0x00 (00000000)
-> 0x16 = 0x00 (00000000)
-> 0x17 = 0x00 (00000000)
-> 0x18 = 0x00 (00000000)
-> 0x19 = 0x00 (00000000)
-> 0x1a = 0x00 (00000000)
-> 0x1b = 0x00 (00000000)
-> 0x1c = 0x00 (00000000)
-> 0x1d = 0x00 (00000000)
-> 0x1e = 0x40 (01000000)
-> 0x1f = 0x00 (00000000)
-> 0x7f = 0x71 (01110001)
-> -------------------------------------------
-
-
-This all looks OK
-
-
-> 
-> /proc/asound/M1010LT/ice1712
-> -------------------------------------------
-> M Audio Delta 1010LT at 0xd040, irq 20
-> 
-> EEPROM:
->   Subvendor        : 0x12143bd6
->   Size             : 29 bytes
->   Version          : 1
->   Codec            : 0x1f (00011111)
->   ACLink           : 0x80 (10000000)
->   I2S ID           : 0x72 (01110010)
->   S/PDIF           : 0x3 (00000011)
->   GPIO mask        : 0x4 (00000100)
->   GPIO state       : 0x7e (01111110)
->   GPIO direction   : 0xfb (11111011)
->   AC'97 main       : 0x0 (00000000)
->   AC'97 pcm        : 0x0 (00000000)
->   AC'97 record     : 0x0 (00000000)
->   AC'97 record src : 0x44 (01000100)
->   DAC ID #0        : 0x3 (00000011)
->   DAC ID #1        : 0x3 (00000011)
->   DAC ID #2        : 0x3 (00000011)
->   DAC ID #3        : 0x3 (00000011)
->   ADC ID #0        : 0x3 (00000011)
->   ADC ID #1        : 0x3 (00000011)
->   ADC ID #2        : 0x3 (00000011)
->   ADC ID #3        : 0x3 (00000011)
->   Extra #28        : 0x0 (00000000)
-> 
-> Registers:
->   PSDOUT03         : 0x0000
->   CAPTURE          : 0x00000000
->   SPDOUT           : 0x0000
->   RATE             : 0x10 (00010000)
->   GPIO_DATA        : 0x5a (01011010)
->   GPIO_WRITE_MASK  : 0x04 (00000100)
->   GPIO_DIRECTION   : 0xfb (11111011)
-
-I do not see any problem here either. Perhaps it would be handy to add
-all remaining envy registers, instead of just relying on their EEPROM
-init values. Perhaps you could add the for loops in the proc listing in
-1712.c the same way as in ice1724.c just to make sure the register values
-
-The problem really looks like clock mismatch, as if envy was switched to
-96kHz internal clock instead of accepting the 96kHz external clock. But
-the RATE register is correctly set at SPDIF clock.
-
-Just a try - are you sure your input signal is correct? :)
-
-Thanks,
-
-Pavel.
+Thanks
+Mengdong
