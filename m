@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm driver
-Date: Mon, 15 Apr 2013 19:19:50 +0200
-Message-ID: <1366046404-8759-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH 05/17] ASoC: tegra: Use generic dmaengine PCM
+Date: Mon, 15 Apr 2013 19:19:52 +0200
+Message-ID: <1366046404-8759-6-git-send-email-lars@metafoo.de>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-031.synserver.de (smtp-out-037.synserver.de
  [212.40.185.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 5333B26522C
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 71B1E265206
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2013 19:21:13 +0200 (CEST)
 In-Reply-To: <1366046404-8759-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,331 +25,225 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a generic dmaengine PCM driver. It builds on top of the
-dmaengine PCM library and adds the missing pieces like DMA channel management,
-buffer management and channel configuration. It will be able to replace the
-majority of the existing platform specific dmaengine based PCM drivers.
-Devicetree is used to map the DMA channels to the PCM device.
+Use the generic dmaengine PCM driver instead of a custom implementation.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/dmaengine_pcm.h         |  25 ++++
- sound/soc/Kconfig                     |   4 +
- sound/soc/Makefile                    |   4 +
- sound/soc/soc-generic-dmaengine-pcm.c | 241 ++++++++++++++++++++++++++++++++++
- 4 files changed, 274 insertions(+)
- create mode 100644 sound/soc/soc-generic-dmaengine-pcm.c
+ sound/soc/tegra/Kconfig     |   2 +-
+ sound/soc/tegra/tegra_pcm.c | 171 +++-----------------------------------------
+ 2 files changed, 10 insertions(+), 163 deletions(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index d015d67..e0bf24e 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -72,4 +72,29 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
- 	const struct snd_dmaengine_dai_dma_data *dma_data,
- 	struct dma_slave_config *config);
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index dbc27ce..b1c9d57 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -2,7 +2,7 @@ config SND_SOC_TEGRA
+ 	tristate "SoC Audio for the Tegra System-on-Chip"
+ 	depends on ARCH_TEGRA && TEGRA20_APB_DMA
+ 	select REGMAP_MMIO
+-	select SND_SOC_DMAENGINE_PCM if TEGRA20_APB_DMA
++	select SND_SOC_GENERIC_DMAENGINE_PCM if TEGRA20_APB_DMA
+ 	help
+ 	  Say Y or M here if you want support for SoC audio on Tegra.
  
-+/**
-+ * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
-+ * @prepare_slave_config: Callback used to fill in the DMA slave_config for a
-+ *   PCM substream. Will be called from the PCM drivers hwparams callback.
-+ * @pcm_hardware: snd_pcm_hardware struct to be used for the PCM.
-+ * @prealloc_buffer_size: Size of the preallocated audio buffer.
-+ */
-+struct snd_dmaengine_pcm_config {
-+	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
-+			struct snd_pcm_hw_params *params,
-+			struct dma_slave_config *slave_config);
-+
-+	const struct snd_pcm_hardware *pcm_hardware;
-+	unsigned int prealloc_buffer_size;
-+};
-+
-+int snd_dmaengine_pcm_register(struct device *dev,
-+	const struct snd_dmaengine_pcm_config *config,
-+	unsigned int flags);
-+void snd_dmaengine_pcm_unregister(struct device *dev);
-+
-+int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params,
-+	struct dma_slave_config *slave_config);
-+
- #endif
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 5da8ca7..9e675c7 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -29,6 +29,10 @@ config SND_SOC_AC97_BUS
- config SND_SOC_DMAENGINE_PCM
- 	bool
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index f9f247c..f056f63 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -29,9 +29,7 @@
+  *
+  */
  
-+config SND_SOC_GENERIC_DMAENGINE_PCM
-+	bool
-+	select SND_SOC_DMAENGINE_PCM
-+
- # All the supported SoCs
- source "sound/soc/atmel/Kconfig"
- source "sound/soc/au1x/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 99f32f7..197b6ae 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -5,6 +5,10 @@ ifneq ($(CONFIG_SND_SOC_DMAENGINE_PCM),)
- snd-soc-core-objs += soc-dmaengine-pcm.o
- endif
+-#include <linux/dma-mapping.h>
+ #include <linux/module.h>
+-#include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -55,175 +53,24 @@ static const struct snd_pcm_hardware tegra_pcm_hardware = {
+ 	.fifo_size		= 4,
+ };
  
-+ifneq ($(CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM),)
-+snd-soc-core-objs += soc-generic-dmaengine-pcm.o
-+endif
-+
- obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
- obj-$(CONFIG_SND_SOC)	+= codecs/
- obj-$(CONFIG_SND_SOC)	+= generic/
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-new file mode 100644
-index 0000000..acfc926
---- /dev/null
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -0,0 +1,241 @@
-+/*
-+ *  Copyright (C) 2013, Analog Devices Inc.
-+ *	Author: Lars-Peter Clausen <lars@metafoo.de>
-+ *
-+ *  This program is free software; you can redistribute it and/or modify it
-+ *  under  the terms of the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the License, or (at your
-+ *  option) any later version.
-+ *
-+ *  You should have received a copy of the GNU General Public License along
-+ *  with this program; if not, write to the Free Software Foundation, Inc.,
-+ *  675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ */
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/dmaengine.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/of.h>
-+#include <linux/of_dma.h>
-+
-+#include <sound/dmaengine_pcm.h>
-+
-+struct dmaengine_pcm {
-+	struct dma_chan *chan[SNDRV_PCM_STREAM_CAPTURE + 1];
-+	const struct snd_dmaengine_pcm_config *config;
-+	struct snd_soc_platform platform;
-+};
-+
-+static struct dmaengine_pcm *soc_platform_to_pcm(struct snd_soc_platform *p)
-+{
-+	return container_of(p, struct dmaengine_pcm, platform);
-+}
-+
-+/**
-+ * snd_dmaengine_pcm_prepare_slave_config() - Generic prepare_slave_config callback
-+ * @substream: PCM substream
-+ * @params: hw_params
-+ * @slave_config: DMA slave config to prepare
-+ *
-+ * This function can be used as a generic prepare_slave_config callback for
-+ * platforms which make use of the snd_dmaengine_dai_dma_data struct for their
-+ * DAI DMA data. Internally the function will first call
-+ * snd_hwparams_to_dma_slave_config to fill in the slave config based on the
-+ * hw_params, followed by snd_dmaengine_set_config_from_dai_data to fill in the
-+ * remaining fields based on the DAI DMA data.
-+ */
-+int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct dma_slave_config *slave_config)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_dmaengine_dai_dma_data *dma_data;
-+	int ret;
-+
-+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
-+	if (ret)
-+		return ret;
-+
-+	snd_dmaengine_pcm_set_config_from_dai_data(substream, dma_data,
-+		slave_config);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_prepare_slave_config);
-+
-+static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
-+	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
-+	struct dma_slave_config slave_config;
-+	int ret;
-+
-+	if (pcm->config->prepare_slave_config) {
-+		ret = pcm->config->prepare_slave_config(substream, params,
-+				&slave_config);
-+		if (ret)
-+			return ret;
-+
-+		ret = dmaengine_slave_config(chan, &slave_config);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+}
-+
-+static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
-+	struct dma_chan *chan = pcm->chan[substream->stream];
-+	int ret;
-+
-+	ret = snd_soc_set_runtime_hwparams(substream,
-+				pcm->config->pcm_hardware);
-+	if (ret)
-+		return ret;
-+
-+	return snd_dmaengine_pcm_open(substream, chan);
-+}
-+
-+static struct device *dmaengine_dma_dev(struct dmaengine_pcm *pcm,
-+	struct snd_pcm_substream *substream)
-+{
-+	if (!pcm->chan[substream->stream])
-+		return NULL;
-+
-+	return pcm->chan[substream->stream]->device->dev;
-+}
-+
-+static void dmaengine_pcm_free(struct snd_pcm *pcm)
-+{
-+	snd_pcm_lib_preallocate_free_for_all(pcm);
-+}
-+
-+static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
-+	const struct snd_dmaengine_pcm_config *config = pcm->config;
-+	struct snd_pcm_substream *substream;
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
-+		substream = rtd->pcm->streams[i].substream;
-+		if (!substream)
-+			continue;
-+
-+		if (!pcm->chan[i]) {
-+			dev_err(rtd->platform->dev,
-+				"Missing dma channel for stream: %d\n", i);
-+			ret = -EINVAL;
-+			goto err_free;
-+		}
-+
-+		ret = snd_pcm_lib_preallocate_pages(substream,
-+				SNDRV_DMA_TYPE_DEV,
-+				dmaengine_dma_dev(pcm, substream),
-+				config->prealloc_buffer_size,
-+				config->pcm_hardware->buffer_bytes_max);
-+		if (ret)
-+			goto err_free;
-+	}
-+
-+	return 0;
-+
-+err_free:
-+	dmaengine_pcm_free(rtd->pcm);
-+	return ret;
-+}
-+
-+static const struct snd_pcm_ops dmaengine_pcm_ops = {
-+	.open		= dmaengine_pcm_open,
-+	.close		= snd_dmaengine_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= dmaengine_pcm_hw_params,
-+	.hw_free	= snd_pcm_lib_free_pages,
-+	.trigger	= snd_dmaengine_pcm_trigger,
-+	.pointer	= snd_dmaengine_pcm_pointer,
-+};
-+
-+static const struct snd_soc_platform_driver dmaengine_pcm_platform = {
-+	.ops		= &dmaengine_pcm_ops,
-+	.pcm_new	= dmaengine_pcm_new,
-+	.pcm_free	= dmaengine_pcm_free,
-+};
-+
-+static const char * const dmaengine_pcm_dma_channel_names[] = {
-+	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
-+	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
-+};
-+
-+/**
-+ * snd_dmaengine_pcm_register - Register a dmaengine based PCM device
-+ * @dev: The parent device for the PCM device
-+ * @config: Platform specific PCM configuration
-+ * @flags: Platform specific quirks
-+ */
-+int snd_dmaengine_pcm_register(struct device *dev,
-+	const struct snd_dmaengine_pcm_config *config, unsigned int flags)
-+{
-+	struct dmaengine_pcm *pcm;
-+	unsigned int i;
-+
-+	if (!dev->of_node)
-+		return -EINVAL;
-+
-+	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->config = config;
-+
-+	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
-+		pcm->chan[i] = of_dma_request_slave_channel(dev->of_node,
-+					dmaengine_pcm_dma_channel_names[i]);
-+	}
-+
-+	return snd_soc_add_platform(dev, &pcm->platform,
-+				&dmaengine_pcm_platform);
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_register);
-+
-+/**
-+ * snd_dmaengine_pcm_unregister - Removes a dmaengine based PCM device
-+ * @dev: Parent device the PCM was register with
-+ *
-+ * Removes a dmaengine based PCM device previously registered with
-+ * snd_dmaengine_pcm_register.
-+ */
-+void snd_dmaengine_pcm_unregister(struct device *dev)
-+{
-+	struct snd_soc_platform *platform;
-+	struct dmaengine_pcm *pcm;
-+	unsigned int i;
-+
-+	platform = snd_soc_lookup_platform(dev);
-+	if (!platform)
-+		return;
-+
-+	pcm = soc_platform_to_pcm(platform);
-+
-+	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
-+		if (pcm->chan[i])
-+			dma_release_channel(pcm->chan[i]);
-+	}
-+
-+	snd_soc_remove_platform(platform);
-+	kfree(pcm);
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_unregister);
-+
-+MODULE_LICENSE("GPL");
+-static int tegra_pcm_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct device *dev = rtd->platform->dev;
+-	int ret;
+-
+-	/* Set HW params now that initialization is complete */
+-	snd_soc_set_runtime_hwparams(substream, &tegra_pcm_hardware);
+-
+-	ret = snd_dmaengine_pcm_open_request_chan(substream, NULL, NULL);
+-	if (ret) {
+-		dev_err(dev, "dmaengine pcm open failed with err %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int tegra_pcm_hw_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct device *dev = rtd->platform->dev;
+-	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
+-	struct dma_slave_config slave_config;
+-	int ret;
+-
+-	ret = snd_hwparams_to_dma_slave_config(substream, params,
+-						&slave_config);
+-	if (ret) {
+-		dev_err(dev, "hw params config failed with err %d\n", ret);
+-		return ret;
+-	}
+-
+-	snd_dmaengine_pcm_set_config_from_dai_data(substream,
+-			snd_soc_dai_get_dma_data(rtd->cpu_dai, substream),
+-			&slave_config);
+-
+-	ret = dmaengine_slave_config(chan, &slave_config);
+-	if (ret < 0) {
+-		dev_err(dev, "dma slave config failed with err %d\n", ret);
+-		return ret;
+-	}
+-
+-	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+-	return 0;
+-}
+-
+-static int tegra_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	snd_pcm_set_runtime_buffer(substream, NULL);
+-	return 0;
+-}
+-
+-static int tegra_pcm_mmap(struct snd_pcm_substream *substream,
+-				struct vm_area_struct *vma)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
+-					runtime->dma_area,
+-					runtime->dma_addr,
+-					runtime->dma_bytes);
+-}
+-
+-static struct snd_pcm_ops tegra_pcm_ops = {
+-	.open		= tegra_pcm_open,
+-	.close		= snd_dmaengine_pcm_close_release_chan,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= tegra_pcm_hw_params,
+-	.hw_free	= tegra_pcm_hw_free,
+-	.trigger	= snd_dmaengine_pcm_trigger,
+-	.pointer	= snd_dmaengine_pcm_pointer,
+-	.mmap		= tegra_pcm_mmap,
+-};
+-
+-static int tegra_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = tegra_pcm_hardware.buffer_bytes_max;
+-
+-	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+-						&buf->addr, GFP_KERNEL);
+-	if (!buf->area)
+-		return -ENOMEM;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-	buf->bytes = size;
+-
+-	return 0;
+-}
+-
+-static void tegra_pcm_deallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-
+-	substream = pcm->streams[stream].substream;
+-	if (!substream)
+-		return;
+-
+-	buf = &substream->dma_buffer;
+-	if (!buf->area)
+-		return;
+-
+-	dma_free_writecombine(pcm->card->dev, buf->bytes,
+-				buf->area, buf->addr);
+-	buf->area = NULL;
+-}
+-
+-static u64 tegra_dma_mask = DMA_BIT_MASK(32);
+-
+-static int tegra_pcm_new(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_card *card = rtd->card->snd_card;
+-	struct snd_pcm *pcm = rtd->pcm;
+-	int ret = 0;
+-
+-	if (!card->dev->dma_mask)
+-		card->dev->dma_mask = &tegra_dma_mask;
+-	if (!card->dev->coherent_dma_mask)
+-		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = tegra_pcm_preallocate_dma_buffer(pcm,
+-						SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			goto err;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = tegra_pcm_preallocate_dma_buffer(pcm,
+-						SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			goto err_free_play;
+-	}
+-
+-	return 0;
+-
+-err_free_play:
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
+-err:
+-	return ret;
+-}
+-
+-static void tegra_pcm_free(struct snd_pcm *pcm)
+-{
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_CAPTURE);
+-	tegra_pcm_deallocate_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
+-}
+-
+-static struct snd_soc_platform_driver tegra_pcm_platform = {
+-	.ops		= &tegra_pcm_ops,
+-	.pcm_new	= tegra_pcm_new,
+-	.pcm_free	= tegra_pcm_free,
++static const struct snd_dmaengine_pcm_config tegra_dmaengine_pcm_config = {
++	.pcm_hardware = &tegra_pcm_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.compat_filter_fn = NULL,
++	.prealloc_buffer_size = PAGE_SIZE * 8,
+ };
+ 
+ int tegra_pcm_platform_register(struct device *dev)
+ {
+-	return snd_soc_register_platform(dev, &tegra_pcm_platform);
++	return snd_dmaengine_pcm_register(dev, &tegra_dmaengine_pcm_config,
++			SND_DMAENGINE_PCM_FLAG_NO_DT |
++			SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ EXPORT_SYMBOL_GPL(tegra_pcm_platform_register);
+ 
+ void tegra_pcm_platform_unregister(struct device *dev)
+ {
+-	snd_soc_unregister_platform(dev);
++	return snd_dmaengine_pcm_unregister(dev);
+ }
+ EXPORT_SYMBOL_GPL(tegra_pcm_platform_unregister);
+ 
 -- 
 1.8.0
