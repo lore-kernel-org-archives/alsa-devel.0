@@ -1,16 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH v3 2/5] ALSA: snd-usb: use ep->stride from urb
-	callbacks
-Date: Wed, 17 Apr 2013 00:01:37 +0800
-Message-ID: <1366128100-9778-3-git-send-email-zonque@gmail.com>
+Subject: [PATCH v3 4/5] ALSA: snd-usb: add support for
+	bit-reversed byte formats
+Date: Wed, 17 Apr 2013 00:01:39 +0800
+Message-ID: <1366128100-9778-5-git-send-email-zonque@gmail.com>
 References: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BFA42610B2
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AA0402610A8
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:54 +0200 (CEST)
 In-Reply-To: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,67 +25,79 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-For normal PCM transfer, this change has no effect, as the endpoint's
-stride is always frame_bits/8. For DSD DOP streams, however, which is
-added later, the hardware stride differs from the software stride, and
-the endpoint has the correct information in these cases.
+There is quite some confusion around the bit-ordering in DSD samples,
+and no general agreement that defines whether hardware is supposed to
+expect the oldest sample in the MSB or the LSB of a byte.
+
+ALSA will hence set the rule that on the software API layer, bytes
+always carry the oldest bit in the most significant bit of a byte, and
+the driver has to translate that at runtime in order to match the
+hardware layout.
+
+This patch adds support for this by adding a boolean flag to the
+audio format struct.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- sound/usb/pcm.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/usb/card.h |    1 +
+ sound/usb/pcm.c  |   19 ++++++++++++++++++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 2c05cb7..fcae411 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -29,6 +29,7 @@ struct audioformat {
+ 	unsigned char clock;		/* associated clock */
+ 	struct snd_pcm_chmap_elem *chmap; /* (optional) channel map */
+ 	bool dsd_dop;			/* add DOP headers in case of DSD samples */
++	bool dsd_bitrev;		/* reverse the bits of each DSD sample */
+ };
+ 
+ struct snd_usb_substream;
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 815a37d..6f85202 100644
+index b5eae93..c31980c 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -1236,8 +1236,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 			counts = snd_usb_endpoint_next_packet_size(ep);
+@@ -16,6 +16,7 @@
  
- 		/* set up descriptor */
--		urb->iso_frame_desc[i].offset = frames * stride;
--		urb->iso_frame_desc[i].length = counts * stride;
-+		urb->iso_frame_desc[i].offset = frames * ep->stride;
-+		urb->iso_frame_desc[i].length = counts * ep->stride;
- 		frames += counts;
- 		urb->number_of_packets++;
- 		subs->transfer_done += counts;
-@@ -1251,14 +1251,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 					frames -= subs->transfer_done;
- 					counts -= subs->transfer_done;
- 					urb->iso_frame_desc[i].length =
--						counts * stride;
-+						counts * ep->stride;
- 					subs->transfer_done = 0;
- 				}
- 				i++;
- 				if (i < ctx->packets) {
- 					/* add a transfer delimiter */
- 					urb->iso_frame_desc[i].offset =
--						frames * stride;
-+						frames * ep->stride;
- 					urb->iso_frame_desc[i].length = 0;
- 					urb->number_of_packets++;
- 				}
-@@ -1269,7 +1269,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 		    !snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint)) /* finish at the period boundary */
- 			break;
+ #include <linux/init.h>
+ #include <linux/slab.h>
++#include <linux/bitrev.h>
+ #include <linux/ratelimit.h>
+ #include <linux/usb.h>
+ #include <linux/usb/audio.h>
+@@ -1264,7 +1265,12 @@ static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
+ 		} else {
+ 			/* stuff the DSD payload */
+ 			int idx = (src_idx + subs->dsd_dop.byte_idx - 1) % wrap;
+-			dst[dst_idx++] = src[idx];
++
++			if (subs->cur_audiofmt->dsd_bitrev)
++				dst[dst_idx++] = bitrev8(src[idx]);
++			else
++				dst[dst_idx++] = src[idx];
++
+ 			subs->hwptr_done++;
+ 		}
  	}
--	bytes = frames * stride;
-+	bytes = frames * ep->stride;
- 	if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
- 		/* err, the transferred area goes over buffer boundary. */
- 		unsigned int bytes1 =
-@@ -1310,8 +1310,8 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
- {
- 	unsigned long flags;
- 	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
--	int stride = runtime->frame_bits >> 3;
--	int processed = urb->transfer_buffer_length / stride;
-+	struct snd_usb_endpoint *ep = subs->data_endpoint;
-+	int processed = urb->transfer_buffer_length / ep->stride;
- 	int est_delay;
- 
- 	/* ignore the delay accounting when procssed=0 is given, i.e.
+@@ -1330,6 +1336,17 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 	if (unlikely(subs->pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE &&
+ 		     subs->cur_audiofmt->dsd_dop)) {
+ 		fill_playback_urb_dsd_dop(subs, urb, bytes);
++	} else if (unlikely(subs->pcm_format == SNDRV_PCM_FORMAT_DSD_U8 &&
++			   subs->cur_audiofmt->dsd_bitrev)) {
++		/* bit-reverse the bytes */
++		u8 *buf = urb->transfer_buffer;
++		for (i = 0; i < bytes; i++) {
++			int idx = (subs->hwptr_done + i)
++				% (runtime->buffer_size * stride);
++			buf[i] = bitrev8(runtime->dma_area[idx]);
++		}
++
++		subs->hwptr_done += bytes;
+ 	} else {
+ 		/* usual PCM */
+ 		if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
 -- 
 1.7.10.4
