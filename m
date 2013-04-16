@@ -1,16 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH v3 3/5] ALSA: snd-usb: add support for DSD DOP
-	stream transport
-Date: Wed, 17 Apr 2013 00:01:38 +0800
-Message-ID: <1366128100-9778-4-git-send-email-zonque@gmail.com>
+Subject: [PATCH v3 5/5] ALSA: snd-usb: add quirks handler for
+	DSD streams
+Date: Wed, 17 Apr 2013 00:01:40 +0800
+Message-ID: <1366128100-9778-6-git-send-email-zonque@gmail.com>
 References: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 74C162610B7
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 85FEA2610CA
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:56 +0200 (CEST)
 In-Reply-To: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,188 +25,87 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-In order to provide a compatibility way for pushing DSD
-samples through ordinary PCM channels, the "DoP open Standard" was
-invented. See http://www.dsd-guide.com for the official document.
+Unfortunately, none of the UAC standards provides a way to identify DSD
+(Direct Stream Digital) formats. Hence, this patch adds a quirks
+handler to identify USB interfaces that are capable of handling DSD.
 
-The host is required to stuff DSD marker bytes (0x05, 0xfa,
-alternating) in the MSB of 24 bit wide samples on the bus, in addition
-to the 16 bits of actual DSD sample payload.
+That quirks handler can augment the already parsed formats bit-field,
+by any of the new SNDRV_PCM_FMTBIT_DSD_{U8_U16} and setting the dsd_dop
+flag in the audio format, if the driver should take care for the DOP
+byte stuffing.
 
-To support this, the hardware and software stride logic in the driver
-has to be tweaked a bit, as we make the userspace believe we're
-operating on 16 bit samples, while we in fact push one more byte per
-channel down to the hardware.
-
-The DOP runtime information is stored in struct snd_usb_substream, so
-we can keep track of our state across multiple calls to
-prepare_playback_urb_dsd_dop().
+The only devices that are known to work with this are the ones with
+a 'Playback Designs' vendor id.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- sound/usb/card.h     |    7 ++++
- sound/usb/endpoint.c |    9 ++++++
- sound/usb/pcm.c      |   87 +++++++++++++++++++++++++++++++++++++++++++-------
- 3 files changed, 92 insertions(+), 11 deletions(-)
+ sound/usb/format.c |    3 +++
+ sound/usb/quirks.c |   28 ++++++++++++++++++++++++++++
+ sound/usb/quirks.h |    4 ++++
+ 3 files changed, 35 insertions(+)
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 8a751b4..2c05cb7 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -28,6 +28,7 @@ struct audioformat {
- 	unsigned int *rate_table;	/* rate table */
- 	unsigned char clock;		/* associated clock */
- 	struct snd_pcm_chmap_elem *chmap; /* (optional) channel map */
-+	bool dsd_dop;			/* add DOP headers in case of DSD samples */
- };
- 
- struct snd_usb_substream;
-@@ -138,6 +139,12 @@ struct snd_usb_substream {
- 
- 	int last_frame_number;          /* stored frame number */
- 	int last_delay;                 /* stored delay */
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 20c7751..020ede0 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -136,6 +136,9 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 		snd_printk(KERN_INFO "%d:%u:%d : unsupported format bits %#x\n",
+ 			   chip->dev->devnum, fp->iface, fp->altsetting, format);
+ 	}
 +
-+	struct {
-+		int marker;
-+		int channel;
-+		int byte_idx;
-+	} dsd_dop;
- };
- 
- struct snd_usb_stream {
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 7e9c55a..32d0b41 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -578,6 +578,15 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep,
- 	int is_playback = usb_pipeout(ep->pipe);
- 	int frame_bits = snd_pcm_format_physical_width(pcm_format) * channels;
- 
-+	if (pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE && fmt->dsd_dop) {
-+		/*
-+		 * When operating in DSD DOP mode, the size of a sample frame
-+		 * in hardware differs from the actual physical format width
-+		 * because we need to make room for the DOP markers.
-+		 */
-+		frame_bits += channels << 3;
-+	}
++	pcm_formats |= snd_usb_interface_dsd_format_quirks(chip, fp, sample_bytes);
 +
- 	ep->datainterval = fmt->datainterval;
- 	ep->stride = frame_bits >> 3;
- 	ep->silence_value = pcm_format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0;
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 6f85202..b5eae93 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1120,6 +1120,12 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
- 	runtime->private_data = subs;
- 	subs->pcm_substream = substream;
- 	/* runtime PM is also done there */
-+
-+	/* initialize DSD/DOP context */
-+	subs->dsd_dop.byte_idx = 0;
-+	subs->dsd_dop.channel = 0;
-+	subs->dsd_dop.marker = 1;
-+
- 	return setup_hw_info(runtime, subs);
+ 	return pcm_formats;
  }
  
-@@ -1214,6 +1220,56 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
- 		snd_pcm_period_elapsed(subs->pcm_substream);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 2927981..4c6366c 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -915,3 +915,31 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 		mdelay(20);
  }
  
-+static inline void fill_playback_urb_dsd_dop(struct snd_usb_substream *subs,
-+					     struct urb *urb, unsigned int bytes)
++/*
++ * snd_usb_interface_dsd_format_quirks() is called from format.c to
++ * augment the PCM format bit-field for DSD types. The UAC standards
++ * don't have a designated bit field to denote DSD-capable interfaces,
++ * hence all hardware that is known to support this format has to be
++ * listed here.
++ */
++u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
++					struct audioformat *fp,
++					unsigned int sample_bytes)
 +{
-+	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
-+	unsigned int stride = runtime->frame_bits >> 3;
-+	unsigned int dst_idx = 0;
-+	unsigned int src_idx = subs->hwptr_done;
-+	unsigned int wrap = runtime->buffer_size * stride;
-+	u8 *dst = urb->transfer_buffer;
-+	u8 *src = runtime->dma_area;
-+	u8 marker[] = { 0x05, 0xfa };
-+
-+	/*
-+	 * The DSP DOP format defines a way to transport DSD samples over
-+	 * normal PCM data endpoints. It requires stuffing of marker bytes
-+	 * (0x05 and 0xfa, alternating per sample frame), and then expects
-+	 * 2 additional bytes of actual payload. The whole frame is stored
-+	 * LSB.
-+	 *
-+	 * Hence, for a stereo transport, the buffer layout looks like this,
-+	 * where L refers to left channel samples and R to right.
-+	 *
-+	 *   L1 L2 0x05   R1 R2 0x05   L3 L4 0xfa  R3 R4 0xfa
-+	 *   L5 L6 0x05   R5 R6 0x05   L7 L8 0xfa  R7 R8 0xfa
-+	 *   .....
-+	 *
-+	 */
-+
-+	while (bytes--) {
-+		if (++subs->dsd_dop.byte_idx == 3) {
-+			/* frame boundary? */
-+			dst[dst_idx++] = marker[subs->dsd_dop.marker];
-+			src_idx += 2;
-+			subs->dsd_dop.byte_idx = 0;
-+
-+			if (++subs->dsd_dop.channel % runtime->channels == 0) {
-+				/* alternate the marker */
-+				subs->dsd_dop.marker++;
-+				subs->dsd_dop.marker %= ARRAY_SIZE(marker);
-+				subs->dsd_dop.channel = 0;
-+			}
-+		} else {
-+			/* stuff the DSD payload */
-+			int idx = (src_idx + subs->dsd_dop.byte_idx - 1) % wrap;
-+			dst[dst_idx++] = src[idx];
-+			subs->hwptr_done++;
++	/* Playback Designs */
++	if (le16_to_cpu(chip->dev->descriptor.idVendor) == 0x23ba) {
++		switch (fp->altsetting) {
++		case 1:
++			fp->dsd_dop = true;
++			return SNDRV_PCM_FMTBIT_DSD_U16_LE;
++		case 2:
++			fp->dsd_bitrev = true;
++			return SNDRV_PCM_FMTBIT_DSD_U8;
++		case 3:
++			fp->dsd_bitrev = true;
++			return SNDRV_PCM_FMTBIT_DSD_U16_LE;
 +		}
 +	}
++
++	return 0;
 +}
-+
- static void prepare_playback_urb(struct snd_usb_substream *subs,
- 				 struct urb *urb)
- {
-@@ -1270,19 +1326,28 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 			break;
- 	}
- 	bytes = frames * ep->stride;
--	if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
--		/* err, the transferred area goes over buffer boundary. */
--		unsigned int bytes1 =
--			runtime->buffer_size * stride - subs->hwptr_done;
--		memcpy(urb->transfer_buffer,
--		       runtime->dma_area + subs->hwptr_done, bytes1);
--		memcpy(urb->transfer_buffer + bytes1,
--		       runtime->dma_area, bytes - bytes1);
-+
-+	if (unlikely(subs->pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE &&
-+		     subs->cur_audiofmt->dsd_dop)) {
-+		fill_playback_urb_dsd_dop(subs, urb, bytes);
- 	} else {
--		memcpy(urb->transfer_buffer,
--		       runtime->dma_area + subs->hwptr_done, bytes);
-+		/* usual PCM */
-+		if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
-+			/* err, the transferred area goes over buffer boundary. */
-+			unsigned int bytes1 =
-+				runtime->buffer_size * stride - subs->hwptr_done;
-+			memcpy(urb->transfer_buffer,
-+			       runtime->dma_area + subs->hwptr_done, bytes1);
-+			memcpy(urb->transfer_buffer + bytes1,
-+			       runtime->dma_area, bytes - bytes1);
-+		} else {
-+			memcpy(urb->transfer_buffer,
-+			       runtime->dma_area + subs->hwptr_done, bytes);
-+		}
-+
-+		subs->hwptr_done += bytes;
- 	}
--	subs->hwptr_done += bytes;
-+
- 	if (subs->hwptr_done >= runtime->buffer_size * stride)
- 		subs->hwptr_done -= runtime->buffer_size * stride;
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 7c3681f..665e972 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -31,4 +31,8 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 			   __u8 request, __u8 requesttype, __u16 value,
+ 			   __u16 index, void *data, __u16 size);
  
++u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
++					struct audioformat *fp,
++					unsigned int sample_bytes);
++
+ #endif /* __USBAUDIO_QUIRKS_H */
 -- 
 1.7.10.4
