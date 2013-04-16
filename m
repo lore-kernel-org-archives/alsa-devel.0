@@ -1,18 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] tinycompress: cplay: Correct a couple of
- small message	typos
-Date: Tue, 16 Apr 2013 19:31:20 +0530
-Message-ID: <20130416140120.GN12436@intel.com>
-References: <20130415163724.GA28342@opensource.wolfsonmicro.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
+	driver
+Date: Tue, 16 Apr 2013 15:35:18 +0100
+Message-ID: <20130416143518.GA29127@gmail.com>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-4-git-send-email-lars@metafoo.de>
+ <20130416141105.GB13272@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E219D26109C
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 16:31:44 +0200 (CEST)
+Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
+ [209.85.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id C919726109C
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 16:35:23 +0200 (CEST)
+Received: by mail-wi0-f175.google.com with SMTP id c10so2692849wiw.2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 07:35:23 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20130415163724.GA28342@opensource.wolfsonmicro.com>
+In-Reply-To: <20130416141105.GB13272@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Russell King <linux@arm.linux.org.uk>, Shawn Guo <shawn.guo@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 15, 2013 at 05:39:39PM +0100, Richard Fitzgerald wrote:
-> 
-> Change-Id: I2b25d006328f1a9458f232f77c61e509c9b54d3c
-You need to strip these
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-and add s-o-b by the author
-
-I have fixed it up and applied, thanks
-
---
-~Vinod
-> ---
->  cplay.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/cplay.c b/cplay.c
-> index 60995a4..d9364f4 100644
-> --- a/cplay.c
-> +++ b/cplay.c
-> @@ -337,7 +337,7 @@ void play_samples(char *name, unsigned int card, unsigned int device,
->  				goto BUF_EXIT;
->  			}
->  			if (wrote != num_read) {
-> -				/* TODO: Buufer pointer needs to be set here */
-> +				/* TODO: Buffer pointer needs to be set here */
->  				fprintf(stderr, "We wrote %d, DSP accepted %d\n", num_read, wrote);
->  			}
->  			if (verbose) {
-> @@ -348,7 +348,7 @@ void play_samples(char *name, unsigned int card, unsigned int device,
->  	} while (num_read > 0);
->  
->  	if (verbose)
-> -		printf("%s: exit sucess\n", __func__);
-> +		printf("%s: exit success\n", __func__);
->  	/* issue drain if it supports */
->  	compress_drain(compress);
->  	free(buffer);
-> -- 
-> 1.7.2.5
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+PiA+ICsvKioKPiA+ICsgKiBzbmRfZG1hZW5naW5lX3BjbV9yZWdpc3RlciAtIFJlZ2lzdGVyIGEg
+ZG1hZW5naW5lIGJhc2VkIFBDTSBkZXZpY2UKPiA+ICsgKiBAZGV2OiBUaGUgcGFyZW50IGRldmlj
+ZSBmb3IgdGhlIFBDTSBkZXZpY2UKPiA+ICsgKiBAY29uZmlnOiBQbGF0Zm9ybSBzcGVjaWZpYyBQ
+Q00gY29uZmlndXJhdGlvbgo+ID4gKyAqIEBmbGFnczogUGxhdGZvcm0gc3BlY2lmaWMgcXVpcmtz
+Cj4gPiArICovCj4gPiAraW50IHNuZF9kbWFlbmdpbmVfcGNtX3JlZ2lzdGVyKHN0cnVjdCBkZXZp
+Y2UgKmRldiwKPiA+ICsJY29uc3Qgc3RydWN0IHNuZF9kbWFlbmdpbmVfcGNtX2NvbmZpZyAqY29u
+ZmlnLCB1bnNpZ25lZCBpbnQgZmxhZ3MpCj4gPiArewo+ID4gKwlzdHJ1Y3QgZG1hZW5naW5lX3Bj
+bSAqcGNtOwo+ID4gKwl1bnNpZ25lZCBpbnQgaTsKPiA+ICsKPiA+ICsJaWYgKCFkZXYtPm9mX25v
+ZGUpCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsKCldoeSBpcyB0aGlzIGNhbGwgRGV2aWNlIFRyZWUg
+b25seT8KCkFyZSBkZXZpY2VzIHdoaWNoIHVzZSBwbGF0Zm9ybSBkYXRhIHN0aWxsIHN1cHBvcnRl
+ZD8KCj4gPiArCXBjbSA9IGt6YWxsb2Moc2l6ZW9mKCpwY20pLCBHRlBfS0VSTkVMKTsKPiA+ICsJ
+aWYgKCFwY20pCj4gPiArCQlyZXR1cm4gLUVOT01FTTsKPiA+ICsKPiA+ICsJcGNtLT5jb25maWcg
+PSBjb25maWc7Cj4gPiArCj4gPiArCWZvciAoaSA9IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0s7
+IGkgPD0gU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFOyBpKyspIHsKPiA+ICsJCXBjbS0+Y2hhbltp
+XSA9IG9mX2RtYV9yZXF1ZXN0X3NsYXZlX2NoYW5uZWwoZGV2LT5vZl9ub2RlLAo+ID4gKwkJCQkJ
+ZG1hZW5naW5lX3BjbV9kbWFfY2hhbm5lbF9uYW1lc1tpXSk7Cj4gPiArCX0KPiAKPiBQZXJoYXBz
+IHlvdSBzaG91bGQgdXNlIGRtYV9yZXF1ZXN0X3NsYXZlX2NoYW5uZWwgaGVyZT8gVGhlbiB5b3Ug
+Y291bGQKPiBhbHNvIGRyb3AgdGhlIG9mX2RtYS5oIGluY2x1ZGUuCgpUaGVuIGhvdyB3b3VsZCBE
+ZXZpY2UgVHJlZSBiZSBzdXBwb3J0ZWQ/CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3Nv
+biBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBm
+b3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
