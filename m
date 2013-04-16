@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/17] ASoC: Towards a generic dmaengine
-	PCM driver
-Date: Tue, 16 Apr 2013 16:33:36 +0100
-Message-ID: <20130416153335.GK26958@opensource.wolfsonmicro.com>
-References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: Re: Solved Hercules RMX2
+Date: Tue, 16 Apr 2013 08:35:05 -0700
+Message-ID: <516D6FA9.3020609@gmail.com>
+References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
+ <516D5BC0.9020204@gmail.com>
+ <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9218194246023101048=="
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B04A32610A6
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 17:33:37 +0200 (CEST)
-In-Reply-To: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+Received: from mail-da0-f52.google.com (mail-da0-f52.google.com
+ [209.85.210.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 432572610A6
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 17:35:15 +0200 (CEST)
+Received: by mail-da0-f52.google.com with SMTP id f10so305212dak.39
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 08:35:13 -0700 (PDT)
+In-Reply-To: <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,80 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
++Daniel Mack <daniel@caiaq.de> (I think he's doing a lot of USB audio =
 
---===============9218194246023101048==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VJJoKLVEFXdmHQwR"
-Content-Disposition: inline
+maint. these days)
 
+On 04/16/2013 08:12 AM, Daniel Sch=FCrmann wrote:
+> Hi Gabriel,
+>
+> Thank you for your quick response.
+> The patch against the alsa-kernel is also attached at
+> https://bugs.launchpad.net/mixxx/+bug/1096687 and here:
 
---VJJoKLVEFXdmHQwR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK, I see now.  FYI, most maintainers prefer that you submit patches =
 
-On Mon, Apr 15, 2013 at 07:19:47PM +0200, Lars-Peter Clausen wrote:
+according to the guidelines in Documentation/SubmittingPatches.  (I'm =
 
-> This series adds a (almost) generic dmaengine PCM driver for ASoC. The tegra,
-> spear, omap, imx, mxs, ep93xx and ux500 platforms are converted to use the
-> generic driver instead of their own custom implementation. The driver builds on
-> top of the dmaengine PCM library and adds the missing bits. The driver was
+not a maintainer, BTW...)
 
-This all looks pretty good modulo testing and so on.
+>
+> diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+> index c1db28f..e044804 100644
+> --- a/sound/usb/helper.c
+> +++ b/sound/usb/helper.c
+> @@ -23,6 +23,9 @@
+>   #include "helper.h"
+>   #include "quirks.h"
+>
+> +/* Hercules RMX2 needs 1240 ms for setting the sample rate the first tim=
+e */
+> +#define USB_MSG_TIMEOUT 1500
+> +
+>   /*
+>    * combine bytes and get an integer value
+>    */
+> @@ -93,7 +96,7 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned in=
+t pipe, __u8 request,
+>   			return -ENOMEM;
+>   	}
+>   	err =3D usb_control_msg(dev, pipe, request, requesttype,
+> -			      value, index, buf, size, 1000);
+> +			      value, index, buf, size, USB_MSG_TIMEOUT);
+>   	if (size > 0) {
+>   		memcpy(data, buf, size);
+>   		kfree(buf);
 
->  * The size of the pre-allocated audio buffer. All platforms seem use different
->    sizes and since some of them might be sensitive to changes to the buffer
->    size this series keeps the original size for now. But we should probably try
->    to decide on a sane default for this and maybe allow ASoC board drivers to
->    overwrite it somehow.
+This changes the value for every USB audio device... not just the RMX2. =
 
-Or the platform for that matter of course.
+  Daniel, is there a better way to do this?
 
-> The driver uses snd_pcm_lib_preallocate_pages to preallocate the memory buffer.
-> snd_pcm_lib_preallocate_pages internally uses dma_alloc_coherent, while most of
-> the platforms converted in this series use dma_alloc_writecombine. Laxman
-> Dewangan submitted a patch[1] a couple of months ago to add support for
-> dma_alloc_writecombine to snd_pcm_lib_preallocate_pages, I always thought the
-> patch had been merged, but it looks like I was mistaken. So if there are
-> concerns about performance regression due to using coherent instead of
-> writecombine mappings we'll have to postpone converting these platforms until
-> Laxman's patch has been merged.
-
-Can you resend that to Takashi, it sounds like if it's not been merged
-it's probably due to it getting dropped rather than any great objection?
-
---VJJoKLVEFXdmHQwR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRbW70AAoJELSic+t+oim9t+4P/jUbcVLbaQtXA/RuRLXE4bYp
-7abrJ5LDLGVmAbIxqH9hGyO6H4wylFgUJ05zzFXijef1Sg8NYt7091U4xXJiujyY
-pEmu2hNoMOL2RInTiNKGLRJWgYzB9w07R0n61Waj2krBKP8oYy/cSyj9cuK5x+sU
-hOzJq9xkOHbce9t3DTLOlMkGm9zizcbgtRbldJpwQTmoYiXQeyUoju0AOxpHRyWf
-aSyEIeHUwa5t906BHbs4pkX+q0ZFEE02UIXFgpNTrgv1uU5A0IbBRFM5nsWnXA9I
-M3lCuX0QCb5zm7G5qmrDyHPbpqxheowBVy+pUC9ndBlLuoc1Hk2varnpkcbwYcof
-seKpN93THrgzP0c68TB/bFFvLm7L4+0oCSk38KVegTlCzb3L9+cK3S5k+YBuSU9g
-4qaDzWmfYSihL0j3JO2KxM2WxRkiAk3UeFnOQ/V1znx8Rvv7uedpZnmN1yaAs6O+
-2wvVPQv9jzMrnAVlnPK1Te16tkHTmSfEpEUU3iz+/adAi4swzlZJjf6z2m9O8RSH
-Ct0u+rplC7aVGSZ0buAANliiUOcPcfcjnYY8HkjLDelgEn6HfE/Kar2J6raS5lCb
-2WnmkhuA8hj/T4ZmKVokcqb7Pmkma+AYOGud2EjKXfj6HXo6UVThnuAjibzFA2Uh
-oQehHbmIBhvAGa0jAom8
-=PoRP
------END PGP SIGNATURE-----
-
---VJJoKLVEFXdmHQwR--
-
---===============9218194246023101048==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9218194246023101048==--
+-gabriel
