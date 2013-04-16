@@ -1,15 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH v3 1/5] ALSA: add DSD formats
-Date: Wed, 17 Apr 2013 00:01:36 +0800
-Message-ID: <1366128100-9778-2-git-send-email-zonque@gmail.com>
+Subject: [PATCH v3 2/5] ALSA: snd-usb: use ep->stride from urb
+	callbacks
+Date: Wed, 17 Apr 2013 00:01:37 +0800
+Message-ID: <1366128100-9778-3-git-send-email-zonque@gmail.com>
 References: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id B09622610AD
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BFA42610B2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 18:01:52 +0200 (CEST)
 In-Reply-To: <1366128100-9778-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,97 +25,67 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>, demian@auraliti.com, ray@auraliti.com, andreas@akdesigninc.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds two formats for Direct Stream Digital (DSD), a
-pulse-density encoding format which is described here:
-https://en.wikipedia.org/wiki/Direct_Stream_Digital
-
-DSD operates on 2.8, 5.6 or 11.2MHz sample rates and as a 1-bit
-stream.
-
-The two new types added by this patch describe streams that are capable
-of handling DSD samples in DOP format as 8-bit or in 16-bit (or at a x8
-or x16 data rate, respectively).
-
-DSD itself specifies samples in *bit*, while DOP and ALSA handle them
-as *bytes*. Hence, a factor of 8 or 16 has to be applied for the sample
-rare configuration, according to the following table:
-
-                                                  configured hardware
-        176.4KHz   352.8kHz   705.6KHz     <----       sample rate
-
-8-bit                2.8MHz     5.6MHz
-16-bit    2.8Mhz     5.6MHz    11.2MHz
-
-         `-----------------------------'
-             actual DSD sample rates
+For normal PCM transfer, this change has no effect, as the endpoint's
+stride is always frame_bits/8. For DSD DOP streams, however, which is
+added later, the hardware stride differs from the software stride, and
+the endpoint has the correct information in these cases.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- include/sound/pcm.h         |    2 ++
- include/uapi/sound/asound.h |    4 +++-
- sound/core/pcm.c            |    2 ++
- sound/core/pcm_misc.c       |    8 ++++++++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+ sound/usb/pcm.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index aa7b0a8..1b0c648 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -181,6 +181,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_G723_24_1B	_SNDRV_PCM_FMTBIT(G723_24_1B)
- #define SNDRV_PCM_FMTBIT_G723_40	_SNDRV_PCM_FMTBIT(G723_40)
- #define SNDRV_PCM_FMTBIT_G723_40_1B	_SNDRV_PCM_FMTBIT(G723_40_1B)
-+#define SNDRV_PCM_FMTBIT_DSD_U8		_SNDRV_PCM_FMTBIT(DSD_U8)
-+#define SNDRV_PCM_FMTBIT_DSD_U16_LE	_SNDRV_PCM_FMTBIT(DSD_U16_LE)
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 815a37d..6f85202 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1236,8 +1236,8 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 			counts = snd_usb_endpoint_next_packet_size(ep);
  
- #ifdef SNDRV_LITTLE_ENDIAN
- #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 1774a5c..e3983d5 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -214,7 +214,9 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_G723_24_1B	((__force snd_pcm_format_t) 45) /* 1 sample in 1 byte */
- #define	SNDRV_PCM_FORMAT_G723_40	((__force snd_pcm_format_t) 46) /* 8 Samples in 5 bytes */
- #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
--#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_G723_40_1B
-+#define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
-+#define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
-+#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
+ 		/* set up descriptor */
+-		urb->iso_frame_desc[i].offset = frames * stride;
+-		urb->iso_frame_desc[i].length = counts * stride;
++		urb->iso_frame_desc[i].offset = frames * ep->stride;
++		urb->iso_frame_desc[i].length = counts * ep->stride;
+ 		frames += counts;
+ 		urb->number_of_packets++;
+ 		subs->transfer_done += counts;
+@@ -1251,14 +1251,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 					frames -= subs->transfer_done;
+ 					counts -= subs->transfer_done;
+ 					urb->iso_frame_desc[i].length =
+-						counts * stride;
++						counts * ep->stride;
+ 					subs->transfer_done = 0;
+ 				}
+ 				i++;
+ 				if (i < ctx->packets) {
+ 					/* add a transfer delimiter */
+ 					urb->iso_frame_desc[i].offset =
+-						frames * stride;
++						frames * ep->stride;
+ 					urb->iso_frame_desc[i].length = 0;
+ 					urb->number_of_packets++;
+ 				}
+@@ -1269,7 +1269,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 		    !snd_usb_endpoint_implicit_feedback_sink(subs->data_endpoint)) /* finish at the period boundary */
+ 			break;
+ 	}
+-	bytes = frames * stride;
++	bytes = frames * ep->stride;
+ 	if (subs->hwptr_done + bytes > runtime->buffer_size * stride) {
+ 		/* err, the transferred area goes over buffer boundary. */
+ 		unsigned int bytes1 =
+@@ -1310,8 +1310,8 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ {
+ 	unsigned long flags;
+ 	struct snd_pcm_runtime *runtime = subs->pcm_substream->runtime;
+-	int stride = runtime->frame_bits >> 3;
+-	int processed = urb->transfer_buffer_length / stride;
++	struct snd_usb_endpoint *ep = subs->data_endpoint;
++	int processed = urb->transfer_buffer_length / ep->stride;
+ 	int est_delay;
  
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 578327e..17f45e8 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -209,6 +209,8 @@ static char *snd_pcm_format_names[] = {
- 	FORMAT(G723_24_1B),
- 	FORMAT(G723_40),
- 	FORMAT(G723_40_1B),
-+	FORMAT(DSD_U8),
-+	FORMAT(DSD_U16_LE),
- };
- 
- const char *snd_pcm_format_name(snd_pcm_format_t format)
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index b875b19..43f24cc 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -140,6 +140,14 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 5, .phys = 5, .le = -1, .signd = -1,
- 		.silence = {},
- 	},
-+	[SNDRV_PCM_FORMAT_DSD_U8] = {
-+		.width = 8, .phys = 8, .le = 1, .signd = 0,
-+		.silence = {},
-+	},
-+	[SNDRV_PCM_FORMAT_DSD_U16_LE] = {
-+		.width = 16, .phys = 16, .le = 1, .signd = 0,
-+		.silence = {},
-+	},
- 	/* FIXME: the following three formats are not defined properly yet */
- 	[SNDRV_PCM_FORMAT_MPEG] = {
- 		.le = -1, .signd = -1,
+ 	/* ignore the delay accounting when procssed=0 is given, i.e.
 -- 
 1.7.10.4
