@@ -1,63 +1,40 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
-	driver
-Date: Mon, 15 Apr 2013 17:15:30 -0600
-Message-ID: <516C8A12.4020405@wwwdotorg.org>
-References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-4-git-send-email-lars@metafoo.de>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v3 00/15] ASoC: fsl-ssi: ac97-slave support
+Date: Mon, 15 Apr 2013 19:25:43 -0500
+Message-ID: <516C9A87.4090307@tabi.org>
+References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
+ <516A9D5B.2070707@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id C718F2625D9
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 01:15:36 +0200 (CEST)
-In-Reply-To: <1366046404-8759-4-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Laxman Dewangan <ldewangan@nvidia.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <516A9D5B.2070707@metafoo.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/15/2013 11:19 AM, Lars-Peter Clausen wrote:
-> This patch adds a generic dmaengine PCM driver. It builds on top of the
-> dmaengine PCM library and adds the missing pieces like DMA channel management,
-> buffer management and channel configuration. It will be able to replace the
-> majority of the existing platform specific dmaengine based PCM drivers.
+Lars-Peter Clausen wrote:
+>> >@Lars:
+>> >There are 4 new patches at the beginning of the series that fix some problems
+>> >of your cleanups. I think they were in the changes you posted. If not, could you
+>> >please add them to your branch?
+> Hi,
+>
+> I had already fixed them localy. I'm in the process of polishing the last bits
+> and pieces of my generic dmaengine PCM driver series right now and will submit
+> it later today.
 
-> Devicetree is used to map the DMA channels to the PCM device.
-...
-> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-...
-> +static const char * const dmaengine_pcm_dma_channel_names[] = {
-> +	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
-> +	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
-> +};
-...
-> +int snd_dmaengine_pcm_register(struct device *dev,
-> +	const struct snd_dmaengine_pcm_config *config, unsigned int flags)
-...
-> +	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
-> +		pcm->chan[i] = of_dma_request_slave_channel(dev->of_node,
-> +					dmaengine_pcm_dma_channel_names[i]);
+So which repository should I apply these patches to?  I want to make sure 
+they don't break PowerPC.
 
-That all means that the Tegra patch won't work yet. Tegra currently uses
-a custom DT binding for DMA since we haven't fully converted everything
-over the very new DT DMA bindings. So, the patches for Tegra may well be
-fine /if/ staged in the correct order with some .dts file changes too.
-
-I wonder if all the other platforms this series modifies already have
-the appropriate DMA properties set up? A very quick look implies that
-(at least some) imx and omap do, but I'm not sure about spear, ep93xx,
-ux500?
-
-Perhaps Laxman can provide appropriate DT fixes for Tegra while I'm on
-vacation, and test out this series, if I don't get to it in the next 2
-days before my vacation.
+-- 
+Timur Tabi
