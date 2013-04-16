@@ -1,24 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Solved Hercules RMX2
-Date: Tue, 16 Apr 2013 21:24:59 +0200
-Message-ID: <516DA58B.3060207@gmail.com>
-References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
- <516D5BC0.9020204@gmail.com>
- <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
- <516D6FA9.3020609@gmail.com> <516D76CC.7090408@gmail.com>
- <CABVYHNhXKXOmUQVmuwfQuZWbMK6c6aVSmzcafPLoD+LR_5xGBQ@mail.gmail.com>
- <516DA527.1070806@gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
+	driver
+Date: Tue, 16 Apr 2013 14:02:23 -0600
+Message-ID: <516DAE4F.9030408@wwwdotorg.org>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-4-git-send-email-lars@metafoo.de>
+ <516C8A12.4020405@wwwdotorg.org> <516CE224.2070506@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f41.google.com (mail-bk0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 60450260320
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 21:24:49 +0200 (CEST)
-Received: by mail-bk0-f41.google.com with SMTP id i18so440987bkv.0
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 12:24:49 -0700 (PDT)
-In-Reply-To: <516DA527.1070806@gmail.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id A52DC261599
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 22:02:29 +0200 (CEST)
+In-Reply-To: <516CE224.2070506@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,19 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 16.04.2013 21:23, Daniel Mack wrote:
-> On 16.04.2013 21:14, Daniel Sch=FCrmann wrote:
+On 04/15/2013 11:31 PM, Lars-Peter Clausen wrote:
+> On 04/16/2013 01:15 AM, Stephen Warren wrote:
+>> On 04/15/2013 11:19 AM, Lars-Peter Clausen wrote:
+>>> This patch adds a generic dmaengine PCM driver. It builds on top of the
+>>> dmaengine PCM library and adds the missing pieces like DMA channel management,
+>>> buffer management and channel configuration. It will be able to replace the
+>>> majority of the existing platform specific dmaengine based PCM drivers.
+>>
+>>> Devicetree is used to map the DMA channels to the PCM device.
+>> ...
+>>> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+>> ...
+>>> +static const char * const dmaengine_pcm_dma_channel_names[] = {
+>>> +	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
+>>> +	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
+>>> +};
+>> ...
+>>> +int snd_dmaengine_pcm_register(struct device *dev,
+>>> +	const struct snd_dmaengine_pcm_config *config, unsigned int flags)
+>> ...
+>>> +	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
+>>> +		pcm->chan[i] = of_dma_request_slave_channel(dev->of_node,
+>>> +					dmaengine_pcm_dma_channel_names[i]);
+>>
+>> That all means that the Tegra patch won't work yet. Tegra currently uses
+>> a custom DT binding for DMA since we haven't fully converted everything
+>> over the very new DT DMA bindings. So, the patches for Tegra may well be
+>> fine /if/ staged in the correct order with some .dts file changes too.
+>>
+>> I wonder if all the other platforms this series modifies already have
+>> the appropriate DMA properties set up? A very quick look implies that
+>> (at least some) imx and omap do, but I'm not sure about spear, ep93xx,
+>> ux500?
+>>
+>> Perhaps Laxman can provide appropriate DT fixes for Tegra while I'm on
+>> vacation, and test out this series, if I don't get to it in the next 2
+>> days before my vacation.
+> 
+> None of the converted platforms is changed to use DT yet, they all use the
+> compat path. So there shouldn't be any functional change for them. Converting
+> them to use the generic DT bindings can be done one by one later.
 
->> Against which Kernel should I patch?
-> =
+Ah right. So, this series works fine on Tegra20 at least:
 
-> https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/log/?h=3Df=
-or-next
-
-Eh, sorry. This one:
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/ for-next
+Tested-by: Stephen Warren <swarren@nvidia.com>
