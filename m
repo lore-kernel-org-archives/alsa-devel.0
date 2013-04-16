@@ -1,20 +1,19 @@
-From: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
-Subject: Re: Solved Hercules RMX2
-Date: Tue, 16 Apr 2013 17:12:08 +0200
-Message-ID: <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
-References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
- <516D5BC0.9020204@gmail.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v3 05/15] ASoC: phycore-ac97: Add DT support
+Date: Tue, 16 Apr 2013 17:23:05 +0200
+Message-ID: <20130416152305.GE13272@pengutronix.de>
+References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
+ <1365939779-4507-6-git-send-email-mpa@pengutronix.de>
+ <20130416115942.GG26958@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f170.google.com (mail-ie0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 091572610A7
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 17:12:09 +0200 (CEST)
-Received: by mail-ie0-f170.google.com with SMTP id c11so638491ieb.29
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 08:12:08 -0700 (PDT)
-In-Reply-To: <516D5BC0.9020204@gmail.com>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C879D2610A6
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2013 17:23:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130416115942.GG26958@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,81 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gabriel,
+On Tue, Apr 16, 2013 at 12:59:43PM +0100, Mark Brown wrote:
+> On Sun, Apr 14, 2013 at 01:42:49PM +0200, Markus Pargmann wrote:
+> 
+> > +	/*
+> > +	 * This driver doesn't need to know which actual hardware is used.
+> > +	 * The audmux driver has knowledge about it's type, and returns
+> > +	 * an error if executed on the wrong type of hardware.
+> > +	 */
+> > +	ret = phycore_ac97_pca100_audmux();
+> > +	if (!ret)
+> > +		return 0;
+> > +
+> > +	ret = phycore_ac97_pcm043_audmux();
+> 
+> The DT really ought to be able to give enough information to figure out
+> the audmux configuration.  If we can't do that it rather defeats the
+> point of moving to DT...
 
-Thank you for your quick response.
-The patch against the alsa-kernel is also attached at
-https://bugs.launchpad.net/mixxx/+bug/1096687 and here:
+Yes you are right, I added a phandle "phytec,audmux" to check which
+audmux setup function we have to use.
 
-diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-index c1db28f..e044804 100644
---- a/sound/usb/helper.c
-+++ b/sound/usb/helper.c
-@@ -23,6 +23,9 @@
- #include "helper.h"
- #include "quirks.h"
+Regards,
 
-+/* Hercules RMX2 needs 1240 ms for setting the sample rate the first time =
-*/
-+#define USB_MSG_TIMEOUT 1500
-+
- /*
-  * combine bytes and get an integer value
-  */
-@@ -93,7 +96,7 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned
-int pipe, __u8 request,
- 			return -ENOMEM;
- 	}
- 	err =3D usb_control_msg(dev, pipe, request, requesttype,
--			      value, index, buf, size, 1000);
-+			      value, index, buf, size, USB_MSG_TIMEOUT);
- 	if (size > 0) {
- 		memcpy(data, buf, size);
- 		kfree(buf);
+Markus
 
-
-
-Kind regards,
-
-Daniel
-
-
-
-
-
-2013/4/16 Gabriel M. Beddingfield <gabrbedd@gmail.com>
-
->
-> Hi Daniel,
->
->
-> On 04/15/2013 03:04 PM, Daniel Sch=FCrmann wrote:
->
->> Hallo Alsa Developers,
->>
->> I have fixed Support for Hercules RMX2.
->>
->> You can find the Bug and the patch here:
->> https://bugs.launchpad.net/**mixxx/+bug/1096687<https://bugs.launchpad.n=
-et/mixxx/+bug/1096687>
->>
-> [snip]
->
->  Is it possible to include the fix in trunk?
->>
->
-> Since the RMX2's /driver/ isn't in the Linux kernel -- the answer is
-> probably no.  Notice that the DEB package has "DKMS" in the name --
-> indicating that this is an out-of-tree driver.
->
-> So, you would need to start by submitting a patch to add the RMX driver to
-> the kernel.
->
-> -gabriel
->
->
->
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
