@@ -1,17 +1,19 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: [PATCH] ASoC: define playback and capture streams in
-	dummy codec
-Date: Wed, 17 Apr 2013 16:34:06 +0400
-Message-ID: <20130417163406.4a3b339c@stas>
-References: <5167E7C4.7080501@list.ru>
- <20130412105943.GU9243@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
+ driver
+Date: Wed, 17 Apr 2013 15:06:38 +0200
+Message-ID: <516E9E5E.4090901@ti.com>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-4-git-send-email-lars@metafoo.de> <516E6FD8.5040400@ti.com>
+ <516E7DF1.6080905@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/UOWkm7JrtEwIB2/qV7HjICt"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.mail.ru (smtp5.mail.ru [94.100.176.132])
- by alsa0.perex.cz (Postfix) with ESMTP id E88C5261645
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 14:34:25 +0200 (CEST)
-In-Reply-To: <20130412105943.GU9243@opensource.wolfsonmicro.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2FFE261666
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:06:45 +0200 (CEST)
+In-Reply-To: <516E7DF1.6080905@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
---MP_/UOWkm7JrtEwIB2/qV7HjICt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 04/17/2013 12:48 PM, Lars-Peter Clausen wrote:
+> This sounds like it needs more than just support for custom channel names.
+> The generic driver currently expects that there is exactly one DMA channel
+> for capture and one for playback (well and in case the DAI link is simplex
+> only either one of them).
+> =
 
-Hello.
+> What are these 8 channels exactly used for?
 
-This patch adds a playback and capture streams to the dummy codec DAI
-configuration. Most permissive set of sampling rates and formats is used.
+We have 7 FIFOs which can be configured either playback or capture. The last
+channel is used for debug purposes only right now.
+Basically we can dynamically configure the 8 DMA channel for playback/captu=
+re
+and the mixing of incoming streams done inside of the AESS.
+We have 7 DAIs and we have playback/capture on those (some only have playba=
+ck
+some only capture some duplex). Right now we have kind of static DMA bindin=
+gs
+for them, I'm working on a dynamic model right now.
 
-This patch is needed for playback and capturing on a codec-less systems,
-as otherwise the PCM device nodes are not even created.
+So one IP (one driver) which can request 8 DMA and depending on the stream
+(DAI in use) we pick one of them to be used.
 
-Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
---MP_/UOWkm7JrtEwIB2/qV7HjICt
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-ASoC-define-playback-and-capture-streams-in-dummy-co.patch
+-- =
 
->From 9a498275e59c2c6ef933fe7d0cff79a13ba790ff Mon Sep 17 00:00:00 2001
-From: Stas Sergeev <stsp@users.sourceforge.net>
-Date: Thu, 11 Apr 2013 19:07:20 +0400
-Subject: [PATCH] ASoC: define playback and capture streams in dummy codec
-
-This patch adds a playback and capture streams to the dummy codec DAI
-configuration. Most permissive set of sampling rates and formats is used.
-
-This patch is needed for playback and capturing on a codec-less systems,
-as otherwise the PCM device nodes are not even created.
-
-Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
----
- sound/soc/soc-utils.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index fe4541d..4b3be6c 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -90,8 +90,33 @@ static struct snd_soc_platform_driver dummy_platform = {
- };
- 
- static struct snd_soc_codec_driver dummy_codec;
-+
-+#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
-+#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
-+			SNDRV_PCM_FMTBIT_U8 | \
-+			SNDRV_PCM_FMTBIT_S16_LE | \
-+			SNDRV_PCM_FMTBIT_U16_LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE | \
-+			SNDRV_PCM_FMTBIT_U24_LE | \
-+			SNDRV_PCM_FMTBIT_S32_LE | \
-+			SNDRV_PCM_FMTBIT_U32_LE | \
-+			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
- static struct snd_soc_dai_driver dummy_dai = {
- 	.name = "snd-soc-dummy-dai",
-+	.playback = {
-+		.stream_name	= "Playback",
-+		.channels_min	= 1,
-+		.channels_max	= 384,
-+		.rates		= STUB_RATES,
-+		.formats	= STUB_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name	= "Capture",
-+		.channels_min	= 1,
-+		.channels_max	= 384,
-+		.rates = STUB_RATES,
-+		.formats = STUB_FORMATS,
-+	 },
- };
- 
- static int snd_soc_dummy_probe(struct platform_device *pdev)
--- 
-1.7.11.7
-
-
---MP_/UOWkm7JrtEwIB2/qV7HjICt
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---MP_/UOWkm7JrtEwIB2/qV7HjICt--
+P=E9ter
