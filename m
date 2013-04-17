@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
- driver
-Date: Wed, 17 Apr 2013 14:21:17 +0100
-Message-ID: <20130417132117.GF13687@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 04/17] ASoC: dmaengine_pcm: Add support for
+ compat platforms
+Date: Wed, 17 Apr 2013 14:21:57 +0100
+Message-ID: <20130417132156.GG13687@opensource.wolfsonmicro.com>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-4-git-send-email-lars@metafoo.de>
+ <1366046404-8759-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8777140180944718494=="
+Content-Type: multipart/mixed; boundary="===============4942373390365467268=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B791D261681
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:21:19 +0200 (CEST)
-In-Reply-To: <1366046404-8759-4-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E4241261666
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:21:58 +0200 (CEST)
+In-Reply-To: <1366046404-8759-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,55 +26,51 @@ Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev 
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8777140180944718494==
+--===============4942373390365467268==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
+	protocol="application/pgp-signature"; boundary="lQSB8Tqijvu1+4Ba"
 Content-Disposition: inline
 
 
---FoLtEtfbNGMjfgrs
+--lQSB8Tqijvu1+4Ba
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 15, 2013 at 07:19:50PM +0200, Lars-Peter Clausen wrote:
-> This patch adds a generic dmaengine PCM driver. It builds on top of the
-> dmaengine PCM library and adds the missing pieces like DMA channel management,
-> buffer management and channel configuration. It will be able to replace the
-> majority of the existing platform specific dmaengine based PCM drivers.
-> Devicetree is used to map the DMA channels to the PCM device.
+On Mon, Apr 15, 2013 at 07:19:51PM +0200, Lars-Peter Clausen wrote:
+> Add support for platforms which don't use devicetree yet or have to optionally
+> support a non-devicetree way to request the DMA channel. The patch adds the
 
-Applied, thanks - seems like it'll need some more work but let's make
-the merge window...
+Applied, thanks.
 
---FoLtEtfbNGMjfgrs
+--lQSB8Tqijvu1+4Ba
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRbqHGAAoJELSic+t+oim9+HcP/RdPyyU8/vRtSJWXz8p4DrUN
-cXr+VjJ5naHmzrk3sRxhwTL0bGdMSDQ5teLxITTB1ZZ1yRF8iir9Kep38W1Z+RCE
-LAhLAgN9kd7w/zMpi+11H9PgQxsh4Un/F5qOx1zIDJCq0iDBpAZWrEpLLtgrIIDk
-jg3qzF2lo8ExqJZNzXLtxx8gT3Se+hIlGkGGBteaxtSWd4TBAcJoQkAGzA+KX55W
-d7/aTOW0CCOGkeCeEfJvklOgtsAzV1gfSnsF7SnVztqyP1nFlBkmnjad3PAJprhs
-iozqbLRIG/s32ZGRAjNPDv8n8+hSdyeGmOVwj13e4N9bYb8DoqNDfrIfRU5tKa9S
-tWXqBXp2a37C3DF9+GVmQmxaF4JvBoiO2JEc7csUHu5ee/s1J487TNKYpYWGCdTP
-XVZ2WCsccL9Im/QezzBnykKzUayWNqS2Oa3iAD7cQ0TyIH8p/8fyAEKJJCH3i1ZN
-d8EKHRWwA40nZHJp0a+RNZZPkPKLuA1Hs4tDFA17YmXvMF231WWa87mTc+FDvzeI
-DyAbNSGJgykCBFM5HHQnEzEsSwwjikqsPQ0eivIOf+X5tEbwZJDnCWo4SWgXzMI9
-sqzUFxHk7wuEiuCa9mhY3CSpmrl38gyAFwE0eFsu20SwnjAix5JcdB9APXCp+hAk
-NmIme5osPPFtWmz3FYUo
-=2Cie
+iQIcBAEBAgAGBQJRbqHuAAoJELSic+t+oim9zH4QAIcUKZZJsvKR58OeekYqio5V
+/7xHapMNO/PzdRikjy0cJBpvBXX93ZWPMQ8Whc2txdN1lcqvPSLm4bc3CshdpD4p
+NQMmeSqraGw0/KmtQ14FcOohXT4st6k2C0IZayoCnOIzQVBqb6SL1njnuqcSx2Ze
+0KE1heOmY6zjRE8WJAtQitWxe0EGITDaBY6FGEbmUhdES5PCVWC1uuQkIjKRnlAa
+oUk22ghdfyoAMv2JcBf6xa3qa6jeISM/4Ahe4jiMmAKkjn+8GI6IJBkxf0m35nBe
+U58WqK3I+w4OGp8KMmxdiQ6txTZD1vdzY4NDEozZsTZJmo/rh9mMvxB7NJoBF21U
+x4SLM8NYa9ckNuaOQ1ULCz4wed86izjF9GzaWrjQaRLhWZOImC8RyPWh4ZDRC77y
+nWnvF8w75CI+zHEShdqyxSJ+YNDWPSZ5cxCoHbaKrOt+WARuNZZ3PZ3iw5zIFltD
+5u0ndEI1av+T9I0H9Gb/OgACjMw9TTBpjcZ1C2I3qclqm/IUBUnufr9CRGs9fjk5
+jHj6hei7MkZJ/6Pzy44B2/uH+vjKdX7n1w8Vh11JUtHpEH+JZEhnxIcP5BXsw+27
+WqvY5vf3BBWqWJbCFUM9ah3oPJUykcXhEnAFgf2OTtsOhO998ZTTjYP48KtXEN7g
+f5zFir4pHd+X9xSNdkaM
+=vqif
 -----END PGP SIGNATURE-----
 
---FoLtEtfbNGMjfgrs--
+--lQSB8Tqijvu1+4Ba--
 
---===============8777140180944718494==
+--===============4942373390365467268==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8777140180944718494==--
+--===============4942373390365467268==--
