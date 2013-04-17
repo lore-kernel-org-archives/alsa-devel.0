@@ -1,16 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98088: Fix logging of hardware
-	revision.
-Date: Wed, 17 Apr 2013 14:33:03 +0100
-Message-ID: <20130417133303.GJ13687@opensource.wolfsonmicro.com>
-References: <1366167754-14664-1-git-send-email-dgreid@chromium.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Fwd:  Solved Hercules RMX2
+Date: Wed, 17 Apr 2013 15:36:27 +0200
+Message-ID: <516EA55B.90001@gmail.com>
+References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
+ <516D5BC0.9020204@gmail.com>
+ <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
+ <516D6FA9.3020609@gmail.com> <516D76CC.7090408@gmail.com>
+ <CABVYHNhXKXOmUQVmuwfQuZWbMK6c6aVSmzcafPLoD+LR_5xGBQ@mail.gmail.com>
+ <516DA527.1070806@gmail.com> <516DA58B.3060207@gmail.com>
+ <CABVYHNiUu+Bm=uVNHu+d6LUENAfr0FxnwE2HvmUGyzt7a1UYVg@mail.gmail.com>
+ <CABVYHNiPNiBdizdzSKtb7gc+0b3S=4XJn_4zWvDUZoCSXUHf1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5245884342559283417=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8573326164D
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:33:04 +0200 (CEST)
-In-Reply-To: <1366167754-14664-1-git-send-email-dgreid@chromium.org>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68F1D26164D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:36:18 +0200 (CEST)
+Received: by mail-bk0-f47.google.com with SMTP id ik5so760982bkc.34
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 06:36:18 -0700 (PDT)
+In-Reply-To: <CABVYHNiPNiBdizdzSKtb7gc+0b3S=4XJn_4zWvDUZoCSXUHf1w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +30,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
 
---===============5245884342559283417==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M9pltayyoy9lWEMH"
-Content-Disposition: inline
+On 17.04.2013 08:32, Daniel Sch=FCrmann wrote:
+> thank your advice!
+> =
 
+> I am not a Hercules developer, I am developer of the Mixxx DJ Software and
+> I am just trying to make
+> the thing work!
+> =
 
---M9pltayyoy9lWEMH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> I have just read within the USB 2.0 speck to find out if there are specif=
+ic
+> timeouts to deal with.
+> =
 
-On Tue, Apr 16, 2013 at 08:02:34PM -0700, Dylan Reid wrote:
-> The hardware revision of the codec is based at 0x40.  Subtract that
-> before convering to ASCII.  The same as it is done for 98095.
+> I have found:
+> =A7 9.2.6.4 Standard Device Requests
+> =
 
-Wow, someone had fun defining that...  applied anyway, thanks.
+> If I understand it correct, there is a 5-second limit for storing data in=
+to
+> the device.
+> I think changing the sample rate is such a operation.
+> =
 
---M9pltayyoy9lWEMH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> So what about changing the Limit to 5000 ms for all "Set requests"
+> bmRequest =3D 21.
+> See Audio20 =A7 5.2.2
+> All other timeouts might be reduced to 500 ms but I would leave them
+> untouched at 1000 ms , just in case.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRbqRiAAoJELSic+t+oim9+2wP/034z1aFWEb46dypF+RZn6f9
-qLA+HTnxeNHUNPZUYgbYw7RzpBTHLcMfWnqHwmWC8kIXpJbC/XT+X2mWY4LbpTtq
-pYzVVW4BfeFHLjW331pJOeC5wD8HaltuScyIcduZRdHbsIoeXTqNh4EOyoL/Tg7/
-tYuWym13GtcpQJ8UBN/sZiG7XC+Kdz6rFmmcQVuUevr9+hNdGTLN6LDP07vWFCBM
-n2LgDmJLWH2wVe7DAYQpbBTYJIPKI/YpEekYtH+8Nz2FfjCCJA4cYidB3Rb/VT0d
-d29b7VK8nBCJtt8ghl1tA56quSg/KJMehllKtEeV7sXWNRrDNavutQB99uLfp8oG
-TXvBUqaRJhglLeP0kKDGXfYRsiFOSBGAEKBH4hfqRZ1IM4Z2cFe5ecZcP+uq8lqK
-qJQ68HcBcXA752YhiD0vJq+0cKs8wOqr4b7gJjK8QQ1Zf0k3jP0iXdSVQYsO3kFh
-rWU7DjIlw0nbZ0C9DAOlIRgkGD+cc9Kn/8Lh/qceIGEPgtsJwj6Ot4BUiMHCMKSt
-cvRdBqBHrH33zCXUlhpIUyFJiFEKqO7odW9O1coC4DKUXqdr5+uhh/X7yWzglmOf
-o4t8YmtDi0jIdymI+ravpFHPABe4ZduutL5Z8RmC1MEuLQiYKthRI0k18hq7KlzT
-d+55ohsQ0AyNsPJs0Aj6
-=posb
------END PGP SIGNATURE-----
-
---M9pltayyoy9lWEMH--
-
---===============5245884342559283417==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Ok, can you cook a patch which sets the limit parameter
+usb_control_msg() to 5000 for SET request but leaves the former default
+value of 1000 in other cases? The patch should be all local to
+snd_usb_ctl_msg() then.
 
 
---===============5245884342559283417==--
+Thanks,
+Daniel
