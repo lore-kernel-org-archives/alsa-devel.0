@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm_adsp: Expose coefficient
- blocks as ALSA binary controls
-Date: Wed, 17 Apr 2013 15:59:24 +0100
-Message-ID: <20130417145924.GX13687@opensource.wolfsonmicro.com>
-References: <1366196132-4302-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+Date: Wed, 17 Apr 2013 09:18:30 -0600
+Message-ID: <516EBD46.7020804@wwwdotorg.org>
+References: <1364340938-17175-1-git-send-email-swarren@wwwdotorg.org>
+ <20130327011511.GP18316@opensource.wolfsonmicro.com>
+ <515377AD.9080704@wwwdotorg.org>
+ <20130327230730.GA18316@opensource.wolfsonmicro.com>
+ <1121E117AD4ECE49880A389A396215BB8718BB370D@rtitmbs7.realtek.com.tw>
+ <516DD0D4.5070409@wwwdotorg.org>
+ <20130417140147.GM13687@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1548319938722319395=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 304BD2616BF
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 17:08:51 +0200 (CEST)
-In-Reply-To: <1366196132-4302-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C67D2616A6
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 17:18:34 +0200 (CEST)
+In-Reply-To: <20130417140147.GM13687@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 04/17/2013 08:01 AM, Mark Brown wrote:
+> On Tue, Apr 16, 2013 at 04:29:40PM -0600, Stephen Warren wrote:
+> 
+>> a) There are many different VDD inputs to the chip. I imagine
+>> that some of these only need to be enabled/active under certain
+>> conditions. For example, perhaps the SPKVDD or MICVDD inputs are
+>> only required if actively using the speakers or microphones, and
+>> could be disabled at other times? If so, all of these "optional"
+>> or "part-time" VDD inputs should be represented as regulators,
+>> and retrieved/manipulated using Linux APIs such as
+>> regulator_get(), regulator_enable(), etc.
+> 
+> There's framework support for regulator supplies in ASoC so you
+> just need to specify the name and the core will do the rest.
+> 
+>> b) Some VDD inputs are optional; for example, either I believe
+>> that a board should either provide DCVDD, or provide LDO1_IN and
+>> assert the LDO1_EN input signal. Similarly, I think that either
+>> MICVDD should be provided, or SPKVDDL be provided, coupled with
+>> LDO2_EN register bit being set. This may require the RT5640
+>> driver to provide two regulator objects (LDO1, LDO2), which the
+>> board file or device tree can connect back to the DCVDD and
+>> MICVDD inputs if appropriate for the board's HW configuration. In
+>> the case where LDO1 is used, a separate fixed regulator with GPIO
+>> should be used to control the LDO1_EN GPIO input.
+> 
+> That said if boards generally don't use external supplies and use
+> the built in regulators then it's probably best to at least have
+> the driver assume that by default.
 
---===============1548319938722319395==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WVf18ZLo9bznw8Mz"
-Content-Disposition: inline
+So the issue here is that regulators aren't supposed to be optional,
+right? So if there's a reasonable chance that regulators would ever be
+needed, we should add them now.
 
-
---WVf18ZLo9bznw8Mz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 17, 2013 at 11:55:32AM +0100, Dimitris Papastamos wrote:
-> Add initial support for runtime tuning for the ADSP cores.  This
-> is achieved by exposing the coefficient configuration blocks as
-> ALSA binary controls.
-> The current code assumes that no controls on the DSP are volatile.
-
-As discussed offline this doesn't test well for me with mainline.
-
---WVf18ZLo9bznw8Mz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRbrjDAAoJELSic+t+oim9VBgP/2G+AO9AGf0VZkzbvrfDZBEQ
-AgU2z0/dZmQkX3osyjBgCu8eMYtRsESZjD16D3GSdugMAYBlrk4vMUaf16QAd64g
-NT4aMa+j3frNE0rnyzweRaw0lPdT2TAtp9t0HBtLt6pEBv4XKZYTR2u3lBxAALR9
-omzGrSX5+gVLAhWRENyqiyNOehm8AdNvqSG7HTaTZ5tXbRbSsNpdPqEfMLuympTG
-X16EDi1Q0cKFZGuErTl2mLpIqHtiLvU61pWysTaFndJlTUeeaXeAxTYIq7fnwaxk
-VL8olitOERM/045u+Kkqk1mKLRjV1ElFj02ZJ80ltWK0wMQTZRaQly254k1mbpCX
-xU3MPG/px9ucwt3wVeVmLjwZ5bPlZDljtwKuTkSlZQOi7hDQGhFfeTCrYddqCSGR
-leeW6YUVMkz46rZ62yD5YeUQ1ijzS2JFShbC05/rWeG9NUx9Gnf36eH/VYd96HdF
-la11p1Sf+TIGkS/HHvYZKMzKz8rPJ83h9DtETlpWzwU+ZTvoMM9wYxzUtKg3j5/O
-bUgjbWhQYo7zbtRwAVtaQEuVysSHsz4Ff2SOnNParF/sw2b8s42u//oTKjPRKY0V
-WYU4FdTEffpD49G4PcatSkTb26lOHdvEvHx/MqIMRbLL4fzH3knOKJ6Wpa2rxxF+
-xx3prLLrn8EW630K8RJJ
-=cze6
------END PGP SIGNATURE-----
-
---WVf18ZLo9bznw8Mz--
-
---===============1548319938722319395==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1548319938722319395==--
+With board files, we probably could have just added them later, but
+with device tree (which is my use-case for this CODEC at least), the
+DT binding needs to specify which regulator(s) the device requires (if
+any) right from the start, so that all DTs will include the regulator
+definitions.
