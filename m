@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/17] ASoC: tegra: Use generic dmaengine
-	PCM
-Date: Wed, 17 Apr 2013 14:25:31 +0100
-Message-ID: <20130417132530.GH13687@opensource.wolfsonmicro.com>
-References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-6-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: define playback and capture streams
+	in dummy codec
+Date: Wed, 17 Apr 2013 14:31:04 +0100
+Message-ID: <20130417133104.GI13687@opensource.wolfsonmicro.com>
+References: <5167E7C4.7080501@list.ru>
+ <20130412105943.GU9243@opensource.wolfsonmicro.com>
+ <20130417163406.4a3b339c@stas>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3934259665075507326=="
+Content-Type: multipart/mixed; boundary="===============1962801912424953936=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D114C2616BC
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:25:32 +0200 (CEST)
-In-Reply-To: <1366046404-8759-6-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2B2DA26164D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:31:06 +0200 (CEST)
+In-Reply-To: <20130417163406.4a3b339c@stas>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Stas Sergeev <stsp@list.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3934259665075507326==
+--===============1962801912424953936==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HuscSE0D68UGttcd"
+	protocol="application/pgp-signature"; boundary="Rmm1Stw9KgbdL9/H"
 Content-Disposition: inline
 
 
---HuscSE0D68UGttcd
+--Rmm1Stw9KgbdL9/H
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2013 at 07:19:52PM +0200, Lars-Peter Clausen wrote:
-> Use the generic dmaengine PCM driver instead of a custom implementation.
+On Wed, Apr 17, 2013 at 04:34:06PM +0400, Stas Sergeev wrote:
 
-Applied, thanks.
+> This patch adds a playback and capture streams to the dummy codec DAI
+> configuration. Most permissive set of sampling rates and formats is used.
+>=20
+> This patch is needed for playback and capturing on a codec-less systems,
+> as otherwise the PCM device nodes are not even created.
+>=20
+> Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
 
---HuscSE0D68UGttcd
+> From 9a498275e59c2c6ef933fe7d0cff79a13ba790ff Mon Sep 17 00:00:00 2001
+> From: Stas Sergeev <stsp@users.sourceforge.net>
+> Date: Thu, 11 Apr 2013 19:07:20 +0400
+> Subject: [PATCH] ASoC: define playback and capture streams in dummy codec
+
+Applied, but please do send patches as covered in SubmittingPatches -
+send patches inline, not as attachments.  That makes them harder to
+apply.
+
+--Rmm1Stw9KgbdL9/H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRbqLEAAoJELSic+t+oim9trAQAJRlBHU54tb0LPanrWnpri9v
-5nbYWhhs/jkMJAt72xna/04Q83qmv6quA957rHXCrhTusv9kHgJu8Jz4EqgmvxtJ
-ECD0xEj3k/s9f/LjvAS9CMjIu0vOfORgCi8Jaaxr19mqiFh0rfkDjI5L5D6ijtiv
-lmwlaP0YhVlv2Oim7Fu3GGewZ1RLOh8IGjDhx5khluAFfjOns0qBg8Mz/QdZ1AC+
-VXm7NSrCziaBnDdmiRxMJIq+SR8VmxmTCwMZay/Yc7rKhKjLx5aiiD7p+EOnkQEr
-ct1Z3e0TGldaIXIgp0fGHCxyYUoJdjF/x99ljvMYOtACjdt/5XIgRUDN+MDeI/s2
-9QpqmKQeU8ZT5kmzJKCSi9D+hSLNrUe61+c7zT87xn1t5jJmKhXpFEZDzA9ZKXVd
-YLECw4WMHv1OFlrstksGL0fYTeHGEkZG8KFzxIIcr7rDEYUuadZ5wNxb16avBMv5
-RJCGwxwrVzcsCDXQG0HxXgC6zEhhftgXVyJBILIhHXQLdpcczXT7xtR/58vnhdsK
-5ln7/7an7xwMx6Uk52yuTWBPLH3/XAUT+RLRpz0o8Dmf9zHpWQ7cQJRWXS9XK7GY
-GTGBbSPMkaLArtqK1rbegFbFRIRLX/nvOr7NNUg04orgnNTkUDb5rl8rLnMEPWpt
-wGjQpuK5dZCTcK0L+Omo
-=XQ5u
+iQIcBAEBAgAGBQJRbqQSAAoJELSic+t+oim9Q/AP/1Hv5o9jZbWEvGQXGv02aTHU
+eOlW7gCpfIt+x0Ys+fUBOGfAQHi5SOgYUtZldPaVmZWRxmAgpMxqIHndZHFnBLzb
+d9bWHDst61vOS5j9ExoNTkOXkMa0mkNrbcT1IEs5xzzoB8tfJyubsZfSSJywUeYo
+zBNQUpj1T1RwJLcuPNBTL++C+3LqRhfCQbgB6Ts8iXu0ahFyUf298OgA98+/Ujuy
+o9bCyWj/IekDmToU6t4EH20aDbuvsZ6sb2EyKtI4VnNliSha0DgrMMFwXVWWNJUP
+WJP40bn86grPxmu45m4TMXDDa/KoHjoQyr+u/jtZirpB4AHiqXMnGL8m2EGlMhGW
+aNanqjQCSjbC+fqCO8ygb4D9xsfrNpBYERlT9e+LYGi98/kcy+7WoLsSO77NI5uO
+MVmw0Ap0YYkEaJIbSjf2d3HHZYBt9w5mkMJV8OvOHA9PYxtA9KzyKOhOJDGY//5r
+G3G0IH75B/+vsLOjNrmPnZmTYfgQMN6l8mdHKXYVZdYBWt7rSzq19L763EsHd/MU
+Pkxp0kASdTXQK+d3P7qPtYMtiTNJ1Is2G9rVmyk83T557yeK9k/DC/CtMiJY9adN
+2Sb+fhkC4/lSTVmHqzSDU9Mu6H72MoSt/gCVQWtIRimQ6q5GfswnEOGti+7RW7mX
+SJcoUIIrB5epzebI87EM
+=ur6L
 -----END PGP SIGNATURE-----
 
---HuscSE0D68UGttcd--
+--Rmm1Stw9KgbdL9/H--
 
---===============3934259665075507326==
+--===============1962801912424953936==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3934259665075507326==--
+--===============1962801912424953936==--
