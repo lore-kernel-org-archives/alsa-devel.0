@@ -1,15 +1,15 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Expose coefficient blocks as
+Subject: [PATCH v2] ASoC: wm_adsp: Expose coefficient blocks as
 	ALSA binary controls
-Date: Wed, 17 Apr 2013 11:45:23 +0100
-Message-ID: <1366195523-3891-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Wed, 17 Apr 2013 11:55:32 +0100
+Message-ID: <1366196132-4302-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB66926160C
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 12:53:50 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C0FD26160C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 12:55:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,6 @@ is achieved by exposing the coefficient configuration blocks as
 ALSA binary controls.
 The current code assumes that no controls on the DSP are volatile.
 
-Change-Id: I9cd57efabe6c195c731f5a17f53617a99d2f09da
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
  sound/soc/codecs/wm_adsp.c | 435 ++++++++++++++++++++++++++++++++++++++++++++-
