@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/17] ASoC: Add snd_soc_{add,
- remove}_platform
-Date: Wed, 17 Apr 2013 14:20:40 +0100
-Message-ID: <20130417132040.GE13687@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
+ driver
+Date: Wed, 17 Apr 2013 14:21:17 +0100
+Message-ID: <20130417132117.GF13687@opensource.wolfsonmicro.com>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-3-git-send-email-lars@metafoo.de>
+ <1366046404-8759-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5083829905987469320=="
+Content-Type: multipart/mixed; boundary="===============8777140180944718494=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0F2CF26164D
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:20:42 +0200 (CEST)
-In-Reply-To: <1366046404-8759-3-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B791D261681
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:21:19 +0200 (CEST)
+In-Reply-To: <1366046404-8759-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,55 @@ Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev 
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5083829905987469320==
+--===============8777140180944718494==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hwvH6HDNit2nSK4j"
+	protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
 Content-Disposition: inline
 
 
---hwvH6HDNit2nSK4j
+--FoLtEtfbNGMjfgrs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 15, 2013 at 07:19:49PM +0200, Lars-Peter Clausen wrote:
-> snd_soc_{add,remove}_platform are similar to snd_soc_register_platform and
-> snd_soc_unregister_platform with the difference that they won't allocate and
-> free the snd_soc_platform structure.
+On Mon, Apr 15, 2013 at 07:19:50PM +0200, Lars-Peter Clausen wrote:
+> This patch adds a generic dmaengine PCM driver. It builds on top of the
+> dmaengine PCM library and adds the missing pieces like DMA channel management,
+> buffer management and channel configuration. It will be able to replace the
+> majority of the existing platform specific dmaengine based PCM drivers.
+> Devicetree is used to map the DMA channels to the PCM device.
 
-Applied, thanks.  Seems like we're going to get a bit of refactoring
-still but I'd rather get this in for the merge window.
+Applied, thanks - seems like it'll need some more work but let's make
+the merge window...
 
---hwvH6HDNit2nSK4j
+--FoLtEtfbNGMjfgrs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRbqGhAAoJELSic+t+oim9t7MP/2Lq4liZnW9idB8LsBtCMN//
-iz6GjN8HzsXxkSJR4OahiHTVQi8kHPGr/0ftbxJl3x53H+ai35Y49WKW/a7BW7QD
-7E84X4l/e3bpbracWU1Nc25laMoIqSb6xKR4tRcHZzBcnVkx1e4DmajSYLqWlr+j
-Lr/i3ozycjoBtbZCBYsf/VzUVaNe0ElaHM6oQ3+WyC+Ium8SiBWiLZ2h5iyHzYar
-XNfMRy0D0GcECjksISnfNhcLAgbZAvZloqhS9QmkWwZG7VlMyFxkcFJgubdkN4fv
-wNcC2JPNiE5FUD/YaBcOeI1wK8Luj2hylwZL1MU544vBMMOn7naoV62ipmPr33Xy
-oyb+1UvCoFYLeHDOQCSrp8LFhwFxS5dpUMZqdYXv65L6Omn9TeJ/9vnoANiysF5b
-Zm8yRQr0FSe98cKOR0ESqNn/wqOeIKUxbvetiuQZ6Tq4xVGOD55Y4CmyB3XjuLlY
-Y97ap1Id29n7izbw9NkqbDt7ruF6qIVXNu7t3D0mZlPzwObL5E+7w4cbCW/sAxvh
-Fr2A4u5jWChstWQV6sein3Ph3q5WfzCmrDlfv9TDKlyUZIZk42qqyZp29epDga84
-GOs8TUFgldn9DOLwzkLxldlO+x4JDZQHZiQCPiYsKfpQZzBgt/Yc+ypk5y8+G/M2
-RGArv/9mOd3emTHMdYFJ
-=QnzJ
+iQIcBAEBAgAGBQJRbqHGAAoJELSic+t+oim9+HcP/RdPyyU8/vRtSJWXz8p4DrUN
+cXr+VjJ5naHmzrk3sRxhwTL0bGdMSDQ5teLxITTB1ZZ1yRF8iir9Kep38W1Z+RCE
+LAhLAgN9kd7w/zMpi+11H9PgQxsh4Un/F5qOx1zIDJCq0iDBpAZWrEpLLtgrIIDk
+jg3qzF2lo8ExqJZNzXLtxx8gT3Se+hIlGkGGBteaxtSWd4TBAcJoQkAGzA+KX55W
+d7/aTOW0CCOGkeCeEfJvklOgtsAzV1gfSnsF7SnVztqyP1nFlBkmnjad3PAJprhs
+iozqbLRIG/s32ZGRAjNPDv8n8+hSdyeGmOVwj13e4N9bYb8DoqNDfrIfRU5tKa9S
+tWXqBXp2a37C3DF9+GVmQmxaF4JvBoiO2JEc7csUHu5ee/s1J487TNKYpYWGCdTP
+XVZ2WCsccL9Im/QezzBnykKzUayWNqS2Oa3iAD7cQ0TyIH8p/8fyAEKJJCH3i1ZN
+d8EKHRWwA40nZHJp0a+RNZZPkPKLuA1Hs4tDFA17YmXvMF231WWa87mTc+FDvzeI
+DyAbNSGJgykCBFM5HHQnEzEsSwwjikqsPQ0eivIOf+X5tEbwZJDnCWo4SWgXzMI9
+sqzUFxHk7wuEiuCa9mhY3CSpmrl38gyAFwE0eFsu20SwnjAix5JcdB9APXCp+hAk
+NmIme5osPPFtWmz3FYUo
+=2Cie
 -----END PGP SIGNATURE-----
 
---hwvH6HDNit2nSK4j--
+--FoLtEtfbNGMjfgrs--
 
---===============5083829905987469320==
+--===============8777140180944718494==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5083829905987469320==--
+--===============8777140180944718494==--
