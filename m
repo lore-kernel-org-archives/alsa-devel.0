@@ -1,26 +1,21 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Fwd:  Solved Hercules RMX2
-Date: Wed, 17 Apr 2013 15:36:27 +0200
-Message-ID: <516EA55B.90001@gmail.com>
-References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
- <516D5BC0.9020204@gmail.com>
- <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
- <516D6FA9.3020609@gmail.com> <516D76CC.7090408@gmail.com>
- <CABVYHNhXKXOmUQVmuwfQuZWbMK6c6aVSmzcafPLoD+LR_5xGBQ@mail.gmail.com>
- <516DA527.1070806@gmail.com> <516DA58B.3060207@gmail.com>
- <CABVYHNiUu+Bm=uVNHu+d6LUENAfr0FxnwE2HvmUGyzt7a1UYVg@mail.gmail.com>
- <CABVYHNiPNiBdizdzSKtb7gc+0b3S=4XJn_4zWvDUZoCSXUHf1w@mail.gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 10/17] ASoC: mxs: Use generic dmaengine PCM
+Date: Wed, 17 Apr 2013 21:50:05 +0800
+Message-ID: <20130417135003.GA20563@S2101-09.ap.freescale.net>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-11-git-send-email-lars@metafoo.de>
+ <20130417084304.GK11245@S2101-09.ap.freescale.net>
+ <516E6B2B.5000805@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
- [209.85.214.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 68F1D26164D
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:36:18 +0200 (CEST)
-Received: by mail-bk0-f47.google.com with SMTP id ik5so760982bkc.34
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 06:36:18 -0700 (PDT)
-In-Reply-To: <CABVYHNiPNiBdizdzSKtb7gc+0b3S=4XJn_4zWvDUZoCSXUHf1w@mail.gmail.com>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DE5C26164D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:50:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <516E6B2B.5000805@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,47 +25,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+On Wed, Apr 17, 2013 at 11:28:11AM +0200, Lars-Peter Clausen wrote:
+> Can you see whether the patch below fixes it?
+> 
+No, it does not fix the problem.
 
-On 17.04.2013 08:32, Daniel Sch=FCrmann wrote:
-> thank your advice!
-> =
+Shawn
 
-> I am not a Hercules developer, I am developer of the Mixxx DJ Software and
-> I am just trying to make
-> the thing work!
-> =
-
-> I have just read within the USB 2.0 speck to find out if there are specif=
-ic
-> timeouts to deal with.
-> =
-
-> I have found:
-> =A7 9.2.6.4 Standard Device Requests
-> =
-
-> If I understand it correct, there is a 5-second limit for storing data in=
-to
-> the device.
-> I think changing the sample rate is such a operation.
-> =
-
-> So what about changing the Limit to 5000 ms for all "Set requests"
-> bmRequest =3D 21.
-> See Audio20 =A7 5.2.2
-> All other timeouts might be reduced to 500 ms but I would leave them
-> untouched at 1000 ms , just in case.
-
-Ok, can you cook a patch which sets the limit parameter
-usb_control_msg() to 5000 for SET request but leaves the former default
-value of 1000 in other cases? The patch should be all local to
-snd_usb_ctl_msg() then.
-
-
-Thanks,
-Daniel
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index b563141..675c348 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -611,21 +611,28 @@ static int mxs_saif_dai_probe(struct snd_soc_dai *dai)
+>  }
+> 
+>  static struct snd_soc_dai_driver mxs_saif_dai = {
+> -	.name = "mxs-saif",
+> -	.probe = mxs_saif_dai_probe,
+> -	.playback = {
+> -		.channels_min = 2,
+> -		.channels_max = 2,
+> -		.rates = MXS_SAIF_RATES,
+> -		.formats = MXS_SAIF_FORMATS,
+> +	{
+> +		.name = "mxs-saif",
+> +		.probe = mxs_saif_dai_probe,
+> +		.playback = {
+> +			.channels_min = 2,
+> +			.channels_max = 2,
+> +			.rates = MXS_SAIF_RATES,
+> +			.formats = MXS_SAIF_FORMATS,
+> +		},
+> +		.ops = &mxs_saif_dai_ops,
+>  	},
+> -	.capture = {
+> -		.channels_min = 2,
+> -		.channels_max = 2,
+> -		.rates = MXS_SAIF_RATES,
+> -		.formats = MXS_SAIF_FORMATS,
+> +	{
+> +		.name = "mxs-saif",
+> +		.probe = mxs_saif_dai_probe,
+> +		.capture = {
+> +			.channels_min = 2,
+> +			.channels_max = 2,
+> +			.rates = MXS_SAIF_RATES,
+> +			.formats = MXS_SAIF_FORMATS,
+> +		},
+> +		.ops = &mxs_saif_dai_ops,
+>  	},
+> -	.ops = &mxs_saif_dai_ops,
+>  };
+> 
+>  static const struct snd_soc_component_driver mxs_saif_component = {
+> @@ -769,7 +776,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, saif);
+> 
+>  	ret = snd_soc_register_component(&pdev->dev, &mxs_saif_component,
+> -					 &mxs_saif_dai, 1);
+> +					 &mxs_saif_dai[saif->id], 1);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "register DAI failed\n");
+>  		return ret;
