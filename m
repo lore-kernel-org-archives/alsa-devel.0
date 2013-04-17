@@ -1,19 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 03/17] ASoC: Add a generic dmaengine_pcm
- driver
-Date: Wed, 17 Apr 2013 15:06:38 +0200
-Message-ID: <516E9E5E.4090901@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 02/17] ASoC: Add snd_soc_{add,
+ remove}_platform
+Date: Wed, 17 Apr 2013 14:18:52 +0100
+Message-ID: <20130417131852.GC13687@opensource.wolfsonmicro.com>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-4-git-send-email-lars@metafoo.de> <516E6FD8.5040400@ti.com>
- <516E7DF1.6080905@metafoo.de>
+ <1366046404-8759-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4264243690295277721=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id A2FFE261666
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:06:45 +0200 (CEST)
-In-Reply-To: <516E7DF1.6080905@metafoo.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAC8D26164D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 15:18:54 +0200 (CEST)
+In-Reply-To: <1366046404-8759-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/17/2013 12:48 PM, Lars-Peter Clausen wrote:
-> This sounds like it needs more than just support for custom channel names.
-> The generic driver currently expects that there is exactly one DMA channel
-> for capture and one for playback (well and in case the DAI link is simplex
-> only either one of them).
-> =
 
-> What are these 8 channels exactly used for?
+--===============4264243690295277721==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TiqCXmo5T1hvSQQg"
+Content-Disposition: inline
 
-We have 7 FIFOs which can be configured either playback or capture. The last
-channel is used for debug purposes only right now.
-Basically we can dynamically configure the 8 DMA channel for playback/captu=
-re
-and the mixing of incoming streams done inside of the AESS.
-We have 7 DAIs and we have playback/capture on those (some only have playba=
-ck
-some only capture some duplex). Right now we have kind of static DMA bindin=
-gs
-for them, I'm working on a dynamic model right now.
 
-So one IP (one driver) which can request 8 DMA and depending on the stream
-(DAI in use) we pick one of them to be used.
+--TiqCXmo5T1hvSQQg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- =
+On Mon, Apr 15, 2013 at 07:19:49PM +0200, Lars-Peter Clausen wrote:
+> snd_soc_{add,remove}_platform are similar to snd_soc_register_platform and
+> snd_soc_unregister_platform with the difference that they won't allocate =
+and
+> free the snd_soc_platform structure.
+>=20
+> Also add snd_soc_lookup_platform which looks up a platform by the device =
+it has
+> been registered for.
 
-P=E9ter
+Applied, thanks.
+
+--TiqCXmo5T1hvSQQg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRbqE1AAoJELSic+t+oim9McEQAJRGHo2XIHO+AaX7WjGz5zbq
+YzGGwUvbIEfz890HuAAtNY1fb5ji2crqOmOq3Goy4gIJFlQVlqz7LxtgBd6IkGrV
+90/ydKDOns+TR8mUYpOTJ1+JfSn+7NEzxHpYXe8iQZ8tqYGsY8BU14cyaPg1xYq/
+/nxLlpX8m4XBYDpwz4XrCNJ8HkG9W4D2QPtzJ1I/LmslIwidbjPgjBFsfwQCcNsJ
+rTI9nwhQFO51l8GWF5mWNhEx09+2KqKHIiZmpV7L4kYrh7fIIixq6yqtHkW0WTi8
+L0ZJPEBMAxcT9B1onPOcguVqaETTnBBOnUa+1vcvGVxysXUCpZb1XKu6nClt8BLL
+QW3v0uFwBu0dM29PdkSATd2cNuFwSMskzlWBNSSqtFeL5Hny0I2pUEXH/nkIl/ZO
+MdRDI/kdpPjctCaQE/HyJXEWKt+z3vO25B03fa2i9iNg8A4Wse+1fTryE0LocSnP
+8NbdKB7SarTUxTxVlaGp4OzBQLcm1D/1VEUKn9Fe6yQq679WP7OKf0WLrW9Sm8aT
+aLWqapWczYphPrvWYzmhx78CH0bqL5za04AFBJN1KTdk2B4DxVv0YJ9WGh0ua6U2
+TYyk2S6pdmm5NHehlG6Q65SU+pMnw2QlZmeckQz01eaOaQFFf+maJLD9RRS6JI0x
+RdOCOTv5Nn7s3xGUrBos
+=1f7x
+-----END PGP SIGNATURE-----
+
+--TiqCXmo5T1hvSQQg--
+
+--===============4264243690295277721==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4264243690295277721==--
