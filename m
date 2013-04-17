@@ -1,61 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] sound: ASoC: multiple DAIs/codecs on single audio stream
-Date: Wed, 17 Apr 2013 15:13:21 +0100
-Message-ID: <20130417141321.GU13687@opensource.wolfsonmicro.com>
-References: <516D8E24.9020308@gmail.com>
+Subject: Re: [PATCH 1/7] ALSA: compress_core: Update calc_avail
+ to use cumulative values
+Date: Wed, 17 Apr 2013 15:27:49 +0100
+Message-ID: <20130417142749.GV13687@opensource.wolfsonmicro.com>
+References: <1365703245-20738-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1365703245-20738-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20130415161354.GD12436@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f6M9UaX53EEZorp0"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <516D8E24.9020308@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============8826491906937602684=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C20F265D35
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 16:33:51 +0200 (CEST)
+In-Reply-To: <20130415161354.GD12436@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---f6M9UaX53EEZorp0
-Content-Type: text/plain; charset=us-ascii
+--===============8826491906937602684==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Lez9QO3Seu3ycz0M"
 Content-Disposition: inline
 
-On Tue, Apr 16, 2013 at 07:45:08PM +0200, Sebastian Hesselbarth wrote:
 
-> The controller has a dma controller for one playback buffer. It can
-> play the stream to both I2S and SPDIF interfaces with independent mute.
+--Lez9QO3Seu3ycz0M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Now, for example, I have a board with i2s codec and spdif tx diode
-> connected to the above controller:
+On Mon, Apr 15, 2013 at 09:43:54PM +0530, Vinod Koul wrote:
 
-> DMA (platform) -+-> I2S (dai) ----> I2S_Codec (codec)
->                 |
->                 +-> SPDIF (dai) --> SPDIF_TX (codec)
+> As I said last time these doesn't seem to generated against either Takash=
+i's or
+> Mark's public tree. This comment is as below on all the public trees I ha=
+ve seen
+> 	/* FIXME: This needs to be different for capture stream,
+> 	   available is # of compressed data, for playback it's remainder of buf=
+fer */
+>=20
+> As a result I am unable to apply & test this on any of the trees I work w=
+ith :(
+> Pls clone either of these and regenerate..
 
-> Is there any way in the current ASoC API to have the above setup?
+Richard did say (dropping CCs, grumble) that these applied to Takashi's
+tree but as he's now merged in the ASoC stuff for this release cycle
+they'll need to be respun against his for-next or the asoc-v3.10 tag.
+For the avoidance of confusion I'd suggest reposting explicitly
+specifying what they're  based off.
 
-As discussed on IRC this is probably best represented using soc-pcm at
-the minute.
-
---f6M9UaX53EEZorp0
+--Lez9QO3Seu3ycz0M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRbq3zAAoJELSic+t+oim96qIP+wcXCDOs1QeWiJbjdobSnfqV
-7yqyA4/jwi8lmu4Gn8HG5YWSi73sjmiN+QQDex4G+QnonmhPb6gmP6v66YDSRXLg
-fofKBqGb+FcZ65yDjI8D2RvkO+q9URVjUGVhHiw5HLrOMz6OBBtdxuqd+E7euLzn
-Biw/pmttYwrH5N1C5GGeVI9QeZDRrWo5DOF6jYOQI1IckStBYHiuaJRmiC8kWodv
-4r6ETrjOIycm8B3NkqYk/QE5YVySVzxV9X3nL4utsRWlEm6l1n6oI/Usq1dAlfMq
-z+D9uC8Zi6jgMZ58o2t5ll36CG/fWc5q6qZSyU9eUnyjwnW8suKQU2xObx0YedAq
-9KKFjLEbmwDuHtREafexkG3zKotvLI1IvUNa62FOpwjZNUBonDbHF3yKJE7FaYpV
-9HJtV9AY6w5RPLNHyD74mfsfgozB5HQtokwkc0vWtNbBuzzyiY31pjUeGa8rrKjP
-OGaHqkhkc4I+sf1IaVm9IodHZs3n6vwDc5xn9lXTUztuBWfdMpDStLqfJENdxH7d
-Cb7KBGZtHTpRVieaMt3LyCHgVhGieocZC8GnRTBV9cogtitpbs2DwBLyJkIe06my
-5+S1mjnYG7g9MKl3RQFubli022YuYEBBX1cXdGb4HL2OJ6J0+bRF9EJaJkI4MS3E
-mHCvdaire9Ps2iRkdexp
-=pq34
+iQIcBAEBAgAGBQJRbrFcAAoJELSic+t+oim9BV0P/3ZuGCW0gcpMajHLIXs4QKqa
+pKiTimYSC3j+b3FRqN5fSWxkot34EM8jwuOlYgXFO4NavNxZJH2cKKPbTuu+mrme
+BFzAcAy5bbWTmmoSTNbfHyjtBJTPAR4gYBh5Zn6AmrqaQwqqo/DGE748Z92Oz2tC
+APTb/Gdfzx6ajJ6326Ehaxx94q0T3P1FSVSny1Xu5QB6CrOKvOIva6qSzGmQqZHE
+fDnc6Wg+DBVm8TyByngb0N+t42JhNy/Yg2b8ZJ7bgifel5Cqa+5q3XRo6vf+CO5F
+6T1lZJGj07iJR1gmu4fPjv53XqSpk6ROaE7SXJcwKTs+ApFZgsn22EH+r4bjSTQO
+ERWfjaQTyHvWKTk/UHz0UICxzvPUq8hG/a8UBn0h8vvg8ubRQC1DRwoLHwoj0bvu
+CAkOQGKloVnJOG9g9sYPKcfjR8GIYqxJh+zkr2HP4Dlfutc7WsMR+hLw0vhR/KRe
+TdoKxHiVTW8FJv/J4464jwvm/dHgOx0+Sq+BvOw+7ISkvULvmZbxzCVF+yTkmgde
+qLWYsFVft/6eYK2aYK0YlflT843C1mJyTvR3A8U1E5zkVSRNFT6W4QME3ZW3oyEt
+49w5WRTlS2ipNPL0s2joHI6pX2RjetiwiIOFJz9Gat+nRMLl2r/nZjmp4TwykPLR
+yfZGCVamXK/YX/b769gx
+=DJWe
 -----END PGP SIGNATURE-----
 
---f6M9UaX53EEZorp0--
+--Lez9QO3Seu3ycz0M--
+
+--===============8826491906937602684==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8826491906937602684==--
