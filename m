@@ -1,19 +1,17 @@
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: hda: sink info in case of AMD Radeon GPU card (no
-	ELD?)
-Date: Wed, 17 Apr 2013 14:08:00 +0200
-Message-ID: <CACna6ryEYmqv7_6qpcUouABsK-QtnBdJnLzaRsJC7eDW8WsbJg@mail.gmail.com>
-References: <CACna6rymTWUCcaibDzV8tXN509xmRTXh31SYb7C89cQX=5RJcg@mail.gmail.com>
+From: Stas Sergeev <stsp@list.ru>
+Subject: [PATCH] ASoC: define playback and capture streams in
+	dummy codec
+Date: Wed, 17 Apr 2013 16:34:06 +0400
+Message-ID: <20130417163406.4a3b339c@stas>
+References: <5167E7C4.7080501@list.ru>
+ <20130412105943.GU9243@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001a11c249f65b3d5504da8d567a
+Content-Type: multipart/mixed; boundary="MP_/UOWkm7JrtEwIB2/qV7HjICt"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
- [209.85.219.51])
- by alsa0.perex.cz (Postfix) with ESMTP id B325B261639
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 14:08:01 +0200 (CEST)
-Received: by mail-oa0-f51.google.com with SMTP id k14so1495082oag.38
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 05:08:00 -0700 (PDT)
-In-Reply-To: <CACna6rymTWUCcaibDzV8tXN509xmRTXh31SYb7C89cQX=5RJcg@mail.gmail.com>
+Received: from smtp5.mail.ru (smtp5.mail.ru [94.100.176.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id E88C5261645
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 14:34:25 +0200 (CEST)
+In-Reply-To: <20130412105943.GU9243@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,116 +21,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, stsp@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---001a11c249f65b3d5504da8d567a
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+--MP_/UOWkm7JrtEwIB2/qV7HjICt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-2013/1/19 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>:
-> Hello,
->
-> I'm interested in polishing HDMI audio support for Radeon cards and I
-> hope to get some help here. One of the current problems is that hda
-> has no information about TV audio capabilities. It results in a well
-> known:
-> ALSA sound/pci/hda/hda_eld.c:337 HDMI: ELD buf size is 0, force 128
-> ALSA sound/pci/hda/hda_eld.c:356 HDMI: invalid ELD data byte 0
-> It's expected, as radeon (GPU driver) doesn't pass ELD struct anywhere
-> to the GPU and it's not done automatically neither.
->
-> Unfortunately it doesn't seem to be trivial to solve. You may be
-> familiar with other GPUs like Nvidia or Intel, where it's done in a
-> pretty simple way, for example:
->> for (i =3D 0; i < len; i++)
->>       I915_WRITE(hdmiw_hdmiedid, *((uint32_t *)eld + i));
-> but it can't be handled that way on Radeon cards.
->
-> If you take a look at evergreend.h [0] you can see we can't simply
-> write ELD to the GPU buffer, but we have to fill specific registers
-> which look more like SADs (Short Audio Descriptors).
->
-> My question is how to handle this on the alsa side. We can't just read
-> ELD, we probably have to read some registers from the audio card. Is
-> something like that implemented anywhere else? Did anyone started
-> working on it? Anyone interested in it?
->
-> [0] http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux.git;a=3Dbl=
-ob;f=3Ddrivers/gpu/drm/radeon/evergreend.h;hb=3DHEAD
+Hello.
 
-I tried hacking this sink info problem again. I've installed "fglrx"
-on my AMD Radeon HD 6970M (BARTS =3D=3D DCE5) and verified it sets SAD
-registers:
-5f84        7f077f07
-5f88        00500705
-5f8c        00000001
-5f90        00000001
-5f94        00000001
-5f98        00000001
-5f9c        00c01e05
-5fa0        00000001
-5fa4        00000001
-5fa8        00000607
-5fac        00017e07
-5fb0        00007e07
-5fb4        00000001
-5fb8        00000001
+This patch adds a playback and capture streams to the dummy codec DAI
+configuration. Most permissive set of sampling rates and formats is used.
 
-Reading ELD of course doesn't work (that's why we get warning in
-dmesg) and I did some manual confirmation with hda-verb (reading ELD
-length):
-$ sudo ./hda-verb /dev/snd/hwC1D0 3 0xf2e 0x8
-nid =3D 0x3, verb =3D 0xf2e, param =3D 0x8
-value =3D 0x0
+This patch is needed for playback and capturing on a codec-less systems,
+as otherwise the PCM device nodes are not even created.
 
-Plus (just for sure) reading first byte of ELD (in case length is
-always zero, but data is available):
-$ sudo ./hda-verb /dev/snd/hwC1D0 3 0xf2f 0 | grep val
-value =3D 0x0
-$ sudo ./hda-verb /dev/snd/hwC1D0 3 0xf2f 1 | grep val
-value =3D 0x0
-$ sudo ./hda-verb /dev/snd/hwC1D0 3 0xf2f 2 | grep val
-value =3D 0x0
+Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+--MP_/UOWkm7JrtEwIB2/qV7HjICt
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-ASoC-define-playback-and-capture-streams-in-dummy-co.patch
 
-So it seems ELD is really not available in this configuration. I
-thought about vendor specific verbs. Maybe values from the GPU
-registers are just copied to the audio? I've tried reading every
-possible vendor specific verb with the attached script (verbs.php).
+>From 9a498275e59c2c6ef933fe7d0cff79a13ba790ff Mon Sep 17 00:00:00 2001
+From: Stas Sergeev <stsp@users.sourceforge.net>
+Date: Thu, 11 Apr 2013 19:07:20 +0400
+Subject: [PATCH] ASoC: define playback and capture streams in dummy codec
 
-Unfortunately any verb didn't return anything interesting :(
-> grep value verbs.txt | sort | uniq -c
-9336832 value =3D 0x0
-  18432 value =3D 0x1
-   6144 value =3D 0x40
-   2048 value =3D 0x415f
-  55296 value =3D 0x86
-   2048 value =3D 0xa6
-  16384 value =3D 0xb6
+This patch adds a playback and capture streams to the dummy codec DAI
+configuration. Most permissive set of sampling rates and formats is used.
 
-Does anyone have any idea how we can/should read that values from GPU
-in the audio driver? :| I guess the must be copied somewhere, but
-can't find the correct place.
+This patch is needed for playback and capturing on a codec-less systems,
+as otherwise the PCM device nodes are not even created.
 
---=20
-Rafa=C5=82
+Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+---
+ sound/soc/soc-utils.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
---001a11c249f65b3d5504da8d567a
-Content-Type: application/x-httpd-php; name="verbs.php"
-Content-Disposition: attachment; filename="verbs.php"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hfmghh0k0
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index fe4541d..4b3be6c 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -90,8 +90,33 @@ static struct snd_soc_platform_driver dummy_platform = {
+ };
+ 
+ static struct snd_soc_codec_driver dummy_codec;
++
++#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
++			SNDRV_PCM_FMTBIT_U8 | \
++			SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_U16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | \
++			SNDRV_PCM_FMTBIT_U32_LE | \
++			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
+ static struct snd_soc_dai_driver dummy_dai = {
+ 	.name = "snd-soc-dummy-dai",
++	.playback = {
++		.stream_name	= "Playback",
++		.channels_min	= 1,
++		.channels_max	= 384,
++		.rates		= STUB_RATES,
++		.formats	= STUB_FORMATS,
++	},
++	.capture = {
++		.stream_name	= "Capture",
++		.channels_min	= 1,
++		.channels_max	= 384,
++		.rates = STUB_RATES,
++		.formats = STUB_FORMATS,
++	 },
+ };
+ 
+ static int snd_soc_dummy_probe(struct platform_device *pdev)
+-- 
+1.7.11.7
 
-PD9waHAKZm9yICgkdmVyYiA9IDB4ZjcwOyAkdmVyYiA8IDB4MTAwMDsgJHZlcmIrKykgewoJZm9y
-ICgkbmlkID0gMzsgJG5pZCA8IDQ7ICRuaWQrKykgewoJCWZvciAoJHBhciA9IDB4MDAwMDsgJHBh
-ciA8IDB4MTAwMDA7ICRwYXIrKykgewoJCQkkY21kID0gc3ByaW50Zigic3VkbyAuL2hkYS12ZXJi
-IC9kZXYvc25kL2h3QzFEMCAlZCAweCV4ICVkXG4iLCAkbmlkLCAkdmVyYiwgJHBhcik7CgkJCXN5
-c3RlbSgkY21kKTsKCQl9Cgl9Cn0KPz4K
---001a11c249f65b3d5504da8d567a
+
+--MP_/UOWkm7JrtEwIB2/qV7HjICt
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---001a11c249f65b3d5504da8d567a--
+--MP_/UOWkm7JrtEwIB2/qV7HjICt--
