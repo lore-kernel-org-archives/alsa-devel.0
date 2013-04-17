@@ -1,77 +1,61 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 00/15] ASoC: fsl-ssi: ac97-slave support
-Date: Wed, 17 Apr 2013 15:12:03 +0100
-Message-ID: <20130417141202.GT13687@opensource.wolfsonmicro.com>
-References: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
+Subject: Re: [RFC] sound: ASoC: multiple DAIs/codecs on single audio stream
+Date: Wed, 17 Apr 2013 15:13:21 +0100
+Message-ID: <20130417141321.GU13687@opensource.wolfsonmicro.com>
+References: <516D8E24.9020308@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2666238072846941336=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 316F726164D
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 16:12:16 +0200 (CEST)
-In-Reply-To: <1365939779-4507-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f6M9UaX53EEZorp0"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <516D8E24.9020308@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2666238072846941336==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vru7fAags9pVPvn5"
-Content-Disposition: inline
-
-
---vru7fAags9pVPvn5
+--f6M9UaX53EEZorp0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Apr 14, 2013 at 01:42:44PM +0200, Markus Pargmann wrote:
+On Tue, Apr 16, 2013 at 07:45:08PM +0200, Sebastian Hesselbarth wrote:
 
-> This series adds DT support for phycore-ac97. It is now based on the pcm dma
-> cleanups from Lars. Beside ac97 support, the series adds fsl-ssi imx-pcm-fiq
-> and generic DMA binding handling.
+> The controller has a dma controller for one playback buffer. It can
+> play the stream to both I2S and SPDIF interfaces with independent mute.
 
-I've now merged the core and i.MX bits of that into topic/dma so if you
-could check what actually went in and then respin?
+> Now, for example, I have a board with i2s codec and spdif tx diode
+> connected to the above controller:
 
---vru7fAags9pVPvn5
+> DMA (platform) -+-> I2S (dai) ----> I2S_Codec (codec)
+>                 |
+>                 +-> SPDIF (dai) --> SPDIF_TX (codec)
+
+> Is there any way in the current ASoC API to have the above setup?
+
+As discussed on IRC this is probably best represented using soc-pcm at
+the minute.
+
+--f6M9UaX53EEZorp0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRbq2pAAoJELSic+t+oim9XmsP/RSyi11LHCB4mbopWBVJyszQ
-IyaDSskNDqfwbAt3+F9rTM1Ybt2AVU3Dad1kZSHG4YrI7Tn8scFY6Y1MIQaXuEc6
-2n3Wrer2wIJVSq55q+W5ZU2laYbT7TDZlVPrEyWC8D173d4xSYJaNtkExO5GLyO3
-8AqgTSFyOEdeVHJteU2Eol+vAlwFXNgFHByY3U1mEXUV4gIeRJSz91PQf3ffTlKr
-Ne+lssgSV69aL8Yx230S8xVIUaExJYpfoiNT9NysTU5J7egMXEuPRaABtd77/hpD
-LJiBatkh3HeVEJLk2LYlS7PcAzdltXUDn5q50Ex06llabT6rGRGG1lR1BNKGv1Mx
-C4RruceWfdGDY+njSU/2RoazDdpg4wEGQZUx6IHYnL7DTMpJ9JrCEKuRR9ZNu+XB
-gQnhDPkompuWJRxIwRhofnloEtglolXWeVESK3v80PWBP4lniYLuraFkwnbJ1RCQ
-Xf80915VL4iqqg5VzR+dgNsBGCJFTIAyngAev6Vk4+05Vl+92dbIR6lxSwg1X90i
-MfQouHOvX1BCJ5uxRji0cQ4rVvCTos+xrdj0/+ss6VWoQYJm88I9K5ndWi/MfgRy
-BgwnC7h9rFtBDsuxWyf+akSHlKbD/GR8FNy1GVeopey49yyOBPIjK+DlI91mGxfX
-ScfDikEMieexzhk4GdOo
-=Q8X7
+iQIcBAEBAgAGBQJRbq3zAAoJELSic+t+oim96qIP+wcXCDOs1QeWiJbjdobSnfqV
+7yqyA4/jwi8lmu4Gn8HG5YWSi73sjmiN+QQDex4G+QnonmhPb6gmP6v66YDSRXLg
+fofKBqGb+FcZ65yDjI8D2RvkO+q9URVjUGVhHiw5HLrOMz6OBBtdxuqd+E7euLzn
+Biw/pmttYwrH5N1C5GGeVI9QeZDRrWo5DOF6jYOQI1IckStBYHiuaJRmiC8kWodv
+4r6ETrjOIycm8B3NkqYk/QE5YVySVzxV9X3nL4utsRWlEm6l1n6oI/Usq1dAlfMq
+z+D9uC8Zi6jgMZ58o2t5ll36CG/fWc5q6qZSyU9eUnyjwnW8suKQU2xObx0YedAq
+9KKFjLEbmwDuHtREafexkG3zKotvLI1IvUNa62FOpwjZNUBonDbHF3yKJE7FaYpV
+9HJtV9AY6w5RPLNHyD74mfsfgozB5HQtokwkc0vWtNbBuzzyiY31pjUeGa8rrKjP
+OGaHqkhkc4I+sf1IaVm9IodHZs3n6vwDc5xn9lXTUztuBWfdMpDStLqfJENdxH7d
+Cb7KBGZtHTpRVieaMt3LyCHgVhGieocZC8GnRTBV9cogtitpbs2DwBLyJkIe06my
+5+S1mjnYG7g9MKl3RQFubli022YuYEBBX1cXdGb4HL2OJ6J0+bRF9EJaJkI4MS3E
+mHCvdaire9Ps2iRkdexp
+=pq34
 -----END PGP SIGNATURE-----
 
---vru7fAags9pVPvn5--
-
---===============2666238072846941336==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2666238072846941336==--
+--f6M9UaX53EEZorp0--
