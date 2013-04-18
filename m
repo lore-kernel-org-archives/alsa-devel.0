@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 02/10] ASoC: imx-pcm-dma: DT support
-Date: Thu, 18 Apr 2013 15:56:02 +0100
-Message-ID: <20130418145602.GL13687@opensource.wolfsonmicro.com>
-References: <1366288424-7660-1-git-send-email-mpa@pengutronix.de>
- <1366288424-7660-3-git-send-email-mpa@pengutronix.de>
- <5170069F.4030200@metafoo.de>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 10/17] ASoC: mxs: Use generic dmaengine PCM
+Date: Thu, 18 Apr 2013 23:00:51 +0800
+Message-ID: <20130418150050.GE2222@S2101-09.ap.freescale.net>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-11-git-send-email-lars@metafoo.de>
+ <20130417084304.GK11245@S2101-09.ap.freescale.net>
+ <516E6B2B.5000805@metafoo.de>
+ <20130417135003.GA20563@S2101-09.ap.freescale.net>
+ <516FB726.4080304@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8408910823354031386=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D122264F0F
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 16:56:04 +0200 (CEST)
-In-Reply-To: <5170069F.4030200@metafoo.de>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe001.messaging.microsoft.com [213.199.154.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EA8264F0F
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 17:01:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <516FB726.4080304@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +28,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 18, 2013 at 11:04:38AM +0200, Lars-Peter Clausen wrote:
+> On 04/17/2013 03:50 PM, Shawn Guo wrote:
+> > On Wed, Apr 17, 2013 at 11:28:11AM +0200, Lars-Peter Clausen wrote:
+> >> Can you see whether the patch below fixes it?
+> >>
+> > No, it does not fix the problem.
+> > 
+> > Shawn
+> 
+> Could you try the other patch plus this one:
+> 
+Yes, it works now.  Thanks for the fixing, Lars.
 
---===============8408910823354031386==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cW0eHRJ76X8TDo3d"
-Content-Disposition: inline
+One small correction below on the first patch.
 
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2018,9 +2018,11 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+>  		if (cpu_dai->driver->capture.channels_min)
+>  			capture = 1;
+>  	} else {
+> -		if (codec_dai->driver->playback.channels_min)
+> +		if (codec_dai->driver->playback.channels_min &&
+> +			cpu_dai->driver->playback.channels_min)
+>  			playback = 1;
+> -		if (codec_dai->driver->capture.channels_min)
+> +		if (codec_dai->driver->capture.channels_min &&
+> +			cpu_dai->driver->capture.channels_min)
+>  			capture = 1;
+>  	}
+> 
+> > 
+> >> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> >> index b563141..675c348 100644
+> >> --- a/sound/soc/mxs/mxs-saif.c
+> >> +++ b/sound/soc/mxs/mxs-saif.c
+> >> @@ -611,21 +611,28 @@ static int mxs_saif_dai_probe(struct snd_soc_dai *dai)
+> >>  }
+> >>
+> >>  static struct snd_soc_dai_driver mxs_saif_dai = {
 
---cW0eHRJ76X8TDo3d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It should be mxs_saif_dai[] now.
 
-On Thu, Apr 18, 2013 at 04:43:43PM +0200, Lars-Peter Clausen wrote:
-> On 04/18/2013 02:33 PM, Markus Pargmann wrote:
+Shawn
 
-> > +	if (pdev->dev.platform_data)
-> > +		pdev->dev.of_node = pdev->dev.platform_data;
-
-> In my opinion it's better to use pdev->dev.parent->of_node here. In the ssi
-> driver you use platform_device_register_data, which will create a copy of
-> the of_node you pass in as platform data. I'm not quite sure how well this
-> will work. If you want to continue to use platform_data you should at least
-> change the code in the ssi driver to not make a copy of the of_node.
-
-If nothing else the above code just looks wrong and confusing.
-
---cW0eHRJ76X8TDo3d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRcAlTAAoJELSic+t+oim9r0EP/3uVVhDqP28BfB8bvqLeCkSA
-mrugRLtP8B4VTIRBlNTTBTwB8l70auA4GjEhSpL5Lyu02paHeJF0ppfLVezs5R5n
-TFz0nnmqQmeQe7OXu/swLCjQLzGRULk24hl0kQMvNucn/76oq4og5S9QP5NWyzBH
-y0kYtIvSUPO3fRw3rfAmHQCafBsvr10v/bD5dMpAZqeZS5UuRa7uM2yL+g0wXQzE
-pAP/ecM1KR2/RgDoWZea7GxzBphA8hjFqXDskvwDTWc00TKkKDNsQJkAKrivWgzr
-5zYdI2FtDPQglBI8w3xRcJhFYNglXHspSQxyjQ1mCyk+LPeO5XgKBvUpiLQIF5cv
-SP9ZqG+htAbG6W+BtHowUcyVSiKrCIuiSn7H/3KvUnQiDwHi/iWAYOEYJ2guPPK8
-6lu0IyG7/ifiWON1QZOkQDIrjvtb+Z6IrTTGSNokm7qqcsMgsJ9wsmMhQ+8aNAym
-LPF+9op2Je23qVcTnjWXEPNQWhZhlVjIR4CJH+JCFtNdIMLsefn0ciyw89dsJbn3
-xB0QRH/BDGyGehOwHzeYd8jgMpKNRot3BPf4dFEc6RvGo0vJllX896DZxqq1iyOI
-9Sh/Z1UFmv6gLQfE0SMCU6kY8zZDbXNL/yx/72rD0Rv8SOgSPaWyM0RPZ0nCXRg8
-1+FLoyeeMMOsYr1SbBXz
-=WFo8
------END PGP SIGNATURE-----
-
---cW0eHRJ76X8TDo3d--
-
---===============8408910823354031386==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8408910823354031386==--
+> >> -	.name = "mxs-saif",
+> >> -	.probe = mxs_saif_dai_probe,
+> >> -	.playback = {
+> >> -		.channels_min = 2,
+> >> -		.channels_max = 2,
+> >> -		.rates = MXS_SAIF_RATES,
+> >> -		.formats = MXS_SAIF_FORMATS,
+> >> +	{
+> >> +		.name = "mxs-saif",
+> >> +		.probe = mxs_saif_dai_probe,
+> >> +		.playback = {
+> >> +			.channels_min = 2,
+> >> +			.channels_max = 2,
+> >> +			.rates = MXS_SAIF_RATES,
+> >> +			.formats = MXS_SAIF_FORMATS,
+> >> +		},
+> >> +		.ops = &mxs_saif_dai_ops,
+> >>  	},
+> >> -	.capture = {
+> >> -		.channels_min = 2,
+> >> -		.channels_max = 2,
+> >> -		.rates = MXS_SAIF_RATES,
+> >> -		.formats = MXS_SAIF_FORMATS,
+> >> +	{
+> >> +		.name = "mxs-saif",
+> >> +		.probe = mxs_saif_dai_probe,
+> >> +		.capture = {
+> >> +			.channels_min = 2,
+> >> +			.channels_max = 2,
+> >> +			.rates = MXS_SAIF_RATES,
+> >> +			.formats = MXS_SAIF_FORMATS,
+> >> +		},
+> >> +		.ops = &mxs_saif_dai_ops,
+> >>  	},
+> >> -	.ops = &mxs_saif_dai_ops,
+> >>  };
+> >>
+> >>  static const struct snd_soc_component_driver mxs_saif_component = {
+> >> @@ -769,7 +776,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+> >>  	platform_set_drvdata(pdev, saif);
+> >>
+> >>  	ret = snd_soc_register_component(&pdev->dev, &mxs_saif_component,
+> >> -					 &mxs_saif_dai, 1);
+> >> +					 &mxs_saif_dai[saif->id], 1);
+> >>  	if (ret) {
+> >>  		dev_err(&pdev->dev, "register DAI failed\n");
+> >>  		return ret;
+> > 
+> 
