@@ -1,18 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] sgtl5000.txt: Include supplies as required
-	properties
-Date: Wed, 17 Apr 2013 21:10:39 -0300
-Message-ID: <1366243839-16908-1-git-send-email-festevam@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/4] ASoC: imx-sgtl5000: Do not enter the
+ error path on success
+Date: Thu, 18 Apr 2013 09:29:40 +0800
+Message-ID: <20130418012938.GC20563@S2101-09.ap.freescale.net>
+References: <1366242921-16376-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f53.google.com (mail-yh0-f53.google.com
- [209.85.213.53])
- by alsa0.perex.cz (Postfix) with ESMTP id AEF7F2625D3
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 02:10:50 +0200 (CEST)
-Received: by mail-yh0-f53.google.com with SMTP id t59so354759yho.12
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 17:10:49 -0700 (PDT)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90DF22625D4
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 03:30:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1366242921-16376-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, rob.herring@calxeda.com, kernel@pengutronix.de
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, matt@genesi-usa.com, mfuzzey@gmail.com, broonie@kernel.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wed, Apr 17, 2013 at 08:55:18PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> Return on success instead of entering the error path.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  sound/soc/fsl/imx-sgtl5000.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index 9584e78..88fc02c 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -174,6 +174,9 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	platform_set_drvdata(pdev, data);
+> +
+> +	return 0;
+> +
 
-sgtl5000 driver cannot probe succesfully if VDDA and VDDIO regulators are not
-provided.
+This does not look correct.  Doing so will skip clk_put() and
+of_node_put() on success.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- .../devicetree/bindings/sound/sgtl5000.txt         |    6 ++++++
- 1 file changed, 6 insertions(+)
+Shawn
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 9cc4444..520eb98 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -5,9 +5,15 @@ Required properties:
- 
- - reg : the I2C address of the device
- 
-+- VDDA-supply: regulator that provides VDDA voltage
-+
-+- VDDIO-supply: regulator that provides VDDIO voltage
-+
- Example:
- 
- codec: sgtl5000@0a {
- 	compatible = "fsl,sgtl5000";
- 	reg = <0x0a>;
-+	VDDA-supply = <&reg_2p5v>;
-+	VDDIO-supply = <&reg_3p3v>;
- };
--- 
-1.7.9.5
+>  clk_fail:
+>  	clk_put(data->codec_clk);
+>  fail:
+> -- 
+> 1.7.9.5
+> 
