@@ -1,17 +1,14 @@
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: [RFC] ASoC: Current state of Dynamic PCM API
-Date: Thu, 18 Apr 2013 14:07:07 +0200
-Message-ID: <CABJ1b_QQS7amB3jTMvKGsJAC-QuPj4DmPNg-1waAqgC-Y8Ry7A@mail.gmail.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: BUG: USB audio discontinuities with 'UHCI:
+ implement new semantics for URB_ISO_ASAP'
+Date: Thu, 18 Apr 2013 12:42:00 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1304181241010.1525-100000__21139.7433806725$1366617411$gmane$org@iolanthe.rowland.org>
+References: <20130417183436.GA4381@richardiv.omgwallhack.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f41.google.com (mail-oa0-f41.google.com
- [209.85.219.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A997265E7E
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 14:07:08 +0200 (CEST)
-Received: by mail-oa0-f41.google.com with SMTP id g12so1714723oah.28
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 05:07:07 -0700 (PDT)
+In-Reply-To: <20130417183436.GA4381@richardiv.omgwallhack.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +18,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 17 Apr 2013, Joe Rayhawk wrote:
 
-I am rewriting Marvell Kirkwood ASoC driver to also support Dove and
-reflect the audio controller's capabilities. The audio controller can
-have one DMA stream for playback and capture respectively. While capture
-source can be either I2S or SPDIF, playback can be on both interfaces
-simultaneously.
+> Small buffer/period sizes on usb audio playback though UHCI works fine on v3.7 but causes audio discontinuities/delays on v3.8 and v3.9-rc7.
+> 
+> I've bisected the behavior down to
+> 
+>     c44b225077bb1fb25ed5cd5c4f226897b91bedd4
+>     'UHCI: implement new semantics for URB_ISO_ASAP'
+> 
+> Tested on two UHCI hosts and three usb-audio devices, all from different vendors.
 
-The setup I have in mind for a generic Kirkwood/Dove soundcard is:
+Can you provide a usbmon trace showing the problems?  And maybe also a 
+similar trace made under a 3.7 kernel, where the problem doesn't occur?
 
-(DMA)-->(CPU_DAI)--+<-->(I2S Codec)
-                   |
-                   +--->(SPDIF TX Codec)
-                   |
-                   +<---(SPDIF RX Codec)
+Alan Stern
 
-I sent a mail on how to handle multiple codecs on a single cpu_dai
-earlier, and Mark pointed me to Dynamic PCM API. Unfortunately,
-current mainline ASoC has no driver using DPCM as an example and
-integration of DPCM patches look kind-of incomplete to me.
-
-Can any of you point me to patches, repositories, or documentation
-about DPCM where I can start with?
-
-Regards,
-  Sebastian
