@@ -1,19 +1,17 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH v2] Add M2Tech hiFace USB-SPDIF driver
-Date: Mon, 22 Apr 2013 09:40:51 +0200
-Message-ID: <5174E983.7050205@ivitera.com>
-References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
- <1360775505-13106-1-git-send-email-ao2@amarulasolutions.com>
- <5172F76C.9040002@gmail.com>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: [RFC] ASoC: Current state of Dynamic PCM API
+Date: Thu, 18 Apr 2013 14:07:07 +0200
+Message-ID: <CABJ1b_QQS7amB3jTMvKGsJAC-QuPj4DmPNg-1waAqgC-Y8Ry7A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id EC9F1260306
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 09:40:55 +0200 (CEST)
-In-Reply-To: <5172F76C.9040002@gmail.com>
+Received: from mail-oa0-f41.google.com (mail-oa0-f41.google.com
+ [209.85.219.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A997265E7E
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 14:07:08 +0200 (CEST)
+Received: by mail-oa0-f41.google.com with SMTP id g12so1714723oah.28
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 05:07:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
+I am rewriting Marvell Kirkwood ASoC driver to also support Dove and
+reflect the audio controller's capabilities. The audio controller can
+have one DMA stream for playback and capture respectively. While capture
+source can be either I2S or SPDIF, playback can be on both interfaces
+simultaneously.
 
-On 20.4.2013 22:15, Daniel Mack wrote:
-> On 13.02.2013 18:11, Antonio Ospite wrote:
->> Add driver for M2Tech hiFace USB-SPDIF interface and compatible devices.
->>
->> M2Tech hiFace and compatible devices offer a Hi-End S/PDIF Output
->> Interface, see http://www.m2tech.biz/hiface.html
-> 
-> Just curious: is there a new version of this patch set coming?
+The setup I have in mind for a generic Kirkwood/Dove soundcard is:
 
-I have read users report large latencies (unable to watch movies) of
-hiFace1 in OSX while reportedly they have not identified any major
-latency in windows. Perhaps the fixed PCM_PACKET_SIZE
-https://github.com/panicking/snd-usb-asyncaudio/blob/master/pcm.c#L25
-limiting the period size
-https://github.com/panicking/snd-usb-asyncaudio/blob/master/pcm.c#L98
-does not have to be a single relatively large value?
+(DMA)-->(CPU_DAI)--+<-->(I2S Codec)
+                   |
+                   +--->(SPDIF TX Codec)
+                   |
+                   +<---(SPDIF RX Codec)
 
-Thanks,
+I sent a mail on how to handle multiple codecs on a single cpu_dai
+earlier, and Mark pointed me to Dynamic PCM API. Unfortunately,
+current mainline ASoC has no driver using DPCM as an example and
+integration of DPCM patches look kind-of incomplete to me.
 
-Pavel.
+Can any of you point me to patches, repositories, or documentation
+about DPCM where I can start with?
+
+Regards,
+  Sebastian
