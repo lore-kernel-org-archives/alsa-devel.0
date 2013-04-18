@@ -1,69 +1,55 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v4 00/10] ASoC: fsl-ssi: ac97-slave support
-Date: Thu, 18 Apr 2013 14:33:34 +0200
-Message-ID: <1366288424-7660-1-git-send-email-mpa@pengutronix.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 17/17] ASoC: ux500: Use generic dmaengine
+	PCM
+Date: Thu, 18 Apr 2013 14:50:37 +0100
+Message-ID: <20130418135037.GB3959@gmail.com>
+References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
+ <1366046404-8759-18-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19203264F13
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 15:50:43 +0200 (CEST)
+Received: by mail-wi0-f180.google.com with SMTP id h11so1931031wiv.13
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 06:50:42 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1366046404-8759-18-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-This series adds DT support for phycore-ac97. It is now based on the pcm dma
-cleanups from Lars. Beside ac97 support, the series adds fsl-ssi imx-pcm-fiq
-and generic DMA binding handling.
-
-Regards,
-
-Markus
-
-Changes in v4:
- - phycore-ac97 uses the iomux functions based on audmux phandle now.
- - fsl-ssi imx-pcm-fiq got some new comments about problems with imx-ssi and
-   incompatible codecs
-
-Changes in v3:
- - Rebased onto pcm dma cleanup patches
- - A lot of cleanups for the fsl-ssi ac97 integration
- - Some small changes which are listed in the notes of the patches.
-
-Markus Pargmann (10):
-      ASoC: phycore-ac97: Add DT support
-      ASoC: imx-pcm-dma: DT support
-      ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-      ASoC: fsl-ssi: Add support for imx-pcm-fiq
-      ASoC: fsl-ssi: Use generic DMA bindings if possible
-      ARM: imx: Export ac97 reset functions
-      ASoC: fsl-ssi: imx ac97 support
-      ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
-      ASoC: fsl: Move fsl-ssi binding doc to sound/
-      ASoC: fsl: Update fsl-ssi binding doc
-
- Documentation/devicetree/bindings/{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt} |  10 ++
- Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt              |  14 ++
- arch/arm/mach-imx/mach-pca100.c                                              |   7 +-
- arch/arm/mach-imx/mach-pcm043.c                                              |   7 +-
- sound/soc/fsl/Kconfig                                                        |   2 +-
- sound/soc/fsl/fsl_ssi.c                                                      | 512 ++++++++++++++++++++++++++++++++++++++++++++++++----------
- sound/soc/fsl/imx-pcm-dma.c                                                  |   4 +-
- sound/soc/fsl/imx-pcm-fiq.c                                                  |  16 +-
- sound/soc/fsl/imx-pcm.h                                                      |   9 ++
- sound/soc/fsl/imx-ssi.c                                                      |   7 +-
- sound/soc/fsl/imx-ssi.h                                                      |   1 +
- sound/soc/fsl/phycore-ac97.c                                                 | 166 ++++++++++++++++---
- 12 files changed, 633 insertions(+), 122 deletions(-)
- rename Documentation/devicetree/bindings/{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt} (88%)
- create mode 100644 Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
+T24gTW9uLCAxNSBBcHIgMjAxMywgTGFycy1QZXRlciBDbGF1c2VuIHdyb3RlOgoKPiBVc2UgdGhl
+IGdlbmVyaWMgZG1hZW5naW5lIFBDTSBkcml2ZXIgaW5zdGVhZCBvZiBhIGN1c3RvbSBpbXBsZW1l
+bnRpb24uICBUaGVyZSBpcwo+IGEgbWlub3IgZnVuY3Rpb25hbCBjaGFuZ2UsIHRoZSB1eDUwMCBQ
+Q00gZHJpdmVyIGRpZCBub3QgcHJlYWxsb2NhdGUgdGhlIGF1ZGlvCj4gYnVmZmVyLCB3aGlsZSB0
+aGUgZ2VuZXJpYyBkbWFlbmdpbmUgUENNIGRyaXZlciB3aWxsIGRvIHRoaXMuCj4gCj4gU2lnbmVk
+LW9mZi1ieTogTGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28uZGU+Cj4gLS0tCj4gIGlu
+Y2x1ZGUvc291bmQvZG1hZW5naW5lX3BjbS5oIHwgICAyICstCj4gIHNvdW5kL3NvYy91eDUwMC9L
+Y29uZmlnICAgICAgIHwgICAyICstCj4gIHNvdW5kL3NvYy91eDUwMC91eDUwMF9wY20uYyAgIHwg
+MTU5ICsrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAzIGZpbGVz
+IGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDE0NCBkZWxldGlvbnMoLSkKCkJ5IHJpZ2h0cyB5
+b3UgcmVhbGx5IG5lZWQgT2xhJ3MgYXBwcm92YWwgb24gdGhpcywgYnV0IGJlY2F1c2U6CgphKSAu
+Li4gdGhpcyByZW1vdmVzIGEgaGVsbCBvZiBhIGxvdCBvZiBvbGQgY29kZSwgYW5kCmIpIC4uLiB1
+c2luZyB0aGUgbmV3IERNQSBBUElzIF9pc18gdGhlIGNvcnJlY3QgdGhpbmcgdG8gZG8sIGFuZApj
+KSAuLi4gdGhpcyBhaWRzIG1lIGluIGdldHRpbmcgdGhlIEQ0MCBETUEgY29udHJvbGxlciB1cC10
+by1zY3JhdGNoLCBhbmQKZCkgLi4uIEkgaGF2ZSBwYXRjaGVzIHdoaWNoIHJlbHkgb24gdGhlc2Ug
+Y2hhbmdlcywgYW5kCmUpIC4uLiB0aGUgZHJpdmVyIGlzIGFscmVhZHkgcHJldHR5IGJyb2tlbgoK
+Li4uIHlvdSBjYW4gaGF2ZSBteTogQWNrZWQtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFy
+by5vcmc+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVh
+ZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93
+IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
