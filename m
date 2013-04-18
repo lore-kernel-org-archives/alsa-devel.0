@@ -1,53 +1,79 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 10/17] ASoC: mxs: Use generic dmaengine PCM
-Date: Thu, 18 Apr 2013 17:04:56 +0200
-Message-ID: <51700B98.9030502@metafoo.de>
-References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
- <1366046404-8759-11-git-send-email-lars@metafoo.de>
- <20130417084304.GK11245@S2101-09.ap.freescale.net>
- <516E6B2B.5000805@metafoo.de>
- <20130417135003.GA20563@S2101-09.ap.freescale.net>
- <516FB726.4080304@metafoo.de>
- <20130418150050.GE2222@S2101-09.ap.freescale.net>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v4 02/10] ASoC: imx-pcm-dma: DT support
+Date: Thu, 18 Apr 2013 17:35:12 +0200
+Message-ID: <20130418153512.GA4307@pengutronix.de>
+References: <1366288424-7660-1-git-send-email-mpa@pengutronix.de>
+ <1366288424-7660-3-git-send-email-mpa@pengutronix.de>
+ <5170069F.4030200@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-202.synserver.de
- [212.40.185.202])
- by alsa0.perex.cz (Postfix) with ESMTP id 69303264F00
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 17:05:45 +0200 (CEST)
-In-Reply-To: <20130418150050.GE2222@S2101-09.ap.freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <5170069F.4030200-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/18/2013 05:00 PM, Shawn Guo wrote:
-> On Thu, Apr 18, 2013 at 11:04:38AM +0200, Lars-Peter Clausen wrote:
->> On 04/17/2013 03:50 PM, Shawn Guo wrote:
->>> On Wed, Apr 17, 2013 at 11:28:11AM +0200, Lars-Peter Clausen wrote:
->>>> Can you see whether the patch below fixes it?
->>>>
->>> No, it does not fix the problem.
->>>
->>> Shawn
->>
->> Could you try the other patch plus this one:
->>
-> Yes, it works now.  Thanks for the fixing, Lars.
+On Thu, Apr 18, 2013 at 04:43:43PM +0200, Lars-Peter Clausen wrote:
+> On 04/18/2013 02:33 PM, Markus Pargmann wrote:
+> > This patch adds the possibility to pass a of_node as platform_data which
+> > is used by generic-pcm-dma to request a DMA slave channel.
+> > 
+> > Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> > ---
+> >  sound/soc/fsl/imx-pcm-dma.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+> > index c246fb5..8945d22 100644
+> > --- a/sound/soc/fsl/imx-pcm-dma.c
+> > +++ b/sound/soc/fsl/imx-pcm-dma.c
+> > @@ -62,9 +62,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+> >  
+> >  int imx_pcm_dma_init(struct platform_device *pdev)
+> >  {
+> > +	if (pdev->dev.platform_data)
+> > +		pdev->dev.of_node = pdev->dev.platform_data;
 > 
-> One small correction below on the first patch.
+> In my opinion it's better to use pdev->dev.parent->of_node here. In the ssi
+> driver you use platform_device_register_data, which will create a copy of
+> the of_node you pass in as platform data. I'm not quite sure how well this
+> will work. If you want to continue to use platform_data you should at least
+> change the code in the ssi driver to not make a copy of the of_node.
+
+Thanks, I did not think about using the parent, that is much easier. I
+changed it for the next version.
+
+Regards,
+
+Markus
+
+> 
+> - Lars
+> 
+> > +
+> >  	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
+> >  		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+> > -		SND_DMAENGINE_PCM_FLAG_NO_DT |
+> >  		SND_DMAENGINE_PCM_FLAG_COMPAT);
+> >  }
+> >  
+> 
 > 
 
-Ok, thanks for testing. Will resent it with the two other patches later today.
-
-- Lars
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
