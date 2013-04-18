@@ -1,319 +1,91 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 04/28] proc: Supply PDE attribute setting accessor
- functions [RFC]
-Date: Thu, 18 Apr 2013 10:42:50 -0600
-Message-ID: <CAErSpo5RV_A+EoiLOzZ05VOQk54a0k_C-iJku72UjkVHH0eY7A@mail.gmail.com>
-References: <20130416182550.27773.89310.stgit@warthog.procyon.org.uk> <20130416182606.27773.55054.stgit@warthog.procyon.org.uk>
+From: lkasam@codeaurora.org
+Subject: ALSA framework problem: FE disconnected,
+	BE still connected!
+Date: Thu, 18 Apr 2013 09:56:25 -0700
+Message-ID: <7e576a6bf7cb6ca6a9be95b0d14e3a87.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-fsdevel-owner@vger.kernel.org>
-In-Reply-To: <20130416182606.27773.55054.stgit@warthog.procyon.org.uk>
-Sender: linux-fsdevel-owner@vger.kernel.org
-To: David Howells <dhowells@redhat.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, netdev <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
+ [199.106.114.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBA0E260309
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 18:56:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: asishb@codeaurora.org, plai@codeaurora.org, broonie@kernel.org, gsantosh@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 16, 2013 at 12:26 PM, David Howells <dhowells@redhat.com> wrote:
-> Supply accessor functions to set attributes in proc_dir_entry structs.
->
-> The following are supplied: proc_set_size() and proc_set_user().
->
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: linuxppc-dev@lists.ozlabs.org
-> cc: linux-media@vger.kernel.org
-> cc: netdev@vger.kernel.org
-> cc: linux-wireless@vger.kernel.org
-> cc: linux-pci@vger.kernel.org
-> cc: netfilter-devel@vger.kernel.org
-> cc: alsa-devel@alsa-project.org
-> ---
->
->  arch/powerpc/kernel/proc_powerpc.c        |    2 +-
->  arch/powerpc/platforms/pseries/reconfig.c |    2 +-
->  drivers/media/pci/ttpci/av7110_ir.c       |    2 +-
->  drivers/net/irda/vlsi_ir.c                |    2 +-
->  drivers/net/wireless/airo.c               |   34 +++++++++--------------------
->  drivers/pci/proc.c                        |    2 +-
+Hi Liam,
+We have a problem encountered in ALSA framework wrt FE/BE disconnection and
+fix to it is mentioned in below code change. please check it and provide
+your valuable comments.
 
-For the drivers/pci part:
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+----------------------
+From: Laxminath Kasam <lkasam@codeaurora.org>
+Date: Wed, 3 Apr 2013 14:03:17 +0530
+Subject: [PATCH] ASoC: audio: Fix BE not disconnected even codec teardown
 
->  fs/proc/generic.c                         |   13 +++++++++++
->  include/linux/proc_fs.h                   |    5 ++++
->  kernel/configs.c                          |    2 +-
->  kernel/profile.c                          |    2 +-
->  net/netfilter/xt_recent.c                 |    3 +--
->  sound/core/info.c                         |    2 +-
->  12 files changed, 38 insertions(+), 33 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/proc_powerpc.c b/arch/powerpc/kernel/proc_powerpc.c
-> index 41d8ee9..feb8580 100644
-> --- a/arch/powerpc/kernel/proc_powerpc.c
-> +++ b/arch/powerpc/kernel/proc_powerpc.c
-> @@ -83,7 +83,7 @@ static int __init proc_ppc64_init(void)
->                                &page_map_fops, vdso_data);
->         if (!pde)
->                 return 1;
-> -       pde->size = PAGE_SIZE;
-> +       proc_set_size(pde, PAGE_SIZE);
->
->         return 0;
->  }
-> diff --git a/arch/powerpc/platforms/pseries/reconfig.c b/arch/powerpc/platforms/pseries/reconfig.c
-> index d6491bd..f93cdf5 100644
-> --- a/arch/powerpc/platforms/pseries/reconfig.c
-> +++ b/arch/powerpc/platforms/pseries/reconfig.c
-> @@ -452,7 +452,7 @@ static int proc_ppc64_create_ofdt(void)
->
->         ent = proc_create("powerpc/ofdt", S_IWUSR, NULL, &ofdt_fops);
->         if (ent)
-> -               ent->size = 0;
-> +               proc_set_size(ent, 0);
->
->         return 0;
->  }
-> diff --git a/drivers/media/pci/ttpci/av7110_ir.c b/drivers/media/pci/ttpci/av7110_ir.c
-> index eb82286..0e763a7 100644
-> --- a/drivers/media/pci/ttpci/av7110_ir.c
-> +++ b/drivers/media/pci/ttpci/av7110_ir.c
-> @@ -375,7 +375,7 @@ int av7110_ir_init(struct av7110 *av7110)
->         if (av_cnt == 1) {
->                 e = proc_create("av7110_ir", S_IWUSR, NULL, &av7110_ir_proc_fops);
->                 if (e)
-> -                       e->size = 4 + 256 * sizeof(u16);
-> +                       proc_set_size(e, 4 + 256 * sizeof(u16));
->         }
->
->         tasklet_init(&av7110->ir.ir_tasklet, av7110_emit_key, (unsigned long) &av7110->ir);
-> diff --git a/drivers/net/irda/vlsi_ir.c b/drivers/net/irda/vlsi_ir.c
-> index e22cd4e..5f47584 100644
-> --- a/drivers/net/irda/vlsi_ir.c
-> +++ b/drivers/net/irda/vlsi_ir.c
-> @@ -1678,7 +1678,7 @@ vlsi_irda_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->                         IRDA_WARNING("%s: failed to create proc entry\n",
->                                      __func__);
->                 } else {
-> -                       ent->size = 0;
-> +                       proc_set_size(ent, 0);
->                 }
->                 idev->proc_entry = ent;
->         }
-> diff --git a/drivers/net/wireless/airo.c b/drivers/net/wireless/airo.c
-> index 66e398d..21d0233 100644
-> --- a/drivers/net/wireless/airo.c
-> +++ b/drivers/net/wireless/airo.c
-> @@ -4507,73 +4507,63 @@ static int setup_proc_entry( struct net_device *dev,
->                                             airo_entry);
->         if (!apriv->proc_entry)
->                 goto fail;
-> -       apriv->proc_entry->uid = proc_kuid;
-> -       apriv->proc_entry->gid = proc_kgid;
-> +       proc_set_user(apriv->proc_entry, proc_kuid, proc_kgid);
->
->         /* Setup the StatsDelta */
->         entry = proc_create_data("StatsDelta", S_IRUGO & proc_perm,
->                                  apriv->proc_entry, &proc_statsdelta_ops, dev);
->         if (!entry)
->                 goto fail_stats_delta;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the Stats */
->         entry = proc_create_data("Stats", S_IRUGO & proc_perm,
->                                  apriv->proc_entry, &proc_stats_ops, dev);
->         if (!entry)
->                 goto fail_stats;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the Status */
->         entry = proc_create_data("Status", S_IRUGO & proc_perm,
->                                  apriv->proc_entry, &proc_status_ops, dev);
->         if (!entry)
->                 goto fail_status;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the Config */
->         entry = proc_create_data("Config", proc_perm,
->                                  apriv->proc_entry, &proc_config_ops, dev);
->         if (!entry)
->                 goto fail_config;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the SSID */
->         entry = proc_create_data("SSID", proc_perm,
->                                  apriv->proc_entry, &proc_SSID_ops, dev);
->         if (!entry)
->                 goto fail_ssid;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the APList */
->         entry = proc_create_data("APList", proc_perm,
->                                  apriv->proc_entry, &proc_APList_ops, dev);
->         if (!entry)
->                 goto fail_aplist;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the BSSList */
->         entry = proc_create_data("BSSList", proc_perm,
->                                  apriv->proc_entry, &proc_BSSList_ops, dev);
->         if (!entry)
->                 goto fail_bsslist;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->
->         /* Setup the WepKey */
->         entry = proc_create_data("WepKey", proc_perm,
->                                  apriv->proc_entry, &proc_wepkey_ops, dev);
->         if (!entry)
->                 goto fail_wepkey;
-> -       entry->uid = proc_kuid;
-> -       entry->gid = proc_kgid;
-> -
-> +       proc_set_user(entry, proc_kuid, proc_kgid);
->         return 0;
->
->  fail_wepkey:
-> @@ -5695,10 +5685,8 @@ static int __init airo_init_module( void )
->
->         airo_entry = proc_mkdir_mode("driver/aironet", airo_perm, NULL);
->
-> -       if (airo_entry) {
-> -               airo_entry->uid = proc_kuid;
-> -               airo_entry->gid = proc_kgid;
-> -       }
-> +       if (airo_entry)
-> +               proc_set_user(airo_entry, proc_kuid, proc_kgid);
->
->         for (i = 0; i < 4 && io[i] && irq[i]; i++) {
->                 airo_print_info("", "Trying to configure ISA adapter at irq=%d "
-> diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-> index 12e4fb5..7cde7c1 100644
-> --- a/drivers/pci/proc.c
-> +++ b/drivers/pci/proc.c
-> @@ -419,7 +419,7 @@ int pci_proc_attach_device(struct pci_dev *dev)
->                              &proc_bus_pci_operations, dev);
->         if (!e)
->                 return -ENOMEM;
-> -       e->size = dev->cfg_size;
-> +       proc_set_size(e, dev->cfg_size);
->         dev->procent = e;
->
->         return 0;
-> diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-> index 1c07cad..5f6f6c3 100644
-> --- a/fs/proc/generic.c
-> +++ b/fs/proc/generic.c
-> @@ -498,6 +498,19 @@ out:
->         return NULL;
->  }
->  EXPORT_SYMBOL(proc_create_data);
-> +
-> +void proc_set_size(struct proc_dir_entry *de, loff_t size)
-> +{
-> +       de->size = size;
-> +}
-> +EXPORT_SYMBOL(proc_set_size);
-> +
-> +void proc_set_user(struct proc_dir_entry *de, kuid_t uid, kgid_t gid)
-> +{
-> +       de->uid = uid;
-> +       de->gid = gid;
-> +}
-> +EXPORT_SYMBOL(proc_set_user);
->
->  static void free_proc_entry(struct proc_dir_entry *de)
->  {
-> diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-> index 805edac..28a4d7e 100644
-> --- a/include/linux/proc_fs.h
-> +++ b/include/linux/proc_fs.h
-> @@ -130,6 +130,9 @@ static inline struct proc_dir_entry *proc_create(const char *name, umode_t mode,
->  extern struct proc_dir_entry *proc_net_mkdir(struct net *net, const char *name,
->         struct proc_dir_entry *parent);
->
-> +extern void proc_set_size(struct proc_dir_entry *, loff_t);
-> +extern void proc_set_user(struct proc_dir_entry *, kuid_t, kgid_t);
-> +
->  extern struct file *proc_ns_fget(int fd);
->  extern bool proc_ns_inode(struct inode *inode);
->
-> @@ -158,6 +161,8 @@ static inline struct proc_dir_entry *proc_mkdir(const char *name,
->         struct proc_dir_entry *parent) {return NULL;}
->  static inline struct proc_dir_entry *proc_mkdir_mode(const char *name,
->         umode_t mode, struct proc_dir_entry *parent) { return NULL; }
-> +static inline void proc_set_size(struct proc_dir_entry *de, loff_t size) {}
-> +static inline void proc_set_user(struct proc_dir_entry *de, kuid_t uid, kgid_t gid) {}
->
->  struct tty_driver;
->  static inline void proc_tty_register_driver(struct tty_driver *driver) {};
-> diff --git a/kernel/configs.c b/kernel/configs.c
-> index 42e8fa0..c18b1f1 100644
-> --- a/kernel/configs.c
-> +++ b/kernel/configs.c
-> @@ -79,7 +79,7 @@ static int __init ikconfig_init(void)
->         if (!entry)
->                 return -ENOMEM;
->
-> -       entry->size = kernel_config_data_size;
-> +       proc_set_size(entry, kernel_config_data_size);
->
->         return 0;
->  }
-> diff --git a/kernel/profile.c b/kernel/profile.c
-> index 524ce5e..0bf4007 100644
-> --- a/kernel/profile.c
-> +++ b/kernel/profile.c
-> @@ -600,7 +600,7 @@ int __ref create_proc_profile(void) /* false positive from hotcpu_notifier */
->                             NULL, &proc_profile_operations);
->         if (!entry)
->                 return 0;
-> -       entry->size = (1+prof_len) * sizeof(atomic_t);
-> +       proc_set_size(entry, (1 + prof_len) * sizeof(atomic_t));
->         hotcpu_notifier(profile_cpu_callback, 0);
->         return 0;
->  }
-> diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
-> index 3db2d38..1e657cf 100644
-> --- a/net/netfilter/xt_recent.c
-> +++ b/net/netfilter/xt_recent.c
-> @@ -401,8 +401,7 @@ static int recent_mt_check(const struct xt_mtchk_param *par,
->                 ret = -ENOMEM;
->                 goto out;
->         }
-> -       pde->uid = uid;
-> -       pde->gid = gid;
-> +       proc_set_user(pde, uid, gid);
->  #endif
->         spin_lock_bh(&recent_lock);
->         list_add_tail(&t->list, &recent_net->tables);
-> diff --git a/sound/core/info.c b/sound/core/info.c
-> index 3aa8864..c7f41c3 100644
-> --- a/sound/core/info.c
-> +++ b/sound/core/info.c
-> @@ -970,7 +970,7 @@ int snd_info_register(struct snd_info_entry * entry)
->                         mutex_unlock(&info_mutex);
->                         return -ENOMEM;
->                 }
-> -               p->size = entry->size;
-> +               proc_set_size(p, entry->size);
->         }
->         entry->p = p;
->         if (entry->parent)
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-pci" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Scenario:
+When FE1(LowLatency) comes in which opens BE1 and puts it in state
+SND_SOC_DPCM_STATE_START. Similarly FE2(LPA) comes in with
+connecting to same BE. Now FE2 is in SND_SOC_DPCM_STATE_PREPARE
+state and waits for TRIGGER_START. Meanwhile FE1 is closed which
+doesn't affect BE1 and FE2 which are connected.
+Also, for FE2 pcm_close is called before TRIGGER_START itself.
+In such a case, BE1 is not getting disconnected  while Codec is teared
+down resulting in failures.
+
+Fix:
+Whenever BE1 is found to be in SND_SOC_DPCM_STATE_START state
+and FE1 being connected is not started yet, and close sequence
+happens for this FE, then allow hw_free to happen for BE1 if
+this is the only FE connected to this BE1. This allows BE to be
+disconnected which calls afe_close then followed by Codec teardown
+not resulting in any failures.
+
+Signed-off-by: Laxminath Kasam <lkasam@codeaurora.org>
+---
+sound/soc/soc-pcm.c |    7 ++++++-
+1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 915c3c2..ed0ea86 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1765,7 +1765,12 @@ static int soc_dpcm_be_dai_hw_free(struct
+snd_soc_pcm_runtime *fe, int stream)
+                    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+                        (be->dpcm[stream].state !=
+SND_SOC_DPCM_STATE_HW_FREE) &&
+                    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED) &&
+-                   (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
++                   (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
++                   !((be->dpcm[stream].state == SND_SOC_DPCM_STATE_START)&&
++                     ((fe->dpcm[stream].state !=
+SND_SOC_DPCM_STATE_START) &&
++                       (fe->dpcm[stream].state !=
+SND_SOC_DPCM_STATE_PAUSED) &&
++                       (fe->dpcm[stream].state !=
++
+SND_SOC_DPCM_STATE_SUSPEND))))
+                        continue;
+
+                dev_dbg(be->dev, "dpcm: hw_free BE %s\n",
+--
+-----------------------------------------
+
+
+Please let me know if you are looking for more details.
+
+Thanks
+Kasam
