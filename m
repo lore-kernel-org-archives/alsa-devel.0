@@ -1,18 +1,19 @@
-From: walter harms <wharms@bfs.de>
-Subject: Re: [patch] ALSA: compress: info leak in
-	snd_compr_get_caps()
-Date: Sun, 21 Apr 2013 13:40:25 +0200
-Message-ID: <5173D029.10806@bfs.de>
-References: <20130421110729.GA6171@elgon.mountain>
-Reply-To: wharms@bfs.de
+From: Leanne Girdwood <girdwood@gmail.com>
+Subject: Re: [PATCH 0/7] Add capture support to compress API
+Date: Thu, 18 Apr 2013 20:20:43 +1000
+Message-ID: <CAE3SLkuPN_8SJxLq1PxrS0hxUwaB+7nVNi8XSJDfzDus+jhBHw@mail.gmail.com>
+References: <cover.1366278354.git.rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx01.sz.bfs.de (mx01.sz.bfs.de [194.94.69.103])
- by alsa0.perex.cz (Postfix) with ESMTP id 71712260305
- for <alsa-devel@alsa-project.org>; Sun, 21 Apr 2013 13:40:58 +0200 (CEST)
-In-Reply-To: <20130421110729.GA6171@elgon.mountain>
+Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
+ [209.85.217.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED6F1264EFC
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 12:21:03 +0200 (CEST)
+Received: by mail-lb0-f180.google.com with SMTP id t11so2517039lbi.39
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 03:21:03 -0700 (PDT)
+In-Reply-To: <cover.1366278354.git.rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Namarta Kohli <namartax.kohli@intel.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, vinod.koul@intel.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+REMOVE THIS ADDRESS FROM THIS MAILING LIST PLEASE
 
 
-Am 21.04.2013 13:07, schrieb Dan Carpenter:
-> If the ->get_caps() function doesn't clear the buffer then there would
-> stack information leaked to userspace.  For example,
-> soc_compr_get_caps() can return success without clearing the buffer.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> Perhaps the soc_compr_get_caps() function should return an error code
-> if the platform->driver->compr_ops is NULL.  I'm not sure about that,
-> and it's a separate issue anyway.
-> 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index c84abc8..8d3190a 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -375,6 +375,7 @@ snd_compr_get_caps(struct snd_compr_stream *stream, unsigned long arg)
->  	if (!stream->ops->get_caps)
->  		return -ENXIO;
->  
-> +	memset(&caps, 0, sizeof(caps));
->  	retval = stream->ops->get_caps(stream, &caps);
->  	if (retval)
->  		goto out;
+On 18 April 2013 19:58, Richard Fitzgerald
+<rf@opensource.wolfsonmicro.com>wrote:
+
+> This chain of patches does some clearing up and add capture
+> support to the compressed API.
+>
+> Missing is support for capture streams that don't use the
+> copy callback. Also I have included two patches at the end
+> of the chain that remove the buffer pointers and just use
+> the cumulative values however as our setup uses the copy
+> callback these are untested past build so should be taken
+> with caution.
+>
+> Thanks,
+> Charles
+>
+> Thess patches apply to:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+>   branch "for-next"
+>
+> based on top of commit
+>   126825e ALSA: snd-usb: add quirks handler for DSD streams
+>
+> - RichF
+>
+> Charles Keepax (7):
+>   ALSA: compress_core: Update calc_avail to use cumulative values
+>   ALSA: compress_core: Calculate avail correctly for capture streams
+>   ALSA: compress_core: Deconstify copy callback buffer
+>   ALSA: compress_core: Add support for capture streams
+>   ASoC: soc-compress: Deduce stream direction
+>   ALSA: compress_core: Remove unused hw_pointer
+>   ALSA: compress_core: Rework writes to use cumulative values
+>
+>  include/sound/compress_driver.h |    4 +-
+>  sound/core/compress_offload.c   |  117
+> +++++++++++++++++++++++++-------------
+>  sound/soc/soc-compress.c        |   11 +++-
+>  3 files changed, 87 insertions(+), 45 deletions(-)
+>
 > --
-
-IMHO this should be done in get_caps() as it will manipulate the entries.
-or is there a special reason to have it here ?
-
-re,
- wh
+> 1.7.2.5
+>
+>
