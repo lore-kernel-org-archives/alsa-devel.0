@@ -1,21 +1,16 @@
-From: Lee Jones <lee.jones@linaro.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 17/17] ASoC: ux500: Use generic dmaengine
 	PCM
-Date: Thu, 18 Apr 2013 14:50:37 +0100
-Message-ID: <20130418135037.GB3959@gmail.com>
+Date: Thu, 18 Apr 2013 15:05:41 +0100
+Message-ID: <20130418140541.GH13687@opensource.wolfsonmicro.com>
 References: <1366046404-8759-1-git-send-email-lars@metafoo.de>
  <1366046404-8759-18-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3008928416776290488=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 19203264F13
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 15:50:43 +0200 (CEST)
-Received: by mail-wi0-f180.google.com with SMTP id h11so1931031wiv.13
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 06:50:42 -0700 (PDT)
-Content-Disposition: inline
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0AA5B264F19
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 16:05:44 +0200 (CEST)
 In-Reply-To: <1366046404-8759-18-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,29 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Russell King <linux@arm.linux.org.uk>, Ryan Mallon <rmallon@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Laxman Dewangan <ldewangan@nvidia.com>, Sebastien Guiriec <s-guiriec@ti.com>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, Lee Jones <lee.jones@linaro.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxNSBBcHIgMjAxMywgTGFycy1QZXRlciBDbGF1c2VuIHdyb3RlOgoKPiBVc2UgdGhl
-IGdlbmVyaWMgZG1hZW5naW5lIFBDTSBkcml2ZXIgaW5zdGVhZCBvZiBhIGN1c3RvbSBpbXBsZW1l
-bnRpb24uICBUaGVyZSBpcwo+IGEgbWlub3IgZnVuY3Rpb25hbCBjaGFuZ2UsIHRoZSB1eDUwMCBQ
-Q00gZHJpdmVyIGRpZCBub3QgcHJlYWxsb2NhdGUgdGhlIGF1ZGlvCj4gYnVmZmVyLCB3aGlsZSB0
-aGUgZ2VuZXJpYyBkbWFlbmdpbmUgUENNIGRyaXZlciB3aWxsIGRvIHRoaXMuCj4gCj4gU2lnbmVk
-LW9mZi1ieTogTGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1ldGFmb28uZGU+Cj4gLS0tCj4gIGlu
-Y2x1ZGUvc291bmQvZG1hZW5naW5lX3BjbS5oIHwgICAyICstCj4gIHNvdW5kL3NvYy91eDUwMC9L
-Y29uZmlnICAgICAgIHwgICAyICstCj4gIHNvdW5kL3NvYy91eDUwMC91eDUwMF9wY20uYyAgIHwg
-MTU5ICsrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAzIGZpbGVz
-IGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDE0NCBkZWxldGlvbnMoLSkKCkJ5IHJpZ2h0cyB5
-b3UgcmVhbGx5IG5lZWQgT2xhJ3MgYXBwcm92YWwgb24gdGhpcywgYnV0IGJlY2F1c2U6CgphKSAu
-Li4gdGhpcyByZW1vdmVzIGEgaGVsbCBvZiBhIGxvdCBvZiBvbGQgY29kZSwgYW5kCmIpIC4uLiB1
-c2luZyB0aGUgbmV3IERNQSBBUElzIF9pc18gdGhlIGNvcnJlY3QgdGhpbmcgdG8gZG8sIGFuZApj
-KSAuLi4gdGhpcyBhaWRzIG1lIGluIGdldHRpbmcgdGhlIEQ0MCBETUEgY29udHJvbGxlciB1cC10
-by1zY3JhdGNoLCBhbmQKZCkgLi4uIEkgaGF2ZSBwYXRjaGVzIHdoaWNoIHJlbHkgb24gdGhlc2Ug
-Y2hhbmdlcywgYW5kCmUpIC4uLiB0aGUgZHJpdmVyIGlzIGFscmVhZHkgcHJldHR5IGJyb2tlbgoK
-Li4uIHlvdSBjYW4gaGF2ZSBteTogQWNrZWQtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFy
-by5vcmc+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVh
-ZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93
-IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============3008928416776290488==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tQHaQFR6K/xpRpl8"
+Content-Disposition: inline
+
+
+--tQHaQFR6K/xpRpl8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Apr 15, 2013 at 07:20:04PM +0200, Lars-Peter Clausen wrote:
+> Use the generic dmaengine PCM driver instead of a custom implemention.  There is
+> a minor functional change, the ux500 PCM driver did not preallocate the audio
+> buffer, while the generic dmaengine PCM driver will do this.
+
+Applied, thanks.
+
+--tQHaQFR6K/xpRpl8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRb/2gAAoJELSic+t+oim97BcP/jrk2zC/olaTrXw9qSSjpm7B
+cFvLF85j4QXxdTlyPa4oVE5bRkVXGureTssSTac6S0XplgrgsnnPuFaX7yYE1Pn4
+/iuayMKz8MmoQS7U3HM3P1pc2cL1dUO8Ekz2MJa0ofiSiDvgTE0q8m3MV8Gm8nR5
+gP+aMptJFeMybk7ELDkKSY51RfteiuB6MhhRl8a4D2L+K0XGttaS8W12y3wTctF1
+OV/gjnCDk7nRazW2aPk1snc1eoj9Y6atToQOAxg41EPaeT+NjvKyVAxPYw6YcKg5
+ZETxTrQjXc/L8FKNCA2zoOKU+JvOPO9Gf1AcqpeSB+GJckocVR1wQiI26s4xwFaF
+vFdY1ilDd8qGTl9SDh12BoEBQOvBPMAnnZBP9scVITkU3Or/c6IJKEoT5TFRuh/F
+21Po2QdtDoAFxF3ttluDxeb6yjNXuaezCx4wzkdX4ysqvDg8QDVYZfzOT4up3acm
+DjHLRWE9RIxfM05Rfu4NiZBxQfEIooyx3SCyYkfA91dLUkNvAvtv4P0Hutg4Uyz9
+Zxjh28scxgmcC5rU78JShXlyR8Nax+6JilMPPiiESEbXoy3ActrSOuOIQyJk2MdU
+uswXiFdQpMP8CZm2tXGhkxHfI8DCc8GwcmD+/mpwy9h1K16D+5/2Su0DLiUwC/B7
+nxE/GsvhMBDiD0udPh6T
+=nqt+
+-----END PGP SIGNATURE-----
+
+--tQHaQFR6K/xpRpl8--
+
+--===============3008928416776290488==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3008928416776290488==--
