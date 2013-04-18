@@ -1,20 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 4/4] ASoC: imx-sgtl5000: Convert to
-	devm_clk_get()
-Date: Wed, 17 Apr 2013 20:55:21 -0300
-Message-ID: <1366242921-16376-4-git-send-email-festevam@gmail.com>
-References: <1366242921-16376-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH] sgtl5000.txt: Include supplies as required
+	properties
+Date: Wed, 17 Apr 2013 21:10:39 -0300
+Message-ID: <1366243839-16908-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f41.google.com (mail-yh0-f41.google.com
- [209.85.213.41])
- by alsa0.perex.cz (Postfix) with ESMTP id AE8AD261981
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 01:55:53 +0200 (CEST)
-Received: by mail-yh0-f41.google.com with SMTP id q11so363011yhf.14
- for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 16:55:53 -0700 (PDT)
-In-Reply-To: <1366242921-16376-1-git-send-email-festevam@gmail.com>
+Received: from mail-yh0-f53.google.com (mail-yh0-f53.google.com
+ [209.85.213.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEF7F2625D3
+ for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2013 02:10:50 +0200 (CEST)
+Received: by mail-yh0-f53.google.com with SMTP id t59so354759yho.12
+ for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2013 17:10:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, matt@genesi-usa.com, mfuzzey@gmail.com, kernel@pengutronix.de, shawn.guo@linaro.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, rob.herring@calxeda.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Converting to devm_clk_get() can simplify the code a bit.
+sgtl5000 driver cannot probe succesfully if VDDA and VDDIO regulators are not
+provided.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/imx-sgtl5000.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ .../devicetree/bindings/sound/sgtl5000.txt         |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 18af815..c869996 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -137,7 +137,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+index 9cc4444..520eb98 100644
+--- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+@@ -5,9 +5,15 @@ Required properties:
  
--	data->codec_clk = clk_get(&codec_dev->dev, NULL);
-+	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
- 	if (IS_ERR(data->codec_clk)) {
- 		ret = PTR_ERR(data->codec_clk);
- 		dev_err(&codec_dev->dev, "could not get codec clk: %d\n", ret);
-@@ -186,7 +186,6 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ - reg : the I2C address of the device
  
- clk_fail:
- 	clk_disable_unprepare(data->codec_clk);
--	clk_put(data->codec_clk);
- fail:
- 	if (ssi_np)
- 		of_node_put(ssi_np);
-@@ -200,10 +199,7 @@ static int imx_sgtl5000_remove(struct platform_device *pdev)
- {
- 	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
++- VDDA-supply: regulator that provides VDDA voltage
++
++- VDDIO-supply: regulator that provides VDDIO voltage
++
+ Example:
  
--	if (data->codec_clk) {
--		clk_disable_unprepare(data->codec_clk);
--		clk_put(data->codec_clk);
--	}
-+	clk_disable_unprepare(data->codec_clk);
- 	snd_soc_unregister_card(&data->card);
- 
- 	return 0;
+ codec: sgtl5000@0a {
+ 	compatible = "fsl,sgtl5000";
+ 	reg = <0x0a>;
++	VDDA-supply = <&reg_2p5v>;
++	VDDIO-supply = <&reg_3p3v>;
+ };
 -- 
 1.7.9.5
