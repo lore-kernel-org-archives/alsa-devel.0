@@ -1,87 +1,118 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ALSA framework problem: FE disconnected,
- BE still connected!
-Date: Fri, 19 Apr 2013 11:27:22 +0100
-Message-ID: <20130419102722.GT13687@opensource.wolfsonmicro.com>
-References: <7e576a6bf7cb6ca6a9be95b0d14e3a87.squirrel@www.codeaurora.org>
- <20130418165844.GN13687@opensource.wolfsonmicro.com>
- <51705700.8090005@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0467428691093781133=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 248DB264FE3
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2013 12:27:24 +0200 (CEST)
-In-Reply-To: <51705700.8090005@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: asishb@codeaurora.org, lkasam@codeaurora.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, gsantosh@codeaurora.org
+From: Michal Bachraty <michal.bachraty@streamunlimited.com>
+Subject: [PATCH 1/2] ALSA: ASoC davinci-pcm, davinci-mcasp Clean up active_serializers
+Date: Fri, 19 Apr 2013 15:28:03 +0200
+Message-ID: <1366378083-14325-1-git-send-email-michal.bachraty@streamunlimited.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, marek.belisko@streamunlimited.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
+As pointed of by Vaibhav, commit message: "ASoC: davinci-mcasp: Add support for multichannel playback"
+number of active serializers can be hidden into fifo_level variable, which is set in davimci-mcasp.
 
---===============0467428691093781133==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PzGeKfgKLFJqWH+5"
-Content-Disposition: inline
+Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
+---
+ sound/soc/davinci/davinci-mcasp.c |    8 +++++---
+ sound/soc/davinci/davinci-pcm.c   |   11 +++++------
+ sound/soc/davinci/davinci-pcm.h   |    1 -
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-
---PzGeKfgKLFJqWH+5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 18, 2013 at 01:26:40PM -0700, Patrick Lai wrote:
-> On 4/18/2013 9:58 AM, Mark Brown wrote:
-
-> >Please submit patches in hte form covered in SubmittingPatches.
-
-> We are not sure if the solution is correct. Change from Kasam will skip
-
-Even if you're not sure it's best to post as a normal patch so if the
-patch is a good solution it can be applied.
-
-> the step which trigger stop the hardware and directly call hardware
-> free. Is it expected that every driver internally stops the hardware
-> before freeing the hardware resource if not stopped?
-
-That seems silly.
-
---PzGeKfgKLFJqWH+5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRcRwCAAoJELSic+t+oim9+GgQAJRnN5zOfxXo8TY9NnpwOy9F
-3mvJ9eyJPlR6wXQ/PB5cKMKHMc7WluRrkSG6OwOUCFiLxREMuF5pJVrqxvm8e4Hg
-FkBsqxnKSvJ9+ld2q/TXOdELXs+Z6+PYimb2Lu5sjHSSAknH1R1zKu+jszEz9obo
-xtNN02Y5Qi1cn2UTrtYYDtLLqm4jjsAfYLbDysOAzUTH/HivwK7v7f1kjSSd89Ef
-/YHr3MEDPnxp3iUHTAHsUmAVWOJh24b8hIWkUS/tjd6B/dHhJpBS1dI1cBn6fSRb
-t9Wz/EwEWWLPzWxt7tMnm0TXWg2My0RlP/W5J0h9ukKNVql1bAQ3YQS4hXnzx66l
-7OwkFIUKWBIrnNsBNAcxmZwY/Fa/TvGj5NZ0NMhV5QaLYd6ijXCdqZaAvhOGC4XZ
-eFuUqOjvzT3DrpfByMG1+IuaVGuBJ4VkrgqTX58xGaR020EMSmThDVSsThEgQCQb
-BPAxSbKF1TH7bc1h6+w+/yHJAuErVwEra9Uf0gL74AJxkcLVq54Y/Ey/ugpM9U0c
-CE36owGhdj88ZULk7tTKv4s+Q6oknsx2uNAb2VXy5siUG9dJj7++i56N9IAeuPi8
-+1AxoRDWV9bBeTmfD4dYOcIKMvZloclcFnzADSAL42LNSsdV5u05a0pm53Qj2FEG
-BWFWgDxRQSRjkHrBpHjp
-=mxPT
------END PGP SIGNATURE-----
-
---PzGeKfgKLFJqWH+5--
-
---===============0467428691093781133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0467428691093781133==--
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 8a9c0ee..63633e9 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -834,17 +834,20 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 	int word_length;
+ 	u8 fifo_level;
+ 	u8 slots = dev->tdm_slots;
++	u8 active_serializers;
+ 	int channels;
+ 	struct snd_interval *pcm_channels = hw_param_interval(params,
+ 					SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	channels = pcm_channels->min;
+ 
++	active_serializers = (channels + slots - 1) / slots;
++
+ 	if (davinci_hw_common_param(dev, substream->stream, channels) == -EINVAL)
+ 		return -EINVAL;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		fifo_level = dev->txnumevt;
++		fifo_level = dev->txnumevt * active_serializers;
+ 	else
+-		fifo_level = dev->rxnumevt;
++		fifo_level = dev->rxnumevt * active_serializers;
+ 
+ 	if (dev->op_mode == DAVINCI_MCASP_DIT_MODE)
+ 		davinci_hw_dit_param(dev);
+@@ -889,7 +892,6 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 		dma_params->acnt = dma_params->data_type;
+ 
+ 	dma_params->fifo_level = fifo_level;
+-	dma_params->active_serializers = (channels + slots - 1) / slots;
+ 	davinci_config_channel_size(dev, word_length);
+ 
+ 	return 0;
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index 0161579..8460edc 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -182,7 +182,6 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	unsigned short acnt;
+ 	unsigned int count;
+ 	unsigned int fifo_level;
+-	unsigned char serializers = prtd->params->active_serializers;
+ 
+ 	period_size = snd_pcm_lib_period_bytes(substream);
+ 	dma_offset = prtd->period * period_size;
+@@ -196,14 +195,14 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	data_type = prtd->params->data_type;
+ 	count = period_size / data_type;
+ 	if (fifo_level)
+-		count /= fifo_level * serializers;
++		count /= fifo_level;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		src = dma_pos;
+ 		dst = prtd->params->dma_addr;
+ 		src_bidx = data_type;
+ 		dst_bidx = 4;
+-		src_cidx = data_type * fifo_level * serializers;
++		src_cidx = data_type * fifo_level;
+ 		dst_cidx = 0;
+ 	} else {
+ 		src = prtd->params->dma_addr;
+@@ -211,7 +210,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 		src_bidx = 0;
+ 		dst_bidx = data_type;
+ 		src_cidx = 0;
+-		dst_cidx = data_type * fifo_level * serializers;
++		dst_cidx = data_type * fifo_level;
+ 	}
+ 
+ 	acnt = prtd->params->acnt;
+@@ -226,8 +225,8 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 							ASYNC);
+ 	else
+ 		edma_set_transfer_params(prtd->asp_link[0], acnt,
+-						fifo_level * serializers,
+-						count, fifo_level * serializers,
++						fifo_level,
++						count, fifo_level,
+ 						ABSYNC);
+ }
+ 
+diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
+index 0d84d32..fbb710c 100644
+--- a/sound/soc/davinci/davinci-pcm.h
++++ b/sound/soc/davinci/davinci-pcm.h
+@@ -27,7 +27,6 @@ struct davinci_pcm_dma_params {
+ 	unsigned char data_type;	/* xfer data type */
+ 	unsigned char convert_mono_stereo;
+ 	unsigned int fifo_level;
+-	unsigned char active_serializers; /* num. of active audio serializers */
+ };
+ 
+ int davinci_soc_platform_register(struct device *dev);
+-- 
+1.7.9.5
