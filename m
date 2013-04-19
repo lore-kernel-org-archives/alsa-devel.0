@@ -1,14 +1,11 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
- by alsa0.perex.cz (Postfix) with SMTP id DF0E1265139
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2013 22:48:02 +0200 (CEST)
-Date: Fri, 19 Apr 2013 16:48:00 -0400 (EDT)
+Date: Fri, 19 Apr 2013 14:18:24 -0400 (EDT)
 From: Alan Stern <stern@rowland.harvard.edu>
-In-Reply-To: <517192E1.1090609@gmail.com>
-Message-ID: <Pine.LNX.4.44L0.1304191638020.29846-100000@netrider.rowland.org>
+In-Reply-To: <5171700A.50308@ladisch.de>
+Message-ID: <Pine.LNX.4.44L0.1304191359350.26229-100000@netrider.rowland.org>
 MIME-Version: 1.0
-Subject: Re: [alsa-devel] Asynchronous audio USB chips: choppy playback
- since 3.8-rc7
+Subject: Re: [alsa-devel] BUG: USB audio discontinuities with 'UHCI:
+ implement new semantics for URB_ISO_ASAP'
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,69 +17,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 1136110@bugs.launchpad.net, Takashi Iwai <tiwai@suse.de>, Joseph Salisbury <joseph.salisbury@canonical.com>, Tyson Tan <tysontan@mail.com>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
+Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, Joe Rayhawk <jrayhawk@fairlystable.org>, alsa-devel@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-On Fri, 19 Apr 2013, Daniel Mack wrote:
+On Fri, 19 Apr 2013, Clemens Ladisch wrote:
 
-> On 03.04.2013 12:25, Takashi Iwai wrote:
-> > At Wed, 03 Apr 2013 12:15:25 +0200,
-> > David Henningsson wrote:
-> >>
-> >> Hi ALSA developers,
-> >>
-> >> Just to get your attention here on what seems to be an USB audio 
-> >> regression.
-> >>
-> >> The bug is described in detail here:
-> >>
-> >> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110?comments=all
-> >>
-> >> Quoting the bug:
-> >>
-> >> "
-> >> This bug seems to affect only a certain kind of hardware, which is 
-> >> called "Asynchronous USB Digital Audio Codec (DAC)". It's said that such 
-> >> a DAC hosts the clock itself (USB Device Host). An ordinary DAC, so 
-> >> called "Synchronous USB DAC", uses the clock hosted by the mother board, 
-> >> which is not affected by this bug.
-> >>
-> >> When this bug affects an asynchronous USB DAC, the audio played by the 
-> >> DAC is constantly interrupted. The playback itself does not stop, but 
-> >> the output becomes discontinous, filling with constant crackling noises, 
-> >> destroying everything the DAC plays.
-> >> "
-> >>
-> >> According to the bug reporter, which seems to have done quite a bit of 
-> >> research, this started between 3.8-rc6 and 3.8-rc7 as well as stable 
-> >> kernels and the bug also lists a few commits which could be the cause, 
-> >> none under sound/usb though.
-> > 
-> > Yes, there is no commits regarding usb-audio itself between 3.8-rc6
-> > and rc7, so the likely culprit is in drivers/usb (usually either
-> > drivers/usb/host or drivers/usb/core).  There are a bunch of changes
-> > there, so further bisection would be appreciated.
+> Alan Stern wrote:
+> > ...
+> > This trace shows that the frame numbers do not increase sequentially:
+> > 1057125, 1057126, 1057128, 1057129, 1053131, ...  This is because the
+> > new driver is a little more conservative than the old driver,
+> > requiring latencies to be larger than 1 ms.  You can see this
+> > explicitly in one of the new lines added by the commit you found:
+> >
+> > +		next = uhci->frame_number + 2;
+> >
+> > That 2 is the minimum latency, in frames (one frame per ms).
 > 
-> Ok, Joseph Salisbury has build some bisection kernels, and Tyson Tan
-> relentlessly tested all of them, and it turns out that
-> 
-> 3e619d0415 ("USB: EHCI: fix bug in scheduling periodic split transfers")
-> 
-> Is the first bad commit. Also, reverting this commit from the current
-> mainline head makes the problem disappear.
-> 
-> Alan, any idea?
-> 
->   https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110
+> One frame worked fine with the old driver.  What is the reason for
+> this regression?
 
-No ideas as to the cause.
+The semantics of URB_ISO_ASAP changed; now the driver interprets as
+meaning "the earliest time that is certain to work".  Since I wasn't
+sure that a 1-ms latency would always work, I increased the minimum to
+2.
 
-For debugging, it would help to see a usbmon trace from a kernel where 
-the problem occurs, together with a trace from another kernel where the 
-problem does not occur.
+Perhaps that was a mistake.  Joe, you can try changing the 2 above to a 
+1 to see if it fixes the problem.
+
+> > Anyway, the solution is simple: The audio driver needs either to submit
+> > buffers that are at least 2 ms long, or to use more than two buffers
+> > (or both).
+> 
+> The audio driver already has the infrastructure to cope for hardware
+> restrictions like this, it just needs to *know* about them.  How can
+> it detect that it runs on the OHCI/UHCI drivers?
+
+That is a very good question.  In fact, the audio driver shouldn't care 
+about what kind of driver is used at the lower level; all it should 
+care about are bounds on the latency.
+
+The kernel's USB API doesn't provide this information, unfortunately.  
+There should be a way for drivers to find out, for any USB device:
+
+     A.	The maximum delay time needed for starting a new isochronous
+	stream;
+
+     B.	The minimum advance time required for submitting a new URB
+	to an existing isochronous stream (i.e., the minimum pipeline
+	size);
+
+     C.	The maximum time into the future that isochronous URBs can be 
+	scheduled (the maximum pipeline size).
+
+I don't think there's any way to add this information into all of the 
+existing host controller drivers, though.
+
+For now, the best approach is to be conservative.  I believe all the
+existing USB host controller drivers will work okay if you assume the
+following values:
+
+	A: 50 ms;
+
+	B: 2 ms;
+
+	C: 200 ms.
+
+The audio driver probably doesn't care about A; you try to start a new 
+stream and it gets going whenever the HCD chooses.  You may or may not 
+care about C.  B is the important one for this discussion.
 
 Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 _______________________________________________
 Alsa-devel mailing list
