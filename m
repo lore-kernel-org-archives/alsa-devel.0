@@ -1,55 +1,68 @@
 From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: [PATCH 2/2] ALSA: ASoc: davinci-mcasp: Add Support BCLK-to-LRCLK ratio for TDM modes
-Date: Fri, 19 Apr 2013 15:28:44 +0200
-Message-ID: <1366378124-14368-1-git-send-email-michal.bachraty@streamunlimited.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, marek.belisko@streamunlimited.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
+Subject: [PATCH 1/2] ALSA: ASoc: spdif_transciever: Add DT
+	support
+Date: Fri, 19 Apr 2013 15:38:45 +0200
+Message-ID: <1366378725-14471-1-git-send-email-michal.bachraty@streamunlimited.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.inode.at (mx03.lb01.inode.at [62.99.145.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 704F426109B
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2013 15:38:58 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, rob.herring@calxeda.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
+Cc: marek.belisko@streamunlimited.com, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
-For TDM mode, BCLK-to-LCLK ratio is computed as (tdm_slots) x (word_length).
-I2S mode is only subset of TDM mode with specific tdm_slots = 2 channels.
-Also bclk_lrclk_ratio can be greater than 255, therefore u16 need to be used.
+Add devicetree support for this dummy audio soc driver.
 
 Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
 ---
- sound/soc/davinci/davinci-mcasp.c |    7 ++++---
- sound/soc/davinci/davinci-mcasp.h |    2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/spdif_transciever.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 63633e9..d54e0d9 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -636,11 +636,12 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
- 	 * callback, take it into account here. That allows us to for example
- 	 * send 32 bits per channel to the codec, while only 16 of them carry
- 	 * audio payload.
--	 * The clock ratio is given for a full period of data (both left and
--	 * right channels), so it has to be divided by 2.
-+	 * The clock ratio is given for a full period of data (for I2S format
-+	 * both left and right channels), so it has to be divided by number of
-+	 * tdm-slots (for I2S - divided by 2).
- 	 */
- 	if (dev->bclk_lrclk_ratio)
--		word_length = dev->bclk_lrclk_ratio / 2;
-+		word_length = dev->bclk_lrclk_ratio / dev->tdm_slots;
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
+index 112a49d..4c8c295 100644
+--- a/sound/soc/codecs/spdif_transciever.c
++++ b/sound/soc/codecs/spdif_transciever.c
+@@ -20,6 +20,7 @@
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+ #include <sound/initval.h>
++#include <linux/of.h>
  
- 	/* mapping of the XSSZ bit-field as described in the datasheet */
- 	fmt = (word_length >> 1) - 1;
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 0edd3b5..a9ac0c1 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -38,7 +38,7 @@ struct davinci_audio_dev {
- 	u8	num_serializer;
- 	u8	*serial_dir;
- 	u8	version;
--	u8	bclk_lrclk_ratio;
-+	u16	bclk_lrclk_ratio;
+ #define DRV_NAME "spdif-dit"
  
- 	/* McASP FIFO related */
- 	u8	txnumevt;
+@@ -52,12 +53,21 @@ static int spdif_dit_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id spdif_dit_dt_ids[] = {
++	{ .compatible = DRV_NAME, },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, spdif_dits_dt_ids);
++#endif
++
+ static struct platform_driver spdif_dit_driver = {
+ 	.probe		= spdif_dit_probe,
+ 	.remove		= spdif_dit_remove,
+ 	.driver		= {
+ 		.name	= DRV_NAME,
+ 		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(spdif_dit_dt_ids),
+ 	},
+ };
+ 
 -- 
 1.7.9.5
