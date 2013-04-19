@@ -1,48 +1,35 @@
 From: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Subject: [PATCH 1/2] ALSA: ASoc: spdif_transciever: Add DT
-	support
-Date: Fri, 19 Apr 2013 15:38:45 +0200
-Message-ID: <1366378725-14471-1-git-send-email-michal.bachraty@streamunlimited.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.inode.at (mx03.lb01.inode.at [62.99.145.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 704F426109B
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2013 15:38:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 2/2] ALSA: ASoC: spdif_receiver: Add DT support
+Date: Fri, 19 Apr 2013 15:39:19 +0200
+Message-ID: <1366378759-14517-1-git-send-email-michal.bachraty@streamunlimited.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, rob.herring@calxeda.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree-discuss@lists.ozlabs.org
-Cc: marek.belisko@streamunlimited.com, broonie@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
+Cc: lgirdwood@gmail.com, marek.belisko@streamunlimited.com, broonie@opensource.wolfsonmicro.com, Michal Bachraty <michal.bachraty@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
 Add devicetree support for this dummy audio soc driver.
 
 Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
 ---
- sound/soc/codecs/spdif_transciever.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/spdif_receiver.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
-index 112a49d..4c8c295 100644
---- a/sound/soc/codecs/spdif_transciever.c
-+++ b/sound/soc/codecs/spdif_transciever.c
-@@ -20,6 +20,7 @@
+diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
+index dd8d856..5d469c7 100644
+--- a/sound/soc/codecs/spdif_receiver.c
++++ b/sound/soc/codecs/spdif_receiver.c
+@@ -21,6 +21,9 @@
  #include <sound/soc.h>
  #include <sound/pcm.h>
  #include <sound/initval.h>
 +#include <linux/of.h>
++
++#define DRV_NAME "spdif-dir"
  
- #define DRV_NAME "spdif-dit"
- 
-@@ -52,12 +53,21 @@ static int spdif_dit_remove(struct platform_device *pdev)
+ #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -51,12 +54,21 @@ static int spdif_dir_remove(struct platform_device *pdev)
  	return 0;
  }
  
@@ -54,11 +41,11 @@ index 112a49d..4c8c295 100644
 +MODULE_DEVICE_TABLE(of, spdif_dits_dt_ids);
 +#endif
 +
- static struct platform_driver spdif_dit_driver = {
- 	.probe		= spdif_dit_probe,
- 	.remove		= spdif_dit_remove,
+ static struct platform_driver spdif_dir_driver = {
+ 	.probe		= spdif_dir_probe,
+ 	.remove		= spdif_dir_remove,
  	.driver		= {
- 		.name	= DRV_NAME,
+ 		.name	= "spdif-dir",
  		.owner	= THIS_MODULE,
 +		.of_match_table = of_match_ptr(spdif_dit_dt_ids),
  	},
