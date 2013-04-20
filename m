@@ -1,7 +1,7 @@
 From: Trulan Martin <trulanm@gmail.com>
-Subject: [PATCH - Yamaha THR5a 2/3] Yamaha THR5a USB quirk
-Date: Sat, 20 Apr 2013 11:31:46 -0400
-Message-ID: <1366471907-16615-3-git-send-email-trulanm@gmail.com>
+Subject: [PATCH - Yamaha THR10c 3/3] Yamaha THR10c USB quirk
+Date: Sat, 20 Apr 2013 11:31:47 -0400
+Message-ID: <1366471907-16615-4-git-send-email-trulanm@gmail.com>
 References: <1366471907-16615-1-git-send-email-trulanm@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,26 +22,26 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Trulan Martin <trulanm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a USB quirk for the Yamaha THR5a amp.
+This patch adds a USB quirk for the Yamaha THR10c amp.
 
 Signed-off-by: Trulan Martin <trulanm@gmail.com>
 
 diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 741680a..a16cb45 100644
+index a16cb45..ca50477 100644
 --- a/sound/usb/quirks-table.h
 +++ b/sound/usb/quirks-table.h
-@@ -379,6 +379,35 @@ YAMAHA_DEVICE(0x105d, NULL),
-         }
-     }
+@@ -408,6 +408,35 @@ YAMAHA_DEVICE(0x105d, NULL),
+       }
+    }
  },
 +/*
-+ * Yamaha THR5a
++ * Yamaha THR10c
 + */
 +{
-+   USB_DEVICE(0x0499, 0x150a),
++   USB_DEVICE(0x0499, 0x150c),
 +   .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
 +      /* .vendor_name = "Yamaha", */
-+      /* .product_name = "THR5a", */
++      /* .product_name = "THR10c", */
 +      .ifnum = QUIRK_ANY_INTERFACE,
 +      .type = QUIRK_COMPOSITE,
 +      .data = (const struct snd_usb_audio_quirk[]) {
