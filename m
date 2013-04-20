@@ -1,21 +1,22 @@
-From: =?UTF-8?Q?Daniel_Sch=C3=BCrmann?= <daschuer@mixxx.org>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH v2] ALSA: snd-usb-audio: set the timeout
  for usb control set messages to 5000 ms
-Date: Sat, 20 Apr 2013 22:17:36 +0200
-Message-ID: <CABVYHNjK4THGcVnak4-_-SPGdSGHNoRtmznMqStQ=U8t6f1VBg@mail.gmail.com>
+Date: Sat, 20 Apr 2013 22:19:55 +0200
+Message-ID: <5172F86B.2060207@gmail.com>
 References: <CABVYHNhfzWNhi0Jv=Z-WET-4amLnhB7Kq1Gi_bKc-Pf4cqqHHw@mail.gmail.com>
  <20130420192414.GB5650@pvv.ntnu.no>
+ <CABVYHNjK4THGcVnak4-_-SPGdSGHNoRtmznMqStQ=U8t6f1VBg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ia0-f177.google.com (mail-ia0-f177.google.com
- [209.85.210.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 41ED42651AE
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 22:17:38 +0200 (CEST)
-Received: by mail-ia0-f177.google.com with SMTP id y26so1772733iab.22
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 13:17:37 -0700 (PDT)
-In-Reply-To: <20130420192414.GB5650@pvv.ntnu.no>
+Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
+ [209.85.214.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 535D22651AE
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 22:19:49 +0200 (CEST)
+Received: by mail-bk0-f44.google.com with SMTP id jk13so2114797bkc.3
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 13:19:49 -0700 (PDT)
+In-Reply-To: <CABVYHNjK4THGcVnak4-_-SPGdSGHNoRtmznMqStQ=U8t6f1VBg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Torstein Hegge <hegge@resisty.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: =?UTF-8?B?RGFuaWVsIFNjaMO8cm1hbm4=?= <daschuer@mixxx.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Torstein Hegge <hegge@resisty.net>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVG9yc3RlaW4sIEhpIERhbmllbAoKVGhhbmsgeW91IGZvciB5b3VyIGhpbnQuCgpKdXN0IG5v
+T24gMjAuMDQuMjAxMyAyMjoxNywgRGFuaWVsIFNjaMO8cm1hbm4gd3JvdGU6Cj4gSGkgVG9yc3Rl
+aW4sIEhpIERhbmllbCAKPiAKPiBUaGFuayB5b3UgZm9yIHlvdXIgaGludC4KPiAKPiBKdXN0IG5v
 dGljZWQgdGhhdCB0aGUgZ2V0IHRpbWVvdXQgaXMgYWxzbyBzZXQgdG8gNTAwMCBtcyBldmVuIGlm
-IHRoZSBVU0IgMgpzcGVjIG9ubHkgYWxsb3dzIDUwMCBtcy4KCkRvIHlvdSB0aGluayBpdCBpcyBh
-bHNvIGEgZ29vZCBpZGVhIHRvIGFkb3B0IHRoZSA1MDAwIG1zIGdldCB0aW1vdXQgZm9yCnNuZC11
-c2ItYXVkaW8/CgpLaW5kIHJlZ2FyZHMsCgpEYW5pZWwKCi8qCiAqIHRpbWVvdXRzLCBpbiBtaWxs
-aXNlY29uZHMsIHVzZWQgZm9yIHNlbmRpbmcvcmVjZWl2aW5nIGNvbnRyb2wgbWVzc2FnZXMKICog
-dGhleSB0eXBpY2FsbHkgY29tcGxldGUgd2l0aGluIGEgZmV3IGZyYW1lcyAobXNlYykgYWZ0ZXIg
-dGhleSdyZSBpc3N1ZWQKICogVVNCIGlkZW50aWZpZXMgNSBzZWNvbmQgdGltZW91dHMsIG1heWJl
-IG1vcmUgaW4gYSBmZXcgY2FzZXMsIGFuZCBhIGZldwogKiBzbG93IGRldmljZXMgKGxpa2Ugc29t
-ZSBNR0UgRWxsaXBzZSBVUFNlcykgYWN0dWFsbHkgcHVzaCB0aGF0IGxpbWl0LgogKi8KI2RlZmlu
-ZSBVU0JfQ1RSTF9HRVRfVElNRU9VVCAgICA1MDAwCiNkZWZpbmUgVVNCX0NUUkxfU0VUX1RJTUVP
-VVQgICAgNTAwMAoKCgoKCgoyMDEzLzQvMjAgVG9yc3RlaW4gSGVnZ2UgPGhlZ2dlQHJlc2lzdHku
-bmV0PgoKPiBPbiBTYXQsIEFwciAyMCwgMjAxMyBhdCAyMDo1ODo1NiArMDIwMCwgRGFuaWVsIFNj
-aMO8cm1hbm4gd3JvdGU6Cj4gPiBUaGFuayB5b3UgRGFuaWVsIGZvciByZXZpZXcuCj4gPiBIZXJl
-IGlzIGFuIHVwZGF0ZWQgdmVyc2lvbiBvZiB0aGUgcGF0Y2ggYWdhaW5zdAo+ID4gaHR0cHM6Ly9n
-aXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0Lwo+ID4g
-NTgxY2JlZjQ2YWU2MDA3MzI1MjIwOGZjMWYyNmRkMTA0NGY2ZTIxNQo+ID4KPiA+IFNldCB0aGUg
-dGltZW91dCBmb3IgVVNCIGNvbnRyb2wgc2V0IG1lc3NhZ2VzIGFjY29yZGluZyB0byB0aGUgVVNC
-IDIgc3BlYwo+ID4gwqc5LjIuNi40IHRvIDUwMDAgbXMuCj4gPiBUbyBhdm9pZCBuZXcgaXNzdWVz
-LCB0aGUgZ2V0IHRpbWVvdXQgaXMgdW5jaGFuZ2VkIGF0IDEwMDAgbXMsIHRob3VnaCBpdAo+ID4g
-aXMgNTAwIG1zIGluIHRoZSBzcGVjLgo+ID4gVGhpcyBwYXRjaCBpcyByZXF1aXJlZCB0byBydW4g
-dGhlIEhlcmN1bGVzIFJNWDIgd2hpY2ggbmVlZHMgYSB0aW1lb3V0ID4KPiA+IDEyNDAgbXMKPiA+
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2Now7xybWFubiA8ZGFzY2h1ZXJAbWl4eHgub3Jn
-Pgo+ID4gLS0tCj4gPiBkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2hlbHBlci5jIGIvc291bmQvdXNi
-L2hlbHBlci5jCj4gPiBpbmRleCBjMWRiMjhmLi5jMWNhYWU0IDEwMDY0NAo+ID4gLS0tIGEvc291
-bmQvdXNiL2hlbHBlci5jCj4gPiArKysgYi9zb3VuZC91c2IvaGVscGVyLmMKPiA+IEBAIC0yMyw2
-ICsyMywxMSBAQAo+ID4gICNpbmNsdWRlICJoZWxwZXIuaCIKPiA+ICAjaW5jbHVkZSAicXVpcmtz
-LmgiCj4gPgo+ID4gKy8qIFZhbHVlIGZyb20gOS4yLjYuNCBVU0IgMiBzcGVjICovCj4gPiArI2Rl
-ZmluZSBVU0JfTVNHX1NFVF9USU1FT1VUIDUwMDAKPgo+IFRoZXJlIGlzIGFuIFVTQl9DVFJMX1NF
-VF9USU1FT1VUIG9mIDUwMDAgbXMgZGVmaW5lZCBpbgo+IGluY2x1ZGUvbGludXgvdXNiLmgsIHdo
-aWNoIGlzIHVzZWQgYnkgb3RoZXIgY2FsbGVycyBvZgo+IHVzYl9jb250cm9sX21zZygpLiBBbmQg
-bGludXgvdXNiLmggaXMgYWxyZWFkeSBpbmNsdWRlZCBieSBoZWxwZXIuYy4KPgo+ID4gKy8qIFZh
-bHVlIGZyb20gc3BlYyBpcyA1MDAgYnV0IHdlIHBpY2sgMTAwMCBmb3IgbGVnYWN5IHJlYXNvbnMg
-Ki8KPiA+ICsjZGVmaW5lIFVTQl9NU0dfR0VUX1RJTUVPVVQgMTAwMAo+ID4gKwo+ID4gIC8qCj4g
-PiAgICogY29tYmluZSBieXRlcyBhbmQgZ2V0IGFuIGludGVnZXIgdmFsdWUKPiA+ICAgKi8KPiA+
-IEBAIC04NiwxNCArOTEsMTkgQEAgaW50IHNuZF91c2JfY3RsX21zZyhzdHJ1Y3QgdXNiX2Rldmlj
-ZSAqZGV2LCB1bnNpZ25lZAo+ID4gaW50IHBpcGUsIF9fdTggcmVxdWVzdCwKPiA+ICB7Cj4gPiAg
-ICAgIGludCBlcnI7Cj4gPiAgICAgIHZvaWQgKmJ1ZiA9IE5VTEw7Cj4gPiArICAgIGludCB0aW1l
-b3V0Owo+ID4KPiA+ICAgICAgaWYgKHNpemUgPiAwKSB7Cj4gPiAgICAgICAgICBidWYgPSBrbWVt
-ZHVwKGRhdGEsIHNpemUsIEdGUF9LRVJORUwpOwo+ID4gICAgICAgICAgaWYgKCFidWYpCj4gPiAg
-ICAgICAgICAgICAgcmV0dXJuIC1FTk9NRU07Cj4gPiAgICAgIH0KPiA+ICsgICAgaWYgKHJlcXVl
-c3R0eXBlICYgVVNCX0RJUl9JTikKPiA+ICsgICAgICAgIHRpbWVvdXQgPSBVU0JfTVNHX0dFVF9U
-SU1FT1VUOwo+ID4gKyAgICBlbHNlCj4gPiArICAgICAgICB0aW1lb3V0ID0gVVNCX01TR19TRVRf
-VElNRU9VVDsKPiA+ICAgICAgZXJyID0gdXNiX2NvbnRyb2xfbXNnKGRldiwgcGlwZSwgcmVxdWVz
-dCwgcmVxdWVzdHR5cGUsCj4gPiAtICAgICAgICAgICAgICAgICAgdmFsdWUsIGluZGV4LCBidWYs
-IHNpemUsIDEwMDApOwo+ID4gKyAgICAgICAgICAgICAgICAgIHZhbHVlLCBpbmRleCwgYnVmLCBz
-aXplLCB0aW1lb3V0KTsKPiA+ICAgICAgaWYgKHNpemUgPiAwKSB7Cj4gPiAgICAgICAgICBtZW1j
-cHkoZGF0YSwgYnVmLCBzaXplKTsKPiA+ICAgICAgICAgIGtmcmVlKGJ1Zik7Cj4KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+IHRoZSBVU0IKPiAyIHNwZWMgb25seSBhbGxvd3MgNTAwIG1zLgo+IAo+IERvIHlvdSB0aGluayBp
+dCBpcyBhbHNvIGEgZ29vZCBpZGVhIHRvIGFkb3B0IHRoZSA1MDAwIG1zIGdldCB0aW1vdXQgZm9y
+Cj4gc25kLXVzYi1hdWRpbz8KCldlbGwsIGluIHRoYXQgY2FzZSwgd2UgY2FuIGluZGVlZCBqdXN0
+IHNldCBpdCB0byA1MDAwIHVuY29uZGl0aW9uYWxseSwKd2hpY2ggbWFrZXMgeW91ciBwYXRjaCBh
+IG9uZS1saW5lci4KCgpUaGFua3MsCkRhbmllbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
