@@ -1,17 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 8/8] ASoC: spear: Use generic dmaengine PCM
-Date: Sat, 20 Apr 2013 19:29:07 +0200
-Message-ID: <1366478947-9377-8-git-send-email-lars@metafoo.de>
-References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+From: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
+Subject: [PATCH v2] ALSA: snd-usb-audio: set the timeout for
+ usb control set messages to 5000 ms
+Date: Sat, 20 Apr 2013 20:58:56 +0200
+Message-ID: <CABVYHNhfzWNhi0Jv=Z-WET-4amLnhB7Kq1Gi_bKc-Pf4cqqHHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-081.synserver.de (smtp-out-086.synserver.de
- [212.40.185.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 456742651B7
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 19:30:05 +0200 (CEST)
-In-Reply-To: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+Received: from mail-ia0-f181.google.com (mail-ia0-f181.google.com
+ [209.85.210.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB488265191
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 20:58:59 +0200 (CEST)
+Received: by mail-ia0-f181.google.com with SMTP id y25so4352238iay.12
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 11:58:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,205 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the generic dmaengine PCM driver instead of a custom implementation.
+Thank you Daniel for review.
+Here is an updated version of the patch against
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
+581cbef46ae60073252208fc1f26dd1044f6e215
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Set the timeout for USB control set messages according to the USB 2 spec
+=A79.2.6.4 to 5000 ms.
+To avoid new issues, the get timeout is unchanged at 1000 ms, though it
+is 500 ms in the spec.
+This patch is required to run the Hercules RMX2 which needs a timeout >
+1240 ms
+
+Signed-off-by: Daniel Sch=FCrmann <daschuer@mixxx.org>
 ---
- sound/soc/spear/spear_pcm.c | 152 +++++---------------------------------------
- 1 file changed, 15 insertions(+), 137 deletions(-)
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index c1db28f..c1caae4 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -23,6 +23,11 @@
+ #include "helper.h"
+ #include "quirks.h"
 
-diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
-index d653763..4707f2b 100644
---- a/sound/soc/spear/spear_pcm.c
-+++ b/sound/soc/spear/spear_pcm.c
-@@ -13,19 +13,13 @@
- 
- #include <linux/module.h>
- #include <linux/dmaengine.h>
--#include <linux/dma-mapping.h>
--#include <linux/init.h>
- #include <linux/platform_device.h>
--#include <linux/scatterlist.h>
--#include <linux/slab.h>
--#include <sound/core.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm.h>
--#include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/spear_dma.h>
- 
--struct snd_pcm_hardware spear_pcm_hardware = {
-+static const struct snd_pcm_hardware spear_pcm_hardware = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
- 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-@@ -37,149 +31,33 @@ struct snd_pcm_hardware spear_pcm_hardware = {
- 	.fifo_size = 0, /* fifo size in bytes */
- };
- 
--static int spear_pcm_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
-+static struct dma_chan *spear_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
-+	struct snd_pcm_substream *substream)
++/* Value from 9.2.6.4 USB 2 spec */
++#define USB_MSG_SET_TIMEOUT 5000
++/* Value from spec is 500 but we pick 1000 for legacy reasons */
++#define USB_MSG_GET_TIMEOUT 1000
++
+ /*
+  * combine bytes and get an integer value
+  */
+@@ -86,14 +91,19 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned
+int pipe, __u8 request,
  {
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	struct spear_dma_data *dma_data;
- 
--	return 0;
--}
--
--static int spear_pcm_hw_free(struct snd_pcm_substream *substream)
--{
--	snd_pcm_set_runtime_buffer(substream, NULL);
--
--	return 0;
--}
--
--static int spear_pcm_open(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--
--	struct spear_dma_data *dma_data = (struct spear_dma_data *)
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--	int ret;
--
--	ret = snd_soc_set_runtime_hwparams(substream, &spear_pcm_hardware);
--	if (ret)
--		return ret;
-+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
--	return snd_dmaengine_pcm_open_request_chan(substream, dma_data->filter,
--				dma_data);
-+	return snd_dmaengine_pcm_request_channel(dma_data->filter, dma_data);
- }
- 
--static int spear_pcm_mmap(struct snd_pcm_substream *substream,
--		struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
--			runtime->dma_area, runtime->dma_addr,
--			runtime->dma_bytes);
--}
--
--static struct snd_pcm_ops spear_pcm_ops = {
--	.open		= spear_pcm_open,
--	.close		= snd_dmaengine_pcm_close_release_chan,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= spear_pcm_hw_params,
--	.hw_free	= spear_pcm_hw_free,
--	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer,
--	.mmap		= spear_pcm_mmap,
--};
--
--static int
--spear_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream,
--		size_t size)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--
--	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
--			&buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--
--	dev_info(buf->dev.dev,
--			" preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
--			(void *)buf->area, (void *)buf->addr, size);
--
--	buf->bytes = size;
--	return 0;
--}
--
--static void spear_pcm_free(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf || !buf->area)
--			continue;
--
--		dma_free_writecombine(pcm->card->dev, buf->bytes,
--				buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--
--static u64 spear_pcm_dmamask = DMA_BIT_MASK(32);
--
--static int spear_pcm_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	int ret;
--
--	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &spear_pcm_dmamask;
--	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
--
--	if (rtd->cpu_dai->driver->playback.channels_min) {
--		ret = spear_pcm_preallocate_dma_buffer(rtd->pcm,
--				SNDRV_PCM_STREAM_PLAYBACK,
--				spear_pcm_hardware.buffer_bytes_max);
--		if (ret)
--			return ret;
--	}
--
--	if (rtd->cpu_dai->driver->capture.channels_min) {
--		ret = spear_pcm_preallocate_dma_buffer(rtd->pcm,
--				SNDRV_PCM_STREAM_CAPTURE,
--				spear_pcm_hardware.buffer_bytes_max);
--		if (ret)
--			return ret;
--	}
--
--	return 0;
--}
--
--struct snd_soc_platform_driver spear_soc_platform = {
--	.ops		=	&spear_pcm_ops,
--	.pcm_new	=	spear_pcm_new,
--	.pcm_free	=	spear_pcm_free,
-+static const struct snd_dmaengine_pcm_config spear_dmaengine_pcm_config = {
-+	.pcm_hardware = &spear_pcm_hardware,
-+	.compat_request_channel = spear_pcm_request_chan,
-+	.prealloc_buffer_size = 16 * 1024,
- };
- 
- static int spear_soc_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &spear_soc_platform);
-+	return snd_dmaengine_pcm_register(&pdev->dev,
-+		&spear_dmaengine_pcm_config,
-+		SND_DMAENGINE_PCM_FLAG_NO_DT |
-+		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
- 
- static int spear_soc_platform_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_platform(&pdev->dev);
--
-+	snd_dmaengine_pcm_unregister(&pdev->dev);
- 	return 0;
- }
- 
--- 
-1.8.0
+     int err;
+     void *buf =3D NULL;
++    int timeout;
+
+     if (size > 0) {
+         buf =3D kmemdup(data, size, GFP_KERNEL);
+         if (!buf)
+             return -ENOMEM;
+     }
++    if (requesttype & USB_DIR_IN)
++        timeout =3D USB_MSG_GET_TIMEOUT;
++    else
++        timeout =3D USB_MSG_SET_TIMEOUT;
+     err =3D usb_control_msg(dev, pipe, request, requesttype,
+-                  value, index, buf, size, 1000);
++                  value, index, buf, size, timeout);
+     if (size > 0) {
+         memcpy(data, buf, size);
+         kfree(buf);
