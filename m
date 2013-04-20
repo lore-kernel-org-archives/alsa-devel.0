@@ -1,22 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v2] ALSA: snd-usb-audio: set the timeout
- for usb control set messages to 5000 ms
-Date: Sat, 20 Apr 2013 22:19:55 +0200
-Message-ID: <5172F86B.2060207@gmail.com>
-References: <CABVYHNhfzWNhi0Jv=Z-WET-4amLnhB7Kq1Gi_bKc-Pf4cqqHHw@mail.gmail.com>
- <20130420192414.GB5650@pvv.ntnu.no>
- <CABVYHNjK4THGcVnak4-_-SPGdSGHNoRtmznMqStQ=U8t6f1VBg@mail.gmail.com>
+From: =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>
+Subject: [PATCH v3] ALSA: snd-usb-audio: set the timeout for
+	usb control set messages to 5000 ms
+Date: Sat, 20 Apr 2013 23:06:17 +0200
+Message-ID: <1366491977-12348-1-git-send-email-daschuer@mixxx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 535D22651AE
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 22:19:49 +0200 (CEST)
-Received: by mail-bk0-f44.google.com with SMTP id jk13so2114797bkc.3
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 13:19:49 -0700 (PDT)
-In-Reply-To: <CABVYHNjK4THGcVnak4-_-SPGdSGHNoRtmznMqStQ=U8t6f1VBg@mail.gmail.com>
+Received: from mail-bk0-f45.google.com (mail-bk0-f45.google.com
+ [209.85.214.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 084BC265215
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 23:06:59 +0200 (CEST)
+Received: by mail-bk0-f45.google.com with SMTP id j4so204901bkw.18
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 14:06:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?RGFuaWVsIFNjaMO8cm1hbm4=?= <daschuer@mixxx.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Torstein Hegge <hegge@resisty.net>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>, clemens@ladisch.de, zonque@gmail.com, hegge@resisty.net, gabrbedd@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAuMDQuMjAxMyAyMjoxNywgRGFuaWVsIFNjaMO8cm1hbm4gd3JvdGU6Cj4gSGkgVG9yc3Rl
-aW4sIEhpIERhbmllbCAKPiAKPiBUaGFuayB5b3UgZm9yIHlvdXIgaGludC4KPiAKPiBKdXN0IG5v
-dGljZWQgdGhhdCB0aGUgZ2V0IHRpbWVvdXQgaXMgYWxzbyBzZXQgdG8gNTAwMCBtcyBldmVuIGlm
-IHRoZSBVU0IKPiAyIHNwZWMgb25seSBhbGxvd3MgNTAwIG1zLgo+IAo+IERvIHlvdSB0aGluayBp
-dCBpcyBhbHNvIGEgZ29vZCBpZGVhIHRvIGFkb3B0IHRoZSA1MDAwIG1zIGdldCB0aW1vdXQgZm9y
-Cj4gc25kLXVzYi1hdWRpbz8KCldlbGwsIGluIHRoYXQgY2FzZSwgd2UgY2FuIGluZGVlZCBqdXN0
-IHNldCBpdCB0byA1MDAwIHVuY29uZGl0aW9uYWxseSwKd2hpY2ggbWFrZXMgeW91ciBwYXRjaCBh
-IG9uZS1saW5lci4KCgpUaGFua3MsCkRhbmllbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+VGhpcyBpcyBhbiBvdGhlciB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZW5kIHZpYSBnaXQgc2VuZC1l
+bWFpbC4gSSBzdGlsbCAKZGlzdGluZ3Vpc2ggYmV0d2VlbiBzZXQgYW5kIGdldCBidXQgYXMgbG9u
+ZyBib3RoIGFyZSA1MDAwIG1zIEdDQyB3aWxsIApyZW1vdmUgaXQgYW55d2F5LiBJTUhPIHRoaXMg
+aXMgbW9yZSBlYXN5IHJlYWQgYW5kIHRoZXJlIGlzIG5vIG5lZWQgdG8gCmV4cGxhaW4gd2h5IHdl
+IHVzZSBhIGdldCB0aW1lb3V0IGZvciBzZXQgbWVzc2FnZXMuCgpDb21taXQgbWVzc2FnZToKU2V0
+IHRoZSB0aW1lb3V0IGZvciBVU0IgY29udHJvbCBzZXQgbWVzc2FnZXMgYWNjb3JkaW5nIHRvIHRo
+ZSBVU0IgMgpzcGVjLCB1c2luZyB0aGUgbWFjcm9zIGZyb20gaW5jbHVkZS9saW51eC91c2IuaC4g
+ICAgIApUaGUgZ2V0IHRpbW91dCBiZWNvbWVzIDUwMDAgbXMgZXZlbiB0aG91Z2ggaXQgaXMgNTAw
+IG1zIGluIHRoZSAgICAKc3BlYy4gVGhpcyBwYXRjaCBpcyByZXF1aXJlZCB0byBydW4gdGhlIEhl
+cmN1bGVzIFJNWDIgd2hpY2ggbmVlZHMgYQp0aW1lb3V0IG9mIDEyNDAgbXMuCgpTaWduZWQtb2Zm
+LWJ5OiBEYW5pZWwgU2Now7xybWFubiA8ZGFzY2h1ZXJAbWl4eHgub3JnPgotLS0KIHNvdW5kL3Vz
+Yi9oZWxwZXIuYyB8ICAgMTAgKysrKysrKysrLQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9u
+cygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9oZWxwZXIuYyBiL3Nv
+dW5kL3VzYi9oZWxwZXIuYwppbmRleCBjMWRiMjhmLi42MjA5MDI0IDEwMDY0NAotLS0gYS9zb3Vu
+ZC91c2IvaGVscGVyLmMKKysrIGIvc291bmQvdXNiL2hlbHBlci5jCkBAIC04NiwxNCArODYsMjIg
+QEAgaW50IHNuZF91c2JfY3RsX21zZyhzdHJ1Y3QgdXNiX2RldmljZSAqZGV2LCB1bnNpZ25lZCBp
+bnQgcGlwZSwgX191OCByZXF1ZXN0LAogewogCWludCBlcnI7CiAJdm9pZCAqYnVmID0gTlVMTDsK
+KwlpbnQgdGltZW91dDsKIAogCWlmIChzaXplID4gMCkgewogCQlidWYgPSBrbWVtZHVwKGRhdGEs
+IHNpemUsIEdGUF9LRVJORUwpOwogCQlpZiAoIWJ1ZikKIAkJCXJldHVybiAtRU5PTUVNOwogCX0K
+KworCWlmIChyZXF1ZXN0dHlwZSAmIFVTQl9ESVJfSU4pCisJCXRpbWVvdXQgPSBVU0JfQ1RSTF9H
+RVRfVElNRU9VVDsKKwllbHNlCisJCXRpbWVvdXQgPSBVU0JfQ1RSTF9TRVRfVElNRU9VVDsKKwog
+CWVyciA9IHVzYl9jb250cm9sX21zZyhkZXYsIHBpcGUsIHJlcXVlc3QsIHJlcXVlc3R0eXBlLAot
+CQkJICAgICAgdmFsdWUsIGluZGV4LCBidWYsIHNpemUsIDEwMDApOworCQkJICAgICAgdmFsdWUs
+IGluZGV4LCBidWYsIHNpemUsIHRpbWVvdXQpOworCiAJaWYgKHNpemUgPiAwKSB7CiAJCW1lbWNw
+eShkYXRhLCBidWYsIHNpemUpOwogCQlrZnJlZShidWYpOwotLSAKMS43LjkuNQoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
