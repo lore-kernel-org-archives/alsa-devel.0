@@ -1,25 +1,25 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: snd-usb-audio: set the timeout for
- usb control set messages to 5000 ms
-Date: Sat, 20 Apr 2013 00:50:11 +0200
-Message-ID: <5171CA23.1000407@gmail.com>
-References: <CABVYHNhLjkAknhypk3howphQk8KWV6OqJ415x1A-YAGVC-0J3w@mail.gmail.com>
- <516D5BC0.9020204@gmail.com>
- <CABVYHNis8cn5Y_BeTMQv0hn_AaJDsOw+=GaX7pFy9JjDvP5+Tw@mail.gmail.com>
- <516D6FA9.3020609@gmail.com> <516D76CC.7090408@gmail.com>
- <CABVYHNhXKXOmUQVmuwfQuZWbMK6c6aVSmzcafPLoD+LR_5xGBQ@mail.gmail.com>
- <516DA527.1070806@gmail.com> <5171B980.6050501@mixxx.org>
+From: marcelg <marcelsbox@quicknet.nl>
+Subject: PCM buffering ussues ( or probably the lack of
+	understanding )
+Date: Sat, 20 Apr 2013 09:13:34 +0200
+Message-ID: <5172401E.8020708@quicknet.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f53.google.com (mail-bk0-f53.google.com
- [209.85.214.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 20FC8265160
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 00:50:03 +0200 (CEST)
-Received: by mail-bk0-f53.google.com with SMTP id e19so1908210bku.26
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2013 15:50:02 -0700 (PDT)
-In-Reply-To: <5171B980.6050501@mixxx.org>
+Received: from smtpq3.gn.mail.iss.as9143.net (smtpq3.gn.mail.iss.as9143.net
+ [212.54.34.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BA492650D3
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2013 09:13:33 +0200 (CEST)
+Received: from [212.54.34.137] (helo=smtp6.gn.mail.iss.as9143.net)
+ by smtpq3.gn.mail.iss.as9143.net with esmtp (Exim 4.71)
+ (envelope-from <marcelsbox@quicknet.nl>) id 1UTRzJ-0006Sq-0J
+ for alsa-devel@alsa-project.org; Sat, 20 Apr 2013 09:13:33 +0200
+Received: from d97aadab.cm-3-3c.dynamic.ziggo.nl ([217.122.173.171]
+ helo=[192.168.1.150]) by smtp6.gn.mail.iss.as9143.net with esmtpsa
+ (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
+ (envelope-from <marcelsbox@quicknet.nl>) id 1UTRzI-0002AS-Lp
+ for alsa-devel@alsa-project.org; Sat, 20 Apr 2013 09:13:32 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,94 +29,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Daniel_Sch=FCrmann?= <daschuer@mixxx.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+I am working on a PCM driver, have some issues and thing which are 
+unclear to me, hopefully somebody here can clarify something for me.
 
-On 19.04.2013 23:39, Daniel Sch=FCrmann wrote:
-> This is a patch against
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
-> 581cbef46ae60073252208fc1f26dd1044f6e215
+My PCM driver is straigh forward:
 
-Yeah, we're getting there :)
+- Copy callback copies the frames received in the callback into a small 
+ringbuffer and starts a DMA transfer to the hardware.
+- DMA interrupt each times take the next chunk from the ringbuffer.
+- In the DMA interrupt the number of frames is counted, if te number >= 
+period_size reported in runtime_struct   pcm_period_elapsed() is called.
+- the pointer which is read by the pcm_pointer() callback is updated in 
+each DMA interrupt.
 
-> Set the timeout for USB control set messages according to the USB 2 spec
-> =A79.2.6.4 to 5000 ms.
-> To avoid new issues, the get timeout is unchanged at 1000 ms, though it
-> is 500 ms in the spec.
-> This patch is required to run the Hercules RMX2 which needs a timeout >
-> 1240 ms
-> =
-
-> Signed-off-by: Daniel Sch=FCrmann <daschuer@mixxx.org>
-> ---
-> diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-> index c1db28f..b4f3876 100644
-> --- a/sound/usb/helper.c
-> +++ b/sound/usb/helper.c
-> @@ -21,7 +21,11 @@
->  =
-
->  #include "usbaudio.h"
->  #include "helper.h"
-> -#include "quirks.h"
-
-That is a stray change which shouldn't be part of this patch.
-
-> +
-> +/* Value from 9.2.6.4 USB 2 spec */
-> +#define USB_MSG_SET_TIMEOUT 5000
-> +/* Value from spec is 500 but we pick 1000 for legacy reasons */
-> +#define USB_MSG_GET_TIMEOUT 1000
->  =
-
->  /*
->   * combine bytes and get an integer value
-> @@ -86,14 +90,24 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned
-> int pipe, __u8 request,
->  {
->      int err;
->      void *buf =3D NULL;
-> +    int timeout;
-
-Can be unsigned, but that's a minor.
-
->  =
-
->      if (size > 0) {
->          buf =3D kmemdup(data, size, GFP_KERNEL);
->          if (!buf)
->              return -ENOMEM;
->      }
-> +
-> +    if (requesttype & USB_DIR_IN) {
-> +        /* Get Request */
-> +        timeout =3D USB_MSG_GET_TIMEOUT;
-> +    } else {
-> +        /* Set Request */
-> +        timeout =3D USB_MSG_SET_TIMEOUT;
-> +    }
-
-You can omit the comments, they don't add any value for someone who's
-reading the code. And you don't need the curly braces.
-
-Other than that, looks good to me.
+When using mplayer this works without problems, however with other 
+applications like mpg123 its causes a lot of problems, for some reaosns 
+I do not understand yet.
+It has something to do with buffer handling.
 
 
-Can you send an updated version?
+basically in the cm driver I can influence a few parameters:
+
+periods_min/periods_max
+period_bytes_min, period_bytes_max
+buffer_size  ( should be sufficient to hold periods_max with 
+period_bytes_max I assume )
+
+As far as I understand periods_min/periods_max is the size (number of 
+buffer entries) of the internal ringbuffer Alsa uses.
+- Why is there both a min and a max ?  How is chosen what will be used ?
+- Currently my period_min is set to 1 and my period_max  set to 4, If I 
+increase the period_max value it does not start properly, it seems  that 
+the samples are not deliverered in time.
+   Is there any explanation for this,   does the Alsa layer not any 
+pre-buffering before the first copy() is called ?
+- Is there any advice / guidline for period min/max values ?  I checked 
+sourecs of severl drivers, some use 1 and some use values like 32 or 
+more for period_max.
+
+The same applies to buffer_bytes min/max, currently my min is set to 
+128bytes , max to 2kB, larger values of max seem to cause more problems.
+
+ From the documentation I understand that it does not matter if 
+pcm_period_elapsed()  is not always called,  How dows the ALSA layer 
+then know how many samples are played.
+the pointer value read the pcm_pointer()  only counts from 
+[0..period_max]  so what if 2 or more calls to period_elapsed()  are 
+skipped ?
+
+Suppose I want to have some buffering inside my pcm driver, how will I 
+be able to get some samples in advance before starting playback ? Can I 
+just call pcm_period_elapsed() a few times in  a row to get the buffer 
+filled
+before starting the actual playcback, or does this cause side effects ?
+
+I noticed that the number of frames passed to pcm_copy is often less 
+than the periods_size, is this determined by the application ?
 
 
-Thanks,
-Daniel
+Lots of questions, but I try to understand the odd behaviour with 
+certain applications ( and the best settings for a pcm driver which will 
+work with most applications )
 
+Any help would be appreciated.
 
->      err =3D usb_control_msg(dev, pipe, request, requesttype,
-> -                  value, index, buf, size, 1000);
-> +                  value, index, buf, size, timeout);
-> +
->      if (size > 0) {
->          memcpy(data, buf, size);
->          kfree(buf);
-> =
+Marcel
