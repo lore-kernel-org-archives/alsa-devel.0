@@ -1,11 +1,14 @@
 From: Trulan Martin <trulanm@gmail.com>
-Subject: [PATCH 0/3] Yamaha THR10 and related USB quirks
-Date: Sat, 20 Apr 2013 11:31:44 -0400
-Message-ID: <1366471907-16615-1-git-send-email-trulanm@gmail.com>
+Subject: [PATCH 1/3] Yamaha THR10 USB quirk
+Date: Sat, 20 Apr 2013 11:31:45 -0400
+Message-ID: <1366471907-16615-2-git-send-email-trulanm@gmail.com>
+References: <1366471907-16615-1-git-send-email-trulanm@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1366471907-16615-1-git-send-email-trulanm@gmail.com>
+In-Reply-To: [PATCH 0/3] Yamaha THR10 and related USB quirks
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,7 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Trulan Martin <trulanm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following patches add USB quirks for several Yamaha amps.  Please CC me as I am not subscribed to the mailing list.
+This patch adds a USB quirk for the Yamaha THR10 amp.
+
+Signed-off-by: Trulan Martin <trulanm@gmail.com>
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 64d25a7..741680a 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -353,6 +353,32 @@ YAMAHA_DEVICE(0x105d, NULL),
+ 		}
+ 	}
+ },
++{
++    USB_DEVICE(0x0499, 0x1507),
++    .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++        /* .vendor_name = "Yamaha", */
++        /* .product_name = "THR10", */
++        .ifnum = QUIRK_ANY_INTERFACE,
++        .type = QUIRK_COMPOSITE,
++        .data = (const struct snd_usb_audio_quirk[]) {
++            {
++                .ifnum = 1,
++                .type = QUIRK_AUDIO_STANDARD_INTERFACE
++            },
++            {
++                .ifnum = 2,
++                .type = QUIRK_AUDIO_STANDARD_INTERFACE
++            },
++            {
++                .ifnum = 3,
++                .type = QUIRK_MIDI_YAMAHA
++            },
++            {
++                .ifnum = -1
++            }
++        }
++    }
++},
+ YAMAHA_DEVICE(0x2000, "DGP-7"),
+ YAMAHA_DEVICE(0x2001, "DGP-5"),
+ YAMAHA_DEVICE(0x2002, NULL),
+-- 
+1.7.10.4
