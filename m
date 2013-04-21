@@ -1,20 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v3] ALSA: snd-usb-audio: set the timeout
- for usb control set messages to 5000 ms
-Date: Sun, 21 Apr 2013 10:17:26 +0200
-Message-ID: <5173A096.9000304@gmail.com>
-References: <1366491977-12348-1-git-send-email-daschuer@mixxx.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: compress: info leak in
+	snd_compr_get_caps()
+Date: Sun, 21 Apr 2013 14:07:29 +0300
+Message-ID: <20130421110729.GA6171@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
- [209.85.214.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 238D2265265
- for <alsa-devel@alsa-project.org>; Sun, 21 Apr 2013 10:17:19 +0200 (CEST)
-Received: by mail-bk0-f43.google.com with SMTP id jm19so1042313bkc.30
- for <alsa-devel@alsa-project.org>; Sun, 21 Apr 2013 01:17:18 -0700 (PDT)
-In-Reply-To: <1366491977-12348-1-git-send-email-daschuer@mixxx.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8175026007E
+ for <alsa-devel@alsa-project.org>; Sun, 21 Apr 2013 13:07:36 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?RGFuaWVsIFNjaMO8cm1hbm4=?= <daschuer@mixxx.org>
-Cc: tiwai@suse.de, hegge@resisty.net, alsa-devel@alsa-project.org, clemens@ladisch.de, gabrbedd@gmail.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Namarta Kohli <namartax.kohli@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAuMDQuMjAxMyAyMzowNiwgRGFuaWVsIFNjaMO8cm1hbm4gd3JvdGU6Cj4gVGhpcyBpcyBh
-biBvdGhlciB2ZXJzaW9uIG9mIHRoZSBwYXRjaCBzZW5kIHZpYSBnaXQgc2VuZC1lbWFpbC4gSSBz
-dGlsbCAKPiBkaXN0aW5ndWlzaCBiZXR3ZWVuIHNldCBhbmQgZ2V0IGJ1dCBhcyBsb25nIGJvdGgg
-YXJlIDUwMDAgbXMgR0NDIHdpbGwgCj4gcmVtb3ZlIGl0IGFueXdheS4gSU1ITyB0aGlzIGlzIG1v
-cmUgZWFzeSByZWFkIGFuZCB0aGVyZSBpcyBubyBuZWVkIHRvIAo+IGV4cGxhaW4gd2h5IHdlIHVz
-ZSBhIGdldCB0aW1lb3V0IGZvciBzZXQgbWVzc2FnZXMuCj4gCj4gQ29tbWl0IG1lc3NhZ2U6CgpO
-ZXh0IHRpbWUsIHBsZWFzZSBwdXQgaW5mb3JtYXRpb24gdGhhdCBzaG91bGQgbm90IGJlIHBhcnQg
-b2YgdGhlIGNvbW1pdApsb2cgbWVzc2FnZSAoc3VjaCBhcyB0aGUgbGluZXMgYWJvdmUpIHVuZGVy
-bmVhdGggdGhlICItLS0iIG1hcmtlci4gQnV0Cm1heWJlIFRha2FzaGkgY2FuIGRvIHRoYXQgd2hl
-biBhcHBseWluZz8KCj4gU2V0IHRoZSB0aW1lb3V0IGZvciBVU0IgY29udHJvbCBzZXQgbWVzc2Fn
-ZXMgYWNjb3JkaW5nIHRvIHRoZSBVU0IgMgo+IHNwZWMsIHVzaW5nIHRoZSBtYWNyb3MgZnJvbSBp
-bmNsdWRlL2xpbnV4L3VzYi5oLiAgICAgCj4gVGhlIGdldCB0aW1vdXQgYmVjb21lcyA1MDAwIG1z
-IGV2ZW4gdGhvdWdoIGl0IGlzIDUwMCBtcyBpbiB0aGUgICAgCj4gc3BlYy4gVGhpcyBwYXRjaCBp
-cyByZXF1aXJlZCB0byBydW4gdGhlIEhlcmN1bGVzIFJNWDIgd2hpY2ggbmVlZHMgYQo+IHRpbWVv
-dXQgb2YgMTI0MCBtcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2Now7xybWFubiA8ZGFz
-Y2h1ZXJAbWl4eHgub3JnPgoKQWNrZWQtYnk6IERhbmllbCBNYWNrIDx6b25xdWVAZ21haWwuY29t
-PgoKPiAtLS0KPiAgc291bmQvdXNiL2hlbHBlci5jIHwgICAxMCArKysrKysrKystCj4gIDEgZmls
-ZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0
-IGEvc291bmQvdXNiL2hlbHBlci5jIGIvc291bmQvdXNiL2hlbHBlci5jCj4gaW5kZXggYzFkYjI4
-Zi4uNjIwOTAyNCAxMDA2NDQKPiAtLS0gYS9zb3VuZC91c2IvaGVscGVyLmMKPiArKysgYi9zb3Vu
-ZC91c2IvaGVscGVyLmMKPiBAQCAtODYsMTQgKzg2LDIyIEBAIGludCBzbmRfdXNiX2N0bF9tc2co
-c3RydWN0IHVzYl9kZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHBpcGUsIF9fdTggcmVxdWVzdCwK
-PiAgewo+ICAJaW50IGVycjsKPiAgCXZvaWQgKmJ1ZiA9IE5VTEw7Cj4gKwlpbnQgdGltZW91dDsK
-PiAgCj4gIAlpZiAoc2l6ZSA+IDApIHsKPiAgCQlidWYgPSBrbWVtZHVwKGRhdGEsIHNpemUsIEdG
-UF9LRVJORUwpOwo+ICAJCWlmICghYnVmKQo+ICAJCQlyZXR1cm4gLUVOT01FTTsKPiAgCX0KPiAr
-Cj4gKwlpZiAocmVxdWVzdHR5cGUgJiBVU0JfRElSX0lOKQo+ICsJCXRpbWVvdXQgPSBVU0JfQ1RS
-TF9HRVRfVElNRU9VVDsKPiArCWVsc2UKPiArCQl0aW1lb3V0ID0gVVNCX0NUUkxfU0VUX1RJTUVP
-VVQ7Cj4gKwo+ICAJZXJyID0gdXNiX2NvbnRyb2xfbXNnKGRldiwgcGlwZSwgcmVxdWVzdCwgcmVx
-dWVzdHR5cGUsCj4gLQkJCSAgICAgIHZhbHVlLCBpbmRleCwgYnVmLCBzaXplLCAxMDAwKTsKPiAr
-CQkJICAgICAgdmFsdWUsIGluZGV4LCBidWYsIHNpemUsIHRpbWVvdXQpOwo+ICsKPiAgCWlmIChz
-aXplID4gMCkgewo+ICAJCW1lbWNweShkYXRhLCBidWYsIHNpemUpOwo+ICAJCWtmcmVlKGJ1Zik7
-Cj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+If the ->get_caps() function doesn't clear the buffer then there would
+stack information leaked to userspace.  For example,
+soc_compr_get_caps() can return success without clearing the buffer.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Perhaps the soc_compr_get_caps() function should return an error code
+if the platform->driver->compr_ops is NULL.  I'm not sure about that,
+and it's a separate issue anyway.
+
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index c84abc8..8d3190a 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -375,6 +375,7 @@ snd_compr_get_caps(struct snd_compr_stream *stream, unsigned long arg)
+ 	if (!stream->ops->get_caps)
+ 		return -ENXIO;
+ 
++	memset(&caps, 0, sizeof(caps));
+ 	retval = stream->ops->get_caps(stream, &caps);
+ 	if (retval)
+ 		goto out;
