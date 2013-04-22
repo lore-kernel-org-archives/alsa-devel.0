@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] Add capture support to compress API
-Date: Mon, 22 Apr 2013 10:53:35 +0100
-Message-ID: <20130422095335.GA30351@opensource.wolfsonmicro.com>
-References: <cover.1366278354.git.rf@opensource.wolfsonmicro.com>
- <s5h61zi7i4o.wl%tiwai@suse.de>
+Subject: Re: [PATCH 2/8] ASoC: mxs-pcm: Set
+	SNDRV_PCM_INFO_HALF_DUPLEX
+Date: Mon, 22 Apr 2013 11:28:24 +0100
+Message-ID: <20130422102823.GE30351@opensource.wolfsonmicro.com>
+References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+ <1366478947-9377-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6528622610280667968=="
+Content-Type: multipart/mixed; boundary="===============1861322266358632279=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 51A6826030E
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 11:53:38 +0200 (CEST)
-In-Reply-To: <s5h61zi7i4o.wl%tiwai@suse.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 549F02610CF
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:28:26 +0200 (CEST)
+In-Reply-To: <1366478947-9377-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, ckeepax@opensource.wolfsonmicro.com, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6528622610280667968==
+--===============1861322266358632279==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+	protocol="application/pgp-signature"; boundary="AjmyJqqohANyBN/e"
 Content-Disposition: inline
 
 
---k1lZvvs/B4yU6o8G
+--AjmyJqqohANyBN/e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 19, 2013 at 03:41:11PM +0200, Takashi Iwai wrote:
+On Sat, Apr 20, 2013 at 07:29:01PM +0200, Lars-Peter Clausen wrote:
+> The MXS SAIF is only half-duplex so set the SNDRV_PCM_INFO_HALF_DUPLEX flag for
+> the PCM in order to prevent playback and capture from running at the same time.
 
-> If we really merge it, don't you mind me merging soc-compress patch in
-> my tree (directly to for-next branch), Mark?
+Applied, thanks.
 
-Yes, that's fine for me - for v3.11 I suspect it'd make sense to have it
-in my tree though as there'll probably be other stuff that depends on
-it.
-
---k1lZvvs/B4yU6o8G
+--AjmyJqqohANyBN/e
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRdQhgAAoJELSic+t+oim97pgP/i+1k1WkMIIZhBG1Y79PKdHd
-Pkw68kVRrcPBb3d33A0hYGp/9pRzrk7wYNwKdAjIV0Lbp0uyl+4a3OgkR4f8MMl+
-YU/OXxgKtY7WlvriPF0AaeMqncbemkB+5IYoOjvgImcb/xxMGxNOwcoy8f1M0qNp
-xB0MMheOgi0x7jgQLTSaVhHoM1x91uQ1LqsoPqeF5APGYr9b2xn6irThBuXx2CDO
-ZW7L9LXokorUYKAbF/N/YRZ2xDzJdE3bhZkAxFtJPqubDNO2XNJjLd6bf6IOJSj2
-sU7bldbd+DhMfAFQHYUNA1hMsi2OxqFtPMMQOl+wKTFPTDnJeiAaw5tCmayGUw81
-ZbnxR4NnC+uXQEys8K7N8aqAegJ/8/W1vapPpiNQAyrmaZZUEABjmcIv6ilfGA78
-z6a7f/vBYtTuSCqZuYIKl6B0qB5SOBc/LV9JGstoyT63dtvUs8HtoTDaM2P9eGDl
-kY11IL+A+2EhyN93dLgEYMSF2/GeTc6e4IEIyWs/HoKCGn3UXgnpduJMbJxmP8KW
-kmhNBAeaUw1CkOXPfTl9KNqy5lZuIE6tQU5HT4sSSRlU+QE8KfJaIOjSacG03lnJ
-9mdjNd0U9TGmtED2D1xwJDh1jBf8RuNqj316/pC/7r8nrqaildHV8S3cePLLZEy8
-SeIzYtlKKV2KBHRLUEgR
-=Emvt
+iQIcBAEBAgAGBQJRdRC8AAoJELSic+t+oim9CmUQAIEwctLP3c2FYbp5h9NFgjX2
+WQTKZpeOiTOnuTQnJDcYbbGwzEzOFnZg56r7EnNrzm82fh06+JaMvkN/AyOXdi19
+YstOYfpxFM4OEmhY7Gdo4Abm9FrRCCpx3mtbLjq1zQnqwVyBSEM75wUIojxtJWzw
+bKJVwviRzS0L9cMFS8dVR0N2Cq7MlZ3AXhn0HH31yyrCr25u59yl3RDeOMjwg7R0
+w4elbr6E7MBz0/VsOwlTl2saFwVj3yJAQ78ulru1IsYMO+yVGvzIpVVMpvc/FvJY
+3z27EqC3YlwnflAJrw+/O0qBvTjqjL32aSKAJlVCfikdFuSAAPqicZUUdC0CxH56
+8ubrnmIEdhYFttFkxOwHmitjU4uiLToJBYgO4u6LingJrhGcKPhDTETavVW5PoYX
+2Ui6LTl2I8VIFrL0DgnKqrZTZlMzE2QrGQuMF9+UgZKvn/WYLlhwbZLc99CoDBLD
+YSs7sD5w1N4bTGUTqhFAzBhac4BH8VHBXv2riEFS0z9zyMr1a69BVbbBCJS5yt2/
+wiPkPGeTW+eiS3vi3fh4t6zUyfjEYNqgj3yVzJV1PlMG82eD5iKPacBk62rq3f+C
+sYEJlTetQMb1tSbEnVB2o5z6tZa4i1mxXaWgCZoHaG7uvOzCqNub63Dhcd4Knogy
+D2fZy+B0KyuSLAQ+en30
+=puH1
 -----END PGP SIGNATURE-----
 
---k1lZvvs/B4yU6o8G--
+--AjmyJqqohANyBN/e--
 
---===============6528622610280667968==
+--===============1861322266358632279==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6528622610280667968==--
+--===============1861322266358632279==--
