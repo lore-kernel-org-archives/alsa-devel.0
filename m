@@ -1,19 +1,14 @@
-From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
-Subject: Re: [RFC] ASoC: Current state of Dynamic PCM API
-Date: Mon, 22 Apr 2013 07:57:35 -0700
-Message-ID: <51754FDF.5050401@gmail.com>
-References: <CABJ1b_QQS7amB3jTMvKGsJAC-QuPj4DmPNg-1waAqgC-Y8Ry7A@mail.gmail.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: BUG: USB audio discontinuities with 'UHCI:
+ implement new semantics for URB_ISO_ASAP'
+Date: Mon, 22 Apr 2013 11:29:34 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1304221126200.1388-100000__17747.6088436835$1366644594$gmane$org@iolanthe.rowland.org>
+References: <20130420003533.GA4607@richardiv.omgwallhack.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id E42B2260202
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 16:57:45 +0200 (CEST)
-Received: by mail-pa0-f47.google.com with SMTP id bj1so1747837pad.20
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 07:57:44 -0700 (PDT)
-In-Reply-To: <CABJ1b_QQS7amB3jTMvKGsJAC-QuPj4DmPNg-1waAqgC-Y8Ry7A@mail.gmail.com>
+In-Reply-To: <20130420003533.GA4607@richardiv.omgwallhack.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/18/2013 05:07 AM, Sebastian Hesselbarth wrote:
-> Can any of you point me to patches, repositories, or documentation
-> about DPCM where I can start with?
+On Fri, 19 Apr 2013, Joe Rayhawk wrote:
 
+> On Fri, Apr 19, 2013 at 02:18:24PM -0400, Alan Stern wrote:
+> > On Fri, 19 Apr 2013, Clemens Ladisch wrote:
+> > > Alan Stern wrote:
+> > > > +		next = uhci->frame_number + 2;
+> > > >
+> > > > That 2 is the minimum latency, in frames (one frame per ms).
+> > > 
+> > > One frame worked fine with the old driver.  What is the reason for
+> > > this regression?
+> > 
+> > Perhaps that was a mistake.  Joe, you can try changing the 2 above to a 
+> > 1 to see if it fixes the problem.
+> 
+> Hey, that worked great! Audio's coming through continuously, now.
 
-One that I know of is here:
+This change could be added to the driver, but I would prefer not to.  
+In any case, it would be best if the usb-audio driver were changed to
+keep the pipeline length at least 2 ms at all times.
 
-    http://git.omapzoom.org/?p=kernel/omap.git;a=summary
-    branch: p-android-omap-3.4, p-linux-omap-3.4
-    machine driver: sound/soc/omap/omap-abe-twl6040.c (OMAP4, OMAP5)
+Clemens, what do you suggest?
 
-There's also stuff on the 3.0 and 3.1 branches... but 3.4 more closely 
-resembles the current API.
+Alan Stern
 
--gabriel
