@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: generic-dmaengine-pcm: Add
- support for half-duplex
-Date: Mon, 22 Apr 2013 11:28:00 +0100
-Message-ID: <20130422102800.GD30351@opensource.wolfsonmicro.com>
-References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH,
+ for-next] ALSA: usb-audio: use FMTBITs in parse_audio_format_i
+Date: Mon, 22 Apr 2013 13:29:41 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1304221308180.1652@xoschi>
+References: <1366587844-1252-1-git-send-email-eldad@fogrefinery.com>
+ <s5h8v4b54oy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3267840597174432350=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C2D692610CF
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:33:53 +0200 (CEST)
-In-Reply-To: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+Received: from mail-bk0-f47.google.com (mail-bk0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2798F261631
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 13:29:48 +0200 (CEST)
+Received: by mail-bk0-f47.google.com with SMTP id ji2so937748bkc.20
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 04:29:48 -0700 (PDT)
+In-Reply-To: <s5h8v4b54oy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +25,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3267840597174432350==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x4pBfXISqBoDm8sr"
-Content-Disposition: inline
 
+On Mon, 22 Apr 2013, Takashi Iwai wrote:
 
---x4pBfXISqBoDm8sr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> At Mon, 22 Apr 2013 01:44:04 +0200,
+> Eldad Zack wrote:
+> > 
+> > Replace the usage of SNDRV_PCM_FORMAT_* macros with the equivalent
+> > SNDRV_PCM_FMTBIT_* macros, and the result be can assigned directly
+> > to the formats field.
+> 
+> Note that SNDRV_PCM_FMTBIT_* are 64bit integer.  And it makes sense to
+> use FMTBIT only when multiple formats are supposed.  For a single
+> format, keeping SNDRV_PCM_FORMAT_* is more reasonable.
+> 
+> In other words, a proper fix would be to replace the type of variable
+> format with snd_pcm_format_t, and cast at converting to format bits
+> like
+> 	1ULL << (unsigned int)pcm_format
 
-On Sat, Apr 20, 2013 at 07:29:00PM +0200, Lars-Peter Clausen wrote:
-> Some platforms which are half-duplex share the same DMA channel between the
-> playback and capture stream. Add support for this to the generic dmaengine PCM
-> driver.
+I see your point. I just figured making the assignment directly would
+make sense just for this case.
 
-Applied, thanks.
+There are a couple of other places with the same conversion that 
+"break" the strong typing - how about something like this:
 
---x4pBfXISqBoDm8sr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+	#define pcm_format_to_bits(fmt) (1uLL << ((__force int)(fmt)))
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Or an equivalent function?
 
-iQIcBAEBAgAGBQJRdRCfAAoJELSic+t+oim9WtcP/jlk7wKlE/0WVy5jCxMCZf9q
-TEUxERgZDUlUoG1bMsX7qcsYSfikIgd0kBEv182begKBbtEvf7txc2HKKSBmWTKr
-HKbOE2KsspWMq0ZjOytVOA2Q1BUX2UcDY/IBpE5rRXAvwSy404OBlzbJkwUSPjpD
-te9RLSsB7tzG2F5JF0RpV2L+nvfNPoGjie3mZ8O5877NhYf1xCqhiCTXD2S/ajih
-GguI1yEkmR2Nkvv3uAyk4gq5MeMxejgQRSPPGi8bLG1B6TY3zHQGAgdLdSpU+kMH
-AxOjy+4EIn+bsvgxk1if6Qr1uRuRiMquvs6qEdJgz1MTJK/zzhED8cUP5evZMN8l
-FYkv8UqstmI9orQDRcB0f1f1c5GuIhJFSS1QMdVYRD0Bd+lsiDiCoKhN3FocYY+b
-ullMKMOHAeU1iqDgFoeLuHZ6v5QPRQebywOBsYKVbFN9cf6sbInqYDG5b3sE/bY0
-kYlL3Tftn1IRxXEMh0/dXN4CT9AGSUjuOKVTPzxJhCgVRw6V+Ja/nRFhsUG6WAIK
-XO0qYk3lKTKCusKOzsu51ZUvcShlAs1OETK+Otc7VRIL2vkrA4c/jX2aM++B4cg9
-GN9JvNAUbb5aAR7/0zhW6jRgviN3zfpDFQMikTaafqHMVsNSjak9ZS4iNMfnj4/t
-eBKKmqEgDse/ezLDp/Nd
-=6i44
------END PGP SIGNATURE-----
+Cheers,
+Eldad
 
---x4pBfXISqBoDm8sr--
-
---===============3267840597174432350==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3267840597174432350==--
+> > Modify the variable name to reflect the change.
+> > 
+> > The following sparse messages are silenced:
+> > 
+> > sound/usb/format.c:377:44: warning: incorrect type in assignment (different base types)
+> > sound/usb/format.c:377:44:    expected int [signed] pcm_format
+> > sound/usb/format.c:377:44:    got restricted snd_pcm_format_t [usertype] <noident>
+> > sound/usb/format.c:379:44: warning: incorrect type in assignment (different base types)
+> > sound/usb/format.c:379:44:    expected int [signed] pcm_format
+> > sound/usb/format.c:379:44:    got restricted snd_pcm_format_t [usertype] <noident>
+> > sound/usb/format.c:382:36: warning: incorrect type in assignment (different base types)
+> > sound/usb/format.c:382:36:    expected int [signed] pcm_format
+> > sound/usb/format.c:382:36:    got restricted snd_pcm_format_t [usertype] <noident>
+> > 
+> > Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+> > ---
+> >  sound/usb/format.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/sound/usb/format.c b/sound/usb/format.c
+> > index 020ede0..e025e28 100644
+> > --- a/sound/usb/format.c
+> > +++ b/sound/usb/format.c
+> > @@ -365,7 +365,7 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
+> >  {
+> >  	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
+> >  	int protocol = altsd->bInterfaceProtocol;
+> > -	int pcm_format, ret;
+> > +	int pcm_formats, ret;
+> >  
+> >  	if (fmt->bFormatType == UAC_FORMAT_TYPE_III) {
+> >  		/* FIXME: the format type is really IECxxx
+> > @@ -377,14 +377,14 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
+> >  		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+> >  			if (chip->setup == 0x00 && 
+> >  			    fp->altsetting == 6)
+> > -				pcm_format = SNDRV_PCM_FORMAT_S16_BE;
+> > +				pcm_formats = SNDRV_PCM_FMTBIT_S16_BE;
+> >  			else
+> > -				pcm_format = SNDRV_PCM_FORMAT_S16_LE;
+> > +				pcm_formats = SNDRV_PCM_FMTBIT_S16_LE;
+> >  			break;
+> >  		default:
+> > -			pcm_format = SNDRV_PCM_FORMAT_S16_LE;
+> > +			pcm_formats = SNDRV_PCM_FMTBIT_S16_LE;
+> >  		}
+> > -		fp->formats = 1uLL << pcm_format;
+> > +		fp->formats = pcm_formats;
+> >  	} else {
+> >  		fp->formats = parse_audio_format_i_type(chip, fp, format,
+> >  							fmt, protocol);
+> > -- 
+> > 1.8.1.5
+> > 
+> 
