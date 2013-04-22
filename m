@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/8] ASoC: mxs-pcm: Set
-	SNDRV_PCM_INFO_HALF_DUPLEX
-Date: Mon, 22 Apr 2013 11:28:24 +0100
-Message-ID: <20130422102823.GE30351@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/8] ASoC: mxs: Setup dma data in DAI probe
+Date: Mon, 22 Apr 2013 11:28:39 +0100
+Message-ID: <20130422102838.GF30351@opensource.wolfsonmicro.com>
 References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
- <1366478947-9377-2-git-send-email-lars@metafoo.de>
+ <1366478947-9377-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1861322266358632279=="
+Content-Type: multipart/mixed; boundary="===============4004169519742224018=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 549F02610CF
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:28:26 +0200 (CEST)
-In-Reply-To: <1366478947-9377-2-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 834A326160C
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:28:40 +0200 (CEST)
+In-Reply-To: <1366478947-9377-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +25,51 @@ Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Ma
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1861322266358632279==
+--===============4004169519742224018==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AjmyJqqohANyBN/e"
+	protocol="application/pgp-signature"; boundary="kbCYTQG2MZjuOjyn"
 Content-Disposition: inline
 
 
---AjmyJqqohANyBN/e
+--kbCYTQG2MZjuOjyn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Apr 20, 2013 at 07:29:01PM +0200, Lars-Peter Clausen wrote:
-> The MXS SAIF is only half-duplex so set the SNDRV_PCM_INFO_HALF_DUPLEX flag for
-> the PCM in order to prevent playback and capture from running at the same time.
+On Sat, Apr 20, 2013 at 07:29:02PM +0200, Lars-Peter Clausen wrote:
+> This allows us to access the DAI DMA data when we create the PCM. We'll use
+> this when converting mxs to generic DMA engine PCM driver.
 
 Applied, thanks.
 
---AjmyJqqohANyBN/e
+--kbCYTQG2MZjuOjyn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRdRC8AAoJELSic+t+oim9CmUQAIEwctLP3c2FYbp5h9NFgjX2
-WQTKZpeOiTOnuTQnJDcYbbGwzEzOFnZg56r7EnNrzm82fh06+JaMvkN/AyOXdi19
-YstOYfpxFM4OEmhY7Gdo4Abm9FrRCCpx3mtbLjq1zQnqwVyBSEM75wUIojxtJWzw
-bKJVwviRzS0L9cMFS8dVR0N2Cq7MlZ3AXhn0HH31yyrCr25u59yl3RDeOMjwg7R0
-w4elbr6E7MBz0/VsOwlTl2saFwVj3yJAQ78ulru1IsYMO+yVGvzIpVVMpvc/FvJY
-3z27EqC3YlwnflAJrw+/O0qBvTjqjL32aSKAJlVCfikdFuSAAPqicZUUdC0CxH56
-8ubrnmIEdhYFttFkxOwHmitjU4uiLToJBYgO4u6LingJrhGcKPhDTETavVW5PoYX
-2Ui6LTl2I8VIFrL0DgnKqrZTZlMzE2QrGQuMF9+UgZKvn/WYLlhwbZLc99CoDBLD
-YSs7sD5w1N4bTGUTqhFAzBhac4BH8VHBXv2riEFS0z9zyMr1a69BVbbBCJS5yt2/
-wiPkPGeTW+eiS3vi3fh4t6zUyfjEYNqgj3yVzJV1PlMG82eD5iKPacBk62rq3f+C
-sYEJlTetQMb1tSbEnVB2o5z6tZa4i1mxXaWgCZoHaG7uvOzCqNub63Dhcd4Knogy
-D2fZy+B0KyuSLAQ+en30
-=puH1
+iQIcBAEBAgAGBQJRdRDPAAoJELSic+t+oim9UdwP/RcfzlzZU7gjdJHd/ZV17IXv
+cNmqSzuhJWLZbV3wM7ucCO3ElU3lc7hH0F6CcNTQPoGfdeYqQjexMjVJC18YKMl1
+OrOiqzV6O2BykjhxcEefqLzkDFKhGPWPdPKLIdylVajeXapSry+cHBkKAEZ9mDmH
+UVb9UP1VjEMV9KNLk8x/FlXtJQEcPL9Kl/HbgeJwNMgsUy9ulYdJ+LF7mYSFHnPv
+SGupb60VYcOdFAktLxJNZo3oK6H42waE3/+y2WeR+c5bNdbRdUvXQUIokKmCJEQO
+2MwN6KNdKlaJ6QEdWveNDv0aJfEZ/LyXmZ3wqLncEL54027pkqeemZbtLLVL5hez
+ZFDSzRBE1JNtN4KSr+9zpHY9TQMyPxdi6ZGqHKcaQl1yqMslR0eUSr8VLd2J8y+v
+mA7vPmUyKvTjN7elsIuRN5PIHA7r0FmLOdhAfCuoZEMwtU6JcSJEPLiL1QQcG104
+2rNwm2twGkh4UO/fNyWqnh7wYAE2BnB6oCJEVCYQs0RC/HdgGvYgFnWI8yYUXjN0
+iyB/jcJUIyf6r5rjXA+UgXdktMliFnW+sfEQbrEnaXMfHUwaDzovd1Q23KKk6DZV
+sA+VkmAkC1YIuWbObmfHqxquOicxeT1xga3EumIBp90GRbTuv2HvcaTTsnxjFb4X
+BffABW1l8GbGPN+o8uHt
+=EHoP
 -----END PGP SIGNATURE-----
 
---AjmyJqqohANyBN/e--
+--kbCYTQG2MZjuOjyn--
 
---===============1861322266358632279==
+--===============4004169519742224018==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1861322266358632279==--
+--===============4004169519742224018==--
