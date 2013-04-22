@@ -1,15 +1,16 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH v2] Add M2Tech hiFace USB-SPDIF driver
-Date: Mon, 22 Apr 2013 11:14:27 +0200
-Message-ID: <20130422111427.f9b4e6f0a0db193f9924a75a@studenti.unina.it>
-References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
- <1360775505-13106-1-git-send-email-ao2@amarulasolutions.com>
- <5172F76C.9040002@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/7] Add capture support to compress API
+Date: Mon, 22 Apr 2013 10:53:35 +0100
+Message-ID: <20130422095335.GA30351@opensource.wolfsonmicro.com>
+References: <cover.1366278354.git.rf@opensource.wolfsonmicro.com>
+ <s5h61zi7i4o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6528622610280667968=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <5172F76C.9040002@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 51A6826030E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 11:53:38 +0200 (CEST)
+In-Reply-To: <s5h61zi7i4o.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, ckeepax@opensource.wolfsonmicro.com, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 20 Apr 2013 22:15:40 +0200
-Daniel Mack <zonque@gmail.com> wrote:
 
-> On 13.02.2013 18:11, Antonio Ospite wrote:
-> > Add driver for M2Tech hiFace USB-SPDIF interface and compatible devices.
-> > 
-> > M2Tech hiFace and compatible devices offer a Hi-End S/PDIF Output
-> > Interface, see http://www.m2tech.biz/hiface.html
-> 
-> Just curious: is there a new version of this patch set coming?
-> 
+--===============6528622610280667968==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
 
-Hi Daniel,
 
-I hope to find the time to send it in the next few days.
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards,
-   Antonio
+On Fri, Apr 19, 2013 at 03:41:11PM +0200, Takashi Iwai wrote:
 
--- 
-Antonio Ospite
-http://ao2.it
+> If we really merge it, don't you mind me merging soc-compress patch in
+> my tree (directly to for-next branch), Mark?
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+Yes, that's fine for me - for v3.11 I suspect it'd make sense to have it
+in my tree though as there'll probably be other stuff that depends on
+it.
+
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRdQhgAAoJELSic+t+oim97pgP/i+1k1WkMIIZhBG1Y79PKdHd
+Pkw68kVRrcPBb3d33A0hYGp/9pRzrk7wYNwKdAjIV0Lbp0uyl+4a3OgkR4f8MMl+
+YU/OXxgKtY7WlvriPF0AaeMqncbemkB+5IYoOjvgImcb/xxMGxNOwcoy8f1M0qNp
+xB0MMheOgi0x7jgQLTSaVhHoM1x91uQ1LqsoPqeF5APGYr9b2xn6irThBuXx2CDO
+ZW7L9LXokorUYKAbF/N/YRZ2xDzJdE3bhZkAxFtJPqubDNO2XNJjLd6bf6IOJSj2
+sU7bldbd+DhMfAFQHYUNA1hMsi2OxqFtPMMQOl+wKTFPTDnJeiAaw5tCmayGUw81
+ZbnxR4NnC+uXQEys8K7N8aqAegJ/8/W1vapPpiNQAyrmaZZUEABjmcIv6ilfGA78
+z6a7f/vBYtTuSCqZuYIKl6B0qB5SOBc/LV9JGstoyT63dtvUs8HtoTDaM2P9eGDl
+kY11IL+A+2EhyN93dLgEYMSF2/GeTc6e4IEIyWs/HoKCGn3UXgnpduJMbJxmP8KW
+kmhNBAeaUw1CkOXPfTl9KNqy5lZuIE6tQU5HT4sSSRlU+QE8KfJaIOjSacG03lnJ
+9mdjNd0U9TGmtED2D1xwJDh1jBf8RuNqj316/pC/7r8nrqaildHV8S3cePLLZEy8
+SeIzYtlKKV2KBHRLUEgR
+=Emvt
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
+
+--===============6528622610280667968==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6528622610280667968==--
