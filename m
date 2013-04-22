@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/8] ASoC: mxs: Setup dma data in DAI probe
-Date: Mon, 22 Apr 2013 11:28:39 +0100
-Message-ID: <20130422102838.GF30351@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/8] ASoC: mxs: Use generic dmaengine PCM
+Date: Mon, 22 Apr 2013 11:29:09 +0100
+Message-ID: <20130422102909.GG30351@opensource.wolfsonmicro.com>
 References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
- <1366478947-9377-3-git-send-email-lars@metafoo.de>
+ <1366478947-9377-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4004169519742224018=="
+Content-Type: multipart/mixed; boundary="===============8788512988288595824=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 834A326160C
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:28:40 +0200 (CEST)
-In-Reply-To: <1366478947-9377-3-git-send-email-lars@metafoo.de>
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 24D2026160C
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 12:29:11 +0200 (CEST)
+In-Reply-To: <1366478947-9377-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +25,50 @@ Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Ma
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4004169519742224018==
+--===============8788512988288595824==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kbCYTQG2MZjuOjyn"
+	protocol="application/pgp-signature"; boundary="EDJsL2R9iCFAt7IV"
 Content-Disposition: inline
 
 
---kbCYTQG2MZjuOjyn
+--EDJsL2R9iCFAt7IV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Apr 20, 2013 at 07:29:02PM +0200, Lars-Peter Clausen wrote:
-> This allows us to access the DAI DMA data when we create the PCM. We'll use
-> this when converting mxs to generic DMA engine PCM driver.
+On Sat, Apr 20, 2013 at 07:29:03PM +0200, Lars-Peter Clausen wrote:
+> Use the generic dmaengine PCM driver instead of a custom implementation.
 
 Applied, thanks.
 
---kbCYTQG2MZjuOjyn
+--EDJsL2R9iCFAt7IV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRdRDPAAoJELSic+t+oim9UdwP/RcfzlzZU7gjdJHd/ZV17IXv
-cNmqSzuhJWLZbV3wM7ucCO3ElU3lc7hH0F6CcNTQPoGfdeYqQjexMjVJC18YKMl1
-OrOiqzV6O2BykjhxcEefqLzkDFKhGPWPdPKLIdylVajeXapSry+cHBkKAEZ9mDmH
-UVb9UP1VjEMV9KNLk8x/FlXtJQEcPL9Kl/HbgeJwNMgsUy9ulYdJ+LF7mYSFHnPv
-SGupb60VYcOdFAktLxJNZo3oK6H42waE3/+y2WeR+c5bNdbRdUvXQUIokKmCJEQO
-2MwN6KNdKlaJ6QEdWveNDv0aJfEZ/LyXmZ3wqLncEL54027pkqeemZbtLLVL5hez
-ZFDSzRBE1JNtN4KSr+9zpHY9TQMyPxdi6ZGqHKcaQl1yqMslR0eUSr8VLd2J8y+v
-mA7vPmUyKvTjN7elsIuRN5PIHA7r0FmLOdhAfCuoZEMwtU6JcSJEPLiL1QQcG104
-2rNwm2twGkh4UO/fNyWqnh7wYAE2BnB6oCJEVCYQs0RC/HdgGvYgFnWI8yYUXjN0
-iyB/jcJUIyf6r5rjXA+UgXdktMliFnW+sfEQbrEnaXMfHUwaDzovd1Q23KKk6DZV
-sA+VkmAkC1YIuWbObmfHqxquOicxeT1xga3EumIBp90GRbTuv2HvcaTTsnxjFb4X
-BffABW1l8GbGPN+o8uHt
-=EHoP
+iQIcBAEBAgAGBQJRdRDtAAoJELSic+t+oim9oPAP/A3mKu7w7Y9eq2I68Eu4loFt
+ZTp74aKOfMn+LerhcqiuqF6ONLAN83QCErROgNEQ0uHrMuvZwA7F5pCV+YXFu9F4
+PR9mOAevg/yucb+S2tGdHOlGs694wIg/ERGdyv1FGTOuVWaI4g14ZmSmbrldl1Xp
+W506ROewjUnALy/Mo7qoIk8A0wvWgarE/PT87y2D1TN6V6hewvTO44/PLC96fmbt
+434q8azYmCo9LftDPElOLiqzXqBn3gg+wd6WIeFhybDpAE/EpVmtXUSff7p5leGM
+M+uMyQyY9J1sywFf6bF8UKruT8/LhweTmRvNoC7pR4EoKTMQzlKtnq/VvQPEwFb+
+DpiBj2WtwwJFBKSeb5thNhf9W0xbWVZ6xwWXK7YR+2UpLUexupi9pk9XZdTQzNLT
+vCEDPRjc8h04hGB9TJDL8js2XDOwy++avfKF7/F1SVdA0W+0vDZ4kY1rbDYbSbQ8
+CMx7c/+jYpYIIuMfMwea1yEFzr0lR8I4OE5N1CHd+pL6pJvCFo4EJtJkn83zeC68
+RqQw322/FeDd7lSPVaTfCNL/ndRr66DrWFxQ5S7t7ThzDBrkyb2ueaqi7dNms7Lr
+YwSTEhfB7eZExACUeHXKQbgtyGOop/GSwW6rLYTQmiJvsJlWpOWHjj+/oL5qwPLs
+kzkpamwoPVL82I8mzUUX
+=GjZi
 -----END PGP SIGNATURE-----
 
---kbCYTQG2MZjuOjyn--
+--EDJsL2R9iCFAt7IV--
 
---===============4004169519742224018==
+--===============8788512988288595824==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4004169519742224018==--
+--===============8788512988288595824==--
