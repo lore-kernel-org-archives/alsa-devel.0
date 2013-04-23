@@ -1,22 +1,18 @@
-From: Mark Hills <mark@xwax.org>
-Subject: Per-host .asoundrc on shared $HOME
-Date: Tue, 23 Apr 2013 21:41:27 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1304232118010.9238@localhost>
+From: =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>
+Subject: [PATCH] fixed mixer range reading during probing when
+	compiled with CONFIG_PM defined
+Date: Tue, 23 Apr 2013 23:38:49 +0200
+Message-ID: <1366753129-18854-1-git-send-email-daschuer@mixxx.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C1722610C0
- for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 22:41:28 +0200 (CEST)
-Received: from cpc5-hari13-2-0-cust67.20-2.cable.virginmedia.com
- ([82.45.173.68] helo=localhost)
- by wes.ijneb.com with esmtpa (Exim 4.77)
- (envelope-from <mark@pogo.org.uk>) id 1UUk1n-0007PJ-UX
- for alsa-devel@alsa-project.org; Tue, 23 Apr 2013 21:41:27 +0100
-Received: from mark (helo=localhost) by localhost with local-esmtp (Exim 4.69)
- (envelope-from <mark@xwax.org>) id 1UUk1n-0002T1-GL
- for alsa-devel@alsa-project.org; Tue, 23 Apr 2013 21:41:27 +0100
+Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
+ [209.85.214.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD8D32615ED
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 23:39:37 +0200 (CEST)
+Received: by mail-bk0-f46.google.com with SMTP id e19so17069bku.19
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 14:39:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>, clemens@ladisch.de, zonque@gmail.com, hegge@resisty.net, gabrbedd@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-There is a very old thread [1] on alsa-user on this topic which seems to 
-go through some yucky solutions. I have the same use case, and post some 
-findings here.
-
-Since pre-2003 alsa-lib calls wordexp(3) on the filenames. I am using the 
-patch below in /usr/share/alsa/alsa.conf
-
-It follows a precedent set by other files such as .Xdefaults-hostname.
-
-I'd submit a patch, except there seems to be no guarantee that HOSTNAME is 
-in the environment (on Slackware it is explicitly set in /etc/profile.) 
-Without it I can only see a bash local variable.
-
->From the old thread I imagine this function (or at least this mail) would 
-be useful to others.
-
-Would it be better to patch the C code to provide a token (eg. '\h') that 
-is substituted by the hostname? Or is it enough to assume that HOSTNAME 
-would be set?
-
-I didn't consider short vs. long hostnames, I suppose $HOSTNAME gives the 
-user/admin some control over this.
-
-This:
-
-  ~/.asoundrc-$(hostname -s)
-
-may work, but I don't see that forking a process is an option.
-
-[1] http://thread.gmane.org/gmane.linux.alsa.user/27532/focus=27542
-
--- 
-Mark
-
-
---- alsa.conf.orig	2013-04-23 21:22:45.105454493 +0100
-+++ alsa.conf	2013-04-23 21:16:41.707053308 +0100
-@@ -17,6 +17,7 @@
- 			}
- 			"/etc/asound.conf"
- 			"~/.asoundrc"
-+			"~/.asoundrc-$HOSTNAME"
- 		]
- 		errors false
- 	}
+RHVyaW5nIHByb2JpbmcsIHNuZF91c2JfYXV0b3Jlc3VtZSgpIGZhaWxlcyB3aXRoIC1FTk9ERVYu
+IFRoaXMgYnJha2VzICAKZ2V0X2N0bF92YWx1ZSgpIGluIG1peGVyLmMgd2hlbiByYWRpbmcgdGhl
+IHJhbmdlIHZhbHVlcy4gVGhlIG5ldyAgCmNvZGUgZG9lcyBub3QgdHJ5IHRvIGNhbGwgc25kX3Vz
+Yl9hdXRvcmVzdW1lKCkgaW4gdGhpcyBjYXNlLiAKVGhlIGZvbGxvd2luZyBzbmRfdXNiX3N1c3Bl
+bmQoKSBmYWlscyBzaWxlbnRseSBkdXJpbmcgcHJvYmluZyBhbnl3YXkuICAKVGhlIHBhdGNoIGFs
+c28gbWFrZXMgdGhlIGVycm9yIG1lc3NhZ2VzIG1vcmUgc2lnbmlmaWNhbnQuIFRoZSBvcmlnaW5h
+bCAKZXJyb3IgbWVzc2FnZXMgd2hlcmUgaWRlbnRpZmllZCBhcyBtaXNzbGVhZGluZyBkdXJpbmcg
+ZGVidWcuICAgCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2Now7xybWFubiA8ZGFzY2h1ZXJAbWl4
+eHgub3JnPgotLS0KIHNvdW5kL3VzYi9taXhlci5jIHwgICAyMyArKysrKysrKysrKysrKystLS0t
+LS0tLQogMSBmaWxlIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpk
+aWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVyLmMgYi9zb3VuZC91c2IvbWl4ZXIuYwppbmRleCBj
+YTQ3MzljLi5jMmRhYTU4IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4ZXIuYworKysgYi9zb3Vu
+ZC91c2IvbWl4ZXIuYwpAQCAtMjg5LDkgKzI4OSwxMSBAQCBzdGF0aWMgaW50IGdldF9jdGxfdmFs
+dWVfdjEoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsIGludCByZXF1ZXN0LCBpbnQg
+dgogCWludCB0aW1lb3V0ID0gMTA7CiAJaW50IGlkeCA9IDAsIGVycjsKIAotCWVyciA9IHNuZF91
+c2JfYXV0b3Jlc3VtZShjdmFsLT5taXhlci0+Y2hpcCk7Ci0JaWYgKGVyciA8IDApCi0JCXJldHVy
+biAtRUlPOworCWlmICghY2hpcC0+cHJvYmluZykgewkKKwkJZXJyID0gc25kX3VzYl9hdXRvcmVz
+dW1lKGN2YWwtPm1peGVyLT5jaGlwKTsKKwkJaWYgKGVyciA8IDApCisJCQlyZXR1cm4gLUVJTzsK
+Kwl9CiAJZG93bl9yZWFkKCZjaGlwLT5zaHV0ZG93bl9yd3NlbSk7CiAJd2hpbGUgKHRpbWVvdXQt
+LSA+IDApIHsKIAkJaWYgKGNoaXAtPnNodXRkb3duKQpAQCAtMzMzLDkgKzMzNSwxNCBAQCBzdGF0
+aWMgaW50IGdldF9jdGxfdmFsdWVfdjIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWws
+IGludCByZXF1ZXN0LCBpbnQgdgogCiAJbWVtc2V0KGJ1ZiwgMCwgc2l6ZW9mKGJ1ZikpOwogCi0J
+cmV0ID0gc25kX3VzYl9hdXRvcmVzdW1lKGNoaXApID8gLUVJTyA6IDA7Ci0JaWYgKHJldCkKLQkJ
+Z290byBlcnJvcjsKKwlpZiAoIWNoaXAtPnByb2JpbmcpIHsKKwkJcmV0ID0gc25kX3VzYl9hdXRv
+cmVzdW1lKGNoaXApOyAKKwkJaWYgKHJldCkgeworCQkJc25kX3ByaW50ayhLRVJOX0VSUiAic25k
+X3VzYl9hdXRvcmVzdW1lKCkgZmFpbGVkIHdpdGggJWRcbiIsIHJldCk7IAorCQkJcmV0ID0gLUVJ
+TzsJCQorCQkJZ290byBlcnJvcjsKKwkJfQorCX0KIAogCWRvd25fcmVhZCgmY2hpcC0+c2h1dGRv
+d25fcndzZW0pOwogCWlmIChjaGlwLT5zaHV0ZG93bikKQEAgLTM1MSw4ICszNTgsOCBAQCBzdGF0
+aWMgaW50IGdldF9jdGxfdmFsdWVfdjIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWws
+IGludCByZXF1ZXN0LCBpbnQgdgogCiAJaWYgKHJldCA8IDApIHsKIGVycm9yOgotCQlzbmRfcHJp
+bnRrKEtFUk5fRVJSICJjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVxID0gJSN4LCB3VmFsdWUgPSAl
+I3gsIHdJbmRleCA9ICUjeCwgdHlwZSA9ICVkXG4iLAotCQkJICAgcmVxdWVzdCwgdmFsaWR4LCBp
+ZHgsIGN2YWwtPnZhbF90eXBlKTsKKwkJc25kX3ByaW50ayhLRVJOX0VSUiAiY2Fubm90IGdldCBj
+dGwgdmFsdWU6IHJlcSA9ICUjeCwgd1ZhbHVlID0gJSN4LCB3SW5kZXggPSAlI3gsIHR5cGUgPSAl
+ZCwgcmV0ID0gJWRcbiIsCisJCQkgICBiUmVxdWVzdCwgdmFsaWR4LCBpZHgsIGN2YWwtPnZhbF90
+eXBlLCByZXQpOwogCQlyZXR1cm4gcmV0OwogCX0KIAotLSAKMS43LjkuNQoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
