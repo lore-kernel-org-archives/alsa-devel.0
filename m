@@ -1,50 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/21] ASoC: ux500: forward declare msp_i2s_platform_data
-Date: Tue, 23 Apr 2013 19:25:29 +0100
-Message-ID: <20130423182528.GT5019@opensource.wolfsonmicro.com>
-References: <1366734653-488286-1-git-send-email-arnd@arndb.de>
- <1366734653-488286-9-git-send-email-arnd@arndb.de>
+From: Mark Hills <mark@xwax.org>
+Subject: Per-host .asoundrc on shared $HOME
+Date: Tue, 23 Apr 2013 21:41:27 +0100 (BST)
+Message-ID: <alpine.LNX.2.01.1304232118010.9238@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iiZKCn1f/U0ES2iY"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1366734653-488286-9-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C1722610C0
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 22:41:28 +0200 (CEST)
+Received: from cpc5-hari13-2-0-cust67.20-2.cable.virginmedia.com
+ ([82.45.173.68] helo=localhost)
+ by wes.ijneb.com with esmtpa (Exim 4.77)
+ (envelope-from <mark@pogo.org.uk>) id 1UUk1n-0007PJ-UX
+ for alsa-devel@alsa-project.org; Tue, 23 Apr 2013 21:41:27 +0100
+Received: from mark (helo=localhost) by localhost with local-esmtp (Exim 4.69)
+ (envelope-from <mark@xwax.org>) id 1UUk1n-0002T1-GL
+ for alsa-devel@alsa-project.org; Tue, 23 Apr 2013 21:41:27 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+There is a very old thread [1] on alsa-user on this topic which seems to 
+go through some yucky solutions. I have the same use case, and post some 
+findings here.
 
---iiZKCn1f/U0ES2iY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since pre-2003 alsa-lib calls wordexp(3) on the filenames. I am using the 
+patch below in /usr/share/alsa/alsa.conf
 
-On Tue, Apr 23, 2013 at 06:30:40PM +0200, Arnd Bergmann wrote:
-> We get a lot of build warnings from the msp driver like:
+It follows a precedent set by other files such as .Xdefaults-hostname.
 
-Applied, thanks.
+I'd submit a patch, except there seems to be no guarantee that HOSTNAME is 
+in the environment (on Slackware it is explicitly set in /etc/profile.) 
+Without it I can only see a bash local variable.
 
---iiZKCn1f/U0ES2iY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>From the old thread I imagine this function (or at least this mail) would 
+be useful to others.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Would it be better to patch the C code to provide a token (eg. '\h') that 
+is substituted by the hostname? Or is it enough to assume that HOSTNAME 
+would be set?
 
-iQIcBAEBAgAGBQJRdtIRAAoJELSic+t+oim90nUP/1pU0K1IvIiZp4lBqZ4vyANk
-a/k6Kc6LbhJV0BGrzHxkrW+BfecTej1oOoiH0msPZ4DVcAdk9L7buXhPkTRKC2bV
-+y24b4VeP1SOpKOnB9ipIBAMp1CjBOoioJRz7SSpXKLsl6GcnMwgs+6Aa/Eqinhk
-NzU+0tmzMniiYFjZUmAS5fuVevgFEWp4xWXN8kXDUN96m/nnBDX9Og1L2/3CS+cZ
-FeT2QgLVItyX/1jPEETDHE0ZRgTIc+HnmuYdNasBT79/GRUUcrLkZ9UiXSl/Pxtb
-5tJaKbJG4LV5cWhH/qas4oSr74ESUjzcCFonYHmFSmnj2vJbqA1+HTjFB0NreSFh
-I0XmX06AeMLv0lllZRpZGd69ssINLFY5IU8S/UDDcngDpPA7PFQ9YqBzt7mif2se
-JqBsWq9Tei4L8hZ3fX0e77rrg+U6eJEStEpD1kdvcAVjOZdz+TuVFDcxDuFYsqoP
-zicX1FdSkt/YY6p2qXxGOfGnJU4j3ZWRVfgjXqpFKWrJGTIQxbzUMPdI6eUYJ1sg
-TU0RZC59G4M+XU+ac1uDtFtk3yR2IgQuq5RtggjIYCT/OhO7LNTkXNrs60h6opWT
-c5dZlyabEx/ylleMC2W02XNQ+jwHFN7IwFZz5keEwrXAxYjglvAAwuk4MZgj3Wpt
-+EjULwvFf9CKGZOcQpoC
-=SZZI
------END PGP SIGNATURE-----
+I didn't consider short vs. long hostnames, I suppose $HOSTNAME gives the 
+user/admin some control over this.
 
---iiZKCn1f/U0ES2iY--
+This:
+
+  ~/.asoundrc-$(hostname -s)
+
+may work, but I don't see that forking a process is an option.
+
+[1] http://thread.gmane.org/gmane.linux.alsa.user/27532/focus=27542
+
+-- 
+Mark
+
+
+--- alsa.conf.orig	2013-04-23 21:22:45.105454493 +0100
++++ alsa.conf	2013-04-23 21:16:41.707053308 +0100
+@@ -17,6 +17,7 @@
+ 			}
+ 			"/etc/asound.conf"
+ 			"~/.asoundrc"
++			"~/.asoundrc-$HOSTNAME"
+ 		]
+ 		errors false
+ 	}
