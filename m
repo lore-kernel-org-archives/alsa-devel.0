@@ -1,22 +1,14 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH,
-	for-next 2/2] ALSA: asihpi: add format support check in
-	snd_card_asihpi_capture_formats
-Date: Tue, 23 Apr 2013 01:00:42 +0200
-Message-ID: <1366671642-30423-2-git-send-email-eldad@fogrefinery.com>
-References: <s5hk3nu4wfa.wl%tiwai@suse.de>
- <1366671642-30423-1-git-send-email-eldad@fogrefinery.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: BUG: USB audio discontinuities with 'UHCI:
+ implement new semantics for URB_ISO_ASAP'
+Date: Tue, 23 Apr 2013 10:47:44 +0200
+Message-ID: <51764AB0.7020301__25522.8771632121$1366706890$gmane$org@ladisch.de>
+References: <Pine.LNX.4.44L0.1304221126200.1388-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
- [209.85.214.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A4549261721
- for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 01:01:02 +0200 (CEST)
-Received: by mail-bk0-f43.google.com with SMTP id jm19so736bkc.30
- for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2013 16:01:02 -0700 (PDT)
-In-Reply-To: <1366671642-30423-1-git-send-email-eldad@fogrefinery.com>
+In-Reply-To: <Pine.LNX.4.44L0.1304221126200.1388-100000@iolanthe.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Eldad Zack <eldad@fogrefinery.com>, Daniel Mack <zonque@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, Joe Rayhawk <jrayhawk@fairlystable.org>, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Some Asihpi formats are not supported or invalid, and their mapping to
-ALSA format is set to -1.
-Before performing the format conversion into ALSA bitwise formats,
-add a consistency check for the requested format, as done in
-snd_card_asihpi_playback_formats().
+Alan Stern wrote:
+> On Fri, 19 Apr 2013, Joe Rayhawk wrote:
+>> On Fri, Apr 19, 2013 at 02:18:24PM -0400, Alan Stern wrote:
+>>> On Fri, 19 Apr 2013, Clemens Ladisch wrote:
+>>>> Alan Stern wrote:
+>>>>> +		next = uhci->frame_number + 2;
+>>>>>
+>>>>> That 2 is the minimum latency, in frames (one frame per ms).
+>>>>
+>>>> One frame worked fine with the old driver.  What is the reason for
+>>>> this regression?
+>>>
+>>> Perhaps that was a mistake.  Joe, you can try changing the 2 above to a
+>>> 1 to see if it fixes the problem.
+>>
+>> Hey, that worked great! Audio's coming through continuously, now.
+>
+> This change could be added to the driver, but I would prefer not to.
 
-Compile tested only.
+Why do you think it is necessary to have a minimum latency of 2 ms?
 
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- sound/pci/asihpi/asihpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Again, the old algorithm worked fine.  While such short queues are not
+used by default, they are necessary to get low latencies for real-time
+audio applications.  Keeping this change would keep this regression for
+quite a few people.
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 160cf83..fbc1720 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -1141,7 +1141,7 @@ static u64 snd_card_asihpi_capture_formats(struct snd_card_asihpi *asihpi,
- 					format, sample_rate, 128000, 0);
- 		if (!err)
- 			err = hpi_instream_query_format(h_stream, &hpi_format);
--		if (!err)
-+		if (!err && (hpi_to_alsa_formats[format] != -1))
- 			formats |= pcm_format_to_bits(hpi_to_alsa_formats[format]);
- 	}
- 	return formats;
--- 
-1.8.1.5
+> In any case, it would be best
+
+What criteria are you using to evaluate the benefit of this?  Do you
+want to reduce the chance of queue underruns?  Interrupts?  Power usage?
+
+> if the usb-audio driver were changed to keep the pipeline length at
+> least 2 ms at all times.
+
+Why is having a queue of two URB with one packet each suddenly not
+allowed?
+
+
+Regards,
+Clemens
