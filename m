@@ -1,57 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: don't call of_dma_request_slave_channel directly
-Date: Tue, 23 Apr 2013 16:56:30 +0100
-Message-ID: <20130423155629.GS5019@opensource.wolfsonmicro.com>
-References: <1366732475-479886-1-git-send-email-arnd@arndb.de>
- <1366732475-479886-3-git-send-email-arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 08/21] ASoC: ux500: forward declare
+	msp_i2s_platform_data
+Date: Tue, 23 Apr 2013 18:30:40 +0200
+Message-ID: <1366734653-488286-9-git-send-email-arnd@arndb.de>
+References: <1366734653-488286-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qjXtncIm5b3tWrFJ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1366732475-479886-3-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A7D1264F0F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 18:32:12 +0200 (CEST)
+In-Reply-To: <1366734653-488286-1-git-send-email-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+We get a lot of build warnings from the msp driver like:
 
---qjXtncIm5b3tWrFJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In file included from sound/soc/ux500/ux500_msp_dai.h:21:0,
+                 from sound/soc/ux500/mop500.c:25:
+sound/soc/ux500/ux500_msp_i2s.h:546:11: warning: 'struct msp_i2s_platform_data' declared inside parameter list [enabled by default]
+    struct msp_i2s_platform_data *platform_data);
+           ^
+sound/soc/ux500/ux500_msp_i2s.h:546:11: warning: its scope is only this definition or declaration, which is probably not what you want [enabled by default]
 
-On Tue, Apr 23, 2013 at 05:54:33PM +0200, Arnd Bergmann wrote:
-> The exported interface for device drivers is dma_request_slave_channel,
-> not of_dma_request_slave_channel. The former does not depend on device
-> tree but also works with ACPI and other interfaces providing an
-> abstraction for DMA channels.
+The easiest solution is to add a declaration of the struct name.
 
-> This fixes link errors when building ALSA as a loadable module.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/ux500/ux500_msp_i2s.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-This has already been changed separately, I'm surprised this applies
-against current code.  Though one does have to wonder why it's in the
-header file if it's not a supported API...
-
---qjXtncIm5b3tWrFJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRdq8GAAoJELSic+t+oim9ZrIP/3mwT42y+29d8cL1uzv+PGLw
-kBXVYWLeNg7akk9e3QCTxNCidIAodP89W24Qor5Ljz81dMEAg8Bp0Qm/lR784V6A
-HlJnKTcrYnNIN3VJ5CmXhQwlYltNXf0fD/UQUVQRMSh/4a3GmXnT6t7mBM0/mjy8
-G3JbSZT+mP74z2ctTHymnwQik9WXoEewA6+KLP5wDJ5dzjgcyKZzAvX2YdGkQ78/
-m7gHM7Di/dzASPmFr7ICPHp62nwqoJ29UBBHOMLy0/TiGi5yCIL/JJ1kGUJBNXZ4
-UwKBYxturMKNXVmVBwealhOTDP21Z3UN2v6JM0pUJtT8hEjjMpGUq2P+CFDFrgP0
-S9CHKiTRCToqokEarFMhJYUGu4fp0z7w2lgNsExdwqYVT2mTCumHiof0eoLgj0YG
-Cx2zCtfAnsBcNl8jt15z5QaZUQRj2M4hzs+8a/GzKXAAkdgZWUPdjEiQbFbClHdV
-Rqo8iayk148QnCanW2oFV+A2U9FVY95Tfz2wilbVmnJsKB1qjtSIaiDQOMO90r7D
-xuCoGI6+Wp0rqFuaVWB+MX4ZVXCUDms0rNgvgeklCkE7bIMY/kv+jUG8cfe+5TO2
-XL/3RNu5sHS5OUn5464pDmnq+9WEI6N+Vo3gxWGN/3YvRTbesu8WC7NsthgvO2sC
-kH9gGmxQKmVCyMh232Ho
-=NHEN
------END PGP SIGNATURE-----
-
---qjXtncIm5b3tWrFJ--
+diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
+index 1311c0d..6f3e3dc 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.h
++++ b/sound/soc/ux500/ux500_msp_i2s.h
+@@ -543,6 +543,7 @@ struct ux500_msp_dma_params {
+ 	struct stedma40_chan_cfg *dma_cfg;
+ };
+ 
++struct msp_i2s_platform_data;
+ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+ 			struct ux500_msp **msp_p,
+ 			struct msp_i2s_platform_data *platform_data);
+-- 
+1.8.1.2
