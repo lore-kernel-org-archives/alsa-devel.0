@@ -1,61 +1,210 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH] ASoC: wm8962: Convert to
-	devm_input_allocate_device()
-Date: Wed, 24 Apr 2013 16:50:48 +0300
-Message-ID: <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
-References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v5 04/10] ASoC: fsl-ssi: Add support for imx-pcm-fiq
+Date: Wed, 24 Apr 2013 16:36:33 +0200
+Message-ID: <1366814199-14827-5-git-send-email-mpa@pengutronix.de>
+References: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
- [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E3322615CC
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 15:51:09 +0200 (CEST)
-Received: by mail-vc0-f179.google.com with SMTP id hz11so1754431vcb.38
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 06:51:08 -0700 (PDT)
-In-Reply-To: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Add support for non-dma pcm for imx platforms with imx-pcm-fiq support.
+Instead of imx-pcm-audio, in this case imx-pcm-fiq-audio device is added
+and the SIER flags are set differently.
 
-On Thu, Dec 20, 2012 at 4:18 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8962.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index 50b0983..1cee9b3 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -3210,7 +3210,6 @@ static void wm8962_init_beep(struct snd_soc_codec *codec)
->
->         ret = input_register_device(wm8962->beep);
->         if (ret != 0) {
-> -               input_free_device(wm8962->beep);
->                 wm8962->beep = NULL;
->                 dev_err(codec->dev, "Failed to register beep device\n");
->         }
+We need imx-pcm-fiq for some boards that use an incompatible codec.
+imx-pcm-fiq handles those codecs differently and allows to operate with
+them. DMA is not possible because some data sent by the codecs, e.g.
+wm9712, is not in the datastream. Also some data is mixed up in the
+fifos, so that we need to sort them out manually.
 
-I'm not sure if this patch is correct.
-According to comment of input_free_memory()
-(http://lxr.free-electrons.com/source/drivers/input/input.c#L1825) you
-need to call it if input_register_device failed.
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
 
+Notes:
+    Changes in v4:
+     - Add a comment about the reason why we add a imx-pcm-fiq device.
+     - Change commit message to include information about the usage of imx-pcm-fiq
+    
+    Changes in v3:
+     - Rename bool "dma" to "use_dma"
 
---
-Leon Romanovsky | Independent Linux Consultant
-        www.leon.nu | leon@leon.nu
+ sound/soc/fsl/fsl_ssi.c | 94 +++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 80 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 0f0bed6..5165d41 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -8,6 +8,26 @@
+  * This file is licensed under the terms of the GNU General Public License
+  * version 2.  This program is licensed "as is" without any warranty of any
+  * kind, whether express or implied.
++ *
++ *
++ * Some notes why imx-pcm-fiq is used instead of DMA on some boards:
++ *
++ * The i.MX SSI core has some nasty limitations in AC97 mode. While most
++ * sane processor vendors have a FIFO per AC97 slot, the i.MX has only
++ * one FIFO which combines all valid receive slots. We cannot even select
++ * which slots we want to receive. The WM9712 with which this driver
++ * was developed with always sends GPIO status data in slot 12 which
++ * we receive in our (PCM-) data stream. The only chance we have is to
++ * manually skip this data in the FIQ handler. With sampling rates different
++ * from 48000Hz not every frame has valid receive data, so the ratio
++ * between pcm data and GPIO status data changes. Our FIQ handler is not
++ * able to handle this, hence this driver only works with 48000Hz sampling
++ * rate.
++ * Reading and writing AC97 registers is another challenge. The core
++ * provides us status bits when the read register is updated with *another*
++ * value. When we read the same register two times (and the register still
++ * contains the same value) these status bits are not set. We work
++ * around this by not polling these bits but only wait a fixed delay.
+  */
+ 
+ #include <linux/init.h>
+@@ -121,12 +141,14 @@ struct fsl_ssi_private {
+ 
+ 	bool new_binding;
+ 	bool ssi_on_imx;
++	bool use_dma;
+ 	struct clk *clk;
+ 	struct platform_device *imx_pcm_pdev;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	struct imx_dma_data filter_data_tx;
+ 	struct imx_dma_data filter_data_rx;
++	struct imx_pcm_fiq_params fiq_params;
+ 
+ 	struct {
+ 		unsigned int rfrc;
+@@ -356,7 +378,12 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 		 */
+ 
+ 		/* Enable the interrupts and DMA requests */
+-		write_ssi(SIER_FLAGS, &ssi->sier);
++		if (ssi_private->use_dma)
++			write_ssi(SIER_FLAGS, &ssi->sier);
++		else
++			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN |
++					CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN, &ssi->sier);
+ 
+ 		/*
+ 		 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
+@@ -550,7 +577,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (ssi_private->ssi_on_imx) {
++	if (ssi_private->ssi_on_imx && ssi_private->use_dma) {
+ 		dai->playback_dma_data = &ssi_private->dma_params_tx;
+ 		dai->capture_dma_data = &ssi_private->dma_params_rx;
+ 	}
+@@ -695,6 +722,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	       sizeof(fsl_ssi_dai_template));
+ 	ssi_private->cpu_dai_drv.name = ssi_private->name;
+ 
++	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
++
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+ 	if (ret) {
+@@ -716,12 +745,15 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		goto error_iomap;
+ 	}
+ 
+-	/* The 'name' should not have any slashes in it. */
+-	ret = request_irq(ssi_private->irq, fsl_ssi_isr, 0, ssi_private->name,
+-			  ssi_private);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "could not claim irq %u\n", ssi_private->irq);
+-		goto error_irqmap;
++	if (ssi_private->use_dma) {
++		/* The 'name' should not have any slashes in it. */
++		ret = request_irq(ssi_private->irq, fsl_ssi_isr, 0,
++				ssi_private->name, ssi_private);
++		if (ret < 0) {
++			dev_err(&pdev->dev, "could not claim irq %u\n",
++					ssi_private->irq);
++			goto error_irqmap;
++		}
+ 	}
+ 
+ 	/* Are the RX and the TX clocks locked? */
+@@ -770,7 +802,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		 */
+ 		ret = of_property_read_u32_array(pdev->dev.of_node,
+ 					"fsl,ssi-dma-events", dma_events, 2);
+-		if (ret) {
++		if (ret && !ssi_private->use_dma) {
+ 			dev_err(&pdev->dev, "could not get dma events\n");
+ 			goto error_clk;
+ 		}
+@@ -809,12 +841,46 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (ssi_private->ssi_on_imx) {
+-		ssi_private->imx_pcm_pdev =
+-			platform_device_register_simple("imx-pcm-audio",
++		if (!ssi_private->use_dma) {
++
++			/*
++			 * Some boards use an incompatible codec. To get it
++			 * working, we are using imx-fiq-pcm-audio, that
++			 * can handle those codecs. DMA is not possible in this
++			 * situation.
++			 */
++
++			ssi_private->imx_pcm_pdev = platform_device_alloc(
++							"imx-fiq-pcm-audio",
++							pdev->id);
++			if (!ssi_private->imx_pcm_pdev) {
++				ret = -ENOMEM;
++				goto error_dev;
++			}
++
++			ssi_private->fiq_params.irq = ssi_private->irq;
++			ssi_private->fiq_params.base = ssi_private->ssi;
++			ssi_private->fiq_params.dma_params_rx =
++				&ssi_private->dma_params_rx;
++			ssi_private->fiq_params.dma_params_tx =
++				&ssi_private->dma_params_tx;
++
++			platform_set_drvdata(ssi_private->imx_pcm_pdev,
++					&ssi_private->fiq_params);
++			ret = platform_device_add(ssi_private->imx_pcm_pdev);
++			if (ret) {
++				dev_err(&pdev->dev, "Failed to add imx-fiq-pcm-audio device\n");
++				platform_device_put(ssi_private->imx_pcm_pdev);
++				goto error_dev;
++			}
++		} else {
++			ssi_private->imx_pcm_pdev =
++				platform_device_register_simple("imx-pcm-audio",
+ 							-1, NULL, 0);
+-		if (IS_ERR(ssi_private->imx_pcm_pdev)) {
+-			ret = PTR_ERR(ssi_private->imx_pcm_pdev);
+-			goto error_dev;
++			if (IS_ERR(ssi_private->imx_pcm_pdev)) {
++				ret = PTR_ERR(ssi_private->imx_pcm_pdev);
++				goto error_dev;
++			}
+ 		}
+ 	}
+ 
+-- 
+1.8.1.5
