@@ -1,67 +1,57 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: Asynchronous audio USB chips: choppy playback
- since 3.8-rc7
-Date: Wed, 24 Apr 2013 15:11:48 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1304241504580.1548-100000@iolanthe.rowland.org>
-References: <517824CB.8050309@canonical.com>
+From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v5 01/10] ASoC: phycore-ac97: Add DT support
+Date: Wed, 24 Apr 2013 21:45:40 +0200
+Message-ID: <20130424194540.GF32299@pengutronix.de>
+References: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
+ <1366814199-14827-2-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id 0AC962625CF
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 21:11:49 +0200 (CEST)
-In-Reply-To: <517824CB.8050309@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 1136110@bugs.launchpad.net, Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Tyson Tan <tysontan@mail.com>, Joseph Salisbury <joseph.salisbury@canonical.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1366814199-14827-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 24 Apr 2013, David Henningsson wrote:
+Hi Markus,
 
-> >> Ok, Joseph Salisbury has build some bisection kernels, and Tyson Tan
-> >> relentlessly tested all of them, and it turns out that
-> >>
-> >> 3e619d0415 ("USB: EHCI: fix bug in scheduling periodic split transfers")
-> >>
-> >> Is the first bad commit. Also, reverting this commit from the current
-> >> mainline head makes the problem disappear.
-> >>
-> >> Alan, any idea?
-> >>
-> >>    https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110
-> >
-> > No ideas as to the cause.
-> >
-> > For debugging, it would help to see a usbmon trace from a kernel where
-> > the problem occurs, together with a trace from another kernel where the
-> > problem does not occur.
-> >
-> > Alan Stern
+On Wed, Apr 24, 2013 at 04:36:30PM +0200, Markus Pargmann wrote:
+> Add devicetree support for this audio soc fabric driver.
 > 
-> First, thanks for looking at this bug.
-> 
-> While a long-term solution is being discussed, this patch went to stable 
-> too, where it is causing regressions. Would it be okay just to revert 
-> this patch in the next stable series? (Even if this was a bug fix, few 
-> people seem to have noticed?) Or do you envision something else 
-> happening but the original -ENOSPC error showing up, due to other stuff 
-> that went to stable at the same time?
+> @@ -32,8 +35,12 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+>  		.stream_name	= "HiFi",
+>  		.codec_dai_name		= "wm9712-hifi",
+>  		.codec_name	= "wm9712-codec",
+> +#ifdef CONFIG_MACH_IMX27_DT
+> +		.platform_name	= "imx-fiq-pcm-audio",
+> +#else
+>  		.cpu_dai_name	= "imx-ssi.0",
+>  		.platform_name	= "imx-fiq-pcm-audio.0",
+> +#endif
 
-I think reverting it from stable won't cause any new problems to show 
-up (although the original problem will return, obviously).  Go ahead.
+This doesn't work properly. Compiling the kernel with IMX27_DT enabled
+does not necessarily mean that it also started with dt support.
 
-At the same time, it would be nice to know that some people are really
-carrying out tests to find the reason for the new problem.  Otherwise
-we end up with this commit reverted and nobody trying to figure out how
-to fix the original bug correctly.
+Personally I am fine with removing platform based support for this
+driver if it's too much effort to fix it properly, but we shouldn't
+start working with ifdefs here.
 
-Alan Stern
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
