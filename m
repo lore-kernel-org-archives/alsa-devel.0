@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v5 08/10] ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
-Date: Wed, 24 Apr 2013 16:36:37 +0200
-Message-ID: <1366814199-14827-9-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v5 02/10] ASoC: imx-pcm-dma: DT support
+Date: Wed, 24 Apr 2013 16:36:31 +0200
+Message-ID: <1366814199-14827-3-git-send-email-mpa@pengutronix.de>
 References: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,23 +22,35 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the possibility to pass a of_node as platform_data which
+is used by generic-pcm-dma to request a DMA slave channel.
+
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/fsl/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3843a18..28af843 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -153,7 +153,7 @@ config SND_SOC_PHYCORE_AC97
- 	select SND_SOC_WM9712
- 	select SND_SOC_IMX_PCM_FIQ
- 	select SND_SOC_IMX_AUDMUX
--	select SND_SOC_IMX_SSI
-+	select SND_SOC_FSL_SSI
- 	help
- 	  Say Y if you want to add support for SoC audio on Phytec phyCORE
- 	  and phyCARD boards in AC97 mode
+Notes:
+    Changes in v5:
+     - Use dev.parent pointer to get the of_node.
+
+ sound/soc/fsl/imx-pcm-dma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index c246fb5..f9577e1 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -62,9 +62,11 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+ 
+ int imx_pcm_dma_init(struct platform_device *pdev)
+ {
++	if (pdev->dev.parent)
++		pdev->dev.of_node = pdev->dev.parent->of_node;
++
+ 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ 
 -- 
 1.8.1.5
