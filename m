@@ -1,18 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Asynchronous audio USB chips: choppy playback
- since 3.8-rc7
-Date: Wed, 24 Apr 2013 20:30:35 +0200
-Message-ID: <517824CB.8050309@canonical.com>
-References: <Pine.LNX.4.44L0.1304191638020.29846-100000@netrider.rowland.org>
+From: =?UTF-8?Q?Daniel_Sch=C3=BCrmann?= <daschuer@mixxx.org>
+Subject: Re: [PATCH v2] ALSA: snd-usb-audio: fixed mixer range
+ reading during probing, when compiled with CONFIG_PM defined
+Date: Wed, 24 Apr 2013 20:34:58 +0200
+Message-ID: <CABVYHNhyJCxh4TL5xPnCuSf7womv13+3=_8DxUUFMOkiCX2pHw@mail.gmail.com>
+References: <1366828163-3579-1-git-send-email-daschuer@mixxx.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BCB062615E6
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 20:30:37 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1304191638020.29846-100000@netrider.rowland.org>
+Received: from mail-ia0-f176.google.com (mail-ia0-f176.google.com
+ [209.85.210.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ADFD26166B
+ for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 20:35:00 +0200 (CEST)
+Received: by mail-ia0-f176.google.com with SMTP id l27so1441177iae.7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 11:34:59 -0700 (PDT)
+In-Reply-To: <1366828163-3579-1-git-send-email-daschuer@mixxx.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,81 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 1136110@bugs.launchpad.net, Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>, Tyson Tan <tysontan@mail.com>, Joseph Salisbury <joseph.salisbury@canonical.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, =?UTF-8?Q?Daniel_Sch=C3=BCrmann?= <daschuer@mixxx.org>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Torstein Hegge <hegge@resisty.net>, Gabriel Beddingfield <gabrbedd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/19/2013 10:48 PM, Alan Stern wrote:
-> On Fri, 19 Apr 2013, Daniel Mack wrote:
->
->> On 03.04.2013 12:25, Takashi Iwai wrote:
->>> At Wed, 03 Apr 2013 12:15:25 +0200,
->>> David Henningsson wrote:
->>>>
->>>> Hi ALSA developers,
->>>>
->>>> Just to get your attention here on what seems to be an USB audio
->>>> regression.
->>>>
->>>> The bug is described in detail here:
->>>>
->>>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110?comments=all
->>>>
->>>> Quoting the bug:
->>>>
->>>> "
->>>> This bug seems to affect only a certain kind of hardware, which is
->>>> called "Asynchronous USB Digital Audio Codec (DAC)". It's said that such
->>>> a DAC hosts the clock itself (USB Device Host). An ordinary DAC, so
->>>> called "Synchronous USB DAC", uses the clock hosted by the mother board,
->>>> which is not affected by this bug.
->>>>
->>>> When this bug affects an asynchronous USB DAC, the audio played by the
->>>> DAC is constantly interrupted. The playback itself does not stop, but
->>>> the output becomes discontinous, filling with constant crackling noises,
->>>> destroying everything the DAC plays.
->>>> "
->>>>
->>>> According to the bug reporter, which seems to have done quite a bit of
->>>> research, this started between 3.8-rc6 and 3.8-rc7 as well as stable
->>>> kernels and the bug also lists a few commits which could be the cause,
->>>> none under sound/usb though.
->>>
->>> Yes, there is no commits regarding usb-audio itself between 3.8-rc6
->>> and rc7, so the likely culprit is in drivers/usb (usually either
->>> drivers/usb/host or drivers/usb/core).  There are a bunch of changes
->>> there, so further bisection would be appreciated.
->>
->> Ok, Joseph Salisbury has build some bisection kernels, and Tyson Tan
->> relentlessly tested all of them, and it turns out that
->>
->> 3e619d0415 ("USB: EHCI: fix bug in scheduling periodic split transfers")
->>
->> Is the first bad commit. Also, reverting this commit from the current
->> mainline head makes the problem disappear.
->>
->> Alan, any idea?
->>
->>    https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1136110
->
-> No ideas as to the cause.
->
-> For debugging, it would help to see a usbmon trace from a kernel where
-> the problem occurs, together with a trace from another kernel where the
-> problem does not occur.
->
-> Alan Stern
-
-First, thanks for looking at this bug.
-
-While a long-term solution is being discussed, this patch went to stable 
-too, where it is causing regressions. Would it be okay just to revert 
-this patch in the next stable series? (Even if this was a bug fix, few 
-people seem to have noticed?) Or do you envision something else 
-happening but the original -ENOSPC error showing up, due to other stuff 
-that went to stable at the same time?
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+SGkgVGFrYXNoaSwKCkkgaGF2ZSB0ZXN0ZWQgeW91IElkZWEsIGFuZCBJdCB3b3JrcyBmaW5lIGFz
+IGV4cGVjdGVkLgpJdCBpcyBpbmNsdWRlIGEgaW4gdGhlIHBhdGNoIGJlbG93LgpJIGhhdmUgYWxz
+byBkZWJ1Z2dlZCBkZWVwZXIsIGFuZCBmb3VuZCBvdXQgdGhhdCB0aGVyZSBpcyBzdGlsbCBhIHNj
+YWxpbmcKaXNzdWUgb2YgdGhlIENsYXNzIDIgTWl4ZXIuCkkgd2lsbCB0cnkgdG8gZml4IGl0IGlu
+IGEgc2VwYXJhdGUgcGF0Y2guCgpLaW5kIHJlZ2FyZHMsCgpEYW5pZWwKCgoyMDEzLzQvMjQgRGFu
+aWVsIFNjaMO8cm1hbm4gPGRhc2NodWVyQG1peHh4Lm9yZz4KCj4gRHVyaW5nIHByb2JpbmcsIHNu
+ZF91c2JfYXV0b3Jlc3VtZSgpIGZhaWxzIHdpdGggLUVOT0RFVi4gVGhpcyBicmFrZXMKPiBnZXRf
+Y3RsX3ZhbHVlKCkgaW4gbWl4ZXIuYyB3aGVuIHJlYWRpbmcgdGhlIHJhbmdlIHZhbHVlcy4gSW4g
+dGhlIG5ldwo+IHZlcnNpb24KPiBzbmRfdXNiX2F1dG9yZXN1bWUoKSByZXR1cm5zIDAgaW4gdGhp
+cyBjYXNlIHdoaWNoIGJyYWtlcyBub3QgdGhlIGZvbGxvd2luZwo+IHF1ZXJ5LiBUaGUgZm9sbG93
+aW5nIHNuZF91c2Jfc3VzcGVuZCgpIGZhaWxzIHNpbGVudGx5IGR1cmluZyBwcm9iaW5nCj4gYW55
+d2F5Lgo+IFRoZSBwYXRjaCBhbHNvIG1ha2VzIHRoZSBlcnJvciBtZXNzYWdlcyBtb3JlIHNpZ25p
+ZmljYW50LiBUaGUgb3JpZ2luYWwKPiBlcnJvciBtZXNzYWdlcyB3aGVyZSBpZGVudGlmaWVkIGFz
+IG1pc2xlYWRpbmcgZHVyaW5nIGRlYnVnLgo+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2No
+w7xybWFubiA8ZGFzY2h1ZXJAbWl4eHgub3JnPgo+IC0tLQo+ICBzb3VuZC91c2IvY2FyZC5jICB8
+ICAgIDcgKysrKystLQo+ICBzb3VuZC91c2IvbWl4ZXIuYyB8ICAgMTEgKysrKysrKy0tLS0KPiAg
+MiBmaWxlcyBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQo+Cj4gZGlm
+ZiAtLWdpdCBhL3NvdW5kL3VzYi9jYXJkLmMgYi9zb3VuZC91c2IvY2FyZC5jCj4gaW5kZXggNTI1
+NGIxOC4uMmY1NWQwMCAxMDA2NDQKPiAtLS0gYS9zb3VuZC91c2IvY2FyZC5jCj4gKysrIGIvc291
+bmQvdXNiL2NhcmQuYwo+IEBAIC02MjksOSArNjI5LDEyIEBAIHN0YXRpYyB2b2lkIHVzYl9hdWRp
+b19kaXNjb25uZWN0KHN0cnVjdCB1c2JfaW50ZXJmYWNlCj4gKmludGYpCj4gIGludCBzbmRfdXNi
+X2F1dG9yZXN1bWUoc3RydWN0IHNuZF91c2JfYXVkaW8gKmNoaXApCj4gIHsKPiAgICAgICAgIGlu
+dCBlcnIgPSAtRU5PREVWOwo+IC0KPiArCj4gKyAgICAgICBpZiAoY2hpcC0+cHJvYmluZykgewo+
+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsKPiArICAgICAgIH0KPiAgICAgICAgIGRvd25fcmVh
+ZCgmY2hpcC0+c2h1dGRvd25fcndzZW0pOwo+IC0gICAgICAgaWYgKCFjaGlwLT5zaHV0ZG93biAm
+JiAhY2hpcC0+cHJvYmluZykKPiArICAgICAgIGlmICghY2hpcC0+c2h1dGRvd24pCj4gICAgICAg
+ICAgICAgICAgIGVyciA9IHVzYl9hdXRvcG1fZ2V0X2ludGVyZmFjZShjaGlwLT5wbV9pbnRmKTsK
+PiAgICAgICAgIHVwX3JlYWQoJmNoaXAtPnNodXRkb3duX3J3c2VtKTsKPgo+IGRpZmYgLS1naXQg
+YS9zb3VuZC91c2IvbWl4ZXIuYyBiL3NvdW5kL3VzYi9taXhlci5jCj4gaW5kZXggY2E0NzM5Yy4u
+NWQ0ZjNjNiAxMDA2NDQKPiAtLS0gYS9zb3VuZC91c2IvbWl4ZXIuYwo+ICsrKyBiL3NvdW5kL3Vz
+Yi9taXhlci5jCj4gQEAgLTMzMyw5ICszMzMsMTIgQEAgc3RhdGljIGludCBnZXRfY3RsX3ZhbHVl
+X3YyKHN0cnVjdAo+IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsIGludCByZXF1ZXN0LCBpbnQg
+dgo+Cj4gICAgICAgICBtZW1zZXQoYnVmLCAwLCBzaXplb2YoYnVmKSk7Cj4KPiAtICAgICAgIHJl
+dCA9IHNuZF91c2JfYXV0b3Jlc3VtZShjaGlwKSA/IC1FSU8gOiAwOwo+IC0gICAgICAgaWYgKHJl
+dCkKPiArICAgICAgIHJldCA9IHNuZF91c2JfYXV0b3Jlc3VtZShjaGlwKTsKPiArICAgICAgIGlm
+IChyZXQpIHsKPiArICAgICAgICAgICAgICAgc25kX3ByaW50ayhLRVJOX0VSUiAic25kX3VzYl9h
+dXRvcmVzdW1lKCkgZmFpbGVkIHdpdGgKPiAlZFxuIiwgcmV0KTsKPiArICAgICAgICAgICAgICAg
+cmV0ID0gLUVJTzsKPiAgICAgICAgICAgICAgICAgZ290byBlcnJvcjsKPiArICAgICAgIH0KPgo+
+ICAgICAgICAgZG93bl9yZWFkKCZjaGlwLT5zaHV0ZG93bl9yd3NlbSk7Cj4gICAgICAgICBpZiAo
+Y2hpcC0+c2h1dGRvd24pCj4gQEAgLTM1MSw4ICszNTQsOCBAQCBzdGF0aWMgaW50IGdldF9jdGxf
+dmFsdWVfdjIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8KPiAqY3ZhbCwgaW50IHJlcXVlc3Qs
+IGludCB2Cj4KPiAgICAgICAgIGlmIChyZXQgPCAwKSB7Cj4gIGVycm9yOgo+IC0gICAgICAgICAg
+ICAgICBzbmRfcHJpbnRrKEtFUk5fRVJSICJjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVxID0gJSN4
+LAo+IHdWYWx1ZSA9ICUjeCwgd0luZGV4ID0gJSN4LCB0eXBlID0gJWRcbiIsCj4gLSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgcmVxdWVzdCwgdmFsaWR4LCBpZHgsIGN2YWwtPnZhbF90eXBlKTsK
+PiArICAgICAgICAgICAgICAgc25kX3ByaW50ayhLRVJOX0VSUiAiY2Fubm90IGdldCBjdGwgdmFs
+dWU6IHJlcSA9ICUjeCwKPiB3VmFsdWUgPSAlI3gsIHdJbmRleCA9ICUjeCwgdHlwZSA9ICVkLCBy
+ZXQgPSAlZFxuIiwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICBiUmVxdWVzdCwgdmFsaWR4
+LCBpZHgsIGN2YWwtPnZhbF90eXBlLCByZXQpOwo+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0
+Owo+ICAgICAgICAgfQo+Cj4gLS0KPiAxLjcuOS41Cj4KPgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
