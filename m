@@ -1,67 +1,80 @@
-From: =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>
-Subject: [PATCH] fixed mixer range reading during probing when
-	compiled with CONFIG_PM defined
-Date: Tue, 23 Apr 2013 23:38:49 +0200
-Message-ID: <1366753129-18854-1-git-send-email-daschuer@mixxx.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: don't call of_dma_request_slave_channel directly
+Date: Wed, 24 Apr 2013 09:11:55 +0800
+Message-ID: <20130424011153.GA2319@shlinux1.ap.freescale.net>
+References: <1366732475-479886-1-git-send-email-arnd@arndb.de>
+ <1366732475-479886-3-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f46.google.com (mail-bk0-f46.google.com
- [209.85.214.46])
- by alsa0.perex.cz (Postfix) with ESMTP id DD8D32615ED
- for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 23:39:37 +0200 (CEST)
-Received: by mail-bk0-f46.google.com with SMTP id e19so17069bku.19
- for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2013 14:39:37 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>, clemens@ladisch.de, zonque@gmail.com, hegge@resisty.net, gabrbedd@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1366732475-479886-3-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-RHVyaW5nIHByb2JpbmcsIHNuZF91c2JfYXV0b3Jlc3VtZSgpIGZhaWxlcyB3aXRoIC1FTk9ERVYu
-IFRoaXMgYnJha2VzICAKZ2V0X2N0bF92YWx1ZSgpIGluIG1peGVyLmMgd2hlbiByYWRpbmcgdGhl
-IHJhbmdlIHZhbHVlcy4gVGhlIG5ldyAgCmNvZGUgZG9lcyBub3QgdHJ5IHRvIGNhbGwgc25kX3Vz
-Yl9hdXRvcmVzdW1lKCkgaW4gdGhpcyBjYXNlLiAKVGhlIGZvbGxvd2luZyBzbmRfdXNiX3N1c3Bl
-bmQoKSBmYWlscyBzaWxlbnRseSBkdXJpbmcgcHJvYmluZyBhbnl3YXkuICAKVGhlIHBhdGNoIGFs
-c28gbWFrZXMgdGhlIGVycm9yIG1lc3NhZ2VzIG1vcmUgc2lnbmlmaWNhbnQuIFRoZSBvcmlnaW5h
-bCAKZXJyb3IgbWVzc2FnZXMgd2hlcmUgaWRlbnRpZmllZCBhcyBtaXNzbGVhZGluZyBkdXJpbmcg
-ZGVidWcuICAgCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2Now7xybWFubiA8ZGFzY2h1ZXJAbWl4
-eHgub3JnPgotLS0KIHNvdW5kL3VzYi9taXhlci5jIHwgICAyMyArKysrKysrKysrKysrKystLS0t
-LS0tLQogMSBmaWxlIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVyLmMgYi9zb3VuZC91c2IvbWl4ZXIuYwppbmRleCBj
-YTQ3MzljLi5jMmRhYTU4IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4ZXIuYworKysgYi9zb3Vu
-ZC91c2IvbWl4ZXIuYwpAQCAtMjg5LDkgKzI4OSwxMSBAQCBzdGF0aWMgaW50IGdldF9jdGxfdmFs
-dWVfdjEoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsIGludCByZXF1ZXN0LCBpbnQg
-dgogCWludCB0aW1lb3V0ID0gMTA7CiAJaW50IGlkeCA9IDAsIGVycjsKIAotCWVyciA9IHNuZF91
-c2JfYXV0b3Jlc3VtZShjdmFsLT5taXhlci0+Y2hpcCk7Ci0JaWYgKGVyciA8IDApCi0JCXJldHVy
-biAtRUlPOworCWlmICghY2hpcC0+cHJvYmluZykgewkKKwkJZXJyID0gc25kX3VzYl9hdXRvcmVz
-dW1lKGN2YWwtPm1peGVyLT5jaGlwKTsKKwkJaWYgKGVyciA8IDApCisJCQlyZXR1cm4gLUVJTzsK
-Kwl9CiAJZG93bl9yZWFkKCZjaGlwLT5zaHV0ZG93bl9yd3NlbSk7CiAJd2hpbGUgKHRpbWVvdXQt
-LSA+IDApIHsKIAkJaWYgKGNoaXAtPnNodXRkb3duKQpAQCAtMzMzLDkgKzMzNSwxNCBAQCBzdGF0
-aWMgaW50IGdldF9jdGxfdmFsdWVfdjIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWws
-IGludCByZXF1ZXN0LCBpbnQgdgogCiAJbWVtc2V0KGJ1ZiwgMCwgc2l6ZW9mKGJ1ZikpOwogCi0J
-cmV0ID0gc25kX3VzYl9hdXRvcmVzdW1lKGNoaXApID8gLUVJTyA6IDA7Ci0JaWYgKHJldCkKLQkJ
-Z290byBlcnJvcjsKKwlpZiAoIWNoaXAtPnByb2JpbmcpIHsKKwkJcmV0ID0gc25kX3VzYl9hdXRv
-cmVzdW1lKGNoaXApOyAKKwkJaWYgKHJldCkgeworCQkJc25kX3ByaW50ayhLRVJOX0VSUiAic25k
-X3VzYl9hdXRvcmVzdW1lKCkgZmFpbGVkIHdpdGggJWRcbiIsIHJldCk7IAorCQkJcmV0ID0gLUVJ
-TzsJCQorCQkJZ290byBlcnJvcjsKKwkJfQorCX0KIAogCWRvd25fcmVhZCgmY2hpcC0+c2h1dGRv
-d25fcndzZW0pOwogCWlmIChjaGlwLT5zaHV0ZG93bikKQEAgLTM1MSw4ICszNTgsOCBAQCBzdGF0
-aWMgaW50IGdldF9jdGxfdmFsdWVfdjIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWws
-IGludCByZXF1ZXN0LCBpbnQgdgogCiAJaWYgKHJldCA8IDApIHsKIGVycm9yOgotCQlzbmRfcHJp
-bnRrKEtFUk5fRVJSICJjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVxID0gJSN4LCB3VmFsdWUgPSAl
-I3gsIHdJbmRleCA9ICUjeCwgdHlwZSA9ICVkXG4iLAotCQkJICAgcmVxdWVzdCwgdmFsaWR4LCBp
-ZHgsIGN2YWwtPnZhbF90eXBlKTsKKwkJc25kX3ByaW50ayhLRVJOX0VSUiAiY2Fubm90IGdldCBj
-dGwgdmFsdWU6IHJlcSA9ICUjeCwgd1ZhbHVlID0gJSN4LCB3SW5kZXggPSAlI3gsIHR5cGUgPSAl
-ZCwgcmV0ID0gJWRcbiIsCisJCQkgICBiUmVxdWVzdCwgdmFsaWR4LCBpZHgsIGN2YWwtPnZhbF90
-eXBlLCByZXQpOwogCQlyZXR1cm4gcmV0OwogCX0KIAotLSAKMS43LjkuNQoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, Apr 23, 2013 at 05:54:33PM +0200, Arnd Bergmann wrote:
+> The exported interface for device drivers is dma_request_slave_channel,
+> not of_dma_request_slave_channel. The former does not depend on device
+> tree but also works with ACPI and other interfaces providing an
+> abstraction for DMA channels.
+> 
+> This fixes link errors when building ALSA as a loadable module.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+I had already sent a similar patch [1] for that.
+
+Shawn
+
+[1] http://thread.gmane.org/gmane.linux.alsa.devel/107568/
+
+> Cc: alsa-devel@alsa-project.org
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-generic-dmaengine-pcm.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index 5fd5ed4..8ee9859 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -219,19 +219,20 @@ static const char * const dmaengine_pcm_dma_channel_names[] = {
+>  };
+>  
+>  static void dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
+> -	struct device_node *of_node)
+> +	struct device *dev)
+>  {
+>  	unsigned int i;
+> +	struct device_node *of_node = dev->of_node;
+>  
+>  	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !of_node)
+>  		return;
+>  
+>  	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) {
+> -		pcm->chan[0] = of_dma_request_slave_channel(of_node, "tx_rx");
+> +		pcm->chan[0] = dma_request_slave_channel(dev, "tx_rx");
+>  		pcm->chan[1] = pcm->chan[0];
+>  	} else {
+>  		for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
+> -			pcm->chan[i] = of_dma_request_slave_channel(of_node,
+> +			pcm->chan[i] = dma_request_slave_channel(dev,
+>  					dmaengine_pcm_dma_channel_names[i]);
+>  		}
+>  	}
+> @@ -255,7 +256,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
+>  	pcm->config = config;
+>  	pcm->flags = flags;
+>  
+> -	dmaengine_pcm_request_chan_of(pcm, dev->of_node);
+> +	dmaengine_pcm_request_chan_of(pcm, dev);
+>  
+>  	if (flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
+>  		return snd_soc_add_platform(dev, &pcm->platform,
+> -- 
+> 1.8.1.2
+> 
