@@ -1,20 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/2] ASoC: mxs-sgtl5000: Remove unneeded fields
-	from snd_soc_dai_link
-Date: Wed, 24 Apr 2013 13:23:15 -0300
-Message-ID: <1366820595-19762-2-git-send-email-festevam@gmail.com>
-References: <1366820595-19762-1-git-send-email-festevam@gmail.com>
+From: =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>
+Subject: [PATCH v2] ALSA: snd-usb-audio: fixed mixer range
+	reading during probing, when compiled with CONFIG_PM defined
+Date: Wed, 24 Apr 2013 20:29:23 +0200
+Message-ID: <1366828163-3579-1-git-send-email-daschuer@mixxx.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gg0-f169.google.com (mail-gg0-f169.google.com
- [209.85.161.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BFC0261698
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 18:23:27 +0200 (CEST)
-Received: by mail-gg0-f169.google.com with SMTP id h3so279798gge.14
- for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 09:23:27 -0700 (PDT)
-In-Reply-To: <1366820595-19762-1-git-send-email-festevam@gmail.com>
+Received: from mail-bk0-f52.google.com (mail-bk0-f52.google.com
+ [209.85.214.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9551826166B
+ for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 20:29:39 +0200 (CEST)
+Received: by mail-bk0-f52.google.com with SMTP id it16so868939bkc.25
+ for <alsa-devel@alsa-project.org>; Wed, 24 Apr 2013 11:29:38 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, kernel@pengutronix.de
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, =?UTF-8?q?Daniel=20Sch=C3=BCrmann?= <daschuer@mixxx.org>, clemens@ladisch.de, zonque@gmail.com, hegge@resisty.net, gabrbedd@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-It makes no sense to hardcode the I2C bus into the codec_name field.
-
-cpu_dai_name and platform_name are also overwritten later in 
-mxs_sgtl5000_probe_dt().
-
-So remove the three fields, as mxs platform is dt-only platform.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/mxs/mxs-sgtl5000.c |    6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index 4f74b05..1b134d7 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -90,17 +90,11 @@ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
- 		.name		= "HiFi Tx",
- 		.stream_name	= "HiFi Playback",
- 		.codec_dai_name	= "sgtl5000",
--		.codec_name	= "sgtl5000.0-000a",
--		.cpu_dai_name	= "mxs-saif.0",
--		.platform_name	= "mxs-saif.0",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
- 	}, {
- 		.name		= "HiFi Rx",
- 		.stream_name	= "HiFi Capture",
- 		.codec_dai_name	= "sgtl5000",
--		.codec_name	= "sgtl5000.0-000a",
--		.cpu_dai_name	= "mxs-saif.1",
--		.platform_name	= "mxs-saif.1",
- 		.ops		= &mxs_sgtl5000_hifi_ops,
- 	},
- };
--- 
-1.7.9.5
+RHVyaW5nIHByb2JpbmcsIHNuZF91c2JfYXV0b3Jlc3VtZSgpIGZhaWxzIHdpdGggLUVOT0RFVi4g
+VGhpcyBicmFrZXMKZ2V0X2N0bF92YWx1ZSgpIGluIG1peGVyLmMgd2hlbiByZWFkaW5nIHRoZSBy
+YW5nZSB2YWx1ZXMuIEluIHRoZSBuZXcgdmVyc2lvbgpzbmRfdXNiX2F1dG9yZXN1bWUoKSByZXR1
+cm5zIDAgaW4gdGhpcyBjYXNlIHdoaWNoIGJyYWtlcyBub3QgdGhlIGZvbGxvd2luZwpxdWVyeS4g
+VGhlIGZvbGxvd2luZyBzbmRfdXNiX3N1c3BlbmQoKSBmYWlscyBzaWxlbnRseSBkdXJpbmcgcHJv
+YmluZyBhbnl3YXkuClRoZSBwYXRjaCBhbHNvIG1ha2VzIHRoZSBlcnJvciBtZXNzYWdlcyBtb3Jl
+IHNpZ25pZmljYW50LiBUaGUgb3JpZ2luYWwKZXJyb3IgbWVzc2FnZXMgd2hlcmUgaWRlbnRpZmll
+ZCBhcyBtaXNsZWFkaW5nIGR1cmluZyBkZWJ1Zy4KCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgU2No
+w7xybWFubiA8ZGFzY2h1ZXJAbWl4eHgub3JnPgotLS0KIHNvdW5kL3VzYi9jYXJkLmMgIHwgICAg
+NyArKysrKy0tCiBzb3VuZC91c2IvbWl4ZXIuYyB8ICAgMTEgKysrKysrKy0tLS0KIDIgZmlsZXMg
+Y2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9z
+b3VuZC91c2IvY2FyZC5jIGIvc291bmQvdXNiL2NhcmQuYwppbmRleCA1MjU0YjE4Li4yZjU1ZDAw
+IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvY2FyZC5jCisrKyBiL3NvdW5kL3VzYi9jYXJkLmMKQEAg
+LTYyOSw5ICs2MjksMTIgQEAgc3RhdGljIHZvaWQgdXNiX2F1ZGlvX2Rpc2Nvbm5lY3Qoc3RydWN0
+IHVzYl9pbnRlcmZhY2UgKmludGYpCiBpbnQgc25kX3VzYl9hdXRvcmVzdW1lKHN0cnVjdCBzbmRf
+dXNiX2F1ZGlvICpjaGlwKQogewogCWludCBlcnIgPSAtRU5PREVWOwotCisJCisJaWYgKGNoaXAt
+PnByb2JpbmcpIHsKKwkJcmV0dXJuIDA7IAorCX0KIAlkb3duX3JlYWQoJmNoaXAtPnNodXRkb3du
+X3J3c2VtKTsKLQlpZiAoIWNoaXAtPnNodXRkb3duICYmICFjaGlwLT5wcm9iaW5nKQorCWlmICgh
+Y2hpcC0+c2h1dGRvd24pCiAJCWVyciA9IHVzYl9hdXRvcG1fZ2V0X2ludGVyZmFjZShjaGlwLT5w
+bV9pbnRmKTsKIAl1cF9yZWFkKCZjaGlwLT5zaHV0ZG93bl9yd3NlbSk7CiAKZGlmZiAtLWdpdCBh
+L3NvdW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKaW5kZXggY2E0NzM5Yy4uNWQ0
+ZjNjNiAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291bmQvdXNiL21peGVy
+LmMKQEAgLTMzMyw5ICszMzMsMTIgQEAgc3RhdGljIGludCBnZXRfY3RsX3ZhbHVlX3YyKHN0cnVj
+dCB1c2JfbWl4ZXJfZWxlbV9pbmZvICpjdmFsLCBpbnQgcmVxdWVzdCwgaW50IHYKIAogCW1lbXNl
+dChidWYsIDAsIHNpemVvZihidWYpKTsKIAotCXJldCA9IHNuZF91c2JfYXV0b3Jlc3VtZShjaGlw
+KSA/IC1FSU8gOiAwOwotCWlmIChyZXQpCisJcmV0ID0gc25kX3VzYl9hdXRvcmVzdW1lKGNoaXAp
+OyAKKwlpZiAocmV0KSB7CisJCXNuZF9wcmludGsoS0VSTl9FUlIgInNuZF91c2JfYXV0b3Jlc3Vt
+ZSgpIGZhaWxlZCB3aXRoICVkXG4iLCByZXQpOyAKKwkJcmV0ID0gLUVJTzsJCQogCQlnb3RvIGVy
+cm9yOworCX0KIAogCWRvd25fcmVhZCgmY2hpcC0+c2h1dGRvd25fcndzZW0pOwogCWlmIChjaGlw
+LT5zaHV0ZG93bikKQEAgLTM1MSw4ICszNTQsOCBAQCBzdGF0aWMgaW50IGdldF9jdGxfdmFsdWVf
+djIoc3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsIGludCByZXF1ZXN0LCBpbnQgdgog
+CiAJaWYgKHJldCA8IDApIHsKIGVycm9yOgotCQlzbmRfcHJpbnRrKEtFUk5fRVJSICJjYW5ub3Qg
+Z2V0IGN0bCB2YWx1ZTogcmVxID0gJSN4LCB3VmFsdWUgPSAlI3gsIHdJbmRleCA9ICUjeCwgdHlw
+ZSA9ICVkXG4iLAotCQkJICAgcmVxdWVzdCwgdmFsaWR4LCBpZHgsIGN2YWwtPnZhbF90eXBlKTsK
+KwkJc25kX3ByaW50ayhLRVJOX0VSUiAiY2Fubm90IGdldCBjdGwgdmFsdWU6IHJlcSA9ICUjeCwg
+d1ZhbHVlID0gJSN4LCB3SW5kZXggPSAlI3gsIHR5cGUgPSAlZCwgcmV0ID0gJWRcbiIsCisJCQkg
+ICBiUmVxdWVzdCwgdmFsaWR4LCBpZHgsIGN2YWwtPnZhbF90eXBlLCByZXQpOwogCQlyZXR1cm4g
+cmV0OwogCX0KIAotLSAKMS43LjkuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
