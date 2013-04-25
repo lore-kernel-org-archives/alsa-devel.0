@@ -1,16 +1,17 @@
 From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 5/5] ASoC: fsl: remove imx-pcm driver
-Date: Thu, 25 Apr 2013 11:18:50 +0800
-Message-ID: <1366859930-1232-6-git-send-email-shawn.guo@linaro.org>
+Subject: [PATCH 4/5] ASoC: fsl: remove use of imx-fiq-pcm-audio
+	from imx-ssi
+Date: Thu, 25 Apr 2013 11:18:49 +0800
+Message-ID: <1366859930-1232-5-git-send-email-shawn.guo@linaro.org>
 References: <1366859930-1232-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe010.messaging.microsoft.com [216.32.180.30])
- by alsa0.perex.cz (Postfix) with ESMTP id 23120265D04
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 05:19:12 +0200 (CEST)
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe004.messaging.microsoft.com [213.199.154.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id 539E4265D1F
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 05:20:09 +0200 (CEST)
 In-Reply-To: <1366859930-1232-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,372 +26,120 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-With imx-pcm-dma moving to generic dmaengine pcm driver and the removal
-of imx-pcm-audio/imx-fiq-pcm-audio platform device use, now imx-pcm
-driver contains a few functions that are only used by imx-pcm-fiq.c.
-Move these functions into imx-pcm-fiq.c and remove imx-pcm.c completely.
+Rather than instantiating imx-fiq-pcm-audio to call imx_pcm_fiq_init(),
+imx-ssi can just directly call it to save the use of imx-fiq-pcm-audio.
+With this change, imx-ssi becomes not only a cpu DAI but also a platform
+device, so updates platform device setup in eukrea-tlv320, phycore-ac97
+and wm1133-ev1 accordingly.
 
 Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- sound/soc/fsl/Kconfig       |    5 --
- sound/soc/fsl/Makefile      |   11 +---
- sound/soc/fsl/imx-pcm-dma.c |    2 +
- sound/soc/fsl/imx-pcm-fiq.c |   87 ++++++++++++++++++++++++++
- sound/soc/fsl/imx-pcm.c     |  145 -------------------------------------------
- sound/soc/fsl/imx-pcm.h     |    5 --
- 6 files changed, 91 insertions(+), 164 deletions(-)
- delete mode 100644 sound/soc/fsl/imx-pcm.c
+ sound/soc/fsl/eukrea-tlv320.c |    2 +-
+ sound/soc/fsl/imx-ssi.c       |   23 ++++++-----------------
+ sound/soc/fsl/imx-ssi.h       |    2 --
+ sound/soc/fsl/phycore-ac97.c  |    2 +-
+ sound/soc/fsl/wm1133-ev1.c    |    2 +-
+ 5 files changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3843a18..7860cc2 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -108,18 +108,13 @@ if SND_IMX_SOC
- config SND_SOC_IMX_SSI
- 	tristate
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 75ffdf0..9a4a0ca 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -80,7 +80,7 @@ static struct snd_soc_dai_link eukrea_tlv320_dai = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "TLV320AIC23",
+ 	.codec_dai_name	= "tlv320aic23-hifi",
+-	.platform_name	= "imx-fiq-pcm-audio.0",
++	.platform_name	= "imx-ssi.0",
+ 	.codec_name	= "tlv320aic23-codec.0-001a",
+ 	.cpu_dai_name	= "imx-ssi.0",
+ 	.ops		= &eukrea_tlv320_snd_ops,
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index b5a2b04..1b2e750 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -595,18 +595,9 @@ static int imx_ssi_probe(struct platform_device *pdev)
+ 		goto failed_register;
+ 	}
  
--config SND_SOC_IMX_PCM
--	tristate
+-	ssi->soc_platform_pdev_fiq = platform_device_alloc("imx-fiq-pcm-audio", pdev->id);
+-	if (!ssi->soc_platform_pdev_fiq) {
+-		ret = -ENOMEM;
+-		goto failed_pdev_fiq_alloc;
+-	}
 -
- config SND_SOC_IMX_PCM_FIQ
- 	bool
- 	select FIQ
--	select SND_SOC_IMX_PCM
+-	platform_set_drvdata(ssi->soc_platform_pdev_fiq, ssi);
+-	ret = platform_device_add(ssi->soc_platform_pdev_fiq);
+-	if (ret) {
+-		dev_err(&pdev->dev, "failed to add platform device\n");
+-		goto failed_pdev_fiq_add;
+-	}
++	ret = imx_pcm_fiq_init(pdev);
++	if (ret)
++		goto failed_pcm_fiq;
  
- config SND_SOC_IMX_PCM_DMA
- 	bool
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
--	select SND_SOC_IMX_PCM
- 
- config SND_SOC_IMX_AUDMUX
- 	tristate
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index afd3479..91883f8 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -30,18 +30,11 @@ obj-$(CONFIG_SND_MPC52xx_SOC_EFIKA) += efika-audio-fabric.o
- # i.MX Platform Support
- snd-soc-imx-ssi-objs := imx-ssi.o
- snd-soc-imx-audmux-objs := imx-audmux.o
--snd-soc-imx-pcm-objs := imx-pcm.o
--ifneq ($(CONFIG_SND_SOC_IMX_PCM_FIQ),)
--	snd-soc-imx-pcm-objs += imx-pcm-fiq.o
--endif
--ifneq ($(CONFIG_SND_SOC_IMX_PCM_DMA),)
--	snd-soc-imx-pcm-objs += imx-pcm-dma.o
--endif
--
- obj-$(CONFIG_SND_SOC_IMX_SSI) += snd-soc-imx-ssi.o
- obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
- 
--obj-$(CONFIG_SND_SOC_IMX_PCM) += snd-soc-imx-pcm.o
-+obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm-fiq.o
-+obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm-dma.o
- 
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index c246fb5..fde4d2e 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -67,8 +67,10 @@ int imx_pcm_dma_init(struct platform_device *pdev)
- 		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
- 
- void imx_pcm_dma_exit(struct platform_device *pdev)
- {
- 	snd_dmaengine_pcm_unregister(&pdev->dev);
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_dma_exit);
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 710c069..310d902 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -225,6 +225,22 @@ static int snd_imx_close(struct snd_pcm_substream *substream)
+ 	ret = imx_pcm_dma_init(pdev);
+ 	if (ret)
+@@ -615,10 +606,8 @@ static int imx_ssi_probe(struct platform_device *pdev)
  	return 0;
- }
  
-+static int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
-+		struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int ret;
-+
-+	ret = dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
-+
-+	pr_debug("%s: ret: %d %p 0x%08x 0x%08x\n", __func__, ret,
-+			runtime->dma_area,
-+			runtime->dma_addr,
-+			runtime->dma_bytes);
-+	return ret;
-+}
-+
- static struct snd_pcm_ops imx_pcm_ops = {
- 	.open		= snd_imx_open,
- 	.close		= snd_imx_close,
-@@ -236,6 +252,54 @@ static struct snd_pcm_ops imx_pcm_ops = {
- 	.mmap		= snd_imx_pcm_mmap,
+ failed_pcm_dma:
+-	platform_device_del(ssi->soc_platform_pdev_fiq);
+-failed_pdev_fiq_add:
+-	platform_device_put(ssi->soc_platform_pdev_fiq);
+-failed_pdev_fiq_alloc:
++	imx_pcm_fiq_exit(pdev);
++failed_pcm_fiq:
+ 	snd_soc_unregister_component(&pdev->dev);
+ failed_register:
+ 	release_mem_region(res->start, resource_size(res));
+@@ -635,7 +624,7 @@ static int imx_ssi_remove(struct platform_device *pdev)
+ 	struct imx_ssi *ssi = platform_get_drvdata(pdev);
+ 
+ 	imx_pcm_dma_exit(pdev);
+-	platform_device_unregister(ssi->soc_platform_pdev_fiq);
++	imx_pcm_fiq_exit(pdev);
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+index b052fad..d5003ce 100644
+--- a/sound/soc/fsl/imx-ssi.h
++++ b/sound/soc/fsl/imx-ssi.h
+@@ -211,8 +211,6 @@ struct imx_ssi {
+ 	struct imx_dma_data filter_data_rx;
+ 
+ 	int enabled;
+-
+-	struct platform_device *soc_platform_pdev_fiq;
  };
  
-+static int imx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
-+{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = IMX_SSI_DMABUF_SIZE;
-+
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
-+	if (!buf->area)
-+		return -ENOMEM;
-+	buf->bytes = size;
-+
-+	return 0;
-+}
-+
-+static u64 imx_pcm_dmamask = DMA_BIT_MASK(32);
-+
-+static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+	struct snd_pcm *pcm = rtd->pcm;
-+	int ret = 0;
-+
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &imx_pcm_dmamask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
-+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-+		ret = imx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-+		ret = imx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
- static int ssi_irq = 0;
- 
- static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
-@@ -268,6 +332,27 @@ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
-+static void imx_pcm_free(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
-+
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
-+}
-+
- static void imx_pcm_fiq_free(struct snd_pcm *pcm)
- {
- 	mxc_set_irq_fiq(ssi_irq, 0);
-@@ -314,8 +399,10 @@ failed_register:
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_fiq_init);
- 
- void imx_pcm_fiq_exit(struct platform_device *pdev)
- {
- 	snd_soc_unregister_platform(&pdev->dev);
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_fiq_exit);
-diff --git a/sound/soc/fsl/imx-pcm.c b/sound/soc/fsl/imx-pcm.c
-deleted file mode 100644
-index 16a956b..0000000
---- a/sound/soc/fsl/imx-pcm.c
-+++ /dev/null
-@@ -1,145 +0,0 @@
--/*
-- * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
-- *
-- * This code is based on code copyrighted by Freescale,
-- * Liam Girdwood, Javier Martin and probably others.
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/dma-mapping.h>
--#include <linux/module.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include "imx-pcm.h"
--
--int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
--		struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
--
--	ret = dma_mmap_writecombine(substream->pcm->card->dev, vma,
--		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
--
--	pr_debug("%s: ret: %d %p 0x%08x 0x%08x\n", __func__, ret,
--			runtime->dma_area,
--			runtime->dma_addr,
--			runtime->dma_bytes);
--	return ret;
--}
--EXPORT_SYMBOL_GPL(snd_imx_pcm_mmap);
--
--static int imx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = IMX_SSI_DMABUF_SIZE;
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
--					   &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--	buf->bytes = size;
--
--	return 0;
--}
--
--static u64 imx_pcm_dmamask = DMA_BIT_MASK(32);
--
--int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_pcm *pcm = rtd->pcm;
--	int ret = 0;
--
--	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &imx_pcm_dmamask;
--	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = imx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = imx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
--
--out:
--	return ret;
--}
--EXPORT_SYMBOL_GPL(imx_pcm_new);
--
--void imx_pcm_free(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--
--		dma_free_writecombine(pcm->card->dev, buf->bytes,
--				      buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--EXPORT_SYMBOL_GPL(imx_pcm_free);
--
--static int imx_pcm_probe(struct platform_device *pdev)
--{
--	if (strcmp(pdev->id_entry->name, "imx-fiq-pcm-audio") == 0)
--		return imx_pcm_fiq_init(pdev);
--
--	return imx_pcm_dma_init(pdev);
--}
--
--static int imx_pcm_remove(struct platform_device *pdev)
--{
--	if (strcmp(pdev->id_entry->name, "imx-fiq-pcm-audio") == 0)
--		imx_pcm_fiq_exit(pdev);
--	else
--		imx_pcm_dma_exit(pdev);
--
--	return 0;
--}
--
--static struct platform_device_id imx_pcm_devtype[] = {
--	{ .name = "imx-pcm-audio", },
--	{ .name = "imx-fiq-pcm-audio", },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(platform, imx_pcm_devtype);
--
--static struct platform_driver imx_pcm_driver = {
--	.driver = {
--			.name = "imx-pcm",
--			.owner = THIS_MODULE,
--	},
--	.id_table = imx_pcm_devtype,
--	.probe = imx_pcm_probe,
--	.remove = imx_pcm_remove,
--};
--module_platform_driver(imx_pcm_driver);
--
--MODULE_DESCRIPTION("Freescale i.MX PCM driver");
--MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 073bf38..67f656c 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -32,11 +32,6 @@ imx_pcm_dma_params_init_data(struct imx_dma_data *dma_data,
- 		dma_data->peripheral_type = IMX_DMATYPE_SSI;
- }
- 
--int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
--		     struct vm_area_struct *vma);
--int imx_pcm_new(struct snd_soc_pcm_runtime *rtd);
--void imx_pcm_free(struct snd_pcm *pcm);
--
- #ifdef CONFIG_SND_SOC_IMX_PCM_DMA
- int imx_pcm_dma_init(struct platform_device *pdev);
- void imx_pcm_dma_exit(struct platform_device *pdev);
+ #endif /* _IMX_SSI_H */
+diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
+index f8da6dd..ae403c2 100644
+--- a/sound/soc/fsl/phycore-ac97.c
++++ b/sound/soc/fsl/phycore-ac97.c
+@@ -33,7 +33,7 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+ 		.codec_dai_name		= "wm9712-hifi",
+ 		.codec_name	= "wm9712-codec",
+ 		.cpu_dai_name	= "imx-ssi.0",
+-		.platform_name	= "imx-fiq-pcm-audio.0",
++		.platform_name	= "imx-ssi.0",
+ 		.ops		= &imx_phycore_hifi_ops,
+ 	},
+ };
+diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+index fe54a69..fce6325 100644
+--- a/sound/soc/fsl/wm1133-ev1.c
++++ b/sound/soc/fsl/wm1133-ev1.c
+@@ -245,7 +245,7 @@ static struct snd_soc_dai_link wm1133_ev1_dai = {
+ 	.stream_name = "Audio",
+ 	.cpu_dai_name = "imx-ssi.0",
+ 	.codec_dai_name = "wm8350-hifi",
+-	.platform_name = "imx-fiq-pcm-audio.0",
++	.platform_name = "imx-ssi.0",
+ 	.codec_name = "wm8350-codec.0-0x1a",
+ 	.init = wm1133_ev1_init,
+ 	.ops = &wm1133_ev1_ops,
 -- 
 1.7.9.5
