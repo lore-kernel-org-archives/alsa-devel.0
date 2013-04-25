@@ -1,57 +1,334 @@
-From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v5 01/10] ASoC: phycore-ac97: Add DT support
-Date: Wed, 24 Apr 2013 21:45:40 +0200
-Message-ID: <20130424194540.GF32299@pengutronix.de>
-References: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
- <1366814199-14827-2-git-send-email-mpa@pengutronix.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+	usage
+Date: Thu, 25 Apr 2013 02:36:57 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC4890109D2387@SHSMSX102.ccr.corp.intel.com>
+References: <1398349210-15099-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1366814199-14827-2-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "Zanoni, Paulo R" <paulo.r.zanoni@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Markus,
+Hi Daniel/Paulo,
 
-On Wed, Apr 24, 2013 at 04:36:30PM +0200, Markus Pargmann wrote:
-> Add devicetree support for this audio soc fabric driver.
+Any comments on this?
+Add Jesse and Rafael in loop.
+
+thanks
+--xingchao
+
+
+> -----Original Message-----
+> From: Wang, Xingchao
+> Sent: Wednesday, April 24, 2013 3:29 PM
+> To: daniel.vetter@ffwll.ch; Zanoni, Paulo R; 'Takashi Iwai'
+> Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; Li, Jocelyn;
+> intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; 'Wang Xingchao'
+> Subject: RE: [PATCH] drm/i915: Add private api for power well usage
 > 
-> @@ -32,8 +35,12 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
->  		.stream_name	= "HiFi",
->  		.codec_dai_name		= "wm9712-hifi",
->  		.codec_name	= "wm9712-codec",
-> +#ifdef CONFIG_MACH_IMX27_DT
-> +		.platform_name	= "imx-fiq-pcm-audio",
-> +#else
->  		.cpu_dai_name	= "imx-ssi.0",
->  		.platform_name	= "imx-fiq-pcm-audio.0",
-> +#endif
-
-This doesn't work properly. Compiling the kernel with IMX27_DT enabled
-does not necessarily mean that it also started with dt support.
-
-Personally I am fine with removing platform based support for this
-driver if it's too much effort to fix it properly, but we shouldn't
-start working with ifdefs here.
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> Hi Guys,
+> 
+> Sorry I should Add Takashi and alsa maillist in loop.
+> 
+> I tested this patch against Daniel's "drm-intel-next-queued" Branch, on
+> Haswell Mobile C3 stepping machines.
+> 
+> Test steps:
+> 1. only connect one monitor through HDMI cable 2. echo 1 >
+> /sys/module/i915/parameters/disable_power_well ==> I think this could be set
+> as 1 by default if applied my patch.
+> 3. plug out HDMI cable
+> 4. cat /proc/asound/card0/codec#0
+> 
+> At step 3,  i915 will try to disable power well but rejected as display audio is
+> using power well.
+> Without the patch, display audio would crash at step 4.
+> 
+> I did not list suspend/resume test here, as during suspend sequence, i915 will
+> _ENABLE_ power well, that's a BUG?
+> 
+> For me above test case is the only one to reproduce the issue, if you have more
+> ideas and need more test, please let me know.
+> 
+> I'm afraid there's some risk because the dependency between alsa driver and
+> drm driver. For example, if i915 module was not loaded, display audio Will call
+> request_power_well() and meet symbol error. Even if i915 module loaded after
+> snd-hda-intel module, there's such risk too. Any comment on this?
+> 
+> Another risk is the pointer "power_well_device", it should be set NULL when
+> i915 module unloaded, I added the caller but have no idea where to call it, if
+> anyone has suggestion, that would be fine.
+> 
+> thanks
+> --xingchao
+> 
+> 
+> > -----Original Message-----
+> > From: Wang Xingchao [mailto:xingchao.wang@linux.intel.com]
+> > Sent: Thursday, April 24, 2014 10:20 PM
+> > To: daniel.vetter@ffwll.ch; Zanoni, Paulo R
+> > Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R;
+> > Li, Jocelyn; intel-gfx@lists.freedesktop.org; Wang, Xingchao; Wang
+> > Xingchao
+> > Subject: [PATCH] drm/i915: Add private api for power well usage
+> >
+> > Display audio depends on power well in graphic side, it should request
+> > power well before use it and release power well after use.
+> > I915 will not shutdown power well if it detects audio is using.
+> > This patch protects display audio crash for Intel Haswell mobile
+> > C3 stepping board.
+> >
+> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> > ---
+> >  drivers/gpu/drm/i915/intel_pm.c |   73
+> > +++++++++++++++++++++++++++++++++++----
+> >  include/drm/audio_drm.h         |   39 +++++++++++++++++++++
+> >  sound/pci/hda/hda_intel.c       |    8 +++++
+> >  3 files changed, 113 insertions(+), 7 deletions(-)  create mode
+> > 100644 include/drm/audio_drm.h
+> >
+> > diff --git a/drivers/gpu/drm/i915/intel_pm.c
+> > b/drivers/gpu/drm/i915/intel_pm.c index 2557926..9983f56 100644
+> > --- a/drivers/gpu/drm/i915/intel_pm.c
+> > +++ b/drivers/gpu/drm/i915/intel_pm.c
+> > @@ -4298,18 +4298,12 @@ bool intel_using_power_well(struct drm_device
+> > *dev)
+> >  		return true;
+> >  }
+> >
+> > -void intel_set_power_well(struct drm_device *dev, bool enable)
+> > +void set_power_well(struct drm_device *dev, bool enable)
+> >  {
+> >  	struct drm_i915_private *dev_priv = dev->dev_private;
+> >  	bool is_enabled, enable_requested;
+> >  	uint32_t tmp;
+> >
+> > -	if (!HAS_POWER_WELL(dev))
+> > -		return;
+> > -
+> > -	if (!i915_disable_power_well && !enable)
+> > -		return;
+> > -
+> >  	tmp = I915_READ(HSW_PWR_WELL_DRIVER);
+> >  	is_enabled = tmp & HSW_PWR_WELL_STATE;
+> >  	enable_requested = tmp & HSW_PWR_WELL_ENABLE; @@ -4332,6
+> > +4326,71 @@ void intel_set_power_well(struct drm_device *dev, bool
+> > +enable)
+> >  	}
+> >  }
+> >
+> > +/* Global drm_device for display audio drvier usage */ static struct
+> > +drm_device *power_well_device; static bool audio_power_well_using,
+> > +i915_power_well_using;
+> > +/* Lock protecting power well setting */
+> > +DEFINE_SPINLOCK(powerwell_lock);
+> > +
+> > +void request_power_well(void)
+> > +{
+> > +	DRM_DEBUG_KMS("Display audio requesting power well\n");
+> > +	spin_lock_irq(&powerwell_lock);
+> > +	if (!power_well_device)
+> > +		goto out;
+> > +	if (i915_power_well_using == false)
+> > +		set_power_well(power_well_device, true);
+> > +	audio_power_well_using = true;
+> > +out:
+> > +	spin_unlock_irq(&powerwell_lock);
+> > +	return;
+> > +}
+> > +EXPORT_SYMBOL_GPL(request_power_well);
+> > +
+> > +void release_power_well(void)
+> > +{
+> > +	DRM_DEBUG_KMS("Display audio releasing power well\n");
+> > +	spin_lock_irq(&powerwell_lock);
+> > +	if (!power_well_device)
+> > +		goto out;
+> > +	if (i915_power_well_using == false)
+> > +		set_power_well(power_well_device, false);
+> > +	audio_power_well_using = false;
+> > +out:
+> > +	spin_unlock_irq(&powerwell_lock);
+> > +	return;
+> > +}
+> > +EXPORT_SYMBOL_GPL(release_power_well);
+> > +
+> > +/* TODO: Call this when i915 module unload */ void
+> > +remove_power_well(void) {
+> > +	spin_lock_irq(&powerwell_lock);
+> > +	audio_power_well_using = false;
+> > +	i915_power_well_using = false;
+> > +	power_well_device = NULL;
+> > +	spin_unlock_irq(&powerwell_lock);
+> > +}
+> > +
+> > +void intel_set_power_well(struct drm_device *dev, bool enable) {
+> > +	if (!HAS_POWER_WELL(dev))
+> > +		return;
+> > +
+> > +	spin_lock_irq(&powerwell_lock);
+> > +	power_well_device = dev;
+> > +	i915_power_well_using = enable;
+> > +	if (!enable && audio_power_well_using)
+> > +		goto out;
+> > +
+> > +	if (!i915_disable_power_well && !enable)
+> > +		goto out;
+> > +	set_power_well(dev, enable);
+> > +out:
+> > +	spin_unlock_irq(&powerwell_lock);
+> > +	return;
+> > +}
+> > +
+> >  /*
+> >   * Starting with Haswell, we have a "Power Down Well" that can be turned
+> off
+> >   * when not needed anymore. We have 4 registers that can request the
+> > power well diff --git a/include/drm/audio_drm.h
+> > b/include/drm/audio_drm.h new file mode 100644 index 0000000..4412b36
+> > --- /dev/null
+> > +++ b/include/drm/audio_drm.h
+> > @@ -0,0 +1,39 @@
+> >
+> +/**************************************************************
+> > ********
+> > +****
+> > + *
+> > + * Copyright 2013 Intel Inc.
+> > + * All Rights Reserved.
+> > + *
+> > + * Permission is hereby granted, free of charge, to any person
+> > +obtaining a
+> > + * copy of this software and associated documentation files (the
+> > + * "Software"), to deal in the Software without restriction,
+> > +including
+> > + * without limitation the rights to use, copy, modify, merge,
+> > +publish,
+> > + * distribute, sub license, and/or sell copies of the Software, and
+> > +to
+> > + * permit persons to whom the Software is furnished to do so, subject
+> > +to
+> > + * the following conditions:
+> > + *
+> > + * The above copyright notice and this permission notice (including
+> > +the
+> > + * next paragraph) shall be included in all copies or substantial
+> > +portions
+> > + * of the Software.
+> > + *
+> > + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+> KIND,
+> > +EXPRESS OR
+> > + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+> > +MERCHANTABILITY,
+> > + * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+> > EVENT
+> > +SHALL
+> > + * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE
+> > FOR
+> > +ANY CLAIM,
+> > + * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+> > TORT
+> > +OR
+> > + * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+> > SOFTWARE
+> > +OR THE
+> > + * USE OR OTHER DEALINGS IN THE SOFTWARE.
+> > + *
+> > + *
+> > +
+> >
+> +***************************************************************
+> > ********
+> > +***/
+> > +/*
+> > + * Authors:
+> > + * Wang Xingchao <xingchao.wang@intel.com>  */
+> > +
+> > +#ifndef _AUDIO_DRM_H_
+> > +#define _AUDIO_DRM_H_
+> > +
+> > +extern void request_power_well(void); extern void
+> > +release_power_well(void);
+> > +
+> > +#endif				/* _AUDIO_DRM_H_ */
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 418bfc0..59a85de 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -50,6 +50,7 @@
+> >  #include <linux/clocksource.h>
+> >  #include <linux/time.h>
+> >  #include <linux/completion.h>
+> > +#include <drm/audio_drm.h>
+> >
+> >  #ifdef CONFIG_X86
+> >  /* for snoop control */
+> > @@ -2869,6 +2870,7 @@ static int azx_suspend(struct device *dev)
+> >  	pci_disable_device(pci);
+> >  	pci_save_state(pci);
+> >  	pci_set_power_state(pci, PCI_D3hot);
+> > +	release_power_well();
+> >  	return 0;
+> >  }
+> >
+> > @@ -2881,6 +2883,7 @@ static int azx_resume(struct device *dev)
+> >  	if (chip->disabled)
+> >  		return 0;
+> >
+> > +	request_power_well();
+> >  	pci_set_power_state(pci, PCI_D0);
+> >  	pci_restore_state(pci);
+> >  	if (pci_enable_device(pci) < 0) {
+> > @@ -2913,6 +2916,7 @@ static int azx_runtime_suspend(struct device
+> > *dev)
+> >
+> >  	azx_stop_chip(chip);
+> >  	azx_clear_irq_pending(chip);
+> > +	release_power_well();
+> >  	return 0;
+> >  }
+> >
+> > @@ -2921,6 +2925,7 @@ static int azx_runtime_resume(struct device *dev)
+> >  	struct snd_card *card = dev_get_drvdata(dev);
+> >  	struct azx *chip = card->private_data;
+> >
+> > +	request_power_well();
+> >  	azx_init_pci(chip);
+> >  	azx_init_chip(chip, 1);
+> >  	return 0;
+> > @@ -3671,6 +3676,8 @@ static int azx_probe(struct pci_dev *pci,
+> >  		return -ENOENT;
+> >  	}
+> >
+> > +	request_power_well();
+> > +
+> >  	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
+> >  	if (err < 0) {
+> >  		snd_printk(KERN_ERR "hda-intel: Error creating card!\n"); @@
+> > -3806,6 +3813,7 @@ static void azx_remove(struct pci_dev *pci)
+> >  	if (card)
+> >  		snd_card_free(card);
+> >  	pci_set_drvdata(pci, NULL);
+> > +	release_power_well();
+> >  }
+> >
+> >  /* PCI IDs */
+> > --
+> > 1.7.9.5
