@@ -1,74 +1,54 @@
-From: Marek Belisko <marek.belisko@gmail.com>
-Subject: [PATCH v2 3/3] ASoC: spdif_receiver: Add DT support.
-Date: Thu, 25 Apr 2013 15:13:14 +0200
-Message-ID: <1366895594-19596-4-git-send-email-marek.belisko@streamunlimited.com>
+From: Marek Belisko <marek.belisko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 1/3] ASoC: spdif_transceiver: Change driver filename to
+ spdif_transmitter.c.
+Date: Thu, 25 Apr 2013 15:13:12 +0200
+Message-ID: <1366895594-19596-2-git-send-email-marek.belisko@streamunlimited.com>
 References: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: grant.likely@secretlab.ca, rob.herring@calxeda.com, rob@landley.net
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, zonque@gmail.com, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marek Belisko <marek.belisko@streamunlimited.com>, Michal Bachraty <michal.bachraty@streamunlimited.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1366895594-19596-1-git-send-email-marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Marek Belisko <marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree support for this dummy audio soc driver.
+Transceiver usually means receiver + transmitter. This codec can do only
+transmit. Update driver accordingly.
 
-Signed-off-by: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Signed-off-by: Marek Belisko <marek.belisko@streamunlimited.com>
+Signed-off-by: Marek Belisko <marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>
 ---
- .../devicetree/bindings/sound/spdif-receiver.txt   |   10 ++++++++++
- sound/soc/codecs/spdif_receiver.c                  |   10 ++++++++++
- 2 files changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/spdif-receiver.txt
+ sound/soc/codecs/Makefile                          |    2 +-
+ .../{spdif_transciever.c => spdif_transmitter.c}   |    0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename sound/soc/codecs/{spdif_transciever.c => spdif_transmitter.c} (100%)
 
-diff --git a/Documentation/devicetree/bindings/sound/spdif-receiver.txt b/Documentation/devicetree/bindings/sound/spdif-receiver.txt
-new file mode 100644
-index 0000000..80f807b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/spdif-receiver.txt
-@@ -0,0 +1,10 @@
-+Device-Tree bindings for dummy spdif receiver
-+
-+Required properties:
-+	- compatible: should be "linux,spdif-dir".
-+
-+Example node:
-+
-+	codec: spdif-receiver {
-+		compatible = "linux,spdif-dir";
-+	};
-diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
-index dd8d856..e9d7881 100644
---- a/sound/soc/codecs/spdif_receiver.c
-+++ b/sound/soc/codecs/spdif_receiver.c
-@@ -21,6 +21,7 @@
- #include <sound/soc.h>
- #include <sound/pcm.h>
- #include <sound/initval.h>
-+#include <linux/of.h>
- 
- #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-@@ -51,12 +52,21 @@ static int spdif_dir_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id spdif_dir_dt_ids[] = {
-+	{ .compatible = "linux,spdif-dir", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, spdif_dir_dt_ids);
-+#endif
-+
- static struct platform_driver spdif_dir_driver = {
- 	.probe		= spdif_dir_probe,
- 	.remove		= spdif_dir_remove,
- 	.driver		= {
- 		.name	= "spdif-dir",
- 		.owner	= THIS_MODULE,
-+		.of_match_table = of_match_ptr(spdif_dir_dt_ids),
- 	},
- };
- 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 8cf5951..4252c35 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -51,7 +51,7 @@ snd-soc-alc5632-objs := alc5632.o
+ snd-soc-sigmadsp-objs := sigmadsp.o
+ snd-soc-si476x-objs := si476x.o
+ snd-soc-sn95031-objs := sn95031.o
+-snd-soc-spdif-tx-objs := spdif_transciever.o
++snd-soc-spdif-tx-objs := spdif_transmitter.o
+ snd-soc-spdif-rx-objs := spdif_receiver.o
+ snd-soc-ssm2602-objs := ssm2602.o
+ snd-soc-sta32x-objs := sta32x.o
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transmitter.c
+similarity index 100%
+rename from sound/soc/codecs/spdif_transciever.c
+rename to sound/soc/codecs/spdif_transmitter.c
 -- 
 1.7.9.5
