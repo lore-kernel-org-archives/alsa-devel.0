@@ -1,54 +1,49 @@
-From: Marek Belisko <marek.belisko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 1/3] ASoC: spdif_transceiver: Change driver filename to
- spdif_transmitter.c.
-Date: Thu, 25 Apr 2013 15:13:12 +0200
-Message-ID: <1366895594-19596-2-git-send-email-marek.belisko@streamunlimited.com>
-References: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 2/4] ASoC: imx-sgtl5000: Let the code
+ clock be a mandatory binding
+Date: Thu, 25 Apr 2013 22:35:24 +0800
+Message-ID: <20130425143522.GA7504@S2101-09.ap.freescale.net>
+References: <1366815286-31820-1-git-send-email-festevam@gmail.com>
+ <1366815286-31820-2-git-send-email-festevam@gmail.com>
+ <20130425051654.GB1389@S2101-09.ap.freescale.net>
+ <20130425110127.GR5019@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1366895594-19596-1-git-send-email-marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, rob-VoJi6FS/r0vR7s880joybQ@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Marek Belisko <marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe002.messaging.microsoft.com [216.32.180.185])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBB87265E17
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 16:36:06 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130425110127.GR5019@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Transceiver usually means receiver + transmitter. This codec can do only
-transmit. Update driver accordingly.
+On Thu, Apr 25, 2013 at 12:01:27PM +0100, Mark Brown wrote:
+> On Thu, Apr 25, 2013 at 01:16:55PM +0800, Shawn Guo wrote:
+> > On Wed, Apr 24, 2013 at 11:54:44AM -0300, Fabio Estevam wrote:
+> 
+> > > - Rebased against Shawn's tree and remove mx53qsb clock fix, as it was already
+> > > applied on Shawn's tree
+> 
+> > It seems that you expect the patch to go via my tree?  In that case, I
+> > need Mark's ACK.
+> 
+> Well, it's a bit late for ARM changes to go in so I guess it'll be
+> sorted out after the merge window anyway and can be applied to the
+> ASoC tree after that?
 
-Signed-off-by: Marek Belisko <marek.belisko-6oiIBCxl0MMjD8S081q9vkEOCMrvLtNR@public.gmane.org>
----
- sound/soc/codecs/Makefile                          |    2 +-
- .../{spdif_transciever.c => spdif_transmitter.c}   |    0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename sound/soc/codecs/{spdif_transciever.c => spdif_transmitter.c} (100%)
+Even worse.  The dependant patches in my tree are 3.11 material.
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8cf5951..4252c35 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -51,7 +51,7 @@ snd-soc-alc5632-objs := alc5632.o
- snd-soc-sigmadsp-objs := sigmadsp.o
- snd-soc-si476x-objs := si476x.o
- snd-soc-sn95031-objs := sn95031.o
--snd-soc-spdif-tx-objs := spdif_transciever.o
-+snd-soc-spdif-tx-objs := spdif_transmitter.o
- snd-soc-spdif-rx-objs := spdif_receiver.o
- snd-soc-ssm2602-objs := ssm2602.o
- snd-soc-sta32x-objs := sta32x.o
-diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transmitter.c
-similarity index 100%
-rename from sound/soc/codecs/spdif_transciever.c
-rename to sound/soc/codecs/spdif_transmitter.c
--- 
-1.7.9.5
+Shawn
