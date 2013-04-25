@@ -1,872 +1,361 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC] Sound/HID: wiimote: add speaker support
-Date: Thu, 25 Apr 2013 09:11:05 +0200
-Message-ID: <5178D709.1060500@canonical.com>
-References: <1366481693-5945-1-git-send-email-dh.herrmann@gmail.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+	usage
+Date: Thu, 25 Apr 2013 09:52:28 +0200
+Message-ID: <CAKMK7uH_0bL1b0iu_8abuL1DwDY_8fZ0W5nA4c-BFq=DuZ1+2Q@mail.gmail.com>
+References: <1398349210-15099-1-git-send-email-xingchao.wang@linux.intel.com>
+	<46B810F6945F7C4788E11DCE57EC4890109D2387@SHSMSX102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E6DD0265D9D
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 09:11:06 +0200 (CEST)
-In-Reply-To: <1366481693-5945-1-git-send-email-dh.herrmann@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Herrmann <dh.herrmann@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC4890109D2387@SHSMSX102.ccr.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/20/2013 08:14 PM, David Herrmann wrote:
-> Classic Wii Remotes provide a speaker on the device. We can stream PCM
-> data, mute and change volume via special protocol requests and remote
-> audio registers.
+On Thu, Apr 25, 2013 at 4:36 AM, Wang, Xingchao <xingchao.wang@intel.com> wrote:
+> Hi Daniel/Paulo,
 >
-> The device supports several different formats, but fully understood are
-> only signed 8-bit PCM and something that looks like 4-bit Yamaha ADPCM.
-> Theoretically, we can set data-rates from 183Hz up to 12MHz, but a
-> realistic range for Bluetooth l2cap is 1500-4000 Hz.
->
-> Data is streamed as 20bytes blocks and must be sent in a constant rate.
-> There is no way to read the current position. It would be way too slow,
-> anyway.
+> Any comments on this?
+> Add Jesse and Rafael in loop.
 
-Hi,
+Well I've figured we want to get the power well integration working
+before we waste time reviewing an interface which might or might not
+quite work. But if you want, I can drop two quick comments:
+- I think the functions needs some prefix like i915_
+- Imo the power well should just be reference counted (the current
+interface name suggests it's generally useable, but actually can only
+cope with one request from the audio driver).
+- Is the spin_lock (irq-disabling even) really required for the audio
+driver to work? power well enabling can take up to 20ms, so this won't
+work as-is. Can't we just use a mutex?
+- I'd need to see the audio driver side of this to check how this
+works for coping with arbitrary module load ordering.
 
-Fun project!
-
-I'm not sure I'm qualified to answer, but I would have allocated a 
-buffer of kernel memory, say 64K (or maybe less, since the sample rate 
-is so low). That would be the buffer you expose to userspace, and 
-userspace would set period and buffer sizes according to this buffer.
-
-Your code doesn't really expose if/how you can tell if you're allowed to 
-send 20 more bytes or not. But assuming you have a timer running at a 
-reasonable interval, that code would do something like:
-
-if (ready_to_send_packet_to_wiimote()) {
-   send_20_bytes_to_wiimote(kernel_buffer_ptr + offset);
-   offset += 20;
-   offset %= buffer_size;
-   if (offset % period_size < 20)
-     snd_pcm_period_elapsed();
-}
-
-I'm guessing that the hrtimer API would be appropriate, and some kind of 
-RT priority. But I'm not really experienced in that area of kernel 
-programming.
-
+Cheers, Daniel
 
 >
-> Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
-> ---
-> Hi
+> thanks
+> --xingchao
 >
-> I'm reworking large parts of the HID Nintendo Wii Remote driver and wanted to
-> add speaker support. I have never worked with the sound subsystem until now
-> and need some help.
 >
-> The Wii Remote is a Bluetooth gamepad that features a small speaker on the
-> remote. All information was gathered via reverse-engineering so I cannot tell
-> you any specifics about the hardware, sorry. What I figured out so far is how
-> to set up the speaker, stream data, set volume and mute the speaker.
->
-> Supported formats are:
->    signed 8-bit PCM
->    4-bit Yamaha ADPCM
->
-> I implemented only the 8-bit PCM as I couldn't figure out whether the kernel
-> supports the other format?
->
-> The wiiproto_* helpers in hid-wiimote-core.c are used to send the requests.
-> Data is streamed as 20-bytes packets and must be sent at a constant rate.
->
-> I would really appreciate if someone can have a look at hid-wiimote-speaker.c
-> and help me fill the gaps. I figured out how to write the basic snd_card
-> management and PCM setup, but I am stuck with buffer management now.
->
-> I have a function called wiiproto_req_audio() which sends up to 20bytes of PCM
-> data to the device. However, I cannot figure out how to integrate that into the
-> snd_pcm object. The problem is that all other drivers I found have large DMA
-> buffers which are filled whenever an interrupt signals more data. However, I
-> don't have this setup but instead I need a timer (does the sound-core provide
-> that?) which causes the "copy" callback to be called with 20bytes of data at a
-> constant rate.
->
-> Any help welcome! And if this whole idea is stupid, please tell me! ;)
->
-> Thanks
-> David
->
->   drivers/hid/Kconfig               |   3 +
->   drivers/hid/Makefile              |   3 +
->   drivers/hid/hid-wiimote-core.c    |  54 +++-
->   drivers/hid/hid-wiimote-modules.c |   5 +
->   drivers/hid/hid-wiimote-speaker.c | 539 ++++++++++++++++++++++++++++++++++++++
->   drivers/hid/hid-wiimote.h         |  17 ++
->   6 files changed, 619 insertions(+), 2 deletions(-)
->   create mode 100644 drivers/hid/hid-wiimote-speaker.c
->
-> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-> index e8ef86c..0b4d7e2 100644
-> --- a/drivers/hid/Kconfig
-> +++ b/drivers/hid/Kconfig
-> @@ -715,6 +715,9 @@ config HID_WIIMOTE
->   	the Wii U Gamepad) might be supported in the future. But currently
->   	support is limited to Bluetooth based devices.
->
-> +	If Alsa sound support (CONFIG_SND) is enabled, this driver also provides
-> +	a sound card interface for Wii Remote speakers.
-> +
->   	If unsure, say N.
->
->   	To compile this driver as a module, choose M here: the
-> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-> index 8b7106b..d149e10 100644
-> --- a/drivers/hid/Makefile
-> +++ b/drivers/hid/Makefile
-> @@ -32,6 +32,9 @@ hid-wiimote-y		:= hid-wiimote-core.o hid-wiimote-modules.o
->   ifdef CONFIG_DEBUG_FS
->   	hid-wiimote-y	+= hid-wiimote-debug.o
->   endif
-> +ifdef CONFIG_SND
-> +	hid-wiimote-y	+= hid-wiimote-speaker.o
-> +endif
->
->   obj-$(CONFIG_HID_A4TECH)	+= hid-a4tech.o
->   obj-$(CONFIG_HID_ACRUX)		+= hid-axff.o
-> diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
-> index 906c146..53f1e88 100644
-> --- a/drivers/hid/hid-wiimote-core.c
-> +++ b/drivers/hid/hid-wiimote-core.c
-> @@ -17,6 +17,7 @@
->   #include <linux/module.h>
->   #include <linux/mutex.h>
->   #include <linux/spinlock.h>
-> +#include <linux/uaccess.h>
->   #include "hid-ids.h"
->   #include "hid-wiimote.h"
->
-> @@ -309,8 +310,8 @@ void wiiproto_req_ir2(struct wiimote_data *wdata, __u8 flags)
->   #define wiiproto_req_weeprom(wdata, os, buf, sz) \
->   			wiiproto_req_wmem((wdata), true, (os), (buf), (sz))
->
-> -static void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
-> -				__u32 offset, const __u8 *buf, __u8 size)
-> +void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
-> +		       __u32 offset, const __u8 *buf, __u8 size)
->   {
->   	__u8 cmd[22];
->
-> @@ -359,6 +360,52 @@ void wiiproto_req_rmem(struct wiimote_data *wdata, bool eeprom, __u32 offset,
->   	wiimote_queue(wdata, cmd, sizeof(cmd));
->   }
->
-> +void wiiproto_req_speaker(struct wiimote_data *wdata, bool on)
-> +{
-> +	__u8 cmd[2];
-> +
-> +	cmd[0] = WIIPROTO_REQ_SPEAKER;
-> +	cmd[1] = on ? 0x04 : 0x00;
-> +
-> +	wiiproto_keep_rumble(wdata, &cmd[1]);
-> +	wiimote_queue(wdata, cmd, sizeof(cmd));
-> +}
-> +
-> +void wiiproto_req_mute(struct wiimote_data *wdata, bool on)
-> +{
-> +	__u8 cmd[2];
-> +
-> +	cmd[0] = WIIPROTO_REQ_MUTE;
-> +	cmd[1] = on ? 0x04 : 0x00;
-> +
-> +	wiiproto_keep_rumble(wdata, &cmd[1]);
-> +	wiimote_queue(wdata, cmd, sizeof(cmd));
-> +}
-> +
-> +/* must not be called from atomic contexts */
-> +int wiiproto_req_audio_user(struct wiimote_data *wdata,
-> +			    void __user *buf, size_t len)
-> +{
-> +	unsigned long flags;
-> +	__u8 cmd[22];
-> +
-> +	if (len > 20)
-> +		len = 20;
-> +
-> +	cmd[0] = WIIPROTO_REQ_AUDIO;
-> +	cmd[1] = (len & 0xff) << 3;
-> +
-> +	if (copy_from_user(&cmd[2], buf, len))
-> +		return -EFAULT;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +	wiiproto_keep_rumble(wdata, &cmd[1]);
-> +	wiimote_queue(wdata, cmd, sizeof(cmd));
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +	return 0;
-> +}
-> +
->   /* requries the cmd-mutex to be held */
->   int wiimote_cmd_write(struct wiimote_data *wdata, __u32 offset,
->   						const __u8 *wmem, __u8 size)
-> @@ -570,6 +617,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
->   		WIIMOD_LED4,
->   		WIIMOD_ACCEL,
->   		WIIMOD_IR,
-> +		WIIMOD_SPEAKER,
->   		WIIMOD_NULL,
->   	},
->   	[WIIMOTE_DEV_GEN10] = (const __u8[]){
-> @@ -582,6 +630,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
->   		WIIMOD_LED4,
->   		WIIMOD_ACCEL,
->   		WIIMOD_IR,
-> +		WIIMOD_SPEAKER,
->   		WIIMOD_NULL,
->   	},
->   	[WIIMOTE_DEV_GEN20] = (const __u8[]){
-> @@ -595,6 +644,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
->   		WIIMOD_ACCEL,
->   		WIIMOD_IR,
->   		WIIMOD_BUILTIN_MP,
-> +		WIIMOD_SPEAKER,
->   		WIIMOD_NULL,
->   	},
->   	[WIIMOTE_DEV_BALANCE_BOARD] = (const __u8[]) {
-> diff --git a/drivers/hid/hid-wiimote-modules.c b/drivers/hid/hid-wiimote-modules.c
-> index 4ce0e02..7acf721 100644
-> --- a/drivers/hid/hid-wiimote-modules.c
-> +++ b/drivers/hid/hid-wiimote-modules.c
-> @@ -2072,6 +2072,11 @@ const struct wiimod_ops *wiimod_table[WIIMOD_NUM] = {
->   	[WIIMOD_IR] = &wiimod_ir,
->   	[WIIMOD_BUILTIN_MP] = &wiimod_builtin_mp,
->   	[WIIMOD_NO_MP] = &wiimod_no_mp,
-> +#ifdef CONFIG_SND
-> +	[WIIMOD_SPEAKER] = &wiimod_speaker,
-> +#else
-> +	[WIIMOD_SPEAKER] = &wiimod_dummy,
-> +#endif
->   };
->
->   const struct wiimod_ops *wiimod_ext_table[WIIMOTE_EXT_NUM] = {
-> diff --git a/drivers/hid/hid-wiimote-speaker.c b/drivers/hid/hid-wiimote-speaker.c
-> new file mode 100644
-> index 0000000..ecec5d9
-> --- /dev/null
-> +++ b/drivers/hid/hid-wiimote-speaker.c
-> @@ -0,0 +1,539 @@
-> +/*
-> + * Driver for audio speakers of Nintendo Wii / Wii U peripherals
-> + * Copyright (c) 2012-2013 David Herrmann <dh.herrmann@gmail.com>
-> + */
-> +
-> +/*
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published by the Free
-> + * Software Foundation; either version 2 of the License, or (at your option)
-> + * any later version.
-> + */
-> +
-> +/*
-> + * Audio Speakers
-> + * Some Wii peripherals provide an audio speaker that supports 8bit PCM and
-> + * some other mostly unknown formats. Not all setup options are known, but we
-> + * know how to setup an 8bit PCM or 4bit ADPCM stream and adjust volume. Data
-> + * is sent as 20bytes chunks and needs to be streamed at a constant rate.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/hid.h>
-> +#include <linux/mutex.h>
-> +#include <linux/spinlock.h>
-> +#include <sound/control.h>
-> +#include <sound/core.h>
-> +#include <sound/initval.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include "hid-wiimote.h"
-> +
-> +struct wiimote_speaker {
-> +	struct snd_card *card;
-> +	unsigned int online : 1;
-> +	unsigned int mute : 1;
-> +	__u8 volume;
-> +};
-> +
-> +enum wiimod_speaker_mode {
-> +	WIIMOD_SPEAKER_MODE_PCM8,
-> +	WIIMOD_SPEAKER_MODE_ADPCM4,
-> +};
-> +
-> +static int wiimod_speaker_enable(struct wiimote_data *wdata)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +
-> +	if (!speaker->online) {
-> +		speaker->online = 1;
-> +		wiiproto_req_speaker(wdata, true);
-> +		wiiproto_req_mute(wdata, speaker->mute);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void wiimod_speaker_disable(struct wiimote_data *wdata)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +
-> +	if (speaker->online) {
-> +		speaker->online = 0;
-> +		wiiproto_req_speaker(wdata, false);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +}
-> +
-> +static void wiimod_speaker_set_mute(struct wiimote_data *wdata, bool mute)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +
-> +	if (speaker->mute != mute) {
-> +		speaker->mute = mute;
-> +		if (speaker->online)
-> +			wiiproto_req_mute(wdata, mute);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +}
-> +
-> +static void wiimod_speaker_set_volume(struct wiimote_data *wdata, __u8 volume)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +
-> +	if (speaker->volume != volume) {
-> +		speaker->volume = volume;
-> +		if (speaker->online)
-> +			wiiproto_req_wmem(wdata, false, 0xa20005, &volume,
-> +					  sizeof(volume));
-> +	}
-> +
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +}
-> +
-> +/* Change speaker configuration. \mode can be one of WIIMOD_SPEAKER_MODE_*,
-> + * \rate is the PCM sample rate and \volume is the requested volume. */
-> +static int wiimod_speaker_setup(struct wiimote_data *wdata,
-> +				__u8 mode, __u16 rate, __s16 volume)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +	__u8 config[7], m, wmem;
-> +	__u16 r;
-> +	int ret;
-> +
-> +	if (!rate)
-> +		return -EINVAL;
-> +
-> +	switch (mode) {
-> +	case WIIMOD_SPEAKER_MODE_PCM8:
-> +		r = 12000000ULL / rate;
-> +		m = 0x40;
-> +		break;
-> +	case WIIMOD_SPEAKER_MODE_ADPCM4:
-> +		r = 6000000ULL / rate;
-> +		m = 0x00;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	config[0] = 0x00;
-> +	config[1] = m;
-> +	config[2] = r & 0x00ff;
-> +	config[3] = (r & 0xff00) >> 8;
-> +	config[4] = volume & 0xff;
-> +	config[5] = 0x00;
-> +	config[6] = 0x00;
-> +
-> +	wiimote_cmd_acquire_noint(wdata);
-> +
-> +	/* mute speaker during setup and read/write volume field */
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +
-> +	wiiproto_req_mute(wdata, true);
-> +	if (volume < 0)
-> +		config[4] = speaker->volume;
-> +	else
-> +		speaker->volume = volume;
-> +
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +	/* power speaker */
-> +	wmem = 0x01;
-> +	ret = wiimote_cmd_write(wdata, 0xa20009, &wmem, sizeof(wmem));
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	/* prepare setup */
-> +	wmem = 0x08;
-> +	ret = wiimote_cmd_write(wdata, 0xa20001, &wmem, sizeof(wmem));
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	/* write configuration */
-> +	ret = wiimote_cmd_write(wdata, 0xa20001, config, sizeof(config));
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	/* enable speaker */
-> +	wmem = 0x01;
-> +	ret = wiimote_cmd_write(wdata, 0xa20008, &wmem, sizeof(wmem));
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	/* unmute speaker after setup if not muted */
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +	if (!speaker->mute)
-> +		wiiproto_req_mute(wdata, false);
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +out_unlock:
-> +	wiimote_cmd_release(wdata);
-> +	return ret;
-> +}
-> +
-> +/* PCM layer */
-> +
-> +static const struct snd_pcm_hardware wiimod_speaker_playback_hw = {
-> +	.info = SNDRV_PCM_INFO_NONINTERLEAVED,
-> +	.formats = SNDRV_PCM_FMTBIT_S8,
-> +	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> +	.rate_min = 1500,
-> +	.rate_max = 4000,
-> +	.channels_min = 1,
-> +	.channels_max = 1,
-> +	.buffer_bytes_max = 20,
-> +	.period_bytes_min = 20,
-> +	.period_bytes_max = 20,
-> +	.periods_min = 1,
-> +	.periods_max = 1,
-> +};
-> +
-> +static int wiimod_speaker_playback_open(struct snd_pcm_substream *substream)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(substream);
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +
-> +	runtime->hw = wiimod_speaker_playback_hw;
-> +	runtime->private_data = wdata;
-> +
-> +	return wiimod_speaker_enable(wdata);
-> +}
-> +
-> +static int wiimod_speaker_playback_close(struct snd_pcm_substream *substream)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(substream);
-> +
-> +	wiimod_speaker_disable(wdata);
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_playback_hw_params(struct snd_pcm_substream *subs,
-> +					     struct snd_pcm_hw_params *hw)
-> +{
-> +	/* TODO: anything to do here? */
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_playback_hw_free(struct snd_pcm_substream *subs)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_playback_prepare(struct snd_pcm_substream *subs)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(subs);
-> +	struct snd_pcm_runtime *runtime = subs->runtime;
-> +	size_t buf_size, period_size, periods;
-> +	int ret;
-> +
-> +	/* TODO: If I have set the hw-params to a fixed 20 bytes buffer, do
-> +	 * I actually need to do any computations here? */
-> +	buf_size = frames_to_bytes(runtime, runtime->buffer_size);
-> +	period_size = frames_to_bytes(runtime, runtime->period_size);
-> +	periods = runtime->periods;
-> +
-> +	switch (runtime->format) {
-> +	case SNDRV_PCM_FMTBIT_S8:
-> +		ret = wiimod_speaker_setup(wdata, WIIMOD_SPEAKER_MODE_PCM8,
-> +					   runtime->rate, -1);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int wiimod_speaker_playback_trigger(struct snd_pcm_substream *subs,
-> +					   int cmd)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(subs);
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_START:
-> +		/* unmute device on start if not muted by user-space */
-> +		spin_lock_irqsave(&wdata->state.lock, flags);
-> +		if (!speaker->mute)
-> +			wiiproto_req_mute(wdata, false);
-> +		spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +		break;
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +		/* mute device when stopping transmission */
-> +		spin_lock_irqsave(&wdata->state.lock, flags);
-> +		wiiproto_req_mute(wdata, true);
-> +		spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static snd_pcm_uframes_t wiimod_speaker_playback_pointer(struct snd_pcm_substream *subs)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(subs);
-> +	unsigned long pos;
-> +
-> +	/* There is no way to read the current position. Even if there was a
-> +	 * way to do that, it would be so slow that it would be useless.
-> +	 * TODO: Should we interpolate via a timer? Is this function actually
-> +	 * needed? When is it called? */
-> +	pos = 0;
-> +
-> +	pos %= 20;
-> +
-> +	return bytes_to_frames(subs->runtime, pos);
-> +}
-> +
-> +static int wiimod_speaker_playback_copy(struct snd_pcm_substream *subs,
-> +					int channel, snd_pcm_uframes_t pos,
-> +					void __user *buf,
-> +					snd_pcm_uframes_t count)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(subs);
-> +	struct snd_pcm_runtime *runtime = subs->runtime;
-> +
-> +	count = frames_to_bytes(runtime, count);
-> +	pos = frames_to_bytes(runtime, pos);
-> +
-> +	/* TODO: copy from "buf" "count" bytes to "protobuf + pos"
-> +	 * With the given hw-params, can pos be non-zero? Can count != 20?
-> +	 * If not, should I simply send a 20byte frame to the device here? */
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_playback_silence(struct snd_pcm_substream *subs,
-> +					   int channel, snd_pcm_uframes_t pos,
-> +					   snd_pcm_uframes_t count)
-> +{
-> +	struct wiimote_data *wdata = snd_pcm_chip(subs);
-> +	struct snd_pcm_runtime *runtime = subs->runtime;
-> +
-> +	count = frames_to_bytes(runtime, count);
-> +	pos = frames_to_bytes(runtime, pos);
-> +
-> +	/* TODO: set "count" bytes of "protobuf + pos" to zero
-> +	 * Can "pos" actually be non-zero with the given hw-params? If not,
-> +	 * can I simply send a 20byte zeroed frame to the remote device? */
-> +
-> +	return 0;
-> +}
-> +
-> +/* TODO: is there a reason this cannot be "const"? */
-> +static struct snd_pcm_ops wiimod_speaker_playback_ops = {
-> +	.open		= wiimod_speaker_playback_open,
-> +	.close		= wiimod_speaker_playback_close,
-> +	.ioctl		= snd_pcm_lib_ioctl,
-> +	.hw_params	= wiimod_speaker_playback_hw_params,
-> +	.hw_free	= wiimod_speaker_playback_hw_free,
-> +	.prepare	= wiimod_speaker_playback_prepare,
-> +	.trigger	= wiimod_speaker_playback_trigger,
-> +	.pointer	= wiimod_speaker_playback_pointer,
-> +	.copy		= wiimod_speaker_playback_copy,
-> +	.silence	= wiimod_speaker_playback_silence,
-> +};
-> +
-> +/* volume control */
-> +
-> +static int wiimod_speaker_volume_info(struct snd_kcontrol *kcontrol,
-> +				      struct snd_ctl_elem_info *info)
-> +{
-> +	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-> +	info->count = 1;
-> +	info->value.integer.min = 0;
-> +	info->value.integer.max = 0xff;
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_volume_get(struct snd_kcontrol *kcontrol,
-> +				     struct snd_ctl_elem_value *val)
-> +{
-> +	struct wiimote_data *wdata = snd_kcontrol_chip(kcontrol);
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +	val->value.integer.value[0] = speaker->volume;
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_volume_put(struct snd_kcontrol *kcontrol,
-> +				     struct snd_ctl_elem_value *val)
-> +{
-> +	struct wiimote_data *wdata = snd_kcontrol_chip(kcontrol);
-> +	unsigned long value;
-> +
-> +	value = val->value.integer.value[0];
-> +	if (value > 0xff)
-> +		value = 0xff;
-> +
-> +	wiimod_speaker_set_volume(wdata, value);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_kcontrol_new wiimod_speaker_volume = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-> +	.name = "PCM Playback Volume",
-> +	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-> +	.info = wiimod_speaker_volume_info,
-> +	.get = wiimod_speaker_volume_get,
-> +	.put = wiimod_speaker_volume_put,
-> +};
-> +
-> +/* mute control */
-> +
-> +static int wiimod_speaker_mute_get(struct snd_kcontrol *kcontrol,
-> +				   struct snd_ctl_elem_value *val)
-> +{
-> +	struct wiimote_data *wdata = snd_kcontrol_chip(kcontrol);
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&wdata->state.lock, flags);
-> +	val->value.integer.value[0] = !!speaker->mute;
-> +	spin_unlock_irqrestore(&wdata->state.lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int wiimod_speaker_mute_put(struct snd_kcontrol *kcontrol,
-> +				   struct snd_ctl_elem_value *val)
-> +{
-> +	struct wiimote_data *wdata = snd_kcontrol_chip(kcontrol);
-> +
-> +	wiimod_speaker_set_mute(wdata, val->value.integer.value[0]);
-> +
-> +	return 0;
-> +}
-> +
-> +/* TODO: Is *_IFACE_CARD the right interface? */
-> +static const struct snd_kcontrol_new wiimod_speaker_mute = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-> +	.name = "PCM Playback Switch",
-> +	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-> +	.info = snd_ctl_boolean_mono_info,
-> +	.get = wiimod_speaker_mute_get,
-> +	.put = wiimod_speaker_mute_put,
-> +};
-> +
-> +/* initialization and setup */
-> +
-> +static int wiimod_speaker_probe(const struct wiimod_ops *ops,
-> +				struct wiimote_data *wdata)
-> +{
-> +	int ret;
-> +	struct wiimote_speaker *speaker;
-> +	struct snd_card *card;
-> +	struct snd_kcontrol *kcontrol;
-> +	struct snd_pcm *pcm;
-> +
-> +	/* create sound card device */
-> +	ret = snd_card_create(-1, NULL, THIS_MODULE,
-> +			      sizeof(struct wiimote_speaker), &card);
-> +	if (ret)
-> +		return ret;
-> +	speaker = card->private_data;
-> +
-> +	wdata->speaker = speaker;
-> +	speaker->card = card;
-> +	speaker->mute = 1;
-> +	speaker->volume = 0xff;
-> +	strcpy(card->driver, "hid-wiimote");
-> +	strcpy(card->shortname, "wiimote");
-> +	strcpy(card->longname, "Nintendo Wii Remote speaker");
-> +
-> +	/* create volume control */
-> +	kcontrol = snd_ctl_new1(&wiimod_speaker_volume, wdata);
-> +	if (!kcontrol) {
-> +		ret = -ENOMEM;
-> +		goto err_free;
-> +	}
-> +
-> +	ret = snd_ctl_add(card, kcontrol);
-> +	if (ret) {
-> +		snd_ctl_free_one(kcontrol);
-> +		goto err_free;
-> +	}
-> +
-> +	/* create mute control */
-> +	kcontrol = snd_ctl_new1(&wiimod_speaker_mute, wdata);
-> +	if (!kcontrol) {
-> +		ret = -ENOMEM;
-> +		goto err_free;
-> +	}
-> +
-> +	ret = snd_ctl_add(card, kcontrol);
-> +	if (ret) {
-> +		snd_ctl_free_one(kcontrol);
-> +		goto err_free;
-> +	}
-> +
-> +	/* create PCM sub-device for playback */
-> +	ret = snd_pcm_new(card, "Speaker", 0, 1, 0, &pcm);
-> +	if (ret)
-> +		goto err_free;
-> +
-> +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-> +			&wiimod_speaker_playback_ops);
-> +	pcm->private_data = wdata;
-> +
-> +	/* register sound card */
-> +	snd_card_set_dev(card, &wdata->hdev->dev);
-> +	ret = snd_card_register(card);
-> +	if (ret)
-> +		goto err_free;
-> +
-> +	return 0;
-> +
-> +err_free:
-> +	snd_card_free(card);
-> +	wdata->speaker = NULL;
-> +	return ret;
-> +}
-> +
-> +static void wiimod_speaker_remove(const struct wiimod_ops *ops,
-> +				  struct wiimote_data *wdata)
-> +{
-> +	struct wiimote_speaker *speaker = wdata->speaker;
-> +
-> +	if (!speaker)
-> +		return;
-> +
-> +	snd_card_free_when_closed(speaker->card);
-> +	wdata->speaker = NULL;
-> +}
-> +
-> +const struct wiimod_ops wiimod_speaker = {
-> +	.flags = 0,
-> +	.arg = 0,
-> +	.probe = wiimod_speaker_probe,
-> +	.remove = wiimod_speaker_remove,
-> +};
-> diff --git a/drivers/hid/hid-wiimote.h b/drivers/hid/hid-wiimote.h
-> index 30caef5..4907bc7 100644
-> --- a/drivers/hid/hid-wiimote.h
-> +++ b/drivers/hid/hid-wiimote.h
-> @@ -148,6 +148,7 @@ struct wiimote_data {
->   	struct timer_list timer;
->   	struct wiimote_ext *ext;
->   	struct wiimote_debug *debug;
-> +	struct wiimote_speaker *speaker;
->
->   	union {
->   		struct input_dev *input;
-> @@ -172,6 +173,7 @@ enum wiimod_module {
->   	WIIMOD_IR,
->   	WIIMOD_BUILTIN_MP,
->   	WIIMOD_NO_MP,
-> +	WIIMOD_SPEAKER,
->   	WIIMOD_NUM,
->   	WIIMOD_NULL = WIIMOD_NUM,
->   };
-> @@ -208,9 +210,12 @@ enum wiiproto_reqs {
->   	WIIPROTO_REQ_LED = 0x11,
->   	WIIPROTO_REQ_DRM = 0x12,
->   	WIIPROTO_REQ_IR1 = 0x13,
-> +	WIIPROTO_REQ_SPEAKER = 0x14,
->   	WIIPROTO_REQ_SREQ = 0x15,
->   	WIIPROTO_REQ_WMEM = 0x16,
->   	WIIPROTO_REQ_RMEM = 0x17,
-> +	WIIPROTO_REQ_AUDIO = 0x18,
-> +	WIIPROTO_REQ_MUTE = 0x19,
->   	WIIPROTO_REQ_IR2 = 0x1a,
->   	WIIPROTO_REQ_STATUS = 0x20,
->   	WIIPROTO_REQ_DATA = 0x21,
-> @@ -241,6 +246,12 @@ extern void wiiproto_req_status(struct wiimote_data *wdata);
->   extern void wiiproto_req_accel(struct wiimote_data *wdata, __u8 accel);
->   extern void wiiproto_req_ir1(struct wiimote_data *wdata, __u8 flags);
->   extern void wiiproto_req_ir2(struct wiimote_data *wdata, __u8 flags);
-> +extern void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
-> +			      __u32 offset, const __u8 *buf, __u8 size);
-> +extern void wiiproto_req_speaker(struct wiimote_data *wdata, bool on);
-> +extern void wiiproto_req_mute(struct wiimote_data *wdata, bool on);
-> +extern int wiiproto_req_audio_user(struct wiimote_data *wdata,
-> +				   void __user *buf, size_t len);
->   extern int wiimote_cmd_write(struct wiimote_data *wdata, __u32 offset,
->   						const __u8 *wmem, __u8 size);
->   extern ssize_t wiimote_cmd_read(struct wiimote_data *wdata, __u32 offset,
-> @@ -283,6 +294,12 @@ static inline void wiidebug_deinit(void *u) { }
->
->   #endif
->
-> +#ifdef CONFIG_SND
-> +
-> +extern const struct wiimod_ops wiimod_speaker;
-> +
-> +#endif
-> +
->   /* requires the state.lock spinlock to be held */
->   static inline bool wiimote_cmd_pending(struct wiimote_data *wdata, int cmd,
->   								__u32 opt)
+>> -----Original Message-----
+>> From: Wang, Xingchao
+>> Sent: Wednesday, April 24, 2013 3:29 PM
+>> To: daniel.vetter@ffwll.ch; Zanoni, Paulo R; 'Takashi Iwai'
+>> Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; Li, Jocelyn;
+>> intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; 'Wang Xingchao'
+>> Subject: RE: [PATCH] drm/i915: Add private api for power well usage
+>>
+>> Hi Guys,
+>>
+>> Sorry I should Add Takashi and alsa maillist in loop.
+>>
+>> I tested this patch against Daniel's "drm-intel-next-queued" Branch, on
+>> Haswell Mobile C3 stepping machines.
+>>
+>> Test steps:
+>> 1. only connect one monitor through HDMI cable 2. echo 1 >
+>> /sys/module/i915/parameters/disable_power_well ==> I think this could be set
+>> as 1 by default if applied my patch.
+>> 3. plug out HDMI cable
+>> 4. cat /proc/asound/card0/codec#0
+>>
+>> At step 3,  i915 will try to disable power well but rejected as display audio is
+>> using power well.
+>> Without the patch, display audio would crash at step 4.
+>>
+>> I did not list suspend/resume test here, as during suspend sequence, i915 will
+>> _ENABLE_ power well, that's a BUG?
+>>
+>> For me above test case is the only one to reproduce the issue, if you have more
+>> ideas and need more test, please let me know.
+>>
+>> I'm afraid there's some risk because the dependency between alsa driver and
+>> drm driver. For example, if i915 module was not loaded, display audio Will call
+>> request_power_well() and meet symbol error. Even if i915 module loaded after
+>> snd-hda-intel module, there's such risk too. Any comment on this?
+>>
+>> Another risk is the pointer "power_well_device", it should be set NULL when
+>> i915 module unloaded, I added the caller but have no idea where to call it, if
+>> anyone has suggestion, that would be fine.
+>>
+>> thanks
+>> --xingchao
+>>
+>>
+>> > -----Original Message-----
+>> > From: Wang Xingchao [mailto:xingchao.wang@linux.intel.com]
+>> > Sent: Thursday, April 24, 2014 10:20 PM
+>> > To: daniel.vetter@ffwll.ch; Zanoni, Paulo R
+>> > Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R;
+>> > Li, Jocelyn; intel-gfx@lists.freedesktop.org; Wang, Xingchao; Wang
+>> > Xingchao
+>> > Subject: [PATCH] drm/i915: Add private api for power well usage
+>> >
+>> > Display audio depends on power well in graphic side, it should request
+>> > power well before use it and release power well after use.
+>> > I915 will not shutdown power well if it detects audio is using.
+>> > This patch protects display audio crash for Intel Haswell mobile
+>> > C3 stepping board.
+>> >
+>> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+>> > ---
+>> >  drivers/gpu/drm/i915/intel_pm.c |   73
+>> > +++++++++++++++++++++++++++++++++++----
+>> >  include/drm/audio_drm.h         |   39 +++++++++++++++++++++
+>> >  sound/pci/hda/hda_intel.c       |    8 +++++
+>> >  3 files changed, 113 insertions(+), 7 deletions(-)  create mode
+>> > 100644 include/drm/audio_drm.h
+>> >
+>> > diff --git a/drivers/gpu/drm/i915/intel_pm.c
+>> > b/drivers/gpu/drm/i915/intel_pm.c index 2557926..9983f56 100644
+>> > --- a/drivers/gpu/drm/i915/intel_pm.c
+>> > +++ b/drivers/gpu/drm/i915/intel_pm.c
+>> > @@ -4298,18 +4298,12 @@ bool intel_using_power_well(struct drm_device
+>> > *dev)
+>> >             return true;
+>> >  }
+>> >
+>> > -void intel_set_power_well(struct drm_device *dev, bool enable)
+>> > +void set_power_well(struct drm_device *dev, bool enable)
+>> >  {
+>> >     struct drm_i915_private *dev_priv = dev->dev_private;
+>> >     bool is_enabled, enable_requested;
+>> >     uint32_t tmp;
+>> >
+>> > -   if (!HAS_POWER_WELL(dev))
+>> > -           return;
+>> > -
+>> > -   if (!i915_disable_power_well && !enable)
+>> > -           return;
+>> > -
+>> >     tmp = I915_READ(HSW_PWR_WELL_DRIVER);
+>> >     is_enabled = tmp & HSW_PWR_WELL_STATE;
+>> >     enable_requested = tmp & HSW_PWR_WELL_ENABLE; @@ -4332,6
+>> > +4326,71 @@ void intel_set_power_well(struct drm_device *dev, bool
+>> > +enable)
+>> >     }
+>> >  }
+>> >
+>> > +/* Global drm_device for display audio drvier usage */ static struct
+>> > +drm_device *power_well_device; static bool audio_power_well_using,
+>> > +i915_power_well_using;
+>> > +/* Lock protecting power well setting */
+>> > +DEFINE_SPINLOCK(powerwell_lock);
+>> > +
+>> > +void request_power_well(void)
+>> > +{
+>> > +   DRM_DEBUG_KMS("Display audio requesting power well\n");
+>> > +   spin_lock_irq(&powerwell_lock);
+>> > +   if (!power_well_device)
+>> > +           goto out;
+>> > +   if (i915_power_well_using == false)
+>> > +           set_power_well(power_well_device, true);
+>> > +   audio_power_well_using = true;
+>> > +out:
+>> > +   spin_unlock_irq(&powerwell_lock);
+>> > +   return;
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(request_power_well);
+>> > +
+>> > +void release_power_well(void)
+>> > +{
+>> > +   DRM_DEBUG_KMS("Display audio releasing power well\n");
+>> > +   spin_lock_irq(&powerwell_lock);
+>> > +   if (!power_well_device)
+>> > +           goto out;
+>> > +   if (i915_power_well_using == false)
+>> > +           set_power_well(power_well_device, false);
+>> > +   audio_power_well_using = false;
+>> > +out:
+>> > +   spin_unlock_irq(&powerwell_lock);
+>> > +   return;
+>> > +}
+>> > +EXPORT_SYMBOL_GPL(release_power_well);
+>> > +
+>> > +/* TODO: Call this when i915 module unload */ void
+>> > +remove_power_well(void) {
+>> > +   spin_lock_irq(&powerwell_lock);
+>> > +   audio_power_well_using = false;
+>> > +   i915_power_well_using = false;
+>> > +   power_well_device = NULL;
+>> > +   spin_unlock_irq(&powerwell_lock);
+>> > +}
+>> > +
+>> > +void intel_set_power_well(struct drm_device *dev, bool enable) {
+>> > +   if (!HAS_POWER_WELL(dev))
+>> > +           return;
+>> > +
+>> > +   spin_lock_irq(&powerwell_lock);
+>> > +   power_well_device = dev;
+>> > +   i915_power_well_using = enable;
+>> > +   if (!enable && audio_power_well_using)
+>> > +           goto out;
+>> > +
+>> > +   if (!i915_disable_power_well && !enable)
+>> > +           goto out;
+>> > +   set_power_well(dev, enable);
+>> > +out:
+>> > +   spin_unlock_irq(&powerwell_lock);
+>> > +   return;
+>> > +}
+>> > +
+>> >  /*
+>> >   * Starting with Haswell, we have a "Power Down Well" that can be turned
+>> off
+>> >   * when not needed anymore. We have 4 registers that can request the
+>> > power well diff --git a/include/drm/audio_drm.h
+>> > b/include/drm/audio_drm.h new file mode 100644 index 0000000..4412b36
+>> > --- /dev/null
+>> > +++ b/include/drm/audio_drm.h
+>> > @@ -0,0 +1,39 @@
+>> >
+>> +/**************************************************************
+>> > ********
+>> > +****
+>> > + *
+>> > + * Copyright 2013 Intel Inc.
+>> > + * All Rights Reserved.
+>> > + *
+>> > + * Permission is hereby granted, free of charge, to any person
+>> > +obtaining a
+>> > + * copy of this software and associated documentation files (the
+>> > + * "Software"), to deal in the Software without restriction,
+>> > +including
+>> > + * without limitation the rights to use, copy, modify, merge,
+>> > +publish,
+>> > + * distribute, sub license, and/or sell copies of the Software, and
+>> > +to
+>> > + * permit persons to whom the Software is furnished to do so, subject
+>> > +to
+>> > + * the following conditions:
+>> > + *
+>> > + * The above copyright notice and this permission notice (including
+>> > +the
+>> > + * next paragraph) shall be included in all copies or substantial
+>> > +portions
+>> > + * of the Software.
+>> > + *
+>> > + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+>> KIND,
+>> > +EXPRESS OR
+>> > + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+>> > +MERCHANTABILITY,
+>> > + * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+>> > EVENT
+>> > +SHALL
+>> > + * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE
+>> > FOR
+>> > +ANY CLAIM,
+>> > + * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+>> > TORT
+>> > +OR
+>> > + * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+>> > SOFTWARE
+>> > +OR THE
+>> > + * USE OR OTHER DEALINGS IN THE SOFTWARE.
+>> > + *
+>> > + *
+>> > +
+>> >
+>> +***************************************************************
+>> > ********
+>> > +***/
+>> > +/*
+>> > + * Authors:
+>> > + * Wang Xingchao <xingchao.wang@intel.com>  */
+>> > +
+>> > +#ifndef _AUDIO_DRM_H_
+>> > +#define _AUDIO_DRM_H_
+>> > +
+>> > +extern void request_power_well(void); extern void
+>> > +release_power_well(void);
+>> > +
+>> > +#endif                             /* _AUDIO_DRM_H_ */
+>> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> > index 418bfc0..59a85de 100644
+>> > --- a/sound/pci/hda/hda_intel.c
+>> > +++ b/sound/pci/hda/hda_intel.c
+>> > @@ -50,6 +50,7 @@
+>> >  #include <linux/clocksource.h>
+>> >  #include <linux/time.h>
+>> >  #include <linux/completion.h>
+>> > +#include <drm/audio_drm.h>
+>> >
+>> >  #ifdef CONFIG_X86
+>> >  /* for snoop control */
+>> > @@ -2869,6 +2870,7 @@ static int azx_suspend(struct device *dev)
+>> >     pci_disable_device(pci);
+>> >     pci_save_state(pci);
+>> >     pci_set_power_state(pci, PCI_D3hot);
+>> > +   release_power_well();
+>> >     return 0;
+>> >  }
+>> >
+>> > @@ -2881,6 +2883,7 @@ static int azx_resume(struct device *dev)
+>> >     if (chip->disabled)
+>> >             return 0;
+>> >
+>> > +   request_power_well();
+>> >     pci_set_power_state(pci, PCI_D0);
+>> >     pci_restore_state(pci);
+>> >     if (pci_enable_device(pci) < 0) {
+>> > @@ -2913,6 +2916,7 @@ static int azx_runtime_suspend(struct device
+>> > *dev)
+>> >
+>> >     azx_stop_chip(chip);
+>> >     azx_clear_irq_pending(chip);
+>> > +   release_power_well();
+>> >     return 0;
+>> >  }
+>> >
+>> > @@ -2921,6 +2925,7 @@ static int azx_runtime_resume(struct device *dev)
+>> >     struct snd_card *card = dev_get_drvdata(dev);
+>> >     struct azx *chip = card->private_data;
+>> >
+>> > +   request_power_well();
+>> >     azx_init_pci(chip);
+>> >     azx_init_chip(chip, 1);
+>> >     return 0;
+>> > @@ -3671,6 +3676,8 @@ static int azx_probe(struct pci_dev *pci,
+>> >             return -ENOENT;
+>> >     }
+>> >
+>> > +   request_power_well();
+>> > +
+>> >     err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
+>> >     if (err < 0) {
+>> >             snd_printk(KERN_ERR "hda-intel: Error creating card!\n"); @@
+>> > -3806,6 +3813,7 @@ static void azx_remove(struct pci_dev *pci)
+>> >     if (card)
+>> >             snd_card_free(card);
+>> >     pci_set_drvdata(pci, NULL);
+>> > +   release_power_well();
+>> >  }
+>> >
+>> >  /* PCI IDs */
+>> > --
+>> > 1.7.9.5
 >
 
 
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
