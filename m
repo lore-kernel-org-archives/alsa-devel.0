@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/4] ASoC: imx-sgtl5000: Let the code
- clock be a mandatory binding
-Date: Thu, 25 Apr 2013 12:01:27 +0100
-Message-ID: <20130425110127.GR5019@opensource.wolfsonmicro.com>
-References: <1366815286-31820-1-git-send-email-festevam@gmail.com>
- <1366815286-31820-2-git-send-email-festevam@gmail.com>
- <20130425051654.GB1389@S2101-09.ap.freescale.net>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v5 01/10] ASoC: phycore-ac97: Add DT support
+Date: Thu, 25 Apr 2013 13:02:43 +0200
+Message-ID: <20130425110243.GA27763@pengutronix.de>
+References: <1366814199-14827-1-git-send-email-mpa@pengutronix.de>
+ <1366814199-14827-2-git-send-email-mpa@pengutronix.de>
+ <20130424194540.GF32299@pengutronix.de>
+ <20130425033517.GA1276@S2101-09.ap.freescale.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6104170070558489610=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6BFF26531B
- for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 13:01:28 +0200 (CEST)
-In-Reply-To: <20130425051654.GB1389@S2101-09.ap.freescale.net>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 92386265DB6
+ for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2013 13:03:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130425033517.GA1276@S2101-09.ap.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, kernel@pengutronix.de
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 25, 2013 at 11:35:20AM +0800, Shawn Guo wrote:
+> On Wed, Apr 24, 2013 at 09:45:40PM +0200, Sascha Hauer wrote:
+> > Hi Markus,
+> > 
+> > On Wed, Apr 24, 2013 at 04:36:30PM +0200, Markus Pargmann wrote:
+> > > Add devicetree support for this audio soc fabric driver.
+> > > 
+> > > @@ -32,8 +35,12 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+> > >  		.stream_name	= "HiFi",
+> > >  		.codec_dai_name		= "wm9712-hifi",
+> > >  		.codec_name	= "wm9712-codec",
+> > > +#ifdef CONFIG_MACH_IMX27_DT
+> > > +		.platform_name	= "imx-fiq-pcm-audio",
+> > > +#else
+> > >  		.cpu_dai_name	= "imx-ssi.0",
+> > >  		.platform_name	= "imx-fiq-pcm-audio.0",
+> > > +#endif
+> > 
+> > This doesn't work properly. Compiling the kernel with IMX27_DT enabled
+> > does not necessarily mean that it also started with dt support.
+> > 
+> Right, we should run-time check pdev->dev.of_node to see if it's a DT
+> boot and set .platform_of_node rather than .platform_name if it is.  But
+> it's only possible with the cleanup series "ASoC: fsl: imx-pcm driver
+> cleanup" I just sent being the base.  I hope you can rebase your series
+> on that :)
 
---===============6104170070558489610==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J/rMgauiyHIRVABE"
-Content-Disposition: inline
+The current version of phycore-ac97.c is not a driver, it is just a late
+init call. So run-time check is not possible unless I modify the old
+part to be a driver and add a device to all board init functions using
+ac97. (I would prefer dropping the non-DT part in this case ;) )
 
+Yes I rebased this series onto your cleanups, looks good so far and
+platform_of_node works finally.
 
---J/rMgauiyHIRVABE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
 
-On Thu, Apr 25, 2013 at 01:16:55PM +0800, Shawn Guo wrote:
-> On Wed, Apr 24, 2013 at 11:54:44AM -0300, Fabio Estevam wrote:
+Markus
 
-> > - Rebased against Shawn's tree and remove mx53qsb clock fix, as it was already
-> > applied on Shawn's tree
+> 
+> Shawn
+> 
+> > Personally I am fine with removing platform based support for this
+> > driver if it's too much effort to fix it properly, but we shouldn't
+> > start working with ifdefs here.
+> > 
+> > Sascha
+> > 
+> > 
+> > -- 
+> > Pengutronix e.K.                           |                             |
+> > Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> > Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+> > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
+> 
 
-> It seems that you expect the patch to go via my tree?  In that case, I
-> need Mark's ACK.
-
-Well, it's a bit late for ARM changes to go in so I guess it'll be
-sorted out after the merge window anyway and can be applied to the
-ASoC tree after that?
-
---J/rMgauiyHIRVABE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJReQy/AAoJELSic+t+oim9PaIQAIX5zEA0a7v+jdKXA9UsLlHY
-sVhITy5CJpQ8VV2c4zazdQNlYbMv6pEGQVORuXOUiBcMi8ukgUkj2yg83Prfyk0k
-bMPkZeLwoVpDQTzvS12l1uYyQaHz/KDDq6h93EicjzQfjtPP2MiZxLQW408K4n3X
-BS4OMsFbTOFHZZvtBvLT/qkyuHMJbc/GvAarWATE2RYTMCPcwO3yCgZ7IoShscVH
-kkaCv1Rs9JqriZQ1929f4iLOpAbOUIS4aqNMwS+pv0HgpXlxoyt3k4erhRAvcONt
-ceys6EYvG2sZzcfzpe+WmHNF7pdcfkDGQatxMbEn59csa4nvtgqLtBbsTFqKkMTK
-9OFO0HX7mTG8WetbtVhMi4qL4BoriFKDLleZHGfvH6vHJLa7bGNKbVvMycQ2JjCW
-gwIHikgzm5ZTPeSyI034of9OHe1HYSOFR3MYnieOLwSjM5A0+eB8LUc09+uBOAGw
-WzY3QEm42hzlq2T+dqQ4SwIm5taP1yrPe7342yfpn8XIC2TDhD1/IY5CnGmN29Es
-EoDMRKpii6Le7U5vVOMA5F1ZuOhqh/dFPVb3GVkdjryWknQCKZtL8jVrYm+IcnBA
-bIXxmt/UfMj4GcjZoa0TMIr02kUgtn35N/zL3mGVPMnYKNbrsT4gGOUmQJnDqMSV
-vj+Ee5lszHXw0AwDvK1M
-=MSkE
------END PGP SIGNATURE-----
-
---J/rMgauiyHIRVABE--
-
---===============6104170070558489610==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6104170070558489610==--
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
