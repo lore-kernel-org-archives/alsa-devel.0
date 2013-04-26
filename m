@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/1] ALSA: compress_core: Ensure device is
- stopped when stream closed
-Date: Fri, 26 Apr 2013 22:12:55 +0530
-Message-ID: <20130426164255.GF24632@intel.com>
-References: <20130426134706.GA27501@opensource.wolfsonmicro.com>
+Subject: Re: [TINYCOMPRESS][PATCH 1/1] compress: Add support
+ for capture streams
+Date: Fri, 26 Apr 2013 22:18:59 +0530
+Message-ID: <20130426164859.GG24632@intel.com>
+References: <20130426151422.GA29257@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 6465726030A
- for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 19:15:33 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 699DE260319
+ for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 19:21:30 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20130426134706.GA27501@opensource.wolfsonmicro.com>
+In-Reply-To: <20130426151422.GA29257@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +23,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.jf.intel.com, vinod.koul@linux.jf.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 26, 2013 at 02:47:06PM +0100, Richard Fitzgerald wrote:
-> If the stream state is running or paused when device file is
-> closed snd_compr_free() will send a SNDRV_PCM_TRIGGER_STOP
-> to the stream.
+On Fri, Apr 26, 2013 at 04:14:22PM +0100, Richard Fitzgerald wrote:
 > 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 > ---
->  sound/core/compress_offload.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index 91e6bcb..a81c5e4 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -132,6 +132,11 @@ static int snd_compr_open(struct inode *inode, struct file *f)
->  static int snd_compr_free(struct inode *inode, struct file *f)
->  {
->  	struct snd_compr_file *data = f->private_data;
-> +
-> +	if ((data->stream.runtime->state == SNDRV_PCM_STATE_RUNNING) ||
-> +	    (data->stream.runtime->state == SNDRV_PCM_STATE_PAUSED))
-> +		data->stream.ops->trigger(&data->stream, SNDRV_PCM_TRIGGER_STOP);
-two things:
-1. I like Mark's idea the switch will make it look better :)
-2. why do you want to do explicit stop when you are freeing. Esp the Paused
-cases doesnt make sense. Shouldnt the DSP be able to handle this transistion?
+>  compress.c                          |   64 +++++++++++++++++++++++++++++++---
+>  include/tinycompress/tinycompress.h |    2 +-
+>  2 files changed, 59 insertions(+), 7 deletions(-)
+Applied thanks, now where is crecord :-)
 
 --
 ~Vinod
+> 
+> diff --git a/compress.c b/compress.c
+> index 86cca88..e80e598 100644
+> --- a/compress.c
+> +++ b/compress.c
+> @@ -240,13 +240,12 @@ struct compress *compress_open(unsigned int card, unsigned int device,
+>  		oops(&bad_compress, -EINVAL, "can't deduce device direction from given flags");
+>  		goto config_fail;
+>  	}
 > +
->  	data->stream.ops->free(&data->stream);
->  	kfree(data->stream.runtime->buffer);
->  	kfree(data->stream.runtime);
+>  	if (flags & COMPRESS_OUT) {
+> -		/* this should be removed once we have capture tested */
+> -		oops(&bad_compress, -EINVAL, "this version doesnt support capture");
+> -		goto config_fail;
+> +		compress->fd = open(fn, O_RDONLY);
+> +	} else {
+> +		compress->fd = open(fn, O_WRONLY);
+>  	}
+> -
+> -	compress->fd = open(fn, O_WRONLY);
+>  	if (compress->fd < 0) {
+>  		oops(&bad_compress, errno, "cannot open device '%s'", fn);
+>  		goto config_fail;
+> @@ -403,7 +402,60 @@ int compress_write(struct compress *compress, const void *buf, unsigned int size
+>  
+>  int compress_read(struct compress *compress, void *buf, unsigned int size)
+>  {
+> -	return oops(compress, -ENOTTY, "Not supported yet in lib");
+> +	struct snd_compr_avail avail;
+> +	struct pollfd fds;
+> +	int to_read = 0;
+> +	int num_read, total = 0, ret;
+> +	char* cbuf = buf;
+> +	const unsigned int frag_size = compress->config->fragment_size;
+> +
+> +	if (!(compress->flags & COMPRESS_OUT))
+> +		return oops(compress, -EINVAL, "Invalid flag set");
+> +	if (!is_compress_ready(compress))
+> +		return oops(compress, -ENODEV, "device not ready");
+> +	fds.fd = compress->fd;
+> +	fds.events = POLLIN;
+> +
+> +	while (size) {
+> +		if (ioctl(compress->fd, SNDRV_COMPRESS_AVAIL, &avail))
+> +			return oops(compress, errno, "cannot get avail");
+> +
+> +		if ( (avail.avail < frag_size) && (avail.avail < size) ) {
+> +			/* Less than one fragment available and not at the
+> +			 * end of the read, so poll
+> +			 */
+> +			ret = poll(&fds, 1, compress->max_poll_wait_ms);
+> +			/* A pause will cause -EBADFD or zero.
+> +			 * This is not an error, just stop reading */
+> +			if ((ret == 0) || (ret == -EBADFD))
+> +				break;
+> +			if (ret < 0)
+> +				return oops(compress, errno, "poll error");
+> +			if (fds.revents & POLLIN) {
+> +				continue;
+> +			}
+> +			if (fds.revents & POLLERR) {
+> +				return oops(compress, -EIO, "poll returned error!");
+> +			}
+> +		}
+> +		/* read avail bytes */
+> +		if (size > avail.avail)
+> +			to_read = avail.avail;
+> +		else
+> +			to_read = size;
+> +		num_read = read(compress->fd, cbuf, to_read);
+> +		/* If play was paused the read returns -EBADFD */
+> +		if (num_read == -EBADFD)
+> +			break;
+> +		if (num_read < 0)
+> +			return oops(compress, errno, "read failed!");
+> +
+> +		size -= num_read;
+> +		cbuf += num_read;
+> +		total += num_read;
+> +	}
+> +
+> +	return total;
+>  }
+>  
+>  int compress_start(struct compress *compress)
+> diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
+> index ba9f3b6..9867afc 100644
+> --- a/include/tinycompress/tinycompress.h
+> +++ b/include/tinycompress/tinycompress.h
+> @@ -76,7 +76,7 @@ struct compr_gapless_mdata {
+>  	__u32 encoder_padding;
+>  };
+>  
+> -#define COMPRESS_OUT        0x00000000
+> +#define COMPRESS_OUT        0x20000000
+>  #define COMPRESS_IN         0x10000000
+>  
+>  struct compress;
 > -- 
 > 1.7.2.5
 > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
