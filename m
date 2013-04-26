@@ -1,14 +1,16 @@
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
+From: "Li, Jocelyn" <jocelyn.li@intel.com>
 Subject: Re: [PATCH] drm/i915: Add private api for power well
  usage -- alignment between graphic team and audio team
-Date: Fri, 26 Apr 2013 09:24:49 +0200
-Message-ID: <CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+Date: Fri, 26 Apr 2013 07:53:41 +0000
+Message-ID: <1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
 References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+In-Reply-To: <CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -18,7 +20,7 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
 Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: "Li, Jocelyn" <jocelyn.li@intel.com>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
 	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, "Lin,
 	Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Hindman,
@@ -27,6 +29,20 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
 	Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
+
+Please see my comments below.
+
+Regards,
+Jocelyn
+
+-----Original Message-----
+From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch] 
+Sent: Friday, April 26, 2013 3:25 PM
+To: Li, Jocelyn
+Cc: Wang, Xingchao; Zanoni, Paulo R; ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; Wang Xingchao; Takashi Iwai; Barnes, Jesse; Wysocki, Rafael J; Hindman, Gavin
+Subject: Re: [PATCH] drm/i915: Add private api for power well usage -- alignment between graphic team and audio team
+
 On Fri, Apr 26, 2013 at 8:58 AM, Li, Jocelyn <jocelyn.li@intel.com> wrote:
 > Hi Guys,
 >
@@ -34,23 +50,20 @@ On Fri, Apr 26, 2013 at 8:58 AM, Li, Jocelyn <jocelyn.li@intel.com> wrote:
 
 Yes, that's my understanding, too.
 
-> So the correct implementation approach between gfx and audio should be,
+> So the correct implementation approach between gfx and audio should 
+> be,
 >
 > #1, Daniel will work on the existing private API in gfx driver for power well control that can be used by the audio driver to enable/disable the power well.
 >
-> #2, Once #1 is done, Audio team will integrate Daniel's patch into audio driver and add/improve on anything that is missing
+> #2, Once #1 is done, Audio team will integrate Daniel's patch into 
+> audio driver and add/improve on anything that is missing
 
-That sounds backwards to me. Imo first priority should be to get the
-audio driver to work with power well functionality enabled. And
-Xingchao's patch looks like it should be good enough to start with
-that on the audio side.
+That sounds backwards to me. Imo first priority should be to get the audio driver to work with power well functionality enabled. And Xingchao's patch looks like it should be good enough to start with that on the audio side.
 
-Once we've figured out what needs to be changed in the audio driver we
-can look at the entire patch series and the interface to i915.ko.
-That's also why I didn't comment on Xingchao's patch right away, but
-only once he specifically asked for feedback, since doing a real
-review of the interface doesn't make sense until we have all the
-pieces (and a working audio driver).
+Once we've figured out what needs to be changed in the audio driver we can look at the entire patch series and the interface to i915.ko.
+That's also why I didn't comment on Xingchao's patch right away, but only once he specifically asked for feedback, since doing a real review of the interface doesn't make sense until we have all the pieces (and a working audio driver).
+
+[Jocelyn] I think you have made constructive comments on Xingchao's patch yesterday. Next, shall we have Xingchao improve his patch? Or we just have Xingchao wait till you have completed your pieces. Sorry, I am a little confused :)
 
 Yours, Daniel
 
@@ -64,7 +77,10 @@ Yours, Daniel
 > From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch]
 > Sent: Thursday, April 25, 2013 3:52 PM
 > To: Wang, Xingchao
-> Cc: Zanoni, Paulo R; ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; Li, Jocelyn; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; Wang Xingchao; Takashi Iwai; Barnes, Jesse; Wysocki, Rafael J
+> Cc: Zanoni, Paulo R; ville.syrjala@linux.intel.com; Lin, Mengdong; 
+> Girdwood, Liam R; Li, Jocelyn; intel-gfx@lists.freedesktop.org; 
+> alsa-devel@alsa-project.org; Wang Xingchao; Takashi Iwai; Barnes, 
+> Jesse; Wysocki, Rafael J
 > Subject: Re: [PATCH] drm/i915: Add private api for power well usage
 >
 > On Thu, Apr 25, 2013 at 4:36 AM, Wang, Xingchao <xingchao.wang@intel.com> wrote:
@@ -90,7 +106,7 @@ Yours, Daniel
 >>> From: Wang, Xingchao
 >>> Sent: Wednesday, April 24, 2013 3:29 PM
 >>> To: daniel.vetter@ffwll.ch; Zanoni, Paulo R; 'Takashi Iwai'
->>> Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R;
+>>> Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; 
 >>> Li, Jocelyn; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; 'Wang Xingchao'
 >>> Subject: RE: [PATCH] drm/i915: Add private api for power well usage
 >>>
@@ -98,35 +114,35 @@ Yours, Daniel
 >>>
 >>> Sorry I should Add Takashi and alsa maillist in loop.
 >>>
->>> I tested this patch against Daniel's "drm-intel-next-queued" Branch,
+>>> I tested this patch against Daniel's "drm-intel-next-queued" Branch, 
 >>> on Haswell Mobile C3 stepping machines.
 >>>
 >>> Test steps:
->>> 1. only connect one monitor through HDMI cable 2. echo 1 >
->>> /sys/module/i915/parameters/disable_power_well ==> I think this could
->>> be set as 1 by default if applied my patch.
+>>> 1. only connect one monitor through HDMI cable 2. echo 1 > 
+>>> /sys/module/i915/parameters/disable_power_well ==> I think this 
+>>> could be set as 1 by default if applied my patch.
 >>> 3. plug out HDMI cable
 >>> 4. cat /proc/asound/card0/codec#0
 >>>
->>> At step 3,  i915 will try to disable power well but rejected as
+>>> At step 3,  i915 will try to disable power well but rejected as 
 >>> display audio is using power well.
 >>> Without the patch, display audio would crash at step 4.
 >>>
 >>> I did not list suspend/resume test here, as during suspend sequence,
 >>> i915 will _ENABLE_ power well, that's a BUG?
 >>>
->>> For me above test case is the only one to reproduce the issue, if you
->>> have more ideas and need more test, please let me know.
+>>> For me above test case is the only one to reproduce the issue, if 
+>>> you have more ideas and need more test, please let me know.
 >>>
->>> I'm afraid there's some risk because the dependency between alsa
->>> driver and drm driver. For example, if i915 module was not loaded,
+>>> I'm afraid there's some risk because the dependency between alsa 
+>>> driver and drm driver. For example, if i915 module was not loaded, 
 >>> display audio Will call
->>> request_power_well() and meet symbol error. Even if i915 module
+>>> request_power_well() and meet symbol error. Even if i915 module 
 >>> loaded after snd-hda-intel module, there's such risk too. Any comment on this?
 >>>
->>> Another risk is the pointer "power_well_device", it should be set
+>>> Another risk is the pointer "power_well_device", it should be set 
 >>> NULL when
->>> i915 module unloaded, I added the caller but have no idea where to
+>>> i915 module unloaded, I added the caller but have no idea where to 
 >>> call it, if anyone has suggestion, that would be fine.
 >>>
 >>> thanks
@@ -137,12 +153,12 @@ Yours, Daniel
 >>> > From: Wang Xingchao [mailto:xingchao.wang@linux.intel.com]
 >>> > Sent: Thursday, April 24, 2014 10:20 PM
 >>> > To: daniel.vetter@ffwll.ch; Zanoni, Paulo R
->>> > Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R;
->>> > Li, Jocelyn; intel-gfx@lists.freedesktop.org; Wang, Xingchao; Wang
->>> > Xingchao
+>>> > Cc: ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam 
+>>> > R; Li, Jocelyn; intel-gfx@lists.freedesktop.org; Wang, Xingchao; 
+>>> > Wang Xingchao
 >>> > Subject: [PATCH] drm/i915: Add private api for power well usage
 >>> >
->>> > Display audio depends on power well in graphic side, it should
+>>> > Display audio depends on power well in graphic side, it should 
 >>> > request power well before use it and release power well after use.
 >>> > I915 will not shutdown power well if it detects audio is using.
 >>> > This patch protects display audio crash for Intel Haswell mobile
@@ -157,11 +173,11 @@ Yours, Daniel
 >>> >  3 files changed, 113 insertions(+), 7 deletions(-)  create mode
 >>> > 100644 include/drm/audio_drm.h
 >>> >
->>> > diff --git a/drivers/gpu/drm/i915/intel_pm.c
+>>> > diff --git a/drivers/gpu/drm/i915/intel_pm.c 
 >>> > b/drivers/gpu/drm/i915/intel_pm.c index 2557926..9983f56 100644
 >>> > --- a/drivers/gpu/drm/i915/intel_pm.c
 >>> > +++ b/drivers/gpu/drm/i915/intel_pm.c
->>> > @@ -4298,18 +4298,12 @@ bool intel_using_power_well(struct
+>>> > @@ -4298,18 +4298,12 @@ bool intel_using_power_well(struct 
 >>> > drm_device
 >>> > *dev)
 >>> >             return true;
@@ -188,10 +204,10 @@ Yours, Daniel
 >>> >     }
 >>> >  }
 >>> >
->>> > +/* Global drm_device for display audio drvier usage */ static
->>> > +struct drm_device *power_well_device; static bool
+>>> > +/* Global drm_device for display audio drvier usage */ static 
+>>> > +struct drm_device *power_well_device; static bool 
 >>> > +audio_power_well_using, i915_power_well_using;
->>> > +/* Lock protecting power well setting */
+>>> > +/* Lock protecting power well setting */ 
 >>> > +DEFINE_SPINLOCK(powerwell_lock);
 >>> > +
 >>> > +void request_power_well(void)
@@ -251,11 +267,11 @@ Yours, Daniel
 >>> > +}
 >>> > +
 >>> >  /*
->>> >   * Starting with Haswell, we have a "Power Down Well" that can be
+>>> >   * Starting with Haswell, we have a "Power Down Well" that can be 
 >>> > turned
 >>> off
->>> >   * when not needed anymore. We have 4 registers that can request
->>> > the power well diff --git a/include/drm/audio_drm.h
+>>> >   * when not needed anymore. We have 4 registers that can request 
+>>> > the power well diff --git a/include/drm/audio_drm.h 
 >>> > b/include/drm/audio_drm.h new file mode 100644 index
 >>> > 0000000..4412b36
 >>> > --- /dev/null
@@ -269,29 +285,29 @@ Yours, Daniel
 >>> > + * Copyright 2013 Intel Inc.
 >>> > + * All Rights Reserved.
 >>> > + *
->>> > + * Permission is hereby granted, free of charge, to any person
+>>> > + * Permission is hereby granted, free of charge, to any person 
 >>> > +obtaining a
 >>> > + * copy of this software and associated documentation files (the
->>> > + * "Software"), to deal in the Software without restriction,
+>>> > + * "Software"), to deal in the Software without restriction, 
 >>> > +including
->>> > + * without limitation the rights to use, copy, modify, merge,
+>>> > + * without limitation the rights to use, copy, modify, merge, 
 >>> > +publish,
->>> > + * distribute, sub license, and/or sell copies of the Software,
+>>> > + * distribute, sub license, and/or sell copies of the Software, 
 >>> > +and to
->>> > + * permit persons to whom the Software is furnished to do so,
+>>> > + * permit persons to whom the Software is furnished to do so, 
 >>> > +subject to
 >>> > + * the following conditions:
 >>> > + *
->>> > + * The above copyright notice and this permission notice
+>>> > + * The above copyright notice and this permission notice 
 >>> > +(including the
->>> > + * next paragraph) shall be included in all copies or substantial
+>>> > + * next paragraph) shall be included in all copies or substantial 
 >>> > +portions
 >>> > + * of the Software.
 >>> > + *
 >>> > + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
 >>> KIND,
 >>> > +EXPRESS OR
->>> > + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+>>> > + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
 >>> > +MERCHANTABILITY,
 >>> > + * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
 >>> > EVENT
@@ -320,11 +336,11 @@ Yours, Daniel
 >>> > +#ifndef _AUDIO_DRM_H_
 >>> > +#define _AUDIO_DRM_H_
 >>> > +
->>> > +extern void request_power_well(void); extern void
+>>> > +extern void request_power_well(void); extern void 
 >>> > +release_power_well(void);
 >>> > +
 >>> > +#endif                             /* _AUDIO_DRM_H_ */
->>> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c 
 >>> > index 418bfc0..59a85de 100644
 >>> > --- a/sound/pci/hda/hda_intel.c
 >>> > +++ b/sound/pci/hda/hda_intel.c
@@ -351,7 +367,7 @@ Yours, Daniel
 >>> > +   request_power_well();
 >>> >     pci_set_power_state(pci, PCI_D0);
 >>> >     pci_restore_state(pci);
->>> >     if (pci_enable_device(pci) < 0) { @@ -2913,6 +2916,7 @@ static
+>>> >     if (pci_enable_device(pci) < 0) { @@ -2913,6 +2916,7 @@ static 
 >>> > int azx_runtime_suspend(struct device
 >>> > *dev)
 >>> >
@@ -377,7 +393,7 @@ Yours, Daniel
 >>> > +
 >>> >     err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
 >>> >     if (err < 0) {
->>> >             snd_printk(KERN_ERR "hda-intel: Error creating
+>>> >             snd_printk(KERN_ERR "hda-intel: Error creating 
 >>> > card!\n"); @@
 >>> > -3806,6 +3813,7 @@ static void azx_remove(struct pci_dev *pci)
 >>> >     if (card)
