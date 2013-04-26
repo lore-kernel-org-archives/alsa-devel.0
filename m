@@ -1,93 +1,95 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ALSA: compress_core: Ensure device is
- stopped when stream closed
-Date: Fri, 26 Apr 2013 16:38:48 +0100
-Message-ID: <20130426153848.GA5019@opensource.wolfsonmicro.com>
-References: <20130426134706.GA27501@opensource.wolfsonmicro.com>
- <20130426134850.GX5019@opensource.wolfsonmicro.com>
- <20130426135627.GB27501@opensource.wolfsonmicro.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+ usage -- alignment between graphic team and audio team
+Date: Fri, 26 Apr 2013 17:42:07 +0200
+Message-ID: <20130426154207.GP6169@phenom.ffwll.local>
+References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+	<1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
+	<20130426145708.GN6169@phenom.ffwll.local>
+	<s5h61z91g2l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3605007045827116226=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A00B1260291
- for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 17:38:49 +0200 (CEST)
-In-Reply-To: <20130426135627.GB27501@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5h61z91g2l.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, "Hindman,
+	Gavin" <gavin.hindman@intel.com>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Apr 26, 2013 at 05:12:34PM +0200, Takashi Iwai wrote:
+> At Fri, 26 Apr 2013 16:57:08 +0200,
+> Daniel Vetter wrote:
+> > 
+> > On Fri, Apr 26, 2013 at 07:53:41AM +0000, Li, Jocelyn wrote:
+> > > -----Original Message-----
+> > > From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch] 
+> > > Sent: Friday, April 26, 2013 3:25 PM
+> > > To: Li, Jocelyn
+> > > Cc: Wang, Xingchao; Zanoni, Paulo R; ville.syrjala@linux.intel.com; Lin, Mengdong; Girdwood, Liam R; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; Wang Xingchao; Takashi Iwai; Barnes, Jesse; Wysocki, Rafael J; Hindman, Gavin
+> > > Subject: Re: [PATCH] drm/i915: Add private api for power well usage -- alignment between graphic team and audio team
+> > > Once we've figured out what needs to be changed in the audio driver we
+> > > can look at the entire patch series and the interface to i915.ko.
+> > > That's also why I didn't comment on Xingchao's patch right away, but
+> > > only once he specifically asked for feedback, since doing a real review
+> > > of the interface doesn't make sense until we have all the pieces (and a
+> > > working audio driver).
+> > > 
+> > > [Jocelyn] I think you have made constructive comments on Xingchao's
+> > > patch yesterday. Next, shall we have Xingchao improve his patch? Or we
+> > > just have Xingchao wait till you have completed your pieces. Sorry, I am
+> > > a little confused :)
+> > 
+> > I think the next step is to use Xinchao's patch as-is and get the audio
+> > side going. Once we have that fixed up, we can revisit the interface and
+> > make it solid. But for now trying to polish this relatively simple part
+> > seems like wasted time.
+> > 
+> > Also, reviewing an interface is much easier if we have both the i915
+> > pieces (already here) and the audio pieces (which I haven't seen yet)
+> > avaialble.
+> 
+> I haven't checked the patch properly yet, but the patch pasted in the
+> post looks like i915 driver exports the functions to control power
+> well, and let audio driver calling them.  If so, the big mess in such
+> a case is the dependency between driver modules.
+> 
+> A simple workaround would be to split this function and the relevant
+> instance out of i915 and snd-hda-intel and put into an individual
+> module (e.g. i915-powerwell-ctl).
 
---===============3605007045827116226==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rMBvpMIlSQ3hWZ0K"
-Content-Disposition: inline
+Yeah, the current patch doesn't work for loading i915/snd-hda-intel in any
+order. But it should be good enough to fix the hw interactions.
 
+> Also, it would be feasible to implement some PM governor over both
+> graphics and audio, that is, it gives the proper serialization of
+> power up for audio controller, for example.
 
---rMBvpMIlSQ3hWZ0K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, I think once we have the hw interaction/sequence and stuff all
+figured out we need to figure out what kind of interface would suit best
+here. One of the options we've talked about a bit is a full runtime PM
+governor on a special device. Then only the device needs to be
+instantiated first, the audio driver could just grab runtime pm references
+and i915 could implement the PM backend.
 
-On Fri, Apr 26, 2013 at 02:56:27PM +0100, Richard Fitzgerald wrote:
-> >> +     if ((data->stream.runtime->state == SNDRV_PCM_STATE_RUNNING) ||
-> >> +         (data->stream.runtime->state == SNDRV_PCM_STATE_PAUSED))
-> >> +             data->stream.ops->trigger(&data->stream, SNDRV_PCM_TRIGGER_STOP);
-> >> +
-
-> >A switch statement would be more idiomatic for this sort of thing.
-> >
-
-> This follows the general style used in other functions in the
-> source file. I'm happy to upload a version that uses a switch
-> instead if that's preferred.
-
-Well, it doesn't quite follow the same style as the code generally does:
-
-        if (stream->runtime->state == SNDRV_PCM_STATE_PAUSED ||
-                        stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-
-with fewer () and different indentation to what you have above...  being
-consistent with the rest of the file is best, though it would be nice to
-update the file to do this sort of thing with switches.
-
---rMBvpMIlSQ3hWZ0K
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRep+BAAoJELSic+t+oim9Z/kP/2TI+JL/TgGNQamvWJW4foc5
-LmnUyo0dZUrT494UEhg1apy7VDTD36A4q/d7PEgW+n6FeMttUUTF3ab0fscaAGHa
-RecBK5XH+P0Ea1IJbBNlA8a3sgbJVQvpELssuLPqoAGiVUSXJ4sMtIQgrtzpRPa5
-KXCCUhK2JViOz66pfk/RLUwpsFDZnaEkHXSLIQ4qZr722PB6+NiMl9LDwY8VH6qB
-MCZhiPZt0oh2not9WHlCLUF+chjzZVvsDn/oIgN+6sa5dqEhWOo1+ovfF+857ngF
-/jdLTbqe6kMWH6R/uRrHqL55E5k8UrArDdgk6WCP4Uaonm9i3xlobnogXCae8YqN
-rCtywEoLbstHmRmI91fK4mnWyK8yQUmUKQNyRzNWFQ/vdLAJ6PnoJxH3SkT2S+SQ
-NAEW2aQD3xEPiIdQAl+Cu6W5bwIcl+9zEz6sFWzDD4aXa3lj0DT9gCjt/2DMN7dP
-CDcAchwfbLQyWDjzjiRGcYC7dcsxHseUi+hLF/6AUWBIzA2Ytv2X++KbUehNB/ct
-U6QpTjkEjQkGNJWZ0ds3HOI2GGTg2UEtSrycZua7OCi9NmzbBivx219lSMZBNwYX
-XL8bNiVIgC30emqdZnMtVP64jC7qBST3IPzUzTjKnInuniVEGBHIk134ICpbu5Tx
-QglA1eDJB0R1iAoL1Ven
-=n5Fy
------END PGP SIGNATURE-----
-
---rMBvpMIlSQ3hWZ0K--
-
---===============3605007045827116226==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3605007045827116226==--
+But like I've said, those considerations should be a second step once we
+have something working with a quickly hacked-together interface.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
