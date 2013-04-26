@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ALSA: compress_core: Ensure device is
- stopped when stream closed
-Date: Fri, 26 Apr 2013 14:48:51 +0100
-Message-ID: <20130426134850.GX5019@opensource.wolfsonmicro.com>
-References: <20130426134706.GA27501@opensource.wolfsonmicro.com>
+From: David Herrmann <dh.herrmann@gmail.com>
+Subject: Re: [RFC] Sound/HID: wiimote: add speaker support
+Date: Fri, 26 Apr 2013 15:56:12 +0200
+Message-ID: <CANq1E4RyAzGn1H5PN5iuyp0eVDfX8YEXNkVkkq3Jp3jMb=ea0w@mail.gmail.com>
+References: <1366481693-5945-1-git-send-email-dh.herrmann@gmail.com>
+ <5178D709.1060500@canonical.com>
+ <CANq1E4SkUkqwR0EPfr2XWaNNf6=v1u7YtfTqzBnqN6YTdWBSyA@mail.gmail.com>
+ <517A80E6.5010909@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3868378131150802243=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8DEC260816
- for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 15:48:52 +0200 (CEST)
-In-Reply-To: <20130426134706.GA27501@opensource.wolfsonmicro.com>
+Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BB6B260824
+ for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 15:56:14 +0200 (CEST)
+Received: by mail-ie0-f174.google.com with SMTP id 10so4837668ied.19
+ for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2013 06:56:13 -0700 (PDT)
+In-Reply-To: <517A80E6.5010909@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +26,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.de
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============3868378131150802243==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HBXo5IaYAxUG7vuS"
-Content-Disposition: inline
+On Fri, Apr 26, 2013 at 3:28 PM, David Henningsson
+<david.henningsson@canonical.com> wrote:
+> On 04/26/2013 03:00 PM, David Herrmann wrote:
+>>
+>> Hi
+>>
+>> On Thu, Apr 25, 2013 at 9:11 AM, David Henningsson
+>> <david.henningsson@canonical.com> wrote:
+>>>
+>>> On 04/20/2013 08:14 PM, David Herrmann wrote:
+>>>>
+>>>>
+>>>> Classic Wii Remotes provide a speaker on the device. We can stream PCM
+>>>> data, mute and change volume via special protocol requests and remote
+>>>> audio registers.
+>>>>
+>>>> The device supports several different formats, but fully understood are
+>>>> only signed 8-bit PCM and something that looks like 4-bit Yamaha ADPCM.
+>>>> Theoretically, we can set data-rates from 183Hz up to 12MHz, but a
+>>>> realistic range for Bluetooth l2cap is 1500-4000 Hz.
+>>>>
+>>>> Data is streamed as 20bytes blocks and must be sent in a constant rate.
+>>>> There is no way to read the current position. It would be way too slow,
+>>>> anyway.
+>>>
+>>>
+>>>
+>>> Hi,
+>>>
+>>> Fun project!
+>>>
+>>> I'm not sure I'm qualified to answer, but I would have allocated a buffer
+>>> of
+>>> kernel memory, say 64K (or maybe less, since the sample rate is so low).
+>>> That would be the buffer you expose to userspace, and userspace would set
+>>> period and buffer sizes according to this buffer.
+>>>
+>>> Your code doesn't really expose if/how you can tell if you're allowed to
+>>> send 20 more bytes or not.
+>>
+>>
+>> I cannot tell at all. That's the problem. I just send data at the
+>> expected rate and let the device deal with it. For instance with 8bit
+>> PCM at 2000 Hz that makes one 20byte packet every 10ms. That's
+>> 16kbit/s, which should work via Bluetooth l2cap.
+>
+>
+> Btw, since this is something bluetooth related, have you checked with the
+> bluez/bluetoothd project, so it isn't easier to integrate that way instead
+> of in a kernel driver?
+>
+> That's how bluetooth audio is usually done.
 
+Hehe, I'm involved in Bluetooth kernel development so I did check that
+first ;) The thing is, Nintendo did a pretty bad job with audio on the
+Wiimote. Bluetooth provides SCO channels specifically for audio but
+Nintendo tunnels audio through an HID connection, yay! On the other
+hand, the speaker is mostly used for small sound-effects so that
+explains why they didn't care for higher rates.
 
---HBXo5IaYAxUG7vuS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+As l2cap+HID is handled in the kernel, I would have to provide a
+char-interface or sysfs PCM-stream or whatever for user-space so they
+can send HID reports with audio data while the kernel sends it's own
+HID reports for normal HID operation. That does work, but I thought if
+I already have all the device handling in the kernel, I should at
+least try to do it as sound-driver. If it doesn't work out I can
+always fall back to this option.
 
-On Fri, Apr 26, 2013 at 02:47:06PM +0100, Richard Fitzgerald wrote:
+>
+>> Even 10x the
+>> sample-rate (20kHz) with 160kbit/s should be possible, but the latency
+>> gets pretty high that I doubt I can do that with a 20byte buffer. I
+>> haven't figured out how big the real buffer of the device is so until
+>> then I expect it to be as low as 20 bytes (the proprietary driver does
+>> that, too).
+>>
+>> If the transmission buffer overflows, I just drop packages so there is
+>> currently no easy way for me to see whether there's enough room for a
+>> next package or not. But the connection is reliable so once a packet
+>> is in the buffer, it's "guaranteed" to be transmitted in order to the
+>> device.
+>>
+>> What's the expected thing to do if the connection is too slow? Should
+>> I pause and resume or drop packets?
+>
+>
+> Not sure what you mean here. Maybe bluetooth people know this problem
+> better.
+>
+>
+>>
+>>> But assuming you have a timer running at a
+>>> reasonable interval, that code would do something like:
+>>>
+>>> if (ready_to_send_packet_to_wiimote()) {
+>>>    send_20_bytes_to_wiimote(kernel_buffer_ptr + offset);
+>>>    offset += 20;
+>>>    offset %= buffer_size;
+>>>    if (offset % period_size < 20)
+>>>      snd_pcm_period_elapsed();
+>>> }
+>>
+>>
+>> Ah, ok, so I just send the data in the timer-interrupt and call
+>> snd_pcm_period_elapsed() if the fill-state gets smaller than 20 bytes?
+>> I guess snd_pcm_period_elapsed() is atomic so I can expect it to
+>> prepare the buffer so the next timer-interrupt is guaranteed to have a
+>> valid buffer or a cleared buffer?
+>
+>
+> snd_pcm_period_elapsed() just tells userspace that userspace can start
+> filling up a new period in the ringbuffer. snd_pcm_period_elapsed() does not
+> prepare anything.
+>
+> E g, if userspace requests a buffer of 64K and period of 16K, you should
+> call snd_pcm_period_elapsed() every time you cross a period boundary.
+> Perhaps "offset % period_size < 20" can be more clearly written as "(offset
+> / period_size) != (old_offset / period_size)", if that's more
+> understandable?
 
-> +	if ((data->stream.runtime->state == SNDRV_PCM_STATE_RUNNING) ||
-> +	    (data->stream.runtime->state == SNDRV_PCM_STATE_PAUSED))
-> +		data->stream.ops->trigger(&data->stream, SNDRV_PCM_TRIGGER_STOP);
-> +
+Ah, now I understand. I thought the period-size is the maximum
+transmission size that I can use in the driver (20 in this case). Ok,
+your explanation helped. I think I understand the "period" concept
+now.
 
-A switch statement would be more idiomatic for this sort of thing.
+Apart from that, should I provide an mmap() interface for the buffer
+so I can map it into the clients address-space? Or should I prevent
+mmap() and let them use read/write? I guess I wouldn't need the .copy
+and .silence callbacks if I provide mmap(), right? And a
+vm_insert_pfn() would be quite simple to do..
 
---HBXo5IaYAxUG7vuS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+What happens if user-space cannot keep up with the rates? Do I just
+continue sending garbage from the buffer or does the alsa core pause
+the transmission or silence it until user-space catches up?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Thanks
+David
 
-iQIcBAEBAgAGBQJReoW7AAoJELSic+t+oim9GZAP/0PvKz8sbc84P6Gr29kpQ/lO
-u7/D7ZxNiAfAwLOvhfMLusQhWKOkHkze0bN4SCDbpT37F9h/E9p8A1JrT0uliLlM
-UKMBdwZTqA5MIHxj93L/ImEpoxLoZdsoSiOimyDGZtFdnC5U0bZkCGkoCUwOU4EC
-YU3MGT8aMPLArDW8Fu4K26FYXdHodQ80nNHjHvLSwS+S3jgmJYoNmb3Ejw8nZeXM
-kLXlGnj7qErKws35YlgqMW9e2ZSHv44BrkGjECnTuWYQpHng20wLR0gW0jKdpaBl
-cX5KyPh1Db3x6UUmbqcmx9ARya3G4Bq6fwF4U+YsanrC0cKeJxkXZrmYLG9SLkpP
-okQYAPU/9hMtZ8OJoDAg8RQ09DbporLbEp+aZKDoHHBTrS2g87Qy12ydpUwabeim
-qT+be/6swBQ12skLN2QJv0yuRAxv4Is7M1zUreC+X4oY2MGaC5izmH0DKIgD6re9
-W6Oj3aanNsnc4J9t8QbJxcs5Q7qHb+pGoIufCMq8oqallO3vb92Fy47d7pyfj5DT
-0Jh8mzOBvR8x2ZDSHjRQhqMCQzrxGLARXEkvNUcP/37s08X1OSZR2MWgr6xs2RB4
-qUYh2ktPftdLd3RsKjws7ZFfHrrPiQic72VasBPcSk8AcdQ3fw8nOoQqwm8o0Cf3
-zsm94lZphUHdebv64L26
-=EgcL
------END PGP SIGNATURE-----
-
---HBXo5IaYAxUG7vuS--
-
---===============3868378131150802243==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3868378131150802243==--
+>>
+>>> I'm guessing that the hrtimer API would be appropriate, and some kind of
+>>> RT
+>>> priority. But I'm not really experienced in that area of kernel
+>>> programming.
+>>
+>>
+>> Yeah, the hrtimer should be perfect for this. I was just wondering
+>> whether the alsa-core already provides an optional timer for the
+>> drivers but it seems I need to do it myself.
+>>
+>> Thanks a lot for the feedback! Lets see how it works out.
+>> David
+>>
