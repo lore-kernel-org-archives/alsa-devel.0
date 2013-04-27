@@ -1,60 +1,57 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH] drm/i915: Add private api for power well
- usage -- alignment between graphic team and audio team
-Date: Sat, 27 Apr 2013 13:35:29 +0200
-Message-ID: <20130427113529.GT6169@phenom.ffwll.local>
-References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
-	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
-	<1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
-	<20130426145708.GN6169@phenom.ffwll.local>
-	<s5h61z91g2l.wl%tiwai@suse.de>
-	<20130426154207.GP6169@phenom.ffwll.local>
-	<s5hzjwlz46s.wl%tiwai@suse.de>
-	<20130426171737.GR6169@phenom.ffwll.local>
-	<46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: [PATCH] ALSA: USB: adjust for changed 3.8 USB API
+Date: Sat, 27 Apr 2013 15:08:51 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1304271447440.4910@xoschi>
+References: <517BA418.3010104@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: "Wang, Xingchao" <xingchao.wang@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
-	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
-	Liam R" <liam.r.girdwood@intel.com>, "Li,
-	Jocelyn" <jocelyn.li@intel.com>, "Hindman,
-	Gavin" <gavin.hindman@intel.com>, "Barnes,
-	Jesse" <jesse.barnes@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
+ [209.85.214.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 141F2260307
+ for <alsa-devel@alsa-project.org>; Sat, 27 Apr 2013 15:08:56 +0200 (CEST)
+Received: by mail-bk0-f44.google.com with SMTP id jk14so1986337bkc.3
+ for <alsa-devel@alsa-project.org>; Sat, 27 Apr 2013 06:08:56 -0700 (PDT)
+In-Reply-To: <517BA418.3010104@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Alan Stern <stern@rowland.harvard.edu>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 27, 2013 at 09:20:39AM +0000, Wang, Xingchao wrote:
-> Let me throw a basic proposal on Audio driver side,  please give your comments freely.
-> 
-> it contains the power well control usage points:
-> #1: audio request power well at boot up.
-> I915 may shut down power well after bootup initialization, as there's no monitor connected outside or only eDP on pipe A.
-> #2: audio request power on resume
-> After exit from D3 mode, audio driver quest power on. This may happen at normal resume or runtime resume.
-> #3: audio release power well control at suspend
-> Audio driver will let i915 know it doensot need power well anymore as it's going to suspend. This may happened at normal suspend or runtime suspend point.
-> #4: audio release power well when module unload
-> Audio release power well at remove callback to let i915 know.
 
-I miss the power well grab/dropping at runtime from the audio side. If the
-audio driver forces the power well to be on the entire time it's loaded,
-that's not good, since the power well stuff is very much for runtime PM.
-We _must_ be able to switch off the power well whenever possible.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+On Sat, 27 Apr 2013, Clemens Ladisch wrote:
+
+> The recent changes in the USB API ("implement new semantics for
+> URB_ISO_ASAP") made the former meaning of the URB_ISO_ASAP flag the
+> default, and changed this flag to mean that URBs can be delayed.
+> This is not the behaviour wanted by any of the audio drivers because
+> it leads to discontinuous playback with very small period sizes.
+> Therefore, our URBs need to be submitted without this flag.
+> 
+> Reported-by: Joe Rayhawk <jrayhawk@fairlystable.org>
+> Cc: <stable@vger.kernel.org> # 3.8 only
+> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+
+This is slightly offtopic but related:
+
+I figured a change of these semantics might impact consistent latency,
+so I went ahead and tested this. It turns out that with my device
+(uses implicit feedback) on current mainline I get up to +/- 10 frames 
+change across stream restarts, while with 3.7.0 I get +/- 1 frame 
+change.
+I restarted the stream about 20 times with each kernel.
+
+So I tested this patch to see if it helps, but there's no change for my 
+setup with 3.9.
+
+Cheers,
+Eldad
