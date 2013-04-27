@@ -1,157 +1,60 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] ALSA: USB: adjust for changed 3.8 USB API
-Date: Sat, 27 Apr 2013 12:10:32 +0200
-Message-ID: <517BA418.3010104@ladisch.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+ usage -- alignment between graphic team and audio team
+Date: Sat, 27 Apr 2013 13:35:29 +0200
+Message-ID: <20130427113529.GT6169@phenom.ffwll.local>
+References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+	<1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
+	<20130426145708.GN6169@phenom.ffwll.local>
+	<s5h61z91g2l.wl%tiwai@suse.de>
+	<20130426154207.GP6169@phenom.ffwll.local>
+	<s5hzjwlz46s.wl%tiwai@suse.de>
+	<20130426171737.GR6169@phenom.ffwll.local>
+	<46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 092D826030E
- for <alsa-devel@alsa-project.org>; Sat, 27 Apr 2013 12:10:55 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alan Stern <stern@rowland.harvard.edu>
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Hindman,
+	Gavin" <gavin.hindman@intel.com>, "Barnes,
+	Jesse" <jesse.barnes@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The recent changes in the USB API ("implement new semantics for
-URB_ISO_ASAP") made the former meaning of the URB_ISO_ASAP flag the
-default, and changed this flag to mean that URBs can be delayed.
-This is not the behaviour wanted by any of the audio drivers because
-it leads to discontinuous playback with very small period sizes.
-Therefore, our URBs need to be submitted without this flag.
+On Sat, Apr 27, 2013 at 09:20:39AM +0000, Wang, Xingchao wrote:
+> Let me throw a basic proposal on Audio driver side,  please give your comments freely.
+> 
+> it contains the power well control usage points:
+> #1: audio request power well at boot up.
+> I915 may shut down power well after bootup initialization, as there's no monitor connected outside or only eDP on pipe A.
+> #2: audio request power on resume
+> After exit from D3 mode, audio driver quest power on. This may happen at normal resume or runtime resume.
+> #3: audio release power well control at suspend
+> Audio driver will let i915 know it doensot need power well anymore as it's going to suspend. This may happened at normal suspend or runtime suspend point.
+> #4: audio release power well when module unload
+> Audio release power well at remove callback to let i915 know.
 
-Reported-by: Joe Rayhawk <jrayhawk@fairlystable.org>
-Cc: <stable@vger.kernel.org> # 3.8 only
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/6fire/pcm.c           |    1 -
- sound/usb/caiaq/audio.c         |    3 ---
- sound/usb/endpoint.c            |    5 ++---
- sound/usb/misc/ua101.c          |    3 +--
- sound/usb/usx2y/usb_stream.c    |    1 -
- sound/usb/usx2y/usbusx2yaudio.c |    1 -
- sound/usb/usx2y/usx2yhwdeppcm.c |    1 -
- 7 files changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
-index e2ca12f..40dd50a 100644
---- a/sound/usb/6fire/pcm.c
-+++ b/sound/usb/6fire/pcm.c
-@@ -575,7 +575,6 @@ static void usb6fire_pcm_init_urb(struct pcm_urb *urb,
- 	urb->instance.pipe = in ? usb_rcvisocpipe(chip->dev, ep)
- 			: usb_sndisocpipe(chip->dev, ep);
- 	urb->instance.interval = 1;
--	urb->instance.transfer_flags = URB_ISO_ASAP;
- 	urb->instance.complete = handler;
- 	urb->instance.context = urb;
- 	urb->instance.number_of_packets = PCM_N_PACKETS_PER_URB;
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index fde9a7a..b45e29b 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -670,7 +670,6 @@ static void read_completed(struct urb *urb)
-
- 	if (send_it) {
- 		out->number_of_packets = outframe;
--		out->transfer_flags = URB_ISO_ASAP;
- 		usb_submit_urb(out, GFP_ATOMIC);
- 	} else {
- 		struct snd_usb_caiaq_cb_info *oinfo = out->context;
-@@ -686,7 +685,6 @@ requeue:
- 	}
-
- 	urb->number_of_packets = FRAMES_PER_URB;
--	urb->transfer_flags = URB_ISO_ASAP;
- 	usb_submit_urb(urb, GFP_ATOMIC);
- }
-
-@@ -751,7 +749,6 @@ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *dev, int dir, int *ret)
- 						* BYTES_PER_FRAME;
- 		urbs[i]->context = &dev->data_cb_info[i];
- 		urbs[i]->interval = 1;
--		urbs[i]->transfer_flags = URB_ISO_ASAP;
- 		urbs[i]->number_of_packets = FRAMES_PER_URB;
- 		urbs[i]->complete = (dir == SNDRV_PCM_STREAM_CAPTURE) ?
- 					read_completed : write_completed;
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 21049b8..63cca3a 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -677,7 +677,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep,
- 		if (!u->urb->transfer_buffer)
- 			goto out_of_memory;
- 		u->urb->pipe = ep->pipe;
--		u->urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
-+		u->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
- 		u->urb->interval = 1 << ep->datainterval;
- 		u->urb->context = u;
- 		u->urb->complete = snd_complete_urb;
-@@ -716,8 +716,7 @@ static int sync_ep_set_params(struct snd_usb_endpoint *ep,
- 		u->urb->transfer_dma = ep->sync_dma + i * 4;
- 		u->urb->transfer_buffer_length = 4;
- 		u->urb->pipe = ep->pipe;
--		u->urb->transfer_flags = URB_ISO_ASAP |
--					 URB_NO_TRANSFER_DMA_MAP;
-+		u->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
- 		u->urb->number_of_packets = 1;
- 		u->urb->interval = 1 << ep->syncinterval;
- 		u->urb->context = u;
-diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
-index 8b81cb5..6ad617b 100644
---- a/sound/usb/misc/ua101.c
-+++ b/sound/usb/misc/ua101.c
-@@ -1120,8 +1120,7 @@ static int alloc_stream_urbs(struct ua101 *ua, struct ua101_stream *stream,
- 			usb_init_urb(&urb->urb);
- 			urb->urb.dev = ua->dev;
- 			urb->urb.pipe = stream->usb_pipe;
--			urb->urb.transfer_flags = URB_ISO_ASAP |
--					URB_NO_TRANSFER_DMA_MAP;
-+			urb->urb.transfer_flags = URB_NO_TRANSFER_DMA_MAP;
- 			urb->urb.transfer_buffer = addr;
- 			urb->urb.transfer_dma = dma;
- 			urb->urb.transfer_buffer_length = max_packet_size;
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 1e7a47a..bf618e1 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -69,7 +69,6 @@ static void init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
- 	     ++u, transfer += transfer_length) {
- 		struct urb *urb = urbs[u];
- 		struct usb_iso_packet_descriptor *desc;
--		urb->transfer_flags = URB_ISO_ASAP;
- 		urb->transfer_buffer = transfer;
- 		urb->dev = dev;
- 		urb->pipe = pipe;
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 520ef96..b376532 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -503,7 +503,6 @@ static int usX2Y_urbs_start(struct snd_usX2Y_substream *subs)
- 			if (0 == i)
- 				atomic_set(&subs->state, state_STARTING3);
- 			urb->dev = usX2Y->dev;
--			urb->transfer_flags = URB_ISO_ASAP;
- 			for (pack = 0; pack < nr_of_packs(); pack++) {
- 				urb->iso_frame_desc[pack].offset = subs->maxpacksize * pack;
- 				urb->iso_frame_desc[pack].length = subs->maxpacksize;
-diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
-index cc56007..f2a1acd 100644
---- a/sound/usb/usx2y/usx2yhwdeppcm.c
-+++ b/sound/usb/usx2y/usx2yhwdeppcm.c
-@@ -443,7 +443,6 @@ static int usX2Y_usbpcm_urbs_start(struct snd_usX2Y_substream *subs)
- 					if (0 == u)
- 						atomic_set(&subs->state, state_STARTING3);
- 					urb->dev = usX2Y->dev;
--					urb->transfer_flags = URB_ISO_ASAP;
- 					for (pack = 0; pack < nr_of_packs(); pack++) {
- 						urb->iso_frame_desc[pack].offset = subs->maxpacksize * (pack + u * nr_of_packs());
- 						urb->iso_frame_desc[pack].length = subs->maxpacksize;
+I miss the power well grab/dropping at runtime from the audio side. If the
+audio driver forces the power well to be on the entire time it's loaded,
+that's not good, since the power well stuff is very much for runtime PM.
+We _must_ be able to switch off the power well whenever possible.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
