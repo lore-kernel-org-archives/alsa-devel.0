@@ -1,17 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: =?utf-8?q?=5BPATCH_2/4=5D_Add_macros_for_fixed_value?=
-	=?utf-8?q?_related_to_AMDTP?=
-Date: Sun, 28 Apr 2013 14:02:12 +0900
-Message-ID: <1367125334-446-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ALSA: compress: fix the states to check for
+	allowing read
+Date: Sun, 28 Apr 2013 13:35:22 +0530
+Message-ID: <1367136322-24531-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C06E26167A
- for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 07:02:23 +0200 (CEST)
-In-Reply-To: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AA5B261645
+ for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 10:38:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGZvciBmaXhlZCB2YWx1ZSByZWxhdGVkIHRvIEFN
-RFRQCmluIElFQyA2MTg4My02LiBUaGVzZSBtYWNyb3Mgd2lsbCBiZSB1c2VkIGJ5IGZvbGxvd2Vk
-IHBhdGNoZXMuCgpUaGlzIHBhdGNoIGFsc28gcmVwbGFjZSBleGlzdGVkIGZpeGVkIHZhbHVlIHRv
-IHRoZSBjb3JyZXNwb25kaW5nIG1hY3JvLgoKU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBTYWthbW90
-byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Ci0tLQogc291bmQvZmlyZXdpcmUvYW1kdHAuYyB8
-ICAgMjAgKysrKysrKysrKysrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25z
-KCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMg
-Yi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDMyZWE2NTAuLjViYjc4MzYgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpA
-QCAtMjAsMTIgKzIwLDIyIEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAw
-IC8qIDQ3OS4xNyDCtXMgKi8KIAorI2RlZmluZSBJU09fREFUQV9MRU5HVEhfU0hJRlQJMTYKICNk
-ZWZpbmUgVEFHX0NJUAkJCTEKLQotI2RlZmluZSBDSVBfRU9ICQkJKDF1IDw8IDMxKQotI2RlZmlu
-ZSBDSVBfRk1UX0FNCQkoMHgxMCA8PCAyNCkKLSNkZWZpbmUgQU1EVFBfRkRGX0FNODI0CQkoMCA8
-PCAxOSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCisjZGVmaW5lIENJUF9FT0hf
-U0hJRlQJCTMxCisjZGVmaW5lIENJUF9FT0gJCQkoMXUgPDwgQ0lQX0VPSF9TSElGVCkKKyNkZWZp
-bmUgQ0lQX0ZNVF9NQVNLCQkweDNGMDAwMDAwCisjZGVmaW5lIENJUF9GTVRfU0hJRlQJCTI0Cisj
-ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IENJUF9GTVRfU0hJRlQpCisjZGVmaW5lIEFNRFRQ
-X0ZERl9NQVNLCQkweDAwRkYwMDAwCiAjZGVmaW5lIEFNRFRQX0ZERl9TRkNfU0hJRlQJMTYKKyNk
-ZWZpbmUgQU1EVFBfRkRGX05PX0RBVEEJKDB4RkYgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkKKy8q
-IG9ubHkgIkNsb2NrLWJhc2VkIHJhdGUgY29udHJvbGwgbW9kZSIgaXMgc3VwcG9ydGVkICovCisj
-ZGVmaW5lIEFNRFRQX0ZERl9BTTgyNAkJKDAgPDwgKEFNRFRQX0ZERl9TRkNfU0hJRlQgKyAzKSkK
-KyNkZWZpbmUgQU1EVFBfREJTX01BU0sJCTB4MDBGRjAwMDAKKyNkZWZpbmUgQU1EVFBfREJTX1NI
-SUZUCQkxNgorI2RlZmluZSBBTURUUF9EQkNfTUFTSwkJMHgwMDAwMDBGRgogCiAvKiBUT0RPOiBt
-YWtlIHRoZXNlIGNvbmZpZ3VyYWJsZSAqLwogI2RlZmluZSBJTlRFUlJVUFRfSU5URVJWQUwJMTYK
-QEAgLTM0OSw3ICszNTksNyBAQCBzdGF0aWMgdm9pZCBxdWV1ZV9vdXRfcGFja2V0KHN0cnVjdCBh
-bWR0cF9zdHJlYW0gKnMsIHVuc2lnbmVkIGludCBjeWNsZSkKIAogCWJ1ZmZlciA9IHMtPmJ1ZmZl
-ci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0gY3B1X3RvX2JlMzIoQUNDRVNT
-X09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQkocy0+ZGF0YV9ibG9ja19xdWFk
-bGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRsZXRzIDw8IEFNRFRQX0RCU19T
-SElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJYnVmZmVyWzFdID0gY3B1X3Rv
-X2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZfQU04MjQgfAogCQkJCShzLT5z
-ZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOwotLSAKMS43LjEwLjQKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+for reading compressed data, we need to allow when we are paused, draining or
+stopped.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+
+---
+ sound/core/compress_offload.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index a0bc47f..5389b9a 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -311,8 +311,14 @@ static ssize_t snd_compr_read(struct file *f, char __user *buf,
+ 	stream = &data->stream;
+ 	mutex_lock(&stream->device->lock);
+ 
+-	/* read is allowed when stream is running */
+-	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING) {
++	/* read is allowed when stream is running, paused, draining and setup
++	 * (yes setup is state which we transistion to after stop, so if user
++	 * wants to read data after stop we allow that
++	 */
++	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING ||
++			stream->runtime->state != SNDRV_PCM_STATE_DRAINING ||
++			stream->runtime->state != SNDRV_PCM_STATE_PAUSED ||
++			stream->runtime->state != SNDRV_PCM_STATE_SETUP) {
+ 		retval = -EBADFD;
+ 		goto out;
+ 	}
+-- 
+1.7.0.4
