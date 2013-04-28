@@ -1,104 +1,67 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] Add "direction" member to amdtp_stream structure for AMDTP
-Date: Sun, 28 Apr 2013 14:02:13 +0900
-Message-ID: <1367125334-446-4-git-send-email-o-takashi@sakamocchi.jp>
-References: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH] ASoC: wm8962: Convert to
+	devm_input_allocate_device()
+Date: Sun, 28 Apr 2013 08:00:29 +0300
+Message-ID: <CALq1K=+ViDvsCZDR5KndX-T1Dt6tghPjiP7F6wm+npYOw2DE1A@mail.gmail.com>
+References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
+ <20130425125234.GV5019@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f172.google.com (mail-vc0-f172.google.com
+ [209.85.220.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D2D8261683
+ for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 07:00:51 +0200 (CEST)
+Received: by mail-vc0-f172.google.com with SMTP id hx10so4739967vcb.17
+ for <alsa-devel@alsa-project.org>; Sat, 27 Apr 2013 22:00:51 -0700 (PDT)
+In-Reply-To: <20130425125234.GV5019@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-To indicate the direction of amdtp stream, this patch adds "direction" member
-to amdtp_stream structure. To determine the direction, this patch also adds
-"direction" argument to amdtp_stream_init() function. The amdtp_stream_init()
-function is exported and used by snd-firewire-speakers so this patch also
-affects it.
+Hi Mark,
+On Thu, Apr 25, 2013 at 3:52 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Apr 24, 2013 at 04:50:48PM +0300, Leon Romanovsky wrote:
+>> On Thu, Dec 20, 2012 at 4:18 PM, Mark Brown
+>
+>> >         ret = input_register_device(wm8962->beep);
+>> >         if (ret != 0) {
+>> > -               input_free_device(wm8962->beep);
+>> >                 wm8962->beep = NULL;
+>> >                 dev_err(codec->dev, "Failed to register beep device\n");
+>> >         }
+>
+>> I'm not sure if this patch is correct.
+>> According to comment of input_free_memory()
+>> (http://lxr.free-electrons.com/source/drivers/input/input.c#L1825) you
+>> need to call it if input_register_device failed.
+>
+> This seems like a bug that should be fixed on the API side, it's really
+> not what you'd expect a devm function to do, and if you are explicitly
+> freeing a devm allocated object there's an expectation that you need to
+> call a corresponding devm cleanup function.
 
-This patch just add them. Actual implementation will be done by followed
-patches.
+I can't agree with you about the "expectation" - device memory can be in use.
+This code will free memory after all references will be freed.
+Additionally it is up-to developer to decide what to do if
+input_register_device call failed.
+According to the code base
+(http://lxr.free-electrons.com/ident?i=input_free_device)
+the patch is not correct.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c    |    2 +-
- sound/firewire/amdtp.h    |    8 +++++++-
- sound/firewire/speakers.c |    3 ++-
- 3 files changed, 10 insertions(+), 3 deletions(-)
+Thanks.
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 5bb7836..98bc68e 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -50,7 +50,7 @@ static void pcm_period_tasklet(unsigned long data);
-  * @flags: the packet transmission method to use
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--			  enum cip_flags flags)
-+		enum amdtp_stream_direction direction, enum cip_flags flags)
- {
- 	if (flags != CIP_NONBLOCKING)
- 		return -EINVAL;
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 82392ea..09803d6 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -37,9 +37,15 @@ struct fw_unit;
- struct fw_iso_context;
- struct snd_pcm_substream;
- 
-+enum amdtp_stream_direction {
-+	AMDTP_STREAM_RECEIVE = 0,
-+	AMDTP_STREAM_TRANSMIT
-+};
-+
- struct amdtp_stream {
- 	struct fw_unit *unit;
- 	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
- 	struct fw_iso_context *context;
- 	struct mutex mutex;
- 
-@@ -72,7 +78,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--			  enum cip_flags flags);
-+		enum amdtp_stream_direction direction, enum cip_flags flags);
- void amdtp_stream_destroy(struct amdtp_stream *s);
- 
- void amdtp_stream_set_rate(struct amdtp_stream *s, unsigned int rate);
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 7df20ac..4164163 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -727,7 +727,8 @@ static int fwspk_probe(struct device *unit_dev)
- 	if (err < 0)
- 		goto err_unit;
- 
--	err = amdtp_stream_init(&fwspk->stream, unit, CIP_NONBLOCKING);
-+	err = amdtp_stream_init(&fwspk->stream, unit,
-+				AMDTP_STREAM_TRANSMIT, CIP_NONBLOCKING);
- 	if (err < 0)
- 		goto err_connection;
- 
--- 
-1.7.10.4
-
-
-------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--
+Leon Romanovsky | Independent Linux Consultant
+        www.leon.nu | leon@leon.nu
