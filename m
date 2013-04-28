@@ -1,22 +1,17 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH] ASoC: wm8962: Convert to
-	devm_input_allocate_device()
-Date: Sun, 28 Apr 2013 08:00:29 +0300
-Message-ID: <CALq1K=+ViDvsCZDR5KndX-T1Dt6tghPjiP7F6wm+npYOw2DE1A@mail.gmail.com>
-References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
- <20130425125234.GV5019@opensource.wolfsonmicro.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: =?utf-8?q?=5BPATCH_2/4=5D_Add_macros_for_fixed_value?=
+	=?utf-8?q?_related_to_AMDTP?=
+Date: Sun, 28 Apr 2013 14:02:12 +0900
+Message-ID: <1367125334-446-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f172.google.com (mail-vc0-f172.google.com
- [209.85.220.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D2D8261683
- for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 07:00:51 +0200 (CEST)
-Received: by mail-vc0-f172.google.com with SMTP id hx10so4739967vcb.17
- for <alsa-devel@alsa-project.org>; Sat, 27 Apr 2013 22:00:51 -0700 (PDT)
-In-Reply-To: <20130425125234.GV5019@opensource.wolfsonmicro.com>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C06E26167A
+ for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 07:02:23 +0200 (CEST)
+In-Reply-To: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,42 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-On Thu, Apr 25, 2013 at 3:52 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Apr 24, 2013 at 04:50:48PM +0300, Leon Romanovsky wrote:
->> On Thu, Dec 20, 2012 at 4:18 PM, Mark Brown
->
->> >         ret = input_register_device(wm8962->beep);
->> >         if (ret != 0) {
->> > -               input_free_device(wm8962->beep);
->> >                 wm8962->beep = NULL;
->> >                 dev_err(codec->dev, "Failed to register beep device\n");
->> >         }
->
->> I'm not sure if this patch is correct.
->> According to comment of input_free_memory()
->> (http://lxr.free-electrons.com/source/drivers/input/input.c#L1825) you
->> need to call it if input_register_device failed.
->
-> This seems like a bug that should be fixed on the API side, it's really
-> not what you'd expect a devm function to do, and if you are explicitly
-> freeing a devm allocated object there's an expectation that you need to
-> call a corresponding devm cleanup function.
-
-I can't agree with you about the "expectation" - device memory can be in use.
-This code will free memory after all references will be freed.
-Additionally it is up-to developer to decide what to do if
-input_register_device call failed.
-According to the code base
-(http://lxr.free-electrons.com/ident?i=input_free_device)
-the patch is not correct.
-
-Thanks.
-
---
-Leon Romanovsky | Independent Linux Consultant
-        www.leon.nu | leon@leon.nu
+VGhpcyBwYXRjaCBhZGRzIHNvbWUgbWFjcm9zIGZvciBmaXhlZCB2YWx1ZSByZWxhdGVkIHRvIEFN
+RFRQCmluIElFQyA2MTg4My02LiBUaGVzZSBtYWNyb3Mgd2lsbCBiZSB1c2VkIGJ5IGZvbGxvd2Vk
+IHBhdGNoZXMuCgpUaGlzIHBhdGNoIGFsc28gcmVwbGFjZSBleGlzdGVkIGZpeGVkIHZhbHVlIHRv
+IHRoZSBjb3JyZXNwb25kaW5nIG1hY3JvLgoKU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBTYWthbW90
+byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Ci0tLQogc291bmQvZmlyZXdpcmUvYW1kdHAuYyB8
+ICAgMjAgKysrKysrKysrKysrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25z
+KCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMg
+Yi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCmluZGV4IDMyZWE2NTAuLjViYjc4MzYgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKKysrIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwpA
+QCAtMjAsMTIgKzIwLDIyIEBACiAKICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAw
+IC8qIDQ3OS4xNyDCtXMgKi8KIAorI2RlZmluZSBJU09fREFUQV9MRU5HVEhfU0hJRlQJMTYKICNk
+ZWZpbmUgVEFHX0NJUAkJCTEKLQotI2RlZmluZSBDSVBfRU9ICQkJKDF1IDw8IDMxKQotI2RlZmlu
+ZSBDSVBfRk1UX0FNCQkoMHgxMCA8PCAyNCkKLSNkZWZpbmUgQU1EVFBfRkRGX0FNODI0CQkoMCA8
+PCAxOSkKKyNkZWZpbmUgQ0lQX0VPSF9NQVNLCQkweDgwMDAwMDAwCisjZGVmaW5lIENJUF9FT0hf
+U0hJRlQJCTMxCisjZGVmaW5lIENJUF9FT0gJCQkoMXUgPDwgQ0lQX0VPSF9TSElGVCkKKyNkZWZp
+bmUgQ0lQX0ZNVF9NQVNLCQkweDNGMDAwMDAwCisjZGVmaW5lIENJUF9GTVRfU0hJRlQJCTI0Cisj
+ZGVmaW5lIENJUF9GTVRfQU0JCSgweDEwIDw8IENJUF9GTVRfU0hJRlQpCisjZGVmaW5lIEFNRFRQ
+X0ZERl9NQVNLCQkweDAwRkYwMDAwCiAjZGVmaW5lIEFNRFRQX0ZERl9TRkNfU0hJRlQJMTYKKyNk
+ZWZpbmUgQU1EVFBfRkRGX05PX0RBVEEJKDB4RkYgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkKKy8q
+IG9ubHkgIkNsb2NrLWJhc2VkIHJhdGUgY29udHJvbGwgbW9kZSIgaXMgc3VwcG9ydGVkICovCisj
+ZGVmaW5lIEFNRFRQX0ZERl9BTTgyNAkJKDAgPDwgKEFNRFRQX0ZERl9TRkNfU0hJRlQgKyAzKSkK
+KyNkZWZpbmUgQU1EVFBfREJTX01BU0sJCTB4MDBGRjAwMDAKKyNkZWZpbmUgQU1EVFBfREJTX1NI
+SUZUCQkxNgorI2RlZmluZSBBTURUUF9EQkNfTUFTSwkJMHgwMDAwMDBGRgogCiAvKiBUT0RPOiBt
+YWtlIHRoZXNlIGNvbmZpZ3VyYWJsZSAqLwogI2RlZmluZSBJTlRFUlJVUFRfSU5URVJWQUwJMTYK
+QEAgLTM0OSw3ICszNTksNyBAQCBzdGF0aWMgdm9pZCBxdWV1ZV9vdXRfcGFja2V0KHN0cnVjdCBh
+bWR0cF9zdHJlYW0gKnMsIHVuc2lnbmVkIGludCBjeWNsZSkKIAogCWJ1ZmZlciA9IHMtPmJ1ZmZl
+ci5wYWNrZXRzW2luZGV4XS5idWZmZXI7CiAJYnVmZmVyWzBdID0gY3B1X3RvX2JlMzIoQUNDRVNT
+X09OQ0Uocy0+c291cmNlX25vZGVfaWRfZmllbGQpIHwKLQkJCQkocy0+ZGF0YV9ibG9ja19xdWFk
+bGV0cyA8PCAxNikgfAorCQkJCShzLT5kYXRhX2Jsb2NrX3F1YWRsZXRzIDw8IEFNRFRQX0RCU19T
+SElGVCkgfAogCQkJCXMtPmRhdGFfYmxvY2tfY291bnRlcik7CiAJYnVmZmVyWzFdID0gY3B1X3Rv
+X2JlMzIoQ0lQX0VPSCB8IENJUF9GTVRfQU0gfCBBTURUUF9GREZfQU04MjQgfAogCQkJCShzLT5z
+ZmMgPDwgQU1EVFBfRkRGX1NGQ19TSElGVCkgfCBzeXQpOwotLSAKMS43LjEwLjQKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
