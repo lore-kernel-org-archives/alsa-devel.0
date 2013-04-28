@@ -1,97 +1,71 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 4/4] Add handling AMDTP receive stream
-Date: Sun, 28 Apr 2013 14:52:51 +0200
-Message-ID: <517D1BA3.9010503@ladisch.de>
-References: <1367125334-446-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1367125334-446-5-git-send-email-o-takashi@sakamocchi.jp>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH] ASoC: wm8962: Convert to
+	devm_input_allocate_device()
+Date: Sun, 28 Apr 2013 21:32:18 +0300
+Message-ID: <CALq1K=+=J9oPGvbrXuhS=Bgqj+viC5EAkTHKkNuHxBadExpXdA@mail.gmail.com>
+References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
+ <20130425125234.GV5019@opensource.wolfsonmicro.com>
+ <CALq1K=+ViDvsCZDR5KndX-T1Dt6tghPjiP7F6wm+npYOw2DE1A@mail.gmail.com>
+ <20130428094745.GA5877@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1367125334-446-5-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, perex@perex.cz
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f48.google.com (mail-vb0-f48.google.com
+ [209.85.212.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E593261722
+ for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 20:32:39 +0200 (CEST)
+Received: by mail-vb0-f48.google.com with SMTP id p12so520281vbe.7
+ for <alsa-devel@alsa-project.org>; Sun, 28 Apr 2013 11:32:38 -0700 (PDT)
+In-Reply-To: <20130428094745.GA5877@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> To handle AMDTP receive stream, this patch adds some codes with condition of its
-> direction and new functions. Once amdtp_stream_init() is executed with its
-> direction, AMDTP receive and transmit stream can be handles by the same way.
+On Sun, Apr 28, 2013 at 12:47 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Sun, Apr 28, 2013 at 08:00:29AM +0300, Leon Romanovsky wrote:
+>> On Thu, Apr 25, 2013 at 3:52 PM, Mark Brown <broonie@kernel.org> wrote:
 >
-> Unfortunatelly Echo Audio's Fireworks(TM) is not fully compliant to IEC 61883-6
-> against their guide. This patch include some work arounds for Fireworks.
+>> > This seems like a bug that should be fixed on the API side, it's really
+>> > not what you'd expect a devm function to do, and if you are explicitly
+>> > freeing a devm allocated object there's an expectation that you need to
+>> > call a corresponding devm cleanup function.
+>
+>> I can't agree with you about the "expectation" - device memory can be in use.
+>> This code will free memory after all references will be freed.
+>> Additionally it is up-to developer to decide what to do if
+>> input_register_device call failed.
+>> According to the code base
+>> (http://lxr.free-electrons.com/ident?i=input_free_device)
+>> the patch is not correct.
+>
+> Right, but what I'm saying is that this is not how a devm_ API is
+> expected to behave and is therefore at best error prone on two fronts -
+> both due to the fact that you need to clean up explicitly even if the
+> resource is not actually managed and also due to the fact that the
+> regular free function is being used rather than a devm_ one when
+> explicit deallocation is done.  Neither of these things is normal for a
+> devm_ API.  The behaviour you're describing says that the managed
+> function should actually be registration not allocation.
+I think the reason of our misunderstanding is due to the name of
+input_free_device call. From the code, it is device destroy function,
+and the freeing itself done as an error handling of
+input_register_device
+(http://lxr.free-electrons.com/source/drivers/input/input.c#L2114).
 
-> +++ b/sound/firewire/amdtp.c
+How do you think we need to proceed? Do I need to send patches with
+explicit call to input_free_device function?
 
-> +static void handle_in_packet_data(struct amdtp_stream *s,
-> +						unsigned int data_quadlets)
-
-> +	/* checking CIP headers for AMDTP with restriction of this module */
-> +	if (((be32_to_cpu(buffer[0]) & CIP_EOH_MASK) == CIP_EOH) ||
-> +	    ((be32_to_cpu(buffer[1]) & CIP_EOH_MASK) != CIP_EOH) ||
-> +	    ((be32_to_cpu(buffer[1]) & CIP_FMT_MASK) != CIP_FMT_AM)) {
-
-It would be easier and a little bit more efficient to convert the two
-header quadlets at the beginning and to store them in some local
-variables.
-
-> +		dev_err(&s->unit->device, "CIP headers error: %08X:%08X\n",
-> +			be32_to_cpu(buffer[0]), be32_to_cpu(buffer[1]));
-> +		return;
-
-This error should either be ignored (resubmit the packet) or cause the
-stream to abort (see "queueing error" below).
-
-But I'm not sure which.
-
-> +		 * Echo Audio's Fireworks reports wrong number of data block
-> +		 * counter. Mostly it reports it with increment of 8 blocks
-> +		 * but sometimes it increments with NO-DATA packet.
-
-Does this imply that the DBC field could not be used to detect dropped
-packets?
-
-> +		 * Handling syt field is related to time stamp,
-> +		 * but the cost is bigger than the effect.
-
-Actually, the SYT specifies the presentation timestamp, but when doing
-capturing in ALSA, there is no "presentation" in the sense of the spec,
-so not handling the SYT field is the correct thing to do regardless of
-the cost.  :-)
-
-> +		 * NOTE: this module doesn't check dbc ...
-
-> +		data_block_counter  = (be32_to_cpu(buffer[0]) & AMDTP_DBC_MASK);
-
-Unused.
-
-> +		/* for next packet */
-> +		s->data_block_quadlets = data_block_quadlets;
-> +		s->data_block_counter  = data_block_counter;
-
-Unused.
-
-> +	/* calcurate packet index */
-
-> +	/* calcurate period and buffer borders */
-
-	   calculate
-
-
-Regards,
-Clemens
-
-------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
+--
+Leon Romanovsky | Independent Linux Consultant
+        www.leon.nu | leon@leon.nu
