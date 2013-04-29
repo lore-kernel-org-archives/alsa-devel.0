@@ -1,15 +1,18 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH v2] Add M2Tech hiFace USB-SPDIF driver
-Date: Sun, 28 Apr 2013 23:09:59 +0200
-Message-ID: <20130428230959.809f7987357f1b9a1754cbd5@studenti.unina.it>
-References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
- <1360775505-13106-1-git-send-email-ao2@amarulasolutions.com>
- <s5htxp4eci5.wl%tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/3] Add handling CMP output connection
+Date: Mon, 29 Apr 2013 13:18:18 +0900
+Message-ID: <517DF48A.9000702@sakamocchi.jp>
+References: <1367125189-377-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1367125189-377-4-git-send-email-o-takashi@sakamocchi.jp>
+ <517D1B89.506@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5htxp4eci5.wl%tiwai@suse.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D0F32617B7
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 06:18:25 +0200 (CEST)
+In-Reply-To: <517D1B89.506@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,285 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 22 Feb 2013 13:53:06 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Clemens,
 
-Hi Takashi, I know, it's a huge delay.
+Thanks for your review. I arrange these issues to 5 items below.
 
-> At Wed, 13 Feb 2013 18:11:45 +0100,
-> Antonio Ospite wrote:
-> > new file mode 100644
-> > index 0000000..d0c3c58
-> > --- /dev/null
-> > +++ b/sound/usb/hiface/pcm.c
-> > @@ -0,0 +1,638 @@
-> ....
-> > +struct pcm_runtime {
-> > +	struct hiface_chip *chip;
-> > +	struct snd_pcm *instance;
-> > +
-> > +	struct pcm_substream playback;
-> > +	bool panic; /* if set driver won't do anymore pcm on device */
-> 
-> Once when rt->panic is set, how can you recover?
-> I see no code resetting rt->panic.
+cmp[PATCH 3/3]:
+1. Calculating offset should be moved into a helper function because 
+they are used twice.
+OK. I push them into a helper function.
+
+2. Comments should be start with capital letter in each sentenses.
+OK. I rewrite it.
+
+3. Use DIV_ROUND_UP macro instead of "for" loop.
+OK. I rewrite with the macro.
+
+4. This superfluous comment should say anything to be obvious about the 
+code.
+OK. I remove the comment.
+
+5. In an oPCR, the payload field is changed only by the device.
+OK. I misunderstand the specification. I check IEC 611883-1:2008 and I 
+should follow the rules in "7.9 Plug control register modification 
+rules". It menthions the fields which should be modified in the same 
+compare_swap lock transaction and payload field is not included in it.
+
+Then I have a question about handling payload field. In specification, 
+"The payload field shall specify the maximum number of quadlets that may 
+be transmitted in a single isochronous packet for this plug" but 
+actually cheking this field seems to make no sense because there is no 
+checking process in the procedure. I think I can do nothing for payload 
+field.
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+(Apr 28 2013 21:52), Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> To handle CMP output connection, this patch adds some macros, codes with
+>> condition of direction and new functions. Once cmp_connection_init() is
+>> executed with its direction, CMP input and output connection can be
+>> handled by the same way.
 >
-
-The logic behind this is that rt->panic is set to true if there was some
-USB errors (or a disconnect), so a USB replug is expected anyways;
-rt->panic will be initialized in the hiface_pcm_init() to 0 with a
-kzalloc().
-
-> > +/* The hardware wants word-swapped 32-bit values */
-> > +static void memcpy_swahw32(u8 *dest, u8 *src, unsigned int n)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	for (i = 0; i < n / 4; i++)
-> > +		((u32 *)dest)[i] = swahw32(((u32 *)src)[i]);
-> > +}
-> > +
-> > +/* call with substream locked */
-> > +/* returns true if a period elapsed */
-> > +static bool hiface_pcm_playback(struct pcm_substream *sub,
-> > +		struct pcm_urb *urb)
-> > +{
-> > +	struct snd_pcm_runtime *alsa_rt = sub->instance->runtime;
-> > +	u8 *source;
-> > +	unsigned int pcm_buffer_size;
-> > +
-> > +	WARN_ON(alsa_rt->format != SNDRV_PCM_FORMAT_S32_LE);
-> 
-> Can't we use simply SNDRV_PCM_FORMAT_S32_BE without the byte swapping
-> above?
-
-The code above calls swahw32() it swaps words, it's some kind of mixed
-endian format which the device expects, maybe it's because it handles
-16 bits at time internally, we don't know for sure, but this is how it
-is.
-
-> 
-> > +static void hiface_pcm_out_urb_handler(struct urb *usb_urb)
-> > +{
-> > +	struct pcm_urb *out_urb = usb_urb->context;
-> > +	struct pcm_runtime *rt = out_urb->chip->pcm;
-> > +	struct pcm_substream *sub;
-> > +	bool do_period_elapsed = false;
-> > +	unsigned long flags;
-> > +	int ret;
-> > +
-> > +	pr_debug("%s: called.\n", __func__);
-> > +
-> > +	if (rt->panic || rt->stream_state == STREAM_STOPPING)
-> > +		return;
-> > +
-> > +	if (unlikely(usb_urb->status == -ENOENT ||	/* unlinked */
-> > +		     usb_urb->status == -ENODEV ||	/* device removed */
-> > +		     usb_urb->status == -ECONNRESET ||	/* unlinked */
-> > +		     usb_urb->status == -ESHUTDOWN)) {	/* device disabled */
-> > +		goto out_fail;
-> > +	}
-> > +
-> > +	if (rt->stream_state == STREAM_STARTING) {
-> > +		rt->stream_wait_cond = true;
-> > +		wake_up(&rt->stream_wait_queue);
-> > +	}
-> > +
-> > +	/* now send our playback data (if a free out urb was found) */
-> > +	sub = &rt->playback;
-> > +	spin_lock_irqsave(&sub->lock, flags);
-> > +	if (sub->active)
-> > +		do_period_elapsed = hiface_pcm_playback(sub, out_urb);
-> > +	else
-> > +		memset(out_urb->buffer, 0, PCM_PACKET_SIZE);
-> > +
-> > +	spin_unlock_irqrestore(&sub->lock, flags);
-> > +
-> > +	if (do_period_elapsed)
-> > +		snd_pcm_period_elapsed(sub->instance);
-> 
-> This looks like a small open race.  sub->instance might be set to NULL
-> after the unlock above?
+>> +++ b/sound/firewire/cmp.c
 >
-
-Let's take a look at hiface_pcm_close():
- * sub->instance is set to NULL
- * the URBs are killed _after_ sub->instance is set to NULL
-
-So if a URB is completed between these actions
-hiface_pcm_out_urb_handler() gets called and there could be a problem.
-
-If in hiface_pcm_close() I kill the URBs first and then set
-sub->instance to NULL the race window gets closed, right?
-
-> > +
-> > +	ret = usb_submit_urb(&out_urb->instance, GFP_ATOMIC);
-> > +	if (ret < 0)
-> > +		goto out_fail;
-> 
-> Maybe better to check the state again before resubmission, e.g. when
-> XRUN is detected in the pointer callback.
+>> +	if (c->direction == CMP_INPUT)
+>> +		offset = CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index);
+>> +	else
+>> +		offset = CSR_REGISTER_BASE + CSR_OPCR(c->pcr_index);
 >
-
-I am not sure I understand what you mean here, should I check the
-state of ALSA PCM stream or should I keep another state to avoid
-transmissions on overruns?
-
-Maybe you mean that I need to check that:
- sub->instance->runtime->status->state == SNDRV_PCM_STATE_RUNNING
-?
-
-> > +
-> > +	return;
-> > +
-> > +out_fail:
-> > +	rt->panic = true;
-> > +}
-> > +
-> > +static int hiface_pcm_open(struct snd_pcm_substream *alsa_sub)
-> > +{
-> > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > +	struct pcm_substream *sub = NULL;
-> > +	struct snd_pcm_runtime *alsa_rt = alsa_sub->runtime;
-> > +	int ret;
-> > +
-> > +	pr_debug("%s: called.\n", __func__);
-> > +
-> > +	if (rt->panic)
-> > +		return -EPIPE;
-> > +
-> > +	mutex_lock(&rt->stream_mutex);
-> > +	alsa_rt->hw = pcm_hw;
-> > +
-> > +	if (alsa_sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +		sub = &rt->playback;
-> > +
-> > +	if (!sub) {
-> > +		mutex_unlock(&rt->stream_mutex);
-> > +		pr_err("Invalid stream type\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if (rt->extra_freq) {
-> > +		alsa_rt->hw.rates |= SNDRV_PCM_RATE_KNOT;
-> > +		alsa_rt->hw.rate_max = 384000;
-> > +
-> > +		/* explicit constraints needed as we added SNDRV_PCM_RATE_KNOT */
-> > +		ret = snd_pcm_hw_constraint_list(alsa_sub->runtime, 0,
-> > +						 SNDRV_PCM_HW_PARAM_RATE,
-> > +						 &constraints_extra_rates);
-> > +		if (ret < 0) {
-> > +			mutex_unlock(&rt->stream_mutex);
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	sub->instance = alsa_sub;
-> > +	sub->active = false;
-> > +	mutex_unlock(&rt->stream_mutex);
-> > +	return 0;
-> > +}
-> > +
-> > +static int hiface_pcm_close(struct snd_pcm_substream *alsa_sub)
-> > +{
-> > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > +	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
-> > +	unsigned long flags;
-> > +
-> > +	if (rt->panic)
-> > +		return 0;
-> > +
-> > +	pr_debug("%s: called.\n", __func__);
-> > +
-> > +	mutex_lock(&rt->stream_mutex);
-> > +	if (sub) {
-> > +		/* deactivate substream */
-> > +		spin_lock_irqsave(&sub->lock, flags);
-> > +		sub->instance = NULL;
-> > +		sub->active = false;
-> > +		spin_unlock_irqrestore(&sub->lock, flags);
-> > +
-> > +		/* all substreams closed? if so, stop streaming */
-> > +		if (!rt->playback.instance)
-> > +			hiface_pcm_stream_stop(rt);
-> 
-> Can this condition be ever false...?
+> This code is used twice and could be moved into a helper function.
 >
-
-You mean that if we got to the .close() callback then the .open() one
-succeeded and so we have a valid snd_pcm_substream? I guess that's
-right and I can skip the check.
-
-The driver was based on a driver which handled multiple streams so
-something must have slipped during the cleanup.
-
-BTW, I think that cleaning up this hiFace driver further could be useful
-even after mainline inclusion, it's a fairly simple driver which can be
-used as an example driver, but my inexperience with ALSA, and audio in
-general, was holding me back a bit to revolutionize it's initial
-structure. Help is always appreciated by more experienced people.
-
-> > +static int hiface_pcm_trigger(struct snd_pcm_substream *alsa_sub, int cmd)
-> > +{
-> > +	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
-> > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > +	unsigned long flags;
-> 
-> For trigger callback, you need no irqsave but simply use
-> spin_lock_irq().
+>> +static int get_overhead_id(struct cmp_connection *c)
 >
-
-OK, will do, thanks.
-
-> > +void hiface_pcm_abort(struct hiface_chip *chip)
-> > +{
-> > +	struct pcm_runtime *rt = chip->pcm;
-> > +
-> > +	if (rt) {
-> > +		rt->panic = true;
-> > +
-> > +		if (rt->playback.instance) {
-> > +			snd_pcm_stream_lock_irq(rt->playback.instance);
-> > +			snd_pcm_stop(rt->playback.instance,
-> > +					SNDRV_PCM_STATE_XRUN);
-> > +			snd_pcm_stream_unlock_irq(rt->playback.instance);
-> > +		}
-> 
-> Hmm... this is called after snd_card_disconnect(), thus it will reset
-> the PCM stream state from DISCONNECTED to XRUN.  It doesn't sound
-> right.
+>> +	/*
+>> +	 * apply "oPCR overhead ID encoding"
+>> +	 * the encoding table can convert up to 512.
+>> +	 * here the value over 512 is converted as the same way as 512.
+>> +	 */
 >
-
-Mmh, some other USB drivers do that too in their abort, _after_
-snd_card_disconnect() so they must be wrong too.
-Can I just skip calling snd_pcm_stop() altogether since the PCM stream
-state is in DISCONNECTED state already?
-
-> > +int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq)
-> > +{
-> ....
-> > +	snd_pcm_lib_preallocate_pages_for_all(pcm,
-> > +					SNDRV_DMA_TYPE_CONTINUOUS,
-> > +					snd_dma_continuous_data(GFP_KERNEL),
-> > +					PCM_BUFFER_SIZE, PCM_BUFFER_SIZE);
-> 
-> Any reason not to use vmalloc buffer?
-> 
-
-I don't know, I just shamelessly copied from other drivers here, what'd
-be the difference?
-
-Thanks,
-   Antonio
-
--- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+> 	/*
+> 	 * Apply "oPCR overhead ID encoding":
+> 	 * The encoding table can convert up to 512.
+> 	 * Here any value over 512 is converted in the same way as 512.
+> 	 */
+>
+>> +	for (id = 1; id < 16; id += 1) {
+>> +		if (c->resources.bandwidth_overhead < (id << 5))
+>> +			break;
+>> +	}
+>> +	if (id == 16)
+>> +		id = 0;
+>
+> 	id = DIV_ROUND_UP(c->resources.bandwidth_overhead, 32);
+> 	if (id >= 16)
+> 		id = 0;
+>
+>> +static __be32 opcr_set_modify(struct cmp_connection *c, __be32 opcr)
+>
+>> +	/* generate speed and extended speed field value */
+>
+> This comment is superfluous; it does not tell anything non-obvious about
+> the code.
+>
+>> +	/*
+>> +	 * here zero is applied to payload field.
+>> +	 * it means the maximum number of quadlets in an isochronous packet is
+>> +	 * 1024 when spd is less than three, 1024 * 2 * xspd + 1 when spd is
+>> +	 * equal to three. An arbitrary value can be set here but 0 is enough
+>> +	 * for our purpose.
+>> +	 */
+>> +	opcr |= cpu_to_be32(0 << OPCR_PAYLOAD_SHIFT);
+>
+> In an oPCR, the payload field is changed only by the device.
+>
+>
+> Regards,
+> Clemens
