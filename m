@@ -1,16 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Move Thinkpad X220 to use auto
-	parser
-Date: Mon, 29 Apr 2013 08:24:23 +0200
-Message-ID: <1367216663-4196-1-git-send-email-david.henningsson@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 3/3] Add handling CMP output connection
+Date: Mon, 29 Apr 2013 08:30:27 +0200
+Message-ID: <517E1383.3000603@ladisch.de>
+References: <1367125189-377-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1367125189-377-4-git-send-email-o-takashi@sakamocchi.jp>
+ <517D1B89.506@ladisch.de> <517DF48A.9000702@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE292615D2
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 08:24:24 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D9AA726171D
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 08:30:28 +0200 (CEST)
+In-Reply-To: <517DF48A.9000702@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This enables better volume controls than the current model parser.
-Also, because the original quirk for X220 was added to fix
-docking station support, add the TP410 fixup instead.
+Takashi Sakamoto wrote:
+> Then I have a question about handling payload field. In specification,
+> "The payload field shall specify the maximum number of quadlets that
+> may be transmitted in a single isochronous packet for this plug" but
+> actually cheking this field seems to make no sense because there is no
+> checking process in the procedure. I think I can do nothing for
+> payload field.
 
-Reported-by: Willian Jon McCann <william.jon.mccann@gmail.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The specification was written for the general case where the device that
+creates the connection might be different from the transmitting and
+receiving devices.  In that case, the payload size is needed for correct
+bandwidth allocation.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 5499643..84b81c8 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -2946,7 +2946,6 @@ static const struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
--	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo U350", CXT5066_ASUS),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G560", CXT5066_ASUS),
-@@ -3308,6 +3307,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x215f, "Lenovo T510", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21ce, "Lenovo T420", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520", CXT_PINCFG_LENOVO_TP410),
-+	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
--- 
-1.7.9.5
+In our case, the Linux PC does not have plugs that could be accessed by
+anybody else.  (And I'm not sure if the value set by the Fireworks
+firmware is correct enough so that we'd want to use it.)
+
+
+Regards,
+Clemens
