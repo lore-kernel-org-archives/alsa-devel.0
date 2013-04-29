@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Configure a CODEC which has I2C connected to CPU,
- but no PCM bus connection
-Date: Mon, 29 Apr 2013 21:33:55 +0100
-Message-ID: <20130429203355.GH3270@sirena.org.uk>
-References: <DB8F1B3EEF94C3439BFFE674EB05E3CC14C644DE@SINPRD0211MB405.apcprd02.prod.outlook.com>
+Subject: Re: ALSA SOC Driver (mxs-wm8753)
+Date: Mon, 29 Apr 2013 21:41:41 +0100
+Message-ID: <20130429204141.GI3270@sirena.org.uk>
+References: <CAFio4Nem+9fj+=iUxN1awP=ZBzh=1Eca1kPi1ShjjjLR_9eO6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1644790078426356435=="
+Content-Type: multipart/mixed; boundary="===============6115808284342785556=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F1CB2616B4
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 22:33:59 +0200 (CEST)
-In-Reply-To: <DB8F1B3EEF94C3439BFFE674EB05E3CC14C644DE@SINPRD0211MB405.apcprd02.prod.outlook.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C5AC2625CF
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 22:41:44 +0200 (CEST)
+In-Reply-To: <CAFio4Nem+9fj+=iUxN1awP=ZBzh=1Eca1kPi1ShjjjLR_9eO6A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,75 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Craig McQueen <craig.mcqueen@beamcommunications.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: John Graham <johngavingraham@googlemail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1644790078426356435==
+--===============6115808284342785556==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Enx9fNJ0XV5HaWRu"
+	protocol="application/pgp-signature"; boundary="OfrWf2Fun5Ae4m0Y"
 Content-Disposition: inline
 
 
---Enx9fNJ0XV5HaWRu
+--OfrWf2Fun5Ae4m0Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 26, 2013 at 12:01:02AM +0000, Craig McQueen wrote:
+On Mon, Mar 04, 2013 at 06:25:05PM +0000, John Graham wrote:
 
-Always CC maintainers on posts, if you just mail the list your message
-is likely to be lost in the noise.  Also please fix your MUA to word wrap
-within paragraphs for legibility.
+You should CC maintainers on e-mails, often things just on the list get
+lost in the noise.
 
-> I have an embedded device with somewhat unusual configuration: there
-> is a second audio CODEC (Wolfson WM8940) which is connected to the PCM
-> interface of another device (a radio module, which is acting as PCM
-> bus master), so that radio device can do analog audio I/O. So there is
-> no CPU<-->CODEC PCM link, but the CODEC _is_ connected to the CPU's
-> I2C, and the CPU needs to configure the CODEC registers to interface
-> to the radio module.
+> The problem now is that the I2S data lines don't look right - the line
+> from codec to TX28 looks like a (more-or-less) square wave with the
+> same period as the I2S clock, but only going from ~3.1 - ~3.5 V, as
+> opposed to the 0 - ~3.3 V I expect. Furthermore, it's a pretty regular
+> square wave - it doesn't have all the breaks you see on a working I2S
+> data line.
 
-That's fairly normal - most mobile phones do this.  Take a look at the
-neo1973, speyside or bells drivers for example of such a configuration.
-You can just connect two CODEC DAIs directly together and either start
-the audio from the application layer by running through all the steps
-for streaming except for actually starting DMA like:
+My immediate thought here is that you're probably seeing some sort of
+electrical problem if the logic levels aren't being hit - normally this
+is because both ends of the link are driving simultaneously.  I'd check
+the pin mux settings on the SoC, probably in arch/arm, to make sure that
+everything on the SoC is in the correct mode then check that the CPU is
+configured as a slave (which sounds like the intended configuration).
 
-   http://opensource.wolfsonmicro.com/~gg/bluetooth_pcm.c
-
-does or supply a configuration in the machine driver (if the format is
-fixed) like speyside and bells do.
-
---Enx9fNJ0XV5HaWRu
+--OfrWf2Fun5Ae4m0Y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRftkwAAoJELSic+t+oim9oc8P/0ebEgiTFb8WyJWwqXAczEzp
-W7gh+k9JS/nEg5ITb5Y/TtQotBe9GM1dPJ7w8p10l8llNYO1Jm/sMXNCnrCYMPOz
-Ttxpdw/Yzcy+8/dZSNITAwm1So29dzYGlyqckoceuxqn6YP8xDHQ1s3BH88/QIIV
-526DsCU3fjZyYOi9W/qaeNRQBmpnYrwVisRVaUtxjqXygMzgqg0f0s6likgW1sCQ
-oRaw8wo4PViB6Hp7LfzbuMPi5TqMyNsNGAlHKNY6TI6MSqYy+v1K921QlblEaZDn
-CFKY0OtVsX4UXZwEMBBYhF+zAUlWGla/TvwpRRk2tmyE9mP1wGQzPPAYbFCnkQy7
-srGX2oAyRll3c20jP0dnCY3GXibgfaLNh1ndtA58/xX31GYRkqeKXdPmIpwT+EHz
-zORG9N0NU6Rd3OE5utBwo8GeU8zUKmI27XWGrZq8uRn3sGvlaNSWieYD4jf2maIH
-HvZRN0vp+g7vh/PqPsWAOxjz1wCRQP23sVShph4xNFxdX2VpTkc+8if4LtatEkdh
-KGnGazz2lpaKejgqeXnfEj3hi6tn1cJOVvHovcmvVDCQmGF1tyjstTUwXpvIw+jU
-Y0osK2UHZ9HneJr54z7VAnVfnsAmPHrO7BY9+mSxW6lq0zVuzOHM+jwDsSntPuzH
-BOa7OVIcnpauytTBJpgl
-=SjD1
+iQIcBAEBAgAGBQJRftsCAAoJELSic+t+oim9WkwP/3LMYg636GTRKmRoksz2HWZT
+8cd7gsUVUDAWSnu+jxpyBQ6l+rMjwAW/Pj+JUroFaVknhem9Eh5fnV0gg3Y28E9a
+VxuA6EfKTR1EgX5OBkxhoQkV6NJ2jy6qEjIHBUfVzOZzOh9DTp4wD6LvBzHCLJPg
+x3w/e71ExAOcocsiYaEo6woqconAOska77bGi/npbg6YqkAtXV3sgwDswAOPYB94
+vixASVvpUXKagxVIrUmonUb2tGVd1C81NIIGo/11Vdxbw8HBsKLIYksb4IlMTJaH
+4Tbbpa4jGnv7NLmQG5lB3ZQ8OTIjzAJYPhV4/vRudBH9oKKqCrpXnHU+hZ7s68v+
+5dZ2OPlu8XSpohRQU7bHZEGWRdrXCPx7z49dR8a7p7WJHczDmBMkTMrhjhfaAGnS
+HTsuhO+xPdLAz5HUFZskCgeVm0F1CTCVhNJ23k79eVrsaJdF1gCwagNvPempeOY4
+wvbvg+mj/MFuwrCltoWhdNMVbncu2AA08Qe9UJp7BdUXL56dhrSoMZTuD0rw8n8R
+TkZrNIhN2TkJ+EDLZ6P/wyMYWjRCwrmzmCnO+KqJyCrwv+fa5JSUCodNPlsj6n/m
+Y5AAa0yBNYENtHCxK2VeBq2Zj6mT05i3XVzpd7iN7wJvBniBo40CX9bpKCiyspXT
+kza6jREYgyRUxP943yZ6
+=B0/2
 -----END PGP SIGNATURE-----
 
---Enx9fNJ0XV5HaWRu--
+--OfrWf2Fun5Ae4m0Y--
 
---===============1644790078426356435==
+--===============6115808284342785556==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1644790078426356435==--
+--===============6115808284342785556==--
