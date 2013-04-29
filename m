@@ -1,103 +1,109 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 3/3] Add handling CMP output connection
-Date: Mon, 29 Apr 2013 21:38:08 +0900
-Message-ID: <517E69B0.2040904@sakamocchi.jp>
-References: <1367125189-377-1-git-send-email-o-takashi@sakamocchi.jp>
- <1367125189-377-4-git-send-email-o-takashi@sakamocchi.jp>
- <517D1B89.506@ladisch.de> <517DF48A.9000702@sakamocchi.jp>
- <517E1383.3000603@ladisch.de> <517E3C92.3050801@sakamocchi.jp>
+From: Jesse Barnes <jesse.barnes@intel.com>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+ usage -- alignment between graphic team and audio team
+Date: Mon, 29 Apr 2013 08:02:19 -0700
+Message-ID: <20130429080219.05108857@jbarnes-desktop>
+References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+	<1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
+	<20130426145708.GN6169@phenom.ffwll.local>
+	<s5h61z91g2l.wl%tiwai@suse.de>
+	<20130426154207.GP6169@phenom.ffwll.local>
+	<s5hzjwlz46s.wl%tiwai@suse.de>
+	<20130426171737.GR6169@phenom.ffwll.local>
+	<46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
+	<20130427113529.GT6169@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id AB454261AA8
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 14:38:16 +0200 (CEST)
-In-Reply-To: <517E3C92.3050801@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <20130427113529.GT6169@phenom.ffwll.local>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Hindman,
+	Gavin" <gavin.hindman@intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, "Lin,
+	Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm sorry but I correct what I said:
+On Sat, 27 Apr 2013 13:35:29 +0200
+Daniel Vetter <daniel@ffwll.ch> wrote:
 
- > Actually the target device seems to update the max payload size after
- > host connects to CMP output plug because its initial value is zero.
- > Then we already allocate isochronous resources and isochronous packet
- > to host system. I don't think it better to reallocate them after the
- > connecting.
+> On Sat, Apr 27, 2013 at 09:20:39AM +0000, Wang, Xingchao wrote:
+> > Let me throw a basic proposal on Audio driver side,  please give your comments freely.
+> > 
+> > it contains the power well control usage points:
+> > #1: audio request power well at boot up.
+> > I915 may shut down power well after bootup initialization, as there's no monitor connected outside or only eDP on pipe A.
+> > #2: audio request power on resume
+> > After exit from D3 mode, audio driver quest power on. This may happen at normal resume or runtime resume.
+> > #3: audio release power well control at suspend
+> > Audio driver will let i915 know it doensot need power well anymore as it's going to suspend. This may happened at normal suspend or runtime suspend point.
+> > #4: audio release power well when module unload
+> > Audio release power well at remove callback to let i915 know.
+> 
+> I miss the power well grab/dropping at runtime from the audio side. If the
+> audio driver forces the power well to be on the entire time it's loaded,
+> that's not good, since the power well stuff is very much for runtime PM.
+> We _must_ be able to switch off the power well whenever possible.
 
-We don't allocate buffer for isochronous packet yet when connecting CMP 
-output plug. Then we just gain isochronous resource.
+Xingchao, I'm not an audio developer so I'm probably way off.
 
-Anyway I don't think it better to reallocate isochronous resource.
+But what we really need is a very small and targeted set of calls into
+the i915 driver from say the HDMI driver in HDA.  It looks like the
+prepare/cleanup pair in the pcm_ops structure might be the right place
+to put things?  If that's too fine grained, you could do it at
+open/close time I guess, but the danger there is that some app will
+keep the device open even while it's not playing.
 
+If that won't work, maybe calling i915 from hda_power_work in the
+higher level code would be better?
 
-Regards
+For detecting whether to call i915 at all, you can filter on the PCI
+IDs (just look for an Intel graphics device and if present, try to get
+the i915 symbols for the power functions).
 
-Takashi Sakamoto
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3860,6 +3860,8 @@ static unsigned int hda_call_codec_suspend(struct hda_code
+                codec->patch_ops.suspend(codec);
+        hda_cleanup_all_streams(codec);
+        state = hda_set_power_state(codec, AC_PWRST_D3);
++       if (i915_shared_power_well)
++               i915_put_power_well(codec->i915_data);
+        /* Cancel delayed work if we aren't currently running from it. */
+        if (!in_wq)
+                cancel_delayed_work_sync(&codec->power_work);
+@@ -4807,6 +4809,9 @@ static void __snd_hda_power_up(struct hda_codec *codec, bo
+                return;
+        spin_unlock(&codec->power_lock);
+ 
++       if (i915_shared_power_well)
++               i915_get_power_well(codec->i915_data);
++
+        cancel_delayed_work_sync(&codec->power_work);
+ 
+        spin_lock(&codec->power_lock);
 
-(Apr 29 2013 18:25), Takashi Sakamoto wrote:
-> Clemens,
->
->  > The specification was written for the general case where the device
->  > that creates the connection might be different from the transmitting
->  > and receiving devices.  In that case, the payload size is needed for
->  > correct bandwidth allocation.
->
-> I'm sure that the general case.
->
->  > In our case, the Linux PC does not have plugs that could be accessed
->  > by anybody else.
->
-> I'm sure that host system (Linux PC) doesn't have no plugs.
->
->  >  (And I'm not sure if the value set by the Fireworks
->  > firmware is correct enough so that we'd want to use it.)
->
-> With my Fireworks device, it always report 0, it means 1024 bytes for
-> max payload size for output plug. But I'm not sure that it always report
-> the same value. Especially at 192.0 kHz, the payload size is over 1024
-> bytes but my device supports up to 96.0 kHz...
->
-> Actually the target device seems to update the max payload size after
-> host connects to CMP output plug because its initial value is zero. Then
-> we already allocate isochronous resources and isochronous packet to host
-> system. I don't think it better to reallocate them after the connecting.
->
-> It's reasonable to ignore the payload field in any processing.
->
->
-> Regards
->
-> Takashi Sakamoto
->
-> (Apr 29 2013 15:30), Clemens Ladisch wrote:
->> Takashi Sakamoto wrote:
->>> Then I have a question about handling payload field. In specification,
->>> "The payload field shall specify the maximum number of quadlets that
->>> may be transmitted in a single isochronous packet for this plug" but
->>> actually cheking this field seems to make no sense because there is no
->>> checking process in the procedure. I think I can do nothing for
->>> payload field.
->>
->> The specification was written for the general case where the device that
->> creates the connection might be different from the transmitting and
->> receiving devices.  In that case, the payload size is needed for correct
->> bandwidth allocation.
->>
->> In our case, the Linux PC does not have plugs that could be accessed by
->> anybody else.  (And I'm not sure if the value set by the Fireworks
->> firmware is correct enough so that we'd want to use it.)
->>
->>
->> Regards,
->> Clemens
+With some code at init time to get the i915 symbols you need to call
+and whether or not the shared power well is present...
+
+Takashi, any other ideas?
+
+The high level goal here should be for the audio driver to call into
+i915 with get/put power well around the sequences where it needs the
+power to be up (reading/writing registers, playing audio), but not
+across the whole time the driver is loaded, just like you already do
+with the powersave work functions, e.g. hda_call_codec_suspend.
+
+Jesse
