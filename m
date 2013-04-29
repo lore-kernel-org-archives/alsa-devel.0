@@ -1,79 +1,103 @@
-From: Marek Belisko <marek.belisko@streamunlimited.com>
-Subject: Re: [PATCH v2 2/3] ASoC: spdif_transmitter: Add DT support.
-Date: Mon, 29 Apr 2013 14:16:33 +0200
-Message-ID: <517E64A1.4020402@streamunlimited.com>
-References: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com> <1366895594-19596-3-git-send-email-marek.belisko@streamunlimited.com> <517AD46A.2020402@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/3] Add handling CMP output connection
+Date: Mon, 29 Apr 2013 21:38:08 +0900
+Message-ID: <517E69B0.2040904@sakamocchi.jp>
+References: <1367125189-377-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1367125189-377-4-git-send-email-o-takashi@sakamocchi.jp>
+ <517D1B89.506@ladisch.de> <517DF48A.9000702@sakamocchi.jp>
+ <517E1383.3000603@ladisch.de> <517E3C92.3050801@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <517AD46A.2020402@gmail.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Marek Belisko <marek.belisko@gmail.com>, grant.likely@secretlab.ca, rob.herring@calxeda.com, rob@landley.net, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, broonie@kernel.org, perex@perex.cz
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB454261AA8
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 14:38:16 +0200 (CEST)
+In-Reply-To: <517E3C92.3050801@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear Sebastian Hesselbarth,
+I'm sorry but I correct what I said:
 
-On 04/26/2013 09:24 PM, Sebastian Hesselbarth wrote:
-> On 04/25/2013 03:13 PM, Marek Belisko wrote:
->> Add devicetree support for this dummy audio soc driver.
+ > Actually the target device seems to update the max payload size after
+ > host connects to CMP output plug because its initial value is zero.
+ > Then we already allocate isochronous resources and isochronous packet
+ > to host system. I don't think it better to reallocate them after the
+ > connecting.
+
+We don't allocate buffer for isochronous packet yet when connecting CMP 
+output plug. Then we just gain isochronous resource.
+
+Anyway I don't think it better to reallocate isochronous resource.
+
+
+Regards
+
+Takashi Sakamoto
+
+(Apr 29 2013 18:25), Takashi Sakamoto wrote:
+> Clemens,
+>
+>  > The specification was written for the general case where the device
+>  > that creates the connection might be different from the transmitting
+>  > and receiving devices.  In that case, the payload size is needed for
+>  > correct bandwidth allocation.
+>
+> I'm sure that the general case.
+>
+>  > In our case, the Linux PC does not have plugs that could be accessed
+>  > by anybody else.
+>
+> I'm sure that host system (Linux PC) doesn't have no plugs.
+>
+>  >  (And I'm not sure if the value set by the Fireworks
+>  > firmware is correct enough so that we'd want to use it.)
+>
+> With my Fireworks device, it always report 0, it means 1024 bytes for
+> max payload size for output plug. But I'm not sure that it always report
+> the same value. Especially at 192.0 kHz, the payload size is over 1024
+> bytes but my device supports up to 96.0 kHz...
+>
+> Actually the target device seems to update the max payload size after
+> host connects to CMP output plug because its initial value is zero. Then
+> we already allocate isochronous resources and isochronous packet to host
+> system. I don't think it better to reallocate them after the connecting.
+>
+> It's reasonable to ignore the payload field in any processing.
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+>
+> (Apr 29 2013 15:30), Clemens Ladisch wrote:
+>> Takashi Sakamoto wrote:
+>>> Then I have a question about handling payload field. In specification,
+>>> "The payload field shall specify the maximum number of quadlets that
+>>> may be transmitted in a single isochronous packet for this plug" but
+>>> actually cheking this field seems to make no sense because there is no
+>>> checking process in the procedure. I think I can do nothing for
+>>> payload field.
 >>
->> Signed-off-by: Michal Bachraty<michal.bachraty@streamunlimited.com>
->> Signed-off-by: Marek Belisko<marek.belisko@streamunlimited.com>
->> ---
->>   .../bindings/sound/spdif-transmitter.txt           |   10 ++++++++++
->>   sound/soc/codecs/spdif_transmitter.c               |   10 ++++++++++
->>   2 files changed, 20 insertions(+)
->>   create mode 100644
->> Documentation/devicetree/bindings/sound/spdif-transmitter.txt
+>> The specification was written for the general case where the device that
+>> creates the connection might be different from the transmitting and
+>> receiving devices.  In that case, the payload size is needed for correct
+>> bandwidth allocation.
 >>
->> diff --git
->> a/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
->> b/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
->> new file mode 100644
->> index 0000000..55a8584
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/spdif-transmitter.txt
->> @@ -0,0 +1,10 @@
->> +Device-Tree bindings for dummy spdif transmitter
->> +
->> +Required properties:
->> +    - compatible: should be "linux,spdif-dit".
->
-> Marek,
->
-> I remember Daniel commenting on the name already, but
-> what about "spdif-transmitter" and "spdif-receiver" respectively?
-Agree.
-> That is very generic and should allow to remove "linux," prefix.
-Not sure if linux, prefix can be removed. I believe (at least what 
-documentation said) is that <manufacturer>,<model> must be format for 
-compatible.
-> And there is a lot of drivers using more informative compatible
-> strings compared to the driver name.
->
-> Sebastian
->
-
-Cheers,
-
-	~marek
--- 
-Marek Belisko
-
-Software Developer
-StreamUnlimited Engineering GmbH
-Gutheil Schodergasse 8-12
-A-1100 Vienna, Austria
-
-Office: +421 267200087
-
-e-mail: marek.belisko@streamunlimited.com
-http://www.streamunlimited.com
-
-Meet us at:
-
-High End - Munich, 09 - 12 May, Hall 4/F05
-IFA - Berlin, 6-11 September
-CEDIA - Denver, 25-28 September
+>> In our case, the Linux PC does not have plugs that could be accessed by
+>> anybody else.  (And I'm not sure if the value set by the Fireworks
+>> firmware is correct enough so that we'd want to use it.)
+>>
+>>
+>> Regards,
+>> Clemens
