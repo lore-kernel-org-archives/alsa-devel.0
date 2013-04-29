@@ -1,89 +1,88 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: ALSA: usb-audio: caiaq: endianness bug
-Date: Mon, 29 Apr 2013 20:33:56 +0200
-Message-ID: <517EBD14.7030904@gmail.com>
-References: <alpine.LNX.2.00.1304291957510.6097@xoschi>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: Convert to devm_input_allocate_device()
+Date: Mon, 29 Apr 2013 21:52:34 +0300
+Message-ID: <CALq1K=+4bz0RtuxK=sOEr_k1y2e5x67oUFbo8T7cs0t2vX+54Q@mail.gmail.com>
+References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
+ <20130425125234.GV5019@opensource.wolfsonmicro.com> <CALq1K=+ViDvsCZDR5KndX-T1Dt6tghPjiP7F6wm+npYOw2DE1A@mail.gmail.com>
+ <20130428094745.GA5877@sirena.org.uk> <CALq1K=+=J9oPGvbrXuhS=Bgqj+viC5EAkTHKkNuHxBadExpXdA@mail.gmail.com>
+ <20130429101959.GE5019@opensource.wolfsonmicro.com> <CALq1K=KGrDJZa_w_ZVdriptpiKsWvwYDcx3aV3oVXMyTxMjcqg@mail.gmail.com>
+ <20130429180727.GA3915@core.coreip.homeip.net> <20130429181903.GB3915@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f43.google.com (mail-bk0-f43.google.com
- [209.85.214.43])
- by alsa0.perex.cz (Postfix) with ESMTP id B0FD9261609
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 20:33:57 +0200 (CEST)
-Received: by mail-bk0-f43.google.com with SMTP id jm19so2839861bkc.16
- for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 11:33:57 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1304291957510.6097@xoschi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Eldad Zack <eldad@fogrefinery.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20130429181903.GB3915@core.coreip.homeip.net>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches <patches@opensource.wolfsonmicro.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29.04.2013 20:10, Eldad Zack wrote:
-> 
-> Hi Daniel,
-> 
-> I think I found a endian usage issue in the caiaq driver. I have a patch 
-> to fix it (below), but it assumes that the driver works currently on 
-> little endian CPUs - I don't have a device to test it with.
+On Mon, Apr 29, 2013 at 9:19 PM, Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Mon, Apr 29, 2013 at 11:07:28AM -0700, Dmitry Torokhov wrote:
+>> On Mon, Apr 29, 2013 at 08:47:37PM +0300, Leon Romanovsky wrote:
+>> > On Mon, Apr 29, 2013 at 1:19 PM, Mark Brown <broonie@kernel.org> wrote:
+>> > > On Sun, Apr 28, 2013 at 09:32:18PM +0300, Leon Romanovsky wrote:
+>> > >
+>> > >> I think the reason of our misunderstanding is due to the name of
+>> > >> input_free_device call. From the code, it is device destroy function,
+>> > >> and the freeing itself done as an error handling of
+>> > >> input_register_device
+>> > >> (http://lxr.free-electrons.com/source/drivers/input/input.c#L2114).
+>> > >
+>> > >> How do you think we need to proceed? Do I need to send patches with
+>> > >> explicit call to input_free_device function?
+>> > >
+>> > > I really think the input API needs to be looked at here, this is all way
+>> > > too error prone.  Calling input_free_device() on something allocated
+>> > > using devm_ looks like an error itself...
+>> > In general, I agree with you, but I think we both agree that the
+>> > current patch is not working as expected.
+>> > The problem is that you allocated device with devm_ and later at the
+>> > code you tried to register it, but failed. In this case no one will
+>> > call to devres_destroy, because it is done at unregister stage only.
+>> >
+>> > I see two possible solutions:
+>> > 1. short one - fix your patches
+>> > 2. long one - add input_free_device code into input_register_device
+>> > call (http://lxr.free-electrons.com/source/drivers/input/input.c#L2114).
+>> >
+>>
+>> The rules are pretty straightforward:
+>>
+>> 1. If you are using devm_input_allocate_device() you do not need to call
+>> input_free_device() nor input_unregister_device()  - the core will
+>> create a devres structure for freeing the device and if
+>> input_register_device() succeeds it will also add a 2nd devres for
+>> unregistering. This way the "normal" unwind is a 2-step process with
+>> device is "half alive" and being able to survive input_event() calls
+>> from IRQ handlers if they are still alive.
+>>
+>> IOW  it should all "just work".
+>>
+>> 2. If you are using input_allocate_device() then you need to call
+>> input_free_device() until you called input_register_device(), afterward
+>> input_unregister_device() should be called.
+>>
+>
+> BTW, looking at Marks patch it looks good to me.
+Dmitry, thanks for the explanation.
 
-I don't currently have any either, but your findings make sense. I just
-know that the driver currently works on LE CPUs.
+Mark, please take my apologies, I was mislead by the following comment
+on the code:
+http://lxr.free-electrons.com/source/drivers/input/input.c#L1825
+1822  * input_free_device - free memory occupied by input_dev structure
+1823  * @dev: input device to free
+1824  *
+1825  * This function should only be used if input_register_device()
+1826  * was not called yet or if it failed.
 
-> Cheers,
-> Eldad
-> 
-> -- >8 --
-> Subject: [PATCH] ALSA: usb-audio: caiaq: fix endianness bug
-> 
-> Current code does this:
-> 
->   be16_to_cpu(buf[i * 2] << 8 | buf[(i * 2) + 1])
-> 
-> Which is effectively:
-> 
->   be16_to_cpu(be16_to_cpu(*((u16 *) buf)))
-> 
-> This means the int16 in the buffer is not converted at all.
-> Assuming the device-side structure is actually little endian,
-> change the code to use le16_to_cpu().
-> 
-> Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
+>
+> --
+> Dmitry
 
-Acked-by: Daniel Mack <zonque@gmail.com>
 
-> ---
->  sound/usb/caiaq/input.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/usb/caiaq/input.c b/sound/usb/caiaq/input.c
-> index efc70ae..2f4ae4d 100644
-> --- a/sound/usb/caiaq/input.c
-> +++ b/sound/usb/caiaq/input.c
-> @@ -488,13 +488,12 @@ static void snd_usb_caiaq_maschine_dispatch(struct snd_usb_caiaqdev *cdev,
->  					unsigned int len)
->  {
->  	unsigned int i, pad_id;
-> -	uint16_t pressure;
-> +	__le16 *pressure = (__le16 *) buf;
->  
->  	for (i = 0; i < MASCHINE_PADS; i++) {
-> -		pressure = be16_to_cpu(buf[i * 2] << 8 | buf[(i * 2) + 1]);
-> -		pad_id = pressure >> 12;
-> -
-> -		input_report_abs(cdev->input_dev, MASCHINE_PAD(pad_id), pressure & 0xfff);
-> +		pad_id = le16_to_cpu(*pressure) >> 12;
-> +		input_report_abs(cdev->input_dev, MASCHINE_PAD(pad_id), le16_to_cpu(*pressure) & 0xfff);
-> +		pressure++;
->  	}
->  
->  	input_sync(cdev->input_dev);
-> 
+
+--
+Leon Romanovsky | Independent Linux Consultant
+        www.leon.nu | leon@leon.nu
