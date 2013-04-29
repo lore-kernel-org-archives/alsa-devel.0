@@ -1,88 +1,50 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: Convert to devm_input_allocate_device()
-Date: Mon, 29 Apr 2013 21:52:34 +0300
-Message-ID: <CALq1K=+4bz0RtuxK=sOEr_k1y2e5x67oUFbo8T7cs0t2vX+54Q@mail.gmail.com>
-References: <1356009506-4766-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CALq1K=+sJUZ++_sMkU1Sg9+aE-HpF1tnfPHGCEJ789hj19Yp9A@mail.gmail.com>
- <20130425125234.GV5019@opensource.wolfsonmicro.com> <CALq1K=+ViDvsCZDR5KndX-T1Dt6tghPjiP7F6wm+npYOw2DE1A@mail.gmail.com>
- <20130428094745.GA5877@sirena.org.uk> <CALq1K=+=J9oPGvbrXuhS=Bgqj+viC5EAkTHKkNuHxBadExpXdA@mail.gmail.com>
- <20130429101959.GE5019@opensource.wolfsonmicro.com> <CALq1K=KGrDJZa_w_ZVdriptpiKsWvwYDcx3aV3oVXMyTxMjcqg@mail.gmail.com>
- <20130429180727.GA3915@core.coreip.homeip.net> <20130429181903.GB3915@core.coreip.homeip.net>
+From: Eldad Zack <eldad@fogrefinery.com>
+Subject: Re: ALSA: usb-audio: caiaq: endianness bug
+Date: Mon, 29 Apr 2013 21:04:31 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1304292103150.7328@xoschi>
+References: <alpine.LNX.2.00.1304291957510.6097@xoschi>
+ <517EBD14.7030904@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20130429181903.GB3915@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches <patches@opensource.wolfsonmicro.com>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bk0-f44.google.com (mail-bk0-f44.google.com
+ [209.85.214.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 006282616B4
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 21:04:35 +0200 (CEST)
+Received: by mail-bk0-f44.google.com with SMTP id jk13so713187bkc.17
+ for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2013 12:04:35 -0700 (PDT)
+In-Reply-To: <517EBD14.7030904@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 29, 2013 at 9:19 PM, Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
-> On Mon, Apr 29, 2013 at 11:07:28AM -0700, Dmitry Torokhov wrote:
->> On Mon, Apr 29, 2013 at 08:47:37PM +0300, Leon Romanovsky wrote:
->> > On Mon, Apr 29, 2013 at 1:19 PM, Mark Brown <broonie@kernel.org> wrote:
->> > > On Sun, Apr 28, 2013 at 09:32:18PM +0300, Leon Romanovsky wrote:
->> > >
->> > >> I think the reason of our misunderstanding is due to the name of
->> > >> input_free_device call. From the code, it is device destroy function,
->> > >> and the freeing itself done as an error handling of
->> > >> input_register_device
->> > >> (http://lxr.free-electrons.com/source/drivers/input/input.c#L2114).
->> > >
->> > >> How do you think we need to proceed? Do I need to send patches with
->> > >> explicit call to input_free_device function?
->> > >
->> > > I really think the input API needs to be looked at here, this is all way
->> > > too error prone.  Calling input_free_device() on something allocated
->> > > using devm_ looks like an error itself...
->> > In general, I agree with you, but I think we both agree that the
->> > current patch is not working as expected.
->> > The problem is that you allocated device with devm_ and later at the
->> > code you tried to register it, but failed. In this case no one will
->> > call to devres_destroy, because it is done at unregister stage only.
->> >
->> > I see two possible solutions:
->> > 1. short one - fix your patches
->> > 2. long one - add input_free_device code into input_register_device
->> > call (http://lxr.free-electrons.com/source/drivers/input/input.c#L2114).
->> >
->>
->> The rules are pretty straightforward:
->>
->> 1. If you are using devm_input_allocate_device() you do not need to call
->> input_free_device() nor input_unregister_device()  - the core will
->> create a devres structure for freeing the device and if
->> input_register_device() succeeds it will also add a 2nd devres for
->> unregistering. This way the "normal" unwind is a 2-step process with
->> device is "half alive" and being able to survive input_event() calls
->> from IRQ handlers if they are still alive.
->>
->> IOW  it should all "just work".
->>
->> 2. If you are using input_allocate_device() then you need to call
->> input_free_device() until you called input_register_device(), afterward
->> input_unregister_device() should be called.
->>
->
-> BTW, looking at Marks patch it looks good to me.
-Dmitry, thanks for the explanation.
 
-Mark, please take my apologies, I was mislead by the following comment
-on the code:
-http://lxr.free-electrons.com/source/drivers/input/input.c#L1825
-1822  * input_free_device - free memory occupied by input_dev structure
-1823  * @dev: input device to free
-1824  *
-1825  * This function should only be used if input_register_device()
-1826  * was not called yet or if it failed.
+On Mon, 29 Apr 2013, Daniel Mack wrote:
 
->
-> --
-> Dmitry
+> On 29.04.2013 20:10, Eldad Zack wrote:
+> > 
+> > Hi Daniel,
+> > 
+> > I think I found a endian usage issue in the caiaq driver. I have a patch 
+> > to fix it (below), but it assumes that the driver works currently on 
+> > little endian CPUs - I don't have a device to test it with.
+> 
+> I don't currently have any either, but your findings make sense. I just
+> know that the driver currently works on LE CPUs.
 
+Thanks for the quick reply and the ack!
 
+I'll update the commit message post a patch soon.
 
---
-Leon Romanovsky | Independent Linux Consultant
-        www.leon.nu | leon@leon.nu
+Cheers,
+Eldad
