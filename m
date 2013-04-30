@@ -1,79 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch] ASoC: wm8994: missing break in
- wm8994_aif3_hw_params()
-Date: Tue, 30 Apr 2013 19:07:10 +0100
-Message-ID: <20130430180710.GB26160@sirena.org.uk>
-References: <20130430072441.GB7237@elgon.mountain>
- <517F778E.3020700@bfs.de>
+Subject: Re: [PATCH 2/3] ASoC: ux500: move clock controls to ab8500-codec
+Date: Tue, 30 Apr 2013 19:30:35 +0100
+Message-ID: <20130430183035.GC26160@sirena.org.uk>
+References: <1367330994-7259-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367330994-7259-3-git-send-email-fabio.baltieri@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1345081169463791779=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 07E6D2650D1
- for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2013 20:07:15 +0200 (CEST)
-In-Reply-To: <517F778E.3020700@bfs.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: walter harms <wharms@bfs.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5QAgd0e35j3NYeGe"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1367330994-7259-3-git-send-email-fabio.baltieri@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1345081169463791779==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hQiwHBbRI9kgIhsi"
-Content-Disposition: inline
-
-
---hQiwHBbRI9kgIhsi
+--5QAgd0e35j3NYeGe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 30, 2013 at 09:49:34AM +0200, walter harms wrote:
+On Tue, Apr 30, 2013 at 04:09:53PM +0200, Fabio Baltieri wrote:
+> Move ab8500 clock control definitions to the ab8500 codec driver,
+> leaving only card specific setting in mop500_ab8500_ctrls.
 
-> the patch seems ok, but i would question the wisdom of a nested switch here,
-> obviously the readability suffers and since it is only one case it seems
-> better to be replaced it with
+So, if this is some generic thing and not some weird stuff for the card
+this really reopens the question about why this is done with user
+visible controls...
 
-I don't think that's a good idea, it does nothing for the readability
-and isn't idiomatic.
+>  static struct snd_kcontrol_new ab8500_ctrls[] = {
+> +	/* Digital interface - Clocks */
+> +	SOC_SINGLE("Digital Interface Master Generator Switch",
+> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENMASTGEN,
+> +		1, 0),
+> +	SOC_SINGLE("Digital Interface 0 Bit-clock Switch",
+> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK0,
+> +		1, 0),
+> +	SOC_SINGLE("Digital Interface 1 Bit-clock Switch",
+> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK1,
+> +		1, 0),
 
---hQiwHBbRI9kgIhsi
+...this is all stuff that is normally figured out automatically by the
+drivers, we know when the audio interface is in use and hence when it
+needs to be clocked.
+
+--5QAgd0e35j3NYeGe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRgAhLAAoJELSic+t+oim9sBAP/0bNqpewdSTDr8UF4gwF/7Tw
-EbNx/trQbsqFIIT3GQoPj1/jERVdm61XPEPZIKHcyVV6uOX9hFA+JejEl7W0HAxE
-uQP3izDtkgE8lp41qFfY7sYWgT8Zp7sAgmCq/E7Vib1b1HjHBxb1ej9Mty5DB1/L
-QeEXgx7WkFHPtCNCz88hAmn9G8JSlD/v1sP0fij47WlqZtW9NGkbEeKO3Fy9JHoF
-5HdLmxRQglKcp+Jlv4Zxugjinrha1w7EkifI/EKZ0wTSgnoFCy88lgSgXMlCLyPU
-l+T2j1yPZV8fKvCWq+uTXxTaQjhNEddDT9CehRQ47stCtkR2ItJsTcoJH9e4h8Xw
-5b6W5GYfLXA3OA/TeZ6//HUlpNhuWFZw2Ohpbz1NiWehCrinQB5mq8dSW4YXIrZq
-bk5PVZSepE84wq/LORDn4xpaSFW6G8/tP/KEmn9jNn3ltdaN18fOo80m3RT+Emv/
-uTEAjeG1vIxZSn5NgGKFY0m4b36UZHVERRioFUj1FIMyEyi8gLuOnMjs7fcrUS2q
-Rm0rpswY74iuNyiHi/qI6nq8N+ftGhoGzsZSP3N8P7tlaf1pM6kKxRpxjl8lazm9
-waMSvnRap4xZ4OoZl/RhDXLohOiuOlfWj6BePqupMV6DMpel0ujWftnN3uKi3usb
-HucwHd9sjNgQlR6Zpi6+
-=Fv2o
+iQIcBAEBAgAGBQJRgA3IAAoJELSic+t+oim9x1QP/iiEmShnYvFGkVpqah3NZPzg
+Y5qvxDDXFlFNMd3vD9woe/FwLrMivmNcS4lOlHqNb307Q1mepHggcztia5ZPHTC5
+M19x2S2vzXrshGUp8GPnY3Mi/j72Ae9cT4/B4JUiL+w69fSjLsHrri37ujs2aazf
+/G9/92BWB3gaV4ZtyyIP3EyIWre4sTIyiBB0iRKt+wSZ8XQ0zo8mZWzcj+dVxW6D
+DxRG8RPvEZ4XpBZzEykzKs0qQYTOFfuAX/z2DB7DogKiB4YmiNc0MlMicwUnHt1f
+S5XN3GZFCaLQFM7Yc8zHVaLjQhOFyP+SVTS6lzoVuFOHUSeQqcH2Uwi/WNOWGVkP
+lNiyEARIguVwRnA6A++TIzKTqTYDbnTvDhmWtEkVb+b0bfBTJc7fWwEBDbr7WFIO
+q5CB8UimA7+nSrJHSMRMhBqpphZWqjWoBSqJ9qdvS6ZG5ECTOxMkqzbOVFoLGpAR
+h4OM4tpJDDOdgZyqZBef9D2rcwXTBKffQiMtADkfy7wjMGuP8JOGjK3liPrGzmik
+35ZrmV3hXKYDJG7/nyyA/q0izMSwekEkAEERp7iOO/ey5Org7d+vkot9aoE2uVNc
+WESxLocuKWGM+9Gej+NCpvmFMSyp5pwy8UHa5KLVhI+dQC6vInRYeJWrVQ+rs5wl
+GZAYlhYXWKccpi/2qp8I
+=4Lf8
 -----END PGP SIGNATURE-----
 
---hQiwHBbRI9kgIhsi--
-
---===============1345081169463791779==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1345081169463791779==--
+--5QAgd0e35j3NYeGe--
