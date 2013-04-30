@@ -1,53 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/3] ASoC: Add devicetree support for spdif dummy
- codecs.
-Date: Tue, 30 Apr 2013 19:43:27 +0100
-Message-ID: <20130430184327.GH26160@sirena.org.uk>
-References: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com>
+Subject: Re: [PATCH] ASoC: McASP: Add pins output direction for rx clocks
+ when configured in CBS_CFS format.
+Date: Tue, 30 Apr 2013 19:44:41 +0100
+Message-ID: <20130430184441.GI26160@sirena.org.uk>
+References: <1366979891-15434-1-git-send-email-marek.belisko@streamunlimited.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tcC6YSqBgqqkz7Sb"
-Return-path: <linux-doc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="3U8TY7m7wOx7RL1F"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1366895594-19596-1-git-send-email-marek.belisko@streamunlimited.com>
-Sender: linux-doc-owner@vger.kernel.org
+In-Reply-To: <1366979891-15434-1-git-send-email-marek.belisko@streamunlimited.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Marek Belisko <marek.belisko@gmail.com>
-Cc: grant.likely@secretlab.ca, rob.herring@calxeda.com, rob@landley.net, perex@perex.cz, tiwai@suse.de, zonque@gmail.com, devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Marek Belisko <marek.belisko@streamunlimited.com>
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, zonque@gmail.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Marek Belisko <marek.belisko@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---tcC6YSqBgqqkz7Sb
+--3U8TY7m7wOx7RL1F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 25, 2013 at 03:13:11PM +0200, Marek Belisko wrote:
-> changes from v1 (for patch 2 and 3):
-> - add prefix linux for compatible property (for both tx and rx)
-> - rename spdif_transceiver.c to spdif_transmitter.c
-> - add bindings documentation
+On Fri, Apr 26, 2013 at 02:38:11PM +0200, Marek Belisko wrote:
+> When McASP is bit clock and frame clock master enable pin output for rx clocks.
 
-Applied all, thanks.
+Applied, thanks.
 
---tcC6YSqBgqqkz7Sb
+--3U8TY7m7wOx7RL1F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRgBDMAAoJELSic+t+oim9LT8P/0gu46HYkMNAlAY1ydtPd4nr
-N6ihpptezgcXh9AVJXIMOwP4N9mofeeE7Fv8iCLbSc2nsTVRKbQV4oZNW+pAw+89
-72a19Yzw8gnddaz33RqSUYo9uPKJGYIKHdj1H8imUq9Xab9j7gv0kW16jv3kRoU9
-sr2Zj1/U8YuYbfxwKTLK/qlF2F4+0xl+0hyPQoijUQ+vlK6lxJHsKCrZMM7NEXDf
-O0UtbGN/6uwgUTRfHZMV36pNRt5tAhWpT+NskNImOCbEDK3U5XWTxfDFCRuhGUNr
-2h3fH3DRftEuvSw65EFELROKdfB+3drB0R0+wnFbBLscs7XPA7ncG6ZeYIF0whTe
-gqKS9hp17yt9xHAGbaziJAp/me3pFtdVtFJwr1WoeYkUimdFAuJcxjOn2yYLeSSy
-p+rroe7db0TAYjPb023/TTmA1zlYpv4Et/2d2dFjmz8+kBEs9NhJgSf7fuqfeOHW
-ekzDXyHUPpoaubhCGN48UVPVYXDoPT6CaUI3Hd/qt+H9zOlljVUrFe0P1r5H0iq5
-ylcx9f16rsppcaf/TpuZq2cWtNqKLUm8pGqMaS4brqPUykI54jnaZjt3gBYsjrfg
-PJYWoxaI894+8M8i+lTPBLBVwSA396fOG7jlkbmng7AJjOD+LuwMWwNrzwTl1n67
-BbAHMV7VS82dTQPkv+q7
-=amvf
+iQIcBAEBAgAGBQJRgBEWAAoJELSic+t+oim9x6kP/is8QrT82Z0zoZdWTzP48Dx3
+os2iBd9w3VGyRN7D83vR+wD9sFrJheRcklFmtnj2HMu87WFxpKWxXDTgSb94ROFI
+7R2s16BTqj5HpIY+HkuwEpzRJdufPOfNos1zogrIy5bjeQLYFtL2G+ZMnUvA0jH7
++nIAHenGlz2pyDrYXOfHm5yoOBWiO2InKq9tnLYowWNIxn73Y33Qs5B+i4c5tBmu
+cVEAsk/82SoRV/SSaxggCihWpc03qGyI9VnYBl8LQexZyiFCEgMrkPmOdYoKNb13
+iUo6xV3fcl52Z5BvUe6WRJBnYXkvlC9rjRq5s6oaPJZ69fDlxd5az/nt1wLB0mQ/
+tiVYa1Hp+jJJXRuEXSLrPd2YN5MPgl4mDfKHuiGNhlS7BAtQ1HBM7aWHEOl5Fmf3
+r4opm0iZKWKGXa1XIYAtXZ1U7qV5eoTqfnNEuzVEeU73PcwgVei9HW/hLzZcCatx
+wvwYcJ2b/YRJ0pddbJ/sEndjGZenKf9GcLW7vrvupIccyfZLBLpPQ4lVREBIQgZs
+1C8IkLDo8Eu1y79No0TZyiW9hr928GXFisgaFM3MzLnI0xTN/UDw26vckqSPtcma
+ni5hu58rTdT1ZciMNmG3UajpvLaO912gLgONLHNbUCJ+7yQy0RYYJaahj4RDtUxg
+qS+M+DxHlS6OK9UnJpRj
+=aTpY
 -----END PGP SIGNATURE-----
 
---tcC6YSqBgqqkz7Sb--
+--3U8TY7m7wOx7RL1F--
