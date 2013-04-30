@@ -1,49 +1,42 @@
-From: Jesse Barnes <jesse.barnes@intel.com>
-Subject: Re: [PATCH] drm/i915: Add private api for power well
- usage -- alignment between graphic team and audio team
-Date: Tue, 30 Apr 2013 07:38:02 -0700
-Message-ID: <20130430073802.02a677c2@jbarnes-desktop>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] drm/i915: Add private api for
+ power well usage -- alignment between graphic team and audio team
+Date: Tue, 30 Apr 2013 15:41:22 +0100
+Message-ID: <1367332882.2460.14.camel@loki>
 References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
- <CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
- <1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
- <20130426145708.GN6169@phenom.ffwll.local>
- <s5h61z91g2l.wl%tiwai@suse.de>
- <20130426154207.GP6169@phenom.ffwll.local>
- <s5hzjwlz46s.wl%tiwai@suse.de>
- <20130426171737.GR6169@phenom.ffwll.local>
- <46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
- <20130427113529.GT6169@phenom.ffwll.local>
- <20130429080219.05108857@jbarnes-desktop>
- <517F9D11.3020905@canonical.com>
+	<CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+	<1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
+	<20130426145708.GN6169@phenom.ffwll.local>
+	<s5h61z91g2l.wl%tiwai@suse.de>
+	<20130426154207.GP6169@phenom.ffwll.local>
+	<s5hzjwlz46s.wl%tiwai@suse.de>
+	<20130426171737.GR6169@phenom.ffwll.local>
+	<46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
+	<20130427113529.GT6169@phenom.ffwll.local>
+	<20130429080219.05108857@jbarnes-desktop>
+	<517F9D11.3020905@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 24A12265055
- for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2013 16:37:23 +0200 (CEST)
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 In-Reply-To: <517F9D11.3020905@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 To: David Henningsson <david.henningsson@canonical.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
- Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki,
- Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Wang,
- Xingchao" <xingchao.wang@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, "Hindman,
- Gavin" <gavin.hindman@intel.com>, Daniel Vetter <daniel@ffwll.ch>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>
+	Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Hindman,
+	Gavin" <gavin.hindman@intel.com>, Jesse Barnes <jesse.barnes@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Apr 2013 12:29:37 +0200
-David Henningsson <david.henningsson@canonical.com> wrote:
-
+On Tue, 2013-04-30 at 12:29 +0200, David Henningsson wrote:
 > On 04/29/2013 05:02 PM, Jesse Barnes wrote:
 > > On Sat, 27 Apr 2013 13:35:29 +0200
 > > Daniel Vetter <daniel@ffwll.ch> wrote:
@@ -102,11 +95,13 @@ David Henningsson <david.henningsson@canonical.com> wrote:
 > 
 > Is it wise that a _get function actually has side effects? Perhaps _push 
 > and _pop or something else would be better semantics.
-
-We have other get/put functions like this, so I thought it fit (vblank
-irq, PCI runtime PM).
-
 > 
+
+I think the intention here is to model on the PM runtime subsystem where
+we can get/put the reference count on a PM resource. I'd expect with
+this API that i915_get_power_well() will increment the count and prevent
+the shared PM resource from being powered OFF. 
+
 > > +
 > >          cancel_delayed_work_sync(&codec->power_work);
 > >
@@ -135,12 +130,15 @@ irq, PCI runtime PM).
 > 
 > But maybe there's something smarter to do here, as I'm not experienced 
 > in mending kernel pieces together :-)
+> 
 
-Yeah a separate module would be ok too.  But I was hoping the i915
-dependencies could be pretty well contained so as not to affect
-readability in the HDA driver, while having all the conditionality
-needed for whether i915 is loaded, or loaded first, or needed at all on
-a given platform.
+Interesting idea, we could have something similar to the AC97 ad-hoc
+device support where we could load other HW specific AC97 modules (like
+touchscreen controllers) without breaking the generic nature of the base
+driver. e.g. the WM9712 AC97 touchscreen driver could connect to the
+generic AC97 audio driver (get it's device struct ac97 *) and perform
+AC97 register IO, ac97 API calls etc.
 
-Thanks,
-Jesse
+Regards
+
+Liam
