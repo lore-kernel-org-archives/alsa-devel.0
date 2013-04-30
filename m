@@ -1,48 +1,146 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/3] ASoC: ux500: move clock controls to ab8500-codec
-Date: Tue, 30 Apr 2013 16:23:40 +0200
-Message-ID: <517FD3EC.1050309@metafoo.de>
-References: <1367330994-7259-1-git-send-email-fabio.baltieri@linaro.org> <1367330994-7259-3-git-send-email-fabio.baltieri@linaro.org>
+From: Jesse Barnes <jesse.barnes@intel.com>
+Subject: Re: [PATCH] drm/i915: Add private api for power well
+ usage -- alignment between graphic team and audio team
+Date: Tue, 30 Apr 2013 07:38:02 -0700
+Message-ID: <20130430073802.02a677c2@jbarnes-desktop>
+References: <1B1032E88FFFDA4898B04D530F28DEDB53CAB7@SHSMSX101.ccr.corp.intel.com>
+ <CAKMK7uGZ1eK1MngbihR_+xUZZXsFQGEV3=NH1Ohjf7S0i9s2-g@mail.gmail.com>
+ <1B1032E88FFFDA4898B04D530F28DEDB53CB7C@SHSMSX101.ccr.corp.intel.com>
+ <20130426145708.GN6169@phenom.ffwll.local>
+ <s5h61z91g2l.wl%tiwai@suse.de>
+ <20130426154207.GP6169@phenom.ffwll.local>
+ <s5hzjwlz46s.wl%tiwai@suse.de>
+ <20130426171737.GR6169@phenom.ffwll.local>
+ <46B810F6945F7C4788E11DCE57EC4890109D3608@SHSMSX102.ccr.corp.intel.com>
+ <20130427113529.GT6169@phenom.ffwll.local>
+ <20130429080219.05108857@jbarnes-desktop>
+ <517F9D11.3020905@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1367330994-7259-3-git-send-email-fabio.baltieri@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24A12265055
+ for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2013 16:37:23 +0200 (CEST)
+In-Reply-To: <517F9D11.3020905@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zanoni,
+ Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Wysocki,
+ Rafael J" <rafael.j.wysocki@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, "Hindman,
+ Gavin" <gavin.hindman@intel.com>, Daniel Vetter <daniel@ffwll.ch>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/30/2013 04:09 PM, Fabio Baltieri wrote:
-> Move ab8500 clock control definitions to the ab8500 codec driver,
-> leaving only card specific setting in mop500_ab8500_ctrls.
-> 
-> Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
-> ---
->  sound/soc/codecs/ab8500-codec.c | 10 ++++++++++
->  sound/soc/ux500/mop500_ab8500.c | 10 ----------
->  2 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-> index a153b16..925e625 100644
-> --- a/sound/soc/codecs/ab8500-codec.c
-> +++ b/sound/soc/codecs/ab8500-codec.c
-> @@ -1615,6 +1615,16 @@ static SOC_ENUM_SINGLE_EXT_DECL(soc_enum_sidstate, enum_sid_state);
->  static SOC_ENUM_SINGLE_EXT_DECL(soc_enum_ancstate, enum_anc_state);
->  
->  static struct snd_kcontrol_new ab8500_ctrls[] = {
-> +	/* Digital interface - Clocks */
-> +	SOC_SINGLE("Digital Interface Master Generator Switch",
-> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENMASTGEN,
-> +		1, 0),
-> +	SOC_SINGLE("Digital Interface 0 Bit-clock Switch",
-> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK0,
-> +		1, 0),
-> +	SOC_SINGLE("Digital Interface 1 Bit-clock Switch",
-> +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK1,
-> +		1, 0),
+On Tue, 30 Apr 2013 12:29:37 +0200
+David Henningsson <david.henningsson@canonical.com> wrote:
 
-I think this patch as it is is fine. But those three controls looks like
-they should be converted to DAPM widgets.
+> On 04/29/2013 05:02 PM, Jesse Barnes wrote:
+> > On Sat, 27 Apr 2013 13:35:29 +0200
+> > Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> >> On Sat, Apr 27, 2013 at 09:20:39AM +0000, Wang, Xingchao wrote:
+> >>> Let me throw a basic proposal on Audio driver side,  please give your comments freely.
+> >>>
+> >>> it contains the power well control usage points:
+> >>> #1: audio request power well at boot up.
+> >>> I915 may shut down power well after bootup initialization, as there's no monitor connected outside or only eDP on pipe A.
+> >>> #2: audio request power on resume
+> >>> After exit from D3 mode, audio driver quest power on. This may happen at normal resume or runtime resume.
+> >>> #3: audio release power well control at suspend
+> >>> Audio driver will let i915 know it doensot need power well anymore as it's going to suspend. This may happened at normal suspend or runtime suspend point.
+> >>> #4: audio release power well when module unload
+> >>> Audio release power well at remove callback to let i915 know.
+> >>
+> >> I miss the power well grab/dropping at runtime from the audio side. If the
+> >> audio driver forces the power well to be on the entire time it's loaded,
+> >> that's not good, since the power well stuff is very much for runtime PM.
+> >> We _must_ be able to switch off the power well whenever possible.
+> >
+> > Xingchao, I'm not an audio developer so I'm probably way off.
+> >
+> > But what we really need is a very small and targeted set of calls into
+> > the i915 driver from say the HDMI driver in HDA.  It looks like the
+> > prepare/cleanup pair in the pcm_ops structure might be the right place
+> > to put things?  If that's too fine grained, you could do it at
+> > open/close time I guess, but the danger there is that some app will
+> > keep the device open even while it's not playing.
+> >
+> > If that won't work, maybe calling i915 from hda_power_work in the
+> > higher level code would be better?
+> >
+> > For detecting whether to call i915 at all, you can filter on the PCI
+> > IDs (just look for an Intel graphics device and if present, try to get
+> > the i915 symbols for the power functions).
+> >
+> > --- a/sound/pci/hda/hda_codec.c
+> > +++ b/sound/pci/hda/hda_codec.c
+> > @@ -3860,6 +3860,8 @@ static unsigned int hda_call_codec_suspend(struct hda_code
+> >                  codec->patch_ops.suspend(codec);
+> >          hda_cleanup_all_streams(codec);
+> >          state = hda_set_power_state(codec, AC_PWRST_D3);
+> > +       if (i915_shared_power_well)
+> > +               i915_put_power_well(codec->i915_data);
+> >          /* Cancel delayed work if we aren't currently running from it. */
+> >          if (!in_wq)
+> >                  cancel_delayed_work_sync(&codec->power_work);
+> > @@ -4807,6 +4809,9 @@ static void __snd_hda_power_up(struct hda_codec *codec, bo
+> >                  return;
+> >          spin_unlock(&codec->power_lock);
+> >
+> > +       if (i915_shared_power_well)
+> > +               i915_get_power_well(codec->i915_data);
+> 
+> Is it wise that a _get function actually has side effects? Perhaps _push 
+> and _pop or something else would be better semantics.
 
-- Lars
+We have other get/put functions like this, so I thought it fit (vblank
+irq, PCI runtime PM).
+
+> 
+> > +
+> >          cancel_delayed_work_sync(&codec->power_work);
+> >
+> >          spin_lock(&codec->power_lock);
+> >
+> > With some code at init time to get the i915 symbols you need to call
+> > and whether or not the shared power well is present...
+> >
+> > Takashi, any other ideas?
+> >
+> > The high level goal here should be for the audio driver to call into
+> > i915 with get/put power well around the sequences where it needs the
+> > power to be up (reading/writing registers, playing audio), but not
+> > across the whole time the driver is loaded, just like you already do
+> > with the powersave work functions, e.g. hda_call_codec_suspend.
+> 
+> I think this sounds about right. The question is how to avoid a 
+> dependency on the i915 driver when it's not necessary, such as when the 
+> HDMI codec is AMD or Nvidia.
+> 
+> The most obvious way to me seems to be to create a new 
+> snd-hda-codec-hdmi-haswell module (that depends on both i915 and 
+> snd-hda-codec-hdmi), and then let that call into i915 and codec-hdmi 
+> drivers as necessary, e g using the set_power_state callback for the 
+> i915 stuff.
+> 
+> But maybe there's something smarter to do here, as I'm not experienced 
+> in mending kernel pieces together :-)
+
+Yeah a separate module would be ok too.  But I was hoping the i915
+dependencies could be pretty well contained so as not to affect
+readability in the HDA driver, while having all the conditionality
+needed for whether i915 is loaded, or loaded first, or needed at all on
+a given platform.
+
+Thanks,
+Jesse
