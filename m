@@ -1,37 +1,68 @@
-From: Mike Travis <travis@sgi.com>
-Subject: [PATCH]: x86_64, audio: Fix system panic when DMA > 40 bits
-Date: Wed,  1 May 2013 14:04:08 -0500
-Message-ID: <1367435048-66137-1-git-send-email-travis@sgi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Russ Anderson <rja@sgi.com>, Mike Travis <travis@sgi.com>
+From: Thomas Richter <thor@math.tu-berlin.de>
+Subject: Mono output on emu10k1 with alsa broken
+Date: Wed, 1 May 2013 21:36:45 +0000 (UTC)
+Message-ID: <loom.20130501T232933-467@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6CF9260856
+ for <alsa-devel@alsa-project.org>; Wed,  1 May 2013 23:37:51 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1UXeiO-0004kT-3M
+ for alsa-devel@alsa-project.org; Wed, 01 May 2013 23:37:28 +0200
+Received: from p4FC12FBE.dip0.t-ipconnect.de ([79.193.47.190])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 01 May 2013 23:37:28 +0200
+Received: from thor by p4FC12FBE.dip0.t-ipconnect.de with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Wed, 01 May 2013 23:37:28 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The audio driver mistakenly allows 64 bit addresses to be created for
-the audio driver on Nvidia GPUs.  Unfortunately, the hardware normally
-only supports up to 40 bits of DMA.  This can cause system panics as
-well as misdirected data when the address is > 40 bits as the upper
-part the address is truncated.
+Trying to configure mono (one channel) output on emu10k1 hardware using the
+alsa version that comes with kernel 3.9 is broken. Instead of expecting mono
+samples, the alsa callback expects twice as many stereo samples. Not getting
+the required number of samples then causes a buffer underrun, and sound gets
+interrupted or messed up. In fact, what the audio hardware does is that it
+plays not only the buffer, but also the data "behind the buffer", causing
+wierd noises.
 
-Signed-off-by: Mike Travis <travis@sgi.com>
-Reviewed-by: Mike Habeck <habeck@sgi.com>
----
- sound/pci/hda/hda_intel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The channel count is setup as
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index bcd40ee..45eb165 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -615,7 +615,7 @@ enum {
- /* quirks for Nvidia */
- #define AZX_DCAPS_PRESET_NVIDIA \
- 	(AZX_DCAPS_NVIDIA_SNOOP | AZX_DCAPS_RIRB_DELAY | AZX_DCAPS_NO_MSI |\
--	 AZX_DCAPS_ALIGN_BUFSIZE)
-+	 AZX_DCAPS_ALIGN_BUFSIZE | AZX_DCAPS_NO_64BIT)
- 
- #define AZX_DCAPS_PRESET_CTHDA \
- 	(AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB | AZX_DCAPS_4K_BDLE_BOUNDARY)
--- 
-1.8.2.1
+channels = 1;
+
+
+snd_pcm_hw_params_malloc(&HWParms);
+
+snd_pcm_open(&SoundStream,CardName,SND_PCM_STREAM_PLAYBACK,SND_PCM_NONBLOCK
+| SND_PCM_ASYNC);
+
+snd_pcm_hw_params_set_channels_min(SoundStream,HWParms,&channels);
+
+snd_pcm_hw_params_set_channels_max(SoundStream,HWParms,&channels);
+
+snd_pcm_hw_params_set_channels_first(SoundStream,HWParms,&channels);
+
+plus error checking. Then, a bit later, the number of configured channels is
+verified:
+
+snd_pcm_hw_params_get_channels(HWParms,&channels);
+
+channels is at this point still 1, i.e. the driver accepted the mono output,
+but does then not play correctly.
+
+Note that the same call sequence works for stereo, and it also works for
+mono for other underlying hardware drivers, i.e. mono output works on
+snd-hda-intel, for example. It does not on emu10k1.
