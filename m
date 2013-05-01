@@ -1,61 +1,39 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Tue, 23 Apr 2013 11:23:37 -0400 (EDT)
-From: Alan Stern <stern@rowland.harvard.edu>
-In-Reply-To: <5176A42F.6080409@ladisch.de>
-Message-ID: <Pine.LNX.4.44L0.1304231119060.1679-100000@iolanthe.rowland.org>
-MIME-Version: 1.0
-Subject: Re: [alsa-devel] BUG: USB audio discontinuities with 'UHCI:
- implement new semantics for URB_ISO_ASAP'
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] MAINTAINERS: Add linux-samsung-soc list
+ to all related entries
+Date: Wed, 01 May 2013 12:28:17 +0200
+Message-ID: <5180EE41.50302@gmail.com>
+References: <1366572050-626-1-git-send-email-tomasz.figa@gmail.com> <CAH9JG2U7Qdq_xQbuqHu6PXzURS2fWwBC=HJmyrXT5n3n_pAa0w@mail.gmail.com> <20130430132755.GB1023@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, Joe Rayhawk <jrayhawk@fairlystable.org>, alsa-devel@vger.kernel.org
-List-ID: <alsa-devel@alsa-project.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20130430132755.GB1023@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Kyungmin Park <kmpark@infradead.org>, t.stanislaws@samsung.com, linux-fbdev@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, jy0922.shim@samsung.com, alsa-devel@alsa-project.org, sbkim73@samsung.com, sw0312.kim@samsung.com, jg1.han@samsung.com, linux-mmc@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>, dri-devel@lists.freedesktop.org, inki.dae@samsung.com, jtp.park@samsung.com, dh09.lee@samsung.com, linux-arm-kernel@lists.infradead.org, s.nawrocki@samsung.com, k.debski@samsung.com, linux-media@vger.kernel.org
+List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Apr 2013, Clemens Ladisch wrote:
+On 04/30/2013 03:27 PM, Mark Brown wrote:
+> On Mon, Apr 22, 2013 at 03:23:29PM +0900, Kyungmin Park wrote:
+>
+>> I don't think it's not required, each tree has each own mailing list. don't
+>> need to post all patches to samsung-soc list.
+>
+> It can be useful to get system level input on some stuff, I guess it
+> mostly depends if the people on the generic list mind the extra traffic
+> or if they find it useful.
 
-> Alan Stern wrote:
-> > On Tue, 23 Apr 2013, Clemens Ladisch wrote:
-> >> Why is having a queue of two URB with one packet each suddenly not
-> >> allowed?
-> >
-> > It _is_ allowed when URB_ISO_ASAP is clear.  I have never fully
-> > understood why the audio driver sets that flag.  By setting it, you are
-> > telling the host controller driver that you are willing to give up
-> > reduced latency in order to avoid underruns.
-> 
-> This flag was needed to avoid having to set urb->start_frame.
+I think this could also improve testing coverage, if more people are aware
+of stuff going in through various mailing lists.
 
-Ah, okay.  It is now unnecessary to set urb->start_frame; in fact that 
-field is now output-only.
+Also on a specific subsystem mailing lists yet another SoC specific patches
+may not get enough attention, as people care most about the core subsystem
+changes.
 
-(To be fair, I haven't checked _all_ the HCDs in this regard, just 
-uhci-hcd, ohci-hcd, and ehci-hcd.  However, if any other HCD requires 
-urb->start_frame to be set then that HCD should be considered buggy and 
-should be fixed.)
+So I would in general encourage others to Cc linux-samsung-soc, even if the
+$subject patch gets ignored.
 
-> With the changed queueing API, the audio driver needs to change too.
-> I'll look into this ...
-
-Let me know if you have any questions.
-
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I seriously doubt anyone would have ever been disturbed with additional
+traffic on the list, with its current average of about 20..50 emails per 
+day.
