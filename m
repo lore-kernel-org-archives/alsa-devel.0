@@ -1,61 +1,74 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: max98090: Fix build warning when
- CONFIG_PM_RUNTIME is not set
-Date: Thu, 02 May 2013 16:00:58 +0800
-Message-ID: <1367481658.13357.1.camel@phoenix>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH]: x86_64, audio: Fix system panic when DMA > 40 bits
+Date: Thu, 02 May 2013 10:29:33 +0200
+Message-ID: <518223ED.3000509@canonical.com>
+References: <1367435048-66137-1-git-send-email-travis@sgi.com> <518205A9.1050409@canonical.com> <51820968.7080303@sgi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f45.google.com (mail-da0-f45.google.com
- [209.85.210.45])
- by alsa0.perex.cz (Postfix) with ESMTP id A92B82610C9
- for <alsa-devel@alsa-project.org>; Thu,  2 May 2013 10:01:05 +0200 (CEST)
-Received: by mail-da0-f45.google.com with SMTP id w3so196359dad.32
- for <alsa-devel@alsa-project.org>; Thu, 02 May 2013 01:01:04 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <51820968.7080303@sgi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mike Travis <travis@sgi.com>
+Cc: Stephen Warren <swarren@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Russ Anderson <rja@sgi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix below build warning when CONFIG_PM_RUNTIME is not set.
+On 05/02/2013 08:36 AM, Mike Travis wrote:
+>
+>
+> On 5/1/2013 11:20 PM, David Henningsson wrote:
+>> On 05/01/2013 09:04 PM, Mike Travis wrote:
+>>> The audio driver mistakenly allows 64 bit addresses to be created for
+>>> the audio driver on Nvidia GPUs.  Unfortunately, the hardware normally
+>>> only supports up to 40 bits of DMA.  This can cause system panics as
+>>> well as misdirected data when the address is > 40 bits as the upper
+>>> part the address is truncated.
+>>
+>> Thanks for this patch. Stephen Warren, is this something you can
+>> confirm/deny, and do you know what range of hardware this actually
+>> applies to?
+>
+> The dma_mask can be read from the gpu device's pci entry.  I know it's
+> a stretch to try to link to that but past history has shown that it
+> ranges from 36 to 40 bits.
 
-  CC [M]  sound/soc/codecs/max98090.o
-sound/soc/codecs/max98090.c:2339:12: warning: 'max98090_runtime_resume' defined but not used [-Wunused-function]
-sound/soc/codecs/max98090.c:2350:12: warning: 'max98090_runtime_suspend' defined but not used [-Wunused-function]
+Ok, so the below patch is some kind of workaround, as we don't currently 
+take the dma_mask into account correctly? Or put in another way, would 
+it be possible/better to actually read the dma_mask and use that instead 
+of just clamping at 32 bit?
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/max98090.c | 2 ++
- 1 file changed, 2 insertions(+)
+>
+>>
+>>>
+>>> Signed-off-by: Mike Travis <travis@sgi.com>
+>>> Reviewed-by: Mike Habeck <habeck@sgi.com>
+>>> ---
+>>>    sound/pci/hda/hda_intel.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>> index bcd40ee..45eb165 100644
+>>> --- a/sound/pci/hda/hda_intel.c
+>>> +++ b/sound/pci/hda/hda_intel.c
+>>> @@ -615,7 +615,7 @@ enum {
+>>>    /* quirks for Nvidia */
+>>>    #define AZX_DCAPS_PRESET_NVIDIA \
+>>>        (AZX_DCAPS_NVIDIA_SNOOP | AZX_DCAPS_RIRB_DELAY |
+>>> AZX_DCAPS_NO_MSI |\
+>>> -     AZX_DCAPS_ALIGN_BUFSIZE)
+>>> +     AZX_DCAPS_ALIGN_BUFSIZE | AZX_DCAPS_NO_64BIT)
+>>>
+>>>    #define AZX_DCAPS_PRESET_CTHDA \
+>>>        (AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB |
+>>> AZX_DCAPS_4K_BDLE_BOUNDARY)
+>>>
+>>
+>>
+>>
+>
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index ce0d364..4f39a50 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2336,6 +2336,7 @@ static int max98090_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_RUNTIME
- static int max98090_runtime_resume(struct device *dev)
- {
- 	struct max98090_priv *max98090 = dev_get_drvdata(dev);
-@@ -2355,6 +2356,7 @@ static int max98090_runtime_suspend(struct device *dev)
- 
- 	return 0;
- }
-+#endif
- 
- static const struct dev_pm_ops max98090_pm = {
- 	SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
+
+
 -- 
-1.8.1.2
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
