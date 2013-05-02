@@ -1,79 +1,79 @@
-From: Tvrtko Ursulin <tvrtko.ursulin@onelan.co.uk>
-Subject: Re: idea: a reserve alsa plugin
-Date: Thu, 02 May 2013 15:28:47 +0100
-Message-ID: <2131647.YQz4O6jht3@deuteros>
-References: <51824609.30405@canonical.com>
-Reply-To: General PulseAudio Discussion
-	<pulseaudio-discuss@lists.freedesktop.org>
+From: Mike Travis <travis@sgi.com>
+Subject: Re: [PATCH]: x86_64, audio: Fix system panic when DMA > 40 bits
+Date: Thu, 02 May 2013 09:19:58 -0700
+Message-ID: <5182922E.4060305@sgi.com>
+References: <1367435048-66137-1-git-send-email-travis@sgi.com> <518205A9.1050409@canonical.com> <51820968.7080303@sgi.com> <518223ED.3000509@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <51824609.30405@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
-To: pulseaudio-discuss@lists.freedesktop.org
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <518223ED.3000509@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Stephen Warren <swarren@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Russ Anderson <rja@sgi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi David,
 
-On Thursday 02 May 2013 12:55:05 David Henningsson wrote:
-> Just had an idea which I'll write down here before I forget it
-> again...and I'm not saying I'll implement this anytime soon either, but
-> here goes:
+On 5/2/2013 1:29 AM, David Henningsson wrote:
+> On 05/02/2013 08:36 AM, Mike Travis wrote:
+>>
+>>
+>> On 5/1/2013 11:20 PM, David Henningsson wrote:
+>>> On 05/01/2013 09:04 PM, Mike Travis wrote:
+>>>> The audio driver mistakenly allows 64 bit addresses to be created for
+>>>> the audio driver on Nvidia GPUs.  Unfortunately, the hardware normally
+>>>> only supports up to 40 bits of DMA.  This can cause system panics as
+>>>> well as misdirected data when the address is > 40 bits as the upper
+>>>> part the address is truncated.
+>>>
+>>> Thanks for this patch. Stephen Warren, is this something you can
+>>> confirm/deny, and do you know what range of hardware this actually
+>>> applies to?
+>>
+>> The dma_mask can be read from the gpu device's pci entry.  I know it's
+>> a stretch to try to link to that but past history has shown that it
+>> ranges from 36 to 40 bits.
 > 
-> There is a device reserve protocol between PulseAudio and JACK2 - when
-> JACK needs the sound card, it'll send a dbus message to PulseAudio and
-> grab a name in D-Bus.
+> Ok, so the below patch is some kind of workaround, as we don't currently
+> take the dma_mask into account correctly? Or put in another way, would
+> it be possible/better to actually read the dma_mask and use that instead
+> of just clamping at 32 bit?\
+
+Yes, it would.  There is a strange scenario where if you request
+a DMA32 address it must be on the lowest node (where the DMA32 area
+is).  But if you are running on a cpuset that excludes Node 0's
+memory, you'll get an error.  But I couldn't think of a workable
+way to link the two (except that the PCI id is the same except
+for the function #.)
+>>>
+>>>>
+>>>> Signed-off-by: Mike Travis <travis@sgi.com>
+>>>> Reviewed-by: Mike Habeck <habeck@sgi.com>
+>>>> ---
+>>>>    sound/pci/hda/hda_intel.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>>> index bcd40ee..45eb165 100644
+>>>> --- a/sound/pci/hda/hda_intel.c
+>>>> +++ b/sound/pci/hda/hda_intel.c
+>>>> @@ -615,7 +615,7 @@ enum {
+>>>>    /* quirks for Nvidia */
+>>>>    #define AZX_DCAPS_PRESET_NVIDIA \
+>>>>        (AZX_DCAPS_NVIDIA_SNOOP | AZX_DCAPS_RIRB_DELAY |
+>>>> AZX_DCAPS_NO_MSI |\
+>>>> -     AZX_DCAPS_ALIGN_BUFSIZE)
+>>>> +     AZX_DCAPS_ALIGN_BUFSIZE | AZX_DCAPS_NO_64BIT)
+>>>>
+>>>>    #define AZX_DCAPS_PRESET_CTHDA \
+>>>>        (AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB |
+>>>> AZX_DCAPS_4K_BDLE_BOUNDARY)
+>>>>
+>>>
+>>>
+>>>
+>>
 > 
-> However, there are plenty of applications who like to access ALSA
-> directly, without going through JACK2 or PulseAudio. By making a
-> "reserve" plugin, we could have this functionality for those apps too.
 > 
-> In practice, if the app usually opens "plughw:0" or "hw:0", it could
-> instead open "reserve:plughw:0" or "reserve:hw:0" to also reserve the
-> device from PulseAudio usage while the device is open. Meanwhile,
-> PulseAudio is free to use other audio devices (which is not the case
-> when using e g pasuspender).
 > 
-> How does that sound?
-
-If I understand correctly you are saying essentially this:
-
-1. There is an existing device control protocol which works over DBus.
-2. Your idea is to add a equivalent device control protocol using ALSA PCM 
-plugin (well in fact not add but create a new proxy interface to it).
-
-Is that right? If so, how do you provide this functionality to existing 
-applications without teaching them about the reserve plugin?
-
-And if you have to modify the applications, is the only advantage then that 
-you do not have to add DBus dependency to them? Or a PA dependency to talk 
-directly to the server? If so then this solution feels a bit kludgy. 
-
-Perhaps you would want an extension to snd_pcm_open (or whatever, I am going 
-from vague memory here) to have something like "SND_PCM_EXCLUSIVE | 
-SND_PCM_NOTIFY_BUSY_OPEN" mode (if the former is not implied) which would 
-notify the original owner that the second application is attempting to open 
-it. Perhaps using SIGURG or something while returing -EBUSY or something to 
-the caller signalling they should retry. Not sure if this would be doable 
-completely in userspace so I might be leading you toward a generic 
-kernel/glibc solution here. :)
-
-What about the policy control as to which applications are allowed to take 
-over? It sounds sub optimal to allow any ALSA application which knows about 
-this new plugin or other release mechanism to take over just like that. That 
-would create a bit of a mess.
-
-Regards,
-
-Tvrtko
