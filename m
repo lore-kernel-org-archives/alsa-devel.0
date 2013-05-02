@@ -1,51 +1,47 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH v2 2/3] ASoC: ux500: drop clock gating widgets from machine driver
-Date: Thu,  2 May 2013 11:52:51 +0200
-Message-ID: <1367488371-18346-1-git-send-email-fabio.baltieri@linaro.org>
-References: <20130502075421.GA23346@balto.lan>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130502075421.GA23346@balto.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: idea: a reserve alsa plugin
+Date: Thu, 02 May 2013 12:55:05 +0200
+Message-ID: <51824609.30405@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E76E62610A5
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2013 12:55:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Drop ab8500 clock gating widgets from mop500_ab8500_ctrls, as these bits
-are already controlled by ab8500 codec driver and should not be exposed
-to the user.
+Just had an idea which I'll write down here before I forget it 
+again...and I'm not saying I'll implement this anytime soon either, but 
+here goes:
 
-Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
----
+There is a device reserve protocol between PulseAudio and JACK2 - when 
+JACK needs the sound card, it'll send a dbus message to PulseAudio and 
+grab a name in D-Bus.
 
-Was: ASoC: ux500: move clock controls to ab8500-codec
+However, there are plenty of applications who like to access ALSA 
+directly, without going through JACK2 or PulseAudio. By making a 
+"reserve" plugin, we could have this functionality for those apps too.
 
-Changes from v1:
-- rewrote the patch to just drop the widgets, as those allowed the user
-  to control some bits already handled by the codec driver.
+In practice, if the app usually opens "plughw:0" or "hw:0", it could 
+instead open "reserve:plughw:0" or "reserve:hw:0" to also reserve the 
+device from PulseAudio usage while the device is open. Meanwhile, 
+PulseAudio is free to use other audio devices (which is not the case 
+when using e g pasuspender).
 
- sound/soc/ux500/mop500_ab8500.c | 10 ----------
- 1 file changed, 10 deletions(-)
+How does that sound?
 
-diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500_ab8500.c
-index 2c122de..4606194 100644
---- a/sound/soc/ux500/mop500_ab8500.c
-+++ b/sound/soc/ux500/mop500_ab8500.c
-@@ -162,16 +162,6 @@ static struct snd_kcontrol_new mop500_ab8500_ctrls[] = {
- 	SOC_ENUM_EXT("Master Clock Select",
- 		soc_enum_mclk,
- 		mclk_input_control_get, mclk_input_control_put),
--	/* Digital interface - Clocks */
--	SOC_SINGLE("Digital Interface Master Generator Switch",
--		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENMASTGEN,
--		1, 0),
--	SOC_SINGLE("Digital Interface 0 Bit-clock Switch",
--		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK0,
--		1, 0),
--	SOC_SINGLE("Digital Interface 1 Bit-clock Switch",
--		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK1,
--		1, 0),
- 	SOC_DAPM_PIN_SWITCH("Headset Left"),
- 	SOC_DAPM_PIN_SWITCH("Headset Right"),
- 	SOC_DAPM_PIN_SWITCH("Earpiece"),
 -- 
-1.8.2
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
