@@ -1,50 +1,61 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: Re: [PATCH 2/3] ASoC: ux500: move clock controls to ab8500-codec
-Date: Thu, 2 May 2013 09:54:21 +0200
-Message-ID: <20130502075421.GA23346@balto.lan>
-References: <1367330994-7259-1-git-send-email-fabio.baltieri@linaro.org>
- <1367330994-7259-3-git-send-email-fabio.baltieri@linaro.org>
- <20130430183035.GC26160@sirena.org.uk>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: max98090: Fix build warning when
+ CONFIG_PM_RUNTIME is not set
+Date: Thu, 02 May 2013 16:00:58 +0800
+Message-ID: <1367481658.13357.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130430183035.GC26160@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-da0-f45.google.com (mail-da0-f45.google.com
+ [209.85.210.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A92B82610C9
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2013 10:01:05 +0200 (CEST)
+Received: by mail-da0-f45.google.com with SMTP id w3so196359dad.32
+ for <alsa-devel@alsa-project.org>; Thu, 02 May 2013 01:01:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 30, 2013 at 07:30:35PM +0100, Mark Brown wrote:
-> On Tue, Apr 30, 2013 at 04:09:53PM +0200, Fabio Baltieri wrote:
-> > Move ab8500 clock control definitions to the ab8500 codec driver,
-> > leaving only card specific setting in mop500_ab8500_ctrls.
-> 
-> So, if this is some generic thing and not some weird stuff for the card
-> this really reopens the question about why this is done with user
-> visible controls...
-> 
-> >  static struct snd_kcontrol_new ab8500_ctrls[] = {
-> > +	/* Digital interface - Clocks */
-> > +	SOC_SINGLE("Digital Interface Master Generator Switch",
-> > +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENMASTGEN,
-> > +		1, 0),
-> > +	SOC_SINGLE("Digital Interface 0 Bit-clock Switch",
-> > +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK0,
-> > +		1, 0),
-> > +	SOC_SINGLE("Digital Interface 1 Bit-clock Switch",
-> > +		AB8500_DIGIFCONF1, AB8500_DIGIFCONF1_ENFSBITCLK1,
-> > +		1, 0),
-> 
-> ...this is all stuff that is normally figured out automatically by the
-> drivers, we know when the audio interface is in use and hence when it
-> needs to be clocked.
+Fix below build warning when CONFIG_PM_RUNTIME is not set.
 
-It makes sense, I'll poke the documentation I have and try to figure out
-how to control those bits from a more appropriate place.
+  CC [M]  sound/soc/codecs/max98090.o
+sound/soc/codecs/max98090.c:2339:12: warning: 'max98090_runtime_resume' defined but not used [-Wunused-function]
+sound/soc/codecs/max98090.c:2350:12: warning: 'max98090_runtime_suspend' defined but not used [-Wunused-function]
 
-Thanks,
-Fabio
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/max98090.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index ce0d364..4f39a50 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2336,6 +2336,7 @@ static int max98090_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_RUNTIME
+ static int max98090_runtime_resume(struct device *dev)
+ {
+ 	struct max98090_priv *max98090 = dev_get_drvdata(dev);
+@@ -2355,6 +2356,7 @@ static int max98090_runtime_suspend(struct device *dev)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static const struct dev_pm_ops max98090_pm = {
+ 	SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
 -- 
-Fabio Baltieri
+1.8.1.2
