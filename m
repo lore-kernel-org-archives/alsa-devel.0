@@ -1,24 +1,24 @@
-From: Thomas Richter <thor@math.tu-berlin.de>
-Subject: Mono output on emu10k1 with alsa broken
-Date: Wed, 1 May 2013 21:36:45 +0000 (UTC)
-Message-ID: <loom.20130501T232933-467@post.gmane.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 2/4] ASoC: imx-sgtl5000: Let the code
+ clock be a mandatory binding
+Date: Thu, 2 May 2013 10:04:05 +0800
+Message-ID: <20130502020403.GB3442@S2101-09.ap.freescale.net>
+References: <1366815286-31820-1-git-send-email-festevam@gmail.com>
+ <1366815286-31820-2-git-send-email-festevam@gmail.com>
+ <20130425051654.GB1389@S2101-09.ap.freescale.net>
+ <20130425110127.GR5019@opensource.wolfsonmicro.com>
+ <20130425143522.GA7504@S2101-09.ap.freescale.net>
+ <20130501165301.GT26160@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id E6CF9260856
- for <alsa-devel@alsa-project.org>; Wed,  1 May 2013 23:37:51 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1UXeiO-0004kT-3M
- for alsa-devel@alsa-project.org; Wed, 01 May 2013 23:37:28 +0200
-Received: from p4FC12FBE.dip0.t-ipconnect.de ([79.193.47.190])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 01 May 2013 23:37:28 +0200
-Received: from thor by p4FC12FBE.dip0.t-ipconnect.de with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 01 May 2013 23:37:28 +0200
+Received: from db9outboundpool.messaging.microsoft.com
+ (mail-db9lp0253.outbound.messaging.microsoft.com [213.199.154.253])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C44526087D
+ for <alsa-devel@alsa-project.org>; Thu,  2 May 2013 04:04:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130501165301.GT26160@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,41 +28,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Trying to configure mono (one channel) output on emu10k1 hardware using the
-alsa version that comes with kernel 3.9 is broken. Instead of expecting mono
-samples, the alsa callback expects twice as many stereo samples. Not getting
-the required number of samples then causes a buffer underrun, and sound gets
-interrupted or messed up. In fact, what the audio hardware does is that it
-plays not only the buffer, but also the data "behind the buffer", causing
-wierd noises.
+On Wed, May 01, 2013 at 05:53:01PM +0100, Mark Brown wrote:
+> On Thu, Apr 25, 2013 at 10:35:24PM +0800, Shawn Guo wrote:
+> > On Thu, Apr 25, 2013 at 12:01:27PM +0100, Mark Brown wrote:
+> > > On Thu, Apr 25, 2013 at 01:16:55PM +0800, Shawn Guo wrote:
+> > > > On Wed, Apr 24, 2013 at 11:54:44AM -0300, Fabio Estevam wrote:
+> 
+> > > > > - Rebased against Shawn's tree and remove mx53qsb clock fix, as it was already
+> > > > > applied on Shawn's tree
+> 
+> > > > It seems that you expect the patch to go via my tree?  In that case, I
+> > > > need Mark's ACK.
+> 
+> > > Well, it's a bit late for ARM changes to go in so I guess it'll be
+> > > sorted out after the merge window anyway and can be applied to the
+> > > ASoC tree after that?
+> 
+> > Even worse.  The dependant patches in my tree are 3.11 material.
+> 
+> Oh, that's distressing - I guess there's more than just the fix
+> mentioned above?
 
-The channel count is setup as
+Yes, a couple of patches.
 
-channels = 1;
+> Would it be possible for you to provide a branch I can
+> pull into my tree for v3.11?
 
+Ok, I will try to once we have a -rc to be the base.
 
-snd_pcm_hw_params_malloc(&HWParms);
+Shawn
 
-snd_pcm_open(&SoundStream,CardName,SND_PCM_STREAM_PLAYBACK,SND_PCM_NONBLOCK
-| SND_PCM_ASYNC);
-
-snd_pcm_hw_params_set_channels_min(SoundStream,HWParms,&channels);
-
-snd_pcm_hw_params_set_channels_max(SoundStream,HWParms,&channels);
-
-snd_pcm_hw_params_set_channels_first(SoundStream,HWParms,&channels);
-
-plus error checking. Then, a bit later, the number of configured channels is
-verified:
-
-snd_pcm_hw_params_get_channels(HWParms,&channels);
-
-channels is at this point still 1, i.e. the driver accepted the mono output,
-but does then not play correctly.
-
-Note that the same call sequence works for stereo, and it also works for
-mono for other underlying hardware drivers, i.e. mono output works on
-snd-hda-intel, for example. It does not on emu10k1.
+> My workflow is easier if I don't have to
+> worry about having potential collisions with other trees.  If it'd be
+> too inconvenient for you then I can cope but it'd be nice.
