@@ -1,41 +1,37 @@
-From: Mike Travis <travis@sgi.com>
-Subject: Re: [PATCH]: x86_64, audio: Fix system panic when DMA > 40 bits
-Date: Thu, 02 May 2013 11:59:28 -0700
-Message-ID: <5182B790.6090907@sgi.com>
-References: <1367435048-66137-1-git-send-email-travis@sgi.com> <518205A9.1050409@canonical.com> <5182AE68.9010905@wwwdotorg.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Marek Belisko <marek.belisko@gmail.com>
+Subject: [PATCH] ASoC: McASP: Fix receive clock polarity in DAIFMT_NB_NF mode.
+Date: Fri,  3 May 2013 07:37:36 +0200
+Message-ID: <1367559456-20208-1-git-send-email-marek.belisko@streamunlimited.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5182AE68.9010905@wwwdotorg.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: David Henningsson <david.henningsson@canonical.com>, Stephen Warren <swarren@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Russ Anderson <rja@sgi.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: zonque@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Marek Belisko <marek.belisko@streamunlimited.com>
 List-Id: alsa-devel@alsa-project.org
 
+According documentation bit ACLKRPOL is set to 0 (receiver samples data
+on falling edge) and when set to 1 (receiver samples data on rising edge).
 
+I2S data are always sampled on falling edge and valid during rising edge
+of bit clock. So in case of capture data transmitter sample data on falling
+edge and macsp must read then on rising edge.
 
-On 5/2/2013 11:20 AM, Stephen Warren wrote:
-> On 05/02/2013 12:20 AM, David Henningsson wrote:
->> On 05/01/2013 09:04 PM, Mike Travis wrote:
->>> The audio driver mistakenly allows 64 bit addresses to be created for
->>> the audio driver on Nvidia GPUs.  Unfortunately, the hardware normally
->>> only supports up to 40 bits of DMA.  This can cause system panics as
->>> well as misdirected data when the address is > 40 bits as the upper
->>> part the address is truncated.
->>
->> Thanks for this patch. Stephen Warren, is this something you can
->> confirm/deny, and do you know what range of hardware this actually
->> applies to?
-> 
-> It's certainly plausible that the GPU's internal physical addresses are
-> less than a full 64-bits, and this probably affects PCI accesses too.
-> 
+Signed-off-by: Marek Belisko <marek.belisko@streamunlimited.com>
+---
+ sound/soc/davinci/davinci-mcasp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I haven't noticed any other problems with MMIOH accesses.  The
-problem of DMA32 addresses certainly affects us though audio is
-not a high priority on UV(*) except in specific applications (like
-Media Servers, etc.]  Accesses to the GPU and GPGPU are much more
-common.
-
-(* http://www.sgi.com/products/servers/uv/)
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 849a187..c46112e 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -568,7 +568,7 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_set_bits(base + DAVINCI_MCASP_ACLKXCTL_REG, ACLKXPOL);
+ 		mcasp_clr_bits(base + DAVINCI_MCASP_TXFMCTL_REG, FSXPOL);
+ 
+-		mcasp_clr_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
++		mcasp_set_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRPOL);
+ 		mcasp_clr_bits(base + DAVINCI_MCASP_RXFMCTL_REG, FSRPOL);
+ 		break;
+ 
+-- 
+1.7.9.5
