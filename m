@@ -1,77 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: jz4740: Remove redundant
-	platform_set_drvdata()
-Date: Fri, 3 May 2013 10:40:07 +0100
-Message-ID: <20130503094007.GM4945@sirena.org.uk>
-References: <1367572164-19523-1-git-send-email-sachin.kamat@linaro.org>
- <1367572164-19523-6-git-send-email-sachin.kamat@linaro.org>
+Subject: Re: [PATCH v2 2/3] ASoC: ux500: drop clock gating widgets from
+ machine driver
+Date: Fri, 3 May 2013 10:42:43 +0100
+Message-ID: <20130503094243.GO4945@sirena.org.uk>
+References: <20130502075421.GA23346@balto.lan>
+ <1367488371-18346-1-git-send-email-fabio.baltieri@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0264798841146720520=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 472B72616A0
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2013 11:40:18 +0200 (CEST)
-In-Reply-To: <1367572164-19523-6-git-send-email-sachin.kamat@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XVTPT6MZt3zd/C+/"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1367488371-18346-1-git-send-email-fabio.baltieri@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0264798841146720520==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3FyYKcuUbgqNYeqV"
-Content-Disposition: inline
-
-
---3FyYKcuUbgqNYeqV
+--XVTPT6MZt3zd/C+/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 03, 2013 at 02:39:24PM +0530, Sachin Kamat wrote:
-> Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
-> driver is bound) removes the need to set driver data field to
-> NULL.
+On Thu, May 02, 2013 at 11:52:51AM +0200, Fabio Baltieri wrote:
+> Drop ab8500 clock gating widgets from mop500_ab8500_ctrls, as these bits
+> are already controlled by ab8500 codec driver and should not be exposed
+> to the user.
 
 Applied, thanks.
 
---3FyYKcuUbgqNYeqV
+--XVTPT6MZt3zd/C+/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRg4X0AAoJELSic+t+oim99dwP/jAfVnKzoGzdpgBiE8CXr3kw
-XhKiWzSAEyYMtWLQ+2h55HobcP2xnmkrOhn2HwTVBdQ0myL6bClD4Q7ACvXU9mCO
-GtunBLIxqSvA227FIauEemWoMHI3yrLfEGE1zErDbQO/OgnAZPxR930dIJXwdFVG
-vvR+nU709byUn2Bqja6EkZSg8sL7RY53hY9aQn1XpzurbtPkB+sAoZx8lk8YjWjU
-JPUtnHxOKOPcNxBlp58qeJ9/pFgar7Cayw0u1JAn4PKf4V5Ol4Yn4kEoSIfVgAij
-jAvIspplEMwuUFwRT7uiSvK0cpxlDfNIfdK36I/ZGdP8XVnHHT0hzZy6p/Tl4wpc
-h2nxBdxy9L4NU43Xx7mTPDCYTIzl5xuMuXeJXE4K1/zN098iPaip4cRerYimDWi3
-Iu6cJluBh7vaqv3NctraG3W6PZmrv7nHhbBVI10/LPpDLqGiez06DHgJJfC06Ksu
-xDJE8XvxEhkFs1oGV8jin1FV5wamocZ1TcEx/Y9vY0hBAsdK/quKBkB7u3EeWktK
-E7y1QEp3Huvp5VHHlzVzehusl6hZdd4K7qng39kb3WK2zGlRTaZ/3Ijpir5vAgTj
-Z4j+IZybWClAsUttQIE1LnUtuWzvxbqXJaCa2+anczFRwsaiJF8R0cOn1QeWHZoF
-BMTtuaYHaDmhcqodkQHM
-=Ce/o
+iQIcBAEBAgAGBQJRg4aQAAoJELSic+t+oim9So4P/j2E76Wemmw41nhZgf16pZ80
+QV/1+FcZgXtC8b5lUZ0t4OaRyvwp+Fiw69azlHuHL+EtJi/BwrN5mGGOsY5A39+g
+ByUmcBYT9PE6QLHlsLNTPfgvmpcixqT9DetF5dWJu4lL+utKs1rdLDjZU0eEsUCT
+zkhRjvvEHrLpYR3lglaaMd+t/3UVgnZq2L2wuHBpZdzf18svTdpT0xuRefkKAfEA
+XHFVuajLbCdBsB/LtDk1Wo4DDnEMwpJ8p8/jDSZfwDgSlIh9fv656ivKkywXSHq2
+OvdTfSFF/cqxqrjkdpbPetsd9+Dv4ccsLIWG0RDhLaBMXMRYNLSDSDj9zVRkhI55
+P/w8B2XXkXs+OhwUbPTI3tCgU4WlqYipiZni9duQerFiLSvkFF4lQYxDHVTSiKUN
+1cuClnNp6Ucme2tlKIJKDs6mJgxKm5AifxajPwzAHWypt6hCB/N0sU0QmBeT44Tj
+m8/f27ngP3MrZTNG+RrSEzUXCjL6Dw76PM9OskN5w3dGNvma0o3m4R2EB9REdqAL
+vrDzEHyw6QSIOK8jMQp+PIguIr4NY6ZgwtwU6N5mld8a4ahsmoUhpiiUEPJ22fUN
+ijvETG4CG5LsBMaYIBEb9Yh0j4Vlf/qVZVcAuHWg2lJE+8MrEbLMK2iqnCPBC8Qz
+nqRPg5e4Zu8Zqv53w7hE
+=tbib
 -----END PGP SIGNATURE-----
 
---3FyYKcuUbgqNYeqV--
-
---===============0264798841146720520==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0264798841146720520==--
+--XVTPT6MZt3zd/C+/--
