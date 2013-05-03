@@ -1,18 +1,17 @@
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH 1/1] ALSA: atmel: Remove redundant
- platform_set_drvdata()
-Date: Fri, 3 May 2013 09:13:47 +0200
-Message-ID: <20130503071347.GA4109@samfundet.no>
-References: <1367564188-14674-1-git-send-email-sachin.kamat@linaro.org>
+From: "Christopher K." <c.krooss@gmail.com>
+Subject: Conexant CX20588 breakage in Kernel 3.9
+Date: Fri, 3 May 2013 15:51:20 +0200
+Message-ID: <CAHQjNr9J_tUH4BBp6-gwPC-L5h-FLBvQo80RpR7KFbk6yy_ffQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassarossa.samfundet.no (cassarossa.samfundet.no [193.35.52.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 02CCA261654
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2013 09:13:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1367564188-14674-1-git-send-email-sachin.kamat@linaro.org>
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DA6726163E
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2013 15:51:21 +0200 (CEST)
+Received: by mail-la0-f48.google.com with SMTP id eg20so1521784lab.21
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2013 06:51:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, nicolas.ferre@atmel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Around Fri 03 May 2013 12:26:28 +0530 or thereabout, Sachin Kamat wrote:
-> Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
-> driver is bound) removes the need to set driver data field to
-> NULL.
-> 
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Hi,
 
-Thanks
+Kernel 3.9 breaks audio on internal speakers for the Conexant CX20588.
+EAPD is disabled for Node 0x1d. Enabling in hda_analyzer works fine.
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Someone already postet on
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1173618
 
-> ---
->  sound/atmel/abdac.c |    2 --
->  sound/atmel/ac97c.c |    2 --
->  2 files changed, 4 deletions(-)
+Is this the right place to report this bug?
 
-<snipp diff>
-
--- 
-HcE
+Regards,
+Chris
