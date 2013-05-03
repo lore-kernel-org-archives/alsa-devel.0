@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 4/6] ASoC: ep93xx: Remove redundant
+Subject: [PATCH 6/6] ASoC: jz4740: Remove redundant
 	platform_set_drvdata()
-Date: Fri,  3 May 2013 14:39:22 +0530
-Message-ID: <1367572164-19523-4-git-send-email-sachin.kamat@linaro.org>
+Date: Fri,  3 May 2013 14:39:24 +0530
+Message-ID: <1367572164-19523-6-git-send-email-sachin.kamat@linaro.org>
 References: <1367572164-19523-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BD602652D7
- for <alsa-devel@alsa-project.org>; Fri,  3 May 2013 11:30:34 +0200 (CEST)
-Received: by mail-pa0-f41.google.com with SMTP id rl6so838934pac.0
- for <alsa-devel@alsa-project.org>; Fri, 03 May 2013 02:30:33 -0700 (PDT)
+Received: from mail-da0-f48.google.com (mail-da0-f48.google.com
+ [209.85.210.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75D552652F1
+ for <alsa-devel@alsa-project.org>; Fri,  3 May 2013 11:30:48 +0200 (CEST)
+Received: by mail-da0-f48.google.com with SMTP id h32so719069dak.21
+ for <alsa-devel@alsa-project.org>; Fri, 03 May 2013 02:30:46 -0700 (PDT)
 In-Reply-To: <1367572164-19523-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +25,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, sachin.kamat@linaro.org, Mika Westerberg <mika.westerberg@iki.fi>, broonie@kernel.org, patches@linaro.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, broonie@kernel.org, Lars-Peter Clausen <lars@metafoo.de>, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
@@ -33,30 +33,36 @@ driver is bound) removes the need to set driver data field to
 NULL.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/cirrus/ep93xx-ac97.c |    2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/jz4740.c     |    2 --
+ sound/soc/jz4740/jz4740-i2s.c |    1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-index 7798fbd..840c9b1 100644
---- a/sound/soc/cirrus/ep93xx-ac97.c
-+++ b/sound/soc/cirrus/ep93xx-ac97.c
-@@ -403,7 +403,6 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 5f607b3..bcebd1a 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -384,8 +384,6 @@ static int jz4740_codec_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 
+-	platform_set_drvdata(pdev, NULL);
+-
  	return 0;
+ }
  
- fail:
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 9a12644..cafc6ed 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -509,7 +509,6 @@ static int jz4740_i2s_dev_remove(struct platform_device *pdev)
+ 	iounmap(i2s->base);
+ 	release_mem_region(i2s->mem->start, resource_size(i2s->mem));
+ 
 -	platform_set_drvdata(pdev, NULL);
- 	ep93xx_ac97_info = NULL;
- 	dev_set_drvdata(&pdev->dev, NULL);
- 	return ret;
-@@ -418,7 +417,6 @@ static int ep93xx_ac97_remove(struct platform_device *pdev)
- 	/* disable the AC97 controller */
- 	ep93xx_ac97_write_reg(info, AC97GCR, 0);
+ 	kfree(i2s);
  
--	platform_set_drvdata(pdev, NULL);
- 	ep93xx_ac97_info = NULL;
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
+ 	return 0;
 -- 
 1.7.9.5
