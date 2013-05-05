@@ -1,238 +1,970 @@
 From: David Herrmann <dh.herrmann@gmail.com>
-Subject: Re: [RFC] Sound/HID: wiimote: add speaker support
-Date: Sun, 5 May 2013 13:17:25 +0200
-Message-ID: <CANq1E4SV+0nw=XY1k7g9vg2YJ75OyKoQGkwV-9onC+5JqDs1rg@mail.gmail.com>
-References: <1366481693-5945-1-git-send-email-dh.herrmann@gmail.com>
- <5178D709.1060500@canonical.com>
- <CANq1E4SkUkqwR0EPfr2XWaNNf6=v1u7YtfTqzBnqN6YTdWBSyA@mail.gmail.com>
- <517A80E6.5010909@canonical.com>
- <CANq1E4RyAzGn1H5PN5iuyp0eVDfX8YEXNkVkkq3Jp3jMb=ea0w@mail.gmail.com>
- <517A8D87.5090800@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
- [209.85.223.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CFA3261689
- for <alsa-devel@alsa-project.org>; Sun,  5 May 2013 13:17:26 +0200 (CEST)
-Received: by mail-ie0-f179.google.com with SMTP id c13so3170926ieb.38
- for <alsa-devel@alsa-project.org>; Sun, 05 May 2013 04:17:26 -0700 (PDT)
-In-Reply-To: <517A8D87.5090800@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Subject: [RFC 26/26] HID/ALSA: wiimote: add speaker support
+Date: Sun,  5 May 2013 23:13:10 +0200
+Message-ID: <1367788390-29835-27-git-send-email-dh.herrmann@gmail.com>
+References: <1367788390-29835-1-git-send-email-dh.herrmann@gmail.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <1367788390-29835-1-git-send-email-dh.herrmann@gmail.com>
+Sender: linux-input-owner@vger.kernel.org
+To: linux-input@vger.kernel.org
+Cc: Jiri Kosina <jkosina@suse.cz>, David Herrmann <dh.herrmann@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Classic Wii Remotes provide a speaker on the device. We can stream PCM
+data, mute and change volume via special protocol requests and remote
+audio registers.
+The device supports several different formats, but fully understood are
+only signed 8-bit PCM and something that looks like 4-bit Yamaha ADPCM.
+Theoretically, we can set data-rates from 183Hz up to 12MHz, but a
+realistic range for Bluetooth l2cap is 1000-4000 Hz.
+
+Data is streamed as 20bytes blocks and must be sent in a constant rate.
+There is no way to read the current position. It would be way too slow,
+anyway. However, if we stream data too fast, older devices will report
+overrun errors. It is nearly impossible to avoid them as we have no
+fine-grained control over bluetooth radio. But that's probably also the
+reason why newer devices no longer send these errors.
+
+Note that 8bit PCM at such low rates has quite bad sound quality. You
+also need to use user-space programs like "sox/play" as other
+applications require rates >4000/8000Hz.
+
+The 4bit Yamaha ADPCM should improve sound-quality a lot, however, the
+kernel currently doesn't support this. So we either need to add ALSA
+support or add an internal encoder. But this will be implemented in
+follow-up patches so we first get the infrastructure ready.
+
+Thanks to David Henningsson for very helpful advice on the driver layout.
+The driver is also very loosely based on the sgio2audio driver by
+Vivien Chappelier <vivien.chappelier@linux-mips.org> and the dummy
+alsa sound driver.
+
+Cc: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+---
 Hi
 
-On Fri, Apr 26, 2013 at 4:21 PM, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> On 04/26/2013 03:56 PM, David Herrmann wrote:
->>
->> Hi
->>
->> On Fri, Apr 26, 2013 at 3:28 PM, David Henningsson
->> <david.henningsson@canonical.com> wrote:
->>>
->>> On 04/26/2013 03:00 PM, David Herrmann wrote:
->>>>
->>>>
->>>> Hi
->>>>
->>>> On Thu, Apr 25, 2013 at 9:11 AM, David Henningsson
->>>> <david.henningsson@canonical.com> wrote:
->>>>>
->>>>>
->>>>> On 04/20/2013 08:14 PM, David Herrmann wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> Classic Wii Remotes provide a speaker on the device. We can stream PCM
->>>>>> data, mute and change volume via special protocol requests and remote
->>>>>> audio registers.
->>>>>>
->>>>>> The device supports several different formats, but fully understood
->>>>>> are
->>>>>> only signed 8-bit PCM and something that looks like 4-bit Yamaha
->>>>>> ADPCM.
->>>>>> Theoretically, we can set data-rates from 183Hz up to 12MHz, but a
->>>>>> realistic range for Bluetooth l2cap is 1500-4000 Hz.
->>>>>>
->>>>>> Data is streamed as 20bytes blocks and must be sent in a constant
->>>>>> rate.
->>>>>> There is no way to read the current position. It would be way too
->>>>>> slow,
->>>>>> anyway.
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> Hi,
->>>>>
->>>>> Fun project!
->>>>>
->>>>> I'm not sure I'm qualified to answer, but I would have allocated a
->>>>> buffer
->>>>> of
->>>>> kernel memory, say 64K (or maybe less, since the sample rate is so
->>>>> low).
->>>>> That would be the buffer you expose to userspace, and userspace would
->>>>> set
->>>>> period and buffer sizes according to this buffer.
->>>>>
->>>>> Your code doesn't really expose if/how you can tell if you're allowed
->>>>> to
->>>>> send 20 more bytes or not.
->>>>
->>>>
->>>>
->>>> I cannot tell at all. That's the problem. I just send data at the
->>>> expected rate and let the device deal with it. For instance with 8bit
->>>> PCM at 2000 Hz that makes one 20byte packet every 10ms. That's
->>>> 16kbit/s, which should work via Bluetooth l2cap.
->>>
->>>
->>>
->>> Btw, since this is something bluetooth related, have you checked with the
->>> bluez/bluetoothd project, so it isn't easier to integrate that way
->>> instead
->>> of in a kernel driver?
->>>
->>> That's how bluetooth audio is usually done.
->>
->>
->> Hehe, I'm involved in Bluetooth kernel development so I did check that
->> first ;)
->
->
-> Cool, does this mean I can contact you if I have problems with Bluetooth
-> chips and kernel drivers? That can come in handy ;-)
+This is my second revision of the Wii Remote sound-driver. It is based on the
+hotplugging rework in this series. It's the only patch that is marked as RFC
+but I thought I'd just include it in this series for completenes.
 
-I don't get paid for this, but you can always try ;)
+If someone wants to give it a try, I used the "sox" tools for testing as most
+other tools require rates >4000/8000Hz.
+  Sample created via:
+    sox input.wav -b 8 -e signed -c 1 -r 2000 output.raw
+  Play via: (prefix with: SOX_OPTS="--buffer 128" for better responsiveness)
+    AUDIODEV=hw:1 play -e signed -b 8 -c 1 -r 2000 output.raw
 
->
->> The thing is, Nintendo did a pretty bad job with audio on the
->> Wiimote. Bluetooth provides SCO channels specifically for audio but
->> Nintendo tunnels audio through an HID connection, yay! On the other
->> hand, the speaker is mostly used for small sound-effects so that
->> explains why they didn't care for higher rates.
->>
->> As l2cap+HID is handled in the kernel, I would have to provide a
->> char-interface or sysfs PCM-stream or whatever for user-space so they
->> can send HID reports with audio data while the kernel sends it's own
->> HID reports for normal HID operation. That does work, but I thought if
->> I already have all the device handling in the kernel, I should at
->> least try to do it as sound-driver. If it doesn't work out I can
->> always fall back to this option.
->
->
-> Ok.
->
->
->>>> Even 10x the
->>>> sample-rate (20kHz) with 160kbit/s should be possible, but the latency
->>>> gets pretty high that I doubt I can do that with a 20byte buffer. I
->>>> haven't figured out how big the real buffer of the device is so until
->>>> then I expect it to be as low as 20 bytes (the proprietary driver does
->>>> that, too).
->>>>
->>>> If the transmission buffer overflows, I just drop packages so there is
->>>> currently no easy way for me to see whether there's enough room for a
->>>> next package or not. But the connection is reliable so once a packet
->>>> is in the buffer, it's "guaranteed" to be transmitted in order to the
->>>> device.
->>>>
->>>> What's the expected thing to do if the connection is too slow? Should
->>>> I pause and resume or drop packets?
->>>
->>>
->>>
->>> Not sure what you mean here. Maybe bluetooth people know this problem
->>> better.
->>>
->>>
->>>>
->>>>> But assuming you have a timer running at a
->>>>> reasonable interval, that code would do something like:
->>>>>
->>>>> if (ready_to_send_packet_to_wiimote()) {
->>>>>     send_20_bytes_to_wiimote(kernel_buffer_ptr + offset);
->>>>>     offset += 20;
->>>>>     offset %= buffer_size;
->>>>>     if (offset % period_size < 20)
->>>>>       snd_pcm_period_elapsed();
->>>>> }
->>>>
->>>>
->>>>
->>>> Ah, ok, so I just send the data in the timer-interrupt and call
->>>> snd_pcm_period_elapsed() if the fill-state gets smaller than 20 bytes?
->>>> I guess snd_pcm_period_elapsed() is atomic so I can expect it to
->>>> prepare the buffer so the next timer-interrupt is guaranteed to have a
->>>> valid buffer or a cleared buffer?
->>>
->>>
->>>
->>> snd_pcm_period_elapsed() just tells userspace that userspace can start
->>> filling up a new period in the ringbuffer. snd_pcm_period_elapsed() does
->>> not
->>> prepare anything.
->>>
->>> E g, if userspace requests a buffer of 64K and period of 16K, you should
->>> call snd_pcm_period_elapsed() every time you cross a period boundary.
->>> Perhaps "offset % period_size < 20" can be more clearly written as
->>> "(offset
->>> / period_size) != (old_offset / period_size)", if that's more
->>> understandable?
->>
->>
->> Ah, now I understand. I thought the period-size is the maximum
->> transmission size that I can use in the driver (20 in this case). Ok,
->> your explanation helped. I think I understand the "period" concept
->> now.
->>
->> Apart from that, should I provide an mmap() interface for the buffer
->> so I can map it into the clients address-space? Or should I prevent
->> mmap() and let them use read/write? I guess I wouldn't need the .copy
->> and .silence callbacks if I provide mmap(), right? And a
->> vm_insert_pfn() would be quite simple to do..
->
->
-> I believe a mmap() interface would be more efficient, and thus recommended.
-> And some sound applications depend on an mmap interface being present
-> (although, really, they shouldn't).
->
-> There are some mmap helper functions in pcm.h that can probably help you
-> here - as for which callbacks you need to provide, you can probably figure
-> that out as quick as I can, as you're used to kernel development.
->
->
->> What happens if user-space cannot keep up with the rates? Do I just
->> continue sending garbage from the buffer or does the alsa core pause
->> the transmission or silence it until user-space catches up?
->
->
-> If userspace cannot keep up, I believe snd_pcm_period_elapsed() will make
-> sure userspace gets an underrun error.
+Comments welcome! I tested this with 4 different devices and all worked well.
+I also tested hotplugging while playing audio and I never got any deadlocks or
+oopses. It's the first time I worked with the sound-layer, but I'm now pretty
+sure I got everything right. Maybe I could even relax the heavy-locking but
+better be safe.
 
-I now got a working implementation (with the snd_pcm_vmalloc_*()
-helpers) and I can (if I listen closely) recognize the sound that I
-play on the Wii-Remote, but quality is worse than horrible. I also get
-weird protocol errors. Seems like I need to do some more
-reverse-engineering to figure it out.
-But at least the driver works correctly. I will try to figure out why
-the remote discards some requests and if everything works out I will
-repost the driver here.
-
-Thanks for your help!
-Regards
+Cheers
 David
+
+ drivers/hid/Kconfig               |   4 +
+ drivers/hid/Makefile              |   3 +
+ drivers/hid/hid-wiimote-core.c    |  66 +++-
+ drivers/hid/hid-wiimote-modules.c |   5 +
+ drivers/hid/hid-wiimote-speaker.c | 662 ++++++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-wiimote.h         |  17 +
+ 6 files changed, 755 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/hid/hid-wiimote-speaker.c
+
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index e8ef86c..3bc81c8 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -699,6 +699,7 @@ config HID_WIIMOTE
+ 	tristate "Nintendo Wii / Wii U peripherals"
+ 	depends on HID
+ 	depends on LEDS_CLASS
++	depends on !SND || HIGH_RES_TIMERS
+ 	select POWER_SUPPLY
+ 	select INPUT_FF_MEMLESS
+ 	---help---
+@@ -715,6 +716,9 @@ config HID_WIIMOTE
+ 	the Wii U Gamepad) might be supported in the future. But currently
+ 	support is limited to Bluetooth based devices.
+ 
++	If Alsa sound support (CONFIG_SND) is enabled, this driver also provides
++	a sound card interface for Wii Remote speakers.
++
+ 	If unsure, say N.
+ 
+ 	To compile this driver as a module, choose M here: the
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 8b7106b..d149e10 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -32,6 +32,9 @@ hid-wiimote-y		:= hid-wiimote-core.o hid-wiimote-modules.o
+ ifdef CONFIG_DEBUG_FS
+ 	hid-wiimote-y	+= hid-wiimote-debug.o
+ endif
++ifdef CONFIG_SND
++	hid-wiimote-y	+= hid-wiimote-speaker.o
++endif
+ 
+ obj-$(CONFIG_HID_A4TECH)	+= hid-a4tech.o
+ obj-$(CONFIG_HID_ACRUX)		+= hid-axff.o
+diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
+index 279a07d..ea07fc3 100644
+--- a/drivers/hid/hid-wiimote-core.c
++++ b/drivers/hid/hid-wiimote-core.c
+@@ -309,8 +309,8 @@ void wiiproto_req_ir2(struct wiimote_data *wdata, __u8 flags)
+ #define wiiproto_req_weeprom(wdata, os, buf, sz) \
+ 			wiiproto_req_wmem((wdata), true, (os), (buf), (sz))
+ 
+-static void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
+-				__u32 offset, const __u8 *buf, __u8 size)
++void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
++		       __u32 offset, const __u8 *buf, __u8 size)
+ {
+ 	__u8 cmd[22];
+ 
+@@ -359,6 +359,58 @@ void wiiproto_req_rmem(struct wiimote_data *wdata, bool eeprom, __u32 offset,
+ 	wiimote_queue(wdata, cmd, sizeof(cmd));
+ }
+ 
++void wiiproto_req_speaker(struct wiimote_data *wdata, bool on)
++{
++	__u8 cmd[2];
++
++	cmd[0] = WIIPROTO_REQ_SPEAKER;
++	cmd[1] = on ? 0x04 : 0x00;
++
++	wiiproto_keep_rumble(wdata, &cmd[1]);
++	wiimote_queue(wdata, cmd, sizeof(cmd));
++}
++
++void wiiproto_req_mute(struct wiimote_data *wdata, bool on)
++{
++	__u8 cmd[2];
++
++	cmd[0] = WIIPROTO_REQ_MUTE;
++	cmd[1] = on ? 0x04 : 0x00;
++
++	wiiproto_keep_rumble(wdata, &cmd[1]);
++	wiimote_queue(wdata, cmd, sizeof(cmd));
++}
++
++/* send audio data, possibly fragmented into two blocks */
++size_t wiiproto_req_audio(struct wiimote_data *wdata, const __u8 *b1,
++			  size_t len1, const __u8 *b2, size_t len2)
++{
++	__u8 cmd[22];
++	size_t pos, len;
++
++	pos = 0;
++	len = min_t(size_t, len1, 20ULL);
++	memcpy(&cmd[2 + pos], b1, len);
++	pos += len;
++
++	if (pos < 20 && len2) {
++		len = min_t(size_t, len2, 20ULL - pos);
++		memcpy(&cmd[2 + pos], b2, len);
++		pos += len;
++	}
++
++	cmd[0] = WIIPROTO_REQ_AUDIO;
++	cmd[1] = (pos & 0xff) << 3;
++
++	for ( ; pos < 20; ++pos)
++		cmd[pos] = 0;
++
++	wiiproto_keep_rumble(wdata, &cmd[1]);
++	wiimote_queue(wdata, cmd, sizeof(cmd));
++
++	return pos;
++}
++
+ /* requries the cmd-mutex to be held */
+ int wiimote_cmd_write(struct wiimote_data *wdata, __u32 offset,
+ 						const __u8 *wmem, __u8 size)
+@@ -570,6 +622,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
+ 		WIIMOD_LED4,
+ 		WIIMOD_ACCEL,
+ 		WIIMOD_IR,
++		WIIMOD_SPEAKER,
+ 		WIIMOD_NULL,
+ 	},
+ 	[WIIMOTE_DEV_GEN10] = (const __u8[]){
+@@ -582,6 +635,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
+ 		WIIMOD_LED4,
+ 		WIIMOD_ACCEL,
+ 		WIIMOD_IR,
++		WIIMOD_SPEAKER,
+ 		WIIMOD_NULL,
+ 	},
+ 	[WIIMOTE_DEV_GEN20] = (const __u8[]){
+@@ -595,6 +649,7 @@ static const __u8 * const wiimote_devtype_mods[WIIMOTE_DEV_NUM] = {
+ 		WIIMOD_ACCEL,
+ 		WIIMOD_IR,
+ 		WIIMOD_BUILTIN_MP,
++		WIIMOD_SPEAKER,
+ 		WIIMOD_NULL,
+ 	},
+ 	[WIIMOTE_DEV_BALANCE_BOARD] = (const __u8[]) {
+@@ -1469,6 +1524,13 @@ static void handler_return(struct wiimote_data *wdata, const __u8 *payload)
+ 	if (wiimote_cmd_pending(wdata, cmd, 0)) {
+ 		wdata->state.cmd_err = err;
+ 		wiimote_cmd_complete(wdata);
++	} else if (cmd == WIIPROTO_REQ_AUDIO && err == 4) {
++		/* If we stream audio data too fast, we get overrun errors
++		 * from the device. However, on audio-period bounds,
++		 * we have a very hard time sending audio at the exact rate
++		 * as we have no control over the bluetooth l2cap IRQs.
++		 * Hence, drop any overrun errors. */
++		hid_dbg(wdata->hdev, "audio overrun error\n");
+ 	} else if (err) {
+ 		hid_warn(wdata->hdev, "Remote error %hhu on req %hhu\n", err,
+ 									cmd);
+diff --git a/drivers/hid/hid-wiimote-modules.c b/drivers/hid/hid-wiimote-modules.c
+index ab25a64..25483aa 100644
+--- a/drivers/hid/hid-wiimote-modules.c
++++ b/drivers/hid/hid-wiimote-modules.c
+@@ -2074,6 +2074,11 @@ const struct wiimod_ops *wiimod_table[WIIMOD_NUM] = {
+ 	[WIIMOD_IR] = &wiimod_ir,
+ 	[WIIMOD_BUILTIN_MP] = &wiimod_builtin_mp,
+ 	[WIIMOD_NO_MP] = &wiimod_no_mp,
++#ifdef CONFIG_SND
++	[WIIMOD_SPEAKER] = &wiimod_speaker,
++#else
++	[WIIMOD_SPEAKER] = &wiimod_dummy,
++#endif
+ };
+ 
+ const struct wiimod_ops *wiimod_ext_table[WIIMOTE_EXT_NUM] = {
+diff --git a/drivers/hid/hid-wiimote-speaker.c b/drivers/hid/hid-wiimote-speaker.c
+new file mode 100644
+index 0000000..89b7f9f
+--- /dev/null
++++ b/drivers/hid/hid-wiimote-speaker.c
+@@ -0,0 +1,662 @@
++/*
++ * Driver for audio speakers of Nintendo Wii / Wii U peripherals
++ * Copyright (c) 2012-2013 David Herrmann <dh.herrmann@gmail.com>
++ */
++
++/*
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ */
++
++/*
++ * Audio Speakers
++ * Some Wii peripherals provide an audio speaker that supports 8bit PCM, 4bit
++ * Yamaha ADPCM and some other mostly unknown formats. Not all setup options
++ * are known, but we know how to setup an 8bit PCM or 4bit ADPCM stream and
++ * adjust volume. Data is sent as 20bytes chunks and needs to be streamed at
++ * a constant rate.
++ */
++
++#include <linux/device.h>
++#include <linux/hid.h>
++#include <linux/hrtimer.h>
++#include <linux/interrupt.h>
++#include <linux/mutex.h>
++#include <linux/spinlock.h>
++#include <sound/control.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include "hid-wiimote.h"
++
++struct wiimote_speaker {
++	spinlock_t lock;
++	struct snd_card *card;
++	struct wiimote_data *wdata;
++	unsigned int online : 1;
++	unsigned int mute : 1;
++	__u8 volume;
++
++	unsigned long pos;
++	struct snd_pcm_substream *subs;
++	struct mutex runlock;
++
++	struct hrtimer timer;
++	struct tasklet_struct tasklet;
++};
++
++enum wiimod_speaker_mode {
++	WIIMOD_SPEAKER_MODE_PCM8,
++	/* TODO: 4bit Yamaha ADPCM is currently not implemented */
++	WIIMOD_SPEAKER_MODE_ADPCM4,
++};
++
++static int wiimod_speaker_enable(struct wiimote_speaker *speaker)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	unsigned long flags;
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	if (!speaker->online) {
++		speaker->online = 1;
++		wiiproto_req_speaker(wdata, true);
++		wiiproto_req_mute(wdata, speaker->mute);
++	}
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++
++	return 0;
++}
++
++static void wiimod_speaker_disable(struct wiimote_speaker *speaker)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	unsigned long flags;
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	if (speaker->online) {
++		speaker->online = 0;
++		wiiproto_req_speaker(wdata, false);
++	}
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++}
++
++static void wiimod_speaker_set_mute(struct wiimote_speaker *speaker, bool mute)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	unsigned long flags;
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	if (speaker->mute != mute) {
++		speaker->mute = mute;
++		if (speaker->online)
++			wiiproto_req_mute(wdata, mute);
++	}
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++}
++
++static void wiimod_speaker_set_volume(struct wiimote_speaker *speaker,
++				      __u8 volume)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	unsigned long flags;
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	if (speaker->volume != volume) {
++		speaker->volume = volume;
++		if (speaker->online)
++			wiiproto_req_wmem(wdata, false, 0xa20005, &volume,
++					  sizeof(volume));
++	}
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++}
++
++/* Change speaker configuration. \mode can be one of WIIMOD_SPEAKER_MODE_*,
++ * \rate is the PCM sample rate and \volume is the requested volume. */
++static int wiimod_speaker_setup(struct wiimote_speaker *speaker,
++				__u8 mode, __u16 rate, __s16 volume)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	unsigned long flags;
++	__u8 config[7], m, wmem;
++	__u16 r;
++	int ret;
++
++	if (!rate)
++		return -EINVAL;
++
++	switch (mode) {
++	case WIIMOD_SPEAKER_MODE_PCM8:
++		r = 12000000ULL / rate;
++		m = 0x40;
++		break;
++	case WIIMOD_SPEAKER_MODE_ADPCM4:
++		r = 6000000ULL / rate;
++		m = 0x00;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	config[0] = 0x00;
++	config[1] = m;
++	config[2] = r & 0x00ff;
++	config[3] = (r & 0xff00) >> 8;
++	config[4] = volume & 0xff;
++	config[5] = 0x00;
++	config[6] = 0x00;
++
++	wiimote_cmd_acquire_noint(wdata);
++
++	/* mute speaker during setup and read/write volume field */
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	wiiproto_req_mute(wdata, true);
++	if (volume < 0)
++		config[4] = speaker->volume;
++	else
++		speaker->volume = volume;
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++
++	/* power speaker */
++	wmem = 0x01;
++	ret = wiimote_cmd_write(wdata, 0xa20009, &wmem, sizeof(wmem));
++	if (ret)
++		goto out_unlock;
++
++	/* prepare setup */
++	wmem = 0x08;
++	ret = wiimote_cmd_write(wdata, 0xa20001, &wmem, sizeof(wmem));
++	if (ret)
++		goto out_unlock;
++
++	/* write configuration */
++	ret = wiimote_cmd_write(wdata, 0xa20001, config, sizeof(config));
++	if (ret)
++		goto out_unlock;
++
++	/* enable speaker */
++	wmem = 0x01;
++	ret = wiimote_cmd_write(wdata, 0xa20008, &wmem, sizeof(wmem));
++	if (ret)
++		goto out_unlock;
++
++out_unlock:
++	wiimote_cmd_release(wdata);
++	return ret;
++}
++
++/* returns true if a period has elapsed */
++static bool wiimod_speaker_push(struct wiimote_speaker *speaker)
++{
++	struct wiimote_data *wdata = speaker->wdata;
++	struct snd_pcm_runtime *runtime = speaker->subs->runtime;
++	unsigned long flags;
++	bool elapsed;
++	unsigned long buflen, plen, len;
++	__u8 *src;
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++
++	buflen = frames_to_bytes(runtime, runtime->buffer_size);
++	plen = frames_to_bytes(runtime, runtime->period_size);
++	src = runtime->dma_area;
++
++	len = buflen - speaker->pos;
++
++	/* no need to send data while muted or offline */
++	if (speaker->online && !speaker->mute) {
++		if (len < 20)
++			wiiproto_req_audio(wdata, &src[speaker->pos],
++					   len, src, 20 - len);
++		else
++			wiiproto_req_audio(wdata, &src[speaker->pos],
++					   20, NULL, 0);
++	}
++
++	speaker->pos += 20;
++	speaker->pos %= buflen;
++	elapsed = (speaker->pos % plen) < 20;
++
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++
++	return elapsed;
++}
++
++/* timer handling */
++
++static void wiimod_speaker_task(unsigned long data)
++{
++	struct wiimote_speaker *speaker = (void*)data;
++	unsigned long flags;
++	bool elapsed = false;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	if (speaker->wdata)
++		elapsed = wiimod_speaker_push(speaker);
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	if (elapsed)
++		snd_pcm_period_elapsed(speaker->subs);
++}
++
++static enum hrtimer_restart wiimod_speaker_tick(struct hrtimer *timer)
++{
++	struct wiimote_speaker *speaker = container_of(timer,
++						       struct wiimote_speaker,
++						       timer);
++	unsigned long missed;
++	__u64 ival;
++
++	tasklet_schedule(&speaker->tasklet);
++
++	ival = 1000000000ULL * 20U;
++	ival /= speaker->subs->runtime->rate;
++
++	missed = hrtimer_forward_now(timer, ns_to_ktime(ival));
++	if (missed > 1)
++		snd_printdd("wiimote: speaker: missed %lu timer interrupts\n",
++			    missed - 1);
++
++	return HRTIMER_RESTART;
++}
++
++/* PCM layer */
++
++static const struct snd_pcm_hardware wiimod_speaker_playback_hw = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_INTERLEAVED,
++	.formats = SNDRV_PCM_FMTBIT_S8,
++	.rates = SNDRV_PCM_RATE_CONTINUOUS,
++	.rate_min = 500,
++	.rate_max = 2000, /* TODO: >2000 only supported by 2nd gen */
++	.channels_min = 1,
++	.channels_max = 1,
++	.buffer_bytes_max = 32768,
++	.period_bytes_min = 128,
++	.period_bytes_max = 32768,
++	.periods_min = 1,
++	.periods_max = 1024,
++};
++
++static int wiimod_speaker_playback_open(struct snd_pcm_substream *substream)
++{
++	struct wiimote_speaker *speaker = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned long flags;
++	int ret;
++
++	runtime->hw = wiimod_speaker_playback_hw;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	ret = -ENODEV;
++	if (speaker->wdata) {
++		runtime->private_data = speaker->wdata;
++		ret = wiimod_speaker_enable(speaker);
++	}
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	return ret;
++}
++
++static int wiimod_speaker_playback_close(struct snd_pcm_substream *substream)
++{
++	struct wiimote_speaker *speaker = snd_pcm_substream_chip(substream);
++	unsigned long flags;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	if (speaker->wdata)
++		wiimod_speaker_disable(speaker);
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	hrtimer_cancel(&speaker->timer);
++	tasklet_kill(&speaker->tasklet);
++
++	return 0;
++}
++
++static int wiimod_speaker_playback_hw_params(struct snd_pcm_substream *subs,
++					     struct snd_pcm_hw_params *hw)
++{
++	return snd_pcm_lib_alloc_vmalloc_buffer(subs, params_buffer_bytes(hw));
++}
++
++static int wiimod_speaker_playback_hw_free(struct snd_pcm_substream *subs)
++{
++	return snd_pcm_lib_free_vmalloc_buffer(subs);
++}
++
++static int wiimod_speaker_playback_prepare(struct snd_pcm_substream *subs)
++{
++	struct wiimote_speaker *speaker = snd_pcm_substream_chip(subs);
++	struct wiimote_data *wdata;
++	struct snd_pcm_runtime *runtime = subs->runtime;
++	int ret, online;
++	unsigned long flags;
++
++	/* runlock synchronizes with device hotplugging */
++	mutex_lock(&speaker->runlock);
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	wdata = speaker->wdata;
++	online = speaker->online;
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	if (!wdata || !online) {
++		ret = -ENODEV;
++		goto unlock;
++	}
++
++	spin_lock_irqsave(&wdata->state.lock, flags);
++	speaker->pos = 0;
++	speaker->subs = subs;
++	spin_unlock_irqrestore(&wdata->state.lock, flags);
++
++	/* Perform speaker setup. This may take a few milliseconds and the
++	 * handlers perform synchronous network operations so this
++	 * may sleep. */
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S8:
++		ret = wiimod_speaker_setup(speaker, WIIMOD_SPEAKER_MODE_PCM8,
++					   runtime->rate, -1);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++unlock:
++	mutex_unlock(&speaker->runlock);
++	return ret;
++}
++
++static int wiimod_speaker_playback_trigger(struct snd_pcm_substream *subs,
++					   int cmd)
++{
++	struct wiimote_speaker *speaker = snd_pcm_substream_chip(subs);
++	struct snd_pcm_runtime *runtime = subs->runtime;
++	struct wiimote_data *wdata;
++	unsigned long flags;
++	__u64 ival;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++
++	wdata = speaker->wdata;
++	if (!wdata || !speaker->online)
++		goto unlock;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* unmute device on start if not muted by user-space */
++		spin_lock(&wdata->state.lock);
++		if (!speaker->mute)
++			wiiproto_req_mute(wdata, false);
++		spin_unlock(&wdata->state.lock);
++
++		ival = 20U * 1000000000ULL / runtime->rate;
++		hrtimer_start(&speaker->timer, ktime_set(0, ival),
++			      HRTIMER_MODE_REL);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		/* mute device when stopping transmission */
++		spin_lock(&wdata->state.lock);
++		wiiproto_req_mute(wdata, true);
++		spin_unlock(&wdata->state.lock);
++
++		hrtimer_cancel(&speaker->timer);
++		break;
++	case SNDRV_PCM_TRIGGER_RESUME:
++		/* unmute device on start if not muted by user-space */
++		spin_lock(&wdata->state.lock);
++		if (!speaker->mute)
++			wiiproto_req_mute(wdata, false);
++		spin_unlock(&wdata->state.lock);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		/* mute device when stopping transmission */
++		spin_lock(&wdata->state.lock);
++		wiiproto_req_mute(wdata, true);
++		spin_unlock(&wdata->state.lock);
++		break;
++	}
++
++unlock:
++	spin_unlock_irqrestore(&speaker->lock, flags);
++	return 0;
++}
++
++static snd_pcm_uframes_t wiimod_speaker_playback_pointer(struct snd_pcm_substream *subs)
++{
++	struct wiimote_speaker *speaker = snd_pcm_substream_chip(subs);
++
++	return bytes_to_frames(subs->runtime, speaker->pos);
++}
++
++static struct snd_pcm_ops wiimod_speaker_playback_ops = {
++	.open		= wiimod_speaker_playback_open,
++	.close		= wiimod_speaker_playback_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= wiimod_speaker_playback_hw_params,
++	.hw_free	= wiimod_speaker_playback_hw_free,
++	.prepare	= wiimod_speaker_playback_prepare,
++	.trigger	= wiimod_speaker_playback_trigger,
++	.pointer	= wiimod_speaker_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++/* volume control */
++
++static int wiimod_speaker_volume_info(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_info *info)
++{
++	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	info->count = 1;
++	info->value.integer.min = 0;
++	info->value.integer.max = 0xff;
++
++	return 0;
++}
++
++static int wiimod_speaker_volume_get(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *val)
++{
++	struct wiimote_speaker *speaker = snd_kcontrol_chip(kcontrol);
++
++	val->value.integer.value[0] = speaker->volume;
++
++	return 0;
++}
++
++static int wiimod_speaker_volume_put(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *val)
++{
++	struct wiimote_speaker *speaker = snd_kcontrol_chip(kcontrol);
++	unsigned long value, flags;
++
++	value = val->value.integer.value[0];
++	if (value > 0xff)
++		value = 0xff;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	if (speaker->wdata)
++		wiimod_speaker_set_volume(speaker, value);
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new wiimod_speaker_volume = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "PCM Playback Volume",
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info = wiimod_speaker_volume_info,
++	.get = wiimod_speaker_volume_get,
++	.put = wiimod_speaker_volume_put,
++};
++
++/* mute control */
++
++static int wiimod_speaker_mute_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *val)
++{
++	struct wiimote_speaker *speaker = snd_kcontrol_chip(kcontrol);
++
++	val->value.integer.value[0] = !speaker->mute;
++
++	return 0;
++}
++
++static int wiimod_speaker_mute_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *val)
++{
++	struct wiimote_speaker *speaker = snd_kcontrol_chip(kcontrol);
++	unsigned long flags;
++
++	spin_lock_irqsave(&speaker->lock, flags);
++	if (speaker->wdata)
++		wiimod_speaker_set_mute(speaker,
++					!val->value.integer.value[0]);
++	spin_unlock_irqrestore(&speaker->lock, flags);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new wiimod_speaker_mute = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "PCM Playback Switch",
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info = snd_ctl_boolean_mono_info,
++	.get = wiimod_speaker_mute_get,
++	.put = wiimod_speaker_mute_put,
++};
++
++/* initialization and setup */
++
++static int wiimod_speaker_probe(const struct wiimod_ops *ops,
++				struct wiimote_data *wdata)
++{
++	int ret;
++	struct wiimote_speaker *speaker;
++	struct snd_card *card;
++	struct snd_kcontrol *kcontrol;
++	struct snd_pcm *pcm;
++
++	/* create sound card device */
++	ret = snd_card_create(-1, NULL, THIS_MODULE,
++			      sizeof(struct wiimote_speaker), &card);
++	if (ret)
++		return ret;
++	speaker = card->private_data;
++
++	wdata->speaker = speaker;
++	speaker->wdata = wdata;
++	speaker->card = card;
++	speaker->mute = 1;
++	speaker->volume = 0xff;
++	strcpy(card->driver, "hid-wiimote");
++	strcpy(card->shortname, "wiimote");
++	strcpy(card->longname, "Nintendo Wii Remote speaker");
++
++	spin_lock_init(&speaker->lock);
++	mutex_init(&speaker->runlock);
++	hrtimer_init(&speaker->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	speaker->timer.function = wiimod_speaker_tick;
++	tasklet_init(&speaker->tasklet, wiimod_speaker_task,
++		     (unsigned long)speaker);
++
++	/* create volume control */
++	kcontrol = snd_ctl_new1(&wiimod_speaker_volume, speaker);
++	if (!kcontrol) {
++		ret = -ENOMEM;
++		goto err_free;
++	}
++
++	ret = snd_ctl_add(card, kcontrol);
++	if (ret) {
++		snd_ctl_free_one(kcontrol);
++		goto err_free;
++	}
++
++	/* create mute control */
++	kcontrol = snd_ctl_new1(&wiimod_speaker_mute, speaker);
++	if (!kcontrol) {
++		ret = -ENOMEM;
++		goto err_free;
++	}
++
++	ret = snd_ctl_add(card, kcontrol);
++	if (ret) {
++		snd_ctl_free_one(kcontrol);
++		goto err_free;
++	}
++
++	/* create PCM sub-device for playback */
++	ret = snd_pcm_new(card, "Speaker", 0, 1, 0, &pcm);
++	if (ret)
++		goto err_free;
++
++	pcm->private_data = speaker;
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			&wiimod_speaker_playback_ops);
++
++	/* register sound card */
++	snd_card_set_dev(card, &wdata->hdev->dev);
++	ret = snd_card_register(card);
++	if (ret)
++		goto err_free;
++
++	return 0;
++
++err_free:
++	snd_card_free(card);
++	wdata->speaker = NULL;
++	return ret;
++}
++
++static void wiimod_speaker_remove(const struct wiimod_ops *ops,
++				  struct wiimote_data *wdata)
++{
++	struct wiimote_speaker *speaker = wdata->speaker;
++	unsigned long flags;
++
++	if (!speaker)
++		return;
++
++	mutex_lock(&speaker->runlock);
++	spin_lock_irqsave(&speaker->lock, flags);
++
++	wdata->speaker = NULL;
++	speaker->online = 0;
++	speaker->wdata = NULL;
++
++	spin_lock(&wdata->state.lock);
++	wiiproto_req_mute(wdata, true);
++	wiiproto_req_speaker(wdata, false);
++	spin_unlock(&wdata->state.lock);
++
++	spin_unlock_irqrestore(&speaker->lock, flags);
++	mutex_unlock(&speaker->runlock);
++
++	hrtimer_cancel(&speaker->timer);
++	tasklet_kill(&speaker->tasklet);
++	snd_card_free_when_closed(speaker->card);
++}
++
++const struct wiimod_ops wiimod_speaker = {
++	.flags = 0,
++	.arg = 0,
++	.probe = wiimod_speaker_probe,
++	.remove = wiimod_speaker_remove,
++};
+diff --git a/drivers/hid/hid-wiimote.h b/drivers/hid/hid-wiimote.h
+index f1474f3..63a9244 100644
+--- a/drivers/hid/hid-wiimote.h
++++ b/drivers/hid/hid-wiimote.h
+@@ -147,6 +147,7 @@ struct wiimote_data {
+ 	struct input_dev *mp;
+ 	struct timer_list timer;
+ 	struct wiimote_debug *debug;
++	struct wiimote_speaker *speaker;
+ 
+ 	union {
+ 		struct input_dev *input;
+@@ -171,6 +172,7 @@ enum wiimod_module {
+ 	WIIMOD_IR,
+ 	WIIMOD_BUILTIN_MP,
+ 	WIIMOD_NO_MP,
++	WIIMOD_SPEAKER,
+ 	WIIMOD_NUM,
+ 	WIIMOD_NULL = WIIMOD_NUM,
+ };
+@@ -207,9 +209,12 @@ enum wiiproto_reqs {
+ 	WIIPROTO_REQ_LED = 0x11,
+ 	WIIPROTO_REQ_DRM = 0x12,
+ 	WIIPROTO_REQ_IR1 = 0x13,
++	WIIPROTO_REQ_SPEAKER = 0x14,
+ 	WIIPROTO_REQ_SREQ = 0x15,
+ 	WIIPROTO_REQ_WMEM = 0x16,
+ 	WIIPROTO_REQ_RMEM = 0x17,
++	WIIPROTO_REQ_AUDIO = 0x18,
++	WIIPROTO_REQ_MUTE = 0x19,
+ 	WIIPROTO_REQ_IR2 = 0x1a,
+ 	WIIPROTO_REQ_STATUS = 0x20,
+ 	WIIPROTO_REQ_DATA = 0x21,
+@@ -263,6 +268,12 @@ extern void wiiproto_req_status(struct wiimote_data *wdata);
+ extern void wiiproto_req_accel(struct wiimote_data *wdata, __u8 accel);
+ extern void wiiproto_req_ir1(struct wiimote_data *wdata, __u8 flags);
+ extern void wiiproto_req_ir2(struct wiimote_data *wdata, __u8 flags);
++extern void wiiproto_req_wmem(struct wiimote_data *wdata, bool eeprom,
++			      __u32 offset, const __u8 *buf, __u8 size);
++extern void wiiproto_req_speaker(struct wiimote_data *wdata, bool on);
++extern void wiiproto_req_mute(struct wiimote_data *wdata, bool on);
++extern size_t wiiproto_req_audio(struct wiimote_data *wdata, const __u8 *b1,
++				 size_t len1, const __u8 *b2, size_t len2);
+ extern int wiimote_cmd_write(struct wiimote_data *wdata, __u32 offset,
+ 						const __u8 *wmem, __u8 size);
+ extern ssize_t wiimote_cmd_read(struct wiimote_data *wdata, __u32 offset,
+@@ -287,6 +298,12 @@ static inline void wiidebug_deinit(void *u) { }
+ 
+ #endif
+ 
++#ifdef CONFIG_SND
++
++extern const struct wiimod_ops wiimod_speaker;
++
++#endif
++
+ /* requires the state.lock spinlock to be held */
+ static inline bool wiimote_cmd_pending(struct wiimote_data *wdata, int cmd,
+ 								__u32 opt)
+-- 
+1.8.2.2
+
