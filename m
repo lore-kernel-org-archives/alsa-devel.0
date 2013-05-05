@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: sgtl5000: Remove cache support
-Date: Sun, 5 May 2013 11:15:15 +0100
-Message-ID: <20130505101515.GT4945@sirena.org.uk>
-References: <1367610549-25542-1-git-send-email-festevam@gmail.com>
- <20130503223613.GR4945@sirena.org.uk>
- <CAOMZO5B84e0YdcJLa27e4KZv459CGL=msU0fqe4LyFZfM-t1+A@mail.gmail.com>
- <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Convert to use regmap
+	directly
+Date: Sun, 5 May 2013 11:21:48 +0100
+Message-ID: <20130505102148.GU4945@sirena.org.uk>
+References: <1367692780-23550-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2704569826442262808=="
+Content-Type: multipart/mixed; boundary="===============2211996964953699771=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B5472261A55
- for <alsa-devel@alsa-project.org>; Sun,  5 May 2013 12:15:34 +0200 (CEST)
-In-Reply-To: <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CC9CC261689
+ for <alsa-devel@alsa-project.org>; Sun,  5 May 2013 12:21:53 +0200 (CEST)
+In-Reply-To: <1367692780-23550-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, matt@genesi-usa.com, eric.nelson@boundarydevices.com, troy.kisky@boundarydevices.com, zengzm.kernel@gmail.com
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2704569826442262808==
+--===============2211996964953699771==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vru7fAags9pVPvn5"
+	protocol="application/pgp-signature"; boundary="f6M9UaX53EEZorp0"
 Content-Disposition: inline
 
 
---vru7fAags9pVPvn5
+--f6M9UaX53EEZorp0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 04, 2013 at 05:25:45PM -0300, Fabio Estevam wrote:
+On Sat, May 04, 2013 at 03:39:34PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-> I see this commit from Freescale kernel that workarounds exactly the same issue:
+Applied, thanks - this can be taken a step further and
 
-> http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/commit/sound/soc/codecs/sgtl5000.c?h=imx_3.0.35_1.1.0&id=2f7d47e760725d33f6b2eb01024b800d64ff8944
+> +static const struct regmap_config sgtl5000_regmap =3D {
+> +	.reg_bits =3D 16,
+> +	.val_bits =3D 16,
+> +
+> +	.max_register =3D SGTL5000_MAX_REG_OFFSET,
+> +	.volatile_reg =3D sgtl5000_volatile,
+> +	.readable_reg =3D sgtl5000_readable,
+> +
+> +	.cache_type =3D REGCACHE_RBTREE,
+> +	.reg_defaults =3D sgtl5000_reg_defaults,
+> +	.num_reg_defaults =3D ARRAY_SIZE(sgtl5000_reg_defaults),
+> +};
 
-> It seems that caching is broking with this codec.
+Based on the comments in the commit you mentioned before do we need to
+have some sort of register striding in there?
 
-This is nonsensical.  Clearly there's something about the use of the
-cache that is interacting poorly with the device but we've no idea what
-it is.  Simply having a copy of the register map in the host memory is
-not going to do anything to the device, there must be some other issue
-at work.
+>  static int sgtl5000_i2c_probe(struct i2c_client *client,
+>  			      const struct i2c_device_id *id)
+>  {
+> @@ -1415,6 +1485,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *c=
+lient,
+>  	if (!sgtl5000)
+>  		return -ENOMEM;
+> =20
+> +	sgtl5000->regmap =3D devm_regmap_init_i2c(client, &sgtl5000_regmap);
+> +	if (IS_ERR(sgtl5000->regmap)) {
+> +		ret =3D PTR_ERR(sgtl5000->regmap);
+> +		dev_err(&client->dev, "Failed to allocate regmap: %d\n", ret);
+> +		return ret;
+> +	}
+> +
 
-> If this is true, should we go with the proposal of this RFC patch?
+Now we have register I/O in the probe the regulator setup, device
+identification and so on can be pulled out here.  This is more idiomatic
+for the device model if nothing else.
 
-We should understand what the issue is.  Looking at the commit above
-it's not removing the cache at all, it's both attempting to work around
-an issue with the cache not handling the register step size properly
-(this looks like it's just a bug in the current driver) and reordering
-some of the startup around the regulator (the comment says it's open
-coding cache_bypass but it's also moving blocks of code around).
+There's definitely still a bug in this driver with regard to not syncing
+the cache too...
 
---vru7fAags9pVPvn5
+--f6M9UaX53EEZorp0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRhjEqAAoJELSic+t+oim92CgP/3lfIzxJLzWM7vBVtOH2YGv6
-k9szePKV+0D0ZpEzqd1mZVJo204s8tYX7UykIuZJ8iTzwMuXUCO9nYohu84Xd2F+
-daHtS9p+Ip7JtG9oX47IcDGGUN5ZPAWrayvCRwxr/xW99zw6Odae2izfTZkNqTx6
-lKyVA1eT9XR9dzh5xsV8F8LYUMZMlbHDXDs2sEWcwYLTosZYdso5gpPpcjcgJSxq
-8dOnyeOEJQcWJvS8PRFrxw4hBqTOwk4/F32nN46qIDWuDfGe60a1wITp3xMxDqwK
-nlUvFaFZQGh1sVD/ikEDgWu5v2IuoPs1pz6vOfUvOEbD2Atj/BsiuEKggQeESyJc
-JWLWH3sqEKwmHoPD5ORF3sSr+Kk8xCo5UBMaEOL8Yf6u7PHCDrdO3uZZg9et7R2f
-aCa36L4KH1nFsIQzWuMFVElKaTu9I9w4xHUCPfOPWhks/FTfknyiGEdz71qdI2lH
-Z7ggJB8Ex8NVP5S6R1HGrkxFDFeNbCn1xMkeEi3xB1yEDstxdb9t934qOJpa/V0S
-2QUQzMj5HnJtKm2uU3qQpUYtLentePVm+noZVfUmijogkPUubTVvzrxA0XYOMBym
-FZ2Ra+0nO8OXc/CYC6yvabwSjk+HIvbKAwQNv7gM5/9HV8D2rDkpxb9yZ2x9K+79
-/GL1HFNCqhjqqeQmco8K
-=eIvL
+iQIcBAEBAgAGBQJRhjK5AAoJELSic+t+oim9GVkP/Av3rc4I3jYM9Y97VxrUEAuX
+N8/lCZBBSXmoRHSnrjhCxtVu6xSj58kzgIE4YbRFuXnHwQyzJrbSlExeVI3xoeFz
+Y/1Q/Yc7mndMW5mRh5LASeT8hLYuUY4ELhoWLwVpsb34IhqGLBJWLqrabsw1Ee8v
+Xd4DhdJ+Ffi3JLc7YR8nRJbv3xFJ0kvilKpOXfz5d7oxuYaFmDn1N76x5S3erwwZ
+YRWwnwvNhR1UiP8TJIDs0OJt22MxWZ61mPRsmBylBt2ee+iosyG1mq/Lh6hhugSo
+WT4ci946CVbZiuZ/2hDx0atkluebnQztDxiLBe1QNDG9jE25mY+cU8pXPtRrh7KK
+FWcjXRgU59GBxFeWIwRPnsQjhVdvzAJfP+/iLk2AOha3JB6584TBaaSlYARUCFZS
+WQTLPYGNXQnmm7HiQqIH10EZgp8e0YrxS7tKGgIty1NplCseA/17i2hrEHQPMCH3
+i9aoeQXpYYDyUyCyayBvRNfCrVVnBhx1GEmbvcwJ5VwhC9ceZTGCSa2j4EldD49m
+keVlsC3uDSGREIoyqzhrtwAXTprKWwx6Il4TopZwmSgvo0bJrDr5OprH5FjXzB7I
+kBqu2mzBZ7loD3LAvsg1NHPj+QFvCWBp0oRgKC4/qnwQUqSJP3NG3KOX6ztNWsH6
+Y2tbrznL+QMCVV0uZNTV
+=hWFt
 -----END PGP SIGNATURE-----
 
---vru7fAags9pVPvn5--
+--f6M9UaX53EEZorp0--
 
---===============2704569826442262808==
+--===============2211996964953699771==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2704569826442262808==--
+--===============2211996964953699771==--
