@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: sam9g20ek: Let device core handle pinctrl
-Date: Mon,  6 May 2013 20:28:28 +0100
-Message-ID: <1367868508-12329-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6/8] ASoC: ep93xx: Use generic dmaengine PCM
+Date: Mon, 6 May 2013 20:41:32 +0100
+Message-ID: <20130506194132.GF7478@sirena.org.uk>
+References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+ <1366478947-9377-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1701575563693731768=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A9F62607D7
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 21:28:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E9C52261B0F
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 21:41:40 +0200 (CEST)
+In-Reply-To: <1366478947-9377-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,47 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since commit ab78029 (drivers/pinctrl: grab default handles from device
-core) we can rely on device core for handling pinctrl so remove
-devm_pinctrl_get_select_default() from the driver.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/atmel/sam9g20_wm8731.c |    9 ---------
- 1 file changed, 9 deletions(-)
+--===============1701575563693731768==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JSkcQAAxhB1h8DcT"
+Content-Disposition: inline
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 2d6fbd0..802717e 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -38,8 +38,6 @@
- #include <linux/platform_device.h>
- #include <linux/i2c.h>
- 
--#include <linux/pinctrl/consumer.h>
--
- #include <linux/atmel-ssc.h>
- 
- #include <sound/core.h>
-@@ -203,15 +201,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 	struct device_node *codec_np, *cpu_np;
- 	struct clk *pllb;
- 	struct snd_soc_card *card = &snd_soc_at91sam9g20ek;
--	struct pinctrl *pinctrl;
- 	int ret;
- 
--	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
--	if (IS_ERR(pinctrl)) {
--		dev_err(&pdev->dev, "Failed to request pinctrl for mck\n");
--		return PTR_ERR(pinctrl);
--	}
--
- 	if (!np) {
- 		if (!(machine_is_at91sam9g20ek() ||
- 			machine_is_at91sam9g20ek_2mmc()))
--- 
-1.7.10.4
+
+--JSkcQAAxhB1h8DcT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Apr 20, 2013 at 07:29:05PM +0200, Lars-Peter Clausen wrote:
+> Use the generic dmaengine PCM driver instead of a custom implementation.
+
+Applied, thanks.
+
+--JSkcQAAxhB1h8DcT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRiAdpAAoJELSic+t+oim9AkgP/jzpm1Xolzo34CCd7tDZ7VmQ
+ags8tt/8uaIQ9beaWW92WPttaMnLf5rcSJxNTzuLTwRD2iPttEMZOhCGZC/lkPjZ
+aIhQrOeWxxr8WY5GV30CV5emacgGMpyDLC7lSYKwac7yS50pYc8L5z/s2tyi8QHr
+Hv7zewisFxlsHu7xrfPTHZQ2B/AP9yr0WStkwATuEgUFro7t7o/l/FU4ID7o3wKg
+ey9qWMcMzP0YIw2+vfpcmXL+Z7z0XQVLLJYn9VarAszW/rEHRlGJw/j4hBq8S2RX
+vwrK2lnoIMVRKHhPPHN4yIR4E/zgg++LCENsI6Qj0+9ToxtLE626hqNtvykpXPFF
+Q8rMbZoUm4BQwz0lhlDmaNbPGjxtk6vtS+WFL+6zDtqTLieeIW92L7w8nyJP2aXY
+WVSGVW0kaG9+QYXC78FSAZDzmPgePJeyGWlLMJdRYVu9YWoITyiL4EaGsYpUVc+E
+e7yh388m/qGR2yfoLyCSrxLs+3DOr4rhyapDy+i4AfH1IctgpFnmwmIZ3pldYZWB
+C4lv/GkHSVG3+j+wGq9fr6OSu+IXfIgaREc8CZXznbsPfsesQKxgCj0Krj9PUi2h
+93G4irDV20IsmAXvdMPFcEyBQCn8tr/Jb7sALA4IAErxqiJGgx0yHrBrs5Yy/+C0
+nJLbM7D2h8TfAQtqoth8
+=+LRG
+-----END PGP SIGNATURE-----
+
+--JSkcQAAxhB1h8DcT--
+
+--===============1701575563693731768==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1701575563693731768==--
