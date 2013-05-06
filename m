@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 13/13] ASoC: mxs: mxs-saif: Let device core
-	handle pinctrl
-Date: Mon, 6 May 2013 20:22:05 +0100
-Message-ID: <20130506192205.GD7478@sirena.org.uk>
-References: <1367863561-11534-1-git-send-email-fabio.estevam@freescale.com>
- <1367863561-11534-13-git-send-email-fabio.estevam@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: sam9g20ek: Let device core handle pinctrl
+Date: Mon,  6 May 2013 20:28:28 +0100
+Message-ID: <1367868508-12329-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7170542242095028770=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id F2AD7261B28
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 21:22:09 +0200 (CEST)
-In-Reply-To: <1367863561-11534-13-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A9F62607D7
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 21:28:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, festevam@gmail.com, kernel@pengutronix.de
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Since commit ab78029 (drivers/pinctrl: grab default handles from device
+core) we can rely on device core for handling pinctrl so remove
+devm_pinctrl_get_select_default() from the driver.
 
---===============7170542242095028770==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/atmel/sam9g20_wm8731.c |    9 ---------
+ 1 file changed, 9 deletions(-)
 
-
---XvKFcGCOAo53UbWW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, May 06, 2013 at 03:06:01PM -0300, Fabio Estevam wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device c=
-ore),
-> we can rely on device core for handling pinctrl.
->=20
-> So remove devm_pinctrl_get_select_default() from the driver.=20
-
-Applied, thanks.
-
---XvKFcGCOAo53UbWW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRiALZAAoJELSic+t+oim9k4gP/1E80PsbCU3wiBK31quhF97t
-c68XzoC7dsHvfqCJcEhG6CgIZMTjmAfgpD/z73iDGaKZHAMEE/3kdlZyUrpggElh
-dvov89seS3EVDy3ksjiOXCk9/CTYwEX/J5ElPCy951TMnDC8rMGIf8eGHuMjrPiw
-wpMqKDzW5HiuIOjaCkiASt+pLsDVQ6WDPI13PM2KshQCPJ8QLNhIz2wUXNmsA0zK
-b4iDp3pHytzgklb8KAUlaQpmmQxyttbA4kQTWkFMeJO3I4Hr4r8tWQ+Z5yX3v4kt
-e5/6nGQxtntgcZqDOvcLbwQOwDDy9iFKOb6LveCeQKnzqthfuaQAPzo+CXTkRCoB
-5qYoyvnIegFum4iGtF/skQQX2LHHQgiVdqC3cyXh3S1/dQfKbY9X8QdXdGExUH4o
-7UuEOF+ajR4qoLBJoIMnnlis1y0guA+rNN+4/Ekkx8DpPdG5B8DVgmMQzxNZQseO
-oRnMQle1LtOXLEeN9w6FY0C+uoa+w+oMuTmUnwQCBju1Bz2ykML7QdcLpxvSJhMw
-/7J49WN0WN70aU95vvqn2BbycwnQrzFR0Sc8MkUAp76lxc2vsiSE9tzV1UTkZCvt
-yLOR+240J/RAx7igsHogKJ7GwFMtZJgwFSIKF/bjL60S7XfCn4EbuKcFypIttJnp
-db6/IWMdBXEWPZuFBIdb
-=Wc85
------END PGP SIGNATURE-----
-
---XvKFcGCOAo53UbWW--
-
---===============7170542242095028770==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7170542242095028770==--
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 2d6fbd0..802717e 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -38,8 +38,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/i2c.h>
+ 
+-#include <linux/pinctrl/consumer.h>
+-
+ #include <linux/atmel-ssc.h>
+ 
+ #include <sound/core.h>
+@@ -203,15 +201,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
+ 	struct device_node *codec_np, *cpu_np;
+ 	struct clk *pllb;
+ 	struct snd_soc_card *card = &snd_soc_at91sam9g20ek;
+-	struct pinctrl *pinctrl;
+ 	int ret;
+ 
+-	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+-	if (IS_ERR(pinctrl)) {
+-		dev_err(&pdev->dev, "Failed to request pinctrl for mck\n");
+-		return PTR_ERR(pinctrl);
+-	}
+-
+ 	if (!np) {
+ 		if (!(machine_is_at91sam9g20ek() ||
+ 			machine_is_at91sam9g20ek_2mmc()))
+-- 
+1.7.10.4
