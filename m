@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: mxs-sgtl5000: Remove unneeded
-	'ret' variable
-Date: Mon, 6 May 2013 12:43:58 +0100
-Message-ID: <20130506114358.GB4945@sirena.org.uk>
-References: <1366820595-19762-1-git-send-email-festevam@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: "Negative" volume settings in a kcontrol
+Date: Mon, 06 May 2013 15:22:45 +0200
+Message-ID: <5187AEA5.1020108@ladisch.de>
+References: <51824609.30405@canonical.com> <1367498241.8766.3.camel@localhost>
+ <5182746C.1070603@topic.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0773643077617451104=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 71308260794
- for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 13:44:14 +0200 (CEST)
-In-Reply-To: <1366820595-19762-1-git-send-email-festevam@gmail.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A5E44261AE5
+ for <alsa-devel@alsa-project.org>; Mon,  6 May 2013 15:22:44 +0200 (CEST)
+In-Reply-To: <5182746C.1070603@topic.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, kernel@pengutronix.de
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Mike Looijmans wrote:
+> Some codec registers need negative values. For example,
+> sound/soc/codecs/tlv320aic32x4.c specifies this:
+>
+>  78         SOC_DOUBLE_R_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
+>  79                         AIC32X4_RDACVOL, 0, 0x30, 0, tlv_step_0_5),
+>
+> It's incomplete. The actual range is from -63.5dB to +24dB in 0.5 dB steps.
+> The 8-bit value is interpreted as a signed 8-bit integer, so to get -3dB
+> the register value must be -6 or 0xFA.
+>
+> How do I explain that to Alsa?
 
---===============0773643077617451104==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Kf9dPzkPP9+q7vtQ"
-Content-Disposition: inline
+There are some ASoC helper macros that handle signed register fields, such
+as SOC_DOUBLE_S8_TLV and SOC_SINGLE_XR_SX.  If those don't do what you want,
+you have to write your own.
 
+> (and on a side note "amixer" doesn't accept negative values either)
 
---Kf9dPzkPP9+q7vtQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Apr 24, 2013 at 01:23:14PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Variable 'ret' is not needed here, so just remove it.
-
-Applied both, thanks.
-
---Kf9dPzkPP9+q7vtQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRh5d7AAoJELSic+t+oim9M44QAIlHx6FNP7T54tdZoSNYeZA7
-znpUNZB6OdAEs3LLIrPQcGSO1xnX6/YYLMocOIqYKIN6evfiNrXiYh893IDqT+YO
-/kKyjATm32jsJpPhwOnfUEn5bO3LQHtRBVNh/Cw6cl/EHCeGeO6QHu5qOP/pK0EQ
-L8ZRwDXicOnmwKCvSt0BT9VcqVkzYFDbRqO2VgCg/6m5KbkooI7duJ6SM/DA3Pw3
-rhfkyxNRXy3SYWZBYIMJZJqOutpk9Yg6YVfHKY5/vh1GjjjfvJc6ZEm5gJ//vsZI
-zVQNRexWDRoidPQbobZ78XZwRorEC7t7u0Da2ECGTU2fMmY7vhQTBLIjry7Edpyx
-BIGMGMjhLY1gn2LvyqjtpERX5FI701lQVnGEFmFZ7ZZbq3wc3KgDCbEKhQEd/F80
-K2UfKuiS2jDk3nAscx45VDR/YNCD28Eua5Swmr1dLlya45R5uWl8fMnd4xhkvaXo
-6FwJ+XLofM7KkdBa6UvIsR+zoBFS/trB+/skO6V6StJB+fayv1o5PGUcVBnPI4/T
-5KVwnWXY696UQUmP6uF0mWtK7Dcg7eEEhvqi97mjdAwT75+sOtrTowGX8ctXrOGc
-VknJcoB7nxaGSh7cXAxb0rt3QpFePYhoNSqL4dykmLGjBaWQykLPP3zOcUKfxrPU
-xwMS4NkuOeFo+5eDW8Mw
-=jHJe
------END PGP SIGNATURE-----
-
---Kf9dPzkPP9+q7vtQ--
-
---===============0773643077617451104==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A workaround would be to set the control value first to 0 and then to
+the desired negative value ... but this bug needs fixing.
 
 
---===============0773643077617451104==--
+Regards,
+Clemens
