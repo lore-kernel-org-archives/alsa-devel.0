@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm0010: fix error return code in
-	wm0010_boot()
-Date: Tue, 7 May 2013 14:54:31 +0100
-Message-ID: <20130507135431.GT7478@sirena.org.uk>
-References: <CAPgLHd-5rAbUnijs_dfeXuk9LhsSKihOBYeicLWDvZECfP0LmA@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2] ALSA: hda - re-apply fixup when
+ resuming haswell hdmi codec
+Date: Tue, 7 May 2013 14:10:08 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8823C52@SHSMSX102.ccr.corp.intel.com>
+References: <1367944461-24456-1-git-send-email-mengdong.lin@intel.com>
+ <s5hr4hj11em.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2241446948279091192=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1004E265065
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 15:54:43 +0200 (CEST)
-In-Reply-To: <CAPgLHd-5rAbUnijs_dfeXuk9LhsSKihOBYeicLWDvZECfP0LmA@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5532F265065
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 16:10:21 +0200 (CEST)
+In-Reply-To: <s5hr4hj11em.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +23,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, yongjun_wei@trendmicro.com.cn
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, May 07, 2013 7:21 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [PATCH v2] ALSA: hda - re-apply fixup when resuming haswell hdmi
+> codec
+> 
+> At Tue,  7 May 2013 12:34:21 -0400,
+> mengdong.lin@intel.com wrote:
+> >
+> > From: Mengdong Lin <mengdong.lin@intel.com>
+> >
+> > This patch is a supplement to a previous patch:
+> > "ALSA: hda - Add fixup for Haswell to enable all pin and convertor widgets".
+> >
+> > Some Haswell BIOS will disable the 2nd and 3rd pin/covertor widgets
+> > when the HD-A controller changes state from D3 to D0. So when the
+> > controller resumes after a system or runtime suspend, these widgets
+> > are disabled and programming these widgets to D0 will cause H/W error and
+> codec will not respond.
+> >
+> > So this patch adds a "set_power_state" ops for Haswell codec. Before
+> > setting the codec to D0, this function will apply a BIOS-specific
+> > fixup to enable the 2nd & 3rd pins/cvts if need.
+> >
+> > And since BIOS will also disable DP1.2, so this function will check
+> > and enable
+> > DP1.2 mode if need.
+> >
+> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> >
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index adb5dce..080398e 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -1842,7 +1842,7 @@ static void intel_haswell_enable_all_pins(struct
+> > hda_codec *codec,  {
+> >  	unsigned int vendor_param;
+> >
+> > -	if (action != HDA_FIXUP_ACT_PRE_PROBE)
+> > +	if (action != HDA_FIXUP_ACT_PRE_PROBE && action !=
+> > +HDA_FIXUP_ACT_INIT)
+> >  		return;
+> >  	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
+> >  				INTEL_GET_VENDOR_VERB, 0);
+> > @@ -1855,7 +1855,8 @@ static void intel_haswell_enable_all_pins(struct
+> hda_codec *codec,
+> >  	if (vendor_param == -1)
+> >  		return;
+> >
+> > -	snd_hda_codec_update_widgets(codec);
+> > +	if (action == HDA_FIXUP_ACT_PRE_PROBE)
+> > +		snd_hda_codec_update_widgets(codec);
+> >  	return;
+> >  }
+> >
+> > @@ -1874,7 +1875,24 @@ static void
+> intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
+> >  				INTEL_SET_VENDOR_VERB, vendor_param);  }
+> >
+> > +static void haswell_set_power_state(struct hda_codec *codec, hda_nid_t fg,
+> > +				unsigned int power_state)
+> > +{
+> > +	if (AC_PWRST_D0 == power_state) {
+> > +		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
+> 
+> Here is no right place to apply the fixup.  If needed, call it generic_hdmi_init(),
+> for example.
 
---===============2241446948279091192==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0WGqsT62A4RTsSXf"
-Content-Disposition: inline
+Hi Takashi,
 
+These widgets need to be enabled before hda_set_power_state(codec, AC_PWRST_D0) programs these widgets to D0.
+Otherwise, audio driver would program these disabled widgets to D0. The codec will not respond when audio driver tries to sync power state. And later verb execution will fail.
 
---0WGqsT62A4RTsSXf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In hda_call_codec_resume(), generic_hdmi_init() is called from codec->patch_ops.init, after setting power state to D0. It would be too late.
+Is it okay to add a new ops like "pre_resume" to apply the fixup?
 
-On Tue, May 07, 2013 at 07:38:52PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Fix to return -ENOMEM in the memory malloc of 'out' and 'img_swap' error
-> handling case instead of 0, as done elsewhere in this function.
-
-Applied, thanks.  Please note my new e-mail address.
-
---0WGqsT62A4RTsSXf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRiQeUAAoJELSic+t+oim9M3AP/RgCrVYDfwHqOvHUQ0qn/E5r
-AwA8nIaCnpuIoPUMzTi/KHhuw20XI5exuNKMmr4D2AsJVoo/ayVGaOq+Urs7ytmR
-bS6fDmX8xi01ZB6vCvrSYr3aKDL6sqR+avqi5JEj070C7+ZolDkq8lKVKggj4YMp
-Ty7u0/moLgWI64t+YeRIBivUHyxqESfpBAXEKMMhw3t1ENnu28IZOwL9Sbh+R4Kv
-OUc7RU8q27+4uR3G6KpZNRxXfycVWzym1d1rnEEFLeUBRBtQEiNnmOCoNWDs4JQ3
-Sj36Ssvt0yjjzk3+uVCKUtIsn8kwg6IQ5DwvIbkhL3aIKGXC/QqQvJnD5VOVMj7I
-fgEzuFbevohrRa1GBw3+N2cXFItSBig3RjXS2rjp+7fa2mD6OkW8/woHD+CuoJDz
-AiYTWcADRSGat3uH/zXzDYJNgluEilk9TaPJSdWDyuNO1iP1QB1HLLSOa2suNqZt
-D+YyH9OV35ejQsVxykdzhHD0K6LRDz7DNQYJzKQXMdD13W62QnpYh9UQ+li/HDmY
-xi6QQT3q+xava6K5U6gcVNqU7281+32kAeRWoZHqPzeovSKZMI67I2vcAXFfNAy6
-6Okc0KdrqaEW+yP+CzB8JnqubyHs3fU8iy4KvXaXFpntLHuMFV4cb7Dg2c4Zzjlq
-lRBVRdkMT9s4GcCtLN2S
-=/TCp
------END PGP SIGNATURE-----
-
---0WGqsT62A4RTsSXf--
-
---===============2241446948279091192==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2241446948279091192==--
+Thanks
+Mengdong
