@@ -1,71 +1,44 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH] ASoC: sam9g20ek: Let device core handle
-	pinctrl
-Date: Tue, 7 May 2013 10:10:10 +0800
-Message-ID: <51886282.8060106@atmel.com>
-References: <1367868508-12329-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Wang YanQing <udknight@gmail.com>
+Subject: [PATCH]ALSA: HDA: Fix Oops caused by dereference NULL pointer
+Date: Tue, 7 May 2013 11:27:33 +0800
+Message-ID: <20130507032733.GA29944@udknight>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nasmtp02.atmel.com (nasmtp02.atmel.com [204.2.163.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 95378260856
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 04:10:57 +0200 (CEST)
-In-Reply-To: <1367868508-12329-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+The interrupt handler azx_interrupt will call azx_update_rirb,
+which may call snd_hda_queue_unsol_event, snd_hda_queue_unsol_event
+will dereference chip->bus pointer.
 
-On 5/7/2013 03:28, Mark Brown wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device
-> core) we can rely on device core for handling pinctrl so remove
-> devm_pinctrl_get_select_default() from the driver.
->
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->   sound/soc/atmel/sam9g20_wm8731.c |    9 ---------
->   1 file changed, 9 deletions(-)
->
-> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-> index 2d6fbd0..802717e 100644
-> --- a/sound/soc/atmel/sam9g20_wm8731.c
-> +++ b/sound/soc/atmel/sam9g20_wm8731.c
-> @@ -38,8 +38,6 @@
->   #include <linux/platform_device.h>
->   #include <linux/i2c.h>
->
-> -#include <linux/pinctrl/consumer.h>
-> -
->   #include <linux/atmel-ssc.h>
->
->   #include <sound/core.h>
-> @@ -203,15 +201,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
->   	struct device_node *codec_np, *cpu_np;
->   	struct clk *pllb;
->   	struct snd_soc_card *card = &snd_soc_at91sam9g20ek;
-> -	struct pinctrl *pinctrl;
->   	int ret;
->
-> -	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-> -	if (IS_ERR(pinctrl)) {
-> -		dev_err(&pdev->dev, "Failed to request pinctrl for mck\n");
-> -		return PTR_ERR(pinctrl);
-> -	}
-> -
+The problem is we alloc chip->bus in azx_codec_create
+which will be called after we enable IRQ and enable unsolicited
+event in azx_probe.
 
-I have one question: with this patch, if lose default pinctrl 
-configuration in dts/dtsi file, how should we know that?
+This will cause Oops due dereference NULL pointer. I meet it, good luck:)
 
-Best Regards,
-Bo Shen
+Signed-off-by: Wang YanQing <udknight@gmail.com>
+---
+ sound/pci/hda/hda_codec.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 622f726..9c76752 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -618,6 +618,9 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
+ 	unsigned int wp;
+ 
+ 	trace_hda_unsol_event(bus, res, res_ex);
++	if (!bus)
++		return 0;
++
+ 	unsol = bus->unsol;
+ 	if (!unsol)
+ 		return 0;
+-- 
+1.7.12.4.dirty
