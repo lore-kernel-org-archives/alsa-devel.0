@@ -1,15 +1,26 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH] ASoC: sgtl5000: Mark CHIP_ANA_POWER as volatile
-Date: Tue, 7 May 2013 17:20:12 -0300
-Message-ID: <1367958018-4827-1-git-send-email-fabio.estevam@freescale.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [RFC] ASoC: sgtl5000: Remove cache support
+Date: Tue, 7 May 2013 20:26:57 -0300
+Message-ID: <CAOMZO5D_EeUDPmDNUxgqU-8sLMcESAR=8b16KNk0Wz-WkX77hQ@mail.gmail.com>
+References: <1367610549-25542-1-git-send-email-festevam@gmail.com>
+ <20130503223613.GR4945@sirena.org.uk>
+ <CAOMZO5B84e0YdcJLa27e4KZv459CGL=msU0fqe4LyFZfM-t1+A@mail.gmail.com>
+ <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
+ <20130505101515.GT4945@sirena.org.uk>
+ <CAKGA1bmKdtAoUP7Yn0CJRVwsCNX5JkEWdWVJj1VJBaJn+9PA=A@mail.gmail.com>
+ <20130506220650.GJ7478@sirena.org.uk>
+ <CAKGA1b=+j5BpHzWOfkDv+xjLLcauHeD4jDj_Do+6ft6UPhYEtA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe006.messaging.microsoft.com [213.199.154.209])
- by alsa0.perex.cz (Postfix) with ESMTP id AEAD926510C
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 22:20:43 +0200 (CEST)
+Received: from mail-vc0-f172.google.com (mail-vc0-f172.google.com
+ [209.85.220.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00CF226510C
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 01:26:57 +0200 (CEST)
+Received: by mail-vc0-f172.google.com with SMTP id m17so1121392vca.31
+ for <alsa-devel@alsa-project.org>; Tue, 07 May 2013 16:26:57 -0700 (PDT)
+In-Reply-To: <CAKGA1b=+j5BpHzWOfkDv+xjLLcauHeD4jDj_Do+6ft6UPhYEtA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +30,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, matt@genesi-usa.com, alsa-devel@alsa-project.org, eric.nelson@boundarydevices.com
+To: Matt Sealey <matt@genesi-usa.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Eric Nelson <eric.nelson@boundarydevices.com>, "troy.kisky" <troy.kisky@boundarydevices.com>, Mark Brown <broonie@kernel.org>, "zengzm.kernel" <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Register CHIP_ANA_POWER (address: 0x0030) contains all of the power down 
-controls for the analog blocks.
+On Tue, May 7, 2013 at 5:06 PM, Matt Sealey <matt@genesi-usa.com> wrote:
 
-Mark it as a volatile register, so that sgtl5000 can be functional after a
-reset.
+> Right, and in theory - I can't find an example of anyone implementing
+> VDDD as unconnected - if you float VDDD then the SGTL5000 will start
 
-Without this patch the following error happens after a audio playback followed
-by a reset:
+Actually I can't find see anyone that implemented VDDD connected, except Efika.
 
-sgtl5000 0-000a: Device with ID register ffff is not a sgtl5000
-sgtl5000 0-000a: ASoC: failed to probe CODEC -19
-imx-sgtl5000 sound.12: ASoC: failed to instantiate card -19
-imx-sgtl5000 sound.12: snd_soc_register_card failed (-19)
+All these boards have sgtl5000 VDDD unconnected:
+mx51evk, mx28evk, mx53smd, mx35pdk, mx25pdk.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 327b443..8b704ff 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -965,6 +965,7 @@ static bool sgtl5000_volatile(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case SGTL5000_CHIP_ID:
- 	case SGTL5000_CHIP_ADCDAC_CTRL:
-+	case SGTL5000_CHIP_ANA_POWER:
- 	case SGTL5000_CHIP_ANA_STATUS:
- 		return true;
- 	}
--- 
-1.7.9.5
+mx6qsabrelite connects VDD to GND.
