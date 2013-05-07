@@ -1,18 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - re-apply fixup when resuming
- haswell hdmi codec
-Date: Tue, 7 May 2013 09:00:14 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F882372B@SHSMSX102.ccr.corp.intel.com>
-References: <1367942120-21382-1-git-send-email-mengdong.lin@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sam9g20ek: Let device core handle
+	pinctrl
+Date: Tue, 7 May 2013 10:01:16 +0100
+Message-ID: <20130507090116.GO7478@sirena.org.uk>
+References: <1367868508-12329-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <51886282.8060106@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1918716098637782106=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B0B32608EE
- for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 11:00:21 +0200 (CEST)
-In-Reply-To: <1367942120-21382-1-git-send-email-mengdong.lin@intel.com>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8523426262D
+ for <alsa-devel@alsa-project.org>; Tue,  7 May 2013 11:01:20 +0200 (CEST)
+In-Reply-To: <51886282.8060106@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,104 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, there are some unused parameters in haswell_set_power_state(). I'll remove them.
 
-Thanks
-Mengdong
+--===============1918716098637782106==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7gLe/sNPhR777EPF"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Lin, Mengdong
-> Sent: Tuesday, May 07, 2013 11:55 PM
-> To: alsa-devel@alsa-project.org; tiwai@suse.de
-> Cc: Lin, Mengdong
-> Subject: [PATCH] ALSA: hda - re-apply fixup when resuming haswell hdmi codec
-> 
-> From: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> This patch is a supplement to a previous patch:
-> "ALSA: hda - Add fixup for Haswell to enable all pin and convertor widgets".
-> 
-> Some Haswell BIOS will disable the 2nd and 3rd pin/covertor widgets when the
-> HD-A controller changes state from D3 to D0. So when the controller resumes
-> after a system or runtime suspend, these widgets are disabled and programming
-> these widgets to D0 will cause H/W error and codec will not respond.
-> 
-> So this patch adds a "set_power_state" ops for Haswell codec. Before setting
-> the codec to D0, this function will apply a BIOS-specific fixup to enable the 2nd
-> & 3rd pins/cvts if need.
-> 
-> And since BIOS will also disable DP1.2, so this function will check and enable
-> DP1.2 mode if need.
-> 
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
-> adb5dce..9ecb55c 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -1842,7 +1842,7 @@ static void intel_haswell_enable_all_pins(struct
-> hda_codec *codec,  {
->  	unsigned int vendor_param;
-> 
-> -	if (action != HDA_FIXUP_ACT_PRE_PROBE)
-> +	if (action != HDA_FIXUP_ACT_PRE_PROBE && action !=
-> HDA_FIXUP_ACT_INIT)
->  		return;
->  	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
->  				INTEL_GET_VENDOR_VERB, 0);
-> @@ -1855,7 +1855,8 @@ static void intel_haswell_enable_all_pins(struct
-> hda_codec *codec,
->  	if (vendor_param == -1)
->  		return;
-> 
-> -	snd_hda_codec_update_widgets(codec);
-> +	if (action == HDA_FIXUP_ACT_PRE_PROBE)
-> +		snd_hda_codec_update_widgets(codec);
->  	return;
->  }
-> 
-> @@ -1874,7 +1875,27 @@ static void intel_haswell_fixup_enable_dp12(struct
-> hda_codec *codec)
->  				INTEL_SET_VENDOR_VERB, vendor_param);  }
-> 
-> +static void haswell_set_power_state(struct hda_codec *codec, hda_nid_t fg,
-> +				unsigned int power_state)
-> +{
-> +	unsigned int state;
-> +	unsigned int vendor_param;
-> +
-> +	if (AC_PWRST_D0 == power_state) {
-> +		snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
-> +
-> +		intel_haswell_fixup_enable_dp12(codec);
-> +
-> +	}
-> 
-> +	snd_hda_codec_read(codec, fg, 0,
-> +					   AC_VERB_SET_POWER_STATE,
-> +					   power_state);
-> +
-> +	snd_hda_codec_set_power_to_all(codec, fg, power_state);
-> +
-> +	return;
-> +}
-> 
->  /* available models for fixup */
->  enum {
-> @@ -1922,6 +1943,10 @@ static int patch_generic_hdmi(struct hda_codec
-> *codec)
->  		return -EINVAL;
->  	}
->  	codec->patch_ops = generic_hdmi_patch_ops;
-> +
-> +	if (codec->vendor_id == 0x80862807)
-> +		codec->patch_ops.set_power_state = haswell_set_power_state;
-> +
->  	generic_hdmi_init_per_pins(codec);
-> 
->  	init_channel_allocations();
-> --
-> 1.7.10.4
+
+--7gLe/sNPhR777EPF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 07, 2013 at 10:10:10AM +0800, Bo Shen wrote:
+> On 5/7/2013 03:28, Mark Brown wrote:
+
+> >Since commit ab78029 (drivers/pinctrl: grab default handles from device
+> >core) we can rely on device core for handling pinctrl so remove
+> >devm_pinctrl_get_select_default() from the driver.
+
+> I have one question: with this patch, if lose default pinctrl
+> configuration in dts/dtsi file, how should we know that?
+
+I'd hope the core does something sensible with this, though I've not
+checked.
+
+--7gLe/sNPhR777EPF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRiMLZAAoJELSic+t+oim9SxUP/ipEzF12SASpwiBIOn0NkURG
+qOXYp3K7oIjHY1iNY5ztMDWVAS8wN03OS3LYTjxeO+jXM6cQb0tQyx7RWLyeIBy8
+jCmC6iBAcZyXPtz96HfM/O/OVr0l+xHwYDLJ6KPmKqqKAzePNzpllwLqSCdRk3r3
+K8k5n9hDFe89V6nXFgBrpw0dShgizZBVCDeq37rTUZiH041UOz+3FeXodcWNo1zg
+qzXk6/f1I1krrkfXN5H++pnfcjv1pq11P7MNxd5BG07UZiyVK0LABCiIJ9FX7Jmh
+lVPHCdCt3GcVwRJvLhxfbdnZR0cr+vYjzI5rnr+eLPrHRddFIkEbjfWk93sXIJ5n
+fZXe0rl0fMKheBvARHgwG5a2Qs0ZrRYKwnfiNdjDFLy56+KBRhoCqf+lIXcVbW8x
+OP+8/0Ux0n6eTFpdngtmzFd6b9PhgphTllxyk9s8J30Zm9za3Szc0aeaGZNu1XDw
+rae7mJBwKG8Gx1nDsRYd0YRqP24GhL/YKB+Lvbb862OtR50tIrwtTyOCQGFuJIWP
+NCbLUp/ugevU6Nh0Sn8lgoNb3Iaa1eN7DiGPzi/V1eeEgjSoz++yNFIe0D9TFiyv
+0gcaS1QhVnE/2EOFdb8Iem19PN/rnrBXCK3RA2G5L7sUkxEGK7PIUOFf8L/hTlQG
+8Qft8y2xJod7CWcIOGrm
+=u2M1
+-----END PGP SIGNATURE-----
+
+--7gLe/sNPhR777EPF--
+
+--===============1918716098637782106==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1918716098637782106==--
