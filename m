@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: ux500: Use the first two AD
-	slots for capture
-Date: Wed, 8 May 2013 13:30:36 +0100
-Message-ID: <20130508123036.GJ7478@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Wed, 8 May 2013 13:32:25 +0100
+Message-ID: <20130508123225.GK7478@sirena.org.uk>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-7-git-send-email-fabio.baltieri@linaro.org>
- <20130508105654.GC7478@sirena.org.uk>
- <20130508111253.GE3459@gmail.com>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105124.GA7478@sirena.org.uk>
+ <20130508114216.GB29130@balto.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2806435785662716953=="
+Content-Type: multipart/mixed; boundary="===============7549645182666650134=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A96B26109F
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:30:47 +0200 (CEST)
-In-Reply-To: <20130508111253.GE3459@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CDEF2607BA
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:32:38 +0200 (CEST)
+In-Reply-To: <20130508114216.GB29130@balto.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Fabio Baltieri <fabio.baltieri@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2806435785662716953==
+--===============7549645182666650134==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b+chlBtRKJDCtqTb"
+	protocol="application/pgp-signature"; boundary="LR9UEBmNK407lwl9"
 Content-Disposition: inline
 
 
---b+chlBtRKJDCtqTb
+--LR9UEBmNK407lwl9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 08, 2013 at 12:12:53PM +0100, Lee Jones wrote:
-> On Wed, 08 May 2013, Mark Brown wrote:
+On Wed, May 08, 2013 at 01:42:16PM +0200, Fabio Baltieri wrote:
+> On Wed, May 08, 2013 at 11:51:24AM +0100, Mark Brown wrote:
 
-> > If these are routing specific analogue inputs to specific timeslots then
-> > this is routing that should be being exposed to DAPM as muxes, not hard
-> > coded in the middle of TDM slot configuration (which is both obscure and
-> > not what the TDM API is there for).  The TDM API should be purely about
-> > placing the timeslots for the audio interface on the bus.
+> > I tend to agree with Lee that this looks like a bad approach - there's a
+> > whole bunch of other code in there which I'd guess is probably equally
+> > broken but only the pinctrl code is being removed.  Why not just fix it
+> > (or better yet simplify all this stuff)?
 
-> Again, I think this patch is a valid bugfix. If the driver requires
-> refactoring, it should be done by someone else. That's not the purpose
-> of Fabio's role.
+> Sorry I did not get the subject, are you referring to other broken code
+> in the ux500 driver or to pinctrl and shared pins in generals?
 
-It's a configuraiton change not a bug fix as far as I can see.
+I'm saying that if functions like enable_msp() don't work reliably then
+removing some but not all of their functionality isn't an obviously good
+approach to fixing that.  Why does the other functionality work well but
+not this bit?  It sounds like there's some reference counting bug here
+is all...
 
---b+chlBtRKJDCtqTb
+--LR9UEBmNK407lwl9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRikVoAAoJELSic+t+oim9t68P/2SQ4WsZLe1MgEH5ke/HkNHA
-S1jSYiAmvt/9zc+TiuZsv2/B+ygPrHU69bg8aZHeELv3gMxWVt9t6OEI064uHP6q
-QhKjBNdGj/k3enBJddG4u0qQOyh8CQlXGbwj44tiyYHWIun2WLhyRQY9NPdflo9o
-hyJPlbtoIf1ciiQpW0Rg/N7TXfLvYbpnLJPubS48RicfsX6NKav56mwbj4Yi96Ya
-G+5QoSgf+Y+WaFr0A635tuU5qvEB3JcmkpbCNuRJ6lhidFR0DDcKlrmncxEHNymD
-nJ/ewN4P2yJkP4WXM0+mUcneUrA9GAJZ1fUj67KxaHNjCbBProblfr6hsV+CZAb9
-CFrDHDjOCNyY59smonSFSQDNIy1gir5dFwOS/EzniJzsyjbSQgNpM1MiHSxoVuMS
-SbMv2yQjKewopzU/0Ad3CHqRVjyesXF3eX3vYR5oZN5FRJw+PZ3hzlOXWMA1i8Us
-MZlW6rVlC5xd+vZkLL/qxhg9SXJe54vLJRicMq9NPvuJdtYFu+HEj9YB4CKtjJnh
-TRvviBeppuZV9tnOHzIp79TBjgB3sF5v9uUsdSHOuyPmMwpglpYDtt/5sdrjvSLo
-hQXEfRvRkRvg6L5lZi9/LvURR/9o5AoZm4zuQnFLyN2hX3SUPvqvo3LnZhUsiAY6
-cWksrr9PKddmHVuTxKen
-=NyK8
+iQIcBAEBAgAGBQJRikXWAAoJELSic+t+oim9XZwP/2lqobpaImrY6Jxc1tg9GR+2
+8bTTu+Wckvz0V5AdnPyX3/Rf+BIgn3ZQLkQOWorm9W9jdb20QFaT5IbSzDyggw9H
+8ScjZShjz+gOle1/qn9VNe2o/Hyh++wwbOYyR7Kr7SL6TbDFYLu52szR+VldcByO
+lo/16ICzYec1Qq+tGisXXoAWbnJx3BVMnnS/ifuz5xsdLq8VN8cIz6QvLhujiA0T
+nB1j+lpJlfAfdsmWpEjzI6cWLQ0mU4USDFKr5Sl0gqeEa31LEdhqYdUUU+7Co8jR
+kqJt5K1J7IMn/6yqCskE4YRz4JojYu3FN9D2dSqo5d+mcXQ8YpcGtdJefXyYL3kf
+tA7mOaWbxRtbDaHnXekFkvpOhWbyEFGzqiiqWx45Sr4jThND2ja/uIMNc6z8ufp3
+asKjTdxSc88sor/P+DO1IZfxHkTJln6Uc93i1v4pVLAeLao0fmKUVaM3OhCYNpBy
+TbfhlVB7Cw1kcnBL325/M1rMyYQUJ7h+WtJxErmUfJ+StMlnI23MKZxMKOXxCobr
+BBZ8UJF+gfgX8jAie1agHwJd7wkUW9f+mbLxDU20LB83aUY0WoXoYIjp1asmaVJt
+OjV0YV6JT/PHiNUhlnqxl8h1yvWY5HJ7ZspnABX6i57Ex1pk9O4g1S+WxEv3Mf5f
+Q1qQk7JY035JAmB16cQ5
+=g0eS
 -----END PGP SIGNATURE-----
 
---b+chlBtRKJDCtqTb--
+--LR9UEBmNK407lwl9--
 
---===============2806435785662716953==
+--===============7549645182666650134==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2806435785662716953==--
+--===============7549645182666650134==--
