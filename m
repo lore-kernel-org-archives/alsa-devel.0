@@ -1,89 +1,88 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 4/6] ASoC: ux500: Update tx tdm slots configuration
-Date: Wed, 8 May 2013 09:18:23 +0100
-Message-ID: <20130508081823.GI3102@gmail.com>
+Subject: Re: [PATCH 5/6] ASoC: ux500: Swap even/odd AD slot
+	definitions
+Date: Wed, 8 May 2013 09:19:37 +0100
+Message-ID: <20130508081937.GJ3102@gmail.com>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-5-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-6-git-send-email-fabio.baltieri@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f180.google.com (mail-ea0-f180.google.com
+ [209.85.215.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4077026168C
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 10:19:42 +0200 (CEST)
+Received: by mail-ea0-f180.google.com with SMTP id g14so752083eak.39
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 01:19:42 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1367997261-32048-5-git-send-email-fabio.baltieri@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <1367997261-32048-6-git-send-email-fabio.baltieri@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 08 May 2013, Fabio Baltieri wrote:
-
-> Update ab8500-codec and mop500_ab8500 tx slot configuration to reflec=
-t
-> the actual one used by STE.  Also update a wrong comment in the proce=
-ss.
->=20
-> Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
-> ---
->  sound/soc/codecs/ab8500-codec.c | 20 ++++++++++----------
->  sound/soc/ux500/mop500_ab8500.c |  4 ++--
->  2 files changed, 12 insertions(+), 12 deletions(-)
->=20
-> diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab850=
-0-codec.c
-> index 3126cac..7c026d4 100644
-> --- a/sound/soc/codecs/ab8500-codec.c
-> +++ b/sound/soc/codecs/ab8500-codec.c
-> @@ -2300,18 +2300,18 @@ static int ab8500_codec_set_dai_tdm_slot(stru=
-ct snd_soc_dai *dai,
->  	case 0:
->  		break;
->  	case 1:
-> -		/* Slot 9 -> DA_IN1 & DA_IN3 */
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, 11);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, 11);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, 11);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, 11);
-> +		/* Slot 8 -> DA_IN1 to DA_IN4 */
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, 8);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, 8);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, 8);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, 8);
->  		break;
->  	case 2:
-> -		/* Slot 9 -> DA_IN1 & DA_IN3, Slot 11 -> DA_IN2 & DA_IN4 */
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, 9);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, 9);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, 11);
-> -		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, 11);
-> +		/* Slot 8 -> DA_IN1 & DA_IN3, Slot 9 -> DA_IN2 & DA_IN4 */
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF1, mask, 8);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF3, mask, 8);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF2, mask, 9);
-> +		snd_soc_update_bits(codec, AB8500_DASLOTCONF4, mask, 9);
-> =20
->  		break;
->  	case 8:
-> diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500=
-_ab8500.c
-> index 4606194..44899f7 100644
-> --- a/sound/soc/ux500/mop500_ab8500.c
-> +++ b/sound/soc/ux500/mop500_ab8500.c
-> @@ -28,8 +28,8 @@
->  #include "ux500_msp_dai.h"
->  #include "../codecs/ab8500-codec.h"
-> =20
-> -#define TX_SLOT_MONO	0x0008
-> -#define TX_SLOT_STEREO	0x000a
-> +#define TX_SLOT_MONO	0x0001
-> +#define TX_SLOT_STEREO	0x0003
->  #define RX_SLOT_MONO	0x0001
->  #define RX_SLOT_STEREO	0x0003
->  #define TX_SLOT_8CH	0x00FF
-
-Looks fine: Acked-by: Lee Jones <lee.jones@linaro.org>
-
---=20
-Lee Jones
-Linaro ST-Ericsson Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+T24gV2VkLCAwOCBNYXkgMjAxMywgRmFiaW8gQmFsdGllcmkgd3JvdGU6Cgo+IEFEIHNsb3RzIGRl
+ZmluaXRpb25zIGZvciBhYjg1MDAgY29kZWMgd2VyZSBlcnJvbmVvdXNseSBzd2FwcGVkIGJldHdl
+ZW4KPiBldmVuIGFuZCBvZGQgY2hhbm5lbHMuICBGaXggdGhpcyBieSBzd2FwcGluZyB0aGUgZGVm
+aW5pdGlvbnMgdG8gYmUKPiBjb2hlcmVudCB3aXRoIHRoZSBjaGFubmVsIG51bWJlci4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBGYWJpbyBCYWx0aWVyaSA8ZmFiaW8uYmFsdGllcmlAbGluYXJvLm9yZz4K
+PiAtLS0KPiAgc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuaCB8IDM2ICsrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
+cygrKSwgMTggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mv
+YWI4NTAwLWNvZGVjLmggYi9zb3VuZC9zb2MvY29kZWNzL2FiODUwMC1jb2RlYy5oCj4gaW5kZXgg
+MTE0ZjY5YS4uMzA2ZDBiYyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2FiODUwMC1j
+b2RlYy5oCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuaAo+IEBAIC0zNDgs
+MjUgKzM0OCwyNSBAQAo+ICAKPiAgLyogQUI4NTAwX0FEU0xPVFNFTFggKi8KPiAgI2RlZmluZSBB
+Qjg1MDBfQURTTE9UU0VMWF9BRF9PVVQxX1RPX1NMT1RfT0RECTB4MDAKPiAtI2RlZmluZSBBQjg1
+MDBfQURTTE9UU0VMWF9BRF9PVVQyX1RPX1NMT1RfT0RECTB4MDEKPiAtI2RlZmluZSBBQjg1MDBf
+QURTTE9UU0VMWF9BRF9PVVQzX1RPX1NMT1RfT0RECTB4MDIKPiAtI2RlZmluZSBBQjg1MDBfQURT
+TE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfT0RECTB4MDMKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9U
+U0VMWF9BRF9PVVQ1X1RPX1NMT1RfT0RECTB4MDQKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VM
+WF9BRF9PVVQ2X1RPX1NMT1RfT0RECTB4MDUKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9B
+RF9PVVQ3X1RPX1NMT1RfT0RECTB4MDYKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9P
+VVQ4X1RPX1NMT1RfT0RECTB4MDcKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9aRVJPRVNf
+VE9fU0xPVF9PREQJMHgwOAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RP
+X1NMT1RfT0RECTB4MEYKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQyX1RPX1NM
+T1RfT0RECTB4MTAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQzX1RPX1NMT1Rf
+T0RECTB4MjAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfT0RE
+CTB4MzAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ1X1RPX1NMT1RfT0RECTB4
+NDAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ2X1RPX1NMT1RfT0RECTB4NTAK
+PiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ3X1RPX1NMT1RfT0RECTB4NjAKPiAr
+I2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ4X1RPX1NMT1RfT0RECTB4NzAKPiArI2Rl
+ZmluZSBBQjg1MDBfQURTTE9UU0VMWF9aRVJPRVNfVE9fU0xPVF9PREQJMHg4MAo+ICsjZGVmaW5l
+IEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RPX1NMT1RfT0RECTB4RjAKPiAgI2RlZmluZSBB
+Qjg1MDBfQURTTE9UU0VMWF9BRF9PVVQxX1RPX1NMT1RfRVZFTgkweDAwCj4gLSNkZWZpbmUgQUI4
+NTAwX0FEU0xPVFNFTFhfQURfT1VUMl9UT19TTE9UX0VWRU4JMHgxMAo+IC0jZGVmaW5lIEFCODUw
+MF9BRFNMT1RTRUxYX0FEX09VVDNfVE9fU0xPVF9FVkVOCTB4MjAKPiAtI2RlZmluZSBBQjg1MDBf
+QURTTE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfRVZFTgkweDMwCj4gLSNkZWZpbmUgQUI4NTAwX0FE
+U0xPVFNFTFhfQURfT1VUNV9UT19TTE9UX0VWRU4JMHg0MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNM
+T1RTRUxYX0FEX09VVDZfVE9fU0xPVF9FVkVOCTB4NTAKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9U
+U0VMWF9BRF9PVVQ3X1RPX1NMT1RfRVZFTgkweDYwCj4gLSNkZWZpbmUgQUI4NTAwX0FEU0xPVFNF
+TFhfQURfT1VUOF9UT19TTE9UX0VWRU4JMHg3MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxY
+X1pFUk9FU19UT19TTE9UX0VWRU4JMHg4MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RS
+SVNUQVRFX1RPX1NMT1RfRVZFTgkweEYwCj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURf
+T1VUMl9UT19TTE9UX0VWRU4JMHgwMQo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX0FEX09V
+VDNfVE9fU0xPVF9FVkVOCTB4MDIKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ0
+X1RPX1NMT1RfRVZFTgkweDAzCj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURfT1VUNV9U
+T19TTE9UX0VWRU4JMHgwNAo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX0FEX09VVDZfVE9f
+U0xPVF9FVkVOCTB4MDUKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ3X1RPX1NM
+T1RfRVZFTgkweDA2Cj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURfT1VUOF9UT19TTE9U
+X0VWRU4JMHgwNwo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1pFUk9FU19UT19TTE9UX0VW
+RU4JMHgwOAo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RPX1NMT1RfRVZF
+TgkweDBGCj4gICNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfRVZFTl9TSElGVAkJMAo+ICAjZGVm
+aW5lIEFCODUwMF9BRFNMT1RTRUxYX09ERF9TSElGVAkJNAoKQWNrZWQtYnk6IExlZSBKb25lcyA8
+bGVlLmpvbmVzQGxpbmFyby5vcmc+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBM
+YW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3Ig
+QVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
