@@ -1,77 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm_adsp: Expose coefficient
- blocks as ALSA binary controls
-Date: Wed, 8 May 2013 16:03:22 +0100
-Message-ID: <20130508150322.GV7478@sirena.org.uk>
-References: <1368018935-4902-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Wed, 8 May 2013 16:07:29 +0100
+Message-ID: <20130508150729.GK3459@gmail.com>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105124.GA7478@sirena.org.uk>
+ <20130508114216.GB29130@balto.lan>
+ <20130508123225.GK7478@sirena.org.uk>
+ <20130508131020.GA30503@balto.lan>
+ <20130508135413.GR7478@sirena.org.uk>
+ <20130508141723.GA12155@balto.lan>
+ <20130508142734.GB12155@balto.lan>
+ <20130508144958.GT7478@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2072562123867522875=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id D509D2610A2
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 17:03:33 +0200 (CEST)
-In-Reply-To: <1368018935-4902-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130508144958.GT7478@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Baltieri <fabio.baltieri@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 08 May 2013, Mark Brown wrote:
 
---===============2072562123867522875==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t98UOKzcpBZ5uth4"
-Content-Disposition: inline
+> On Wed, May 08, 2013 at 04:27:34PM +0200, Fabio Baltieri wrote:
+> > On Wed, May 08, 2013 at 04:17:23PM +0200, Fabio Baltieri wrote:
+>=20
+> > > Ok, what I'm trying to say is that the codec used in this platfor=
+m
+> > > should be able to handle sleep modes without requiring any
+> > > reconfiguration of the digital interface on the SoC side.  In sup=
+port of
+> > > this the fact that the STE fork of the driver does not do that, a=
+nd the
+> > > same goes for all other ASoC drivers currently in mainline.
+>=20
+> > And by the way, if the current code is *really* setting the digital
+> > audio bus pins in hi-z mode (without any pull-up/down/keeper) as it
+> > claims, this is not just usless, it's plain wrong.  The bus should =
+never
+> > be left floating on both sides, right?
+>=20
+> Probably not, no.
 
+Why don't we wait and see what LinusW says?
 
---t98UOKzcpBZ5uth4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If anyone would know, it's him.
 
-On Wed, May 08, 2013 at 02:15:35PM +0100, Dimitris Papastamos wrote:
-> Add initial support for runtime tuning for the ADSP cores.  This
-> is achieved by exposing the coefficient configuration blocks as
-> ALSA binary controls.
-> The current code assumes that no controls on the DSP are volatile.
-
-Applied, thanks.
-
---t98UOKzcpBZ5uth4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRimkxAAoJELSic+t+oim9TCcP/3JQhjF+44QbY1ekpswW1eDe
-O5zQuRIT+w5embc3UxDWAQHNbxcDR8Ho7WPjFDvsQEX44Ju3hetSqkTHQvuFXN+k
-Y86OgCtbWbHNHwyej2WEmhq8oLgEAzMMSnstu1hVyQWUtzt5D4qzu6b3tCzBtjiP
-Urk1/5JCduGt2LIc71piZe6Z15kMyJL54rvp1CcPkbchj42rs57NcG2PSuy99NWw
-sXHRYtxQPDvyzMnXH4nvR1O07TPlkrW/OO5k5XZHLPBaXc4GibRGHIRwfwkoWvKq
-wTq5K8O1gELuWWgMSJJF5cg+bN6fazIWwN5jkKEdJc3LcwX/VPYonrktkdK6bpgO
-B2gFaki7cyu5YiQQT70Kkp5MWBcMQ7Yf9EJIAc4rGjdCw7YRKgijzhg/w8UFXJef
-y5Z4LKRXR8osajg+xjhxmZFjxi3JuRJEB46pB45cuvOe2BqTyg2a7R+MmRZUWDW1
-QDSDSFsqLDZgh5uBp2BBlBS/KLJvsqZ7Qfka8jdGpEoJCzNi4x4q1ulcbeAphQZU
-WOGdrnX9ttNc3MIMpQlMm7y3SgRVyJlOHCnXjEZd6Mps9gdKwrVkwg5BsCqCt4Tf
-6njaPpNFeOH/WXvnSaeJdzE47cPlkX+Al7CAAdLkrNkxgu+pPHSz/m4tzO3ySLVa
-elhHbHdzruZsfxtHelQr
-=eeZ3
------END PGP SIGNATURE-----
-
---t98UOKzcpBZ5uth4--
-
---===============2072562123867522875==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2072562123867522875==--
+--=20
+Lee Jones
+Linaro ST-Ericsson Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
