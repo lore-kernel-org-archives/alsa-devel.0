@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: ux500: Update tx tdm slots
-	configuration
-Date: Wed, 8 May 2013 13:28:54 +0100
-Message-ID: <20130508122854.GI7478@sirena.org.uk>
+Subject: Re: [PATCH 6/6] ASoC: ux500: Use the first two AD
+	slots for capture
+Date: Wed, 8 May 2013 13:30:36 +0100
+Message-ID: <20130508123036.GJ7478@sirena.org.uk>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-5-git-send-email-fabio.baltieri@linaro.org>
- <20130508110149.GF7478@sirena.org.uk>
- <20130508111110.GD3459@gmail.com>
+ <1367997261-32048-7-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105654.GC7478@sirena.org.uk>
+ <20130508111253.GE3459@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6543593675295449969=="
+Content-Type: multipart/mixed; boundary="===============2806435785662716953=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6237626109F
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:29:07 +0200 (CEST)
-In-Reply-To: <20130508111110.GD3459@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A96B26109F
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:30:47 +0200 (CEST)
+In-Reply-To: <20130508111253.GE3459@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,70 +28,60 @@ Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Fabio B
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6543593675295449969==
+--===============2806435785662716953==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KCBbHYs95wY/7dOt"
+	protocol="application/pgp-signature"; boundary="b+chlBtRKJDCtqTb"
 Content-Disposition: inline
 
 
---KCBbHYs95wY/7dOt
+--b+chlBtRKJDCtqTb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 08, 2013 at 12:11:10PM +0100, Lee Jones wrote:
+On Wed, May 08, 2013 at 12:12:53PM +0100, Lee Jones wrote:
 > On Wed, 08 May 2013, Mark Brown wrote:
 
-> > On Wed, May 08, 2013 at 09:14:19AM +0200, Fabio Baltieri wrote:
-> > > Update ab8500-codec and mop500_ab8500 tx slot configuration to reflect
-> > > the actual one used by STE.  Also update a wrong comment in the process.
+> > If these are routing specific analogue inputs to specific timeslots then
+> > this is routing that should be being exposed to DAPM as muxes, not hard
+> > coded in the middle of TDM slot configuration (which is both obscure and
+> > not what the TDM API is there for).  The TDM API should be purely about
+> > placing the timeslots for the audio interface on the bus.
 
-> > This seems wrong, the individual chip drivers should just be doing
-> > whatever they're being told by the machine driver.  Sounds like there's
-> > two fixes needed here - one is to change the TDM API so that the chip
-> > drivers are just implementing configuration supplied by the machine
-> > driver and the other is to change the configuration being done to
-> > whatever is desired.
+> Again, I think this patch is a valid bugfix. If the driver requires
+> refactoring, it should be done by someone else. That's not the purpose
+> of Fabio's role.
 
-> Do you mean that the original implementation is incorrect, or that
-> this patch is doing the wrong thing? I think this patch is a bugfix
-> rather than a opportunity to refactor the driver.
+It's a configuraiton change not a bug fix as far as I can see.
 
-I mean that the original implementation is incorrect and this is just
-continuing the problem - the reason that we don't want to have this
-stuff hard coded in the device drivers is that we should be doing this
-sort of configuration in the machine drivers so only the relevant
-systems are affected by configuration updates.  Putting this in the
-drivers tends to lead to a series of configuration changes like this.
-
---KCBbHYs95wY/7dOt
+--b+chlBtRKJDCtqTb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRikUDAAoJELSic+t+oim95FoP/jV2Uye2IXWcPyVxswowul26
-66agqrFgjMpIewaIZiwwMQB4zNSs/g17WUrIBYoUSF25lPePoisJ2FWYoqyssA8Q
-T4g5agv8VcBAb3vHXF81TiuPr5ixn0t2hf4Heeo9xpZjAUItrE+6VNX4itzZcNkQ
-CoDszaM1u1MXH88Wqx6E5rqdYfOH0dHwb1tryIPrhvqPNLJCFSEGjRGoprGi4u3+
-Vyt4p0mxfBU8iXtWoDbkO5kKuOY0yH5Z7QjI0bq9DTl0pFZ6bbU9om6uXncBROZw
-mBlybUyd9sJUd6mrofoQa99YkpZS1rxUp89f8UUhVhq+k1fmr2pJCAMYpZlrpQ1Y
-tbaOQcgNHypo6tv1zIbmRSknsMDQ+ckU/9LCXC5yxndMVvjDrV5aoGt2kRp5AkCc
-22N/WlthZ2Ls2EbZJ39i1p+FeufcAHGXzjOYtSW6FoHNnKlCBx8XaeeqA3Lvep9h
-d8VfuToltl9QeLo+W3fC90+0P8wYjF7AJcxQXQa6UcC+yZWzDQPOeLgi+I9+wcGM
-qgz7yvqC2VI0TF+9w6w052gScqbQaDPnTO8zhwIiGaoIF41ZMc+t9vx0UMbrWFTQ
-yJckS5roV6bqiXZyaIOxwVe2u3DMKco3CTMHQVwdYFEGh0L7WftFW+2XTRwgfIlj
-rr/5DceMMf8YUR8z/S4g
-=F7As
+iQIcBAEBAgAGBQJRikVoAAoJELSic+t+oim9t68P/2SQ4WsZLe1MgEH5ke/HkNHA
+S1jSYiAmvt/9zc+TiuZsv2/B+ygPrHU69bg8aZHeELv3gMxWVt9t6OEI064uHP6q
+QhKjBNdGj/k3enBJddG4u0qQOyh8CQlXGbwj44tiyYHWIun2WLhyRQY9NPdflo9o
+hyJPlbtoIf1ciiQpW0Rg/N7TXfLvYbpnLJPubS48RicfsX6NKav56mwbj4Yi96Ya
+G+5QoSgf+Y+WaFr0A635tuU5qvEB3JcmkpbCNuRJ6lhidFR0DDcKlrmncxEHNymD
+nJ/ewN4P2yJkP4WXM0+mUcneUrA9GAJZ1fUj67KxaHNjCbBProblfr6hsV+CZAb9
+CFrDHDjOCNyY59smonSFSQDNIy1gir5dFwOS/EzniJzsyjbSQgNpM1MiHSxoVuMS
+SbMv2yQjKewopzU/0Ad3CHqRVjyesXF3eX3vYR5oZN5FRJw+PZ3hzlOXWMA1i8Us
+MZlW6rVlC5xd+vZkLL/qxhg9SXJe54vLJRicMq9NPvuJdtYFu+HEj9YB4CKtjJnh
+TRvviBeppuZV9tnOHzIp79TBjgB3sF5v9uUsdSHOuyPmMwpglpYDtt/5sdrjvSLo
+hQXEfRvRkRvg6L5lZi9/LvURR/9o5AoZm4zuQnFLyN2hX3SUPvqvo3LnZhUsiAY6
+cWksrr9PKddmHVuTxKen
+=NyK8
 -----END PGP SIGNATURE-----
 
---KCBbHYs95wY/7dOt--
+--b+chlBtRKJDCtqTb--
 
---===============6543593675295449969==
+--===============2806435785662716953==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6543593675295449969==--
+--===============2806435785662716953==--
