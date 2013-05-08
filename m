@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
-Date: Wed, 8 May 2013 11:51:24 +0100
-Message-ID: <20130508105124.GA7478@sirena.org.uk>
-References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+Subject: Re: [PATCH] ASoC: SPEAr spdif_{in,
+ out}: use devm for clk and a few more cleanups
+Date: Wed, 8 May 2013 11:52:49 +0100
+Message-ID: <20130508105249.GB7478@sirena.org.uk>
+References: <1368006458-20438-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0598233509309083788=="
+Content-Type: multipart/mixed; boundary="===============2880253676804300213=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CC0E261658
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:51:39 +0200 (CEST)
-In-Reply-To: <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F399261666
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:53:12 +0200 (CEST)
+In-Reply-To: <1368006458-20438-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,64 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0598233509309083788==
+--===============2880253676804300213==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Jsn5+Lu/ZvzbAGtZ"
+	protocol="application/pgp-signature"; boundary="OJWLbGElk4npXSe3"
 Content-Disposition: inline
 
 
---Jsn5+Lu/ZvzbAGtZ
-Content-Type: text/plain; charset=us-ascii
+--OJWLbGElk4npXSe3
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 08, 2013 at 09:14:18AM +0200, Fabio Baltieri wrote:
-> Drop pinctrl default/sleep state switching code, as it was breaking the
-> capture interface by putting the I2S pins in hi-z mode regardless of its
-> usage status, and not giving any real benefit.
->=20
-> Pinctrl default mode configuration is already managed automatically by a
-> specific pinctrl hog.
+On Wed, May 08, 2013 at 11:47:38AM +0200, Uwe Kleine-K=F6nig wrote:
+> Drop dev_set_drvdata as this is handled in the core and use
+> devm_request_and_ioremap instead of devm_ioremap to properly register the
+> address range used
 
-I tend to agree with Lee that this looks like a bad approach - there's a
-whole bunch of other code in there which I'd guess is probably equally
-broken but only the pinctrl code is being removed.  Why not just fix it
-(or better yet simplify all this stuff)?
+Applied, thanks.
 
---Jsn5+Lu/ZvzbAGtZ
+--OJWLbGElk4npXSe3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRii4oAAoJELSic+t+oim9KmgP/3UuESUutQ3yJnaQpS4u76AG
-qbcgcGVV/yCMeqvo5p115+BTy5hcFOYkIL9Js0mRaKX6uXcwYasG/L18AhPY66hF
-xaYTow7OxQjF8xHpDyH3y36DNKsJHIBL2U9aznXVltk9hIxDFW0lPJpX1bZ71rvS
-/BvsVW/O9E0sE5NCraplLBnvGA8x7EXC0V6h2nSkT/Qqj+Gl9ceIOPUXkC0H2b7I
-qPDS34FysNl7JlJj5txK4RDHJe7NIYB+A79syJsOjbGz1mw70Rl28USvixHgU16/
-DTLVSAKA8j599ONHDa1C/a9gaIubKomY2WjY7UFz/PpQ5vIjWmEwDKjnG5EjtEz/
-uztGZlXi5CONCccX8+HzjF9pMsEcd+Mqou8f+7APNZC7leTgW9v5AouxNEZqTV6r
-nGPa9cvBtgHjOjEGgwkS0i6PmCDyT8pW5QiQtzwsW95xXqRhkwpolR+BvPN1i8Vw
-eYF9wj0Yqd7K/VDxhnGalRlS4ETr/drsY+d0CvtpeZQ74zENTVrxTOfu2JIwokpW
-RdR3i97Dr1vl48aTGmktkjkqoL+hSETu53gndDR3RGELwerCDfjgEUrvFQhQUejT
-BrpLVN8HFYuwrNsgDPeiccQXVl8Y4NGZ0RycrckhXGIkGwJoCcQoWySh7NkY1s6Y
-vzu+kaAqOycnRkn4oL91
-=dyGU
+iQIcBAEBAgAGBQJRii5+AAoJELSic+t+oim9YskP/isKeTU6KZF08LTBU+es9Vt+
+gYe1VF7+8LJEmZ6xe+HsHvKMF9umNDZHp/BnO5O+FIrvRfLghLycpTKAwmYOBhO5
+g9ouoX6YsAflu64sMCRSokRtvXO1GJ3Qk0vKJkzeKwV/hjzG9rBsinyUBbI2fEN1
+rA5ivMkbaqHZa/qw5WNuFDQTSCN6YNfwTo9UbPPV85Pc4vvpxf4rSfMgWGTnJAbA
+hX0ynIipxbMhnqWfATe3A7ORQ97CiAQGXh8piyzh6waMtcT9BR5qBabV8+kGpfzB
+5yclJCoP/mh51VWIhY0pEOSf+D98KnJT6z0TisG0Dtw4UAQ9a3aI7W/4WhTrXFMT
+ujual0pDkQMfiP9cFEATgGV4jT5vOtRcRSaSXsxZGdqrvKQnSRkp5XkAV/qS2xCc
+o9E05FLjB9mqaW5iuxzXcxjQOn/+znusFaSChnuqMJ9ulRL5LShIXJ8wRYGg99n0
+uMKDUbmkjBh402WRcVtxq6Kw5iL3XBWmbkKd9NslNAEtw2h5PwYh4s/QqZVf13n+
+J/eGl3Wr1bpDvHhNy8o7Lkx5fYgN4O69NUpyt8OFWxEhbd74FrC58aBiKDnmK1IL
++vp9f7i8Aub2LKoO2WHoKhJCOFbxvy6OX9Sn/U1KIcAAU/vyLqbByCyp0eR7jTuu
+1zhAvt4a+DykpaCWW+E5
+=hTII
 -----END PGP SIGNATURE-----
 
---Jsn5+Lu/ZvzbAGtZ--
+--OJWLbGElk4npXSe3--
 
---===============0598233509309083788==
+--===============2880253676804300213==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0598233509309083788==--
+--===============2880253676804300213==--
