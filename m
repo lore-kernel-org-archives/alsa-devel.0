@@ -1,73 +1,53 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 2/6] ASoC: ux500: Do not clear state if already idle
-Date: Wed, 8 May 2013 12:04:51 +0100
-Message-ID: <20130508110451.GC3459@gmail.com>
-References: <20130508080448.GG3102@gmail.com>
- <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
- <20130508103401.GX7478@sirena.org.uk>
+Subject: Re: [PATCH 4/6] ASoC: ux500: Update tx tdm slots
+	configuration
+Date: Wed, 8 May 2013 12:11:10 +0100
+Message-ID: <20130508111110.GD3459@gmail.com>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-5-git-send-email-fabio.baltieri@linaro.org>
+ <20130508110149.GF7478@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ea0-f176.google.com (mail-ea0-f176.google.com
+ [209.85.215.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62EDD2652B3
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 13:11:14 +0200 (CEST)
+Received: by mail-ea0-f176.google.com with SMTP id h14so836870eak.7
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 04:11:14 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20130508103401.GX7478@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20130508110149.GF7478@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Baltieri <fabio.baltieri@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Fabio Baltieri <fabio.baltieri@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 08 May 2013, Mark Brown wrote:
-
-> On Wed, May 08, 2013 at 10:39:14AM +0200, Fabio Baltieri wrote:
-> > As enable_msp gets called only after some audio data has been recei=
-ved,
-> > if the userspace closes the device before sending any data it cause=
-s
-> > ux500_msp_i2s_close to clear device state even if it was not previo=
-usly
-> > initialized.
->=20
-> Ugh, please don't do stuff like this - you're posting an individual
-> revision of a patch buried in the middle of a thread.  This just make=
-s
-> things hard to follow and error prone.  Repost the patch series
-
-It's so much more convenient to do it this way. Re-sending entire
-patch-sets for small fixups is clumsy and annoying at best. Creating
-much more churn than is actually required. Sending patches again
-signally i.e. not as a reply to the original [PATCH x/x], would be
-even more prone to error.
-
-Personally, I like to get the niggles and fixups out of the way using
-this method, then send the entire patch-set again, complete with all
-of the reaped Acks once there are significant fixes or when I believe
-it to be finished and ready for applying.
-
-Surely most people have their mail setup as threaded? Then the
-time-line and subsequent patch versions are very easy to follow aren't
-they? I get a nice trace like this:
-
-> <date> Fabio Baltieri    (  0) =E2=94=9C>[PATCH 2/6] ASoC: ux500: <sn=
-ip>
-> <date> To Fabio Baltieri (  0) =E2=94=82=E2=94=94>
-> <date> Fabio Baltieri    (  0) =E2=94=82 =E2=94=94>[PATCH v2 2/6] ASo=
-C:   <snip>
-
-=2E.. or even better would be to reply to the original one, then
-subsequent versions won't be "buried in the thread" per say:
-
-> <date> Fabio Baltieri    (  0) =E2=94=9C>[PATCH 2/6] ASoC: ux500: <sn=
-ip>
-> <date> Fabio Baltieri    (  0) =E2=94=82 =E2=94=94>[PATCH v2 2/6] ASo=
-C:   <snip>
-> <date> To Fabio Baltieri (  0) =E2=94=82->
-
-> or wait until what can be applied is applied then repost.
-
-Taking patches out-of-order, or 'willy-nilly', is asking for trouble.
-
---=20
-Lee Jones
-Linaro ST-Ericsson Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+T24gV2VkLCAwOCBNYXkgMjAxMywgTWFyayBCcm93biB3cm90ZToKCj4gT24gV2VkLCBNYXkgMDgs
+IDIwMTMgYXQgMDk6MTQ6MTlBTSArMDIwMCwgRmFiaW8gQmFsdGllcmkgd3JvdGU6Cj4gPiBVcGRh
+dGUgYWI4NTAwLWNvZGVjIGFuZCBtb3A1MDBfYWI4NTAwIHR4IHNsb3QgY29uZmlndXJhdGlvbiB0
+byByZWZsZWN0Cj4gPiB0aGUgYWN0dWFsIG9uZSB1c2VkIGJ5IFNURS4gIEFsc28gdXBkYXRlIGEg
+d3JvbmcgY29tbWVudCBpbiB0aGUgcHJvY2Vzcy4KPiAKPiBUaGlzIHNlZW1zIHdyb25nLCB0aGUg
+aW5kaXZpZHVhbCBjaGlwIGRyaXZlcnMgc2hvdWxkIGp1c3QgYmUgZG9pbmcKPiB3aGF0ZXZlciB0
+aGV5J3JlIGJlaW5nIHRvbGQgYnkgdGhlIG1hY2hpbmUgZHJpdmVyLiAgU291bmRzIGxpa2UgdGhl
+cmUncwo+IHR3byBmaXhlcyBuZWVkZWQgaGVyZSAtIG9uZSBpcyB0byBjaGFuZ2UgdGhlIFRETSBB
+UEkgc28gdGhhdCB0aGUgY2hpcAo+IGRyaXZlcnMgYXJlIGp1c3QgaW1wbGVtZW50aW5nIGNvbmZp
+Z3VyYXRpb24gc3VwcGxpZWQgYnkgdGhlIG1hY2hpbmUKPiBkcml2ZXIgYW5kIHRoZSBvdGhlciBp
+cyB0byBjaGFuZ2UgdGhlIGNvbmZpZ3VyYXRpb24gYmVpbmcgZG9uZSB0bwo+IHdoYXRldmVyIGlz
+IGRlc2lyZWQuCgpEbyB5b3UgbWVhbiB0aGF0IHRoZSBvcmlnaW5hbCBpbXBsZW1lbnRhdGlvbiBp
+cyBpbmNvcnJlY3QsIG9yIHRoYXQKdGhpcyBwYXRjaCBpcyBkb2luZyB0aGUgd3JvbmcgdGhpbmc/
+IEkgdGhpbmsgdGhpcyBwYXRjaCBpcyBhIGJ1Z2ZpeApyYXRoZXIgdGhhbiBhIG9wcG9ydHVuaXR5
+IHRvIHJlZmFjdG9yIHRoZSBkcml2ZXIuCgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3Nv
+biBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBm
+b3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
