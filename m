@@ -1,37 +1,56 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: Re: [PATCH v2 2/6] ASoC: ux500: Do not clear state if already idle
-Date: Wed, 8 May 2013 14:04:49 +0200
-Message-ID: <20130508120449.GA18323@balto.lan>
-References: <20130508080448.GG3102@gmail.com>
- <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
- <20130508103401.GX7478@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: TLV question - ranges not in volume order
+Date: Wed, 08 May 2013 14:09:31 +0200
+Message-ID: <518A407B.3070802@ladisch.de>
+References: <518A3545.8000809@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130508103401.GX7478@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C95722652B3
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:09:34 +0200 (CEST)
+In-Reply-To: <518A3545.8000809@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: rex.tsai@canonical.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 08, 2013 at 11:34:01AM +0100, Mark Brown wrote:
-> On Wed, May 08, 2013 at 10:39:14AM +0200, Fabio Baltieri wrote:
-> > As enable_msp gets called only after some audio data has been received,
-> > if the userspace closes the device before sending any data it causes
-> > ux500_msp_i2s_close to clear device state even if it was not previously
-> > initialized.
-> 
-> Ugh, please don't do stuff like this - you're posting an individual
-> revision of a patch buried in the middle of a thread.  This just makes
-> things hard to follow and error prone.  Repost the patch series or wait
-> until what can be applied is applied then repost.
+David Henningsson wrote:
+> I recently came across a strange ASoC volume control. In this case,
+> the values are not in volume order, i e, the control is declared
+> something like below.
+>
+> However alsamixer seems not to handle this "reordering" correctly. My
+> question is if this is something that should be fixed in alsamixer (or
+> possibly alsa-lib?), or does one need to write some kind of mapping
+> table in the kernel, just to make something come in volume order to
+> userspace?
 
-Ok, I'll just repost all the not applied patches after the review.
+Items in a DB_RANGE container must be ordered by their values *and* by
+their dB values.  This implies that larger values must correspond with
+larger dB values, whis is also required for all other mixer controls.
 
-Anything on the patch itself?
+If the register values are unordered, the driver must reorder them.
 
-Fabio
+> static const unsigned int tlv[] = {
+>         TLV_DB_RANGE_HEAD(8),
 
--- 
-Fabio Baltieri
+This should be rewritten as:
+
+static const DECLARE_TLV_DB_RANGE(tlv,
+	0, 0, TLV_DB_SCALE_ITEM(-100, 0, 1),
+	...
+);
+
+
+Regards,
+Clemens
