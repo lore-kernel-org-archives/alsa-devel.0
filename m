@@ -1,56 +1,78 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
-Date: Wed, 8 May 2013 11:00:25 +0200
-Message-ID: <20130508090025.GC1526@balto.lan>
-References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
- <20130508080708.GH3102@gmail.com>
- <20130508082017.GA1526@balto.lan>
- <20130508084846.GB3459@gmail.com>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] ASoC: SPEAr spdif_{in,
+	out}: use devm for clk and a few more cleanups
+Date: Wed,  8 May 2013 11:47:38 +0200
+Message-ID: <1368006458-20438-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130508084846.GB3459@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id A3BBB2617AD
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 11:47:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Vipin Kumar <vipin.kumar@st.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 08, 2013 at 09:48:46AM +0100, Lee Jones wrote:
-> On Wed, 08 May 2013, Fabio Baltieri wrote:
-> 
-> > On Wed, May 08, 2013 at 09:07:08AM +0100, Lee Jones wrote:
-> > > On Wed, 08 May 2013, Fabio Baltieri wrote:
-> > > 
-> > > > Drop pinctrl default/sleep state switching code, as it was breaking the
-> > > > capture interface by putting the I2S pins in hi-z mode regardless of its
-> > > > usage status, and not giving any real benefit.
-> > > > 
-> > > > Pinctrl default mode configuration is already managed automatically by a
-> > > > specific pinctrl hog.
-> > > 
-> > > I'm sure we should support pinctrl though shouldn't we?
-> > > 
-> > > Is there no way of fixing the implementation instead of ripping it out?
-> > 
-> > Yes, but requesting the default pinctrl configuration should be enough,
-> > and as those pins are shared with multiple device ids, a "hog"
-> > configuration should be the cleanest.
-> > 
-> > Actually I asked Linus an opinion before doing this, so maybe he can ack
-> > this patch or suggest a better way of doing this, such as declaring the
-> > same pins for multiple device ids, but I'm not sure that would work as
-> > expected.
-> 
-> Linus is on vacation at the moment, but I agree he should have the
-> final say on this. Better wait until he returns.
-
-Sounds good, I'll send the pinctrl patch in the meantime.  There should
-be no dependency issues regardless of merging order so I'll keep that
-one on its own.
-
-Fabio
-
--- 
-Fabio Baltieri
+RHJvcCBkZXZfc2V0X2RydmRhdGEgYXMgdGhpcyBpcyBoYW5kbGVkIGluIHRoZSBjb3JlIGFuZCB1
+c2UKZGV2bV9yZXF1ZXN0X2FuZF9pb3JlbWFwIGluc3RlYWQgb2YgZGV2bV9pb3JlbWFwIHRvIHBy
+b3Blcmx5IHJlZ2lzdGVyIHRoZQphZGRyZXNzIHJhbmdlIHVzZWQKClNpZ25lZC1vZmYtYnk6IFV3
+ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+Ci0tLQogc291
+bmQvc29jL3NwZWFyL3NwZGlmX2luLmMgIHwgMTcgKystLS0tLS0tLS0tLS0tLS0KIHNvdW5kL3Nv
+Yy9zcGVhci9zcGRpZl9vdXQuYyB8IDE3ICsrKy0tLS0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5n
+ZWQsIDUgaW5zZXJ0aW9ucygrKSwgMjkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL3NwZWFyL3NwZGlmX2luLmMgYi9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYwppbmRleCBj
+N2M0YjIwLi5kNDBiYjM0IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYwor
+KysgYi9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYwpAQCAtMjMxLDcgKzIzMSw3IEBAIHN0YXRp
+YyBpbnQgc3BkaWZfaW5fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAlpZiAo
+aG9zdC0+aXJxIDwgMCkKIAkJcmV0dXJuIC1FSU5WQUw7CiAKLQlob3N0LT5jbGsgPSBjbGtfZ2V0
+KCZwZGV2LT5kZXYsIE5VTEwpOworCWhvc3QtPmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2
+LCBOVUxMKTsKIAlpZiAoSVNfRVJSKGhvc3QtPmNsaykpCiAJCXJldHVybiBQVFJfRVJSKGhvc3Qt
+PmNsayk7CiAKQEAgLTI1MywzMyArMjUzLDIwIEBAIHN0YXRpYyBpbnQgc3BkaWZfaW5fcHJvYmUo
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAlyZXQgPSBkZXZtX3JlcXVlc3RfaXJxKCZw
+ZGV2LT5kZXYsIGhvc3QtPmlycSwgc3BkaWZfaW5faXJxLCAwLAogCQkJInNwZGlmLWluIiwgaG9z
+dCk7CiAJaWYgKHJldCkgewotCQljbGtfcHV0KGhvc3QtPmNsayk7CiAJCWRldl93YXJuKCZwZGV2
+LT5kZXYsICJyZXF1ZXN0X2lycSBmYWlsZWRcbiIpOwogCQlyZXR1cm4gcmV0OwogCX0KIAotCXJl
+dCA9IHNuZF9zb2NfcmVnaXN0ZXJfZGFpKCZwZGV2LT5kZXYsICZzcGRpZl9pbl9kYWkpOwotCWlm
+IChyZXQgIT0gMCkgewotCQljbGtfcHV0KGhvc3QtPmNsayk7Ci0JCXJldHVybiByZXQ7Ci0JfQot
+Ci0JcmV0dXJuIDA7CisJcmV0dXJuIHNuZF9zb2NfcmVnaXN0ZXJfZGFpKCZwZGV2LT5kZXYsICZz
+cGRpZl9pbl9kYWkpOwogfQogCiBzdGF0aWMgaW50IHNwZGlmX2luX3JlbW92ZShzdHJ1Y3QgcGxh
+dGZvcm1fZGV2aWNlICpwZGV2KQogewotCXN0cnVjdCBzcGRpZl9pbl9kZXYgKmhvc3QgPSBkZXZf
+Z2V0X2RydmRhdGEoJnBkZXYtPmRldik7Ci0KIAlzbmRfc29jX3VucmVnaXN0ZXJfZGFpKCZwZGV2
+LT5kZXYpOwotCWRldl9zZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2LCBOVUxMKTsKLQotCWNsa19wdXQo
+aG9zdC0+Y2xrKTsKIAogCXJldHVybiAwOwogfQogCi0KIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1f
+ZHJpdmVyIHNwZGlmX2luX2RyaXZlciA9IHsKIAkucHJvYmUJCT0gc3BkaWZfaW5fcHJvYmUsCiAJ
+LnJlbW92ZQkJPSBzcGRpZl9pbl9yZW1vdmUsCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc3BlYXIv
+c3BkaWZfb3V0LmMgYi9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfb3V0LmMKaW5kZXggNWVhYzRjZC4u
+YjI0ODhiNCAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jCisrKyBiL3Nv
+dW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYwpAQCAtMjkzLDE0ICsyOTMsMTQgQEAgc3RhdGljIGlu
+dCBzcGRpZl9vdXRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkJcmV0dXJu
+IC1FTk9NRU07CiAJfQogCi0JaG9zdC0+aW9fYmFzZSA9IGRldm1faW9yZW1hcCgmcGRldi0+ZGV2
+LCByZXMtPnN0YXJ0LAorCWhvc3QtPmlvX2Jhc2UgPSBkZXZtX3JlcXVlc3RfYW5kX2lvcmVtYXAo
+JnBkZXYtPmRldiwgcmVzLT5zdGFydCwKIAkJCQlyZXNvdXJjZV9zaXplKHJlcykpOwogCWlmICgh
+aG9zdC0+aW9fYmFzZSkgewogCQlkZXZfd2FybigmcGRldi0+ZGV2LCAiaW9yZW1hcCBmYWlsZWRc
+biIpOwogCQlyZXR1cm4gLUVOT01FTTsKIAl9CiAKLQlob3N0LT5jbGsgPSBjbGtfZ2V0KCZwZGV2
+LT5kZXYsIE5VTEwpOworCWhvc3QtPmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxM
+KTsKIAlpZiAoSVNfRVJSKGhvc3QtPmNsaykpCiAJCXJldHVybiBQVFJfRVJSKGhvc3QtPmNsayk7
+CiAKQEAgLTMxNCwyMyArMzE0LDEyIEBAIHN0YXRpYyBpbnQgc3BkaWZfb3V0X3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAlkZXZfc2V0X2RydmRhdGEoJnBkZXYtPmRldiwg
+aG9zdCk7CiAKLQlyZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2RhaSgmcGRldi0+ZGV2LCAmc3BkaWZf
+b3V0X2RhaSk7Ci0JaWYgKHJldCAhPSAwKSB7Ci0JCWNsa19wdXQoaG9zdC0+Y2xrKTsKLQkJcmV0
+dXJuIHJldDsKLQl9Ci0KLQlyZXR1cm4gMDsKKwlyZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9kYWko
+JnBkZXYtPmRldiwgJnNwZGlmX291dF9kYWkpOwogfQogCiBzdGF0aWMgaW50IHNwZGlmX291dF9y
+ZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIHsKLQlzdHJ1Y3Qgc3BkaWZfb3V0
+X2RldiAqaG9zdCA9IGRldl9nZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2KTsKLQogCXNuZF9zb2NfdW5y
+ZWdpc3Rlcl9kYWkoJnBkZXYtPmRldik7Ci0JZGV2X3NldF9kcnZkYXRhKCZwZGV2LT5kZXYsIE5V
+TEwpOwotCi0JY2xrX3B1dChob3N0LT5jbGspOwogCiAJcmV0dXJuIDA7CiB9Ci0tIAoxLjguMi5y
+YzIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
