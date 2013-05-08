@@ -1,27 +1,15 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [RFC] ASoC: sgtl5000: Remove cache support
-Date: Tue, 07 May 2013 17:57:50 -0700
-Message-ID: <5189A30E.10208@boundarydevices.com>
-References: <1367610549-25542-1-git-send-email-festevam@gmail.com>
- <20130503223613.GR4945@sirena.org.uk>
- <CAOMZO5B84e0YdcJLa27e4KZv459CGL=msU0fqe4LyFZfM-t1+A@mail.gmail.com>
- <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
- <20130505101515.GT4945@sirena.org.uk>
- <CAKGA1bmKdtAoUP7Yn0CJRVwsCNX5JkEWdWVJj1VJBaJn+9PA=A@mail.gmail.com>
- <20130506220650.GJ7478@sirena.org.uk>
- <CAKGA1b=+j5BpHzWOfkDv+xjLLcauHeD4jDj_Do+6ft6UPhYEtA@mail.gmail.com>
- <CAOMZO5D_EeUDPmDNUxgqU-8sLMcESAR=8b16KNk0Wz-WkX77hQ@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Apply pin-enablement workaround to
+	all Haswell HDMI codecs
+Date: Wed,  8 May 2013 08:48:26 +0200
+Message-ID: <1367995706-32560-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f41.google.com (mail-pb0-f41.google.com
- [209.85.160.41])
- by alsa0.perex.cz (Postfix) with ESMTP id B6EC1261A1D
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 02:57:53 +0200 (CEST)
-Received: by mail-pb0-f41.google.com with SMTP id mc17so810784pbc.0
- for <alsa-devel@alsa-project.org>; Tue, 07 May 2013 17:57:52 -0700 (PDT)
-In-Reply-To: <CAOMZO5D_EeUDPmDNUxgqU-8sLMcESAR=8b16KNk0Wz-WkX77hQ@mail.gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 852F726162A
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 08:48:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,23 +19,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Matt Sealey <matt@genesi-usa.com>, Eric Nelson <eric.nelson@boundarydevices.com>, Mark Brown <broonie@kernel.org>, "zengzm.kernel" <zengzm.kernel@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/7/2013 4:26 PM, Fabio Estevam wrote:
-> On Tue, May 7, 2013 at 5:06 PM, Matt Sealey <matt@genesi-usa.com> wrote:
->
->> Right, and in theory - I can't find an example of anyone implementing
->> VDDD as unconnected - if you float VDDD then the SGTL5000 will start
-> Actually I can't find see anyone that implemented VDDD connected, except Efika.
->
-> All these boards have sgtl5000 VDDD unconnected:
-> mx51evk, mx28evk, mx53smd, mx35pdk, mx25pdk.
->
-> mx6qsabrelite connects VDD to GND.
-> .
->
-Sabrelite connects VDD to a cap only.
+This is a revised patch based on Mengdong Lin's fix patch, which is a
+supplement to a previous patch [1611a9c9: ALSA: hda - Add fixup for
+Haswell to enable all pin and convertor widgets].
 
-Troy
+Some Haswell BIOS will disable the 2nd and 3rd pin/covertor widgets
+when the HD-A controller changes state from D3 to D0.  So when the
+controller resumes after a system or runtime suspend, these widgets
+are disabled and programming these widgets to D0 will cause H/W error
+and codec will not respond.
+
+In addition, we found out that some BIOS disables the pins at S3
+although it shows up at boot.  This confuses the driver utterly, and
+the hardware falls into the fatal communication error like the above.
+
+So in this patch, we apply intel_haswell_enable_all_pins() not only as
+a fixup to a certain device (with 8086:2010) but to all Haswell
+machines.  The codec driver basically assumes that all pins are
+exposed, so it's anyway better to see them from the beginning.  Even
+if all pins and converters are shown by this call, there should be no
+regression in practice: the pin default configurations are still kept,
+thus the disabled pins are handled as disabled by the driver
+properly.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_hdmi.c | 54 +++++++++++++++++++---------------------------
+ 1 file changed, 22 insertions(+), 32 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 32930e6..e12f7a0 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1832,12 +1832,10 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ #define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
+ 
+ static void intel_haswell_enable_all_pins(struct hda_codec *codec,
+-					const struct hda_fixup *fix, int action)
++					  bool update_tree)
+ {
+ 	unsigned int vendor_param;
+ 
+-	if (action != HDA_FIXUP_ACT_PRE_PROBE)
+-		return;
+ 	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
+ 				INTEL_GET_VENDOR_VERB, 0);
+ 	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
+@@ -1849,8 +1847,8 @@ static void intel_haswell_enable_all_pins(struct hda_codec *codec,
+ 	if (vendor_param == -1)
+ 		return;
+ 
+-	snd_hda_codec_update_widgets(codec);
+-	return;
++	if (update_tree)
++		snd_hda_codec_update_widgets(codec);
+ }
+ 
+ static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
+@@ -1868,30 +1866,20 @@ static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
+ 				INTEL_SET_VENDOR_VERB, vendor_param);
+ }
+ 
++/* Haswell needs to re-issue the vendor-specific verbs before turning to D0.
++ * Otherwise you may get severe h/w communication errors.
++ */
++static void haswell_set_power_state(struct hda_codec *codec, hda_nid_t fg,
++				unsigned int power_state)
++{
++	if (power_state == AC_PWRST_D0) {
++		intel_haswell_enable_all_pins(codec, false);
++		intel_haswell_fixup_enable_dp12(codec);
++	}
+ 
+-
+-/* available models for fixup */
+-enum {
+-	INTEL_HASWELL,
+-};
+-
+-static const struct hda_model_fixup hdmi_models[] = {
+-	{.id = INTEL_HASWELL, .name = "Haswell"},
+-	{}
+-};
+-
+-static const struct snd_pci_quirk hdmi_fixup_tbl[] = {
+-	SND_PCI_QUIRK(0x8086, 0x2010, "Haswell", INTEL_HASWELL),
+-	{} /* terminator */
+-};
+-
+-static const struct hda_fixup hdmi_fixups[] = {
+-	[INTEL_HASWELL] = {
+-		.type = HDA_FIXUP_FUNC,
+-		.v.func = intel_haswell_enable_all_pins,
+-	},
+-};
+-
++	snd_hda_codec_read(codec, fg, 0, AC_VERB_SET_POWER_STATE, power_state);
++	snd_hda_codec_set_power_to_all(codec, fg, power_state);
++}
+ 
+ static int patch_generic_hdmi(struct hda_codec *codec)
+ {
+@@ -1904,11 +1892,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	hdmi_array_init(spec, 4);
+ 
+-	snd_hda_pick_fixup(codec, hdmi_models, hdmi_fixup_tbl, hdmi_fixups);
+-	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+-
+-	if (codec->vendor_id == 0x80862807)
++	if (codec->vendor_id == 0x80862807) {
++		intel_haswell_enable_all_pins(codec, true);
+ 		intel_haswell_fixup_enable_dp12(codec);
++	}
+ 
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
+@@ -1916,6 +1903,9 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		return -EINVAL;
+ 	}
+ 	codec->patch_ops = generic_hdmi_patch_ops;
++	if (codec->vendor_id == 0x80862807)
++		codec->patch_ops.set_power_state = haswell_set_power_state;
++
+ 	generic_hdmi_init_per_pins(codec);
+ 
+ 	init_channel_allocations();
+-- 
+1.8.2.1
