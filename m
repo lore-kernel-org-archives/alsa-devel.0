@@ -1,157 +1,56 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Apply pin-enablement workaround to
-	all Haswell HDMI codecs
-Date: Wed,  8 May 2013 08:27:53 +0200
-Message-ID: <1367994473-31589-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E321926162A
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 09:07:59 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AC033A3DDF
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 09:07:59 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+From: Fabio Baltieri <fabio.baltieri@linaro.org>
+Subject: [PATCH 0/6] Second set of fixes for ux500 ASoC drivers
+Date: Wed,  8 May 2013 09:14:15 +0200
+Message-ID: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a revised patch based on Mengdong Lin's fix patch, which is a
-supplement to a previous patch [1611a9c9: ALSA: hda - Add fixup for
-Haswell to enable all pin and convertor widgets].
+Hi,
 
-Some Haswell BIOS will disable the 2nd and 3rd pin/covertor widgets
-when the HD-A controller changes state from D3 to D0.  So when the
-controller resumes after a system or runtime suspend, these widgets
-are disabled and programming these widgets to D0 will cause H/W error
-and codec will not respond.
+These are some others fixes for various small issues I found while
+testing the ux500 ASoC driver on -next.
 
-In addition, we found out that some BIOS disables the pins at S3
-although it shows up at boot.  This confuses the driver utterly, and
-the hardware falls into the fatal communication error like the above.
+Patch 1 adds some missing declarations for AD controls that were causing
+some weird behaviour in alsamixer, as the default state was outside the
+declared range.
 
-So in this patch, we apply intel_haswell_enable_all_pins() not only as
-a fixup to a certain device (with 8086:2010) but to all Haswell
-machines.  The codec driver basically assumes that all pins are
-exposed, so it's anyway better to see them from the beginning.  Even
-if all pins and converters are shown by this call, there should be no
-regression in practice: the pin default configurations are still kept,
-thus the disabled pins are handled as disabled by the driver
-properly.
+Patch 2 fixes a kernel crash when opening and closing the audio device
+without sending any data.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 54 +++++++++++++++++++---------------------------
- 1 file changed, 22 insertions(+), 32 deletions(-)
+Patch 3 drops pinctrl code altogether from the driver.  The actual
+implementation is buggy as the pins are only registered to the playback
+interfaces, which gives a bunch of warnings during kernel startup and
+also kills the capture interface by setting the shared pins to hi-z mode
+even if that's still active.  As putting those pins in high-z is not
+really needed and was removed from the internal STE driver anyway, I'm
+just dropping that code form here as well.  In parallel, I'm sending a
+pinctrl patch to declare those pin as a hog.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 32930e6..e12f7a0 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1832,12 +1832,10 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
- #define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
- 
- static void intel_haswell_enable_all_pins(struct hda_codec *codec,
--					const struct hda_fixup *fix, int action)
-+					  bool update_tree)
- {
- 	unsigned int vendor_param;
- 
--	if (action != HDA_FIXUP_ACT_PRE_PROBE)
--		return;
- 	vendor_param = snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
- 				INTEL_GET_VENDOR_VERB, 0);
- 	if (vendor_param == -1 || vendor_param & INTEL_EN_ALL_PIN_CVTS)
-@@ -1849,8 +1847,8 @@ static void intel_haswell_enable_all_pins(struct hda_codec *codec,
- 	if (vendor_param == -1)
- 		return;
- 
--	snd_hda_codec_update_widgets(codec);
--	return;
-+	if (update_tree)
-+		snd_hda_codec_update_widgets(codec);
- }
- 
- static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
-@@ -1868,30 +1866,20 @@ static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
- 				INTEL_SET_VENDOR_VERB, vendor_param);
- }
- 
-+/* Haswell needs to re-issue the vendor-specific verbs before turning to D0.
-+ * Otherwise you may get severe h/w communication errors.
-+ */
-+static void haswell_set_power_state(struct hda_codec *codec, hda_nid_t fg,
-+				unsigned int power_state)
-+{
-+	if (power_state == AC_PWRST_D0) {
-+		intel_haswell_enable_all_pins(codec, false);
-+		intel_haswell_fixup_enable_dp12(codec);
-+	}
- 
--
--/* available models for fixup */
--enum {
--	INTEL_HASWELL,
--};
--
--static const struct hda_model_fixup hdmi_models[] = {
--	{.id = INTEL_HASWELL, .name = "Haswell"},
--	{}
--};
--
--static const struct snd_pci_quirk hdmi_fixup_tbl[] = {
--	SND_PCI_QUIRK(0x8086, 0x2010, "Haswell", INTEL_HASWELL),
--	{} /* terminator */
--};
--
--static const struct hda_fixup hdmi_fixups[] = {
--	[INTEL_HASWELL] = {
--		.type = HDA_FIXUP_FUNC,
--		.v.func = intel_haswell_enable_all_pins,
--	},
--};
--
-+	snd_hda_codec_read(codec, fg, 0, AC_VERB_SET_POWER_STATE, power_state);
-+	snd_hda_codec_set_power_to_all(codec, fg, power_state);
-+}
- 
- static int patch_generic_hdmi(struct hda_codec *codec)
- {
-@@ -1904,11 +1892,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 	codec->spec = spec;
- 	hdmi_array_init(spec, 4);
- 
--	snd_hda_pick_fixup(codec, hdmi_models, hdmi_fixup_tbl, hdmi_fixups);
--	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
--
--	if (codec->vendor_id == 0x80862807)
-+	if (codec->vendor_id == 0x80862807) {
-+		intel_haswell_enable_all_pins(codec, true);
- 		intel_haswell_fixup_enable_dp12(codec);
-+	}
- 
- 	if (hdmi_parse_codec(codec) < 0) {
- 		codec->spec = NULL;
-@@ -1916,6 +1903,9 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 		return -EINVAL;
- 	}
- 	codec->patch_ops = generic_hdmi_patch_ops;
-+	if (codec->vendor_id == 0x80862807)
-+		codec->patch_ops.set_power_state = haswell_set_power_state;
-+
- 	generic_hdmi_init_per_pins(codec);
- 
- 	init_channel_allocations();
+Patches 4 to 6 fixes some weirdness with time slot usage.  After this
+series the driver seems to work fine for both capture and playback
+interface (tested on a snowball v11).
+
+Thanks,
+Fabio
+
+
+Fabio Baltieri (6):
+  ASoC: ab8500-codec: Add missing ad_to_slot definitions
+  ASoC: ux500: Do not clear state if already idle
+  ASoC: ux500: Drop pinctrl sleep support
+  ASoC: ux500: Update tx tdm slots configuration
+  ASoC: ux500: Swap even/odd AD slot definitions
+  ASoC: ux500: Use the first two AD slots for capture
+
+ sound/soc/codecs/ab8500-codec.c | 39 +++++++++++++++------------
+ sound/soc/codecs/ab8500-codec.h | 36 ++++++++++++-------------
+ sound/soc/ux500/mop500_ab8500.c |  4 +--
+ sound/soc/ux500/ux500_msp_i2s.c | 58 +++--------------------------------------
+ sound/soc/ux500/ux500_msp_i2s.h |  6 -----
+ 5 files changed, 46 insertions(+), 97 deletions(-)
+
 -- 
-1.8.2.1
+1.8.2
