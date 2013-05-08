@@ -1,88 +1,172 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 5/6] ASoC: ux500: Swap even/odd AD slot
-	definitions
-Date: Wed, 8 May 2013 09:19:37 +0100
-Message-ID: <20130508081937.GJ3102@gmail.com>
+From: Fabio Baltieri <fabio.baltieri@linaro.org>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Wed, 8 May 2013 10:20:17 +0200
+Message-ID: <20130508082017.GA1526@balto.lan>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-6-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508080708.GH3102@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f180.google.com (mail-ea0-f180.google.com
- [209.85.215.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 4077026168C
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 10:19:42 +0200 (CEST)
-Received: by mail-ea0-f180.google.com with SMTP id g14so752083eak.39
- for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 01:19:42 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1367997261-32048-6-git-send-email-fabio.baltieri@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20130508080708.GH3102@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwOCBNYXkgMjAxMywgRmFiaW8gQmFsdGllcmkgd3JvdGU6Cgo+IEFEIHNsb3RzIGRl
-ZmluaXRpb25zIGZvciBhYjg1MDAgY29kZWMgd2VyZSBlcnJvbmVvdXNseSBzd2FwcGVkIGJldHdl
-ZW4KPiBldmVuIGFuZCBvZGQgY2hhbm5lbHMuICBGaXggdGhpcyBieSBzd2FwcGluZyB0aGUgZGVm
-aW5pdGlvbnMgdG8gYmUKPiBjb2hlcmVudCB3aXRoIHRoZSBjaGFubmVsIG51bWJlci4KPiAKPiBT
-aWduZWQtb2ZmLWJ5OiBGYWJpbyBCYWx0aWVyaSA8ZmFiaW8uYmFsdGllcmlAbGluYXJvLm9yZz4K
-PiAtLS0KPiAgc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuaCB8IDM2ICsrKysrKysrKysr
-KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
-cygrKSwgMTggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mv
-YWI4NTAwLWNvZGVjLmggYi9zb3VuZC9zb2MvY29kZWNzL2FiODUwMC1jb2RlYy5oCj4gaW5kZXgg
-MTE0ZjY5YS4uMzA2ZDBiYyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2FiODUwMC1j
-b2RlYy5oCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9hYjg1MDAtY29kZWMuaAo+IEBAIC0zNDgs
-MjUgKzM0OCwyNSBAQAo+ICAKPiAgLyogQUI4NTAwX0FEU0xPVFNFTFggKi8KPiAgI2RlZmluZSBB
-Qjg1MDBfQURTTE9UU0VMWF9BRF9PVVQxX1RPX1NMT1RfT0RECTB4MDAKPiAtI2RlZmluZSBBQjg1
-MDBfQURTTE9UU0VMWF9BRF9PVVQyX1RPX1NMT1RfT0RECTB4MDEKPiAtI2RlZmluZSBBQjg1MDBf
-QURTTE9UU0VMWF9BRF9PVVQzX1RPX1NMT1RfT0RECTB4MDIKPiAtI2RlZmluZSBBQjg1MDBfQURT
-TE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfT0RECTB4MDMKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9U
-U0VMWF9BRF9PVVQ1X1RPX1NMT1RfT0RECTB4MDQKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VM
-WF9BRF9PVVQ2X1RPX1NMT1RfT0RECTB4MDUKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9B
-RF9PVVQ3X1RPX1NMT1RfT0RECTB4MDYKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9P
-VVQ4X1RPX1NMT1RfT0RECTB4MDcKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9aRVJPRVNf
-VE9fU0xPVF9PREQJMHgwOAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RP
-X1NMT1RfT0RECTB4MEYKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQyX1RPX1NM
-T1RfT0RECTB4MTAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQzX1RPX1NMT1Rf
-T0RECTB4MjAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfT0RE
-CTB4MzAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ1X1RPX1NMT1RfT0RECTB4
-NDAKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ2X1RPX1NMT1RfT0RECTB4NTAK
-PiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ3X1RPX1NMT1RfT0RECTB4NjAKPiAr
-I2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ4X1RPX1NMT1RfT0RECTB4NzAKPiArI2Rl
-ZmluZSBBQjg1MDBfQURTTE9UU0VMWF9aRVJPRVNfVE9fU0xPVF9PREQJMHg4MAo+ICsjZGVmaW5l
-IEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RPX1NMT1RfT0RECTB4RjAKPiAgI2RlZmluZSBB
-Qjg1MDBfQURTTE9UU0VMWF9BRF9PVVQxX1RPX1NMT1RfRVZFTgkweDAwCj4gLSNkZWZpbmUgQUI4
-NTAwX0FEU0xPVFNFTFhfQURfT1VUMl9UT19TTE9UX0VWRU4JMHgxMAo+IC0jZGVmaW5lIEFCODUw
-MF9BRFNMT1RTRUxYX0FEX09VVDNfVE9fU0xPVF9FVkVOCTB4MjAKPiAtI2RlZmluZSBBQjg1MDBf
-QURTTE9UU0VMWF9BRF9PVVQ0X1RPX1NMT1RfRVZFTgkweDMwCj4gLSNkZWZpbmUgQUI4NTAwX0FE
-U0xPVFNFTFhfQURfT1VUNV9UT19TTE9UX0VWRU4JMHg0MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNM
-T1RTRUxYX0FEX09VVDZfVE9fU0xPVF9FVkVOCTB4NTAKPiAtI2RlZmluZSBBQjg1MDBfQURTTE9U
-U0VMWF9BRF9PVVQ3X1RPX1NMT1RfRVZFTgkweDYwCj4gLSNkZWZpbmUgQUI4NTAwX0FEU0xPVFNF
-TFhfQURfT1VUOF9UT19TTE9UX0VWRU4JMHg3MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxY
-X1pFUk9FU19UT19TTE9UX0VWRU4JMHg4MAo+IC0jZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RS
-SVNUQVRFX1RPX1NMT1RfRVZFTgkweEYwCj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURf
-T1VUMl9UT19TTE9UX0VWRU4JMHgwMQo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX0FEX09V
-VDNfVE9fU0xPVF9FVkVOCTB4MDIKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ0
-X1RPX1NMT1RfRVZFTgkweDAzCj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURfT1VUNV9U
-T19TTE9UX0VWRU4JMHgwNAo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX0FEX09VVDZfVE9f
-U0xPVF9FVkVOCTB4MDUKPiArI2RlZmluZSBBQjg1MDBfQURTTE9UU0VMWF9BRF9PVVQ3X1RPX1NM
-T1RfRVZFTgkweDA2Cj4gKyNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfQURfT1VUOF9UT19TTE9U
-X0VWRU4JMHgwNwo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1pFUk9FU19UT19TTE9UX0VW
-RU4JMHgwOAo+ICsjZGVmaW5lIEFCODUwMF9BRFNMT1RTRUxYX1RSSVNUQVRFX1RPX1NMT1RfRVZF
-TgkweDBGCj4gICNkZWZpbmUgQUI4NTAwX0FEU0xPVFNFTFhfRVZFTl9TSElGVAkJMAo+ICAjZGVm
-aW5lIEFCODUwMF9BRFNMT1RTRUxYX09ERF9TSElGVAkJNAoKQWNrZWQtYnk6IExlZSBKb25lcyA8
-bGVlLmpvbmVzQGxpbmFyby5vcmc+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBM
-YW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3Ig
-QVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, May 08, 2013 at 09:07:08AM +0100, Lee Jones wrote:
+> On Wed, 08 May 2013, Fabio Baltieri wrote:
+> 
+> > Drop pinctrl default/sleep state switching code, as it was breaking the
+> > capture interface by putting the I2S pins in hi-z mode regardless of its
+> > usage status, and not giving any real benefit.
+> > 
+> > Pinctrl default mode configuration is already managed automatically by a
+> > specific pinctrl hog.
+> 
+> I'm sure we should support pinctrl though shouldn't we?
+> 
+> Is there no way of fixing the implementation instead of ripping it out?
+
+Yes, but requesting the default pinctrl configuration should be enough,
+and as those pins are shared with multiple device ids, a "hog"
+configuration should be the cleanest.
+
+Actually I asked Linus an opinion before doing this, so maybe he can ack
+this patch or suggest a better way of doing this, such as declaring the
+same pins for multiple device ids, but I'm not sure that would work as
+expected.
+
+Thanks,
+Fabio
+
+> > Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
+> > ---
+> >  sound/soc/ux500/ux500_msp_i2s.c | 56 ++---------------------------------------
+> >  sound/soc/ux500/ux500_msp_i2s.h |  6 -----
+> >  2 files changed, 2 insertions(+), 60 deletions(-)
+> > 
+> > diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+> > index 964cfd6..8512c78 100644
+> > --- a/sound/soc/ux500/ux500_msp_i2s.c
+> > +++ b/sound/soc/ux500/ux500_msp_i2s.c
+> > @@ -15,7 +15,6 @@
+> >  
+> >  #include <linux/module.h>
+> >  #include <linux/platform_device.h>
+> > -#include <linux/pinctrl/consumer.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/io.h>
+> > @@ -28,9 +27,6 @@
+> >  
+> >  #include "ux500_msp_i2s.h"
+> >  
+> > -/* MSP1/3 Tx/Rx usage protection */
+> > -static DEFINE_SPINLOCK(msp_rxtx_lock);
+> > -
+> >   /* Protocol desciptors */
+> >  static const struct msp_protdesc prot_descs[] = {
+> >  	{ /* I2S */
+> > @@ -358,24 +354,8 @@ static int configure_multichannel(struct ux500_msp *msp,
+> >  
+> >  static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
+> >  {
+> > -	int status = 0, retval = 0;
+> > +	int status = 0;
+> >  	u32 reg_val_DMACR, reg_val_GCR;
+> > -	unsigned long flags;
+> > -
+> > -	/* Check msp state whether in RUN or CONFIGURED Mode */
+> > -	if (msp->msp_state == MSP_STATE_IDLE) {
+> > -		spin_lock_irqsave(&msp_rxtx_lock, flags);
+> > -		if (msp->pinctrl_rxtx_ref == 0 &&
+> > -			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_def))) {
+> > -			retval = pinctrl_select_state(msp->pinctrl_p,
+> > -						msp->pinctrl_def);
+> > -			if (retval)
+> > -				pr_err("could not set MSP defstate\n");
+> > -		}
+> > -		if (!retval)
+> > -			msp->pinctrl_rxtx_ref++;
+> > -		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
+> > -	}
+> >  
+> >  	/* Configure msp with protocol dependent settings */
+> >  	configure_protocol(msp, config);
+> > @@ -632,8 +612,7 @@ int ux500_msp_i2s_trigger(struct ux500_msp *msp, int cmd, int direction)
+> >  
+> >  int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
+> >  {
+> > -	int status = 0, retval = 0;
+> > -	unsigned long flags;
+> > +	int status = 0;
+> >  
+> >  	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
+> >  
+> > @@ -645,18 +624,6 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
+> >  			       (~(FRAME_GEN_ENABLE | SRG_ENABLE))),
+> >  			      msp->registers + MSP_GCR);
+> >  
+> > -		spin_lock_irqsave(&msp_rxtx_lock, flags);
+> > -		WARN_ON(!msp->pinctrl_rxtx_ref);
+> > -		msp->pinctrl_rxtx_ref--;
+> > -		if (msp->pinctrl_rxtx_ref == 0 &&
+> > -			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_sleep))) {
+> > -			retval = pinctrl_select_state(msp->pinctrl_p,
+> > -						msp->pinctrl_sleep);
+> > -			if (retval)
+> > -				pr_err("could not set MSP sleepstate\n");
+> > -		}
+> > -		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
+> > -
+> >  		writel(0, msp->registers + MSP_GCR);
+> >  		writel(0, msp->registers + MSP_TCF);
+> >  		writel(0, msp->registers + MSP_RCF);
+> > @@ -745,25 +712,6 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+> >  	dev_dbg(&pdev->dev, "I2S device-name: '%s'\n", i2s_cont->name);
+> >  	msp->i2s_cont = i2s_cont;
+> >  
+> > -	msp->pinctrl_p = pinctrl_get(msp->dev);
+> > -	if (IS_ERR(msp->pinctrl_p))
+> > -		dev_err(&pdev->dev, "could not get MSP pinctrl\n");
+> > -	else {
+> > -		msp->pinctrl_def = pinctrl_lookup_state(msp->pinctrl_p,
+> > -						PINCTRL_STATE_DEFAULT);
+> > -		if (IS_ERR(msp->pinctrl_def)) {
+> > -			dev_err(&pdev->dev,
+> > -				"could not get MSP defstate (%li)\n",
+> > -				PTR_ERR(msp->pinctrl_def));
+> > -		}
+> > -		msp->pinctrl_sleep = pinctrl_lookup_state(msp->pinctrl_p,
+> > -						PINCTRL_STATE_SLEEP);
+> > -		if (IS_ERR(msp->pinctrl_sleep))
+> > -			dev_err(&pdev->dev,
+> > -				"could not get MSP idlestate (%li)\n",
+> > -				PTR_ERR(msp->pinctrl_def));
+> > -	}
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
+> > index 1311c0d..1ce336f 100644
+> > --- a/sound/soc/ux500/ux500_msp_i2s.h
+> > +++ b/sound/soc/ux500/ux500_msp_i2s.h
+> > @@ -530,12 +530,6 @@ struct ux500_msp {
+> >  	int loopback_enable;
+> >  	u32 backup_regs[MAX_MSP_BACKUP_REGS];
+> >  	unsigned int f_bitclk;
+> > -	/* Pin modes */
+> > -	struct pinctrl *pinctrl_p;
+> > -	struct pinctrl_state *pinctrl_def;
+> > -	struct pinctrl_state *pinctrl_sleep;
+> > -	/* Reference Count */
+> > -	int pinctrl_rxtx_ref;
+> >  };
+> >  
+> >  struct ux500_msp_dma_params {
+
+-- 
+Fabio Baltieri
