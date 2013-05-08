@@ -1,68 +1,79 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH v2 2/6] ASoC: ux500: Do not clear state if
-	already idle
-Date: Wed,  8 May 2013 10:39:14 +0200
-Message-ID: <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
-References: <20130508080448.GG3102@gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/6] ASoC: ab8500-codec: Add missing ad_to_slot
+ definitions
+Date: Wed, 8 May 2013 09:47:22 +0100
+Message-ID: <20130508084722.GA3459@gmail.com>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-2-git-send-email-fabio.baltieri@linaro.org>
+ <20130508075328.GF3102@gmail.com>
+ <20130508083017.GB1526@balto.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 0480326168D
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 10:39:27 +0200 (CEST)
-Received: by mail-wg0-f50.google.com with SMTP id m15so1542537wgh.17
- for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 01:39:27 -0700 (PDT)
-In-Reply-To: <20130508080448.GG3102@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee.jones@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Fabio Baltieri <fabio.baltieri@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130508083017.GB1526@balto.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-As enable_msp gets called only after some audio data has been received,
-if the userspace closes the device before sending any data it causes
-ux500_msp_i2s_close to clear device state even if it was not previously
-initialized.
+On Wed, 08 May 2013, Fabio Baltieri wrote:
 
-This in turn leads to some non necessary but harmless writel, but also
-to decrementing the pinctrl usage counter (pinctrl_rxtx_ref) below zero.
+> On Wed, May 08, 2013 at 08:53:28AM +0100, Lee Jones wrote:
+> > I'm sure this is just me, but:
+> >=20
+> > >    0 to  7 corresponds to AD_OUTx slots
+> > > char * const enum_ad_to_slot_map[] =3D {"AD_OUT1",    0
+> >                                                       1..5 ???
+> > >  					"AD_OUT7",    6
+> > >  					"AD_OUT8",    7
+>=20
+> I'm a bit confused... the first one was from the diff header, while O=
+UT7 and
+> OUT8 are context lines, so 1 to 5 are already there but not shown in =
+the
+> patch.  The final array is like:
+>=20
+> static const char * const enum_ad_to_slot_map[] =3D {"AD_OUT1",
+>                                         "AD_OUT2",
+>                                         "AD_OUT3",
+>                                         "AD_OUT4",
+>                                         "AD_OUT5",
+>                                         "AD_OUT6",
+>                                         "AD_OUT7",
+>                                         "AD_OUT8",
+>                                         "zeroes",
+>                                         "zeroes",
+>                                         "zeroes",
+>                                         "zeroes",
+>                                         "tristate",
+>                                         "tristate",
+>                                         "tristate",
+>                                         "tristate"};
+>=20
+> Is it ok?
 
-To prevent this from happening add a condition to skip register and
-pinctrl clear if current msp state is already MSP_STATE_IDLE.
+Yes, I see that now.
 
 Acked-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
----
 
-Changes from v1:
-- fix grammatical error in commit message
+> > >    8 to 11 corresponds to zero output
+> > >  					"zeroes",     8
+> > > +					"zeroes",     9
+> > > +					"zeroes",     10
+> > > +					"zeroes",     11
+> > >   12 to 15 sets the output in tristate mode
+> > > +					"tristate",   12
+> > > +					"tristate",   13
+> > > +					"tristate",   14
+> > >  					"tristate"};  15
+> >=20
+> >=20
+>=20
 
-Thanks,
-Fabio
-
- sound/soc/ux500/ux500_msp_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index a26c6bf..964cfd6 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -638,7 +638,7 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- 	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
- 
- 	status = disable_msp(msp, dir);
--	if (msp->dir_busy == 0) {
-+	if (msp->dir_busy == 0 && msp->msp_state != MSP_STATE_IDLE) {
- 		/* disable sample rate and frame generators */
- 		msp->msp_state = MSP_STATE_IDLE;
- 		writel((readl(msp->registers + MSP_GCR) &
--- 
-1.8.2
+--=20
+Lee Jones
+Linaro ST-Ericsson Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
