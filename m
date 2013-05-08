@@ -1,7 +1,7 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
-Date: Wed,  8 May 2013 09:14:18 +0200
-Message-ID: <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+Subject: [PATCH 5/6] ASoC: ux500: Swap even/odd AD slot definitions
+Date: Wed,  8 May 2013 09:14:20 +0200
+Message-ID: <1367997261-32048-6-git-send-email-fabio.baltieri@linaro.org>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
@@ -10,138 +10,62 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Drop pinctrl default/sleep state switching code, as it was breaking the
-capture interface by putting the I2S pins in hi-z mode regardless of its
-usage status, and not giving any real benefit.
-
-Pinctrl default mode configuration is already managed automatically by a
-specific pinctrl hog.
+AD slots definitions for ab8500 codec were erroneously swapped between
+even and odd channels.  Fix this by swapping the definitions to be
+coherent with the channel number.
 
 Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_i2s.c | 56 ++---------------------------------------
- sound/soc/ux500/ux500_msp_i2s.h |  6 -----
- 2 files changed, 2 insertions(+), 60 deletions(-)
+ sound/soc/codecs/ab8500-codec.h | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 964cfd6..8512c78 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -15,7 +15,6 @@
+diff --git a/sound/soc/codecs/ab8500-codec.h b/sound/soc/codecs/ab8500-codec.h
+index 114f69a..306d0bc 100644
+--- a/sound/soc/codecs/ab8500-codec.h
++++ b/sound/soc/codecs/ab8500-codec.h
+@@ -348,25 +348,25 @@
  
- #include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/pinctrl/consumer.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/io.h>
-@@ -28,9 +27,6 @@
+ /* AB8500_ADSLOTSELX */
+ #define AB8500_ADSLOTSELX_AD_OUT1_TO_SLOT_ODD	0x00
+-#define AB8500_ADSLOTSELX_AD_OUT2_TO_SLOT_ODD	0x01
+-#define AB8500_ADSLOTSELX_AD_OUT3_TO_SLOT_ODD	0x02
+-#define AB8500_ADSLOTSELX_AD_OUT4_TO_SLOT_ODD	0x03
+-#define AB8500_ADSLOTSELX_AD_OUT5_TO_SLOT_ODD	0x04
+-#define AB8500_ADSLOTSELX_AD_OUT6_TO_SLOT_ODD	0x05
+-#define AB8500_ADSLOTSELX_AD_OUT7_TO_SLOT_ODD	0x06
+-#define AB8500_ADSLOTSELX_AD_OUT8_TO_SLOT_ODD	0x07
+-#define AB8500_ADSLOTSELX_ZEROES_TO_SLOT_ODD	0x08
+-#define AB8500_ADSLOTSELX_TRISTATE_TO_SLOT_ODD	0x0F
++#define AB8500_ADSLOTSELX_AD_OUT2_TO_SLOT_ODD	0x10
++#define AB8500_ADSLOTSELX_AD_OUT3_TO_SLOT_ODD	0x20
++#define AB8500_ADSLOTSELX_AD_OUT4_TO_SLOT_ODD	0x30
++#define AB8500_ADSLOTSELX_AD_OUT5_TO_SLOT_ODD	0x40
++#define AB8500_ADSLOTSELX_AD_OUT6_TO_SLOT_ODD	0x50
++#define AB8500_ADSLOTSELX_AD_OUT7_TO_SLOT_ODD	0x60
++#define AB8500_ADSLOTSELX_AD_OUT8_TO_SLOT_ODD	0x70
++#define AB8500_ADSLOTSELX_ZEROES_TO_SLOT_ODD	0x80
++#define AB8500_ADSLOTSELX_TRISTATE_TO_SLOT_ODD	0xF0
+ #define AB8500_ADSLOTSELX_AD_OUT1_TO_SLOT_EVEN	0x00
+-#define AB8500_ADSLOTSELX_AD_OUT2_TO_SLOT_EVEN	0x10
+-#define AB8500_ADSLOTSELX_AD_OUT3_TO_SLOT_EVEN	0x20
+-#define AB8500_ADSLOTSELX_AD_OUT4_TO_SLOT_EVEN	0x30
+-#define AB8500_ADSLOTSELX_AD_OUT5_TO_SLOT_EVEN	0x40
+-#define AB8500_ADSLOTSELX_AD_OUT6_TO_SLOT_EVEN	0x50
+-#define AB8500_ADSLOTSELX_AD_OUT7_TO_SLOT_EVEN	0x60
+-#define AB8500_ADSLOTSELX_AD_OUT8_TO_SLOT_EVEN	0x70
+-#define AB8500_ADSLOTSELX_ZEROES_TO_SLOT_EVEN	0x80
+-#define AB8500_ADSLOTSELX_TRISTATE_TO_SLOT_EVEN	0xF0
++#define AB8500_ADSLOTSELX_AD_OUT2_TO_SLOT_EVEN	0x01
++#define AB8500_ADSLOTSELX_AD_OUT3_TO_SLOT_EVEN	0x02
++#define AB8500_ADSLOTSELX_AD_OUT4_TO_SLOT_EVEN	0x03
++#define AB8500_ADSLOTSELX_AD_OUT5_TO_SLOT_EVEN	0x04
++#define AB8500_ADSLOTSELX_AD_OUT6_TO_SLOT_EVEN	0x05
++#define AB8500_ADSLOTSELX_AD_OUT7_TO_SLOT_EVEN	0x06
++#define AB8500_ADSLOTSELX_AD_OUT8_TO_SLOT_EVEN	0x07
++#define AB8500_ADSLOTSELX_ZEROES_TO_SLOT_EVEN	0x08
++#define AB8500_ADSLOTSELX_TRISTATE_TO_SLOT_EVEN	0x0F
+ #define AB8500_ADSLOTSELX_EVEN_SHIFT		0
+ #define AB8500_ADSLOTSELX_ODD_SHIFT		4
  
- #include "ux500_msp_i2s.h"
- 
--/* MSP1/3 Tx/Rx usage protection */
--static DEFINE_SPINLOCK(msp_rxtx_lock);
--
-  /* Protocol desciptors */
- static const struct msp_protdesc prot_descs[] = {
- 	{ /* I2S */
-@@ -358,24 +354,8 @@ static int configure_multichannel(struct ux500_msp *msp,
- 
- static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
- {
--	int status = 0, retval = 0;
-+	int status = 0;
- 	u32 reg_val_DMACR, reg_val_GCR;
--	unsigned long flags;
--
--	/* Check msp state whether in RUN or CONFIGURED Mode */
--	if (msp->msp_state == MSP_STATE_IDLE) {
--		spin_lock_irqsave(&msp_rxtx_lock, flags);
--		if (msp->pinctrl_rxtx_ref == 0 &&
--			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_def))) {
--			retval = pinctrl_select_state(msp->pinctrl_p,
--						msp->pinctrl_def);
--			if (retval)
--				pr_err("could not set MSP defstate\n");
--		}
--		if (!retval)
--			msp->pinctrl_rxtx_ref++;
--		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
--	}
- 
- 	/* Configure msp with protocol dependent settings */
- 	configure_protocol(msp, config);
-@@ -632,8 +612,7 @@ int ux500_msp_i2s_trigger(struct ux500_msp *msp, int cmd, int direction)
- 
- int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- {
--	int status = 0, retval = 0;
--	unsigned long flags;
-+	int status = 0;
- 
- 	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
- 
-@@ -645,18 +624,6 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- 			       (~(FRAME_GEN_ENABLE | SRG_ENABLE))),
- 			      msp->registers + MSP_GCR);
- 
--		spin_lock_irqsave(&msp_rxtx_lock, flags);
--		WARN_ON(!msp->pinctrl_rxtx_ref);
--		msp->pinctrl_rxtx_ref--;
--		if (msp->pinctrl_rxtx_ref == 0 &&
--			!(IS_ERR(msp->pinctrl_p) || IS_ERR(msp->pinctrl_sleep))) {
--			retval = pinctrl_select_state(msp->pinctrl_p,
--						msp->pinctrl_sleep);
--			if (retval)
--				pr_err("could not set MSP sleepstate\n");
--		}
--		spin_unlock_irqrestore(&msp_rxtx_lock, flags);
--
- 		writel(0, msp->registers + MSP_GCR);
- 		writel(0, msp->registers + MSP_TCF);
- 		writel(0, msp->registers + MSP_RCF);
-@@ -745,25 +712,6 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 	dev_dbg(&pdev->dev, "I2S device-name: '%s'\n", i2s_cont->name);
- 	msp->i2s_cont = i2s_cont;
- 
--	msp->pinctrl_p = pinctrl_get(msp->dev);
--	if (IS_ERR(msp->pinctrl_p))
--		dev_err(&pdev->dev, "could not get MSP pinctrl\n");
--	else {
--		msp->pinctrl_def = pinctrl_lookup_state(msp->pinctrl_p,
--						PINCTRL_STATE_DEFAULT);
--		if (IS_ERR(msp->pinctrl_def)) {
--			dev_err(&pdev->dev,
--				"could not get MSP defstate (%li)\n",
--				PTR_ERR(msp->pinctrl_def));
--		}
--		msp->pinctrl_sleep = pinctrl_lookup_state(msp->pinctrl_p,
--						PINCTRL_STATE_SLEEP);
--		if (IS_ERR(msp->pinctrl_sleep))
--			dev_err(&pdev->dev,
--				"could not get MSP idlestate (%li)\n",
--				PTR_ERR(msp->pinctrl_def));
--	}
--
- 	return 0;
- }
- 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
-index 1311c0d..1ce336f 100644
---- a/sound/soc/ux500/ux500_msp_i2s.h
-+++ b/sound/soc/ux500/ux500_msp_i2s.h
-@@ -530,12 +530,6 @@ struct ux500_msp {
- 	int loopback_enable;
- 	u32 backup_regs[MAX_MSP_BACKUP_REGS];
- 	unsigned int f_bitclk;
--	/* Pin modes */
--	struct pinctrl *pinctrl_p;
--	struct pinctrl_state *pinctrl_def;
--	struct pinctrl_state *pinctrl_sleep;
--	/* Reference Count */
--	int pinctrl_rxtx_ref;
- };
- 
- struct ux500_msp_dma_params {
 -- 
 1.8.2
