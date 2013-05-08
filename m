@@ -1,15 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: [PATCH] ALSA: hda - Apply pin-enablement workaround to
 	all Haswell HDMI codecs
-Date: Wed,  8 May 2013 08:48:26 +0200
-Message-ID: <1367995706-32560-1-git-send-email-tiwai@suse.de>
+Date: Wed,  8 May 2013 08:27:53 +0200
+Message-ID: <1367994473-31589-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 852F726162A
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 08:48:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E321926162A
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 09:07:59 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AC033A3DDF
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 09:07:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
