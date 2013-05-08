@@ -1,7 +1,7 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 2/6] ASoC: ux500: Do not clear state if already idle
-Date: Wed,  8 May 2013 09:14:17 +0200
-Message-ID: <1367997261-32048-3-git-send-email-fabio.baltieri@linaro.org>
+Subject: [PATCH 1/6] ASoC: ab8500-codec: Add missing ad_to_slot definitions
+Date: Wed,  8 May 2013 09:14:16 +0200
+Message-ID: <1367997261-32048-2-git-send-email-fabio.baltieri@linaro.org>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
@@ -10,34 +10,39 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-As enable_msp gets called only after some audio data has been received,
-if the userspace closes the device before sending any data it causes
-ux500_msp_i2s_close to clear device state even if it was not previously
-initialized.
+According to the AB8500 user manual AD to Slot register multiplexer
+accept values from 0 to 15 where:
 
-This in turns leads to some non necessary but harmless writel, but also
-to decrementing the pinctrl usage counter (pinctrl_rxtx_ref) below zero.
+   0 to  7 corresponds to AD_OUTx slots
+   8 to 11 corresponds to zero output
+  12 to 15 sets the output in tristate mode
 
-To prevent this from happening add a condition to skip register and
-pinctrl clear if current msp state is already MSP_STATE_IDLE.
+Update enum_ad_to_slot_map array to reflect this definition.
+
+This also allows alsamixer to properly display the default
+configuration, as all controls are set to tristate (=12) at reset.
 
 Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ab8500-codec.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index a26c6bf..964cfd6 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -638,7 +638,7 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
- 	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
- 
- 	status = disable_msp(msp, dir);
--	if (msp->dir_busy == 0) {
-+	if (msp->dir_busy == 0 && msp->msp_state != MSP_STATE_IDLE) {
- 		/* disable sample rate and frame generators */
- 		msp->msp_state = MSP_STATE_IDLE;
- 		writel((readl(msp->registers + MSP_GCR) &
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index a153b16..3126cac 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -1496,6 +1496,12 @@ static const char * const enum_ad_to_slot_map[] = {"AD_OUT1",
+ 					"AD_OUT7",
+ 					"AD_OUT8",
+ 					"zeroes",
++					"zeroes",
++					"zeroes",
++					"zeroes",
++					"tristate",
++					"tristate",
++					"tristate",
+ 					"tristate"};
+ static SOC_ENUM_SINGLE_DECL(soc_enum_adslot0map,
+ 			AB8500_ADSLOTSEL1, AB8500_ADSLOTSELX_EVEN_SHIFT,
 -- 
 1.8.2
