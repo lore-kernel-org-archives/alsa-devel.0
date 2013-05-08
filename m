@@ -1,56 +1,43 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 0/6] Second set of fixes for ux500 ASoC drivers
-Date: Wed,  8 May 2013 09:14:15 +0200
-Message-ID: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+Subject: [PATCH 2/6] ASoC: ux500: Do not clear state if already idle
+Date: Wed,  8 May 2013 09:14:17 +0200
+Message-ID: <1367997261-32048-3-git-send-email-fabio.baltieri@linaro.org>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+As enable_msp gets called only after some audio data has been received,
+if the userspace closes the device before sending any data it causes
+ux500_msp_i2s_close to clear device state even if it was not previously
+initialized.
 
-These are some others fixes for various small issues I found while
-testing the ux500 ASoC driver on -next.
+This in turns leads to some non necessary but harmless writel, but also
+to decrementing the pinctrl usage counter (pinctrl_rxtx_ref) below zero.
 
-Patch 1 adds some missing declarations for AD controls that were causing
-some weird behaviour in alsamixer, as the default state was outside the
-declared range.
+To prevent this from happening add a condition to skip register and
+pinctrl clear if current msp state is already MSP_STATE_IDLE.
 
-Patch 2 fixes a kernel crash when opening and closing the audio device
-without sending any data.
+Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
+---
+ sound/soc/ux500/ux500_msp_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patch 3 drops pinctrl code altogether from the driver.  The actual
-implementation is buggy as the pins are only registered to the playback
-interfaces, which gives a bunch of warnings during kernel startup and
-also kills the capture interface by setting the shared pins to hi-z mode
-even if that's still active.  As putting those pins in high-z is not
-really needed and was removed from the internal STE driver anyway, I'm
-just dropping that code form here as well.  In parallel, I'm sending a
-pinctrl patch to declare those pin as a hog.
-
-Patches 4 to 6 fixes some weirdness with time slot usage.  After this
-series the driver seems to work fine for both capture and playback
-interface (tested on a snowball v11).
-
-Thanks,
-Fabio
-
-
-Fabio Baltieri (6):
-  ASoC: ab8500-codec: Add missing ad_to_slot definitions
-  ASoC: ux500: Do not clear state if already idle
-  ASoC: ux500: Drop pinctrl sleep support
-  ASoC: ux500: Update tx tdm slots configuration
-  ASoC: ux500: Swap even/odd AD slot definitions
-  ASoC: ux500: Use the first two AD slots for capture
-
- sound/soc/codecs/ab8500-codec.c | 39 +++++++++++++++------------
- sound/soc/codecs/ab8500-codec.h | 36 ++++++++++++-------------
- sound/soc/ux500/mop500_ab8500.c |  4 +--
- sound/soc/ux500/ux500_msp_i2s.c | 58 +++--------------------------------------
- sound/soc/ux500/ux500_msp_i2s.h |  6 -----
- 5 files changed, 46 insertions(+), 97 deletions(-)
-
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index a26c6bf..964cfd6 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -638,7 +638,7 @@ int ux500_msp_i2s_close(struct ux500_msp *msp, unsigned int dir)
+ 	dev_dbg(msp->dev, "%s: Enter (dir = 0x%01x).\n", __func__, dir);
+ 
+ 	status = disable_msp(msp, dir);
+-	if (msp->dir_busy == 0) {
++	if (msp->dir_busy == 0 && msp->msp_state != MSP_STATE_IDLE) {
+ 		/* disable sample rate and frame generators */
+ 		msp->msp_state = MSP_STATE_IDLE;
+ 		writel((readl(msp->registers + MSP_GCR) &
 -- 
 1.8.2
