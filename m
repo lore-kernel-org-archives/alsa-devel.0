@@ -1,17 +1,30 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: sgtl5000: Fix driver probe after reset
-Date: Wed,  8 May 2013 14:04:06 -0300
-Message-ID: <1368032653-19489-1-git-send-email-festevam@gmail.com>
+Subject: Re: [RFC] ASoC: sgtl5000: Remove cache support
+Date: Wed, 8 May 2013 14:14:12 -0300
+Message-ID: <CAOMZO5CzDGJ+UD6L4UAmzAg5evN5cru26HdnSiUJUSNqSiEHJA@mail.gmail.com>
+References: <20130503223613.GR4945@sirena.org.uk>
+ <CAOMZO5B84e0YdcJLa27e4KZv459CGL=msU0fqe4LyFZfM-t1+A@mail.gmail.com>
+ <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
+ <20130505101515.GT4945@sirena.org.uk>
+ <CAKGA1bmKdtAoUP7Yn0CJRVwsCNX5JkEWdWVJj1VJBaJn+9PA=A@mail.gmail.com>
+ <20130506220650.GJ7478@sirena.org.uk>
+ <CAKGA1b=+j5BpHzWOfkDv+xjLLcauHeD4jDj_Do+6ft6UPhYEtA@mail.gmail.com>
+ <20130508103150.GW7478@sirena.org.uk>
+ <518A608E.8030802@boundarydevices.com>
+ <20130508145919.GU7478@sirena.org.uk>
+ <20130508151128.GW7478@sirena.org.uk>
+ <CAOMZO5DYBONvbEQQd1_CUB7VhVn7pyxB=ms7u-uiJpWS4OSMAw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f177.google.com (mail-qc0-f177.google.com
- [209.85.216.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 27E95261A29
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 19:04:51 +0200 (CEST)
-Received: by mail-qc0-f177.google.com with SMTP id e1so1128059qcy.8
- for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 10:04:50 -0700 (PDT)
+Received: from mail-ve0-f180.google.com (mail-ve0-f180.google.com
+ [209.85.128.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C5352616FF
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 19:14:13 +0200 (CEST)
+Received: by mail-ve0-f180.google.com with SMTP id pa12so1996551veb.39
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 10:14:12 -0700 (PDT)
+In-Reply-To: <CAOMZO5DYBONvbEQQd1_CUB7VhVn7pyxB=ms7u-uiJpWS4OSMAw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +34,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, matt@genesi-usa.com, alsa-devel@alsa-project.org, eric.nelson@boundarydevices.com, troy.kisky@boundarydevices.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Matt Sealey <matt@genesi-usa.com>, Eric Nelson <eric.nelson@boundarydevices.com>, "troy.kisky" <troy.kisky@boundarydevices.com>, "zengzm.kernel" <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Wed, May 8, 2013 at 1:02 PM, Fabio Estevam <festevam@gmail.com> wrote:
 
-sgtl5000 codec does not have a reset line, nor a reset command in software.
+> When using regmap, the 'defaults_raw' variants must be used, as these are the
+> ones checked inside drivers/base/regmap/regcache.c
 
-After a 'reboot' command in Linux or after pressing the system's reset button
-the sgtl5000 driver fails to probe:
-
-sgtl5000 0-000a: Device with ID register ffff is not a sgtl5000
-sgtl5000 0-000a: ASoC: failed to probe CODEC -19
-imx-sgtl5000 sound.12: ASoC: failed to instantiate card -19
-imx-sgtl5000 sound.12: snd_soc_register_card failed (-19)
-
-As the sgtl5000 codec did not go through a real reset, we cannot rely on the 
-reg_defaults array, since these are only valid after a clean power-on reset.
-
-To fix this issue, use 'reg_defaults_raw' which tells the regcache driver
-to actually read the codec registers and then fill the cache.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 327b443..c59fae8 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1470,8 +1470,8 @@ static const struct regmap_config sgtl5000_regmap = {
- 	.readable_reg = sgtl5000_readable,
- 
- 	.cache_type = REGCACHE_RBTREE,
--	.reg_defaults = sgtl5000_reg_defaults,
--	.num_reg_defaults = ARRAY_SIZE(sgtl5000_reg_defaults),
-+	.reg_defaults_raw = sgtl5000_reg_defaults,
-+	.num_reg_defaults_raw = ARRAY_SIZE(sgtl5000_reg_defaults),
- };
- 
- static int sgtl5000_i2c_probe(struct i2c_client *client,
--- 
-1.7.9.5
+Please ignore this comment. I fixed it in the patch I have just submitted.
