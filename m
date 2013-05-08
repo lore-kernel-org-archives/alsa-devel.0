@@ -1,24 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: sgtl5000: Remove cache support
-Date: Wed, 8 May 2013 16:11:28 +0100
-Message-ID: <20130508151128.GW7478@sirena.org.uk>
-References: <20130503223613.GR4945@sirena.org.uk>
- <CAOMZO5B84e0YdcJLa27e4KZv459CGL=msU0fqe4LyFZfM-t1+A@mail.gmail.com>
- <CAOMZO5BG-3SKZF_ZrQ=C51nLvKYSNJEgy-KavzBXJcb=fCk=iA@mail.gmail.com>
- <20130505101515.GT4945@sirena.org.uk>
- <CAKGA1bmKdtAoUP7Yn0CJRVwsCNX5JkEWdWVJj1VJBaJn+9PA=A@mail.gmail.com>
- <20130506220650.GJ7478@sirena.org.uk>
- <CAKGA1b=+j5BpHzWOfkDv+xjLLcauHeD4jDj_Do+6ft6UPhYEtA@mail.gmail.com>
- <20130508103150.GW7478@sirena.org.uk>
- <518A608E.8030802@boundarydevices.com>
- <20130508145919.GU7478@sirena.org.uk>
+From: Fabio Baltieri <fabio.baltieri@linaro.org>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Wed, 8 May 2013 17:48:05 +0200
+Message-ID: <20130508154805.GA12970@balto.lan>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105124.GA7478@sirena.org.uk>
+ <20130508114216.GB29130@balto.lan>
+ <20130508123225.GK7478@sirena.org.uk>
+ <20130508131020.GA30503@balto.lan>
+ <20130508135413.GR7478@sirena.org.uk>
+ <20130508141723.GA12155@balto.lan>
+ <20130508142938.GS7478@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3335749412741846820=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 00AA32616B9
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 17:11:47 +0200 (CEST)
-In-Reply-To: <20130508145919.GU7478@sirena.org.uk>
+Received: from mail-we0-f177.google.com (mail-we0-f177.google.com
+ [74.125.82.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id A73842616EF
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 17:48:15 +0200 (CEST)
+Received: by mail-we0-f177.google.com with SMTP id q58so1945492wes.36
+ for <alsa-devel@alsa-project.org>; Wed, 08 May 2013 08:48:15 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20130508142938.GS7478@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,80 +32,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Nelson <eric.nelson@boundarydevices.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Matt Sealey <matt@genesi-usa.com>, "troy.kisky" <troy.kisky@boundarydevices.com>, "zengzm.kernel" <zengzm.kernel@gmail.com>, Fabio Estevam <festevam@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 08, 2013 at 03:29:38PM +0100, Mark Brown wrote:
+> On Wed, May 08, 2013 at 04:17:23PM +0200, Fabio Baltieri wrote:
+> > On Wed, May 08, 2013 at 02:54:13PM +0100, Mark Brown wrote:
+> 
+> > > But why does the rest of the code work well if the reference counting is
+> > > wrong, it's in the middle of a big block of code?  This all smells like
+> > > this change is papering over a specific symptom of some underlying issue
+> > > - if that's not the case then it needs to be clearer why.
+> 
+> > Well, the counting by itself is not wrong, it's just that the same pins
+> > are used by both driver instances (ux500-msp-i2s.1 and ux500-msp-i2s.3)
+> > but the actual counter is specific of each instance
+> > (msp->pinctrl_rxtx_ref, if I'm not mistaken msp is different between the
+> > capture and playback interfaces).
+> 
+> So if these pins are being shared between the instances then surely
+> there are other interdependencies that need to be taken care of Is that
+> happening?  For example if the clocks are shared then is the code
+> currently stopping the interfaces being configured with incompatible
+> sample rates or word sizes?
 
---===============3335749412741846820==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JQJYpj0es6mGpGbU"
-Content-Disposition: inline
+That's an interesting point.  Mixed format, rate and channel counts
+seems to work just fine, but that's probably because the supported rate
+and format is locked by the codec to 48k + S16_LE.  This is in line with
+what is specified on the ab8500 datasheet:
 
+---
+The AB8500 audio module exchanges audio data through the two digital
+interfaces at a fixed 48 kHz rate in different formats with up to 8
+channels per interface.
+---
 
---JQJYpj0es6mGpGbU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> It seems like the code is definitely buggy here but is this really all
+> that's buggy or is it just the symptom you happen to have seen?
 
-On Wed, May 08, 2013 at 03:59:19PM +0100, Mark Brown wrote:
-> On Wed, May 08, 2013 at 07:26:22AM -0700, Eric Nelson wrote:
+For the pinctrl code drop I still think that it should go, but really
+I leave the last word to LinusW as suggested.
 
-> > An initial pass of writing all of the default register values with a
-> > sort of 'cache flush' appears to be the right thing.
+For the format mix, my guess is that you are probably right and this
+thing may just fall apart if used on another codec.
 
-> > Then it doesn't even matter if the values match the datasheet, or if
-> > the spec changes over time. If the values are reasonable, the device
-> > will function properly.
+On the other side, I don't think anybody is using the ux500 with
+anything else than the ab8500, so I don't even know how would I test and
+fix this.
 
-> No, it does matter - when we do things like cache syncs on resume the
-> core will suppress writes of registers which have their power on value
-> since either the register will have been reset to that value by power
-> loss or retained the value due to power being maintained.  This is a
-> useful win when resuming to audio activity, I2C is pretty slow.
+> > Ok, what I'm trying to say is that the codec used in this platform
+> > should be able to handle sleep modes without requiring any
+> > reconfiguration of the digital interface on the SoC side.  In support of
+> > this the fact that the STE fork of the driver does not do that, and the
+> > same goes for all other ASoC drivers currently in mainline.
+> 
+> Well, most things would probably be able to get some small benefit from
+> doing this, it's just that we've not had any real support for managing
+> pin muxing - one of the goals of adding pinctrl is to make it easier to
+> deploy this sort of thing.
 
-Actually the simplest way to implement this solution (at least with
-regmap, IIRC there might've been some issues with the ASoC cache code)
-is just to discard the register defaults.  The core will fall back to
-reading the hardware for any register it doesn't have cached but will
-continue to cache values that are written. =20
+Pin muxing is handled transparently.  The real problem is sleep mode
+switching, but that's really not needed if the codec has a proper low
+power mode.
 
-Something that iterates all the known registers and reads the default
-values in will be required in order to support control access with the
-device powered down.  I'd therefore suggest just not telling regmap
-about the current defaults and instead changing the code to loop over
-them and write them out during startup.  Probably with a big fat comment
-about why we're doing this.
+Fabio
 
---JQJYpj0es6mGpGbU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRimsdAAoJELSic+t+oim9rRMP/i2EH/+DWr/i+duryGVRYW27
-l55anjhaVOSnF3DIoAeeGIBzaJWjPxQIDlLe2rUNd9xIZpEv8Tem4BO24YNu/MKH
-W4R1Jarxb0+GSNFmWWpJl+8NhLFMBW4/V7wP6L6wwh5Pxm8Wjyi74DEgy8kPMDk9
-3KteQoPtIkTcPCxuJ5TfBUwXKsaaGg7KImnk1ceMwL/v2ozckU6qPJdeqG4Xtocz
-07c+AwTCEdQ+wxm8CQdbLYdJq2VR8O8s4UdWPNu9OMixozsmKZagFbR+qr64bOwQ
-GxPOLc8Q4PDxUwtxHb7ICb4Fhl+5joIXVXlqX866BvMqSpBXGoHM7Hz48R8F5F27
-qM7gmUGCWecnj7si51icq9YGvrOBIgT8LnbfX2XY4QR+udXOIm+WwhZA4Zj0Xv2G
-wyWc731nsOkSIq+Abx4JS+IC/gxSjhdNnfT5MTPLD7m1pi8t8pgQUm9CPkuEsrAE
-TLHkJ0Lo5VLBvm28utjLkP6TV7+tUnAvStbVap1cZaDlD4uNMtZkMiDwhzCG03TP
-Bmls30tm1BgIHshm+UZOgRfmSTXtD7I+FlRh3MSyTKVXFLWRa6HgWjTeh6xoFbuH
-pzYIw56In0anwk/v0dky6KBumVPJZCvC6kJlm8vM6Cwr09c5LxoQdSWyrt5vybOp
-jcnz0Y38hPPV62ekRNpc
-=qyzo
------END PGP SIGNATURE-----
-
---JQJYpj0es6mGpGbU--
-
---===============3335749412741846820==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3335749412741846820==--
+-- 
+Fabio Baltieri
