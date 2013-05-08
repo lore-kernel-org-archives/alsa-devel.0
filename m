@@ -1,41 +1,34 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: Re: [PATCH 4/6] ASoC: ux500: Update tx tdm slots configuration
-Date: Wed, 8 May 2013 18:03:32 +0200
-Message-ID: <20130508160332.GB12970@balto.lan>
+Subject: Re: [PATCH 6/6] ASoC: ux500: Use the first two AD slots for capture
+Date: Wed, 8 May 2013 18:08:39 +0200
+Message-ID: <20130508160839.GC12970@balto.lan>
 References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
- <1367997261-32048-5-git-send-email-fabio.baltieri@linaro.org>
- <20130508110149.GF7478@sirena.org.uk>
+ <1367997261-32048-7-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105654.GC7478@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130508110149.GF7478@sirena.org.uk>
+In-Reply-To: <20130508105654.GC7478@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 08, 2013 at 12:01:49PM +0100, Mark Brown wrote:
-> On Wed, May 08, 2013 at 09:14:19AM +0200, Fabio Baltieri wrote:
-> > Update ab8500-codec and mop500_ab8500 tx slot configuration to reflect
-> > the actual one used by STE.  Also update a wrong comment in the process.
+On Wed, May 08, 2013 at 11:56:54AM +0100, Mark Brown wrote:
+> On Wed, May 08, 2013 at 09:14:21AM +0200, Fabio Baltieri wrote:
+> > Set AD_OUT1 and AD_OUT2, corresponding to LINL and LINR pins, as the
+> > default input slots for the capture interfaces.
 > 
-> This seems wrong, the individual chip drivers should just be doing
-> whatever they're being told by the machine driver.  Sounds like there's
-> two fixes needed here - one is to change the TDM API so that the chip
-> drivers are just implementing configuration supplied by the machine
-> driver and the other is to change the configuration being done to
-> whatever is desired.
+> If these are routing specific analogue inputs to specific timeslots then
+> this is routing that should be being exposed to DAPM as muxes, not hard
+> coded in the middle of TDM slot configuration (which is both obscure and
+> not what the TDM API is there for).  The TDM API should be purely about
+> placing the timeslots for the audio interface on the bus.
 
-Ok so, this patch was really just going to slightly align the
-configuration with the STE driver.  I'll drop it and just fix the wrong
-comment as a trivial patch.
-
-For the reimplementation with channel configuration from machine driver,
-I actually went through that, but was not able to find the reason why
-there is a slot offset somewhere (example: I request 0x0001 for first
-slot on the DAI and that shows up on slot 8 on the codec), so I just
-updated the hardcoded value.  I'll try to get some explanation for that.
+Ok, it makes sense.  Again, this patch was wrote as a fix to the
+existing codebase to make the driver usable with the actual board
+available to the community (the snowball).
 
 Fabio
 
