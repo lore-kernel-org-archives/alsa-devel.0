@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/6] ASoC: ux500: Do not clear state if
-	already idle
-Date: Wed, 8 May 2013 11:34:01 +0100
-Message-ID: <20130508103401.GX7478@sirena.org.uk>
-References: <20130508080448.GG3102@gmail.com>
- <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: Mark CHIP_ANA_POWER as
+	volatile
+Date: Wed, 8 May 2013 11:40:11 +0100
+Message-ID: <20130508104011.GZ7478@sirena.org.uk>
+References: <1367958018-4827-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0916655776708162796=="
+Content-Type: multipart/mixed; boundary="===============0779256282451638889=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AF463261658
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:34:12 +0200 (CEST)
-In-Reply-To: <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FF60261658
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:40:29 +0200 (CEST)
+In-Reply-To: <1367958018-4827-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: matt@genesi-usa.com, alsa-devel@alsa-project.org, eric.nelson@boundarydevices.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0916655776708162796==
+--===============0779256282451638889==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="b/3kIrr+SWblMf9a"
+	protocol="application/pgp-signature"; boundary="JefYhWJ8RkX3aR0a"
 Content-Disposition: inline
 
 
---b/3kIrr+SWblMf9a
+--JefYhWJ8RkX3aR0a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 08, 2013 at 10:39:14AM +0200, Fabio Baltieri wrote:
-> As enable_msp gets called only after some audio data has been received,
-> if the userspace closes the device before sending any data it causes
-> ux500_msp_i2s_close to clear device state even if it was not previously
-> initialized.
+On Tue, May 07, 2013 at 05:20:12PM -0300, Fabio Estevam wrote:
+> Register CHIP_ANA_POWER (address: 0x0030) contains all of the power down=
+=20
+> controls for the analog blocks.
 
-Ugh, please don't do stuff like this - you're posting an individual
-revision of a patch buried in the middle of a thread.  This just makes
-things hard to follow and error prone.  Repost the patch series or wait
-until what can be applied is applied then repost.
+> Mark it as a volatile register, so that sgtl5000 can be functional after a
+> reset.
 
---b/3kIrr+SWblMf9a
+Is this register actually volatile - in what situations does the chip
+autonomously change its power state?
+
+> Without this patch the following error happens after a audio playback fol=
+lowed
+> by a reset:
+
+What is the mechanism by which this change fixes the error you quote?
+
+--JefYhWJ8RkX3aR0a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRiioWAAoJELSic+t+oim9fkoP/0xYvB8xWrJTr9Wnopic7yX4
-DvARISDa6cKnn6qKnNegFqr0apH8/MiwlAXHPgZmD3Of3UDoipb9b/66bsh8wDJQ
-eMI1sqiC9i+8iaT4k1uEJuuYab1584MNfqzrFofSLIs/i3B+T/ghhQdUbaQYaZa8
-2ghDAmjT18GV1s4MXAqCk9Jy1AyGnw5sCoeqRR6ZZEiDQDQ66p+S2zyk+ebI4EvI
-dMY8T89b1AJKFSJws+0whkGO0Is64aOF2tgOxM8iGXBvVlca0fOGWdM70cY/BFE7
-7a349XwtWZ4CdDf3TSlHI3+iWQ5qf8PBkO9XnOZvxt4jJNrAaZLd3OBVmjuOG4E9
-8iWXbP2g5yGdWn2onS1NAwX2MttsA84ZeGtoA5xiIsHtFlNMzwExC0KGda8z9V1N
-UnN2H8L4rJ8wCTEbT3p6RM3BIxW0Ft4AnWbOIWpA1v/F85nsbZ9w2+kUz5KQzC2s
-OwT6q0MxpMI08e1Xfq4OTAsQ3/FMT4zWMq5MVpurOcDcSSPA36XEi2GNeviOE3e1
-qwxekcegJFt/GkExopADjdKo9p53NqvNUVWfsiuAZN5Uc6mcYOEaBtX1gSVJ0+gY
-iQC5F3GQ4zZDccm3VpiTTXHSm4VCiH1ps7dpwowOCkIHfCCVNXtxAtEm0xGQmOdL
-VeQ6zeEizImF8gnjYP+V
-=xVuL
+iQIcBAEBAgAGBQJRiiuIAAoJELSic+t+oim9ce4P/Ay0F6DvIXTkXFePNFqFfOfv
+Ua9SBG+sjPc8IM/YxG438F/6iUbkg+ECOHMIEm78kzGAgQKI7NhL/SePOJBKdGz0
+xeleecXhWgw2ZYT00ly9K2wcou38O+1gpipSovEVgwCgduI2YsrsGAM4FkYlaDCY
+0xBgMvq0KABdOxp/07yc/FzAUKCnQ/A1dO2A2hlxL0VMF0AK5bUsk/Xgam2jZXMU
+BkwPYdv+u1DRbJf5KhtZAnnoNeAxtI8IRqs7Eu8jIiccfQmAmtJfr1ZcAgmQtOEx
+EnS6LGtfaWMv0GwUVXmOMTqpwnLWamrNRZdKoqhBGEmaSa2xa2xxLyZn3zH8l8f3
+O+mR9SllmFB53lVuDreW+OdYt8FGzqGEGMe4vrcLQeJQ1ZH2upcPpipU/Hua0WQP
+4Fh2cuzf029nKbIwzUQLaOTClAZ94g/lIzwlFuLUHME5GsRNlKzNDWFpRJR6cTLU
+6u4RWWtEJJll36stsRnQAJb9niw2F/qFzjrUjzgmSmP7zCPRGvlwyAAnBkwuyi1W
+EpwLkxELP24/NzlqD81yK3L2AIhl+D+SbBRosU61ng9awYW6N8yu3A44nj/XS7w6
+sZ2KMmH/kd2jptBUOHN+C9C4H6PZrpi6rUNZq3V3mHzPdNv1nsfIBk/M29CbRUnW
+foesBGkxb+MIq46h3skk
+=vAnI
 -----END PGP SIGNATURE-----
 
---b/3kIrr+SWblMf9a--
+--JefYhWJ8RkX3aR0a--
 
---===============0916655776708162796==
+--===============0779256282451638889==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0916655776708162796==--
+--===============0779256282451638889==--
