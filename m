@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: Mark CHIP_ANA_POWER as
-	volatile
-Date: Wed, 8 May 2013 11:40:11 +0100
-Message-ID: <20130508104011.GZ7478@sirena.org.uk>
-References: <1367958018-4827-1-git-send-email-fabio.estevam@freescale.com>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Wed, 8 May 2013 11:51:24 +0100
+Message-ID: <20130508105124.GA7478@sirena.org.uk>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0779256282451638889=="
+Content-Type: multipart/mixed; boundary="===============0598233509309083788=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FF60261658
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:40:29 +0200 (CEST)
-In-Reply-To: <1367958018-4827-1-git-send-email-fabio.estevam@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CC0E261658
+ for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 12:51:39 +0200 (CEST)
+In-Reply-To: <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,68 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: matt@genesi-usa.com, alsa-devel@alsa-project.org, eric.nelson@boundarydevices.com
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0779256282451638889==
+--===============0598233509309083788==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JefYhWJ8RkX3aR0a"
+	protocol="application/pgp-signature"; boundary="Jsn5+Lu/ZvzbAGtZ"
 Content-Disposition: inline
 
 
---JefYhWJ8RkX3aR0a
+--Jsn5+Lu/ZvzbAGtZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 07, 2013 at 05:20:12PM -0300, Fabio Estevam wrote:
-> Register CHIP_ANA_POWER (address: 0x0030) contains all of the power down=
-=20
-> controls for the analog blocks.
+On Wed, May 08, 2013 at 09:14:18AM +0200, Fabio Baltieri wrote:
+> Drop pinctrl default/sleep state switching code, as it was breaking the
+> capture interface by putting the I2S pins in hi-z mode regardless of its
+> usage status, and not giving any real benefit.
+>=20
+> Pinctrl default mode configuration is already managed automatically by a
+> specific pinctrl hog.
 
-> Mark it as a volatile register, so that sgtl5000 can be functional after a
-> reset.
+I tend to agree with Lee that this looks like a bad approach - there's a
+whole bunch of other code in there which I'd guess is probably equally
+broken but only the pinctrl code is being removed.  Why not just fix it
+(or better yet simplify all this stuff)?
 
-Is this register actually volatile - in what situations does the chip
-autonomously change its power state?
-
-> Without this patch the following error happens after a audio playback fol=
-lowed
-> by a reset:
-
-What is the mechanism by which this change fixes the error you quote?
-
---JefYhWJ8RkX3aR0a
+--Jsn5+Lu/ZvzbAGtZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRiiuIAAoJELSic+t+oim9ce4P/Ay0F6DvIXTkXFePNFqFfOfv
-Ua9SBG+sjPc8IM/YxG438F/6iUbkg+ECOHMIEm78kzGAgQKI7NhL/SePOJBKdGz0
-xeleecXhWgw2ZYT00ly9K2wcou38O+1gpipSovEVgwCgduI2YsrsGAM4FkYlaDCY
-0xBgMvq0KABdOxp/07yc/FzAUKCnQ/A1dO2A2hlxL0VMF0AK5bUsk/Xgam2jZXMU
-BkwPYdv+u1DRbJf5KhtZAnnoNeAxtI8IRqs7Eu8jIiccfQmAmtJfr1ZcAgmQtOEx
-EnS6LGtfaWMv0GwUVXmOMTqpwnLWamrNRZdKoqhBGEmaSa2xa2xxLyZn3zH8l8f3
-O+mR9SllmFB53lVuDreW+OdYt8FGzqGEGMe4vrcLQeJQ1ZH2upcPpipU/Hua0WQP
-4Fh2cuzf029nKbIwzUQLaOTClAZ94g/lIzwlFuLUHME5GsRNlKzNDWFpRJR6cTLU
-6u4RWWtEJJll36stsRnQAJb9niw2F/qFzjrUjzgmSmP7zCPRGvlwyAAnBkwuyi1W
-EpwLkxELP24/NzlqD81yK3L2AIhl+D+SbBRosU61ng9awYW6N8yu3A44nj/XS7w6
-sZ2KMmH/kd2jptBUOHN+C9C4H6PZrpi6rUNZq3V3mHzPdNv1nsfIBk/M29CbRUnW
-foesBGkxb+MIq46h3skk
-=vAnI
+iQIcBAEBAgAGBQJRii4oAAoJELSic+t+oim9KmgP/3UuESUutQ3yJnaQpS4u76AG
+qbcgcGVV/yCMeqvo5p115+BTy5hcFOYkIL9Js0mRaKX6uXcwYasG/L18AhPY66hF
+xaYTow7OxQjF8xHpDyH3y36DNKsJHIBL2U9aznXVltk9hIxDFW0lPJpX1bZ71rvS
+/BvsVW/O9E0sE5NCraplLBnvGA8x7EXC0V6h2nSkT/Qqj+Gl9ceIOPUXkC0H2b7I
+qPDS34FysNl7JlJj5txK4RDHJe7NIYB+A79syJsOjbGz1mw70Rl28USvixHgU16/
+DTLVSAKA8j599ONHDa1C/a9gaIubKomY2WjY7UFz/PpQ5vIjWmEwDKjnG5EjtEz/
+uztGZlXi5CONCccX8+HzjF9pMsEcd+Mqou8f+7APNZC7leTgW9v5AouxNEZqTV6r
+nGPa9cvBtgHjOjEGgwkS0i6PmCDyT8pW5QiQtzwsW95xXqRhkwpolR+BvPN1i8Vw
+eYF9wj0Yqd7K/VDxhnGalRlS4ETr/drsY+d0CvtpeZQ74zENTVrxTOfu2JIwokpW
+RdR3i97Dr1vl48aTGmktkjkqoL+hSETu53gndDR3RGELwerCDfjgEUrvFQhQUejT
+BrpLVN8HFYuwrNsgDPeiccQXVl8Y4NGZ0RycrckhXGIkGwJoCcQoWySh7NkY1s6Y
+vzu+kaAqOycnRkn4oL91
+=dyGU
 -----END PGP SIGNATURE-----
 
---JefYhWJ8RkX3aR0a--
+--Jsn5+Lu/ZvzbAGtZ--
 
---===============0779256282451638889==
+--===============0598233509309083788==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0779256282451638889==--
+--===============0598233509309083788==--
