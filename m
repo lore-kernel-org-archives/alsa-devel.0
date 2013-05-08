@@ -1,87 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/6] ASoC: ux500: Do not clear state if
-	already idle
-Date: Wed, 8 May 2013 13:39:02 +0100
-Message-ID: <20130508123902.GL7478@sirena.org.uk>
+Subject: Re: [PATCH v2 2/6] ASoC: ux500: Do not clear state if already idle
+Date: Wed, 8 May 2013 13:39:36 +0100
+Message-ID: <20130508123936.GM7478@sirena.org.uk>
 References: <20130508080448.GG3102@gmail.com>
  <1368002354-15471-1-git-send-email-fabio.baltieri@linaro.org>
  <20130508103401.GX7478@sirena.org.uk>
- <20130508110451.GC3459@gmail.com>
- <20130508113124.GH7478@sirena.org.uk>
- <20130508120326.GF3459@gmail.com>
+ <20130508120449.GA18323@balto.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0005492746692814940=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9105C2608C9
- for <alsa-devel@alsa-project.org>; Wed,  8 May 2013 14:39:13 +0200 (CEST)
-In-Reply-To: <20130508120326.GF3459@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Fabio Baltieri <fabio.baltieri@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ByWDhVrfOLxO82cA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130508120449.GA18323@balto.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0005492746692814940==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gBMNUjqROSlRgKnE"
-Content-Disposition: inline
-
-
---gBMNUjqROSlRgKnE
+--ByWDhVrfOLxO82cA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 08, 2013 at 01:03:26PM +0100, Lee Jones wrote:
+On Wed, May 08, 2013 at 02:04:49PM +0200, Fabio Baltieri wrote:
 
-> Besides, I was more referencing the massively increased effort
-> imparted to the developer by applying patches in an arbitrary order.
-> Forcing the developer to rearranging and rebase the patch-set causing
-> unnecessary merge conflicts. It's better if the maintainer takes the
-> patch-set in the order it was written to prevent unnecessary (which is
-> the key word here) such things.
+> Anything on the patch itself?
 
-Meh, rebase takes care of all this stuff for you and you really need to
-be rebasing anyway to take account of changes sent by other people.  The
-problem you were having was that you weren't rebasing at all.
+I didn't really look at it TBH.
 
---gBMNUjqROSlRgKnE
+--ByWDhVrfOLxO82cA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRikdiAAoJELSic+t+oim9R3MP/0sTjHV1ChLjwjJvP16w/Sou
-7l2ifGG/eaZqmlaLoETLdI3A4DEq0NGuqP4g1gm7xYkUSivLpKcvSP3r1unEohEA
-fNno5BhmpVsmTL2LBNiylqVO3Nr+OG7LC08m3Fwwej4j4RzsUmYjb6W6JzWmgyri
-ZWKhLdzhxnWVtugmmb7HFIxk4tao/EFxCMiGRV7XdvXdkPbFMMj/wkQTPVblPBFw
-Alkn/N6VoFXdb+ajn55FMlIuvn13qBwzZ9RldRGhd1wQyqklCg7SYqT2+F0BAYlQ
-L0fKd97B2fTeLlncM4MkrwrvbGjKn1CWCofN6b1Pr4uhsIN41uD9cwFWxQOkI38h
-gISJ583iVJxondlgVHYOz6O5QCRFbPf36uvvVAaxOXAFGwBdTp6ioFubZKMJ81Vc
-suV4h3sYV3RQ620cItL0RVb/98CfPGKM4mEH719LEjFku0/NM76aJmp9HW8Jz7la
-fOYDayxIvkgmcLxtJj0zEm+Myd8jwoBKivI3IGOsZGcMi45RT+CBuwriLziDzkAb
-c1xc4FxpYc4/EGlPI2caB4bwK/xwyhY/1ZIwcIHAcxhFw8bPdEqSUTcjgJsUFt9v
-xUXGuBzficn2WDXpwbJ+GQqqfDqVUWn7Q1pp6OMlz96nWOby76krGj6PsN0z1ihd
-ET7uh7gPiVQ60sgXnGf2
-=wwle
+iQIcBAEBAgAGBQJRikeFAAoJELSic+t+oim9YekP/AlsseYdHOju1kjBW5MTS6Y8
+V219aiSPsgvB1TC/JFQRsZrd5cNuvGX4GZpFEZFv0T4hNFviPld4fM5lG1otktzX
+uVgQ5+i9avpevRLRP6gUlniGo+fuljoaKsnYnKnHSNw2MUlBW6Z7sGGdw81B6+2G
+mhDJEXPETyZgFt4vuAslNeTmJ4UDqpkJuXlEWpiDRJKzWFLMEdQsGbGuvUGjSqoy
+WisQGUC9zJmh5+YpSoRLgnXXoyOemlmpcJCYTGdcvijlklcMxfiJz3YHl0lpS4HV
+JVy1a8bFfWMECNMDqJfhaamkKk8KRf+c+1zBNF6HJg7QhgzPNU6qsRKc6smzU2k1
+6nspLcW1TA9Vre4RWuImO4bJru10fCmPQkqkXgqYoQbTNIe9XZXjGzEaUFSdoda7
+bo8IguiC1CiKmpHEot+58BuzOJmbvevgFTCdKa0x8OsrAIJ1aDK1FFWAVI4JNrei
+XJe6i8ve1f9h1UIYZlIEpi6uuA/4pX0P63Bmnrszx7tP4jwUh0ClbWY6AC8nRHi+
+KgXUbudjOWwJRxyki+b8/CQnhtyRB7IcI4pJK8Oj7yMIcl6JLXo0vWdvPXyLEHxl
+SnfCWkp4vdE5Oc8FO6R+jTEX9vayOq1QWUS4U6tn5vEmDYs3aXpHuIPxajuq3Apm
+4++VoV/GqPiIlnc7SCyh
+=4sXc
 -----END PGP SIGNATURE-----
 
---gBMNUjqROSlRgKnE--
-
---===============0005492746692814940==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0005492746692814940==--
+--ByWDhVrfOLxO82cA--
