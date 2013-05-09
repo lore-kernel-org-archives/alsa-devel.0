@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: TLV question - ranges not in volume order
-Date: Thu, 9 May 2013 11:12:17 +0100
-Message-ID: <20130509101217.GE7478@sirena.org.uk>
-References: <518A3545.8000809@canonical.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: da7213: Fix setting dmic_samplephase
+ and dmic_clk_rate
+Date: Thu, 09 May 2013 21:14:20 +0800
+Message-ID: <1368105260.10534.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2502857875762644393=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C09EC2619F4
- for <alsa-devel@alsa-project.org>; Thu,  9 May 2013 12:12:19 +0200 (CEST)
-In-Reply-To: <518A3545.8000809@canonical.com>
+Received: from mail-pb0-f43.google.com (mail-pb0-f43.google.com
+ [209.85.160.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 071E42602F3
+ for <alsa-devel@alsa-project.org>; Thu,  9 May 2013 15:14:26 +0200 (CEST)
+Received: by mail-pb0-f43.google.com with SMTP id md12so1983480pbc.30
+ for <alsa-devel@alsa-project.org>; Thu, 09 May 2013 06:14:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: rex.tsai@canonical.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When set dmic_samplephase and dmic_clk_rate bits for dmic_cfg,
+current code checks pdata->dmic_data_sel which is wrong.
 
---===============2502857875762644393==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="F3Ja72XjDYN1ox8a"
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+This looks like a copy-paste bug.
 
+ sound/soc/codecs/da7213.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---F3Ja72XjDYN1ox8a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, May 08, 2013 at 01:21:41PM +0200, David Henningsson wrote:
-
-> I recently came across a strange ASoC volume control. In this case,
-> the values are not in volume order, i e, the control is declared
-> something like below. I believe the numbers correctly match the
-> hardware.
-
-Oh, joy.  What driver is this?
-
---F3Ja72XjDYN1ox8a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRi3Z+AAoJELSic+t+oim9egcQAJrIwmpBv/T46aApk9EjChqB
-n5jXGJFcTzZXMS/bvBUuxlMLJ1v4Yla02C0Jnb7w7QYlSOlJIc5vLdHSjRDuQ1CN
-OpQXNy735+GgLP9BWFBHfyx3BbItL0PT70qT+YTgF95L5EGtIb64d6hv7ZJ7Iw/C
-/JJOSwTlJjUFeJbxvKrrazKZGwMiqpFLdeNXmOhuYSSb3FJOYsiQTToqEnU7tMBN
-Tg69TMlzXLTUaom5ZWqAVLcCsG7EQKr/6YCc3pDi2x7n97/4W+fPsjInGT/yEpYR
-FhfmbEb+CU+4Tw9CsDvITIR5Wb8SlhZ8AU7alXV/+/0lCSPBZ9AKvlX6IRrdR2Ni
-217BY2o7zQj9I3jxn3mG5H86hpmFijvXRrl6FpRSlMdTudoGmHc1Nd43XsAuSkLC
-ZquRRzF3bmmQQozFWdPVCAYfI8WkQiFSC2wxfxpVrcWz1nhYhtR0IzsMbBGAwlQo
-qx4QfRDfdLB9lwCSJUj9CMd60PP6JNcpL1TiFw2Ra9GX3WQnOMtDxf1O4sKL4c22
-HsxgN+vtXrJBkm7Vhn4Ba0ZL9vNJunKo7SYwzkuSoU0fffkqjHC45LqPIXLIjMyW
-yPwe4an0GnLCUS+d+zR+26bmGSPVfNPVOhmQRsl/PwjPUi9Sv0yUi/ETzMM3cwi5
-rJrOBWuBTh+YWQb0028e
-=thji
------END PGP SIGNATURE-----
-
---F3Ja72XjDYN1ox8a--
-
---===============2502857875762644393==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2502857875762644393==--
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 41230ad..4a6f1da 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1488,17 +1488,17 @@ static int da7213_probe(struct snd_soc_codec *codec)
+ 				     DA7213_DMIC_DATA_SEL_SHIFT);
+ 			break;
+ 		}
+-		switch (pdata->dmic_data_sel) {
++		switch (pdata->dmic_samplephase) {
+ 		case DA7213_DMIC_SAMPLE_ON_CLKEDGE:
+ 		case DA7213_DMIC_SAMPLE_BETWEEN_CLKEDGE:
+-			dmic_cfg |= (pdata->dmic_data_sel <<
++			dmic_cfg |= (pdata->dmic_samplephase <<
+ 				     DA7213_DMIC_SAMPLEPHASE_SHIFT);
+ 			break;
+ 		}
+-		switch (pdata->dmic_data_sel) {
++		switch (pdata->dmic_clk_rate) {
+ 		case DA7213_DMIC_CLK_3_0MHZ:
+ 		case DA7213_DMIC_CLK_1_5MHZ:
+-			dmic_cfg |= (pdata->dmic_data_sel <<
++			dmic_cfg |= (pdata->dmic_clk_rate <<
+ 				     DA7213_DMIC_CLK_RATE_SHIFT);
+ 			break;
+ 		}
+-- 
+1.8.1.2
