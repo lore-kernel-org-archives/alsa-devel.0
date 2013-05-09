@@ -1,16 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFT] ASoC: da7213: Fix setting
- dmic_samplephase and dmic_clk_rate
-Date: Thu, 9 May 2013 14:29:25 +0100
-Message-ID: <20130509132924.GB3200@sirena.org.uk>
-References: <1368105260.10534.0.camel@phoenix>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: BUG: USB audio discontinuities with 'UHCI:
+ implement new semantics for URB_ISO_ASAP'
+Date: Thu, 9 May 2013 10:38:08 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1305091037150.1796-100000__34638.0098177635$1368110316$gmane$org@iolanthe.rowland.org>
+References: <20130509001613.GA4383@richardiv.omgwallhack.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6987474370979873834=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C1872602F2
- for <alsa-devel@alsa-project.org>; Thu,  9 May 2013 15:29:29 +0200 (CEST)
-In-Reply-To: <1368105260.10534.0.camel@phoenix>
+In-Reply-To: <20130509001613.GA4383@richardiv.omgwallhack.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +18,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tova-dev@tovacompany.com, linux-usb@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 8 May 2013, Joe Rayhawk wrote:
 
---===============6987474370979873834==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
-Content-Disposition: inline
+> For what it's worth, the following -stable patch
+> 
+> "ALSA: USB: adjust for changed 3.8 USB API"
+> c75c5ab575af7db707689cdbb5a5c458e9a034bb
+> 
+> fixes the discontinuous playback on period sizes between 139 and 192,
+> but the discontinuous playback on period sizes between 48 and 138 has
+> been replaced by rather worse kernel blocking and kernel errors:
+> 
+> jrayhawk@richardiv:~$ sudo tail -F -n 0 /var/log/kern.log &
+> [1] 4490
+> jrayhawk@richardiv:~$ time perl -e 'print pack "H*", "00FF" x 2048' | aplay --period-size=192 -r 48000 -f S16_LE -c2 -D hw:0,0
+> Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+> 
+> real	0m0.053s
+> user	0m0.008s
+> sys	0m0.000s
+> jrayhawk@richardiv:~$ time perl -e 'print pack "H*", "00FF" x 2048' | aplay --period-size=48 -r 48000 -f S16_LE -c2 -D hw:0,0
+> Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+> May  8 17:01:56 richardiv kernel: [ 1680.923474] cannot submit urb (err = -18)
+> May  8 17:01:56 richardiv kernel: [ 1680.924472] cannot submit urb (err = -18)
+> 
+> real	0m10.023s
+> user	0m0.008s
+> sys	0m0.004s
 
+I don't know if you want to investigate this in any detail.  If you do, 
+please post a usbmon trace of a failed playback.
 
---61jdw2sOBCFtR2d/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Alan Stern
 
-On Thu, May 09, 2013 at 09:14:20PM +0800, Axel Lin wrote:
-> When set dmic_samplephase and dmic_clk_rate bits for dmic_cfg,
-> current code checks pdata->dmic_data_sel which is wrong.
-
-Applied, thanks.
-
---61jdw2sOBCFtR2d/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRi6SxAAoJELSic+t+oim9LNEP/jQzzQrhKMWkbqknFw1XIbVR
-fZwK0wS3I9dLhpSohRHEZcEkPw4FPo8+RPZvheDu6RyFskM21M0barzDAlUcgC6p
-kNFnozmoUNagKNy3pns7wJC1ibkOztPN5V68uiAeonDlH7bSPoVz/Bc4wS5LJhMU
-5cHsUJk/+PnzkaRfZpnbWvyADKlFU02wBDupskXDiXrl4y7270H10aGcuiO7f541
-CZSC5xVQjjD8mfcnGdMpmipRZdY/1K605+pZ7SDA7iy+TBnNYvaaOvYWRW1C5fvg
-GWbIryS55/ICPZi4toBD+8E2O9KClokXrYGW9jRwOC1Z/WibX2OyjBEE98kXy/lp
-vW3iw32KjmITJSc2mAF4YGB6sKqeFV9YO1aieemj1e9rckgj04XKY1cnS1tuPS0r
-12lznWTWP9AYHtNtaWJA+sW24ax6bPIU8fop85cKZhWMCDNP93b9Cqjh1mc8Xs5Z
-cDSE1JJs4au8Za8T9fAlTrVXODwY0Ee+APk7XUDz5I/fkEgCXErqHWk79JomhZNr
-I095B123gdan57OTG7FrdE86ZpEhPO8DhQsE95SceOdx+8ds1VZzDoHDVPwgFRl8
-liHwh2c7OI8hpJII547eaIZKbK5e6jnuJUFhvi88K3fA4kZO41PclnwZDcm7E59f
-apSOfEO2oIrSax9oyLaN
-=VRpf
------END PGP SIGNATURE-----
-
---61jdw2sOBCFtR2d/--
-
---===============6987474370979873834==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6987474370979873834==--
