@@ -1,53 +1,80 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3] ASoC: sgtl5000: Fix driver probe after
- reset
-Date: Thu, 09 May 2013 20:10:33 +0200
-Message-ID: <518BE699.6050409@metafoo.de>
-References: <1368120063-20655-1-git-send-email-fabio.estevam@freescale.com>
- <518BDFF4.2070403@metafoo.de>
- <CAOMZO5Awf2YG0b1S5inTDDs5yYf4TyPM5GWvB+5ys=k1bFe5Hw@mail.gmail.com>
+From: Jesse Barnes <jesse.barnes@intel.com>
+Subject: Re: [RFC PATCH 1/3] drm/915: Add private api for power
+	well usage
+Date: Thu, 9 May 2013 11:30:01 -0700
+Message-ID: <20130509113001.7e7ff1d6@jbarnes-desktop>
+References: <1368082842-2537-1-git-send-email-xingchao.wang@linux.intel.com>
+	<46B810F6945F7C4788E11DCE57EC489010E584A7@SHSMSX102.ccr.corp.intel.com>
+	<CAKMK7uEftD9H65oxDhs1RxmjTQR+k0on1t86Ok6ZXmUJ40eYAQ@mail.gmail.com>
+	<s5ha9o4xebz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-141.synserver.de (smtp-out-143.synserver.de
- [212.40.185.143])
- by alsa0.perex.cz (Postfix) with ESMTP id B7EBD260795
- for <alsa-devel@alsa-project.org>; Thu,  9 May 2013 20:11:01 +0200 (CEST)
-In-Reply-To: <CAOMZO5Awf2YG0b1S5inTDDs5yYf4TyPM5GWvB+5ys=k1bFe5Hw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, matt@genesi-usa.com, eric.nelson@boundarydevices.com, troy.kisky@boundarydevices.com, broonie@kernel.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <s5ha9o4xebz.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, intel-gfx <intel-gfx@lists.freedesktop.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+	Liam R" <liam.r.girdwood@intel.com>, "david.henningsson@canonical.com" <david.henningsson@canonical.com>, "Zanoni, Paulo R" <paulo.r.zanoni@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/09/2013 08:07 PM, Fabio Estevam wrote:
-> On Thu, May 9, 2013 at 2:42 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> 
->> I don't see how this is different from v2, except that it is now opencoding
->> the register reading and is sharing a driver global variable between
->> multiple instances (which is kind of a no-go).
-> 
-> Actually I like v2 better, but Mark stated:
-> 
-> "I'm not sure that removing the defaults is the ideal thing here - it
-> means that the driver will be stuck with whatever the last booted OS
-> left the device running which may or may not be sane.  Explicitly
-> writing in all the values we want seems safer, that way we know how the
-> device is configured and there's less potential for odd bugs caused by
-> rebooting at the wrong moment."
-> 
-> So I would appreciate any suggestions.
+On Thu, 9 May 2013 19:17:36 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-I think what Mark suggested was to take the register defaults and write them
-to the registers in your probe function, so you'll always end up in the same
-state.
+> At Thu, 9 May 2013 11:23:21 +0200,
+> Daniel Vetter wrote:
+> > 
+> > 2. On a quick read of the hda driver stuff I don't think the power
+> > well enable/disable places are at the right spot: We force the power
+> > well on whenever the hda codec is used, but we must only do that when
+> > we want to output audio to external screens. And since that state
+> > transition can only really happen due to a modeset change on the gfx
+> > side I don't think we need any autosuspend delays either.
+> > 
+> > The use-case I'm thinking of is media playback with just the panel
+> > enabled: In that case we can switch off the power well on the display
+> > side, and I don't think the power well is required for audio play back
+> > on the integrated speakerrs/headphone-jack either.
+> 
+> Well, in the case of Haswell, the audio controller/codec is dedicated
+> to only HDMI audio, and in the audio driver level, the power saving of
+> each codec/controller chip is managed individually.  So, it's not that
+> bad to handle power well on/off at that point.  A sane power-conscious
+> OS would open/close the audio device file in a fine grained way.
 
-- Lars
+So hda_intel and the azx_suspend/resume functions will only be called
+for HDMI audio on HSW?  If so, then I guess this patch has the calls
+in the right places.
+
+If it's going to force the power well on for non-HDMI audio, then I
+think we'll need some additional changes.
+
+> 
+> > 3. The moduel depencies seem to still not work out dynamically, at
+> > least I think we still have a hard chain between hda-intel and i915.ko
+> > (just with one thing in between now).
+> 
+> True.
+> 
+> The question is in which level we need power_well_*() controls.
+> If the initialization of HD-audio controller (e.g. PCI registers)
+> requires the power well on, hda_intel.c requires the calls, as this
+> patch does.  OTOH, if it's only about the HD-audio verbs, basically we
+> can push the power well calls into the codec driver,
+> i.e. patch_hdmi.c.  In the latter case, as David once suggested, we
+> can split the Haswell codec driver from patch_hdmi.c so that only the
+> new driver depends on i915.
+
+I think it's needed for the HDMI related MMIO regs as well, but I don't
+have a platform to test and make sure.
+
+Jesse
