@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix driver probe after
-	reset
-Date: Fri, 10 May 2013 10:09:19 +0100
-Message-ID: <20130510090919.GH3200@sirena.org.uk>
-References: <1368045961-31213-1-git-send-email-festevam@gmail.com>
- <20130509100052.GC7478@sirena.org.uk>
- <CAKGA1b=nHcw4bBDgU-9X-0-+b9J58vi_Az-_h+4ptNEvEC4OpA@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: sgtl5000: Fix driver probe after
+ reset
+Date: Fri, 10 May 2013 10:10:34 +0100
+Message-ID: <20130510091034.GI3200@sirena.org.uk>
+References: <1368120063-20655-1-git-send-email-fabio.estevam@freescale.com>
+ <518BDFF4.2070403@metafoo.de>
+ <CAOMZO5Awf2YG0b1S5inTDDs5yYf4TyPM5GWvB+5ys=k1bFe5Hw@mail.gmail.com>
+ <518BE699.6050409@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0861231738567918681=="
+Content-Type: multipart/mixed; boundary="===============3262050298415012803=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 99E2C2610D7
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 11:09:37 +0200 (CEST)
-In-Reply-To: <CAKGA1b=nHcw4bBDgU-9X-0-+b9J58vi_Az-_h+4ptNEvEC4OpA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 488F72610D7
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 11:10:45 +0200 (CEST)
+In-Reply-To: <518BE699.6050409@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Sealey <matt@genesi-usa.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Eric Nelson <eric.nelson@boundarydevices.com>, "troy.kisky" <troy.kisky@boundarydevices.com>, Fabio Estevam <festevam@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, matt@genesi-usa.com, eric.nelson@boundarydevices.com, troy.kisky@boundarydevices.com, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0861231738567918681==
+--===============3262050298415012803==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GBDnBH7+ZvLx8QD4"
+	protocol="application/pgp-signature"; boundary="Q59ABw34pTSIagmi"
 Content-Disposition: inline
 
 
---GBDnBH7+ZvLx8QD4
+--Q59ABw34pTSIagmi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 09, 2013 at 12:08:38PM -0500, Matt Sealey wrote:
+On Thu, May 09, 2013 at 08:10:33PM +0200, Lars-Peter Clausen wrote:
 
-> match a reset chip powered on for the first time. What we should
-> actually be doing is dumping these into the chip as the first thing we
-> do at probe, and then they DO become the reasonable defaults.
+> I think what Mark suggested was to take the register defaults and write them
+> to the registers in your probe function, so you'll always end up in the same
+> state.
 
-Yes, this is eactly what I keep saying :/
+Yes, exactly.
 
-> The fix is keep using cache/regmaps or whatever, but it definitely
-> would be an absolute requirement to reset the codec manually by
-> putting in all the right register values before using the cache, which
-
-You don't need to disable the cache at any point.
-
---GBDnBH7+ZvLx8QD4
+--Q59ABw34pTSIagmi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRjLktAAoJELSic+t+oim9NekQAJ5NifNjj5X7pThAfO+SeE5F
-5l3oNq+OLiPPokQq7rt8I5cGoZhsY+PxDzQdlgfZYHkytkP1FH3aEPkaKU0nptgN
-nGSXKU4N/u4IE+6p+b+nrkcIjfKjKlg9eL8Lacw887d/qgktYF0e/6WN+uJNCCES
-Evq47AGLNmK7toR9LV8nwY9hsZ7RV5TSHCLEFEzM+NO1ppRWN7llpgx7RTIefdzy
-TOHLH0ybDycRu//q4OUhUk2K+RpymybWy4uzCKgx6dU4szj5j1gmyB6zn4tayDEh
-antPIwYfXYmT5/FNy1sD8+PJ7ODy0/ULqbjVDzHyna1SnfOCB3OwHLvKx7BWat0p
-XF0BdFVJMrCzAtr6DFU6h7TZd9ZuWQaW3kVsRqFhECJT5PT3Z5uREUY9Xl34rVyI
-vwaimjcZS/eJldLONS8WJ+ZguFd/OKzuNTNB0SEaV6rE6FOPiBukbRRtGnB2awTW
-PjC4D4YCipJ79Fiwa1w9C4Iw2Urw+0DRHQpG4ex7Wq+FzygUGh0qfgcohXu7KEPw
-r1VBNTncYBMJGDMbm20gDkrLVzp2H+DI3cEsugvTfH9emFWFNhVds2LNBF1B/IQn
-UGnWcLdWhXgdjQBff+LSFOq4ztRLicTZCPD7+8Txm7FujpIez8Q57WiwMw/1dJGu
-U9ObTQUnbWmjQa7QIG6u
-=AMRJ
+iQIcBAEBAgAGBQJRjLmGAAoJELSic+t+oim9KcsP/RPKH8laaCrsTcTpg5cSIPGB
+a8uhfUhWCykNEu4FAlKaEY2rH3j1QT3TevP+/cCv5w65yynivtNuvafjMWW550/7
+4YCBgVmpb+h6TBrLS04eqtbh/hPh15IbZP+4vpI3Gdx/5Jjsaumq+MrLZql2C9+s
+/gJzR28vIq9JsIHq3XdKQxxcMkR01JOPwZDQMg6BreF9UfqTyQxDXgqIPN1OiMLl
+/Ew53H+Xib4xFNDhPYLEKLImAhPh+KpS1mUMHy1nqwkDCdvY9/Dpn2C77TlTNp4v
+xJ4nboylnt94lU0QjSmVh7NbCwWKNsfFpB1mjcSA3zXyRcSEGoZTPXqcj2YmTG3p
+03m+Ksc3ws5NYqBcjcUz3YdL9mhYLIlR9iUafxkN+hAzIGltm4xuaFf+rTyjGE3u
+b5M/zEEneCQdYWlir36EyfbvtG0AFWNxxb8XH7u75AA2WpG99JUufJL8htwn8ZUL
+aqiZRIfXZAV+DypCVeG8GqUJSggf7yMt1Is6mxLuAEn+noq3wbbBve2jbUBsKO5T
+/Zg2W8QBSoIJH128WzSnAurN4njh2/g1DX2XDrqElr6lMTYHpzqDNlneK47qW+Zz
+AEGzvLDMk8xVaxhPYMJAM21LHJWauAj5lcQ+aSRVPx7ZnIAWYHmuHkLLY1v9SmtM
+2eAQL219P3FrVghwtfq1
+=iHvJ
 -----END PGP SIGNATURE-----
 
---GBDnBH7+ZvLx8QD4--
+--Q59ABw34pTSIagmi--
 
---===============0861231738567918681==
+--===============3262050298415012803==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0861231738567918681==--
+--===============3262050298415012803==--
