@@ -1,59 +1,161 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH v5 2/2] ASoC: sgtl5000: Fix driver probe
-	after reset
-Date: Fri, 10 May 2013 13:13:52 -0700
-Message-ID: <518D5500.4050101@boundarydevices.com>
-References: <1368144947-23775-1-git-send-email-festevam@gmail.com>
- <1368144947-23775-2-git-send-email-festevam@gmail.com>
- <518C4A8E.6020501@boundarydevices.com>
- <CAOMZO5AoWqhSdH5WVu=TFgejis=8mWNGYyHneRc5idwCd8RZWA@mail.gmail.com>
- <518D4660.9070202@boundarydevices.com> <518D4781.30507@boundarydevices.com>
- <CAOMZO5Dj83WqD2tQBQDBz9FzvLQGyuv-4yvb4gwL=rRq6DxPuw@mail.gmail.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-es1968: Add radio support for MediaForte M56VAP
+Date: Fri, 10 May 2013 22:41:12 +0200
+Message-ID: <201305102241.13171.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id B2855261688
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 22:13:56 +0200 (CEST)
-Received: by mail-pb0-f45.google.com with SMTP id mc8so1114045pbc.18
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 13:13:55 -0700 (PDT)
-In-Reply-To: <CAOMZO5Dj83WqD2tQBQDBz9FzvLQGyuv-4yvb4gwL=rRq6DxPuw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, matt@genesi-usa.com, eric.nelson@boundarydevices.com, broonie@kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/10/2013 12:18 PM, Fabio Estevam wrote:
-> On Fri, May 10, 2013 at 4:16 PM, Troy Kisky
-> <troy.kisky@boundarydevices.com> wrote:
->
->> Since Sabrelite uses "dummy" regulators (always on), have you tested with a
->> boards that
->> actually uses regulators?
-> I don't have any board that drives the sgtl5000 power supplies from a
-> PMIC, for example.
->
->> I would think that some regulators would need to be on before you could even
->> read
->> the ID register.
-> Sure. That's why I placed the ID reading after turning on the regulators :-)
->
-Hmm. Maybe I need some remedial classes. This is what the flow looks 
-like to me.
+Add support for TEA5757 tuner on MediaForte M56VAP sound+modem+radio card.
+The GPIO connection type is automatically detected (like snd-fm801 driver).
 
-sgtl5000_i2c_probe
-	regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ID, &reg);
-         snd_soc_register_codec(&client->dev,&sgtl5000_driver, &sgtl5000_dai, 1);
+Also add a safety subsystem vendor check to skip radio detection if vendor
+differs from ESS (so we don't touch GPIOs on laptops).
 
-	sgtl5000_probe
-		sgtl5000_enable_regulators
+Tested with SF64-PCE2 and M56VAP cards.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+---
+ sound/pci/es1968.c |   73 +++++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 50 insertions(+), 23 deletions(-)
+
+diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+index a1f32b5..db08641 100644
+--- a/sound/pci/es1968.c
++++ b/sound/pci/es1968.c
+@@ -564,6 +564,7 @@ struct es1968 {
+ #ifdef CONFIG_SND_ES1968_RADIO
+ 	struct v4l2_device v4l2_dev;
+ 	struct snd_tea575x tea;
++	unsigned int tea575x_tuner;
+ #endif
+ };
+ 
+@@ -2557,37 +2558,47 @@ static int snd_es1968_input_register(struct es1968 *chip)
+ 				bits 1=unmask write to given bit */
+ #define IO_DIR		8      /* direction register offset from GPIO_DATA
+ 				bits 0/1=read/write direction */
+-/* mask bits for GPIO lines */
+-#define STR_DATA	0x0040 /* GPIO6 */
+-#define STR_CLK		0x0080 /* GPIO7 */
+-#define STR_WREN	0x0100 /* GPIO8 */
+-#define STR_MOST	0x0200 /* GPIO9 */
++
++/* GPIO to TEA575x maps */
++struct snd_es1968_tea575x_gpio {
++	u8 data, clk, wren, most;
++	char *name;
++};
++
++static struct snd_es1968_tea575x_gpio snd_es1968_tea575x_gpios[] = {
++	{ .data = 6, .clk = 7, .wren = 8, .most = 9, .name = "SF64-PCE2" },
++	{ .data = 7, .clk = 8, .wren = 6, .most = 10, .name = "M56VAP" },
++};
++
++#define get_tea575x_gpio(chip) \
++	(&snd_es1968_tea575x_gpios[(chip)->tea575x_tuner])
++
+ 
+ static void snd_es1968_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
+ {
+ 	struct es1968 *chip = tea->private_data;
+-	unsigned long io = chip->io_port + GPIO_DATA;
++	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+ 	u16 val = 0;
+ 
+-	val |= (pins & TEA575X_DATA) ? STR_DATA : 0;
+-	val |= (pins & TEA575X_CLK)  ? STR_CLK  : 0;
+-	val |= (pins & TEA575X_WREN) ? STR_WREN : 0;
++	val |= (pins & TEA575X_DATA) ? (1 << gpio.data) : 0;
++	val |= (pins & TEA575X_CLK)  ? (1 << gpio.clk)  : 0;
++	val |= (pins & TEA575X_WREN) ? (1 << gpio.wren) : 0;
+ 
+-	outw(val, io);
++	outw(val, chip->io_port + GPIO_DATA);
+ }
+ 
+ static u8 snd_es1968_tea575x_get_pins(struct snd_tea575x *tea)
+ {
+ 	struct es1968 *chip = tea->private_data;
+-	unsigned long io = chip->io_port + GPIO_DATA;
+-	u16 val = inw(io);
+-	u8 ret;
++	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
++	u16 val = inw(chip->io_port + GPIO_DATA);
++	u8 ret = 0;
+ 
+-	ret = 0;
+-	if (val & STR_DATA)
++	if (val & (1 << gpio.data))
+ 		ret |= TEA575X_DATA;
+-	if (val & STR_MOST)
++	if (val & (1 << gpio.most))
+ 		ret |= TEA575X_MOST;
++
+ 	return ret;
+ }
+ 
+@@ -2596,13 +2607,18 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
+ 	struct es1968 *chip = tea->private_data;
+ 	unsigned long io = chip->io_port + GPIO_DATA;
+ 	u16 odir = inw(io + IO_DIR);
++	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
+ 
+ 	if (output) {
+-		outw(~(STR_DATA | STR_CLK | STR_WREN), io + IO_MASK);
+-		outw(odir | STR_DATA | STR_CLK | STR_WREN, io + IO_DIR);
++		outw(~((1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren)),
++			io + IO_MASK);
++		outw(odir | (1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren),
++			io + IO_DIR);
+ 	} else {
+-		outw(~(STR_CLK | STR_WREN | STR_DATA | STR_MOST), io + IO_MASK);
+-		outw((odir & ~(STR_DATA | STR_MOST)) | STR_CLK | STR_WREN, io + IO_DIR);
++		outw(~((1 << gpio.clk) | (1 << gpio.wren) | (1 << gpio.data) | (1 << gpio.most)),
++			io + IO_MASK);
++		outw((odir & ~((1 << gpio.data) | (1 << gpio.most)))
++			| (1 << gpio.clk) | (1 << gpio.wren), io + IO_DIR);
+ 	}
+ }
+ 
+@@ -2772,6 +2788,9 @@ static int snd_es1968_create(struct snd_card *card,
+ 	snd_card_set_dev(card, &pci->dev);
+ 
+ #ifdef CONFIG_SND_ES1968_RADIO
++	/* don't play with GPIOs on laptops */
++	if (chip->pci->subsystem_vendor != 0x125d)
++		goto no_radio;
+ 	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
+ 	if (err < 0) {
+ 		snd_es1968_free(chip);
+@@ -2781,10 +2800,18 @@ static int snd_es1968_create(struct snd_card *card,
+ 	chip->tea.private_data = chip;
+ 	chip->tea.radio_nr = radio_nr;
+ 	chip->tea.ops = &snd_es1968_tea_ops;
+-	strlcpy(chip->tea.card, "SF64-PCE2", sizeof(chip->tea.card));
+ 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
+-	if (!snd_tea575x_init(&chip->tea, THIS_MODULE))
+-		printk(KERN_INFO "es1968: detected TEA575x radio\n");
++	for (i = 0; i < ARRAY_SIZE(snd_es1968_tea575x_gpios); i++) {
++		chip->tea575x_tuner = i;
++		if (!snd_tea575x_init(&chip->tea, THIS_MODULE)) {
++			snd_printk(KERN_INFO "es1968: detected TEA575x radio type %s\n",
++				   get_tea575x_gpio(chip)->name);
++			strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
++				sizeof(chip->tea.card));
++			break;
++		}
++	}
++no_radio:
+ #endif
+ 
+ 	*chip_ret = chip;
+-- 
+Ondrej Zary
