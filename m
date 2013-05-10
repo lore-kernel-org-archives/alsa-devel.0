@@ -1,18 +1,18 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 1/5] DAISY-I2S: add Samsung ARM Chromebook
- UCM config from ChromeOS
-Date: Fri, 10 May 2013 07:09:03 -0700
-Message-ID: <CAEUnVG5f3Y2L8uK1SV6o45CoO8wZOhhOG061j_ptqVFNUR21sw@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: UCM profiles taken from Ubuntu
+Date: Fri, 10 May 2013 15:22:21 +0100
+Message-ID: <1368195741.2463.52.camel@loki>
+References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
+ <s5hobcjt1mo.wl%tiwai@suse.de>
+ <1368194214.15763.4.camel@penyagolosa.oskuro.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f178.google.com (mail-ea0-f178.google.com
- [209.85.215.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 64052261647
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 16:09:25 +0200 (CEST)
-Received: by mail-ea0-f178.google.com with SMTP id q15so329230ead.23
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 07:09:25 -0700 (PDT)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4806A261647
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 16:22:26 +0200 (CEST)
+In-Reply-To: <1368194214.15763.4.camel@penyagolosa.oskuro.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,109 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Cc: alsa-devel@alsa-project.org, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
+Cc: alsa-devel@alsa-project.org, Luke Yelavich <themuso@ubuntu.com>, Takashi Iwai <tiwai@suse.de>, Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 10, 2013 at 5:51 AM, Marcin Juszkiewicz
-<marcin@juszkiewicz.com.pl> wrote:
-> Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-> ---
->  DAISY-I2S/DAISY-I2S.conf |  6 +++++
->  DAISY-I2S/HiFi.conf      | 61 ++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 67 insertions(+)
->  create mode 100644 DAISY-I2S/DAISY-I2S.conf
->  create mode 100644 DAISY-I2S/HiFi.conf
->
-> diff --git a/DAISY-I2S/DAISY-I2S.conf b/DAISY-I2S/DAISY-I2S.conf
-> new file mode 100644
-> index 0000000..0f4b5fc
-> --- /dev/null
-> +++ b/DAISY-I2S/DAISY-I2S.conf
-> @@ -0,0 +1,6 @@
-> +Comment "Daisy internal card"
-> +
-> +SectionUseCase."HiFi" {
-> +       File "HiFi.conf"
-> +       Comment "Default"
-> +}
-> diff --git a/DAISY-I2S/HiFi.conf b/DAISY-I2S/HiFi.conf
-> new file mode 100644
-> index 0000000..66b0afa
-> --- /dev/null
-> +++ b/DAISY-I2S/HiFi.conf
-> @@ -0,0 +1,61 @@
-> +SectionVerb {
-> +       EnableSequence [
-> +               cdev "hw:DAISYI2S"
-> +               cset "name='Left Speaker Mixer Left DAC1 Switch' on"
-> +               cset "name='Right Speaker Mixer Right DAC1 Switch' on"
-> +               cset "name='Left Headphone Mixer Left DAC1 Switch' on"
-> +               cset "name='Right Headphone Mixer Right DAC1 Switch' on"
-> +               cset "name='DMIC1 Left Capture Switch' on"
-> +               cset "name='DMIC1 Right Capture Switch' on"
-> +               cset "name='MIC2 External Mic Switch' on"
-> +               cset "name='Left ADC Mixer MIC2 Switch' on"
-> +               cset "name='Right ADC Mixer MIC2 Switch' on"
-> +               cset "name='EQ1 Mode' Default"
-
-The current version has one additional line here:
-cset "name='DAI1 Filter Mode' Music"
-
-Thanks for finding a potential home for this.
-
-> +       ]
-> +       DisableSequence [
-> +       ]
-> +}
-> +
-> +SectionDevice."Headphone".0 {
-> +       Value {
-> +               JackName "DAISY-I2S Headphone Jack"
-> +       }
-> +
-> +       EnableSequence [
-> +               cdev "hw:DAISYI2S"
-> +               cset "name='EQ1 Switch' off"
-> +               cset "name='Left Headphone Mixer Left DAC1 Switch' on"
-> +               cset "name='Right Headphone Mixer Right DAC1 Switch' on"
-> +       ]
-> +       DisableSequence [
-> +               cdev "hw:DAISYI2S"
-> +               cset "name='EQ1 Mode' Default"
-> +               cset "name='EQ1 Switch' on"
-> +               cset "name='Left Speaker Mixer Left DAC1 Switch' on"
-> +               cset "name='Right Speaker Mixer Right DAC1 Switch' on"
-> +       ]
-> +}
-> +
-> +SectionDevice."Mic".0 {
-> +       Value {
-> +               JackName "DAISY-I2S Mic Jack"
-> +       }
-> +
-> +       EnableSequence [
-> +               cdev "hw:DAISYI2S"
-> +
-> +               cset "name='DMIC1 Left Capture Switch' off"
-> +               cset "name='DMIC1 Right Capture Switch' off"
-> +               cset "name='Left ADC Mixer MIC2 Switch' on"
-> +               cset "name='Right ADC Mixer MIC2 Switch' on"
-> +       ]
-> +
-> +       DisableSequence [
-> +               cdev "hw:DAISYI2S"
-> +
-> +               cset "name='Left ADC Mixer MIC2 Switch' off"
-> +               cset "name='Right ADC Mixer MIC2 Switch' off"
-> +               cset "name='DMIC1 Left Capture Switch' on"
-> +               cset "name='DMIC1 Right Capture Switch' on"
-> +       ]
-> +}
-> --
-> 1.8.1.2
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gRnJpLCAyMDEzLTA1LTEwIGF0IDE1OjU2ICswMjAwLCBKb3JkaSBNYWxsYWNoIHdyb3RlOgo+
+IEVsIGR2IDEwIGRlIDA1IGRlIDIwMTMgYSBsZXMgMTU6MTcgKzAyMDAsIGVuL25hIFRha2FzaGkg
+SXdhaSB2YQo+IGVzY3JpdXJlOgo+ID4gQXQgRnJpLCAxMCBNYXkgMjAxMyAxNDo1MTowNSArMDIw
+MCwKPiA+IE1hcmNpbiBKdXN6a2lld2ljeiB3cm90ZToKPiA+ID4gCj4gPiA+IFdoZW4gSSBib3Vn
+aHQgU2Ftc3VuZyBBUk0gQ2hyb21lYm9vayBmZXcgbW9udGhzIGFnbyBJIGhhZCBubyBpZGVhCj4g
+PiA+IGFib3V0IFVDTSBwcm9maWxlcyBhbmQgYnVybnQgc3BlYWtlcnMgKGxlZnQgaXMgZGVhZCwg
+cmlnaHQgaXMKPiA+ID4gcmVzdGluZykuIFRoZW4gSSBsZWFybnQsIHRvb2sgb25lcyBmcm9tIENo
+cm9tZU9TIGFuZCBhZGRlZCB0aGVtIGludG8KPiA+ID4gVWJ1bnR1IHNvIG90aGVyIHVzZXJzIHdp
+bGwgYmUgYSBiaXQgbW9yZSBzYWZlLgo+ID4gPiAKPiA+ID4gTGF0ZXIgSSBoYWQgYSBkaXNjdXNz
+aW9uIHdpdGggc29tZSBEZWJpYW4sIFVidW50dSwgRmVkb3JhIGRldmVsb3BlcnMKPiA+ID4gYWJv
+dXQgaG93IHRvIHNvbHZlIHN1Y2ggcHJvYmxlbXMgYW5kIGhvdyB0byBrZWVwIFVDTSBwcm9maWxl
+cyBzaGFyZWQKPiA+ID4gYmV0d2VlbiBkaXN0cmlidXRpb25zLgo+ID4gPiAKPiA+ID4gTGlhbSBH
+aXJkd29vZCBwb2ludGVkIG1lIHRvIG5vdCB1c2VkIGdpdCB0cmVlIGF0IEFMU0EgUHJvamVjdCBz
+ZXJ2ZXIKPiA+ID4gYW5kIGZpbmFsbHkgSSByZW1pbmRlZCBteXNlbGYgYWJvdXQgaXQuCj4gPiA+
+IAo+ID4gPiBUaGUgaWRlYSBpcyB0byBjb2xsZWN0IFVDTSBwcm9maWxlcywga2VlcCB0aGVtIGlu
+IG9uZSBwbGFjZSBhbmQgY3JlYXRlCj4gPiA+IGFsc2EtdWNtIHBhY2thZ2UgaW4gZWFjaCBkaXN0
+cmlidXRpb24uCj4gCj4gVGhhbmtzIE1hcmNpbiEgVGhpcyBwYXJ0IG9mIHRoZSBEZWJpYW7ihpDi
+hpJVYnVudHUgZGVsdGEgd2FzIHNvbWV0aGluZyBJCj4gd2FudGVkIHRvIGJyaW5nIHVwIHdpdGgg
+dXBzdHJlYW0gYWZ0ZXIgdGhlIHdoZWV6eSByZWxlYXNlLgo+IAoKSSdsbCBlY2hvIHRoYXQgdGhv
+dWdodCwgbWFueSB0aGFua3MgTWFyY2luICEKCj4gPiBXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIHB1
+dCBpbnRvIGFsc2EtbGliLmdpdD8gIFNpbmNlIFVDTSBpdHNlbGYgd2FzCj4gPiBhbHJlYWR5IGlu
+dGVncmF0ZWQgaW50byBhbHNhLWxpYiBhbmQgdGhlcmUgYXJlIGFscmVhZHkgdG9ucyBvZgo+ID4g
+Y2FyZC1iYXNlZCBjb25maWcgZmlsZXMgaW4gYWxzYS1saWIvc3JjL2NvbmYvKiwgdGhlc2UgYWxz
+byBmaXQgdG8gYQo+ID4gc2ltaWxhciBkaXJlY3RvcnkgdGhlcmUsIEkgdGhpbmsuCj4gPiAKPiA+
+IFRoZXkgY291bGQgYmUgaW4gYSBzZXBhcmF0ZSByZXBvLCBidXQgVUNNIGNvbmZpZyBpcyBjb3Vw
+bGVkIHdpdGggVUNNCj4gPiBjb2RlLCBzbyB3ZSBtYXkga2VlcCBpbiB0aGUgc2luZ2xlIHJlcG8u
+Cj4gCj4gSXQgbWFrZXMgc2Vuc2UgdG8gbWUsIGZ3aXcuCj4gCgpBZ3JlZWQsIHRoZSBpbml0aWFs
+IGludGVudGlvbiBvZiB0aGUgc2VwYXJhdGUgcmVwbyB3YXMgdG8gZG8gZnJlcXVlbnQKcmVsZWFz
+ZXMgdGhhdCB3b3VsZCBiZSBsaWtlbHkgb3V0IG9mIHN5bmMgYWxzYS1saWIuIEJ1dCBJIHRoaW5r
+CmNvbWJpbmluZyBpcyB0aGUgYmVzdCB3YXkgZm9yd2FyZCBub3cuIFRha2FzaGksIHBsZWFzZSBm
+ZWVsIGZyZWUgdG8KcmVtb3ZlIHRoZSBvdGhlciByZXBvIChJIHRoaW5rIGl0J3MgbW9zdGx5IGVt
+cHR5IGFueXdheSkuCgpMaWFtCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
