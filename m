@@ -1,52 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 42/42] sound/soc/kirkwood: don't check resource with
- devm_ioremap_resource
-Date: Fri, 10 May 2013 11:56:20 +0100
-Message-ID: <20130510105620.GQ3200@sirena.org.uk>
+Subject: Re: [RFC 41/42] sound/soc/fsl: don't check resource
+ with devm_ioremap_resource
+Date: Fri, 10 May 2013 11:56:02 +0100
+Message-ID: <20130510105602.GP3200@sirena.org.uk>
 References: <1368173847-5661-1-git-send-email-wsa@the-dreams.de>
- <1368173847-5661-43-git-send-email-wsa@the-dreams.de>
+ <1368173847-5661-42-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OrT4iOlIQZp3kw4S"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1368173847-5661-43-git-send-email-wsa@the-dreams.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2667682281983908653=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04BD726158D
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 12:56:26 +0200 (CEST)
+In-Reply-To: <1368173847-5661-42-git-send-email-wsa@the-dreams.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---OrT4iOlIQZp3kw4S
+--===============2667682281983908653==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="v+Mbu5iuT/5Blw/K"
+Content-Disposition: inline
+
+
+--v+Mbu5iuT/5Blw/K
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 10, 2013 at 10:17:27AM +0200, Wolfram Sang wrote:
+On Fri, May 10, 2013 at 10:17:26AM +0200, Wolfram Sang wrote:
 > devm_ioremap_resource does sanity checks on the given resource. No need to
 > duplicate this in the driver.
 
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---OrT4iOlIQZp3kw4S
+--v+Mbu5iuT/5Blw/K
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRjNJRAAoJELSic+t+oim9LMgP/jywx9NAjFcL8jhkepKJGZ5s
-ghvVXPjgCNTzxZ5U4/3ggS3l2zrv0yQ332KUU4cSMqMnkV2F6ge6ecO4qpArbffF
-rqK2tw811plfTTR/TN4+PBnJgfslyRyApDCTg7xmqzndVCdaVnTjM6OHKfZ69pea
-dd02q0sUSnI2Xv/f1EntMqWesqQ/YCoFp/hFAHEwK4ng8wMW7kxYbI3Pro8SJFMR
-IxPH48Nf5lAZJHSbOtz8wS0d3F+rAgeZGO+IXH9+wUrRFVoNPrh+rP1PoikNoXho
-IXjARjc1rbekTgfd5Jhx4P9x8wleiQisT5it4FBtfWwAROXCUrfSAWjmCMJHrCp6
-yh7HVLlL/DJTwCj6NEBmx3j9CXXnZaZ+rRvKbj1pnBD+O8BzI8JVUp3dfNDso91X
-hL1bI5ZcfZ+wSvSR6wCeAWXLv1uAaBNDBttLjNSjy3kmhTRgbA59rh/i2RM36tCp
-DlGymaJzwLzBCoP07ozQPFutKoodgHmLBjoMty4AxQf4yXdh8f/BZC4azBJjWN7z
-/8CPjrphHU8hlKWHTn7NmUV+1Po9gWpoAhNgjyGOu6TicuDDeEQ7NpQlnH0bLD7N
-uka1d7EWvtsDqIxjoh3wfH+4VCl9/OKoxFR92kFryAtgw6tbhaGoso/XDZeZLj36
-ZtcHQMskfb05ISehHbcU
-=yxO3
+iQIcBAEBAgAGBQJRjNI/AAoJELSic+t+oim9mrEP+wZGhG/LMG1B/Oki5RlZWiTP
+kkyXn1Db4WZjc6od5hHGc5oSXyolSezbl8wpu1kpTrK3l33EjhSHmHZE2dWYLg2K
+bkzOqro+TKIu/tl5uNZZaYP7W5NXnhgtF622+KGMQHhNcQ91ugpPDzjeMPc2jN1J
+wV24J4G0ktBWECGegsZDz7e384LjE2SxlJYBAT5Ig7BJiEOhgo3VkT+o+0De7Pdn
+BA7JdJnLnUbbfIq4StK0kw/DjzYzxgPGRd8khN84dwzpz/7zofnhyZnLw82IfJ+P
+UxVZMITJKCQPaJMxcHDLycm8C57UIHr687M4QVoJsM8mHdEAFtvvIl/oqUD/pEIX
+Y6S+eLBbxaSo68YnjYxgIMQ37jPnD4vILN1km8Q6k/F3LkVu6vWzcZAyTEbUTo8Y
+vOwqiw35sSuSW0LC5l6sHDs1u7vMGJSax0q5PATWrFIXQ1DELyoWbWM/tkAS27Aq
+YwPp6UVgFPQZTl/MuyrIElmCqDTA2vjgyLXEVHEj6CgY6E80L+RrRKHNdt11nE3E
+A46/DzGxljDT/S8bIxzrlByTEtGGr67LLdxQS1S46xs+vL6npERI1o2sltO3aNZg
+l+u73Dzxb8065zOOorJsnZhndP5i4wghGSPzZrmYqXTSocH4/+SbYuwVOfHWcA1c
+3PI/rCu4/ep67kZwCkxz
+=C3Zx
 -----END PGP SIGNATURE-----
 
---OrT4iOlIQZp3kw4S--
+--v+Mbu5iuT/5Blw/K--
+
+--===============2667682281983908653==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2667682281983908653==--
