@@ -1,80 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 2/2] ASoC: sgtl5000: Fix driver probe
-	after reset
-Date: Fri, 10 May 2013 10:16:58 +0100
-Message-ID: <20130510091658.GK3200@sirena.org.uk>
-References: <1368144947-23775-1-git-send-email-festevam@gmail.com>
- <1368144947-23775-2-git-send-email-festevam@gmail.com>
+Subject: Re: [RFC 42/42] sound/soc/kirkwood: don't check resource with
+ devm_ioremap_resource
+Date: Fri, 10 May 2013 11:56:20 +0100
+Message-ID: <20130510105620.GQ3200@sirena.org.uk>
+References: <1368173847-5661-1-git-send-email-wsa@the-dreams.de>
+ <1368173847-5661-43-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8552522285331855332=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EEDB2610D6
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 11:17:42 +0200 (CEST)
-In-Reply-To: <1368144947-23775-2-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, matt@genesi-usa.com, eric.nelson@boundarydevices.com, troy.kisky@boundarydevices.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OrT4iOlIQZp3kw4S"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1368173847-5661-43-git-send-email-wsa@the-dreams.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8552522285331855332==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aqWxf8ydqYKP8htK"
-Content-Disposition: inline
-
-
---aqWxf8ydqYKP8htK
+--OrT4iOlIQZp3kw4S
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 09, 2013 at 09:15:47PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> After a 'reboot' command in Linux or after pressing the system's reset bu=
-tton
-> the sgtl5000 driver fails to probe:
+On Fri, May 10, 2013 at 10:17:27AM +0200, Wolfram Sang wrote:
+> devm_ioremap_resource does sanity checks on the given resource. No need to
+> duplicate this in the driver.
 
-Looks good, can everyone confirm that this fixes the reset issues please?
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---aqWxf8ydqYKP8htK
+--OrT4iOlIQZp3kw4S
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRjLsGAAoJELSic+t+oim9+zcQAJv2EeTUdT0SbcqM1YL5qH9c
-BtGh2B0fR7WXQ+U7spR/vCVNMPVV8s242NOvCZjJpsedokiZkOkvqZBmgMUa7CUx
-QOz8FyOafU7xv7XXK2RO57eDCHAHbtULvpp48f0fjc19CCLIdidB3x0sQzg8BhwM
-RJKlfbrmDykAJaq+CrP0mc7EmgB3Fja0wOZxJiwyGDzg9gHDzePYxKlgeD7iai+1
-qHnxXinAWak1v1a5iyOfyCyxNiTcVSkX9rYq2ZE9h1enVqLFEqaiqqs/28LmTza6
-WOir6xYJDyFceuS+Q/pw06KzBa5PccOrT/uzsrKfxyDmVUEe/2jYUNBUk1rmd7Iz
-3eBsKWVvbjwvFnCHYbHJyg/0rshERWnIs4jNJntm2cf6tEG17mA4dIc0Vme5p73b
-yAAkFuVqunupxsekwhRTAyn8fqLylPnJ6D2v+Dbvhsp6uZdLzVhUxGM1+WlRSe7F
-drHNzOD9BPBYPgVLCp1hcZpvPTSihYn0yOKJuHuQr14ifG/i3Zu1vrVGpQA38kLY
-fR33sejZWgFK3AHIYZG6my5Q/jtyOIv/77/yAtrJml5Yrq8HVZQRWG54CHqiZtPC
-ktOtislb9jKskOtGrr2i3LtP3tmY55yKwruWG5fDBBs8ZU22z3LdEcVsA60gLWsW
-UwcZkBv8WnLskVJBU8CS
-=XmIA
+iQIcBAEBAgAGBQJRjNJRAAoJELSic+t+oim9LMgP/jywx9NAjFcL8jhkepKJGZ5s
+ghvVXPjgCNTzxZ5U4/3ggS3l2zrv0yQ332KUU4cSMqMnkV2F6ge6ecO4qpArbffF
+rqK2tw811plfTTR/TN4+PBnJgfslyRyApDCTg7xmqzndVCdaVnTjM6OHKfZ69pea
+dd02q0sUSnI2Xv/f1EntMqWesqQ/YCoFp/hFAHEwK4ng8wMW7kxYbI3Pro8SJFMR
+IxPH48Nf5lAZJHSbOtz8wS0d3F+rAgeZGO+IXH9+wUrRFVoNPrh+rP1PoikNoXho
+IXjARjc1rbekTgfd5Jhx4P9x8wleiQisT5it4FBtfWwAROXCUrfSAWjmCMJHrCp6
+yh7HVLlL/DJTwCj6NEBmx3j9CXXnZaZ+rRvKbj1pnBD+O8BzI8JVUp3dfNDso91X
+hL1bI5ZcfZ+wSvSR6wCeAWXLv1uAaBNDBttLjNSjy3kmhTRgbA59rh/i2RM36tCp
+DlGymaJzwLzBCoP07ozQPFutKoodgHmLBjoMty4AxQf4yXdh8f/BZC4azBJjWN7z
+/8CPjrphHU8hlKWHTn7NmUV+1Po9gWpoAhNgjyGOu6TicuDDeEQ7NpQlnH0bLD7N
+uka1d7EWvtsDqIxjoh3wfH+4VCl9/OKoxFR92kFryAtgw6tbhaGoso/XDZeZLj36
+ZtcHQMskfb05ISehHbcU
+=yxO3
 -----END PGP SIGNATURE-----
 
---aqWxf8ydqYKP8htK--
-
---===============8552522285331855332==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8552522285331855332==--
+--OrT4iOlIQZp3kw4S--
