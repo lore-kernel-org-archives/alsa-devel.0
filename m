@@ -1,15 +1,15 @@
 From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Subject: [PATCH 4/5] SDP4430: add UCM config from Ubuntu
-Date: Fri, 10 May 2013 14:51:09 +0200
-Message-ID: <1368190270-29647-5-git-send-email-marcin@juszkiewicz.com.pl>
+Subject: [PATCH 3/5] PandaBoardES: add UCM config from Ubuntu
+Date: Fri, 10 May 2013 14:51:08 +0200
+Message-ID: <1368190270-29647-4-git-send-email-marcin@juszkiewicz.com.pl>
 References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tygrysek.juszkiewicz.com.pl (tygrysek.juszkiewicz.com.pl
- [178.33.81.99]) by alsa0.perex.cz (Postfix) with ESMTP id 0D7EB2615F7
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 14:51:24 +0200 (CEST)
+ [178.33.81.99]) by alsa0.perex.cz (Postfix) with ESMTP id 5EFE02615F3
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 14:51:23 +0200 (CEST)
 In-Reply-To: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,34 +26,34 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
 ---
- SDP4430/FMAnalog     | 46 +++++++++++++++++++++++++++++
- SDP4430/SDP4430.conf | 45 ++++++++++++++++++++++++++++
- SDP4430/hifi         | 83 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- SDP4430/hifiLP       | 46 +++++++++++++++++++++++++++++
- SDP4430/record       | 45 ++++++++++++++++++++++++++++
- SDP4430/voice        | 46 +++++++++++++++++++++++++++++
- SDP4430/voiceCall    | 67 ++++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 378 insertions(+)
- create mode 100644 SDP4430/FMAnalog
- create mode 100644 SDP4430/SDP4430.conf
- create mode 100644 SDP4430/hifi
- create mode 100644 SDP4430/hifiLP
- create mode 100644 SDP4430/record
- create mode 100644 SDP4430/voice
- create mode 100644 SDP4430/voiceCall
+ PandaBoardES/FMAnalog          | 46 +++++++++++++++++++++++
+ PandaBoardES/PandaBoardES.conf | 45 +++++++++++++++++++++++
+ PandaBoardES/hifi              | 83 ++++++++++++++++++++++++++++++++++++++++++
+ PandaBoardES/hifiLP            | 46 +++++++++++++++++++++++
+ PandaBoardES/record            | 47 ++++++++++++++++++++++++
+ PandaBoardES/voice             | 46 +++++++++++++++++++++++
+ PandaBoardES/voiceCall         | 67 ++++++++++++++++++++++++++++++++++
+ 7 files changed, 380 insertions(+)
+ create mode 100644 PandaBoardES/FMAnalog
+ create mode 100644 PandaBoardES/PandaBoardES.conf
+ create mode 100644 PandaBoardES/hifi
+ create mode 100644 PandaBoardES/hifiLP
+ create mode 100644 PandaBoardES/record
+ create mode 100644 PandaBoardES/voice
+ create mode 100644 PandaBoardES/voiceCall
 
-diff --git a/SDP4430/FMAnalog b/SDP4430/FMAnalog
+diff --git a/PandaBoardES/FMAnalog b/PandaBoardES/FMAnalog
 new file mode 100644
-index 0000000..876527a
+index 0000000..6885cc8
 --- /dev/null
-+++ b/SDP4430/FMAnalog
++++ b/PandaBoardES/FMAnalog
 @@ -0,0 +1,46 @@
-+# Use case Configurationfor TI SDP4430 HiFi Music
++# Use case Configurationfor TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='AMIC_UL PDM Switch' 1"
 +                cset "name='MUX_UL00' 9"
 +                cset "name='MUX_UL01' 10"
@@ -62,7 +62,7 @@ index 0000000..876527a
 +
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='AMIC_UL PDM Switch' 0"
 +                cset "name='MUX_UL00' 0"
 +                cset "name='MUX_UL01' 0"
@@ -77,30 +77,30 @@ index 0000000..876527a
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 2"
 +                cset "name='Analog Right Capture Route' 2"
 +                cset "name='Capture Preamplifier Volume' 2"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 3"
 +                cset "name='Analog Right Capture Route' 3"
 +                cset "name='Capture Preamplifier Volume' 0"
 +	]
 +}
 +
-diff --git a/SDP4430/SDP4430.conf b/SDP4430/SDP4430.conf
+diff --git a/PandaBoardES/PandaBoardES.conf b/PandaBoardES/PandaBoardES.conf
 new file mode 100644
-index 0000000..2fa2ab8
+index 0000000..4fe6d0b
 --- /dev/null
-+++ b/SDP4430/SDP4430.conf
++++ b/PandaBoardES/PandaBoardES.conf
 @@ -0,0 +1,45 @@
-+# UCM configuration for SDP4430
++# UCM configuration for PandaBoardES
 +SectionUseCase."Record" {
 + 		File "record"
 + 		Comment "Record."
@@ -142,42 +142,42 @@ index 0000000..2fa2ab8
 +}
 +
 +SectionDefaults [
-+                cdev "hw:SDP4430"
-+		exec "echo Im setting defaults"
++                cdev "hw:PandaBoardES"
++		exec "echo Im setting PandaBoardES defaults"
 +]
-diff --git a/SDP4430/hifi b/SDP4430/hifi
+diff --git a/PandaBoardES/hifi b/PandaBoardES/hifi
 new file mode 100644
-index 0000000..a3293c5
+index 0000000..be00e60
 --- /dev/null
-+++ b/SDP4430/hifi
++++ b/PandaBoardES/hifi
 @@ -0,0 +1,83 @@
-+# Use case Configuration for TI SDP4430 HiFi Music
++# Use case Configuration for TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Multimedia' 1"
 +		cset "name='Sidetone Mixer Playback' 1"
 +                cset "name='DL1 PDM Switch' 1"
 +		cset "name='DL1 Media Playback Volume' 90,90"
 +                cset "name='SDT DL Volume' 120"
 +
-+                cset "name='HS Left Playback' 1"
-+                cset "name='HS Right Playback' 1"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
 +                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Multimedia' 0"
 +		cset "name='Sidetone Mixer Playback' 0"
 +                cset "name='DL1 PDM Switch' 0"
 +		cset "name='DL1 Media Playback Volume' 0,0"
 +                cset "name='SDT DL Volume' 0"
 +
-+		cset "name='HS Right Playback' 0"
-+		cset "name='HS Left Playback' 0"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
 +                cset "name='Headset Playback Volume' 0"
 +	]
 +
@@ -191,19 +191,19 @@ index 0000000..a3293c5
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
-+                cset "name='HS Left Playback' 1"
-+                cset "name='HS Right Playback' 1"
++                cdev "hw:PandaBoardES"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
 +                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
-+		cset "name='HS Right Playback' 0"
-+		cset "name='HS Left Playback' 0"
++                cdev "hw:PandaBoardES"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
 +                cset "name='Headset Playback Volume' 0"
 +	]
 +}
@@ -234,18 +234,18 @@ index 0000000..a3293c5
 +#
 +#}
 +
-diff --git a/SDP4430/hifiLP b/SDP4430/hifiLP
+diff --git a/PandaBoardES/hifiLP b/PandaBoardES/hifiLP
 new file mode 100644
-index 0000000..ccf3d87
+index 0000000..c817a58
 --- /dev/null
-+++ b/SDP4430/hifiLP
++++ b/PandaBoardES/hifiLP
 @@ -0,0 +1,46 @@
-+# Use case Configuration for TI SDP4430 HiFi Music
++# Use case Configuration for TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Multimedia' 1"
 +		cset "name='Sidetone Mixer Playback' 1"
 +                cset "name='DL1 PDM Switch' 1"
@@ -254,7 +254,7 @@ index 0000000..ccf3d87
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Multimedia' 0"
 +		cset "name='Sidetone Mixer Playback' 0"
 +                cset "name='DL1 PDM Switch' 0"
@@ -270,43 +270,45 @@ index 0000000..ccf3d87
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
-+                cset "name='HS Left Playback' 1"
-+                cset "name='HS Right Playback' 1"
++                cdev "hw:PandaBoardES"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
 +                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
-+		cset "name='HS Right Playback' 0"
-+		cset "name='HS Left Playback' 0"
++                cdev "hw:PandaBoardES"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
 +                cset "name='Headset Playback Volume' 0"
 +	]
 +}
-diff --git a/SDP4430/record b/SDP4430/record
+diff --git a/PandaBoardES/record b/PandaBoardES/record
 new file mode 100644
-index 0000000..d680f25
+index 0000000..4f272a9
 --- /dev/null
-+++ b/SDP4430/record
-@@ -0,0 +1,45 @@
-+# Use case Configuration for TI SDP4430 HiFi Music
++++ b/PandaBoardES/record
+@@ -0,0 +1,47 @@
++# Use case Configuration for TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
-+                cset "name='AMIC_UL PDM Switch' 1"
++                cdev "hw:PandaBoardES"
++                # No more AMIC PDM Switch in current kernels
++                #cset "name='AMIC_UL PDM Switch' 1"
 +                cset "name='MUX_UL00' 9"
 +                cset "name='MUX_UL01' 10"
 +                cset "name='Capture Volume' 4"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
-+                cset "name='AMIC_UL PDM Switch' 0"
++                cdev "hw:PandaBoardES"
++                # No more AMIC PDM Switch in current kernels
++                #cset "name='AMIC_UL PDM Switch' 0"
 +                cset "name='MUX_UL00' 0"
 +                cset "name='MUX_UL01' 0"
 +                cset "name='Capture Volume' 0"
@@ -321,34 +323,34 @@ index 0000000..d680f25
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 0"
 +                cset "name='Analog Right Capture Route' 0"
 +                cset "name='Capture Preamplifier Volume' 2"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 3"
 +                cset "name='Analog Right Capture Route' 3"
 +                cset "name='Capture Preamplifier Volume' 0"
 +	]
 +}
-diff --git a/SDP4430/voice b/SDP4430/voice
+diff --git a/PandaBoardES/voice b/PandaBoardES/voice
 new file mode 100644
-index 0000000..8bea89c
+index 0000000..e2b3f79
 --- /dev/null
-+++ b/SDP4430/voice
++++ b/PandaBoardES/voice
 @@ -0,0 +1,46 @@
-+# Use case Configuration for TI SDP4430 HiFi Music
++# Use case Configuration for TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Voice' 1"
 +		cset "name='Sidetone Mixer Playback' 1"
 +                cset "name='DL1 PDM Switch' 1"
@@ -357,7 +359,7 @@ index 0000000..8bea89c
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +		cset "name='DL1 Mixer Voice' 0"
 +		cset "name='Sidetone Mixer Playback' 0"
 +                cset "name='DL1 PDM Switch' 0"
@@ -373,34 +375,34 @@ index 0000000..8bea89c
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
-+                cset "name='HS Left Playback' 1"
-+                cset "name='HS Right Playback' 1"
++                cdev "hw:PandaBoardES"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
 +                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
-+		cset "name='HS Right Playback' 0"
-+		cset "name='HS Left Playback' 0"
++                cdev "hw:PandaBoardES"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
 +                cset "name='Headset Playback Volume' 0"
 +	]
 +}
-diff --git a/SDP4430/voiceCall b/SDP4430/voiceCall
+diff --git a/PandaBoardES/voiceCall b/PandaBoardES/voiceCall
 new file mode 100644
-index 0000000..4c06106
+index 0000000..57b1c80
 --- /dev/null
-+++ b/SDP4430/voiceCall
++++ b/PandaBoardES/voiceCall
 @@ -0,0 +1,67 @@
-+# Use case Configuration for TI SDP4430 HiFi Music
++# Use case Configuration for TI PandaBoardES HiFi Music
 +# By Liam Girdwood <lrg@slimlogic.co.uk>
 +
 +SectionVerb {
 +  	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='AMIC_UL PDM Switch' 1"
 +                cset "name='Sidetone Mixer Capture' 1"
 +                cset "name='MUX_VX0' 9"
@@ -416,7 +418,7 @@ index 0000000..4c06106
 +
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='AMIC_UL PDM Switch' 0"
 +                cset "name='Sidetone Mixer Capture' 0"
 +                cset "name='MUX_VX0' 0"
@@ -439,25 +441,25 @@ index 0000000..4c06106
 +}
 +
 +SectionDevice."Headset".0 {
-+	Comment "SDP4430 3.5mm Headset"
++	Comment "PandaBoardES 3.5mm Headset"
 +	
 +	EnableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 0"
 +                cset "name='Analog Right Capture Route' 0"
 +                cset "name='Capture Preamplifier Volume' 2"
-+                cset "name='HS Left Playback' 1"
-+                cset "name='HS Right Playback' 1"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
 +                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+                cdev "hw:SDP4430"
++                cdev "hw:PandaBoardES"
 +                cset "name='Analog Left Capture Route' 3"
 +                cset "name='Analog Right Capture Route' 3"
 +                cset "name='Capture Preamplifier Volume' 0"
-+		cset "name='HS Right Playback' 0"
-+		cset "name='HS Left Playback' 0"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
 +                cset "name='Headset Playback Volume' 0"
 +	]
 +}
