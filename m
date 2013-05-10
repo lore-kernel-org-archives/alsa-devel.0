@@ -1,18 +1,20 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 5/5] tegraalc5632: add UCM config from
-	Ubuntu
-Date: Fri, 10 May 2013 10:22:59 -0600
-Message-ID: <518D1EE3.10205@wwwdotorg.org>
-References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
- <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
+From: Eric Nelson <eric.nelson@boundarydevices.com>
+Subject: Re: [PATCH v5 1/2] ASoC: sgtl5000: Read
+	SGTL5000_CHIP_ID in i2c_probe()
+Date: Fri, 10 May 2013 09:37:58 -0700
+Message-ID: <518D2266.4080705@boundarydevices.com>
+References: <1368144947-23775-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id E4FE1261677
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 18:23:03 +0200 (CEST)
-In-Reply-To: <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
+Received: from mail-da0-f49.google.com (mail-da0-f49.google.com
+ [209.85.210.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id C84E0261677
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 18:38:04 +0200 (CEST)
+Received: by mail-da0-f49.google.com with SMTP id p5so2340336dak.36
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 09:38:03 -0700 (PDT)
+In-Reply-To: <1368144947-23775-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Cc: alsa-devel@alsa-project.org, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, matt@genesi-usa.com, troy.kisky@boundarydevices.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/10/2013 06:51 AM, Marcin Juszkiewicz wrote:
-> Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+On 05/09/2013 05:15 PM, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> The usual place for reading chip ID is inside i2c_probe, so move it there and
+> also convert it to regmap.
+>
+> sgtl5000_enable_regulators() needs to read the chip revision, so keep the
+> revision check there.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 > ---
->  tegraalc5632/tegraalc5632.conf | 30 ++++++++++++++++++++++++++++++
+> Changes since v4:
+> - Just introduced in this version.
+>
+>   sound/soc/codecs/sgtl5000.c |   39 ++++++++++++++++++++++++---------------
+>   1 file changed, 24 insertions(+), 15 deletions(-)
+>
 
-I'm not sure that's the correct name for this file.
-
-"alc5632" is the name of the audio CODEC, which could be used in a
-variety of different boards, each of which might require a different UCM
-configuration. Shouldn't the file be named based on the board name. At
-least with upstream kernels, the device tree contains:
-
-nvidia,model = "Compal PAZ00";
-
-which should influence the name the kernel gives to the sound card, and
-hence I think be the name the UCM config is looked up under?
-
-> +		exec "echo Im setting defaults for tegra-alc5632"
-
-I'm not sure if that's useful?
-
-I also notice that this file doesn't define any use-cases/verbs/...
-Presumably a Linux-based OS would expect a certain set of them to exist,
-and they'd be implemented/named consistently across all UCM configs?
+Tested-by: Eric Nelson <eric.nelson@boundarydevices.com>
