@@ -1,24 +1,23 @@
-From: Fabio Estevam <festevam@gmail.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
 Subject: Re: [PATCH v5 2/2] ASoC: sgtl5000: Fix driver probe
 	after reset
-Date: Fri, 10 May 2013 14:31:46 -0300
-Message-ID: <CAOMZO5COocgHXsJdwO-qHcg2srg+sAPYfM0_9kds4hKCVFtqCw@mail.gmail.com>
+Date: Fri, 10 May 2013 12:11:28 -0700
+Message-ID: <518D4660.9070202@boundarydevices.com>
 References: <1368144947-23775-1-git-send-email-festevam@gmail.com>
  <1368144947-23775-2-git-send-email-festevam@gmail.com>
  <518C4A8E.6020501@boundarydevices.com>
  <CAOMZO5AoWqhSdH5WVu=TFgejis=8mWNGYyHneRc5idwCd8RZWA@mail.gmail.com>
- <CAKGA1bnhE3dZe8P+aJm+cps+Rp4abSGOMmPckGw_0fCnh9e6+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f173.google.com (mail-ve0-f173.google.com
- [209.85.128.173])
- by alsa0.perex.cz (Postfix) with ESMTP id B2BC8261684
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 19:31:47 +0200 (CEST)
-Received: by mail-ve0-f173.google.com with SMTP id cy12so692632veb.32
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 10:31:46 -0700 (PDT)
-In-Reply-To: <CAKGA1bnhE3dZe8P+aJm+cps+Rp4abSGOMmPckGw_0fCnh9e6+A@mail.gmail.com>
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0BA7261691
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 21:11:32 +0200 (CEST)
+Received: by mail-pd0-f169.google.com with SMTP id bv13so2976064pdb.28
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 12:11:31 -0700 (PDT)
+In-Reply-To: <CAOMZO5AoWqhSdH5WVu=TFgejis=8mWNGYyHneRc5idwCd8RZWA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,33 +27,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Sealey <matt@genesi-usa.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Eric Nelson <eric.nelson@boundarydevices.com>, Troy Kisky <troy.kisky@boundarydevices.com>, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, matt@genesi-usa.com, eric.nelson@boundarydevices.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matt,
-
-On Fri, May 10, 2013 at 2:14 PM, Matt Sealey <matt@genesi-usa.com> wrote:
-
-> Hi Fabio!
+On 5/9/2013 7:12 PM, Fabio Estevam wrote:
+> On Thu, May 9, 2013 at 10:17 PM, Troy Kisky
+> <troy.kisky@boundarydevices.com> wrote:
 >
-> Is there any way to make that failure a little less of a "failure" or
-> even a warning, since the message below;
+>> Did you test a reset/reboot ?  Since the fill_defaults now happens after the
+>> read of the device id,
+>> how does this fix the mentioned problem ?
+> Yes, tested several times :-)
 >
->> sgtl5000 0-000a: Using internal LDO instead of VDDD
+> The chip ID has to be read from the register and it always read
+> correctly. In patch 1/2, I  just moved the reading to a more standard
+> location (in i2c_probe function), just like many other codecs do.
 >
-> Pretty much covers that VDDD was not supplied. I would consider that
-> you would want to say "VDDD wasn't supplied" in the sense that it is
-> optional and not give in pdata or dt, and then remark that the LDO was
-> actually configured.. I don't like it when my kernels boot up and spit
-> out high numbered errno's for the sake of a completely optional entry
-> in the design vs. missing and still optional entry in the device tree.
+> Patch 2/2 fixes the issue by ensuring that we start from sane values
+> from power-on reset.
+>
+> Let's look at the original error:
+>
+> sgtl5000 0-000a: Device with ID register ffff is not a sgtl5000
+> sgtl5000 0-000a: ASoC: failed to probe CODEC -19
+> imx-sgtl5000 sound.12: ASoC: failed to instantiate card -19
+> imx-sgtl5000 sound.12: snd_soc_register_card failed (-19)
+>
+> If I move the chip ID reading to i2c_probe (ie, only apply patch 1/2),
+> the device ID would be read correctly, but the fail would happen at a
+> later point:
+>
+> sgtl5000 0-000a: sgtl5000 revision 0x11
+> sgtl5000 0-000a: Failed to get supply 'VDDD': -517
+>   mmcblk0: p1
+> 0-000a: 1200 mV normal
+> sgtl5000 0-000a: Using internal LDO instead of VDDD
+> usb 2-1: new high-speed USB device number 2 using ci_hdrc
+> hub 2-1:1.0: USB hub found
+> hub 2-1:1.0: 3 ports detected
+> sgtl5000 0-000a: ASoC: failed to probe CODEC -110
+> imx-sgtl5000 sound.12: ASoC: failed to instantiate card -110
+> imx-sgtl5000 sound.12: snd_soc_register_card failed (-110)
+> imx-sgtl5000: probe of sound.12 failed with error -110
 
-Yes, I plan to clean the sgtl5000 log messages. I agree that it is
-currently too noisy.
+Shouldn't you update your commit log with this then ?
+>
+> So the original issue was not about reading the chip ID correctly.
+>
+> The power related registers change from POR to reset (among others)
+>
+> If the chip is not properly powered, then we are not able to read its
+> ID and we get that original error.
+>
 
-Will do it after Mark applies this series.
+Thanks for fixing, I guess I don't need to understand how the fix works.
 
-Regards,
-
-Fabio Estevam
+Troy
