@@ -1,18 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] tegraalc5632: add UCM config from
-	Ubuntu
-Date: Fri, 10 May 2013 21:53:30 +0100
-Message-ID: <20130510205330.GT3200@sirena.org.uk>
-References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
- <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
- <518D1EE3.10205@wwwdotorg.org>
+Subject: Re: [PATCH v5 2/2] ASoC: sgtl5000: Fix driver probe
+	after reset
+Date: Fri, 10 May 2013 21:56:16 +0100
+Message-ID: <20130510205616.GU3200@sirena.org.uk>
+References: <1368144947-23775-1-git-send-email-festevam@gmail.com>
+ <1368144947-23775-2-git-send-email-festevam@gmail.com>
+ <518C4A8E.6020501@boundarydevices.com>
+ <CAOMZO5AoWqhSdH5WVu=TFgejis=8mWNGYyHneRc5idwCd8RZWA@mail.gmail.com>
+ <518D4660.9070202@boundarydevices.com>
+ <518D4781.30507@boundarydevices.com>
+ <CAOMZO5Dj83WqD2tQBQDBz9FzvLQGyuv-4yvb4gwL=rRq6DxPuw@mail.gmail.com>
+ <CAOMZO5BQv-AwzXfYC0y+OvKNMHtkFOosPUGAWNBQizd9A+zk8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8706942410369501502=="
+Content-Type: multipart/mixed; boundary="===============6116794913407188148=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D6A72616A6
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 22:53:49 +0200 (CEST)
-In-Reply-To: <518D1EE3.10205@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FA372616A6
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 22:56:34 +0200 (CEST)
+In-Reply-To: <CAOMZO5BQv-AwzXfYC0y+OvKNMHtkFOosPUGAWNBQizd9A+zk8w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, matt@genesi-usa.com, eric.nelson@boundarydevices.com, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8706942410369501502==
+--===============6116794913407188148==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eNjIDde0W37E3OQP"
+	protocol="application/pgp-signature"; boundary="KxKI/R+N9hudrWbn"
 Content-Disposition: inline
 
 
---eNjIDde0W37E3OQP
+--KxKI/R+N9hudrWbn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 10, 2013 at 10:22:59AM -0600, Stephen Warren wrote:
+On Fri, May 10, 2013 at 04:39:32PM -0300, Fabio Estevam wrote:
+> On Fri, May 10, 2013 at 4:18 PM, Fabio Estevam <festevam@gmail.com> wrote:
 
-> "alc5632" is the name of the audio CODEC, which could be used in a
-> variety of different boards, each of which might require a different UCM
-> configuration. Shouldn't the file be named based on the board name. At
+> > Sure. That's why I placed the ID reading after turning on the regulators :-)
 
-Yes, it should.
+> Ops, actually I did not. Will fix it.
 
-> I also notice that this file doesn't define any use-cases/verbs/...
-> Presumably a Linux-based OS would expect a certain set of them to exist,
-> and they'd be implemented/named consistently across all UCM configs?
+I'll wait for a new version.
 
-I'd expect them to at least fall back to assuming some default thing is
-available - having a model that is more "do I need to do something
-special for this mode".  Being able to give at least some basic
-functionality from a minimal starting point seems sensible.
-
---eNjIDde0W37E3OQP
+--KxKI/R+N9hudrWbn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRjV4nAAoJELSic+t+oim9A90P/3nHr/VcCPqS9qXEVMpEvD2x
-aXA7dYCmJB+olmiAb5sDwb2rf/xVFrPUj18HK9HgXZmVqhnN9pNgRYgx4EHkk3QJ
-ZFHJcDlIOSr9vVi538RnGs1el2XKg9ompOule9+UstCArM0OPR3+VFfqPvu4ed4e
-d9jfHu5Us8IzJyxqH0z2YpF9tal6R1yU6UXqYwL2xjAgQAukmTq18JqEHc7VCipe
-MnF5lvOTag+niVBqDhhDL5BA9qmYw6oKnZEfEhYr7sDSOTtnb0+ehzVd08I0kFWG
-vF1K8emzYUT/n+bskTFyjVMCyUYpc4rrXR/3Haz38veveWsjURr6zenFUl8K/uut
-G/ut+hoXZTBW/idnxIl/cznxOF0SHEgtaoKXd8U7rjyRKF4sMBzuRlUBQlB/b5yK
-1xuNXRagMqIlGfDtzxtbxpee7dKWOmpEB62ynguT4g2G5C9mddG2t+cQc68lRIN2
-2cv5l2DZepQus2eNPod9zz9NLW2tCyNBPUVCXilR/gHBm45V5FD59oUjdgOSDJ6U
-khnXF/BFUycLlbBgSlbd2r39+iUkoigfd852MX7NXYfBf+TS4NcwoRj7t3hwthuV
-2FL+cRqX0rO2fvKpWHsSvR4CoJsrPpb/Ams6N7f5w7ywh4MNqhB+9Xnx3OGU4XeH
-KDH9mrRmhY5wMVuTLCoH
-=Jczt
+iQIcBAEBAgAGBQJRjV7tAAoJELSic+t+oim9CRQQAI07D2hu0Sk7igtfhnpxOP4G
+nOcUcOjurgTxKXw9bb+9Ky7rG7Nvc1vL/G4dwh8h8FMrlH8zlazx0eCc2n51nb9z
+0oC4O0QqInY/MLvRBwJ8txnrWQDikmSplxQkyHZrS+40KjeaAGBy5io6Ai2T8pcA
+H8G5/PD7s6aG16Uwmci8AUdExz7YVOhstc8mjD67e4Nk0dwf15ekP8CGWJ+cOFpH
+5o1Db1OZX378XdyKNpshPmoFTuUjlR4njvVUNr1g0HErZrIg8R0VEZKgN/m8NoCC
+vQpHdn5nsoJXvM8trCDCBrgaDzOZpvTbpAUDMYscAmRBI6fef+NqOeuen92whLIv
+jlOQJmGXWdG1f0Od9W4QIE1eTC/wPPtJQf2+q/A+DwJ3OjWvOv4B+J6ZBXMrpVWq
++Bnj7N9k1MHwBPE1Ibhv+7NiUxEbeUUM21fOZz1+rXdpt6k/GAYodfH2GPjDZNwI
+6YG8mHBq+3vd0P0KuBUmGTgTgxr/CM6WoYKWi8cj4AUGYudKZAnN9gvOSXe3BceG
+hn7eegS3aHVA8VEbTtdqVoek7TtpcdmP4fU87t7bbiWOJdmXSXeY2HihCJi+IarG
+y9my54x1L+zEcFoN9NyVRkdqLs3Ql9eDwTSrmXOmzdZIXu1JfgOc1qm7rWXC103o
+wdgSPRNPamZiBV32JnXv
+=yfmY
 -----END PGP SIGNATURE-----
 
---eNjIDde0W37E3OQP--
+--KxKI/R+N9hudrWbn--
 
---===============8706942410369501502==
+--===============6116794913407188148==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8706942410369501502==--
+--===============6116794913407188148==--
