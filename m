@@ -1,16 +1,15 @@
 From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
-Subject: [PATCH 1/5] DAISY-I2S: add Samsung ARM Chromebook UCM
-	config from ChromeOS
-Date: Fri, 10 May 2013 14:51:06 +0200
-Message-ID: <1368190270-29647-2-git-send-email-marcin@juszkiewicz.com.pl>
+Subject: [PATCH 2/5] PandaBoard: add UCM config from Ubuntu
+Date: Fri, 10 May 2013 14:51:07 +0200
+Message-ID: <1368190270-29647-3-git-send-email-marcin@juszkiewicz.com.pl>
 References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tygrysek.juszkiewicz.com.pl (tygrysek.juszkiewicz.com.pl
- [178.33.81.99]) by alsa0.perex.cz (Postfix) with ESMTP id 327352615ED
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 14:51:20 +0200 (CEST)
+ [178.33.81.99]) by alsa0.perex.cz (Postfix) with ESMTP id 3299E2615F2
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 14:51:21 +0200 (CEST)
 In-Reply-To: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,90 +26,443 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
 ---
- DAISY-I2S/DAISY-I2S.conf |  6 +++++
- DAISY-I2S/HiFi.conf      | 61 ++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 DAISY-I2S/DAISY-I2S.conf
- create mode 100644 DAISY-I2S/HiFi.conf
+ PandaBoard/FMAnalog        | 46 +++++++++++++++++++++++++
+ PandaBoard/PandaBoard.conf | 45 +++++++++++++++++++++++++
+ PandaBoard/hifi            | 83 ++++++++++++++++++++++++++++++++++++++++++++++
+ PandaBoard/hifiLP          | 46 +++++++++++++++++++++++++
+ PandaBoard/record          | 47 ++++++++++++++++++++++++++
+ PandaBoard/voice           | 46 +++++++++++++++++++++++++
+ PandaBoard/voiceCall       | 67 +++++++++++++++++++++++++++++++++++++
+ 7 files changed, 380 insertions(+)
+ create mode 100644 PandaBoard/FMAnalog
+ create mode 100644 PandaBoard/PandaBoard.conf
+ create mode 100644 PandaBoard/hifi
+ create mode 100644 PandaBoard/hifiLP
+ create mode 100644 PandaBoard/record
+ create mode 100644 PandaBoard/voice
+ create mode 100644 PandaBoard/voiceCall
 
-diff --git a/DAISY-I2S/DAISY-I2S.conf b/DAISY-I2S/DAISY-I2S.conf
+diff --git a/PandaBoard/FMAnalog b/PandaBoard/FMAnalog
 new file mode 100644
-index 0000000..0f4b5fc
+index 0000000..f1b4477
 --- /dev/null
-+++ b/DAISY-I2S/DAISY-I2S.conf
-@@ -0,0 +1,6 @@
-+Comment "Daisy internal card"
++++ b/PandaBoard/FMAnalog
+@@ -0,0 +1,46 @@
++# Use case Configurationfor TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
++SectionVerb {
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='AMIC_UL PDM Switch' 1"
++                cset "name='MUX_UL00' 9"
++                cset "name='MUX_UL01' 10"
++                cset "name='Capture Volume' 4"
++	]
++
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='AMIC_UL PDM Switch' 0"
++                cset "name='MUX_UL00' 0"
++                cset "name='MUX_UL01' 0"
++                cset "name='Capture Volume' 0"
++	]
++
++	# Optional TQ and ALSA PCMs
++	Value {
++		TQ "Music"
++                CapturePCM "hw:0,0"
++	}
++}
++
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
++	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 2"
++                cset "name='Analog Right Capture Route' 2"
++                cset "name='Capture Preamplifier Volume' 2"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 3"
++                cset "name='Analog Right Capture Route' 3"
++                cset "name='Capture Preamplifier Volume' 0"
++	]
++}
++
+diff --git a/PandaBoard/PandaBoard.conf b/PandaBoard/PandaBoard.conf
+new file mode 100644
+index 0000000..85b90b4
+--- /dev/null
++++ b/PandaBoard/PandaBoard.conf
+@@ -0,0 +1,45 @@
++# UCM configuration for PandaBoard
++SectionUseCase."Record" {
++ 		File "record"
++ 		Comment "Record."
++}
 +
 +SectionUseCase."HiFi" {
-+	File "HiFi.conf"
-+	Comment "Default"
++ 		File "hifi"
++ 		Comment "Play HiFi quality Music."
 +}
-diff --git a/DAISY-I2S/HiFi.conf b/DAISY-I2S/HiFi.conf
++
++SectionUseCase."HiFi_Low_Power" {
++ 		File "hifiLP"
++ 		Comment "Play HiFi quality Music in Low Power Mode."
++}
++
++SectionUseCase."Voice" {
++ 		File "voice"
++ 		Comment "Playback Voice quality."
++}
++
++SectionUseCase."Voice_Low_Power" {
++ 		File "voice"
++ 		Comment "Playback Voice quality in Low Power Mode."
++}
++
++SectionUseCase."Voice_Call" {
++ 		File "voiceCall"
++ 		Comment "Capture and Playback in Voice quality."
++}
++
++SectionUseCase."Voice_Call_IP" {
++ 		File "voiceCall"
++ 		Comment "Capture and Playback in Voice quality."
++}
++
++SectionUseCase."FM_Analog_Radio" {
++ 		File "FMAnalog"
++ 		Comment "Capture FM Analog Radio."
++}
++
++SectionDefaults [
++                cdev "hw:PandaBoard"
++		exec "echo Im setting defaults"
++]
+diff --git a/PandaBoard/hifi b/PandaBoard/hifi
 new file mode 100644
-index 0000000..66b0afa
+index 0000000..db405a4
 --- /dev/null
-+++ b/DAISY-I2S/HiFi.conf
-@@ -0,0 +1,61 @@
++++ b/PandaBoard/hifi
+@@ -0,0 +1,83 @@
++# Use case Configuration for TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
 +SectionVerb {
-+	EnableSequence [
-+		cdev "hw:DAISYI2S"
-+		cset "name='Left Speaker Mixer Left DAC1 Switch' on"
-+		cset "name='Right Speaker Mixer Right DAC1 Switch' on"
-+		cset "name='Left Headphone Mixer Left DAC1 Switch' on"
-+		cset "name='Right Headphone Mixer Right DAC1 Switch' on"
-+		cset "name='DMIC1 Left Capture Switch' on"
-+		cset "name='DMIC1 Right Capture Switch' on"
-+		cset "name='MIC2 External Mic Switch' on"
-+		cset "name='Left ADC Mixer MIC2 Switch' on"
-+		cset "name='Right ADC Mixer MIC2 Switch' on"
-+		cset "name='EQ1 Mode' Default"
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Multimedia' 1"
++		cset "name='Sidetone Mixer Playback' 1"
++                cset "name='DL1 PDM Switch' 1"
++		cset "name='DL1 Media Playback Volume' 90,90"
++                cset "name='SDT DL Volume' 120"
++
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
++                cset "name='Headset Playback Volume' 13"
 +	]
++
 +	DisableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Multimedia' 0"
++		cset "name='Sidetone Mixer Playback' 0"
++                cset "name='DL1 PDM Switch' 0"
++		cset "name='DL1 Media Playback Volume' 0,0"
++                cset "name='SDT DL Volume' 0"
++
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
++                cset "name='Headset Playback Volume' 0"
++	]
++
++ 	# Optional TQ and ALSA PCMs
++#	Value {
++#		TQ "Music"
++#		PlaybackPCM "hw:0,0"
++#                PlaybackVolume "name='DL1 Media Playback Volume' 90,90"
++#                PlaybackSwitch "name='DL1 PDM Switch' 1"
++#	}
++}
++
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
++	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
++                cset "name='Headset Playback Volume' 13"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
++                cset "name='Headset Playback Volume' 0"
 +	]
 +}
 +
-+SectionDevice."Headphone".0 {
++#SectionModifier."RecordMedia".0 {
++#	SupportedDevice [
++#		"Headset"
++#	]
++ #       EnableSequence [
++ #         ....
++ #       ]
++ #
++ #       DisableSequence [
++ #         ...
++ #       ]
++ #
++ #       TransitionSequence."ToModifierName" [
++ #         ...
++ #       ]
++ #
++ #       # Optional TQ and ALSA PCMs
++ #       Value {
++ #               TQ Voice
++ #               CapturePCM "hw:1"
++ #               PlaybackVolume "name='Master Playback Volume',index=2"
++ #               PlaybackSwitch "name='Master Playback Switch',index=2"
++ #       }
++#
++#}
++
+diff --git a/PandaBoard/hifiLP b/PandaBoard/hifiLP
+new file mode 100644
+index 0000000..7bbbd5d
+--- /dev/null
++++ b/PandaBoard/hifiLP
+@@ -0,0 +1,46 @@
++# Use case Configuration for TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
++SectionVerb {
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Multimedia' 1"
++		cset "name='Sidetone Mixer Playback' 1"
++                cset "name='DL1 PDM Switch' 1"
++		cset "name='DL1 Media Playback Volume' 90,90"
++                cset "name='SDT DL Volume' 120"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Multimedia' 0"
++		cset "name='Sidetone Mixer Playback' 0"
++                cset "name='DL1 PDM Switch' 0"
++		cset "name='DL1 Media Playback Volume' 0,0"
++                cset "name='SDT DL Volume' 0"
++	]
++
++	# Optional TQ and ALSA PCMs
 +	Value {
-+		JackName "DAISY-I2S Headphone Jack"
++		TQ "Music"
++		PlaybackPCM "hw:0,6"
++	}
++}
++
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
++	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
++                cset "name='Headset Playback Volume' 13"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
++                cset "name='Headset Playback Volume' 0"
++	]
++}
+diff --git a/PandaBoard/record b/PandaBoard/record
+new file mode 100644
+index 0000000..0eaf117
+--- /dev/null
++++ b/PandaBoard/record
+@@ -0,0 +1,47 @@
++# Use case Configuration for TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
++SectionVerb {
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++                # No more AMIC PDM Switch in current kernels
++                #cset "name='AMIC_UL PDM Switch' 1"
++                cset "name='MUX_UL00' 9"
++                cset "name='MUX_UL01' 10"
++                cset "name='Capture Volume' 4"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                # No more AMIC PDM Switch in current kernels
++                #cset "name='AMIC_UL PDM Switch' 0"
++                cset "name='MUX_UL00' 0"
++                cset "name='MUX_UL01' 0"
++                cset "name='Capture Volume' 0"
++	]
++
++	# Optional TQ and ALSA PCMs
++	Value {
++		TQ "Music"
++		CapturePCM "hw:0,0"
 +	}
 +
-+	EnableSequence [
-+		cdev "hw:DAISYI2S"
-+		cset "name='EQ1 Switch' off"
-+		cset "name='Left Headphone Mixer Left DAC1 Switch' on"
-+		cset "name='Right Headphone Mixer Right DAC1 Switch' on"
-+	]
-+	DisableSequence [
-+		cdev "hw:DAISYI2S"
-+		cset "name='EQ1 Mode' Default"
-+		cset "name='EQ1 Switch' on"
-+		cset "name='Left Speaker Mixer Left DAC1 Switch' on"
-+		cset "name='Right Speaker Mixer Right DAC1 Switch' on"
-+	]
 +}
 +
-+SectionDevice."Mic".0 {
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
++	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 0"
++                cset "name='Analog Right Capture Route' 0"
++                cset "name='Capture Preamplifier Volume' 2"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 3"
++                cset "name='Analog Right Capture Route' 3"
++                cset "name='Capture Preamplifier Volume' 0"
++	]
++}
+diff --git a/PandaBoard/voice b/PandaBoard/voice
+new file mode 100644
+index 0000000..4861071
+--- /dev/null
++++ b/PandaBoard/voice
+@@ -0,0 +1,46 @@
++# Use case Configuration for TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
++SectionVerb {
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Voice' 1"
++		cset "name='Sidetone Mixer Playback' 1"
++                cset "name='DL1 PDM Switch' 1"
++		cset "name='DL1 Voice Playback Volume' 90,90"
++                cset "name='SDT DL Volume' 120"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++		cset "name='DL1 Mixer Voice' 0"
++		cset "name='Sidetone Mixer Playback' 0"
++                cset "name='DL1 PDM Switch' 0"
++		cset "name='DL1 Voice Playback Volume' 0,0"
++                cset "name='SDT DL Volume' 0"
++	]
++
++	# Optional TQ and ALSA PCMs
 +	Value {
-+		JackName "DAISY-I2S Mic Jack"
++		TQ "Voice"
++		PlaybackPCM "hw:0,2"
 +	}
++}
 +
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
 +	EnableSequence [
-+		cdev "hw:DAISYI2S"
-+
-+		cset "name='DMIC1 Left Capture Switch' off"
-+		cset "name='DMIC1 Right Capture Switch' off"
-+		cset "name='Left ADC Mixer MIC2 Switch' on"
-+		cset "name='Right ADC Mixer MIC2 Switch' on"
++                cdev "hw:PandaBoard"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
++                cset "name='Headset Playback Volume' 13"
 +	]
 +
 +	DisableSequence [
-+		cdev "hw:DAISYI2S"
-+
-+		cset "name='Left ADC Mixer MIC2 Switch' off"
-+		cset "name='Right ADC Mixer MIC2 Switch' off"
-+		cset "name='DMIC1 Left Capture Switch' on"
-+		cset "name='DMIC1 Right Capture Switch' on"
++                cdev "hw:PandaBoard"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
++                cset "name='Headset Playback Volume' 0"
 +	]
 +}
+diff --git a/PandaBoard/voiceCall b/PandaBoard/voiceCall
+new file mode 100644
+index 0000000..d3c9501
+--- /dev/null
++++ b/PandaBoard/voiceCall
+@@ -0,0 +1,67 @@
++# Use case Configuration for TI PandaBoard HiFi Music
++# By Liam Girdwood <lrg@slimlogic.co.uk>
++
++SectionVerb {
++  	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='AMIC_UL PDM Switch' 1"
++                cset "name='Sidetone Mixer Capture' 1"
++                cset "name='MUX_VX0' 9"
++                cset "name='MUX_VX1' 10"
++		cset "name='DL1 Mixer Voice' 1"
++		cset "name='Sidetone Mixer Playback' 1"
++                cset "name='DL1 PDM Switch' 1"
++		cset "name='DL1 Voice Playback Volume' 90,90"
++                cset "name='Capture Volume' 4"
++                cset "name='Capture Mixer Voice Capture' 90,90"
++                cset "name='SDT DL Volume' 120"
++	]
++
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='AMIC_UL PDM Switch' 0"
++                cset "name='Sidetone Mixer Capture' 0"
++                cset "name='MUX_VX0' 0"
++                cset "name='MUX_VX1' 0"
++		cset "name='DL1 Mixer Voice' 0"
++		cset "name='Sidetone Mixer Playback' 0"
++                cset "name='DL1 PDM Switch' 0"
++		cset "name='DL1 Voice Playback Volume' 0,0"
++                cset "name='Capture Volume' 0"
++		cset "name='DL1 Voice Playback Volume' 0,0"
++                cset "name='SDT DL Volume' 0"
++	]
++
++	# Optional TQ and ALSA PCMs
++	Value {
++		TQ "Voice"
++                CapturePCM "hw:0,2"
++		PlaybackPCM "hw:0,2"
++	}
++}
++
++SectionDevice."Headset".0 {
++	Comment "PandaBoard 3.5mm Headset"
++	
++	EnableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 0"
++                cset "name='Analog Right Capture Route' 0"
++                cset "name='Capture Preamplifier Volume' 2"
++                cset "name='Headset Left Playback' 1"
++                cset "name='Headset Right Playback' 1"
++                cset "name='Headset Playback Volume' 13"
++	]
++
++	DisableSequence [
++                cdev "hw:PandaBoard"
++                cset "name='Analog Left Capture Route' 3"
++                cset "name='Analog Right Capture Route' 3"
++                cset "name='Capture Preamplifier Volume' 0"
++		cset "name='Headset Right Playback' 0"
++		cset "name='Headset Left Playback' 0"
++                cset "name='Headset Playback Volume' 0"
++	]
++}
++
 -- 
 1.8.1.2
