@@ -1,161 +1,88 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] snd-es1968: Add radio support for MediaForte M56VAP
-Date: Fri, 10 May 2013 22:41:12 +0200
-Message-ID: <201305102241.13171.linux@rainbow-software.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/5] tegraalc5632: add UCM config from
+	Ubuntu
+Date: Fri, 10 May 2013 21:53:30 +0100
+Message-ID: <20130510205330.GT3200@sirena.org.uk>
+References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
+ <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
+ <518D1EE3.10205@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============8706942410369501502=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D6A72616A6
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 22:53:49 +0200 (CEST)
+In-Reply-To: <518D1EE3.10205@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for TEA5757 tuner on MediaForte M56VAP sound+modem+radio card.
-The GPIO connection type is automatically detected (like snd-fm801 driver).
 
-Also add a safety subsystem vendor check to skip radio detection if vendor
-differs from ESS (so we don't touch GPIOs on laptops).
+--===============8706942410369501502==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eNjIDde0W37E3OQP"
+Content-Disposition: inline
 
-Tested with SF64-PCE2 and M56VAP cards.
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
----
- sound/pci/es1968.c |   73 +++++++++++++++++++++++++++++++++++----------------
- 1 files changed, 50 insertions(+), 23 deletions(-)
+--eNjIDde0W37E3OQP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index a1f32b5..db08641 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -564,6 +564,7 @@ struct es1968 {
- #ifdef CONFIG_SND_ES1968_RADIO
- 	struct v4l2_device v4l2_dev;
- 	struct snd_tea575x tea;
-+	unsigned int tea575x_tuner;
- #endif
- };
- 
-@@ -2557,37 +2558,47 @@ static int snd_es1968_input_register(struct es1968 *chip)
- 				bits 1=unmask write to given bit */
- #define IO_DIR		8      /* direction register offset from GPIO_DATA
- 				bits 0/1=read/write direction */
--/* mask bits for GPIO lines */
--#define STR_DATA	0x0040 /* GPIO6 */
--#define STR_CLK		0x0080 /* GPIO7 */
--#define STR_WREN	0x0100 /* GPIO8 */
--#define STR_MOST	0x0200 /* GPIO9 */
-+
-+/* GPIO to TEA575x maps */
-+struct snd_es1968_tea575x_gpio {
-+	u8 data, clk, wren, most;
-+	char *name;
-+};
-+
-+static struct snd_es1968_tea575x_gpio snd_es1968_tea575x_gpios[] = {
-+	{ .data = 6, .clk = 7, .wren = 8, .most = 9, .name = "SF64-PCE2" },
-+	{ .data = 7, .clk = 8, .wren = 6, .most = 10, .name = "M56VAP" },
-+};
-+
-+#define get_tea575x_gpio(chip) \
-+	(&snd_es1968_tea575x_gpios[(chip)->tea575x_tuner])
-+
- 
- static void snd_es1968_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
- {
- 	struct es1968 *chip = tea->private_data;
--	unsigned long io = chip->io_port + GPIO_DATA;
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
- 	u16 val = 0;
- 
--	val |= (pins & TEA575X_DATA) ? STR_DATA : 0;
--	val |= (pins & TEA575X_CLK)  ? STR_CLK  : 0;
--	val |= (pins & TEA575X_WREN) ? STR_WREN : 0;
-+	val |= (pins & TEA575X_DATA) ? (1 << gpio.data) : 0;
-+	val |= (pins & TEA575X_CLK)  ? (1 << gpio.clk)  : 0;
-+	val |= (pins & TEA575X_WREN) ? (1 << gpio.wren) : 0;
- 
--	outw(val, io);
-+	outw(val, chip->io_port + GPIO_DATA);
- }
- 
- static u8 snd_es1968_tea575x_get_pins(struct snd_tea575x *tea)
- {
- 	struct es1968 *chip = tea->private_data;
--	unsigned long io = chip->io_port + GPIO_DATA;
--	u16 val = inw(io);
--	u8 ret;
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
-+	u16 val = inw(chip->io_port + GPIO_DATA);
-+	u8 ret = 0;
- 
--	ret = 0;
--	if (val & STR_DATA)
-+	if (val & (1 << gpio.data))
- 		ret |= TEA575X_DATA;
--	if (val & STR_MOST)
-+	if (val & (1 << gpio.most))
- 		ret |= TEA575X_MOST;
-+
- 	return ret;
- }
- 
-@@ -2596,13 +2607,18 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
- 	struct es1968 *chip = tea->private_data;
- 	unsigned long io = chip->io_port + GPIO_DATA;
- 	u16 odir = inw(io + IO_DIR);
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
- 
- 	if (output) {
--		outw(~(STR_DATA | STR_CLK | STR_WREN), io + IO_MASK);
--		outw(odir | STR_DATA | STR_CLK | STR_WREN, io + IO_DIR);
-+		outw(~((1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren)),
-+			io + IO_MASK);
-+		outw(odir | (1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren),
-+			io + IO_DIR);
- 	} else {
--		outw(~(STR_CLK | STR_WREN | STR_DATA | STR_MOST), io + IO_MASK);
--		outw((odir & ~(STR_DATA | STR_MOST)) | STR_CLK | STR_WREN, io + IO_DIR);
-+		outw(~((1 << gpio.clk) | (1 << gpio.wren) | (1 << gpio.data) | (1 << gpio.most)),
-+			io + IO_MASK);
-+		outw((odir & ~((1 << gpio.data) | (1 << gpio.most)))
-+			| (1 << gpio.clk) | (1 << gpio.wren), io + IO_DIR);
- 	}
- }
- 
-@@ -2772,6 +2788,9 @@ static int snd_es1968_create(struct snd_card *card,
- 	snd_card_set_dev(card, &pci->dev);
- 
- #ifdef CONFIG_SND_ES1968_RADIO
-+	/* don't play with GPIOs on laptops */
-+	if (chip->pci->subsystem_vendor != 0x125d)
-+		goto no_radio;
- 	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
- 	if (err < 0) {
- 		snd_es1968_free(chip);
-@@ -2781,10 +2800,18 @@ static int snd_es1968_create(struct snd_card *card,
- 	chip->tea.private_data = chip;
- 	chip->tea.radio_nr = radio_nr;
- 	chip->tea.ops = &snd_es1968_tea_ops;
--	strlcpy(chip->tea.card, "SF64-PCE2", sizeof(chip->tea.card));
- 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
--	if (!snd_tea575x_init(&chip->tea, THIS_MODULE))
--		printk(KERN_INFO "es1968: detected TEA575x radio\n");
-+	for (i = 0; i < ARRAY_SIZE(snd_es1968_tea575x_gpios); i++) {
-+		chip->tea575x_tuner = i;
-+		if (!snd_tea575x_init(&chip->tea, THIS_MODULE)) {
-+			snd_printk(KERN_INFO "es1968: detected TEA575x radio type %s\n",
-+				   get_tea575x_gpio(chip)->name);
-+			strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
-+				sizeof(chip->tea.card));
-+			break;
-+		}
-+	}
-+no_radio:
- #endif
- 
- 	*chip_ret = chip;
--- 
-Ondrej Zary
+On Fri, May 10, 2013 at 10:22:59AM -0600, Stephen Warren wrote:
+
+> "alc5632" is the name of the audio CODEC, which could be used in a
+> variety of different boards, each of which might require a different UCM
+> configuration. Shouldn't the file be named based on the board name. At
+
+Yes, it should.
+
+> I also notice that this file doesn't define any use-cases/verbs/...
+> Presumably a Linux-based OS would expect a certain set of them to exist,
+> and they'd be implemented/named consistently across all UCM configs?
+
+I'd expect them to at least fall back to assuming some default thing is
+available - having a model that is more "do I need to do something
+special for this mode".  Being able to give at least some basic
+functionality from a minimal starting point seems sensible.
+
+--eNjIDde0W37E3OQP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRjV4nAAoJELSic+t+oim9A90P/3nHr/VcCPqS9qXEVMpEvD2x
+aXA7dYCmJB+olmiAb5sDwb2rf/xVFrPUj18HK9HgXZmVqhnN9pNgRYgx4EHkk3QJ
+ZFHJcDlIOSr9vVi538RnGs1el2XKg9ompOule9+UstCArM0OPR3+VFfqPvu4ed4e
+d9jfHu5Us8IzJyxqH0z2YpF9tal6R1yU6UXqYwL2xjAgQAukmTq18JqEHc7VCipe
+MnF5lvOTag+niVBqDhhDL5BA9qmYw6oKnZEfEhYr7sDSOTtnb0+ehzVd08I0kFWG
+vF1K8emzYUT/n+bskTFyjVMCyUYpc4rrXR/3Haz38veveWsjURr6zenFUl8K/uut
+G/ut+hoXZTBW/idnxIl/cznxOF0SHEgtaoKXd8U7rjyRKF4sMBzuRlUBQlB/b5yK
+1xuNXRagMqIlGfDtzxtbxpee7dKWOmpEB62ynguT4g2G5C9mddG2t+cQc68lRIN2
+2cv5l2DZepQus2eNPod9zz9NLW2tCyNBPUVCXilR/gHBm45V5FD59oUjdgOSDJ6U
+khnXF/BFUycLlbBgSlbd2r39+iUkoigfd852MX7NXYfBf+TS4NcwoRj7t3hwthuV
+2FL+cRqX0rO2fvKpWHsSvR4CoJsrPpb/Ams6N7f5w7ywh4MNqhB+9Xnx3OGU4XeH
+KDH9mrRmhY5wMVuTLCoH
+=Jczt
+-----END PGP SIGNATURE-----
+
+--eNjIDde0W37E3OQP--
+
+--===============8706942410369501502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8706942410369501502==--
