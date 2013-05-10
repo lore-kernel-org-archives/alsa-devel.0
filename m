@@ -1,18 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: UCM profiles taken from Ubuntu
-Date: Fri, 10 May 2013 15:22:21 +0100
-Message-ID: <1368195741.2463.52.camel@loki>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH 5/5] tegraalc5632: add UCM config from
+	Ubuntu
+Date: Fri, 10 May 2013 10:22:59 -0600
+Message-ID: <518D1EE3.10205@wwwdotorg.org>
 References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
- <s5hobcjt1mo.wl%tiwai@suse.de>
- <1368194214.15763.4.camel@penyagolosa.oskuro.net>
+ <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4806A261647
- for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 16:22:26 +0200 (CEST)
-In-Reply-To: <1368194214.15763.4.camel@penyagolosa.oskuro.net>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4FE1261677
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 18:23:03 +0200 (CEST)
+In-Reply-To: <1368190270-29647-6-git-send-email-marcin@juszkiewicz.com.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Luke Yelavich <themuso@ubuntu.com>, Takashi Iwai <tiwai@suse.de>, Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
+To: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Cc: alsa-devel@alsa-project.org, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDEzLTA1LTEwIGF0IDE1OjU2ICswMjAwLCBKb3JkaSBNYWxsYWNoIHdyb3RlOgo+
-IEVsIGR2IDEwIGRlIDA1IGRlIDIwMTMgYSBsZXMgMTU6MTcgKzAyMDAsIGVuL25hIFRha2FzaGkg
-SXdhaSB2YQo+IGVzY3JpdXJlOgo+ID4gQXQgRnJpLCAxMCBNYXkgMjAxMyAxNDo1MTowNSArMDIw
-MCwKPiA+IE1hcmNpbiBKdXN6a2lld2ljeiB3cm90ZToKPiA+ID4gCj4gPiA+IFdoZW4gSSBib3Vn
-aHQgU2Ftc3VuZyBBUk0gQ2hyb21lYm9vayBmZXcgbW9udGhzIGFnbyBJIGhhZCBubyBpZGVhCj4g
-PiA+IGFib3V0IFVDTSBwcm9maWxlcyBhbmQgYnVybnQgc3BlYWtlcnMgKGxlZnQgaXMgZGVhZCwg
-cmlnaHQgaXMKPiA+ID4gcmVzdGluZykuIFRoZW4gSSBsZWFybnQsIHRvb2sgb25lcyBmcm9tIENo
-cm9tZU9TIGFuZCBhZGRlZCB0aGVtIGludG8KPiA+ID4gVWJ1bnR1IHNvIG90aGVyIHVzZXJzIHdp
-bGwgYmUgYSBiaXQgbW9yZSBzYWZlLgo+ID4gPiAKPiA+ID4gTGF0ZXIgSSBoYWQgYSBkaXNjdXNz
-aW9uIHdpdGggc29tZSBEZWJpYW4sIFVidW50dSwgRmVkb3JhIGRldmVsb3BlcnMKPiA+ID4gYWJv
-dXQgaG93IHRvIHNvbHZlIHN1Y2ggcHJvYmxlbXMgYW5kIGhvdyB0byBrZWVwIFVDTSBwcm9maWxl
-cyBzaGFyZWQKPiA+ID4gYmV0d2VlbiBkaXN0cmlidXRpb25zLgo+ID4gPiAKPiA+ID4gTGlhbSBH
-aXJkd29vZCBwb2ludGVkIG1lIHRvIG5vdCB1c2VkIGdpdCB0cmVlIGF0IEFMU0EgUHJvamVjdCBz
-ZXJ2ZXIKPiA+ID4gYW5kIGZpbmFsbHkgSSByZW1pbmRlZCBteXNlbGYgYWJvdXQgaXQuCj4gPiA+
-IAo+ID4gPiBUaGUgaWRlYSBpcyB0byBjb2xsZWN0IFVDTSBwcm9maWxlcywga2VlcCB0aGVtIGlu
-IG9uZSBwbGFjZSBhbmQgY3JlYXRlCj4gPiA+IGFsc2EtdWNtIHBhY2thZ2UgaW4gZWFjaCBkaXN0
-cmlidXRpb24uCj4gCj4gVGhhbmtzIE1hcmNpbiEgVGhpcyBwYXJ0IG9mIHRoZSBEZWJpYW7ihpDi
-hpJVYnVudHUgZGVsdGEgd2FzIHNvbWV0aGluZyBJCj4gd2FudGVkIHRvIGJyaW5nIHVwIHdpdGgg
-dXBzdHJlYW0gYWZ0ZXIgdGhlIHdoZWV6eSByZWxlYXNlLgo+IAoKSSdsbCBlY2hvIHRoYXQgdGhv
-dWdodCwgbWFueSB0aGFua3MgTWFyY2luICEKCj4gPiBXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIHB1
-dCBpbnRvIGFsc2EtbGliLmdpdD8gIFNpbmNlIFVDTSBpdHNlbGYgd2FzCj4gPiBhbHJlYWR5IGlu
-dGVncmF0ZWQgaW50byBhbHNhLWxpYiBhbmQgdGhlcmUgYXJlIGFscmVhZHkgdG9ucyBvZgo+ID4g
-Y2FyZC1iYXNlZCBjb25maWcgZmlsZXMgaW4gYWxzYS1saWIvc3JjL2NvbmYvKiwgdGhlc2UgYWxz
-byBmaXQgdG8gYQo+ID4gc2ltaWxhciBkaXJlY3RvcnkgdGhlcmUsIEkgdGhpbmsuCj4gPiAKPiA+
-IFRoZXkgY291bGQgYmUgaW4gYSBzZXBhcmF0ZSByZXBvLCBidXQgVUNNIGNvbmZpZyBpcyBjb3Vw
-bGVkIHdpdGggVUNNCj4gPiBjb2RlLCBzbyB3ZSBtYXkga2VlcCBpbiB0aGUgc2luZ2xlIHJlcG8u
-Cj4gCj4gSXQgbWFrZXMgc2Vuc2UgdG8gbWUsIGZ3aXcuCj4gCgpBZ3JlZWQsIHRoZSBpbml0aWFs
-IGludGVudGlvbiBvZiB0aGUgc2VwYXJhdGUgcmVwbyB3YXMgdG8gZG8gZnJlcXVlbnQKcmVsZWFz
-ZXMgdGhhdCB3b3VsZCBiZSBsaWtlbHkgb3V0IG9mIHN5bmMgYWxzYS1saWIuIEJ1dCBJIHRoaW5r
-CmNvbWJpbmluZyBpcyB0aGUgYmVzdCB3YXkgZm9yd2FyZCBub3cuIFRha2FzaGksIHBsZWFzZSBm
-ZWVsIGZyZWUgdG8KcmVtb3ZlIHRoZSBvdGhlciByZXBvIChJIHRoaW5rIGl0J3MgbW9zdGx5IGVt
-cHR5IGFueXdheSkuCgpMaWFtCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+On 05/10/2013 06:51 AM, Marcin Juszkiewicz wrote:
+> Signed-off-by: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+> ---
+>  tegraalc5632/tegraalc5632.conf | 30 ++++++++++++++++++++++++++++++
+
+I'm not sure that's the correct name for this file.
+
+"alc5632" is the name of the audio CODEC, which could be used in a
+variety of different boards, each of which might require a different UCM
+configuration. Shouldn't the file be named based on the board name. At
+least with upstream kernels, the device tree contains:
+
+nvidia,model = "Compal PAZ00";
+
+which should influence the name the kernel gives to the sound card, and
+hence I think be the name the UCM config is looked up under?
+
+> +		exec "echo Im setting defaults for tegra-alc5632"
+
+I'm not sure if that's useful?
+
+I also notice that this file doesn't define any use-cases/verbs/...
+Presumably a Linux-based OS would expect a certain set of them to exist,
+and they'd be implemented/named consistently across all UCM configs?
