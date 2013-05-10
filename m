@@ -1,34 +1,38 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: [PATCH 11/11] sound/oxygen_io: take msecs_to_jiffies_min into use
-Date: Fri, 10 May 2013 15:13:29 +0300
-Message-ID: <1368188011-23661-11-git-send-email-imre.deak@intel.com>
-References: <1368188011-23661-1-git-send-email-imre.deak@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1368188011-23661-1-git-send-email-imre.deak@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Subject: UCM profiles taken from Ubuntu
+Date: Fri, 10 May 2013 14:51:05 +0200
+Message-ID: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tygrysek.juszkiewicz.com.pl (tygrysek.juszkiewicz.com.pl
+ [178.33.81.99]) by alsa0.perex.cz (Postfix) with ESMTP id BC8C72615EC
+ for <alsa-devel@alsa-project.org>; Fri, 10 May 2013 14:51:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use msecs_to_jiffies_min instead of open-coding the same.
+When I bought Samsung ARM Chromebook few months ago I had no idea
+about UCM profiles and burnt speakers (left is dead, right is
+resting). Then I learnt, took ones from ChromeOS and added them into
+Ubuntu so other users will be a bit more safe.
 
-Signed-off-by: Imre Deak <imre.deak@intel.com>
----
- sound/pci/oxygen/oxygen_io.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Later I had a discussion with some Debian, Ubuntu, Fedora developers
+about how to solve such problems and how to keep UCM profiles shared
+between distributions.
 
-diff --git a/sound/pci/oxygen/oxygen_io.c b/sound/pci/oxygen/oxygen_io.c
-index 521eae4..132ecbe 100644
---- a/sound/pci/oxygen/oxygen_io.c
-+++ b/sound/pci/oxygen/oxygen_io.c
-@@ -108,7 +108,7 @@ static int oxygen_ac97_wait(struct oxygen *chip, unsigned int mask)
- 	wait_event_timeout(chip->ac97_waitqueue,
- 			   ({ status |= oxygen_read8(chip, OXYGEN_AC97_INTERRUPT_STATUS);
- 			      status & mask; }),
--			   msecs_to_jiffies(1) + 1);
-+			   msecs_to_jiffies_min(1));
- 	/*
- 	 * Check even after a timeout because this function should not require
- 	 * the AC'97 interrupt to be enabled.
--- 
-1.7.10.4
+Liam Girdwood pointed me to not used git tree at ALSA Project server
+and finally I reminded myself about it.
+
+The idea is to collect UCM profiles, keep them in one place and create
+alsa-ucm package in each distribution.
