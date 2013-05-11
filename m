@@ -1,20 +1,15 @@
-From: Marc Dietrich <marvin24@gmx.de>
-Subject: Re: [PATCH 5/5] tegraalc5632: add UCM config fromUbuntu
-Date: Sat, 11 May 2013 16:15:49 +0200
-Message-ID: <1786278.dYWLQAQjL2@ax5200p>
-References: <1368190270-29647-1-git-send-email-marcin@juszkiewicz.com.pl>
- <518D1EE3.10205@wwwdotorg.org> <20130510205330.GT3200@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Debian patches for ALSA
+Date: Sat, 11 May 2013 18:16:25 +0400
+Message-ID: <20130511141625.GZ3200@sirena.org.uk>
+References: <1368225163.24178.1.camel@penyagolosa.oskuro.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0240805941887380895=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 4307B261A44
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43B02261A45
  for <alsa-devel@alsa-project.org>; Sat, 11 May 2013 16:16:36 +0200 (CEST)
-Received: from mailout-de.gmx.net ([10.1.76.34]) by mrigmx.server.lan
- (mrigmx002) with ESMTP (Nemesis) id 0MB0os-1UiuNL440q-00A2AJ for
- <alsa-devel@alsa-project.org>; Sat, 11 May 2013 16:16:35 +0200
-In-Reply-To: <20130510205330.GT3200@sirena.org.uk>
+In-Reply-To: <1368225163.24178.1.camel@penyagolosa.oskuro.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +19,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Warren <swarren@wwwdotorg.org>, Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, Luke Yelavich <themuso@ubuntu.com>, Mark Brown <broonie@kernel.org>, Peter Robinson <pbrobinson@gmail.com>, Andrey Danin <danindrey@mail.ru>, Leon Romanovsky <leon@leon.nu>, Jordi Mallach <jordi@debian.org>
+To: Jordi Mallach <jordi@debian.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Friday 10 May 2013 21:53:30 Mark Brown wrote:
-> On Fri, May 10, 2013 at 10:22:59AM -0600, Stephen Warren wrote:
-> > "alc5632" is the name of the audio CODEC, which could be used in a
-> > variety of different boards, each of which might require a different UCM
-> > configuration. Shouldn't the file be named based on the board name. At
-> 
-> Yes, it should.
+--===============0240805941887380895==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k1G2Bc0EDIhoSmEt"
+Content-Disposition: inline
 
-I like to help out, but I'm also unfamiliar with UCM profiles. This 
-configuation belong to the AC100 netboot (board name paz00) and a single hifi 
-use case would be sufficient for now. http://www.alsa-
-project.org/main/index.php/Use_Case_Manager doesn't give much info. Andrey, 
-Leon, any idea?
 
-Marc
+--k1G2Bc0EDIhoSmEt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> > I also notice that this file doesn't define any use-cases/verbs/...
-> > Presumably a Linux-based OS would expect a certain set of them to exist,
-> > and they'd be implemented/named consistently across all UCM configs?
-> 
-> I'd expect them to at least fall back to assuming some default thing is
-> available - having a model that is more "do I need to do something
-> special for this mode".  Being able to give at least some basic
-> functionality from a minimal starting point seems sensible.
+On Sat, May 11, 2013 at 12:32:43AM +0200, Jordi Mallach wrote:
+
+> I'm going to outline all the individual patches below. The patch tracker
+> has the patches just as I would send them upstream, but if you prefer
+> git formatted patches, I can go ahead and do that too, if it makes your
+> life easier.
+
+That's the normal workflow for sending stuff and it makes it easy to
+apply things.
+
+> http://patch-tracker.debian.org/patch/series/view/alsa-tools/1.0.27-2/envy24control_config_dir.patch
+>    This one is to be discussed. envy24control currently creates a
+> visible directory in $HOME, which is quite unacceptable. This patch just
+> moves the directory to a dotdir, but an upgrade path might need to be
+> coded. I would just move the thing away.
+
+Or just have it only create the .dir but check both names?
+
+--k1G2Bc0EDIhoSmEt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRjlKwAAoJELSic+t+oim9iQ0P/2rpeDmWfFnY/iPncoqlXG+Y
+nufOHU90qVDhav3VkjcgMrTvpNu96xdWSKYsfxP1LO+HDRfDmCSv+M+N2ZPFUzLA
+YXwoH/kelwPxNnQcLWyVsNO46Vsf7+/Anqu74Awl9TVlpAhGlhXktNnpw/pCKCil
+gOMTY00FiBm4J3YfTjwFKPYHCmbR1emgvfqgrVdFlGjinKM//TyBx0UD/o3Zow7Y
+JMvR9eiguyaoJGUWuAYSvZ2faGhdpVXOkmJsg6rx1nv/pMZxYE0OtQwMnLGf4xf9
+AYaboPoebg36l/s1RvNn64SipHeyHThqRS5kwuxgl/B60nQvIlQrhuvVh5AuFJqq
+7PoOKeqUA+OhrFtwE1mDSV1z9W8FvrVKEssN7wdjmD67f2rXWccwOs7mMDGynonl
+qX4EtmR1nXsq8DrBxe5rAtThk46rV8b7qXXnfFr/menu31cHWlsvKf0Qog8bJjd4
+qzb/aFefhENX6l13LU5o9qjbyyleUfirgwKdeniIseVKdC0jDVHis+dm6YjMwNHA
+N3n+sKhH/XN+x6539KOBpinSbz2G932EFPzD134D1u1Y8RU2SZ3nLc7CdmkAndvu
+6hPELOIQyby0zk5OLfxhQSx9JqpYS3IGSEglUVI0kY9UGyGpe+UZIFLU4V70gJg2
+Mn7AvwY0eRplQTL6oXYx
+=wP5h
+-----END PGP SIGNATURE-----
+
+--k1G2Bc0EDIhoSmEt--
+
+--===============0240805941887380895==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0240805941887380895==--
