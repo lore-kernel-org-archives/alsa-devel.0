@@ -1,16 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: jz4740-i2s: Use
-	clk_prepare_enable/clk_disable_unprepare
-Date: Sun, 12 May 2013 20:07:39 +0200
-Message-ID: <1368382059-4175-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: jz4740-i2s: Use
+ clk_prepare_enable/clk_disable_unprepare
+Date: Sun, 12 May 2013 22:09:21 +0400
+Message-ID: <20130512180921.GB6836@sirena.org.uk>
+References: <1368382059-4175-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8250298321207569174=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-236.synserver.de (smtp-out-237.synserver.de
- [212.40.185.237])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F76B261AAC
- for <alsa-devel@alsa-project.org>; Sun, 12 May 2013 20:05:25 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDF1B261AA7
+ for <alsa-devel@alsa-project.org>; Sun, 12 May 2013 20:09:25 +0200 (CEST)
+In-Reply-To: <1368382059-4175-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,83 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation to switching the jz4740 clk driver to the common clk framework
-update the clk enable/disable calls to clk_prepare_enable/clk_disable_unprepare.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/jz4740/jz4740-i2s.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+--===============8250298321207569174==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
+Content-Disposition: inline
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 9a12644..12c21bd 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -118,7 +118,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
- 	ctrl |= JZ_AIC_CTRL_FLUSH;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
- 
--	clk_enable(i2s->clk_i2s);
-+	clk_prepare_enable(i2s->clk_i2s);
- 
- 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
- 	conf |= JZ_AIC_CONF_ENABLE;
-@@ -140,7 +140,7 @@ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
- 	conf &= ~JZ_AIC_CONF_ENABLE;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
- 
--	clk_disable(i2s->clk_i2s);
-+	clk_disable_unprepare(i2s->clk_i2s);
- }
- 
- static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-@@ -314,10 +314,10 @@ static int jz4740_i2s_suspend(struct snd_soc_dai *dai)
- 		conf &= ~JZ_AIC_CONF_ENABLE;
- 		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
- 
--		clk_disable(i2s->clk_i2s);
-+		clk_disable_unprepare(i2s->clk_i2s);
- 	}
- 
--	clk_disable(i2s->clk_aic);
-+	clk_disable_unprepare(i2s->clk_aic);
- 
- 	return 0;
- }
-@@ -327,10 +327,10 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	uint32_t conf;
- 
--	clk_enable(i2s->clk_aic);
-+	clk_prepare_enable(i2s->clk_aic);
- 
- 	if (dai->active) {
--		clk_enable(i2s->clk_i2s);
-+		clk_prepare_enable(i2s->clk_i2s);
- 
- 		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
- 		conf |= JZ_AIC_CONF_ENABLE;
-@@ -368,7 +368,7 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	uint32_t conf;
- 
--	clk_enable(i2s->clk_aic);
-+	clk_prepare_enable(i2s->clk_aic);
- 
- 	jz4740_i2c_init_pcm_config(i2s);
- 
-@@ -388,7 +388,7 @@ static int jz4740_i2s_dai_remove(struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 
--	clk_disable(i2s->clk_aic);
-+	clk_disable_unprepare(i2s->clk_aic);
- 	return 0;
- }
- 
--- 
-1.8.2.1
+
+--7ZAtKRhVyVSsbBD2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, May 12, 2013 at 08:07:39PM +0200, Lars-Peter Clausen wrote:
+> In preparation to switching the jz4740 clk driver to the common clk framework
+> update the clk enable/disable calls to clk_prepare_enable/clk_disable_unprepare.
+
+Applied, thanks.
+
+--7ZAtKRhVyVSsbBD2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRj9rOAAoJELSic+t+oim9p8UP/RV6JFkAPCi7ZCDphNRd8v0i
+Xm3kXI84AGnCJLChix7gvxi5hGUybAZvEnX31HeG4aqS1yFWU1JJsPZPyEQrsrXe
+VR1Oi+zYuKheBRpAawwI2RHvicYmvtAedE+NKhxWLyuLQ2WDpab6w93UG8e3lQ6W
+ZgxTr+e2NXw2RUe3RcVZcxR1GedMa1T5HhyCuIv5LcYvf0Yz2zcbuRLJ0GDvR0Si
+pA77TYadTcHOB0RHzQ0iXxv4DrldhbRAt/6+hk5Jrvl4rfZNFypIKG1cs/Lbv1zk
+EqNJ4yyQUgDzLYtJz4havvQccFRDMdmWig9KCj2KvrnVg4ytdMfKoAKNYwCoKAGJ
++Z9g92mCLTnWaKqpaD9/cKfS3zv/ChF/sRzVFKfZ7SHdLSKU1p4MzSGuKcqSzueQ
+IGsLckVKDNQV8fYgPPxk70cF/taqw9HwRsFTYuV98IHTjS7phLXFEgOjKiE3ebMg
+4+hXzHzIYb2XeDErM4JXE1EKwYlYbYU034+IxA19BDuTu5SRcDljCoUfMB+IoKGQ
+kMSnAyD6D5urq56wR+TKp/E05dP8HTLGhJCjMskrF9dNT3SiVA6TPsTONZOeYj3m
+qheA9LDThlRbh9gURAwS6xt1TPFgKheY04wMV+wPWBghJB6E878JqDONHyxvAbXM
+KdISWSmeT62Y123kFZxl
+=SHsl
+-----END PGP SIGNATURE-----
+
+--7ZAtKRhVyVSsbBD2--
+
+--===============8250298321207569174==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8250298321207569174==--
