@@ -1,61 +1,40 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Fwd: regression: from 3.8 to 3.9: headphones output no
- sound on Intel HDA, codec VIA VT1802
-Date: Sun, 12 May 2013 11:58:09 +0200
-Message-ID: <CALxABCY+kS_oNmQjN4iWDEpLotnT9s3Y2O2Bkpi3VM07+d255g@mail.gmail.com>
-References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] sound: Fix make allmodconfig on MIPS correctly
+Date: Sun, 12 May 2013 14:31:19 +0200
+Message-ID: <1368361879.1350.13.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f45.google.com (mail-oa0-f45.google.com
- [209.85.219.45])
- by alsa0.perex.cz (Postfix) with ESMTP id E2DC02615DC
- for <alsa-devel@alsa-project.org>; Sun, 12 May 2013 11:58:30 +0200 (CEST)
-Received: by mail-oa0-f45.google.com with SMTP id j6so5352493oag.4
- for <alsa-devel@alsa-project.org>; Sun, 12 May 2013 02:58:30 -0700 (PDT)
-In-Reply-To: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Ralf Baechle <ralf@linux-mips.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The original message is being held hostage by moderator approval.
-The attachments (alsa-info output) can be found here:
+Commit d4702b189c ("sound: Fix make allmodconfig on MIPS") added a
+(negative) dependency on ISA_DMA_SUPPORT_BROKEN. Since that Kconfig
+symbol doesn't exist, this dependency will always evaluate to true.
+Apparently GENERIC_ISA_DMA_SUPPORT_BROKEN was meant to be used here.
 
-  http://marc.info/?l=linux-kernel&m=136835246706699&w=2
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Tested only with "git grep".
 
----------- Forwarded message ----------
+ sound/oss/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
-
-I just noticed (use the headphones rarely) that the headphones on this
-System76 Lemur Ultra (lemu4) stopped working. There is absolutely no
-output.
-
-I tried reverting all changes to patch_via.c since v3.8, and
-have the sound back, but there wasn't much to revert:
-
-Revert "ALSA: hda - Rearrange INPUT_PIN_ATTR_*"
-Revert "ALSA: hda - Use generic parser for VIA codec driver"
-Revert "ALSA: hda - Enable parsing the independent HP mode as default
-for VIA codecs"
-Revert "ALSA: hda/via - Fix wrong checks of power state bits"
-Revert "ALSA: hda - Fix phantom jacks on VT1708"
-Revert "ALSA: hda - detect jacks on VT1708 even when no streams are active"
-Revert "ALSA: hda - Use generic array for loopback list management"
-
-and one change (which I indeed suspect) is large: the use of generic parser.
-
-The problem is also present in 3.10-rc1. The output of alsa-info.sh attached,
-for 3.8.12 and 3.9.2 respectively.
-
-Regards,
-Alex Riesen
+diff --git a/sound/oss/Kconfig b/sound/oss/Kconfig
+index 51c4ba9..1a96402 100644
+--- a/sound/oss/Kconfig
++++ b/sound/oss/Kconfig
+@@ -250,7 +250,7 @@ config MSND_FIFOSIZE
+ menuconfig SOUND_OSS
+ 	tristate "OSS sound modules"
+ 	depends on ISA_DMA_API && VIRT_TO_BUS
+-	depends on !ISA_DMA_SUPPORT_BROKEN
++	depends on !GENERIC_ISA_DMA_SUPPORT_BROKEN
+ 	help
+ 	  OSS is the Open Sound System suite of sound card drivers.  They make
+ 	  sound programming easier since they provide a common API.  Say Y or
+-- 
+1.7.11.7
