@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 5/8] ASoC: ep93xx: Setup dma data in DAI
- probe
-Date: Mon, 13 May 2013 09:27:09 +0200
-Message-ID: <519095CD.3080606@metafoo.de>
-References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
- <1366478947-9377-5-git-send-email-lars@metafoo.de>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: =?utf-8?q?=5BPATCH_0/5=5D_Power-well_API_implementat?=
+	=?utf-8?q?ion_for_Haswell?=
+Date: Mon, 13 May 2013 15:37:23 +0800
+Message-ID: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-046.synserver.de (smtp-out-047.synserver.de
- [212.40.185.47])
- by alsa0.perex.cz (Postfix) with ESMTP id E9D31261635
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 09:27:37 +0200 (CEST)
-In-Reply-To: <1366478947-9377-5-git-send-email-lars@metafoo.de>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ADD0260864
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 09:38:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,123 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
+To: tiwai@suse.de, daniel@ffwll.ch, liam.r.girdwood@intel.com
+Cc: alsa-devel@alsa-project.org, paulo.r.zanoni@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, jesse.barnes@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/20/2013 07:29 PM, Lars-Peter Clausen wrote:
-> This allows us to access the DAI DMA data when we create the PCM. We'll use
-> this when converting ep39xx to generic DMA engine PCM driver.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> 
-
-Hi Mark,
-
-it looks like this patch was lost. The next one in this series which has a
-dependency on this one was applied though. Should I resend the patch?
-
-- Lars
-
-
-> ---
-> Changes since v1:
-> 	* Fix a mis-rebase which mixed up bits from this patch with the next one
-> ---
->  sound/soc/cirrus/ep93xx-ac97.c | 14 ++++----------
->  sound/soc/cirrus/ep93xx-i2s.c  | 14 ++++----------
->  2 files changed, 8 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-> index 8d30886..38cf335 100644
-> --- a/sound/soc/cirrus/ep93xx-ac97.c
-> +++ b/sound/soc/cirrus/ep93xx-ac97.c
-> @@ -314,22 +314,15 @@ static int ep93xx_ac97_trigger(struct snd_pcm_substream *substream,
->  	return 0;
->  }
->  
-> -static int ep93xx_ac97_startup(struct snd_pcm_substream *substream,
-> -			       struct snd_soc_dai *dai)
-> +static int ep93xx_ac97_dai_probe(struct snd_soc_dai *dai)
->  {
-> -	struct ep93xx_dma_data *dma_data;
-> +	dai->playback_dma_data = &ep93xx_ac97_pcm_out;
-> +	dai->capture_dma_data = &ep93xx_ac97_pcm_in;
->  
-> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> -		dma_data = &ep93xx_ac97_pcm_out;
-> -	else
-> -		dma_data = &ep93xx_ac97_pcm_in;
-> -
-> -	snd_soc_dai_set_dma_data(dai, substream, dma_data);
->  	return 0;
->  }
->  
->  static const struct snd_soc_dai_ops ep93xx_ac97_dai_ops = {
-> -	.startup	= ep93xx_ac97_startup,
->  	.trigger	= ep93xx_ac97_trigger,
->  };
->  
-> @@ -337,6 +330,7 @@ static struct snd_soc_dai_driver ep93xx_ac97_dai = {
->  	.name		= "ep93xx-ac97",
->  	.id		= 0,
->  	.ac97_control	= 1,
-> +	.probe		= ep93xx_ac97_dai_probe,
->  	.playback	= {
->  		.stream_name	= "AC97 Playback",
->  		.channels_min	= 2,
-> diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-> index 83075b3..e17b905 100644
-> --- a/sound/soc/cirrus/ep93xx-i2s.c
-> +++ b/sound/soc/cirrus/ep93xx-i2s.c
-> @@ -60,7 +60,6 @@ struct ep93xx_i2s_info {
->  	struct clk			*mclk;
->  	struct clk			*sclk;
->  	struct clk			*lrclk;
-> -	struct ep93xx_dma_data		*dma_data;
->  	void __iomem			*regs;
->  };
->  
-> @@ -139,15 +138,11 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
->  	}
->  }
->  
-> -static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
-> -			      struct snd_soc_dai *dai)
-> +static int ep93xx_i2s_dai_probe(struct snd_soc_dai *dai)
->  {
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	dai->playback_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-> +	dai->capture_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
->  
-> -	snd_soc_dai_set_dma_data(cpu_dai, substream,
-> -				 &info->dma_data[substream->stream]);
->  	return 0;
->  }
->  
-> @@ -338,7 +333,6 @@ static int ep93xx_i2s_resume(struct snd_soc_dai *dai)
->  #endif
->  
->  static const struct snd_soc_dai_ops ep93xx_i2s_dai_ops = {
-> -	.startup	= ep93xx_i2s_startup,
->  	.shutdown	= ep93xx_i2s_shutdown,
->  	.hw_params	= ep93xx_i2s_hw_params,
->  	.set_sysclk	= ep93xx_i2s_set_sysclk,
-> @@ -349,6 +343,7 @@ static const struct snd_soc_dai_ops ep93xx_i2s_dai_ops = {
->  
->  static struct snd_soc_dai_driver ep93xx_i2s_dai = {
->  	.symmetric_rates= 1,
-> +	.probe		= ep93xx_i2s_dai_probe,
->  	.suspend	= ep93xx_i2s_suspend,
->  	.resume		= ep93xx_i2s_resume,
->  	.playback	= {
-> @@ -403,7 +398,6 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
->  	}
->  
->  	dev_set_drvdata(&pdev->dev, info);
-> -	info->dma_data = ep93xx_i2s_dma_data;
->  
->  	err = snd_soc_register_dai(&pdev->dev, &ep93xx_i2s_dai);
->  	if (err)
+VGhpcyBwYXRjaHNldCBpbnRlbmRlZCB0byBBZGQgcG93ZXItd2VsbCBhcGkgc3VwcG9ydCBmb3Ig
+SGFzd2VsbC4KCkZvciBJbnRlbCBIYXN3ZWxsICwg4oCccG93ZXIgd2VsbOKAnSBpbiBHUFUgaGFz
+IGltcGFjdCBmb3IgYm90aCBEaXNwbGF5IEhELUEKY29udHJvbGxlciBhbmQgY29kZWNzLiBHZngg
+ZHJpdmVyIGhhcyBwb3dlciB3ZWxsIGZlYXR1cmUgZW5hbGVkIGJ1dCBkb25vdAp0aGluayBtdWNo
+IGFib3V0IGF1ZGlvIHNpZGUuIFRoZSBpc3N1ZSBpcyBpZiBnZnggZHJpdmVyIGRpc2FibGVkIHBv
+d2VyIHdlbGwsIAphdWRpbyBzaWRlIHdvdWxkIGxvc2UgcG93ZXIgYW5kIGNyYXNoLgoKRGF2aWQg
+aGVscGVkIGEgaW5pdGlhbCBwYXRjaCB0byBhZGQgZXh0ZXJuYWwgbW9kdWxlIHBhdGNoX2hkbWlf
+aTkxNSwgd2hpY2gKYnVpbHQgaW4gb25seSBEUk1fSTkxNSBhbmQgSERNSV9DT0RFQyBlbmFibGVk
+LCAgVGhpcyBwYXRjaHNldCB3YXMgYmFzZWQgb24KRGF2aWTigJlzIHdvcmssIHRoYW5rcyBEYXZp
+ZCEgCgpBcyBjb2RlYyBkZXBlbmRzIG9uIGNvbnRyb2xsZXLigJlzIHBvd2VyLCBzbyB3ZSByZW1v
+dmVkIHRoZSBwbSBjYWxsYmFjawp0ZW1wb3JhcnkuIFNvIG9ubHkgSERBIGNvbnRyb2xsZXIgZHJp
+dmVyIHdvdWxkIHN1Y2ggbmVlZCB0byByZXF1ZXN0L3JlbGVhc2UKcG93ZXIsIHRoZSBjb2RlYyB3
+aWxsIGFsd2F5cyBiZSBzYWZlLgoKR2Z4IGRyaXZlciB3b3VsZCBzaHV0ZG93biBwb3dlciB3ZWxs
+IGluIGJlbG93IGNhc2VzLCBhdWRpbyBkcml2ZXIKd291bGQgYmUgZGFtYWdlZCBhcyBsb3Npbmcg
+cG93ZXIgdG90YWxseSB3aXRob3V0IGFueSBub3RpZmljYXRpb24uIAooVGhlcmUgd291bGQgYmUg
+bW9yZSBjYXNlcyBub3QgY292ZXJlZCwgd2VsY29tZSBtb3JlIGNvbW1lbnRzIGhlcmUuCiBpIGNh
+biB2ZXJpZnkgdGhlIHBhdGNoc2V0IHVuZGVyIG1vcmUgY2FzZXMpCi0JT25seSBlRFAgcG9ydCBh
+Y3RpdmUKLQlIRE1JIG1vbml0b3IgaG90IHBsdWcKLQlTeXN0ZW0gc3VzcGVuZAoKQWxzbyB0aGVy
+ZeKAmXJlIHNvbWUgY2FsbGluZyBmcm9tIGk5MTUgdG8gZGlzYWJsZSBwb3dlciB3ZWxsIGZyb20g
+dGltZSB0byB0aW1lLAp0aGlzIHBhdGNoc2V0IHdvdWxkIHJlamVjdCB0aG9zZSBvcGVyYXRpb25z
+IGlmIGF1ZGlvIHVzaW5nIHBvd2VyIHdlbGwsIGJ1dCBpdCB3aWxsIApyZWNvcmQgaTkxNSBkcml2
+ZXLigJlzIHJlcXVlc3QgYW5kIHNodXQgZG93biBwb3dlciBpZiBhdWRpbyByZWxlYXNlIGl0LgoK
+QmFzaWNhbGx5LCBoZXJlJ3MgdGhlIGxhdGVzdCB3b3JraW5nIHN0YXR1cyBvbiBteSBzaWRlOgoK
+SSB0ZXN0ZWQgdGhlIHBvd2VyIHdlbGwgZmVhdHVyZSBvbiBIYXN3ZWxsIFVMVCBib2FyZCwgdGhl
+cmUncyBvbmx5IG9uZSBlRFAKcG9ydCB1c2VkLiBXaXRob3V0IHRoaXMgcGF0Y2ggYW5kIHdlIGVu
+YWJsZWQgcG93ZXIgd2VsbCBmZWF0dXJlLCBnZnggZHJpdmVyIHdpbGwgc2h1dGRvd24KcG93ZXIg
+d2VsbCwgYXVkaW8gZHJpdmVyIHdpbGwgY3Jhc2guCkFwcGxpZWQgdGhpcyBwYXRjaCwgZGlzcGxh
+eSBhdWRpbyBkcml2ZXIgd2lsbCByZXF1ZXN0IHBvd2VyIHdlbGwgb24gYmVmb3JlCmluaXRpYWxp
+emUgdGhlIGNhcmQuIEluIGdmeCBzaWRlLCBpdCB3aWxsIGVuYWJsZSBwb3dlciB3ZWxsLgoKQWxz
+byBwb3dlcl9zYXZlIGZlYXR1cmUgaW4gYXVkaW8gc2lkZSBzaG91bGQgYmUgZW5hYmxlZCwgSSBz
+ZXQgIjUiIHNlY29uZCB0bwpsZXQgY29kZWMgZW50ZXIgc3VzcGVuZCB3aGVuIGZyZWUgZm9yIDVz
+IGxvbmcuCkF1ZGlvIGNvbnRyb2xsZXIgZHJpdmVyIGRldGVjdHMgYWxsIGNvZGVjcyBhcmUgc3Vz
+cGVuZGVkIGl0IHdpbGwgcmVsZWFzZSBwb3dlcgp3ZWxsIGFuZCBzdXNwZW5kIHRvby4gR2Z4IGRy
+aXZlciB3aWxsIHJlY2VpdmUgdGhlIHJlcXVlc3QgYW5kIHNodXQgZG93biBwb3dlcgp3ZWxsLgoK
+SWYgdXNlciB0cmlnZ2VyIHNvbWUgYXVkaW8gb3BlcmF0aW9ucyhjYXQgY29kZWMjIGluZm8pLCBh
+dWRpbyBjb250cm9sbGVyCmRyaXZlciB3aWxsIHJlcXVlc3QgcG93ZXIgd2VsbCBhZ2Fpbi4uLgoK
+SWYgZ2Z4IHNpZGUgZGVjaWRlZCB0byBkaXNhYmxlIHBvd2VyIHdlbGwgbm93LCB3aGlsZSBhdWRp
+byBpcyBpbiB1c2UsIHBvd2VyCndlbGwgd291bGQgYmUga2VwdCBvbi4KCihpIHdpbGwgc2VuZCBv
+dXQgYSBkb2N1bWVudGF0aW9uIHdoaWNoIGhhcyBzb21lIGxvZ3MgYW5kIGFuYWx5c2lzIHRoZXJl
+LikKCkdlbmVyYWxseSBhdWRpbyBkcnZpZXIgd2lsbCByZXF1ZXN0IHBvd2VyIHdlbGwgb24gbmVl
+ZCBhbmQgcmVsZWFzZSBpdAppbW1lZGlhdGVseSBhZnRlciBzdXNwZW5kLiBHZnggc2hvdWxkIG1h
+a2UgZGVjaXNpb24gYXQgaGlzIHNpZGUuCgpUaGUgbmV3IGludHJvZHVjZWQgbW9kdWxlICJoZGEt
+aTkxNSIgaGFzIGRlcGVuZGVuY3kgb24gaTkxNSwgb25seSBidWlsdCBpbgp3aGVuIGk5MTUgZW5h
+YmxlZC4gU28gaXQncyBzYWZlIGZvciBjYWxsLgoKRm9yIG5vbi1IYXN3ZWxsIHBsYXRmb3JtLCBw
+b3dlciB3ZWxsIGlzIG5vIG5lZWQgYXRtLiBFdmVuIHRoZSBtb2R1bGUgaXMgYnVpbHQgaW4Kd3Jv
+bmdseSwgaGRhIGRyaXZlciB3aWxsIG5vdCBjYWxsIHRoZSBwb3dlciB3ZWxsIGFwaS4gQWxzbyBn
+Znggd2lsbCByZWplY3QgCnBvd2VyIHdlbGwgcmVxdWVzdCBhdCBpdHMgc2lkZSwgc28gaXQncyBz
+YWZlIHRvby4KClRoaXMgcGF0Y2ggY291bGQgbWFrZSBzdXJlIGl0IHdvdWxkIG5vdCBjYXVzZSBk
+YW1hZ2Ugd2hlbiBzbmQtaGRhLWludGVsIGFuZAppOTE1IG1vZHVsZSBsb2FkZWQgaW4gYW55IG9y
+ZGVyLiBJZiBpOTE1IG1vZHVsZSBsb2FkZWQgYXQgZmlyc3QsIGl0J3Mgc2FmZSB0bwpnZXQgdGhl
+IHN5bWJvbC4gSWYgc25kLWhkYS1pbnRlbCBsb2FkZWQgZmlyc3QsIGl0IHdpbGwgdHJ5IHRvIGxv
+YWQgaTkxNQptYW51YWxseSBhbmQgZ2V0IG5vdGlmaWNhdGlvbiB3aGVuIHRoZSBwb3dlci13ZWxs
+IGFwaSBhcmUgZXhwb3J0ZWQuCgpXYW5nIFhpbmdjaGFvICg1KToKICBkcm0vOTE1OiBBZGQgcHJp
+dmF0ZSBhcGkgZm9yIHBvd2VyIHdlbGwgdXNhZ2UKICBBTFNBOiBoZGEgLSBBZGQgZXh0ZXJuYWwg
+bW9kdWxlIGhkYS1pOTE1IGZvciBwb3dlciB3ZWxsCiAgQUxTQTogaGRhIC0gUG93ZXIgd2VsbCBy
+ZXF1ZXN0L3JlbGVhc2UgZm9yIGhkYSBjb250cm9sbGVyCiAgQUxTQTogaGRhIC0gRml4IG1vZHVs
+ZSBkZXBlbmRlbmN5IHdpdGggZ2Z4IGk5MTUKICBBTFNBL2k5MTU6IENoZWNrIHBvd2VyIHdlbGwg
+QVBJIGV4aXN0ZW5zZSBiZWZvcmUgY2FsbGluZwoKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVf
+ZG1hLmMgIHwgICAgMyArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCB8ICAgIDIg
+KwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfcG0uYyAgfCAgMTM5ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tCiBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vyd2VsbC5oICAg
+ICB8ICAgNDAgKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvS2NvbmZpZyAgICAgICAgICAgIHwg
+ICAxMyArKysrCiBzb3VuZC9wY2kvaGRhL01ha2VmaWxlICAgICAgICAgICB8ICAgIDYgKysKIHNv
+dW5kL3BjaS9oZGEvaGRhX2k5MTUuYyAgICAgICAgIHwgICA5MiArKysrKysrKysrKysrKysrKysr
+KysrKysrCiBzb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmggICAgICAgICB8ICAgMTUgKysrKwogc291
+bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyAgICAgICAgfCAgIDIyICsrKysrKwogOSBmaWxlcyBjaGFu
+Z2VkLCAzMjUgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vyd2VsbC5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQv
+cGNpL2hkYS9oZGFfaTkxNS5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvcGNpL2hkYS9oZGFf
+aTkxNS5oCgotLSAKMS43LjkuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
