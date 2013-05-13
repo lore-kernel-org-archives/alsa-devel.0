@@ -1,16 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Debian patches for ALSA
-Date: Mon, 13 May 2013 09:12:28 +0200
-Message-ID: <5190925C.5000207@perex.cz>
-References: <1368225163.24178.1.camel@penyagolosa.oskuro.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 5/8] ASoC: ep93xx: Setup dma data in DAI
+ probe
+Date: Mon, 13 May 2013 09:27:09 +0200
+Message-ID: <519095CD.3080606@metafoo.de>
+References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
+ <1366478947-9377-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 7271E260864
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 09:12:29 +0200 (CEST)
-In-Reply-To: <1368225163.24178.1.camel@penyagolosa.oskuro.net>
+Received: from smtp-out-046.synserver.de (smtp-out-047.synserver.de
+ [212.40.185.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9D31261635
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 09:27:37 +0200 (CEST)
+In-Reply-To: <1366478947-9377-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,127 +23,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jordi Mallach <jordi@debian.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAxMS41LjIwMTMgMDA6MzIsIEpvcmRpIE1hbGxhY2ggd3JvdGU6Cj4gCj4gSGkhCj4gCj4g
-SSd2ZSBiZWVuIHdhbnRpbmcgdG8gcHV0IHNvbWUgb3JkZXIgaW4gdGhlIGNvbGxlY3Rpb24gb2Yg
-cGF0Y2hlcyB3ZSd2ZQo+IGJlZW4gYnVpbGRpbmcgdXAgaW4gRGViaWFuIGR1ZSB0byBtZSBuZWds
-ZWN0aW5nIGZvcndhcmRpbmcgYW55dGhpbmcgZm9yCj4gZmFyIHRvbyBsb25nLgo+IAo+IExldCdz
-IHRyeSB0byBjb3JyZWN0IHRoaXMuCj4gCj4gSSBoYXZlIGEgbnVtYmVyIG9mIHBhdGNoZXMsIG1v
-c3Qgb2Ygd2hpY2ggc2hvdWxkIGJlIHRyaXZpYWwgYW5kCj4gbm8tYnJhaW5lcnMsIGFsbCB1cGRh
-dGVkIHRvIDEuMC4yNy4KPiAKPiBJJ20gZ29pbmcgdG8gb3V0bGluZSBhbGwgdGhlIGluZGl2aWR1
-YWwgcGF0Y2hlcyBiZWxvdy4gVGhlIHBhdGNoIHRyYWNrZXIKPiBoYXMgdGhlIHBhdGNoZXMganVz
-dCBhcyBJIHdvdWxkIHNlbmQgdGhlbSB1cHN0cmVhbSwgYnV0IGlmIHlvdSBwcmVmZXIKPiBnaXQg
-Zm9ybWF0dGVkIHBhdGNoZXMsIEkgY2FuIGdvIGFoZWFkIGFuZCBkbyB0aGF0IHRvbywgaWYgaXQg
-bWFrZXMgeW91cgo+IGxpZmUgZWFzaWVyLgo+IAo+IFRoYW5rcyEKPiAKPiBBTFNBLUxJQjogaHR0
-cDovL3BhdGNoLXRyYWNrZXIuZGViaWFuLm9yZy9wYWNrYWdlL2Fsc2EtbGliLzEuMC4yNy0zCj4g
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PQo+IAo+IAo+IC0KPiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3Bh
-dGNoL3Nlcmllcy92aWV3L2Fsc2EtbGliLzEuMC4yNy0zL2FkZC1tYWludGFpbmVyLW1vZGUucGF0
-Y2gKPiAgIGFkZC1tYWludGFpbmVyLW1vZGUucGF0Y2ggaXMgc29tZXRoaW5nIEknZCBsaWtlIHRv
-IHNlZSBpbiBhbGwgQUxTQQo+IGNvbmZpZ3VyZSBzY3JpcHRzOiBoYXZlIG1haW50YWluZXIgbW9k
-ZSBlbmFibGVkLCBidXQgYWRkIHRoZSBwb3NzaWJpbGl0eQo+IHRvIGRpc2FibGUgaXQgdmlhIC0t
-ZGlzYWJsZS1tYWludGFpbmVyLW1vZGUuIFNlZQo+IGh0dHA6Ly9ibG9ncy5nbm9tZS5vcmcvZGVz
-cnQvMjAxMS8wOS8wOC9hbV9tYWludGFpbmVyX21vZGUtaXMtbm90LWNvb2wvCj4gZm9yIHJlZmVy
-ZW5jZS4KPiAKPiAgLQo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2Vy
-aWVzL3ZpZXcvYWxzYS1saWIvMS4wLjI3LTMvbXVsdGlhcmNoLXNhZmUtZGxvcGVuLXNlYXJjaC1w
-YXRoLnBhdGNoCj4gICBUaGUgcGF0Y2ggaGVhZGVyIGlzIHNlbGYgZXhwbGFuYXRvcnk6IGl0IGZp
-eGVzIHRoZSBwbHVnaW4gbG9va3VwIHBhdGgKPiBmb3IgRGViaWFuL1VidW50dSdzIG11bHRpYXJj
-aCBwYXRocy4KPiAKPiAgLQo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gv
-c2VyaWVzL3ZpZXcvYWxzYS1saWIvMS4wLjI3LTMvc3BlbGxpbmdfZml4ZXMucGF0Y2gKPiAgIExp
-dHRsZSB0byBleHBsYWluIGhlcmUuIDspCgpUaGUgYWxzYS1saWIgcGF0Y2hlcyBsb29rcyBnb29k
-LiBQb3N0IHRoZW0gdG8gdGhpcyBsaXN0IGluIHRoZSBwYXRjaApmb3JtYXQgKG9yICdnaXQgZm9y
-bWF0LXBhdGNoJykuCgo+IEFMU0EtVVRJTFM6IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5v
-cmcvcGFja2FnZS9hbHNhLXV0aWxzLzEuMC4yNy0yCj4gPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiAKPiAgLQo+
-IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3ZpZXcvYWxzYS11
-dGlscy8xLjAuMjctMi9zcGVsbGluZ19maXhlcy5wYXRjaAo+ICAgQWdhaW4sIHRyaXZpYWwuCj4g
-Cj4gIC0KPiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3
-L2Fsc2EtdXRpbHMvMS4wLjI3LTIvZml4X21pc3NwZWxsaW5nX3NwZWFrZXItdGVzdF9tYW5fcGFn
-ZS5wYXRjaAo+ICAgRXZlbiBtb3JlIHRyaXZpYWwuCj4gCj4gIC0KPiBodHRwOi8vcGF0Y2gtdHJh
-Y2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3L2Fsc2EtdXRpbHMvMS4wLjI3LTIvdXRp
-bHNfZnRiZnNfZm9ybWF0LXNlY3VyaXR5X2ZpeC5wYXRjaAo+IAo+ICAgRml4ZXMgYSBidWlsZCBm
-YWlsdXJlIHdoZW4gdXNpbmcgLVdlcnJvcj1mb3JtYXQtc2VjdXJpdHksIHdoaWNoIGlzCj4gZGVm
-YXVsdCBpbiBEZWJpYW4gYW5kIFV1Ym50dSdzIHRvb2xjaGFpbi4KPiAKPiAgLQo+IGh0dHA6Ly9w
-YXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3ZpZXcvYWxzYS11dGlscy8xLjAu
-MjctMi9hbHNhLXJlc3RvcmVfc2VydmljZV9pbXByb3ZlbWVudHMucGF0Y2gKPiAKPiAgIFRoaXMg
-b25lIEkgd2FudCB0byBkaXNjdXNzLiBXZSB0aGluayB0aGUgQWZ0ZXIgY29uZGl0aW9uIGlzIHdy
-b25nLCBhcwo+IGl0J3MgZGVwZW5kaW5nIG9uIGFuIG9wdGlvbmFsIHNlcnZpY2UgKGFsc2Etc3Rh
-dGUgbWlnaHQgbm90IGhhcHBlbiBpZgo+IHRoZSBjb25maWcgZmlsZSBpcyBub3QgcHJlc2VudCku
-IEluc3RlYWQsIGl0IHNob3VsZCBiZSBjaGVja2luZyBmb3IKPiBzeXNpbml0LCB0byBlbnN1cmUg
-bG9jYWwtZnMuCgpUaGUgY29uZGl0aW9uIGlzIG5vdCB3cm9uZyBhbmQgaXQgaXMgZXhwZWN0ZWQg
-dGhhdCBib3RoIHNlcnZpY2VzCmFsc2Etc3RhdGUvYWxzYS1yZXN0b3JlIHdpbGwgYmUgaW4gdGhl
-IHN5c3RlbSwgZXZlbiBpZiBvbmUgaXMgZGlzYWJsZWQKdmlhIHRoZSBDb25kaXRpb25QYXRoRXhp
-c3RzIC4gVGhlIHN5c3RlbWQganVzdCBza2lwcyBzZXJ2aWNlcyB3aXRoIGZhbHNlCmNvbmRpdGlv
-bnMsIGJ1dCB0aGUgZGVwZW5kZW5jeSBpcyByZXRhaW5lZC4KClRoZSBtYWluIHJlYXNvbiB0byBz
-ZXJpYWxpemUgdGhlc2UgdHdvIHNlcnZpY2VzIHZpYSBkZXBlbmRlbmN5IGlzIHRvCmhhdmUgb25s
-eSBvbmUgc2VydmljZSBmb3IgdGhlIHNvdW5kIHN0YXRlIHJlc3RvcmUgKGFsc2EtcmVzdG9yZSkg
-Zm9yCm90aGVyIHN5c3RlbWQgdW5pdHMuIEZlZG9yYSB1c2VzIHRoaXMgaW4gY2FuYmVycmEtc3lz
-dGVtLWJvb3R1cC5zZXJ2aWNlCmZvciBhbiBleGFtcGxlLiBQZXJoYXBzIHRoaXMgZGVwZW5kZW5j
-eSBtYXkgYmUgc29sdmVkIHVzaW5nIGEgbmV3CnRhcmdldCwgYnV0IGl0IHNlZW1zIG1vcmUgY29t
-cGxpY2F0ZWQgdGhhbiB1c2UgMiBzZXJ2aWNlcyBhdCB0aGUgbW9tZW50CmZvciBtZS4KCj4gIC0K
-PiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3L2Fsc2Et
-dXRpbHMvMS4wLjI3LTIvbWFucGFnZV9maXhlcy5wYXRjaAo+IAo+ICAgRXh0ZW5zaXZlIGZvcm1h
-dHRpbmcgZml4ZXMgZm9yIGFsbCBhbHNhLXV0aWxzIG1hbnBhZ2VzLCBwbHVzIGFuCj4gRW5nbGlz
-aCBpbXByb3ZlbWVudCAoYWxsb3dzIHRvIOKGkiBhbGxvd3Mgb25lIHRvKS4KCk90aGVyIHBhdGNo
-ZXMgYXJlIG9rLi4KCj4gQUxTQS1QTFVHSU5TOgo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlh
-bi5vcmcvcGFja2FnZS9hbHNhLXBsdWdpbnMvMS4wLjI3LTIKPiA9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
-PiAKPiAgLQo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3Zp
-ZXcvYWxzYS1wbHVnaW5zLzEuMC4yNy0yL2FyY2FtLWF2X3VzZXNfcHRocmVhZHMucGF0Y2gKPiAg
-ICBGaXggbGlua2luZyB0byBhdm9pZCB1bmRlZmluZWQgc3ltYm9scyBpbiBhcmNhbS1hdi4KPiAK
-PiAgLQo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3ZpZXcv
-YWxzYS1wbHVnaW5zLzEuMC4yNy0yL3VzZV9saWJhdnV0aWwucGF0Y2gKPiAgICBUaGUgbGliYXYg
-Y2hhbmdlcyBpbiAxLjAuMjcgd2VyZSBpbnN1ZmZpY2llbnQ6IGE1MiB1c2VzIGF2X2ZyZWUoKSwK
-PiB3aGljaCBpcyBwYXJ0IG9mIGxpYmF2dXRpbC4gVGhlIHBhdGNoIG5lZWRzIHRvIGJlIGNvbXBs
-ZXRlZCB0byBsb29rIGZvcgo+IHRoZSBjb3JyZWN0IGhlYWRlciBmaWxlcywgdGhvdWdoLCBidXQg
-aXQncyBlbm91Z2ggdG8gZ2V0IHRoZSBwYWNrYWdlCj4gY29tcGlsaW5nIGluIG91ciBzZXR1cC4K
-Ckxvb2tzIGdvb2QuCgoKPiAKPiBBTFNBLVRPT0xTOiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJp
-YW4ub3JnL3BhY2thZ2UvYWxzYS10b29scy8xLjAuMjctMgo+IAo+ICAtCj4gaHR0cDovL3BhdGNo
-LXRyYWNrZXIuZGViaWFuLm9yZy9wYXRjaC9zZXJpZXMvdmlldy9hbHNhLXRvb2xzLzEuMC4yNy0y
-L2luaXRfbGl2ZV9iYXNoaXNtZml4LnBhdGNoCj4gICAgRml4IHRyaXZpYWwgYmFzaGlzbXMuCj4g
-Cj4gIC0KPiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3
-L2Fsc2EtdG9vbHMvMS4wLjI3LTIvbWFucGFnZV9zcGVsbGluZy5wYXRjaAo+ICAgIFNwZWxsaW5n
-IGZpeGVzLgo+IAo+ICAtCj4gaHR0cDovL3BhdGNoLXRyYWNrZXIuZGViaWFuLm9yZy9wYXRjaC9z
-ZXJpZXMvdmlldy9hbHNhLXRvb2xzLzEuMC4yNy0yL2xkMTBrMV9mb3JtYXQtc2VjdXJpdHkucGF0
-Y2gKPiAgICBNb3JlIC1XZXJyb3I9Zm9ybWF0LXNlY3VyaXR5IGlzc3Vlcy4KPiAKPiAgLQo+IGh0
-dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3ZpZXcvYWxzYS10b29s
-cy8xLjAuMjctMi9oZGEtdmVyYl9zeXNfaW9faC5wYXRjaAo+ICAgIEV4dGVuZCBjaGVjayBmb3Ig
-c3lzL2lvLmggZm9yIG90aGVyIHBsYXRmb3JtcyBpbiBEZWJpYW4gdGhhdCBkb24ndAo+IHN1cHBv
-cnQgaXQuIEFsdGVybmF0aXZlbHksIHRoZSBjaGVjayBjb3VsZCBiZSByZXZlcnNlZCB0byBjaGVm
-IGZvciB0aGUKPiBhcmNoaXRlY3R1cmVzIGN1cnJlbnRseSBrbm93IHRvIGhhdmUgdGhlIGhlYWRl
-ciwgYXMgc3RhdGVkIGluIHRoZQo+IGNvbW1lbnQuCj4gICAgVGhpcyBmaXhlcyB0aGUgYnVpbGQg
-aW4gYSBudW1iZXIgb2YgRGViaWFuIGFyY2hpdGVjdHVyZXMuCj4gCj4gIC0KPiBodHRwOi8vcGF0
-Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3L2Fsc2EtdG9vbHMvMS4wLjI3
-LTIvZW52eTI0Y29udHJvbF9jb25maWdfZGlyLnBhdGNoCj4gICAgVGhpcyBvbmUgaXMgdG8gYmUg
-ZGlzY3Vzc2VkLiBlbnZ5MjRjb250cm9sIGN1cnJlbnRseSBjcmVhdGVzIGEKPiB2aXNpYmxlIGRp
-cmVjdG9yeSBpbiAkSE9NRSwgd2hpY2ggaXMgcXVpdGUgdW5hY2NlcHRhYmxlLiBUaGlzIHBhdGNo
-IGp1c3QKPiBtb3ZlcyB0aGUgZGlyZWN0b3J5IHRvIGEgZG90ZGlyLCBidXQgYW4gdXBncmFkZSBw
-YXRoIG1pZ2h0IG5lZWQgdG8gYmUKPiBjb2RlZC4gSSB3b3VsZCBqdXN0IG1vdmUgdGhlIHRoaW5n
-IGF3YXkuCgpBcyBNYXJrIHN1Z2dlc3RlZCwgdGhlIGVudnkyNGNvbnRyb2wgc2hvdWxkIGxvb2sg
-Zm9yIHRoZSBvbGQgY29uZmlnCmZpbGVzLCB0b28uCgo+ICAtCj4gaHR0cDovL3BhdGNoLXRyYWNr
-ZXIuZGViaWFuLm9yZy9wYXRjaC9zZXJpZXMvdmlldy9hbHNhLXRvb2xzLzEuMC4yNy0yL2FzMTBr
-MV9leGFtcGxlc19NYWtlZmlsZS5wYXRjaAo+ICAgRm9yIGNvbnZlbmllbmNlIHRvIG91ciBidWls
-ZCBzeXN0ZW1zLCBhZGQgYW4gYWxpYXMgZm9yIGNsZWFuLgo+IAo+ICAtCj4gaHR0cDovL3BhdGNo
-LXRyYWNrZXIuZGViaWFuLm9yZy9wYXRjaC9zZXJpZXMvdmlldy9hbHNhLXRvb2xzLzEuMC4yNy0y
-L3VzeDJ5bG9hZGVyX3VkZXYucGF0Y2gKPiAgICBXaGlsZSBub3QgcmVhZHkgZm9yIHN1Ym1pc3Np
-b24sIHRoaXMgb25lIHByb2JhYmx5IHJldmVhbHMgYSBoYXJkY29kZWQKPiBwYXRoIHRoYXQgc2hv
-dWxkIGJlIG1hZGUgY29uZmlndXJhYmxlLCBpZiBub3QgYWxsIGRpc3Ryb3Mgc3RvcmUgZmlybXdh
-cmUKPiBpbiB0aGlzIGRpci4gTm90IHN1cmUgYWJvdXQgRmVkb3JhLCBhdCBsZWFzdC4gL2V0Yy9o
-b3RwbHVnIGxvb2tzIHBsYWluCj4gb2xkLCBhbnl3YXkuCgpPdGhlciBwYXRjaGVzIGxvb2sgZ29v
-ZCwgcGxlYXNlLCBwb3N0LgoKPiAKPiBBTFNBLU9TUzogaHR0cDovL3BhdGNoLXRyYWNrZXIuZGVi
-aWFuLm9yZy9wYWNrYWdlL2Fsc2Etb3NzLzEuMC4yNS0xCj4gPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+ICAgLQo+IGh0
-dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVzL3ZpZXcvYWxzYS1vc3Mv
-MS4wLjI1LTEvYW9zc193cmFwX3dhcm5pbmcucGF0Y2gKPiAKPiAgICBNYWtlIGl0IG9idmlvdXMg
-YW9zcyBpcyBub3QgZG9pbmcgYW55dGhpbmcgdXNlZnVsIGlmIEFMU0EgaXMgbm90Cj4gcHJlc2Vu
-dC4KPiAKPiAgLQo+IGh0dHA6Ly9wYXRjaC10cmFja2VyLmRlYmlhbi5vcmcvcGF0Y2gvc2VyaWVz
-L3ZpZXcvYWxzYS1vc3MvMS4wLjI1LTEvYW9zc19saWJfcGF0aC5wYXRjaAo+ICAgIEZpeCBwYXRo
-IHRvIGxpYmFvc3Mgb24gdGhlIG11bHRpYXJjaCBjYXNlLgoKCk5vIG9iamVjdGlvbnMsIHBsZWFz
-ZSwgcG9zdC4KCgkJCQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4
-LmN6PgpMaW51eCBLZXJuZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQs
-IEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 04/20/2013 07:29 PM, Lars-Peter Clausen wrote:
+> This allows us to access the DAI DMA data when we create the PCM. We'll use
+> this when converting ep39xx to generic DMA engine PCM driver.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
+
+Hi Mark,
+
+it looks like this patch was lost. The next one in this series which has a
+dependency on this one was applied though. Should I resend the patch?
+
+- Lars
+
+
+> ---
+> Changes since v1:
+> 	* Fix a mis-rebase which mixed up bits from this patch with the next one
+> ---
+>  sound/soc/cirrus/ep93xx-ac97.c | 14 ++++----------
+>  sound/soc/cirrus/ep93xx-i2s.c  | 14 ++++----------
+>  2 files changed, 8 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
+> index 8d30886..38cf335 100644
+> --- a/sound/soc/cirrus/ep93xx-ac97.c
+> +++ b/sound/soc/cirrus/ep93xx-ac97.c
+> @@ -314,22 +314,15 @@ static int ep93xx_ac97_trigger(struct snd_pcm_substream *substream,
+>  	return 0;
+>  }
+>  
+> -static int ep93xx_ac97_startup(struct snd_pcm_substream *substream,
+> -			       struct snd_soc_dai *dai)
+> +static int ep93xx_ac97_dai_probe(struct snd_soc_dai *dai)
+>  {
+> -	struct ep93xx_dma_data *dma_data;
+> +	dai->playback_dma_data = &ep93xx_ac97_pcm_out;
+> +	dai->capture_dma_data = &ep93xx_ac97_pcm_in;
+>  
+> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -		dma_data = &ep93xx_ac97_pcm_out;
+> -	else
+> -		dma_data = &ep93xx_ac97_pcm_in;
+> -
+> -	snd_soc_dai_set_dma_data(dai, substream, dma_data);
+>  	return 0;
+>  }
+>  
+>  static const struct snd_soc_dai_ops ep93xx_ac97_dai_ops = {
+> -	.startup	= ep93xx_ac97_startup,
+>  	.trigger	= ep93xx_ac97_trigger,
+>  };
+>  
+> @@ -337,6 +330,7 @@ static struct snd_soc_dai_driver ep93xx_ac97_dai = {
+>  	.name		= "ep93xx-ac97",
+>  	.id		= 0,
+>  	.ac97_control	= 1,
+> +	.probe		= ep93xx_ac97_dai_probe,
+>  	.playback	= {
+>  		.stream_name	= "AC97 Playback",
+>  		.channels_min	= 2,
+> diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+> index 83075b3..e17b905 100644
+> --- a/sound/soc/cirrus/ep93xx-i2s.c
+> +++ b/sound/soc/cirrus/ep93xx-i2s.c
+> @@ -60,7 +60,6 @@ struct ep93xx_i2s_info {
+>  	struct clk			*mclk;
+>  	struct clk			*sclk;
+>  	struct clk			*lrclk;
+> -	struct ep93xx_dma_data		*dma_data;
+>  	void __iomem			*regs;
+>  };
+>  
+> @@ -139,15 +138,11 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
+>  	}
+>  }
+>  
+> -static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
+> -			      struct snd_soc_dai *dai)
+> +static int ep93xx_i2s_dai_probe(struct snd_soc_dai *dai)
+>  {
+> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> -	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	dai->playback_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+> +	dai->capture_dma_data = &ep93xx_i2s_dma_data[SNDRV_PCM_STREAM_CAPTURE];
+>  
+> -	snd_soc_dai_set_dma_data(cpu_dai, substream,
+> -				 &info->dma_data[substream->stream]);
+>  	return 0;
+>  }
+>  
+> @@ -338,7 +333,6 @@ static int ep93xx_i2s_resume(struct snd_soc_dai *dai)
+>  #endif
+>  
+>  static const struct snd_soc_dai_ops ep93xx_i2s_dai_ops = {
+> -	.startup	= ep93xx_i2s_startup,
+>  	.shutdown	= ep93xx_i2s_shutdown,
+>  	.hw_params	= ep93xx_i2s_hw_params,
+>  	.set_sysclk	= ep93xx_i2s_set_sysclk,
+> @@ -349,6 +343,7 @@ static const struct snd_soc_dai_ops ep93xx_i2s_dai_ops = {
+>  
+>  static struct snd_soc_dai_driver ep93xx_i2s_dai = {
+>  	.symmetric_rates= 1,
+> +	.probe		= ep93xx_i2s_dai_probe,
+>  	.suspend	= ep93xx_i2s_suspend,
+>  	.resume		= ep93xx_i2s_resume,
+>  	.playback	= {
+> @@ -403,7 +398,6 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	dev_set_drvdata(&pdev->dev, info);
+> -	info->dma_data = ep93xx_i2s_dma_data;
+>  
+>  	err = snd_soc_register_dai(&pdev->dev, &ep93xx_i2s_dai);
+>  	if (err)
