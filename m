@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/8] ASoC: ep93xx: Setup dma data in DAI
- probe
-Date: Mon, 13 May 2013 17:33:04 +0400
-Message-ID: <20130513133304.GG6836@sirena.org.uk>
-References: <1366478947-9377-1-git-send-email-lars@metafoo.de>
- <1366478947-9377-5-git-send-email-lars@metafoo.de>
- <519095CD.3080606@metafoo.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 5/5] ALSA/i915: Check power well API
+ existense before calling
+Date: Mon, 13 May 2013 13:43:04 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC489010E5C26B@SHSMSX102.ccr.corp.intel.com>
+References: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1368430648-2353-6-git-send-email-xingchao.wang@linux.intel.com>
+ <5190A43B.8040106@canonical.com>
+ <46B810F6945F7C4788E11DCE57EC489010E5C1B8@SHSMSX102.ccr.corp.intel.com>
+ <s5hbo8frs59.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3585252803707804816=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id BB4732617B6
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 15:33:10 +0200 (CEST)
-In-Reply-To: <519095CD.3080606@metafoo.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E642B2617B6
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 15:43:09 +0200 (CEST)
+In-Reply-To: <s5hbo8frs59.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +26,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Barnes,
+ Jesse" <jesse.barnes@intel.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, David Henningsson <david.henningsson@canonical.com>, "Zanoni,
+ Paulo R" <paulo.r.zanoni@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3585252803707804816==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fnm8lRGFTVS/3GuM"
-Content-Disposition: inline
+Hi Takashi,
 
 
---Fnm8lRGFTVS/3GuM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, May 13, 2013 8:17 PM
+> To: Wang, Xingchao
+> Cc: David Henningsson; Wang Xingchao; alsa-devel@alsa-project.org;
+> daniel@ffwll.ch; Lin, Mengdong; intel-gfx@lists.freedesktop.org; Li, Jocelyn;
+> Barnes, Jesse; Girdwood, Liam R; Zanoni, Paulo R
+> Subject: Re: [alsa-devel] [PATCH 5/5] ALSA/i915: Check power well API
+> existense before calling
+> 
+> At Mon, 13 May 2013 11:55:14 +0000,
+> Wang, Xingchao wrote:
+> >
+> > Hi David,
+> >
+> >
+> > > -----Original Message-----
+> > > From: alsa-devel-bounces@alsa-project.org
+> > > [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of David
+> > > Henningsson
+> > > Sent: Monday, May 13, 2013 4:29 PM
+> > > To: Wang Xingchao
+> > > Cc: alsa-devel@alsa-project.org; daniel@ffwll.ch; tiwai@suse.de;
+> > > Lin, Mengdong; intel-gfx@lists.freedesktop.org; Li, Jocelyn; Barnes,
+> > > Jesse; Girdwood, Liam R; Zanoni, Paulo R
+> > > Subject: Re: [alsa-devel] [PATCH 5/5] ALSA/i915: Check power well
+> > > API existense before calling
+> > >
+> > > On 05/13/2013 09:37 AM, Wang Xingchao wrote:
+> > > > I915 module maybe loaded after snd_hda_intel, the power-well API
+> > > > doesnot exist in such case. This patch intended to avoid loading
+> > > > dependency between snd-hda-intel and i915 module.
+> > >
+> > > Hi Xingchao and thanks for working on this.
+> > >
+> > > This patch seems to re-do some of the work done in other patches (a
+> > > lot of lines removed), so it's a little hard to follow. But I'll try
+> > > to write some overall comments on how I have envisioned things...
+> > >
+> > > 1. I don't think there's any need to create an additional kernel
+> > > module, we can just let hda_i915.c be in the snd-hda-intel.ko
+> > > module, and only compile it if
+> > > DRM_I915 is defined.
+> > >
+> > > 2. We don't need an IS_HSW macro on the audio side. Instead declare
+> > > a new AZX_DCAPS_NEED_I915_POWER (or similar) driver quirk.
+> > >
+> > > 3. Somewhere in the beginning of the probing in hda_intel.c, we'll
+> > > need something like:
+> > >
+> > > if (driver_caps & AZX_DCAPS_NEED_I915_POWER)
+> > >    hda_i915_init(chip);
+> > >
+> > > 4. The hda_i915_init does not need to be exported (they're now both
+> > > in the same module). hda_i915.h could have something like:
+> > >
+> > > #ifdef DRM_I915
+> > >    void hda_i915_init(chip);
+> > > #else
+> > >    #define hda_i915_init(chip) do {} while(0) #endif
+> >
+> > Thanks your suggestions. Will change them in next version.
+> 
+> A question is what to do if a Haswell controller is loaded without
+> i915 driver.  Shouldn't we warn?
 
-On Mon, May 13, 2013 at 09:27:09AM +0200, Lars-Peter Clausen wrote:
-> On 04/20/2013 07:29 PM, Lars-Peter Clausen wrote:
-> > This allows us to access the DAI DMA data when we create the PCM. We'll use
-> > this when converting ep39xx to generic DMA engine PCM driver.
+I think the dependency between snd-hda-intel and i915 module is that
+I915 module *must* be loaded, otherwise Haswell HD-A controller and codec
+would both fail. There's an alternative solution is that power-well enabled through BIOS setting by default.
+In latter case the Audio controller and codecs registers maybe accessible but the functionality would not, it donot make sense.
 
-> it looks like this patch was lost. The next one in this series which has a
-> dependency on this one was applied though. Should I resend the patch?
+The default loading sequence is i915 first in my test. 
+So for your question, I think there should be a warning about the loading sequence at first; then if trying load i915 fail, probe failed here.
 
-You need to rebase it into the current code, if it's been discared it's
-a result of the rebase into v3.10-rc1 - I didn't have to do any fixups
-for ep83xx.
+Thanks
+--xingchao
 
---Fnm8lRGFTVS/3GuM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRkOuIAAoJELSic+t+oim9LL4P/2ef3cynJCBmxmL06hObXo2B
-K/iehMwCeVGdD8DYNW+sdj9VZAUvgVq0Rwzlni6ItGbJ5gV0OpAVYjctzq/kb21/
-+bot1UWVlY+HJogyrXzrqL0IRPNoAAFWLQPkvSEtfZafpKekMyW4D0AElk/7PEx/
-AQu4dHslABXE9zojMq0nXa5u9mFi+fbcuYJf6y3EQjx0jo1uv0BjCQuEBSgh1DIT
-sWrMYOrOM9t6SQc5u9YeVfHmxQPw/ftDiAQwRWLiw7aseQ44y6YdmcwgngcTNpch
-sx+iwjPCcKccoMenMi3uH5AZC86BnzLwGdH5ADqUSJfm9b7e2iK0vla9/ch2rgIY
-jlP3gLoVwQ1vN4rNRBFQH5FP97GPy0mjiZcINT1VmWpRISdsraILkAPoFnQ/uprq
-UD8HqcwqjRZsXh5U87y3SUsPCfPhoOaq/ERwO1AiADd9lEruEGbyanWq6CvEUS23
-C1i+uKMaUh6KWLxZiLuymmfRfTD4buNBe5PMaMntbdSES6EirsgRuRIilUw5eHYM
-sjnjFBgvCqyEvkGYHP/CHLVM/FU5x1dvZteIYzuihDSuLhXz2AcUHnQihRCXLgqA
-5kPQVtfa8Mn3w21miexgn36OHWXYJiwi4ZJuQRgMuW02VbQ9lMDuGRO3B9ngs6B9
-RjTETDXfmdBEodVrAaNT
-=pFVg
------END PGP SIGNATURE-----
-
---Fnm8lRGFTVS/3GuM--
-
---===============3585252803707804816==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3585252803707804816==--
+> 
+> 
+> Takashi
