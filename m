@@ -1,98 +1,234 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: =?utf-8?q?=5BPATCH_0/5=5D_Power-well_API_implementat?=
-	=?utf-8?q?ion_for_Haswell?=
-Date: Mon, 13 May 2013 15:37:23 +0800
-Message-ID: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/5] drm/915: Add private api for power well
+	usage
+Date: Mon, 13 May 2013 15:37:24 +0800
+Message-ID: <1368430648-2353-2-git-send-email-xingchao.wang@linux.intel.com>
+References: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ADD0260864
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 09:38:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 To: tiwai@suse.de, daniel@ffwll.ch, liam.r.girdwood@intel.com
 Cc: alsa-devel@alsa-project.org, paulo.r.zanoni@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, jesse.barnes@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaHNldCBpbnRlbmRlZCB0byBBZGQgcG93ZXItd2VsbCBhcGkgc3VwcG9ydCBmb3Ig
-SGFzd2VsbC4KCkZvciBJbnRlbCBIYXN3ZWxsICwg4oCccG93ZXIgd2VsbOKAnSBpbiBHUFUgaGFz
-IGltcGFjdCBmb3IgYm90aCBEaXNwbGF5IEhELUEKY29udHJvbGxlciBhbmQgY29kZWNzLiBHZngg
-ZHJpdmVyIGhhcyBwb3dlciB3ZWxsIGZlYXR1cmUgZW5hbGVkIGJ1dCBkb25vdAp0aGluayBtdWNo
-IGFib3V0IGF1ZGlvIHNpZGUuIFRoZSBpc3N1ZSBpcyBpZiBnZnggZHJpdmVyIGRpc2FibGVkIHBv
-d2VyIHdlbGwsIAphdWRpbyBzaWRlIHdvdWxkIGxvc2UgcG93ZXIgYW5kIGNyYXNoLgoKRGF2aWQg
-aGVscGVkIGEgaW5pdGlhbCBwYXRjaCB0byBhZGQgZXh0ZXJuYWwgbW9kdWxlIHBhdGNoX2hkbWlf
-aTkxNSwgd2hpY2gKYnVpbHQgaW4gb25seSBEUk1fSTkxNSBhbmQgSERNSV9DT0RFQyBlbmFibGVk
-LCAgVGhpcyBwYXRjaHNldCB3YXMgYmFzZWQgb24KRGF2aWTigJlzIHdvcmssIHRoYW5rcyBEYXZp
-ZCEgCgpBcyBjb2RlYyBkZXBlbmRzIG9uIGNvbnRyb2xsZXLigJlzIHBvd2VyLCBzbyB3ZSByZW1v
-dmVkIHRoZSBwbSBjYWxsYmFjawp0ZW1wb3JhcnkuIFNvIG9ubHkgSERBIGNvbnRyb2xsZXIgZHJp
-dmVyIHdvdWxkIHN1Y2ggbmVlZCB0byByZXF1ZXN0L3JlbGVhc2UKcG93ZXIsIHRoZSBjb2RlYyB3
-aWxsIGFsd2F5cyBiZSBzYWZlLgoKR2Z4IGRyaXZlciB3b3VsZCBzaHV0ZG93biBwb3dlciB3ZWxs
-IGluIGJlbG93IGNhc2VzLCBhdWRpbyBkcml2ZXIKd291bGQgYmUgZGFtYWdlZCBhcyBsb3Npbmcg
-cG93ZXIgdG90YWxseSB3aXRob3V0IGFueSBub3RpZmljYXRpb24uIAooVGhlcmUgd291bGQgYmUg
-bW9yZSBjYXNlcyBub3QgY292ZXJlZCwgd2VsY29tZSBtb3JlIGNvbW1lbnRzIGhlcmUuCiBpIGNh
-biB2ZXJpZnkgdGhlIHBhdGNoc2V0IHVuZGVyIG1vcmUgY2FzZXMpCi0JT25seSBlRFAgcG9ydCBh
-Y3RpdmUKLQlIRE1JIG1vbml0b3IgaG90IHBsdWcKLQlTeXN0ZW0gc3VzcGVuZAoKQWxzbyB0aGVy
-ZeKAmXJlIHNvbWUgY2FsbGluZyBmcm9tIGk5MTUgdG8gZGlzYWJsZSBwb3dlciB3ZWxsIGZyb20g
-dGltZSB0byB0aW1lLAp0aGlzIHBhdGNoc2V0IHdvdWxkIHJlamVjdCB0aG9zZSBvcGVyYXRpb25z
-IGlmIGF1ZGlvIHVzaW5nIHBvd2VyIHdlbGwsIGJ1dCBpdCB3aWxsIApyZWNvcmQgaTkxNSBkcml2
-ZXLigJlzIHJlcXVlc3QgYW5kIHNodXQgZG93biBwb3dlciBpZiBhdWRpbyByZWxlYXNlIGl0LgoK
-QmFzaWNhbGx5LCBoZXJlJ3MgdGhlIGxhdGVzdCB3b3JraW5nIHN0YXR1cyBvbiBteSBzaWRlOgoK
-SSB0ZXN0ZWQgdGhlIHBvd2VyIHdlbGwgZmVhdHVyZSBvbiBIYXN3ZWxsIFVMVCBib2FyZCwgdGhl
-cmUncyBvbmx5IG9uZSBlRFAKcG9ydCB1c2VkLiBXaXRob3V0IHRoaXMgcGF0Y2ggYW5kIHdlIGVu
-YWJsZWQgcG93ZXIgd2VsbCBmZWF0dXJlLCBnZnggZHJpdmVyIHdpbGwgc2h1dGRvd24KcG93ZXIg
-d2VsbCwgYXVkaW8gZHJpdmVyIHdpbGwgY3Jhc2guCkFwcGxpZWQgdGhpcyBwYXRjaCwgZGlzcGxh
-eSBhdWRpbyBkcml2ZXIgd2lsbCByZXF1ZXN0IHBvd2VyIHdlbGwgb24gYmVmb3JlCmluaXRpYWxp
-emUgdGhlIGNhcmQuIEluIGdmeCBzaWRlLCBpdCB3aWxsIGVuYWJsZSBwb3dlciB3ZWxsLgoKQWxz
-byBwb3dlcl9zYXZlIGZlYXR1cmUgaW4gYXVkaW8gc2lkZSBzaG91bGQgYmUgZW5hYmxlZCwgSSBz
-ZXQgIjUiIHNlY29uZCB0bwpsZXQgY29kZWMgZW50ZXIgc3VzcGVuZCB3aGVuIGZyZWUgZm9yIDVz
-IGxvbmcuCkF1ZGlvIGNvbnRyb2xsZXIgZHJpdmVyIGRldGVjdHMgYWxsIGNvZGVjcyBhcmUgc3Vz
-cGVuZGVkIGl0IHdpbGwgcmVsZWFzZSBwb3dlcgp3ZWxsIGFuZCBzdXNwZW5kIHRvby4gR2Z4IGRy
-aXZlciB3aWxsIHJlY2VpdmUgdGhlIHJlcXVlc3QgYW5kIHNodXQgZG93biBwb3dlcgp3ZWxsLgoK
-SWYgdXNlciB0cmlnZ2VyIHNvbWUgYXVkaW8gb3BlcmF0aW9ucyhjYXQgY29kZWMjIGluZm8pLCBh
-dWRpbyBjb250cm9sbGVyCmRyaXZlciB3aWxsIHJlcXVlc3QgcG93ZXIgd2VsbCBhZ2Fpbi4uLgoK
-SWYgZ2Z4IHNpZGUgZGVjaWRlZCB0byBkaXNhYmxlIHBvd2VyIHdlbGwgbm93LCB3aGlsZSBhdWRp
-byBpcyBpbiB1c2UsIHBvd2VyCndlbGwgd291bGQgYmUga2VwdCBvbi4KCihpIHdpbGwgc2VuZCBv
-dXQgYSBkb2N1bWVudGF0aW9uIHdoaWNoIGhhcyBzb21lIGxvZ3MgYW5kIGFuYWx5c2lzIHRoZXJl
-LikKCkdlbmVyYWxseSBhdWRpbyBkcnZpZXIgd2lsbCByZXF1ZXN0IHBvd2VyIHdlbGwgb24gbmVl
-ZCBhbmQgcmVsZWFzZSBpdAppbW1lZGlhdGVseSBhZnRlciBzdXNwZW5kLiBHZnggc2hvdWxkIG1h
-a2UgZGVjaXNpb24gYXQgaGlzIHNpZGUuCgpUaGUgbmV3IGludHJvZHVjZWQgbW9kdWxlICJoZGEt
-aTkxNSIgaGFzIGRlcGVuZGVuY3kgb24gaTkxNSwgb25seSBidWlsdCBpbgp3aGVuIGk5MTUgZW5h
-YmxlZC4gU28gaXQncyBzYWZlIGZvciBjYWxsLgoKRm9yIG5vbi1IYXN3ZWxsIHBsYXRmb3JtLCBw
-b3dlciB3ZWxsIGlzIG5vIG5lZWQgYXRtLiBFdmVuIHRoZSBtb2R1bGUgaXMgYnVpbHQgaW4Kd3Jv
-bmdseSwgaGRhIGRyaXZlciB3aWxsIG5vdCBjYWxsIHRoZSBwb3dlciB3ZWxsIGFwaS4gQWxzbyBn
-Znggd2lsbCByZWplY3QgCnBvd2VyIHdlbGwgcmVxdWVzdCBhdCBpdHMgc2lkZSwgc28gaXQncyBz
-YWZlIHRvby4KClRoaXMgcGF0Y2ggY291bGQgbWFrZSBzdXJlIGl0IHdvdWxkIG5vdCBjYXVzZSBk
-YW1hZ2Ugd2hlbiBzbmQtaGRhLWludGVsIGFuZAppOTE1IG1vZHVsZSBsb2FkZWQgaW4gYW55IG9y
-ZGVyLiBJZiBpOTE1IG1vZHVsZSBsb2FkZWQgYXQgZmlyc3QsIGl0J3Mgc2FmZSB0bwpnZXQgdGhl
-IHN5bWJvbC4gSWYgc25kLWhkYS1pbnRlbCBsb2FkZWQgZmlyc3QsIGl0IHdpbGwgdHJ5IHRvIGxv
-YWQgaTkxNQptYW51YWxseSBhbmQgZ2V0IG5vdGlmaWNhdGlvbiB3aGVuIHRoZSBwb3dlci13ZWxs
-IGFwaSBhcmUgZXhwb3J0ZWQuCgpXYW5nIFhpbmdjaGFvICg1KToKICBkcm0vOTE1OiBBZGQgcHJp
-dmF0ZSBhcGkgZm9yIHBvd2VyIHdlbGwgdXNhZ2UKICBBTFNBOiBoZGEgLSBBZGQgZXh0ZXJuYWwg
-bW9kdWxlIGhkYS1pOTE1IGZvciBwb3dlciB3ZWxsCiAgQUxTQTogaGRhIC0gUG93ZXIgd2VsbCBy
-ZXF1ZXN0L3JlbGVhc2UgZm9yIGhkYSBjb250cm9sbGVyCiAgQUxTQTogaGRhIC0gRml4IG1vZHVs
-ZSBkZXBlbmRlbmN5IHdpdGggZ2Z4IGk5MTUKICBBTFNBL2k5MTU6IENoZWNrIHBvd2VyIHdlbGwg
-QVBJIGV4aXN0ZW5zZSBiZWZvcmUgY2FsbGluZwoKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVf
-ZG1hLmMgIHwgICAgMyArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCB8ICAgIDIg
-KwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfcG0uYyAgfCAgMTM5ICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKy0tCiBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vyd2VsbC5oICAg
-ICB8ICAgNDAgKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvS2NvbmZpZyAgICAgICAgICAgIHwg
-ICAxMyArKysrCiBzb3VuZC9wY2kvaGRhL01ha2VmaWxlICAgICAgICAgICB8ICAgIDYgKysKIHNv
-dW5kL3BjaS9oZGEvaGRhX2k5MTUuYyAgICAgICAgIHwgICA5MiArKysrKysrKysrKysrKysrKysr
-KysrKysrCiBzb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmggICAgICAgICB8ICAgMTUgKysrKwogc291
-bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyAgICAgICAgfCAgIDIyICsrKysrKwogOSBmaWxlcyBjaGFu
-Z2VkLCAzMjUgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vyd2VsbC5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQv
-cGNpL2hkYS9oZGFfaTkxNS5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvcGNpL2hkYS9oZGFf
-aTkxNS5oCgotLSAKMS43LjkuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Haswell Display audio depends on power well in graphic side, it should
+request power well before use it and release power well after use.
+I915 will not shutdown power well if it detects audio is using.
+This patch protects display audio crash for Intel Haswell mobile
+C3 stepping board.
+
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ drivers/gpu/drm/i915/intel_pm.c |  127 ++++++++++++++++++++++++++++++++++++---
+ include/drm/i915_powerwell.h    |   39 ++++++++++++
+ 2 files changed, 159 insertions(+), 7 deletions(-)
+ create mode 100644 include/drm/i915_powerwell.h
+
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index 0f4b46e..642c4b6 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -4344,18 +4344,12 @@ bool intel_using_power_well(struct drm_device *dev)
+ 		return true;
+ }
+ 
+-void intel_set_power_well(struct drm_device *dev, bool enable)
++void enable_power_well(struct drm_device *dev, bool enable)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	bool is_enabled, enable_requested;
+ 	uint32_t tmp;
+ 
+-	if (!HAS_POWER_WELL(dev))
+-		return;
+-
+-	if (!i915_disable_power_well && !enable)
+-		return;
+-
+ 	tmp = I915_READ(HSW_PWR_WELL_DRIVER);
+ 	is_enabled = tmp & HSW_PWR_WELL_STATE;
+ 	enable_requested = tmp & HSW_PWR_WELL_ENABLE;
+@@ -4378,6 +4372,125 @@ void intel_set_power_well(struct drm_device *dev, bool enable)
+ 	}
+ }
+ 
++/* Global drm_device for display audio drvier usage */
++static struct drm_device *power_well_device;
++/* Lock protecting power well setting */
++DEFINE_SPINLOCK(powerwell_lock);
++static bool i915_power_well_using;
++
++struct i915_power_well {
++	int user_cnt;
++	struct list_head power_well_list;
++};
++
++static struct i915_power_well hsw_power = {
++	.user_cnt = 0,
++	.power_well_list = LIST_HEAD_INIT(hsw_power.power_well_list),
++};
++
++struct i915_power_well_user {
++	char name[16];
++	struct list_head list;
++};
++
++void i915_request_power_well(const char *name)
++{
++	struct i915_power_well_user *user;
++
++	DRM_DEBUG_KMS("request power well for %s\n", name);
++	spin_lock_irq(&powerwell_lock);
++	if (!power_well_device)
++		goto out;
++
++	if (!IS_HASWELL(power_well_device))
++		goto out;
++
++	list_for_each_entry(user, &hsw_power.power_well_list, list) {
++		if (!strcmp(user->name, name)) {
++			goto out;
++		}
++	}
++
++	user = kzalloc(sizeof(*user), GFP_KERNEL);
++	if (user == NULL) {
++		goto out;
++	}
++	strcpy(user->name, name);
++
++	list_add(&user->list, &hsw_power.power_well_list);
++	hsw_power.user_cnt++;
++
++	if (hsw_power.user_cnt == 1) {
++		enable_power_well(power_well_device, true);
++		DRM_DEBUG_KMS("%s set power well on\n", user->name);
++	}
++out:
++	spin_unlock_irq(&powerwell_lock);
++	return;
++}
++EXPORT_SYMBOL_GPL(i915_request_power_well);
++
++void i915_release_power_well(const char *name)
++{
++	struct i915_power_well_user *user;
++
++	DRM_DEBUG_KMS("release power well from %s\n", name);
++	spin_lock_irq(&powerwell_lock);
++	if (!power_well_device)
++		goto out;
++
++	if (!IS_HASWELL(power_well_device))
++		goto out;
++
++	list_for_each_entry(user, &hsw_power.power_well_list, list) {
++		if (!strcmp(user->name, name)) {
++			list_del(&user->list);
++			hsw_power.user_cnt--;
++			DRM_DEBUG_KMS("Releaseing power well:%s, user_cnt:%d, i915 using:%d\n",
++					user->name, hsw_power.user_cnt, i915_power_well_using);
++			if (!hsw_power.user_cnt && !i915_power_well_using)
++				enable_power_well(power_well_device, false);
++			goto out;
++		}
++	}
++
++	DRM_DEBUG_KMS("power well %s doesnot exist\n", name);
++out:
++	spin_unlock_irq(&powerwell_lock);
++	return;
++}
++EXPORT_SYMBOL_GPL(i915_release_power_well);
++
++/* TODO: Call this when i915 module unload */
++void remove_power_well(void)
++{
++	spin_lock_irq(&powerwell_lock);
++	i915_power_well_using = false;
++	power_well_device = NULL;
++	spin_unlock_irq(&powerwell_lock);
++}
++
++void intel_set_power_well(struct drm_device *dev, bool enable)
++{
++	if (!HAS_POWER_WELL(dev))
++		return;
++
++	spin_lock_irq(&powerwell_lock);
++	power_well_device = dev;
++	i915_power_well_using = enable;
++	if (!enable && hsw_power.user_cnt) {
++		DRM_DEBUG_KMS("Display audio power well busy using now\n");
++		goto out;
++	}
++
++	if (!i915_disable_power_well && !enable)
++		goto out;
++	enable_power_well(dev, enable);
++out:
++	spin_unlock_irq(&powerwell_lock);
++	return;
++}
++
+ /*
+  * Starting with Haswell, we have a "Power Down Well" that can be turned off
+  * when not needed anymore. We have 4 registers that can request the power well
+diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+new file mode 100644
+index 0000000..87e0a2e
+--- /dev/null
++++ b/include/drm/i915_powerwell.h
+@@ -0,0 +1,39 @@
++/**************************************************************************
++ *
++ * Copyright 2013 Intel Inc.
++ * All Rights Reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the
++ * "Software"), to deal in the Software without restriction, including
++ * without limitation the rights to use, copy, modify, merge, publish,
++ * distribute, sub license, and/or sell copies of the Software, and to
++ * permit persons to whom the Software is furnished to do so, subject to
++ * the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the
++ * next paragraph) shall be included in all copies or substantial portions
++ * of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM,
++ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
++ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++ * USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *
++ *
++ **************************************************************************/
++/*
++ * Authors:
++ * Wang Xingchao <xingchao.wang@intel.com>
++ */
++
++#ifndef _I915_POWERWELL_H_
++#define _I915_POWERWELL_H_
++
++extern void i915_request_power_well(const char *name);
++extern void i915_release_power_well(const char *name);
++
++#endif				/* _I915_POWERWELL_H_ */
+-- 
+1.7.9.5
