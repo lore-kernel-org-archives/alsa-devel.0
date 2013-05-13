@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Support EFS mode for FLL
-Date: Mon, 13 May 2013 09:38:47 +0400
-Message-ID: <1368423527-12354-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASOC bug? maybe no need to set bias_level to
+	PREPARE.
+Date: Mon, 13 May 2013 09:55:08 +0400
+Message-ID: <20130513055508.GE6836@sirena.org.uk>
+References: <027FCDD209E4CC4181A7B9D5DBB88057249C05D9@SHSMSX102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3602485389132837966=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id CE201261622
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:38:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D644261AE7
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:55:14 +0200 (CEST)
+In-Reply-To: <027FCDD209E4CC4181A7B9D5DBB88057249C05D9@SHSMSX102.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,119 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Zhang, Ning A" <ning.a.zhang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Later WM8994 devices support an enhanced accuracy FLL divisor mode called
-EFS which allows more precise selection of fractional source to output
-ratios. Support this on relevant devices.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   49 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 13 deletions(-)
+--===============3602485389132837966==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CGDBiGfvSTbxKZlW"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 1eb152c..9f32dd8 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -16,6 +16,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/gcd.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-@@ -2005,15 +2006,16 @@ struct fll_div {
- 	u16 outdiv;
- 	u16 n;
- 	u16 k;
-+	u16 lambda;
- 	u16 clk_ref_div;
- 	u16 fll_fratio;
- };
- 
--static int wm8994_get_fll_config(struct fll_div *fll,
-+static int wm8994_get_fll_config(struct wm8994 *control, struct fll_div *fll,
- 				 int freq_in, int freq_out)
- {
- 	u64 Kpart;
--	unsigned int K, Ndiv, Nmod;
-+	unsigned int K, Ndiv, Nmod, gcd_fll;
- 
- 	pr_debug("FLL input=%dHz, output=%dHz\n", freq_in, freq_out);
- 
-@@ -2062,20 +2064,30 @@ static int wm8994_get_fll_config(struct fll_div *fll,
- 	Nmod = freq_out % freq_in;
- 	pr_debug("Nmod=%d\n", Nmod);
- 
--	/* Calculate fractional part - scale up so we can round. */
--	Kpart = FIXED_FLL_SIZE * (long long)Nmod;
-+	switch (control->type) {
-+	case WM8994:
-+		/* Calculate fractional part - scale up so we can round. */
-+		Kpart = FIXED_FLL_SIZE * (long long)Nmod;
- 
--	do_div(Kpart, freq_in);
-+		do_div(Kpart, freq_in);
- 
--	K = Kpart & 0xFFFFFFFF;
-+		K = Kpart & 0xFFFFFFFF;
- 
--	if ((K % 10) >= 5)
--		K += 5;
-+		if ((K % 10) >= 5)
-+			K += 5;
- 
--	/* Move down to proper range now rounding is done */
--	fll->k = K / 10;
-+		/* Move down to proper range now rounding is done */
-+		fll->k = K / 10;
- 
--	pr_debug("N=%x K=%x\n", fll->n, fll->k);
-+		pr_debug("N=%x K=%x\n", fll->n, fll->k);
-+
-+	default:
-+		gcd_fll = gcd(freq_out, freq_in);
-+
-+		fll->k = (freq_out - (freq_in * fll->n)) / gcd_fll;
-+		fll->lambda = freq_in / gcd_fll;
-+		
-+	}
- 
- 	return 0;
- }
-@@ -2139,9 +2151,9 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 	 * analysis bugs spewing warnings.
- 	 */
- 	if (freq_out)
--		ret = wm8994_get_fll_config(&fll, freq_in, freq_out);
-+		ret = wm8994_get_fll_config(control, &fll, freq_in, freq_out);
- 	else
--		ret = wm8994_get_fll_config(&fll, wm8994->fll[id].in,
-+		ret = wm8994_get_fll_config(control, &fll, wm8994->fll[id].in,
- 					    wm8994->fll[id].out);
- 	if (ret < 0)
- 		return ret;
-@@ -2186,6 +2198,17 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 			    WM8994_FLL1_N_MASK,
- 			    fll.n << WM8994_FLL1_N_SHIFT);
- 
-+	if (fll.lambda) {
-+		snd_soc_update_bits(codec, WM8958_FLL1_EFS_1 + reg_offset,
-+				    WM8958_FLL1_LAMBDA_MASK,
-+				    fll.lambda);
-+		snd_soc_update_bits(codec, WM8958_FLL1_EFS_2 + reg_offset,
-+				    WM8958_FLL1_EFS_ENA, WM8958_FLL1_EFS_ENA);
-+	} else {
-+		snd_soc_update_bits(codec, WM8958_FLL1_EFS_2 + reg_offset,
-+				    WM8958_FLL1_EFS_ENA, 0);
-+	}
-+
- 	snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_5 + reg_offset,
- 			    WM8994_FLL1_FRC_NCO | WM8958_FLL1_BYP |
- 			    WM8994_FLL1_REFCLK_DIV_MASK |
--- 
-1.7.10.4
+
+--CGDBiGfvSTbxKZlW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, May 13, 2013 at 01:27:47AM +0000, Zhang, Ning A wrote:
+> When I try to fix wm1811 standby issue for our customer, I find a strange=
+ behavior in ASOC core.
+>=20
+> here is my test code:
+>=20
+> snd_soc_dapm_disable_pin(&dapm,"MICBIAS2");
+> snd_soc_dapm_disable_pin(&dapm,"CLK_SYS");
+> snd_soc_dapm_sync(&dapm);
+
+
+What you are saying seems sensible.  Please send your patch as covered
+in Documentation/SubmittingPatches in the kernel - the general idea is
+to send something that can be applied using git am.
+
+--CGDBiGfvSTbxKZlW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRkIA5AAoJELSic+t+oim9AIQP/29SMEn/jdGznL60Lv+KS2ds
+FZd5lfoHRcthTTFfWhVmGaac8Alrp7bRx8sIVPOP6HiT2XH4pNkqEIN9+XdaiFZq
+EmlgHtmGAy+GqeojDrTPSgHjU0OBo0F3OEjtL7sW8njUkffpwprpTD2NtX/b9dgm
+1qBEflGmc7m7X9NW1TrXOQnkO5Y6GWTZ7MrtlscyM1C/ujdzJG+ELWnZCPEC09ZC
+4wBbhG31Bw3oLZhW1PHtUKOCJ39Juy2SX3+m6LwHUjgVTEj7u1rF814YJgONkcSX
+kDnMV6jjEPr2QcTiKQuAOcRzyDUFeMP3XjaDGsZ5h9DSeTBAsbpr5qi0a807u/wb
+kCxVNXNGhQPwaujLFOj2wSndliXFndoodeCPULWGW7Ky4hMn6lxtw8r5M7RdOQNY
+uNB+XPmB2P4XcqoEWjcWCb/UHInHoVNCNVIPoYGmj505hG3HnO7vFGh76OA2f8bG
+5pAlPYofK2KbNL70ZBM/mZRRIs5ZtjXiNMv/EatlYbwqZlOSmOmzF45XKqIhyvfD
+5qOlNK2sRMn1goxygA7OPo+eifGvKw5Q+hFSbCk3tYGhRDQKTA8T2olsUeUfmR9U
+PAGpVWYfow6pcpOkkRGUaB893Rvc4xvUvBtvojMNev8rldr1dT46gpXunBlaDY8m
+OdspxW0Mhzp16fZ/ekcL
+=J/el
+-----END PGP SIGNATURE-----
+
+--CGDBiGfvSTbxKZlW--
+
+--===============3602485389132837966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3602485389132837966==--
