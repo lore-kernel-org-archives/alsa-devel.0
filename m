@@ -1,15 +1,14 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v2] ASoC: mxs: move to use generic DMA helper
-Date: Mon, 13 May 2013 13:30:56 +0800
-Message-ID: <1368423056-8378-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Support EFS mode for FLL
+Date: Mon, 13 May 2013 09:38:47 +0400
+Message-ID: <1368423527-12354-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 11254261ACC
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:30:43 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE201261622
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:38:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,201 +18,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-With mxs-dma converted to generic DMA bindings, let's move mxs-pcm to
-use it by removing flages SND_DMAENGINE_PCM_FLAG_NO_DT and
-SND_DMAENGINE_PCM_FLAG_COMPAT.  As the result, those mxs custom dma
-params code can be removed now.
+Later WM8994 devices support an enhanced accuracy FLL divisor mode called
+EFS which allows more precise selection of fractional source to output
+ratios. Support this on relevant devices.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-Changes since v1:
- * rebase against Mark's topic/mxs branch
+ sound/soc/codecs/wm8994.c |   49 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 13 deletions(-)
 
- .../devicetree/bindings/sound/mxs-saif.txt         |   17 ++++++++----
- sound/soc/mxs/mxs-pcm.c                            |   18 ------------
- sound/soc/mxs/mxs-pcm.h                            |    7 -----
- sound/soc/mxs/mxs-saif.c                           |   29 +-------------------
- sound/soc/mxs/mxs-saif.h                           |    1 -
- 5 files changed, 12 insertions(+), 60 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/mxs-saif.txt b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-index c37ba61..7ba07a1 100644
---- a/Documentation/devicetree/bindings/sound/mxs-saif.txt
-+++ b/Documentation/devicetree/bindings/sound/mxs-saif.txt
-@@ -3,8 +3,11 @@
- Required properties:
- - compatible: Should be "fsl,<chip>-saif"
- - reg: Should contain registers location and length
--- interrupts: Should contain ERROR and DMA interrupts
--- fsl,saif-dma-channel: APBX DMA channel for the SAIF
-+- interrupts: Should contain ERROR interrupt number
-+- dmas: DMA specifier, consisting of a phandle to DMA controller node
-+  and SAIF DMA channel ID.
-+  Refer to dma.txt and fsl-mxs-dma.txt for details.
-+- dma-names: Must be "rx-tx".
- 
- Optional properties:
- - fsl,saif-master: phandle to the master SAIF.  It's only required for
-@@ -23,14 +26,16 @@ aliases {
- saif0: saif@80042000 {
- 	compatible = "fsl,imx28-saif";
- 	reg = <0x80042000 2000>;
--	interrupts = <59 80>;
--	fsl,saif-dma-channel = <4>;
-+	interrupts = <59>;
-+	dmas = <&dma_apbx 4>;
-+	dma-names = "rx-tx";
- };
- 
- saif1: saif@80046000 {
- 	compatible = "fsl,imx28-saif";
- 	reg = <0x80046000 2000>;
--	interrupts = <58 81>;
--	fsl,saif-dma-channel = <5>;
-+	interrupts = <58>;
-+	dmas = <&dma_apbx 5>;
-+	dma-names = "rx-tx";
- 	fsl,saif-master = <&saif0>;
- };
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index b41fffc..b16abbb 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -49,24 +49,8 @@ static const struct snd_pcm_hardware snd_mxs_hardware = {
- 	.fifo_size		= 32,
- };
- 
--static bool filter(struct dma_chan *chan, void *param)
--{
--	struct mxs_pcm_dma_params *dma_params = param;
--
--	if (!mxs_dma_is_apbx(chan))
--		return false;
--
--	if (chan->chan_id != dma_params->chan_num)
--		return false;
--
--	chan->private = &dma_params->dma_data;
--
--	return true;
--}
--
- static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
- 	.pcm_hardware = &snd_mxs_hardware,
--	.compat_filter_fn = filter,
- 	.prealloc_buffer_size = 64 * 1024,
- };
- 
-@@ -74,8 +58,6 @@ int mxs_pcm_platform_register(struct device *dev)
- {
- 	return snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
--		SND_DMAENGINE_PCM_FLAG_NO_DT |
--		SND_DMAENGINE_PCM_FLAG_COMPAT |
- 		SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX);
- }
- EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
-diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
-index 3aa918f..bc685b6 100644
---- a/sound/soc/mxs/mxs-pcm.h
-+++ b/sound/soc/mxs/mxs-pcm.h
-@@ -19,13 +19,6 @@
- #ifndef _MXS_PCM_H
- #define _MXS_PCM_H
- 
--#include <linux/fsl/mxs-dma.h>
--
--struct mxs_pcm_dma_params {
--	struct mxs_dma_data dma_data;
--	int chan_num;
--};
--
- int mxs_pcm_platform_register(struct device *dev);
- void mxs_pcm_platform_unregister(struct device *dev);
- 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 71a972f..49d8700 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -26,7 +26,6 @@
- #include <linux/clk.h>
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 1eb152c..9f32dd8 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -16,6 +16,7 @@
+ #include <linux/init.h>
  #include <linux/delay.h>
- #include <linux/time.h>
--#include <linux/fsl/mxs-dma.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -604,8 +603,6 @@ static int mxs_saif_dai_probe(struct snd_soc_dai *dai)
- 	struct mxs_saif *saif = dev_get_drvdata(dai->dev);
+ #include <linux/pm.h>
++#include <linux/gcd.h>
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+@@ -2005,15 +2006,16 @@ struct fll_div {
+ 	u16 outdiv;
+ 	u16 n;
+ 	u16 k;
++	u16 lambda;
+ 	u16 clk_ref_div;
+ 	u16 fll_fratio;
+ };
  
- 	snd_soc_dai_set_drvdata(dai, saif);
--	dai->playback_dma_data = &saif->dma_param;
--	dai->capture_dma_data = &saif->dma_param;
+-static int wm8994_get_fll_config(struct fll_div *fll,
++static int wm8994_get_fll_config(struct wm8994 *control, struct fll_div *fll,
+ 				 int freq_in, int freq_out)
+ {
+ 	u64 Kpart;
+-	unsigned int K, Ndiv, Nmod;
++	unsigned int K, Ndiv, Nmod, gcd_fll;
+ 
+ 	pr_debug("FLL input=%dHz, output=%dHz\n", freq_in, freq_out);
+ 
+@@ -2062,20 +2064,30 @@ static int wm8994_get_fll_config(struct fll_div *fll,
+ 	Nmod = freq_out % freq_in;
+ 	pr_debug("Nmod=%d\n", Nmod);
+ 
+-	/* Calculate fractional part - scale up so we can round. */
+-	Kpart = FIXED_FLL_SIZE * (long long)Nmod;
++	switch (control->type) {
++	case WM8994:
++		/* Calculate fractional part - scale up so we can round. */
++		Kpart = FIXED_FLL_SIZE * (long long)Nmod;
+ 
+-	do_div(Kpart, freq_in);
++		do_div(Kpart, freq_in);
+ 
+-	K = Kpart & 0xFFFFFFFF;
++		K = Kpart & 0xFFFFFFFF;
+ 
+-	if ((K % 10) >= 5)
+-		K += 5;
++		if ((K % 10) >= 5)
++			K += 5;
+ 
+-	/* Move down to proper range now rounding is done */
+-	fll->k = K / 10;
++		/* Move down to proper range now rounding is done */
++		fll->k = K / 10;
+ 
+-	pr_debug("N=%x K=%x\n", fll->n, fll->k);
++		pr_debug("N=%x K=%x\n", fll->n, fll->k);
++
++	default:
++		gcd_fll = gcd(freq_out, freq_in);
++
++		fll->k = (freq_out - (freq_in * fll->n)) / gcd_fll;
++		fll->lambda = freq_in / gcd_fll;
++		
++	}
  
  	return 0;
  }
-@@ -664,7 +661,7 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
- static int mxs_saif_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	struct resource *iores, *dmares;
-+	struct resource *iores;
- 	struct mxs_saif *saif;
- 	int ret = 0;
- 	struct device_node *master;
-@@ -719,22 +716,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (IS_ERR(saif->base))
- 		return PTR_ERR(saif->base);
- 
--	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!dmares) {
--		/*
--		 * TODO: This is a temporary solution and should be changed
--		 * to use generic DMA binding later when the helplers get in.
--		 */
--		ret = of_property_read_u32(np, "fsl,saif-dma-channel",
--					   &saif->dma_param.chan_num);
--		if (ret) {
--			dev_err(&pdev->dev, "failed to get dma channel\n");
--			return ret;
--		}
--	} else {
--		saif->dma_param.chan_num = dmares->start;
--	}
--
- 	saif->irq = platform_get_irq(pdev, 0);
- 	if (saif->irq < 0) {
- 		ret = saif->irq;
-@@ -751,14 +732,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
+@@ -2139,9 +2151,9 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
+ 	 * analysis bugs spewing warnings.
+ 	 */
+ 	if (freq_out)
+-		ret = wm8994_get_fll_config(&fll, freq_in, freq_out);
++		ret = wm8994_get_fll_config(control, &fll, freq_in, freq_out);
+ 	else
+-		ret = wm8994_get_fll_config(&fll, wm8994->fll[id].in,
++		ret = wm8994_get_fll_config(control, &fll, wm8994->fll[id].in,
+ 					    wm8994->fll[id].out);
+ 	if (ret < 0)
  		return ret;
- 	}
+@@ -2186,6 +2198,17 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
+ 			    WM8994_FLL1_N_MASK,
+ 			    fll.n << WM8994_FLL1_N_SHIFT);
  
--	saif->dma_param.dma_data.chan_irq = platform_get_irq(pdev, 1);
--	if (saif->dma_param.dma_data.chan_irq < 0) {
--		ret = saif->dma_param.dma_data.chan_irq;
--		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
--			ret);
--		return ret;
--	}
--
- 	platform_set_drvdata(pdev, saif);
- 
- 	ret = snd_soc_register_component(&pdev->dev, &mxs_saif_component,
-diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
-index 3cb342e..53eaa4b 100644
---- a/sound/soc/mxs/mxs-saif.h
-+++ b/sound/soc/mxs/mxs-saif.h
-@@ -117,7 +117,6 @@ struct mxs_saif {
- 	unsigned int mclk_in_use;
- 	void __iomem *base;
- 	int irq;
--	struct mxs_pcm_dma_params dma_param;
- 	unsigned int id;
- 	unsigned int master_id;
- 	unsigned int cur_rate;
++	if (fll.lambda) {
++		snd_soc_update_bits(codec, WM8958_FLL1_EFS_1 + reg_offset,
++				    WM8958_FLL1_LAMBDA_MASK,
++				    fll.lambda);
++		snd_soc_update_bits(codec, WM8958_FLL1_EFS_2 + reg_offset,
++				    WM8958_FLL1_EFS_ENA, WM8958_FLL1_EFS_ENA);
++	} else {
++		snd_soc_update_bits(codec, WM8958_FLL1_EFS_2 + reg_offset,
++				    WM8958_FLL1_EFS_ENA, 0);
++	}
++
+ 	snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_5 + reg_offset,
+ 			    WM8994_FLL1_FRC_NCO | WM8958_FLL1_BYP |
+ 			    WM8994_FLL1_REFCLK_DIV_MASK |
 -- 
-1.7.9.5
+1.7.10.4
