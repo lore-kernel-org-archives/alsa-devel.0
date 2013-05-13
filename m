@@ -1,8 +1,8 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 2/5] ALSA: hda - Add external module hda-i915
-	for power well
-Date: Mon, 13 May 2013 15:37:25 +0800
-Message-ID: <1368430648-2353-3-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 3/5] ALSA: hda - Power well request/release for
+	hda controller
+Date: Mon, 13 May 2013 15:37:26 +0800
+Message-ID: <1368430648-2353-4-git-send-email-xingchao.wang@linux.intel.com>
 References: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,127 +22,108 @@ To: tiwai@suse.de, daniel@ffwll.ch, liam.r.girdwood@intel.com
 Cc: alsa-devel@alsa-project.org, paulo.r.zanoni@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, jesse.barnes@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This new added external module hda_i915 only built in when
-gfx i915 module built in. It includes hda_display_power()
-api implementation for hda controller driver, which will
-ask gfx driver for reqeust/release power well on Intel Haswell.
+Display HDA need reqeust power well in case it's shut down by gfx.
+Currently "hda" is the only user in audio side, even though the codecs
+depends on same power well too, it's safe to share the same power well
+with hda controller. If gfx power well could shut down only for codecs,
+it can be added as another new user "hdmi-codec".
 
 Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
 ---
- sound/pci/hda/Kconfig    |   13 +++++++++++++
- sound/pci/hda/Makefile   |    6 ++++++
- sound/pci/hda/hda_i915.c |   37 +++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_i915.h |   10 ++++++++++
- 4 files changed, 66 insertions(+)
- create mode 100644 sound/pci/hda/hda_i915.c
- create mode 100644 sound/pci/hda/hda_i915.h
+ sound/pci/hda/hda_i915.c  |    2 +-
+ sound/pci/hda/hda_intel.c |   18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 80a7d44..8347325 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -152,6 +152,19 @@ config SND_HDA_CODEC_HDMI
- 	  snd-hda-codec-hdmi.
- 	  This module is automatically loaded at probing.
- 
-+config SND_HDA_I915
-+	bool "Build Display HD-audio controller/codec power well support for i915 cards"
-+	depends on DRM_I915
-+	default y
-+	help
-+	  Say Y here to include full HDMI and DisplayPort HD-audio controller/codec
-+	  support for Intel Haswell graphics cards based on the i915 driver.
-+
-+	  When the HD-audio driver is built as a module, the controller/codec
-+	  support code is also built as another module,
-+	  snd-hda-i915.
-+	  This module is automatically loaded at probing.
-+
- config SND_HDA_CODEC_CIRRUS
- 	bool "Build Cirrus Logic codec support"
- 	default y
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index 24a2514..00768dd 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -6,6 +6,9 @@ snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
- snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
- snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
- 
-+# for haswell power well
-+snd-hda-i915-objs :=	hda_i915.o
-+
- # for trace-points
- CFLAGS_hda_codec.o := -I$(src)
- CFLAGS_hda_intel.o := -I$(src)
-@@ -59,6 +62,9 @@ endif
- ifdef CONFIG_SND_HDA_CODEC_HDMI
- obj-$(CONFIG_SND_HDA_INTEL) += snd-hda-codec-hdmi.o
- endif
-+ifdef CONFIG_SND_HDA_I915
-+obj-$(CONFIG_SND_HDA_INTEL) += snd-hda-i915.o
-+endif
- 
- # this must be the last entry after codec drivers;
- # otherwise the codec patches won't be hooked before the PCI probe
 diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
-new file mode 100644
-index 0000000..7e8ddaa
---- /dev/null
+index 7e8ddaa..00def82 100644
+--- a/sound/pci/hda/hda_i915.c
 +++ b/sound/pci/hda/hda_i915.c
-@@ -0,0 +1,37 @@
-+/*
-+ *  patch_hdmi_i915.c - routines for Haswell HDMI/DisplayPort power well
-+ *
-+ *  This program is free software; you can redistribute it and/or modify it
-+ *  under the terms of the GNU General Public License as published by the Free
-+ *  Software Foundation; either version 2 of the License, or (at your option)
-+ *  any later version.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-+ *  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-+ *  for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software Foundation,
-+ *  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <sound/core.h>
-+#include <drm/i915_powerwell.h>
+@@ -25,7 +25,7 @@
+ /* Power well has impact on Haswell controller and codecs */
+ void hda_display_power(bool enable)
+ {
+-	snd_printk(KERN_INFO "HDA display power %d \n", enable);
++	snd_printk(KERN_INFO "HDA display power %s \n", enable ? "Enable" : "Disable");
+ 	if (enable)
+ 		i915_request_power_well("hda");
+ 	else
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 418bfc0..8bb6075 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -62,6 +62,7 @@
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+ #include "hda_codec.h"
 +#include "hda_i915.h"
+ 
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
+@@ -675,6 +676,10 @@ static char *driver_short_names[] = {
+ #define azx_sd_readb(dev,reg) \
+ 	readb((dev)->sd_addr + ICH6_REG_##reg)
+ 
++#define IS_HSW(pci)		((pci)->device == 0x0a0c || \
++				 (pci)->device == 0x0c0c || \
++				 (pci)->device == 0x0d0c)
 +
-+/* Power well has impact on Haswell controller and codecs */
-+void hda_display_power(bool enable)
-+{
-+	snd_printk(KERN_INFO "HDA display power %d \n", enable);
-+	if (enable)
-+		i915_request_power_well("hda");
-+	else
-+		i915_release_power_well("hda");
-+}
-+EXPORT_SYMBOL(hda_display_power);
+ /* for pcm support */
+ #define get_azx_dev(substream) (substream->runtime->private_data)
+ 
+@@ -2869,6 +2874,8 @@ static int azx_suspend(struct device *dev)
+ 	pci_disable_device(pci);
+ 	pci_save_state(pci);
+ 	pci_set_power_state(pci, PCI_D3hot);
++	if (IS_HSW(pci))
++		hda_display_power(false);
+ 	return 0;
+ }
+ 
+@@ -2881,6 +2888,8 @@ static int azx_resume(struct device *dev)
+ 	if (chip->disabled)
+ 		return 0;
+ 
++	if (IS_HSW(pci))
++		hda_display_power(true);
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+@@ -2913,6 +2922,8 @@ static int azx_runtime_suspend(struct device *dev)
+ 
+ 	azx_stop_chip(chip);
+ 	azx_clear_irq_pending(chip);
++	if (IS_HSW(to_pci_dev(dev)))
++		hda_display_power(false);
+ 	return 0;
+ }
+ 
+@@ -2921,6 +2932,8 @@ static int azx_runtime_resume(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
++	if (IS_HSW(to_pci_dev(dev)))
++		hda_display_power(true);
+ 	azx_init_pci(chip);
+ 	azx_init_chip(chip, 1);
+ 	return 0;
+@@ -3671,6 +3684,9 @@ static int azx_probe(struct pci_dev *pci,
+ 		return -ENOENT;
+ 	}
+ 
++	if (IS_HSW(pci))
++		hda_display_power(true);
 +
-+MODULE_DESCRIPTION("HDA power well");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h
-new file mode 100644
-index 0000000..a7e5324
---- /dev/null
-+++ b/sound/pci/hda/hda_i915.h
-@@ -0,0 +1,10 @@
-+#ifndef __SOUND_HDA_I915_H
-+#define __SOUND_HDA_I915_H
-+
-+#ifdef CONFIG_SND_HDA_I915
-+void hda_display_power(bool enable);
-+#else
-+void hda_display_power(bool enable) {}
-+#endif
-+
-+#endif
+ 	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
+ 	if (err < 0) {
+ 		snd_printk(KERN_ERR "hda-intel: Error creating card!\n");
+@@ -3806,6 +3822,8 @@ static void azx_remove(struct pci_dev *pci)
+ 	if (card)
+ 		snd_card_free(card);
+ 	pci_set_drvdata(pci, NULL);
++	if (IS_HSW(pci))
++		hda_display_power(false);
+ }
+ 
+ /* PCI IDs */
 -- 
 1.7.9.5
