@@ -1,105 +1,85 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 5/5] ALSA/i915: Check power well API
- existense before calling
-Date: Mon, 13 May 2013 11:53:56 +0200
-Message-ID: <5190B834.5090201@perex.cz>
-References: <1368430648-2353-1-git-send-email-xingchao.wang@linux.intel.com>
- <1368430648-2353-6-git-send-email-xingchao.wang@linux.intel.com>
- <5190A43B.8040106@canonical.com> <5190AA92.8040400@perex.cz>
- <s5h1u9btfvn.wl%tiwai@suse.de>
+From: Fabio Baltieri <fabio.baltieri@linaro.org>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Mon, 13 May 2013 12:43:51 +0200
+Message-ID: <20130513104351.GA32308@balto.lan>
+References: <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105124.GA7478@sirena.org.uk>
+ <20130508114216.GB29130@balto.lan>
+ <20130508123225.GK7478@sirena.org.uk>
+ <20130508131020.GA30503@balto.lan>
+ <20130508135413.GR7478@sirena.org.uk>
+ <20130508141723.GA12155@balto.lan>
+ <20130508142938.GS7478@sirena.org.uk>
+ <20130508154805.GA12970@balto.lan>
+ <20130509094103.GA7478@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A4952616C1
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 11:53:56 +0200 (CEST)
-In-Reply-To: <s5h1u9btfvn.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, jesse.barnes@intel.com, daniel@ffwll.ch, David Henningsson <david.henningsson@canonical.com>, paulo.r.zanoni@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130509094103.GA7478@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-Date 13.5.2013 10:59, Takashi Iwai wrote:
-> At Mon, 13 May 2013 10:55:46 +0200,
-> Jaroslav Kysela wrote:
->>
->> Date 13.5.2013 10:28, David Henningsson wrote:
->>> On 05/13/2013 09:37 AM, Wang Xingchao wrote:
->>>> I915 module maybe loaded after snd_hda_intel, the power-well
->>>> API doesnot exist in such case. This patch intended to avoid
->>>> loading dependency between snd-hda-intel and i915 module.
->>>
->>> Hi Xingchao and thanks for working on this.
->>>
->>> This patch seems to re-do some of the work done in other patches (a lot 
->>> of lines removed), so it's a little hard to follow. But I'll try to 
->>> write some overall comments on how I have envisioned things...
->>>
->>> 1. I don't think there's any need to create an additional kernel module, 
->>> we can just let hda_i915.c be in the snd-hda-intel.ko module, and only 
->>> compile it if DRM_I915 is defined.
->>>
->>> 2. We don't need an IS_HSW macro on the audio side. Instead declare a 
->>> new AZX_DCAPS_NEED_I915_POWER (or similar) driver quirk.
->>>
->>> 3. Somewhere in the beginning of the probing in hda_intel.c, we'll need 
->>> something like:
->>>
->>> if (driver_caps & AZX_DCAPS_NEED_I915_POWER)
->>>    hda_i915_init(chip);
->>>
->>> 4. The hda_i915_init does not need to be exported (they're now both in 
->>> the same module). hda_i915.h could have something like:
->>>
->>> #ifdef DRM_I915
->>>    void hda_i915_init(chip);
->>> #else
->>>    #define hda_i915_init(chip) do {} while(0)
->>> #endif
->>>
->>> 5. You're saying this patch is about avoid loading dependency between 
->>> snd-hda-intel and i915 module. That does not make sense to me, since the 
->>> powerwell API is in the i915 module, snd-hda-intel must load it when it 
->>> wants to enable power on haswell, right? Thus there is a loading 
->>> dependency. If the i915 module is not loaded at that point, we must wait 
->>> for it to load, so we can have proper power, instead of continuing 
->>> probing without the power well?
->>
->> Looking to the code, if the drm code requires a callback to the audio
->> code, I would just register it in the audio driver init phase and
->> unregister it when snd-hda-intel is unloaded. This cross module loading
->> dependency looks really bad. Or it is not allowed to load the audio
->> driver later than DRM one?
+On Thu, May 09, 2013 at 10:41:03AM +0100, Mark Brown wrote:
+> On Wed, May 08, 2013 at 05:48:05PM +0200, Fabio Baltieri wrote:
+> > On Wed, May 08, 2013 at 03:29:38PM +0100, Mark Brown wrote:
 > 
-> It's not allowed.  The drm/i915 must be initialized before the audio.
-> And yet, we don't want this dependency in a hard way in the hda
-> driver, because the driver is not only for i915 but for other vendor's
-> controllers, too.
+> > > So if these pins are being shared between the instances then surely
+> > > there are other interdependencies that need to be taken care of Is that
+> > > happening?  For example if the clocks are shared then is the code
+> > > currently stopping the interfaces being configured with incompatible
+> > > sample rates or word sizes?
 > 
-> In the previous meeting, I suggested to split snd-hda-intel for
-> Haswell as an alternative solution.  But this has obvious
-> disadvantages, and since the dynamic symbol lookup is already used in
-> a few other kernel codes, we decided to try this first.
+> > That's an interesting point.  Mixed format, rate and channel counts
+> > seems to work just fine, but that's probably because the supported rate
+> > and format is locked by the codec to 48k + S16_LE.  This is in line with
+> > what is specified on the ab8500 datasheet:
+> > 
+> > ---
+> > The AB8500 audio module exchanges audio data through the two digital
+> > interfaces at a fixed 48 kHz rate in different formats with up to 8
+> > channels per interface.
+> > ---
+> 
+> That sounds like there's still some potential problems with the channel
+> count, though?
 
-Yes, I agree here, but I was talking about the proposed
-intel_gpu_audio_init() function which creates a back-dependency to the
-audio driver. It should be done using a callback to the DRM code without
-adding a new cross module. The other stuff (request_module, symbol_get)
-looks good, but it should be integrated to the main snd-hda-intel module
-as David proposed.
+Ok I'll try to figure out how to properly handle this. Right now the
+timeslot mapping is exposed to the userspace with a series of dapm
+widgets at codec level, and the same bits are set in the tdm api
+depending on the channel counts.
 
-						Jaroslav
+> > On the other side, I don't think anybody is using the ux500 with
+> > anything else than the ab8500, so I don't even know how would I test and
+> > fix this.
+> 
+> The fix should simply be a case of setting constraints when opening
+> additional interfaces based on the configuration of the primary
+> interface.  You can test this sort of thing by simply verifying that it
+> doesn't break the existing cases.
+
+Ok.
+
+> > > Well, most things would probably be able to get some small benefit from
+> > > doing this, it's just that we've not had any real support for managing
+> > > pin muxing - one of the goals of adding pinctrl is to make it easier to
+> > > deploy this sort of thing.
+> 
+> > Pin muxing is handled transparently.  The real problem is sleep mode
+> > switching, but that's really not needed if the codec has a proper low
+> > power mode.
+> 
+> I'm not following that at all I'm afraid - I don't understand the
+> relevance of the CODEC?
+
+My understanding is that ASoC may not need explicit pinctrl support
+because default pin assignments is already handled at pinctrl framework
+level, and pinctrl sleep mode may not be necessary at all, unless
+someone else can come out with a good reason for that.
+
+Fabio
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Fabio Baltieri
