@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mxs: move to use generic DMA helper
-Date: Mon, 13 May 2013 09:18:46 +0400
-Message-ID: <20130513051846.GC6836@sirena.org.uk>
-References: <1368421836-7261-1-git-send-email-shawn.guo@linaro.org>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v2] ASoC: mxs: move to use generic DMA helper
+Date: Mon, 13 May 2013 13:30:56 +0800
+Message-ID: <1368423056-8378-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7450530594610158746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 12ED4261ACC
- for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:18:51 +0200 (CEST)
-In-Reply-To: <1368421836-7261-1-git-send-email-shawn.guo@linaro.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11254261ACC
+ for <alsa-devel@alsa-project.org>; Mon, 13 May 2013 07:30:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +19,201 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+With mxs-dma converted to generic DMA bindings, let's move mxs-pcm to
+use it by removing flages SND_DMAENGINE_PCM_FLAG_NO_DT and
+SND_DMAENGINE_PCM_FLAG_COMPAT.  As the result, those mxs custom dma
+params code can be removed now.
 
---===============7450530594610158746==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
-Content-Disposition: inline
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+---
+Changes since v1:
+ * rebase against Mark's topic/mxs branch
 
+ .../devicetree/bindings/sound/mxs-saif.txt         |   17 ++++++++----
+ sound/soc/mxs/mxs-pcm.c                            |   18 ------------
+ sound/soc/mxs/mxs-pcm.h                            |    7 -----
+ sound/soc/mxs/mxs-saif.c                           |   29 +-------------------
+ sound/soc/mxs/mxs-saif.h                           |    1 -
+ 5 files changed, 12 insertions(+), 60 deletions(-)
 
---z4+8/lEcDcG5Ke9S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 13, 2013 at 01:10:35PM +0800, Shawn Guo wrote:
-> With mxs-dma converted to generic DMA bindings, let's move mxs-pcm to
-> use it by removing flages SND_DMAENGINE_PCM_FLAG_NO_DT and
-> SND_DMAENGINE_PCM_FLAG_COMPAT.  As the result, those mxs custom dma
-> params code can be removed now.
-
-This doesn't apply against current code.  Looks like a simple thing due
-to pinctrl updates but please check all the dependencies are merged.
-
---z4+8/lEcDcG5Ke9S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRkHetAAoJELSic+t+oim9EJEP/0UEK+utTYSwMpB26EUxny5l
-JPKRJKLkt4g0SLcP8gor2rpMTXujr19ZCei4HvL+WRrFn/3bq2s9ZoeOioAbkTQS
-+/YvEAEuI1YozLEQg/GRCr2jw67nTchrSW6gjOBiLb2DaOdg6QYVIJI72ilryue7
-+Xu6u4+x4EKL0RXPNobqEXKE4eGuHCjg/48IAH5vXIlXuR9BqmqAvZ3UXhrAsrDV
-IbsezVwTo+ylwcsiv4BEtAv0yAPvVTgK+dw+Ar4+LavgMjaFkpV7i9klQ6Vzla5G
-X7XzAttVgGAEkZAnm6OeRthYhPXbpa9+Xnij6te7Mn0LLwy0us5UPWuxl+gkF+ti
-sT0dVFihazje7R2HThQvs5JPDGQ9povAr3ylx2K7KadwVRdnjfyRMIh2OFynUQRa
-zaEDR8bVH4p48BAtk+a5nIY5UAeKQjnIcHJxpF4fjU8dHGwZyuoL6VjpSVo85kv+
-1In1VsnWhhvzch31tlQUpBQRDUU6E7sCzAbMlET51BPOEvLfRtOeumt1dLPAx3TX
-y0UBJXlC9mY4zReqMgTlS8hQsLojTgViWgDu5p3vDNn9X230dFR6SDRuPVl12C3O
-A+xLsZthwqFwbgfM3MtSuQjinXjlyaUPRB1q6Z742lRh99dvlPQukVqqmrcKIIqB
-oYLSrTP9ETo1cMID067E
-=Uc/R
------END PGP SIGNATURE-----
-
---z4+8/lEcDcG5Ke9S--
-
---===============7450530594610158746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7450530594610158746==--
+diff --git a/Documentation/devicetree/bindings/sound/mxs-saif.txt b/Documentation/devicetree/bindings/sound/mxs-saif.txt
+index c37ba61..7ba07a1 100644
+--- a/Documentation/devicetree/bindings/sound/mxs-saif.txt
++++ b/Documentation/devicetree/bindings/sound/mxs-saif.txt
+@@ -3,8 +3,11 @@
+ Required properties:
+ - compatible: Should be "fsl,<chip>-saif"
+ - reg: Should contain registers location and length
+-- interrupts: Should contain ERROR and DMA interrupts
+-- fsl,saif-dma-channel: APBX DMA channel for the SAIF
++- interrupts: Should contain ERROR interrupt number
++- dmas: DMA specifier, consisting of a phandle to DMA controller node
++  and SAIF DMA channel ID.
++  Refer to dma.txt and fsl-mxs-dma.txt for details.
++- dma-names: Must be "rx-tx".
+ 
+ Optional properties:
+ - fsl,saif-master: phandle to the master SAIF.  It's only required for
+@@ -23,14 +26,16 @@ aliases {
+ saif0: saif@80042000 {
+ 	compatible = "fsl,imx28-saif";
+ 	reg = <0x80042000 2000>;
+-	interrupts = <59 80>;
+-	fsl,saif-dma-channel = <4>;
++	interrupts = <59>;
++	dmas = <&dma_apbx 4>;
++	dma-names = "rx-tx";
+ };
+ 
+ saif1: saif@80046000 {
+ 	compatible = "fsl,imx28-saif";
+ 	reg = <0x80046000 2000>;
+-	interrupts = <58 81>;
+-	fsl,saif-dma-channel = <5>;
++	interrupts = <58>;
++	dmas = <&dma_apbx 5>;
++	dma-names = "rx-tx";
+ 	fsl,saif-master = <&saif0>;
+ };
+diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
+index b41fffc..b16abbb 100644
+--- a/sound/soc/mxs/mxs-pcm.c
++++ b/sound/soc/mxs/mxs-pcm.c
+@@ -49,24 +49,8 @@ static const struct snd_pcm_hardware snd_mxs_hardware = {
+ 	.fifo_size		= 32,
+ };
+ 
+-static bool filter(struct dma_chan *chan, void *param)
+-{
+-	struct mxs_pcm_dma_params *dma_params = param;
+-
+-	if (!mxs_dma_is_apbx(chan))
+-		return false;
+-
+-	if (chan->chan_id != dma_params->chan_num)
+-		return false;
+-
+-	chan->private = &dma_params->dma_data;
+-
+-	return true;
+-}
+-
+ static const struct snd_dmaengine_pcm_config mxs_dmaengine_pcm_config = {
+ 	.pcm_hardware = &snd_mxs_hardware,
+-	.compat_filter_fn = filter,
+ 	.prealloc_buffer_size = 64 * 1024,
+ };
+ 
+@@ -74,8 +58,6 @@ int mxs_pcm_platform_register(struct device *dev)
+ {
+ 	return snd_dmaengine_pcm_register(dev, &mxs_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-		SND_DMAENGINE_PCM_FLAG_NO_DT |
+-		SND_DMAENGINE_PCM_FLAG_COMPAT |
+ 		SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX);
+ }
+ EXPORT_SYMBOL_GPL(mxs_pcm_platform_register);
+diff --git a/sound/soc/mxs/mxs-pcm.h b/sound/soc/mxs/mxs-pcm.h
+index 3aa918f..bc685b6 100644
+--- a/sound/soc/mxs/mxs-pcm.h
++++ b/sound/soc/mxs/mxs-pcm.h
+@@ -19,13 +19,6 @@
+ #ifndef _MXS_PCM_H
+ #define _MXS_PCM_H
+ 
+-#include <linux/fsl/mxs-dma.h>
+-
+-struct mxs_pcm_dma_params {
+-	struct mxs_dma_data dma_data;
+-	int chan_num;
+-};
+-
+ int mxs_pcm_platform_register(struct device *dev);
+ void mxs_pcm_platform_unregister(struct device *dev);
+ 
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 71a972f..49d8700 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -26,7 +26,6 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/time.h>
+-#include <linux/fsl/mxs-dma.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -604,8 +603,6 @@ static int mxs_saif_dai_probe(struct snd_soc_dai *dai)
+ 	struct mxs_saif *saif = dev_get_drvdata(dai->dev);
+ 
+ 	snd_soc_dai_set_drvdata(dai, saif);
+-	dai->playback_dma_data = &saif->dma_param;
+-	dai->capture_dma_data = &saif->dma_param;
+ 
+ 	return 0;
+ }
+@@ -664,7 +661,7 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
+ static int mxs_saif_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct resource *iores, *dmares;
++	struct resource *iores;
+ 	struct mxs_saif *saif;
+ 	int ret = 0;
+ 	struct device_node *master;
+@@ -719,22 +716,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (IS_ERR(saif->base))
+ 		return PTR_ERR(saif->base);
+ 
+-	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!dmares) {
+-		/*
+-		 * TODO: This is a temporary solution and should be changed
+-		 * to use generic DMA binding later when the helplers get in.
+-		 */
+-		ret = of_property_read_u32(np, "fsl,saif-dma-channel",
+-					   &saif->dma_param.chan_num);
+-		if (ret) {
+-			dev_err(&pdev->dev, "failed to get dma channel\n");
+-			return ret;
+-		}
+-	} else {
+-		saif->dma_param.chan_num = dmares->start;
+-	}
+-
+ 	saif->irq = platform_get_irq(pdev, 0);
+ 	if (saif->irq < 0) {
+ 		ret = saif->irq;
+@@ -751,14 +732,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	saif->dma_param.dma_data.chan_irq = platform_get_irq(pdev, 1);
+-	if (saif->dma_param.dma_data.chan_irq < 0) {
+-		ret = saif->dma_param.dma_data.chan_irq;
+-		dev_err(&pdev->dev, "failed to get dma irq resource: %d\n",
+-			ret);
+-		return ret;
+-	}
+-
+ 	platform_set_drvdata(pdev, saif);
+ 
+ 	ret = snd_soc_register_component(&pdev->dev, &mxs_saif_component,
+diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
+index 3cb342e..53eaa4b 100644
+--- a/sound/soc/mxs/mxs-saif.h
++++ b/sound/soc/mxs/mxs-saif.h
+@@ -117,7 +117,6 @@ struct mxs_saif {
+ 	unsigned int mclk_in_use;
+ 	void __iomem *base;
+ 	int irq;
+-	struct mxs_pcm_dma_params dma_param;
+ 	unsigned int id;
+ 	unsigned int master_id;
+ 	unsigned int cur_rate;
+-- 
+1.7.9.5
