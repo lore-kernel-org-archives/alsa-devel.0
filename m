@@ -1,29 +1,50 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Re: regression: from 3.8 to 3.9: headphones output no sound on Intel
- HDA, codec VIA VT1802
-Date: Tue, 14 May 2013 21:55:43 +0200
-Message-ID: <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
-References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
- <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
- <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
- <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 01/11] ASoC: ep93xx-i2s: Staticize non exported
+	struct
+Date: Tue, 14 May 2013 22:19:47 +0200
+Message-ID: <1368562797-10440-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hd2stq152.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-208.synserver.de (smtp-out-209.synserver.de
+ [212.40.185.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id E11382607B7
+ for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 22:20:23 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <ryan@bluewatersys.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 14, 2013 at 12:58 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> OK, then we know the place to fix now.
->> Try the patch below instead.  Does it fix the problem as well?
->
-> The below is the revised patch, fixing not only for VT1802 but other
-> VIA codecs, too.  Please let me know if it works.
+The ep93xx_i2s_dma_data struct is not used outside of ep93xx-i2s.c, so make it
+static.
 
-With this patch headphones work, but Auto-Mute is inverted, as it was before.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ryan Mallon <ryan@bluewatersys.com>
+---
+ sound/soc/cirrus/ep93xx-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Alex
+diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+index ef731e6..17ad70b 100644
+--- a/sound/soc/cirrus/ep93xx-i2s.c
++++ b/sound/soc/cirrus/ep93xx-i2s.c
+@@ -63,7 +63,7 @@ struct ep93xx_i2s_info {
+ 	void __iomem			*regs;
+ };
+ 
+-struct ep93xx_dma_data ep93xx_i2s_dma_data[] = {
++static struct ep93xx_dma_data ep93xx_i2s_dma_data[] = {
+ 	[SNDRV_PCM_STREAM_PLAYBACK] = {
+ 		.name		= "i2s-pcm-out",
+ 		.port		= EP93XX_DMA_I2S1,
+-- 
+1.8.0
