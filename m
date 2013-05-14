@@ -1,18 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 11/11] ASoC: davinci-sffsdr: Staticize non
-	exported struct
-Date: Tue, 14 May 2013 22:19:57 +0200
-Message-ID: <1368562797-10440-11-git-send-email-lars@metafoo.de>
-References: <1368562797-10440-1-git-send-email-lars@metafoo.de>
+From: Jordi Mallach <jordi@debian.org>
+Subject: Re: Debian patches for ALSA
+Date: Wed, 15 May 2013 01:04:02 +0200
+Message-ID: <1368572642.15570.10.camel@penyagolosa.oskuro.net>
+References: <1368225163.24178.1.camel@penyagolosa.oskuro.net>
+ <5190925C.5000207@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-208.synserver.de (smtp-out-209.synserver.de
- [212.40.185.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 601BA260865
- for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 22:20:30 +0200 (CEST)
-In-Reply-To: <1368562797-10440-1-git-send-email-lars@metafoo.de>
+Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18C9A2607B7
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 01:04:11 +0200 (CEST)
+Received: from [192.168.1.140] (7.72.19.95.dynamic.jazztel.es [95.19.72.7])
+ by tempesta.oskuro.net (Postfix) with ESMTPSA id DBE15629FB
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 01:04:03 +0200 (CEST)
+In-Reply-To: <5190925C.5000207@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Gururaja Hebbar <gururaja.hebbar@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The pcm3008_codec struct is not used outside of davinci-sffsdr.c, so make it
-static.
-
-Cc: Gururaja Hebbar <gururaja.hebbar@ti.com>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/davinci/davinci-sffsdr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
-index 5be65aa..24df5bc 100644
---- a/sound/soc/davinci/davinci-sffsdr.c
-+++ b/sound/soc/davinci/davinci-sffsdr.c
-@@ -106,7 +106,7 @@ static struct pcm3008_setup_data sffsdr_pcm3008_setup = {
- 	.pdda_pin = GPIO(38),
- };
- 
--struct platform_device pcm3008_codec = {
-+static struct platform_device pcm3008_codec = {
- 		.name = "pcm3008-codec",
- 		.id = 0,
- 		.dev = {
--- 
-1.8.0
+SGkgSmFyb3NsYXYsCgpFbCBkbCAxMyBkZSAwNSBkZSAyMDEzIGEgbGVzIDA5OjEyICswMjAwLCBl
+bi9uYSBKYXJvc2xhdiBLeXNlbGEgdmEKZXNjcml1cmU6Cj4gPiBodHRwOi8vcGF0Y2gtdHJhY2tl
+ci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmllcy92aWV3L2Fsc2EtdXRpbHMvMS4wLjI3LTIvYWxzYS1y
+ZXN0b3JlX3NlcnZpY2VfaW1wcm92ZW1lbnRzLnBhdGNoCj4gPiAKPiA+ICAgVGhpcyBvbmUgSSB3
+YW50IHRvIGRpc2N1c3MuIFdlIHRoaW5rIHRoZSBBZnRlciBjb25kaXRpb24gaXMgd3JvbmcsIGFz
+Cj4gPiBpdCdzIGRlcGVuZGluZyBvbiBhbiBvcHRpb25hbCBzZXJ2aWNlIChhbHNhLXN0YXRlIG1p
+Z2h0IG5vdCBoYXBwZW4gaWYKPiA+IHRoZSBjb25maWcgZmlsZSBpcyBub3QgcHJlc2VudCkuIElu
+c3RlYWQsIGl0IHNob3VsZCBiZSBjaGVja2luZyBmb3IKPiA+IHN5c2luaXQsIHRvIGVuc3VyZSBs
+b2NhbC1mcy4KPiAKPiBUaGUgY29uZGl0aW9uIGlzIG5vdCB3cm9uZyBhbmQgaXQgaXMgZXhwZWN0
+ZWQgdGhhdCBib3RoIHNlcnZpY2VzCj4gYWxzYS1zdGF0ZS9hbHNhLXJlc3RvcmUgd2lsbCBiZSBp
+biB0aGUgc3lzdGVtLCBldmVuIGlmIG9uZSBpcyBkaXNhYmxlZAo+IHZpYSB0aGUgQ29uZGl0aW9u
+UGF0aEV4aXN0cyAuIFRoZSBzeXN0ZW1kIGp1c3Qgc2tpcHMgc2VydmljZXMgd2l0aCBmYWxzZQo+
+IGNvbmRpdGlvbnMsIGJ1dCB0aGUgZGVwZW5kZW5jeSBpcyByZXRhaW5lZC4KPiAKPiBUaGUgbWFp
+biByZWFzb24gdG8gc2VyaWFsaXplIHRoZXNlIHR3byBzZXJ2aWNlcyB2aWEgZGVwZW5kZW5jeSBp
+cyB0bwo+IGhhdmUgb25seSBvbmUgc2VydmljZSBmb3IgdGhlIHNvdW5kIHN0YXRlIHJlc3RvcmUg
+KGFsc2EtcmVzdG9yZSkgZm9yCj4gb3RoZXIgc3lzdGVtZCB1bml0cy4gRmVkb3JhIHVzZXMgdGhp
+cyBpbiBjYW5iZXJyYS1zeXN0ZW0tYm9vdHVwLnNlcnZpY2UKPiBmb3IgYW4gZXhhbXBsZS4gUGVy
+aGFwcyB0aGlzIGRlcGVuZGVuY3kgbWF5IGJlIHNvbHZlZCB1c2luZyBhIG5ldwo+IHRhcmdldCwg
+YnV0IGl0IHNlZW1zIG1vcmUgY29tcGxpY2F0ZWQgdGhhbiB1c2UgMiBzZXJ2aWNlcyBhdCB0aGUg
+bW9tZW50Cj4gZm9yIG1lLgoKVGhhbmtzIGZvciB0aGUgY29tbWVudC4gV2UndmUgcmVhbGlzZWQg
+b3VyIGFzc3VtcHRpb24gd2FzIHdyb25nIGFuZCBJCmhhdmUgdGFrZW4gdGhpcyBwYXRjaCBkb3du
+LgoKPiA+ICAtCj4gPiBodHRwOi8vcGF0Y2gtdHJhY2tlci5kZWJpYW4ub3JnL3BhdGNoL3Nlcmll
+cy92aWV3L2Fsc2EtdG9vbHMvMS4wLjI3LTIvZW52eTI0Y29udHJvbF9jb25maWdfZGlyLnBhdGNo
+Cj4gPiAgICBUaGlzIG9uZSBpcyB0byBiZSBkaXNjdXNzZWQuIGVudnkyNGNvbnRyb2wgY3VycmVu
+dGx5IGNyZWF0ZXMgYQo+ID4gdmlzaWJsZSBkaXJlY3RvcnkgaW4gJEhPTUUsIHdoaWNoIGlzIHF1
+aXRlIHVuYWNjZXB0YWJsZS4gVGhpcyBwYXRjaCBqdXN0Cj4gPiBtb3ZlcyB0aGUgZGlyZWN0b3J5
+IHRvIGEgZG90ZGlyLCBidXQgYW4gdXBncmFkZSBwYXRoIG1pZ2h0IG5lZWQgdG8gYmUKPiA+IGNv
+ZGVkLiBJIHdvdWxkIGp1c3QgbW92ZSB0aGUgdGhpbmcgYXdheS4KPiAKPiBBcyBNYXJrIHN1Z2dl
+c3RlZCwgdGhlIGVudnkyNGNvbnRyb2wgc2hvdWxkIGxvb2sgZm9yIHRoZSBvbGQgY29uZmlnCj4g
+ZmlsZXMsIHRvby4KCkkgcHJvYmFibHkgd29uJ3QgaGF2ZSB0aW1lIHRvIGRvIHRoaXMsIHRob3Vn
+aC4KCi0tIApKb3JkaSBNYWxsYWNoIFDDqXJleiAgLS0gIERlYmlhbiBkZXZlbG9wZXIgICAgIGh0
+dHA6Ly93d3cuZGViaWFuLm9yZy8Kam9yZGlAc2luZG9taW5pby5uZXQgICAgIGpvcmRpQGRlYmlh
+bi5vcmcgICAgIGh0dHA6Ly93d3cuc2luZG9taW5pby5uZXQvCkdudVBHIHB1YmxpYyBrZXkgaW5m
+b3JtYXRpb24gYXZhaWxhYmxlIGF0IGh0dHA6Ly9vc2t1cm8ubmV0LwoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
