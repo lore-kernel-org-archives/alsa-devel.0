@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/3] ASoC: Move snd_soc_set_runtime_hwparams()
-	to soc-pcm.c
-Date: Tue, 14 May 2013 11:05:30 +0200
-Message-ID: <1368522332-15624-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/3] ASoC: Add helper function to initialize
+	the runtime pcm
+Date: Tue, 14 May 2013 11:05:31 +0200
+Message-ID: <1368522332-15624-2-git-send-email-lars@metafoo.de>
+References: <1368522332-15624-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-187.synserver.de (smtp-out-187.synserver.de
  [212.40.185.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C21326036C
+ by alsa0.perex.cz (Postfix) with ESMTP id D65F62607BA
  for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 11:05:57 +0200 (CEST)
+In-Reply-To: <1368522332-15624-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,83 +26,101 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_set_runtime_hwparams() is the only PCM related function that lives in
-soc-core.c. All other PCM related functions live in soc-pcm.c, so move
-snd_soc_set_runtime_hwparams() over as well for a bit more consistency.
+We use the same code to initialize the runtime pcm based on the
+snd_soc_pcm_stream struct on both the playback and capture path. Factor this
+code into a helper function to make things a bit more tidy.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-core.c | 23 -----------------------
- sound/soc/soc-pcm.c  | 23 +++++++++++++++++++++++
- 2 files changed, 23 insertions(+), 23 deletions(-)
+ sound/soc/soc-pcm.c | 68 +++++++++++++++++++----------------------------------
+ 1 file changed, 24 insertions(+), 44 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 308895a..9d95ef5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2220,29 +2220,6 @@ int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned short reg,
- EXPORT_SYMBOL_GPL(snd_soc_test_bits);
- 
- /**
-- * snd_soc_set_runtime_hwparams - set the runtime hardware parameters
-- * @substream: the pcm substream
-- * @hw: the hardware parameters
-- *
-- * Sets the substream runtime hardware parameters.
-- */
--int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
--	const struct snd_pcm_hardware *hw)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	runtime->hw.info = hw->info;
--	runtime->hw.formats = hw->formats;
--	runtime->hw.period_bytes_min = hw->period_bytes_min;
--	runtime->hw.period_bytes_max = hw->period_bytes_max;
--	runtime->hw.periods_min = hw->periods_min;
--	runtime->hw.periods_max = hw->periods_max;
--	runtime->hw.buffer_bytes_max = hw->buffer_bytes_max;
--	runtime->hw.fifo_size = hw->fifo_size;
--	return 0;
--}
--EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
--
--/**
-  * snd_soc_cnew - create new control
-  * @_template: control template
-  * @data: control private data
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 73bb8ee..058b403 100644
+index 058b403..2f6f545 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -33,6 +33,29 @@
+@@ -147,6 +147,26 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
+ 	}
+ }
  
- #define DPCM_MAX_BE_USERS	8
- 
-+/**
-+ * snd_soc_set_runtime_hwparams - set the runtime hardware parameters
-+ * @substream: the pcm substream
-+ * @hw: the hardware parameters
-+ *
-+ * Sets the substream runtime hardware parameters.
-+ */
-+int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
-+	const struct snd_pcm_hardware *hw)
++static void soc_pcm_init_runtime_hw(struct snd_pcm_hardware *hw,
++	struct snd_soc_pcm_stream *codec_stream,
++	struct snd_soc_pcm_stream *cpu_stream)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	runtime->hw.info = hw->info;
-+	runtime->hw.formats = hw->formats;
-+	runtime->hw.period_bytes_min = hw->period_bytes_min;
-+	runtime->hw.period_bytes_max = hw->period_bytes_max;
-+	runtime->hw.periods_min = hw->periods_min;
-+	runtime->hw.periods_max = hw->periods_max;
-+	runtime->hw.buffer_bytes_max = hw->buffer_bytes_max;
-+	runtime->hw.fifo_size = hw->fifo_size;
-+	return 0;
++	hw->rate_min = max(codec_stream->rate_min, cpu_stream->rate_min);
++	hw->rate_max = max(codec_stream->rate_max, cpu_stream->rate_max);
++	hw->channels_min = max(codec_stream->channels_min,
++		cpu_stream->channels_min);
++	hw->channels_max = min(codec_stream->channels_max,
++		cpu_stream->channels_max);
++	hw->formats = codec_stream->formats & cpu_stream->formats;
++	hw->rates = codec_stream->rates & cpu_stream->rates;
++	if (codec_stream->rates
++		& (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++		hw->rates |= cpu_stream->rates;
++	if (cpu_stream->rates
++		& (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++		hw->rates |= codec_stream->rates;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
 +
- /* DPCM stream event, send event to FE and all active BEs. */
- static int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
- 	int event)
+ /*
+  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
+  * then initialized and any private data can be allocated. This also calls
+@@ -212,51 +232,11 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	/* Check that the codec and cpu DAIs are compatible */
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		runtime->hw.rate_min =
+-			max(codec_dai_drv->playback.rate_min,
+-			    cpu_dai_drv->playback.rate_min);
+-		runtime->hw.rate_max =
+-			min(codec_dai_drv->playback.rate_max,
+-			    cpu_dai_drv->playback.rate_max);
+-		runtime->hw.channels_min =
+-			max(codec_dai_drv->playback.channels_min,
+-				cpu_dai_drv->playback.channels_min);
+-		runtime->hw.channels_max =
+-			min(codec_dai_drv->playback.channels_max,
+-				cpu_dai_drv->playback.channels_max);
+-		runtime->hw.formats =
+-			codec_dai_drv->playback.formats & cpu_dai_drv->playback.formats;
+-		runtime->hw.rates =
+-			codec_dai_drv->playback.rates & cpu_dai_drv->playback.rates;
+-		if (codec_dai_drv->playback.rates
+-			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
+-			runtime->hw.rates |= cpu_dai_drv->playback.rates;
+-		if (cpu_dai_drv->playback.rates
+-			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
+-			runtime->hw.rates |= codec_dai_drv->playback.rates;
++		soc_pcm_init_runtime_hw(&runtime->hw, &codec_dai_drv->playback,
++			&cpu_dai_drv->playback);
+ 	} else {
+-		runtime->hw.rate_min =
+-			max(codec_dai_drv->capture.rate_min,
+-			    cpu_dai_drv->capture.rate_min);
+-		runtime->hw.rate_max =
+-			min(codec_dai_drv->capture.rate_max,
+-			    cpu_dai_drv->capture.rate_max);
+-		runtime->hw.channels_min =
+-			max(codec_dai_drv->capture.channels_min,
+-				cpu_dai_drv->capture.channels_min);
+-		runtime->hw.channels_max =
+-			min(codec_dai_drv->capture.channels_max,
+-				cpu_dai_drv->capture.channels_max);
+-		runtime->hw.formats =
+-			codec_dai_drv->capture.formats & cpu_dai_drv->capture.formats;
+-		runtime->hw.rates =
+-			codec_dai_drv->capture.rates & cpu_dai_drv->capture.rates;
+-		if (codec_dai_drv->capture.rates
+-			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
+-			runtime->hw.rates |= cpu_dai_drv->capture.rates;
+-		if (cpu_dai_drv->capture.rates
+-			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
+-			runtime->hw.rates |= codec_dai_drv->capture.rates;
++		soc_pcm_init_runtime_hw(&runtime->hw, &codec_dai_drv->capture,
++			&cpu_dai_drv->capture);
+ 	}
+ 
+ 	ret = -EINVAL;
 -- 
 1.8.0
