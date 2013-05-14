@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 03/11] ASoC: spear: spdif_in: Staticize non
-	exported struct
-Date: Tue, 14 May 2013 22:19:49 +0200
-Message-ID: <1368562797-10440-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 06/11] ASoC: mmp-sspa: Staticize non exported
+	struct
+Date: Tue, 14 May 2013 22:19:52 +0200
+Message-ID: <1368562797-10440-6-git-send-email-lars@metafoo.de>
 References: <1368562797-10440-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-208.synserver.de (smtp-out-209.synserver.de
  [212.40.185.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 3800326080B
- for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 22:20:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D23E326084D
+ for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 22:20:26 +0200 (CEST)
 In-Reply-To: <1368562797-10440-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,29 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Zhangfei Gao <zhangfei.gao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-The spdif_in_dai struct is not used outside of spdif_in.c, so make it static.
+The mmp_sspa_dai struct is only used in mmp-sspa.c, so make it static.
 
-Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: Zhangfei Gao <zhangfei.gao@marvell.com>
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/spear/spdif_in.c | 2 +-
+ sound/soc/pxa/mmp-sspa.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
-index 643ada6..f0071dd 100644
---- a/sound/soc/spear/spdif_in.c
-+++ b/sound/soc/spear/spdif_in.c
-@@ -152,7 +152,7 @@ static struct snd_soc_dai_ops spdif_in_dai_ops = {
- 	.hw_params	= spdif_in_hw_params,
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index a647799..62142ce 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -388,7 +388,7 @@ static struct snd_soc_dai_ops mmp_sspa_dai_ops = {
+ 	.set_fmt	= mmp_sspa_set_dai_fmt,
  };
  
--struct snd_soc_dai_driver spdif_in_dai = {
-+static struct snd_soc_dai_driver spdif_in_dai = {
- 	.probe = spdif_in_dai_probe,
- 	.capture = {
- 		.channels_min = 2,
+-struct snd_soc_dai_driver mmp_sspa_dai = {
++static struct snd_soc_dai_driver mmp_sspa_dai = {
+ 	.probe = mmp_sspa_probe,
+ 	.playback = {
+ 		.channels_min = 1,
 -- 
 1.8.0
