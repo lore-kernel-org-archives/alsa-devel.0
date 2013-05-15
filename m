@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/11] ASoC: mop500_ab8500: Staticize non
- exported functions
-Date: Wed, 15 May 2013 08:52:18 +0400
-Message-ID: <20130515045218.GG24524@sirena.org.uk>
+Subject: Re: [PATCH 09/11] ASoC: mop500: Staticize non exported
+	struct
+Date: Wed, 15 May 2013 08:52:30 +0400
+Message-ID: <20130515045230.GH24524@sirena.org.uk>
 References: <1368562797-10440-1-git-send-email-lars@metafoo.de>
- <1368562797-10440-8-git-send-email-lars@metafoo.de>
+ <1368562797-10440-9-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9015591087590837030=="
+Content-Type: multipart/mixed; boundary="===============4625524847297294133=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 10CE726109E
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 06:52:24 +0200 (CEST)
-In-Reply-To: <1368562797-10440-8-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D2792610A9
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 06:52:35 +0200 (CEST)
+In-Reply-To: <1368562797-10440-9-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +26,50 @@ Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Liam Gi
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9015591087590837030==
+--===============4625524847297294133==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hTiIB9CRvBOLTyqY"
+	protocol="application/pgp-signature"; boundary="jRdC2OsRnuV8iIl8"
 Content-Disposition: inline
 
 
---hTiIB9CRvBOLTyqY
+--jRdC2OsRnuV8iIl8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 14, 2013 at 10:19:54PM +0200, Lars-Peter Clausen wrote:
-> The mop500_ab8500_startup(), the mop500_ab8500_shutdown() and the
-> mop500_ab8500_hw_params() function are not used outside of mop500_ab8500, so
-> make them static.
+On Tue, May 14, 2013 at 10:19:55PM +0200, Lars-Peter Clausen wrote:
+> The mop500_dai_links struct is not used outside of mop500.c, so make it static.
 
 Applied, thanks.
 
---hTiIB9CRvBOLTyqY
+--jRdC2OsRnuV8iIl8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRkxR/AAoJELSic+t+oim9JCQP/Ri0X7BMRUYS3A1/esu7WOoQ
-eU/XC/YWMeq8/aAaNpXSpgdTFbsiZRi3nCtwMt3TVh5S6COSH6dYxP78Xx6tIYAy
-cb0RLFiuF9WzlCpKKuDqoJi6G/Lr3D8P29m/KZW2a6TqYf7H684JonAFKXjAb4Zv
-s8dGRSKRAIpKdC6tu4OPRaLE/6kS2hcolN9Y+uE5LMh3UKHku0ODjwjqmLsAFfrO
-0aUNb1QqXUmHBoj0sNmqptApQj5xQ0fRjOPRhyIUOopGwPgkkbogwBsUl8iQwpGZ
-o6quuZGtopEmMNb526rcLpkKSOJf6PajTIp4EXB+83AU95YWr7B3q9Q2yf20QmzV
-d7rTF0X3lpHDMoc3PQ8ut0Cl95oJSr+epduwD5SFrHgfbRLDdFTPbiUs4ao6dQxD
-CxBfKJzC2ogI5d/uMos9HVeIphzDpLU0qd8wS0i9vbhCFif4BTuWr/YwL3cpT7LE
-afIusLUIzFHyMAmFm4IryuZ9j0lfxscJ1GyHG9WKN3QjhZWIalzFESsN3E1S9LcR
-o7Xiidqvhvlzs27ZoxibFWnf1DBymoAXhd4tc8e3WIrv9zPVLU5OvWZPySdy9knr
-SGAke8j9YN7bhlASMkt2g/Pm9Bc11Hz9DVtPJ5UNzhvV1lZEsg4XVgD5lOT3sL8l
-MHW/V9C3aoZR0qoKFhxr
-=pmLw
+iQIcBAEBAgAGBQJRkxSLAAoJELSic+t+oim9LIIP/0WukrRtkxV2uw5447gXd7Ec
+zfWBTQg32fKlsaLJ76tXN7BMyIpoLi22JO3nAn+w5dRey2o4vhXEVKvGWtMG1/qJ
+Q4xmUIaGdJSp/Tcqz8IIivnN2ruWb2BpicY4zYETYFzN5h3zDrKYtIc9L4lzIUGJ
+NUMnKerXvpmcZx5zno/qq0l3RrhszVoUPcwB9C8IMdo4N3QvI/vpnyMqUqNlHCSC
+RRRG7E96yalXgnkBZHh7cdWkswjVj58O4iFUQBzchvLCyeH8zsYjr5s1yTaZ5S4q
+GspA86zlA3Q2KujGl1TQlub3ZeYnG9j2adxR55QqQUhDDFqWi7iaNE2eHXy01ZJX
+ZVFujMBgaEwTfGIY7jEys//IE8SkG71l4HbvP030Hfmo+QL5JSorK4vl4Fb4RqmZ
+SSObtH4D6jrIOYyPfNEeVIFINfXSWnPGaRFzoeGIitEq4VHnTMCHEsxynBfmwKZp
+WOukHVkAWCCE8QKTHKaJn+2aYNf4rsuhTYcHBpxT/mqrNHX1tMY9aPoGEP937cmV
+EEu2FowCi8l3Y4KAmLlXPFx674E+zyWuoCR84OCsawpnlpd0dDd3sDS0ragk2V91
+cUlROPZ8AH4nNZKrUQGfHFyg/zpgdCo2Xqc1LUDjtP90wDgKiWyG7tLyMWCp16jc
+juSVM/UZiqreahu5uPj/
+=kdaP
 -----END PGP SIGNATURE-----
 
---hTiIB9CRvBOLTyqY--
+--jRdC2OsRnuV8iIl8--
 
---===============9015591087590837030==
+--===============4625524847297294133==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9015591087590837030==--
+--===============4625524847297294133==--
