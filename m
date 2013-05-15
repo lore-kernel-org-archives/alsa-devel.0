@@ -1,15 +1,19 @@
 From: Jordi Mallach <jordi@debian.org>
-Subject: [PATCH 2/3] Compile in the ALSA search path instead of
-	relying on ld.so.conf.
-Date: Wed, 15 May 2013 19:05:59 +0200
-Message-ID: <1368637560-28962-3-git-send-email-jordi@debian.org>
+Subject: =?utf-8?q?=5BPATCH_3/3=5D_Fix_several_spelling_error?=
+	=?utf-8?q?s_for_=E2=80=9Cwritable=E2=80=9D_and_derivatives=2E?=
+Date: Wed, 15 May 2013 19:06:00 +0200
+Message-ID: <1368637560-28962-4-git-send-email-jordi@debian.org>
 References: <1368637560-28962-1-git-send-email-jordi@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 631532616DB
+ by alsa0.perex.cz (Postfix) with ESMTP id ECCA52616DD
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:06:25 +0200 (CEST)
+Received: from penyagolosa.oskuro.net (169.219.14.37.dynamic.jazztel.es
+ [37.14.219.169])
+ by tempesta.oskuro.net (Postfix) with ESMTPSA id 3FF50628EE
  for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:06:25 +0200 (CEST)
 In-Reply-To: <1368637560-28962-1-git-send-email-jordi@debian.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,55 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Steve Langasek <steve.langasek@canonical.com>
 List-Id: alsa-devel@alsa-project.org
-
-From: Steve Langasek <steve.langasek@canonical.com>
-
-The Ubuntu package currently uses ld.so.conf.d fragments to add
-/usr/lib/alsa-lib and /usr/lib{32,64}/alsa-lib to the dlopen search path.
-These don't *belong* on the global search path, and it becomes much more
-problematic to put them there with the advent of multiarch because each
-architecture then needs its own distinct config file to add the separate
-path... which is then also put in the global library namespace.  Instead,
-let ALSA make use of the already defined ALSA_PLUGIN_DIR to look up
-plugins.
 
 Signed-off-by: Jordi Mallach <jordi@debian.org>
 ---
- src/dlmisc.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ src/alisp/alisp.c     |    4 ++--
+ src/alisp/alisp_snd.c |    2 +-
+ src/rawmidi/rawmidi.c |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/src/dlmisc.c b/src/dlmisc.c
-index 2de0234..4b8a02c 100644
---- a/src/dlmisc.c
-+++ b/src/dlmisc.c
-@@ -67,7 +67,25 @@ void *snd_dlopen(const char *name, int mode)
- #endif
- #endif
- #ifdef HAVE_LIBDL
--	return dlopen(name, mode);
-+	/*
-+	 * Handle the plugin dir not being on the default dlopen search
-+	 * path, without resorting to polluting the entire system namespace
-+	 * via ld.so.conf.
-+	 */
-+	void *handle = NULL;
-+	char *filename;
-+
-+	if (name && name[0] != '/') {
-+		filename = malloc(sizeof(ALSA_PLUGIN_DIR) + 1 + strlen(name) + 1);
-+		strcpy(filename, ALSA_PLUGIN_DIR);
-+		strcat(filename, "/");
-+		strcat(filename, name);
-+		handle = dlopen(filename, mode);
-+		free(filename);
-+	}
-+	if (!handle)
-+		handle = dlopen(name, mode);
-+	return handle;
- #else
- 	return NULL;
- #endif
+diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
+index 5dd5b06..1796c33 100644
+--- a/src/alisp/alisp.c
++++ b/src/alisp/alisp.c
+@@ -989,7 +989,7 @@ static void dump_objects(struct alisp_instance *instance, const char *fname)
+ 	else
+ 		err = snd_output_stdio_open(&out, fname, "w+");
+ 	if (err < 0) {
+-		SNDERR("alisp: cannot open file '%s' for writting (%s)", fname, snd_strerror(errno));
++		SNDERR("alisp: cannot open file '%s' for writing (%s)", fname, snd_strerror(errno));
+ 		return;
+ 	}
+ 
+@@ -1062,7 +1062,7 @@ static void dump_obj_lists(struct alisp_instance *instance, const char *fname)
+ 	else
+ 		err = snd_output_stdio_open(&out, fname, "w+");
+ 	if (err < 0) {
+-		SNDERR("alisp: cannot open file '%s' for writting (%s)", fname, snd_strerror(errno));
++		SNDERR("alisp: cannot open file '%s' for writing (%s)", fname, snd_strerror(errno));
+ 		return;
+ 	}
+ 
+diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
+index de429d9..0a1a3b4 100644
+--- a/src/alisp/alisp_snd.c
++++ b/src/alisp/alisp_snd.c
+@@ -572,7 +572,7 @@ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance,
+ 	}
+ 	p1 = add_cons(instance, p1, 1, "type", new_string(instance, snd_ctl_elem_type_name(type)));
+ 	p1 = add_cons(instance, p1, 1, "readable", new_integer(instance, snd_ctl_elem_info_is_readable(info)));
+-	p1 = add_cons(instance, p1, 1, "writeable", new_integer(instance, snd_ctl_elem_info_is_writable(info)));
++	p1 = add_cons(instance, p1, 1, "writable", new_integer(instance, snd_ctl_elem_info_is_writable(info)));
+ 	p1 = add_cons(instance, p1, 1, "volatile", new_integer(instance, snd_ctl_elem_info_is_volatile(info)));
+ 	p1 = add_cons(instance, p1, 1, "inactive", new_integer(instance, snd_ctl_elem_info_is_inactive(info)));
+ 	p1 = add_cons(instance, p1, 1, "locked", new_integer(instance, snd_ctl_elem_info_is_locked(info)));
+diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
+index 0bd6b96..b835b47 100644
+--- a/src/rawmidi/rawmidi.c
++++ b/src/rawmidi/rawmidi.c
+@@ -63,7 +63,7 @@ contents of written buffer - passed by snd_rawmidi_write() - atomically
+ to output ring buffer in the kernel space. This flag also means that device
+ is not opened exclusively, so more applications can share given rawmidi device.
+ Note that applications must send the whole MIDI message including the running status,
+-because another writting application might break the MIDI message in the output
++because another writing application might break the MIDI message in the output
+ buffer.
+ 
+ \subsection rawmidi_open_sync Sync open (flag)
 -- 
 1.7.10.4
