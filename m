@@ -1,16 +1,13 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: remove saarb and tavorevb3 machine
-	drivers
-Date: Wed, 15 May 2013 08:59:42 +0400
-Message-ID: <20130515045942.GK24524@sirena.org.uk>
-References: <1368544041.1350.111.camel@x61.thuisdomein>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: ASoC updates for v3.10
+Date: Wed, 15 May 2013 09:05:52 +0400
+Message-ID: <20130515050552.GL24524@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0236292449037300265=="
+Content-Type: multipart/mixed; boundary="===============2900808941210354405=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BB0226109E
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 06:59:53 +0200 (CEST)
-In-Reply-To: <1368544041.1350.111.camel@x61.thuisdomein>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C58126109E
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 07:05:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +17,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0236292449037300265==
+--===============2900808941210354405==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YZQs1kEQY307C4ut"
+	protocol="application/pgp-signature"; boundary="kaF1vgn83Aa7CiXN"
 Content-Disposition: inline
 
 
---YZQs1kEQY307C4ut
+--kaF1vgn83Aa7CiXN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 14, 2013 at 05:07:21PM +0200, Paul Bolle wrote:
-> Support for PXA95x was removed in v3.8. This means that the Kconfig
-> symbols MACH_SAARB and MACH_TAVOREVB3 are no longer available. This
-> leaves the SoC Audio support for Marvell Saarb and Marvell Tavor EVB3
-> unbuildable. Remove these drivers too.
+The following changes since commit f722406faae2d073cc1d01063d1123c35425939e:
 
-Applied, thanks.
+  Linux 3.10-rc1 (2013-05-11 17:14:08 -0700)
 
---YZQs1kEQY307C4ut
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.10-rc1
+
+for you to fetch changes up to 407a0e18ecfbd7f58f49c307a657b63e6f32544d:
+
+  Merge remote-tracking branch 'asoc/fix/wm0010' into asoc-linus (2013-05-14 16:53:21 +0400)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.10
+
+A few small driver-specific fixes, none of them especially crippling.
+
+----------------------------------------------------------------
+Axel Lin (1):
+      ASoC: da7213: Fix setting dmic_samplephase and dmic_clk_rate
+
+Fabio Baltieri (1):
+      ASoC: ux500: Swap even/odd AD slot definitions
+
+Mark Brown (3):
+      Merge remote-tracking branch 'asoc/fix/da7213' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/ux500' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/wm0010' into asoc-linus
+
+Wei Yongjun (1):
+      ASoC: wm0010: fix error return code in wm0010_boot()
+
+ sound/soc/codecs/ab8500-codec.h |   36 ++++++++++++++++++------------------
+ sound/soc/codecs/da7213.c       |    8 ++++----
+ sound/soc/codecs/wm0010.c       |    1 +
+ 3 files changed, 23 insertions(+), 22 deletions(-)
+
+--kaF1vgn83Aa7CiXN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRkxY7AAoJELSic+t+oim9i+cP/j6W0qy+mM6Km08JaKKNB/2m
-z9pBkcjRcVJujr+jHJUBGkKF2IfZTKDcTAQ6+c7H3k8PYNBZbKBBz+Vrjgu7UJoe
-6VhFzCgkff7R193HIPVTsfrYidnU2xjPkRUhZgrFpAt6vKiPXVLewqoVrsh//uhi
-1bqzbw4Q04OP328r+jH27hQhp+6xteDYseJ9JxLkgLZDD69a4EE0ya0BtPmz/xz6
-Gx+5mCPUczvebt+cioF/3j1I6dH/QtRy3aJajP7VPBVBTKna+kxdeh4iELBf85vo
-TD05tEJJUKb9oAnMj5gqJl0K1yylWREofRjnIt6Mp3Cje6KXkfyZkSd0eI3bjQKF
-pSxp86s8cLw2BMutikxG2imR71KIQqsfNDfO1USoFWadFYhJogepGGIg987qfDb1
-dIMJo0terP8M5+eGqlcO3Snfzwy5/+oAsOLL+AfqLdm3nId4LYgV6TgVRLa67QcD
-QqhOJgNH5NCaeeTFGHmMKQiIc8QiDCVh/SlHyPNr8Cb4OntDLwk0fp66rHbG2l+l
-tRdn5+faAoQr+EvtC4KE4tjdFOtE+zaV8SBa7hzwJQjflZ4UQWxuFxEjm2jHgILj
-qIyQl7b0pj+A/NTtCQPi/DAOgwAsh6Vt9gUSM+hwAqeaIikZQkdr2xnV+U1cF5J1
-iCmvYgi6jYu/50ea5sD/
-=mlVL
+iQIcBAEBAgAGBQJRkxerAAoJELSic+t+oim95aUQAIIuHtv4fhn8d9SWjKtJjJTx
+giPS+IM4IZ8GX2CJE31HG3C3I4yui4p+K6agt9axyrEmVPc1YRZB3qoiUpERWGuy
+qRmWiZi13aAZ95lU87dUF++tyDUBTjrPswn394P80HwUiTLCviWAbAq7TyaqO7ob
+AP2nnE6e/CP14S/rIjWv+hZ9/2ozCwjB0iELv1KW3sE5GjD7rxXGNCBKwvsoeNpe
+HMdG6qMt21Gbc4jK1+XY5kKmhaKURCoK4GCWjtf1rotnjpzDpJFzk2R+zqSmkGSf
+oZaNPI6LwESD0gG1Q0EVt3AXXMUSp5Lc9QuL/k+EmeFS912zELAWnFjipet4j3co
+ltpYZD6SfAgXumaeLwu277Vgo8lrmvfgEcua4Lf9QkpgSISrcUORW1p8tXikinxD
+8cR7CnDJ2i7WHezGRr+RplI/2f0IaTfWc8ZjZVK7TB4PY9hvMWAwIXmidlFCDBOL
+LonIvp/hqQJxonuJFkUKCX0LMtt5fybcfxJK6zBJU+xkXl3bpR72RGehyFuwjm1l
+BmUHw/rkRHvyj13DWg5qjDdA0EpbWZXi1HRH9YNqGp3fm/unHhFOXV02Xx9bzmx0
+RCL9gfOJ5tgKNMK4WH/ID4tiK7+OgCPdlEOjydACbrN6hASqU6TD7hPlcsz5cnHb
+/+jtBjhLU4bp4odZUYEA
+=0hQw
 -----END PGP SIGNATURE-----
 
---YZQs1kEQY307C4ut--
+--kaF1vgn83Aa7CiXN--
 
---===============0236292449037300265==
+--===============2900808941210354405==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0236292449037300265==--
+--===============2900808941210354405==--
