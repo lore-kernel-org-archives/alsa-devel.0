@@ -1,18 +1,16 @@
 From: Jordi Mallach <jordi@debian.org>
-Subject: Debian alsa-tools patches
-Date: Wed, 15 May 2013 19:19:03 +0200
-Message-ID: <1368638351-29200-1-git-send-email-jordi@debian.org>
+Subject: [PATCH 1/8] Make usx2yloader work with udev.
+Date: Wed, 15 May 2013 19:19:04 +0200
+Message-ID: <1368638351-29200-2-git-send-email-jordi@debian.org>
+References: <1368638351-29200-1-git-send-email-jordi@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id E6014261722
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:19:19 +0200 (CEST)
-Received: from penyagolosa.oskuro.net (169.219.14.37.dynamic.jazztel.es
- [37.14.219.169])
- by tempesta.oskuro.net (Postfix) with ESMTPSA id 1D16B62838
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:19:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 82B29261723
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:19:20 +0200 (CEST)
+In-Reply-To: <1368638351-29200-1-git-send-email-jordi@debian.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,16 +23,27 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As previously discussed, I'm posting all Debian patches against alsa-tools
-that were pending upstreaming.
+From: Elimar Riesebieter <riesebie@lxtec.de>
 
-Please review patch 8, as this one is new and the general state of
-configure scripts in alsa-tools is less than optimal.
+Signed-off-by: Jordi Mallach <jordi@debian.org>
+---
+ usx2yloader/Makefile.am |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I've left out the patch to correct envy24control's configuration directory,
-as the additional check for the old dir is not implemented. If anyone wants
-to pick that up, please contact me or fetch the (trivial) patch from Debian
-sources.
-
-Thanks,
-Jordi
+diff --git a/usx2yloader/Makefile.am b/usx2yloader/Makefile.am
+index 4cc9a70..4dd26a2 100644
+--- a/usx2yloader/Makefile.am
++++ b/usx2yloader/Makefile.am
+@@ -11,8 +11,8 @@ usx2yloader_SOURCES = usx2yloader.c
+ 
+ EXTRA_DIST = gitcompile depcomp tascam_fw.usermap tascam_fw.in tascam_fpga.in
+ 
+-hotplug_files = tascam_fw.usermap tascam_fw tascam_fpga
+-hotplugdir = /etc/hotplug/usb
++hotplug_files = tascam_fw tascam_fpga
++hotplugdir = /lib/udev
+ hotplug_SCRIPTS = $(hotplug_files)
+ 
+ 
+-- 
+1.7.10.4
