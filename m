@@ -1,269 +1,117 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: [PATCH 8/8] Add AM_MAINTAINER_MODE([enable]) macro to
-	all configure scripts.
-Date: Wed, 15 May 2013 19:19:11 +0200
-Message-ID: <1368638351-29200-9-git-send-email-jordi@debian.org>
-References: <1368638351-29200-1-git-send-email-jordi@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 728E62652F4
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:19:24 +0200 (CEST)
-Received: from penyagolosa.oskuro.net (169.219.14.37.dynamic.jazztel.es
- [37.14.219.169])
- by tempesta.oskuro.net (Postfix) with ESMTPSA id BDD8362838
- for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 19:19:23 +0200 (CEST)
-In-Reply-To: <1368638351-29200-1-git-send-email-jordi@debian.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+From: Andrew Bresticker <abrestic@chromium.org>
+Subject: [PATCH] ASoC: max98090: add digital mic mux to record path
+Date: Wed, 15 May 2013 10:48:32 -0700
+Message-ID: <1368640112-1417-1-git-send-email-abrestic@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sachin Kamat <sachin.kamat@linaro.org>, Ralph Birt <ralph.birt@maximintegrated.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Jerry Wong <jerry.wong@maximintegrated.com>, Evan Ragsdale <evan.ragsdale@maximintegrated.com>, Dylan Reid <dgreid@chromium.org>, linux-kernel@vger.kernel.org, Andrew Bresticker <abrestic@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jordi Mallach <jordi@debian.org>
----
- as10k1/configure.in         |    1 +
- echomixer/configure.in      |    1 +
- envy24control/configure.in  |    1 +
- hda-verb/configure.ac       |    2 +-
- hdajackretask/configure.in  |    1 +
- hdspconf/configure.in       |    1 +
- hdsploader/configure.in     |    1 +
- hdspmixer/configure.in      |    1 +
- hwmixvolume/configure.ac    |    1 +
- ld10k1/configure.in         |    1 +
- mixartloader/configure.in   |    1 +
- pcxhrloader/configure.in    |    1 +
- qlo10k1/configure.in        |    1 +
- rmedigicontrol/configure.in |    1 +
- sb16_csp/configure.in       |    1 +
- sscape_ctl/configure.in     |    1 +
- us428control/configure.in   |    1 +
- usx2yloader/configure.in    |    1 +
- vxloader/configure.in       |    1 +
- 19 files changed, 19 insertions(+), 1 deletion(-)
+The max98090 driver currently treats the digital mic enable as a supply
+on the record path, causing the digital mic enable to always be turned on
+when attempting to record.  This is incorrect, however, since the digital
+mic enable is actually a mux control where 0 selects the ADC output as
+input to the record-path DSP and 1 selects the digital mic.  This patch
+converts the DMIC{L,R}_ENA supplies into DMIC{L,R} muxes so that we can
+switch between the ADC and the digital mic for recording.
 
-diff --git a/as10k1/configure.in b/as10k1/configure.in
-index 37e9e6c..1855eea 100644
---- a/as10k1/configure.in
-+++ b/as10k1/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(as10k1.c)
- AM_INIT_AUTOMAKE(as10k1, A0.99)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/echomixer/configure.in b/echomixer/configure.in
-index 9228924..b4c50f1 100644
---- a/echomixer/configure.in
-+++ b/echomixer/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(echomixer.c)
- AM_INIT_AUTOMAKE(echomixer, 1.0.5)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/envy24control/configure.in b/envy24control/configure.in
-index d42aee8..6a7b23a 100644
---- a/envy24control/configure.in
-+++ b/envy24control/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(envy24control.c)
- AM_INIT_AUTOMAKE(envy24control, 0.6.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/hda-verb/configure.ac b/hda-verb/configure.ac
-index 94ca73b..21349b8 100644
---- a/hda-verb/configure.ac
-+++ b/hda-verb/configure.ac
-@@ -1,7 +1,7 @@
- AC_INIT(hda-verb.c)
- AM_INIT_AUTOMAKE(hda-verb, 0.4)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
--
- AC_OUTPUT(Makefile)
-diff --git a/hdajackretask/configure.in b/hdajackretask/configure.in
-index f839af3..050c731 100644
---- a/hdajackretask/configure.in
-+++ b/hdajackretask/configure.in
-@@ -1,6 +1,7 @@
- AC_INIT([hdajackretask], [0.20120413])
- AC_CONFIG_SRCDIR([main-gtk.c])
- AM_INIT_AUTOMAKE
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/hdspconf/configure.in b/hdspconf/configure.in
-index a32ff5f..37a18de 100644
---- a/hdspconf/configure.in
-+++ b/hdspconf/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(src/hdspconf.cxx)
- AM_INIT_AUTOMAKE(hdspconf, 1.4)
-+AM_MAINTAINER_MODE([enable])
+Signed-off-by: Andrew Bresticker <abrestic@chromium.org>
+---
+ sound/soc/codecs/max98090.c | 45 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 31 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index ce0d364..71b6b8a 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -857,6 +857,22 @@ static const struct soc_enum mic2_mux_enum =
+ static const struct snd_kcontrol_new max98090_mic2_mux =
+ 	SOC_DAPM_ENUM("MIC2 Mux", mic2_mux_enum);
  
- AC_PROG_CXX
- AC_PROG_MAKE_SET
-diff --git a/hdsploader/configure.in b/hdsploader/configure.in
-index 4801124..b530e9c 100644
---- a/hdsploader/configure.in
-+++ b/hdsploader/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(hdsploader.c)
- AM_INIT_AUTOMAKE(hdsploader, 1.2)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/hdspmixer/configure.in b/hdspmixer/configure.in
-index e47a97d..5e2295b 100644
---- a/hdspmixer/configure.in
-+++ b/hdspmixer/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(src/hdspmixer.cxx)
- AM_INIT_AUTOMAKE(hdspmixer, 1.11)
-+AM_MAINTAINER_MODE([enable])
++static const char *dmic_mux_text[] = { "ADC", "DMIC" };
++
++static const struct soc_enum dmicl_mux_enum =
++	SOC_ENUM_SINGLE(M98090_REG_DIGITAL_MIC_ENABLE, M98090_DIGMICL_SHIFT,
++		ARRAY_SIZE(dmic_mux_text), dmic_mux_text);
++
++static const struct snd_kcontrol_new max98090_dmicl_mux =
++	SOC_DAPM_ENUM("DMICL Mux", dmicl_mux_enum);
++
++static const struct soc_enum dmicr_mux_enum =
++	SOC_ENUM_SINGLE(M98090_REG_DIGITAL_MIC_ENABLE, M98090_DIGMICR_SHIFT,
++		ARRAY_SIZE(dmic_mux_text), dmic_mux_text);
++
++static const struct snd_kcontrol_new max98090_dmicr_mux =
++	SOC_DAPM_ENUM("DMICR Mux", dmicr_mux_enum);
++
+ static const char *max98090_micpre_text[] = { "Off", "On" };
  
- AC_PROG_CXX
- AC_PROG_MAKE_SET
-diff --git a/hwmixvolume/configure.ac b/hwmixvolume/configure.ac
-index ad318ad..5572412 100644
---- a/hwmixvolume/configure.ac
-+++ b/hwmixvolume/configure.ac
-@@ -1,6 +1,7 @@
- dnl Process this file with autoconf to produce a configure script.
- AC_INIT([hwmixvolume], [0.9])
- AM_INIT_AUTOMAKE
-+AM_MAINTAINER_MODE([enable])
- AC_CONFIG_SRCDIR([hwmixvolume])
- AC_PROG_INSTALL
- AC_OUTPUT([Makefile])
-diff --git a/ld10k1/configure.in b/ld10k1/configure.in
-index b04fa34..6249e03 100644
---- a/ld10k1/configure.in
-+++ b/ld10k1/configure.in
-@@ -1,6 +1,7 @@
- AC_INIT(src/ld10k1.c)
- AM_INIT_AUTOMAKE(ld10k1, 0.1.8p1)
- AC_CONFIG_MACRO_DIR([m4])
-+AM_MAINTAINER_MODE([enable])
+ static const struct soc_enum max98090_pa1en_enum =
+@@ -1127,10 +1143,6 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
+ 		M98090_SDIEN_SHIFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("SDOEN", M98090_REG_IO_CONFIGURATION,
+ 		M98090_SDOEN_SHIFT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DMICL_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
+-		 M98090_DIGMICL_SHIFT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DMICR_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
+-		 M98090_DIGMICR_SHIFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("AHPF", M98090_REG_FILTER_CONFIG,
+ 		M98090_AHPF_SHIFT, 0, NULL, 0),
  
- AC_CONFIG_HEADERS(config.h)
- AC_PROG_CC
-diff --git a/mixartloader/configure.in b/mixartloader/configure.in
-index e5d14f8..6ad5ca7 100644
---- a/mixartloader/configure.in
-+++ b/mixartloader/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(mixartloader.c)
- AM_INIT_AUTOMAKE(mixartloader, 1.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/pcxhrloader/configure.in b/pcxhrloader/configure.in
-index 0565dcf..b8ee5d1 100644
---- a/pcxhrloader/configure.in
-+++ b/pcxhrloader/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(pcxhrloader.c)
- AM_INIT_AUTOMAKE(pcxhrloader, 1.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/qlo10k1/configure.in b/qlo10k1/configure.in
-index da6ea97..574754e 100644
---- a/qlo10k1/configure.in
-+++ b/qlo10k1/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(src/main.cpp)
- AM_INIT_AUTOMAKE(qlo10k1, 0.1.2p1)
-+AM_MAINTAINER_MODE([enable])
- AC_CONFIG_MACRO_DIR([m4])
- AC_CONFIG_HEADERS(config.h)
- AC_PROG_CXX
-diff --git a/rmedigicontrol/configure.in b/rmedigicontrol/configure.in
-index bc4c605..bf8c3f4 100644
---- a/rmedigicontrol/configure.in
-+++ b/rmedigicontrol/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(rmedigicontrol.c)
- AM_INIT_AUTOMAKE(rmedigicontrol, 0.3.5a)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/sb16_csp/configure.in b/sb16_csp/configure.in
-index d0b90ca..5e04236 100644
---- a/sb16_csp/configure.in
-+++ b/sb16_csp/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(cspctl.c)
- AM_INIT_AUTOMAKE(cspctl, 0.2.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/sscape_ctl/configure.in b/sscape_ctl/configure.in
-index 282a56b..98eed8b 100644
---- a/sscape_ctl/configure.in
-+++ b/sscape_ctl/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(sscape_ctl.c)
- AM_INIT_AUTOMAKE(sscape_ctl, 0.1.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/us428control/configure.in b/us428control/configure.in
-index 66aff9e..031ef3e 100644
---- a/us428control/configure.in
-+++ b/us428control/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(us428control.cc)
- AM_INIT_AUTOMAKE(us428control, 0.4.6)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CXX
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/usx2yloader/configure.in b/usx2yloader/configure.in
-index e91f28a..800e6e0 100644
---- a/usx2yloader/configure.in
-+++ b/usx2yloader/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(usx2yloader.c)
- AM_INIT_AUTOMAKE(usx2yloader, 0.3)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
-diff --git a/vxloader/configure.in b/vxloader/configure.in
-index e3597ba..2035af3 100644
---- a/vxloader/configure.in
-+++ b/vxloader/configure.in
-@@ -1,5 +1,6 @@
- AC_INIT(vxloader.c)
- AM_INIT_AUTOMAKE(vxloader, 1.0)
-+AM_MAINTAINER_MODE([enable])
- AC_PROG_CC
- AC_PROG_INSTALL
- AC_HEADER_STDC
+@@ -1144,6 +1156,12 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("MIC2 Mux", SND_SOC_NOPM,
+ 		0, 0, &max98090_mic2_mux),
+ 
++	SND_SOC_DAPM_MUX("DMICL Mux", SND_SOC_NOPM,
++		0, 0, &max98090_dmicl_mux),
++
++	SND_SOC_DAPM_MUX("DMICR Mux", SND_SOC_NOPM,
++		0, 0, &max98090_dmicr_mux),
++
+ 	SND_SOC_DAPM_PGA_E("MIC1 Input", M98090_REG_MIC1_INPUT_LEVEL,
+ 		M98090_MIC_PA1EN_SHIFT, 0, NULL, 0, max98090_micinput_event,
+ 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+@@ -1281,8 +1299,6 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
+ 	{"MIC1 Input", NULL, "MIC1"},
+ 	{"MIC2 Input", NULL, "MIC2"},
+ 
+-	{"DMICL", NULL, "DMICL_ENA"},
+-	{"DMICR", NULL, "DMICR_ENA"},
+ 	{"DMICL", NULL, "AHPF"},
+ 	{"DMICR", NULL, "AHPF"},
+ 
+@@ -1336,11 +1352,14 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
+ 	{"ADCL", NULL, "SHDN"},
+ 	{"ADCR", NULL, "SHDN"},
+ 
+-	{"LBENL Mux", "Normal", "ADCL"},
+-	{"LBENL Mux", "Normal", "DMICL"},
++	{"DMICL Mux", "ADC", "ADCL"},
++	{"DMICL Mux", "DMIC", "DMICL"},
++	{"DMICR Mux", "ADC", "ADCR"},
++	{"DMICR Mux", "DMIC", "DMICR"},
++
++	{"LBENL Mux", "Normal", "DMICL Mux"},
+ 	{"LBENL Mux", "Loopback", "LTENL Mux"},
+-	{"LBENR Mux", "Normal", "ADCR"},
+-	{"LBENR Mux", "Normal", "DMICR"},
++	{"LBENR Mux", "Normal", "DMICR Mux"},
+ 	{"LBENR Mux", "Loopback", "LTENR Mux"},
+ 
+ 	{"AIFOUTL", NULL, "LBENL Mux"},
+@@ -1358,10 +1377,8 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
+ 	{"DACL", NULL, "LTENL Mux"},
+ 	{"DACR", NULL, "LTENR Mux"},
+ 
+-	{"STENL Mux", "Sidetone Left", "ADCL"},
+-	{"STENL Mux", "Sidetone Left", "DMICL"},
+-	{"STENR Mux", "Sidetone Right", "ADCR"},
+-	{"STENR Mux", "Sidetone Right", "DMICR"},
++	{"STENL Mux", "Sidetone Left", "DMICL Mux"},
++	{"STENR Mux", "Sidetone Right", "DMICR Mux"},
+ 	{"DACL", "NULL", "STENL Mux"},
+ 	{"DACR", "NULL", "STENL Mux"},
+ 
 -- 
-1.7.10.4
+1.8.2.1
