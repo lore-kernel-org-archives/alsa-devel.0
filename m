@@ -1,17 +1,16 @@
-From: Tom <wi271@gmx.de>
-Subject: Error after wakeup from suspend?! (HDA Intel PCH)
-Date: Tue, 14 May 2013 17:35:34 +0200
-Message-ID: <op.ww2yxkmqmpt9kq@localhost>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Handling HDA FIFO error
+Date: Wed, 15 May 2013 11:08:55 +0200
+Message-ID: <519350A7.3000606@ladisch.de>
+References: <CAMLZHHT8Q4iV5Ug8s6XyA1-LNWUe+WH3a0jEqHTbXYC-ihzy7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CC3D0260319
- for <alsa-devel@alsa-project.org>; Tue, 14 May 2013 17:36:06 +0200 (CEST)
-Received: from mailout-de.gmx.net ([10.1.76.16]) by mrigmx.server.lan
- (mrigmx002) with ESMTP (Nemesis) id 0LwCie-1URuYK1ssQ-0181RK for
- <alsa-devel@alsa-project.org>; Tue, 14 May 2013 17:36:06 +0200
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2C86E260319
+ for <alsa-devel@alsa-project.org>; Wed, 15 May 2013 11:09:00 +0200 (CEST)
+In-Reply-To: <CAMLZHHT8Q4iV5Ug8s6XyA1-LNWUe+WH3a0jEqHTbXYC-ihzy7w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,18 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Drake <dsd@laptop.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Daniel Drake wrote:
+> Digging into the HDA code, I can see that normally, when the stream
+> gets started, we get interrupts with SD_STS as 0x24. In the failure
+> case, as soon as we start the stream, we get a flood of interrupts
+> with SD_STS 0x8 - which indicates FIFO error.
+>
+> Disabling interrupt generation upon FIFO error does not help much - it
+> avoids the flood of interrupts, but doesn't change the fact that audio
+> playing apps hang or loop infinitely.
+>
+> Are there any things I could check that would explain why a FIFO error
+> might be occurring?
 
-I woke up my ArchLinux system and pulseaudio is not working. Also I got  
-this message from the commandline:
+Probably a buffer underrun, i.e., the controller did not manage to
+read samples from memory fast enough.
 
-https://gist.github.com/anonymous/5576712
+> any suggestions for how to improve the hda_intel driver to handle
+> FIFO error gracefully? Right now there is no code to handle that.
 
-Pulseaudio is running like it would work fine. I can see the volume bars  
-shaking in Pulse Audio Volume Manager. Except, I can't hear any sound.  
-It's like the audio plug is not connected.
+It should stop the stream, i.e., go into the xrun state.
 
-Hopefully this helps you a bit.
+In theory, the application restarting the stream should reset the DMA
+engine enough to make it work again.  But you say this happens also
+when starting the stream, so I guess more resetting is needed.
+
+
+Regards,
+Clemens
