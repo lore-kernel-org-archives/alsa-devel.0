@@ -1,55 +1,34 @@
-From: LANGLOIS Olivier PIS -EXT <olivier.pis.langlois@transport.alstom.com>
-Subject: Re: [PATCH] Remove an obsolete macro in configure.in
-Date: Thu, 16 May 2013 15:07:04 +0000
-Message-ID: <89F8E4011FD7234ABFE48744E300CBC206AB6D63@041-DB3MPN1-092.041d.mgd.msft.net>
-References: <1368693178-30659-1-git-send-email-olivier@trillion01.com>
- <s5hhai3jate.wl%tiwai@suse.de>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH 00/33] devm improvement series, part 1, take 2
+Date: Thu, 16 May 2013 18:13:58 +0200
+Message-ID: <20130516161355.GA3032@katana>
+References: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
+ <1368705452.15764.217.camel@sauron.fi.intel.com>
+ <CAKohpokUy7QfvKkzGH025Zs5VkUhr8zRLeo3caG3LAnLfptzww@mail.gmail.com>
+ <1368709862.15764.224.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from itc.alstom.com (as-smtp4.itc.alstom.com [159.245.16.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 47871261A4C
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 17:06:49 +0200 (CEST)
-In-Reply-To: <s5hhai3jate.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "olivier@trillion01.com" <olivier@trillion01.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+In-Reply-To: <1368709862.15764.224.camel@sauron.fi.intel.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>, Matt Mackall <mpm@selenic.com>, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, linux-ide@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Evgeniy Polyakov <zbr@ioremap.net>, Wan ZongShun <mcuos.com@gmail.com>, ac100@lists.launchpad.net, devel@driverdev.osuosl.org, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Herbert Xu <herbert@gondor.apana.org.au>, Florian
 List-Id: alsa-devel@alsa-project.org
 
->
-> Sigh, automake should be renamed to automasochism...
->
-> > Signed-off-by: Olivier Langlois <olivier@trillion01.com>
->
-> Thanks, applied.
->
-> BTW, at the next time, please specify which package to patch :)
->
-Takashi,
 
-I am not asking better than improve my patch submitting skill. Please explain exactly what was missing. I followed what is described at
+> I need a defconfig which would have this driver enabled. 
 
-http://www.alsa-project.org/main/index.php/GIT_Server
-
-When you say package was missing, are you referring to 'my module' in:
-
-git format-patch -s -n -p --subject-prefix="PATCH - my module" remotes/origin/master
-
-and in this particular case should 'my module' be configure or alsa-lib or something else?
-
-Thank you,
-Olivier
-
-
-________________________________
-CONFIDENTIALITY : This e-mail and any attachments are confidential and may be privileged. If you are not a named recipient, please notify the sender immediately and do not disclose the contents to another person, use it for any purpose or store or copy the information in any medium.
+My wish would be a minimal config. Right now, I try to build the driver
+with the current config and when that fails I grep through the
+(uncompressed) defconfigs for the symbol needed. Gives me 45/57 success
+rate on this series. Not perfect, but the best I could come up with
+without writing a .config-generator myself.
