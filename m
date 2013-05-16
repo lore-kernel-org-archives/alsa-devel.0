@@ -1,15 +1,24 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: 7.1 surround channels missing on CS46xx
-Date: Thu, 16 May 2013 12:55:26 +0200
-Message-ID: <201305161255.26607.linux@rainbow-software.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: PulseAudio and softvol
+Date: Thu, 16 May 2013 12:58:07 +0200
+Message-ID: <5194BBBF.7010507@perex.cz>
+References: <1368611744.6590.8.camel@localhost> <519362EB.7050603@perex.cz>
+ <s5hd2ssmsd2.wl%tiwai@suse.de> <5193692A.4060007@perex.cz>
+ <51936B74.6080105@canonical.com> <51936FDB.2050407@perex.cz>
+ <s5h1u98mn2y.wl%tiwai@suse.de> <519383D3.3000303@canonical.com>
+ <51938525.4090208@perex.cz> <s5hr4h8l7fx.wl%tiwai@suse.de>
+ <519389B1.6080400@perex.cz> <s5hli7gl6hf.wl%tiwai@suse.de>
+ <5193A1C9.9010108@perex.cz> <s5ha9nwl1ut.wl%tiwai@suse.de>
+ <5193A8D4.4090008@perex.cz> <s5h4ne4ky13.wl%tiwai@suse.de>
+ <51947D45.1040003@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail-1.atlantis.sk [80.94.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id C3B332654B8
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 12:55:40 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 714EA2654BA
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 12:58:08 +0200 (CEST)
+In-Reply-To: <51947D45.1040003@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,26 +28,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Arun Raghavan <arun.raghavan@collabora.co.uk>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I got a Hercules Fortissimo 7.1 sound card (CS4624 + two CS4294) but 
-snd-cs46xx driver supports only 6 channels (front, rear, center/lfe). The 
-surround output (7&8) is not supported - as seen in dsp_spos_scb_lib.c:
+Date 16.5.2013 08:31, David Henningsson wrote:
+> On 05/15/2013 06:28 PM, Takashi Iwai wrote:
+>> At Wed, 15 May 2013 17:25:08 +0200,
+>> Jaroslav Kysela wrote:
+>>>
+>>> Date 15.5.2013 17:06, Takashi Iwai wrote:
+>>>> Enough for...?  It restores the value without the new TLV, thus it
+>>>> doesn't show it's a softvol element.
+>>>
+>>> Yes, for the first call, but then PA will open the pcm device and this
+>>> call will add the softvol information to TLV which inactivates the
+>>> softvol control in the mixer.
+>>
+>> Yes, but the invocation of PCM softvol isn't guaranteed to be first
+>> before the reference to the already existing user ctl element.
+>> snd_mixer_open() can be called before that.
+> 
+> So this is a transient problem, right? As soon as the first PCM is 
+> opened, the TLV would be corrected, and then stay corrected for all 
+> times to come.
+> 
+> And looking at the current PulseAudio code, it does open the pcm device 
+> before it opens the mixer/ctl device.
+> So, if this isn't possible to solve in a better way, maybe we need to be 
+> pragmatic about it - PulseAudio is the only application we know that 
+> would care, and it opens the pcm device first. So in practice, it looks 
+> like the TLV approach would work.
 
-       case DSP_PCM_S71_CHANNEL:
-                /* TODO */
-                snd_BUG();
-                break;
+It would work even if the mixer is opened before PCM, because the mixer
+will get notified about the TLV change and can make the PCM element
+inactive after. PA should only handle this situation correctly.
 
-Tried to add a code for this, mostly copying the center/lfe code but I miss 
-some data:
- - which slots (ACOSV_SLVx) should be used (maybe 10 and 12?)
- - what are the channel_disp and fifo_addr values for
-   cs46xx_dsp_create_codec_out_scb() function
- - what values should S71_MIXER_SCB_ADDR and S71_CODEC_SCB_ADDR be (maybe
-   0x1b0 and 0x1c0?)
+>>>>>> You may think of adding the code to softvol plugin to automatically
+>>>>>> rewrite TLV of the existing ctl element if it contains no new TLV
+>>>>>> type.  But, PA shall skip softvol.  Thus, it won't be touched.  And
+>>>>>> yet, PA would like to skip the control elements that have been created
+>>>>>> beforehand.
+>>>>>
+>>>>> The alsa-lib code can be modified to create or modify the user space
+>>>>> control also in the SND_PCM_NO_SOFTVOL case, so the mixer API will be
+>>>>> informed that the PCM controls belongs to softvol.
+>>>>
+>>>> But how would you know exactly?  Parsing the PCM definition at each
+>>>> time if a user ctl element is found and check whether it *might*
+>>>> belong to softvol plugin defined in some of card's default config?
+>>>
+>>> No. The information in TLV would be enough to determine the softvol
+>>> functionality.
+>>>
+>>>> What if a user takes own definition temporarily?
+>>>
+>>> Then user is responsible to remove this control later.
+>>
+>> That's messy.  We provide no such tool.
+
+Perhaps amixer should be extended.
+
+>>>> There can be endless corner cases.
+>>>
+>>> I'm not sure what you talk about. Yes, everything can be misused, but
+>>> we're talking about the standard usage. You can do weird things with the
+>>> softvol user controls anyway (remove them during runtime, because
+>>> they're not locked).
+>>
+>> I know I'm picky, but adding a new metadata *onto* the existing data
+>> structure has to be always done carefully.  Otherwise it'll hit back
+>> us later.
+> 
+> I think it's good that you are picky. Missing a use case can cause 
+> problems indeed. But is there another solution to this problem which is 
+> better?
+> 
+>> For example, another corner case I can think of easily is that user
+>> downgrades alsa-lib.  Then softvol overrides the TLV again without the
+>> new tag (the current softvol code assumes the single TLV and overrides
+>> if it doesn't fit), and it can be saved so...
+>>
+>>>> BTW, does the alsaloop device just work as is, i.e. without specifying
+>>>> anything in PA's configuration?
+>>>
+>>> The alsaloop can run on top of the snd-aloop, so it behaves like a
+>>> standard hardware, only the mixer controls can be rerouted using the
+>>> user controls to the real card.
+>>
+>> OK.  But, looking at the current implementation, you are allowed to
+>> map freely the source ctl element.  It can lead to the same problem in
+>> PA.
+>>
+>> The very reason we'd like to filter out the mixer control created by
+>> softvol is that this mixer element confuses PA as if it actually
+
+Why it can confuse PA? It behaves like standard soundcard and user can
+select the forwarded controls (for example Master and PCM or Front
+only). PA don't have any hint that the audio is rerouted and it's correct.
+
+>> changes the volume (e.g. "PCM") although PA ignores the softvol.  If
+>> user creates PCM volume in alsaloop in a different fashion as PA
+>> expected, the similar problem may happen.  How can we detect this
+>> logically...?  In other words, how can PA adjust the mixer elements
+>> for alsaloop properly?
+> 
+> So if alsaloop is run, only once, that could cause a control to be added 
+> for all future, due to alsactl saving and restoring it?
+> 
+> If so, that looks like a problem with alsaloop. If it adds controls, it 
+> should also remove them.
+
+These controls are removed when alsaloop exits.
+
+					Jaroslav
 
 -- 
-Ondrej Zary
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
