@@ -1,14 +1,23 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ASoC: davinci: fix sample rotation
-Date: Thu, 16 May 2013 15:25:01 +0200
-Message-ID: <1368710701-12159-1-git-send-email-zonque@gmail.com>
+From: Olivier Langlois <olivier@trillion01.com>
+Subject: Re: Only stereo output possible with ATI Tahiti XT
+ HDMI Audio [Radeon HD 7970 Series] [1002:aaa0]
+Date: Thu, 16 May 2013 09:30:21 -0400
+Message-ID: <1368711021.1131.36.camel@Wailaba2>
+References: <1368501319.18787.18.camel@Wailaba2>
+ <1368625619.1131.11.camel@Wailaba2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E185265513
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 15:24:48 +0200 (CEST)
+Received: from oproxy13-pub.unifiedlayer.com (oproxy13-pub.unifiedlayer.com
+ [69.89.16.30]) by alsa0.perex.cz (Postfix) with SMTP id 6904B265516
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 15:30:27 +0200 (CEST)
+Received: from [173.178.227.159] (port=40271 helo=[192.168.1.104])
+ by box610.bluehost.com with esmtpsa (TLSv1:CAMELLIA256-SHA:256)
+ (Exim 4.80) (envelope-from <olivier@trillion01.com>)
+ id 1UcyGF-0000x7-57
+ for alsa-devel@alsa-project.org; Thu, 16 May 2013 07:30:23 -0600
+In-Reply-To: <1368625619.1131.11.camel@Wailaba2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,47 +28,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Michal Bachraty <michal.bachraty@streamunlimited.com>, stable@vger.kernel.org, Daniel Mack <zonque@gmail.com>, broonie@kernel.org, vaibhav.bedia@ti.com, marek.belisko@streamunlimited.com, "[3.9 only]"@mail.zonque.de
 List-Id: alsa-devel@alsa-project.org
 
-McASP serial audio engine needs different rotation values on TX and RX
-channels. Commit dde109fb462 ("ASoC: McASP: Fix data rotation for
-playback. Enables 24bit audio playback") changed the calculation to fix
-the playback format, but broke the capture stream by doing it for both
-TXFMT and RXFMT.
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Michal Bachraty <michal.bachraty@streamunlimited.com>
-Cc: stable@vger.kernel.org [3.9 only]
----
- sound/soc/davinci/davinci-mcasp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+On Wed, 2013-05-15 at 09:46 -0400, Olivier Langlois wrote:
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 63633e9..8d805ec 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -628,7 +628,8 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
- 				       int word_length)
- {
- 	u32 fmt;
--	u32 rotate = (word_length / 4) & 0x7;
-+	u32 tx_rotate = (word_length / 4) & 0x7;
-+	u32 rx_rotate = (32 - word_length) / 4;
- 	u32 mask = (1ULL << word_length) - 1;
- 
- 	/*
-@@ -651,9 +652,9 @@ static int davinci_config_channel_size(struct davinci_audio_dev *dev,
- 		mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
- 				TXSSZ(fmt), TXSSZ(0x0F));
- 		mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMT_REG,
--				TXROT(rotate), TXROT(7));
-+				TXROT(tx_rotate), TXROT(7));
- 		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMT_REG,
--				RXROT(rotate), RXROT(7));
-+				RXROT(rx_rotate), RXROT(7));
- 		mcasp_set_reg(dev->base + DAVINCI_MCASP_RXMASK_REG,
- 				mask);
- 	}
--- 
-1.8.1.4
+> 
+> In the meantime, I have tried to setup an alternative with my given
+> wcaps:
+> 
+> lano1106@whippet2 ~ :( $ cat /etc/asound.conf
+> pcm.mypcm {
+>    type plug
+>    slave {
+>      pcm "hdmi:{AES0 0x6 AES1 0x82 AES2 0x0 AES3 0x2}"
+>    }
+> }
+> 
+> pcm.a52encode {
+>     type a52
+>     slavepcm mypcm
+> }
+> 
+> pcm.!default pcm.a52encode
+> 
+> lano1106@whippet2 ~ $ speaker-test -c6
+> 
+> speaker-test 1.0.27
+> 
+> Playback device is default
+> Stream parameters are 48000Hz, S16_LE, 6 channels
+> Using 16 octaves of pink noise
+> Access type not available for playback: Invalid argument
+> Setting of hwparams failed: Invalid argument
+> 
+> Apparently, SND_PCM_ACCESS_RW_INTERLEAVED is not supported with my
+> setup.
+> 
+I am grateful that noone has replied as it has allowed me to dig alsa
+and appreciate further its design.
+
+For completeness and help the next user stumbling on the same problem, I
+am autoreplying to myself
+
+Trivia quiz: What kind of access mode does the a52 plugin accept?
+A: It depends...INTERLEAVED if libavcodec is old or NONINTERLEAVED if
+you have a recent ffmpeg setup, in anycase, a plug shield you from
+surprises....:
+
+pcm.a52encode {
+    type a52
+    card 0
+}
+
+pcm.a52accessadapter {
+    type plug
+    slave {
+      pcm a52encode
+    }
+}
+
+pcm.!default pcm.a52accessadapter
+
+Concerning ATI Tahiti 7.1 HDMI output. Looking into patch_hdmi.c and by
+seeing the special secret magic handshake to enable 7.1 output for a nvidia
+device made me thinking about a slight hope to do something similar for
+my card. I'll report back if I find the ATI magic incantation to reach
+7.1 nirvana.
