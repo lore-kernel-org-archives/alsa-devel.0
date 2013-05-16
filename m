@@ -1,57 +1,38 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: dfbmcs320: make the driver common
- for other BT modules
-Date: Thu, 16 May 2013 13:29:00 +0200
-Message-ID: <5194C2FC.70804@metafoo.de>
-References: <1368687184-12169-1-git-send-email-Baohua.Song@csr.com>
- <5194AC3C.4080206@metafoo.de>
- <CAGsJ_4yoXj+e7A20SM5+ctLvE2QRTp0bzDeKfCZSUHTO8BPq5A@mail.gmail.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/33] devm improvement series, part 1, take 2
+Date: Thu, 16 May 2013 14:57:32 +0300
+Message-ID: <1368705452.15764.217.camel@sauron.fi.intel.com>
+References: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
+Reply-To: dedekind1@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-159.synserver.de (smtp-out-163.synserver.de
- [212.40.185.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E2BA2654D8
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 13:30:08 +0200 (CEST)
-In-Reply-To: <CAGsJ_4yoXj+e7A20SM5+ctLvE2QRTp0bzDeKfCZSUHTO8BPq5A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, workgroup.linux@csr.com, Graeme Gregory <graeme@openmoko.org>, broonie@kernel.org, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <devel-bounces@linuxdriverproject.org>
+In-Reply-To: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/devel>,
+ <mailto:devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/devel/>
+List-Post: <mailto:devel@linuxdriverproject.org>
+List-Help: <mailto:devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/devel>,
+ <mailto:devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: devel-bounces@linuxdriverproject.org
+Sender: "devel" <devel-bounces@linuxdriverproject.org>
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Viresh Kumar <viresh.kumar@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Thierry Reding <thierry.reding@avionic-design.de>, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, Evgeniy Polyakov <zbr@ioremap.net>, ac100@lists.launchpad.net, devel@driverdev.osuosl.org, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Herbert Xu <herbert@gondor.apana.org.au>, Samuel Ortiz <sameo@linux.intel.com>, Florian Tobias Schandinat <FlorianSchandinat@gmx.de>, Vinod Koul <vinod.koul@intel.com>, linux-pm@vger.kernel.org, cpufreq@vger.ker
 List-Id: alsa-devel@alsa-project.org
 
-On 05/16/2013 12:31 PM, Barry Song wrote:
-> 2013/5/16 Lars-Peter Clausen <lars@metafoo.de>:
->> On 05/16/2013 08:53 AM, Barry Song wrote:
->>> DFBM-CS320 is only one of bluetooth modules using CSR bluetooth chips,
->>> we don't want everyone to have a seperate codec driver. anyway, the
->>> feature of Bluetooth handsfree is same on all platforms, so this patch
->>> makes the DFBM-CS320 driver become a common BT handsfree driver.
->> [...]
->>> -static struct platform_driver dfmcs320_driver = {
->>> +static struct platform_driver bt_handsfree_driver = {
->>>       .driver = {
->>> -             .name = "dfbmcs320",
->>> +             .name = "bt-handsfree",
->>>               .owner = THIS_MODULE,
->>
->> In my opinion it's a good idea to keep a platform_id list of all the
->> supported devices.
-> 
-> i have no idea how many bluetooth handsfree module exist in the world.
-> there must be many. actually the driver works for almost all BT
-> handsfree.
-> so my basic idea is making the codes as common as possible.
+On Thu, 2013-05-16 at 13:15 +0200, Wolfram Sang wrote:
+> Despite various architectures and platform dependencies, I managed to
+> compile
+> test 45 out of 57 modified files locally using heuristics and
+> defconfigs.
+> If somebody knows how to create a minimal .config with a certain
+> kconfig symbol
+> (and its dependencies) set, I'd love to hear about it.
 
-you don't have to know all the device names, but I'd prefer to keep at least
-dfbmcs320 in the device id list.
+If you find this out, please, share!
 
-- Lars
+-- 
+Best Regards,
+Artem Bityutskiy
