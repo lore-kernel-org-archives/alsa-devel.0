@@ -1,46 +1,57 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH 32/33] sound/soc/fsl: don't check resource with devm_ioremap_resource
-Date: Thu, 16 May 2013 13:16:00 +0200
-Message-ID: <1368702961-4325-33-git-send-email-wsa@the-dreams.de>
-References: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Wolfram Sang <wsa@the-dreams.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dfbmcs320: make the driver common
+ for other BT modules
+Date: Thu, 16 May 2013 13:29:00 +0200
+Message-ID: <5194C2FC.70804@metafoo.de>
+References: <1368687184-12169-1-git-send-email-Baohua.Song@csr.com>
+ <5194AC3C.4080206@metafoo.de>
+ <CAGsJ_4yoXj+e7A20SM5+ctLvE2QRTp0bzDeKfCZSUHTO8BPq5A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-159.synserver.de (smtp-out-163.synserver.de
+ [212.40.185.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E2BA2654D8
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 13:30:08 +0200 (CEST)
+In-Reply-To: <CAGsJ_4yoXj+e7A20SM5+ctLvE2QRTp0bzDeKfCZSUHTO8BPq5A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, workgroup.linux@csr.com, Graeme Gregory <graeme@openmoko.org>, broonie@kernel.org, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-devm_ioremap_resource does sanity checks on the given resource. No need to
-duplicate this in the driver.
+On 05/16/2013 12:31 PM, Barry Song wrote:
+> 2013/5/16 Lars-Peter Clausen <lars@metafoo.de>:
+>> On 05/16/2013 08:53 AM, Barry Song wrote:
+>>> DFBM-CS320 is only one of bluetooth modules using CSR bluetooth chips,
+>>> we don't want everyone to have a seperate codec driver. anyway, the
+>>> feature of Bluetooth handsfree is same on all platforms, so this patch
+>>> makes the DFBM-CS320 driver become a common BT handsfree driver.
+>> [...]
+>>> -static struct platform_driver dfmcs320_driver = {
+>>> +static struct platform_driver bt_handsfree_driver = {
+>>>       .driver = {
+>>> -             .name = "dfbmcs320",
+>>> +             .name = "bt-handsfree",
+>>>               .owner = THIS_MODULE,
+>>
+>> In my opinion it's a good idea to keep a platform_id list of all the
+>> supported devices.
+> 
+> i have no idea how many bluetooth handsfree module exist in the world.
+> there must be many. actually the driver works for almost all BT
+> handsfree.
+> so my basic idea is making the codes as common as possible.
 
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
----
- sound/soc/fsl/imx-ssi.c |    6 ------
- 1 file changed, 6 deletions(-)
+you don't have to know all the device names, but I'd prefer to keep at least
+dfbmcs320 in the device id list.
 
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 902fab0..c6fa03e 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -540,11 +540,6 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	clk_prepare_enable(ssi->clk);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		ret = -ENODEV;
--		goto failed_get_resource;
--	}
--
- 	ssi->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(ssi->base)) {
- 		ret = PTR_ERR(ssi->base);
-@@ -633,7 +628,6 @@ failed_pdev_fiq_alloc:
- 	snd_soc_unregister_component(&pdev->dev);
- failed_register:
- 	release_mem_region(res->start, resource_size(res));
--failed_get_resource:
- 	clk_disable_unprepare(ssi->clk);
- failed_clk:
- 
--- 
-1.7.10.4
+- Lars
