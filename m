@@ -1,23 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH] ASoC: dfbmcs320: make the driver common
- for other BT modules
-Date: Thu, 16 May 2013 20:00:17 +0800
-Message-ID: <CAGsJ_4yn2uodRKrFKYrX85XA7A=hQs2w0cyGoEEHsYgCJHD7eQ@mail.gmail.com>
-References: <1368687184-12169-1-git-send-email-Baohua.Song@csr.com>
- <5194AC3C.4080206@metafoo.de>
- <CAGsJ_4yoXj+e7A20SM5+ctLvE2QRTp0bzDeKfCZSUHTO8BPq5A@mail.gmail.com>
- <5194C2FC.70804@metafoo.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+Date: Thu, 16 May 2013 12:04:03 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC489010E6AFD9@SHSMSX102.ccr.corp.intel.com>
+References: <1368692945-2122-1-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hehd7jomk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qe0-f42.google.com (mail-qe0-f42.google.com
- [209.85.128.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 1759B2654E3
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 14:00:37 +0200 (CEST)
-Received: by mail-qe0-f42.google.com with SMTP id 1so1885858qee.15
- for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 05:00:37 -0700 (PDT)
-In-Reply-To: <5194C2FC.70804@metafoo.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03EC32654E3
+ for <alsa-devel@alsa-project.org>; Thu, 16 May 2013 14:04:45 +0200 (CEST)
+In-Reply-To: <s5hehd7jomk.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, workgroup.linux@csr.com, Graeme Gregory <graeme@openmoko.org>, broonie@kernel.org, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Li, Jocelyn" <jocelyn.li@intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-2013/5/16 Lars-Peter Clausen <lars@metafoo.de>:
-> On 05/16/2013 12:31 PM, Barry Song wrote:
->> 2013/5/16 Lars-Peter Clausen <lars@metafoo.de>:
->>> On 05/16/2013 08:53 AM, Barry Song wrote:
->>>> DFBM-CS320 is only one of bluetooth modules using CSR bluetooth chips,
->>>> we don't want everyone to have a seperate codec driver. anyway, the
->>>> feature of Bluetooth handsfree is same on all platforms, so this patch
->>>> makes the DFBM-CS320 driver become a common BT handsfree driver.
->>> [...]
->>>> -static struct platform_driver dfmcs320_driver = {
->>>> +static struct platform_driver bt_handsfree_driver = {
->>>>       .driver = {
->>>> -             .name = "dfbmcs320",
->>>> +             .name = "bt-handsfree",
->>>>               .owner = THIS_MODULE,
->>>
->>> In my opinion it's a good idea to keep a platform_id list of all the
->>> supported devices.
->>
->> i have no idea how many bluetooth handsfree module exist in the world.
->> there must be many. actually the driver works for almost all BT
->> handsfree.
->> so my basic idea is making the codes as common as possible.
->
-> you don't have to know all the device names, but I'd prefer to keep at least
-> dfbmcs320 in the device id list.
+Hi Takashi,
 
-i did think it is a good idea to have device id list while i sent the
-last mail. and it matches with the generic device driver engineering
-sense. the problem is i don't how long the list will be.
-if you like to keep dfbmcs320 at least for the moment, i would agree.
 
->
-> - Lars
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, May 16, 2013 4:49 PM
+> To: Wang Xingchao
+> Cc: Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn; alsa-devel@alsa-project.org;
+> Wang, Xingchao
+> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+> 
+> At Thu, 16 May 2013 16:29:05 +0800,
+> Wang Xingchao wrote:
+> >
+> > Haswell doesnot support runtime pm by default.
+> > This patch let haswell Display HD-A controller enter runtime suspend,
+> > and bring more power saving whith power-well.
+> >
+> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> 
+> I don't think it's good to fiddle such a thing in the driver side.
+> If Haswell can support runtime PM really, it should be set commonly.
 
--barry
+Haswell doesnot show its power capability to support PME, I'm not sure it's caused by BIOS setting
+or need some additional configurations in PCI registers.
+So pci_dev_run_wake() return false and  this make haswell lose
+the chance to support runtime pm in software, right?
+
+If a PCI device would support runtime pm in software, maybe it doesnot support PME in hardware level, it should
+get a chance to try. I see some pci devices, they look much like:
+
+pm_runtime_put_noidle(&pdev->dev);
+pm_runtime_allow(&pdev->dev);
+
+anyway it's better if we can set haswell PME capability externally,  then it fits current code.
+but if there's such software requirement for runtime pm, it should be improved, right?
+
+Thanks
+--xingchao
+> 
+> 
+> Takashi
+> 
+> > ---
+> >  sound/pci/hda/hda_intel.c |    6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index bf27693..eb25888 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -3755,6 +3755,12 @@ static int azx_probe(struct pci_dev *pci,
+> >
+> >  	if (pci_dev_run_wake(pci))
+> >  		pm_runtime_put_noidle(&pci->dev);
+> > +	else if (chip->driver_caps
+> > +			& AZX_DCAPS_I915_POWERWELL) {
+> > +		/* Haswell doesnot support runtime pm by default */
+> > +		pm_runtime_put_noidle(&pci->dev);
+> > +		pm_runtime_allow(&pci->dev);
+> > +	}
+> >
+> >  	dev++;
+> >  	complete_all(&chip->probe_wait);
+> > --
+> > 1.7.9.5
+> >
