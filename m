@@ -1,16 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-compress: Send correct stream
- event for capture start
-Date: Fri, 17 May 2013 21:20:08 +0100
-Message-ID: <20130517202008.GP1627@sirena.org.uk>
-References: <1368806306-5520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 3/6] ASoC: ux500: Drop pinctrl sleep support
+Date: Sat, 18 May 2013 00:02:18 +0200
+Message-ID: <CACRpkdbZ4Wxx7qsyYOfFES-UpTTcRcfV6GZi-R8YmxhC-sLV8g@mail.gmail.com>
+References: <1367997261-32048-1-git-send-email-fabio.baltieri@linaro.org>
+ <1367997261-32048-4-git-send-email-fabio.baltieri@linaro.org>
+ <20130508105124.GA7478@sirena.org.uk>
+ <20130508114216.GB29130@balto.lan>
+ <20130508123225.GK7478@sirena.org.uk>
+ <20130508131020.GA30503@balto.lan>
+ <20130508135413.GR7478@sirena.org.uk>
+ <20130508141723.GA12155@balto.lan>
+ <20130508142938.GS7478@sirena.org.uk>
+ <20130508154805.GA12970@balto.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6944121286614395027=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AC999261683
- for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 22:20:16 +0200 (CEST)
-In-Reply-To: <1368806306-5520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mail-ie0-f171.google.com (mail-ie0-f171.google.com
+ [209.85.223.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id EED63261683
+ for <alsa-devel@alsa-project.org>; Sat, 18 May 2013 00:02:19 +0200 (CEST)
+Received: by mail-ie0-f171.google.com with SMTP id e11so10492231iej.30
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 15:02:19 -0700 (PDT)
+In-Reply-To: <20130508154805.GA12970@balto.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,69 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, vinod.koul@intel.com
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 8, 2013 at 5:48 PM, Fabio Baltieri
+<fabio.baltieri@linaro.org> wrote:
+> On Wed, May 08, 2013 at 03:29:38PM +0100, Mark Brown wrote:
 
---===============6944121286614395027==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f9b3biUB1f7FHqGn"
-Content-Disposition: inline
+>> It seems like the code is definitely buggy here but is this really all
+>> that's buggy or is it just the symptom you happen to have seen?
+>
+> For the pinctrl code drop I still think that it should go, but really
+> I leave the last word to LinusW as suggested.
 
+Kill it then.
 
---f9b3biUB1f7FHqGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+At the time the driver was upstreamed, it was using the old
+nmk_config_pins() interface to switch the pins.
 
-On Fri, May 17, 2013 at 04:58:26PM +0100, Charles Keepax wrote:
+All I did was convert them to use pinctrl. See commit
+08d98fe0e81cd9424ef2451ed13afe91a9a26f9f
 
-> Sorry little bug I missed due to some integration bugs in our
-> setup here. Again this applies onto Takashi's sound for-next
-> branch.
+If nobody knows why it was doing that in the first place, let's
+just kill it.
 
-Now the merge window is done this matters less.
-
-> +	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
-> +		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
-> +					SND_SOC_DAPM_STREAM_START);
-> +	} else {
-> +		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
-> +					SND_SOC_DAPM_STREAM_START);
-> +	}
-
-Coding style: no braces for single line if clauses unless there's a good
-reason.
-
---f9b3biUB1f7FHqGn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRlpDxAAoJELSic+t+oim9ysMP+wdXxnd9SNsWcd8PSjYzaR4U
-lNPwwnXbXvzHz2Pt/AK0163HILm2y8DVS1ls1jjDbpvahXKT30+Xz/+2VOq3kRP8
-3Zaq8ol1TEpit8c3bZLyoL0XUNBX+2o5Ez7YJ0MKUKfov3UGmwfbSDhpjXJryuVA
-HYO3TNSS62wjFK1LtwC+Od9VWgeeCCzGef5eLtR1KTJJwQbDUToDEaj79WzKStnO
-mFjw/wHKH8Mt+C/FCzvnHq5KSXdSiBGFLoL0prbc2p2k58rrhe+uLpq0givTKcGm
-Ki5FtoilmP3eNMNlH3LH6SwY70/asDSzrpRUlKR2cyy3ibxURswlXNIndw2SVhL7
-uYE0YueuHKxbiQvkwsAB37kQgsO0oyLBeyQQoL1nGVOEtvEWCMg+LwOxj6zM8HSH
-fdP+H2na7/Y6Xkk//GYkRsKmrv7Z/RanDHGc8LivPK21BJ6/+lXlwJF83wIel/7+
-qoGUSdux2s7ymLAwSkNg0ZI54+WZOKXGOHgoVKThxMtje6Ufu5FUdcqgwFG91Xmh
-oryWcRM0Ee4hvwPZgBPkAQUm25IwUJ1XyYN4q+4b7J/xf3fVS4pRaC6YU5YPlB0c
-THQRRVXes4K8oqJGEXoXZE1x2FpTSJA/ubrg5XvwlUI6Mh1TyR5FXE24tBiDkDE7
-VbJV5ck/Yo/PR7m2/0IL
-=7KDZ
------END PGP SIGNATURE-----
-
---f9b3biUB1f7FHqGn--
-
---===============6944121286614395027==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6944121286614395027==--
+Yours,
+Linus Walleij
