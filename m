@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simplify registration of
-	snd-soc-dummy device
-Date: Fri, 17 May 2013 12:08:39 +0100
-Message-ID: <20130517110839.GL1627@sirena.org.uk>
-References: <1368782775-28517-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2] ASoC: dfbmcs320: make the driver common
+ for other BT modules
+Date: Fri, 17 May 2013 12:15:23 +0100
+Message-ID: <20130517111523.GM1627@sirena.org.uk>
+References: <1368757177-15372-1-git-send-email-Baohua.Song@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3495308303096484098=="
+Content-Type: multipart/mixed; boundary="===============1272819119953601811=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DF17260728
- for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 13:08:52 +0200 (CEST)
-In-Reply-To: <1368782775-28517-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 29B9D26031A
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 13:15:39 +0200 (CEST)
+In-Reply-To: <1368757177-15372-1-git-send-email-Baohua.Song@csr.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: Barry Song <Baohua.Song@csr.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, workgroup.linux@csr.com, Graeme Gregory <graeme@openmoko.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3495308303096484098==
+--===============1272819119953601811==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qgd2S+2VS1hsWwXW"
+	protocol="application/pgp-signature"; boundary="/t6ASE28jIy1gGy9"
 Content-Disposition: inline
 
 
---Qgd2S+2VS1hsWwXW
-Content-Type: text/plain; charset=iso-8859-1
+--/t6ASE28jIy1gGy9
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 17, 2013 at 11:26:15AM +0200, Uwe Kleine-K=F6nig wrote:
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+On Fri, May 17, 2013 at 10:19:37AM +0800, Barry Song wrote:
+> DFBM-CS320 is only one of bluetooth modules using CSR bluetooth chips,
+> we don't want everyone to have a seperate codec driver. anyway, the
+> feature of Bluetooth handsfree is same on all platforms, so this patch
+> makes the DFBM-CS320 driver become a common BT handsfree driver.
 
-Applied, thanks.
+Sorry, should have thought of this before but why are we calling this
+"handsfree"?  It's just a generic bluetooth link as far as the host
+system is concerned, "bt-sco" might be more appropriate?
 
---Qgd2S+2VS1hsWwXW
+Otherwise this looks OK for ASoC though I'd expect to see a change to
+registration of the OpenMoko BT device (perhaps I missed it though).
+
+--/t6ASE28jIy1gGy9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRlg+zAAoJELSic+t+oim9nxAP/RS3bwSOc+f8ejvCmL+CYpkf
-swX9+1F3dQ2H52yvtBk129c3rOdlWDEXfkYpTKjGavYLqJhtcIoZ8TP+e/vxI6YC
-GrXTxJI8pgMf9/1QT6drm3Y+Ez/TItIxXTl+dXb+DvJWQos2681QNHDed+rVw84V
-2io5y90uqVEHHETD6+KosVl33jgr8J4OGPsaWFmgiTIlhV7sOFBk1lGO/8wJMoOn
-TBBQySFiuBYpWkNXqwGikOIGNv36OTVqUyu7qRU3uNiZddMOMaUIWL2VsrUKJ397
-op7h1KN422c5768MOE8SzJDIGN00SdhCAgwhd/oJ0w57mUoSdhYkxTMO5U/7S5EO
-7tlyM+IuX5evGWcPp+T+88FF3SbsZiunuBRimQB8e4trl9RBAlH3aolcQIBkIUJK
-OmCZ4UVvKtZ0urlkjtdP72RHoU5Jtdyka6U03HlxjSHfydDjYURD24JKwo6uq3ws
-m2/41pIO6AupYt8Y2xEeBQgIY04WchoVmvmcve2ws7gS0pcYpLF8U57LDlel4Sur
-TgdDW8QBI/VvdhcomUYY2PIkXtwHAN62eINe/FNOrAbIJPzAhSs7G6b5pv9Je1WI
-IGFGvkZqO9P+E4EOugRAIVP+BHphUlmTUmD9Kiz57+8ZK4iQzP2A/fQvDCfXA2lr
-4qj7Vu+v6aSaO6vZ489k
-=vqn4
+iQIcBAEBAgAGBQJRlhFIAAoJELSic+t+oim9LfEQAJcRUit1LsgP/esBDm3+WXLj
++bRsvzn53Cu0UU6vMaEFMo0C7Pr5mkJVHbNuIrFKeQ2n7gUVNe7SqXjSJ3ui2Mii
+sD4KJ/GW88xbg9w+dIYwcS/DFYEGqg7DKR2mCD0e4XLa6I1d0ntKB5MyWAjIIKRY
+IJa8R79AW0OaiL+/6pGwBr5lLg4a5YhRMrV+W67UDT6Wn/Cz+6WL5A3wFWLu0dek
+SJjXQcziaDMv8cQEhb6Bwdhk+vrNxMWEDgVbaKSCN37Xe57z2IQicoOx1QAzQcla
+pri6eOJqRe9CIgQNI2AL86F6uURVsd4bNx39Rr1sYeNcjCa+sjYo7YGZ0sEpqb/Q
+wHBcoG8qXstUkk01N1HBEYPvkIXV4Qgk57DQ4Adw79tLN5W5egclVYaLd8KnRcfW
+cEE5PIXXUoiethgpz1KWnF5JaJJVy/IcDql6OTm8n0Q28Da4JLGMbO/w023dUU2a
+ZnTfabV7rOLqO+rJCBLyJzIp+lGZ5+zkAMl0b33P2ONBrXFoxmRcFxVOrnriirM3
+hNlZPpNF0EAa+rCddthZ+M/eYwUbOnrcsz8U+6zr7iN/FKaiMm3/mazjgrrZRAdY
+ajzkWJYwCZStioI2LeFbIulXRJ/Lo5qCK9VWtu48MuozNV7x/5yV/jvrDuymhY7K
+PLDyZ0e30pnVhBEB7vDg
+=EX5n
 -----END PGP SIGNATURE-----
 
---Qgd2S+2VS1hsWwXW--
+--/t6ASE28jIy1gGy9--
 
---===============3495308303096484098==
+--===============1272819119953601811==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3495308303096484098==--
+--===============1272819119953601811==--
