@@ -1,156 +1,60 @@
-From: Jesse Barnes <jesse.barnes@intel.com>
-Subject: Re: [PATCH 1/2 V3] drm/915: Add private api for power
-	well usage
-Date: Fri, 17 May 2013 08:43:33 -0700
-Message-ID: <20130517084333.2e868d7f@jbarnes-desktop>
-References: <1368690757-2856-1-git-send-email-xingchao.wang@linux.intel.com>
-	<1368690757-2856-2-git-send-email-xingchao.wang@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-compress: Send correct stream event
+	for capture start
+Date: Fri, 17 May 2013 16:58:26 +0100
+Message-ID: <1368806306-5520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <1368690757-2856-2-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Wang Xingchao <xingchao.wang@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, jocelyn.li@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com, paulo.r.zanoni@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37B1E2610CE
+ for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 18:08:10 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-A few comments and questions below.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
 
-On Thu, 16 May 2013 15:52:36 +0800
-Wang Xingchao <xingchao.wang@linux.intel.com> wrote:
+Sorry little bug I missed due to some integration bugs in our
+setup here. Again this applies onto Takashi's sound for-next
+branch.
 
-> Haswell Display audio depends on power well in graphic side, it should
-> request power well before use it and release power well after use.
-> I915 will not shutdown power well if it detects audio is using.
-> This patch protects display audio crash for Intel Haswell C3 stepping board.
-> 
-> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> ---
->  drivers/gpu/drm/i915/intel_pm.c |   75 +++++++++++++++++++++++++++++++++++----
->  include/drm/i915_powerwell.h    |   36 +++++++++++++++++++
->  2 files changed, 104 insertions(+), 7 deletions(-)
->  create mode 100644 include/drm/i915_powerwell.h
-> 
-> diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-> index 0f4b46e..88820e1 100644
-> --- a/drivers/gpu/drm/i915/intel_pm.c
-> +++ b/drivers/gpu/drm/i915/intel_pm.c
-> @@ -4344,18 +4344,12 @@ bool intel_using_power_well(struct drm_device *dev)
->  		return true;
->  }
->  
-> -void intel_set_power_well(struct drm_device *dev, bool enable)
-> +static void enable_power_well(struct drm_device *dev, bool enable)
+Thanks,
+Charles
 
-We can leave the name of this function alone; even for static stuff we
-tend to use the intel_ prefix.  Plus it's a set function, not an enable
-function...  so maybe just put a __ in front of it to indicate it's for
-internal use only.
+ sound/soc/soc-compress.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
->  {
->  	struct drm_i915_private *dev_priv = dev->dev_private;
->  	bool is_enabled, enable_requested;
->  	uint32_t tmp;
->  
-
-
-> +/* Global drm_device for display audio drvier usage */
-> +static struct drm_device *power_well_device;
-> +/* Lock protecting power well setting */
-> +static DEFINE_SPINLOCK(powerwell_lock);
-> +static bool i915_power_well_using;
-
-What does this mean?  If it's just for making sure we don't use bogus
-power_well_device, it seems like we can just use a NULL check against
-power_well_device for that instead.
-
-> +static int hsw_power_count;
-> +
-> +void i915_request_power_well(void)
-> +{
-> +	if (!power_well_device)
-> +		return;
-> +
-> +	if (!IS_HASWELL(power_well_device))
-> +		return;
-> +
-> +	spin_lock_irq(&powerwell_lock);
-> +	if (!hsw_power_count++ && !i915_power_well_using)
-> +		enable_power_well(power_well_device, true);
-> +	spin_unlock_irq(&powerwell_lock);
-> +}
-> +EXPORT_SYMBOL_GPL(i915_request_power_well);
-> +
-> +void i915_release_power_well(void)
-> +{
-> +	if (!power_well_device)
-> +		return;
-> +
-> +	if (!IS_HASWELL(power_well_device))
-> +		return;
-> +
-> +	spin_lock_irq(&powerwell_lock);
-> +	WARN_ON(!hsw_power_count);
-> +	if (!--hsw_power_count
-> +			&& !i915_power_well_using)
-> +		enable_power_well(power_well_device, false);
-> +	spin_unlock_irq(&powerwell_lock);
-> +}
-> +EXPORT_SYMBOL_GPL(i915_release_power_well);
-> +
-> +/* TODO: Call this when i915 module unload */
-> +void i915_remove_power_well(void)
-> +{
-> +	i915_power_well_using = false;
-> +	power_well_device = NULL;
-> +}
-> +
-> +void intel_set_power_well(struct drm_device *dev, bool enable)
-> +{
-> +	if (!HAS_POWER_WELL(dev))
-> +		return;
-> +
-> +	power_well_device = dev;
-> +	spin_lock_irq(&powerwell_lock);
-> +	i915_power_well_using = enable;
-> +	if (!enable && hsw_power_count) {
-> +		DRM_DEBUG_KMS("Display audio power well busy using now\n");
-> +		goto out;
-> +	}
-> +
-> +	if (!i915_disable_power_well && !enable)
-> +		goto out;
-> +
-> +	enable_power_well(dev, enable);
-> +out:
-> +	spin_unlock_irq(&powerwell_lock);
-> +}
-
-I think we should just set the power_well_device at module init time,
-then ou wouldn't need to check/set it here.
-
-Also, the existing i915 code could just use the request/release
-functions too (internal versions taking a drm_device *), then you
-wouldn't need this special case.
-
-> +/* For use by hda_i915 driver */
-> +extern void i915_request_power_well(void);
-> +extern void i915_release_power_well(void);
-
-For future proofing, it might be good if these took an enum for the
-power well being requested.  Then we could track an array of refcounts
-later when we need the additional controls.
-
-But I suppose that could be added later when we have a better idea of
-what future chips will look like.
-
-Jesse
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 3853f7e..a5107df 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -220,8 +220,13 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 			goto err;
+ 	}
+ 
+-	snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
+-				SND_SOC_DAPM_STREAM_START);
++	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
++		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
++					SND_SOC_DAPM_STREAM_START);
++	} else {
++		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
++					SND_SOC_DAPM_STREAM_START);
++	}
+ 
+ 	/* cancel any delayed stream shutdown that is pending */
+ 	rtd->pop_wait = 0;
+-- 
+1.7.2.5
