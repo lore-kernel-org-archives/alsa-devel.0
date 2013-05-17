@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: wm5102: Stub hookup for Slimbus
+Subject: [PATCH 3/3] ASoC: wm5110: Stub hookup for Slimbus
 	interface
-Date: Fri, 17 May 2013 13:29:04 +0100
-Message-ID: <1368793745-30887-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Fri, 17 May 2013 13:29:05 +0100
+Message-ID: <1368793745-30887-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1368793745-30887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D944260815
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6BC292607D7
  for <alsa-devel@alsa-project.org>; Fri, 17 May 2013 14:29:12 +0200 (CEST)
 In-Reply-To: <1368793745-30887-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,14 +27,14 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5102.c |  179 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm5110.c |  179 +++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 179 insertions(+)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 6e1ee13..9a186ff 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -852,6 +852,15 @@ ARIZONA_MIXER_CONTROLS("AIF2TX2", ARIZONA_AIF2TX2MIX_INPUT_1_SOURCE),
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index ac40d6f..e77410e 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -347,6 +347,15 @@ ARIZONA_MIXER_CONTROLS("AIF2TX2", ARIZONA_AIF2TX2MIX_INPUT_1_SOURCE),
  
  ARIZONA_MIXER_CONTROLS("AIF3TX1", ARIZONA_AIF3TX1MIX_INPUT_1_SOURCE),
  ARIZONA_MIXER_CONTROLS("AIF3TX2", ARIZONA_AIF3TX2MIX_INPUT_1_SOURCE),
@@ -50,7 +50,7 @@ index 6e1ee13..9a186ff 100644
  };
  
  ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
-@@ -898,6 +907,15 @@ ARIZONA_MIXER_ENUMS(AIF2TX2, ARIZONA_AIF2TX2MIX_INPUT_1_SOURCE);
+@@ -414,6 +423,15 @@ ARIZONA_MIXER_ENUMS(AIF2TX2, ARIZONA_AIF2TX2MIX_INPUT_1_SOURCE);
  ARIZONA_MIXER_ENUMS(AIF3TX1, ARIZONA_AIF3TX1MIX_INPUT_1_SOURCE);
  ARIZONA_MIXER_ENUMS(AIF3TX2, ARIZONA_AIF3TX2MIX_INPUT_1_SOURCE);
  
@@ -66,35 +66,10 @@ index 6e1ee13..9a186ff 100644
  ARIZONA_MUX_ENUMS(ASRC1L, ARIZONA_ASRC1LMIX_INPUT_1_SOURCE);
  ARIZONA_MUX_ENUMS(ASRC1R, ARIZONA_ASRC1RMIX_INPUT_1_SOURCE);
  ARIZONA_MUX_ENUMS(ASRC2L, ARIZONA_ASRC2LMIX_INPUT_1_SOURCE);
-@@ -1117,6 +1135,56 @@ SND_SOC_DAPM_AIF_IN("AIF3RX1", NULL, 0,
- SND_SOC_DAPM_AIF_IN("AIF3RX2", NULL, 0,
- 		    ARIZONA_AIF3_RX_ENABLES, ARIZONA_AIF3RX2_ENA_SHIFT, 0),
+@@ -608,6 +626,56 @@ SND_SOC_DAPM_AIF_IN("AIF2RX1", NULL, 0,
+ SND_SOC_DAPM_AIF_IN("AIF2RX2", NULL, 0,
+ 		    ARIZONA_AIF2_RX_ENABLES, ARIZONA_AIF2RX2_ENA_SHIFT, 0),
  
-+SND_SOC_DAPM_AIF_OUT("SLIMTX1", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX1_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX2", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX2_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX3", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX3_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX4", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX4_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX5", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX5_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX6", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX6_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX7", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX7_ENA_SHIFT, 0),
-+SND_SOC_DAPM_AIF_OUT("SLIMTX8", NULL, 0,
-+		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
-+		     ARIZONA_SLIMTX8_ENA_SHIFT, 0),
-+
 +SND_SOC_DAPM_AIF_IN("SLIMRX1", NULL, 0,
 +		    ARIZONA_SLIMBUS_RX_CHANNEL_ENABLE,
 +		    ARIZONA_SLIMRX1_ENA_SHIFT, 0),
@@ -120,10 +95,35 @@ index 6e1ee13..9a186ff 100644
 +		    ARIZONA_SLIMBUS_RX_CHANNEL_ENABLE,
 +		    ARIZONA_SLIMRX8_ENA_SHIFT, 0),
 +
- ARIZONA_DSP_WIDGETS(DSP1, "DSP1"),
- 
- SND_SOC_DAPM_VALUE_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
-@@ -1188,6 +1256,15 @@ ARIZONA_MIXER_WIDGETS(AIF2TX2, "AIF2TX2"),
++SND_SOC_DAPM_AIF_OUT("SLIMTX1", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX1_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX2", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX2_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX3", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX3_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX4", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX4_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX5", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX5_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX6", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX6_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX7", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX7_ENA_SHIFT, 0),
++SND_SOC_DAPM_AIF_OUT("SLIMTX8", NULL, 0,
++		     ARIZONA_SLIMBUS_TX_CHANNEL_ENABLE,
++		     ARIZONA_SLIMTX8_ENA_SHIFT, 0),
++
+ SND_SOC_DAPM_AIF_OUT("AIF3TX1", NULL, 0,
+ 		     ARIZONA_AIF3_TX_ENABLES, ARIZONA_AIF3TX1_ENA_SHIFT, 0),
+ SND_SOC_DAPM_AIF_OUT("AIF3TX2", NULL, 0,
+@@ -698,6 +766,15 @@ ARIZONA_MIXER_WIDGETS(AIF2TX2, "AIF2TX2"),
  ARIZONA_MIXER_WIDGETS(AIF3TX1, "AIF3TX1"),
  ARIZONA_MIXER_WIDGETS(AIF3TX2, "AIF3TX2"),
  
@@ -139,7 +139,7 @@ index 6e1ee13..9a186ff 100644
  ARIZONA_MUX_WIDGETS(ASRC1L, "ASRC1L"),
  ARIZONA_MUX_WIDGETS(ASRC1R, "ASRC1R"),
  ARIZONA_MUX_WIDGETS(ASRC2L, "ASRC2L"),
-@@ -1248,6 +1325,14 @@ SND_SOC_DAPM_OUTPUT("MICSUPP"),
+@@ -753,6 +830,14 @@ SND_SOC_DAPM_OUTPUT("MICSUPP"),
  	{ name, "AIF2RX2", "AIF2RX2" }, \
  	{ name, "AIF3RX1", "AIF3RX1" }, \
  	{ name, "AIF3RX2", "AIF3RX2" }, \
@@ -154,7 +154,7 @@ index 6e1ee13..9a186ff 100644
  	{ name, "EQ1", "EQ1" }, \
  	{ name, "EQ2", "EQ2" }, \
  	{ name, "EQ3", "EQ3" }, \
-@@ -1344,13 +1429,41 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
+@@ -864,13 +949,41 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
  	{ "AIF3RX1", NULL, "AIF3 Playback" },
  	{ "AIF3RX2", NULL, "AIF3 Playback" },
  
@@ -196,7 +196,7 @@ index 6e1ee13..9a186ff 100644
  
  	{ "IN1L PGA", NULL, "IN1L" },
  	{ "IN1R PGA", NULL, "IN1R" },
-@@ -1407,6 +1520,15 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
+@@ -916,6 +1029,15 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
  	ARIZONA_MIXER_ROUTES("AIF3TX1", "AIF3TX1"),
  	ARIZONA_MIXER_ROUTES("AIF3TX2", "AIF3TX2"),
  
@@ -212,69 +212,69 @@ index 6e1ee13..9a186ff 100644
  	ARIZONA_MIXER_ROUTES("EQ1", "EQ1"),
  	ARIZONA_MIXER_ROUTES("EQ2", "EQ2"),
  	ARIZONA_MIXER_ROUTES("EQ3", "EQ3"),
-@@ -1559,6 +1681,63 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+@@ -1055,6 +1177,63 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
  		.ops = &arizona_dai_ops,
  		.symmetric_rates = 1,
  	},
 +	{
-+		.name = "wm5102-slim1",
++		.name = "wm5110-slim1",
 +		.id = 4,
 +		.playback = {
 +			.stream_name = "Slim1 Playback",
 +			.channels_min = 1,
 +			.channels_max = 4,
-+			.rates = WM5102_RATES,
-+			.formats = WM5102_FORMATS,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
 +		},
 +		.capture = {
 +			 .stream_name = "Slim1 Capture",
 +			 .channels_min = 1,
 +			 .channels_max = 4,
-+			 .rates = WM5102_RATES,
-+			 .formats = WM5102_FORMATS,
++			 .rates = WM5110_RATES,
++			 .formats = WM5110_FORMATS,
 +		 },
 +		.ops = &arizona_simple_dai_ops,
 +	},
 +	{
-+		.name = "wm5102-slim2",
++		.name = "wm5110-slim2",
 +		.id = 5,
 +		.playback = {
 +			.stream_name = "Slim2 Playback",
 +			.channels_min = 1,
 +			.channels_max = 2,
-+			.rates = WM5102_RATES,
-+			.formats = WM5102_FORMATS,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
 +		},
 +		.capture = {
 +			 .stream_name = "Slim2 Capture",
 +			 .channels_min = 1,
 +			 .channels_max = 2,
-+			 .rates = WM5102_RATES,
-+			 .formats = WM5102_FORMATS,
++			 .rates = WM5110_RATES,
++			 .formats = WM5110_FORMATS,
 +		 },
 +		.ops = &arizona_simple_dai_ops,
 +	},
 +	{
-+		.name = "wm5102-slim3",
++		.name = "wm5110-slim3",
 +		.id = 6,
 +		.playback = {
 +			.stream_name = "Slim3 Playback",
 +			.channels_min = 1,
 +			.channels_max = 2,
-+			.rates = WM5102_RATES,
-+			.formats = WM5102_FORMATS,
++			.rates = WM5110_RATES,
++			.formats = WM5110_FORMATS,
 +		},
 +		.capture = {
 +			 .stream_name = "Slim3 Capture",
 +			 .channels_min = 1,
 +			 .channels_max = 2,
-+			 .rates = WM5102_RATES,
-+			 .formats = WM5102_FORMATS,
++			 .rates = WM5110_RATES,
++			 .formats = WM5110_FORMATS,
 +		 },
 +		.ops = &arizona_simple_dai_ops,
 +	},
  };
  
- static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
 -- 
 1.7.10.4
