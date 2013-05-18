@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dfbmcs320: make the driver common
- for other BT modules
-Date: Sat, 18 May 2013 12:25:05 +0100
-Message-ID: <20130518112505.GS1627@sirena.org.uk>
-References: <1368757177-15372-1-git-send-email-Baohua.Song@csr.com>
- <20130517111523.GM1627@sirena.org.uk>
- <CAGsJ_4zjgLhNOiwGcTjvC6dP2XPqnmjzWF12pVPomU-ERH6YYg@mail.gmail.com>
+Subject: Re: [patch] ASoC: wm8994: missing break in
+	wm8994_get_fll_config()
+Date: Sat, 18 May 2013 12:26:04 +0100
+Message-ID: <20130518112604.GT1627@sirena.org.uk>
+References: <20130515070943.GB20381@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1774499795030084379=="
+Content-Type: multipart/mixed; boundary="===============4785432755526932230=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FD8626170F
- for <alsa-devel@alsa-project.org>; Sat, 18 May 2013 13:25:10 +0200 (CEST)
-In-Reply-To: <CAGsJ_4zjgLhNOiwGcTjvC6dP2XPqnmjzWF12pVPomU-ERH6YYg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 12ABF260319
+ for <alsa-devel@alsa-project.org>; Sat, 18 May 2013 13:26:12 +0200 (CEST)
+In-Reply-To: <20130515070943.GB20381@elgon.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, workgroup.linux@csr.com, Graeme Gregory <graeme@openmoko.org>, Barry Song <Baohua.Song@csr.com>, linux-arm-kernel@lists.infradead.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1774499795030084379==
+--===============4785432755526932230==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XAEV7zm15O60d1Zf"
+	protocol="application/pgp-signature"; boundary="/U0GMd1Pus0mbMSS"
 Content-Disposition: inline
 
 
---XAEV7zm15O60d1Zf
+--/U0GMd1Pus0mbMSS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 18, 2013 at 07:03:24PM +0800, Barry Song wrote:
-> 2013/5/17 Mark Brown <broonie@kernel.org>:
+On Wed, May 15, 2013 at 10:09:43AM +0300, Dan Carpenter wrote:
+> Smatch complains that:
+>=20
+> 	sound/soc/codecs/wm8994.c:2087 wm8994_get_fll_config()
+> 		warn: missing break? reassigning 'fll->k'
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> > Otherwise this looks OK for ASoC though I'd expect to see a change to
-> > registration of the OpenMoko BT device (perhaps I missed it though).
+Applied, thanks.
 
-> sorry. i don't understand. i would think OpenMOKO can also use this driver?
-
-If you change the names the driver uses to bind you need to also update
-the users so that they use the new name.
-
---XAEV7zm15O60d1Zf
+--/U0GMd1Pus0mbMSS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.19 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRl2UNAAoJELSic+t+oim98VoP/0Q3soC0ewnfonrM0nt4B8OM
-olkiLXiQAcjWLSMqxQz4lX4ptOhORbBDFmnsQZfJg2A8yY1Qu7Rbct0HZih6wreS
-YHV70Icd9FNfggo8rn1LlU9E0Rsmw/ZE8u0R5IYnO3mqDsj41Aw+GUVxuut5idpa
-32sxSK+fqHFI8tHxW5dr6GmRYh0gH5ywnNc0bDAGd2BFCP6yJ0Ibo9kAFmjiU1cq
-KhN4Si+vEExfhC6VVJLGicwVHPS5T15Dms2dbp/viaXd9HQ/TeUZSrcrtB/s0sJL
-HEtcTGpSgz/QDc3raWq3Pdyas8iPhGuv8zFF4z/ZPC/VvEkdhHx7LpqVkDY+lZPl
-4bCFZrhPGGFuyKOzxoQtNR2R9rqlucH9pyTNjMu3UuVorkE9xmFpb3U2Kv6+Eurt
-6Izf7sPctnk9PT1tBMxuj3SQAk9Ze4qJ+e4MO70zdTo0x52H7n8FFiQv28q84QV+
-zat5ALx6sP1T+P7s+QuK8WU7jTqyRyOx0E/Ph4BkOG7rC4oynR2t0Yu256+I4c8A
-/cIeTAh/miUnt/77m3Rt3p4zQj+5i+Rmi7h4RciZCU9Ehv4Q1lwaBK0QmBDUqv0G
-7W35Z90wITlgvLdcNxikgdd7CWo4SyH/+YlzROs3AswXYlOl5uJf3r15/5r1s1E9
-NHkVmLHo/LWt7kQydUvi
-=cMXh
+iQIcBAEBAgAGBQJRl2VJAAoJELSic+t+oim9Lr8P/jj/MH8+WENu478PwXYxC9Gd
+6ecjGaV7m9sRluO0jXkfiMcB+kzdjQ5GVSsaPg31OhaEwof0eHdYmZX9k2uikF4N
+tokODkrCyIqKKAj3vpRHF4/E6vgyR1KMh66+GQEoLbtoYuGZsLyyDhoQgd4bfA3z
+66tXfyQFL5VRCWWOLWvvJXIjGhWQl6mAOVFvYmbwEdWPob/mWxbSf51W8J5z6DZn
+zYBSbHT3t6ZbfdRrQ6BlzXHtngBne7J79Y27DUutn6p0Msc/YCq4r+4ISOy8A7CQ
+VFOEopjGqpxc03UqKKKL6eXl+lyWob6mU6NnJvCK612IobW7/pApHwwr6zBiT3Cu
+STBhcylcWF7UyxL8a6Stw2tjWIY0CEqUyDZ5/HEsaAgkb4JCtFfxMp+xT6PU8MGR
+lTqrQOveXMAQRdoDHEn982ZgZHIGtD3Pq2If/d2D48ljKTPrK1GSqG+dm9Y5CBxv
+Bu/dbyjwKZTAvh7l9SFzalfakWpgOGcL9CyXsJ/PM+3/yn9T+o5xwCfsJXjaL9Jt
+wqIi7M77v1WUL8qIO1VpNnQXaQyuaJcQ0hmcHzWKOwrIfCk5N2fFDGTXMy6nEw6R
+V71ozRGbKmminq7cAHafYrCUVL2VFLPe1j2IOYHhllc7mS4wuOueEYKvpcooFnNR
+5O04rFiAiZeyYrFZHfFD
+=mipt
 -----END PGP SIGNATURE-----
 
---XAEV7zm15O60d1Zf--
+--/U0GMd1Pus0mbMSS--
 
---===============1774499795030084379==
+--===============4785432755526932230==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1774499795030084379==--
+--===============4785432755526932230==--
