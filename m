@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 03/11] ALSA: ml403-ac97cr: Remove redundant
+Subject: [PATCH 04/11] ALSA: mpu401: Remove redundant
 	platform_set_drvdata()
-Date: Mon, 20 May 2013 14:08:36 +0530
-Message-ID: <1369039124-32590-3-git-send-email-sachin.kamat@linaro.org>
+Date: Mon, 20 May 2013 14:08:37 +0530
+Message-ID: <1369039124-32590-4-git-send-email-sachin.kamat@linaro.org>
 References: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
- [209.85.192.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 20CE52610A9
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:37 +0200 (CEST)
-Received: by mail-pd0-f171.google.com with SMTP id t12so3496199pdi.16
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:37 -0700 (PDT)
+Received: from mail-da0-f50.google.com (mail-da0-f50.google.com
+ [209.85.210.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 228A8261675
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:40 +0200 (CEST)
+Received: by mail-da0-f50.google.com with SMTP id i23so2870443dad.9
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:40 -0700 (PDT)
 In-Reply-To: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,18 +34,18 @@ NULL.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/drivers/ml403-ac97cr.c |    1 -
+ sound/drivers/mpu401/mpu401.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/drivers/ml403-ac97cr.c b/sound/drivers/ml403-ac97cr.c
-index 8125a7e..95ea4a1 100644
---- a/sound/drivers/ml403-ac97cr.c
-+++ b/sound/drivers/ml403-ac97cr.c
-@@ -1325,7 +1325,6 @@ static int snd_ml403_ac97cr_probe(struct platform_device *pfdev)
- static int snd_ml403_ac97cr_remove(struct platform_device *pfdev)
+diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
+index da1a29b..90a3a7b 100644
+--- a/sound/drivers/mpu401/mpu401.c
++++ b/sound/drivers/mpu401/mpu401.c
+@@ -129,7 +129,6 @@ static int snd_mpu401_probe(struct platform_device *devptr)
+ static int snd_mpu401_remove(struct platform_device *devptr)
  {
- 	snd_card_free(platform_get_drvdata(pfdev));
--	platform_set_drvdata(pfdev, NULL);
+ 	snd_card_free(platform_get_drvdata(devptr));
+-	platform_set_drvdata(devptr, NULL);
  	return 0;
  }
  
