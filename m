@@ -1,72 +1,273 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 0/2 V4] Power-well API implementation for
-	Haswell
-Date: Mon, 20 May 2013 19:26:56 +0800
-Message-ID: <1369049218-2850-1-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/2 V4] i915/drm: Add private api for power well
+	usage
+Date: Mon, 20 May 2013 19:26:57 +0800
+Message-ID: <1369049218-2850-2-git-send-email-xingchao.wang@linux.intel.com>
+References: <1369049218-2850-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E2DF32610A8
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 13:30:00 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1369049218-2850-1-git-send-email-xingchao.wang@linux.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 To: tiwai@suse.de, daniel@ffwll.ch, liam.r.girdwood@intel.com
-Cc: alsa-devel@alsa-project.org, paulo.r.zanoni@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, jesse.barnes@intel.com, david.henningsson@canonical.com
+Cc: alsa-devel@alsa-project.org, paulo.r.zanoni@intel.com, jocelyn.li@intel.com, mengdong.lin@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, jesse.barnes@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Haswell Display audio depends on power well in graphic side, it should
+request power well before use it and release power well after use.
+I915 will not shutdown power well if it detects audio is using.
+This patch protects display audio crash for Intel Haswell C3 stepping board.
 
-   This is V4 and here're some changes notes:
-
-   change between V3-->V4:
-   - add new structure i915_power_well
-   - initialize drm_device pointer at module init time
-   - change function name
-
-   change between V2-->V3:
-   - make SND_HDA_I915 selectable
-   - use snd_printdd to output message
-   - add return error code check
-   - use symbol_request to replace symbol_get
-   - release power_well at azx_free
-   - some typo fixes
-
-   changes between V1-->V2:
-   - use reference count to track power-well usage
-   - remove external module, compiled into snd-hda-intel instead
-   - manage symbols and module loading properly
-   - remove IS_HSW macro, use flag instead
-   - remove audio callback for gfx driver to avoid dependency 
-   - split whole patch into two pieces for easy review
-   - more typo fixes
-
-Wang Xingchao (2):
-  i915/drm: Add private api for power well usage
-  ALSA: hda - Add power-welll support for haswell HDA
-
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
  drivers/gpu/drm/i915/i915_dma.c  |    6 +++
  drivers/gpu/drm/i915/i915_drv.h  |   12 +++++
  drivers/gpu/drm/i915/intel_drv.h |    4 ++
  drivers/gpu/drm/i915/intel_pm.c  |   98 +++++++++++++++++++++++++++++++++++---
  include/drm/i915_powerwell.h     |   36 ++++++++++++++
- sound/pci/hda/Kconfig            |   10 ++++
- sound/pci/hda/Makefile           |    3 ++
- sound/pci/hda/hda_i915.c         |   75 +++++++++++++++++++++++++++++
- sound/pci/hda/hda_i915.h         |   35 ++++++++++++++
- sound/pci/hda/hda_intel.c        |   41 ++++++++++++++--
- 10 files changed, 310 insertions(+), 10 deletions(-)
+ 5 files changed, 149 insertions(+), 7 deletions(-)
  create mode 100644 include/drm/i915_powerwell.h
- create mode 100644 sound/pci/hda/hda_i915.c
- create mode 100644 sound/pci/hda/hda_i915.h
 
+diff --git a/drivers/gpu/drm/i915/i915_dma.c b/drivers/gpu/drm/i915/i915_dma.c
+index a1648eb..2b9010a 100644
+--- a/drivers/gpu/drm/i915/i915_dma.c
++++ b/drivers/gpu/drm/i915/i915_dma.c
+@@ -1652,6 +1652,9 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
+ 	/* Start out suspended */
+ 	dev_priv->mm.suspended = 1;
+ 
++	if (IS_HASWELL(dev))
++		i915_init_power_well(dev);
++
+ 	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+ 		ret = i915_load_modeset_init(dev);
+ 		if (ret < 0) {
+@@ -1708,6 +1711,9 @@ int i915_driver_unload(struct drm_device *dev)
+ 
+ 	intel_gpu_ips_teardown();
+ 
++	if (IS_HASWELL(dev))
++		i915_remove_power_well(dev);
++
+ 	i915_teardown_sysfs(dev);
+ 
+ 	if (dev_priv->mm.inactive_shrinker.shrink)
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 3ac71db..a0f1a6d 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -702,6 +702,15 @@ struct intel_ilk_power_mgmt {
+ 	struct drm_i915_gem_object *renderctx;
+ };
+ 
++/* Power well structure for haswell */
++struct i915_power_well {
++	struct drm_device *device;
++	spinlock_t lock;
++	/* power well enable/disable usage count */
++	int count;
++	int i915_request;
++};
++
+ struct i915_dri1_state {
+ 	unsigned allow_batchbuffer : 1;
+ 	u32 __iomem *gfx_hws_cpu_addr;
+@@ -1048,6 +1057,9 @@ typedef struct drm_i915_private {
+ 	 * mchdev_lock in intel_pm.c */
+ 	struct intel_ilk_power_mgmt ips;
+ 
++	/* Haswell power well */
++	struct i915_power_well *hsw_pwr;
++
+ 	enum no_fbc_reason no_fbc_reason;
+ 
+ 	struct drm_mm_node *compressed_fb;
+diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
+index dfcf546..efcccab 100644
+--- a/drivers/gpu/drm/i915/intel_drv.h
++++ b/drivers/gpu/drm/i915/intel_drv.h
+@@ -759,6 +759,10 @@ extern void intel_update_fbc(struct drm_device *dev);
+ extern void intel_gpu_ips_init(struct drm_i915_private *dev_priv);
+ extern void intel_gpu_ips_teardown(void);
+ 
++/* Power well */
++extern int i915_init_power_well(struct drm_device *dev);
++extern void i915_remove_power_well(struct drm_device *dev);
++
+ extern bool intel_using_power_well(struct drm_device *dev);
+ extern void intel_init_power_well(struct drm_device *dev);
+ extern void intel_set_power_well(struct drm_device *dev, bool enable);
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index 0f4b46e..eec7aa8 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -4344,18 +4344,12 @@ bool intel_using_power_well(struct drm_device *dev)
+ 		return true;
+ }
+ 
+-void intel_set_power_well(struct drm_device *dev, bool enable)
++static void __intel_set_power_well(struct drm_device *dev, bool enable)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	bool is_enabled, enable_requested;
+ 	uint32_t tmp;
+ 
+-	if (!HAS_POWER_WELL(dev))
+-		return;
+-
+-	if (!i915_disable_power_well && !enable)
+-		return;
+-
+ 	tmp = I915_READ(HSW_PWR_WELL_DRIVER);
+ 	is_enabled = tmp & HSW_PWR_WELL_STATE;
+ 	enable_requested = tmp & HSW_PWR_WELL_ENABLE;
+@@ -4378,6 +4372,96 @@ void intel_set_power_well(struct drm_device *dev, bool enable)
+ 	}
+ }
+ 
++static struct i915_power_well *hsw_pwr;
++
++/* Display audio driver power well request */
++void i915_request_power_well(void)
++{
++	if (hsw_pwr == NULL)
++		return;
++
++	spin_lock_irq(&hsw_pwr->lock);
++	if (!hsw_pwr->count++ &&
++			!hsw_pwr->i915_request)
++		__intel_set_power_well(hsw_pwr->device, true);
++	spin_unlock_irq(&hsw_pwr->lock);
++}
++EXPORT_SYMBOL_GPL(i915_request_power_well);
++
++/* Display audio driver power well release */
++void i915_release_power_well(void)
++{
++	if (hsw_pwr == NULL)
++		return;
++
++	spin_lock_irq(&hsw_pwr->lock);
++
++	/* i915 using power well */
++	if (hsw_pwr->i915_request) {
++		spin_unlock_irq(&hsw_pwr->lock);
++		return;
++	}
++
++	WARN_ON(!hsw_pwr->count);
++	if (!--hsw_pwr->count)
++		__intel_set_power_well(hsw_pwr->device, false);
++	spin_unlock_irq(&hsw_pwr->lock);
++}
++EXPORT_SYMBOL_GPL(i915_release_power_well);
++
++int i915_init_power_well(struct drm_device *dev)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++
++	hsw_pwr = kzalloc(sizeof *hsw_pwr, GFP_KERNEL);
++	if (hsw_pwr == NULL)
++		return -ENOMEM;
++
++	dev_priv->hsw_pwr = hsw_pwr;
++
++	hsw_pwr->device = dev;
++	spin_lock_init(&hsw_pwr->lock);
++	hsw_pwr->count = 0;
++
++	return 0;
++}
++
++void i915_remove_power_well(struct drm_device *dev)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++
++	kfree(dev_priv->hsw_pwr);
++	dev_priv->hsw_pwr = NULL;
++	hsw_pwr = NULL;
++}
++
++void intel_set_power_well(struct drm_device *dev, bool enable)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++	struct i915_power_well *power_well = dev_priv->hsw_pwr;
++
++	if (!HAS_POWER_WELL(dev))
++		return;
++
++	if (!i915_disable_power_well && !enable)
++		return;
++
++	if (!power_well)
++		return;
++
++	spin_lock_irq(&power_well->lock);
++	power_well->i915_request = enable;
++
++	/* only reject "disable" power well request */
++	if (power_well->count && !enable) {
++		spin_unlock_irq(&power_well->lock);
++		return;
++	}
++
++	__intel_set_power_well(dev, enable);
++	spin_unlock_irq(&power_well->lock);
++}
++
+ /*
+  * Starting with Haswell, we have a "Power Down Well" that can be turned off
+  * when not needed anymore. We have 4 registers that can request the power well
+diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+new file mode 100644
+index 0000000..cfdc884
+--- /dev/null
++++ b/include/drm/i915_powerwell.h
+@@ -0,0 +1,36 @@
++/**************************************************************************
++ *
++ * Copyright 2013 Intel Inc.
++ * All Rights Reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the
++ * "Software"), to deal in the Software without restriction, including
++ * without limitation the rights to use, copy, modify, merge, publish,
++ * distribute, sub license, and/or sell copies of the Software, and to
++ * permit persons to whom the Software is furnished to do so, subject to
++ * the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the
++ * next paragraph) shall be included in all copies or substantial portions
++ * of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM,
++ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
++ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++ * USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *
++ *
++ **************************************************************************/
++
++#ifndef _I915_POWERWELL_H_
++#define _I915_POWERWELL_H_
++
++/* For use by hda_i915 driver */
++extern void i915_request_power_well(void);
++extern void i915_release_power_well(void);
++
++#endif				/* _I915_POWERWELL_H_ */
 -- 
 1.7.9.5
