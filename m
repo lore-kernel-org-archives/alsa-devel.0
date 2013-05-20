@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 04/11] ALSA: mpu401: Remove redundant
+Subject: [PATCH 05/11] ALSA: mtpav: Remove redundant
 	platform_set_drvdata()
-Date: Mon, 20 May 2013 14:08:37 +0530
-Message-ID: <1369039124-32590-4-git-send-email-sachin.kamat@linaro.org>
+Date: Mon, 20 May 2013 14:08:38 +0530
+Message-ID: <1369039124-32590-5-git-send-email-sachin.kamat@linaro.org>
 References: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f50.google.com (mail-da0-f50.google.com
- [209.85.210.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 228A8261675
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:40 +0200 (CEST)
-Received: by mail-da0-f50.google.com with SMTP id i23so2870443dad.9
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:40 -0700 (PDT)
+Received: from mail-da0-f53.google.com (mail-da0-f53.google.com
+ [209.85.210.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 902C526109E
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:45 +0200 (CEST)
+Received: by mail-da0-f53.google.com with SMTP id t11so3768426daj.12
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:44 -0700 (PDT)
 In-Reply-To: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,15 +34,15 @@ NULL.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- sound/drivers/mpu401/mpu401.c |    1 -
+ sound/drivers/mtpav.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
-index da1a29b..90a3a7b 100644
---- a/sound/drivers/mpu401/mpu401.c
-+++ b/sound/drivers/mpu401/mpu401.c
-@@ -129,7 +129,6 @@ static int snd_mpu401_probe(struct platform_device *devptr)
- static int snd_mpu401_remove(struct platform_device *devptr)
+diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
+index 9f1815b..e5ec7eb 100644
+--- a/sound/drivers/mtpav.c
++++ b/sound/drivers/mtpav.c
+@@ -749,7 +749,6 @@ static int snd_mtpav_probe(struct platform_device *dev)
+ static int snd_mtpav_remove(struct platform_device *devptr)
  {
  	snd_card_free(platform_get_drvdata(devptr));
 -	platform_set_drvdata(devptr, NULL);
