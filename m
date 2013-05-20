@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: soc-compress: Send correct stream
- event for capture start
-Date: Mon, 20 May 2013 08:02:01 -0500
-Message-ID: <20130520130201.GV1627@sirena.org.uk>
-References: <1369035234-22052-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Handle LRCLK inversion for
+	WM8958 and WM1811A
+Date: Mon, 20 May 2013 11:16:10 -0500
+Message-ID: <1369066570-16282-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3765738135311259098=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 19DCD2610BA
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 15:02:13 +0200 (CEST)
-In-Reply-To: <1369035234-22052-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B33B261643
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 18:24:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +19,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, vinod.koul@intel.com
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On WM8958 and WM1811A separate control of the LRCLK inversion bit is
+available for the DAC and ADC LRCLKs which for compatibility reasons is
+done in a new register bit.
 
---===============3765738135311259098==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="niUlcCfh/sMBwTxc"
-Content-Disposition: inline
+Since writes to each scheme have no effect on parts using the other just
+always write to both for simplicity.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Samreen Nilofer <samreen.nilofer@intel.com>
+---
+ include/linux/mfd/wm8994/registers.h |    8 ++++++++
+ sound/soc/codecs/wm8994.c            |   14 ++++++++++++++
+ 2 files changed, 22 insertions(+)
 
---niUlcCfh/sMBwTxc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 20, 2013 at 08:33:54AM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Applied, thanks.
-
---niUlcCfh/sMBwTxc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRmh7GAAoJELSic+t+oim9ym0QAIjK06L+jVK0QPj9+Fj/lwKv
-jt+Pg425QQUZJc+/QGHNJbgFwxZY6rb8eV/xw+8cWGYgwu75nPOXDOR3Pj6hIesE
-8Px1FsNLft6G5hegu2c805NOI1wBJa5rJzbCkfKe1kkNW4+A93M9hf2Pa4D8COs4
-6rFTp1kv2S8f/PrY0aJMG2zLcxjtlY7B/q4utxiNhrIhRjAZB2RaFZFAnlBdKN2W
-LpUEeXx7nY6v4tnuPz8K5uZsKykbpo5sW5vSm9+hR3NO1DGiq5Nr9ZxkilRxWV9o
-5kNzTjxKuS8o2x9GjJD890v6/BderjMcY3NU8OPL+GbgB82RfLeYHt/YTkgfWFjO
-oWD69T+j8anBds3+s28feaUrZJY1WPvFC0VYnbydgCOfH+5rZJ4rfxXTZoaHW7CG
-HL9XO0wiXiBgdHkuSotYQhRMqgJW/D4yUgyFopjU8YgIM8G4x3K9fh7xyZki6dcL
-HRxXx0pDgF1tF1hdFO4gEdVRaJ9F12nJ26DyMEA5GPLJnKFhhKWLoQe3L/aS8SE8
-bLEa1CTqDhpmhA77sqqSIb2rTklidGKgwC7f/rE8WY3/8gzb8OY6leF8ffJr2eWt
-zGRKTbw4X9JQ871BTXPTnGnpsBMkDi6+TzKkepnC+6hl820x2mvY8AC1Gs4PpsiW
-IYYiTfIhDGdDKeDQ6yLh
-=FmfE
------END PGP SIGNATURE-----
-
---niUlcCfh/sMBwTxc--
-
---===============3765738135311259098==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3765738135311259098==--
+diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
+index 0535489..db8cef3 100644
+--- a/include/linux/mfd/wm8994/registers.h
++++ b/include/linux/mfd/wm8994/registers.h
+@@ -2668,6 +2668,10 @@
+ /*
+  * R772 (0x304) - AIF1ADC LRCLK
+  */
++#define WM8958_AIF1_LRCLK_INV                   0x1000  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_MASK              0x1000  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_SHIFT                 12  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_WIDTH                  1  /* AIF1_LRCLK_INV */
+ #define WM8994_AIF1ADC_LRCLK_DIR                0x0800  /* AIF1ADC_LRCLK_DIR */
+ #define WM8994_AIF1ADC_LRCLK_DIR_MASK           0x0800  /* AIF1ADC_LRCLK_DIR */
+ #define WM8994_AIF1ADC_LRCLK_DIR_SHIFT              11  /* AIF1ADC_LRCLK_DIR */
+@@ -2679,6 +2683,10 @@
+ /*
+  * R773 (0x305) - AIF1DAC LRCLK
+  */
++#define WM8958_AIF1_LRCLK_INV                   0x1000  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_MASK              0x1000  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_SHIFT                 12  /* AIF1_LRCLK_INV */
++#define WM8958_AIF1_LRCLK_INV_WIDTH                  1  /* AIF1_LRCLK_INV */
+ #define WM8994_AIF1DAC_LRCLK_DIR                0x0800  /* AIF1DAC_LRCLK_DIR */
+ #define WM8994_AIF1DAC_LRCLK_DIR_MASK           0x0800  /* AIF1DAC_LRCLK_DIR */
+ #define WM8994_AIF1DAC_LRCLK_DIR_SHIFT              11  /* AIF1DAC_LRCLK_DIR */
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index cb67603..0bcbd12 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2574,17 +2574,24 @@ static int wm8994_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	struct wm8994 *control = wm8994->wm8994;
+ 	int ms_reg;
+ 	int aif1_reg;
++	int dac_reg;
++	int adc_reg;
+ 	int ms = 0;
+ 	int aif1 = 0;
++	int lrclk = 0;
+ 
+ 	switch (dai->id) {
+ 	case 1:
+ 		ms_reg = WM8994_AIF1_MASTER_SLAVE;
+ 		aif1_reg = WM8994_AIF1_CONTROL_1;
++		dac_reg = WM8994_AIF1DAC_LRCLK;
++		adc_reg = WM8994_AIF1ADC_LRCLK;
+ 		break;
+ 	case 2:
+ 		ms_reg = WM8994_AIF2_MASTER_SLAVE;
+ 		aif1_reg = WM8994_AIF2_CONTROL_1;
++		dac_reg = WM8994_AIF1DAC_LRCLK;
++		adc_reg = WM8994_AIF1ADC_LRCLK;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -2603,6 +2610,7 @@ static int wm8994_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		aif1 |= WM8994_AIF1_LRCLK_INV;
++		lrclk |= WM8958_AIF1_LRCLK_INV;
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		aif1 |= 0x18;
+ 		break;
+@@ -2641,12 +2649,14 @@ static int wm8994_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			break;
+ 		case SND_SOC_DAIFMT_IB_IF:
+ 			aif1 |= WM8994_AIF1_BCLK_INV | WM8994_AIF1_LRCLK_INV;
++			lrclk |= WM8958_AIF1_LRCLK_INV;
+ 			break;
+ 		case SND_SOC_DAIFMT_IB_NF:
+ 			aif1 |= WM8994_AIF1_BCLK_INV;
+ 			break;
+ 		case SND_SOC_DAIFMT_NB_IF:
+ 			aif1 |= WM8994_AIF1_LRCLK_INV;
++			lrclk |= WM8958_AIF1_LRCLK_INV;
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -2677,6 +2687,10 @@ static int wm8994_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			    aif1);
+ 	snd_soc_update_bits(codec, ms_reg, WM8994_AIF1_MSTR,
+ 			    ms);
++	snd_soc_update_bits(codec, dac_reg,
++			    WM8958_AIF1_LRCLK_INV, lrclk);
++	snd_soc_update_bits(codec, adc_reg,
++			    WM8958_AIF1_LRCLK_INV, lrclk);
+ 
+ 	return 0;
+ }
+-- 
+1.7.10.4
