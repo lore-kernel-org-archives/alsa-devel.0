@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: [PATCH 05/11] ALSA: mtpav: Remove redundant
+Subject: [PATCH 06/11] ALSA: pcsp: Remove redundant
 	platform_set_drvdata()
-Date: Mon, 20 May 2013 14:08:38 +0530
-Message-ID: <1369039124-32590-5-git-send-email-sachin.kamat@linaro.org>
+Date: Mon, 20 May 2013 14:08:39 +0530
+Message-ID: <1369039124-32590-6-git-send-email-sachin.kamat@linaro.org>
 References: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-da0-f53.google.com (mail-da0-f53.google.com
- [209.85.210.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 902C526109E
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:45 +0200 (CEST)
-Received: by mail-da0-f53.google.com with SMTP id t11so3768426daj.12
- for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:44 -0700 (PDT)
+Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
+ [209.85.192.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49E092610B0
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 10:52:49 +0200 (CEST)
+Received: by mail-pd0-f180.google.com with SMTP id 10so4112682pdc.11
+ for <alsa-devel@alsa-project.org>; Mon, 20 May 2013 01:52:48 -0700 (PDT)
 In-Reply-To: <1369039124-32590-1-git-send-email-sachin.kamat@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +25,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, sachin.kamat@linaro.org, patches@linaro.org
+Cc: tiwai@suse.de, sachin.kamat@linaro.org, patches@linaro.org, Stas Sergeev <stsp@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
@@ -33,19 +33,20 @@ driver is bound) removes the need to set driver data field to
 NULL.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: Stas Sergeev <stsp@users.sourceforge.net>
 ---
- sound/drivers/mtpav.c |    1 -
+ sound/drivers/pcsp/pcsp.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
-index 9f1815b..e5ec7eb 100644
---- a/sound/drivers/mtpav.c
-+++ b/sound/drivers/mtpav.c
-@@ -749,7 +749,6 @@ static int snd_mtpav_probe(struct platform_device *dev)
- static int snd_mtpav_remove(struct platform_device *devptr)
- {
- 	snd_card_free(platform_get_drvdata(devptr));
--	platform_set_drvdata(devptr, NULL);
+diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
+index 7a5fdb9..1c19cd7 100644
+--- a/sound/drivers/pcsp/pcsp.c
++++ b/sound/drivers/pcsp/pcsp.c
+@@ -189,7 +189,6 @@ static int pcsp_remove(struct platform_device *dev)
+ 	struct snd_pcsp *chip = platform_get_drvdata(dev);
+ 	alsa_card_pcsp_exit(chip);
+ 	pcspkr_input_remove(chip->input_dev);
+-	platform_set_drvdata(dev, NULL);
  	return 0;
  }
  
