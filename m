@@ -1,74 +1,38 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-devel] add support for syba 7.1 surround
-	sound card
-Date: Tue, 21 May 2013 10:50:57 +0200
-Message-ID: <519B3571.3070601@ladisch.de>
-References: <51804394.a36cec0a.2c7d.291b@mx.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay02.ispgateway.de (smtprelay02.ispgateway.de
- [80.67.31.25]) by alsa0.perex.cz (Postfix) with ESMTP id A1C7026172C
- for <alsa-devel@alsa-project.org>; Tue, 21 May 2013 10:51:30 +0200 (CEST)
-In-Reply-To: <51804394.a36cec0a.2c7d.291b@mx.google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: good1.2guy@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Fabio Baltieri <fabio.baltieri@linaro.org>
+Subject: [PATCH 0/2] Set ab8500-codec dai slots from machine drivers
+Date: Tue, 21 May 2013 12:04:07 +0200
+Message-ID: <1369130649-15179-1-git-send-email-fabio.baltieri@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-good1.2guy@gmail.com wrote:
-> Summary: add support for syba 7.1 surround sound card
-> Keywords: syba via VT1723 Tremor
-> Kernel: 3.8.8-203.fc18.x86_64
+Hi Mark,
 
-What are these three lines for?
+these two patches rework the slot selection code in ab8500-codec to use
+the slots masks provided by the machine drivers instead of the hardcoded
+ones as suggested.
 
-> add support for syba 7.1 surround sound card
-> actually the card only has 6 dmas, so it is really only 5.1
+The patches replaces some of the previous macros with a parametrized
+version in the effort of making the actual code compact and readable,
+and should be applied in order.  Also, the second patch drops the
+hardcoded defintions swapped in -rc2, so you may want to rebase the
+ux500 topic branch to avoid the conflict, or I can resend the patch
+based on the topic branch directly.  Just let me know.
 
-The website shows a daughterboard.
+Big thanks to Ola for helping me figuring out the weird ab8500 slot
+mapping logic.
 
-> added code to force_rate setting to not fail EBUSY when the dmas are running.
-> suggest using force_rate with pulseaudio to avoid loops with error logging.
+Fabio
 
-This sounds as if it has nothing to do with this particular SYBA card
-but affects all VT1723 cards.  Please move it into a separate patch.
+Fabio Baltieri (2):
+  ASoC: ab8500-codec: Set tx dai slots from tx_mask
+  ASoC: ab8500-codec: Set rx dai slots from rx_mask
 
-And there should be no reason for a module parameter; if this is a bug
-in the driver and/or in PulseAudio, it should be just fixed.
+ sound/soc/codecs/ab8500-codec.c | 60 ++++++++++++++++++++++++++---------------
+ sound/soc/codecs/ab8500-codec.h | 42 +++++++++++++++--------------
+ 2 files changed, 61 insertions(+), 41 deletions(-)
 
-> Signed-off-by: psmith2004@yahoo.com
-
-Real names only.
-
-Please read Documentation/SubmittingPatches.
-
-> +static void syba_quirk_open(struct snd_ice1712 *ice)
-> +{
-> +	unsigned long flags;
-
-It's common to have an empty line here.
-
-> +	spin_lock_irqsave(&ice->reg_lock, flags);
-> +	outb(0xff, ICEREG1724(ice, AC97_CFG));
-> +	udelay(500);
-> +	outb(ice->eeprom.data[ICE_EEP2_ACLINK], ICEREG1724(ice, AC97_CFG));
-> +	spin_unlock_irqrestore(&ice->reg_lock, flags);
-> +}
-
-What is the reason for this quirk?
-Is it possible that this might be needed for other cards using a AC'97
-codec?
-
-
-Regards,
-Clemens
+-- 
+1.8.2
