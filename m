@@ -1,30 +1,15 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Re: regression: from 3.8 to 3.9: headphones output no
- sound on Intel HDA, codec VIA VT1802
-Date: Wed, 22 May 2013 23:06:53 +0200
-Message-ID: <CALxABCaubJgHkr60r4M5igJtZhCOMhZbzCvGByb3gOg5spSFUQ@mail.gmail.com>
-References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
- <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
- <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
- <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
- <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
- <s5ha9nwx1j3.wl%tiwai@suse.de>
- <CALxABCZMyqh5SSo=RpQCJNUR_p9yrG5x9DimFpzvgkCFLr4eug@mail.gmail.com>
- <s5h1u97jik9.wl%tiwai@suse.de>
- <CALxABCa27gVVJGWM-crvFOPmJXdZ0FEBc3=dPZ0pG+AhDB78cA@mail.gmail.com>
- <s5hk3myuoq6.wl%tiwai@suse.de>
- <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Fix early event callback list iteration
+Date: Thu, 23 May 2013 00:12:53 +0200
+Message-ID: <1369260773-4060-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f45.google.com (mail-oa0-f45.google.com
- [209.85.219.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 44619261692
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 23:07:14 +0200 (CEST)
-Received: by mail-oa0-f45.google.com with SMTP id j6so3366014oag.4
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 14:07:13 -0700 (PDT)
-In-Reply-To: <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
+Received: from smtp-out-050.synserver.de (smtp-out-050.synserver.de
+ [212.40.185.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6BCB2616A6
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 00:10:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,69 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Ping? Can I do something for you?
+The power_list field is used when adding a widget to a power sequence list. Use
+the same field when iterating the list using list_for_each_entry, otherwise
+we'll see undefined behavior.
 
-Regards,
-Alex
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Sat, May 18, 2013 at 10:29 PM, Alex Riesen <raa.lkml@gmail.com> wrote:
-> Sorry for delayed replies. I have not much time for this lately.
->
-> On Fri, May 17, 2013 at 8:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
->>> Well... It seems that something went unnoticed. This command seems
->>> to be essential for this (and the revised) patch to get the headphone
->>> output at all:
->>>
->>>         hda-verb /dev/snd/hwC0D0 0x25 SET_PIN_WID 0xc0
->>
->> Do you mean that the headphone doesn't work without this even after
->> the patch?  It's weird that the alsa-info.sh output you attached below
->> already contains it, i.e. 0x25 showing 0xc0.
->
-> Yes. It is after the latest patch.
->
->> Or, is the attached output the result after you ran hda-verb like the
->> above?
->
-> Er, yes.
->
->>> It does. And there is no output from the speakers.
->>
->> Hmm.  I'm confused.  I thought you mentioned that the speaker is
->> unmuted?
->
-> I think I am as confused as you, if not more. I redid the tests
-> but recorded everything this time with script(1). It is without
-> timing information (would be boring anyway, with me figuring
-> the arguments), so just cat it. Just in case: it sets xterm title.
-> The transcript is in headphone.gz.
->
->> - Use the patched kernel, play without headphone, confirm that the
->>   speaker works.  Get alsa-info.sh output at this point.
->
-> That's 3.9.2-wo-headphone.alsa.gz
->
->> - Plug the headphone, play, and check whether the headphone works and
->>   the speaker is muted.
->>   Again, get alsa-info.sh output at this point, no matter whether the
->>   headphone works or not.
->
-> That's 3.9.2-w-headphone.alsa.gz. Headphone not working, speakers
-> correctly muted.
->
->> In anyway, if you make things working, please give exactly what you
->> did, and take again alsa-info.sh output, too.
->
-> 3.9.2-w-headphone-working.alsa.gz. The working state is lost after
-> unplugging and replugging the headphones. It is different to the
-> case when the alternate channel is used (Independent HP): replugging
-> does not break the output than.
->
-> Sorry for confusion and thanks!
->
-> Regards,
-> Alex
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 071579b..3507346 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1738,11 +1738,11 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 					&async_domain);
+ 	async_synchronize_full_domain(&async_domain);
+ 
+-	list_for_each_entry(w, &down_list, list) {
++	list_for_each_entry(w, &down_list, power_list) {
+ 		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_WILL_PMD);
+ 	}
+ 
+-	list_for_each_entry(w, &up_list, list) {
++	list_for_each_entry(w, &up_list, power_list) {
+ 		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_WILL_PMU);
+ 	}
+ 
+-- 
+1.8.2.1
