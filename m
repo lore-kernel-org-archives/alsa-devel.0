@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] sound/soc/fsl: remove leftover
-	release_mem_region
-Date: Wed, 22 May 2013 11:40:38 -0500
-Message-ID: <20130522164038.GR1627@sirena.org.uk>
-References: <1369228886-3527-1-git-send-email-wsa@the-dreams.de>
- <1369228886-3527-3-git-send-email-wsa@the-dreams.de>
- <20130522155628.GK1627@sirena.org.uk>
- <20130522160357.GA2917@katana>
+Subject: Re: [PATCH] ASoC: Add support for BCM2708
+Date: Wed, 22 May 2013 11:42:10 -0500
+Message-ID: <20130522164210.GS1627@sirena.org.uk>
+References: <519CD1CC.8070507@koalo.de> <519CE2B7.8080704@wwwdotorg.org>
+ <519CED72.40406@koalo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8275226452580626035=="
+Content-Type: multipart/mixed; boundary="===============8943031359912898811=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 74E792608B7
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 18:40:51 +0200 (CEST)
-In-Reply-To: <20130522160357.GA2917@katana>
+ by alsa0.perex.cz (Postfix) with ESMTP id B2279260785
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 18:42:20 +0200 (CEST)
+In-Reply-To: <519CED72.40406@koalo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Florian Meier <florian.meier@koalo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8275226452580626035==
+--===============8943031359912898811==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AXAqmCxJPvkQLT2P"
+	protocol="application/pgp-signature"; boundary="ewIlFbbLnYFKahON"
 Content-Disposition: inline
 
 
---AXAqmCxJPvkQLT2P
+--ewIlFbbLnYFKahON
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 22, 2013 at 06:04:00PM +0200, Wolfram Sang wrote:
-> On Wed, May 22, 2013 at 10:56:28AM -0500, Mark Brown wrote:
+On Wed, May 22, 2013 at 06:08:18PM +0200, Florian Meier wrote:
+> On 22.05.2013 17:22, Stephen Warren wrote:
 
-> > This doesn't apply against current code, can you please regenerate
-> > against topic/fsl or mainline?
+> > I assume you're planning on sending the DMA driver upstream too? I guess
+> > this driver isn't useful without it.
 
-> ? Works fine against v3.10-rc2 here. Or is mainline v3.9 for you?
+> I would like to, but it only supports cyclic DMA. Should I send it
+> upstream anyway? In case you are interested:
 
-To be honest I didn't actually try mainline as I wasn't expecting any
-conflicts from the branch and it didn't seem urgent as a bug fix.
+It seems better to send something partially featured upstream so that
+people can work on enhancing it rather than having nothing all upstream.
 
---AXAqmCxJPvkQLT2P
+--ewIlFbbLnYFKahON
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRnPUDAAoJELSic+t+oim9rNkP/RsmFHXy0jfIOVWB2pCkgDhk
-ow5HhbzqWYgbI7wdbvq20dzddtWPSJzmZEohJ/jwKTnxInuZfaQYZ+b1+FPsoCue
-Nv8nk84pIwmgmpz8meCL1cAG0wHMOJrudZAkqsUYgBwu0I+IOIjbtG+i6IJbMAJT
-twQmoRWQEOizBUWoYtf07+gnETjKrilfALSa5AigZbRmD9K6oR6irgwi/Y5luOYY
-CSicTQcTWnJLmKkau0pzIUzILRItqn6meFMjcwTeMpTpXRYab7n4uDUmkoOrIbUL
-vLlFLHoWYhrcPbjNxIOGfP/YIOJ01/1pR3ALDFfu1njBB8jHdquSPxOexMDSN+/g
-8Lh9SpmBdR2sP4TUcRCp1wYw9gxKmKD3O5IL6nUH4oycFRnf9rC0Dv7kQoavvbex
-FBAOdmCTLp5T6RmQdZMWjwsLIb6nsEVETM5VsnD0V4DsNrDTHpAophNjKG34ayaQ
-OYCLAJGyuxQnnVHmOqIdT2adCqEO0BXip2wgqPejpGvVdP3CVkXfBQf4yBCUoXCt
-MJx74jHzqqLbJLbhqAt0LAl6FX9Nv8mbIK1TxSv+/tqGZ6j+SApQBqah36MWXqt+
-57oR+Xco/rhcHdrvpIf0zAr/TaCFF05OnhoV9DHxhrep3cGZW63sZOoBYvR3uQw6
-5WbS3Udezdjn1g+rrDdb
-=vaOs
+iQIcBAEBAgAGBQJRnPVfAAoJELSic+t+oim9dzAP/0j8kZVrmvDvA/7HVUFr7qti
+aHUjpMWnGcX7bo1KXABS8JDHHBPXWXlc2RP8DbMkl2Vc6TfLB9DFBlVgiAWQoqp7
+29h52mnXFlYpwHD03rGZC/DGMH3HTCglfr+0O6ebNBo4xaegrbYXUIcaZlw5JyMV
+PtHkMCpLjg4C4DpFk5mc7p1IZxCY/33e3ZIGkFNlrW3rXKqqw8Z/l+3TZQv4Foal
+o2jaOePIaVwUVL3uBZB/GZVVV1pcF2imuxkkTn8Fqow4bcAM38mF/Ae2H458uMZb
+FoVR8nqXCVoIyQQdkwMb8G90WbRSlTCz/WwrhitBjsuWg4LWZkSm7jNpTIhy0ZXZ
+vzS7XDmqVuSih0EWWcpZnIgrSS9qgpvmzsV5GczBJ5Ib2qwwAo1vXqF5Yo3vSLZX
+Rkf7AeVMZm/WI/F9Yr6dd6ZmtrBNQyWtgwFJwK4qu96jTJnehFN2XBBjGhkFDzOr
+odj/TSD5xCklBGaUVxYQ1QQnywB4JtMc62RHCWkyEZOELEImO+fKVhCNToHOcgvP
+QVO+uNQ83msKZhjf5vVfjDoDLJEqrqQ/gIK88KD+x6PQuGSB6UNcmVgRgxqcxCtR
+5jLMh4/o6+cknPlMDyw/IU1rGwDlij/WPfm3YX0R9kF3zI7ZcvkCeLbXFCgPGmAl
+T/9jEaEVG7iSabpD3q2l
+=xa9A
 -----END PGP SIGNATURE-----
 
---AXAqmCxJPvkQLT2P--
+--ewIlFbbLnYFKahON--
 
---===============8275226452580626035==
+--===============8943031359912898811==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8275226452580626035==--
+--===============8943031359912898811==--
