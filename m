@@ -1,52 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
+From: Wolfram Sang <wsa@the-dreams.de>
 Subject: Re: [PATCH 3/3] sound/soc/fsl: remove leftover release_mem_region
-Date: Wed, 22 May 2013 10:56:28 -0500
-Message-ID: <20130522155628.GK1627@sirena.org.uk>
+Date: Wed, 22 May 2013 18:04:00 +0200
+Message-ID: <20130522160357.GA2917@katana>
 References: <1369228886-3527-1-git-send-email-wsa@the-dreams.de>
  <1369228886-3527-3-git-send-email-wsa@the-dreams.de>
+ <20130522155628.GK1627@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="e7MbhXUj+2isZwqc"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1369228886-3527-3-git-send-email-wsa@the-dreams.de>
+In-Reply-To: <20130522155628.GK1627@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
+To: Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 22, 2013 at 10:56:28AM -0500, Mark Brown wrote:
+> On Wed, May 22, 2013 at 03:21:26PM +0200, Wolfram Sang wrote:
+> > When converting this driver to devm_ioremap_resource, the removal of this now
+> > unneeded function has been forgotten.
+> 
+> This doesn't apply against current code, can you please regenerate
+> against topic/fsl or mainline?
 
---e7MbhXUj+2isZwqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, May 22, 2013 at 03:21:26PM +0200, Wolfram Sang wrote:
-> When converting this driver to devm_ioremap_resource, the removal of this now
-> unneeded function has been forgotten.
-
-This doesn't apply against current code, can you please regenerate
-against topic/fsl or mainline?
-
---e7MbhXUj+2isZwqc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRnOqpAAoJELSic+t+oim96CoP/0H8fkH+KUko39u2bFWR7fWM
-BNKlO1wjJOonvz6mz+KYXCI36JtQoMd555HILySKlmF8PnPROFx1/1MtQMjjgt6w
-7WEysuJU8Rv0TeKrtXOMq6daHtmEYDOYrz7Jtha6NAB/9eB/9RQryBKj8peLyVG7
-rHNrFcqpfhk5vmJ1yKgCVBB/4H8RdNlwc4WpjhKevDaaRp/LE89UrXabCJD1i1nV
-0cIR8fnwZ65+MOVlBl4hfYXtjJgBJmd+ZR3BUAikZDwCWEJdxqiLQWBIeB965wpO
-2MpynD2viFBnfNXj/UcHe0aiJaErZ2L2gL+9GHntnqQfiZ3PDRjGGfPI1VexFW6p
-HjNFnRbsxcSJYDYwzp+4BcxU9CvHczGCnZiXKGEbmt5ZKo2S1u6KG9JIvviHHNGr
-S9d9w10Y+YHFX8+PcPh+wqWXfwPb8bVyFTKrFhZEoBuZ0I7W9CBYO+XVd5FYW/F6
-q8is2cw/yOnyyOsoAyDdiQaa2f1VuBnxEDvn575aPxzyo9TkRbQcOKLaVB9QLnNu
-mflnep/Y+WXlqxR4p5Brr9flolMZxfmM9YcPDw9hS1gmXWptb95+NwngIdP7WmP7
-YRRFnhKHt8SzBjTuksMGf6LgW0x0hrRo0F19Vs7jRsp82C7ltU6vKpjhxT2XQ3wM
-BcQU9qJrRbvzN4tn7nkn
-=k9cq
------END PGP SIGNATURE-----
-
---e7MbhXUj+2isZwqc--
+? Works fine against v3.10-rc2 here. Or is mainline v3.9 for you?
