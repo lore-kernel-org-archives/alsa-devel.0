@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add ssm2518 support
-Date: Wed, 22 May 2013 17:07:56 -0500
-Message-ID: <20130522220756.GF1627@sirena.org.uk>
-References: <1369242013-27672-1-git-send-email-lars@metafoo.de>
- <20130522175705.GU1627@sirena.org.uk> <519D0B84.70307@metafoo.de>
+Subject: Re: [PATCH] ASoC: Fix early event callback list
+	iteration
+Date: Wed, 22 May 2013 17:34:25 -0500
+Message-ID: <20130522223425.GG1627@sirena.org.uk>
+References: <1369260773-4060-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4945488481126624509=="
+Content-Type: multipart/mixed; boundary="===============0075173228317231526=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A15E5261692
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 00:13:14 +0200 (CEST)
-In-Reply-To: <519D0B84.70307@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E6F4D261692
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 00:34:34 +0200 (CEST)
+In-Reply-To: <1369260773-4060-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Grant Likely <grant.likely@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4945488481126624509==
+--===============0075173228317231526==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+5X6wed+orjucm7J"
+	protocol="application/pgp-signature"; boundary="v+yx4Fq+rcVvnsQ8"
 Content-Disposition: inline
 
 
---+5X6wed+orjucm7J
+--v+yx4Fq+rcVvnsQ8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 22, 2013 at 08:16:36PM +0200, Lars-Peter Clausen wrote:
-> On 05/22/2013 07:57 PM, Mark Brown wrote:
+On Thu, May 23, 2013 at 12:12:53AM +0200, Lars-Peter Clausen wrote:
+> The power_list field is used when adding a widget to a power sequence list. Use
+> the same field when iterating the list using list_for_each_entry, otherwise
+> we'll see undefined behavior.
 
-> >> +	if (slots =3D=3D 0) {
-> >> +		return regmap_update_bits(ssm2518->regmap,
-> >> +			SSM2518_REG_SAI_CTRL1, SSM2518_SAI_CTRL1_SAI_MASK,
-> >> +			SSM2518_SAI_CTRL1_SAI_I2S);
-> >> +	}
+Gah, I had noticed occasional errors but hadn't seen them often enough
+to reproduce reliably in my testing.  Thanks!
 
-> > You've got quite a few single statement if () blocks with { } which
-> > shouldn't be there.
-> >=20
-
-> I prefer to only do this for single single-line statements.
-
-That's not the kernel coding style and I have to say these examples were
-all jumping out at me as weird, I was looking for an else clause or
-something.
-
---+5X6wed+orjucm7J
+--v+yx4Fq+rcVvnsQ8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRnUG5AAoJELSic+t+oim95xgP/1KTrB2KGotNi+F2baTbJ3bG
-fmSTQhhQUitoN46ugYxGD3warq1ZVwIMcf0a3oehToy3eKacDHER2aWhMTwpRQ4X
-jRIWV3xhS2aToDylha0NTA+dGLwJNUmkNFaLfd83En7NzUMsq6vsJAYoiPI1R1aG
-zvtRctoy4JL4IcsZ+RMUBptW6Dwk0RwLb9lqs2romOmQEhCGpVkbc9Kv/ouBXuD5
-bjJImEL8wlt4H5I7p082Va1VGxfrjrFsxpJ9IvOvduxHrHTUrDTjGlZlQKjT26DO
-/1HVCPhcczFsY2yhmDS5hCEVd6s3+Zc29YU78KureHnxJbQ4cs14zgqv0ZUPAdUQ
-c/tPDTiBDYGQykByeuSbi96kf4o7MmammVCHul1/sY7dTD7+rNY3O3z3x1iEIAUN
-tLkyfvIGQ1ocyiPXj0rfbhK8+vuJdQZdfBRoQwsA8JHyzy+fwdfaBe9C+sK0d11V
-KKpsJFBO2RFTbWBR+0CTu8vYpioVLC16kz9KDDZrFK+DmlCA+/FxxqwtsdJP0rPC
-2Q23cmlpFlKYlznWQCu48xhPlWlxiLQZL3gRGRr+3ruw5uTMVnbltQTQyG/pgzxe
-CC3mc33XhrJupsJy4OwDOe+3JgEk8V2we7EsHizDnW8MdVLN1cDZqtxHSy/gPXq1
-fPVkGcqzzlQNJ6euSP1F
-=XQto
+iQIcBAEBAgAGBQJRnUfuAAoJELSic+t+oim9ickP/jV21vNspN5I0weq+9RPOwa1
+NSbXANqg3y7GT5U6+QOwMKgBlcKyB/TUwjgacUFWOSF1C7I5LRh+nJ0jm7dY5o+4
+XNJI5GNSvNMdboxaD7Uk5H1gKox2jKpjOdieiO1PYrnRTWNxxK5MiL5rAqeNo2iu
+l2ucOgqKY9G0OmYYLOWgF9I156WyUTezKtZgygKuTIh1zpFfgdWNI76t5foVgg1o
+lIZOdoiBmyq9XDPe9vDMFzcn5bC3dVy4U3Ke5qVBIQwlkoNSkSbjE/Hf97kHwv62
+poEV0Cl4VPUcN3C02A7kp8EbHY8dh37HkVg22D7dR0U8C29AMM1sm9/yAtsf654u
+IQ7CNCRxRgOWuT+JL9IA/+rgO/fV26Wn+QRz07qSWdp6cLL9x0l3fmNmsyqczDPn
+gGB594UBC0E6biUrOPWhrOaxc4Y98Fuvr9d4vQ/03bko4zZoLl5ujkUkNcwM9ocX
+yKkYH3nVsisIz1zmODIJ5H82a4MY/EMlHu/1attAVpKHuYAHiOEvCZ+jvJ6fewKd
++dxnLnCZf91skpBYIsWAzm4hdsTNZ2JlIJucT4U9TkHVYNlLkm7RvSYjCfFJFt7w
+I4U9bCb75ZVGVktkyZyKzPFC4cITKYsa3H6KuOzBn4wen8utaDOVEl3kn01HpJv4
+DUGOZquElaEVL2x6Fhro
+=0QM8
 -----END PGP SIGNATURE-----
 
---+5X6wed+orjucm7J--
+--v+yx4Fq+rcVvnsQ8--
 
---===============4945488481126624509==
+--===============0075173228317231526==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4945488481126624509==--
+--===============0075173228317231526==--
