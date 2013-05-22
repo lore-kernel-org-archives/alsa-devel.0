@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add ssm2518 support
-Date: Wed, 22 May 2013 12:57:05 -0500
-Message-ID: <20130522175705.GU1627@sirena.org.uk>
-References: <1369242013-27672-1-git-send-email-lars@metafoo.de>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
+Date: Wed, 22 May 2013 14:01:33 -0400
+Message-ID: <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
+References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
+ <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
+ <519D068A.8030003@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5936394929545295078=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B1E2260899
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 19:57:32 +0200 (CEST)
-In-Reply-To: <1369242013-27672-1-git-send-email-lars@metafoo.de>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58798260899
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:01:34 +0200 (CEST)
+Received: by mail-la0-f41.google.com with SMTP id ee20so2320887lab.0
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:01:33 -0700 (PDT)
+In-Reply-To: <519D068A.8030003@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,107 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Grant Likely <grant.likely@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
+> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
+>> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
+>>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
+>>>
+>>> This chip has a very unusual register layout, specifically because the
+>>> registers are of unequal size, and multi-byte registers require bulk
+>>> writes to take effect. Regmap does not support these kind of mappings.
+>>>
+>>> Currently, the driver does not touch any of the registers >= 0x20, so
+>>> it doesn't matter, because the register map is mapped to an 8-bit array.
+>>> In case more features will be added in the future that require access
+>>> to higher registers, the entire regmap H/W I/O routines have to be
+>>> open-coded.
+>>
+>> Check out my tas5504 driver from a long time ago. It dealt with those registers.
+>>
+>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
+>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
+>
+> Sure, without any regmap abstractions, things are somehow manageable.
+> Though you lose all the nice things that regmap gives you, such as
+> hardware independence and caching. I might have a different solution,
+> but I need to get my hands on one of these devices to test.
+>
+> On a slightly different note: why isn't your driver in the mainline kernel?
 
---===============5936394929545295078==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XbOGSHoyTtRSevGh"
-Content-Disposition: inline
-
-
---XbOGSHoyTtRSevGh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, May 22, 2013 at 07:00:13PM +0200, Lars-Peter Clausen wrote:
-> This patch adds a ASoC CODEC driver for the SSM2516. The SSM2516 is a ste=
-reo
-> Class-D audio amplifier with an I2S interface for audio in and a built-in
-> dynamic range control processor.
-
-I'll apply this but=20
-
-> +	if (slots =3D=3D 0) {
-> +		return regmap_update_bits(ssm2518->regmap,
-> +			SSM2518_REG_SAI_CTRL1, SSM2518_SAI_CTRL1_SAI_MASK,
-> +			SSM2518_SAI_CTRL1_SAI_I2S);
-> +	}
-
-You've got quite a few single statement if () blocks with { } which
-shouldn't be there.
-
-> +	codec->control_data =3D ssm2518->regmap;
-> +	ret =3D snd_soc_codec_set_cache_io(codec, 0, 0, SND_SOC_REGMAP);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret =3D regmap_update_bits(ssm2518->regmap, SSM2518_REG_POWER2,
-> +				SSM2518_POWER2_APWDN, 0x00);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return ssm2518_set_bias_level(codec, SND_SOC_BIAS_OFF);
-
-The power down stuff shouild probably be done in the I2C probe so that
-the device is in a low power state if unused.
-
-> +	switch (freq) {
-> +	case 2048000:
-
-Looks like the user can't select 0 for the SYSCLK, I'd expect that to be
-possible for systems that can reprogram the clock so that they can avoid
-having constraints set when they don't need them.
-
-> +static bool ssm2518_register_volatile(struct device *dev, unsigned int r=
-eg)
-> +{
-> +	return false;
-> +}
-
-Hrm, this should be the default...
-
-> +	} else if (i2c->dev.of_node) {
-> +		ssm2518->enable_gpio =3D of_get_gpio(i2c->dev.of_node, 0);
-> +		if (ssm2518->enable_gpio =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-
-Why are other errors being ignored here?
-
---XbOGSHoyTtRSevGh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRnQbuAAoJELSic+t+oim93ecP/ifa3C73VStW30XIA/EqkYiV
-Szjh1GLzH026HKNmCcQcsxafZ/H484pK0M4Iy2416AuUWitvf9s7bwljnUq1VWUn
-znqKDGtz+pcNtScnW2IRY/LaAlGHizBG7YQ4XlWvys1M3safIpT15pS2vCFooIT1
-kG36cy+DZeCleM6b+RVsko3VT26qdUIibNAQQYin3zFjFBFgeKVdiQHnXPteo5Lt
-/cvq/Um1y4TlQjK+AHMZu+ySKUyZ5Q4SBJU7T47y1OKXB/yf5YPR+PpfmKOF325t
-TFHlDaPXlpM3s/1gIesvJRsfCQHq7kmCIwbPn45r0DSp9/8ZCu4sqLBV7dHbArdR
-lv3HH/kc5e0K6U+ftBqsebl68rZMELAxaG2iQkhzTEBtQb2NCpQI90zuvWXztbkh
-0dCeu+AiehXka1tDqJVrXUro4Lul00Tn19NS/yshnZdpLiZ/TU+KU3rWYxMyhRhT
-X7VNH5ZnByonbmnohvLu3M8eiFWbuXifEXix/ii/bHiKV9RyI2InKVOGqlaeUeFv
-FAmAlQuZsu7tph0BhoFOzElziQaKOHLIbU4tQfFvPuyOooqS7dOWNQY7P52Tifme
-kk4iAHYFIcsZv97xMeDN/Pgms2M7bH8yw2eg8GQb+KT+FwF0q2pIOrHW6t1NUjbz
-Xp1TXceegoW1idXF0mcP
-=0IWW
------END PGP SIGNATURE-----
-
---XbOGSHoyTtRSevGh--
-
---===============5936394929545295078==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+TI doesn't make the chip any more.
 
 
---===============5936394929545295078==--
+>
+>
+> Thanks,
+> Daniel
+>
+
+
+
+--
+Jon Smirl
+jonsmirl@gmail.com
