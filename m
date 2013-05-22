@@ -1,24 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
-Date: Wed, 22 May 2013 20:36:58 +0200
-Message-ID: <519D104A.8080708@gmail.com>
-References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
- <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
- <519D068A.8030003@gmail.com>
- <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
- <519D0DA2.3050508@gmail.com>
- <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] cs42l52: microphone bias is controlled
+ by IFACE_CTL2 register.
+Date: Wed, 22 May 2013 13:38:50 -0500
+Message-ID: <20130522183850.GX1627@sirena.org.uk>
+References: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
+ <1369243167-28700-3-git-send-email-nschichan@freebox.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8440046744610697609=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
- [209.85.214.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 38E682610C3
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:36:37 +0200 (CEST)
-Received: by mail-bk0-f42.google.com with SMTP id jk13so1341749bkc.1
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:36:36 -0700 (PDT)
-In-Reply-To: <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id C178E2608ED
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:38:58 +0200 (CEST)
+In-Reply-To: <1369243167-28700-3-git-send-email-nschichan@freebox.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,54 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Nicolas Schichan <nschichan@freebox.fr>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 22.05.2013 20:33, jonsmirl@gmail.com wrote:
-> On Wed, May 22, 2013 at 2:25 PM, Daniel Mack <zonque@gmail.com> wrote:
->> On 22.05.2013 20:01, jonsmirl@gmail.com wrote:
->>> On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
->>>> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
->>>>> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
->>>>>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
->>>>>>
->>>>>> This chip has a very unusual register layout, specifically because the
->>>>>> registers are of unequal size, and multi-byte registers require bulk
->>>>>> writes to take effect. Regmap does not support these kind of mappings.
->>>>>>
->>>>>> Currently, the driver does not touch any of the registers >= 0x20, so
->>>>>> it doesn't matter, because the register map is mapped to an 8-bit array.
->>>>>> In case more features will be added in the future that require access
->>>>>> to higher registers, the entire regmap H/W I/O routines have to be
->>>>>> open-coded.
->>>>>
->>>>> Check out my tas5504 driver from a long time ago. It dealt with those registers.
->>>>>
->>>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
->>>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
->>>>
->>>> Sure, without any regmap abstractions, things are somehow manageable.
->>>> Though you lose all the nice things that regmap gives you, such as
->>>> hardware independence and caching. I might have a different solution,
->>>> but I need to get my hands on one of these devices to test.
->>>>
->>>> On a slightly different note: why isn't your driver in the mainline kernel?
->>>
->>> TI doesn't make the chip any more.
->>
->> That might be, but we have tons of drivers for devices in the mainline
->> kernel which aren't in production anymore.
-> 
-> Yes, but they were added before the chips went out of production.
-> 
-> Mark/Liam - you can add my TAS5504 driver if you want it. As far as I
-> know there is no Linux based hardware using the chip except for a few
-> prototypes we built about five years ago.
 
-Ok, I guess that's enough justification to not add it now, at least for
-the fact that nobody is able to test this driver now ...
+--===============8440046744610697609==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ttZyFY8Q/ImP0sT1"
+Content-Disposition: inline
 
 
-Thanks,
-Daniel
+--ttZyFY8Q/ImP0sT1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, May 22, 2013 at 07:19:25PM +0200, Nicolas Schichan wrote:
+>=20
+> Signed-off-by: Nicolas Schichan <nschichan@freebox.fr>
+
+Applied, but please always CC maintainers on patches and use changelogs
+appropriate for the subsystem.
+
+--ttZyFY8Q/ImP0sT1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRnRC3AAoJELSic+t+oim9yDIP/3wgQsqFuRqP/yFEfljoUvlT
++RuvRogUomBBGWS0yIdpEFWtBWWVPC1ZEi/aYsDUKsRS3SP7o9ULW2q4EZyDvzmP
+sqguc/Mv7bofywAqKXWRWZhS+beRjRFv4mx8F/ZYq5VSKmUhQ9mkj0xqrdLIvqxU
+kfn6ykMmUIkcpvaNXMlENblbeXZg3nQQ1l9qMDmY1350U5EMaTJ0Y7Jqwn2OJTqL
+uhyUn6fv2s9NX5gMVWQ3DvmVREnHHo9rHysOsT2B47WwYle8KXqsPzTVYv1cFGSn
+9C9nPJ+rgOAOjJwFykmcdh53VBwMECDIBVGwkdh0V/7jNOVbhbtUtaU/NYuMz/5F
+f72+396rSlAonsoIM2kDQBIen9/SuxsZLIZRZjjpCr3jE9DrjAIFXiySGnfqXnEc
+bTEaP3MPryxSVDDGBqHX/2OA6kIACikKuAPLIg2OUI2i/6bCx5OSygvxIxPkjEic
+YzwGR2s4ljJSwe2thNhUdUt1n6Ph9CbFZBEA7FsKAoWdp50TlMZcEYH3+zsNQKPQ
+3K2FKdZ7oqu73rQ60/8P1Is5pWAnKXXQv6Tk2Nld0cAE1O4IncRHNdPe6ppHNJF0
+RdWTiy777IEf9Bd6rrwzttV0SO3qpHO41PwehSU3qIBnT2C8yXK2eyIkHIJPa/a4
+YnCMV/Fa1obBNuilgP4N
+=ZYAr
+-----END PGP SIGNATURE-----
+
+--ttZyFY8Q/ImP0sT1--
+
+--===============8440046744610697609==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8440046744610697609==--
