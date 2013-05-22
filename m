@@ -1,21 +1,18 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
-Date: Wed, 22 May 2013 14:01:33 -0400
-Message-ID: <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
-References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
- <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
- <519D068A.8030003@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Add ssm2518 support
+Date: Wed, 22 May 2013 20:16:36 +0200
+Message-ID: <519D0B84.70307@metafoo.de>
+References: <1369242013-27672-1-git-send-email-lars@metafoo.de>
+ <20130522175705.GU1627@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
- [209.85.215.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 58798260899
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:01:34 +0200 (CEST)
-Received: by mail-la0-f41.google.com with SMTP id ee20so2320887lab.0
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:01:33 -0700 (PDT)
-In-Reply-To: <519D068A.8030003@gmail.com>
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEFC6260899
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:14:04 +0200 (CEST)
+In-Reply-To: <20130522175705.GU1627@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Grant Likely <grant.likely@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
-> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
->> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
->>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
->>>
->>> This chip has a very unusual register layout, specifically because the
->>> registers are of unequal size, and multi-byte registers require bulk
->>> writes to take effect. Regmap does not support these kind of mappings.
->>>
->>> Currently, the driver does not touch any of the registers >= 0x20, so
->>> it doesn't matter, because the register map is mapped to an 8-bit array.
->>> In case more features will be added in the future that require access
->>> to higher registers, the entire regmap H/W I/O routines have to be
->>> open-coded.
->>
->> Check out my tas5504 driver from a long time ago. It dealt with those registers.
->>
->> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
->> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
->
-> Sure, without any regmap abstractions, things are somehow manageable.
-> Though you lose all the nice things that regmap gives you, such as
-> hardware independence and caching. I might have a different solution,
-> but I need to get my hands on one of these devices to test.
->
-> On a slightly different note: why isn't your driver in the mainline kernel?
+On 05/22/2013 07:57 PM, Mark Brown wrote:
+> On Wed, May 22, 2013 at 07:00:13PM +0200, Lars-Peter Clausen wrote:
+>> This patch adds a ASoC CODEC driver for the SSM2516. The SSM2516 is a stereo
+>> Class-D audio amplifier with an I2S interface for audio in and a built-in
+>> dynamic range control processor.
+> 
+> I'll apply this but 
 
-TI doesn't make the chip any more.
+I'll send a v2 with your comments fixed.
+
+> 
+>> +	if (slots == 0) {
+>> +		return regmap_update_bits(ssm2518->regmap,
+>> +			SSM2518_REG_SAI_CTRL1, SSM2518_SAI_CTRL1_SAI_MASK,
+>> +			SSM2518_SAI_CTRL1_SAI_I2S);
+>> +	}
+> 
+> You've got quite a few single statement if () blocks with { } which
+> shouldn't be there.
+> 
+
+I prefer to only do this for single single-line statements.
 
 
->
->
-> Thanks,
-> Daniel
->
+[...]
+> 
+>> +	switch (freq) {
+>> +	case 2048000:
+> 
+> Looks like the user can't select 0 for the SYSCLK, I'd expect that to be
+> possible for systems that can reprogram the clock so that they can avoid
+> having constraints set when they don't need them.
+> 
 
+Makes sense.
 
+>> +	} else if (i2c->dev.of_node) {
+>> +		ssm2518->enable_gpio = of_get_gpio(i2c->dev.of_node, 0);
+>> +		if (ssm2518->enable_gpio == -EPROBE_DEFER)
+>> +			return -EPROBE_DEFER;
+> 
+> Why are other errors being ignored here?
 
---
-Jon Smirl
-jonsmirl@gmail.com
+To make the property optional. But I think it might be better to only allow
+-ENOENT and treat everything else as an error in this case.
+
+Thanks,
+- Lars
