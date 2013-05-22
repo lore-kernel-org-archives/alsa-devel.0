@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] cs42l52: microphone bias is controlled
- by IFACE_CTL2 register.
-Date: Wed, 22 May 2013 13:38:50 -0500
-Message-ID: <20130522183850.GX1627@sirena.org.uk>
+Subject: Re: [PATCH 3/4] cs42l52: fix bogus shifts in "Speaker
+ Volume" and "PCM Mixer Volume" controls.
+Date: Wed, 22 May 2013 13:39:06 -0500
+Message-ID: <20130522183906.GY1627@sirena.org.uk>
 References: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
- <1369243167-28700-3-git-send-email-nschichan@freebox.fr>
+ <1369243167-28700-4-git-send-email-nschichan@freebox.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8440046744610697609=="
+Content-Type: multipart/mixed; boundary="===============3469933569838609663=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C178E2608ED
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:38:58 +0200 (CEST)
-In-Reply-To: <1369243167-28700-3-git-send-email-nschichan@freebox.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C42E2610C3
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:39:18 +0200 (CEST)
+In-Reply-To: <1369243167-28700-4-git-send-email-nschichan@freebox.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,52 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Brian Austin <bri
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8440046744610697609==
+--===============3469933569838609663==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ttZyFY8Q/ImP0sT1"
+	protocol="application/pgp-signature"; boundary="cy0BeJHB1CR/AQ7b"
 Content-Disposition: inline
 
 
---ttZyFY8Q/ImP0sT1
+--cy0BeJHB1CR/AQ7b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 22, 2013 at 07:19:25PM +0200, Nicolas Schichan wrote:
+On Wed, May 22, 2013 at 07:19:26PM +0200, Nicolas Schichan wrote:
 >=20
 > Signed-off-by: Nicolas Schichan <nschichan@freebox.fr>
 
-Applied, but please always CC maintainers on patches and use changelogs
-appropriate for the subsystem.
+Applied, thanks.
 
---ttZyFY8Q/ImP0sT1
+--cy0BeJHB1CR/AQ7b
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRnRC3AAoJELSic+t+oim9yDIP/3wgQsqFuRqP/yFEfljoUvlT
-+RuvRogUomBBGWS0yIdpEFWtBWWVPC1ZEi/aYsDUKsRS3SP7o9ULW2q4EZyDvzmP
-sqguc/Mv7bofywAqKXWRWZhS+beRjRFv4mx8F/ZYq5VSKmUhQ9mkj0xqrdLIvqxU
-kfn6ykMmUIkcpvaNXMlENblbeXZg3nQQ1l9qMDmY1350U5EMaTJ0Y7Jqwn2OJTqL
-uhyUn6fv2s9NX5gMVWQ3DvmVREnHHo9rHysOsT2B47WwYle8KXqsPzTVYv1cFGSn
-9C9nPJ+rgOAOjJwFykmcdh53VBwMECDIBVGwkdh0V/7jNOVbhbtUtaU/NYuMz/5F
-f72+396rSlAonsoIM2kDQBIen9/SuxsZLIZRZjjpCr3jE9DrjAIFXiySGnfqXnEc
-bTEaP3MPryxSVDDGBqHX/2OA6kIACikKuAPLIg2OUI2i/6bCx5OSygvxIxPkjEic
-YzwGR2s4ljJSwe2thNhUdUt1n6Ph9CbFZBEA7FsKAoWdp50TlMZcEYH3+zsNQKPQ
-3K2FKdZ7oqu73rQ60/8P1Is5pWAnKXXQv6Tk2Nld0cAE1O4IncRHNdPe6ppHNJF0
-RdWTiy777IEf9Bd6rrwzttV0SO3qpHO41PwehSU3qIBnT2C8yXK2eyIkHIJPa/a4
-YnCMV/Fa1obBNuilgP4N
-=ZYAr
+iQIcBAEBAgAGBQJRnRDHAAoJELSic+t+oim93e8P/0WZ4iCdf/RYqZlW6VATH8IM
+9scp4WolBdo7RrM5pwmqboRfaZWwdS1lnjKJG+GwDL1LwjKGqiyfIIyHtopxOEQ5
+isNjKd7BosrFTrU02sjKf5HsqlhUJEjft5KPUXenktA18vQgX+vWfqmFfBIvWTc7
+zNNYrKMMIW7NjuWqc2K+4NSUA2maavaw/hj/pBtJaNOr5qXz8U3krkuRmUpEvf4t
++X5zOeenzdDhzygGef3t0TJb94zpf7mrm32Xt9JY+FAJAhuXoVaAgQf1cn4/XV3w
+NznIe0cb5CKhrlNI2v3zonwGpDlm5tHb1wMjtGgc/2396xWwPJJZO2v74CvZUtKr
+xhCrXN5H4rMIBzUqAtJsiD6XfxpVpEiHCHBQRJRWF6/lqadkEkH+A3wOmMFpJbBa
+D562ciPMYLyegGlppeWAQMFyGvfmRPVLwWce4ycq92ejTR1C0d63c57+p3lbhXgT
+/gfmQuSK4Yy2gV0OJ+I4yJqLazQwc6rb/c0YnRJ/1zt9RMyuG1RIFd+ZRd/WbGzj
+wSdnnyKj1GqSlcx+AdhyOdfOWtpdL6V0zhZDXOKAbMUh+FAnsufNptKSPzSbkKXL
+p5JHzQz8Chrc7qeggyWIZvgy3aM46fb3+vNSdFnA9snC89e8SpvtICRk9ib+T2ZK
+VkzLchOb0DIq1KQpqmWH
+=JMHQ
 -----END PGP SIGNATURE-----
 
---ttZyFY8Q/ImP0sT1--
+--cy0BeJHB1CR/AQ7b--
 
---===============8440046744610697609==
+--===============3469933569838609663==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8440046744610697609==--
+--===============3469933569838609663==--
