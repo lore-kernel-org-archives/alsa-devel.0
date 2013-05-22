@@ -1,20 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
-Date: Wed, 22 May 2013 14:31:17 -0500
-Message-ID: <20130522193117.GC1627@sirena.org.uk>
-References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
- <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
- <519D068A.8030003@gmail.com>
- <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
- <519D0DA2.3050508@gmail.com>
- <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
+From: Alex Riesen <raa.lkml@gmail.com>
+Subject: Re: regression: from 3.8 to 3.9: headphones output no
+ sound on Intel HDA, codec VIA VT1802
+Date: Wed, 22 May 2013 23:06:53 +0200
+Message-ID: <CALxABCaubJgHkr60r4M5igJtZhCOMhZbzCvGByb3gOg5spSFUQ@mail.gmail.com>
+References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
+ <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
+ <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
+ <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
+ <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
+ <s5ha9nwx1j3.wl%tiwai@suse.de>
+ <CALxABCZMyqh5SSo=RpQCJNUR_p9yrG5x9DimFpzvgkCFLr4eug@mail.gmail.com>
+ <s5h1u97jik9.wl%tiwai@suse.de>
+ <CALxABCa27gVVJGWM-crvFOPmJXdZ0FEBc3=dPZ0pG+AhDB78cA@mail.gmail.com>
+ <s5hk3myuoq6.wl%tiwai@suse.de>
+ <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0792452212225892294=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 130872615F7
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 21:31:22 +0200 (CEST)
-In-Reply-To: <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
+Received: from mail-oa0-f45.google.com (mail-oa0-f45.google.com
+ [209.85.219.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44619261692
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 23:07:14 +0200 (CEST)
+Received: by mail-oa0-f45.google.com with SMTP id j6so3366014oag.4
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 14:07:13 -0700 (PDT)
+In-Reply-To: <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +34,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Ping? Can I do something for you?
 
---===============0792452212225892294==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A9eION1OHh0ab6BT"
-Content-Disposition: inline
+Regards,
+Alex
 
-
---A9eION1OHh0ab6BT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, May 22, 2013 at 02:33:45PM -0400, jonsmirl@gmail.com wrote:
-
-> Mark/Liam - you can add my TAS5504 driver if you want it. As far as I
-> know there is no Linux based hardware using the chip except for a few
-> prototypes we built about five years ago.
-
-I'll apply any sensible driver that gets submitted.
-
---A9eION1OHh0ab6BT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRnR0CAAoJELSic+t+oim9M40P/0KILdlYxBKLyNMMvrSHM2vv
-RPwSb+KEPfK/Batr3cUblvER/tRBLvNLk52900tVnzXzCKtpJY9c+NnPMH5v3sJt
-wpH6/Le9TmJxfbS83NKETXoOqBir9Jn7soa94eu7SY8OYkH8F/xW4mZRglfn47jp
-WR/q5bRdozmahm6NsPXD+gyDXdh7R7ZvDScFA9PkWKBPoo3SScapMAbWz6dpXlhw
-Ws9LFGjx2iC244BLc3QSbhNyzHb1FWXVmkcJfThj0hAnWYBy84exxvSNsUn6jX5m
-G3RH8CJupUaeoMCfzNp9klNB0bRBU6H63P5Os1f3hxcL/xhQC1tlyiEREtO0ulMo
-FXTb7Y/8JPEGJUhPuL/xK+6oISqVZAcRk7S2SUJ6Z+g52Lc3BKBj2J9pnK+uOu2l
-+WIO6VlwfJnNC9hyQeQ+go1wbYQ5ZN1p9swrXV9VjfF33NcaBgSwVAuuhSWP/nCM
-+w8PKuLK7otL4a0TIrXNI82CI9hi3XnKqq+l7F1FZbhqk3idb+2843Yx4lhR9SgZ
-bYMVqdZV4C7rHyu9EmT40oIBaxYu3MCfjc+JzgHCESUW3+PirnK7K1eVvzyQFd/C
-NPzXzU8xz7xaYALV3JtoNe9WYhBP5x0PzWZEWy+PsFp1C6sySFotBmceDdZSjd4U
-oWWjPL18Hd0mre6P5uEF
-=zMOm
------END PGP SIGNATURE-----
-
---A9eION1OHh0ab6BT--
-
---===============0792452212225892294==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0792452212225892294==--
+On Sat, May 18, 2013 at 10:29 PM, Alex Riesen <raa.lkml@gmail.com> wrote:
+> Sorry for delayed replies. I have not much time for this lately.
+>
+> On Fri, May 17, 2013 at 8:04 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> Well... It seems that something went unnoticed. This command seems
+>>> to be essential for this (and the revised) patch to get the headphone
+>>> output at all:
+>>>
+>>>         hda-verb /dev/snd/hwC0D0 0x25 SET_PIN_WID 0xc0
+>>
+>> Do you mean that the headphone doesn't work without this even after
+>> the patch?  It's weird that the alsa-info.sh output you attached below
+>> already contains it, i.e. 0x25 showing 0xc0.
+>
+> Yes. It is after the latest patch.
+>
+>> Or, is the attached output the result after you ran hda-verb like the
+>> above?
+>
+> Er, yes.
+>
+>>> It does. And there is no output from the speakers.
+>>
+>> Hmm.  I'm confused.  I thought you mentioned that the speaker is
+>> unmuted?
+>
+> I think I am as confused as you, if not more. I redid the tests
+> but recorded everything this time with script(1). It is without
+> timing information (would be boring anyway, with me figuring
+> the arguments), so just cat it. Just in case: it sets xterm title.
+> The transcript is in headphone.gz.
+>
+>> - Use the patched kernel, play without headphone, confirm that the
+>>   speaker works.  Get alsa-info.sh output at this point.
+>
+> That's 3.9.2-wo-headphone.alsa.gz
+>
+>> - Plug the headphone, play, and check whether the headphone works and
+>>   the speaker is muted.
+>>   Again, get alsa-info.sh output at this point, no matter whether the
+>>   headphone works or not.
+>
+> That's 3.9.2-w-headphone.alsa.gz. Headphone not working, speakers
+> correctly muted.
+>
+>> In anyway, if you make things working, please give exactly what you
+>> did, and take again alsa-info.sh output, too.
+>
+> 3.9.2-w-headphone-working.alsa.gz. The working state is lost after
+> unplugging and replugging the headphones. It is different to the
+> case when the alternate channel is used (Independent HP): replugging
+> does not break the output than.
+>
+> Sorry for confusion and thanks!
+>
+> Regards,
+> Alex
