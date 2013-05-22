@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] cs42l52: use same init values for
- MASTERA_VOL/MASTERB_VOL.
-Date: Wed, 22 May 2013 13:34:25 -0500
-Message-ID: <20130522183425.GW1627@sirena.org.uk>
-References: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
- <1369243167-28700-2-git-send-email-nschichan@freebox.fr>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
+Date: Wed, 22 May 2013 20:36:58 +0200
+Message-ID: <519D104A.8080708@gmail.com>
+References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
+ <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
+ <519D068A.8030003@gmail.com>
+ <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
+ <519D0DA2.3050508@gmail.com>
+ <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5668239476020503847=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FB342608ED
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:34:42 +0200 (CEST)
-In-Reply-To: <1369243167-28700-2-git-send-email-nschichan@freebox.fr>
+Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
+ [209.85.214.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38E682610C3
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:36:37 +0200 (CEST)
+Received: by mail-bk0-f42.google.com with SMTP id jk13so1341749bkc.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:36:36 -0700 (PDT)
+In-Reply-To: <CAKON4Oyb5oGenUh4HZ2vKuD28D0U=tHU+PaZrZ6wfQxq5Mf6qw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Schichan <nschichan@freebox.fr>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 22.05.2013 20:33, jonsmirl@gmail.com wrote:
+> On Wed, May 22, 2013 at 2:25 PM, Daniel Mack <zonque@gmail.com> wrote:
+>> On 22.05.2013 20:01, jonsmirl@gmail.com wrote:
+>>> On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
+>>>> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
+>>>>> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
+>>>>>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
+>>>>>>
+>>>>>> This chip has a very unusual register layout, specifically because the
+>>>>>> registers are of unequal size, and multi-byte registers require bulk
+>>>>>> writes to take effect. Regmap does not support these kind of mappings.
+>>>>>>
+>>>>>> Currently, the driver does not touch any of the registers >= 0x20, so
+>>>>>> it doesn't matter, because the register map is mapped to an 8-bit array.
+>>>>>> In case more features will be added in the future that require access
+>>>>>> to higher registers, the entire regmap H/W I/O routines have to be
+>>>>>> open-coded.
+>>>>>
+>>>>> Check out my tas5504 driver from a long time ago. It dealt with those registers.
+>>>>>
+>>>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
+>>>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
+>>>>
+>>>> Sure, without any regmap abstractions, things are somehow manageable.
+>>>> Though you lose all the nice things that regmap gives you, such as
+>>>> hardware independence and caching. I might have a different solution,
+>>>> but I need to get my hands on one of these devices to test.
+>>>>
+>>>> On a slightly different note: why isn't your driver in the mainline kernel?
+>>>
+>>> TI doesn't make the chip any more.
+>>
+>> That might be, but we have tons of drivers for devices in the mainline
+>> kernel which aren't in production anymore.
+> 
+> Yes, but they were added before the chips went out of production.
+> 
+> Mark/Liam - you can add my TAS5504 driver if you want it. As far as I
+> know there is no Linux based hardware using the chip except for a few
+> prototypes we built about five years ago.
 
---===============5668239476020503847==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="w7rOJgaucv5jay56"
-Content-Disposition: inline
-
-
---w7rOJgaucv5jay56
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, May 22, 2013 at 07:19:24PM +0200, Nicolas Schichan wrote:
->=20
-> Signed-off-by: Nicolas Schichan <nschichan@freebox.fr>
-
-Why?
-
-> -	{ CS42L52_MASTERB_VOL, 0x00 },	/* r21 Master B Volume */
-> +	{ CS42L52_MASTERB_VOL, 0x88 },	/* r21 Master B Volume */
-
-Note that the register defaults need to reflect the default value
-for the registers.
-
---w7rOJgaucv5jay56
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRnQ+uAAoJELSic+t+oim9Q4kP/RShKTl7YNXrB3nproyjP9zN
-6v0ssoVpg4w2eCnRj1u8nB6D9JpYN2PIPESb/+oKellWUdQN56wN9+MxR2Tf4coV
-kogrOocbe1a2pg6v73H5RHzJyEo+EO/cbjgjevICSY7o62m6tzs0Bj7m9+flII+g
-PkwatxW72DnlhLJ1W3n+yXF+fl5Xi3aXU/Zu8bLGdfpAfIwbmzdCq7csODKTUumz
-VF9YXMyCOUZ6oNulNIm1zrtOqQ/mlfqrSu3UQE9roSXMuzzDnfWOL3VHu0LZbb/N
-jF8S6DM+uB/cz2hreqHZhlKj+oxriKY3B0IDhu7riwUu1C/AyWp6SmukDuurqKCS
-p/VFU7Uo47/IlpH7hC4rgXBlu4omUSN99prwW4Dr38iKK3qB+OiEzquUjLWypYWF
-ro4wgpbnInEtbcJgGPEWiVwldLoJL54NUFBEpzWfnfOQ845cAxck8nWmUpUaDC48
-xmOOLbkFyMz8KTK/Z+5U1rITylE7X9aZvRJUwcRvuqdp1E686Gqh7lnSkZrv7jV/
-yJMRjdbaeREI6hqhZ5Z0tHpya9D4VkIIpqqeasdY71rtldfEC1e70hV0Iutr2MZR
-ZS1GbZnnIeMeI7wBf1WXhTmvaiWlvARAJiCz/LKlITN1chyLcsxSrZWcVom9F2p3
-hvTep0XL9lXlANl2L2bG
-=6/k+
------END PGP SIGNATURE-----
-
---w7rOJgaucv5jay56--
-
---===============5668239476020503847==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Ok, I guess that's enough justification to not add it now, at least for
+the fact that nobody is able to test this driver now ...
 
 
---===============5668239476020503847==--
+Thanks,
+Daniel
