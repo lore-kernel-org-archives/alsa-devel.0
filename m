@@ -1,173 +1,80 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Add support for BCM2708
-Date: Wed, 22 May 2013 19:26:53 +0200
-Message-ID: <519CFFDD.4080203@metafoo.de>
-References: <519CD1CC.8070507@koalo.de>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: [PATCH 0/4 V5] Power-well API implementation for
+	Haswell
+Date: Thu, 23 May 2013 01:04:12 +0800
+Message-ID: <1369242256-32112-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <519CD1CC.8070507@koalo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Florian Meier <florian.meier@koalo.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, swarren@wwwdotorg.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DD85260899
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 19:31:11 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: daniel@ffwll.ch, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, jocelyn.li@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/22/2013 04:10 PM, Florian Meier wrote:
-[...]
-> diff --git a/sound/soc/bcm2708/bcm2708-i2s.c b/sound/soc/bcm2708/bcm2708-i2s.c
-> new file mode 100644
-> index 0000000..a8e995f
-> --- /dev/null
-> +++ b/sound/soc/bcm2708/bcm2708-i2s.c
-> @@ -0,0 +1,964 @@
-[...]
-> +static int bcm2708_i2s_startup(struct snd_pcm_substream *substream,
-> +			       struct snd_soc_dai *dai)
-> +{
-> +	struct bcm2708_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-> +
-> +	if (!dev->first_stream) {
-> +		dev->first_stream = substream;
-> +
-> +		/* should this still be running stop it */
-> +		bcm2708_i2s_stop_clock(dev);
-> +
-> +		/* enable PCM block */
-> +		bcm2708_i2s_set_bits(dev, BCM2708_I2S_CS_A_REG, BCM2708_I2S_EN);
-> +
-> +		/*
-> +		 * Disable STBY
-> +		 * Requires at least 4 PCM clock cycles to take effect
-> +		 */
-> +		bcm2708_i2s_set_bits(dev, BCM2708_I2S_CS_A_REG,
-> +				BCM2708_I2S_STBY);
-> +	} else {
-> +		struct snd_pcm_runtime *first_runtime =
-> +			dev->first_stream->runtime;
-> +
-> +		/*
-> +		 * This is the second stream open, so we need to impose
-> +		 * sample size and sampling rate constraints.
-> +		 * This is because frame length and clock cannot be specified
-> +		 * seperately.
-> +		 *
-> +		 * Note that this can cause a race condition if the
-> +		 * second stream is opened before the first stream is
-> +		 * fully initialized.  We provide some protection by
-> +		 * checking to make sure the first stream is
-> +		 * initialized, but it's not perfect.  ALSA sometimes
-> +		 * re-initializes the driver with a different sample
-> +		 * rate or size.  If the second stream is opened
-> +		 * before the first stream has received its final
-> +		 * parameters, then the second stream may be
-> +		 * constrained to the wrong sample rate or size.
-> +		 *
-> +		 * We will continue in case of failure and recheck the
-> +		 * constraint in hw_params.
-> +		 */
-> +		if (!first_runtime->format) {
-> +			dev_err(substream->pcm->card->dev,
-> +					"Set format in %s stream first! "
-> +					"Initialization may fail.\n",
-> +					substream->stream ==
-> +					SNDRV_PCM_STREAM_PLAYBACK
-> +					? "capture" : "playback");
-> +		} else {
-> +			snd_pcm_hw_constraint_minmax(substream->runtime,
-> +					SNDRV_PCM_HW_PARAM_FORMAT,
-> +					first_runtime->format,
-> +					first_runtime->format);
-> +		}
-> +
-> +		if (!first_runtime->rate) {
-> +			dev_err(substream->pcm->card->dev,
-> +					"Set sampling rate in %s stream first! "
-> +					"Initialization may fail!\n",
-> +					substream->stream ==
-> +					SNDRV_PCM_STREAM_PLAYBACK
-> +					? "capture" : "playback");
-> +		} else {
-> +			snd_pcm_hw_constraint_minmax(substream->runtime,
-> +					SNDRV_PCM_HW_PARAM_RATE,
-> +					first_runtime->rate,
-> +					first_runtime->rate);
-> +		}
+Hi all,
 
-Setting the symmetric_rates lets the core take care of setting the proper
-constraints on the rate. It probably makes sense to also add a
-symmetric_formats since this isn't the only driver that has the requirement
-that the formats for playback and capture match.
+   This is V5 and here're some changes notes:
 
-> +
-> +		dev->second_stream = substream;
-> +	}
-> +
-> +	snd_soc_dai_set_dma_data(dai, substream,
-> +			&dev->dma_params[substream->stream]);
-> +
-> +	return 0;
-> +}
-> +
-> +static void bcm2708_i2s_shutdown(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct bcm2708_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-> +
-> +	bcm2708_i2s_stop(dev, substream);
-> +
-> +	if (dev->first_stream == substream)
-> +		dev->first_stream = dev->second_stream;
-> +
-> +	dev->second_stream = NULL;
-> +
-> +	/* If both streams are stopped, disable module and clock */
-> +	if (!dev->first_stream) {
-> +		/* Disable the module */
-> +		bcm2708_i2s_clear_bits(dev, BCM2708_I2S_CS_A_REG,
-> +				BCM2708_I2S_EN);
-> +
-> +		/*
-> +		 * Stopping clock is necessary, because stop does
-> +		 * not stop the clock when SND_SOC_DAIFMT_CONT
-> +		 */
-> +		bcm2708_i2s_stop_clock(dev);
-> +	}
-> +}
-[...]
-> diff --git a/sound/soc/bcm2708/bcm2708-pcm.c b/sound/soc/bcm2708/bcm2708-pcm.c
-> new file mode 100644
-> index 0000000..4b3e688
-> --- /dev/null
-> +++ b/sound/soc/bcm2708/bcm2708-pcm.c
-> @@ -0,0 +1,303 @@
+   change from V4-->V5:
+   - fix reference count bug
+   - new patch on general runtime pm support for audio pci device
+   - new patch to avoid request_module() deadlock
 
-I think you should be able to remove the bulk of this driver by using the
-generic PCM dmaengine driver.
+   change between V3-->V4:
+   - add new structure i915_power_well
+   - initialize drm_device pointer at module init time
+   - change function name
 
-[...]
-> +
-> +#include "bcm2708-pcm.h"
-> +
-> +static const struct snd_pcm_hardware bcm2708_pcm_hardware = {
-> +	.info			= SNDRV_PCM_INFO_MMAP |
-> +				  SNDRV_PCM_INFO_MMAP_VALID |
-> +				  SNDRV_PCM_INFO_INTERLEAVED |
-> +				  SNDRV_PCM_INFO_PAUSE |
-> +				  SNDRV_PCM_INFO_RESUME |
-> +				  SNDRV_PCM_INFO_JOINT_DUPLEX |
-> +				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+   change between V2-->V3:
+   - make SND_HDA_I915 selectable
+   - use snd_printdd to output message
+   - add return error code check
+   - use symbol_request to replace symbol_get
+   - release power_well at azx_free
+   - some typo fixes
 
-I don't think you actually support the last one, and neither pause and
-resume are supported.
+   changes between V1-->V2:
+   - use reference count to track power-well usage
+   - remove external module, compiled into snd-hda-intel instead
+   - manage symbols and module loading properly
+   - remove IS_HSW macro, use flag instead
+   - remove audio callback for gfx driver to avoid dependency 
+   - split whole patch into two pieces for easy review
+   - more typo fixes
 
-> +	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-> +				  SNDRV_PCM_FMTBIT_S32_LE,
-> +	.period_bytes_min	= 32,
-> +	.period_bytes_max	= 64 * 1024,
-> +	.periods_min		= 2,
-> +	.periods_max		= 255,
-> +	.buffer_bytes_max	= 128 * 1024,
-> +};
-> +
-[...]
+Wang Xingchao (4):
+  i915/drm: Add private api for power well usage
+  ALSA: hda - Add power-welll support for haswell HDA
+  ALSA: hda - Fix runtime PM check
+  ALSA: hda - Continue probe in work context to avoid request_module
+    deadlock
+
+ drivers/gpu/drm/i915/i915_dma.c  |   6 ++
+ drivers/gpu/drm/i915/i915_drv.h  |  12 ++++
+ drivers/gpu/drm/i915/intel_drv.h |   4 ++
+ drivers/gpu/drm/i915/intel_pm.c  |  92 ++++++++++++++++++++++++---
+ include/drm/i915_powerwell.h     |  36 +++++++++++
+ sound/pci/hda/Kconfig            |  10 +++
+ sound/pci/hda/Makefile           |   3 +
+ sound/pci/hda/hda_i915.c         |  75 ++++++++++++++++++++++
+ sound/pci/hda/hda_i915.h         |  35 +++++++++++
+ sound/pci/hda/hda_intel.c        | 132 ++++++++++++++++++++++++++++-----------
+ 10 files changed, 360 insertions(+), 45 deletions(-)
+ create mode 100644 include/drm/i915_powerwell.h
+ create mode 100644 sound/pci/hda/hda_i915.c
+ create mode 100644 sound/pci/hda/hda_i915.h
+
+-- 
+1.8.1.2
