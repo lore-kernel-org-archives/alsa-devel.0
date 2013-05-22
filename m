@@ -1,18 +1,19 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 0/4] CS42L52 fixes.
-Date: Wed, 22 May 2013 17:36:23 +0000
-Message-ID: <5F66E62A-200A-4A6D-A231-4E2889D19CB3@cirrus.com>
-References: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
+Date: Wed, 22 May 2013 13:50:21 -0400
+Message-ID: <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
+References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe002.messaging.microsoft.com [65.55.88.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 75076260899
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 19:36:38 +0200 (CEST)
-In-Reply-To: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
-Content-Language: en-US
+Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 513E2260899
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 19:50:22 +0200 (CEST)
+Received: by mail-lb0-f177.google.com with SMTP id o10so2377881lbi.8
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 10:50:21 -0700 (PDT)
+In-Reply-To: <1362740833-15704-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas Schichan <nschichan@freebox.fr>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Georgi Vlaev <joe@nucleusys.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
+> This patch adds a driver for TI's TA5086 6-channel PWM processor.
+>
+> This chip has a very unusual register layout, specifically because the
+> registers are of unequal size, and multi-byte registers require bulk
+> writes to take effect. Regmap does not support these kind of mappings.
+>
+> Currently, the driver does not touch any of the registers >= 0x20, so
+> it doesn't matter, because the register map is mapped to an 8-bit array.
+> In case more features will be added in the future that require access
+> to higher registers, the entire regmap H/W I/O routines have to be
+> open-coded.
 
+Check out my tas5504 driver from a long time ago. It dealt with those registers.
 
-On May 22, 2013, at 7:19, "Nicolas Schichan" <nschichan@freebox.fr> wrote:
+https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
+https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
 
-> Hi,
-> 
-> In the following emails, you will find the fixes I currently have for
-> the CS42L52 driver.
-> 
-> The fixes are:
-> 
-> - Set both Master Volume A & B init value to 0x88 (otherwise left
->  channel and right channel master volume would not be the same after
->  init).
-> 
-> - Use IFACE_CTL2 register for Microphone Bias enum (IFACE_CTL1 is
->  clearly not controling microphone bias according to the datasheet).
-> 
-> - Various controls would use a bogus shift value, resulting in only the
->  high order bits being updated when changing them.
-> 
-> - The wrong mask was used when muting/unmuting the codec, resutling in
->  the wrong part of the PB_CTL1 register being cleared, especially the
->  headphone analog gain part.
-> 
-> All those patches are against the latest linus tree.
-> 
-> Regards,
-> 
-> -- 
-> Nicolas Schichan
-> 
-> 
-Whole series
-Acked-by: Brian Austin <brian.austin@cirrus.com>
-
-Thanks
+--
+Jon Smirl
+jonsmirl@gmail.com
