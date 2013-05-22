@@ -1,23 +1,22 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH] ALSA: ASoC: add codec driver for TI TAS5086
-Date: Wed, 22 May 2013 14:24:06 -0400
-Message-ID: <CAKON4OwnjR_gWwKxXsnscUpobpq3DOBxaQWSk-m=E_Ht8wDLnw@mail.gmail.com>
+Date: Wed, 22 May 2013 20:25:38 +0200
+Message-ID: <519D0DA2.3050508@gmail.com>
 References: <1362740833-15704-1-git-send-email-zonque@gmail.com>
  <CAKON4OyqoUTsYHqv3kW3jN9Za=-Z866rcjPiANL8t5uyraK=6w@mail.gmail.com>
  <519D068A.8030003@gmail.com>
  <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
- <CAKON4Ox5O7MF3MH3W98JNoi2Z+G5yYy8A0engLXBfk+Pte2Siw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
- [209.85.215.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 59A602610BA
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:24:07 +0200 (CEST)
-Received: by mail-la0-f41.google.com with SMTP id ee20so2335130lab.14
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:24:07 -0700 (PDT)
-In-Reply-To: <CAKON4Ox5O7MF3MH3W98JNoi2Z+G5yYy8A0engLXBfk+Pte2Siw@mail.gmail.com>
+Received: from mail-bk0-f50.google.com (mail-bk0-f50.google.com
+ [209.85.214.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F21D2610BA
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 20:25:17 +0200 (CEST)
+Received: by mail-bk0-f50.google.com with SMTP id ik8so344949bkc.23
+ for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 11:25:16 -0700 (PDT)
+In-Reply-To: <CAKON4OyX+xSR8A-J9RM=tE5PowQyqzZC8TA8J7f+pn5SRkE--g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,79 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
 Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 22, 2013 at 2:20 PM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
-> On Wed, May 22, 2013 at 2:01 PM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
->> On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
->>> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
->>>> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
->>>>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
->>>>>
->>>>> This chip has a very unusual register layout, specifically because the
->>>>> registers are of unequal size, and multi-byte registers require bulk
->>>>> writes to take effect. Regmap does not support these kind of mappings.
->
-> These ST amps are more recent that the TI parts.
->
-> http://www.st.com/web/catalog/sense_power/FM125/SC1756
->
-
-TI has stopped making the TAS5504 but they still make the TAS5508
-which is very similar.
-
-TAS5508 eval board is $399.
-http://www.ti.com/tool/tas5508-5142k7evm
-
-TAS5086 eval for $299
-http://www.ti.com/tool/tas5086-5186v6evm
-
-
->
->>>>>
->>>>> Currently, the driver does not touch any of the registers >= 0x20, so
->>>>> it doesn't matter, because the register map is mapped to an 8-bit array.
->>>>> In case more features will be added in the future that require access
->>>>> to higher registers, the entire regmap H/W I/O routines have to be
->>>>> open-coded.
+On 22.05.2013 20:01, jonsmirl@gmail.com wrote:
+> On Wed, May 22, 2013 at 1:55 PM, Daniel Mack <zonque@gmail.com> wrote:
+>> On 22.05.2013 19:50, jonsmirl@gmail.com wrote:
+>>> On Fri, Mar 8, 2013 at 6:07 AM, Daniel Mack <zonque@gmail.com> wrote:
+>>>> This patch adds a driver for TI's TA5086 6-channel PWM processor.
 >>>>
->>>> Check out my tas5504 driver from a long time ago. It dealt with those registers.
+>>>> This chip has a very unusual register layout, specifically because the
+>>>> registers are of unequal size, and multi-byte registers require bulk
+>>>> writes to take effect. Regmap does not support these kind of mappings.
 >>>>
->>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
->>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
+>>>> Currently, the driver does not touch any of the registers >= 0x20, so
+>>>> it doesn't matter, because the register map is mapped to an 8-bit array.
+>>>> In case more features will be added in the future that require access
+>>>> to higher registers, the entire regmap H/W I/O routines have to be
+>>>> open-coded.
 >>>
->>> Sure, without any regmap abstractions, things are somehow manageable.
->>> Though you lose all the nice things that regmap gives you, such as
->>> hardware independence and caching. I might have a different solution,
->>> but I need to get my hands on one of these devices to test.
+>>> Check out my tas5504 driver from a long time ago. It dealt with those registers.
 >>>
->>> On a slightly different note: why isn't your driver in the mainline kernel?
+>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.c
+>>> https://github.com/jonsmirl/mpc5200/blob/master/sound/soc/codecs/tas5504.h
 >>
->> TI doesn't make the chip any more.
+>> Sure, without any regmap abstractions, things are somehow manageable.
+>> Though you lose all the nice things that regmap gives you, such as
+>> hardware independence and caching. I might have a different solution,
+>> but I need to get my hands on one of these devices to test.
 >>
->>
->>>
->>>
->>> Thanks,
->>> Daniel
->>>
->>
->>
->>
->> --
->> Jon Smirl
->> jonsmirl@gmail.com
->
->
->
-> --
-> Jon Smirl
-> jonsmirl@gmail.com
+>> On a slightly different note: why isn't your driver in the mainline kernel?
+> 
+> TI doesn't make the chip any more.
+
+That might be, but we have tons of drivers for devices in the mainline
+kernel which aren't in production anymore.
 
 
-
---
-Jon Smirl
-jonsmirl@gmail.com
+Daniel
