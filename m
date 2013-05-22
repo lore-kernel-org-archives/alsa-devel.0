@@ -1,92 +1,52 @@
-From: Stefano Panella <stefano.panella@citrix.com>
-Subject: Problem opening default device in haswell system using
-	aplay
-Date: Wed, 22 May 2013 16:48:58 +0100
-Message-ID: <519CE8EA.3010303@citrix.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] sound/soc/fsl: remove leftover release_mem_region
+Date: Wed, 22 May 2013 10:56:28 -0500
+Message-ID: <20130522155628.GK1627@sirena.org.uk>
+References: <1369228886-3527-1-git-send-email-wsa@the-dreams.de>
+ <1369228886-3527-3-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SMTP.EU.CITRIX.COM (smtp.eu.citrix.com [46.33.159.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D168260783
- for <alsa-devel@alsa-project.org>; Wed, 22 May 2013 17:48:55 +0200 (CEST)
-Received: from slimey.cam.xci-test.com ([10.80.249.177])	by
- norwich.cam.xci-test.com with esmtp (Exim 4.72)	(envelope-from
- <stefano.panella@citrix.com>)	id 1UfBHa-0008CE-DB	for
- alsa-devel@alsa-project.org; Wed, 22 May 2013 15:48:54 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e7MbhXUj+2isZwqc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1369228886-3527-3-git-send-email-wsa@the-dreams.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
 
-sorry if this email has been sent twice... ( I sent it once before subscribing)
+--e7MbhXUj+2isZwqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I am working on some haswell systems running Ubuntu 12.04 and I have a problem if I run aplay -D sysdefault.
+On Wed, May 22, 2013 at 03:21:26PM +0200, Wolfram Sang wrote:
+> When converting this driver to devm_ioremap_resource, the removal of this now
+> unneeded function has been forgotten.
 
-when I do:
+This doesn't apply against current code, can you please regenerate
+against topic/fsl or mainline?
 
-cat /proc/asound/pcm
+--e7MbhXUj+2isZwqc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I get:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-00-03: HDMI 0 : HDMI 0 : playback 1
-00-07: HDMI 1 : HDMI 1 : playback 1
-00-08: HDMI 2 : HDMI 2 : playback 1
-01-00: ALC662 rev3 Analog : ALC662 rev3 Analog : playback 1 : capture 1
-01-02: ALC662 rev3 Analog : ALC662 rev3 Analog : capture 1
+iQIcBAEBAgAGBQJRnOqpAAoJELSic+t+oim96CoP/0H8fkH+KUko39u2bFWR7fWM
+BNKlO1wjJOonvz6mz+KYXCI36JtQoMd555HILySKlmF8PnPROFx1/1MtQMjjgt6w
+7WEysuJU8Rv0TeKrtXOMq6daHtmEYDOYrz7Jtha6NAB/9eB/9RQryBKj8peLyVG7
+rHNrFcqpfhk5vmJ1yKgCVBB/4H8RdNlwc4WpjhKevDaaRp/LE89UrXabCJD1i1nV
+0cIR8fnwZ65+MOVlBl4hfYXtjJgBJmd+ZR3BUAikZDwCWEJdxqiLQWBIeB965wpO
+2MpynD2viFBnfNXj/UcHe0aiJaErZ2L2gL+9GHntnqQfiZ3PDRjGGfPI1VexFW6p
+HjNFnRbsxcSJYDYwzp+4BcxU9CvHczGCnZiXKGEbmt5ZKo2S1u6KG9JIvviHHNGr
+S9d9w10Y+YHFX8+PcPh+wqWXfwPb8bVyFTKrFhZEoBuZ0I7W9CBYO+XVd5FYW/F6
+q8is2cw/yOnyyOsoAyDdiQaa2f1VuBnxEDvn575aPxzyo9TkRbQcOKLaVB9QLnNu
+mflnep/Y+WXlqxR4p5Brr9flolMZxfmM9YcPDw9hS1gmXWptb95+NwngIdP7WmP7
+YRRFnhKHt8SzBjTuksMGf6LgW0x0hrRo0F19Vs7jRsp82C7ltU6vKpjhxT2XQ3wM
+BcQU9qJrRbvzN4tn7nkn
+=k9cq
+-----END PGP SIGNATURE-----
 
-If I do:
-
-aplay -L | grep sysdefault
-
-I get:
-
-sysdefault:CARD=PCH
-
-where PCH is card number 1 (id = 1)
-
-on most of my systems (non haswell laptops) the default card is number 0
-
-If I run
-
-aplay -D sysdefault
-
-I get:
-
-ALSA lib pcm_dmix.c:1018:(snd_pcm_dmix_open) unable to open slave
-aplay: main:682: audio open error: No such file or directory
-
-if I strace it I get:
-
-open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK|O_CLOEXEC) = -1 ENOENT (No
-such file or directory)
-
-If I run:
-
-aplay -D hw:PCH,0
-
-all works fine...
-
-Any idea why hw:PCH,0 works and sysdefault does not?
-
-I guess there could be a problem in the mapping of devices in hw systems?
-
-Has anybody else observed a similar issue? Or has this been a problem in
-the past already fixed upstream?
-If so, where was it fixed (kernel, lib, tools, utils, etc.) ?
-
-Thanks for all your help on this.
-
-In case this is a real problem I am willing to help debugging it and
-submit patches.
-
-Stefano
+--e7MbhXUj+2isZwqc--
