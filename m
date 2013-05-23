@@ -1,93 +1,95 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH: TinyCompress 2/2] cplay: use get_alsa_rate to
-	convert sample rate
-Date: Thu, 23 May 2013 13:42:47 +0530
-Message-ID: <1369296767-30136-2-git-send-email-vinod.koul@intel.com>
-References: <1369296767-30136-1-git-send-email-vinod.koul@intel.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 4/4 V2] ALSA: hda - Continue probe in work
+ context to avoid request_module deadlock
+Date: Thu, 23 May 2013 10:19:27 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901181688C@SHSMSX104.ccr.corp.intel.com>
+References: <1369273867-2067-1-git-send-email-xingchao.wang@linux.intel.com>
+	<s5hip2a8a33.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 920A3261ACD
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 10:49:31 +0200 (CEST)
-In-Reply-To: <1369296767-30136-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <s5hip2a8a33.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Li,
+	Jocelyn" <jocelyn.li@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "david.henningsson@canonical.com" <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- cplay.c |   48 +++++-------------------------------------------
- 1 files changed, 5 insertions(+), 43 deletions(-)
+Hi Takashi,
 
-diff --git a/cplay.c b/cplay.c
-index 673026e..10c5424 100644
---- a/cplay.c
-+++ b/cplay.c
-@@ -226,49 +226,11 @@ void play_samples(char *name, unsigned int card, unsigned int device,
- 	codec.id = SND_AUDIOCODEC_MP3;
- 	codec.ch_in = channels;
- 	codec.ch_out = channels;
--	switch (rate) {
--	case 5512:
--		codec.sample_rate = SNDRV_PCM_RATE_5512;
--		break;
--	case 8000:
--		codec.sample_rate = SNDRV_PCM_RATE_8000;
--		break;
--	case 11025:
--		codec.sample_rate = SNDRV_PCM_RATE_11025;
--		break;
--	case 16000:
--		codec.sample_rate = SNDRV_PCM_RATE_16000;
--		break;
--	case 220500:
--		codec.sample_rate = SNDRV_PCM_RATE_22050;
--		break;
--	case 32000:
--		codec.sample_rate = SNDRV_PCM_RATE_32000;
--		break;
--	case 44100:
--		codec.sample_rate = SNDRV_PCM_RATE_44100;
--		break;
--	case 48000:
--		codec.sample_rate = SNDRV_PCM_RATE_48000;
--		break;
--	case 64000:
--		codec.sample_rate = SNDRV_PCM_RATE_64000;
--		break;
--	case 88200:
--		codec.sample_rate = SNDRV_PCM_RATE_88200;
--		break;
--	case 96000:
--		codec.sample_rate = SNDRV_PCM_RATE_96000;
--		break;
--	case 176400:
--		codec.sample_rate = SNDRV_PCM_RATE_176400;
--		break;
--	case 192000:
--		codec.sample_rate = SNDRV_PCM_RATE_192000;
--		break;
--	default:
--		fprintf(stderr, "unknown sample rate %d\n", rate);
--		goto FILE_EXIT;
-+	codec.sample_rate = compress_get_alsa_rate(rate);
-+	if (!codec.sample_rate) {
-+		fprintf(stderr, "invalid sample rate %d\n", rate);
-+		fclose(file);
-+		exit(EXIT_FAILURE);
- 	}
- 	codec.bit_rate = bits;
- 	codec.rate_control = 0;
--- 
-1.7.0.4
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, May 23, 2013 2:49 PM
+> To: Wang Xingchao
+> Cc: alsa-devel@alsa-project.org; intel-gfx@lists.freedesktop.org;
+> david.henningsson@canonical.com; Girdwood, Liam R; Li, Jocelyn; Wang,
+> Xingchao; Lin, Mengdong
+> Subject: Re: [PATCH 4/4 V2] ALSA: hda - Continue probe in work context to avoid
+> request_module deadlock
+> 
+> At Thu, 23 May 2013 09:51:07 +0800,
+> Wang Xingchao wrote:
+> >
+> > There's deadlock when request_module(i915) in azx_probe.
+> > It looks like:
+> > device_lock(audio pci device) -> azx_probe -> module_request (or
+> > symbol_request) -> modprobe (userspace) -> i915 init -> drm_pci_init
+> > -> pci_register_driver -> bus_add_driver -> driver_attach -> which in
+> > turn tries all locks on pci bus, and when it tries the one on the
+> > audio device, it will deadlock.
+> >
+> > This patch introduce a work to store remaining probe stuff, and let
+> > request_module run in safe work context.
+> >
+> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> > ---
+> >  sound/pci/hda/hda_i915.c  |  13 ++++--  sound/pci/hda/hda_intel.c |
+> > 105 +++++++++++++++++++++++++++-------------------
+> >  2 files changed, 71 insertions(+), 47 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c index
+> > 76c13d5..7547b20 100644
+> > --- a/sound/pci/hda/hda_i915.c
+> > +++ b/sound/pci/hda/hda_i915.c
+> > @@ -42,13 +42,18 @@ int hda_i915_init(void)  {
+> >  	int err = 0;
+> >
+> > -	get_power = symbol_request(i915_request_power_well);
+> > +	get_power = symbol_get(i915_request_power_well);
+> >  	if (!get_power) {
+> > -		snd_printk(KERN_WARNING "hda-i915: get_power symbol get
+> fail\n");
+> > -		return -ENODEV;
+> > +		request_module("i915");
+> > +		get_power = symbol_get(i915_request_power_well);
+> > +		if (!get_power) {
+> > +			snd_printk(KERN_WARNING "hda-i915: get_power symbol get
+> fail\n");
+> > +			return -ENODEV;
+> > +		}
+> > +		snd_printdd("hda-i915: get_power symbol get successful\n");
+> 
+> Why do you need this change?
+> 
+
+symbol_request() should be the better API in such case but in my test it doesnot really load i915 module, that's why
+I call request_module(i915) directly here.
+
+Please note there's parameter difference:
+request_module("i915")
+symbol_request(i915_reauest_power_well)-->request_module("symbol:i915_request_power_well")
+
+I donot know why the second one did not really load the module.
+
+Thanks
+--xingchao
