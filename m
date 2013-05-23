@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] cs42l52: microphone bias is controlled
- by IFACE_CTL2 register.
-Date: Thu, 23 May 2013 08:58:18 -0500
-Message-ID: <20130523135818.GA2412@sirena.org.uk>
+Subject: Re: [PATCH 1/4] cs42l52: use same init values for
+ MASTERA_VOL/MASTERB_VOL.
+Date: Thu, 23 May 2013 08:58:54 -0500
+Message-ID: <20130523135854.GB2412@sirena.org.uk>
 References: <1369243167-28700-1-git-send-email-nschichan@freebox.fr>
- <1369243167-28700-3-git-send-email-nschichan@freebox.fr>
- <20130522183850.GX1627@sirena.org.uk> <519E128C.1020509@freebox.fr>
+ <1369243167-28700-2-git-send-email-nschichan@freebox.fr>
+ <20130522183425.GW1627@sirena.org.uk> <519E16E4.1030604@freebox.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1927088277650789155=="
+Content-Type: multipart/mixed; boundary="===============5424543181807256816=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A96DC2625EE
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 15:58:23 +0200 (CEST)
-In-Reply-To: <519E128C.1020509@freebox.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CF08264F3A
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 15:59:06 +0200 (CEST)
+In-Reply-To: <519E16E4.1030604@freebox.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +27,54 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Brian Austin <bri
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1927088277650789155==
+--===============5424543181807256816==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
+	protocol="application/pgp-signature"; boundary="kXdP64Ggrk/fb43R"
 Content-Disposition: inline
 
 
---u3/rZRmxL6MmkK24
+--kXdP64Ggrk/fb43R
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 23, 2013 at 02:58:52PM +0200, Nicolas Schichan wrote:
+On Thu, May 23, 2013 at 03:17:24PM +0200, Nicolas Schichan wrote:
 
-> I Cc'ed only the maintainers reported by get_maintainers.pl (you are
-> reported as 'supporter'), but I'll note to Cc you next time, sorry
-> about that.
+> I was not aware of that, The solution would be then to fix
+> MASTERB_VOL default value to 0x00 instead to 0x88. Shall I just send
+> an updated version of the patch or the whole serie ?
 
-A supporter is a maintianer who is employed.
+Don't resend anything that's already been applied, just send things that
+are still being worked on.
 
---u3/rZRmxL6MmkK24
+--kXdP64Ggrk/fb43R
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRniBxAAoJELSic+t+oim9Ip8P/iURMHyo13vq8jMSh6ZcuE6g
-LytaTwBq18eDQILymsupgcY7r3QNJB0T594e6oTQcirzfrHEAr12fFSx9dYqdguY
-vuZmQ9PyblIEEBNXChyqRQO42dM5t1GPFWojm2NXPLlh67QGd5TwK3jNCzbvv9yt
-xJOKu8UPZS4Xh4iTY/z5aAjdZLwVEDfoYm2e2TKW2GHH/8FIVmj5sqhLkSlLlAbZ
-LwzEyd77gKV2OVBWgCMq4/uKXYScMDOGPWiOPOMqD7CWlu3elqPOofIetx0FpaJb
-+4zS3hURsHGxUPFXkcw1vYJDRuTpkH3+RtgP+Lbqs1FoPc3hCy6rp6cH3AqHwFwH
-+E7HsrbpBK6ikmSc4nuE9pm4sRmDM7kMZlPhU87fCxTmySjkXRPGt5HhpOKnSkks
-vYUxCTT41A7MrqF/o42gnk/x0ktXhbkNowch2xxNNpRX2MCroibOhQOl1XVlYLge
-/WfJjirIUTuS8x40oTkF6Z0gH1nqgABq/zfNJyZI+LQDr2PdwjhWN58YFmsqFVZE
-yah7dRAKOPBDvuTQ1Ccn4Y6eMsV4gEtYbb5Qave8HCrUHhHmnqJdO4RDC/LBUau2
-E3cfBAzlA+KKVyjtc1Fha3DViA2f1/tksdAIAn+M6WFLPXr1BobYZtksbSy8VRXg
-SYid/Bxtd5UZz0cwRB/D
-=wdqj
+iQIcBAEBAgAGBQJRniCbAAoJELSic+t+oim9Ck8P/0efgUQhZrKhNcice+SZmdWi
+VnD0s3FQN1nog30h+avvszSD8TPtJtFpDW04PNfGBkYj8ZT8CiGG6M6BZfYEn9nE
+gl0QgCzVSms0d7O69k5SpgB8+6rlrEIMX5y1FGYGfezqpTgxEGkb5boKFAdlDbKl
+2qYqwfysFZ3rWW55CsQCOoyqg/rKqgifqY8UKaZCnm9/oPpppkMRkQdrNI0Vkicx
+SoofNkUM0fhA6SQIut1NmR2/xvxguLX5ydcKGOFMhDzxIuG+Op1RuaOsaW1U8SrF
+3syzJtFehJWKxRJbn+TwOUAsH0ewcj3EpQSPOLuzE89kNKV3bDfpN2jJN0aSWJCz
+wWqQ8q1sP6RZZ68yOkk+00QLydeZ64MLYBvcfqfgzlJpW10qlhQxD4D/vJvPLNMd
+nMfs0pBIso3e7vlHDi6y6zGO37MijZSvyLYiECqA0MY7RNGR2x/KD/77BKg6PpEm
+HWOtrQVPKNKTZhUAdYP6xrUzqs67jqEdoDcrbGcZAB/k4rOdNEsg5uNfdqsboZVa
+JdyZagQypZS8mgHQd4ClHj8Vi9oQlfppc94BvpLHWWNKNrOwnenR8dLZGy/vCRBG
+aouy5MhaKUmfhIWk5YfbkWQcF9UaxSsqo31pEhwh7jdKg3CsQJJUOFOwnzaZ9Sh9
+Vov1kNWHppa3Wo5Vhuls
+=Fk3v
 -----END PGP SIGNATURE-----
 
---u3/rZRmxL6MmkK24--
+--kXdP64Ggrk/fb43R--
 
---===============1927088277650789155==
+--===============5424543181807256816==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1927088277650789155==--
+--===============5424543181807256816==--
