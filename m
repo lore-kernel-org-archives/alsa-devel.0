@@ -1,73 +1,78 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 0/6] Convert JZ4740 to dmaengine
-Date: Thu, 23 May 2013 22:36:21 +0200
-Message-ID: <1369341387-19147-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-103.synserver.de (smtp-out-103.synserver.de
- [212.40.185.103])
- by alsa0.perex.cz (Postfix) with ESMTP id 63C2A265066
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 22:34:06 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 2/6] MIPS: jz4740: Acquire and enable DMA controller clock
+Date: Thu, 23 May 2013 22:36:23 +0200
+Message-ID: <1369341387-19147-3-git-send-email-lars@metafoo.de>
+References: <1369341387-19147-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1369341387-19147-1-git-send-email-lars@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Ralf Baechle <ralf@linux-mips.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+Cc: Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Maarten ter Huurne <maarten@treewalker.org>
 
-This series replaces the custom JZ4740 DMA API with a dmaengine driver. This is
-done in 3 steps:
-	1) Add a dmaengine driver which wraps the custom JZ4740 DMA API
-	2) Update all users of the JZ4740 DMA API to use dmaengine instead
-	3) Remove the custom API and move all direct hardware access to the
-	   dmaengine driver.
+Previously, it was assumed that the DMA controller clock is not gated
+when the kernel starts running. While that is the power-on state, it is
+safer to not rely on that.
 
-The first two patches in the series also make sure that the clock of the DMA
-core is enabled.
+Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ arch/mips/jz4740/dma.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-Since the patches in this series depend on each other I'd prefer if they could
-all go through the DMA tree.
-
-- Lars
-
-Lars-Peter Clausen (4):
-  dma: Add a jz4740 dmaengine driver
-  MIPS: jz4740: Register jz4740 DMA device
-  ASoC: jz4740: Use the generic dmaengine PCM driver
-  MIPS: jz4740: Remove custom DMA API
-
-Maarten ter Huurne (2):
-  MIPS: jz4740: Correct clock gate bit for DMA controller
-  MIPS: jz4740: Acquire and enable DMA controller clock
-
- arch/mips/include/asm/mach-jz4740/dma.h      |  56 ---
- arch/mips/include/asm/mach-jz4740/platform.h |   1 +
- arch/mips/jz4740/Makefile                    |   2 +-
- arch/mips/jz4740/board-qi_lb60.c             |   1 +
- arch/mips/jz4740/clock.c                     |   2 +-
- arch/mips/jz4740/dma.c                       | 287 -------------
- arch/mips/jz4740/platform.c                  |  21 +
- drivers/dma/Kconfig                          |   6 +
- drivers/dma/Makefile                         |   1 +
- drivers/dma/dma-jz4740.c                     | 616 +++++++++++++++++++++++++++
- sound/soc/jz4740/Kconfig                     |   1 +
- sound/soc/jz4740/jz4740-i2s.c                |  48 +--
- sound/soc/jz4740/jz4740-pcm.c                | 310 +-------------
- sound/soc/jz4740/jz4740-pcm.h                |  20 -
- 14 files changed, 675 insertions(+), 697 deletions(-)
- delete mode 100644 arch/mips/jz4740/dma.c
- create mode 100644 drivers/dma/dma-jz4740.c
- delete mode 100644 sound/soc/jz4740/jz4740-pcm.h
-
+diff --git a/arch/mips/jz4740/dma.c b/arch/mips/jz4740/dma.c
+index 317ec6f..0e34b97 100644
+--- a/arch/mips/jz4740/dma.c
++++ b/arch/mips/jz4740/dma.c
+@@ -16,6 +16,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/spinlock.h>
++#include <linux/clk.h>
+ #include <linux/interrupt.h>
+ 
+ #include <linux/dma-mapping.h>
+@@ -268,6 +269,7 @@ static irqreturn_t jz4740_dma_irq(int irq, void *dev_id)
+ 
+ static int jz4740_dma_init(void)
+ {
++	struct clk *clk;
+ 	unsigned int ret;
+ 
+ 	jz4740_dma_base = ioremap(JZ4740_DMAC_BASE_ADDR, 0x400);
+@@ -277,11 +279,29 @@ static int jz4740_dma_init(void)
+ 
+ 	spin_lock_init(&jz4740_dma_lock);
+ 
+-	ret = request_irq(JZ4740_IRQ_DMAC, jz4740_dma_irq, 0, "DMA", NULL);
++	clk = clk_get(NULL, "dma");
++	if (IS_ERR(clk)) {
++		ret = PTR_ERR(clk);
++		printk(KERN_ERR "JZ4740 DMA: Failed to request clock: %d\n",
++				ret);
++		goto err_iounmap;
++	}
+ 
+-	if (ret)
++	ret = request_irq(JZ4740_IRQ_DMAC, jz4740_dma_irq, 0, "DMA", NULL);
++	if (ret) {
+ 		printk(KERN_ERR "JZ4740 DMA: Failed to request irq: %d\n", ret);
++		goto err_clkput;
++	}
++
++	clk_prepare_enable(clk);
++
++	return 0;
++
++err_clkput:
++	clk_put(clk);
+ 
++err_iounmap:
++	iounmap(jz4740_dma_base);
+ 	return ret;
+ }
+ arch_initcall(jz4740_dma_init);
 -- 
 1.8.2.1
