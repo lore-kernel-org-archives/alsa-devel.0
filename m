@@ -1,14 +1,15 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: [PATCH] usb-6fire: Modify firmware version check
-Date: Thu, 23 May 2013 13:38:29 +0200
-Message-ID: <20130523133829.71e40688a43163bec22d17b9@zoho.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2] ASoC: codecs: adau1701: refactor firmware
+	loading function
+Date: Thu, 23 May 2013 13:58:00 +0200
+Message-ID: <1369310281-4323-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
- by alsa0.perex.cz (Postfix) with ESMTP id 86735261736
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 13:38:35 +0200 (CEST)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CC4F260729
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 13:57:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,37 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, clemens <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Check only the uppermost 16 bits instead of the whole 32 bits of
-the version information. Do this because all firmware version tested
-with this version information worked correctly and the strict check
-causes problems for several users.
+Pass a struct i2c_client * to adau1701_load_firmware directly to make
+the code more readable.
 
-Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/adau1701.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff -Nur a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
---- a/sound/usb/6fire/firmware.c	2013-05-23 13:32:39.432545897 +0200
-+++ b/sound/usb/6fire/firmware.c	2013-05-23 13:33:21.998193012 +0200
-@@ -42,8 +42,8 @@
- 	0x94, 0x01, 0x5c, 0x02  /* alt 3: 404 EP2 and 604 EP6 (25 fpp) */
- };
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index dafdbe8..95e1677 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -180,9 +180,9 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
+ 	return value;
+ }
  
--static const u8 known_fw_versions[][4] = {
--	{ 0x03, 0x01, 0x0b, 0x00 }
-+static const u8 known_fw_versions[][2] = {
-+	{ 0x03, 0x01 }
- };
+-static int adau1701_load_firmware(struct snd_soc_codec *codec)
++static int adau1701_load_firmware(struct i2c_client *client)
+ {
+-	return process_sigma_firmware(codec->control_data, ADAU1701_FIRMWARE);
++	return process_sigma_firmware(client, ADAU1701_FIRMWARE);
+ }
  
- struct ihex_record {
-@@ -343,7 +343,7 @@
- 	int i;
+ static int adau1701_set_capture_pcm_format(struct snd_soc_codec *codec,
+@@ -455,10 +455,11 @@ static struct snd_soc_dai_driver adau1701_dai = {
+ static int adau1701_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
++	struct i2c_client *client = to_i2c_client(codec->dev);
  
- 	for (i = 0; i < ARRAY_SIZE(known_fw_versions); i++)
--		if (!memcmp(version, known_fw_versions + i, 4))
-+		if (!memcmp(version, known_fw_versions + i, 2))
- 			return 0;
+-	codec->control_data = to_i2c_client(codec->dev);
++	codec->control_data = client;
  
- 	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %*ph. "
+-	ret = adau1701_load_firmware(codec);
++	ret = adau1701_load_firmware(client);
+ 	if (ret)
+ 		dev_warn(codec->dev, "Failed to load firmware\n");
+ 
+-- 
+1.8.1.4
