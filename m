@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: codecs: adau1701: refactor
- firmware loading function
-Date: Thu, 23 May 2013 09:00:26 -0500
-Message-ID: <20130523140026.GC2412@sirena.org.uk>
-References: <1369310281-4323-1-git-send-email-zonque@gmail.com>
+From: Nicolas Schichan <nschichan@freebox.fr>
+Subject: [PATCH] ASoC: cs42l52: fix default value for
+	MASTERA_VOL.
+Date: Thu, 23 May 2013 16:53:02 +0200
+Message-ID: <1369320782-2371-1-git-send-email-nschichan@freebox.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6560311004045923809=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E6612264F3A
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 16:00:29 +0200 (CEST)
-In-Reply-To: <1369310281-4323-1-git-send-email-zonque@gmail.com>
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA09E262632
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 16:53:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolas Schichan <nschichan@freebox.fr>
 List-Id: alsa-devel@alsa-project.org
 
+The default register value for MASTERA_VOL is 0x00, the same as
+MASTERB_VOL.
 
---===============6560311004045923809==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8X7/QrJGcKSMr1RN"
-Content-Disposition: inline
+Signed-off-by: Nicolas Schichan <nschichan@freebox.fr>
+---
+ sound/soc/codecs/cs42l52.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---8X7/QrJGcKSMr1RN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 23, 2013 at 01:58:00PM +0200, Daniel Mack wrote:
-> Pass a struct i2c_client * to adau1701_load_firmware directly to make
-> the code more readable.
-
-Applied, thanks.
-
---8X7/QrJGcKSMr1RN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRniD2AAoJELSic+t+oim9lTQP/iuWMQGHprXT8qHu+uZug0yZ
-C+C7SuP/LHVIUgNuCbAnrSM/MAcKf2iJzXHKgQhzV860rqbWerjSurA0gH9NWI0b
-iuvB+yBkkTJNPgmcAgMN0EtVqe1yWVB673OswfX35i8tpPrimhdDFC6CbsbOB+Vd
-yi6qReV+/Hrwist4L7rDb2PxoodIsBQaY2AF21TRTCrpJqW5mhaaVEOvAy4AuikW
-NjsGApeCK3iK7EoDWDEyTnHxuJ6Ko1rFh4m51cebcGA9+pqnQXid7CXCpoHYjE7K
-5mPPyHLfVHpMa9zF1IY1qnwu0zEUkEtpllEVF7tjSVfnQrG0UShHkTh3NvX0qTYj
-/Xy6z3jHH3jYoOo31lcXsrE9B+J+6yvFQ+I8f1IFJv20uOPWPcoBA95zcTD/FYKZ
-tN1GV+QstakRByH8i30Sly4Sv0Z0ZC5bbiqTuCPS64owDsgRHo2clIVlBS+2JCdJ
-LYhHqMdKpSahi/VGtEUxKigSm9kY1cIi2msisGhYgCX1luh+WI6Jpuh8uklKattm
-AN83tWDo3JhAmLFzDAOkfASt/Hs4xci0rRAuIic2RD83IlRi1BPL0fP9vcW3RjkB
-6jwVouNTtYhl5LB1E3Vn4VRSktqdosTmTt3mlr8do9lVxruCk5yIHNUBxMBmYhnU
-cZ6pCLxRvPgY0ECAgpdO
-=JfQW
------END PGP SIGNATURE-----
-
---8X7/QrJGcKSMr1RN--
-
---===============6560311004045923809==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6560311004045923809==--
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 8465c1fa..030f53c 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -86,7 +86,7 @@ static const struct reg_default cs42l52_reg_defaults[] = {
+ 	{ CS42L52_BEEP_VOL, 0x00 },	/* r1D Beep Volume off Time */
+ 	{ CS42L52_BEEP_TONE_CTL, 0x00 },	/* r1E Beep Tone Cfg. */
+ 	{ CS42L52_TONE_CTL, 0x00 },	/* r1F Tone Ctl */
+-	{ CS42L52_MASTERA_VOL, 0x88 },	/* r20 Master A Volume */
++	{ CS42L52_MASTERA_VOL, 0x00 },	/* r20 Master A Volume */
+ 	{ CS42L52_MASTERB_VOL, 0x00 },	/* r21 Master B Volume */
+ 	{ CS42L52_HPA_VOL, 0x00 },	/* r22 Headphone A Volume */
+ 	{ CS42L52_HPB_VOL, 0x00 },	/* r23 Headphone B Volume */
+-- 
+1.7.10.4
