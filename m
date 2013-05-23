@@ -1,18 +1,14 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH] ASoC: fsl: expand the size of the name in
- fsl_ssi_private struct
-Date: Thu, 23 May 2013 06:19:53 -0500
-Message-ID: <519DFB59.6090004@tabi.org>
-References: <1369299072-25147-1-git-send-email-b42378@freescale.com>
- <AE90C24D6B3A694183C094C60CF0A2F6026B7248@saturn3.aculab.com>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: [PATCH] usb-6fire: Modify firmware version check
+Date: Thu, 23 May 2013 13:38:29 +0200
+Message-ID: <20130523133829.71e40688a43163bec22d17b9@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
- [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 6248A2625EE
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 13:19:56 +0200 (CEST)
-In-Reply-To: <AE90C24D6B3A694183C094C60CF0A2F6026B7248@saturn3.aculab.com>
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86735261736
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 13:38:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Laight <David.Laight@ACULAB.COM>, Nicolin Chen <b42378@freescale.com>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, clemens <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-David Laight wrote:
->> strcpy(ssi_private->name, p) in probe() sets "name" by "p", gotten from dts,
->> >while the length of "p", if the devicetree node name of SSI is commonly set,
->> >would always be larger than 1 char size, so need a larger size for "name".
-> Are you sure this isn't allowed for when the structure is allocated?
-> Otherwise you also need to use strlcpy() as well.
+Check only the uppermost 16 bits instead of the whole 32 bits of
+the version information. Do this because all firmware version tested
+with this version information worked correctly and the strict check
+causes problems for several users.
 
-Yes, this is already handled properly:
+Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
 
-p = strrchr(np->full_name, '/') + 1;
-ssi_private = kzalloc(sizeof(struct fsl_ssi_private) + strlen(p),
-                       GFP_KERNEL);
-
-Nicolin's patch is wrong.  Do not apply it.
-
--- 
-Timur Tabi
+diff -Nur a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+--- a/sound/usb/6fire/firmware.c	2013-05-23 13:32:39.432545897 +0200
++++ b/sound/usb/6fire/firmware.c	2013-05-23 13:33:21.998193012 +0200
+@@ -42,8 +42,8 @@
+ 	0x94, 0x01, 0x5c, 0x02  /* alt 3: 404 EP2 and 604 EP6 (25 fpp) */
+ };
+ 
+-static const u8 known_fw_versions[][4] = {
+-	{ 0x03, 0x01, 0x0b, 0x00 }
++static const u8 known_fw_versions[][2] = {
++	{ 0x03, 0x01 }
+ };
+ 
+ struct ihex_record {
+@@ -343,7 +343,7 @@
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(known_fw_versions); i++)
+-		if (!memcmp(version, known_fw_versions + i, 4))
++		if (!memcmp(version, known_fw_versions + i, 2))
+ 			return 0;
+ 
+ 	snd_printk(KERN_ERR PREFIX "invalid fimware version in device: %*ph. "
