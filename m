@@ -1,14 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5110: Correct DSP4R Mixer control name
-Date: Fri, 24 May 2013 11:40:43 +0100
-Message-ID: <1369392043-28932-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: =?UTF-8?q?Juho=20H=C3=A4m=C3=A4l=C3=A4inen?= <juho.hamalainen@tieto.com>
+Subject: [PATCH] ucm: Fix segfault when device argument is
+	missing from _sw{dev, mod}
+Date: Fri, 24 May 2013 14:01:25 +0300
+Message-ID: <1369393285-25963-1-git-send-email-juho.hamalainen@tieto.com>
+References: <s5hobc0tzx2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55EC62650C4
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 12:51:21 +0200 (CEST)
+Received: from ebb05.tieto.com (ebb05.tieto.com [131.207.168.36])
+ by alsa0.perex.cz (Postfix) with ESMTP id 109592650B9
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 13:01:38 +0200 (CEST)
+In-Reply-To: <s5hobc0tzx2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,27 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index c00480b..ba38f06 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -190,7 +190,7 @@ ARIZONA_MIXER_CONTROLS("DSP2R", ARIZONA_DSP2RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP3L", ARIZONA_DSP3LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP3R", ARIZONA_DSP3RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP4L", ARIZONA_DSP4LMIX_INPUT_1_SOURCE),
--ARIZONA_MIXER_CONTROLS("DSP5R", ARIZONA_DSP4RMIX_INPUT_1_SOURCE),
-+ARIZONA_MIXER_CONTROLS("DSP4R", ARIZONA_DSP4RMIX_INPUT_1_SOURCE),
- 
- ARIZONA_MIXER_CONTROLS("Mic", ARIZONA_MICMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("Noise", ARIZONA_NOISEMIX_INPUT_1_SOURCE),
--- 
-1.7.2.5
+U2lnbmVkLW9mZi1ieTogSnVobyBIw6Rtw6Rsw6RpbmVuIDxqdWhvLmhhbWFsYWluZW5AdGlldG8u
+Y29tPgotLS0KIHNyYy91Y20vbWFpbi5jIHwgICAgMyArKy0KIDEgZmlsZSBjaGFuZ2VkLCAyIGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zcmMvdWNtL21haW4uYyBi
+L3NyYy91Y20vbWFpbi5jCmluZGV4IGQzOGI3ZmEuLjA0OTQ3MjggMTAwNjQ0Ci0tLSBhL3NyYy91
+Y20vbWFpbi5jCisrKyBiL3NyYy91Y20vbWFpbi5jCkBAIC0xNjQ3LDcgKzE2NDcsOCBAQCBpbnQg
+c25kX3VzZV9jYXNlX3NldChzbmRfdXNlX2Nhc2VfbWdyX3QgKnVjX21nciwKICAgICAgICAgICAg
+ICAgICAJCWdvdG8gX19lbmQ7CiAgICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAg
+ICAgICAgfSBlbHNlIHsKLSAgICAgICAgICAgICAgICAgICAgICAgIHN0ciA9IE5VTEw7CisgICAg
+ICAgICAgICAgICAgICAgICAgICBlcnIgPSAtRUlOVkFMOworICAgICAgICAgICAgICAgICAgICAg
+ICAgZ290byBfX2VuZDsKICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgaWYgKGNo
+ZWNrX2lkZW50aWZpZXIoaWRlbnRpZmllciwgIl9zd2RldiIpKQogICAgICAgICAgICAgICAgICAg
+ICAgICAgZXJyID0gc3dpdGNoX2RldmljZSh1Y19tZ3IsIHN0ciwgdmFsdWUpOwotLSAKMS43LjEw
+LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
