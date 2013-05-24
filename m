@@ -1,18 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: Fix the default suffix string with
-	high card number
-Date: Fri, 24 May 2013 16:46:43 +0200
-Message-ID: <1369406804-29914-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: Add kconfig to specify the max card
+	numbers
+Date: Fri, 24 May 2013 16:46:44 +0200
+Message-ID: <1369406804-29914-2-git-send-email-tiwai@suse.de>
+References: <1369406804-29914-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 50FA32651A9
+ by alsa0.perex.cz (Postfix) with ESMTP id 50AED26518B
  for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 16:46:24 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1FB74A67C5
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1FD53A67E8
  for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 16:46:24 +0200 (CEST)
+In-Reply-To: <1369406804-29914-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +27,145 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA core tries to add a suffix as "_1" automatically when the given
-id string conflicts.  The current code assumes implicitly that the max
-card number is 16 so that the single hex "_X" suffix can be put.
-However, with the dynamic device management, the card can be at most
-32, so it can put even a non-hex character there.  Also, when the max
-card number is increased in future, this would result in worse.
+Currently ALSA supports up to 32 card instances when the dynamic minor
+is used.  While 32 cards are usually big enough for normal use cases,
+there are sometimes weird requirements with more card support.
 
-This patch rewrites the code to add the suffix string in a simpler
-(thus cleaner) way.  It can support up to three digits, so it should
-suffice for most requirements.
+Actually, this limitation, 32, comes from the index option, where you
+can pass the bit mask to assign the card.  Other than that, we can
+actually give more cards up to the minor number limits (currently 256,
+which can be extended more, too).
+
+This patch adds a new Kconfig to specify the max card numbers, and
+changes a few places to accept more than 32 cards.
+
+The only incompatibility with high card numbers would be the handling
+of index option.  The index option can be still used to pass the
+bitmask for card assignments, but this works only up to 32 slots.
+More than 32, no bitmask style option is available but only a single
+slot can be specified via index option.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/init.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ include/sound/core.h |  2 +-
+ sound/core/Kconfig   |  9 +++++++++
+ sound/core/init.c    | 25 ++++++++++++++++---------
+ 3 files changed, 26 insertions(+), 10 deletions(-)
 
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 5bfe513..c586617 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -30,7 +30,7 @@
+ 
+ /* number of supported soundcards */
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+-#define SNDRV_CARDS 32
++#define SNDRV_CARDS CONFIG_SND_MAX_CARDS
+ #else
+ #define SNDRV_CARDS 8		/* don't change - minor numbers */
+ #endif
+diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+index b413ed0..c0c2f57 100644
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -157,6 +157,15 @@ config SND_DYNAMIC_MINORS
+ 
+ 	  If you are unsure about this, say N here.
+ 
++config SND_MAX_CARDS
++	int "Max number of sound cards"
++	range 4 256
++	default 32
++	depends on SND_DYNAMIC_MINORS
++	help
++	  Specify the max number of sound cards that can be assigned
++	  on a single machine.
++
+ config SND_SUPPORT_OLD_API
+ 	bool "Support old ALSA API"
+ 	default y
 diff --git a/sound/core/init.c b/sound/core/init.c
-index 6ef0640..ed4a481 100644
+index ed4a481..6b90871 100644
 --- a/sound/core/init.c
 +++ b/sound/core/init.c
-@@ -549,7 +549,6 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
- 				    const char *nid)
- {
- 	int len, loops;
--	bool with_suffix;
- 	bool is_default = false;
- 	char *id;
+@@ -46,7 +46,8 @@ static LIST_HEAD(shutdown_files);
+ 
+ static const struct file_operations snd_shutdown_f_ops;
+ 
+-static unsigned int snd_cards_lock;	/* locked for registering/using */
++/* locked for registering/using */
++static DECLARE_BITMAP(snd_cards_lock, SNDRV_CARDS);
+ struct snd_card *snd_cards[SNDRV_CARDS];
+ EXPORT_SYMBOL(snd_cards);
+ 
+@@ -167,29 +168,35 @@ int snd_card_create(int idx, const char *xid,
+ 	err = 0;
+ 	mutex_lock(&snd_card_mutex);
+ 	if (idx < 0) {
+-		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
++		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
+ 			/* idx == -1 == 0xffff means: take any free slot */
+-			if (~snd_cards_lock & idx & 1<<idx2) {
++			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
++				continue;
++			if (!test_bit(idx2, snd_cards_lock)) {
+ 				if (module_slot_match(module, idx2)) {
+ 					idx = idx2;
+ 					break;
+ 				}
+ 			}
++		}
+ 	}
+ 	if (idx < 0) {
+-		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
++		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
+ 			/* idx == -1 == 0xffff means: take any free slot */
+-			if (~snd_cards_lock & idx & 1<<idx2) {
++			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
++				continue;
++			if (!test_bit(idx2, snd_cards_lock)) {
+ 				if (!slots[idx2] || !*slots[idx2]) {
+ 					idx = idx2;
+ 					break;
+ 				}
+ 			}
++		}
+ 	}
+ 	if (idx < 0)
+ 		err = -ENODEV;
+ 	else if (idx < snd_ecards_limit) {
+-		if (snd_cards_lock & (1 << idx))
++		if (test_bit(idx, snd_cards_lock))
+ 			err = -EBUSY;	/* invalid */
+ 	} else if (idx >= SNDRV_CARDS)
+ 		err = -ENODEV;
+@@ -199,7 +206,7 @@ int snd_card_create(int idx, const char *xid,
+ 			 idx, snd_ecards_limit - 1, err);
+ 		goto __error;
+ 	}
+-	snd_cards_lock |= 1 << idx;		/* lock it */
++	set_bit(idx, snd_cards_lock);		/* lock it */
+ 	if (idx >= snd_ecards_limit)
+ 		snd_ecards_limit = idx + 1; /* increase the limit */
+ 	mutex_unlock(&snd_card_mutex);
+@@ -249,7 +256,7 @@ int snd_card_locked(int card)
+ 	int locked;
+ 
+ 	mutex_lock(&snd_card_mutex);
+-	locked = snd_cards_lock & (1 << card);
++	locked = test_bit(card, snd_cards_lock);
+ 	mutex_unlock(&snd_card_mutex);
+ 	return locked;
+ }
+@@ -361,7 +368,7 @@ int snd_card_disconnect(struct snd_card *card)
+ 	/* phase 1: disable fops (user space) operations for ALSA API */
+ 	mutex_lock(&snd_card_mutex);
+ 	snd_cards[card->number] = NULL;
+-	snd_cards_lock &= ~(1 << card->number);
++	clear_bit(card->number, snd_cards_lock);
+ 	mutex_unlock(&snd_card_mutex);
  	
-@@ -565,26 +564,23 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
- 		is_default = true;
- 	}
- 
--	with_suffix = false;
-+	len = strlen(id);
- 	for (loops = 0; loops < SNDRV_CARDS; loops++) {
-+		char *spos;
-+		char sfxstr[5]; /* "_012" */
-+		int sfxlen;
-+
- 		if (card_id_ok(card, id))
- 			return; /* OK */
- 
--		len = strlen(id);
--		if (!with_suffix) {
--			/* add the "_X" suffix */
--			char *spos = id + len;
--			if (len >  sizeof(card->id) - 3)
--				spos = id + sizeof(card->id) - 3;
--			strcpy(spos, "_1");
--			with_suffix = true;
--		} else {
--			/* modify the existing suffix */
--			if (id[len - 1] != '9')
--				id[len - 1]++;
--			else
--				id[len - 1] = 'A';
--		}
-+		/* Add _XYZ suffix */
-+		sprintf(sfxstr, "_%X", loops + 1);
-+		sfxlen = strlen(sfxstr);
-+		if (len + sfxlen >= sizeof(card->id))
-+			spos = id + sizeof(card->id) - sfxlen - 1;
-+		else
-+			spos = id + len;
-+		strcpy(spos, sfxstr);
- 	}
- 	/* fallback to the default id */
- 	if (!is_default) {
+ 	/* phase 2: replace file->f_op with special dummy operations */
 -- 
 1.8.2.3
