@@ -1,20 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: Add kconfig to specify the max card
-	numbers
-Date: Fri, 24 May 2013 16:46:44 +0200
-Message-ID: <1369406804-29914-2-git-send-email-tiwai@suse.de>
-References: <1369406804-29914-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH alsa-lib] Allow specifying the max number of
+	cards
+Date: Fri, 24 May 2013 17:23:33 +0200
+Message-ID: <1369409013-7745-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 50AED26518B
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 16:46:24 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1FD53A67E8
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 16:46:24 +0200 (CEST)
-In-Reply-To: <1369406804-29914-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA20F2651A9
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 17:23:13 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 535C9A67C5
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 17:23:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,145 +25,113 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently ALSA supports up to 32 card instances when the dynamic minor
-is used.  While 32 cards are usually big enough for normal use cases,
-there are sometimes weird requirements with more card support.
-
-Actually, this limitation, 32, comes from the index option, where you
-can pass the bit mask to assign the card.  Other than that, we can
-actually give more cards up to the minor number limits (currently 256,
-which can be extended more, too).
-
-This patch adds a new Kconfig to specify the max card numbers, and
-changes a few places to accept more than 32 cards.
-
-The only incompatibility with high card numbers would be the handling
-of index option.  The index option can be still used to pass the
-bitmask for card assignments, but this works only up to 32 slots.
-More than 32, no bitmask style option is available but only a single
-slot can be specified via index option.
+Add --with-max-cards option to specify the max number of cards in
+configure script, when the support for more than 32 cards is
+required.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |  2 +-
- sound/core/Kconfig   |  9 +++++++++
- sound/core/init.c    | 25 ++++++++++++++++---------
- 3 files changed, 26 insertions(+), 10 deletions(-)
+ configure.in             | 14 ++++++++++++++
+ src/confmisc.c           |  2 +-
+ src/control/cards.c      |  6 +++---
+ src/control/control_hw.c |  2 +-
+ src/hwdep/hwdep_hw.c     |  2 +-
+ 5 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 5bfe513..c586617 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -30,7 +30,7 @@
+diff --git a/configure.in b/configure.in
+index 35b8e84..3d394fc 100644
+--- a/configure.in
++++ b/configure.in
+@@ -632,6 +632,20 @@ for t in $CTL_PLUGIN_LIST; do
+   fi
+ done
  
- /* number of supported soundcards */
- #ifdef CONFIG_SND_DYNAMIC_MINORS
--#define SNDRV_CARDS 32
-+#define SNDRV_CARDS CONFIG_SND_MAX_CARDS
- #else
- #define SNDRV_CARDS 8		/* don't change - minor numbers */
- #endif
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index b413ed0..c0c2f57 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -157,6 +157,15 @@ config SND_DYNAMIC_MINORS
- 
- 	  If you are unsure about this, say N here.
- 
-+config SND_MAX_CARDS
-+	int "Max number of sound cards"
-+	range 4 256
-+	default 32
-+	depends on SND_DYNAMIC_MINORS
-+	help
-+	  Specify the max number of sound cards that can be assigned
-+	  on a single machine.
++dnl Max number of cards
++AC_MSG_CHECKING(for max number of cards)
++AC_ARG_WITH(max-cards,
++  AS_HELP_STRING([--with-max-cards], [Specify the max number of cards (default = 32)]),
++  [ max_cards="$withval" ], [ max_cards="32" ])
++AC_MSG_RESULT([$max_cards])
 +
- config SND_SUPPORT_OLD_API
- 	bool "Support old ALSA API"
- 	default y
-diff --git a/sound/core/init.c b/sound/core/init.c
-index ed4a481..6b90871 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -46,7 +46,8 @@ static LIST_HEAD(shutdown_files);
++if test "$max_cards" -lt 1; then
++   AC_ERROR([Invalid max cards $max_cards])
++elif test "$max_cards" -gt 256; then
++   AC_ERROR([Invalid max cards $max_cards])
++fi
++AC_DEFINE_UNQUOTED(SND_MAX_CARDS, $max_cards, [Max number of cards])
++
+ dnl Make a symlink for inclusion of alsa/xxx.h
+ if test ! -L "$srcdir"/include/alsa ; then
+   echo "Making a symlink include/alsa"
+diff --git a/src/confmisc.c b/src/confmisc.c
+index 80b0027..af686be 100644
+--- a/src/confmisc.c
++++ b/src/confmisc.c
+@@ -668,7 +668,7 @@ int snd_determine_driver(int card, char **driver)
+ 	char *res = NULL;
+ 	int err;
  
- static const struct file_operations snd_shutdown_f_ops;
- 
--static unsigned int snd_cards_lock;	/* locked for registering/using */
-+/* locked for registering/using */
-+static DECLARE_BITMAP(snd_cards_lock, SNDRV_CARDS);
- struct snd_card *snd_cards[SNDRV_CARDS];
- EXPORT_SYMBOL(snd_cards);
- 
-@@ -167,29 +168,35 @@ int snd_card_create(int idx, const char *xid,
- 	err = 0;
- 	mutex_lock(&snd_card_mutex);
- 	if (idx < 0) {
--		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
-+		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
- 			/* idx == -1 == 0xffff means: take any free slot */
--			if (~snd_cards_lock & idx & 1<<idx2) {
-+			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
-+				continue;
-+			if (!test_bit(idx2, snd_cards_lock)) {
- 				if (module_slot_match(module, idx2)) {
- 					idx = idx2;
- 					break;
- 				}
- 			}
-+		}
+-	assert(card >= 0 && card <= 32);
++	assert(card >= 0 && card <= SND_MAX_CARDS);
+ 	err = open_ctl(card, &ctl);
+ 	if (err < 0) {
+ 		SNDERR("could not open control for card %i", card);
+diff --git a/src/control/cards.c b/src/control/cards.c
+index b528e33..5d7376c 100644
+--- a/src/control/cards.c
++++ b/src/control/cards.c
+@@ -103,7 +103,7 @@ int snd_card_next(int *rcard)
+ 		return -EINVAL;
+ 	card = *rcard;
+ 	card = card < 0 ? 0 : card + 1;
+-	for (; card < 32; card++) {
++	for (; card < SND_MAX_CARDS; card++) {
+ 		if (snd_card_load(card)) {
+ 			*rcard = card;
+ 			return 0;
+@@ -134,7 +134,7 @@ int snd_card_get_index(const char *string)
+ 	    (isdigit(*string) && isdigit(*(string + 1)) && *(string + 2) == 0)) {
+ 		if (sscanf(string, "%i", &card) != 1)
+ 			return -EINVAL;
+-		if (card < 0 || card > 31)
++		if (card < 0 || card >= SND_MAX_CARDS)
+ 			return -EINVAL;
+ 		err = snd_card_load1(card);
+ 		if (err >= 0)
+@@ -143,7 +143,7 @@ int snd_card_get_index(const char *string)
  	}
- 	if (idx < 0) {
--		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++)
-+		for (idx2 = 0; idx2 < SNDRV_CARDS; idx2++) {
- 			/* idx == -1 == 0xffff means: take any free slot */
--			if (~snd_cards_lock & idx & 1<<idx2) {
-+			if (idx2 < sizeof(int) && !(idx & (1U << idx2)))
-+				continue;
-+			if (!test_bit(idx2, snd_cards_lock)) {
- 				if (!slots[idx2] || !*slots[idx2]) {
- 					idx = idx2;
- 					break;
- 				}
- 			}
-+		}
- 	}
- 	if (idx < 0)
- 		err = -ENODEV;
- 	else if (idx < snd_ecards_limit) {
--		if (snd_cards_lock & (1 << idx))
-+		if (test_bit(idx, snd_cards_lock))
- 			err = -EBUSY;	/* invalid */
- 	} else if (idx >= SNDRV_CARDS)
- 		err = -ENODEV;
-@@ -199,7 +206,7 @@ int snd_card_create(int idx, const char *xid,
- 			 idx, snd_ecards_limit - 1, err);
- 		goto __error;
- 	}
--	snd_cards_lock |= 1 << idx;		/* lock it */
-+	set_bit(idx, snd_cards_lock);		/* lock it */
- 	if (idx >= snd_ecards_limit)
- 		snd_ecards_limit = idx + 1; /* increase the limit */
- 	mutex_unlock(&snd_card_mutex);
-@@ -249,7 +256,7 @@ int snd_card_locked(int card)
- 	int locked;
+ 	if (string[0] == '/')	/* device name */
+ 		return snd_card_load2(string);
+-	for (card = 0; card < 32; card++) {
++	for (card = 0; card < SND_MAX_CARDS; card++) {
+ #ifdef SUPPORT_ALOAD
+ 		if (! snd_card_load(card))
+ 			continue;
+diff --git a/src/control/control_hw.c b/src/control/control_hw.c
+index 90c4ba7..148097f 100644
+--- a/src/control/control_hw.c
++++ b/src/control/control_hw.c
+@@ -382,7 +382,7 @@ int snd_ctl_hw_open(snd_ctl_t **handle, const char *name, int card, int mode)
  
- 	mutex_lock(&snd_card_mutex);
--	locked = snd_cards_lock & (1 << card);
-+	locked = test_bit(card, snd_cards_lock);
- 	mutex_unlock(&snd_card_mutex);
- 	return locked;
- }
-@@ -361,7 +368,7 @@ int snd_card_disconnect(struct snd_card *card)
- 	/* phase 1: disable fops (user space) operations for ALSA API */
- 	mutex_lock(&snd_card_mutex);
- 	snd_cards[card->number] = NULL;
--	snd_cards_lock &= ~(1 << card->number);
-+	clear_bit(card->number, snd_cards_lock);
- 	mutex_unlock(&snd_card_mutex);
+ 	*handle = NULL;	
+ 
+-	if (CHECK_SANITY(card < 0 || card >= 32)) {
++	if (CHECK_SANITY(card < 0 || card >= SND_MAX_CARDS)) {
+ 		SNDMSG("Invalid card index %d", card);
+ 		return -EINVAL;
+ 	}
+diff --git a/src/hwdep/hwdep_hw.c b/src/hwdep/hwdep_hw.c
+index e4fcdc3..4314e32 100644
+--- a/src/hwdep/hwdep_hw.c
++++ b/src/hwdep/hwdep_hw.c
+@@ -112,7 +112,7 @@ int snd_hwdep_hw_open(snd_hwdep_t **handle, const char *name, int card, int devi
+ 
+ 	*handle = NULL;
  	
- 	/* phase 2: replace file->f_op with special dummy operations */
+-	if (card < 0 || card >= 32)
++	if (card < 0 || card >= SND_MAX_CARDS)
+ 		return -EINVAL;
+ 	sprintf(filename, SNDRV_FILE_HWDEP, card, device);
+ 	fd = snd_open_device(filename, mode);
 -- 
 1.8.2.3
