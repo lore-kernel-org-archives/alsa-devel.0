@@ -1,17 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/6] MIPS: jz4740: Register jz4740 DMA device
-Date: Thu, 23 May 2013 22:36:25 +0200
-Message-ID: <1369341387-19147-5-git-send-email-lars@metafoo.de>
-References: <1369341387-19147-1-git-send-email-lars@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Problem opening default device in haswell system
+ using aplay
+Date: Fri, 24 May 2013 02:18:27 +0000
+Message-ID: <CAN8cciZ6UMdCJ=5aetG50xpcoDwpqQySmuxJGdYcFY+uhZPQ=A@mail.gmail.com>
+References: <519CE8EA.3010303@citrix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-103.synserver.de (smtp-out-103.synserver.de
- [212.40.185.103])
- by alsa0.perex.cz (Postfix) with ESMTP id 95BCF26508D
- for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 22:34:09 +0200 (CEST)
-In-Reply-To: <1369341387-19147-1-git-send-email-lars@metafoo.de>
+Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D26926509A
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 04:18:28 +0200 (CEST)
+Received: by mail-ie0-f169.google.com with SMTP id u16so10948681iet.28
+ for <alsa-devel@alsa-project.org>; Thu, 23 May 2013 19:18:27 -0700 (PDT)
+In-Reply-To: <519CE8EA.3010303@citrix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ralf Baechle <ralf@linux-mips.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+To: Stefano Panella <stefano.panella@citrix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Register a device for the newly added jz4740 dmaengine driver.
+>
+> I am working on some haswell systems running Ubuntu 12.04 and I have a
+problem if I run aplay -D sysdefault.
+>
+> when I do:
+>
+> cat /proc/asound/pcm
+>
+> I get:
+>
+> 00-03: HDMI 0 : HDMI 0 : playback 1
+> 00-07: HDMI 1 : HDMI 1 : playback 1
+> 00-08: HDMI 2 : HDMI 2 : playback 1
+> 01-00: ALC662 rev3 Analog : ALC662 rev3 Analog : playback 1 : capture 1
+> 01-02: ALC662 rev3 Analog : ALC662 rev3 Analog : capture 1
+>
+> If I do:
+>
+> aplay -L | grep sysdefault
+>
+> I get:
+>
+> sysdefault:CARD=PCH
+>
+> where PCH is card number 1 (id = 1)
+>
+> on most of my systems (non haswell laptops) the default card is number 0
+>
+> If I run
+>
+> aplay -D sysdefault
+>
+> I get:
+>
+> ALSA lib pcm_dmix.c:1018:(snd_pcm_dmix_open) unable to open slave
+> aplay: main:682: audio open error: No such file or directory
+>
+> if I strace it I get:
+>
+> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK|O_CLOEXEC) = -1 ENOENT (No
+> such file or directory)
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- arch/mips/include/asm/mach-jz4740/platform.h |  1 +
- arch/mips/jz4740/board-qi_lb60.c             |  1 +
- arch/mips/jz4740/platform.c                  | 21 +++++++++++++++++++++
- 3 files changed, 23 insertions(+)
+defaults.pcm.dmix.device defaults.pcm.device
 
-diff --git a/arch/mips/include/asm/mach-jz4740/platform.h b/arch/mips/include/asm/mach-jz4740/platform.h
-index 72cfebd..05988c2 100644
---- a/arch/mips/include/asm/mach-jz4740/platform.h
-+++ b/arch/mips/include/asm/mach-jz4740/platform.h
-@@ -32,6 +32,7 @@ extern struct platform_device jz4740_codec_device;
- extern struct platform_device jz4740_adc_device;
- extern struct platform_device jz4740_wdt_device;
- extern struct platform_device jz4740_pwm_device;
-+extern struct platform_device jz4740_dma_device;
- 
- void jz4740_serial_device_register(void);
- 
-diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
-index be2b3de..8a5ec0e 100644
---- a/arch/mips/jz4740/board-qi_lb60.c
-+++ b/arch/mips/jz4740/board-qi_lb60.c
-@@ -438,6 +438,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
- 	&jz4740_rtc_device,
- 	&jz4740_adc_device,
- 	&jz4740_pwm_device,
-+	&jz4740_dma_device,
- 	&qi_lb60_gpio_keys,
- 	&qi_lb60_pwm_beeper,
- 	&qi_lb60_charger_device,
-diff --git a/arch/mips/jz4740/platform.c b/arch/mips/jz4740/platform.c
-index e9348fd..35a9d8c 100644
---- a/arch/mips/jz4740/platform.c
-+++ b/arch/mips/jz4740/platform.c
-@@ -329,3 +329,24 @@ struct platform_device jz4740_pwm_device = {
- 	.name = "jz4740-pwm",
- 	.id   = -1,
- };
-+
-+/* DMA */
-+static struct resource jz4740_dma_resources[] = {
-+	{
-+		.start	= JZ4740_DMAC_BASE_ADDR,
-+		.end	= JZ4740_DMAC_BASE_ADDR + 0x400 - 1,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+	{
-+		.start	= JZ4740_IRQ_DMAC,
-+		.end	= JZ4740_IRQ_DMAC,
-+		.flags	= IORESOURCE_IRQ,
-+	},
-+};
-+
-+struct platform_device jz4740_dma_device = {
-+	.name	= "jz4740-dma",
-+	.id	= -1,
-+	.num_resources = ARRAY_SIZE(jz4740_dma_resources),
-+	.resource      = jz4740_dma_resources,
-+};
--- 
-1.8.2.1
+You have to change defaults.pcm.dmix.device to the device of  your hdmi if
+your are not using the analog device 0
