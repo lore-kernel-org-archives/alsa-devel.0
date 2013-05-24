@@ -1,67 +1,58 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 2/6] ASoC: ab8500-codec: Move codec ops on a separate structure
-Date: Fri, 24 May 2013 12:39:16 +0200
-Message-ID: <1369391960-27320-3-git-send-email-fabio.baltieri@linaro.org>
-References: <1369391960-27320-1-git-send-email-fabio.baltieri@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1369391960-27320-1-git-send-email-fabio.baltieri@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 0/6] More code cleanup for ASoC ux500
+Date: Fri, 24 May 2013 12:39:14 +0200
+Message-ID: <1369391960-27320-1-git-send-email-fabio.baltieri@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f42.google.com (mail-ee0-f42.google.com [74.125.83.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB21B2650B9
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 12:39:24 +0200 (CEST)
+Received: by mail-ee0-f42.google.com with SMTP id c50so2486178eek.15
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 03:39:24 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Fabio Baltieri <fabio.baltieri@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Define ab8500 codec operations structure on its own rather than inline
-with snd_soc_dai_drivers to clean up the code and make the style
-coherent with other codec drivers.
+Hi Mark,
 
-Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
----
- sound/soc/codecs/ab8500-codec.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+this series contains more various code cleanup patches that I put
+together while working on other stuff this drivers.
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 4ca45b9..b8ba0ad 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2380,6 +2380,11 @@ static int ab8500_codec_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static const struct snd_soc_dai_ops ab8500_codec_ops = {
-+	.set_fmt = ab8500_codec_set_dai_fmt,
-+	.set_tdm_slot = ab8500_codec_set_dai_tdm_slot,
-+};
-+
- static struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 	{
- 		.name = "ab8500-codec-dai.0",
-@@ -2391,12 +2396,7 @@ static struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 			.rates = AB8500_SUPPORTED_RATE,
- 			.formats = AB8500_SUPPORTED_FMT,
- 		},
--		.ops = (struct snd_soc_dai_ops[]) {
--			{
--				.set_tdm_slot = ab8500_codec_set_dai_tdm_slot,
--				.set_fmt = ab8500_codec_set_dai_fmt,
--			}
--		},
-+		.ops = &ab8500_codec_ops,
- 		.symmetric_rates = 1
- 	},
- 	{
-@@ -2409,12 +2409,7 @@ static struct snd_soc_dai_driver ab8500_codec_dai[] = {
- 			.rates = AB8500_SUPPORTED_RATE,
- 			.formats = AB8500_SUPPORTED_FMT,
- 		},
--		.ops = (struct snd_soc_dai_ops[]) {
--			{
--				.set_tdm_slot = ab8500_codec_set_dai_tdm_slot,
--				.set_fmt = ab8500_codec_set_dai_fmt,
--			}
--		},
-+		.ops = &ab8500_codec_ops,
- 		.symmetric_rates = 1
- 	}
- };
+The first patch is actually a resend, as Linus Walleij agreed to drop
+that code in the original thread (https://lkml.org/lkml/2013/5/17/487).
+
+The others are just a bunch of sparse fixes and generic code cleanup and
+dead code removal.
+
+Thanks,
+Fabio
+
+
+Fabio Baltieri (6):
+  ASoC: ux500: Drop pinctrl sleep support
+  ASoC: ab8500-codec: Move codec ops on a separate structure
+  ASoC: ux500: Drop dangling struct i2s_controller
+  ASoC: ux500: Drop unused code from msp headers
+  ASoC: ux500: Add missing mop500_ab8500.h include
+  ASoC: ux500: Drop redundant msp id enumerations
+
+ sound/soc/codecs/ab8500-codec.c | 19 ++++-------
+ sound/soc/ux500/mop500_ab8500.c |  1 +
+ sound/soc/ux500/ux500_msp_dai.h |  2 --
+ sound/soc/ux500/ux500_msp_i2s.c | 75 ++---------------------------------------
+ sound/soc/ux500/ux500_msp_i2s.h | 59 ++------------------------------
+ 5 files changed, 12 insertions(+), 144 deletions(-)
+
 -- 
 1.8.2
