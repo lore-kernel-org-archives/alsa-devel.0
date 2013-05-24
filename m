@@ -1,137 +1,88 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH alsa-lib] Allow specifying the max number of
-	cards
-Date: Fri, 24 May 2013 17:23:33 +0200
-Message-ID: <1369409013-7745-1-git-send-email-tiwai@suse.de>
+From: Florian Meier <florian.meier@koalo.de>
+Subject: Re: [PATCH] ASoC: Add support for BCM2708
+Date: Fri, 24 May 2013 17:32:35 +0200
+Message-ID: <CABDT8WxS+Aq_feGqhzUMK-=DkZsnOULrH_fd+j0OP0czGnFdAw@mail.gmail.com>
+References: <519CD1CC.8070507@koalo.de>
+	<519CFFDD.4080203@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CA20F2651A9
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 17:23:13 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 535C9A67C5
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 17:23:13 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <519CFFDD.4080203@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, swarren@wwwdotorg.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add --with-max-cards option to specify the max number of cards in
-configure script, when the support for more than 32 cards is
-required.
+2013/5/22 Lars-Peter Clausen <lars@metafoo.de>
+>
+> On 05/22/2013 04:10 PM, Florian Meier wrote:
+> [...]
+> > diff --git a/sound/soc/bcm2708/bcm2708-i2s.c b/sound/soc/bcm2708/bcm2708-i2s.c
+> > new file mode 100644
+> > index 0000000..a8e995f
+> > --- /dev/null
+> > +++ b/sound/soc/bcm2708/bcm2708-i2s.c
+> > @@ -0,0 +1,964 @@
+> [...]
+> > +static int bcm2708_i2s_startup(struct snd_pcm_substream *substream,
+> > +                            struct snd_soc_dai *dai)
+> > +{
+> > +     struct bcm2708_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+> > +
+> > [...]
+> > +             } else {
+> > +                     snd_pcm_hw_constraint_minmax(substream->runtime,
+> > +                                     SNDRV_PCM_HW_PARAM_RATE,
+> > +                                     first_runtime->rate,
+> > +                                     first_runtime->rate);
+> > +             }
+>
+> Setting the symmetric_rates lets the core take care of setting the proper
+> constraints on the rate. It probably makes sense to also add a
+> symmetric_formats since this isn't the only driver that has the requirement
+> that the formats for playback and capture match.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- configure.in             | 14 ++++++++++++++
- src/confmisc.c           |  2 +-
- src/control/cards.c      |  6 +++---
- src/control/control_hw.c |  2 +-
- src/hwdep/hwdep_hw.c     |  2 +-
- 5 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/configure.in b/configure.in
-index 35b8e84..3d394fc 100644
---- a/configure.in
-+++ b/configure.in
-@@ -632,6 +632,20 @@ for t in $CTL_PLUGIN_LIST; do
-   fi
- done
- 
-+dnl Max number of cards
-+AC_MSG_CHECKING(for max number of cards)
-+AC_ARG_WITH(max-cards,
-+  AS_HELP_STRING([--with-max-cards], [Specify the max number of cards (default = 32)]),
-+  [ max_cards="$withval" ], [ max_cards="32" ])
-+AC_MSG_RESULT([$max_cards])
-+
-+if test "$max_cards" -lt 1; then
-+   AC_ERROR([Invalid max cards $max_cards])
-+elif test "$max_cards" -gt 256; then
-+   AC_ERROR([Invalid max cards $max_cards])
-+fi
-+AC_DEFINE_UNQUOTED(SND_MAX_CARDS, $max_cards, [Max number of cards])
-+
- dnl Make a symlink for inclusion of alsa/xxx.h
- if test ! -L "$srcdir"/include/alsa ; then
-   echo "Making a symlink include/alsa"
-diff --git a/src/confmisc.c b/src/confmisc.c
-index 80b0027..af686be 100644
---- a/src/confmisc.c
-+++ b/src/confmisc.c
-@@ -668,7 +668,7 @@ int snd_determine_driver(int card, char **driver)
- 	char *res = NULL;
- 	int err;
- 
--	assert(card >= 0 && card <= 32);
-+	assert(card >= 0 && card <= SND_MAX_CARDS);
- 	err = open_ctl(card, &ctl);
- 	if (err < 0) {
- 		SNDERR("could not open control for card %i", card);
-diff --git a/src/control/cards.c b/src/control/cards.c
-index b528e33..5d7376c 100644
---- a/src/control/cards.c
-+++ b/src/control/cards.c
-@@ -103,7 +103,7 @@ int snd_card_next(int *rcard)
- 		return -EINVAL;
- 	card = *rcard;
- 	card = card < 0 ? 0 : card + 1;
--	for (; card < 32; card++) {
-+	for (; card < SND_MAX_CARDS; card++) {
- 		if (snd_card_load(card)) {
- 			*rcard = card;
- 			return 0;
-@@ -134,7 +134,7 @@ int snd_card_get_index(const char *string)
- 	    (isdigit(*string) && isdigit(*(string + 1)) && *(string + 2) == 0)) {
- 		if (sscanf(string, "%i", &card) != 1)
- 			return -EINVAL;
--		if (card < 0 || card > 31)
-+		if (card < 0 || card >= SND_MAX_CARDS)
- 			return -EINVAL;
- 		err = snd_card_load1(card);
- 		if (err >= 0)
-@@ -143,7 +143,7 @@ int snd_card_get_index(const char *string)
- 	}
- 	if (string[0] == '/')	/* device name */
- 		return snd_card_load2(string);
--	for (card = 0; card < 32; card++) {
-+	for (card = 0; card < SND_MAX_CARDS; card++) {
- #ifdef SUPPORT_ALOAD
- 		if (! snd_card_load(card))
- 			continue;
-diff --git a/src/control/control_hw.c b/src/control/control_hw.c
-index 90c4ba7..148097f 100644
---- a/src/control/control_hw.c
-+++ b/src/control/control_hw.c
-@@ -382,7 +382,7 @@ int snd_ctl_hw_open(snd_ctl_t **handle, const char *name, int card, int mode)
- 
- 	*handle = NULL;	
- 
--	if (CHECK_SANITY(card < 0 || card >= 32)) {
-+	if (CHECK_SANITY(card < 0 || card >= SND_MAX_CARDS)) {
- 		SNDMSG("Invalid card index %d", card);
- 		return -EINVAL;
- 	}
-diff --git a/src/hwdep/hwdep_hw.c b/src/hwdep/hwdep_hw.c
-index e4fcdc3..4314e32 100644
---- a/src/hwdep/hwdep_hw.c
-+++ b/src/hwdep/hwdep_hw.c
-@@ -112,7 +112,7 @@ int snd_hwdep_hw_open(snd_hwdep_t **handle, const char *name, int card, int devi
- 
- 	*handle = NULL;
- 	
--	if (card < 0 || card >= 32)
-+	if (card < 0 || card >= SND_MAX_CARDS)
- 		return -EINVAL;
- 	sprintf(filename, SNDRV_FILE_HWDEP, card, device);
- 	fd = snd_open_device(filename, mode);
--- 
-1.8.2.3
+You are right! I forgot to remove this after I found the symmetric_rates flag.
+For symmetric_formats I will have a closer look into the ALSA sources.
+
+
+
+> [...]
+> > diff --git a/sound/soc/bcm2708/bcm2708-pcm.c b/sound/soc/bcm2708/bcm2708-pcm.c
+> > new file mode 100644
+> > index 0000000..4b3e688
+> > --- /dev/null
+> > +++ b/sound/soc/bcm2708/bcm2708-pcm.c
+> > @@ -0,0 +1,303 @@
+>
+> I think you should be able to remove the bulk of this driver by using the
+> generic PCM dmaengine driver.
+
+
+As implied in the header of this file, I would really like to use the
+generic PCM dmaengine driver,
+but I would also like to maintain compatibility to the Raspberry Pi
+downstream kernel.
+Therefore, I have to wait until the downstream kernel migrates to the
+new version.
+
+
+
+> [...]
+> > +
+> > +#include "bcm2708-pcm.h"
+> > +
+> > +static const struct snd_pcm_hardware bcm2708_pcm_hardware = {
+> > +     .info                   = SNDRV_PCM_INFO_MMAP |
+> > +                               SNDRV_PCM_INFO_MMAP_VALID |
+> > +                               SNDRV_PCM_INFO_INTERLEAVED |
+> > +                               SNDRV_PCM_INFO_PAUSE |
+> > +                               SNDRV_PCM_INFO_RESUME |
+> > +                               SNDRV_PCM_INFO_JOINT_DUPLEX |
+> > +                               SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+>
+> I don't think you actually support the last one, and neither pause and
+> resume are supported.
+
+I will have a closer look at these flags. Thanks!
