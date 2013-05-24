@@ -1,68 +1,40 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 3/6] dma: Add a jz4740 dmaengine driver
-Date: Fri, 24 May 2013 08:41:05 +0200
-Message-ID: <519F0B81.1090009@metafoo.de>
-References: <1369341387-19147-1-git-send-email-lars@metafoo.de> <1369341387-19147-4-git-send-email-lars@metafoo.de> <20130524045935.GM30200@intel.com> <519F016C.4040901@metafoo.de> <20130524055453.GR30200@intel.com>
+From: =?UTF-8?q?Juho=20H=C3=A4m=C3=A4l=C3=A4inen?= <juho.hamalainen@tieto.com>
+Subject: [PATCH] ucm: Fix segfault when device argument is
+	missing from _sw{dev, mod}
+Date: Fri, 24 May 2013 11:12:57 +0300
+Message-ID: <1369383177-19489-1-git-send-email-juho.hamalainen@tieto.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130524055453.GR30200@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ebb06.tieto.com (ebb06.tieto.com [131.207.168.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1F39261A48
+ for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 10:13:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/24/2013 07:54 AM, Vinod Koul wrote:
-> On Fri, May 24, 2013 at 07:58:04AM +0200, Lars-Peter Clausen wrote:
->> This one needs both.
->>
->>>> +	jzcfg.mode = JZ4740_DMA_MODE_SINGLE;
->>>> +	jzcfg.request_type = config->slave_id;
->>>> +
->>>> +	chan->config = *config;
->>>> +
->>>> +	jz4740_dma_configure(chan->jz_chan, &jzcfg);
->>>> +
->>>> +	return 0;
->>> You are NOT use src_addr/dstn_addr? How else are you passing the periphral
->>> address?
->> I'm saving the whole config, which will later be used to retrieve the source or
->> dest address.
-> well I missed that and it is a bad idea. You dont know when client has
-> freed/thrown the pointer so copy this instead..
-
-I do copy the full config, not just the pointer to the config. Although
-src_addr and dest_addr are the only two fields which are used later on at this
-point. So I could change it to just copy src_addr and dest_addr, or well just
-one of them depending on the direction.
-
-> 
->>
->>>> +}
->> [...]
->>>> +static int jz4740_dma_alloc_chan_resources(struct dma_chan *c)
->>>> +{
->>>> +	struct jz4740_dmaengine_chan *chan = to_jz4740_dma_chan(c);
->>>> +
->>>> +	chan->jz_chan = jz4740_dma_request(chan, NULL);
->>>> +	if (!chan->jz_chan)
->>>> +		return -EBUSY;
->>>> +
->>>> +	jz4740_dma_set_complete_cb(chan->jz_chan, jz4740_dma_complete_cb);
->>>> +
->>>> +	return 0;
->>> Zero is not expected value, you need to return the descriptors allocated
->>> sucessfully.
->>
->> Well, zero descriptors have been allocated. As far as I can see only a negative
->> return value is treated as an error. Also the core doesn't seem to use the
->> return value for anything else but checking if it is an error.
-> This is the API defination
-> * @device_alloc_chan_resources: allocate resources and return the
-> *      number of allocated descriptors
-> 
-
-But 0 is still the number of descriptors that have been pre-allocated.
-
-- Lars
+U2lnbmVkLW9mZi1ieTogSnVobyBIw6Rtw6Rsw6RpbmVuIDxqdWhvLmhhbWFsYWluZW5AdGlldG8u
+Y29tPgotLS0KIHNyYy91Y20vbWFpbi5jIHwgICAgNCArKysrCiAxIGZpbGUgY2hhbmdlZCwgNCBp
+bnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc3JjL3VjbS9tYWluLmMgYi9zcmMvdWNtL21haW4u
+YwppbmRleCBkMzhiN2ZhLi43NGUxNTMwIDEwMDY0NAotLS0gYS9zcmMvdWNtL21haW4uYworKysg
+Yi9zcmMvdWNtL21haW4uYwpAQCAtMTY0OSw2ICsxNjQ5LDEwIEBAIGludCBzbmRfdXNlX2Nhc2Vf
+c2V0KHNuZF91c2VfY2FzZV9tZ3JfdCAqdWNfbWdyLAogICAgICAgICAgICAgICAgIH0gZWxzZSB7
+CiAgICAgICAgICAgICAgICAgICAgICAgICBzdHIgPSBOVUxMOwogICAgICAgICAgICAgICAgIH0K
+KyAgICAgICAgICAgICAgICBpZiAoIXN0cikgeworICAgICAgICAgICAgICAgICAgICBlcnIgPSAt
+RUlOVkFMOworICAgICAgICAgICAgICAgICAgICBnb3RvIF9fZW5kOworICAgICAgICAgICAgICAg
+IH0KICAgICAgICAgICAgICAgICBpZiAoY2hlY2tfaWRlbnRpZmllcihpZGVudGlmaWVyLCAiX3N3
+ZGV2IikpCiAgICAgICAgICAgICAgICAgICAgICAgICBlcnIgPSBzd2l0Y2hfZGV2aWNlKHVjX21n
+ciwgc3RyLCB2YWx1ZSk7CiAgICAgICAgICAgICAgICAgZWxzZSBpZiAoY2hlY2tfaWRlbnRpZmll
+cihpZGVudGlmaWVyLCAiX3N3bW9kIikpCi0tIAoxLjcuMTAuNAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
