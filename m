@@ -1,18 +1,15 @@
-From: Sander Jansen <s.jansen@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: hdmi output (switching sample format/rates)
-Date: Sat, 25 May 2013 12:50:07 -0500
-Message-ID: <CACj81kH1x_c7w=8VQULrEYqs4OxKn7+Byg4ChBuuYEsWH8DDTw@mail.gmail.com>
+Date: Sat, 25 May 2013 21:19:51 +0200
+Message-ID: <51A10ED7.5050605@ladisch.de>
 References: <CACj81kGTmA7HT7OHX8eP8F3DP+-quDwfkgy_wSKzrbzjXiD9Fw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f177.google.com (mail-vc0-f177.google.com
- [209.85.220.177])
- by alsa0.perex.cz (Postfix) with ESMTP id D483E261718
- for <alsa-devel@alsa-project.org>; Sat, 25 May 2013 19:50:08 +0200 (CEST)
-Received: by mail-vc0-f177.google.com with SMTP id ib11so3903988vcb.36
- for <alsa-devel@alsa-project.org>; Sat, 25 May 2013 10:50:08 -0700 (PDT)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 7A6A226171F
+ for <alsa-devel@alsa-project.org>; Sat, 25 May 2013 21:20:34 +0200 (CEST)
 In-Reply-To: <CACj81kGTmA7HT7OHX8eP8F3DP+-quDwfkgy_wSKzrbzjXiD9Fw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,11 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sander Jansen <s.jansen@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TmV2ZXIgZ290IGEgcmVwbHkgb24gdGhpcyBvbmUuIFRoaXMgc2VlbXMgc3RpbGwgdG8gYmUgdGhl
-IGNhc2UuLi7igIsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Sander Jansen wrote:
+> In my audio application when I sometimes  need to switch to a
+> different sample format and/or rate, I usually leave the audio device
+> open and merely reconfigure the device to the new parameters. This
+> works with all the regular pcm devices, but it fails when I use the
+> "hdmi" device.
+
+This sounds like a driver bug.
+
+Which kernel version and HDMI transmitter hardware is this?
+
+
+Regards,
+Clemens
