@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5110: Correct DSP4R Mixer control
-	name
-Date: Sat, 25 May 2013 10:30:04 -0400
-Message-ID: <20130525143004.GD7660@sirena.org.uk>
-References: <1369391904-28871-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: Add ssm2518 support
+Date: Sat, 25 May 2013 10:34:06 -0400
+Message-ID: <20130525143406.GF7660@sirena.org.uk>
+References: <1369332891-15164-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4630311702924310817=="
+Content-Type: multipart/mixed; boundary="===============4442565407447220474=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E63712610AE
- for <alsa-devel@alsa-project.org>; Sat, 25 May 2013 16:30:20 +0200 (CEST)
-In-Reply-To: <1369391904-28871-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DAA672610C7
+ for <alsa-devel@alsa-project.org>; Sat, 25 May 2013 16:34:17 +0200 (CEST)
+In-Reply-To: <1369332891-15164-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, patches@opensource.wolfsonmirco.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Grant Likely <grant.likely@linaro.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4630311702924310817==
+--===============4442565407447220474==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
+	protocol="application/pgp-signature"; boundary="yH1ZJFh+qWm+VodA"
 Content-Disposition: inline
 
 
---AkbCVLjbJ9qUtAXD
+--yH1ZJFh+qWm+VodA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 24, 2013 at 11:38:24AM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Thu, May 23, 2013 at 08:14:50PM +0200, Lars-Peter Clausen wrote:
+> This patch adds a ASoC CODEC driver for the SSM2516. The SSM2516 is a stereo
+> Class-D audio amplifier with an I2S interface for audio in and a built-in
+> dynamic range control processor.
 
-Applied, thanks.
+Applied, thanks.  Always generate patches against the tree you're
+submitting for - this has context differences with -next.
 
---AkbCVLjbJ9qUtAXD
+--yH1ZJFh+qWm+VodA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRoMrjAAoJELSic+t+oim996wQAJg7Y2SP4pPEKpPSmqHhuTuk
-Hwr77/7E5bzJ2386+eZqPNNkNMKaJr+MW5k80eJKkEUEMWD0G0ZntveAYhLBS8Hz
-TxA7QVOwNrbusIp//Wy/w63KuAaqAhdJts5PF2qWDg+sLVpoty5HJScUOwq6GnI6
-fLmto+EDLWsixv8uAJZcYcEWz556mK9V4Q63Y14y1g+23CEPvmfxz+2OcI2jqLDR
-ClAuwLow06fmps7vUsH2utZjdHasQIkEzo9eLWGlnew/2ZnDBlCv+REOQ22jvIjD
-9z1Ae+Kl3rkv1KxUjwyazCwzjzJMlfnS9oU4Q88W4pAmhcqL7NDzBxZl1pK74UTV
-BRq/JDd+AwVUlJoaCdLXdknBtBpvMOhS7+8VfAxPZ4R04GPXfTjdKn1SxjtKiNsM
-VUDbu3f7k1BWoqyt3CXvpGICAEPS8QfwnAKWxOePdUnOHE/NcsEtkSNewN9RtHTE
-yJTjO6gKyzI5lcoojfEp+JKnUc3ru7mzlQ0M5T6hJ0xjWFOZDnPltaTfnCfKwp4Q
-G0TwIrCNevK/TYN1i1WEXcjbmNYldC/mV09MknoNW1ELIjSurkxOj+81lkmm0/IF
-GCiXj/XdGD0rR4vRKwg4bT07Lw2Rpja2VB2MMlfLRK2w0F201y1oDzI1ZUOkzSOd
-srv+Lg1DGkRuUK7fjwAT
-=FRWQ
+iQIcBAEBAgAGBQJRoMvbAAoJELSic+t+oim9U0cP/0WE7VLzFDhr6siuoE2VxUMc
+L2smhmeKT8SEeOZhAkGPuHNlQtVf33BDjkoUji1qB1QbKps2opQ8OjzmpIVgqLO0
+rSpWA3AP6zZnwaAK4MB8hjzLsIEPjYaonUeB2sPt3vud7SFavFYoqY1bD6s7rkAH
+3bNljLXsNE11zAcZKEzbVxEtpgOpHKUjwcTjU/5p2VJRMG4JIGzmP5axw5uG0bjX
+FyNUJeLOMKpHFT8qJ90cjSDb/nYPfRI7Kn86DFRre/fVogFh1CKeWje4nsANmY5p
+6JTGFYxEBIrF1YehysBOXwBqojMYujQI1JrrA5XVzd4Hpjh/PLLXyBMupI1s5Jy5
+1xJCbZWpjiEwQQik4hXqEu1yTWLWQw9k6g3rAUOxiuL63tK8Z0icWGACG1mEN3fK
+x7gS7d0SX9zdIcha1JfaWogocAZtR3NX19RrMyUiUOYYmf86VnwZWj74Zk52Qq72
+y0vTuMWqAc6ejyexSCfCDQ/stNqYYhemlgCt2nVwnqdy9QlT0GSpEAhplM6tX8c6
+0DQkxguBqGqecIisbnbddEZLNWTsqtyQWB21fMHXGDic+PEc6le/OyyMxkZhSasA
+9hSugKgSn0cVHGY2DAqE/qwcqogudckfBUgJhw7Gf87CKJtYEKWN4BvY7e/fuA4L
+6hBlUXHImxjUA4NqHHmC
+=Rsu9
 -----END PGP SIGNATURE-----
 
---AkbCVLjbJ9qUtAXD--
+--yH1ZJFh+qWm+VodA--
 
---===============4630311702924310817==
+--===============4442565407447220474==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4630311702924310817==--
+--===============4442565407447220474==--
