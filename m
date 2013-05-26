@@ -1,53 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: ab8500-codec: Move codec ops on a separate
- structure
-Date: Sat, 25 May 2013 15:59:35 -0400
-Message-ID: <20130525195935.GB32043@sirena.org.uk>
-References: <1369391960-27320-1-git-send-email-fabio.baltieri@linaro.org>
- <1369391960-27320-3-git-send-email-fabio.baltieri@linaro.org>
+From: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
+Subject: [PATCH] alsactl init: ca0106 file was omitted
+Date: Sun, 26 May 2013 15:54:44 -0700
+Message-ID: <1369608885-3654-1-git-send-email-gabrbedd@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8P1HSweYDcXXzwPJ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1369391960-27320-3-git-send-email-fabio.baltieri@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
+ [209.85.192.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id E98EB2619E7
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 00:54:59 +0200 (CEST)
+Received: by mail-pd0-f177.google.com with SMTP id u11so5979438pdi.36
+ for <alsa-devel@alsa-project.org>; Sun, 26 May 2013 15:54:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Gabriel M. Beddingfield" <gabrbedd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The file alsactl/init/00main includes the line:
 
---8P1HSweYDcXXzwPJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+CARDINFO{driver}=="CA0106", INCLUDE="ca0106", GOTO="init_end"
 
-On Fri, May 24, 2013 at 12:39:16PM +0200, Fabio Baltieri wrote:
-> Define ab8500 codec operations structure on its own rather than inline
-> with snd_soc_dai_drivers to clean up the code and make the style
-> coherent with other codec drivers.
+However, the file alsactl/init/ca0106 is not making it into the
+release tarballs (nor to user installations).
 
-Applied this and the rest, thanks.
+This patch adds the ca0106 file to the build.
 
---8P1HSweYDcXXzwPJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Signed-off-by: Gabriel M. Beddingfield <gabrbedd@gmail.com>
+---
+CAVEAT EMPTOR: I found this issue while helping someone in
+the #alsa channel.  I have no way to test this patch.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+ alsactl/init/Makefile.am |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iQIcBAEBAgAGBQJRoRgkAAoJELSic+t+oim98+UP/RfNVp1HuvxBOSVx2mK+9Dk7
-ZIOMlMNGsSJRCPFHNhE/xjumq1J0ipSQWzuTKAYK4dJ0MmwlMrnei24u4yDA7K9w
-XL4AUR9GzZAPKRxMZA5evV84u+AMm0PyOkYl/Wh6W2wf2nUllMDeB4WAyRp1PR67
-2pTDNEJIqO+Ortt2OHqdzgiPW1dt6a3zSPeYP8qKLq/337oB5G46HnKqvNHgutBi
-kHYvqkeiDsdgDszJ09AZWGiZjAbOppi5JgK2G6pO4Jmfuf5PXGooKGExTn/56WAz
-mo/v+Vv5/Dit+kL5lEpWr3NCeDPFGMKYAethSaPJRleBrwsunSs4n1I7du1TEZnE
-/R3fgX11iFV5HJhHG4Cwoa0770Mi4m8kmbGNsKnR854poYlkjUm4K+cOL6i1Z5gR
-KnhL4NavTcoVoXGjPS+gFfH0/49oR6gF3T014BjAF9SEzqIA+D61J/rDMxaU+UQ3
-5o9XZPCLW8hxhRo5Fj5BOPXGKB98oblEneVMrfM5g41PPGPUN1CyE8p2KwNclX/q
-eDIgXs3/8W8RtwK2GnVmo7xUsPa8l0lqOs5YPlj7bBMOXP5FlKyQksHvEV2wvYeC
-qSlzin60IN9bMtmwNODi0i4WQZuDJHSirDNUIViq1S/G9cQvyS+KgnVD61w6APGz
-JXfWXHqLiIXg3FGH+ss/
-=fmj3
------END PGP SIGNATURE-----
-
---8P1HSweYDcXXzwPJ--
+diff --git a/alsactl/init/Makefile.am b/alsactl/init/Makefile.am
+index 9e2b83d..64dac41 100644
+--- a/alsactl/init/Makefile.am
++++ b/alsactl/init/Makefile.am
+@@ -1,7 +1,7 @@
+ 
+ init_files = \
+ 	00main default help info test \
+-	hda
++	hda ca0106
+ EXTRA_DIST = $(init_files)
+ alsainitdir = $(datadir)/alsa/init
+ alsainit_DATA = $(init_files)
+-- 
+1.7.9.5
