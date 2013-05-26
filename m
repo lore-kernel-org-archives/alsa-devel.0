@@ -1,18 +1,25 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH: TinyCompress] fix error reporting in
-	tinycompress
-Date: Sun, 26 May 2013 19:43:11 +0530
-Message-ID: <20130526141311.GX30200@intel.com>
-References: <1369295119-29676-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH: TinyCompress 1/2] add utils file with rate
+ conversion helper
+Date: Sun, 26 May 2013 19:43:47 +0530
+Message-ID: <20130526141347.GY30200@intel.com>
+References: <1369296767-30136-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 46D3E261281
- for <alsa-devel@alsa-project.org>; Sun, 26 May 2013 16:50:18 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55DD3261785
+ for <alsa-devel@alsa-project.org>; Sun, 26 May 2013 16:50:40 +0200 (CEST)
+Received: from vkoul-udesk3.iind.intel.com (localhost [127.0.0.1])
+ by vkoul-udesk3.iind.intel.com (8.14.3/8.14.3/Debian-9.1ubuntu1) with ESMTP id
+ r4QEDmYV004884
+ for <alsa-devel@alsa-project.org>; Sun, 26 May 2013 19:43:48 +0530
+Received: (from vkoul@localhost)
+ by vkoul-udesk3.iind.intel.com (8.14.3/8.14.3/Submit) id r4QEDl12004883
+ for alsa-devel@alsa-project.org; Sun, 26 May 2013 19:43:47 +0530
 Content-Disposition: inline
-In-Reply-To: <1369295119-29676-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1369296767-30136-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,245 +30,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lakshmi N Vinnakota <lakshmi.n.vinnakota@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 23, 2013 at 01:15:19PM +0530, Vinod Koul wrote:
-> From: Lakshmi N Vinnakota <lakshmi.n.vinnakota@intel.com>
-> 
-> The compress API are expected to return a negative value on an error
-> with errno indicating the type of error. But in some cases, this is
-> not happening.
-> 
-> The fix is the oops function always returns -1 and the actual
-> error number is determined by the global variable errno.
-> 
-> Signed-off-by: Lakshmi N Vinnakota <lakshmi.n.vinnakota@intel.com>
+On Thu, May 23, 2013 at 01:42:46PM +0530, Vinod Koul wrote:
 > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Applied, Thanks
+Applied both
 
 --
 ~Vinod
 > ---
->  compress.c |   61 ++++++++++++++++++++++++++++++-----------------------------
->  1 files changed, 31 insertions(+), 30 deletions(-)
+>  Android.mk                          |    2 +-
+>  include/tinycompress/tinycompress.h |    2 +
+>  makefile.linux                      |    2 +-
+>  utils.c                             |   96 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 100 insertions(+), 2 deletions(-)
+>  create mode 100644 utils.c
 > 
-> diff --git a/compress.c b/compress.c
-> index 8753758..7f56c78 100644
-> --- a/compress.c
-> +++ b/compress.c
-> @@ -102,10 +102,11 @@ static int oops(struct compress *compress, int e, const char *fmt, ...)
->  	va_end(ap);
->  	sz = strlen(compress->error);
+> diff --git a/Android.mk b/Android.mk
+> index b9c52e2..104dfef 100644
+> --- a/Android.mk
+> +++ b/Android.mk
+> @@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 >  
-> -	if (errno)
-> -		snprintf(compress->error + sz, COMPR_ERR_MAX - sz,
-> -			": %s", strerror(e));
-> -	return e;
-> +	snprintf(compress->error + sz, COMPR_ERR_MAX - sz,
-> +		": %s", strerror(e));
-> +	errno = e;
+>  include $(CLEAR_VARS)
+>  LOCAL_C_INCLUDES:= $(LOCAL_PATH)/include
+> -LOCAL_SRC_FILES:= compress.c
+> +LOCAL_SRC_FILES:= compress.c utils.c
+>  LOCAL_MODULE := libtinycompress
+>  LOCAL_SHARED_LIBRARIES:= libcutils libutils
+>  LOCAL_MODULE_TAGS := optional
+> diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
+> index 9867afc..e947322 100644
+> --- a/include/tinycompress/tinycompress.h
+> +++ b/include/tinycompress/tinycompress.h
+> @@ -267,4 +267,6 @@ const char *compress_get_error(struct compress *compress);
+>  #define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
+>  #define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
+>  
+> +/* utility functions */
+> +unsigned int compress_get_alsa_rate(unsigned int rate);
+>  #endif
+> diff --git a/makefile.linux b/makefile.linux
+> index 60d6c04..677878d 100644
+> --- a/makefile.linux
+> +++ b/makefile.linux
+> @@ -2,7 +2,7 @@ LIB = libtinycompress
+>  BIN = cplay
+>  VER = 0.1
+>  LIBSRC = compress.c
+> -SRC = cplay.c
+> +SRC = cplay.c utils.c
+>  LIBOBJ = ${LIBSRC:.c=.o}
+>  OBJ = ${SRC:.c=.o}
+>  
+> diff --git a/utils.c b/utils.c
+> new file mode 100644
+> index 0000000..fa37f23
+> --- /dev/null
+> +++ b/utils.c
+> @@ -0,0 +1,96 @@
+> +/*
+> + * BSD LICENSE
+> + *
+> + * tinycompress utility functions
+> + * Copyright (c) 2011-2013, Intel Corporation
+> + * All rights reserved.
+> + *
+> + * Author: Vinod Koul <vinod.koul@intel.com>
+> + *
+> + * Redistribution and use in source and binary forms, with or without
+> + * modification, are permitted provided that the following conditions are met:
+> + *
+> + * Redistributions of source code must retain the above copyright notice,
+> + * this list of conditions and the following disclaimer.
+> + * Redistributions in binary form must reproduce the above copyright notice,
+> + * this list of conditions and the following disclaimer in the documentation
+> + * and/or other materials provided with the distribution.
+> + * Neither the name of Intel Corporation nor the names of its contributors
+> + * may be used to endorse or promote products derived from this software
+> + * without specific prior written permission.
+> + *
+> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+> + * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+> + * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+> + * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+> + * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+> + * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+> + * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+> + * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+> + * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+> + * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+> + * THE POSSIBILITY OF SUCH DAMAGE.
+> + *
+> + * LGPL LICENSE
+> + *
+> + * tinycompress utility functions
+> + * Copyright (c) 2011-2013, Intel Corporation
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms and conditions of the GNU Lesser General Public License,
+> + * version 2.1, as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope it will be useful, but WITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+> + * License for more details.
+> + *
+> + * You should have received a copy of the GNU Lesser General Public License
+> + * along with this program; if not, write to
+> + * the Free Software Foundation, Inc.,
+> + * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <stdbool.h>
+> +#include <linux/types.h>
+> +#include <sys/time.h>
+> +#define __force
+> +#define __bitwise
+> +#define __user
+> +#include "tinycompress/tinycompress.h"
 > +
-> +	return -1;
->  }
->  
->  const char *compress_get_error(struct compress *compress)
-> @@ -151,27 +152,27 @@ static bool _is_codec_supported(struct compress *compress, struct compr_config *
->  		}
->  	}
->  	if (codec == false) {
-> -		oops(compress, -ENXIO, "this codec is not supported");
-> +		oops(compress, ENXIO, "this codec is not supported");
->  		return false;
->  	}
->  
->  	if (config->fragment_size < caps->min_fragment_size) {
-> -		oops(compress, -EINVAL, "requested fragment size %d is below min supported %d",
-> +		oops(compress, EINVAL, "requested fragment size %d is below min supported %d",
->  			config->fragment_size, caps->min_fragment_size);
->  		return false;
->  	}
->  	if (config->fragment_size > caps->max_fragment_size) {
-> -		oops(compress, -EINVAL, "requested fragment size %d is above max supported %d",
-> +		oops(compress, EINVAL, "requested fragment size %d is above max supported %d",
->  			config->fragment_size, caps->max_fragment_size);
->  		return false;
->  	}
->  	if (config->fragments < caps->min_fragments) {
-> -		oops(compress, -EINVAL, "requested fragments %d are below min supported %d",
-> +		oops(compress, EINVAL, "requested fragments %d are below min supported %d",
->  			config->fragments, caps->min_fragments);
->  		return false;
->  	}
->  	if (config->fragments > caps->max_fragments) {
-> -		oops(compress, -EINVAL, "requested fragments %d are above max supported %d",
-> +		oops(compress, EINVAL, "requested fragments %d are above max supported %d",
->  			config->fragments, caps->max_fragments);
->  		return false;
->  	}
-> @@ -219,7 +220,7 @@ struct compress *compress_open(unsigned int card, unsigned int device,
->  	char fn[256];
->  
->  	if (!config) {
-> -		oops(&bad_compress, -EINVAL, "passed bad config");
-> +		oops(&bad_compress, EINVAL, "passed bad config");
->  		return &bad_compress;
->  	}
->  
-> @@ -242,7 +243,7 @@ struct compress *compress_open(unsigned int card, unsigned int device,
->  
->  	compress->flags = flags;
->  	if (!((flags & COMPRESS_OUT) || (flags & COMPRESS_IN))) {
-> -		oops(&bad_compress, -EINVAL, "can't deduce device direction from given flags");
-> +		oops(&bad_compress, EINVAL, "can't deduce device direction from given flags");
->  		goto config_fail;
->  	}
->  
-> @@ -315,12 +316,12 @@ int compress_get_hpointer(struct compress *compress,
->  	__u64 time;
->  
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_AVAIL, &kavail))
->  		return oops(compress, errno, "cannot get avail");
->  	if (0 == kavail.tstamp.sampling_rate)
-> -		return oops(compress, -ENODATA, "sample rate unknown");
-> +		return oops(compress, ENODATA, "sample rate unknown");
->  	*avail = (unsigned int)kavail.avail;
->  	time = kavail.tstamp.pcm_io_frames / kavail.tstamp.sampling_rate;
->  	tstamp->tv_sec = time;
-> @@ -335,7 +336,7 @@ int compress_get_tstamp(struct compress *compress,
->  	struct snd_compr_tstamp ktstamp;
->  
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_TSTAMP, &ktstamp))
->  		return oops(compress, errno, "cannot get tstamp");
-> @@ -355,9 +356,9 @@ int compress_write(struct compress *compress, const void *buf, unsigned int size
->  	const unsigned int frag_size = compress->config->fragment_size;
->  
->  	if (!(compress->flags & COMPRESS_IN))
-> -		return oops(compress, -EINVAL, "Invalid flag set");
-> +		return oops(compress, EINVAL, "Invalid flag set");
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	fds.fd = compress->fd;
->  	fds.events = POLLOUT;
->  
-> @@ -383,7 +384,7 @@ int compress_write(struct compress *compress, const void *buf, unsigned int size
->  				continue;
->  			}
->  			if (fds.revents & POLLERR) {
-> -				return oops(compress, -EIO, "poll returned error!");
-> +				return oops(compress, EIO, "poll returned error!");
->  			}
->  		}
->  		/* write avail bytes */
-> @@ -415,9 +416,9 @@ int compress_read(struct compress *compress, void *buf, unsigned int size)
->  	const unsigned int frag_size = compress->config->fragment_size;
->  
->  	if (!(compress->flags & COMPRESS_OUT))
-> -		return oops(compress, -EINVAL, "Invalid flag set");
-> +		return oops(compress, EINVAL, "Invalid flag set");
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	fds.fd = compress->fd;
->  	fds.events = POLLIN;
->  
-> @@ -440,7 +441,7 @@ int compress_read(struct compress *compress, void *buf, unsigned int size)
->  				continue;
->  			}
->  			if (fds.revents & POLLERR) {
-> -				return oops(compress, -EIO, "poll returned error!");
-> +				return oops(compress, EIO, "poll returned error!");
->  			}
->  		}
->  		/* read avail bytes */
-> @@ -466,7 +467,7 @@ int compress_read(struct compress *compress, void *buf, unsigned int size)
->  int compress_start(struct compress *compress)
->  {
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_START))
->  		return oops(compress, errno, "cannot start the stream");
->  	compress->running = 1;
-> @@ -477,7 +478,7 @@ int compress_start(struct compress *compress)
->  int compress_stop(struct compress *compress)
->  {
->  	if (!is_compress_running(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_STOP))
->  		return oops(compress, errno, "cannot stop the stream");
->  	return 0;
-> @@ -486,7 +487,7 @@ int compress_stop(struct compress *compress)
->  int compress_pause(struct compress *compress)
->  {
->  	if (!is_compress_running(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_PAUSE))
->  		return oops(compress, errno, "cannot pause the stream");
->  	return 0;
-> @@ -502,7 +503,7 @@ int compress_resume(struct compress *compress)
->  int compress_drain(struct compress *compress)
->  {
->  	if (!is_compress_running(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_DRAIN))
->  		return oops(compress, errno, "cannot drain the stream");
->  	return 0;
-> @@ -511,10 +512,10 @@ int compress_drain(struct compress *compress)
->  int compress_partial_drain(struct compress *compress)
->  {
->  	if (!is_compress_running(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  
->  	if (!compress->next_track)
-> -		return oops(compress, -EPERM, "next track not signalled");
-> +		return oops(compress, EPERM, "next track not signalled");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_PARTIAL_DRAIN))
->  		return oops(compress, errno, "cannot drain the stream\n");
->  	compress->next_track = 0;
-> @@ -524,10 +525,10 @@ int compress_partial_drain(struct compress *compress)
->  int compress_next_track(struct compress *compress)
->  {
->  	if (!is_compress_running(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  
->  	if (!compress->gapless_metadata)
-> -		return oops(compress, -EPERM, "metadata not set");
-> +		return oops(compress, EPERM, "metadata not set");
->  	if (ioctl(compress->fd, SNDRV_COMPRESS_NEXT_TRACK))
->  		return oops(compress, errno, "cannot set next track\n");
->  	compress->next_track = 1;
-> @@ -542,14 +543,14 @@ int compress_set_gapless_metadata(struct compress *compress,
->  	int version;
->  
->  	if (!is_compress_ready(compress))
-> -		return oops(compress, -ENODEV, "device not ready");
-> +		return oops(compress, ENODEV, "device not ready");
->  
->  	version = get_compress_version(compress);
->  	if (version <= 0)
->  		return -1;
->  
->  	if (version < SNDRV_PROTOCOL_VERSION(0, 1, 1))
-> -		return oops(compress, -ENXIO, "gapless apis not supported in kernel");
-> +		return oops(compress, ENXIO, "gapless apis not supported in kernel");
->  
->  	metadata.key = SNDRV_COMPRESS_ENCODER_PADDING;
->  	metadata.value[0] = mdata->encoder_padding;
+> +
+> +unsigned int compress_get_alsa_rate(unsigned int rate)
+> +{
+> +	switch (rate) {
+> +	case 5512:
+> +		return SNDRV_PCM_RATE_5512;
+> +	case 8000:
+> +		return SNDRV_PCM_RATE_8000;
+> +	case 11025:
+> +		return SNDRV_PCM_RATE_11025;
+> +	case 16000:
+> +		return SNDRV_PCM_RATE_16000;
+> +	case 220500:
+> +		return SNDRV_PCM_RATE_22050;
+> +	case 32000:
+> +		return SNDRV_PCM_RATE_32000;
+> +	case 44100:
+> +		return SNDRV_PCM_RATE_44100;
+> +	case 48000:
+> +		return SNDRV_PCM_RATE_48000;
+> +	case 64000:
+> +		return SNDRV_PCM_RATE_64000;
+> +	case 88200:
+> +		return SNDRV_PCM_RATE_88200;
+> +	case 96000:
+> +		return SNDRV_PCM_RATE_96000;
+> +	case 176400:
+> +		return SNDRV_PCM_RATE_176400;
+> +	case 192000:
+> +		return SNDRV_PCM_RATE_192000;
+> +	default:
+> +		return 0;
+> +	}
+> +}
 > -- 
 > 1.7.0.4
 > 
