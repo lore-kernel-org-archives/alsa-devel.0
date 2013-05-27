@@ -1,11 +1,13 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 0/4 V6] Power-well API implementation for Haswell
-Date: Mon, 27 May 2013 17:15:12 +0800
-Message-ID: <1369646116-11942-1-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/4 V6] ALSA: hda - Fix runtime PM check
+Date: Mon, 27 May 2013 17:15:13 +0800
+Message-ID: <1369646116-11942-2-git-send-email-xingchao.wang@linux.intel.com>
+References: <1369646116-11942-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1369646116-11942-1-git-send-email-xingchao.wang@linux.intel.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -19,68 +21,71 @@ To: daniel@ffwll.ch, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, jocelyn.li@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+The device can support runtime PM no matter whether it support
+signal wakeup or not. For some chips like Haswell which doesnot
+support PME by default, this patch let haswell Display HD-A controller
+enter runtime suspend, and bring more power saving whith power-well
+feature enabled.
 
-   This is V6 and here're some changes notes:
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ sound/pci/hda/hda_intel.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-   change from V5-->V6:
-   - Remove duplication code in new introduced probe work
-   - move duplication code in azx_probe_continue
-   - remove unused #ifdef
-   - replace request_module with symbol_request
-   - replace spin_lock_irq with spin_lock_irqsave in gfx side
-   - other typo fixes 
-   (review by Takashi)
-
-   change from V4-->V5:
-   - fix reference count bug
-   - new patch on general runtime pm support for audio pci device
-   - new patch to avoid request_module() deadlock
-
-   change between V3-->V4:
-   - add new structure i915_power_well
-   - initialize drm_device pointer at module init time
-   - change function name
-
-   change between V2-->V3:
-   - make SND_HDA_I915 selectable
-   - use snd_printdd to output message
-   - add return error code check
-   - use symbol_request to replace symbol_get
-   - release power_well at azx_free
-   - some typo fixes
-
-   changes between V1-->V2:
-   - use reference count to track power-well usage
-   - remove external module, compiled into snd-hda-intel instead
-   - manage symbols and module loading properly
-   - remove IS_HSW macro, use flag instead
-   - remove audio callback for gfx driver to avoid dependency 
-   - split whole patch into two pieces for easy review
-   - more typo fixes
-
-Takashi Iwai (1):
-  ALSA: hda - Move azx_first_init() into azx_probe_continue()
-
-Wang Xingchao (3):
-  ALSA: hda - Fix runtime PM check
-  ALSA: hda - Add power-welll support for haswell HDA
-  i915/drm: Add private api for power well usage
-
- drivers/gpu/drm/i915/i915_dma.c  |    6 +++
- drivers/gpu/drm/i915/i915_drv.h  |   12 +++++
- drivers/gpu/drm/i915/intel_drv.h |    4 ++
- drivers/gpu/drm/i915/intel_pm.c  |   92 +++++++++++++++++++++++++++++++++++---
- include/drm/i915_powerwell.h     |   36 +++++++++++++++
- sound/pci/hda/Kconfig            |   10 +++++
- sound/pci/hda/Makefile           |    2 +
- sound/pci/hda/hda_i915.c         |   75 +++++++++++++++++++++++++++++++
- sound/pci/hda/hda_i915.h         |   35 +++++++++++++++
- sound/pci/hda/hda_intel.c        |   87 ++++++++++++++++++++++++++++-------
- 10 files changed, 335 insertions(+), 24 deletions(-)
- create mode 100644 include/drm/i915_powerwell.h
- create mode 100644 sound/pci/hda/hda_i915.c
- create mode 100644 sound/pci/hda/hda_i915.h
-
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 418bfc0..cf3d36c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -3091,8 +3091,13 @@ static int register_vga_switcheroo(struct azx *chip)
+  */
+ static int azx_free(struct azx *chip)
+ {
++	struct pci_dev *pci = chip->pci;
+ 	int i;
+ 
++	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
++			&& chip->running)
++		pm_runtime_get_noresume(&pci->dev);
++
+ 	azx_del_card_list(chip);
+ 
+ 	azx_notifier_unregister(chip);
+@@ -3726,9 +3731,6 @@ static int azx_probe(struct pci_dev *pci,
+ 			goto out_free;
+ 	}
+ 
+-	if (pci_dev_run_wake(pci))
+-		pm_runtime_put_noidle(&pci->dev);
+-
+ 	dev++;
+ 	complete_all(&chip->probe_wait);
+ 	return 0;
+@@ -3741,6 +3743,7 @@ out_free:
+ 
+ static int azx_probe_continue(struct azx *chip)
+ {
++	struct pci_dev *pci = chip->pci;
+ 	int dev = chip->dev_index;
+ 	int err;
+ 
+@@ -3788,6 +3791,8 @@ static int azx_probe_continue(struct azx *chip)
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
+ 	azx_add_card_list(chip);
++	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
++		pm_runtime_put_noidle(&pci->dev);
+ 
+ 	return 0;
+ 
+@@ -3800,9 +3805,6 @@ static void azx_remove(struct pci_dev *pci)
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+ 
+-	if (pci_dev_run_wake(pci))
+-		pm_runtime_get_noresume(&pci->dev);
+-
+ 	if (card)
+ 		snd_card_free(card);
+ 	pci_set_drvdata(pci, NULL);
 -- 
 1.7.9.5
