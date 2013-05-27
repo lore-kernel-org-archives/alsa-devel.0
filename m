@@ -1,15 +1,20 @@
-From: Marek Vasut <marex@denx.de>
-Subject: [PATCH] ASoC: sgtl5000: Fix VAG_POWER
-	enabling/disabling order
-Date: Fri, 24 May 2013 05:34:56 +0200
-Message-ID: <1369366496-15329-1-git-send-email-marex@denx.de>
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+Date: Mon, 27 May 2013 15:02:21 +0200
+Message-ID: <51A3595D.1000603@intel.com>
+References: <1368692945-2122-1-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hehd7jomk.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC4890118154B8@SHSMSX104.ccr.corp.intel.com>
+ <s5h4ndva7g8.wl%tiwai@suse.de> <519CA768.5020305@intel.com>
+ <46B810F6945F7C4788E11DCE57EC489011816442@SHSMSX104.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 886A82650AB
- for <alsa-devel@alsa-project.org>; Fri, 24 May 2013 05:35:02 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54EB126030A
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 15:02:34 +0200 (CEST)
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC489011816442@SHSMSX104.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,83 +24,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Marek Vasut <marex@denx.de>, Fabio Estevam <fabio.estevam@freescale.com>, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Li,
+ Jocelyn" <jocelyn.li@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The VAG_POWER must be enabled after all other bits in CHIP_ANA_POWER
-and disabled before any other bit in CHIP_ANA_POWER. See the SGTL5000
-datasheet (Table 31, BIT 7, page 42-43). Failing to follow this order
-will result in ugly loud "POP" noise at the end of playback.
+On 5/23/2013 4:59 AM, Wang, Xingchao wrote:
+> Hi Rafael,
+>
+>
+>> -----Original Message-----
+>> From: Wysocki, Rafael J
+>> Sent: Wednesday, May 22, 2013 7:09 PM
+>> To: Takashi Iwai
+>> Cc: Wang, Xingchao; Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
+>> alsa-devel@alsa-project.org; Wang Xingchao
+>> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+>>
+>> On 5/22/2013 7:51 AM, Takashi Iwai wrote:
+>>> At Wed, 22 May 2013 03:56:00 +0000,
+>>> Wang, Xingchao wrote:
+>>>> Hi,
+>>>>
+>>>> Add Rafael in loop.
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+>>>>> Sent: Thursday, May 16, 2013 4:49 PM
+>>>>> To: Wang Xingchao
+>>>>> Cc: Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
+>>>>> alsa-devel@alsa-project.org; Wang, Xingchao
+>>>>> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+>>>>>
+>>>>> At Thu, 16 May 2013 16:29:05 +0800,
+>>>>> Wang Xingchao wrote:
+>>>>>> Haswell doesnot support runtime pm by default.
+>>>>>> This patch let haswell Display HD-A controller enter runtime
+>>>>>> suspend, and bring more power saving whith power-well.
+>>>>>>
+>>>>>> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+>>>>> I don't think it's good to fiddle such a thing in the driver side.
+>>>>> If Haswell can support runtime PM really, it should be set commonly.
+>>>> I wonder whether it's HD-A driver's policy to only support runtime PM if the
+>> device can support signal wakup?
+>>>> According to Rafael, the device can support runtime PM regardless, no
+>> matter it supports PME or not.
+>>>> If so, we should remove the "if" condition check here.
+>>> Well, if the decision is purely a driver issue, then we can get rid of
+>>> PME check.
+>> Yes, it is.
+>>
+>>>     But in that case, it should be simply like:
+>>>
+>>> azx_probe() {
+>>> 	...
+>>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+>>> 		pm_runtime_put_noidle(&pci->dev);
+>>> 	...
+>>> }
+>>>
+>>> azx_remove() {
+>>> 	...
+>>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+>>> 		pm_runtime_get_noresume(&pci->dev);
+>>> 	...
+>>> }
+>>>
+>>>
+>>> AFAIU, calling pm_runtime_allow() enables the runtime PM *forcibly*.
+>>> Usually this isn't a good thing.
+>>>
+>> That's correct.  Moreover, calling both pm_runtime_allow() *and*
+>> pm_runtime_put_noidle() together would be a bug IMO.
+> It's interesting something maybe wrong in my test:
+> 1. withtout calling pm_runtime_allow(), azx_runteim_idle/suspend() will not be called.
 
-To achieve such order, use the _PRE and _POST DAPM widgets to trigger
-the power_vag_event, where the event type check has to be fixed
-accordingly as well.
+That's because you need to echo "auto" into the device's 
+/sys/devices/.../power/control file from user space for it to work (most 
+likely that's the reason).  If that file already contains "auto" when 
+this happens, I'll need to look at the code to tell you what may be wrong.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Dong Aisheng <dong.aisheng@linaro.org>
-Cc: Eric Nelson <eric.nelson@boundarydevices.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/sgtl5000.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+> 2. another trick is on my Haswell ULT C stepping board, the runtime PM only work
+> after exit from resume:
+>
+> echo mem > /sys/power/state
+>
+> if you donot let system enter suspend manually, the runtime pm will not be triggered.
+>
+> Is there any dependency between runtime pm suspend and normal suspend?
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 92bbfec..2068c36 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -151,15 +151,15 @@ static int power_vag_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
- 	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMU:
- 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
- 			SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
- 		break;
- 
--	case SND_SOC_DAPM_POST_PMD:
-+	case SND_SOC_DAPM_PRE_PMD:
- 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
- 			SGTL5000_VAG_POWERUP, 0);
--		msleep(400);
-+		mdelay(400);
- 		break;
- 	default:
- 		break;
-@@ -217,12 +217,11 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
- 				0, SGTL5000_CHIP_DIG_POWER,
- 				1, 0),
- 
--	SND_SOC_DAPM_SUPPLY("VAG_POWER", SGTL5000_CHIP_ANA_POWER, 7, 0,
--			    power_vag_event,
--			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
--
- 	SND_SOC_DAPM_ADC("ADC", "Capture", SGTL5000_CHIP_ANA_POWER, 1, 0),
- 	SND_SOC_DAPM_DAC("DAC", "Playback", SGTL5000_CHIP_ANA_POWER, 3, 0),
-+
-+	SND_SOC_DAPM_PRE("VAG_POWER_PRE", power_vag_event),
-+	SND_SOC_DAPM_POST("VAG_POWER_POST", power_vag_event),
- };
- 
- /* routes for sgtl5000 */
-@@ -230,16 +229,13 @@ static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
- 	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
- 	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
- 
--	{"ADC", NULL, "VAG_POWER"},
- 	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
- 	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
- 
--	{"DAC", NULL, "VAG_POWER"},
- 	{"DAC", NULL, "AIFIN"},			/* i2s-->dac,skip audio mux */
- 	{"Headphone Mux", "DAC", "DAC"},	/* dac --> hp_mux */
- 	{"LO", NULL, "DAC"},			/* dac --> line_out */
- 
--	{"LINE_IN", NULL, "VAG_POWER"},
- 	{"Headphone Mux", "LINE_IN", "LINE_IN"},/* line_in --> hp_mux */
- 	{"HP", NULL, "Headphone Mux"},		/* hp_mux --> hp */
- 
--- 
-1.7.10.4
+There shouldn't be any like this, and if there's one, it is a bug most 
+likely.
+
+Thanks,
+Rafael
+
+---------------------------------------------------------------------
+Intel Technology Poland sp. z o.o.
+z siedziba w Gdansku
+ul. Slowackiego 173
+80-298 Gdansk
+
+Sad Rejonowy Gdansk Polnoc w Gdansku, 
+VII Wydzial Gospodarczy Krajowego Rejestru Sadowego, 
+numer KRS 101882
+
+NIP 957-07-52-316
+Kapital zakladowy 200.000 zl
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
