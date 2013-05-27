@@ -1,270 +1,365 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 4/4 V6] i915/drm: Add private api for power
-	well usage
-Date: Mon, 27 May 2013 17:15:16 +0800
-Message-ID: <1369646116-11942-5-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 3/4 V6] ALSA: hda - Add power-welll support for
+	haswell HDA
+Date: Mon, 27 May 2013 17:15:15 +0800
+Message-ID: <1369646116-11942-4-git-send-email-xingchao.wang@linux.intel.com>
 References: <1369646116-11942-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C45D2616EF
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 11:42:23 +0200 (CEST)
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 In-Reply-To: <1369646116-11942-1-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 To: daniel@ffwll.ch, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, jocelyn.li@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com
+Cc: alsa-devel@alsa-project.org, jocelyn.li@intel.com, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Haswell Display audio depends on power well in graphic side, it should
-request power well before use it and release power well after use.
-I915 will not shutdown power well if it detects audio is using.
-This patch protects display audio crash for Intel Haswell C3 stepping board.
+For Intel Haswell chip, HDA controller and codec have
+power well dependency from GPU side. This patch added support
+to request/release power well in audio driver. Power save
+feature should be enabled to get runtime power saving.
+
+There's deadlock when request_module(i915) in azx_probe.
+It looks like:
+device_lock(audio pci device) -> azx_probe -> module_request
+(or symbol_request) -> modprobe (userspace) -> i915 init ->
+drm_pci_init -> pci_register_driver -> bus_add_driver -> driver_attach ->
+which in turn tries all locks on pci bus, and when it tries the one on the
+audio device, it will deadlock.
+
+This patch introduce a work to store remaining probe stuff, and let
+request_module run in safe work context.
 
 Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
 ---
- drivers/gpu/drm/i915/i915_dma.c  |    6 +++
- drivers/gpu/drm/i915/i915_drv.h  |   12 +++++
- drivers/gpu/drm/i915/intel_drv.h |    4 ++
- drivers/gpu/drm/i915/intel_pm.c  |   92 +++++++++++++++++++++++++++++++++++---
- include/drm/i915_powerwell.h     |   36 +++++++++++++++
- 5 files changed, 143 insertions(+), 7 deletions(-)
- create mode 100644 include/drm/i915_powerwell.h
+ sound/pci/hda/Kconfig     |   10 ++++++
+ sound/pci/hda/Makefile    |    2 ++
+ sound/pci/hda/hda_i915.c  |   75 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_i915.h  |   35 +++++++++++++++++++++
+ sound/pci/hda/hda_intel.c |   60 ++++++++++++++++++++++++++++++++++--
+ 5 files changed, 179 insertions(+), 3 deletions(-)
+ create mode 100644 sound/pci/hda/hda_i915.c
+ create mode 100644 sound/pci/hda/hda_i915.h
 
-diff --git a/drivers/gpu/drm/i915/i915_dma.c b/drivers/gpu/drm/i915/i915_dma.c
-index f5addac..b702915 100644
---- a/drivers/gpu/drm/i915/i915_dma.c
-+++ b/drivers/gpu/drm/i915/i915_dma.c
-@@ -1652,6 +1652,9 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
- 	/* Start out suspended */
- 	dev_priv->mm.suspended = 1;
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 80a7d44..c5a872c 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -152,6 +152,16 @@ config SND_HDA_CODEC_HDMI
+ 	  snd-hda-codec-hdmi.
+ 	  This module is automatically loaded at probing.
  
-+	if (IS_HASWELL(dev))
-+		i915_init_power_well(dev);
++config SND_HDA_I915
++	bool "Build Display HD-audio controller/codec power well support for i915 cards"
++	depends on DRM_I915
++	help
++	  Say Y here to include full HDMI and DisplayPort HD-audio controller/codec
++	  power-well support for Intel Haswell graphics cards based on the i915 driver.
 +
- 	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
- 		ret = i915_load_modeset_init(dev);
- 		if (ret < 0) {
-@@ -1708,6 +1711,9 @@ int i915_driver_unload(struct drm_device *dev)
- 
- 	intel_gpu_ips_teardown();
- 
-+	if (IS_HASWELL(dev))
-+		i915_remove_power_well(dev);
++	  Note that this option must be enabled for Intel Haswell C+ stepping machines, otherwise
++	  the GPU audio controller/codecs will not be initialized or damaged when exit from S3 mode.
 +
- 	i915_teardown_sysfs(dev);
+ config SND_HDA_CODEC_CIRRUS
+ 	bool "Build Cirrus Logic codec support"
+ 	default y
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index 24a2514..c091438 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -1,4 +1,6 @@
+ snd-hda-intel-objs := hda_intel.o
++# for haswell power well
++snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
  
- 	if (dev_priv->mm.inactive_shrinker.shrink)
-diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 14817de..ea94e5e 100644
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -720,6 +720,15 @@ struct intel_ilk_power_mgmt {
- 	struct drm_i915_gem_object *renderctx;
- };
- 
-+/* Power well structure for haswell */
-+struct i915_power_well {
-+	struct drm_device *device;
-+	spinlock_t lock;
-+	/* power well enable/disable usage count */
-+	int count;
-+	int i915_request;
-+};
+ snd-hda-codec-y := hda_codec.o hda_jack.o hda_auto_parser.o
+ snd-hda-codec-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+new file mode 100644
+index 0000000..76c13d5
+--- /dev/null
++++ b/sound/pci/hda/hda_i915.c
+@@ -0,0 +1,75 @@
++/*
++ *  hda_i915.c - routines for Haswell HDA controller power well support
++ *
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License as published by the Free
++ *  Software Foundation; either version 2 of the License, or (at your option)
++ *  any later version.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++ *  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ *  for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software Foundation,
++ *  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
++ */
 +
- struct i915_dri1_state {
- 	unsigned allow_batchbuffer : 1;
- 	u32 __iomem *gfx_hws_cpu_addr;
-@@ -1073,6 +1082,9 @@ typedef struct drm_i915_private {
- 	 * mchdev_lock in intel_pm.c */
- 	struct intel_ilk_power_mgmt ips;
- 
-+	/* Haswell power well */
-+	struct i915_power_well *hsw_pwr;
++#include <linux/init.h>
++#include <linux/module.h>
++#include <sound/core.h>
++#include <drm/i915_powerwell.h>
++#include "hda_i915.h"
 +
- 	enum no_fbc_reason no_fbc_reason;
- 
- 	struct drm_mm_node *compressed_fb;
-diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
-index 0f35545..8b5017d 100644
---- a/drivers/gpu/drm/i915/intel_drv.h
-+++ b/drivers/gpu/drm/i915/intel_drv.h
-@@ -754,6 +754,10 @@ extern void intel_update_fbc(struct drm_device *dev);
- extern void intel_gpu_ips_init(struct drm_i915_private *dev_priv);
- extern void intel_gpu_ips_teardown(void);
- 
-+/* Power well */
-+extern int i915_init_power_well(struct drm_device *dev);
-+extern void i915_remove_power_well(struct drm_device *dev);
++static void (*get_power)(void);
++static void (*put_power)(void);
 +
- extern bool intel_display_power_enabled(struct drm_device *dev,
- 					enum intel_display_power_domain domain);
- extern void intel_init_power_well(struct drm_device *dev);
-diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index 1a76572..f429347 100644
---- a/drivers/gpu/drm/i915/intel_pm.c
-+++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -4502,18 +4502,12 @@ bool intel_display_power_enabled(struct drm_device *dev,
- 	}
- }
- 
--void intel_set_power_well(struct drm_device *dev, bool enable)
-+static void __intel_set_power_well(struct drm_device *dev, bool enable)
- {
- 	struct drm_i915_private *dev_priv = dev->dev_private;
- 	bool is_enabled, enable_requested;
- 	uint32_t tmp;
- 
--	if (!HAS_POWER_WELL(dev))
--		return;
--
--	if (!i915_disable_power_well && !enable)
--		return;
--
- 	tmp = I915_READ(HSW_PWR_WELL_DRIVER);
- 	is_enabled = tmp & HSW_PWR_WELL_STATE;
- 	enable_requested = tmp & HSW_PWR_WELL_ENABLE;
-@@ -4536,6 +4530,90 @@ void intel_set_power_well(struct drm_device *dev, bool enable)
- 	}
- }
- 
-+static struct i915_power_well *hsw_pwr;
-+
-+/* Display audio driver power well request */
-+void i915_request_power_well(void)
++void hda_display_power(bool enable)
 +{
-+	if (hsw_pwr == NULL)
++	if (!get_power || !put_power)
 +		return;
 +
-+	spin_lock_irq(&hsw_pwr->lock);
-+	if (!hsw_pwr->count++ &&
-+			!hsw_pwr->i915_request)
-+		__intel_set_power_well(hsw_pwr->device, true);
-+	spin_unlock_irq(&hsw_pwr->lock);
++	snd_printdd("HDA display power %s \n",
++			enable ? "Enable" : "Disable");
++	if (enable)
++		get_power();
++	else
++		put_power();
 +}
-+EXPORT_SYMBOL_GPL(i915_request_power_well);
 +
-+/* Display audio driver power well release */
-+void i915_release_power_well(void)
++int hda_i915_init(void)
 +{
-+	if (hsw_pwr == NULL)
-+		return;
++	int err = 0;
 +
-+	spin_lock_irq(&hsw_pwr->lock);
-+	WARN_ON(!hsw_pwr->count);
-+	if (!--hsw_pwr->count &&
-+		       !hsw_pwr->i915_request)
-+		__intel_set_power_well(hsw_pwr->device, false);
-+	spin_unlock_irq(&hsw_pwr->lock);
++	get_power = symbol_request(i915_request_power_well);
++	if (!get_power) {
++		snd_printk(KERN_WARNING "hda-i915: get_power symbol get fail\n");
++		return -ENODEV;
++	}
++
++	put_power = symbol_request(i915_release_power_well);
++	if (!put_power) {
++		symbol_put(i915_request_power_well);
++		get_power = NULL;
++		return -ENODEV;
++	}
++
++	snd_printd("HDA driver get symbol successfully from i915 module\n");
++
++	return err;
 +}
-+EXPORT_SYMBOL_GPL(i915_release_power_well);
 +
-+int i915_init_power_well(struct drm_device *dev)
++int hda_i915_exit(void)
 +{
-+	struct drm_i915_private *dev_priv = dev->dev_private;
-+
-+	hsw_pwr = kzalloc(sizeof *hsw_pwr, GFP_KERNEL);
-+	if (hsw_pwr == NULL)
-+		return -ENOMEM;
-+
-+	dev_priv->hsw_pwr = hsw_pwr;
-+
-+	hsw_pwr->device = dev;
-+	spin_lock_init(&hsw_pwr->lock);
-+	hsw_pwr->count = 0;
++	if (get_power) {
++		symbol_put(i915_request_power_well);
++		get_power = NULL;
++	}
++	if (put_power) {
++		symbol_put(i915_release_power_well);
++		put_power = NULL;
++	}
 +
 +	return 0;
 +}
+diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h
+new file mode 100644
+index 0000000..5a63da2
+--- /dev/null
++++ b/sound/pci/hda/hda_i915.h
+@@ -0,0 +1,35 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License as published by the Free
++ *  Software Foundation; either version 2 of the License, or (at your option)
++ *  any later version.
++ *
++ *  This program is distributed in the hope that it will be useful, but WITHOUT
++ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ *  more details.
++ *
++ *  You should have received a copy of the GNU General Public License along with
++ *  this program; if not, write to the Free Software Foundation, Inc., 59
++ *  Temple Place - Suite 330, Boston, MA  02111-1307, USA.
++ */
++#ifndef __SOUND_HDA_I915_H
++#define __SOUND_HDA_I915_H
 +
-+void i915_remove_power_well(struct drm_device *dev)
++#ifdef CONFIG_SND_HDA_I915
++void hda_display_power(bool enable);
++int hda_i915_init(void);
++int hda_i915_exit(void);
++#else
++static inline void hda_display_power(bool enable) {}
++static inline int hda_i915_init(void)
 +{
-+	struct drm_i915_private *dev_priv = dev->dev_private;
-+
-+	kfree(dev_priv->hsw_pwr);
-+	dev_priv->hsw_pwr = NULL;
-+	hsw_pwr = NULL;
++	return -ENODEV;
 +}
-+
-+void intel_set_power_well(struct drm_device *dev, bool enable)
++static inline int hda_i915_exit(void)
 +{
-+	struct drm_i915_private *dev_priv = dev->dev_private;
-+	struct i915_power_well *power_well = dev_priv->hsw_pwr;
++	return 0;
++}
++#endif
 +
-+	if (!HAS_POWER_WELL(dev))
-+		return;
++#endif
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 49cc942..1dedcb1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -62,6 +62,7 @@
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+ #include "hda_codec.h"
++#include "hda_i915.h"
+ 
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
+@@ -541,6 +542,10 @@ struct azx {
+ 	/* for pending irqs */
+ 	struct work_struct irq_pending_work;
+ 
++#ifdef CONFIG_SND_HDA_I915
++	struct work_struct probe_work;
++#endif
 +
-+	if (!i915_disable_power_well && !enable)
-+		return;
-+
-+	if (!power_well)
-+		return;
-+
-+	spin_lock_irq(&power_well->lock);
-+	power_well->i915_request = enable;
-+
-+	/* only reject "disable" power well request */
-+	if (power_well->count && !enable) {
-+		spin_unlock_irq(&power_well->lock);
-+		return;
+ 	/* reboot notifier (for mysterious hangup problem at power-down) */
+ 	struct notifier_block reboot_notifier;
+ 
+@@ -594,6 +599,7 @@ enum {
+ #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
+ #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
+ #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
++#define AZX_DCAPS_I915_POWERWELL (1 << 27)	/* HSW i915 power well support */
+ 
+ /* quirks for Intel PCH */
+ #define AZX_DCAPS_INTEL_PCH_NOPM \
+@@ -2869,6 +2875,8 @@ static int azx_suspend(struct device *dev)
+ 	pci_disable_device(pci);
+ 	pci_save_state(pci);
+ 	pci_set_power_state(pci, PCI_D3hot);
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++		hda_display_power(false);
+ 	return 0;
+ }
+ 
+@@ -2881,6 +2889,8 @@ static int azx_resume(struct device *dev)
+ 	if (chip->disabled)
+ 		return 0;
+ 
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++		hda_display_power(true);
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+@@ -2913,6 +2923,8 @@ static int azx_runtime_suspend(struct device *dev)
+ 
+ 	azx_stop_chip(chip);
+ 	azx_clear_irq_pending(chip);
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++		hda_display_power(false);
+ 	return 0;
+ }
+ 
+@@ -2921,6 +2933,8 @@ static int azx_runtime_resume(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++		hda_display_power(true);
+ 	azx_init_pci(chip);
+ 	azx_init_chip(chip, 1);
+ 	return 0;
+@@ -3147,6 +3161,10 @@ static int azx_free(struct azx *chip)
+ 	if (chip->fw)
+ 		release_firmware(chip->fw);
+ #endif
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
++		hda_display_power(false);
++		hda_i915_exit();
 +	}
-+
-+	__intel_set_power_well(dev, enable);
-+	spin_unlock_irq(&power_well->lock);
+ 	kfree(chip);
+ 
+ 	return 0;
+@@ -3372,6 +3390,13 @@ static void azx_check_snoop_available(struct azx *chip)
+ 	}
+ }
+ 
++#ifdef CONFIG_SND_HDA_I915
++static void azx_probe_work(struct work_struct *work)
++{
++	azx_probe_continue(container_of(work, struct azx, probe_work));
 +}
++#endif
 +
  /*
-  * Starting with Haswell, we have a "Power Down Well" that can be turned off
-  * when not needed anymore. We have 4 registers that can request the power well
-diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
-new file mode 100644
-index 0000000..cfdc884
---- /dev/null
-+++ b/include/drm/i915_powerwell.h
-@@ -0,0 +1,36 @@
-+/**************************************************************************
-+ *
-+ * Copyright 2013 Intel Inc.
-+ * All Rights Reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the
-+ * "Software"), to deal in the Software without restriction, including
-+ * without limitation the rights to use, copy, modify, merge, publish,
-+ * distribute, sub license, and/or sell copies of the Software, and to
-+ * permit persons to whom the Software is furnished to do so, subject to
-+ * the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the
-+ * next paragraph) shall be included in all copies or substantial portions
-+ * of the Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL
-+ * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM,
-+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-+ * USE OR OTHER DEALINGS IN THE SOFTWARE.
-+ *
-+ *
-+ **************************************************************************/
+  * constructor
+  */
+@@ -3447,7 +3472,13 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 		return err;
+ 	}
+ 
++#ifdef CONFIG_SND_HDA_I915
++	/* continue probing in work context as may trigger request module */
++	INIT_WORK(&chip->probe_work, azx_probe_work);
++#endif
 +
-+#ifndef _I915_POWERWELL_H_
-+#define _I915_POWERWELL_H_
+ 	*rchip = chip;
 +
-+/* For use by hda_i915 driver */
-+extern void i915_request_power_well(void);
-+extern void i915_release_power_well(void);
+ 	return 0;
+ }
+ 
+@@ -3718,6 +3749,16 @@ static int azx_probe(struct pci_dev *pci,
+ 	}
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ 
++	/* continue probing in work context, avoid request_module deadlock */
++	if (probe_now && (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)) {
++#ifdef CONFIG_SND_HDA_I915
++		probe_now = false;
++		schedule_work(&chip->probe_work);
++#else
++		snd_printk(KERN_ERR SFX "Haswell must build in CONFIG_SND_HDA_I915\n");
++#endif
++	}
 +
-+#endif				/* _I915_POWERWELL_H_ */
+ 	if (probe_now) {
+ 		err = azx_probe_continue(chip);
+ 		if (err < 0)
+@@ -3740,6 +3781,16 @@ static int azx_probe_continue(struct azx *chip)
+ 	int dev = chip->dev_index;
+ 	int err;
+ 
++	/* Request power well for Haswell HDA controller and codec */
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
++		err = hda_i915_init();
++		if (err < 0) {
++			snd_printk(KERN_ERR SFX "Error request power-well from i915\n");
++			goto out_free;
++		}
++		hda_display_power(true);
++	}
++
+ 	err = azx_first_init(chip);
+ 	if (err < 0)
+ 		goto out_free;
+@@ -3834,11 +3885,14 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+ 	/* Haswell */
+ 	{ PCI_DEVICE(0x8086, 0x0a0c),
+-	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
++	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
++	  AZX_DCAPS_I915_POWERWELL },
+ 	{ PCI_DEVICE(0x8086, 0x0c0c),
+-	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
++	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
++	  AZX_DCAPS_I915_POWERWELL },
+ 	{ PCI_DEVICE(0x8086, 0x0d0c),
+-	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
++	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
++	  AZX_DCAPS_I915_POWERWELL },
+ 	/* 5 Series/3400 */
+ 	{ PCI_DEVICE(0x8086, 0x3b56),
+ 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
 -- 
 1.7.9.5
