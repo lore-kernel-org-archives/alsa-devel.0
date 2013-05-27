@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: bells: Hookup DMICs for Bells
-Date: Mon, 27 May 2013 08:13:17 -0400
-Message-ID: <20130527121317.GA2250@sirena.org.uk>
-References: <1369644413-25597-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm8994: Ensure lambda is zeroed for
+	WM8994
+Date: Mon, 27 May 2013 14:24:49 +0100
+Message-ID: <1369661089-13891-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5096969873415501701=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 9116E26031A
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 14:13:38 +0200 (CEST)
-In-Reply-To: <1369644413-25597-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 022B0260369
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 15:24:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, kgene.kim@samsung.com, ben-linux@fluff.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---===============5096969873415501701==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
-Content-Disposition: inline
-
-
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 27, 2013 at 09:46:53AM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Applied, thanks.
-
---ew6BAiZeqk4r7MaW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRo03RAAoJELSic+t+oim9PqAQAJza+VxgnoNsLk3E+ZUq0syN
-pnLcW3sN+pCme8avirQnEAWyjNZZWifjeytjeRksxRWTFWv9Y9Blj6uvEOCJlekX
-49bbDUouznEBbgVrcHoY4bZYZiohfd5PXAEWChInzboTBCMf/hwGE+nIADC6IsQ4
-7wxyFJyuO0N1nSYhAXyf4Ug7+uWcjHQb+1xdXOOzBWoJL382zhIsJsBUbiyO5U3J
-28SmE30Z6e8jw1NMele6JvgdDXrP0yEdJq/iB/qGvAcf90dwVcVGd/fQMrpRq+do
-DsRXWBZTwJAqH7b/KmK7C4soUwrBAhQNA34bCQmLRIA+F/bmRRBMkV2+n6yCxbRC
-ZNcryQKUrKzjmzcIhsr5be32+mhSZxjzh+Q9o5QDyDAQ+yrlnxIyXvOkYk+vlugo
-Xl4WCs2AJgNgOgzZhL5eLU1sPRGr34WFL5X3ZDtUBJfx2pNFEk4QRM4xRedpLVlb
-LS9Ox8aMUkqn6EY1xK5m2fBDLw5JCExAasjHYRw57W34CwtvYamWN0jqkBHJeZZH
-tByArflmMMZOpJLeoyyadZe/ulGZ8wWOKbCLdr+k8/NrR+d43keSgttPrKV9U8gx
-84EWXzUD8uMixH3uArpQ8d9V77CQ+AjlQh9OHLu2SKG1285wwW3q7F++HxXISZcE
-rGjbhNX8Y3BMzu4sHKii
-=JUid
------END PGP SIGNATURE-----
-
---ew6BAiZeqk4r7MaW--
-
---===============5096969873415501701==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5096969873415501701==--
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 5f51127..f5eb644 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1,3 +1,4 @@
++#define DEBUG
+ /*
+  * wm8994.c  --  WM8994 ALSA SoC Audio driver
+  *
+@@ -2078,6 +2079,7 @@ static int wm8994_get_fll_config(struct wm8994 *control, struct fll_div *fll,
+ 
+ 		/* Move down to proper range now rounding is done */
+ 		fll->k = K / 10;
++		fll->lambda = 0;
+ 
+ 		pr_debug("N=%x K=%x\n", fll->n, fll->k);
+ 		break;
+@@ -3129,9 +3131,7 @@ static int wm8994_codec_suspend(struct snd_soc_codec *codec)
+ static int wm8994_codec_resume(struct snd_soc_codec *codec)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8994 *control = wm8994->wm8994;
+ 	int i, ret;
+-	unsigned int val, mask;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm8994->fll); i++) {
+ 		if (!wm8994->fll_suspend[i].out)
+@@ -3986,7 +3986,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 		case 0:
+ 		case 1:
+ 			wm8994->hubs.no_series_update = 1;
+-			wm8994->hubs.no_runtime_dcs = true;
++			//wm8994->hubs.no_runtime_dcs = true;
+ 			break;
+ 		default:
+ 			break;
+-- 
+1.7.10.4
