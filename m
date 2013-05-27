@@ -1,20 +1,20 @@
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
-Date: Mon, 27 May 2013 15:02:21 +0200
-Message-ID: <51A3595D.1000603@intel.com>
-References: <1368692945-2122-1-git-send-email-xingchao.wang@linux.intel.com>
- <s5hehd7jomk.wl%tiwai@suse.de>
- <46B810F6945F7C4788E11DCE57EC4890118154B8@SHSMSX104.ccr.corp.intel.com>
- <s5h4ndva7g8.wl%tiwai@suse.de> <519CA768.5020305@intel.com>
- <46B810F6945F7C4788E11DCE57EC489011816442@SHSMSX104.ccr.corp.intel.com>
+From: Jordi Mallach <jordi@debian.org>
+Subject: Re: [PATCH] Remove an obsolete macro in configure.in
+Date: Mon, 27 May 2013 17:00:50 +0200
+Message-ID: <1369666850.14101.22.camel@penyagolosa.oskuro.net>
+References: <1368693178-30659-1-git-send-email-olivier@trillion01.com>
+ <s5hhai3jate.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
- by alsa0.perex.cz (Postfix) with ESMTP id 54EB126030A
- for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 15:02:34 +0200 (CEST)
-In-Reply-To: <46B810F6945F7C4788E11DCE57EC489011816442@SHSMSX104.ccr.corp.intel.com>
+Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13B5E26036A
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 17:00:59 +0200 (CEST)
+Received: from [192.168.1.140] (168.19.15.37.dynamic.jazztel.es [37.15.19.168])
+ by tempesta.oskuro.net (Postfix) with ESMTPSA id 122E761EE3
+ for <alsa-devel@alsa-project.org>; Mon, 27 May 2013 17:00:53 +0200 (CEST)
+In-Reply-To: <s5hhai3jate.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,116 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Xingchao" <xingchao.wang@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Li,
- Jocelyn" <jocelyn.li@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/23/2013 4:59 AM, Wang, Xingchao wrote:
-> Hi Rafael,
->
->
->> -----Original Message-----
->> From: Wysocki, Rafael J
->> Sent: Wednesday, May 22, 2013 7:09 PM
->> To: Takashi Iwai
->> Cc: Wang, Xingchao; Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
->> alsa-devel@alsa-project.org; Wang Xingchao
->> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
->>
->> On 5/22/2013 7:51 AM, Takashi Iwai wrote:
->>> At Wed, 22 May 2013 03:56:00 +0000,
->>> Wang, Xingchao wrote:
->>>> Hi,
->>>>
->>>> Add Rafael in loop.
->>>>
->>>>> -----Original Message-----
->>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>>>> Sent: Thursday, May 16, 2013 4:49 PM
->>>>> To: Wang Xingchao
->>>>> Cc: Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
->>>>> alsa-devel@alsa-project.org; Wang, Xingchao
->>>>> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
->>>>>
->>>>> At Thu, 16 May 2013 16:29:05 +0800,
->>>>> Wang Xingchao wrote:
->>>>>> Haswell doesnot support runtime pm by default.
->>>>>> This patch let haswell Display HD-A controller enter runtime
->>>>>> suspend, and bring more power saving whith power-well.
->>>>>>
->>>>>> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
->>>>> I don't think it's good to fiddle such a thing in the driver side.
->>>>> If Haswell can support runtime PM really, it should be set commonly.
->>>> I wonder whether it's HD-A driver's policy to only support runtime PM if the
->> device can support signal wakup?
->>>> According to Rafael, the device can support runtime PM regardless, no
->> matter it supports PME or not.
->>>> If so, we should remove the "if" condition check here.
->>> Well, if the decision is purely a driver issue, then we can get rid of
->>> PME check.
->> Yes, it is.
->>
->>>     But in that case, it should be simply like:
->>>
->>> azx_probe() {
->>> 	...
->>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
->>> 		pm_runtime_put_noidle(&pci->dev);
->>> 	...
->>> }
->>>
->>> azx_remove() {
->>> 	...
->>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
->>> 		pm_runtime_get_noresume(&pci->dev);
->>> 	...
->>> }
->>>
->>>
->>> AFAIU, calling pm_runtime_allow() enables the runtime PM *forcibly*.
->>> Usually this isn't a good thing.
->>>
->> That's correct.  Moreover, calling both pm_runtime_allow() *and*
->> pm_runtime_put_noidle() together would be a bug IMO.
-> It's interesting something maybe wrong in my test:
-> 1. withtout calling pm_runtime_allow(), azx_runteim_idle/suspend() will not be called.
-
-That's because you need to echo "auto" into the device's 
-/sys/devices/.../power/control file from user space for it to work (most 
-likely that's the reason).  If that file already contains "auto" when 
-this happens, I'll need to look at the code to tell you what may be wrong.
-
-> 2. another trick is on my Haswell ULT C stepping board, the runtime PM only work
-> after exit from resume:
->
-> echo mem > /sys/power/state
->
-> if you donot let system enter suspend manually, the runtime pm will not be triggered.
->
-> Is there any dependency between runtime pm suspend and normal suspend?
-
-There shouldn't be any like this, and if there's one, it is a bug most 
-likely.
-
-Thanks,
-Rafael
-
----------------------------------------------------------------------
-Intel Technology Poland sp. z o.o.
-z siedziba w Gdansku
-ul. Slowackiego 173
-80-298 Gdansk
-
-Sad Rejonowy Gdansk Polnoc w Gdansku, 
-VII Wydzial Gospodarczy Krajowego Rejestru Sadowego, 
-numer KRS 101882
-
-NIP 957-07-52-316
-Kapital zakladowy 200.000 zl
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+SGksCgpFbCBkaiAxNiBkZSAwNSBkZSAyMDEzIGEgbGVzIDE1OjQ3ICswMjAwLCBlbi9uYSBUYWth
+c2hpIEl3YWkgdmEKZXNjcml1cmU6Cj4gQXQgVGh1LCAxNiBNYXkgMjAxMyAwNDozMjo1OCAtMDQw
+MCwKPiBvbGl2aWVyQHRyaWxsaW9uMDEuY29tIHdyb3RlOgo+ID4gCj4gPiBGcm9tOiBPbGl2aWVy
+IExhbmdsb2lzIDxvbGl2aWVyQHRyaWxsaW9uMDEuY29tPgo+ID4gCj4gPiBSZXBsYWNlZCBBTV9D
+T05GSUdfSEVBREVSIHdpdGggQUNfQ09ORklHX0hFQURFUlMKPiA+IAo+ID4gbGFubzExMDZAd2hp
+cHBldDIgfi9kZXYvYWxzYS1saWIgJCAuL2dpdGNvbXBpbGUKPiA+IGFjbG9jYWw6IHdhcm5pbmc6
+IGF1dG9jb25mIGlucHV0IHNob3VsZCBiZSBuYW1lZCAnY29uZmlndXJlLmFjJywgbm90ICdjb25m
+aWd1cmUuaW4nCj4gPiBjb25maWd1cmUuaW46NTY6IGVycm9yOiAnQU1fQ09ORklHX0hFQURFUic6
+IHRoaXMgbWFjcm8gaXMgb2Jzb2xldGUuCj4gPiAgICAgWW91IHNob3VsZCB1c2UgdGhlICdBQ19D
+T05GSUdfSEVBREVSUycgbWFjcm8gaW5zdGVhZC4KPiA+IC91c3Ivc2hhcmUvYWNsb2NhbC0xLjEz
+L29ic29sZXRlLWVyci5tNDoxMjogQU1fQ09ORklHX0hFQURFUiBpcyBleHBhbmRlZCBmcm9tLi4u
+Cj4gPiBjb25maWd1cmUuaW46NTY6IHRoZSB0b3AgbGV2ZWwKPiA+IGF1dG9tNHRlOiAvdXNyL2Jp
+bi9tNCBmYWlsZWQgd2l0aCBleGl0IHN0YXR1czogMQo+ID4gYWNsb2NhbDogZXJyb3I6IGVjaG8g
+ZmFpbGVkIHdpdGggZXhpdCBzdGF0dXM6IDEKPiAKPiBTaWdoLCBhdXRvbWFrZSBzaG91bGQgYmUg
+cmVuYW1lZCB0byBhdXRvbWFzb2NoaXNtLi4uCgpXb3VsZCB5b3UgYWNjZXB0IHBhdGNoZXMgZm9y
+IHNvbWUgb3RoZXIgaW1wcm92ZW1lbnRzLCBsaWtlIGdlbmVyYXRpbmcgeHoKdGFyYmFsbHMgYW5k
+IG1vZGVybmlzaW5nIHNvbWUgYml0cyBvZiB0aGUgYXV0b3Rvb2xzIGluZnJhc3RydWN0dXJlPwoK
+SW4gcGFydGljdWxhciwgaWYgd2FudGVkLCBnZXR0aW5nIHJpZCBvZiB0aGUgcGFja2FnZS1vZi1w
+YWNrYWdlcyBsYXlvdXQKaW4gYWxzYS10b29scyBhbmQgaGF2ZSBpdCBiZSBhIHNpbmdsZSBwYWNr
+YWdlIHdpdGggYSBzaW5nbGUgY29uZmlndXJlCnNjcmlwdCBsaWtlIGFsc2EtdXRpbHMgaXMgc29t
+ZXRoaW5nIEknZCBsaWtlIHRvIGdldCBkb25lIGluIG15IGNvcGlvdXMKZnJlZSB0aW1lLgoKSm9y
+ZGkKCi0tIApKb3JkaSBNYWxsYWNoIFDDqXJleiAgLS0gIERlYmlhbiBkZXZlbG9wZXIgICAgIGh0
+dHA6Ly93d3cuZGViaWFuLm9yZy8Kam9yZGlAc2luZG9taW5pby5uZXQgICAgIGpvcmRpQGRlYmlh
+bi5vcmcgICAgIGh0dHA6Ly93d3cuc2luZG9taW5pby5uZXQvCkdudVBHIHB1YmxpYyBrZXkgaW5m
+b3JtYXRpb24gYXZhaWxhYmxlIGF0IGh0dHA6Ly9vc2t1cm8ubmV0LwoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
