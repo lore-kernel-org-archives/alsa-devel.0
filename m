@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: [PATCH 02/10] ASoC: blackfin: bf5xx-i2s: Use
-	dev_{err, dbg} instead of pr_{error, debug}
-Date: Tue, 28 May 2013 19:22:10 +0200
-Message-ID: <1369761738-29503-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 05/10] ASoC: blackfin: bf5xx-i2s-pcm:
+	Use snd_pcm_lib_preallocate_pages_for_all()
+Date: Tue, 28 May 2013 19:22:13 +0200
+Message-ID: <1369761738-29503-5-git-send-email-lars@metafoo.de>
 References: <1369761738-29503-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,113 +22,106 @@ To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood 
 Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Using dev_{err,dbg} instead of pr_{error,debug} makes it easier to recognize
-which device created the message.
+Use snd_pcm_lib_preallocate_pages_for_all() for pre-allocating the DMA buffers
+instead of re-implementing the same functionality.  Note that there is no need
+to call snd_pcm_lib_free_pages_for_all() since the ALSA core takes care of this
+for us.
 
 Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 ---
- sound/soc/blackfin/bf5xx-i2s.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ sound/soc/blackfin/bf5xx-i2s-pcm.c | 63 ++------------------------------------
+ 1 file changed, 3 insertions(+), 60 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
-index dd0c2a4..78411f2 100644
---- a/sound/soc/blackfin/bf5xx-i2s.c
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -74,7 +74,8 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		ret = -EINVAL;
- 		break;
- 	default:
--		printk(KERN_ERR "%s: Unknown DAI format type\n", __func__);
-+		dev_err(cpu_dai->dev, "%s: Unknown DAI format type\n",
-+			__func__);
- 		ret = -EINVAL;
- 		break;
- 	}
-@@ -88,7 +89,8 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		ret = -EINVAL;
- 		break;
- 	default:
--		printk(KERN_ERR "%s: Unknown DAI master type\n", __func__);
-+		dev_err(cpu_dai->dev, "%s: Unknown DAI master type\n",
-+			__func__);
- 		ret = -EINVAL;
- 		break;
- 	}
-@@ -141,14 +143,14 @@ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 		ret = sport_config_rx(sport_handle, bf5xx_i2s->rcr1,
- 				      bf5xx_i2s->rcr2, 0, 0);
- 		if (ret) {
--			pr_err("SPORT is busy!\n");
-+			dev_err(dai->dev, "SPORT is busy!\n");
- 			return -EBUSY;
- 		}
+diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+index 107c1c9..9931a18 100644
+--- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
++++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+@@ -209,55 +209,12 @@ static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
+ 	.mmap		= bf5xx_pcm_mmap,
+ };
  
- 		ret = sport_config_tx(sport_handle, bf5xx_i2s->tcr1,
- 				      bf5xx_i2s->tcr2, 0, 0);
- 		if (ret) {
--			pr_err("SPORT is busy!\n");
-+			dev_err(dai->dev, "SPORT is busy!\n");
- 			return -EBUSY;
- 		}
- 	}
-@@ -162,7 +164,7 @@ static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream,
- 	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
- 	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
+-static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->private_data = NULL;
+-	buf->area = dma_alloc_coherent(pcm->card->dev, size,
+-			&buf->addr, GFP_KERNEL);
+-	if (!buf->area) {
+-		pr_err("Failed to allocate dma memory - Please increase uncached DMA memory region\n");
+-		return -ENOMEM;
+-	}
+-	buf->bytes = size;
+-
+-	pr_debug("%s, area:%p, size:0x%08lx\n", __func__,
+-		buf->area, buf->bytes);
+-
+-	return 0;
+-}
+-
+-static void bf5xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-	int stream;
+-
+-	for (stream = 0; stream < 2; stream++) {
+-		substream = pcm->streams[stream].substream;
+-		if (!substream)
+-			continue;
+-
+-		buf = &substream->dma_buffer;
+-		if (!buf->area)
+-			continue;
+-		dma_free_coherent(NULL, buf->bytes, buf->area, 0);
+-		buf->area = NULL;
+-	}
+-}
+-
+ static u64 bf5xx_pcm_dmamask = DMA_BIT_MASK(32);
  
--	pr_debug("%s enter\n", __func__);
-+	dev_dbg(dai->dev, "%s enter\n", __func__);
- 	/* No active stream, SPORT is allowed to be configured again. */
- 	if (!dai->active)
- 		bf5xx_i2s->configured = 0;
-@@ -173,7 +175,7 @@ static int bf5xx_i2s_suspend(struct snd_soc_dai *dai)
+ static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_card *card = rtd->card->snd_card;
+-	struct snd_pcm *pcm = rtd->pcm;
+-	int ret = 0;
++	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
  
--	pr_debug("%s : sport %d\n", __func__, dai->id);
-+	dev_dbg(dai->dev, "%s : sport %d\n", __func__, dai->id);
+ 	pr_debug("%s enter\n", __func__);
+ 	if (!card->dev->dma_mask)
+@@ -265,27 +222,13 @@ static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
+ 	if (!card->dev->coherent_dma_mask)
+ 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
  
- 	if (dai->capture_active)
- 		sport_rx_stop(sport_handle);
-@@ -188,19 +190,19 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
- 	struct bf5xx_i2s_port *bf5xx_i2s = sport_handle->private_data;
- 	int ret;
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			goto out;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
+-			SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			goto out;
+-	}
+- out:
+-	return ret;
++	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
++				SNDRV_DMA_TYPE_DEV, card->dev, size, size);
+ }
  
--	pr_debug("%s : sport %d\n", __func__, dai->id);
-+	dev_dbg(dai->dev, "%s : sport %d\n", __func__, dai->id);
+ static struct snd_soc_platform_driver bf5xx_i2s_soc_platform = {
+ 	.ops		= &bf5xx_pcm_i2s_ops,
+ 	.pcm_new	= bf5xx_pcm_i2s_new,
+-	.pcm_free	= bf5xx_pcm_free_dma_buffers,
+ };
  
- 	ret = sport_config_rx(sport_handle, bf5xx_i2s->rcr1,
- 				      bf5xx_i2s->rcr2, 0, 0);
- 	if (ret) {
--		pr_err("SPORT is busy!\n");
-+		dev_err(dai->dev, "SPORT is busy!\n");
- 		return -EBUSY;
- 	}
- 
- 	ret = sport_config_tx(sport_handle, bf5xx_i2s->tcr1,
- 				      bf5xx_i2s->tcr2, 0, 0);
- 	if (ret) {
--		pr_err("SPORT is busy!\n");
-+		dev_err(dai->dev, "SPORT is busy!\n");
- 		return -EBUSY;
- 	}
- 
-@@ -264,7 +266,7 @@ static int bf5xx_i2s_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_component(&pdev->dev, &bf5xx_i2s_component,
- 					 &bf5xx_i2s_dai, 1);
- 	if (ret) {
--		pr_err("Failed to register DAI: %d\n", ret);
-+		dev_err(&pdev->dev, "Failed to register DAI: %d\n", ret);
- 		sport_done(sport_handle);
- 		return ret;
- 	}
-@@ -276,7 +278,7 @@ static int bf5xx_i2s_remove(struct platform_device *pdev)
- {
- 	struct sport_device *sport_handle = platform_get_drvdata(pdev);
- 
--	pr_debug("%s enter\n", __func__);
-+	dev_dbg(&pdev->dev, "%s enter\n", __func__);
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 	sport_done(sport_handle);
+ static int bfin_i2s_soc_platform_probe(struct platform_device *pdev)
 -- 
 1.8.0
