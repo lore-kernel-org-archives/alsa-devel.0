@@ -1,233 +1,129 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/10] ASoC: blackfin: Remove unused bf5xx-{i2s,
-	tdm, ac97}-pcm.h
-Date: Tue, 28 May 2013 19:22:09 +0200
-Message-ID: <1369761738-29503-1-git-send-email-lars@metafoo.de>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 03/10] ASoC: blackfin: bf5xx-sport:
+	Allow setting rx and tx mask independently
+Date: Tue, 28 May 2013 19:22:11 +0200
+Message-ID: <1369761738-29503-3-git-send-email-lars@metafoo.de>
+References: <1369761738-29503-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-125.synserver.de (smtp-out-125.synserver.de
- [212.40.185.125])
- by alsa0.perex.cz (Postfix) with ESMTP id D13A22610BA
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 19:22:35 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Scott Jiang <scott.jiang.linux@gmail.com>, Steven Miao <realmz6@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1369761738-29503-1-git-send-email-lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Scott Jiang <scott.jiang.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Steven Miao <realmz6-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The structs defined in these files are completely unused, so remove both the
-structs and the files.
+Since the hardware supports it there is no need to artificially limit this to
+just being able to set the same mask for both tx and rx.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 ---
- sound/soc/blackfin/bf5xx-ac97-pcm.c |  1 -
- sound/soc/blackfin/bf5xx-ac97-pcm.h | 26 --------------------------
- sound/soc/blackfin/bf5xx-ad1836.c   |  1 -
- sound/soc/blackfin/bf5xx-ad193x.c   |  1 -
- sound/soc/blackfin/bf5xx-ad1980.c   |  1 -
- sound/soc/blackfin/bf5xx-ad73311.c  |  1 -
- sound/soc/blackfin/bf5xx-i2s-pcm.c  |  1 -
- sound/soc/blackfin/bf5xx-i2s-pcm.h  | 26 --------------------------
- sound/soc/blackfin/bf5xx-ssm2602.c  |  1 -
- sound/soc/blackfin/bf5xx-tdm-pcm.c  |  1 -
- sound/soc/blackfin/bf5xx-tdm-pcm.h  | 18 ------------------
- 11 files changed, 78 deletions(-)
- delete mode 100644 sound/soc/blackfin/bf5xx-ac97-pcm.h
- delete mode 100644 sound/soc/blackfin/bf5xx-i2s-pcm.h
- delete mode 100644 sound/soc/blackfin/bf5xx-tdm-pcm.h
+ sound/soc/blackfin/bf5xx-ac97.c  |  8 ++++----
+ sound/soc/blackfin/bf5xx-sport.c | 10 +++++-----
+ sound/soc/blackfin/bf5xx-sport.h |  2 +-
+ sound/soc/blackfin/bf5xx-tdm.c   |  4 ++--
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index 7e2f360..53f8408 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -39,7 +39,6 @@
+diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
+index 4902173..c66bef8 100644
+--- a/sound/soc/blackfin/bf5xx-ac97.c
++++ b/sound/soc/blackfin/bf5xx-ac97.c
+@@ -231,9 +231,9 @@ static int bf5xx_ac97_resume(struct snd_soc_dai *dai)
+ 		return 0;
  
- #include <asm/dma.h>
+ #if defined(CONFIG_SND_BF5XX_MULTICHAN_SUPPORT)
+-	ret = sport_set_multichannel(sport, 16, 0x3FF, 1);
++	ret = sport_set_multichannel(sport, 16, 0x3FF, 0x3FF, 1);
+ #else
+-	ret = sport_set_multichannel(sport, 16, 0x1F, 1);
++	ret = sport_set_multichannel(sport, 16, 0x1F, 0x1F, 1);
+ #endif
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+@@ -311,9 +311,9 @@ static int asoc_bfin_ac97_probe(struct platform_device *pdev)
  
--#include "bf5xx-ac97-pcm.h"
- #include "bf5xx-ac97.h"
- #include "bf5xx-sport.h"
+ 	/*SPORT works in TDM mode to simulate AC97 transfers*/
+ #if defined(CONFIG_SND_BF5XX_MULTICHAN_SUPPORT)
+-	ret = sport_set_multichannel(sport_handle, 16, 0x3FF, 1);
++	ret = sport_set_multichannel(sport_handle, 16, 0x3FF, 0x3FF, 1);
+ #else
+-	ret = sport_set_multichannel(sport_handle, 16, 0x1F, 1);
++	ret = sport_set_multichannel(sport_handle, 16, 0x1F, 0x1F, 1);
+ #endif
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+diff --git a/sound/soc/blackfin/bf5xx-sport.c b/sound/soc/blackfin/bf5xx-sport.c
+index 2fd9f2a..6953512 100644
+--- a/sound/soc/blackfin/bf5xx-sport.c
++++ b/sound/soc/blackfin/bf5xx-sport.c
+@@ -46,10 +46,10 @@
+ /* note: multichannel is in units of 8 channels,
+  * tdm_count is # channels NOT / 8 ! */
+ int sport_set_multichannel(struct sport_device *sport,
+-		int tdm_count, u32 mask, int packed)
++		int tdm_count, u32 tx_mask, u32 rx_mask, int packed)
+ {
+-	pr_debug("%s tdm_count=%d mask:0x%08x packed=%d\n", __func__,
+-			tdm_count, mask, packed);
++	pr_debug("%s tdm_count=%d tx_mask:0x%08x rx_mask:0x%08x packed=%d\n",
++			__func__, tdm_count, tx_mask, rx_mask, packed);
  
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.h b/sound/soc/blackfin/bf5xx-ac97-pcm.h
-deleted file mode 100644
-index d324d58..0000000
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/*
-- * linux/sound/arm/bf5xx-ac97-pcm.h -- ALSA PCM interface for the Blackfin
-- *
-- * Copyright 2007 Analog Device Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef _BF5XX_AC97_PCM_H
--#define _BF5XX_AC97_PCM_H
--
--struct bf5xx_pcm_dma_params {
--	char *name;			/* stream identifier */
--};
--
--struct bf5xx_gpio {
--	u32 sys;
--	u32 rx;
--	u32 tx;
--	u32 clk;
--	u32 frm;
--};
--
--#endif
-diff --git a/sound/soc/blackfin/bf5xx-ad1836.c b/sound/soc/blackfin/bf5xx-ad1836.c
-index d23f4b0..1528176 100644
---- a/sound/soc/blackfin/bf5xx-ad1836.c
-+++ b/sound/soc/blackfin/bf5xx-ad1836.c
-@@ -30,7 +30,6 @@
+ 	if ((sport->regs->tcr1 & TSPEN) || (sport->regs->rcr1 & RSPEN))
+ 		return -EBUSY;
+@@ -65,8 +65,8 @@ int sport_set_multichannel(struct sport_device *sport,
+ 		sport->regs->mcmc2 = FRAME_DELAY | MCMEN | \
+ 				(packed ? (MCDTXPE|MCDRXPE) : 0);
  
- #include "../codecs/ad1836.h"
+-		sport->regs->mtcs0 = mask;
+-		sport->regs->mrcs0 = mask;
++		sport->regs->mtcs0 = tx_mask;
++		sport->regs->mrcs0 = rx_mask;
+ 		sport->regs->mtcs1 = 0;
+ 		sport->regs->mrcs1 = 0;
+ 		sport->regs->mtcs2 = 0;
+diff --git a/sound/soc/blackfin/bf5xx-sport.h b/sound/soc/blackfin/bf5xx-sport.h
+index 5ab60bd..9fc2192 100644
+--- a/sound/soc/blackfin/bf5xx-sport.h
++++ b/sound/soc/blackfin/bf5xx-sport.h
+@@ -128,7 +128,7 @@ void sport_done(struct sport_device *sport);
+ /* note: multichannel is in units of 8 channels, tdm_count is number of channels
+  *  NOT / 8 ! all channels are enabled by default */
+ int sport_set_multichannel(struct sport_device *sport, int tdm_count,
+-		u32 mask, int packed);
++		u32 tx_mask, u32 rx_mask, int packed);
  
--#include "bf5xx-tdm-pcm.h"
- #include "bf5xx-tdm.h"
+ int sport_config_rx(struct sport_device *sport,
+ 		unsigned int rcr1, unsigned int rcr2,
+diff --git a/sound/soc/blackfin/bf5xx-tdm.c b/sound/soc/blackfin/bf5xx-tdm.c
+index 69e9a3e..aa08516 100644
+--- a/sound/soc/blackfin/bf5xx-tdm.c
++++ b/sound/soc/blackfin/bf5xx-tdm.c
+@@ -198,7 +198,7 @@ static int bf5xx_tdm_resume(struct snd_soc_dai *dai)
+ 	int ret;
+ 	struct sport_device *sport = snd_soc_dai_get_drvdata(dai);
  
- static struct snd_soc_card bf5xx_ad1836;
-diff --git a/sound/soc/blackfin/bf5xx-ad193x.c b/sound/soc/blackfin/bf5xx-ad193x.c
-index 0e55e9f..ce773b3 100644
---- a/sound/soc/blackfin/bf5xx-ad193x.c
-+++ b/sound/soc/blackfin/bf5xx-ad193x.c
-@@ -39,7 +39,6 @@
+-	ret = sport_set_multichannel(sport, 8, 0xFF, 1);
++	ret = sport_set_multichannel(sport, 8, 0xFF, 0xFF, 1);
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+ 		ret = -EBUSY;
+@@ -265,7 +265,7 @@ static int bfin_tdm_probe(struct platform_device *pdev)
+ 		return -ENODEV;
  
- #include "../codecs/ad193x.h"
- 
--#include "bf5xx-tdm-pcm.h"
- #include "bf5xx-tdm.h"
- 
- static struct snd_soc_card bf5xx_ad193x;
-diff --git a/sound/soc/blackfin/bf5xx-ad1980.c b/sound/soc/blackfin/bf5xx-ad1980.c
-index b30f88b..3450e8f 100644
---- a/sound/soc/blackfin/bf5xx-ad1980.c
-+++ b/sound/soc/blackfin/bf5xx-ad1980.c
-@@ -48,7 +48,6 @@
- 
- #include "../codecs/ad1980.h"
- 
--#include "bf5xx-ac97-pcm.h"
- #include "bf5xx-ac97.h"
- 
- static struct snd_soc_card bf5xx_board;
-diff --git a/sound/soc/blackfin/bf5xx-ad73311.c b/sound/soc/blackfin/bf5xx-ad73311.c
-index 61cc91d..786bbdd 100644
---- a/sound/soc/blackfin/bf5xx-ad73311.c
-+++ b/sound/soc/blackfin/bf5xx-ad73311.c
-@@ -45,7 +45,6 @@
- 
- #include "../codecs/ad73311.h"
- #include "bf5xx-sport.h"
--#include "bf5xx-i2s-pcm.h"
- 
- #if CONFIG_SND_BF5XX_SPORT_NUM == 0
- #define bfin_write_SPORT_TCR1	bfin_write_SPORT0_TCR1
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index 262c1de..8726c3a 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -39,7 +39,6 @@
- 
- #include <asm/dma.h>
- 
--#include "bf5xx-i2s-pcm.h"
- #include "bf5xx-sport.h"
- 
- static void bf5xx_dma_irq(void *data)
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.h b/sound/soc/blackfin/bf5xx-i2s-pcm.h
-deleted file mode 100644
-index 0c2c5a6..0000000
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/*
-- * linux/sound/arm/bf5xx-i2s-pcm.h -- ALSA PCM interface for the Blackfin
-- *
-- * Copyright 2007 Analog Device Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef _BF5XX_I2S_PCM_H
--#define _BF5XX_I2S_PCM_H
--
--struct bf5xx_pcm_dma_params {
--	char *name;			/* stream identifier */
--};
--
--struct bf5xx_gpio {
--	u32 sys;
--	u32 rx;
--	u32 tx;
--	u32 clk;
--	u32 frm;
--};
--
--#endif
-diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
-index 7dbeef1..9c19ccc 100644
---- a/sound/soc/blackfin/bf5xx-ssm2602.c
-+++ b/sound/soc/blackfin/bf5xx-ssm2602.c
-@@ -40,7 +40,6 @@
- #include <linux/gpio.h>
- #include "../codecs/ssm2602.h"
- #include "bf5xx-sport.h"
--#include "bf5xx-i2s-pcm.h"
- 
- static struct snd_soc_card bf5xx_ssm2602;
- 
-diff --git a/sound/soc/blackfin/bf5xx-tdm-pcm.c b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-index 19e855d..a6b5457 100644
---- a/sound/soc/blackfin/bf5xx-tdm-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-@@ -39,7 +39,6 @@
- 
- #include <asm/dma.h>
- 
--#include "bf5xx-tdm-pcm.h"
- #include "bf5xx-tdm.h"
- #include "bf5xx-sport.h"
- 
-diff --git a/sound/soc/blackfin/bf5xx-tdm-pcm.h b/sound/soc/blackfin/bf5xx-tdm-pcm.h
-deleted file mode 100644
-index 7f8cc01..0000000
---- a/sound/soc/blackfin/bf5xx-tdm-pcm.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/*
-- * sound/soc/blackfin/bf5xx-tdm-pcm.h -- ALSA PCM interface for the Blackfin
-- *
-- * Copyright 2009 Analog Device Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef _BF5XX_TDM_PCM_H
--#define _BF5XX_TDM_PCM_H
--
--struct bf5xx_pcm_dma_params {
--	char *name;                     /* stream identifier */
--};
--
--#endif
+ 	/* SPORT works in TDM mode */
+-	ret = sport_set_multichannel(sport_handle, 8, 0xFF, 1);
++	ret = sport_set_multichannel(sport_handle, 8, 0xFF, 0xFF, 1);
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+ 		ret = -EBUSY;
 -- 
 1.8.0
