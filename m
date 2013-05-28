@@ -1,20 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Fix VAG_POWER
- enabling/disabling order
-Date: Tue, 28 May 2013 11:10:35 -0300
-Message-ID: <CAOMZO5CpOz3PKiJ8-Ka+0nWN8BLquxHMcb8DZGvEE-cbeq3M8w@mail.gmail.com>
-References: <1369366496-15329-1-git-send-email-marex@denx.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8994: use the correct pointer to
+ get the control value
+Date: Tue, 28 May 2013 10:10:29 -0400
+Message-ID: <20130528141029.GG3660@sirena.org.uk>
+References: <1369735917-9395-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3852828504518913113=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ve0-f178.google.com (mail-ve0-f178.google.com
- [209.85.128.178])
- by alsa0.perex.cz (Postfix) with ESMTP id F13A02610BA
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:10:35 +0200 (CEST)
-Received: by mail-ve0-f178.google.com with SMTP id pb11so3763205veb.23
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 07:10:35 -0700 (PDT)
-In-Reply-To: <1369366496-15329-1-git-send-email-marex@denx.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6491A26158B
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:10:47 +0200 (CEST)
+In-Reply-To: <1369735917-9395-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Marek,
 
-On Fri, May 24, 2013 at 12:34 AM, Marek Vasut <marex@denx.de> wrote:
-> The VAG_POWER must be enabled after all other bits in CHIP_ANA_POWER
-> and disabled before any other bit in CHIP_ANA_POWER. See the SGTL5000
-> datasheet (Table 31, BIT 7, page 42-43). Failing to follow this order
-> will result in ugly loud "POP" noise at the end of playback.
->
-> To achieve such order, use the _PRE and _POST DAPM widgets to trigger
-> the power_vag_event, where the event type check has to be fixed
-> accordingly as well.
->
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Dong Aisheng <dong.aisheng@linaro.org>
-> Cc: Eric Nelson <eric.nelson@boundarydevices.com>
-> Cc: Fabio Estevam <fabio.estevam@freescale.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+--===============3852828504518913113==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qoTlaiD+Y2fIM3Ll"
+Content-Disposition: inline
 
-Thanks, tested on a mx51evk and it removes an annoying 'click' after
-an audio track is played.
 
-> -       case SND_SOC_DAPM_POST_PMD:
-> +       case SND_SOC_DAPM_PRE_PMD:
->                 snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
->                         SGTL5000_VAG_POWERUP, 0);
-> -               msleep(400);
-> +               mdelay(400);
+--qoTlaiD+Y2fIM3Ll
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What is the reasoning for this change?
+On Tue, May 28, 2013 at 03:41:57PM +0530, Vinod Koul wrote:
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 
-Anyway:
+Applied, thanks.
 
-Tested-by: Fabio Estevam <fabio.estevam@freescale.com>
+--qoTlaiD+Y2fIM3Ll
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRpLrSAAoJELSic+t+oim9hQQP/A+Tvv3ZaS+xHmVP9jxGSlQ+
+YzBLYEbjqs1WC3iHYiKL4gBopoa3dKbmnjbuOOnOmmNCUbFySWqZKYp2g0kRIN8+
+jEU+UVM27TkGA/JVgZazME731ZZEcBFA+acE2Y6+t4UhGfkJ5+TCCpRdoQiZRgEv
+dT0Of4vO04KqDRwro3GLQT3woSE6y4ZPDrcAy82/VH8LctzB/dT1l1JRkgYJjCuq
+uZKuKpmpHMm0GxjgFsX3kcXlIIX5bQqLajOZWmHTQzPlBgx8w5Cp4BIUwUb0S+Oq
+hfjXhYHSDtjNq2zrU4eZk8dMRFRT1UjnErnAYvcX4Q6zFvgWkJrYBPiTKqwRYCWg
+Riw7Pbw1H1TFv6J6wx58W4RdATBt9eVI7lc1/gPpupycpZkgSCxhw4Ay/rlJ+Hmz
+UxuFLM/kunlIWx79jLCTmknbvWmtoD1L8OnSVOksvYaPV9IkIY2TlcqbTM1KRqQv
+/YL9vL0NH6bLOVs3kOhw500P6GoPMdUkWzFpRChNl3/4/4ODjfT9Vw7naAkiqJB7
+XbWYkkcNt7CdcfQDCg877E9V03EbQDL/pltN25w0AE5XABPvFwCR9pWZrzuixDCe
+90CZ6mdGQ1TnJ+jC/8U6EEO8uIahZErXI/3rN+8PSoqf9VTAxgYuNc7BQK6fa/Rp
+gVgU0bnB4yenx2rKgGxl
+=KnzQ
+-----END PGP SIGNATURE-----
+
+--qoTlaiD+Y2fIM3Ll--
+
+--===============3852828504518913113==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3852828504518913113==--
