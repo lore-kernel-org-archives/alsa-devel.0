@@ -1,18 +1,15 @@
 From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] ASoC: sgtl5000: Fix VAG_POWER
+Subject: [PATCH V2] ASoC: sgtl5000: Fix VAG_POWER
 	enabling/disabling order
-Date: Tue, 28 May 2013 20:23:40 +0200
-Message-ID: <201305282023.40181.marex@denx.de>
-References: <1369366496-15329-1-git-send-email-marex@denx.de>
- <CAOMZO5CpOz3PKiJ8-Ka+0nWN8BLquxHMcb8DZGvEE-cbeq3M8w@mail.gmail.com>
+Date: Tue, 28 May 2013 20:55:56 +0200
+Message-ID: <1369767356-8496-1-git-send-email-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C0772610BA
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 20:52:02 +0200 (CEST)
-In-Reply-To: <CAOMZO5CpOz3PKiJ8-Ka+0nWN8BLquxHMcb8DZGvEE-cbeq3M8w@mail.gmail.com>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F0C026167E
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 20:56:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +19,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>
+To: alsa-devel@alsa-project.org
+Cc: Marek Vasut <marex@denx.de>, Fabio Estevam <fabio.estevam@freescale.com>, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Fabio Estevam,
+The VAG_POWER must be enabled after all other bits in CHIP_ANA_POWER
+and disabled before any other bit in CHIP_ANA_POWER. See the SGTL5000
+datasheet (Table 31, BIT 7, page 42-43). Failing to follow this order
+will result in ugly loud "POP" noise at the end of playback.
 
-[Fixing Mark's address in the CC.]
+To achieve such order, use the _PRE and _POST DAPM widgets to trigger
+the power_vag_event, where the event type check has to be fixed
+accordingly as well.
 
-> Hi Marek,
-> 
-> On Fri, May 24, 2013 at 12:34 AM, Marek Vasut <marex@denx.de> wrote:
-> > The VAG_POWER must be enabled after all other bits in CHIP_ANA_POWER
-> > and disabled before any other bit in CHIP_ANA_POWER. See the SGTL5000
-> > datasheet (Table 31, BIT 7, page 42-43). Failing to follow this order
-> > will result in ugly loud "POP" noise at the end of playback.
-> > 
-> > To achieve such order, use the _PRE and _POST DAPM widgets to trigger
-> > the power_vag_event, where the event type check has to be fixed
-> > accordingly as well.
-> > 
-> > Signed-off-by: Marek Vasut <marex@denx.de>
-> > Cc: Dong Aisheng <dong.aisheng@linaro.org>
-> > Cc: Eric Nelson <eric.nelson@boundarydevices.com>
-> > Cc: Fabio Estevam <fabio.estevam@freescale.com>
-> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> 
-> Thanks, tested on a mx51evk and it removes an annoying 'click' after
-> an audio track is played.
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Dong Aisheng <dong.aisheng@linaro.org>
+Cc: Eric Nelson <eric.nelson@boundarydevices.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/sgtl5000.c |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-That's good. But you still hear some noise when the headphone/lineout drivers 
-are powered up/down, right?
+V2: Remove that mdelay/msleep regression
 
-> > -       case SND_SOC_DAPM_POST_PMD:
-> > 
-> > +       case SND_SOC_DAPM_PRE_PMD:
-> >                 snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
-> >                 
-> >                         SGTL5000_VAG_POWERUP, 0);
-> > 
-> > -               msleep(400);
-> > +               mdelay(400);
-> 
-> What is the reasoning for this change?
-
-Me being a moron, that's the full reasoning. Sorry.
-
-Best regards,
-Marek Vasut
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 92bbfec..1994f01 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -151,12 +151,12 @@ static int power_vag_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+ 	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
++	case SND_SOC_DAPM_POST_PMU:
+ 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+ 			SGTL5000_VAG_POWERUP, SGTL5000_VAG_POWERUP);
+ 		break;
+ 
+-	case SND_SOC_DAPM_POST_PMD:
++	case SND_SOC_DAPM_PRE_PMD:
+ 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+ 			SGTL5000_VAG_POWERUP, 0);
+ 		msleep(400);
+@@ -217,12 +217,11 @@ static const struct snd_soc_dapm_widget sgtl5000_dapm_widgets[] = {
+ 				0, SGTL5000_CHIP_DIG_POWER,
+ 				1, 0),
+ 
+-	SND_SOC_DAPM_SUPPLY("VAG_POWER", SGTL5000_CHIP_ANA_POWER, 7, 0,
+-			    power_vag_event,
+-			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+-
+ 	SND_SOC_DAPM_ADC("ADC", "Capture", SGTL5000_CHIP_ANA_POWER, 1, 0),
+ 	SND_SOC_DAPM_DAC("DAC", "Playback", SGTL5000_CHIP_ANA_POWER, 3, 0),
++
++	SND_SOC_DAPM_PRE("VAG_POWER_PRE", power_vag_event),
++	SND_SOC_DAPM_POST("VAG_POWER_POST", power_vag_event),
+ };
+ 
+ /* routes for sgtl5000 */
+@@ -230,16 +229,13 @@ static const struct snd_soc_dapm_route sgtl5000_dapm_routes[] = {
+ 	{"Capture Mux", "LINE_IN", "LINE_IN"},	/* line_in --> adc_mux */
+ 	{"Capture Mux", "MIC_IN", "MIC_IN"},	/* mic_in --> adc_mux */
+ 
+-	{"ADC", NULL, "VAG_POWER"},
+ 	{"ADC", NULL, "Capture Mux"},		/* adc_mux --> adc */
+ 	{"AIFOUT", NULL, "ADC"},		/* adc --> i2s_out */
+ 
+-	{"DAC", NULL, "VAG_POWER"},
+ 	{"DAC", NULL, "AIFIN"},			/* i2s-->dac,skip audio mux */
+ 	{"Headphone Mux", "DAC", "DAC"},	/* dac --> hp_mux */
+ 	{"LO", NULL, "DAC"},			/* dac --> line_out */
+ 
+-	{"LINE_IN", NULL, "VAG_POWER"},
+ 	{"Headphone Mux", "LINE_IN", "LINE_IN"},/* line_in --> hp_mux */
+ 	{"HP", NULL, "Headphone Mux"},		/* hp_mux --> hp */
+ 
+-- 
+1.7.10.4
