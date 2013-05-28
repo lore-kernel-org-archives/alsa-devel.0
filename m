@@ -1,91 +1,45 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH] ARM: dts: wm8994: Add wm8994 regulator support on smdk5250.
-Date: Tue, 28 May 2013 16:05:22 +0530
-Message-ID: <1369737322-10907-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
-Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: wm8994: use the correct pointer to get
+	the control value
+Date: Tue, 28 May 2013 15:41:57 +0530
+Message-ID: <1369735917-9395-1-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9E5D2608EB
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 12:49:27 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the required regulator supplies and properties
-for wm8994 codec on smdk5250 board.
-
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- arch/arm/boot/dts/exynos5250-smdk5250.dts |   53 +++++++++++++++++++++++++++-
- 1 files changed, 51 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8994.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250-smdk5250.dts b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-index f2a025e..42fc79e 100644
---- a/arch/arm/boot/dts/exynos5250-smdk5250.dts
-+++ b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-@@ -37,6 +37,46 @@
- 		};
- 	};
- 
-+	avdd2:fixed-regulator@0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "avdd2-supply";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
-+
-+	cpvdd:fixed-regulator@1 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "cpvdd-supply";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
-+
-+	dbvdd:fixed-regulator@2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "dbvdd-supply";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	spkvdd1:fixed-regulator@3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "spkvdd1-supply";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	spkvdd2:fixed-regulator@4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "spkvdd2-supply";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
- 	i2c@12C70000 {
- 		samsung,i2c-sda-delay = <100>;
- 		samsung,i2c-max-bus-freq = <20000>;
-@@ -47,8 +87,17 @@
- 		};
- 
- 		wm8994: wm8994@1a {
--			 compatible = "wlf,wm8994";
--			 reg = <0x1a>;
-+			compatible = "wlf,wm8994";
-+			reg = <0x1a>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+
-+			AVDD2-supply = <&avdd2>;
-+			CPVDD-supply = <&cpvdd>;
-+			DBVDD-supply = <&dbvdd>;
-+			SPKVDD1-supply = <&spkvdd1>;
-+			SPKVDD2-supply = <&spkvdd2>;
- 		};
- 	};
- 
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index f1c54af..49b2b00 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1032,7 +1032,7 @@ static int aif1clk_ev(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_codec *codec = w->codec;
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8994 *control = codec->control_data;
++	struct wm8994 *control = wm8994->wm8994;
+ 	int mask = WM8994_AIF1DAC1L_ENA | WM8994_AIF1DAC1R_ENA;
+ 	int i;
+ 	int dac;
 -- 
-1.7.4.4
+1.7.0.4
