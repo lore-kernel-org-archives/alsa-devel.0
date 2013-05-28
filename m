@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 01/10] ASoC: phycore-ac97: Add DT support
-Date: Tue, 28 May 2013 15:56:03 +0100
-Message-ID: <20130528145603.GR21462@opensource.wolfsonmicro.com>
-References: <1369752478-30260-1-git-send-email-mpa@pengutronix.de>
- <1369752478-30260-2-git-send-email-mpa@pengutronix.de>
+Subject: Re: [PATCH] ASoC: sgtl5000: Fix VAG_POWER
+	enabling/disabling order
+Date: Tue, 28 May 2013 15:59:44 +0100
+Message-ID: <20130528145943.GS21462@opensource.wolfsonmicro.com>
+References: <1369366496-15329-1-git-send-email-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5DE22625EA
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:56:05 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB1192610CC
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:59:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1369752478-30260-2-git-send-email-mpa@pengutronix.de>
+In-Reply-To: <1369366496-15329-1-git-send-email-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,11 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 28, 2013 at 04:47:49PM +0200, Markus Pargmann wrote:
-> Add devicetree support for this audio soc fabric driver.
+On Fri, May 24, 2013 at 05:34:56AM +0200, Marek Vasut wrote:
 
-What is an "audio soc fabric driver"?
+> -	case SND_SOC_DAPM_POST_PMD:
+> +	case SND_SOC_DAPM_PRE_PMD:
+>  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_ANA_POWER,
+>  			SGTL5000_VAG_POWERUP, 0);
+> -		msleep(400);
+> +		mdelay(400);
+>  		break;
+
+This looks to be both unrelated and a regression - mdelay() should be
+more resource intensive than sleeping and if it's 400ms we shouldn't be
+that worried about delaying slightly longer.
+
+Please note my updated mail address which I've been using for a while
+now, the Wolfson one will go bad at the end of the week.
