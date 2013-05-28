@@ -1,77 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l52: fix default value for
-	MASTERA_VOL.
-Date: Tue, 28 May 2013 15:41:33 +0100
-Message-ID: <20130528144133.GP3660@sirena.org.uk>
-References: <1369320782-2371-1-git-send-email-nschichan@freebox.fr>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH v6 00/10] ASoC: fsl-ssi: ac97-slave support
+Date: Tue, 28 May 2013 16:47:48 +0200
+Message-ID: <1369752478-30260-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3098747666835131063=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D62E2610BA
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:41:53 +0200 (CEST)
-In-Reply-To: <1369320782-2371-1-git-send-email-nschichan@freebox.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Schichan <nschichan@freebox.fr>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Georgi Vlaev <joe@nucleusys.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============3098747666835131063==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ctUzwJm0i+kwMBIK"
-Content-Disposition: inline
+This series adds DT support for phycore-ac97. Beside ac97 support, the series
+adds imx-pcm-fiq and generic DMA bindings to fsl-ssi.
 
+Regards,
 
---ctUzwJm0i+kwMBIK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Markus
 
-On Thu, May 23, 2013 at 04:53:02PM +0200, Nicolas Schichan wrote:
-> The default register value for MASTERA_VOL is 0x00, the same as
-> MASTERB_VOL.
+Changes in v6:
+ - Rebased onto 3.10-rc3 with Shawn's pcm cleanup patches
+ - Setup of reset functions moved to phycore-ac97.c
 
-Applied, thanks.  Please use my current e-mail address as per
-MAINTAINERS and so on, the Wolfson one will go bad at the end of the
-week.
+Changes in v5:
+ - Pass of_node via parent device to imx-pcm-dma.
 
---ctUzwJm0i+kwMBIK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Changes in v4:
+ - phycore-ac97 uses the iomux functions based on audmux phandle now.
+ - fsl-ssi imx-pcm-fiq got some new comments about problems with imx-ssi and
+   incompatible codecs
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Changes in v3:
+ - Rebased onto pcm dma cleanup patches
+ - A lot of cleanups for the fsl-ssi ac97 integration
+ - Some small changes which are listed in the notes of the patches.
 
-iQIcBAEBAgAGBQJRpMIaAAoJELSic+t+oim9je4P/3RNUKo3oteZS+jQYeGKekOZ
-1frn11H/2yy21x+gZM3tRgd1EkMc5JaL2aYF/xXdeFHGe0r502gYcPpZM6AKr7Wb
-o9a10zuLSTIjYs70zAuTJYZGCiaDFcVxfsxRfa7l1dC9Gwo9pdZ2fC/NdGa4Jmac
-WpGoNfsuMYJnfX9IiNqDQSXVDMVQQIIhkHS02D/k44XTAPvqgMSvDRTF7cRZ+kDJ
-qUCpSwMdHol+eQX7zMPhu0DpSJVwW5C/oVMA+bI533zZPzrvM9hch7Rv8jFkymQx
-kHBOBcB1FTD8EBxkbVrAV5z+hHBDqV6Xc8tGmyLDN4IcFdpCCqmCv0vavh176ona
-Fk7FtXT9USUkqieVuVlCNN9LeKXODvT6GuyNmagCW4JkU32YS0KrxhT6ypqgYOI/
-xJrJrnq6MSDJ+OTNea0p6M+C4VMR5u8lPVdyrUhjRy4KpDeMOC17nU6ozzo7BHCC
-f1K6cGmcI0uYptJghTG4TtCjY61fYfS4PxXaxB5zmgKelQIn+wbCEiR1SKO5W+3C
-+lZ+tdL5MLa9Nyg+L7jtXXpXLRmwbx/ROfHXNnaHJQOn2LUnH09vW8gDKAW5iTkC
-yMMruge0/LEqTmTQ5dkpU2nyLCgxYPLNuPDieF2dZj3AFwhG29/1ibaz/mpWLLFN
-xps7j4o0qnM2H1YIP+kv
-=3e6Z
------END PGP SIGNATURE-----
+Markus Pargmann (10):
+      ASoC: phycore-ac97: Add DT support
+      ASoC: imx-pcm-dma: DT support
+      ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
+      ASoC: fsl-ssi: Add support for imx-pcm-fiq
+      ASoC: fsl-ssi: Use generic DMA bindings if possible
+      ARM: imx: Export ac97 reset functions
+      ASoC: fsl-ssi: imx ac97 support
+      ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
+      ASoC: fsl: Move fsl-ssi binding doc to sound/
+      ASoC: fsl: Update fsl-ssi binding doc
 
---ctUzwJm0i+kwMBIK--
-
---===============3098747666835131063==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3098747666835131063==--
+ .../{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt}     |  10 +
+ .../bindings/sound/phytec,phycore-ac97.txt         |  14 +
+ arch/arm/mach-imx/mach-pca100.c                    |   7 +-
+ arch/arm/mach-imx/mach-pcm043.c                    |   7 +-
+ sound/soc/fsl/Kconfig                              |   2 +-
+ sound/soc/fsl/fsl_ssi.c                            | 441 +++++++++++++++++----
+ sound/soc/fsl/fsl_ssi.h                            |   7 +
+ sound/soc/fsl/imx-pcm-dma.c                        |   1 -
+ sound/soc/fsl/imx-pcm-fiq.c                        |  18 +-
+ sound/soc/fsl/imx-pcm.h                            |  12 +-
+ sound/soc/fsl/imx-ssi.c                            |   7 +-
+ sound/soc/fsl/imx-ssi.h                            |   1 +
+ sound/soc/fsl/phycore-ac97.c                       | 241 +++++++++--
+ 13 files changed, 643 insertions(+), 125 deletions(-)
+ rename Documentation/devicetree/bindings/{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt} (88%)
+ create mode 100644 Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
