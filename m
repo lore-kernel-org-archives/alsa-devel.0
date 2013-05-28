@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH repost] ASoC: fsi: fixup sparse errors
-Date: Tue, 28 May 2013 15:35:57 +0100
-Message-ID: <20130528143557.GM3660@sirena.org.uk>
-References: <87ip3m3ish.wl%kuninori.morimoto.gx@renesas.com>
- <87vc6825tw.wl%kuninori.morimoto.gx@renesas.com>
- <20130527113033.GE21462@opensource.wolfsonmicro.com>
- <20130527235233.GC8096@verge.net.au>
- <87txln8roj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: cs42l52: fix default value for
+	MASTERA_VOL.
+Date: Tue, 28 May 2013 15:41:33 +0100
+Message-ID: <20130528144133.GP3660@sirena.org.uk>
+References: <1369320782-2371-1-git-send-email-nschichan@freebox.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2578103672249229832=="
+Content-Type: multipart/mixed; boundary="===============3098747666835131063=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A87952610CC
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:36:17 +0200 (CEST)
-In-Reply-To: <87txln8roj.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D62E2610BA
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:41:53 +0200 (CEST)
+In-Reply-To: <1369320782-2371-1-git-send-email-nschichan@freebox.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon Horman <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: Nicolas Schichan <nschichan@freebox.fr>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Georgi Vlaev <joe@nucleusys.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2578103672249229832==
+--===============3098747666835131063==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8c07nsHwQobhlezh"
+	protocol="application/pgp-signature"; boundary="ctUzwJm0i+kwMBIK"
 Content-Disposition: inline
 
 
---8c07nsHwQobhlezh
+--ctUzwJm0i+kwMBIK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 28, 2013 at 12:55:12AM -0700, Kuninori Morimoto wrote:
-> This patch fixup below sparse errors
+On Thu, May 23, 2013 at 04:53:02PM +0200, Nicolas Schichan wrote:
+> The default register value for MASTERA_VOL is 0x00, the same as
+> MASTERB_VOL.
 
-Applied, thanks.
+Applied, thanks.  Please use my current e-mail address as per
+MAINTAINERS and so on, the Wolfson one will go bad at the end of the
+week.
 
---8c07nsHwQobhlezh
+--ctUzwJm0i+kwMBIK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRpMDJAAoJELSic+t+oim9bqIP/0iD+feIWVV35UApdqOy1l3g
-6hABngYOmCijDuhXMZvrXsHU9BRKZ/LbKe+Q3n62n5/k0lZocSKYJ/23AjBfGjGw
-ac/L0Q8iZ1HY8MKQcIrt+qTSh1WLf0FpwKObSdr+CyssK6rrpxK8azQBZbWqvfpu
-/s4XWd6pDXXmcAaX1p2+Br0XzJ/F2Nax1ZwxTNrRvskU+XhLuPFHDiSuQWJYPsv5
-N7rzkjD4L1c++W5sHUziUHCi/4+Q1fKOro1JYl3eBEms5t7cw5r0FvWHcQ0wr2Gs
-Mj+KhCw7AnBsH5k5ScP+ynns4uitz028FWCUQUT1JfjTcF6HDwDrPT2Bh6HzbgTx
-vncKzUoPb/pc4mDVhY8wngkhQKUdYm9HgO+N3+943pD1LEsnO9FLk4lFMwSOJOn6
-XwnxRnt3eQLhvP1UBs/EXMH6M2SN07PLlHXf7rsFOBSU+nhMNi73OLyV6VTTmkmD
-fMziUnDhztAAtTNKgwn8q8BecbbgKceoUOeNN1qM1uf8x9iMdTtuQBPNQcsLnWl+
-Av92oXRJ/y+11cWHqVAR0BaohAqHpcu7zCWewHzT52ZNGKnjLnuu5dqeUuk4vMOQ
-SYsZ3tI1sWl/q2wMSkXEJ25IXmekUYYMb44bvarrkJvmrtZASnchtOQtZZZ0F3A9
-XQfgQPxuehPxbt98fefw
-=0U64
+iQIcBAEBAgAGBQJRpMIaAAoJELSic+t+oim9je4P/3RNUKo3oteZS+jQYeGKekOZ
+1frn11H/2yy21x+gZM3tRgd1EkMc5JaL2aYF/xXdeFHGe0r502gYcPpZM6AKr7Wb
+o9a10zuLSTIjYs70zAuTJYZGCiaDFcVxfsxRfa7l1dC9Gwo9pdZ2fC/NdGa4Jmac
+WpGoNfsuMYJnfX9IiNqDQSXVDMVQQIIhkHS02D/k44XTAPvqgMSvDRTF7cRZ+kDJ
+qUCpSwMdHol+eQX7zMPhu0DpSJVwW5C/oVMA+bI533zZPzrvM9hch7Rv8jFkymQx
+kHBOBcB1FTD8EBxkbVrAV5z+hHBDqV6Xc8tGmyLDN4IcFdpCCqmCv0vavh176ona
+Fk7FtXT9USUkqieVuVlCNN9LeKXODvT6GuyNmagCW4JkU32YS0KrxhT6ypqgYOI/
+xJrJrnq6MSDJ+OTNea0p6M+C4VMR5u8lPVdyrUhjRy4KpDeMOC17nU6ozzo7BHCC
+f1K6cGmcI0uYptJghTG4TtCjY61fYfS4PxXaxB5zmgKelQIn+wbCEiR1SKO5W+3C
++lZ+tdL5MLa9Nyg+L7jtXXpXLRmwbx/ROfHXNnaHJQOn2LUnH09vW8gDKAW5iTkC
+yMMruge0/LEqTmTQ5dkpU2nyLCgxYPLNuPDieF2dZj3AFwhG29/1ibaz/mpWLLFN
+xps7j4o0qnM2H1YIP+kv
+=3e6Z
 -----END PGP SIGNATURE-----
 
---8c07nsHwQobhlezh--
+--ctUzwJm0i+kwMBIK--
 
---===============2578103672249229832==
+--===============3098747666835131063==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2578103672249229832==--
+--===============3098747666835131063==--
