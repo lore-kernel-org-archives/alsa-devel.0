@@ -1,112 +1,32 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v6 06/10] ARM: imx: Export ac97 reset functions
-Date: Tue, 28 May 2013 16:47:54 +0200
-Message-ID: <1369752478-30260-7-git-send-email-mpa@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 01/10] ASoC: phycore-ac97: Add DT support
+Date: Tue, 28 May 2013 15:56:03 +0100
+Message-ID: <20130528145603.GR21462@opensource.wolfsonmicro.com>
 References: <1369752478-30260-1-git-send-email-mpa@pengutronix.de>
+ <1369752478-30260-2-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1369752478-30260-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5DE22625EA
+ for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 16:56:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1369752478-30260-2-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
----
- arch/arm/mach-imx/mach-pca100.c | 7 +++++--
- arch/arm/mach-imx/mach-pcm043.c | 7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+On Tue, May 28, 2013 at 04:47:49PM +0200, Markus Pargmann wrote:
+> Add devicetree support for this audio soc fabric driver.
 
-diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
-index b8b15bb..68badf8 100644
---- a/arch/arm/mach-imx/mach-pca100.c
-+++ b/arch/arm/mach-imx/mach-pca100.c
-@@ -22,6 +22,7 @@
- #include <linux/i2c.h>
- #include <linux/i2c/at24.h>
- #include <linux/dma-mapping.h>
-+#include <linux/export.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
- #include <linux/irq.h>
-@@ -208,7 +209,7 @@ static const struct spi_imx_master pca100_spi0_data __initconst = {
- 	.num_chipselect = ARRAY_SIZE(pca100_spi_cs),
- };
- 
--static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
- {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
- 	gpio_set_value(GPIO_PORTC + 20, 1);
-@@ -217,8 +218,9 @@ static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC20_PF_SSI1_FS);
- 	msleep(2);
- }
-+EXPORT_SYMBOL(pca100_ac97_warm_reset);
- 
--static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
- 	gpio_set_value(GPIO_PORTC + 20, 0);
-@@ -232,6 +234,7 @@ static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC22_PF_SSI1_TXD);
- 	msleep(2);
- }
-+EXPORT_SYMBOL(pca100_ac97_cold_reset);
- 
- static const struct imx_ssi_platform_data pca100_ssi_pdata __initconst = {
- 	.ac97_reset		= pca100_ac97_cold_reset,
-diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
-index 8ed533f..4f318ca 100644
---- a/arch/arm/mach-imx/mach-pcm043.c
-+++ b/arch/arm/mach-imx/mach-pcm043.c
-@@ -27,6 +27,7 @@
- #include <linux/i2c/at24.h>
- #include <linux/usb/otg.h>
- #include <linux/usb/ulpi.h>
-+#include <linux/export.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -217,7 +218,7 @@ static iomux_v3_cfg_t pcm043_pads[] = {
- #define SD1_GPIO_WP	IMX_GPIO_NR(2, 23)
- #define SD1_GPIO_CD	IMX_GPIO_NR(2, 24)
- 
--static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
-+void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
- {
- 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
- 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
-@@ -239,8 +240,9 @@ static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
- 	gpio_free(AC97_GPIO_TXFS);
- 	mxc_iomux_v3_setup_pad(txfs);
- }
-+EXPORT_SYMBOL(pcm043_ac97_warm_reset);
- 
--static void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
-+void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
- {
- 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
- 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
-@@ -286,6 +288,7 @@ err1:
- 		printk("%s failed with %d\n", __func__, ret);
- 	mdelay(1);
- }
-+EXPORT_SYMBOL(pcm043_ac97_cold_reset);
- 
- static const struct imx_ssi_platform_data pcm043_ssi_pdata __initconst = {
- 	.ac97_reset = pcm043_ac97_cold_reset,
--- 
-1.8.2.1
+What is an "audio soc fabric driver"?
