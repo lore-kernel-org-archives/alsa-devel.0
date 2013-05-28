@@ -1,96 +1,71 @@
-From: Stefano Panella <stefano.panella@citrix.com>
-Subject: Re: Problem opening default device in haswell system
- using	aplay
-Date: Tue, 28 May 2013 10:26:09 +0100
-Message-ID: <51A47831.20003@citrix.com>
-References: <519CE8EA.3010303@citrix.com> <s5hfvx8sxx8.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SMTP.EU.CITRIX.COM (smtp.eu.citrix.com [46.33.159.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 317502608D8
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 11:21:43 +0200 (CEST)
-In-Reply-To: <s5hfvx8sxx8.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH V3 0/4] clk: Samsung: audss: Register audio subsytem clocks
+ using common clk framework
+Date: Tue, 28 May 2013 15:32:54 +0530
+Message-ID: <1369735378-10003-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
+Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, mturquette@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/27/2013 08:07 AM, Takashi Iwai wrote:
-> At Wed, 22 May 2013 16:48:58 +0100,
-> Stefano Panella wrote:
->> Hi everyone,
->>
->> sorry if this email has been sent twice... ( I sent it once before subscribing)
->>
->> I am working on some haswell systems running Ubuntu 12.04 and I have a problem if I run aplay -D sysdefault.
->>
->> when I do:
->>
->> cat /proc/asound/pcm
->>
->> I get:
->>
->> 00-03: HDMI 0 : HDMI 0 : playback 1
->> 00-07: HDMI 1 : HDMI 1 : playback 1
->> 00-08: HDMI 2 : HDMI 2 : playback 1
->> 01-00: ALC662 rev3 Analog : ALC662 rev3 Analog : playback 1 : capture 1
->> 01-02: ALC662 rev3 Analog : ALC662 rev3 Analog : capture 1
->>
->> If I do:
->>
->> aplay -L | grep sysdefault
->>
->> I get:
->>
->> sysdefault:CARD=PCH
->>
->> where PCH is card number 1 (id = 1)
->>
->> on most of my systems (non haswell laptops) the default card is number 0
->>
->> If I run
->>
->> aplay -D sysdefault
->>
->> I get:
->>
->> ALSA lib pcm_dmix.c:1018:(snd_pcm_dmix_open) unable to open slave
->> aplay: main:682: audio open error: No such file or directory
-> It's because the card 0 contains only HDMI.  The sysdefault in
-> HDA-Intel.conf is configured for the analog I/O.
-Thanks for answering, what I do not get is what the default 
-configuration is on a freshly installed system (no custom configurations):
+Samsung S5PV210 and Exynos SoC has a separate subsystem for audio. This subsystem
+has a internal clock controller which controls i2s0 and pcm0 clocks. This patch
+series adds the Samsung audio subsytem clock to the common clock framework and
+provides the I2S controllers clock information in the dtsi file.
 
-- for example, can I assume hw:0,0 is always there and is the default? 
-(apparently not on these haswell machine)
-- if I run aplay -D sysdefault is it expected to work?
-- is there any ALSA_CARD variable configured somewhere or is it just 
-supposed to be 0?
-- how do I know what is it the default card/pcm?
+This patch series is made based on Kukjin Kim for-next branch
 
-The reasons I am asking these questions is I need to write some SW which 
-will be able to open the default analog playback device and on haswell 
-system I did not find any way to do that apart from using:
+Changes since V2:
+	- Removed s5pv210 compatible name from driver as it is
+	  not yet supported which is different from Exynos series
+	  audio subsystem clock conroller.
+	- Removed clkdev lookup support and added alias names in
+	  the i2s0 controller node.
+Changes since V1:
+        - Reworked on all review comments by Sylwester Nawrocki
+        - Added a header file for all clock indexes as requested by Sylwester
+        - Added different compatible names for s5pv210, exynos4 and exynos5
+        - Registered the pcm clocks with common clock framework
 
-aplay -L | grep sysdefault
+Padmavathi Venna (4):
+  ARM: samsung: use #include for all device trees
+  clk: samsung: register audio subsystem clocks using common clock
+    framework
+  ARM: dts: add Exynos audio subsystem clock controller node
+  ARM: dts: add clock provider information for i2s controllers in
+    Exynos5250
 
-which will return <CARD> = PCH or Intel or MID etc.. and than I open 
-hw:<CARD>,0 from the C code.
+ .../bindings/clock/clk-samsung-audss.txt           |   64 ++++++++++
+ arch/arm/boot/dts/exynos4.dtsi                     |    2 +-
+ arch/arm/boot/dts/exynos4210-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4210-smdkv310.dts          |    2 +-
+ arch/arm/boot/dts/exynos4210-trats.dts             |    2 +-
+ arch/arm/boot/dts/exynos4210-universal_c210.dts    |    2 +-
+ arch/arm/boot/dts/exynos4210.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos4212.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4412-odroidx.dts           |    2 +-
+ arch/arm/boot/dts/exynos4412-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4412-smdk4412.dts          |    2 +-
+ arch/arm/boot/dts/exynos4412.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4x12.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos5250-arndale.dts           |    2 +-
+ arch/arm/boot/dts/exynos5250-smdk5250.dts          |    2 +-
+ arch/arm/boot/dts/exynos5250-snow.dts              |    4 +-
+ arch/arm/boot/dts/exynos5250.dtsi                  |   23 +++-
+ arch/arm/boot/dts/exynos5440-sd5v1.dts             |    2 +-
+ arch/arm/boot/dts/exynos5440-ssdk5440.dts          |    2 +-
+ arch/arm/boot/dts/exynos5440.dtsi                  |    2 +-
+ arch/arm/boot/dts/s3c2416-smdk2416.dts             |    2 +-
+ arch/arm/boot/dts/s3c2416.dtsi                     |    4 +-
+ arch/arm/boot/dts/s3c24xx.dtsi                     |    2 +-
+ drivers/clk/samsung/Makefile                       |    1 +
+ drivers/clk/samsung/clk-samsung-audss.c            |  133 ++++++++++++++++++++
+ include/dt-bindings/clk/samsung-audss-clk.h        |   25 ++++
+ 26 files changed, 269 insertions(+), 27 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/clk-samsung-audss.txt
+ create mode 100644 drivers/clk/samsung/clk-samsung-audss.c
+ create mode 100644 include/dt-bindings/clk/samsung-audss-clk.h
 
-I would like to understand if I can poerform some more tests to 
-understand if this is a genuine problem on haswell systems or if I am 
-just making some wrong assumptions or incorrect use of the cmd_line/API.
-
-Thanks again for helping me on this.
->
-> Takashi
+-- 
+1.7.4.4
