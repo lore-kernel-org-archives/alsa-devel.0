@@ -1,78 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsi: fixup sparse errors
-Date: Tue, 28 May 2013 06:02:00 -0400
-Message-ID: <20130528100200.GD3660@sirena.org.uk>
-References: <87ip3m3ish.wl%kuninori.morimoto.gx@renesas.com>
- <87vc6825tw.wl%kuninori.morimoto.gx@renesas.com>
- <20130527113033.GE21462@opensource.wolfsonmicro.com>
- <20130527235233.GC8096@verge.net.au>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8286302788828327432=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id B244E2608E8
- for <alsa-devel@alsa-project.org>; Tue, 28 May 2013 12:02:29 +0200 (CEST)
-In-Reply-To: <20130527235233.GC8096@verge.net.au>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Simon Horman <horms@verge.net.au>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH] ARM: dts: wm8994: Add wm8994 regulator support on smdk5250.
+Date: Tue, 28 May 2013 16:05:22 +0530
+Message-ID: <1369737322-10907-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
+Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the required regulator supplies and properties
+for wm8994 codec on smdk5250 board.
 
---===============8286302788828327432==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="48TaNjbzBVislYPb"
-Content-Disposition: inline
+Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+---
+ arch/arm/boot/dts/exynos5250-smdk5250.dts |   53 +++++++++++++++++++++++++++-
+ 1 files changed, 51 insertions(+), 2 deletions(-)
 
-
---48TaNjbzBVislYPb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 28, 2013 at 08:52:33AM +0900, Simon Horman wrote:
-
-> Would it be acceptable for Morimoto-san to repost the patch instead?
-
-Yes, of course - that's actually something that can be used.
-Contentless pings can't be acted on.
-
---48TaNjbzBVislYPb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRpICQAAoJELSic+t+oim9Tm4P/0ppmr5HxdZojRC8CjGdbcuR
-etZMrFqiVlyPkCw7FKnMGnpRFNCCHyeHsM4zinxr2MKQ1lkPPKZOv6IGAQwoYH2M
-BCfc7GdODvl3QUPMAkaYvEgyzRjsw+HDlrIpfQxhBoWdHiILfrrfVP8g2koDU/m/
-i5shxRriPFGYRhpP/gDI+sc9nyOLIqfKDG9HkXO5EjIPwhMPF1JRBsAL3c6DlPKK
-DOnOPEETqubCMoVcY0e3kPbENmshgJ+sQ4toLHTplxLYI87UtXZYUCyWRc9p8OjT
-4eeDDL3ep52DRZneCjE+PeO1pchs2lV1BX+U0HRo93M9QZ/6dZdcuebPmLiVFt8/
-lrCNdUwxuIjE0Ktx1B8RRiABQiLnLiOcLtUiJxA1OohpzrFlswdER6zngsZW49rX
-o6+hWqttyQVzNrbTPy8K0aMc0aumtuDl/Bc3movGnjlqdvY0WoffX6fmD2tg0KBQ
-MDjf7uN2/L+YedykuT99ASpPhUpR7IzY3tk1DWnwxiCgq3EGobS6XRTL004XPVZf
-C+//d03cKTMQsOykq0GG970/oIx6XgOuV8kbOedBGU12uDvT/SAxPj2KxB+k/kwM
-ZecGPS2aVItypg+EqaVIYBP8YWD04euCkvNrRxlaJY6y47PyPoh4WmUZgKlnzims
-P6u+FTKeSUCEjlDofXEi
-=NjeV
------END PGP SIGNATURE-----
-
---48TaNjbzBVislYPb--
-
---===============8286302788828327432==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8286302788828327432==--
+diff --git a/arch/arm/boot/dts/exynos5250-smdk5250.dts b/arch/arm/boot/dts/exynos5250-smdk5250.dts
+index f2a025e..42fc79e 100644
+--- a/arch/arm/boot/dts/exynos5250-smdk5250.dts
++++ b/arch/arm/boot/dts/exynos5250-smdk5250.dts
+@@ -37,6 +37,46 @@
+ 		};
+ 	};
+ 
++	avdd2:fixed-regulator@0 {
++		compatible = "regulator-fixed";
++		regulator-name = "avdd2-supply";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
++
++	cpvdd:fixed-regulator@1 {
++		compatible = "regulator-fixed";
++		regulator-name = "cpvdd-supply";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
++
++	dbvdd:fixed-regulator@2 {
++		compatible = "regulator-fixed";
++		regulator-name = "dbvdd-supply";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++	};
++
++	spkvdd1:fixed-regulator@3 {
++		compatible = "regulator-fixed";
++		regulator-name = "spkvdd1-supply";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++	};
++
++	spkvdd2:fixed-regulator@4 {
++		compatible = "regulator-fixed";
++		regulator-name = "spkvdd2-supply";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++	};
++
+ 	i2c@12C70000 {
+ 		samsung,i2c-sda-delay = <100>;
+ 		samsung,i2c-max-bus-freq = <20000>;
+@@ -47,8 +87,17 @@
+ 		};
+ 
+ 		wm8994: wm8994@1a {
+-			 compatible = "wlf,wm8994";
+-			 reg = <0x1a>;
++			compatible = "wlf,wm8994";
++			reg = <0x1a>;
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			AVDD2-supply = <&avdd2>;
++			CPVDD-supply = <&cpvdd>;
++			DBVDD-supply = <&dbvdd>;
++			SPKVDD1-supply = <&spkvdd1>;
++			SPKVDD2-supply = <&spkvdd2>;
+ 		};
+ 	};
+ 
+-- 
+1.7.4.4
