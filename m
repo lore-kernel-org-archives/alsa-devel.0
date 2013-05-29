@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: Avoid leaking pm_runtime
-	reference on removed jack race
-Date: Wed, 29 May 2013 18:38:46 +0100
-Message-ID: <1369849126-27360-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Nicolas Schichan <nschichan@freebox.fr>
+Subject: [PATCH 0/2] ASoC: cs42l52: HP gain enum and PCM Mixer
+	dB scale fixes.
+Date: Wed, 29 May 2013 20:01:18 +0200
+Message-ID: <1369850480-1772-1-git-send-email-nschichan@freebox.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 57CCA264FEB
- for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 19:44:14 +0200 (CEST)
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id B804B264FE3
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 20:01:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolas Schichan <nschichan@freebox.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 1ddb067..4aaa8a0 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3886,7 +3886,7 @@ static irqreturn_t wm8958_mic_irq(int irq, void *data)
- 				ret);
- 		} else if (!(ret & WM1811_JACKDET_LVL)) {
- 			dev_dbg(codec->dev, "Ignoring removed jack\n");
--			return IRQ_HANDLED;
-+			goto out;
- 		}
- 	} else if (!(reg & WM8958_MICD_STS)) {
- 		snd_soc_jack_report(wm8994->micdet[0].jack, 0,
+The two patches in the serie contains the following fixes:
+
+- Use the correct shift value in hp_gain_enum, effectively allowing
+  the higher gain values to be effective and the correct gain value to
+  be reported to userland wrt what is written to the register.
+
+- Fix the PCM Mixer dB scale so that userland can report the correct
+  dB gain values. Note that in its current form, the PCM Mixer control
+  will only allow the range [-0.5 dB (0x7f), +12 dB (0x18)] to be
+  programmed to the hardware. I don't know if it is intentional or
+  not.
+
+Regards,
+
+Nicolas Schichan (2):
+  ASoC: cs42l52: use correct PCM mixer TLV dB scale to match datasheet.
+  ASoC: cs42l52: fix hp_gain_enum shift value.
+
+ sound/soc/codecs/cs42l52.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
 -- 
 1.7.10.4
