@@ -1,27 +1,59 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: Improving or replacing snd_printk()
-Date: Wed, 29 May 2013 12:51:52 -0700
-Message-ID: <1369857112.22004.119.camel@joe-AO722>
-References: <Pine.LNX.4.44L0.1305291516090.885-100000@iolanthe.rowland.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: aplay lists both Playback and Capture devices
+Date: Wed, 29 May 2013 18:32:56 -0300
+Message-ID: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.44L0.1305291516090.885-100000@iolanthe.rowland.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vb0-f41.google.com (mail-vb0-f41.google.com
+ [209.85.212.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92C3E26506D
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 23:32:57 +0200 (CEST)
+Received: by mail-vb0-f41.google.com with SMTP id p14so6781662vbm.0
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 14:32:56 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2013-05-29 at 15:27 -0400, Alan Stern wrote:
-> Has there been any thought of improving snd_printk(), or even better,
-> changing the call sites to use the dev_*() routines instead?
+Hi,
 
-Perhaps better would be to add and use some combination of
-type specific logging message functions/macros like:
+When running 'aplay -l' and 'arecord -l' I see the following output on
+a mx28evk running a 3.10-rc kernel:
 
-void snd_<level>(const struct snd_device *dev, const char *fmt, ...)
-void snd_card_<level>(const struct snd_card *card, const char *fmt, ...)
-void snd_ac97_<level>(const struct snd_ac97 *ac97, const char *fmt, ...)
+/$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-allowing NULL as the type pointer when necessary/appropriate.
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: mxssgtl5000 [mxs_sgtl5000], device 0: Playback sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: mxssgtl5000 [mxs_sgtl5000], device 1: Capture sgtl5000-1 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+I would expect to see only the Playback entry in aplay and only the
+Record entry in arecord.
+
+Is there anything I should change in sound/soc/mxs/mxs-sgtl5000.c in
+order to get the correct outputs?
+
+Regards,
+
+Fabio Estevam
