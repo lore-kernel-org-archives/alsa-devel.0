@@ -1,41 +1,98 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 03/10] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-Date: Wed, 29 May 2013 22:26:50 +0800
-Message-ID: <20130529142648.GC29528@S2101-09.ap.freescale.net>
-References: <1369752478-30260-1-git-send-email-mpa@pengutronix.de>
- <1369752478-30260-4-git-send-email-mpa@pengutronix.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: UCM {Supported,Conflicting}Device confusion
+Date: Wed, 29 May 2013 09:12:42 -0600
+Message-ID: <51A61AEA.4050602@wwwdotorg.org>
+References: <51A5DEAA.4020007@tieto.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1369752478-30260-4-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7FBC264F00
+ for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 17:12:47 +0200 (CEST)
+In-Reply-To: <51A5DEAA.4020007@tieto.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?ISO-8859-1?Q?Juho_H=E4m=E4l=E4inen?= <juho.hamalainen@tieto.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 28, 2013 at 04:47:51PM +0200, Markus Pargmann wrote:
-> @@ -47,7 +56,8 @@ static inline void imx_pcm_dma_exit(struct platform_device *pdev)
->  #endif
->  
->  #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
-> -int imx_pcm_fiq_init(struct platform_device *pdev);
-> +int imx_pcm_fiq_init(struct platform_device *pdev,
-> +		struct imx_pcm_fiq_params *params);
->  void imx_pcm_fiq_exit(struct platform_device *pdev);
->  #else
->  static inline int imx_pcm_fiq_init(struct platform_device *pdev)
+On 05/29/2013 04:55 AM, Juho H=E4m=E4l=E4inen wrote:
+> Hello,
+> =
 
-This one also needs update with a new parameter.
+> Firstly as a sidenote, Supported/Conflicting is checked only one-way, if
+> say devices A and B are enabled and say B has ConflictingDevice "C", and
+> device C doesn't list anything, enabling of C is possible (and after
+> that disabling C is not possible before B is disabled first).
 
-Shawn
+It's been a long time since I touched the ConflictingDevice stuff, but
+IIRC the idea was that every device would include a complete list of
+Supported/Conflicting Devices, so there was only a need to check "one way".
+
+> Now, looking at the way SupportedDevice and ConflictingDevice are
+> implemented in ucm and I came to following conclusion:
+> =
+
+> If no SupportedDevice or ConflictingDevice: All devices and combinations
+> are compatible, so implicit "SupportedDevice ALL".
+> =
+
+> If SupportedDevice is listed: Device can be enabled as long as at least
+> one enabled device is in SupportedDevice list.
+> =
+
+> If ConflictingDevice is listed: Device can be enabled if none of active
+> devices are in ConflictingDevice list (noting aforementioned limit in
+> checking this)
+> =
+
+> This is at least how I figured all combinations of multiple devices can
+> be defined with only zero or one either SupportedDevice or
+> ConflictingDevice entry per device.
+> =
+
+> Did I understand this right?
+
+That sounds about right, from my rusty memory.
+
+Oh, the commit log specifies the behaviour:
+
+>     UCM: Implement ConflictingDevices, add device list to devices
+>     =
+
+>     Wherever SupportedDevice can appear, also allow ConflictingDevice. On=
+ly
+>     one or the other (or neither) may be specified. When neither is
+>     specified, allow anything. Sometimes, listing ConflictingDevices may
+>     result in a shorter list than explicitly listing all SupportedDevices.
+>     =
+
+>     Add support for SupportedDevice and ConflictingDevice to SectionDevic=
+e.
+>     This allows representing devices which are mutually exclusive, e.g. d=
+ue
+>     to a mux that switches between capturing from two different microphon=
+es,
+>     without the possibility of mixing.
+>     =
+
+>     Enhance is_modifier_supported to allow ignoring SupportedDevice and
+>     ConflictingDevice. This is useful when querying values from a
+>     SectionModifier; there's no reason we shouldn't be able to query valu=
+es
+>     just because the current configuration would prevent enabling that
+>     device. The new is_device_supported is implemented similarly.
+>     =
+
+>     Enhance switch_device to remove the old device from the current device
+>     list before querying for the new device, and add it back immediately
+>     afterwards. This allows the query for the new device to ignore any
+>     conflicts caused solely by the old device.
