@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/10] ASoC: blackfin: Remove unused
- bf5xx-{i2s, tdm, ac97}-pcm.h
-Date: Thu, 30 May 2013 11:47:03 +0100
-Message-ID: <20130530104703.GE5180@sirena.org.uk>
-References: <1369761738-29503-1-git-send-email-lars@metafoo.de>
- <20130529192726.GA5180@sirena.org.uk> <51A70402.2070901@metafoo.de>
+Subject: Re: [PATCH] ASoC: wm0010: Set IRQ as a wake source
+Date: Thu, 30 May 2013 11:48:20 +0100
+Message-ID: <20130530104819.GF5180@sirena.org.uk>
+References: <1369904761-8355-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1674160126511448907=="
+Content-Type: multipart/mixed; boundary="===============0131132458078577780=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 17F5F265127
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:47:18 +0200 (CEST)
-In-Reply-To: <51A70402.2070901@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFB14265117
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:48:33 +0200 (CEST)
+In-Reply-To: <1369904761-8355-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Scott Jiang <scott.jiang.linux@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Steven Miao <realmz6@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1674160126511448907==
+--===============0131132458078577780==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YkJPYEFdoxh/AXLE"
+	protocol="application/pgp-signature"; boundary="b8GWCKCLzrXbuNet"
 Content-Disposition: inline
 
 
---YkJPYEFdoxh/AXLE
+--b8GWCKCLzrXbuNet
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 30, 2013 at 09:47:14AM +0200, Lars-Peter Clausen wrote:
+On Thu, May 30, 2013 at 10:06:01AM +0100, Charles Keepax wrote:
+> The DSPs IRQ should be a wake source as several of the possible
+> algorithms may run whilst the AP is asleepi and require to wake the AP
+> to push or pull more data, such as compressed playback.
 
-> Hm, where exactly are you getting conflicts? If I download the patches as
-> they are in the ml-archive and run git am on them on top of topic/blackfin
-> everything applies cleanly.
+Applied, thanks.
 
-Patch 3 IIRC.
-
---YkJPYEFdoxh/AXLE
+--b8GWCKCLzrXbuNet
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRpy4kAAoJELSic+t+oim96gUQAJAcqO/XNfCLuVCd3sVTf0yy
-tgNsb+kOi3R7MuiS/Kc8I+c5/kJxXTGTwBMQXdW+weG5jpty8Sjvb9puH5/+jSF6
-jmOyze77IJm75zode0daTH9pVefHY1IV6JJWD2sKf4bv6wzc1kO2M5Qilt48ylhP
-BlwX4FgR1V5VFNI+R620JXbrDwX2/+M6u7v8A/jYgqjmDjU4A4OTjiGwYpQ069FL
-JMPcXzTuHfwFTVY6xo+zg5N48MdFGh1dodJ4DDquZ/29goT9ufd11f3WFbx7+Plf
-+tN5e2dT21LDmLq7Jhh7LTpqDg96iBX/H1sUbtt0+svlrfnNqDz1+nE+b9XeElz9
-eFrSNUEAGQObIm5i+7LjQHlTzk5xSKG+GoK0SrN5qFxbg+pb8gSX5eBLSn1WHBSu
-lVkPehnWLDhauEXbm+ByjoMGVMp6Ob0mWWTbqoCzELQegMEA0H7N7+8RZNXZUZtK
-+hjJ0n35c6+HHr/H4DldBLcw2LDhk0aaJhaXZRqZNuX7u60OB+HxOMLGWODjsq6T
-Ip9IqFuACss9mf7jgoB8cg9ieu9GqtnLYR78C35YXFkiOXXSpXcKc6yTvpk0R+rs
-4KOMqs6syExIq2EQdLTcUWh4GCU2V7/U7IVrEWJr7xfMyEoFaRPi3oMKFQ2/0pCh
-XX0BLXGMjo6V6IpUpXvD
-=5nVQ
+iQIcBAEBAgAGBQJRpy5wAAoJELSic+t+oim9Va0P/ikGQY5haoloGd/b9SzMwmKa
+QHAkpXcOttB24xCWv4WglABBcfC3QVx7dNt4Rzujwlt9uYiuTa4PRMttr3I8U2En
+KnuHp2JqKdwdiLsg5nJJSwkM7ESgY8pHuGWnMoOUaNz+bUD/gJ9WbQyKRBg3Duzx
+AuY0MgwOxSFSr7yNv3BuOZcDtRO9txScGRLMVk9ZyGf9P3D9IImssTBoodvG1mN1
+u7AJUpEsdtMRF568HU1iWuj8zW677sOs/9NIWe1aUyuojg/WFA72B5enljk3pHvt
+5e7tj0Yrnyae2D+FFoLA9GdBiidbcEBau6mwbeNifPJT+E3LMcvIJFs8s43AIJpE
+4chmwmp51P1U+eUgcBieSCe94uMmzI8TPDsgC0c8z8y1XwOnzlYDrqoF3nX7TLQw
+GGNT1g8ScA5y+rx/zk+tbmy/gIaJagO3oWPwnKoL098kpYe3+sSzaQyuiDaiYYFM
+yQMslwqED7ufyaB7Tmjp9pQZ9Hb3dp6TU9ojegyAmTVun9wzeeijqjgGzspWK/nx
++0G5RaoTHEf1ONO/cOVuQIjxrXRoPvHI/ywSzOK0c+RbLnI4Rjvw+WjKi+FsQEeW
+C1FV71t389owqFWFalEKXxBfu47acjeEtMK8aYeX0mZJqvJ/+Txo3un+o8Q438PZ
+/Bdk/AitO13a56bauL71
+=a5qq
 -----END PGP SIGNATURE-----
 
---YkJPYEFdoxh/AXLE--
+--b8GWCKCLzrXbuNet--
 
---===============1674160126511448907==
+--===============0131132458078577780==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1674160126511448907==--
+--===============0131132458078577780==--
