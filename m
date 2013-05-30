@@ -1,46 +1,57 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 6/6] MIPS: jz4740: Remove custom DMA API
-Date: Thu, 30 May 2013 20:48:03 +0200
-Message-ID: <51A79EE3.4040403@metafoo.de>
-References: <1369931105-28065-1-git-send-email-lars@metafoo.de> <1369931105-28065-7-git-send-email-lars@metafoo.de> <20130530172050.GB3767@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Improving or replacing snd_printk()
+Date: Thu, 30 May 2013 20:49:09 +0200
+Message-ID: <51A79F25.6040007@perex.cz>
+References: <Pine.LNX.4.44L0.1305301411370.1137-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130530172050.GB3767@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E610261A5C
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 20:49:09 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.44L0.1305301411370.1137-100000@iolanthe.rowland.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Joe Perches <joe@perches.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/30/2013 07:20 PM, Vinod Koul wrote:
-> On Thu, May 30, 2013 at 06:25:05PM +0200, Lars-Peter Clausen wrote:
->> Now that all users of the custom jz4740 DMA API have been converted to use
->> the dmaengine API instead we can remove the custom API and move all the code
->> talking to the hardware to the dmaengine driver.
+Date 30.5.2013 20:14, Alan Stern wrote:
+> On Wed, 29 May 2013, Joe Perches wrote:
+> 
+>> On Wed, 2013-05-29 at 15:27 -0400, Alan Stern wrote:
+>>> Has there been any thought of improving snd_printk(), or even better,
+>>> changing the call sites to use the dev_*() routines instead?
 >>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Acked-by: Ralf Baechle <ralf@linux-mips.org>
->> ---
->> No changes since v1
->> ---
->>  arch/mips/include/asm/mach-jz4740/dma.h |  56 ------
->>  arch/mips/jz4740/Makefile               |   2 +-
->>  arch/mips/jz4740/dma.c                  | 307 --------------------------------
->>  drivers/dma/dma-jz4740.c                | 258 +++++++++++++++++++++++----
->>  4 files changed, 222 insertions(+), 401 deletions(-)
->>  delete mode 100644 arch/mips/jz4740/dma.c
-> only dma.c, you should remove the dma.h or relocate it to linux/
-
-As I said the header only contains the slave ids at this point and the
-dmaengine driver doesn't need it anymore. So I should remove the #include from
-the driver as well.
-
+>> Perhaps better would be to add and use some combination of
+>> type specific logging message functions/macros like:
+>>
+>> void snd_<level>(const struct snd_device *dev, const char *fmt, ...)
+>> void snd_card_<level>(const struct snd_card *card, const char *fmt, ...)
+>> void snd_ac97_<level>(const struct snd_ac97 *ac97, const char *fmt, ...)
+>>
+>> allowing NULL as the type pointer when necessary/appropriate.
 > 
-> 
-> rest of the series looks fine, and once we have acks from repsective subsystem
-> mainatiners, we should be good to merge
+> Almost anything would be better than the current situation.  The only 
+> enhancement provided by CONFIG_SND_VERBOSE_PRINTK is to print the 
+> filename and line number, which is relatively unhelpful (unless there 
+> are multiple copies of the same message in several places).
 
-We already have acks from the maintainers.
+I don't think that it's useless to see the origin of the source message
+from the first glance. It may be improved, of course, but adding more
+and more functions with minor benefits is another step to another hell.
 
-- Lars
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
