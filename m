@@ -1,16 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH alsa-lib 1/2] pcm_hw: Remove unused fields in
-	struct
-Date: Thu, 30 May 2013 12:26:33 +0200
-Message-ID: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: aplay lists both Playback and Capture devices
+Date: Thu, 30 May 2013 11:43:19 +0100
+Message-ID: <20130530104319.GD5180@sirena.org.uk>
+References: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2930627156207092805=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C9C1C2650F0
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:26:36 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD0DC2610AB
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:43:35 +0200 (CEST)
+In-Reply-To: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, arun.raghavan@collabora.co.uk, David Henningsson <david.henningsson@canonical.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These fields are not used, and their name similarity to other
-fields are quite confusing when trying to debug alsa-lib.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- src/pcm/pcm_hw.c |    2 --
- 1 file changed, 2 deletions(-)
+--===============2930627156207092805==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pZs/OQEoSSbxGlYw"
+Content-Disposition: inline
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 0f3226d..196393d 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -95,8 +95,6 @@ typedef struct {
- 	volatile struct snd_pcm_mmap_status * mmap_status;
- 	struct snd_pcm_mmap_control *mmap_control;
- 	struct snd_pcm_sync_ptr *sync_ptr;
--	snd_pcm_uframes_t hw_ptr;
--	snd_pcm_uframes_t appl_ptr;
- 	int period_event;
- 	snd_timer_t *period_timer;
- 	struct pollfd period_timer_pfd;
--- 
-1.7.9.5
+
+--pZs/OQEoSSbxGlYw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 29, 2013 at 06:32:56PM -0300, Fabio Estevam wrote:
+
+> Is there anything I should change in sound/soc/mxs/mxs-sgtl5000.c in
+> order to get the correct outputs?
+
+No, this is userspace.
+
+--pZs/OQEoSSbxGlYw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRpy0/AAoJELSic+t+oim9odgQAIMa6f3xGiI+R8EPeR+BCLiI
+lWsP05YCN+BGiOJlqB9YxhOCFGll1lUuQ3lx5g29Y7b+E1LikEU+f9SPv7Z4KH4u
+lstOMbJEcpg5mXmlm4W0bhdOuk5KTgyVFJQNJCe4/QZYUljoiKWIT5f5BNaKYrDv
+p9sLkXvE9fdq16aKoJ4zeFWX/AlFzH+tIMq3BrazskSsA2ti0Jk5DZgMB7rsIjJx
+Hm5poCRJ5bKtlIZATePwsHZGaBUKMzjW9zYPAOHHH9aGn2yb2MAgVSVBhs9bKz24
+oU3Cz1qvWDenTQOIb3FH348+u1SW3A9RWOdPQJJzXAx7V4H7MFbh/2VZbIn04Qs0
+fmnouxpprlonPtTk2xO5CWZsxZFkqugXjK5PN3W+/xG9mFzhDR+41yxPskN9SbTo
+LWwfJpF2Ne1rSz2eF3JY7Yi+vRuTx6MoFeQjhIv/I4N1JgDGWMWko3XpsDhwqZ6r
+PA56N7WZ82Gfah65JLahq0P6RjqpvNKyG0Bj3CjlFEEsN/f3k+atdVMbdQ9GZyju
+w/BNHAGnEQdRFMuUVd9EFJj3Mi3q0tHZFGPCXX1DvYbsT+Vo96R8nveILHMluQiX
+lBMDBc9REAJZwO0YNU1Ru4HYF7LvZnM4LYNfwJ8omDODCW8xkxaBoS4S3weF+Mao
+xiUBcocqj/1+5fUhZp6w
+=OY3s
+-----END PGP SIGNATURE-----
+
+--pZs/OQEoSSbxGlYw--
+
+--===============2930627156207092805==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2930627156207092805==--
