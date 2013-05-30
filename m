@@ -1,169 +1,56 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v7 02/11] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-Date: Thu, 30 May 2013 16:51:44 +0200
-Message-ID: <1369925513-19329-3-git-send-email-mpa@pengutronix.de>
-References: <1369925513-19329-1-git-send-email-mpa@pengutronix.de>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [PATCH] alsa-utils 1.0.27.1 still ships
+ 90-alsa-restore.rules
+Date: Thu, 30 May 2013 17:06:31 +0200
+Message-ID: <20130530150631.GA20416@galadriel.home.lxtec.de>
+References: <20130530130813.GA25784@galadriel.home.lxtec.de>
+ <51A75A5B.8090000@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1369925513-19329-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.hostsharing.net (mailout2.hostsharing.net
+ [83.223.90.233])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08D5E2610AE
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 17:06:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51A75A5B.8090000@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, pkg-alsa-devel@lists.alioth.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
-struct to pass all arguments.
+* Jaroslav Kysela <perex@perex.cz> [2013-05-30 15:55 +0200]:
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
----
+> Date 30.5.2013 15:08, Elimar Riesebieter wrote:
+> > 
+> > Hi all,
+> > 
+> > [0] tells:
+> > alsactl: remove 90-alsa-restore.rules from the tar ball
+> > 
+> > but it still ships 90-alsa-restore.rules.in and installs the file as
+> > 90-alsa-restore.rules
+> 
+> It's correct. The rules file should be generated after configure/make
+> with correct paths.
+> 
+> It's not a complete removal of this feature. You probably miss this fix:
+> 
+> http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=c0f70a0b8e340d6ee903ff226886bb6f969d46a1
 
-Notes:
-    Changes in v7:
-     - Fix init function signature for !CONFIG_SND_SOC_IMX_PCM_FIQ
-    
-    Changes in v6:
-     - After rebasing onto Shawn's imx-pcm cleanups, the imx_pcm_fiq_params are now
-       passed as function arguments instead of platform driver data.
-    
-    Changes in v3:
-     - Using snd_dmaengine_dai_dma_data for dma_params after rebasing onto
-       dmaengine cleanups.
+Well, it is useless when EPREFIX (i.e /usr) isn't mounted while udev runs?
+It should be better to restore mixer settings by an initscript.
 
- sound/soc/fsl/imx-pcm-fiq.c | 18 ++++++++++--------
- sound/soc/fsl/imx-pcm.h     | 15 +++++++++++++--
- sound/soc/fsl/imx-ssi.c     |  7 ++++++-
- sound/soc/fsl/imx-ssi.h     |  1 +
- 4 files changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 310d902..3b2ba99 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -22,6 +22,7 @@
- #include <linux/slab.h>
- 
- #include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -32,6 +33,7 @@
- #include <linux/platform_data/asoc-imx-ssi.h>
- 
- #include "imx-ssi.h"
-+#include "imx-pcm.h"
- 
- struct imx_pcm_runtime_data {
- 	unsigned int period;
-@@ -366,9 +368,9 @@ static struct snd_soc_platform_driver imx_soc_platform_fiq = {
- 	.pcm_free	= imx_pcm_fiq_free,
- };
- 
--int imx_pcm_fiq_init(struct platform_device *pdev)
-+int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params)
- {
--	struct imx_ssi *ssi = platform_get_drvdata(pdev);
- 	int ret;
- 
- 	ret = claim_fiq(&fh);
-@@ -377,15 +379,15 @@ int imx_pcm_fiq_init(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	mxc_set_irq_fiq(ssi->irq, 1);
--	ssi_irq = ssi->irq;
-+	mxc_set_irq_fiq(params->irq, 1);
-+	ssi_irq = params->irq;
- 
--	imx_pcm_fiq = ssi->irq;
-+	imx_pcm_fiq = params->irq;
- 
--	imx_ssi_fiq_base = (unsigned long)ssi->base;
-+	imx_ssi_fiq_base = (unsigned long)params->base;
- 
--	ssi->dma_params_tx.maxburst = 4;
--	ssi->dma_params_rx.maxburst = 6;
-+	params->dma_params_tx->maxburst = 4;
-+	params->dma_params_rx->maxburst = 6;
- 
- 	ret = snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
- 	if (ret)
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 67f656c..cd8a796 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -32,6 +32,15 @@ imx_pcm_dma_params_init_data(struct imx_dma_data *dma_data,
- 		dma_data->peripheral_type = IMX_DMATYPE_SSI;
- }
- 
-+struct imx_pcm_fiq_params {
-+	int irq;
-+	void __iomem *base;
-+
-+	/* Pointer to original ssi driver to setup tx rx sizes */
-+	struct snd_dmaengine_dai_dma_data *dma_params_rx;
-+	struct snd_dmaengine_dai_dma_data *dma_params_tx;
-+};
-+
- #ifdef CONFIG_SND_SOC_IMX_PCM_DMA
- int imx_pcm_dma_init(struct platform_device *pdev);
- void imx_pcm_dma_exit(struct platform_device *pdev);
-@@ -47,10 +56,12 @@ static inline void imx_pcm_dma_exit(struct platform_device *pdev)
- #endif
- 
- #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
--int imx_pcm_fiq_init(struct platform_device *pdev);
-+int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params);
- void imx_pcm_fiq_exit(struct platform_device *pdev);
- #else
--static inline int imx_pcm_fiq_init(struct platform_device *pdev)
-+static inline int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params);
- {
- 	return -ENODEV;
- }
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index a8362be..16ae16d 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -590,7 +590,12 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 		goto failed_register;
- 	}
- 
--	ret = imx_pcm_fiq_init(pdev);
-+	ssi->fiq_params.irq = ssi->irq;
-+	ssi->fiq_params.base = ssi->base;
-+	ssi->fiq_params.dma_params_rx = &ssi->dma_params_rx;
-+	ssi->fiq_params.dma_params_tx = &ssi->dma_params_tx;
-+
-+	ret = imx_pcm_fiq_init(pdev, &ssi->fiq_params);
- 	if (ret)
- 		goto failed_pcm_fiq;
- 
-diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
-index d5003ce..fb1616b 100644
---- a/sound/soc/fsl/imx-ssi.h
-+++ b/sound/soc/fsl/imx-ssi.h
-@@ -209,6 +209,7 @@ struct imx_ssi {
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct imx_dma_data filter_data_tx;
- 	struct imx_dma_data filter_data_rx;
-+	struct imx_pcm_fiq_params fiq_params;
- 
- 	int enabled;
- };
+Elimar
 -- 
-1.8.2.1
+  On the keyboard of life you have always
+  to keep a finger at the escape key;-)
