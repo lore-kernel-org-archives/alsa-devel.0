@@ -1,16 +1,18 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] ASoC: OMAP: Remove obsolete Makefile line
-Date: Thu, 30 May 2013 12:39:14 +0300
-Message-ID: <20130530123914.fba4840122d4fbca3c182e08@bitmer.com>
-References: <1369899460.23034.31.camel@x61.thuisdomein>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH alsa-lib 2/2] pcm_plugin: Fix return value of
+	snd_pcm_rewind
+Date: Thu, 30 May 2013 12:26:34 +0200
+Message-ID: <1369909594-15047-2-git-send-email-david.henningsson@canonical.com>
+References: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id AE2B82650DD
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 11:38:08 +0200 (CEST)
-In-Reply-To: <1369899460.23034.31.camel@x61.thuisdomein>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9D8026510C
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:26:36 +0200 (CEST)
+In-Reply-To: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, arun.raghavan@collabora.co.uk, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 30 May 2013 09:37:40 +0200
-Paul Bolle <pebolle@tiscali.nl> wrote:
+In case the rewind did not rewind as much as expected, e g due to
+time delay between the latest avail update and the rewind, we must
+properly account for that in the plugin layer.
 
-> Support for omap2evm was removed in v3.0. But only one of its two
-> lines in this Makefile was removed. Remove the second line too.
-> 
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
-> ---
-> Eyeball tested only.
-> 
->  sound/soc/omap/Makefile | 1 -
->  1 file changed, 1 deletion(-)
-> 
-True, commit 91d94af ("omap: Remove support for omap2evm") removed only omap2evm.o.
+Otherwise, the plugin's appl ptr and the hw's appl ptr become
+unsynchronised, which is very bad, especially in mmap_shadow plugins,
+e g, this could cause the overlapping memcpy in the softvol plugin
+as seen here:
+https://bugs.freedesktop.org/show_bug.cgi?id=64299
 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/pcm/pcm_plugin.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Btw, I was also considering always syncing the appl.ptr (for playback)
+with the slave in snd_pcm_plugin_avail_update, like we do for the
+hw.ptr. Do you think this would be a good idea?
+
+diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
+index 96218a8..17157e8 100644
+--- a/src/pcm/pcm_plugin.c
++++ b/src/pcm/pcm_plugin.c
+@@ -219,9 +219,9 @@ static snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t
+ 		snd_atomic_write_end(&plugin->watom);
+ 		return sframes;
+ 	}
+-	snd_pcm_mmap_appl_backward(pcm, (snd_pcm_uframes_t) frames);
++	snd_pcm_mmap_appl_backward(pcm, (snd_pcm_uframes_t) sframes);
+ 	snd_atomic_write_end(&plugin->watom);
+-	return (snd_pcm_sframes_t) frames;
++	return (snd_pcm_sframes_t) sframes;
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_plugin_forwardable(snd_pcm_t *pcm)
+-- 
+1.7.9.5
