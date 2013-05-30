@@ -1,15 +1,14 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 2/4] ALSA: hda - Move azx_first_init() into
-	azx_probe_continue()
-Date: Thu, 30 May 2013 22:07:09 +0800
-Message-ID: <1369922831-727-3-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/4 V7] ALSA: hda - Fix runtime PM check
+Date: Thu, 30 May 2013 22:07:08 +0800
+Message-ID: <1369922831-727-2-git-send-email-xingchao.wang@linux.intel.com>
 References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 624692651D3
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07FD02651DB
  for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 16:34:34 +0200 (CEST)
 In-Reply-To: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,67 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, daniel.vetter@ffwll.ch
-Cc: alsa-devel@alsa-project.org, xingchao.wang@intel.com, intel-gfx@lists.freedesktop.org, liam.r.girdwood@intel.com, david.henningsson@canonical.com
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Takashi Iwai <tiwai@suse.de>
+The device can support runtime PM no matter whether it support
+signal wakeup or not. For some chips like Haswell which doesnot
+support PME by default, this patch let haswell Display HD-A controller
+enter runtime suspend, and bring more power saving whith power-well
+feature enabled.
 
-This is a preliminary work for the upcoming Haswell HDMI audio fixes.
-
-azx_first_init() function can be safely called after the f/w loader,
-since the f/w loader doesn't require the sound hardware initialization
-beforehand.  Moving it into azx_probe_continue() cleans up the code
-flow a bit.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- sound/pci/hda/hda_intel.c |   13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/pci/hda/hda_intel.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index cf3d36c..49cc942 100644
+index 418bfc0..cf3d36c 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -2977,7 +2977,6 @@ static void azx_notifier_unregister(struct azx *chip)
- 		unregister_reboot_notifier(&chip->reboot_notifier);
- }
+@@ -3091,8 +3091,13 @@ static int register_vga_switcheroo(struct azx *chip)
+  */
+ static int azx_free(struct azx *chip)
+ {
++	struct pci_dev *pci = chip->pci;
+ 	int i;
  
--static int azx_first_init(struct azx *chip);
- static int azx_probe_continue(struct azx *chip);
++	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
++			&& chip->running)
++		pm_runtime_get_noresume(&pci->dev);
++
+ 	azx_del_card_list(chip);
  
- #ifdef SUPPORT_VGA_SWITCHEROO
-@@ -3004,8 +3003,7 @@ static void azx_vs_set_state(struct pci_dev *pci,
- 			snd_printk(KERN_INFO SFX
- 				   "%s: Start delayed initialization\n",
- 				   pci_name(chip->pci));
--			if (azx_first_init(chip) < 0 ||
--			    azx_probe_continue(chip) < 0) {
-+			if (azx_probe_continue(chip) < 0) {
- 				snd_printk(KERN_ERR SFX
- 					   "%s: initialization error\n",
- 					   pci_name(chip->pci));
-@@ -3706,11 +3704,6 @@ static int azx_probe(struct pci_dev *pci,
+ 	azx_notifier_unregister(chip);
+@@ -3726,9 +3731,6 @@ static int azx_probe(struct pci_dev *pci,
+ 			goto out_free;
  	}
  
- 	probe_now = !chip->disabled;
--	if (probe_now) {
--		err = azx_first_init(chip);
--		if (err < 0)
--			goto out_free;
--	}
+-	if (pci_dev_run_wake(pci))
+-		pm_runtime_put_noidle(&pci->dev);
+-
+ 	dev++;
+ 	complete_all(&chip->probe_wait);
+ 	return 0;
+@@ -3741,6 +3743,7 @@ out_free:
  
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- 	if (patch[dev] && *patch[dev]) {
-@@ -3747,6 +3740,10 @@ static int azx_probe_continue(struct azx *chip)
+ static int azx_probe_continue(struct azx *chip)
+ {
++	struct pci_dev *pci = chip->pci;
  	int dev = chip->dev_index;
  	int err;
  
-+	err = azx_first_init(chip);
-+	if (err < 0)
-+		goto out_free;
-+
- #ifdef CONFIG_SND_HDA_INPUT_BEEP
- 	chip->beep_mode = beep_mode[dev];
- #endif
+@@ -3788,6 +3791,8 @@ static int azx_probe_continue(struct azx *chip)
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
+ 	azx_add_card_list(chip);
++	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
++		pm_runtime_put_noidle(&pci->dev);
+ 
+ 	return 0;
+ 
+@@ -3800,9 +3805,6 @@ static void azx_remove(struct pci_dev *pci)
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+ 
+-	if (pci_dev_run_wake(pci))
+-		pm_runtime_get_noresume(&pci->dev);
+-
+ 	if (card)
+ 		snd_card_free(card);
+ 	pci_set_drvdata(pci, NULL);
 -- 
 1.7.9.5
