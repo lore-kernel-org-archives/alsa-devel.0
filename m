@@ -1,161 +1,262 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH] [resend] snd-es1968: Add radio support for MediaForte M56VAP
-Date: Thu, 30 May 2013 16:13:09 +0200
-Message-ID: <201305301613.09234.linux@rainbow-software.org>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: [PATCH 4/4 V7] i915/drm: Add private api for power
+	well usage
+Date: Thu, 30 May 2013 22:07:11 +0800
+Message-ID: <1369922831-727-5-git-send-email-xingchao.wang@linux.intel.com>
+References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63B062651CB
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 16:34:33 +0200 (CEST)
+In-Reply-To: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, daniel.vetter@ffwll.ch
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Add support for TEA5757 tuner on MediaForte M56VAP sound+modem+radio card.
-The GPIO connection type is automatically detected (like snd-fm801 driver).
+Haswell Display audio depends on power well in graphic side, it should
+request power well before use it and release power well after use.
+I915 will not shutdown power well if it detects audio is using.
+This patch protects display audio crash for Intel Haswell C3 stepping board.
 
-Also add a safety subsystem vendor check to skip radio detection if vendor
-differs from ESS (so we don't touch GPIOs on laptops).
-
-Tested with SF64-PCE2 and M56VAP cards.
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Damien Lespiau <damien.lespiau@intel.com> 
+Reviewed-by: Jesse Barnes <jbarnes@virtuousgeek.org>
 ---
- sound/pci/es1968.c |   73 +++++++++++++++++++++++++++++++++++----------------
- 1 files changed, 50 insertions(+), 23 deletions(-)
+ drivers/gpu/drm/i915/i915_dma.c  |    6 +++
+ drivers/gpu/drm/i915/i915_drv.h  |   12 ++++++
+ drivers/gpu/drm/i915/intel_drv.h |    4 ++
+ drivers/gpu/drm/i915/intel_pm.c  |   81 ++++++++++++++++++++++++++++++++++----
+ include/drm/i915_powerwell.h     |   36 +++++++++++++++++
+ 5 files changed, 132 insertions(+), 7 deletions(-)
+ create mode 100644 include/drm/i915_powerwell.h
 
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index a1f32b5..db08641 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -564,6 +564,7 @@ struct es1968 {
- #ifdef CONFIG_SND_ES1968_RADIO
- 	struct v4l2_device v4l2_dev;
- 	struct snd_tea575x tea;
-+	unsigned int tea575x_tuner;
- #endif
+diff --git a/drivers/gpu/drm/i915/i915_dma.c b/drivers/gpu/drm/i915/i915_dma.c
+index f5addac..d709776 100644
+--- a/drivers/gpu/drm/i915/i915_dma.c
++++ b/drivers/gpu/drm/i915/i915_dma.c
+@@ -1652,6 +1652,9 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
+ 	/* Start out suspended */
+ 	dev_priv->mm.suspended = 1;
+ 
++	if (HAS_POWER_WELL(dev))
++		i915_init_power_well(dev);
++
+ 	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+ 		ret = i915_load_modeset_init(dev);
+ 		if (ret < 0) {
+@@ -1708,6 +1711,9 @@ int i915_driver_unload(struct drm_device *dev)
+ 
+ 	intel_gpu_ips_teardown();
+ 
++	if (HAS_POWER_WELL(dev))
++		i915_remove_power_well(dev);
++
+ 	i915_teardown_sysfs(dev);
+ 
+ 	if (dev_priv->mm.inactive_shrinker.shrink)
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 14817de..bd53a6a 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -720,6 +720,15 @@ struct intel_ilk_power_mgmt {
+ 	struct drm_i915_gem_object *renderctx;
  };
  
-@@ -2557,37 +2558,47 @@ static int snd_es1968_input_register(struct es1968 *chip)
- 				bits 1=unmask write to given bit */
- #define IO_DIR		8      /* direction register offset from GPIO_DATA
- 				bits 0/1=read/write direction */
--/* mask bits for GPIO lines */
--#define STR_DATA	0x0040 /* GPIO6 */
--#define STR_CLK		0x0080 /* GPIO7 */
--#define STR_WREN	0x0100 /* GPIO8 */
--#define STR_MOST	0x0200 /* GPIO9 */
-+
-+/* GPIO to TEA575x maps */
-+struct snd_es1968_tea575x_gpio {
-+	u8 data, clk, wren, most;
-+	char *name;
++/* Power well structure for haswell */
++struct i915_power_well {
++	struct drm_device *device;
++	spinlock_t lock;
++	/* power well enable/disable usage count */
++	int count;
++	int i915_request;
 +};
 +
-+static struct snd_es1968_tea575x_gpio snd_es1968_tea575x_gpios[] = {
-+	{ .data = 6, .clk = 7, .wren = 8, .most = 9, .name = "SF64-PCE2" },
-+	{ .data = 7, .clk = 8, .wren = 6, .most = 10, .name = "M56VAP" },
-+};
+ struct i915_dri1_state {
+ 	unsigned allow_batchbuffer : 1;
+ 	u32 __iomem *gfx_hws_cpu_addr;
+@@ -1073,6 +1082,9 @@ typedef struct drm_i915_private {
+ 	 * mchdev_lock in intel_pm.c */
+ 	struct intel_ilk_power_mgmt ips;
+ 
++	/* Haswell power well */
++	struct i915_power_well power_well;
 +
-+#define get_tea575x_gpio(chip) \
-+	(&snd_es1968_tea575x_gpios[(chip)->tea575x_tuner])
+ 	enum no_fbc_reason no_fbc_reason;
+ 
+ 	struct drm_mm_node *compressed_fb;
+diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
+index 0f35545..8b5017d 100644
+--- a/drivers/gpu/drm/i915/intel_drv.h
++++ b/drivers/gpu/drm/i915/intel_drv.h
+@@ -754,6 +754,10 @@ extern void intel_update_fbc(struct drm_device *dev);
+ extern void intel_gpu_ips_init(struct drm_i915_private *dev_priv);
+ extern void intel_gpu_ips_teardown(void);
+ 
++/* Power well */
++extern int i915_init_power_well(struct drm_device *dev);
++extern void i915_remove_power_well(struct drm_device *dev);
 +
- 
- static void snd_es1968_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
- {
- 	struct es1968 *chip = tea->private_data;
--	unsigned long io = chip->io_port + GPIO_DATA;
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
- 	u16 val = 0;
- 
--	val |= (pins & TEA575X_DATA) ? STR_DATA : 0;
--	val |= (pins & TEA575X_CLK)  ? STR_CLK  : 0;
--	val |= (pins & TEA575X_WREN) ? STR_WREN : 0;
-+	val |= (pins & TEA575X_DATA) ? (1 << gpio.data) : 0;
-+	val |= (pins & TEA575X_CLK)  ? (1 << gpio.clk)  : 0;
-+	val |= (pins & TEA575X_WREN) ? (1 << gpio.wren) : 0;
- 
--	outw(val, io);
-+	outw(val, chip->io_port + GPIO_DATA);
- }
- 
- static u8 snd_es1968_tea575x_get_pins(struct snd_tea575x *tea)
- {
- 	struct es1968 *chip = tea->private_data;
--	unsigned long io = chip->io_port + GPIO_DATA;
--	u16 val = inw(io);
--	u8 ret;
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
-+	u16 val = inw(chip->io_port + GPIO_DATA);
-+	u8 ret = 0;
- 
--	ret = 0;
--	if (val & STR_DATA)
-+	if (val & (1 << gpio.data))
- 		ret |= TEA575X_DATA;
--	if (val & STR_MOST)
-+	if (val & (1 << gpio.most))
- 		ret |= TEA575X_MOST;
-+
- 	return ret;
- }
- 
-@@ -2596,13 +2607,18 @@ static void snd_es1968_tea575x_set_direction(struct snd_tea575x *tea, bool outpu
- 	struct es1968 *chip = tea->private_data;
- 	unsigned long io = chip->io_port + GPIO_DATA;
- 	u16 odir = inw(io + IO_DIR);
-+	struct snd_es1968_tea575x_gpio gpio = *get_tea575x_gpio(chip);
- 
- 	if (output) {
--		outw(~(STR_DATA | STR_CLK | STR_WREN), io + IO_MASK);
--		outw(odir | STR_DATA | STR_CLK | STR_WREN, io + IO_DIR);
-+		outw(~((1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren)),
-+			io + IO_MASK);
-+		outw(odir | (1 << gpio.data) | (1 << gpio.clk) | (1 << gpio.wren),
-+			io + IO_DIR);
- 	} else {
--		outw(~(STR_CLK | STR_WREN | STR_DATA | STR_MOST), io + IO_MASK);
--		outw((odir & ~(STR_DATA | STR_MOST)) | STR_CLK | STR_WREN, io + IO_DIR);
-+		outw(~((1 << gpio.clk) | (1 << gpio.wren) | (1 << gpio.data) | (1 << gpio.most)),
-+			io + IO_MASK);
-+		outw((odir & ~((1 << gpio.data) | (1 << gpio.most)))
-+			| (1 << gpio.clk) | (1 << gpio.wren), io + IO_DIR);
+ extern bool intel_display_power_enabled(struct drm_device *dev,
+ 					enum intel_display_power_domain domain);
+ extern void intel_init_power_well(struct drm_device *dev);
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index 1a76572..eeba875 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -4502,18 +4502,12 @@ bool intel_display_power_enabled(struct drm_device *dev,
  	}
  }
  
-@@ -2772,6 +2788,9 @@ static int snd_es1968_create(struct snd_card *card,
- 	snd_card_set_dev(card, &pci->dev);
+-void intel_set_power_well(struct drm_device *dev, bool enable)
++static void __intel_set_power_well(struct drm_device *dev, bool enable)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	bool is_enabled, enable_requested;
+ 	uint32_t tmp;
  
- #ifdef CONFIG_SND_ES1968_RADIO
-+	/* don't play with GPIOs on laptops */
-+	if (chip->pci->subsystem_vendor != 0x125d)
-+		goto no_radio;
- 	err = v4l2_device_register(&pci->dev, &chip->v4l2_dev);
- 	if (err < 0) {
- 		snd_es1968_free(chip);
-@@ -2781,10 +2800,18 @@ static int snd_es1968_create(struct snd_card *card,
- 	chip->tea.private_data = chip;
- 	chip->tea.radio_nr = radio_nr;
- 	chip->tea.ops = &snd_es1968_tea_ops;
--	strlcpy(chip->tea.card, "SF64-PCE2", sizeof(chip->tea.card));
- 	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
--	if (!snd_tea575x_init(&chip->tea, THIS_MODULE))
--		printk(KERN_INFO "es1968: detected TEA575x radio\n");
-+	for (i = 0; i < ARRAY_SIZE(snd_es1968_tea575x_gpios); i++) {
-+		chip->tea575x_tuner = i;
-+		if (!snd_tea575x_init(&chip->tea, THIS_MODULE)) {
-+			snd_printk(KERN_INFO "es1968: detected TEA575x radio type %s\n",
-+				   get_tea575x_gpio(chip)->name);
-+			strlcpy(chip->tea.card, get_tea575x_gpio(chip)->name,
-+				sizeof(chip->tea.card));
-+			break;
-+		}
+-	if (!HAS_POWER_WELL(dev))
+-		return;
+-
+-	if (!i915_disable_power_well && !enable)
+-		return;
+-
+ 	tmp = I915_READ(HSW_PWR_WELL_DRIVER);
+ 	is_enabled = tmp & HSW_PWR_WELL_STATE;
+ 	enable_requested = tmp & HSW_PWR_WELL_ENABLE;
+@@ -4536,6 +4530,79 @@ void intel_set_power_well(struct drm_device *dev, bool enable)
+ 	}
+ }
+ 
++static struct i915_power_well *hsw_pwr;
++
++/* Display audio driver power well request */
++void i915_request_power_well(void)
++{
++	if (WARN_ON(!hsw_pwr))
++		return;
++
++	spin_lock_irq(&hsw_pwr->lock);
++	if (!hsw_pwr->count++ &&
++			!hsw_pwr->i915_request)
++		__intel_set_power_well(hsw_pwr->device, true);
++	spin_unlock_irq(&hsw_pwr->lock);
++}
++EXPORT_SYMBOL_GPL(i915_request_power_well);
++
++/* Display audio driver power well release */
++void i915_release_power_well(void)
++{
++	if (WARN_ON(!hsw_pwr))
++		return;
++
++	spin_lock_irq(&hsw_pwr->lock);
++	WARN_ON(!hsw_pwr->count);
++	if (!--hsw_pwr->count &&
++		       !hsw_pwr->i915_request)
++		__intel_set_power_well(hsw_pwr->device, false);
++	spin_unlock_irq(&hsw_pwr->lock);
++}
++EXPORT_SYMBOL_GPL(i915_release_power_well);
++
++int i915_init_power_well(struct drm_device *dev)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++
++	hsw_pwr = &dev_priv->power_well;
++
++	hsw_pwr->device = dev;
++	spin_lock_init(&hsw_pwr->lock);
++	hsw_pwr->count = 0;
++
++	return 0;
++}
++
++void i915_remove_power_well(struct drm_device *dev)
++{
++	hsw_pwr = NULL;
++}
++
++void intel_set_power_well(struct drm_device *dev, bool enable)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++	struct i915_power_well *power_well = &dev_priv->power_well;
++
++	if (!HAS_POWER_WELL(dev))
++		return;
++
++	if (!i915_disable_power_well && !enable)
++		return;
++
++	spin_lock_irq(&power_well->lock);
++	power_well->i915_request = enable;
++
++	/* only reject "disable" power well request */
++	if (power_well->count && !enable) {
++		spin_unlock_irq(&power_well->lock);
++		return;
 +	}
-+no_radio:
- #endif
- 
- 	*chip_ret = chip;
++
++	__intel_set_power_well(dev, enable);
++	spin_unlock_irq(&power_well->lock);
++}
++
+ /*
+  * Starting with Haswell, we have a "Power Down Well" that can be turned off
+  * when not needed anymore. We have 4 registers that can request the power well
+diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+new file mode 100644
+index 0000000..cfdc884
+--- /dev/null
++++ b/include/drm/i915_powerwell.h
+@@ -0,0 +1,36 @@
++/**************************************************************************
++ *
++ * Copyright 2013 Intel Inc.
++ * All Rights Reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the
++ * "Software"), to deal in the Software without restriction, including
++ * without limitation the rights to use, copy, modify, merge, publish,
++ * distribute, sub license, and/or sell copies of the Software, and to
++ * permit persons to whom the Software is furnished to do so, subject to
++ * the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the
++ * next paragraph) shall be included in all copies or substantial portions
++ * of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDERS, AUTHORS AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM,
++ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
++ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
++ * USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *
++ *
++ **************************************************************************/
++
++#ifndef _I915_POWERWELL_H_
++#define _I915_POWERWELL_H_
++
++/* For use by hda_i915 driver */
++extern void i915_request_power_well(void);
++extern void i915_release_power_well(void);
++
++#endif				/* _I915_POWERWELL_H_ */
 -- 
-Ondrej Zary
+1.7.9.5
