@@ -1,37 +1,44 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: [PATCH] ASoC: OMAP: Remove obsolete Makefile line
-Date: Thu, 30 May 2013 09:37:40 +0200
-Message-ID: <1369899460.23034.31.camel@x61.thuisdomein>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 01/10] ASoC: blackfin: Remove unused
+ bf5xx-{i2s, tdm, ac97}-pcm.h
+Date: Thu, 30 May 2013 09:47:14 +0200
+Message-ID: <51A70402.2070901@metafoo.de>
+References: <1369761738-29503-1-git-send-email-lars@metafoo.de>
+ <20130529192726.GA5180@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-231.synserver.de (smtp-out-231.synserver.de
+ [212.40.185.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 751322650BE
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 09:47:23 +0200 (CEST)
+In-Reply-To: <20130529192726.GA5180@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Scott Jiang <scott.jiang.linux@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Steven Miao <realmz6@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Support for omap2evm was removed in v3.0. But only one of its two
-lines in this Makefile was removed. Remove the second line too.
+On 05/29/2013 09:27 PM, Mark Brown wrote:
+> On Tue, May 28, 2013 at 07:22:09PM +0200, Lars-Peter Clausen wrote:
+>> The structs defined in these files are completely unused, so remove both the
+>> structs and the files.
+> 
+> This series doesn't appear to apply cleanly to my topic/blackfin or the
+> merge of that and v3.10-rc3 - can you please check what's going on
+> there?
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
-Eyeball tested only.
+Hm, where exactly are you getting conflicts? If I download the patches as
+they are in the ml-archive and run git am on them on top of topic/blackfin
+everything applies cleanly.
 
- sound/soc/omap/Makefile | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 2b22594..a725905 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -26,7 +26,6 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
- obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
- obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
--- 
-1.7.11.7
+Thanks,
+- Lars
