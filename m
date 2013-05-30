@@ -1,21 +1,17 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: Re: [PATCH] hda_analyzer: don't fail to display audio
- selector if caps variables aren't available
-Date: Thu, 30 May 2013 14:37:58 +0200
-Message-ID: <20130530143758.0c174743@serenity>
-References: <1369916047-27642-1-git-send-email-anisse@astier.eu>
- <51A745A7.5020403@perex.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/5] ASoC: wm8994: Ensure microphone detection
+	state is reset on removal
+Date: Thu, 30 May 2013 13:42:27 +0100
+Message-ID: <1369917750-7322-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1369917750-7322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f196.google.com (mail-we0-f196.google.com
- [74.125.82.196])
- by alsa0.perex.cz (Postfix) with ESMTP id E4DB226517C
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 14:38:40 +0200 (CEST)
-Received: by mail-we0-f196.google.com with SMTP id w62so56642wes.11
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 05:38:40 -0700 (PDT)
-In-Reply-To: <51A745A7.5020403@perex.cz>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 387E8265182
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 14:42:35 +0200 (CEST)
+In-Reply-To: <1369917750-7322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 30 May 2013 14:27:19 +0200, Jaroslav Kysela <perex@perex.cz> wrote :
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> Date 30.5.2013 14:14, Anisse Astier wrote:
-> > In particular, when an audio selector node has Amp-In caps: N/A, it
-> > allows to still interact with the selector, and not have TypeError traceback
-> > throwns because of NoneType variables.
-> 
-> When ofs is None, the steps are not defined, too. I fixed it in:
-> 
-> http://git.alsa-project.org/?p=alsa.git;a=commitdiff;h=5bcf62d6947fe348a2b055bce633df1d12ff4370
-> 
-
-Awesome, thanks.
-
-Anisse
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 2081fa1..7dd5045 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3912,6 +3912,7 @@ static irqreturn_t wm8958_mic_irq(int irq, void *data)
+ 		snd_soc_jack_report(wm8994->micdet[0].jack, 0,
+ 				    SND_JACK_MECHANICAL | SND_JACK_HEADSET |
+ 				    wm8994->btn_mask);
++		wm8994->mic_detecting = false;
+ 		goto out;
+ 	}
+ 
+-- 
+1.7.10.4
