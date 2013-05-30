@@ -1,33 +1,37 @@
-From: Ebben Aries <earies@dscp.org>
-Subject: [PATCH 1/1] ALSA: hda - add dock support for Thinkpad T431s
-Date: Wed, 29 May 2013 22:27:18 -0600
-Message-ID: <1369888038-6044-1-git-send-email-earies@dscp.org>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] ASoC: OMAP: Remove obsolete Makefile line
+Date: Thu, 30 May 2013 09:37:40 +0200
+Message-ID: <1369899460.23034.31.camel@x61.thuisdomein>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Ebben Aries <earies@dscp.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a model/fixup string "lenovo-dock", for Thinkpad T431s, to allow sound in docking station.
+Support for omap2evm was removed in v3.0. But only one of its two
+lines in this Makefile was removed. Remove the second line too.
 
-Tested on Lenovo T431s with ThinkPad Mini Dock Plus Series 3
-
-Signed-off-by: Ebben Aries <earies@dscp.org>
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Eyeball tested only.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 59d2e91..9658faf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3530,6 +3530,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
-+	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+ sound/soc/omap/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 2b22594..a725905 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -26,7 +26,6 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+ obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
+ obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+-obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
 -- 
-1.7.12.1
+1.7.11.7
