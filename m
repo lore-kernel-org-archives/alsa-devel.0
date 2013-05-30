@@ -1,59 +1,53 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: Re: [PATCH v6 01/10] ASoC: phycore-ac97: Add DT support
-Date: Thu, 30 May 2013 11:13:43 +0200
-Message-ID: <20130530091343.GB31548@pengutronix.de>
-References: <1369752478-30260-1-git-send-email-mpa@pengutronix.de>
- <1369752478-30260-2-git-send-email-mpa@pengutronix.de>
- <20130529135342.GB29528@S2101-09.ap.freescale.net>
- <CAOZdJXVL2uP-qW=kydgS-t3C=C+6Cn9D3FWqbMuoK2c-EnckyA@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm0010: Set IRQ as a wake source
+Date: Thu, 30 May 2013 10:06:01 +0100
+Message-ID: <1369904761-8355-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAOZdJXVL2uP-qW=kydgS-t3C=C+6Cn9D3FWqbMuoK2c-EnckyA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel mailing list <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D60902650D5
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 11:16:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 29, 2013 at 10:41:58AM -0500, Timur Tabi wrote:
-> On Wed, May 29, 2013 at 8:53 AM, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrote:
-> >
-> >
-> > This function is unavailable until patch #7, right?
-> 
-> 
-> May I suggest that Markus run this script:
-> 
-> for i in 1 2 3 4 5 6 7 8 9
-> do
->   git checkout HEAD^
->   make
-> done
-> 
-> It's important that each commit in a patchset be compilable, otherwise
-> git-bisect will break.
-> 
+The DSPs IRQ should be a wake source as several of the possible
+algorithms may run whilst the AP is asleepi and require to wake the AP
+to push or pull more data, such as compressed playback.
 
-I will reorder the patches in the series so that the kernel is
-compilable after each patch.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-Thanks,
-
-Markus
-
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 370af0c..b6df319 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -972,6 +972,13 @@ static int wm0010_spi_probe(struct spi_device *spi)
+ 	}
+ 	wm0010->irq = irq;
+ 
++	ret = irq_set_irq_wake(irq, 1);
++	if (ret) {
++		dev_err(wm0010->dev, "Failed to set IRQ %d as wake source: %d\n",
++			irq, ret);
++		return ret;
++	}
++
+ 	if (spi->max_speed_hz)
+ 		wm0010->board_max_spi_speed = spi->max_speed_hz;
+ 	else
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.7.2.5
