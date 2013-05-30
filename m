@@ -1,371 +1,522 @@
-From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 3/4 V7] ALSA: hda - Add power-welll support for
-	haswell HDA
-Date: Thu, 30 May 2013 22:07:10 +0800
-Message-ID: <1369922831-727-4-git-send-email-xingchao.wang@linux.intel.com>
-References: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH v7 06/11] ASoC: fsl-ssi: imx ac97 support
+Date: Thu, 30 May 2013 16:51:48 +0200
+Message-ID: <1369925513-19329-7-git-send-email-mpa@pengutronix.de>
+References: <1369925513-19329-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EDC532651DA
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 16:34:34 +0200 (CEST)
-In-Reply-To: <1369922831-727-1-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, daniel.vetter@ffwll.ch
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com, liam.r.girdwood@intel.com, david.henningsson@canonical.com
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1369925513-19329-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-For Intel Haswell chip, HDA controller and codec have
-power well dependency from GPU side. This patch added support
-to request/release power well in audio driver. Power save
-feature should be enabled to get runtime power saving.
+This patch copies some parts from imx-ssi to support AC97 on
+imx27-pca100 and imx35-pcm043. This is a implementation of the
+ac97-slave mode.
 
-There's deadlock when request_module(i915) in azx_probe.
-It looks like:
-device_lock(audio pci device) -> azx_probe -> module_request
-(or symbol_request) -> modprobe (userspace) -> i915 init ->
-drm_pci_init -> pci_register_driver -> bus_add_driver -> driver_attach ->
-which in turn tries all locks on pci bus, and when it tries the one on the
-audio device, it will deadlock.
+For ac97, the registers have to be setup earlier than for other ssi
+modes because there is some communication with the external device
+before actual streaming. So this patch introduces a fsl_ssi_setup
+function to setup the registers at different times.
 
-This patch introduce a work to store remaining probe stuff, and let
-request_module run in safe work context.
+To seperate board specific ac97 reset functions, ac97 read/write
+functions are exported. The reset functions are set by other drivers.
 
-Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Reviewed-by: Liam Girdwood <liam.r.girdwood@intel.com>
-Reviewed-by: David Henningsson <david.henningsson@canonical.com>
+This patch was tested with imx27-pca100.
+
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/pci/hda/Kconfig     |   10 ++++++
- sound/pci/hda/Makefile    |    2 ++
- sound/pci/hda/hda_i915.c  |   75 +++++++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_i915.h  |   35 +++++++++++++++++++++
- sound/pci/hda/hda_intel.c |   60 ++++++++++++++++++++++++++++++++++--
- 5 files changed, 179 insertions(+), 3 deletions(-)
- create mode 100644 sound/pci/hda/hda_i915.c
- create mode 100644 sound/pci/hda/hda_i915.h
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 80a7d44..c5a872c 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -152,6 +152,16 @@ config SND_HDA_CODEC_HDMI
- 	  snd-hda-codec-hdmi.
- 	  This module is automatically loaded at probing.
+Notes:
+    Changes in v7:
+     - ac97 ops are now assigned to soc_ac97_ops to allow enabled imx-ssi and
+       fsl-ssi at the same time.
+    
+    Changes in v6:
+     - ac97 reset functions are not provided by fsl-ssi code anymore. They were
+       moved to board specific code like phycore-ac97. Therefore ac97 read/write
+       functions are exported and a helper function to set the soc_ac97_ops reset
+       functions was created.
+    
+    Changes in v3:
+     - Cleanup ac97 code by adding a fsl_ssi_setup function for initial register
+       setup. For ac97 the registers have to be setup earlier than in normal
+       mode.
+
+ sound/soc/fsl/fsl_ssi.c | 363 ++++++++++++++++++++++++++++++++++++++----------
+ sound/soc/fsl/fsl_ssi.h |   7 +
+ 2 files changed, 298 insertions(+), 72 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index ed1fbbb..7c20bd7 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -141,6 +141,7 @@ struct fsl_ssi_private {
  
-+config SND_HDA_I915
-+	bool "Build Display HD-audio controller/codec power well support for i915 cards"
-+	depends on DRM_I915
-+	help
-+	  Say Y here to include full HDMI and DisplayPort HD-audio controller/codec
-+	  power-well support for Intel Haswell graphics cards based on the i915 driver.
-+
-+	  Note that this option must be enabled for Intel Haswell C+ stepping machines, otherwise
-+	  the GPU audio controller/codecs will not be initialized or damaged when exit from S3 mode.
-+
- config SND_HDA_CODEC_CIRRUS
- 	bool "Build Cirrus Logic codec support"
- 	default y
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index 24a2514..c091438 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -1,4 +1,6 @@
- snd-hda-intel-objs := hda_intel.o
-+# for haswell power well
-+snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
+ 	bool new_binding;
+ 	bool ssi_on_imx;
++	bool imx_ac97;
+ 	bool use_dma;
+ 	struct clk *clk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+@@ -320,6 +321,124 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ 	return ret;
+ }
  
- snd-hda-codec-y := hda_codec.o hda_jack.o hda_auto_parser.o
- snd-hda-codec-$(CONFIG_SND_HDA_GENERIC) += hda_generic.o
-diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
-new file mode 100644
-index 0000000..76c13d5
---- /dev/null
-+++ b/sound/pci/hda/hda_i915.c
-@@ -0,0 +1,75 @@
-+/*
-+ *  hda_i915.c - routines for Haswell HDA controller power well support
-+ *
-+ *  This program is free software; you can redistribute it and/or modify it
-+ *  under the terms of the GNU General Public License as published by the Free
-+ *  Software Foundation; either version 2 of the License, or (at your option)
-+ *  any later version.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-+ *  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-+ *  for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software Foundation,
-+ *  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <sound/core.h>
-+#include <drm/i915_powerwell.h>
-+#include "hda_i915.h"
-+
-+static void (*get_power)(void);
-+static void (*put_power)(void);
-+
-+void hda_display_power(bool enable)
++static int fsl_ssi_setup(struct fsl_ssi_private *ssi_private)
 +{
-+	if (!get_power || !put_power)
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++	u8 i2s_mode;
++	u8 wm;
++	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates;
++
++	if (ssi_private->imx_ac97)
++		i2s_mode = CCSR_SSI_SCR_I2S_MODE_NORMAL | CCSR_SSI_SCR_NET;
++	else
++		i2s_mode = CCSR_SSI_SCR_I2S_MODE_SLAVE;
++
++	/*
++	 * Section 16.5 of the MPC8610 reference manual says that the SSI needs
++	 * to be disabled before updating the registers we set here.
++	 */
++	write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
++
++	/*
++	 * Program the SSI into I2S Slave Non-Network Synchronous mode. Also
++	 * enable the transmit and receive FIFO.
++	 *
++	 * FIXME: Little-endian samples require a different shift dir
++	 */
++	write_ssi_mask(&ssi->scr,
++		CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
++		CCSR_SSI_SCR_TFR_CLK_DIS |
++		i2s_mode |
++		(synchronous ? CCSR_SSI_SCR_SYN : 0));
++
++	write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
++		 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
++		 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
++
++	write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
++		 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
++		 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
++	/*
++	 * The DC and PM bits are only used if the SSI is the clock master.
++	 */
++
++	/*
++	 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We don't
++	 * use FIFO 1. We program the transmit water to signal a DMA transfer
++	 * if there are only two (or fewer) elements left in the FIFO. Two
++	 * elements equals one frame (left channel, right channel). This value,
++	 * however, depends on the depth of the transmit buffer.
++	 *
++	 * We set the watermark on the same level as the DMA burstsize.  For
++	 * fiq it is probably better to use the biggest possible watermark
++	 * size.
++	 */
++	if (ssi_private->use_dma)
++		wm = ssi_private->fifo_depth - 2;
++	else
++		wm = ssi_private->fifo_depth;
++
++	write_ssi(CCSR_SSI_SFCSR_TFWM0(wm) | CCSR_SSI_SFCSR_RFWM0(wm) |
++		CCSR_SSI_SFCSR_TFWM1(wm) | CCSR_SSI_SFCSR_RFWM1(wm),
++		&ssi->sfcsr);
++
++	/*
++	 * For non-ac97 setups, we keep the SSI disabled because if we enable
++	 * it, then the DMA controller will start. It's not supposed to start
++	 * until the SCR.TE (or SCR.RE) bit is set, but it does anyway. The DMA
++	 * controller will transfer one "BWC" of data (i.e. the amount of data
++	 * that the MR.BWC bits are set to). The reason this is bad is because
++	 * at this point, the PCM driver has not finished initializing the DMA
++	 * controller.
++	 */
++
++
++	/*
++	 * For ac97 interrupts are enabled with the startup of the substream
++	 * because it is also running without an active substream. Normally SSI
++	 * is only enabled when there is a substream.
++	 */
++	if (!ssi_private->imx_ac97) {
++		/* Enable the interrupts and DMA requests */
++		if (ssi_private->use_dma)
++			write_ssi(SIER_FLAGS, &ssi->sier);
++		else
++			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN |
++					CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN, &ssi->sier);
++	} else {
++		/*
++		 * Setup the clock control register
++		 */
++		write_ssi(CCSR_SSI_SxCCR_WL(17) | CCSR_SSI_SxCCR_DC(13),
++				&ssi->stccr);
++		write_ssi(CCSR_SSI_SxCCR_WL(17) | CCSR_SSI_SxCCR_DC(13),
++				&ssi->srccr);
++
++		/*
++		 * Enable AC97 mode and startup the SSI
++		 */
++		write_ssi(CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV,
++				&ssi->sacnt);
++		write_ssi(0xff, &ssi->saccdis);
++		write_ssi(0x300, &ssi->saccen);
++
++		/*
++		 * Enable SSI
++		 */
++		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_SSIEN);
++		write_ssi(CCSR_SSI_SOR_WAIT(3), &ssi->sor);
++
++		/*
++		 * Enable Transmit and Receive
++		 */
++		write_ssi_mask(&ssi->scr, 0, CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
++	}
++
++	return 0;
++}
++
++
+ /**
+  * fsl_ssi_startup: create a new substream
+  *
+@@ -341,75 +460,14 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 	 * and initialize the SSI registers.
+ 	 */
+ 	if (!ssi_private->first_stream) {
+-		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+-
+ 		ssi_private->first_stream = substream;
+ 
+ 		/*
+-		 * Section 16.5 of the MPC8610 reference manual says that the
+-		 * SSI needs to be disabled before updating the registers we set
+-		 * here.
+-		 */
+-		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
+-
+-		/*
+-		 * Program the SSI into I2S Slave Non-Network Synchronous mode.
+-		 * Also enable the transmit and receive FIFO.
+-		 *
+-		 * FIXME: Little-endian samples require a different shift dir
+-		 */
+-		write_ssi_mask(&ssi->scr,
+-			CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_SYN,
+-			CCSR_SSI_SCR_TFR_CLK_DIS | CCSR_SSI_SCR_I2S_MODE_SLAVE
+-			| (synchronous ? CCSR_SSI_SCR_SYN : 0));
+-
+-		write_ssi(CCSR_SSI_STCR_TXBIT0 | CCSR_SSI_STCR_TFEN0 |
+-			 CCSR_SSI_STCR_TFSI | CCSR_SSI_STCR_TEFS |
+-			 CCSR_SSI_STCR_TSCKP, &ssi->stcr);
+-
+-		write_ssi(CCSR_SSI_SRCR_RXBIT0 | CCSR_SSI_SRCR_RFEN0 |
+-			 CCSR_SSI_SRCR_RFSI | CCSR_SSI_SRCR_REFS |
+-			 CCSR_SSI_SRCR_RSCKP, &ssi->srcr);
+-
+-		/*
+-		 * The DC and PM bits are only used if the SSI is the clock
+-		 * master.
+-		 */
+-
+-		/* Enable the interrupts and DMA requests */
+-		if (ssi_private->use_dma)
+-			write_ssi(SIER_FLAGS, &ssi->sier);
+-		else
+-			write_ssi(CCSR_SSI_SIER_TIE | CCSR_SSI_SIER_TFE0_EN |
+-					CCSR_SSI_SIER_RIE |
+-					CCSR_SSI_SIER_RFF0_EN, &ssi->sier);
+-
+-		/*
+-		 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We
+-		 * don't use FIFO 1.  We program the transmit water to signal a
+-		 * DMA transfer if there are only two (or fewer) elements left
+-		 * in the FIFO.  Two elements equals one frame (left channel,
+-		 * right channel).  This value, however, depends on the depth of
+-		 * the transmit buffer.
+-		 *
+-		 * We program the receive FIFO to notify us if at least two
+-		 * elements (one frame) have been written to the FIFO.  We could
+-		 * make this value larger (and maybe we should), but this way
+-		 * data will be written to memory as soon as it's available.
+-		 */
+-		write_ssi(CCSR_SSI_SFCSR_TFWM0(ssi_private->fifo_depth - 2) |
+-			CCSR_SSI_SFCSR_RFWM0(ssi_private->fifo_depth - 2),
+-			&ssi->sfcsr);
+-
+-		/*
+-		 * We keep the SSI disabled because if we enable it, then the
+-		 * DMA controller will start.  It's not supposed to start until
+-		 * the SCR.TE (or SCR.RE) bit is set, but it does anyway.  The
+-		 * DMA controller will transfer one "BWC" of data (i.e. the
+-		 * amount of data that the MR.BWC bits are set to).  The reason
+-		 * this is bad is because at this point, the PCM driver has not
+-		 * finished initializing the DMA controller.
++		 * fsl_ssi_setup was already called by ac97_init earlier if
++		 * the driver is in ac97 mode.
+ 		 */
++		if (!ssi_private->imx_ac97)
++			fsl_ssi_setup(ssi_private);
+ 	} else {
+ 		if (synchronous) {
+ 			struct snd_pcm_runtime *first_runtime =
+@@ -564,8 +622,9 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	/*
+ 	 * If this is the last active substream, disable the SSI.
++	 * If AC97 is active, we don't want to disable SSI.
+ 	 */
+-	if (!ssi_private->first_stream) {
++	if (!ssi_private->first_stream && !ssi_private->imx_ac97) {
+ 		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 
+ 		write_ssi_mask(&ssi->scr, CCSR_SSI_SCR_SSIEN, 0);
+@@ -614,6 +673,129 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
+ 	.name		= "fsl-ssi",
+ };
+ 
++/**
++ * fsl_ssi_ac97_trigger: start and stop the AC97 receive/transmit.
++ *
++ * This function is called by ALSA to start, stop, pause, and resume the
++ * transfer of data.
++ */
++static int fsl_ssi_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_TIE |
++					CCSR_SSI_SIER_TFE0_EN);
++		else
++			write_ssi_mask(&ssi->sier, 0, CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN);
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_TIE |
++					CCSR_SSI_SIER_TFE0_EN, 0);
++		else
++			write_ssi_mask(&ssi->sier, CCSR_SSI_SIER_RIE |
++					CCSR_SSI_SIER_RFF0_EN, 0);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		write_ssi(CCSR_SSI_SOR_TX_CLR, &ssi->sor);
++	else
++		write_ssi(CCSR_SSI_SOR_RX_CLR, &ssi->sor);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops fsl_ssi_ac97_dai_ops = {
++	.startup	= fsl_ssi_startup,
++	.shutdown	= fsl_ssi_shutdown,
++	.trigger	= fsl_ssi_ac97_trigger,
++};
++
++static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
++	.ac97_control = 1,
++	.playback = {
++		.stream_name = "AC97 Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "AC97 Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = &fsl_ssi_ac97_dai_ops,
++};
++
++
++static struct fsl_ssi_private *fsl_ac97_data;
++
++static void fsl_ssi_ac97_init(void)
++{
++	fsl_ssi_setup(fsl_ac97_data);
++}
++
++void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
++		unsigned short val)
++{
++	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
++	unsigned int lreg;
++	unsigned int lval;
++
++	if (reg > 0x7f)
 +		return;
 +
-+	snd_printdd("HDA display power %s \n",
-+			enable ? "Enable" : "Disable");
-+	if (enable)
-+		get_power();
-+	else
-+		put_power();
-+}
 +
-+int hda_i915_init(void)
++	lreg = reg <<  12;
++	write_ssi(lreg, &ssi->sacadd);
++
++	lval = val << 4;
++	write_ssi(lval , &ssi->sacdat);
++
++	write_ssi_mask(&ssi->sacnt, CCSR_SSI_SACNT_RDWR_MASK,
++			CCSR_SSI_SACNT_WR);
++	udelay(100);
++}
++EXPORT_SYMBOL(fsl_ssi_ac97_write);
++
++unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
++		unsigned short reg)
 +{
-+	int err = 0;
++	struct ccsr_ssi *ssi = fsl_ac97_data->ssi;
 +
-+	get_power = symbol_request(i915_request_power_well);
-+	if (!get_power) {
-+		snd_printk(KERN_WARNING "hda-i915: get_power symbol get fail\n");
-+		return -ENODEV;
-+	}
++	unsigned short val = -1;
++	unsigned int lreg;
 +
-+	put_power = symbol_request(i915_release_power_well);
-+	if (!put_power) {
-+		symbol_put(i915_request_power_well);
-+		get_power = NULL;
-+		return -ENODEV;
-+	}
++	lreg = (reg & 0x7f) <<  12 ;
++	write_ssi(lreg, &ssi->sacadd);
++	write_ssi_mask(&ssi->sacnt, CCSR_SSI_SACNT_RDWR_MASK,
++			CCSR_SSI_SACNT_RD);
 +
-+	snd_printd("HDA driver get symbol successfully from i915 module\n");
++	udelay(100);
 +
-+	return err;
++	val = (read_ssi(&ssi->sacdat) >> 4) & 0xffff;
++
++	return val;
 +}
-+
-+int hda_i915_exit(void)
-+{
-+	if (get_power) {
-+		symbol_put(i915_request_power_well);
-+		get_power = NULL;
-+	}
-+	if (put_power) {
-+		symbol_put(i915_release_power_well);
-+		put_power = NULL;
-+	}
-+
-+	return 0;
-+}
-diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h
-new file mode 100644
-index 0000000..5a63da2
---- /dev/null
-+++ b/sound/pci/hda/hda_i915.h
-@@ -0,0 +1,35 @@
-+/*
-+ *  This program is free software; you can redistribute it and/or modify it
-+ *  under the terms of the GNU General Public License as published by the Free
-+ *  Software Foundation; either version 2 of the License, or (at your option)
-+ *  any later version.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but WITHOUT
-+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ *  more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License along with
-+ *  this program; if not, write to the Free Software Foundation, Inc., 59
-+ *  Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+#ifndef __SOUND_HDA_I915_H
-+#define __SOUND_HDA_I915_H
-+
-+#ifdef CONFIG_SND_HDA_I915
-+void hda_display_power(bool enable);
-+int hda_i915_init(void);
-+int hda_i915_exit(void);
-+#else
-+static inline void hda_display_power(bool enable) {}
-+static inline int hda_i915_init(void)
-+{
-+	return -ENODEV;
-+}
-+static inline int hda_i915_exit(void)
-+{
-+	return 0;
-+}
-+#endif
-+
-+#endif
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 49cc942..1dedcb1 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -62,6 +62,7 @@
- #include <linux/vga_switcheroo.h>
- #include <linux/firmware.h>
- #include "hda_codec.h"
-+#include "hda_i915.h"
- 
- 
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
-@@ -541,6 +542,10 @@ struct azx {
- 	/* for pending irqs */
- 	struct work_struct irq_pending_work;
- 
-+#ifdef CONFIG_SND_HDA_I915
-+	struct work_struct probe_work;
-+#endif
-+
- 	/* reboot notifier (for mysterious hangup problem at power-down) */
- 	struct notifier_block reboot_notifier;
- 
-@@ -594,6 +599,7 @@ enum {
- #define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
- #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
- #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
-+#define AZX_DCAPS_I915_POWERWELL (1 << 27)	/* HSW i915 power well support */
- 
- /* quirks for Intel PCH */
- #define AZX_DCAPS_INTEL_PCH_NOPM \
-@@ -2869,6 +2875,8 @@ static int azx_suspend(struct device *dev)
- 	pci_disable_device(pci);
- 	pci_save_state(pci);
- 	pci_set_power_state(pci, PCI_D3hot);
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+		hda_display_power(false);
- 	return 0;
- }
- 
-@@ -2881,6 +2889,8 @@ static int azx_resume(struct device *dev)
- 	if (chip->disabled)
- 		return 0;
- 
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+		hda_display_power(true);
- 	pci_set_power_state(pci, PCI_D0);
- 	pci_restore_state(pci);
- 	if (pci_enable_device(pci) < 0) {
-@@ -2913,6 +2923,8 @@ static int azx_runtime_suspend(struct device *dev)
- 
- 	azx_stop_chip(chip);
- 	azx_clear_irq_pending(chip);
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+		hda_display_power(false);
- 	return 0;
- }
- 
-@@ -2921,6 +2933,8 @@ static int azx_runtime_resume(struct device *dev)
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
- 
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+		hda_display_power(true);
- 	azx_init_pci(chip);
- 	azx_init_chip(chip, 1);
- 	return 0;
-@@ -3147,6 +3161,10 @@ static int azx_free(struct azx *chip)
- 	if (chip->fw)
- 		release_firmware(chip->fw);
- #endif
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+		hda_display_power(false);
-+		hda_i915_exit();
-+	}
- 	kfree(chip);
- 
- 	return 0;
-@@ -3372,6 +3390,13 @@ static void azx_check_snoop_available(struct azx *chip)
- 	}
- }
- 
-+#ifdef CONFIG_SND_HDA_I915
-+static void azx_probe_work(struct work_struct *work)
-+{
-+	azx_probe_continue(container_of(work, struct azx, probe_work));
-+}
-+#endif
++EXPORT_SYMBOL(fsl_ssi_ac97_read);
 +
  /*
-  * constructor
-  */
-@@ -3447,7 +3472,13 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 		return err;
+  * FIXME: As soon as all boards using imx-ssi AC97 mode are able to use
+  * fsl-ssi, soc_ac97_ops can be used exclusively in this driver without copying
+@@ -622,6 +804,23 @@ static const struct snd_soc_component_driver fsl_ssi_component = {
+ struct snd_ac97_bus_ops soc_ac97_ops;
+ EXPORT_SYMBOL_GPL(soc_ac97_ops);
+ 
++static struct snd_ac97_bus_ops fsl_ssi_soc_ac97_ops = {
++	.read		= fsl_ssi_ac97_read,
++	.write		= fsl_ssi_ac97_write,
++};
++
++/*
++ * ac97 reset and warm_reset functions are setup by board specific drivers.
++ * ssi does not have any knowledge about the used board.
++ */
++void fsl_ssi_ac97_set_reset(void (*ac97_reset)(struct snd_ac97 *ac97),
++		void (*ac97_warm_reset)(struct snd_ac97 *ac97))
++{
++	soc_ac97_ops.reset = ac97_reset;
++	soc_ac97_ops.warm_reset = ac97_warm_reset;
++}
++EXPORT_SYMBOL(fsl_ssi_ac97_set_reset);
++
+ /* Show the statistics of a flag only if its interrupt is enabled.  The
+  * compiler will optimze this code to a no-op if the interrupt is not
+  * enabled.
+@@ -698,6 +897,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	struct resource res;
+ 	char name[64];
+ 	bool shared;
++	bool ac97 = false;
+ 
+ 	/* SSIs that are not connected on the board should have a
+ 	 *      status = "disabled"
+@@ -708,7 +908,13 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ 	/* We only support the SSI in "I2S Slave" mode */
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+-	if (!sprop || strcmp(sprop, "i2s-slave")) {
++	if (!sprop) {
++		dev_err(&pdev->dev, "fsl,mode property is necessary\n");
++		return -EINVAL;
++	}
++	if (!strcmp(sprop, "ac97-slave")) {
++		ac97 = true;
++	} else if (strcmp(sprop, "i2s-slave")) {
+ 		dev_notice(&pdev->dev, "mode %s is unsupported\n", sprop);
+ 		return -ENODEV;
+ 	}
+@@ -724,13 +930,23 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ 	strcpy(ssi_private->name, p);
+ 
+-	/* Initialize this copy of the CPU DAI driver structure */
+-	memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+-	       sizeof(fsl_ssi_dai_template));
+-	ssi_private->cpu_dai_drv.name = ssi_private->name;
+-
+ 	ssi_private->use_dma = !of_property_read_bool(np, "fsl,imx-fiq");
+ 
++	if (ac97) {
++		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_ac97_dai,
++				sizeof(fsl_ssi_ac97_dai));
++		memcpy(&soc_ac97_ops, &fsl_ssi_soc_ac97_ops,
++				sizeof(soc_ac97_ops));
++
++		fsl_ac97_data = ssi_private;
++		ssi_private->imx_ac97 = true;
++	} else {
++		/* Initialize this copy of the CPU DAI driver structure */
++		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
++		       sizeof(fsl_ssi_dai_template));
++	}
++	ssi_private->cpu_dai_drv.name = ssi_private->name;
++
+ 	/* Get the addresses and IRQ */
+ 	ret = of_address_to_resource(np, 0, &res);
+ 	if (ret) {
+@@ -910,6 +1126,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
  	}
  
-+#ifdef CONFIG_SND_HDA_I915
-+	/* continue probing in work context as may trigger request module */
-+	INIT_WORK(&chip->probe_work, azx_probe_work);
-+#endif
-+
- 	*rchip = chip;
+ done:
++	if (ssi_private->imx_ac97)
++		fsl_ssi_ac97_init();
 +
  	return 0;
- }
  
-@@ -3718,6 +3749,16 @@ static int azx_probe(struct pci_dev *pci,
- 	}
- #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ error_dai:
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index e6b9a69..87004ae 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -206,3 +206,10 @@ struct ccsr_ssi {
  
-+	/* continue probing in work context, avoid request_module deadlock */
-+	if (probe_now && (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)) {
-+#ifdef CONFIG_SND_HDA_I915
-+		probe_now = false;
-+		schedule_work(&chip->probe_work);
-+#else
-+		snd_printk(KERN_ERR SFX "Haswell must build in CONFIG_SND_HDA_I915\n");
-+#endif
-+	}
+ #endif
+ 
 +
- 	if (probe_now) {
- 		err = azx_probe_continue(chip);
- 		if (err < 0)
-@@ -3740,6 +3781,16 @@ static int azx_probe_continue(struct azx *chip)
- 	int dev = chip->dev_index;
- 	int err;
- 
-+	/* Request power well for Haswell HDA controller and codec */
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+		err = hda_i915_init();
-+		if (err < 0) {
-+			snd_printk(KERN_ERR SFX "Error request power-well from i915\n");
-+			goto out_free;
-+		}
-+		hda_display_power(true);
-+	}
-+
- 	err = azx_first_init(chip);
- 	if (err < 0)
- 		goto out_free;
-@@ -3834,11 +3885,14 @@ static DEFINE_PCI_DEVICE_TABLE(azx_ids) = {
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
-+	  AZX_DCAPS_I915_POWERWELL },
- 	{ PCI_DEVICE(0x8086, 0x0c0c),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
-+	  AZX_DCAPS_I915_POWERWELL },
- 	{ PCI_DEVICE(0x8086, 0x0d0c),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH },
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH |
-+	  AZX_DCAPS_I915_POWERWELL },
- 	/* 5 Series/3400 */
- 	{ PCI_DEVICE(0x8086, 0x3b56),
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
++void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
++		unsigned short val);
++unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
++		unsigned short reg);
++void fsl_ssi_ac97_set_reset(void (*ac97_reset)(struct snd_ac97 *ac97),
++		void (*ac97_warm_reset)(struct snd_ac97 *ac97));
 -- 
-1.7.9.5
+1.8.2.1
