@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v7 07/11] ARM: imx: Export ac97 reset functions
-Date: Thu, 30 May 2013 16:51:49 +0200
-Message-ID: <1369925513-19329-8-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v7 01/11] ASoC: imx-pcm-dma: DT support
+Date: Thu, 30 May 2013 16:51:43 +0200
+Message-ID: <1369925513-19329-2-git-send-email-mpa@pengutronix.de>
 References: <1369925513-19329-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,91 +22,35 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch removes the NO_DT flag. The pdev pointer may have a proper
+of_node with the dmas property, so we can use it to request DMA
+channels.
+
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- arch/arm/mach-imx/mach-pca100.c | 7 +++++--
- arch/arm/mach-imx/mach-pcm043.c | 7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
-index b8b15bb..68badf8 100644
---- a/arch/arm/mach-imx/mach-pca100.c
-+++ b/arch/arm/mach-imx/mach-pca100.c
-@@ -22,6 +22,7 @@
- #include <linux/i2c.h>
- #include <linux/i2c/at24.h>
- #include <linux/dma-mapping.h>
-+#include <linux/export.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
- #include <linux/irq.h>
-@@ -208,7 +209,7 @@ static const struct spi_imx_master pca100_spi0_data __initconst = {
- 	.num_chipselect = ARRAY_SIZE(pca100_spi_cs),
- };
- 
--static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
+Notes:
+    Changes in v6:
+     - After rebasing onto Shawn's imx-pcm cleanups, this patch just consists of
+       removing the NO_DT flag.
+    
+    Changes in v5:
+     - Use dev.parent pointer to get the of_node.
+
+ sound/soc/fsl/imx-pcm-dma.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index fde4d2e..f323ce0 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -64,7 +64,6 @@ int imx_pcm_dma_init(struct platform_device *pdev)
  {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
- 	gpio_set_value(GPIO_PORTC + 20, 1);
-@@ -217,8 +218,9 @@ static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC20_PF_SSI1_FS);
- 	msleep(2);
+ 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
  }
-+EXPORT_SYMBOL(pca100_ac97_warm_reset);
- 
--static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
-+void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- {
- 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
- 	gpio_set_value(GPIO_PORTC + 20, 0);
-@@ -232,6 +234,7 @@ static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
- 	mxc_gpio_mode(PC22_PF_SSI1_TXD);
- 	msleep(2);
- }
-+EXPORT_SYMBOL(pca100_ac97_cold_reset);
- 
- static const struct imx_ssi_platform_data pca100_ssi_pdata __initconst = {
- 	.ac97_reset		= pca100_ac97_cold_reset,
-diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
-index 8ed533f..4f318ca 100644
---- a/arch/arm/mach-imx/mach-pcm043.c
-+++ b/arch/arm/mach-imx/mach-pcm043.c
-@@ -27,6 +27,7 @@
- #include <linux/i2c/at24.h>
- #include <linux/usb/otg.h>
- #include <linux/usb/ulpi.h>
-+#include <linux/export.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -217,7 +218,7 @@ static iomux_v3_cfg_t pcm043_pads[] = {
- #define SD1_GPIO_WP	IMX_GPIO_NR(2, 23)
- #define SD1_GPIO_CD	IMX_GPIO_NR(2, 24)
- 
--static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
-+void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
- {
- 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
- 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
-@@ -239,8 +240,9 @@ static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
- 	gpio_free(AC97_GPIO_TXFS);
- 	mxc_iomux_v3_setup_pad(txfs);
- }
-+EXPORT_SYMBOL(pcm043_ac97_warm_reset);
- 
--static void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
-+void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
- {
- 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
- 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
-@@ -286,6 +288,7 @@ err1:
- 		printk("%s failed with %d\n", __func__, ret);
- 	mdelay(1);
- }
-+EXPORT_SYMBOL(pcm043_ac97_cold_reset);
- 
- static const struct imx_ssi_platform_data pcm043_ssi_pdata __initconst = {
- 	.ac97_reset = pcm043_ac97_cold_reset,
+ EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
 -- 
 1.8.2.1
