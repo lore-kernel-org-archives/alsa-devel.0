@@ -1,36 +1,42 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH] ALSA: sis7019: fix error return code in sis_chip_create()
-Date: Thu, 30 May 2013 19:55:34 +0800
-Message-ID: <CAPgLHd_QmY-8YEh8_kVGLGYq+mwYrXfjjYjtzn-tx5tmf87Ztg@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH alsa-lib 2/2] pcm_plugin: Fix return value
+	of snd_pcm_rewind
+Date: Thu, 30 May 2013 14:05:32 +0200
+Message-ID: <51A7408C.1010608@perex.cz>
+References: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
+ <1369909594-15047-2-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, wfp5p@virginia.edu, adam.buchbinder@gmail.com, jkosina@suse.cz, Julia.Lawall@lip6.fr
-Cc: yongjun_wei@trendmicro.com.cn, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEE16265150
+ for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 14:05:33 +0200 (CEST)
+In-Reply-To: <1369909594-15047-2-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, arun.raghavan@collabora.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Date 30.5.2013 12:26, David Henningsson wrote:
+> In case the rewind did not rewind as much as expected, e g due to
+> time delay between the latest avail update and the rewind, we must
+> properly account for that in the plugin layer.
 
-Fix to return a negative error code in the pci_set_dma_mask() error
-handling case instead of 0, as done elsewhere in this function.
+Thank you very much for this fix.
+I applied both patches to alsa-lib's repo.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/pci/sis7019.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+				Jaroslav
 
-diff --git a/sound/pci/sis7019.c b/sound/pci/sis7019.c
-index f2639a0..e413b4e 100644
---- a/sound/pci/sis7019.c
-+++ b/sound/pci/sis7019.c
-@@ -1341,7 +1341,8 @@ static int sis_chip_create(struct snd_card *card,
- 	if (rc)
- 		goto error_out;
- 
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(30)) < 0) {
-+	rc = pci_set_dma_mask(pci, DMA_BIT_MASK(30));
-+	if (rc < 0) {
- 		dev_err(&pci->dev, "architecture does not support 30-bit PCI busmaster DMA");
- 		goto error_out_enabled;
- 	}
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
