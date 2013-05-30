@@ -1,61 +1,46 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] alsa-utils 1.0.27.1 still ships
-	90-alsa-restore.rules
-Date: Thu, 30 May 2013 20:44:47 +0200
-Message-ID: <51A79E1F.9070200@perex.cz>
-References: <20130530130813.GA25784@galadriel.home.lxtec.de>
- <51A75A5B.8090000@perex.cz> <20130530150631.GA20416@galadriel.home.lxtec.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 6/6] MIPS: jz4740: Remove custom DMA API
+Date: Thu, 30 May 2013 20:48:03 +0200
+Message-ID: <51A79EE3.4040403@metafoo.de>
+References: <1369931105-28065-1-git-send-email-lars@metafoo.de> <1369931105-28065-7-git-send-email-lars@metafoo.de> <20130530172050.GB3767@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E537261A67
- for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 20:44:48 +0200 (CEST)
-In-Reply-To: <20130530150631.GA20416@galadriel.home.lxtec.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>, pkg-alsa-devel@lists.alioth.debian.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130530172050.GB3767@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 30.5.2013 17:06, Elimar Riesebieter wrote:
-> * Jaroslav Kysela <perex@perex.cz> [2013-05-30 15:55 +0200]:
+On 05/30/2013 07:20 PM, Vinod Koul wrote:
+> On Thu, May 30, 2013 at 06:25:05PM +0200, Lars-Peter Clausen wrote:
+>> Now that all users of the custom jz4740 DMA API have been converted to use
+>> the dmaengine API instead we can remove the custom API and move all the code
+>> talking to the hardware to the dmaengine driver.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> Acked-by: Ralf Baechle <ralf@linux-mips.org>
+>> ---
+>> No changes since v1
+>> ---
+>>  arch/mips/include/asm/mach-jz4740/dma.h |  56 ------
+>>  arch/mips/jz4740/Makefile               |   2 +-
+>>  arch/mips/jz4740/dma.c                  | 307 --------------------------------
+>>  drivers/dma/dma-jz4740.c                | 258 +++++++++++++++++++++++----
+>>  4 files changed, 222 insertions(+), 401 deletions(-)
+>>  delete mode 100644 arch/mips/jz4740/dma.c
+> only dma.c, you should remove the dma.h or relocate it to linux/
+
+As I said the header only contains the slave ids at this point and the
+dmaengine driver doesn't need it anymore. So I should remove the #include from
+the driver as well.
+
 > 
->> Date 30.5.2013 15:08, Elimar Riesebieter wrote:
->>>
->>> Hi all,
->>>
->>> [0] tells:
->>> alsactl: remove 90-alsa-restore.rules from the tar ball
->>>
->>> but it still ships 90-alsa-restore.rules.in and installs the file as
->>> 90-alsa-restore.rules
->>
->> It's correct. The rules file should be generated after configure/make
->> with correct paths.
->>
->> It's not a complete removal of this feature. You probably miss this fix:
->>
->> http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=c0f70a0b8e340d6ee903ff226886bb6f969d46a1
 > 
-> Well, it is useless when EPREFIX (i.e /usr) isn't mounted while udev runs?
+> rest of the series looks fine, and once we have acks from repsective subsystem
+> mainatiners, we should be good to merge
 
-The distro should handle this situation.
+We already have acks from the maintainers.
 
-> It should be better to restore mixer settings by an initscript.
-
-It does not work for plug and play devices.
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+- Lars
