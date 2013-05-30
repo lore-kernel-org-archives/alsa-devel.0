@@ -1,18 +1,16 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH alsa-lib 2/2] pcm_plugin: Fix return value of
-	snd_pcm_rewind
-Date: Thu, 30 May 2013 12:26:34 +0200
-Message-ID: <1369909594-15047-2-git-send-email-david.henningsson@canonical.com>
-References: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH alsa-lib 1/2] pcm_hw: Remove unused fields in
+	struct
+Date: Thu, 30 May 2013 12:26:33 +0200
+Message-ID: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C9D8026510C
+ by alsa0.perex.cz (Postfix) with ESMTP id C9C1C2650F0
  for <alsa-devel@alsa-project.org>; Thu, 30 May 2013 12:26:36 +0200 (CEST)
-In-Reply-To: <1369909594-15047-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,40 +24,26 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, arun.raghavan@collabora.co.uk, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case the rewind did not rewind as much as expected, e g due to
-time delay between the latest avail update and the rewind, we must
-properly account for that in the plugin layer.
-
-Otherwise, the plugin's appl ptr and the hw's appl ptr become
-unsynchronised, which is very bad, especially in mmap_shadow plugins,
-e g, this could cause the overlapping memcpy in the softvol plugin
-as seen here:
-https://bugs.freedesktop.org/show_bug.cgi?id=64299
+These fields are not used, and their name similarity to other
+fields are quite confusing when trying to debug alsa-lib.
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- src/pcm/pcm_plugin.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/pcm/pcm_hw.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-Btw, I was also considering always syncing the appl.ptr (for playback)
-with the slave in snd_pcm_plugin_avail_update, like we do for the
-hw.ptr. Do you think this would be a good idea?
-
-diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-index 96218a8..17157e8 100644
---- a/src/pcm/pcm_plugin.c
-+++ b/src/pcm/pcm_plugin.c
-@@ -219,9 +219,9 @@ static snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t
- 		snd_atomic_write_end(&plugin->watom);
- 		return sframes;
- 	}
--	snd_pcm_mmap_appl_backward(pcm, (snd_pcm_uframes_t) frames);
-+	snd_pcm_mmap_appl_backward(pcm, (snd_pcm_uframes_t) sframes);
- 	snd_atomic_write_end(&plugin->watom);
--	return (snd_pcm_sframes_t) frames;
-+	return (snd_pcm_sframes_t) sframes;
- }
- 
- static snd_pcm_sframes_t snd_pcm_plugin_forwardable(snd_pcm_t *pcm)
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 0f3226d..196393d 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -95,8 +95,6 @@ typedef struct {
+ 	volatile struct snd_pcm_mmap_status * mmap_status;
+ 	struct snd_pcm_mmap_control *mmap_control;
+ 	struct snd_pcm_sync_ptr *sync_ptr;
+-	snd_pcm_uframes_t hw_ptr;
+-	snd_pcm_uframes_t appl_ptr;
+ 	int period_event;
+ 	snd_timer_t *period_timer;
+ 	struct pollfd period_timer_pfd;
 -- 
 1.7.9.5
