@@ -1,14 +1,24 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 2/3] ALSA: hdspm - Refactor SS/DS/QS clock
-	multiplier into function
-Date: Fri, 31 May 2013 12:57:10 +0200
-Message-ID: <1369997831-7274-2-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1369997831-7274-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Evan <sirevan@gmail.com>
+Subject: Fwd: regression: from 3.8 to 3.9: headphones output no
+ sound on Intel HDA, codec VIA VT1802
+Date: Fri, 31 May 2013 13:07:29 +0200
+Message-ID: <51A88471.3010302@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1369997831-7274-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
+ [209.85.217.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23DE12619E3
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 13:07:31 +0200 (CEST)
+Received: by mail-lb0-f174.google.com with SMTP id u10so1530452lbi.5
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 04:07:30 -0700 (PDT)
+Received: from [37.191.193.210] (host-37-191-193-210.lynet.no.
+ [37.191.193.210])
+ by mx.google.com with ESMTPSA id n7sm18591231lbd.12.2013.05.31.04.07.29
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Fri, 31 May 2013 04:07:30 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,73 +28,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When the DoubleSpeed or QuadSpeed bit is set, the SingleSpeed frequency
-has to be multiplied accordingly. Since this functionality will be
-required at least twice, refactor it into a separate function.
+I am having this same issue (with the same hardware). I found a
+temporary work around for the problem by disabling "Auto-Mute Mode" with
+alsamixer and then muting my "Speaker" output. If I don't mute the
+"Speaker" I get audio through both my headphones and my speakers, but
+when I mute the speakers I get the audio just through the headphones.
 
-The second reference to the newly introduced hdspm_rate_multiplier()
-will be in a separate commit.
+The output of alsa-info for 3.9.4 is here[1].
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+[1]
+http://www.alsa-project.org/db/?f=6120303f74b8e46930e15a544ba11b859de25c04
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index e070ea8..8eb2070 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -1091,6 +1091,26 @@ static int hdspm_round_frequency(int rate)
- 		return 48000;
- }
- 
-+/* QS and DS rates normally can not be detected
-+ * automatically by the card. Only exception is MADI
-+ * in 96k frame mode.
-+ *
-+ * So if we read SS values (32 .. 48k), check for
-+ * user-provided DS/QS bits in the control register
-+ * and multiply the base frequency accordingly.
-+ */
-+static int hdspm_rate_multiplier(struct hdspm *hdspm, int rate)
-+{
-+	if (rate <= 48000) {
-+		if (hdspm->control_register & HDSPM_QuadSpeed)
-+			return rate * 4;
-+		else if (hdspm->control_register &
-+				HDSPM_DoubleSpeed)
-+			return rate * 2;
-+	};
-+	return rate;
-+}
-+
- static int hdspm_tco_sync_check(struct hdspm *hdspm);
- static int hdspm_sync_in_sync_check(struct hdspm *hdspm);
- 
-@@ -1268,21 +1288,8 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
- 			}
- 		}
- 
--		/* QS and DS rates normally can not be detected
--		 * automatically by the card. Only exception is MADI
--		 * in 96k frame mode.
--		 *
--		 * So if we read SS values (32 .. 48k), check for
--		 * user-provided DS/QS bits in the control register
--		 * and multiply the base frequency accordingly.
--		 */
--		if (rate <= 48000) {
--			if (hdspm->control_register & HDSPM_QuadSpeed)
--				rate *= 4;
--			else if (hdspm->control_register &
--					HDSPM_DoubleSpeed)
--				rate *= 2;
--		}
-+		rate = hdspm_rate_multiplier(hdspm, rate);
-+
- 		break;
- 	}
- 
--- 
-1.7.10.4
+-E
