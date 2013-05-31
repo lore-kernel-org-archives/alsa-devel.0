@@ -1,20 +1,19 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Re: Fwd: regression: from 3.8 to 3.9: headphones
- output no sound on Intel HDA, codec VIA VT1802
-Date: Fri, 31 May 2013 17:21:32 +0200
-Message-ID: <CALxABCba7cV=9nimQYTP8xj8bRj4gyGv+O70rTkNgvP7wS4OXQ@mail.gmail.com>
-References: <51A88471.3010302@gmail.com>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] ASoC: sgtl5000: Do not read registers
+	prior to turning on the supplies
+Date: Fri, 31 May 2013 17:32:23 +0200
+Message-ID: <201305311732.24103.marex@denx.de>
+References: <1369749858-21579-1-git-send-email-fabio.estevam@freescale.com>
+ <201305310036.11681.marex@denx.de>
+ <86D15885F63D1143A519F161FB828EAF265F56@039-SN2MPN1-013.039d.mgd.msft.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 829A5261728
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 17:21:53 +0200 (CEST)
-Received: by mail-ob0-f179.google.com with SMTP id xk17so3247393obc.38
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 08:21:52 -0700 (PDT)
-In-Reply-To: <51A88471.3010302@gmail.com>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31750261281
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 17:32:31 +0200 (CEST)
+In-Reply-To: <86D15885F63D1143A519F161FB828EAF265F56@039-SN2MPN1-013.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,15 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Evan <sirevan@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Estevam Fabio-R49496 <r49496@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 31, 2013 at 1:07 PM, Evan <sirevan@gmail.com> wrote:
-> I am having this same issue (with the same hardware). I found a
-> temporary work around for the problem by disabling "Auto-Mute Mode" with
-> alsamixer and then muting my "Speaker" output. If I don't mute the
-> "Speaker" I get audio through both my headphones and my speakers, but
-> when I mute the speakers I get the audio just through the headphones.
+Hello Fabio,
 
-Didn't work for me on pure 3.9.2.
+> Hi Marek,
+> 
+> (Sorry for the top-posting here)
+> 
+> There is a delay of 23 seconds, which is 1 second for each sgtl500-
+> register write.
+> 
+> This is an I2C issue and we have already talked about this on the
+> linux-arm-kernel list.
+> 
+> Alexandre Belloni also sees this 1 second on another I2C device connected
+> to mx28.
+
+There was no problem without these patches though. With your patches, I see NAK 
+happening on the I2C lines upon first 2-byte write.
+
+> Regards,
+> 
+> Fabio Estevam
+> ________________________________________
+> From: Marek Vasut [marex@denx.de]
+> Sent: Thursday, May 30, 2013 5:36 PM
+> To: alsa-devel@alsa-project.org
+> Cc: Mark Brown; Estevam Fabio-R49496
+> Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: Do not read registers
+> prior to turning on the supplies
+> 
+> Hi Mark, Fabio,
+> 
+> > On Tue, May 28, 2013 at 11:04:18AM -0300, Fabio Estevam wrote:
+> > > Commit b871f1ad (ASoC: sgtl5000: Read SGTL5000_CHIP_ID in i2c_probe())
+> > > placed the code for reading the codec revision prior to turning on the
+> > > power supplies.
+> > > 
+> > > Even though this works on some systems that always have the codec power
+> > > supplies enabled, this is not correct, so revert this commit.
+> > 
+> > It seems like a better fix for this is to just enable the supplies while
+> > doing the device identification?
+> 
+> This patch does kinda fix it for me, but the system takes quite some time
+> to init the soundcard now (a few seconds). After reverting these two
+> patches, the soundcard works just fine (like before):
+> 
+>     ASoC: sgtl5000: Fix driver probe after reset
+>     ASoC: sgtl5000: Read SGTL5000_CHIP_ID in i2c_probe()
+> 
+> Best regards,
+> Marek Vasut
+
+Best regards,
+Marek Vasut
