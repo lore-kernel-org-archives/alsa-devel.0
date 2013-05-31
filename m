@@ -1,54 +1,140 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 08/11] ASoC: phycore-ac97: Add DT support
-Date: Fri, 31 May 2013 09:51:03 +0800
-Message-ID: <20130531015101.GA22536@S2101-09.ap.freescale.net>
-References: <1369925513-19329-1-git-send-email-mpa@pengutronix.de>
- <1369925513-19329-9-git-send-email-mpa@pengutronix.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+Date: Fri, 31 May 2013 03:43:09 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901181A783@SHSMSX104.ccr.corp.intel.com>
+References: <1368692945-2122-1-git-send-email-xingchao.wang@linux.intel.com>
+ <s5hehd7jomk.wl%tiwai@suse.de>
+ <46B810F6945F7C4788E11DCE57EC4890118154B8@SHSMSX104.ccr.corp.intel.com>
+ <s5h4ndva7g8.wl%tiwai@suse.de> <519CA768.5020305@intel.com>
+ <46B810F6945F7C4788E11DCE57EC489011816442@SHSMSX104.ccr.corp.intel.com>
+ <51A3595D.1000603@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1369925513-19329-9-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A56A26537D
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 05:43:26 +0200 (CEST)
+In-Reply-To: <51A3595D.1000603@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Wang Xingchao <xingchao.wang@linux.intel.com>, "Li,
+ Jocelyn" <jocelyn.li@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBNYXkgMzAsIDIwMTMgYXQgMDQ6NTE6NTBQTSArMDIwMCwgTWFya3VzIFBhcmdtYW5u
-IHdyb3RlOgo+IEFkZCBkZXZpY2V0cmVlIHN1cHBvcnQgZm9yIHBoeWNvcmUtYWM5NyBkcml2ZXIu
-Cj4gCj4gcGxhdGZvcm1fb2Zfbm9kZSBhbmQgY3B1X29mX25vZGUgYXJlIHNldCBhY2NvcmRpbmcg
-dG8gdGhlIGZzbCxhdWRtdXgKPiBwaGFuZGxlLgo+IAo+IFRoaXMgcGF0Y2ggYWRkcyBoYW5kbGlu
-ZyBvZiBhYzk3IHJlc2V0IGZ1bmN0aW9ucyBhY2NvcmRpbmcgdG8gZnNsIGFjOTcKPiBzdXBwb3J0
-LiBUaGV5IGFyZSBzZXR1cCBmcm9tIGhlcmUgdG8gYXZvaWQgYm9hcmQgc3BlY2lmaWMgY29kZSBp
-biB0aGUKPiBnZW5lcmljIGZzbC1zc2kgZHJpdmVyLgo+IAo+IFRoaXMgcGF0Y2ggY2hhbmdlcyB0
-aGUgaGFuZGxpbmcgb2YgcGNhMTAwIGJvYXJkcyBmcm9tIG5vbi1EVCB0byBEVCBvbmx5Lgo+IHBj
-bTA0MyBpcyBzdGlsbCBoYW5kbGVkIHdpdGhvdXQgRFQuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWFy
-a3VzIFBhcmdtYW5uIDxtcGFAcGVuZ3V0cm9uaXguZGU+CgpDb21waWxpbmcgcGh5Y29yZS1hYzk3
-IGFzIG1vZHVsZSwgIEkgZ290IHRoZSBmb2xsb3dpbmcgZXJyb3JzLgoKICBDQyBbTV0gIHNvdW5k
-L3NvYy9mc2wvcGh5Y29yZS1hYzk3Lm8Kc291bmQvc29jL2ZzbC9waHljb3JlLWFjOTcuYzozMDU6
-MTogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiDigJhfX2luaXR0ZXN04oCZCnNvdW5kL3NvYy9mc2wv
-cGh5Y29yZS1hYzk3LmM6MTQ2OjE6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYX19p
-bml0dGVzdOKAmSB3YXMgaGVyZQpzb3VuZC9zb2MvZnNsL3BoeWNvcmUtYWM5Ny5jOjMwNToxOiBl
-cnJvcjogcmVkZWZpbml0aW9uIG9mIOKAmGluaXRfbW9kdWxl4oCZCnNvdW5kL3NvYy9mc2wvcGh5
-Y29yZS1hYzk3LmM6MTQ2OjE6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYaW5pdF9t
-b2R1bGXigJkgd2FzIGhlcmUKc291bmQvc29jL2ZzbC9waHljb3JlLWFjOTcuYzozMDU6MTogZXJy
-b3I6IHJlZGVmaW5pdGlvbiBvZiDigJhfX2V4aXR0ZXN04oCZCnNvdW5kL3NvYy9mc2wvcGh5Y29y
-ZS1hYzk3LmM6MTQ3OjE6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYX19leGl0dGVz
-dOKAmSB3YXMgaGVyZQpzb3VuZC9zb2MvZnNsL3BoeWNvcmUtYWM5Ny5jOjMwNToxOiBlcnJvcjog
-cmVkZWZpbml0aW9uIG9mIOKAmGNsZWFudXBfbW9kdWxl4oCZCnNvdW5kL3NvYy9mc2wvcGh5Y29y
-ZS1hYzk3LmM6MTQ3OjE6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYY2xlYW51cF9t
-b2R1bGXigJkgd2FzIGhlcmUKbWFrZVs0XTogKioqIFtzb3VuZC9zb2MvZnNsL3BoeWNvcmUtYWM5
-Ny5vXSBFcnJvciAxCgpTaGF3bgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KZGV2aWNldHJlZS1kaXNjdXNzIG1haWxpbmcgbGlzdApkZXZpY2V0cmVlLWRp
-c2N1c3NAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8v
-ZGV2aWNldHJlZS1kaXNjdXNzCg==
+Hi Rafael,
+
+> -----Original Message-----
+> From: Wysocki, Rafael J
+> Sent: Monday, May 27, 2013 9:02 PM
+> To: Wang, Xingchao
+> Cc: Takashi Iwai; Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
+> alsa-devel@alsa-project.org; Wang Xingchao
+> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+> 
+> On 5/23/2013 4:59 AM, Wang, Xingchao wrote:
+> > Hi Rafael,
+> >
+> >
+> >> -----Original Message-----
+> >> From: Wysocki, Rafael J
+> >> Sent: Wednesday, May 22, 2013 7:09 PM
+> >> To: Takashi Iwai
+> >> Cc: Wang, Xingchao; Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
+> >> alsa-devel@alsa-project.org; Wang Xingchao
+> >> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+> >>
+> >> On 5/22/2013 7:51 AM, Takashi Iwai wrote:
+> >>> At Wed, 22 May 2013 03:56:00 +0000,
+> >>> Wang, Xingchao wrote:
+> >>>> Hi,
+> >>>>
+> >>>> Add Rafael in loop.
+> >>>>
+> >>>>> -----Original Message-----
+> >>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
+> >>>>> Sent: Thursday, May 16, 2013 4:49 PM
+> >>>>> To: Wang Xingchao
+> >>>>> Cc: Girdwood, Liam R; Lin, Mengdong; Li, Jocelyn;
+> >>>>> alsa-devel@alsa-project.org; Wang, Xingchao
+> >>>>> Subject: Re: [PATCH] ALSA: hda - Enable runtime pm for Haswell
+> >>>>>
+> >>>>> At Thu, 16 May 2013 16:29:05 +0800, Wang Xingchao wrote:
+> >>>>>> Haswell doesnot support runtime pm by default.
+> >>>>>> This patch let haswell Display HD-A controller enter runtime
+> >>>>>> suspend, and bring more power saving whith power-well.
+> >>>>>>
+> >>>>>> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> >>>>> I don't think it's good to fiddle such a thing in the driver side.
+> >>>>> If Haswell can support runtime PM really, it should be set commonly.
+> >>>> I wonder whether it's HD-A driver's policy to only support runtime
+> >>>> PM if the
+> >> device can support signal wakup?
+> >>>> According to Rafael, the device can support runtime PM regardless,
+> >>>> no
+> >> matter it supports PME or not.
+> >>>> If so, we should remove the "if" condition check here.
+> >>> Well, if the decision is purely a driver issue, then we can get rid
+> >>> of PME check.
+> >> Yes, it is.
+> >>
+> >>>     But in that case, it should be simply like:
+> >>>
+> >>> azx_probe() {
+> >>> 	...
+> >>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+> >>> 		pm_runtime_put_noidle(&pci->dev);
+> >>> 	...
+> >>> }
+> >>>
+> >>> azx_remove() {
+> >>> 	...
+> >>> 	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+> >>> 		pm_runtime_get_noresume(&pci->dev);
+> >>> 	...
+> >>> }
+> >>>
+> >>>
+> >>> AFAIU, calling pm_runtime_allow() enables the runtime PM *forcibly*.
+> >>> Usually this isn't a good thing.
+> >>>
+> >> That's correct.  Moreover, calling both pm_runtime_allow() *and*
+> >> pm_runtime_put_noidle() together would be a bug IMO.
+> > It's interesting something maybe wrong in my test:
+> > 1. withtout calling pm_runtime_allow(), azx_runteim_idle/suspend() will not
+> be called.
+> 
+> That's because you need to echo "auto" into the device's
+> /sys/devices/.../power/control file from user space for it to work (most likely
+> that's the reason).  If that file already contains "auto" when this happens, I'll
+> need to look at the code to tell you what may be wrong.
+
+Yes, it works after echo "auto" into hda pci device, it's "on" by default. :)
+
+Thanks
+---xingchao
+
+> 
+> > 2. another trick is on my Haswell ULT C stepping board, the runtime PM
+> > only work after exit from resume:
+> >
+> > echo mem > /sys/power/state
+> >
+> > if you donot let system enter suspend manually, the runtime pm will not be
+> triggered.
+> >
+> > Is there any dependency between runtime pm suspend and normal suspend?
+> 
+> There shouldn't be any like this, and if there's one, it is a bug most likely.
+> 
+> Thanks,
+> Rafael
