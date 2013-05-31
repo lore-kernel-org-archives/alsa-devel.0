@@ -1,16 +1,23 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: Improving or replacing snd_printk()
-Date: Fri, 31 May 2013 11:33:44 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1305311131450.1276-100000@iolanthe.rowland.org>
-References: <s5hwqqf1an3.wl%tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Do not read registers
+ prior to turning on the supplies
+Date: Fri, 31 May 2013 12:36:43 -0300
+Message-ID: <CAOMZO5Ab1gfTr4Fi3jXAXtR2LEdBcT6nyNRgm3djpBeRnaz-qg@mail.gmail.com>
+References: <1369749858-21579-1-git-send-email-fabio.estevam@freescale.com>
+ <201305310036.11681.marex@denx.de>
+ <86D15885F63D1143A519F161FB828EAF265F56@039-SN2MPN1-013.039d.mgd.msft.net>
+ <201305311732.24103.marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id C0421261785
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 17:33:47 +0200 (CEST)
-In-Reply-To: <s5hwqqf1an3.wl%tiwai@suse.de>
+Received: from mail-ve0-f181.google.com (mail-ve0-f181.google.com
+ [209.85.128.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B7E261281
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 17:36:44 +0200 (CEST)
+Received: by mail-ve0-f181.google.com with SMTP id db10so1256148veb.12
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 08:36:43 -0700 (PDT)
+In-Reply-To: <201305311732.24103.marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,27 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>
+To: Marek Vasut <marex@denx.de>
+Cc: Estevam Fabio-R49496 <r49496@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 31 May 2013, Takashi Iwai wrote:
+On Fri, May 31, 2013 at 12:32 PM, Marek Vasut <marex@denx.de> wrote:
 
-> > struct snd_card contains pointers to two different devices: dev and 
-> > card_dev.  Some contexts might want to use one of them for log messages 
-> > while other contexts might want to use the other.
-> 
-> Yes, there are some corner cases, indeed.
-> 
-> Also, another expected problem is that neither card->card_dev nor
-> card->dev are set when snd_card_err() is called.  Many drivers set the
-> device pointers at the late stage just before the device
-> registration.  So, systematic replacements won't work as expected in
-> many cases.  (The same is applied for replacement with dev_*(), too.)
+> There was no problem without these patches though. With your patches, I see NAK
+> happening on the I2C lines upon first 2-byte write.
 
-Given that the drivers would have to be edited to fix up the snd_printk 
-calls, the device pointer assignments can be moved to an earlier stage 
-at the same time.  But doing this would require understanding how the 
-driver works to some extent; it couldn't be done blindly.
+Yes, but prior to these patches there were no register writes in sgtl5000.
 
-Alan Stern
+These addditional writes does work and solve the reset issues on
+mx6qsabrelite/mx51evk.
+
+It is only on mx28evk that we have this timeout issue.
+
+I think we need to turn on the SAIF clock (that connects to the
+sgtl5000 MCLK) prior to doing the I2C writes.
+
+Regards,
+
+Fabio Estevam
