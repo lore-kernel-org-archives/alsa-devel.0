@@ -1,35 +1,12 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Re: regression: from 3.8 to 3.9: headphones output no
- sound on Intel HDA, codec VIA VT1802
-Date: Fri, 31 May 2013 12:31:19 +0200
-Message-ID: <CALxABCbBYRJDsXMw0Y0BLs+RuXNMa_RMOAF5i4rmWDaYPa2H0Q@mail.gmail.com>
-References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
- <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
- <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
- <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
- <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
- <s5ha9nwx1j3.wl%tiwai@suse.de>
- <CALxABCZMyqh5SSo=RpQCJNUR_p9yrG5x9DimFpzvgkCFLr4eug@mail.gmail.com>
- <s5h1u97jik9.wl%tiwai@suse.de>
- <CALxABCa27gVVJGWM-crvFOPmJXdZ0FEBc3=dPZ0pG+AhDB78cA@mail.gmail.com>
- <s5hk3myuoq6.wl%tiwai@suse.de>
- <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
- <s5h1u8wtsk9.wl%tiwai@suse.de>
- <CALxABCZdm=qd1E63NeabcqmD0csnL1FcuUBCFTwa1yDOVRVXyg@mail.gmail.com>
- <s5h1u8w8f82.wl%tiwai@suse.de>
- <CALxABCbJ-4_UPNX5qNAOy-PdQ+tp+vVBDE535nLyfjgzDjjebQ@mail.gmail.com>
- <s5h1u8p7pxi.wl%tiwai@suse.de>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 1/3] ALSA: hdspm - Add support for 128-192kHz
+	WordClock input
+Date: Fri, 31 May 2013 12:57:09 +0200
+Message-ID: <1369997831-7274-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
- [209.85.214.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 238DB261A49
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 12:31:41 +0200 (CEST)
-Received: by mail-ob0-f171.google.com with SMTP id dn14so2678389obc.30
- for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 03:31:40 -0700 (PDT)
-In-Reply-To: <s5h1u8p7pxi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,33 +16,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 29, 2013 at 5:42 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 24 May 2013 23:32:14 +0200, Alex Riesen wrote:
->> I'm sorry to say that I will not be able to test it in the next
->> 8 or so days: I'll be traveling and without this particular laptop
->> with me. I hope someone with similar model (Sytem76 Lemur lemu4, i7)
->> can provide some testing in the meantime. Otherwise, I'll test
->> it as soon as I get back.
->
-> Don't worry, the bug is more difficult than I thought :)
+Allow WordClock input rates of 128, 176.4 and 192kHz.
 
-I was afraid you will say that sooner or later :)
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-> When you back, could you try the following and give the outputs?
-> ...
-> So, you'll get 4 alsa-info.sh outputs (step 3, 6, 7 and 8), and 4
-> trace logs (step 5, 6 and 7).
-
-Done. That's a lot of data, so please download it from here:
-
-  http://familie-riesen.de/~raa/public/test/no-cached-write-test.tar.bz2
-
-The system boot is in linuxrc-safemode, and the test itself in test.sh.
-The logs and transcript in report/.
-
-Regards,
-Alex
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index ef3cbc0..e070ea8 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -400,8 +400,8 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+ 
+ #define HDSPM_wc_freq0 (1<<5)	/* input freq detected via autosync  */
+ #define HDSPM_wc_freq1 (1<<6)	/* 001=32, 010==44.1, 011=48, */
+-#define HDSPM_wc_freq2 (1<<7)	/* 100=64, 101=88.2, 110=96, */
+-/* missing Bit   for               111=128, 1000=176.4, 1001=192 */
++#define HDSPM_wc_freq2 (1<<7)	/* 100=64, 101=88.2, 110=96, 111=128 */
++#define HDSPM_wc_freq3 0x800	/* 1000=176.4, 1001=192 */
+ 
+ #define HDSPM_SyncRef0 0x10000  /* Sync Reference */
+ #define HDSPM_SyncRef1 0x20000
+@@ -412,13 +412,17 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+ 
+ #define HDSPM_wc_valid (HDSPM_wcLock|HDSPM_wcSync)
+ 
+-#define HDSPM_wcFreqMask  (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2)
++#define HDSPM_wcFreqMask  (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2|\
++			    HDSPM_wc_freq3)
+ #define HDSPM_wcFreq32    (HDSPM_wc_freq0)
+ #define HDSPM_wcFreq44_1  (HDSPM_wc_freq1)
+ #define HDSPM_wcFreq48    (HDSPM_wc_freq0|HDSPM_wc_freq1)
+ #define HDSPM_wcFreq64    (HDSPM_wc_freq2)
+ #define HDSPM_wcFreq88_2  (HDSPM_wc_freq0|HDSPM_wc_freq2)
+ #define HDSPM_wcFreq96    (HDSPM_wc_freq1|HDSPM_wc_freq2)
++#define HDSPM_wcFreq128   (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2)
++#define HDSPM_wcFreq176_4 (HDSPM_wc_freq3)
++#define HDSPM_wcFreq192   (HDSPM_wc_freq0|HDSPM_wc_freq3)
+ 
+ #define HDSPM_status1_F_0 0x0400000
+ #define HDSPM_status1_F_1 0x0800000
+@@ -1181,6 +1185,15 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ 			case HDSPM_wcFreq96:
+ 				rate = 96000;
+ 				break;
++			case HDSPM_wcFreq128:
++				rate = 128000;
++				break;
++			case HDSPM_wcFreq176_4:
++				rate = 176400;
++				break;
++			case HDSPM_wcFreq192:
++				rate = 192000;
++				break;
+ 			default:
+ 				rate = 0;
+ 				break;
+-- 
+1.7.10.4
