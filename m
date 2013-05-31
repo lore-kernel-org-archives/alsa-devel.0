@@ -1,27 +1,43 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [alsa-devel] Improving or replacing snd_printk()
-Date: Fri, 31 May 2013 10:06:38 -0700
-Message-ID: <1370019998.10556.82.camel@joe-AO722>
-References: <s5ha9nbinre.wl%tiwai@suse.de>
-	 <Pine.LNX.4.44L0.1305311014330.1276-100000@iolanthe.rowland.org>
-	 <s5hwqqf1an3.wl%tiwai@suse.de>
+From: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] ASoC: sgtl5000: Do not read registers
+	prior to turning on the supplies
+Date: Fri, 31 May 2013 19:20:01 +0200
+Message-ID: <201305311920.02005.marex@denx.de>
+References: <1369749858-21579-1-git-send-email-fabio.estevam@freescale.com>
+ <201305311745.50326.marex@denx.de>
+ <CAOMZO5CXMCQ8dN92BPfp5s7dz0Jfkm5MrK2duCjrt-s70gHJPA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hwqqf1an3.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alan Stern <stern@rowland.harvard.edu>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49C58265534
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 19:20:05 +0200 (CEST)
+In-Reply-To: <CAOMZO5CXMCQ8dN92BPfp5s7dz0Jfkm5MrK2duCjrt-s70gHJPA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Estevam Fabio-R49496 <r49496@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2013-05-31 at 16:34 +0200, Takashi Iwai wrote:
-> Also, another expected problem is that neither card->card_dev nor
-> card->dev are set when snd_card_err() is called.  Many drivers set the
-> device pointers at the late stage just before the device
-> registration.  So, systematic replacements won't work as expected in
-> many cases.  (The same is applied for replacement with dev_*(), too.)
+Hi Fabio,
 
-If all the pointers are null, then the logging function could
-use pr_<level> and %pf, __builtin_return_addr() or another
-method to look up the module name.
+> On Fri, May 31, 2013 at 12:45 PM, Marek Vasut <marex@denx.de> wrote:
+> > Ah, that's _very_ likely. I think the chip will NAK I2C communication
+> > without having clock supplied to it. I did look into this stuff with an
+> > LA yesterday night and I saw the 2-byte write followed by I2C NAK.
+> 
+> Yes, I haven't had a chance to try enabling the saif clock earlier and
+> I am currently out of office.
+
+Send me a patch if you have time and I'll test it.
+
+Best regards,
+Marek Vasut
