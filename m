@@ -1,12 +1,15 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/3] ALSA: hdspm - Add support for 128-192kHz
-	WordClock input
-Date: Fri, 31 May 2013 12:57:09 +0200
-Message-ID: <1369997831-7274-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 3/3] ALSA: hdspm - Allow SingleSpeed WordClock
+	when in DS/QS mode
+Date: Fri, 31 May 2013 12:57:11 +0200
+Message-ID: <1369997831-7274-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1369997831-7274-1-git-send-email-adi@drcomp.erfurt.thur.de>
+ <1369997831-7274-2-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1369997831-7274-2-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +23,24 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allow WordClock input rates of 128, 176.4 and 192kHz.
+Similarly to MADI, WordClock can also be at SingleSpeed while the card
+is actually working at twice or four times this rate. If so, multiply
+the base rate accordingly.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index ef3cbc0..e070ea8 100644
+index 8eb2070..bd50193 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -400,8 +400,8 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+@@ -1225,7 +1225,7 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ 		 */
+ 		if (rate != 0 &&
+ 		(status2 & HDSPM_SelSyncRefMask) == HDSPM_SelSyncRef_WORD)
+-			return rate;
++			return hdspm_rate_multiplier(hdspm, rate);
  
- #define HDSPM_wc_freq0 (1<<5)	/* input freq detected via autosync  */
- #define HDSPM_wc_freq1 (1<<6)	/* 001=32, 010==44.1, 011=48, */
--#define HDSPM_wc_freq2 (1<<7)	/* 100=64, 101=88.2, 110=96, */
--/* missing Bit   for               111=128, 1000=176.4, 1001=192 */
-+#define HDSPM_wc_freq2 (1<<7)	/* 100=64, 101=88.2, 110=96, 111=128 */
-+#define HDSPM_wc_freq3 0x800	/* 1000=176.4, 1001=192 */
- 
- #define HDSPM_SyncRef0 0x10000  /* Sync Reference */
- #define HDSPM_SyncRef1 0x20000
-@@ -412,13 +412,17 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- 
- #define HDSPM_wc_valid (HDSPM_wcLock|HDSPM_wcSync)
- 
--#define HDSPM_wcFreqMask  (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2)
-+#define HDSPM_wcFreqMask  (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2|\
-+			    HDSPM_wc_freq3)
- #define HDSPM_wcFreq32    (HDSPM_wc_freq0)
- #define HDSPM_wcFreq44_1  (HDSPM_wc_freq1)
- #define HDSPM_wcFreq48    (HDSPM_wc_freq0|HDSPM_wc_freq1)
- #define HDSPM_wcFreq64    (HDSPM_wc_freq2)
- #define HDSPM_wcFreq88_2  (HDSPM_wc_freq0|HDSPM_wc_freq2)
- #define HDSPM_wcFreq96    (HDSPM_wc_freq1|HDSPM_wc_freq2)
-+#define HDSPM_wcFreq128   (HDSPM_wc_freq0|HDSPM_wc_freq1|HDSPM_wc_freq2)
-+#define HDSPM_wcFreq176_4 (HDSPM_wc_freq3)
-+#define HDSPM_wcFreq192   (HDSPM_wc_freq0|HDSPM_wc_freq3)
- 
- #define HDSPM_status1_F_0 0x0400000
- #define HDSPM_status1_F_1 0x0800000
-@@ -1181,6 +1185,15 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
- 			case HDSPM_wcFreq96:
- 				rate = 96000;
- 				break;
-+			case HDSPM_wcFreq128:
-+				rate = 128000;
-+				break;
-+			case HDSPM_wcFreq176_4:
-+				rate = 176400;
-+				break;
-+			case HDSPM_wcFreq192:
-+				rate = 192000;
-+				break;
- 			default:
- 				rate = 0;
- 				break;
+ 		/* maybe a madi input (which is taken if sel sync is madi) */
+ 		if (status & HDSPM_madiLock) {
 -- 
 1.7.10.4
