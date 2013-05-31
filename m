@@ -1,19 +1,20 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 2/3] lx6464es: dump MAC in standard form
-Date: Wed, 29 May 2013 14:31:07 +0300
-Message-ID: <1369827067.29283.237.camel@smile>
-References: <1369821802-2308-1-git-send-email-andriy.shevchenko@linux.intel.com>
- <1369821802-2308-2-git-send-email-andriy.shevchenko@linux.intel.com>
- <s5hehcq6qhw.wl%tiwai@suse.de> <1369825257.29283.229.camel@smile>
- <s5hy5ay59qc.wl%tiwai@suse.de>
+From: Estevam Fabio-R49496 <r49496@freescale.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Do not read registers
+ prior to turning on the supplies
+Date: Fri, 31 May 2013 05:09:52 +0000
+Message-ID: <86D15885F63D1143A519F161FB828EAF265F56@039-SN2MPN1-013.039d.mgd.msft.net>
+References: <1369749858-21579-1-git-send-email-fabio.estevam@freescale.com>
+ <20130528143255.GK3660@sirena.org.uk>,<201305310036.11681.marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ECF2261A96
- for <alsa-devel@alsa-project.org>; Wed, 29 May 2013 13:31:11 +0200 (CEST)
-In-Reply-To: <s5hy5ay59qc.wl%tiwai@suse.de>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9859026538B
+ for <alsa-devel@alsa-project.org>; Fri, 31 May 2013 07:10:18 +0200 (CEST)
+In-Reply-To: <201305310036.11681.marex@denx.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Marek Vasut <marex@denx.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2013-05-29 at 13:03 +0200, Takashi Iwai wrote:
+Hi Marek,
 
-> > > > -	sprintf(card->shortname, "LX6464ES %02X.%02X.%02X.%02X.%02X.%02X",
-> > > > -		chip->mac_address[0], chip->mac_address[1], chip->mac_address[2],
-> > > > -		chip->mac_address[3], chip->mac_address[4], chip->mac_address[5]);
-> > > > +	sprintf(card->shortname, "LX6464ES %pM", chip->mac_address);
-> > > 
-> > > This will change from the upper to the lower case, thus it'll lead to
-> > > an incompatible name string, unfortunately.
-> > 
-> > Who is the user of this string?
-> 
-> It's exposed to the user-space via ioctl and it can be used as an id
-> string.  So this will break user-space compatibility.
+(Sorry for the top-posting here)
 
-MAC is theoretically set of arbitrary 6 bytes.
-Only what I can see here is the difference between '.' and ':' as a
-delimiter. But the MAC address form is defined in IEEE 802 standards.
+There is a delay of 23 seconds, which is 1 second for each sgtl500- register write.
 
-Anyway, I am okay if you reject this one.
+This is an I2C issue and we have already talked about this on the linux-arm-kernel list.
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+Alexandre Belloni also sees this 1 second on another I2C device connected to mx28.
+
+Regards,
+
+Fabio Estevam
+________________________________________
+From: Marek Vasut [marex@denx.de]
+Sent: Thursday, May 30, 2013 5:36 PM
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown; Estevam Fabio-R49496
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: Do not read registers prior to turning on the supplies
+
+Hi Mark, Fabio,
+
+> On Tue, May 28, 2013 at 11:04:18AM -0300, Fabio Estevam wrote:
+> > Commit b871f1ad (ASoC: sgtl5000: Read SGTL5000_CHIP_ID in i2c_probe())
+> > placed the code for reading the codec revision prior to turning on the
+> > power supplies.
+> >
+> > Even though this works on some systems that always have the codec power
+> > supplies enabled, this is not correct, so revert this commit.
+>
+> It seems like a better fix for this is to just enable the supplies while
+> doing the device identification?
+
+This patch does kinda fix it for me, but the system takes quite some time to
+init the soundcard now (a few seconds). After reverting these two patches, the
+soundcard works just fine (like before):
+
+    ASoC: sgtl5000: Fix driver probe after reset
+    ASoC: sgtl5000: Read SGTL5000_CHIP_ID in i2c_probe()
+
+Best regards,
+Marek Vasut
