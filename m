@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: wm8958: check for return value
- before using as array index
-Date: Sat, 1 Jun 2013 19:56:12 +0100
-Message-ID: <20130601185612.GH16790@sirena.org.uk>
-References: <1369930931-9635-1-git-send-email-vinod.koul@intel.com>
- <1369930931-9635-2-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] dma: Add a PAUSE_RESUME capability
+Date: Sat, 1 Jun 2013 20:00:00 +0100
+Message-ID: <20130601190000.GJ16790@sirena.org.uk>
+References: <1369827743-5533-1-git-send-email-lars@metafoo.de>
+ <1369932575.3890.18.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3329197156839885036=="
+Content-Type: multipart/mixed; boundary="===============9107927402359252049=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 78180261ADF
- for <alsa-devel@alsa-project.org>; Sat,  1 Jun 2013 20:56:20 +0200 (CEST)
-In-Reply-To: <1369930931-9635-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 55AC4261ACF
+ for <alsa-devel@alsa-project.org>; Sat,  1 Jun 2013 21:00:14 +0200 (CEST)
+In-Reply-To: <1369932575.3890.18.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Scott Jiang <scott.jiang.linux@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Steven Miao <realmz6@gmail.com>, vinod.koul@intel.com, Liam Girdwood <lgirdwood@gmail.com>, uclinux-dist-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3329197156839885036==
+--===============9107927402359252049==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TBNym+cBXeFsS4Vs"
+	protocol="application/pgp-signature"; boundary="YPJ8CVbwFUtL7OFW"
 Content-Disposition: inline
 
 
---TBNym+cBXeFsS4Vs
+--YPJ8CVbwFUtL7OFW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 30, 2013 at 09:52:11PM +0530, Vinod Koul wrote:
-> return maybe EINVAL and needs to be checked
+On Thu, May 30, 2013 at 10:19:35PM +0530, Vinod Koul wrote:
 
-This is already applied...
+> - This mail-list is not correct for this patch
+> - use get_maintainer.pl, if you dont know but you already know!
 
-Please also remember to CC maintainers on patches
+These two bits of advice unfortunately conflict with each other a bit if
+one of the lists involved is lkml - since lkml isn't listed in
+MAINTAINERS and is always added implicitly get_maintainers won't tell
+you if it is actually a list you should be using as opposed to just
+something that it shoves on the end of the list of addreses (which most
+of the time means it's not actually sensible to send there).
 
---TBNym+cBXeFsS4Vs
+--YPJ8CVbwFUtL7OFW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRqkPJAAoJELSic+t+oim9e/MP/0DUSkLaZX157JudfRPQgW5F
-4ZOUw5A2AIGNjslrwtHS8sKtsUnKqOv6oQPPudVWy73zkEsblYmiushOdxfvCXDo
-AtGmoz96ZXcM9cwsgSwRcJxruVvkEc+KY7YPo53o/H7Tk/BwR6JCYFREJgB6L4gn
-rkQMTnm3JXr+YvQtONYp4OXKcfDSFuIGJoI3Ep2Jv5K6reekcpRROStzno/k2U8G
-0sYGceNk5kuoVFbQAIikjFHSx6zwfGWUrBhnebzugv1AOYfm4Vr9nPUE04w6flM0
-bXbpE1iDz+QjCvIOcOtt6Mjbdt1F0V7RRflWdrvP0FfN/8HddQyOwidTOI7X9vAz
-uigVQ3wWck7CZYACzXJGH1C8lw2rZP+uU1sBwuGgI07enhp2wioF0tcPRBFi61oW
-1kuUxBlUJ/o7042qvmsBLgNU1t5eMOphe1c2YNiZ4Nhq6eu55hE0imAiOVDG0KoB
-jAvT2CIevu1W+g1lWMAo61S/xb8LgbX/rM+uI3KrmjeTBkw/zaoX4FHXEOip2jII
-skP0OhWoYTbyP2Ggo8XfIeX1pJe8EA2aObQAHpnXc40ArIYIlyBedUXadbUn3IDJ
-vIrrPgx0vMnmjE/EZ6uYC28/JgZPOh2letdyNVG7B1DqhOMay2ngBgaVD59Fz9Vt
-YV1qGUfauj4QWzl6HCk1
-=jV39
+iQIcBAEBAgAGBQJRqkStAAoJELSic+t+oim9jJMP/Rny8wSL/YM4g0np5rkPqg72
+yGquSfYUtTlk+sv2ZBfEYGDtnEdwMCf70gv2lt5fD8kCHv355IxFKmTkRAvFylh5
+aPPf+d12vd/TesRP8UvwlTwLLVF32FSowU7OEAj1vuGbnKgsAc8WwZTUMRCjw7iO
+j9fPTdAN0kxFS9jQdpmxk2TEPGzX4NBKE0ppUPF7AWsZpkXc2wdv6oQDQx58Z0VP
+yWu7B8tsqKks+xJ+6zeLaBpn59LL+jzEYGs/Oe4ZKOdTyv2VMQK+b7emscfzaYOu
+gXXb5ogdjsQV209VUns613JWD1xjH4ybb7Wbh2qaQ8ay/ZGcw7ieQlDPbmYVAdY+
+6mltLahKbjTkmOtrFVjaPIlo7h2KADnCPgIiwidsSqzEmmSlNkZQYBZr/+27KpCa
+eXwlxxfQYWPdyo8/+U+eg30GZHSJ/0JB6/+54CYnTU6sxzaBn5kjYpcdJ0UDEuIl
+BTtM8qfWeADnI+KU6c8ZxyJIoTOfMGfrPVPLbGn6gwTujTkU6jyU4mhfZTUpdKtr
+SojKCbp056c2vAPXh1kLpqif4ckdf7HoaYlSzE2pSXSJ9liIsADeKYrqkJWS30vQ
+3hXDSyQby+7ucCwOA8+7jyN838PvhBowSkI/ooHw5dFtQHIHbT7g+XcNSbOzb3us
+EN4n1EQkkr/z59VUgnjj
+=vsJ7
 -----END PGP SIGNATURE-----
 
---TBNym+cBXeFsS4Vs--
+--YPJ8CVbwFUtL7OFW--
 
---===============3329197156839885036==
+--===============9107927402359252049==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3329197156839885036==--
+--===============9107927402359252049==--
