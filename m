@@ -1,7 +1,7 @@
 From: o-takashi@sakamocchi.jp
-Subject: [PATCH 4/8] add handling AMDTP stream
-Date: Sun,  2 Jun 2013 00:55:54 +0900
-Message-ID: <1370102158-24389-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/8] add proc interface
+Date: Sun,  2 Jun 2013 00:55:57 +0900
+Message-ID: <1370102158-24389-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,24 +22,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Fireworks is IEC 61883-1 and 6 compliant framework (not fully). This file
-utilize snd-firewire-lib module to handle AMDTP stream.
+The purpose of this patch is adding proc interface mainly for debug.
+The proc interfaces gives us:
+ - hardware property
+ - clock information
+ - physical metering
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks_stream.c |  107 +++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
- create mode 100644 sound/firewire/fireworks/fireworks_stream.c
+ sound/firewire/fireworks/fireworks_proc.c |  183 +++++++++++++++++++++++++++++
+ 1 file changed, 183 insertions(+)
+ create mode 100644 sound/firewire/fireworks/fireworks_proc.c
 
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
 new file mode 100644
-index 0000000..35b7a8e
+index 0000000..c092aa4
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -0,0 +1,107 @@
++++ b/sound/firewire/fireworks/fireworks_proc.c
+@@ -0,0 +1,183 @@
 +/*
-+ * fireworks_stream.c - driver for Firewire devices from Echo Digital Audio
++ * fireworks_proc.c - driver for Firewire devices from Echo Digital Audio
 + *
++ * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
 + *
 + *
@@ -54,94 +58,169 @@ index 0000000..35b7a8e
 + * You should have received a copy of the GNU General Public License
 + * along with this driver; if not, see <http://www.gnu.org/licenses/>.
 + */
++
 +#include "./fireworks.h"
 +
-+int snd_efw_stream_init(struct snd_efw *efw, struct amdtp_stream *stream)
++static void
++proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
 +{
-+	struct cmp_connection *connection;
-+	enum cmp_direction c_dir;
-+	enum amdtp_stream_direction s_dir;
-+	int err;
++	struct snd_efw *efw = entry->private_data;
++	unsigned short i;
++	struct snd_efw_hwinfo hwinfo;
 +
-+	if (stream == &efw->receive_stream) {
-+		connection = &efw->output_connection;
-+		c_dir = CMP_OUTPUT;
-+		s_dir = AMDTP_STREAM_RECEIVE;
-+	} else {
-+		connection = &efw->input_connection;
-+		c_dir = CMP_INPUT;
-+		s_dir = AMDTP_STREAM_TRANSMIT;
++	if (snd_efw_command_get_hwinfo(efw, &hwinfo) < 0)
++		goto end;
++
++	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo.guid_hi);
++	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo.guid_lo);
++	snd_iprintf(buffer, "type: 0x%X\n", hwinfo.type);
++	snd_iprintf(buffer, "version: 0x%X\n", hwinfo.version);
++	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo.vendor_name);
++	snd_iprintf(buffer, "model_name: %s\n", hwinfo.model_name);
++
++	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo.dsp_version);
++	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo.arm_version);
++	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo.fpga_version);
++
++	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo.flags);
++
++	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo.max_sample_rate);
++	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo.min_sample_rate);
++	snd_iprintf(buffer, "supported_clock: 0x%X\n",
++		    hwinfo.supported_clocks);
++
++	snd_iprintf(buffer, "nb_phys_audio_out: 0x%X\n",
++		    hwinfo.nb_phys_audio_out);
++	snd_iprintf(buffer, "nb_phys_audio_in: 0x%X\n",
++		    hwinfo.nb_phys_audio_in);
++
++	snd_iprintf(buffer, "nb_in_groups: 0x%X\n", hwinfo.nb_in_groups);
++	for (i = 0; i < hwinfo.nb_in_groups; i += 1) {
++		snd_iprintf(buffer, "in_group[0x%d]: type 0x%d, count 0x%d\n",
++			    i, hwinfo.out_groups[i].type,
++			    hwinfo.out_groups[i].count);
 +	}
 +
-+	err = cmp_connection_init(connection, efw->unit, c_dir, 0);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_init(stream, efw->unit, s_dir, CIP_NONBLOCKING);
-+	if (err < 0) {
-+		cmp_connection_destroy(connection);
-+		goto end;
++	snd_iprintf(buffer, "nb_out_groups: 0x%X\n", hwinfo.nb_out_groups);
++	for (i = 0; i < hwinfo.nb_out_groups; i += 1) {
++		snd_iprintf(buffer, "out_group[0x%d]: type 0x%d, count 0x%d\n",
++			    i, hwinfo.out_groups[i].type,
++			    hwinfo.out_groups[i].count);
 +	}
 +
-+end:
-+	return err;
-+}
++	snd_iprintf(buffer, "nb_1394_playback_channels: 0x%X\n",
++		    hwinfo.nb_1394_playback_channels);
++	snd_iprintf(buffer, "nb_1394_capture_channels: 0x%X\n",
++		    hwinfo.nb_1394_capture_channels);
++	snd_iprintf(buffer, "nb_1394_playback_channels_2x: 0x%X\n",
++		    hwinfo.nb_1394_playback_channels_2x);
++	snd_iprintf(buffer, "nb_1394_capture_channels_2x: 0x%X\n",
++		    hwinfo.nb_1394_capture_channels_2x);
++	snd_iprintf(buffer, "nb_1394_playback_channels_4x: 0x%X\n",
++		    hwinfo.nb_1394_playback_channels_4x);
++	snd_iprintf(buffer, "nb_1394_capture_channels_4x: 0x%X\n",
++		    hwinfo.nb_1394_capture_channels_4x);
 +
-+int snd_efw_stream_start(struct snd_efw *efw, struct amdtp_stream *stream)
-+{
-+	struct cmp_connection *connection;
-+	int err = 0;
++	snd_iprintf(buffer, "nb_midi_out: 0x%X\n", hwinfo.nb_midi_out);
++	snd_iprintf(buffer, "nb_midi_in: 0x%X\n", hwinfo.nb_midi_in);
 +
-+	/* already running */
-+	if (amdtp_stream_running(stream))
-+		goto end;
++	snd_iprintf(buffer, "mixer_playback_channels: 0x%X\n",
++		    hwinfo.mixer_playback_channels);
++	snd_iprintf(buffer, "mixer_capture_channels: 0x%X\n",
++		    hwinfo.mixer_capture_channels);
 +
-+	if (stream == &efw->receive_stream)
-+		connection = &efw->output_connection;
-+	else
-+		connection = &efw->input_connection;
-+
-+	/*  establish connection via CMP */
-+	err = cmp_connection_establish(connection,
-+				amdtp_stream_get_max_payload(stream));
-+	if (err < 0)
-+		goto end;
-+
-+	/* start amdtp stream */
-+	err = amdtp_stream_start(stream,
-+				 connection->resources.channel,
-+				 connection->speed);
-+	if (err < 0)
-+		cmp_connection_break(connection);
-+
-+end:
-+	return err;
-+}
-+
-+void snd_efw_stream_stop(struct snd_efw *efw, struct amdtp_stream *stream)
-+{
-+	if (!amdtp_stream_running(stream))
-+		goto end;
-+
-+	amdtp_stream_stop(stream);
-+
-+	if (stream == &efw->receive_stream)
-+		cmp_connection_break(&efw->output_connection);
-+	else
-+		cmp_connection_break(&efw->input_connection);
 +end:
 +	return;
 +}
 +
-+void snd_efw_stream_destroy(struct snd_efw *efw, struct amdtp_stream *stream)
++static void
++proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
 +{
-+	snd_efw_stream_stop(efw, stream);
++	struct snd_efw *efw = entry->private_data;
++	enum snd_efw_clock_source clock_source;
++	int sampling_rate;
 +
-+	if (stream == &efw->receive_stream)
-+		cmp_connection_destroy(&efw->output_connection);
-+	else
-+		cmp_connection_destroy(&efw->input_connection);
++	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
++		goto end;
 +
++	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
++		goto end;
++
++	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
++	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
++
++end:
++	return;
++}
++
++static void
++proc_read_phys_meters(struct snd_info_entry *entry,
++		      struct snd_info_buffer *buffer)
++{
++	struct snd_efw *efw = entry->private_data;
++
++	char const *descs[] = {"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
++			       "Analog Mirroring", "Headphones", "I2S"};
++
++	struct snd_efw_phys_meters *meters;
++	int i, g, c;
++	int base = sizeof(struct snd_efw_phys_meters);
++	int count = efw->input_meter_counts + efw->output_meter_counts;
++	int err;
++
++	meters = kzalloc(base + count * 4, GFP_KERNEL);
++	if (meters == NULL)
++		return;
++
++	err = snd_efw_command_get_phys_meters(efw, meters, base + count * 4);
++	if (err < 0)
++		goto end;
++
++	snd_iprintf(buffer, "Physical Meters:\n");
++
++	snd_iprintf(buffer, " %d Inputs:\n", efw->input_meter_counts);
++	g = 0;
++	c = 0;
++	for (i = 0; i < efw->input_meter_counts; i += 1) {
++		if (c == efw->input_groups[g].count) {
++			g += 1;
++			c = 0;
++		}
++		snd_iprintf(buffer, "\t%s [%d]: %d\n",
++			descs[efw->input_groups[g].type], c,
++			meters->values[efw->output_meter_counts + i]);
++		c += 1;
++	}
++
++	snd_iprintf(buffer, " %d Outputs:\n", efw->output_meter_counts);
++	g = 0;
++	c = 0;
++	for (i = 0; i < efw->output_meter_counts; i += 1) {
++		if (c == efw->output_groups[g].count) {
++			g += 1;
++			c = 0;
++		}
++		snd_iprintf(buffer, "\t%s [%d]: %d\n",
++			descs[efw->output_groups[g].type], c,
++			meters->values[i]);
++		c += 1;
++	}
++
++end:
++	kfree(meters);
++	return;
++}
++
++void snd_efw_proc_init(struct snd_efw *efw)
++{
++	struct snd_info_entry *entry;
++
++	if (!snd_card_proc_new(efw->card, "#hardware", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
++	if (!snd_card_proc_new(efw->card, "#clock", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_clock);
++	if (!snd_card_proc_new(efw->card, "#meters", &entry))
++		snd_info_set_text_ops(entry, efw, proc_read_phys_meters);
 +	return;
 +}
 -- 
