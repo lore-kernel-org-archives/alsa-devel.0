@@ -1,7 +1,7 @@
 From: o-takashi@sakamocchi.jp
-Subject: [PATCH 7/8] add proc interface
-Date: Sun,  2 Jun 2013 00:55:57 +0900
-Message-ID: <1370102158-24389-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/8] add MIDI interface
+Date: Sun,  2 Jun 2013 00:55:55 +0900
+Message-ID: <1370102158-24389-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,26 +22,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-The purpose of this patch is adding proc interface mainly for debug.
-The proc interfaces gives us:
- - hardware property
- - clock information
- - physical metering
+MIDI stream is multiplexed into AMDTP stream with PCM stream. Then this module
+need to arrange the start of both streams. Currently the rules in comment of
+file is used.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks_proc.c |  183 +++++++++++++++++++++++++++++
- 1 file changed, 183 insertions(+)
- create mode 100644 sound/firewire/fireworks/fireworks_proc.c
+ sound/firewire/fireworks/fireworks_midi.c |  236 +++++++++++++++++++++++++++++
+ 1 file changed, 236 insertions(+)
+ create mode 100644 sound/firewire/fireworks/fireworks_midi.c
 
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
 new file mode 100644
-index 0000000..c092aa4
+index 0000000..2b8cef4
 --- /dev/null
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -0,0 +1,183 @@
++++ b/sound/firewire/fireworks/fireworks_midi.c
+@@ -0,0 +1,236 @@
 +/*
-+ * fireworks_proc.c - driver for Firewire devices from Echo Digital Audio
++ * fireworks_midi.c - driver for Firewire devices from Echo Digital Audio
 + *
 + * Copyright (c) 2009-2010 Clemens Ladisch
 + * Copyright (c) 2013 Takashi Sakamoto
@@ -58,170 +56,223 @@ index 0000000..c092aa4
 + * You should have received a copy of the GNU General Public License
 + * along with this driver; if not, see <http://www.gnu.org/licenses/>.
 + */
++#include "fireworks.h"
 +
-+#include "./fireworks.h"
++/*
++ * According to MMA/AMEI-027, MIDI stream is multiplexed with PCM stream in an
++ * Firewire isochronous stream. And Fireworks need to handle input and output
++ * stream with the same sampling rate. Then this module use the rules below:
++ *
++ * [MIDI stream side]
++ *  1.When no stream in both direction is started, start stream with 48000
++ *  2.When stream in opposite direction is started, start stream with the same
++ *    sampling rate.
++ *  3.When stream in the same direction has PCM stream and request to stop MIDI
++ *    stream, don't stop stream itself.
++ * [PCM stream side]
++ *  1.When stream in the both direction is started and has no PCM stream, stop
++ *    the stream because it include just MIDI stream. Then restart it with
++ *    requested sampling rate by PCM component.
++ *  2.When MIDI stream is going to be closed but PCM stream is still running,
++ *    the stream is kept to be running.
++ */
 +
-+static void
-+proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
++static int
++midi_open(struct snd_rawmidi_substream *substream)
 +{
-+	struct snd_efw *efw = entry->private_data;
-+	unsigned short i;
-+	struct snd_efw_hwinfo hwinfo;
-+
-+	if (snd_efw_command_get_hwinfo(efw, &hwinfo) < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "guid_hi: 0x%X\n", hwinfo.guid_hi);
-+	snd_iprintf(buffer, "guid_lo: 0x%X\n", hwinfo.guid_lo);
-+	snd_iprintf(buffer, "type: 0x%X\n", hwinfo.type);
-+	snd_iprintf(buffer, "version: 0x%X\n", hwinfo.version);
-+	snd_iprintf(buffer, "vendor_name: %s\n", hwinfo.vendor_name);
-+	snd_iprintf(buffer, "model_name: %s\n", hwinfo.model_name);
-+
-+	snd_iprintf(buffer, "dsp_version: 0x%X\n", hwinfo.dsp_version);
-+	snd_iprintf(buffer, "arm_version: 0x%X\n", hwinfo.arm_version);
-+	snd_iprintf(buffer, "fpga_version: 0x%X\n", hwinfo.fpga_version);
-+
-+	snd_iprintf(buffer, "flags: 0x%X\n", hwinfo.flags);
-+
-+	snd_iprintf(buffer, "max_sample_rate: 0x%X\n", hwinfo.max_sample_rate);
-+	snd_iprintf(buffer, "min_sample_rate: 0x%X\n", hwinfo.min_sample_rate);
-+	snd_iprintf(buffer, "supported_clock: 0x%X\n",
-+		    hwinfo.supported_clocks);
-+
-+	snd_iprintf(buffer, "nb_phys_audio_out: 0x%X\n",
-+		    hwinfo.nb_phys_audio_out);
-+	snd_iprintf(buffer, "nb_phys_audio_in: 0x%X\n",
-+		    hwinfo.nb_phys_audio_in);
-+
-+	snd_iprintf(buffer, "nb_in_groups: 0x%X\n", hwinfo.nb_in_groups);
-+	for (i = 0; i < hwinfo.nb_in_groups; i += 1) {
-+		snd_iprintf(buffer, "in_group[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo.out_groups[i].type,
-+			    hwinfo.out_groups[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "nb_out_groups: 0x%X\n", hwinfo.nb_out_groups);
-+	for (i = 0; i < hwinfo.nb_out_groups; i += 1) {
-+		snd_iprintf(buffer, "out_group[0x%d]: type 0x%d, count 0x%d\n",
-+			    i, hwinfo.out_groups[i].type,
-+			    hwinfo.out_groups[i].count);
-+	}
-+
-+	snd_iprintf(buffer, "nb_1394_playback_channels: 0x%X\n",
-+		    hwinfo.nb_1394_playback_channels);
-+	snd_iprintf(buffer, "nb_1394_capture_channels: 0x%X\n",
-+		    hwinfo.nb_1394_capture_channels);
-+	snd_iprintf(buffer, "nb_1394_playback_channels_2x: 0x%X\n",
-+		    hwinfo.nb_1394_playback_channels_2x);
-+	snd_iprintf(buffer, "nb_1394_capture_channels_2x: 0x%X\n",
-+		    hwinfo.nb_1394_capture_channels_2x);
-+	snd_iprintf(buffer, "nb_1394_playback_channels_4x: 0x%X\n",
-+		    hwinfo.nb_1394_playback_channels_4x);
-+	snd_iprintf(buffer, "nb_1394_capture_channels_4x: 0x%X\n",
-+		    hwinfo.nb_1394_capture_channels_4x);
-+
-+	snd_iprintf(buffer, "nb_midi_out: 0x%X\n", hwinfo.nb_midi_out);
-+	snd_iprintf(buffer, "nb_midi_in: 0x%X\n", hwinfo.nb_midi_in);
-+
-+	snd_iprintf(buffer, "mixer_playback_channels: 0x%X\n",
-+		    hwinfo.mixer_playback_channels);
-+	snd_iprintf(buffer, "mixer_capture_channels: 0x%X\n",
-+		    hwinfo.mixer_capture_channels);
-+
-+end:
-+	return;
-+}
-+
-+static void
-+proc_read_clock(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+	enum snd_efw_clock_source clock_source;
-+	int sampling_rate;
-+
-+	if (snd_efw_command_get_clock_source(efw, &clock_source) < 0)
-+		goto end;
-+
-+	if (snd_efw_command_get_sampling_rate(efw, &sampling_rate) < 0)
-+		goto end;
-+
-+	snd_iprintf(buffer, "Clock Source: %d\n", clock_source);
-+	snd_iprintf(buffer, "Sampling Rate: %d\n", sampling_rate);
-+
-+end:
-+	return;
-+}
-+
-+static void
-+proc_read_phys_meters(struct snd_info_entry *entry,
-+		      struct snd_info_buffer *buffer)
-+{
-+	struct snd_efw *efw = entry->private_data;
-+
-+	char const *descs[] = {"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT",
-+			       "Analog Mirroring", "Headphones", "I2S"};
-+
-+	struct snd_efw_phys_meters *meters;
-+	int i, g, c;
-+	int base = sizeof(struct snd_efw_phys_meters);
-+	int count = efw->input_meter_counts + efw->output_meter_counts;
++	struct snd_efw *efw = substream->rmidi->private_data;
++	struct amdtp_stream *stream;
++	struct amdtp_stream *opposite;
++	int *pcm_channels;
++	int run, mode, sampling_rate = 48000;
 +	int err;
 +
-+	meters = kzalloc(base + count * 4, GFP_KERNEL);
-+	if (meters == NULL)
-+		return;
++	if (substream->stream == SNDRV_RAWMIDI_STREAM_INPUT) {
++		stream = &efw->receive_stream;
++		pcm_channels = efw->pcm_capture_channels;
++		opposite = &efw->transmit_stream;
++	} else {
++		stream = &efw->transmit_stream;
++		pcm_channels = efw->pcm_playback_channels;
++		opposite = &efw->receive_stream;
++	}
 +
-+	err = snd_efw_command_get_phys_meters(efw, meters, base + count * 4);
++	/* check other streams */
++	run = stream->midi_triggered;
++
++	/* register pointer */
++	amdtp_stream_midi_insert(stream, substream);
++
++	/* the other MIDI streams running */
++	if (run > 0) {
++		err = 0;
++		goto end;
++	}
++	/* PCM stream starts the stream */
++	else if (amdtp_stream_running(stream)) {
++		err = 0;
++		goto end;
++	}
++
++	/* opposite stream is running then use the same sampling rate */
++	if (amdtp_stream_running(opposite))
++		err = snd_efw_command_get_sampling_rate(efw, &sampling_rate);
++	else {
++		err = snd_efw_command_set_sampling_rate(efw, sampling_rate);
++		snd_ctl_notify(efw->card, SNDRV_CTL_EVENT_MASK_VALUE,
++				efw->control_id_sampling_rate);
++	}
++	if (err < 0)
++		goto end;
++	mode = snd_efw_get_multiplier_mode(sampling_rate);
++	amdtp_stream_set_rate(stream, sampling_rate);
++	amdtp_stream_set_pcm(stream, pcm_channels[mode]);
++
++	/* start stream just for MIDI */
++	err = snd_efw_stream_start(efw, stream);
 +	if (err < 0)
 +		goto end;
 +
-+	snd_iprintf(buffer, "Physical Meters:\n");
++end:
++	return err;
++}
 +
-+	snd_iprintf(buffer, " %d Inputs:\n", efw->input_meter_counts);
-+	g = 0;
-+	c = 0;
-+	for (i = 0; i < efw->input_meter_counts; i += 1) {
-+		if (c == efw->input_groups[g].count) {
-+			g += 1;
-+			c = 0;
-+		}
-+		snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+			descs[efw->input_groups[g].type], c,
-+			meters->values[efw->output_meter_counts + i]);
-+		c += 1;
-+	}
++static int
++midi_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++	struct amdtp_stream *stream;
 +
-+	snd_iprintf(buffer, " %d Outputs:\n", efw->output_meter_counts);
-+	g = 0;
-+	c = 0;
-+	for (i = 0; i < efw->output_meter_counts; i += 1) {
-+		if (c == efw->output_groups[g].count) {
-+			g += 1;
-+			c = 0;
-+		}
-+		snd_iprintf(buffer, "\t%s [%d]: %d\n",
-+			descs[efw->output_groups[g].type], c,
-+			meters->values[i]);
-+		c += 1;
-+	}
++	if (substream->stream == SNDRV_RAWMIDI_STREAM_INPUT)
++		stream = &efw->receive_stream;
++	else
++		stream = &efw->transmit_stream;
++
++	/* unregister pointer */
++	amdtp_stream_midi_extract(stream, substream);
++
++	/* the other streams is running */
++	if (amdtp_stream_midi_running(stream) > 0)
++		goto end;
++
++	/* PCM stream is running */
++	if (stream->pcm)
++		goto end;
++
++	/* stop stream */
++	snd_efw_stream_stop(efw, stream);
 +
 +end:
-+	kfree(meters);
++	return 0;
++}
++
++static void
++midi_trigger(struct snd_rawmidi_substream *substream, int up)
++{
++	struct snd_efw *efw = substream->rmidi->private_data;
++	unsigned long *midi_triggered;
++	unsigned long flags;
++
++	if (substream->stream == SNDRV_RAWMIDI_STREAM_INPUT)
++		midi_triggered = &efw->receive_stream.midi_triggered;
++	else
++		midi_triggered = &efw->transmit_stream.midi_triggered;
++
++	spin_lock_irqsave(&efw->lock, flags);
++
++	/* bit table shows MIDI stream has data or not */
++	if (up)
++		__set_bit(substream->number, midi_triggered);
++	else
++		__clear_bit(substream->number, midi_triggered);
++
++	spin_unlock_irqrestore(&efw->lock, flags);
++
 +	return;
 +}
 +
-+void snd_efw_proc_init(struct snd_efw *efw)
-+{
-+	struct snd_info_entry *entry;
++static struct snd_rawmidi_ops midi_output_ops = {
++	.open		= midi_open,
++	.close		= midi_close,
++	.trigger	= midi_trigger,
++};
 +
-+	if (!snd_card_proc_new(efw->card, "#hardware", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_hwinfo);
-+	if (!snd_card_proc_new(efw->card, "#clock", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_clock);
-+	if (!snd_card_proc_new(efw->card, "#meters", &entry))
-+		snd_info_set_text_ops(entry, efw, proc_read_phys_meters);
-+	return;
++static struct snd_rawmidi_ops midi_input_ops = {
++	.open		= midi_open,
++	.close		= midi_close,
++	.trigger	= midi_trigger,
++};
++
++static void
++set_midi_substream_names(struct snd_efw *efw,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	if (str->substream_count > 2)
++		return;
++
++	list_for_each_entry(subs, &str->substreams, list)
++		snprintf(subs->name, sizeof(subs->name),
++			"%s MIDI %d", efw->card->shortname, subs->number + 1);
++}
++
++int snd_efw_create_midi_devices(struct snd_efw *efw)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	struct snd_rawmidi_substream *subs;
++	int err;
++
++	/* check the number of midi stream */
++	if ((efw->midi_input_ports > AMDTP_MAX_MIDI_STREAMS) |
++	    (efw->midi_output_ports > AMDTP_MAX_MIDI_STREAMS))
++		return -EINVAL;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(efw->card, efw->card->driver, 0,
++			      efw->midi_output_ports, efw->midi_input_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++			"%s MIDI", efw->card->shortname);
++	rmidi->private_data = efw;
++
++	if (efw->midi_input_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++					&midi_input_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(efw, str);
++		amdtp_stream_set_midi(&efw->receive_stream,
++				      efw->midi_input_ports);
++	}
++
++	if (efw->midi_output_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++					&midi_output_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		list_for_each_entry(subs, &str->substreams, list)
++			efw->transmit_stream.midi[subs->number] = subs;
++
++		set_midi_substream_names(efw, str);
++		amdtp_stream_set_midi(&efw->transmit_stream,
++				      efw->midi_output_ports);
++	}
++
++	if ((efw->midi_output_ports > 0) && (efw->midi_input_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
 +}
 -- 
 1.7.10.4
