@@ -1,70 +1,51 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No headphone control for ALC892 on Zotac
-	Motherboard D2550ITXS-B-E
-Date: Sat, 1 Jun 2013 12:56:34 +0000
-Message-ID: <CAN8cciaN7kRuq214PHhhP8vhexfiihvxEzH9yg7qFku7WtiTVQ@mail.gmail.com>
-References: <20130531114710.GA5636@gentoo.local>
- <CAN8ccia1XM_p-kNQMMhSBUZsbb-D_Ae8CoEP4wQs00qzN6qhJw@mail.gmail.com>
- <20130601123650.GA31372@gentoo.local>
+From: o-takashi@sakamocchi.jp
+Subject: [PATCH 0/2] snd-firewire-lib: add MIDI stream support
+Date: Sun,  2 Jun 2013 00:25:35 +0900
+Message-ID: <1370100337-22463-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
- [209.85.192.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 800A426077D
- for <alsa-devel@alsa-project.org>; Sat,  1 Jun 2013 14:56:35 +0200 (CEST)
-Received: by mail-pd0-f172.google.com with SMTP id t10so43406pdi.3
- for <alsa-devel@alsa-project.org>; Sat, 01 Jun 2013 05:56:34 -0700 (PDT)
-In-Reply-To: <20130601123650.GA31372@gentoo.local>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Halim Sahin <halim.sahin@freenet.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: perex@perex.cz, clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > > Hi,
-> > > Attached is output of alsa-info.
-> > > Updated to Alsa-driver 1.0.25 running with 2.6.34 kernel.
-> > > Frontpanel of my case has mic and headphone output connectors.
-> > > front mic works but no headphones.
-> > > Card works except headphones
-> > > Can you please help?
-> > >
-> >
-> > Try hda-jack-retask the front line out to front headphone
->
-> Is there a way to do that without using a grphical gui?
-> The machine doesn't have gtk3 installed.
-> Thx in advance!
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Use early patching to fix the pin default of node 0x1b
+This series of patch add MIDI stream support to snd-firewire-lib according to
+IEC 61883-6 and MMA/AMEI RP-027.
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio.txt
+This series of patch is based on my previous patches for snd-firewire-lib.
 
->
-> > Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-> >   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-> >   Amp-In vals:  [0x00 0x00]
-> >   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-> >   Amp-Out vals:  [0x80 0x80]
-> >   Pincap 0x0001373e: IN OUT HP EAPD Detect Trigger
-> >     Vref caps: HIZ 50 GRD 80 100
-> >   EAPD 0x2: EAPD
-> >   Pin Default 0x02014c20: [Jack] Line Out at Ext Front
-> >     Conn = 1/8, Color = Green
-> >     DefAssociation = 0x2, Sequence = 0x0
-> >   Pin-ctls: 0x20: IN VREF_HIZ
-> >   Unsolicited: tag=00, enabled=0
-> >   Power states:  D0 D1 D2 D3 EPSS
-> >   Power: setting=D0, actual=D0
-> >   Connection: 5
-> >      0x0c* 0x0d 0x0e 0x0f 0x26
->
+[PATCH v2 0/3] snd-firewire-lib: add handling CMP output connection
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-April/061607.html
+
+[PATCH v2 0/4] snd-firewire-lib: add handling AMDTP receive stream
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-April/061611.html
+
+Takashi Sakamoto (2):
+  Add amdtp_stream_running() and amdtp_stream_pcm_running()
+  Add MIDI stream support with data rate restriction
+
+ sound/firewire/amdtp.c |  171 +++++++++++++++++++++++++++++++++++++++++++-----
+ sound/firewire/amdtp.h |   37 +++++++++++
+ 2 files changed, 193 insertions(+), 15 deletions(-)
+
+-- 
+1.7.10.4
+
+
+------------------------------------------------------------------------------
+Get 100% visibility into Java/.NET code with AppDynamics Lite
+It's a free troubleshooting tool designed for production
+Get down to code-level detail for bottlenecks, with <2% overhead.
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap2
