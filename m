@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: aplay lists both Playback and Capture devices
-Date: Sat, 1 Jun 2013 23:12:44 +0100
-Message-ID: <20130601221243.GY16790@sirena.org.uk>
-References: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
- <CAOMZO5BTv2oqZzwXcWs=K8r+tdzCR8MA+DuopYaBnH+fw5Hsug@mail.gmail.com>
- <20130601210534.GU16790@sirena.org.uk>
- <201306012342.21418.marex@denx.de>
+From: Mark Brown <broonie@linaro.org>
+Subject: [PATCH] ASoC: pcm: Require both CODEC and CPU support
+	when declaring stream caps
+Date: Sat,  1 Jun 2013 23:16:16 +0100
+Message-ID: <1370124976-25047-1-git-send-email-broonie@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8278122670428267670=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 641C5265579
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2013 00:12:56 +0200 (CEST)
-In-Reply-To: <201306012342.21418.marex@denx.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 32503265579
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2013 00:16:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+To: Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+When declaring playback and capture capabilities check for both CODEC
+side and CPU side support rather than only checking for CODEC side
+support.  While it is unusual some CPUs do have unidirectional DAIs.
 
---===============8278122670428267670==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OEa2bCMk+rg6xBXy"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-pcm.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-
---OEa2bCMk+rg6xBXy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Jun 01, 2013 at 11:42:21PM +0200, Marek Vasut wrote:
-
-> Each of the SAIFs has only one direction, the question Fabio probably wan=
-ted to=20
-> ask is where he can fix the SAIF caps so they report only one direction i=
-nstead=20
-> of both.
-
-Only specifying playback or capture capabilities ought to do the job.
-Looking at soc-pcm.c it rather looks like things got broken during the
-soc-pcm stuff if they ever worked for CPU side limitations here.
-
---OEa2bCMk+rg6xBXy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRqnHYAAoJELSic+t+oim976oP/01njUJ2sfssA5hZtt1LoPbi
-YEpO93iYB3PVYZ6JzW3m5AJJI0eMimHkh9j1nQo52+DM3YjmdDFbneVON8GgoXr1
-jHng3dvfRatr3nVChLvYSL5qVhuglhkKvDDMDsX6dCX24R/T2Z9tedBBfVuSRVfv
-KYsNPMc+Ywn+7HDHJFjhfo/0DVSVJ46bht+6wu0uXXcza2icJrOuVzTsjfKgU277
-GJBvbqiHyetpo0s13kLoMdqv2fsAF+7dDs9+5sAuthatn9AIwkS+DofSghIljvT9
-dWwUIQKOAAuPFLCPAXcDzjlUxtKpw1AayypCjjAPke+r3KejWj4ocfMUcBuZ7XHx
-CRj46EcvzZ/z0LndDQyDzoqpwxiOmTTrWDfz/bKnzaBjBM/Jzsjuk/4F+I6QGg/I
-cugo+LNnrB4GFy7OYbN+OXq4HuTyqzRXkfFOkuZhMUTbvDc1Aa1uVUji5rLCWP0W
-mxhSW/SGEVDuCMYMAVGGb2Um+48hDE541uT/8ixawTrCsJIcrnejMiW4YYmqnmat
-o0JqQa2ePlF5OLguzdQQwHLqUeCL70RhfULHV4SoIv9B+8yFgQgpeMekbRY8iEVw
-oOGgVMcFalj5swSfxwZab4Tx+73pmDLEVDPgj2ncjgcfqjK+Do7fUjAvhcqP7ZOi
-Pm8K8pdWMzArjTOSCcsv
-=bszG
------END PGP SIGNATURE-----
-
---OEa2bCMk+rg6xBXy--
-
---===============8278122670428267670==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8278122670428267670==--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 73bb8ee..a9fddf0 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2011,9 +2011,11 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		if (cpu_dai->driver->capture.channels_min)
+ 			capture = 1;
+ 	} else {
+-		if (codec_dai->driver->playback.channels_min)
++		if (codec_dai->driver->playback.channels_min &&
++		    cpu_dai->driver->playback.channels_min)
+ 			playback = 1;
+-		if (codec_dai->driver->capture.channels_min)
++		if (codec_dai->driver->capture.channels_min &&
++		    cpu_dai->driver->capture.channels_min)
+ 			capture = 1;
+ 	}
+ 
+-- 
+1.7.10.4
