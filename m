@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] dma: Add a PAUSE_RESUME capability
-Date: Sat, 1 Jun 2013 20:00:00 +0100
-Message-ID: <20130601190000.GJ16790@sirena.org.uk>
-References: <1369827743-5533-1-git-send-email-lars@metafoo.de>
- <1369932575.3890.18.camel@vkoul-udesk3>
+Subject: Re: aplay lists both Playback and Capture devices
+Date: Sat, 1 Jun 2013 20:06:22 +0100
+Message-ID: <20130601190622.GM16790@sirena.org.uk>
+References: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
+ <51A736C6.2060500@ladisch.de>
+ <CAOMZO5C3eDi_wicdJLab5Dg1yqexkJ6Ffhwwft_2XnO5KHPD+Q@mail.gmail.com>
+ <CAOMZO5CfQUnRN8h5gSFV8qAu2YYw4B3hZRBfgkW5DzEmAb3-2A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9107927402359252049=="
+Content-Type: multipart/mixed; boundary="===============4208803332783226974=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 55AC4261ACF
- for <alsa-devel@alsa-project.org>; Sat,  1 Jun 2013 21:00:14 +0200 (CEST)
-In-Reply-To: <1369932575.3890.18.camel@vkoul-udesk3>
+ by alsa0.perex.cz (Postfix) with ESMTP id BE0EB261ACF
+ for <alsa-devel@alsa-project.org>; Sat,  1 Jun 2013 21:06:31 +0200 (CEST)
+In-Reply-To: <CAOMZO5CfQUnRN8h5gSFV8qAu2YYw4B3hZRBfgkW5DzEmAb3-2A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: Scott Jiang <scott.jiang.linux@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Steven Miao <realmz6@gmail.com>, vinod.koul@intel.com, Liam Girdwood <lgirdwood@gmail.com>, uclinux-dist-devel@blackfin.uclinux.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9107927402359252049==
+--===============4208803332783226974==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YPJ8CVbwFUtL7OFW"
+	protocol="application/pgp-signature"; boundary="j3zO+32zXj6UcJCE"
 Content-Disposition: inline
 
 
---YPJ8CVbwFUtL7OFW
+--j3zO+32zXj6UcJCE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 30, 2013 at 10:19:35PM +0530, Vinod Koul wrote:
+On Sat, Jun 01, 2013 at 03:09:38PM -0300, Fabio Estevam wrote:
 
-> - This mail-list is not correct for this patch
-> - use get_maintainer.pl, if you dont know but you already know!
+> root@freescale /$ cat /proc/asound/pcm
+> 00-00: HiFi Playback sgtl5000-0 :  : playback 1 : capture 1
+> 00-01: HiFi Capture sgtl5000-1 :  : playback 1 : capture 1
 
-These two bits of advice unfortunately conflict with each other a bit if
-one of the lists involved is lkml - since lkml isn't listed in
-MAINTAINERS and is always added implicitly get_maintainers won't tell
-you if it is actually a list you should be using as opposed to just
-something that it shoves on the end of the list of addreses (which most
-of the time means it's not actually sensible to send there).
+Hrm, in that case the kernel does seem to be lying about capabilites...
+are all the DAIs correctly listing that they're unidirectional?
 
---YPJ8CVbwFUtL7OFW
+--j3zO+32zXj6UcJCE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRqkStAAoJELSic+t+oim9jJMP/Rny8wSL/YM4g0np5rkPqg72
-yGquSfYUtTlk+sv2ZBfEYGDtnEdwMCf70gv2lt5fD8kCHv355IxFKmTkRAvFylh5
-aPPf+d12vd/TesRP8UvwlTwLLVF32FSowU7OEAj1vuGbnKgsAc8WwZTUMRCjw7iO
-j9fPTdAN0kxFS9jQdpmxk2TEPGzX4NBKE0ppUPF7AWsZpkXc2wdv6oQDQx58Z0VP
-yWu7B8tsqKks+xJ+6zeLaBpn59LL+jzEYGs/Oe4ZKOdTyv2VMQK+b7emscfzaYOu
-gXXb5ogdjsQV209VUns613JWD1xjH4ybb7Wbh2qaQ8ay/ZGcw7ieQlDPbmYVAdY+
-6mltLahKbjTkmOtrFVjaPIlo7h2KADnCPgIiwidsSqzEmmSlNkZQYBZr/+27KpCa
-eXwlxxfQYWPdyo8/+U+eg30GZHSJ/0JB6/+54CYnTU6sxzaBn5kjYpcdJ0UDEuIl
-BTtM8qfWeADnI+KU6c8ZxyJIoTOfMGfrPVPLbGn6gwTujTkU6jyU4mhfZTUpdKtr
-SojKCbp056c2vAPXh1kLpqif4ckdf7HoaYlSzE2pSXSJ9liIsADeKYrqkJWS30vQ
-3hXDSyQby+7ucCwOA8+7jyN838PvhBowSkI/ooHw5dFtQHIHbT7g+XcNSbOzb3us
-EN4n1EQkkr/z59VUgnjj
-=vsJ7
+iQIcBAEBAgAGBQJRqkYrAAoJELSic+t+oim9aDEP/A1sKqadUnR5gsoS0D34DI8Z
+OAnr11f4jjsf2zKj/gzrZfUtW1zrZzHRMICWX3rc9uYAQIbK0RutSpgHMMkeBu9M
+y6lBuBAR/cO1UXS318LWr2uuw1YkQxE3emO7HhY/UN6/a423BDxdm6M6iKdb15XG
+rRDOTsX4YTJIU3QND7WgIJFtjOyVnQtWwqjPo9gpBRK8rz3mT9N2mrEkLqu6WURo
+f41wOJBOlKJU0D180IrNxrJAuGuNbWmByGcj6yRmjUCfn5DF/ulnQKl+q6/lRujF
+RBJu9UmgiqCiFE8EcI6TayZ6OHU5FvbfBAygGvKXo0GUC9V6bGokTdkE5hncAFPB
+tNM5uH0CbiH9pRN6slHAYCzHNL5SCZTrdWcTiPXYvtv0oiNnRormmwnkdBKuJb+j
+htSDv2ejfwPTYsVJL0JQJgbMYfNdkTHywM5KrrzoOASucn/2vbuVckVNIoBmbdDX
+cR31brYHbjqIA4OyHDyWn0pUMA+KZ9136TXJyw6aMJJ7RQ0aGq7SFgyB8kjzEPen
+QMr3PGK1PaPmuB0NbzrDrdBH8XG0fYyrFXxK6o1FryF7hk5eAH2fK2DwXZuAefx3
+PlFaK5N90y4TLjFWMkwyD/lCBSah6gXmIPbxLHjpzoJgqIKS2yaZ1IaSmyioBneN
+Cu7ZW0DHSGtg+6bl+znD
+=aTCE
 -----END PGP SIGNATURE-----
 
---YPJ8CVbwFUtL7OFW--
+--j3zO+32zXj6UcJCE--
 
---===============9107927402359252049==
+--===============4208803332783226974==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9107927402359252049==--
+--===============4208803332783226974==--
