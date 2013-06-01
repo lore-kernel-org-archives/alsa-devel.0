@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: aplay lists both Playback and Capture devices
-Date: Sat, 1 Jun 2013 23:09:55 +0100
-Message-ID: <20130601220955.GX16790@sirena.org.uk>
+Date: Sat, 1 Jun 2013 23:12:44 +0100
+Message-ID: <20130601221243.GY16790@sirena.org.uk>
 References: <CAOMZO5Cq8xSj3fGoZEO+K5xxJNfHotC2PiuX62q+p+yw1-i9Ng@mail.gmail.com>
- <51A736C6.2060500@ladisch.de>
- <CAOMZO5C3eDi_wicdJLab5Dg1yqexkJ6Ffhwwft_2XnO5KHPD+Q@mail.gmail.com>
- <CAOMZO5CfQUnRN8h5gSFV8qAu2YYw4B3hZRBfgkW5DzEmAb3-2A@mail.gmail.com>
- <20130601190622.GM16790@sirena.org.uk>
  <CAOMZO5BTv2oqZzwXcWs=K8r+tdzCR8MA+DuopYaBnH+fw5Hsug@mail.gmail.com>
  <20130601210534.GU16790@sirena.org.uk>
- <CAOMZO5Cn6ANtrb675v7A90aRsS1+L7nB3RaN+vp_OJc+FROF9g@mail.gmail.com>
+ <201306012342.21418.marex@denx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0793507559903078963=="
+Content-Type: multipart/mixed; boundary="===============8278122670428267670=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F827265579
- for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2013 00:10:12 +0200 (CEST)
-In-Reply-To: <CAOMZO5Cn6ANtrb675v7A90aRsS1+L7nB3RaN+vp_OJc+FROF9g@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 641C5265579
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jun 2013 00:12:56 +0200 (CEST)
+In-Reply-To: <201306012342.21418.marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,82 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Marek Vasut <marex@denx.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0793507559903078963==
+--===============8278122670428267670==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jn/MQTzma+jNUHFC"
+	protocol="application/pgp-signature"; boundary="OEa2bCMk+rg6xBXy"
 Content-Disposition: inline
 
 
---jn/MQTzma+jNUHFC
+--OEa2bCMk+rg6xBXy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 01, 2013 at 06:36:49PM -0300, Fabio Estevam wrote:
-> On Sat, Jun 1, 2013 at 6:05 PM, Mark Brown <broonie@kernel.org> wrote:
+On Sat, Jun 01, 2013 at 11:42:21PM +0200, Marek Vasut wrote:
 
-> > If it's not got any playback or capture capabilities.
+> Each of the SAIFs has only one direction, the question Fabio probably wan=
+ted to=20
+> ask is where he can fix the SAIF caps so they report only one direction i=
+nstead=20
+> of both.
 
-> On mx28evk there are two DAIs connected to a single sgtl5000:
+Only specifying playback or capture capabilities ought to do the job.
+Looking at soc-pcm.c it rather looks like things got broken during the
+soc-pcm stuff if they ever worked for CPU side limitations here.
 
-> - One corresponds to the serial audio interface 0 (SAIF0) and it is
-> playback only
-
-> - The other corresponds to the serial audio interface 1 (SAIF1) and it
-> is capture only.
-
-These are not DAIs, they are DAI links.  The capabilities of the links
-should be being worked out by examining
-
-> Should I create and pass device tree bindings like "playback-only" and
-> "capture-only", so that we can avoid having both playback and capture
-> capabilities for SAIF0 and SAIF1?
-
-No, it's not sensible to require users to set DT properties for basic
-features of the harwdare.  If for some reason the interface could be
-bidirectional but the board design breaks that for some reason then it
-may make sense but otherwise the kernel ought to be able to work this
-out based on the fact that one or both ends of the link can only do one
-direction.
-
-> Or is there already a mechanism in place that I can use to configure a
-> DAI as unidirectional?
-
-How is the kernel currently managing to get properties for playback?
-
---jn/MQTzma+jNUHFC
+--OEa2bCMk+rg6xBXy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRqnEwAAoJELSic+t+oim9JBYP/1cmRo8zElUQ+JZRmG1yxUmf
-jnBagLidRdEccaBgaoLfwQf0IgFPG3GwBsVozUtzIrn6NJSiu42hDr5Nn0lXpFCt
-0nr4z14mejZOvoUZPaZOfFRVr3yvp0A06WtCf5WnKdMNKCWNUi6ypXf56e40IADL
-HKlO/Sm5YRrB6RvjVYp5zQl24T1gYcwGaEZmIek/aGxXWuiUu5UU1tt8o+ZSJ9AB
-/eL8gtkHOdFhQjt4OXbfpSNongU6tGf8U2ILMJstEGGFZJ/SGVfBl2xFROyd+8gV
-nQSRnz2XcK5wDb3z3QA+3Y8pDJzI5mXqNXm1k7fSUOgFaLrP/uaDFhUda26tEUsL
-3G5Ygdor1mwXjlccoBEsyoentnZHnwYnsFHN1mtXsivATC/TS6AFQFpKauAxvy4N
-OGzfMMBvGWL/JMNH3RtD9lbkYvko9hTW7NZ1K4xGjxPQ9cuIr3AryIu94Y6NbVpO
-w5Y92VY5lJ0PmVqvIHbpa2lyGFty8B9TobNxEYfZDwgoAGqw0fS0FWi1Ef0kPhe/
-bCl2aQasHgdEfH9WpKNRUJRyAaoESnDjWN8B1bNIJqc5bNKXGP8RWI9HOEYndoTU
-aMzd3CvDW+TTAsul73+gHWFC61P67r4OTgnDnpzI8RaGRH2Gl5XuP3nxUM9mJh/z
-m/hlw3hRu8fdPtR/d0jK
-=SIV6
+iQIcBAEBAgAGBQJRqnHYAAoJELSic+t+oim976oP/01njUJ2sfssA5hZtt1LoPbi
+YEpO93iYB3PVYZ6JzW3m5AJJI0eMimHkh9j1nQo52+DM3YjmdDFbneVON8GgoXr1
+jHng3dvfRatr3nVChLvYSL5qVhuglhkKvDDMDsX6dCX24R/T2Z9tedBBfVuSRVfv
+KYsNPMc+Ywn+7HDHJFjhfo/0DVSVJ46bht+6wu0uXXcza2icJrOuVzTsjfKgU277
+GJBvbqiHyetpo0s13kLoMdqv2fsAF+7dDs9+5sAuthatn9AIwkS+DofSghIljvT9
+dWwUIQKOAAuPFLCPAXcDzjlUxtKpw1AayypCjjAPke+r3KejWj4ocfMUcBuZ7XHx
+CRj46EcvzZ/z0LndDQyDzoqpwxiOmTTrWDfz/bKnzaBjBM/Jzsjuk/4F+I6QGg/I
+cugo+LNnrB4GFy7OYbN+OXq4HuTyqzRXkfFOkuZhMUTbvDc1Aa1uVUji5rLCWP0W
+mxhSW/SGEVDuCMYMAVGGb2Um+48hDE541uT/8ixawTrCsJIcrnejMiW4YYmqnmat
+o0JqQa2ePlF5OLguzdQQwHLqUeCL70RhfULHV4SoIv9B+8yFgQgpeMekbRY8iEVw
+oOGgVMcFalj5swSfxwZab4Tx+73pmDLEVDPgj2ncjgcfqjK+Do7fUjAvhcqP7ZOi
+Pm8K8pdWMzArjTOSCcsv
+=bszG
 -----END PGP SIGNATURE-----
 
---jn/MQTzma+jNUHFC--
+--OEa2bCMk+rg6xBXy--
 
---===============0793507559903078963==
+--===============8278122670428267670==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0793507559903078963==--
+--===============8278122670428267670==--
