@@ -1,13 +1,13 @@
 From: o-takashi@sakamocchi.jp
-Subject: [PATCH 2/2] Add MIDI stream support with data rate restriction
-Date: Sun,  2 Jun 2013 00:25:37 +0900
-Message-ID: <1370100337-22463-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1370100337-22463-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/8] add device specific command
+Date: Sun,  2 Jun 2013 00:55:52 +0900
+Message-ID: <1370102158-24389-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1370100337-22463-1-git-send-email-o-takashi@sakamocchi.jp>
+In-Reply-To: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
 	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
@@ -17,300 +17,562 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
 	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: linux1394-devel-bounces@lists.sourceforge.net
 To: perex@perex.cz, clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-IEC 61883-6 defines MIDI comformant deta and MMA/AMEI RP-027 defines its
-implementation. This patch add handling MIDI stream according to them.
-
-According to MMA/AMEI RP-027, one MIDI channel in AMDTP stream can handle
-8 MIDI streams. The index of MIDI stream in one MIDI comformant
-data channel is defined as "mod(data_block_count, 8)".
-
-And one MIDI comformant data can send MIDI message up to 3 bytes. Every MIDI
-comformant data includes "label" to indicate the number of bytes in its most
-significant byte.
-
-Then theoretically one MIDI stream can transmit MIDI messages up to 72,000
-bytes per second at 192.0kHz (= 192,000 / 8 * 3).
-
-But MIDI interface is based on MPU401-UART. It's maximum rate is 3,150 bytes
-per seconds without label. So each device require a buffer between IEEE 1394
-and MPU401-UART.
-
-Actually Echo's Fireworks cannot handle higer data rate. The devices can
-overflow MIDI messages when receiving at higher data rate. To prevent from
-this, this module apply a restriction.
-
-According to MMA/AMEI RP-027, to arrange data rate between transmitter and
-receiver, they communicate by "a negotiation prucedure" and the devices without
-this procedure should just support 3,125 bytes per second (1 byte per 320
-microseconds) with 1 byte label.
-
-This patch add an restriction of data rate up to 2,756 or 3,000 bytes per second
-with simple logic. This restriction causes quite a small delay comparing to the
-maximum data rate. But I hope to keep codes to be as simple as possible.
+Fireworks can be controlled by device specific commands over IEEE1394 TA's
+AV/C Digital Interface Command Set. This file add some functions to execute
+the command.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c |  157 +++++++++++++++++++++++++++++++++++++++++++++---
- sound/firewire/amdtp.h |   15 +++++
- 2 files changed, 163 insertions(+), 9 deletions(-)
+ sound/firewire/fireworks/fireworks_command.c |  535 ++++++++++++++++++++++++++
+ 1 file changed, 535 insertions(+)
+ create mode 100644 sound/firewire/fireworks/fireworks_command.c
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index a042fe1..9d14361 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -1,6 +1,7 @@
- /*
-  * Audio and Music Data Transmission Protocol (IEC 61883-6) streams
-- * with Common Isochronous Packet (IEC 61883-1) headers
-+ * with Common Isochronous Packet (IEC 61883-1) headers and MIDI comformant
-+ * data according to MMA/AMEI RP-027.
-  *
-  * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-  * Licensed under the terms of the GNU General Public License, version 2.
-@@ -12,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <sound/pcm.h>
-+#include <sound/rawmidi.h>
- #include "amdtp.h"
- 
- #define TICKS_PER_CYCLE		3072
-@@ -52,6 +54,8 @@ static void pcm_period_tasklet(unsigned long data);
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		enum amdtp_stream_direction direction, enum cip_flags flags)
- {
-+	int i;
-+
- 	if (flags != CIP_NONBLOCKING)
- 		return -EINVAL;
- 
-@@ -64,6 +68,8 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- 	s->packet_index = 0;
- 
- 	s->pcm = NULL;
-+	for (i = 0; i < AMDTP_MAX_MIDI_STREAMS; i += 1)
-+		s->midi[i] = NULL;
- 
- 	return 0;
- }
-@@ -405,18 +411,102 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
--	unsigned int i;
-+	unsigned int m, f, c, port;
-+	int len;
-+	u8 b[4];
-+
-+	/*
-+	 * This module can't support "negotiation procedure" in
-+	 * MMA/AMEI RP-027. Then a maximum data rate is 3,125 bytes per second
-+	 * without 1 byte label. This table is for the restriction. With this
-+	 * table, the maximum data rate is between 2,000 to 3,000 bytes per
-+	 * second.
-+	 */
-+	static const int block_interval[] = {
-+		[CIP_SFC_32000]   = 16,
-+		[CIP_SFC_44100]   = 16,
-+		[CIP_SFC_48000]   = 16,
-+		[CIP_SFC_88200]   = 32,
-+		[CIP_SFC_96000]   = 32,
-+		[CIP_SFC_176400]  = 64,
-+		[CIP_SFC_192000]  = 64
-+	};
- 
--	for (i = 0; i < frames; ++i)
--		buffer[s->pcm_channels + i * s->data_block_quadlets] =
--						cpu_to_be32(0x80000000);
-+	for (f = 0; f < frames; f += 1) {
-+		/* skip PCM data */
-+		buffer += s->pcm_channels;
-+
-+		/*
-+		 * According to MMA/AMEI RP-027, one channels of AM824 can
-+		 * handle 8 MIDI streams.
-+		 */
-+		m = (s->data_block_counter + f) % 8;
-+		for (c = 0; c < DIV_ROUND_UP(s->midi_ports, 8); c += 1) {
-+			/* MIDI stream number */
-+			port = c * 8 + m;
-+
-+			b[0] = 0x80;
-+			b[1] = 0x00;
-+			b[2] = 0x00;
-+			b[3] = 0x00;
-+			len = 0;
-+
-+			if ((m == (s->data_block_counter + f) %
-+						block_interval[s->sfc]) &&
-+			    (s->midi[port] != NULL) &&
-+			    test_bit(port, &s->midi_triggered)) {
-+				len = snd_rawmidi_transmit(s->midi[port],
-+								b + 1, 1);
-+				if (len <= 0)
-+					b[1] = 0x00;
-+				else
-+					b[0] = 0x81;
-+			}
-+
-+			buffer[c] = (b[0] << 24) | (b[1] << 16) |
-+							(b[2] << 8) | b[3];
-+			buffer[c] = be32_to_cpu(buffer[c]);
-+		}
-+		buffer += s->data_block_quadlets - s->pcm_channels;
-+	}
- }
- 
- static void amdtp_pull_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
--	/* not implemented yet */
--	return;
-+	unsigned int m, f, p, port;
-+	int len, ret;
-+	u8 *b;
-+
-+	for (f = 0; f < frames; f += 1) {
-+		buffer += s->pcm_channels;
-+
-+		m = (s->data_block_counter + f) % 8;
-+
-+		for (p = 0; p < s->midi_ports; p += 1) {
-+			b = (u8 *)&buffer[p];
-+
-+			if (b[0] < 0x81 || 0x83 < b[0])
-+				continue;
-+
-+			len = b[0] - 0x80;
-+
-+			/* MIDI stream number */
-+			port = p * 8 + m;
-+
-+			if ((s->midi[port] == NULL) ||
-+			    !test_bit(port, &s->midi_triggered))
-+				continue;
-+
-+			ret = snd_rawmidi_receive(s->midi[port], b + 1, len);
-+			if (ret != len) {
-+				dev_err(&s->unit->device,
-+				"MIDI[%d] receive: %08X %08X %08X %08X\n",
-+				port, b[0], b[1], b[2], b[3]);
-+			}
-+		}
-+		buffer += s->data_block_quadlets - s->pcm_channels;
-+	}
- }
- 
- static void queue_out_packet(struct amdtp_stream *s, unsigned int cycle)
-@@ -538,8 +628,8 @@ static void handle_in_packet_data(struct amdtp_stream *s,
- 		 * current sampling rate. This is a workaround for Fireworks.
- 		 */
- 		if ((data_quadlets - 2) % data_block_quadlets > 0)
--			s->data_block_quadlets =
--					s->pcm_channels + s->midi_ports;
-+			s->data_block_quadlets = s->pcm_channels +
-+					DIV_ROUND_UP(s->midi_ports, 8);
- 		else
- 			s->data_block_quadlets = data_block_quadlets;
- 
-@@ -871,3 +961,52 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s)
- 	}
- }
- EXPORT_SYMBOL(amdtp_stream_pcm_abort);
-+
-+/**
-+ * amdtp_stream_midi_insert - add MIDI stream
-+ * @s: the AMDTP stream
-+ * @substream: the MIDI stream to be added
-+ *
-+ * This function don't check the number of midi substream but it should be
-+ * within AMDTP_MAX_MIDI_STREAMS.
-+ */
-+void amdtp_stream_midi_insert(struct amdtp_stream *s,
-+				struct snd_rawmidi_substream *substream)
-+{
-+	ACCESS_ONCE(s->midi[substream->number]) = substream;
-+}
-+EXPORT_SYMBOL(amdtp_stream_midi_insert);
-+
-+/**
-+ * amdtp_stream_midi_extract - remove MIDI stream
-+ * @s: the AMDTP stream
-+ * @substream: the MIDI stream to be removed
-+ *
-+ * This function should not be automatically called by amdtp_stream_stop
-+ * because the AMDTP stream only with MIDI stream need to be restarted by
-+ * PCM streams at requested sampling rate.
-+ */
-+void amdtp_stream_midi_extract(struct amdtp_stream *s,
-+				  struct snd_rawmidi_substream *substream)
-+{
-+	ACCESS_ONCE(s->midi[substream->number]) = NULL;
-+}
-+EXPORT_SYMBOL(amdtp_stream_midi_extract);
-+
-+/**
-+ * amdtp_stream_midi_running - check any MIDI streams are running or not
-+ * @s: the AMDTP stream
-+ *
-+ * If this function returns true, any MIDI streams are running.
-+ */
-+bool amdtp_stream_midi_running(struct amdtp_stream *s)
-+{
-+	int i;
-+	for (i = 0; i < AMDTP_MAX_MIDI_STREAMS; i += 1) {
-+		if (!IS_ERR_OR_NULL(s->midi[i]))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(amdtp_stream_midi_running);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 056f84a..492d87c 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -32,6 +32,12 @@ enum cip_sfc {
- 
- #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
- 					 SNDRV_PCM_FMTBIT_S32)
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
+new file mode 100644
+index 0000000..0006be2
+--- /dev/null
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -0,0 +1,535 @@
 +/*
-+ * This module support maximum 8 MIDI streams
-+ * This is not in MMA/AMEI RP-027 but for our convinience.
-+ * Then AMDTP packets include maximum 2 quadlets in each data blocks.
++ * fireworks_command.c - driver for Firewire devices from Echo Digital Audio
++ *
++ * Copyright (c) 2013 Takashi Sakamoto <o-takashi@sakmocchi.jp>
++ *
++ *
++ * This driver is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License, version 2.
++ *
++ * This driver is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this driver; if not, see <http://www.gnu.org/licenses/>.
++ *
++ * mostly based on FFADO's souce, which is
++ * Copyright (C) 2005-2008 by Pieter Palmers
++ *
 + */
-+#define AMDTP_MAX_MIDI_STREAMS 16
- 
- struct fw_unit;
- struct fw_iso_context;
-@@ -75,6 +81,9 @@ struct amdtp_stream {
- 	unsigned int pcm_buffer_pointer;
- 	unsigned int pcm_period_pointer;
- 	bool pointer_flush;
 +
-+	struct snd_rawmidi_substream *midi[AMDTP_MAX_MIDI_STREAMS];
-+	unsigned long midi_triggered;	/* bit table for each MIDI substream */
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-@@ -94,6 +103,12 @@ void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
- unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
- void amdtp_stream_pcm_abort(struct amdtp_stream *s);
- 
-+void amdtp_stream_midi_register(struct amdtp_stream *s,
-+				struct snd_rawmidi_substream *substream);
-+void amdtp_stream_midi_unregister(struct amdtp_stream *s,
-+				  struct snd_rawmidi_substream *substream);
-+bool amdtp_stream_midi_running(struct amdtp_stream *s);
++#include "./fireworks.h"
 +
- /**
-  * amdtp_stream_set_pcm - configure format of PCM samples
-  * @s: the AMDTP stream to be configured
++/*
++ * According to AV/C command specification, vendors can define own command.
++ *
++ * 1394 Trade Association's AV/C Digital Interface Command Set General
++ * Specification 4.2 (September 1, 2004)
++ *  9.6 VENDOR-DEPENDENT commands
++ *  (to page 55)
++ *   opcode:		0x00
++ *   operand[0-2]:	company ID
++ *   operand[3-]:	vendor dependent data
++ *
++ * Echo's Fireworks(TM) utilize this specification.
++ * This module calls it as 'Echo Fireworks Commands' (a.k.a EFC).
++ *
++ * In EFC,
++ *  Company ID is always 0x00.
++ *   operand[0]:	0x00
++ *   operand[1]:	0x00
++ *   operand[2]:	0x00
++ *
++ *  Two blank operands exists in the beginning of the 'vendor dependent data'
++ *  This seems to be for data alignment of 32 bit.
++ *   operand[3]:	0x00
++ *   operand[4]:	0x00
++ *
++ *  Following these operands, EFC substance exists.
++ *   At first, 6 data exist. we call these data as 'EFC fields'.
++ *   Following to the 6 data, parameters for each commands exists.
++ *   Most of parameters are 32 bit. But exception exists according to command.
++ *    data[0]:	Length of EFC substance.
++ *    data[1]:	EFC version
++ *    data[2]:	Sequence number. This is incremented at return value
++ *    data[3]:	EFC category. If greater than 1,
++ *				EFC_CAT_HWINFO return extended fields.
++ *    data[4]:	EFC command
++ *    data[5]:	EFC return value in EFC response.
++ *    data[6-]:	parameters
++ *
++ * As a result, Echo's Fireworks doesn't need generic command sets.
++ */
++
++/*
++ * AV/C parameters for Vendor-Dependent command
++ */
++#define AVC_CTS			0x00
++#define AVC_CTYPE		0x00
++#define AVC_SUBUNIT_TYPE	0x1F
++#define AVC_SUBUNIT_ID		0x07
++#define AVC_OPCODE		0x00
++#define AVC_COMPANY_ID		0x00
++
++struct avc_fields {
++	unsigned short cts:4;
++	unsigned short ctype:4;
++	unsigned short subunit_type:5;
++	unsigned short subunit_id:3;
++	unsigned short opcode:8;
++	unsigned long company_id:24;
++};
++
++/*
++ * EFC command
++ * quadlet parameters following to these fields.
++ */
++struct efc_fields {
++	u32 length;
++	u32 version;
++	u32 seqnum;
++	u32 category;
++	u32 command;
++	u32 retval;
++};
++
++/* for clock source and sampling rate */
++struct efc_clock {
++	u32 source;
++	u32 sampling_rate;
++	u32 index;
++};
++
++/* command categories */
++enum efc_category {
++	EFC_CAT_HWINFO			= 0,
++	EFC_CAT_FLASH			= 1,
++	EFC_CAT_TRANSPORT		= 2,
++	EFC_CAT_HWCTL			= 3,
++	EFC_CAT_MIXER_PHYS_OUT		= 4,
++	EFC_CAT_MIXER_PHYS_IN		= 5,
++	EFC_CAT_MIXER_PLAYBACK		= 6,
++	EFC_CAT_MIXER_CAPTURE		= 7,
++	EFC_CAT_MIXER_MONITOR		= 8,
++	EFC_CAT_IOCONF			= 9,
++};
++
++/* hardware info category commands */
++enum efc_cmd_hwinfo {
++	EFC_CMD_HWINFO_GET_CAPS			= 0,
++	EFC_CMD_HWINFO_GET_POLLED		= 1,
++	EFC_CMD_HWINFO_SET_EFR_ADDRESS		= 2,
++	EFC_CMD_HWINFO_READ_SESSION_BLOCK	= 3,
++	EFC_CMD_HWINFO_GET_DEBUG_INFO		= 4,
++	EFC_CMD_HWINFO_SET_DEBUG_TRACKING	= 5
++};
++
++/* flash category commands */
++enum efc_cmd_flash {
++	EFC_CMD_FLASH_ERASE		= 0,
++	EFC_CMD_FLASH_READ		= 1,
++	EFC_CMD_FLASH_WRITE		= 2,
++	EFC_CMD_FLASH_GET_STATUS	= 3,
++	EFC_CMD_FLASH_GET_SESSION_BASE	= 4,
++	EFC_CMD_FLASH_LOCK		= 5
++};
++
++/* hardware control category commands */
++enum efc_cmd_hwctl {
++	EFC_CMD_HWCTL_SET_CLOCK		= 0,
++	EFC_CMD_HWCTL_GET_CLOCK		= 1,
++	EFC_CMD_HWCTL_BSX_HANDSHAKE	= 2,
++	EFC_CMD_HWCTL_CHANGE_FLAGS	= 3,
++	EFC_CMD_HWCTL_GET_FLAGS		= 4,
++	EFC_CMD_HWCTL_IDENTIFY		= 5,
++	EFC_CMD_HWCTL_RECONNECT_PHY	= 6
++};
++/* for flags */
++#define EFC_HWCTL_FLAG_MIXER_UNUSABLE	0x00
++#define EFC_HWCTL_FLAG_MIXER_USABLE	0x01
++#define EFC_HWCTL_FLAG_DIGITAL_PRO	0x02
++#define EFC_HWCTL_FLAG_DIGITAL_RAW	0x04
++
++/* I/O config category commands */
++enum efc_cmd_ioconf {
++	EFC_CMD_IOCONF_SET_MIRROR	= 0,
++	EFC_CMD_IOCONF_GET_MIRROR	= 1,
++	EFC_CMD_IOCONF_SET_DIGITAL_MODE	= 2,
++	EFC_CMD_IOCONF_GET_DIGITAL_MODE	= 3,
++	EFC_CMD_IOCONF_SET_PHANTOM	= 4,
++	EFC_CMD_IOCONF_GET_PHANTOM	= 5,
++	EFC_CMD_IOCONF_SET_ISOC_MAP	= 6,
++	EFC_CMD_IOCONF_GET_ISOC_MAP	= 7,
++};
++
++/* return values in response */
++enum efc_retval {
++	EFC_RETVAL_OK			= 0,
++	EFC_RETVAL_BAD			= 1,
++	EFC_RETVAL_BAD_COMMAND		= 2,
++	EFC_RETVAL_COMM_ERR		= 3,
++	EFC_RETVAL_BAD_QUAD_COUNT	= 4,
++	EFC_RETVAL_UNSUPPORTED		= 5,
++	EFC_RETVAL_1394_TIMEOUT		= 6,
++	EFC_RETVAL_DSP_TIMEOUT		= 7,
++	EFC_RETVAL_BAD_RATE		= 8,
++	EFC_RETVAL_BAD_CLOCK		= 9,
++	EFC_RETVAL_BAD_CHANNEL		= 10,
++	EFC_RETVAL_BAD_PAN		= 11,
++	EFC_RETVAL_FLASH_BUSY		= 12,
++	EFC_RETVAL_BAD_MIRROR		= 13,
++	EFC_RETVAL_BAD_LED		= 14,
++	EFC_RETVAL_BAD_PARAMETER	= 15,
++	EFC_RETVAL_INCOMPLETE		= 0x80000000
++};
++
++/* for phys_in/phys_out/playback/capture/monitor category commands */
++enum snd_efw_mixer_cmd {
++	SND_EFW_MIXER_SET_GAIN		= 0,
++	SND_EFW_MIXER_GET_GAIN		= 1,
++	SND_EFW_MIXER_SET_MUTE		= 2,
++	SND_EFW_MIXER_GET_MUTE		= 3,
++	SND_EFW_MIXER_SET_SOLO		= 4,
++	SND_EFW_MIXER_GET_SOLO		= 5,
++	SND_EFW_MIXER_SET_PAN		= 6,
++	SND_EFW_MIXER_GET_PAN		= 7,
++	SND_EFW_MIXER_SET_NOMINAL	= 8,
++	SND_EFW_MIXER_GET_NOMINAL	= 9
++};
++
++static int
++efc_over_avc(struct snd_efw *efw, unsigned int category,
++		unsigned int command,
++		const u32 *params, unsigned int param_count,
++		void *response, unsigned int response_quadlets)
++{
++	int err;
++
++	unsigned int cmdbuf_bytes;
++	__be32 *cmdbuf;
++	struct efc_fields *efc_fields;
++	u32 sequence_number;
++	unsigned int i;
++
++	/* AV/C fields */
++	struct avc_fields avc_fields = {
++		.cts		= AVC_CTS,
++		.ctype		= AVC_CTYPE,
++		.subunit_type	= AVC_SUBUNIT_TYPE,
++		.subunit_id	= AVC_SUBUNIT_ID,
++		.opcode		= AVC_OPCODE,
++		.company_id	= AVC_COMPANY_ID
++	};
++
++	/* calcurate buffer size*/
++	if (param_count > response_quadlets)
++		cmdbuf_bytes = 32 + param_count * 4;
++	else
++		cmdbuf_bytes = 32 + response_quadlets * 4;
++
++	/* keep buffer */
++	cmdbuf = kzalloc(cmdbuf_bytes, GFP_KERNEL);
++	if (cmdbuf == NULL)
++		return -ENOMEM;
++
++	/* fill AV/C fields */
++	cmdbuf[0] =	(avc_fields.cts << 28) |
++			(avc_fields.ctype << 24) |
++			(avc_fields.subunit_type << 19) |
++			(avc_fields.subunit_id << 16) |
++			(avc_fields.opcode << 8) |
++			(avc_fields.company_id >> 16 & 0xFF);
++	cmdbuf[1] =	((avc_fields.company_id >> 8 & 0xFF) << 24) |
++			((avc_fields.company_id & 0xFF) << 16) |
++			(0x00 << 8) |
++			0x00;
++
++	/* fill EFC fields */
++	efc_fields		= (struct efc_fields *)(cmdbuf + 2);
++	efc_fields->length	= sizeof(struct efc_fields) / 4 + param_count;
++	efc_fields->version	= 1;
++	efc_fields->category	= category;
++	efc_fields->command	= command;
++	efc_fields->retval	= 0;
++
++	/* sequence number should keep consistency */
++	spin_lock(&efw->lock);
++	efc_fields->seqnum = efw->sequence_number++;
++	sequence_number = efw->sequence_number;
++	spin_unlock(&efw->lock);
++
++	/* fill EFC parameters */
++	for (i = 0; i < param_count; i += 1)
++		cmdbuf[8 + i] = params[i];
++
++	/* for endian-ness */
++	for (i = 0; i < (cmdbuf_bytes / 4); i += 1)
++		cmdbuf[i] = cpu_to_be32(cmdbuf[i]);
++
++	/* if return value is positive, it means return bytes */
++	err = fcp_avc_transaction(efw->unit,
++				  cmdbuf, cmdbuf_bytes,
++				  cmdbuf, cmdbuf_bytes, 0x00);
++	if (err < 0)
++		goto end;
++
++	/* for endian-ness */
++	for (i = 0; i < (err / 4); i += 1)
++		cmdbuf[i] = cpu_to_be32(cmdbuf[i]);
++
++	/* parse AV/C fields */
++	avc_fields.cts		= cmdbuf[0] >> 28;
++	avc_fields.ctype	= cmdbuf[0] >> 24 & 0x0F;
++	avc_fields.subunit_type	= cmdbuf[0] >> 19 & 0x1F;
++	avc_fields.subunit_id	= cmdbuf[0] >> 16 & 0x07;
++	avc_fields.opcode	= cmdbuf[0] >> 8 & 0xFF;
++	avc_fields.company_id	= ((cmdbuf[0] & 0xFF) << 16) |
++				  ((cmdbuf[1] >> 24 & 0xFF) << 8) |
++				  (cmdbuf[1] >> 16 & 0xFF);
++
++	/* check AV/C fields */
++	if ((avc_fields.cts != AVC_CTS) ||
++	    (avc_fields.ctype != 0x09) ||	/* ACCEPTED */
++	    (avc_fields.subunit_type != AVC_SUBUNIT_TYPE) ||
++	    (avc_fields.subunit_id != AVC_SUBUNIT_ID) ||
++	    (avc_fields.opcode != AVC_OPCODE) ||
++	    (avc_fields.company_id != AVC_COMPANY_ID)) {
++		snd_printk(KERN_INFO "AV/C Failed: 0x%X 0x%X 0x%X 0x%X 0x%X, 0x%X\n",
++			avc_fields.cts, avc_fields.ctype,
++			avc_fields.subunit_type, avc_fields.subunit_id,
++			avc_fields.opcode, avc_fields.company_id);
++		err = -EIO;
++		goto end;
++	}
++
++	/* check EFC response fields */
++	efc_fields = (struct efc_fields *)(cmdbuf + 2);
++	if ((efc_fields->seqnum != sequence_number) |
++	    (efc_fields->version < 1) |
++	    (efc_fields->category != category) |
++	    (efc_fields->command != command) |
++	    (efc_fields->retval != EFC_RETVAL_OK)) {
++		snd_printk(KERN_INFO "EFC Failed [%u/%u/%u]: %X\n",
++			efc_fields->version, efc_fields->category,
++			efc_fields->command, efc_fields->retval);
++		err = -EIO;
++		goto end;
++	}
++
++	/* fill response buffer */
++	memset(response, 0, response_quadlets);
++	if (response_quadlets > efc_fields->length)
++		response_quadlets = efc_fields->length;
++	memcpy(response, cmdbuf + 8, response_quadlets * 4);
++
++	err = 0;
++end:
++	kfree(cmdbuf);
++	return err;
++}
++
++int snd_efw_command_identify(struct snd_efw *efw)
++{
++	return efc_over_avc(efw, EFC_CAT_HWCTL,
++				EFC_CMD_HWCTL_IDENTIFY,
++				NULL, 0, NULL, 0);
++}
++
++int snd_efw_command_get_hwinfo(struct snd_efw *efw,
++			       struct snd_efw_hwinfo *hwinfo)
++{
++	u32 *tmp;
++	int i;
++	int count;
++	int err = efc_over_avc(efw, EFC_CAT_HWINFO,
++				EFC_CMD_HWINFO_GET_CAPS,
++				NULL, 0, hwinfo, sizeof(*hwinfo) / 4);
++	if (err < 0)
++		goto end;
++
++	/* arrangement for endianness */
++	count = HWINFO_NAME_SIZE_BYTES / 4;
++	tmp = (u32 *)&hwinfo->vendor_name;
++	for (i = 0; i < count; i += 1)
++		tmp[i] = cpu_to_be32(tmp[i]);
++	tmp = (u32 *)&hwinfo->model_name;
++	for (i = 0; i < count; i += 1)
++		tmp[i] = cpu_to_be32(tmp[i]);
++
++	count = sizeof(struct snd_efw_phys_group) * HWINFO_MAX_CAPS_GROUPS / 4;
++	tmp = (u32 *)&hwinfo->out_groups;
++	for (i = 0; i < count; i += 1)
++		tmp[i] = cpu_to_be32(tmp[i]);
++	tmp = (u32 *)&hwinfo->in_groups;
++	for (i = 0; i < count; i += 1)
++		tmp[i] = cpu_to_be32(tmp[i]);
++
++	/* ensure terminated */
++	hwinfo->vendor_name[HWINFO_NAME_SIZE_BYTES - 1] = '\0';
++	hwinfo->model_name[HWINFO_NAME_SIZE_BYTES  - 1] = '\0';
++
++	err = 0;
++end:
++	return err;
++}
++
++int snd_efw_command_get_phys_meters(struct snd_efw *efw,
++				    struct snd_efw_phys_meters *meters,
++				    int len)
++{
++	return efc_over_avc(efw, EFC_CAT_HWINFO,
++				EFC_CMD_HWINFO_GET_POLLED,
++				NULL, 0, meters, len / 4);
++}
++
++static int
++command_get_clock(struct snd_efw *efw, struct efc_clock *clock)
++{
++	return efc_over_avc(efw, EFC_CAT_HWCTL,
++				EFC_CMD_HWCTL_GET_CLOCK,
++				NULL, 0, clock, sizeof(struct efc_clock) / 4);
++}
++
++static int
++command_set_clock(struct snd_efw *efw,
++			  int source, int sampling_rate)
++{
++	int err;
++
++	struct efc_clock clock = {0};
++
++	/* check arguments */
++	if ((source < 0) && (sampling_rate < 0)) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	/* get current status */
++	err = command_get_clock(efw, &clock);
++	if (err < 0)
++		goto end;
++
++	/* no need */
++	if ((clock.source == source) &&
++	    (clock.sampling_rate == sampling_rate))
++		goto end;
++
++	/* set params */
++	if ((source >= 0) && (clock.source != source))
++		clock.source = source;
++	if ((sampling_rate > 0) && (clock.sampling_rate != sampling_rate))
++		clock.sampling_rate = sampling_rate;
++	clock.index = 0;
++
++	err = efc_over_avc(efw, EFC_CAT_HWCTL,
++				EFC_CMD_HWCTL_SET_CLOCK,
++				(u32 *)&clock, 3, NULL, 0);
++
++	err = 0;
++end:
++	return err;
++}
++
++int snd_efw_command_get_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source *source)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*source = clock.source;
++
++	return err;
++}
++
++int snd_efw_command_set_clock_source(struct snd_efw *efw,
++				     enum snd_efw_clock_source source)
++{
++	return command_set_clock(efw, source, -1);
++}
++
++int snd_efw_command_get_sampling_rate(struct snd_efw *efw,
++				      int *sampling_rate)
++{
++	int err;
++	struct efc_clock clock = {0};
++
++	err = command_get_clock(efw, &clock);
++	if (err >= 0)
++		*sampling_rate = clock.sampling_rate;
++
++	return err;
++}
++
++int
++snd_efw_command_set_sampling_rate(struct snd_efw *efw, int sampling_rate)
++{
++	return command_set_clock(efw, -1, sampling_rate);
++}
++
++int snd_efw_command_get_iec60958_format(struct snd_efw *efw,
++					enum snd_efw_iec60958_format *format)
++{
++	int err;
++	u32 flag = {0};
++
++	err = efc_over_avc(efw, EFC_CAT_HWCTL,
++				EFC_CMD_HWCTL_GET_FLAGS,
++				NULL, 0, &flag, 1);
++	if (err >= 0) {
++		if (flag & EFC_HWCTL_FLAG_DIGITAL_PRO)
++			*format = SND_EFW_IEC60958_FORMAT_PROFESSIONAL;
++		else
++			*format = SND_EFW_IEC60958_FORMAT_CONSUMER;
++	}
++
++	return err;
++}
++
++int snd_efw_command_set_iec60958_format(struct snd_efw *efw,
++					enum snd_efw_iec60958_format format)
++{
++	/*
++	 * mask[0]: for set
++	 * mask[1]: for clear
++	 */
++	u32 mask[2] = {0};
++
++	if (format == SND_EFW_IEC60958_FORMAT_PROFESSIONAL)
++		mask[0] = EFC_HWCTL_FLAG_DIGITAL_PRO;
++	else
++		mask[1] = EFC_HWCTL_FLAG_DIGITAL_PRO;
++
++	return efc_over_avc(efw, EFC_CAT_HWCTL,
++				EFC_CMD_HWCTL_CHANGE_FLAGS,
++				(u32 *)mask, 2, NULL, 0);
++}
++
++int snd_efw_command_get_digital_interface(struct snd_efw *efw,
++			enum snd_efw_digital_interface *digital_interface)
++{
++	int err;
++	u32 value = 0;
++
++	err = efc_over_avc(efw, EFC_CAT_IOCONF,
++				EFC_CMD_IOCONF_GET_DIGITAL_MODE,
++				NULL, 0, &value, 1);
++
++	if (err >= 0)
++		*digital_interface = value;
++
++	return err;
++}
++
++int snd_efw_command_set_digital_interface(struct snd_efw *efw,
++			enum snd_efw_digital_interface digital_interface)
++{
++	u32 value = digital_interface;
++
++	return efc_over_avc(efw, EFC_CAT_IOCONF,
++				EFC_CMD_IOCONF_SET_DIGITAL_MODE,
++				&value, 1, NULL, 0);
++}
 -- 
 1.7.10.4
 
