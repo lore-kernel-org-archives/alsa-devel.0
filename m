@@ -1,83 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: check suspend state in
- dapm_dai_check_power()
-Date: Mon, 3 Jun 2013 20:46:28 +0100
-Message-ID: <20130603194628.GV31367@sirena.org.uk>
-References: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
- <20130603185120.GS31367@sirena.org.uk>
- <51ACEB94.9020205@metafoo.de>
+From: Doug Anderson <dianders@chromium.org>
+Subject: Re: [PATCH V4 2/4] clk: samsung: register audio subsystem clocks
+ using common clock framework
+Date: Mon, 3 Jun 2013 13:10:56 -0700
+Message-ID: <CAD=FV=XOfi=BsaF+-96SqKwyiwP9h0h3MCJxJ+qWNKaGoP=CcA@mail.gmail.com>
+References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
+	<1370236744-16802-3-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0625451573558236797=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id AD1FB264FE3
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 21:46:31 +0200 (CEST)
-In-Reply-To: <51ACEB94.9020205@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1370236744-16802-3-git-send-email-padma.v@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padmavathi Venna <padma.v@samsung.com>
+Cc: linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, broonie@kernel.org, Mike Turquette <mturquette@linaro.org>, Andrew Bresticker <abrestic@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+Padmavathi,
 
---===============0625451573558236797==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tuFXEhzhBeitrIAu"
-Content-Disposition: inline
+On Sun, Jun 2, 2013 at 10:19 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
 
+> +static unsigned long reg_save[][2] = {
+> +       {ASS_CLK_SRC,  0},
+> +       {ASS_CLK_DIV,  0},
+> +       {ASS_CLK_GATE, 0},
+> +};
+> +
+> +/* list of all parent clock list */
+> +static const char *mout_audss_p[] = { "fin_pll", "fout_epll" };
 
---tuFXEhzhBeitrIAu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think this is supposed to be "xxti" which might or might not be
+"fin_pll".  In the exynos4 code these are two different clocks that
+are chosen by OM[0].  I'd bet that 99% of the time they are the same,
+but it seems better to use "xxti".
 
-On Mon, Jun 03, 2013 at 09:16:36PM +0200, Lars-Peter Clausen wrote:
-
-> I think it is just an oversight that this is not working properly right now.
-> In snd_soc_suspend() where we also stop the DMA streams etc the DAI link
-> widgets are put into suspend, by calling snd_soc_dapm_stream_event(...,
-> SND_SOC_DAPM_STREAM_SUSPEND). But dapm_dai_check_power() doesn't consider
-> this and hence stays active and also keeps the whole DAPM context (this is
-> not CODEC specific) active.
-
-It's clearly an oversight but I don't think this is a joined up fix for
-it.
-
---tuFXEhzhBeitrIAu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRrPKQAAoJELSic+t+oim9KggP/it6HwtJ2l9pxtd/LHbVaPQu
-z7jLvz58wD0xdT+HIY1AZtPS4HX/VupsZepeLdALbGpiX4MzavSFPZfKwsQIDQUP
-RwaQRKzzkY7u4CntW7FNlJRMWJNY6Jw3DPFSqF5x2+ZsAFV2gIcTR77womfKk/c5
-PkKPT0l1SvW4FboJTU4DsqVEzD3otVcZU4cPF0VwNIKsA9IpbYc9BqBA/g+NhRfH
-TrIc5hW87aUtYc3sqktScTBbsxnrQmid9Hnuog8AseT8/EXogetOjJ77pt0HOsbq
-aC5b6CIp1vud+BDDf59g04tcda0u7GTVzRkbLF10xbZ3D95I0yZRr1m6mw22Q+28
-KfXXzDoBc436AV59eZ6wy5cfqSZvJ7oc7ksk2RLpSy8YY0PpFhpNe6ai1hr/lUpN
-IYULLflUwz6Hk0HPABCwq7cuB/8VLkV5sYRYDhjwAwkmJdiaXHZP8pfR6DWtcB7m
-n5uREzScHdPvC2GRWMUWhj4VYa7yKMrG9ELwKO/+8D7lq02FxTxoibx+8TkYj4Mo
-13BoH7LMKlcDFGngbUsD36uQ2euAOxOhKTHAwD4AIiy7VNgrsJ1yfHLxO04CR38a
-K79RNBkb/04gbWdO8tS+3abCnVazVqBFZcwyhZu6c2zClqyfIx/XPQvaNztabxjp
-XZxuuVkdnKYZO/lmBKIW
-=E7lU
------END PGP SIGNATURE-----
-
---tuFXEhzhBeitrIAu--
-
---===============0625451573558236797==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+At the moment the 5250 code doesn't expose "xxti".  It probably
+should.  Andrew (CCed) is looking at this.
 
 
---===============0625451573558236797==--
+> +static const char *mout_i2s_p[] = { "mout_audss", "cdclk0", "sclk_audio0" };
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static int exynos_audss_clk_suspend(void)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < 3; i++)
+
+Can't you use ARRAY_SIZE?
+
+
+> +void __init exynos_audss_clk_init(struct device_node *np)
+> +{
+> +       reg_base = of_iomap(np, 0);
+> +       if (!reg_base) {
+> +               pr_err("%s: failed to map audss registers\n", __func__);
+> +               return;
+> +       }
+> +
+> +       clk_table = kzalloc(sizeof(struct clk *) * EXYNOS_AUDSS_MAX_CLKS,
+> +                               GFP_KERNEL);
+> +       if (!clk_table) {
+> +               pr_err("%s: could not allocate clk lookup table\n", __func__);
+> +               return;
+> +       }
+> +
+> +       clk_data.clks = clk_table;
+> +       clk_data.clk_num = EXYNOS_AUDSS_MAX_CLKS;
+> +       of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data);
+> +
+> +       clk_table[EXYNOS_MOUT_AUDSS] = clk_register_mux(NULL, "mout_audss",
+> +                               mout_audss_p, ARRAY_SIZE(mout_audss_p), 0,
+> +                               reg_base + ASS_CLK_SRC, 0, 1, 0, &lock);
+> +
+> +       clk_table[EXYNOS_MOUT_I2S] = clk_register_mux(NULL, "mout_i2s",
+> +                               mout_i2s_p, ARRAY_SIZE(mout_i2s_p), 0,
+> +                               reg_base + ASS_CLK_SRC, 2, 2, 0, &lock);
+> +
+> +       clk_table[EXYNOS_DOUT_SRP] = clk_register_divider(NULL, "dout_srp",
+> +                               "mout_audss", 0, reg_base + ASS_CLK_DIV, 0, 4,
+> +                               0, &lock);
+> +
+> +       clk_table[EXYNOS_DOUT_BUS] = clk_register_divider(NULL, "dout_bus",
+
+I'm learning that clock names need to be globally unique in a given
+system.  Perhaps "dout_aud_bus" might be more descriptive and less
+likely to cause conflicts?
