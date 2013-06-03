@@ -1,90 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: check suspend state in
-	dapm_dai_check_power()
-Date: Mon, 3 Jun 2013 19:51:20 +0100
-Message-ID: <20130603185120.GS31367@sirena.org.uk>
-References: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: tegra: implement suspend/resume for Tegra30
+ AHUB
+Date: Mon, 3 Jun 2013 19:53:26 +0100
+Message-ID: <20130603185326.GT31367@sirena.org.uk>
+References: <1370281062-15238-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0823373773176651045=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DC08264F40
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 20:51:27 +0200 (CEST)
-In-Reply-To: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TYjWXklH5JTzT8n9"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1370281062-15238-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0823373773176651045==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ll0BBk1HBk/f94B0"
-Content-Disposition: inline
-
-
---Ll0BBk1HBk/f94B0
+--TYjWXklH5JTzT8n9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 03, 2013 at 11:36:40AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
+On Mon, Jun 03, 2013 at 11:37:41AM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 >=20
-> Currently, when the system enters suspend with audio playing, since the
-> DAI widgets are active, the associated CODEC is considered active, and
-> hence is not transition into a low-power bias state as the system
-> suspends. This likely causes audio failure after resume, since the CODEC
-> power has quite possibly been removed during suspend, and the bias level
-> transitions in the CODEC driver are needed to recover from this. At the
-> very least, this issue likely causes warnings in the kernel log due to
-> the CODEC being left on over the suspend transition.
->=20
-> To solve this, modify dapm_dai_check_power() not to consider DAI widgets
-> active if the system is entering suspend.
+> Add tegra30_ahub_{suspend,resume}. These use regcache functions to
+> restore all HW registers after power loss during a suspend/resume cycle.
 
-I would expect us to be dealing with this as part of quiescing the DMA
-operations on the links - it's not just the CODEC that needs handling
-here.  This feels like it ought to be more joined up somewhere along the
-line.
+Applied both, thanks.
 
---Ll0BBk1HBk/f94B0
+--TYjWXklH5JTzT8n9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRrOWlAAoJELSic+t+oim9pJIP/i0ppe6Pc7HAclyMJ+M2l+jc
-aq/ZiQnuY6XYneBn+it+HxKIeIuoizOksKfmy/shL2Zh+0T35OcMTDiNsaimx75Q
-4hQuAa7eD+aTwfL64m3DeEkxKqhApU0Ua9+Vm3dmlkVd3Y2AMb16677hK1Znh0+w
-iAfjXIcRiHJUdzNGyGWw6WKufhvW/CSn2q1psqjfNk5Kr6M/mK7Whs9d8lPFvDkc
-NEduJFjN/tvuW0W7m6hTlI3JR6m55Bsf4DK9ijyGdvT+sn8Nqm+SHP/aoNQNDLUG
-Lh9gBEDkh11wBoU5/f7wcCRyJVEev9DWwx9ypkEDxx1+u6JD8motHIK7GM1VpoHk
-j5yP+mTbVpJx+GiFiWq+2uOUcq0nj7xhqLHdYCRAdBx2rsP565Tl/81cSq3YWqDy
-ZrJ9SxLZiZC1SAY7CSpzZT9QeDfqb1Lir+Q9oxpIMm8EjjqFIPeSGC1d5XQjmARF
-qyKxTfAsu6zyqpGZy9wMrQXc2RcvuneB72n3XyHJC+I4uDkDLL/z1+V/FALUAmZ0
-ClQqddGa15317iVa/o02LiZXJwN4aUp+utNQAboKyEij+TZggMuG8QXrDII8Muy+
-staoL6w9dxbk1ArREyu9fImXz0UE44iqfHNV3URfNKlNheXxe0Yq1wpuf9nbCtwS
-WE29bPVdGTJGYcoMSj1o
-=Tm4c
+iQIcBAEBAgAGBQJRrOYjAAoJELSic+t+oim9TRYP+gP7HGe883Uw9ET2OZf7KkSl
+0Z3z4NmJwCUfaplxHFd3pfhIjtfXhjLxgrhLYjbj+5M4KHGNiVa77q+PJM8fwN76
+4DP8TO+lxJ/aPdWiuvXjM00sleOxJo26n5o7a69/RFSM//ZYFWrCvhYAPDbm8D+2
+E83Mm/tQ8Wqd8YWx/b+BdOkG3th8WZyOD0dUPacJE5EDrcrPAR/o5KgFt8i7OaId
+1caRAslYoMfp1m9KKLyeSJsi0BR8KPFwKyuk0avuUeRtmEHMAgvjmK4Nqd17x89+
+sJJhrSBYvtBzCdMMFd1SUOOcuPocVsbulgOD8CGLfUqPxZPILoLkuNm/gKJiES8j
+nO14oQMV2tbfNIo9ECDg5ddffQrHgjfqJVw1tNxI4idiz9AwIIQhPELMjn4+8PqM
+c3ZiQUhIywjDL1sN1g4KKBQG5euf4isp8YaUU+69ikstJ4dO6OQQDsFejTu9mPy1
+uqtoiPKjDWYGlRmvAAaBIwQae/9ziYGai73cVn5+inOcl+RfMuj26jZiFyD61s5t
+cn8yyI1xvfEMSkXFV8Xma1sdjSbuSwOluGePdgdaUzuBrpb1BnRhUxgzTHAVDs5C
+fc0/sajnNSHgS47zv92S0UCJvq7kiBIgfobkC3FYV5qnyx7m+S0d9mTETc2+8K2o
+HVJxgghl2iL46WnShZHR
+=skxU
 -----END PGP SIGNATURE-----
 
---Ll0BBk1HBk/f94B0--
-
---===============0823373773176651045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0823373773176651045==--
+--TYjWXklH5JTzT8n9--
