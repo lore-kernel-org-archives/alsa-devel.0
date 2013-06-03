@@ -1,57 +1,48 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH 1/2] ASoC: tegra: implement suspend/resume for Tegra30 AHUB
-Date: Mon,  3 Jun 2013 11:37:41 -0600
-Message-ID: <1370281062-15238-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Alex Riesen <raa.lkml@gmail.com>
+Subject: Re: regression: from 3.8 to 3.9: headphones output no sound on Intel
+ HDA, codec VIA VT1802
+Date: Mon, 3 Jun 2013 20:49:45 +0200
+Message-ID: <CALxABCbJz_8ENe+qQgb8m9yoU_75yKh5CAaikT3zX92X18As1w@mail.gmail.com>
+References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
+ <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
+ <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
+ <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
+ <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
+ <s5ha9nwx1j3.wl%tiwai@suse.de> <CALxABCZMyqh5SSo=RpQCJNUR_p9yrG5x9DimFpzvgkCFLr4eug@mail.gmail.com>
+ <s5h1u97jik9.wl%tiwai@suse.de> <CALxABCa27gVVJGWM-crvFOPmJXdZ0FEBc3=dPZ0pG+AhDB78cA@mail.gmail.com>
+ <s5hk3myuoq6.wl%tiwai@suse.de> <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
+ <s5h1u8wtsk9.wl%tiwai@suse.de> <CALxABCZdm=qd1E63NeabcqmD0csnL1FcuUBCFTwa1yDOVRVXyg@mail.gmail.com>
+ <s5h1u8w8f82.wl%tiwai@suse.de> <CALxABCbJ-4_UPNX5qNAOy-PdQ+tp+vVBDE535nLyfjgzDjjebQ@mail.gmail.com>
+ <s5h1u8p7pxi.wl%tiwai@suse.de> <CALxABCbBYRJDsXMw0Y0BLs+RuXNMa_RMOAF5i4rmWDaYPa2H0Q@mail.gmail.com>
+ <s5hehcn2tc3.wl%tiwai@suse.de> <CALxABCaQ_drc+jKP4wZ5S_5wZVcE7rVXW_LZdVJ8tqZUai-=UQ@mail.gmail.com>
+ <s5hbo7rowq5.wl%tiwai@suse.de> <CALxABCZVDrLMH+Y=b6CP8rehM5q7vikjoGNgi=S5jHKZuSSGsw@mail.gmail.com>
+ <s5h8v2rzezr.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h8v2rzezr.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Mon, Jun 3, 2013 at 12:05 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> Thanks.  I think I found the culprit of the problem with the pin ctl
+> value now.  This happens only when the power save is used or
+> suspended, and it happens only on VT1802.  That's why I couldn't
+> reproduce the issue with the emulator, and it wasn't reported from
+> users of other VIA codecs.
+>
+> In anyway, the patch series below are the fixes.  Scratch the whole
+> previous patches and apply them on clean 3.9 (or 3.10-rc) tree.
+> Hopefully we sorted out all issues now.
 
-Add tegra30_ahub_{suspend,resume}. These use regcache functions to
-restore all HW registers after power loss during a suspend/resume cycle.
+Bingo, it works! In case you want to review the test, logs:
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- sound/soc/tegra/tegra30_ahub.c |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+  http://familie-riesen.de/~raa/public/test/via-fix-cleared-pins.tar.bz2
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 23e592f..0f4787c 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -627,9 +627,30 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int tegra30_ahub_suspend(struct device *dev)
-+{
-+	regcache_mark_dirty(ahub->regmap_ahub);
-+	regcache_mark_dirty(ahub->regmap_apbif);
-+
-+	return 0;
-+}
-+
-+static int tegra30_ahub_resume(struct device *dev)
-+{
-+	int ret;
-+
-+	ret = regcache_sync(ahub->regmap_ahub);
-+	ret |= regcache_sync(ahub->regmap_apbif);
-+
-+	return ret;
-+}
-+#endif
-+
- static const struct dev_pm_ops tegra30_ahub_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra30_ahub_runtime_suspend,
- 			   tegra30_ahub_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(tegra30_ahub_suspend, tegra30_ahub_resume)
- };
- 
- static struct platform_driver tegra30_ahub_driver = {
--- 
-1.7.10.4
+I'm going to run this kernel from now on. I shall report if I see
+something else.
+
+Thanks!
+Alex
