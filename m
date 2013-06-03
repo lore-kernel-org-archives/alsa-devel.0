@@ -1,53 +1,46 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 8/8] modify Makefile and Kconfig to build this module
-Date: Mon, 03 Jun 2013 13:19:00 +0200
-Message-ID: <51AC7BA4.4020804@ladisch.de>
-References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1370102158-24389-9-git-send-email-o-takashi@sakamocchi.jp>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: mxs: mxs-saif: Fix the
+ playback/record capabilities
+Date: Mon, 03 Jun 2013 17:07:57 +0200
+Message-ID: <51ACB14D.2050205@metafoo.de>
+References: <1370191092-1773-1-git-send-email-festevam@gmail.com>
+ <51ABA36D.8020802@metafoo.de> <20130603092028.GD31367@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1370102158-24389-9-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: o-takashi@sakamocchi.jp
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net, perex@perex.cz
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-046.synserver.de (smtp-out-047.synserver.de
+ [212.40.185.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1087C261ADA
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 17:08:06 +0200 (CEST)
+In-Reply-To: <20130603092028.GD31367@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: marex@denx.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-o-takashi@sakamocchi.jp wrote:
-> +config SND_FIREWORKS
-> +	tristate "Echo Fireworks chipset support"
-> +	select SND_PCM
-> +	select SND_RAWMIDI
-> +	select SND_FIREWIRE_LIB
-> +	help
-> +	  Say Y here to include support for FireWire devices based
-> +	  on Echo Digital Audio's Fireworks architecture:
-> +	  * Echo AudioFire 2/4/8/8a/Pre8/12
-> +	  * Echo Fireworks 8/HDMI
-> +	  * Gibson Goldtop/RIP
-> +	  * Mackie Onyx 400F/1200F
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called snd-fireworks.
+On 06/03/2013 11:20 AM, Mark Brown wrote:
+> On Sun, Jun 02, 2013 at 09:56:29PM +0200, Lars-Peter Clausen wrote:
+> 
+>> Not sure if this is the right approach, there is no limitation on either
+>> saif0 or saif1 that it can only be used for capture or playback. Some
+>> systems may use saif1 as playback and saif0 as capture, or both as playback
+>> and so on...
+> 
+> Is there a limitation on the CODEC side or does the CODEC side have a
+> single bidirectional interface?
 
-We'll have to find some mechanism to prevent FFADO from blowing up just
-because a distribution update has introduced this driver.
+I think the sgtl5000 has a single bidirectional DAI, but I'd assume that it
+is not the only CODEC to be ever used with the mxs-saif. In my opinion a
+better solution is to add support for being able to specify if a
+snd_soc_dai_link is used playback, capture or both.
 
-
-Regards,
-Clemens
-
-------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite
-It's a free troubleshooting tool designed for production
-Get down to code-level detail for bottlenecks, with <2% overhead.
-Download for free and get started troubleshooting in minutes.
-http://p.sf.net/sfu/appdyn_d2d_ap2
+- Lars
