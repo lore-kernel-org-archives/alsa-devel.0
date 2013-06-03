@@ -1,54 +1,58 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: tegra: implement suspend/resume for Tegra30
- AHUB
-Date: Mon, 3 Jun 2013 19:53:26 +0100
-Message-ID: <20130603185326.GT31367@sirena.org.uk>
-References: <1370281062-15238-1-git-send-email-swarren@wwwdotorg.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dapm: check suspend state in
+	dapm_dai_check_power()
+Date: Mon, 03 Jun 2013 21:16:36 +0200
+Message-ID: <51ACEB94.9020205@metafoo.de>
+References: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
+ <20130603185120.GS31367@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TYjWXklH5JTzT8n9"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1370281062-15238-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-070.synserver.de (smtp-out-074.synserver.de
+ [212.40.185.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2397264FB0
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 21:21:54 +0200 (CEST)
+In-Reply-To: <20130603185120.GS31367@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 06/03/2013 08:51 PM, Mark Brown wrote:
+> On Mon, Jun 03, 2013 at 11:36:40AM -0600, Stephen Warren wrote:
+>> From: Stephen Warren <swarren@nvidia.com>
+>>
+>> Currently, when the system enters suspend with audio playing, since the
+>> DAI widgets are active, the associated CODEC is considered active, and
+>> hence is not transition into a low-power bias state as the system
+>> suspends. This likely causes audio failure after resume, since the CODEC
+>> power has quite possibly been removed during suspend, and the bias level
+>> transitions in the CODEC driver are needed to recover from this. At the
+>> very least, this issue likely causes warnings in the kernel log due to
+>> the CODEC being left on over the suspend transition.
+>>
+>> To solve this, modify dapm_dai_check_power() not to consider DAI widgets
+>> active if the system is entering suspend.
+> 
+> I would expect us to be dealing with this as part of quiescing the DMA
+> operations on the links - it's not just the CODEC that needs handling
+> here.  This feels like it ought to be more joined up somewhere along the
+> line.
 
---TYjWXklH5JTzT8n9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it is just an oversight that this is not working properly right now.
+In snd_soc_suspend() where we also stop the DMA streams etc the DAI link
+widgets are put into suspend, by calling snd_soc_dapm_stream_event(...,
+SND_SOC_DAPM_STREAM_SUSPEND). But dapm_dai_check_power() doesn't consider
+this and hence stays active and also keeps the whole DAPM context (this is
+not CODEC specific) active.
 
-On Mon, Jun 03, 2013 at 11:37:41AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> Add tegra30_ahub_{suspend,resume}. These use regcache functions to
-> restore all HW registers after power loss during a suspend/resume cycle.
-
-Applied both, thanks.
-
---TYjWXklH5JTzT8n9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRrOYjAAoJELSic+t+oim9TRYP+gP7HGe883Uw9ET2OZf7KkSl
-0Z3z4NmJwCUfaplxHFd3pfhIjtfXhjLxgrhLYjbj+5M4KHGNiVa77q+PJM8fwN76
-4DP8TO+lxJ/aPdWiuvXjM00sleOxJo26n5o7a69/RFSM//ZYFWrCvhYAPDbm8D+2
-E83Mm/tQ8Wqd8YWx/b+BdOkG3th8WZyOD0dUPacJE5EDrcrPAR/o5KgFt8i7OaId
-1caRAslYoMfp1m9KKLyeSJsi0BR8KPFwKyuk0avuUeRtmEHMAgvjmK4Nqd17x89+
-sJJhrSBYvtBzCdMMFd1SUOOcuPocVsbulgOD8CGLfUqPxZPILoLkuNm/gKJiES8j
-nO14oQMV2tbfNIo9ECDg5ddffQrHgjfqJVw1tNxI4idiz9AwIIQhPELMjn4+8PqM
-c3ZiQUhIywjDL1sN1g4KKBQG5euf4isp8YaUU+69ikstJ4dO6OQQDsFejTu9mPy1
-uqtoiPKjDWYGlRmvAAaBIwQae/9ziYGai73cVn5+inOcl+RfMuj26jZiFyD61s5t
-cn8yyI1xvfEMSkXFV8Xma1sdjSbuSwOluGePdgdaUzuBrpb1BnRhUxgzTHAVDs5C
-fc0/sajnNSHgS47zv92S0UCJvq7kiBIgfobkC3FYV5qnyx7m+S0d9mTETc2+8K2o
-HVJxgghl2iL46WnShZHR
-=skxU
------END PGP SIGNATURE-----
-
---TYjWXklH5JTzT8n9--
+- Lars
