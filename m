@@ -1,48 +1,90 @@
-From: Alex Riesen <raa.lkml@gmail.com>
-Subject: Re: regression: from 3.8 to 3.9: headphones output no sound on Intel
- HDA, codec VIA VT1802
-Date: Mon, 3 Jun 2013 20:49:45 +0200
-Message-ID: <CALxABCbJz_8ENe+qQgb8m9yoU_75yKh5CAaikT3zX92X18As1w@mail.gmail.com>
-References: <CALxABCbP9hkNQ=xTEUMWb+6UhmVs2N-5kauYJe7d=j1z_RL+LA@mail.gmail.com>
- <s5h8v3irjeb.wl%tiwai@suse.de> <s5hy5biq3kr.wl%tiwai@suse.de>
- <CALxABCbyALmAKwCC6wNOgQWs8jD2X72aH8_++OW6R7m7C3vgfw@mail.gmail.com>
- <s5hr4haw190.wl%tiwai@suse.de> <s5hd2stq152.wl%tiwai@suse.de>
- <CALxABCaxJkG486g2reFDJD_nKzyaZkJnsRrwaLFNC9eFZBcXTg@mail.gmail.com>
- <s5ha9nwx1j3.wl%tiwai@suse.de> <CALxABCZMyqh5SSo=RpQCJNUR_p9yrG5x9DimFpzvgkCFLr4eug@mail.gmail.com>
- <s5h1u97jik9.wl%tiwai@suse.de> <CALxABCa27gVVJGWM-crvFOPmJXdZ0FEBc3=dPZ0pG+AhDB78cA@mail.gmail.com>
- <s5hk3myuoq6.wl%tiwai@suse.de> <CALxABCZHwKPDKPsjWJmK=-QzcC3fs2bKqHU0SCUmdH7OqGDNdA@mail.gmail.com>
- <s5h1u8wtsk9.wl%tiwai@suse.de> <CALxABCZdm=qd1E63NeabcqmD0csnL1FcuUBCFTwa1yDOVRVXyg@mail.gmail.com>
- <s5h1u8w8f82.wl%tiwai@suse.de> <CALxABCbJ-4_UPNX5qNAOy-PdQ+tp+vVBDE535nLyfjgzDjjebQ@mail.gmail.com>
- <s5h1u8p7pxi.wl%tiwai@suse.de> <CALxABCbBYRJDsXMw0Y0BLs+RuXNMa_RMOAF5i4rmWDaYPa2H0Q@mail.gmail.com>
- <s5hehcn2tc3.wl%tiwai@suse.de> <CALxABCaQ_drc+jKP4wZ5S_5wZVcE7rVXW_LZdVJ8tqZUai-=UQ@mail.gmail.com>
- <s5hbo7rowq5.wl%tiwai@suse.de> <CALxABCZVDrLMH+Y=b6CP8rehM5q7vikjoGNgi=S5jHKZuSSGsw@mail.gmail.com>
- <s5h8v2rzezr.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dapm: check suspend state in
+	dapm_dai_check_power()
+Date: Mon, 3 Jun 2013 19:51:20 +0100
+Message-ID: <20130603185120.GS31367@sirena.org.uk>
+References: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h8v2rzezr.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============0823373773176651045=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DC08264F40
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 20:51:27 +0200 (CEST)
+In-Reply-To: <1370281000-1120-1-git-send-email-swarren@wwwdotorg.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 3, 2013 at 12:05 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> Thanks.  I think I found the culprit of the problem with the pin ctl
-> value now.  This happens only when the power save is used or
-> suspended, and it happens only on VT1802.  That's why I couldn't
-> reproduce the issue with the emulator, and it wasn't reported from
-> users of other VIA codecs.
->
-> In anyway, the patch series below are the fixes.  Scratch the whole
-> previous patches and apply them on clean 3.9 (or 3.10-rc) tree.
-> Hopefully we sorted out all issues now.
 
-Bingo, it works! In case you want to review the test, logs:
+--===============0823373773176651045==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ll0BBk1HBk/f94B0"
+Content-Disposition: inline
 
-  http://familie-riesen.de/~raa/public/test/via-fix-cleared-pins.tar.bz2
 
-I'm going to run this kernel from now on. I shall report if I see
-something else.
+--Ll0BBk1HBk/f94B0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
-Alex
+On Mon, Jun 03, 2013 at 11:36:40AM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> Currently, when the system enters suspend with audio playing, since the
+> DAI widgets are active, the associated CODEC is considered active, and
+> hence is not transition into a low-power bias state as the system
+> suspends. This likely causes audio failure after resume, since the CODEC
+> power has quite possibly been removed during suspend, and the bias level
+> transitions in the CODEC driver are needed to recover from this. At the
+> very least, this issue likely causes warnings in the kernel log due to
+> the CODEC being left on over the suspend transition.
+>=20
+> To solve this, modify dapm_dai_check_power() not to consider DAI widgets
+> active if the system is entering suspend.
+
+I would expect us to be dealing with this as part of quiescing the DMA
+operations on the links - it's not just the CODEC that needs handling
+here.  This feels like it ought to be more joined up somewhere along the
+line.
+
+--Ll0BBk1HBk/f94B0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRrOWlAAoJELSic+t+oim9pJIP/i0ppe6Pc7HAclyMJ+M2l+jc
+aq/ZiQnuY6XYneBn+it+HxKIeIuoizOksKfmy/shL2Zh+0T35OcMTDiNsaimx75Q
+4hQuAa7eD+aTwfL64m3DeEkxKqhApU0Ua9+Vm3dmlkVd3Y2AMb16677hK1Znh0+w
+iAfjXIcRiHJUdzNGyGWw6WKufhvW/CSn2q1psqjfNk5Kr6M/mK7Whs9d8lPFvDkc
+NEduJFjN/tvuW0W7m6hTlI3JR6m55Bsf4DK9ijyGdvT+sn8Nqm+SHP/aoNQNDLUG
+Lh9gBEDkh11wBoU5/f7wcCRyJVEev9DWwx9ypkEDxx1+u6JD8motHIK7GM1VpoHk
+j5yP+mTbVpJx+GiFiWq+2uOUcq0nj7xhqLHdYCRAdBx2rsP565Tl/81cSq3YWqDy
+ZrJ9SxLZiZC1SAY7CSpzZT9QeDfqb1Lir+Q9oxpIMm8EjjqFIPeSGC1d5XQjmARF
+qyKxTfAsu6zyqpGZy9wMrQXc2RcvuneB72n3XyHJC+I4uDkDLL/z1+V/FALUAmZ0
+ClQqddGa15317iVa/o02LiZXJwN4aUp+utNQAboKyEij+TZggMuG8QXrDII8Muy+
+staoL6w9dxbk1ArREyu9fImXz0UE44iqfHNV3URfNKlNheXxe0Yq1wpuf9nbCtwS
+WE29bPVdGTJGYcoMSj1o
+=Tm4c
+-----END PGP SIGNATURE-----
+
+--Ll0BBk1HBk/f94B0--
+
+--===============0823373773176651045==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0823373773176651045==--
