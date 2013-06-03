@@ -1,73 +1,43 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 0/8] [RFC] new driver for Echo Audio's
- Fireworks based devices
-Date: Mon, 03 Jun 2013 13:18:04 +0200
-Message-ID: <51AC7B6C.7000108@ladisch.de>
+Subject: Re: [PATCH 1/8] add main file of driver module
+Date: Mon, 03 Jun 2013 13:18:17 +0200
+Message-ID: <51AC7B79.5050007@ladisch.de>
 References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1370102158-24389-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 93BAD2619EF
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 13:18:08 +0200 (CEST)
-In-Reply-To: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1370102158-24389-2-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
 To: o-takashi@sakamocchi.jp
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
 o-takashi@sakamocchi.jp wrote:
-> Currently this driver module support just PCM/MIDI kernel streaming via ALSA interfaces.
-> So there are some issues about this driver.
-> 1.whether adding each PCM devices for analog and digital interface
+> +#define VENDOR_ECHO_DIGITAL_AUDIO	0x001486
+> +#define  MODEL_ECHO_AUDIOFIRE_2		0x000af2
+> +#define  MODEL_ECHO_AUDIOFIRE_4		0x000af4
+> +#define  MODEL_ECHO_AUDIOFIRE_8		0x000af8
+> +/* #define  MODEL_ECHO_AUDIOFIRE_8A	0x?????? */
+> +/* #define  MODEL_ECHO_AUDIOFIRE_PRE8	0x?????? */
 
-ALSA drivers should reflect the actual hardware design as much as
-possible; conversions should be done in user space by alsa-lib.
-
-If analog and digital channels are part of the same AMDTP stream, then
-that is how the PCM device should look like.  (This is also how other
-drivers like ice1712 work.)
-
-There are other functions to describe and label channels.
-(And when I say "there are", I actually mean "there will be,
-eventually".  ;-)
-
-> 2.where the codes for device control like volume, routing and etc are
-
-The idea was to let the kernel driver handle only the actual streaming
-(and everything else necessary for that, such as device enumeration,
-sample rate, and clock source management), and let user space handle
-everything else.
-
-Volume and routing do not affect the streaming part in any way, so the
-kernel driver should not bother to implement them.
-
-
-4. clock source handling
-
-AMDTP itself was designed for consumer devices, where streaming is in
-only one direction, and where the receiving device always synchronizes
-to the playback device; this is the equivalent of the "SYT Match" clock
-source.
-
-This is how the existing drivers (isight, firewire-speakers) work.
-
-However, for full duplex and other clock sources, streaming becomes
-more complicated.  When in "SYT match" mode, the playback stream should
-be running even when only a capture PCM device is open.  In all other
-modes, the PC must synchronize to the device, so the capture stream must
-be running when _any_ PCM/MIDI stream is open (and, of course, the
-capture packets must be used to determine when to send packets).
+The 8a has ID 0x000af9; please also add the Pre8 ID.
 
 
 Regards,
 Clemens
+
+------------------------------------------------------------------------------
+Get 100% visibility into Java/.NET code with AppDynamics Lite
+It's a free troubleshooting tool designed for production
+Get down to code-level detail for bottlenecks, with <2% overhead.
+Download for free and get started troubleshooting in minutes.
+http://p.sf.net/sfu/appdyn_d2d_ap2
