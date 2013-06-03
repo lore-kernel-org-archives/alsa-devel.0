@@ -1,79 +1,58 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH V2] ARM: dts: wm8994: Add wm8994 regulator support on smdk5250.
-Date: Mon, 03 Jun 2013 10:52:34 +0530
-Message-ID: <1370236954-16863-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
-Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com
+From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Subject: [PATCH] ASoC: dwc: debug message correction.
+Date: Mon, 3 Jun 2013 10:55:00 +0530
+Message-ID: <1370237100-7765-1-git-send-email-rajeev-dlh.kumar@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
+ [207.126.144.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99BB726165F
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 07:25:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
+Cc: Rajeev Kumar <rajeevk-dlh.kumar@st.com>, alsa-devel@alsa-project.org, spear-devel@list.st.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the required regulator supplies and properties
-for wm8994 codec on smdk5250 board.
+From: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
 
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+Debug message correction.
+
+Signed-off-by: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
 ---
+ sound/soc/dwc/designware_i2s.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Changes since V1:
-	- Clubbed the same supply regulators as suggested by Mark.
-
- arch/arm/boot/dts/exynos5250-smdk5250.dts |   37 +++++++++++++++++++++++++++-
- 1 files changed, 35 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/exynos5250-smdk5250.dts b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-index f2a025e..dc2ec25 100644
---- a/arch/arm/boot/dts/exynos5250-smdk5250.dts
-+++ b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-@@ -37,6 +37,30 @@
- 		};
- 	};
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index deb30d5..deb975e 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -392,7 +392,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	}
  
-+	vdd:fixed-regulator@0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd-supply";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
-+
-+	dbvdd:fixed-regulator@1 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "dbvdd-supply";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	spkvdd:fixed-regulator@2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "spkvdd-supply";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
- 	i2c@12C70000 {
- 		samsung,i2c-sda-delay = <100>;
- 		samsung,i2c-max-bus-freq = <20000>;
-@@ -47,8 +71,17 @@
- 		};
+ 	if (cap & DWC_I2S_PLAY) {
+-		dev_dbg(&pdev->dev, " SPEAr: play supported\n");
++		dev_dbg(&pdev->dev, " designware: play supported\n");
+ 		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
+ 		dw_i2s_dai->playback.channels_max = pdata->channel;
+ 		dw_i2s_dai->playback.formats = pdata->snd_fmts;
+@@ -400,7 +400,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	}
  
- 		wm8994: wm8994@1a {
--			 compatible = "wlf,wm8994";
--			 reg = <0x1a>;
-+			compatible = "wlf,wm8994";
-+			reg = <0x1a>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+
-+			AVDD2-supply = <&vdd>;
-+			CPVDD-supply = <&vdd>;
-+			DBVDD-supply = <&dbvdd>;
-+			SPKVDD1-supply = <&spkvdd>;
-+			SPKVDD2-supply = <&spkvdd>;
- 		};
- 	};
- 
+ 	if (cap & DWC_I2S_RECORD) {
+-		dev_dbg(&pdev->dev, "SPEAr: record supported\n");
++		dev_dbg(&pdev->dev, "designware: record supported\n");
+ 		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
+ 		dw_i2s_dai->capture.channels_max = pdata->channel;
+ 		dw_i2s_dai->capture.formats = pdata->snd_fmts;
 -- 
-1.7.4.4
+1.7.6.5
