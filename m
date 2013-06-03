@@ -1,16 +1,16 @@
-From: "Zhang wei" <zhangwei@vimicro.com>
-Subject: how to use the invert of the field of struct
-	snd_kcontrl_new ?
-Date: Mon, 3 Jun 2013 11:18:36 +0800
-Message-ID: <6B947C8AC4195040A8C6876A496C644A0863C198@BJ-MAIL-04.vimicro.com>
+From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Subject: [PATCH] ASoC: dwc: Folder path correction in file
+	header.
+Date: Mon, 3 Jun 2013 10:23:49 +0530
+Message-ID: <1370235229-10631-1-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.vimicro.com (unknown [211.155.250.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 795EC26162E
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 05:18:45 +0200 (CEST)
-Content-class: urn:content-classes:message
+Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
+ [207.126.144.121])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B000261651
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 06:53:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,17 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
+Cc: Rajeev Kumar <rajeevk-dlh.kumar@st.com>, alsa-devel@alsa-project.org, spear-devel@list.st.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Is there some details documents about it?
+From: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
 
-When need I set it as 1 and 0?
+Folder path correction in file header.
 
- 
+Signed-off-by: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
+---
+ sound/soc/dwc/designware_i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Thanks 
-
-BR
-
-zw
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index deb30d5..a11050c 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -1,7 +1,7 @@
+ /*
+  * ALSA SoC Synopsys I2S Audio Layer
+  *
+- * sound/soc/spear/designware_i2s.c
++ * sound/soc/dwc/designware_i2s.c
+  *
+  * Copyright (C) 2010 ST Microelectronics
+  * Rajeev Kumar <rajeev-dlh.kumar@st.com>
+-- 
+1.7.6.5
