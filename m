@@ -1,386 +1,41 @@
-From: Antonio Ospite <ospite@studenti.unina.it>
-Subject: Re: [PATCH v2] Add M2Tech hiFace USB-SPDIF driver
-Date: Mon, 3 Jun 2013 23:40:00 +0200
-Message-ID: <20130603234000.40b6d3250f244215f61615ea@studenti.unina.it>
-References: <1360537887-9427-1-git-send-email-ao2@amarulasolutions.com>
- <1360775505-13106-1-git-send-email-ao2@amarulasolutions.com>
- <s5htxp4eci5.wl%tiwai@suse.de>
- <20130428230959.809f7987357f1b9a1754cbd5@studenti.unina.it>
- <s5h38t6gei5.wl%tiwai@suse.de>
+From: Andrew Bresticker <abrestic@chromium.org>
+Subject: Re: [PATCH V4 2/4] clk: samsung: register audio subsystem clocks
+ using common clock framework
+Date: Mon, 3 Jun 2013 16:46:09 -0700
+Message-ID: <CAL1qeaEkomoDQPyGqqLL-WzoLS=nND-eXeRAGD2HpoV6WW3yRQ@mail.gmail.com>
+References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
+	<1370236744-16802-3-git-send-email-padma.v@samsung.com>
+	<CAD=FV=XOfi=BsaF+-96SqKwyiwP9h0h3MCJxJ+qWNKaGoP=CcA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp208.alice.it (smtp208.alice.it [82.57.200.104])
- by alsa0.perex.cz (Postfix) with ESMTP id A8A92265042
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 23:40:06 +0200 (CEST)
-In-Reply-To: <s5h38t6gei5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, fchecconi@gmail.com, Pietro Cipriano <p.cipriano@m2tech.biz>, alberto@amarulasolutions.com, Michael Trimarchi <michael@amarulasolutions.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAD=FV=XOfi=BsaF+-96SqKwyiwP9h0h3MCJxJ+qWNKaGoP=CcA@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Doug Anderson <dianders@chromium.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 29 May 2013 14:24:50 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-Hi again,
-
-> At Sun, 28 Apr 2013 23:09:59 +0200,
-> Antonio Ospite wrote:
-> > 
-> > On Fri, 22 Feb 2013 13:53:06 +0100
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > Hi Takashi, I know, it's a huge delay.
-> > 
-> > > At Wed, 13 Feb 2013 18:11:45 +0100,
-> > > Antonio Ospite wrote:
-> > > > new file mode 100644
-> > > > index 0000000..d0c3c58
-> > > > --- /dev/null
-> > > > +++ b/sound/usb/hiface/pcm.c
-> > > > @@ -0,0 +1,638 @@
-> > > ....
-> > > > +struct pcm_runtime {
-> > > > +	struct hiface_chip *chip;
-> > > > +	struct snd_pcm *instance;
-> > > > +
-> > > > +	struct pcm_substream playback;
-> > > > +	bool panic; /* if set driver won't do anymore pcm on device */
-> > > 
-> > > Once when rt->panic is set, how can you recover?
-> > > I see no code resetting rt->panic.
-> > >
-> > 
-> > The logic behind this is that rt->panic is set to true if there was some
-> > USB errors (or a disconnect), so a USB replug is expected anyways;
-> > rt->panic will be initialized in the hiface_pcm_init() to 0 with a
-> > kzalloc().
-> 
-> Hmm, it doesn't sound good.
-> 
-
-In some other drivers like caiaq the "panic" is a condition independent
-from the USB communication itself.
-In the 6fire driver instead the panic is triggered by the URB status
-itself, so the scheme is more or less the same as in this hiFace driver,
-which was based on the 6fire one.
-
-I may very well skip the panic logic altogether if the assumption is
-that the USB communication works, and if it does not it is
-responsibility of the USB stack to report that.
-
-> > > > +/* The hardware wants word-swapped 32-bit values */
-> > > > +static void memcpy_swahw32(u8 *dest, u8 *src, unsigned int n)
-> > > > +{
-> > > > +	unsigned int i;
-> > > > +
-> > > > +	for (i = 0; i < n / 4; i++)
-> > > > +		((u32 *)dest)[i] = swahw32(((u32 *)src)[i]);
-> > > > +}
-> > > > +
-> > > > +/* call with substream locked */
-> > > > +/* returns true if a period elapsed */
-> > > > +static bool hiface_pcm_playback(struct pcm_substream *sub,
-> > > > +		struct pcm_urb *urb)
-> > > > +{
-> > > > +	struct snd_pcm_runtime *alsa_rt = sub->instance->runtime;
-> > > > +	u8 *source;
-> > > > +	unsigned int pcm_buffer_size;
-> > > > +
-> > > > +	WARN_ON(alsa_rt->format != SNDRV_PCM_FORMAT_S32_LE);
-> > > 
-> > > Can't we use simply SNDRV_PCM_FORMAT_S32_BE without the byte swapping
-> > > above?
-> > 
-> > The code above calls swahw32() it swaps words, it's some kind of mixed
-> > endian format which the device expects, maybe it's because it handles
-> > 16 bits at time internally, we don't know for sure, but this is how it
-> > is.
-> 
-> OK, then I read it wrongly.  In general, we don't want to do such
-> conversions in the driver code but it's too exotic, and maybe not
-> worth to add the new format in the common definition.
+>> +static unsigned long reg_save[][2] = {
+>> +       {ASS_CLK_SRC,  0},
+>> +       {ASS_CLK_DIV,  0},
+>> +       {ASS_CLK_GATE, 0},
+>> +};
+>> +
+>> +/* list of all parent clock list */
+>> +static const char *mout_audss_p[] = { "fin_pll", "fout_epll" };
 >
+> I think this is supposed to be "xxti" which might or might not be
+> "fin_pll".  In the exynos4 code these are two different clocks that
+> are chosen by OM[0].  I'd bet that 99% of the time they are the same,
+> but it seems better to use "xxti".
 
-Probably not worth it, I'll leave this as it is.
+OM[0] also appears to mux the input here between "xxti" and "xusbxti"
+as well.  So this should probably remain "fin_pll".
 
-> > > > +static void hiface_pcm_out_urb_handler(struct urb *usb_urb)
-> > > > +{
-> > > > +	struct pcm_urb *out_urb = usb_urb->context;
-> > > > +	struct pcm_runtime *rt = out_urb->chip->pcm;
-> > > > +	struct pcm_substream *sub;
-> > > > +	bool do_period_elapsed = false;
-> > > > +	unsigned long flags;
-> > > > +	int ret;
-> > > > +
-> > > > +	pr_debug("%s: called.\n", __func__);
-> > > > +
-> > > > +	if (rt->panic || rt->stream_state == STREAM_STOPPING)
-> > > > +		return;
-> > > > +
-> > > > +	if (unlikely(usb_urb->status == -ENOENT ||	/* unlinked */
-> > > > +		     usb_urb->status == -ENODEV ||	/* device removed */
-> > > > +		     usb_urb->status == -ECONNRESET ||	/* unlinked */
-> > > > +		     usb_urb->status == -ESHUTDOWN)) {	/* device disabled */
-> > > > +		goto out_fail;
-> > > > +	}
-> > > > +
-> > > > +	if (rt->stream_state == STREAM_STARTING) {
-> > > > +		rt->stream_wait_cond = true;
-> > > > +		wake_up(&rt->stream_wait_queue);
-> > > > +	}
-> > > > +
-> > > > +	/* now send our playback data (if a free out urb was found) */
-> > > > +	sub = &rt->playback;
-> > > > +	spin_lock_irqsave(&sub->lock, flags);
-> > > > +	if (sub->active)
-> > > > +		do_period_elapsed = hiface_pcm_playback(sub, out_urb);
-> > > > +	else
-> > > > +		memset(out_urb->buffer, 0, PCM_PACKET_SIZE);
-> > > > +
-> > > > +	spin_unlock_irqrestore(&sub->lock, flags);
-> > > > +
-> > > > +	if (do_period_elapsed)
-> > > > +		snd_pcm_period_elapsed(sub->instance);
-> > > 
-> > > This looks like a small open race.  sub->instance might be set to NULL
-> > > after the unlock above?
-> > >
-> > 
-> > Let's take a look at hiface_pcm_close():
-> >  * sub->instance is set to NULL
-> >  * the URBs are killed _after_ sub->instance is set to NULL
-> > 
-> > So if a URB is completed between these actions
-> > hiface_pcm_out_urb_handler() gets called and there could be a problem.
-> > 
-> > If in hiface_pcm_close() I kill the URBs first and then set
-> > sub->instance to NULL the race window gets closed, right?
-> 
-> Should be, yes.
->
+> At the moment the 5250 code doesn't expose "xxti".  It probably
+> should.  Andrew (CCed) is looking at this.
 
-Done, thanks.
+Yes, xxti is used directly elsewhere (SPI and UART, from what I can
+tell), but not here.
 
-> > > > +
-> > > > +	ret = usb_submit_urb(&out_urb->instance, GFP_ATOMIC);
-> > > > +	if (ret < 0)
-> > > > +		goto out_fail;
-> > > 
-> > > Maybe better to check the state again before resubmission, e.g. when
-> > > XRUN is detected in the pointer callback.
-> > >
-> > 
-> > I am not sure I understand what you mean here, should I check the
-> > state of ALSA PCM stream or should I keep another state to avoid
-> > transmissions on overruns?
-> 
-> ALSA state check should be enough for XRUN.
-> 
-> > Maybe you mean that I need to check that:
-> >  sub->instance->runtime->status->state == SNDRV_PCM_STATE_RUNNING
-> > ?
-> 
-> Yes, something like that.
->
-
-Mmh, checking the ALSA state in the URB complete callback looks a bit
-off, I don't see the other drives doing it, and if I add a check like
-the above then I cannot resume from pause.
-
-Is the driver supposed to keep sending URBs even when the stream is in
-SNDRV_PCM_STATE_PAUSED? I'll check with the other drivers.
-
-> > > > +
-> > > > +	return;
-> > > > +
-> > > > +out_fail:
-> > > > +	rt->panic = true;
-> > > > +}
-> > > > +
-> > > > +static int hiface_pcm_open(struct snd_pcm_substream *alsa_sub)
-> > > > +{
-> > > > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > > > +	struct pcm_substream *sub = NULL;
-> > > > +	struct snd_pcm_runtime *alsa_rt = alsa_sub->runtime;
-> > > > +	int ret;
-> > > > +
-> > > > +	pr_debug("%s: called.\n", __func__);
-> > > > +
-> > > > +	if (rt->panic)
-> > > > +		return -EPIPE;
-> > > > +
-> > > > +	mutex_lock(&rt->stream_mutex);
-> > > > +	alsa_rt->hw = pcm_hw;
-> > > > +
-> > > > +	if (alsa_sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > > > +		sub = &rt->playback;
-> > > > +
-> > > > +	if (!sub) {
-> > > > +		mutex_unlock(&rt->stream_mutex);
-> > > > +		pr_err("Invalid stream type\n");
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +
-> > > > +	if (rt->extra_freq) {
-> > > > +		alsa_rt->hw.rates |= SNDRV_PCM_RATE_KNOT;
-> > > > +		alsa_rt->hw.rate_max = 384000;
-> > > > +
-> > > > +		/* explicit constraints needed as we added SNDRV_PCM_RATE_KNOT */
-> > > > +		ret = snd_pcm_hw_constraint_list(alsa_sub->runtime, 0,
-> > > > +						 SNDRV_PCM_HW_PARAM_RATE,
-> > > > +						 &constraints_extra_rates);
-> > > > +		if (ret < 0) {
-> > > > +			mutex_unlock(&rt->stream_mutex);
-> > > > +			return ret;
-> > > > +		}
-> > > > +	}
-> > > > +
-> > > > +	sub->instance = alsa_sub;
-> > > > +	sub->active = false;
-> > > > +	mutex_unlock(&rt->stream_mutex);
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static int hiface_pcm_close(struct snd_pcm_substream *alsa_sub)
-> > > > +{
-> > > > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > > > +	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
-> > > > +	unsigned long flags;
-> > > > +
-> > > > +	if (rt->panic)
-> > > > +		return 0;
-> > > > +
-> > > > +	pr_debug("%s: called.\n", __func__);
-> > > > +
-> > > > +	mutex_lock(&rt->stream_mutex);
-> > > > +	if (sub) {
-> > > > +		/* deactivate substream */
-> > > > +		spin_lock_irqsave(&sub->lock, flags);
-> > > > +		sub->instance = NULL;
-> > > > +		sub->active = false;
-> > > > +		spin_unlock_irqrestore(&sub->lock, flags);
-> > > > +
-> > > > +		/* all substreams closed? if so, stop streaming */
-> > > > +		if (!rt->playback.instance)
-> > > > +			hiface_pcm_stream_stop(rt);
-> > > 
-> > > Can this condition be ever false...?
-> > >
-> > 
-> > You mean that if we got to the .close() callback then the .open() one
-> > succeeded and so we have a valid snd_pcm_substream? I guess that's
-> > right and I can skip the check.
-> 
-> What does stream_mutex protect?  I don't have any glance over the
-> whole code, and the code was so old, thus I don't remember at all...
->
-
-OK, now I get it, the check must go away and the hiface_pcm_stream_stop
-() must be called, otherwise the driver will keep sending URBs even
-after a .close(). Thanks again.
-
-> > The driver was based on a driver which handled multiple streams so
-> > something must have slipped during the cleanup.
-> > 
-> > BTW, I think that cleaning up this hiFace driver further could be useful
-> > even after mainline inclusion, it's a fairly simple driver which can be
-> > used as an example driver, but my inexperience with ALSA, and audio in
-> > general, was holding me back a bit to revolutionize it's initial
-> > structure. Help is always appreciated by more experienced people.
-> > 
-> > > > +static int hiface_pcm_trigger(struct snd_pcm_substream *alsa_sub, int cmd)
-> > > > +{
-> > > > +	struct pcm_substream *sub = hiface_pcm_get_substream(alsa_sub);
-> > > > +	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
-> > > > +	unsigned long flags;
-> > > 
-> > > For trigger callback, you need no irqsave but simply use
-> > > spin_lock_irq().
-> > >
-> > 
-> > OK, will do, thanks.
-> > 
-> > > > +void hiface_pcm_abort(struct hiface_chip *chip)
-> > > > +{
-> > > > +	struct pcm_runtime *rt = chip->pcm;
-> > > > +
-> > > > +	if (rt) {
-> > > > +		rt->panic = true;
-> > > > +
-> > > > +		if (rt->playback.instance) {
-> > > > +			snd_pcm_stream_lock_irq(rt->playback.instance);
-> > > > +			snd_pcm_stop(rt->playback.instance,
-> > > > +					SNDRV_PCM_STATE_XRUN);
-> > > > +			snd_pcm_stream_unlock_irq(rt->playback.instance);
-> > > > +		}
-> > > 
-> > > Hmm... this is called after snd_card_disconnect(), thus it will reset
-> > > the PCM stream state from DISCONNECTED to XRUN.  It doesn't sound
-> > > right.
-> > >
-> > 
-> > Mmh, some other USB drivers do that too in their abort, _after_
-> > snd_card_disconnect() so they must be wrong too.
-> 
-> Which one?  The common usb-audio driver has the check beforehand.
-
-I was referring to ua101 and to 6fire, but I see that the caiaq driver
-and the usb generic one do not call snd_pcm_stop() at all so I am going
-to drop it too.
-
-> > Can I just skip calling snd_pcm_stop() altogether since the PCM stream
-> > state is in DISCONNECTED state already?
-> > 
-> > > > +int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq)
-> > > > +{
-> > > ....
-> > > > +	snd_pcm_lib_preallocate_pages_for_all(pcm,
-> > > > +					SNDRV_DMA_TYPE_CONTINUOUS,
-> > > > +					snd_dma_continuous_data(GFP_KERNEL),
-> > > > +					PCM_BUFFER_SIZE, PCM_BUFFER_SIZE);
-> > > 
-> > > Any reason not to use vmalloc buffer?
-> > > 
-> > 
-> > I don't know, I just shamelessly copied from other drivers here, what'd
-> > be the difference?
-> 
-> A huge difference.  Imagine allocating a 1MB buffer.
-
-I think I get what you meant now: for USB devices
-snd_pcm_lib_alloc_vmalloc_buffer() can be used because an USB device
-does not have the DMA and contiguousness requirements that a PCI device
-has, right?
-
-https://github.com/panicking/snd-usb-asyncaudio/commit/7cc042dda89e3705dbca6edb6744ea068e01a115
-
-Daniel, maybe you want to change this in the caiaq driver too?
-Should I send a patch for it?
-
-The doubts about the panic condition and about checking the ALSA state
-before resubmitting the URBs are the only two issue which are
-keeping me from sending a v3 targeted for inclusion.
-
-Michael I'll drop all the pr_debug("%s: called!", __func__) too in the
-final version.
-
-Thanks again,
-   Antonio
-
--- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+-Andrew
