@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: mxs: mxs-saif: Fix the
- playback/record capabilities
-Date: Mon, 03 Jun 2013 17:07:57 +0200
-Message-ID: <51ACB14D.2050205@metafoo.de>
-References: <1370191092-1773-1-git-send-email-festevam@gmail.com>
- <51ABA36D.8020802@metafoo.de> <20130603092028.GD31367@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: wm0010: Clear IRQ as wake source and
+	include missing header
+Date: Mon,  3 Jun 2013 15:57:55 +0100
+Message-ID: <1370271475-24159-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-046.synserver.de (smtp-out-047.synserver.de
- [212.40.185.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 1087C261ADA
- for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 17:08:06 +0200 (CEST)
-In-Reply-To: <20130603092028.GD31367@sirena.org.uk>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D845B261B0A
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2013 17:08:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: marex@denx.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/03/2013 11:20 AM, Mark Brown wrote:
-> On Sun, Jun 02, 2013 at 09:56:29PM +0200, Lars-Peter Clausen wrote:
-> 
->> Not sure if this is the right approach, there is no limitation on either
->> saif0 or saif1 that it can only be used for capture or playback. Some
->> systems may use saif1 as playback and saif0 as capture, or both as playback
->> and so on...
-> 
-> Is there a limitation on the CODEC side or does the CODEC side have a
-> single bidirectional interface?
+Both clear the IRQ as being a wake source when we are finished with it
+and include a missing header file that is required.
 
-I think the sgtl5000 has a single bidirectional DAI, but I'd assume that it
-is not the only CODEC to be ever used with the mxs-saif. In my opinion a
-better solution is to add support for being able to specify if a
-snd_soc_dai_link is used playback, capture or both.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm0010.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-- Lars
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index b6df319..f5e8356 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -14,6 +14,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/interrupt.h>
+ #include <linux/irqreturn.h>
+ #include <linux/init.h>
+ #include <linux/spi/spi.h>
+@@ -1002,6 +1003,8 @@ static int wm0010_spi_remove(struct spi_device *spi)
+ 	gpio_set_value_cansleep(wm0010->gpio_reset,
+ 				wm0010->gpio_reset_value);
+ 
++	irq_set_irq_wake(wm0010->irq, 0);
++
+ 	if (wm0010->irq)
+ 		free_irq(wm0010->irq, wm0010);
+ 
+-- 
+1.7.2.5
