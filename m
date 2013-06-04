@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: add runtime PM to resume
-	functions
-Date: Tue, 4 Jun 2013 20:47:44 +0100
-Message-ID: <20130604194744.GU31367@sirena.org.uk>
-References: <1370372294-25844-1-git-send-email-swarren@wwwdotorg.org>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
+Date: Tue, 4 Jun 2013 16:54:12 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306041646240.1093-100000@iolanthe.rowland.org>
+References: <1370375134.2385.64.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4149228403671627032=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C93B2651A3
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 21:47:50 +0200 (CEST)
-In-Reply-To: <1370372294-25844-1-git-send-email-swarren@wwwdotorg.org>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id CBDAB261A86
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 22:54:14 +0200 (CEST)
+In-Reply-To: <1370375134.2385.64.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Joe Perches <joe@perches.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 4 Jun 2013, Joe Perches wrote:
 
---===============4149228403671627032==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kPvmKZRaHW6UEX9w"
-Content-Disposition: inline
+> A somewhat common convention is to use
+> 
+> 	prefix_dbg(level, fmt, ...)
+> 
+> where level is either a numeric value or bitmask,
+> and also is either a #define or a MODULE_PARAM
+> 
+> today sound/misc.c has:
+> 
+> ------------------------------------------
+> 
+> #ifdef CONFIG_SND_DEBUG
+> 
+> #ifdef CONFIG_SND_DEBUG_VERBOSE
+> #define DEFAULT_DEBUG_LEVEL	2
+> #else
+> #define DEFAULT_DEBUG_LEVEL	1
+> #endif
+> 
+> static int debug = DEFAULT_DEBUG_LEVEL;
+> module_param(debug, int, 0644);
+> MODULE_PARM_DESC(debug, "Debug level (0 = disable)");
+> 
+> #endif /* CONFIG_SND_DEBUG */
 
+Yes, I have read this part of the code.
 
---kPvmKZRaHW6UEX9w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ------------------------------------------
+> 
+> I suggest converting all the remaining
+> 
+> snd_printd(...) to snd_dbg(1, ...)
+> and
+> snd_printdd(...) to snd_dbg(2, ...)
+> 
+> so that debug module param control can be used for
+> all these and if the DEFAULT_DEBUG_LEVEL isn't
+> high enough, the various snd_dbg(2, ...) can be
+> completely optimized away if appropriate.
 
-On Tue, Jun 04, 2013 at 12:58:14PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
->=20
-> Tegra HW needs clocks etc. active when touching registers. Make sure they
-> are active during resume, by calling pm_runtime_get_sync() before touching
-> HW.
+I don't see how DEFAULT_DEBUG_LEVEL can be used to optimize away
+anything.  The user can always change the value of the "debug" module
+parameter while the system is running.  The only valid opportunity for
+optimization would be if CONFIG_SND_DEBUG was disabled; then all these 
+messages would disappear.
 
-Applied, thanks.
+You didn't respond to the first point I raised.  Since these messages
+are all meant for debugging, there's no point allowing them to have
+prefixes like KERN_ERR or KERN_INFO.  They should always be printed at
+the KERN_DEBUG level.  Or did you think this was so obviously true that
+it didn't require any comment?
 
---kPvmKZRaHW6UEX9w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIbBAEBAgAGBQJRrkRdAAoJELSic+t+oim9dtcP920sOsCI9jDs8J4YjQjWBbYo
-3WhOCONeJ5MwtlWObJ1Rg9oGynRkqIpG/k8U7TTRlV6S+QY/igtjDKRbeCgriHLl
-KS4aSeun+PA8gKjUVxuIxPaklGdf8FMnQayzq6iPLFBKWc+zmE1XJt6TQNdJfitY
-2WzEcGP2/riDHO9ygvW82yJzdGhaxyfAi2gmsZ9PeXPTwVJsBq0tj5h1Q+sHxxp3
-MTfXySvzv1R79wkfl7b8Zt+9/0yqjiB47ifa8YvspKLv6gCKx8HFG4Sf2+OouhaR
-DoY1hA90yGq9rbepH1LEjswb5KFBzROSRLGZXkkLTzuDD+YtTnN3li/dqqlqLgHv
-eApmi8hYQ14hA6LevRCazWA6ILGf5OxkB/l2sh74vCpMD0L+iiKjich9dkCIitS/
-sv+08v/B5eHxcwDq5lToU/ZI0sb4fo7HMcO7/8pKYZJ5FvhQXQKbh0QdNPXcv75R
-09LmkOSuE47oqStX0AZecSwKkIIuLaWgW0CunQRjsy6ywnHO1Ocx7JZQfNASf/fn
-62LJhCGGlQ5QQVG7ptne+CHuFukYtIBj0IX1kOJLFlT5MsWPBEfulEwNYhZNzHEB
-jaqzc+9wCaG3gJU50VVWAmJsAh+1J7oIMBoa6bFWja4KJ9PttyQdLu9JW5nz4qkD
-qRDabRP7qUSHZ6UNUVo=
-=Ob0h
------END PGP SIGNATURE-----
-
---kPvmKZRaHW6UEX9w--
-
---===============4149228403671627032==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4149228403671627032==--
+Alan Stern
