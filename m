@@ -1,112 +1,84 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] ALSA: hda - Ignore default pin config
- on Haswell HDMI codecs
-Date: Tue, 04 Jun 2013 12:19:57 +0200
-Message-ID: <51ADBF4D.30407@canonical.com>
-References: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F80123BA2C@SHSMSX101.ccr.corp.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 65E552650D7
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 12:19:59 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F80123BA2C@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Wang,
- Xingchao" <xingchao.wang@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, James M Leddy <james.leddy@canonical.com>
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH V5 0/5]  clk: Samsung: audss: Register audio subsytem clocks
+ using common clk framework
+Date: Tue, 04 Jun 2013 17:58:05 +0530
+Message-ID: <1370348890-6645-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
+Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, mturquette@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/04/2013 12:10 PM, Lin, Mengdong wrote:
-> Hi David,
->
-> Do you mean that a pin's default configuration may tell "No physical connection" by mistake?
+Samsung S5PV210 and Exynos SoC has a separate subsystem for audio. This subsystem
+has a internal clock controller which controls i2s0 and pcm0 clocks. This patch
+series adds the Samsung audio subsytem clock to the common clock framework and
+provides the I2S controllers clock information in the dtsi file.
 
-A pin's default configuration can be set to "No physical connection". 
-I've seen this on one machine that we're trying to enable.
+This patch series is made based on Kukjin Kim for-next branch
 
-Whether that is a mistake or not, that's the million dollar question here:
+Changes since V4:
+        - Reworked on the nits given by Doug.
+        - Removed mout_audss and mout_i2s from i2s nodes as we are not
+          getting these clocks in the i2s driver.
+        - Modified the I2S binding documentation for clocks and pinmux.
 
-If it is not a mistake, then the graphics driver/stack should pay 
-attention to this value, and not route audio to that pin.
+Changes since V3:
+        - Replaced samsung with exynos in the macro prefixes and function names
+          as this driver supports mainly exynos and s5p family.
+        - Added Reviewed-by:Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-If it is a mistake, then the bspec [1] should mention that programming 
-of this value should not be allowed (so we can tell the OEM to correct 
-their BIOS).
+Changes since V2:
+        - Removed s5pv210 compatible name from driver as it is
+          not yet supported which is different from Exynos series
+          audio subsystem clock conroller.
+        - Removed clkdev lookup support and added alias names in
+          the i2s0 controller node.
+Changes since V1:
+        - Reworked on all review comments by Sylwester Nawrocki
+        - Added a header file for all clock indexes as requested by Sylwester
+        - Added different compatible names for s5pv210, exynos4 and exynos5
+        - Registered the pcm clocks with common clock framework
 
-I'm still trying to get a clear answer from someone at Intel, and it's 
-becoming a bit frustrating not to get that.
+Padmavathi Venna (5):
+  ARM: samsung: use #include for all device trees
+  clk: samsung: register audio subsystem clocks using common clock
+    framework
+  ARM: dts: add Exynos audio subsystem clock controller node
+  ARM: dts: add clock provider information for i2s controllers in
+    Exynos5250
+  ARM: dts: Update Samsung I2S documentation
 
-
->
-> Thanks
-> Mengdong
->
->> -----Original Message-----
->> From: David Henningsson [mailto:david.henningsson@canonical.com]
->> Sent: Tuesday, June 04, 2013 4:03 PM
->> To: alsa-devel@alsa-project.org
->> Cc: tiwai@suse.de; Wang, Xingchao; daniel@ffwll.ch; Lin, Mengdong; Girdwood,
->> Liam R; Li, Jocelyn; David Henningsson
->> Subject: [RFC PATCH] ALSA: hda - Ignore default pin config on Haswell HDMI
->> codecs
->>
->> According to Daniel Vetter, these pin configs should be ignored, because the
->> graphics driver/userspace could route audio to these pins even if they are
->> disabled by BIOS.
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->> ---
->>   sound/pci/hda/patch_hdmi.c |   10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> It would be good to have this acked by someone at Intel before committing.
->>
->> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
->> e12f7a0..8c1bede 100644
->> --- a/sound/pci/hda/patch_hdmi.c
->> +++ b/sound/pci/hda/patch_hdmi.c
->> @@ -1307,12 +1307,14 @@ static int hdmi_add_pin(struct hda_codec *codec,
->> hda_nid_t pin_nid)
->>   	if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
->>   		return 0;
->>
->> -	config = snd_hda_codec_get_pincfg(codec, pin_nid);
->> -	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
->> -		return 0;
->> -
->>   	if (codec->vendor_id == 0x80862807)
->>   		intel_haswell_fixup_connect_list(codec, pin_nid);
->> +	else {
->> +		/* On Haswell, default pin config should be ignored */
->> +		config = snd_hda_codec_get_pincfg(codec, pin_nid);
->> +		if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
->> +			return 0;
->> +	}
->>
->>   	pin_idx = spec->num_pins;
->>   	per_pin = snd_array_new(&spec->pins);
->> --
->> 1.7.9.5
->
-
-
+ .../devicetree/bindings/clock/clk-exynos-audss.txt |   64 ++++++++++
+ .../devicetree/bindings/sound/samsung-i2s.txt      |   40 ++----
+ arch/arm/boot/dts/exynos4.dtsi                     |    2 +-
+ arch/arm/boot/dts/exynos4210-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4210-smdkv310.dts          |    2 +-
+ arch/arm/boot/dts/exynos4210-trats.dts             |    2 +-
+ arch/arm/boot/dts/exynos4210-universal_c210.dts    |    2 +-
+ arch/arm/boot/dts/exynos4210.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos4212.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4412-odroidx.dts           |    2 +-
+ arch/arm/boot/dts/exynos4412-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4412-smdk4412.dts          |    2 +-
+ arch/arm/boot/dts/exynos4412.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4x12.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos5250-arndale.dts           |    2 +-
+ arch/arm/boot/dts/exynos5250-smdk5250.dts          |    2 +-
+ arch/arm/boot/dts/exynos5250-snow.dts              |    4 +-
+ arch/arm/boot/dts/exynos5250.dtsi                  |   20 +++-
+ arch/arm/boot/dts/exynos5440-sd5v1.dts             |    2 +-
+ arch/arm/boot/dts/exynos5440-ssdk5440.dts          |    2 +-
+ arch/arm/boot/dts/exynos5440.dtsi                  |    2 +-
+ arch/arm/boot/dts/s3c2416-smdk2416.dts             |    2 +-
+ arch/arm/boot/dts/s3c2416.dtsi                     |    4 +-
+ arch/arm/boot/dts/s3c24xx.dtsi                     |    2 +-
+ drivers/clk/samsung/Makefile                       |    1 +
+ drivers/clk/samsung/clk-exynos-audss.c             |  133 ++++++++++++++++++++
+ include/dt-bindings/clk/exynos-audss-clk.h         |   25 ++++
+ 27 files changed, 279 insertions(+), 54 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
+ create mode 100644 drivers/clk/samsung/clk-exynos-audss.c
+ create mode 100644 include/dt-bindings/clk/exynos-audss-clk.h
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
-
-[1] Or some other document. I don't have access to the bspec, so I can't 
-check this for myself.
+1.7.4.4
