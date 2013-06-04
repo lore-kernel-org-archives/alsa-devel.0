@@ -1,49 +1,61 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: cplay error "Can't find sync world"
-Date: Tue, 4 Jun 2013 05:29:34 +0530
-Message-ID: <20130603235934.GA23045@intel.com>
-References: <51AC55B4.5080105@linux.intel.com>
- <20130603162004.GC31108@opensource.wolfsonmicro.com>
- <51AD30FD.9080406@linux.intel.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [PATCH V4 3/4] ARM: dts: add Exynos audio subsystem clock
+ controller node
+Date: Tue, 4 Jun 2013 09:55:47 +0530
+Message-ID: <CAAgF-Bds5yy3J4fMQXhR4LEw5-6gtd2sHZOA+1dR-poASxrj4A@mail.gmail.com>
+References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
+	<1370236744-16802-4-git-send-email-padma.v@samsung.com>
+	<CAD=FV=WXEDA+R3BSn7TgSB5BpS2yuWGGmFDpxcQoYmQHGTAQMw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EC322650B9
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 02:37:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <51AD30FD.9080406@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Keyon.Jey" <yang.jie@linux.jf.intel.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAD=FV=WXEDA+R3BSn7TgSB5BpS2yuWGGmFDpxcQoYmQHGTAQMw@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Doug Anderson <dianders@chromium.org>
+Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, broonie@kernel.org, Mike Turquette <mturquette@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 04, 2013 at 08:12:45AM +0800, Keyon.Jey wrote:
+Hi Doug,
 
-Pls *DONT* drop ppl from CC,
-Pls CC maintainers
+On Tue, Jun 4, 2013 at 1:43 AM, Doug Anderson <dianders@chromium.org> wrote:
+> Padmavathi,
+>
+> On Sun, Jun 2, 2013 at 10:19 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
+>> Audio subsystem introduced in s5pv210 and exynos platforms
+>> which has a internal clock controller. This patch adds a node
+>> for the same on exynos5250.
+>>
+>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+>> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>> ---
+>>  arch/arm/boot/dts/exynos5250.dtsi |    6 ++++++
+>>  1 files changed, 6 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
+>> index bccda67..388983e 100644
+>> --- a/arch/arm/boot/dts/exynos5250.dtsi
+>> +++ b/arch/arm/boot/dts/exynos5250.dtsi
+>> @@ -72,6 +72,12 @@
+>>                 #clock-cells = <1>;
+>>         };
+>>
+>> +       clock_audss: audss-clock-controller@3810000 {
 
-> >>when I try use clpay -c 1 -d 2 test.mp3 to use tinycompress hwdec on my
-> >>phone, "Can't find sync world" always occurred, no matter what mp3 music
-> >>I try to play.
-> >I believe the issue here is cplay does not currently handle MP3s
-> >with meta data, such as track naming etc. You will need to strip
-> >anything like this from the start of the MP3 file before playing.
-> it helps! thanks a lot, Charles!
-The current code, doesn't parse the header looking for the SYNC bits, it checks
-at a predefined offset. Which means that most of the files will work but as
-Charles said, if the the file has meta data, it wont work.
+I removed this leading 0 as Tomasz Figa suggested.
 
-And yes patch is welcome...
+>
+> Nit: other places in the same file have the leading 0, like
+>   i2s0: i2s@03830000 {
 
---
-~Vinod
+This was the patch which got merged earlier. So I didn't modify this.
+Is it okey if I remove  leading 0 for both of the nodes now?
+
+>
+> So you could follow suit and do:
+>
+>   clock_audss: audss-clock-controller@03810000 {
+>
+> -Doug
+
+Thanks
+Padma
