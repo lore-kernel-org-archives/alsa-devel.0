@@ -1,18 +1,16 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
-Date: Tue, 4 Jun 2013 14:39:36 +0800
-Message-ID: <1121E117AD4ECE49880A389A396215BB8A89699532@rtitmbs7.realtek.com.tw>
-References: <1369983899-13580-1-git-send-email-bardliao@realtek.com>
- <20130603153542.GM31367@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [RFC PATCH] ALSA: hda - Ignore default pin config on
+	Haswell HDMI codecs
+Date: Tue,  4 Jun 2013 10:02:45 +0200
+Message-ID: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 4746A2655E0
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 08:39:42 +0200 (CEST)
-In-Reply-To: <20130603153542.GM31367@sirena.org.uk>
-Content-Language: zh-TW
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A6182650AE
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 10:02:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@intel.com, tiwai@suse.de, mengdong.lin@intel.com, xingchao.wang@intel.com, jocelyn.li@intel.com, daniel@ffwll.ch, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Monday, June 03, 2013 11:36 PM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Oder Chiou;
-> swarren@nvidia.com; swarren@wwwdotorg.org
-> Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
-> > +	case SND_SOC_BIAS_STANDBY:
-> > +		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
-> > +			snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
-> > +				RT5640_PWR_VREF1 | RT5640_PWR_MB |
-> > +				RT5640_PWR_BG | RT5640_PWR_VREF2,
-> > +				RT5640_PWR_VREF1 | RT5640_PWR_MB |
-> > +				RT5640_PWR_BG | RT5640_PWR_VREF2);
-> > +			mdelay(10);
-> > +			snd_soc_update_bits(codec, RT5640_PWR_ANLG1,
-> > +				RT5640_PWR_FV1 | RT5640_PWR_FV2,
-> > +				RT5640_PWR_FV1 | RT5640_PWR_FV2);
-> > +			regcache_cache_only(rt5640->regmap, false);
-> > +			regcache_sync(rt5640->regmap);
-> 
-> This looks wrong - you're writing to the device before you take it out of cache
-> only mode so your delay in the above sequence will have no effect.
+According to Daniel Vetter, these pin configs should be ignored,
+because the graphics driver/userspace could route audio to these
+pins even if they are disabled by BIOS.
 
-Actually, I don't know if I need to call "regcache_cache_only(rt5640->regmap, false);" here.
-We never call "regcache_cache_only(rt5640->regmap, true);" in the codec driver.
-I assume the cache_only flag is default false.
-If yes, I think I can remove "regcache_cache_only(rt5640->regmap, false);" from the code driver.
-If not, I will move it to the beginning of if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) condition.
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_hdmi.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
+It would be good to have this acked by someone at Intel before committing.
 
-> ------Please consider the environment before printing this e-mail.
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e12f7a0..8c1bede 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1307,12 +1307,14 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+ 		return 0;
+ 
+-	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+-	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+-		return 0;
+-
+ 	if (codec->vendor_id == 0x80862807)
+ 		intel_haswell_fixup_connect_list(codec, pin_nid);
++	else {
++		/* On Haswell, default pin config should be ignored */
++		config = snd_hda_codec_get_pincfg(codec, pin_nid);
++		if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
++			return 0;
++	}
+ 
+ 	pin_idx = spec->num_pins;
+ 	per_pin = snd_array_new(&spec->pins);
+-- 
+1.7.9.5
