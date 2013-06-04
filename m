@@ -1,31 +1,44 @@
-From: Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH V4 2/4] clk: samsung: register audio subsystem clocks
- using common clock framework
-Date: Mon, 3 Jun 2013 17:07:26 -0700
-Message-ID: <CAD=FV=Wu6u=gvh5Anut8MtC+Bb43EG7hxRN=vs-ML35P1qTJYQ@mail.gmail.com>
-References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
-	<1370236744-16802-3-git-send-email-padma.v@samsung.com>
-	<CAD=FV=XOfi=BsaF+-96SqKwyiwP9h0h3MCJxJ+qWNKaGoP=CcA@mail.gmail.com>
-	<CAL1qeaEkomoDQPyGqqLL-WzoLS=nND-eXeRAGD2HpoV6WW3yRQ@mail.gmail.com>
+From: "Keyon.Jey" <yang.jie@linux.intel.com>
+Subject: Re: cplay error "Can't find sync world"
+Date: Tue, 04 Jun 2013 08:12:45 +0800
+Message-ID: <51AD30FD.9080406@linux.intel.com>
+References: <51AC55B4.5080105@linux.intel.com>
+ <20130603162004.GC31108@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CAL1qeaEkomoDQPyGqqLL-WzoLS=nND-eXeRAGD2HpoV6WW3yRQ@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Andrew Bresticker <abrestic@chromium.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, padma.kvr@gmail.com, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 648732650AE
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 02:11:23 +0200 (CEST)
+In-Reply-To: <20130603162004.GC31108@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andrew,
-
-On Mon, Jun 3, 2013 at 4:46 PM, Andrew Bresticker <abrestic@chromium.org> wrote:
->> I think this is supposed to be "xxti" which might or might not be
->> "fin_pll".  In the exynos4 code these are two different clocks that
->> are chosen by OM[0].  I'd bet that 99% of the time they are the same,
->> but it seems better to use "xxti".
+On 06/04/2013 12:20 AM, Charles Keepax wrote:
+> On Mon, Jun 03, 2013 at 04:37:08PM +0800, Keyon.Jey wrote:
+>> when I try use clpay -c 1 -d 2 test.mp3 to use tinycompress hwdec on my
+>> phone, "Can't find sync world" always occurred, no matter what mp3 music
+>> I try to play.
+> I believe the issue here is cplay does not currently handle MP3s
+> with meta data, such as track naming etc. You will need to strip
+> anything like this from the start of the MP3 file before playing.
 >
-> OM[0] also appears to mux the input here between "xxti" and "xusbxti"
-> as well.  So this should probably remain "fin_pll".
+> Charles
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+it helps! thanks a lot, Charles!
 
-Thanks!  ...so I'm OK with this landing "as-is" or a re-spin with nits
-fixed, since all of the rest of my comments were just nits...
+Keyon
