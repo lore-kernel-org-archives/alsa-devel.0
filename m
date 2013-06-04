@@ -1,62 +1,60 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: add runtime PM to resume functions
-Date: Tue,  4 Jun 2013 12:58:14 -0600
-Message-ID: <1370372294-25844-1-git-send-email-swarren@wwwdotorg.org>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
+Date: Tue, 4 Jun 2013 15:32:02 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306041519531.1093-100000@iolanthe.rowland.org>
+References: <s5h61xtx6i5.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id 9993B2651A3
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 21:32:04 +0200 (CEST)
+In-Reply-To: <s5h61xtx6i5.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Tue, 4 Jun 2013, Takashi Iwai wrote:
 
-Tegra HW needs clocks etc. active when touching registers. Make sure they
-are active during resume, by calling pm_runtime_get_sync() before touching
-HW.
+> I wouldn't mind but some might do :)
+> 
+> So we should clean up the excessive usage of snd_printk() and convert
+> them to the standard printk & co at first.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- sound/soc/tegra/tegra30_ahub.c | 4 ++++
- sound/soc/tegra/tegra30_i2s.c  | 9 ++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+This part is now done (already posted).
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 0f4787c..d554d46 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -640,8 +640,12 @@ static int tegra30_ahub_resume(struct device *dev)
- {
- 	int ret;
- 
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0)
-+		return ret;
- 	ret = regcache_sync(ahub->regmap_ahub);
- 	ret |= regcache_sync(ahub->regmap_apbif);
-+	pm_runtime_put(dev);
- 
- 	return ret;
- }
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index bd0ebc0..d04146c 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -527,8 +527,15 @@ static int tegra30_i2s_suspend(struct device *dev)
- static int tegra30_i2s_resume(struct device *dev)
- {
- 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
-+	int ret;
- 
--	return regcache_sync(i2s->regmap);
-+	ret = pm_runtime_get_sync(dev);
-+	if (ret < 0)
-+		return ret;
-+	ret = regcache_sync(i2s->regmap);
-+	pm_runtime_put(dev);
-+
-+	return ret;
- }
- #endif
- 
--- 
-1.8.1.5
+The next step involves snd_printd() and snd_printdd().  Although these
+are clearly intended to be used for debugging messages -- that's why
+the names end in 'd' -- they nevertheless take a KERN_* level
+indicator.
+
+This doesn't make much sense.  Are these debugging messages or aren't 
+they?  If they are, they should always use KERN_DEBUG.
+
+As I see it, the best thing to do is replace snd_printd() with a
+dev_dbg() wrapper and eliminate the level indicators.  This will
+require changing all the Makefiles; they will need to have a line
+saying
+
+ccflags-$(CONFIG_SND_DEBUG) := -DDEBUG
+
+at the top, because dev_dbg() is defined to do nothing if DEBUG isn't 
+defined as a preprocessor symbol.
+
+Similarly, snd_printdd() can be translated to a macro that expands to 
+dev_dbg when CONFIG_SND_VERBOSE_DEBUG is enabled, and to nothing 
+otherwise.
+
+Does this seem reasonable?
+
+Alan Stern
