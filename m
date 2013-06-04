@@ -1,68 +1,85 @@
-From: Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH V4 3/4] ARM: dts: add Exynos audio subsystem clock
- controller node
-Date: Tue, 4 Jun 2013 08:15:00 -0700
-Message-ID: <CAD=FV=Wpm0bch13c6KmZmuH0OkRr-ts_DcbTa315KZ9tnxujkA@mail.gmail.com>
-References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
-	<1370236744-16802-4-git-send-email-padma.v@samsung.com>
-	<CAD=FV=WXEDA+R3BSn7TgSB5BpS2yuWGGmFDpxcQoYmQHGTAQMw@mail.gmail.com>
-	<CAAgF-Bds5yy3J4fMQXhR4LEw5-6gtd2sHZOA+1dR-poASxrj4A@mail.gmail.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda - Ignore default pin config
+ on Haswell HDMI codecs
+Date: Tue, 4 Jun 2013 15:26:59 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC489011821B84@SHSMSX104.ccr.corp.intel.com>
+References: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CAAgF-Bds5yy3J4fMQXhR4LEw5-6gtd2sHZOA+1dR-poASxrj4A@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, Mike Turquette <mturquette@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AC792615A6
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 17:27:03 +0200 (CEST)
+In-Reply-To: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "Li, Jocelyn" <jocelyn.li@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Padma,
+Hi David,
 
-On Mon, Jun 3, 2013 at 9:25 PM, Padma Venkat <padma.kvr@gmail.com> wrote:
-> Hi Doug,
->
-> On Tue, Jun 4, 2013 at 1:43 AM, Doug Anderson <dianders@chromium.org> wrote:
->> Padmavathi,
->>
->> On Sun, Jun 2, 2013 at 10:19 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
->>> Audio subsystem introduced in s5pv210 and exynos platforms
->>> which has a internal clock controller. This patch adds a node
->>> for the same on exynos5250.
->>>
->>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
->>> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->>> ---
->>>  arch/arm/boot/dts/exynos5250.dtsi |    6 ++++++
->>>  1 files changed, 6 insertions(+), 0 deletions(-)
->>>
->>> diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
->>> index bccda67..388983e 100644
->>> --- a/arch/arm/boot/dts/exynos5250.dtsi
->>> +++ b/arch/arm/boot/dts/exynos5250.dtsi
->>> @@ -72,6 +72,12 @@
->>>                 #clock-cells = <1>;
->>>         };
->>>
->>> +       clock_audss: audss-clock-controller@3810000 {
->
-> I removed this leading 0 as Tomasz Figa suggested.
+Did you test the patch and what exactly the issue it could fix?
+We do have issue when play audio on the pin without physical device connected.i.e. you can hear sound on that pin.
+I'm working on some patches to fix similar issues, also trying to fix issue like dual monitor audio routing.
+So please let me know what's the scenario of this patch trying to fix.
 
-Let's just leave this as-is if Tomasz wants no leading 0.  I don't
-much care either way but it's really nice if we're consistent within
-the file.
+thanks
+--xingchao
 
 
->> Nit: other places in the same file have the leading 0, like
->>   i2s0: i2s@03830000 {
->
-> This was the patch which got merged earlier. So I didn't modify this.
-> Is it okey if I remove  leading 0 for both of the nodes now?
-
-No, don't touch the i2s0 one in this patch.  I guess we'll have to
-merge a "cleanup" patch sometime later to try to normalize all this
-stuff, since nobody seems to be keeping a close eye on keeping it
-consistent.  I also see a whole bunch that have the 0x in the name
-which is yet another inconsistency.
-
-
-Reviewed-by: Doug Anderson <dianders@chromium.org>
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Tuesday, June 04, 2013 4:03 PM
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de; Wang, Xingchao; daniel@ffwll.ch; Lin, Mengdong;
+> Girdwood, Liam R; Li, Jocelyn; David Henningsson
+> Subject: [RFC PATCH] ALSA: hda - Ignore default pin config on Haswell HDMI
+> codecs
+> 
+> According to Daniel Vetter, these pin configs should be ignored, because the
+> graphics driver/userspace could route audio to these pins even if they are
+> disabled by BIOS.
+> 
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
+>  sound/pci/hda/patch_hdmi.c |   10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> It would be good to have this acked by someone at Intel before committing.
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
+> e12f7a0..8c1bede 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1307,12 +1307,14 @@ static int hdmi_add_pin(struct hda_codec *codec,
+> hda_nid_t pin_nid)
+>  	if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+>  		return 0;
+> 
+> -	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+> -	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+> -		return 0;
+> -
+>  	if (codec->vendor_id == 0x80862807)
+>  		intel_haswell_fixup_connect_list(codec, pin_nid);
+> +	else {
+> +		/* On Haswell, default pin config should be ignored */
+> +		config = snd_hda_codec_get_pincfg(codec, pin_nid);
+> +		if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+> +			return 0;
+> +	}
+> 
+>  	pin_idx = spec->num_pins;
+>  	per_pin = snd_array_new(&spec->pins);
+> --
+> 1.7.9.5
