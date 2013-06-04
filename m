@@ -1,16 +1,16 @@
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Joe Perches <joe@perches.com>
 Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
-Date: Tue, 4 Jun 2013 16:54:12 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1306041646240.1093-100000@iolanthe.rowland.org>
-References: <1370375134.2385.64.camel@joe-AO722>
+Date: Tue, 04 Jun 2013 14:19:45 -0700
+Message-ID: <1370380785.2385.69.camel@joe-AO722>
+References: <Pine.LNX.4.44L0.1306041646240.1093-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id CBDAB261A86
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 22:54:14 +0200 (CEST)
-In-Reply-To: <1370375134.2385.64.camel@joe-AO722>
+Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B2E92651AE
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 23:19:47 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.44L0.1306041646240.1093-100000@iolanthe.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
+To: Alan Stern <stern@rowland.harvard.edu>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 4 Jun 2013, Joe Perches wrote:
+On Tue, 2013-06-04 at 16:54 -0400, Alan Stern wrote:
+> I don't see how DEFAULT_DEBUG_LEVEL can be used to optimize away
+> anything.  The user can always change the value of the "debug" module
+> parameter while the system is running.  The only valid opportunity for
+> optimization would be if CONFIG_SND_DEBUG was disabled; then all these 
+> messages would disappear.
 
-> A somewhat common convention is to use
-> 
-> 	prefix_dbg(level, fmt, ...)
-> 
-> where level is either a numeric value or bitmask,
-> and also is either a #define or a MODULE_PARAM
-> 
-> today sound/misc.c has:
-> 
-> ------------------------------------------
-> 
-> #ifdef CONFIG_SND_DEBUG
-> 
-> #ifdef CONFIG_SND_DEBUG_VERBOSE
-> #define DEFAULT_DEBUG_LEVEL	2
-> #else
-> #define DEFAULT_DEBUG_LEVEL	1
-> #endif
-> 
-> static int debug = DEFAULT_DEBUG_LEVEL;
-> module_param(debug, int, 0644);
-> MODULE_PARM_DESC(debug, "Debug level (0 = disable)");
-> 
-> #endif /* CONFIG_SND_DEBUG */
+Not really.
 
-Yes, I have read this part of the code.
+Think of CONFIG_SND_DEBUG as a level. (0, 1, 2)
+or maybe think of it as CONFIG_SND_DEBUG_VERBOSITY.
 
-> ------------------------------------------
-> 
-> I suggest converting all the remaining
-> 
-> snd_printd(...) to snd_dbg(1, ...)
-> and
-> snd_printdd(...) to snd_dbg(2, ...)
-> 
-> so that debug module param control can be used for
-> all these and if the DEFAULT_DEBUG_LEVEL isn't
-> high enough, the various snd_dbg(2, ...) can be
-> completely optimized away if appropriate.
+There could still be ability to have CONFIG_SND_DEBUG
+limit the compiled-in messages to those below the
+#define value and still then have runtime control over
+which ones are displayed.
 
-I don't see how DEFAULT_DEBUG_LEVEL can be used to optimize away
-anything.  The user can always change the value of the "debug" module
-parameter while the system is running.  The only valid opportunity for
-optimization would be if CONFIG_SND_DEBUG was disabled; then all these 
-messages would disappear.
+> You didn't respond to the first point I raised.  Since these messages
+> are all meant for debugging, there's no point allowing them to have
+> prefixes like KERN_ERR or KERN_INFO.  They should always be printed at
+> the KERN_DEBUG level.  Or did you think this was so obviously true that
+> it didn't require any comment?
 
-You didn't respond to the first point I raised.  Since these messages
-are all meant for debugging, there's no point allowing them to have
-prefixes like KERN_ERR or KERN_INFO.  They should always be printed at
-the KERN_DEBUG level.  Or did you think this was so obviously true that
-it didn't require any comment?
-
-Alan Stern
+Yes.  My perspective is _all_ debugging messages should
+be at KERN_DEBUG.
