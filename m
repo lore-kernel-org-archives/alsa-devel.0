@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: dsnoop memory leak
-Date: Tue, 04 Jun 2013 16:02:39 +0200
-Message-ID: <51ADF37F.1050104@perex.cz>
-References: <103845287.94506.1370008697164.JavaMail.root@telum.ru>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
+Date: Tue, 4 Jun 2013 10:49:22 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306041041430.1093-100000@iolanthe.rowland.org>
+References: <s5h8v2qxmqp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FAA9265122
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 16:02:39 +0200 (CEST)
-In-Reply-To: <103845287.94506.1370008697164.JavaMail.root@telum.ru>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id 2D878265134
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 16:49:24 +0200 (CEST)
+In-Reply-To: <s5h8v2qxmqp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,19 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?0JjQstCw0L0g0JHQvtC70YzRgdGD0L3QvtCy?= <bolsunov@telum.ru>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAzMS41LjIwMTMgMTU6NTgsINCY0LLQsNC9INCR0L7Qu9GM0YHRg9C90L7QsiB3cm90ZToK
-Cj4gPT03ODg5PT0gICAgYnkgMHg0MDcxMDdFOiBzbmRfY29uZmlnX3NlYXJjaF9kZWZpbml0aW9u
-IChpbiAvdXNyL2xpYi9saWJhc291bmQuc28uMi4wLjApCj4gPT03ODg5PT0gICAgYnkgMHg0MEQy
-QzIyOiBfc25kX3BjbV9kaXJlY3RfZ2V0X3NsYXZlX2lwY19vZmZzZXQgKGluIC91c3IvbGliL2xp
-YmFzb3VuZC5zby4yLjAuMCkKCkkgZml4ZWQgdGhpcyBpc3N1ZSBpbiB0aGlzIGNvbW1pdDoKCmh0
-dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1jb21taXRkaWZmO2g9
-Y2E0ODdjOTUxMWMxNTAwMTg0MDIzZGZlYTgwM2E1ZTc4NWQ3MjVlMgoKVGhhbmsgeW91IGZvciB5
-b3VyIHJlcG9ydC4KCgkJCQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBl
-cmV4LmN6PgpMaW51eCBLZXJuZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBI
-YXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, 4 Jun 2013, Takashi Iwai wrote:
+
+> At Mon, 3 Jun 2013 16:18:49 -0400 (EDT),
+> Alan Stern wrote:
+> > 
+> > According to Takashi Iwai, CONFIG_SND_VERBOSE_PRINTK is "useless".  All 
+> > it does is add filenames and line numbers to certain log messages.
+> 
+> No, I did't mean it.  The file name and line number are useful.
+> What's useless is to let user select CONFIG_SND_VERBOSE_PRINTK.
+> If the extra information can be annoying, the driver should use the
+> plain printk() or whatever from the beginning.  If the driver code
+> chooses snd_printk(), it implies that it wants extra information.
+
+Although most of the calls to snd_printk() are for errors and warnings,
+some of them are just informational.  You don't mind having those
+messages suddenly including the filename and line number?  (At least, 
+until someone gets around to changing them to printk() or something 
+else...)
+
+Alan Stern
