@@ -1,91 +1,37 @@
-From: Padmavathi Venna <padma.v@samsung.com>
-Subject: [PATCH V5 5/5] ARM: dts: Update Samsung I2S documentation
-Date: Tue, 04 Jun 2013 17:58:10 +0530
-Message-ID: <1370348890-6645-6-git-send-email-padma.v@samsung.com>
-References: <1370348890-6645-1-git-send-email-padma.v@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1370348890-6645-1-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
-Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, mturquette@linaro.org
+From: Ivan Bolsunov <bolsunov@telum.ru>
+Subject: dsnoop memory leak
+Date: Tue, 4 Jun 2013 17:33:36 +0400 (MSK)
+Message-ID: <1177532444.4770.1370352816940.JavaMail.root@telum.ru>
+References: <370949076.4726.1370352588794.JavaMail.root@telum.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.telum.ru (mail.telum.ru [62.141.76.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92D89265122
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 15:33:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.telum.ru (Postfix) with ESMTP id E2F6A480183
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 17:33:37 +0400 (MSK)
+Received: from mail.telum.ru ([127.0.0.1])
+ by localhost (mail.telum.ru [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id TJA-4TWRxCsx for <alsa-devel@alsa-project.org>;
+ Tue,  4 Jun 2013 17:33:37 +0400 (MSK)
+Received: from mail.telum.ru (mail.telum.ru [127.0.1.1])
+ by mail.telum.ru (Postfix) with ESMTP id 084B048002A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 17:33:37 +0400 (MSK)
+In-Reply-To: <370949076.4726.1370352588794.JavaMail.root@telum.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch updates the samsung i2s documentation for pinmux and
-clock entries.
-
-Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
----
- .../devicetree/bindings/sound/samsung-i2s.txt      |   40 ++++++-------------
- 1 files changed, 13 insertions(+), 27 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-index 3070046..6f9d29f 100644
---- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-@@ -8,6 +8,10 @@ Required SoC Specific Properties:
- - dmas: list of DMA controller phandle and DMA request line ordered pairs.
- - dma-names: identifier string for each DMA request line in the dmas property.
-   These strings correspond 1:1 with the ordered pairs in dmas.
-+- clocks: from common clock binding. Handle to iis clock and RCLK src clk.
-+- clock-names: from common clock binding: Should be "iis","i2s_opclk0" and
-+  "i2s_opclk1". "iis" is the i2s bus clock and i2s_opclk selects the src of
-+  RCLK which is a mux inside i2s controller.
- 
- Optional SoC Specific Properties:
- 
-@@ -20,44 +24,26 @@ Optional SoC Specific Properties:
-   then this flag is enabled.
- - samsung,idma-addr: Internal DMA register base address of the audio
-   sub system(used in secondary sound source).
--
--Required Board Specific Properties:
--
--- gpios: The gpio specifier for data out,data in, LRCLK, CDCLK and SCLK
--  interface lines. The format of the gpio specifier depends on the gpio
--  controller.
--  The syntax of samsung gpio specifier is
--	<[phandle of the gpio controller node]
--	 [pin number within the gpio controller]
--	 [mux function]
--	 [flags and pull up/down]
--	 [drive strength]>
-+- pinctrl-0: Should specify pin control groups used for this controller.
-+- pinctrl-names: Should contain only one value - "default".
- 
- Example:
- 
--- SoC Specific Portion:
--
--i2s@03830000 {
-+i2s0: i2s@03830000 {
- 	compatible = "samsung,i2s-v5";
- 	reg = <0x03830000 0x100>;
- 	dmas = <&pdma0 10
- 		&pdma0 9
- 		&pdma0 8>;
- 	dma-names = "tx", "rx", "tx-sec";
-+	clocks = <&clock_audss EXYNOS_I2S_BUS>,
-+		<&clock_audss EXYNOS_I2S_BUS>,
-+		<&clock_audss EXYNOS_SCLK_I2S>;
-+	clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
- 	samsung,supports-6ch;
- 	samsung,supports-rstclr;
- 	samsung,supports-secdai;
- 	samsung,idma-addr = <0x03000000>;
--};
--
--- Board Specific Portion:
--
--i2s@03830000 {
--	gpios = <&gpz 0 2 0 0>, /* I2S_0_SCLK */
--		<&gpz 1 2 0 0>, /* I2S_0_CDCLK */
--		<&gpz 2 2 0 0>, /* I2S_0_LRCK */
--		<&gpz 3 2 0 0>, /* I2S_0_SDI */
--		<&gpz 4 2 0 0>, /* I2S_0_SDO[1] */
--		<&gpz 5 2 0 0>, /* I2S_0_SDO[2] */
--		<&gpz 6 2 0 0>; /* I2S_0_SDO[3] */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s0_bus>;
- };
--- 
-1.7.4.4
+Hi guys, on may 31 I sent message, can you at least confirm what bug exist?
+Thanks.
