@@ -1,16 +1,16 @@
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Joe Perches <joe@perches.com>
 Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
-Date: Tue, 4 Jun 2013 15:32:02 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1306041519531.1093-100000@iolanthe.rowland.org>
-References: <s5h61xtx6i5.wl%tiwai@suse.de>
+Date: Tue, 04 Jun 2013 12:45:34 -0700
+Message-ID: <1370375134.2385.64.camel@joe-AO722>
+References: <Pine.LNX.4.44L0.1306041519531.1093-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id 9993B2651A3
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 21:32:04 +0200 (CEST)
-In-Reply-To: <s5h61xtx6i5.wl%tiwai@suse.de>
+Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84B2B2651A0
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 21:45:36 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.44L0.1306041519531.1093-100000@iolanthe.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 4 Jun 2013, Takashi Iwai wrote:
-
-> I wouldn't mind but some might do :)
+On Tue, 2013-06-04 at 15:32 -0400, Alan Stern wrote:
+> Similarly, snd_printdd() can be translated to a macro that expands to 
+> dev_dbg when CONFIG_SND_VERBOSE_DEBUG is enabled, and to nothing 
+> otherwise.
 > 
-> So we should clean up the excessive usage of snd_printk() and convert
-> them to the standard printk & co at first.
+> Does this seem reasonable?
 
-This part is now done (already posted).
+A somewhat common convention is to use
 
-The next step involves snd_printd() and snd_printdd().  Although these
-are clearly intended to be used for debugging messages -- that's why
-the names end in 'd' -- they nevertheless take a KERN_* level
-indicator.
+	prefix_dbg(level, fmt, ...)
 
-This doesn't make much sense.  Are these debugging messages or aren't 
-they?  If they are, they should always use KERN_DEBUG.
+where level is either a numeric value or bitmask,
+and also is either a #define or a MODULE_PARAM
 
-As I see it, the best thing to do is replace snd_printd() with a
-dev_dbg() wrapper and eliminate the level indicators.  This will
-require changing all the Makefiles; they will need to have a line
-saying
+today sound/misc.c has:
 
-ccflags-$(CONFIG_SND_DEBUG) := -DDEBUG
+------------------------------------------
 
-at the top, because dev_dbg() is defined to do nothing if DEBUG isn't 
-defined as a preprocessor symbol.
+#ifdef CONFIG_SND_DEBUG
 
-Similarly, snd_printdd() can be translated to a macro that expands to 
-dev_dbg when CONFIG_SND_VERBOSE_DEBUG is enabled, and to nothing 
-otherwise.
+#ifdef CONFIG_SND_DEBUG_VERBOSE
+#define DEFAULT_DEBUG_LEVEL	2
+#else
+#define DEFAULT_DEBUG_LEVEL	1
+#endif
 
-Does this seem reasonable?
+static int debug = DEFAULT_DEBUG_LEVEL;
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "Debug level (0 = disable)");
 
-Alan Stern
+#endif /* CONFIG_SND_DEBUG */
+
+------------------------------------------
+
+I suggest converting all the remaining
+
+snd_printd(...) to snd_dbg(1, ...)
+and
+snd_printdd(...) to snd_dbg(2, ...)
+
+so that debug module param control can be used for
+all these and if the DEFAULT_DEBUG_LEVEL isn't
+high enough, the various snd_dbg(2, ...) can be
+completely optimized away if appropriate.
