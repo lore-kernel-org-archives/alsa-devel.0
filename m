@@ -1,77 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: sgtl5000: Fix VAG_POWER
-	enabling/disabling order
-Date: Tue, 4 Jun 2013 18:47:14 +0100
-Message-ID: <20130604174714.GS31367@sirena.org.uk>
-References: <1369767356-8496-1-git-send-email-marex@denx.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4167156933550451546=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 14A4B261A6C
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 19:47:21 +0200 (CEST)
-In-Reply-To: <1369767356-8496-1-git-send-email-marex@denx.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, Eric Nelson <eric.nelson@boundarydevices.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: [PATCH] ASoC: tegra: add runtime PM to resume functions
+Date: Tue,  4 Jun 2013 12:58:14 -0600
+Message-ID: <1370372294-25844-1-git-send-email-swarren@wwwdotorg.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
---===============4167156933550451546==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MgcI0aUO3vrRQI/Z"
-Content-Disposition: inline
+Tegra HW needs clocks etc. active when touching registers. Make sure they
+are active during resume, by calling pm_runtime_get_sync() before touching
+HW.
 
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/tegra/tegra30_ahub.c | 4 ++++
+ sound/soc/tegra/tegra30_i2s.c  | 9 ++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
---MgcI0aUO3vrRQI/Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 28, 2013 at 08:55:56PM +0200, Marek Vasut wrote:
-> The VAG_POWER must be enabled after all other bits in CHIP_ANA_POWER
-> and disabled before any other bit in CHIP_ANA_POWER. See the SGTL5000
-> datasheet (Table 31, BIT 7, page 42-43). Failing to follow this order
-> will result in ugly loud "POP" noise at the end of playback.
-
-Applied, thanks.
-
---MgcI0aUO3vrRQI/Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRrigeAAoJELSic+t+oim97SwP/Rt79UKZZzrQvB4ZdUf3t2uW
-nO84Lp2sQtJgHix8n2Y56UpcAdzMsVa0vpHSRH9pn7k/UW1EzGTDnvyP7HqW9Ui5
-SiAMd/erMTlQguO0UnW5c6gKiRSbT2KkQAZ1g0MVJa9G6Dcbwg5Sy/N0jSE5ZYZt
-SgSzcphZuV9Wj2OdAWAI8y7/BzD24mm4KsHdZlUipmIj1Jomms2AddOIeyyHlMsw
-5V7vDKdqpVQ3/U/agIdC75O3daoQLGYJaNX8fSU4BOYRsfscxL96BF3ZOa5WqROa
-ixuvBCdogJjjjJjte19xR1Bjo4afSUqIERo0ttGmceKRMlSMoFFNpD9W9C1fKZeu
-QgoHxG7Kn1WqfihiR2VvuqSlN4SntcCCVsTl3hi3Va01anicJnBy+VIsjGjnqL2H
-Ij1ewC1WYZ9yrEPaY1hHVzW5Vbyw7goSe5f2F5/O/Veb0kAetBXBnj4Sm6HjFrym
-nYgrbJMCeGIcEZ2Tvwn8rEaxPXK9j8mfGjrV+POsPRiGsJPPQvKEJ8R8FJsTj6cV
-s09zUdsYRuADZYQZ1hH+e9Uz7gf1KuqlCb3SHrq5RkKSb2c/VPg50RXaXfOXKT9n
-ZjrUWGMT9tg53aKd/ULU+w8BpoL/inRlGpWp5I61yBb1Wa23OE/K3Gdbym0+OLkr
-YIIcm9UiTFLcy7NtqKQT
-=c7Wj
------END PGP SIGNATURE-----
-
---MgcI0aUO3vrRQI/Z--
-
---===============4167156933550451546==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4167156933550451546==--
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 0f4787c..d554d46 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -640,8 +640,12 @@ static int tegra30_ahub_resume(struct device *dev)
+ {
+ 	int ret;
+ 
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
+ 	ret = regcache_sync(ahub->regmap_ahub);
+ 	ret |= regcache_sync(ahub->regmap_apbif);
++	pm_runtime_put(dev);
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index bd0ebc0..d04146c 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -527,8 +527,15 @@ static int tegra30_i2s_suspend(struct device *dev)
+ static int tegra30_i2s_resume(struct device *dev)
+ {
+ 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
++	int ret;
+ 
+-	return regcache_sync(i2s->regmap);
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
++	ret = regcache_sync(i2s->regmap);
++	pm_runtime_put(dev);
++
++	return ret;
+ }
+ #endif
+ 
+-- 
+1.8.1.5
