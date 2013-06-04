@@ -1,50 +1,59 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V4 4/4] ARM: dts: add clock provider information for i2s
- controllers in Exynos5250
-Date: Tue, 4 Jun 2013 09:58:30 +0530
-Message-ID: <CAAgF-Bd01JU_aess33d10ah7me=DR-tGF4vy20D6CPFiDYUg6g@mail.gmail.com>
-References: <1370236744-16802-1-git-send-email-padma.v@samsung.com>
-	<1370236744-16802-5-git-send-email-padma.v@samsung.com>
-	<CAD=FV=X_XVmQ-jyorxATqBad5hhdFe5dodg_AzjsRQ-S+1=NeA@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+Date: Tue, 4 Jun 2013 14:23:25 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB8A89699525@rtitmbs7.realtek.com.tw>
+References: <1369983899-13580-1-git-send-email-bardliao@realtek.com>
+ <1121E117AD4ECE49880A389A396215BB8A8969924B@rtitmbs7.realtek.com.tw>
+ <51ACBAE0.1070406@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CAD=FV=X_XVmQ-jyorxATqBad5hhdFe5dodg_AzjsRQ-S+1=NeA@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org, sbkim73@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, broonie@kernel.org, Mike Turquette <mturquette@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF5392655F9
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 08:23:31 +0200 (CEST)
+In-Reply-To: <51ACBAE0.1070406@wwwdotorg.org>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Doug,
+> -----Original Message-----
+> From: Stephen Warren [mailto:swarren@wwwdotorg.org]
+> Sent: Monday, June 03, 2013 11:49 PM
+> To: Bard Liao
+> Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> Flove; Oder Chiou; swarren@nvidia.com
+> Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+> 
+> On 05/31/2013 01:15 AM, Bard Liao wrote:
+> > Stephen,
+> >
+> > I remove the DT support from this patch.
+> > Can you add the DT support as a separate patch?
+> 
+> Yes, I'll do that.
+> 
+> I assume you also want me to add the code to control the LDO1_EN GPIO,
+> since that seems missing from this patch. I thought you said you were going to
+> add it. I assume you tested this on Dalmore by manually setting the GPIO from
+> U-Boot before booting the kernel?
 
-On Tue, Jun 4, 2013 at 1:48 AM, Doug Anderson <dianders@chromium.org> wrote:
-> Padmavathi,
->
-> On Sun, Jun 2, 2013 at 10:19 PM, Padmavathi Venna <padma.v@samsung.com> wrote:
->> +               clocks = <&clock_audss EXYNOS_I2S_BUS>,
->> +                       <&clock_audss EXYNOS_I2S_BUS>,
->> +                       <&clock_audss EXYNOS_SCLK_I2S>,
->> +                       <&clock_audss EXYNOS_MOUT_AUDSS>,
->> +                       <&clock_audss EXYNOS_MOUT_I2S>;
->> +               clock-names = "iis", "i2s_opclk0", "i2s_opclk1",
->> +                               "mout_audss", "mout_i2s";
->
-> Are there bindings for these clocks? Would be nice to see a
-> description for what they are supposed to be.
+Yes, please add the code to control the LDO1_EN_GPIO.
+Thanks a lot.
+I execute "gpio set 171" command in U-Boot every time before booting the kernel.
 
-Yes. They have bindings. I will add the description.
-
->
-> I looked up i2s_opclk0 / i2s_opclk1 and they look reasonable at a
-> quick glance. ...and it does seem right that iis and i2s_opclk0 are
-> the same. ...but I don't see any place that uses the last two. Is
-> there an in-flight patch?
-
-I don't have any patch for these right now. These are used internally.
-But as these are i2s0 base clocks I added here.
-
->
-> -Doug
-
-Thanks
-Padma
+> 
+> I'll try to get to this ASAP; perhaps not today though - we'll see how long the
+> other things I have stacked up take.
+> 
+> ------Please consider the environment before printing this e-mail.
