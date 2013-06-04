@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
-Date: Tue, 4 Jun 2013 10:53:53 +0100
-Message-ID: <20130604095353.GZ31367@sirena.org.uk>
-References: <1369983899-13580-1-git-send-email-bardliao@realtek.com>
- <20130603153542.GM31367@sirena.org.uk>
- <1121E117AD4ECE49880A389A396215BB8A89699532@rtitmbs7.realtek.com.tw>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda - Ignore default pin config
+ on Haswell HDMI codecs
+Date: Tue, 4 Jun 2013 10:10:20 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F80123BA2C@SHSMSX101.ccr.corp.intel.com>
+References: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1303722138679729288=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 86B3A2650CC
- for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 11:53:57 +0200 (CEST)
-In-Reply-To: <1121E117AD4ECE49880A389A396215BB8A89699532@rtitmbs7.realtek.com.tw>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECD292650D1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2013 12:10:24 +0200 (CEST)
+In-Reply-To: <1370332965-3489-1-git-send-email-david.henningsson@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Li, Jocelyn" <jocelyn.li@intel.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi David,
 
---===============1303722138679729288==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MOeiELSuYwpLEKvX"
-Content-Disposition: inline
+Do you mean that a pin's default configuration may tell "No physical connection" by mistake?
 
+Thanks
+Mengdong
 
---MOeiELSuYwpLEKvX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 04, 2013 at 02:39:36PM +0800, Bard Liao wrote:
-
-> Actually, I don't know if I need to call "regcache_cache_only(rt5640->regmap, false);" here.
-> We never call "regcache_cache_only(rt5640->regmap, true);" in the codec driver.
-> I assume the cache_only flag is default false.
-> If yes, I think I can remove "regcache_cache_only(rt5640->regmap, false);" from the code driver.
-> If not, I will move it to the beginning of if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) condition.
-
-I'd actually put in code to enable cache only mode when you power off,
-that way when the support for the LDO enable GPIO is added it will not
-need to be re-added.
-
---MOeiELSuYwpLEKvX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRrbkuAAoJELSic+t+oim9Xe0P/2x+fDhIeUiRhWQasXF7TKSV
-uJj58jdWT1g4dzANBImzX0kPmvV6Y/YsfFuDOqr6+gYZHfUAFaFR0adfp8f/HAKg
-3bNGoXOQ/RDOfxCYlUY0Fbj5VMskAItLHVY+BuSTcmO0VaBVldQNEgu0PuB76r48
-7zEO7KcvBlcBnxImYU30VS3FFYM7yZvZK5jXXehcKmGu5NvRJu87l76xUR3Cp+qy
-/KuoVnPK+K+TBEWBE8X9fvNAJx5rG31Q64YJXyf2dauccO0x9h4tomUUo73+x4rO
-Swn54JenX1Yp9scd3k0bNqcfk67J7KZwU+QRtd2js+togRXiVoHTKGrvyrFuRqpF
-H6b5BijS2NVVF+KR77BtR5DNtkC0j+VshnEJ6waJP/aLyXZhZaVstQIgp6lM7kK4
-9EnlBtQgfVsPou/AiyXVxSw4Yzr3J5ipAer1XjZpM+KpFyXS/TNBCpvyf/+iavyJ
-ln05/qF+TA4gR8ztq1C87RyaSXVdNUBtnSNr1FyCSGVSEmtyZGGZAT4h4OaEZqiN
-jRzS7H676EjahJchygnfmyOUBWzfAWqwyTvLbQ1wrj8ezt99DhgU7A/68rhESLyF
-wvxu6qpW13oDJ5h5XRTz8VxS6oZHxPLTFGNuF/4gQxW5E/ayTyjFIhCx2G5J8Btl
-ilCz6cZtUMxZmrvifLyh
-=7P31
------END PGP SIGNATURE-----
-
---MOeiELSuYwpLEKvX--
-
---===============1303722138679729288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1303722138679729288==--
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Tuesday, June 04, 2013 4:03 PM
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de; Wang, Xingchao; daniel@ffwll.ch; Lin, Mengdong; Girdwood,
+> Liam R; Li, Jocelyn; David Henningsson
+> Subject: [RFC PATCH] ALSA: hda - Ignore default pin config on Haswell HDMI
+> codecs
+> 
+> According to Daniel Vetter, these pin configs should be ignored, because the
+> graphics driver/userspace could route audio to these pins even if they are
+> disabled by BIOS.
+> 
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
+>  sound/pci/hda/patch_hdmi.c |   10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> It would be good to have this acked by someone at Intel before committing.
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c index
+> e12f7a0..8c1bede 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1307,12 +1307,14 @@ static int hdmi_add_pin(struct hda_codec *codec,
+> hda_nid_t pin_nid)
+>  	if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+>  		return 0;
+> 
+> -	config = snd_hda_codec_get_pincfg(codec, pin_nid);
+> -	if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+> -		return 0;
+> -
+>  	if (codec->vendor_id == 0x80862807)
+>  		intel_haswell_fixup_connect_list(codec, pin_nid);
+> +	else {
+> +		/* On Haswell, default pin config should be ignored */
+> +		config = snd_hda_codec_get_pincfg(codec, pin_nid);
+> +		if (get_defcfg_connect(config) == AC_JACK_PORT_NONE)
+> +			return 0;
+> +	}
+> 
+>  	pin_idx = spec->num_pins;
+>  	per_pin = snd_array_new(&spec->pins);
+> --
+> 1.7.9.5
