@@ -1,17 +1,16 @@
 From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH 1/2] ASoC: WM8962: Create default platform data
-	structure
-Date: Wed, 5 Jun 2013 20:12:55 +0800
-Message-ID: <4e85e3a9b5dfdc04899958424eb53a9cfd0f4ace.1370433363.git.b42378@freescale.com>
+Subject: [PATCH 2/2] ASoC: WM8962: Add device tree binding
+Date: Wed, 5 Jun 2013 20:12:56 +0800
+Message-ID: <1c716a6860c9486071c11a7f7752d14b217f4ef1.1370433363.git.b42378@freescale.com>
 References: <cover.1370433363.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co1outboundpool.messaging.microsoft.com
- (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
- by alsa0.perex.cz (Postfix) with ESMTP id E655726538A
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 14:06:33 +0200 (CEST)
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9554E265453
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 14:06:36 +0200 (CEST)
 In-Reply-To: <cover.1370433363.git.b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,88 +25,101 @@ To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, devicetree
 Cc: grant.likely@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, rob.herring@calxeda.com
 List-Id: alsa-devel@alsa-project.org
 
-When no platform data is supplied, point pdata at a default platform
-structure. This enables two future changes:
-
-a) Defines the default platform data values in a single place.
-b) There is always a valid pdata pointer, so some conditional code can
-   be simplified by a later patch.
+Document the device tree binding for the WM8962 codec, and modify the
+driver to extract platform data from the device tree, if present.
 
 Based on work of WM8903 by Stephen Warren <swarren@nvidia.com>
 
 Signed-off-by: Nicolin Chen <b42378@freescale.com>
 ---
- sound/soc/codecs/wm8962.c |   23 +++++++++++++++++++----
- 1 files changed, 19 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/wm8962.txt |   20 ++++++++++++
+ sound/soc/codecs/wm8962.c                          |   33 ++++++++++++++++++++
+ 2 files changed, 53 insertions(+), 0 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/wm8962.txt b/Documentation/devicetree/bindings/sound/wm8962.txt
+index dceb3b1..ef89a2c 100644
+--- a/Documentation/devicetree/bindings/sound/wm8962.txt
++++ b/Documentation/devicetree/bindings/sound/wm8962.txt
+@@ -8,9 +8,29 @@ Required properties:
+ 
+   - reg : the I2C address of the device.
+ 
++Optional properties:
++  - spk-mono: Default register value for SPK_MONO of R51 (Class D Control 2).
++
++  - mic-cfg : Default register value for R48 (Additional Control 4).
++    If absent, the default is 0.
++
++  - gpio-cfg : A list of GPIO configuration register values. The list must
++    be 6 entries long. If absent, no configuration of these registers is
++    performed. And note that the max value for each entry is 0xffff, don't
++    fill a large one.
++
+ Example:
+ 
+ codec: wm8962@1a {
+ 	compatible = "wlf,wm8962";
+ 	reg = <0x1a>;
++
++	gpio-cfg = <
++		0x0000 /* 0:Default */
++		0x0000 /* 1:Default */
++		0x0013 /* 2:FN_DMICCLK */
++		0x0000 /* 3:Default */
++		0x8014 /* 4:FN_DMICCDAT */
++		0x0000 /* 5:Default */
++	>;
+ };
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index e971028..ea35396 100644
+index ea35396..4540b0d 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -51,6 +51,7 @@ static const char *wm8962_supply_names[WM8962_NUM_SUPPLIES] = {
+@@ -3586,6 +3586,33 @@ static const struct regmap_config wm8962_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
  
- /* codec private data */
- struct wm8962_priv {
-+	struct wm8962_pdata *pdata;
- 	struct regmap *regmap;
- 	struct snd_soc_codec *codec;
- 
-@@ -2345,7 +2346,8 @@ static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
- 
- static int wm8962_add_widgets(struct snd_soc_codec *codec)
- {
--	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-+	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8962_pdata *pdata = wm8962->pdata;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
- 	snd_soc_add_codec_controls(codec, wm8962_snd_controls,
-@@ -3333,7 +3335,7 @@ static struct gpio_chip wm8962_template_chip = {
- static void wm8962_init_gpio(struct snd_soc_codec *codec)
- {
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
--	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-+	struct wm8962_pdata *pdata = wm8962->pdata;
- 	int ret;
- 
- 	wm8962->gpio_chip = wm8962_template_chip;
-@@ -3373,7 +3375,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- {
- 	int ret;
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
--	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
-+	struct wm8962_pdata *pdata = wm8962->pdata;
- 	u16 *reg_cache = codec->reg_cache;
- 	int i, trigger, irq_pol;
- 	bool dmicclk, dmicdat;
-@@ -3603,6 +3605,19 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 	init_completion(&wm8962->fll_lock);
- 	wm8962->irq = i2c->irq;
- 
-+	/* If no platform data was supplied, create storage for defaults */
-+	if (pdata) {
-+		wm8962->pdata = pdata;
-+	} else {
-+		wm8962->pdata = devm_kzalloc(&i2c->dev,
-+					sizeof(struct wm8962_pdata),
-+					GFP_KERNEL);
-+		if (wm8962->pdata == NULL) {
-+			dev_err(&i2c->dev, "Failed to allocate pdata\n");
-+			return -ENOMEM;
++static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
++				    struct wm8962_pdata *pdata)
++{
++	const struct device_node *np = i2c->dev.of_node;
++	u32 val32;
++	int i;
++
++	if (of_property_read_bool(np, "spk-mono"))
++		pdata->spk_mono = true;
++
++	if (of_property_read_u32(np, "mic-cfg", &val32) >= 0)
++		pdata->mic_cfg = val32;
++
++	if (of_property_read_u32_array(np, "gpio-cfg", pdata->gpio_init,
++				       ARRAY_SIZE(pdata->gpio_init)) >= 0) {
++		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++) {
++			if (pdata->gpio_init[i] > 0xffff) {
++				dev_err(&i2c->dev, "Invalid gpio-cfg[%d] %x\n",
++					i, pdata->gpio_init[i]);
++				return -EINVAL;
++			}
 +		}
 +	}
 +
- 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
- 		wm8962->supplies[i].supply = wm8962_supply_names[i];
- 
-@@ -3666,7 +3681,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 		goto err_enable;
++	return 0;
++}
++
+ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+@@ -3616,6 +3643,12 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 			dev_err(&i2c->dev, "Failed to allocate pdata\n");
+ 			return -ENOMEM;
+ 		}
++
++		if (i2c->dev.of_node) {
++			ret = wm8962_set_pdata_from_of(i2c, wm8962->pdata);
++			if (ret != 0)
++				return ret;
++		}
  	}
  
--	if (pdata && pdata->in4_dc_measure) {
-+	if (wm8962->pdata->in4_dc_measure) {
- 		ret = regmap_register_patch(wm8962->regmap,
- 					    wm8962_dc_measure,
- 					    ARRAY_SIZE(wm8962_dc_measure));
+ 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
 -- 
 1.7.1
