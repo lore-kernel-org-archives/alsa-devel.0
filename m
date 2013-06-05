@@ -1,242 +1,186 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] Add MIDI stream support with data rate restriction
-Date: Wed, 05 Jun 2013 20:44:39 +0900
-Message-ID: <51AF24A7.9010005@sakamocchi.jp>
-References: <1370100337-22463-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1370100337-22463-3-git-send-email-o-takashi@sakamocchi.jp>
-	<51AC51D7.1040806@ladisch.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
+Date: Wed, 5 Jun 2013 12:55:44 +0100
+Message-ID: <20130605115544.GX31367@sirena.org.uk>
+References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <51AC51D7.1040806@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+Content-Type: multipart/mixed; boundary="===============2539582731339105326=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1370420501-8410-1-git-send-email-b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
 
-Thank you to review my patches and I'm really sorry to include much =
-
-mistakes, misleads and so on in my patches...
-
- >> It's maximum rate is 3,150 bytes per seconds
- >                       3,125
-
-Yes. This is my mistake.
-
- > In practice, many MPU-401 compatible devices transmit with two stop
- > bits and thus limit the actual rate to about 2841 bps.
- > That the hardware MIDI ports on Fireworks devices can transmit at
- > the full 3125 bps allowed by the spec is an exception.
-
-I have a little knowledgement about MIDI specification and =
-
-implementation. Here I should refer just to MMA/AMEI RP-027 and =
-
-shouldn't have menthioned MPU-401..
-
- > It should be possible to adjust the interval between consecutive MIDI
- > bytes so that it is 320 =B5s (=3D 3125 bps) on average; this would be
- > similar to how packets are allocated to frames in blocking mode.  This
- > would require no more than one byte of buffering in the device.
- >
- > However, this can be added later.
-
-OK. From the first I planed to improve these codes after snd-fireworks =
-
-discussion.
-
- > This comment might be misleading.  There is no such "negotiation
- > procedure"; RP27 mentions this only to allow for future extension.
-
-Yes, it's misleading. It should be rewritten.
-
-Here I can't find such a specification that define this "negotiation =
-
-procedure". Do you know about it?
-
- > snd_rawmidi_receive() already reports errors; you can just ignore its
- > return value.
-
-I understand you mean "ALSA core prints debug message if =
-
-snd_rawmidi_receive() failed so you don't need to check return value."
-
- > The bytes in the b[] array are arranged in big-endian order.
- > Converting them to CPU order and then back feels unnecessary.
-
-This is my bad mistake. I was preoccupied with the restriction and =
-
-snd-fireworks...
-
- > "Extract" would imply that the removed value is then used
- > for something else.  Just name the functions "add"/"remove".
-
-OK. I name them "amdtp_stream_midi_add()" and
-"amdtp_stream_midi_remove()". And I'm sorry that I added wrong prototype =
-
-declarations in a patch for amdtp.h.
-
- > Please note that this driver always uses "unsigned int" unless
- > negative values are actually needed.
-
- > i++ would be more idiomatic.
-
- > len can never be negative.
-
- > unsigned
-
- > i++
-
- > This comment's accuracy is capable of improvement.
-
-All OK.
-
-Regards
+--===============2539582731339105326==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CgyvWwj/llZsteoZ"
+Content-Disposition: inline
 
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+--CgyvWwj/llZsteoZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-(Jun 3 2013 17:20), Clemens Ladisch wrote:
-> o-takashi@sakamocchi.jp wrote:
->> IEC 61883-6 defines MIDI comformant deta and MMA/AMEI RP-027 defines its
->> implementation. This patch add handling MIDI stream according to them.
->>
->> According to MMA/AMEI RP-027, one MIDI channel in AMDTP stream can handle
->> 8 MIDI streams. The index of MIDI stream in one MIDI comformant
->> data channel is defined as "mod(data_block_count, 8)".
->>
->> And one MIDI comformant data can send MIDI message up to 3 bytes. Every =
-MIDI
->> comformant data includes "label" to indicate the number of bytes in its =
-most
->> significant byte.
->>
->> Then theoretically one MIDI stream can transmit MIDI messages up to 72,0=
-00
->> bytes per second at 192.0kHz (=3D 192,000 / 8 * 3).
->>
->> But MIDI interface is based on MPU401-UART.
->
-> Roland's MPU-401 was simply based on the MIDI specification.
->
->> It's maximum rate is 3,150 bytes per seconds
->
->                         3,125
->
-> In practice, many MPU-401 compatible devices transmit with two stop
-> bits and thus limit the actual rate to about 2841 bps.  That the
-> hardware MIDI ports on Fireworks devices can transmit at the full
-> 3125 bps allowed by the spec is an exception.
->
-> I vaguely remember some MIDI spec saying that the maximum _sustained_
-> data rate must be about 2500 bps.
->
->> Actually Echo's Fireworks cannot handle higer data rate. The devices can
->> overflow MIDI messages when receiving at higher data rate.
->
-> Actually, higher data rates can be handled if the driver takes care to
-> throttle when the device's internal FIFO is about to overflow.  My
-> AudioFire2 has a 4 KB buffer, so that is what my old snd-fireworks
-> driver assumes; I don't know how your AF Pre8 handles this.
->
->> This patch add an restriction of data rate up to 2,756 or 3,000 bytes pe=
-r second
->> with simple logic. This restriction causes quite a small delay comparing=
- to the
->> maximum data rate. But I hope to keep codes to be as simple as possible.
->
-> It should be possible to adjust the interval between consecutive MIDI
-> bytes so that it is 320 =B5s (=3D 3125 bps) on average; this would be
-> similar to how packets are allocated to frames in blocking mode.  This
-> would require no more than one byte of buffering in the device.
->
-> However, this can be added later.
->
->>   int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
->>   		enum amdtp_stream_direction direction, enum cip_flags flags)
->>   {
->> +	int i;
->
-> Please note that this driver always uses "unsigned int" unless negative
-> values are actually needed.
->
->> +	for (i =3D 0; i < AMDTP_MAX_MIDI_STREAMS; i +=3D 1)
->
-> i++ would be more idiomatic.
->
->>   static void amdtp_fill_midi(struct amdtp_stream *s,
->>   			    __be32 *buffer, unsigned int frames)
->
->> +	 * This module can't support "negotiation procedure" in
->> +	 * MMA/AMEI RP-027.
->
-> This comment might be misleading.  There is no such "negotiation
-> procedure"; RP27 mentions this only to allow for future extension.
->
->> +			buffer[c] =3D (b[0] << 24) | (b[1] << 16) |
->> +							(b[2] << 8) | b[3];
->> +			buffer[c] =3D be32_to_cpu(buffer[c]);
->
-> The bytes in the b[] array are arranged in big-endian order.  Converting
-> them to CPU order and then back feels unnecessary.
->
-> You could just let b point to the actual buffer:  u8 *p =3D &buffer[c];
->
->>   static void amdtp_pull_midi(struct amdtp_stream *s,
->>   			    __be32 *buffer, unsigned int frames)
->>   {
->> +	int len, ret;
->
-> len can never be negative.
->
->> +			ret =3D snd_rawmidi_receive(s->midi[port], b + 1, len);
->> +			if (ret !=3D len) {
->> +				dev_err(&s->unit->device,
->
-> snd_rawmidi_receive() already reports errors; you can just ignore its
-> return value.
->
->> + * amdtp_stream_midi_insert - add MIDI stream
->> + * amdtp_stream_midi_extract - remove MIDI stream
->
-> "Extract" would imply that the removed value is then used for something
-> else.  Just name the functions "add"/"remove".
->
->> +bool amdtp_stream_midi_running(struct amdtp_stream *s)
->> +{
->> +	int i;
->
-> unsigned
->
->> +	for (i =3D 0; i < AMDTP_MAX_MIDI_STREAMS; i +=3D 1) {
->
-> i++
->
->> + * This module support maximum 8 MIDI streams
->> +#define AMDTP_MAX_MIDI_STREAMS 16
->
-> This comment's accuracy is capable of improvement.
->
->
-> Regards,
-> Clemens
+On Wed, Jun 05, 2013 at 04:21:41PM +0800, Nicolin Chen wrote:
 
+Looks pretty good, a few comments but they're all fairly minor.
 
----------------------------------------------------------------------------=
----
-How ServiceNow helps IT people transform IT departments:
-1. A cloud service to automate IT design, transition and operations
-2. Dashboards that offer high-level views of enterprise services
-3. A single system of record for all IT processes
-http://p.sf.net/sfu/servicenow-d2d-j
+> +  WM8962 pins:
+> +  * HPOUTL
+> +  * HPOUTR
+> +  * SPKOUTL
+> +  * SPKOUTR
+> +  * MICBIAS
+> +  * IN3R
+> +  * DMIC
+> +  * DMICDAT
+
+No need to list all these, just reference the CODEC (and add them to the
+CODEC binding documentation if they're not there which they probably
+aren't).  This is generally good practice if there's a family of devices
+sharing a driver and means that you don't have to worry about missing
+all the other input pins as you've done here.  :)
+
+> +- hp-det-gpios : The gpio port of Headphone detection.
+> +- mic-det-gpios: The gpio port of Micphone detection.
+
+I'd say a bit more about these - obviously the CODEC has its own
+accessory detection here, and I rather suspect that in fact the HP
+detection you have there is really jack detection.
+
+> +static int check_hw_params(struct snd_pcm_substream *substream,
+> +		snd_pcm_format_t sample_format, unsigned int sample_rate)
+> +{
+> +	struct imx_priv *priv = &card_priv;
+> +	struct device *dev = substream->pcm->card->dev;
+> +
+> +	substream->runtime->sample_bits =
+> +		snd_pcm_format_physical_width(sample_format);
+> +	substream->runtime->rate = sample_rate;
+> +	substream->runtime->format = sample_format;
+> +
+> +	if (!priv->first_stream) {
+> +		priv->first_stream = substream;
+> +	} else {
+> +		priv->second_stream = substream;
+> +
+> +		if (priv->first_stream->runtime->rate !=
+> +				priv->second_stream->runtime->rate) {
+> +			dev_err(dev, "KEEP THE SAME SAMPLE RATE: %d!\n",
+> +					priv->first_stream->runtime->rate);
+> +			return -EINVAL;
+> +		}
+> +		if (priv->first_stream->runtime->sample_bits !=
+> +				priv->second_stream->runtime->sample_bits) {
+> +			snd_pcm_format_t first_format =
+> +				priv->first_stream->runtime->format;
+> +
+> +			dev_err(dev, "KEEP THE SAME FORMAT: %s!\n",
+> +					snd_pcm_format_name(first_format));
+> +			return -EINVAL;
+> +		}
+> +	}
+
+The sample rate checking can be done with the symmmetric_rates feature
+in the core.  The sample_bits check can't be but it's something that a
+lot of systems probably ought to have so it ought to be factored out
+into the core too rather than open coded in the driver.
+
+> +		/*
+> +		 * SYSCLK of wm8962's not disabled yet. If we wanna close FLL,
+
+No '.
+
+> +		ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
+> +				data->clk_frequency, SND_SOC_CLOCK_IN);
+> +		if (ret < 0) {
+> +			dev_err(dev, "Failed to set SYSCLK: %d\n", ret);
+> +			return ret;
+> +		}
+> +
+> +		/* Disable FLL and let codec do pm_runtime_put() */
+> +		ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL, 0, 0, 0);
+> +		if (ret < 0) {
+> +			dev_err(dev, "Failed to disable FLL: %d\n", ret);
+> +			return ret;
+
+You're enabling and disabling the CODEC only while there's an audio
+stream active.  This means that it's not possible to support analogue
+bypass paths (which the device can do) - you should probably also
+support enabling the FLL via set_bias_level() and use set_bias_level()
+to turn it off (which works in all cases).
+
+> +	data->codec_clk = clk_get(&codec_dev->dev, NULL);
+> +	if (IS_ERR(data->codec_clk)) {
+
+devm_clk_get().
+
+> +		/* assuming clock enabled by default */
+> +		data->codec_clk = NULL;
+> +		ret = of_property_read_u32(codec_np, "clock-frequency",
+> +					&data->clk_frequency);
+> +		if (ret) {
+> +			dev_err(&codec_dev->dev,
+> +				"clock-frequency missing or invalid\n");
+> +			goto fail;
+> +		}
+
+Since it's easy to define a fixed rate clock (there's a generic driver
+for that) I'd just require the user to provide a clock API clock and fix
+the rate using that.  This is going to be less error prone and makes the
+code simpler.
+
+> +	} else {
+> +		data->clk_frequency = clk_get_rate(data->codec_clk);
+> +		clk_prepare_enable(data->codec_clk);
+
+Not needed immediately but if there is actually a clock we have control
+of we might want to vary the frequency...
+
+--CgyvWwj/llZsteoZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRryc9AAoJELSic+t+oim9uAsP/2S+ZaCjaFQO6wrpb1EZhDCF
+3cDAczO582aEPe5L+bzBFzfghV3J9O1DnpugUe9hV3Wx2zpcaNDXe+g4GLQSv0gV
+yiNiSGtEJiWIWGPP4QW7Buta/eg6746+VPuqVioX6AwaF8X93sJN0jRLxws2L0yq
+dWTt8mTwmd9jSbV1jkxIOkHN3UsM/RvbfjnwNqt8zRVjQM236fGAm7i35qFsIVCD
+RXhtheLUPnefyCuTwgSEseSaXK3tsCS/dc/wC52p4Ug1OcEwJCxTheYBeGtjkVfB
+4S05s9oZsiWyWEtOlD5lwXALVTcwR+/wGtyBxmdlquIYnQ/Dje8SF2xJUwDh7frl
+hJC5b63qNyTNNQ5PKErf/HLTNR7su5q51Ru5puGTah8Ai8lS5VMk3GM7B3KQXOpL
+5iRTJJl6fRwTv7QU7Z8gPWD1t2CE/HYZu1b0MNfnrFwMXaRpCuCTSDsS1rV3iTJL
+jVn/qUnNiOJLJW+JZakEpBHNfT+BblJy3gsrk6v0bZgWBnPOqfGVnSjsWdAn6Skb
+m2DUxaJQkKP8iX1Y5jQ0cMFFtxX+UBEbY2LTZrTj4IFICUwK4zeBxV+Trgd3citq
++XpNmcum6pDcvVDxrlbofZ2wmozZFeiYKL6Yr+W8DtuQusT579xImHHSoUDpLgur
+6wAwzek6KJfYohujBXVb
+=gS3b
+-----END PGP SIGNATURE-----
+
+--CgyvWwj/llZsteoZ--
+
+--===============2539582731339105326==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============2539582731339105326==--
