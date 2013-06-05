@@ -1,17 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: arizona: Hookup SYSCLK to inputs and
-	noise generators
-Date: Wed,  5 Jun 2013 14:51:31 +0100
-Message-ID: <1370440291-2876-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1370440291-2876-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: CONFIG_SND_DEBUG
+Date: Wed, 5 Jun 2013 10:11:12 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306051008410.1078-100000@iolanthe.rowland.org>
+References: <s5h4ndcvl4a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE37926548F
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 16:02:30 +0200 (CEST)
-In-Reply-To: <1370440291-2876-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id D6A18265493
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 16:11:14 +0200 (CEST)
+In-Reply-To: <s5h4ndcvl4a.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>, Kernel team list <kernel-team@lists.ubuntu.com>, Andy Whitcroft <apw@canonical.com>, leann.ogasawara@canonical.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-All sources and sinks should enable SYSCLK.
+On Wed, 5 Jun 2013, Takashi Iwai wrote:
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5102.c |   11 +++++++++++
- sound/soc/codecs/wm5110.c |   13 +++++++++++++
- 2 files changed, 24 insertions(+), 0 deletions(-)
+> > >> Andy/Leann - apparently CONFIG_SND_DEBUG is on by default from
+> > >> upstream, and we explicitly disable it. Is there any reason why we
+> > >> do that?
+> > >
+> > > config SND_DEBUG
+> > >          bool "Debug"
+> > >          help
+> > >            Say Y here to enable ALSA debug code.
+> > >
+> > > It is off by default in upstream, and the really helpful description
+> > > would cirtainly tend to lead to it being disabled.  But if it is helpful
+> > > to your debugging efforts David then I suspect we can enable it in Saucy
+> > > and see what happens.
+> > 
+> > Okay, so then the ball is back in Takashi's area - if we're recommended 
+> > to turn CONFIG_SND_DEBUG on, why is it off by default in the upstream 
+> > Linux kernel?
+> 
+> It's not off as default.  Simply there is no default, just like most
+> of other options.
+> 
+> As already mentioned, if the device is known to work well with the
+> kernel, there is no reason to set it on.  Then it'll saves the memory
+> and code space.  That is, for custom kernels, it's good to be off.
+> But for generic kernels like distro kernel, it'd be better to take a
+> safer side with more safety checks that is built in by that option.
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 100fdad..82dd0c6 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1304,10 +1304,21 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
- 	{ "OUT5L", NULL, "SYSCLK" },
- 	{ "OUT5R", NULL, "SYSCLK" },
- 
-+	{ "IN1L", NULL, "SYSCLK" },
-+	{ "IN1R", NULL, "SYSCLK" },
-+	{ "IN2L", NULL, "SYSCLK" },
-+	{ "IN2R", NULL, "SYSCLK" },
-+	{ "IN3L", NULL, "SYSCLK" },
-+	{ "IN3R", NULL, "SYSCLK" },
-+
- 	{ "MICBIAS1", NULL, "MICVDD" },
- 	{ "MICBIAS2", NULL, "MICVDD" },
- 	{ "MICBIAS3", NULL, "MICVDD" },
- 
-+	{ "Noise Generator", NULL, "SYSCLK" },
-+	{ "Tone Generator 1", NULL, "SYSCLK" },
-+	{ "Tone Generator 2", NULL, "SYSCLK" },
-+
- 	{ "Noise Generator", NULL, "NOISE" },
- 	{ "Tone Generator 1", NULL, "TONE" },
- 	{ "Tone Generator 2", NULL, "TONE" },
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 88ad7db..be7216c 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -736,10 +736,23 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
- 	{ "OUT6L", NULL, "SYSCLK" },
- 	{ "OUT6R", NULL, "SYSCLK" },
- 
-+	{ "IN1L", NULL, "SYSCLK" },
-+	{ "IN1R", NULL, "SYSCLK" },
-+	{ "IN2L", NULL, "SYSCLK" },
-+	{ "IN2R", NULL, "SYSCLK" },
-+	{ "IN3L", NULL, "SYSCLK" },
-+	{ "IN3R", NULL, "SYSCLK" },
-+	{ "IN4L", NULL, "SYSCLK" },
-+	{ "IN4R", NULL, "SYSCLK" },
-+
- 	{ "MICBIAS1", NULL, "MICVDD" },
- 	{ "MICBIAS2", NULL, "MICVDD" },
- 	{ "MICBIAS3", NULL, "MICVDD" },
- 
-+	{ "Noise Generator", NULL, "SYSCLK" },
-+	{ "Tone Generator 1", NULL, "SYSCLK" },
-+	{ "Tone Generator 2", NULL, "SYSCLK" },
-+
- 	{ "Noise Generator", NULL, "NOISE" },
- 	{ "Tone Generator 1", NULL, "TONE" },
- 	{ "Tone Generator 2", NULL, "TONE" },
--- 
-1.7.2.5
+Given this description, the symbol's name is very misleading.  Instead 
+of being called CONFIG_SND_DEBUG, it should be called 
+CONFIG_SND_SAFETY_CHECKS or something like that.
+
+IMO, distributions are completely justified in turning off any symbol 
+which is named (and described in the help text!) as being used for 
+debugging only.
+
+Alan Stern
