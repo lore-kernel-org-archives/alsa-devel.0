@@ -1,186 +1,113 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
-Date: Wed, 5 Jun 2013 12:55:44 +0100
-Message-ID: <20130605115544.GX31367@sirena.org.uk>
-References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH 1/2] ASoC: WM8962: Create default platform data
+	structure
+Date: Wed, 5 Jun 2013 20:12:55 +0800
+Message-ID: <4e85e3a9b5dfdc04899958424eb53a9cfd0f4ace.1370433363.git.b42378@freescale.com>
+References: <cover.1370433363.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2539582731339105326=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1370420501-8410-1-git-send-email-b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe003.messaging.microsoft.com [216.32.180.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id E655726538A
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 14:06:33 +0200 (CEST)
+In-Reply-To: <cover.1370433363.git.b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+Cc: grant.likely@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, rob.herring@calxeda.com
 List-Id: alsa-devel@alsa-project.org
 
+When no platform data is supplied, point pdata at a default platform
+structure. This enables two future changes:
 
---===============2539582731339105326==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CgyvWwj/llZsteoZ"
-Content-Disposition: inline
+a) Defines the default platform data values in a single place.
+b) There is always a valid pdata pointer, so some conditional code can
+   be simplified by a later patch.
 
+Based on work of WM8903 by Stephen Warren <swarren@nvidia.com>
 
---CgyvWwj/llZsteoZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ sound/soc/codecs/wm8962.c |   23 +++++++++++++++++++----
+ 1 files changed, 19 insertions(+), 4 deletions(-)
 
-On Wed, Jun 05, 2013 at 04:21:41PM +0800, Nicolin Chen wrote:
-
-Looks pretty good, a few comments but they're all fairly minor.
-
-> +  WM8962 pins:
-> +  * HPOUTL
-> +  * HPOUTR
-> +  * SPKOUTL
-> +  * SPKOUTR
-> +  * MICBIAS
-> +  * IN3R
-> +  * DMIC
-> +  * DMICDAT
-
-No need to list all these, just reference the CODEC (and add them to the
-CODEC binding documentation if they're not there which they probably
-aren't).  This is generally good practice if there's a family of devices
-sharing a driver and means that you don't have to worry about missing
-all the other input pins as you've done here.  :)
-
-> +- hp-det-gpios : The gpio port of Headphone detection.
-> +- mic-det-gpios: The gpio port of Micphone detection.
-
-I'd say a bit more about these - obviously the CODEC has its own
-accessory detection here, and I rather suspect that in fact the HP
-detection you have there is really jack detection.
-
-> +static int check_hw_params(struct snd_pcm_substream *substream,
-> +		snd_pcm_format_t sample_format, unsigned int sample_rate)
-> +{
-> +	struct imx_priv *priv = &card_priv;
-> +	struct device *dev = substream->pcm->card->dev;
-> +
-> +	substream->runtime->sample_bits =
-> +		snd_pcm_format_physical_width(sample_format);
-> +	substream->runtime->rate = sample_rate;
-> +	substream->runtime->format = sample_format;
-> +
-> +	if (!priv->first_stream) {
-> +		priv->first_stream = substream;
-> +	} else {
-> +		priv->second_stream = substream;
-> +
-> +		if (priv->first_stream->runtime->rate !=
-> +				priv->second_stream->runtime->rate) {
-> +			dev_err(dev, "KEEP THE SAME SAMPLE RATE: %d!\n",
-> +					priv->first_stream->runtime->rate);
-> +			return -EINVAL;
-> +		}
-> +		if (priv->first_stream->runtime->sample_bits !=
-> +				priv->second_stream->runtime->sample_bits) {
-> +			snd_pcm_format_t first_format =
-> +				priv->first_stream->runtime->format;
-> +
-> +			dev_err(dev, "KEEP THE SAME FORMAT: %s!\n",
-> +					snd_pcm_format_name(first_format));
-> +			return -EINVAL;
-> +		}
-> +	}
-
-The sample rate checking can be done with the symmmetric_rates feature
-in the core.  The sample_bits check can't be but it's something that a
-lot of systems probably ought to have so it ought to be factored out
-into the core too rather than open coded in the driver.
-
-> +		/*
-> +		 * SYSCLK of wm8962's not disabled yet. If we wanna close FLL,
-
-No '.
-
-> +		ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
-> +				data->clk_frequency, SND_SOC_CLOCK_IN);
-> +		if (ret < 0) {
-> +			dev_err(dev, "Failed to set SYSCLK: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		/* Disable FLL and let codec do pm_runtime_put() */
-> +		ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL, 0, 0, 0);
-> +		if (ret < 0) {
-> +			dev_err(dev, "Failed to disable FLL: %d\n", ret);
-> +			return ret;
-
-You're enabling and disabling the CODEC only while there's an audio
-stream active.  This means that it's not possible to support analogue
-bypass paths (which the device can do) - you should probably also
-support enabling the FLL via set_bias_level() and use set_bias_level()
-to turn it off (which works in all cases).
-
-> +	data->codec_clk = clk_get(&codec_dev->dev, NULL);
-> +	if (IS_ERR(data->codec_clk)) {
-
-devm_clk_get().
-
-> +		/* assuming clock enabled by default */
-> +		data->codec_clk = NULL;
-> +		ret = of_property_read_u32(codec_np, "clock-frequency",
-> +					&data->clk_frequency);
-> +		if (ret) {
-> +			dev_err(&codec_dev->dev,
-> +				"clock-frequency missing or invalid\n");
-> +			goto fail;
-> +		}
-
-Since it's easy to define a fixed rate clock (there's a generic driver
-for that) I'd just require the user to provide a clock API clock and fix
-the rate using that.  This is going to be less error prone and makes the
-code simpler.
-
-> +	} else {
-> +		data->clk_frequency = clk_get_rate(data->codec_clk);
-> +		clk_prepare_enable(data->codec_clk);
-
-Not needed immediately but if there is actually a clock we have control
-of we might want to vary the frequency...
-
---CgyvWwj/llZsteoZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRryc9AAoJELSic+t+oim9uAsP/2S+ZaCjaFQO6wrpb1EZhDCF
-3cDAczO582aEPe5L+bzBFzfghV3J9O1DnpugUe9hV3Wx2zpcaNDXe+g4GLQSv0gV
-yiNiSGtEJiWIWGPP4QW7Buta/eg6746+VPuqVioX6AwaF8X93sJN0jRLxws2L0yq
-dWTt8mTwmd9jSbV1jkxIOkHN3UsM/RvbfjnwNqt8zRVjQM236fGAm7i35qFsIVCD
-RXhtheLUPnefyCuTwgSEseSaXK3tsCS/dc/wC52p4Ug1OcEwJCxTheYBeGtjkVfB
-4S05s9oZsiWyWEtOlD5lwXALVTcwR+/wGtyBxmdlquIYnQ/Dje8SF2xJUwDh7frl
-hJC5b63qNyTNNQ5PKErf/HLTNR7su5q51Ru5puGTah8Ai8lS5VMk3GM7B3KQXOpL
-5iRTJJl6fRwTv7QU7Z8gPWD1t2CE/HYZu1b0MNfnrFwMXaRpCuCTSDsS1rV3iTJL
-jVn/qUnNiOJLJW+JZakEpBHNfT+BblJy3gsrk6v0bZgWBnPOqfGVnSjsWdAn6Skb
-m2DUxaJQkKP8iX1Y5jQ0cMFFtxX+UBEbY2LTZrTj4IFICUwK4zeBxV+Trgd3citq
-+XpNmcum6pDcvVDxrlbofZ2wmozZFeiYKL6Yr+W8DtuQusT579xImHHSoUDpLgur
-6wAwzek6KJfYohujBXVb
-=gS3b
------END PGP SIGNATURE-----
-
---CgyvWwj/llZsteoZ--
-
---===============2539582731339105326==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============2539582731339105326==--
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index e971028..ea35396 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -51,6 +51,7 @@ static const char *wm8962_supply_names[WM8962_NUM_SUPPLIES] = {
+ 
+ /* codec private data */
+ struct wm8962_priv {
++	struct wm8962_pdata *pdata;
+ 	struct regmap *regmap;
+ 	struct snd_soc_codec *codec;
+ 
+@@ -2345,7 +2346,8 @@ static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
+ 
+ static int wm8962_add_widgets(struct snd_soc_codec *codec)
+ {
+-	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
++	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
++	struct wm8962_pdata *pdata = wm8962->pdata;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 
+ 	snd_soc_add_codec_controls(codec, wm8962_snd_controls,
+@@ -3333,7 +3335,7 @@ static struct gpio_chip wm8962_template_chip = {
+ static void wm8962_init_gpio(struct snd_soc_codec *codec)
+ {
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
++	struct wm8962_pdata *pdata = wm8962->pdata;
+ 	int ret;
+ 
+ 	wm8962->gpio_chip = wm8962_template_chip;
+@@ -3373,7 +3375,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
++	struct wm8962_pdata *pdata = wm8962->pdata;
+ 	u16 *reg_cache = codec->reg_cache;
+ 	int i, trigger, irq_pol;
+ 	bool dmicclk, dmicdat;
+@@ -3603,6 +3605,19 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	init_completion(&wm8962->fll_lock);
+ 	wm8962->irq = i2c->irq;
+ 
++	/* If no platform data was supplied, create storage for defaults */
++	if (pdata) {
++		wm8962->pdata = pdata;
++	} else {
++		wm8962->pdata = devm_kzalloc(&i2c->dev,
++					sizeof(struct wm8962_pdata),
++					GFP_KERNEL);
++		if (wm8962->pdata == NULL) {
++			dev_err(&i2c->dev, "Failed to allocate pdata\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
+ 		wm8962->supplies[i].supply = wm8962_supply_names[i];
+ 
+@@ -3666,7 +3681,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 		goto err_enable;
+ 	}
+ 
+-	if (pdata && pdata->in4_dc_measure) {
++	if (wm8962->pdata->in4_dc_measure) {
+ 		ret = regmap_register_patch(wm8962->regmap,
+ 					    wm8962_dc_measure,
+ 					    ARRAY_SIZE(wm8962_dc_measure));
+-- 
+1.7.1
