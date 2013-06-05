@@ -1,16 +1,15 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH 0/2] Add device tree binding support to WM8962
-	codec driver
-Date: Wed, 5 Jun 2013 20:12:54 +0800
-Message-ID: <cover.1370433363.git.b42378@freescale.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [tinycompress][PATCH 0/2] Fixes for write loop logic
+Date: Wed, 5 Jun 2013 13:08:27 +0100
+Message-ID: <20130605120827.GA21556@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tx2outboundpool.messaging.microsoft.com
- (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A9932265467
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 14:06:53 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66FBA26546C
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 14:08:30 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,18 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
-Cc: grant.likely@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, rob.herring@calxeda.com
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-*** These two patch added devicetree binding support to WM8962 codec driver
-*** so that it can fetch pdata not only from old platform_data but also from
-*** newer dts binding.
+Two small patches which correct the logic of compress_write()
+so that it will work correctly if asked to write a buffer
+shorter than the fragment length. The first patch is needed
+to ensure that if the client requests auto-configuration
+of fragment size the internal copy of the config contains the
+configured fragment size. The second patch contains the actual
+fix to the write loop logic.
 
-Nicolin Chen (2):
-  ASoC: WM8962: Create default platform data structure
-  ASoC: WM8962: Add device tree binding
+Richard Fitzgerald (2):
+  compress: copy final version of config struct
+  compress: do not poll if enough space to write remaining data
 
- Documentation/devicetree/bindings/sound/wm8962.txt |   20 +++++++
- sound/soc/codecs/wm8962.c                          |   56 ++++++++++++++++++--
- 2 files changed, 72 insertions(+), 4 deletions(-)
+ compress.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+-- 
+1.7.2.5
