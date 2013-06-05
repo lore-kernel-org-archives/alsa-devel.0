@@ -1,58 +1,54 @@
-From: "Eamon Hayden" <eamon.hayden@cloudiumsystems.com>
-Subject: RE: [alsa-devel] USB audio Gadget - code 10 error
-Date: Wed, 5 Jun 2013 18:08:36 +0100
-Message-ID: <36834.8451135263$1370452258@news.gmane.org>
-References: <51ae1eb1.88d1ec0a.38dc.662aSMTPIN_ADDED_BROKEN@mx.google.com>	<CAK7N6voGPrqiwwk8HV-2irc7jK+y_ZRkHB0jfQJYKg7yG9voNA@mail.gmail.com>	<CABb+yY1oa-tO+ZEZ0aHzCYhDBgxUCa2DVuf6izC-yEW79uv3kQ@mail.gmail.com>
-	<000f01ce61c0$22888330$67998990$@hayden@cloudiumsystems.com>
+From: Mark Brown <broonie@linaro.org>
+Subject: [PATCH] ASoC: max98090: Guard runtime PM callbacks
+Date: Wed,  5 Jun 2013 19:33:54 +0100
+Message-ID: <1370457234-27747-1-git-send-email-broonie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <kernelnewbies-bounces@kernelnewbies.org>
-In-Reply-To: <000f01ce61c0$22888330$67998990$@hayden@cloudiumsystems.com>
-Content-Language: en-ie
-List-Unsubscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
-	<mailto:kernelnewbies-request@kernelnewbies.org?subject=unsubscribe>
-List-Archive: <http://lists.kernelnewbies.org/pipermail/kernelnewbies>
-List-Post: <mailto:kernelnewbies@kernelnewbies.org>
-List-Help: <mailto:kernelnewbies-request@kernelnewbies.org?subject=help>
-List-Subscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
-	<mailto:kernelnewbies-request@kernelnewbies.org?subject=subscribe>
-Sender: kernelnewbies-bounces@kernelnewbies.org
-Errors-To: kernelnewbies-bounces@kernelnewbies.org
-To: 'Eamon Hayden' <eamon.hayden@cloudiumsystems.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'anish singh' <anish198519851985@gmail.com>
-Cc: alsa-devel@alsa-project.org, 'kernelnewbies' <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id A06D32619E4
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 20:34:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-SnVzdCB0byBiZSBzdXJlLi4uCkkganVzdCBkb3dubG9hZGVkIGEgY2xlYW4gY29weSBvZiBrZXJu
-ZWwgMy42LjkuIApJIHRoZW4gY29uZmlndXJlZCBpdCBmb3IgVUFDMSBhbmQgdGhlIFVTQiBBdWRp
-byBHYWRnZXQuIApJIHJlYnVpbHQgYW5kIGluc3RhbGxlZCB0aGUgZ19hdWRpbyBsb2FkYWJsZSBt
-b2R1bGUuCgpBZ2FpbiBJIGdldCB0aGUgJ1RoaXMgZGV2aWNlIGNhbm5vdCBzdGFydCAoY29kZSAx
-MCknIEVycm9yIHdoZW4gSSBjb25uZWN0IHdpbmRvd3MgNy4KCk15IGV4cGVjdGF0aW9uIGlzIHRo
-YXQgdGhhdCB0aGlzIHNob3VsZCB3b3JrIHdpdGggdGhlIGRlZmF1bHQgd2luZG93cyBkcml2ZXJz
-IC0gSXMgdGhpcyBjb3JyZWN0LgoKVGhhbmtzIGZvciB5b3VyIGhlbHAuCkVhbW9uLgoKLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0KRnJvbToga2VybmVsbmV3Ymllcy1ib3VuY2VzQGtlcm5lbG5l
-d2JpZXMub3JnIFttYWlsdG86a2VybmVsbmV3Ymllcy1ib3VuY2VzQGtlcm5lbG5ld2JpZXMub3Jn
-XSBPbiBCZWhhbGYgT2YgRWFtb24gSGF5ZGVuClNlbnQ6IFdlZG5lc2RheSwgSnVuZSAwNSwgMjAx
-MyA4OjQyIEFNClRvOiAnSmFzc2kgQnJhcic7ICdhbmlzaCBzaW5naCcKQ2M6IGFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZzsgJ2tlcm5lbG5ld2JpZXMnClN1YmplY3Q6IFJFOiBbYWxzYS1kZXZl
-bF0gVVNCIGF1ZGlvIEdhZGdldCAtIGNvZGUgMTAgZXJyb3IKCkkndmUgdHJpZWQgYm90aCBVQUMx
-IGFuZCBVQUMyIGF0IHRoaXMgc3RhZ2UgYW5kIGJvdGggZ2l2ZSB0aGUgc2FtZSByZXN1bHQuCgot
-LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQpGcm9tOiBKYXNzaSBCcmFyIFttYWlsdG86amFzc2lz
-aW5naGJyYXJAZ21haWwuY29tXQpTZW50OiBXZWRuZXNkYXksIEp1bmUgMDUsIDIwMTMgNDoyOSBB
-TQpUbzogYW5pc2ggc2luZ2gKQ2M6IEVhbW9uIEhheWRlbjsgYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnOyBrZXJuZWxuZXdiaWVzClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gVVNCIGF1ZGlv
-IEdhZGdldCAtIGNvZGUgMTAgZXJyb3IKCj4gT24gVHVlLCBKdW4gNCwgMjAxMyBhdCAxMDozNSBQ
-TSwgRWFtb24gSGF5ZGVuIAo+IDxlYW1vbi5oYXlkZW5AY2xvdWRpdW1zeXN0ZW1zLmNvbT4gd3Jv
-dGU6Cj4+IEnigJltIHRyeWluZyB0byB1c2UgdGhlIGxpbnV4IHVzYiBhdWRpbyBnYWRnZXQgYnV0
-IEkgZ2V0IHRoZSBlcnJvciA6IAo+PiDigJxUaGlzIGRldmljZSBjYW5ub3Qgc3RhcnQgKGNvZGUg
-MTApIHdoZW4gSSBjb25uZWN0IHRvIGEgd2luZG93cyA3LzggCj4+IGJveC4gSSBkb27igJl0IGhh
-dmUgdGhpcyBwcm9ibGVtIHdoZW4gSSBjb25uZWN0IHRvIHVidW50byAxMi4wLjQKPj4KWW91IGRp
-ZG4ndCB0ZWxsIGlmIHlvdSBhcmUgdHJ5aW5nIFVBQzEgb3IgVUFDMiA/ICBUaGUgbGF0dGVyIHdv
-bid0IHdvcmsgYXMgc3VjaCBiZWNhdXNlIGlpcmMgV2luZG93cyBkb24ndCBzdXBwb3J0IFVBQzIg
-bmF0aXZlbHkgKHlvdSdsbCBoYXZlIHRvIGxvYWQgc29tZSAzcmQgcGFydCBkaXZlcnMpLgoKLWoK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpLZXJuZWxu
-ZXdiaWVzIG1haWxpbmcgbGlzdApLZXJuZWxuZXdiaWVzQGtlcm5lbG5ld2JpZXMub3JnCmh0dHA6
-Ly9saXN0cy5rZXJuZWxuZXdiaWVzLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2tlcm5lbG5ld2JpZXMK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpLZXJuZWxu
-ZXdiaWVzIG1haWxpbmcgbGlzdApLZXJuZWxuZXdiaWVzQGtlcm5lbG5ld2JpZXMub3JnCmh0dHA6
-Ly9saXN0cy5rZXJuZWxuZXdiaWVzLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2tlcm5lbG5ld2JpZXMK
+Otherwise the functions will be defined but unreferenced when runtime PM
+is disabled, generating warnings.
+
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/max98090.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 1bf96bd..ad5313f 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2350,6 +2350,7 @@ static int max98090_i2c_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_RUNTIME
+ static int max98090_runtime_resume(struct device *dev)
+ {
+ 	struct max98090_priv *max98090 = dev_get_drvdata(dev);
+@@ -2369,6 +2370,7 @@ static int max98090_runtime_suspend(struct device *dev)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static const struct dev_pm_ops max98090_pm = {
+ 	SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
+-- 
+1.7.10.4
