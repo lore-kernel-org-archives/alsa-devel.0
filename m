@@ -1,43 +1,42 @@
-From: "Eamon Hayden" <eamon.hayden@cloudiumsystems.com>
-Subject: RE: [alsa-devel] USB audio Gadget - code 10 error
-Date: Wed, 5 Jun 2013 08:41:39 +0100
-Message-ID: <45945.7673867748$1370418657@news.gmane.org>
-References: <51ae1eb1.88d1ec0a.38dc.662aSMTPIN_ADDED_BROKEN@mx.google.com>	<CAK7N6voGPrqiwwk8HV-2irc7jK+y_ZRkHB0jfQJYKg7yG9voNA@mail.gmail.com>
-	<CABb+yY1oa-tO+ZEZ0aHzCYhDBgxUCa2DVuf6izC-yEW79uv3kQ@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [tinycompress]how should I call compress_open	for
+	aac ltp file playback?
+Date: Wed, 5 Jun 2013 09:01:04 +0100
+Message-ID: <20130605080104.GE31108@opensource.wolfsonmicro.com>
+References: <51AEDEAC.2020705@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <kernelnewbies-bounces@kernelnewbies.org>
-In-Reply-To: <CABb+yY1oa-tO+ZEZ0aHzCYhDBgxUCa2DVuf6izC-yEW79uv3kQ@mail.gmail.com>
-Content-Language: en-ie
-List-Unsubscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
-	<mailto:kernelnewbies-request@kernelnewbies.org?subject=unsubscribe>
-List-Archive: <http://lists.kernelnewbies.org/pipermail/kernelnewbies>
-List-Post: <mailto:kernelnewbies@kernelnewbies.org>
-List-Help: <mailto:kernelnewbies-request@kernelnewbies.org?subject=help>
-List-Subscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
-	<mailto:kernelnewbies-request@kernelnewbies.org?subject=subscribe>
-Sender: kernelnewbies-bounces@kernelnewbies.org
-Errors-To: kernelnewbies-bounces@kernelnewbies.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>, 'anish singh' <anish198519851985@gmail.com>
-Cc: alsa-devel@alsa-project.org, 'kernelnewbies' <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ABAB926109C
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 10:09:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51AEDEAC.2020705@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Keyon.Jey" <yang.jie@linux.intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSd2ZSB0cmllZCBib3RoIFVBQzEgYW5kIFVBQzIgYXQgdGhpcyBzdGFnZSBhbmQgYm90aCBnaXZl
-IHRoZSBzYW1lIHJlc3VsdC4KCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206IEphc3Np
-IEJyYXIgW21haWx0bzpqYXNzaXNpbmdoYnJhckBnbWFpbC5jb21dIApTZW50OiBXZWRuZXNkYXks
-IEp1bmUgMDUsIDIwMTMgNDoyOSBBTQpUbzogYW5pc2ggc2luZ2gKQ2M6IEVhbW9uIEhheWRlbjsg
-YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBrZXJuZWxuZXdiaWVzClN1YmplY3Q6IFJlOiBb
-YWxzYS1kZXZlbF0gVVNCIGF1ZGlvIEdhZGdldCAtIGNvZGUgMTAgZXJyb3IKCj4gT24gVHVlLCBK
-dW4gNCwgMjAxMyBhdCAxMDozNSBQTSwgRWFtb24gSGF5ZGVuIAo+IDxlYW1vbi5oYXlkZW5AY2xv
-dWRpdW1zeXN0ZW1zLmNvbT4gd3JvdGU6Cj4+IEnigJltIHRyeWluZyB0byB1c2UgdGhlIGxpbnV4
-IHVzYiBhdWRpbyBnYWRnZXQgYnV0IEkgZ2V0IHRoZSBlcnJvciA6IAo+PiDigJxUaGlzIGRldmlj
-ZSBjYW5ub3Qgc3RhcnQgKGNvZGUgMTApIHdoZW4gSSBjb25uZWN0IHRvIGEgd2luZG93cyA3Lzgg
-Cj4+IGJveC4gSSBkb27igJl0IGhhdmUgdGhpcyBwcm9ibGVtIHdoZW4gSSBjb25uZWN0IHRvIHVi
-dW50byAxMi4wLjQKPj4KWW91IGRpZG4ndCB0ZWxsIGlmIHlvdSBhcmUgdHJ5aW5nIFVBQzEgb3Ig
-VUFDMiA/ICBUaGUgbGF0dGVyIHdvbid0IHdvcmsgYXMgc3VjaCBiZWNhdXNlIGlpcmMgV2luZG93
-cyBkb24ndCBzdXBwb3J0IFVBQzIgbmF0aXZlbHkgKHlvdSdsbCBoYXZlIHRvIGxvYWQgc29tZSAz
-cmQgcGFydCBkaXZlcnMpLgoKLWoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpLZXJuZWxuZXdiaWVzIG1haWxpbmcgbGlzdApLZXJuZWxuZXdiaWVzQGtl
-cm5lbG5ld2JpZXMub3JnCmh0dHA6Ly9saXN0cy5rZXJuZWxuZXdiaWVzLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2tlcm5lbG5ld2JpZXMK
+On Wed, Jun 05, 2013 at 02:46:04PM +0800, Keyon.Jey wrote:
+> I am trying to use tinycompress for hwdecoder. everything works fine,  
+> but after compress_open (with profile = SND_AUDIOPROFILE_AAC level=0  
+> ch_mode=0 rate_control=0), the playback of my aac-ltp-16bit-48KHz-Stereo  
+> file is faster than it should be.  Am I wrong?
+
+Vinod is probably the person for this one, as I am not so
+familiar with what you guys have done internally. However, my
+guess would be you are not setting the sample_rate correctly? It
+likely needs to be set to the appropriate SNDRV_PCM_RATE_XXXX
+define. The source for cplay included in the tinycompress
+repository is a good example of using the tinycompress library.
+
+Charles
