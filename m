@@ -1,18 +1,14 @@
-From: "Keyon.Jey" <yang.jie@linux.intel.com>
-Subject: Re: [tinycompress]how should I call compress_open	for
- aac ltp file playback?
-Date: Wed, 05 Jun 2013 16:27:44 +0800
-Message-ID: <51AEF680.10209@linux.intel.com>
-References: <51AEDEAC.2020705@linux.intel.com>
- <20130605080104.GE31108@opensource.wolfsonmicro.com>
+From: gsantosh@codeaurora.org
+Subject: Question on wait_for_avail function
+Date: Wed, 5 Jun 2013 08:28:14 -0000
+Message-ID: <1794d77072add642c43309c0a06bfadb.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 174472610B9
- for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 10:26:22 +0200 (CEST)
-In-Reply-To: <20130605080104.GE31108@opensource.wolfsonmicro.com>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11D3F261A03
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2013 10:28:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/05/2013 04:01 PM, Charles Keepax wrote:
-> On Wed, Jun 05, 2013 at 02:46:04PM +0800, Keyon.Jey wrote:
->> I am trying to use tinycompress for hwdecoder. everything works fine,
->> but after compress_open (with profile = SND_AUDIOPROFILE_AAC level=0
->> ch_mode=0 rate_control=0), the playback of my aac-ltp-16bit-48KHz-Stereo
->> file is faster than it should be.  Am I wrong?
-> Vinod is probably the person for this one, as I am not so
-> familiar with what you guys have done internally. However, my
-> guess would be you are not setting the sample_rate correctly? It
-> likely needs to be set to the appropriate SNDRV_PCM_RATE_XXXX
-> define. The source for cplay included in the tinycompress
-> repository is a good example of using the tinycompress library.
->
-> Charles
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-thanks, Charles. the print log showed me that I have set 
-SNDRV_PCM_RATE_48000 which seems no problem.
-the cplay example code is only for mp3 file, and it also not set .level, 
-.ch_mode and .rate_control.
-Vinod, what's your suggestion?
+Hi Liam,
 
-thanks,
-Keyon
+Consider an use case
+1) Write is blocked as there is no space to write the data,
+after the return from snd_pcm_playback_avail()function in wait_for_avail
+2) HAL issues pause in parallel to the write
+I see that the following function snd_pcm_post_pause unblock the write
+		wake_up(&runtime->sleep);
+		wake_up(&runtime->tsleep);
+But i do not see any case handling for the pause state in the
+wait_for_avail function, it is not coming out of the for loop as there
+will not be any change in the buffer states.
+
+Please explain what is the intention behind the wake in pause callback.
+
+Want to understand why there is no handling of pause in wait_for_avail
+function.
+
+and also is there any restriction from ALSA framework that we should not
+issue pause while write is blocked or going on.
+
+Regards,
+Santosh M G.
