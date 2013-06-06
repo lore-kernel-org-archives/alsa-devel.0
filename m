@@ -1,19 +1,18 @@
-From: Johan Hellman <johan.hellman@axis.com>
-Subject: Re: Timestamps using I/O Plugin
-Date: Thu, 6 Jun 2013 14:54:51 +0200
-Message-ID: <9A8CA64355151747A180E7910F873F1802B88CAF21@xmail3.se.axis.com>
-References: <9A8CA64355151747A180E7910F873F1802B9DFC0B1@xmail3.se.axis.com>
- <9A8CA64355151747A180E7910F873F1802B88CAF20@xmail3.se.axis.com>,
- <s5hobbjsith.wl%tiwai@suse.de>
+From: James Miller <jamesstewartmiller@gmail.com>
+Subject: "https://bugtrack.alsa-project.org/alsa-bug" Tascam
+	US122L
+Date: Thu, 6 Jun 2013 13:56:32 +0100
+Message-ID: <CAKJvYZH=kmG7MotB8wOfYeLhF8hu1uWVo75Rt5aicP2sj28ZAg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ra.se.axis.com (ra.se.axis.com [195.60.68.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 535D8261A95
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 14:54:56 +0200 (CEST)
-In-Reply-To: <s5hobbjsith.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-oa0-f52.google.com (mail-oa0-f52.google.com
+ [209.85.219.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9429A261AAB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 14:56:33 +0200 (CEST)
+Received: by mail-oa0-f52.google.com with SMTP id o13so2101279oag.25
+ for <alsa-devel@alsa-project.org>; Thu, 06 Jun 2013 05:56:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->At Thu, 6 Jun 2013 09:01:12 +0200,
->Johan Hellman wrote:
->>
->> After spending more time investigating how I would set monotonic timestamps from a new I/O plugin so that the app using ALSA lib could synchronize different audio streams I cant find that its possible!?
->>
->> Can someone please confirm that it is not possible to set monotonic timestamps using the I/O plugin SDK!?
->
->AFAIK, there is nothing special in ioplug layer but it's a matter of
->ioplug plugin instance.  If the plugin sets
->SND_PCM_IOPLUG_FLAG_MONOTONIC bit to ioplug->flags, the ioplug layer
->uses the monotonic timestamp (via clock_gettime()) instead of
->gettimeofday().  So far, no plugins in alsa-plugins provide
->SND_PCM_IOPLUG_FLAG_MONOTONIC yet, though.
->
->
->Takashi
+Hi, I can't visit this bugtracker page (above) and am also wondering if
+there is any progress on the Tascam US122L.  I understand someone from the
+kxaudio team has tried a kernel bisect but that the problem lies in the
+driver with a vm switch.
 
-Thanks for your reply, by enabling SND_PCM_IOPLUG_FLAG_MONOTONIC the ioplug 
-would return a monotonic timestamp if requested by calling snd_pcm_htimestamp()
-but it would be the current timestamp i.e. change every time you call ..htimestamp() 
-and not be related to the last buffer update or anything(within ALSA) actually??. 
-And there would be no timestamp information in the snd_pcm_status_t returned by 
-snd_pcm_status() or am i missing something?  
+http://www.remastersys.com/forums/index.php?topic=3013.0
 
-What i found in the implementation for the ioplug layer(snd_pcm_ioplug_status) 
-was that the status struct was memset to 0 but the tstamp is not set, so 0 
-is returned as a monotonic timestamp.
+somewhere I read that this was an alsa problem but I found this kernel
+patch (referred to) and it has been suggested that it is this that is the
+cause.  I am not a prof. developer but might have a go at recompiling my
+kernel after changing the module so that I can get my soundcard working
+with kernel 3.8.13-rt(patch).  Do you guys know anything about this that
+might help me?
 
-Would a change similar to what i wrote in my previus post regarding adding the 
-possibility for the plugin to override ..htimestamp() and the ioplug layer to 
-update tstamp in the status struct using that function (if available)?
+https://patchwork.kernel.org/patch/1258951/
 
-/JohanHellman
+thanks
+
+James
+
+ubuntu studio on mac pro 2006
+
+3.8.13-rt9 #1 SMP PREEMPT RT Thu May 30 18:54:25 BST 2013 x86_64 x86_64
+x86_64 GNU/Linux
+
+-- 
+James Stewart Miller Bsc(hons) Psych.
