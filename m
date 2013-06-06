@@ -1,15 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Drop hard dependency on
-	CONFIG_SND_DYNAMIC_MINORS
-Date: Thu,  6 Jun 2013 15:02:19 +0200
-Message-ID: <1370523739-28479-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Introduce bit flags to
+	snd_hda_codec_read/write()
+Date: Thu,  6 Jun 2013 15:02:52 +0200
+Message-ID: <1370523773-28528-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CF027261AAB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:01:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B8904265654
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 97736A56A1
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +25,201 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently HDMI codec driver sets the hard dependency (reverse
-selection) on CONFIG_SND_DYNAMIC_MINORS because the recent codecs may
-support more than two PCMs.  But, this doesn't mean that we need
-always this option, since there can be a single PCM stream even with
-the modern codecs.
+snd_hda_codec_read(), snd_hda_codec_write() & co take the argument
+"direct" that indicates whether the given NID is a direct reference or
+an indirect reference.  However, the indirect reference is practically
+unimplemented and never exists.  And moreover, we don't need the
+indication of indirect reference at this high level, as NID can be
+represented in 16bit values at this point.
 
-This patch drops the hard dependency again but give more sensible
-error message when no enough PCMs are available due to the lack of
-this option.
+Meanwhile, there are some cases where it'd be nice to give some
+operational options to these functions.  So, we can reuse this
+argument as a new bit flag!  Pretty frugal, eh?
+
+All callers so far pass zero to this argument, thus there is no
+behavior change by this replacement.
+
+The real usage of this new bit option will be added in the following
+patches.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/Kconfig     |  1 -
- sound/pci/hda/hda_codec.c | 19 +++++++++++++++----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_codec.c | 41 ++++++++++++++++++++---------------------
+ sound/pci/hda/hda_codec.h |  8 ++++----
+ 2 files changed, 24 insertions(+), 25 deletions(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 80a7d44..0c5371a 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -140,7 +140,6 @@ config SND_HDA_CODEC_VIA
- 
- config SND_HDA_CODEC_HDMI
- 	bool "Build HDMI/DisplayPort HD-audio codec support"
--	select SND_DYNAMIC_MINORS
- 	default y
- 	help
- 	  Say Y here to include HDMI and DisplayPort HD-audio codec
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 55108b5..679fba4 100644
+index 679fba4..503869a 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -4461,12 +4461,13 @@ const char *snd_hda_pcm_type_name[HDA_PCM_NTYPES] = {
- 
- /*
-  * get the empty PCM device number to assign
-- *
-- * note the max device number is limited by HDA_MAX_PCMS, currently 10
+@@ -185,20 +185,19 @@ EXPORT_SYMBOL_HDA(snd_hda_get_jack_type);
+  * Compose a 32bit command word to be sent to the HD-audio controller
   */
--static int get_empty_pcm_device(struct hda_bus *bus, int type)
-+static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+ static inline unsigned int
+-make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
++make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int flags,
+ 	       unsigned int verb, unsigned int parm)
  {
- 	/* audio device indices; not linear to keep compatibility */
-+	/* assigned to static slots up to dev#10; if more needed, assign
-+	 * the later slot dynamically (when CONFIG_SND_DYNAMIC_MINORS=y)
-+	 */
- 	static int audio_idx[HDA_PCM_NTYPES][5] = {
- 		[HDA_PCM_TYPE_AUDIO] = { 0, 2, 4, 5, -1 },
- 		[HDA_PCM_TYPE_SPDIF] = { 1, -1 },
-@@ -4480,18 +4481,28 @@ static int get_empty_pcm_device(struct hda_bus *bus, int type)
- 		return -EINVAL;
+ 	u32 val;
+ 
+-	if ((codec->addr & ~0xf) || (direct & ~1) || (nid & ~0x7f) ||
++	if ((codec->addr & ~0xf) || (nid & ~0x7f) ||
+ 	    (verb & ~0xfff) || (parm & ~0xffff)) {
+-		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x:%x\n",
+-		       codec->addr, direct, nid, verb, parm);
++		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x\n",
++		       codec->addr, nid, verb, parm);
+ 		return ~0;
  	}
  
--	for (i = 0; audio_idx[type][i] >= 0 ; i++)
-+	for (i = 0; audio_idx[type][i] >= 0; i++) {
-+#ifndef CONFIG_SND_DYNAMIC_MINORS
-+		if (audio_idx[type][i] >= 8)
-+			break;
-+#endif
- 		if (!test_and_set_bit(audio_idx[type][i], bus->pcm_dev_bits))
- 			return audio_idx[type][i];
-+	}
- 
-+#ifdef CONFIG_SND_DYNAMIC_MINORS
- 	/* non-fixed slots starting from 10 */
- 	for (i = 10; i < 32; i++) {
- 		if (!test_and_set_bit(i, bus->pcm_dev_bits))
- 			return i;
- 	}
-+#endif
- 
- 	snd_printk(KERN_WARNING "Too many %s devices\n",
- 		snd_hda_pcm_type_name[type]);
-+#ifndef CONFIG_SND_DYNAMIC_MINORS
-+	snd_printk(KERN_WARNING "Consider building the kernel with CONFIG_SND_DYNAMIC_MINORS=y\n");
-+#endif
- 	return -EAGAIN;
+ 	val = (u32)codec->addr << 28;
+-	val |= (u32)direct << 27;
+ 	val |= (u32)nid << 20;
+ 	val |= verb << 8;
+ 	val |= parm;
+@@ -209,7 +208,7 @@ make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
+  * Send and receive a verb
+  */
+ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+-			   unsigned int *res)
++			   int flags, unsigned int *res)
+ {
+ 	struct hda_bus *bus = codec->bus;
+ 	int err;
+@@ -255,7 +254,7 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+  * snd_hda_codec_read - send a command and get the response
+  * @codec: the HDA codec
+  * @nid: NID to send the command
+- * @direct: direct flag
++ * @flags: optional bit flags
+  * @verb: the verb to send
+  * @parm: the parameter for the verb
+  *
+@@ -264,12 +263,12 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+  * Returns the obtained response value, or -1 for an error.
+  */
+ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+-				int direct,
++				int flags,
+ 				unsigned int verb, unsigned int parm)
+ {
+-	unsigned cmd = make_codec_cmd(codec, nid, direct, verb, parm);
++	unsigned cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+ 	unsigned int res;
+-	if (codec_exec_verb(codec, cmd, &res))
++	if (codec_exec_verb(codec, cmd, flags, &res))
+ 		return -1;
+ 	return res;
  }
+@@ -279,7 +278,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_read);
+  * snd_hda_codec_write - send a single command without waiting for response
+  * @codec: the HDA codec
+  * @nid: NID to send the command
+- * @direct: direct flag
++ * @flags: optional bit flags
+  * @verb: the verb to send
+  * @parm: the parameter for the verb
+  *
+@@ -287,12 +286,12 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_read);
+  *
+  * Returns 0 if successful, or a negative error code.
+  */
+-int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
+-			 unsigned int verb, unsigned int parm)
++int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
++			unsigned int verb, unsigned int parm)
+ {
+-	unsigned int cmd = make_codec_cmd(codec, nid, direct, verb, parm);
++	unsigned int cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+ 	unsigned int res;
+-	return codec_exec_verb(codec, cmd,
++	return codec_exec_verb(codec, cmd, flags,
+ 			       codec->bus->sync_write ? &res : NULL);
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_write);
+@@ -3582,7 +3581,7 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
+  * snd_hda_codec_write_cache - send a single command with caching
+  * @codec: the HDA codec
+  * @nid: NID to send the command
+- * @direct: direct flag
++ * @flags: optional bit flags
+  * @verb: the verb to send
+  * @parm: the parameter for the verb
+  *
+@@ -3591,7 +3590,7 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
+  * Returns 0 if successful, or a negative error code.
+  */
+ int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
+-			      int direct, unsigned int verb, unsigned int parm)
++			      int flags, unsigned int verb, unsigned int parm)
+ {
+ 	int err;
+ 	struct hda_cache_head *c;
+@@ -3600,7 +3599,7 @@ int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
  
+ 	cache_only = codec->cached_write;
+ 	if (!cache_only) {
+-		err = snd_hda_codec_write(codec, nid, direct, verb, parm);
++		err = snd_hda_codec_write(codec, nid, flags, verb, parm);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -3624,7 +3623,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
+  * snd_hda_codec_update_cache - check cache and write the cmd only when needed
+  * @codec: the HDA codec
+  * @nid: NID to send the command
+- * @direct: direct flag
++ * @flags: optional bit flags
+  * @verb: the verb to send
+  * @parm: the parameter for the verb
+  *
+@@ -3635,7 +3634,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
+  * Returns 0 if successful, or a negative error code.
+  */
+ int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
+-			       int direct, unsigned int verb, unsigned int parm)
++			       int flags, unsigned int verb, unsigned int parm)
+ {
+ 	struct hda_cache_head *c;
+ 	u32 key;
+@@ -3651,7 +3650,7 @@ int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
+ 		return 0;
+ 	}
+ 	mutex_unlock(&codec->bus->cmd_mutex);
+-	return snd_hda_codec_write_cache(codec, nid, direct, verb, parm);
++	return snd_hda_codec_write_cache(codec, nid, flags, verb, parm);
+ }
+ EXPORT_SYMBOL_HDA(snd_hda_codec_update_cache);
+ 
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index c93f902..39a658e 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -945,9 +945,9 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+  * low level functions
+  */
+ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+-				int direct,
++				int flags,
+ 				unsigned int verb, unsigned int parm);
+-int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
++int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+ 			unsigned int verb, unsigned int parm);
+ #define snd_hda_param_read(codec, nid, param) \
+ 	snd_hda_codec_read(codec, nid, 0, AC_VERB_PARAMETERS, param)
+@@ -986,11 +986,11 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex);
+ 
+ /* cached write */
+ int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
+-			      int direct, unsigned int verb, unsigned int parm);
++			      int flags, unsigned int verb, unsigned int parm);
+ void snd_hda_sequence_write_cache(struct hda_codec *codec,
+ 				  const struct hda_verb *seq);
+ int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
+-			      int direct, unsigned int verb, unsigned int parm);
++			      int flags, unsigned int verb, unsigned int parm);
+ void snd_hda_codec_resume_cache(struct hda_codec *codec);
+ /* both for cmd & amp caches */
+ void snd_hda_codec_flush_cache(struct hda_codec *codec);
 -- 
 1.8.3
