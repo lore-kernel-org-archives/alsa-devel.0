@@ -1,16 +1,16 @@
-From: Joe Perches <joe@perches.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
-Date: Thu, 06 Jun 2013 13:59:10 -0700
-Message-ID: <1370552350.2209.41.camel@joe-AO722>
-References: <Pine.LNX.4.44L0.1306061636520.878-100000@iolanthe.rowland.org>
+Date: Thu, 6 Jun 2013 17:28:52 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306061654270.878-100000@iolanthe.rowland.org>
+References: <s5hobblrt2s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from labridge.com (perches-mx.perches.com [206.117.179.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 78A25261ABB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 22:59:13 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.44L0.1306061636520.878-100000@iolanthe.rowland.org>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id A5672261AEC
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 23:28:53 +0200 (CEST)
+In-Reply-To: <s5hobblrt2s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +20,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2013-06-06 at 16:42 -0400, Alan Stern wrote:
-> On Tue, 4 Jun 2013, Joe Perches wrote:
+On Wed, 5 Jun 2013, Takashi Iwai wrote:
+
+> > You didn't respond to the first point I raised.  Since these messages
+> > are all meant for debugging, there's no point allowing them to have
+> > prefixes like KERN_ERR or KERN_INFO.  They should always be printed at
+> > the KERN_DEBUG level.  Or did you think this was so obviously true that
+> > it didn't require any comment?
 > 
-> > On Tue, 2013-06-04 at 16:54 -0400, Alan Stern wrote:
-> > > I don't see how DEFAULT_DEBUG_LEVEL can be used to optimize away
-> > > anything.  The user can always change the value of the "debug" module
-> > > parameter while the system is running.  The only valid opportunity for
-> > > optimization would be if CONFIG_SND_DEBUG was disabled; then all these 
-> > > messages would disappear.
-> > 
-> > Not really.
-> > 
-> > Think of CONFIG_SND_DEBUG as a level. (0, 1, 2)
-> > or maybe think of it as CONFIG_SND_DEBUG_VERBOSITY.
-> > 
-> > There could still be ability to have CONFIG_SND_DEBUG
-> > limit the compiled-in messages to those below the
-> > #define value and still then have runtime control over
-> > which ones are displayed.
+> Unfortunately, it's not so straightforward.  Many messages are better
+> with KERN_INFO indeed.  In such places, snd_printd() is used rather as
+> snd_chattier_printk_with_prefix().
+
+I don't understand the point of this.  The idea of using snd_printd() 
+is to prevent these messages from being printed unless debugging is 
+enabled.  Since the only time you are going to see these messages is 
+when CONFIG_SND_DEBUG is on, why shouldn't they use KERN_DEBUG?
+
+> This comes from the subsystem development history.  In the era of 2.4
+> kernels, many systems did load/unload the module frequently on demand.
+> Thus we didn't want to put a message from driver at each module probe
+> or removal.  Otherwise dmesg will be flood of such messages at each
+> time you play a WAV song or ring a beep via PCM.
 > 
-> How useful really is it to be able to limit the amount of debugging
-> messages at runtime?  Does anybody ever actually adjust the "debug"  
-> module parameter?
+> Instead, we tended to put such informational messages as snd_printd(),
+> while keeping the driver itself reticent as much as possible for
+> "productive" systems.  This style was kept for a while even after
+> merged to 2.5 kernels until recently.
 
-When it's a bitmask, yes.
-It then becomes similar to ethtool.
+Changing snd_printd() to use KERN_DEBUG always won't make the driver 
+any less reticent.
 
-> In my opinion, this is not worth the extra space required.  Virtually 
-> all the benefit of different debugging levels can be obtained by 
-> defining different symbols at compile time, such as CONFIG_SND_DEBUG 
-> and CONFIG_SND_VERBOSE_DEBUG.
+> Also, some places use KERN_WARNING or KERN_ERR with snd_printd(),
+> mostly because they are in the context with CONFIG_SND_DEBUG.
+> They can be well pr_warning() or pr_err().
 
-I think the whole verbosity thing should be done at runtime
-via pr_debug and classifications by type via bitmasks at
-compile-time instead of the silliness of something like
-CONFIG_SND_DEBUG_VERBOSITY.
+Okay.  Those can be changed separately.
 
-> Does anybody really need a third level?
+> Last but not least, as mentioned in the reply to patch 1/2, many
+> messages miss proper prefixes.
+> 
+> 
+> These are the main reasons I stated that systematic replacements would
+> be difficult.  We need to take a look through the whole snd_print*()
+> and replace appropriately case by case...
 
-Hard to say.  There are several additional "private"
-debugging level controls for sound/...
+I'm not sure if my original point behind all this is still clear.  I
+don't really want to make a lot of small updates to the logging API for
+the sound subsystem, or clean up messages that have the wrong logging
+level.
+
+The important point is that these files are _drivers_; what matters at
+runtime is the device name.  On systems with more than one sound card
+of the same type, the device name is vital, but even on others it still
+helps a lot.
+
+What I want to do is make the messages include the device and driver
+names.  Basically this means calling dev_info() and friends instead of
+"snd_printk(KERN_INFO" or pr_info().  As part of the fallout from this
+change, it should no longer be necessary to print the filename or
+module name.  If a driver contains multiple identical messages, they
+can be made non-identical (assuming it really matters; messages like
+"can't allocate memory" usually don't need to be pinned down exactly).  
+Line numbers are even less useful because they can change from one
+kernel version to the next.
+
+I can't convert the entire sound subsystem at once -- it's way too big.  
+But I can at least do the sound/usb subsystem.  If this means that two
+different logging APIs are used by different sets of sound drivers, so
+be it.
+
+In theory, this would be more or less independent of the patches posted 
+so far.  In fact, when taken to its logical extreme, _all_ the messages 
+would use dev_*() or some variant.  There wouldn't be any snd_printk(), 
+snd_printd(), pr_info(), ... messages left to worry about.
+
+I don't expect that to happen any time soon.  Still, I think it makes
+more sense to concentrate on converting the messages below sound/usb
+rather than fiddling around with the existing API, which is inadequate
+anyway since it doesn't include the device.
+
+Alan Stern
