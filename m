@@ -1,19 +1,19 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
-Date: Thu, 6 Jun 2013 12:39:20 +0800
-Message-ID: <20130606043920.GA19094@MrMyself>
-References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
- <20130605115544.GX31367@sirena.org.uk>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: hda question: 'Headphone Playback Switch' cannot
+ unmute the pin's output amplifier?
+Date: Thu, 6 Jun 2013 05:39:00 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801248F48@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F801246F8D@SHSMSX101.ccr.corp.intel.com>
+ <51AF2230.4070704@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe004.messaging.microsoft.com [216.32.180.14])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE5F265505
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 06:57:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130605115544.GX31367@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91DFE265515
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 07:39:05 +0200 (CEST)
+In-Reply-To: <51AF2230.4070704@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,101 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: grant.likely@linaro.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, rob.herring@calxeda.com, lgirdwood@gmail.com
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Wang,
+ Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks you for the review. I'll revise the patch and send a [V3]
-
-But please see my reply at some points.
-
-On Wed, Jun 05, 2013 at 12:55:44PM +0100, Mark Brown wrote:
-> > +- hp-det-gpios : The gpio port of Headphone detection.
-> > +- mic-det-gpios: The gpio port of Micphone detection.
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Wednesday, June 05, 2013 7:34 PM
+ 
+> On 06/05/2013 01:06 PM, Lin, Mengdong wrote:
+> > Hi,
+> >
+> > I'm using a Realtek HD-A codec ALC282. But the headphone output amplifier is
+> always muted and I cannot unmute it by amixer.
+> >
+> > I tried to unmute the pin via control 'Headphone Playback Switch', but
+> snd_hda_mixer_amp_switch_put() gets a ZERO value from
+> ucontrol->value.integer.value, thus the pin will be muted.
+> > Could somebody give me some tips to further check this issue? Many thanks!
 > 
-> I'd say a bit more about these - obviously the CODEC has its own
-> accessory detection here, and I rather suspect that in fact the HP
-> detection you have there is really jack detection.
-[Nic]: i.MX6 SabreSD board uses these two extra pins for jack detection.
-You're exactly right that CODEC already has this function. But the hardware
-guy of Freescale, who put the extra pins here, has his own reason that
-Android needs not codec driver but machine driver to handle the detection and
-use an event to report pin status to Android system. Well this event code
-hasn't been included in this patch though. So since hardware has pins here,
-I think it's better to put in the binding doc as well. But I guess it'd be
-better to put it into OPTIONAL area?
+> Maybe there's also a "Master playback switch" that needs to be turned on as
+> well?
 
-> > +static int check_hw_params(struct snd_pcm_substream *substream,
-> > +		snd_pcm_format_t sample_format, unsigned int sample_rate)
-> > +{
-> > +	struct imx_priv *priv = &card_priv;
-> > +	struct device *dev = substream->pcm->card->dev;
-> > +
-> > +	substream->runtime->sample_bits =
-> > +		snd_pcm_format_physical_width(sample_format);
-> > +	substream->runtime->rate = sample_rate;
-> > +	substream->runtime->format = sample_format;
-> > +
-> > +	if (!priv->first_stream) {
-> > +		priv->first_stream = substream;
-> > +	} else {
-> > +		priv->second_stream = substream;
-> > +
-> > +		if (priv->first_stream->runtime->rate !=
-> > +				priv->second_stream->runtime->rate) {
-> > +			dev_err(dev, "KEEP THE SAME SAMPLE RATE: %d!\n",
-> > +					priv->first_stream->runtime->rate);
-> > +			return -EINVAL;
-> > +		}
-> > +		if (priv->first_stream->runtime->sample_bits !=
-> > +				priv->second_stream->runtime->sample_bits) {
-> > +			snd_pcm_format_t first_format =
-> > +				priv->first_stream->runtime->format;
-> > +
-> > +			dev_err(dev, "KEEP THE SAME FORMAT: %s!\n",
-> > +					snd_pcm_format_name(first_format));
-> > +			return -EINVAL;
-> > +		}
-> > +	}
+Many thanks, David! This works. I need to turn on "Master playback switch" as well.
+
+And could you give me some info about the relationship of "Master playback switch", "Headphone Playback Switch" and "Speaker Playback switch"?
+I observed a close binding between "Master playback switch" and "Headphone Playback Switch": if I turn off one, then both will be turned off. It looks strange.
+But the "Speaker Playback Switch" is independent from "Master playback switch": It can be turn on/off without affecting the "Master". 
+Both "Speaker Playback Switch" and "Headphone Playback Switch" are implemented by a output pin, why "Master" seems to be tied to "Headphone"?
+
+Is this behavior a designed result, user preference, or codec H/W restriction?
+
+Thanks
+Mengdong
+
+> >
+> > Here are the headphone pin info:
+> > Node 0x21 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+> >    Control: name="Headphone Playback Switch", index=0, device=0
+> >      ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+> >    Control: name="Headphone Jack", index=0, device=0
+> >    Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >    Amp-Out vals:  [0x80 0x80]
+> >    Pincap 0x0000001c: OUT HP Detect
+> >    Pin Default 0x0321401f: [Jack] HP Out at Ext Left
+> >      Conn = 1/8, Color = Green
+> >      DefAssociation = 0x1, Sequence = 0xf
+> >    Pin-ctls: 0xc0: OUT HP
+> >    Unsolicited: tag=01, enabled=1
+> >    Power states:  D0 D1 D2 D3 EPSS
+> >    Power: setting=D0, actual=D0
+> >    Connection: 2
+> >       0x0c 0x0d*
+> >
+> > Here is the pin's controls listed by amixer:
+> > numid=2,iface=MIXER,name='Headphone Playback Switch'
+> >
+> > Then I use this command to unmute the pin's amplifier:
+> > amixer -c 1 cset numid=2,iface=MIXER,name='Headphone Playback Switch'
+> > on
+> >
+> > My debug message show that snd_hda_mixer_amp_switch_put() gets zero
+> value , indicating to 'mute':
+> > [  346.263519] snd_hda_mixer_amp_switch_put: nid 0x0021, chs 3,
+> > control value [0x00000000, 0x00000000] [  346.263527]
+> > snd_hda_codec_amp_update: nid 0x0021 [  346.263532]
+> codec_amp_update:
+> > nid 0x0021, ch 0, direction 1 (OUT 1), index 0, val 0x00000080 [
+> > 346.263536] codec_amp_update: amp val not change [  346.263538]
+> > snd_hda_codec_amp_update: nid 0x0021 [  346.263542]
+> codec_amp_update:
+> > nid 0x0021, ch 1, direction 1 (OUT 1), index 0, val 0x00000080 [
+> > 346.263544] codec_amp_update: amp val not change
+> >
+> > Thanks
+> > Mengdong
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
 > 
-> The sample rate checking can be done with the symmmetric_rates feature
-> in the core.  The sample_bits check can't be but it's something that a
-> lot of systems probably ought to have so it ought to be factored out
-> into the core too rather than open coded in the driver.
-[Nic:] fsl_ssi.c uses symmmetric_rates, but last time I traced soc-pcm.c
-and found the core only cares about symmmetric_rates during pcm_open(),
-which means the startup() in dai/machine driver, while what I'm considering
-is something like "arecord -Dhw:0 -r 44100 | aplay -Dhw:0 -r 48000":
-The two startup() would run almost at the same time and each of them would
-be earlier than hw_param() -- the exact point we can get the sample rate
-from application, but before this point no sample-rate actually be set to
-make hw_constraint(). Then the two hw_param() would continue their code and
-successively call set_fll() twice with different sample rates.
-But I agree that it's kinda ugly to put code here. So I think maybe I need
-to drop this part of code and to think about another patch for the core?
-
-
-> > +		ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
-> > +				data->clk_frequency, SND_SOC_CLOCK_IN);
-> > +		if (ret < 0) {
-> > +			dev_err(dev, "Failed to set SYSCLK: %d\n", ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		/* Disable FLL and let codec do pm_runtime_put() */
-> > +		ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL, 0, 0, 0);
-> > +		if (ret < 0) {
-> > +			dev_err(dev, "Failed to disable FLL: %d\n", ret);
-> > +			return ret;
 > 
-> You're enabling and disabling the CODEC only while there's an audio
-> stream active.  This means that it's not possible to support analogue
-> bypass paths (which the device can do) - you should probably also
-> support enabling the FLL via set_bias_level() and use set_bias_level()
-> to turn it off (which works in all cases).
-[Nic] I've seen and tested set_bias_level() way as samsung/tobermory.c does.
-But I find a flaw to the method that if I play two and more wav files like
-'aplay -Dhw:0 audio44Khz.wav audio48Khz.wav audio22Khz.wav', which needs to
-set_fll() before each playback and to keep SYSCLK valid by changing its source
-to MCLK after the playback, but I only found that hw_param() and hw_free()
-are symmetrically called before/after each playback in this case.
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
