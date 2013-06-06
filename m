@@ -1,14 +1,13 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2 1/2] ASoC: WM8962: Create default platform data
- structure
-Date: Thu, 6 Jun 2013 14:26:44 +0100
-Message-ID: <20130606132644.GZ31367@sirena.org.uk>
+Subject: Re: [PATCH V2 2/2] ASoC: WM8962: Add device tree binding
+Date: Thu, 6 Jun 2013 14:28:57 +0100
+Message-ID: <20130606132857.GA31367@sirena.org.uk>
 References: <cover.1370518627.git.b42378@freescale.com>
- <7e99c1946386e241854a3d7659a7a6d4201a5b34.1370518627.git.b42378@freescale.com>
+ <a7acc6e603272a9d48324712f54da9bb1fa46889.1370518627.git.b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4995267095246473153=="
+Content-Type: multipart/mixed; boundary="===============1076844599961466242=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <7e99c1946386e241854a3d7659a7a6d4201a5b34.1370518627.git.b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+In-Reply-To: <a7acc6e603272a9d48324712f54da9bb1fa46889.1370518627.git.b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -24,47 +23,55 @@ Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4995267095246473153==
+--===============1076844599961466242==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LgjTlQw5wen6foCl"
+	protocol="application/pgp-signature"; boundary="HHsIqWg7hQfWlXNC"
 Content-Disposition: inline
 
 
---LgjTlQw5wen6foCl
+--HHsIqWg7hQfWlXNC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 06, 2013 at 07:38:45PM +0800, Nicolin Chen wrote:
-> Embed a copy of struct wm8962_pdata in stuct wm8962_priv
-> so that there's no need to check validity of pdata any more.
+On Thu, Jun 06, 2013 at 07:38:46PM +0800, Nicolin Chen wrote:
 
-Applied, thanks.
+> +Optional properties:
+> +  - spk-mono: Default register value for SPK_MONO of R51 (Class D Control 2).
 
---LgjTlQw5wen6foCl
+This doesn't correspond to the code.  This is a boolean property, if
+it's present then that bit gets set indicating that the speaker is in
+mono mode.
+
+> +  - mic-cfg : Default register value for R48 (Additional Control 4).
+> +    If absent, the default is 0.
+
+Again if it's absent the default should be the register default.
+
+--HHsIqWg7hQfWlXNC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRsI4RAAoJELSic+t+oim92ucQAIk610XHoIvdWLP+X7WXO5x3
-JnCt+SqWYRbLsHMGlGOb8CQXWKsr5KbN0rFQtDIzdpBb6Zv41HUvBA0CFf6uPP31
-/v+1RBEHzu2bFZk9EmOrHfG5aNxeZ9HlDSWIRw3KoMo9y/BJ6tI9DXflhUaRVrhE
-Mtj2qXVWagjQ9GyCRPGRLRHWJQLzep6WMvjcnHFbQPmxgtC3tenENw9UyJ6y/8Sb
-fSVe08UXMHTzaBymoVzFMeCG/hqxnQ3XWQ3H1c6iy+4T20dRSOFCd8Mn52/z6sw6
-3VDmSQnsNjzFHxiQ2OwZ/2P5t9vDP3UYiRH3Z67aF/at43NFY1U4O0XLUJL2e3s6
-L4X5dYqPlqBOIzuHnvm7TJEiH+ZjOxc1XC48tw4ow0mThnvSmvBvI5rROtUsRCDJ
-lUVItCM35brX8EQIk+5xDuaZ+CuAyQoGnPefpbK5hzq9BRGBNrj8PoT5xU33PHJ3
-kJyIAPvVf6kOBC0EaoJiQ8mrO/4ddLu1r/i4uE7Jyl25N1cCT6BylmARTH08j7yV
-z+H2pXXdBfwabQNm+Uui14lJisZR7ITv0CVhvo86/35CfLEpTHGYZ8UBj4OnWqLA
-Tpl37Ac94nBEw9o6d4XZOpaDttxhB1QqLIV1+E6KGDARyomw0EnR/Fz3fB4/WUFZ
-6psCyGbnbFwRCrhOmmsd
-=clt7
+iQIcBAEBAgAGBQJRsI6WAAoJELSic+t+oim98yQP/0+Bq3FqFeJWM+Yn+X2XckGP
+pLr/HQiLDdhHTAohhHhIHA03MNHfh6pS7Shwp+Ht6xPDprDwR7ffFfe0d5yebWLk
+QrvcrKP3JHzY2dglA5p2IXhpm4GqLjhXiO1BGExSLKXSYD6r7hsspu/zlaO7YJpW
+8TPYu3d9arOOyhhCOefHGdvPq+4UkdvlMZC/7BlnoX6g1k9bGJnvioqACmUntvbv
+yiI0/yqw0HasIqOV1q90XfWKTq8LaVZtSB6KK2Dut9YxnCR3cmV2ch+F3cTXm13t
+EzzP4A1JuPbxiS4KE8iV8ekSZKljzf1FgYkTuYeLC4XAoIbS420zo+lSnuCWkB8O
+8v0ob/o4Ksy1qFxk48nzRTafOugjQwm9mYGpqi6NenZo3KbbqPbw24wCZMcYzDq1
+dM0nLsRX4UtxHCMK6jjn8WsW5UBqs1Um/RWt2HYJYnW/hmKp2skfqSXh6hDMk7Uz
+np5ZmlbzaBRG5ABuw2Rri7eGiZC7ik++GD2ZNAeYZIrpQ+iSl8RqSIxEnIJH1u38
+nx9TS4Z/ze2rpY9EZrOGLJc0w7WAN6o1ACsaaOHQxBMqHCyS8edDHVv/RmnPKwLP
+jA3v7kJgwl+Iy7+3OJAJKmLC+dexUh7EgpwiTSRFyNVpFv6DDSNeL4t0k+0BruP7
+Hqz40xwmXCeiczZO2Q7M
+=1LLn
 -----END PGP SIGNATURE-----
 
---LgjTlQw5wen6foCl--
+--HHsIqWg7hQfWlXNC--
 
---===============4995267095246473153==
+--===============1076844599961466242==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -75,4 +82,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============4995267095246473153==--
+--===============1076844599961466242==--
