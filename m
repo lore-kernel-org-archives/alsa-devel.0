@@ -1,94 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Generic clock divider indices
-Date: Thu, 6 Jun 2013 14:56:05 +0100
-Message-ID: <20130606135605.GB9980@sirena.org.uk>
-References: <51B09224.9050409@gmail.com>
+From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
+Date: Thu, 6 Jun 2013 11:02:43 -0300
+Message-ID: <CAOMZO5B=OrXUMcD9wYHn=T171usvG_P5dpQ-7iM77-RnS8iSGQ@mail.gmail.com>
+References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
+ <20130605115544.GX31367@sirena.org.uk>
+ <20130606124952.GA19153@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4843100004797554165=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 93ACA261ACC
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:56:08 +0200 (CEST)
-In-Reply-To: <51B09224.9050409@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <20130606124952.GA19153@MrMyself>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Nicolin,
 
---===============4843100004797554165==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
-Content-Disposition: inline
+On Thu, Jun 6, 2013 at 9:49 AM, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
 
+> But I always got "failed to create fixed clk" error during system booting.
+> So I think it's pretty different to get a fixed clock with normal since
+> it's on the root_list of clock tree.
+> How can I get the clock here, or more specifically, any way to get the
+> rate of the fixed-rate-clk?
 
---+g7M9IMkV8truYOl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You could try something like (pass the real clock in the device tree):
 
-On Thu, Jun 06, 2013 at 03:44:04PM +0200, Daniel Mack wrote:
+http://permalink.gmane.org/gmane.linux.alsa.devel/107614
 
-> Would it be an idea to define some commonly used dividers in the core?
-> If they start at 0x80000000, they won't collide with existing ones, and
-> we could simply add them as alternative case statements to existing drivers.
+(I will re-post this patch later)
 
-I don't think this is a terribly sensible idea; as soon as you start
-relying on these dividers in machine code you're going to run into
-drivers that just don't implement them either due to hardware or due to
-them being able to figure things out by themselves and...
+Regards,
 
-> Some commonly used ones I can think of are
-
-> 	MCLK / BCLK
-> 	MCLK / LRCLK
-> 	BCLK / LRCLK
-
-> That way, platform code could just pass the values dows to the codec
-> drivers, whether or not they know what to do with it.
-
-...frankly the above all look like dividers that the drivers should just
-be figuring out all by themselves anyway without bothering the machine
-driver.  If that's the sort of stuff you're having to do it seems more
-generally useful to work on making the relevant drivers require less
-manual control by the machine driver.
-
---+g7M9IMkV8truYOl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRsJTyAAoJELSic+t+oim9RtwP/1BQ1yaArtiPHIabtne30O6B
-VmmrEV2wBkxP0xJxgKXKChrbkhMWaco3a5cGpOkuiyhGIXrr1BXlNWj+Yqy9SGQC
-7lFpdxDy/34TQXHddeYZOaFLAIIsdLQwHwL+ypqkUAV5d+2D4WWBlK4XST0utqmm
-Cc6qWkJrlF74Yq/3CcGcQACvVVSVSopJzmrQqdwaDRA4an92wmfTYn5zHozpC2hz
-GxI1gpuIv6xzYcOJnNRFACV5OtqhiZymeM7vfZC2cj/AdshmVFz682RosNxh5t1m
-rjCwy9+k+aJ4vm42GMAnrRo3JI8dXmaa0CkwE/suvKSW5xLfEijdtg450WDlHtdk
-KXw/deyS7PJo94eXLjTHT3tG4r6i6cmZ+p+4EDl9WMXG+r1245XseuMJUAIKMeMS
-BMwCZ1QvjVgz7Ky3qYQhK86kDa4mpGA4z+UxuZQFtIJqykWSwPHQ5zVXHuXzFdga
-b5zCylokTAO1Qse4bU4PNLunvaCRc+mg6VIPeK+1EUJifVY+2knOC4770Mk7/16H
-GywTgxiA1lJhBe4ZX36qWyRY6MxKTcGyxxxhwDCzgqX+kvaT6KaXVW20OtlrMbhQ
-+/3aJXw3Lc54WxO4uDgeXvpec6xIehpKXfhyhaHtjpI8socrFSnTFbPrQTfEcRU4
-jKorBCu8fMFonzhGzQAm
-=3zmC
------END PGP SIGNATURE-----
-
---+g7M9IMkV8truYOl--
-
---===============4843100004797554165==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4843100004797554165==--
+Fabio Estevam
