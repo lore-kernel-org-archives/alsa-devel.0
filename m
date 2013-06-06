@@ -1,21 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: hda question: 'Headphone Playback Switch' cannot
- unmute the pin's output amplifier?
-Date: Thu, 6 Jun 2013 10:34:36 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F801249441@SHSMSX101.ccr.corp.intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F801246F8D@SHSMSX101.ccr.corp.intel.com>
- <51AF2230.4070704@canonical.com>
- <F46914AEC2663F4A9BB62374E5EEF8F801248F48@SHSMSX101.ccr.corp.intel.com>
- <s5hppvzsjdh.wl%tiwai@suse.de>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH V2 0/2] Add device tree binding support to
+	WM8962 codec driver
+Date: Thu, 6 Jun 2013 19:38:44 +0800
+Message-ID: <cover.1370518627.git.b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A630261AB4
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 12:34:42 +0200 (CEST)
-In-Reply-To: <s5hppvzsjdh.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe003.messaging.microsoft.com [207.46.163.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 013C1265562
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 13:32:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
- Xingchao" <xingchao.wang@intel.com>, "Girdwood, Liam
- R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
+Cc: grant.likely@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, rob.herring@calxeda.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, June 06, 2013 5:02 PM
+*** These two patch added devicetree binding support to WM8962 codec driver
+*** so that it can fetch pdata not only from old platform_data but also from
+*** newer dts binding.
+---
+ChangeLog:
+v1->v2:
+ * PATCH 1/2:
+ *** Embedded a copy of struct wm8962_pdata instead of its pointer
+ *** Removed all 'if (pdata)' checking code as it is always valid.
+ * PATCH 2/2:
+ *** Dropped out-of-band value error msg by regarding it as default value. 
 
-> At Thu, 6 Jun 2013 05:39:00 +0000,
-> Lin, Mengdong wrote:
-> >
-> > And could you give me some info about the relationship of "Master playback
-> switch", "Headphone Playback Switch" and "Speaker Playback switch"?
-> > I observed a close binding between "Master playback switch" and "Headphone
-> Playback Switch": if I turn off one, then both will be turned off. It looks strange.
-> > But the "Speaker Playback Switch" is independent from "Master playback
-> switch": It can be turn on/off without affecting the "Master".
-> > Both "Speaker Playback Switch" and "Headphone Playback Switch" are
-> implemented by a output pin, why "Master" seems to be tied to "Headphone"?
-> 
-> Master is master.  If it's turned off, all belongings will be off.
-> That is, if Master is muted, both speaker and headphone outputs are muted no
-> matter what Speaker or Headphone element is set.
+Nicolin Chen (2):
+  ASoC: WM8962: Create default platform data structure
+  ASoC: WM8962: Add device tree binding
 
-Thanks for clarification, Takashi!
-
-Is this master-slave logic implemented in ALSA driver or lib?
- 
-> In the driver level, it must be have so.  If not, it's a bug.
-> But for verifying the driver behavior, you should check without PulseAudio; PA
-> may mute/unmute the active/inactive mixer elements dynamically.
-
-I don't have pulseaudio running. 
-
-Thanks
-Mengdong
+ Documentation/devicetree/bindings/sound/wm8962.txt |   20 ++++
+ sound/soc/codecs/wm8962.c                          |   99 +++++++++++++------
+ 2 files changed, 88 insertions(+), 31 deletions(-)
