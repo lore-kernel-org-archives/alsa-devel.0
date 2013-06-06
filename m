@@ -1,20 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Don't take unresponsive D3
-	transition too serious
-Date: Thu,  6 Jun 2013 15:02:53 +0200
-Message-ID: <1370523773-28528-2-git-send-email-tiwai@suse.de>
-References: <1370523773-28528-1-git-send-email-tiwai@suse.de>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
+Date: Thu, 6 Jun 2013 20:49:53 +0800
+Message-ID: <20130606124952.GA19153@MrMyself>
+References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
+ <20130605115544.GX31367@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CD48926565A
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A35FFA566D
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
-In-Reply-To: <1370523773-28528-1-git-send-email-tiwai@suse.de>
+Received: from ch1outboundpool.messaging.microsoft.com
+ (ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D90BE261AAB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:04:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130605115544.GX31367@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,109 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: grant.likely@linaro.org, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, rob.herring@calxeda.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-When a codec is powered off, some systems don't respond properly after
-D3 FG transition, while the driver still expects the response and
-tries to fall back to different modes (polling and single-cmd).  When
-the fallback happens, the driver stays in that mode, and falling back
-to the single-cmd mode means it'll loose the unsol event handling,
-too.
+On Wed, Jun 05, 2013 at 12:55:44PM +0100, Mark Brown wrote:
+> > +		/* assuming clock enabled by default */
+> > +		data->codec_clk = NULL;
+> > +		ret = of_property_read_u32(codec_np, "clock-frequency",
+> > +					&data->clk_frequency);
+> > +		if (ret) {
+> > +			dev_err(&codec_dev->dev,
+> > +				"clock-frequency missing or invalid\n");
+> > +			goto fail;
+> > +		}
+> 
+> Since it's easy to define a fixed rate clock (there's a generic driver
+> for that) I'd just require the user to provide a clock API clock and fix
+> the rate using that.  This is going to be less error prone and makes the
+> code simpler.
 
-The unresponsiveness at D3 isn't too serious, thus this fallback is
-mostly superfluous.  We can gracefully ignore the error there so that
-the driver keeps the normal operation mode.
+I tried to use fixed rate clock as below:
 
-This patch adds a new bit flag for codec read/write, set in the power
-transition stage, which is notified to the controller driver via a new
-bus->no_response_fallback flag.
+	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+	if (IS_ERR(data->codec_clk)) {
+		of_fixed_clk_setup(codec_np);
+		data->codec_clk = clk_get(NULL, codec_np->name);
+		if (IS_ERR(data->codec_clk)) {
+			dev_err(&pdev->dev, "failed to create fixed clk\n");
+			ret = IS_ERR(data->codec_clk);
+			goto fail;
+		}
+	}
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 7 ++++++-
- sound/pci/hda/hda_codec.h | 3 +++
- sound/pci/hda/hda_intel.c | 3 +++
- 3 files changed, 12 insertions(+), 1 deletion(-)
+	data->clk_frequency = clk_get_rate(data->codec_clk);
+	clk_prepare_enable(data->codec_clk);
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 503869a..35090b3 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -221,6 +221,8 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
-  again:
- 	snd_hda_power_up(codec);
- 	mutex_lock(&bus->cmd_mutex);
-+	if (flags & HDA_RW_NO_RESPONSE_FALLBACK)
-+		bus->no_response_fallback = 1;
- 	for (;;) {
- 		trace_hda_send_cmd(codec, cmd);
- 		err = bus->ops.command(bus, cmd);
-@@ -233,6 +235,7 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
- 		*res = bus->ops.get_response(bus, codec->addr);
- 		trace_hda_get_response(codec, *res);
- 	}
-+	bus->no_response_fallback = 0;
- 	mutex_unlock(&bus->cmd_mutex);
- 	snd_hda_power_down(codec);
- 	if (!codec_in_pm(codec) && res && *res == -1 && bus->rirb_error) {
-@@ -3805,11 +3808,13 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
- 	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
- 	int count;
- 	unsigned int state;
-+	int flags = 0;
- 
- 	/* this delay seems necessary to avoid click noise at power-down */
- 	if (power_state == AC_PWRST_D3) {
- 		/* transition time less than 10ms for power down */
- 		msleep(codec->epss ? 10 : 100);
-+		flags = HDA_RW_NO_RESPONSE_FALLBACK;
- 	}
- 
- 	/* repeat power states setting at most 10 times*/
-@@ -3818,7 +3823,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
- 			codec->patch_ops.set_power_state(codec, fg,
- 							 power_state);
- 		else {
--			snd_hda_codec_read(codec, fg, 0,
-+			snd_hda_codec_read(codec, fg, flags,
- 					   AC_VERB_SET_POWER_STATE,
- 					   power_state);
- 			snd_hda_codec_set_power_to_all(codec, fg, power_state);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 39a658e..701c2e0 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -679,6 +679,7 @@ struct hda_bus {
- 	unsigned int response_reset:1;	/* controller was reset */
- 	unsigned int in_reset:1;	/* during reset operation */
- 	unsigned int power_keep_link_on:1; /* don't power off HDA link */
-+	unsigned int no_response_fallback:1; /* don't fallback at RIRB error */
- 
- 	int primary_dig_out_type;	/* primary digital out PCM type */
- };
-@@ -930,6 +931,8 @@ enum {
- 	HDA_INPUT, HDA_OUTPUT
- };
- 
-+/* snd_hda_codec_read/write optional flags */
-+#define HDA_RW_NO_RESPONSE_FALLBACK	(1 << 0)
- 
- /*
-  * constructors
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 49dfad4..f089fa0 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -942,6 +942,9 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
- 		}
- 	}
- 
-+	if (!bus->no_response_fallback)
-+		return -1;
-+
- 	if (!chip->polling_mode && chip->poll_count < 2) {
- 		snd_printdd(SFX "%s: azx_get_response timeout, "
- 			   "polling the codec once: last cmd=0x%08x\n",
--- 
-1.8.3
+But I always got "failed to create fixed clk" error during system booting.
+So I think it's pretty different to get a fixed clock with normal since
+it's on the root_list of clock tree.
+How can I get the clock here, or more specifically, any way to get the 
+rate of the fixed-rate-clk?
+
+Thanks.
