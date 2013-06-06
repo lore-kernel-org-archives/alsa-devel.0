@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Treat DAI widgets like AIF
- widgets for power
-Date: Thu, 6 Jun 2013 00:27:06 +0100
-Message-ID: <20130605232705.GJ31367@sirena.org.uk>
-References: <1370457440-27867-1-git-send-email-broonie@linaro.org>
- <51AFA31C.3000602@wwwdotorg.org>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: WM8962: Create default platform
+	data structure
+Date: Thu, 6 Jun 2013 11:21:26 +0800
+Message-ID: <20130606032125.GA18783@MrMyself>
+References: <cover.1370433363.git.b42378@freescale.com>
+ <4e85e3a9b5dfdc04899958424eb53a9cfd0f4ace.1370433363.git.b42378@freescale.com>
+ <20130605122511.GB31367@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7518144208334761316=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C133E2654EA
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 01:27:12 +0200 (CEST)
-In-Reply-To: <51AFA31C.3000602@wwwdotorg.org>
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id E144C265503
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 05:27:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130605122511.GB31367@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, rob.herring@calxeda.com, grant.likely@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jun 05, 2013 at 01:25:11PM +0100, Mark Brown wrote:
+> On Wed, Jun 05, 2013 at 08:12:55PM +0800, Nicolin Chen wrote:
+> 
+> >  struct wm8962_priv {
+> > +	struct wm8962_pdata *pdata;
+> 
+> More idiomatic style for this is to just embed a copy of the platform
+> data struct in the private data then copy any driver model platform data
+> on top of it.  This simplifies usage as now the driver can assume that
+> there is platform data available at all times.
 
---===============7518144208334761316==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dvhSTuvbbQltApUS"
-Content-Disposition: inline
+Hmm..sorry I don't fully get it. Does that mean I should do something like:
+struct wm8962_priv {
+	struct wm8962_pdata pdata;
 
-
---dvhSTuvbbQltApUS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jun 05, 2013 at 02:44:12PM -0600, Stephen Warren wrote:
-> On 06/05/2013 12:37 PM, Mark Brown wrote:
-
-> > -		if (dai_w->id != snd_soc_dapm_dai)
-> > +		switch (w->id) {
-
-> That should be dai_w->id not w->id.
-
-> With that fixed,
-> Tested-by: Stephen Warren <swarren@nvidia.com>
-
-Great, thanks for testing.
-
---dvhSTuvbbQltApUS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRr8lGAAoJELSic+t+oim9BTgP/j8Gufua4gstL1HvUddVI9rG
-5cOfL9Kp0VYZvrdMUozVQlMVaJfpP/MneQd+0Da4L/Jf/CQ5Ir51P7xVHbLFMFv/
-ZqvHOLFILtOZ+mqd4J2q41UJJJEarAcQWgDvHhsGpB1mB/cUzaNZdF2dMLfVVrR8
-GpdmTK9FyH451bpoKDH2xZCJ7cldG6PJAx9zt7RthOL3hraxiJY/UxYyP72JdVEB
-ko4DXaXXQ4CvlDbT0MWgwkKrJJvLFJG/bCMab0QXH8HJ6p0k0NH5/V427pg8bi6H
-y5Q8ivUzpMlg62VMBbien+9MAxXNEvk0hcPJEbh1DIJEfr/K55do/VT+bFP9CJf0
-jCkhgVSEmotSLr/uSwoZtX2IB81XHNZcmQiccUUN9qR40EJwMApgeP/DkLVl2CRg
-Pwz/by98BTAa/cQD0sTqyHZBBrGQzpq2Y4MO4vn4z0zsgrITL4vw4nRrqqyA66TU
-2mJ/zdG7vycyjWLULYutCm4r/jf6SPaYJXbrIORo6cqe+5nc8HWZ36kCOzxz/4Jm
-l3I0AvOC8YJBpMKtzsv6/0cDSlT4iUahqeIX7jBn/1nWLSWOB5H8VJiYDaudroOa
-fqzXCwY5WXJ9ttyM1bY2WuntNymt5RI4YYxWozv2mwsV70r6S6X5L45m0IEnHQQ/
-NC7BPLQrhEtc8RKjal1z
-=6ENT
------END PGP SIGNATURE-----
-
---dvhSTuvbbQltApUS--
-
---===============7518144208334761316==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7518144208334761316==--
+instead of pointer? so no devm_kzalloc() for it any more?
