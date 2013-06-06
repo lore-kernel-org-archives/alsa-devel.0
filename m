@@ -1,76 +1,83 @@
-From: Johan Hellman <johan.hellman@axis.com>
-Subject: Re: Timestamps using I/O Plugin
-Date: Thu, 6 Jun 2013 09:01:12 +0200
-Message-ID: <9A8CA64355151747A180E7910F873F1802B88CAF20@xmail3.se.axis.com>
-References: <9A8CA64355151747A180E7910F873F1802B9DFC0B1@xmail3.se.axis.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: WM8962: Create default platform data structure
+Date: Thu, 6 Jun 2013 09:42:59 +0100
+Message-ID: <20130606084259.GK31367@sirena.org.uk>
+References: <cover.1370433363.git.b42378@freescale.com>
+ <4e85e3a9b5dfdc04899958424eb53a9cfd0f4ace.1370433363.git.b42378@freescale.com>
+ <20130605122511.GB31367@sirena.org.uk>
+ <20130606032125.GA18783@MrMyself>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anubis.se.axis.com (anubis.se.axis.com [195.60.68.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 8355A265535
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by anubis.se.axis.com (Postfix) with ESMTP id 2D91A19E04
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:15 +0200 (CEST)
-Received: from anubis.se.axis.com ([127.0.0.1])
- by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id yewNxs0TcDoY for <alsa-devel@alsa-project.org>;
- Thu,  6 Jun 2013 09:01:14 +0200 (CEST)
-Received: from boulder.localdomain (boulder.se.axis.com [10.0.2.104])
- by anubis.se.axis.com (Postfix) with ESMTP id 0902419DE6
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:13 +0200 (CEST)
-Received: from boulder.localdomain (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id BC1E284D
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:13 +0200 (CEST)
-Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
- by boulder.localdomain (Postfix) with ESMTP id AD8C4818
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:13 +0200 (CEST)
-Received: from xmail3.se.axis.com (xmail3.se.axis.com [10.0.5.75])
- by seth.se.axis.com (Postfix) with ESMTP id AC09C3E06D
- for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 09:01:13 +0200 (CEST)
-In-Reply-To: <9A8CA64355151747A180E7910F873F1802B9DFC0B1@xmail3.se.axis.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============3044696252893469418=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <20130606032125.GA18783@MrMyself>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-After spending more time investigating how I would set monotonic timestamps from a new I/O plugin so that the app using ALSA lib could synchronize different audio streams I cant find that its possible!? 
 
-Can someone please confirm that it is not possible to set monotonic timestamps using the I/O plugin SDK!?
-
-The new plugin would know the relationship between audio streams timestamp information and the systems monotonic clock. If it was possible to override the snd_pcm_htimestamp() then the timestamp could be fetched from the I/O plugin, and snd_pcm_status()->snd_pcm_ioplug_status() could call that overridden function to fill in tstamp into the status object.  If not implemented in the I/O plugin call snd_pcm_generic_real_htimestamp() as today.  Would this be an acceptable way forward? 
-
-/JohanHellman
-________________________________________
-From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Johan Hellman [johanhn@axis.com]
-Sent: Friday, May 31, 2013 11:22 AM
-To: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Timestamps using I/O Plugin
-
-I was excited when I found that it was possible to write user space drivers for ALSA, but I can't get my head around how timestamping works when using a I/O plugin instance.
-
-I better start explaining what we want to do.
-Basically we just want to transfer raw audio between the HOST running ALSA and one or more small(tiny) network connected MCUs with audio codecs. We need to synchronize the different network sources with the local HW sources (on the ALSA HOST).
-
-Starting looking into how timestamps is handled by ALSA  I could not find how it was possible to set the timestamp, there seems to be some differences compared to using a normal kernel driver!?
-If I understand it correctly timestamp can be obtained by calling snd_pcm_status() but the ioplugs implementation of the .status() newer fills in the ->tstamp only the ->trigger_tstamp, so how can I set the timestamp of the data my plugin delivers to ALSA? Additionally snd_pcm_htimestamp() only seams to return the current monotonic clock at the point the function was called for an ioplug instance!?
-
-I saw that there are plugins for pulseaudio and jack doing what we whant to achieve but because of the footprint of the MCU we can't use PA/Jack  on these MCU:s. But how have they solved this issue or isn't it  an issue for their usecase?
-/JohanHellman
+--===============3044696252893469418==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xKAOFH8xvSgM/GoA"
+Content-Disposition: inline
 
 
+--xKAOFH8xvSgM/GoA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Jun 06, 2013 at 11:21:26AM +0800, Nicolin Chen wrote:
+
+> Hmm..sorry I don't fully get it. Does that mean I should do something like:
+> struct wm8962_priv {
+> 	struct wm8962_pdata pdata;
+
+> instead of pointer? so no devm_kzalloc() for it any more?
+
+Yes.
+
+--xKAOFH8xvSgM/GoA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRsEuPAAoJELSic+t+oim966cP/jy6V3vEiHufeikqvOcbZUNU
+r9l9YvTleDgmooovSTM+t2gNp6MBhkhb2/Qdd4qqwBTspwVRJrdsda8FWT3sW3nC
+IawPLWHoxBeZoU2kUGMEdi09BfQ+cZFK4mxkWAIJ1/EmZ9B+Hf8k0vXSgRNdt3NK
+Q+GukLmJqhdHKvLl8qsZCvq8hg5D150fKz90YzUd7Y0kEyFLAhwuVbOaDAn/hv+M
+AKXnnXP9Jirh5xTd+8r5SyXKtPcP1+9aE7Bv0WNkIxcfjocaLbLwTt9VTC8OAxsr
+Lbmt6E8LFKcYYH8+ir/GMxkjpp7V42CaRQQZpch6MN/083Ol71znnLCbpsuW2+di
+iXDkNLNj3A/AqRa/uDPaavlpcZrWxlE4D3AiRJb/it5myMlrScbM63SFj07zgQIu
+SElGGXo7bMvFX2LC74pnv7kD6Ux3SfIj3qvHIUuC/1Xnt+UByd+SBxmZKYmYqavs
+1Tq0JpD4+zBLIopHrsgJfRhP6d+EBOYyjz3QEOGm0p+yqNUoszQAM6AZtC1Gh7iD
+Ldz5GcAtugzXCycwp2pULOIHkbHagixZdfzqYDODUI2dw/p3cadVJJFwxCxRAvjK
+maxFRSqSK69x25ftZdGPfL5uApDES67+XJfYPWDC/47Mqp9ftJg05Ka5G8p0+cLp
+XfSQJo3xorMWTiKp+Gwu
+=sktu
+-----END PGP SIGNATURE-----
+
+--xKAOFH8xvSgM/GoA--
+
+--===============3044696252893469418==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
+
+--===============3044696252893469418==--
