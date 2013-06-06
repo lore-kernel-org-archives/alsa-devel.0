@@ -1,18 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: hda - Introduce bit flags to
-	snd_hda_codec_read/write()
-Date: Thu,  6 Jun 2013 15:02:52 +0200
-Message-ID: <1370523773-28528-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda - Don't take unresponsive D3
+	transition too serious
+Date: Thu,  6 Jun 2013 15:02:53 +0200
+Message-ID: <1370523773-28528-2-git-send-email-tiwai@suse.de>
+References: <1370523773-28528-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B8904265654
+ by alsa0.perex.cz (Postfix) with ESMTP id CD48926565A
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 97736A56A1
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A35FFA566D
  for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 15:02:16 +0200 (CEST)
+In-Reply-To: <1370523773-28528-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,201 +27,106 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_hda_codec_read(), snd_hda_codec_write() & co take the argument
-"direct" that indicates whether the given NID is a direct reference or
-an indirect reference.  However, the indirect reference is practically
-unimplemented and never exists.  And moreover, we don't need the
-indication of indirect reference at this high level, as NID can be
-represented in 16bit values at this point.
+When a codec is powered off, some systems don't respond properly after
+D3 FG transition, while the driver still expects the response and
+tries to fall back to different modes (polling and single-cmd).  When
+the fallback happens, the driver stays in that mode, and falling back
+to the single-cmd mode means it'll loose the unsol event handling,
+too.
 
-Meanwhile, there are some cases where it'd be nice to give some
-operational options to these functions.  So, we can reuse this
-argument as a new bit flag!  Pretty frugal, eh?
+The unresponsiveness at D3 isn't too serious, thus this fallback is
+mostly superfluous.  We can gracefully ignore the error there so that
+the driver keeps the normal operation mode.
 
-All callers so far pass zero to this argument, thus there is no
-behavior change by this replacement.
-
-The real usage of this new bit option will be added in the following
-patches.
+This patch adds a new bit flag for codec read/write, set in the power
+transition stage, which is notified to the controller driver via a new
+bus->no_response_fallback flag.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 41 ++++++++++++++++++++---------------------
- sound/pci/hda/hda_codec.h |  8 ++++----
- 2 files changed, 24 insertions(+), 25 deletions(-)
+ sound/pci/hda/hda_codec.c | 7 ++++++-
+ sound/pci/hda/hda_codec.h | 3 +++
+ sound/pci/hda/hda_intel.c | 3 +++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 679fba4..503869a 100644
+index 503869a..35090b3 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -185,20 +185,19 @@ EXPORT_SYMBOL_HDA(snd_hda_get_jack_type);
-  * Compose a 32bit command word to be sent to the HD-audio controller
-  */
- static inline unsigned int
--make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
-+make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int flags,
- 	       unsigned int verb, unsigned int parm)
- {
- 	u32 val;
+@@ -221,6 +221,8 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+  again:
+ 	snd_hda_power_up(codec);
+ 	mutex_lock(&bus->cmd_mutex);
++	if (flags & HDA_RW_NO_RESPONSE_FALLBACK)
++		bus->no_response_fallback = 1;
+ 	for (;;) {
+ 		trace_hda_send_cmd(codec, cmd);
+ 		err = bus->ops.command(bus, cmd);
+@@ -233,6 +235,7 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+ 		*res = bus->ops.get_response(bus, codec->addr);
+ 		trace_hda_get_response(codec, *res);
+ 	}
++	bus->no_response_fallback = 0;
+ 	mutex_unlock(&bus->cmd_mutex);
+ 	snd_hda_power_down(codec);
+ 	if (!codec_in_pm(codec) && res && *res == -1 && bus->rirb_error) {
+@@ -3805,11 +3808,13 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 	hda_nid_t fg = codec->afg ? codec->afg : codec->mfg;
+ 	int count;
+ 	unsigned int state;
++	int flags = 0;
  
--	if ((codec->addr & ~0xf) || (direct & ~1) || (nid & ~0x7f) ||
-+	if ((codec->addr & ~0xf) || (nid & ~0x7f) ||
- 	    (verb & ~0xfff) || (parm & ~0xffff)) {
--		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x:%x\n",
--		       codec->addr, direct, nid, verb, parm);
-+		printk(KERN_ERR "hda-codec: out of range cmd %x:%x:%x:%x\n",
-+		       codec->addr, nid, verb, parm);
- 		return ~0;
+ 	/* this delay seems necessary to avoid click noise at power-down */
+ 	if (power_state == AC_PWRST_D3) {
+ 		/* transition time less than 10ms for power down */
+ 		msleep(codec->epss ? 10 : 100);
++		flags = HDA_RW_NO_RESPONSE_FALLBACK;
  	}
  
- 	val = (u32)codec->addr << 28;
--	val |= (u32)direct << 27;
- 	val |= (u32)nid << 20;
- 	val |= verb << 8;
- 	val |= parm;
-@@ -209,7 +208,7 @@ make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int direct,
-  * Send and receive a verb
-  */
- static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
--			   unsigned int *res)
-+			   int flags, unsigned int *res)
- {
- 	struct hda_bus *bus = codec->bus;
- 	int err;
-@@ -255,7 +254,7 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
-  * snd_hda_codec_read - send a command and get the response
-  * @codec: the HDA codec
-  * @nid: NID to send the command
-- * @direct: direct flag
-+ * @flags: optional bit flags
-  * @verb: the verb to send
-  * @parm: the parameter for the verb
-  *
-@@ -264,12 +263,12 @@ static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
-  * Returns the obtained response value, or -1 for an error.
-  */
- unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
--				int direct,
-+				int flags,
- 				unsigned int verb, unsigned int parm)
- {
--	unsigned cmd = make_codec_cmd(codec, nid, direct, verb, parm);
-+	unsigned cmd = make_codec_cmd(codec, nid, flags, verb, parm);
- 	unsigned int res;
--	if (codec_exec_verb(codec, cmd, &res))
-+	if (codec_exec_verb(codec, cmd, flags, &res))
- 		return -1;
- 	return res;
- }
-@@ -279,7 +278,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_read);
-  * snd_hda_codec_write - send a single command without waiting for response
-  * @codec: the HDA codec
-  * @nid: NID to send the command
-- * @direct: direct flag
-+ * @flags: optional bit flags
-  * @verb: the verb to send
-  * @parm: the parameter for the verb
-  *
-@@ -287,12 +286,12 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_read);
-  *
-  * Returns 0 if successful, or a negative error code.
-  */
--int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
--			 unsigned int verb, unsigned int parm)
-+int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
-+			unsigned int verb, unsigned int parm)
- {
--	unsigned int cmd = make_codec_cmd(codec, nid, direct, verb, parm);
-+	unsigned int cmd = make_codec_cmd(codec, nid, flags, verb, parm);
- 	unsigned int res;
--	return codec_exec_verb(codec, cmd,
-+	return codec_exec_verb(codec, cmd, flags,
- 			       codec->bus->sync_write ? &res : NULL);
- }
- EXPORT_SYMBOL_HDA(snd_hda_codec_write);
-@@ -3582,7 +3581,7 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
-  * snd_hda_codec_write_cache - send a single command with caching
-  * @codec: the HDA codec
-  * @nid: NID to send the command
-- * @direct: direct flag
-+ * @flags: optional bit flags
-  * @verb: the verb to send
-  * @parm: the parameter for the verb
-  *
-@@ -3591,7 +3590,7 @@ EXPORT_SYMBOL_HDA(snd_hda_create_spdif_in_ctls);
-  * Returns 0 if successful, or a negative error code.
-  */
- int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
--			      int direct, unsigned int verb, unsigned int parm)
-+			      int flags, unsigned int verb, unsigned int parm)
- {
- 	int err;
- 	struct hda_cache_head *c;
-@@ -3600,7 +3599,7 @@ int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
- 
- 	cache_only = codec->cached_write;
- 	if (!cache_only) {
--		err = snd_hda_codec_write(codec, nid, direct, verb, parm);
-+		err = snd_hda_codec_write(codec, nid, flags, verb, parm);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -3624,7 +3623,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
-  * snd_hda_codec_update_cache - check cache and write the cmd only when needed
-  * @codec: the HDA codec
-  * @nid: NID to send the command
-- * @direct: direct flag
-+ * @flags: optional bit flags
-  * @verb: the verb to send
-  * @parm: the parameter for the verb
-  *
-@@ -3635,7 +3634,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_write_cache);
-  * Returns 0 if successful, or a negative error code.
-  */
- int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
--			       int direct, unsigned int verb, unsigned int parm)
-+			       int flags, unsigned int verb, unsigned int parm)
- {
- 	struct hda_cache_head *c;
- 	u32 key;
-@@ -3651,7 +3650,7 @@ int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
- 		return 0;
- 	}
- 	mutex_unlock(&codec->bus->cmd_mutex);
--	return snd_hda_codec_write_cache(codec, nid, direct, verb, parm);
-+	return snd_hda_codec_write_cache(codec, nid, flags, verb, parm);
- }
- EXPORT_SYMBOL_HDA(snd_hda_codec_update_cache);
- 
+ 	/* repeat power states setting at most 10 times*/
+@@ -3818,7 +3823,7 @@ static unsigned int hda_set_power_state(struct hda_codec *codec,
+ 			codec->patch_ops.set_power_state(codec, fg,
+ 							 power_state);
+ 		else {
+-			snd_hda_codec_read(codec, fg, 0,
++			snd_hda_codec_read(codec, fg, flags,
+ 					   AC_VERB_SET_POWER_STATE,
+ 					   power_state);
+ 			snd_hda_codec_set_power_to_all(codec, fg, power_state);
 diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index c93f902..39a658e 100644
+index 39a658e..701c2e0 100644
 --- a/sound/pci/hda/hda_codec.h
 +++ b/sound/pci/hda/hda_codec.h
-@@ -945,9 +945,9 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec);
-  * low level functions
-  */
- unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
--				int direct,
-+				int flags,
- 				unsigned int verb, unsigned int parm);
--int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int direct,
-+int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
- 			unsigned int verb, unsigned int parm);
- #define snd_hda_param_read(codec, nid, param) \
- 	snd_hda_codec_read(codec, nid, 0, AC_VERB_PARAMETERS, param)
-@@ -986,11 +986,11 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex);
+@@ -679,6 +679,7 @@ struct hda_bus {
+ 	unsigned int response_reset:1;	/* controller was reset */
+ 	unsigned int in_reset:1;	/* during reset operation */
+ 	unsigned int power_keep_link_on:1; /* don't power off HDA link */
++	unsigned int no_response_fallback:1; /* don't fallback at RIRB error */
  
- /* cached write */
- int snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
--			      int direct, unsigned int verb, unsigned int parm);
-+			      int flags, unsigned int verb, unsigned int parm);
- void snd_hda_sequence_write_cache(struct hda_codec *codec,
- 				  const struct hda_verb *seq);
- int snd_hda_codec_update_cache(struct hda_codec *codec, hda_nid_t nid,
--			      int direct, unsigned int verb, unsigned int parm);
-+			      int flags, unsigned int verb, unsigned int parm);
- void snd_hda_codec_resume_cache(struct hda_codec *codec);
- /* both for cmd & amp caches */
- void snd_hda_codec_flush_cache(struct hda_codec *codec);
+ 	int primary_dig_out_type;	/* primary digital out PCM type */
+ };
+@@ -930,6 +931,8 @@ enum {
+ 	HDA_INPUT, HDA_OUTPUT
+ };
+ 
++/* snd_hda_codec_read/write optional flags */
++#define HDA_RW_NO_RESPONSE_FALLBACK	(1 << 0)
+ 
+ /*
+  * constructors
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 49dfad4..f089fa0 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -942,6 +942,9 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
+ 		}
+ 	}
+ 
++	if (!bus->no_response_fallback)
++		return -1;
++
+ 	if (!chip->polling_mode && chip->poll_count < 2) {
+ 		snd_printdd(SFX "%s: azx_get_response timeout, "
+ 			   "polling the codec once: last cmd=0x%08x\n",
 -- 
 1.8.3
