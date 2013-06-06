@@ -1,45 +1,49 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH V2] ASoC: fsl: add imx-wm8962 machine driver
-Date: Thu, 6 Jun 2013 11:02:43 -0300
-Message-ID: <CAOMZO5B=OrXUMcD9wYHn=T171usvG_P5dpQ-7iM77-RnS8iSGQ@mail.gmail.com>
-References: <1370420501-8410-1-git-send-email-b42378@freescale.com>
- <20130605115544.GX31367@sirena.org.uk>
- <20130606124952.GA19153@MrMyself>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Generic clock divider indices
+Date: Thu, 06 Jun 2013 16:09:52 +0200
+Message-ID: <51B09830.7020208@gmail.com>
+References: <51B09224.9050409@gmail.com> <20130606135605.GB9980@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20130606124952.GA19153@MrMyself>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 323772655C5
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2013 16:09:24 +0200 (CEST)
+Received: by mail-wi0-f179.google.com with SMTP id hm9so393306wib.0
+ for <alsa-devel@alsa-project.org>; Thu, 06 Jun 2013 07:09:23 -0700 (PDT)
+In-Reply-To: <20130606135605.GB9980@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
+On 06.06.2013 15:56, Mark Brown wrote:
+> On Thu, Jun 06, 2013 at 03:44:04PM +0200, Daniel Mack wrote:
+> 
+>> Would it be an idea to define some commonly used dividers in the core?
+>> If they start at 0x80000000, they won't collide with existing ones, and
+>> we could simply add them as alternative case statements to existing drivers.
+> 
+> I don't think this is a terribly sensible idea; as soon as you start
+> relying on these dividers in machine code you're going to run into
+> drivers that just don't implement them either due to hardware or due to
+> them being able to figure things out by themselves and...
 
-On Thu, Jun 6, 2013 at 9:49 AM, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
+I do see that we have a way to propagate the sysclk, but how would you
+determine the bit clock rate from a codec driver?
 
-> But I always got "failed to create fixed clk" error during system booting.
-> So I think it's pretty different to get a fixed clock with normal since
-> it's on the root_list of clock tree.
-> How can I get the clock here, or more specifically, any way to get the
-> rate of the fixed-rate-clk?
+Also, the same problem with freely definable indices is true for
+.set_sysclk() as well. Not all drivers expect the actual MCLK rate here.
 
-You could try something like (pass the real clock in the device tree):
 
-http://permalink.gmane.org/gmane.linux.alsa.devel/107614
-
-(I will re-post this patch later)
-
-Regards,
-
-Fabio Estevam
+Daniel
