@@ -1,16 +1,15 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
-Date: Fri, 7 Jun 2013 11:34:25 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1306071041170.1366-100000@iolanthe.rowland.org>
-References: <s5hobbiqx7w.wl%tiwai@suse.de>
+From: Mark Brown <broonie@linaro.org>
+Subject: [PATCH] ASoC: wm8962: Restore device state after reset
+	in runtime resume
+Date: Fri,  7 Jun 2013 16:43:17 +0100
+Message-ID: <1370619797-17503-1-git-send-email-broonie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id 7749F2610CA
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 17:34:27 +0200 (CEST)
-In-Reply-To: <s5hobbiqx7w.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9894A2610CA
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 17:43:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 7 Jun 2013, Takashi Iwai wrote:
+After the device has been reset we need to repeat the same
+initialisation we do on probe to make sure that the device is in
+a known state.
 
-> > > I don't expect that to happen any time soon.  Still, I think it makes
-> > > more sense to concentrate on converting the messages below sound/usb
-> > > rather than fiddling around with the existing API, which is inadequate
-> > > anyway since it doesn't include the device.
-> > 
-> > I agree with that.
-> > 
-> > It'd be pretty easy to take that large patch that did
-> > snd_printk(fmt, ...) -> snd_dbg(1, fmt, ...) and
-> > convert it to snd_card_dbg(card *, fmt, ...)
-> > whenever a struct snd_card * was available.
-> > 
-> > snd_card_dbg() would be either a macro or a function
-> > to deference the snd_card * dev and maybe emit
-> > "struct snd_card.shortname" with it too.
-> > 
-> > Want to start with that?
-> 
-> As discussed earlier, the snd_card instance isn't always appropriate
-> for retrieving the device pointer.  It might help some driver codes,
-> but not always.
-> 
-> In the case of sound/usb/*, most of codes rather handle directly the
-> USB device pointer (mostly struct usb_interface), thus it's more
-> natural to use it directly, IMO.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/codecs/wm8962.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Agreed -- the lower-level driver should use the underlying device for
-their messages.  The natural device for the snd_usb_audio driver to
-report is the USB interface.  This would be the audio control interface
-in many cases, or it could be the interface that contains the streaming
-endpoints, or the interface containing the mixer, or the MIDI
-interface...
-
-The relevant data structures don't all store a pointer to the
-interface, so I will have to add one.  That's another example of why
-the conversion can't simply be done mindlessly.
-
-For log messages in the sound core, it does make sense to use
-snd_card->dev, or (preferably) snd_card->card_dev when it is available.  
-As Takashi mentioned, the lower drivers often do not set snd_card->dev
-as quickly as they should, i.e., they don't call snd_card_set_dev()  
-right after creating the snd_card.  The best way to solve this is
-probably to add a new routine, a version of snd_card_create() that
-accepts the device pointer as an additional argument.
-
-(Or maybe just change snd_card_create() and all its callers in one big 
-patch.  It would be a fair amount of work, but doable.)
-
-Alan Stern
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index d56dd86..32c2c47 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3723,6 +3723,21 @@ static int wm8962_runtime_resume(struct device *dev)
+ 
+ 	wm8962_reset(wm8962);
+ 
++	/* SYSCLK defaults to on; make sure it is off so we can safely
++	 * write to registers if the device is declocked.
++	 */
++	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
++			   WM8962_SYSCLK_ENA, 0);
++
++	/* Ensure we have soft control over all registers */
++	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
++			   WM8962_CLKREG_OVD, WM8962_CLKREG_OVD);
++
++	/* Ensure that the oscillator and PLLs are disabled */
++	regmap_update_bits(wm8962->regmap, WM8962_PLL2,
++			   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
++			   0);
++
+ 	regcache_sync(wm8962->regmap);
+ 
+ 	return 0;
+-- 
+1.7.10.4
