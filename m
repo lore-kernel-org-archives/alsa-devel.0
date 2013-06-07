@@ -1,16 +1,20 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
-Date: Fri, 7 Jun 2013 10:40:39 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1306071035130.1366-100000@iolanthe.rowland.org>
-References: <1370552350.2209.41.camel@joe-AO722>
+From: Chen Guangyu-B42378 <B42378@freescale.com>
+Subject: Re: [PATCH] ASoC: WM8962: Set CLKREG_OVD if GP5_FN is
+ not its reset value
+Date: Fri, 7 Jun 2013 15:33:31 +0000
+Message-ID: <E31481825E4C03459FC878EE97CB2EFD02FDA184@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <1370607258-4750-1-git-send-email-b42378@freescale.com>,
+ <20130607143905.GT31367@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
- by alsa0.perex.cz (Postfix) with SMTP id 9DCEC265710
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 16:40:41 +0200 (CEST)
-In-Reply-To: <1370552350.2209.41.camel@joe-AO722>
+Received: from tx2outboundpool.messaging.microsoft.com
+ (tx2ehsobe005.messaging.microsoft.com [65.55.88.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B122610B7
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 17:34:04 +0200 (CEST)
+In-Reply-To: <20130607143905.GT31367@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 Jun 2013, Joe Perches wrote:
 
-> > How useful really is it to be able to limit the amount of debugging
-> > messages at runtime?  Does anybody ever actually adjust the "debug"  
-> > module parameter?
-> 
-> When it's a bitmask, yes.
-> It then becomes similar to ethtool.
+On Fri, Jun 07, 2013,  Mark Brown wrote:
 
-But it isn't a bitmask; it's just a level.  From 
-sound/core/misc.c:__snd_printk():
+> Please use subject lines appropriate for the thing you're changing.
 
-#ifdef CONFIG_SND_DEBUG
-	if (debug < level)
-		return;
-#endif
+I'm sorry. I'll pay attention to it next time.
 
-Since I have no intention of making it a bitmask at the moment, I will
-presume your answer really means "No".
+> You're missing a whole batch of handling of device reset here - look at
+> how we handle things on power on.
 
-> > In my opinion, this is not worth the extra space required.  Virtually 
-> > all the benefit of different debugging levels can be obtained by 
-> > defining different symbols at compile time, such as CONFIG_SND_DEBUG 
-> > and CONFIG_SND_VERBOSE_DEBUG.
-> 
-> I think the whole verbosity thing should be done at runtime
-> via pr_debug and classifications by type via bitmasks at
-> compile-time instead of the silliness of something like
-> CONFIG_SND_DEBUG_VERBOSITY.
+Are you talking about the initial code in wm8962_probe()?
+But after wm8962_runtime_resume(), register Clocking2 will be reset to its
+default value without OVD-setting and won't be recovered after regcache_sync()
+due to volatile_reg.
+If I'm wrong about it, pls tell me. I'll be happy if this codec driver hasn't this issue.
 
-The appeal of this approach is understandable.  But it is a whole 
-different project from the conversion I'm considering for now.
-
-> > Does anybody really need a third level?
-> 
-> Hard to say.  There are several additional "private"
-> debugging level controls for sound/...
-
-Then they can remain private.  Takashi asked me not to change the 
-existing Kconfig options, and I won't.
-
-Alan Stern
+Thank you.
