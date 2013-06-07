@@ -1,15 +1,17 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 0/4] ASoC: codecs: some more improvements for
-	adau1701
-Date: Fri,  7 Jun 2013 13:53:03 +0200
-Message-ID: <1370605987-19290-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH 1/4] ASoC: codecs: adau1701: factor out
+	firmware reset
+Date: Fri,  7 Jun 2013 13:53:04 +0200
+Message-ID: <1370605987-19290-2-git-send-email-zonque@gmail.com>
+References: <1370605987-19290-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 98A892656E2
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 13:52:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 545A72656E5
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 13:52:48 +0200 (CEST)
+In-Reply-To: <1370605987-19290-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +25,106 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, lars@metafoo.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Here are some more patches that I worked on while bootstrapping a new
-audio device featuring an ADAU1701 DSP.
+Some runtime-determined constraints might need to be satisfied prior to
+firmware loading, so the actual download and releasing the device from
+reset has to be postponed. Factor it out first, so we have everything at
+one place.
 
-Daniel Mack (4):
-  ASoC: codecs: adau1701: factor out firmware reset
-  ASoC: codecs: adau1701: allow configuration of PLL mode pins
-  ASoC: codecs: adau1701: switch to direct regmap API usage
-  ASoC: codecs: adau1701: add support for pin muxing
+This also changes the behaviour in a way that adau1701_i2c_probe() will
+assert the reset line, and wait for the codec probe to release it.
 
- .../devicetree/bindings/sound/adi,adau1701.txt     |  17 ++
- sound/soc/codecs/adau1701.c                        | 255 ++++++++++++++++++---
- sound/soc/codecs/adau1701.h                        |   4 +
- 3 files changed, 238 insertions(+), 38 deletions(-)
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/codecs/adau1701.c | 49 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 13 deletions(-)
 
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index 3fc1763..b6b1a77 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -90,6 +90,7 @@
+ #define ADAU1701_FIRMWARE "adau1701.bin"
+ 
+ struct adau1701 {
++	int gpio_nreset;
+ 	unsigned int dai_fmt;
+ };
+ 
+@@ -183,9 +184,37 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
+ 	return value;
+ }
+ 
+-static int adau1701_load_firmware(struct i2c_client *client)
++static void adau1701_reset(struct snd_soc_codec *codec)
+ {
+-	return process_sigma_firmware(client, ADAU1701_FIRMWARE);
++	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
++
++	if (!gpio_is_valid(adau1701->gpio_nreset))
++		return;
++
++	gpio_set_value(adau1701->gpio_nreset, 0);
++	/* minimum reset time is 20ns */
++	udelay(1);
++	gpio_set_value(adau1701->gpio_nreset, 1);
++	/* power-up time may be as long as 85ms */
++	mdelay(85);
++}
++
++static int adau1701_init(struct snd_soc_codec *codec)
++{
++	int ret;
++	struct i2c_client *client = to_i2c_client(codec->dev);
++
++	adau1701_reset(codec);
++
++	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
++	if (ret) {
++		dev_warn(codec->dev, "Failed to load firmware\n");
++		return ret;
++	}
++
++	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
++
++	return 0;
+ }
+ 
+ static int adau1701_set_capture_pcm_format(struct snd_soc_codec *codec,
+@@ -466,15 +495,13 @@ MODULE_DEVICE_TABLE(of, adau1701_dt_ids);
+ static int adau1701_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
+-	struct i2c_client *client = to_i2c_client(codec->dev);
+ 
+-	codec->control_data = client;
++	codec->control_data = to_i2c_client(codec->dev);
+ 
+-	ret = adau1701_load_firmware(client);
++	ret = adau1701_init(codec);
+ 	if (ret)
+-		dev_warn(codec->dev, "Failed to load firmware\n");
++		return ret;
+ 
+-	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
+ 	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
+ 
+ 	return 0;
+@@ -524,14 +551,10 @@ static int adau1701_i2c_probe(struct i2c_client *client,
+ 					    "ADAU1701 Reset");
+ 		if (ret < 0)
+ 			return ret;
+-
+-		/* minimum reset time is 20ns */
+-		udelay(1);
+-		gpio_set_value(gpio_nreset, 1);
+-		/* power-up time may be as long as 85ms */
+-		mdelay(85);
+ 	}
+ 
++	adau1701->gpio_nreset = gpio_nreset;
++
+ 	i2c_set_clientdata(client, adau1701);
+ 	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
+ 			&adau1701_dai, 1);
 -- 
 1.8.1.4
