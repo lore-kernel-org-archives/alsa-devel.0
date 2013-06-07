@@ -1,76 +1,83 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V3] ASoC: WM8962: Add device tree binding
-Date: Fri, 7 Jun 2013 10:35:38 +0100
-Message-ID: <20130607093537.GI31367@sirena.org.uk>
-References: <1370575407-17712-1-git-send-email-b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V3] ASoC: fsl: add imx-wm8962 machine driver
+Date: Fri, 7 Jun 2013 10:41:47 +0100
+Message-ID: <20130607094147.GJ31367@sirena.org.uk>
+References: <1370584787-9604-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7560188958381295083=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1370575407-17712-1-git-send-email-b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7065051067970085989=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8B702656B3
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 11:41:49 +0200 (CEST)
+In-Reply-To: <1370584787-9604-1-git-send-email-b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, lgirdwood@gmail.com, rob.herring@calxeda.com, grant.likely@linaro.org, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7560188958381295083==
+--===============7065051067970085989==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="em00FKA6+IJh3lGW"
+	protocol="application/pgp-signature"; boundary="prKJgtdAmn5IQEeG"
 Content-Disposition: inline
 
 
---em00FKA6+IJh3lGW
+--prKJgtdAmn5IQEeG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 07, 2013 at 11:23:27AM +0800, Nicolin Chen wrote:
-> Document the device tree binding for the WM8962 codec, and modify the
-> driver to extract platform data from the device tree, if present.
+On Fri, Jun 07, 2013 at 01:59:47PM +0800, Nicolin Chen wrote:
 
-Applied, thanks.
+> +Optional properties:
+> +- hp-det-gpios : The gpio port of Headphone jack detection.
+> +- mic-det-gpios: The gpio port of Micphone jack detection.
 
---em00FKA6+IJh3lGW
+These still need better documentation to say what they are electrically. =
+=20
+Like I say I really don't expect that your hp-det-gpio is actually
+detecting headphones at all, I think it's detecting if something is
+present in the jack.
+
+Otherwise this looks good.
+
+--prKJgtdAmn5IQEeG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRsalmAAoJELSic+t+oim96PcP/R21QiTTiAXyMqoZP1nmD+Yf
-/D1ILNCA/3KdUizte5F+XYgSR5bPdt7ZiJeWtQ4WKPzhV5eJ+5aKsxRrB1hqvAJS
-PSsH0yOsnLiZDX41BqkfXxB0iMUs4K22Zo8jAtatp6KzNUzI6rtzczSdZztuc+tw
-K5beF1S8K1+Ud5n+DAcFrVbVrvGqjtpZosTC8S/pBtFD8wNQibCRx9BNwj3pq/Oj
-My3X1WKwlzpvyWqHQHYjJUk46pcbKOD7OYvq3BlY82lwvcu/jVTos4UeI9faDh9M
-I07ArOrNsqM1f/SXNa7sMgTyIL4RaXJ0DsIKLd6n4CUBrs04iuDUzecc9Ct0g1f9
-qVhvfxMj0i3eOH96sbAsRWga5qgYFW1Bm/R1jDErDusABB2Zqyag95GA0rwWREtc
-EIfdwSbfdi8IkJrSRVunNbmNp5RmP3Xz9nyKgW0fwNpqJrAoE/eEB0t2CMA4nP2T
-zu6hX6vjqbzhkIrLga3fZvb6DCvkQF9NKomufXY5BeZTuxRqcaQ9kQOWBwlCP+gf
-6SGzYwnRuKmTehj+9sCX2a1atOxa0JBzuIO2amlZFxgPjoAMQmc9/orTk1vnSljR
-Ns6UEEbc7Dhysi3e72OOVOykIb1g81fH4CDNNTP6iyIdMRj3hYnYvexeHOUsRMa/
-nBevk4RstJ6QDtjYObkV
-=xF+T
+iQIcBAEBAgAGBQJRsarXAAoJELSic+t+oim9z8kP/12mJzkq/dz9jgLNPJyJ0T13
+tvCQgoaPbXbhay6eeXm41lPfFPPKckBvbB5pIF/gmZIQdN6Km35N4w+EZi4hmcP+
+Zkt+OsuBDOlOT8IpqykXq6bjVumQzoV2tpznO67U3fW0YEbOKedCgJbO+FgobSzV
+9kRPCiHesRZAKWs0KuiWUW19cKzkW37XENl3g30kDOGxyZzVAYahOViqEb1Tlxf1
+ez5BLzGhdwdvTtv4EmOtLIuqc0P66AG76rywlAkniUZolTY9vvqfIDjJsSHsz5ec
+H6IAIo+mGaG5koW5zwo5UUT1K8kNGDVpKwnyNtlTMd6kh4TMuZWJdXi10fZMjN2D
+cw6tcegOrdtBIxQM15rjGT8f5X2WVT/FESuW5jtikjxYIfR9jT3oe2yod8LGBxc2
+pfulOvtouIyBzWUzUlwnkgKB2kSR/8M5/7/Mbcg88jXNZlfM2LLy5MEIWKnqsnuQ
+akoN/W0Oq5CMENrAX1jWuZWl8lRaypN0JTg23VNVmYtywVx4PagycA9wElBXVKO9
+Ovi0gqLci1KNGAexLLcIN4NeIU0/YcLdJvUd3kUqe47TQ2qlX/KpUfjCVhiHADx3
+UavmIX0/pmzscPb3R9F/ywDeDydL+XH6ZpExPneGpR2UBSBg3/YU+t2TdJ7wkbC5
+MBhocSslALVW8jXrPZZn
+=sdXd
 -----END PGP SIGNATURE-----
 
---em00FKA6+IJh3lGW--
+--prKJgtdAmn5IQEeG--
 
---===============7560188958381295083==
+--===============7065051067970085989==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============7560188958381295083==--
+--===============7065051067970085989==--
