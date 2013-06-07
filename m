@@ -1,16 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: WM8962: Set CLKREG_OVD if GP5_FN is not
-	its reset value
-Date: Fri, 7 Jun 2013 20:14:18 +0800
-Message-ID: <1370607258-4750-1-git-send-email-b42378@freescale.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/8] [RFC] new driver for Echo Audio's
+ Fireworks based devices
+Date: Fri, 07 Jun 2013 21:16:10 +0900
+Message-ID: <51B1CF0A.6020402@sakamocchi.jp>
+References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
+ <51AC7B6C.7000108@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from co9outboundpool.messaging.microsoft.com
- (co9ehsobe005.messaging.microsoft.com [207.46.163.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F06F2656EB
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 14:07:39 +0200 (CEST)
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDD7F2656EB
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 14:16:14 +0200 (CEST)
+In-Reply-To: <51AC7B6C.7000108@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-According to WM8962 datasheet, the GP5_FN bit of R516 (GPIO 5) depends on
-the CLKREG_OVD bit of R8 (Clocking2):
+Clemens,
 
-"Note that GPIO5 functions are only supported when CLKREG_OVD=1. When
-CLKREG_OVD=0, the contents of Register R516 must not be changed from
-the default value."
+ > 4. clock source handling
 
-So set CLKREG_OVD bit before regcache_sync() updates the GP5_FN bit to a
-non-reset value.
+I want to discuss about this issue in this mail.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
- sound/soc/codecs/wm8962.c |   19 +++++++++++++++++++
- 1 files changed, 19 insertions(+), 0 deletions(-)
+I've never concerned about this synchronization so it took me a bit time 
+to understand what you said...
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 26219ea..9c8fd11 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3739,6 +3739,23 @@ static int wm8962_i2c_remove(struct i2c_client *client)
- }
- 
- #ifdef CONFIG_PM_RUNTIME
-+static void wm8962_check_gp5_fn(struct snd_soc_codec *codec)
-+{
-+	int changed;
-+
-+	/*
-+	 * If GP5_FN is not going to be the reset value 0x0,
-+	 * need to set CLKREG_OVD bit of Register CLOCKING2
-+	 * before regcache_sync() updates GP5_FN bit to a
-+	 * non-reset value. The reset value should be 0x0.
-+	 */
-+	changed = snd_soc_test_bits(codec, WM8962_GPIO_5,
-+			WM8962_GP5_FN_MASK, 0x0);
-+	if (changed)
-+		snd_soc_update_bits(codec, WM8962_CLOCKING2,
-+				WM8962_CLKREG_OVD_MASK, WM8962_CLKREG_OVD);
-+}
-+
- static int wm8962_runtime_resume(struct device *dev)
- {
- 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
-@@ -3756,6 +3773,8 @@ static int wm8962_runtime_resume(struct device *dev)
- 
- 	wm8962_reset(wm8962);
- 
-+	wm8962_check_gp5_fn(wm8962->codec);
-+
- 	regcache_sync(wm8962->regmap);
- 
- 	return 0;
--- 
-1.7.1
+Actually Fireworks supports severarl clock source, "Internal", "SYT 
+Match", "Word", "S/PDIF", "ADAT1", "ADAT2". Then there is two options, 
+one is for SYT match and another is for the others.
+
+SYT match:
+PC is a clock master to transmit SYT in CIP. So receive stream require 
+transmit stream in advance.
+
+The others:
+Device is a clock master and PC should generate SYT for transmit stream 
+from SYT in receive stream.
+
+ > (and, of course, the capture packets must be used to determine
+ > when to send packets).
+
+To achieve this, we need to change calculate_syt() or add new function 
+to amdtp.c. I think it's enough to generate outgoing SYT from incoming 
+SYT with TRANSFER_DELAY (479.17 micro seconds). This is for consumer use.
+
+But I have no idea when playback starts. Do you have any idea?
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+(Jun 3 2013 20:18), Clemens Ladisch wrote:
+> o-takashi@sakamocchi.jp wrote:
+>> Currently this driver module support just PCM/MIDI kernel streaming via ALSA interfaces.
+>> So there are some issues about this driver.
+>> 1.whether adding each PCM devices for analog and digital interface
+>
+> ALSA drivers should reflect the actual hardware design as much as
+> possible; conversions should be done in user space by alsa-lib.
+>
+> If analog and digital channels are part of the same AMDTP stream, then
+> that is how the PCM device should look like.  (This is also how other
+> drivers like ice1712 work.)
+>
+> There are other functions to describe and label channels.
+> (And when I say "there are", I actually mean "there will be,
+> eventually".  ;-)
+>
+>> 2.where the codes for device control like volume, routing and etc are
+>
+> The idea was to let the kernel driver handle only the actual streaming
+> (and everything else necessary for that, such as device enumeration,
+> sample rate, and clock source management), and let user space handle
+> everything else.
+>
+> Volume and routing do not affect the streaming part in any way, so the
+> kernel driver should not bother to implement them.
+>
+>
+> 4. clock source handling
+>
+> AMDTP itself was designed for consumer devices, where streaming is in
+> only one direction, and where the receiving device always synchronizes
+> to the playback device; this is the equivalent of the "SYT Match" clock
+> source.
+>
+> This is how the existing drivers (isight, firewire-speakers) work.
+>
+> However, for full duplex and other clock sources, streaming becomes
+> more complicated.  When in "SYT match" mode, the playback stream should
+> be running even when only a capture PCM device is open.  In all other
+> modes, the PC must synchronize to the device, so the capture stream must
+> be running when _any_ PCM/MIDI stream is open (and, of course, the
+> capture packets must be used to determine when to send packets).
+>
+>
+> Regards,
+> Clemens
