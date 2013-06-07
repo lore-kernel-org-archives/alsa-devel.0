@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dmaengine: add runtime status
- checking in dmaengine_pcm_dma_complete
-Date: Fri, 7 Jun 2013 15:34:28 +0100
-Message-ID: <20130607143428.GR31367@sirena.org.uk>
-References: <1370606249-19955-1-git-send-email-zhouqiao@marvell.com>
+Subject: Re: [PATCH] ASoC: WM8962: Set CLKREG_OVD if GP5_FN is
+ not its reset value
+Date: Fri, 7 Jun 2013 15:39:05 +0100
+Message-ID: <20130607143905.GT31367@sirena.org.uk>
+References: <1370607258-4750-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4805097866588898988=="
+Content-Type: multipart/mixed; boundary="===============6490606273429994033=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D8DF265706
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 16:34:34 +0200 (CEST)
-In-Reply-To: <1370606249-19955-1-git-send-email-zhouqiao@marvell.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5A622656FE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 16:39:09 +0200 (CEST)
+In-Reply-To: <1370607258-4750-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,76 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4805097866588898988==
+--===============6490606273429994033==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SyWwpI3Z1FWsG80s"
+	protocol="application/pgp-signature"; boundary="IOdQuxhrWjbL7fBD"
 Content-Disposition: inline
 
 
---SyWwpI3Z1FWsG80s
+--IOdQuxhrWjbL7fBD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 07, 2013 at 07:57:29PM +0800, Qiao Zhou wrote:
-> the dmaengine_pcm_dma_complete callback is usually executed after
-> the dma interrupt, which uses tasklet_schedule, workqueue, or other
-> method for quick int handler return.
->=20
-> in some corner case, where pcm stream is released unexpected, like
-> media server is killed, the runtime parameter will be freed. if it
-> happens between the t1 and t2 in below chart, then the callback
-> will try to access members of paramters which is already freed,
-> and kernel panics.
->=20
-> to avoid this issue, add runtime checking before other handling in
-> dmaengine_pcm_dma_complete. if pcm stream is already released,
-> just ignore the current handling and return.
+On Fri, Jun 07, 2013 at 08:14:18PM +0800, Nicolin Chen wrote:
 
-This doesn't seem like a good or robust way of fixing this, if we're
-tearing down the resources the DMA is using while the DMA is in progress
-then in the worst case that might include the memory being DMAed and of
-course there's races if you just check the pointer - the pointer can be
-checked at the same time as it's being freed (or between the free and
-the clear).
+Please use subject lines appropriate for the thing you're changing.
 
-I think we should be either halting the DMA or waiting for it to finish
-here.
+> According to WM8962 datasheet, the GP5_FN bit of R516 (GPIO 5) depends on
+> the CLKREG_OVD bit of R8 (Clocking2):
 
---SyWwpI3Z1FWsG80s
+> "Note that GPIO5 functions are only supported when CLKREG_OVD=1. When
+> CLKREG_OVD=0, the contents of Register R516 must not be changed from
+> the default value."
+
+> So set CLKREG_OVD bit before regcache_sync() updates the GP5_FN bit to a
+> non-reset value.
+
+You're missing a whole batch of handling of device reset here - look at
+how we handle things on power on.
+
+--IOdQuxhrWjbL7fBD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRse9wAAoJELSic+t+oim9eZkP/iAyOd+wE6/C9ml5tPkzRmZa
-ZLg+1EzFhIWLMDXfK78zVG0HBeL9DLcOSJK1kvOjJOQXNyYqFFYeDF6tRJ4ZDe3F
-d8m2u6HUMgK0cciidicmKJBv8nJZhzAe5I2LKNgPwhs5D5eN4ETRcc5syg+YXF5/
-XKEAggXrzmAqV+lhAoBG9BoYIJmNCjKFgzImYQ2W+nATeAFrIBbphMOG6VQjU6+9
-vLt+KT7YcDGjuPNi8/eTTe/bLGhrYQjJY6KHqLZnu/BpVHpr3ykBOqLFtUt9SE8+
-YzvnZUD0i4s9lT011s8QWz5xpmFeTheZWghMckuSMUF7T9heKQhWuANo2jGgY/8f
-aRBqAGevgBFi+ZX1gr69dRouniASlyebyiAG/tqrTMfQeDHaPxKNcVp49IGryYY6
-9Kste7UvXi6fQZg5yMyPHTpduzgma+9QzaUu4uD3+OhKTng6hMQtOC/liJtsz8Xu
-DONE4cKi8HHL4q80uDm6Xh+tNRuAnxn+rVjLaMoZF/Zm+maZj7k+YF2uP3DcceRo
-2uIvet4+7NUAT2EjHuSjPV35pCSNDEcldQoVBIehGFAcNcqyKGTfFemNQchu3HQW
-WZXaJ/F7gp/y7DehDcM0ITO+x2q8UZw7CH36ZGDe7EIGhDjBOUYEYjNgRLqIrjn4
-oFDj+M1LkC4OqaJ6Fw6P
-=Kmgv
+iQIcBAEBAgAGBQJRsfCGAAoJELSic+t+oim9VOUP/iFS3+yNM7v0iPYjwckmbvJR
+YEmF1852qQCEbYmTPWzHMtBQ+Bazm/aXp1xbsyKkD0BDdJmP7p8ysqz89/PaqPe2
+qPKwYuBBJ+uLwLxqrA0cIMYaU4pFTt44Xo3/xrLibbiN57oWtMUB7FlyG+DI4MXM
+73t+mnn3SxMODx89TeVvAQ+QLFOU447XNuc3kFqZcfUlfSLSiHzwDhF68mriMZrK
+OPAc25Q33bf0TCeOH7Opm074PivNI95B7Lgipl5i188wHaqRXolPeUspY1Re6mgq
+OeIyl6Fd9BAMm1WzAGojkUKSUFUFzhLL6faH86W5TfIynnH/1gBYQIR4p9XlUase
+0vK5dwMDBVj1jY+0F0GLnOSVdQsegWXZo+TKMOmW/qljRl9EGQpz1yAPmd7obMDI
+yQdRmKL4xH2T3RyM7L77X25v6xafzYGWzRgJ5NBQBdVQybO2bsahmW+HbaIVoM6O
+Dvw6tHnIIn4g9qpmb0/aOuOvmdcmf75xqX6+nA6pw9fqc6LedXjxbNrF8qHgoVRR
+Zz7xoRy4joxnAcrXnIAQWQvEmtaJ7fqOhe4yF9gq1JQoBb15c6/385U2XKmUeRrV
+ty9ODmcApU4tlWhE+JuKvKSG7628vcT7pX1tQWM87NsZvA9UyaDUZC+yWDzPO4CK
+WhLcKz242fkIM/ZptQ6z
+=MSZ9
 -----END PGP SIGNATURE-----
 
---SyWwpI3Z1FWsG80s--
+--IOdQuxhrWjbL7fBD--
 
---===============4805097866588898988==
+--===============6490606273429994033==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4805097866588898988==--
+--===============6490606273429994033==--
