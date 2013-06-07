@@ -1,20 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [tinycompress]how should I call compress_open	for
- aac ltp file playback?
-Date: Fri, 7 Jun 2013 05:53:08 +0530
-Message-ID: <20130607002308.GD23045@intel.com>
-References: <51AEDEAC.2020705@linux.intel.com>
- <20130605080104.GE31108@opensource.wolfsonmicro.com>
- <51AEF680.10209@linux.intel.com>
+Subject: Re: [tinycompress][PATCH 0/2] Fixes for write loop
+ logic
+Date: Fri, 7 Jun 2013 06:00:25 +0530
+Message-ID: <20130607003025.GE23045@intel.com>
+References: <20130605120827.GA21556@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B059265567
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 03:02:34 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A8C9265567
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 03:09:40 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <51AEF680.10209@linux.intel.com>
+In-Reply-To: <20130605120827.GA21556@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Keyon.Jey" <yang.jie@linux.jf.intel.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.jf.intel.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 05, 2013 at 04:27:44PM +0800, Keyon.Jey wrote:
-> On 06/05/2013 04:01 PM, Charles Keepax wrote:
-> >On Wed, Jun 05, 2013 at 02:46:04PM +0800, Keyon.Jey wrote:
-> >>I am trying to use tinycompress for hwdecoder. everything works fine,
-> >>but after compress_open (with profile = SND_AUDIOPROFILE_AAC level=0
-> >>ch_mode=0 rate_control=0), the playback of my aac-ltp-16bit-48KHz-Stereo
-> >>file is faster than it should be.  Am I wrong?
-> >Vinod is probably the person for this one, as I am not so
-> >familiar with what you guys have done internally. However, my
-> >guess would be you are not setting the sample_rate correctly? It
-> >likely needs to be set to the appropriate SNDRV_PCM_RATE_XXXX
-> >define. The source for cplay included in the tinycompress
-> >repository is a good example of using the tinycompress library.
-> >
-> thanks, Charles. the print log showed me that I have set
-> SNDRV_PCM_RATE_48000 which seems no problem.
-> the cplay example code is only for mp3 file, and it also not set
-> .level, .ch_mode and .rate_control.
-> Vinod, what's your suggestion?
-You need to ask your firmware guys, what are they expecting the these fields.
-Some decoder implementations can be different. But i would expect the audio to
-be broken, bad quality if that is the case.
-
-But the speed of playback can be due to different decoder output rate and
-different sampling rate configured. You are telling decoder 48Khz as CPM sample
-rate, is that what decoder is understanding and conversion to decoder values
-correct. Then you should check if the rendering to DAC is at 48KHz or not.
+On Wed, Jun 05, 2013 at 01:08:27PM +0100, Richard Fitzgerald wrote:
+> Two small patches which correct the logic of compress_write()
+> so that it will work correctly if asked to write a buffer
+> shorter than the fragment length. The first patch is needed
+> to ensure that if the client requests auto-configuration
+> of fragment size the internal copy of the config contains the
+> configured fragment size. The second patch contains the actual
+> fix to the write loop logic.
+> 
+> Richard Fitzgerald (2):
+>   compress: copy final version of config struct
+>   compress: do not poll if enough space to write remaining data
+Applied thanks
 
 --
 ~Vinod
+> 
+>  compress.c |   13 ++++++-------
+>  1 files changed, 6 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 1.7.2.5
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
