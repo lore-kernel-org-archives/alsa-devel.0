@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: WM8962: Set CLKREG_OVD if GP5_FN is
- not its reset value
-Date: Fri, 7 Jun 2013 15:39:05 +0100
-Message-ID: <20130607143905.GT31367@sirena.org.uk>
-References: <1370607258-4750-1-git-send-email-b42378@freescale.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] ALSA: get rid of CONFIG_SND_VERBOSE_PRINTK
+Date: Fri, 7 Jun 2013 10:40:39 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306071035130.1366-100000@iolanthe.rowland.org>
+References: <1370552350.2209.41.camel@joe-AO722>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6490606273429994033=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C5A622656FE
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 16:39:09 +0200 (CEST)
-In-Reply-To: <1370607258-4750-1-git-send-email-b42378@freescale.com>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id 9DCEC265710
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 16:40:41 +0200 (CEST)
+In-Reply-To: <1370552350.2209.41.camel@joe-AO722>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Joe Perches <joe@perches.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 6 Jun 2013, Joe Perches wrote:
 
---===============6490606273429994033==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IOdQuxhrWjbL7fBD"
-Content-Disposition: inline
+> > How useful really is it to be able to limit the amount of debugging
+> > messages at runtime?  Does anybody ever actually adjust the "debug"  
+> > module parameter?
+> 
+> When it's a bitmask, yes.
+> It then becomes similar to ethtool.
 
+But it isn't a bitmask; it's just a level.  From 
+sound/core/misc.c:__snd_printk():
 
---IOdQuxhrWjbL7fBD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+#ifdef CONFIG_SND_DEBUG
+	if (debug < level)
+		return;
+#endif
 
-On Fri, Jun 07, 2013 at 08:14:18PM +0800, Nicolin Chen wrote:
+Since I have no intention of making it a bitmask at the moment, I will
+presume your answer really means "No".
 
-Please use subject lines appropriate for the thing you're changing.
+> > In my opinion, this is not worth the extra space required.  Virtually 
+> > all the benefit of different debugging levels can be obtained by 
+> > defining different symbols at compile time, such as CONFIG_SND_DEBUG 
+> > and CONFIG_SND_VERBOSE_DEBUG.
+> 
+> I think the whole verbosity thing should be done at runtime
+> via pr_debug and classifications by type via bitmasks at
+> compile-time instead of the silliness of something like
+> CONFIG_SND_DEBUG_VERBOSITY.
 
-> According to WM8962 datasheet, the GP5_FN bit of R516 (GPIO 5) depends on
-> the CLKREG_OVD bit of R8 (Clocking2):
+The appeal of this approach is understandable.  But it is a whole 
+different project from the conversion I'm considering for now.
 
-> "Note that GPIO5 functions are only supported when CLKREG_OVD=1. When
-> CLKREG_OVD=0, the contents of Register R516 must not be changed from
-> the default value."
+> > Does anybody really need a third level?
+> 
+> Hard to say.  There are several additional "private"
+> debugging level controls for sound/...
 
-> So set CLKREG_OVD bit before regcache_sync() updates the GP5_FN bit to a
-> non-reset value.
+Then they can remain private.  Takashi asked me not to change the 
+existing Kconfig options, and I won't.
 
-You're missing a whole batch of handling of device reset here - look at
-how we handle things on power on.
-
---IOdQuxhrWjbL7fBD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRsfCGAAoJELSic+t+oim9VOUP/iFS3+yNM7v0iPYjwckmbvJR
-YEmF1852qQCEbYmTPWzHMtBQ+Bazm/aXp1xbsyKkD0BDdJmP7p8ysqz89/PaqPe2
-qPKwYuBBJ+uLwLxqrA0cIMYaU4pFTt44Xo3/xrLibbiN57oWtMUB7FlyG+DI4MXM
-73t+mnn3SxMODx89TeVvAQ+QLFOU447XNuc3kFqZcfUlfSLSiHzwDhF68mriMZrK
-OPAc25Q33bf0TCeOH7Opm074PivNI95B7Lgipl5i188wHaqRXolPeUspY1Re6mgq
-OeIyl6Fd9BAMm1WzAGojkUKSUFUFzhLL6faH86W5TfIynnH/1gBYQIR4p9XlUase
-0vK5dwMDBVj1jY+0F0GLnOSVdQsegWXZo+TKMOmW/qljRl9EGQpz1yAPmd7obMDI
-yQdRmKL4xH2T3RyM7L77X25v6xafzYGWzRgJ5NBQBdVQybO2bsahmW+HbaIVoM6O
-Dvw6tHnIIn4g9qpmb0/aOuOvmdcmf75xqX6+nA6pw9fqc6LedXjxbNrF8qHgoVRR
-Zz7xoRy4joxnAcrXnIAQWQvEmtaJ7fqOhe4yF9gq1JQoBb15c6/385U2XKmUeRrV
-ty9ODmcApU4tlWhE+JuKvKSG7628vcT7pX1tQWM87NsZvA9UyaDUZC+yWDzPO4CK
-WhLcKz242fkIM/ZptQ6z
-=MSZ9
------END PGP SIGNATURE-----
-
---IOdQuxhrWjbL7fBD--
-
---===============6490606273429994033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6490606273429994033==--
+Alan Stern
