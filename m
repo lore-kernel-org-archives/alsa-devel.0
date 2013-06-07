@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: WM8962: Set CLKREG_OVD if GP5_FN is
- not its reset value
-Date: Fri, 7 Jun 2013 16:46:20 +0100
-Message-ID: <20130607154620.GV31367@sirena.org.uk>
-References: <1370607258-4750-1-git-send-email-b42378@freescale.com>
- <20130607143905.GT31367@sirena.org.uk>
- <E31481825E4C03459FC878EE97CB2EFD02FDA184@039-SN2MPN1-023.039d.mgd.msft.net>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH 1/2] ALSA: convert "snd_printk(KERN_INFO"
+	to "pr_info("
+Date: Fri, 7 Jun 2013 11:51:14 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1306071136290.1366-100000@iolanthe.rowland.org>
+References: <s5hr4geqxz9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3329078333210953649=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 85B6A2656E3
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 17:46:23 +0200 (CEST)
-In-Reply-To: <E31481825E4C03459FC878EE97CB2EFD02FDA184@039-SN2MPN1-023.039d.mgd.msft.net>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id 825602610CA
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 17:51:15 +0200 (CEST)
+In-Reply-To: <s5hr4geqxz9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +21,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen Guangyu-B42378 <B42378@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 7 Jun 2013, Takashi Iwai wrote:
 
---===============3329078333210953649==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9+c39mRxyNdSGXq/"
-Content-Disposition: inline
+> > > I agree conversion in this way.  But looking at the patch, some places
+> > > should be better convert with pr_warning() or pr_err().
+> > 
+> > How often do those places get printed?  I would assume that warnings 
+> > and errors are relatively infrequent, in which case there would be no 
+> > harm in changing "snd_printk(KERN_INFO" to "snd_printk(KERN_WARN" or 
+> > "snd_printk(KERN_ERR".
+> 
+> Yes.  That's my intention, too.  These shouldn't have been KERN_INFO
+> from the beginning.
 
+Okay.
 
---9+c39mRxyNdSGXq/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > > Also, many places miss proper prefix, thus you'll still see the
+> > 
+> > What exactly do you mean by "proper prefix"?  KBUILD_MODNAME?  The 
+> > filename and line number?  The device and driver names?  Or something 
+> > else?
+> 
+> I don't mind any way if it's unique enough to identify from where the
+> message comes, but some people prefer (over-)unification.
+> Usually KBUILD_MODNAME should suffice, I guess, but still function
+> name or file name might be needed in addition if similar messages
+> appear multiple times in the same driver.  This must be all
+> case-by-case decision.
 
-On Fri, Jun 07, 2013 at 03:33:31PM +0000, Chen Guangyu-B42378 wrote:
-> On Fri, Jun 07, 2013,  Mark Brown wrote:
+For the messages that get converted to "snd_printk(KERN_ERR", the 
+prefix added by snd_printk() when CONFIG_SND_VERBOSE_PRINTK is enabled 
+should be sufficient.  Following the 2/2 patch in this series, that 
+symbol will effectively _always_ be enabled.  Therefore these messages 
+shouldn't need any extra prefix.
 
-> > You're missing a whole batch of handling of device reset here - look at
-> > how we handle things on power on.
+The ones that get converted to pr_info() probably will need a short
+prefix of some kind, though.
 
-> Are you talking about the initial code in wm8962_probe()?
-> But after wm8962_runtime_resume(), register Clocking2 will be reset to its
-> default value without OVD-setting and won't be recovered after regcache_sync()
-> due to volatile_reg.
+> > > These need proper prefix, and should be rather pr_warning().
+> > 
+> > I don't understand.  pr_warning doesn't print any prefixes, by default.  
+> > They would have to added to the format string.  Why not change it to 
+> > "snd_printk(KERN_WARN"?
+> 
+> Yes, this should be snd_printk(KERN_WARN) *and* it needs a proper
+> prefix depending on CONFIG_SND_VERBOSE_PRINTK:
+> 
+> #ifdef CONFIG_SND_VERBOSE_PRINTK
+> #define PREFIX	""
+> #else
+> #define PREFIX	"miro: "
+> #endif
+> ....
+> 	snd_printk(KERN_WARNING PFX "found unsupported aci card\n");
 
-The point is that there's more work needed to recover the device state
-here, you're only doing one of the several things that need to be done
-after the device has been restored.
+There's no point using PREFIX (or PFX) here, since the 2/2 patch would
+eliminate the second #define anyway.
 
---9+c39mRxyNdSGXq/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> The same check should be applied to all snd_printk() lines.
+> 
+> Once after all snd_printk() have the unified prefix, we can convert
+> straightforwardly like
+> 
+> #define pr_fmt	"miro: "
+> ....
+> 	pr_warn("found unsupported aci card\n");
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+Ultimately, it will be better to change these to dev_warn() or
+something equivalent.  Then the "miro:" prefix wouldn't be needed.  
+However, doing what you suggest might be a reasonable intermediate 
+step, aside from for all the additional work required.
 
-iQIcBAEBAgAGBQJRsgBJAAoJELSic+t+oim97gMP/0QyEyYDRnEKWY+wYAfSdfF3
-Ijln1+GCalUNSp+MRC0//HyBoEW3yo9qSScQzTynq70+P9kQTsheCstK9upiN88Z
-nMp5eSElKn50CdEbIW+ZjvYEjkA0aeG0BCse7bSwtIHLgvLOgxkmWrJhk2I+D2sV
-xUSlejIfpnu3Yl2ld96i2SaW86E4f4ZsYgAXh5aw5Klxz7eIcE4766KX1eI1oY7C
-wd2iMlP/4UcwOnRRs9PQwgdU/2i4kr6wjKq+uRL1Y6/F68gdW6QeWw+AynJvXvfK
-s+Zo6zUmawbFwRp2w7PlzdNbiN4FLMnx+DF/+uf/PoAvt8wK5u82DqV02V/QXvgX
-42OXut5rLb8N+FN7Wp9HZU+4uIQ8cfORh4gjh0RUi+I2DSHPhOsp/GBYpoOBZBDo
-R3TwA0c/W/dSr4JPp/yq/R7EPoNZMbzgUp1PktqZbWEowKqTT5b95VzN4RbiRkmS
-qmMXQCZqgR+19BRfpqehd2RUw2swQzaortLcjlaY2msBa13FSN9wUS5o9u14IBQf
-V4rtpub8gVHVgOXL3Mxqk9gJjvTc90/CO29Ud1u9MihHFYAqCVp1PlITK4FL05Mq
-4oUC87TP7piyL58wPjh/cJuDCLARKDYRp5C7h0CVuANIJ6Oplf4Y+v4Ly1ZvHRYe
-t1b3c+gvoFg2uRdYfGLO
-=tVTq
------END PGP SIGNATURE-----
+> In other words, toward the final conversions, we need to audit:
+> - Whether each message is really marked properly with KERN_* level,
+> - Whether messages have consistent prefix through the whole module,
+> - whether messages are unique enough to be identified,
+> - optionally, check typos
 
---9+c39mRxyNdSGXq/--
+I'm willing to do the first step for the messages that were altered in
+the 1/2 patch (but I don't want to audit every message under sound/).  
+The second step shouldn't be needed, according to the reasoning above.
 
---===============3329078333210953649==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The third step is something that will have to be done on a 
+driver-by-driver basis, since it requires looking through all the 
+messages in each driver at once to determine if there are any 
+duplicates.  I don't want to tackle that (except perhaps for the USB 
+drivers).
 
+Finally, typos can be fixed separately.
 
---===============3329078333210953649==--
+Alan Stern
