@@ -1,18 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/8] add device specific command
-Date: Fri, 07 Jun 2013 07:49:03 +0900
-Message-ID: <51B111DF.6030602@sakamocchi.jp>
-References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
- <1370102158-24389-3-git-send-email-o-takashi@sakamocchi.jp>
- <51AC7B83.3060708@ladisch.de> <51B0C7F4.6020200@sakamocchi.jp>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [tinycompress]how should I call compress_open	for
+ aac ltp file playback?
+Date: Fri, 7 Jun 2013 05:53:08 +0530
+Message-ID: <20130607002308.GD23045@intel.com>
+References: <51AEDEAC.2020705@linux.intel.com>
+ <20130605080104.GE31108@opensource.wolfsonmicro.com>
+ <51AEF680.10209@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D715261B24
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 00:49:10 +0200 (CEST)
-In-Reply-To: <51B0C7F4.6020200@sakamocchi.jp>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B059265567
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 03:02:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <51AEF680.10209@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,112 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+To: "Keyon.Jey" <yang.jie@linux.jf.intel.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- > I got packet dump and confirm there is no EFC over AVC. As you say,
- > it commands to 0xecc0 00000 0000 and receives response at
- > 0xecc 8000 0000.
+On Wed, Jun 05, 2013 at 04:27:44PM +0800, Keyon.Jey wrote:
+> On 06/05/2013 04:01 PM, Charles Keepax wrote:
+> >On Wed, Jun 05, 2013 at 02:46:04PM +0800, Keyon.Jey wrote:
+> >>I am trying to use tinycompress for hwdecoder. everything works fine,
+> >>but after compress_open (with profile = SND_AUDIOPROFILE_AAC level=0
+> >>ch_mode=0 rate_control=0), the playback of my aac-ltp-16bit-48KHz-Stereo
+> >>file is faster than it should be.  Am I wrong?
+> >Vinod is probably the person for this one, as I am not so
+> >familiar with what you guys have done internally. However, my
+> >guess would be you are not setting the sample_rate correctly? It
+> >likely needs to be set to the appropriate SNDRV_PCM_RATE_XXXX
+> >define. The source for cplay included in the tinycompress
+> >repository is a good example of using the tinycompress library.
+> >
+> thanks, Charles. the print log showed me that I have set
+> SNDRV_PCM_RATE_48000 which seems no problem.
+> the cplay example code is only for mp3 file, and it also not set
+> .level, .ch_mode and .rate_control.
+> Vinod, what's your suggestion?
+You need to ask your firmware guys, what are they expecting the these fields.
+Some decoder implementations can be different. But i would expect the audio to
+be broken, bad quality if that is the case.
 
-0xecc0 8000 0000 is correct address.
+But the speed of playback can be due to different decoder output rate and
+different sampling rate configured. You are telling decoder 48Khz as CPM sample
+rate, is that what decoder is understanding and conversion to decoder values
+correct. Then you should check if the rendering to DAC is at 48KHz or not.
 
-
-Regards
-
-Takashi Sakamoto
-
-(Jun 7 2013 02:33), Takashi Sakamoto wrote:
-> Clemens,
->
->  > Do you have the latest firmware in your AFPre8?
->
-> I use AFPre8 with firmware version 5.5 (0x5050000). I have never updated
-> it after I bought so it's factory setting.
->
->  > It can also be controlled by sending the commands directly (without
->  > the AV/C header) to address 0xecc000000000.  This is one of the
->  > differences between FFADO and the Echo drivers,
->
-> I got packet dump and confirm there is no EFC over AVC. As you say, it
-> commands to 0xecc0 00000 0000 and receives response at 0xecc 8000 0000.
->
-> Then I implemented it and it looks to work fine. I also think it good to
-> use EFC without AVC.
->
->  > and might be related to the problems that FFADO has with the
->  > latest Fireworks firmware versions.
->
-> Later I'll update firmware in my device and search for this issue. But
-> it may be far future...
->
->  > That was part of my old driver, but most if this device-specific stuff
->  > is not needed for a simple kernel streaming driver.
->
-> OK. I use this transaction to confirm the device can respond but it's
-> needless. I'll remove it till posting improved patch.
->
->
-> Regards
->
-> Takashi Sakamoto
-> o-takashi@sakamocchi.jp
->
-> (Jun 3 2013 20:18), Clemens Ladisch wrote:
->> o-takashi@sakamocchi.jp wrote:
->>> Fireworks can be controlled by device specific commands over IEEE1394
->>> TA's
->>> AV/C Digital Interface Command Set.
->>
->> It can also be controlled by sending the commands directly (without the
->> AV/C header) to address 0xecc000000000.  This is one of the differences
->> between FFADO and the Echo drivers, and might be related to the problems
->> that FFADO has with the latest Fireworks firmware versions.
->>
->> Do you have the latest firmware in your AFPre8?
->>
->>> +struct avc_fields {
->>> +    unsigned short cts:4;
->>> +    unsigned short ctype:4;
->>>        ...
->>
->> The layout of bit fields are very unportable.  And if you do *not*
->> actually rely on the memory layout, you do not actually save space
->> because the code to access the fields becomes more complex.
->>
->>> +efc_over_avc(struct snd_efw *efw, unsigned int category,
->>
->>> +    /* AV/C fields */
->>> +    struct avc_fields avc_fields = {
->>> +        .cts        = AVC_CTS,
->>> +        .ctype        = AVC_CTYPE,
->>> +        .subunit_type    = AVC_SUBUNIT_TYPE,
->>> +        .subunit_id    = AVC_SUBUNIT_ID,
->>> +        .opcode        = AVC_OPCODE,
->>> +        .company_id    = AVC_COMPANY_ID
->>> +    };
->>
->> The compiler has to construct this on the stack.  Use "static const".
->>
->>> +    /* calcurate buffer size*/
->>
->>             calculate
->>
->>> +    if (param_count > response_quadlets)
->>> +        cmdbuf_bytes = 32 + param_count * 4;
->>> +    else
->>> +        cmdbuf_bytes = 32 + response_quadlets * 4;
->>
->> max()
->>
->>> +int snd_efw_command_identify(struct snd_efw *efw)
->>> +{
->>> +    return efc_over_avc(efw, EFC_CAT_HWCTL,
->>> +                EFC_CMD_HWCTL_IDENTIFY,
->>
->> That was part of my old driver, but most if this device-specific stuff
->> is not needed for a simple kernel streaming driver.
->>
->>
->> Regards,
->> Clemens
+--
+~Vinod
