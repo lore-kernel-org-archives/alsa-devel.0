@@ -1,16 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/4] ASoC: codecs: adau1701: allow
-	configuration of PLL mode pins
-Date: Fri,  7 Jun 2013 13:53:05 +0200
-Message-ID: <1370605987-19290-3-git-send-email-zonque@gmail.com>
+Subject: [PATCH 4/4] ASoC: codecs: adau1701: add support for
+	pin muxing
+Date: Fri,  7 Jun 2013 13:53:07 +0200
+Message-ID: <1370605987-19290-5-git-send-email-zonque@gmail.com>
 References: <1370605987-19290-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 314EC2656EB
- for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 13:52:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E8ED62656EE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jun 2013 13:52:52 +0200 (CEST)
 In-Reply-To: <1370605987-19290-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,189 +25,123 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, lars@metafoo.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ADAU1701 has 2 hardware pins to configure the PLL mode in accordance
-to the MCLK-to-LRCLK ratio. These pins have to be stable before the chip
-is released from reset, and a full reset cycle, including a new firmware
-download is needed whenever they change.
-
-This patch adds GPIO properties to the DT bindings of the Codec, and
-implements a callback for the set_clkdiv callback of the DAI.
-
-To avoid excessive reset cycles and firmware downloads, the default
-clock divider can be specified in DT as well.
+The ADAU1701 has 12 pins that can be configured depending on the system
+configuration. Allow settting the corresponding registers from DT.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- .../devicetree/bindings/sound/adi,adau1701.txt     | 13 ++++
- sound/soc/codecs/adau1701.c                        | 74 ++++++++++++++++++++++
- sound/soc/codecs/adau1701.h                        |  4 ++
- 3 files changed, 91 insertions(+)
+ .../devicetree/bindings/sound/adi,adau1701.txt     |  4 +++
+ sound/soc/codecs/adau1701.c                        | 34 ++++++++++++++++++++--
+ 2 files changed, 36 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/adi,adau1701.txt b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
-index 3afeda7..c9c6e98 100644
+index c9c6e98..e1b44a0 100644
 --- a/Documentation/devicetree/bindings/sound/adi,adau1701.txt
 +++ b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
-@@ -11,6 +11,19 @@ Optional properties:
-  - reset-gpio: 		A GPIO spec to define which pin is connected to the
- 			chip's !RESET pin. If specified, the driver will
- 			assert a hardware reset at probe time.
-+ - adi,pll-clkdiv: 	The PLL clock divider, specifing the ratio between
-+			MCLK and fsclk. The value is used to determine the
-+			correct state of the two mode pins below.
-+			Note that this value can be overridden at runtime
-+			by passing the ADAU1701_CLKDIV_MCLK_LRCLK divider
-+			with ASoC calls. However, the chips needs a full
-+			reset cycle and a new firmware download each time
-+			the configuration changes.
-+ - adi,pll-mode0-gpio,
-+   adi,pll-mode1-gpio:	GPIO specs to describe the GPIOs the ADAU's PLL config
-+			pins are connected to. The state of the pins are set
-+			according to the configured clock divider on ASoC side
-+			before the firmware is loaded.
+@@ -25,6 +25,10 @@ Optional properties:
+ 			according to the configured clock divider on ASoC side
+ 			before the firmware is loaded.
  
++ - adi,pin-config:	An array of 12 numerical values selecting one of the
++			pin configurations as described in the datasheet,
++			table 53.
++
  Examples:
  
+ 	i2c_bus {
 diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index b6b1a77..4e1ec57 100644
+index 8d2804c..fca9cac 100644
 --- a/sound/soc/codecs/adau1701.c
 +++ b/sound/soc/codecs/adau1701.c
-@@ -91,7 +91,10 @@
+@@ -29,6 +29,8 @@
+ #define ADAU1701_SEROCTL	0x1e
+ #define ADAU1701_SERICTL	0x1f
  
- struct adau1701 {
- 	int gpio_nreset;
-+	int gpio_pll_mode0;
-+	int gpio_pll_mode1;
++#define ADAU1701_PINCONF_0	0x20
++#define ADAU1701_PINCONF_1	0x21
+ #define ADAU1701_AUXNPOW	0x22
+ 
+ #define ADAU1701_OSCIPOW	0x26
+@@ -97,6 +99,7 @@ struct adau1701 {
  	unsigned int dai_fmt;
-+	unsigned int pll_clkdiv;
+ 	unsigned int pll_clkdiv;
+ 	struct regmap *regmap;
++	unsigned char pin_config[12];
  };
  
  static const struct snd_kcontrol_new adau1701_controls[] = {
-@@ -191,6 +194,29 @@ static void adau1701_reset(struct snd_soc_codec *codec)
- 	if (!gpio_is_valid(adau1701->gpio_nreset))
- 		return;
+@@ -132,6 +135,9 @@ static unsigned int adau1701_register_size(struct device *dev,
+ 		unsigned int reg)
+ {
+ 	switch (reg) {
++	case ADAU1701_PINCONF_0:
++	case ADAU1701_PINCONF_1:
++		return 3;
+ 	case ADAU1701_DSPCTRL:
+ 	case ADAU1701_SEROCTL:
+ 	case ADAU1701_AUXNPOW:
+@@ -162,7 +168,7 @@ static int adau1701_reg_write(void *context, unsigned int reg,
+ 	struct i2c_client *client = context;
+ 	unsigned int i;
+ 	unsigned int size;
+-	uint8_t buf[4];
++	uint8_t buf[5];
+ 	int ret;
  
-+	if (gpio_is_valid(adau1701->gpio_pll_mode0) &&
-+	    gpio_is_valid(adau1701->gpio_pll_mode1)) {
-+		switch (adau1701->pll_clkdiv) {
-+		case 64:
-+			gpio_set_value(adau1701->gpio_pll_mode0, 0);
-+			gpio_set_value(adau1701->gpio_pll_mode1, 0);
-+			break;
-+		case 256:
-+			gpio_set_value(adau1701->gpio_pll_mode0, 0);
-+			gpio_set_value(adau1701->gpio_pll_mode1, 1);
-+			break;
-+		case 384:
-+			gpio_set_value(adau1701->gpio_pll_mode0, 1);
-+			gpio_set_value(adau1701->gpio_pll_mode1, 0);
-+			break;
-+		case 512:
-+		default:
-+			gpio_set_value(adau1701->gpio_pll_mode0, 1);
-+			gpio_set_value(adau1701->gpio_pll_mode1, 1);
-+			break;
-+		}
-+	}
+ 	size = adau1701_register_size(&client->dev, reg);
+@@ -580,7 +586,8 @@ MODULE_DEVICE_TABLE(of, adau1701_dt_ids);
+ 
+ static int adau1701_probe(struct snd_soc_codec *codec)
+ {
+-	int ret;
++	int ret, i;
++	unsigned int val;
+ 	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	ret = adau1701_init(codec);
+@@ -589,6 +596,19 @@ static int adau1701_probe(struct snd_soc_codec *codec)
+ 
+ 	regmap_write(adau1701->regmap, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
+ 
++	/* set up pin config */
++	val = 0;
++	for (i = 0; i < 6; i++)
++		val |= adau1701->pin_config[i] << (i * 4);
 +
- 	gpio_set_value(adau1701->gpio_nreset, 0);
- 	/* minimum reset time is 20ns */
- 	udelay(1);
-@@ -452,6 +478,21 @@ static int adau1701_set_sysclk(struct snd_soc_codec *codec, int clk_id,
++	regmap_write(adau1701->regmap, ADAU1701_PINCONF_0, val);
++
++	val = 0;
++	for (i = 0; i < 6; i++)
++		val |= adau1701->pin_config[i + 6] << (i * 4);
++
++	regmap_write(adau1701->regmap, ADAU1701_PINCONF_1, val);
++
  	return 0;
  }
  
-+static int adau1701_set_clkdiv(struct snd_soc_dai *codec_dai,
-+			       int div_id, int div)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+@@ -637,6 +657,9 @@ static int adau1701_i2c_probe(struct i2c_client *client,
+ 		return PTR_ERR(adau1701->regmap);
+ 
+ 	if (dev->of_node) {
++		const u32 *pin_config32;
++		u32 size, i;
 +
-+	switch (div_id) {
-+	case ADAU1701_CLKDIV_MCLK_LRCLK:
-+		adau1701->pll_clkdiv = div;
-+		return adau1701_init(codec);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- #define ADAU1701_RATES (SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 | \
- 	SNDRV_PCM_RATE_192000)
- 
-@@ -462,6 +503,7 @@ static const struct snd_soc_dai_ops adau1701_dai_ops = {
- 	.set_fmt	= adau1701_set_dai_fmt,
- 	.hw_params	= adau1701_hw_params,
- 	.digital_mute	= adau1701_digital_mute,
-+	.set_clkdiv	= adau1701_set_clkdiv,
- };
- 
- static struct snd_soc_dai_driver adau1701_dai = {
-@@ -534,6 +576,8 @@ static int adau1701_i2c_probe(struct i2c_client *client,
- 	struct adau1701 *adau1701;
- 	struct device *dev = &client->dev;
- 	int gpio_nreset = -EINVAL;
-+	int gpio_pll_mode0 = -EINVAL;
-+	int gpio_pll_mode1 = -EINVAL;
- 	int ret;
- 
- 	adau1701 = devm_kzalloc(dev, sizeof(*adau1701), GFP_KERNEL);
-@@ -544,6 +588,19 @@ static int adau1701_i2c_probe(struct i2c_client *client,
  		gpio_nreset = of_get_named_gpio(dev->of_node, "reset-gpio", 0);
  		if (gpio_nreset < 0 && gpio_nreset != -ENOENT)
  			return gpio_nreset;
+@@ -653,6 +676,13 @@ static int adau1701_i2c_probe(struct i2c_client *client,
+ 
+ 		of_property_read_u32(dev->of_node, "adi,pll-clkdiv",
+ 				     &adau1701->pll_clkdiv);
++		pin_config32 = of_get_property(dev->of_node,
++					       "adi,pin-config", &size);
++		size /= sizeof(u32);
++		size = min(ARRAY_SIZE(adau1701->pin_config), size);
 +
-+		gpio_pll_mode0 = of_get_named_gpio(dev->of_node,
-+						   "adi,pll-mode0-gpio", 0);
-+		if (gpio_pll_mode0 < 0 && gpio_pll_mode0 != -ENOENT)
-+			return gpio_pll_mode0;
-+
-+		gpio_pll_mode1 = of_get_named_gpio(dev->of_node,
-+						   "adi,pll-mode1-gpio", 0);
-+		if (gpio_pll_mode1 < 0 && gpio_pll_mode1 != -ENOENT)
-+			return gpio_pll_mode1;
-+
-+		of_property_read_u32(dev->of_node, "adi,pll-clkdiv",
-+				     &adau1701->pll_clkdiv);
++		for (i = 0; i < size; i++)
++			adau1701->pin_config[i] = be32_to_cpup(pin_config32 + i);
  	}
  
  	if (gpio_is_valid(gpio_nreset)) {
-@@ -553,7 +610,24 @@ static int adau1701_i2c_probe(struct i2c_client *client,
- 			return ret;
- 	}
- 
-+	if (gpio_is_valid(gpio_pll_mode0) &&
-+	    gpio_is_valid(gpio_pll_mode1)) {
-+		ret = devm_gpio_request_one(dev, gpio_pll_mode0,
-+					    GPIOF_OUT_INIT_LOW,
-+					    "ADAU1701 PLL mode 0");
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = devm_gpio_request_one(dev, gpio_pll_mode1,
-+					    GPIOF_OUT_INIT_LOW,
-+					    "ADAU1701 PLL mode 1");
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	adau1701->gpio_nreset = gpio_nreset;
-+	adau1701->gpio_pll_mode0 = gpio_pll_mode0;
-+	adau1701->gpio_pll_mode1 = gpio_pll_mode1;
- 
- 	i2c_set_clientdata(client, adau1701);
- 	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
-diff --git a/sound/soc/codecs/adau1701.h b/sound/soc/codecs/adau1701.h
-index 8d0949a..bdcdddc 100644
---- a/sound/soc/codecs/adau1701.h
-+++ b/sound/soc/codecs/adau1701.h
-@@ -14,4 +14,8 @@ enum adau1701_clk_src {
- 	ADAU1701_CLK_SRC_MCLK,
- };
- 
-+enum adau1701_clkdiv {
-+	ADAU1701_CLKDIV_MCLK_LRCLK,
-+};
-+
- #endif
 -- 
 1.8.1.4
