@@ -1,19 +1,18 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8962: Restore device state after
- reset in runtime resume
-Date: Sat, 8 Jun 2013 13:34:58 +0800
-Message-ID: <20130608053457.GE19153@MrMyself>
-References: <1370619797-17503-1-git-send-email-broonie@linaro.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 0/8] [RFC] new driver for Echo Audio's
+ Fireworks based devices
+Date: Sat, 08 Jun 2013 11:29:40 +0200
+Message-ID: <51B2F984.60706@ladisch.de>
+References: <1370102158-24389-1-git-send-email-o-takashi@sakamocchi.jp>
+ <51AC7B6C.7000108@ladisch.de> <51B1CF0A.6020402@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db8outboundpool.messaging.microsoft.com
- (mail-db8lp0188.outbound.messaging.microsoft.com [213.199.154.188])
- by alsa0.perex.cz (Postfix) with ESMTP id 37CDC261635
- for <alsa-devel@alsa-project.org>; Sat,  8 Jun 2013 07:47:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1370619797-17503-1-git-send-email-broonie@linaro.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 8736F26169D
+ for <alsa-devel@alsa-project.org>; Sat,  8 Jun 2013 11:29:47 +0200 (CEST)
+In-Reply-To: <51B1CF0A.6020402@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@linaro.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 07, 2013 at 04:43:17PM +0100, Mark Brown wrote:
-> +	/* SYSCLK defaults to on; make sure it is off so we can safely
-> +	 * write to registers if the device is declocked.
-> +	 */
-> +	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
-> +			   WM8962_SYSCLK_ENA, 0);
+Takashi Sakamoto wrote:
+> Actually Fireworks supports severarl clock source, "Internal", "SYT
+> Match", "Word", "S/PDIF", "ADAT1", "ADAT2". Then there is two options,
+> one is for SYT match and another is for the others.
+>
+> SYT match:
+> PC is a clock master to transmit SYT in CIP. So receive stream require
+> transmit stream in advance.
+>
+> The others:
+> Device is a clock master and PC should generate SYT for transmit
+> stream from SYT in receive stream.
+>
+>> (and, of course, the capture packets must be used to determine
+>> when to send packets).
+>
+> To achieve this, we need to change calculate_syt() or add new function
+> to amdtp.c. I think it's enough to generate outgoing SYT from incoming
+> SYT with TRANSFER_DELAY (479.17 micro seconds).
 
-I think it's really nice to disable SYSCLK_ENA here and let soc-dapm
-load it up since there's DAPM SUPPLY registered for SYSCLK_ENA bit.
-Please keep this line here. Thank you.
+We want the playback stream to behave like the capture stream, and the
+SYT is interpreted relative to the frame in which the packet is actually
+transferred, so what the driver has to do is this:
+1) compute the offset between the frame where the capture packet was
+   received and its SYT;
+2) compute the frame where the playback packet will be sent (i.e., add
+   the queue length to the current frame);
+3) add the offset to that frame.
 
-
-> +
-> +	/* Ensure we have soft control over all registers */
-> +	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
-> +			   WM8962_CLKREG_OVD, WM8962_CLKREG_OVD);
-> +
-
-On our board this works finely, because our board uses GPIO5 as DMIC_DAT
-function which is suggested by WM8962 datasheet in APPLICATIONS chapter,
-so this case need to set CLKREG_OVD bit. But there is another case, the
-original one, also the driver currently considers, that is, GPIO5 actually
-controls SYSCLK source by its input electric level(logical 0 and 1).
-Pls check the note in WM8962 datasheet, MCLK_SRC bit of R8 (Clocking 2).
-
-And I have to say that WM8962 is so sophisticatedly designed that this
-CLKREG_OVD bit is pretty hard for software to perfectly control. But my
-previous patch, at least at the idea of GP5_FN checking before setting
-CLKREG_OVD bit, does not break the SYSCLK source controlling function.
-Even if it might be not a qualified one, I think we can still figure out
-a better solution based on that patch.
-
-
-
-> +	/* Ensure that the oscillator and PLLs are disabled */
-> +	regmap_update_bits(wm8962->regmap, WM8962_PLL2,
-> +			   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
-> +			   0);
-> +
-
-Not sure if this is gonna be nice, because I have not seen any other
-place enabling either of these three bits if users need one of them.
+The SYT field wraps around after 2 ms, so the corresponding capture/
+playback SYT values will be identical only if the queue length is
+a multiple of 2 ms.
 
 
+But there is another thing: the driver has to choose whether a packet to
+send contains SYT_INTERVAL samples or is a NO-DATA packet.
 
-------------------------------------------------------------------------
+In SYT Match mode, the driver just checks whether enough samples are
+available for that frame.
 
-Allow me to start one more question about power up here, Since we are
-solving all the resume initial issue in one patch.
+In the other modes, the driver must copy the packet type from the
+capture stream, i.e., when it receives a NO-DATA packet, it submits
+a NO-DATA packet, and when it receives a data packet, it submits a data
+packet.  This implies that the queueing of playback packets happens not
+in the playback packet completion callback, but in the *capture* packet
+completion callback.
 
-I have a concern about an applied patch:
-commit 52c0eee33 "Don't duplicate bias level management"
+> But I have no idea when playback starts. Do you have any idea?
 
-This patch removed BIAS generator powering up code. But I found that,
-at least on our i.MX6 SabreSD board with WM8962 as audio CODEC, these
-BIAS bits are not being updated by soc-core before starting playback,
-then "wm8962 0-001a: DC servo timed out" error msg will occur. I checked
-the regmap of WM8962 and found these bits, STARTUP_BIAS_ENA bit in R28
-for example, are still remaining reset value 0x0 -- disabled.
+Playback packets can be submitted only when we already have a running
+capture stream with its packet completion callbacks.  (This is similar
+to starting playback in the SYT Match case, where the driver submits
+a bunch of skip packets so that the playback packet completion
+callbacks arrive with the correct timing.)
 
-However, if I revert that patch, with my machine driver and my board
-I can play euphonious music as before. (I'm now mainly using Kernel 3.5)
 
-I traced the soc-core by searching 'idle_bias_off' and didn't found any
-power-codec-up code in that file. Maybe I'm still missing some parts,
-so could you please tell me is there anything wrong on my side?
-
-Thank you.
-And sorry if I opened the Pandora Box because I just asked too many
-questions :(
+Regards,
+Clemens
