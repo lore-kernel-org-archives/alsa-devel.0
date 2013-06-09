@@ -1,15 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: usx2y: remove some old dead code
-Date: Sun, 9 Jun 2013 16:14:25 +0300
-Message-ID: <20130609131425.GB1442@debian>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dmaengine: add runtime status
+ checking in dmaengine_pcm_dma_complete
+Date: Sun, 09 Jun 2013 15:37:16 +0200
+Message-ID: <51B4850C.5090508@metafoo.de>
+References: <1370606249-19955-1-git-send-email-zhouqiao@marvell.com>
+ <20130607143428.GR31367@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id E610B261AE0
- for <alsa-devel@alsa-project.org>; Sun,  9 Jun 2013 15:14:42 +0200 (CEST)
-Content-Disposition: inline
+Received: from mailhost.informatik.uni-hamburg.de
+ (mailhost.informatik.uni-hamburg.de [134.100.9.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id E44DC261AE0
+ for <alsa-devel@alsa-project.org>; Sun,  9 Jun 2013 15:33:59 +0200 (CEST)
+In-Reply-To: <20130607143428.GR31367@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,25 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-USB_QUEUE_BULK isn't defined any more.
+On 06/07/2013 04:34 PM, Mark Brown wrote:
+> On Fri, Jun 07, 2013 at 07:57:29PM +0800, Qiao Zhou wrote:
+>> the dmaengine_pcm_dma_complete callback is usually executed after
+>> the dma interrupt, which uses tasklet_schedule, workqueue, or other
+>> method for quick int handler return.
+>>
+>> in some corner case, where pcm stream is released unexpected, like
+>> media server is killed, the runtime parameter will be freed. if it
+>> happens between the t1 and t2 in below chart, then the callback
+>> will try to access members of paramters which is already freed,
+>> and kernel panics.
+>>
+>> to avoid this issue, add runtime checking before other handling in
+>> dmaengine_pcm_dma_complete. if pcm stream is already released,
+>> just ignore the current handling and return.
+> 
+> This doesn't seem like a good or robust way of fixing this, if we're
+> tearing down the resources the DMA is using while the DMA is in progress
+> then in the worst case that might include the memory being DMAed and of
+> course there's races if you just check the pointer - the pointer can be
+> checked at the same time as it's being freed (or between the free and
+> the clear).
+> 
+> I think we should be either halting the DMA or waiting for it to finish
+> here.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+I haven't see the original patch, but the proper solution to this problem
+should be to add a check to snd_dmaengine_pcm_close() to see if the DMA is
+still running, and if it is call dmaengine_terminate_all() for the DMA channel
+associated with the PCM. Everything else will probably still be racy.
 
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index b376532..4967fe9 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -695,9 +695,6 @@ static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
- 			((char*)(usbdata + i))[1] = ra[i].c2;
- 			usb_fill_bulk_urb(us->urb[i], usX2Y->dev, usb_sndbulkpipe(usX2Y->dev, 4),
- 					  usbdata + i, 2, i_usX2Y_04Int, usX2Y);
--#ifdef OLD_USB
--			us->urb[i]->transfer_flags = USB_QUEUE_BULK;
--#endif
- 		}
- 		us->submitted =	0;
- 		us->len =	NOOF_SETRATE_URBS;
+- Lars
