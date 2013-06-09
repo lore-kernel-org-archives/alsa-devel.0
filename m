@@ -1,19 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: dmaengine: add runtime status
- checking in dmaengine_pcm_dma_complete
-Date: Sun, 09 Jun 2013 15:51:09 +0200
-Message-ID: <51B4884D.3010904@metafoo.de>
-References: <1370606249-19955-1-git-send-email-zhouqiao@marvell.com>
- <20130607143428.GR31367@sirena.org.uk> <51B4850C.5090508@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Codec driver gets probed prior to the machine driver
+Date: Sun, 9 Jun 2013 11:50:01 -0300
+Message-ID: <CAOMZO5BzaAmt0BNXvSw+a18QorOBmEjGwaA5PoQ_D6mVb6QiUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
- (mailhost.informatik.uni-hamburg.de [134.100.9.70])
- by alsa0.perex.cz (Postfix) with ESMTP id C7276261AE9
- for <alsa-devel@alsa-project.org>; Sun,  9 Jun 2013 15:47:49 +0200 (CEST)
-In-Reply-To: <51B4850C.5090508@metafoo.de>
+Received: from mail-vc0-f181.google.com (mail-vc0-f181.google.com
+ [209.85.220.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8D882602C6
+ for <alsa-devel@alsa-project.org>; Sun,  9 Jun 2013 16:50:02 +0200 (CEST)
+Received: by mail-vc0-f181.google.com with SMTP id lf11so3038164vcb.40
+ for <alsa-devel@alsa-project.org>; Sun, 09 Jun 2013 07:50:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com
+To: Mark Brown <broonie@kernel.org>, Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/2013 03:37 PM, Lars-Peter Clausen wrote:
-> On 06/07/2013 04:34 PM, Mark Brown wrote:
->> On Fri, Jun 07, 2013 at 07:57:29PM +0800, Qiao Zhou wrote:
->>> the dmaengine_pcm_dma_complete callback is usually executed after
->>> the dma interrupt, which uses tasklet_schedule, workqueue, or other
->>> method for quick int handler return.
->>>
->>> in some corner case, where pcm stream is released unexpected, like
->>> media server is killed, the runtime parameter will be freed. if it
->>> happens between the t1 and t2 in below chart, then the callback
->>> will try to access members of paramters which is already freed,
->>> and kernel panics.
->>>
->>> to avoid this issue, add runtime checking before other handling in
->>> dmaengine_pcm_dma_complete. if pcm stream is already released,
->>> just ignore the current handling and return.
->>
->> This doesn't seem like a good or robust way of fixing this, if we're
->> tearing down the resources the DMA is using while the DMA is in progress
->> then in the worst case that might include the memory being DMAed and of
->> course there's races if you just check the pointer - the pointer can be
->> checked at the same time as it's being freed (or between the free and
->> the clear).
->>
->> I think we should be either halting the DMA or waiting for it to finish
->> here.
-> 
-> I haven't see the original patch, but the proper solution to this problem
-> should be to add a check to snd_dmaengine_pcm_close() to see if the DMA is
-> still running.
+Hi,
 
-Ok, since this will never happen, I suppose the problem is rather that the DMA
-callback is called after dma_terminate_all() has been called. Which sounds like
-it is a bug in the dmaengine driver. And this will likely also be a problem for
-other users of that dmaengine driver and not only the ASoC driver, so it should
-be fixed in the dmaengine driver.
+When running linux-next 20130607 on a mx6qsabrelite I see that the
+audio drivers fail to probe.
+Added some printk's to better illustrate the problem:
 
-- Lars
+mmcblk0: mmc0:b5a1 SD04G 3.69 GiB
+**** reading the chip ID
+sgtl5000: probe of 0-000a failed with error -5
+****** enabling the codec clock
+imx-sgtl5000 sound.13: ASoC: CODEC (null) not registered
+imx-sgtl5000 sound.13: snd_soc_register_card failed (-517)
+platform sound.13: Driver imx-sgtl5000 requests probe defer
+
+The problem here is that the codec driver (sgtl5000) is being probed
+prior to the machine driver (imx-sgtl5000).
+
+The reading of the chip ID fails because at this point in time there
+is no codec clock, which is turned on by imx-sgtl5000.
+
+Running 3.10-rc4, the order of the events is as expected: imx-sgtl5000
+is called first and sgtl5000 is called later.
+In this case the probe works as usual.
+
+Tried doing a bisect, but this was not succesful due to several bisect
+breakages (build issues and non-booting kernels) on  its way.
+
+Would anyone have some suggestion as to why the codec driver is
+getting probed first?
+
+Thanks,
+
+Fabio Estevam
