@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: codecs: adau1701: factor out
-	firmware reset
-Date: Mon, 10 Jun 2013 14:09:46 +0100
-Message-ID: <20130610130946.GA1403@sirena.org.uk>
-References: <1370605987-19290-1-git-send-email-zonque@gmail.com>
- <1370605987-19290-2-git-send-email-zonque@gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: adav80x: Select SND_SOC_ADAV80X if
+	SND_SOC_I2C_AND_SPI
+Date: Mon, 10 Jun 2013 21:20:44 +0800
+Message-ID: <1370870444.14367.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8547651150576355009=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 18BA02615D1
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 15:09:50 +0200 (CEST)
-In-Reply-To: <1370605987-19290-2-git-send-email-zonque@gmail.com>
+Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
+ [209.85.220.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583C72615EE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 15:20:50 +0200 (CEST)
+Received: by mail-pa0-f50.google.com with SMTP id fb1so4416676pad.9
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 06:20:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de
+To: Mark Brown <broonie@kernel.org>
+Cc: Yi Li <yi.li@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This driver is useless if both SPI and I2C are not configured.
+Thus don't build this driver if both SPI and I2C are not configured.
 
---===============8547651150576355009==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
+This patch silences below build warning if both SPI and I2C are not configured.
 
+  CC      sound/soc/codecs/adav80x.o
+sound/soc/codecs/adav80x.c:842:12: warning: 'adav80x_bus_probe' defined but not used [-Wunused-function]
+sound/soc/codecs/adav80x.c:863:12: warning: 'adav80x_bus_remove' defined but not used [-Wunused-function]
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, Jun 07, 2013 at 01:53:04PM +0200, Daniel Mack wrote:
-> Some runtime-determined constraints might need to be satisfied prior to
-> firmware loading, so the actual download and releasing the device from
-> reset has to be postponed. Factor it out first, so we have everything at
-> one place.
-
-Applied, thanks.
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRtdAWAAoJELSic+t+oim9CMYP/ie9b12+OsUpNHcH+rOBVbYN
-+VkEkLGyl1iCRun1q8Cv8bv3F2w+B3mYtmF5edvgCX83rDxBsXk0tpigq/nW1eKI
-yaW+NbecK5Kde7gLs8Ge02S8QUtjExhumNh3A2yx6JkbLGPi4cnHTME9JTycCeFG
-eGs6ltwyt3e8kN+czcbf2hGEf6S0yWg0lp3GzfKEtjtiQ92vWUcg3GzcmJGTD1yC
-50Ie7Y4I4+nNZWeS/9n9j60PX1MjRkNn6pWaOBgIr/XZnsXvl7C+NtfxgTBgI/lq
-lwclSW87hbqTEsrWELetoVD201tzrkXgPz8GcWWIjqtgk0mI0cpuNrEtbXCnwSLZ
-OKBmK83AuzHEkMgbhE737K3Y4b7UrFW655/DYAnX4BMBR7ph62qMLqIeAkM1x25B
-QHi36sBDberbRoZTHEKFIetMii+GoaVkw9RpPveyIp+0l+8Qk/erw+48VlRERwrJ
-BWMjSS8Ijxt8daj9N96+ZctrXyemvDijPPiN50U6hMEFM9XRGBQzNZeTTstZqPvN
-zbg7RBzI+oqGqs7UiYEFG8DlZFaaQvdGknl3WY0UOcWOBwuPWDHrdkq0LY2e+Jab
-ULXJdFALLTTab6s24zctoRn79BOxkGzBsH/R7ugWbxYR+bFmYoEdhpoZCxY96vdD
-bMznoSlqOfs5bUNTQdAc
-=CMfZ
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
-
---===============8547651150576355009==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8547651150576355009==--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c90d298..6234900 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -19,7 +19,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AD1980 if SND_SOC_AC97_BUS
+ 	select SND_SOC_AD73311
+ 	select SND_SOC_ADAU1373 if I2C
+-	select SND_SOC_ADAV80X
++	select SND_SOC_ADAV80X if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_ADS117X
+ 	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+-- 
+1.8.1.2
