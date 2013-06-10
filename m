@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: dmaengine: add runtime status
  checking in dmaengine_pcm_dma_complete
-Date: Mon, 10 Jun 2013 10:30:43 +0100
-Message-ID: <20130610093043.GJ31367@sirena.org.uk>
+Date: Mon, 10 Jun 2013 10:31:55 +0100
+Message-ID: <20130610093155.GK31367@sirena.org.uk>
 References: <1370606249-19955-1-git-send-email-zhouqiao@marvell.com>
  <20130607143428.GR31367@sirena.org.uk>
- <51B2EC7A.8090309@marvell.com>
+ <51B4850C.5090508@metafoo.de> <51B4884D.3010904@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3851742615923963948=="
+Content-Type: multipart/mixed; boundary="===============1515725928842958955=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 4881126109C
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 11:30:50 +0200 (CEST)
-In-Reply-To: <51B2EC7A.8090309@marvell.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 971AB26109D
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 11:31:58 +0200 (CEST)
+In-Reply-To: <51B4884D.3010904@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: tiwai@suse.de, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org, zhangfei.gao@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3851742615923963948==
+--===============1515725928842958955==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lQziCMYVe1V9fMJ2"
+	protocol="application/pgp-signature"; boundary="R7M+3ROIzrLwNusK"
 Content-Disposition: inline
 
 
---lQziCMYVe1V9fMJ2
+--R7M+3ROIzrLwNusK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jun 08, 2013 at 04:34:02PM +0800, Qiao Zhou wrote:
+On Sun, Jun 09, 2013 at 03:51:09PM +0200, Lars-Peter Clausen wrote:
+> On 06/09/2013 03:37 PM, Lars-Peter Clausen wrote:
 
-> This call back only takes substream as parameter. In case that a
-> wrong/fake interrupt of other drivers triggers this call back, like
-> a careless/bad design, then it panics in audio driver. Can we add
-> such checking and give a warning log rather than to let the system
-> die directly. Could you consider it?
+> > I haven't see the original patch, but the proper solution to this problem
+> > should be to add a check to snd_dmaengine_pcm_close() to see if the DMA is
+> > still running.
 
-Why not fix the problem in the paths that do the teardown instead?
+> Ok, since this will never happen, I suppose the problem is rather that the DMA
+> callback is called after dma_terminate_all() has been called. Which sounds like
+> it is a bug in the dmaengine driver. And this will likely also be a problem for
+> other users of that dmaengine driver and not only the ASoC driver, so it should
+> be fixed in the dmaengine driver.
 
---lQziCMYVe1V9fMJ2
+Just to clarify what is it makes you say that this will never happen?
+
+--R7M+3ROIzrLwNusK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRtZy/AAoJELSic+t+oim9k38P/2v4DOjb0c84y0Ya3AYX1L3H
-FlatuX2aaQe+8ll8nIVK+KOZnwjJOoLkHlvGowXj1FYqUMkYQa9l2uzcyyFIty3Y
-EJz/OmTga63XMMFWutGYfRsDb0SlcKG7WBKLOVsCABY6zo8VjU17r3+MAjZfjHFP
-q8PfbTzTcI1KYmI7Yu9Z4KsVsQw0CuR91MBQBT0b/7hS6wxAkWUBE/TOJF8RmbkG
-A8hWAoOYlpYRV+pmWF2hkooDQw2t0Cp0ou37kds6vY8r/KJwM74lem2Wzo3UxmAQ
-MzGI0VIadEWH63QZvOUH35q9Jgbafe8VnqItnK9Vuva4S0Z4bXzaTiK0upnlkODP
-BqR7fYtU5UJkmyV81N8Io3pA9z9GxicGBFp5n0NeD8/sYREzlKPH/VtonjJ0/efI
-1ToA1d+AtIZ6Tgs3o5Il89OoeQbpO515iTBHmx0a+ST4leTIhFcN7Do2RGIwKXFx
-lKAL4vvbeizMTypFyCA50aUHMprSKbATj700tR/zCf3YZNjVZtWqjqWBBiiNl3jq
-/J7RzFm4hcR8SFPIkJ/2aACXD0MbYCjwTTh/+zkW3iBYoavzcj6sSF7o36o47Y8b
-BNC4RMj3OVyXm9UVin+MGC0FPlAvpjk7dxQ5MPpClOiW1z2MBNgTrhGhC08SLEgF
-cdoz1y6u6u3dyvpcZdGB
-=qFZe
+iQIcBAEBAgAGBQJRtZ0IAAoJELSic+t+oim9W+cP/2t8odqWyx16JPtek1ywaAe5
+W+x1aFhzSeJ4+E8CBIiGp/SEbLV50yBXkoCaIFi01G2USIdWaOJDHztepTZxcb5E
+iQRIwRKNHYEMJ6fWjrdMn4gc6pIXjdGVP63dLfNHcml+QOMhUBEVg44CFwiSorZL
+Ouxrnr492nOHgsyJ56x8UpjU2u9m9v515lLewKOa1eM1w/AW6iGRWrQW9fK2+sCQ
+DcQT7wiQ8uoP4JElrzPlgUHusBLsU4a68iOq6gCXb3BYtGuzJ+SYUHIWDkPTs9YB
+GwnSgUxBi07ric4UAI3Mp2qqTjL14f5legg7A1fOHHyDTAZnKm3RzVvOSbHLP+bi
+21QO2eaNjXkBKXsGx4GLPLhNsoi1JGb1u9hVCpPfIIyMXY5CWf2TQeugzXaMOk5V
+BZjoLTFqMzROFcE/61qfRxGdbDIMXuVAVRbGBt/YABLXNb4fdzVBWsIEGoHhZ1m+
+5unC1I488dzqO2kFRMz4mKWwQeWDNu2eYtnLlJeNa1OpO5NSdBHKnTAn2swQNNHB
+HQTY+TVS1EnUF6ladFXLj3F6iLP0//7JqTowdtZg+HROc7ampclhbNPpMO0GoetK
+LSZNy+oYv3p13nHiqPI6dMoR1lBYDywOv3hKtilKjq6WVXu2byoEkAyVKyXCEU94
+8CvPZ7PMo0GMvcNALGyF
+=2dEB
 -----END PGP SIGNATURE-----
 
---lQziCMYVe1V9fMJ2--
+--R7M+3ROIzrLwNusK--
 
---===============3851742615923963948==
+--===============1515725928842958955==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3851742615923963948==--
+--===============1515725928842958955==--
