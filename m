@@ -1,63 +1,50 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 12/15] ASoC: spear: Convert to use devm_ioremap_resource
-Date: Mon, 10 Jun 2013 17:05:10 +0530
-Message-ID: <1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
-References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: thierry.reding@gmail.com, patches@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+From: Chen Guangyu-B42378 <B42378@freescale.com>
+Subject: Re: [PATCH] ASoC: wm8962: Restore device state after
+ reset in runtime resume
+Date: Mon, 10 Jun 2013 11:54:18 +0000
+Message-ID: <E31481825E4C03459FC878EE97CB2EFD02FE491C@039-SN2MPN1-023.039d.mgd.msft.net>
+References: <1370619797-17503-1-git-send-email-broonie@linaro.org>
+ <20130608053457.GE19153@MrMyself>,<20130610094826.GN31367@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from am1outboundpool.messaging.microsoft.com
+ (am1ehsobe005.messaging.microsoft.com [213.199.154.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43B14261281
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 13:54:23 +0200 (CEST)
+In-Reply-To: <20130610094826.GN31367@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
-introduced devm_ioremap_resource() and deprecated the use of
-devm_request_and_ioremap().
+Hi,
 
-Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
-CC: alsa-devel@alsa-project.org
-CC: Liam Girdwood <lgirdwood@gmail.com>
-CC: Mark Brown <broonie@kernel.org>
----
- sound/soc/spear/spdif_out.c |   20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+On Fri, Jun 10,  Mark Brown wrote:
+> Again this is to fix interactions with hardware control modes.  Since
+> we're coming out of suspend mode where the device may well have been
+> powered down we can be confident that nothing is actually using the
+> PLLs.
 
-diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
-index 4bde512..896ee7f 100644
---- a/sound/soc/spear/spdif_out.c
-+++ b/sound/soc/spear/spdif_out.c
-@@ -282,27 +282,17 @@ static int spdif_out_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int ret;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res)
--		return -EINVAL;
--
--	if (!devm_request_mem_region(&pdev->dev, res->start,
--				resource_size(res), pdev->name)) {
--		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
--		return -ENOENT;
--	}
--
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host) {
- 		dev_warn(&pdev->dev, "kzalloc fail\n");
- 		return -ENOMEM;
- 	}
- 
--	host->io_base = devm_request_and_ioremap(&pdev->dev, res->start,
--				resource_size(res));
--	if (!host->io_base) {
--		dev_warn(&pdev->dev, "ioremap failed\n");
--		return -ENOMEM;
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	host->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(host->io_base)) {
-+		dev_warn(&pdev->dev, "devm_ioremap_resource failed\n");
-+		return PTR_ERR(host->io_base);
- 	}
- 
- 	host->clk = devm_clk_get(&pdev->dev, NULL);
--- 
-1.7.9.5
+I see your point. Then I think I'm okay with this patch. Please apply this to
+the manline, it's really helpful.
+Tested-by: Nicolin Chen <b42378@freescale.com>
+
+And sir, I'm sorry if I push you. But I'm not sure about my patch:
+([PATCH V5] ASoC: fsl: add imx-wm8962 machine driver)
+
+Is there anything essential I need to improve?
+Please find that thread and append your comments as before.
+
+Thank you.
+Nicolin Chen
