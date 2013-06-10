@@ -1,18 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 1/4] ASoC: codecs: adau1701: factor out
- firmware reset
-Date: Mon, 10 Jun 2013 15:08:24 +0200
-Message-ID: <51B5CFC8.3060608@metafoo.de>
+	firmware reset
+Date: Mon, 10 Jun 2013 14:09:46 +0100
+Message-ID: <20130610130946.GA1403@sirena.org.uk>
 References: <1370605987-19290-1-git-send-email-zonque@gmail.com>
  <1370605987-19290-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8547651150576355009=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-066.synserver.de (smtp-out-067.synserver.de
- [212.40.185.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 4236B2615D1
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 15:08:17 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18BA02615D1
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 15:09:50 +0200 (CEST)
 In-Reply-To: <1370605987-19290-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,113 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-On 06/07/2013 01:53 PM, Daniel Mack wrote:
+
+--===============8547651150576355009==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Disposition: inline
+
+
+--qDbXVdCdHGoSgWSk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 07, 2013 at 01:53:04PM +0200, Daniel Mack wrote:
 > Some runtime-determined constraints might need to be satisfied prior to
 > firmware loading, so the actual download and releasing the device from
 > reset has to be postponed. Factor it out first, so we have everything at
 > one place.
-> 
-> This also changes the behaviour in a way that adau1701_i2c_probe() will
-> assert the reset line, and wait for the codec probe to release it.
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Applied, thanks.
 
-Thanks.
+--qDbXVdCdHGoSgWSk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> ---
->  sound/soc/codecs/adau1701.c | 49 +++++++++++++++++++++++++++++++++------------
->  1 file changed, 36 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-> index 3fc1763..b6b1a77 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -90,6 +90,7 @@
->  #define ADAU1701_FIRMWARE "adau1701.bin"
->  
->  struct adau1701 {
-> +	int gpio_nreset;
->  	unsigned int dai_fmt;
->  };
->  
-> @@ -183,9 +184,37 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
->  	return value;
->  }
->  
-> -static int adau1701_load_firmware(struct i2c_client *client)
-> +static void adau1701_reset(struct snd_soc_codec *codec)
->  {
-> -	return process_sigma_firmware(client, ADAU1701_FIRMWARE);
-> +	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	if (!gpio_is_valid(adau1701->gpio_nreset))
-> +		return;
-> +
-> +	gpio_set_value(adau1701->gpio_nreset, 0);
-> +	/* minimum reset time is 20ns */
-> +	udelay(1);
-> +	gpio_set_value(adau1701->gpio_nreset, 1);
-> +	/* power-up time may be as long as 85ms */
-> +	mdelay(85);
-> +}
-> +
-> +static int adau1701_init(struct snd_soc_codec *codec)
-> +{
-> +	int ret;
-> +	struct i2c_client *client = to_i2c_client(codec->dev);
-> +
-> +	adau1701_reset(codec);
-> +
-> +	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
-> +	if (ret) {
-> +		dev_warn(codec->dev, "Failed to load firmware\n");
-> +		return ret;
-> +	}
-> +
-> +	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
-> +
-> +	return 0;
->  }
->  
->  static int adau1701_set_capture_pcm_format(struct snd_soc_codec *codec,
-> @@ -466,15 +495,13 @@ MODULE_DEVICE_TABLE(of, adau1701_dt_ids);
->  static int adau1701_probe(struct snd_soc_codec *codec)
->  {
->  	int ret;
-> -	struct i2c_client *client = to_i2c_client(codec->dev);
->  
-> -	codec->control_data = client;
-> +	codec->control_data = to_i2c_client(codec->dev);
->  
-> -	ret = adau1701_load_firmware(client);
-> +	ret = adau1701_init(codec);
->  	if (ret)
-> -		dev_warn(codec->dev, "Failed to load firmware\n");
-> +		return ret;
->  
-> -	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
->  	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
->  
->  	return 0;
-> @@ -524,14 +551,10 @@ static int adau1701_i2c_probe(struct i2c_client *client,
->  					    "ADAU1701 Reset");
->  		if (ret < 0)
->  			return ret;
-> -
-> -		/* minimum reset time is 20ns */
-> -		udelay(1);
-> -		gpio_set_value(gpio_nreset, 1);
-> -		/* power-up time may be as long as 85ms */
-> -		mdelay(85);
->  	}
->  
-> +	adau1701->gpio_nreset = gpio_nreset;
-> +
->  	i2c_set_clientdata(client, adau1701);
->  	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
->  			&adau1701_dai, 1);
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRtdAWAAoJELSic+t+oim9CMYP/ie9b12+OsUpNHcH+rOBVbYN
++VkEkLGyl1iCRun1q8Cv8bv3F2w+B3mYtmF5edvgCX83rDxBsXk0tpigq/nW1eKI
+yaW+NbecK5Kde7gLs8Ge02S8QUtjExhumNh3A2yx6JkbLGPi4cnHTME9JTycCeFG
+eGs6ltwyt3e8kN+czcbf2hGEf6S0yWg0lp3GzfKEtjtiQ92vWUcg3GzcmJGTD1yC
+50Ie7Y4I4+nNZWeS/9n9j60PX1MjRkNn6pWaOBgIr/XZnsXvl7C+NtfxgTBgI/lq
+lwclSW87hbqTEsrWELetoVD201tzrkXgPz8GcWWIjqtgk0mI0cpuNrEtbXCnwSLZ
+OKBmK83AuzHEkMgbhE737K3Y4b7UrFW655/DYAnX4BMBR7ph62qMLqIeAkM1x25B
+QHi36sBDberbRoZTHEKFIetMii+GoaVkw9RpPveyIp+0l+8Qk/erw+48VlRERwrJ
+BWMjSS8Ijxt8daj9N96+ZctrXyemvDijPPiN50U6hMEFM9XRGBQzNZeTTstZqPvN
+zbg7RBzI+oqGqs7UiYEFG8DlZFaaQvdGknl3WY0UOcWOBwuPWDHrdkq0LY2e+Jab
+ULXJdFALLTTab6s24zctoRn79BOxkGzBsH/R7ugWbxYR+bFmYoEdhpoZCxY96vdD
+bMznoSlqOfs5bUNTQdAc
+=CMfZ
+-----END PGP SIGNATURE-----
+
+--qDbXVdCdHGoSgWSk--
+
+--===============8547651150576355009==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8547651150576355009==--
