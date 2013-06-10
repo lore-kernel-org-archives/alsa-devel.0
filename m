@@ -1,20 +1,16 @@
-From: Johan Hellman <johan.hellman@axis.com>
-Subject: Re: Timestamps using I/O Plugin
-Date: Mon, 10 Jun 2013 10:19:31 +0200
-Message-ID: <9A8CA64355151747A180E7910F873F1802B88CAF26@xmail3.se.axis.com>
-References: <9A8CA64355151747A180E7910F873F1802B9DFC0B1@xmail3.se.axis.com>
- <9A8CA64355151747A180E7910F873F1802B88CAF20@xmail3.se.axis.com>,
- <s5hobbjsith.wl%tiwai@suse.de>,
- <9A8CA64355151747A180E7910F873F1802B88CAF21@xmail3.se.axis.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Headset mic support for two more
+	machines
+Date: Mon, 10 Jun 2013 10:22:25 +0200
+Message-ID: <1370852545-5015-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anubis.se.axis.com (anubis.se.axis.com [195.60.68.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 69908260862
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 10:20:07 +0200 (CEST)
-In-Reply-To: <9A8CA64355151747A180E7910F873F1802B88CAF21@xmail3.se.axis.com>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DC9F260865
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 10:22:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,12 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Johan Hellman <johanhn@axis.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1189363@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
->If it was possible to override the snd_pcm_htimestamp() then the timestamp could be fetched from the I/O plugin, and snd_pcm_status()->snd_pcm_ioplug_status() could call that overridden function to fill in tstamp into the status object.  If not implemented in the I/O plugin call >snd_pcm_generic_real_htimestamp() as today.  Would this be an acceptable way forward?
+They need these quirks to have headset mic support.
 
-Would this be an acceptable way to let a ioplugin support setting timestamps related to the monotonic system clock? The ioplugin implementation would handle the relationship between the systems monotonic clock and the audio streams clock source, making a network source transparent to alsa but the applications could synchronize different streams.
+BugLink: https://bugs.launchpad.net/bugs/1189363
+Tested-by: Shawn Wang <shawn.wang@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-/JohanHellman
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 02e22b4..cbd443d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3483,6 +3483,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x05ca, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05cb, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05de, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x05e0, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05e9, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05ea, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05eb, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+@@ -3494,6 +3495,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x05f5, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05f6, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05f8, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+ 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
+-- 
+1.7.9.5
