@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8962: Restore device state after
- reset in runtime resume
-Date: Mon, 10 Jun 2013 13:52:01 +0100
-Message-ID: <20130610125201.GV31367@sirena.org.uk>
-References: <1370619797-17503-1-git-send-email-broonie@linaro.org>
- <20130608053457.GE19153@MrMyself>
- <20130610094826.GN31367@sirena.org.uk>
- <E31481825E4C03459FC878EE97CB2EFD02FE491C@039-SN2MPN1-023.039d.mgd.msft.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/4] ASoC: codecs: adau1701: factor out
+ firmware reset
+Date: Mon, 10 Jun 2013 15:08:24 +0200
+Message-ID: <51B5CFC8.3060608@metafoo.de>
+References: <1370605987-19290-1-git-send-email-zonque@gmail.com>
+ <1370605987-19290-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3147135432506203749=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 45D0F2615CD
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 14:52:05 +0200 (CEST)
-In-Reply-To: <E31481825E4C03459FC878EE97CB2EFD02FE491C@039-SN2MPN1-023.039d.mgd.msft.net>
+Received: from smtp-out-066.synserver.de (smtp-out-067.synserver.de
+ [212.40.185.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4236B2615D1
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 15:08:17 +0200 (CEST)
+In-Reply-To: <1370605987-19290-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +23,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen Guangyu-B42378 <B42378@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 06/07/2013 01:53 PM, Daniel Mack wrote:
+> Some runtime-determined constraints might need to be satisfied prior to
+> firmware loading, so the actual download and releasing the device from
+> reset has to be postponed. Factor it out first, so we have everything at
+> one place.
+> 
+> This also changes the behaviour in a way that adau1701_i2c_probe() will
+> assert the reset line, and wait for the codec probe to release it.
+> 
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
 
---===============3147135432506203749==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IKLiWPpDzW6eSXZ0"
-Content-Disposition: inline
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
+Thanks.
 
---IKLiWPpDzW6eSXZ0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 10, 2013 at 11:54:18AM +0000, Chen Guangyu-B42378 wrote:
-
-> And sir, I'm sorry if I push you. But I'm not sure about my patch:
-> ([PATCH V5] ASoC: fsl: add imx-wm8962 machine driver)
-
-> Is there anything essential I need to improve?
-> Please find that thread and append your comments as before.
-
-I've not looked at it yet, you only posted it late on Friday.
-
---IKLiWPpDzW6eSXZ0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRtcvuAAoJELSic+t+oim90p4P+QHOiBQwDFQ76ONm9T+QaKwq
-skTAJ8nHvVNzdaCHg2gkfGcpspJBmLKFDq5XhOq4MutzoZteFPd6E2mUoBdlwoAU
-YaxscxZhj44ybBxvBOHBh4Rxy1mF6i/i55PYSDLXxYqYJrobraSd1TYITwvV5/VR
-fBNIf8ZWoTRhuveNQracrm2zBUf83oGpyyWFt5t/IGy0GCWaOQRCPKSSwFKrT/XB
-A7B22pYh0E3GX/wnqyJVaihwUCVgPn9ySKiQvzpJeDCUwGBAxHMSo4JdtYw9KUzC
-NE7AMwpSEtclqrWu0CQdZaIq6uhzGt4PZpbRVax80K0V/4dcLIZhvzhW4lcd88gn
-73/xecAhPYLMIsJJAcXd8AUPmRmemUcYUZpcCtzLIOC6pD/Og/sA4OgkVzqkM4BF
-rL/aXdBLJJey2ZlU9vArhj6vqkCoJs7PluUHX//eB6ckbKjxQApwQhXoQ0950iHi
-OaHKSNQxuxYAemKzwOCFQucWvUVYnLUa0o6NbtLAGwTMmk/rjzEgXYGrx2FZa352
-ubum0RrEmFTgHyUx51u6hVohmXb4KDOpLZWlmIqn6uNWMeGJe6KUv+HeQ8GbifWW
-oKFmL8/RAJQZEbIsh0BIGFv8N2YPaHAWhPYHzDPgpkFTDWKJfUDZzmlVR80Y/1tt
-p5L+o4CR0sRgw6TF6bWL
-=LcKS
------END PGP SIGNATURE-----
-
---IKLiWPpDzW6eSXZ0--
-
---===============3147135432506203749==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3147135432506203749==--
+> ---
+>  sound/soc/codecs/adau1701.c | 49 +++++++++++++++++++++++++++++++++------------
+>  1 file changed, 36 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index 3fc1763..b6b1a77 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -90,6 +90,7 @@
+>  #define ADAU1701_FIRMWARE "adau1701.bin"
+>  
+>  struct adau1701 {
+> +	int gpio_nreset;
+>  	unsigned int dai_fmt;
+>  };
+>  
+> @@ -183,9 +184,37 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
+>  	return value;
+>  }
+>  
+> -static int adau1701_load_firmware(struct i2c_client *client)
+> +static void adau1701_reset(struct snd_soc_codec *codec)
+>  {
+> -	return process_sigma_firmware(client, ADAU1701_FIRMWARE);
+> +	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	if (!gpio_is_valid(adau1701->gpio_nreset))
+> +		return;
+> +
+> +	gpio_set_value(adau1701->gpio_nreset, 0);
+> +	/* minimum reset time is 20ns */
+> +	udelay(1);
+> +	gpio_set_value(adau1701->gpio_nreset, 1);
+> +	/* power-up time may be as long as 85ms */
+> +	mdelay(85);
+> +}
+> +
+> +static int adau1701_init(struct snd_soc_codec *codec)
+> +{
+> +	int ret;
+> +	struct i2c_client *client = to_i2c_client(codec->dev);
+> +
+> +	adau1701_reset(codec);
+> +
+> +	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
+> +	if (ret) {
+> +		dev_warn(codec->dev, "Failed to load firmware\n");
+> +		return ret;
+> +	}
+> +
+> +	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
+> +
+> +	return 0;
+>  }
+>  
+>  static int adau1701_set_capture_pcm_format(struct snd_soc_codec *codec,
+> @@ -466,15 +495,13 @@ MODULE_DEVICE_TABLE(of, adau1701_dt_ids);
+>  static int adau1701_probe(struct snd_soc_codec *codec)
+>  {
+>  	int ret;
+> -	struct i2c_client *client = to_i2c_client(codec->dev);
+>  
+> -	codec->control_data = client;
+> +	codec->control_data = to_i2c_client(codec->dev);
+>  
+> -	ret = adau1701_load_firmware(client);
+> +	ret = adau1701_init(codec);
+>  	if (ret)
+> -		dev_warn(codec->dev, "Failed to load firmware\n");
+> +		return ret;
+>  
+> -	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
+>  	snd_soc_write(codec, ADAU1701_DSPCTRL, ADAU1701_DSPCTRL_CR);
+>  
+>  	return 0;
+> @@ -524,14 +551,10 @@ static int adau1701_i2c_probe(struct i2c_client *client,
+>  					    "ADAU1701 Reset");
+>  		if (ret < 0)
+>  			return ret;
+> -
+> -		/* minimum reset time is 20ns */
+> -		udelay(1);
+> -		gpio_set_value(gpio_nreset, 1);
+> -		/* power-up time may be as long as 85ms */
+> -		mdelay(85);
+>  	}
+>  
+> +	adau1701->gpio_nreset = gpio_nreset;
+> +
+>  	i2c_set_clientdata(client, adau1701);
+>  	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
+>  			&adau1701_dai, 1);
