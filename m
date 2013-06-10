@@ -1,17 +1,17 @@
-From: Robert Billing <bob@tnglwood.demon.co.uk>
-Subject: Device enumeration
-Date: Mon, 10 Jun 2013 10:05:13 +0100
-Message-ID: <51B596C9.6090701@tnglwood.demon.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Codec driver gets probed prior to the machine
+	driver
+Date: Mon, 10 Jun 2013 10:14:36 +0100
+Message-ID: <20130610091436.GF31367@sirena.org.uk>
+References: <CAOMZO5BzaAmt0BNXvSw+a18QorOBmEjGwaA5PoQ_D6mVb6QiUw@mail.gmail.com>
+ <51B49B79.2040007@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3811353988640233000=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tnglwood.demon.co.uk (tnglwood.demon.co.uk [83.104.36.146])
- by alsa0.perex.cz (Postfix) with ESMTP id 12E4A2608D4
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 11:05:14 +0200 (CEST)
-Received: from [127.0.0.1] (localhost.localdomain [127.0.0.1])
- by tnglwood.demon.co.uk (8.14.5/8.14.5) with ESMTP id r5A95DK5002228
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 10:05:14 +0100
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01D7E2608D3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 11:14:42 +0200 (CEST)
+In-Reply-To: <51B49B79.2040007@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am currently developing a package to play theatrical sound effects, 
-which has two play channels that I want to be able to attach to two 
-different ALSA devices. To allow the users, who are theatre directors 
-and are *not* technical to do this I am trying to provide a drop-down 
-list of play devices. I can get the raw devices by parsing either the 
-output from aplay -L, or from /proc/asound. The problem comes with 
-devices defined in .asoundrc. I have this in .asoundrc on the 
-development system:
 
-pcm.speakers {
-     type pulse
-     device alsa_output.pci-0000_02_06.0.analog-stereo
-}
+--===============3811353988640233000==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="THRyzaXkjSsfugGc"
+Content-Disposition: inline
 
-ctl.speakers {
-     type pulse
-     device alsa_output.pci-0000_02_06.0.analog-stereo
-}
 
-pcm.cans {
-     type pulse
-     device alsa_output.pci-0000_00_1f.5.analog-stereo
-}
+--THRyzaXkjSsfugGc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-ctl.cans {
-     type pulse
-     device alsa_output.pci-0000_00_1f.5.analog-stereo
-}
+On Sun, Jun 09, 2013 at 05:12:57PM +0200, Lars-Peter Clausen wrote:
+> On 06/09/2013 04:50 PM, Fabio Estevam wrote:
 
-This works and it is possible to play to the devices "cans" or 
-"speakers" to get output on headphones and speakers respectively, but 
-these names don't appear in the output from aplay.
+> > The reading of the chip ID fails because at this point in time there is no
+> > codec clock, which is turned on by imx-sgtl5000.
 
-What I need is some clean way of getting a list of the aliases. This 
-package will have to be capable of being installed on any Linux system 
-without needing to edit configuration files manually. However if some 
-tool or some part of the installation process has edited a configuration 
-file I want the aliases to appear in my list of devices.
+> This sounds as if the CODEC driver should enable the CODEC clock and not the
+> machine driver.
 
-What is the right way to do this?
+Well, probably both.  Remember that we don't actually have a standard
+clock API, even the generic clock API is not available on most
+platforms.  Though frankly I'm getting fed up enough with this to just
+start using the API and getting platforms that haven't provided one to
+deal with the issue since otherwise I'm getting very little traction.
 
--- 
-Robert Billing,
+--THRyzaXkjSsfugGc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Phone/fax +44 (0) 1344-772849
-bob@tnglwood.demon.co.uk
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-Tanglewood,
-64, Pinehill Road,
-Crowthorne,
-Berks, RG45 7JR
+iQIcBAEBAgAGBQJRtZj4AAoJELSic+t+oim9iWwP/jIZnqg6NV2ATMB4egqHUvvE
+wF1DzhlHkEmvoY2Ui9GYYMyXuWYrpKRjJlone2OXohRhjz3PqRZ2dMSaPp5ezeJF
+Wy3hUhVeModCBPdFygQdENRJm1qQy7fkbasGlwIplZzIUnXw6aPpBj+dv3imx2MY
+mP0FmWI8lRRoBw+vS2jQJFPuTckBtXxb+spXfRCyJvqC0dl4T2UZj4DimF6KKqZa
+WKfKH0Tu6FpxZmEQcltQf/8xplsRVYrv9Z5dN9YurVwhy9EIPSfIZimmtB2+sZNX
+hm5AzB55e3NeJ2xX7zyU5sjUYvxjHZLD0IWFHRUf70G2CcgcVjlaqygkzO7zBM2V
+XxoBu4Nr217cf216WIelcii0DaNp+RNWiVYjk+hwArp2C6yi20qrRQK+44fNd3q8
+400RTfiQXAY4N4Ng2CN+ibCPa8fS/SHSr8KbKrA4qHqTI5wdGsaKEb3b2pfFEEyH
+r5qMfdgLRW5EoG5EyG+lbGx4ToHC5URAr86eBgR9hCeyrPn1sbfmiFpuN4A5pTb7
+Pjd5KTVn7da/RziUcK536AWjbDoXDlS3EHqkjyjtdSFTjuyniVPLZ8jdmdatpTjf
+fFY0dMxDFSmx7wejlfoELGxEe0UhU662ZR4YPvbry1kC7Vjyn6TwXcySx8p/16AP
+jmtCcje7jUTQm2gldRKw
+=qjNX
+-----END PGP SIGNATURE-----
+
+--THRyzaXkjSsfugGc--
+
+--===============3811353988640233000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3811353988640233000==--
