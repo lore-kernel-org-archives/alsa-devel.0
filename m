@@ -1,20 +1,16 @@
-From: Chen Guangyu-B42378 <B42378@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8962: Restore device state after
- reset in runtime resume
-Date: Mon, 10 Jun 2013 11:54:18 +0000
-Message-ID: <E31481825E4C03459FC878EE97CB2EFD02FE491C@039-SN2MPN1-023.039d.mgd.msft.net>
-References: <1370619797-17503-1-git-send-email-broonie@linaro.org>
- <20130608053457.GE19153@MrMyself>,<20130610094826.GN31367@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem using alsa to implement an Android dock
+Date: Mon, 10 Jun 2013 14:02:34 +0200
+Message-ID: <51B5C05A.9010804@ladisch.de>
+References: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from am1outboundpool.messaging.microsoft.com
- (am1ehsobe005.messaging.microsoft.com [213.199.154.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 43B14261281
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 13:54:23 +0200 (CEST)
-In-Reply-To: <20130610094826.GN31367@sirena.org.uk>
-Content-Language: en-US
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 883A32615EE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 14:02:41 +0200 (CEST)
+In-Reply-To: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
+To: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Jeremy Rosen wrote:
+> my problems arrive when both the dock mode and the accessory mode are
+> enabled. in that case Alsa will not recognise the usb sound device exposed
+> by android.
 
-On Fri, Jun 10,  Mark Brown wrote:
-> Again this is to fix interactions with hardware control modes.  Since
-> we're coming out of suspend mode where the device may well have been
-> powered down we can be confident that nothing is actually using the
-> PLLs.
+>       bInterfaceNumber        1
+>       bInterfaceSubClass      Control Device
+>       AudioControl Interface Descriptor:
+>         baInterfaceNr           0
+>         baInterfaceNr           1
+>       bInterfaceNumber        2
+>       bInterfaceSubClass      Streaming
 
-I see your point. Then I think I'm okay with this patch. Please apply this to
-the manline, it's really helpful.
-Tested-by: Nicolin Chen <b42378@freescale.com>
+This is a bug in the Android firmware: it says that the audio driver
+should look at interfaces 0 and 1, but the actual audio interfaces are
+1 and 2.
 
-And sir, I'm sorry if I push you. But I'm not sure about my patch:
-([PATCH V5] ASoC: fsl: add imx-wm8962 machine driver)
+I'll look into this ...
 
-Is there anything essential I need to improve?
-Please find that thread and append your comments as before.
 
-Thank you.
-Nicolin Chen
+Regards,
+Clemens
