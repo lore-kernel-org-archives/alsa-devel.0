@@ -1,81 +1,55 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/2] ARM: dts: imx51-babbage: Pass a real clock
-	to the codec
-Date: Sun,  9 Jun 2013 22:07:47 -0300
-Message-ID: <1370826467-30399-2-git-send-email-festevam@gmail.com>
-References: <1370826467-30399-1-git-send-email-festevam@gmail.com>
+From: "Eamon Hayden" <eamon.hayden@cloudiumsystems.com>
+Subject: RE: [alsa-devel] USB audio Gadget - code 10 error
+Date: Mon, 10 Jun 2013 08:41:46 +0100
+Message-ID: <28376.5056905851$1370850251@news.gmane.org>
+References: <51ae1eb1.88d1ec0a.38dc.662aSMTPIN_ADDED_BROKEN@mx.google.com>
+	<CAK7N6voGPrqiwwk8HV-2irc7jK+y_ZRkHB0jfQJYKg7yG9voNA@mail.gmail.com>
+	<CABb+yY1oa-tO+ZEZ0aHzCYhDBgxUCa2DVuf6izC-yEW79uv3kQ@mail.gmail.com>
+	<000f01ce61c0$22888330$67998990$@hayden@cloudiumsystems.com>
+	<000301ce620f$54663920$fd32ab60$@hayden@cloudiumsystems.com>
+	<20130605184605.GC3332@debian.debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ye0-f172.google.com (mail-ye0-f172.google.com
- [209.85.213.172])
- by alsa0.perex.cz (Postfix) with ESMTP id DA5EE260202
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 03:08:08 +0200 (CEST)
-Received: by mail-ye0-f172.google.com with SMTP id l2so555524yen.3
- for <alsa-devel@alsa-project.org>; Sun, 09 Jun 2013 18:08:08 -0700 (PDT)
-In-Reply-To: <1370826467-30399-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, lars@metafoo.de, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <kernelnewbies-bounces@kernelnewbies.org>
+In-Reply-To: <20130605184605.GC3332@debian.debian>
+Content-Language: en-ie
+List-Unsubscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
+	<mailto:kernelnewbies-request@kernelnewbies.org?subject=unsubscribe>
+List-Archive: <http://lists.kernelnewbies.org/pipermail/kernelnewbies>
+List-Post: <mailto:kernelnewbies@kernelnewbies.org>
+List-Help: <mailto:kernelnewbies-request@kernelnewbies.org?subject=help>
+List-Subscribe: <http://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
+	<mailto:kernelnewbies-request@kernelnewbies.org?subject=subscribe>
+Sender: kernelnewbies-bounces@kernelnewbies.org
+Errors-To: kernelnewbies-bounces@kernelnewbies.org
+To: =?utf-8?Q?'Jonathan_Neusch=C3=A4fer'?= <j.neuschaefer@gmx.net>
+Cc: 'anish singh' <anish198519851985@gmail.com>, alsa-devel@alsa-project.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'kernelnewbies' <kernelnewbies@kernelnewbies.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-On imx51_babbage the codec clock is activated via GPIO4_26.
-
-Provide a real clock to the sgtl5000 codec via device tree.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- arch/arm/boot/dts/imx51-babbage.dts | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/imx51-babbage.dts b/arch/arm/boot/dts/imx51-babbage.dts
-index 6dd9486..27b4061 100644
---- a/arch/arm/boot/dts/imx51-babbage.dts
-+++ b/arch/arm/boot/dts/imx51-babbage.dts
-@@ -61,6 +61,16 @@
- 		mux-int-port = <2>;
- 		mux-ext-port = <3>;
- 	};
-+
-+	clocks {
-+		clk_26M: codec_clock {
-+			compatible = "fixed-clock";
-+			reg=<0>;
-+			#clock-cells = <0>;
-+			clock-frequency = <26000000>;
-+			gpios = <&gpio4 26 1>;
-+		};
-+	};
- };
- 
- &esdhc1 {
-@@ -229,6 +239,7 @@
- 				MX51_PAD_EIM_A27__GPIO2_21   0x5
- 				MX51_PAD_CSPI1_SS0__GPIO4_24 0x85
- 				MX51_PAD_CSPI1_SS1__GPIO4_25 0x85
-+				MX51_PAD_CSPI1_RDY__GPIO4_26 0x80000000
- 			>;
- 		};
- 	};
-@@ -255,7 +266,7 @@
- 	sgtl5000: codec@0a {
- 		compatible = "fsl,sgtl5000";
- 		reg = <0x0a>;
--		clock-frequency = <26000000>;
-+		clocks = <&clk_26M>;
- 		VDDA-supply = <&vdig_reg>;
- 		VDDIO-supply = <&vvideo_reg>;
- 	};
--- 
-1.8.1.2
+WWVzLCBJIG9ubHkgaGF2ZSB0aGlzIHByb2JsZW0gd2l0aCBXaW5kb3dzICh2ZXJzaW9ucyA3IGFu
+ZCA4IGFyZSB0aGUgb25lcyBJIGhhdmUgdHJpZWQpLgoKSSBkb24ndCBoYXZlIHRoaXMgcHJvYmxl
+bSBvbiBMaW51eCAtIG9yIG1vcmUgc3BlY2lmaWNhbGx5IEkgZG9uJ3QgaGF2ZSB0aGUgaXNzdWUg
+b24gVWJ1bnRvIDEyLjAuNAoKSXMgdGhlcmUgYW55Ym9keSB0aGF0IGhhcyB0cmllZCB0aGlzIHdp
+dGggd2luZG93cz8KClRoYW5rcywKRWFtb24uCgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQpG
+cm9tOiBKb25hdGhhbiBOZXVzY2jDpGZlciBbbWFpbHRvOmoubmV1c2NoYWVmZXJAZ214Lm5ldF0g
+ClNlbnQ6IFdlZG5lc2RheSwgSnVuZSAwNSwgMjAxMyA3OjQ2IFBNClRvOiBFYW1vbiBIYXlkZW4K
+Q2M6ICdKYXNzaSBCcmFyJzsgJ2FuaXNoIHNpbmdoJzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnOyAna2VybmVsbmV3YmllcycKU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBVU0IgYXVkaW8g
+R2FkZ2V0IC0gY29kZSAxMCBlcnJvcgoKT24gV2VkLCBKdW4gMDUsIDIwMTMgYXQgMDY6MDg6MzZQ
+TSArMDEwMCwgRWFtb24gSGF5ZGVuIHdyb3RlOgo+IEp1c3QgdG8gYmUgc3VyZS4uLgo+IEkganVz
+dCBkb3dubG9hZGVkIGEgY2xlYW4gY29weSBvZiBrZXJuZWwgMy42LjkuIAo+IEkgdGhlbiBjb25m
+aWd1cmVkIGl0IGZvciBVQUMxIGFuZCB0aGUgVVNCIEF1ZGlvIEdhZGdldC4gCj4gSSByZWJ1aWx0
+IGFuZCBpbnN0YWxsZWQgdGhlIGdfYXVkaW8gbG9hZGFibGUgbW9kdWxlLgo+IAo+IEFnYWluIEkg
+Z2V0IHRoZSAnVGhpcyBkZXZpY2UgY2Fubm90IHN0YXJ0IChjb2RlIDEwKScgRXJyb3Igd2hlbiBJ
+IAo+IGNvbm5lY3Qgd2luZG93cyA3Lgo+IAo+IE15IGV4cGVjdGF0aW9uIGlzIHRoYXQgdGhhdCB0
+aGlzIHNob3VsZCB3b3JrIHdpdGggdGhlIGRlZmF1bHQgd2luZG93cyAKPiBkcml2ZXJzIC0gSXMg
+dGhpcyBjb3JyZWN0LgoKVGhpcyBzZWVtcyB0byBiZSBhIHByb2JsZW0geW91IGhhdmUgd2l0aCBN
+aWNyb3NvZnQgV2luZG93cyA3LCBpcyB0aGF0IGNvcnJlY3Q/CgpPciBkbyB5b3UgcmF0aGVyIGdl
+dCB0aGUgZXJyb3IgbWVzc2FnZSAnVGhpcyBkZXZpY2UgY2Fubm90IHN0YXJ0IChjb2RlIDEwKScg
+b24gTGludXg/IElmIHNvLCBwbGVhc2UgcG9zdCBhIG1vcmUgY29tcGxldGUgZXJyb3IgbG9nLgpB
+bHNvLCB0aGUgb3V0cHV0IG9mICJsc3VzYiAtdiIgbWlnaHQgaGVscC4KCgpIVEgsCkpvbmF0aGFu
+IE5ldXNjaMOkZmVyCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KS2VybmVsbmV3YmllcyBtYWlsaW5nIGxpc3QKS2VybmVsbmV3Ymllc0BrZXJuZWxuZXdi
+aWVzLm9yZwpodHRwOi8vbGlzdHMua2VybmVsbmV3Ymllcy5vcmcvbWFpbG1hbi9saXN0aW5mby9r
+ZXJuZWxuZXdiaWVzCg==
