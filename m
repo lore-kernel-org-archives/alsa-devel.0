@@ -1,48 +1,87 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problem using alsa to implement an Android dock
-Date: Mon, 10 Jun 2013 14:02:34 +0200
-Message-ID: <51B5C05A.9010804@ladisch.de>
-References: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
+From: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 12/15] ASoC: spear: Convert to use devm_ioremap_resource
+Date: Mon, 10 Jun 2013 17:36:50 +0530
+Message-ID: <CAK9yfHygMQYpVRqrieyESJw9oZC5OzKoWWSUhYDYEd6KJigegA@mail.gmail.com>
+References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org>
+	<1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 883A32615EE
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 14:02:41 +0200 (CEST)
-In-Reply-To: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy Rosen <jeremy.rosen@openwide.fr>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jeremy Rosen wrote:
-> my problems arrive when both the dock mode and the accessory mode are
-> enabled. in that case Alsa will not recognise the usb sound device exposed
-> by android.
+On 10 June 2013 17:05, Tushar Behera <tushar.behera@linaro.org> wrote:
+> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+> introduced devm_ioremap_resource() and deprecated the use of
+> devm_request_and_ioremap().
 
->       bInterfaceNumber        1
->       bInterfaceSubClass      Control Device
->       AudioControl Interface Descriptor:
->         baInterfaceNr           0
->         baInterfaceNr           1
->       bInterfaceNumber        2
->       bInterfaceSubClass      Streaming
+This patch does a little more than just conversion. May that change
+could be mentioned here.
 
-This is a bug in the Android firmware: it says that the audio driver
-should look at interfaces 0 and 1, but the actual audio interfaces are
-1 and 2.
+>
+> Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+> CC: alsa-devel@alsa-project.org
+> CC: Liam Girdwood <lgirdwood@gmail.com>
+> CC: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/spear/spdif_out.c |   20 +++++---------------
+>  1 file changed, 5 insertions(+), 15 deletions(-)
+>
+> diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+> index 4bde512..896ee7f 100644
+> --- a/sound/soc/spear/spdif_out.c
+> +++ b/sound/soc/spear/spdif_out.c
+> @@ -282,27 +282,17 @@ static int spdif_out_probe(struct platform_device *pdev)
+>         struct resource *res;
+>         int ret;
+>
+> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       if (!res)
+> -               return -EINVAL;
+> -
+> -       if (!devm_request_mem_region(&pdev->dev, res->start,
+> -                               resource_size(res), pdev->name)) {
+> -               dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+> -               return -ENOENT;
+> -       }
+> -
+>         host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+>         if (!host) {
+>                 dev_warn(&pdev->dev, "kzalloc fail\n");
+>                 return -ENOMEM;
+>         }
+>
+> -       host->io_base = devm_request_and_ioremap(&pdev->dev, res->start,
+> -                               resource_size(res));
+> -       if (!host->io_base) {
+> -               dev_warn(&pdev->dev, "ioremap failed\n");
+> -               return -ENOMEM;
+> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       host->io_base = devm_ioremap_resource(&pdev->dev, res);
+> +       if (IS_ERR(host->io_base)) {
+> +               dev_warn(&pdev->dev, "devm_ioremap_resource failed\n");
 
-I'll look into this ...
+This print is not needed as devm_ioremap_resource prints its own messages.
 
 
-Regards,
-Clemens
+> +               return PTR_ERR(host->io_base);
+>         }
+>
+>         host->clk = devm_clk_get(&pdev->dev, NULL);
+> --
+> 1.7.9.5
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+
+
+
+-- 
+With warm regards,
+Sachin
