@@ -1,16 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Headset mic support for two more
-	machines
-Date: Mon, 10 Jun 2013 10:22:25 +0200
-Message-ID: <1370852545-5015-1-git-send-email-david.henningsson@canonical.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Let the codec acquire
+	its clock
+Date: Mon, 10 Jun 2013 16:49:21 +0800
+Message-ID: <20130610084919.GC6381@S2101-09.ap.freescale.net>
+References: <1370826467-30399-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DC9F260865
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 10:22:26 +0200 (CEST)
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe005.messaging.microsoft.com [216.32.180.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ABD6260895
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 10:49:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1370826467-30399-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,38 +23,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1189363@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-They need these quirks to have headset mic support.
+On Sun, Jun 09, 2013 at 10:07:46PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> On a mx6qsabrelite board the following error happens on probe:
+> 
+> sgtl5000: probe of 0-000a failed with error -5
+> imx-sgtl5000 sound.13: ASoC: CODEC (null) not registered
+> imx-sgtl5000 sound.13: snd_soc_register_card failed (-517)
+> platform sound.13: Driver imx-sgtl5000 requests probe defer
+> 
+> Prior to reading the codec ID we need to turn the SYS_MCLK clock, so let's 
+> enable the codec clock inside sgtl5000_i2c_probe().
+> 
+> Also remove the codec clock enable/disable functions from the machine driver.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Shawn,
+> 
+> I haven't had a chance to convert mx28 to pass the codec clock via device tree
+> yet. It looks like it is a bit trickier there, as it uses the saif clock.
+> 
+> Given that mx28 audio playback is already broken in linux-next, this series
+> does not make things worse on mx28 side.
 
-BugLink: https://bugs.launchpad.net/bugs/1189363
-Tested-by: Shawn Wang <shawn.wang@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+Okay.  But I assume you will get it fixed soon.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 02e22b4..cbd443d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3483,6 +3483,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05ca, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05cb, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05de, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x05e0, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05e9, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05ea, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05eb, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-@@ -3494,6 +3495,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05f5, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05f6, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05f8, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
- 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
--- 
-1.7.9.5
+> 
+>  sound/soc/codecs/sgtl5000.c  | 34 ++++++++++++++++++++++++++++++----
+>  sound/soc/fsl/imx-sgtl5000.c | 30 +++++++-----------------------
+>  2 files changed, 37 insertions(+), 27 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> index c8f2afb..2e0227b 100644
+> --- a/sound/soc/codecs/sgtl5000.c
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -114,6 +114,7 @@ struct sgtl5000_priv {
+>  	struct regulator_bulk_data supplies[SGTL5000_SUPPLY_NUM];
+>  	struct ldo_regulator *ldo;
+>  	struct regmap *regmap;
+> +	struct clk *mclk;
+>  };
+>  
+>  /*
+> @@ -1522,16 +1523,28 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> +	sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
+> +	if (IS_ERR(sgtl5000->mclk)) {
+> +		ret = PTR_ERR(sgtl5000->mclk);
+> +		dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(sgtl5000->mclk);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* read chip information */
+>  	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ID, &reg);
+>  	if (ret)
+> -		return ret;
+> +		goto disable_clk;
+>  
+>  	if (((reg & SGTL5000_PARTID_MASK) >> SGTL5000_PARTID_SHIFT) !=
+>  	    SGTL5000_PARTID_PART_ID) {
+>  		dev_err(&client->dev,
+>  			"Device with ID register %x is not a sgtl5000\n", reg);
+> -		return -ENODEV;
+> +		ret = -ENODEV;
+> +		goto disable_clk;
+>  	}
+>  
+>  	rev = (reg & SGTL5000_REVID_MASK) >> SGTL5000_REVID_SHIFT;
+> @@ -1542,17 +1555,30 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+>  	/* Ensure sgtl5000 will start with sane register values */
+>  	ret = sgtl5000_fill_defaults(sgtl5000);
+>  	if (ret)
+> -		return ret;
+> +		goto disable_clk;
+>  
+>  	ret = snd_soc_register_codec(&client->dev,
+>  			&sgtl5000_driver, &sgtl5000_dai, 1);
+> +	if (ret)
+> +		goto disable_clk;
+> +
+> +	return 0;
+> +
+> +disable_clk:
+> +	clk_disable_unprepare(sgtl5000->mclk);
+>  	return ret;
+>  }
+>  
+>  static int sgtl5000_i2c_remove(struct i2c_client *client)
+>  {
+> -	snd_soc_unregister_codec(&client->dev);
+> +	struct sgtl5000_priv *sgtl5000;
+> +	sgtl5000 = devm_kzalloc(&client->dev, sizeof(struct sgtl5000_priv),
+> +								GFP_KERNEL);
+
+Are you kidding?  You should call i2c_get_clientdata() rather than
+devm_kzalloc() to get the pointer.
+
+> +	if (!sgtl5000)
+> +		return -ENOMEM;
+>  
+> +	snd_soc_unregister_codec(&client->dev);
+> +	clk_disable_unprepare(sgtl5000->mclk);
+>  	return 0;
+>  }
+>  
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index a60aaa0..823151b 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -129,20 +129,10 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	data->codec_clk = clk_get(&codec_dev->dev, NULL);
+> -	if (IS_ERR(data->codec_clk)) {
+> -		/* assuming clock enabled by default */
+> -		data->codec_clk = NULL;
+> -		ret = of_property_read_u32(codec_np, "clock-frequency",
+> -					&data->clk_frequency);
+> -		if (ret) {
+> -			dev_err(&codec_dev->dev,
+> -				"clock-frequency missing or invalid\n");
+> -			goto fail;
+> -		}
+> -	} else {
+> -		data->clk_frequency = clk_get_rate(data->codec_clk);
+> -		clk_prepare_enable(data->codec_clk);
+> -	}
+> +	if (IS_ERR(data->codec_clk))
+> +		goto fail;
+> +
+> +	data->clk_frequency = clk_get_rate(data->codec_clk);
+
+With codec driver setting up the clock now, the only use of codec_clk 
+n this machine driver is getting the rate and setting up sysclk with
+snd_soc_dai_set_sysclk().  I'm wondering if it makes more sense to move
+all these over into codec driver, so that machine driver does not need
+to touch the clock at all.
+
+Shawn
+
+>  
+>  	data->dai.name = "HiFi";
+>  	data->dai.stream_name = "HiFi";
+> @@ -157,10 +147,10 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  	data->card.dev = &pdev->dev;
+>  	ret = snd_soc_of_parse_card_name(&data->card, "model");
+>  	if (ret)
+> -		goto clk_fail;
+> +		goto fail;
+>  	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
+>  	if (ret)
+> -		goto clk_fail;
+> +		goto fail;
+>  	data->card.num_links = 1;
+>  	data->card.owner = THIS_MODULE;
+>  	data->card.dai_link = &data->dai;
+> @@ -170,7 +160,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  	ret = snd_soc_register_card(&data->card);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+> -		goto clk_fail;
+> +		goto fail;
+>  	}
+>  
+>  	platform_set_drvdata(pdev, data);
+> @@ -179,8 +169,6 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  
+>  	return 0;
+>  
+> -clk_fail:
+> -	clk_put(data->codec_clk);
+>  fail:
+>  	if (ssi_np)
+>  		of_node_put(ssi_np);
+> @@ -194,10 +182,6 @@ static int imx_sgtl5000_remove(struct platform_device *pdev)
+>  {
+>  	struct imx_sgtl5000_data *data = platform_get_drvdata(pdev);
+>  
+> -	if (data->codec_clk) {
+> -		clk_disable_unprepare(data->codec_clk);
+> -		clk_put(data->codec_clk);
+> -	}
+>  	snd_soc_unregister_card(&data->card);
+>  
+>  	return 0;
+> -- 
+> 1.8.1.2
+> 
