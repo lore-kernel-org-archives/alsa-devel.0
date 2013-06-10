@@ -1,74 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm2518: Fix trivial typo in
- checking tx_mask and rx_mask values
-Date: Mon, 10 Jun 2013 18:06:30 +0100
-Message-ID: <20130610170630.GO1403@sirena.org.uk>
-References: <1370874233.25883.1.camel@phoenix>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V5] ASoC: fsl: add imx-wm8962 machine driver
+Date: Mon, 10 Jun 2013 18:08:38 +0100
+Message-ID: <20130610170838.GP1403@sirena.org.uk>
+References: <1370607974-6895-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3836578465406051265=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A66692616FA
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 19:06:34 +0200 (CEST)
-In-Reply-To: <1370874233.25883.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="===============7771442502429973862=="
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1370607974-6895-1-git-send-email-b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3836578465406051265==
+--===============7771442502429973862==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8WA4ILJSyYAmUzbY"
+	protocol="application/pgp-signature"; boundary="aC33ObtQAkNdOZ6b"
 Content-Disposition: inline
 
 
---8WA4ILJSyYAmUzbY
+--aC33ObtQAkNdOZ6b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 10, 2013 at 10:23:53PM +0800, Axel Lin wrote:
-> Otherwise, ssm2518_set_tdm_slot() always returns error if slots != 0.
+On Fri, Jun 07, 2013 at 08:26:14PM +0800, Nicolin Chen wrote:
 
-Applied, thanks.
+> +
+> +struct imx_priv {
+> +	int hp_gpio;
+> +	int hp_active_low;
+> +	int hp_status;
+> +	int amic_gpio;
+> +	int amic_active_low;
+> +	int amic_status;
 
---8WA4ILJSyYAmUzbY
+These are just recorded in the struct but never actually seem to be
+used?
+
+> +	struct platform_device *pdev;
+> +	struct snd_pcm_substream *first_stream;
+> +	struct snd_pcm_substream *second_stream;
+
+These aren't used any more.
+
+--aC33ObtQAkNdOZ6b
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRtgeTAAoJELSic+t+oim99VoQAJtufvfO0Nz8ciuEMSbAwIe6
-zTkLVZnIXh+3Pvexfp0jgPRr4b7einfttWM29vlW2f63uG1LvAnYL8wZ8rJpXFmV
-Ec0d8iJM3h6LUTTjZWUs+W1APPCfK5UgXy7BSu2rhDAqK8DRauhc8uTC6jw6Uf43
-kZr2Xbc80Vr/TFJg0TMIlVC67Xa5DhS/lS0+3YDy6xDcdRnbLx5Tcu3hx42jjgF7
-DBShnmYYYqfdgYgfqq4Pm8GrDCKgnXKLheuHtoov70nTr42GEvcXEMraieKSFyKm
-hQoKfGUzpDI5Uxl2F37pUeK/TYkJD8YMyRSYSkHh1r53y1GO6oh2KzbNtjRLV3jZ
-VhdFn2cLwUYr9S2UrCx9dm3k+/8grfK9sJ2BgrZ5uWeF1m04glS+n1yN/Dtaly+D
-u6raPtBRtnxZDrkXaNlkXvA+Y2UytXpG7jyoRXIAib3Oz6DnCfait0EEP0XYwHnC
-1hW85R4Kv0KFzf0kxZc8NoRb0e5JNkEGrjcLFRdvg+WqtQpuXSaN0W05LHTCYBTk
-5DcHcuH7Vbe4IH3RgFTX7Z7n/1A9vRMjrJMSmqjWLZUPqR0c+EDTVwdGRPIc9D8S
-B2Isq3OMwZoJm1A/MSMTC0wbqKTKSB7FdO086cJyeJqDoBcMHp4H526RNGwJxsGF
-SbW5i86ATP52rvXLi4iN
-=3q3R
+iQIcBAEBAgAGBQJRtggTAAoJELSic+t+oim9Bt4P/0covOO1GK9wFGRpgDOlFGSW
+NbbodlteBWgPu5Pdy7tjbCoS53lSc53KonsqW0CFrgC4vGeGkfgnwdjIbN/TK+6i
+g+62sZYF7Dplmt6FMO1du9xsQdSk3QUb8Zoi90btdI3AVUEU8ar/10tm4S0lPzIl
+foUJghRisH9WhQlbL4tZtF8Xub5FV9M92F7Vox+sarPifKhFgRJFPIJyz4xCn4SI
+xKQhXEzVLUBOKmO+QC8z9EdXyB4PB5dT2V9CFfu7mY2ji37ddGiRapneMW84/grp
+T+wSju/1+3hhT0kDdOEP9UfUey6xteDYDSHvm7GgnouHGl0KQnM9H91t9iLAuFrM
+IetFM8ibQbaIqyK0fsWNLsp74vYE9dlTlTy8lKKR71flvRd/Yk2+F4lifsO+A7ZN
+877/AZfcyGBup3GUTrNj9GiBKIy7iXqirF5i2b2ZyihuxNrk2N0i1LzXIcUv5MlS
+DkDsgOMyR84gjlu+fkZFgJeuCznJonskBhytvxD6YtEOoloV9xRDjUpiVYt8F3pc
+hYyZqfAc9qaBtTmJzBnrUkvxN0PzoqAE5UXFZ3BM1cswxZmlgXS2jHEIBIbmlAjn
+BHFo/SoXvqmnLOaAROqceYoRsO4H2xE0XlwAy/FGVpZQXRZcmiPVOuVKc5j0JuVG
+yZ+LLN4uMGXNP2n1ByMx
+=49wv
 -----END PGP SIGNATURE-----
 
---8WA4ILJSyYAmUzbY--
+--aC33ObtQAkNdOZ6b--
 
---===============3836578465406051265==
+--===============7771442502429973862==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+devicetree-discuss mailing list
+devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============3836578465406051265==--
+--===============7771442502429973862==--
