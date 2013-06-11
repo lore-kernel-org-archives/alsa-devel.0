@@ -1,16 +1,16 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
-Date: Tue, 11 Jun 2013 11:41:49 -0600
-Message-ID: <51B7615D.7040408@wwwdotorg.org>
-References: <1370927416-12216-1-git-send-email-bardliao@realtek.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem using alsa to implement an Android dock
+Date: Tue, 11 Jun 2013 21:44:18 +0200
+Message-ID: <51B77E12.7000101@ladisch.de>
+References: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 49BED261A9E
- for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 19:41:53 +0200 (CEST)
-In-Reply-To: <1370927416-12216-1-git-send-email-bardliao@realtek.com>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 90C17261AD1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 21:44:25 +0200 (CEST)
+In-Reply-To: <312118621.168631.1370854985139.JavaMail.root@openwide.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,43 +20,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
+To: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/10/2013 11:10 PM, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
-> 
-> This patch adds the ALC5640 codec driver.
+Please try this patch:
 
-> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
 
-> +static int rt5640_i2c_probe(struct i2c_client *i2c,
+ALSA: usb-audio: work around Anroid accessory firmware bug
 
-> +	rt5640->regmap = devm_regmap_init_i2c(i2c, &rt5640_regmap);
+When the Android firmware enables the audio interfaces in accessory
+mode, it always declares in the control interface's baInterfaceNr array
+that interfaces 0 and 1 belong to the audio function.  However, the
+accessory interface itself, if also enabled, already is at index 0 and
+shifts the actual audio interface numbers to 1 and 2, which prevents the
+PCM streaming interface from being seen by the host driver.
 
-> +	if (rt5640->pdata.ldo1_en) {
-> +		ret = devm_gpio_request_one(&i2c->dev, rt5640->pdata.ldo1_en,
-> +					    GPIOF_OUT_INIT_HIGH,
-> +					    "RT5640 LDO1_EN");
-> +		if (ret < 0) {
-> +			dev_err(&i2c->dev, "Failed to request LDO1_EN %d: %d\n",
-> +				rt5640->pdata.ldo1_en, ret);
-> +			return ret;
-> +		}
-> +		msleep(400);
-> +	}
+To get the PCM interface interface to work, detect when the descriptors
+point to the (for this driver useless) accessory interface, and redirect
+to the correct one.
 
-Oh I see this is the only place ldo1_en is touched. I had assumed you
-were going to add code to turn it off/on based on bias level. That's why
-I had asked you to add that feature, since you'd know any HW
-requirements for doing that. Still, as Mark mentioned, that can
-certainly be added later.
+Reported-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Not-yet-tested-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/card.c |   21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-One question though: Don't you want to initially enable ldo1_en before
-you create the regmap? At least some regmap_init() calls end up trying
-to read from the device to populate the register cache, and that won't
-work until ldo1_en is active.
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 563854a..f7a38ec 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -148,14 +148,31 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 		return -EINVAL;
+ 	}
 
-Anyway, I'll go test this again, and work on the patch to pull the
-platform data from DT.
++	alts = &iface->altsetting[0];
++	altsd = get_iface_desc(alts);
++
++	/*
++	 * Android with both accessory and audio interfaces enabled gets the
++	 * interface numbers wrong.
++	 */
++	if ((chip->usb_id == USB_ID(0x18d1, 0x2d04) ||
++	     chip->usb_id == USB_ID(0x18d1, 0x2d05)) &&
++	    interface == 0 &&
++	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
++	    altsd->bInterfaceSubClass == USB_SUBCLASS_VENDOR_SPEC) {
++		iface = usb_ifnum_to_if(dev, 2);
++		if (!iface)
++			return -EINVAL;
++		alts = &iface->altsetting[0];
++		altsd = get_iface_desc(alts);
++	}
++
+ 	if (usb_interface_claimed(iface)) {
+ 		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
+ 						dev->devnum, ctrlif, interface);
+ 		return -EINVAL;
+ 	}
+
+-	alts = &iface->altsetting[0];
+-	altsd = get_iface_desc(alts);
+ 	if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
+ 	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
+ 	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDISTREAMING) {
