@@ -1,80 +1,58 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: Re: [PATCH 12/15] ASoC: spear: Convert to use devm_ioremap_resource
-Date: Tue, 11 Jun 2013 09:21:25 +0530
-Message-ID: <51B69EBD.5000706@linaro.org>
-References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org> <1370864113-17895-13-git-send-email-tushar.behera@linaro.org> <CAK9yfHygMQYpVRqrieyESJw9oZC5OzKoWWSUhYDYEd6KJigegA@mail.gmail.com>
+From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Subject: [PATCH] ASoC: dwc: debug message correction.
+Date: Tue, 11 Jun 2013 09:29:07 +0530
+Message-ID: <1370923148-19398-1-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK9yfHygMQYpVRqrieyESJw9oZC5OzKoWWSUhYDYEd6KJigegA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog112.obsmtp.com (eu1sys200aog112.obsmtp.com
+ [207.126.144.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9033261A15
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 05:59:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, rajeev-dlh.kumar@st.com, Rajeev Kumar <rajeevk-dlh.kumar@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/10/2013 05:36 PM, Sachin Kamat wrote:
-> On 10 June 2013 17:05, Tushar Behera <tushar.behera@linaro.org> wrote:
->> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
->> introduced devm_ioremap_resource() and deprecated the use of
->> devm_request_and_ioremap().
-> 
-> This patch does a little more than just conversion. May that change
-> could be mentioned here.
-> 
+From: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
 
-Sure. I will update that.
+Debug message correction.
 
->>
->> Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
->> CC: alsa-devel@alsa-project.org
->> CC: Liam Girdwood <lgirdwood@gmail.com>
->> CC: Mark Brown <broonie@kernel.org>
->> ---
->>  sound/soc/spear/spdif_out.c |   20 +++++---------------
->>  1 file changed, 5 insertions(+), 15 deletions(-)
->>
->> diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
->> index 4bde512..896ee7f 100644
->> --- a/sound/soc/spear/spdif_out.c
->> +++ b/sound/soc/spear/spdif_out.c
->> @@ -282,27 +282,17 @@ static int spdif_out_probe(struct platform_device *pdev)
->>         struct resource *res;
->>         int ret;
->>
->> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -       if (!res)
->> -               return -EINVAL;
->> -
->> -       if (!devm_request_mem_region(&pdev->dev, res->start,
->> -                               resource_size(res), pdev->name)) {
->> -               dev_warn(&pdev->dev, "Failed to get memory resourse\n");
->> -               return -ENOENT;
->> -       }
->> -
->>         host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
->>         if (!host) {
->>                 dev_warn(&pdev->dev, "kzalloc fail\n");
->>                 return -ENOMEM;
->>         }
->>
->> -       host->io_base = devm_request_and_ioremap(&pdev->dev, res->start,
->> -                               resource_size(res));
->> -       if (!host->io_base) {
->> -               dev_warn(&pdev->dev, "ioremap failed\n");
->> -               return -ENOMEM;
->> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +       host->io_base = devm_ioremap_resource(&pdev->dev, res);
->> +       if (IS_ERR(host->io_base)) {
->> +               dev_warn(&pdev->dev, "devm_ioremap_resource failed\n");
-> 
-> This print is not needed as devm_ioremap_resource prints its own messages.
-> 
-> 
+Signed-off-by: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
+---
+ sound/soc/dwc/designware_i2s.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Ok.
-
-Thanks.
-
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index deb30d5..deb975e 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -392,7 +392,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (cap & DWC_I2S_PLAY) {
+-		dev_dbg(&pdev->dev, " SPEAr: play supported\n");
++		dev_dbg(&pdev->dev, " designware: play supported\n");
+ 		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
+ 		dw_i2s_dai->playback.channels_max = pdata->channel;
+ 		dw_i2s_dai->playback.formats = pdata->snd_fmts;
+@@ -400,7 +400,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (cap & DWC_I2S_RECORD) {
+-		dev_dbg(&pdev->dev, "SPEAr: record supported\n");
++		dev_dbg(&pdev->dev, "designware: record supported\n");
+ 		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
+ 		dw_i2s_dai->capture.channels_max = pdata->channel;
+ 		dw_i2s_dai->capture.formats = pdata->snd_fmts;
 -- 
-Tushar Behera
+1.6.0.2
