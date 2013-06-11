@@ -1,52 +1,76 @@
-From: "Oskar Schirmer" <oskar@scara.com>
-Subject: [PATCH] sound/sgtl5000: fix codec register initial values and mask
-Date: 11 Jun 2013 08:12:00 +0000
-Message-ID: <1370938320-6554-1-git-send-email-oskar@scara.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Fabio Estevam <fabio.estevam@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>, Oskar Schirmer <oskar@scara.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dwc: debug message correction.
+Date: Tue, 11 Jun 2013 09:55:40 +0100
+Message-ID: <20130611085540.GT1403@sirena.org.uk>
+References: <1370923148-19398-1-git-send-email-rajeev-dlh.kumar@st.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2759425145272186782=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6F82261A3F
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 10:55:43 +0200 (CEST)
+In-Reply-To: <1370923148-19398-1-git-send-email-rajeev-dlh.kumar@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Rajeev Kumar <rajeevk-dlh.kumar@st.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-According to documentation bit 3:2 in register SSS_CTRL are
-reserved and zero, so initially setting the register to 0x0008
-does not make much sense. Instead, bit 4 should be marked set,
-as this is the power up default.
 
-Further, mask computation in declarative part is obviously wrong:
-Fix FRAC DIVISOR to provide an 11 bit mask correctly.
+--===============2759425145272186782==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UsbkURXZxe2ekgES"
+Content-Disposition: inline
 
-Signed-off-by: Oskar Schirmer <oskar@scara.com>
----
- sound/soc/codecs/sgtl5000.c |    2 +-
- sound/soc/codecs/sgtl5000.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 92bbfec..ea47938 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -37,7 +37,7 @@
- static const u16 sgtl5000_regs[SGTL5000_MAX_REG_OFFSET] =  {
- 	[SGTL5000_CHIP_CLK_CTRL] = 0x0008,
- 	[SGTL5000_CHIP_I2S_CTRL] = 0x0010,
--	[SGTL5000_CHIP_SSS_CTRL] = 0x0008,
-+	[SGTL5000_CHIP_SSS_CTRL] = 0x0010,
- 	[SGTL5000_CHIP_DAC_VOL] = 0x3c3c,
- 	[SGTL5000_CHIP_PAD_STRENGTH] = 0x015f,
- 	[SGTL5000_CHIP_ANA_HP_CTRL] = 0x1818,
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 8a9f435..d3a68bb 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -347,7 +347,7 @@
- #define SGTL5000_PLL_INT_DIV_MASK		0xf800
- #define SGTL5000_PLL_INT_DIV_SHIFT		11
- #define SGTL5000_PLL_INT_DIV_WIDTH		5
--#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
-+#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
- #define SGTL5000_PLL_FRAC_DIV_SHIFT		0
- #define SGTL5000_PLL_FRAC_DIV_WIDTH		11
- 
--- 
-1.7.9.5
+--UsbkURXZxe2ekgES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jun 11, 2013 at 09:29:07AM +0530, Rajeev Kumar wrote:
+> From: Rajeev Kumar <rajeevk-dlh.kumar@st.com>
+>=20
+> Debug message correction.
+
+Applied both, thanks.
+
+--UsbkURXZxe2ekgES
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRtuYJAAoJELSic+t+oim9a00P/03SS4Bzh0usUlUK/OutCp0h
+SVuF+ZBlV7tMRCm/DJOjkkjHgEjANShjVcW5CxgWc9pySwlthdc2ZgCeJXcG1pt4
+kLVdtumPSomiRQ9fRQgZ9bytCF/Ub/mUBJu68TOnCUdofUqFdRPSE4a47kTlP8eZ
+GXHzbZpPGZA0QmqKwuJhgnVyG8nrvA8T5jrHek14uD5WQNrOBxYZOIOTazndmzGW
+/j30z+9cuiKAIFJxdv2eVwKUZSHoHA6SXhfymIGAPzMP6zGCqGXT2Xt3HIoeDYSO
+FAq8dplej1dWg0nsbdW4zz/ycPAze3ziY/FpkbsHQBDT/slhECsmgCROPL/nUQ/y
+v5GXA/w2kxrV+V7LEXue+4OGOpD2u1T5HCEGS8S8z+6MOw1ysSBr/2B+hgUVtqeY
+pwUjj4+N5grF4sr9PaxEaZXiPGtbh27MfU1m0+1wc6uPUrs0XeF1ptrRY6xqairb
+mNHwP4WmEJT9Oj0wCP7XwC7dQIrsJKp3I7+7eWcphTpvM+1WnxGnBdJUbnBNPCbz
+YF8NatrY6f14kqKYSrbAxpwtSuuyMIfW4hWUAH0UxoOfA/DQlgm4wo+1YNbLI4b9
+vUp7o8w2gSq6gApp21ojnSodg0+me1mVfRk1LWIJcIkn9n5JxaNKC6FB7753LvNL
+KVry8X9Z+xYvLLZEPxLZ
+=BQfD
+-----END PGP SIGNATURE-----
+
+--UsbkURXZxe2ekgES--
+
+--===============2759425145272186782==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2759425145272186782==--
