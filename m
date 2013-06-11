@@ -1,18 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Add models for Dell headset
-	jacks
-Date: Tue, 11 Jun 2013 11:06:49 +0200
-Message-ID: <1370941609-5056-2-git-send-email-david.henningsson@canonical.com>
-References: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+Date: Tue, 11 Jun 2013 10:12:13 +0100
+Message-ID: <20130611091212.GW1403@sirena.org.uk>
+References: <1370927416-12216-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3892838283859597420=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E693E261A56
- for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 11:06:50 +0200 (CEST)
-In-Reply-To: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 360DD261A4B
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 11:12:18 +0200 (CEST)
+In-Reply-To: <1370927416-12216-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +19,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1189363@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-These headset jacks keep coming in on more and more platforms, and
-it's possible I don't catch them all. Make it easier to test and
-verify by making models.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- Documentation/sound/alsa/HD-Audio-Models.txt |   41 ++++++++++++++------------
- sound/pci/hda/patch_realtek.c                |    3 ++
- 2 files changed, 25 insertions(+), 19 deletions(-)
+--===============3892838283859597420==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="B8YbZbqleQryf2nq"
+Content-Disposition: inline
 
-diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
-index bb8b0dc..9a0927c 100644
---- a/Documentation/sound/alsa/HD-Audio-Models.txt
-+++ b/Documentation/sound/alsa/HD-Audio-Models.txt
-@@ -21,27 +21,30 @@ ALC267/268
- ==========
-   inv-dmic	Inverted internal mic workaround
- 
--ALC269/270/275/276/280/282
-+ALC269/270/275/276/28x/29x
- ======
--  laptop-amic	Laptops with analog-mic input
--  laptop-dmic	Laptops with digital-mic input
--  alc269-dmic	Enable ALC269(VA) digital mic workaround
--  alc271-dmic	Enable ALC271X digital mic workaround
--  inv-dmic	Inverted internal mic workaround
--  lenovo-dock   Enables docking station I/O for some Lenovos
--
--ALC662/663/272
-+  laptop-amic		Laptops with analog-mic input
-+  laptop-dmic		Laptops with digital-mic input
-+  alc269-dmic		Enable ALC269(VA) digital mic workaround
-+  alc271-dmic		Enable ALC271X digital mic workaround
-+  inv-dmic		Inverted internal mic workaround
-+  lenovo-dock		Enables docking station I/O for some Lenovos
-+  dell-headset-multi	Headset jack, which can also be used as mic-in
-+  dell-headset-dock	Headset jack (without mic-in), and also dock I/O
-+
-+ALC662/663/668/272
- ==============
--  mario		Chromebook mario model fixup
--  asus-mode1	ASUS
--  asus-mode2	ASUS
--  asus-mode3	ASUS
--  asus-mode4	ASUS
--  asus-mode5	ASUS
--  asus-mode6	ASUS
--  asus-mode7	ASUS
--  asus-mode8	ASUS
--  inv-dmic	Inverted internal mic workaround
-+  mario			Chromebook mario model fixup
-+  asus-mode1		ASUS
-+  asus-mode2		ASUS
-+  asus-mode3		ASUS
-+  asus-mode4		ASUS
-+  asus-mode5		ASUS
-+  asus-mode6		ASUS
-+  asus-mode7		ASUS
-+  asus-mode8		ASUS
-+  inv-dmic		Inverted internal mic workaround
-+  dell-headset-multi	Headset jack, which can also be used as mic-in
- 
- ALC680
- ======
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index af9e71b..403010c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3599,6 +3599,8 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC269_FIXUP_INV_DMIC, .name = "inv-dmic"},
- 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
- 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
-+	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
-+	{.id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "dell-headset-dock"},
- 	{}
- };
- 
-@@ -4278,6 +4280,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{.id = ALC662_FIXUP_ASUS_MODE7, .name = "asus-mode7"},
- 	{.id = ALC662_FIXUP_ASUS_MODE8, .name = "asus-mode8"},
- 	{.id = ALC662_FIXUP_INV_DMIC, .name = "inv-dmic"},
-+	{.id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
- 	{}
- };
- 
--- 
-1.7.9.5
+
+--B8YbZbqleQryf2nq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 11, 2013 at 01:10:16PM +0800, bardliao@realtek.com wrote:
+
+> Signed-off-by: Bard Liao <bardliao@realtek.com>
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+
+I don't think that signoff for Stephen is right...
+
+> +static int rt5640_set_bias_level(struct snd_soc_codec *codec,
+> +			enum snd_soc_bias_level level)
+> +{
+> +	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+> +	switch (level) {
+> +	case SND_SOC_BIAS_STANDBY:
+> +		if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
+> +			regcache_cache_only(rt5640->regmap, false);
+
+You mark the device cache only in suspend so for symmetry this should
+really be in _BIAS_OFF, especially since the device is idle_bias_off so
+it'll be able to power off without a full suspend.
+
+> +	if (rt5640->pdata.ldo1_en) {
+> +		ret = devm_gpio_request_one(&i2c->dev, rt5640->pdata.ldo1_en,
+> +					    GPIOF_OUT_INIT_HIGH,
+> +					    "RT5640 LDO1_EN");
+> +		if (ret < 0) {
+> +			dev_err(&i2c->dev, "Failed to request LDO1_EN %d: %d\n",
+> +				rt5640->pdata.ldo1_en, ret);
+> +			return ret;
+> +		}
+> +		msleep(400);
+> +	}
+
+I'd expect to see some handling fo the LDO over suspend but that can be
+dealt with in a followup as previously discussed.  Ideally we'd be able
+to power off when in _BIAS_OFF too but if it's going to take 400ms to
+ramp the LDO (which does seem high) that might be an issue.
+
+--B8YbZbqleQryf2nq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRtunpAAoJELSic+t+oim9phIP/1VXHC31t1Bp9CfE65zuGNnM
+Z9dSFkAMKlDfSRu0wKx9FTEHRI/VYLx4ipDq9wtj3awzfd8YbE2r9ZfxM+bdwgfI
+yskfKQOi7dI9qFHEoy6ePNJg1J+UqmrrZFaI2AaI6AVvffpoR3/ybeJUgccsmRZE
+QPr2WtRUFcDp++/NRz7uRUS9Ebn1GbdKI0JQicFXfTWr1LVx1jVuMFAFMV88tQjM
+YZYU+T9q04UkH2yA4CQ1wTSsX5CbteUGs04jQtDP7t6Br8V034mvfMYdpuZ5Fzcs
+HnuqlRh9bxv0TQX5AxY4/nV1pxly/CEo8o4OaLY3zY6j+HRkEqGnQl7Z9fAfnUde
+rzsRQ41vZ3zqnQzoa4bIDmzYBZOkeR0tghYrs3+RhF97ItjNp7CnRPvMxf2lmhMl
+e2VfT7MW05pEGP1+I37z5ucpeDn0hYRqkqkoVYBO0Nf3gu0AEXk6I02E3++QjkcW
+yQ/NmAL+Ri0S8kqHbVEfNCkQTJYoVkaqI9HFdxRCkn5mWbI68tO8PoUJmm0Z9/7j
+ZSwMDxBmAxF/tp6q/nYwQr/ZK3hBrabVkFyC7cbQy9DhIAl26f+NP8I72+ZC0tz+
+vJpGindxpdGWy7xcMkgmfJLrxT5WCS+4NCA8/fH/6NfcAsbdz5ZDjj3rjTuRH9S4
+Q6CYlDAUzIpxpdp2IE/J
+=boa0
+-----END PGP SIGNATURE-----
+
+--B8YbZbqleQryf2nq--
+
+--===============3892838283859597420==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3892838283859597420==--
