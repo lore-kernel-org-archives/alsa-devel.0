@@ -1,57 +1,80 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH] ASoC: imx-sgtl5000: Use devm_clk_get()
-Date: Tue, 11 Jun 2013 10:50:40 +0800
-Message-ID: <CAAQ0ZWSs7otvj2pO64+8b=QJc=c563SPAPK3unS_VzQA+LLO-w@mail.gmail.com>
-References: <1370881565-5455-1-git-send-email-fabio.estevam@freescale.com>
- <20130611004437.GA12514@S2101-09.ap.freescale.net>
- <CAOMZO5Avoamo-JPEVz4BoXvrmmbQd8C4o5DQ0For5Asueb5jQA@mail.gmail.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH 12/15] ASoC: spear: Convert to use devm_ioremap_resource
+Date: Tue, 11 Jun 2013 09:21:25 +0530
+Message-ID: <51B69EBD.5000706@linaro.org>
+References: <1370864113-17895-1-git-send-email-tushar.behera@linaro.org> <1370864113-17895-13-git-send-email-tushar.behera@linaro.org> <CAK9yfHygMQYpVRqrieyESJw9oZC5OzKoWWSUhYDYEd6KJigegA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 99A1C261A13
- for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 04:50:42 +0200 (CEST)
-Received: by mail-pb0-f45.google.com with SMTP id mc8so7945214pbc.32
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 19:50:41 -0700 (PDT)
-In-Reply-To: <CAOMZO5Avoamo-JPEVz4BoXvrmmbQd8C4o5DQ0For5Asueb5jQA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, broonie@kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAK9yfHygMQYpVRqrieyESJw9oZC5OzKoWWSUhYDYEd6KJigegA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 10, 2013 at 11:04:29PM -0300, Fabio Estevam wrote:
-> On Mon, Jun 10, 2013 at 9:44 PM, Shawn Guo <shawn.guo@linaro.org> wrote:
->
-> > I do not think the change is correct.  It only works if the struct *dev
-> > is what imx_sgtl5000 platform_device points to, that is pdev->dev here.
-> > However what you pass here is codec's.  So when imx_sgtl5000_probe()
-> > fails or imx_sgtl5000 module is removed, clk_put() will not be called.
-> > And if I remember correctly, that's the reason why devm_clk_get() wasn't
-> > used here in the first place.
->
-> Ok, as you suggested I think we should handle the clocks at the codec
-> driver only and pass the codec frequency to the machine driver.
+On 06/10/2013 05:36 PM, Sachin Kamat wrote:
+> On 10 June 2013 17:05, Tushar Behera <tushar.behera@linaro.org> wrote:
+>> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+>> introduced devm_ioremap_resource() and deprecated the use of
+>> devm_request_and_ioremap().
+> 
+> This patch does a little more than just conversion. May that change
+> could be mentioned here.
+> 
 
-Why do you need to pass it at all?  It seems to me that the machine
-driver only needs the frequency to set up sgtl5000 sysclk.  So it ends
-up with something below.
+Sure. I will update that.
 
- - sgtl5000 driver calls clk_get_rate() to get the frequency
- - sgtl5000 driver passes the frequency to imx-sgtl500 driver
- - imx-sgtl500 driver sets the frequency back to sgtl5000 via
-   .set_sysclk callback
+>>
+>> Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+>> CC: alsa-devel@alsa-project.org
+>> CC: Liam Girdwood <lgirdwood@gmail.com>
+>> CC: Mark Brown <broonie@kernel.org>
+>> ---
+>>  sound/soc/spear/spdif_out.c |   20 +++++---------------
+>>  1 file changed, 5 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+>> index 4bde512..896ee7f 100644
+>> --- a/sound/soc/spear/spdif_out.c
+>> +++ b/sound/soc/spear/spdif_out.c
+>> @@ -282,27 +282,17 @@ static int spdif_out_probe(struct platform_device *pdev)
+>>         struct resource *res;
+>>         int ret;
+>>
+>> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> -       if (!res)
+>> -               return -EINVAL;
+>> -
+>> -       if (!devm_request_mem_region(&pdev->dev, res->start,
+>> -                               resource_size(res), pdev->name)) {
+>> -               dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+>> -               return -ENOENT;
+>> -       }
+>> -
+>>         host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+>>         if (!host) {
+>>                 dev_warn(&pdev->dev, "kzalloc fail\n");
+>>                 return -ENOMEM;
+>>         }
+>>
+>> -       host->io_base = devm_request_and_ioremap(&pdev->dev, res->start,
+>> -                               resource_size(res));
+>> -       if (!host->io_base) {
+>> -               dev_warn(&pdev->dev, "ioremap failed\n");
+>> -               return -ENOMEM;
+>> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       host->io_base = devm_ioremap_resource(&pdev->dev, res);
+>> +       if (IS_ERR(host->io_base)) {
+>> +               dev_warn(&pdev->dev, "devm_ioremap_resource failed\n");
+> 
+> This print is not needed as devm_ioremap_resource prints its own messages.
+> 
+> 
 
-I need some help to understand why sgtl5000 driver can not just set up
-its sysclk but having to do the above.
+Ok.
 
-Shawn
+Thanks.
+
+-- 
+Tushar Behera
