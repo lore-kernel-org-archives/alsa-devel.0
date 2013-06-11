@@ -1,17 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH V6] ASoC: fsl: add imx-wm8962 machine driver
-Date: Tue, 11 Jun 2013 02:43:30 +0800
-Message-ID: <1370889810-14323-1-git-send-email-b42378@freescale.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH] ASoC: imx-sgtl5000: Use devm_clk_get()
+Date: Tue, 11 Jun 2013 08:44:40 +0800
+Message-ID: <20130611004437.GA12514@S2101-09.ap.freescale.net>
+References: <1370881565-5455-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 102702619E7
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 20:43:48 +0200 (CEST)
-Received: by mail-pa0-f47.google.com with SMTP id kl14so1387650pab.6
- for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2013 11:43:48 -0700 (PDT)
+Received: from db8outboundpool.messaging.microsoft.com
+ (mail-db8lp0187.outbound.messaging.microsoft.com [213.199.154.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7231C26169D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 02:44:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1370881565-5455-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,468 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org
-Cc: grant.likely@linaro.org, broonie@kernel.org, festevam@gmail.com, lgirdwood@gmail.com, rob.herring@calxeda.com
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is the initial imx-wm8962 device-tree-only machine driver working with
-fsl_ssi driver. More features can be added on top of it later.
+On Mon, Jun 10, 2013 at 01:26:05PM -0300, Fabio Estevam wrote:
+> Commit 9e13f345 (ASoC: sgtl5000: Let the codec acquire its clock) removed the 
+> clk_put calls.
+> 
+> Let's use devm_clk_get() instead, so that we do not need to call them anymore.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  sound/soc/fsl/imx-sgtl5000.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index 823151b..7a8bc12 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -128,7 +128,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+>  		goto fail;
+>  	}
+>  
+> -	data->codec_clk = clk_get(&codec_dev->dev, NULL);
+> +	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-ChangeLog:
-v1->v2:
- * Fixed a typo in probe():
- *** data->dai.ops = &imx_hifi_ops,  ==>   data->dai.ops = &imx_hifi_ops;
-v2->v3:
- * Moved Headphone/Microphone jack detection GPIO port to Optional properties.
- * Use set_bias_level() instead of hw_params/hw_free() to open/close FLL.
- * Use devm_clk_get() instead of clk_get().
- * Dropped clock-frequency grabbing code.
- * Fixed a typo: 
- *** data->card.late_probe = imx_wm8962_late_probe,
- *** ==>
- *** data->card.late_probe = imx_wm8962_late_probe;
-v3->v4:
- * Revised binding doc to describe two gpio pins more clearly.
-v4->v5:
- * Added return value checking for clk_prepare_enable().
- * Revised error message for devm_clk_get() to keep same pattern as above.
-v5->v6:
- * Removed un-used members from struct imx_priv.
- * Removed un-needed head files.
- * Used dev_err instead of pr_err in set_bias_level().
- * Droped jack detection gpio pins in binding doc.
+I do not think the change is correct.  It only works if the struct *dev
+is what imx_sgtl5000 platform_device points to, that is pdev->dev here.
+However what you pass here is codec's.  So when imx_sgtl5000_probe()
+fails or imx_sgtl5000 module is removed, clk_put() will not be called.
+And if I remember correctly, that's the reason why devm_clk_get() wasn't
+used here in the first place.
 
- .../devicetree/bindings/sound/imx-audio-wm8962.txt |   46 +++
- sound/soc/fsl/Kconfig                              |   12 +
- sound/soc/fsl/Makefile                             |    2 +
- sound/soc/fsl/imx-wm8962.c                         |  323 ++++++++++++++++++++
- 4 files changed, 383 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
- create mode 100644 sound/soc/fsl/imx-wm8962.c
+Shawn
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt b/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
-new file mode 100644
-index 0000000..f49450a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-wm8962.txt
-@@ -0,0 +1,46 @@
-+Freescale i.MX audio complex with WM8962 codec
-+
-+Required properties:
-+- compatible : "fsl,imx-audio-wm8962"
-+- model : The user-visible name of this sound complex
-+- ssi-controller : The phandle of the i.MX SSI controller
-+- audio-codec : The phandle of the WM8962 audio codec
-+- audio-routing : A list of the connections between audio components.
-+  Each entry is a pair of strings, the first being the connection's sink,
-+  the second being the connection's source. Valid names could be power
-+  supplies, WM8962 pins, and the jacks on the board:
-+
-+  Power supplies:
-+   * Mic Bias
-+
-+  Board connectors:
-+   * Mic Jack
-+   * Headphone Jack
-+   * Ext Spk
-+
-+- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
-+- mux-ext-port : The external port of the i.MX audio muxer
-+
-+Note: The AUDMUX port numbering should start at 1, which is consistent with
-+hardware manual.
-+
-+Example:
-+
-+sound {
-+	compatible = "fsl,imx6q-sabresd-wm8962",
-+		     "fsl,imx-audio-wm8962";
-+	model = "wm8962-audio";
-+	ssi-controller = <&ssi2>;
-+	audio-codec = <&codec>;
-+		audio-routing =
-+		"Headphone Jack", "HPOUTL",
-+		"Headphone Jack", "HPOUTR",
-+		"Ext Spk", "SPKOUTL",
-+		"Ext Spk", "SPKOUTR",
-+		"MICBIAS", "AMIC",
-+		"IN3R", "MICBIAS",
-+		"DMIC", "MICBIAS",
-+		"DMICDAT", "DMIC";
-+	mux-int-port = <2>;
-+	mux-ext-port = <3>;
-+};
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 7860cc2..aa43854 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -168,6 +168,18 @@ config SND_SOC_EUKREA_TLV320
- 	  Enable I2S based access to the TLV320AIC23B codec attached
- 	  to the SSI interface
- 
-+config SND_SOC_IMX_WM8962
-+	tristate "SoC Audio support for i.MX boards with wm8962"
-+	depends on OF && I2C
-+	select SND_SOC_WM8962
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_IMX_AUDMUX
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_FSL_UTILS
-+	help
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  a wm8962 codec.
-+
- config SND_SOC_IMX_SGTL5000
- 	tristate "SoC Audio support for i.MX boards with sgtl5000"
- 	depends on OF && I2C
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 91883f8..d4b4aa8 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -42,6 +42,7 @@ snd-soc-phycore-ac97-objs := phycore-ac97.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
-+snd-soc-imx-wm8962-objs := imx-wm8962.o
- snd-soc-imx-mc13783-objs := imx-mc13783.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
-@@ -49,4 +50,5 @@ obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
-+obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-new file mode 100644
-index 0000000..52a36a9
---- /dev/null
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -0,0 +1,323 @@
-+/*
-+ * Copyright 2013 Freescale Semiconductor, Inc.
-+ *
-+ * Based on imx-sgtl5000.c
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2012 Linaro Ltd.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/of_i2c.h>
-+#include <linux/slab.h>
-+#include <linux/clk.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+#include "../codecs/wm8962.h"
-+#include "imx-audmux.h"
-+
-+#define DAI_NAME_SIZE	32
-+
-+struct imx_wm8962_data {
-+	struct snd_soc_dai_link dai;
-+	struct snd_soc_card card;
-+	char codec_dai_name[DAI_NAME_SIZE];
-+	char platform_name[DAI_NAME_SIZE];
-+	struct clk *codec_clk;
-+	unsigned int clk_frequency;
-+};
-+
-+struct imx_priv {
-+	struct platform_device *pdev;
-+};
-+static struct imx_priv card_priv;
-+
-+static const struct snd_soc_dapm_widget imx_wm8962_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_MIC("AMIC", NULL),
-+	SND_SOC_DAPM_MIC("DMIC", NULL),
-+};
-+
-+static int sample_rate = 44100;
-+static snd_pcm_format_t sample_format = SNDRV_PCM_FORMAT_S16_LE;
-+
-+static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	sample_rate = params_rate(params);
-+	sample_format = params_format(params);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops imx_hifi_ops = {
-+	.hw_params = imx_hifi_hw_params,
-+};
-+
-+static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
-+					struct snd_soc_dapm_context *dapm,
-+					enum snd_soc_bias_level level)
-+{
-+	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
-+	struct imx_priv *priv = &card_priv;
-+	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
-+	struct device *dev = &priv->pdev->dev;
-+	unsigned int pll_out;
-+	int ret;
-+
-+	if (dapm->dev != codec_dai->dev)
-+		return 0;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		if (dapm->bias_level == SND_SOC_BIAS_STANDBY) {
-+			if (sample_format == SNDRV_PCM_FORMAT_S24_LE)
-+				pll_out = sample_rate * 384;
-+			else
-+				pll_out = sample_rate * 256;
-+
-+			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
-+					WM8962_FLL_MCLK, data->clk_frequency,
-+					pll_out);
-+			if (ret < 0) {
-+				dev_err(dev, "failed to start FLL: %d\n", ret);
-+				return ret;
-+			}
-+
-+			ret = snd_soc_dai_set_sysclk(codec_dai,
-+					WM8962_SYSCLK_FLL, pll_out,
-+					SND_SOC_CLOCK_IN);
-+			if (ret < 0) {
-+				dev_err(dev, "failed to set SYSCLK: %d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
-+
-+	case SND_SOC_BIAS_STANDBY:
-+		if (dapm->bias_level == SND_SOC_BIAS_PREPARE) {
-+			ret = snd_soc_dai_set_sysclk(codec_dai,
-+					WM8962_SYSCLK_MCLK, data->clk_frequency,
-+					SND_SOC_CLOCK_IN);
-+			if (ret < 0) {
-+				dev_err(dev,
-+					"failed to switch away from FLL: %d\n",
-+					ret);
-+				return ret;
-+			}
-+
-+			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
-+					0, 0, 0);
-+			if (ret < 0) {
-+				dev_err(dev, "failed to stop FLL: %d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	dapm->bias_level = level;
-+
-+	return 0;
-+}
-+
-+static int imx_wm8962_late_probe(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
-+	struct imx_priv *priv = &card_priv;
-+	struct imx_wm8962_data *data = platform_get_drvdata(priv->pdev);
-+	struct device *dev = &priv->pdev->dev;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8962_SYSCLK_MCLK,
-+			data->clk_frequency, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		dev_err(dev, "failed to set sysclk in %s\n", __func__);
-+
-+	return ret;
-+}
-+
-+static int imx_wm8962_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *ssi_np, *codec_np;
-+	struct platform_device *ssi_pdev;
-+	struct imx_priv *priv = &card_priv;
-+	struct i2c_client *codec_dev;
-+	struct imx_wm8962_data *data;
-+	int int_port, ext_port;
-+	int ret;
-+
-+	priv->pdev = pdev;
-+
-+	ret = of_property_read_u32(np, "mux-int-port", &int_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-+		return ret;
-+	}
-+	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * The port numbering in the hardware manual starts at 1, while
-+	 * the audmux API expects it starts at 0.
-+	 */
-+	int_port--;
-+	ext_port--;
-+	ret = imx_audmux_v2_configure_port(int_port,
-+			IMX_AUDMUX_V2_PTCR_SYN |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux internal port setup failed\n");
-+		return ret;
-+	}
-+	imx_audmux_v2_configure_port(ext_port,
-+			IMX_AUDMUX_V2_PTCR_SYN,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux external port setup failed\n");
-+		return ret;
-+	}
-+
-+	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-+	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+	if (!ssi_np || !codec_np) {
-+		dev_err(&pdev->dev, "phandle missing or invalid\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	ssi_pdev = of_find_device_by_node(ssi_np);
-+	if (!ssi_pdev) {
-+		dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+	codec_dev = of_find_i2c_device_by_node(codec_np);
-+	if (!codec_dev || !codec_dev->driver) {
-+		dev_err(&pdev->dev, "failed to find codec platform device\n");
-+		return -EINVAL;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
-+	if (IS_ERR(data->codec_clk)) {
-+		ret = PTR_ERR(data->codec_clk);
-+		dev_err(&codec_dev->dev, "failed to get codec clk: %d\n", ret);
-+		goto fail;
-+	}
-+
-+	data->clk_frequency = clk_get_rate(data->codec_clk);
-+	ret = clk_prepare_enable(data->codec_clk);
-+	if (ret) {
-+		dev_err(&codec_dev->dev, "failed to enable codec clk: %d\n", ret);
-+		goto fail;
-+	}
-+
-+	data->dai.name = "HiFi";
-+	data->dai.stream_name = "HiFi";
-+	data->dai.codec_dai_name = "wm8962";
-+	data->dai.codec_of_node = codec_np;
-+	data->dai.cpu_dai_name = dev_name(&ssi_pdev->dev);
-+	data->dai.platform_of_node = ssi_np;
-+	data->dai.ops = &imx_hifi_ops;
-+	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			    SND_SOC_DAIFMT_CBM_CFM;
-+
-+	data->card.dev = &pdev->dev;
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto clk_fail;
-+	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
-+	if (ret)
-+		goto clk_fail;
-+	data->card.num_links = 1;
-+	data->card.dai_link = &data->dai;
-+	data->card.dapm_widgets = imx_wm8962_dapm_widgets;
-+	data->card.num_dapm_widgets = ARRAY_SIZE(imx_wm8962_dapm_widgets);
-+
-+	data->card.late_probe = imx_wm8962_late_probe;
-+	data->card.set_bias_level = imx_wm8962_set_bias_level;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		goto clk_fail;
-+	}
-+
-+	platform_set_drvdata(pdev, data);
-+	of_node_put(ssi_np);
-+	of_node_put(codec_np);
-+
-+	return 0;
-+
-+clk_fail:
-+	if (!IS_ERR(data->codec_clk))
-+		clk_disable_unprepare(data->codec_clk);
-+fail:
-+	if (ssi_np)
-+		of_node_put(ssi_np);
-+	if (codec_np)
-+		of_node_put(codec_np);
-+
-+	return ret;
-+}
-+
-+static int imx_wm8962_remove(struct platform_device *pdev)
-+{
-+	struct imx_wm8962_data *data = platform_get_drvdata(pdev);
-+
-+	if (!IS_ERR(data->codec_clk))
-+		clk_disable_unprepare(data->codec_clk);
-+	snd_soc_unregister_card(&data->card);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id imx_wm8962_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-wm8962", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_wm8962_dt_ids);
-+
-+static struct platform_driver imx_wm8962_driver = {
-+	.driver = {
-+		.name = "imx-wm8962",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_wm8962_dt_ids,
-+	},
-+	.probe = imx_wm8962_probe,
-+	.remove = imx_wm8962_remove,
-+};
-+module_platform_driver(imx_wm8962_driver);
-+
-+MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-+MODULE_DESCRIPTION("Freescale i.MX WM8962 ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-wm8962");
--- 
-1.7.0.4
+>  	if (IS_ERR(data->codec_clk))
+>  		goto fail;
+>  
+> -- 
+> 1.8.1.2
+> 
+> 
