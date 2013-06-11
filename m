@@ -1,16 +1,18 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/2 (v2)] ALSA: hda - Headset mic support for
-	three more machines
-Date: Tue, 11 Jun 2013 11:06:48 +0200
-Message-ID: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda - Add models for Dell headset
+	jacks
+Date: Tue, 11 Jun 2013 11:06:49 +0200
+Message-ID: <1370941609-5056-2-git-send-email-david.henningsson@canonical.com>
+References: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id E876A261A59
+ by alsa0.perex.cz (Postfix) with ESMTP id E693E261A56
  for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 11:06:50 +0200 (CEST)
+In-Reply-To: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +26,90 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: 1189363@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-They need these quirks to have headset mic support.
+These headset jacks keep coming in on more and more platforms, and
+it's possible I don't catch them all. Make it easier to test and
+verify by making models.
 
-BugLink: https://bugs.launchpad.net/bugs/1189363
-Tested-by: Shawn Wang <shawn.wang@canonical.com>
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c |    3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/sound/alsa/HD-Audio-Models.txt |   41 ++++++++++++++------------
+ sound/pci/hda/patch_realtek.c                |    3 ++
+ 2 files changed, 25 insertions(+), 19 deletions(-)
 
-Note that this patch replaces the patch sent yesterday. I added one more ID in this version.
-
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index bb8b0dc..9a0927c 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -21,27 +21,30 @@ ALC267/268
+ ==========
+   inv-dmic	Inverted internal mic workaround
+ 
+-ALC269/270/275/276/280/282
++ALC269/270/275/276/28x/29x
+ ======
+-  laptop-amic	Laptops with analog-mic input
+-  laptop-dmic	Laptops with digital-mic input
+-  alc269-dmic	Enable ALC269(VA) digital mic workaround
+-  alc271-dmic	Enable ALC271X digital mic workaround
+-  inv-dmic	Inverted internal mic workaround
+-  lenovo-dock   Enables docking station I/O for some Lenovos
+-
+-ALC662/663/272
++  laptop-amic		Laptops with analog-mic input
++  laptop-dmic		Laptops with digital-mic input
++  alc269-dmic		Enable ALC269(VA) digital mic workaround
++  alc271-dmic		Enable ALC271X digital mic workaround
++  inv-dmic		Inverted internal mic workaround
++  lenovo-dock		Enables docking station I/O for some Lenovos
++  dell-headset-multi	Headset jack, which can also be used as mic-in
++  dell-headset-dock	Headset jack (without mic-in), and also dock I/O
++
++ALC662/663/668/272
+ ==============
+-  mario		Chromebook mario model fixup
+-  asus-mode1	ASUS
+-  asus-mode2	ASUS
+-  asus-mode3	ASUS
+-  asus-mode4	ASUS
+-  asus-mode5	ASUS
+-  asus-mode6	ASUS
+-  asus-mode7	ASUS
+-  asus-mode8	ASUS
+-  inv-dmic	Inverted internal mic workaround
++  mario			Chromebook mario model fixup
++  asus-mode1		ASUS
++  asus-mode2		ASUS
++  asus-mode3		ASUS
++  asus-mode4		ASUS
++  asus-mode5		ASUS
++  asus-mode6		ASUS
++  asus-mode7		ASUS
++  asus-mode8		ASUS
++  inv-dmic		Inverted internal mic workaround
++  dell-headset-multi	Headset jack, which can also be used as mic-in
+ 
+ ALC680
+ ======
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 02e22b4..af9e71b 100644
+index af9e71b..403010c 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -3483,6 +3483,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05ca, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05cb, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05de, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x05e0, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05e9, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05ea, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05eb, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-@@ -3494,6 +3495,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05f5, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05f6, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05f8, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
- 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
+@@ -3599,6 +3599,8 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_INV_DMIC, .name = "inv-dmic"},
+ 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
+ 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
++	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
++	{.id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "dell-headset-dock"},
+ 	{}
+ };
+ 
+@@ -4278,6 +4280,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
+ 	{.id = ALC662_FIXUP_ASUS_MODE7, .name = "asus-mode7"},
+ 	{.id = ALC662_FIXUP_ASUS_MODE8, .name = "asus-mode8"},
+ 	{.id = ALC662_FIXUP_INV_DMIC, .name = "inv-dmic"},
++	{.id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
+ 	{}
+ };
+ 
 -- 
 1.7.9.5
