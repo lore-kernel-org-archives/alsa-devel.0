@@ -1,63 +1,38 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: Re: [PATCH v2] sound/sgtl5000: fix codec register initial values
- and mask
-Date: Tue, 11 Jun 2013 13:01:57 -0300
-Message-ID: <51B749F5.3010907@freescale.com>
-References: <51B71608.3000302@freescale.com> <1370964151-6728-1-git-send-email-oskar@scara.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+Date: Tue, 11 Jun 2013 11:36:53 -0600
+Message-ID: <51B76035.2050503@wwwdotorg.org>
+References: <1370927416-12216-1-git-send-email-bardliao@realtek.com>
+ <20130611091212.GW1403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1370964151-6728-1-git-send-email-oskar@scara.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oskar Schirmer <oskar@scara.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57AF7260816
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2013 19:36:58 +0200 (CEST)
+In-Reply-To: <20130611091212.GW1403@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, lgirdwood@gmail.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/11/2013 12:22 PM, Oskar Schirmer wrote:
-> According to documentation bit 3:2 in register SSS_CTRL are
-> reserved and zero, so initially setting the register to 0x0008
-> does not make much sense. Instead, bit 4 should be marked set,
-> as this is the power up default.
->
-> Further, mask computation in declarative part is obviously wrong:
-> Fix FRAC DIVISOR to provide an 11 bit mask correctly.
->
-> Signed-off-by: Oskar Schirmer <oskar@scara.com>
-> Tested-by: Fabio Estevam <fabio.estevam@freescale.com>
+On 06/11/2013 03:12 AM, Mark Brown wrote:
+> On Tue, Jun 11, 2013 at 01:10:16PM +0800, bardliao@realtek.com
+> wrote:
+> 
+>> Signed-off-by: Bard Liao <bardliao@realtek.com> Signed-off-by:
+>> Stephen Warren <swarren@nvidia.com>
+> 
+> I don't think that signoff for Stephen is right...
 
-Looks good, but please copy Mark Brown. Just added him in Cc now.
-
-
-> ---
->   sound/soc/codecs/sgtl5000.c |    2 +-
->   sound/soc/codecs/sgtl5000.h |    2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-> index d441559..10092ba 100644
-> --- a/sound/soc/codecs/sgtl5000.c
-> +++ b/sound/soc/codecs/sgtl5000.c
-> @@ -38,7 +38,7 @@
->   static const struct reg_default sgtl5000_reg_defaults[] = {
->   	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
->   	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
-> -	{ SGTL5000_CHIP_SSS_CTRL,		0x0008 },
-> +	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
->   	{ SGTL5000_CHIP_DAC_VOL,		0x3c3c },
->   	{ SGTL5000_CHIP_PAD_STRENGTH,		0x015f },
->   	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
-> diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-> index 4b69229..52bd843 100644
-> --- a/sound/soc/codecs/sgtl5000.h
-> +++ b/sound/soc/codecs/sgtl5000.h
-> @@ -347,7 +347,7 @@
->   #define SGTL5000_PLL_INT_DIV_MASK		0xf800
->   #define SGTL5000_PLL_INT_DIV_SHIFT		11
->   #define SGTL5000_PLL_INT_DIV_WIDTH		5
-> -#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
-> +#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
->   #define SGTL5000_PLL_FRAC_DIV_SHIFT		0
->   #define SGTL5000_PLL_FRAC_DIV_WIDTH		11
->
->
+I believe this is based on the patch I sent out a little while back,
+which obviously included my s-o-b, so this probably makes sense.
