@@ -1,19 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [GIT PULL] ASoC updates for v3.10
-Date: Wed, 12 Jun 2013 21:10:05 +0200
-Message-ID: <CAH5Jhw9jeYESNqeCXudujfG9MyQ=bu0_J0Y8pF2D8aUk_hbYUg@mail.gmail.com>
-References: <20130610101644.GQ31367@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem using alsa to implement an Android dock
+Date: Wed, 12 Jun 2013 22:08:58 +0200
+Message-ID: <51B8D55A.8080206@ladisch.de>
+References: <1933213258.312328.1371050209400.JavaMail.root@openwide.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
- [209.85.215.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EE74265151
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 21:10:06 +0200 (CEST)
-Received: by mail-la0-f47.google.com with SMTP id fe20so8238979lab.20
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 12:10:05 -0700 (PDT)
-In-Reply-To: <20130610101644.GQ31367@sirena.org.uk>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D6947265167
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 22:09:06 +0200 (CEST)
+In-Reply-To: <1933213258.312328.1371050209400.JavaMail.root@openwide.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +20,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, takashi.iwai@gmail.com
+To: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Jeremy Rosen wrote:
+> it didn't seem to work
 
-I'm currently traveling, and will pull it after back from that, so it may
-slip the upcoming rc.
-If needed, feel free ask Linus to pull directly.
+Because the important code uses 'interface', not 'iface'.
+Try this one:
 
-Thanks,
 
-Takashi
-On Jun 10, 2013 12:19 PM, "Mark Brown" <broonie@kernel.org> wrote:
+ALSA: usb-audio: work around Anroid accessory firmware bug
 
-> The following changes since commit
-> 317ddd256b9c24b0d78fa8018f80f1e495481a10:
->
->   Linux 3.10-rc5 (2013-06-08 17:41:04 -0700)
->
-> are available in the git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.gittags/aso=
-c-v3.10-rc5
->
-> for you to fetch changes up to 902a75cdc491066514aac35b40a756aaa9740173:
->
->   Merge remote-tracking branch 'asoc/fix/wm8994' into asoc-linus
-> (2013-06-10 10:28:51 +0100)
->
-> ----------------------------------------------------------------
->
-> ASoC: Updates for v3.10
->
-> As well as the usual driver specifics we've got a couple of core fixes
-> here, one fixing capabilities for unidirectional streams and the other
-> fixing suspend while audio streams are active.  The suspend fix is a
-> little involved but mostly as a result of removing some special casing
-> that was doing the wrong thing.
->
-> ----------------------------------------------------------------
-> Andreas Irest=E5l (1):
->       ASoC: tlv320aic3x: Remove deadlock from
-> snd_soc_dapm_put_volsw_aic3x()
->
-> Charles Keepax (1):
->       ASoC: arizona: Correct AEC loopback enable
->
-> Mark Brown (11):
->       ASoC: wm8994: Avoid leaking pm_runtime reference on removed jack ra=
-ce
->       ASoC: wm8994: Ensure microphone detection state is reset on removal
->       MAINTAINERS: Remove myself from Wolfson maintainers
->       ASoC: pcm: Require both CODEC and CPU support when declaring stream
-> caps
->       ASoC: dapm: Treat DAI widgets like AIF widgets for power
->       Merge remote-tracking branch 'asoc/fix/arizona' into asoc-linus
->       Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
->       Merge remote-tracking branch 'asoc/fix/cs42l52' into asoc-linus
->       Merge remote-tracking branch 'asoc/fix/maintainers' into asoc-linus
->       Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus
->       Merge remote-tracking branch 'asoc/fix/wm8994' into asoc-linus
->
-> Nicolas Schichan (2):
->       ASoC: cs42l52: use correct PCM mixer TLV dB scale to match datashee=
-t.
->       ASoC: cs42l52: fix hp_gain_enum shift value.
->
->  MAINTAINERS                    |    3 +--
->  include/sound/soc-dapm.h       |    3 ++-
->  sound/soc/codecs/cs42l52.c     |    6 +++--
->  sound/soc/codecs/tlv320aic3x.c |   10 ++++----
->  sound/soc/codecs/wm5102.c      |    3 ++-
->  sound/soc/codecs/wm5110.c      |    3 ++-
->  sound/soc/codecs/wm8994.c      |    3 ++-
->  sound/soc/soc-dapm.c           |   49
-> +++++++++++++++++++++-------------------
->  sound/soc/soc-pcm.c            |   13 ++++++++---
->  9 files changed, 54 insertions(+), 39 deletions(-)
->
+When the Android firmware enables the audio interfaces in accessory
+mode, it always declares in the control interface's baInterfaceNr array
+that interfaces 0 and 1 belong to the audio function.  However, the
+accessory interface itself, if also enabled, already is at index 0 and
+shifts the actual audio interface numbers to 1 and 2, which prevents the
+PCM streaming interface from being seen by the host driver.
+
+To get the PCM interface interface to work, detect when the descriptors
+point to the (for this driver useless) accessory interface, and redirect
+to the correct one.
+
+Reported-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Not-yet-tested-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/card.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 563854a..5a5153c 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -148,14 +148,32 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 		return -EINVAL;
+ 	}
+
++	alts = &iface->altsetting[0];
++	altsd = get_iface_desc(alts);
++
++	/*
++	 * Android with both accessory and audio interfaces enabled gets the
++	 * interface numbers wrong.
++	 */
++	if ((chip->usb_id == USB_ID(0x18d1, 0x2d04) ||
++	     chip->usb_id == USB_ID(0x18d1, 0x2d05)) &&
++	    interface == 0 &&
++	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
++	    altsd->bInterfaceSubClass == USB_SUBCLASS_VENDOR_SPEC) {
++		interface = 2;
++		iface = usb_ifnum_to_if(dev, interface);
++		if (!iface)
++			return -EINVAL;
++		alts = &iface->altsetting[0];
++		altsd = get_iface_desc(alts);
++	}
++
+ 	if (usb_interface_claimed(iface)) {
+ 		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
+ 						dev->devnum, ctrlif, interface);
+ 		return -EINVAL;
+ 	}
+
+-	alts = &iface->altsetting[0];
+-	altsd = get_iface_desc(alts);
+ 	if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
+ 	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
+ 	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDISTREAMING) {
