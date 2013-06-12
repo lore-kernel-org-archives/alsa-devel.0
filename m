@@ -1,12 +1,12 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH V2] ASoC: rt5640: add device tree support
-Date: Wed, 12 Jun 2013 19:25:33 +0100
-Message-ID: <20130612182533.GS1403@sirena.org.uk>
-References: <1371058470-25100-1-git-send-email-swarren@wwwdotorg.org>
+Subject: Re: [PATCH] ASoC: tegra: add tegra+RT5640 machine driver
+Date: Wed, 12 Jun 2013 19:28:04 +0100
+Message-ID: <20130612182804.GT1403@sirena.org.uk>
+References: <1371058534-25158-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7790958259095699690=="
+Content-Type: multipart/mixed; boundary="===============3358797847564771288=="
 Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371058470-25100-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+In-Reply-To: <1371058534-25158-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
 List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
  <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
@@ -18,54 +18,75 @@ Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06c
 Sender: "devicetree-discuss"
  <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, flove-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org
+Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7790958259095699690==
+--===============3358797847564771288==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7JtmyEQckRKrnqj+"
+	protocol="application/pgp-signature"; boundary="rePSHXHJe0GetUdz"
 Content-Disposition: inline
 
 
---7JtmyEQckRKrnqj+
+--rePSHXHJe0GetUdz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 12, 2013 at 11:34:30AM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> Modify the RT5640 driver to parse platform data from device tree. Write
-> a DT binding document to describe those properties.
+On Wed, Jun 12, 2013 at 11:35:34AM -0600, Stephen Warren wrote:
 
-Applied, thanks.
+> +  RT5640 pins:
+> +
+> +  * DMIC1
+> +  * DMIC2
+> +  * MICBIAS1
+> +  * IN1P
+> +  * IN1R
+> +  * IN2P
+> +  * IN2R
+> +  * HPOL
+> +  * HPOR
+> +  * LOUTL
+> +  * LOUTR
+> +  * MONOP
+> +  * MONON
+> +  * SPOLP
+> +  * SPOLN
+> +  * SPORP
+> +  * SPORN
 
---7JtmyEQckRKrnqj+
+These should really go in the binding document for the CODEC and be
+referenced there in case new packaging variants turn up or something.  I
+know we've not done that for some older drivers but would still be a
+good idea to start, if nothing else it saves typing for anyone making
+any other machine drivers with the same CODEC.
+
+Anyway I'll apply, this can be changed later.
+
+--rePSHXHJe0GetUdz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRuL0aAAoJELSic+t+oim96XwQAIxk6AMpo/wMwXd693ej8n2h
-iIPS4AtuVDvnnjSeDKlBPRdq5VcYZX3pNf7jP7EMP/SMPUR1CtsMLQXik8jyPcMn
-LG0aDxdkJoSRYC1sTL/B8WBhJRnPBaBF5JXHskCEpjgCMJnU/7P+KAWic09Ub8rt
-Mkan0wGYn4eGlriIkcXq7UvvL6irzy0Ne6GfEOcxAxTBQUF0DbX76V4nHL1MCpf/
-XQhxvEnFOUEq0rXpc7I3GVC7tXzEe5SlSSTfYeA3UTEtf8EkoOX9NmyR/4CKIF/c
-0gefYIcUAkTb1ekV8kPCLuZw26svgHlBrWO/SF1ncUlf9RpHV22EsribCb+tD/LD
-FtcxSBS+fnrBu6qyq+6ZaPLwFppoj3DzOoIGUN2Mn3y1ahhfE6LL9IIH/FQrO7aL
-D64kOCAXV5NdF99R10uRP4tnC7OKkZc88EF3RQ0ASCN9dfqh55ziER2SXuwZBsNp
-zA4Vqa/WyzPTuBIZaQDIhqsOqKQ1wvqjUkMRZrquqD94zTaCjl8PR6b6VO3KUW9G
-WIfmuqj3ANPjSuZKW+OvumCbzg8qLj2syuW5+MkSzRaLhwVcc/X0YTw74aj/oXW6
-KPXqjZn/U4LMPmXIkXTfaRBRLq25zCm4e3diQ5g7Mpi9h1ZUnK6wleoyQSKvftin
-5pzpTJ9NhimyohnCowCr
-=/ys/
+iQIcBAEBAgAGBQJRuL2xAAoJELSic+t+oim98R8P/jZNL3Y1Fm75248UKY+kj47o
+dI46n+0h65iM+BBEeSoT2q0E0Q6n1tMrSCZLvAG1Q+gVeRMhD55HpIG2RcpISzfq
+N7aZSey2ncxFjF3rMypk4KRmVF/efqSqbndbIMMIj9aLIUvNQMU1MyMryMphoeKf
+fs0CutqBQUSZeYSc/Ai5P/irC8nCWv0GeYkLvdaJXLNgQrTq9a9lQ8cO7tjPTGvq
+Tn0vXqasMLyOVO/qevObPv1MOhFTiw3g0N1StbM5oo0Vh5ZMO0KKHB8S0HDnWxP2
+NQzx0YfvFn1gjCdv02Ea4NQQp2bC5H9ZdRR6kQr7I0jgmf+o2Vu/bsKk13HI+TM5
+u7p9lObG31HxdPT9DmxKtb/nWeut2WKUgTkrSBsliseohDILTCKDrzMe3VKZ2lfs
+aENYqoguypO5/B6qWWm9btEIhcSs219/NKOWDqKH8BZqfSd7dtZOELidteoJuEWU
+mNhOGqeLPcCLVQuZgpNVjMThnGcphfm7KYexDCZtVvPlvuGyjl/b73CKa75ZeMKI
+GlqccdMPqi3cFNO+uJisr//pwYJ0Fv+HETaLOi7wLe/CWqk+n9b4x7Bx2GNnJF+M
+dadVtLO7aRaeV3lTbqf9t0VVPX4w8NlJ6oKwhh/G6UQzP4JI6Gk3VBON3fpFhZbu
+40k606iUNoa094b0D1qn
+=dxWB
 -----END PGP SIGNATURE-----
 
---7JtmyEQckRKrnqj+--
+--rePSHXHJe0GetUdz--
 
---===============7790958259095699690==
+--===============3358797847564771288==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -76,4 +97,4 @@ devicetree-discuss mailing list
 devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 https://lists.ozlabs.org/listinfo/devicetree-discuss
 
---===============7790958259095699690==--
+--===============3358797847564771288==--
