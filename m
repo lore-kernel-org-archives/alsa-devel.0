@@ -1,7 +1,7 @@
 From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 3/3] ASoC: ux500: Add DMA slave config prepare routine
-Date: Wed, 12 Jun 2013 09:57:59 +0200
-Message-ID: <1371023879-21884-4-git-send-email-fabio.baltieri@linaro.org>
+Subject: [PATCH 2/3] ASoC: ux500: Set DMA address during device init
+Date: Wed, 12 Jun 2013 09:57:58 +0200
+Message-ID: <1371023879-21884-3-git-send-email-fabio.baltieri@linaro.org>
 References: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
@@ -10,60 +10,44 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Implement a DMA slave config prepare routine, as until now the MSP
-driver depended on the DMA controller completing the channel
-configuration on its own, but this is not the case anymore since the
-recent DMA driver updates.
+Add a field with the tx/rx register address to the DMA parameters
+structure, and set it to the correct address during device
+initialization.
+
+This address used to be hardcoded in the DMA controller driver, it now
+needs to be explicitly figured out by the device driver.
 
 Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
 ---
- sound/soc/ux500/ux500_pcm.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ sound/soc/ux500/ux500_msp_i2s.c | 3 +++
+ sound/soc/ux500/ux500_msp_i2s.h | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index b6e5ae2..5f01c19 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -103,10 +103,40 @@ static struct dma_chan *ux500_pcm_request_chan(struct snd_soc_pcm_runtime *rtd,
- 	return snd_dmaengine_pcm_request_channel(stedma40_filter, dma_cfg);
- }
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 14a4a5b..1ca8b08 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -685,6 +685,9 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
+ 		return -ENOMEM;
+ 	}
  
-+static int ux500_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct dma_slave_config *slave_config)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct ux500_msp_dma_params *dma_params;
-+	struct stedma40_chan_cfg *dma_cfg;
-+	int ret;
++	msp->playback_dma_data.tx_rx_addr = res->start + MSP_DR;
++	msp->capture_dma_data.tx_rx_addr = res->start + MSP_DR;
 +
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	dma_cfg = dma_params->dma_cfg;
-+
-+	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
-+	if (ret)
-+		return ret;
-+
-+	slave_config->dst_maxburst = 4;
-+	slave_config->dst_addr_width = dma_cfg->dst_info.data_width;
-+	slave_config->src_maxburst = 4;
-+	slave_config->src_addr_width = dma_cfg->src_info.data_width;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		slave_config->dst_addr = dma_params->tx_rx_addr;
-+	else
-+		slave_config->src_addr = dma_params->tx_rx_addr;
-+
-+	return 0;
-+}
-+
- static const struct snd_dmaengine_pcm_config ux500_dmaengine_pcm_config = {
- 	.pcm_hardware = &ux500_pcm_hw,
- 	.compat_request_channel = ux500_pcm_request_chan,
- 	.prealloc_buffer_size = 128 * 1024,
-+	.prepare_slave_config = ux500_pcm_prepare_slave_config,
+ 	msp->registers = devm_ioremap(&pdev->dev, res->start,
+ 				      resource_size(res));
+ 	if (msp->registers == NULL) {
+diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
+index 8796171..258d0bc 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.h
++++ b/sound/soc/ux500/ux500_msp_i2s.h
+@@ -470,6 +470,7 @@ struct ux500_msp_config {
+ 
+ struct ux500_msp_dma_params {
+ 	unsigned int data_size;
++	dma_addr_t tx_rx_addr;
+ 	struct stedma40_chan_cfg *dma_cfg;
  };
  
- int ux500_pcm_register_platform(struct platform_device *pdev)
 -- 
 1.8.2
