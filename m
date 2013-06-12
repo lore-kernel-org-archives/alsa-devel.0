@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problem using alsa to implement an Android dock
-Date: Wed, 12 Jun 2013 22:08:58 +0200
-Message-ID: <51B8D55A.8080206@ladisch.de>
-References: <1933213258.312328.1371050209400.JavaMail.root@openwide.fr>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] ASoC: SPEAr spdif_{in,
+	out}: fix fallout of previous cleanup
+Date: Wed, 12 Jun 2013 22:18:01 +0200
+Message-ID: <1371068281-7974-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <51B898DA.8020301@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D6947265167
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 22:09:06 +0200 (CEST)
-In-Reply-To: <1933213258.312328.1371050209400.JavaMail.root@openwide.fr>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 21248265171
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 22:18:15 +0200 (CEST)
+In-Reply-To: <51B898DA.8020301@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,74 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeremy Rosen <jeremy.rosen@openwide.fr>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Jeremy Rosen wrote:
-> it didn't seem to work
-
-Because the important code uses 'interface', not 'iface'.
-Try this one:
-
-
-ALSA: usb-audio: work around Anroid accessory firmware bug
-
-When the Android firmware enables the audio interfaces in accessory
-mode, it always declares in the control interface's baInterfaceNr array
-that interfaces 0 and 1 belong to the audio function.  However, the
-accessory interface itself, if also enabled, already is at index 0 and
-shifts the actual audio interface numbers to 1 and 2, which prevents the
-PCM streaming interface from being seen by the host driver.
-
-To get the PCM interface interface to work, detect when the descriptors
-point to the (for this driver useless) accessory interface, and redirect
-to the correct one.
-
-Reported-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
-Not-yet-tested-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/card.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 563854a..5a5153c 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -148,14 +148,32 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
- 		return -EINVAL;
- 	}
-
-+	alts = &iface->altsetting[0];
-+	altsd = get_iface_desc(alts);
-+
-+	/*
-+	 * Android with both accessory and audio interfaces enabled gets the
-+	 * interface numbers wrong.
-+	 */
-+	if ((chip->usb_id == USB_ID(0x18d1, 0x2d04) ||
-+	     chip->usb_id == USB_ID(0x18d1, 0x2d05)) &&
-+	    interface == 0 &&
-+	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
-+	    altsd->bInterfaceSubClass == USB_SUBCLASS_VENDOR_SPEC) {
-+		interface = 2;
-+		iface = usb_ifnum_to_if(dev, interface);
-+		if (!iface)
-+			return -EINVAL;
-+		alts = &iface->altsetting[0];
-+		altsd = get_iface_desc(alts);
-+	}
-+
- 	if (usb_interface_claimed(iface)) {
- 		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
- 						dev->devnum, ctrlif, interface);
- 		return -EINVAL;
- 	}
-
--	alts = &iface->altsetting[0];
--	altsd = get_iface_desc(alts);
- 	if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
- 	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
- 	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDISTREAMING) {
+VGhlIHBhdGNoIHRoYXQgcmVzdWx0ZWQgaW4KCgliZmNjNzRlIChBU29DOiBTUEVBciBzcGRpZl97
+aW4sb3V0fTogdXNlIGRldm0gZm9yIGNsayBhbmQgYSBmZXcKbW9yZSBjbGVhbnVwcykKCndhcyBi
+cm9rZW4gYW5kIGFwcGxpZWQgb24gYSBuZXdlciB0cmVlIHRoYW4gaXQgd2FzIGNyZWF0ZWQgZm9y
+LiBTbwpiZmNjNzRlIGludHJvZHVjZWQgdW5iYWxhbmNlZCBjbGsgaGFuZGxpbmcsIHR3byB3YXJu
+aW5ncyBhYm91dCB1bnVzZWQKdmFyaWFibGVzIGFuZCBwYXNzZWQgMyBhcmd1bWVudHMgdG8gYSBm
+dW5jdGlvbiBvbmx5IHRha2luZyAyLiBUaGlzCmNvbW1pdCBmaXhlcyB0aGF0LgoKU2lnbmVkLW9m
+Zi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4K
+LS0tCiBzb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYyAgfCAxMCArLS0tLS0tLS0tCiBzb3VuZC9z
+b2Mvc3BlYXIvc3BkaWZfb3V0LmMgfCAxMiArKy0tLS0tLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwg
+MyBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+c3BlYXIvc3BkaWZfaW4uYyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCmluZGV4IGYwMDcx
+ZGQuLjYzYWNmZWIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCisrKyBi
+L3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCkBAIC0yNTcsMjAgKzI1NywxMiBAQCBzdGF0aWMg
+aW50IHNwZGlmX2luX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJCXJldHVy
+biByZXQ7CiAJfQogCi0JcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9jb21wb25lbnQoJnBkZXYtPmRl
+diwgJnNwZGlmX2luX2NvbXBvbmVudCwKKwlyZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9jb21wb25l
+bnQoJnBkZXYtPmRldiwgJnNwZGlmX2luX2NvbXBvbmVudCwKIAkJCQkJICZzcGRpZl9pbl9kYWks
+IDEpOwotCWlmIChyZXQgIT0gMCkgewotCQljbGtfcHV0KGhvc3QtPmNsayk7Ci0JCXJldHVybiBy
+ZXQ7Ci0JfQotCi0JcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBpbnQgc3BkaWZfaW5fcmVtb3ZlKHN0
+cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiB7Ci0Jc3RydWN0IHNwZGlmX2luX2RldiAqaG9z
+dCA9IGRldl9nZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2KTsKLQogCXNuZF9zb2NfdW5yZWdpc3Rlcl9j
+b21wb25lbnQoJnBkZXYtPmRldik7CiAKIAlyZXR1cm4gMDsKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9zcGVhci9zcGRpZl9vdXQuYyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYwppbmRleCA0
+YmRlNTEyLi5hNGE4NzQ4IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfb3V0LmMK
+KysrIGIvc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jCkBAIC0yOTgsOCArMjk4LDcgQEAgc3Rh
+dGljIGludCBzcGRpZl9vdXRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkJ
+cmV0dXJuIC1FTk9NRU07CiAJfQogCi0JaG9zdC0+aW9fYmFzZSA9IGRldm1fcmVxdWVzdF9hbmRf
+aW9yZW1hcCgmcGRldi0+ZGV2LCByZXMtPnN0YXJ0LAotCQkJCXJlc291cmNlX3NpemUocmVzKSk7
+CisJaG9zdC0+aW9fYmFzZSA9IGRldm1fcmVxdWVzdF9hbmRfaW9yZW1hcCgmcGRldi0+ZGV2LCBy
+ZXMpOwogCWlmICghaG9zdC0+aW9fYmFzZSkgewogCQlkZXZfd2FybigmcGRldi0+ZGV2LCAiaW9y
+ZW1hcCBmYWlsZWRcbiIpOwogCQlyZXR1cm4gLUVOT01FTTsKQEAgLTMyMSwxOCArMzIwLDExIEBA
+IHN0YXRpYyBpbnQgc3BkaWZfb3V0X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
+CiAKIAlyZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2NvbXBvbmVudCgmcGRldi0+ZGV2LCAmc3BkaWZf
+b3V0X2NvbXBvbmVudCwKIAkJCQkJICZzcGRpZl9vdXRfZGFpLCAxKTsKLQlpZiAocmV0ICE9IDAp
+IHsKLQkJY2xrX3B1dChob3N0LT5jbGspOwotCQlyZXR1cm4gcmV0OwotCX0KLQotCXJldHVybiAw
+OworCXJldHVybiByZXQ7CiB9CiAKIHN0YXRpYyBpbnQgc3BkaWZfb3V0X3JlbW92ZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlICpwZGV2KQogewotCXN0cnVjdCBzcGRpZl9vdXRfZGV2ICpob3N0ID0g
+ZGV2X2dldF9kcnZkYXRhKCZwZGV2LT5kZXYpOwotCiAJc25kX3NvY191bnJlZ2lzdGVyX2NvbXBv
+bmVudCgmcGRldi0+ZGV2KTsKIAogCXJldHVybiAwOwotLSAKMS44LjIucmMyCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
