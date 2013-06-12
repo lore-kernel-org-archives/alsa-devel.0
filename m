@@ -1,17 +1,14 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] ASoC: SPEAr spdif_{in,
-	out}: fix fallout of previous cleanup
-Date: Wed, 12 Jun 2013 22:18:01 +0200
-Message-ID: <1371068281-7974-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <51B898DA.8020301@metafoo.de>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH 1/2] ASoC: rt5640: fix sparse warnings
+Date: Wed, 12 Jun 2013 15:34:23 -0600
+Message-ID: <1371072864-13205-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 21248265171
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 22:18:15 +0200 (CEST)
-In-Reply-To: <51B898DA.8020301@metafoo.de>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D354261705
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 23:34:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoIHRoYXQgcmVzdWx0ZWQgaW4KCgliZmNjNzRlIChBU29DOiBTUEVBciBzcGRpZl97
-aW4sb3V0fTogdXNlIGRldm0gZm9yIGNsayBhbmQgYSBmZXcKbW9yZSBjbGVhbnVwcykKCndhcyBi
-cm9rZW4gYW5kIGFwcGxpZWQgb24gYSBuZXdlciB0cmVlIHRoYW4gaXQgd2FzIGNyZWF0ZWQgZm9y
-LiBTbwpiZmNjNzRlIGludHJvZHVjZWQgdW5iYWxhbmNlZCBjbGsgaGFuZGxpbmcsIHR3byB3YXJu
-aW5ncyBhYm91dCB1bnVzZWQKdmFyaWFibGVzIGFuZCBwYXNzZWQgMyBhcmd1bWVudHMgdG8gYSBm
-dW5jdGlvbiBvbmx5IHRha2luZyAyLiBUaGlzCmNvbW1pdCBmaXhlcyB0aGF0LgoKU2lnbmVkLW9m
-Zi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4K
-LS0tCiBzb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYyAgfCAxMCArLS0tLS0tLS0tCiBzb3VuZC9z
-b2Mvc3BlYXIvc3BkaWZfb3V0LmMgfCAxMiArKy0tLS0tLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwg
-MyBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-c3BlYXIvc3BkaWZfaW4uYyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCmluZGV4IGYwMDcx
-ZGQuLjYzYWNmZWIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCisrKyBi
-L3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jCkBAIC0yNTcsMjAgKzI1NywxMiBAQCBzdGF0aWMg
-aW50IHNwZGlmX2luX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJCXJldHVy
-biByZXQ7CiAJfQogCi0JcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9jb21wb25lbnQoJnBkZXYtPmRl
-diwgJnNwZGlmX2luX2NvbXBvbmVudCwKKwlyZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9jb21wb25l
-bnQoJnBkZXYtPmRldiwgJnNwZGlmX2luX2NvbXBvbmVudCwKIAkJCQkJICZzcGRpZl9pbl9kYWks
-IDEpOwotCWlmIChyZXQgIT0gMCkgewotCQljbGtfcHV0KGhvc3QtPmNsayk7Ci0JCXJldHVybiBy
-ZXQ7Ci0JfQotCi0JcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBpbnQgc3BkaWZfaW5fcmVtb3ZlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiB7Ci0Jc3RydWN0IHNwZGlmX2luX2RldiAqaG9z
-dCA9IGRldl9nZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2KTsKLQogCXNuZF9zb2NfdW5yZWdpc3Rlcl9j
-b21wb25lbnQoJnBkZXYtPmRldik7CiAKIAlyZXR1cm4gMDsKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9zcGVhci9zcGRpZl9vdXQuYyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYwppbmRleCA0
-YmRlNTEyLi5hNGE4NzQ4IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfb3V0LmMK
-KysrIGIvc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jCkBAIC0yOTgsOCArMjk4LDcgQEAgc3Rh
-dGljIGludCBzcGRpZl9vdXRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkJ
-cmV0dXJuIC1FTk9NRU07CiAJfQogCi0JaG9zdC0+aW9fYmFzZSA9IGRldm1fcmVxdWVzdF9hbmRf
-aW9yZW1hcCgmcGRldi0+ZGV2LCByZXMtPnN0YXJ0LAotCQkJCXJlc291cmNlX3NpemUocmVzKSk7
-CisJaG9zdC0+aW9fYmFzZSA9IGRldm1fcmVxdWVzdF9hbmRfaW9yZW1hcCgmcGRldi0+ZGV2LCBy
-ZXMpOwogCWlmICghaG9zdC0+aW9fYmFzZSkgewogCQlkZXZfd2FybigmcGRldi0+ZGV2LCAiaW9y
-ZW1hcCBmYWlsZWRcbiIpOwogCQlyZXR1cm4gLUVOT01FTTsKQEAgLTMyMSwxOCArMzIwLDExIEBA
-IHN0YXRpYyBpbnQgc3BkaWZfb3V0X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-CiAKIAlyZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2NvbXBvbmVudCgmcGRldi0+ZGV2LCAmc3BkaWZf
-b3V0X2NvbXBvbmVudCwKIAkJCQkJICZzcGRpZl9vdXRfZGFpLCAxKTsKLQlpZiAocmV0ICE9IDAp
-IHsKLQkJY2xrX3B1dChob3N0LT5jbGspOwotCQlyZXR1cm4gcmV0OwotCX0KLQotCXJldHVybiAw
-OworCXJldHVybiByZXQ7CiB9CiAKIHN0YXRpYyBpbnQgc3BkaWZfb3V0X3JlbW92ZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQogewotCXN0cnVjdCBzcGRpZl9vdXRfZGV2ICpob3N0ID0g
-ZGV2X2dldF9kcnZkYXRhKCZwZGV2LT5kZXYpOwotCiAJc25kX3NvY191bnJlZ2lzdGVyX2NvbXBv
-bmVudCgmcGRldi0+ZGV2KTsKIAogCXJldHVybiAwOwotLSAKMS44LjIucmMyCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Stephen Warren <swarren@nvidia.com>
+
+This fixes:
+975:9: sparse: Using plain integer as NULL pointer
+1917:24: sparse: symbol 'rt5640_aif_dai_ops' was not declared. Should it be static?
+1924:27: sparse: symbol 'rt5640_dai' was not declared. Should it be static?
+2079:19: sparse: symbol 'rt5640_i2c_driver' was not declared. Should it be static?
+
+Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/codecs/rt5640.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 8761552..ce585e3 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -974,7 +974,7 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("LDO2", RT5640_PWR_ANLG1,
+ 			RT5640_PWR_LDO2_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5640_PWR_ANLG2,
+-			RT5640_PWR_MB1_BIT, 0, 0, 0),
++			RT5640_PWR_MB1_BIT, 0, NULL, 0),
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC1"),
+ 	SND_SOC_DAPM_INPUT("DMIC2"),
+@@ -1915,14 +1915,14 @@ static int rt5640_resume(struct snd_soc_codec *codec)
+ #define RT5640_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+ 
+-struct snd_soc_dai_ops rt5640_aif_dai_ops = {
++static const struct snd_soc_dai_ops rt5640_aif_dai_ops = {
+ 	.hw_params = rt5640_hw_params,
+ 	.set_fmt = rt5640_set_dai_fmt,
+ 	.set_sysclk = rt5640_set_dai_sysclk,
+ 	.set_pll = rt5640_set_dai_pll,
+ };
+ 
+-struct snd_soc_dai_driver rt5640_dai[] = {
++static struct snd_soc_dai_driver rt5640_dai[] = {
+ 	{
+ 		.name = "rt5640-aif1",
+ 		.id = RT5640_AIF1,
+@@ -2112,7 +2112,7 @@ static int rt5640_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
+ }
+ 
+-struct i2c_driver rt5640_i2c_driver = {
++static struct i2c_driver rt5640_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5640",
+ 		.owner = THIS_MODULE,
+-- 
+1.8.1.5
