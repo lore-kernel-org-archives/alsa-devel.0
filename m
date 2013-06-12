@@ -1,51 +1,68 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 3/6] dma: Add a jz4740 dmaengine driver
-Date: Wed, 12 Jun 2013 11:08:10 +0530
-Message-ID: <20130612053810.GF4107@intel.com>
-References: <1369931105-28065-1-git-send-email-lars@metafoo.de>
- <1369931105-28065-4-git-send-email-lars@metafoo.de>
- <20130530171225.GA3767@intel.com>
- <51A79E8F.4070209@metafoo.de>
- <51B60D0A.7040307@metafoo.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: add RT5640 CODEC driver
+Date: Wed, 12 Jun 2013 15:47:08 +0800
+Message-ID: <1121E117AD4ECE49880A389A396215BB8A8945AF85@rtitmbs7.realtek.com.tw>
+References: <1370927416-12216-1-git-send-email-bardliao@realtek.com>,
+ <20130611091212.GW1403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <51B60D0A.7040307@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD937261AFC
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 09:47:15 +0200 (CEST)
+In-Reply-To: <20130611091212.GW1403@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@nvidia.com" <swarren@nvidia.com>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 10, 2013 at 07:29:46PM +0200, Lars-Peter Clausen wrote:
-> On 05/30/2013 08:46 PM, Lars-Peter Clausen wrote:
-> >>> +static int jz4740_dma_alloc_chan_resources(struct dma_chan *c)
-> >>> +{
-> >>> +	struct jz4740_dmaengine_chan *chan = to_jz4740_dma_chan(c);
-> >>> +
-> >>> +	chan->jz_chan = jz4740_dma_request(chan, NULL);
-> >>> +	if (!chan->jz_chan)
-> >>> +		return -EBUSY;
-> >>> +
-> >>> +	jz4740_dma_set_complete_cb(chan->jz_chan, jz4740_dma_complete_cb);
-> >>> +
-> >>> +	return 0;
-> >> Sorry, I didnt reply on this one. The API expects you to allocate a pool of
-> >> descriptors. These descriptors are to be used in .device_prep_xxx calls later.
-> > 
-> > The size of the descriptor is not fixed, so they can not be pre-allocated. And
-> > this is nothing new either, most of the more recently added dmaengine drivers
-> > allocate their descriptors on demand.
+> > +static int rt5640_set_bias_level(struct snd_soc_codec *codec,
+> > +                     enum snd_soc_bias_level level)
+> > +{
+> > +     struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+> > +     switch (level) {
+> > +     case SND_SOC_BIAS_STANDBY:
+> > +             if (SND_SOC_BIAS_OFF == codec->dapm.bias_level) {
+> > +                     regcache_cache_only(rt5640->regmap, false);
 > 
-> Vinod, are you ok with this explanation?
-Sorry, I was travelling...
+> You mark the device cache only in suspend so for symmetry this should
+> really be in _BIAS_OFF, especially since the device is idle_bias_off so
+> it'll be able to power off without a full suspend.
 
-Can you explain more of a bit when you say size is not fixed. Why would it be
-issue if we allocate descriptors at the alloc_chan. The idea is that you 
-preallocated pool at alloc_chan and since the .device_prep_xxx calls can be
-called from atomic context as well, you dont need to do this later. You can use use
-these descriptors at that time. The idea is keep rotating the descriptors from
-free poll to used one
+Actually, we prefer turn off the codec fully ,ie. set the LDO pin to low, only in suspend.
+Because it need 400 ms when we set the LDO pin to high and reset the codec.
+So, may I mark the device cache only in suspend and resume? 
 
---
-~Vinod
+>
+> > +     if (rt5640->pdata.ldo1_en) {
+> > +             ret = devm_gpio_request_one(&i2c->dev, rt5640->pdata.ldo1_en,
+> > +                                         GPIOF_OUT_INIT_HIGH,
+> > +                                         "RT5640 LDO1_EN");
+> > +             if (ret < 0) {
+> > +                     dev_err(&i2c->dev, "Failed to request LDO1_EN %d: %d\n",
+> > +                             rt5640->pdata.ldo1_en, ret);
+> > +                     return ret;
+> > +             }
+> > +             msleep(400);
+> > +     }
+> 
+> I'd expect to see some handling fo the LDO over suspend but that can be
+> dealt with in a followup as previously discussed.  Ideally we'd be able
+> to power off when in _BIAS_OFF too but if it's going to take 400ms to
+> ramp the LDO (which does seem high) that might be an issue.
+
+I think I can't set LDO low in _BIAS_OFF bue to the timing issue.
+I will handle in suspend.
+
+> 
+> ------Please consider the environment before printing this e-mail.
