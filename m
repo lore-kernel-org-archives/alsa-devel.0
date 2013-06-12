@@ -1,100 +1,93 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: add tegra+RT5640 machine driver
-Date: Wed, 12 Jun 2013 19:28:04 +0100
-Message-ID: <20130612182804.GT1403@sirena.org.uk>
-References: <1371058534-25158-1-git-send-email-swarren@wwwdotorg.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 1/2 (v2)] ALSA: hda - Headset mic support
+	for three more machines
+Date: Wed, 12 Jun 2013 21:03:06 +0200
+Message-ID: <CAH5Jhw_32z140DMkccSxTucZjotPdk1woMOxO--jAkJsuCKhHA@mail.gmail.com>
+References: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3358797847564771288=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371058534-25158-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f182.google.com (mail-lb0-f182.google.com
+ [209.85.217.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98A8A265141
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 21:03:07 +0200 (CEST)
+Received: by mail-lb0-f182.google.com with SMTP id r11so7964747lbv.27
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 12:03:07 -0700 (PDT)
+In-Reply-To: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, 1189363@bugs.launchpad.net, takashi.iwai@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi David,
 
---===============3358797847564771288==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rePSHXHJe0GetUdz"
-Content-Disposition: inline
+I'm currently traveling, and will apply the patch in the weekend, as it
+doesn't look like an urgent fix.
 
+Thanks,
 
---rePSHXHJe0GetUdz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Takashi
+On Jun 11, 2013 11:09 AM, "David Henningsson" <
+david.henningsson@canonical.com> wrote:
 
-On Wed, Jun 12, 2013 at 11:35:34AM -0600, Stephen Warren wrote:
-
-> +  RT5640 pins:
-> +
-> +  * DMIC1
-> +  * DMIC2
-> +  * MICBIAS1
-> +  * IN1P
-> +  * IN1R
-> +  * IN2P
-> +  * IN2R
-> +  * HPOL
-> +  * HPOR
-> +  * LOUTL
-> +  * LOUTR
-> +  * MONOP
-> +  * MONON
-> +  * SPOLP
-> +  * SPOLN
-> +  * SPORP
-> +  * SPORN
-
-These should really go in the binding document for the CODEC and be
-referenced there in case new packaging variants turn up or something.  I
-know we've not done that for some older drivers but would still be a
-good idea to start, if nothing else it saves typing for anyone making
-any other machine drivers with the same CODEC.
-
-Anyway I'll apply, this can be changed later.
-
---rePSHXHJe0GetUdz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRuL2xAAoJELSic+t+oim98R8P/jZNL3Y1Fm75248UKY+kj47o
-dI46n+0h65iM+BBEeSoT2q0E0Q6n1tMrSCZLvAG1Q+gVeRMhD55HpIG2RcpISzfq
-N7aZSey2ncxFjF3rMypk4KRmVF/efqSqbndbIMMIj9aLIUvNQMU1MyMryMphoeKf
-fs0CutqBQUSZeYSc/Ai5P/irC8nCWv0GeYkLvdaJXLNgQrTq9a9lQ8cO7tjPTGvq
-Tn0vXqasMLyOVO/qevObPv1MOhFTiw3g0N1StbM5oo0Vh5ZMO0KKHB8S0HDnWxP2
-NQzx0YfvFn1gjCdv02Ea4NQQp2bC5H9ZdRR6kQr7I0jgmf+o2Vu/bsKk13HI+TM5
-u7p9lObG31HxdPT9DmxKtb/nWeut2WKUgTkrSBsliseohDILTCKDrzMe3VKZ2lfs
-aENYqoguypO5/B6qWWm9btEIhcSs219/NKOWDqKH8BZqfSd7dtZOELidteoJuEWU
-mNhOGqeLPcCLVQuZgpNVjMThnGcphfm7KYexDCZtVvPlvuGyjl/b73CKa75ZeMKI
-GlqccdMPqi3cFNO+uJisr//pwYJ0Fv+HETaLOi7wLe/CWqk+n9b4x7Bx2GNnJF+M
-dadVtLO7aRaeV3lTbqf9t0VVPX4w8NlJ6oKwhh/G6UQzP4JI6Gk3VBON3fpFhZbu
-40k606iUNoa094b0D1qn
-=dxWB
------END PGP SIGNATURE-----
-
---rePSHXHJe0GetUdz--
-
---===============3358797847564771288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============3358797847564771288==--
+> They need these quirks to have headset mic support.
+>
+> BugLink: https://bugs.launchpad.net/bugs/1189363
+> Tested-by: Shawn Wang <shawn.wang@canonical.com>
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+> ---
+>  sound/pci/hda/patch_realtek.c |    3 +++
+>  1 file changed, 3 insertions(+)
+>
+> Note that this patch replaces the patch sent yesterday. I added one more
+> ID in this version.
+>
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 02e22b4..af9e71b 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3483,6 +3483,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
+> = {
+>         SND_PCI_QUIRK(0x1028, 0x05ca, "Dell",
+> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05cb, "Dell",
+> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05de, "Dell",
+> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+> +       SND_PCI_QUIRK(0x1028, 0x05e0, "Dell",
+> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05e9, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05ea, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05eb, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+> @@ -3494,6 +3495,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
+> = {
+>         SND_PCI_QUIRK(0x1028, 0x05f5, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05f6, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x05f8, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+> +       SND_PCI_QUIRK(0x1028, 0x0606, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+> +       SND_PCI_QUIRK(0x1028, 0x0608, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x0609, "Dell",
+> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+>         SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
+> --
+> 1.7.9.5
+>
+>
