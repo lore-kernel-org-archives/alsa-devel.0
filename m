@@ -1,421 +1,161 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: add tegra+RT5640 machine driver
-Date: Wed, 12 Jun 2013 11:35:34 -0600
-Message-ID: <1371058534-25158-1-git-send-email-swarren@wwwdotorg.org>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: [PATCH V2] ASoC: rt5640: add device tree support
+Date: Wed, 12 Jun 2013 11:34:30 -0600
+Message-ID: <1371058470-25100-1-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2596E26512D
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 19:40:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, devicetree-discuss@lists.ozlabs.org, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Stephen Warren <swarren@nvidia.com>
 
-Initially, this binding and driver only describe/support playback to
-headphones and speakers.
+Modify the RT5640 driver to parse platform data from device tree. Write
+a DT binding document to describe those properties.
 
-This driver will support Beaver and Dalmore.
+Slight re-ordering of rt5640_i2c_probe() to better fit the DT parsing.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Since ldo1_en is optional, guard usage of it with gpio_is_valid(), rather
+than open-coding an if (gpio) check.
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- .../bindings/sound/nvidia,tegra-audio-rt5640.txt   |  71 ++++++
- sound/soc/tegra/Kconfig                            |  10 +
- sound/soc/tegra/Makefile                           |   2 +
- sound/soc/tegra/tegra_rt5640.c                     | 257 +++++++++++++++++++++
- 4 files changed, 340 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
- create mode 100644 sound/soc/tegra/tegra_rt5640.c
+v2: Treat ldo1_en==0 in pdata as an invalid (unspecified) GPIO.
+---
+ Documentation/devicetree/bindings/sound/rt5640.txt | 30 ++++++++++++++
+ sound/soc/codecs/rt5640.c                          | 48 +++++++++++++++++++---
+ 2 files changed, 72 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5640.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
+diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
 new file mode 100644
-index 0000000..d130818
+index 0000000..005bcb2
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5640.txt
-@@ -0,0 +1,71 @@
-+NVIDIA Tegra audio complex, with RT5640 CODEC
++++ b/Documentation/devicetree/bindings/sound/rt5640.txt
+@@ -0,0 +1,30 @@
++RT5640 audio CODEC
++
++This device supports I2C only.
 +
 +Required properties:
-+- compatible : "nvidia,tegra-audio-rt5640"
-+- clocks : Must contain an entry for each entry in clock-names.
-+- clock-names : Must include the following entries:
-+  "pll_a" (The Tegra clock of that name),
-+  "pll_a_out0" (The Tegra clock of that name),
-+  "mclk" (The Tegra cdev1/extern1 clock, which feeds the CODEC's mclk)
-+- nvidia,model : The user-visible name of this sound complex.
-+- nvidia,audio-routing : A list of the connections between audio components.
-+  Each entry is a pair of strings, the first being the connection's sink,
-+  the second being the connection's source. Valid names for sources and
-+  sinks are the RT5640's pins, and the jacks on the board:
 +
-+  RT5640 pins:
++- compatible : "realtek,rt5640".
 +
-+  * DMIC1
-+  * DMIC2
-+  * MICBIAS1
-+  * IN1P
-+  * IN1R
-+  * IN2P
-+  * IN2R
-+  * HPOL
-+  * HPOR
-+  * LOUTL
-+  * LOUTR
-+  * MONOP
-+  * MONON
-+  * SPOLP
-+  * SPOLN
-+  * SPORP
-+  * SPORN
++- reg : The I2C address of the device.
 +
-+  Board connectors:
-+
-+  * Headphones
-+  * Speakers
-+
-+- nvidia,i2s-controller : The phandle of the Tegra I2S controller that's
-+  connected to the CODEC.
-+- nvidia,audio-codec : The phandle of the RT5640 audio codec. This binding
-+  assumes that AIF1 on the CODEC is connected to Tegra.
++- interrupts : The CODEC's interrupt output.
 +
 +Optional properties:
-+- nvidia,hp-det-gpios : The GPIO that detects headphones are plugged in
++
++- realtek,in1-differential
++- realtek,in2-differential
++  Boolean. Indicate MIC1/2 input are differential, rather than single-ended.
++
++- realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
 +
 +Example:
 +
-+sound {
-+	compatible = "nvidia,tegra-audio-rt5640-dalmore",
-+			"nvidia,tegra-audio-rt5640";
-+	nvidia,model = "NVIDIA Tegra Dalmore";
-+
-+	nvidia,audio-routing =
-+		"Headphones", "HPOR",
-+		"Headphones", "HPOL",
-+		"Speakers", "SPORP",
-+		"Speakers", "SPORN",
-+		"Speakers", "SPOLP",
-+		"Speakers", "SPOLN";
-+
-+	nvidia,i2s-controller = <&tegra_i2s1>;
-+	nvidia,audio-codec = <&rt5640>;
-+
-+	nvidia,hp-det-gpios = <&gpio 143 0>; /* GPIO PR7 */
-+
-+	clocks = <&tegra_car 216>, <&tegra_car 217>, <&tegra_car 120>;
-+	clock-names = "pll_a", "pll_a_out0", "mclk";
++rt5640 {
++	compatible = "realtek,rt5640";
++	reg = <0x1c>;
++	interrupt-parent = <&gpio>;
++	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	realtek,ldo1-en-gpios =
++		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
 +};
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index b1c9d57..995b120 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -59,6 +59,16 @@ config SND_SOC_TEGRA30_I2S
- 	  Tegra30 I2S interface. You will also need to select the individual
- 	  machine drivers to support below.
- 
-+config SND_SOC_TEGRA_RT5640
-+	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
-+	depends on SND_SOC_TEGRA && I2C
-+	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
-+	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
-+	select SND_SOC_RT5640
-+	help
-+	  Say Y or M here if you want to add support for SoC audio on Tegra
-+	  boards using the RT5640 codec, such as Dalmore.
-+
- config SND_SOC_TEGRA_WM8753
- 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
- 	depends on SND_SOC_TEGRA && I2C
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index 416a14b..21d2550 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -18,12 +18,14 @@ obj-$(CONFIG_SND_SOC_TEGRA30_AHUB) += snd-soc-tegra30-ahub.o
- obj-$(CONFIG_SND_SOC_TEGRA30_I2S) += snd-soc-tegra30-i2s.o
- 
- # Tegra machine Support
-+snd-soc-tegra-rt5640-objs := tegra_rt5640.o
- snd-soc-tegra-wm8753-objs := tegra_wm8753.o
- snd-soc-tegra-wm8903-objs := tegra_wm8903.o
- snd-soc-tegra-wm9712-objs := tegra_wm9712.o
- snd-soc-tegra-trimslice-objs := trimslice.o
- snd-soc-tegra-alc5632-objs := tegra_alc5632.o
- 
-+obj-$(CONFIG_SND_SOC_TEGRA_RT5640) += snd-soc-tegra-rt5640.o
- obj-$(CONFIG_SND_SOC_TEGRA_WM8753) += snd-soc-tegra-wm8753.o
- obj-$(CONFIG_SND_SOC_TEGRA_WM8903) += snd-soc-tegra-wm8903.o
- obj-$(CONFIG_SND_SOC_TEGRA_WM9712) += snd-soc-tegra-wm9712.o
-diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
-new file mode 100644
-index 0000000..08794f9
---- /dev/null
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -0,0 +1,257 @@
-+/*
-+* tegra_rt5640.c - Tegra machine ASoC driver for boards using WM8903 codec.
-+ *
-+ * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Based on code copyright/by:
-+ *
-+ * Copyright (C) 2010-2012 - NVIDIA, Inc.
-+ * Copyright (C) 2011 The AC100 Kernel Team <ac100-oU9gvf+ajcSyy5GWsZ7R2qxOck334EZe@public.gmane.org>
-+ * (c) 2009, 2010 Nvidia Graphics Pvt. Ltd.
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 288c17c..8761552 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -18,6 +18,7 @@
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
 +#include <linux/of_gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "../codecs/rt5640.h"
-+
-+#include "tegra_asoc_utils.h"
-+
-+#define DRV_NAME "tegra-snd-rt5640"
-+
-+struct tegra_rt5640 {
-+	struct tegra_asoc_utils_data util_data;
-+	int gpio_hp_det;
-+};
-+
-+static int tegra_rt5640_asoc_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <sound/core.h>
+@@ -1998,6 +1999,28 @@ static const struct i2c_device_id rt5640_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5640_i2c_id);
+ 
++static int rt5640_parse_dt(struct rt5640_priv *rt5640, struct device_node *np)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_card *card = codec->card;
-+	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(card);
-+	int srate, mclk;
-+	int err;
++	rt5640->pdata.in1_diff = of_property_read_bool(np,
++					"realtek,in1-differential");
++	rt5640->pdata.in2_diff = of_property_read_bool(np,
++					"realtek,in2-differential");
 +
-+	srate = params_rate(params);
-+	mclk = 256 * srate;
-+
-+	err = tegra_asoc_utils_set_rate(&machine->util_data, srate, mclk);
-+	if (err < 0) {
-+		dev_err(card->dev, "Can't configure clocks\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_MCLK, mclk,
-+					SND_SOC_CLOCK_IN);
-+	if (err < 0) {
-+		dev_err(card->dev, "codec_dai clock not set\n");
-+		return err;
-+	}
++	rt5640->pdata.ldo1_en = of_get_named_gpio(np,
++					"realtek,ldo1-en-gpios", 0);
++	/*
++	 * LDO1_EN is optional (it may be statically tied on the board).
++	 * -ENOENT means that the property doesn't exist, i.e. there is no
++	 * GPIO, so is not an error. Any other error code means the property
++	 * exists, but could not be parsed.
++	 */
++	if (!gpio_is_valid(rt5640->pdata.ldo1_en) &&
++			(rt5640->pdata.ldo1_en != -ENOENT))
++		return rt5640->pdata.ldo1_en;
 +
 +	return 0;
 +}
 +
-+static struct snd_soc_ops tegra_rt5640_ops = {
-+	.hw_params = tegra_rt5640_asoc_hw_params,
-+};
+ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -2011,6 +2034,24 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 				GFP_KERNEL);
+ 	if (NULL == rt5640)
+ 		return -ENOMEM;
++	i2c_set_clientdata(i2c, rt5640);
 +
-+static struct snd_soc_jack tegra_rt5640_hp_jack;
-+
-+static struct snd_soc_jack_pin tegra_rt5640_hp_jack_pins[] = {
-+	{
-+		.pin = "Headphones",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio tegra_rt5640_hp_jack_gpio = {
-+	.name = "Headphone detection",
-+	.report = SND_JACK_HEADPHONE,
-+	.debounce_time = 150,
-+	.invert = 1,
-+};
-+
-+static const struct snd_soc_dapm_widget tegra_rt5640_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphones", NULL),
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+};
-+
-+static const struct snd_kcontrol_new tegra_rt5640_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speakers"),
-+};
-+
-+static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(codec->card);
-+
-+	snd_soc_jack_new(codec, "Headphones", SND_JACK_HEADPHONE,
-+			 &tegra_rt5640_hp_jack);
-+	snd_soc_jack_add_pins(&tegra_rt5640_hp_jack,
-+			ARRAY_SIZE(tegra_rt5640_hp_jack_pins),
-+			tegra_rt5640_hp_jack_pins);
-+
-+	if (gpio_is_valid(machine->gpio_hp_det)) {
-+		tegra_rt5640_hp_jack_gpio.gpio = machine->gpio_hp_det;
-+		snd_soc_jack_add_gpios(&tegra_rt5640_hp_jack,
-+						1,
-+						&tegra_rt5640_hp_jack_gpio);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link tegra_rt5640_dai = {
-+	.name = "RT5640",
-+	.stream_name = "RT5640 PCM",
-+	.codec_dai_name = "rt5640-aif1",
-+	.init = tegra_rt5640_asoc_init,
-+	.ops = &tegra_rt5640_ops,
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+};
-+
-+static struct snd_soc_card snd_soc_tegra_rt5640 = {
-+	.name = "tegra-rt5640",
-+	.owner = THIS_MODULE,
-+	.dai_link = &tegra_rt5640_dai,
-+	.num_links = 1,
-+	.controls = tegra_rt5640_controls,
-+	.num_controls = ARRAY_SIZE(tegra_rt5640_controls),
-+	.dapm_widgets = tegra_rt5640_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tegra_rt5640_dapm_widgets),
-+	.fully_routed = true,
-+};
-+
-+static int tegra_rt5640_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct snd_soc_card *card = &snd_soc_tegra_rt5640;
-+	struct tegra_rt5640 *machine;
-+	int ret;
-+
-+	machine = devm_kzalloc(&pdev->dev,
-+			sizeof(struct tegra_rt5640), GFP_KERNEL);
-+	if (!machine) {
-+		dev_err(&pdev->dev, "Can't allocate tegra_rt5640\n");
-+		return -ENOMEM;
-+	}
-+
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, machine);
-+
-+	machine->gpio_hp_det = of_get_named_gpio(np, "nvidia,hp-det-gpios", 0);
-+	if (machine->gpio_hp_det == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+
-+	ret = snd_soc_of_parse_card_name(card, "nvidia,model");
-+	if (ret)
-+		goto err;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "nvidia,audio-routing");
-+	if (ret)
-+		goto err;
-+
-+	tegra_rt5640_dai.codec_of_node = of_parse_phandle(np,
-+			"nvidia,audio-codec", 0);
-+	if (!tegra_rt5640_dai.codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,audio-codec' missing or invalid\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	tegra_rt5640_dai.cpu_of_node = of_parse_phandle(np,
-+			"nvidia,i2s-controller", 0);
-+	if (!tegra_rt5640_dai.cpu_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,i2s-controller' missing or invalid\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	tegra_rt5640_dai.platform_of_node = tegra_rt5640_dai.cpu_of_node;
-+
-+	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
-+	if (ret)
-+		goto err;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+			ret);
-+		goto err_fini_utils;
-+	}
-+
-+	return 0;
-+
-+err_fini_utils:
-+	tegra_asoc_utils_fini(&machine->util_data);
-+err:
-+	return ret;
-+}
-+
-+static int tegra_rt5640_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_jack_free_gpios(&tegra_rt5640_hp_jack, 1,
-+				&tegra_rt5640_hp_jack_gpio);
-+
-+	snd_soc_unregister_card(card);
-+
-+	tegra_asoc_utils_fini(&machine->util_data);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id tegra_rt5640_of_match[] = {
-+	{ .compatible = "nvidia,tegra-audio-rt5640", },
-+	{},
-+};
-+
-+static struct platform_driver tegra_rt5640_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = tegra_rt5640_of_match,
-+	},
-+	.probe = tegra_rt5640_probe,
-+	.remove = tegra_rt5640_remove,
-+};
-+module_platform_driver(tegra_rt5640_driver);
-+
-+MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
-+MODULE_DESCRIPTION("Tegra+RT5640 machine ASoC driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DEVICE_TABLE(of, tegra_rt5640_of_match);
++	if (pdata) {
++		rt5640->pdata = *pdata;
++		/*
++		 * Translate zero'd out (default) pdata value to an invalid
++		 * GPIO ID. This makes the pdata and DT paths consistent in
++		 * terms of the value left in this field when no GPIO is
++		 * specified, but means we can't actually use GPIO 0.
++		 */
++		if (!rt5640->pdata.ldo1_en)
++			rt5640->pdata.ldo1_en = -EINVAL;
++	} else if (i2c->dev.of_node) {
++		ret = rt5640_parse_dt(rt5640, i2c->dev.of_node);
++		if (ret)
++			return ret;
++	} else
++		rt5640->pdata.ldo1_en = -EINVAL;
+ 
+ 	rt5640->regmap = devm_regmap_init_i2c(i2c, &rt5640_regmap);
+ 	if (IS_ERR(rt5640->regmap)) {
+@@ -2020,12 +2061,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	if (pdata)
+-		rt5640->pdata = *pdata;
+-
+-	i2c_set_clientdata(i2c, rt5640);
+-
+-	if (rt5640->pdata.ldo1_en) {
++	if (gpio_is_valid(rt5640->pdata.ldo1_en)) {
+ 		ret = devm_gpio_request_one(&i2c->dev, rt5640->pdata.ldo1_en,
+ 					    GPIOF_OUT_INIT_HIGH,
+ 					    "RT5640 LDO1_EN");
 -- 
 1.8.1.5
