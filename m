@@ -1,98 +1,55 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: SPEAr spdif_{in,
- out}: use devm for clk and a few more cleanups
-Date: Wed, 12 Jun 2013 17:50:50 +0200
-Message-ID: <51B898DA.8020301@metafoo.de>
-References: <1368006458-20438-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] DMA fixes for ux500 ASoC driver
+Date: Wed, 12 Jun 2013 17:03:17 +0100
+Message-ID: <20130612160317.GK1403@sirena.org.uk>
+References: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-004.synserver.de (smtp-out-004.synserver.de
- [212.40.185.4]) by alsa0.perex.cz (Postfix) with ESMTP id 71E1F26500A
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 17:50:45 +0200 (CEST)
-In-Reply-To: <1368006458-20438-1-git-send-email-u.kleine-koenig@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Vipin Kumar <vipin.kumar@st.com>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7UxcOAJ07vnNm5/N"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Baltieri <fabio.baltieri@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDUvMDgvMjAxMyAxMTo0NyBBTSwgVXdlIEtsZWluZS1Lw7ZuaWcgd3JvdGU6Cj4gRHJvcCBk
-ZXZfc2V0X2RydmRhdGEgYXMgdGhpcyBpcyBoYW5kbGVkIGluIHRoZSBjb3JlIGFuZCB1c2UKPiBk
-ZXZtX3JlcXVlc3RfYW5kX2lvcmVtYXAgaW5zdGVhZCBvZiBkZXZtX2lvcmVtYXAgdG8gcHJvcGVy
-bHkgcmVnaXN0ZXIgdGhlCj4gYWRkcmVzcyByYW5nZSB1c2VkCj4gCj4gU2lnbmVkLW9mZi1ieTog
-VXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KCkJ0dywg
-dGhlIHBhdGNoIGFkZGVkIGEgY291cGxlIG9mIHdhcm5pbmdzIGFuZCBvbmUgYnVpbGQgZXJyb3I6
-Cgpzb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYzogSW4gZnVuY3Rpb24gJ3NwZGlmX2luX3JlbW92
-ZSc6CnNvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5jOjI3MjoyMzogd2FybmluZzogdW51c2VkIHZh
-cmlhYmxlICdob3N0JwogIENDICAgICAgc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5vCnNvdW5k
-L3NvYy9zcGVhci9zcGRpZl9vdXQuYzogSW4gZnVuY3Rpb24gJ3NwZGlmX291dF9wcm9iZSc6CnNv
-dW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYzozMDI6NTogd2FybmluZzogcGFzc2luZyBhcmd1bWVu
-dCAyIG9mCidkZXZtX3JlcXVlc3RfYW5kX2lvcmVtYXAnIG1ha2VzIHBvaW50ZXIgZnJvbSBpbnRl
-Z2VyIHdpdGhvdXQgYSBjYXN0CmluY2x1ZGUvbGludXgvZGV2aWNlLmg6NTc2OjE1OiBub3RlOiBl
-eHBlY3RlZCAnc3RydWN0IHJlc291cmNlIConIGJ1dAphcmd1bWVudCBpcyBvZiB0eXBlICdyZXNv
-dXJjZV9zaXplX3QnCnNvdW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYzozMDI6NTogZXJyb3I6IHRv
-byBtYW55IGFyZ3VtZW50cyB0byBmdW5jdGlvbgonZGV2bV9yZXF1ZXN0X2FuZF9pb3JlbWFwJwpp
-bmNsdWRlL2xpbnV4L2RldmljZS5oOjU3NjoxNTogbm90ZTogZGVjbGFyZWQgaGVyZQpzb3VuZC9z
-b2Mvc3BlYXIvc3BkaWZfb3V0LmM6IEluIGZ1bmN0aW9uICdzcGRpZl9vdXRfcmVtb3ZlJzoKCgoK
-PiAtLS0KPiAgc291bmQvc29jL3NwZWFyL3NwZGlmX2luLmMgIHwgMTcgKystLS0tLS0tLS0tLS0t
-LS0KPiAgc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jIHwgMTcgKysrLS0tLS0tLS0tLS0tLS0K
-PiAgMiBmaWxlcyBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQo+IAo+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYyBiL3NvdW5kL3NvYy9zcGVh
-ci9zcGRpZl9pbi5jCj4gaW5kZXggYzdjNGIyMC4uZDQwYmIzNCAxMDA2NDQKPiAtLS0gYS9zb3Vu
-ZC9zb2Mvc3BlYXIvc3BkaWZfaW4uYwo+ICsrKyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9pbi5j
-Cj4gQEAgLTIzMSw3ICsyMzEsNyBAQCBzdGF0aWMgaW50IHNwZGlmX2luX3Byb2JlKHN0cnVjdCBw
-bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIAlpZiAoaG9zdC0+aXJxIDwgMCkKPiAgCQlyZXR1cm4g
-LUVJTlZBTDsKPiAgCj4gLQlob3N0LT5jbGsgPSBjbGtfZ2V0KCZwZGV2LT5kZXYsIE5VTEwpOwo+
-ICsJaG9zdC0+Y2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsIE5VTEwpOwo+ICAJaWYgKElT
-X0VSUihob3N0LT5jbGspKQo+ICAJCXJldHVybiBQVFJfRVJSKGhvc3QtPmNsayk7Cj4gIAo+IEBA
-IC0yNTMsMzMgKzI1MywyMCBAQCBzdGF0aWMgaW50IHNwZGlmX2luX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIAlyZXQgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYs
-IGhvc3QtPmlycSwgc3BkaWZfaW5faXJxLCAwLAo+ICAJCQkic3BkaWYtaW4iLCBob3N0KTsKPiAg
-CWlmIChyZXQpIHsKPiAtCQljbGtfcHV0KGhvc3QtPmNsayk7Cj4gIAkJZGV2X3dhcm4oJnBkZXYt
-PmRldiwgInJlcXVlc3RfaXJxIGZhaWxlZFxuIik7Cj4gIAkJcmV0dXJuIHJldDsKPiAgCX0KPiAg
-Cj4gLQlyZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2RhaSgmcGRldi0+ZGV2LCAmc3BkaWZfaW5fZGFp
-KTsKPiAtCWlmIChyZXQgIT0gMCkgewo+IC0JCWNsa19wdXQoaG9zdC0+Y2xrKTsKPiAtCQlyZXR1
-cm4gcmV0Owo+IC0JfQo+IC0KPiAtCXJldHVybiAwOwo+ICsJcmV0dXJuIHNuZF9zb2NfcmVnaXN0
-ZXJfZGFpKCZwZGV2LT5kZXYsICZzcGRpZl9pbl9kYWkpOwo+ICB9Cj4gIAo+ICBzdGF0aWMgaW50
-IHNwZGlmX2luX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ICB7Cj4gLQlz
-dHJ1Y3Qgc3BkaWZfaW5fZGV2ICpob3N0ID0gZGV2X2dldF9kcnZkYXRhKCZwZGV2LT5kZXYpOwo+
-IC0KPiAgCXNuZF9zb2NfdW5yZWdpc3Rlcl9kYWkoJnBkZXYtPmRldik7Cj4gLQlkZXZfc2V0X2Ry
-dmRhdGEoJnBkZXYtPmRldiwgTlVMTCk7Cj4gLQo+IC0JY2xrX3B1dChob3N0LT5jbGspOwo+ICAK
-PiAgCXJldHVybiAwOwo+ICB9Cj4gIAo+IC0KPiAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2
-ZXIgc3BkaWZfaW5fZHJpdmVyID0gewo+ICAJLnByb2JlCQk9IHNwZGlmX2luX3Byb2JlLAo+ICAJ
-LnJlbW92ZQkJPSBzcGRpZl9pbl9yZW1vdmUsCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zcGVh
-ci9zcGRpZl9vdXQuYyBiL3NvdW5kL3NvYy9zcGVhci9zcGRpZl9vdXQuYwo+IGluZGV4IDVlYWM0
-Y2QuLmIyNDg4YjQgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jCj4g
-KysrIGIvc291bmQvc29jL3NwZWFyL3NwZGlmX291dC5jCj4gQEAgLTI5MywxNCArMjkzLDE0IEBA
-IHN0YXRpYyBpbnQgc3BkaWZfb3V0X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-Cj4gIAkJcmV0dXJuIC1FTk9NRU07Cj4gIAl9Cj4gIAo+IC0JaG9zdC0+aW9fYmFzZSA9IGRldm1f
-aW9yZW1hcCgmcGRldi0+ZGV2LCByZXMtPnN0YXJ0LAo+ICsJaG9zdC0+aW9fYmFzZSA9IGRldm1f
-cmVxdWVzdF9hbmRfaW9yZW1hcCgmcGRldi0+ZGV2LCByZXMtPnN0YXJ0LAo+ICAJCQkJcmVzb3Vy
-Y2Vfc2l6ZShyZXMpKTsKPiAgCWlmICghaG9zdC0+aW9fYmFzZSkgewo+ICAJCWRldl93YXJuKCZw
-ZGV2LT5kZXYsICJpb3JlbWFwIGZhaWxlZFxuIik7Cj4gIAkJcmV0dXJuIC1FTk9NRU07Cj4gIAl9
-Cj4gIAo+IC0JaG9zdC0+Y2xrID0gY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxMKTsKPiArCWhvc3Qt
-PmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxMKTsKPiAgCWlmIChJU19FUlIoaG9z
-dC0+Y2xrKSkKPiAgCQlyZXR1cm4gUFRSX0VSUihob3N0LT5jbGspOwo+ICAKPiBAQCAtMzE0LDIz
-ICszMTQsMTIgQEAgc3RhdGljIGludCBzcGRpZl9vdXRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rl
-dmljZSAqcGRldikKPiAgCj4gIAlkZXZfc2V0X2RydmRhdGEoJnBkZXYtPmRldiwgaG9zdCk7Cj4g
-IAo+IC0JcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9kYWkoJnBkZXYtPmRldiwgJnNwZGlmX291dF9k
-YWkpOwo+IC0JaWYgKHJldCAhPSAwKSB7Cj4gLQkJY2xrX3B1dChob3N0LT5jbGspOwo+IC0JCXJl
-dHVybiByZXQ7Cj4gLQl9Cj4gLQo+IC0JcmV0dXJuIDA7Cj4gKwlyZXR1cm4gc25kX3NvY19yZWdp
-c3Rlcl9kYWkoJnBkZXYtPmRldiwgJnNwZGlmX291dF9kYWkpOwo+ICB9Cj4gIAo+ICBzdGF0aWMg
-aW50IHNwZGlmX291dF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgewo+
-IC0Jc3RydWN0IHNwZGlmX291dF9kZXYgKmhvc3QgPSBkZXZfZ2V0X2RydmRhdGEoJnBkZXYtPmRl
-dik7Cj4gLQo+ICAJc25kX3NvY191bnJlZ2lzdGVyX2RhaSgmcGRldi0+ZGV2KTsKPiAtCWRldl9z
-ZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2LCBOVUxMKTsKPiAtCj4gLQljbGtfcHV0KGhvc3QtPmNsayk7
-Cj4gIAo+ICAJcmV0dXJuIDA7Cj4gIH0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+
+--7UxcOAJ07vnNm5/N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 12, 2013 at 09:57:56AM +0200, Fabio Baltieri wrote:
+> Hi Mark,
+>=20
+> The DMA driver used on ux500 has been recently reworked to make it
+> device-tree capable, but the rework required to drop some "features",
+> such as opportunistic channel allocation and hardcoded addresses, that
+> the ASoC driver was relying upon.
+
+Applied all, thanks.
+
+--7UxcOAJ07vnNm5/N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRuJvCAAoJELSic+t+oim9tSkP/0r7rVsDAEreWgy9FWhF6Zjr
+wEAVi2bBamEqpCczaA9wImBJLeuVuAzUnBdmfl71R/qM4cxAoutWg3apr+bhrZ6d
+gjtPO01mjhgUNZIkPPghXJgNUfGZtZOnyyM9jQSwlWq5SPGj3tmz1WiThHDDaY/8
+RgTem1aH5l559GQYa8wfFNtRS9uITvshpB9+/PEnF6RO+U0VWCYFUuQUo6lbflYf
+PejS78NBRfXIGqwXB/lhH13VhYUmka1O0ThiwRQy9V1ZtyuvDVgae9kGp8tL899I
+grSZvTYlmiS21LqtWWvxTwg2Bl8KSAiXW2rAVscbx0PTeqF7146mi+QQm2tr01eA
+Yfazk8cT77pPBoDJgGeeVkxBeezlMwUq1PwXzriFvwoNdqyyvEyfOS2hxe67uGz5
+cIAmoOTA0ASYp8BWpTSWVdHqEIWbCaP7EHwhctPgF5gOLNnH4/IsjW0XC59TSS4i
+5wDV9yJpSdt9gbInEgqcEkPrUN8jU+ym+iiDbroonwIxHls9w8j8s4IqZOd0aPTB
+wElbXd+RempqeENNrayuIF48V2qjxUsPR9KaEWZs3uwkOIAyJ/UIlEzCGl7vCXsM
+dORTNInZnxL6Bsk3+WLF2c1uM2ZfzuW2thdZA4YMDS4/5qfYbrhHb0JIjzUHbN2/
+Bs6sCNNHgyO4GzrF6XxS
+=QHvL
+-----END PGP SIGNATURE-----
+
+--7UxcOAJ07vnNm5/N--
