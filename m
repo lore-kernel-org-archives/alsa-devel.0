@@ -1,130 +1,91 @@
-From: Fabio Baltieri <fabio.baltieri@linaro.org>
-Subject: [PATCH 1/3] ASoC: ux500: Move DMA parameters into ux500_msp
-Date: Wed, 12 Jun 2013 09:57:57 +0200
-Message-ID: <1371023879-21884-2-git-send-email-fabio.baltieri@linaro.org>
-References: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, Ola Lilja <ola.o.lilja@stericsson.com>, Fabio Baltieri <fabio.baltieri@linaro.org>
+From: Padmavathi Venna <padma.v@samsung.com>
+Subject: [PATCH V6 0/6] clk: Samsung: audss: Register audio subsytem clocks
+ using common clk framework
+Date: Wed, 12 Jun 2013 13:37:37 +0530
+Message-ID: <1371024463-303-1-git-send-email-padma.v@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.v@samsung.com, padma.kvr@gmail.com
+Cc: sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com, mturquette@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Move struct ux500_msp_dma_params declaration from ux500_msp_i2s_drvdata
-to ux500_msp, this saves some confusing pointer passing and allows to
-access all DMA configuration fields from ux500_msp_i2s.
+Samsung S5PV210 and Exynos SoC has a separate subsystem for audio. This subsystem
+has a internal clock controller which controls i2s0 and pcm0 clocks. This patch
+series adds the Samsung audio subsytem clock to the common clock framework and
+provides the I2S controllers clock information in the dtsi file.
 
-Signed-off-by: Fabio Baltieri <fabio.baltieri@linaro.org>
----
- sound/soc/ux500/ux500_msp_dai.c | 11 ++++-------
- sound/soc/ux500/ux500_msp_dai.h |  2 --
- sound/soc/ux500/ux500_msp_i2s.c | 10 ++++++----
- sound/soc/ux500/ux500_msp_i2s.h | 14 +++++++-------
- 4 files changed, 17 insertions(+), 20 deletions(-)
+This patch series is made based on Kukjin Kim for-next branch
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 7d5fc13..c6fb5cc 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -658,14 +658,11 @@ static int ux500_msp_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
- 
--	drvdata->playback_dma_data.dma_cfg = drvdata->msp->dma_cfg_tx;
--	drvdata->capture_dma_data.dma_cfg = drvdata->msp->dma_cfg_rx;
-+	dai->playback_dma_data = &drvdata->msp->playback_dma_data;
-+	dai->capture_dma_data = &drvdata->msp->capture_dma_data;
- 
--	dai->playback_dma_data = &drvdata->playback_dma_data;
--	dai->capture_dma_data = &drvdata->capture_dma_data;
--
--	drvdata->playback_dma_data.data_size = drvdata->slot_width;
--	drvdata->capture_dma_data.data_size = drvdata->slot_width;
-+	drvdata->msp->playback_dma_data.data_size = drvdata->slot_width;
-+	drvdata->msp->capture_dma_data.data_size = drvdata->slot_width;
- 
- 	return 0;
- }
-diff --git a/sound/soc/ux500/ux500_msp_dai.h b/sound/soc/ux500/ux500_msp_dai.h
-index c721282..312ae53 100644
---- a/sound/soc/ux500/ux500_msp_dai.h
-+++ b/sound/soc/ux500/ux500_msp_dai.h
-@@ -51,8 +51,6 @@ enum ux500_msp_clock_id {
- struct ux500_msp_i2s_drvdata {
- 	struct ux500_msp *msp;
- 	struct regulator *reg_vape;
--	struct ux500_msp_dma_params playback_dma_data;
--	struct ux500_msp_dma_params capture_dma_data;
- 	unsigned int fmt;
- 	unsigned int tx_mask;
- 	unsigned int rx_mask;
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index cba0e86..14a4a5b 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -367,12 +367,14 @@ static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
- 	}
- 
- 	/* Make sure the correct DMA-directions are configured */
--	if ((config->direction & MSP_DIR_RX) && (!msp->dma_cfg_rx)) {
-+	if ((config->direction & MSP_DIR_RX) &&
-+			!msp->capture_dma_data.dma_cfg) {
- 		dev_err(msp->dev, "%s: ERROR: MSP RX-mode is not configured!",
- 			__func__);
- 		return -EINVAL;
- 	}
--	if ((config->direction == MSP_DIR_TX) && (!msp->dma_cfg_tx)) {
-+	if ((config->direction == MSP_DIR_TX) &&
-+			!msp->playback_dma_data.dma_cfg) {
- 		dev_err(msp->dev, "%s: ERROR: MSP TX-mode is not configured!",
- 			__func__);
- 		return -EINVAL;
-@@ -673,8 +675,8 @@ int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 
- 	msp->id = platform_data->id;
- 	msp->dev = &pdev->dev;
--	msp->dma_cfg_rx = platform_data->msp_i2s_dma_rx;
--	msp->dma_cfg_tx = platform_data->msp_i2s_dma_tx;
-+	msp->playback_dma_data.dma_cfg = platform_data->msp_i2s_dma_tx;
-+	msp->capture_dma_data.dma_cfg = platform_data->msp_i2s_dma_rx;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL) {
-diff --git a/sound/soc/ux500/ux500_msp_i2s.h b/sound/soc/ux500/ux500_msp_i2s.h
-index 189a375..8796171 100644
---- a/sound/soc/ux500/ux500_msp_i2s.h
-+++ b/sound/soc/ux500/ux500_msp_i2s.h
-@@ -468,12 +468,17 @@ struct ux500_msp_config {
- 	unsigned int iodelay;
- };
- 
-+struct ux500_msp_dma_params {
-+	unsigned int data_size;
-+	struct stedma40_chan_cfg *dma_cfg;
-+};
-+
- struct ux500_msp {
- 	enum msp_i2s_id id;
- 	void __iomem *registers;
- 	struct device *dev;
--	struct stedma40_chan_cfg *dma_cfg_rx;
--	struct stedma40_chan_cfg *dma_cfg_tx;
-+	struct ux500_msp_dma_params playback_dma_data;
-+	struct ux500_msp_dma_params capture_dma_data;
- 	enum msp_state msp_state;
- 	int def_elem_len;
- 	unsigned int dir_busy;
-@@ -481,11 +486,6 @@ struct ux500_msp {
- 	unsigned int f_bitclk;
- };
- 
--struct ux500_msp_dma_params {
--	unsigned int data_size;
--	struct stedma40_chan_cfg *dma_cfg;
--};
--
- struct msp_i2s_platform_data;
- int ux500_msp_i2s_init_msp(struct platform_device *pdev,
- 			struct ux500_msp **msp_p,
+Changes since V5:
+	- Added i2s_opclk0 entry for i2s1 and i2s2 nodes
+	- Added Acked-by: Mike Turquette <mturquette@linaro.org>
+	- Added Reviewed-by: Doug Anderson <dianders@chromium.org>
+
+Changes since V4:
+        - Reworked on the nits given by Doug.
+        - Removed mout_audss and mout_i2s from i2s nodes as we are not
+          getting these clocks in the i2s driver.
+        - Modified the I2S binding documentation for clocks and pinmux.
+
+Changes since V3:
+        - Replaced samsung with exynos in the macro prefixes and function names
+          as this driver supports mainly exynos and s5p family.
+        - Added Reviewed-by:Sylwester Nawrocki <s.nawrocki@samsung.com>
+
+Changes since V2:
+        - Removed s5pv210 compatible name from driver as it is
+          not yet supported which is different from Exynos series
+          audio subsystem clock conroller.
+        - Removed clkdev lookup support and added alias names in
+          the i2s0 controller node.
+Changes since V1:
+        - Reworked on all review comments by Sylwester Nawrocki
+        - Added a header file for all clock indexes as requested by Sylwester
+        - Added different compatible names for s5pv210, exynos4 and exynos5
+        - Registered the pcm clocks with common clock framework
+
+Padmavathi Venna (6):
+  ARM: samsung: use #include for all device trees
+  clk: samsung: register audio subsystem clocks using common clock
+    framework
+  ARM: dts: add Exynos audio subsystem clock controller node
+  ARM: dts: add clock provider information for i2s controllers in
+    Exynos5250
+  ARM: dts: Update Samsung I2S documentation
+  clk: exynos5250: Add enum entries for divider clock of i2s1 and i2s2
+
+ .../devicetree/bindings/clock/clk-exynos-audss.txt |   64 ++++++++++
+ .../devicetree/bindings/sound/samsung-i2s.txt      |   46 +++----
+ arch/arm/boot/dts/exynos4.dtsi                     |    2 +-
+ arch/arm/boot/dts/exynos4210-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4210-smdkv310.dts          |    2 +-
+ arch/arm/boot/dts/exynos4210-trats.dts             |    2 +-
+ arch/arm/boot/dts/exynos4210-universal_c210.dts    |    2 +-
+ arch/arm/boot/dts/exynos4210.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos4212.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4412-odroidx.dts           |    2 +-
+ arch/arm/boot/dts/exynos4412-origen.dts            |    2 +-
+ arch/arm/boot/dts/exynos4412-smdk4412.dts          |    2 +-
+ arch/arm/boot/dts/exynos4412.dtsi                  |    2 +-
+ arch/arm/boot/dts/exynos4x12.dtsi                  |    4 +-
+ arch/arm/boot/dts/exynos5250-arndale.dts           |    2 +-
+ arch/arm/boot/dts/exynos5250-smdk5250.dts          |    2 +-
+ arch/arm/boot/dts/exynos5250-snow.dts              |    4 +-
+ arch/arm/boot/dts/exynos5250.dtsi                  |   20 +++-
+ arch/arm/boot/dts/exynos5440-sd5v1.dts             |    2 +-
+ arch/arm/boot/dts/exynos5440-ssdk5440.dts          |    2 +-
+ arch/arm/boot/dts/exynos5440.dtsi                  |    2 +-
+ arch/arm/boot/dts/s3c2416-smdk2416.dts             |    2 +-
+ arch/arm/boot/dts/s3c2416.dtsi                     |    4 +-
+ arch/arm/boot/dts/s3c24xx.dtsi                     |    2 +-
+ drivers/clk/samsung/Makefile                       |    1 +
+ drivers/clk/samsung/clk-exynos-audss.c             |  133 ++++++++++++++++++++
+ drivers/clk/samsung/clk-exynos5250.c               |    5 +-
+ include/dt-bindings/clk/exynos-audss-clk.h         |   25 ++++
+ 28 files changed, 288 insertions(+), 56 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
+ create mode 100644 drivers/clk/samsung/clk-exynos-audss.c
+ create mode 100644 include/dt-bindings/clk/exynos-audss-clk.h
+
 -- 
-1.8.2
+1.7.4.4
