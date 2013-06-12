@@ -1,20 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 1/2 (v2)] ALSA: hda - Headset mic support
-	for three more machines
-Date: Wed, 12 Jun 2013 21:03:06 +0200
-Message-ID: <CAH5Jhw_32z140DMkccSxTucZjotPdk1woMOxO--jAkJsuCKhHA@mail.gmail.com>
-References: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+Subject: Re: [GIT PULL] ASoC updates for v3.10
+Date: Wed, 12 Jun 2013 21:10:05 +0200
+Message-ID: <CAH5Jhw9jeYESNqeCXudujfG9MyQ=bu0_J0Y8pF2D8aUk_hbYUg@mail.gmail.com>
+References: <20130610101644.GQ31367@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f182.google.com (mail-lb0-f182.google.com
- [209.85.217.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 98A8A265141
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 21:03:07 +0200 (CEST)
-Received: by mail-lb0-f182.google.com with SMTP id r11so7964747lbv.27
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 12:03:07 -0700 (PDT)
-In-Reply-To: <1370941609-5056-1-git-send-email-david.henningsson@canonical.com>
+Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EE74265151
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 21:10:06 +0200 (CEST)
+Received: by mail-la0-f47.google.com with SMTP id fe20so8238979lab.20
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 12:10:05 -0700 (PDT)
+In-Reply-To: <20130610101644.GQ31367@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,70 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, 1189363@bugs.launchpad.net, takashi.iwai@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, takashi.iwai@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi David,
+Hi Mark,
 
-I'm currently traveling, and will apply the patch in the weekend, as it
-doesn't look like an urgent fix.
+I'm currently traveling, and will pull it after back from that, so it may
+slip the upcoming rc.
+If needed, feel free ask Linus to pull directly.
 
 Thanks,
 
 Takashi
-On Jun 11, 2013 11:09 AM, "David Henningsson" <
-david.henningsson@canonical.com> wrote:
+On Jun 10, 2013 12:19 PM, "Mark Brown" <broonie@kernel.org> wrote:
 
-> They need these quirks to have headset mic support.
+> The following changes since commit
+> 317ddd256b9c24b0d78fa8018f80f1e495481a10:
 >
-> BugLink: https://bugs.launchpad.net/bugs/1189363
-> Tested-by: Shawn Wang <shawn.wang@canonical.com>
-> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-> ---
->  sound/pci/hda/patch_realtek.c |    3 +++
->  1 file changed, 3 insertions(+)
+>   Linux 3.10-rc5 (2013-06-08 17:41:04 -0700)
 >
-> Note that this patch replaces the patch sent yesterday. I added one more
-> ID in this version.
+> are available in the git repository at:
 >
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 02e22b4..af9e71b 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -3483,6 +3483,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
-> = {
->         SND_PCI_QUIRK(0x1028, 0x05ca, "Dell",
-> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05cb, "Dell",
-> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05de, "Dell",
-> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
-> +       SND_PCI_QUIRK(0x1028, 0x05e0, "Dell",
-> ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05e9, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05ea, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05eb, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-> @@ -3494,6 +3495,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
-> = {
->         SND_PCI_QUIRK(0x1028, 0x05f5, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05f6, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x05f8, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-> +       SND_PCI_QUIRK(0x1028, 0x0606, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-> +       SND_PCI_QUIRK(0x1028, 0x0608, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x0609, "Dell",
-> ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
->         SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
-> --
-> 1.7.9.5
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.gittags/aso=
+c-v3.10-rc5
 >
+> for you to fetch changes up to 902a75cdc491066514aac35b40a756aaa9740173:
+>
+>   Merge remote-tracking branch 'asoc/fix/wm8994' into asoc-linus
+> (2013-06-10 10:28:51 +0100)
+>
+> ----------------------------------------------------------------
+>
+> ASoC: Updates for v3.10
+>
+> As well as the usual driver specifics we've got a couple of core fixes
+> here, one fixing capabilities for unidirectional streams and the other
+> fixing suspend while audio streams are active.  The suspend fix is a
+> little involved but mostly as a result of removing some special casing
+> that was doing the wrong thing.
+>
+> ----------------------------------------------------------------
+> Andreas Irest=E5l (1):
+>       ASoC: tlv320aic3x: Remove deadlock from
+> snd_soc_dapm_put_volsw_aic3x()
+>
+> Charles Keepax (1):
+>       ASoC: arizona: Correct AEC loopback enable
+>
+> Mark Brown (11):
+>       ASoC: wm8994: Avoid leaking pm_runtime reference on removed jack ra=
+ce
+>       ASoC: wm8994: Ensure microphone detection state is reset on removal
+>       MAINTAINERS: Remove myself from Wolfson maintainers
+>       ASoC: pcm: Require both CODEC and CPU support when declaring stream
+> caps
+>       ASoC: dapm: Treat DAI widgets like AIF widgets for power
+>       Merge remote-tracking branch 'asoc/fix/arizona' into asoc-linus
+>       Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+>       Merge remote-tracking branch 'asoc/fix/cs42l52' into asoc-linus
+>       Merge remote-tracking branch 'asoc/fix/maintainers' into asoc-linus
+>       Merge remote-tracking branch 'asoc/fix/tlv320aic3x' into asoc-linus
+>       Merge remote-tracking branch 'asoc/fix/wm8994' into asoc-linus
+>
+> Nicolas Schichan (2):
+>       ASoC: cs42l52: use correct PCM mixer TLV dB scale to match datashee=
+t.
+>       ASoC: cs42l52: fix hp_gain_enum shift value.
+>
+>  MAINTAINERS                    |    3 +--
+>  include/sound/soc-dapm.h       |    3 ++-
+>  sound/soc/codecs/cs42l52.c     |    6 +++--
+>  sound/soc/codecs/tlv320aic3x.c |   10 ++++----
+>  sound/soc/codecs/wm5102.c      |    3 ++-
+>  sound/soc/codecs/wm5110.c      |    3 ++-
+>  sound/soc/codecs/wm8994.c      |    3 ++-
+>  sound/soc/soc-dapm.c           |   49
+> +++++++++++++++++++++-------------------
+>  sound/soc/soc-pcm.c            |   13 ++++++++---
+>  9 files changed, 54 insertions(+), 39 deletions(-)
 >
