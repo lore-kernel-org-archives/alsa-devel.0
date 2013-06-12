@@ -1,20 +1,19 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 0/3] DMA fixes for ux500 ASoC driver
-Date: Wed, 12 Jun 2013 11:48:52 +0100
-Message-ID: <20130612104852.GD4320@laptop>
-References: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 3/6] dma: Add a jz4740 dmaengine driver
+Date: Wed, 12 Jun 2013 14:07:10 +0200
+Message-ID: <51B8646E.5040907@metafoo.de>
+References: <1369931105-28065-1-git-send-email-lars@metafoo.de>
+ <1369931105-28065-4-git-send-email-lars@metafoo.de>
+ <20130530171225.GA3767@intel.com> <51A79E8F.4070209@metafoo.de>
+ <51B60D0A.7040307@metafoo.de> <20130612053810.GF4107@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bk0-f48.google.com (mail-bk0-f48.google.com
- [209.85.214.48])
- by alsa0.perex.cz (Postfix) with ESMTP id D1DB42615A6
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 12:48:57 +0200 (CEST)
-Received: by mail-bk0-f48.google.com with SMTP id jf17so4429129bkc.7
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 03:48:57 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1371023879-21884-1-git-send-email-fabio.baltieri@linaro.org>
+Received: from smtp-out-004.synserver.de (smtp-out-004.synserver.de
+ [212.40.185.4]) by alsa0.perex.cz (Postfix) with ESMTP id 461D72615A6
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 14:07:11 +0200 (CEST)
+In-Reply-To: <20130612053810.GF4107@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Baltieri <fabio.baltieri@linaro.org>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>, alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMiBKdW4gMjAxMywgRmFiaW8gQmFsdGllcmkgd3JvdGU6Cgo+IEhpIE1hcmssCj4g
-Cj4gVGhlIERNQSBkcml2ZXIgdXNlZCBvbiB1eDUwMCBoYXMgYmVlbiByZWNlbnRseSByZXdvcmtl
-ZCB0byBtYWtlIGl0Cj4gZGV2aWNlLXRyZWUgY2FwYWJsZSwgYnV0IHRoZSByZXdvcmsgcmVxdWly
-ZWQgdG8gZHJvcCBzb21lICJmZWF0dXJlcyIsCj4gc3VjaCBhcyBvcHBvcnR1bmlzdGljIGNoYW5u
-ZWwgYWxsb2NhdGlvbiBhbmQgaGFyZGNvZGVkIGFkZHJlc3NlcywgdGhhdAo+IHRoZSBBU29DIGRy
-aXZlciB3YXMgcmVseWluZyB1cG9uLgo+IAo+IFRoaXMgc2VyaWVzIGZpeGVzIHRoZSBhdWRpbyBk
-cml2ZXIgdG8gbWFrZSBpdCB3b3JrIHdpdGggdGhlIGN1cnJlbnQKPiBkbWE0MCBpbXBsZW1lbnRh
-dGlvbiwgYW5kIHdvcmtzIGZpbmUgZXZlbiB3aGVuIGJvb3Rpbmcgd2l0aCBkZXZpY2UtdHJlZS4K
-PiAKPiBXb3VsZCB5b3UgY29uc2lkZXIgbWVyZ2luZyB0aGVzZSBmb3IgYXNvYy90b3BpYy91eDUw
-MD8KPiAKPiBUaGFua3MsCj4gRmFiaW8KPiAKPiAKPiBGYWJpbyBCYWx0aWVyaSAoMyk6Cj4gICBB
-U29DOiB1eDUwMDogTW92ZSBETUEgcGFyYW1ldGVycyBpbnRvIHV4NTAwX21zcAo+ICAgQVNvQzog
-dXg1MDA6IFNldCBETUEgYWRkcmVzcyBkdXJpbmcgZGV2aWNlIGluaXQKPiAgIEFTb0M6IHV4NTAw
-OiBBZGQgRE1BIHNsYXZlIGNvbmZpZyBwcmVwYXJlIHJvdXRpbmUKPiAKPiAgc291bmQvc29jL3V4
-NTAwL3V4NTAwX21zcF9kYWkuYyB8IDExICsrKystLS0tLS0tCj4gIHNvdW5kL3NvYy91eDUwMC91
-eDUwMF9tc3BfZGFpLmggfCAgMiAtLQo+ICBzb3VuZC9zb2MvdXg1MDAvdXg1MDBfbXNwX2kycy5j
-IHwgMTMgKysrKysrKysrLS0tLQo+ICBzb3VuZC9zb2MvdXg1MDAvdXg1MDBfbXNwX2kycy5oIHwg
-MTUgKysrKysrKystLS0tLS0tCj4gIHNvdW5kL3NvYy91eDUwMC91eDUwMF9wY20uYyAgICAgfCAz
-MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgNSBmaWxlcyBjaGFuZ2VkLCA1MSBp
-bnNlcnRpb25zKCspLCAyMCBkZWxldGlvbnMoLSkKCkkgZG9uJ3Qgc2VlIGFueXRoaW5nIHZpc3Vh
-bGx5IHdyb25nIHdpdGggdGhlbSwgc28gYXMgbG9uZyBhcyB0aGV5IHdvcmsKZm9yIHlvdSwgdGhl
-biB5b3UgY2FuIGFwcGx5IG15OgoKQWNrZWQtYnk6IExlZSBKb25lcyA8bGVlLmpvbmVzQGxpbmFy
-by5vcmc+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVC1Fcmljc3NvbiBMYW5kaW5nIFRlYW0gTGVh
-ZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93
-IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 06/12/2013 07:38 AM, Vinod Koul wrote:
+> On Mon, Jun 10, 2013 at 07:29:46PM +0200, Lars-Peter Clausen wrote:
+>> On 05/30/2013 08:46 PM, Lars-Peter Clausen wrote:
+>>>>> +static int jz4740_dma_alloc_chan_resources(struct dma_chan *c)
+>>>>> +{
+>>>>> +	struct jz4740_dmaengine_chan *chan = to_jz4740_dma_chan(c);
+>>>>> +
+>>>>> +	chan->jz_chan = jz4740_dma_request(chan, NULL);
+>>>>> +	if (!chan->jz_chan)
+>>>>> +		return -EBUSY;
+>>>>> +
+>>>>> +	jz4740_dma_set_complete_cb(chan->jz_chan, jz4740_dma_complete_cb);
+>>>>> +
+>>>>> +	return 0;
+>>>> Sorry, I didnt reply on this one. The API expects you to allocate a pool of
+>>>> descriptors. These descriptors are to be used in .device_prep_xxx calls later.
+>>>
+>>> The size of the descriptor is not fixed, so they can not be pre-allocated. And
+>>> this is nothing new either, most of the more recently added dmaengine drivers
+>>> allocate their descriptors on demand.
+>>
+>> Vinod, are you ok with this explanation?
+> Sorry, I was travelling...
+> 
+> Can you explain more of a bit when you say size is not fixed.
+
+This is the function that allocates the descriptor:
+
+static struct jz4740_dma_desc *jz4740_dma_alloc_desc(unsigned int num_sgs)
+{
+	return kzalloc(sizeof(struct jz4740_dma_desc) +
+		sizeof(struct jz4740_dma_sg) * num_sgs, GFP_ATOMIC);
+}
+
+So the size depends on the entries in the sg list.
+
+
+> Why would it be
+> issue if we allocate descriptors at the alloc_chan. The idea is that you 
+> preallocated pool at alloc_chan and since the .device_prep_xxx calls can be
+> called from atomic context as well, you dont need to do this later. You can use use
+> these descriptors at that time. The idea is keep rotating the descriptors from
+> free poll to used one
+
+Yes, I know all that. And it makes sense to use a pool in certain
+situations, e.g. if the hardware only supports a limited set of physical
+descriptors. But in this case the descriptors are completely virtual.
+Forcing the driver to use a pool would make it more complex, use more memory
+and also a bit slower (although probably not noticeable).
+
+- Lars
