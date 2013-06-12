@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: wm8997: Initial CODEC driver
-Date: Wed, 12 Jun 2013 18:10:25 +0100
-Message-ID: <20130612171025.GQ1403@sirena.org.uk>
+Subject: Re: [PATCH 1/3] mfd: arizona: Integrate wm8997 into
+	Arizona mfd
+Date: Wed, 12 Jun 2013 18:14:43 +0100
+Message-ID: <20130612171443.GR1403@sirena.org.uk>
 References: <1371054560-28770-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1371054560-28770-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1371054560-28770-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8819494401344958855=="
+Content-Type: multipart/mixed; boundary="===============1059284030831770367=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id C6444265095
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 19:10:28 +0200 (CEST)
-In-Reply-To: <1371054560-28770-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 79589265095
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 19:14:46 +0200 (CEST)
+In-Reply-To: <1371054560-28770-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8819494401344958855==
+--===============1059284030831770367==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="suroagWEfFHnktSq"
+	protocol="application/pgp-signature"; boundary="dwlrTrmaMopxYcLA"
 Content-Disposition: inline
 
 
---suroagWEfFHnktSq
+--dwlrTrmaMopxYcLA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 12, 2013 at 05:29:19PM +0100, Charles Keepax wrote:
+On Wed, Jun 12, 2013 at 05:29:18PM +0100, Charles Keepax wrote:
+> The wm8997 is a compact, high-performance audio hub CODEC with SLIMbus
+> interfacing, for smartphones, tablets and other portable audio devices
+> based on the Arizona platform.
+>=20
+> This patch integrates the wm8997 into the Arizona mfd.
 
-> +static const struct reg_default wm8997_sysclk_reva_patch[] = {
-> +	{0x301D, 0x7B15},
-> +	{0x301B, 0x0050},
+There should be an update to add the OF device ID to the driver in here.
 
-Should have spaces around the { }.
-
-> +static struct snd_soc_dai_driver wm8997_dai[] = {
-> +	{
-> +		.name = "wm8997-aif1",
-> +		.id = 1,
-
-I'd expect to see the Slimbus interfaces here too.
-
---suroagWEfFHnktSq
+--dwlrTrmaMopxYcLA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRuKt+AAoJELSic+t+oim9k+wP/0VjoTqL1aNqjEWpHlbmhzo0
-K6xu/ZT5Ks7SS0yde5OQQ+jZUwn6gChA7K7r1A9yOvZAVLqfhgRlj4asecLAllw1
-8TcQZZ6oxUQZHZg8vdNS5D59gE1XpDnm0ASlATyYOCxSXQ0ra5XSzCdLlo7+gbjS
-2HH0ZNvg+i/ZPY0DwLKRvDqNf40FD9JtcwOFx9InTbs8U24tpsvUqX7pYjlqPE0J
-mn868+jj6HJ/tpVpFCVob/9g/NzuXRBB8rlC80vEhImQirzwANLJCBP0UzJiSzv/
-Y3DzVD45lkMIoC5K+iNYD1GYsZ9Y+fU1O7xJ7+iKZLD8gm7Qkum46poqrwdMzLvQ
-Jn5BvmmSMxNwVaZwUj4L4XvR4MU5Hbx8qnbdtS3VVtH5QRIUoNFS3SLjWTcxVY9y
-xmTtCXRpwPPaQOkxI3M8fLKyvPOd2BzjjQC+v8xwSqEN2FWZbkwEKal6PwnfXaOo
-b7eSLJ844mp9H6lG0GiZo4gzvS1/iyyFpmN7Cx2aH1n3M+LdIXffVEFhTQIA8C/S
-oH08vVYXNtIhwwya9/iY6i5cxtUrLgvJ3LghbWrqc/REmGINp4nIBG/bFIx3jcjw
-LkyEOhzVONZtYNa4qlCQWYF4rUYE5Q4weXEt9ttGz8IT3RiHdrZE6YjeyJNVkyKB
-hhPxkbx2o0lHeUwTt3cd
-=bjsp
+iQIcBAEBAgAGBQJRuKyAAAoJELSic+t+oim9rtcP/jhCe6mmPld3sKrPd3TUG5N/
+2nR58NBemdTIFxLiD4YPQGu6eommCugxN2Hfu/Dgixz3RL0LsST+S3cna33SeE7n
+UYM3Q91HTvj+eqGVPStFw8wrnj+kT5iDZoiC+1aKNOcRESAEKjegv76I8mz2ivdC
+FpnSGZcbiLVQeLxsM0ynwlwkpIC9uiPGSO5OjI6EUC6olrI417Zi/DEowe5CfGxH
+wPhmS2eCULd+H70tZ00Rv7FBpjwXZrXqz1bO6OahICx2WEMCa5cdhU1azUPUSGr+
+tcVYp0Crv49ogecsSFg4armt9/7Dr3n4ULFk8uilKSjUPBm4WyX4nD6oMXKINKA7
+UDJqdLHz9qFJ5AZR+nkMM7GjIBliXcOoRL1QgQK7YPfh78RxyzEwaNoYLmOQFeDP
+AfjHpJ1UeOtnlCz054kn9IRzrwu12zfn8/6RIsWrn3I97DO8U1JbTYuVAlGpSZQ4
+jUzd9jR3HOHo0ilf9+APBXUyoWYhXim81rMcDMFDOPHFWaNwfNJRXXko5hZW2XF9
+CS8Q6Kefu3xEBqwyfQIYZBHDL/TfwspvI3+N5GrXswjwfPKeGnc5TR/crpPNCFh7
+ce7KTcn2q6OiKwjubyA414ZSTVTlloUOlReOnb7tXaxfQ/VOVF1MTPcU4k7rT7Um
+EAQSIHyVGn6fkswOrvcj
+=lCSg
 -----END PGP SIGNATURE-----
 
---suroagWEfFHnktSq--
+--dwlrTrmaMopxYcLA--
 
---===============8819494401344958855==
+--===============1059284030831770367==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8819494401344958855==--
+--===============1059284030831770367==--
