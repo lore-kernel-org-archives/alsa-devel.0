@@ -1,67 +1,79 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V6 6/6] clk: exynos5250: Add enum entries for divider
- clock of i2s1 and i2s2
-Date: Thu, 13 Jun 2013 08:32:23 +0530
-Message-ID: <CAAgF-BfEvBcrm186t6U9Tp4r64wB3sEsy6hoXMQi=dHJgncvfw@mail.gmail.com>
-References: <1371024463-303-1-git-send-email-padma.v@samsung.com>
-	<1371024463-303-7-git-send-email-padma.v@samsung.com>
-	<20130612164553.26381.41398@quantum>
+From: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Subject: Re: Problem using alsa to implement an Android dock
+Date: Thu, 13 Jun 2013 10:24:47 +0200 (CEST)
+Message-ID: <1532812831.335058.1371111887295.JavaMail.root@openwide.fr>
+References: <51B8D55A.8080206@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130612164553.26381.41398@quantum>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mike Turquette <mturquette@linaro.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from zimbra3.corp.accelance.fr (zimbra3.corp.accelance.fr
+ [213.162.49.233])
+ by alsa0.perex.cz (Postfix) with ESMTP id B953D2619F0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2013 10:24:48 +0200 (CEST)
+In-Reply-To: <51B8D55A.8080206@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mike,
-
-On Wed, Jun 12, 2013 at 10:15 PM, Mike Turquette <mturquette@linaro.org> wrote:
-> Quoting Padmavathi Venna (2013-06-12 01:07:43)
->> This patch adds enum entries for div_i2s1 and div_i2s2 which are
->> required for i2s1 and i2s2 controllers.
->>
->> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
->
-> Looks good.  Did you want me to take the clk patches or just gathering
-> Acks?
-
-Please take the patches :).
-
-Thanks
-Padma
-
->
-> Regards,
-> Mike
->
->> ---
->>  drivers/clk/samsung/clk-exynos5250.c |    5 +++--
->>  1 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/clk/samsung/clk-exynos5250.c b/drivers/clk/samsung/clk-exynos5250.c
->> index 5c97e75..7c68850 100644
->> --- a/drivers/clk/samsung/clk-exynos5250.c
->> +++ b/drivers/clk/samsung/clk-exynos5250.c
->> @@ -87,6 +87,7 @@ enum exynos5250_clks {
->>         sclk_mmc0, sclk_mmc1, sclk_mmc2, sclk_mmc3, sclk_sata, sclk_usb3,
->>         sclk_jpeg, sclk_uart0, sclk_uart1, sclk_uart2, sclk_uart3, sclk_pwm,
->>         sclk_audio1, sclk_audio2, sclk_spdif, sclk_spi0, sclk_spi1, sclk_spi2,
->> +       div_i2s1, div_i2s2,
->>
->>         /* gate clocks */
->>         gscl0 = 256, gscl1, gscl2, gscl3, gscl_wa, gscl_wb, smmu_gscl0,
->> @@ -291,8 +292,8 @@ struct samsung_div_clock exynos5250_div_clks[] __initdata = {
->>         DIV(none, "div_pcm1", "sclk_audio1", DIV_PERIC4, 4, 8),
->>         DIV(none, "div_audio2", "mout_audio2", DIV_PERIC4, 16, 4),
->>         DIV(none, "div_pcm2", "sclk_audio2", DIV_PERIC4, 20, 8),
->> -       DIV(none, "div_i2s1", "sclk_audio1", DIV_PERIC5, 0, 6),
->> -       DIV(none, "div_i2s2", "sclk_audio2", DIV_PERIC5, 8, 6),
->> +       DIV(div_i2s1, "div_i2s1", "sclk_audio1", DIV_PERIC5, 0, 6),
->> +       DIV(div_i2s2, "div_i2s2", "sclk_audio2", DIV_PERIC5, 8, 6),
->>         DIV(sclk_pixel, "div_hdmi_pixel", "sclk_vpll", DIV_DISP1_0, 28, 4),
->>         DIV_A(none, "armclk", "div_arm", DIV_CPU0, 28, 3, "armclk"),
->>         DIV_F(none, "div_mipi1_pre", "div_mipi1",
->> --
->> 1.7.4.4
+QXdlc29tZSwgdGhpcyB3b3JrcyBwZXJmZWN0bHksIHRoeCBhIGxvdAoKdGVzdGVkLWJ5OiBKZXJl
+bXkgUm9zZW4gPGplcmVteS5yb3NlbkBvcGVud2lkZS5mcj4KCklzIHRoZXJlIGFueXRoaW5nIEkg
+bmVlZCB0byBkbyBmb3IgdGhlIHVwc3RyZWFtaW5nID8KCkkgd2lsbCBzdGlsbCBvcGVuIGEgYnVn
+IG9uIHRoZSBhbmRyb2lkIHNpZGUsIHRob3VnaC4uLgoKCiAgICBDb3JkaWFsZW1lbnQKCiAgICBK
+w6lyw6lteSBSb3NlbgoKZmlnaHQga2V5IGxvZ2dlcnMgOiB3cml0ZSBzb21lIHBlcmwgdXNpbmcg
+dmltCgotLS0tLSBNYWlsIG9yaWdpbmFsIC0tLS0tCj4gSmVyZW15IFJvc2VuIHdyb3RlOgo+ID4g
+aXQgZGlkbid0IHNlZW0gdG8gd29yawo+IAo+IEJlY2F1c2UgdGhlIGltcG9ydGFudCBjb2RlIHVz
+ZXMgJ2ludGVyZmFjZScsIG5vdCAnaWZhY2UnLgo+IFRyeSB0aGlzIG9uZToKPiAKPiAKPiBBTFNB
+OiB1c2ItYXVkaW86IHdvcmsgYXJvdW5kIEFucm9pZCBhY2Nlc3NvcnkgZmlybXdhcmUgYnVnCj4g
+Cj4gV2hlbiB0aGUgQW5kcm9pZCBmaXJtd2FyZSBlbmFibGVzIHRoZSBhdWRpbyBpbnRlcmZhY2Vz
+IGluIGFjY2Vzc29yeQo+IG1vZGUsIGl0IGFsd2F5cyBkZWNsYXJlcyBpbiB0aGUgY29udHJvbCBp
+bnRlcmZhY2UncyBiYUludGVyZmFjZU5yCj4gYXJyYXkKPiB0aGF0IGludGVyZmFjZXMgMCBhbmQg
+MSBiZWxvbmcgdG8gdGhlIGF1ZGlvIGZ1bmN0aW9uLiAgSG93ZXZlciwgdGhlCj4gYWNjZXNzb3J5
+IGludGVyZmFjZSBpdHNlbGYsIGlmIGFsc28gZW5hYmxlZCwgYWxyZWFkeSBpcyBhdCBpbmRleCAw
+Cj4gYW5kCj4gc2hpZnRzIHRoZSBhY3R1YWwgYXVkaW8gaW50ZXJmYWNlIG51bWJlcnMgdG8gMSBh
+bmQgMiwgd2hpY2ggcHJldmVudHMKPiB0aGUKPiBQQ00gc3RyZWFtaW5nIGludGVyZmFjZSBmcm9t
+IGJlaW5nIHNlZW4gYnkgdGhlIGhvc3QgZHJpdmVyLgo+IAo+IFRvIGdldCB0aGUgUENNIGludGVy
+ZmFjZSBpbnRlcmZhY2UgdG8gd29yaywgZGV0ZWN0IHdoZW4gdGhlCj4gZGVzY3JpcHRvcnMKPiBw
+b2ludCB0byB0aGUgKGZvciB0aGlzIGRyaXZlciB1c2VsZXNzKSBhY2Nlc3NvcnkgaW50ZXJmYWNl
+LCBhbmQKPiByZWRpcmVjdAo+IHRvIHRoZSBjb3JyZWN0IG9uZS4KPiAKPiBSZXBvcnRlZC1ieTog
+SmVyZW15IFJvc2VuIDxqZXJlbXkucm9zZW5Ab3BlbndpZGUuZnI+Cj4gTm90LXlldC10ZXN0ZWQt
+Ynk6IEplcmVteSBSb3NlbiA8amVyZW15LnJvc2VuQG9wZW53aWRlLmZyPgo+IENjOiA8c3RhYmxl
+QHZnZXIua2VybmVsLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1l
+bnNAbGFkaXNjaC5kZT4KPiAtLS0KPiAgc291bmQvdXNiL2NhcmQuYyB8ICAgMjIgKysrKysrKysr
+KysrKysrKysrKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
+dGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2NhcmQuYyBiL3NvdW5kL3VzYi9j
+YXJkLmMKPiBpbmRleCA1NjM4NTRhLi41YTUxNTNjIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3VzYi9j
+YXJkLmMKPiArKysgYi9zb3VuZC91c2IvY2FyZC5jCj4gQEAgLTE0OCwxNCArMTQ4LDMyIEBAIHN0
+YXRpYyBpbnQgc25kX3VzYl9jcmVhdGVfc3RyZWFtKHN0cnVjdAo+IHNuZF91c2JfYXVkaW8gKmNo
+aXAsIGludCBjdHJsaWYsIGludCBpbnQKPiAgCQlyZXR1cm4gLUVJTlZBTDsKPiAgCX0KPiAKPiAr
+CWFsdHMgPSAmaWZhY2UtPmFsdHNldHRpbmdbMF07Cj4gKwlhbHRzZCA9IGdldF9pZmFjZV9kZXNj
+KGFsdHMpOwo+ICsKPiArCS8qCj4gKwkgKiBBbmRyb2lkIHdpdGggYm90aCBhY2Nlc3NvcnkgYW5k
+IGF1ZGlvIGludGVyZmFjZXMgZW5hYmxlZCBnZXRzCj4gdGhlCj4gKwkgKiBpbnRlcmZhY2UgbnVt
+YmVycyB3cm9uZy4KPiArCSAqLwo+ICsJaWYgKChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MThk
+MSwgMHgyZDA0KSB8fAo+ICsJICAgICBjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MThkMSwgMHgy
+ZDA1KSkgJiYKPiArCSAgICBpbnRlcmZhY2UgPT0gMCAmJgo+ICsJICAgIGFsdHNkLT5iSW50ZXJm
+YWNlQ2xhc3MgPT0gVVNCX0NMQVNTX1ZFTkRPUl9TUEVDICYmCj4gKwkgICAgYWx0c2QtPmJJbnRl
+cmZhY2VTdWJDbGFzcyA9PSBVU0JfU1VCQ0xBU1NfVkVORE9SX1NQRUMpIHsKPiArCQlpbnRlcmZh
+Y2UgPSAyOwo+ICsJCWlmYWNlID0gdXNiX2lmbnVtX3RvX2lmKGRldiwgaW50ZXJmYWNlKTsKPiAr
+CQlpZiAoIWlmYWNlKQo+ICsJCQlyZXR1cm4gLUVJTlZBTDsKPiArCQlhbHRzID0gJmlmYWNlLT5h
+bHRzZXR0aW5nWzBdOwo+ICsJCWFsdHNkID0gZ2V0X2lmYWNlX2Rlc2MoYWx0cyk7Cj4gKwl9Cj4g
+Kwo+ICAJaWYgKHVzYl9pbnRlcmZhY2VfY2xhaW1lZChpZmFjZSkpIHsKPiAgCQlzbmRfcHJpbnRk
+ZChLRVJOX0lORk8gIiVkOiVkOiVkOiBza2lwcGluZywgYWxyZWFkeSBjbGFpbWVkXG4iLAo+ICAJ
+CQkJCQlkZXYtPmRldm51bSwgY3RybGlmLCBpbnRlcmZhY2UpOwo+ICAJCXJldHVybiAtRUlOVkFM
+Owo+ICAJfQo+IAo+IC0JYWx0cyA9ICZpZmFjZS0+YWx0c2V0dGluZ1swXTsKPiAtCWFsdHNkID0g
+Z2V0X2lmYWNlX2Rlc2MoYWx0cyk7Cj4gIAlpZiAoKGFsdHNkLT5iSW50ZXJmYWNlQ2xhc3MgPT0g
+VVNCX0NMQVNTX0FVRElPIHx8Cj4gIAkgICAgIGFsdHNkLT5iSW50ZXJmYWNlQ2xhc3MgPT0gVVNC
+X0NMQVNTX1ZFTkRPUl9TUEVDKSAmJgo+ICAJICAgIGFsdHNkLT5iSW50ZXJmYWNlU3ViQ2xhc3Mg
+PT0gVVNCX1NVQkNMQVNTX01JRElTVFJFQU1JTkcpIHsKPgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
