@@ -1,75 +1,84 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: [PATCH 2/2] ASoC: rt5640: enable LDO1 before creating
-	regmap
-Date: Wed, 12 Jun 2013 15:34:24 -0600
-Message-ID: <1371072864-13205-2-git-send-email-swarren@wwwdotorg.org>
-References: <1371072864-13205-1-git-send-email-swarren@wwwdotorg.org>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [alsa-devel] usb-audio validation fixes [3.0, 3.2]
+Date: Thu, 13 Jun 2013 02:30:39 +0100
+Message-ID: <1371087039.10688.9.camel@deadeye.wl.decadent.org.uk>
+References: <1369704469.3469.412.camel@deadeye.wl.decadent.org.uk>
+	 <s5hobbv7h4p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 528D8261B2E
- for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2013 23:34:32 +0200 (CEST)
-In-Reply-To: <1371072864-13205-1-git-send-email-swarren@wwwdotorg.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-0qc7DPcSaG9gogu/u7f0"
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hobbv7h4p.wl%tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Xi Wang <xi.wang@gmail.com>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Warren <swarren@nvidia.com>
 
-Enable the LDO1_EN GPIO to the CODEC, which enables the device to show
-up on the I2C bus, before creating the regmap object. This guarantees
-that if devm_regmap_init_i2c() were to attempt to communicate with the
-device, it would be able to.
+--=-0qc7DPcSaG9gogu/u7f0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/codecs/rt5640.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+On Tue, 2013-05-28 at 08:28 +0200, Takashi Iwai wrote:
+> At Tue, 28 May 2013 02:27:49 +0100,
+> Ben Hutchings wrote:
+> >=20
+> > It looks these fixes are suitable for inclusion in the 3.0.y and 3.2.y
+> > stable branches:
+> >=20
+> > commit 4fa0e81b83503900be277e6273a79651b375e288
+> > Author: Xi Wang <xi.wang@gmail.com>
+> > Date:   Sun Jan 8 09:02:52 2012 -0500
+> >=20
+> >     ALSA: usb-audio: fix possible hang and overflow in parse_uac2_sampl=
+e_rate_range()
+> >=20
+> > commit 8866f405efd4171f9d9c91901d2dd02f01bacb60
+> > Author: Xi Wang <xi.wang@gmail.com>
+> > Date:   Tue Feb 14 05:18:48 2012 -0500
+> >=20
+> >     ALSA: usb-audio: avoid integer overflow in create_fixed_stream_quir=
+k()
+> >=20
+> > Do you agree?
+>=20
+> If it's applicable to old kernels, yes, it's worth.
+> I didn't mark it simply because the patch hasn't been tested with the
+> actual hardware.
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index ce585e3..ead953c 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2053,14 +2053,6 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 	} else
- 		rt5640->pdata.ldo1_en = -EINVAL;
- 
--	rt5640->regmap = devm_regmap_init_i2c(i2c, &rt5640_regmap);
--	if (IS_ERR(rt5640->regmap)) {
--		ret = PTR_ERR(rt5640->regmap);
--		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
--			ret);
--		return ret;
--	}
--
- 	if (gpio_is_valid(rt5640->pdata.ldo1_en)) {
- 		ret = devm_gpio_request_one(&i2c->dev, rt5640->pdata.ldo1_en,
- 					    GPIOF_OUT_INIT_HIGH,
-@@ -2073,6 +2065,14 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 		msleep(400);
- 	}
- 
-+	rt5640->regmap = devm_regmap_init_i2c(i2c, &rt5640_regmap);
-+	if (IS_ERR(rt5640->regmap)) {
-+		ret = PTR_ERR(rt5640->regmap);
-+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
- 	regmap_read(rt5640->regmap, RT5640_VENDOR_ID2, &val);
- 	if ((val != RT5640_DEVICE_ID)) {
- 		dev_err(&i2c->dev,
--- 
-1.8.1.5
+So no-one's tried fuzz-testing?  This is just based on code inspection
+or static analysis?
+
+> But the change itself is simple, and should be safe to apply.
+
+Right, I've queued these up for 3.2.
+
+Ben.
+
+--=20
+Ben Hutchings
+friends: People who know you well, but like you anyway.
+
+--=-0qc7DPcSaG9gogu/u7f0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIVAwUAUbkgv+e/yOyVhhEJAQpn+g//VCIAgEsRy6zfhcLQay1po4RYmnm9MU0x
+O18O3A3Fy/EZUui7Y0wR6hM/CqE0qmiMVDV+xXyzNNOC7Ym886tGWiNl66mXNIC4
+2MSbCoejajUGQBGna3jykfXEr+BqXgmC56838J0ynClVva7CgLIoB/tbeoTjJ0w7
+0Uskmn/hbKlTaFiW/odIb9B3LuYyEvA+WukkrLlktPog6yGA9NzgJLdoRmcuk1/2
+EpdzluS4dcppSOgZ0dvoNrw+cdEzMBL9AtAGdG35B59vgp6FDGQlQkTMiP6y6KfD
+jHnfIXTBJ/ukCtZ2ErTlShbfudpaIINtQo5iA6af52D/Bs0E0u6DUY6YOPktHaO2
+vCl9dEdbYXB2sMuCt6RGVj4a9znhBK6o9ENzqQgJgVY+iE8A/pSgd1F5/X3omA9T
+lItWCacreDyJ/KuqdvBzVMHI+8Zlu+U8leDdJZN/g5ac3qGEPVnS8Ilrz+z2pj9E
+Q0GDD1NYg7YLe8OWt+/HEHGvFEiGmIxhRlRrNiU7meVvCNUJbNuR8JGT+EzYARTu
+q/5Ls6uz5Q3QKE/c3+2T0G1M4JeP0SmgmXLoUsZpTAokfWbYNUclG6uJY7iiu0VA
+fjVDF+tFzkfkw5jbSEncrlstXlXCVzNaphytvYryOD7rQItE2ebrqj6EkoXUun82
+07qRFKrWmaw=
+=1OsQ
+-----END PGP SIGNATURE-----
+
+--=-0qc7DPcSaG9gogu/u7f0--
