@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5640: fix sparse warnings
-Date: Thu, 13 Jun 2013 10:27:20 +0100
-Message-ID: <20130613092720.GV1403@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: rt5640: enable LDO1 before
+	creating regmap
+Date: Thu, 13 Jun 2013 10:30:38 +0100
+Message-ID: <20130613093038.GW1403@sirena.org.uk>
 References: <1371072864-13205-1-git-send-email-swarren@wwwdotorg.org>
+ <1371072864-13205-2-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2285713736461952558=="
+Content-Type: multipart/mixed; boundary="===============7203022827820958203=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 6176E2619F0
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2013 11:27:27 +0200 (CEST)
-In-Reply-To: <1371072864-13205-1-git-send-email-swarren@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id B34F2261AE4
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2013 11:30:43 +0200 (CEST)
+In-Reply-To: <1371072864-13205-2-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +26,59 @@ Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Stephen Warre
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2285713736461952558==
+--===============7203022827820958203==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+vl+q9EKybVy/Rgp"
+	protocol="application/pgp-signature"; boundary="NUQP2JP/Zo+En7Or"
 Content-Disposition: inline
 
 
---+vl+q9EKybVy/Rgp
+--NUQP2JP/Zo+En7Or
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 12, 2013 at 03:34:23PM -0600, Stephen Warren wrote:
+On Wed, Jun 12, 2013 at 03:34:24PM -0600, Stephen Warren wrote:
 > From: Stephen Warren <swarren@nvidia.com>
 >=20
-> This fixes:
-> 975:9: sparse: Using plain integer as NULL pointer
-> 1917:24: sparse: symbol 'rt5640_aif_dai_ops' was not declared. Should it =
-be static?
-> 1924:27: sparse: symbol 'rt5640_dai' was not declared. Should it be stati=
-c?
-> 2079:19: sparse: symbol 'rt5640_i2c_driver' was not declared. Should it b=
-e static?
+> Enable the LDO1_EN GPIO to the CODEC, which enables the device to show
+> up on the I2C bus, before creating the regmap object. This guarantees
+> that if devm_regmap_init_i2c() were to attempt to communicate with the
+> device, it would be able to.
 
-Applied, thanks.
+Is this an actual issue?  Unless specifically asked to the regmap code
+really shouldn't be interacting with the hardware and the ordering the
+code currently has is the standard one so if we're having problems then
+a number of other drivers ought to be fixed.
 
---+vl+q9EKybVy/Rgp
+--NUQP2JP/Zo+En7Or
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRuZB1AAoJELSic+t+oim9CqgP/jZSI8r46+u2bIAbMKvoProm
-FZxu5QYN3z/ZQ+NQIyMKZeU97WNBMNwMDiRaSk4m2YLat2UqCObePjknys1prXQN
-oaUOpeFASe22ihynGUlF34jF9h3cW18pV8Tt7vsoVBp8dc4KUo7v0iLYra/EYAZq
-F38qwm9ZS6LXRbdG8C7xXwbpRpIWHVoJlV9rz1pm6ZzGMh/nNtOuHpM2apeHVHd2
-lvxAZu1ubMRDes3ThbaoBttKW2WzA3J5/AIWsXJ6wLmTQYzhkeeoe6Wa0T89EXLA
-KgXi25nkwzv/YGFtfRzGfnk7IhsBOq3oNRvE+2g4Q0GTzjNyw2pinX/fuNoRkG0o
-I0yl4FgIM0IbABCIGnKqG5JeYCTDszZai/kQII25HZQC99gD2dIlzscA2HFa1KJ4
-m4AMpixkHYpvVuT3i0s5biMKyUOhyMzcXZ2sSGBpakEgHhG+W/XMCu1yzNulGAHC
-hH8L1pat9tOXU6p9jcqBeufY2i0mXhIhO7ucZzxDxYZlRkrjyK84n1F6ERD552zt
-wJcnx7ilRHUQdIRzN/Te2wsPnAb9TA6cMNfW4eMlrKDzs/exqBVR4wRSZ9j1Ul64
-kJlkFhcbwmHe5CsYy5eZ4V3g2Fwsj2jMbKoKygKv4OBGXPMi8dygIJj7F7yPwZNN
-zgvDDS/jS+U2SVOfh/QM
-=SLnP
+iQIcBAEBAgAGBQJRuZE7AAoJELSic+t+oim90C0P/1jSpri8p9xaZViATgmKYHpT
+vmj/pdK0rLjYQfuzhlAPdWN/ebN9mO/iJhcq6w1Xts1+fXIqa14PkIPS3J3B6ni2
+RL/1yw+awsamXe7ETpfV9mQR0Kz0hSJDlJEY5lvydz4UIdhJDCR95Rb9seF1oFeU
+DRzHkXJJwcc7BQLqIO7KdFp5RfSvS1MaRwEA9aE0WheqO2jg682FjjqJyLbIq23C
+hL25p+wnKaX1avKJT2O3VWgRK+a3bHsk7JUdwhf0T9KFNPQ5I2WvukFxr08/PwWJ
+uWwHONN4SvZL8Ta5LtLh5YhFBvRGjk+BxRLDrsQgOpwNOp8hm4VjMbv45BRgDQ/5
+ntDr18275Fp3WQCeppSFoUH/ozJDQmNxcFKx1q3vy0Ue1dNWCGU3uFUEYC2UAxHj
+LcLBUxMgTWxg2XDMzslzQM3SZrgOEZS948FnssBUxD7w/N9BvLSZp40rDewA9JdR
+Ag4K4dZGD0vO2OT47JJ9lDvw9LXNjkn4KLxp/LkvIczkSlQdV+W1p4cP0rhhWEB7
+VcmXZJR6pbCZ7dBBH6Rm3pO00ToIcylotJVAlx1IouBW8xWWEiHjkzVJAArXdKRU
+B6Vg7MN/q3flzknhbqe8SEd+YYD6bShR/XqPycGLNGmh5smahIevOtEFS2MVA//h
+Qu3wKCI5a9A/26OPAkA3
+=Hu7D
 -----END PGP SIGNATURE-----
 
---+vl+q9EKybVy/Rgp--
+--NUQP2JP/Zo+En7Or--
 
---===============2285713736461952558==
+--===============7203022827820958203==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2285713736461952558==--
+--===============7203022827820958203==--
