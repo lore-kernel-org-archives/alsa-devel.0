@@ -1,12 +1,14 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: =?utf-8?q?=5BPATCH_0/4=5D_Haswell_Display_audio_routi?=
-	=?utf-8?q?ng_bug_fix?=
-Date: Fri, 14 Jun 2013 23:20:25 +0800
-Message-ID: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 1/4] ALSA: hda - Haswell converter power state
+	D0 verify
+Date: Fri, 14 Jun 2013 23:20:26 +0800
+Message-ID: <1371223229-8236-2-git-send-email-xingchao.wang@linux.intel.com>
+References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -20,47 +22,52 @@ To: tiwai@suse.de, daniel.vetter@ffwll.ch
 Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, intel-gfx@lists.freedesktop.org, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaHNldCB1c2VkIHRvIGZpeCBzb21lIGRpc3BsYXkgYXVkaW8gaXNzdWVzIG9uIEhh
-c3dlbGwgcGxhdGZvcm0uCgpJIHRlc3RlZCB0aGlzIHBhdGNoIG9uIEhhc3dlbGwgdWx0IGJvYXJk
-LCBDMCBzdGVwcGluZywgd2l0aCBlRFAgcGFubmVsLCBIRE1JCm1vbml0b3IsIERQIG1vbml0b3Iu
-CgpUaGUgZml4ZWQgaXNzdWVzOgoxKSB3aGVuIG9ubHkgSERNSSBvciBEUCBtb25pdG9yIGNvbm5l
-Y3RlZCwgaGVhciBzb3VuZCBvbiBBTEwgdGhyZWUgSERNSSBkZXZpY2VzLgoyKSB3aGVuIEhETUkg
-KyBEUCBtb25pdG9ycyBjb25uZWN0ZWQsIGhlYXIgc291bmQgb24gSERNSSBhbmQgRFAgYXQgdGhl
-IHNhbWUKICB0aW1lIG5vIG1hdHRlciB5b3UncmUgcGxheWluZyBhdWRpbyBvbiBEUCBvciBIRE1J
-IGRldmljZS4KMykgV2hlbiBEUCArIEhETUkgKyBlRFAgY29ubmVjdGVkLCBubyBzb3VuZCBjb3Vs
-ZCBiZSBoZWFyZC4KNCkgQWZ0ZXIgYm9vdHVwLCBwbGF5IGF1ZGlvIG9uIEhETUkgZGV2aWNlIDco
-dXNlIHNlY29uZCBwaW4pLCBubyBzb3VuZC4KICBJZiBwbGF5IGF1ZGlvIG9uIGRldmljZSAzIGF0
-IGZpcnN0KHVzZSBmaXJzdCBwaW4pLCBpdCBoYXMgc291bmQgYWdhaW4uCgpUaGVyZSdzIHF1aXRl
-IGRpZmZlcmVudCBoYXJkd2FyZSBjaGFuZ2VzIGZvciBoYXN3ZWxsIGRpc3BsYXkgYXVkaW8sIGNv
-bXBhcmVkCndpdGggcHJldmlvdXMgSXZ5YnJpZGdlL1NhbmR5YnJpZGdlLiBUaGUgY29tbW9uIGhk
-LWEgZHJpdmVyIGFuZCBoZG1pIGRyaXZlcgpuZWVkIG1ha2UgaW1wcm92ZW1lbnQgdG8gc3VwcG9y
-dC4KCkhhc3dlbGwgY2hpcCBzdXBwb3J0cyBEcDEuMiBmZWF0dXJlKHNlZSByZWYgMSkuIFRoaXMg
-aXMgdmVyeSBjb29sIGZldHVyZQp3aW5kb3dzIGhhZCBzdXBwb3J0ZWQuIFdlIGdldCBjb25maXJt
-IGxpbnV4IGdmeCB0ZWFtIGhhcyBwbGFuIHRvIHN1cHBvcnQgRHAxLjIKaW4gZnV0dXJlIHRvby4g
-V2UncmUgcmVhZHkgdG8gc3VwcG9ydCBkcDEuMiBmZWF0dXJlIGluIGF1ZGlvIHNpZGUsIGFzIHRo
-ZQpjb252ZXJ0ZXIgc2VsZWN0aW9uIGRlcGVuZGVuY3kgaXMgZml4ZWQgaW4gdGhpcyBwYXRjaHNl
-dC4gQWxzbyB3ZSBuZWVkIHNvbWUKaW1wcm92ZW1lbnQgaW4gSERBIGRyaXZlciBzaWRlIGJlY2F1
-c2UgSGFzd2VsbCBhZGRlZCBuZXcgVmVyYiB0byBzdXBwb3J0IERQMS4yLiAKCmhlcmXigJlzIGEg
-dmlkZW8gc2hvdyBhYm91dCBEUDEuMiBmZWF0dXJlCmh0dHA6Ly93d3cuY2x1Yi0zZC5jb20vaW5k
-ZXgucGhwL3Byb2R1Y3RzL3JlYWRlci5lbi9wcm9kdWN0L21zdC1odWItMS0zLmh0bWwKClBsZWFz
-ZSBhcHBseSB0aGUgcGF0Y2hlcyBiYXNlZCBvbiBEYW5pZWwncyBkcm0taW50ZWwtbmV4dC1xdWV1
-ZWQgYnJhbmNoOgpodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmRhbnZldC9kcm0taW50ZWwv
-bG9nLz9oPWRybS1pbnRlbC1uZXh0LXF1ZXVlZApsYXN0IGNvbW1pdCA4MGU4MzgzMWE2NGI5YTVk
-NDllODQ0NjkxMDM3YjJkNGJlMGYxNGY5CgpQbGVhc2UgZmVlbCBmcmVlIHRvIGxldCBtZSBrbm93
-IHRoZSBpc3N1ZXMgeW91IG1lZXQgZHVyaW5nIHRlc3QuCgpXYW5nIFhpbmdjaGFvICg0KToKICBB
-TFNBOiBoZGEgLSBIYXN3ZWxsIGNvbnZlcnRlciBwb3dlciBzdGF0ZSBEMCB2ZXJpZnkKICBBTFNB
-OiBoZGEgLSBSZXR1cm4gZXJyb3Igd2hlbiBvcGVuIGVtcHR5IGhkbWkgZGV2aWNlCiAgZHJtL2k5
-MTU6IEFkZCBkaXNwbGF5IGF1ZGlvIHJvdXRpbmcgQVBJcyBmb3IgQUxTQQogIEFMU0E6IGhkYSAt
-IEFkZCBkaXNwbGF5IGF1ZGlvIHJvdXRpbmcgQVBJIGZvciBoYXN3ZWxsCgogZHJpdmVycy9ncHUv
-ZHJtL2k5MTUvaTkxNV9kcnYuaCAgICAgIHwgIDE4ICsrKysrCiBkcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pbnRlbF9kZGkuYyAgICAgfCAxMzEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rpc3BsYXkuYyB8ICAgNyArLQogZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmggICAgIHwgICAxICsKIGluY2x1ZGUvZHJtL2k5MTVf
-cG93ZXJ3ZWxsLmggICAgICAgICB8ICAgNSArKwogc291bmQvcGNpL2hkYS9oZGFfaTkxNS5jICAg
-ICAgICAgICAgIHwgIDgzICsrKysrKysrKysrKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvaGRh
-X2k5MTUuaCAgICAgICAgICAgICB8ICAgNCArKwogc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMg
-ICAgICAgICAgIHwgIDM3ICsrKysrKysrKysKIDggZmlsZXMgY2hhbmdlZCwgMjgxIGluc2VydGlv
-bnMoKyksIDUgZGVsZXRpb25zKC0pCgotLSAKMS44LjEuMgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+Haswell converters maybe in wrong power state before usage.
+i.e. only converter 0 is in D0, converter 1/2 are in D3.
+When pin choose converter 1/2, there's no audio output.
+
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e12f7a0..8db5eb6 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1053,6 +1053,23 @@ static void haswell_verify_pin_D0(struct hda_codec *codec, hda_nid_t nid)
+ 	}
+ }
+ 
++static void hsw_verify_cvt_D0(struct hdmi_spec *spec,
++			 struct hda_codec *codec)
++{
++	struct hdmi_spec_per_cvt *per_cvt;
++	int pwr, cvt_idx;
++
++	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
++		per_cvt = get_cvt(spec, cvt_idx);
++		pwr = snd_hda_codec_read(codec, per_cvt->cvt_nid, 0,
++				AC_VERB_GET_POWER_STATE, 0);
++		pwr = (pwr & AC_PWRST_ACTUAL) >> AC_PWRST_ACTUAL_SHIFT;
++		if (pwr != AC_PWRST_D0)
++			snd_hda_codec_write(codec, per_cvt->cvt_nid, 0, AC_VERB_SET_POWER_STATE,
++					    AC_PWRST_D0);
++	}
++}
++
+ /*
+  * Callbacks
+  */
+@@ -1122,6 +1139,9 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 	per_pin = get_pin(spec, pin_idx);
+ 	eld = &per_pin->sink_eld;
+ 
++	if (codec->vendor_id == 0x80862807)
++		hsw_verify_cvt_D0(spec, codec);
++
+ 	/* Dynamically assign converter to stream */
+ 	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
+ 		per_cvt = get_cvt(spec, cvt_idx);
+-- 
+1.8.1.2
