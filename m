@@ -1,19 +1,16 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH (alsa-utils)] amixer: Print TLV of channel
- map controls
-Date: Fri, 14 Jun 2013 14:12:56 +0200
-Message-ID: <51BB08C8.2050207@perex.cz>
-References: <1371202861-18758-1-git-send-email-david.henningsson@canonical.com>
- <51BB00E3.6050309@perex.cz> <51BB049B.9030905@canonical.com>
- <51BB0524.2040405@canonical.com>
+Subject: Re: SEGFAULT in ALSA lib 1.0.27.1 pcm_direct parser
+Date: Fri, 14 Jun 2013 14:16:56 +0200
+Message-ID: <51BB09B8.8050909@perex.cz>
+References: <m3obb8kimt.fsf@t19.piap.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id DF36226528B
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 14:12:57 +0200 (CEST)
-In-Reply-To: <51BB0524.2040405@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AB9EE265290
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 14:16:56 +0200 (CEST)
+In-Reply-To: <m3obb8kimt.fsf@t19.piap.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +20,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: =?UTF-8?B?S3J6eXN6dG9mIEhhxYJhc2E=?= <khalasa@piap.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 14.6.2013 13:57, David Henningsson wrote:
-> On 06/14/2013 01:55 PM, David Henningsson wrote:
->> On 06/14/2013 01:39 PM, Jaroslav Kysela wrote:
->>> Date 14.6.2013 11:41, David Henningsson wrote:
->>>> Previously these were written as "unk-25..." which wasn't very user
->>>> friendly.
->>>>
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>
->>> Applied to repo. Thanks.
->>
->> Thanks, would you mind taking the alsa-utils and alsa-lib patches I
->> posted two days ago too? Especially the alsa-lib one looked quite serious.
-> 
-> Reference: 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062922.html
-
-I applied all user-space related patches from you since 10th.
-
-				Thanks,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+RGF0ZSAxNC42LjIwMTMgMTM6NTksIEtyenlzenRvZiBIYcWCYXNhIHdyb3RlOgo+IEhpLAo+IAo+
+IEZpeGVzIGEgc2VnZmF1bHQgd2hlbiBnZXRncm5hbV9yKCkgcmV0dXJucyAwIGFuZCBzdGlsbCBz
+ZXRzIHBncnAgdG8gTlVMTAo+IHdoZW4gdGhlIGdyb3VwIHNpbXBseSBkb2Vzbid0IGV4aXN0LgoK
+VGhhbmtzLiBBcHBsaWVkIHRvIG91ciByZXBvLgoKCQkJCUphcm9zbGF2CgotLSAKSmFyb3NsYXYg
+S3lzZWxhIDxwZXJleEBwZXJleC5jej4KTGludXggS2VybmVsIFNvdW5kIE1haW50YWluZXIKQUxT
+QSBQcm9qZWN0OyBSZWQgSGF0LCBJbmMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
