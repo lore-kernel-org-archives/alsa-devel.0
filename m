@@ -1,89 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: WM8962: Enable start-up and normal
- bias after reset in runtime resume
-Date: Fri, 14 Jun 2013 10:59:17 +0100
-Message-ID: <20130614095917.GG1403@sirena.org.uk>
-References: <1371199940-29803-1-git-send-email-b42378@freescale.com>
+Subject: Re: [PATCH] ASoC: Fix double assignment of .owner in struct
+ snd_soc_card
+Date: Fri, 14 Jun 2013 11:00:20 +0100
+Message-ID: <20130614100020.GH1403@sirena.org.uk>
+References: <1371203336-16972-1-git-send-email-emilgoode@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1130730193144926957=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id A29BF261AA0
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 11:59:20 +0200 (CEST)
-In-Reply-To: <1371199940-29803-1-git-send-email-b42378@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <b42378@freescale.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============0472137707066900113=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1371203336-16972-1-git-send-email-emilgoode@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Emil Goode <emilgoode@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, perex@perex.cz, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1130730193144926957==
+--===============0472137707066900113==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5p9QWNAcIBsfgc97"
+	protocol="application/pgp-signature"; boundary="7/IUJOcl5c0tDlVH"
 Content-Disposition: inline
 
 
---5p9QWNAcIBsfgc97
+--7/IUJOcl5c0tDlVH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 14, 2013 at 04:52:20PM +0800, Nicolin Chen wrote:
-> The analogue circuits in WM8962 require a mid-rail analogue reference
-> voltage, VMID, which generator is enabled by STARTUP_BIAS_ENA bit,
-> while VMID_BUF_ENA bit can enable buffered VMID to avoid audible pops.
->=20
-> Besides, these circuits also need a bias current enabled by BIAS_ENA.
->=20
-> Then set VMID_SEL to 2x5k divider, the fast start-up mode, to power it
-> up. And let set_bias_level() handle its 2x250k for low power standby
-> and 2x50k for normal operation.
->=20
-> This patch might be kinda reverting operation against commit 52c0eee3
-> but after testing with WM8962 CODEC, these configurations during power
-> up should be essential and soc-core would not do any of them. So the
-> codec drvier need to handle it.
+On Fri, Jun 14, 2013 at 11:48:56AM +0200, Emil Goode wrote:
+> In struct snd_soc_card zylonite .owner is assigned THIS_MODULE
+> twice, remove one of them.
 
-The biases should be being managed using set_bias_level() which will get
-called automatically when audio is being started and stopped.
+Applied, thanks.
 
---5p9QWNAcIBsfgc97
+--7/IUJOcl5c0tDlVH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRuulyAAoJELSic+t+oim950EP+gKIc0tMVNOr9FjM6nqO14BM
-WbuMV5VUcdFVv6Nm7l30cbmkHZFc5AIoyGsEG+OSYlG5if4+bSiIqoIzY/NAlUj6
-Nsr63dSNTG3E1M0wW1nkkb7iMC9y4vbS7EA6CkkoTZsfJrfI+FI1VQROK5tdOFpo
-oAwovJ3TE6AUxJuvLQhW/BOwE7y20DnfzMLW8df3LkW6kUmiwmwhyWOwYwTviaS9
-5NQM7xOIc8JuH+sEEG0pbZ1w/JXXW4+TD6QN9Hu2IgFRpj3ND4kB7rawyAoz6svz
-FyvhACO95YlM85Q3tsLZ8KO5o4Xf2e5maUj3U1ImT5YUp6tmtBk5BXCUpJiua/Lw
-seCt2bI7C8677LhCYSjtqCcgCDl/UbeFnFJkcF+rnc3q7Mbg3ez4UZolVzR8IvJy
-Rs866owRPfjoeAAFO23ucCPllV3c0+qbtA4pWo+Jr3zxoctV8pTms/TO895m1tRn
-alwzwp74kuCC9zZUXaTvAqjqDYIzkcp2UMTQksv9IY5PqPatsjasKVox196QhufS
-Fg0O9kgtjUJkRpRJ/6BZrUcyow0nGl6fejgC4BysYhYNafzGMxYJbEXgPWXtku+C
-ALE1l3Q/KzWtxyt/YftxfoSyKjYN7sjU1yCmVDoAnO39a0/y+aJHiJK+dgvTlgB9
-kIylL0Oq/Uk7wkg5nsd1
-=2L/h
+iQIcBAEBAgAGBQJRuumxAAoJELSic+t+oim9q2kP/AnbRKoCuS/4EoZPVoSWxUZE
+Sq4LX2eq/DSR86zhOTMpwqqklNM+Xl+FBrsFTMB7uEkhenY6+zTvKJcKSsdB7Rg2
+vWVEflULvI9vNz+MeVFD+ICkou6v/V20iaemlp5F5seFoxCAUAugwFDCEourNK5b
+8bc3i2CUWZ8fqJ1EAtvliljaT+b/w7zCh8j+Gc1IPQzWptuQPduNV5GGeOCSkWrZ
+JIdcJMW9oBi3dpBaAOm3AtSceV+YYy6XxWTDUds8pU21VDiiXQW2DrijSJue2hxL
+ep10ty884mT7ehNUU0o/lXXs81HvktrHtN1BqcEyvKPg1+YalB3JWqt+02QTK9X5
+Dn8LFA4dsdZ7BVkhZKHu5lI14wVCbRW5m6XyV1HHCLPRvWJICUFOnvO7xq7ChMNS
+3+nMgX3gYehYU1PxsFVquM9d5Or0ixwrlFPWrPMYyc+jKjZtOYX4YSmmysgbr1S1
+B8RD/r2ugqpVHyNJvskBrXUpYxYdkOQ6ek/5bDmJ6kfNk3rxDhP5rvah2tQGKXge
+KlhRQlOOZ1CePS5Vwv8IgVPanM6JtRDOyf4aDb0wn4m2xQ3Fl+t/JfLlLilQBlFN
+asnB6cPw8Kp8DYIkytxkQXdKd5s0uiS7q6fcXjtJe26hT1aKt/n20UtssME92vNC
+D0pZyRATL1RpNoDA4Tat
+=M+me
 -----END PGP SIGNATURE-----
 
---5p9QWNAcIBsfgc97--
+--7/IUJOcl5c0tDlVH--
 
---===============1130730193144926957==
+
+--===============0472137707066900113==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============1130730193144926957==--
+--===============0472137707066900113==--
