@@ -1,75 +1,32 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH (alsa-utils)] amixer: Print TLV of channel map
-	controls
-Date: Fri, 14 Jun 2013 11:41:01 +0200
-Message-ID: <1371202861-18758-1-git-send-email-david.henningsson@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 421A3261A6B
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 11:41:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+From: Emil Goode <emilgoode@gmail.com>
+Subject: [PATCH] ASoC: Fix double assignment of .owner in struct snd_soc_card
+Date: Fri, 14 Jun 2013 11:48:56 +0200
+Message-ID: <1371203336-16972-1-git-send-email-emilgoode@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: eric.y.miao@gmail.com, linux@arm.linux.org.uk, haojian.zhuang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Emil Goode <emilgoode@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously these were written as "unk-25..." which wasn't very user friendly.
+In struct snd_soc_card zylonite .owner is assigned THIS_MODULE
+twice, remove one of them.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Emil Goode <emilgoode@gmail.com>
 ---
- amixer/amixer.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/soc/pxa/zylonite.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/amixer/amixer.c b/amixer/amixer.c
-index fe83b49..7727943 100644
---- a/amixer/amixer.c
-+++ b/amixer/amixer.c
-@@ -443,6 +443,7 @@ static void decode_tlv(unsigned int spaces, unsigned int *tlv, unsigned int tlv_
- 	unsigned int type = tlv[0];
- 	unsigned int size;
- 	unsigned int idx = 0;
-+	const char *chmap_type = NULL;
+diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
+index ceb6566..db8aadf 100644
+--- a/sound/soc/pxa/zylonite.c
++++ b/sound/soc/pxa/zylonite.c
+@@ -256,7 +256,6 @@ static struct snd_soc_card zylonite = {
+ 	.resume_pre = &zylonite_resume_pre,
+ 	.dai_link = zylonite_dai,
+ 	.num_links = ARRAY_SIZE(zylonite_dai),
+-	.owner = THIS_MODULE,
+ };
  
- 	if (tlv_size < 2 * sizeof(unsigned int)) {
- 		printf("TLV size error!\n");
-@@ -541,6 +542,27 @@ static void decode_tlv(unsigned int spaces, unsigned int *tlv, unsigned int tlv_
- 		}
- 		break;
- #endif
-+#ifdef SND_CTL_TLVT_CHMAP_FIXED
-+	case SND_CTL_TLVT_CHMAP_FIXED:
-+		chmap_type = "fixed";
-+		/* Fall through */
-+	case SND_CTL_TLVT_CHMAP_VAR:
-+		if (!chmap_type)
-+			chmap_type = "variable";
-+		/* Fall through */
-+	case SND_CTL_TLVT_CHMAP_PAIRED:
-+		if (!chmap_type)
-+			chmap_type = "paired";
-+		printf("chmap-%s=", chmap_type);
-+
-+		while (size > 0) {
-+			printf("%s", snd_pcm_chmap_name(tlv[idx++]));
-+			size -= sizeof(unsigned int);
-+			if (size > 0)
-+				printf(",");
-+		}
-+		break;
-+#endif
- 	default:
- 		printf("unk-%i-", type);
- 		while (size > 0) {
+ static struct platform_device *zylonite_snd_ac97_device;
 -- 
-1.8.3
+1.7.10.4
