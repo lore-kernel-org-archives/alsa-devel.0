@@ -1,50 +1,76 @@
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] ASoc: si476x: Do not use binary constants
-Date: Fri, 14 Jun 2013 09:49:34 +0100
-Message-ID: <1371199774-3946-1-git-send-email-james.hogan@imgtec.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: WM8962: Remove remaining direct
+ register cache accesses
+Date: Fri, 14 Jun 2013 10:18:53 +0100
+Message-ID: <20130614091853.GD1403@sirena.org.uk>
+References: <1371184490-2479-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>, Andrey Smirnov <andrey.smirnov@convergeddevices.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0036230567354573894=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 252EC261A6B
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 11:19:00 +0200 (CEST)
+In-Reply-To: <1371184490-2479-1-git-send-email-b42378@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <b42378@freescale.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Gcc < 4.3 doesn't understand binary constants (0b*):
 
-sound/soc/codecs/si476x.c:172:8: error: invalid suffix "b1111110" on integer constant
-sound/soc/codecs/si476x.c:219:9: error: invalid suffix "b111" on integer constant
-sound/soc/codecs/si476x.c:219:56: error: invalid suffix "b111" on integer constant
+--===============0036230567354573894==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MXXylufPoVaQ01lt"
+Content-Disposition: inline
 
-So use hexadecimal constants (0x*) instead.
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Andrey Smirnov <andrey.smirnov@convergeddevices.net>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/codecs/si476x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--MXXylufPoVaQ01lt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
-index 721587c..73e205c 100644
---- a/sound/soc/codecs/si476x.c
-+++ b/sound/soc/codecs/si476x.c
-@@ -38,9 +38,9 @@ enum si476x_digital_io_output_format {
- 	SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT	= 8,
- };
- 
--#define SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK	((0b111 << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) | \
--						  (0b111 << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT))
--#define SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK	(0b1111110)
-+#define SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK	((0x7 << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) | \
-+						  (0x7 << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT))
-+#define SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK	(0x7e)
- 
- enum si476x_daudio_formats {
- 	SI476X_DAUDIO_MODE_I2S		= (0x0 << 1),
--- 
-1.8.1.2
+On Fri, Jun 14, 2013 at 12:34:50PM +0800, Nicolin Chen wrote:
+> Also fix return values for headphone switch updates.
+
+Applied, thanks.  I applied this as a bug fix so it needed some manual
+fixup and merging - it was fairly simple but it'd be good to check it
+all worked properly.
+
+--MXXylufPoVaQ01lt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRut/6AAoJELSic+t+oim9HGUP/0ZZz4LWW8QrChUmcJamiqHg
+pxf2319s+5dVEusg/kc7dh4kemSVhBfRXR4fEvUI3y/VoBmdhGy4TOUqrBWz0d7Z
+DchQsY6RpQVZXGHSqkgh4W6pKMgPLMWY/c4Xhi1iSVWiw97I/90pkTWjBArcjsMs
+06aoC6u3U1ZoeqyX3fkoCwT2BBqd5HZbQCXR4h4knrvI6/LDcUDLoacEPVzWCgL5
+qgfVlNxZcb2xFc4O1Lo7RKy12ZbS1pyTznDbMuClP+aLpujsDgGgb2h8jOt5bgpK
+BC4uN45Sk5CatGn47D8Wf6XftfX8SH+AlksEUFBdChDSHiibUOiN21g7GrN+3OXD
+i2ImUTQpxLLoZ93JWgbHsnXNfCKB6eDoJg1jHIxNH2IIKpcPDmDMvXs5ClnluLzb
+Z/G2NYIyYcVj5jnCzc2cF6xdNio3VADqvSwRN3BRuKq6nHLWqZfL0nDlwDFlT9CL
+MmBE0RaQss6FY05WtrxoG7s2Wkxz8OCdVcIz49XjWm4AqGbafxUXHO1EfyYzOumU
+L9K0UbNYbCIOBG7Z0SHUFpEKuM8yWLRrbNc1sU0YFFTL8lYsSrNtQiQnpxgoR02e
+7Uw3Mr85E+SYX1JRiloU8jkB2wghTBJOLFEZHA/MnWAgcXxRQl69D7scT1q8bn0U
+26QFTWGqqjl1sba75I6l
+=Utf3
+-----END PGP SIGNATURE-----
+
+--MXXylufPoVaQ01lt--
+
+--===============0036230567354573894==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0036230567354573894==--
