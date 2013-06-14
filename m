@@ -1,74 +1,66 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5110: Correct rate control for DSP4
-Date: Fri, 14 Jun 2013 16:00:17 +0100
-Message-ID: <20130614150017.GT1403@sirena.org.uk>
-References: <1371215976-24616-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: =?utf-8?q?=5BPATCH_0/4=5D_Haswell_Display_audio_routi?=
+	=?utf-8?q?ng_bug_fix?=
+Date: Fri, 14 Jun 2013 23:20:25 +0800
+Message-ID: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7712758022553363223=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E0722602F3
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 17:00:27 +0200 (CEST)
-In-Reply-To: <1371215976-24616-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+To: tiwai@suse.de, daniel.vetter@ffwll.ch
+Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, intel-gfx@lists.freedesktop.org, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7712758022553363223==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hH+ZLLRw9aZ7+ob6"
-Content-Disposition: inline
-
-
---hH+ZLLRw9aZ7+ob6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 14, 2013 at 02:19:36PM +0100, Charles Keepax wrote:
-> Reported-by: Dennis May <dennis.may@wolfsonmicro.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Applied, thanks.  This is an ASDP change not a wm5110 one.
-
---hH+ZLLRw9aZ7+ob6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRuy/+AAoJELSic+t+oim91iEQAIV6EFOgSY3xS3r22EU0sT3Q
-NpoEqs8MsBtXLzXRuS7mpaf7q2yw/bhi9tJF176UMqEVaCHFxnXDI+OQvoIuVEre
-XhTfp5b5fWKc/hfxBR85z17SOXUNLR7k52fPNTvyHSF+omhsQzZeKf3iOx28na1C
-ZQKviZleEyGh532bA043hSmujwb7UMn8kNXNW/qYqjSDT9u+EUPPzCTINF4Rlxg7
-pFgHZwYg0NDZ6HkmJtlhrHmaiTf2cEQ0Lz3/WHi1BIc2PoLeQ/5OyRQmdKTrIook
-wAYBvuyZKhuSL43VdW7oD4AU/WnRcYNLjYO8pBDrmY70XxEtQmgdwuelX58jcG5V
-SXJ8ewOvEjV70AYUe88Sfz9ftrYh6ii/VEvnnbfeAwiBJsKgJPX96p8OcLcqv7i2
-BDxBnGsDR8cGU5ixRArdTdiflk8gUR03Im7wg0FbhwSeHaIOG3kcs1hg/63yzBQN
-yVLfXWT3CkbU7QFD+My0kcWZ1LdZ5oWR6wHWwNAM2dVG4Vj89e/Mf4g7uldOEvCY
-WNBxDVzstXcSEnyymm7fLs0+LBvtA2GvhMaWgx/oUu5zesL+YEdlPQJwWASpSZp8
-g46vPEzN4TIdy0PpCwZQuk7tgH2u8gTl+GqZZcGMLT2qGi2nYx9wwns3F16gcz0a
-rL+uI1Z8rpv87u4hIJkQ
-=VKt2
------END PGP SIGNATURE-----
-
---hH+ZLLRw9aZ7+ob6--
-
---===============7712758022553363223==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7712758022553363223==--
+VGhpcyBwYXRjaHNldCB1c2VkIHRvIGZpeCBzb21lIGRpc3BsYXkgYXVkaW8gaXNzdWVzIG9uIEhh
+c3dlbGwgcGxhdGZvcm0uCgpJIHRlc3RlZCB0aGlzIHBhdGNoIG9uIEhhc3dlbGwgdWx0IGJvYXJk
+LCBDMCBzdGVwcGluZywgd2l0aCBlRFAgcGFubmVsLCBIRE1JCm1vbml0b3IsIERQIG1vbml0b3Iu
+CgpUaGUgZml4ZWQgaXNzdWVzOgoxKSB3aGVuIG9ubHkgSERNSSBvciBEUCBtb25pdG9yIGNvbm5l
+Y3RlZCwgaGVhciBzb3VuZCBvbiBBTEwgdGhyZWUgSERNSSBkZXZpY2VzLgoyKSB3aGVuIEhETUkg
+KyBEUCBtb25pdG9ycyBjb25uZWN0ZWQsIGhlYXIgc291bmQgb24gSERNSSBhbmQgRFAgYXQgdGhl
+IHNhbWUKICB0aW1lIG5vIG1hdHRlciB5b3UncmUgcGxheWluZyBhdWRpbyBvbiBEUCBvciBIRE1J
+IGRldmljZS4KMykgV2hlbiBEUCArIEhETUkgKyBlRFAgY29ubmVjdGVkLCBubyBzb3VuZCBjb3Vs
+ZCBiZSBoZWFyZC4KNCkgQWZ0ZXIgYm9vdHVwLCBwbGF5IGF1ZGlvIG9uIEhETUkgZGV2aWNlIDco
+dXNlIHNlY29uZCBwaW4pLCBubyBzb3VuZC4KICBJZiBwbGF5IGF1ZGlvIG9uIGRldmljZSAzIGF0
+IGZpcnN0KHVzZSBmaXJzdCBwaW4pLCBpdCBoYXMgc291bmQgYWdhaW4uCgpUaGVyZSdzIHF1aXRl
+IGRpZmZlcmVudCBoYXJkd2FyZSBjaGFuZ2VzIGZvciBoYXN3ZWxsIGRpc3BsYXkgYXVkaW8sIGNv
+bXBhcmVkCndpdGggcHJldmlvdXMgSXZ5YnJpZGdlL1NhbmR5YnJpZGdlLiBUaGUgY29tbW9uIGhk
+LWEgZHJpdmVyIGFuZCBoZG1pIGRyaXZlcgpuZWVkIG1ha2UgaW1wcm92ZW1lbnQgdG8gc3VwcG9y
+dC4KCkhhc3dlbGwgY2hpcCBzdXBwb3J0cyBEcDEuMiBmZWF0dXJlKHNlZSByZWYgMSkuIFRoaXMg
+aXMgdmVyeSBjb29sIGZldHVyZQp3aW5kb3dzIGhhZCBzdXBwb3J0ZWQuIFdlIGdldCBjb25maXJt
+IGxpbnV4IGdmeCB0ZWFtIGhhcyBwbGFuIHRvIHN1cHBvcnQgRHAxLjIKaW4gZnV0dXJlIHRvby4g
+V2UncmUgcmVhZHkgdG8gc3VwcG9ydCBkcDEuMiBmZWF0dXJlIGluIGF1ZGlvIHNpZGUsIGFzIHRo
+ZQpjb252ZXJ0ZXIgc2VsZWN0aW9uIGRlcGVuZGVuY3kgaXMgZml4ZWQgaW4gdGhpcyBwYXRjaHNl
+dC4gQWxzbyB3ZSBuZWVkIHNvbWUKaW1wcm92ZW1lbnQgaW4gSERBIGRyaXZlciBzaWRlIGJlY2F1
+c2UgSGFzd2VsbCBhZGRlZCBuZXcgVmVyYiB0byBzdXBwb3J0IERQMS4yLiAKCmhlcmXigJlzIGEg
+dmlkZW8gc2hvdyBhYm91dCBEUDEuMiBmZWF0dXJlCmh0dHA6Ly93d3cuY2x1Yi0zZC5jb20vaW5k
+ZXgucGhwL3Byb2R1Y3RzL3JlYWRlci5lbi9wcm9kdWN0L21zdC1odWItMS0zLmh0bWwKClBsZWFz
+ZSBhcHBseSB0aGUgcGF0Y2hlcyBiYXNlZCBvbiBEYW5pZWwncyBkcm0taW50ZWwtbmV4dC1xdWV1
+ZWQgYnJhbmNoOgpodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmRhbnZldC9kcm0taW50ZWwv
+bG9nLz9oPWRybS1pbnRlbC1uZXh0LXF1ZXVlZApsYXN0IGNvbW1pdCA4MGU4MzgzMWE2NGI5YTVk
+NDllODQ0NjkxMDM3YjJkNGJlMGYxNGY5CgpQbGVhc2UgZmVlbCBmcmVlIHRvIGxldCBtZSBrbm93
+IHRoZSBpc3N1ZXMgeW91IG1lZXQgZHVyaW5nIHRlc3QuCgpXYW5nIFhpbmdjaGFvICg0KToKICBB
+TFNBOiBoZGEgLSBIYXN3ZWxsIGNvbnZlcnRlciBwb3dlciBzdGF0ZSBEMCB2ZXJpZnkKICBBTFNB
+OiBoZGEgLSBSZXR1cm4gZXJyb3Igd2hlbiBvcGVuIGVtcHR5IGhkbWkgZGV2aWNlCiAgZHJtL2k5
+MTU6IEFkZCBkaXNwbGF5IGF1ZGlvIHJvdXRpbmcgQVBJcyBmb3IgQUxTQQogIEFMU0E6IGhkYSAt
+IEFkZCBkaXNwbGF5IGF1ZGlvIHJvdXRpbmcgQVBJIGZvciBoYXN3ZWxsCgogZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaTkxNV9kcnYuaCAgICAgIHwgIDE4ICsrKysrCiBkcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pbnRlbF9kZGkuYyAgICAgfCAxMzEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LS0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rpc3BsYXkuYyB8ICAgNyArLQogZHJpdmVy
+cy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmggICAgIHwgICAxICsKIGluY2x1ZGUvZHJtL2k5MTVf
+cG93ZXJ3ZWxsLmggICAgICAgICB8ICAgNSArKwogc291bmQvcGNpL2hkYS9oZGFfaTkxNS5jICAg
+ICAgICAgICAgIHwgIDgzICsrKysrKysrKysrKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvaGRh
+X2k5MTUuaCAgICAgICAgICAgICB8ICAgNCArKwogc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMg
+ICAgICAgICAgIHwgIDM3ICsrKysrKysrKysKIDggZmlsZXMgY2hhbmdlZCwgMjgxIGluc2VydGlv
+bnMoKyksIDUgZGVsZXRpb25zKC0pCgotLSAKMS44LjEuMgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
+ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9pbnRlbC1nZngK
