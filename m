@@ -1,77 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Fix double assignment of .owner in struct
- snd_soc_card
-Date: Fri, 14 Jun 2013 11:00:20 +0100
-Message-ID: <20130614100020.GH1403@sirena.org.uk>
-References: <1371203336-16972-1-git-send-email-emilgoode@gmail.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: Re: [PATCH] ASoC: WM8962: Enable start-up and normal
+ bias after reset in runtime resume
+Date: Fri, 14 Jun 2013 18:08:39 +0800
+Message-ID: <20130614100838.GC9206@MrMyself>
+References: <1371199940-29803-1-git-send-email-b42378@freescale.com>
+ <20130614095917.GG1403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0472137707066900113=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1371203336-16972-1-git-send-email-emilgoode@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Emil Goode <emilgoode@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, perex@perex.cz, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from co9outboundpool.messaging.microsoft.com
+ (co9ehsobe001.messaging.microsoft.com [207.46.163.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88765261AA0
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 12:29:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20130614095917.GG1403@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0472137707066900113==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7/IUJOcl5c0tDlVH"
-Content-Disposition: inline
+On Fri, Jun 14, 2013 at 10:59:17AM +0100, Mark Brown wrote:
+> The biases should be being managed using set_bias_level() which will get
+> called automatically when audio is being started and stopped.
 
+I understand your point because I also found other wm89xx drivers do this way.
+But the truth is, originally this 8962 codec driver did put biases settings
+into set_bias_level() as the others. But after commit d23031a4d they're put
+into pm_resume().
+So I can also see the point that it's reasonable to handle these settings in
+pm_resume() since DAPM would call pm_runtime_get_sync(), so as snd_soc_open()
+would though, pm_resume() would then finish the settings before the bias level
+being set to STANDBY, according to dapm_pre_sequence_async() func.
 
---7/IUJOcl5c0tDlVH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+As far as I can understand, I think these two approaches should be running
+into a same consequence, while I'm not sure which one's better.
 
-On Fri, Jun 14, 2013 at 11:48:56AM +0200, Emil Goode wrote:
-> In struct snd_soc_card zylonite .owner is assigned THIS_MODULE
-> twice, remove one of them.
+Sir, do you still think it's better to put them back into set_bias_level()?
+Could you please help me understand the reason?
 
-Applied, thanks.
-
---7/IUJOcl5c0tDlVH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRuumxAAoJELSic+t+oim9q2kP/AnbRKoCuS/4EoZPVoSWxUZE
-Sq4LX2eq/DSR86zhOTMpwqqklNM+Xl+FBrsFTMB7uEkhenY6+zTvKJcKSsdB7Rg2
-vWVEflULvI9vNz+MeVFD+ICkou6v/V20iaemlp5F5seFoxCAUAugwFDCEourNK5b
-8bc3i2CUWZ8fqJ1EAtvliljaT+b/w7zCh8j+Gc1IPQzWptuQPduNV5GGeOCSkWrZ
-JIdcJMW9oBi3dpBaAOm3AtSceV+YYy6XxWTDUds8pU21VDiiXQW2DrijSJue2hxL
-ep10ty884mT7ehNUU0o/lXXs81HvktrHtN1BqcEyvKPg1+YalB3JWqt+02QTK9X5
-Dn8LFA4dsdZ7BVkhZKHu5lI14wVCbRW5m6XyV1HHCLPRvWJICUFOnvO7xq7ChMNS
-3+nMgX3gYehYU1PxsFVquM9d5Or0ixwrlFPWrPMYyc+jKjZtOYX4YSmmysgbr1S1
-B8RD/r2ugqpVHyNJvskBrXUpYxYdkOQ6ek/5bDmJ6kfNk3rxDhP5rvah2tQGKXge
-KlhRQlOOZ1CePS5Vwv8IgVPanM6JtRDOyf4aDb0wn4m2xQ3Fl+t/JfLlLilQBlFN
-asnB6cPw8Kp8DYIkytxkQXdKd5s0uiS7q6fcXjtJe26hT1aKt/n20UtssME92vNC
-D0pZyRATL1RpNoDA4Tat
-=M+me
------END PGP SIGNATURE-----
-
---7/IUJOcl5c0tDlVH--
-
-
---===============0472137707066900113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============0472137707066900113==--
+Thank you and looking forward to your reply.
+Nicolin Chen
