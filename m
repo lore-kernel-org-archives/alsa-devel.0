@@ -1,7 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/5] ASoC: dapm: Remove unnecessary loop
-Date: Fri, 14 Jun 2013 13:16:52 +0200
-Message-ID: <1371208614-18697-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/5] ASoC: dapm: Add a helper function to free
+	a DAPM path
+Date: Fri, 14 Jun 2013 13:16:53 +0200
+Message-ID: <1371208614-18697-4-git-send-email-lars@metafoo.de>
 References: <1371208614-18697-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-121.synserver.de (smtp-out-121.synserver.de
  [212.40.185.121])
- by alsa0.perex.cz (Postfix) with ESMTP id DC7282625FF
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:16:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DE907264F3A
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:16:56 +0200 (CEST)
 In-Reply-To: <1371208614-18697-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,49 +26,72 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The condition 'i == item' is only true when, well, 'i' equals 'item'.
-So just use 'item' directly as the index into the array.
+We have the same code for freeing a DAPM path in three different locations.
+Introduce a new helper function to take care of this.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-dapm.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ sound/soc/soc-dapm.c | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index f81d942..6d4a72e 100644
+index 6d4a72e..a771473 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -367,11 +367,10 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 		val = soc_widget_read(w, e->reg);
- 		item = (val >> e->shift_l) & e->mask;
+@@ -2109,6 +2109,15 @@ static void snd_soc_dapm_sys_remove(struct device *dev)
+ 	device_remove_file(dev, &dev_attr_dapm_widget);
+ }
  
--		p->connect = 0;
--		for (i = 0; i < e->max; i++) {
--			if (!(strcmp(p->name, e->texts[i])) && item == i)
--				p->connect = 1;
++static void dapm_free_path(struct snd_soc_dapm_path *path)
++{
++	list_del(&path->list_sink);
++	list_del(&path->list_source);
++	list_del(&path->list);
++	kfree(path->long_name);
++	kfree(path);
++}
++
+ /* free all dapm widgets and resources */
+ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ {
+@@ -2124,20 +2133,12 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ 		 * While removing the path, remove reference to it from both
+ 		 * source and sink widgets so that path is removed only once.
+ 		 */
+-		list_for_each_entry_safe(p, next_p, &w->sources, list_sink) {
+-			list_del(&p->list_sink);
+-			list_del(&p->list_source);
+-			list_del(&p->list);
+-			kfree(p->long_name);
+-			kfree(p);
 -		}
-+		if (item < e->max && !strcmp(p->name, e->texts[item]))
-+			p->connect = 1;
-+		else
-+			p->connect = 0;
- 	}
- 	break;
- 	case snd_soc_dapm_virt_mux: {
-@@ -401,11 +400,10 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 				break;
- 		}
+-		list_for_each_entry_safe(p, next_p, &w->sinks, list_source) {
+-			list_del(&p->list_sink);
+-			list_del(&p->list_source);
+-			list_del(&p->list);
+-			kfree(p->long_name);
+-			kfree(p);
+-		}
++		list_for_each_entry_safe(p, next_p, &w->sources, list_sink)
++			dapm_free_path(p);
++
++		list_for_each_entry_safe(p, next_p, &w->sinks, list_source)
++			dapm_free_path(p);
++
+ 		kfree(w->kcontrols);
+ 		kfree(w->name);
+ 		kfree(w);
+@@ -2413,10 +2414,7 @@ static int snd_soc_dapm_del_route(struct snd_soc_dapm_context *dapm,
+ 		dapm_mark_dirty(path->source, "Route removed");
+ 		dapm_mark_dirty(path->sink, "Route removed");
  
--		p->connect = 0;
--		for (i = 0; i < e->max; i++) {
--			if (!(strcmp(p->name, e->texts[i])) && item == i)
--				p->connect = 1;
--		}
-+		if (item < e->max && !strcmp(p->name, e->texts[item]))
-+			p->connect = 1;
-+		else
-+			p->connect = 0;
- 	}
- 	break;
- 	/* does not affect routing - always connected */
+-		list_del(&path->list);
+-		list_del(&path->list_sink);
+-		list_del(&path->list_source);
+-		kfree(path);
++		dapm_free_path(path);
+ 	} else {
+ 		dev_warn(dapm->dev, "ASoC: Route %s->%s does not exist\n",
+ 			 source, sink);
 -- 
 1.8.0
