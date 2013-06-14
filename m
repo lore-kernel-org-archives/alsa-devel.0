@@ -1,16 +1,16 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH v2] ASoC: WM8962: Enable start-up and normal
-	bias after reset in runtime resume
-Date: Fri, 14 Jun 2013 19:49:06 +0800
-Message-ID: <1371210546-5747-1-git-send-email-b42378@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: WM8962: Enable start-up and
+ normal bias after reset in runtime resume
+Date: Fri, 14 Jun 2013 12:43:41 +0100
+Message-ID: <20130614114341.GO1403@sirena.org.uk>
+References: <1371210546-5747-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7442917466035691187=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe005.messaging.microsoft.com [216.32.180.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D7A82651D3
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:42:20 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB61D2650C1
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:43:44 +0200 (CEST)
+In-Reply-To: <1371210546-5747-1-git-send-email-b42378@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Nicolin Chen <b42378@freescale.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This part of bias settings are essential for WM8962 to power up. Without it
-"wm8962 0-001a: DC servo timed out" might be prompted due to power-up failure
-that happens to FLL if being used.
 
-The driver's also bringing the bias down in the suspend path so it needs to be
-powered up in the resume path for symmetry.
+--===============7442917466035691187==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rHXT7wjifYJhd5Y1"
+Content-Disposition: inline
 
-According to dapm_pre_sequence_async(), DAPM would call pm_runtime_get_sync()
-to let driver finish the bias settings in pm_runtime_resume() before the bias
-level being set to STANDBY. So no need to worry about disordered settings for
-VMID of WM8962.
 
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
----
-Changelog:
- v1->v2
- * Revised the commit comment to make it clear.
+--rHXT7wjifYJhd5Y1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/soc/codecs/wm8962.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+On Fri, Jun 14, 2013 at 07:49:06PM +0800, Nicolin Chen wrote:
+> This part of bias settings are essential for WM8962 to power up. Without it
+> "wm8962 0-001a: DC servo timed out" might be prompted due to power-up failure
+> that happens to FLL if being used.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 7a7a056..c63b58e 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3773,6 +3773,17 @@ static int wm8962_runtime_resume(struct device *dev)
- 
- 	regcache_sync(wm8962->regmap);
- 
-+	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
-+			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
-+			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
-+
-+	/* Bias enable at 2*5k (fast start-up) */
-+	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
-+			   WM8962_BIAS_ENA | WM8962_VMID_SEL_MASK,
-+			   WM8962_BIAS_ENA | 0x180);
-+
-+	msleep(5);
-+
- 	return 0;
- }
- 
--- 
-1.7.1
+Applied, thanks.
+
+--rHXT7wjifYJhd5Y1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRuwHqAAoJELSic+t+oim9L4IQAJ3J406gD66/ziyyi3gOz+AJ
+jh7KhQB2D64y6DUjOUfXJShV+NCdVpHzgb1+CZJmPDdk1n/4Gf/9V/8VtCIy/JjC
+Quq18RY1jDtyWlt2QY/OD/wkGpctgOUaqRv6SkPCXce8JWCteja1tb/eH8PcSn71
+lp+es4QJ6z77r7S97bXB7rYABWf+EfpKAR04bMtMXBHqMaHp1gXZZZs7xUfdFrWX
+JzaIc/0Ncs+X0g30zRmAz+p43V/aERb2mnIFYiOLkJyYl2gS+mgiKqOvSliCXw/b
+XZ1pITK4OA/0QhVOwMZ3qhDpqWw42831E979OjyCdTIsEaVX0vsOLyTBlUHb8mJB
+unEHv1vFbKlNLF7KvbwhcGgASihMyIMcpBlIyofatJCKtW/QdGf6D5DviL2agbTf
+HiLPudbhrSDMTZQ8wQH9+Sas7y6wHmXqLGbjW0AMB70xvrDjZX4h1HVoyivP//aW
++gQTzIlJijbWfKHdGlIoB/ovnRWrgduRqrVNbJrE10jtQS02Q4jW/YcP2ubilSaA
+pv2qu5h/ePukdVOb3Ir05cjTKfUweYhOFQ/EPn8m1wyHs7hLTjSnkAWAfKyj3+i7
+712hz0RaC8ukBVFJfx8DoEK2Rh5GEB72/cVyInx3H5/5ZORfhl4mIrbBFqkJ7RLB
+XWLRe3dYmTv9QzLuCORH
+=IwQJ
+-----END PGP SIGNATURE-----
+
+--rHXT7wjifYJhd5Y1--
+
+--===============7442917466035691187==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7442917466035691187==--
