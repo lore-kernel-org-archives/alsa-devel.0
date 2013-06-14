@@ -1,70 +1,50 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: [PATCH] ASoC: WM8962: Enable start-up and normal bias
-	after reset in runtime resume
-Date: Fri, 14 Jun 2013 16:52:20 +0800
-Message-ID: <1371199940-29803-1-git-send-email-b42378@freescale.com>
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] ASoc: si476x: Do not use binary constants
+Date: Fri, 14 Jun 2013 09:49:34 +0100
+Message-ID: <1371199774-3946-1-git-send-email-james.hogan@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 7950C261A11
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 10:45:28 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: James Hogan <james.hogan@imgtec.com>, Andrey Smirnov <andrey.smirnov@convergeddevices.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The analogue circuits in WM8962 require a mid-rail analogue reference
-voltage, VMID, which generator is enabled by STARTUP_BIAS_ENA bit,
-while VMID_BUF_ENA bit can enable buffered VMID to avoid audible pops.
+Gcc < 4.3 doesn't understand binary constants (0b*):
 
-Besides, these circuits also need a bias current enabled by BIAS_ENA.
+sound/soc/codecs/si476x.c:172:8: error: invalid suffix "b1111110" on integer constant
+sound/soc/codecs/si476x.c:219:9: error: invalid suffix "b111" on integer constant
+sound/soc/codecs/si476x.c:219:56: error: invalid suffix "b111" on integer constant
 
-Then set VMID_SEL to 2x5k divider, the fast start-up mode, to power it
-up. And let set_bias_level() handle its 2x250k for low power standby
-and 2x50k for normal operation.
+So use hexadecimal constants (0x*) instead.
 
-This patch might be kinda reverting operation against commit 52c0eee3
-but after testing with WM8962 CODEC, these configurations during power
-up should be essential and soc-core would not do any of them. So the
-codec drvier need to handle it.
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Andrey Smirnov <andrey.smirnov@convergeddevices.net>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 ---
- sound/soc/codecs/wm8962.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ sound/soc/codecs/si476x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 7a7a056..c63b58e 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3773,6 +3773,17 @@ static int wm8962_runtime_resume(struct device *dev)
+diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
+index 721587c..73e205c 100644
+--- a/sound/soc/codecs/si476x.c
++++ b/sound/soc/codecs/si476x.c
+@@ -38,9 +38,9 @@ enum si476x_digital_io_output_format {
+ 	SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT	= 8,
+ };
  
- 	regcache_sync(wm8962->regmap);
+-#define SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK	((0b111 << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) | \
+-						  (0b111 << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT))
+-#define SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK	(0b1111110)
++#define SI476X_DIGITAL_IO_OUTPUT_WIDTH_MASK	((0x7 << SI476X_DIGITAL_IO_SLOT_SIZE_SHIFT) | \
++						  (0x7 << SI476X_DIGITAL_IO_SAMPLE_SIZE_SHIFT))
++#define SI476X_DIGITAL_IO_OUTPUT_FORMAT_MASK	(0x7e)
  
-+	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
-+			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
-+			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
-+
-+	/* Bias enable at 2*5k (fast start-up) */
-+	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
-+			   WM8962_BIAS_ENA | WM8962_VMID_SEL_MASK,
-+			   WM8962_BIAS_ENA | 0x180);
-+
-+	msleep(5);
-+
- 	return 0;
- }
- 
+ enum si476x_daudio_formats {
+ 	SI476X_DAUDIO_MODE_I2S		= (0x0 << 1),
 -- 
-1.7.1
+1.8.1.2
