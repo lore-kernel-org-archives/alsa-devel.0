@@ -1,19 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH (alsa-utils)] amixer: Print TLV of channel
- map controls
-Date: Fri, 14 Jun 2013 13:57:24 +0200
-Message-ID: <51BB0524.2040405@canonical.com>
-References: <1371202861-18758-1-git-send-email-david.henningsson@canonical.com>
- <51BB00E3.6050309@perex.cz> <51BB049B.9030905@canonical.com>
+From: khalasa@piap.pl (Krzysztof =?utf-8?Q?Ha=C5=82asa?=)
+Subject: SEGFAULT in ALSA lib 1.0.27.1 pcm_direct parser
+Date: Fri, 14 Jun 2013 13:59:38 +0200
+Message-ID: <m3obb8kimt.fsf@t19.piap.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 75FEB2651B9
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:57:24 +0200 (CEST)
-In-Reply-To: <51BB049B.9030905@canonical.com>
+Received: from ni.piap.pl (ni.piap.pl [195.187.100.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98F252651B9
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 14:01:10 +0200 (CEST)
+Received: from ni.piap.pl (localhost.localdomain [127.0.0.1])
+ by ni.piap.pl (Postfix) with ESMTP id 2C419440D1C
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 14:01:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/14/2013 01:55 PM, David Henningsson wrote:
-> On 06/14/2013 01:39 PM, Jaroslav Kysela wrote:
->> Date 14.6.2013 11:41, David Henningsson wrote:
->>> Previously these were written as "unk-25..." which wasn't very user
->>> friendly.
->>>
->>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>
->> Applied to repo. Thanks.
->
-> Thanks, would you mind taking the alsa-utils and alsa-lib patches I
-> posted two days ago too? Especially the alsa-lib one looked quite serious.
+Hi,
 
-Reference: 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-June/062922.html
+Fixes a segfault when getgrnam_r() returns 0 and still sets pgrp to NULL
+when the group simply doesn't exist.
 
+--- alsa-lib/src/pcm/pcm_direct.c	2013-05-21 10:48:28.000000000 +0200
++++ alsa-lib/src/pcm/pcm_direct.c	2013-06-14 13:31:28.981013646 +0200
+@@ -1636,7 +1636,7 @@
+ 				if (buffer == NULL)
+ 					return -ENOMEM;
+ 				int st = getgrnam_r(group, &grp, buffer, len, &pgrp);
+-				if (st != 0) {
++				if (st != 0 || !pgrp) {
+ 					SNDERR("The field ipc_gid must be a valid group (create group %s)", group);
+ 					free(buffer);
+ 					return -EINVAL;
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Krzysztof Halasa
+
+Research Institute for Automation and Measurements PIAP
+Al. Jerozolimskie 202, 02-486 Warsaw, Poland
