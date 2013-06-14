@@ -1,17 +1,16 @@
-From: someone deleted <mynameisdeleted@gmail.com>
-Subject: tascam us800
-Date: Fri, 14 Jun 2013 01:02:17 -0500
-Message-ID: <CALA1gd+6bw6Xiaip3eNA8=xh_tZyGQFHKaJwtP9WqN2vrWNPJQ@mail.gmail.com>
+From: Nicolin Chen <b42378@freescale.com>
+Subject: [PATCH] ASoC: WM8962: Enable start-up and normal bias
+	after reset in runtime resume
+Date: Fri, 14 Jun 2013 16:52:20 +0800
+Message-ID: <1371199940-29803-1-git-send-email-b42378@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vb0-f49.google.com (mail-vb0-f49.google.com
- [209.85.212.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E9E4260291
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 08:02:18 +0200 (CEST)
-Received: by mail-vb0-f49.google.com with SMTP id 12so137226vbf.22
- for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2013 23:02:18 -0700 (PDT)
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe002.messaging.microsoft.com [216.32.180.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7950C261A11
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 10:45:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-my tascam us800 works great in 3.8.0-21 except for one issue... no usb-mixer
+The analogue circuits in WM8962 require a mid-rail analogue reference
+voltage, VMID, which generator is enabled by STARTUP_BIAS_ENA bit,
+while VMID_BUF_ENA bit can enable buffered VMID to avoid audible pops.
 
-here is output of lsusb -v
-http://studio213.us/usbif.txt
+Besides, these circuits also need a bias current enabled by BIAS_ENA.
 
+Then set VMID_SEL to 2x5k divider, the fast start-up mode, to power it
+up. And let set_bias_level() handle its 2x250k for low power standby
+and 2x50k for normal operation.
 
-here is output of alsa-info.sh
-http://www.alsa-project.org/db/?f=336a5faa6233bc80a856089e657d80da1d32e081
+This patch might be kinda reverting operation against commit 52c0eee3
+but after testing with WM8962 CODEC, these configurations during power
+up should be essential and soc-core would not do any of them. So the
+codec drvier need to handle it.
 
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+---
+ sound/soc/codecs/wm8962.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-alsamixer -c 1 shows
-amixer: Mixer hw:1 load error: Connection timed out
-
-
-
-
-dmesg when I do that shows
-
-
-[115350.348159] cannot get ctl value: req = 0x83, wValue = 0x101, wIndex =
-0x1f00, type = 4
-[115351.348158] cannot get ctl value: req = 0x81, wValue = 0x101, wIndex =
-0x1f00, type = 4
-[115732.480250] cannot get ctl value: req = 0x83, wValue = 0x101, wIndex =
-0x1f00, type = 4
-[115733.480241] cannot get ctl value: req = 0x81, wValue = 0x101, wIndex =
-0x1f00, type = 4
-
-
-
-
-plugging in the card shows
-[   45.550396] usbcore: registered new interface driver snd-usb-audio
-
-in dmesg
-
-
-any info on how I might access this usb-mixer built into this card?
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 7a7a056..c63b58e 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3773,6 +3773,17 @@ static int wm8962_runtime_resume(struct device *dev)
+ 
+ 	regcache_sync(wm8962->regmap);
+ 
++	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
++			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
++			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
++
++	/* Bias enable at 2*5k (fast start-up) */
++	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
++			   WM8962_BIAS_ENA | WM8962_VMID_SEL_MASK,
++			   WM8962_BIAS_ENA | 0x180);
++
++	msleep(5);
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.1
