@@ -1,24 +1,19 @@
-From: Nicolin Chen <b42378@freescale.com>
-Subject: Re: [PATCH] ASoC: WM8962: Enable start-up and normal
- bias after reset in runtime resume
-Date: Fri, 14 Jun 2013 19:36:01 +0800
-Message-ID: <20130614113600.GA12103@MrMyself>
-References: <1371199940-29803-1-git-send-email-b42378@freescale.com>
- <20130614095917.GG1403@sirena.org.uk>
- <20130614100838.GC9206@MrMyself>
- <20130614105118.GI1403@sirena.org.uk>
- <20130614110742.GD9206@MrMyself>
- <20130614112110.GL1403@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH (alsa-utils)] amixer: Print TLV of channel
+ map controls
+Date: Fri, 14 Jun 2013 13:55:07 +0200
+Message-ID: <51BB049B.9030905@canonical.com>
+References: <1371202861-18758-1-git-send-email-david.henningsson@canonical.com>
+ <51BB00E3.6050309@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from db9outboundpool.messaging.microsoft.com
- (mail-db9lp0252.outbound.messaging.microsoft.com [213.199.154.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 41A552652F6
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:44:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20130614112110.GL1403@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5FCC2651B9
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 13:55:07 +0200 (CEST)
+In-Reply-To: <51BB00E3.6050309@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,18 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 14, 2013 at 12:21:10PM +0100, Mark Brown wrote:
-> If the DC servo is timing out that'll be a problem with the clocking...
-> the FLL is partially analogue so if you're using the FLL that makes
-> sense.  Looking at the code we're also bringing the bias down in the
-> suspend path so it needs to be powered up in the resume path for
-> symmetry if nothing else.
+On 06/14/2013 01:39 PM, Jaroslav Kysela wrote:
+> Date 14.6.2013 11:41, David Henningsson wrote:
+>> Previously these were written as "unk-25..." which wasn't very user friendly.
+>>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>
+> Applied to repo. Thanks.
 
-Thank you for helping me understand the case. And just sent the v2.
+Thanks, would you mind taking the alsa-utils and alsa-lib patches I 
+posted two days ago too? Especially the alsa-lib one looked quite serious.
 
-Hope you can apply it.
-Nicolin Chen
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
