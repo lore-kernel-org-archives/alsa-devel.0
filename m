@@ -1,217 +1,347 @@
 From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 4/4] ALSA: hda - Add display audio routing API
-	for haswell
-Date: Fri, 14 Jun 2013 23:20:29 +0800
-Message-ID: <1371223229-8236-5-git-send-email-xingchao.wang@linux.intel.com>
+Subject: [PATCH 3/4] drm/i915: Add display audio routing APIs
+	for ALSA
+Date: Fri, 14 Jun 2013 23:20:28 +0800
+Message-ID: <1371223229-8236-4-git-send-email-xingchao.wang@linux.intel.com>
 References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 273C526031A
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 17:48:40 +0200 (CEST)
+Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 In-Reply-To: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
+Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 To: tiwai@suse.de, daniel.vetter@ffwll.ch
-Cc: alsa-devel@alsa-project.org, xingchao.wang@intel.com, Wang Xingchao <xingchao.wang@linux.intel.com>, intel-gfx@lists.freedesktop.org, david.henningsson@canonical.com
+Cc: alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, intel-gfx@lists.freedesktop.org, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-ALSA side use these apis to know display audio routing map
-in gfx side. And use the API to disable unused pin's audio output.
+ALSA audio driver need know current audio routing infomation.
+i.e. Route map between codec pins(DDI ports) and Transcoders(Pipe).
+
+Also the new API let audio driver disable unused audio pin's output.
+This fixed the bug when three pins *ALL* have monitors connected, playing
+audio on one pin would cause audio output to all minitors.
 
 Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
 ---
- sound/pci/hda/hda_i915.c   | 83 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_i915.h   |  4 +++
- sound/pci/hda/patch_hdmi.c | 20 +++++++++--
- 3 files changed, 104 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/i915_drv.h      |  18 +++++
+ drivers/gpu/drm/i915/intel_ddi.c     | 131 +++++++++++++++++++++++++++++++++--
+ drivers/gpu/drm/i915/intel_display.c |   7 +-
+ drivers/gpu/drm/i915/intel_drv.h     |   1 +
+ include/drm/i915_powerwell.h         |   5 ++
+ 5 files changed, 157 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
-index 76c13d5..7ac446f 100644
---- a/sound/pci/hda/hda_i915.c
-+++ b/sound/pci/hda/hda_i915.c
-@@ -22,9 +22,73 @@
- #include <drm/i915_powerwell.h>
- #include "hda_i915.h"
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 10a56c9..8248048 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -87,6 +87,7 @@ enum port {
+ 	I915_MAX_PORTS
+ };
+ #define port_name(p) ((p) + 'A')
++#define pin2port(p) ((p) + PORT_B)
  
-+/* Haswell power well */
- static void (*get_power)(void);
- static void (*put_power)(void);
+ enum intel_display_power_domain {
+ 	POWER_DOMAIN_PIPE_A,
+@@ -785,6 +786,20 @@ struct i915_power_well {
+ 	int i915_request;
+ };
  
-+/* Haswell audio routing */
-+static int (*get_using_pipe)(int);
-+static int (*disable_unused_pipe)(int, int *);
-+static int (*restore_eld)(void);
++#define DEFAULT_PIPE	-1
++/* Dp1.2 mode, one DDI port can choose multiple pipes */
++struct dp12_port {
++	int pipes[I915_MAX_PIPES];
++	int count;
++};
 +
-+#define i915_pipe_name(p) ((p) + 'A')
++/* audio routing info for haswell */
++struct i915_audio {
++	/* route map between pipe and DDI port */
++	struct dp12_port active_pipes[I915_MAX_PORTS];
++	int pin_eld;
++};
 +
-+static int busy_pins[3] = {0, 0, 0};
+ struct i915_dri1_state {
+ 	unsigned allow_batchbuffer : 1;
+ 	u32 __iomem *gfx_hws_cpu_addr;
+@@ -1147,6 +1162,9 @@ typedef struct drm_i915_private {
+ 	/* Haswell power well */
+ 	struct i915_power_well power_well;
+ 
++	/* Haswell audio routing */
++	struct i915_audio audio_route;
 +
-+int hdmi_disable_unused_pipe(int pin_idx, int pipe_idx)
+ 	enum no_fbc_reason no_fbc_reason;
+ 
+ 	struct drm_mm_node *compressed_fb;
+diff --git a/drivers/gpu/drm/i915/intel_ddi.c b/drivers/gpu/drm/i915/intel_ddi.c
+index 224ce25..82823b8 100644
+--- a/drivers/gpu/drm/i915/intel_ddi.c
++++ b/drivers/gpu/drm/i915/intel_ddi.c
+@@ -286,8 +286,11 @@ static void intel_ddi_mode_set(struct drm_encoder *encoder,
+ 			       struct drm_display_mode *adjusted_mode)
+ {
+ 	struct drm_crtc *crtc = encoder->crtc;
++	struct drm_i915_private *dev_priv = crtc->dev->dev_private;
+ 	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
+ 	struct intel_encoder *intel_encoder = to_intel_encoder(encoder);
++	struct i915_audio *hsw_audio = &dev_priv->audio_route;
++	struct dp12_port *hsw_port;
+ 	int port = intel_ddi_get_encoder_port(intel_encoder);
+ 	int pipe = intel_crtc->pipe;
+ 	int type = intel_encoder->type;
+@@ -296,6 +299,12 @@ static void intel_ddi_mode_set(struct drm_encoder *encoder,
+ 		      port_name(port), pipe_name(pipe));
+ 
+ 	intel_crtc->eld_vld = false;
++
++	/* store pipe routing info */
++	hsw_port = &hsw_audio->active_pipes[port];
++	hsw_port->pipes[0] = pipe;
++	hsw_port->count = 1;
++
+ 	if (type == INTEL_OUTPUT_DISPLAYPORT || type == INTEL_OUTPUT_EDP) {
+ 		struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
+ 		struct intel_digital_port *intel_dig_port =
+@@ -306,8 +315,8 @@ static void intel_ddi_mode_set(struct drm_encoder *encoder,
+ 		intel_dp->DP |= DDI_PORT_WIDTH(intel_dp->lane_count);
+ 
+ 		if (intel_dp->has_audio) {
+-			DRM_DEBUG_DRIVER("DP audio on pipe %c on DDI\n",
+-					 pipe_name(intel_crtc->pipe));
++			DRM_DEBUG_DRIVER("DP audio on pipe %c on DDI %c\n",
++					 pipe_name(intel_crtc->pipe), port_name(port));
+ 
+ 			/* write eld */
+ 			DRM_DEBUG_DRIVER("DP audio: write eld information\n");
+@@ -324,8 +333,8 @@ static void intel_ddi_mode_set(struct drm_encoder *encoder,
+ 			 * and a new set of registers, so we leave it for future
+ 			 * patch bombing.
+ 			 */
+-			DRM_DEBUG_DRIVER("HDMI audio on pipe %c on DDI\n",
+-					 pipe_name(intel_crtc->pipe));
++			DRM_DEBUG_DRIVER("HDMI audio on pipe %c on DDI %c \n",
++					 pipe_name(intel_crtc->pipe), port_name(port));
+ 
+ 			/* write eld */
+ 			DRM_DEBUG_DRIVER("HDMI audio: write eld information\n");
+@@ -1135,6 +1144,9 @@ static void intel_disable_ddi(struct intel_encoder *intel_encoder)
+ 	int type = intel_encoder->type;
+ 	struct drm_device *dev = encoder->dev;
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
++	struct i915_audio *hsw_audio = &dev_priv->audio_route;
++	struct dp12_port *hsw_port;
++	enum port port = intel_ddi_get_encoder_port(intel_encoder);
+ 	uint32_t tmp;
+ 
+ 	if (intel_crtc->eld_vld && type != INTEL_OUTPUT_EDP) {
+@@ -1149,6 +1161,11 @@ static void intel_disable_ddi(struct intel_encoder *intel_encoder)
+ 
+ 		ironlake_edp_backlight_off(intel_dp);
+ 	}
++
++	/* clear pipe routing info */
++	hsw_port = &hsw_audio->active_pipes[port];
++	hsw_port->pipes[0] = 0;
++	hsw_port->count = 0;
+ }
+ 
+ int intel_ddi_get_cdclk_freq(struct drm_i915_private *dev_priv)
+@@ -1312,6 +1329,24 @@ static const struct drm_encoder_helper_funcs intel_ddi_helper_funcs = {
+ 	.mode_set = intel_ddi_mode_set,
+ };
+ 
++static struct drm_i915_private *hdmi_dev_priv;
++void intel_ddi_audio_init(struct drm_device *dev)
 +{
-+	busy_pins[pin_idx] = 1;
-+	if (disable_unused_pipe)
-+		disable_unused_pipe(pipe_idx, busy_pins);
++	struct drm_i915_private *dev_priv = dev->dev_private;
++	struct i915_audio *hsw_audio = &dev_priv->audio_route;
++	struct dp12_port *hsw_port;
++	enum port port;
 +
-+	return 0;
++	for (port = PORT_A; port < I915_MAX_PORTS; port++) {
++		hsw_port = &hsw_audio->active_pipes[port];
++		hsw_port->count = 0;
++		memset(hsw_port->pipes, DEFAULT_PIPE, sizeof(hsw_port->pipes));
++	}
++
++	hsw_audio->pin_eld = 0;
++	hdmi_dev_priv = dev_priv;
 +}
-+EXPORT_SYMBOL(hdmi_disable_unused_pipe);
 +
-+void hdmi_restore_pineld(int pin_idx)
+ void intel_ddi_init(struct drm_device *dev, enum port port)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+@@ -1369,3 +1404,91 @@ void intel_ddi_init(struct drm_device *dev, enum port port)
+ 		intel_hdmi_init_connector(intel_dig_port, hdmi_connector);
+ 	}
+ }
++
++int i915_using_pipe(int pin)
 +{
-+	busy_pins[pin_idx] = 0;
-+	if (restore_eld)
-+		restore_eld();
-+}
-+EXPORT_SYMBOL(hdmi_restore_pineld);
++	enum port port;
++	int pipe;
++	struct i915_audio *hsw_audio;
++	struct dp12_port *hsw_port;
 +
-+int hdmi_get_using_pipe(int pin_idx)
-+{
-+	int pipe = -1;
++	if (!hdmi_dev_priv)
++		return -EINVAL;
 +
-+	if (get_using_pipe)
-+		pipe = get_using_pipe(pin_idx);
++	hsw_audio = &hdmi_dev_priv->audio_route;
 +
-+	if (pipe != -1)
-+		snd_printd("HDMI: pin %d get using pipe %c\n", pin_idx, i915_pipe_name(pipe));
++	port = pin2port(pin);
++	hsw_port = &hsw_audio->active_pipes[port];
++
++	/* only first element is valid for non Dp1.2 */
++	pipe = hsw_port->pipes[0];
++
++	if (hsw_port->count)
++		DRM_DEBUG_DRIVER("HDMI: i915 is using pipe %c for pin %d now\n", pipe_name(pipe), pin);
 +
 +	return pipe;
 +}
-+EXPORT_SYMBOL(hdmi_get_using_pipe);
++EXPORT_SYMBOL_GPL(i915_using_pipe);
 +
-+static int init_audio_routing(void)
++int i915_disable_pipe(int pipe, int *busy_pins)
 +{
-+	get_using_pipe = symbol_request(i915_using_pipe);
-+	if (!get_using_pipe)
-+		return -ENODEV;
++	struct drm_i915_private *dev_priv = hdmi_dev_priv;
++	struct i915_audio *hsw_audio;
++	struct dp12_port *hsw_port;
++	int aud_cntrl_st2 = HSW_AUD_PIN_ELD_CP_VLD;
++	int port, active_pipe;
++	int tmp;
++	int pin;
 +
-+	disable_unused_pipe = symbol_request(i915_disable_pipe);
-+	if (!disable_unused_pipe) {
-+		get_using_pipe = NULL;
-+		return -ENODEV;
++	if (!hdmi_dev_priv)
++		return -EINVAL;
++
++	hsw_audio = &dev_priv->audio_route;
++
++	if (pipe == DEFAULT_PIPE) {
++		DRM_DEBUG_DRIVER("HDMI: disable all active pipes\n");
 +	}
 +
-+	restore_eld = symbol_request(i915_restore_pineld);
-+	if (!restore_eld) {
-+		restore_eld = NULL;
-+		get_using_pipe = NULL;
-+		return -ENODEV;
-+	}
++	tmp = I915_READ(aud_cntrl_st2);
++	DRM_DEBUG_DRIVER("HDMI: current pin eld 0x%x\n", tmp);
++	/* Clear all output enable bits */
++	tmp &= ~(AUDIO_OUTPUT_ENABLE_A |
++			AUDIO_OUTPUT_ENABLE_B |
++			AUDIO_OUTPUT_ENABLE_C);
 +
-+	return 0;
-+}
++	if (pipe != DEFAULT_PIPE) {
++		for (pin = 0; pin < 3; pin++) {
++			port = pin2port(pin);
++			hsw_port = &hsw_audio->active_pipes[port];
++			active_pipe = hsw_port->pipes[0];
 +
- void hda_display_power(bool enable)
- {
- 	if (!get_power || !put_power)
-@@ -57,6 +121,10 @@ int hda_i915_init(void)
- 
- 	snd_printd("HDA driver get symbol successfully from i915 module\n");
- 
-+	err = init_audio_routing();
-+	if (err < 0)
-+		snd_printd("HDA driver get audior routing APIs failed!\n");
-+
- 	return err;
- }
- 
-@@ -71,5 +139,20 @@ int hda_i915_exit(void)
- 		put_power = NULL;
- 	}
- 
-+	if (get_using_pipe) {
-+		symbol_put(get_using_pipe);
-+		get_using_pipe = NULL;
-+	}
-+
-+	if (disable_unused_pipe) {
-+		symbol_put(disable_unused_pipe);
-+		disable_unused_pipe = NULL;
-+	}
-+
-+	if (restore_eld) {
-+		symbol_put(restore_eld);
-+		restore_eld = NULL;
-+	}
-+
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h
-index 5a63da2..52d6f09 100644
---- a/sound/pci/hda/hda_i915.h
-+++ b/sound/pci/hda/hda_i915.h
-@@ -32,4 +32,8 @@ static inline int hda_i915_exit(void)
- }
- #endif
- 
-+extern int hdmi_get_using_pipe(int pin_idx);
-+extern int hdmi_disable_unused_pipe(int pin_idx, int pipe_idx);
-+extern void hdmi_restore_pineld(int pin_idx);
-+
- #endif
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index d766f40..2a1e977 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -39,6 +39,7 @@
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_jack.h"
-+#include "hda_i915.h"
- 
- static bool static_hdmi_pcm;
- module_param(static_hdmi_pcm, bool, 0644);
-@@ -1131,6 +1132,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	struct hdmi_spec_per_pin *per_pin;
- 	struct hdmi_eld *eld;
- 	struct hdmi_spec_per_cvt *per_cvt = NULL;
-+	int pipe_idx;
- 
- 	/* Validate hinfo */
- 	pin_idx = hinfo_to_pin_index(spec, hinfo);
-@@ -1139,12 +1141,21 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	per_pin = get_pin(spec, pin_idx);
- 	eld = &per_pin->sink_eld;
- 
-+	if (codec->vendor_id == 0x80862807) {
-+		hsw_verify_cvt_D0(spec, codec);
-+
-+		pipe_idx = hdmi_get_using_pipe(pin_idx);
-+		if (pipe_idx < 0)
-+			snd_printdd("HDMI: Pin %d has no valid pipe in use\n", pin_idx);
-+		else {
-+			hdmi_disable_unused_pipe(pin_idx, pipe_idx);
-+			msleep(10);
++			if (busy_pins[pin] && active_pipe != DEFAULT_PIPE) {
++				tmp |= (AUDIO_OUTPUT_ENABLE_A << (active_pipe * 4));
++				DRM_DEBUG_DRIVER("pin %d is busy now, keep its using pipe %c\n", pin, pipe_name(active_pipe));
++			}
 +		}
 +	}
 +
- 	if (!eld->monitor_present || !eld->eld_valid)
- 		return -EIO;
- 
--	if (codec->vendor_id == 0x80862807)
--		hsw_verify_cvt_D0(spec, codec);
--		
- 	/* Dynamically assign converter to stream */
- 	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
- 		per_cvt = get_cvt(spec, cvt_idx);
-@@ -1514,6 +1525,9 @@ static int hdmi_pcm_close(struct hda_pcm_stream *hinfo,
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
- 		per_pin->chmap_set = false;
- 		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
++	I915_WRITE(aud_cntrl_st2, tmp);
++	DRM_DEBUG_DRIVER("HDMI: new pin eld 0x%x -- disable unuesd pin's audio output\n", tmp);
 +
-+		if (codec->vendor_id == 0x80862807)
-+			hdmi_restore_pineld(pin_idx);
- 	}
++	return 0;
++}
++EXPORT_SYMBOL_GPL(i915_disable_pipe);
++
++int i915_restore_pineld(void)
++{
++	struct drm_i915_private *dev_priv = hdmi_dev_priv;
++	struct i915_audio *hsw_audio;
++	int aud_cntrl_st2 = HSW_AUD_PIN_ELD_CP_VLD;
++
++	if (!hdmi_dev_priv)
++		return -EINVAL;
++
++	hsw_audio = &dev_priv->audio_route;
++
++	I915_WRITE(aud_cntrl_st2, hsw_audio->pin_eld);
++	DRM_DEBUG_DRIVER("HDMI: restore pin eld 0x%x\n", hsw_audio->pin_eld);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(i915_restore_pineld);
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index b23937b..1080750 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -6121,6 +6121,7 @@ static void haswell_write_eld(struct drm_connector *connector,
+ 	uint8_t *eld = connector->eld;
+ 	struct drm_device *dev = crtc->dev;
+ 	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
++	struct i915_audio *hsw_audio = &dev_priv->audio_route;
+ 	uint32_t eldv;
+ 	uint32_t i;
+ 	int len;
+@@ -6137,6 +6138,7 @@ static void haswell_write_eld(struct drm_connector *connector,
  
- 	return 0;
+ 	/* Audio output enable */
+ 	DRM_DEBUG_DRIVER("HDMI audio: enable codec\n");
++
+ 	tmp = I915_READ(aud_cntrl_st2);
+ 	tmp |= (AUDIO_OUTPUT_ENABLE_A << (pipe * 4));
+ 	I915_WRITE(aud_cntrl_st2, tmp);
+@@ -6171,6 +6173,7 @@ static void haswell_write_eld(struct drm_connector *connector,
+ 	} else
+ 		I915_WRITE(aud_config, 0);
+ 
++	hsw_audio->pin_eld = I915_READ(aud_cntrl_st2);
+ 	if (intel_eld_uptodate(connector,
+ 			       aud_cntrl_st2, eldv,
+ 			       aud_cntl_st, IBX_ELD_ADDRESS,
+@@ -6198,7 +6201,6 @@ static void haswell_write_eld(struct drm_connector *connector,
+ 	i = I915_READ(aud_cntrl_st2);
+ 	i |= eldv;
+ 	I915_WRITE(aud_cntrl_st2, i);
+-
+ }
+ 
+ static void ironlake_write_eld(struct drm_connector *connector,
+@@ -8969,6 +8971,9 @@ static void intel_setup_outputs(struct drm_device *dev)
+ 	if (HAS_DDI(dev)) {
+ 		int found;
+ 
++		/* Init Haswell audio route map */
++		intel_ddi_audio_init(dev);
++
+ 		/* Haswell uses DDI functions to detect digital outputs */
+ 		found = I915_READ(DDI_BUF_CTL_A) & DDI_INIT_DISPLAY_DETECTED;
+ 		/* DDI A only supports eDP */
+diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
+index ffe9d35..6f8e680 100644
+--- a/drivers/gpu/drm/i915/intel_drv.h
++++ b/drivers/gpu/drm/i915/intel_drv.h
+@@ -758,6 +758,7 @@ extern void intel_write_eld(struct drm_encoder *encoder,
+ extern void intel_prepare_ddi(struct drm_device *dev);
+ extern void hsw_fdi_link_train(struct drm_crtc *crtc);
+ extern void intel_ddi_init(struct drm_device *dev, enum port port);
++extern void intel_ddi_audio_init(struct drm_device *dev);
+ 
+ /* For use by IVB LP watermark workaround in intel_sprite.c */
+ extern void intel_update_watermarks(struct drm_device *dev);
+diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+index cfdc884..aef3ec0 100644
+--- a/include/drm/i915_powerwell.h
++++ b/include/drm/i915_powerwell.h
+@@ -33,4 +33,9 @@
+ extern void i915_request_power_well(void);
+ extern void i915_release_power_well(void);
+ 
++/* used by hdmi driver for audio routing */
++extern int i915_using_pipe(int pin);
++extern int i915_disable_pipe(int pipe, int *busy_pins);
++extern int i915_restore_pineld(void);
++
+ #endif				/* _I915_POWERWELL_H_ */
 -- 
 1.8.1.2
