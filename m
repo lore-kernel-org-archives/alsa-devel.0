@@ -1,14 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5110: Correct rate control for DSP4
-Date: Fri, 14 Jun 2013 14:19:36 +0100
-Message-ID: <1371215976-24616-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Rajan Vaja <rajan.vaja@sibridgetech.com>
+Subject: [ALSA] Codec Registration after soc_probe ()
+Date: Fri, 14 Jun 2013 19:13:56 +0530
+Message-ID: <CAApRLV08C+44YHdxd6CbW_VjMw3GhSh=6eaELX7ATJbYbWwirg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33CD2261AF0
- for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 15:34:26 +0200 (CEST)
+Received: from mail-bk0-f42.google.com (mail-bk0-f42.google.com
+ [209.85.214.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91488261AF2
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 15:44:17 +0200 (CEST)
+Received: by mail-bk0-f42.google.com with SMTP id jk13so283917bkc.29
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2013 06:44:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,28 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Reported-by: Dennis May <dennis.may@wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 3470b64..0a3c7f7 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -279,7 +279,7 @@ static const struct soc_enum wm_adsp2_rate_enum[] = {
- 			      ARIZONA_DSP1_RATE_SHIFT, 0xf,
- 			      ARIZONA_RATE_ENUM_SIZE,
- 			      arizona_rate_text, arizona_rate_val),
--	SOC_VALUE_ENUM_SINGLE(ARIZONA_DSP3_CONTROL_1,
-+	SOC_VALUE_ENUM_SINGLE(ARIZONA_DSP4_CONTROL_1,
- 			      ARIZONA_DSP1_RATE_SHIFT, 0xf,
- 			      ARIZONA_RATE_ENUM_SIZE,
- 			      arizona_rate_text, arizona_rate_val),
--- 
-1.7.2.5
+My codec is registered after SOC init is done (sdp4430_init()). In soc
+init, ALSA cannot find codec registered (given in SOC dai) and hence it
+defers sound card registration. Later on codec is registered successfully
+but sound card registration is not done again. Is there any way to register
+codec later?
+
+I am using kernel version 3.4.0 with OMAP Panda.
+
+Thanks,
+Rajan
