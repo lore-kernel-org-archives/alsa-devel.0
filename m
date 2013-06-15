@@ -1,92 +1,83 @@
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH 3/4] drm/i915: Add display audio routing
-	APIs for ALSA
-Date: Fri, 14 Jun 2013 21:18:25 +0200
-Message-ID: <CAKMK7uE5PCNEqB8EtYjAZF-MVHCXpPzJ8CsXjOfLR=LA7q7Pig@mail.gmail.com>
-References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
-	<1371223229-8236-4-git-send-email-xingchao.wang@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: ALSA: usb-audio: work around Anroid accessory firmware
+	bug
+Date: Sat, 15 Jun 2013 11:21:09 +0200
+Message-ID: <51BC3205.4070108@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <1371223229-8236-4-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Wang Xingchao <xingchao.wang@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>, David Henningsson <david.henningsson@canonical.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 865832607D7
+ for <alsa-devel@alsa-project.org>; Sat, 15 Jun 2013 11:21:21 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 14, 2013 at 5:20 PM, Wang Xingchao
-<xingchao.wang@linux.intel.com> wrote:
-> ALSA audio driver need know current audio routing infomation.
-> i.e. Route map between codec pins(DDI ports) and Transcoders(Pipe).
->
-> Also the new API let audio driver disable unused audio pin's output.
-> This fixed the bug when three pins *ALL* have monitors connected, playing
-> audio on one pin would cause audio output to all minitors.
->
-> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+When the Android firmware enables the audio interfaces in accessory
+mode, it always declares in the control interface's baInterfaceNr array
+that interfaces 0 and 1 belong to the audio function.  However, the
+accessory interface itself, if also enabled, already is at index 0 and
+shifts the actual audio interface numbers to 1 and 2, which prevents the
+PCM streaming interface from being seen by the host driver.
 
+To get the PCM interface interface to work, detect when the descriptors
+point to the (for this driver useless) accessory interface, and redirect
+to the correct one.
 
-So I've started to have a real look at audio on haswell and audio on
-i915 in general, and I'm seriously confused. Random observations, but
-I fear this isn't the real story by far yet:
+Reported-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Tested-by: Jeremy Rosen <jeremy.rosen@openwide.fr>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/card.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-- On haswell we now have a hooping 3 places that set up these audio
-routing register: haswell_write_eld (called from the connector enable
-callbacks), intel_enable/disable_ddi and now the new hooks you're
-adding here. That's 2 places too many. If we really need all three
-places those need to be refactored so that the bit-frobbing logic is
-all in one place. But I seriously doubt that we need them all.
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 563854a..5a5153c 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -148,14 +148,32 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 		return -EINVAL;
+ 	}
 
-- I've quickly read through the haswell audio modeset sequence. On a
-glance I could see no reason why we need to have 3 different places to
-set up the gfx side of the audio support, since it's much simpler
-apparently:
++	alts = &iface->altsetting[0];
++	altsd = get_iface_desc(alts);
++
++	/*
++	 * Android with both accessory and audio interfaces enabled gets the
++	 * interface numbers wrong.
++	 */
++	if ((chip->usb_id == USB_ID(0x18d1, 0x2d04) ||
++	     chip->usb_id == USB_ID(0x18d1, 0x2d05)) &&
++	    interface == 0 &&
++	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
++	    altsd->bInterfaceSubClass == USB_SUBCLASS_VENDOR_SPEC) {
++		interface = 2;
++		iface = usb_ifnum_to_if(dev, interface);
++		if (!iface)
++			return -EINVAL;
++		alts = &iface->altsetting[0];
++		altsd = get_iface_desc(alts);
++	}
++
+ 	if (usb_interface_claimed(iface)) {
+ 		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
+ 						dev->devnum, ctrlif, interface);
+ 		return -EINVAL;
+ 	}
 
-Enable sequence: 1. gfx side sets up registers 2. gfx side sets the
-audio enable bit, which generates the interrup 3. audio side completes
-the setup on its side.
-
-Disable sequence is just the inverse. So I don't think we need 3
-different places for this.
-
-- Both on ibx/cpt and also on haswell here we seem to rely on BIOS
-preset values way too often. Or at least I didn't figure out where
-these registes get initialized (pretty sure nowhere in i915.ko). We
-have countless bugs where the BIOS tried to be fancy and set up
-something we don't actually support. So please, if there's no really
-good reason why we need to do things differently, have explicit
-register setups. If there's something we need to preserve from the
-BIOS, it needs to be done explicitly and must have a comment.
-
-- No global state or stuffing random things into dev_priv/crtc any
-more. Our modeset infrastructure has a transactional state machine
-now: First we compute state parameters in the various compute_config
-functions and store all that into a struct intel_crtc_config
-pipe_config. Then the modeset functions apply that state. Finally at
-the end the hw state is cross-checked with the sw state. We need this
-to properly support atomic modeset and fastboot. Yes, this means that
-recent additions for haswell audio support like crtc->eld_vld need to
-go away and be moved into pipe_config.
-
-- Changing the OUTPUT_ENABLE bits will result in interrupts on the
-audio side. But these functions here are only called from the audio
-side, so we have a really complicated feedback loop. Given that your
-patches need much better explanation of what's going on (preferably
-with time/state diagrams). Also I think I need a more detailed
-explanation of what exactly is broken currently on Haswell audio and
-how these patches fix this.
-
-Cheers, Daniel
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+-	alts = &iface->altsetting[0];
+-	altsd = get_iface_desc(alts);
+ 	if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
+ 	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
+ 	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDISTREAMING) {
