@@ -1,68 +1,81 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v8 11/11] ASoC: fsl: Update fsl-ssi binding doc
-Date: Sun, 16 Jun 2013 15:25:17 +0200
-Message-ID: <1371389117-19729-12-git-send-email-mpa@pengutronix.de>
-References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371389117-19729-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Sun, 16 Jun 2013 22:54:07 +0200
+Message-ID: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Alban Bedel <alba>
 List-Id: alsa-devel@alsa-project.org
 
-Update the fsl-ssi bindings. DMA is no required property anymore and
-uses the generic DMA bindings. imx-fiq is a new alternative to DMA
+One of the biggest roadblocks on the way of S3C64xx to DeviceTree support
+is its DMA driver, which is completely platform-specific and provides
+private API (s3c-dma), not even saying that its design is completely
+against multiplatform-awareness.
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
----
+The DMA controller present on this SoC series is a custom variant
+of ARM PrimeCell PL080 modified by Samsung to add some extra features.
+It is mostly compatible with original PL080, except:
+ - CH_CONTROL2 register is added between CH_CONTROL and CH_CONFIG,
+ - offset of CH_CONFIG register is different,
+ - transfer size field is moved from CH_CONTROL to CH_CONTROL2,
+ - transfer size field is extended to 24 bits, allowing much bigger
+     single transfer,
+ - LLI consists of one more word, to account for CH_CONTROL2 register.
 
-Notes:
-    Changes in v4:
-     - Add a comment about hardware bugs for imx-pcm-fiq
-    
-    Changes in v3:
-     - In previous versions, I removed fsl,playback-dma and capture-dma. But they
-       are still in use by fsl_dma.c, so I added them again.
+Since all the rest is fully compatible with standard PL080 there is no
+point in having separate driver just for this single variant, so I decided
+to look into adding support for it to the amba-pl08x driver.
 
- Documentation/devicetree/bindings/sound/fsl,ssi.txt | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+There was already some attempt to achieve this before, but this was before
+Russel's big rework of the driver to use virtual channels, making the old
+patches being not much of use.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-index 5ff76c9..0375ee0 100644
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-@@ -43,10 +43,20 @@ Required properties:
-                     together.  This would still allow different sample sizes,
-                     but not different sample rates.
- 
-+Note that either dmas, dma-names or fsl,imx-fiq are required.
-+
- Optional properties:
- - codec-handle:     Phandle to a 'codec' node that defines an audio
-                     codec connected to this SSI.  This node is typically
-                     a child of an I2C or other control node.
-+- dmas:		    Generic dma devicetree binding as described in
-+		    Documentation/devicetree/bindings/dma/dma.txt.
-+- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
-+		    is not defined.
-+- fsl,imx-fiq:	    Bool property. Use imx-pcm-fiq instead of imx-pcm-dma.
-+  		    Only necessary for some boards with incompatible
-+		    codec. imx-pcm-fiq will manually filter some data from
-+		    the codec. It is a workaround for a hardware bug.
- 
- Child 'codec' node required properties:
- - compatible:       Compatible list, contains the name of the codec
+This RFC series is a proof of concept that I managed to make during last
+days of hacking. Except one patch adding clkdev lookup to clock driver
+(which is being replaced with a CCF-compliant driver ATM), this is enough
+to get memcpy and slave transfers to work on S3C64xx.
+
+I have tested this on Mini6410 and SMDK6410 boards using dmatest for
+memcpy and Samsung I2S with madplay/aplay for slave transfers.
+Unfortunately I do not have access to other platforms with PL08x so
+I could not test for any regressions introduced on them.
+
+Credits for two patches go to Alban Bedel, who made a series fixing this
+driver to make it usable with audio drivers. I rebased his patches on top
+of mine and corrected coding style a bit.
+
+OK, that's all. Any comments are welcome. Feel free to start throwing eggs
+and tomatoes if you find this awful, but I won't be upset if I get some
+Tested-by or Acked-by as well. ;)
+
+Alban Bedel (2):
+  dmaengine: PL08x: Fix reading the byte count in cctl
+  dmaengine: PL08x: Add cyclic transfer support
+
+Tomasz Figa (9):
+  dma: amba-pl08x: Use bitmap to pass variant specific quirks
+  dma: amba-pl08x: Refactor pl08x_getbytes_chan() to lower indentation
+  dma: amba-pl08x: Add support for different offset of CONFIG register
+  dma: amba-pl08x: Add support for PL080S variant
+  dma: amba-pl08x: Add support for different maximum transfer size
+  dma: amba-pl08x: Keep LLIs aligned to 4-word boundary
+  spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
+  ASoC: samsung: Do not require legacy DMA API in case of S3C64XX
+  ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+
+ arch/arm/Kconfig                         |   1 +
+ arch/arm/mach-s3c64xx/Kconfig            |   8 +-
+ arch/arm/mach-s3c64xx/Makefile           |   1 +
+ arch/arm/mach-s3c64xx/common.h           |   5 +
+ arch/arm/mach-s3c64xx/include/mach/dma.h |  65 +++++
+ arch/arm/mach-s3c64xx/pl080.c            | 244 +++++++++++++++++++
+ drivers/dma/amba-pl08x.c                 | 399 ++++++++++++++++++++++---------
+ drivers/spi/Kconfig                      |   2 +-
+ include/linux/amba/pl080.h               |   1 +
+ sound/soc/samsung/Kconfig                |   2 +-
+ 10 files changed, 613 insertions(+), 115 deletions(-)
+ create mode 100644 arch/arm/mach-s3c64xx/pl080.c
+
 -- 
 1.8.2.1
