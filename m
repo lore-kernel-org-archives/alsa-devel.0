@@ -1,80 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: SPEAr: Add dependency on
- dmaengine helpers
-Date: Sat, 15 Jun 2013 13:33:50 +0100
-Message-ID: <20130615123350.GU1403@sirena.org.uk>
-References: <1371209418-32496-1-git-send-email-broonie@linaro.org>
- <CAOh2x==4nO0eBwvtXZ177fwN8ekNc0UaCwOdg5+bchj+qbUkgQ@mail.gmail.com>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH v8 07/11] ARM: imx: Export ac97 reset functions
+Date: Sun, 16 Jun 2013 15:25:13 +0200
+Message-ID: <1371389117-19729-8-git-send-email-mpa@pengutronix.de>
+References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9025476723324748869=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E5A90260896
- for <alsa-devel@alsa-project.org>; Sat, 15 Jun 2013 14:33:55 +0200 (CEST)
-In-Reply-To: <CAOh2x==4nO0eBwvtXZ177fwN8ekNc0UaCwOdg5+bchj+qbUkgQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1371389117-19729-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+---
+ arch/arm/mach-imx/mach-pca100.c | 7 +++++--
+ arch/arm/mach-imx/mach-pcm043.c | 7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
---===============9025476723324748869==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mW/Yq1p9Hn2AHmV6"
-Content-Disposition: inline
-
-
---mW/Yq1p9Hn2AHmV6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 14, 2013 at 05:49:06PM +0530, Viresh Kumar wrote:
-> On Fri, Jun 14, 2013 at 5:00 PM, Mark Brown <broonie@linaro.org> wrote:
-
-> > I'd be very surprised if anyone has used the Kconfig...
-
-> This might be selected directly by defconfig...
-
-No, any select only options like that should be deselected automatically
-during the build if they're not required any more.
-
---mW/Yq1p9Hn2AHmV6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRvF8rAAoJELSic+t+oim9sewP/iaCxdjI+eQtJRgo+/Zraffv
-O5JUdlBx/Me8sBzaVMGSs9PmVJCQJmge1Z3ivUSJAjmV1uz0NP0d9GXNnbpkUWi0
-pYsJO1T8EQH8kMAcWQd/F0T9TIeK++IbfQAENKtNZPCDwY7dx9v2aOaMYw4xA3m+
-XM3Qm9gIJl0BzuirF2+atupU3F/r7bkFWtl6LbkT/pfYVYZySvrW4AAflIRy3Cl7
-yfP51WPN3boNiaSz+se9GYvMpUpq0kxgM7L3H9+tv13/iYV57TfyOlH8LD0G1eQK
-pxexX3hwigihHckpIRvW3N2xRM8lBrmZscuJ86wCB8+CZCSHVeBtBlBzFjatHSkT
-OMTmuaHZ3XGtp1PEIa02g0sqib/4hmAQ68zRaaNmqv0oOjFzLmv7zHe36K0I2YYV
-DBni880sE5oSWEMVEoWCnRTX+tkc02y/EB/MPIOxd5LFGPc0NdTLXudXg4pJcarP
-lgHRiOnUxPjiNITNZ3in3Vfxii0yAbGp4G7NtesIj91ztLIoda9o+tJDDfODpkYD
-x0KnkKmFEpuJpb/SFAWjhUAwIcuo3cwvTlHfWGw5QAtRmlwVYhtJJLepfBXH2xVp
-wJC2OzSGU1OVpEyh3AoER/JGbnAuNht7+qSe4ZV0O3Nf+R/PdyeiTrRqgyRyX67/
-CRBtEdieVQkD72UkO1Bw
-=dzKw
------END PGP SIGNATURE-----
-
---mW/Yq1p9Hn2AHmV6--
-
---===============9025476723324748869==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9025476723324748869==--
+diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
+index b8b15bb..68badf8 100644
+--- a/arch/arm/mach-imx/mach-pca100.c
++++ b/arch/arm/mach-imx/mach-pca100.c
+@@ -22,6 +22,7 @@
+ #include <linux/i2c.h>
+ #include <linux/i2c/at24.h>
+ #include <linux/dma-mapping.h>
++#include <linux/export.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/eeprom.h>
+ #include <linux/irq.h>
+@@ -208,7 +209,7 @@ static const struct spi_imx_master pca100_spi0_data __initconst = {
+ 	.num_chipselect = ARRAY_SIZE(pca100_spi_cs),
+ };
+ 
+-static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
++void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
+ {
+ 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
+ 	gpio_set_value(GPIO_PORTC + 20, 1);
+@@ -217,8 +218,9 @@ static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
+ 	mxc_gpio_mode(PC20_PF_SSI1_FS);
+ 	msleep(2);
+ }
++EXPORT_SYMBOL(pca100_ac97_warm_reset);
+ 
+-static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
++void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
+ {
+ 	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
+ 	gpio_set_value(GPIO_PORTC + 20, 0);
+@@ -232,6 +234,7 @@ static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
+ 	mxc_gpio_mode(PC22_PF_SSI1_TXD);
+ 	msleep(2);
+ }
++EXPORT_SYMBOL(pca100_ac97_cold_reset);
+ 
+ static const struct imx_ssi_platform_data pca100_ssi_pdata __initconst = {
+ 	.ac97_reset		= pca100_ac97_cold_reset,
+diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
+index 8ed533f..4f318ca 100644
+--- a/arch/arm/mach-imx/mach-pcm043.c
++++ b/arch/arm/mach-imx/mach-pcm043.c
+@@ -27,6 +27,7 @@
+ #include <linux/i2c/at24.h>
+ #include <linux/usb/otg.h>
+ #include <linux/usb/ulpi.h>
++#include <linux/export.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -217,7 +218,7 @@ static iomux_v3_cfg_t pcm043_pads[] = {
+ #define SD1_GPIO_WP	IMX_GPIO_NR(2, 23)
+ #define SD1_GPIO_CD	IMX_GPIO_NR(2, 24)
+ 
+-static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
++void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
+ {
+ 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
+ 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
+@@ -239,8 +240,9 @@ static void pcm043_ac97_warm_reset(struct snd_ac97 *ac97)
+ 	gpio_free(AC97_GPIO_TXFS);
+ 	mxc_iomux_v3_setup_pad(txfs);
+ }
++EXPORT_SYMBOL(pcm043_ac97_warm_reset);
+ 
+-static void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
++void pcm043_ac97_cold_reset(struct snd_ac97 *ac97)
+ {
+ 	iomux_v3_cfg_t txfs_gpio = MX35_PAD_STXFS4__GPIO2_31;
+ 	iomux_v3_cfg_t txfs = MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS;
+@@ -286,6 +288,7 @@ err1:
+ 		printk("%s failed with %d\n", __func__, ret);
+ 	mdelay(1);
+ }
++EXPORT_SYMBOL(pcm043_ac97_cold_reset);
+ 
+ static const struct imx_ssi_platform_data pcm043_ssi_pdata __initconst = {
+ 	.ac97_reset = pcm043_ac97_cold_reset,
+-- 
+1.8.2.1
