@@ -1,55 +1,45 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH v8 01/11] ASoC: imx-pcm-dma: DT support
-Date: Sun, 16 Jun 2013 15:25:07 +0200
-Message-ID: <1371389117-19729-2-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH v8 09/11] ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
+Date: Sun, 16 Jun 2013 15:25:15 +0200
+Message-ID: <1371389117-19729-10-git-send-email-mpa@pengutronix.de>
 References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Markus Pargmann <mpa@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1371389117-19729-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes the NO_DT flag. The pdev pointer may have a proper
-of_node with the dmas property, so we can use it to request DMA
-channels.
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
+ sound/soc/fsl/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Notes:
-    Changes in v6:
-     - After rebasing onto Shawn's imx-pcm cleanups, this patch just consists of
-       removing the NO_DT flag.
-    
-    Changes in v5:
-     - Use dev.parent pointer to get the of_node.
-
- sound/soc/fsl/imx-pcm-dma.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index fde4d2e..f323ce0 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -64,7 +64,6 @@ int imx_pcm_dma_init(struct platform_device *pdev)
- {
- 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
- 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
--		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
- EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index dafffd1..368686e 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -149,7 +149,8 @@ config SND_SOC_PHYCORE_AC97
+ 	select SND_SOC_WM9712
+ 	select SND_SOC_IMX_PCM_FIQ
+ 	select SND_SOC_IMX_AUDMUX
+-	select SND_SOC_IMX_SSI
++	select SND_SOC_FSL_SSI if MACH_PCA100
++	select SND_SOC_IMX_SSI if MACH_PCM043
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Phytec phyCORE
+ 	  and phyCARD boards in AC97 mode
 -- 
 1.8.2.1
