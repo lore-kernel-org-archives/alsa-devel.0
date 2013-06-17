@@ -1,32 +1,59 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH RESEND V2] ARM: dts: wm8994: Add wm8994 regulator support
- on smdk5250.
-Date: Mon, 17 Jun 2013 19:21:48 +0900
-Message-ID: <19b301ce6b44$7a102670$6e307350$%kim@samsung.com>
-References: <1371025425-480-1-git-send-email-padma.v@samsung.com>
- <1371025425-480-2-git-send-email-padma.v@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to arm/common
+Date: Mon, 17 Jun 2013 11:43:27 +0100
+Message-ID: <20130617104327.GD1403@sirena.org.uk>
+References: <1371463571-2578-1-git-send-email-nsekhar@ti.com>
+ <1371463571-2578-2-git-send-email-nsekhar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1371025425-480-2-git-send-email-padma.v@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com
-Cc: sbkim73@samsung.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="moC1XDyencuJ/zDM"
+Return-path: <linux-mmc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371463571-2578-2-git-send-email-nsekhar@ti.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@deeprootsystems.com>, Matt Porter <matt@ohporter.com>, Joel Fernandes A <joelagnel@ti.com>, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
 List-Id: alsa-devel@alsa-project.org
 
-Padmavathi Venna wrote:
-> 
-> This patch adds the required regulator supplies and properties
-> for wm8994 codec on smdk5250 board.
-> 
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
-> 
-> Changes since V1:
-> 	- Clubbed the same supply regulators as suggested by Mark.
-> 
-Applied, thanks.
 
-- Kukjin
+--moC1XDyencuJ/zDM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 17, 2013 at 03:36:10PM +0530, Sekhar Nori wrote:
+> From: Matt Porter <mporter@ti.com>
+>=20
+> Move mach-davinci/dma.c to common/edma.c so it can be used
+> by OMAP (specifically AM33xx) as well.
+>=20
+> Signed-off-by: Matt Porter <mporter@ti.com>
+> Acked-by: Chris Ball <cjb@laptop.org> # davinci_mmc.c
+> [nsekhar@ti.com: dropped davinci sffsdr changes]
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+
+Acked-by: Mark Brown <broonie@linaro.org>
+
+--moC1XDyencuJ/zDM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRvuhMAAoJELSic+t+oim9bHEP+QHtO0gbJlbZAkS1lO+p3cch
+FBRsvIy8D8xAJHuw5uDcZkWWYQMwc9bSBSEbjctzbEPKJW6vEMUpribbyOVQ07T0
+ncJvBTI1q8RtNv1A3rLSlAfioLyw8hc17E0MZuluQBJ56NBG6TKhoQp71FKKbQZx
+BODJ8SvcPtUfOJgmtbIPl8uEfK0W/FaT0qFB42UI0ScF8lilPOXtTUC6aBiO3/Ch
+CunWpVOl/64zV7iyTPapVSvKms3lyHhDOSwyDHaLtcJdquhITkxMT+C0a05d8FJX
+31WB2RYIrOqzOyADsHEi3faFunkFezOs7lyVBbEuuFhtct84EcNIsv0+Go3zsbgj
+2EECKyQ4Lg/2sF9C6XOp+stRukNl+q5ttxXAZjLfAR0WikIK0tuJkrcL3I8IOjEW
+xQ81wd0QzMarFfKuZrBhsvV5urz8sSdMBqk8ufl7sIhNPJEio29Q8IQJZQZZ+WP6
+9Er7d35yGPW034ZOGe0KsqNpjsQiAI5k4XJRnvt/Y6mz965HxgjfeKWWZ6mvic9d
+sf3H2XDr83qWufdzs0OE+yTxzsSlTijbJclj++u4yFSnxT8DuV0rcrwI3q+YHo+y
+8jwCDypIqvEABtzcoYwlzpNHTqumtiRqlmVNnwBgB1765bIfZOihvqRjjFMjZv0V
+XkW1zTFBl8LhPjR3MbFt
+=Hbb/
+-----END PGP SIGNATURE-----
+
+--moC1XDyencuJ/zDM--
