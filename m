@@ -1,79 +1,44 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH RESEND V2] ARM: dts: Correct the base address of pinctrl_3
- on Exynos5250
-Date: Mon, 17 Jun 2013 21:58:47 +0900
-Message-ID: <1a1601ce6b5a$6833d8a0$389b89e0$%kim@samsung.com>
-References: <1371025425-480-1-git-send-email-padma.v@samsung.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [RFC PATCH 01/11] dma: amba-pl08x: Use bitmap to
+ pass variant specific quirks
+Date: Mon, 17 Jun 2013 15:25:44 +0200
+Message-ID: <CACRpkdYAm9BRVjFLwScnwK7SCm8z=4=_DUBhYPna=ywzzpJSMQ@mail.gmail.com>
+References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-2-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1371025425-480-1-git-send-email-padma.v@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, 'Olof Johansson' <olof@lixom.net>
-Cc: sbkim73@samsung.com, broonie@kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oa0-f48.google.com (mail-oa0-f48.google.com
+ [209.85.219.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 214B7262635
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 15:25:44 +0200 (CEST)
+Received: by mail-oa0-f48.google.com with SMTP id f4so3376217oah.35
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 06:25:44 -0700 (PDT)
+In-Reply-To: <1371416058-22047-2-git-send-email-tomasz.figa@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Padmavathi Venna wrote:
-> 
-> This patch corrects the base address of pinctrl_3 on Exynos5250
-> platform.
-> 
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-(+ Olof)
+> Instead of defining new bool field in vendor_data struct for each quirk,
+> it is more reasonable to use a single flags field and make each quirk
+> use single bits.
+>
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-Olof, there is no other fixes in my tree for v3.10 yet, so would be helpful
-if you could take this into fixes in arm-soc for v3.10. Just note, the wrong
-address added during v3.10 merge window.
+Not that I see the point, but I have no strong preference so:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-If you want,
-Acked-by: Kukjin Kim <kgene.kim@samsung.com>
-
-If any problems, please kindly let me know.
-
-Thanks,
-- Kukjin
-
-> ---
-> Changes since V1:
-> 	- Added platform name in the subject line.
-> 
->  arch/arm/boot/dts/exynos5250-pinctrl.dtsi |    2 +-
->  arch/arm/boot/dts/exynos5250.dtsi         |    4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
-> b/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
-> index d1650fb..ded558b 100644
-> --- a/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
-> @@ -763,7 +763,7 @@
->  		};
->  	};
-> 
-> -	pinctrl@03680000 {
-> +	pinctrl@03860000 {
->  		gpz: gpz {
->  			gpio-controller;
->  			#gpio-cells = <2>;
-> diff --git a/arch/arm/boot/dts/exynos5250.dtsi
-> b/arch/arm/boot/dts/exynos5250.dtsi
-> index 7154e3d..e9bfd13 100644
-> --- a/arch/arm/boot/dts/exynos5250.dtsi
-> +++ b/arch/arm/boot/dts/exynos5250.dtsi
-> @@ -169,9 +169,9 @@
->  		interrupts = <0 50 0>;
->  	};
-> 
-> -	pinctrl_3: pinctrl@03680000 {
-> +	pinctrl_3: pinctrl@03860000 {
->  		compatible = "samsung,exynos5250-pinctrl";
-> -		reg = <0x0368000 0x1000>;
-> +		reg = <0x03860000 0x1000>;
->  		interrupts = <0 47 0>;
->  	};
-> 
-> --
-> 1.7.4.4
+Yours,
+Linus Walleij
