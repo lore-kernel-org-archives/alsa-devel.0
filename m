@@ -1,41 +1,74 @@
-From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH] sound/soc/davinci: remove sffsdr machine support
-Date: Mon, 17 Jun 2013 14:47:46 +0530
-Message-ID: <51BED43A.3030608@ti.com>
-References: <1371458791-7530-1-git-send-email-nsekhar@ti.com>
-	<20130617090524.GW1403@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20130617090524.GW1403-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Hugo Villeneuve <hugo-rg2e/+w5TaNBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH V2 12/15] ASoC: spear: Convert to use devm_ioremap_resource
+Date: Mon, 17 Jun 2013 14:43:08 +0530
+Message-ID: <1371460388-26177-1-git-send-email-tushar.behera@linaro.org>
+References: <1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: thierry.reding@gmail.com, patches@linaro.org, sachin.kamat@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+introduced devm_ioremap_resource() and deprecated the use of
+devm_request_and_ioremap().
 
-On 6/17/2013 2:35 PM, Mark Brown wrote:
-> On Mon, Jun 17, 2013 at 02:16:31PM +0530, Sekhar Nori wrote:
->> sffsdr machine support does not build since at least v2.6.36
->> (~3 years). There is little hope of it being fixed, so remove
->> the support.
-> 
-> This doesn't actually apply against -next and I had to fix up the
-> subject line too but applied anyway, thanks.
+devm_request_mem_region is called in devm_ioremap_resource(). Hence that
+part can also be removed.
 
-Thanks for applying. I looked at wrong examples of subject line
-convention in git log. The ones I looked at turned out to be merged from
-outside of ASoC tree. Sigh.
+Since devm_ioremap_resource prints error message on failure, there is
+no need to print an explicit warning message.
 
-Thanks,
-Sekhar
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+CC: alsa-devel@alsa-project.org
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Mark Brown <broonie@kernel.org>
+---
+Changes for V2:
+* Removed redundant print of error message from devm_ioremap_resource
+exit path
+* Call to devm_request_mem_region is removed.
+
+ sound/soc/spear/spdif_out.c |   20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
+
+diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+index 4bde512..64db05a 100644
+--- a/sound/soc/spear/spdif_out.c
++++ b/sound/soc/spear/spdif_out.c
+@@ -282,28 +282,16 @@ static int spdif_out_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -EINVAL;
+-
+-	if (!devm_request_mem_region(&pdev->dev, res->start,
+-				resource_size(res), pdev->name)) {
+-		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+-		return -ENOENT;
+-	}
+-
+ 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host) {
+ 		dev_warn(&pdev->dev, "kzalloc fail\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	host->io_base = devm_request_and_ioremap(&pdev->dev, res->start,
+-				resource_size(res));
+-	if (!host->io_base) {
+-		dev_warn(&pdev->dev, "ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	host->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->io_base))
++		return PTR_ERR(host->io_base);
+ 
+ 	host->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk))
+-- 
+1.7.9.5
