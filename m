@@ -1,61 +1,53 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH V6 6/6] clk: exynos5250: Add enum entries for divider clock
- of i2s1 and i2s2
-Date: Mon, 17 Jun 2013 19:15:27 +0900
-Message-ID: <19ac01ce6b43$96bfb4d0$c43f1e70$%kim@samsung.com>
-References: <1371024463-303-1-git-send-email-padma.v@samsung.com>
- <1371024463-303-7-git-send-email-padma.v@samsung.com>
- <20130612164553.26381.41398@quantum>
- <CAAgF-BfEvBcrm186t6U9Tp4r64wB3sEsy6hoXMQi=dHJgncvfw@mail.gmail.com>
- <CAAgF-Bf4BVfGVuFF8-CwPRi-em5VHA5HXYjkRDxPxvyAZPx7kw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2 12/15] ASoC: spear: Convert to use
+ devm_ioremap_resource
+Date: Mon, 17 Jun 2013 11:20:00 +0100
+Message-ID: <20130617102000.GB1403@sirena.org.uk>
+References: <1370864113-17895-13-git-send-email-tushar.behera@linaro.org>
+ <1371460388-26177-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <CAAgF-Bf4BVfGVuFF8-CwPRi-em5VHA5HXYjkRDxPxvyAZPx7kw@mail.gmail.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Padma Venkat' <padma.kvr@gmail.com>, 'Mike Turquette' <mturquette@linaro.org>
-Cc: 'Padmavathi Venna' <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oQzL12nKbmSHS3MD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371460388-26177-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: linux-kernel@vger.kernel.org, thierry.reding@gmail.com, patches@linaro.org, sachin.kamat@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Padma Venkat wrote:
-> 
-> Hi Mike,
-> 
-> On Thu, Jun 13, 2013 at 8:32 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
-> > Hi Mike,
-> >
-> > On Wed, Jun 12, 2013 at 10:15 PM, Mike Turquette <mturquette@linaro.org>
-> wrote:
-> >> Quoting Padmavathi Venna (2013-06-12 01:07:43)
-> >>> This patch adds enum entries for div_i2s1 and div_i2s2 which are
-> >>> required for i2s1 and i2s2 controllers.
-> >>>
-> >>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> >>
-> >> Looks good.  Did you want me to take the clk patches or just gathering
-> >> Acks?
-> >
-> > Please take the patches :).
-> >
-> > Thanks
-> > Padma
-> 
-> clk related patches in this set has some dependency on arch side
-> patches because one of the patch replaces all '/include's with
-> '#include's and adds a header file in
-> arch/arm/boot/include/dt-bindings/. So all these patches required to
-> go into one tree.
-> 
-> Hi Kukjin,
-> 
-> Can you please take all these patches into samsung-tree?
-> 
-Padma, sure, I will.
 
-BTW, Mike, according to your reply, I may get your ack on 2nd and 6th clk
-patches...If any problems, please kindly let me know.
+--oQzL12nKbmSHS3MD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-- Kukjin
+On Mon, Jun 17, 2013 at 02:43:08PM +0530, Tushar Behera wrote:
+> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+> introduced devm_ioremap_resource() and deprecated the use of
+> devm_request_and_ioremap().
+
+This doesn't apply against current code, please check and resend.
+
+--oQzL12nKbmSHS3MD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRvuLMAAoJELSic+t+oim9ZFYP/2mGzQNaaKGMOF/1zuJpYCU3
+zTjmm1XJrTwz4W4PHHa7G0n6o9R2sjkj8QQbLsTZteXlE5BxKEt9kVJobcS9aTib
+SP0QtGXFeDsxwTNymCvMmHdCboU4yv6n3Rln6927WC0twwg2ZKYRipTq1Tqe2ago
++wHaD0bOlTJx1x/m4l83aVpVVgONNOnX2cWiEZd0FNZ+hWPeVwSheQQM7XSAbsmK
+UCZWfB7x1dydAuR5zUENG+jIjr13teAO0hS1HjxfzRNJnUD241soPfIYzHU2JhiL
+M67+m42mKzEsHt9/o7ekwleW2lg/LIcTiGaTAL5qtnywxMOOYMgmu9fVtO8wf9qy
+I6iWP+bqHkgwVl+C70Su7DcXSdO8G/tt25XjPyJJKBu/+NvHwRuz8Iahjy+lHE/i
+X9xCkRuEzQY58FNkLAUrjD1bH2HPHqTEa5GUR3Q1Pc/Wt75hycqef4wRrAF7M/Fe
+8bKee3A+EoDbSbX2Sfe0TLcvDgjq1TPrXmkjJsvd0wPXXEsMMENZhblShLBOyGLS
+TnzVP1iLGi8ZTahhPO2EZiM2jmP+N+kXYx2ZLPkhPJUKswdABv7CXuqdR9ayBYss
+czSljb+4F0XFocYT2oAxYN9Ce8qV875k+9mBtydRvSwi7/MBGZjqcgHXCEVenIQd
+tPQnofRjfXv5W27KRqVn
+=8kn7
+-----END PGP SIGNATURE-----
+
+--oQzL12nKbmSHS3MD--
