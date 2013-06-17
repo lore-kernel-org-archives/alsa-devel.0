@@ -1,14 +1,19 @@
-From: Mark Brown <broonie@linaro.org>
-Subject: [PATCH 1/2] ASoC: spear: Remove nonexistant EVM options
-Date: Mon, 17 Jun 2013 09:07:06 +0100
-Message-ID: <1371456427-31648-1-git-send-email-broonie@linaro.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/4] ALSA: hda - Return error when open
+	empty hdmi device
+Date: Mon, 17 Jun 2013 10:23:37 +0200
+Message-ID: <51BEC789.1060408@canonical.com>
+References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1371223229-8236-3-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id E293B2619D1
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 10:07:15 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57C762616FB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 10:23:41 +0200 (CEST)
+In-Reply-To: <1371223229-8236-3-git-send-email-xingchao.wang@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,58 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+To: Wang Xingchao <xingchao.wang@linux.intel.com>
+Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The source wasn't added.
+On 06/14/2013 05:20 PM, Wang Xingchao wrote:
+> when user open HDMI device 3/7/8, if it has no physical device
+> connected, return error.
 
-Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/spear/Kconfig  |   21 ---------------------
- sound/soc/spear/Makefile |    3 ---
- 2 files changed, 24 deletions(-)
+This patch will cause regressions in two big use cases:
 
-diff --git a/sound/soc/spear/Kconfig b/sound/soc/spear/Kconfig
-index e3851d6..3567d73 100644
---- a/sound/soc/spear/Kconfig
-+++ b/sound/soc/spear/Kconfig
-@@ -1,24 +1,3 @@
--config SND_SPEAR_EVM
--	tristate "SoC Audio support for SPEAr EVM"
--	select SND_DESIGNWARE_I2S
--	select SND_SOC_STA529
--	select SND_SPEAR_SOC
--	help
--	 Say Y if you want to add support for SoC audio on SPEAr
--	 platform
--
--config SND_SPEAR1340_EVM
--	tristate "SoC Audio support for SPEAr1340 EVM"
--	select SND_DESIGNWARE_I2S
--	select SND_SOC_STA529
--	select SND_SPEAR_SPDIF_OUT
--	select SND_SPEAR_SPDIF_IN
--	select SND_SOC_SPDIF
--	select SND_SPEAR_SOC
--	help
--	 Say Y if you want to add support for SoC audio on SPEAr1340
--	 platform
--
- config SND_SPEAR_SOC
- 	tristate
- 	select SND_SOC_DMAENGINE_PCM
-diff --git a/sound/soc/spear/Makefile b/sound/soc/spear/Makefile
-index b365126..9f47bb4 100644
---- a/sound/soc/spear/Makefile
-+++ b/sound/soc/spear/Makefile
-@@ -2,6 +2,3 @@
- obj-$(CONFIG_SND_SPEAR_SOC) += spear_pcm.o
- obj-$(CONFIG_SND_SPEAR_SPDIF_IN) += spdif_in.o
- obj-$(CONFIG_SND_SPEAR_SPDIF_OUT) += spdif_out.o
--
--# SPEAR Machine Support
--obj-$(CONFIG_SND_SPEAR_EVM) += spear_evb.o
+  1) Older chipsets (at least from non-Intel vendors) might not support 
+correct ELD reporting. Thus this will cause HDMI audio to stop working 
+there.
+
+  2) In PulseAudio's current design, PulseAudio probes the device at 
+startup and caches the result. Unfortunately, there is no reprobing at 
+plug/unplug, so if the monitor is hotplugged, it will not work unless 
+PulseAudio is restarted afterwards.
+
+
+> The bug is from Haswell platform, All pins choose converter 0 by default
+> in hardware level, maybe only pin 1 had valid monitor connected. if user
+> play audio on pin 0/2, pin 1 can get audio data too.
+>
+> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> ---
+>   sound/pci/hda/patch_hdmi.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 8db5eb6..d766f40 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1139,6 +1139,9 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+>   	per_pin = get_pin(spec, pin_idx);
+>   	eld = &per_pin->sink_eld;
+>
+> +	if (!eld->monitor_present || !eld->eld_valid)
+> +		return -EIO;
+> +
+>   	if (codec->vendor_id == 0x80862807)
+>   		hsw_verify_cvt_D0(spec, codec);
+>   		
+>
+
+
+
 -- 
-1.7.10.4
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
