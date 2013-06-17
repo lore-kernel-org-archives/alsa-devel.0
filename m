@@ -1,78 +1,85 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Mon, 17 Jun 2013 21:38:10 +0200
-Message-ID: <7386771.s52fBU89jU@flatron>
-References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <CACRpkdbS3YvwSjpMQbJvSNty=sBrx20vUHKYG44OaWowcN6b0g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] mfd: wm5102: Expose DRE control
+	registers
+Date: Mon, 17 Jun 2013 23:48:52 +0100
+Message-ID: <20130617224852.GK1403@sirena.org.uk>
+References: <1371055448-31316-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20130612170704.GP1403@sirena.org.uk>
+ <20130617223811.GS7998@zurbaran>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CACRpkdbS3YvwSjpMQbJvSNty=sBrx20vUHKYG44OaWowcN6b0g@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Jaroslav Kysela <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.
+Content-Type: multipart/mixed; boundary="===============8283978472854135316=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D89A2650C2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 00:49:03 +0200 (CEST)
+In-Reply-To: <20130617223811.GS7998@zurbaran>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 17 of June 2013 16:06:25 Linus Walleij wrote:
-> On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> 
-wrote:
-> > One of the biggest roadblocks on the way of S3C64xx to DeviceTree
-> > support is its DMA driver, which is completely platform-specific and
-> > provides private API (s3c-dma), not even saying that its design is
-> > completely against multiplatform-awareness.
-> > 
-> > The DMA controller present on this SoC series is a custom variant
-> > of ARM PrimeCell PL080 modified by Samsung to add some extra features.
-> > 
-> > It is mostly compatible with original PL080, except:
-> >  - CH_CONTROL2 register is added between CH_CONTROL and CH_CONFIG,
-> >  - offset of CH_CONFIG register is different,
-> >  - transfer size field is moved from CH_CONTROL to CH_CONTROL2,
-> >  - transfer size field is extended to 24 bits, allowing much bigger
-> >  
-> >      single transfer,
-> >  
-> >  - LLI consists of one more word, to account for CH_CONTROL2 register.
-> > 
-> > Since all the rest is fully compatible with standard PL080 there is no
-> > point in having separate driver just for this single variant, so I
-> > decided to look into adding support for it to the amba-pl08x driver.
-> > 
-> > There was already some attempt to achieve this before, but this was
-> > before Russel's big rework of the driver to use virtual channels,
-> > making the old patches being not much of use.
-> > 
-> > This RFC series is a proof of concept that I managed to make during
-> > last days of hacking. Except one patch adding clkdev lookup to clock
-> > driver (which is being replaced with a CCF-compliant driver ATM),
-> > this is enough to get memcpy and slave transfers to work on S3C64xx.
-> > 
-> > I have tested this on Mini6410 and SMDK6410 boards using dmatest for
-> > memcpy and Samsung I2S with madplay/aplay for slave transfers.
-> > Unfortunately I do not have access to other platforms with PL08x so
-> > I could not test for any regressions introduced on them.
-> > 
-> > Credits for two patches go to Alban Bedel, who made a series fixing
-> > this driver to make it usable with audio drivers. I rebased his
-> > patches on top of mine and corrected coding style a bit.
-> > 
-> > OK, that's all. Any comments are welcome. Feel free to start throwing
-> > eggs and tomatoes if you find this awful, but I won't be upset if I
-> > get some Tested-by or Acked-by as well. ;)
-> 
-> I've waited for a long time for this to happen, thank you very much for
-> doing this.
 
-You're welcome. Thanks for your review.
+--===============8283978472854135316==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dFa58RoqyP9py9tY"
+Content-Disposition: inline
 
-Best regards,
-Tomasz
+
+--dFa58RoqyP9py9tY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 18, 2013 at 12:38:11AM +0200, Samuel Ortiz wrote:
+> On Wed, Jun 12, 2013 at 06:07:04PM +0100, Mark Brown wrote:
+
+> > On Wed, Jun 12, 2013 at 05:44:07PM +0100, Charles Keepax wrote:
+> > > Certain use cases may require specific DRE settings so expose the
+> > > necessary registers.
+
+> > Applied both, thanks.
+
+> Do you have ASoC dependencies on this one or do you mind me taking it ?
+
+The new register defines get used for the ASoC controls unfortunately so
+there is a dependency.
+
+--dFa58RoqyP9py9tY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRv5JRAAoJELSic+t+oim9U3IP+gPw/m1+q9P95thhIdG7jitv
+vUGntAnvnzase3FK3haAApUUk0eKeEU9hbsLc29fEZENx7N3qQVNkkW0mmUFHrV5
+gmKoRhAKUaufZHi3rvfGMKucRqitetlV/rXeTh2lmoLMfUreemAVTtvTchy+0FGL
+/FRWrIwnCjEXBrW96qcy/hU8buaG85jfkN8CrwSTwE6+ZvlJLD7iXQQYnXRa2iyj
+baOLQRstsbK0MeifIp1XDoMeSmO/ePeai8zu8ugCxH75nnhokEr1B6yf4QIytwGJ
+fE7F32cEx41HGtcf88U+6Am15hE+GAX5jUBLEQma4RBnZafVGY/+KesI4ncB28u+
+0T7AhlW+F1HvyKJ9ZL/99s/bh4GW16gX79A+aW6tTjhSMWyFerrpWK9+oVwKthCY
+1xNCicRk6ZnJdHDs/cO684TxBuwpYpNIKQom+SuVCfoaxApF3Lx46OtExxv+az3v
+kk8euXwMOEivHZoRIDgPiGHGO9NWKzXFQhdIuTKlW/i5msKhjKfX2XcllNd2MHFn
+ZxMligXIOS4clHYXd1qSuJJBbB48sD5m8n/IXA3ossN0uitd3xBvKWYVBRX80hCi
+fa4+RABeqrEtHhUTUcQyNZDikcm1yrhomG0dQcDF2/UMrgObAuO4mTM86kX1u5xe
+v4pbGnD7zk3OtPQ0r6ot
+=pxAm
+-----END PGP SIGNATURE-----
+
+--dFa58RoqyP9py9tY--
+
+--===============8283978472854135316==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8283978472854135316==--
