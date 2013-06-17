@@ -1,243 +1,79 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Add display audio routing
- API for haswell
-Date: Mon, 17 Jun 2013 12:53:57 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC489011830702@SHSMSX104.ccr.corp.intel.com>
-References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
-	<1371223229-8236-5-git-send-email-xingchao.wang@linux.intel.com>
-	<s5h8v29nm70.wl%tiwai@suse.de>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH RESEND V2] ARM: dts: Correct the base address of pinctrl_3
+ on Exynos5250
+Date: Mon, 17 Jun 2013 21:58:47 +0900
+Message-ID: <1a1601ce6b5a$6833d8a0$389b89e0$%kim@samsung.com>
+References: <1371025425-480-1-git-send-email-padma.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <s5h8v29nm70.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>
-Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "david.henningsson@canonical.com" <david.henningsson@canonical.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1371025425-480-1-git-send-email-padma.v@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Padmavathi Venna' <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, padma.kvr@gmail.com, 'Olof Johansson' <olof@lixom.net>
+Cc: sbkim73@samsung.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Padmavathi Venna wrote:
+> 
+> This patch corrects the base address of pinctrl_3 on Exynos5250
+> platform.
+> 
+> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, June 17, 2013 5:04 PM
-> To: Wang Xingchao
-> Cc: daniel.vetter@ffwll.ch; alsa-devel@alsa-project.org;
-> intel-gfx@lists.freedesktop.org; david.henningsson@canonical.com; Wang,
-> Xingchao
-> Subject: Re: [PATCH 4/4] ALSA: hda - Add display audio routing API for haswell
-> 
-> At Fri, 14 Jun 2013 23:20:29 +0800,
-> Wang Xingchao wrote:
-> >
-> > ALSA side use these apis to know display audio routing map in gfx
-> > side. And use the API to disable unused pin's audio output.
-> 
-> Adding more and more such exported functions doesn't look scaling.
-> Better to define an ops struct and export it.
+(+ Olof)
 
-Thanks Takashi, under discussion with Daniel in another thread, need improvement to make the API clean.
-I will rework the patch when get some agreement.
+Olof, there is no other fixes in my tree for v3.10 yet, so would be helpful
+if you could take this into fixes in arm-soc for v3.10. Just note, the wrong
+address added during v3.10 merge window.
 
-Thanks
---xingchao
+If you want,
+Acked-by: Kukjin Kim <kgene.kim@samsung.com>
+
+If any problems, please kindly let me know.
+
+Thanks,
+- Kukjin
+
+> ---
+> Changes since V1:
+> 	- Added platform name in the subject line.
 > 
+>  arch/arm/boot/dts/exynos5250-pinctrl.dtsi |    2 +-
+>  arch/arm/boot/dts/exynos5250.dtsi         |    4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> Takashi
+> diff --git a/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
+> b/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
+> index d1650fb..ded558b 100644
+> --- a/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/exynos5250-pinctrl.dtsi
+> @@ -763,7 +763,7 @@
+>  		};
+>  	};
 > 
-> >
-> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/hda_i915.c   | 83
-> ++++++++++++++++++++++++++++++++++++++++++++++
-> >  sound/pci/hda/hda_i915.h   |  4 +++
-> >  sound/pci/hda/patch_hdmi.c | 20 +++++++++--
-> >  3 files changed, 104 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c index
-> > 76c13d5..7ac446f 100644
-> > --- a/sound/pci/hda/hda_i915.c
-> > +++ b/sound/pci/hda/hda_i915.c
-> > @@ -22,9 +22,73 @@
-> >  #include <drm/i915_powerwell.h>
-> >  #include "hda_i915.h"
-> >
-> > +/* Haswell power well */
-> >  static void (*get_power)(void);
-> >  static void (*put_power)(void);
-> >
-> > +/* Haswell audio routing */
-> > +static int (*get_using_pipe)(int);
-> > +static int (*disable_unused_pipe)(int, int *); static int
-> > +(*restore_eld)(void);
-> > +
-> > +#define i915_pipe_name(p) ((p) + 'A')
-> > +
-> > +static int busy_pins[3] = {0, 0, 0};
-> > +
-> > +int hdmi_disable_unused_pipe(int pin_idx, int pipe_idx) {
-> > +	busy_pins[pin_idx] = 1;
-> > +	if (disable_unused_pipe)
-> > +		disable_unused_pipe(pipe_idx, busy_pins);
-> > +
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL(hdmi_disable_unused_pipe);
-> > +
-> > +void hdmi_restore_pineld(int pin_idx) {
-> > +	busy_pins[pin_idx] = 0;
-> > +	if (restore_eld)
-> > +		restore_eld();
-> > +}
-> > +EXPORT_SYMBOL(hdmi_restore_pineld);
-> > +
-> > +int hdmi_get_using_pipe(int pin_idx)
-> > +{
-> > +	int pipe = -1;
-> > +
-> > +	if (get_using_pipe)
-> > +		pipe = get_using_pipe(pin_idx);
-> > +
-> > +	if (pipe != -1)
-> > +		snd_printd("HDMI: pin %d get using pipe %c\n", pin_idx,
-> > +i915_pipe_name(pipe));
-> > +
-> > +	return pipe;
-> > +}
-> > +EXPORT_SYMBOL(hdmi_get_using_pipe);
-> > +
-> > +static int init_audio_routing(void)
-> > +{
-> > +	get_using_pipe = symbol_request(i915_using_pipe);
-> > +	if (!get_using_pipe)
-> > +		return -ENODEV;
-> > +
-> > +	disable_unused_pipe = symbol_request(i915_disable_pipe);
-> > +	if (!disable_unused_pipe) {
-> > +		get_using_pipe = NULL;
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	restore_eld = symbol_request(i915_restore_pineld);
-> > +	if (!restore_eld) {
-> > +		restore_eld = NULL;
-> > +		get_using_pipe = NULL;
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  void hda_display_power(bool enable)
-> >  {
-> >  	if (!get_power || !put_power)
-> > @@ -57,6 +121,10 @@ int hda_i915_init(void)
-> >
-> >  	snd_printd("HDA driver get symbol successfully from i915 module\n");
-> >
-> > +	err = init_audio_routing();
-> > +	if (err < 0)
-> > +		snd_printd("HDA driver get audior routing APIs failed!\n");
-> > +
-> >  	return err;
-> >  }
-> >
-> > @@ -71,5 +139,20 @@ int hda_i915_exit(void)
-> >  		put_power = NULL;
-> >  	}
-> >
-> > +	if (get_using_pipe) {
-> > +		symbol_put(get_using_pipe);
-> > +		get_using_pipe = NULL;
-> > +	}
-> > +
-> > +	if (disable_unused_pipe) {
-> > +		symbol_put(disable_unused_pipe);
-> > +		disable_unused_pipe = NULL;
-> > +	}
-> > +
-> > +	if (restore_eld) {
-> > +		symbol_put(restore_eld);
-> > +		restore_eld = NULL;
-> > +	}
-> > +
-> >  	return 0;
-> >  }
-> > diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h index
-> > 5a63da2..52d6f09 100644
-> > --- a/sound/pci/hda/hda_i915.h
-> > +++ b/sound/pci/hda/hda_i915.h
-> > @@ -32,4 +32,8 @@ static inline int hda_i915_exit(void)  }  #endif
-> >
-> > +extern int hdmi_get_using_pipe(int pin_idx); extern int
-> > +hdmi_disable_unused_pipe(int pin_idx, int pipe_idx); extern void
-> > +hdmi_restore_pineld(int pin_idx);
-> > +
-> >  #endif
-> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > index d766f40..2a1e977 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -39,6 +39,7 @@
-> >  #include "hda_codec.h"
-> >  #include "hda_local.h"
-> >  #include "hda_jack.h"
-> > +#include "hda_i915.h"
-> >
-> >  static bool static_hdmi_pcm;
-> >  module_param(static_hdmi_pcm, bool, 0644); @@ -1131,6 +1132,7 @@
-> > static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> >  	struct hdmi_spec_per_pin *per_pin;
-> >  	struct hdmi_eld *eld;
-> >  	struct hdmi_spec_per_cvt *per_cvt = NULL;
-> > +	int pipe_idx;
-> >
-> >  	/* Validate hinfo */
-> >  	pin_idx = hinfo_to_pin_index(spec, hinfo); @@ -1139,12 +1141,21 @@
-> > static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> >  	per_pin = get_pin(spec, pin_idx);
-> >  	eld = &per_pin->sink_eld;
-> >
-> > +	if (codec->vendor_id == 0x80862807) {
-> > +		hsw_verify_cvt_D0(spec, codec);
-> > +
-> > +		pipe_idx = hdmi_get_using_pipe(pin_idx);
-> > +		if (pipe_idx < 0)
-> > +			snd_printdd("HDMI: Pin %d has no valid pipe in use\n", pin_idx);
-> > +		else {
-> > +			hdmi_disable_unused_pipe(pin_idx, pipe_idx);
-> > +			msleep(10);
-> > +		}
-> > +	}
-> > +
-> >  	if (!eld->monitor_present || !eld->eld_valid)
-> >  		return -EIO;
-> >
-> > -	if (codec->vendor_id == 0x80862807)
-> > -		hsw_verify_cvt_D0(spec, codec);
-> > -
-> >  	/* Dynamically assign converter to stream */
-> >  	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
-> >  		per_cvt = get_cvt(spec, cvt_idx);
-> > @@ -1514,6 +1525,9 @@ static int hdmi_pcm_close(struct
-> hda_pcm_stream *hinfo,
-> >  		snd_hda_spdif_ctls_unassign(codec, pin_idx);
-> >  		per_pin->chmap_set = false;
-> >  		memset(per_pin->chmap, 0, sizeof(per_pin->chmap));
-> > +
-> > +		if (codec->vendor_id == 0x80862807)
-> > +			hdmi_restore_pineld(pin_idx);
-> >  	}
-> >
-> >  	return 0;
-> > --
-> > 1.8.1.2
-> >
+> -	pinctrl@03680000 {
+> +	pinctrl@03860000 {
+>  		gpz: gpz {
+>  			gpio-controller;
+>  			#gpio-cells = <2>;
+> diff --git a/arch/arm/boot/dts/exynos5250.dtsi
+> b/arch/arm/boot/dts/exynos5250.dtsi
+> index 7154e3d..e9bfd13 100644
+> --- a/arch/arm/boot/dts/exynos5250.dtsi
+> +++ b/arch/arm/boot/dts/exynos5250.dtsi
+> @@ -169,9 +169,9 @@
+>  		interrupts = <0 50 0>;
+>  	};
+> 
+> -	pinctrl_3: pinctrl@03680000 {
+> +	pinctrl_3: pinctrl@03860000 {
+>  		compatible = "samsung,exynos5250-pinctrl";
+> -		reg = <0x0368000 0x1000>;
+> +		reg = <0x03860000 0x1000>;
+>  		interrupts = <0 47 0>;
+>  	};
+> 
+> --
+> 1.7.4.4
