@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH 04/11] dma: amba-pl08x: Add support for
-	PL080S variant
-Date: Mon, 17 Jun 2013 15:39:34 +0200
-Message-ID: <CACRpkdZ+g-_AC=2WBs3nruyTMX16Ona99g_wcS=PqOuZ6xVpog@mail.gmail.com>
+Subject: Re: [RFC PATCH 05/11] dma: amba-pl08x: Add support for
+ different maximum transfer size
+Date: Mon, 17 Jun 2013 15:42:15 +0200
+Message-ID: <CACRpkdaHpNVXueXy0HRnKTshn4ZZSPFh-pgav6B0UAU1xqsNCg@mail.gmail.com>
 References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <1371416058-22047-5-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-6-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com
- [209.85.214.170])
- by alsa0.perex.cz (Postfix) with ESMTP id D660726087B
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 15:39:34 +0200 (CEST)
-Received: by mail-ob0-f170.google.com with SMTP id ef5so3172393obb.15
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 06:39:34 -0700 (PDT)
-In-Reply-To: <1371416058-22047-5-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
+ [209.85.214.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E482261ACB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 15:42:16 +0200 (CEST)
+Received: by mail-ob0-f175.google.com with SMTP id xn12so3118000obc.20
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 06:42:15 -0700 (PDT)
+In-Reply-To: <1371416058-22047-6-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,30 +31,18 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-> PL080S is a modified version of PL080 that can be found on Samsung SoCs,
-> such as S3C6400 and S3C6410.
+> PL080S has separate register to store transfer size in, allowing single
+> transfer to be much larger than in standard PL080.
 >
-> It has different offset of CONFIG register, separate CONTROL1 register
-> that holds transfer size and larger maximum transfer size.
+> This patch makes the amba-pl08x driver aware of this and removes writing
+> transfer size to reserved bits of CH_CONTROL register on PL080S, which
+> was not a problem witn transfer sizes fitting the original bitfield
+> of PL080, but now would overwrite other fields.
 >
 > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-(I would have done some smallish things differently but it
-is only a matter of taste.)
-
->  static struct amba_id pl08x_ids[] = {
-> +       /* Samsung PL080S variant */
-> +       {
-> +               .id     = 0x0a141080,
-> +               .mask   = 0xffffffff,
-> +               .data   = &vendor_pl080s,
-> +       },
-
-Interesting that Samsung claim to be vendor 0x41
-(ARM). Well ARM never made revision no 0x0a so
-this works.
+Very straight-forward.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
