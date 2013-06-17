@@ -1,99 +1,65 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to arm/common
-Date: Mon, 17 Jun 2013 10:57:03 -0700
-Message-ID: <CAOesGMgX=7mOtY9UN5iJNiCDTieXZpkLB-ceL1m_r0UZ_OSr0g@mail.gmail.com>
-References: <1371463571-2578-1-git-send-email-nsekhar@ti.com>
-	<1371463571-2578-2-git-send-email-nsekhar@ti.com>
-	<20130617170326.GA28497@quad.lixom.net>
-	<083BC63EECB6FD41B8E81CF7FD87CC0F2E4E95C2@DLEE08.ent.ti.com>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [RFC PATCH 04/11] dma: amba-pl08x: Add support for PL080S variant
+Date: Mon, 17 Jun 2013 20:22:41 +0200
+Message-ID: <3074496.mvNejQEAbP@flatron>
+References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-5-git-send-email-tomasz.figa@gmail.com>
+ <CACRpkdZ+g-_AC=2WBs3nruyTMX16Ona99g_wcS=PqOuZ6xVpog@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4E95C2@DLEE08.ent.ti.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: "Fernandes, Joel A" <joelagnel@ti.com>
-Cc: "Nori, Sekhar" <nsekhar@ti.com>, Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@deeprootsystems.com>, Matt Porter <matt@ohporter.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CACRpkdZ+g-_AC=2WBs3nruyTMX16Ona99g_wcS=PqOuZ6xVpog@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Jaroslav Kysela <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 17, 2013 at 10:55 AM, Fernandes, Joel A <joelagnel@ti.com> wrote:
-> Hi Olof,
->
->> -----Original Message-----
->> From: Olof Johansson [mailto:olof@lixom.net]
->> Sent: Monday, June 17, 2013 12:03 PM
->> To: Nori, Sekhar
->> Cc: Russell King; Vinod Koul; Chris Ball; Liam Girdwood; Mark Brown; Kevin
->> Hilman; Matt Porter; Fernandes, Joel A; linux-arm-kernel@lists.infradead.org;
->> davinci-linux-open-source@linux.davincidsp.com; linux-mmc@vger.kernel.org;
->> alsa-devel@alsa-project.org; Arnd Bergmann
->> Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to
->> arm/common
->>
->> On Mon, Jun 17, 2013 at 03:36:10PM +0530, Sekhar Nori wrote:
->> > From: Matt Porter <mporter@ti.com>
->> >
->> > Move mach-davinci/dma.c to common/edma.c so it can be used by OMAP
->> > (specifically AM33xx) as well.
->> >
->> > Signed-off-by: Matt Porter <mporter@ti.com>
->> > Acked-by: Chris Ball <cjb@laptop.org> # davinci_mmc.c
->> > [nsekhar@ti.com: dropped davinci sffsdr changes]
->> > Signed-off-by: Sekhar Nori <nsekhar@ti.com>
->>
->> Acked-by: Olof Johansson <olof@lixom.net>
->>
->> Tiny nit below, no need to respin just for that.
->>
->> I suppose we should take this through arm-soc.
->>
->> > ---
->> >  arch/arm/Kconfig                                   |    1 +
->> >  arch/arm/common/Kconfig                            |    3 +
->> >  arch/arm/common/Makefile                           |    1 +
->> >  arch/arm/{mach-davinci/dma.c => common/edma.c}     |    2 +-
->> >  arch/arm/mach-davinci/Makefile                     |    2 +-
->> >  arch/arm/mach-davinci/board-tnetv107x-evm.c        |    2 +-
->> >  arch/arm/mach-davinci/davinci.h                    |    2 +-
->> >  arch/arm/mach-davinci/devices-tnetv107x.c          |    2 +-
->> >  arch/arm/mach-davinci/devices.c                    |    6 +-
->> >  arch/arm/mach-davinci/dm355.c                      |    2 +-
->> >  arch/arm/mach-davinci/dm365.c                      |    2 +-
->> >  arch/arm/mach-davinci/dm644x.c                     |    2 +-
->> >  arch/arm/mach-davinci/dm646x.c                     |    2 +-
->> >  arch/arm/mach-davinci/include/mach/da8xx.h         |    2 +-
->> >  drivers/dma/edma.c                                 |    2 +-
->> >  drivers/mmc/host/davinci_mmc.c                     |    1 +
->> >  include/linux/mfd/davinci_voicecodec.h             |    3 +-
->> >  .../mach => include/linux/platform_data}/edma.h    |   89 +-------------------
->> >  include/linux/platform_data/spi-davinci.h          |    2 +-
->> >  sound/soc/davinci/davinci-evm.c                    |    1 +
->> >  sound/soc/davinci/davinci-pcm.c                    |    1 +
->> >  sound/soc/davinci/davinci-pcm.h                    |    2 +-
->> >  22 files changed, 29 insertions(+), 103 deletions(-)  rename
->> > arch/arm/{mach-davinci/dma.c => common/edma.c} (99%)  rename
->> > {arch/arm/mach-davinci/include/mach =>
->> > include/linux/platform_data}/edma.h (59%)
->> >
->> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig index
->> > 49d993c..b1c66a4 100644
->> > --- a/arch/arm/Kconfig
->> > +++ b/arch/arm/Kconfig
->> > @@ -840,6 +840,7 @@ config ARCH_DAVINCI
->> >     select GENERIC_IRQ_CHIP
->> >     select HAVE_IDE
->> >     select NEED_MACH_GPIO_H
->> > +   select TI_PRIV_EDMA
->>
->> What does PRIV here mean? Privileged? Private? I think it can be shortened to
->> TI_EDMA.
->>
->  [Joel] TI_EDMA already exists. It is used to build drivers/dma/edma.
-> I have a patch that reuses the TI_EDMA option instead of the PRIV one . I will
-> include that In my v11 series for EDMA (v10 was just posted) . If its ok, let us
-> merge Sekhar's patch as-is, and then mine will get rid of the PRIV option
-> (among other things).
+On Monday 17 of June 2013 15:39:34 Linus Walleij wrote:
+> On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> 
+wrote:
+> > PL080S is a modified version of PL080 that can be found on Samsung
+> > SoCs, such as S3C6400 and S3C6410.
+> > 
+> > It has different offset of CONFIG register, separate CONTROL1 register
+> > that holds transfer size and larger maximum transfer size.
+> > 
+> > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+> 
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> (I would have done some smallish things differently but it
+> is only a matter of taste.)
+> 
+> >  static struct amba_id pl08x_ids[] = {
+> > 
+> > +       /* Samsung PL080S variant */
+> > +       {
+> > +               .id     = 0x0a141080,
+> > +               .mask   = 0xffffffff,
+> > +               .data   = &vendor_pl080s,
+> > +       },
+> 
+> Interesting that Samsung claim to be vendor 0x41
+> (ARM).
 
-Ok, fair enough. As I said, small nit.
+Yeah, I had identical thought when I saw it first time.
 
+> Well ARM never made revision no 0x0a so
+> this works.
 
--Olof
+Good, this is exactly what I wanted to read! ;)
+
+I was afraid that this ID might conflict with some revision of normal 
+PL080, but fortunately it is not the case.
+
+Best refards,
+Tomasz
