@@ -1,102 +1,71 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 3/3] ALSA: hda - Update HD-Audio-Models.txt
-Date: Mon, 17 Jun 2013 11:04:03 +0200
-Message-ID: <1371459843-3555-3-git-send-email-david.henningsson@canonical.com>
-References: <1371459843-3555-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] sound/soc/davinci: remove sffsdr machine support
+Date: Mon, 17 Jun 2013 10:05:24 +0100
+Message-ID: <20130617090524.GW1403@sirena.org.uk>
+References: <1371458791-7530-1-git-send-email-nsekhar@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 28067261A61
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 11:04:05 +0200 (CEST)
-In-Reply-To: <1371459843-3555-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============0095586764=="
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <1371458791-7530-1-git-send-email-nsekhar-l0cyMroinI0@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Hugo Villeneuve <hugo-rg2e/+w5TaNBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add new known codecs, and fix up tabs.
+--===============0095586764==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QmpK7ckl6/soFui9"
+Content-Disposition: inline
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- Documentation/sound/alsa/HD-Audio-Models.txt |   40 +++++++++++++-------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+--QmpK7ckl6/soFui9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
-index 77d68e2..809d72b 100644
---- a/Documentation/sound/alsa/HD-Audio-Models.txt
-+++ b/Documentation/sound/alsa/HD-Audio-Models.txt
-@@ -21,41 +21,41 @@ ALC267/268
- ==========
-   inv-dmic	Inverted internal mic workaround
- 
--ALC269/270/275/276/280/282
-+ALC269/270/275/276/28x/29x
- ======
--  laptop-amic	Laptops with analog-mic input
--  laptop-dmic	Laptops with digital-mic input
--  alc269-dmic	Enable ALC269(VA) digital mic workaround
--  alc271-dmic	Enable ALC271X digital mic workaround
--  inv-dmic	Inverted internal mic workaround
--  lenovo-dock   Enables docking station I/O for some Lenovos
-+  laptop-amic		Laptops with analog-mic input
-+  laptop-dmic		Laptops with digital-mic input
-+  alc269-dmic		Enable ALC269(VA) digital mic workaround
-+  alc271-dmic		Enable ALC271X digital mic workaround
-+  inv-dmic		Inverted internal mic workaround
-+  lenovo-dock   	Enables docking station I/O for some Lenovos
-   dell-headset-multi	Headset jack, which can also be used as mic-in
-   dell-headset-dock	Headset jack (without mic-in), and also dock I/O
- 
--ALC662/663/272
-+ALC66x/67x/892
- ==============
--  mario		Chromebook mario model fixup
--  asus-mode1	ASUS
--  asus-mode2	ASUS
--  asus-mode3	ASUS
--  asus-mode4	ASUS
--  asus-mode5	ASUS
--  asus-mode6	ASUS
--  asus-mode7	ASUS
--  asus-mode8	ASUS
--  inv-dmic	Inverted internal mic workaround
-+  mario			Chromebook mario model fixup
-+  asus-mode1		ASUS
-+  asus-mode2		ASUS
-+  asus-mode3		ASUS
-+  asus-mode4		ASUS
-+  asus-mode5		ASUS
-+  asus-mode6		ASUS
-+  asus-mode7		ASUS
-+  asus-mode8		ASUS
-+  inv-dmic		Inverted internal mic workaround
-   dell-headset-multi	Headset jack, which can also be used as mic-in
- 
- ALC680
- ======
-   N/A
- 
--ALC882/883/885/888/889
-+ALC88x/898/1150
- ======================
-   acer-aspire-4930g	Acer Aspire 4930G/5930G/6530G/6930G/7730G
-   acer-aspire-8930g	Acer Aspire 8330G/6935G
-   acer-aspire		Acer Aspire others
--  inv-dmic	Inverted internal mic workaround
-+  inv-dmic		Inverted internal mic workaround
-   no-primary-hp		VAIO Z/VGC-LN51JGB workaround (for fixed speaker DAC)
- 
- ALC861/660
--- 
-1.7.9.5
+On Mon, Jun 17, 2013 at 02:16:31PM +0530, Sekhar Nori wrote:
+> sffsdr machine support does not build since at least v2.6.36
+> (~3 years). There is little hope of it being fixed, so remove
+> the support.
+
+This doesn't actually apply against -next and I had to fix up the
+subject line too but applied anyway, thanks.
+
+--QmpK7ckl6/soFui9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRvtFRAAoJELSic+t+oim91KsP/jqKCttV4QOlXXDXK7kdkoxE
+vMXB61qdPuWdDXNJVa/ttxPBtR1qhXA59DQBQcwdmrzwB6hAn8hDIYF7TMfP7xB3
+E0HKG227IUK+J2hT8YXrEAlTG0YtqFdV5X2Fz4R6e7kqY6y+C7dUY1bhIVfffZGq
+UMzQSsRvC6gE6IPaRSO/SpwEF8lFdDUaAHZBqDEH/vTJCSQ/nPiLkEBwt9wF67Rw
+/+lHW4un2HufPA5CM4TlGJWLKpwSdPUvyXekR+BBVt8oOaBJPRxFblBp687lSvwy
+RwTSvOJimwtpnBpuDlU8SCk+WjY72THllCH0QABeyKAiaKIAOi+e6Zr4TnPS2kmj
+EKRYv5epVhaKqAs1SEhUvOJQMWDEl3q8etG4NtmeL+OPaq1yYQJo2S7RscQRWZcg
+Ub7LpVynM/1xKedsd/WdkaDm5GZ2hXpEO/zvyGJkV2ymmbPF6JESc/oBB4KASL3/
+uKdPmjK5BMTwFzC0Ix5r+diNYczNU6LqcPjCkSkshQHpmEr6/HKzGNribNQp4VEu
+wMJ3v1el/17Y+8mFZzXMv7/LTfXDIFhXx0Y/YzL38viy9RrsCng3B8YHdSe40TM+
+IRVXmcXVEcEnpFmOgRw3HsSKgp3rOsrzDmAoR6srVG261kLzTZ4QJY6NQT18UCoW
+aDJqJSXcEoUuZq4QmfIK
+=9t7A
+-----END PGP SIGNATURE-----
+
+--QmpK7ckl6/soFui9--
+
+--===============0095586764==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0095586764==--
