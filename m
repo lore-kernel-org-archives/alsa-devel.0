@@ -1,84 +1,79 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH V6 6/6] clk: exynos5250: Add enum entries for divider
- clock of i2s1 and i2s2
-Date: Mon, 17 Jun 2013 10:29:14 +0530
-Message-ID: <CAAgF-Bf4BVfGVuFF8-CwPRi-em5VHA5HXYjkRDxPxvyAZPx7kw@mail.gmail.com>
-References: <1371024463-303-1-git-send-email-padma.v@samsung.com>
-	<1371024463-303-7-git-send-email-padma.v@samsung.com>
-	<20130612164553.26381.41398@quantum>
-	<CAAgF-BfEvBcrm186t6U9Tp4r64wB3sEsy6hoXMQi=dHJgncvfw@mail.gmail.com>
+From: Johan Hellman <johan.hellman@axis.com>
+Subject: Re: Timestamps using I/O Plugin
+Date: Mon, 17 Jun 2013 09:14:37 +0200
+Message-ID: <1371453277.25340.60.camel@lnxjohanhn.se.axis.com>
+References: <9A8CA64355151747A180E7910F873F1802B9DFC0B1@xmail3.se.axis.com>
+ <9A8CA64355151747A180E7910F873F1802B88CAF20@xmail3.se.axis.com>
+ , <s5hobbjsith.wl%tiwai@suse.de>
+ <9A8CA64355151747A180E7910F873F1802B88CAF21@xmail3.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CAAgF-BfEvBcrm186t6U9Tp4r64wB3sEsy6hoXMQi=dHJgncvfw@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mike Turquette <mturquette@linaro.org>
-Cc: Padmavathi Venna <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, broonie@kernel.org, kgene.kim@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from anubis.se.axis.com (anubis.se.axis.com [195.60.68.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8376D2610B7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 09:14:49 +0200 (CEST)
+In-Reply-To: <9A8CA64355151747A180E7910F873F1802B88CAF21@xmail3.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mike,
+On Thu, 2013-06-06 at 14:54 +0200, Johan Hellman wrote:
+> >At Thu, 6 Jun 2013 09:01:12 +0200,
+> >Johan Hellman wrote:
+> >>
+> >> After spending more time investigating how I would set monotonic timestamps from a new I/O plugin so that the app using ALSA lib could synchronize different audio streams I cant find that its possible!?
+> >>
+> >> Can someone please confirm that it is not possible to set monotonic timestamps using the I/O plugin SDK!?
+> >
+> >AFAIK, there is nothing special in ioplug layer but it's a matter of
+> >ioplug plugin instance.  If the plugin sets
+> >SND_PCM_IOPLUG_FLAG_MONOTONIC bit to ioplug->flags, the ioplug layer
+> >uses the monotonic timestamp (via clock_gettime()) instead of
+> >gettimeofday().  So far, no plugins in alsa-plugins provide
+> >SND_PCM_IOPLUG_FLAG_MONOTONIC yet, though.
+> >
+> >
+> >Takashi
+> 
+> Thanks for your reply, by enabling SND_PCM_IOPLUG_FLAG_MONOTONIC the ioplug 
+> would return a monotonic timestamp if requested by calling snd_pcm_htimestamp()
+> but it would be the current timestamp i.e. change every time you call ..htimestamp() 
+> and not be related to the last buffer update or anything(within ALSA) actually??. 
+> And there would be no timestamp information in the snd_pcm_status_t returned by 
+> snd_pcm_status() or am i missing something?  
+> 
+> What i found in the implementation for the ioplug layer(snd_pcm_ioplug_status) 
+> was that the status struct was memset to 0 but the tstamp is not set, so 0 
+> is returned as a monotonic timestamp.
+> 
+> Would a change similar to what i wrote in my previus post regarding adding the 
+> possibility for the plugin to override ..htimestamp() and the ioplug layer to 
+> update tstamp in the status struct using that function (if available)?
+> 
+> /JohanHellman
 
-On Thu, Jun 13, 2013 at 8:32 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
-> Hi Mike,
->
-> On Wed, Jun 12, 2013 at 10:15 PM, Mike Turquette <mturquette@linaro.org> wrote:
->> Quoting Padmavathi Venna (2013-06-12 01:07:43)
->>> This patch adds enum entries for div_i2s1 and div_i2s2 which are
->>> required for i2s1 and i2s2 controllers.
->>>
->>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
->>
->> Looks good.  Did you want me to take the clk patches or just gathering
->> Acks?
->
-> Please take the patches :).
->
-> Thanks
-> Padma
+snd_pcm_ioplug_status() is missing a call to
+gettimestamp(&status->tstamp, pcm->monotonic); compared to other
+overridden _status functions (dshare/dmix etc..). 
 
-clk related patches in this set has some dependency on arch side
-patches because one of the patch replaces all '/include's with
-'#include's and adds a header file in
-arch/arm/boot/include/dt-bindings/. So all these patches required to
-go into one tree.
+With gettimestamp() added to the ioplug, calls to snd_pcm_status() would
+fill in a timestamp and SNDRV_PCM_TSTAMP_TYPE_MONOTONIC would determine
+if the timestamp returned would be monotonic or not.
 
-Hi Kukjin,
+This would not fix my problem. If a kernel drivers has
+SNDRV_PCM_TSTAMP_ENABLE set then ALSA lets the driver return the
+timestamp, a ioplugin does not have this possibility.
 
-Can you please take all these patches into samsung-tree?
+Any comments or suggestions on how to proceed?
 
-Thanks
-Padma
->
->>
->> Regards,
->> Mike
->>
->>> ---
->>>  drivers/clk/samsung/clk-exynos5250.c |    5 +++--
->>>  1 files changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/clk/samsung/clk-exynos5250.c b/drivers/clk/samsung/clk-exynos5250.c
->>> index 5c97e75..7c68850 100644
->>> --- a/drivers/clk/samsung/clk-exynos5250.c
->>> +++ b/drivers/clk/samsung/clk-exynos5250.c
->>> @@ -87,6 +87,7 @@ enum exynos5250_clks {
->>>         sclk_mmc0, sclk_mmc1, sclk_mmc2, sclk_mmc3, sclk_sata, sclk_usb3,
->>>         sclk_jpeg, sclk_uart0, sclk_uart1, sclk_uart2, sclk_uart3, sclk_pwm,
->>>         sclk_audio1, sclk_audio2, sclk_spdif, sclk_spi0, sclk_spi1, sclk_spi2,
->>> +       div_i2s1, div_i2s2,
->>>
->>>         /* gate clocks */
->>>         gscl0 = 256, gscl1, gscl2, gscl3, gscl_wa, gscl_wb, smmu_gscl0,
->>> @@ -291,8 +292,8 @@ struct samsung_div_clock exynos5250_div_clks[] __initdata = {
->>>         DIV(none, "div_pcm1", "sclk_audio1", DIV_PERIC4, 4, 8),
->>>         DIV(none, "div_audio2", "mout_audio2", DIV_PERIC4, 16, 4),
->>>         DIV(none, "div_pcm2", "sclk_audio2", DIV_PERIC4, 20, 8),
->>> -       DIV(none, "div_i2s1", "sclk_audio1", DIV_PERIC5, 0, 6),
->>> -       DIV(none, "div_i2s2", "sclk_audio2", DIV_PERIC5, 8, 6),
->>> +       DIV(div_i2s1, "div_i2s1", "sclk_audio1", DIV_PERIC5, 0, 6),
->>> +       DIV(div_i2s2, "div_i2s2", "sclk_audio2", DIV_PERIC5, 8, 6),
->>>         DIV(sclk_pixel, "div_hdmi_pixel", "sclk_vpll", DIV_DISP1_0, 28, 4),
->>>         DIV_A(none, "armclk", "div_arm", DIV_CPU0, 28, 3, "armclk"),
->>>         DIV_F(none, "div_mipi1_pre", "div_mipi1",
->>> --
->>> 1.7.4.4
+/JohanHellman
