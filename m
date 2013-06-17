@@ -1,77 +1,54 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH V3 12/15] ASoC: spear: Convert to use devm_ioremap_resource
-Date: Mon, 17 Jun 2013 16:10:57 +0530
-Message-ID: <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
-References: <20130617102000.GB1403@sirena.org.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130617102000.GB1403@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: thierry.reding@gmail.com, patches@linaro.org, sachin.kamat@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v8 02/11] ASoC: imx-pcm-fiq: Introduce
+	pcm-fiq-params
+Date: Mon, 17 Jun 2013 06:39:55 -0500
+Message-ID: <51BEF58B.8070405@tabi.org>
+References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
+ <1371389117-19729-3-git-send-email-mpa@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
+ [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 61B11261B1A
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 13:39:58 +0200 (CEST)
+In-Reply-To: <1371389117-19729-3-git-send-email-mpa@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
-introduced devm_ioremap_resource() and deprecated the use of
-devm_request_and_ioremap().
+Markus Pargmann wrote:
+>   #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
+> -int imx_pcm_fiq_init(struct platform_device *pdev);
+> +int imx_pcm_fiq_init(struct platform_device *pdev,
+> +		struct imx_pcm_fiq_params *params);
+>   void imx_pcm_fiq_exit(struct platform_device *pdev);
+>   #else
+> -static inline int imx_pcm_fiq_init(struct platform_device *pdev)
+> +static inline int imx_pcm_fiq_init(struct platform_device *pdev,
+> +		struct imx_pcm_fiq_params *params);
+>   {
+>   	return -ENODEV;
+>   }
 
-devm_request_mem_region is called in devm_ioremap_resource(). Hence that
-part can also be removed.
+This won't compile on PowerPC, because of the ;
 
-Since devm_ioremap_resource prints error message on failure, there is
-no need to print an explicit warning message.
+In file included from 
+/home/b04825/git/linux.alsa2/sound/soc/fsl/fsl_ssi.c:53:0:
+/home/b04825/git/linux.alsa2/sound/soc/fsl/imx-pcm.h:65:1: error: expected 
+identifier or '(' before '{' token
+/home/b04825/git/linux.alsa2/sound/soc/fsl/imx-pcm.h:63:19: warning: 
+'imx_pcm_fiq_init' used but never defined
 
-Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
-CC: alsa-devel@alsa-project.org
-CC: Liam Girdwood <lgirdwood@gmail.com>
-CC: Mark Brown <broonie@kernel.org>
----
-Changes for V3:
-* Rebased on for-next branch of sound/soc git tree
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
-Changes for V2:
-* Removed redundant print of error message from devm_ioremap_resource
-exit path
-* Call to devm_request_mem_region is removed.
-
- sound/soc/spear/spdif_out.c |   19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
-
-diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
-index a4a8748..2fdf68c 100644
---- a/sound/soc/spear/spdif_out.c
-+++ b/sound/soc/spear/spdif_out.c
-@@ -282,27 +282,16 @@ static int spdif_out_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int ret;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res)
--		return -EINVAL;
--
--	if (!devm_request_mem_region(&pdev->dev, res->start,
--				resource_size(res), pdev->name)) {
--		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
--		return -ENOENT;
--	}
--
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host) {
- 		dev_warn(&pdev->dev, "kzalloc fail\n");
- 		return -ENOMEM;
- 	}
- 
--	host->io_base = devm_request_and_ioremap(&pdev->dev, res);
--	if (!host->io_base) {
--		dev_warn(&pdev->dev, "ioremap failed\n");
--		return -ENOMEM;
--	}
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	host->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(host->io_base))
-+		return PTR_ERR(host->io_base);
- 
- 	host->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(host->clk))
 -- 
-1.7.9.5
+Timur Tabi
