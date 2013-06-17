@@ -1,18 +1,20 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH v8 02/11] ASoC: imx-pcm-fiq: Introduce
-	pcm-fiq-params
-Date: Mon, 17 Jun 2013 06:39:55 -0500
-Message-ID: <51BEF58B.8070405@tabi.org>
-References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
- <1371389117-19729-3-git-send-email-mpa@pengutronix.de>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 2/4] ALSA: hda - Return error when open
+	empty hdmi device
+Date: Mon, 17 Jun 2013 11:54:00 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC48901183065E@SHSMSX104.ccr.corp.intel.com>
+References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1371223229-8236-3-git-send-email-xingchao.wang@linux.intel.com>
+ <51BEC789.1060408@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
- [71.74.56.122]) by alsa0.perex.cz (Postfix) with ESMTP id 61B11261B1A
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 13:39:58 +0200 (CEST)
-In-Reply-To: <1371389117-19729-3-git-send-email-mpa@pengutronix.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38608261B2B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 13:54:18 +0200 (CEST)
+In-Reply-To: <51BEC789.1060408@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+To: David Henningsson <david.henningsson@canonical.com>, Wang Xingchao <xingchao.wang@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Markus Pargmann wrote:
->   #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
-> -int imx_pcm_fiq_init(struct platform_device *pdev);
-> +int imx_pcm_fiq_init(struct platform_device *pdev,
-> +		struct imx_pcm_fiq_params *params);
->   void imx_pcm_fiq_exit(struct platform_device *pdev);
->   #else
-> -static inline int imx_pcm_fiq_init(struct platform_device *pdev)
-> +static inline int imx_pcm_fiq_init(struct platform_device *pdev,
-> +		struct imx_pcm_fiq_params *params);
->   {
->   	return -ENODEV;
->   }
 
-This won't compile on PowerPC, because of the ;
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Monday, June 17, 2013 4:24 PM
+> To: Wang Xingchao
+> Cc: tiwai@suse.de; daniel.vetter@ffwll.ch; alsa-devel@alsa-project.org;
+> intel-gfx@lists.freedesktop.org; Wang, Xingchao
+> Subject: Re: [PATCH 2/4] ALSA: hda - Return error when open empty hdmi
+> device
+> 
+> On 06/14/2013 05:20 PM, Wang Xingchao wrote:
+> > when user open HDMI device 3/7/8, if it has no physical device
+> > connected, return error.
+> 
+> This patch will cause regressions in two big use cases:
+> 
+>   1) Older chipsets (at least from non-Intel vendors) might not support correct
+> ELD reporting. Thus this will cause HDMI audio to stop working there.
 
-In file included from 
-/home/b04825/git/linux.alsa2/sound/soc/fsl/fsl_ssi.c:53:0:
-/home/b04825/git/linux.alsa2/sound/soc/fsl/imx-pcm.h:65:1: error: expected 
-identifier or '(' before '{' token
-/home/b04825/git/linux.alsa2/sound/soc/fsl/imx-pcm.h:63:19: warning: 
-'imx_pcm_fiq_init' used but never defined
+Thanks for pointing this out. It's a good case I missed. :) 
+I thought ELD info was monitor specific, and reported on common platforms.
+But sometimes user get confused when opening a hdmi device and started to play audio,but
+hear nothing, even there's no error message. Is there any way for old chipset which has no
+correct ELD reporting but do have audio functionality? App should check before really play audio on the device.
+> 
+>   2) In PulseAudio's current design, PulseAudio probes the device at startup
+> and caches the result. Unfortunately, there is no reprobing at plug/unplug, so if
+> the monitor is hotplugged, it will not work unless PulseAudio is restarted
+> afterwards.
 
+For haswell ult board only,  DDI port D is not supported, this results in screen flicker when playing on third pin.
+But for other haswell boards, the DDI port D is normal. So at first glance my idea is to disable opening device
+without physical device connecting.
 
--- 
-Timur Tabi
+Thanks
+--xingchao
+
+> 
+> 
+> > The bug is from Haswell platform, All pins choose converter 0 by
+> > default in hardware level, maybe only pin 1 had valid monitor
+> > connected. if user play audio on pin 0/2, pin 1 can get audio data too.
+> >
+> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> > ---
+> >   sound/pci/hda/patch_hdmi.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index 8db5eb6..d766f40 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -1139,6 +1139,9 @@ static int hdmi_pcm_open(struct
+> hda_pcm_stream *hinfo,
+> >   	per_pin = get_pin(spec, pin_idx);
+> >   	eld = &per_pin->sink_eld;
+> >
+> > +	if (!eld->monitor_present || !eld->eld_valid)
+> > +		return -EIO;
+> > +
+> >   	if (codec->vendor_id == 0x80862807)
+> >   		hsw_verify_cvt_D0(spec, codec);
+> >
+> >
+> 
+> 
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
