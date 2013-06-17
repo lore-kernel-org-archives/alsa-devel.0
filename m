@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 09/11] spi: s3c64xx: Do not require
- legacy DMA API in case of S3C64XX
-Date: Mon, 17 Jun 2013 17:06:30 +0100
-Message-ID: <20130617160630.GF1403@sirena.org.uk>
-References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <1371416058-22047-10-git-send-email-tomasz.figa@gmail.com>
- <CACRpkdb8V7pYVnOWOAJ6iG8_-jyeutq5W95+OCO4RLOv9EDjyg@mail.gmail.com>
+Subject: Re: [PATCH V3 12/15] ASoC: spear: Convert to use
+ devm_ioremap_resource
+Date: Mon, 17 Jun 2013 17:20:10 +0100
+Message-ID: <20130617162010.GJ1403@sirena.org.uk>
+References: <20130617102000.GB1403@sirena.org.uk>
+ <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1650777763238057740=="
+Content-Type: multipart/mixed; boundary="===============3247932807783577571=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 697D72625D8
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 18:06:59 +0200 (CEST)
-In-Reply-To: <CACRpkdb8V7pYVnOWOAJ6iG8_-jyeutq5W95+OCO4RLOv9EDjyg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2439A261723
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 18:20:14 +0200 (CEST)
+In-Reply-To: <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, Tomasz Figa <tomasz.figa@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Kukjin Kim <kgene.kim@samsung.com>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kerne
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: alsa-devel@alsa-project.org, patches@linaro.org, sachin.kamat@linaro.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, thierry.reding@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1650777763238057740==
+--===============3247932807783577571==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SpmsQTCLe2l6R7Sg"
+	protocol="application/pgp-signature"; boundary="A6/RaK8Cbiy3x9M4"
 Content-Disposition: inline
 
 
---SpmsQTCLe2l6R7Sg
+--A6/RaK8Cbiy3x9M4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 17, 2013 at 03:59:39PM +0200, Linus Walleij wrote:
-> On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
+On Mon, Jun 17, 2013 at 04:10:57PM +0530, Tushar Behera wrote:
+> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+> introduced devm_ioremap_resource() and deprecated the use of
+> devm_request_and_ioremap().
 
-> > -       select S3C64XX_DMA if ARCH_S3C64XX
-> > +       select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
+Applied, thanks.
 
-> I guess this means the SPI driver does not work without DMA.
-> But is the SPI driver already augmented to handle generic DMA engine?
-> Anyway:
-
-Yes, the driver currently relies on DMA.  There are some pending patches
-for non-DMA operation that I need to test.  To be honest for both this
-and the ASoC driver I'd be more inclined to just either select or depend
-on the DMA controller rather than leaving the option of using the old
-code.
-
---SpmsQTCLe2l6R7Sg
+--A6/RaK8Cbiy3x9M4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJRvzQDAAoJELSic+t+oim9vkEP/jzixmC2H6vNaPIqVT5tbmqW
-QjsQJrZxQK2Ll4bAL9WWHV2Rv5C2gPg7ZWvRdUmjZtKpLaN91XHbtGIViewpmnDu
-/CHmNzfW3MdVIRHGLtLau52+feXxfkqrljlCykrjW0A/8msZANUOcYsrbhR9QvTv
-tuahMM7+MJQGJDez5JqOyX7XG8362wU44PgSIrcQ77q+9hvtC41aoKkCqbgvoFjC
-75+Qm5S5MTfz0rMfc4ojrAy2ZhpmZIeAxq3xqk+YfnK66uZfZ45NzzYyNAd+xRVZ
-VyYH2+ZPeUPcstrsSGF7+/J0bFHCFNRcr8K5bSHFlAagD4yHGgYo05rkql8skh33
-VczChJKYLu1I2Q/UF9nhJF0bgfC9P9fCQU8VKtvtgg6D92pOio0VeiVKNjAwNrPW
-FVVJ27zZ7W5biqrue+eG/VO7jfdiWMrdjdO2lPnnJy58xJHuoBxrBstmjOupFFQk
-r6Dt2XcjsGkcYl+veIPKNt7QcLfxIlsix4cNBp8q1BTcA/8Tl6qyww3xhBrQN923
-fgKgUAeeMVIvsLxWo0IyaHWW9wKTGLCeSAlI/+fqGxrDLUKtZYh7PpXsN2J3cDo2
-SAy0BYRq3KdOEOB/N6jIGZM9BMwhiSTYMWxyfbwgEUNVaGEVO2GMGfI5YnOb5FN6
-oBpX+4Q6BGxYwQpdU7O5
-=cQEE
+iQIcBAEBAgAGBQJRvzc3AAoJELSic+t+oim9e0EP/0UhBdVI8dyz8+Avw6xsx6G+
+NvByUFwaLyw4qWx3PvREyAFuwI+VYFa3eG6LGJtFOTXT92B08BX5phYKa/EEH+6/
+lfuHLiuD88ksJDFiCCtRYoYD++7P5DHhR2trz3qgSMNWTUQRowKWyYjMhZhtrdcJ
+ScG1djObnBeHsAHAtYvICfcQgbaCjSzbnvtieNsnBpnwpz5Th0jMwxq5BoZDJKUi
+cpcpEcGJkxJwWaJcd8+T//OrbFHamNbBQ+fWibU3+wCqtDlNyKu+hSIA9Pgt5H7l
+ltVYCwZfzVytUUk7FMtkRc+4UDr8oXIQj9Z/SyZQZWRCAFRqAHDRt5u+gWPgkNmY
+nPeODbTCBJtoK2Keoysa+bnle4oxOJPx+8MPRSQ5S0Vgym7fohAJhgitdEMGIWDM
++prJmN9sfT/s+2qMali/eARk5gkXWbxN4SJCjRPeNhPXkG/F5EqmeLOaIMjhJfx7
+rHRNXXheUvUsEciUFWFpXSlT1R/bMAavXXYegbeAmSR+CHxju7GOfiMTZRuNCyHb
+llzaELdm9fhOqSprCsghex+zcEyEJdGnfPaPbPrjpZrepIU0z2yyEgI81EE7qbi3
+dpae+OqDGbhtHi9ybEUXQUbkMXUzO5UDHNCRAzpAmeD7guo1iDXISsWZRO2xvPBt
+1DAW/An9QYnlzDdW81Gx
+=yL2B
 -----END PGP SIGNATURE-----
 
---SpmsQTCLe2l6R7Sg--
+--A6/RaK8Cbiy3x9M4--
 
---===============1650777763238057740==
+--===============3247932807783577571==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1650777763238057740==--
+--===============3247932807783577571==--
