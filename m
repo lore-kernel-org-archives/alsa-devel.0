@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH 09/11] spi: s3c64xx: Do not require
+Subject: Re: [RFC PATCH 10/11] ASoC: samsung: Do not require
  legacy DMA API in case of S3C64XX
-Date: Mon, 17 Jun 2013 15:59:39 +0200
-Message-ID: <CACRpkdb8V7pYVnOWOAJ6iG8_-jyeutq5W95+OCO4RLOv9EDjyg@mail.gmail.com>
+Date: Mon, 17 Jun 2013 16:01:12 +0200
+Message-ID: <CACRpkdbvJjVzyXpsDiW1Q6knW5UCTo00nZXVsK+Pt+f7AqfM1g@mail.gmail.com>
 References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <1371416058-22047-10-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-11-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 65C822625FE
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 15:59:40 +0200 (CEST)
-Received: by mail-ob0-f179.google.com with SMTP id xk17so3146614obc.24
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 06:59:39 -0700 (PDT)
-In-Reply-To: <1371416058-22047-10-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEBDE2625FE
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 16:01:12 +0200 (CEST)
+Received: by mail-ob0-f173.google.com with SMTP id wc20so3224783obb.32
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 07:01:12 -0700 (PDT)
+In-Reply-To: <1371416058-22047-11-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,11 +38,10 @@ On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 (...)
 > -       select S3C64XX_DMA if ARCH_S3C64XX
 > +       select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
+>         select S3C2410_DMA if ARCH_S3C24XX
 
-I guess this means the SPI driver does not work without DMA.
-But is the SPI driver already augmented to handle generic DMA engine?
-Anyway:
-
+I hope it will look nicer (like just selecting the real PL080 driver)
+in the end. OK can live with this:
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
