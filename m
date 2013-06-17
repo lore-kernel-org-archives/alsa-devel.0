@@ -1,59 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to arm/common
-Date: Mon, 17 Jun 2013 11:43:27 +0100
-Message-ID: <20130617104327.GD1403@sirena.org.uk>
-References: <1371463571-2578-1-git-send-email-nsekhar@ti.com>
- <1371463571-2578-2-git-send-email-nsekhar@ti.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="moC1XDyencuJ/zDM"
-Return-path: <linux-mmc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1371463571-2578-2-git-send-email-nsekhar@ti.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Sekhar Nori <nsekhar@ti.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@deeprootsystems.com>, Matt Porter <matt@ohporter.com>, Joel Fernandes A <joelagnel@ti.com>, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH V3 12/15] ASoC: spear: Convert to use devm_ioremap_resource
+Date: Mon, 17 Jun 2013 16:10:57 +0530
+Message-ID: <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
+References: <20130617102000.GB1403@sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130617102000.GB1403@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: thierry.reding@gmail.com, patches@linaro.org, sachin.kamat@linaro.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
+introduced devm_ioremap_resource() and deprecated the use of
+devm_request_and_ioremap().
 
---moC1XDyencuJ/zDM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+devm_request_mem_region is called in devm_ioremap_resource(). Hence that
+part can also be removed.
 
-On Mon, Jun 17, 2013 at 03:36:10PM +0530, Sekhar Nori wrote:
-> From: Matt Porter <mporter@ti.com>
->=20
-> Move mach-davinci/dma.c to common/edma.c so it can be used
-> by OMAP (specifically AM33xx) as well.
->=20
-> Signed-off-by: Matt Porter <mporter@ti.com>
-> Acked-by: Chris Ball <cjb@laptop.org> # davinci_mmc.c
-> [nsekhar@ti.com: dropped davinci sffsdr changes]
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+Since devm_ioremap_resource prints error message on failure, there is
+no need to print an explicit warning message.
 
-Acked-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+CC: alsa-devel@alsa-project.org
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Mark Brown <broonie@kernel.org>
+---
+Changes for V3:
+* Rebased on for-next branch of sound/soc git tree
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
---moC1XDyencuJ/zDM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Changes for V2:
+* Removed redundant print of error message from devm_ioremap_resource
+exit path
+* Call to devm_request_mem_region is removed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+ sound/soc/spear/spdif_out.c |   19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-iQIcBAEBAgAGBQJRvuhMAAoJELSic+t+oim9bHEP+QHtO0gbJlbZAkS1lO+p3cch
-FBRsvIy8D8xAJHuw5uDcZkWWYQMwc9bSBSEbjctzbEPKJW6vEMUpribbyOVQ07T0
-ncJvBTI1q8RtNv1A3rLSlAfioLyw8hc17E0MZuluQBJ56NBG6TKhoQp71FKKbQZx
-BODJ8SvcPtUfOJgmtbIPl8uEfK0W/FaT0qFB42UI0ScF8lilPOXtTUC6aBiO3/Ch
-CunWpVOl/64zV7iyTPapVSvKms3lyHhDOSwyDHaLtcJdquhITkxMT+C0a05d8FJX
-31WB2RYIrOqzOyADsHEi3faFunkFezOs7lyVBbEuuFhtct84EcNIsv0+Go3zsbgj
-2EECKyQ4Lg/2sF9C6XOp+stRukNl+q5ttxXAZjLfAR0WikIK0tuJkrcL3I8IOjEW
-xQ81wd0QzMarFfKuZrBhsvV5urz8sSdMBqk8ufl7sIhNPJEio29Q8IQJZQZZ+WP6
-9Er7d35yGPW034ZOGe0KsqNpjsQiAI5k4XJRnvt/Y6mz965HxgjfeKWWZ6mvic9d
-sf3H2XDr83qWufdzs0OE+yTxzsSlTijbJclj++u4yFSnxT8DuV0rcrwI3q+YHo+y
-8jwCDypIqvEABtzcoYwlzpNHTqumtiRqlmVNnwBgB1765bIfZOihvqRjjFMjZv0V
-XkW1zTFBl8LhPjR3MbFt
-=Hbb/
------END PGP SIGNATURE-----
-
---moC1XDyencuJ/zDM--
+diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+index a4a8748..2fdf68c 100644
+--- a/sound/soc/spear/spdif_out.c
++++ b/sound/soc/spear/spdif_out.c
+@@ -282,27 +282,16 @@ static int spdif_out_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -EINVAL;
+-
+-	if (!devm_request_mem_region(&pdev->dev, res->start,
+-				resource_size(res), pdev->name)) {
+-		dev_warn(&pdev->dev, "Failed to get memory resourse\n");
+-		return -ENOENT;
+-	}
+-
+ 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host) {
+ 		dev_warn(&pdev->dev, "kzalloc fail\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	host->io_base = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->io_base) {
+-		dev_warn(&pdev->dev, "ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	host->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->io_base))
++		return PTR_ERR(host->io_base);
+ 
+ 	host->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk))
+-- 
+1.7.9.5
