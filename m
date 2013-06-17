@@ -1,77 +1,99 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V3 12/15] ASoC: spear: Convert to use
- devm_ioremap_resource
-Date: Mon, 17 Jun 2013 17:20:10 +0100
-Message-ID: <20130617162010.GJ1403@sirena.org.uk>
-References: <20130617102000.GB1403@sirena.org.uk>
- <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
+From: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to arm/common
+Date: Mon, 17 Jun 2013 10:03:26 -0700
+Message-ID: <20130617170326.GA28497@quad.lixom.net>
+References: <1371463571-2578-1-git-send-email-nsekhar@ti.com>
+ <1371463571-2578-2-git-send-email-nsekhar@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3247932807783577571=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 2439A261723
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 18:20:14 +0200 (CEST)
-In-Reply-To: <1371465657-22981-1-git-send-email-tushar.behera@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, patches@linaro.org, sachin.kamat@linaro.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, thierry.reding@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mmc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371463571-2578-2-git-send-email-nsekhar@ti.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@deeprootsystems.com>, Matt Porter <matt@ohporter.com>, Joel Fernandes A <joelagnel@ti.com>, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-mmc@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jun 17, 2013 at 03:36:10PM +0530, Sekhar Nori wrote:
+> From: Matt Porter <mporter@ti.com>
+> 
+> Move mach-davinci/dma.c to common/edma.c so it can be used
+> by OMAP (specifically AM33xx) as well.
+> 
+> Signed-off-by: Matt Porter <mporter@ti.com>
+> Acked-by: Chris Ball <cjb@laptop.org> # davinci_mmc.c
+> [nsekhar@ti.com: dropped davinci sffsdr changes]
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
 
---===============3247932807783577571==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A6/RaK8Cbiy3x9M4"
-Content-Disposition: inline
+Acked-by: Olof Johansson <olof@lixom.net>
+
+Tiny nit below, no need to respin just for that.
+
+I suppose we should take this through arm-soc.
+
+> ---
+>  arch/arm/Kconfig                                   |    1 +
+>  arch/arm/common/Kconfig                            |    3 +
+>  arch/arm/common/Makefile                           |    1 +
+>  arch/arm/{mach-davinci/dma.c => common/edma.c}     |    2 +-
+>  arch/arm/mach-davinci/Makefile                     |    2 +-
+>  arch/arm/mach-davinci/board-tnetv107x-evm.c        |    2 +-
+>  arch/arm/mach-davinci/davinci.h                    |    2 +-
+>  arch/arm/mach-davinci/devices-tnetv107x.c          |    2 +-
+>  arch/arm/mach-davinci/devices.c                    |    6 +-
+>  arch/arm/mach-davinci/dm355.c                      |    2 +-
+>  arch/arm/mach-davinci/dm365.c                      |    2 +-
+>  arch/arm/mach-davinci/dm644x.c                     |    2 +-
+>  arch/arm/mach-davinci/dm646x.c                     |    2 +-
+>  arch/arm/mach-davinci/include/mach/da8xx.h         |    2 +-
+>  drivers/dma/edma.c                                 |    2 +-
+>  drivers/mmc/host/davinci_mmc.c                     |    1 +
+>  include/linux/mfd/davinci_voicecodec.h             |    3 +-
+>  .../mach => include/linux/platform_data}/edma.h    |   89 +-------------------
+>  include/linux/platform_data/spi-davinci.h          |    2 +-
+>  sound/soc/davinci/davinci-evm.c                    |    1 +
+>  sound/soc/davinci/davinci-pcm.c                    |    1 +
+>  sound/soc/davinci/davinci-pcm.h                    |    2 +-
+>  22 files changed, 29 insertions(+), 103 deletions(-)
+>  rename arch/arm/{mach-davinci/dma.c => common/edma.c} (99%)
+>  rename {arch/arm/mach-davinci/include/mach => include/linux/platform_data}/edma.h (59%)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 49d993c..b1c66a4 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -840,6 +840,7 @@ config ARCH_DAVINCI
+>  	select GENERIC_IRQ_CHIP
+>  	select HAVE_IDE
+>  	select NEED_MACH_GPIO_H
+> +	select TI_PRIV_EDMA
+
+What does PRIV here mean? Privileged? Private? I think it can be shortened to
+TI_EDMA.
+
+>  	select USE_OF
+>  	select ZONE_DMA
+>  	help
+> diff --git a/arch/arm/common/Kconfig b/arch/arm/common/Kconfig
+> index 9353184..c3a4e9c 100644
+> --- a/arch/arm/common/Kconfig
+> +++ b/arch/arm/common/Kconfig
+> @@ -17,3 +17,6 @@ config SHARP_PARAM
+>  
+>  config SHARP_SCOOP
+>  	bool
+> +
+> +config TI_PRIV_EDMA
+> +	bool
+> diff --git a/arch/arm/common/Makefile b/arch/arm/common/Makefile
+> index 48434cb..8c60f47 100644
+> --- a/arch/arm/common/Makefile
+> +++ b/arch/arm/common/Makefile
+> @@ -16,3 +16,4 @@ obj-$(CONFIG_ARM_TIMER_SP804)	+= timer-sp.o
+>  obj-$(CONFIG_MCPM)		+= mcpm_head.o mcpm_entry.o mcpm_platsmp.o vlock.o
+>  AFLAGS_mcpm_head.o		:= -march=armv7-a
+>  AFLAGS_vlock.o			:= -march=armv7-a
+> +obj-$(CONFIG_TI_PRIV_EDMA)	+= edma.o
 
 
---A6/RaK8Cbiy3x9M4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Jun 17, 2013 at 04:10:57PM +0530, Tushar Behera wrote:
-> Commit 75096579c3ac ("lib: devres: Introduce devm_ioremap_resource()")
-> introduced devm_ioremap_resource() and deprecated the use of
-> devm_request_and_ioremap().
-
-Applied, thanks.
-
---A6/RaK8Cbiy3x9M4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJRvzc3AAoJELSic+t+oim9e0EP/0UhBdVI8dyz8+Avw6xsx6G+
-NvByUFwaLyw4qWx3PvREyAFuwI+VYFa3eG6LGJtFOTXT92B08BX5phYKa/EEH+6/
-lfuHLiuD88ksJDFiCCtRYoYD++7P5DHhR2trz3qgSMNWTUQRowKWyYjMhZhtrdcJ
-ScG1djObnBeHsAHAtYvICfcQgbaCjSzbnvtieNsnBpnwpz5Th0jMwxq5BoZDJKUi
-cpcpEcGJkxJwWaJcd8+T//OrbFHamNbBQ+fWibU3+wCqtDlNyKu+hSIA9Pgt5H7l
-ltVYCwZfzVytUUk7FMtkRc+4UDr8oXIQj9Z/SyZQZWRCAFRqAHDRt5u+gWPgkNmY
-nPeODbTCBJtoK2Keoysa+bnle4oxOJPx+8MPRSQ5S0Vgym7fohAJhgitdEMGIWDM
-+prJmN9sfT/s+2qMali/eARk5gkXWbxN4SJCjRPeNhPXkG/F5EqmeLOaIMjhJfx7
-rHRNXXheUvUsEciUFWFpXSlT1R/bMAavXXYegbeAmSR+CHxju7GOfiMTZRuNCyHb
-llzaELdm9fhOqSprCsghex+zcEyEJdGnfPaPbPrjpZrepIU0z2yyEgI81EE7qbi3
-dpae+OqDGbhtHi9ybEUXQUbkMXUzO5UDHNCRAzpAmeD7guo1iDXISsWZRO2xvPBt
-1DAW/An9QYnlzDdW81Gx
-=yL2B
------END PGP SIGNATURE-----
-
---A6/RaK8Cbiy3x9M4--
-
---===============3247932807783577571==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3247932807783577571==--
