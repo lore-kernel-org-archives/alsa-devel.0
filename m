@@ -1,21 +1,21 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFC PATCH 10/11] ASoC: samsung: Do not require
- legacy DMA API in case of S3C64XX
-Date: Mon, 17 Jun 2013 16:01:12 +0200
-Message-ID: <CACRpkdbvJjVzyXpsDiW1Q6knW5UCTo00nZXVsK+Pt+f7AqfM1g@mail.gmail.com>
+Subject: Re: [RFC PATCH 11/11] ARM: s3c64xx: Add support for
+ DMA using generic amba-pl08x driver
+Date: Mon, 17 Jun 2013 16:04:47 +0200
+Message-ID: <CACRpkdbQ7+FDJh235vERbCcQcnW1Mzar9r5jgLaXAT5n6CiCFQ@mail.gmail.com>
 References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <1371416058-22047-11-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-12-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id DEBDE2625FE
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 16:01:12 +0200 (CEST)
-Received: by mail-ob0-f173.google.com with SMTP id wc20so3224783obb.32
- for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 07:01:12 -0700 (PDT)
-In-Reply-To: <1371416058-22047-11-git-send-email-tomasz.figa@gmail.com>
+Received: from mail-oa0-f54.google.com (mail-oa0-f54.google.com
+ [209.85.219.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6687B264EFA
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 16:04:48 +0200 (CEST)
+Received: by mail-oa0-f54.google.com with SMTP id o6so3415966oag.41
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2013 07:04:47 -0700 (PDT)
+In-Reply-To: <1371416058-22047-12-git-send-email-tomasz.figa@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,18 +31,31 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
 
-> With support for amba-pl08x driver, on S3C64xx the generic DMA engine API
-> can be used instead of the private s3c-dma interface.
+> This patch adds all required platform-specific data and initialization
+> code to support the generic amba-pl08x driver on S3C64xx SoCs.
+>
+> Also some compatibility definitions are added to make the transition from
+> legacy API to DMA engine easier. The biggest hack here is passing const
+> char * pointers through DMA resource, casted to unsigned long, but this
+> is how Samsung DMA wrappers (used to support both s3c-dma and DMA engine
+> in drivers) is designed.
 >
 > Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
-(...)
-> -       select S3C64XX_DMA if ARCH_S3C64XX
-> +       select S3C64XX_DMA if ARCH_S3C64XX && !S3C64XX_PL080
->         select S3C2410_DMA if ARCH_S3C24XX
 
-I hope it will look nicer (like just selecting the real PL080 driver)
-in the end. OK can live with this:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Patch looks like an OK stepping stone.
+
+> +static AMBA_AHB_DEVICE(s3c64xx_dma0, "dma-pl080s.0", 0x0a141080,
+> +                       0x75000000, {IRQ_DMA0}, &s3c64xx_dma0_plat_data);
+(...)
+> +static AMBA_AHB_DEVICE(s3c64xx_dma1, "dma-pl080s.1", 0x0a141080,
+> +                       0x75100000, {IRQ_DMA1}, &s3c64xx_dma1_plat_data);
+
+Ah, does this mean the device does not have any AMBA PrimeCell ID
+contents?
+
+Then use the ID 0x00053080 instead of 0x0a141080
+
+0x53 is "S" for Samsung. Variant 0.
 
 Yours,
 Linus Walleij
