@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: firewire: fix error return code in
-	scs_probe()
-Date: Tue, 18 Jun 2013 16:02:29 +0200
-Message-ID: <51C06875.8080208@ladisch.de>
-References: <CAPgLHd-HMw40igirFvFHtN3HNy2utXHVAVERxKQ-vwF9ecUaSw@mail.gmail.com>
+From: Wang Xingchao <xingchao.wang@linux.intel.com>
+Subject: [PATCH V1] ALSA: hda - Avoid choose same converter for
+	unused pins
+Date: Tue, 18 Jun 2013 21:42:14 +0800
+Message-ID: <1371562934-28859-1-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 6AFFA265159
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 16:02:39 +0200 (CEST)
-In-Reply-To: <CAPgLHd-HMw40igirFvFHtN3HNy2utXHVAVERxKQ-vwF9ecUaSw@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7A0726517B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 16:10:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +19,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: yongjun_wei@trendmicro.com.cn, Wei Yongjun <weiyj.lk@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: tiwai@suse.de
+Cc: daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, intel-gfx@lists.freedesktop.org, xingchao.wang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Wei Yongjun wrote:
-> Fix to return -ENOMEM in the kmalloc() error handling
-> case instead of 0, as done elsewhere in this function.
->
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+For Intel Haswell HDMI codecs, the pins choose converter 0 by default.
+This would cause conflict when playing audio on unused pins,the pin with
+physical device connected would get audio data too.
+i.e. Pin 0/1/2 default choose converter 0, pin 1 has HDMI monitor connected.
+when play audio on Pin 0 or pin 2, pin 1 could get audio data too.
 
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
+This patch configure unused pins to choose different converter.
 
->  	scs->buffer = kmalloc(HSS1394_MAX_PACKET_SIZE, GFP_KERNEL);
-> -	if (!scs->buffer)
-> +	if (!scs->buffer) {
-> +		err = -ENOMEM;
->  		goto err_card;
-> +	}
+Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c |   91 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 76 insertions(+), 15 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 8983747..43f8b76 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1110,26 +1110,15 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 	return 0;
+ }
+ 
+-/*
+- * HDA PCM callbacks
+- */
+-static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+-			 struct hda_codec *codec,
+-			 struct snd_pcm_substream *substream)
++static int hdmi_choose_cvt(struct hda_codec *codec,
++			int pin_idx, int *cvt_id, int *mux_id)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int pin_idx, cvt_idx, mux_idx = 0;
+ 	struct hdmi_spec_per_pin *per_pin;
+-	struct hdmi_eld *eld;
+ 	struct hdmi_spec_per_cvt *per_cvt = NULL;
++	int cvt_idx, mux_idx = 0;
+ 
+-	/* Validate hinfo */
+-	pin_idx = hinfo_to_pin_index(spec, hinfo);
+-	if (snd_BUG_ON(pin_idx < 0))
+-		return -EINVAL;
+ 	per_pin = get_pin(spec, pin_idx);
+-	eld = &per_pin->sink_eld;
+ 
+ 	/* Dynamically assign converter to stream */
+ 	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
+@@ -1147,17 +1136,89 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			continue;
+ 		break;
+ 	}
++
+ 	/* No free converters */
+ 	if (cvt_idx == spec->num_cvts)
+ 		return -ENODEV;
+ 
++	if (cvt_id)
++		*cvt_id = cvt_idx;
++	if (mux_id)
++		*mux_id = mux_idx;
++
++	return 0;
++}
++
++static void haswell_config_cvts(struct hda_codec *codec,
++			int pin_id, int mux_id)
++{
++	struct hdmi_spec *spec = codec->spec;
++	struct hdmi_spec_per_pin *per_pin;
++	int pin_idx, mux_idx;
++	int curr;
++	int err;
++
++	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
++		per_pin = get_pin(spec, pin_idx);
++
++		if (pin_idx == pin_id)
++			continue;
++
++		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
++					  AC_VERB_GET_CONNECT_SEL, 0);
++
++		/* Choose another unused converter */
++		if (curr == mux_id) {
++			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
++			if (err < 0)
++				return;
++			snd_printdd("HDMI: choose converter %d for pin %d\n", mux_idx, pin_idx);
++			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
++					    AC_VERB_SET_CONNECT_SEL,
++					    mux_idx);
++		}
++	}
++}
++
++/*
++ * HDA PCM callbacks
++ */
++static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
++			 struct hda_codec *codec,
++			 struct snd_pcm_substream *substream)
++{
++	struct hdmi_spec *spec = codec->spec;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int pin_idx, cvt_idx, mux_idx = 0;
++	struct hdmi_spec_per_pin *per_pin;
++	struct hdmi_eld *eld;
++	struct hdmi_spec_per_cvt *per_cvt = NULL;
++	int err;
++
++	/* Validate hinfo */
++	pin_idx = hinfo_to_pin_index(spec, hinfo);
++	if (snd_BUG_ON(pin_idx < 0))
++		return -EINVAL;
++	per_pin = get_pin(spec, pin_idx);
++	eld = &per_pin->sink_eld;
++
++	err = hdmi_choose_cvt(codec, pin_idx, &cvt_idx, &mux_idx);
++	if (err < 0)
++		return err;
++
++	per_cvt = get_cvt(spec, cvt_idx);
+ 	/* Claim converter */
+ 	per_cvt->assigned = 1;
+ 	hinfo->nid = per_cvt->cvt_nid;
+ 
+-	snd_hda_codec_write(codec, per_pin->pin_nid, 0,
++	snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
+ 			    AC_VERB_SET_CONNECT_SEL,
+ 			    mux_idx);
++
++	/* configure unused pins to choose other converters */
++	if (codec->vendor_id == 0x80862807)
++		haswell_config_cvts(codec, pin_idx, mux_idx);
++
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+ 
+ 	/* Initially set the converter's capabilities */
+-- 
+1.7.9.5
