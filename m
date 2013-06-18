@@ -1,81 +1,110 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 1/2] ASoC: spear: Remove nonexistant EVM
-	options
-Date: Tue, 18 Jun 2013 09:48:56 +0530
-Message-ID: <51BFDFB0.5000006@st.com>
-References: <1371456427-31648-1-git-send-email-broonie@linaro.org>
+From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to arm/common
+Date: Tue, 18 Jun 2013 10:04:28 +0530
+Message-ID: <51BFE354.6070207@ti.com>
+References: <1371463571-2578-1-git-send-email-nsekhar@ti.com>
+	<1371463571-2578-2-git-send-email-nsekhar@ti.com>
+	<20130617170326.GA28497@quad.lixom.net>
+	<083BC63EECB6FD41B8E81CF7FD87CC0F2E4E95C2@DLEE08.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
- [207.126.144.137])
- by alsa0.perex.cz (Postfix) with ESMTP id D3ED9261A5F
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 06:19:01 +0200 (CEST)
-In-Reply-To: <1371456427-31648-1-git-send-email-broonie@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <083BC63EECB6FD41B8E81CF7FD87CC0F2E4E95C2-YmePFLaaepqIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Fernandes, Joel A" <joelagnel-l0cyMroinI0@public.gmane.org>
+Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kevin Hilman <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Chris Ball <cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/17/2013 1:37 PM, Mark Brown wrote:
-> The source wasn't added.
->
-> Stephen Rothwell<sfr@canb.auug.org.au>
-> Signed-off-by: Mark Brown<broonie@linaro.org>
-> ---
->   sound/soc/spear/Kconfig  |   21 ---------------------
->   sound/soc/spear/Makefile |    3 ---
->   2 files changed, 24 deletions(-)
->
-> diff --git a/sound/soc/spear/Kconfig b/sound/soc/spear/Kconfig
-> index e3851d6..3567d73 100644
-> --- a/sound/soc/spear/Kconfig
-> +++ b/sound/soc/spear/Kconfig
-> @@ -1,24 +1,3 @@
-> -config SND_SPEAR_EVM
-> -	tristate "SoC Audio support for SPEAr EVM"
-> -	select SND_DESIGNWARE_I2S
-> -	select SND_SOC_STA529
-> -	select SND_SPEAR_SOC
-> -	help
-> -	 Say Y if you want to add support for SoC audio on SPEAr
-> -	 platform
-> -
-> -config SND_SPEAR1340_EVM
-> -	tristate "SoC Audio support for SPEAr1340 EVM"
-> -	select SND_DESIGNWARE_I2S
-> -	select SND_SOC_STA529
-> -	select SND_SPEAR_SPDIF_OUT
-> -	select SND_SPEAR_SPDIF_IN
-> -	select SND_SOC_SPDIF
-> -	select SND_SPEAR_SOC
-> -	help
-> -	 Say Y if you want to add support for SoC audio on SPEAr1340
-> -	 platform
-> -
->   config SND_SPEAR_SOC
->   	tristate
->   	select SND_SOC_DMAENGINE_PCM
-> diff --git a/sound/soc/spear/Makefile b/sound/soc/spear/Makefile
-> index b365126..9f47bb4 100644
-> --- a/sound/soc/spear/Makefile
-> +++ b/sound/soc/spear/Makefile
-> @@ -2,6 +2,3 @@
->   obj-$(CONFIG_SND_SPEAR_SOC) += spear_pcm.o
->   obj-$(CONFIG_SND_SPEAR_SPDIF_IN) += spdif_in.o
->   obj-$(CONFIG_SND_SPEAR_SPDIF_OUT) += spdif_out.o
-> -
-> -# SPEAR Machine Support
-> -obj-$(CONFIG_SND_SPEAR_EVM) += spear_evb.o
+On 6/17/2013 11:25 PM, Fernandes, Joel A wrote:
+> Hi Olof,
+> 
+>> -----Original Message-----
+>> From: Olof Johansson [mailto:olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org]
+>> Sent: Monday, June 17, 2013 12:03 PM
+>> To: Nori, Sekhar
+>> Cc: Russell King; Vinod Koul; Chris Ball; Liam Girdwood; Mark Brown; Kevin
+>> Hilman; Matt Porter; Fernandes, Joel A; linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org;
+>> davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org; linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
+>> alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; Arnd Bergmann
+>> Subject: Re: [PATCH v10 1/2] ARM: davinci: move private EDMA API to
+>> arm/common
+>>
+>> On Mon, Jun 17, 2013 at 03:36:10PM +0530, Sekhar Nori wrote:
+>>> From: Matt Porter <mporter-l0cyMroinI0@public.gmane.org>
+>>>
+>>> Move mach-davinci/dma.c to common/edma.c so it can be used by OMAP
+>>> (specifically AM33xx) as well.
+>>>
+>>> Signed-off-by: Matt Porter <mporter-l0cyMroinI0@public.gmane.org>
+>>> Acked-by: Chris Ball <cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org> # davinci_mmc.c
+>>> [nsekhar-l0cyMroinI0@public.gmane.org: dropped davinci sffsdr changes]
+>>> Signed-off-by: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+>>
+>> Acked-by: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+>>
+>> Tiny nit below, no need to respin just for that.
+>>
+>> I suppose we should take this through arm-soc.
+>>
+>>> ---
+>>>  arch/arm/Kconfig                                   |    1 +
+>>>  arch/arm/common/Kconfig                            |    3 +
+>>>  arch/arm/common/Makefile                           |    1 +
+>>>  arch/arm/{mach-davinci/dma.c => common/edma.c}     |    2 +-
+>>>  arch/arm/mach-davinci/Makefile                     |    2 +-
+>>>  arch/arm/mach-davinci/board-tnetv107x-evm.c        |    2 +-
+>>>  arch/arm/mach-davinci/davinci.h                    |    2 +-
+>>>  arch/arm/mach-davinci/devices-tnetv107x.c          |    2 +-
+>>>  arch/arm/mach-davinci/devices.c                    |    6 +-
+>>>  arch/arm/mach-davinci/dm355.c                      |    2 +-
+>>>  arch/arm/mach-davinci/dm365.c                      |    2 +-
+>>>  arch/arm/mach-davinci/dm644x.c                     |    2 +-
+>>>  arch/arm/mach-davinci/dm646x.c                     |    2 +-
+>>>  arch/arm/mach-davinci/include/mach/da8xx.h         |    2 +-
+>>>  drivers/dma/edma.c                                 |    2 +-
+>>>  drivers/mmc/host/davinci_mmc.c                     |    1 +
+>>>  include/linux/mfd/davinci_voicecodec.h             |    3 +-
+>>>  .../mach => include/linux/platform_data}/edma.h    |   89 +-------------------
+>>>  include/linux/platform_data/spi-davinci.h          |    2 +-
+>>>  sound/soc/davinci/davinci-evm.c                    |    1 +
+>>>  sound/soc/davinci/davinci-pcm.c                    |    1 +
+>>>  sound/soc/davinci/davinci-pcm.h                    |    2 +-
+>>>  22 files changed, 29 insertions(+), 103 deletions(-)  rename
+>>> arch/arm/{mach-davinci/dma.c => common/edma.c} (99%)  rename
+>>> {arch/arm/mach-davinci/include/mach =>
+>>> include/linux/platform_data}/edma.h (59%)
+>>>
+>>> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig index
+>>> 49d993c..b1c66a4 100644
+>>> --- a/arch/arm/Kconfig
+>>> +++ b/arch/arm/Kconfig
+>>> @@ -840,6 +840,7 @@ config ARCH_DAVINCI
+>>>  	select GENERIC_IRQ_CHIP
+>>>  	select HAVE_IDE
+>>>  	select NEED_MACH_GPIO_H
+>>> +	select TI_PRIV_EDMA
+>>
+>> What does PRIV here mean? Privileged? Private? I think it can be shortened to
+>> TI_EDMA.
+>>
+>  [Joel] TI_EDMA already exists. It is used to build drivers/dma/edma.
+> I have a patch that reuses the TI_EDMA option instead of the PRIV one . I will
+> include that In my v11 series for EDMA (v10 was just posted) . If its ok, let us
+> merge Sekhar's patch as-is, and then mine will get rid of the PRIV option
+> (among other things).
 
+PRIV is short for "private". We will get rid of TI_PRIV_EDMA along with
+all users of private DMA API (including audio). TI_EDMA and TI_PRIV_EDMA
+denote different things and we cannot reuse one for the other.
 
-Acked-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Thanks,
+Sekhar
