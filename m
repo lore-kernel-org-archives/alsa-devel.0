@@ -1,18 +1,23 @@
-From: kbd_server@rbcmail.ru
-Subject: VIA VT1708S mic booast problem
-Date: Tue, 18 Jun 2013 07:23:47 +0400
-Message-ID: <5ce121765f49a554d7e38dfc43b96aaddd72d2ce@mail.qip.ru>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 3/4] drm/i915: Add display audio routing
+	APIs for ALSA
+Date: Tue, 18 Jun 2013 09:13:25 +0200
+Message-ID: <CAKMK7uGesFzo1gSgygTH=uGvPnSRaRumjMWm=-okNwqcRCtpAA@mail.gmail.com>
+References: <1371223229-8236-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1371223229-8236-4-git-send-email-xingchao.wang@linux.intel.com>
+ <CAKMK7uE5PCNEqB8EtYjAZF-MVHCXpPzJ8CsXjOfLR=LA7q7Pig@mail.gmail.com>
+ <46B810F6945F7C4788E11DCE57EC4890118306EA@SHSMSX104.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="=_fff17065b4cd25e180c9a7504287adbe"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web25.pochta.ru (web25.pochta.ru [62.141.94.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 365052650C6
- for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 05:23:48 +0200 (CEST)
-Received: from [127.0.0.1] (port=34870 helo=localhost)
- by web25.pochta.ru with esmtp id 1UomWJ-0001rH-At
- for alsa-devel@alsa-project.org; Tue, 18 Jun 2013 07:23:47 +0400
+Received: from mail-ie0-f172.google.com (mail-ie0-f172.google.com
+ [209.85.223.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0D512610D2
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 09:13:26 +0200 (CEST)
+Received: by mail-ie0-f172.google.com with SMTP id 16so9316459iea.3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2013 00:13:25 -0700 (PDT)
+In-Reply-To: <46B810F6945F7C4788E11DCE57EC4890118306EA@SHSMSX104.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,167 +27,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx <intel-gfx@lists.freedesktop.org>, Wang Xingchao <xingchao.wang@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a message in Mime Format.  If you see this, your mail reader does not support this format.
+On Mon, Jun 17, 2013 at 12:52:41PM +0000, Wang, Xingchao wrote:
+> Hi Daniel,
+>
+> > -----Original Message-----
+> > From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch]
+> > Sent: Saturday, June 15, 2013 3:18 AM
+> > To: Wang Xingchao
+> > Cc: Takashi Iwai; alsa-devel@alsa-project.org; intel-gfx; David Henningsson;
+> > Wang, Xingchao
+> > Subject: Re: [PATCH 3/4] drm/i915: Add display audio routing APIs for ALSA
+> >
+> > On Fri, Jun 14, 2013 at 5:20 PM, Wang Xingchao
+> > <xingchao.wang@linux.intel.com> wrote:
+> > > ALSA audio driver need know current audio routing infomation.
+> > > i.e. Route map between codec pins(DDI ports) and Transcoders(Pipe).
+> > >
+> > > Also the new API let audio driver disable unused audio pin's output.
+> > > This fixed the bug when three pins *ALL* have monitors connected,
+> > > playing audio on one pin would cause audio output to all minitors.
+> > >
+> > > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> >
+> >
+> > So I've started to have a real look at audio on haswell and audio on
+> > i915 in general, and I'm seriously confused. Random observations, but I fear
+> > this isn't the real story by far yet:
+> >
+> > - On haswell we now have a hooping 3 places that set up these audio routing
+> > register: haswell_write_eld (called from the connector enable callbacks),
+> > intel_enable/disable_ddi and now the new hooks you're adding here. That's 2
+> > places too many. If we really need all three places those need to be refactored
+> > so that the bit-frobbing logic is all in one place. But I seriously doubt that we
+> > need them all.
+> >
+>
+> Yeah I agree to put audio stuff in One place. Let me give you some background about the issue this
+> Patch fixed.
+> Basically audio side need such API in gfx side to enable/disable audio,
+> that's three PIPE based audio enable bits.  The issue comes when two
+> monitors connected on DDI port B and port C, like:
+> DDI B(pin 0) --> DP monitor
+> DDI C(pin 1) --> HDMI minitor
+>
+> In haswell the pins default choose converter 0(hardware level) as data source, so it's like:
+>
+> Converter 0 --> pin 0 + pin 1 + pin2
+>
+> And when play audio on pin 0, pin 1 could get audio data too. Meanwhile
+> pin 1 has HDMi minitor connected, you can hear audio.  To fix this
+> issue, I tried several solutions:
+> 1) Disable pin 1/2 when play audio on pin 0, or disable pin 0/2 when play audio on pin 1
+> 2) mute pin 1/2 when play audio on pin 0, or mute pin 0/2 when play audio on pin 1
+> 3) configure pin 1/2 to choose other converters when play audio on pin 0.
+> 4) disable audio output enable in gfx side, this is implemented in current patchset.
+>
+> I prefer 1) or 2) it's very simple, but it doesnot work on Haswell. It's
+> the issue I'm trying to fix: Pin 0 must be output-eanbe/unmute when
+> playing audio on pin 1.  Seems pin 1 has dependency on pin 0, and I have
+> to disable audio output in gfx side.
+>
+> I don't think it's bad if we implement such API in gfx side, the
+> question is you point out, to make it clean and simple.  If Dp1.2 is
+> needed in future, audio side need the pipe->DDI port
+> connections map too. We can reuse power-well module to export such
+> information.
+>
+> To implement solution 4) above, audio side handle request to disable audio output in gfx side:
+> - if only pin 0 is busy playing audio and using valid pipe, disable audio output for pin 1/2.
+>  It's the same logic when only pin1 or pin 2 is busy playing audio.
+> - if both pin0 and pin 1 are busy playing audio, only disable pin 2.
+> - if all pins are playing audio, do nothing.
+>
+> In above case when both Pin 0 and pin 1 are connected with Dp and HDMI
+> monitor, if only playing audio on pin 0, disable pin 1's audio output in
+> gfx side Would cause eld info refresh in audio driver side, but that
+> doesnot matter as when you need playing audio on pin 1, the audio output
+> enable bit would be set again.
+>
+> The patch could fix the issue when playing audio on one pin, audio would
+> route to another pin too. In such case, we can drop the second patch in
+> fact.
 
---=_fff17065b4cd25e180c9a7504287adbe
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Just reading through your description I prefer option 3) since that
+should be possible to implement in the audio side only.
 
-Dears,=0A=0APlease, check bug report - https://bugzilla.kernel.org/show_=
-bug.cgi?id=3D59861=0A=0AIn 3.9.5-030905-generic version - Rear (Front) M=
-ic Boost Volume option is=0D=0Aabsent for VIA VT1708S codec.=0D=0A3.8.0-=
-19-generic - everything OK.=0A=0A--=0A=D0=9F=D0=BE=D1=87=D1=82=D0=BE=D0=
-=B2=D1=8B=D0=B9 =D1=8F=D1=89=D0=B8=D0=BA =D0=BF=D1=80=D0=B5=D0=B4=D0=BE=
-=D1=81=D1=82=D0=B0=D0=B2=D0=BB=D0=B5=D0=BD =D1=81=D0=B5=D1=80=D0=B2=D0=
-=B8=D1=81=D0=BE=D0=BC qip.ru=0A=D0=97=D0=B0=D0=B2=D0=B5=D0=B4=D0=B8 =D0=
-=B1=D0=B5=D1=81=D0=BF=D0=BB=D0=B0=D1=82=D0=BD=D1=83=D1=8E =D0=BF=D0=BE=
-=D1=87=D1=82=D1=83 =D0=B2 =D0=B4=D0=BE=D0=BC=D0=B5=D0=BD=D0=B5 rbcmail.r=
-u =D0=B8 =D1=82=D1=8B!
+To reiterate why I don't really like 4) is that touching these bits will
+result in unsolicted even interrupts on the audio side. So your patch
+doesn't seem to just disable/enable audio, but there's a big chain of
+follow-up events going on. So I'm afraid that there's some really subtile
+dependency in there making your current solution fragile.
 
---=_fff17065b4cd25e180c9a7504287adbe
-Content-Type: application/x-bzip; name="VT1708S_Alsa.tar.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="VT1708S_Alsa.tar.bz2"
+So what's the downside of option 3?
 
-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
-EgZt42dA
+Yours, Daniel
+>
+> > - I've quickly read through the haswell audio modeset sequence. On a glance I
+> > could see no reason why we need to have 3 different places to set up the gfx
+> > side of the audio support, since it's much simpler
+> > apparently:
+> >
+> > Enable sequence: 1. gfx side sets up registers 2. gfx side sets the audio enable
+> > bit, which generates the interrup 3. audio side completes the setup on its side.
+> >
+> > Disable sequence is just the inverse. So I don't think we need 3 different places
+> > for this.
+> >
+> > - Both on ibx/cpt and also on haswell here we seem to rely on BIOS preset
+> > values way too often. Or at least I didn't figure out where these registes get
+> > initialized (pretty sure nowhere in i915.ko). We have countless bugs where the
+> > BIOS tried to be fancy and set up something we don't actually support. So
+> > please, if there's no really good reason why we need to do things differently,
+> > have explicit register setups. If there's something we need to preserve from
+> > the BIOS, it needs to be done explicitly and must have a comment.
+> >
+> > - No global state or stuffing random things into dev_priv/crtc any more. Our
+> > modeset infrastructure has a transactional state machine
+> > now: First we compute state parameters in the various compute_config
+> > functions and store all that into a struct intel_crtc_config pipe_config. Then the
+> > modeset functions apply that state. Finally at the end the hw state is
+> > cross-checked with the sw state. We need this to properly support atomic
+> > modeset and fastboot. Yes, this means that recent additions for haswell audio
+> > support like crtc->eld_vld need to go away and be moved into pipe_config.
+> >
+> > - Changing the OUTPUT_ENABLE bits will result in interrupts on the audio side.
+> > But these functions here are only called from the audio side, so we have a really
+> > complicated feedback loop. Given that your patches need much better
+> > explanation of what's going on (preferably with time/state diagrams). Also I
+> > think I need a more detailed explanation of what exactly is broken currently on
+> > Haswell audio and how these patches fix this.
+>
+> Hope above explanation is helpful for you, if it's not enough, I would draw some graph case by case to let you know. :)
+>
+> Thanks
+> --xingchao
+> >
+> > Cheers, Daniel
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
 
---=_fff17065b4cd25e180c9a7504287adbe
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---=_fff17065b4cd25e180c9a7504287adbe--
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
