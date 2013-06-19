@@ -1,81 +1,87 @@
-From: "Oskar Schirmer" <oskar@scara.com>
-Subject: [PATCH v3] sound/sgtl5000: fix codec register initial values and handling
-Date: 19 Jun 2013 13:16:06 +0000
-Message-ID: <1371647766-4900-1-git-send-email-oskar@scara.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] sound/sgtl5000: fix codec register
+ initial values and handling
+Date: Wed, 19 Jun 2013 16:26:48 +0100
+Message-ID: <20130619152648.GW1403@sirena.org.uk>
 References: <51B749F5.3010907@freescale.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <51B749F5.3010907@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Wolfram Sang <w.sang@pengutronix.de>, broonie@kernel.org, Oskar Schirmer <oskar@scara.com>
+ <1371647766-4900-1-git-send-email-oskar@scara.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2663053382607385510=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93AB8261AF4
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 17:26:56 +0200 (CEST)
+In-Reply-To: <1371647766-4900-1-git-send-email-oskar@scara.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oskar Schirmer <oskar@scara.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Wolfram Sang <w.sang@pengutronix.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-According to documentation bit 3:2 in register SSS_CTRL are
-reserved and zero, so initially setting the register to 0x0008
-does not make much sense. Instead, bit 4 should be marked set,
-as this is the power up default.
 
-Further, mask computation in declarative part is obviously wrong:
-Fix FRAC DIVISOR to provide an 11 bit mask correctly.
+--===============2663053382607385510==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8JMtXNYTIIy8Rvxv"
+Content-Disposition: inline
 
-Next, powering down PLL before switching to a mode that
-does not use it, is a bad idea. So first set the mode control,
-then power down PLL.
 
-Signed-off-by: Oskar Schirmer <oskar@scara.com>
----
- sound/soc/codecs/sgtl5000.c |   11 +++++++----
- sound/soc/codecs/sgtl5000.h |    2 +-
- 2 files changed, 8 insertions(+), 5 deletions(-)
+--8JMtXNYTIIy8Rvxv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 92bbfec..6162e19 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -38,7 +38,7 @@
- static const struct reg_default sgtl5000_reg_defaults[] = {
- 	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
- 	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
--	{ SGTL5000_CHIP_SSS_CTRL,		0x0008 },
-+	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
- 	{ SGTL5000_CHIP_DAC_VOL,		0x3c3c },
- 	{ SGTL5000_CHIP_PAD_STRENGTH,		0x015f },
- 	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
-@@ -644,16 +644,19 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP,
- 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP);
-+
-+		/* if using pll, clk_ctrl must be set after pll power up */
-+		snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
- 	} else {
-+		/* otherwise, clk_ctrl must be set before pll power down */
-+		snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
-+
- 		/* power down pll */
- 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP,
- 			0);
- 	}
- 
--	/* if using pll, clk_ctrl must be set after pll power up */
--	snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
--
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 8a9f435..d3a68bb 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -347,7 +347,7 @@
- #define SGTL5000_PLL_INT_DIV_MASK		0xf800
- #define SGTL5000_PLL_INT_DIV_SHIFT		11
- #define SGTL5000_PLL_INT_DIV_WIDTH		5
--#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
-+#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
- #define SGTL5000_PLL_FRAC_DIV_SHIFT		0
- #define SGTL5000_PLL_FRAC_DIV_WIDTH		11
- 
--- 
-1.7.9.5
+On Wed, Jun 19, 2013 at 01:16:06PM +0000, Oskar Schirmer wrote:
+
+This is a set of three unrelated changes, they should be sent as three
+separate patches.
+
+> Further, mask computation in declarative part is obviously wrong:
+> Fix FRAC DIVISOR to provide an 11 bit mask correctly.
+
+What makes you say that this is obviously wrong?  It's not entirely
+clear.
+
+> -#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
+> +#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
+
+Based on your changelog I was expecting a mask with only two bits set
+here?
+
+--8JMtXNYTIIy8Rvxv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRwc21AAoJELSic+t+oim9WvMP/ijace/A0w4dhmAuFiLXvObG
+73OtHF13uQG/4jrJTcmYe/3C8MuYcgcSLmHHe91+z05zXbgr7JUP7QEGqccfjwkO
+YaMx9RBuh+UsG0gfOnjCcPJ2SO1vf1tk8LrExMfqipwLxF+C0yPEI+2uqlqLRkkG
+GQwyY3+YOXFsYYdGTOUwHAvgLzGUEq208Y7Ajlbc6NZdCebIY825Njr0IlAQ6wT3
+PkYF2LZNiPPF4uc+UaqH5JCHY69LlXFLlDwPhq9Uqtj3jPYtLyeDYJ6l+eOIHjXR
+yk3yQE0lW87AH7Q2T8MF+76Io0X6oQPRVouvDYHtE8znnx1fyK9gl6g6taz4FMF1
+DYSGMlNlCIG7NzbYtoarPKyuavaKIKdjtUrqvsA2isvJmAqzbpT/WyE2i2TUPhPi
+c1ITtKdGI2qfb3Fuz2CnC/MKhn3YcFRikgN9J0tEjBGFsnhmexbccPYo8AArkqsa
+rLHBm4x0oEm1TuIu1gRhQ3mRLGF2XgonV4K7yt0q0OLgi3CDqX9oQh4iUKIuiMXN
+KmpPOjY2kyrNsm9fHedMmK9LktUfHvtTbyPzZF/SkMFr06Xlc6XNZgkEwL5oKL0e
+HTiaCo/u7fqjBFGchPAZPI6ADSRbKhim3AWkJbbmSErknKu1NccjJ2cy2KEm4AvA
+JrVnr4HqBCNAxP8OYEap
+=L+gf
+-----END PGP SIGNATURE-----
+
+--8JMtXNYTIIy8Rvxv--
+
+--===============2663053382607385510==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2663053382607385510==--
