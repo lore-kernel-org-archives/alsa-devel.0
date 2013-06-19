@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/11] ASoC: wm_hubs: Use SOC_SINGLE_EXT()
+Subject: [PATCH 11/11] ASoC: 88pm860x: Use SND_SOC_DAPM_PGA_E()
 	instead of open-coding it
-Date: Wed, 19 Jun 2013 19:34:01 +0200
-Message-ID: <1371663243-10032-9-git-send-email-lars@metafoo.de>
+Date: Wed, 19 Jun 2013 19:34:03 +0200
+Message-ID: <1371663243-10032-11-git-send-email-lars@metafoo.de>
 References: <1371663243-10032-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-226.synserver.de (smtp-out-227.synserver.de
  [212.40.185.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 8221D261B2F
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 19:34:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 75F44262607
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 19:34:01 +0200 (CEST)
 In-Reply-To: <1371663243-10032-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,25 +28,25 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm_hubs.c | 6 ++----
+ sound/soc/codecs/88pm860x-codec.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index f5d81b9..2d9e099 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -693,10 +693,8 @@ void wm_hubs_update_class_w(struct snd_soc_codec *codec)
- EXPORT_SYMBOL_GPL(wm_hubs_update_class_w);
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index 1382f3f..8af0434 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -120,10 +120,8 @@
+  * before DAC & PGA in DAPM power-off sequence.
+  */
+ #define PM860X_DAPM_OUTPUT(wname, wevent)	\
+-{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, \
+-	.shift = 0, .invert = 0, .kcontrol_news = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
+-	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD, }
++	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, 0, 0, NULL, 0, wevent, \
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD)
  
- #define WM_HUBS_SINGLE_W(xname, reg, shift, max, invert) \
--{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
--	.info = snd_soc_info_volsw, \
--	.get = snd_soc_dapm_get_volsw, .put = class_w_put_volsw, \
--	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
-+	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
-+		snd_soc_dapm_get_volsw, class_w_put_volsw)
- 
- static int class_w_put_volsw(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+ struct pm860x_det {
+ 	struct snd_soc_jack	*hp_jack;
 -- 
 1.8.0
