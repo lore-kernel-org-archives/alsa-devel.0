@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/11] ASoC: wm8994: Use SOC_SINGLE_EXT()
+Subject: [PATCH 10/11] ASoC: wm_adsp: Use SND_SOC_DAPM_PGA_E()
 	instead of open-coding it
-Date: Wed, 19 Jun 2013 19:33:59 +0200
-Message-ID: <1371663243-10032-7-git-send-email-lars@metafoo.de>
+Date: Wed, 19 Jun 2013 19:34:02 +0200
+Message-ID: <1371663243-10032-10-git-send-email-lars@metafoo.de>
 References: <1371663243-10032-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-226.synserver.de (smtp-out-227.synserver.de
  [212.40.185.227])
- by alsa0.perex.cz (Postfix) with ESMTP id ACAB5261B2E
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 19:34:02 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 84E47262610
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 19:34:03 +0200 (CEST)
 In-Reply-To: <1371663243-10032-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,38 +28,31 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8994.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm_adsp.h | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 25580b5..1d4b1ec 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -290,10 +290,8 @@ static const DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
- static const DECLARE_TLV_DB_SCALE(mixin_boost_tlv, 0, 900, 0);
- 
- #define WM8994_DRC_SWITCH(xname, reg, shift) \
--{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
--	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
--	.put = wm8994_put_drc_sw, \
--	.private_value =  SOC_SINGLE_VALUE(reg, shift, 1, 0) }
-+	SOC_SINGLE_EXT(xname, reg, shift, 1, 0, \
-+		snd_soc_get_volsw, wm8994_put_drc_sw)
- 
- static int wm8994_put_drc_sw(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
-@@ -1433,10 +1431,8 @@ SOC_DAPM_SINGLE("AIF1.1 Switch", WM8994_DAC2_RIGHT_MIXER_ROUTING,
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 6e890b9..9f922c8 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -61,14 +61,12 @@ struct wm_adsp {
  };
  
- #define WM8994_CLASS_W_SWITCH(xname, reg, shift, max, invert) \
--{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
--	.info = snd_soc_info_volsw, \
--	.get = snd_soc_dapm_get_volsw, .put = wm8994_put_class_w, \
--	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
-+	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
-+		snd_soc_get_volsw, wm8994_put_class_w)
+ #define WM_ADSP1(wname, num) \
+-	{ .id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, \
+-	.shift = num, .event = wm_adsp1_event, \
+-	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
++	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
++		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
  
- static int wm8994_put_class_w(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+ #define WM_ADSP2(wname, num) \
+-{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, \
+-	.shift = num, .event = wm_adsp2_event, \
+-	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
++	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
++		wm_adsp2_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
+ extern const struct snd_kcontrol_new wm_adsp1_fw_controls[];
+ extern const struct snd_kcontrol_new wm_adsp2_fw_controls[];
 -- 
 1.8.0
