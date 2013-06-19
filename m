@@ -1,69 +1,75 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Wed, 19 Jun 2013 20:26:12 +0200
-Message-ID: <3697657.tZFV7pR81Q@flatron>
-References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com> <20130619174047.GB1403@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/11] ASoC: tlv320aix3x: Use
+ SOC_SINGLE_EXT() instead of open-coding it
+Date: Wed, 19 Jun 2013 19:46:59 +0100
+Message-ID: <20130619184659.GF1403@sirena.org.uk>
+References: <1371663243-10032-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130619174047.GB1403@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>Alban Bedel <al>
+Content-Type: multipart/mixed; boundary="===============8858560464266284256=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76E8C264EFF
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 20:47:08 +0200 (CEST)
+In-Reply-To: <1371663243-10032-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 of June 2013 18:40:47 Mark Brown wrote:
-> On Sun, Jun 16, 2013 at 10:54:07PM +0200, Tomasz Figa wrote:
-> > One of the biggest roadblocks on the way of S3C64xx to DeviceTree
-> > support is its DMA driver, which is completely platform-specific and
-> > provides private API (s3c-dma), not even saying that its design is
-> > completely against multiplatform-awareness.
-> 
-> I tried to test this on my s3c64xx based system but it gave me a kernel
-> that didn't boot far enough to give console output (there's some early
-> init stuff that uses SPI...).  That said, I needed:
-> 
-> diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
-> index 210a893..0f49707 100644
-> --- a/drivers/dma/amba-pl08x.c
-> +++ b/drivers/dma/amba-pl08x.c
-> @@ -313,7 +313,7 @@ static int pl08x_request_mux(struct pl08x_dma_chan
-> *plchan) int ret;
-> 
->  	if (plchan->mux_use++ == 0 && pd->get_signal) {
-> -		ret = pd->get_signal(plchan->cd);
-> +		ret = (pd->get_signal)(plchan->cd);
 
-Hmm, that's strange. The former is a completely valid piece of code...
+--===============8858560464266284256==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ColLPB4ZSxbGn3BV"
+Content-Disposition: inline
 
->  		if (ret < 0) {
->  			plchan->mux_use = 0;
->  			return ret;
-> 
-> to get it to build which makes me suspect the compiler a bit as well...
-> the system has audio, SPI and MMC enabled.
-> 
-> I was applying this to -next, are there any other dependencies I need or
-> anything?
 
-Hmm, I've been testing this on top of my common clock framework and device 
-tree patches, but I don't think this had any effect. Did you add necessary 
-clkdev lookups to the clock driver?
+--ColLPB4ZSxbGn3BV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In Samsung CCF alias notation it looks like this:
+On Wed, Jun 19, 2013 at 07:33:53PM +0200, Lars-Peter Clausen wrote:
+> Cc: Jarkko Nikula <jhnikula@gmail.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-+       ALIAS(HCLK_DMA1, "dma-pl080s.1", "apb_pclk"),
-+       ALIAS(HCLK_DMA0, "dma-pl080s.0", "apb_pclk"),
+Applied all, thanks.
 
-Not sure how hard it will be to add such lookups to the old clock driver, 
-though.
+--ColLPB4ZSxbGn3BV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I will test this applied directly on top of current linux-next when I find 
-some time, but for now you might check out my v3.11-devel branch on my 
-github:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-https://github.com/tom3q/linux.git
+iQIcBAEBAgAGBQJRwfygAAoJELSic+t+oim9yNUQAJ5Drf82R4kdjpc3nLvCe8nR
+xlotWkzbEXI8PeQvRdBedl71sJaoM63DE2M7yx8gplrsFiFFHh1hl2WIue1WtUTJ
+JqIRIpS965i1T8bRBRmAuUjGGTmT+t/o4bnlB+ErrBeAMAb+T/N+5O5MFIBh5SQw
+tN5K4ejoKC99iStp3CX9zQdCZzZhABKD0Uvkbhwe5IZOYdLAeYT8pjf4T7yR8/NR
+0i0YXhCOrpzbqaU1rQqmcdxmNtQX+QyyJKCAvW9zo5iX3FHXSaEaF16y+h/Upfab
+OrEJc+zz7VGFd5Vv2ayHWDjgYYMQE0WUcjn/9493Cmz4ceYth45+9+mEpV87Kx7S
+R3gOcu81ulqqSwjoJ3FdK4wLzdpZitjpHtYNcv7OI50EkQYB9gyLehpFW5lZ3zWC
+zNKnRF9VuvCB87QAo9SSbe5hWctBSfKNbNXN9t+Uis9KAH4nYOQJYBk22MdjNqIu
+QFd95F5nwWSppdI8J2w41JyU+pz9nsgFvcKMgag3ZphfVcJrVfyKHg7SxFS0wN5k
+7ypganizF+jR4ISOAczy3du346EQTjDm6E8bbR+ybN1kKKsPIVBD1mOi06nXtYC2
+FdtaPUUl1dNc3OQcaT0rpqcXmqPkK9NnHaLp1Ryl+EIdjODUH4EbggVfuLMxDUVq
+aBS4Wu8po7Z0nCw1fCHY
+=10GO
+-----END PGP SIGNATURE-----
 
-Best regards,
-Tomasz
+--ColLPB4ZSxbGn3BV--
+
+--===============8858560464266284256==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8858560464266284256==--
