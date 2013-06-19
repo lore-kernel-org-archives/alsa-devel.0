@@ -1,70 +1,63 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Wed, 19 Jun 2013 21:32:44 +0200
-Message-ID: <5443580.A5iCQBtp1T@flatron>
-References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com> <3697657.tZFV7pR81Q@flatron> <20130619192211.GH1403@sirena.org.uk>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [RFC PATCH 11/11] ARM: s3c64xx: Add support for
+ DMA using generic amba-pl08x driver
+Date: Wed, 19 Jun 2013 21:50:35 +0200
+Message-ID: <CACRpkdYqNgLZhJ3oPZcCPjWExjWC+1WzPY2kka4uKCKkLwuu_g@mail.gmail.com>
+References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+ <1371416058-22047-12-git-send-email-tomasz.figa@gmail.com>
+ <CACRpkdbQ7+FDJh235vERbCcQcnW1Mzar9r5jgLaXAT5n6CiCFQ@mail.gmail.com>
+ <91444857.CpeBVZzDHZ@flatron>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20130619192211.GH1403@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>Alban Bedel <al>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF9C2260783
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 21:50:36 +0200 (CEST)
+Received: by mail-ob0-f182.google.com with SMTP id va7so6350454obc.41
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 12:50:36 -0700 (PDT)
+In-Reply-To: <91444857.CpeBVZzDHZ@flatron>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>, Padmavathi Venna <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Alessandro Rubini <rubini@gnudd.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Kukjin Kim <kgene.kim@samsung.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Vinod Koul <vinod.koul@intel.com>, Thomas Abraham <thomas.abraham@linaro.org>, Grant Likely <grant.likely@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 of June 2013 20:22:11 Mark Brown wrote:
-> On Wed, Jun 19, 2013 at 08:26:12PM +0200, Tomasz Figa wrote:
-> > On Wednesday 19 of June 2013 18:40:47 Mark Brown wrote:
-> > > -		ret = pd->get_signal(plchan->cd);
-> > > +		ret = (pd->get_signal)(plchan->cd);
-> > 
-> > Hmm, that's strange. The former is a completely valid piece of code...
-> 
-> I know, hence...
-> 
-> > > to get it to build which makes me suspect the compiler a bit as
-> > > well...
-> 
-> ...my comment about suspecting the compiler.
-> 
-> > > I was applying this to -next, are there any other dependencies I
-> > > need or anything?
-> > 
-> > Hmm, I've been testing this on top of my common clock framework and
-> > device tree patches, but I don't think this had any effect. Did you
-> > add necessary clkdev lookups to the clock driver?
-> 
-> No, I didn't - that's most likely it, I didn't really investigate.  I
-> didn't test the watchdog stuff as the clocks didn't get sent to me.
+On Wed, Jun 19, 2013 at 8:23 PM, Tomasz Figa <tomasz.figa@gmail.com> wrote:
+> On Monday 17 of June 2013 16:04:47 Linus Walleij wrote:
+>> On Sun, Jun 16, 2013 at 10:54 PM, Tomasz Figa <tomasz.figa@gmail.com>
+> wrote:
+>> > +static AMBA_AHB_DEVICE(s3c64xx_dma1, "dma-pl080s.1", 0x0a141080,
+>> > +                       0x75100000, {IRQ_DMA1},
+>> > &s3c64xx_dma1_plat_data);
+>> Ah, does this mean the device does not have any AMBA PrimeCell ID
+>> contents?
+>
+> Hmm, not really. The ID here is what I copied from PrimeCell ID registers
+> and the method of registration is taken from S5PV210. If I remove the
+> override, it will read the same value from registers.
 
-I always try to keep you on Cc of my patches for s3c64xx, as you are the 
-most active user of this platform (if not the only one other than me) and 
-this was the case for clock patches as well, just checked that.
+OK then don't override. Overriding is for hardware which is all zeroes
+in these registers.
 
-Seems like I forgot to add you to watchdog patches, sorry. But you didn't 
-miss anything, since they were rather trivial ones.
+>> Then use the ID 0x00053080 instead of 0x0a141080
+>>
+>> 0x53 is "S" for Samsung. Variant 0.
+>
+> Well, that's kind of solution to make sure that it won't conflict with any
+> future variant manufactured by ARM, I guess.
 
-> > In Samsung CCF alias notation it looks like this:
-> > 
-> > +       ALIAS(HCLK_DMA1, "dma-pl080s.1", "apb_pclk"),
-> > +       ALIAS(HCLK_DMA0, "dma-pl080s.0", "apb_pclk"),
-> > 
-> > Not sure how hard it will be to add such lookups to the old clock
-> > driver, though.
-> 
-> It's pretty much the same providing you know which clock needs to be
-> used.
-> 
-> > I will test this applied directly on top of current linux-next when I
-> > find some time, but for now you might check out my v3.11-devel branch
-> > on my github:
-> > 
-> > https://github.com/tom3q/linux.git
-> 
-> Will try to get round to it.
+Yeah, but as stated, if the hardware has proper IDs (these are
+probably inspired by the PCI vendor/device/revision fields)
+then rely on those.
 
-OK.
-
-Best regards,
-Tomasz
+Yours,
+Linus Walleij
