@@ -1,185 +1,81 @@
-From: "Wang, Xingchao" <xingchao.wang@intel.com>
-Subject: Re: [PATCH V1] ALSA: hda - Avoid choose same converter
- for unused pins
-Date: Tue, 18 Jun 2013 14:16:56 +0000
-Message-ID: <46B810F6945F7C4788E11DCE57EC48901183119D@SHSMSX104.ccr.corp.intel.com>
-References: <1371562934-28859-1-git-send-email-xingchao.wang@linux.intel.com>
-	<s5h4ncvld5m.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <s5h4ncvld5m.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>, Wang Xingchao <xingchao.wang@linux.intel.com>
-Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+From: "Oskar Schirmer" <oskar@scara.com>
+Subject: [PATCH v3] sound/sgtl5000: fix codec register initial values and handling
+Date: 19 Jun 2013 13:16:06 +0000
+Message-ID: <1371647766-4900-1-git-send-email-oskar@scara.com>
+References: <51B749F5.3010907@freescale.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <51B749F5.3010907@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Wolfram Sang <w.sang@pengutronix.de>, broonie@kernel.org, Oskar Schirmer <oskar@scara.com>
 List-Id: alsa-devel@alsa-project.org
 
+According to documentation bit 3:2 in register SSS_CTRL are
+reserved and zero, so initially setting the register to 0x0008
+does not make much sense. Instead, bit 4 should be marked set,
+as this is the power up default.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, June 18, 2013 10:14 PM
-> To: Wang Xingchao
-> Cc: daniel.vetter@ffwll.ch; alsa-devel@alsa-project.org;
-> intel-gfx@lists.freedesktop.org; Wang, Xingchao
-> Subject: Re: [PATCH V1] ALSA: hda - Avoid choose same converter for unused
-> pins
-> 
-> At Tue, 18 Jun 2013 21:42:14 +0800,
-> Wang Xingchao wrote:
-> >
-> > For Intel Haswell HDMI codecs, the pins choose converter 0 by default.
-> > This would cause conflict when playing audio on unused pins,the pin
-> > with physical device connected would get audio data too.
-> > i.e. Pin 0/1/2 default choose converter 0, pin 1 has HDMI monitor connected.
-> > when play audio on Pin 0 or pin 2, pin 1 could get audio data too.
-> >
-> > This patch configure unused pins to choose different converter.
-> >
-> > Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/patch_hdmi.c |   91
-> ++++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 76 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> > index 8983747..43f8b76 100644
-> > --- a/sound/pci/hda/patch_hdmi.c
-> > +++ b/sound/pci/hda/patch_hdmi.c
-> > @@ -1110,26 +1110,15 @@ static int hdmi_setup_stream(struct hda_codec
-> *codec, hda_nid_t cvt_nid,
-> >  	return 0;
-> >  }
-> >
-> > -/*
-> > - * HDA PCM callbacks
-> > - */
-> > -static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> > -			 struct hda_codec *codec,
-> > -			 struct snd_pcm_substream *substream)
-> > +static int hdmi_choose_cvt(struct hda_codec *codec,
-> > +			int pin_idx, int *cvt_id, int *mux_id)
-> >  {
-> >  	struct hdmi_spec *spec = codec->spec;
-> > -	struct snd_pcm_runtime *runtime = substream->runtime;
-> > -	int pin_idx, cvt_idx, mux_idx = 0;
-> >  	struct hdmi_spec_per_pin *per_pin;
-> > -	struct hdmi_eld *eld;
-> >  	struct hdmi_spec_per_cvt *per_cvt = NULL;
-> > +	int cvt_idx, mux_idx = 0;
-> >
-> > -	/* Validate hinfo */
-> > -	pin_idx = hinfo_to_pin_index(spec, hinfo);
-> > -	if (snd_BUG_ON(pin_idx < 0))
-> > -		return -EINVAL;
-> >  	per_pin = get_pin(spec, pin_idx);
-> > -	eld = &per_pin->sink_eld;
-> >
-> >  	/* Dynamically assign converter to stream */
-> >  	for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) { @@ -1147,17
-> > +1136,89 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> >  			continue;
-> >  		break;
-> >  	}
-> > +
-> >  	/* No free converters */
-> >  	if (cvt_idx == spec->num_cvts)
-> >  		return -ENODEV;
-> >
-> > +	if (cvt_id)
-> > +		*cvt_id = cvt_idx;
-> > +	if (mux_id)
-> > +		*mux_id = mux_idx;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void haswell_config_cvts(struct hda_codec *codec,
-> > +			int pin_id, int mux_id)
-> > +{
-> > +	struct hdmi_spec *spec = codec->spec;
-> > +	struct hdmi_spec_per_pin *per_pin;
-> > +	int pin_idx, mux_idx;
-> > +	int curr;
-> > +	int err;
-> > +
-> > +	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-> > +		per_pin = get_pin(spec, pin_idx);
-> > +
-> > +		if (pin_idx == pin_id)
-> > +			continue;
-> > +
-> > +		curr = snd_hda_codec_read(codec, per_pin->pin_nid, 0,
-> > +					  AC_VERB_GET_CONNECT_SEL, 0);
-> > +
-> > +		/* Choose another unused converter */
-> > +		if (curr == mux_id) {
-> > +			err = hdmi_choose_cvt(codec, pin_idx, NULL, &mux_idx);
-> > +			if (err < 0)
-> > +				return;
-> > +			snd_printdd("HDMI: choose converter %d for pin %d\n",
-> mux_idx, pin_idx);
-> > +			snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-> > +					    AC_VERB_SET_CONNECT_SEL,
-> > +					    mux_idx);
-> > +		}
-> > +	}
-> > +}
-> > +
-> > +/*
-> > + * HDA PCM callbacks
-> > + */
-> > +static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> > +			 struct hda_codec *codec,
-> > +			 struct snd_pcm_substream *substream) {
-> > +	struct hdmi_spec *spec = codec->spec;
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	int pin_idx, cvt_idx, mux_idx = 0;
-> > +	struct hdmi_spec_per_pin *per_pin;
-> > +	struct hdmi_eld *eld;
-> > +	struct hdmi_spec_per_cvt *per_cvt = NULL;
-> > +	int err;
-> > +
-> > +	/* Validate hinfo */
-> > +	pin_idx = hinfo_to_pin_index(spec, hinfo);
-> > +	if (snd_BUG_ON(pin_idx < 0))
-> > +		return -EINVAL;
-> > +	per_pin = get_pin(spec, pin_idx);
-> > +	eld = &per_pin->sink_eld;
-> > +
-> > +	err = hdmi_choose_cvt(codec, pin_idx, &cvt_idx, &mux_idx);
-> > +	if (err < 0)
-> > +		return err;
-> > +
-> > +	per_cvt = get_cvt(spec, cvt_idx);
-> >  	/* Claim converter */
-> >  	per_cvt->assigned = 1;
-> >  	hinfo->nid = per_cvt->cvt_nid;
-> >
-> > -	snd_hda_codec_write(codec, per_pin->pin_nid, 0,
-> > +	snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
-> >  			    AC_VERB_SET_CONNECT_SEL,
-> >  			    mux_idx);
-> 
-> You shouldn't mix this fix into your patch.
-> This change should be applied as a separate patch and go to stable kernel.
-> 
-> I'll cook up your patch to remove that chunk and apply the rest as is.
-> 
-Okay, thanks a lot. :)
+Further, mask computation in declarative part is obviously wrong:
+Fix FRAC DIVISOR to provide an 11 bit mask correctly.
 
-Thanks
---xingchao
-> 
-> thanks,
-> 
-> Takashi
+Next, powering down PLL before switching to a mode that
+does not use it, is a bad idea. So first set the mode control,
+then power down PLL.
+
+Signed-off-by: Oskar Schirmer <oskar@scara.com>
+---
+ sound/soc/codecs/sgtl5000.c |   11 +++++++----
+ sound/soc/codecs/sgtl5000.h |    2 +-
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 92bbfec..6162e19 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -38,7 +38,7 @@
+ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
+ 	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
+-	{ SGTL5000_CHIP_SSS_CTRL,		0x0008 },
++	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
+ 	{ SGTL5000_CHIP_DAC_VOL,		0x3c3c },
+ 	{ SGTL5000_CHIP_PAD_STRENGTH,		0x015f },
+ 	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
+@@ -644,16 +644,19 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP,
+ 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP);
++
++		/* if using pll, clk_ctrl must be set after pll power up */
++		snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
+ 	} else {
++		/* otherwise, clk_ctrl must be set before pll power down */
++		snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
++
+ 		/* power down pll */
+ 		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+ 			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP,
+ 			0);
+ 	}
+ 
+-	/* if using pll, clk_ctrl must be set after pll power up */
+-	snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL, clk_ctl);
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index 8a9f435..d3a68bb 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -347,7 +347,7 @@
+ #define SGTL5000_PLL_INT_DIV_MASK		0xf800
+ #define SGTL5000_PLL_INT_DIV_SHIFT		11
+ #define SGTL5000_PLL_INT_DIV_WIDTH		5
+-#define SGTL5000_PLL_FRAC_DIV_MASK		0x0700
++#define SGTL5000_PLL_FRAC_DIV_MASK		0x07ff
+ #define SGTL5000_PLL_FRAC_DIV_SHIFT		0
+ #define SGTL5000_PLL_FRAC_DIV_WIDTH		11
+ 
+-- 
+1.7.9.5
