@@ -1,58 +1,76 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/11] ASoC: wm_adsp: Use SND_SOC_DAPM_PGA_E()
-	instead of open-coding it
-Date: Wed, 19 Jun 2013 19:34:02 +0200
-Message-ID: <1371663243-10032-10-git-send-email-lars@metafoo.de>
-References: <1371663243-10032-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Wed, 19 Jun 2013 18:40:47 +0100
+Message-ID: <20130619174047.GB1403@sirena.org.uk>
+References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-226.synserver.de (smtp-out-227.synserver.de
- [212.40.185.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 84E47262610
- for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2013 19:34:03 +0200 (CEST)
-In-Reply-To: <1371663243-10032-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uGRt5eEWyOm7cD/8"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>Alban Bedel <al>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wm_adsp.h | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 6e890b9..9f922c8 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -61,14 +61,12 @@ struct wm_adsp {
- };
- 
- #define WM_ADSP1(wname, num) \
--	{ .id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, \
--	.shift = num, .event = wm_adsp1_event, \
--	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
-+	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
-+		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
- #define WM_ADSP2(wname, num) \
--{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, \
--	.shift = num, .event = wm_adsp2_event, \
--	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
-+	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
-+		wm_adsp2_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
- extern const struct snd_kcontrol_new wm_adsp1_fw_controls[];
- extern const struct snd_kcontrol_new wm_adsp2_fw_controls[];
--- 
-1.8.0
+--uGRt5eEWyOm7cD/8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Jun 16, 2013 at 10:54:07PM +0200, Tomasz Figa wrote:
+> One of the biggest roadblocks on the way of S3C64xx to DeviceTree support
+> is its DMA driver, which is completely platform-specific and provides
+> private API (s3c-dma), not even saying that its design is completely
+> against multiplatform-awareness.
+
+I tried to test this on my s3c64xx based system but it gave me a kernel
+that didn't boot far enough to give console output (there's some early
+init stuff that uses SPI...).  That said, I needed:
+
+diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
+index 210a893..0f49707 100644
+--- a/drivers/dma/amba-pl08x.c
++++ b/drivers/dma/amba-pl08x.c
+@@ -313,7 +313,7 @@ static int pl08x_request_mux(struct pl08x_dma_chan *plc=
+han)
+ 	int ret;
+=20
+ 	if (plchan->mux_use++ =3D=3D 0 && pd->get_signal) {
+-		ret =3D pd->get_signal(plchan->cd);
++		ret =3D (pd->get_signal)(plchan->cd);
+ 		if (ret < 0) {
+ 			plchan->mux_use =3D 0;
+ 			return ret;
+
+to get it to build which makes me suspect the compiler a bit as well...
+the system has audio, SPI and MMC enabled.
+
+I was applying this to -next, are there any other dependencies I need or
+anything?
+
+--uGRt5eEWyOm7cD/8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRwe0bAAoJELSic+t+oim98MwP/29FMHj4LijyYDE64SKiyk4K
+dnPnJEb9L0089HSrEIXeBi9an7SuKNl83tWhE1pX1hDKm4Ey/EXJ1xCfRLvoiG6Y
+Mo71VnAxiAE9kvU1pTW/X7Alm1W6uzmtMLcPUdMgKSCDl0WbrXlQmOcmfBnO6siO
+ED4NU8VuKX67HvMZ4Z4Dm1KdmgH0xoXf+Yqrg5LlNbXblVha97sH/qNc/cI71zIE
+4IpfgL1zmtfUMVDhkUUY3RovK9kszQpm6i0m3XPG0ePvam3pPA8Vv8XuSWI4aAxt
+w9UMlbja9bzEuxi7ArZ2jPQ8T9TOLm+SV3NozOpxr8QVDxenFT5GbfAV4V5PxmgV
+2/EZCFwv5n6IvVN1xckXYw/OTOx7BF6le8uEcvvybJQYijWx2hOZ6TRNNtezO+ZF
+JjuPS5hjpFKy09VItKvOpi2gLaSYL11V59MN20rl9gwGMlp9Z4BGFdJSU7ynK6hi
+2FEZvep5rAiVxbcIjD92dpa0wc22Q+pOBx+Dw5nAMyzRSu1NwaRtmqPHVn4HapK+
+fVPZyim1eFmc5tFQR1v2v5Q37iZEwbXeQ9UiSXSozq1m1b81QPItIo0xIgQREVeP
+CbY7W+3QfGPrtW435BGd1P8Ja1+EZ3DardHOi/1Nhy8YlzVrCRFNjQ3tJVeKPak6
+QbGKJj4Mv5ntZdSipxoD
+=aV7e
+-----END PGP SIGNATURE-----
+
+--uGRt5eEWyOm7cD/8--
