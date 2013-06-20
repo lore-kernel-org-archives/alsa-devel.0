@@ -1,173 +1,50 @@
-From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v9 02/10] ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-Date: Thu, 20 Jun 2013 15:20:21 +0200
-Message-ID: <1371734429-6081-3-git-send-email-mpa@pengutronix.de>
-References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: cs42l52 alsa driver broken beep volume control
+Date: Thu, 20 Jun 2013 09:00:04 -0500
+Message-ID: <alpine.DEB.2.02.1306200858260.11823@heelrod.ad.cirrus.com>
+References: <51C2BE92.5020901@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1371734429-6081-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: "devicetree-discuss"
- <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from va3outboundpool.messaging.microsoft.com
+ (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 770372608D0
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 16:00:40 +0200 (CEST)
+In-Reply-To: <51C2BE92.5020901@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Brian Austin <brian.austin@cirrus.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Nicolas Schichan <nschichan@freebox.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Cleaner parameter passing for imx-pcm-fiq. Create a seperated fiq-params
-struct to pass all arguments.
+On Thu, 20 Jun 2013, Lars-Peter Clausen wrote:
 
-Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Tested-by: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
----
+> Hi,
+>
+> I stumbled upon this while making some changes to the SOC_SINGLE_VALUE
+> macro. For the Beep Volume control the cs42l52 driver sets the invert field
+> to 7, which doesn't make much sense and is causing a build warning with my
+> changes. I assume the intention was to actually use SOC_SINGLE_SX_TLV
+> instead of SOC_SINGLE_TLV. But I'm not sure if setting min to 0x1f and max
+> 0x7 is right either. Also according to the datasheet the tlv dB info seems
+> to be wrong. The Beep Volume uses 2dB steps while the info uses 0.5dB steps.
+>
+> - Lars
+>
+>
+Yes, I was supposed to use our SX Volume Control, and your correct the 
+step size is 2dB from -65dB. I believe the values are correct but I'll 
+have to do the math on it.
 
-Notes:
-    Changes in v9:
-     - Remove semicolon in function
-    
-    Changes in v7:
-     - Fix init function signature for !CONFIG_SND_SOC_IMX_PCM_FIQ
-    
-    Changes in v6:
-     - After rebasing onto Shawn's imx-pcm cleanups, the imx_pcm_fiq_params are now
-       passed as function arguments instead of platform driver data.
-    
-    Changes in v3:
-     - Using snd_dmaengine_dai_dma_data for dma_params after rebasing onto
-       dmaengine cleanups.
+I can send a patch shortly.
 
- sound/soc/fsl/imx-pcm-fiq.c | 18 ++++++++++--------
- sound/soc/fsl/imx-pcm.h     | 15 +++++++++++++--
- sound/soc/fsl/imx-ssi.c     |  7 ++++++-
- sound/soc/fsl/imx-ssi.h     |  1 +
- 4 files changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 310d902..3b2ba99 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -22,6 +22,7 @@
- #include <linux/slab.h>
- 
- #include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -32,6 +33,7 @@
- #include <linux/platform_data/asoc-imx-ssi.h>
- 
- #include "imx-ssi.h"
-+#include "imx-pcm.h"
- 
- struct imx_pcm_runtime_data {
- 	unsigned int period;
-@@ -366,9 +368,9 @@ static struct snd_soc_platform_driver imx_soc_platform_fiq = {
- 	.pcm_free	= imx_pcm_fiq_free,
- };
- 
--int imx_pcm_fiq_init(struct platform_device *pdev)
-+int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params)
- {
--	struct imx_ssi *ssi = platform_get_drvdata(pdev);
- 	int ret;
- 
- 	ret = claim_fiq(&fh);
-@@ -377,15 +379,15 @@ int imx_pcm_fiq_init(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	mxc_set_irq_fiq(ssi->irq, 1);
--	ssi_irq = ssi->irq;
-+	mxc_set_irq_fiq(params->irq, 1);
-+	ssi_irq = params->irq;
- 
--	imx_pcm_fiq = ssi->irq;
-+	imx_pcm_fiq = params->irq;
- 
--	imx_ssi_fiq_base = (unsigned long)ssi->base;
-+	imx_ssi_fiq_base = (unsigned long)params->base;
- 
--	ssi->dma_params_tx.maxburst = 4;
--	ssi->dma_params_rx.maxburst = 6;
-+	params->dma_params_tx->maxburst = 4;
-+	params->dma_params_rx->maxburst = 6;
- 
- 	ret = snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
- 	if (ret)
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 67f656c..fd56cad 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -32,6 +32,15 @@ imx_pcm_dma_params_init_data(struct imx_dma_data *dma_data,
- 		dma_data->peripheral_type = IMX_DMATYPE_SSI;
- }
- 
-+struct imx_pcm_fiq_params {
-+	int irq;
-+	void __iomem *base;
-+
-+	/* Pointer to original ssi driver to setup tx rx sizes */
-+	struct snd_dmaengine_dai_dma_data *dma_params_rx;
-+	struct snd_dmaengine_dai_dma_data *dma_params_tx;
-+};
-+
- #ifdef CONFIG_SND_SOC_IMX_PCM_DMA
- int imx_pcm_dma_init(struct platform_device *pdev);
- void imx_pcm_dma_exit(struct platform_device *pdev);
-@@ -47,10 +56,12 @@ static inline void imx_pcm_dma_exit(struct platform_device *pdev)
- #endif
- 
- #ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
--int imx_pcm_fiq_init(struct platform_device *pdev);
-+int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params);
- void imx_pcm_fiq_exit(struct platform_device *pdev);
- #else
--static inline int imx_pcm_fiq_init(struct platform_device *pdev)
-+static inline int imx_pcm_fiq_init(struct platform_device *pdev,
-+		struct imx_pcm_fiq_params *params)
- {
- 	return -ENODEV;
- }
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index a8362be..16ae16d 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -590,7 +590,12 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 		goto failed_register;
- 	}
- 
--	ret = imx_pcm_fiq_init(pdev);
-+	ssi->fiq_params.irq = ssi->irq;
-+	ssi->fiq_params.base = ssi->base;
-+	ssi->fiq_params.dma_params_rx = &ssi->dma_params_rx;
-+	ssi->fiq_params.dma_params_tx = &ssi->dma_params_tx;
-+
-+	ret = imx_pcm_fiq_init(pdev, &ssi->fiq_params);
- 	if (ret)
- 		goto failed_pcm_fiq;
- 
-diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
-index d5003ce..fb1616b 100644
---- a/sound/soc/fsl/imx-ssi.h
-+++ b/sound/soc/fsl/imx-ssi.h
-@@ -209,6 +209,7 @@ struct imx_ssi {
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct imx_dma_data filter_data_tx;
- 	struct imx_dma_data filter_data_rx;
-+	struct imx_pcm_fiq_params fiq_params;
- 
- 	int enabled;
- };
--- 
-1.8.2.1
+Thanks,
+Brian
