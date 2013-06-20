@@ -1,16 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Make Thinkpad X220-tablet use
-	generic parser
-Date: Thu, 20 Jun 2013 10:23:54 +0200
-Message-ID: <1371716634-6413-1-git-send-email-david.henningsson@canonical.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: cs42l52 alsa driver broken beep volume control
+Date: Thu, 20 Jun 2013 10:34:26 +0200
+Message-ID: <51C2BE92.5020901@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D6759265211
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 10:23:56 +0200 (CEST)
+Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
+ [212.40.185.35])
+ by alsa0.perex.cz (Postfix) with ESMTP id 002D2265211
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 10:34:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, jan.steffens@gmail.com, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Brian Austin <brian.austin@cirrus.com>, Nicolas Schichan <nschichan@freebox.fr>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Like the X220, this quirk was added to support docking station,
-so enable the fixup instead.
+Hi,
 
-According to Jan, the generic parser works equal or better
-than the current parser. This was tested under a 3.9 kernel.
+I stumbled upon this while making some changes to the SOC_SINGLE_VALUE
+macro. For the Beep Volume control the cs42l52 driver sets the invert field
+to 7, which doesn't make much sense and is causing a build warning with my
+changes. I assume the intention was to actually use SOC_SINGLE_SX_TLV
+instead of SOC_SINGLE_TLV. But I'm not sure if setting min to 0x1f and max
+0x7 is right either. Also according to the datasheet the tlv dB info seems
+to be wrong. The Beep Volume uses 2dB steps while the info uses 0.5dB steps.
 
-Reported-by: Jan Alexander Steffens <jan.steffens@gmail.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index b314d3e..de00ce1 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -2947,7 +2947,6 @@ static const struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
--	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo U350", CXT5066_ASUS),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G560", CXT5066_ASUS),
- 	{}
-@@ -3318,6 +3317,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x21ce, "Lenovo T420", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21cf, "Lenovo T520", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT_PINCFG_LENOVO_TP410),
-+	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT_PINCFG_LENOVO_TP410),
- 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
--- 
-1.7.9.5
+- Lars
