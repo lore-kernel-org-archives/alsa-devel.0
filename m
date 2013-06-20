@@ -1,16 +1,16 @@
 From: Brian Austin <brian.austin@cirrus.com>
 Subject: Re: cs42l52 alsa driver broken beep volume control
-Date: Thu, 20 Jun 2013 09:00:04 -0500
-Message-ID: <alpine.DEB.2.02.1306200858260.11823@heelrod.ad.cirrus.com>
+Date: Thu, 20 Jun 2013 09:15:18 -0500
+Message-ID: <alpine.DEB.2.02.1306200914370.11823@heelrod.ad.cirrus.com>
 References: <51C2BE92.5020901@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from va3outboundpool.messaging.microsoft.com
- (va3ehsobe001.messaging.microsoft.com [216.32.180.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 770372608D0
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 16:00:40 +0200 (CEST)
+Received: from co1outboundpool.messaging.microsoft.com
+ (co1ehsobe004.messaging.microsoft.com [216.32.180.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C7CB26529D
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 16:16:12 +0200 (CEST)
 In-Reply-To: <51C2BE92.5020901@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +25,7 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Brian Austin <brian.austin@cirrus.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Nicolas Schichan <nschichan@freebox.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Jun 2013, Lars-Peter Clausen wrote:
+n Thu, 20 Jun 2013, Lars-Peter Clausen wrote:
 
 > Hi,
 >
@@ -40,11 +40,8 @@ On Thu, 20 Jun 2013, Lars-Peter Clausen wrote:
 > - Lars
 >
 >
-Yes, I was supposed to use our SX Volume Control, and your correct the 
-step size is 2dB from -65dB. I believe the values are correct but I'll 
-have to do the math on it.
+Yep, the min and max are backwards...
 
-I can send a patch shortly.
+I'll fix it
 
-Thanks,
 Brian
