@@ -1,7 +1,7 @@
 From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v9 10/10] ASoC: fsl: Update fsl-ssi binding doc
-Date: Thu, 20 Jun 2013 15:20:29 +0200
-Message-ID: <1371734429-6081-11-git-send-email-mpa@pengutronix.de>
+Subject: [PATCH v9 01/10] ASoC: imx-pcm-dma: DT support
+Date: Thu, 20 Jun 2013 15:20:20 +0200
+Message-ID: <1371734429-6081-2-git-send-email-mpa@pengutronix.de>
 References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,51 +22,36 @@ To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Update the fsl-ssi bindings. DMA is no required property anymore and
-uses the generic DMA bindings. imx-fiq is a new alternative to DMA
+This patch removes the NO_DT flag. The pdev pointer may have a proper
+of_node with the dmas property, so we can use it to request DMA
+channels.
 
 Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 Tested-by: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 ---
 
 Notes:
-    Changes in v9:
-     - Remove space before tab
+    Changes in v6:
+     - After rebasing onto Shawn's imx-pcm cleanups, this patch just consists of
+       removing the NO_DT flag.
     
-    Changes in v4:
-     - Add a comment about hardware bugs for imx-pcm-fiq
-    
-    Changes in v3:
-     - In previous versions, I removed fsl,playback-dma and capture-dma. But they
-       are still in use by fsl_dma.c, so I added them again.
+    Changes in v5:
+     - Use dev.parent pointer to get the of_node.
 
- Documentation/devicetree/bindings/sound/fsl,ssi.txt | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/fsl/imx-pcm-dma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-index 5ff76c9..cae80d2 100644
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-@@ -43,10 +43,20 @@ Required properties:
-                     together.  This would still allow different sample sizes,
-                     but not different sample rates.
- 
-+Note that either dmas, dma-names or fsl,imx-fiq are required.
-+
- Optional properties:
- - codec-handle:     Phandle to a 'codec' node that defines an audio
-                     codec connected to this SSI.  This node is typically
-                     a child of an I2C or other control node.
-+- dmas:		    Generic dma devicetree binding as described in
-+		    Documentation/devicetree/bindings/dma/dma.txt.
-+- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
-+		    is not defined.
-+- fsl,imx-fiq:	    Bool property. Use imx-pcm-fiq instead of imx-pcm-dma.
-+		    Only necessary for some boards with incompatible
-+		    codec. imx-pcm-fiq will manually filter some data from
-+		    the codec. It is a workaround for a hardware bug.
- 
- Child 'codec' node required properties:
- - compatible:       Compatible list, contains the name of the codec
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index fde4d2e..f323ce0 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -64,7 +64,6 @@ int imx_pcm_dma_init(struct platform_device *pdev)
+ {
+ 	return snd_dmaengine_pcm_register(&pdev->dev, &imx_dmaengine_pcm_config,
+ 		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
+-		SND_DMAENGINE_PCM_FLAG_NO_DT |
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
 -- 
 1.8.2.1
