@@ -1,96 +1,78 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: ASoC: fsl-ssi: ac97-slave support
-Date: Thu, 20 Jun 2013 15:20:19 +0200
-Message-ID: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: [PATCH v9 05/10] ASoC: fsl-ssi: Use generic DMA bindings if possible
+Date: Thu, 20 Jun 2013 15:20:24 +0200
+Message-ID: <1371734429-6081-6-git-send-email-mpa@pengutronix.de>
+References: <1371734429-6081-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B2C1526529D
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 15:23:07 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, devicetree-discuss@lists.ozlabs.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1371734429-6081-1-git-send-email-mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+There may be some platforms using fsl-ssi that do not have a DMA driver
+with generic DMA bindings. So this patch adds support for the generic
+DMA bindings, while still accepting the old "fsl,dma-events" property if
+"dmas" is not found.
 
-This series adds DT support for phycore-ac97. Beside ac97 support, the series
-adds imx-pcm-fiq and generic DMA bindings to fsl-ssi.
+Signed-off-by: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Tested-by: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+---
 
-Version 9 contains some style fixes.
+Notes:
+    Changes in v5:
+     - Not passing of_node now, instead setting the parent device
+    
+    Changes in v4:
+     - Change TODO comment to a FIXME, to remove the old dma-events property as soon
+       as all dma drivers support the generic DMA bindings.
 
-Regards,
+ sound/soc/fsl/fsl_ssi.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-Markus
-
-Changes in v9:
- - Style and compile fixes.
- - Removed "ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97". This patch is
-   not necessary with the seperated phycore-ac97-dt driver.
-
-Changes in v8:
- - Fix build issues in phycore-ac97.
-
-Changes in v7:
- - Only one soc_ac97_ops struct for both ssi drivers (fsl-ssi and imx-ssi) to
-   make it possible to compile a kernel with both drivers.
- - Other small bug/style fixes described in the changelogs of the patches.
-
-Changes in v6:
- - Rebased onto 3.10-rc3 with Shawn's pcm cleanup patches
- - Setup of reset functions moved to phycore-ac97.c
-
-Changes in v5:
- - Pass of_node via parent device to imx-pcm-dma.
-
-Changes in v4:
- - phycore-ac97 uses the iomux functions based on audmux phandle now.
- - fsl-ssi imx-pcm-fiq got some new comments about problems with imx-ssi and
-   incompatible codecs
-
-Changes in v3:
- - Rebased onto pcm dma cleanup patches
- - A lot of cleanups for the fsl-ssi ac97 integration
- - Some small changes which are listed in the notes of the patches.
-
-Markus Pargmann (10):
-      ASoC: imx-pcm-dma: DT support
-      ASoC: imx-pcm-fiq: Introduce pcm-fiq-params
-      ASoC: fsl: Move soc_ac97_ops from imx-ssi to fsl_ssi
-      ASoC: fsl-ssi: Add support for imx-pcm-fiq
-      ASoC: fsl-ssi: Use generic DMA bindings if possible
-      ASoC: fsl-ssi: imx ac97 support
-      ARM: imx: Export ac97 reset functions
-      ASoC: Add phycore-ac97-dt driver
-      ASoC: fsl: Move fsl-ssi binding doc to sound/
-      ASoC: fsl: Update fsl-ssi binding doc
-
- .../{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt}     |  10 +
- .../bindings/sound/phytec,phycore-ac97.txt         |  14 +
- arch/arm/mach-imx/mach-pca100.c                    |   7 +-
- arch/arm/mach-imx/mach-pcm043.c                    |   7 +-
- sound/soc/fsl/Kconfig                              |  17 +-
- sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/fsl_ssi.c                            | 451 +++++++++++++++++----
- sound/soc/fsl/fsl_ssi.h                            |   7 +
- sound/soc/fsl/imx-pcm-dma.c                        |   1 -
- sound/soc/fsl/imx-pcm-fiq.c                        |  18 +-
- sound/soc/fsl/imx-pcm.h                            |  15 +-
- sound/soc/fsl/imx-ssi.c                            |  14 +-
- sound/soc/fsl/imx-ssi.h                            |   1 +
- sound/soc/fsl/phycore-ac97-dt.c                    | 242 +++++++++++
- sound/soc/fsl/phycore-ac97.c                       |  13 +-
- 15 files changed, 704 insertions(+), 115 deletions(-)
- rename Documentation/devicetree/bindings/{powerpc/fsl/ssi.txt => sound/fsl,ssi.txt} (88%)
- create mode 100644 Documentation/devicetree/bindings/sound/phytec,phycore-ac97.txt
- create mode 100644 sound/soc/fsl/phycore-ac97-dt.c
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 2fe4dbd..ed1fbbb 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -803,15 +803,19 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 			&ssi_private->filter_data_tx;
+ 		ssi_private->dma_params_rx.filter_data =
+ 			&ssi_private->filter_data_rx;
+-		/*
+-		 * TODO: This is a temporary solution and should be changed
+-		 * to use generic DMA binding later when the helplers get in.
+-		 */
+-		ret = of_property_read_u32_array(pdev->dev.of_node,
++		if (!of_property_read_bool(pdev->dev.of_node, "dmas") &&
++				ssi_private->use_dma) {
++			/*
++			 * FIXME: This is a temporary solution until all
++			 * necessary dma drivers support the generic dma
++			 * bindings.
++			 */
++			ret = of_property_read_u32_array(pdev->dev.of_node,
+ 					"fsl,ssi-dma-events", dma_events, 2);
+-		if (ret && !ssi_private->use_dma) {
+-			dev_err(&pdev->dev, "could not get dma events\n");
+-			goto error_clk;
++			if (ret && ssi_private->use_dma) {
++				dev_err(&pdev->dev, "could not get dma events but fsl-ssi is configured to use DMA\n");
++				goto error_clk;
++			}
+ 		}
+ 
+ 		shared = of_device_is_compatible(of_get_parent(np),
+-- 
+1.8.2.1
