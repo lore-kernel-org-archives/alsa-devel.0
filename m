@@ -1,18 +1,18 @@
 From: Pavel <mr3sge@gmail.com>
 Subject: mint 13 mate + ATI IXP SB4x0 High Definition Audio
 	Controller (rev 01)
-Date: Thu, 20 Jun 2013 21:09:42 +0300
-Message-ID: <CABgcorNDv1QOw6yoY+gpFJBya-XFbQSFXeypjwYv7w2oJXL8kg@mail.gmail.com>
+Date: Thu, 20 Jun 2013 21:25:02 +0300
+Message-ID: <CABgcorMcshpnJc+rs7gKFPjWA7zWNd1US2KLDtTOttj9bFBntg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f67.google.com (mail-oa0-f67.google.com
- [209.85.219.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 31891265342
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 20:09:44 +0200 (CEST)
-Received: by mail-oa0-f67.google.com with SMTP id l10so3584635oag.6
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 11:09:42 -0700 (PDT)
+Received: from mail-ob0-f194.google.com (mail-ob0-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5269265347
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 20:25:03 +0200 (CEST)
+Received: by mail-ob0-f194.google.com with SMTP id v19so3034847obq.1
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 11:25:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
