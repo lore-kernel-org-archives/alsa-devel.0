@@ -1,18 +1,17 @@
-From: Pavel <mr3sge@gmail.com>
-Subject: mint 13 mate + ATI IXP SB4x0 High Definition Audio
-	Controller (rev 01)
-Date: Thu, 20 Jun 2013 21:25:02 +0300
-Message-ID: <CABgcorMcshpnJc+rs7gKFPjWA7zWNd1US2KLDtTOttj9bFBntg@mail.gmail.com>
+From: Michael Lathion <m.lathion@gmail.com>
+Subject: WM8741 DAC with AT91SAM9G20
+Date: Thu, 20 Jun 2013 23:40:16 +0200
+Message-ID: <CA+WMtaNJYNO81zKVWYYQ2SkPwd+2tvn0KEBNv879mNANTLYU9w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f194.google.com (mail-ob0-f194.google.com
- [209.85.214.194])
- by alsa0.perex.cz (Postfix) with ESMTP id D5269265347
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 20:25:03 +0200 (CEST)
-Received: by mail-ob0-f194.google.com with SMTP id v19so3034847obq.1
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 11:25:02 -0700 (PDT)
+Received: from mail-oa0-f67.google.com (mail-oa0-f67.google.com
+ [209.85.219.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD4E426535A
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 23:40:17 +0200 (CEST)
+Received: by mail-oa0-f67.google.com with SMTP id l10so3651900oag.2
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 14:40:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +24,49 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello! i have a big problem - no sound after install linux mint 13
-mate. well, sometimes if i reboot - i have it, but after nex reboot -
-no sound no more, seems like pulseaudio don't see my sound card.
+Hi all,
 
-Laptop: Manufacturer: FUJITSU SIEMENS
+I'm trying to use a WM8742 dac instead of WM8731 on a custom board based on
+AT91SAM9G20EK (developpment board from Atmel for AT91SAM9G20 soc) with
+Linux Kernel 2.6.38.
 
-Product Name: AMILO Pa 1510
+I have the driver working in alsa (driver compiled, mixer up in alsa, ...)
+but I can't have the ssc interface working. When trying to play sound with
+aplay I get only the masterclock and  bitclock but no frame clock (LRCLK),
+see output below.
 
-Product Version: Not Applicable
+What I've done is modifying the /sound/soc/atmel/sam9g20_wm8731.c file  but
+it seems something is not configured as it should (probably related to
+WM8742 being slave and the WM8731 used on original dev board was master for
+clock distribution).
 
-Firmware Version: 1.07C
+My modified sam9g20_wm8741.c is enclosed to this mail, i suspect something
+is wrongly setup in CPU DAI configuration but can't find what.
 
-soundcard: 00:14.2 Audio device: Advanced Micro Devices [AMD] nee ATI
-IXP SB4x0 High Definition Audio Controller (rev 01)
+I'm trying to set this up from some weeks now but can't find the right
+config so if someone have any idea on what can has to be done it could be
+great!
 
-kernel 3.2.0-48-generic
+Thanks for help
 
-dmesg: http://pastebin.com/KF8ABwnY alsa-info: http://pastebin.com/QYBYNJi9
+Regards
+Michael
 
-i read this topic: https://bugzilla.kernel.org/show_bug.cgi?id=18512
-and tried to add "options snd-hda-intel model=6stack-dig single_cmd=1"
-to alsa-base.conf - it helped, after reboot i has sound, till i reboot
-- now no sound no more.. i tried everything i found in the google,
-even alsa-update - http://www.stchman.com/alsa_update.html
+Linux kernel 2.6.38
+AT91SAM9G20 processor
+WM8741 DAC
 
-nothing can help me, but i understand that's the problem is in the driver..
+Kernel boot output :
 
-can someone pls help me to fix the problem?
+ASoC: Mclk set to 22579200
+wm8741-codec 0-001b: Successful registration
+FOX_Board_wm8741 : PB1003A: wm8741__init() called
+wm8741-codec 0-001b: wm8741_set_dai_sysclk info: freq=22579200
+asoc: wm8741 <-> atmel-ssc-dai.0 mapping ok
+ALSA device list:
+  #0: DAISY16
 
-thank you.
+When trying play sound  kernel driver print:
+
+wm8741-codec 0-001b: wm8741_set_dai_fmt:    Format=0, Clock Inv=0
+wm8741-codec 0-001b: wm8741_hw_params:    bit size param = 2
