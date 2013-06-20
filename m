@@ -1,36 +1,48 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: cs42l52 alsa driver broken beep volume control
-Date: Thu, 20 Jun 2013 10:34:26 +0200
-Message-ID: <51C2BE92.5020901@metafoo.de>
+From: Phil Carmody <phil.carmody@partner.samsung.com>
+Subject: RE: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Thu, 20 Jun 2013 12:24:47 +0300
+Message-ID: <001201ce6d98$03d9b920$0b8d2b60$%carmody@partner.samsung.com>
+References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
+ <20130619174047.GB1403@sirena.org.uk> <3697657.tZFV7pR81Q@flatron>
+ <20130619192211.GH1403@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
- [212.40.185.35])
- by alsa0.perex.cz (Postfix) with ESMTP id 002D2265211
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 10:34:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>, Nicolas Schichan <nschichan@freebox.fr>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20130619192211.GH1403@sirena.org.uk>
+Content-language: en-gb
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Mark Brown' <broonie@kernel.org>, 'Tomasz Figa' <tomasz.figa@gmail.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, 'Kukjin Kim' <kgene.kim@samsung.com>, 'Vinod Koul' <vinod.koul@intel.com>, 'Dan Williams' <djbw@fb.co>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+(Apologies if this is mangled, fighting both Outlook and remote desktop :-(
+)
 
-I stumbled upon this while making some changes to the SOC_SINGLE_VALUE
-macro. For the Beep Volume control the cs42l52 driver sets the invert field
-to 7, which doesn't make much sense and is causing a build warning with my
-changes. I assume the intention was to actually use SOC_SINGLE_SX_TLV
-instead of SOC_SINGLE_TLV. But I'm not sure if setting min to 0x1f and max
-0x7 is right either. Also according to the datasheet the tlv dB info seems
-to be wrong. The Beep Volume uses 2dB steps while the info uses 0.5dB steps.
+linux-kernel-owner@vger.kernel.org wrote on Behalf Of Mark Brown
+> On Wed, Jun 19, 2013 at 08:26:12PM +0200, Tomasz Figa wrote:
+> > On Wednesday 19 of June 2013 18:40:47 Mark Brown wrote:
+> 
+> > > -		ret = pd->get_signal(plchan->cd);
+> > > +		ret = (pd->get_signal)(plchan->cd);
+> 
+> > Hmm, that's strange. The former is a completely valid piece of
+> code...
+> 
+> I know, hence...
+> 
+> > > to get it to build which makes me suspect the compiler a bit as
+> well...
+> 
+> ...my comment about suspecting the compiler.
 
-- Lars
+Can you just make that minimal change, and diff the objdump of the two .o's?
+It would be worth a bug-report against the toolchain if different code was
+being generated. If objdump spews huge numbers of diffs (due to one address
+changing and pushing everything else out of kilter), then feel free to
+forward both .o's or both objdumps to me, and I can run a script over them,
+which knows to ignore unimportant address changes. 
+
+Praying that this mail is readable to you, as it's not readable as I write
+it,
+Phil
