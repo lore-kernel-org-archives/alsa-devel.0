@@ -1,65 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 00/11] ARM: s3c64xx: Let amba-pl08x driver handle DMA
-Date: Wed, 19 Jun 2013 23:48:00 +0100
-Message-ID: <20130619224800.GL1403@sirena.org.uk>
-References: <1371416058-22047-1-git-send-email-tomasz.figa@gmail.com>
- <3697657.tZFV7pR81Q@flatron>
- <20130619192211.GH1403@sirena.org.uk>
- <5443580.A5iCQBtp1T@flatron>
+From: sajeesh sidharthan <sajeesh.sidharthan@yahoo.com>
+Subject: [alsa-ucm] segfault at __list_del function in list.h
+Date: Thu, 20 Jun 2013 00:23:36 -0700 (PDT)
+Message-ID: <1371713016.28790.YahooMailNeo@web121506.mail.ne1.yahoo.com>
+Reply-To: sajeesh sidharthan <sajeesh.sidharthan@yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JTJq4mKM0qXghaEa"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5443580.A5iCQBtp1T@flatron>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>Alban Bedel <al>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm13.bullet.mail.ne1.yahoo.com (nm13.bullet.mail.ne1.yahoo.com
+ [98.138.90.76]) by alsa0.perex.cz (Postfix) with ESMTP id 47BFC265208
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 09:23:38 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
---JTJq4mKM0qXghaEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am testing pulseaudio ucm. I have faced a crash when active ucm device li=
+st empty.
 
-On Wed, Jun 19, 2013 at 09:32:44PM +0200, Tomasz Figa wrote:
-> On Wednesday 19 of June 2013 20:22:11 Mark Brown wrote:
+Please let me know if following fix can be checked in alsa-lib-1.0.25/inclu=
+de/list.h
 
-> > No, I didn't - that's most likely it, I didn't really investigate.  I
-> > didn't test the watchdog stuff as the clocks didn't get sent to me.
+old code:
 
-> I always try to keep you on Cc of my patches for s3c64xx, as you are the=
-=20
-> most active user of this platform (if not the only one other than me) and=
-=20
-> this was the case for clock patches as well, just checked that.
 
-Yes, I had the clock patches but they depended on something or other I
-think.  I did test a previous verion IIRC.  There are other users I'm
-aware of (you can probably take a wild guess where from the board)
-though they tend not to be terribly active upstream.
+static __inline__ void list_del(struct list_head *entry)
+{
+=A0=A0=A0 =A0=A0=A0 __list_del(entry->prev, entry->next);
+}
 
---JTJq4mKM0qXghaEa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+new code:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+static __inline__ void list_del(struct list_head *entry)
+{
+=A0=A0=A0 if(entry->prev && entry->next)
+=A0=A0=A0 =A0=A0=A0 __list_del(entry->prev, entry->next);
+}
 
-iQIcBAEBAgAGBQJRwjUcAAoJELSic+t+oim9kNwP/A8TYOSfIfkfYArTyVm654EJ
-pSbqwwY7w72M3w9i+61HY0F9gDrnX63TpMG4d+us5qwvCay3aarGAgSDG3TFqcWC
-6YOungF7u3mZ14O5y4bFXA77+kye+OmtVQML0oh0flnON1pkqpS/By1tjpgCddNE
-8rxuD5i5dC9kMwWXAeHAdDg5K+WZLdA2w8aPcqcbjBFhW77yH0740B6yXGgTmL/r
-UGs1qpYzXwLYJCe1U5WyJ4pUMf1Ts6suQC9enLdjRRv3Tyu5WsdpJjc+ADiYXAFk
-Rtdp3KHnX8zL4sUhXr7cN+8BKgTnEeF5V6NUL9UqkgW0fBJ4fE5t8ybPBmlciXuV
-jmF730FUp4c1c6cCo9fM1AXyu4A4HXflDyrdd9SMu/faQCnTOLLCqYUTUBabNXiz
-3AlfJhyFXbcvlEbioBsxS2mr6N1P5W/b1wUbcEtX36wLGRl5GaDNGGxqUsMV64wF
-/BFsfjb0nDd0cy+KVDqfuhQgS2R7E2QidW+bOwSxAG9yedpOrqjFsjMSBSN1GgNo
-N2sSqkdRhKSs99/ymDoSFLYn4nF8bF5JnXl5yFafurv6gx3gCGYSEAUasR3vE6QB
-yKqGOqhsYuvEQfDBGPUVuArHnJaFAZT1Q2hZeANw0pU3Z+1eVmALK9Tq5jtVtqow
-w6vUDi9WeAnpu0N6cXBT
-=JMXm
------END PGP SIGNATURE-----
 
---JTJq4mKM0qXghaEa--
+Sajeesh
