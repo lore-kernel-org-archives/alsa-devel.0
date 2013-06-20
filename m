@@ -1,74 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: SPEAr: Add device tree support +
- SPEAr machine driver
-Date: Thu, 20 Jun 2013 14:12:42 +0200
-Message-ID: <51C2F1BA.40903@metafoo.de>
-References: <1371728152-14641-1-git-send-email-rajeev-dlh.kumar@st.com>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v8 00/11] ASoC: fsl-ssi: ac97-slave support
+Date: Thu, 20 Jun 2013 14:51:48 +0200
+Message-ID: <20130620125148.GC3085@s25.your-server.de>
+References: <1371389117-19729-1-git-send-email-mpa@pengutronix.de>
+ <51BE8B21.8050605@tabi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
- [212.40.185.35])
- by alsa0.perex.cz (Postfix) with ESMTP id 59456265299
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 14:12:26 +0200 (CEST)
-In-Reply-To: <1371728152-14641-1-git-send-email-rajeev-dlh.kumar@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <51BE8B21.8050605-N01EOCouUvQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss/>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+ <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: "devicetree-discuss"
+ <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+To: Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/20/2013 01:35 PM, Rajeev Kumar wrote:
-> The patch adds device tree support + SPEAr machine driver
+On Sun, Jun 16, 2013 at 11:05:53PM -0500, Timur Tabi wrote:
+> Markus Pargmann wrote:
+> > Hi,
+> >
+> > This series adds DT support for phycore-ac97. Beside ac97 support, the series
+> > adds imx-pcm-fiq and generic DMA bindings to fsl-ssi.
+> >
+> > In version 8 I fixed the build issues by seperating the DT capable ac97 phycore
+> > driver from the old driver.
 > 
-> Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-> ---
->  .../devicetree/bindings/sound/spear-evb.txt        |   20 +++
->  sound/soc/spear/spear_evb.c                        |  135 ++++++++++++++++++++
->  2 files changed, 155 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/spear-evb.txt
->  create mode 100644 sound/soc/spear/spear_evb.c
+> FYI, I get some warnings applying this patchset:
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/spear-evb.txt b/Documentation/devicetree/bindings/sound/spear-evb.txt
-> new file mode 100644
-> index 0000000..cb011b4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/spear-evb.txt
-> @@ -0,0 +1,20 @@
-> +* SPEAr audio sta529 codec
+> Applying: ASoC: Add phycore-ac97-dt driver
+> /home/b04825/git/linux.alsa2/.git/rebase-apply/patch:375: new blank line 
+> at EOF.
 > +
-> +Required properties:
-> +- compatible: "spear,spear-evb"
-> +- audio-controllers: The phandle list of synopsys audio i2s controller
-> +- audio-codec: The phandle of the sta529 audio codec
-> +- codec_dai_name: DAI name for codec.
-> +- stream_name: stream name.
-> +
-> +Example:
-> +
-> +sound {
-> +        compatible = "spear,spear-evb";
-> +        audio-controllers = <&i2s0 &i2s1>;
-> +        audio-codecs = <&sta529 &sta529>;
-> +        codec_dai_name = "sta529-audio", "sta529-audio";
-> +        stream_name = "i2s-play", "i2s-cap";
-> +        dai_name = "i2s0-pcm", "i2s1-pcm";
-> +};
+> warning: 1 line adds whitespace errors.
+> Applying: ASoC: fsl: Kconfig: Use fsl-ssi for phycore-ac97
+> Applying: ASoC: fsl: Move fsl-ssi binding doc to sound/
+> Applying: ASoC: fsl: Update fsl-ssi binding doc
+> /home/b04825/git/linux.alsa2/.git/rebase-apply/patch:33: space before tab 
+> in indent.
+>    		    Only necessary for some boards with incompatible
+> warning: 1 line adds whitespace errors.
 
-Kuninori Morimoto was working on generic bindings for the simple-audio
-driver a while back. I'm not quite sure what the current status is on this,
-but I think it is a better idea to use what he was working on instead of
-adding just another set of incompatible platform specific bindings.
+Thanks, I fixed all whitespace errors and the compile error.
 
-See
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-February/059791.html
+Regards,
 
-- Lars
+Markus
+
+> 
+> -- 
+> Timur Tabi
+> 
