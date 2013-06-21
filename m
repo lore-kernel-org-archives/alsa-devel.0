@@ -1,11 +1,13 @@
 From: Antonio Ospite <ao2@amarulasolutions.com>
-Subject: [PATCH 0/4] ALSA: usb: misc consistency fixes
-Date: Fri, 21 Jun 2013 13:11:47 +0200
-Message-ID: <1371813111-26661-1-git-send-email-ao2@amarulasolutions.com>
+Subject: [PATCH 2/4] ALSA: snd-usb-caiaq: use vmalloc buffers
+Date: Fri, 21 Jun 2013 13:11:49 +0200
+Message-ID: <1371813111-26661-3-git-send-email-ao2@amarulasolutions.com>
+References: <1371813111-26661-1-git-send-email-ao2@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1371813111-26661-1-git-send-email-ao2@amarulasolutions.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +21,58 @@ To: alsa-devel@alsa-project.org, patch@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, Karsten Wiese <annabellesgarden@yahoo.de>, Torsten Schenk <torsten.schenk@zoho.com>, Daniel Mack <daniel@caiaq.de>, Michael Trimarchi <michael@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+For USB devices it's not necessary to allocate physically contiguous
+buffers.
 
-when working on the hiFace driver (which I plan on re-sending later
-today BTW) I've been reading the code of other drivers and I've stumbled
-on a couple of minor inconsistencies which were also spotted during the
-review rounds for the hiFace driver.
+Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
+---
+ sound/usb/caiaq/audio.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-I am sending some patches to address these issues, so that new drivers
-authors won't do the same mistakes I did when copying code over.
-
-Please take a closer look at the ones about vmalloc buffers, do we need
-an actual Tested-by for these?
-
-Patches are against 3.10-rc6.
-
-Thanks,
-   Antonio
-
-Antonio Ospite (4):
-  ALSA: snd-usb-caiaq: remove the unused snd_card_used variable
-  ALSA: snd-usb-caiaq: use vmalloc buffers
-  ALSA: snd-usb-6fire: use vmalloc buffers
-  ALSA: usb: uniform style used in MODULE_SUPPORTED_DEVICE()
-
- sound/usb/6fire/chip.c     |  2 +-
- sound/usb/6fire/pcm.c      | 12 +++++-------
- sound/usb/caiaq/audio.c    | 12 +++++-------
- sound/usb/caiaq/device.c   | 31 +++++++++++++++----------------
- sound/usb/usx2y/usbusx2y.c |  2 +-
- 5 files changed, 27 insertions(+), 32 deletions(-)
-
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index c191618..7103b09 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -183,14 +183,15 @@ static int snd_usb_caiaq_substream_close(struct snd_pcm_substream *substream)
+ static int snd_usb_caiaq_pcm_hw_params(struct snd_pcm_substream *sub,
+ 				       struct snd_pcm_hw_params *hw_params)
+ {
+-	return snd_pcm_lib_malloc_pages(sub, params_buffer_bytes(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(sub,
++						params_buffer_bytes(hw_params));
+ }
+ 
+ static int snd_usb_caiaq_pcm_hw_free(struct snd_pcm_substream *sub)
+ {
+ 	struct snd_usb_caiaqdev *cdev = snd_pcm_substream_chip(sub);
+ 	deactivate_substream(cdev, sub);
+-	return snd_pcm_lib_free_pages(sub);
++	return snd_pcm_lib_free_vmalloc_buffer(sub);
+ }
+ 
+ /* this should probably go upstream */
+@@ -345,7 +346,9 @@ static struct snd_pcm_ops snd_usb_caiaq_ops = {
+ 	.hw_free =	snd_usb_caiaq_pcm_hw_free,
+ 	.prepare =	snd_usb_caiaq_pcm_prepare,
+ 	.trigger =	snd_usb_caiaq_pcm_trigger,
+-	.pointer =	snd_usb_caiaq_pcm_pointer
++	.pointer =	snd_usb_caiaq_pcm_pointer,
++	.page =		snd_pcm_lib_get_vmalloc_page,
++	.mmap =		snd_pcm_lib_mmap_vmalloc,
+ };
+ 
+ static void check_for_elapsed_periods(struct snd_usb_caiaqdev *cdev,
+@@ -852,11 +855,6 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *cdev)
+ 	snd_pcm_set_ops(cdev->pcm, SNDRV_PCM_STREAM_CAPTURE,
+ 				&snd_usb_caiaq_ops);
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(cdev->pcm,
+-					SNDRV_DMA_TYPE_CONTINUOUS,
+-					snd_dma_continuous_data(GFP_KERNEL),
+-					MAX_BUFFER_SIZE, MAX_BUFFER_SIZE);
+-
+ 	cdev->data_cb_info =
+ 		kmalloc(sizeof(struct snd_usb_caiaq_cb_info) * N_URBS,
+ 					GFP_KERNEL);
 -- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+1.8.3.1
