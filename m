@@ -1,78 +1,81 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/6] Convert JZ4740 to dmaengine
-Date: Fri, 21 Jun 2013 19:43:30 +0530
-Message-ID: <20130621141330.GK23141@intel.com>
-References: <1369931105-28065-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/3] ASoC: codecs: adau1701: allow
+ configuration of PLL mode pins
+Date: Fri, 21 Jun 2013 16:00:19 +0100
+Message-ID: <20130621150019.GZ27646@sirena.org.uk>
+References: <1371801284-31603-1-git-send-email-zonque@gmail.com>
+ <1371801284-31603-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1369931105-28065-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0208420929902254148=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7E692615F2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 17:00:21 +0200 (CEST)
+In-Reply-To: <1371801284-31603-2-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 30, 2013 at 06:24:59PM +0200, Lars-Peter Clausen wrote:
-> Hi,
-> 
-> This series replaces the custom JZ4740 DMA API with a dmaengine driver. This is
-> done in 3 steps:
-> 	1) Add a dmaengine driver which wraps the custom JZ4740 DMA API
-> 	2) Update all users of the JZ4740 DMA API to use dmaengine instead
-> 	3) Remove the custom API and move all direct hardware access to the
-> 	   dmaengine driver.
-> 
-> The first two patches in the series also make sure that the clock of the DMA
-> core is enabled.
-> 
-> Since the patches in this series depend on each other I'd prefer if they could
-> all go through the DMA tree.
-> 
-> There are a few minor changes to the patch 3 in v2 of this series, all other
-> patches are identical to v1.
 
-Applied all expect the "ASoC: jz4740: Use the generic dmaengine PCM driver". Can
-you rebase that on slave dma-next and resend
+--===============0208420929902254148==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="abYdCjSRCBwcb+dP"
+Content-Disposition: inline
 
-Fixed up struct alignment manually in 4th one
 
---
-~Vinod
-> 
-> - Lars
-> 
-> Lars-Peter Clausen (4):
->   dma: Add a jz4740 dmaengine driver
->   MIPS: jz4740: Register jz4740 DMA device
->   ASoC: jz4740: Use the generic dmaengine PCM driver
->   MIPS: jz4740: Remove custom DMA API
-> 
-> Maarten ter Huurne (2):
->   MIPS: jz4740: Correct clock gate bit for DMA controller
->   MIPS: jz4740: Acquire and enable DMA controller clock
-> 
->  arch/mips/include/asm/mach-jz4740/dma.h      |  56 ---
->  arch/mips/include/asm/mach-jz4740/platform.h |   1 +
->  arch/mips/jz4740/Makefile                    |   2 +-
->  arch/mips/jz4740/board-qi_lb60.c             |   1 +
->  arch/mips/jz4740/clock.c                     |   2 +-
->  arch/mips/jz4740/dma.c                       | 287 -------------
->  arch/mips/jz4740/platform.c                  |  21 +
->  drivers/dma/Kconfig                          |   6 +
->  drivers/dma/Makefile                         |   1 +
->  drivers/dma/dma-jz4740.c                     | 617 +++++++++++++++++++++++++++
->  sound/soc/jz4740/Kconfig                     |   1 +
->  sound/soc/jz4740/jz4740-i2s.c                |  48 +--
->  sound/soc/jz4740/jz4740-pcm.c                | 310 +-------------
->  sound/soc/jz4740/jz4740-pcm.h                |  20 -
->  14 files changed, 676 insertions(+), 697 deletions(-)
->  delete mode 100644 arch/mips/jz4740/dma.c
->  create mode 100644 drivers/dma/dma-jz4740.c
->  delete mode 100644 sound/soc/jz4740/jz4740-pcm.h
-> 
-> -- 
-> 1.8.2.1
-> 
+--abYdCjSRCBwcb+dP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
+On Fri, Jun 21, 2013 at 09:54:42AM +0200, Daniel Mack wrote:
+
+> To avoid excessive reset cycles and firmware downloads, the default
+> clock divider can be specified in DT as well. Whenever a ratio change is
+> detected in the hw_params callback, the PLL mode lines are updates and a
+> full reset cycle is issued.
+
+Why isn't it enough to just use the first setting we see - I'd expect
+the device to normally be powered off before audio starts including when
+hw_params() is called?
+
+--abYdCjSRCBwcb+dP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJRxGqAAAoJELSic+t+oim9Z94P/3GD4Qq1rFAz6EB+zmC7ilTw
+vC0RU8ifY2vyqzsUzFMa/94LPb7r42vnjGN9hJEZswCyAGfhIxeOwt0AcOd5Ruav
+u5vqoW7IuC43o12Ds1hhDdAIDpccjMiYG1cEuUP9BSuOvEfrxTHtGjisy7hSbJ79
+wwK1ogs0rk6Lnwdbu9F+cJrHfJsekvfyblp30mgKaoDhCkHvCmgViL9UV3tITb2r
+CBUiqN+y/1e37q6plNrHLyy9pM8wT4VKNEyT+XollgpIfK8por8GOxjD+JjQQPCW
+PVZFQ/f1Sq+UoNhmI3i42eF7mAH5YQSSPUC8W3o3DgE53Phu6ULmAcc9Tym9Qm7L
+ftltFwQWS8leBsfnbySGvlSVjtKFMZei0sAAESbkKLPSkdvtsZ2PNNB73e7IXC4q
+56m9XKVxynKo3OuTYmArYh+hnkpiOP2+inGsATbZgFmSLYz0tuPOWhHpBaC1kZmi
+rNo92NMMbXVv7weoZoObTUX3QbCWPJeFxCHVrUlqWDgcnZhDnPpRBd6Yl5Sp6H58
+eL7O50JdyDFzsJyvUrQTZGWfPutSE9S0g8gtCW56CjhqB3IpDBwVEAN2fElLmtb2
+OM6LxuBHxLjpu4S8HPh+gGIFMY4Z60GUfDzaNZye8Mmikj4pHTabAcK+OjRO1QNN
+vp1BFkXQ5Re0d9KVJ3KL
+=Expf
+-----END PGP SIGNATURE-----
+
+--abYdCjSRCBwcb+dP--
+
+--===============0208420929902254148==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0208420929902254148==--
