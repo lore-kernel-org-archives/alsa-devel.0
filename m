@@ -1,7 +1,8 @@
 From: Antonio Ospite <ao2@amarulasolutions.com>
-Subject: [PATCH 2/4] ALSA: snd-usb-caiaq: use vmalloc buffers
-Date: Fri, 21 Jun 2013 13:11:49 +0200
-Message-ID: <1371813111-26661-3-git-send-email-ao2@amarulasolutions.com>
+Subject: [PATCH 1/4] ALSA: snd-usb-caiaq: remove the unused
+	snd_card_used variable
+Date: Fri, 21 Jun 2013 13:11:48 +0200
+Message-ID: <1371813111-26661-2-git-send-email-ao2@amarulasolutions.com>
 References: <1371813111-26661-1-git-send-email-ao2@amarulasolutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,58 +22,33 @@ To: alsa-devel@alsa-project.org, patch@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, Karsten Wiese <annabellesgarden@yahoo.de>, Torsten Schenk <torsten.schenk@zoho.com>, Daniel Mack <daniel@caiaq.de>, Michael Trimarchi <michael@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-For USB devices it's not necessary to allocate physically contiguous
-buffers.
+The snd_card_used variable is only read but never written, remove it.
 
 Signed-off-by: Antonio Ospite <ao2@amarulasolutions.com>
 ---
- sound/usb/caiaq/audio.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/usb/caiaq/device.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index c191618..7103b09 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -183,14 +183,15 @@ static int snd_usb_caiaq_substream_close(struct snd_pcm_substream *substream)
- static int snd_usb_caiaq_pcm_hw_params(struct snd_pcm_substream *sub,
- 				       struct snd_pcm_hw_params *hw_params)
- {
--	return snd_pcm_lib_malloc_pages(sub, params_buffer_bytes(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(sub,
-+						params_buffer_bytes(hw_params));
- }
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index 48b63cc..23cf55d 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -57,7 +57,6 @@ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX; /* Index 0-max */
+ static char* id[SNDRV_CARDS] = SNDRV_DEFAULT_STR; /* Id for this card */
+ static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP; /* Enable this card */
+-static int snd_card_used[SNDRV_CARDS];
  
- static int snd_usb_caiaq_pcm_hw_free(struct snd_pcm_substream *sub)
- {
- 	struct snd_usb_caiaqdev *cdev = snd_pcm_substream_chip(sub);
- 	deactivate_substream(cdev, sub);
--	return snd_pcm_lib_free_pages(sub);
-+	return snd_pcm_lib_free_vmalloc_buffer(sub);
- }
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for the caiaq sound device");
+@@ -388,7 +387,7 @@ static int create_card(struct usb_device *usb_dev,
+ 	struct snd_usb_caiaqdev *cdev;
  
- /* this should probably go upstream */
-@@ -345,7 +346,9 @@ static struct snd_pcm_ops snd_usb_caiaq_ops = {
- 	.hw_free =	snd_usb_caiaq_pcm_hw_free,
- 	.prepare =	snd_usb_caiaq_pcm_prepare,
- 	.trigger =	snd_usb_caiaq_pcm_trigger,
--	.pointer =	snd_usb_caiaq_pcm_pointer
-+	.pointer =	snd_usb_caiaq_pcm_pointer,
-+	.page =		snd_pcm_lib_get_vmalloc_page,
-+	.mmap =		snd_pcm_lib_mmap_vmalloc,
- };
+ 	for (devnum = 0; devnum < SNDRV_CARDS; devnum++)
+-		if (enable[devnum] && !snd_card_used[devnum])
++		if (enable[devnum])
+ 			break;
  
- static void check_for_elapsed_periods(struct snd_usb_caiaqdev *cdev,
-@@ -852,11 +855,6 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *cdev)
- 	snd_pcm_set_ops(cdev->pcm, SNDRV_PCM_STREAM_CAPTURE,
- 				&snd_usb_caiaq_ops);
- 
--	snd_pcm_lib_preallocate_pages_for_all(cdev->pcm,
--					SNDRV_DMA_TYPE_CONTINUOUS,
--					snd_dma_continuous_data(GFP_KERNEL),
--					MAX_BUFFER_SIZE, MAX_BUFFER_SIZE);
--
- 	cdev->data_cb_info =
- 		kmalloc(sizeof(struct snd_usb_caiaq_cb_info) * N_URBS,
- 					GFP_KERNEL);
+ 	if (devnum >= SNDRV_CARDS)
 -- 
 1.8.3.1
