@@ -1,16 +1,11 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: WM8741 DAC with AT91SAM9G20
-Date: Fri, 21 Jun 2013 18:25:24 +0800
-Message-ID: <51C42A14.1070907@atmel.com>
-References: <CA+WMtaNJYNO81zKVWYYQ2SkPwd+2tvn0KEBNv879mNANTLYU9w@mail.gmail.com>
+From: Antonio Ospite <ao2@amarulasolutions.com>
+Subject: [PATCH 0/4] ALSA: usb: misc consistency fixes
+Date: Fri, 21 Jun 2013 13:11:47 +0200
+Message-ID: <1371813111-26661-1-git-send-email-ao2@amarulasolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.243])
- by alsa0.perex.cz (Postfix) with ESMTP id 754E52610C5
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 12:27:27 +0200 (CEST)
-In-Reply-To: <CA+WMtaNJYNO81zKVWYYQ2SkPwd+2tvn0KEBNv879mNANTLYU9w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +15,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Lathion <m.lathion@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, patch@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@amarulasolutions.com>, Clemens Ladisch <clemens@ladisch.de>, Karsten Wiese <annabellesgarden@yahoo.de>, Torsten Schenk <torsten.schenk@zoho.com>, Daniel Mack <daniel@caiaq.de>, Michael Trimarchi <michael@amarulasolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Michael,
+Hi,
 
-On 06/21/2013 05:40 AM, Michael Lathion wrote:
-> Hi all,
->
-> I'm trying to use a WM8742 dac instead of WM8731 on a custom board based on
-> AT91SAM9G20EK (developpment board from Atmel for AT91SAM9G20 soc) with
-> Linux Kernel 2.6.38.
->
-> I have the driver working in alsa (driver compiled, mixer up in alsa, ...)
-> but I can't have the ssc interface working. When trying to play sound with
-> aplay I get only the masterclock and  bitclock but no frame clock (LRCLK),
-> see output below.
->
-> What I've done is modifying the /sound/soc/atmel/sam9g20_wm8731.c file  but
-> it seems something is not configured as it should (probably related to
-> WM8742 being slave and the WM8731 used on original dev board was master for
-> clock distribution).
->
-> My modified sam9g20_wm8741.c is enclosed to this mail, i suspect something
-> is wrongly setup in CPU DAI configuration but can't find what.
+when working on the hiFace driver (which I plan on re-sending later
+today BTW) I've been reading the code of other drivers and I've stumbled
+on a couple of minor inconsistencies which were also spotted during the
+review rounds for the hiFace driver.
 
-Don't see any attachment. So, don't know how you modify the code.
+I am sending some patches to address these issues, so that new drivers
+authors won't do the same mistakes I did when copying code over.
 
-However, for your reference for codec work as slave, atmel ssc as 
-master: 
-https://github.com/Android4SAM/linux-at91/commit/33db8ebd3e75632c482dda271340f4d2adcfd320
+Please take a closer look at the ones about vmalloc buffers, do we need
+an actual Tested-by for these?
 
-Best Regards,
-Bo Shen
+Patches are against 3.10-rc6.
+
+Thanks,
+   Antonio
+
+Antonio Ospite (4):
+  ALSA: snd-usb-caiaq: remove the unused snd_card_used variable
+  ALSA: snd-usb-caiaq: use vmalloc buffers
+  ALSA: snd-usb-6fire: use vmalloc buffers
+  ALSA: usb: uniform style used in MODULE_SUPPORTED_DEVICE()
+
+ sound/usb/6fire/chip.c     |  2 +-
+ sound/usb/6fire/pcm.c      | 12 +++++-------
+ sound/usb/caiaq/audio.c    | 12 +++++-------
+ sound/usb/caiaq/device.c   | 31 +++++++++++++++----------------
+ sound/usb/usx2y/usbusx2y.c |  2 +-
+ 5 files changed, 27 insertions(+), 32 deletions(-)
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
