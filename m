@@ -1,115 +1,68 @@
-From: Wang Xingchao <xingchao.wang@linux.intel.com>
-Subject: [PATCH 2/2 V1] ALSA: hda - Add cache connection info
-Date: Fri, 21 Jun 2013 06:10:45 -0400
-Message-ID: <1371809445-3326-2-git-send-email-xingchao.wang@linux.intel.com>
-References: <1371809445-3326-1-git-send-email-xingchao.wang@linux.intel.com>
+From: Mike Turquette <mturquette@linaro.org>
+Subject: Re: RE: [PATCH V6 6/6] clk: exynos5250: Add enum entries for divider clock
+ of i2s1 and i2s2
+Date: Thu, 20 Jun 2013 23:54:45 -0700
+Message-ID: <20130621065445.9136.69447@quantum>
+References: <1371024463-303-1-git-send-email-padma.v@samsung.com>
+ <1371024463-303-7-git-send-email-padma.v@samsung.com>
+ <20130612164553.26381.41398@quantum>
+ <CAAgF-BfEvBcrm186t6U9Tp4r64wB3sEsy6hoXMQi=dHJgncvfw@mail.gmail.com>
+ <CAAgF-Bf4BVfGVuFF8-CwPRi-em5VHA5HXYjkRDxPxvyAZPx7kw@mail.gmail.com>
+ <19ac01ce6b43$96bfb4d0$c43f1e70$%kim@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id DB2812654C0
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 08:44:13 +0200 (CEST)
-In-Reply-To: <1371809445-3326-1-git-send-email-xingchao.wang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, Wang Xingchao <xingchao.wang@linux.intel.com>, xingchao.wang@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <19ac01ce6b43$96bfb4d0$c43f1e70$%kim@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Kukjin Kim <kgene.kim@samsung.com>, 'Padma Venkat' <padma.kvr@gmail.com>
+Cc: 'Padmavathi Venna' <padma.v@samsung.com>, linux-samsung-soc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Pin's connection list may change dynamically with hot-plug event
-on Intel Haswell chip. Users would see connections be "0" in codec#.
-when play audio on this pin, software choose connections from cache.
-So add Cache connection info to avoid confuse.
+Quoting Kukjin Kim (2013-06-17 03:15:27)
+> Padma Venkat wrote:
+> > 
+> > Hi Mike,
+> > 
+> > On Thu, Jun 13, 2013 at 8:32 AM, Padma Venkat <padma.kvr@gmail.com> wrote:
+> > > Hi Mike,
+> > >
+> > > On Wed, Jun 12, 2013 at 10:15 PM, Mike Turquette <mturquette@linaro.org>
+> > wrote:
+> > >> Quoting Padmavathi Venna (2013-06-12 01:07:43)
+> > >>> This patch adds enum entries for div_i2s1 and div_i2s2 which are
+> > >>> required for i2s1 and i2s2 controllers.
+> > >>>
+> > >>> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
+> > >>
+> > >> Looks good.  Did you want me to take the clk patches or just gathering
+> > >> Acks?
+> > >
+> > > Please take the patches :).
+> > >
+> > > Thanks
+> > > Padma
+> > 
+> > clk related patches in this set has some dependency on arch side
+> > patches because one of the patch replaces all '/include's with
+> > '#include's and adds a header file in
+> > arch/arm/boot/include/dt-bindings/. So all these patches required to
+> > go into one tree.
+> > 
+> > Hi Kukjin,
+> > 
+> > Can you please take all these patches into samsung-tree?
+> > 
+> Padma, sure, I will.
+> 
+> BTW, Mike, according to your reply, I may get your ack on 2nd and 6th clk
+> patches...If any problems, please kindly let me know.
 
-Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
----
- sound/pci/hda/hda_codec.c | 13 +++++++++++++
- sound/pci/hda/hda_codec.h |  2 ++
- sound/pci/hda/hda_proc.c  | 13 ++++++++++++-
- 3 files changed, 27 insertions(+), 1 deletion(-)
+Fine by me.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 55108b5..7517fd6 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -354,6 +354,19 @@ lookup_conn_list(struct hda_codec *codec, hda_nid_t nid)
- 	return NULL;
- }
- 
-+int lookup_cache_conn(struct hda_codec *codec,
-+	       hda_nid_t pin_nid, hda_nid_t *conn_list)
-+{
-+	struct hda_conn_list *p;
-+
-+	p = lookup_conn_list(codec, pin_nid);
-+	if (p) {
-+		memcpy(conn_list, p->conns, p->len * sizeof(hda_nid_t));
-+		return p->len;
-+	}
-+	return 0;
-+}
-+
- static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
- 			 const hda_nid_t *list)
- {
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index c93f902..145d184 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -963,6 +963,8 @@ snd_hda_get_num_conns(struct hda_codec *codec, hda_nid_t nid)
- int snd_hda_get_num_raw_conns(struct hda_codec *codec, hda_nid_t nid);
- int snd_hda_get_raw_connections(struct hda_codec *codec, hda_nid_t nid,
- 			    hda_nid_t *conn_list, int max_conns);
-+int lookup_cache_conn(struct hda_codec *codec,
-+	       hda_nid_t pin_nid, hda_nid_t *conn_list);
- int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
- 			  const hda_nid_t **listp);
- int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int nums,
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index 0fee8fa..644ac1e 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -504,6 +504,7 @@ static void print_conn_list(struct snd_info_buffer *buffer,
- 			    int conn_len)
- {
- 	int c, curr = -1;
-+	hda_nid_t cache_conn[32];
- 
- 	if (conn_len > 1 &&
- 	    wid_type != AC_WID_AUD_MIX &&
-@@ -511,7 +512,7 @@ static void print_conn_list(struct snd_info_buffer *buffer,
- 	    wid_type != AC_WID_POWER)
- 		curr = snd_hda_codec_read(codec, nid, 0,
- 					  AC_VERB_GET_CONNECT_SEL, 0);
--	snd_iprintf(buffer, "  Connection: %d\n", conn_len);
-+	snd_iprintf(buffer, "  Raw Connection: %d\n", conn_len);
- 	if (conn_len > 0) {
- 		snd_iprintf(buffer, "    ");
- 		for (c = 0; c < conn_len; c++) {
-@@ -521,6 +522,16 @@ static void print_conn_list(struct snd_info_buffer *buffer,
- 		}
- 		snd_iprintf(buffer, "\n");
- 	}
-+
-+	/* Get Cache connections info */
-+	conn_len = lookup_cache_conn(codec, nid, cache_conn);
-+	if (conn_len > 0) {
-+		snd_iprintf(buffer, "  Cache Connection: %d\n", conn_len);
-+		snd_iprintf(buffer, "    ");
-+		for (c = 0; c < conn_len; c++)
-+			snd_iprintf(buffer, " 0x%02x", cache_conn[c]);
-+		snd_iprintf(buffer, "\n");
-+	}
- }
- 
- static void print_gpio(struct snd_info_buffer *buffer,
--- 
-1.8.1.2
+Regards,
+Mike
+
+> 
+> Thanks,
+> - Kukjin
