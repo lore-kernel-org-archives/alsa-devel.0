@@ -1,75 +1,231 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/6] dma: Add a jz4740 dmaengine driver
-Date: Fri, 21 Jun 2013 16:21:39 +0530
-Message-ID: <20130621105139.GJ23141@intel.com>
-References: <1369931105-28065-1-git-send-email-lars@metafoo.de>
- <1369931105-28065-4-git-send-email-lars@metafoo.de>
- <20130530171225.GA3767@intel.com>
- <51A79E8F.4070209@metafoo.de>
- <51B60D0A.7040307@metafoo.de>
- <20130612053810.GF4107@intel.com>
- <51B8646E.5040907@metafoo.de>
+From: Michael Lathion <m.lathion@gmail.com>
+Subject: Fwd: WM8741 DAC with AT91SAM9G20
+Date: Fri, 21 Jun 2013 14:24:48 +0200
+Message-ID: <CA+WMtaMWMKTxz1D04fYqzTKRS_gU98y0RmNtVAL2yKMJygnBSw@mail.gmail.com>
+References: <CA+WMtaNJYNO81zKVWYYQ2SkPwd+2tvn0KEBNv879mNANTLYU9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <51B8646E.5040907@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>
+Content-Type: multipart/mixed; boundary=089e01227c0e1f63d304dfa9263e
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f193.google.com (mail-ob0-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F186A2610C5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 14:24:49 +0200 (CEST)
+Received: by mail-ob0-f193.google.com with SMTP id xk17so3303528obc.8
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 05:24:49 -0700 (PDT)
+In-Reply-To: <CA+WMtaNJYNO81zKVWYYQ2SkPwd+2tvn0KEBNv879mNANTLYU9w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 12, 2013 at 02:07:10PM +0200, Lars-Peter Clausen wrote:
-> On 06/12/2013 07:38 AM, Vinod Koul wrote:
-> > On Mon, Jun 10, 2013 at 07:29:46PM +0200, Lars-Peter Clausen wrote:
-> >> On 05/30/2013 08:46 PM, Lars-Peter Clausen wrote:
-> >>>>> +static int jz4740_dma_alloc_chan_resources(struct dma_chan *c)
-> >>>>> +{
-> >>>>> +	struct jz4740_dmaengine_chan *chan = to_jz4740_dma_chan(c);
-> >>>>> +
-> >>>>> +	chan->jz_chan = jz4740_dma_request(chan, NULL);
-> >>>>> +	if (!chan->jz_chan)
-> >>>>> +		return -EBUSY;
-> >>>>> +
-> >>>>> +	jz4740_dma_set_complete_cb(chan->jz_chan, jz4740_dma_complete_cb);
-> >>>>> +
-> >>>>> +	return 0;
-> >>>> Sorry, I didnt reply on this one. The API expects you to allocate a pool of
-> >>>> descriptors. These descriptors are to be used in .device_prep_xxx calls later.
-> >>>
-> >>> The size of the descriptor is not fixed, so they can not be pre-allocated. And
-> >>> this is nothing new either, most of the more recently added dmaengine drivers
-> >>> allocate their descriptors on demand.
-> >>
-> >> Vinod, are you ok with this explanation?
-> > Sorry, I was travelling...
-> > 
-> > Can you explain more of a bit when you say size is not fixed.
-> 
-> This is the function that allocates the descriptor:
-> 
-> static struct jz4740_dma_desc *jz4740_dma_alloc_desc(unsigned int num_sgs)
-> {
-> 	return kzalloc(sizeof(struct jz4740_dma_desc) +
-> 		sizeof(struct jz4740_dma_sg) * num_sgs, GFP_ATOMIC);
-> }
-> 
-> So the size depends on the entries in the sg list.
-> 
-> 
-> > Why would it be
-> > issue if we allocate descriptors at the alloc_chan. The idea is that you 
-> > preallocated pool at alloc_chan and since the .device_prep_xxx calls can be
-> > called from atomic context as well, you dont need to do this later. You can use use
-> > these descriptors at that time. The idea is keep rotating the descriptors from
-> > free poll to used one
-> 
-> Yes, I know all that. And it makes sense to use a pool in certain
-> situations, e.g. if the hardware only supports a limited set of physical
-> descriptors. But in this case the descriptors are completely virtual.
-> Forcing the driver to use a pool would make it more complex, use more memory
-> and also a bit slower (although probably not noticeable).
-Okay, I am going to try applying these now
+--089e01227c0e1f63d304dfa9263e
+Content-Type: text/plain; charset=ISO-8859-1
 
---
-~Vinod
+I forgot tu my modified sam9g20_wm8741.c file, here is it...
+
+---------- Forwarded message ----------
+From: Michael Lathion <m.lathion@gmail.com>
+Date: 2013/6/20
+Subject: WM8741 DAC with AT91SAM9G20
+To: alsa-devel@alsa-project.org
+
+
+Hi all,
+
+I'm trying to use a WM8742 dac instead of WM8731 on a custom board based on
+AT91SAM9G20EK (developpment board from Atmel for AT91SAM9G20 soc) with
+Linux Kernel 2.6.38.
+
+I have the driver working in alsa (driver compiled, mixer up in alsa, ...)
+but I can't have the ssc interface working. When trying to play sound with
+aplay I get only the masterclock and  bitclock but no frame clock (LRCLK),
+see output below.
+
+What I've done is modifying the /sound/soc/atmel/sam9g20_wm8731.c file  but
+it seems something is not configured as it should (probably related to
+WM8742 being slave and the WM8731 used on original dev board was master for
+clock distribution).
+
+My modified sam9g20_wm8741.c is enclosed to this mail, i suspect something
+is wrongly setup in CPU DAI configuration but can't find what.
+
+I'm trying to set this up from some weeks now but can't find the right
+config so if someone have any idea on what can has to be done it could be
+great!
+
+Thanks for help
+
+Regards
+Michael
+
+Linux kernel 2.6.38
+AT91SAM9G20 processor
+WM8741 DAC
+
+Kernel boot output :
+
+ASoC: Mclk set to 22579200
+wm8741-codec 0-001b: Successful registration
+FOX_Board_wm8741 : PB1003A: wm8741__init() called
+wm8741-codec 0-001b: wm8741_set_dai_sysclk info: freq=22579200
+asoc: wm8741 <-> atmel-ssc-dai.0 mapping ok
+ALSA device list:
+  #0: DAISY16
+
+When trying play sound  kernel driver print:
+
+wm8741-codec 0-001b: wm8741_set_dai_fmt:    Format=0, Clock Inv=0
+wm8741-codec 0-001b: wm8741_hw_params:    bit size param = 2
+
+--089e01227c0e1f63d304dfa9263e
+Content-Type: text/x-csrc; charset=US-ASCII; name="sam9g20_wm8741.c"
+Content-Disposition: attachment; filename="sam9g20_wm8741.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hi7cpj9j0
+
+LyoKICogc2FtOWcyMF93bTg3NDEgIC0tICBTb0MgYXVkaW8gZm9yIEFUOTFTQU05RzIwLWJhc2Vk
+CiAqIAkJCUFUTUVMIEFUOTFTQU05RzIwZWsgYm9hcmQuCiAqCiAqICBDb3B5cmlnaHQgKEMpIDIw
+MDUgU0FOIFBlb3BsZQogKiAgQ29weXJpZ2h0IChDKSAyMDA4IEF0bWVsCiAqCiAqIEF1dGhvcnM6
+IFNlZGppIEdhb3Vhb3UgPHNlZGppLmdhb3Vhb3VAYXRtZWwuY29tPgogKgogKiBCYXNlZCBvbiBh
+dGlfYjFfd204NzMxLmMgYnk6CiAqIEZyYW5rIE1hbmRhcmlubyA8Zm1hbmRhcmlub0BlbmRyZWxp
+YS5jb20+CiAqIENvcHlyaWdodCAyMDA2IEVuZHJlbGlhIFRlY2hub2xvZ2llcyBJbmMuCiAqIEJh
+c2VkIG9uIGNvcmdpLmMgYnk6CiAqIENvcHlyaWdodCAyMDA1IFdvbGZzb24gTWljcm9lbGVjdHJv
+bmljcyBQTEMuCiAqIENvcHlyaWdodCAyMDA1IE9wZW5lZGhhbmQgTHRkLgogKgogKiBUaGlzIHBy
+b2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1v
+ZGlmeQogKiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNl
+bnNlIGFzIHB1Ymxpc2hlZCBieQogKiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRo
+ZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgogKiAoYXQgeW91ciBvcHRpb24pIGFueSBs
+YXRlciB2ZXJzaW9uLgogKgogKiBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhv
+cGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKICogYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3
+aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKICogTUVSQ0hBTlRBQklMSVRZIG9y
+IEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQogKiBHTlUgR2VuZXJh
+bCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgogKgogKiBZb3Ugc2hvdWxkIGhhdmUg
+cmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQogKiBhbG9u
+ZyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQog
+KiBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBN
+QSAgMDIxMTEtMTMwNyAgVVNBCiAqLwoKI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgojaW5jbHVk
+ZSA8bGludXgvbW9kdWxlcGFyYW0uaD4KI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgojaW5jbHVk
+ZSA8bGludXgvY2xrLmg+CiNpbmNsdWRlIDxsaW51eC90aW1lci5oPgojaW5jbHVkZSA8bGludXgv
+aW50ZXJydXB0Lmg+CiNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KI2luY2x1ZGUg
+PGxpbnV4L2kyYy5oPgoKI2luY2x1ZGUgPGxpbnV4L2F0bWVsLXNzYy5oPgoKI2luY2x1ZGUgPHNv
+dW5kL2NvcmUuaD4KI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgojaW5jbHVkZSA8c291bmQvcGNtX3Bh
+cmFtcy5oPgojaW5jbHVkZSA8c291bmQvc29jLmg+CgojaW5jbHVkZSA8YXNtL21hY2gtdHlwZXMu
+aD4KI2luY2x1ZGUgPG1hY2gvaGFyZHdhcmUuaD4KI2luY2x1ZGUgPG1hY2gvZ3Bpby5oPgoKI2lu
+Y2x1ZGUgIi4uL2NvZGVjcy93bTg3NDEuaCIKI2luY2x1ZGUgImF0bWVsLXBjbS5oIgojaW5jbHVk
+ZSAiYXRtZWxfc3NjX2RhaS5oIgoKI2RlZmluZSBNQ0xLX1JBVEUgMjI1NzkyMDAKCgpzdGF0aWMg
+c3RydWN0IGNsayAqbWNsazsKCnN0YXRpYyBpbnQgYXQ5MXNhbTlnMjBla19od19wYXJhbXMoc3Ry
+dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCglzdHJ1Y3Qgc25kX3BjbV9od19wYXJh
+bXMgKnBhcmFtcykKewoJc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVh
+bS0+cHJpdmF0ZV9kYXRhOwoJc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNv
+ZGVjX2RhaTsKCXN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSA9IHJ0ZC0+Y3B1X2RhaTsKCWlu
+dCByZXQ7CgoJLyogc2V0IGNvZGVjIERBSSBjb25maWd1cmF0aW9uICovCglyZXQgPSBzbmRfc29j
+X2RhaV9zZXRfZm10KGNvZGVjX2RhaSwgU05EX1NPQ19EQUlGTVRfSTJTIHwKCQlTTkRfU09DX0RB
+SUZNVF9OQl9ORiB8IFNORF9TT0NfREFJRk1UX0NCU19DRlMpOwoJaWYgKHJldCA8IDApCgkJcmV0
+dXJuIHJldDsKCgkvKiBzZXQgY3B1IERBSSBjb25maWd1cmF0aW9uICovCglyZXQgPSBzbmRfc29j
+X2RhaV9zZXRfZm10KGNwdV9kYWksIFNORF9TT0NfREFJRk1UX0kyUyB8CgkJU05EX1NPQ19EQUlG
+TVRfTkJfTkYgfCBTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTKTsKCWlmIChyZXQgPCAwKQoJCXJldHVy
+biByZXQ7CgkJCgkvLy0tLS0tLS0tLS0gYWRkZWQgY3B1IERBSSAtLS0tLS0tLS0tCQovLwlyZXQg
+PSBzbmRfc29jX2RhaV9zZXRfcGxsKGNwdV9kYWksIDAsIDAsIDAsIDIyNTc5MjAwKTsKLy8gICAg
+aWYgKHJldCA8IDApCi8vICAgICAgICByZXR1cm4gcmV0OwoKCXJldCA9IHNuZF9zb2NfZGFpX3Nl
+dF9jbGtkaXYoY3B1X2RhaSwgQVRNRUxfU1NDX0NNUl9ESVYsIDMpOwogICAgICAgIGlmIChyZXQg
+PCAwKQogICAgICAgICAgICByZXR1cm4gcmV0OwoKCXJldCA9IHNuZF9zb2NfZGFpX3NldF9jbGtk
+aXYoY3B1X2RhaSwgQVRNRUxfU1NDX1RDTVJfUEVSSU9ELCA3KTsKICAgICAgICBpZiAocmV0IDwg
+MCkKICAgICAgICAgICAgcmV0dXJuIHJldDsKIAogLy8gICByZXQgPSBzbmRfc29jX2RhaV9zZXRf
+c3lzY2xrKGNwdV9kYWksIEFUTUVMX1NZU0NMS19NQ0ssIDE4NDMyMDAsIDEpOwogLy8gICAgICAg
+aWYgKHJldCA8IDApCiAvLyAgICAgICAgICAgcmV0dXJuIHJldDsKCQkKCS8vLS0tLS0tLS0tLWVu
+ZCBDUFUgREFJIGFkZCAtLS0tLS0tLS0tLS0tLS0tLS0tCQoJCQoKCXJldHVybiAwOwp9CgpzdGF0
+aWMgc3RydWN0IHNuZF9zb2Nfb3BzIGF0OTFzYW05ZzIwZWtfb3BzID0gewoJLmh3X3BhcmFtcyA9
+IGF0OTFzYW05ZzIwZWtfaHdfcGFyYW1zLAp9OwoKc3RhdGljIGludCBhdDkxc2FtOWcyMGVrX3Nl
+dF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQsCgkJCQkJZW51bSBzbmRfc29j
+X2JpYXNfbGV2ZWwgbGV2ZWwpCnsKCXN0YXRpYyBpbnQgbWNsa19vbjsKCWludCByZXQgPSAwOwoK
+CXN3aXRjaCAobGV2ZWwpIHsKCWNhc2UgU05EX1NPQ19CSUFTX09OOgoJY2FzZSBTTkRfU09DX0JJ
+QVNfUFJFUEFSRToKCQlpZiAoIW1jbGtfb24pCgkJCXJldCA9IGNsa19lbmFibGUobWNsayk7CgkJ
+aWYgKHJldCA9PSAwKQoJCQltY2xrX29uID0gMTsKCQlicmVhazsKCgljYXNlIFNORF9TT0NfQklB
+U19PRkY6CgljYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgoJCWlmIChtY2xrX29uKQoJCQljbGtf
+ZGlzYWJsZShtY2xrKTsKCQltY2xrX29uID0gMDsKCQlicmVhazsKCX0KCglyZXR1cm4gcmV0Owp9
+CgpzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgYXQ5MXNhbTlnMjBla19k
+YXBtX3dpZGdldHNbXSA9IHsKCVNORF9TT0NfREFQTV9TUEsoIkV4dCBTcGsiLCBOVUxMKSwKfTsK
+CnN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGludGVyY29uW10gPSB7CgoJ
+Lyogc3BlYWtlciBjb25uZWN0ZWQgdG8gVk9VVEwgKi8KCXsiRXh0IFNwayIsIE5VTEwsICJWT1VU
+TFAifSwKCXsiRXh0IFNwayIsIE5VTEwsICJWT1VUTE4ifSwKLy8JeyJFeHQgU3BrIiwgTlVMTCwg
+IlZPVVRSUCJ9LAovLwl7IkV4dCBTcGsiLCBOVUxMLCAiVk9VVFJOIn0sCn07CgovKgogKiBMb2dp
+YyBmb3IgYSB3bTg3NDEgYXMgY29ubmVjdGVkIG9uIGEgYXQ5MXNhbTlnMjBlayBib2FyZC4KICov
+CnN0YXRpYyBpbnQgYXQ5MXNhbTlnMjBla193bTg3NDFfaW5pdChzdHJ1Y3Qgc25kX3NvY19wY21f
+cnVudGltZSAqcnRkKQp7CglzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBydGQtPmNvZGVj
+OwoJc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNvZGVjX2RhaTsKCXN0cnVj
+dCBzbmRfc29jX2RhcG1fY29udGV4dCAqZGFwbSA9ICZjb2RlYy0+ZGFwbTsKCWludCByZXQ7CgoJ
+cHJpbnRrKEtFUk5fREVCVUcKI2lmIGRlZmluZWQoQ09ORklHX01BQ0hfQUNNRU5FVFVTRk9YRzIw
+KQoJCQkiRk9YX0JvYXJkX3dtODc0MSAiCgkJCSI6IFBCMTAwM0E6IHdtODc0MV9faW5pdCgpIGNh
+bGxlZFxuIik7CiNlbHNlCgkJCSJhdDkxc2FtOWcyMGVrX3dtODczMSAiCgkJCSI6IGF0OTFzYW05
+ZzIwZWtfd204NzMxX2luaXQoKSBjYWxsZWRcbiIpOwojZW5kaWYKCglyZXQgPSBzbmRfc29jX2Rh
+aV9zZXRfc3lzY2xrKGNvZGVjX2RhaSwgV004NzQxX1NZU0NMSywKCQlNQ0xLX1JBVEUsIFNORF9T
+T0NfQ0xPQ0tfSU4pOwoJCQoJaWYgKHJldCA8IDApIHsKCQlwcmludGsoS0VSTl9FUlIgIkZhaWxl
+ZCB0byBzZXQgV004NzQxIFNZU0NMSzogJWRcbiIsIHJldCk7CgkJcmV0dXJuIHJldDsKCX0KCgkv
+KiBBZGQgc3BlY2lmaWMgd2lkZ2V0cyAqLwoJc25kX3NvY19kYXBtX25ld19jb250cm9scyhkYXBt
+LCBhdDkxc2FtOWcyMGVrX2RhcG1fd2lkZ2V0cywKCQkJCSAgQVJSQVlfU0laRShhdDkxc2FtOWcy
+MGVrX2RhcG1fd2lkZ2V0cykpOwoJLyogU2V0IHVwIHNwZWNpZmljIGF1ZGlvIHBhdGggaW50ZXJj
+b25uZWN0cyAqLwoJc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwgaW50ZXJjb24sIEFSUkFZ
+X1NJWkUoaW50ZXJjb24pKTsKCgkvKiBub3QgY29ubmVjdGVkICovCgoKCS8qIGFsd2F5cyBjb25u
+ZWN0ZWQgKi8KCXNuZF9zb2NfZGFwbV9lbmFibGVfcGluKGRhcG0sICJFeHQgU3BrIik7CgoJc25k
+X3NvY19kYXBtX3N5bmMoZGFwbSk7CgoJcmV0dXJuIDA7Cn0KCnN0YXRpYyBzdHJ1Y3Qgc25kX3Nv
+Y19kYWlfbGluayBhdDkxc2FtOWcyMGVrX2RhaSA9IHsKCS5uYW1lID0gIldNODc0MSIsCgkuc3Ry
+ZWFtX25hbWUgPSAiV004NzQxIFBDTSIsCgkuY3B1X2RhaV9uYW1lID0gImF0bWVsLXNzYy1kYWku
+MCIsCgkuY29kZWNfZGFpX25hbWUgPSAid204NzQxIiwKCS5pbml0ID0gYXQ5MXNhbTlnMjBla193
+bTg3NDFfaW5pdCwKCS5wbGF0Zm9ybV9uYW1lID0gImF0bWVsLXBjbS1hdWRpbyIsCgkuY29kZWNf
+bmFtZSA9ICJ3bTg3NDEtY29kZWMuMC0wMDFiIiwKCS5vcHMgPSAmYXQ5MXNhbTlnMjBla19vcHMs
+Cn07CgpzdGF0aWMgc3RydWN0IHNuZF9zb2NfY2FyZCBzbmRfc29jX2F0OTFzYW05ZzIwZWsgPSB7
+CiNpZiBkZWZpbmVkKENPTkZJR19NQUNIX0FDTUVORVRVU0ZPWEcyMCkKCS5uYW1lID0gIkRBSVNZ
+MTYiLAojZWxzZQoJLm5hbWUgPSAiQVQ5MVNBTUcyMC1FSyIsCiNlbmRpZgoJLmRhaV9saW5rID0g
+JmF0OTFzYW05ZzIwZWtfZGFpLAoJLm51bV9saW5rcyA9IDEsCgkuc2V0X2JpYXNfbGV2ZWwgPSBh
+dDkxc2FtOWcyMGVrX3NldF9iaWFzX2xldmVsLAp9OwoKc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9k
+ZXZpY2UgKmF0OTFzYW05ZzIwZWtfc25kX2RldmljZTsKCnN0YXRpYyBpbnQgX19pbml0IGF0OTFz
+YW05ZzIwZWtfaW5pdCh2b2lkKQp7CglzdHJ1Y3QgY2xrICpwbGxiOwoJaW50IHJldDsKCglpZiAo
+IShtYWNoaW5lX2lzX2F0OTFzYW05ZzIwZWsoKSB8fCBtYWNoaW5lX2lzX2F0OTFzYW05ZzIwZWtf
+Mm1tYygpIHx8IG1hY2hpbmVfaXNfYWNtZW5ldHVzZm94ZzIwKCkpKQoJCXJldHVybiAtRU5PREVW
+OwoKCXJldCA9IGF0bWVsX3NzY19zZXRfYXVkaW8oMCk7CglpZiAocmV0ICE9IDApIHsKCQlwcl9l
+cnIoIkZhaWxlZCB0byBzZXQgU1NDIDAgZm9yIGF1ZGlvOiAlZFxuIiwgcmV0KTsKCQlyZXR1cm4g
+cmV0OwoJfQoKCS8qCgkgKiBDb2RlYyBNQ0xLIGlzIHN1cHBsaWVkIGJ5IFBDSzAgLSBzZXQgaXQg
+dXAuCgkgKi8KICAgICAgICBpZiAobWFjaGluZV9pc19hY21lbmV0dXNmb3hnMjAoKSkgCgkJbWNs
+ayA9IGNsa19nZXQoTlVMTCwgInBjazEiKTsgLy8gRGFpc3kxNiBBdWRpbyBDb2RlYyBNQ0xLIGlz
+IHN1cHBsaWVkIGJ5IFBDSzEKCWVsc2UKCQltY2xrID0gY2xrX2dldChOVUxMLCAicGNrMCIpOwoK
+CWlmIChJU19FUlIobWNsaykpIHsKCQlwcmludGsoS0VSTl9FUlIgIkFTb0M6IEZhaWxlZCB0byBn
+ZXQgTUNMS1xuIik7CgkJcmV0ID0gUFRSX0VSUihtY2xrKTsKCQlnb3RvIGVycjsKCX0KCglwbGxi
+ID0gY2xrX2dldChOVUxMLCAicGxsYiIpOwoJaWYgKElTX0VSUihwbGxiKSkgewoJCXByaW50ayhL
+RVJOX0VSUiAiQVNvQzogRmFpbGVkIHRvIGdldCBQTExCXG4iKTsKCQlyZXQgPSBQVFJfRVJSKHBs
+bGIpOwoJCWdvdG8gZXJyX21jbGs7Cgl9CglyZXQgPSBjbGtfc2V0X3BhcmVudChtY2xrLCBwbGxi
+KTsKCWNsa19wdXQocGxsYik7CglpZiAocmV0ICE9IDApIHsKCQlwcmludGsoS0VSTl9FUlIgIkFT
+b0M6IEZhaWxlZCB0byBzZXQgTUNMSyBwYXJlbnRcbiIpOwoJCWdvdG8gZXJyX21jbGs7Cgl9CgoJ
+Y2xrX3NldF9yYXRlKG1jbGssIE1DTEtfUkFURSk7CgoJcHJpbnRrKEtFUk5fRVJSICJBU29DOiBN
+Y2xrIHNldCB0byAlZFxuIixNQ0xLX1JBVEUpOwoJCgoJYXQ5MXNhbTlnMjBla19zbmRfZGV2aWNl
+ID0gcGxhdGZvcm1fZGV2aWNlX2FsbG9jKCJzb2MtYXVkaW8iLCAtMSk7CglpZiAoIWF0OTFzYW05
+ZzIwZWtfc25kX2RldmljZSkgewoJCXByaW50ayhLRVJOX0VSUiAiQVNvQzogUGxhdGZvcm0gZGV2
+aWNlIGFsbG9jYXRpb24gZmFpbGVkXG4iKTsKCQlyZXQgPSAtRU5PTUVNOwoJCWdvdG8gZXJyX21j
+bGs7Cgl9CgoJcGxhdGZvcm1fc2V0X2RydmRhdGEoYXQ5MXNhbTlnMjBla19zbmRfZGV2aWNlLAoJ
+CQkmc25kX3NvY19hdDkxc2FtOWcyMGVrKTsKCglyZXQgPSBwbGF0Zm9ybV9kZXZpY2VfYWRkKGF0
+OTFzYW05ZzIwZWtfc25kX2RldmljZSk7CglpZiAocmV0KSB7CgkJcHJpbnRrKEtFUk5fRVJSICJB
+U29DOiBQbGF0Zm9ybSBkZXZpY2UgYWxsb2NhdGlvbiBmYWlsZWRcbiIpOwoJCWdvdG8gZXJyX2Rl
+dmljZV9hZGQ7Cgl9CgoJcmV0dXJuIHJldDsKCmVycl9kZXZpY2VfYWRkOgoJcGxhdGZvcm1fZGV2
+aWNlX3B1dChhdDkxc2FtOWcyMGVrX3NuZF9kZXZpY2UpOwplcnJfbWNsazoKCWNsa19wdXQobWNs
+ayk7CgltY2xrID0gTlVMTDsKZXJyOgoJcmV0dXJuIHJldDsKfQoKc3RhdGljIHZvaWQgX19leGl0
+IGF0OTFzYW05ZzIwZWtfZXhpdCh2b2lkKQp7CglwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3Rlcihh
+dDkxc2FtOWcyMGVrX3NuZF9kZXZpY2UpOwoJYXQ5MXNhbTlnMjBla19zbmRfZGV2aWNlID0gTlVM
+TDsKCWNsa19wdXQobWNsayk7CgltY2xrID0gTlVMTDsKfQoKbW9kdWxlX2luaXQoYXQ5MXNhbTln
+MjBla19pbml0KTsKbW9kdWxlX2V4aXQoYXQ5MXNhbTlnMjBla19leGl0KTsKCi8qIE1vZHVsZSBp
+bmZvcm1hdGlvbiAqLwpNT0RVTEVfQVVUSE9SKCJTZWRqaSBHYW91YW91IDxzZWRqaS5nYW91YW91
+QGF0bWVsLmNvbT4iKTsKTU9EVUxFX0RFU0NSSVBUSU9OKCJBTFNBIFNvQyBBVDkxU0FNOUcyMEVL
+X1dNODczMSIpOwpNT0RVTEVfTElDRU5TRSgiR1BMIik7Cg==
+--089e01227c0e1f63d304dfa9263e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--089e01227c0e1f63d304dfa9263e--
