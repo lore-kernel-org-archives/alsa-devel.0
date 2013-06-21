@@ -1,22 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: codecs: adau1701: allow
- configuration of PLL mode pins
-Date: Fri, 21 Jun 2013 08:06:48 +0200
-Message-ID: <51C3ED78.8010703@gmail.com>
-References: <1371749397-32238-1-git-send-email-zonque@gmail.com>
- <1371749397-32238-2-git-send-email-zonque@gmail.com>
- <51C3DAAF.9060007@st.com>
+From: "Wang, Xingchao" <xingchao.wang@intel.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Add cache connection info
+Date: Fri, 21 Jun 2013 06:26:27 +0000
+Message-ID: <46B810F6945F7C4788E11DCE57EC489011832941@SHSMSX104.ccr.corp.intel.com>
+References: <1371789708-10524-1-git-send-email-xingchao.wang@linux.intel.com>
+ <1371789708-10524-2-git-send-email-xingchao.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ea0-f177.google.com (mail-ea0-f177.google.com
- [209.85.215.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 0387426547D
- for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 08:06:23 +0200 (CEST)
-Received: by mail-ea0-f177.google.com with SMTP id j14so4333485eak.8
- for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2013 23:06:23 -0700 (PDT)
-In-Reply-To: <51C3DAAF.9060007@st.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCF0E265475
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2013 08:26:32 +0200 (CEST)
+In-Reply-To: <1371789708-10524-2-git-send-email-xingchao.wang@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,174 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "lars@metafoo.de" <lars@metafoo.de>
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Xingchao <xingchao.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21.06.2013 06:46, Rajeev kumar wrote:
-> Daniel,
+Hi Takashi,
+
+Quote from Mengdong:
+"
+Could you double check whether size of " cache_conn" is big enough? Some non-Haswell audio codec may have very large connection list.
++	conn_len = lookup_cache_conn(codec, nid, cache_conn);"
+
+So this is a bug for codec with more than 4 connections.
+At my first thought, I would like to get hda_conn_list pointer, but hda_conn_list is the structure defined in hda_codec.c and lookup_conn_list() is static.
+
+If we really need this, I think it's better to change the function type and move the structure definition to hda_codec.h.
+
+thanks
+--xingchao
+
+
+> -----Original Message-----
+> From: Wang Xingchao [mailto:xingchao.wang@linux.intel.com]
+> Sent: Friday, June 21, 2013 12:42 PM
+> To: tiwai@suse.de
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Wang, Xingchao; Wang
+> Xingchao
+> Subject: [PATCH 2/2] ALSA: hda - Add cache connection info
 > 
-> On 6/20/2013 10:59 PM, Daniel Mack wrote:
->> The ADAU1701 has 2 hardware pins to configure the PLL mode in accordance
->> to the MCLK-to-LRCLK ratio. These pins have to be stable before the chip
->> is released from reset, and a full reset cycle, including a new firmware
->> download is needed whenever they change.
->>
->> This patch adds GPIO properties to the DT bindings of the Codec, and
->> implements makes the set_sysclk memorize the configured sysclk.
->>
->> To avoid excessive reset cycles and firmware downloads, the default
->> clock divider can be specified in DT as well. Whenever a ratio change is
->> detected in the hw_params callback, the PLL mode lines are updates and a
->> full reset cycle is issued.
->>
->> Signed-off-by: Daniel Mack<zonque@gmail.com>
->> ---
->>   .../devicetree/bindings/sound/adi,adau1701.txt     |  14 +++
->>   sound/soc/codecs/adau1701.c                        | 107 +++++++++++++++++----
->>   sound/soc/codecs/adau1701.h                        |   4 +
->>   3 files changed, 104 insertions(+), 21 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/adi,adau1701.txt b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
->> index 3afeda7..a0d7e92 100644
->> --- a/Documentation/devicetree/bindings/sound/adi,adau1701.txt
->> +++ b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
->> @@ -11,6 +11,19 @@ Optional properties:
->>    - reset-gpio: 		A GPIO spec to define which pin is connected to the
->>   			chip's !RESET pin. If specified, the driver will
->>   			assert a hardware reset at probe time.
->> + - adi,pll-clkdiv: 	The PLL clock divider, specifing the ratio between
->> +			MCLK and fsclk. The value is used to determine the
->> +			correct state of the two mode pins below.
->> +			Note that this value can be overridden at runtime
->> +			by passing the ADAU1701_CLKDIV_MCLK_LRCLK divider
->> +			with ASoC calls. However, the chips needs a full
->> +			reset cycle and a new firmware download each time
->> +			the configuration changes.
->> + - adi,pll-mode-gpios:	An array of two GPIO specs to describe the GPIOs
->> +			the ADAU's PLL config pins are connected to.
->> +			The state of the pins are set according to the
->> +			configured clock divider on ASoC side before the
->> +			firmware is loaded.
->>
->>   Examples:
->>
->> @@ -19,5 +32,6 @@ Examples:
->>   			compatible = "adi,adau1701";
->>   			reg =<0x34>;
->>   			reset-gpio =<&gpio 23 0>;
->> +			adi,pll-mode-gpios =<&gpio 24 0&gpio 25 0>;
->>   		};
->>   	};
->> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
->> index b6b1a77..e6ce4fe 100644
->> --- a/sound/soc/codecs/adau1701.c
->> +++ b/sound/soc/codecs/adau1701.c
->> @@ -91,7 +91,11 @@
->>
->>   struct adau1701 {
->>   	int gpio_nreset;
->> +	int gpio_pll_mode0;
->> +	int gpio_pll_mode1;
+> Pin's connection list may change dynamically with hot-plug event on Intel
+> Haswell chip. Users would see connections be "0" in codec#.
+> when play audio on this pin, software choose connections from cache.
+> So add Cache connection info to avoid confuse.
 > 
-> combine in single line.
-
-I disagree for the sake of readability.
-
+> Signed-off-by: Wang Xingchao <xingchao.wang@linux.intel.com>
+> ---
+>  sound/pci/hda/hda_codec.c | 13 +++++++++++++
+> sound/pci/hda/hda_codec.h |  2 ++  sound/pci/hda/hda_proc.c  | 13
+> ++++++++++++-
+>  3 files changed, 27 insertions(+), 1 deletion(-)
 > 
->>   	unsigned int dai_fmt;
->> +	unsigned int pll_clkdiv;
->> +	unsigned int sysclk;
->>   };
->>
->>   static const struct snd_kcontrol_new adau1701_controls[] = {
->> @@ -184,13 +188,37 @@ static unsigned int adau1701_read(struct snd_soc_codec *codec, unsigned int reg)
->>   	return value;
->>   }
->>
->> -static void adau1701_reset(struct snd_soc_codec *codec)
->> +static void adau1701_reset(struct snd_soc_codec *codec, unsigned int clkdiv)
->>   {
->>   	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
->>
->>   	if (!gpio_is_valid(adau1701->gpio_nreset))
->>   		return;
->>
->> +	if (gpio_is_valid(adau1701->gpio_pll_mode0)&&
->> +	    gpio_is_valid(adau1701->gpio_pll_mode1)) {
->> +		switch (adau1701->pll_clkdiv) {
->> +		case 64:
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c index
+> 55108b5..7517fd6 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -354,6 +354,19 @@ lookup_conn_list(struct hda_codec *codec,
+> hda_nid_t nid)
+>  	return NULL;
+>  }
 > 
-> magic number?
-
-That's a divider value. How and why would you possibly add a #define for
-that?
-
+> +int lookup_cache_conn(struct hda_codec *codec,
+> +	       hda_nid_t pin_nid, hda_nid_t *conn_list) {
+> +	struct hda_conn_list *p;
+> +
+> +	p = lookup_conn_list(codec, pin_nid);
+> +	if (p) {
+> +		memcpy(conn_list, p->conns, p->len * sizeof(hda_nid_t));
+> +		return p->len;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
+>  			 const hda_nid_t *list)
+>  {
+> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h index
+> c93f902..145d184 100644
+> --- a/sound/pci/hda/hda_codec.h
+> +++ b/sound/pci/hda/hda_codec.h
+> @@ -963,6 +963,8 @@ snd_hda_get_num_conns(struct hda_codec *codec,
+> hda_nid_t nid)  int snd_hda_get_num_raw_conns(struct hda_codec *codec,
+> hda_nid_t nid);  int snd_hda_get_raw_connections(struct hda_codec *codec,
+> hda_nid_t nid,
+>  			    hda_nid_t *conn_list, int max_conns);
+> +int lookup_cache_conn(struct hda_codec *codec,
+> +	       hda_nid_t pin_nid, hda_nid_t *conn_list);
+>  int snd_hda_get_conn_list(struct hda_codec *codec, hda_nid_t nid,
+>  			  const hda_nid_t **listp);
+>  int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int
+> nums, diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c index
+> 0fee8fa..e52ad3c 100644
+> --- a/sound/pci/hda/hda_proc.c
+> +++ b/sound/pci/hda/hda_proc.c
+> @@ -504,6 +504,7 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+>  			    int conn_len)
+>  {
+>  	int c, curr = -1;
+> +	hda_nid_t cache_conn[4];
 > 
->> +			gpio_set_value(adau1701->gpio_pll_mode0, 0);
->> +			gpio_set_value(adau1701->gpio_pll_mode1, 0);
->> +			break;
->> +		case 256:
->> +			gpio_set_value(adau1701->gpio_pll_mode0, 0);
->> +			gpio_set_value(adau1701->gpio_pll_mode1, 1);
->> +			break;
->> +		case 384:
->> +			gpio_set_value(adau1701->gpio_pll_mode0, 1);
->> +			gpio_set_value(adau1701->gpio_pll_mode1, 0);
->> +			break;
->> +		case 512:
->> +			gpio_set_value(adau1701->gpio_pll_mode0, 1);
->> +			gpio_set_value(adau1701->gpio_pll_mode1, 1);
->> +			break;
->> +		}
->> +	}
->> +
->> +	adau1701->pll_clkdiv = clkdiv;
->> +
->>   	gpio_set_value(adau1701->gpio_nreset, 0);
->>   	/* minimum reset time is 20ns */
->>   	udelay(1);
->> @@ -199,24 +227,6 @@ static void adau1701_reset(struct snd_soc_codec *codec)
->>   	mdelay(85);
->>   }
->>
->> -static int adau1701_init(struct snd_soc_codec *codec)
->> -{
->> -	int ret;
->> -	struct i2c_client *client = to_i2c_client(codec->dev);
->> -
->> -	adau1701_reset(codec);
->> -
->> -	ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
->> -	if (ret) {
->> -		dev_warn(codec->dev, "Failed to load firmware\n");
->> -		return ret;
->> -	}
->> -
->> -	snd_soc_write(codec, ADAU1701_DACSET, ADAU1701_DACSET_DACINIT);
->> -
->> -	return 0;
->> -}
->> -
->>   static int adau1701_set_capture_pcm_format(struct snd_soc_codec *codec,
->>   		snd_pcm_format_t format)
->>   {
->> @@ -291,9 +301,22 @@ static int adau1701_hw_params(struct snd_pcm_substream *substream,
->>   		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
->>   {
->>   	struct snd_soc_codec *codec = dai->codec;
->> +	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
->>   	snd_pcm_format_t format;
->>   	unsigned int val;
->>
->> +	if (adau1701->sysclk) {
->> +		unsigned int clkdiv = adau1701->sysclk / params_rate(params);
+>  	if (conn_len > 1 &&
+>  	    wid_type != AC_WID_AUD_MIX &&
+> @@ -511,7 +512,7 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+>  	    wid_type != AC_WID_POWER)
+>  		curr = snd_hda_codec_read(codec, nid, 0,
+>  					  AC_VERB_GET_CONNECT_SEL, 0);
+> -	snd_iprintf(buffer, "  Connection: %d\n", conn_len);
+> +	snd_iprintf(buffer, "  Raw Connection: %d\n", conn_len);
+>  	if (conn_len > 0) {
+>  		snd_iprintf(buffer, "    ");
+>  		for (c = 0; c < conn_len; c++) {
+> @@ -521,6 +522,16 @@ static void print_conn_list(struct snd_info_buffer
+> *buffer,
+>  		}
+>  		snd_iprintf(buffer, "\n");
+>  	}
+> +
+> +	/* Get Cache connections info */
+> +	conn_len = lookup_cache_conn(codec, nid, cache_conn);
+> +	if (conn_len > 0) {
+> +		snd_iprintf(buffer, "  Cache Connection: %d\n", conn_len);
+> +		snd_iprintf(buffer, "    ");
+> +		for (c = 0; c < conn_len; c++)
+> +			snd_iprintf(buffer, " 0x%02x", cache_conn[c]);
+> +		snd_iprintf(buffer, "\n");
+> +	}
+>  }
 > 
-> It will give warning.
-
-Please elaborate.
-
-
-
-Thanks,
-Daniel
+>  static void print_gpio(struct snd_info_buffer *buffer,
+> --
+> 1.8.1.2
