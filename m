@@ -1,53 +1,109 @@
-From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Subject: [RFC] [patch 1/1] imx-sgtl5000: return E_PROBE_DEFER
-	if ssi/codec not found
-Date: Thu, 20 Jun 2013 23:20:49 +0200
-Message-ID: <20130620212100.075892857@rtp-net.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lebrac.rtp-net.org (lebrac.rtp-net.org [88.191.135.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BB37261737
- for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2013 22:15:21 +0200 (CEST)
-Content-Disposition: inline; filename=imx-sgtl5000-probe-defer.patch
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
+From: Tomasz Figa <tomasz.figa@gmail.com>
+Subject: [RFC PATCH v2 00/12] ARM: s3c64xx: Let amba-pl08x driver handle DMA
+Date: Sat, 22 Jun 2013 22:42:32 +0200
+Message-ID: <1371933764-24875-1-git-send-email-tomasz.figa@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Dan Williams <djbw@fb.com>, Linus Walleij <linus.walleij@linaro.org>, Alessandro Rubini <rubini@gnudd.com>, Giancarlo Asnaghi <giancarlo.asnaghi@st.com>, Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@linaro.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Padmavathi Venna <padma.v@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>, Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Alban Bedel <alba>
 List-Id: alsa-devel@alsa-project.org
 
-If the ssi or codec drivers are not loaded (for instance, because spi or i2c
-bus drivers are not loaded), returning -EINVAL will for people to unload and
-then reload the module to get sound working. Returning E_PROBE_DEFER will
-mitigate this.
+This is another version of my patches extending support of amba-pl08x
+DMA engine driver to PL080S DMA engine (PL080 modified by Samsung) found
+in Samsung S3C64xx SoCs.
 
-Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
-
-Index: linux/sound/soc/fsl/imx-sgtl5000.c
-===================================================================
---- linux.orig/sound/soc/fsl/imx-sgtl5000.c	2013-05-16 09:33:01.000000000 +0200
-+++ linux/sound/soc/fsl/imx-sgtl5000.c	2013-05-16 09:35:14.000000000 +0200
-@@ -113,13 +113,13 @@ static int imx_sgtl5000_probe(struct pla
- 	ssi_pdev = of_find_device_by_node(ssi_np);
- 	if (!ssi_pdev) {
- 		dev_err(&pdev->dev, "failed to find SSI platform device\n");
--		ret = -EINVAL;
-+		ret = -EPROBE_DEFER;
- 		goto fail;
- 	}
- 	codec_dev = of_find_i2c_device_by_node(codec_np);
- 	if (!codec_dev) {
- 		dev_err(&pdev->dev, "failed to find codec platform device\n");
--		return -EINVAL;
-+		return -EPROBE_DEFER;
- 	}
+Changes since RFC v1:
+ - Returned to original way of storing quirks as booleans, as suggested
+   by Russell, Linus and Arnd.
+ - Added reg_config field to pl08x_phy_chan struct, which stores
+   variant-specific address of channel config register, as suggested
+   by Russell.
+ - Simplified handling of extended maximum transfer size of PL080S
+   (no more conditional passing of 0 as length to pl08x_cctl_bits()).
+ - Reworked LLI handling in the driver to stop casting arbitrary memory
+   to a struct and allow different word count of LLI entry, as suggested
+   by Linus.
+ - Removed AMBA ID override from S3C64xx PL080 initialization code.
+ - Fixed brokenness of Samsung DMA wrapper API, which caused cyclic buffers
+   to be queued multiple times when DMA engine is used.
+ - Included patch adding clock aliases for DMA engines (depends on
+   Common Clock Framework driver for S3C64xx).
+ - Fixed several minor stylistic issues.
  
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+For reference, here is the original description of the series:
+
+One of the biggest roadblocks on the way of S3C64xx to DeviceTree support
+is its DMA driver, which is completely platform-specific and provides
+private API (s3c-dma), not even saying that its design is completely
+against multiplatform-awareness.
+
+The DMA controller present on this SoC series is a custom variant
+of ARM PrimeCell PL080 modified by Samsung to add some extra features.
+It is mostly compatible with original PL080, except:
+ - CH_CONTROL2 register is added between CH_CONTROL and CH_CONFIG,
+ - offset of CH_CONFIG register is different,
+ - transfer size field is moved from CH_CONTROL to CH_CONTROL2,
+ - transfer size field is extended to 24 bits, allowing much bigger
+     single transfer,
+ - LLI consists of one more word, to account for CH_CONTROL2 register.
+
+Since all the rest is fully compatible with standard PL080 there is no
+point in having separate driver just for this single variant, so I decided
+to look into adding support for it to the amba-pl08x driver.
+
+There was already some attempt to achieve this before, but this was before
+Russel's big rework of the driver to use virtual channels, making the old
+patches being not much of use.
+
+This RFC series is a proof of concept that I managed to make during last
+days of hacking. Except one patch adding clkdev lookup to clock driver
+(which is being replaced with a CCF-compliant driver ATM), this is enough
+to get memcpy and slave transfers to work on S3C64xx.
+
+I have tested this on Mini6410 and SMDK6410 boards using dmatest for
+memcpy and Samsung I2S with madplay/aplay for slave transfers.
+Unfortunately I do not have access to other platforms with PL08x so
+I could not test for any regressions introduced on them.
+
+Credits for two patches go to Alban Bedel, who made a series fixing this
+driver to make it usable with audio drivers. I rebased his patches on top
+of mine and corrected coding style a bit.
+
+OK, that's all. Any comments are welcome. Feel free to start throwing eggs
+and tomatoes if you find this awful, but I won't be upset if I get some
+Tested-by or Acked-by as well. ;)
+
+Alban Bedel (2):
+  dmaengine: PL08x: Fix reading the byte count in cctl
+  dmaengine: PL08x: Add cyclic transfer support
+
+Tomasz Figa (10):
+  dmaengine: PL08x: Refactor pl08x_getbytes_chan() to lower indentation
+  dmaengine: PL08x: Add support for different offset of CONFIG register
+  dmaengine: PL08x: Rework LLI handling to be less fragile
+  dmaengine: PL08x: Add support for PL080S variant
+  dmaengine: PL08x: Add support for different maximum transfer size
+  ASoC: Samsung: Do not queue cyclic buffers multiple times
+  clk: samsung: s3c64xx: Add aliases for DMA clocks
+  spi: s3c64xx: Do not require legacy DMA API in case of S3C64XX
+  ASoC: Samsung: Do not require legacy DMA API in case of S3C64XX
+  ARM: s3c64xx: Add support for DMA using generic amba-pl08x driver
+
+ arch/arm/Kconfig                         |   1 +
+ arch/arm/mach-s3c64xx/Kconfig            |   8 +-
+ arch/arm/mach-s3c64xx/Makefile           |   1 +
+ arch/arm/mach-s3c64xx/common.h           |   5 +
+ arch/arm/mach-s3c64xx/include/mach/dma.h |  65 +++++
+ arch/arm/mach-s3c64xx/pl080.c            | 244 ++++++++++++++++++
+ arch/arm/plat-samsung/s3c-dma-ops.c      |  13 +-
+ drivers/clk/samsung/clk-s3c64xx.c        |   2 +
+ drivers/dma/amba-pl08x.c                 | 426 ++++++++++++++++++++++---------
+ drivers/spi/Kconfig                      |   2 +-
+ include/linux/amba/pl080.h               |   1 +
+ sound/soc/samsung/Kconfig                |   2 +-
+ sound/soc/samsung/dma.c                  |   7 +
+ 13 files changed, 651 insertions(+), 126 deletions(-)
+ create mode 100644 arch/arm/mach-s3c64xx/pl080.c
+
+-- 
+1.8.2.1
