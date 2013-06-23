@@ -1,20 +1,19 @@
-From: sajeesh sidharthan <sajeesh.sidharthan@yahoo.com>
-Subject: [ucm] Adding list for caching multiple opened control
-	devices
-Date: Sat, 22 Jun 2013 15:10:12 -0700 (PDT)
-Message-ID: <1371939012.85385.YahooMailNeo@web121506.mail.ne1.yahoo.com>
-References: <1371801284-31603-1-git-send-email-zonque@gmail.com>
- <1371801284-31603-2-git-send-email-zonque@gmail.com>
- <20130621150019.GZ27646@sirena.org.uk> <51C4916A.3080008@gmail.com>
-Reply-To: sajeesh sidharthan <sajeesh.sidharthan@yahoo.com>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [kbuild] sound/soc/soc-fw.c:945:9-16: ERROR: se is
+ NULL but dereferenced.
+Date: Sun, 23 Jun 2013 09:45:53 +0800
+Message-ID: <20130623014553.GA10419@localhost>
+References: <51c5b942.ZhZXIoNf8EKpybq5%fengguang.wu@intel.com>
+ <CACz=WefaSAsB6NYY37WA1x-=VHxQ8Jfbud8xzH3nq1QHzynoaQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm12.bullet.mail.ne1.yahoo.com (nm12.bullet.mail.ne1.yahoo.com
- [98.138.90.75]) by alsa0.perex.cz (Postfix) with ESMTP id 6F95D2619DB
- for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2013 00:10:14 +0200 (CEST)
-In-Reply-To: <51C4916A.3080008@gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1EA6261A06
+ for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2013 03:45:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CACz=WefaSAsB6NYY37WA1x-=VHxQ8Jfbud8xzH3nq1QHzynoaQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,161 +23,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raphael S Carvalho <raphael.scarv@gmail.com>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Julia Lawall <julia.lawall@lip6.fr>, kbuild@01.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On Sat, Jun 22, 2013 at 12:35:44PM -0300, Raphael S Carvalho wrote:
+> I'm in a Linux event now, and I can't clone the tree (probably the port for
+> that purpose isn't allowed)
+> Then I sending a simplified patch that shows which lines must be changed.
+ 
+Patch looks good to me. Thanks!
 
-I would like to contribute to alsa development. As a first step, I have mad=
-e changes for caching control devices in ucm.
+Reviewed-by: Fengguang Wu <fengguang.wu@intel.com>
 
-Please review the following changes and let me know if I can check in the c=
-hanges and how to check in?
-
-
-----------------------
-
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 030c9b1..3219778 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -131,31 +131,33 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
-=A0=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 const char *ctl_dev)
-=A0{
-=A0=A0=A0=A0 int err;
-+=A0=A0=A0 struct list_head *pos;
-+=A0=A0=A0 struct snd_ctl_list *snd_ctl;
-=A0
--=A0=A0=A0 /* FIXME: add a list of ctl devices to uc_mgr structure and
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 cache accesses for multiple opened ctl devi=
-ces */
--=A0=A0=A0 if (uc_mgr->ctl_dev !=3D NULL && strcmp(ctl_dev, uc_mgr->ctl_dev=
-) =3D=3D 0) {
--=A0=A0=A0 =A0=A0=A0 *ctl =3D uc_mgr->ctl;
--=A0=A0=A0 =A0=A0=A0 return 0;
--=A0=A0=A0 }
--=A0=A0=A0 if (uc_mgr->ctl_dev) {
--=A0=A0=A0 =A0=A0=A0 free(uc_mgr->ctl_dev);
--=A0=A0=A0 =A0=A0=A0 uc_mgr->ctl_dev =3D NULL;
--=A0=A0=A0 =A0=A0=A0 snd_ctl_close(uc_mgr->ctl);
--=A0=A0=A0 =
-
-+=A0=A0=A0 list_for_each(pos, &uc_mgr->ctl_list) {
-+=A0=A0=A0 =A0=A0=A0 snd_ctl =3D list_entry(pos, struct snd_ctl_list, list);
-+=A0=A0=A0 =A0=A0=A0 if(!snd_ctl)
-+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 break;
-+=A0=A0=A0 =A0=A0=A0 if(!strcmp(snd_ctl->ctl_dev, ctl_dev)) {
-+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 *ctl =3D snd_ctl->ctl;
-+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return 0;
-+=A0=A0=A0 =A0=A0=A0 }
-=A0=A0=A0=A0 }
-=A0=A0=A0=A0 err =3D snd_ctl_open(ctl, ctl_dev, 0);
-=A0=A0=A0=A0 if (err < 0)
-=A0=A0=A0=A0 =A0=A0=A0 return err;
--=A0=A0=A0 uc_mgr->ctl_dev =3D strdup(ctl_dev);
--=A0=A0=A0 if (uc_mgr->ctl_dev =3D=3D NULL) {
--=A0=A0=A0 =A0=A0=A0 snd_ctl_close(*ctl);
--=A0=A0=A0 =A0=A0=A0 return -ENOMEM;
--=A0=A0=A0 }
--=A0=A0=A0 uc_mgr->ctl =3D *ctl;
-+
-+=A0=A0=A0 if (*ctl) {
-+=A0=A0=A0 =A0=A0=A0 snd_ctl =3D malloc(sizeof(struct snd_ctl_list));
-+=A0=A0=A0 =A0=A0=A0 snd_ctl->ctl_dev =3D strdup(ctl_dev);
-+=A0=A0=A0 =A0=A0=A0 snd_ctl->ctl =3D *ctl;
-+=A0=A0=A0 =A0=A0=A0 list_add_tail(&snd_ctl->list, &uc_mgr->ctl_list);
-+=A0=A0=A0 }
-+
-=A0=A0=A0=A0 return 0;
-=A0}
-=A0
-+
-=A0static int execute_cset(snd_ctl_t *ctl, char *cset)
-=A0{
-=A0=A0=A0=A0 char *pos;
-@@ -622,6 +624,7 @@ int snd_use_case_mgr_open(snd_use_case_mgr_t **mgr,
-=A0=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->value_list);
-=A0=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->active_modifiers);
-=A0=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->active_devices);
-+=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->ctl_list);
-=A0=A0=A0=A0 pthread_mutex_init(&uc_mgr->mutex, NULL);
-=A0
-=A0=A0=A0=A0 uc_mgr->card_name =3D strdup(card_name);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 13e82da..86a51c7 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -82,6 +82,12 @@ struct dev_list {
-=A0};
-=A0
-=A0
-+struct snd_ctl_list {
-+=A0=A0=A0 snd_ctl_t *ctl;
-+=A0=A0=A0 char *ctl_dev;
-+=A0=A0=A0 struct list_head list;
-+};
-+
-=A0/*
-=A0 * Describes a Use Case Modifier and it's enable and disable sequences.
-=A0 * A use case verb can have N modifiers.
-@@ -183,8 +189,8 @@ struct snd_use_case_mgr {
-=A0=A0=A0=A0 pthread_mutex_t mutex;
-=A0
-=A0=A0=A0=A0 /* change to list of ctl handles */
--=A0=A0=A0 snd_ctl_t *ctl;
--=A0=A0=A0 char *ctl_dev;
-+=A0=A0=A0 =
-
-+=A0=A0=A0 struct list_head ctl_list;
-=A0};
-=A0
-=A0#define uc_error SNDERR
-diff --git a/src/ucm/utils.c b/src/ucm/utils.c
-index 2def0b8..f18a2ac 100644
---- a/src/ucm/utils.c
-+++ b/src/ucm/utils.c
-@@ -99,6 +99,21 @@ void uc_mgr_free_value(struct list_head *base)
-=A0=A0=A0=A0 }
-=A0}
-=A0
-+
-+void uc_mgr_free_ctl(struct list_head *base)
-+{
-+=A0=A0=A0 struct list_head *pos, *npos;
-+=A0=A0=A0 struct snd_ctl_list *ctl_list;
-+=A0=A0=A0 =
-
-+=A0=A0=A0 list_for_each_safe(pos, npos, base) {
-+=A0=A0=A0 =A0=A0=A0 ctl_list =3D list_entry(pos, struct snd_ctl_list, list=
-);
-+=A0=A0=A0 =A0=A0=A0 free(ctl_list->ctl_dev);
-+=A0=A0=A0 =A0=A0=A0 snd_ctl_close(ctl_list->ctl);
-+=A0=A0=A0 =A0=A0=A0 list_del(&ctl_list->list);
-+=A0=A0=A0 =A0=A0=A0 free(ctl_list);
-+=A0=A0=A0 }
-+}
-+
-=A0void uc_mgr_free_dev_list(struct list_head *base)
-=A0{
-=A0=A0=A0=A0 struct list_head *pos, *npos;
-@@ -220,12 +235,7 @@ void uc_mgr_free_verb(snd_use_case_mgr_t *uc_mgr)
-=A0=A0=A0=A0 uc_mgr->active_verb =3D NULL;
-=A0=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->active_devices);
-=A0=A0=A0=A0 INIT_LIST_HEAD(&uc_mgr->active_modifiers);
--=A0=A0=A0 if (uc_mgr->ctl !=3D NULL) {
--=A0=A0=A0 =A0=A0=A0 snd_ctl_close(uc_mgr->ctl);
--=A0=A0=A0 =A0=A0=A0 uc_mgr->ctl =3D NULL;
--=A0=A0=A0 }
--=A0=A0=A0 free(uc_mgr->ctl_dev);
--=A0=A0=A0 uc_mgr->ctl_dev =3D NULL;
-+=A0=A0=A0 uc_mgr_free_ctl(&uc_mgr->ctl_list);
-=A0}
-=A0
-=A0void uc_mgr_free(snd_use_case_mgr_t *uc_mgr)
-
-
-
-
----------------------
-
-Sajeesh
+> Signed-off: Raphael S. Carvalho <raphael.scarv@gmail.com>
+> 
+> --- soc-fw_old.c    2013-06-22 12:13:48.000000000 -0300
+> +++ soc-fw_new.c    2013-06-22 12:19:41.000000000 -0300
+> @@ -893,7 +893,7 @@
+>          if (err < 0) {
+>              dev_err(sfw->dev, "ASoC: could not create"
+>                  " values for %s\n", ec->hdr.name);
+> -            goto err_se;
+> +            goto err;
+>          }
+>          /* fall through to create texts */
+>      case SOC_CONTROL_TYPE_ENUM:
+> @@ -905,13 +905,13 @@
+>          if (err < 0) {
+>              dev_err(sfw->dev, "ASoC: could not create"
+>                  " texts for %s\n", ec->hdr.name);
+> -            goto err_se;
+> +            goto err;
+>          }
+>          break;
+>      default:
+>          dev_err(sfw->dev, "ASoC: invalid enum control type %d for %s\n",
+>              ec->hdr.index, ec->hdr.name);
+> -        goto err_se;
+> +        goto err;
+>      }
+> 
+>      /* map standard io handlers and check for external handlers */
+> @@ -928,21 +928,19 @@
+>                  SOC_CONTROL_GET_ID_GET(ec->hdr.index),
+>                  SOC_CONTROL_GET_ID_PUT(ec->hdr.index),
+>                  SOC_CONTROL_GET_ID_INFO(ec->hdr.index));
+> -            goto err_se;
+> +            goto err;
+>          }
+> 
+>          err = soc_fw_init_kcontrol(sfw, kc);
+>          if (err < 0) {
+>              dev_err(sfw->dev, "ASoC: failed to init %s\n",
+>                  ec->hdr.name);
+> -            goto err_se;
+> +            goto err;
+>          }
+>      }
+>      return kc;
+> 
+> -err_se:
+> -    kfree(kc);
+> -
+> +err:
+>      /* free values and texts */
+>      if (se->dvalues)
+>          kfree(se->dvalues);
+> @@ -950,7 +948,8 @@
+>          kfree(se->dtexts[i]);
+> 
+>      kfree(se);
+> -
+> +err_se:
+> +    kfree(kc);
+>      return NULL;
+>  }
+> 
+> 
+> 
+> On Sat, Jun 22, 2013 at 11:48 AM, Fengguang Wu <fengguang.wu@intel.com>wrote:
+> 
+> > TO: Liam Girdwood <lrg@ti.com>
+> > CC: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> >
+> >
+> > Hi Liam,
+> >
+> > FYI, there are coccinelle warnings in
+> >
+> > tree:   git://gitorious.org/omap-audio/linux-audiopeter/topic/ti-audio-next-bnw-wip
+> > head:   ac1981249f0c606cede98d6dab091ecb1ae480c9
+> > commit: 6d98dbbcfb5da2176b3e60faaf86d2279790fe67 ASoC: firmware: Add
+> > support for dynamic components
+> > date:   5 weeks ago
+> > :::::: branch date: 5 days ago
+> > :::::: commit date: 5 weeks ago
+> >
+> > >> sound/soc/soc-fw.c:945:9-16: ERROR: se is NULL but dereferenced.
+> > --
+> > >> sound/soc/soc-fw.c:1523:8-9: ERROR: reference preceded by free on line
+> > 1523
+> > >> sound/soc/soc-fw.c:1443:8-9: ERROR: reference preceded by free on line
+> > 1443
+> > >> sound/soc/soc-fw.c:1483:8-9: ERROR: reference preceded by free on line
+> > 1483
+> > --
+> > >> sound/soc/soc-fw.c:1528:6-8: ERROR: invalid reference to the index
+> > variable of the iterator on line 1513
+> > >> sound/soc/soc-fw.c:1448:6-8: ERROR: invalid reference to the index
+> > variable of the iterator on line 1433
+> > >> sound/soc/soc-fw.c:1488:6-8: ERROR: invalid reference to the index
+> > variable of the iterator on line 1473
+> >
+> > git remote add omap-audio git://gitorious.org/omap-audio/linux-audio
+> > git remote update omap-audio
+> > git checkout 6d98dbbcfb5da2176b3e60faaf86d2279790fe67
+> > vim +945 sound/soc/soc-fw.c
+> >
+> > 6d98dbbc Liam Girdwood 2012-12-05  929                          goto
+> > err_se;
+> > 6d98dbbc Liam Girdwood 2012-12-05  930                  }
+> > 6d98dbbc Liam Girdwood 2012-12-05  931
+> > 6d98dbbc Liam Girdwood 2012-12-05  932                  err =
+> > soc_fw_init_kcontrol(sfw, kc);
+> > 6d98dbbc Liam Girdwood 2012-12-05  933                  if (err < 0) {
+> > 6d98dbbc Liam Girdwood 2012-12-05  934
+> >  dev_err(sfw->dev, "ASoC: failed to init %s\n",
+> > 6d98dbbc Liam Girdwood 2012-12-05  935
+> >  ec->hdr.name);
+> > 6d98dbbc Liam Girdwood 2012-12-05  936                          goto
+> > err_se;
+> > 6d98dbbc Liam Girdwood 2012-12-05  937                  }
+> > 6d98dbbc Liam Girdwood 2012-12-05  938          }
+> > 6d98dbbc Liam Girdwood 2012-12-05  939          return kc;
+> > 6d98dbbc Liam Girdwood 2012-12-05  940
+> > 6d98dbbc Liam Girdwood 2012-12-05  941  err_se:
+> > 6d98dbbc Liam Girdwood 2012-12-05  942          kfree(kc);
+> > 6d98dbbc Liam Girdwood 2012-12-05  943
+> > 6d98dbbc Liam Girdwood 2012-12-05  944          /* free values and texts */
+> > 6d98dbbc Liam Girdwood 2012-12-05 @945          if (se->dvalues)
+> > 6d98dbbc Liam Girdwood 2012-12-05  946                  kfree(se->dvalues);
+> > 6d98dbbc Liam Girdwood 2012-12-05  947          for (i = 0; i < ec->max;
+> > i++)
+> > 6d98dbbc Liam Girdwood 2012-12-05  948
+> >  kfree(se->dtexts[i]);
+> > 6d98dbbc Liam Girdwood 2012-12-05  949
+> > 6d98dbbc Liam Girdwood 2012-12-05  950          kfree(se);
+> > 6d98dbbc Liam Girdwood 2012-12-05  951
+> > 6d98dbbc Liam Girdwood 2012-12-05  952          return NULL;
+> > 6d98dbbc Liam Girdwood 2012-12-05  953  }
+> >
+> > ---
+> > 0-DAY kernel build testing backend              Open Source Technology
+> > Center
+> > http://lists.01.org/mailman/listinfo/kbuild                 Intel
+> > Corporation
+> > _______________________________________________
+> > kbuild mailing list
+> > kbuild@lists.01.org
+> > https://lists.01.org/mailman/listinfo/kbuild
+> >
