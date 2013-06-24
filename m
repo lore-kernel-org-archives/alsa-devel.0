@@ -1,15 +1,19 @@
-From: mengdong.lin@intel.com
-Subject: [RFC PATCH] ALSA: hda - reset hda link during
-	system/runtime suspend
-Date: Mon, 24 Jun 2013 10:18:54 -0400
-Message-ID: <1372083534-9706-1-git-send-email-mengdong.lin@intel.com>
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: [RFC] [patch 1/1] imx-sgtl5000: return
+	E_PROBE_DEFER if ssi/codec not found
+Date: Mon, 24 Jun 2013 09:33:02 +0200
+Message-ID: <87y5a09d5d.fsf@lebrac.rtp-net.org>
+References: <20130620212100.075892857@rtp-net.org>
+ <CAOMZO5DOTEGKe0Fm-54vkm+oyY4_tBwgzoLpnKdmvbdgb=s4pA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 918DD261A67
- for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 09:10:17 +0200 (CEST)
+Received: from lebrac.rtp-net.org (lebrac.rtp-net.org [88.191.135.105])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60D53261A67
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2013 09:33:59 +0200 (CEST)
+In-Reply-To: <CAOMZO5DOTEGKe0Fm-54vkm+oyY4_tBwgzoLpnKdmvbdgb=s4pA@mail.gmail.com>
+ (Fabio Estevam's message of "Sun, 23 Jun 2013 18:48:32 -0300")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,63 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: pshou@realtek.com, kailang@realtek.com, Mengdong Lin <mengdong.lin@intel.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Fabio Estevam <festevam@gmail.com> writes:
 
-If all the codecs report ClkStopOK (OK to stop bus clock) after being put to
-D3, this patch will reset the HDA link before the controller is put to D3.
+> On Thu, Jun 20, 2013 at 6:20 PM, Arnaud Patard
+> <arnaud.patard@rtp-net.org> wrote:
+>> If the ssi or codec drivers are not loaded (for instance, because spi or i2c
+>> bus drivers are not loaded), returning -EINVAL will for people to unload and
+>> then reload the module to get sound working. Returning E_PROBE_DEFER will
+>> mitigate this.
+>>
+>> Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
+>
+> Which board you are using that fails to probe sgtl5000?
+>
 
-So the link will be in reset during system or runtime suspend, the bus clock
-stops and the codecs are in D3(ClkStop) state.
+It was on imx53-qsb, nearly everything in module and boot with DT.
 
-This may help to reduce power consumption by dozens of mW on some peripheral
-hda codecs.
+> I have fixed this problem for some boards recently.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+I'm curious to know how to fix that with modules on a per board
+basis. Please, explain.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index f089fa0..9f110c7 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1120,6 +1120,20 @@ static void azx_load_dsp_cleanup(struct hda_bus *bus,
- 				 struct snd_dma_buffer *dmab);
- #endif
- 
-+/* enter link reset */
-+static void azx_reset_link(struct azx *chip)
-+{
-+	unsigned long timeout;
-+
-+	/* reset controller */
-+	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_RESET);
-+
-+	timeout = jiffies + msecs_to_jiffies(100);
-+	while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
-+			time_before(jiffies, timeout))
-+		usleep_range(500, 1000);
-+}
-+
- /* reset codec link */
- static int azx_reset(struct azx *chip, int full_reset)
- {
-@@ -2894,6 +2908,7 @@ static int azx_suspend(struct device *dev)
- 	if (chip->initialized)
- 		snd_hda_suspend(chip->bus);
- 	azx_stop_chip(chip);
-+	azx_reset_link(chip);
- 	if (chip->irq >= 0) {
- 		free_irq(chip->irq, chip);
- 		chip->irq = -1;
-@@ -2946,6 +2961,7 @@ static int azx_runtime_suspend(struct device *dev)
- 	struct azx *chip = card->private_data;
- 
- 	azx_stop_chip(chip);
-+	azx_reset_link(chip);
- 	azx_clear_irq_pending(chip);
- 	return 0;
- }
--- 
-1.7.10.4
+Thanks,
+Arnaud
